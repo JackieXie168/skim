@@ -1,0 +1,363 @@
+.rn '' }`
+''' $RCSfile$$Revision$$Date$
+'''
+''' $Log$
+'''
+.de Sh
+.br
+.if t .Sp
+.ne 5
+.PP
+\fB\\$1\fR
+.PP
+..
+.de Sp
+.if t .sp .5v
+.if n .sp
+..
+.de Ip
+.br
+.ie \\n(.$>=3 .ne \\$3
+.el .ne 3
+.IP "\\$1" \\$2
+..
+.de Vb
+.ft CW
+.nf
+.ne \\$1
+..
+.de Ve
+.ft R
+
+.fi
+..
+'''
+'''
+'''     Set up \*(-- to give an unbreakable dash;
+'''     string Tr holds user defined translation string.
+'''     Bell System Logo is used as a dummy character.
+'''
+.tr \(*W-|\(bv\*(Tr
+.ie n \{\
+.ds -- \(*W-
+.ds PI pi
+.if (\n(.H=4u)&(1m=24u) .ds -- \(*W\h'-12u'\(*W\h'-12u'-\" diablo 10 pitch
+.if (\n(.H=4u)&(1m=20u) .ds -- \(*W\h'-12u'\(*W\h'-8u'-\" diablo 12 pitch
+.ds L" ""
+.ds R" ""
+'''   \*(M", \*(S", \*(N" and \*(T" are the equivalent of
+'''   \*(L" and \*(R", except that they are used on ".xx" lines,
+'''   such as .IP and .SH, which do another additional levels of
+'''   double-quote interpretation
+.ds M" """
+.ds S" """
+.ds N" """""
+.ds T" """""
+.ds L' '
+.ds R' '
+.ds M' '
+.ds S' '
+.ds N' '
+.ds T' '
+'br\}
+.el\{\
+.ds -- \(em\|
+.tr \*(Tr
+.ds L" ``
+.ds R" ''
+.ds M" ``
+.ds S" ''
+.ds N" ``
+.ds T" ''
+.ds L' `
+.ds R' '
+.ds M' `
+.ds S' '
+.ds N' `
+.ds T' '
+.ds PI \(*p
+'br\}
+.\"	If the F register is turned on, we'll generate
+.\"	index entries out stderr for the following things:
+.\"		TH	Title 
+.\"		SH	Header
+.\"		Sh	Subsection 
+.\"		Ip	Item
+.\"		X<>	Xref  (embedded
+.\"	Of course, you have to process the output yourself
+.\"	in some meaninful fashion.
+.if \nF \{
+.de IX
+.tm Index:\\$1\t\\n%\t"\\$2"
+..
+.nr % 0
+.rr F
+.\}
+.TH bt_macros 3 "btparse, version 0.33" "22 Decemer, 2000" "btparse"
+.UC
+.if n .hy 0
+.if n .na
+.ds C+ C\v'-.1v'\h'-1p'\s-2+\h'-1p'+\s0\v'.1v'\h'-1p'
+.de CQ          \" put $1 in typewriter font
+.ft CW
+'if n "\c
+'if t \\&\\$1\c
+'if n \\&\\$1\c
+'if n \&"
+\\&\\$2 \\$3 \\$4 \\$5 \\$6 \\$7
+'.ft R
+..
+.\" @(#)ms.acc 1.5 88/02/08 SMI; from UCB 4.2
+.	\" AM - accent mark definitions
+.bd B 3
+.	\" fudge factors for nroff and troff
+.if n \{\
+.	ds #H 0
+.	ds #V .8m
+.	ds #F .3m
+.	ds #[ \f1
+.	ds #] \fP
+.\}
+.if t \{\
+.	ds #H ((1u-(\\\\n(.fu%2u))*.13m)
+.	ds #V .6m
+.	ds #F 0
+.	ds #[ \&
+.	ds #] \&
+.\}
+.	\" simple accents for nroff and troff
+.if n \{\
+.	ds ' \&
+.	ds ` \&
+.	ds ^ \&
+.	ds , \&
+.	ds ~ ~
+.	ds ? ?
+.	ds ! !
+.	ds /
+.	ds q
+.\}
+.if t \{\
+.	ds ' \\k:\h'-(\\n(.wu*8/10-\*(#H)'\'\h"|\\n:u"
+.	ds ` \\k:\h'-(\\n(.wu*8/10-\*(#H)'\`\h'|\\n:u'
+.	ds ^ \\k:\h'-(\\n(.wu*10/11-\*(#H)'^\h'|\\n:u'
+.	ds , \\k:\h'-(\\n(.wu*8/10)',\h'|\\n:u'
+.	ds ~ \\k:\h'-(\\n(.wu-\*(#H-.1m)'~\h'|\\n:u'
+.	ds ? \s-2c\h'-\w'c'u*7/10'\u\h'\*(#H'\zi\d\s+2\h'\w'c'u*8/10'
+.	ds ! \s-2\(or\s+2\h'-\w'\(or'u'\v'-.8m'.\v'.8m'
+.	ds / \\k:\h'-(\\n(.wu*8/10-\*(#H)'\z\(sl\h'|\\n:u'
+.	ds q o\h'-\w'o'u*8/10'\s-4\v'.4m'\z\(*i\v'-.4m'\s+4\h'\w'o'u*8/10'
+.\}
+.	\" troff and (daisy-wheel) nroff accents
+.ds : \\k:\h'-(\\n(.wu*8/10-\*(#H+.1m+\*(#F)'\v'-\*(#V'\z.\h'.2m+\*(#F'.\h'|\\n:u'\v'\*(#V'
+.ds 8 \h'\*(#H'\(*b\h'-\*(#H'
+.ds v \\k:\h'-(\\n(.wu*9/10-\*(#H)'\v'-\*(#V'\*(#[\s-4v\s0\v'\*(#V'\h'|\\n:u'\*(#]
+.ds _ \\k:\h'-(\\n(.wu*9/10-\*(#H+(\*(#F*2/3))'\v'-.4m'\z\(hy\v'.4m'\h'|\\n:u'
+.ds . \\k:\h'-(\\n(.wu*8/10)'\v'\*(#V*4/10'\z.\v'-\*(#V*4/10'\h'|\\n:u'
+.ds 3 \*(#[\v'.2m'\s-2\&3\s0\v'-.2m'\*(#]
+.ds o \\k:\h'-(\\n(.wu+\w'\(de'u-\*(#H)/2u'\v'-.3n'\*(#[\z\(de\v'.3n'\h'|\\n:u'\*(#]
+.ds d- \h'\*(#H'\(pd\h'-\w'~'u'\v'-.25m'\f2\(hy\fP\v'.25m'\h'-\*(#H'
+.ds D- D\\k:\h'-\w'D'u'\v'-.11m'\z\(hy\v'.11m'\h'|\\n:u'
+.ds th \*(#[\v'.3m'\s+1I\s-1\v'-.3m'\h'-(\w'I'u*2/3)'\s-1o\s+1\*(#]
+.ds Th \*(#[\s+2I\s-2\h'-\w'I'u*3/5'\v'-.3m'o\v'.3m'\*(#]
+.ds ae a\h'-(\w'a'u*4/10)'e
+.ds Ae A\h'-(\w'A'u*4/10)'E
+.ds oe o\h'-(\w'o'u*4/10)'e
+.ds Oe O\h'-(\w'O'u*4/10)'E
+.	\" corrections for vroff
+.if v .ds ~ \\k:\h'-(\\n(.wu*9/10-\*(#H)'\s-2\u~\d\s+2\h'|\\n:u'
+.if v .ds ^ \\k:\h'-(\\n(.wu*10/11-\*(#H)'\v'-.4m'^\v'.4m'\h'|\\n:u'
+.	\" for low resolution devices (crt and lpr)
+.if \n(.H>23 .if \n(.V>19 \
+\{\
+.	ds : e
+.	ds 8 ss
+.	ds v \h'-1'\o'\(aa\(ga'
+.	ds _ \h'-1'^
+.	ds . \h'-1'.
+.	ds 3 3
+.	ds o a
+.	ds d- d\h'-1'\(ga
+.	ds D- D\h'-1'\(hy
+.	ds th \o'bp'
+.	ds Th \o'LP'
+.	ds ae ae
+.	ds Ae AE
+.	ds oe oe
+.	ds Oe OE
+.\}
+.rm #[ #] #H #V #F C
+.SH "NAME"
+bt_macros \- accessing and manipulating the btparse macro table
+.SH "SYNOPSIS"
+.PP
+.Vb 6
+\&   void bt_add_macro_value (AST *  assignment,
+\&                            ushort options);
+\&   void bt_add_macro_text (char * macro,
+\&                           char * text,
+\&                           char * filename,
+\&                           int    line);
+.Ve
+.Vb 2
+\&   void bt_delete_macro (char * macro);
+\&   void bt_delete_all_macros (void);
+.Ve
+.Vb 4
+\&   int bt_macro_length (char *macro);
+\&   char * bt_macro_text (char * macro,
+\&                         char * filename,
+\&                         int line);
+.Ve
+.SH "DESCRIPTION"
+\fBbtparse\fR maintains a single table of all macros (abbreviations)
+encountered while parsing BibTeX entries.  It updates this table
+whenever it encounters a \*(L"macro definition\*(R" (\f(CW@string\fR) entry, and
+refers to it whenever a macro is used in an entry and needs to be
+expanded.  (Macros are not necessarily expanded on input, although this
+is the default.  See the \fIbt_postprocess\fR manpage.)  Macro definitions are only
+cleared when \fBbtparse\fR's global cleanup function, \f(CWbt_cleanup()\fR, is
+called.  Thus, unless you explicitly call \f(CWbt_delete_macro()\fR or
+\f(CWbt_delete_all_macros()\fR, macro definitions persist for as long as you
+use the library---usually, the lifetime of your process.
+.SH "FUNCTIONS"
+You can use the following functions to add macros, delete them, and
+query their values---thus interfering with \fBbtparse\fR's normal operation
+on the fly.
+.Ip "bt_add_macro_text ()" 4
+.Sp
+.Vb 4
+\&   void bt_add_macro_text (char * macro,
+\&                           char * text,
+\&                           char * filename,
+\&                           int    line);
+.Ve
+Defines a new macro, or redefines an old one.  \f(CWmacro\fR is the name of
+the macro, and \f(CWtext\fR is the text it should expand to.  \f(CWfilename\fR and
+\f(CWline\fR are just used to generate any warnings about the macro
+definition; if they don't apply, specify \f(CWNULL\fR for \f(CWfilename\fR and
+\f(CW0\fR for \f(CWline\fR.  The only such warning occurs when you redefine an old
+macro: its value is overridden, and \f(CWbt_add_macro_text()\fR issues a
+warning saying so.  
+.Sp
+For instance, when parsing this macro definition entry:
+.Sp
+.Vb 1
+\&   @string{fubar = "Fouled Up Beyond All Recognition"}
+.Ve
+the library (in particular, the post-processing code called after an
+entry is successfully parsed) will ultimately do this:
+.Sp
+.Vb 2
+\&   bt_add_macro_text ("fubar", "Fouled Up Beyond All Recognition",
+\&                      filename, line);
+.Ve
+This in turn will cause the macro \f(CWfubar\fR to be expanded appropriately
+whenever the post-processing code sees it in any future entries.
+.Ip "bt_add_macro_value ()" 4
+.Sp
+.Vb 2
+\&   void bt_add_macro_value (AST *  assignment,
+\&                            ushort options);
+.Ve
+This function is mainly for internal use by the library, but it's
+available to you if you ever find yourself with a little bit of \s-1AST\s0
+representing a macro definition, and you want to set the macro yourself
+(rather than letting the library's post-processing code take care of it
+for you).  \f(CWassignment\fR must be an \s-1AST\s0 node as returned by
+\f(CWbt_next_field()\fR.  Unlike most other \fBbtparse\fR functions that take an
+\f(CWoptions\fR argument, \f(CWoptions\fR here tells how the value in
+\f(CWassignment\fR was post-processed.  This is needed because macro values
+have to be processed in a special way to be valid in future expansions;
+if this one wasn't processed like that, \f(CWbt_add_macro_value()\fR will do
+it for you.  If you don't know how the value was post-processed, just
+supply \f(CW0\fR for \f(CWoptions\fR---that's guaranteed to describe something
+different from \*(L"the right way\*(R" for macros, so the post-processing will
+be done correctly.
+.Sp
+The processing done to macro values is mainly to ensure that we can get
+away with storing just a string in the macro table: macros invoked by
+the macro are themselves expanded, and all sub-strings are concatenated.
+For instance, if \fBbtparse\fR parses these entries:
+.Sp
+.Vb 2
+\&   @string{and = " and "}
+\&   @string{jim_n_bob = "James Smith" # and # "Bob Jones"}
+.Ve
+then the value stored for \f(CWjim_n_bob\fR should obviously be the string
+\f(CW"James Smith and Bob Jones"\fR.  To ensure this, \fBbtparse\fR has to
+process the value of \f(CWand\fR differently from most BibTeX strings: in
+particular, whitespace is \fInot\fR collapsed before the string is stored.
+That way, the correct value, \f(CW" and "\fR, is interpolated into the value
+of \f(CWjim_n_bob\fR.  Thus, all macro values have sub-macros expanded and
+strings concatenated before they are stored, but whitespace is not
+collapsed until the macro is used in a regular entry.
+.Sp
+This function calls \f(CWbt_add_macro_text()\fR, so the same proviso about
+redefining old macros applies---a warning will be issued, and the old
+value lost.
+.Ip "bt_delete_macro ()" 4
+.Sp
+.Vb 1
+\&   void bt_delete_macro (char * macro);
+.Ve
+Deletes a macro from the macro table.  If \f(CWmacro\fR isn't defined,
+takes no action.
+.Ip "bt_delete_all_macros ()" 4
+.Sp
+.Vb 1
+\&   void bt_delete_all_macros (void);
+.Ve
+Deletes all macros from the macro table.
+.Ip "bt_macro_length ()" 4
+.Sp
+.Vb 1
+\&   int bt_macro_length (char *macro);
+.Ve
+Returns the length of a macro's expansion text.  If the macro is
+undefined, returns 0; no warning is issued.
+.Ip "bt_macro_text ()" 4
+.Sp
+.Vb 3
+\&   char * bt_macro_text (char * macro,
+\&                         char * filename,
+\&                         int line);
+.Ve
+Returns the expansion text of a macro.  If the macro is not defined,
+issues a warning and returns \f(CWNULL\fR.  \f(CWfilename\fR and \f(CWline\fR are used
+for generating this warning; if they don't apply (i.e. you're not
+expanding the macro as a result of finding it in some file), supply
+\f(CWNULL\fR for \f(CWfilename\fR and \f(CW0\fR for \f(CWline\fR.
+.SH "SEE ALSO"
+the \fIbtparse\fR manpage
+.SH "AUTHOR"
+Greg Ward <gward@python.net>
+
+.rn }` ''
+.IX Title "bt_macros 3"
+.IX Name "bt_macros - accessing and manipulating the btparse macro table"
+
+.IX Header "NAME"
+
+.IX Header "SYNOPSIS"
+
+.IX Header "DESCRIPTION"
+
+.IX Header "FUNCTIONS"
+
+.IX Item "bt_add_macro_text ()"
+
+.IX Item "bt_add_macro_value ()"
+
+.IX Item "bt_delete_macro ()"
+
+.IX Item "bt_delete_all_macros ()"
+
+.IX Item "bt_macro_length ()"
+
+.IX Item "bt_macro_text ()"
+
+.IX Header "SEE ALSO"
+
+.IX Header "AUTHOR"
+

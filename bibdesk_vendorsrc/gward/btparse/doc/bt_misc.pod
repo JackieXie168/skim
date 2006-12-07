@@ -1,0 +1,147 @@
+=head1 NAME
+
+bt_misc - miscellaneous BibTeX-like string-processing utilities
+
+=head1 SYNOPSIS
+
+   void bt_purify_string (char * string, ushort options);
+   void bt_change_case (char transform, char * string, ushort options);
+
+=head1 DESCRIPTION
+
+=over 4
+
+=item bt_purify_string()
+
+   void bt_purify_string (char * string, ushort options);
+
+"Purifies" a C<string> in the BibTeX way (usually used for generating
+sort keys).  C<string> is modified in-place.  C<options> is currently
+unused; just set it to zero for future compatibility.  Purification
+consists of copying alphanumeric characters, converting hyphens and ties
+to space, copying spaces, and skipping (almost) everything else.
+
+"Almost" because "special characters" (used for accented and non-English
+letters) are handled specially.  Recall that a BibTeX special character
+is any brace-group that starts at brace-depth zero whose first character
+is a backslash.  For instance, the string
+
+   {\foo bar}Herr M\"uller went from {P{\r r}erov} to {\AA}rhus
+
+contains two special characters: C<"{\foo bar}"> and C<"\AA">.  Neither
+the C<\"u> nor the C<\r r> are special characters, because they are not
+at the right brace depth.
+
+Special characters are handled as follows: if the control sequence (the
+TeX command that follows the backslash) is recognized as one of LaTeX's
+"foreign letters" (C<\oe>, C<\ae>, C<\o>, C<\l>, C<\ae>, C<\ss>, plus
+uppercase versions), then it is converted to a reasonable English
+approximation by stripping the backslash and converting the second
+character (if any) to lowercase; thus, C<{\AA}> in the above example
+would become simply C<Aa>.  All other control sequences in a special
+character are stripped, as are all non-alphabetic characters.
+
+For example the above string, after "purification," becomes
+
+   barHerr Muller went from Pr rerov to Aarhus
+
+Obviously, something has gone wrong with the word C<P{\r r}erov> (a town
+in the Czech Republic).  The accented `r' should be a special character,
+starting at brace-depth zero.  If the original string were instead
+
+   {\foo bar}Herr M\"uller went from P{\r r}erov to {\AA}rhus
+
+then the purified result would be more sensible:
+
+   barHerr Muller went from Prerov to Aarhus
+
+Note the use of a "nonsense" special character C<{\foo bar}>: this trick
+is often used to put certain text in a string solely for generating sort
+keys; the text is then ignored when the document is processed by TeX (as
+long as C<\foo> is defined as a no-op TeX macro).  This assumes, of
+course, that the output is eventually processed by TeX; if not, then
+this trick will backfire on you.
+
+Also, C<bt_purify_string()> is adequate for generating sort keys when
+you want to sort according to English-language conventions.  To follow
+the conventions of other languages, though, a more sophisticated
+approach will be needed; hopefully, future versions of B<btparse> will
+address this deficiency.
+
+=item bt_change_case()
+
+   void bt_change_case (char transform, char * string, ushort options);
+
+Converts a string to lowercase, uppercase, or "non-book title
+capitalization", with special attention paid to BibTeX special
+characters and other brace-groups.  The form of conversion is selected
+by the single character C<transform>: C<'u'> to convert to uppercase,
+C<'l'> for lowercase, and C<'t'> for "title capitalization".  C<string>
+is modified in-place, and C<options> is currently unused; set it to zero
+for future compatibility.
+
+Lowercase and uppercase conversion are obvious, with the proviso that
+text in braces is treated differently (explained below).  Title
+capitalization simply means that everything is converted to lowercase,
+except the first letter of the first word, and words immediately
+following a colon or sentence-ending punctuation.  For instance,
+
+   Flying Squirrels: Their Peculiar Habits. Part One
+
+would be converted to
+
+   Flying squirrels: Their peculiar habits. Part one
+
+Text within braces is handled as follows.  First, in a "special
+character" (see above for definition), control sequences that constitute
+one of LaTeX's non-English letters are converted appropriately---e.g.,
+when converting to lowercase, C<\AE> becomes C<\ae>).  Any other control
+sequence in a special character (including accents) is preserved, and
+all text in a special character, regardless of depth and punctuation, is
+converted to lowercase or uppercase.  (For "title capitalization," all
+text in a special character is converted to lowercase.)
+
+Brace groups that are not special characters are left completely
+untouched: neither text nor control sequences within non-special
+character braces are touched.
+
+For example, the string
+
+   A Guide to \LaTeXe: Document Preparation ...
+
+would, when C<transform> is C<'t'> (title capitalization), be converted
+to 
+
+   A guide to \latexe: Document preparation ...
+
+which is probably not the desired result.  A better attempt is
+
+   A Guide to {\LaTeXe}: Document Preparation ...
+
+which becomes 
+
+   A guide to {\LaTeXe}: Document preparation ...
+
+However, if you go back and re-read the description of
+C<bt_purify_string()>, you'll discover that C<{\LaTeXe}> here is a
+special character, but not a non-English letter: thus, the control
+sequence is stripped.  Thus, a sort key generated from this title would
+be
+
+   A Guide to  Document Preparation
+
+...oops!  The right solution (and this applies to any title with a TeX
+command that becomes actual text) is to bury the control sequence at
+brace-depth two:
+
+   A Guide to {{\LaTeXe}}: Document Preparation ...
+
+=back
+
+=head1 SEE ALSO
+
+L<btparse>
+
+=head1 AUTHOR
+
+Greg Ward <gward@python.net>

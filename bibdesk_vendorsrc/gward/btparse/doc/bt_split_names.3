@@ -1,0 +1,481 @@
+.rn '' }`
+''' $RCSfile$$Revision$$Date$
+'''
+''' $Log$
+'''
+.de Sh
+.br
+.if t .Sp
+.ne 5
+.PP
+\fB\\$1\fR
+.PP
+..
+.de Sp
+.if t .sp .5v
+.if n .sp
+..
+.de Ip
+.br
+.ie \\n(.$>=3 .ne \\$3
+.el .ne 3
+.IP "\\$1" \\$2
+..
+.de Vb
+.ft CW
+.nf
+.ne \\$1
+..
+.de Ve
+.ft R
+
+.fi
+..
+'''
+'''
+'''     Set up \*(-- to give an unbreakable dash;
+'''     string Tr holds user defined translation string.
+'''     Bell System Logo is used as a dummy character.
+'''
+.tr \(*W-|\(bv\*(Tr
+.ie n \{\
+.ds -- \(*W-
+.ds PI pi
+.if (\n(.H=4u)&(1m=24u) .ds -- \(*W\h'-12u'\(*W\h'-12u'-\" diablo 10 pitch
+.if (\n(.H=4u)&(1m=20u) .ds -- \(*W\h'-12u'\(*W\h'-8u'-\" diablo 12 pitch
+.ds L" ""
+.ds R" ""
+'''   \*(M", \*(S", \*(N" and \*(T" are the equivalent of
+'''   \*(L" and \*(R", except that they are used on ".xx" lines,
+'''   such as .IP and .SH, which do another additional levels of
+'''   double-quote interpretation
+.ds M" """
+.ds S" """
+.ds N" """""
+.ds T" """""
+.ds L' '
+.ds R' '
+.ds M' '
+.ds S' '
+.ds N' '
+.ds T' '
+'br\}
+.el\{\
+.ds -- \(em\|
+.tr \*(Tr
+.ds L" ``
+.ds R" ''
+.ds M" ``
+.ds S" ''
+.ds N" ``
+.ds T" ''
+.ds L' `
+.ds R' '
+.ds M' `
+.ds S' '
+.ds N' `
+.ds T' '
+.ds PI \(*p
+'br\}
+.\"	If the F register is turned on, we'll generate
+.\"	index entries out stderr for the following things:
+.\"		TH	Title 
+.\"		SH	Header
+.\"		Sh	Subsection 
+.\"		Ip	Item
+.\"		X<>	Xref  (embedded
+.\"	Of course, you have to process the output yourself
+.\"	in some meaninful fashion.
+.if \nF \{
+.de IX
+.tm Index:\\$1\t\\n%\t"\\$2"
+..
+.nr % 0
+.rr F
+.\}
+.TH bt_split_names 3 "btparse, version 0.33" "22 Decemer, 2000" "btparse"
+.UC
+.if n .hy 0
+.if n .na
+.ds C+ C\v'-.1v'\h'-1p'\s-2+\h'-1p'+\s0\v'.1v'\h'-1p'
+.de CQ          \" put $1 in typewriter font
+.ft CW
+'if n "\c
+'if t \\&\\$1\c
+'if n \\&\\$1\c
+'if n \&"
+\\&\\$2 \\$3 \\$4 \\$5 \\$6 \\$7
+'.ft R
+..
+.\" @(#)ms.acc 1.5 88/02/08 SMI; from UCB 4.2
+.	\" AM - accent mark definitions
+.bd B 3
+.	\" fudge factors for nroff and troff
+.if n \{\
+.	ds #H 0
+.	ds #V .8m
+.	ds #F .3m
+.	ds #[ \f1
+.	ds #] \fP
+.\}
+.if t \{\
+.	ds #H ((1u-(\\\\n(.fu%2u))*.13m)
+.	ds #V .6m
+.	ds #F 0
+.	ds #[ \&
+.	ds #] \&
+.\}
+.	\" simple accents for nroff and troff
+.if n \{\
+.	ds ' \&
+.	ds ` \&
+.	ds ^ \&
+.	ds , \&
+.	ds ~ ~
+.	ds ? ?
+.	ds ! !
+.	ds /
+.	ds q
+.\}
+.if t \{\
+.	ds ' \\k:\h'-(\\n(.wu*8/10-\*(#H)'\'\h"|\\n:u"
+.	ds ` \\k:\h'-(\\n(.wu*8/10-\*(#H)'\`\h'|\\n:u'
+.	ds ^ \\k:\h'-(\\n(.wu*10/11-\*(#H)'^\h'|\\n:u'
+.	ds , \\k:\h'-(\\n(.wu*8/10)',\h'|\\n:u'
+.	ds ~ \\k:\h'-(\\n(.wu-\*(#H-.1m)'~\h'|\\n:u'
+.	ds ? \s-2c\h'-\w'c'u*7/10'\u\h'\*(#H'\zi\d\s+2\h'\w'c'u*8/10'
+.	ds ! \s-2\(or\s+2\h'-\w'\(or'u'\v'-.8m'.\v'.8m'
+.	ds / \\k:\h'-(\\n(.wu*8/10-\*(#H)'\z\(sl\h'|\\n:u'
+.	ds q o\h'-\w'o'u*8/10'\s-4\v'.4m'\z\(*i\v'-.4m'\s+4\h'\w'o'u*8/10'
+.\}
+.	\" troff and (daisy-wheel) nroff accents
+.ds : \\k:\h'-(\\n(.wu*8/10-\*(#H+.1m+\*(#F)'\v'-\*(#V'\z.\h'.2m+\*(#F'.\h'|\\n:u'\v'\*(#V'
+.ds 8 \h'\*(#H'\(*b\h'-\*(#H'
+.ds v \\k:\h'-(\\n(.wu*9/10-\*(#H)'\v'-\*(#V'\*(#[\s-4v\s0\v'\*(#V'\h'|\\n:u'\*(#]
+.ds _ \\k:\h'-(\\n(.wu*9/10-\*(#H+(\*(#F*2/3))'\v'-.4m'\z\(hy\v'.4m'\h'|\\n:u'
+.ds . \\k:\h'-(\\n(.wu*8/10)'\v'\*(#V*4/10'\z.\v'-\*(#V*4/10'\h'|\\n:u'
+.ds 3 \*(#[\v'.2m'\s-2\&3\s0\v'-.2m'\*(#]
+.ds o \\k:\h'-(\\n(.wu+\w'\(de'u-\*(#H)/2u'\v'-.3n'\*(#[\z\(de\v'.3n'\h'|\\n:u'\*(#]
+.ds d- \h'\*(#H'\(pd\h'-\w'~'u'\v'-.25m'\f2\(hy\fP\v'.25m'\h'-\*(#H'
+.ds D- D\\k:\h'-\w'D'u'\v'-.11m'\z\(hy\v'.11m'\h'|\\n:u'
+.ds th \*(#[\v'.3m'\s+1I\s-1\v'-.3m'\h'-(\w'I'u*2/3)'\s-1o\s+1\*(#]
+.ds Th \*(#[\s+2I\s-2\h'-\w'I'u*3/5'\v'-.3m'o\v'.3m'\*(#]
+.ds ae a\h'-(\w'a'u*4/10)'e
+.ds Ae A\h'-(\w'A'u*4/10)'E
+.ds oe o\h'-(\w'o'u*4/10)'e
+.ds Oe O\h'-(\w'O'u*4/10)'E
+.	\" corrections for vroff
+.if v .ds ~ \\k:\h'-(\\n(.wu*9/10-\*(#H)'\s-2\u~\d\s+2\h'|\\n:u'
+.if v .ds ^ \\k:\h'-(\\n(.wu*10/11-\*(#H)'\v'-.4m'^\v'.4m'\h'|\\n:u'
+.	\" for low resolution devices (crt and lpr)
+.if \n(.H>23 .if \n(.V>19 \
+\{\
+.	ds : e
+.	ds 8 ss
+.	ds v \h'-1'\o'\(aa\(ga'
+.	ds _ \h'-1'^
+.	ds . \h'-1'.
+.	ds 3 3
+.	ds o a
+.	ds d- d\h'-1'\(ga
+.	ds D- D\h'-1'\(hy
+.	ds th \o'bp'
+.	ds Th \o'LP'
+.	ds ae ae
+.	ds Ae AE
+.	ds oe oe
+.	ds Oe OE
+.\}
+.rm #[ #] #H #V #F C
+.SH "NAME"
+bt_split_names \- splitting up BibTeX names and lists of names
+.SH "SYNOPSIS"
+.PP
+.Vb 11
+\&   bt_stringlist * bt_split_list (char *   string,
+\&                                  char *   delim,
+\&                                  char *   filename,
+\&                                  int      line,
+\&                                  char *   description);
+\&   void bt_free_list (bt_stringlist *list);
+\&   bt_name * bt_split_name (char *  name,
+\&                            char *  filename, 
+\&                            int     line,
+\&                            int     name_num);
+\&   void bt_free_name (bt_name * name);
+.Ve
+.SH "DESCRIPTION"
+When BibTeX files are used for their original purpose---bibliographic
+entries describing scholarly publications---processing lists of names
+(authors and editors mostly) becomes important.  Although such
+name-processing is outside the general-purpose database domain of most
+of the \fBbtparse\fR library, these splitting functions are provided as a
+concession to reality: most BibTeX data files use the BibTeX conventions
+for author names, and a library to process that data ought to be capable
+of processing the names.
+.PP
+Name-processing comes in two stages: first, split up a list of names
+into individual strings; second, split up each name into \*(L"parts\*(R" (first,
+von, last, and jr).  The first is actually quite general: you could pick
+a delimiter (such as \f(CW'and'\fR, used for lists of names) and use it to
+divide any string into substrings.  \f(CWbt_split_list()\fR could then be
+called to break up the original string and extract the substrings.
+\f(CWbt_split_name()\fR, however, is quite specific to four-part author names
+written using BibTeX conventions.  (These conventions are described
+informally in any BibTeX documentation; the description you will find
+here is more formal and algorithmic---and thus harder to understand.)
+.PP
+See the \fIbt_format_names\fR manpage for information on turning split-up names back
+into strings in a variety of ways.
+.SH "FUNCTIONS"
+.Ip "bt_split_list()" 4
+.Sp
+.Vb 5
+\&   bt_stringlist * bt_split_list (char *   string,
+\&                                  char *   delim,
+\&                                  char *   filename,
+\&                                  int      line,
+\&                                  char *   description)
+.Ve
+Splits \f(CWstring\fR into substrings delimited by \f(CWdelim\fR (a fixed string).
+The splitting is done according to the rules used by BibTeX for
+splitting up a list of names, in particular:
+.Ip "\(bu " 8
+delimiters at beginning or end of string are ignored
+.Ip "\(bu " 8
+delimiters must be surrounded by whitespace
+.Ip "\(bu" 8
+matching of delimiters is case insensitive 
+.Ip "\(bu " 8
+delimiters at non-zero brace depth are ignored
+.Sp
+For instance, if the delimiter is \f(CW"and"\fR, then the string
+.Sp
+.Vb 1
+\&   Candy and Apples AnD {Green Eggs and Ham}
+.Ve
+splits into three substrings: \f(CW"Candy"\fR, \f(CW"Apples"\fR, and 
+\f(CW"{Green Eggs and Ham}"\fR.  
+.Sp
+If there are extra delimiters at the extremities of the string---say,
+an \f(CW"and"\fR at the beginning of the string---then they are included in
+the first/last string; no warning is currently printed, but this may
+change.  Successive delimiters (\f(CW"and and"\fR) result in a warning and a
+\s-1NULL\s0 string being added to the list of substrings.  For instance, the
+string
+.Sp
+.Vb 1
+\&   and Joe Q. Blow and and Smith, Jr., John
+.Ve
+would split into three substrings: \f(CW"and Joe Q. Blow"\fR, \f(CWNULL\fR, and
+\f(CW"Smith, Jr., John"\fR.
+.Sp
+(If these rules seem somewhat odd, don't blame me: I just implemented
+BibTeX's observed behaviour and added warning messages for one of the
+more obvious and easily-detected mistakes.)
+.Sp
+The substrings are returned as a \f(CWbt_stringlist\fR structure:
+.Sp
+.Vb 6
+\&   typedef struct
+\&   {
+\&      char *  string;
+\&      int     num_items;
+\&      char ** items;
+\&   } bt_stringlist;
+.Ve
+There is currently no elegant interface to this structure: you just have
+to poke around in it yourself.  The fields are:
+.Ip "\f(CWstring\fR" 8
+a copy of the \f(CWstring\fR parameter passed to \f(CWbt_split_list()\fR, but with
+\s-1NUL\s0 characters replacing the space after each substring.  (This is safe
+because delimiters must be surrounded by whitespace, which means that
+each substring is followed by whitespace which is not part of the
+substring.)  You probably shouldn't fiddle with \f(CWstring\fR; it's just
+there so that \f(CWbt_free_list()\fR has something to \f(CWfree()\fR.
+.Ip "\f(CWnum_items\fR" 8
+the number of substrings found in the string passed to
+\f(CWbt_split_list()\fR.
+.Ip "\f(CWitems\fR" 8
+an array of \f(CWnum_items\fR pointers into \f(CWstring\fR.  For instance,
+\f(CWitems[1]\fR points to the second substring.  Since \f(CWstring\fR has been
+mangled with \s-1NUL\s0 characters, it is safe to treat \f(CWitems[i]\fR as a
+regular C string.
+.Sp
+\f(CWfilename\fR, \f(CWline\fR, and \f(CWdescription\fR are all used for generating
+warning messages.  \f(CWfilename\fR and \f(CWline\fR simply describe where the
+string came from, and \f(CWdescription\fR is a brief (one word) description
+of the substrings.  For instance, if you are splitting a list of names,
+supply \f(CW"name"\fR for \f(CWdescription\fR---that way, warnings will refer to
+\*(L"name X\*(R" rather than \*(L"substring x\*(R".
+.Ip "bt_free_list()" 4
+.Sp
+.Vb 1
+\&   void bt_free_list (bt_stringlist *list)
+.Ve
+Frees a \f(CWbt_stringlist\fR structure as returned by \f(CWbt_split_list()\fR.
+That is, it frees the copy of the string you passed to
+\f(CWbt_split_list()\fR, and then frees the structure itself.
+.Ip "bt_split_name()" 4
+.Sp
+.Vb 4
+\&   bt_name * bt_split_name (char *  name,
+\&                            char *  filename, 
+\&                            int     line,
+\&                            int     name_num)
+.Ve
+Splits a single BibTeX\-style author name into four parts: first, von,
+last, and jr.  This can handle almost all names in the style of the
+major Western European languages, but not quite.  (Alas!)
+.Sp
+A name is split by first dividing into tokens; tokens are separated by
+whitespace or commas at brace-level zero.  Thus the name
+.Sp
+.Vb 1
+\&   van der Graaf, Horace Q.
+.Ve
+has five tokens, whereas the name
+.Sp
+.Vb 1
+\&   {Foo, Bar, and Sons}
+.Ve
+consists of a single token.
+.Sp
+How tokens are divided into parts depends on the form of the name.  If
+the name has no commas at brace-level zero (as in the second example),
+then it is assumed to be in either \*(L"first last\*(R" or \*(L"first von last\*(R"
+form.  If there are no tokens that start with a lower-case letter, then
+\*(L"first last\*(R" form is assumed: the final token is the last name, and all
+other tokens form the first name.  Otherwise, the earliest contiguous
+sequence of tokens with initial lower-case letters is taken as the `von\*(R'
+part; if this sequence includes the final token, then a warning is
+printed and the final token is forced to be the `last\*(R' part.
+.Sp
+If a name has a single comma, then it is assumed to be in \*(L"von last,
+first\*(R" form.  A leading sequence of tokens with initial lower-case
+letters, if any, forms the `von\*(R' part; tokens between the `von\*(R' and the
+comma form the `last\*(R' part; tokens following the comma form the `first\*(R'
+part.  Again, if there are no token following a leading sequence of
+lowercase tokens, a warning is printed and the token immediately
+preceding the comma is taken to be the `last\*(R' part.
+.Sp
+If a name has more than two commas, a warning is printed and the name is
+treated as though only the first two commas were present.
+.Sp
+Finally, if a name has two commas, it is assumed to be in \*(L"von last, jr,
+first\*(R" form.  (This is the only way to represent a name with a `jr\*(R'
+part.)  The parsing of the name is the same as for a one-comma name,
+except that tokens between the two commas are taken to be the `jr\*(R' part.
+.Sp
+The one case not properly handled by BibTeX name conventions is a name
+with a \*(L'jr\*(R' part not separated from the last name by a comma; for
+example:
+.Sp
+.Vb 2
+\&   Henry Ford Jr.
+\&   George Herbert Walker Bush III
+.Ve
+Both of these would be incorrectly interpreted by both BibTeX and
+\fIbt_split_name()\fR: the \f(CW"Jr."\fR or \f(CW"III"\fR token would be taken as the
+last name, and the other tokekens as a two- or four-part first name.
+The workaround is to shoehorn the \*(L'jr\*(R' into the last name:
+.Sp
+.Vb 2
+\&   Henry {Ford Jr.}
+\&   George Herbert Walker {Bush III}
+.Ve
+but this will make it impossible to extract the last name on its own,
+e.g. to generate \*(L"author-year\*(R" style citations.  This design flaw may be
+fixed in a future version of \fBbtparse\fR.
+.Sp
+The split-up name is returned as a \f(CWbt_name\fR structure:
+.Sp
+.Vb 6
+\&   typedef struct
+\&   {
+\&      bt_stringlist * tokens;
+\&      char ** parts[BT_MAX_NAMEPARTS];
+\&      int     part_len[BT_MAX_NAMEPARTS];
+\&   } bt_name;
+.Ve
+Again, there's no nice interface to this structure; you'll just have to
+access the fields individually.  They are:
+.Ip "\f(CWtokens\fR" 8
+the name, broken down into a flat list of tokens.  See above for a
+description of the \f(CWbt_stringlist\fR structure.
+.Ip "\f(CWparts\fR" 8
+an array of arrays of pointers into the token list.  The major dimension
+of this beast is the \*(L"name part;\*(R" you should index this dimension using
+the \f(CWbt_namepart\fR enum.  For instance, \f(CWparts[BTN_LAST]\fR is an array
+of pointers to the tokens comprising the last name;
+\f(CWparts[BTN_LAST][1]\fR is a \f(CWchar *\fR: the second token of the \*(L'last\*(R'
+part; and \f(CWparts[BTN_LAST][1][0]\fR is the first character of the second
+token of the \*(L'last\*(R' part.
+.Ip "\f(CWpart_len\fR" 8
+the length, in tokens, of each part.  For instance, you might loop over
+all tokens in the \*(L'first\*(R' part as follows (assuming \f(CWname\fR is a 
+\f(CWbt_name *\fR returned by \f(CWbt_split_name()\fR):
+.Sp
+.Vb 5
+\&   for (i = 0; i < name->part_len[BTN_FIRST]; i++)
+\&   {
+\&      printf ("token %d of first name: %s\en",
+\&              i, name->parts[BTN_FIRST][i]);
+\&   }
+.Ve
+.Ip "bt_free_name()" 4
+.Sp
+.Vb 1
+\&   void bt_free_name (bt_name * name)
+.Ve
+Frees the \f(CWbt_name\fR structure created by \f(CWbt_split_name()\fR (including
+the \f(CWbt_stringlist\fR structure inside the \f(CWbt_name\fR).
+.SH "SEE ALSO"
+the \fIbtparse\fR manpage, the \fIbt_format_names\fR manpage
+.SH "AUTHOR"
+Greg Ward <gward@python.net>
+
+.rn }` ''
+.IX Title "bt_split_names 3"
+.IX Name "bt_split_names - splitting up BibTeX names and lists of names"
+
+.IX Header "NAME"
+
+.IX Header "SYNOPSIS"
+
+.IX Header "DESCRIPTION"
+
+.IX Header "FUNCTIONS"
+
+.IX Item "bt_split_list()"
+
+.IX Item "\(bu "
+
+.IX Item "\(bu "
+
+.IX Item "\(bu"
+
+.IX Item "\(bu "
+
+.IX Item "\f(CWstring\fR"
+
+.IX Item "\f(CWnum_items\fR"
+
+.IX Item "\f(CWitems\fR"
+
+.IX Item "bt_free_list()"
+
+.IX Item "bt_split_name()"
+
+.IX Item "\f(CWtokens\fR"
+
+.IX Item "\f(CWparts\fR"
+
+.IX Item "\f(CWpart_len\fR"
+
+.IX Item "bt_free_name()"
+
+.IX Header "SEE ALSO"
+
+.IX Header "AUTHOR"
+
