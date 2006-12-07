@@ -1,0 +1,91 @@
+{
+    IBClasses = (
+        {CLASS = FirstResponder; LANGUAGE = ObjC; SUPERCLASS = NSObject; }, 
+        {
+            ACTIONS = {
+                associatePDFFileWithArticle = id; 
+                imageViewURLChanged = id; 
+                openReferenceInBrowser = id; 
+                renameFile = id; 
+                search = id; 
+            }; 
+            CLASS = SLArticleArrayController; 
+            LANGUAGE = ObjC; 
+            OUTLETS = {articleTable = NSTableView; searchField = NSSearchField; }; 
+            SUPERCLASS = NSArrayController; 
+        }, 
+        {
+            CLASS = SLKeywordArrayController; 
+            LANGUAGE = ObjC; 
+            OUTLETS = {keywordPopup = NSPopUpButton; }; 
+            SUPERCLASS = NSArrayController; 
+        }, 
+        {
+            CLASS = SLKeywordListController; 
+            LANGUAGE = ObjC; 
+            OUTLETS = {mainController = SLMainController; newKeywordTextField = NSTextField; }; 
+            SUPERCLASS = NSArrayController; 
+        }, 
+        {
+            ACTIONS = {
+                addArticle = id; 
+                changeLibraryLocation = id; 
+                closeSetupWindow = id; 
+                editKeywordList = id; 
+                imageViewURLChanged = id; 
+                renameFile = id; 
+                save = id; 
+                setInitialLibraryLocation = id; 
+            }; 
+            CLASS = SLMainController; 
+            LANGUAGE = ObjC; 
+            OUTLETS = {
+                SLArticleController = NSArrayController; 
+                SLKeywordListController = NSArrayController; 
+                SLKeywordPopupButton = NSPopUpButton; 
+                SLPubmedSearchArrayController = NSArrayController; 
+                SLSourceArrayController = NSArrayController; 
+                articleTableView = NSTableView; 
+                articleView = NSView; 
+                keywordsWindow = NSWindow; 
+                mainWindow = NSWindow; 
+                pubMedView = NSView; 
+                pubmedArticleTableView = NSTableView; 
+                setupWindow = NSWindow; 
+                sourceTableView = NSTableView; 
+            }; 
+            SUPERCLASS = NSObject; 
+        }, 
+        {
+            CLASS = SLPDFImageView; 
+            LANGUAGE = ObjC; 
+            OUTLETS = {SLArticleController = NSArrayController; }; 
+            SUPERCLASS = NSImageView; 
+        }, 
+        {
+            ACTIONS = {pubmedReferenceTableRowClicked = id; }; 
+            CLASS = SLPubmedReferenceController; 
+            LANGUAGE = ObjC; 
+            OUTLETS = {pubmedReferenceTable = NSTableView; }; 
+            SUPERCLASS = NSArrayController; 
+        }, 
+        {CLASS = SLPubmedTableView; LANGUAGE = ObjC; SUPERCLASS = NSTableView; }, 
+        {
+            ACTIONS = {checkForNew = id; search = id; }; 
+            CLASS = SLQueryController; 
+            LANGUAGE = ObjC; 
+            OUTLETS = {
+                SLPubmedReferenceController = NSArrayController; 
+                lastCheckedTextField = NSTextField; 
+                mainWindow = NSWindow; 
+                pubmedReferenceTableView = NSTableView; 
+                queryTableView = NSTableView; 
+                searchField = NSTextField; 
+                searchProgressIndicator = NSProgressIndicator; 
+            }; 
+            SUPERCLASS = NSArrayController; 
+        }, 
+        {CLASS = SLSourceTableView; LANGUAGE = ObjC; SUPERCLASS = NSTableView; }
+    ); 
+    IBVersion = 1; 
+}
