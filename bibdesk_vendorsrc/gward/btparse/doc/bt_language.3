@@ -1,0 +1,497 @@
+.rn '' }`
+''' $RCSfile$$Revision$$Date$
+'''
+''' $Log$
+'''
+.de Sh
+.br
+.if t .Sp
+.ne 5
+.PP
+\fB\\$1\fR
+.PP
+..
+.de Sp
+.if t .sp .5v
+.if n .sp
+..
+.de Ip
+.br
+.ie \\n(.$>=3 .ne \\$3
+.el .ne 3
+.IP "\\$1" \\$2
+..
+.de Vb
+.ft CW
+.nf
+.ne \\$1
+..
+.de Ve
+.ft R
+
+.fi
+..
+'''
+'''
+'''     Set up \*(-- to give an unbreakable dash;
+'''     string Tr holds user defined translation string.
+'''     Bell System Logo is used as a dummy character.
+'''
+.tr \(*W-|\(bv\*(Tr
+.ie n \{\
+.ds -- \(*W-
+.ds PI pi
+.if (\n(.H=4u)&(1m=24u) .ds -- \(*W\h'-12u'\(*W\h'-12u'-\" diablo 10 pitch
+.if (\n(.H=4u)&(1m=20u) .ds -- \(*W\h'-12u'\(*W\h'-8u'-\" diablo 12 pitch
+.ds L" ""
+.ds R" ""
+'''   \*(M", \*(S", \*(N" and \*(T" are the equivalent of
+'''   \*(L" and \*(R", except that they are used on ".xx" lines,
+'''   such as .IP and .SH, which do another additional levels of
+'''   double-quote interpretation
+.ds M" """
+.ds S" """
+.ds N" """""
+.ds T" """""
+.ds L' '
+.ds R' '
+.ds M' '
+.ds S' '
+.ds N' '
+.ds T' '
+'br\}
+.el\{\
+.ds -- \(em\|
+.tr \*(Tr
+.ds L" ``
+.ds R" ''
+.ds M" ``
+.ds S" ''
+.ds N" ``
+.ds T" ''
+.ds L' `
+.ds R' '
+.ds M' `
+.ds S' '
+.ds N' `
+.ds T' '
+.ds PI \(*p
+'br\}
+.\"	If the F register is turned on, we'll generate
+.\"	index entries out stderr for the following things:
+.\"		TH	Title 
+.\"		SH	Header
+.\"		Sh	Subsection 
+.\"		Ip	Item
+.\"		X<>	Xref  (embedded
+.\"	Of course, you have to process the output yourself
+.\"	in some meaninful fashion.
+.if \nF \{
+.de IX
+.tm Index:\\$1\t\\n%\t"\\$2"
+..
+.nr % 0
+.rr F
+.\}
+.TH bt_language 3 "btparse, version 0.33" "22 Decemer, 2000" "btparse"
+.UC
+.if n .hy 0
+.if n .na
+.ds C+ C\v'-.1v'\h'-1p'\s-2+\h'-1p'+\s0\v'.1v'\h'-1p'
+.de CQ          \" put $1 in typewriter font
+.ft CW
+'if n "\c
+'if t \\&\\$1\c
+'if n \\&\\$1\c
+'if n \&"
+\\&\\$2 \\$3 \\$4 \\$5 \\$6 \\$7
+'.ft R
+..
+.\" @(#)ms.acc 1.5 88/02/08 SMI; from UCB 4.2
+.	\" AM - accent mark definitions
+.bd B 3
+.	\" fudge factors for nroff and troff
+.if n \{\
+.	ds #H 0
+.	ds #V .8m
+.	ds #F .3m
+.	ds #[ \f1
+.	ds #] \fP
+.\}
+.if t \{\
+.	ds #H ((1u-(\\\\n(.fu%2u))*.13m)
+.	ds #V .6m
+.	ds #F 0
+.	ds #[ \&
+.	ds #] \&
+.\}
+.	\" simple accents for nroff and troff
+.if n \{\
+.	ds ' \&
+.	ds ` \&
+.	ds ^ \&
+.	ds , \&
+.	ds ~ ~
+.	ds ? ?
+.	ds ! !
+.	ds /
+.	ds q
+.\}
+.if t \{\
+.	ds ' \\k:\h'-(\\n(.wu*8/10-\*(#H)'\'\h"|\\n:u"
+.	ds ` \\k:\h'-(\\n(.wu*8/10-\*(#H)'\`\h'|\\n:u'
+.	ds ^ \\k:\h'-(\\n(.wu*10/11-\*(#H)'^\h'|\\n:u'
+.	ds , \\k:\h'-(\\n(.wu*8/10)',\h'|\\n:u'
+.	ds ~ \\k:\h'-(\\n(.wu-\*(#H-.1m)'~\h'|\\n:u'
+.	ds ? \s-2c\h'-\w'c'u*7/10'\u\h'\*(#H'\zi\d\s+2\h'\w'c'u*8/10'
+.	ds ! \s-2\(or\s+2\h'-\w'\(or'u'\v'-.8m'.\v'.8m'
+.	ds / \\k:\h'-(\\n(.wu*8/10-\*(#H)'\z\(sl\h'|\\n:u'
+.	ds q o\h'-\w'o'u*8/10'\s-4\v'.4m'\z\(*i\v'-.4m'\s+4\h'\w'o'u*8/10'
+.\}
+.	\" troff and (daisy-wheel) nroff accents
+.ds : \\k:\h'-(\\n(.wu*8/10-\*(#H+.1m+\*(#F)'\v'-\*(#V'\z.\h'.2m+\*(#F'.\h'|\\n:u'\v'\*(#V'
+.ds 8 \h'\*(#H'\(*b\h'-\*(#H'
+.ds v \\k:\h'-(\\n(.wu*9/10-\*(#H)'\v'-\*(#V'\*(#[\s-4v\s0\v'\*(#V'\h'|\\n:u'\*(#]
+.ds _ \\k:\h'-(\\n(.wu*9/10-\*(#H+(\*(#F*2/3))'\v'-.4m'\z\(hy\v'.4m'\h'|\\n:u'
+.ds . \\k:\h'-(\\n(.wu*8/10)'\v'\*(#V*4/10'\z.\v'-\*(#V*4/10'\h'|\\n:u'
+.ds 3 \*(#[\v'.2m'\s-2\&3\s0\v'-.2m'\*(#]
+.ds o \\k:\h'-(\\n(.wu+\w'\(de'u-\*(#H)/2u'\v'-.3n'\*(#[\z\(de\v'.3n'\h'|\\n:u'\*(#]
+.ds d- \h'\*(#H'\(pd\h'-\w'~'u'\v'-.25m'\f2\(hy\fP\v'.25m'\h'-\*(#H'
+.ds D- D\\k:\h'-\w'D'u'\v'-.11m'\z\(hy\v'.11m'\h'|\\n:u'
+.ds th \*(#[\v'.3m'\s+1I\s-1\v'-.3m'\h'-(\w'I'u*2/3)'\s-1o\s+1\*(#]
+.ds Th \*(#[\s+2I\s-2\h'-\w'I'u*3/5'\v'-.3m'o\v'.3m'\*(#]
+.ds ae a\h'-(\w'a'u*4/10)'e
+.ds Ae A\h'-(\w'A'u*4/10)'E
+.ds oe o\h'-(\w'o'u*4/10)'e
+.ds Oe O\h'-(\w'O'u*4/10)'E
+.	\" corrections for vroff
+.if v .ds ~ \\k:\h'-(\\n(.wu*9/10-\*(#H)'\s-2\u~\d\s+2\h'|\\n:u'
+.if v .ds ^ \\k:\h'-(\\n(.wu*10/11-\*(#H)'\v'-.4m'^\v'.4m'\h'|\\n:u'
+.	\" for low resolution devices (crt and lpr)
+.if \n(.H>23 .if \n(.V>19 \
+\{\
+.	ds : e
+.	ds 8 ss
+.	ds v \h'-1'\o'\(aa\(ga'
+.	ds _ \h'-1'^
+.	ds . \h'-1'.
+.	ds 3 3
+.	ds o a
+.	ds d- d\h'-1'\(ga
+.	ds D- D\h'-1'\(hy
+.	ds th \o'bp'
+.	ds Th \o'LP'
+.	ds ae ae
+.	ds Ae AE
+.	ds oe oe
+.	ds Oe OE
+.\}
+.rm #[ #] #H #V #F C
+.SH "NAME"
+bt_language \- the BibTeX data language, as recognized by \fBbtparse\fR
+.SH "SYNOPSIS"
+.PP
+.Vb 6
+\&   # Lexical grammar, mode 1: top-level
+\&   AT                    \e@
+\&   NEWLINE               \en
+\&   COMMENT               \e%~[\en]*\en
+\&   WHITESPACE            [\e \er\et]+
+\&   JUNK                  ~[\e@\en\e \er\et]+
+.Ve
+.Vb 14
+\&   # Lexical grammar, mode 2: in-entry
+\&   NEWLINE               \en
+\&   COMMENT               \e%~[\en]*\en
+\&   WHITESPACE            [\e \er\et]+
+\&   NUMBER                [0-9]+
+\&   NAME                  [a-z0-9\e!\e$\e&\e*\e+\e-\e.\e/\e:\e;\e<\e>\e?\e[\e]\e^\e_\e`\e|]+
+\&   LBRACE                \e{
+\&   RBRACE                \e}
+\&   LPAREN                \e(
+\&   RPAREN                \e)
+\&   EQUALS                =
+\&   HASH                  \e#
+\&   COMMA                 ,
+\&   QUOTE                 \e"
+.Ve
+.Vb 2
+\&   # Lexical grammar, mode 3: strings
+\&   # (very hairy -- see text)
+.Ve
+.Vb 2
+\&   # Syntactic grammar:
+\&   bibfile : ( entry )*
+.Ve
+.Vb 1
+\&   entry : AT NAME body
+.Ve
+.Vb 2
+\&   body : STRING                    # for comment entries
+\&        | ENTRY_OPEN contents ENTRY_CLOSE
+.Ve
+.Vb 3
+\&   contents : ( NAME | NUMBER ) COMMA fields   # for regular entries
+\&            | fields                # for macro definition entries
+\&            | value                 # for preamble entries
+.Ve
+.Vb 2
+\&   fields : field { COMMA fields }
+\&          | 
+.Ve
+.Vb 1
+\&   field : NAME EQUALS value
+.Ve
+.Vb 1
+\&   value : simple_value ( HASH simple_value )*
+.Ve
+.Vb 3
+\&   simple_value : STRING
+\&                | NUMBER
+\&                | NAME
+.Ve
+.SH "DESCRIPTION"
+One of the problems with BibTeX is that there is no formal specification
+of the language.  This means that users exploring the arcane corners of
+the language are largely on their own, and programmers implementing
+their own parsers are completely on their own---except for observing the
+behaviour of the original implementation.
+.PP
+Other parser implementors (Nelson Beebe of \f(CWbibclean\fR fame, in
+particular) have taken the trouble to explain the language accepted by
+their parser, and in that spirit the following is presented.
+.PP
+If you are unfamiliar with the arcana of regular and context-free
+languages, you will not have any easy time understanding this.  This is
+\fInot\fR an introduction to the BibTeX language; any LaTeX book would be
+more suitable for learning the data language itself.
+.SH "LEXICAL GRAMMAR"
+The lexical scanner has three distinct modes: top-level, in-entry, and
+string.  Roughly speaking, top-level is the initial mode; we enter
+in-entry mode on seeing an \f(CW@\fR at top-level; and on seeing the \f(CW}\fR or
+\f(CW)\fR that ends the entry, we return to top-level.  We enter string mode
+on seeing a \f(CW"\fR or non-entry-delimiting \f(CW{\fR from in-entry mode.  Note
+that the lexical language is both non-regular (because braces must
+balance) and context-sensitive (because \f(CW{\fR can mean different things
+depending on its syntactic context).  That said, we will use regular
+expressions to describe the lexical elements, because they are the
+starting point used by the lexical scanner itself.  The rest of the
+lexical grammar will be informally explained in the text.
+.PP
+From top-level, the following tokens are recognized according to the
+regular expressions on the right:
+.PP
+.Vb 5
+\&   AT                    \e@
+\&   NEWLINE               \en
+\&   COMMENT               \e%~[\en]*\en
+\&   WHITESPACE            [\e \er\et]+
+\&   JUNK                  ~[\e@\en\e \er\et]+
+.Ve
+(Note that this is PCCTS regular expression syntax, which should be
+fairly familar to users of other regex engines.  One oddity is that a
+character class is negated as \f(CW~[...]\fR rather than \f(CW[^...]\fR.)
+.PP
+On seeing \f(CWat\fR at top-level, we enter in-entry mode.  Whitespace, junk,
+newlines, and comments are all skipped, with the latter two incrementing
+a line counter.  (Junk is explicitly recognized to allow for \f(CWbibtex\fR's
+\*(L"implicit comment\*(R" scheme.)
+.PP
+From in-entry mode, we recognize newline, comment, and whitespace
+identically to top-level mode.  In addition, the following tokens are
+recognized:
+.PP
+.Vb 10
+\&   NUMBER                [0-9]+
+\&   NAME                  [a-z0-9\e!\e$\e&\e*\e+\e-\e.\e/\e:\e;\e<\e>\e?\e[\e]\e^\e_\e`\e|]+
+\&   LBRACE                \e{
+\&   RBRACE                \e}
+\&   LPAREN                \e(
+\&   RPAREN                \e)
+\&   EQUALS                =
+\&   HASH                  \e#
+\&   COMMA                 ,
+\&   QUOTE                 \e"
+.Ve
+At this point, the lexical scanner starts to sound suspiciously like a
+context-free grammar, rather than a collection of independent regular
+expressions.  However, it is necessary to keep this complexity in the
+scanner because certain characters (\f(CW{\fR and \f(CW(\fR in particular) have
+very different lexical meanings depending on the tokens that have
+preceded them in the input stream.
+.PP
+In particular, \f(CW{\fR and \f(CW(\fR are treated as \*(L"entry openers\*(R" if they
+follow one \f(CWat\fR and one \f(CWname\fR token, unless the value of the \f(CWname\fR
+token is \f(CW"comment"\fR.  (Note the switch from top-level to in-entry
+between the two tokens.)  In the \f(CW@comment\fR case, the delimiter is
+considered as starting a string, and we enter string mode.  Otherwise,
+the delimiter is saved, and when we see a corresponding \f(CW}\fR or \f(CW)\fR it
+is considered an \*(L"entry closer\*(R".  (Braces are balanced for free here
+because the string lexer takes care of counting brace-depth.)
+.PP
+Anywhere else, \f(CW{\fR is considered as starting a string, and we enter
+string mode.  \f(CW"\fR always starts a string, regardless of context.  The
+other tokens (\f(CWname\fR, \f(CWnumber\fR, \f(CWequals\fR, \f(CWhash\fR, and \f(CWcomma\fR) are
+recognized unconditionally.  
+.PP
+Note that \f(CWname\fR is a catch-all token used for entry types, citation
+keys, field names, and macro names; because BibTeX has slightly
+different (largely undocumented) rules for these various elements, a bit
+of trickery is needed to make things work.  As a starting point,
+consider BibTeX's definition of what's allowed for an entry key:
+a sequence of any characters \fIexcept\fR
+.PP
+.Vb 1
+\&   " # % ' ( ) , = { }
+.Ve
+plus space.  There are a couple of problems with this scheme.  First,
+without specifying the character set from which those \*(L"magic 10\*(R"
+characters are drawn, it's a bit hard to know just what is allowed.
+Second, allowing \f(CW@\fR characters could lead to confusing BibTeX syntax
+(it doesn't confuse BibTeX, but it might confuse a human reader).
+Finally, allowing certain characters that are special to TeX means that
+BibTeX can generate bogus TeX code: try putting a backslash (\f(CW\e\fR) or
+tilde (\f(CW~\fR) in a citation key.  (This last exception is rather specific
+to the \*(L"generating (La)TeX code from a BibTeX database\*(R" application, but
+since that's the major application for BibTeX databases, then it will
+presumably be the major application for \fBbtparse\fR, at least initially.
+Thus, it makes sense to pay attention to this problem.)
+.PP
+In \fBbtparse\fR, then, a name is defined as any sequence of letters,
+digits, underscores, and the following characters:
+.PP
+.Vb 1
+\&   ! $ & * + - . / : ; < > ? [ ] ^ _ ` |
+.Ve
+This list was derived by removing BibTeX's \*(L"magic 10\*(R" from the set of
+printable 7-bit ASCII characters (32-126), and then further removing
+\f(CW@\fR, \f(CW\e\fR, and \f(CW~\fR.  This means that \fBbtparse\fR disallows some of the
+weirder entry keys that BibTeX would accept, such as \f(CW\efoo@bar\fR, but
+still allows a string with initial digits.  In fact, from the above
+definition it appears that \fBbtparse\fR would accept a string of all
+digits as a \*(L"name;\*(R" this is not the case, though, as the lexical scanner
+recognizes such a digit string as a number first.  There are two
+problems here: BibTeX entry keys may in fact be entirely numeric, and
+field names may not begin with a digit.  (Those are two of the
+not-so-obvious differences in BibTeX's handling of keys and field
+names.)  The tricks used to deal with these problems are implemented in
+the parser rather than the lexical scanner, so are described in
+the section on \fISYNTACTIC GRAMMAR\fR below.
+.PP
+The string lexer recognizes \f(CWlbrace\fR, \f(CWrbrace\fR, \f(CWlparen\fR, and
+\f(CWrparen\fR tokens in order to count brace- or parenthesis-depth.  This is
+necessary so it knows when to accept a string delimited by braces or
+parentheses.  (Note that a parenthesis-delimited string is only allowed
+after \f(CW@comment\fR---this is not a normal BibTeX construct.)  In
+addition, it converts each non-space whitespace character (newline,
+carriage-return, and tab) to a single space.  (Sequences of whitespace
+are not collapsed; that's the domain of string post-processing, which is
+well removed from the scanner or parser.)  Finally, it accepts \f(CW"\fR to
+delimit quote-delimited strings.  Apart from those restrictions, the
+string lexer accepts anything up to the end-of-string delimiter.
+.SH "SYNTACTIC GRAMMAR"
+(The language used to describe the grammar here is the extended
+Backus-Naur Form (EBNF) used by PCCTS.  Terminals are represented by
+uppercase strings, non-terminals by lowercase strings; terminal names
+are the same as those given in the lexical grammar above.  \f(CW( foo )*\fR
+means zero or more repetitions of the \f(CWfoo\fR production, and \f(CW{ foo }\fR
+means an optional \f(CWfoo\fR.)
+.PP
+A file is just a sequence of zero or more entries:
+.PP
+.Vb 1
+\&   bibfile : ( entry )*
+.Ve
+An entry is an at-sign, a name (the \*(L"entry type"), and the entry body:
+.PP
+.Vb 1
+\&   entry : AT NAME body
+.Ve
+A body is either a string (this alternative is only tried if the entry
+type is \f(CW"comment"\fR) or the entry contents:
+.PP
+.Vb 2
+\&   body : STRING                    # for comment entries
+\&        | ENTRY_OPEN contents ENTRY_CLOSE
+.Ve
+(\f(CWENTRY_OPEN\fR and \f(CWENTRY_CLOSE\fR are either \f(CW{\fR and \f(CW}\fR or \f(CW(\fR and
+\f(CW)\fR, depending what is seen in the input for a particular entry.)
+.PP
+There are three possible productions for the \*(L"contents\*(R" non-terminal.
+Only one applies to any given entry, depending on the entry metatype
+(which in turn depends on the entry type).  Currently, \fBbtparse\fR
+supports four entry metatypes: comment, preamble, macro definition, and
+regular.  The first two correspond to \f(CW@comment\fR and \f(CW@preamble\fR
+entries; \*(L"macro definition\*(R" is for \f(CW@string\fR entries; and \*(L"regular\*(R" is
+for all other entry types.  (The library will be extended to handle
+\f(CW@modify\fR and \f(CW@alias\fR entry types, and corresponding \*(L"modify\*(R" and
+\*(L"alias\*(R" metatypes, when BibTeX 1.0 is released and the exact syntax is
+known.)  The \*(L"metatype\*(R" concept is necessary so that all entry types
+that aren't specifically recognized fall into the \*(L"regular\*(R" metatype.
+It's also convenient not to have to \f(CWstrcmp\fR the entry type all the
+time.
+.PP
+.Vb 3
+\&   contents : ( NAME | NUMBER ) COMMA fields     # for regular entries
+\&            | fields                # for macro definition entries
+\&            | value                 # for preamble entries
+.Ve
+Note that the entry key is not just a \f(CWNAME\fR, but \f(CW( NAME | NUMBER)\fR.
+This is necessary because BibTeX allows all-numeric entry keys, but
+\fBbtparse\fR's lexical scanner recognizes such digit strings as \f(CWNUMBER\fR
+tokens.
+.PP
+\f(CWfields\fR is a comma-separated list of fields, with an optional single
+trailing comma:
+.PP
+.Vb 2
+\&   fields : field { COMMA fields }
+\&          | 
+.Ve
+A \f(CWfield\fR is a single \*(L"field = value\*(R" assignment:
+.PP
+.Vb 1
+\&   field : NAME EQUALS value
+.Ve
+Note that \f(CWNAME\fR here is a restricted version of the \*(L"name\*(R" token
+described in the section on \fILEXICAL GRAMMAR\fR above.  Any \*(L"name\*(R" token will be
+accepted by the parser, but it is immediately checked to ensure that it
+doesn't begin with a digit; if so, an artificial syntax error is
+triggered.  (This is for compatibility with BibTeX, which doesn't allow
+field names to start with a digit.)
+.PP
+A \f(CWvalue\fR is a series of simple values joined by \f(CW'#'\fR characters:
+.PP
+.Vb 1
+\&   value : simple_value ( HASH simple_value )*
+.Ve
+A simple value is a string, number, or name (for macro invocations):
+.PP
+.Vb 3
+\&   simple_value : STRING
+\&                | NUMBER
+\&                | NAME
+.Ve
+.SH "SEE ALSO"
+the \fIbtparse\fR manpage
+.SH "AUTHOR"
+Greg Ward <gward@python.net>
+
+.rn }` ''
+.IX Title "bt_language 3"
+.IX Name "bt_language - the BibTeX data language, as recognized by B<btparse>"
+
+.IX Header "NAME"
+
+.IX Header "SYNOPSIS"
+
+.IX Header "DESCRIPTION"
+
+.IX Header "LEXICAL GRAMMAR"
+
+.IX Header "SYNTACTIC GRAMMAR"
+
+.IX Header "SEE ALSO"
+
+.IX Header "AUTHOR"
+

@@ -1,0 +1,52 @@
+\documentclass{article}
+%\input{file}
+% \include{another}
+\begin{document}
+
+%latex2rtf: \include{inc_test}
+%latex2rtf: 
+%latex2rtf: 
+
+\section{This is the first section in file \texttt{include.tex}}
+\label{section01}
+
+Here is some text to create a paragraph or two so that we
+can see if this works or not.  It will be interesting to see
+if the labels work properly.  As I create these testing files
+I realize that I need to add parsing support for \verb#\input#
+and \verb#\include# in the getSection function.   Furthermore,
+after reading the \LaTeX{} book, I see that \verb#\include# 
+files will all start on a new page.  This is not the case for
+\verb#\input# files.  Here is a reference to the next section \ref{section02}
+in this file,
+and one to the first subsection in the first include file \texttt{include1} \ref{section11}. 
+This is a reference \ref{section31} to the first subsubsection in 
+the file \texttt{include3} that is included by \texttt{include2}.
+
+\include{include1}
+\include{include2}
+
+% \include{include1} should not be included!
+
+\section{This is the second section in file \texttt{include.tex}}
+\label{section02}
+
+Here is some text to create a paragraph or two so that we
+can see if this works or not.  It will be interesting to see
+if the labels work properly.  As I create these testing files
+I realize that I need to add parsing support for \verb#\input#
+and \verb#\include# in the getSection function.   Furthermore,
+after reading the \LaTeX{} book, I see that \verb#\include# 
+files will all start on a new page.  This is not the case for
+\verb#\input# files.  Here is a reference to the first subsection 
+in \texttt{include2.tex} \ref{section21}.
+Here is a reference to the first subsection in \texttt{include1.tex}
+\ref{section11}. And finally one to the first section of this 
+file \ref{section01}.
+
+\end{document}
+
+XXXX
+more text 
+
+YYYY 

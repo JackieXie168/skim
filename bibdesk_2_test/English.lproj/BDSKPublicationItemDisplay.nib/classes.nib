@@ -1,0 +1,35 @@
+{
+    IBClasses = (
+        {
+            CLASS = BDSKDisplayController; 
+            LANGUAGE = ObjC; 
+            OUTLETS = {mainView = NSView; }; 
+            SUPERCLASS = NSWindowController; 
+        }, 
+        {
+            CLASS = BDSKItemDisplayController; 
+            LANGUAGE = ObjC; 
+            OUTLETS = {itemObjectController = NSObjectController; }; 
+            SUPERCLASS = BDSKDisplayController; 
+        }, 
+        {
+            ACTIONS = {addContributor = id; removeContributors = id; removeNotes = id; }; 
+            CLASS = BDSKPublicationItemDisplayController; 
+            LANGUAGE = ObjC; 
+            OUTLETS = {
+                contributorsArrayController = NSArrayController; 
+                contributorsTableView = NSTableView; 
+                keyValuePairsController = NSArrayController; 
+                keyValuePairsTableView = NSTableView; 
+                notesArrayController = NSArrayController; 
+                notesTableView = NSTableView; 
+                tagsArrayController = NSArrayController; 
+                tagsTableView = NSTableView; 
+            }; 
+            SUPERCLASS = BDSKItemDisplayController; 
+        }, 
+        {CLASS = FirstResponder; LANGUAGE = ObjC; SUPERCLASS = NSObject; }, 
+        {CLASS = ImageBackgroundBox; LANGUAGE = ObjC; SUPERCLASS = NSBox; }
+    ); 
+    IBVersion = 1; 
+}

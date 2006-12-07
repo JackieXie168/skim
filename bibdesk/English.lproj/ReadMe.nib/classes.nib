@@ -1,0 +1,17 @@
+{
+    IBClasses = (
+        {
+            CLASS = BDSKReadMeController; 
+            LANGUAGE = ObjC; 
+            OUTLETS = {textView = NSTextView; }; 
+            SUPERCLASS = NSWindowController; 
+        }, 
+        {
+            CLASS = BDSKRelNotesController; 
+            LANGUAGE = ObjC; 
+            SUPERCLASS = BDSKReadMeController; 
+        }, 
+        {CLASS = FirstResponder; LANGUAGE = ObjC; SUPERCLASS = NSObject; }
+    ); 
+    IBVersion = 1; 
+}

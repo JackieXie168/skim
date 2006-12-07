@@ -1,0 +1,71 @@
+LaTeX2rtf is ``free,'' this means that everyone is free to use it and
+free to redistribute it on certain conditions. LaTeX2rtf is not in the
+public domain; it is copyrighted and there are restrictions on its
+distribution.
+  
+The changes from 1.8a and upwards will fall under the GNU General Public
+License and are 
+
+Copyright (c) Scott Prahl
+
+In 1998 Georg Lehner <glehner@unanleon.edu.ni> updated and extended
+the program and took over maintainence from Ralf Schlatterbeck
+<ralf@zoo.priv.at>.
+
+The changes from Version 1.7 upwards will fall under the GNU General
+Public License and are
+
+Copyright (c) Georg Lehner.
+
+For the authors of the older versions and their copying policy see
+their Copyright Note at the bottom of this file.
+
+--- GPL Stuff --->
+This program is free software; you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation; either version 2 of the License, or (at
+your option) any later version.
+     
+This program is distributed in the hope that it will be useful, but
+WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+General Public License for more details.
+    
+A copy of the GNU General Public License is available with the sources
+in the file "doc/copying.txt".  You can also obtain it by writing to
+the Free Software Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139,
+USA.
+--- original Copyright note form the authors -->
+
+All files in this distribution are
+Copyright (c) 1994 Andreas Granzer and Fernando Dorner
+              1995 Friedrich Polzer and Gerhard Trisko
+All rights reserved.
+
+Redistribution and use in source and binary forms, with or without
+modification, are permitted provided that the following conditions are
+met: 1. Redistributions of source code must retain the above copyright
+notice, this list of conditions and the following disclaimer. 2.
+Redistributions in binary form must reproduce the above copyright notice,
+this list of conditions and the following disclaimer in the documentation
+and/or other materials provided with the distribution.  3. Neither the
+name of the Author nor the names of its contributors may be used to
+endorse or promote products derived from this software without specific
+prior written permission.
+
+THIS SOFTWARE IS PROVIDED ``AS IS'' AND ANY
+EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+DISCLAIMED.  IN NO EVENT SHALL THE AUTHOR OR CONTRIBUTORS BE LIABLE FOR
+ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
+SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
+CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT
+LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
+OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
+SUCH DAMAGE. 
+
+
+
+
+

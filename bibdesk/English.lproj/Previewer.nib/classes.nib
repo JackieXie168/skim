@@ -1,0 +1,29 @@
+{
+    IBClasses = (
+        {CLASS = BDSKOverlay; LANGUAGE = ObjC; SUPERCLASS = NSPanel; }, 
+        {
+            CLASS = BDSKPreviewer; 
+            LANGUAGE = ObjC; 
+            OUTLETS = {
+                imagePreviewView = PDFImageView; 
+                pdfView = id; 
+                progressIndicator = NSProgressIndicator; 
+                progressOverlay = BDSKOverlay; 
+                rtfPreviewView = NSTextView; 
+                tabView = NSTabView; 
+            }; 
+            SUPERCLASS = NSWindowController; 
+        }, 
+        {CLASS = BDSKZoomImageView; LANGUAGE = ObjC; SUPERCLASS = NSImageView; }, 
+        {CLASS = BDSKZoomableScrollView; LANGUAGE = ObjC; SUPERCLASS = NSScrollView; }, 
+        {
+            ACTIONS = {showFindPanel = id; showPreferencePanel = id; }; 
+            CLASS = BibAppController; 
+            LANGUAGE = ObjC; 
+            SUPERCLASS = NSObject; 
+        }, 
+        {CLASS = FirstResponder; LANGUAGE = ObjC; SUPERCLASS = NSObject; }, 
+        {CLASS = PDFImageView; LANGUAGE = ObjC; SUPERCLASS = NSImageView; }
+    ); 
+    IBVersion = 1; 
+}

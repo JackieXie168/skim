@@ -1,0 +1,22 @@
+{
+    IBClasses = (
+        {
+            CLASS = BDSKInspectorWindowController; 
+            LANGUAGE = ObjC; 
+            OUTLETS = {itemsArrayController = NSArrayController; }; 
+            SUPERCLASS = NSWindowController; 
+        }, 
+        {
+            CLASS = BDSKNoteWindowController; 
+            LANGUAGE = ObjC; 
+            SUPERCLASS = BDSKInspectorWindowController; 
+        }, 
+        {
+            CLASS = BDSKTagWindowController; 
+            LANGUAGE = ObjC; 
+            SUPERCLASS = BDSKInspectorWindowController; 
+        }, 
+        {CLASS = FirstResponder; LANGUAGE = ObjC; SUPERCLASS = NSObject; }
+    ); 
+    IBVersion = 1; 
+}

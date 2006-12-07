@@ -1,0 +1,27 @@
+{
+    IBClasses = (
+        {
+            ACTIONS = {showNoteWindow = id; showTagWindow = id; }; 
+            CLASS = BDSKBD2AppDelegate; 
+            LANGUAGE = ObjC; 
+            SUPERCLASS = NSObject; 
+        }, 
+        {
+            ACTIONS = {
+                addNewFolderGroup = id; 
+                addNewGroup = id; 
+                addNewItem = id; 
+                addNewSmartGroup = id; 
+                getInfo = id; 
+                importDocumentUsingPhonyCiteKeys = id; 
+                importFromBibTeXFile = id; 
+                oneShotImportFromBibTeXFile = id; 
+                showWindowForSourceListSelection = id; 
+            }; 
+            CLASS = FirstResponder; 
+            LANGUAGE = ObjC; 
+            SUPERCLASS = NSObject; 
+        }
+    ); 
+    IBVersion = 1; 
+}
