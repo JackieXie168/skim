@@ -1,0 +1,64 @@
+<html>
+	<head>
+		<meta http-equiv="content-type" content="text/html;charset=iso-8859-1">
+		<title>
+			template
+		</title>
+		<meta name="description" content="A Bibliography manager for Mac OS X">
+		<meta name="keywords" content="BibTeX, TeX, Mac OS X, Bibdesk, bibliography, .bib">
+		<meta name="Author" content="Michael McCracken">
+	</head>
+	<body link="blue" vlink="maroon" alink="#00ee00">
+<!-- Header ---> <img src="bdskicon.tiff" align=middle><font size=+3 face="helvetica,sans-serif"> <a href="bibdesk.html">BibDesk</a></font> <font face="helvetica,sans-serif"> | <a href="bibdesk_screenshots.html">screenshots</a> | <a href="bibdesk_relnotes.html">release notes</a> | <a href="bibdesk_FAQ.html">FAQ</a> | <a href="AboutRSS.html">RSS &amp; bibtex</a> | Project Admin: Mike McCracken (<a href="http://disco.ucsd.edu/blog/">weblog</a> | <a href="http://www.cs.ucsd.edu/~mmccrack/index.html">homepage</a> | <a href="mailto:michael_mccracken@mac.com">email</a>)</font> <!-- end of Header ---> 
+		<p>
+			<font face="helvetica,sans-serif" size=+2>Frequently Asked Questions</font>
+			<p>
+			This is mostly a mirror of the FAQ.rtf file distributed with BibDesk. <br>
+			Answers to questions can be found in the archives of <a href="http://www.esm.psu.edu/mac-tex/MacOSX-TeX-Digests/">the MacOSX-TeX mailing list</a>, or by <a href="mailto:michael_mccracken@mac.com">emailing me</a>.
+		</p>
+		<p>
+			<ul>
+				<li>Q: you didn't fix ...
+				<li>I know - I've kept a record of bug reports and feature requests, so I'll be getting to it. No harm in bugging me once or twice, though - within reason.
+			</ul>
+			<ul>
+				<li>Q: Do you plan to integrate searching and downloading references from ...
+				<li>Not right away, but I'll consider it. I'd have to be convinced that that sort of thing would be a big improvement over using a web browser and drag n' drop.
+			</ul>
+			<ul>
+				<li>Q: It doesn't do what I expect with accented characters like ü and Å, or other TeX escape sequences.
+				<li>First, make sure you are using version 0.7 or later! Bibdesk is now capable of reading files with TeX escape sequences like {\^i} and displaying î as expected.
+				<p>
+					Next, if it is a character that you type in Bibdesk that doesn't get saved properly, or if it's an escape sequence that you think Bibdesk should recognize, you have a chance to contribute!
+					<p>
+					You can edit the file BibDesk.app/Contents/Resources/CharacterConversion.plist with the XML Property LIst Editor that came with the Mac OS X developer tools (or any text editor that you're comfortable with using with UTF-8 encoding. In both top-level dictionaries (TeX to MacRoman and vice versa), add symmetric entries with key = {\^i} and value = î (for instance. That one's already in there.) The TeX sequence *has* to be in braces (BibTeX requires this) and has to start with the characters {\ . Please send me any edits so I can include them in future versions. - michael_mccracken@mac.com
+			</ul>
+			<ul>
+				<li>Q: Previewing does not work
+				<li>If you are using a nonstandard style file in Preferences or there is something funky about your entry text, the previewer will not show what you expect. It might show nothing or just fail to refresh - you might see why in the Console.app log entry, where the TeX/BibTeX subtasks send their error output. (The error window in bibdesk is only for errors from parsing bibtex, not for previewing.)
+			</ul>
+			<ul>
+				<li>Q: I get the "give up" dialog on a file that BibTeX thinks is fine.
+				<li>Some characters in cite-keys (or variations on other fields) aren't read properly by BibDesk. Specifically, if a character like single-quote (') appears in your cite-key, BibDesk won't parse it and sends the parsing library's complaint to the error window (and to Console.app). This is entirely a parsing library issue, and I'd like to fix it, but I have no idea when I can get to it. If anyone is interested in fixing it themselves (if you really dig rewriting lexers) - take a look at : <a href="http://starship.python.net/~gward/btOOL/doc/btparse.html">The btparse library</a> .
+			</ul>
+			<ul>
+				<li>Q: When I copy/drag the PDF preview, the PDF image I get has a lot of white space that I don't want.
+				<li>I use (pdf)TeX and BibTeX to create those images, so the white space you see is the full page of TeX output. I'd like to make the image only as large as necessary, but I'm not enough of a TeX expert to do that. If you are and you want to contribute, try changing the file bibpreview.tex inside the BibDesk.app bundle (Using "Show Package Contents" in the Finder, or through the shell) BibDesk will use that file to typeset the images. If you come up with a solution, send it to me!
+			</ul>
+			<ul>
+				<li>Q:The readme said something about a 2nd and 3rd author field. I can't seem to get that to show up, nor do I know how to "enter" in a second or third author in the author field in the edit window. Any suggestions?
+				<li> The 2nd and 3rd author fields are shown in the Publications table of the browser window - you get them to appear by setting preferences: click the Display tab in the preferences window, and check the columns you want to see.
+				<p>
+					To enter 2nd and 3rd (and 4th ... Nth) authors, simply write them as you would have in raw bibtex (if you're used to that) - It all goes in the Author field, separated by 'and'.
+					<p>
+					For instance: Author = "Brian Kernighan and Dennis Ritchie" (just write the names in quotes in the bibdesk field) Bibdesk will pick out the authors and display Kernighan as the 1st author and Ritchie as the 2nd.
+					<p>
+					Bibdesk only displays the first three authors for now, but put as many as you know - I think some bib-styles allow more than three.
+			</ul>
+			<ul>
+				<li>Q: How can I use Macros?
+				<li>See the Release Notes file for a workaround.
+			</ul>
+		</p>
+	</body>
+</html>

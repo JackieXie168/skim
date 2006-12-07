@@ -1,0 +1,119 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+
+<!--Converted with LaTeX2HTML 2002-2-1 (1.70)
+original version by:  Nikos Drakos, CBLU, University of Leeds
+* revised and updated by:  Marcus Hennecke, Ross Moore, Herb Swan
+* with significant contributions from:
+  Jens Lippmann, Marek Rouchal, Martin Wilck and others -->
+<HTML>
+<HEAD>
+<TITLE>Files</TITLE>
+<META NAME="description" CONTENT="Files">
+<META NAME="keywords" CONTENT="build_instructions">
+<META NAME="resource-type" CONTENT="document">
+<META NAME="distribution" CONTENT="global">
+
+<META NAME="Generator" CONTENT="LaTeX2HTML v2002-2-1">
+<META HTTP-EQUIV="Content-Style-Type" CONTENT="text/css">
+
+<LINK REL="STYLESHEET" HREF="build_instructions.css">
+
+<LINK REL="next" HREF="node2.html">
+<LINK REL="previous" HREF="build_instructions.html">
+<LINK REL="up" HREF="build_instructions.html">
+<LINK REL="next" HREF="node2.html">
+</HEAD>
+
+<BODY >
+<!--Navigation Panel-->
+<A NAME="tex2html15"
+  HREF="node2.html">
+<IMG WIDTH="37" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="next"
+ SRC="file:/Users/mike/bin/share/lib/latex2html/icons/next.png"></A> 
+<A NAME="tex2html13"
+  HREF="build_instructions.html">
+<IMG WIDTH="26" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="up"
+ SRC="file:/Users/mike/bin/share/lib/latex2html/icons/up.png"></A> 
+<A NAME="tex2html7"
+  HREF="build_instructions.html">
+<IMG WIDTH="63" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="previous"
+ SRC="file:/Users/mike/bin/share/lib/latex2html/icons/prev.png"></A>   
+<BR>
+<B> Next:</B> <A NAME="tex2html16"
+  HREF="node2.html">Targets</A>
+<B> Up:</B> <A NAME="tex2html14"
+  HREF="build_instructions.html">build_instructions</A>
+<B> Previous:</B> <A NAME="tex2html8"
+  HREF="build_instructions.html">build_instructions</A>
+<BR>
+<BR>
+<!--End of Navigation Panel-->
+
+<H1><A NAME="SECTION00010000000000000000">
+Files</A>
+</H1>
+
+<OL>
+<LI>Follow the directions for CVS at http://www.sf.net/projects/bibdesk/ to pull the source tree.
+</LI>
+<LI>Open the Bibdesk.pbproj file in Project Builder, and click on the ``Files'' tab.
+</LI>
+<LI>Open the Frameworks tree by clicking the triangle.  You should see three frameworks listed at the bottom:
+  
+<OL>
+<LI>OmniAppKit.framework
+</LI>
+<LI>OmniBase.framework
+</LI>
+<LI>OmniFoundation.framework
+  
+</LI>
+</OL>
+</LI>
+<LI>Some of these may be listed in red.  If they are, you will have to install the frameworks on your system.  They can be downloaded from http://www.omnigroup.com/ (look under Developer/Source Code) and need to be compiled.  If you are going to do this, the following should help:
+  
+<OL>
+<LI>Compile and install OmniBase, OmniFoundation, and OmniAppKit <B>in that order</B>, since they depend on each other.
+</LI>
+<LI>You may install the frameworks anywhere, but you will have to tell each sucessive framework how to locate the previous ones.  For example, suppose you compile OmniBase and install it in&nbsp;/Development/Frameworks/OmniBase.framework.  To build OmniFoundation, you need to open its project, look under the ``Files'' tab, expand the Frameworks and Libraries folder, and right-click on the OmniBase.framework icon.
+</LI>
+<LI>Select ``Get Info'' and enter the path to the OmniBase.framework (I used absolute paths).  I think there are multiple ways to do this, and your mileage may vary.
+</LI>
+<LI>Hopefully you have all the Omni frameworks compiled and installed at this point.  This discussion on http://cocoadev.com/index.pl?IncludingFrameworksInApplications is helpful, if you want something beyond the quick-and-dirty steps I've given.
+  
+</LI>
+</OL>
+</LI>
+<LI>At this point, we need to satisfy Bibdesk's dependencies on the Omni frameworks, just like the Omni frameworks depend on each other.  Get info on each of the three Omni frameworks in the Bibdesk.pbproj project (right-click on their icons) and set the paths to those frameworks correctly for your system.  Their names should change from red to black in color.  I think you probably want them all to be the same version, so make sure the paths point to the frameworks you just installed.
+</LI>
+</OL>
+
+<P>
+<HR>
+<!--Navigation Panel-->
+<A NAME="tex2html15"
+  HREF="node2.html">
+<IMG WIDTH="37" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="next"
+ SRC="file:/Users/mike/bin/share/lib/latex2html/icons/next.png"></A> 
+<A NAME="tex2html13"
+  HREF="build_instructions.html">
+<IMG WIDTH="26" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="up"
+ SRC="file:/Users/mike/bin/share/lib/latex2html/icons/up.png"></A> 
+<A NAME="tex2html7"
+  HREF="build_instructions.html">
+<IMG WIDTH="63" HEIGHT="24" ALIGN="BOTTOM" BORDER="0" ALT="previous"
+ SRC="file:/Users/mike/bin/share/lib/latex2html/icons/prev.png"></A>   
+<BR>
+<B> Next:</B> <A NAME="tex2html16"
+  HREF="node2.html">Targets</A>
+<B> Up:</B> <A NAME="tex2html14"
+  HREF="build_instructions.html">build_instructions</A>
+<B> Previous:</B> <A NAME="tex2html8"
+  HREF="build_instructions.html">build_instructions</A>
+<!--End of Navigation Panel-->
+<ADDRESS>
+Michael McCracken
+2003-03-14
+</ADDRESS>
+</BODY>
+</HTML>

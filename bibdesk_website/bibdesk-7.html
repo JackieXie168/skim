@@ -1,0 +1,188 @@
+<html>
+	<head>
+		<meta http-equiv="content-type" content="text/html;charset=iso-8859-1">
+		<title>
+			BibDesk
+		</title>
+		<meta name="description" content="A Bibliography manager for Mac OS X">
+		<meta name="keywords" content="BibTeX, TeX, Mac OS X, Bibdesk, bibliography, .bib">
+		<meta name="Author" content="Michael McCracken">
+	</head>
+	<body link="blue" vlink="maroon" alink="#00ee00">
+		<font size=6 face="helvetica,sans-serif">BibDesk
+		<p>
+			<a href="bdsk-screenshot0.7.jpg" border=1>
+			<img lowsrc="bdsk-screenshot0.7_low.gif" src="bdsk-screenshot0.7.jpg" height=300 ></a>
+		</font>
+		<p>
+		A BibTeX bibliography manager for Mac OS X. Brought to you by <a href="index.html">Michael McCracken</a>.
+<p>		This is the site for official information about BibDesk, but if you check out <a href="http://radio.weblogs.com/0101358">My Weblog</a>, you might find notes about the newer versions in development, and other sutff I might have left out of the documentation.
+<p>		<h3>
+		The <a href="#current">current version</a> is Bibdesk 0.71 beta. There is a list of <a href="#bugs">Known Bugs</a>.
+		</h3>
+		
+			<font size=4 face="helvetica,sans-serif">
+			Description</font>
+	<ul>		
+				<li>What it is
+				<ul>
+					<li>A graphical BibTeX-bibliography manager for Mac OS X (v10.1).
+					<li>A program I wrote to help me manage all the electronic copies of papers I was reading and the bibliographic information about them.
+					<li>BibDesk is intended to help organize and use a set of bibliographic databases in BibTeX .bib format. It is aimed initially at making it easy to find a paper you want to cite in a large database and then to add the citation command to a text file (presumably a TeX source file.)
+					<li>Features
+					<ul>
+						<li>Citation search completion service! - See the <a href="#v6">release notes for version 0.6</a>
+						<li>drag n' drop (and copy n' paste) citations and images of typeset citations
+						<li>drag bibtex entries (and now, files!) onto a BibDesk document browser to create a new citation.
+						<li>Search for text in any open document in standard keys.
+						<ul>
+							<li>(this is only sub-string searching. for reg-exp searching you still need something like bibtool.)
+						</ul>
+					</ul>
+				</ul>
+				<li>What it isn't
+				<ul>
+					<li>BibTool, Emacs, Alpha, etc..
+					<li>It was not intended to be a replacement for the useful features of shell tools like bibtool, etc.
+					<li>As a result, this beta release does not have those really good features such as database merging, searching for duplicates, add your favorite feature here.
+					<li>BibDesk uses the standard BibTex .bib file format so that you can still use the existing nice tools without too much hassle.
+				</ul>
+			</ul>
+</ul>
+<p>
+<font size=4 face="helvetica,sans-serif"><a name="current">Current Version</a></font>
+			<ul>
+				<li>Version 0.71 beta <a href="BibDesk-0.71b.dmg.gz">(http)</a> (~2MB, Includes a mini-manual)
+				<ul>
+				<li>Release Notes
+					<ul>
+					<li>	Abstract is actually saved now								
+		<li>	tex binary path is actually used now							
+		<li>	preview window remembers if it was showing now				
+		<li>	now multiple entries can be dragged around.					
+		<li>	you can peek in on the first page of a PDF file ("peek" in the editor window) to make sure you spell things right.	
+		<li>	you can change the font the browser uses - look in the preferences.
+		<li>	you can change whether you see just the annote or the whole bib in the preview - prefs again.	
+		<li>	you can clear the quick-search field (handy)					
+		<li>	there is an auto-check for updates feature now - it's under the prefs menu item, which doesn't have a key equivalent anymore because the old one conflicted with spell-checking.	
+		<li>	! - can drag a file from the finder and have it create a new pub		
+		<li>	! - drag a file to a pub edit window and it will set the local-url
+drag a URL (say, from OmniWeb - not IE yet) into the edit window, and it'll set the Url field
+-	drag one pub onto another and it will set the empty fields (synchronize!)	
+		<li>	specifically, it sets the fields that exist, and are empty - or the fields that don't exist and 	
+		aren't empty in the dragged pub.							
+		<li>	some important efficiency and memory leak fixes				
+		<li>	opening non ASCII filenames now works
+					</ul>
+				
+<li><a name="bugs">Known Bugs: </a>
+				<ul>
+				<li>It still leaks some memory (surprise!) - I'm working on this. A lot of this is related to the previewing feature, so If you are very concerned with memory usage, turn that off.
+				<li>It takes too long to save - This seems to be a problem with the code for translating between Unicode and TeX accented characters.
+				<li>It's still not very good at dealing with macros. If you use a lot of macros, you might not be happy with BibDesk right now.
+				<li>It's still not good at recovering data from parse errors (it throws out entire entries and doesn't let you edit it without going to an external editor)
+				</ul>
+			</ul></ul>
+			<ul>
+	<font size="-1">			<li>Version 0.7 beta <a href="BibDesk-0.7b.dmg.gz">(http)</a> (~2MB, Includes a mini-manual)
+				<ul>
+					<li>Release Notes
+					<ul>
+						<li>Now it can handle translation of some common 8-bit characters
+						<ul>
+							<li>for instance, if you type &#252; in BibDesk, it will be saved as {\&quot;u}, and when BibDesk reads that in, it will display &#252; again.
+							<li>there is a dictionary file called CharacterConversion.plist inside the application package if you want to add any conversions. Please send me any additions so I can include them in the next release.
+							<li>The file should be edited using the XML Property List editor from the Developer Tools. (it's in UTF-8 encoding)
+						</ul>
+						<li>Complete citation service - major change
+						<ul>
+							<li>First, it's in its own menu (in anticipation of more services)
+							<li>it allows searching in keys, not just titles, now:
+							<ul>
+								<li>&quot;foo&quot; and &quot;Title = foo&quot; search for &quot;foo&quot; in the title
+								<li>&quot;Author = Baz &amp; Title = foo &amp; Month = Jan&quot; searches for those constraints.
+							</ul>
+						</ul>
+						<li>GUI changes
+						<ul>
+							<li>The edit window for publications now no longer has 'save' &amp; 'cancel' buttons - instead it uses the window close button and marks it as changed if it has been edited, just as in regular documents.
+							<li>to maximize useful window space
+							<li>to provide menu (and key) equivalents for toolbar items
+							<li>windows remember where you put them
+						</ul>
+						<li>Drag and drop works between documents now.
+						<ul>
+							<li>(dragging into the same document just duplicates it.)
+						</ul>
+
+					<li>There is now a template file, containing some propaganda for me, but it could be useful for you.
+					<ul>
+						<li>it's written at the front of every saved file.
+						<li>i've included a macro to show what it could do. see above for how to get macros working
+					</ul>
+
+					<li>you can specify a string to replace &quot;cite&quot; in drag/copy/paste etc...
+					<li>You can add and remove fields from individual entries now
+					<li>You can specify a set of your favorite fields that are included by default on every new publication (and when you open a new file, they'll all get added)
+					<li>To accommodate cross-referenced entries, there is now no output for empty fields.
+					<li>Now the files used for previewing are put in ~/Library/Application Support/Bibdesk/
+					<ul>
+						<li>this lets you look at them (and print &amp; copy them) easier
+						<li>but mainly, it allows you to run bibdesk from a directory you don't have write access to.
+					</ul>
+				</ul>
+				<li>Known Bugs: 
+				<ul>
+				<li>Edits to the Abstract field are not saved along with the rest of the entry.
+				<li>There are problems opening files that are contained in folders that have non ASCII characters in their names. (this has been fixed in the version under development now)
+				<li>It leaks memory (surprise!) - I'm working on this. A lot of this is related to the previewing feature, so If you are very concerned with memory usage, turn that off.
+				<li>It takes too long to save - This seems to be a problem with the code for translating between Unicode and TeX accented characters.
+				<li>It's still not very good at dealing with macros. If you use a lot of macros, you might not be happy with BibDesk right now.
+				<li>It's still not good at recovering data from parse errors (it throws out entire entries and doesn't let you edit it without going to an external editor)
+				</ul>
+			</ul>
+</ul>
+
+			<ul>
+				<li>Version 0.61 beta <a href="BibDesk-0.61b.dmg.gz">(http)</a> (~2MB dmg.gz, Includes a mini-manual)
+				<ul>
+					<li>Release Notes
+					<ul>
+						<li>Saving a file with 8-bit characters in an entry silently killed that entry in 0.6 - This is now "fixed" - now it just truncates them like 0.5. The current recommended solution for 8 bit characters is to use the (La)TeX encoding e.g. {\"u} for u-umlaut, until I get a solution for this issue.
+						<li>Due to popular demand, the background color of the typeset preview is now white. It should be easier to read. The next major revision should contain many more improvements to viewing the typeset preview.
+					</ul>
+				</ul>
+				<li>Version 0.6 beta <a href="BibDesk-0.6b.dmg">(http)</a> (beware the browser not understanding .dmg) (~3MB, Includes a mini-manual)
+				<ul>
+				<a name="v6"><li>Release Notes</a>
+					<ul>
+						<li> System service - In any Cocoa (or Carbon Service aware, i think) application - This includes TexShop and iTeXMac - Type a sub-string of a document's title, select it, and choose "Complete Citation" from the Application->Services menu, (Or press Cmd-Shift-J, and all matching citations will be inserted, along with a comment that tells you the title. Make sure you log out before trying this, so the Service can register! This is just an initial exploration of the services feature, I intend this to become a major feature for the program.
+						<li> Customizable Toolbar now implemented for the document browser window. Go wild.
+						<li> Preview now is a separate panel that is hidden by default. This seemed to be more elegant.
+						<li> Now works on 800 x 600 screens! Boy do I feel dumb.
+						<li> Added Abstract field to edit window
+						<li> Added columns for Author 1,2 & 3 (This is important to me, since I was only ever author 2 so far :) )
+						<li> Sort by a column by clicking on the column header
+						<li> Change citation copy/drag preferences to switch between \cite{key1,key2} and \cite{key1} \cite{key2}
+						<li> Fixed quick-search bug that was really embarrassing
+						<li> Fixed delete behavior that was also pretty bad (it simply didn't work - Thanks, Martin A. Bauer for noticing this.)
+						<li> Fixed opening large files bug that was a little less embarrassing
+						<li> Added default Type entry for Phd/Mastersthesis entries.
+					</ul>
+				</ul>
+				<li>Version 0.5 beta <!---Not working<a href="ftp://ftp.cs.ucsd.edu/pub/grad/mmccrack/BibDesk-0.5b.dmg">(ftp)</a>---> <a href="BibDesk-0.5b.dmg">(http)</a> (beware the browser not understanding .dmg) (~1MB, Includes a mini-manual)
+				<ul>
+					This version is not open source, mainly because I don't have it well documented and it's not very clean. I intend to release the first non-beta version as open source (under the GNU GPL).
+					<li>Release Notes
+					<ul>
+						<li>It needs a better icon. If you want to contribute, let <i>me(michael_mccracken@mac.com) </i>know.
+						<li>This has been tested on Mac OS X 10.1.2, on an iBook - 600 and a G4 - 450. It is small, so it's pretty fast.
+						<li>cite keys are not guaranteed to be unique. This is something I will be adding.
+						<li>newlines in the notes are not respected. This really annoys me, I know why it does this, and I'm trying to find the right way to fix it - it's because of the parsing library I'm using, but I don't want to have to replace that.
+						<li>There are certainly other issues that I can't think of right now. This page will be updated as problems are encountered.
+					</ul>
+				</ul>
+			</ul>
+</font>
+		</ul>
+</html>
