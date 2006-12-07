@@ -1,0 +1,75 @@
+\documentclass[11pt]{book}
+
+\newif\ifpdf
+\ifx\pdfoutput\undefined
+\pdffalse % we are not running PDFLaTeX
+\else
+\pdfoutput=1 % we are running PDFLaTeX
+\pdftrue
+\fi
+
+\ifpdf
+\usepackage[pdftex]{graphicx}
+\else
+\usepackage{graphicx}
+\fi
+
+\textwidth = 6.5 in
+\textheight = 9 in
+\oddsidemargin = 0.0 in
+\evensidemargin = 0.0 in
+\topmargin = 0.0 in
+\headheight = 0.0 in
+\headsep = 0.0 in
+\parskip = 0.2in
+\parindent = 0.0in
+
+\usepackage{makeidx}
+\makeindex
+
+\title{BibDesk}
+
+\author{Michael O. McCracken}
+\begin{document}
+
+\ifpdf
+\DeclareGraphicsExtensions{.pdf, .jpg, .tif}
+\else
+\DeclareGraphicsExtensions{.eps, .jpg}
+\fi
+
+\maketitle
+
+\tableofcontents
+\listoffigures
+
+\chapter{Introduction}
+\chapter{Quick Start}
+\chapter{Opening \& Saving Files}
+\chapter{Browsing a Bibliography}
+\chapter{Adding References}
+\chapter{Making citations}
+	\section{cut,copy,drag,drop}
+	\section{system service}
+\chapter{Preferences}
+Text introducing the preferences
+\section{Behavior}
+\begin{figure}[h]
+\centerline{
+\includegraphics[scale=.75]{images/pref_Startup}
+}
+\label{pref_Startup}
+\caption{Startup Preferences Pane}
+\end{figure}
+
+\section{\TeX}
+\appendix
+\chapter{Menus}
+some text about menus
+\chapter{Bib\TeX}
+
+\printindex
+
+ \end{document}
+ \end
+

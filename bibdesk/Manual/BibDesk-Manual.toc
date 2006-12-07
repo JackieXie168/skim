@@ -1,0 +1,13 @@
+\contentsline {chapter}{\numberline {1}Introduction}{7}
+\contentsline {chapter}{\numberline {2}Quick Start}{9}
+\contentsline {chapter}{\numberline {3}Opening \& Saving Files}{11}
+\contentsline {chapter}{\numberline {4}Browsing a Bibliography}{13}
+\contentsline {chapter}{\numberline {5}Adding References}{15}
+\contentsline {chapter}{\numberline {6}Making citations}{17}
+\contentsline {section}{\numberline {6.1}cut,copy,drag,drop}{17}
+\contentsline {section}{\numberline {6.2}system service}{17}
+\contentsline {chapter}{\numberline {7}Preferences}{19}
+\contentsline {section}{\numberline {7.1}Behavior}{19}
+\contentsline {section}{\numberline {7.2}T\kern -.1667em\lower .5ex\hbox {E}\kern -.125emX\spacefactor \@m }{19}
+\contentsline {chapter}{\numberline {A}Menus}{21}
+\contentsline {chapter}{\numberline {B}BibT\kern -.1667em\lower .5ex\hbox {E}\kern -.125emX\spacefactor \@m }{23}
