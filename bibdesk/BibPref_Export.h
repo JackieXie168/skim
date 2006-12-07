@@ -52,6 +52,8 @@ typedef enum {
     IBOutlet NSButton *addButton;
     IBOutlet NSButton *deleteButton;
     IBOutlet NSMatrix *prefListRadio;
+    IBOutlet NSWindow *chooseMainPageSheet;
+    IBOutlet NSPopUpButton *chooseMainPagePopup;
 }
 
 - (IBAction)changePrefList:(id)sender;
@@ -66,5 +68,7 @@ typedef enum {
 - (BOOL)canDeleteSelectedItem;
 
 - (IBAction)revealInFinder:(id)sender;
+
+- (IBAction)dismissChooseMainPageSheet:(id)sender;
 
 @end
