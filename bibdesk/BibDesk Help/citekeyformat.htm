@@ -1,0 +1,131 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+        "http://www.w3.org/TR/1999/REC-html401-19991224/loose.dtd">
+<html>
+<head>
+	<title>Autogeneration Format</title> 
+	<meta http-equiv="content-type" content="text/html; charset=x-mac-roman">
+	<meta name="generator" content="SubEthaEdit">
+	<style type="text/css">
+		.spec {font-weight:bold; color:blue}
+		.param {font-weight:bold; color:green}
+	</style>
+</head>
+<body text="#000000" bgcolor="#ffffff">
+
+<img src="gfx/BibDeskIcon.png" alt="" height="48" width="48">
+<font size="+2"  face="Lucida Grande,Helvetica,Geneva"><b>
+<a name="format"></a>Autogeneration Format
+</b></font>
+
+<p><font size="+1"  face="Lucida Grande,Helvetica,Geneva"><b>
+Syntax of the format
+</b></font></p>
+
+<p><font size="-1" face="Lucida Grande,Geneva,Arial">
+The format is used for autogeneration of certain values, such as the cite key and the local-url. The format is a string containing special format specifiers, which are replaced by strings determined by the bibliography data. Most format specifiers have the form of a %-character followed by a single character. It can be followed by optional digits, which serve as parameters for the format specifier. Possible format specifiers are given in the table below.
+</font></p>
+
+<p><font size="-1" face="Lucida Grande,Geneva,Arial">
+<table>
+<tr><th align="left">Specifier</th><th>Replaced content description</th></tr>
+<tr><td><span class="spec">%a</span>[<span class="param">00</span>]</td><td>Author last names, with (optional) maximal number of authors and number of characters</td></tr>
+<tr><td><span class="spec">%A</span>[<span class="param">0</span>]</td><td>Author last names with initials, with (optional) maximal number of authors</td></tr>
+<tr><td><span class="spec">%t</span>[<span class="param">0</span>]</td><td>Title, with (optional) maximal length</td></tr>
+<tr><td><span class="spec">%T</span>[<span class="param">0</span>]</td><td>Title, with (optional) maximal number of words</td></tr>
+<tr><td><span class="spec">%Y</span></td><td>Year without century</td></tr>
+<tr><td><span class="spec">%y</span></td><td>Year with century</td></tr>
+<tr><td><span class="spec">%m</span></td><td>Month as decimal number</td></tr>
+<tr><td><span class="spec">%k</span>[<span class="param">0</span>]</td><td>Keywords concatenated together, with (optional) maximal number of keywords. Keywords must be separated by one of ;:, (semicolon, colon, or comma)</td></tr>
+<tr><td><span class="spec">%f{</span><span class="param"><i>Field</i></span><span class="spec">}</span>[<span class="param">0</span>]</td><td>Arbitrary field, with (optional) maximal length</td></tr>
+<tr><td><span class="spec">%c{</span><span class="param"><i>Field</i></span><span class="spec">}</span></td><td>Arbitrary field as initials, e.g. &#8216;JCIS&#8217; for &#8216;Journal of Colloid and Interface Science&#8217; in the &#8216;Journal&#8217; BibTeX field</td></tr>
+<tr><td><span class="spec">%r</span>[<span class="param">1</span>]</td><td>Random lowercase letter, with (optional) number of characters</td></tr>
+<tr><td><span class="spec">%R</span>[<span class="param">1</span>]</td><td>Random uppercase letter, with (optional) number of characters</td></tr>
+<tr><td><span class="spec">%d</span>[<span class="param">1</span>]</td><td>Random number, with (optional) number of digits</td></tr>
+<tr><td><span class="spec">%u</span>[<span class="param">1</span>]</td><td>Unique lowercase letter, with (optional) number of characters (only at the end)</td></tr>
+<tr><td><span class="spec">%U</span>[<span class="param">1</span>]</td><td>Unique uppercase letter, with (optional) number of characters (only at the end)</td></tr>
+<tr><td><span class="spec">%n</span>[<span class="param">1</span>]</td><td>Unique lowercase letter, with (optional) number of characters (only at the end)</td></tr>
+<tr><td><span class="spec">%0</span></td><td>Escaped digit (0-9)</td></tr>
+<tr><td><span class="spec">%%</span></td><td>Escaped percent character (if allowed)</td></tr>
+</table>
+</font></p>
+ 
+<p><font size="-1" face="Lucida Grande,Geneva,Arial">
+In the table above, the numbers between square brackets after the specifiers indicate the optional parameters (the brackets themselves are not part of the format, the first parameter after an author specifier should be a single digit). Indicated in the table are the parameter values that are used when they are not entered. 
+</font></p>
+
+<p><font size="-1" face="Lucida Grande,Geneva,Arial">
+The special value of zero for an optional parameter is interpreted either as <em>all</em> (for the &#8216;author&#8217;, &#8216;title&#8217;, or &#8216;field&#8217; specifiers), <em>sufficient</em> (for the &#8216;unique&#8217; specifiers, i.e., sufficient to create a unique cite key), or <em>none</em> (for the &#8216;random&#8217; specifiers). 
+</font></p>
+
+<p><font size="-1" face="Lucida Grande,Geneva,Arial">
+The &#8216;unique&#8217; specifiers <span class="spec">%u</span>, <span class="spec">%U</span> and <span class="spec">%n</span> can only be used at the end of the format string. 
+</font></p>
+
+<p><font size="-1" face="Lucida Grande,Geneva,Arial">
+Because a number right after most specifiers is interpreted as an optional parameter, in order to use explicit digits right after a format specifier, one should use one of the escape specifiers <span class="spec">%0</span>-<span class="spec">%9</span>. 
+</font></p>
+
+<p><font size="-1" face="Lucida Grande,Geneva,Arial">
+The cite key format can contain, apart from the specifiers, only unaccented alphanumeric characters (a-zA-Z0-9), (semi-)colons (:;), dashes (-) or periods (.). Any generated part of the cite key will be converted to contain only those characters. For example, accents are removed and spaces will be converted to dashes. 
+</font></p>
+
+<p><font size="-1" face="Lucida Grande,Geneva,Arial">
+The format for the local-url can contain any character apart from : (colon). To use an explicit percent character, use the escape specifier <span class="spec">%%</span>.
+</font></p>
+
+<p><font size="+1"  face="Lucida Grande,Helvetica,Geneva"><b>
+Examples
+</b></font></p>
+
+<p><font size="-1" face="Lucida Grande,Geneva,Arial">
+<i>Bibliography:</i><br/>
+M. McCracken, A. Maxwell, J. Howison, M. Routley, S. Spiegel, S. S. Porst, and C. M. Hofman,<br/>
+Bibdesk, a great application to manage your bibliographies,<br/>
+Source Forge, 1:96, 11 2004.<br/>
+</font></p>
+
+<p><font size="-1" face="Lucida Grande,Geneva,Arial">
+<table>
+<tr><td>Format string:</td><td><span class="spec">%a</span><span class="param">1</span><b>:</b><span class="spec">%Y</span><span class="spec">%r</span><span class="param">2</span></td></tr>
+<tr><td>Resulting value:</td><td>McCracken:2004yc</td></tr>
+</table>
+</font></p>
+
+<p><font size="-1" face="Lucida Grande,Geneva,Arial">
+<table>
+<tr><td>Format string:</td><td><span class="spec">%a</span><span class="param">1</span><b>:</b><span class="spec">%Y</span><span class="spec">%u</span><span class="param"></span></td></tr>
+<tr><td>Resulting value:</td><td>McCracken:2004b</td></tr>
+</table>
+</font></p>
+
+<p><font size="-1" face="Lucida Grande,Geneva,Arial">
+<table>
+<tr><td>Format string:</td><td><span class="spec">%a</span><span class="param">03</span><span class="spec">%y</span><span class="spec">%m</span></td></tr>
+<tr><td>Resulting value:</td><td>McCMaxHowRouSpiPorHof0411</td></tr>
+</table>
+</font></p>
+
+<p><font size="-1" face="Lucida Grande,Geneva,Arial">
+<table>
+<tr><td>Format string:</td><td><span class="spec">%a</span><span class="param">1</span><span class="spec">%y</span><span class="spec">%t</span><span class="param">20</span></td></tr>
+<tr><td>Resulting value:</td><td>McCracken2004Bibdesk-a-great-appl</td></tr>
+</table>
+</font></p>
+
+<p><font size="-1" face="Lucida Grande,Geneva,Arial">
+<table>
+<tr><td>Format string:</td><td><span class="spec">%a</span><span class="param">24</span><b>:</b><span class="spec">%c{</span><span class="param">Journal</span><span class="spec">}</span><span class="spec">%f{</span><span class="param">Volume</span><span class="spec">}</span></td></tr>
+<tr><td>Resulting value:</td><td>McCrMaxw:SF1</td></tr>
+</table>
+</font></p>
+
+<p><font size="+1"  face="Lucida Grande,Helvetica,Geneva"><b>
+Setting the cite key format
+</b></font></p>
+
+<p><font size="-1" face="Lucida Grande,Geneva,Arial">
+See the discussion in <a href="prefs.htm">Preferences</a> for details on setting the cite key format. 
+</font></p>
+
+</body>
+</html>
