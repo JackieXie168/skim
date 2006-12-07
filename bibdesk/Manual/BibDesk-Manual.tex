@@ -1,0 +1,96 @@
+\documentclass[11pt]{book}
+
+\newif\ifpdf
+\ifx\pdfoutput\undefined
+\pdffalse % we are not running PDFLaTeX
+\else
+\pdfoutput=1 % we are running PDFLaTeX
+\pdftrue
+\fi
+
+\ifpdf
+\usepackage[pdftex]{graphicx}
+\else
+\usepackage{graphicx}
+\fi
+
+\usepackage{url}
+
+
+\textwidth = 6.5 in
+\textheight = 9 in
+\oddsidemargin = 0.0 in
+\evensidemargin = 0.0 in
+\topmargin = 0.0 in
+\headheight = 0.0 in
+\headsep = 0.0 in
+\parskip = 0.2in
+\parindent = 0.0in
+
+\usepackage{makeidx}
+\usepackage[hyperindex=true,
+	    hyperfigures=true,
+	    backref=true,
+	    pagebackref=true,
+	    bookmarks=true]{hyperref}
+
+\makeindex
+
+\title{BibDesk}
+
+\author{Michael O. McCracken}
+\begin{document}
+
+\ifpdf
+\DeclareGraphicsExtensions{.pdf, .jpg, .tif}
+\else
+\DeclareGraphicsExtensions{.eps, .jpg}
+\fi
+
+\maketitle
+
+\tableofcontents
+
+\listoffigures
+
+\chapter{Introduction}
+Welcome to BibDesk. BibDesk is a tool to help you manage bibliographic databases.  It is intended to make it easier to add document and to keep a database updated.  It grew out of a dissatisfaction with the usability of existing bibliographic tools.  I felt that much could be done to improve the workflow of common tasks adding entries from the Web, and searching for and inserting entries into a Mac OS X text editor such as TexShop.  BibDesk uses user friendly Mac OS X features such as system services and drag and drop to make managing bibliographies easier. 
+
+BibDesk is also an open source project, which means that you can help with its development.  Programming help is most needed, however, any contribution of time and effort is valuable, including writing documentation, translating, and reporting bugs.  The BibDesk project has a Web page at sourceforge.net: \url{http://sourceforge.net/projects/bibdesk}.
+
+BibDesk is under active development at the time of writing this manual. As a result, some pieces of the manual can become out of date, and some features in the software may not be documented well yet. 
+
+\chapter{Quick Start}
+This chapter gives a quick reference guide to major commands and features of BibDesk. If you only read one part of the manual, read this one. Section \ref{qs:alreadyhave} describes what you'll need to know if you already use Bib\TeX. Section \ref{qs:nohave} has tips you'll need if you haven't used Bib\TeX~ before, as well as some links to further information about using Bib\TeX.
+
+\section{If you already have Bib\TeX~database files}\label{qs:alreadyhave}
+BibDesk opens .bib files directly. Double-click them to open BibDesk, or open a file using the File menu.
+
+You will see a \emph{browser window}. The entries in the database are listed one per row, with each column displaying the value of a field in the entry, such as Title, 1st Author, etc. (*SHOT*) 
+
+Double-click on an entry in the browser window, or create a new entry using either the toolbar button, menu item or the keyboard shortcut Cmd-n to open the \emph{editor window}. This window allows you to change the values of each field in an entry. It also lets you look at the first page of the file (if it is a PDF file), and lets you open the file, or its URL in a web browser, if you have specified one. (*SHOT*)
+
+\section{If you don't already have Bib\TeX~database files}\label{qs:nohave}
+
+\chapter{Opening \& Saving Files}
+    \section{Converting files}
+\chapter{Browsing a Bibliography}
+    \section{Configuring the Publication table}
+    \section{Viewing entries}
+	\subsection{Text Preview}
+	\subsection{Typeset Preview}
+\chapter{Adding \& Modifying References}
+\chapter{Making citations}
+	\section{cut,copy,drag,drop}
+	\section{system service}
+
+\appendix
+\chapter{Menus}
+some text about menus
+\chapter{Bib\TeX}
+
+\printindex
+
+ \end{document}
+ \end
+

@@ -1,0 +1,22 @@
+{
+    IBClasses = (
+        {
+            ACTIONS = {cancelFromPreview = id; doMoveAction = id; handleCleanupLinksAction = id; }; 
+            CLASS = BibFiler; 
+            LANGUAGE = ObjC; 
+            OUTLETS = {
+                actionButton = NSButton; 
+                cancelButton = NSButton; 
+                cleanupCheckBox = NSButton; 
+                deleteCheckBox = NSButton; 
+                infoTextField = NSTextField; 
+                tv = NSTableView; 
+                window = NSWindow; 
+            }; 
+            SUPERCLASS = NSObject; 
+        }, 
+        {CLASS = FirstResponder; LANGUAGE = ObjC; SUPERCLASS = NSObject; }, 
+        {CLASS = "java.lang.Object"; LANGUAGE = Java; }
+    ); 
+    IBVersion = 1; 
+}
