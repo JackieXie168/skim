@@ -418,6 +418,7 @@ The groupedPublications array is a subset of the publications array, developed b
     
     // This allows us to be slightly lazy, only putting the visible group rows in the dictionary
     NSIndexSet *visibleIndexes = [NSIndexSet indexSetWithIndexesInRange:indexRange];
+    NSIndexSet *selectedIndexes = [groupTableView selectedRowIndexes];
     unsigned int cnt = [visibleIndexes count];
     NSRange categoryRange = [groups rangeOfCategoryGroups];
     NSString *groupField = [self currentGroupField];
@@ -436,7 +437,7 @@ The groupedPublications array is a subset of the publications array, developed b
     
     // exclude smart and shared groups
     while(cnt != NSNotFound){
-		if(NSLocationInRange(cnt, categoryRange))
+		if(NSLocationInRange(cnt, categoryRange) && [selectedIndexes containsIndex:cnt] == NO)
 			CFDictionaryAddValue(rowDict, (void *)[[[groups categoryGroups] objectAtIndex:cnt - categoryRange.location] name], (void *)cnt);
         cnt = [visibleIndexes indexGreaterThanIndex:cnt];
     }
@@ -459,7 +460,7 @@ The groupedPublications array is a subset of the publications array, developed b
     int groupCount = 0;
     
     // we could iterate the dictionary in the outer loop and publications in the inner loop, but there are generally more publications than groups (and we only check visible groups), so this should be more efficient
-    while(rowIndexes != nil && rowIndex != NSNotFound){ 
+    while(rowIndex != NSNotFound){ 
         
         // here are all the groups that this item can be a part of
         possibleGroups = (CFSetRef)[[shownPublications objectAtIndex:rowIndex] groupsForField:groupField];
@@ -493,28 +494,28 @@ The groupedPublications array is a subset of the publications array, developed b
     // handle smart and static groups separately, since they have a different approach to containment
     NSMutableIndexSet *staticAndSmartIndexes = [NSMutableIndexSet indexSetWithIndexesInRange:[groups rangeOfSmartGroups]];
     [staticAndSmartIndexes addIndexesInRange:[groups rangeOfStaticGroups]];
+    [staticAndSmartIndexes removeIndexes:visibleIndexes];
+    [staticAndSmartIndexes removeIndexes:selectedIndexes];
     
     if([staticAndSmartIndexes count]){
-        rowIndexes = [tableView selectedRowIndexes];
-        rowIndex = [rowIndexes firstIndex];
-        
-        int groupIndex;
+        int groupIndex = [staticAndSmartIndexes firstIndex];
         id aGroup;
         
-        // enumerate selected publication indexes once, since it should be a much longer array than static + smart groups
-        while(rowIndex != NSNotFound){
+        while(groupIndex != NSNotFound && [visibleIndexes containsIndex:groupIndex]){
+            aGroup = [groups objectAtIndex:groupIndex];
             
-            BibItem *pub = [shownPublications objectAtIndex:rowIndex];
-            groupIndex = [staticAndSmartIndexes firstIndex];
+            rowIndex = [rowIndexes firstIndex];
             
-            // may not be worth it to check for visibility...
-            while(groupIndex != NSNotFound && [visibleIndexes containsIndex:groupIndex]){
-                aGroup = [groups objectAtIndex:groupIndex];
-                if([aGroup containsItem:pub])
+            while(rowIndex != NSNotFound){
+            
+                if([aGroup containsItem:[shownPublications objectAtIndex:rowIndex]]){
                     [indexSet addIndex:groupIndex];
-                groupIndex = [staticAndSmartIndexes indexGreaterThanIndex:groupIndex];
+                    break;
+                }
+                rowIndex = [rowIndexes indexGreaterThanIndex:rowIndex];
             }
-            rowIndex = [rowIndexes indexGreaterThanIndex:rowIndex];
+            
+            groupIndex = [staticAndSmartIndexes indexGreaterThanIndex:groupIndex];
         }
     }
     
