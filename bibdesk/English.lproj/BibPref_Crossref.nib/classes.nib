@@ -1,0 +1,37 @@
+{
+    IBClasses = (
+        {
+            ACTIONS = {
+                addType = id; 
+                changeAutoSort = id; 
+                changeDuplicateBooktitle = id; 
+                changeForceDuplicateBooktitle = id; 
+                changeWarnOnEditInherited = id; 
+                deleteType = id; 
+            }; 
+            CLASS = "BibPref_Crossref"; 
+            LANGUAGE = ObjC; 
+            OUTLETS = {
+                addTypeButton = NSButton; 
+                autoSortCheckButton = NSButton; 
+                deleteTypeButton = NSButton; 
+                duplicateBooktitleCheckButton = NSButton; 
+                forceDuplicateBooktitleCheckButton = NSButton; 
+                tableView = NSTableView; 
+                warnOnEditInheritedCheckButton = NSButton; 
+            }; 
+            SUPERCLASS = OAPreferenceClient; 
+        }, 
+        {CLASS = FirstResponder; LANGUAGE = ObjC; SUPERCLASS = NSObject; }, 
+        {
+            ACTIONS = {restoreDefaults = id; setValueForSender = id; }; 
+            CLASS = OAPreferenceClient; 
+            LANGUAGE = ObjC; 
+            OUTLETS = {controlBox = NSView; initialFirstResponder = NSView; lastKeyView = NSView; }; 
+            SUPERCLASS = OFObject; 
+        }, 
+        {CLASS = OBObject; LANGUAGE = ObjC; SUPERCLASS = NSObject; }, 
+        {CLASS = OFObject; LANGUAGE = ObjC; SUPERCLASS = OBObject; }
+    ); 
+    IBVersion = 1; 
+}
