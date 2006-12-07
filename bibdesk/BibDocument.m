@@ -2302,7 +2302,7 @@ originalContentsURL:(NSURL *)absoluteOriginalContentsURL
 }
 
 - (void)handleFlagsChangedNotification:(NSNotification *)notification{
-    unsigned int modifierFlags = [[notification object] modifierFlags];
+    unsigned int modifierFlags = [NSApp currentModifierFlags];
     
     if (modifierFlags & NSAlternateKeyMask) {
         [groupAddButton setImage:[NSImage imageNamed:@"GroupAddSmart"]];

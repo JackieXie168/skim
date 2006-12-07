@@ -606,7 +606,7 @@
 @implementation BDSKTextImportController (Private)
 
 - (void)handleFlagsChangedNotification:(NSNotification *)notification{
-    unsigned int modifierFlags = [[notification object] modifierFlags];
+    unsigned int modifierFlags = [NSApp currentModifierFlags];
     
     if (modifierFlags & NSAlternateKeyMask) {
         [addButton setTitle:NSLocalizedString(@"Add & Copy", @"Button title")];
