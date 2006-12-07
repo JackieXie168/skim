@@ -486,24 +486,7 @@
 
 #pragma mark Serializing
 
-- (void)setSmartGroupsFromSerializedData:(NSData *)data {
-	NSString *error = nil;
-	NSPropertyListFormat format = NSPropertyListXMLFormat_v1_0;
-	id plist = [NSPropertyListSerialization propertyListFromData:data
-												mutabilityOption:NSPropertyListImmutable
-														  format:&format 
-												errorDescription:&error];
-	
-	if (error) {
-		NSLog(@"Error deserializing: %@", error);
-        [error release];
-		return;
-	}
-	if ([plist isKindOfClass:[NSArray class]] == NO) {
-		NSLog(@"Serialized smart groups was no array.");
-		return;
-	}
-	
+- (void)setSmartGroupsFromPlist:(NSArray *)plist {
     NSEnumerator *groupEnum = [plist objectEnumerator];
     NSDictionary *groupDict;
     NSMutableArray *array = [NSMutableArray arrayWithCapacity:[(NSArray *)plist count]];
@@ -531,46 +514,12 @@
 	[smartGroups setArray:array];
 }
 
-- (void)setStaticGroupsFromSerializedData:(NSData *)data {
-	NSString *error = nil;
-	NSPropertyListFormat format = NSPropertyListXMLFormat_v1_0;
-	id plist = [NSPropertyListSerialization propertyListFromData:data
-												mutabilityOption:NSPropertyListImmutable
-														  format:&format 
-												errorDescription:&error];
-	
-	if (error) {
-		NSLog(@"Error deserializing: %@", error);
-        [error release];
-		return;
-	}
-	if ([plist isKindOfClass:[NSArray class]] == NO) {
-		NSLog(@"Serialized static groups was no array.");
-		return;
-	}
-	
+- (void)setStaticGroupsFromPlist:(NSArray *)plist {
     [tmpStaticGroups release]; // just to be sure, for revert
     tmpStaticGroups = [plist retain];
 }
 
-- (void)setURLGroupsFromSerializedData:(NSData *)data {
-	NSString *error = nil;
-	NSPropertyListFormat format = NSPropertyListXMLFormat_v1_0;
-	id plist = [NSPropertyListSerialization propertyListFromData:data
-												mutabilityOption:NSPropertyListImmutable
-														  format:&format 
-												errorDescription:&error];
-	
-	if (error) {
-		NSLog(@"Error deserializing: %@", error);
-        [error release];
-		return;
-	}
-	if ([plist isKindOfClass:[NSArray class]] == NO) {
-		NSLog(@"Serialized URL groups was no array.");
-		return;
-	}
-	
+- (void)setURLGroupsFromPlist:(NSArray *)plist {
     NSString *name = nil;
     NSURL *url = nil;
     NSEnumerator *groupEnum = [plist objectEnumerator];
@@ -598,24 +547,7 @@
 	[urlGroups setArray:array];
 }
 
-- (void)setScriptGroupsFromSerializedData:(NSData *)data {
-	NSString *error = nil;
-	NSPropertyListFormat format = NSPropertyListXMLFormat_v1_0;
-	id plist = [NSPropertyListSerialization propertyListFromData:data
-												mutabilityOption:NSPropertyListImmutable
-														  format:&format 
-												errorDescription:&error];
-	
-	if (error) {
-		NSLog(@"Error deserializing: %@", error);
-        [error release];
-		return;
-	}
-	if ([plist isKindOfClass:[NSArray class]] == NO) {
-		NSLog(@"Serialized URL groups was no array.");
-		return;
-	}
-	
+- (void)setScriptGroupsFromPlist:(NSArray *)plist {
     NSString *name = nil;
     NSString *path = nil;
     NSString *arguments = nil;
@@ -647,7 +579,7 @@
 	[scriptGroups setArray:array];
 }
 
-- (NSData *)serializedSmartGroupsData {
+- (NSArray *)plistFromSmartGroups {
 	NSMutableArray *array = [NSMutableArray arrayWithCapacity:[smartGroups count]];
     NSString *name;
     NSMutableDictionary *groupDict;
@@ -662,21 +594,10 @@
 		[groupDict release];
 	}
 	
-	NSString *error = nil;
-	NSPropertyListFormat format = NSPropertyListXMLFormat_v1_0;
-	NSData *data = [NSPropertyListSerialization dataFromPropertyList:array
-															  format:format 
-													errorDescription:&error];
-    	
-	if (error) {
-		NSLog(@"Error serializing: %@", error);
-        [error release];
-		return nil;
-	}
-	return data;
+	return array;
 }
 
-- (NSData *)serializedStaticGroupsData {
+- (NSArray *)plistFromStaticGroups {
     [self updateStaticGroupsIfNeeded];
 	NSMutableArray *array = [NSMutableArray arrayWithCapacity:[staticGroups count]];
 	NSString *keys;
@@ -693,21 +614,10 @@
 		[groupDict release];
 	}
 	
-	NSString *error = nil;
-	NSPropertyListFormat format = NSPropertyListXMLFormat_v1_0;
-	NSData *data = [NSPropertyListSerialization dataFromPropertyList:array
-															  format:format 
-													errorDescription:&error];
-    	
-	if (error) {
-		NSLog(@"Error serializing: %@", error);
-        [error release];
-		return nil;
-	}
-	return data;
+	return array;
 }
 
-- (NSData *)serializedURLGroupsData {
+- (NSArray *)plistFromURLGroups {
 	NSMutableArray *array = [NSMutableArray arrayWithCapacity:[urlGroups count]];
     NSString *name;
     NSString *url;
@@ -723,22 +633,11 @@
 		[groupDict release];
 	}
 	
-	NSString *error = nil;
-	NSPropertyListFormat format = NSPropertyListXMLFormat_v1_0;
-	NSData *data = [NSPropertyListSerialization dataFromPropertyList:array
-															  format:format 
-													errorDescription:&error];
-    	
-	if (error) {
-		NSLog(@"Error serializing: %@", error);
-        [error release];
-		return nil;
-	}
-	return data;
+	return array;
 }
 
-- (NSData *)serializedScriptGroupsData {
-	NSMutableArray *array = [NSMutableArray arrayWithCapacity:[urlGroups count]];
+- (NSArray *)plistFromScriptGroups {
+	NSMutableArray *array = [NSMutableArray arrayWithCapacity:[scriptGroups count]];
     NSString *name;
     NSString *path;
     NSString *args;
@@ -757,6 +656,50 @@
 		[groupDict release];
 	}
 	
+	return array;
+}
+
+- (void)setGroupsOfType:(int)groupType fromSerializedData:(NSData *)data {
+	NSString *error = nil;
+	NSPropertyListFormat format = NSPropertyListXMLFormat_v1_0;
+	id plist = [NSPropertyListSerialization propertyListFromData:data
+												mutabilityOption:NSPropertyListImmutable
+														  format:&format 
+												errorDescription:&error];
+	
+	if (error) {
+		NSLog(@"Error deserializing: %@", error);
+        [error release];
+		return;
+	}
+	if ([plist isKindOfClass:[NSArray class]] == NO) {
+		NSLog(@"Serialized groups was no array.");
+		return;
+	}
+	
+    if (groupType == BDSKSmartGroupType)
+        [self setSmartGroupsFromPlist:plist];
+	else if (groupType == BDSKStaticGroupType)
+        [self setStaticGroupsFromPlist:plist];
+	else if (groupType == BDSKURLGroupType)
+        [self setURLGroupsFromPlist:plist];
+	else if (groupType == BDSKScriptGroupType)
+        [self setScriptGroupsFromPlist:plist];
+}
+
+- (NSData *)serializedGroupsDataOfType:(int)groupType {
+	NSArray *array = nil;
+    
+    if (groupType == BDSKSmartGroupType)
+        array = [self plistFromSmartGroups];
+	else if (groupType == BDSKStaticGroupType)
+        array = [self plistFromStaticGroups];
+	else if (groupType == BDSKURLGroupType)
+        array = [self plistFromURLGroups];
+	else if (groupType == BDSKScriptGroupType)
+        array = [self plistFromScriptGroups];
+    else return nil;
+    
 	NSString *error = nil;
 	NSPropertyListFormat format = NSPropertyListXMLFormat_v1_0;
 	NSData *data = [NSPropertyListSerialization dataFromPropertyList:array

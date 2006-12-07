@@ -1177,27 +1177,27 @@ originalContentsURL:(NSURL *)absoluteOriginalContentsURL
     // The data from groups is always UTF-8, and we shouldn't convert it unless we have an unparseable encoding; the comment key strings should be representable in any encoding
     if(isOK && ([[groups staticGroups] count] > 0)){
         isOK = [outputData appendDataFromString:@"\n\n@comment{BibDesk Static Groups{\n" encoding:encoding error:&error] &&
-               [outputData appendStringData:[groups serializedStaticGroupsData] convertedFromUTF8ToEncoding:groupsEncoding error:&error] &&
+               [outputData appendStringData:[groups serializedGroupsDataOfType:BDSKStaticGroupType] convertedFromUTF8ToEncoding:groupsEncoding error:&error] &&
                [outputData appendDataFromString:@"}}" encoding:encoding error:&error];
         if(NO == isOK)
             [error setValue:NSLocalizedString(@"Unable to convert static groups.", @"string encoding error context") forKey:NSLocalizedRecoverySuggestionErrorKey];
     }
     if(isOK && ([[groups smartGroups] count] > 0)){
         isOK = [outputData appendDataFromString:@"\n\n@comment{BibDesk Smart Groups{\n" encoding:encoding error:&error] &&
-               [outputData appendStringData:[groups serializedSmartGroupsData] convertedFromUTF8ToEncoding:groupsEncoding error:&error] &&
+               [outputData appendStringData:[groups serializedGroupsDataOfType:BDSKSmartGroupType] convertedFromUTF8ToEncoding:groupsEncoding error:&error] &&
                [outputData appendDataFromString:@"}}" encoding:encoding error:&error];
             [error setValue:NSLocalizedString(@"Unable to convert smart groups.", @"string encoding error context") forKey:NSLocalizedRecoverySuggestionErrorKey];
     }
     if(isOK && ([[groups URLGroups] count] > 0)){
         isOK = [outputData appendDataFromString:@"\n\n@comment{BibDesk URL Groups{\n" encoding:encoding error:&error] &&
-               [outputData appendStringData:[groups serializedURLGroupsData] convertedFromUTF8ToEncoding:groupsEncoding error:&error] &&
+               [outputData appendStringData:[groups serializedGroupsDataOfType:BDSKURLGroupType] convertedFromUTF8ToEncoding:groupsEncoding error:&error] &&
                [outputData appendDataFromString:@"}}" encoding:encoding error:&error];
         if(NO == isOK)
             [error setValue:NSLocalizedString(@"Unable to convert external file groups.", @"string encoding error context") forKey:NSLocalizedRecoverySuggestionErrorKey];
     }
     if(isOK && ([[groups scriptGroups] count] > 0)){
         isOK = [outputData appendDataFromString:@"\n\n@comment{BibDesk Script Groups{\n" encoding:encoding error:&error] &&
-               [outputData appendStringData:[groups serializedScriptGroupsData] convertedFromUTF8ToEncoding:groupsEncoding error:&error] &&
+               [outputData appendStringData:[groups serializedGroupsDataOfType:BDSKScriptGroupType] convertedFromUTF8ToEncoding:groupsEncoding error:&error] &&
                [outputData appendDataFromString:@"}}" encoding:encoding error:&error];
         if(NO == isOK)
             [error setValue:NSLocalizedString(@"Unable to convert script groups.", @"string encoding error context") forKey:NSLocalizedRecoverySuggestionErrorKey];
