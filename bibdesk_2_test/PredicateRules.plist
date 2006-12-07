@@ -1,0 +1,341 @@
+{
+    operatorTypes = (
+        "<",
+        "<=",
+        ">",
+        ">=",
+        "==",
+        "!=",
+        "matches",
+        "like",
+        "beginsWith",
+        "endsWith",
+        "in",
+        "custom"
+    );
+    operatorNames = {
+        boolean = (
+            {
+                operatorName = "==";
+                displayName = "is";
+            },
+            {
+                operatorName = "!=";
+                displayName = "is not";
+            }
+        );
+        date = (
+            {
+                operatorName = "<";
+                displayName = "smaller";
+            },
+            {
+                operatorName = "<=";
+                displayName = "smaller or equal";
+            },
+            {
+                operatorName = ">";
+                displayName = "larger";
+            },
+            {
+                operatorName = ">=";
+                displayName = "larger or equal";
+            }
+        );
+        number = (
+            {
+                operatorName = "==";
+                displayName = "is";
+            },
+            {
+                operatorName = "!=";
+                displayName = "is not";
+            },
+            {
+                operatorName = "<";
+                displayName = "smaller";
+            },
+            {
+                operatorName = "<=";
+                displayName = "smaller or equal";
+            },
+            {
+                operatorName = ">";
+                displayName = "larger";
+            },
+            {
+                operatorName = ">=";
+                displayName = "larger or equal";
+            }
+        );
+        string = (
+            {
+                operatorName = "contains";
+                displayName = "contains";
+            },
+            {
+                operatorName = "beginsWith";
+                displayName = "begins with";
+            },
+            {
+                operatorName = "endsWith";
+                displayName = "ends with";
+            },
+            {
+                operatorName = "like";
+                displayName = "like";
+            },
+            {
+                operatorName = "matches";
+                displayName = "matches";
+            }
+        );
+    };
+    entityNames = (
+        {
+            entityName = "Publication";
+            displayName = "Publication";
+        },
+        {
+            entityName = "Person";
+            displayName = "Person";
+        },
+        {
+            entityName = "Institution";
+            displayName = "Institution";
+        },
+        {
+            entityName = "Venue";
+            displayName = "Venue";
+        },
+        {
+            entityName = "Note";
+            displayName = "Note";
+        },
+        {
+            entityName = "Tag";
+            displayName = "Tag";
+        },
+        {
+            entityName = "Item";
+            displayName = "Any Type";
+        },
+        {
+            entityName = "TaggedItem";
+            displayName = "Any Tagged Type";
+        }
+    );
+    propertyNames = {
+        Item = (
+            {
+                propertyName = "name";
+                displayName = "Name";
+                type = "string";
+            }
+        );
+        TaggedItem = (
+            {
+                propertyName = "name";
+                displayName = "Name";
+                type = "string";
+            },
+            {
+                propertyName = "tags.name";
+                displayName = "Tag";
+                type = "string";
+            },
+            {
+                propertyName = "notes.name";
+                displayName = "Note Name";
+                type = "string";
+            },
+            {
+                propertyName = "notes.value";
+                displayName = "Note Value";
+                type = "string";
+            }
+        );
+        Note = (
+            {
+                propertyName = "name";
+                displayName = "Name";
+                type = "string";
+            },
+            {
+                propertyName = "value";
+                displayName = "Value";
+                type = "string";
+            }
+        );
+        Institution = (
+            {
+                propertyName = "name";
+                displayName = "Name";
+                type = "string";
+            },
+            {
+                propertyName = "address";
+                displayName = "Address";
+                type = "string";
+            },
+            {
+                propertyName = "institutionRelationships.person.name";
+                displayName = "Person Name";
+                type = "string";
+            },
+            {
+                propertyName = "tags.name";
+                displayName = "Tag";
+                type = "string";
+            },
+            {
+                propertyName = "notes.name";
+                displayName = "Note Name";
+                type = "string";
+            },
+            {
+                propertyName = "notes.value";
+                displayName = "Note Value";
+                type = "string";
+            }
+        );
+        Person = (
+            {
+                propertyName = "name";
+                displayName = "Name";
+                type = "string";
+            },
+            {
+                propertyName = "firstNamePart";
+                displayName = "First Name";
+                type = "string";
+            },
+            {
+                propertyName = "lastNamePart";
+                displayName = "Last Name";
+                type = "string";
+            },
+            {
+                propertyName = "institutionRelationships.intitution.name";
+                displayName = "Intitution Name";
+                type = "string";
+            },
+            {
+                propertyName = "tags.name";
+                displayName = "Tag";
+                type = "string";
+            },
+            {
+                propertyName = "notes.name";
+                displayName = "Note Name";
+                type = "string";
+            },
+            {
+                propertyName = "notes.value";
+                displayName = "Note Value";
+                type = "string";
+            }
+        );
+        Publication = (
+            {
+                propertyName = "title";
+                displayName = "Title";
+                type = "string";
+            },
+            {
+                propertyName = "shortTitle";
+                displayName = "Short Title";
+                type = "string";
+            },
+            {
+                propertyName = "contributorRelationships.contributor.name";
+                displayName = "Contributor Name";
+                type = "string";
+            },
+            {
+                propertyName = "authors.name";
+                displayName = "Author Name";
+                type = "string";
+            },
+            {
+                propertyName = "editors.name";
+                displayName = "Editor Name";
+                type = "string";
+            },
+            {
+                propertyName = "institutions.name";
+                displayName = "Institution Name";
+                type = "string";
+            },
+            {
+                propertyName = "venue.name";
+                displayName = "Venue Name";
+                type = "string";
+            },
+            {
+                propertyName = "tags.name";
+                displayName = "Tag";
+                type = "string";
+            },
+            {
+                propertyName = "notes.name";
+                displayName = "Note Name";
+                type = "string";
+            },
+            {
+                propertyName = "notes.value";
+                displayName = "Note Value";
+                type = "string";
+            },
+            {
+                propertyName = "dateAdded";
+                displayName = "Date Added";
+                type = "date";
+            },
+            {
+                propertyName = "dateChanged";
+                displayName = "Date Changed";
+                type = "date";
+            },
+            {
+                propertyName = "datePublished";
+                displayName = "Date Published";
+                type = "string";
+            },
+            {
+                propertyName = "publicationType";
+                displayName = "Publication Type";
+                type = "string";
+            },
+            {
+                propertyName = "publicationStatus";
+                displayName = "Publication Status";
+                type = "string";
+            }
+        );
+        Tag = (
+            {
+                propertyName = "name";
+                displayName = "Name";
+                type = "string";
+            }
+        );
+        Venue = (
+            {
+                propertyName = "name";
+                displayName = "Name";
+                type = "string";
+            },
+            {
+                propertyName = "notes.name";
+                displayName = "Note Name";
+                type = "string";
+            },
+            {
+                propertyName = "notes.value";
+                displayName = "Note Value";
+                type = "string";
+            }
+        );
+    };
+}

@@ -1,0 +1,57 @@
+Managing references
+===================
+
+This section will outline starting a new bibliography and many ways of adding references.
+It includes a few gems about drag and drop, so don't skip too quick.
+
+
+Choose "New Bibliography" from the File menu or type the keyboard shortcut \ |cmd|\ |shift|\ N. New references are added to the bibliography with "New Reference" from the Bibliography menu or the keyboard shortcut |cmd|\ N. This opens the Editor window, which looks something like:
+
+
+.. image:: gfx/editWindow.png
+
+
+You can then fill in the appropriate fields for your reference. The type pop-up menu lets you choose from the canonical BibTeX publication types (e.g., article, book, phdthesis). Field titles highlighted in red represent required fields for the chosen reference type (article in the case of the above screenshot). Fields can be added and removed with the plus and minus buttons to the right of the reference-type pop-up menu. BibDesk fills in fields as you type based on the information contained in other references. Also, BibDesk verifies that cite keys are unique before committing a reference to the bibliography.
+
+
+
+Urls typed into the reference listing become active hyperlinks near the top of the Editor window. Dragging a file onto the Edit window adds the files location to the "Local-Url" field and creates a clickable link to the file. Clicking in the box adjacent to "File:" presents a file dialog for choosing the appropriate file. The "View in Drawer" buttons show either the entire PDF file or the first page of the file as text, which can be copied and pasted into the publication's data fields.
+
+
+The "Annote" and "Abstract" tabs provide access to larger text areas for these types of information. Rss-Description is covered in `Exporting to RSS`_.
+
+
+The references are presented in a table, similar to this:
+
+<img src="gfx/tableView.png" alt="" height="608" width="617">
+
+References can also be added to a bibliography by dragging an entry from a text source (text editor, web browser). Here's a fancy picture:
+
+<img src="gfx/dragIntoBib.png" alt="" height="263" width="388">
+
+Below the table view is the Notes pane, which shows the contents of the highlighted reference. It can also be set (using the `Display preferences`_) to show the entire selected entry as nicely formatted text.
+
+Editing references
+------------------
+
+
+Once references have been added to the bibliography, they can be edited by selecting a reference and choosing "Edit Reference" from the Bibliography menu, typing &#8984;E, or double-clicking the reference. When editing, changing pub type never loses information. In other words, if you put a booktitle in when it was inproceedings, and you change it to phdthesis, it will still have that booktitle.
+
+
+
+Deleting references
+-------------------
+
+References can be deleted by selecting the reference and choosing "Delete Reference" from the Bibliography menu or pressing the delete key. Either way, a warning will appear to verify that you want to delete the reference.
+
+
+Printing references
+-------------------
+
+Choosing "Print" from the File menu (\ |cmd|\ P) prints the contents of the lower browser pane of the selected reference.
+
+
+Saving a bibliography
+---------------------
+
+Save (\ |cmd|\ S) and Save As... (\ |cmd|\ |shift|\ S) under the File menu will save your bibliography as a |BT| file. See the section on `Character Encodings`_ for details on how to save files with an encoding other than the one they were read in as.

@@ -1,0 +1,34 @@
+{
+    IBClasses = (
+        {
+            ACTIONS = {
+                copy = id; 
+                gotoError = id; 
+                hideErrorPanel = id; 
+                showErrorPanel = id; 
+                toggleShowingErrorPanel = id; 
+            }; 
+            CLASS = BDSKErrorObjectController; 
+            LANGUAGE = ObjC; 
+            OUTLETS = {
+                errorTableView = NSTableView; 
+                errorsController = BDSKFilteringArrayController; 
+            }; 
+            SUPERCLASS = NSWindowController; 
+        }, 
+        {
+            CLASS = BDSKFilteringArrayController; 
+            LANGUAGE = ObjC; 
+            SUPERCLASS = NSArrayController; 
+        }, 
+        {CLASS = BDSKPlaceHolderFilterItem; LANGUAGE = ObjC; SUPERCLASS = NSObject; }, 
+        {CLASS = BDSKSearchableTextView; LANGUAGE = ObjC; SUPERCLASS = NSTextView; }, 
+        {
+            ACTIONS = {"" = id; reopenDocument = id; }; 
+            CLASS = FirstResponder; 
+            LANGUAGE = ObjC; 
+            SUPERCLASS = NSObject; 
+        }
+    ); 
+    IBVersion = 1; 
+}

@@ -1,0 +1,2586 @@
+\documentclass[a4paper,12pt]{article}
+
+\addtolength{\evensidemargin}{-25pt}
+\addtolength{\oddsidemargin}{-25pt}
+
+\def\displayandname#1{\rlap{$\displaystyle\csname #1\endcsname$}%
+                      \qquad \texttt{\char92 #1}}
+\def\mathlexicon#1{$$\vcenter{\halign{\displayandname{##}\hfil&&\qquad
+                   \displayandname{##}\hfil\cr #1}}$$}
+
+\begin{document}
+
+\title{Getting Started with \LaTeX}
+\author{David R. Wilkins}
+\date{2nd Edition\\[3pt]
+Copyright \copyright\ David R. Wilkins 1995}
+\maketitle
+
+\tableofcontents
+
+\section{Introduction to \LaTeX}
+
+\subsection{What is \LaTeX?}
+
+\LaTeX\ is a computer program for typesetting documents.  It
+takes a computer file, prepared according to the rules of
+\LaTeX\, and converts it to a form that may be printed on a
+high-quality printer, such as a laser writer, to produce
+a printed document of a quality comparable with good
+quality books and journals.  Simple documents, which do
+not contain mathematical formulae or tables may be produced
+very easily: effectively all one has to do is to type the
+text straight in (though observing certain rules relating to
+quotation marks and punctuation dashes).  Typesetting
+mathematics is somewhat more complicated, but even here
+\LaTeX\ is comparatively straightforward to use when one
+considers the complexity of some of the formulae that it
+has to produce and the large number of mathematical symbols
+which it has to produce.
+
+\LaTeX\ is one of a number of `dialects' of \TeX, all based on the
+version of \TeX\ created by D. E. Knuth which is known as
+Plain \TeX.  \LaTeX\ (created by L. B. Lamport) is one of
+these `dialects'.  It is particularly suited to the
+production of long articles and books, since it has
+facilities for the automatic numbering of chapters, sections,
+theorems, equations etc., and also has facilities for
+cross-referencing.  It is probably one of the most suitable
+version of \LaTeX\ for beginners to use.
+
+\subsection{A Typical \LaTeX\ Input File}
+
+In order to produce a document using \LaTeX, we must first
+create a suitable \emph{input file} on the computer.  We
+apply the \LaTeX\ program to the input file and then use the
+printer to print out the so-called `DVI' file produced by
+the \LaTeX\ program (after first using another program to
+translate the  `DVI' file into a form that the printer
+can understand).  Here is an example of a typical
+\LaTeX\ input file:
+\begin{quote}
+\begin{verbatim}
+\documentclass[a4paper,12pt]{article}
+\begin{document}
+
+The foundations of the rigorous study of \textit{analysis}
+were laid in the nineteenth century, notably by the
+mathematicians Cauchy and Weierstrass. Central to the
+study of this subject are the formal definitions of
+\textit{limits} and \textit{continuity}.
+
+Let $D$ be a subset of $\bf R$ and let
+$f \colon D \to \textbf{R}$ be a real-valued function on
+$D$. The function $f$ is said to be \textit{continuous} on
+$D$ if, for all $\epsilon > 0$ and for all $x \in D$,
+there exists some $\delta > 0$ (which may depend on $x$)
+such that if $y \in D$ satisfies
+\[ |y - x| < \delta \]
+then
+\[ |f(y) - f(x)| < \epsilon. \]
+
+One may readily verify that if $f$ and $g$ are continuous
+functions on $D$ then the functions $f+g$, $f-g$ and
+$f.g$ are continuous. If in addition $g$ is everywhere
+non-zero then $f/g$ is continuous.
+
+\end{document}
+
+\end{verbatim}
+\end{quote}
+When we apply \LaTeX\ to these paragraphs we produce the text
+\begin{quotation}
+\normalsize
+The foundations of the rigorous study of \textit{analysis}
+were laid in the nineteenth century, notably by the
+mathematicians Cauchy and Weierstrass. Central to the
+study of this subject are the formal definitions of
+\textit{limits} and \textit{continuity}.
+
+Let $D$ be a subset of $\bf R$ and let
+$f \colon D \to \textbf{R}$ be a real-valued function on
+$D$. The function $f$ is said to be \textit{continuous} on
+$D$ if, for all $\epsilon > 0$ and for all $x \in D$,
+there exists some $\delta > 0$ (which may depend on $x$)
+such that if $y \in D$ satisfies
+\[ |y - x| < \delta\] 
+then
+\[ |f(y) - f(x)| < \epsilon.\] 
+
+One may readily verify that if $f$ and $g$ are continuous
+functions on $D$ then the functions $f+g$, $f-g$ and
+$f.g$ are continuous. If in addition $g$ is everywhere
+non-zero then $f/g$ is continuous.
+\end{quotation}
+
+This example illustrates various features of \LaTeX.  Note
+that the lines
+\begin{quote}
+\begin{verbatim}
+\documentclass[a4paper,12pt]{article}
+\begin{document}
+\end{verbatim}
+\end{quote}
+are placed at the beginning of the input file.  These are followed
+by the main body of the text, followed by the concluding line
+\begin{quote}
+\begin{verbatim}
+\end{document}
+\end{verbatim}
+\end{quote}
+Note also that, although most characters occurring in this file
+have their usual meaning, yet there are special characters such
+as \verb/\/, \verb/$/, \verb/{/ and \verb/}/
+which have special
+meanings within \LaTeX.  Note in particular that there are
+sequences of characters which begin with a `backslash'
+\verb/\/ which are used to produce mathematical symbols and
+Greek letters and to accomplish tasks such as changing fonts.
+These sequences of characters are known as
+\emph{control sequences}.
+
+\subsection{Characters and Control Sequences}
+
+We now describe in more detail some of the features of
+\LaTeX\ illustrated in the above example.
+
+Most characters on the keyboard, such as letters and
+numbers, have their usual meaning. However the characters
+\begin{quote}
+\begin{verbatim}
+\ { } $ ^ _ % ~ # &
+\end{verbatim}
+\end{quote}
+are used for special purposes within \LaTeX. Thus typing one of
+these characters will not produce the corresponding character
+in the final document. Of course these characters are very
+rarely used in ordinary text, and there are methods of
+producing them when they are required in the final document.
+
+In order to typeset a mathematical document it is
+necessary to produce a considerable number of special
+mathematical symbols. One also needs to be able to
+change fonts. Also mathematical documents often contain
+arrays of numbers or symbols (matrices) and other complicated
+expressions. These are produced in \LaTeX\ using \emph{control
+sequences}. Most control sequences consist of a backslash
+\verb/\/ followed by a string of (upper or lower case) letters.
+For example, \verb/\alpha/, \verb/\textit/ and \verb/\sum/
+are control sequences.
+
+In the example above we used the control sequences
+\verb/\textit/ and \verb/\textbf/ to change the font to
+\textit{italic}
+and \textbf{boldface} respectively.  Also we used the control
+sequences \verb/\to/, \verb/\in/, \verb/\delta/ and
+\verb/\epsilon/ to produce the mathematical symbols 
+$\to$
+and 
+$\in$
+and the Greek letters 
+$\delta$
+and 
+$\epsilon$
+
+There is another variety of control sequence which consists
+of a backslash followed by a \emph{single} character that
+is not a letter.  Examples of control sequences of this sort
+are \verb/\{/, \verb/\"/ and \verb/\$/.
+
+The special characters \verb/{/ and \verb/}/ are used for
+\emph{grouping} purposes.  Everything enclosed within
+matching pair of such brackets is treated as a single unit.
+We have applied these brackets in the example above whenever
+we changed fonts.  We shall see other instances where one needs
+to use \verb/{/ and \verb/}/ in \LaTeX\ to group words and symbols
+together (e.g., when we need to produce superscripts and
+subscripts which contain more than one symbol).
+
+The special character \verb/$/ is used when one is
+changing from ordinary text to a mathematical expression
+and when one is changing back to ordinary text. Thus we
+used
+\begin{quote}
+\begin{verbatim}
+for all $\epsilon > 0$ and for all $x \in D$,
+\end{verbatim}
+\end{quote}
+to produce the phrase
+\begin{quotation}
+for all $\epsilon > 0$ and for all $x \in D$,
+\end{quotation}
+in the example given above. Note also that we used
+\verb/\[/ and \verb/\]/ in the example above to mark
+the beginning and end respectively of a mathematical formula that
+is displayed on a separate line.
+
+The remaining special characters
+\begin{quote}
+\begin{verbatim}
+^ _ % ~ # &
+\end{verbatim}
+\end{quote}
+have special purposes within \LaTeX\ that we shall discuss
+later.
+
+\section{Producing Simple Documents using \LaTeX}
+
+\subsection{Producing a \LaTeX\ Input File}
+
+We describe the structure of a typical \LaTeX\ input file.
+
+The first line of the input file should consist of a
+\verb/\documentclass/ command.  The recommended such
+\verb/\documentclass/ command for mathematical articles
+and similar documents has the form
+\begin{quote}
+\begin{verbatim}
+\documentclass[a4paper,12pt]{article}
+\end{verbatim}
+\end{quote}
+(You do not have to worry about what this command means when
+first learning to use \LaTeX: its effect is to ensure that the
+final document is correctly positioned on A4 size paper and
+that the text is of a size that is easy to read.)  There are
+variants of this \verb/\documentclass/ command which are
+appropriate for letters or for books.
+
+The \verb/documentstyle/ command may be followed by certain
+other optional commands, such as the \verb/\pagestyle/ command.
+It is not necessary to find out about these commands when first
+learning to use \LaTeX.
+
+After the \verb/\documentclass/ command and these other
+optional commands, we place the command
+\begin{quote}
+\begin{verbatim}
+\begin{document}
+\end{verbatim}
+\end{quote}
+
+This command is then followed by the main body of the text,
+in the format prescribed by the rules of \LaTeX.
+
+Finally, we end the input file with a line containing the
+command
+\begin{quote}
+\begin{verbatim}
+\end{document}
+\end{verbatim}
+\end{quote}
+
+\subsection{Producing Ordinary Text using \LaTeX}
+
+To produce a simple document using \LaTeX\ one should create a
+\LaTeX\ input file, beginning with a \verb/\documentclass/
+command and the \verb/\begin{document}/ command, as
+described above.  The input file should end with the
+\verb/\end{document}/ command, and the text of the
+document should be sandwiched between the
+\verb/\begin{document}/ and \verb/\end{document}/
+commands in the manner described below.
+
+If one merely wishes to type in ordinary text, without
+complicated mathematical formulae or special effects such
+as font changes, then one merely has to type it in as it
+is, leaving a completely blank line between successive
+paragraphs.  You do not have to worry about paragraph
+indentation: \LaTeX\ will automatically indent all paragraphs
+with the exception of the first paragraph of a new section
+(unless you take special action to override the conventions
+adopted by \LaTeX) 
+
+For example, suppose that we wish to create a document
+containing the following paragraphs:
+\begin{quotation}
+\normalsize
+\noindent
+If one merely wishes to type in ordinary text, without
+complicated mathematical formulae or special effects such
+as font changes, then one merely has to type it in as it
+is, leaving a completely blank line between successive
+paragraphs.
+
+You do not have to worry about paragraph indentation:
+all paragraphs will be indented with the exception of
+the first paragraph of a new section.
+One must take care to distinguish between the `left quote'
+and the `right quote' on the computer terminal.  Also, one
+should use two `single quote' characters in succession if
+one requires ``double quotes''.  One should never use the
+(undirected) `double quote' character on the computer
+terminal, since the computer is unable to tell whether it
+is a `left quote' or a `right quote'.  One also has to
+take care with dashes: a single dash is used for
+hyphenation, whereas three dashes in succession are required
+to produce a dash of the sort used for punctuation---such as
+the one used in this sentence.
+\end{quotation}
+To create this document using \LaTeX\ we use the following
+input file:
+\begin{quote}
+\begin{verbatim}
+\documentclass[a4paper,12pt]{article}
+\begin{document}
+
+If one merely wishes to type in ordinary text, without
+complicated mathematical formulae or special effects such
+as font changes, then one merely has to type it in as it
+is, leaving a completely blank line between successive
+paragraphs.
+
+You do not have to worry about paragraph indentation:
+all paragraphs will be indented with the exception of
+the first paragraph of a new section.
+
+One must take care to distinguish between the `left quote'
+and the `right quote' on the computer terminal.  Also, one
+should use two `single quote' characters in succession if
+one requires ``double quotes''.  One should never use the
+(undirected) `double quote' character on the computer
+terminal, since the computer is unable to tell whether it
+is a `left quote' or a `right quote'.  One also has to
+take care with dashes: a single dash is used for
+hyphenation, whereas three dashes in succession are required
+to produce a dash of the sort used for punctuation---such as
+the one used in this sentence.
+
+\end{document}
+
+\end{verbatim}
+\end{quote}
+
+Having created the input file, one then has to run it
+through the \LaTeX\ program and then print it out the
+resulting output file (known as a `DVI' file).
+
+\subsection{Blank Spaces and Carriage Returns in the Input File}
+
+\LaTeX\ treats the carriage return at the end of a line
+as though it were a blank space.  Similarly \LaTeX\ treats
+tab characters as blank spaces.  Moreover, \LaTeX\ regards
+a sequence of blank spaces as though it were a single
+space, and similarly it will ignore blank spaces at the
+beginning or end of a line in the input file.  Thus, for
+example, if we type
+\begin{quote}
+\begin{verbatim}
+This is
+    a
+        silly
+  example   of   a
+file with many spaces.
+
+
+                   This is the beginning
+of a new paragraph.
+\end{verbatim}
+\end{quote}
+then we obtain
+\begin{quotation}
+This is
+    a
+        silly
+  example   of   a
+file with many spaces.
+
+
+                   This is the beginning
+of a new paragraph.
+\end{quotation}
+
+It follows immediately from this that one will obtain
+the same results whether one types one space or two spaces
+after a full stop: \LaTeX\ does not distinguish between the
+two cases.
+
+Any spaces which follow a control sequence will be ignored
+by \LaTeX.
+
+If you really need a blank space in the final document
+following whatever is produced by the control sequence,
+then you must precede this blank by a
+\emph{backslash} \verb/\/.  Thus in order to obtain the
+sentence
+\begin{quotation}
+\LaTeX\ is a very powerful computer typesetting program.
+\end{quotation}
+we must type
+\begin{quote}
+\begin{verbatim}
+\LaTeX\ is a very powerful computer typesetting program.
+\end{verbatim}
+\end{quote}
+(Here the control sequence \verb/TeX/ is used to produce
+the \LaTeX\ logo.)
+
+In general, preceding a blank space by a backslash
+forces \LaTeX\ to include the blank space in the final
+document.
+
+As a general rule, you should never put a blank space after
+a left parenthesis or before a right parenthesis.  If you were
+to put a blank space in these places, then you run the risk
+that \LaTeX\ might start a new line immediately after the left
+parenthesis or before the right parenthesis, leaving the
+parenthesis marooned at the beginning or end of a line.
+
+
+\subsection{Quotation Marks and Dashes}
+
+Single quotation marks are produced in \LaTeX\ using
+\verb/`/ and \verb/'/.  Double quotation marks are
+produced by typing \verb/``/ and \verb/''/.  (The
+`undirected double quote character \verb/"/ produces
+double right quotation marks: it should \emph{never} be
+used where left quotation marks are required.)
+
+\LaTeX\ allows you to produce dashes of various length, known as
+`hyphens', `en-dashes' and `em-dashes'.  Hyphens are obtained
+in \LaTeX\ by typing \verb/-/, en-dashes by typing \verb/--/ and
+em-dashes by typing \verb/---/.
+
+One normally uses en-dashes when specifying a range of numbers.
+Thus for example, to specify a range of page numbers, one would type
+\begin{quote}
+\begin{verbatim}
+on pages 155--219.
+\end{verbatim}
+\end{quote}
+
+Dashes used for punctuating are often typeset as em-dashes,
+especially in older books.  These are obtained by typing
+\verb/---/.
+
+The dialogue
+\begin{quotation}
+``You \emph{were} a little grave,'' said Alice.
+
+``Well just then I was inventing a new way of
+getting over a gate---would you like to hear it?''
+
+``Very much indeed,'' Alice said politely.
+
+``I'll tell you how I came to think of it,'' said
+the Knight.  ``You see, I said to myself `The only
+difficulty is with the feet: the \emph{head} is
+high enough already.'  Now, first I put my head on
+the top of the gate---then the head's high
+enough---then I stand on my head---then the feet
+are high enough, you see---then I'm over, you see.''
+\end{quotation}
+(taken from \emph{Alice through the Looking Glass}, by Lewis Carroll)
+illustrates the use of quotation marks and dashes.  It is obtained in
+\LaTeX\ from the following input:
+\begin{quote}
+\begin{verbatim}
+``You \emph{were} a little grave,'' said Alice.
+
+``Well just then I was inventing a new way of
+getting over a gate---would you like to hear it?''
+
+``Very much indeed,'' Alice said politely.
+
+``I'll tell you how I came to think of it,'' said
+the Knight.  ``You see, I said to myself `The only
+difficulty is with the feet: the \emph{head} is
+high enough already.'  Now, first I put my head on
+the top of the gate---then the head's high
+enough---then I stand on my head---then the feet
+are high enough, you see---then I'm over, you see.''
+\end{verbatim}
+\end{quote}
+
+Sometimes you need single quotes immediately following double quotes,
+or vica versa, as in
+\begin{quotation}
+``I regard computer typesetting as being reasonably
+`straightforward'\,'' he said.
+\end{quotation}
+The way to typeset this correctly in \LaTeX\ is to use the
+control sequence \verb/\,/ between the quotation marks,
+so as to obtain the necessary amount of separation.  The above
+example is thus produced with the input
+\begin{quote}
+\begin{verbatim}
+``I regard computer typesetting as being reasonably
+`straightforward'\,'' he said.
+\end{verbatim}
+\end{quote}
+
+\subsection{Section Headings in \LaTeX}
+
+Section headings of various sizes are produced (in the
+\textbf{article} document style) using the commands
+\verb/\section/,\verb/\subsection/ and
+\verb/\subsubsection/
+commands. \LaTeX\ will number the sections and subsections
+automatically.  The title of the section should be surrounded
+by curly brackets and placed immediately after the relevant
+command.  Thus if we type
+\begin{quote}
+\begin{verbatim}
+\section{Section Headings}
+
+We explain in this section how to obtain headings
+for the various sections and subsections of our
+document.
+
+\subsection{Headings in the `article' Document Style}
+
+In the `article' style, the document may be divided up
+into sections, subsections and subsubsections, and each
+can be given a title, printed in a boldface font,
+simply by issuing the appropriate command.
+\end{verbatim}
+\end{quote}
+then the title of the section and that of the subsection
+will be printed in a large boldface font, and will be
+numbered accordingly.
+
+Other document styles (such as the \textbf{book} and
+\textbf{letter} styles) have other `sectioning'
+commands available (for example, the \textbf{book}
+style has a \verb/\chapter/ command for beginning
+a new chapter).
+
+Sometimes one wishes to suppress the automatic numbering
+provided by \LaTeX.  This can be done by placing an
+asterisk before the title of the section or subsection.
+Thus, for example, the section numbers in the above example
+could be suppressed by typing
+\begin{quote}
+\begin{verbatim}
+\section*{Section Headings}
+
+We explain in this section how to obtain headings
+for the various sections and subsections of our
+document.
+
+\subsection*{Headings in the `article' Document Style}
+
+In the `article' style, the document may be divided up
+into sections, subsections and subsubsections, and each
+can be given a title, printed in a boldface font,
+simply by issuing the appropriate command.
+\end{verbatim}
+\end{quote}
+
+\subsection{Changing Fonts in Text Mode}
+
+\LaTeX\ has numerous commands for changing the typestyle.
+The most useful of these is \verb/\emph{/\emph{text}\verb/}/
+which \emph{emphasizes} some piece of text, setting it
+usually in an \textit{italic font} (unless the surrounding
+text is already italicized).  Thus for example, the text
+\begin{quotation}
+The basic results and techniques of \emph{Calculus}
+were discovered and developed by \emph{Newton}
+and \emph{Leibniz}, though many of the basic ideas
+can be traced to earlier work of \emph{Cavalieri},
+\emph{Fermat}, \emph{Barrow} and others.
+\end{quotation}
+is obtained by typing
+\begin{quote}
+\begin{verbatim}
+The basic results and techniques of \emph{Calculus}
+were discovered and developed by \emph{Newton}
+and \emph{Leibniz}, though many of the basic ideas
+can be traced to earlier work of \emph{Cavalieri},
+\emph{Fermat}, \emph{Barrow} and others.
+\end{verbatim}
+\end{quote}
+
+Another useful font-changing command is \verb/\textbf{/\emph{text}\verb/}/,
+which typesets the specified portion of text in \textbf{boldface}.
+
+A \emph{font family} or \emph{typeface} in \LaTeX\ consists of a
+collection of related fonts characterized by \emph{size}, \emph{shape}
+and \emph{series}.  The font families available in \LaTeX\ include
+\textrm{roman}, \textsf{sans serif} and \texttt{typewriter}:
+\begin{itemize}
+\item
+\textrm{Roman is normally the default family and includes
+\textup{upright}, \textit{italic}, \textsl{slanted}, \textsc{small caps}
+and \textbf{boldface} fonts of various sizes.}
+\item
+\textsf{There is a sans serif family with
+\textup{upright}, \textsl{slanted}
+and \textbf{boldface} fonts of various sizes.}
+\item
+\texttt{There is a typewriter family with
+\textup{upright}, \textit{italic}, \textsl{slanted}\newline
+and \textsc{small caps} fonts of various sizes.}
+\end{itemize}
+
+The sizes of fonts used in \LaTeX\ are can be determined
+and changed by means of the control sequences
+\verb/\tiny/,
+\verb/\scriptsize/,
+\verb/\footnotesize/,
+\verb/\small/,
+\verb/\normalsize/,
+\verb/\large/,
+\verb/\Large/,
+\verb/\LARGE/,
+\verb/\huge/ and
+\verb/\HUGE/:
+\begin{quote}
+{\tiny This text is \texttt{tiny}}.
+
+{\scriptsize This text is \texttt{scriptsize}}.
+
+{\footnotesize This text is \texttt{footnotesize}}.
+
+{\small This text is \texttt{small}}.
+
+{\normalsize This text is \texttt{normalsize}}.
+
+{\large This text is \texttt{large}}.
+
+{\Large This text is \texttt{Large}}.
+
+{\LARGE This text is \texttt{LARGE}}.
+
+{\huge This text is \texttt{huge}}.
+
+{\Huge This text is \texttt{Huge}}.
+\end{quote}
+\vspace{6pt}
+
+The \emph{shape} of a font can be \textup{upright},
+\textit{italic}, \textsl{slanted} or \textsc{small caps}:
+\begin{itemize}
+\item
+\textup{The LaTeX command}
+   \verb/\textup{/\emph{text}\verb/}/
+   \textup{typesets the specified text with an upright shape:
+   this is normally the default shape.}
+\item
+\textit{The LaTeX command}
+   \verb/\textit{/\emph{text}\verb/}/
+   \textit{typesets the specified text with an italic shape.}
+\item
+\textsl{The LaTeX command}
+   \verb/\textsl{/\emph{text}\verb/}/
+   \textsl{typesets the specified text with a slanted shape:
+   slanted text is similar to italic.}
+\item
+\textsc{The LaTeX command}
+   \verb/\textsc{/\emph{text}\verb/}/
+   \textsc{typesets the specified text with a small caps shape
+   in which all letters are capitals (with uppercase letters taller than
+   lowercase letters).}
+\end{itemize}
+
+The \emph{series} of a font can be \textmd{medium} (the default) or
+\textbf{boldface}:
+\begin{itemize}
+\item
+\textup{The LaTeX command}
+   \verb/\textmd{/\emph{text}\verb/}/
+   \textmd{typesets the specified text with a medium series font.}
+\item
+\textbf{The LaTeX command}
+   \verb/\textbf{/\emph{text}\verb/}/
+   \textbf{typesets the specified text with a boldface series font.}
+\end{itemize}
+If the necessary fonts are available, one can combine changes to
+the size, shape and series of a font, for example producing
+\textbf{\textsl{boldface slanted text}} by typing
+\begin{quote}
+\begin{verbatim}
+\textbf{\textsl{boldface slanted text}}.
+\end{verbatim}
+\end{quote}
+
+There are in \LaTeX\ font declarations corresponding to the
+the font-changing commands described above.  When included in the
+\LaTeX\ input such declarations determine the type-style of the
+subsequent text (till the next font declaration or the end
+of the current `group' delimited by curly brackets
+or by appropriate \verb/\begin/ and \verb/\end/
+commands).  Here is a list of font-changing commands and
+declarations in text mode:
+\begin{quote}
+\begin{tabular}{lll}
+\emph{Command}&\emph{Declaration}&\\
+\verb/\textrm/&\verb/\rmfamily/&{\rmfamily Roman family}\\
+\verb/\textsf/&\verb/\sffamily/&{\sffamily Sans serif family}\\
+\verb/\texttt/&\verb/\ttfamily/&{\ttfamily Typewriter family}\\[6pt]
+\verb/\textup/&\verb/\upshape/&{\upshape Upright shape}\\
+\verb/\textit/&\verb/\itshape/&{\itshape Italic shape}\\
+\verb/\textsl/&\verb/\slshape/&{\slshape Slanted shape}\\
+\verb/\textsc/&\verb/\scshape/&{\scshape Small caps shape}\\[6pt]
+\verb/\textmd/&\verb/\mdseries/&{\mdseries Medium series}\\
+\verb/\textbf/&\verb/\bfseries/&{\bfseries Boldface series}\\
+\end{tabular}
+\end{quote}
+
+\subsection{Accents used in Text}
+
+There are a variety of control sequences for producing accents.
+For example, the control sequence \verb/\'{o}/ produces an
+acute accent on the letter \verb/o/. Thus typing
+\begin{quote}
+\begin{verbatim}
+Se\'{a}n \'{O} Cinn\'{e}ide.
+\end{verbatim}
+\end{quote}
+produces
+\begin{quotation}
+Se\'{a}n \'{O} Cinn\'{e}ide.
+\end{quotation}
+Similarly we use the control sequence \verb/\`/ to
+produce the grave accent in `alg\`{e}bre' and we use
+\verb/\"/ to produce the umlaut in `Universit\"{a}t'.
+The accents provided by \LaTeX\ include the following:
+\begin{quote}
+\begin{tabular}{lll}
+\verb/\'{e}/  & \'{e}
+           & e.g., \verb/math\'{e}matique/ yields `math\'{e}matique' \\
+\verb/\`{e}/  & \`{e}
+           & e.g., \verb/alg\`{e}bre/ yields `alg\`{e}bre' \\
+\verb/\^{e}/  & \^{e}
+           & e.g., \verb/h\^{o}te/ yields `h\^{o}te' \\
+\verb/\"{o}/  & \"{o}
+           & e.g., \verb/H\"{o}lder/ yields `H\"{o}lder' \\
+\verb/\~{n}/  & \~{n}
+           & e.g., \verb/ma\~{n}ana/ yields `ma\~{n}ana' \\
+\verb/\={o}/  & \={o}  & \\
+\verb/\.{o}/  & \.{o}  & \\
+\verb/\u{o}/  & \u{o}  & \\
+\verb/\v{c}/  & \v{c}
+           & e.g., \verb/\v{C}ech/ yields `\v{C}ech' \\
+\verb/\H{o}/  & \H{o}  & \\
+\verb/\t{oo}/ & \t{oo} & \\
+\verb/\c{c}/  & \c{c}
+           & e.g., \verb/gar\c{c}on/ yields `gar\c{c}on' \\
+\verb/\d{o}/  & \d{o}  & \\
+\verb/\b{o}/  & \b{o}  &
+\end{tabular} 
+\end{quote}
+These accents are for use in ordinary text. They cannot be
+used within mathematical formulae, since different control 
+sequences are used to produce accents within mathematics.
+
+The control sequences \verb/\i/ and \verb/\j/ produce
+dotless `i' and `j'.  These are required when placing an
+accent on the letter. Thus \'{i} is produced by typing
+\verb/\'{\i}/.
+
+\subsection{Active Characters and Special Symbols in Text}
+
+The `active characters'
+\begin{quote}
+\begin{verbatim}
+# $ % & \ ^ _ { } ~
+\end{verbatim}
+\end{quote}
+have special purposes within \LaTeX.  Thus they cannot be produced
+in the  final document simply by typing them directly.  On the
+rare occasions when one needs to use the special characters
+\begin{quote}
+\#\ \$\ \%\ \&\ \_\ \{\ \}
+\end{quote}
+in the final document, they can be produced by typing the control
+sequences
+\begin{quote}
+\begin{verbatim}
+\# \$ \% \& \_ \{ \}
+\end{verbatim}
+\end{quote}
+respectively.  However the characters
+\verb/\/, \verb/^/ and \verb/~/ cannot be
+produced simply by preceding them with a backslash.  They can
+however be produced using \verb/\char92/ (in the \verb/\texttt/ font
+only), \verb/\char94/ and \verb/\char126/ respectively.
+(The decimal numbers 92, 94 and 126 are the ASCII codes of these
+characters.)
+
+Other special symbols can be introduced into
+text using the appropriate control sequences:
+\begin{quote}
+\begin{tabular}{l|l}
+\emph{Symbol} & \emph{Control Sequence}\\
+\hline
+\oe, \OE   & \verb/\oe, \OE/   \\
+\ae, \AE   & \verb/\ae, \AE/   \\
+\aa, \AA   & \verb/\aa, \AA/   \\
+\o, \O     & \verb/\o, \O/     \\
+\l, \L     & \verb/\l, \L/     \\
+\ss        & \verb/\ss/        \\
+?`         & \verb/?`/         \\
+!`         & \verb/!`/         \\
+\dag       & \verb/\dag/       \\
+\ddag      & \verb/\ddag/      \\
+\S         & \verb/\S/         \\
+\P         & \verb/\P/         \\
+\copyright & \verb/\copyright/ \\
+\pounds    & \verb/\pounds/    \\
+\i         & \verb/\i/         \\
+\j         & \verb/\j/         
+\end{tabular}
+\end{quote}
+
+\section{Producing Mathematical Formulae using \LaTeX}
+
+\subsection{Mathematics Mode}
+
+In order to obtain a mathematical formula using \LaTeX, one must
+enter \emph{mathematics mode} before the formula and leave it
+afterwards. Mathematical formulae can occur either embedded in text
+or else displayed between lines of text. When a formula occurs within
+the text of a paragraph one should place a \verb/$/ sign before and
+after the formula, in order to enter and leave mathematics mode.
+Thus to obtain a sentence like
+\begin{quotation}
+Let $f$ be the function defined by $f(x) = 3x + 7$, and
+let $a$ be a positive real number.
+\end{quotation}
+one should type
+\begin{quote}
+\begin{verbatim}
+Let $f$ be the function defined by $f(x) = 3x + 7$, and
+let $a$ be a positive real number.
+\end{verbatim}
+\end{quote}
+In particular, note that even mathematical expressions consisting
+of a single character, like $f$ and $a$ in the example above,
+are placed within \verb/$/ signs. This is to ensure that they are set
+in italic type, as is customary in mathematical typesetting.
+
+\LaTeX\ also allows you to use \verb/\(/ and \verb/\)/ to mark
+the beginning and the end respectively of a mathematical formula
+embedded in text. Thus
+\begin{quotation}
+Let \( f \) be the function defined by \( f(x) = 3x + 7 \).
+\end{quotation}
+may be produced by typing
+\begin{quote}
+\begin{verbatim}
+Let \( f \) be the function defined by \( f(x) = 3x + 7 \).
+\end{verbatim}
+\end{quote}
+However this use of \verb/\(/ ... \verb/\)/ is only
+permitted in \LaTeX: other dialects of TeX such as
+Plain \TeX\ and AmSTeX use \verb/$/ ... \verb/$/.
+
+In order to obtain a mathematical formula or equation which
+is displayed on a line by itself, one places \verb/\[/
+before and
+\verb/\]/ after the formula. Thus to obtain
+\begin{quotation}
+If $f(x) = 3x + 7$ and $g(x) = x + 4$ then
+\[ f(x) + g(x) = 4x + 11 \] 
+and
+\[ f(x)g(x) = 3x^2 + 19x +28. \]
+\end{quotation}
+one would type
+\begin{quote}
+\begin{verbatim}
+If $f(x) = 3x + 7$ and $g(x) = x + 4$ then
+\[ f(x) + g(x) = 4x + 11 \] 
+and
+\[ f(x)g(x) = 3x^2 + 19x +28. \]
+\end{verbatim}
+\end{quote}
+(Here the character \verb/^/ is used to obtain a superscript.)
+
+\LaTeX\ provides facilities for the automatic numbering of
+displayed equations. If you want an numbered equation then you
+use \verb/\begin{equation}/ and \verb/\end{equation}/ instead
+of using \verb/\[/ and \verb/\]/ . Thus
+\begin{quote}
+\begin{verbatim}
+If $f(x) = 3x + 7$ and $g(x) = x + 4$ then
+\begin{equation}
+f(x) + g(x) = 4x + 11
+\end{equation}
+and
+\begin{equation}
+f(x)g(x) = 3x^2 + 19x +28.
+\end{equation}
+\end{verbatim}
+\end{quote}
+produces
+\begin{quotation}
+If $f(x) = 3x + 7$ and $g(x) = x + 4$ then
+\begin{equation}
+f(x) + g(x) = 4x + 11
+\end{equation}
+and
+\begin{equation}
+f(x)g(x) = 3x^2 + 19x +28.
+\end{equation}
+\end{quotation}
+
+\subsection{Characters in Mathematics Mode}
+
+All the characters on the keyboard have their standard meaning
+in mathematics mode, with the exception of the characters
+\begin{quote}
+\begin{verbatim}
+      # $ % & ~ _ ^ \ { } '
+\end{verbatim}
+\end{quote}
+Letters are set in italic type. In mathematics mode the character
+\verb/'/ has a special meaning: typing \verb/$u' + v''$/
+produces 
+$u' + v''$
+When in mathematics mode the spaces you type
+between letters and other symbols do not affect the spacing of
+the final result, since \LaTeX\ determines the spacing of characters
+in formulae by its own internal rules. Thus \verb/$u v + w = x$/
+and \verb/$uv+w=x$/ both produce 
+$u v + w = x$
+You can also type carriage returns where necessary in your input file
+(e.g., if you are typing in a complicated formula with many
+Greek characters and funny symbols) and this will have no effect on
+the final result if you are in mathematics mode.
+
+To obtain the characters
+\begin{quote}
+\begin{verbatim}
+      #   $   %   &   _   {   }
+\end{verbatim}
+\end{quote}
+in mathematics mode, one should type
+\begin{quote}
+\begin{verbatim}
+      \#   \$   \%   \&   \_   \{   \} .
+\end{verbatim}
+\end{quote}
+To obtain \verb/\/ in mathematics mode, one may type
+\verb/\backslash/.
+
+\subsection{Superscripts and Subscripts}
+
+Subscripts and superscripts are obtained using the special
+characters \verb/_/ and \verb/^/ respectively. Thus the
+identity 
+\[ ds^2 = dx_1^2 + dx_2^2 + dx_3^2 - c^2 dt^2 \]
+is obtained by typing
+\begin{quote}
+\begin{verbatim}
+\[ ds^2 = dx_1^2 + dx_2^2 + dx_3^2 - c^2 dt^2 \]
+\end{verbatim}
+\end{quote}
+It can also be obtained by typing
+\begin{quote}
+\begin{verbatim}
+\[ ds^2 = dx^2_1 + dx^2_2 + dx^2_3 - c^2 dt^2 \]
+\end{verbatim}
+\end{quote}
+since, when a superscript is to appear above a subscript, it is
+immaterial whether the superscript or subscript is the first to be
+specified.
+
+Where more than one character occurs in a superscript or subscript,
+the characters involved should be enclosed in curly brackets.
+For example, the polynomial
+$x^{17} - 1$
+is obtained by typing \verb/$x^{17} - 1$/.
+
+One may not type expressions such as \verb/$s^n^j$/ since this is
+ambiguous and could be interpreted either as
+$s^{n j}$
+or as 
+$s^{n^j}$
+The first of these alternatives is
+obtained by typing \verb/$s^{n j}$/, the second by typing
+\verb/$s^{n^j}$/.  A similar remark applies to subscripts.
+Note that one can obtain in this way double superscripts (where a
+superscript is placed on a superscript) and double subscripts.
+
+It is sometimes necessary to obtain expressions in which the horizontal
+ordering of the subscripts is significant.  One can use an `empty group'
+\verb/{}/ to separate superscripts and subscripts that must follow
+one another.  For example, the identity
+\[ R_i{}^j{}_{kl} = g^{jm} R_{imkl}
+   = - g^{jm} R_{mikl} = - R^j{}_{ikl} \]
+can be obtained by typing
+\begin{quote}
+\begin{verbatim}
+\[ R_i{}^j{}_{kl} = g^{jm} R_{imkl}
+   = - g^{jm} R_{mikl} = - R^j{}_{ikl} \]
+\end{verbatim}
+\end{quote}
+
+\subsection{Greek Letters}
+
+Greek letters are produced in mathematics mode by preceding the
+name of the letter by a backslash \verb/\/.  Thus to
+obtain the formula
+$A = \pi r^2$
+one types \verb/A = \pi r^2/.
+
+Here are the control sequences for the standard forms of the
+lowercase Greek letters:-
+
+\begin{quotation}
+\mathlexicon{alpha&iota&rho\cr
+beta&kappa&sigma\cr
+gamma&lambda&tau\cr
+delta&mu&upsilon\cr
+epsilon&nu&phi\cr
+zeta&xi&chi\cr
+eta&\omit\qquad \rlap{$o$}\qquad \texttt{o}\hfil&psi\cr
+theta&pi&omega\cr}
+\end{quotation}
+
+There is no special command for omicron: just use \verb/o/.
+
+Some Greek letters occur in variant forms. The variant forms
+are obtained by preceding the name of the Greek letter by `var'.
+The following table lists the usual form of these letters and
+the variant forms:-
+\begin{quotation}
+$$\vcenter{\halign{\displayandname{#}\hfil&&\qquad
+                   \displayandname{#}\hfil\cr
+epsilon&varepsilon\cr
+theta&vartheta\cr
+pi&varpi\cr
+rho&varrho\cr
+sigma&varsigma\cr
+phi&varphi\cr}}$$
+\end{quotation}
+
+Upper case Greek letters are obtained by making the first character
+of the name upper case.  Here are the control sequence for the
+uppercase letters:---
+
+\begin{quotation}
+\mathlexicon{Gamma&Xi&Phi\cr
+Delta&Pi&Psi\cr
+Theta&Sigma&Omega\cr
+Lambda&Upsilon&\omit\hfil\cr}
+\end{quotation}
+
+\subsection{Mathematical Symbols}
+
+There are numerous mathematical symbols that can be used in
+mathematics mode. These are obtained by typing an appropriate
+control sequence.
+
+Miscellaneous Symbols:
+
+\begin{quotation}
+\mathlexicon{aleph&prime&forall\cr
+hbar&emptyset&exists\cr
+imath&nabla&neg\cr
+jmath&surd&flat\cr
+ell&top&natural\cr
+wp&bot&sharp\cr
+Re&|&clubsuit\cr
+Im&angle&diamondsuit\cr
+partial&triangle&heartsuit\cr
+infty&backslash&spadesuit\cr}
+\end{quotation}
+
+``Large'' Operators:
+
+\begin{quotation}
+\mathlexicon{sum&bigcap&bigodot\cr
+prod&bigcup&bigotimes\cr
+coprod&bigsqcup&bigoplus\cr
+int&bigvee&biguplus\cr
+oint&bigwedge&\omit\hfil\cr}
+\end{quotation}
+
+Binary Operations:
+
+\begin{quotation}
+\mathlexicon{pm&cap&vee\cr
+mp&cup&wedge\cr
+setminus&uplus&oplus\cr
+cdot&sqcap&ominus\cr
+times&sqcup&otimes\cr
+ast&triangleleft&oslash\cr
+star&triangleright&odot\cr
+diamond&wr&dagger\cr
+circ&bigcirc&ddagger\cr
+bullet&bigtriangleup&amalg\cr
+div&bigtriangledown&\omit\hfil\cr}
+\end{quotation}
+
+Relations:
+
+\begin{quotation}
+\mathlexicon{leq&geq&equiv\cr
+prec&succ&sim\cr
+preceq&succeq&simeq\cr
+ll&gg&asymp\cr
+subset&supset&approx\cr
+subseteq&supseteq&cong\cr
+sqsubseteq&sqsupseteq&bowtie\cr
+in&ni&propto\cr
+vdash&dashv&models\cr
+smile&mid&doteq\cr
+frown&parallel&perp\cr}
+\end{quotation}
+
+Negated Relations:
+
+\begin{quotation}
+\def\negdisplayandname#1{\rlap{$\displaystyle\not\csname #1\endcsname$}%
+\qquad \texttt{\char92 not\char92 #1}}
+$$\vcenter{\halign{\negdisplayandname{#}\hfil&&\qquad
+        \negdisplayandname{#}\hfil\cr
+\omit\rlap{$\not<$}\qquad\texttt{\char92 not<}\hfil&\omit
+\qquad\rlap{$\not>$}\qquad\texttt{\char92 not>}\hfil&\omit
+\qquad\rlap{$\not=$}\qquad\texttt{\char92 not=}\hfil\cr
+leq&geq&equiv\cr
+prec&succ&sim\cr
+preceq&succeq&simeq\cr
+subset&supset&approx\cr
+subseteq&supseteq&cong\cr
+sqsubseteq&sqsupseteq&asymp\cr}}$$
+\end{quotation}
+
+Arrows:
+
+\begin{quotation}
+\mathlexicon{%
+leftarrow&rightarrow\cr
+longleftarrow&longrightarrow\cr
+Leftarrow&Rightarrow\cr
+Longleftarrow&Longrightarrow\cr
+leftrightarrow&Leftrightarrow\cr
+longleftrightarrow&Longleftrightarrow\cr
+hookleftarrow&hookrightarrow\cr
+leftharpoonup&rightharpoonup\cr
+leftharpoondown&rightharpoondown\cr
+uparrow&downarrow\cr
+Uparrow&Downarrow\cr
+updownarrow&Updownarrow\cr
+nearrow&nwarrow\cr
+searrow&swarrow\cr
+mapsto&longmapsto\cr
+rightleftharpoons&\omit\hfil\cr}
+\end{quotation}
+
+Openings:
+
+\begin{quotation}
+\mathlexicon{lbrack&lfloor&lceil\cr
+lbrace&langle&\omit\hfil\cr}
+\end{quotation}
+
+Closings:
+
+\begin{quotation}
+\mathlexicon{rbrack&rfloor&rceil\cr
+rbrace&rangle&\omit\hfil\cr}
+\end{quotation}
+
+Alternative Names:
+
+\begin{quotation}
+\def\widedisplayandname#1{\rlap{$\displaystyle\csname #1\endcsname$}%
+                      \qquad\qquad \texttt{\char92 #1}}
+$$\vcenter{\halign{\widedisplayandname{#}\hfil&\qquad
+(same as \texttt{\char92 #})\hfil\cr
+\omit\rlap{$\not=$}\qquad\qquad
+      \texttt{\char92 ne} or \texttt{\char92 neq}\hfil&not=\cr
+le&leq\cr
+ge&geq\cr
+\omit\rlap{$\{$}\qquad\qquad\texttt{\char92 \char123}\hfil&lbrace\cr
+\omit\rlap{$\}$}\qquad\qquad\texttt{\char92 \char125}\hfil&lbrace\cr
+to&rightarrow\cr
+gets&leftarrow\cr
+owns&ni\cr
+land&wedge\cr
+lor&vee\cr
+lnot&neg\cr
+vert&\omit\qquad (same as \texttt{|})\hfil\cr
+Vert&\omit\qquad (same as \texttt{\char92 |})\hfil\cr
+iff&\omit\qquad (same as \texttt{\char92 Longleftrightarrow}, but with\hfil\cr
+\omit\hfil&\omit\qquad\ extra space at each end)\hfil\cr
+colon&\omit\qquad (same as \texttt{:}, but with less space around it and\hfil\cr
+\omit\hfil&\omit
+\qquad\ less likelihood of a line break after it)\hfil\cr}}$$
+\end{quotation}
+
+\subsection{Changing Fonts in Mathematics Mode}
+
+\emph{(The following applies to \LaTeX2$\epsilon$, a
+recent version of \LaTeX.  It does not apply to older
+versions of \LaTeX.)}
+
+The `math italic' font is automatically
+used in mathematics mode unless you explicitly change the font.
+The rules for changing the font in mathematics mode are rather different
+to those applying when typesetting ordinary text. 
+In mathematics mode any change only applies to the single character
+or symbol that follows (or to any text enclosed within curly brackets
+immediately following the control sequence).  Also, to change
+a character to the roman or boldface font, the control sequences
+\verb/\mathrm/ and \verb/\mathbf/ must be used
+(rather than \verb/\textrm/ and \verb/\textbf/).
+
+The following example illustrates the use of boldface in mathematical
+formulae.  To obtain
+\begin{quotation}
+Let $\mathbf{u}$,$\mathbf{v}$ and $\mathbf{w}$ be three
+vectors in ${\mathbf R}^3$. The volume~$V$ of the
+parallelepiped with corners at the points
+$\mathbf{0}$, $\mathbf{u}$, $\mathbf{v}$,
+$\mathbf{w}$, $\mathbf{u}+\mathbf{v}$,
+$\mathbf{u}+\mathbf{w}$, $\mathbf{v}+\mathbf{w}$
+and $\mathbf{u}+\mathbf{v}+\mathbf{w}$
+is given by the formula
+\[ V = (\mathbf{u} \times \mathbf{v}) \cdot \mathbf{w}.\] 
+\end{quotation}
+one could type
+\begin{quote}
+\begin{verbatim}
+Let $\mathbf{u}$,$\mathbf{v}$ and $\mathbf{w}$ be three
+vectors in ${\mathbf R}^3$. The volume~$V$ of the
+parallelepiped with corners at the points
+$\mathbf{0}$, $\mathbf{u}$, $\mathbf{v}$,
+$\mathbf{w}$, $\mathbf{u}+\mathbf{v}$,
+$\mathbf{u}+\mathbf{w}$, $\mathbf{v}+\mathbf{w}$
+and $\mathbf{u}+\mathbf{v}+\mathbf{w}$
+is given by the formula
+\[ V = (\mathbf{u} \times \mathbf{v}) \cdot \mathbf{w}.\] 
+\end{verbatim}
+\end{quote}
+
+There is also a `calligraphic' font available in mathematics mode.
+This is obtained using the control sequence \verb/\cal/. 
+\emph{This font can only be used for uppercase letters.} 
+These calligraphic letters have the form
+\[ \cal{A}\cal{B}\cal{C}\cal{D}\cal{E}\cal{F}\cal{G}\cal{H}\cal{I}
+\cal{J}\cal{K}\cal{L}\cal{M}\cal{N}\cal{O}\cal{P}\cal{Q}\cal{R}
+\cal{S}\cal{T}\cal{U}\cal{V}\cal{W}\cal{X}\cal{Y}\cal{Z}. \]
+
+\subsection{Standard Functions (sin, cos etc.)}
+
+The names of certain standard functions and abbreviations are
+obtained by typing a backlash \verb/\/ before the name.
+For example, one obtains
+\[ \cos(\theta + \phi) = \cos \theta \cos \phi
+      - \sin \theta \sin \phi \]
+by typing
+\begin{quote}
+\begin{verbatim}
+\[ \cos(\theta + \phi) = \cos \theta \cos \phi
+      - \sin \theta \sin \phi \]
+\end{verbatim}
+\end{quote}
+
+The following standard functions are represented by control sequences
+defined in \LaTeX:
+\[ 
+\vcenter{\halign{$\backslash$\texttt{#}&&\quad 
+$\backslash$\texttt{#}\cr
+arccos&cos&csc&exp&ker&limsup&min&sinh\cr
+arcsin&cosh&deg&gcd&lg&ln&Pr&sup\cr
+arctan&cot&det&hom&lim&log&sec&tan\cr
+arg&coth&dim&inf&liminf&max&sin&tanh\cr}} \]
+
+Names of functions and other abbreviations not in this list can be
+obtained by converting to the roman font. Thus one obtains
+$\mathrm{cosec} A$
+by typing \verb/$\mathrm{cosec} A$/.
+Note that if one were to type simply \verb/$cosec A$/ one
+would obtain
+$cosec A$,
+because \LaTeX\ has treated
+\verb/cosec A/ as the product of six quantities
+$c$, $o$, $s$, $e$, $c$ and $A$
+and typeset the formula accordingly.
+
+\subsection{Text Embedded in Displayed Equations}
+
+Text can be embedded in displayed equations (in \LaTeX) by using
+\verb/\mbox{/\emph{embedded text}\verb/}/.  For example,
+one obtains
+\[ M^\bot = \{ f \in V' : f(m) = 0 \mbox{ for all } m \in M \}. \]
+by typing
+\begin{quote}
+\begin{verbatim}
+\[ M^\bot = \{ f \in V' : f(m) = 0 \mbox{ for all } m \in M \}.\] 
+\end{verbatim}
+\end{quote}
+Note the blank spaces before and after the words `for all' in the above
+example. Had we typed
+\begin{quote}
+\begin{verbatim}
+\[ M^\bot = \{ f \in V' : f(m) = 0 \mbox{for all} m \in M \}.\] 
+\end{verbatim}
+\end{quote}
+we would have obtained
+\[ M^\bot = \{ f \in V' : f(m) = 0 \mbox{for all} m \in M \}. \]
+
+(In Plain \TeX\ one should use \verb/\hbox/ in place of
+\verb/\mbox/.)
+
+\subsection{Fractions and Roots}
+
+Fractions of the form
+\[ \frac{\mbox{\textit{numerator}}}{\mbox{\textit{denominator}}} \]
+are obtained in \LaTeX\ using the construction
+\begin{quote}
+\verb/\frac{/\emph{numerator}\verb/}{/\emph{denominator}\verb/}/.
+\end{quote}
+For example, to obtain
+\begin{quotation}
+The function $f$ is given by
+\[ f(x) = 2x + \frac{x - 7}{x^2 + 4}\] 
+for all real numbers $x$.
+\end{quotation}
+one would type
+\begin{quote}
+\begin{verbatim}
+The function $f$ is given by
+\[ f(x) = 2x + \frac{x - 7}{x^2 + 4}\] 
+for all real numbers $x$.
+\end{verbatim}
+\end{quote}
+
+To obtain square roots one uses the control sequence
+\begin{quote}
+\verb/\sqrt{/\emph{expression}\verb/}/.
+\end{quote}
+For example, to obtain
+\begin{quotation}
+The roots of a quadratic polynomial $a x^2 + bx + c$ with
+$a \neq 0$ are given by the formula
+\[ \frac{-b \pm \sqrt{b^2 - 4ac}}{2a} \]
+\end{quotation}
+one would type
+\begin{quote}
+\begin{verbatim}
+The roots of a quadratic polynomial $a x^2 + bx + c$ with
+$a \neq 0$ are given by the formula
+\[ \frac{-b \pm \sqrt{b^2 - 4ac}}{2a} \]
+\end{verbatim}
+\end{quote}
+
+In \LaTeX, an 
+$n$th root is produced using
+\begin{quote}
+\verb/\sqrt[n]{/\emph{expression}\verb/}/.
+\end{quote}
+For example, to obtain
+\begin{quotation}
+The roots of a cubic polynomial of the form $x^3 - 3px - 2q$
+are given by the formula
+\[ \sqrt[3]{q + \sqrt{ q^2 - p^3 }}
+  + \sqrt[3]{q - \sqrt{ q^2 - p^3 }} \]
+where the values of the two cube roots must are chosen
+so as to ensure that their product is equal to $p$.
+\end{quotation}
+in \LaTeX, one would type
+\begin{quote}
+\begin{verbatim}
+The roots of a cubic polynomial of the form $x^3 - 3px - 2q$
+are given by the formula
+\[ \sqrt[3]{q + \sqrt{ q^2 - p^3 }}
+  + \sqrt[3]{q - \sqrt{ q^2 - p^3 }} \]
+where the values of the two cube roots must are chosen
+so as to ensure that their product is equal to $p$.
+\end{verbatim}
+\end{quote}
+
+\subsection{Ellipsis (i.e., `three dots')}
+
+Ellipsis (three dots) is produced in mathematics mode using
+the control sequences \verb/\ldots/ (for dots aligned
+with tbe baseline of text), and \verb/\cdots/ (for dots
+aligned with the centreline of mathematical formulae).  Thus
+the formula
+\[ f(x_1, x_2,\ldots, x_n) = x_1^2 + x_2^2 + \cdots + x_n^2 \]
+is obtained by typing
+\begin{quote}
+\begin{verbatim}
+\[ f(x_1, x_2,\ldots, x_n) = x_1^2 + x_2^2 + \cdots + x_n^2 \]
+\end{verbatim}
+\end{quote}
+Similarly the formula
+\[ \frac{1 - x^{n+1}}{1 - x} = 1 + x + x^2 + \cdots + x^n \]
+is produced using \verb/\cdots/, by typing
+\begin{quote}
+\begin{verbatim}
+\[ \frac{1 - x^{n+1}}{1 - x} = 1 + x + x^2 + \cdots + x^n \]
+\end{verbatim}
+\end{quote}
+
+\subsection{Accents in Mathematics Mode}
+
+There are various control sequences for producing underlining,
+overlining and various accents in mathematics mode.  The
+following table lists these control sequences, applying them
+to the letter~$a$:
+\begin{quotation}
+\def\exhibitaccent#1#2{\rlap{$\csname #1\endcsname{#2}$}%
+                      \qquad \texttt{\char92 #1\char123 #2\char125}}
+$$\vcenter{\halign{#\hfil\cr
+\exhibitaccent{underline}{a}\cr
+\exhibitaccent{overline}{a}\cr
+\exhibitaccent{hat}{a}\cr
+\exhibitaccent{check}{a}\cr
+\exhibitaccent{tilde}{a}\cr
+\exhibitaccent{acute}{a}\cr
+\exhibitaccent{grave}{a}\cr
+\exhibitaccent{dot}{a}\cr
+\exhibitaccent{ddot}{a}\cr
+\exhibitaccent{breve}{a}\cr
+\exhibitaccent{bar}{a}\cr
+\exhibitaccent{vec}{a}\cr
+}}$$
+\end{quotation}
+It should be borne in mind that when a character is underlined in
+a mathematical manuscript then it is normally typeset in
+bold face without any underlining. Underlining is used very
+rarely in print.
+
+The control sequences such as \verb/\'/ and \verb/\"/, used
+to produce accents in ordinary text, may not be used in
+mathematics mode.
+
+\subsection{Brackets and Norms}
+
+The frequently used left delimiters include (, [ and \{,
+which are obtained by typing \verb/(/, \verb/[/ and
+\verb/\{/
+respectively. The corresponding right delimiters are of course 
+obtained by typing \verb/)/,
+\verb/]/ and \verb/\}/.  In addition 
+$|$
+and 
+$\|$
+are used as both left and right delimiters, and are obtained by typing
+\verb/|/ and \verb/\|/ respectively. For example, we obtain
+\begin{quotation}
+Let $X$ be a Banach space and let $f \colon B \to \textbf{R}$
+be a bounded linear functional on $X$. The \textit{norm} of
+$f$, denoted by $\|f\|$, is defined by
+\[ \|f\| = \inf \{ K \in [0,+\infty) :
+          |f(x)| \leq K \|x\| \mbox{ for all } x \in X \}.\] 
+\end{quotation}
+by typing
+\begin{quote}
+\begin{verbatim}
+Let $X$ be a Banach space and let $f \colon B \to \textbf{R}$
+be a bounded linear functional on $X$. The \textit{norm} of
+$f$, denoted by $\|f\|$, is defined by
+\[ \|f\| = \inf \{ K \in [0,+\infty) :
+          |f(x)| \leq K \|x\| \mbox{ for all } x \in X \}.\] 
+\end{verbatim}
+\end{quote}
+
+Larger delimiters are sometimes required which have the
+appropriate height to match the size of the subformula which
+they enclose. Consider, for instance, the problem of typesetting
+the following formula:
+\[ f(x,y,z) = 3y^2 z \left( 3 + \frac{7x+5}{1 + y^2} \right). \]
+The way to type the large parentheses is to type \verb/\left(/
+for the left parenthesis and \verb/\right)/ for the right
+parenthesis, and let \LaTeX\ do the rest of the work for you.
+Thus the above formula was obtained by typing
+\begin{quote}
+\begin{verbatim}
+\[ f(x,y,z) = 3y^2 z \left( 3 + \frac{7x+5}{1 + y^2} \right).\] 
+\end{verbatim}
+\end{quote}
+If you type a delimiter which is preceded by \verb/\left/ then
+\LaTeX\ will search for a corresponding delimiter preceded by
+\verb/\right/ and calculate the size of the delimiters required
+to enclose the intervening subformula. One is allowed to balance
+a \verb/\left(/ with a \verb/\right]/ (say) if one desires: there
+is no reason why the enclosing delimiters have to have the same
+shape. One may also nest pairs of delimiters within one another:
+by typing
+\begin{quote}
+\begin{verbatim}
+\[ \left| 4 x^3 + \left( x + \frac{42}{1+x^4} \right) \right|.\] 
+\end{verbatim}
+\end{quote}
+we obtain
+\[ \left| 4 x^3 + \left( x + \frac{42}{1+x^4} \right) \right|. \]
+
+By typing \verb/\left./ and \verb/\right./ one obtains
+\emph{null delimiters} which are completely invisible. Consider,
+for example, the problem of typesetting
+\[ \left. \frac{du}{dx} \right|_{x=0}.\] 
+We wish to make the vertical bar big enough to match the
+derivative preceding it. To do this, we suppose that the
+derivative is enclosed by delimiters, where the left delimiter
+is invisible and the right delimiter is the vertical line.
+The invisible delimiter is produced using \verb/\left./ and thus
+the whole formula is produced by typing
+\[ \left. \frac{du}{dx} \right|_{x=0}.\] 
+
+\subsection{Multiline Formulae in \LaTeX}
+
+Consider the problem of typesetting the formula
+\begin{quotation}
+\begin{eqnarray*}
+\cos 2\theta & = & \cos^2 \theta - \sin^2 \theta \\
+             & = & 2 \cos^2 \theta - 1.
+\end{eqnarray*}
+\end{quotation}
+It is necessary to ensure that the = signs are aligned with one
+another. In \LaTeX, such a formula is typeset using the
+\verb/eqnarray*/ environment. The above example was obtained by
+typing the lines
+\begin{quote}
+\begin{verbatim}
+\begin{eqnarray*}
+\cos 2\theta & = & \cos^2 \theta - \sin^2 \theta \\
+             & = & 2 \cos^2 \theta - 1.
+\end{eqnarray*}
+\end{verbatim}
+\end{quote}
+Note the use of the special character \verb/&/ as an
+\emph{alignment tab}. When the formula is typeset, the part of
+the second line of the formula beginning with an occurrence of
+\verb/&/ will be placed immediately beneath that part of
+the first line of the formula which begins with the corresponding
+occurrence of \verb/&/.  Also \verb/\\/ is used to
+separate the lines of the formula.
+
+Although we have placed corresponding occurrences of \verb/&/
+beneath one another in the above example, it is not necessary to
+do this in the input file. It was done in the above example merely
+to improve the appearance (and readability) of the input file.
+
+The more complicated example
+\begin{quotation}
+If $h \leq \frac{1}{2} |\zeta - z|$ then
+\[ |\zeta - z - h| \geq \frac{1}{2} |\zeta - z|\] 
+and hence
+\begin{eqnarray*}
+\left| \frac{1}{\zeta - z - h} - \frac{1}{\zeta - z} \right|
+& = & \left|
+\frac{(\zeta - z) - (\zeta - z - h)}{(\zeta - z - h)(\zeta - z)}
+\right| \\  & = &
+\left| \frac{h}{(\zeta - z - h)(\zeta - z)} \right| \\
+  & \leq & \frac{2 |h|}{|\zeta - z|^2}.
+\end{eqnarray*}
+\end{quotation}
+was obtained by typing
+\begin{quote}
+\begin{verbatim}
+If $h \leq \frac{1}{2} |\zeta - z|$ then
+\[ |\zeta - z - h| \geq \frac{1}{2} |\zeta - z|\] 
+and hence
+\begin{eqnarray*}
+\left| \frac{1}{\zeta - z - h} - \frac{1}{\zeta - z} \right|
+& = & \left|
+\frac{(\zeta - z) - (\zeta - z - h)}{(\zeta - z - h)(\zeta - z)}
+\right| \\  & = &
+\left| \frac{h}{(\zeta - z - h)(\zeta - z)} \right| \\
+  & \leq & \frac{2 |h|}{|\zeta - z|^2}.
+\end{eqnarray*}
+\end{verbatim}
+\end{quote}
+
+The asterisk in \verb/eqnarray*/ is put there to suppress the
+automatic equation numbering produced by \LaTeX. If you wish for
+an automatically numbered multiline formula, you should use
+\verb/\begin{eqnarray}/ and \verb/\end{eqnarray}/.
+
+\subsection{Matrices and other arrays in \LaTeX}
+
+Matrices and other arrays are produced in \LaTeX\ using the
+\textbf{array} environment. For example, suppose that we wish to
+typeset the following passage:
+\begin{quotation}
+The \emph{characteristic polynomial} $\chi(\lambda)$ of the
+$3 \times 3$~matrix
+\[ \left( \begin{array}{ccc}
+a & b & c \\
+d & e & f \\
+g & h & i \end{array} \right)\] 
+is given by the formula
+\[ \chi(\lambda) = \left| \begin{array}{ccc}
+\lambda - a & -b & -c \\
+-d & \lambda - e & -f \\
+-g & -h & \lambda - i \end{array} \right|.\] 
+\end{quotation}
+This passage is produced by the following input:
+\begin{quote}
+\begin{verbatim}
+The \emph{characteristic polynomial} $\chi(\lambda)$ of the
+$3 \times 3$~matrix
+\[ \left( \begin{array}{ccc}
+a & b & c \\
+d & e & f \\
+g & h & i \end{array} \right)\] 
+is given by the formula
+\[ \chi(\lambda) = \left| \begin{array}{ccc}
+\lambda - a & -b & -c \\
+-d & \lambda - e & -f \\
+-g & -h & \lambda - i \end{array} \right|.\] 
+\end{verbatim}
+\end{quote}
+First of all, note the use of \verb/\left/ and \verb/\right/
+to produce the large delimiters around the arrays. As we have
+already seen, if we use
+\begin{quote}
+\verb/\left)/ ... \verb/\right)/
+\end{quote}
+then the size of the parentheses is chosen to match the subformula
+that they enclose. Next note the use of the alignment tab
+character \verb/&/ to separate the entries of the matrix and
+the use of \verb/\\/ to separate the rows of the matrix, exactly
+as in the construction of multiline formulae described above.
+We begin the array with \verb/\begin{array}/ and end it with
+\verb/\end{array}/. The only thing left to explain, therefore,
+is the mysterious \verb/{ccc}/ which occurs immediately after
+\verb/\begin{array}/.
+Now each of the \verb/c/'s in \verb/{ccc}/ represents a
+column of the matrix and indicates that the entries of the
+column should be \emph{centred}. If the \verb/c/ were replaced by
+\verb/l/ then the corresponding column would be typeset with
+all the entries flush \emph{left}, and \verb/r/ would produce a
+column with all entries flush \emph{right}. Thus
+\begin{quote}
+\begin{verbatim}
+\[ \begin{array}{lcr}
+\mbox{First number} & x & 8 \\
+\mbox{Second number} & y & 15 \\
+\mbox{Sum} & x + y & 23 \\
+\mbox{Difference} & x - y & -7 \\
+\mbox{Product} & xy & 120 \end{array}\] 
+\end{verbatim}
+\end{quote}
+produces
+\[ \begin{array}{lcr}
+\mbox{First number} & x & 8 \\
+\mbox{Second number} & y & 15 \\
+\mbox{Sum} & x + y & 23 \\
+\mbox{Difference} & x - y & -7 \\
+\mbox{Product} & xy & 120 \end{array}\] 
+
+We can use the array environment to produce formulae such as
+\[ |x| = \left\{ \begin{array}{ll}
+         x & \mbox{if $x \geq 0$};\\
+        -x & \mbox{if $x < 0$}.\end{array} \right.  \]
+Note that both columns of this array are set flush left. Thus we
+use \verb/{ll}/ immediately after \verb/\begin{array}/. The large
+curly bracket is produced using \verb/\left\{/. However this
+requires a corresponding \verb/\right/ delimiter to match it.
+We therefore use the \emph{null delimiter} \verb/\right./
+discussed earlier. This delimiter is invisible. We can
+therefore obtain the above formula by typing
+\begin{quote}
+\begin{verbatim}
+\[ |x| = \left\{ \begin{array}{ll}
+         x & \mbox{if $x \geq 0$};\\
+        -x & \mbox{if $x < 0$}.\end{array} \right. \] 
+\end{verbatim}
+\end{quote}
+
+\subsection{Derivatives, Limits, Sums and Integrals}
+
+The expressions
+\[ \frac{du}{dt} \mbox{ and } \frac{d^2 u}{dx^2} \]
+are obtained in \LaTeX\ by typing \verb/\frac{du}{dt}/
+and \verb/\frac{d^2 u}{dx^2}/ respectively. The mathematical
+symbol 
+$\partial$
+is produced using \verb/\partial/. Thus the Heat Equation
+\[\frac{\partial u}{\partial t}
+   = \frac{\partial^2 u}{\partial x^2}
+      + \frac{\partial^2 u}{\partial y^2}
+      + \frac{\partial^2 u}{\partial z^2} \]
+is obtained in \LaTeX\ by typing
+\begin{quote}
+\begin{verbatim}
+\[\frac{\partial u}{\partial t}
+   = \frac{\partial^2 u}{\partial x^2}
+      + \frac{\partial^2 u}{\partial y^2}
+      + \frac{\partial^2 u}{\partial z^2} \]
+\end{verbatim}
+\end{quote}
+
+To obtain mathematical expressions such as
+\[ \lim_{x \to +\infty} \mbox{, } \inf_{x > s} \mbox{ and } \sup_K \]
+in displayed equations we type \verb/\lim_{x \to +\infty}/,
+\verb/\inf_{x > s}/ and \verb/\sup_K/ respectively. Thus to obtain
+\[ \lim_{x \to 0} \frac{3x^2 +7}{x^2 +1} = 3. \]
+(in \LaTeX) we type
+\begin{quote}
+\begin{verbatim}
+\[ \lim_{x \to 0} \frac{3x^2 +7x^3}{x^2 +5x^4} = 3.\] 
+\end{verbatim}
+\end{quote}
+
+To obtain a summation sign such as
+\[ \sum_{i=1}^{2n} \]
+we type \verb/sum_{i=1}^{2n}/. Thus
+\[ \sum_{k=1}^n k^2 = \frac{1}{2} n (n+1). \]
+is obtained by typing
+\begin{quote}
+\begin{verbatim}
+\[ \sum_{k=1}^n k^2 = \frac{1}{2} n (n+1).\] 
+\end{verbatim}
+\end{quote}
+
+We now discuss how to obtain \emph{integrals} in mathematical
+documents. A typical integral is the following:
+\[ \int_a^b f(x)\,dx. \]
+This is typeset using
+\begin{quote}
+\begin{verbatim}
+\[ \int_a^b f(x)\,dx.\] 
+\end{verbatim}
+\end{quote}
+The integral sign 
+$\int$
+is typeset using the control sequence
+\verb/\int/, and the \emph{limits of integration}
+(in this case $a$ and $b$ are treated as a
+subscript and a superscript on the integral sign.
+
+Most integrals occurring in mathematical documents begin with
+an integral sign and contain one or more instances of~$d$
+followed by another (Latin or Greek) letter, as in 
+$dx$, $dy$ and $dt$.
+To obtain the correct appearance one should put
+extra space before the~$d$,
+using \verb/\,/. Thus
+\[ \int_0^{+\infty} x^n e^{-x} \,dx = n!. \]
+\[ \int \cos \theta \,d\theta = \sin \theta. \]
+\[ \int_{x^2 + y^2 \leq R^2} f(x,y)\,dx\,dy
+   = \int_{\theta=0}^{2\pi} \int_{r=0}^R
+      f(r\cos\theta,r\sin\theta) r\,dr\,d\theta. \]
+and
+\[ \int_0^R \frac{2x\,dx}{1+x^2} = \log(1+R^2). \]
+are obtained by typing
+\begin{quote}
+\begin{verbatim}
+\[ \int_0^{+\infty} x^n e^{-x} \,dx = n!.\] 
+\end{verbatim}
+\end{quote}
+\begin{quote}
+\begin{verbatim}
+\[ \int \cos \theta \,d\theta = \sin \theta.\] 
+\end{verbatim}
+\end{quote}
+\begin{quote}
+\begin{verbatim}
+\[ \int_{x^2 + y^2 \leq R^2} f(x,y)\,dx\,dy
+   = \int_{\theta=0}^{2\pi} \int_{r=0}^R
+      f(r\cos\theta,r\sin\theta) r\,dr\,d\theta.\] 
+\end{verbatim}
+\end{quote}
+and
+\begin{quote}
+\begin{verbatim}
+\[ \int_0^R \frac{2x\,dx}{1+x^2} = \log(1+R^2).\] 
+\end{verbatim}
+\end{quote}
+respectively.
+
+In some multiple integrals (i.e., integrals containing more than
+one integral sign) one finds that \LaTeX\ puts too much space
+between the integral signs. The way to improve the appearance of
+of the integral is to use the control sequence \verb/\!/ to
+remove a thin strip of unwanted space. Thus, for example, the
+multiple integral
+\[ \int_0^1 \! \int_0^1 x^2 y^2\,dx\,dy. \]
+is obtained by typing
+\begin{quote}
+\begin{verbatim}
+\[ \int_0^1 \! \int_0^1 x^2 y^2\,dx\,dy.\] 
+\end{verbatim}
+\end{quote}
+Had we typed
+\begin{quote}
+\begin{verbatim}
+\[ \int_0^1 \int_0^1 x^2 y^2\,dx\,dy.\] 
+\end{verbatim}
+\end{quote}
+we would have obtained
+\[ \int_0^1 \int_0^1 x^2 y^2\,dx\,dy. \]
+
+A particularly noteworthy example comes when we are
+typesetting a multiple integral such as
+\[ \int \!\!\! \int_D f(x,y)\,dx\,dy. \]
+Here we use \verb/\!/ three times to obtain suitable spacing
+between the integral signs. We typeset this integral using
+\begin{quote}
+\begin{verbatim}
+\[ \int \!\!\! \int_D f(x,y)\,dx\,dy.\] 
+\end{verbatim}
+\end{quote}
+Had we typed
+\begin{quote}
+\begin{verbatim}
+\[ \int \int_D f(x,y)\,dx\,dy.\] 
+\end{verbatim}
+\end{quote}
+we would have obtained
+\[ \int \int_D f(x,y)\,dx\,dy. \]
+
+The following (reasonably complicated) passage exhibits a
+number of the features which we have been discussing:
+\begin{quotation}
+In non-relativistic wave mechanics, the wave function
+$\psi(\mathbf{r},t)$ of a particle satisfies the
+\textit{Schr\"{o}dinger Wave Equation}
+\[ i\hbar\frac{\partial \psi}{\partial t}
+  = \frac{-\hbar^2}{2m} \left(
+    \frac{\partial^2}{\partial x^2}
+    + \frac{\partial^2}{\partial y^2}
+    + \frac{\partial^2}{\partial z^2}
+  \right) \psi + V \psi.\] 
+It is customary to normalize the wave equation by
+demanding that
+\[ \int \!\!\! \int \!\!\! \int_{\textbf{R}^3}
+      \left| \psi(\mathbf{r},0) \right|^2\,dx\,dy\,dz = 1.\] 
+A simple calculation using the Schr\"{o}dinger wave
+equation shows that
+\[ \frac{d}{dt} \int \!\!\! \int \!\!\! \int_{\textbf{R}^3}
+      \left| \psi(\mathbf{r},t) \right|^2\,dx\,dy\,dz = 0,\] 
+and hence
+\[ \int \!\!\! \int \!\!\! \int_{\textbf{R}^3}
+      \left| \psi(\mathbf{r},t) \right|^2\,dx\,dy\,dz = 1\] 
+for all times~$t$. If we normalize the wave function in this
+way then, for any (measurable) subset~$V$ of $\textbf{R}^3$
+and time~$t$,
+\[ \int \!\!\! \int \!\!\! \int_V
+      \left| \psi(\mathbf{r},t) \right|^2\,dx\,dy\,dz\] 
+represents the probability that the particle is to be found
+within the region~$V$ at time~$t$.
+\end{quotation}
+One would typeset this in \LaTeX\ by typing
+\begin{quote}
+\begin{verbatim}
+In non-relativistic wave mechanics, the wave function
+$\psi(\mathbf{r},t)$ of a particle satisfies the
+\textit{Schr\"{o}dinger Wave Equation}
+\[ i\hbar\frac{\partial \psi}{\partial t}
+  = \frac{-\hbar^2}{2m} \left(
+    \frac{\partial^2}{\partial x^2}
+    + \frac{\partial^2}{\partial y^2}
+    + \frac{\partial^2}{\partial z^2}
+  \right) \psi + V \psi.\] 
+It is customary to normalize the wave equation by
+demanding that
+\[ \int \!\!\! \int \!\!\! \int_{\textbf{R}^3}
+      \left| \psi(\mathbf{r},0) \right|^2\,dx\,dy\,dz = 1.\] 
+A simple calculation using the Schr\"{o}dinger wave
+equation shows that
+\[ \frac{d}{dt} \int \!\!\! \int \!\!\! \int_{\textbf{R}^3}
+      \left| \psi(\mathbf{r},t) \right|^2\,dx\,dy\,dz = 0,\] 
+and hence
+\[ \int \!\!\! \int \!\!\! \int_{\textbf{R}^3}
+      \left| \psi(\mathbf{r},t) \right|^2\,dx\,dy\,dz = 1\] 
+for all times~$t$. If we normalize the wave function in this
+way then, for any (measurable) subset~$V$ of $\textbf{R}^3$
+and time~$t$,
+\[ \int \!\!\! \int \!\!\! \int_V
+      \left| \psi(\mathbf{r},t) \right|^2\,dx\,dy\,dz\] 
+represents the probability that the particle is to be found
+within the region~$V$ at time~$t$.
+\end{verbatim}
+\end{quote}
+
+\section{Further Features of \LaTeX}
+
+\subsection{Producing White Space in \LaTeX}
+
+To produce (horizontal) blank space within a paragraph, use
+\verb/\hspace/, followed by the length
+of the blank space enclosed within curly brackets.  The length
+of the skip should be expressed in a unit recognized by \LaTeX.
+These recognized units are given in the following table:
+\begin{quote}
+\begin{tabular}{lll}
+\texttt{pt}  & point         & (1 in = 72.27 pt) \\
+\texttt{pc}  & pica          & (1 pc = 12 pt) \\
+\texttt{in}  & inch          & (1 in = 25.4 mm) \\
+\texttt{bp}  & big point     & (1 in = 72 bp) \\
+\texttt{cm}  & centimetre    & (1 cm = 10 mm) \\
+\texttt{mm}  & millimetre    & \\
+\texttt{dd}  & didot point   & (1157 dd = 1238 pt) \\
+\texttt{cc}  & cicero        & (1 cc = 12 dd) \\
+\texttt{sp}  & scaled point  & (65536 sp = 1 pt) \\
+\end{tabular}
+\end{quote}
+Thus to produce a horizontal blank space of 20 mm in the middle
+of a paragraph one would type \verb/\hspace{20 mm}/.
+
+If \LaTeX\ decides to break between lines at a point in the document
+where an \verb/\hspace/ is specified, then no white
+space is produced.  To ensure that white space is produced
+even at points in the document where line breaking takes place, one
+should replace \verb/\hspace/ by \verb/\hspace*/
+
+To produce (vertical) blank space between paragraphs, use
+\verb/\vspace/, followed by the length of the blank space
+enclosed within curly brackets.  Thus to obtain
+\begin{quotation}
+This is the first paragraph of some text.  It is
+separated from the second paragraph by a vertical skip of
+10 millimetres.
+
+\vspace{10 mm}
+
+This is the second paragraph.
+\end{quotation}
+one should type
+\begin{quote}
+\begin{verbatim}
+This is the first paragraph of some text.  It is
+separated from the second paragraph by a vertical skip of
+10 millimetres.
+
+\vspace{10 mm}
+This is the second paragraph.
+
+\end{verbatim}
+\end{quote}
+If \LaTeX\ decides to introduce at a point in the document
+where a \verb/\vspace/ is specified, then no white
+space is produced.  To ensure that white space is produced
+even at points in the document where page breaking takes place, one
+should replace \verb/\vspace/ by \verb/\vspace*/
+
+We now describe certain features of \LaTeX\ relating to blank spaces
+and paragraph indentation which will improve the appearance
+of the final document.  Experienced users of \LaTeX\ will improve
+the appearance of their documents if they bear these remarks in mind.
+
+First note that, as a general rule, you should never put
+a blank space after a left parenthesis or before a right
+parenthesis.  If you were to put a blank space in these
+places, then you run the risk that \LaTeX\ might start a
+new line immediately after the left parenthesis or before
+the right parenthesis, leaving the parenthesis marooned at
+the beginning or end of a line.
+
+\LaTeX\ has its own rules for deciding the lengths of blank
+spaces.  For instance, \LaTeX\ will put an extra amount of space
+after a full stop if it considers that the full stop marks the
+end of a sentence.
+
+The rule adopted by \LaTeX\ is to regard a period (full stop) as
+the end of a sentence if it is preceded by a lowercase letter.
+If the period is preceded by an uppercase letter then
+\LaTeX\ assumes that it is not a full stop but follows the
+initials of somebody's name.
+
+This works very well in most cases.  However
+\LaTeX\ occasionally gets things wrong.  This happens with
+a number of common abbreviations (as in `Mr.\ Smith' or
+in `etc.'), and, in particular, in the names of
+journals given in abbreviated form (e.g.,
+`Proc.\ Amer.\ Math.\ Soc.').  The way to overcome this
+problem is to put a backslash before the blank space in
+question.  Thus we should type
+\begin{quote}
+\begin{verbatim}
+Mr.\ Smith
+etc.\ and
+Proc.\ Amer.\ Math.\ Soc.
+\end{verbatim}
+\end{quote}
+
+\LaTeX\ determines itself how to break up a paragraph into
+lines, and will occasionally hyphenate long words where this
+is desirable. However it is sometimes necessary to tell
+\LaTeX\ not to break at a particular blank space. The special
+character used for this purpose is \verb/~/. It represents
+a blank space at which \LaTeX\ is not allowed to break between
+lines. It is often desirable to use \verb/~/ in names where
+the forenames are represented by initials. Thus to obtain
+`W. R. Hamilton' it is best to type \verb/W.~R.~Hamilton/.
+It is also desirable in phrases like `Example 7' and
+`the length~$l$ of the rod', obtained by typing
+\verb/Example~7/ and \verb/the length~$l$ of the rod./
+
+\LaTeX\ will automatically indent paragraphs (with the
+exception of the first paragraph of a new section).  One
+can prevent \LaTeX\ from indenting a paragraph though by
+beginning the paragraph with the control sequence
+\verb/\noindent/.  Thus one obtains
+\begin{quotation}
+\noindent
+This is the beginning of a paragraph which is not
+indented in the usual way.  This has been achieved
+by placing an appropriate control sequence at the
+beginning of the paragraph.
+\end{quotation}
+by typing
+\begin{quote}
+\begin{verbatim}
+\noindent
+This is the beginning of a paragraph which is not
+indented in the usual way.  This has been achieved
+by placing an appropriate control sequence at the
+beginning of the paragraph.
+\end{verbatim}
+\end{quote}
+
+Conversely, the control sequence \verb/\indent/ forces
+\LaTeX\ to indent the paragraph.
+
+\subsection{Lists}
+
+\LaTeX\ provides the following list environments:
+\begin{itemize}
+\item \verb/enumerate/ for numbered lists,
+\item \verb/itemize/ for un-numbered lists,
+\item \verb/description/ for description lists
+\end{itemize}
+
+Numbered lists are produced using
+\begin{quote}
+\begin{verbatim}
+\begin{enumerate} ... \end{enumerate}
+\end{verbatim}
+\end{quote}
+The items in the list should be enclosed between
+\begin{quote}
+\verb/\begin{enumerate}/ and \verb/\end{enumerate}/
+\end{quote}
+and should each be preceded by the control sequence \verb/\item/
+(which will automatically generate the number labelling the item).
+For example, the text
+\begin{quotation}
+A \emph{metric space} $(X,d)$ consists of a set~$X$ on
+which is defined a \emph{distance function} which assigns
+to each pair of points of $X$ a distance between them,
+and which satisfies the following four axioms:
+\begin{enumerate}
+\item
+$d(x,y) \geq 0$ for all points $x$ and $y$ of $X$;
+\item
+$d(x,y) = d(y,x)$ for all points $x$ and $y$ of $X$;
+\item
+$d(x,z) \leq d(x,y) + d(y,z)$ for all points $x$, $y$
+and $z$ of $X$;
+\item
+$d(x,y) = 0$ if and only if the points $x$ and $y$
+coincide.
+\end{enumerate}
+\end{quotation}
+is generated by \LaTeX\ from the following input:
+\begin{quote}
+\begin{verbatim}
+A \emph{metric space} $(X,d)$ consists of a set~$X$ on
+which is defined a \emph{distance function} which assigns
+to each pair of points of $X$ a distance between them,
+and which satisfies the following four axioms:
+\begin{enumerate}
+\item
+$d(x,y) \geq 0$ for all points $x$ and $y$ of $X$;
+\item
+$d(x,y) = d(y,x)$ for all points $x$ and $y$ of $X$;
+\item
+$d(x,z) \leq d(x,y) + d(y,z)$ for all points $x$, $y$
+and $z$ of $X$;
+\item
+$d(x,y) = 0$ if and only if the points $x$ and $y$
+coincide.
+\end{enumerate}
+\end{verbatim}
+\end{quote}
+
+Un-numbered lists are produced using
+\begin{quote}
+\begin{verbatim}
+\begin{itemize} ... \end{itemize}
+\end{verbatim}
+\end{quote}
+If we replace
+\begin{quote}
+\verb/\begin{enumerate}/ and \verb/\end{enumerate}/
+\end{quote}
+in the above input by
+\begin{quote}
+\verb/\begin{itemize}/ and \verb/\end{itemize}/
+\end{quote}
+respectively, \LaTeX\ generates an itemized list in which each
+item is preceeded by a `bullet':
+\begin{quotation}
+A \emph{metric space} $(X,d)$ consists of a set~$X$ on
+which is defined a \emph{distance function} which assigns
+to each pair of points of $X$ a distance between them,
+and which satisfies the following four axioms:
+\begin{itemize}
+\item
+$d(x,y) \geq 0$ for all points $x$ and $y$ of $X$;
+\item
+$d(x,y) = d(y,x)$ for all points $x$ and $y$ of $X$;
+\item
+$d(x,z) \leq d(x,y) + d(y,z)$ for all points $x$, $y$
+and $z$ of $X$;
+\item
+$d(x,y) = 0$ if and only if the points $x$ and $y$
+coincide.
+\end{itemize}
+\end{quotation}
+
+Description lists (for glossaries etc.) are produced using
+\begin{quote}
+\begin{verbatim}
+\begin{description} ... \end{description}
+\end{verbatim}
+\end{quote}
+The items in the list should be enclosed between
+\begin{quote}
+\verb/\begin{description}/ and \verb/\end{description}/
+\end{quote}
+and should each be preceded by
+\verb/\item[/\emph{label}\verb/]/,
+where \emph{label} is the label to be assigned to each item.
+For example, the text
+\begin{quotation}
+We now list the definitions of \emph{open ball},
+\emph{open set} and \emph{closed set} in a metric space.
+\begin{description}
+\item[open ball]
+The \emph{open ball} of radius~$r$ about any point~$x$
+is the set of all points of the metric space whose
+distance from $x$ is strictly less than $r$;
+\item[open set]
+A subset of a metric space is an \emph{open set} if,
+given any point of the set, some open ball of
+sufficiently small radius about that point is contained
+wholly within the set;
+\item[closed set]
+A subset of a metric space is a \emph{closed set} if its
+complement is an open set.
+\end{description}
+\end{quotation}
+is generated by \LaTeX\ from the following input:
+\begin{quote}
+\begin{verbatim}
+We now list the definitions of \emph{open ball},
+\emph{open set} and \emph{closed set} in a metric space.
+\begin{description}
+\item[open ball]
+The \emph{open ball} of radius~$r$ about any point~$x$
+is the set of all points of the metric space whose
+distance from $x$ is strictly less than $r$;
+\item[open set]
+A subset of a metric space is an \emph{open set} if,
+given any point of the set, some open ball of
+sufficiently small radius about that point is contained
+wholly within the set;
+\item[closed set]
+A subset of a metric space is a \emph{closed set} if its
+complement is an open set.
+\end{description}
+\end{verbatim}
+\end{quote}
+
+\subsection{Displayed Quotations}
+
+Displayed quotations can be embedded in text using the
+\textbf{quote} and \textbf{quotation} environments
+\begin{quote}
+\begin{verbatim}
+\begin{quote} ... \end{quote}
+\end{verbatim}
+\end{quote}
+and
+\begin{quote}
+\begin{verbatim}
+\begin{quotation} ... \end{quotation}.
+\end{verbatim}
+\end{quote}
+The \textbf{quote} environment is recommended for short quotations:
+the whole quotation is indended in the \textbf{quote} environment,
+but the first lines of individual paragraphs are not further indented.
+The input file
+\begin{quote}
+\begin{verbatim}
+Isaac Newton discovered the basic techiques of
+the differential and integral calculus, and
+applied them in the study of many problems
+in mathematical physics.  His main mathematical
+works are the \emph{Principia} and the \emph{Optics}.
+He summed up his own estimate of his work as follows:
+\begin{quote}
+I do not know what I may appear to the world; but to
+myself I seem to have been only like a boy, playing
+on the sea-shore, and diverting myself, in now and
+then finding a smoother pebble, or a prettier shell
+than ordinary, whilst the great ocean of truth lay
+all undiscovered before me.
+\end{quote}
+In later years Newton became embroiled in a bitter
+priority dispute with Leibniz over the discovery
+of the basic techniques of calculus.
+\end{verbatim}
+\end{quote}
+is typeset by \LaTeX\ as follows:
+\begin{quotation}
+Isaac Newton discovered the basic techiques of
+the differential and integral calculus, and
+applied them in the study of many problems
+in mathematical physics.  His main mathematical
+works are the \emph{Principia} and the \emph{Optics}.
+He summed up his own estimate of his work as follows:
+\begin{quote}
+I do not know what I may appear to the world; but to
+myself I seem to have been only like a boy, playing
+on the sea-shore, and diverting myself, in now and
+then finding a smoother pebble, or a prettier shell
+than ordinary, whilst the great ocean of truth lay
+all undiscovered before me.
+\end{quote}
+In later years Newton became embroiled in a bitter
+priority dispute with Leibniz over the discovery
+of the basic techniques of calculus.
+\end{quotation}
+
+For longer quotations one may use the \textbf{quotation}
+environment: the whole quotation is indented, and the openings
+of paragraphs are then further indented in the normal fashion.
+
+\subsection{Tables}
+
+Tables can be produced in \LaTeX\ using the \textbf{tabular} environment.
+For example, the text
+\begin{quotation}
+The first five International Congresses of Mathematicians
+were held in the following cities:
+\begin{quote}
+\begin{tabular}{lll}
+Chicago&U.S.A.&1893\\
+Z\"{u}rich&Switzerland&1897\\
+Paris&France&1900\\
+Heidelberg&Germany&1904\\
+Rome&Italy&1908
+\end{tabular}
+\end{quote}
+\end{quotation}
+is produced in \LaTeX using the following input file:
+\begin{quote}
+\begin{verbatim}
+The first five International Congresses of Mathematicians
+were held in the following cities:
+\begin{quote}
+\begin{tabular}{lll}
+Chicago&U.S.A.&1893\\
+Z\"{u}rich&Switzerland&1897\\
+Paris&France&1900\\
+Heidelberg&Germany&1904\\
+Rome&Italy&1908
+\end{tabular}
+\end{quote}
+\end{verbatim}
+\end{quote}
+The \verb/\begin{tabular}/ command must be followed by a string
+of characters enclosed within braces which specifies the format
+of the table.  In the above example, the string \verb/{lll}/ is a
+format specification for a table with three columns of left-justified text.
+Within the body of the table the ampersand character~\verb/&/ is used
+to separate columns of text within each row, and the double
+backslash~\verb/\\/ is used to separate the rows of the table.
+
+The next example shows how to obtain a table with
+vertical and horizontal lines.  The text
+\begin{quotation}
+The group of permutations of a set of $n$~elements has
+order $n!$, where $n!$, the factorial of $n$, is the
+product of all integers between $1$ and $n$.  The
+following table lists the values of the factorial of each
+integer~$n$ between 1 and 10:
+\begin{quote}
+\begin{tabular}{|r|r|}
+\hline
+$n$&$n!$\\
+\hline
+1&1\\
+2&2\\
+3&6\\
+4&24\\
+5&120\\
+6&720\\
+7&5040\\
+8&40320\\
+9&362880\\
+10&3628800\\
+\hline
+\end{tabular}
+\end{quote}
+Note how rapidly the value of $n!$ increases with $n$.
+\end{quotation}
+is produced in \LaTeX using the following input file:
+\begin{quote}
+\begin{verbatim}
+The group of permutations of a set of $n$~elements has
+order $n!$, where $n!$, the factorial of $n$, is the
+product of all integers between $1$ and $n$.  The
+following table lists the values of the factorial of each
+integer~$n$ between 1 and 10:
+\begin{quote}
+\begin{tabular}{|r|r|}
+\hline
+$n$&$n!$\\
+\hline
+1&1\\
+2&2\\
+3&6\\
+4&24\\
+5&120\\
+6&720\\
+7&5040\\
+8&40320\\
+9&362880\\
+10&3628800\\
+\hline
+\end{tabular}
+\end{quote}
+Note how rapidly the value of $n!$ increases with $n$.
+\end{verbatim}
+\end{quote}
+In this example the format specification \verb/{|r|r|}/ after
+\verb/\begin{tabular}/ specifies that the table should consist
+of two columns of right-justified text, with vertical lines
+to the left and to the right of the table, and between columns.
+
+Within the body of the table, the command \verb/\hline/ produces
+a horizontal line; this command can only be placed between the
+format specification and the body of the table (to produce a line
+along the top of the table) or immediately after a row separator
+(to produce a horizontal line between rows or at the bottom of the
+table).
+
+In a \textbf{tabular} environment, the format specification after
+\verb/\begin{tabular}/ should consist of one or more of the following,
+enclosed within braces \verb/{/ and \verb/}/:
+\begin{quote}
+\begin{tabular}{ll}
+\verb/l/&specifies a column of left-justified text\\
+\verb/c/&specifies a column of centred text\\
+\verb/r/&specifies a column of right-justified text\\
+\verb/p{/\emph{width}\verb/}/&specifies a left-justified column
+   of the given width\\
+\verb/|/&inserts a vertical line between columns\\
+\verb/@{/\emph{text}\verb/}/&inserts the given \emph{text}
+   between columns\\
+\end{tabular}
+\end{quote}
+
+A string \emph{str} of characters in the format specification can be
+repeated \emph{num} times using the construction
+\verb/*{/\emph{num}\verb/}{/\emph{str}\verb/}/.  For example,
+a table with 15 columns of right-justified text enclosed within
+vertical lines can be produced using the format specification
+\verb/{|*{15}{r|}}/.
+
+If additional vertical space is required between rows of the table,
+then this can be produced by specifying the amount of space within
+square brackets after \verb/\\/.  For example, on would use
+\verb/\\[6pt]/ to separate two rows of the table by 6~points of
+blank space.
+
+A horizontal line in a table from column~$i$ to column~$j$ inclusive
+can be produced using \verb/\cline{/$i$\verb/-/$j$\verb/}/.  For
+example \verb/\cline{3-5}/ produces a horizontal line spanning
+columns 3, 4 and 5 of some table.
+
+A command of the form
+\verb/\multicolumn{/\emph{num}\verb/}{/\emph{fmt}\verb/}{/\emph{text}\verb/}/
+can be used within the body of a table to produce an entry spanning
+several columns.  Here \emph{num} specifies the number of columns
+to be spanned, \emph{fmt} specifies the format for the entry
+(e.g., \verb/l/ if the entry is to be left-justified entry,
+or \verb/c/ if the entry is to be centred), and \emph{text} is
+the text of the entry.  For example, to span three columns
+of a table with the words `Year of Entry' (centred with respect
+to the three columns), one would use
+\begin{quote}
+\begin{verbatim}
+\multicolumn{3}{c}{Year of entry}
+\end{verbatim}
+\end{quote}
+
+\subsection{The Preamble of the \LaTeX\ Input file}
+
+We describe the options available in \LaTeX\ for specifying
+the overall style of a document.
+
+A \LaTeX\ document should begin with a \verb/\documentclass/
+command and any text to be printed must be included between
+\begin{quote}
+\verb/\begin{document}/ and \verb/\end{document}/
+\end{quote}
+commands.  The \verb/\begin{document}/ command is sometimes
+preceded by commands that set the page-style and set up
+user-defined control sequences.
+
+Here is a typical \LaTeX\ input file:
+\begin{quote}
+\begin{verbatim}
+\documentclass[a4paper,12pt]{article}
+\begin{document}
+
+This is the first paragraph of a typical document. It is
+produced in a `12~point' size. A \textit{point} is a unit
+of length used by printers. One point is approximately
+$1/72$~inch. In a `12~point' font the height of the
+parentheses is 12~points (i.e. about $1/6$~inch) and the
+letter~`m' is about 12 points long. 
+
+This is the second paragraph of the document. There are
+also `10 point' and `11 point' styles available in \LaTeX.
+The required size is specified in the `documentstyle'
+command. If no such size is specified then the 10~point
+size is assumed.
+
+\end{document}
+\end{verbatim}
+\end{quote}
+
+The syntax of the \verb/\documentclass/ command is as
+follows. The command begins with \verb/\documentclass/
+and ends with the names of one of the available styles,
+enclosed in curly brackets. The available styles are
+\verb/article/, \verb/report/, \verb/book/
+and \verb/letter/. Between the ``\verb/\documentclass/''
+and the name of the document style, one may place a
+list of \emph{options}. These options are separated by
+commas and the list of options is enclosed in square
+brackets (as in the above example). The options
+available (which are usually the names of certain
+`style files') include the following:
+\begin{description}
+\item[11pt]
+   Specifies a size of type known as
+   \emph{eleven-point}, which is ten percent larger than
+   the ten-point type normally used.
+\item[12pt]
+   Specifies a twelve-point type size, which is
+   twenty percent larger than ten-point.
+\item[twocolumn]
+   Produces two-column output.
+\item[a4paper]
+   This ensures that the page is appropriately positioned
+   on A4 size paper.
+\end{description}
+
+Typing simply \verb/\documentclass{article}/ will produce a
+document in ten-point type size. However the printed output
+will not be nicely positioned on A4 paper, since the default
+size is intended for a different (American) paper size.
+
+Pages will be automatically numbered at the bottom of the
+page, unless you specify otherwise. This can be done using the
+\verb/\pagestyle/ command. This command should come after the
+\verb/\documentclass/ command and before the
+\verb/\begin{document}/ command. This command has the
+syntax \verb/\pagestyle{/\textit{option}\verb/}/, where
+the \textit{option} is one of the following:
+\begin{description}
+\item[plain]
+   The page number is at the foot of the page.
+   This is the default page style for the \verb/article/
+   and \verb/report/ document styles.
+\item[empty]
+   No page number is printed.
+\item[headings]
+   The page number (and any other information
+   determined by the document style) is put at the top of
+   the page.
+\item[myheadings]
+   Similar to the \textbf{headings} pagestyle,
+   except that the material to go at the top of the
+   page is determined by \verb/\markboth/ and
+   \verb/\markright/ commands (see the \LaTeX\ manual).
+\end{description}
+For example, the input file
+\begin{quote}
+\begin{verbatim}
+\documentclass[a4paper]{article}
+\pagestyle{empty}
+\begin{document}
+The main body of the document is placed here.
+\end{document}
+\end{verbatim}
+\end{quote}
+produces a document without page numbers, using the
+standard ten-point type size.
+
+\subsection{Defining your own Control Sequences in \LaTeX}
+
+Suppose that we are producing a paper that makes frequent
+use of some mathematical expression.  For example,
+suppose that integrals like
+\[ \int_{-\infty}^{+\infty} f(x)\,dx. \]
+occur frequently throughout the text.  This formula is
+obtained by typing
+\begin{quote}
+\begin{verbatim}
+\[ \int_{-\infty}^{+\infty} f(x)\,dx.\] 
+\end{verbatim}
+\end{quote}
+It would be nice if we could type \verb/\inftyint/ (say)
+to obtain the integral sign at the beginning.  This can
+be done using \verb/\newcommand/.  What we do is to place
+a line with the command
+\begin{quote}
+\begin{verbatim}
+\newcommand{\inftyint}{\int_{-\infty}^{+\infty}}
+\end{verbatim}
+\end{quote}
+near the beginning of the input file (e.g., after
+the \verb/\documentclass/ command but before the
+\verb/\begin{document}/ command).  Then we only have to
+type
+\begin{quote}
+\begin{verbatim}
+\[ \inftyint f(x)\,dx.\] 
+\end{verbatim}
+\end{quote}
+to obtain the above formula.
+
+We can modify this procedure slightly.  Suppose that we
+we defined a new control sequence \verb/\intwrtx/ by
+putting the line
+\begin{quote}
+\begin{verbatim}
+\newcommand{\intwrtx}[1]{\int_{-\infty}^{+\infty} #1 \,dx}
+\end{verbatim}
+\end{quote}
+at the beginning of the input file.  If we then type the line
+\begin{quote}
+\begin{verbatim}
+\[ \intwrtx{f(x)}.\] 
+\end{verbatim}
+\end{quote}
+then we obtain
+\newcommand{\intwrtx}[1]{\int_{-\infty}^{+\infty} #1 \,dx}
+\[ \intwrtx{f(x)}. \]
+What has happened is that the expression in curly brackets
+after \verb/\intwrtx/ has been substituted in the expression
+defining \verb/\intwrtx/, replacing the \verb/#1/ in that
+expression.
+
+The number 1 inside square brackets in the
+\verb/\newcommand/ line defining \verb/\intwrtx/ indicates
+to \LaTeX\ that it is to expect one expression (in curly
+brackets) after \verb/\intwrtx/ to substitute for \verb/#1/
+in the definition of \verb/\intwrtx/.  If we defined a
+control sequence \verb/\intwrt/ by
+\begin{quote}
+\begin{verbatim}
+\newcommand{\intwrt}[2]{\int_{-\infty}^{+\infty} #2 \,d #1}
+\end{verbatim}
+\end{quote}
+then it would expect two expressions to substitute in for
+\verb/#1/ and \verb/#2/ in the  definition of \verb/\intwrt/.
+Thus  if we then type
+\begin{quote}
+\begin{verbatim}
+\[ \intwrt{y}{f(y)}.\] 
+\end{verbatim}
+\end{quote}
+we obtain
+\newcommand{\intwrt}[2]{\int_{-\infty}^{+\infty} #2 \,d #1}
+\[ \intwrt{y}{f(y)}. \]
+
+\end{document}

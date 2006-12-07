@@ -1,0 +1,265 @@
+=head1 NAME
+
+bt_postprocess - post-processing of BibTeX strings, values, and entries
+
+=head1 SYNOPSIS
+
+   void bt_postprocess_string (char * s,
+                               ushort options)
+
+   char * bt_postprocess_value (AST *   value,
+                                ushort  options, 
+                                boolean replace);
+
+   char * bt_postprocess_field (AST *   field, 
+                                ushort  options, 
+                                boolean replace);
+
+   void bt_postprocess_entry (AST *  entry,
+                              ushort options);
+
+=head1 DESCRIPTION
+
+When B<btparse> parses a BibTeX entry, it initially stores the results
+in an abstract syntax tree (AST), in a form exactly mirroring the parsed
+data.  For example, the entry
+
+   @Article{Jones:1997a,
+     AuThOr = "Bob   Jones" # and # "Jim Smith ",
+     TITLE = "Feeding Habits of
+              the Common Cockroach",
+     JoUrNaL = j_ent,
+     YEAR = 1997
+   }
+
+would parse to an AST that could be represented as follows:
+
+   (entry,"Article")
+     (key,"Jones:1997a")
+     (field,"AuThOr")
+       (string,"Bob   Jones")
+       (macro,"and")
+       (string,"Jim Smith ")
+     (field,"TITLE")
+       (string,"Feeding Habits of               the Common Cockroach")
+     (field,"JoUrNaL")
+       (macro,"j_ent")
+     (field,"YEAR")
+       (number,"1997")
+
+The advantage of this form is that all the important information in the
+entry is readily available by traversing the tree using the functions
+described in L<bt_traversal>.  This obvious problem is that the data is
+a little too raw to be immediately useful: entry types and field names
+are inconsistently capitalized, strings are full of unwanted whitespace,
+field values not reduced to single strings, and so forth.
+
+All of these problems are addressed by B<btparse>'s post-processing
+functions, described here.  Normally, you won't have to call these
+functions---the library does the Right Thing for you after parsing each
+entry, and you can customize what exactly the Right Thing is for your
+application.  (For instance, you can tell it to expand macros, but not
+to concatenate substrings together.)  However, it's conceivable that you
+might wish to move the post-processing into your own code and out of the
+library's control.  More likely, you could have strings that come from
+something other than BibTeX files that you would like to have treated as
+BibTeX strings; for that situation, the post-processing functions are
+essential.  Finally, you might just be curious about what exactly
+happens to your data after it's parsed.  If so, you've come to the right
+place for excruciatingly detailed explanations.
+
+=head1 FUNCTIONS
+
+B<btparse> offers four points of entry to its post-processing code.  Of
+these, probably only the first and last---for processing individual
+strings and whole entries---will be commonly used.
+
+=head2 Post-processing entry points
+
+To understand why four entry points are offered, an explanation of the
+sample AST shown above will help.  First of all, the whole entry is
+represented by the C<(entry,"Article")> node; this node has the entry
+key and all its field/value pairs as children.  Entry nodes are returned
+by C<bt_parse_entry()> and C<bt_parse_entry_s()> (see L<bt_input>) as
+well as C<bt_next_entry()> (which traverses a list of entries returned
+from C<bt_parse_file()>---see L<bt_traversal>).  Whole entries may be
+post-processed with C<bt_postprocess_entry()>.
+
+You may also need to post-process a single field, or just the value
+associated with it.  (The difference is that processing the field can
+change the field name---e.g. to lowercase---in addition to the field
+value.)  The C<(field,"AuThOr")> node above is an example of a field
+sub-AST, and C<(string,"Bob   Jones")> is the first node in the list of
+simple values representing that field's value.  (Recall that a field
+value is, in general, a list of simple values.)  Field nodes are
+returned by C<bt_next_field()>, value nodes by C<bt_next_value()>.  The
+former may be passed to C<bt_postprocess_field()> for post-processing,
+the latter to C<bt_postprocess_value()>.
+
+Finally, individual strings may wander into your program from many
+places other than a B<btparse> AST.  For that reason,
+C<bt_postprocess_string()> is available for post-processing arbitrary
+strings.
+
+=head2 Post-processing options
+
+All of the post-processing routines have an C<options> parameter, which
+you can use to fine-tune the post-processing.  (This is just like the
+per-metatype string-processing options that you can set before parsing
+entries; see C<bt_set_stringopts()> in L<bt_input>.)  Like elsewhere in
+the library, C<options> is a bitmap constructed by or'ing together
+various predefined constants.  These constants and their effects are
+documented in L<btparse/"String processing option macros">.
+
+=over 4
+
+=item bt_postprocess_string ()
+
+   void bt_postprocess_string (char * s,
+                               ushort options)
+
+Post-processes an individual string, C<s>, which is modified in place.
+The only post-processing option that makes sense on individual strings
+is whether to collapse whitespace according to the BibTeX rules; thus,
+if C<options & BTO_COLLAPSE> is false, this function has no effect.
+(Although it makes a complete pass over the string anyways.  This is for
+future expansion.)
+
+The exact rules for collapsing whitespace are simple: non-space
+whitespace characters (tabs and newlines mainly) are converted to space,
+any strings of more than one space within are collapsed to a single
+space, and any leading or trailing spaces are deleted.  (Ensuring that
+all whitespace is spaces is actually done by B<btparse>'s lexical
+scanner, so strings in B<btparse> ASTs will never have whitespace apart
+from space.  Likewise, any strings passed to bt_postprocess_string()
+should not contain non-space whitespace characters.)
+
+=item bt_postprocess_value ()
+
+   char * bt_postprocess_value (AST *   value,
+                                ushort  options, 
+                                boolean replace);
+
+Post-processes a single field value, which is the head of a list of
+simple values as returned by C<bt_next_value()>.  All of the relevant
+string-processing options come into play here: conversion of numbers to
+strings (C<BTO_CONVERT>), macro expansion (C<BTO_EXPAND>), collapsing of
+whitespace (C<BTO_COLLAPSE>), and string pasting (C<BTO_PASTE>).  Since
+pasting substrings together without first expanding macros and
+converting numbers would be nonsensical, attempting to do so is a fatal
+error.
+
+If C<replace> is true, then the list headed by C<value> will be replaced
+by a list representing the processed value.  That is, if string pasting
+is turned on (C<options & BTO_PASTE> is true), then this list will be
+collapsed to a single node containing the single string that results
+from pasting together all the substrings.  If string pasting is not on,
+then each node in the list will be left intact, but will have its
+text replaced by processed text.
+
+If C<replace> is false, then a new string will be built on the fly and
+returned by the function.  Note that if pasting is not on in this case,
+you will only get the last string in the list.  (It doesn't really make
+a lot of sense to post-process a value without pasting unless you're
+replacing it with the new value, though.)
+
+Returns the string that resulted from processing the whole value, which
+only makes sense if pasting was on or there was only one value in the
+list.  If a multiple-value list was processed without pasting, the last
+string in the list is returned (after processing).
+
+Consider what might be done to the value of the C<author> field in the
+above example, which is the concatenation of a string, a macro, and
+another string.  Assume that the macro C<and> expands to C<" and ">, and
+that the variable C<value> points to the sub-AST for this value.
+The original sub-AST corresponding to this value is
+
+   (string,"Bob   Jones")
+   (macro,"and")
+   (string,"Jim Smith ")
+
+To fully process this value in-place, you would call
+
+   bt_postprocess_value (value, BTO_FULL, TRUE);
+
+This would convert the value to a single-element list,
+
+   (string,"Bob Jones and Jim Smith")
+
+and return the fully-processed string C<"Bob Jones and Jim Smith">.
+Note that the C<and> macro has been expanded, interpolated between the
+two literal strings, everything pasted together, and finally whitespace
+collapsed.  (Collapsing whitespace before concatenating the strings
+would be a bad idea.)
+
+(Incidentally, C<BTO_FULL> is just a macro for the combination of all
+possible string-processing options, currently:
+
+   BTO_CONVERT | BTO_EXPAND | BTO_PASTE | BTO_COLLAPSE
+
+There are two other similar shortcut macros: C<BTO_MACRO> to express the
+special string-processing done on macro values, which is the same as
+C<BTO_FULL> except for the absence of C<BTO_COLLAPSE>; and
+C<BTO_MINIMAL>, which means no string-processing is to be done.)
+
+Let's say you'd rather preserve the list nature of the value, while
+expanding macros and converting any numbers to strings.  (This
+conversion is trivial: it just changes the type of the node from
+C<BTAST_NUMBER> to C<BTAST_STRING>.  "Number" values are always stored
+as a string of digits, just as they appear in the file.)  This would be
+done with the call
+
+   bt_postprocess_value
+      (value, BTO_CONVERT|BTO_EXPAND|BTO_COLLAPSE,TRUE);
+
+which would change the list to
+
+   (string,"Bob Jones")
+   (string,"and")
+   (string,"Jim Smith")
+
+Note that whitespace is collapsed here I<before> any concatenation can
+be done; this is probably a bad idea.  But you can do it if you wish.
+(If you get any ideas about cooking up your own value post-processing
+scheme by doing it in little steps like this, take a look at the source
+to C<bt_postprocess_value()>; it should dissuade you from such a
+venture.)
+
+=item bt_postprocess_field ()
+
+   char * bt_postprocess_field (AST *   field, 
+                                ushort  options, 
+                                boolean replace);
+
+This is little more than a front-end to C<bt_postprocess_value()>; the
+only difference is that you pass it a "field" AST node (eg. the
+C<(field,"AuThOr")> in the above example), and that it transforms the
+field name in addition to its value.  In particular, the field name is
+forced to lowercase; this behaviour is (currently) not optional.
+
+Returns the string returned by C<bt_postprocess_value()>.
+
+=item bt_postprocess_entry ()
+
+   void bt_postprocess_entry (AST *  entry,
+                              ushort options);
+
+Post-processes all values in an entry.  If C<entry> points to the AST
+for a "regular" or "macro definition" entry, then the values are just
+what you'd expect: everything on the right-hand side of a field or macro
+"assignment."  You can also post-process comment and preamble entries,
+though.  Comment entries are essentially one big string, so only
+whitespace collapsing makes sense on them.  Preambles may have multiple
+strings pasted together, so all the string-processing options apply to
+them.  (And there's nothing to prevent you from using macros in a
+preamble.)
+
+=back
+
+=head1 SEE ALSO
+
+L<btparse>, L<bt_input>, L<bt_traversal>
+
+=head1 AUTHOR
+
+Greg Ward <gward@python.net>

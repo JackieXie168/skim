@@ -1,0 +1,181 @@
+=head1 NAME
+
+bt_traversal - AST traversal/query functions in B<btparse> library
+
+=head1 SYNOPSIS
+
+   AST * bt_next_entry (AST * entry_list, 
+                        AST * prev_entry)
+   AST * bt_next_field  (AST * entry, AST * prev, char ** name)
+   AST * bt_next_value  (AST * head, 
+                         AST * prev,
+                         bt_nodetype_t * nodetype,
+                         char ** text)
+
+   bt_metatype_t bt_entry_metatype (AST * entry)
+   char * bt_entry_type (AST * entry)
+   char * bt_entry_key   (AST * entry)
+   char * bt_get_text   (AST * node)
+
+=head1 DESCRIPTION
+
+The functions described here are all used to traverse and query the
+abstract-syntax trees (ASTs) returned by the input functions described
+in L<bt_input>.  The three "bt_next" functions (C<bt_next_entry()>,
+C<bt_next_field()>, and C<bt_next_value()>) are used respectively to
+traverse a list of entries, the list of fields within a particular
+entry, and the list of simple values associated with a particular field.
+The other functions are just used to query various nodes in the tree for
+the useful information contained in them.
+
+=head2 Traversal functions
+
+=over 4
+
+=item bt_next_entry()
+
+   AST * bt_next_entry (AST * entry_list, 
+                        AST * prev_entry)
+
+Used to traverse the linked list of entries returned by
+C<bt_parse_file()> (see L<bt_input>).  On the first call, you should
+supply C<NULL> for C<prev_entry>, and a pointer to the head of the list
+will be returned.  On subsequent calls, pass the previous return value
+as C<prev_entry>; the function returns the next entry in the list, or
+C<NULL> if there are no more entries.  Also returns C<NULL> if either
+C<entry_list> or C<prev_entry> are improper.
+
+For example (ignoring error handling and variable declarations):
+
+   entries = bt_parse_file (filename, options, &status);
+   entry = NULL;
+   while (entry = bt_next_entry (entries, entry))
+   {
+      /* process entry */
+   }
+
+=item bt_next_field()
+
+   AST * bt_next_field  (AST * entry, AST * prev, char ** name)
+
+Used to traverse the list of fields in a regular or macro definition
+entry.  (You should call C<bt_entry_metatype()> to determine if you have
+the right kind of entry before calling C<bt_next_field()>.)  C<entry>
+should be a pointer to the AST for a single entry, as returned by
+C<bt_parse_entry()>, C<bt_parse_entry_s()>, or C<bt_next_entry()>.  On
+the first call, supply C<NULL> for C<prev>; C<bt_next_field()> will
+return a pointer to the first field in C<entry>, or C<NULL> if C<entry>
+has no fields (for instance, if it's a comment or preamble entry).  On
+subsequent calls, pass the previous return value as C<prev>;
+C<bt_next_field()> will keep returning pointers to field sub-ASTs as
+long as it makes sense.  These pointers can then be passed to
+C<bt_next_value()> or C<bt_get_text()> to get the field's value.
+
+For example, the loop body in the previous example could be:
+
+   field = NULL;
+   while (field = bt_next_field (entry, field, &field_name))
+   {
+      /* process field */
+   }
+
+=item bt_next_value()
+
+   AST * bt_next_value (AST * head, 
+                        AST * prev,
+                        bt_nodetype_t * nodetype,
+                        char ** text)
+
+Traverses the list of simple values that make up the value of a single
+field.  (Recall that a simple value is either a quoted string, a macro
+invocation, or a number.  A compound value is a list of these separated
+by C<'#'> in the original input.  Depending on the string
+post-processing options used when the data was parsed, the "list of
+simple values" nature of the original data may be preserved in the AST
+that you're traversing, in which case you'll need a C<bt_next_value()>
+loop.
+
+C<bt_next_value()> works much like C<bt_next_entry()> and
+C<bt_next_field()>: on the first call, you supply C<NULL> for C<prev>,
+and on subsequent calls you supply the previous return value.  Returns
+C<NULL> when there are no more simple values to return.  Also sets
+C<*nodetype> and C<*text> to the corresponding information from the
+simple value node.  C<*nodetype> will be one of C<BTAST_STRING>,
+C<BTAST_MACRO>, or C<BTAST_NUMBER>; C<*text> will point to the same
+string as the AST node does (it is not copied for you), so don't mess
+with it.  
+
+For example, the loop body in the C<bt_next_field()> example could be
+replaced with:
+
+   value = NULL;
+   while (value = bt_next_field (field, value, &nodetype, &text))
+   {
+      switch (nodetype)
+      {
+         case BTAST_STRING:    /* process the string */
+         case BTAST_MACRO:     /* process the macro */
+         case BTAST_NUMBER:    /* process the number */
+      }
+   }
+
+See also L</bt_get_text>.
+
+=back
+
+=head2 Query functions
+
+=over 4
+
+=item bt_entry_metatype()
+
+   bt_metatype_t bt_entry_metatype (AST * entry)
+
+Returns the metatype of an entry.  (Recall that the I<metatype> is an
+enumerated type whose values are derived from the specific type of an
+entry; for instance, an C<@comment> entry has type C<"comment"> and
+metatype C<BTE_COMMENT>.  The type-metatype relationship is similarly
+obvious for C<BTE_PREAMBLE>; C<BTE_MACRODEF> corresponds to C<@string>
+entries; and C<BTE_REGULAR> corresponds to any other type.)
+
+Returns C<BTE_UNKNOWN> if C<entry> is invalid (i.e., C<NULL> or not a
+pointer to an entry AST).
+
+=item bt_entry_type()
+
+   char * bt_entry_type (AST * entry)
+
+Returns the type of an entry.  Recall that the type is the name that
+appears after the C<'@'> character in the original input.  Returns
+C<NULL> if C<entry> is invalid (i.e., C<NULL> or not a pointer to an
+entry AST).
+
+=item bt_entry_key()
+
+   char * bt_entry_key (AST * entry)
+
+Returns the citation key of a regular entry.  (The citation key is the
+name that appears after the entry-open delimiter in a regular entry.)
+Returns C<NULL> if C<entry> is invalid (i.e., C<NULL> or not a pointer
+to the AST for a regular entry).
+
+=item bt_get_text()
+
+   char * bt_get_text (AST * node)
+
+Performs all string post-processing (macro expansion, concatenation of
+simple values, and whitespace collapsing) of a compound value and
+returns the string that results.  Can be called either on a field for a
+regular or macro definition entry (as returned by C<bt_next_field()>),
+or on a comment or preamble entry.  Returns C<NULL> if called on an
+invalid AST node.
+
+=back
+
+=head1 SEE ALSO
+
+L<btparse>, L<bt_input>, L<bt_postprocess>
+
+=head1 AUTHOR
+
+Greg Ward <gward@python.net>

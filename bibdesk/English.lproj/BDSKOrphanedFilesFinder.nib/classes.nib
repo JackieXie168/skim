@@ -1,0 +1,48 @@
+{
+    IBClasses = (
+        {
+            CLASS = BDSKFilePathCell; 
+            LANGUAGE = ObjC; 
+            SUPERCLASS = BDSKTextWithIconCell; 
+        }, 
+        {
+            ACTIONS = {hideMatches = id; showMatches = id; }; 
+            CLASS = BDSKOrphanedFilesArrayController; 
+            LANGUAGE = ObjC; 
+            OUTLETS = {searchField = NSSearchField; }; 
+            SUPERCLASS = NSArrayController; 
+        }, 
+        {
+            ACTIONS = {
+                hideOrphanedFilesPanel = id; 
+                refreshOrphanedFiles = id; 
+                search = id; 
+                showFile = id; 
+                showOrphanedFiles = id; 
+                showOrphanedFilesPanel = id; 
+                stopRefreshing = id; 
+                toggleShowingOrphanedFilesPanel = id; 
+            }; 
+            CLASS = BDSKOrphanedFilesFinder; 
+            LANGUAGE = ObjC; 
+            OUTLETS = {
+                arrayController = BDSKOrphanedFilesArrayController; 
+                contextMenu = NSMenu; 
+                progressIndicator = NSProgressIndicator; 
+                refreshButton = NSButton; 
+                statusField = NSTextField; 
+                tableView = NSTableView; 
+            }; 
+            SUPERCLASS = NSWindowController; 
+        }, 
+        {CLASS = BDSKTextWithIconCell; LANGUAGE = ObjC; SUPERCLASS = NSTextFieldCell; }, 
+        {
+            ACTIONS = {"" = id; }; 
+            CLASS = FirstResponder; 
+            LANGUAGE = ObjC; 
+            SUPERCLASS = NSObject; 
+        }, 
+        {CLASS = NSObject; LANGUAGE = ObjC; }
+    ); 
+    IBVersion = 1; 
+}
