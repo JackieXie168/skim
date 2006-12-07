@@ -1,0 +1,27 @@
+Searching for references
+========================
+
+The Find window
+---------------
+
+You can search for a substring in any key listed with the Find command under the Edit menu (&#8984;F). BibDesk will look in every file you have open and display results in the Find window, where you can copy/paste, drag/drop, or double-click to edit them as much as you want.
+
+<img src="gfx/findWindow.png" alt="" height="404" width="528">
+
+Quick search
+------------
+
+The quick search field lets you enter sub-strings that might be in author names, titles or dates, and the reference view will display only matching publications. There are several built-in options. For example, All Fields (search every entry except the pub type at once), Keywords (search the keywords entries) and Pub Type (search by pub type).
+
+<img src="gfx/quickSearchField.png" alt="" height="50" width="187">
+
+The quick search field is configurable by selecting "Add Field...", which allows you to add any string you want to the menu. If a publication has that field, it will be searched. Adding the field "Cite Key" (with that exact capitalization) will allow you to search the citation key of publications. (All Fields also searches the citation key.)
+
+
+The quick search field has a memory. Across runs of the application, it will remember what key was being used, as well as which strings were in use for every key. If you press enter after typing a search string, it will also add it to a list of recent searches, as seen in this screenshot:
+
+
+<img src="gfx/recentSearches.png" alt="" height="240" width="228">
+
+BibDesk's quick search field also supports a Boolean search, using "AND" or "OR" operators (no quotes, but the operator must be capitalized).  Please note that grouping is not supported at this time.  The search feature will also consider accented and non-accented characters as equivalent, and is case-insensitive (i.e. "B********rger" can be found by searching for "burger" or "B********rGeR").
+
