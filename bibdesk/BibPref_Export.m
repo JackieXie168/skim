@@ -458,6 +458,7 @@ static NSString *BDSKTemplateRowsPboardType = @"BDSKTemplateRowsPboardType";
                 [newNode release];
                 [childNode release];
                 [childNode setValue:BDSKTemplateMainPageString forKey:BDSKTemplateRoleString];
+                fileName = [fileNames objectAtIndex:0];
                 [childNode setValue:[NSURL fileURLWithPath:fileName] forKey:BDSKTemplateFileURLString];
             } else {
                 [chooseMainPagePopup removeAllItems];
