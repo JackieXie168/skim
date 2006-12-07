@@ -170,10 +170,6 @@
     NSParameterAssert(rows != nil);
     NSParameterAssert(highlightColor != nil);
     
-    // don't highlight selected rows
-    NSMutableIndexSet *rowsToHighlight = [rows mutableCopy];
-    [rowsToHighlight removeIndexes:[self selectedRowIndexes]];
-    
     float lineWidth = 1.0f;
     float heightOffset = 0.5f * [self intercellSpacing].height;
     
@@ -184,7 +180,7 @@
     [[highlightColor colorWithAlphaComponent:0.2] setFill];
     [[highlightColor colorWithAlphaComponent:0.8] setStroke];
     
-    unsigned rowIndex = [rowsToHighlight firstIndex];
+    unsigned rowIndex = [rows firstIndex];
     NSRect drawRect;
     NSBezierPath *path;
     
@@ -197,10 +193,8 @@
         [path fill];
         [path stroke];
         
-        rowIndex = [rowsToHighlight indexGreaterThanIndex:rowIndex];
+        rowIndex = [rows indexGreaterThanIndex:rowIndex];
     }
-    
-    [rowsToHighlight release];
     
     [NSGraphicsContext restoreGraphicsState];
     [self unlockFocus];    
@@ -213,9 +207,7 @@
 -(void)_drawDropHighlightOnRow:(int)rowIndex
 {
     NSColor *highlightColor = [NSColor alternateSelectedControlColor];
-    if(rowIndex > 0){
-        [self drawHighlightOnRows:[NSIndexSet indexSetWithIndex:rowIndex] usingColor:highlightColor];
-    }else{
+    if(rowIndex == -1){
         float lineWidth = 2.0;
         
         [self lockFocus];
@@ -234,6 +226,8 @@
         
         [NSGraphicsContext restoreGraphicsState];
         [self unlockFocus];
+    }else{
+        [self drawHighlightOnRows:[NSIndexSet indexSetWithIndex:rowIndex] usingColor:highlightColor];
     }
 }
 
