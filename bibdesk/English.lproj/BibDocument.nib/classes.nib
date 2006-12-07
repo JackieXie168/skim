@@ -1,0 +1,82 @@
+{
+    IBClasses = (
+        {CLASS = BDSKCustomCiteTableView; LANGUAGE = ObjC; SUPERCLASS = NSTableView; }, 
+        {CLASS = BDSKDragOutlineView; LANGUAGE = ObjC; SUPERCLASS = NSOutlineView; }, 
+        {CLASS = BDSKDragTableView; LANGUAGE = ObjC; SUPERCLASS = NSTableView; }, 
+        {
+            CLASS = BDSKPopUpButtonCell; 
+            LANGUAGE = ObjC; 
+            SUPERCLASS = NSPopUpButtonCell; 
+        }, 
+        {
+            ACTIONS = {
+                consolidateLinkedFiles = id; 
+                contextualMenuAddTableColumn = id; 
+                contextualMenuSelectTableColumn = id; 
+                copyAsBibTex = id; 
+                copyAsPDF = id; 
+                copyAsRTF = id; 
+                copyAsTex = id; 
+                delPub = id; 
+                dismissAddFieldSheet = id; 
+                dismissDelFieldSheet = id; 
+                editPubCmd = id; 
+                emailPubCmd = id; 
+                exportAsHTML = id; 
+                exportAsRSS = id; 
+                makeSearchFieldKey = id; 
+                newPub = id; 
+                openCustomCitePrefPane = id; 
+                postItemToWeblog = id; 
+                quickSearchAddField = id; 
+                quickSearchRemoveField = id; 
+                searchFieldAction = id; 
+                searchFieldChangeKey = id; 
+                splitViewDoubleClick = id; 
+                toggleShowingCustomCiteDrawer = id; 
+            }; 
+            CLASS = BibDocument; 
+            LANGUAGE = ObjC; 
+            OUTLETS = {
+                PDFPreviewView = NSImageView; 
+                RTFPreviewView = NSTextView; 
+                actionMenu = NSMenu; 
+                actionMenuButton = NSPopUpButton; 
+                actionMenuFirstItem = NSMenuItem; 
+                addFieldPrompt = NSTextField; 
+                addFieldSheet = NSWindow; 
+                addFieldTextField = NSTextField; 
+                bibListViews = NSWindow; 
+                ccTableView = BDSKCustomCiteTableView; 
+                contextualMenu = NSMenu; 
+                ctxCopyBibTex = NSMenuItem; 
+                ctxCopyPDF = NSMenuItem; 
+                ctxCopyTex = NSMenuItem; 
+                customCiteDrawer = NSDrawer; 
+                delFieldPopupButton = NSPopUpButton; 
+                delFieldPrompt = NSTextField; 
+                delFieldSheet = NSWindow; 
+                documentWindow = NSWindow; 
+                infoLine = NSTextField; 
+                openCustomCitePrefsButton = NSButton; 
+                previewField = NSTextView; 
+                previewTabView = NSTabView; 
+                quickSearchButton = NSPopUpButton; 
+                quickSearchClearButton = NSButton; 
+                rssExportAccessoryView = NSView; 
+                rssExportForm = NSForm; 
+                rssExportTextField = NSTextField; 
+                searchField = id; 
+                searchFieldBox = NSBox; 
+                searchFieldTextField = NSTextField; 
+                splitView = OASplitView; 
+                tableView = BDSKDragTableView; 
+            }; 
+            SUPERCLASS = NSDocument; 
+        }, 
+        {CLASS = MyTextField; LANGUAGE = ObjC; SUPERCLASS = NSTextField; }, 
+        {CLASS = OASplitView; LANGUAGE = ObjC; SUPERCLASS = NSSplitView; }, 
+        {CLASS = RYZImagePopUpButton; LANGUAGE = ObjC; SUPERCLASS = NSPopUpButton; }
+    ); 
+    IBVersion = 1; 
+}

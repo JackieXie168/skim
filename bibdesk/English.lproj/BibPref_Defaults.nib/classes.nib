@@ -1,0 +1,43 @@
+{
+    IBClasses = (
+        {
+            ACTIONS = {
+                addDefaultField = id; 
+                delSelectedDefaultField = id; 
+                outputTemplateButtonPressed = id; 
+            }; 
+            CLASS = "BibPref_Defaults"; 
+            LANGUAGE = ObjC; 
+            OUTLETS = {
+                addFieldButton = NSButton; 
+                addFieldField = NSTextField; 
+                defaultFieldsTableView = NSTableView; 
+                delSelectedFieldButton = NSButton; 
+                outputTemplateFileButton = NSButton; 
+            }; 
+            SUPERCLASS = OAPreferenceClient; 
+        }, 
+        {
+            ACTIONS = {changeStartupBehavior = id; }; 
+            CLASS = "BibPref_Startup"; 
+            LANGUAGE = ObjC; 
+            OUTLETS = {
+                defaultBibFileField = NSTextField; 
+                openSheetAccessoryView = NSView; 
+                startupBehaviorRadio = NSMatrix; 
+            }; 
+            SUPERCLASS = OAPreferenceClient; 
+        }, 
+        {CLASS = FirstResponder; LANGUAGE = ObjC; SUPERCLASS = NSObject; }, 
+        {
+            ACTIONS = {restoreDefaults = id; setValueForSender = id; }; 
+            CLASS = OAPreferenceClient; 
+            LANGUAGE = ObjC; 
+            OUTLETS = {controlBox = NSView; initialFirstResponder = NSView; lastKeyView = NSView; }; 
+            SUPERCLASS = OFObject; 
+        }, 
+        {CLASS = OBObject; LANGUAGE = ObjC; SUPERCLASS = NSObject; }, 
+        {CLASS = OFObject; LANGUAGE = ObjC; SUPERCLASS = OBObject; }
+    ); 
+    IBVersion = 1; 
+}
