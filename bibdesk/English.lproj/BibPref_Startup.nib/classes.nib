@@ -1,0 +1,27 @@
+{
+    IBClasses = (
+        {
+            ACTIONS = {changeStartupBehavior = id; toggleShowWarnings = id; }; 
+            CLASS = "BibPref_Startup"; 
+            LANGUAGE = ObjC; 
+            OUTLETS = {
+                defaultBibFileField = NSTextField; 
+                openSheetAccessoryView = NSView; 
+                showErrorsCheckButton = NSButton; 
+                startupBehaviorRadio = NSMatrix; 
+            }; 
+            SUPERCLASS = OAPreferenceClient; 
+        }, 
+        {CLASS = FirstResponder; LANGUAGE = ObjC; SUPERCLASS = NSObject; }, 
+        {
+            ACTIONS = {restoreDefaults = id; setValueForSender = id; }; 
+            CLASS = OAPreferenceClient; 
+            LANGUAGE = ObjC; 
+            OUTLETS = {controlBox = NSView; initialFirstResponder = NSView; lastKeyView = NSView; }; 
+            SUPERCLASS = OFObject; 
+        }, 
+        {CLASS = OBObject; LANGUAGE = ObjC; SUPERCLASS = NSObject; }, 
+        {CLASS = OFObject; LANGUAGE = ObjC; SUPERCLASS = OBObject; }
+    ); 
+    IBVersion = 1; 
+}

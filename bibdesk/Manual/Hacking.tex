@@ -1,0 +1,83 @@
+\documentclass[11pt]{book}
+
+\newif\ifpdf
+\ifx\pdfoutput\undefined
+\pdffalse % we are not running PDFLaTeX
+\else
+\pdfoutput=1 % we are running PDFLaTeX
+\pdftrue
+\fi
+
+\ifpdf
+\usepackage[pdftex]{graphicx}
+\else
+\usepackage{graphicx}
+\fi
+
+\usepackage{url}
+
+
+\textwidth = 6.5 in
+\textheight = 9 in
+\oddsidemargin = 0.0 in
+\evensidemargin = 0.0 in
+\topmargin = 0.0 in
+\headheight = 0.0 in
+\headsep = 0.0 in
+\parskip = 0.2in
+\parindent = 0.0in
+
+\usepackage{makeidx}
+\usepackage[hyperindex=true,
+	    hyperfigures=true,
+	    backref=true,
+	    pagebackref=true,
+	    bookmarks=true]{hyperref}
+
+\makeindex
+
+\title{Hacking BibDesk}
+
+\author{Michael O. McCracken}
+\begin{document}
+
+\ifpdf
+\DeclareGraphicsExtensions{.pdf, .jpg, .tif}
+\else
+\DeclareGraphicsExtensions{.eps, .jpg}
+\fi
+
+\maketitle
+
+\tableofcontents
+
+\chapter{Class Hierarchy notes}
+There is separate (but incomplete) HTML documentation generated from inline comments about each class. Refer to that for method and function definitions. This section only contains conceptual notes and other miscellany.
+
+\section{BibEditor}
+\section{BibDocument}
+\section{BibTypeManager}
+\section{BibItem}
+
+\chapter{File I/O}
+
+\section{File Types}
+Different file types can contain different entry types, and fields within entries may not be named the same. The BibTypeManager class abstracts the file type.
+It provides the available entry types for a given file type, and the optional and required fields for each entry. It is essentially an interface to the property list file TypeInfo.plist, which is located in the application package's Resources folder.
+
+\subsection{The Typeinfo.plist file}
+This file defines the data used by the BibTypeManager class.
+
+It has four top-level keys:
+
+AllRemovableFieldNames is an Array of field names that are used by the BibItem class when changing pub types of a BibItem (in the method - makeType:). All names in this array that do not contain data and do not appear in the new type are removed. This array should include all "standard" field names.
+
+FieldsForType is a dictionary of dictionaries. Its keys are all the entry types supported by BibDesk. Each one of those keys indexes a dictionary with two keys, "required" and "optional", which index arrays of strings that represent the required and optional field names to be associated with the given entry type.
+
+FileTypes is a dictionary of information about different file types. The dictionary contains the file extension and the default publication type for that file type. 
+
+TypesForFileType explains which of the types in FieldsForType are applicable for a given file type. Note that this is only currently used in one place. Having this doesn't mean that I'm expecting BibDesk to support and discriminate between many file formats natively. I expect most users to import from many formats (RIS, refer, etc...) and save as one of two formats (BibTeX or XML.) So I will plan to distinguish between BibTeX and XML only.
+
+ \end{document}
+ \end
+
