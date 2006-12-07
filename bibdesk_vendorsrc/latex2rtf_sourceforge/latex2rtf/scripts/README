@@ -1,0 +1,32 @@
+latex2png file will convert a latex file into a PNG image.
+
+Breaking with the unix tradition of having separate utilities for separate
+functions, latex2png will also convert EPS files to PNG images.  The reason
+is that the latex2png script already has the code to do this conversion *and*
+this conversion was needed to support images *and* I did not want to add yet
+another dependency by requiring the existing scripts eps2png or epstopng *and*
+I did not want to add yet another piece that could go wrong.
+
+By default latex2png assumes that the input file is a latex file, however,
+if the extension is .eps, then the file is treated an EPS file.
+
+There are two slightly different scripts latex2png_1 and latex2png_2.
+Both require a tex and dvips.  In addition the netpbm utilities are
+needed from
+
+	http://sourceforge.net/projects/netpbm/
+
+latex2png_1 requires ImageMagick to be installed.  The second script
+does not need ImageMagick, but runs much slower.
+
+There are two slightly different scripts in this directory.  They are
+labeled in order of how fast they run on my machine.  You may use either
+of these to replace the default latex2png in the directory.  This is the
+script that will be installed during "make install" by the main
+Makefile.
+
+When the latex file contains the tag 'INLINE_DOT_ON_BASELINE' then a dot
+is assumed to have been placed at the beginning of a latex This dot is
+used to locate the baseline of the equation for alignment in the RTF
+file.  This shell script will create a PBM (portable bitmap) file that
+can be used to determine the height of the equation baseline

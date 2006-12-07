@@ -1,0 +1,89 @@
+! Generated automatically by mantohlp
+1 pdftopbm
+
+       pdftopbm  -  Portable  Document  Format  (PDF) to Portable
+       Bitmap (PBM)
+
+       pdftopbm [options] PDF-file PBM-root
+
+       Pdftopbm converts Portable Document Format (PDF) files  to
+       black-and-white  image files in Portable Bitmap (PBM) for-
+       mat.
+
+       Pdftopbm reads the PDF file, PDF-file, and writes one  PBM
+       file  for  each page, PBM-root-nnnnnn.pbm, where nnnnnn is
+       the page number.
+
+2 ONFIGURATION_FIL
+
+       Pdftopbm  reads a configuration file at startup.  It first
+       tries to find the user's private config  file,  ~/.xpdfrc.
+       If  that  doesn't exist, it looks for a system-wide config
+       file, typically /usr/local/etc/xpdfrc (but  this  location
+       can be changed when pdftopbm is built).  See the xpdfrc(5)
+       man page for details.
+
+2 OPTIONS
+
+       Many  of  the following options can be set with configura-
+       tion file commands.  These are listed in  square  brackets
+       with  the  description  of  the corresponding command line
+       option.
+
+       -f number
+              Specifies the first page to convert.
+
+       -l number
+              Specifies the last page to convert.
+
+       -r number
+              Specifies the resolution, in DPI.  The  default  is
+              150 DPI.
+
+       -opw password
+              Specify  the owner password for the PDF file.  Pro-
+              viding this will bypass all security  restrictions.
+
+       -upw password
+              Specify the user password for the PDF file.
+
+       -q     Don't  print any messages or errors.  [config file:
+              errQuiet]
+
+       -v     Print copyright and version information.
+
+       -h     Print usage information.   (-help  and  --help  are
+              equivalent.)
+
+2 BUGS
+
+       Pdftopbm  uses  X to do the rendering, so it is limited by
+       the capabilities and performance of the X server.  In par-
+       ticular,  high-resolution  output requires lots of memory.
+       Also, non-scalable fonts will not look great.
+
+2 XIT_CODE
+
+       The Xpdf tools use the following exit codes:
+
+       0      No error.
+
+       1      Error opening a PDF file.
+
+       2      Error opening an output file.
+
+       3      Error related to PDF permissions.
+
+       99     Other error.
+
+2 AUTHOR
+
+       The  pdftopbm  software  and  documentation  are copyright
+       1996-2002 Glyph & Cog, LLC.
+
+2 SEE_ALSO
+
+       xpdf(1),   pdftops(1),   pdftotext(1),   pdfinfo(1),  pdf-
+       fonts(1), pdfimages(1), xpdfrc(5)
+       http://www.foolabs.com/xpdf/
+

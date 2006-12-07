@@ -1,0 +1,133 @@
+\documentclass{article}
+\begin{document}
+
+\section{Font commands}
+
+First the trickiest bit.  {\it This is in italics {\em this is emphasized} but
+this is italics and {\em this final bit is emphasized} but this is not.}
+
+An easier test.  \textit{This is in italics \emph{this is emphasized} but
+this is italics and \emph{this final bit is emphasized} but this is not.}
+
+This is roman, testing \verb#itshape# {\itshape italics} more roman text.
+This is roman, testing \verb#\begin{itshape}# \begin{itshape} italics\end{itshape} more roman text.
+This is roman, testing \verb#\textit# \textit{italics} more roman text.
+
+\section{Emphasize commands}
+
+\subsection{the em environment}
+Testing the \verb#\em# environment by \begin{em}emphasizing text and then \begin{em}embedding another
+level inside\end{em} of the first level.\end{em}
+
+this is some text \begin{em} with some emphasized text \end{em} in the middle.
+
+{\bf this is some bold text \begin{em} with some emphasized text \end{em} in the middle.}
+
+\textbf{this is some bold text \begin{em} with some emphasized text \end{em} in the middle.}
+
+\textit{this is some italic text \begin{em} with some emphasized text \end{em} in the middle.}
+
+\subsection{the emph command}
+
+Next testing \verb#\emph# by \emph{emphasizing text and then \emph{embedding another
+level inside} of the first level.}
+
+this is some text \emph{with some emphasized text} in the middle.
+
+{\bf this is some bold text \emph{with some emphasized text} in the middle.}
+
+\textbf{this is some bold text \emph{with some emphasized text} in the middle.}
+
+\textit{this is some italic text \emph{with some emphasized text} in the middle.}
+
+\subsection{the em command}
+
+First testing \verb#\em# by {\em emphasizing text and then {\em embedding another
+level inside} of the first level.}
+
+this is some text {\em with some emphasized text} in the middle.
+
+{\bf this is some bold text {\em with some emphasized text} in the middle.}
+
+\textbf{this is some bold text {\em with some emphasized text} in the middle.}
+
+\textit{this is some italic text {\em with some emphasized text} in the middle.}
+
+\section{Miscellaneous}
+what about \it some italics \bf some bold \rm followed by roman
+
+{\it here is italics \tt followed by plain typewriter}
+
+{\it here is italics \sf followed by plain sans serif}
+
+\textbf{here is bold roman \sf followed by plain sans serif}
+
+{\bf here is bold roman \textsf{followed by bold sans serif}}
+
+\textbf{\textit{bold italics \sf followed by plain sans serif}}
+
+\textbf{\textit{bold italics \textsf{followed by bold italics sans serif}}}
+
+\section{Normal roman font}
+
+\begin{itemize}
+\item
+Testing \verb#\rm# by \textsf{sans serif text with {\rm some roman text} in the middle}.
+\item
+Testing \verb#\rm# by \textit{italic text with {\rm some roman text} in the middle}.
+\item
+Testing \verb#\rm# by \textbf{bold text with {\rm some plain roman text} in the middle}.
+\item
+Testing \verb#\rm# by \textsc{small caps with some {\rm some plain roman text} in the middle}.
+\item
+Testing \verb#\textrm# by \textsf{sans serif text with \textrm{some roman text} in the middle}.
+\item
+Testing \verb#\textrm# by \textit{italic text with \textrm{some italic roman text} in the middle}.
+\item
+Testing \verb#\textrm# by \textbf{bold text with \textrm{some bold roman text} in the middle}.
+\item
+Testing \verb#\textrm# by \textsc{small caps with some \textrm{some small caps roman text} in the middle}.
+\item
+Testing \verb#\rmfamily# by \textsf{sans serif text with {\rmfamily some roman text} in the middle}.
+\item
+Testing \verb#\rmfamily# by \textit{italic text with {\rmfamily some italic roman text} in the middle}.
+\item
+Testing \verb#\rmfamily# by \textbf{bold text with {\rmfamily some bold roman text} in the middle}.
+\item
+Testing \verb#\rmfamily# by \textsc{small caps with some {\rmfamily some roman text} in the middle}.
+\item
+We also have math $x+y = \mathrm{truth}$.
+\end{itemize}
+
+\section{Normal sans serif font}
+
+This is some text.  \emph{This text is emphasized}
+\begin{itemize}
+\item
+Testing \verb#\sf# by \textrm{roman text with {\sf some plain sans serif text} in the middle}.
+\item
+Testing \verb#\sf# by \textit{italic text with {\sf some plain sans serif text} in the middle}.
+\item
+Testing \verb#\sf# by \textbf{bold text with {\sf some plain sans serif text} in the middle}.
+\item
+Testing \verb#\sf# by \textsc{small caps with some {\sf some plain sans serif text} in the middle}.
+\item
+Testing \verb#\textsf# by \textrm{roman text with \textsf{some sans serif text} in the middle}.
+\item
+Testing \verb#\textsf# by \textit{italic text with \textsf{some italic sans serif text} in the middle}.
+\item
+Testing \verb#\textsf# by \textbf{bold text with \textsf{some bold sans serif text} in the middle}.
+\item
+Testing \verb#\textsf# by \textsc{small caps with some \textsf{some small caps sans serif text} in the middle}.
+\item
+Testing \verb#\sffamily# by \textrm{roman text with {\sffamily some sans serif text} in the middle}.
+\item
+Testing \verb#\sffamily# by \textit{italic text with {\sffamily some italic sans serif text} in the middle}.
+\item
+Testing \verb#\sffamily# by \textbf{bold text with {\sffamily some bold sans serif text} in the middle}.
+\item
+Testing \verb#\sffamily# by \textsc{small caps with some {\sffamily some small caps sans serif text} in the middle}.
+\end{itemize}
+
+\end{document}
+
