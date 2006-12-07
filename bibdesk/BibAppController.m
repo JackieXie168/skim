@@ -460,6 +460,10 @@ static void createTemporaryDirectory()
     return menu;
 }
 
+- (void)applicationDidBecomeActive:(NSNotification *)aNotification{
+    [[NSNotificationCenter defaultCenter] postNotificationName:OAFlagsChangedNotification object:[NSApp currentEvent]];
+}
+
 #pragma mark Temporary files and directories
 
 - (NSString *)temporaryFilePath:(NSString *)fileName createDirectory:(BOOL)create{
