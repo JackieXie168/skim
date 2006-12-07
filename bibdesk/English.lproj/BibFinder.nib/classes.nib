@@ -1,0 +1,35 @@
+{
+    IBClasses = (
+        {CLASS = BDSKDragTableView; LANGUAGE = ObjC; SUPERCLASS = NSTableView; }, 
+        {
+            ACTIONS = {showFindPanel = id; showPreferencePanel = id; }; 
+            CLASS = BibAppController; 
+            LANGUAGE = ObjC; 
+            SUPERCLASS = NSObject; 
+        }, 
+        {
+            ACTIONS = {
+                copyAsBibTex = id; 
+                copyAsPDF = id; 
+                copyAsTex = id; 
+                editPub = id; 
+                search = id; 
+            }; 
+            CLASS = BibFinder; 
+            LANGUAGE = ObjC; 
+            OUTLETS = {
+                ctxCopyBibTex = NSMenuItem; 
+                ctxCopyPDF = NSMenuItem; 
+                ctxCopyTex = NSMenuItem; 
+                keySelectButton = NSComboBox; 
+                resultsField = NSTextField; 
+                searchButton = NSButton; 
+                searchTextField = NSTextField; 
+                tableView = BDSKDragTableView; 
+            }; 
+            SUPERCLASS = NSWindowController; 
+        }, 
+        {CLASS = FirstResponder; LANGUAGE = ObjC; SUPERCLASS = NSObject; }
+    ); 
+    IBVersion = 1; 
+}

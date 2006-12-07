@@ -1,0 +1,45 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+        "http://www.w3.org/TR/1999/REC-html401-19991224/loose.dtd">
+<html>
+<head>
+	<title>Exporting to html and rss</title> 
+	<meta http-equiv="content-type" content="text/html; charset=x-mac-roman">
+	<meta name="generator" content="SubEthaEdit">
+</head>
+<body text="#000000" bgcolor="#ffffff">
+
+<img src="gfx/BibDeskIcon.png" alt="" height="48" width="48">
+<font size="+2"  face="Lucida Grande,Helvetica,Geneva"><b>
+Exporting to html and rss
+</b></font>
+
+<p>
+<img src="gfx/export.jpg" alt="" height="277" width="387">
+</p>
+
+<p><font size="+1"  face="Lucida Grande,Helvetica,Geneva"><b>
+Export to html
+</b></font></p>
+
+<p><font size="-1" face="Lucida Grande,Geneva,Arial">
+The HTML Export feature uses two template files, one for the entire file, and another for each publication. These files are added to the ~/Library/Application Support/BibDesk/ directory when you first run version 0.85. The files are HTMLExportTemplate and HTMLItemExportTemplate.
+</font></p>
+
+<p><font size="-1" face="Lucida Grande,Geneva,Arial">
+Each template file contains macros that the program replaces with the contents of the macro.You probably will not want to add macros to the HTMLExportTemplate file, but in the HTMLItemExportTemplate file, you can use the existing macros as an example for editing. The macros are of the form <$stuff/>, where stuff is a function or data field of the publication class. If you just want to add say, the contents of the "URL" field, then you would add the macro <$pubFields.URL/> - pubFields is a detail of the implementation, and has to be present.
+</font></p>
+
+<p><font size="-1" face="Lucida Grande,Geneva,Arial">
+Please share templates you have created! I would like to extend this feature to allow choosing different sets of templates when you want a different look, or perhaps for printing, but I need help creating attractive designs.
+</font></p>
+
+<p><font size="+1"  face="Lucida Grande,Helvetica,Geneva"><b>
+Export to rss
+</b></font></p>
+
+<p><font size="-1" face="Lucida Grande,Geneva,Arial">
+See the discussion in <a href="prefs.htm">Preferences</a> for details on rss.
+</font></p>
+
+</body>
+</html>
