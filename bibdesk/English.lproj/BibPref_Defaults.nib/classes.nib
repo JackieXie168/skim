@@ -1,0 +1,55 @@
+{
+    IBClasses = (
+        {
+            ACTIONS = {
+                addDefaultField = id; 
+                delSelectedDefaultField = id; 
+                outputTemplateButtonPressed = id; 
+                setShouldUseNormalizedNames = id; 
+                shouldUseTemplateFile = id; 
+                showConversionEditor = id; 
+                showTypeInfoEditor = id; 
+            }; 
+            CLASS = "BibPref_Defaults"; 
+            LANGUAGE = ObjC; 
+            OUTLETS = {
+                addFieldButton = NSButton; 
+                addFieldField = NSTextField; 
+                defaultFieldsTableView = NSTableView; 
+                delSelectedFieldButton = NSButton; 
+                outputTemplateFileButton = NSButton; 
+                templateRadioMatrix = NSMatrix; 
+                useNormalizedNamesButton = NSButton; 
+            }; 
+            SUPERCLASS = OAPreferenceClient; 
+        }, 
+        {
+            ACTIONS = {changeStartupBehavior = id; }; 
+            CLASS = "BibPref_Startup"; 
+            LANGUAGE = ObjC; 
+            OUTLETS = {
+                defaultBibFileField = NSTextField; 
+                openSheetAccessoryView = NSView; 
+                startupBehaviorRadio = NSMatrix; 
+            }; 
+            SUPERCLASS = OAPreferenceClient; 
+        }, 
+        {CLASS = BibTeXFieldNameFormatter; LANGUAGE = ObjC; SUPERCLASS = NSFormatter; }, 
+        {
+            ACTIONS = {"" = id; }; 
+            CLASS = FirstResponder; 
+            LANGUAGE = ObjC; 
+            SUPERCLASS = NSObject; 
+        }, 
+        {
+            ACTIONS = {restoreDefaults = id; setValueForSender = id; }; 
+            CLASS = OAPreferenceClient; 
+            LANGUAGE = ObjC; 
+            OUTLETS = {controlBox = NSView; initialFirstResponder = NSView; lastKeyView = NSView; }; 
+            SUPERCLASS = OFObject; 
+        }, 
+        {CLASS = OBObject; LANGUAGE = ObjC; SUPERCLASS = NSObject; }, 
+        {CLASS = OFObject; LANGUAGE = ObjC; SUPERCLASS = OBObject; }
+    ); 
+    IBVersion = 1; 
+}
