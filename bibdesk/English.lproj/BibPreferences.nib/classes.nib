@@ -1,0 +1,52 @@
+{
+    IBClasses = (
+        {
+            ACTIONS = {
+                addDefaultField = id; 
+                changeBibTexBinPath = id; 
+                changeCopyBehavior = id; 
+                changeEditOnPaste = id; 
+                changePreviewDisplay = id; 
+                changeSeparateCite = id; 
+                changeShownColumns = id; 
+                changeStartupBehavior = id; 
+                changeStyle = id; 
+                changeTexBinPath = id; 
+                changeUsesTeX = id; 
+                chooseFont = id; 
+                citeStringFieldChanged = id; 
+                delSelectedDefaultField = id; 
+                outputTemplateButtonPressed = id; 
+            }; 
+            CLASS = BibPrefController; 
+            LANGUAGE = ObjC; 
+            OUTLETS = {
+                addFieldButton = NSButton; 
+                addFieldField = NSTextField; 
+                bibTeXStyle = NSTextField; 
+                bibtexBinaryPath = NSTextField; 
+                citeBehaviorLine = NSTextField; 
+                citeStringField = NSTextField; 
+                defaultBibFileField = NSTextField; 
+                defaultFieldsTableView = NSTableView; 
+                delSelectedFieldButton = NSButton; 
+                displayPrefRadioMatrix = NSMatrix; 
+                dragCopyRadio = NSMatrix; 
+                editOnPasteButton = NSButton; 
+                fontPreviewField = NSTextField; 
+                openSheetAccessoryView = NSView; 
+                outputTemplateFileButton = NSButton; 
+                recentDocumentsPopUp = NSPopUpButton; 
+                separateCiteCheckButton = NSButton; 
+                showColsButtons = NSMatrix; 
+                startupBehaviorRadio = NSMatrix; 
+                texBinaryPath = NSTextField; 
+                texPrefsBox = NSBox; 
+                usesTeXButton = NSButton; 
+            }; 
+            SUPERCLASS = NSWindowController; 
+        }, 
+        {CLASS = FirstResponder; LANGUAGE = ObjC; SUPERCLASS = NSObject; }
+    ); 
+    IBVersion = 1; 
+}
