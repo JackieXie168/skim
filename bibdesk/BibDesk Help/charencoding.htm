@@ -1,0 +1,44 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/1999/REC-html401-19991224/loose.dtd">
+<html>
+	<head>
+		<title>
+			String Encodings
+		</title>
+		<meta content="text/html; charset=x-mac-roman" http-equiv="content-type">
+		<meta content="SubEthaEdit" name="generator">
+		<META NAME="keywords" CONTENT="files, encoding, TeX, character conversion">
+    <META NAME="DESCRIPTION" CONTENT="String Encodings">
+	</head>
+	<body bgcolor="#ffffff" text="#000000">
+	<img width="48" height="48" alt="" src="gfx/BibDeskIcon.png"> <font face="Lucida Grande,Helvetica,Geneva" size="+2"><b>String Encodings</b></font>
+		<p>
+			<font face="Lucida Grande,Helvetica,Geneva" size="+1"><b>What is a string encoding?<br>
+			</b></font>
+		</p>
+		
+		<p>
+		<font face="Lucida Grande,Geneva,Arial" size="-1">
+ 		We will not attempt to answer this question in detail, other than to briefly present the practical ramifications of different text encodings.  For historical background, see <a href="http://www.joelonsoftware.com/articles/Unicode.html">this article</a> or do a <a href="http://www.google.com/search?hl=en&lr=&q=what+is+character+encoding%3F&btnG=Search">Google Search</a> on character encoding (strings are sequences of characters).  It is assumed that if you use LaTeX, you understand that if you use non-ASCII characters in a document, you have to pay attention to the character encoding and possibly use a special package that recognizes the text that you input.
+		<br>
+		</font>
+		</p>
+		
+		<p>
+		<font face="Lucida Grande,Geneva,Arial" size="-1">
+		The basic problem at hand is that characters must be represented by numbers in a computer program, but different sequences of numbers can be used for the same character.  Hence, when opening a file that is UTF-8 encoded under the assumption that it is Latin-1 encoded can lead to a loss of information; some characters may not be read or displayed correctly, and if the document is saved in this state, the data is permanently lost.  TeX <a href="./characterconvert.htm">works around</a> this problem by using {\"u} (in BibTeX, anyway) for the "Ÿ" character, since ASCII characters are essentially a lowest common denominator among most of the existing character sets.
+		<br>
+		</font>
+		</p>
+		
+		<p>
+			<font size="+1" face="Lucida Grande,Helvetica,Geneva"><b>What encoding should I use?<br>
+			</b></font>
+		</p>
+		<p>
+			<font face="Lucida Grande,Geneva,Arial" size="-1">
+			In general, pick an encoding that will be compatible with other systems, if you need to share documents.  On Macintosh systems in Western countries, the default encoding is MacRoman; this is understood by all Apple computers, but users on other platforms may have difficulty reading the files (generally because they assume a different encoding).  The UTF-8 encoding is a superset of ASCII, and is a more modern choice that supports extended character sets; it also works with <a href="http://scripts.sil.org/xetex/">XeTeX</a>, a Unicode-based TeX system for Mac OS X.  Windows computers (or users thereof) generally assume Windows Latin 1 or ISO Latin 1 (8859-1) encoding, which seems to be incompatible with UTF-8, but this is a widely used character encoding.
+			<br>
+			</font>
+		</p>
+	</body>
+</html>
