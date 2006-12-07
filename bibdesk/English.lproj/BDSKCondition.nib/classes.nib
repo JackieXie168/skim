@@ -1,0 +1,53 @@
+{
+    IBClasses = (
+        {
+            ACTIONS = {addNewCondition = id; removeThisCondition = id; }; 
+            CLASS = BDSKConditionController; 
+            LANGUAGE = ObjC; 
+            OUTLETS = {
+                addButton = NSButton; 
+                agoText = NSTextField; 
+                andNumberTextField = NSTextField; 
+                comparisonBox = NSBox; 
+                comparisonPopUp = NSPopUpButton; 
+                dateComparisonPopUp = NSPopUpButton; 
+                dateTextField = NSTextField; 
+                keyComboBox = NSComboBox; 
+                numberTextField = NSTextField; 
+                periodPopUp = NSPopUpButton; 
+                removeButton = NSButton; 
+                toDateTextField = NSTextField; 
+                valueBox = NSBox; 
+                valueTextField = NSTextField; 
+                view = NSView; 
+            }; 
+            SUPERCLASS = NSWindowController; 
+        }, 
+        {
+            ACTIONS = {addNewCondition = id; removeThisCondition = id; }; 
+            CLASS = BDSKConditionController1; 
+            LANGUAGE = ObjC; 
+            OUTLETS = {
+                addButton = NSButton; 
+                agoText = NSTextField; 
+                andNumberTextField = NSTextField; 
+                comparisonBox = NSBox; 
+                comparisonPopUp = NSPopUpButton; 
+                dateComparisonPopUp = NSPopUpButton; 
+                dateTextField = NSTextField; 
+                keyComboBox = NSComboBox; 
+                numberTextField = NSTextField; 
+                ownerController = NSObjectController; 
+                periodPopUp = NSPopUpButton; 
+                removeButton = NSButton; 
+                toDateTextField = NSTextField; 
+                valueBox = NSBox; 
+                valueTextField = NSTextField; 
+                view = NSView; 
+            }; 
+            SUPERCLASS = NSObject; 
+        }, 
+        {CLASS = FirstResponder; LANGUAGE = ObjC; SUPERCLASS = NSObject; }
+    ); 
+    IBVersion = 1; 
+}

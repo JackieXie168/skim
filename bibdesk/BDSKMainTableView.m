@@ -1,0 +1,489 @@
+// BDSKMainTableView.m
+
+/*
+ This software is Copyright (c) 2002,2003,2004,2005,2006
+ Michael O. McCracken. All rights reserved.
+
+ Redistribution and use in source and binary forms, with or without
+ modification, are permitted provided that the following conditions
+ are met:
+
+ - Redistributions of source code must retain the above copyright
+   notice, this list of conditions and the following disclaimer.
+
+ - Redistributions in binary form must reproduce the above copyright
+    notice, this list of conditions and the following disclaimer in
+    the documentation and/or other materials provided with the
+    distribution.
+
+ - Neither the name of Michael O. McCracken nor the names of any
+    contributors may be used to endorse or promote products derived
+    from this software without specific prior written permission.
+
+ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+ "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+ LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+ A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+ OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+ SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+ LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+ DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+ THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+ (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ */
+
+#import "BDSKMainTableView.h"
+#import <OmniFoundation/OFPreference.h>
+#import <OmniFoundation/CFArray-OFExtensions.h>
+#import "BibPrefController.h"
+#import "BibDocument.h"
+#import "BibDocument_Actions.h"
+#import "BDSKTypeSelectHelper.h"
+#import "NSTableView_BDSKExtensions.h"
+#import "NSString_BDSKExtensions.h"
+#import "BDSKFieldSheetController.h"
+#import "BibTypeManager.h"
+#import "BDSKRatingButtonCell.h"
+#import "BDSKImagePopUpButton.h"
+#import "BDSKImagePopUpButtonCell.h"
+#import "NSObject_BDSKExtensions.h"
+#import <OmniAppKit/NSMenu-OAExtensions.h>
+#import <OmniAppKit/NSTableView-OAColumnConfigurationExtensions.h>
+
+
+@interface BDSKMainTableView (Private)
+
+- (NSImage *)headerImageForField:(NSString *)field;
+- (NSString *)headerTitleForField:(NSString *)field;
+- (IBAction)columnsMenuSelectTableColumn:(id)sender;
+- (IBAction)columnsMenuAddTableColumn:(id)sender;
+- (void)addColumnSheetDidEnd:(BDSKAddFieldSheetController *)addFieldController returnCode:(int)returnCode contextInfo:(void *)contextInfo;
+- (void)updateColumnsMenu;
+
+@end
+
+@interface NSTableView (OAColumnConfigurationExtensionsThatShouldBeDeclared)
+- (void)autosizeColumn:(id)sender;
+- (void)autosizeAllColumns:(id)sender;
+@end
+
+@implementation BDSKMainTableView
+
+- (void)awakeFromNib{
+    [super awakeFromNib]; // this updates the font
+    
+    NSRect cornerViewFrame = [[self cornerView] frame];
+    BDSKImagePopUpButton *cornerViewButton = [[BDSKImagePopUpButton alloc] initWithFrame:cornerViewFrame];
+    [cornerViewButton setIconSize:cornerViewFrame.size];
+    [cornerViewButton setIconImage:[NSImage imageNamed:@"cornerColumns"]];
+    [cornerViewButton setAlternateImage:[NSImage imageNamed:@"cornerColumns_Pressed"]];
+    [cornerViewButton setShowsMenuWhenIconClicked:YES];
+    [[cornerViewButton cell] setAltersStateOfSelectedItem:NO];
+    [[cornerViewButton cell] setAlwaysUsesFirstItemAsSelected:NO];
+    [[cornerViewButton cell] setUsesItemFromMenu:NO];
+    [cornerViewButton setRefreshesMenu:NO];
+    [self setCornerView:cornerViewButton];
+    [cornerViewButton release];
+    
+    typeSelectHelper = [[BDSKTypeSelectHelper alloc] init];
+    [typeSelectHelper setDataSource:[self delegate]]; // which is the bibdocument
+    [typeSelectHelper setCyclesSimilarResults:YES];
+    [typeSelectHelper setMatchesPrefix:NO];
+}
+
+- (void)dealloc{
+    [typeSelectHelper setDataSource:nil];
+    [typeSelectHelper release];
+    [trackingRects release];
+    [super dealloc];
+}
+
+- (BDSKTypeSelectHelper *)typeSelectHelper{
+    return typeSelectHelper;
+}
+
+- (void)keyDown:(NSEvent *)event{
+    if ([[event characters] length] == 0)
+        return;
+    unichar c = [[event characters] characterAtIndex:0];
+    NSCharacterSet *alnum = [NSCharacterSet alphanumericCharacterSet];
+    unsigned int flags = ([event modifierFlags] & NSDeviceIndependentModifierFlagsMask & ~NSAlphaShiftKeyMask);
+    if (c == 0x0020){ // spacebar to page down in the lower pane of the BibDocument splitview, shift-space to page up
+        if(flags & NSShiftKeyMask)
+            [[self delegate] pageUpInPreview:nil];
+        else
+            [[self delegate] pageDownInPreview:nil];
+	// somehow alternate menu item shortcuts are not available globally, so we catch them here
+	}else if((c == NSDeleteCharacter) &&  (flags & NSAlternateKeyMask)) {
+		[[self delegate] alternateDelete:nil];
+    // following methods should solve the mysterious problem of arrow/page keys not working for some users
+    }else if(c == NSPageDownFunctionKey){
+        [[self enclosingScrollView] pageDown:self];
+    }else if(c == NSPageUpFunctionKey){
+        [[self enclosingScrollView] pageUp:self];
+    }else if(c == NSUpArrowFunctionKey){
+        int row = [[self selectedRowIndexes] firstIndex];
+		if (row == NSNotFound)
+			row = 0;
+		else if (row > 0)
+			row--;
+        [self selectRowIndexes:[NSIndexSet indexSetWithIndex:row] byExtendingSelection:([event modifierFlags] | NSShiftKeyMask)];
+        [self scrollRowToVisible:row];
+    }else if(c == NSDownArrowFunctionKey){
+        int row = [[self selectedRowIndexes] lastIndex];
+		if (row == NSNotFound)
+			row = 0;
+		else if (row < [self numberOfRows] - 1)
+			row++;
+        [self selectRowIndexes:[NSIndexSet indexSetWithIndex:row] byExtendingSelection:([event modifierFlags] | NSShiftKeyMask)];
+        [self scrollRowToVisible:row];
+    // pass it on the typeahead selector
+    }else if ([alnum characterIsMember:c] && flags == 0) {
+        [typeSelectHelper processKeyDownCharacter:c];
+    }else{
+        [super keyDown:event];
+    }
+}
+
+- (IBAction)deleteForward:(id)sender{
+    // we use the same for Delete and the Backspace
+    // Omni's implementation of deleteForward: selects the next item, which selects the wrong item too early because we may delay for the warning
+    [self deleteBackward:sender];
+}
+
+#pragma mark Tracking rects
+
+- (void)reloadData{
+    [super reloadData];
+    [typeSelectHelper queueSelectorOnce:@selector(rebuildTypeSelectSearchCache)]; // if we resorted or searched, the cache is stale
+	[self rebuildTrackingRects];
+}
+
+- (void)resetCursorRects {
+	[super resetCursorRects];
+    [self rebuildTrackingRects];
+}
+
+- (void)setDataSource:(id)anObject {
+	[super setDataSource:anObject];
+	[self rebuildTrackingRects];
+}
+
+- (void)noteNumberOfRowsChanged {
+	[super noteNumberOfRowsChanged];
+	[self rebuildTrackingRects];
+}
+
+- (void)rebuildTrackingRects {
+    if ([[self delegate] respondsToSelector:@selector(tableView:shouldTrackTableColumn:row:)] == NO)
+        return;
+    
+    if(trackingRects == nil){
+       trackingRects = OFCreateIntegerArray();
+    }else{
+        CFIndex idx = [trackingRects count];
+        while(idx--){
+            [self removeTrackingRect:(NSTrackingRectTag)[trackingRects objectAtIndex:idx]];
+            [trackingRects removeObjectAtIndex:idx];
+        }
+    }
+    
+    NSRange rowRange = [self rowsInRect:[self visibleRect]];
+    NSRange columnRange = [self columnsInRect:[self visibleRect]];
+    unsigned int rowIndex, columnIndex;
+	NSTableColumn *tableColumn;
+    NSTrackingRectTag tag;
+    BOOL assumeInside = [[self delegate] respondsToSelector:@selector(tableView:mouseEnteredTableColumn:row:)];
+    
+    for (columnIndex = columnRange.location; columnIndex < NSMaxRange(columnRange); columnIndex++) {
+        tableColumn = [[self tableColumns] objectAtIndex:columnIndex];
+		for (rowIndex = rowRange.location; rowIndex < NSMaxRange(rowRange); rowIndex++) {
+            if ([[self delegate] tableView:self shouldTrackTableColumn:tableColumn row:rowIndex]) {
+                tag = [self addTrackingRect:[self frameOfCellAtColumn:columnIndex row:rowIndex] owner:self userData:NULL assumeInside:assumeInside];
+                [trackingRects addObject:(id)tag];
+            }
+        }
+    }
+}
+
+- (void)mouseEntered:(NSEvent *)theEvent{
+    if ([[self delegate] respondsToSelector:@selector(tableView:mouseEnteredTableColumn:row:)]) {
+        NSPoint point = [self convertPoint:[theEvent locationInWindow] fromView:nil];
+		int column = [self columnAtPoint:point];
+		int row = [self rowAtPoint:point];
+        if (column != -1 && row != -1) {
+            NSTableColumn *tableColumn = [[self tableColumns] objectAtIndex:column];
+            [[self delegate] tableView:self mouseEnteredTableColumn:tableColumn row:row];
+        }
+	}
+}
+
+- (void)mouseExited:(NSEvent *)theEvent{
+    if ([[self delegate] respondsToSelector:@selector(tableView:mouseExitedTableColumn:row:)]) {
+        NSPoint point = [self convertPoint:[theEvent locationInWindow] fromView:nil];
+		int column = [self columnAtPoint:point];
+		int row = [self rowAtPoint:point];
+        if (column != -1 && row != -1) {
+            NSTableColumn *tableColumn = [[self tableColumns] objectAtIndex:column];
+            [[self delegate] tableView:self mouseExitedTableColumn:tableColumn row:row];
+        }
+	}
+}
+
+#pragma mark TableColumn setup
+
+- (void)setupTableColumnsWithIdentifiers:(NSArray *)identifiers {
+    
+    NSEnumerator *shownColNamesE = [identifiers objectEnumerator];
+    NSTableColumn *tc;
+    NSString *colName;
+    
+    NSNumber *tcWidth;
+    NSImageCell *imageCell = [[[NSImageCell alloc] init] autorelease];
+    
+    NSDictionary *defaultTableColumnWidths = nil;
+    if([[self delegate] respondsToSelector:@selector(defaultColumnWidthsForTableView:)])
+        defaultTableColumnWidths = [[self delegate] defaultColumnWidthsForTableView:self];
+    
+    NSMutableArray *columns = [NSMutableArray arrayWithCapacity:[identifiers count]];
+	
+	while(colName = [shownColNamesE nextObject]){
+		tc = [self tableColumnWithIdentifier:colName];
+		
+		if(tc == nil){
+			NSImage *image;
+			NSString *title;
+			
+			// it is a new column, so create it
+			tc = [[[NSTableColumn alloc] initWithIdentifier:colName] autorelease];
+            [tc setResizingMask:(NSTableColumnAutoresizingMask | NSTableColumnUserResizingMask)];
+			[tc setEditable:NO];
+
+            if([colName isURLField]){
+                [tc setDataCell:imageCell];
+            }else if([colName isRatingField]){
+				BDSKRatingButtonCell *ratingCell = [[[BDSKRatingButtonCell alloc] initWithMaxRating:5] autorelease];
+				[ratingCell setBordered:NO];
+				[ratingCell setAlignment:NSCenterTextAlignment];
+                [tc setDataCell:ratingCell];
+            }else if([colName isBooleanField]){
+				NSButtonCell *switchButtonCell = [[[NSButtonCell alloc] initTextCell:@""] autorelease];
+				[switchButtonCell setButtonType:NSSwitchButton];
+				[switchButtonCell setImagePosition:NSImageOnly];
+				[switchButtonCell setControlSize:NSSmallControlSize];
+                [switchButtonCell setAllowsMixedState:NO];
+                [tc setDataCell:switchButtonCell];
+			}else if([colName isTriStateField]){
+				NSButtonCell *switchButtonCell = [[[NSButtonCell alloc] initTextCell:@""] autorelease];
+				[switchButtonCell setButtonType:NSSwitchButton];
+				[switchButtonCell setImagePosition:NSImageOnly];
+				[switchButtonCell setControlSize:NSSmallControlSize];
+                [switchButtonCell setAllowsMixedState:YES];
+                [tc setDataCell:switchButtonCell];
+			}
+			if(image = [self headerImageForField:colName]){
+				[(NSCell *)[tc headerCell] setImage:image];
+			}else if(title = [self headerTitleForField:colName]){
+				[[tc headerCell] setStringValue:title];
+			}else{	
+				[[tc headerCell] setStringValue:NSLocalizedStringFromTable(colName, @"BibTeXKeys", @"")];
+			}
+            
+            if(tcWidth = [defaultTableColumnWidths objectForKey:colName])
+                [tc setWidth:[tcWidth intValue]];
+		}
+		
+		[columns addObject:tc];
+	}
+    
+    NSTableColumn *highlightedColumn = [self highlightedTableColumn];
+    if([columns containsObject:highlightedColumn] == NO)
+        highlightedColumn = nil;
+	
+    [self removeAllTableColumns];
+    [self performSelector:@selector(addTableColumn:) withObjectsFromArray:columns];
+    [self setHighlightedTableColumn:highlightedColumn]; 
+    [self tableViewFontChanged:nil];
+    [self updateColumnsMenu];
+}
+
+- (NSMenu *)columnsMenu{
+    NSMenu *menu = [[[self headerView] menu] copy];
+    if(menu == nil){
+        [self updateColumnsMenu];
+        menu = [[[self headerView] menu] copy];
+    }
+    [menu removeItem:[menu itemWithAction:@selector(autosizeColumn:)]];
+    return [menu autorelease];
+}
+
+@end
+
+
+@implementation BDSKMainTableView (Private)
+
+- (NSImage *)headerImageForField:(NSString *)field {
+	static NSMutableDictionary *headerImageCache = nil;
+	
+	if (headerImageCache == nil) {
+		NSDictionary *paths = [[OFPreferenceWrapper sharedPreferenceWrapper] objectForKey:BDSKTableHeaderImagesKey];
+		headerImageCache = [[NSMutableDictionary alloc] initWithCapacity:1];
+		if (paths) {
+			NSEnumerator *keyEnum = [paths keyEnumerator];
+			NSString *key, *path;
+			NSImage *image;
+			
+			while (key = [keyEnum nextObject]) {
+				path = [paths objectForKey:key];
+				if ([[NSFileManager defaultManager] fileExistsAtPath:path] &&
+					(image = [[NSImage alloc] initWithContentsOfFile:path])) {
+					[headerImageCache setObject:image forKey:key];
+					[image release];
+				}
+			}
+		}
+		if ([headerImageCache objectForKey:BDSKLocalUrlString] == nil)
+			[headerImageCache setObject:[NSImage imageNamed:@"TinyFile"] forKey:BDSKLocalUrlString];
+	}
+	
+	return [headerImageCache objectForKey:field];
+}
+
+- (NSString *)headerTitleForField:(NSString *)field {
+	static NSMutableDictionary *headerTitleCache = nil;
+	
+	if (headerTitleCache == nil) {
+		NSDictionary *titles = [[OFPreferenceWrapper sharedPreferenceWrapper] objectForKey:BDSKTableHeaderTitlesKey];
+		headerTitleCache = [[NSMutableDictionary alloc] initWithCapacity:1];
+		if (titles) {
+			NSEnumerator *keyEnum = [titles keyEnumerator];
+			NSString *key, *title;
+			
+			while (key = [keyEnum nextObject]) {
+				title = [titles objectForKey:key];
+				[headerTitleCache setObject:title forKey:key];
+			}
+		}
+		if ([headerTitleCache objectForKey:BDSKUrlString] == nil)
+			[headerTitleCache setObject:@"@" forKey:BDSKUrlString];
+	}
+	
+	return [headerTitleCache objectForKey:field];
+}
+
+- (IBAction)columnsMenuSelectTableColumn:(id)sender{
+    
+    NSMutableArray *shownColumns = [NSMutableArray arrayWithArray:[self tableColumnIdentifiers]];
+
+    if ([sender state] == NSOnState) {
+        [shownColumns removeObject:[sender title]];
+        [sender setState:NSOffState];
+    }else{
+        if(![shownColumns containsObject:[sender title]]){
+            [shownColumns addObject:[sender title]];
+        }
+        [sender setState:NSOnState];
+    }
+    [[OFPreferenceWrapper sharedPreferenceWrapper] setObject:shownColumns
+                                                      forKey:BDSKShownColsNamesKey];
+    [self setupTableColumnsWithIdentifiers:shownColumns];
+}
+
+- (void)addColumnSheetDidEnd:(BDSKAddFieldSheetController *)addFieldController returnCode:(int)returnCode contextInfo:(void *)contextInfo{
+    NSString *newColumnName = [addFieldController field];
+    
+    if(newColumnName == nil || returnCode == NSCancelButton)
+        return;
+    
+    NSMutableArray *shownColumns = [NSMutableArray arrayWithArray:[self tableColumnIdentifiers]];
+
+    // Check if an object already exists in the tableview, bail without notification if it does
+    // This means we can't have a column more than once.
+    if ([shownColumns containsObject:newColumnName])
+        return;
+
+    // Store the new column in the preferences
+    [shownColumns addObject:newColumnName];
+    [[OFPreferenceWrapper sharedPreferenceWrapper] setObject:shownColumns
+                                                      forKey:BDSKShownColsNamesKey];
+    
+    // Actually redraw the view now with the new column.
+    [self setupTableColumnsWithIdentifiers:shownColumns];
+}
+
+- (IBAction)columnsMenuAddTableColumn:(id)sender{
+    // first we fill the popup
+	BibTypeManager *typeMan = [BibTypeManager sharedManager];
+    NSArray *colNames = [typeMan allFieldNamesIncluding:[NSArray arrayWithObjects:BDSKPubTypeString, BDSKCiteKeyString, BDSKDateString, BDSKDateAddedString, BDSKDateModifiedString, BDSKFirstAuthorString, BDSKSecondAuthorString, BDSKThirdAuthorString, BDSKLastAuthorString, BDSKFirstAuthorEditorString, BDSKSecondAuthorEditorString, BDSKThirdAuthorEditorString, BDSKAuthorEditorString, BDSKLastAuthorEditorString, BDSKItemNumberString, BDSKContainerString, nil]
+                                              excluding:[[OFPreferenceWrapper sharedPreferenceWrapper] arrayForKey:BDSKShownColsNamesKey]];
+    
+    BDSKAddFieldSheetController *addFieldController = [[BDSKAddFieldSheetController alloc] initWithPrompt:NSLocalizedString(@"Name of column to add:", @"Label for adding column")
+                                                                                              fieldsArray:colNames];
+	[addFieldController beginSheetModalForWindow:[self window]
+                                   modalDelegate:self
+                                  didEndSelector:@selector(addColumnSheetDidEnd:returnCode:contextInfo:)
+                                     contextInfo:NULL];
+    [addFieldController release];
+}
+
+- (void)updateColumnsMenu{
+    NSArray *shownColumns = [self tableColumnIdentifiers];
+    NSEnumerator *shownColNamesE = [shownColumns reverseObjectEnumerator];
+	NSString *colName;
+	NSMenuItem *item = nil;
+    NSMenu *menu = [[self headerView] menu];
+    
+    if(menu == nil){
+        menu = [[NSMenu allocWithZone:[NSMenu menuZone]] init];
+        [menu addItem:[NSMenuItem separatorItem]];
+        item = [menu addItemWithTitle:[NSLocalizedString(@"Add Other", @"Menu title") stringByAppendingEllipsis]
+                               action:@selector(columnsMenuAddTableColumn:)
+                        keyEquivalent:@""];
+		[item setTarget:self];
+        [menu addItem:[NSMenuItem separatorItem]];
+        item = [menu addItemWithTitle:NSLocalizedString(@"Autosize Column", @"Menu title")
+                               action:@selector(autosizeColumn:)
+                        keyEquivalent:@""];
+		[item setTarget:self];
+        item = [menu addItemWithTitle:NSLocalizedString(@"Autosize All Columns", @"Menu title")
+                               action:@selector(autosizeAllColumns:)
+                        keyEquivalent:@""];
+		[item setTarget:self];
+        [[self headerView] setMenu:menu];
+        [menu release];
+    }
+	
+    while([[menu itemAtIndex:0] isSeparatorItem] == NO)
+        [menu removeItemAtIndex:0];
+    
+	// next add all the shown columns in the order they are shown
+	while(colName = [shownColNamesE nextObject]){
+        item = [menu insertItemWithTitle:colName 
+                                  action:@selector(columnsMenuSelectTableColumn:)
+                           keyEquivalent:@""
+                                 atIndex:0];
+		[item setTarget:self];
+		[item setState:NSOnState];
+	}
+    
+	if([[self cornerView] isKindOfClass:[BDSKImagePopUpButton class]] && menu != nil)
+        [(BDSKImagePopUpButton *)[self cornerView] setMenu:[self columnsMenu]];
+}
+
+- (BOOL)validateMenuItem:(NSMenuItem *)menuItem{
+	SEL action = [menuItem action];
+	if (action == @selector(columnsMenuSelectTableColumn:))
+		return ([self numberOfColumns] > 1);
+	else if (action == @selector(columnsMenuAddTableColumn:))
+        return YES;
+	else
+        return [super validateMenuItem:menuItem];
+}
+
+// override private method from OmniAppKit/NSTableView-OAColumnConfigurationExtensions
+- (BOOL)_allowsAutoresizing{
+    return YES;
+}
+
+@end

@@ -1,0 +1,26 @@
+{
+    IBClasses = (
+        {
+            ACTIONS = {addKey = id; removeSelectedKeys = id; }; 
+            CLASS = BDSKDocumentInfoWindowController; 
+            LANGUAGE = ObjC; 
+            OUTLETS = {addButton = NSButton; removeButton = NSButton; tableView = NSTableView; }; 
+            SUPERCLASS = BDSKSheetController; 
+        }, 
+        {
+            ACTIONS = {dismiss = id; }; 
+            CLASS = BDSKSheetController; 
+            LANGUAGE = ObjC; 
+            SUPERCLASS = NSWindowController; 
+        }, 
+        {
+            ACTIONS = {"" = id; }; 
+            CLASS = FirstResponder; 
+            LANGUAGE = ObjC; 
+            SUPERCLASS = NSObject; 
+        }, 
+        {CLASS = MacroDragTableView; LANGUAGE = ObjC; SUPERCLASS = NSTableView; }, 
+        {CLASS = MacroKeyFormatter; LANGUAGE = ObjC; SUPERCLASS = NSFormatter; }
+    ); 
+    IBVersion = 1; 
+}

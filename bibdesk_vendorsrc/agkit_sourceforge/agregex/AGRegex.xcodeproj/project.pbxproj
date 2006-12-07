@@ -1,0 +1,542 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 42;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		F93566600912D56F002B6957 /* AGRegex.h in Headers */ = {isa = PBXBuildFile; fileRef = F98CF71E0387044501DE5C57 /* AGRegex.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		F93566610912D56F002B6957 /* config.h in Headers */ = {isa = PBXBuildFile; fileRef = 24ADE602050886DD00DAF17A /* config.h */; };
+		F93566620912D56F002B6957 /* internal.h in Headers */ = {isa = PBXBuildFile; fileRef = 24ADE650050886DD00DAF17A /* internal.h */; };
+		F93566630912D56F002B6957 /* pcre.h in Headers */ = {isa = PBXBuildFile; fileRef = 24ADE663050886DD00DAF17A /* pcre.h */; };
+		F93566660912D56F002B6957 /* AGRegex.m in Sources */ = {isa = PBXBuildFile; fileRef = F9302D8B0429B15D01FE1BD3 /* AGRegex.m */; };
+		F93566670912D56F002B6957 /* chartables.c in Sources */ = {isa = PBXBuildFile; fileRef = 24ADE600050886DD00DAF17A /* chartables.c */; };
+		F93566680912D56F002B6957 /* get.c in Sources */ = {isa = PBXBuildFile; fileRef = 24ADE64B050886DD00DAF17A /* get.c */; };
+		F93566690912D56F002B6957 /* maketables.c in Sources */ = {isa = PBXBuildFile; fileRef = 24ADE658050886DD00DAF17A /* maketables.c */; };
+		F935666A0912D56F002B6957 /* pcre.c in Sources */ = {isa = PBXBuildFile; fileRef = 24ADE661050886DD00DAF17A /* pcre.c */; };
+		F935666B0912D56F002B6957 /* study.c in Sources */ = {isa = PBXBuildFile; fileRef = 24ADE677050886DD00DAF17A /* study.c */; };
+		F935666D0912D56F002B6957 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0867D69BFE84028FC02AAC07 /* Foundation.framework */; };
+		F935667D0912D56F002B6957 /* Controller.h in Headers */ = {isa = PBXBuildFile; fileRef = 2467EEFD05085A750078EF04 /* Controller.h */; };
+		F93566810912D56F002B6957 /* MainMenu.nib in Resources */ = {isa = PBXBuildFile; fileRef = 24B2073605085EE8001AE9D8 /* MainMenu.nib */; };
+		F93566830912D56F002B6957 /* Controller.m in Sources */ = {isa = PBXBuildFile; fileRef = 2467EEFE05085A750078EF04 /* Controller.m */; };
+		F93566840912D56F002B6957 /* RegexTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 2467EEFF05085A750078EF04 /* RegexTest.m */; };
+		F93566860912D56F002B6957 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2467EEEF05085A050078EF04 /* Cocoa.framework */; };
+		F93566920912D570002B6957 /* AGRegex.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F93566740912D56F002B6957 /* AGRegex.framework */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		F93566900912D570002B6957 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 0867D690FE84028FC02AAC07 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = F935665E0912D56F002B6957;
+			remoteInfo = "AGRegex (Upgraded)";
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		F935667E0912D56F002B6957 /* CopyFiles */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 10;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
+/* Begin PBXFileReference section */
+		0867D69BFE84028FC02AAC07 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = /System/Library/Frameworks/Foundation.framework; sourceTree = "<absolute>"; };
+		2467EEEF05085A050078EF04 /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = /System/Library/Frameworks/Cocoa.framework; sourceTree = "<absolute>"; };
+		2467EEFD05085A750078EF04 /* Controller.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = Controller.h; sourceTree = "<group>"; };
+		2467EEFE05085A750078EF04 /* Controller.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = Controller.m; sourceTree = "<group>"; };
+		2467EEFF05085A750078EF04 /* RegexTest.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = RegexTest.m; sourceTree = "<group>"; };
+		24A8E18E0512E33F00C9C7CA /* Documentation */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = folder; path = Documentation; sourceTree = "<group>"; };
+		24ADE600050886DD00DAF17A /* chartables.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; path = chartables.c; sourceTree = "<group>"; };
+		24ADE602050886DD00DAF17A /* config.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = config.h; sourceTree = "<group>"; };
+		24ADE64B050886DD00DAF17A /* get.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; path = get.c; sourceTree = "<group>"; };
+		24ADE650050886DD00DAF17A /* internal.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = internal.h; sourceTree = "<group>"; };
+		24ADE658050886DD00DAF17A /* maketables.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; path = maketables.c; sourceTree = "<group>"; };
+		24ADE661050886DD00DAF17A /* pcre.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; path = pcre.c; sourceTree = "<group>"; };
+		24ADE663050886DD00DAF17A /* pcre.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = pcre.h; sourceTree = "<group>"; };
+		24ADE677050886DD00DAF17A /* study.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; path = study.c; sourceTree = "<group>"; };
+		24B2073605085EE8001AE9D8 /* MainMenu.nib */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; path = MainMenu.nib; sourceTree = "<group>"; };
+		F9302D8B0429B15D01FE1BD3 /* AGRegex.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = AGRegex.m; sourceTree = "<group>"; };
+		F93566730912D56F002B6957 /* Info-AGRegex.plist */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = "Info-AGRegex.plist"; sourceTree = "<group>"; };
+		F93566740912D56F002B6957 /* AGRegex.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = AGRegex.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		F935668D0912D56F002B6957 /* Info-RegexTest.plist */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = "Info-RegexTest.plist"; sourceTree = "<group>"; };
+		F935668E0912D570002B6957 /* RegexTest.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = RegexTest.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		F986DBD403876F3201A58F65 /* README.txt */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text; path = README.txt; sourceTree = "<group>"; };
+		F98CF71E0387044501DE5C57 /* AGRegex.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = AGRegex.h; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		F935666C0912D56F002B6957 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				F935666D0912D56F002B6957 /* Foundation.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		F93566850912D56F002B6957 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				F93566860912D56F002B6957 /* Cocoa.framework in Frameworks */,
+				F93566920912D570002B6957 /* AGRegex.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		034768DFFF38A50411DB9C8B /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				F93566740912D56F002B6957 /* AGRegex.framework */,
+				F935668E0912D570002B6957 /* RegexTest.app */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		0867D691FE84028FC02AAC07 /* AGRegex */ = {
+			isa = PBXGroup;
+			children = (
+				F986DBD403876F3201A58F65 /* README.txt */,
+				F98CF71E0387044501DE5C57 /* AGRegex.h */,
+				F9302D8B0429B15D01FE1BD3 /* AGRegex.m */,
+				24A8E18E0512E33F00C9C7CA /* Documentation */,
+				24ADE5EE050886DD00DAF17A /* pcre-4.3 */,
+				2467EEFC05085A1E0078EF04 /* RegexTest */,
+				0867D69AFE84028FC02AAC07 /* Frameworks */,
+				034768DFFF38A50411DB9C8B /* Products */,
+				F93566730912D56F002B6957 /* Info-AGRegex.plist */,
+				F935668D0912D56F002B6957 /* Info-RegexTest.plist */,
+			);
+			name = AGRegex;
+			sourceTree = "<group>";
+		};
+		0867D69AFE84028FC02AAC07 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				2467EEEF05085A050078EF04 /* Cocoa.framework */,
+				0867D69BFE84028FC02AAC07 /* Foundation.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		2467EEFC05085A1E0078EF04 /* RegexTest */ = {
+			isa = PBXGroup;
+			children = (
+				2467EEFD05085A750078EF04 /* Controller.h */,
+				2467EEFE05085A750078EF04 /* Controller.m */,
+				2467EEFF05085A750078EF04 /* RegexTest.m */,
+				24B2073605085EE8001AE9D8 /* MainMenu.nib */,
+			);
+			name = RegexTest;
+			sourceTree = "<group>";
+		};
+		24ADE5EE050886DD00DAF17A /* pcre-4.3 */ = {
+			isa = PBXGroup;
+			children = (
+				24ADE600050886DD00DAF17A /* chartables.c */,
+				24ADE602050886DD00DAF17A /* config.h */,
+				24ADE64B050886DD00DAF17A /* get.c */,
+				24ADE650050886DD00DAF17A /* internal.h */,
+				24ADE658050886DD00DAF17A /* maketables.c */,
+				24ADE661050886DD00DAF17A /* pcre.c */,
+				24ADE663050886DD00DAF17A /* pcre.h */,
+				24ADE677050886DD00DAF17A /* study.c */,
+			);
+			path = "pcre-4.3";
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXHeadersBuildPhase section */
+		F935665F0912D56F002B6957 /* Headers */ = {
+			isa = PBXHeadersBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				F93566600912D56F002B6957 /* AGRegex.h in Headers */,
+				F93566610912D56F002B6957 /* config.h in Headers */,
+				F93566620912D56F002B6957 /* internal.h in Headers */,
+				F93566630912D56F002B6957 /* pcre.h in Headers */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		F935667C0912D56F002B6957 /* Headers */ = {
+			isa = PBXHeadersBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				F935667D0912D56F002B6957 /* Controller.h in Headers */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXHeadersBuildPhase section */
+
+/* Begin PBXNativeTarget section */
+		F935665E0912D56F002B6957 /* AGRegex */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = F935666F0912D56F002B6957 /* Build configuration list for PBXNativeTarget "AGRegex" */;
+			buildPhases = (
+				F935665F0912D56F002B6957 /* Headers */,
+				F93566640912D56F002B6957 /* Resources */,
+				F93566650912D56F002B6957 /* Sources */,
+				F935666C0912D56F002B6957 /* Frameworks */,
+				F935666E0912D56F002B6957 /* Rez */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = AGRegex;
+			productInstallPath = "@executable_path/../Frameworks/";
+			productName = AGRegex;
+			productReference = F93566740912D56F002B6957 /* AGRegex.framework */;
+			productType = "com.apple.product-type.framework";
+		};
+		F93566790912D56F002B6957 /* RegexTest */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = F93566890912D56F002B6957 /* Build configuration list for PBXNativeTarget "RegexTest" */;
+			buildPhases = (
+				F935667C0912D56F002B6957 /* Headers */,
+				F935667E0912D56F002B6957 /* CopyFiles */,
+				F93566800912D56F002B6957 /* Resources */,
+				F93566820912D56F002B6957 /* Sources */,
+				F93566850912D56F002B6957 /* Frameworks */,
+				F93566880912D56F002B6957 /* Rez */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				F93566910912D570002B6957 /* PBXTargetDependency */,
+			);
+			name = RegexTest;
+			productInstallPath = "$(USER_APPS_DIR)";
+			productName = RegexTest;
+			productReference = F935668E0912D570002B6957 /* RegexTest.app */;
+			productType = "com.apple.product-type.application";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		0867D690FE84028FC02AAC07 /* Project object */ = {
+			isa = PBXProject;
+			buildConfigurationList = F93566970912D572002B6957 /* Build configuration list for PBXProject "AGRegex" */;
+			compatibilityVersion = "Xcode 2.4";
+			hasScannedForEncodings = 1;
+			mainGroup = 0867D691FE84028FC02AAC07 /* AGRegex */;
+			productRefGroup = 034768DFFF38A50411DB9C8B /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			shouldCheckCompatibility = 1;
+			targets = (
+				F935665E0912D56F002B6957 /* AGRegex */,
+				F93566790912D56F002B6957 /* RegexTest */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		F93566640912D56F002B6957 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		F93566800912D56F002B6957 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				F93566810912D56F002B6957 /* MainMenu.nib in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXRezBuildPhase section */
+		F935666E0912D56F002B6957 /* Rez */ = {
+			isa = PBXRezBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		F93566880912D56F002B6957 /* Rez */ = {
+			isa = PBXRezBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXRezBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		F93566650912D56F002B6957 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				F93566660912D56F002B6957 /* AGRegex.m in Sources */,
+				F93566670912D56F002B6957 /* chartables.c in Sources */,
+				F93566680912D56F002B6957 /* get.c in Sources */,
+				F93566690912D56F002B6957 /* maketables.c in Sources */,
+				F935666A0912D56F002B6957 /* pcre.c in Sources */,
+				F935666B0912D56F002B6957 /* study.c in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		F93566820912D56F002B6957 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				F93566830912D56F002B6957 /* Controller.m in Sources */,
+				F93566840912D56F002B6957 /* RegexTest.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		F93566910912D570002B6957 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = F935665E0912D56F002B6957 /* AGRegex */;
+			targetProxy = F93566900912D570002B6957 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
+/* Begin XCBuildConfiguration section */
+		F93566700912D56F002B6957 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				COPY_PHASE_STRIP = NO;
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				FRAMEWORK_SEARCH_PATHS = "";
+				FRAMEWORK_VERSION = A;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_ENABLE_FIX_AND_CONTINUE = YES;
+				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					SUPPORT_UTF8,
+					"POSIX_MALLOC_THRESHOLD=10",
+				);
+				HEADER_SEARCH_PATHS = "";
+				INFOPLIST_FILE = "Info-AGRegex.plist";
+				INSTALL_PATH = "@executable_path/../Frameworks/";
+				LIBRARY_SEARCH_PATHS = "";
+				OTHER_CFLAGS = "";
+				OTHER_LDFLAGS = "-Wl,-prebind,-image_base,0xC5000000";
+				PRODUCT_NAME = AGRegex;
+				SECTORDER_FLAGS = "";
+				WARNING_CFLAGS = (
+					"-Wmost",
+					"-Wno-four-char-constants",
+					"-Wno-unknown-pragmas",
+				);
+				WRAPPER_EXTENSION = framework;
+				ZERO_LINK = YES;
+			};
+			name = Debug;
+		};
+		F93566710912D56F002B6957 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				COPY_PHASE_STRIP = YES;
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				FRAMEWORK_SEARCH_PATHS = "";
+				FRAMEWORK_VERSION = A;
+				GCC_ENABLE_FIX_AND_CONTINUE = NO;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					SUPPORT_UTF8,
+					"POSIX_MALLOC_THRESHOLD=10",
+				);
+				HEADER_SEARCH_PATHS = "";
+				INFOPLIST_FILE = "Info-AGRegex.plist";
+				INSTALL_PATH = "@executable_path/../Frameworks/";
+				LIBRARY_SEARCH_PATHS = "";
+				OTHER_CFLAGS = "";
+				OTHER_LDFLAGS = "-Wl,-prebind,-image_base,0xC5000000";
+				PRODUCT_NAME = AGRegex;
+				SECTORDER_FLAGS = "";
+				WARNING_CFLAGS = (
+					"-Wmost",
+					"-Wno-four-char-constants",
+					"-Wno-unknown-pragmas",
+				);
+				WRAPPER_EXTENSION = framework;
+				ZERO_LINK = NO;
+			};
+			name = Release;
+		};
+		F93566720912D56F002B6957 /* Default */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				FRAMEWORK_SEARCH_PATHS = "";
+				FRAMEWORK_VERSION = A;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					SUPPORT_UTF8,
+					"POSIX_MALLOC_THRESHOLD=10",
+				);
+				HEADER_SEARCH_PATHS = "";
+				INFOPLIST_FILE = "Info-AGRegex.plist";
+				INSTALL_PATH = "@executable_path/../Frameworks/";
+				LIBRARY_SEARCH_PATHS = "";
+				OTHER_CFLAGS = "";
+				OTHER_LDFLAGS = "-Wl,-prebind,-image_base,0xC5000000";
+				PRODUCT_NAME = AGRegex;
+				SECTORDER_FLAGS = "";
+				WARNING_CFLAGS = (
+					"-Wmost",
+					"-Wno-four-char-constants",
+					"-Wno-unknown-pragmas",
+				);
+				WRAPPER_EXTENSION = framework;
+			};
+			name = Default;
+		};
+		F935668A0912D56F002B6957 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				COPY_PHASE_STRIP = NO;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_ENABLE_FIX_AND_CONTINUE = YES;
+				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				INFOPLIST_FILE = "Info-RegexTest.plist";
+				OTHER_CFLAGS = "";
+				OTHER_LDFLAGS = "";
+				OTHER_REZFLAGS = "";
+				PRODUCT_NAME = RegexTest;
+				SECTORDER_FLAGS = "";
+				WARNING_CFLAGS = (
+					"-Wmost",
+					"-Wno-four-char-constants",
+					"-Wno-unknown-pragmas",
+				);
+				WRAPPER_EXTENSION = app;
+				ZERO_LINK = YES;
+			};
+			name = Debug;
+		};
+		F935668B0912D56F002B6957 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				COPY_PHASE_STRIP = YES;
+				GCC_ENABLE_FIX_AND_CONTINUE = NO;
+				INFOPLIST_FILE = "Info-RegexTest.plist";
+				OTHER_CFLAGS = "";
+				OTHER_LDFLAGS = "";
+				OTHER_REZFLAGS = "";
+				PRODUCT_NAME = RegexTest;
+				SECTORDER_FLAGS = "";
+				WARNING_CFLAGS = (
+					"-Wmost",
+					"-Wno-four-char-constants",
+					"-Wno-unknown-pragmas",
+				);
+				WRAPPER_EXTENSION = app;
+				ZERO_LINK = NO;
+			};
+			name = Release;
+		};
+		F935668C0912D56F002B6957 /* Default */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				INFOPLIST_FILE = "Info-RegexTest.plist";
+				OTHER_CFLAGS = "";
+				OTHER_LDFLAGS = "";
+				OTHER_REZFLAGS = "";
+				PRODUCT_NAME = RegexTest;
+				SECTORDER_FLAGS = "";
+				WARNING_CFLAGS = (
+					"-Wmost",
+					"-Wno-four-char-constants",
+					"-Wno-unknown-pragmas",
+				);
+				WRAPPER_EXTENSION = app;
+			};
+			name = Default;
+		};
+		F93566980912D572002B6957 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ARCHS = (
+					ppc,
+					i386,
+				);
+				MACOSX_DEPLOYMENT_TARGET = 10.3;
+				SDKROOT = /Developer/SDKs/MacOSX10.4u.sdk;
+			};
+			name = Debug;
+		};
+		F93566990912D572002B6957 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ARCHS = (
+					ppc,
+					i386,
+				);
+				MACOSX_DEPLOYMENT_TARGET = 10.3;
+				SDKROOT = /Developer/SDKs/MacOSX10.4u.sdk;
+			};
+			name = Release;
+		};
+		F935669A0912D572002B6957 /* Default */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ARCHS = (
+					ppc,
+					i386,
+				);
+				MACOSX_DEPLOYMENT_TARGET = 10.4;
+				SDKROOT = /Developer/SDKs/MacOSX10.4u.sdk;
+			};
+			name = Default;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		F935666F0912D56F002B6957 /* Build configuration list for PBXNativeTarget "AGRegex" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				F93566700912D56F002B6957 /* Debug */,
+				F93566710912D56F002B6957 /* Release */,
+				F93566720912D56F002B6957 /* Default */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Default;
+		};
+		F93566890912D56F002B6957 /* Build configuration list for PBXNativeTarget "RegexTest" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				F935668A0912D56F002B6957 /* Debug */,
+				F935668B0912D56F002B6957 /* Release */,
+				F935668C0912D56F002B6957 /* Default */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Default;
+		};
+		F93566970912D572002B6957 /* Build configuration list for PBXProject "AGRegex" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				F93566980912D572002B6957 /* Debug */,
+				F93566990912D572002B6957 /* Release */,
+				F935669A0912D572002B6957 /* Default */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Default;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 0867D690FE84028FC02AAC07 /* Project object */;
+}

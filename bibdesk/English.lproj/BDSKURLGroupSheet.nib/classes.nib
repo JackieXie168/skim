@@ -1,0 +1,18 @@
+{
+    IBClasses = (
+        {
+            ACTIONS = {dismiss = id; }; 
+            CLASS = BDSKSheetController; 
+            LANGUAGE = ObjC; 
+            SUPERCLASS = NSWindowController; 
+        }, 
+        {
+            ACTIONS = {chooseURL = id; }; 
+            CLASS = BDSKURLGroupSheetController; 
+            LANGUAGE = ObjC; 
+            SUPERCLASS = BDSKSheetController; 
+        }, 
+        {CLASS = FirstResponder; LANGUAGE = ObjC; SUPERCLASS = NSObject; }
+    ); 
+    IBVersion = 1; 
+}

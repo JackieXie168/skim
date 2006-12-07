@@ -1,0 +1,429 @@
+{
+    BibTeXFieldNamesForJSTORTags = {
+        AB = Abstract; 
+        AU = Author; 
+        DA = Date; 
+        EI = Url; 
+        IN = Issn; 
+        KW = Keywords; 
+        NO = Number; 
+        PP = Pages; 
+        SE = Series; 
+        SO = Journal; 
+        TI = Title; 
+        VO = Volume; 
+    }; 
+    BibTeXFieldNamesForMARCTags = {
+        010 = {a = "Library-Id"; }; 
+        020 = {a = Isbn; }; 
+        050 = {a = "Call-Number"; }; 
+        082 = {a = "Dewey-Call-Number"; }; 
+        245 = {a = Title; b = Title; c = Author; }; 
+        250 = {a = Edition; }; 
+        260 = {a = Address; b = Publisher; c = Year; }; 
+        440 = {v = Volume; }; 
+        490 = {a = Series; v = Volume; }; 
+        500 = {a = Annote; }; 
+        504 = {a = Annote; }; 
+        505 = {a = Annote; }; 
+        520 = {a = Abstract; }; 
+        650 = {a = Genre; }; 
+        700 = {a = Author; }; 
+        856 = {u = Url; }; 
+    }; 
+    BibTeXFieldNamesForPubMedTags = {
+        AB = Abstract; 
+        AD = Address; 
+        BT = Title; 
+        CP = Address; 
+        CT = Title; 
+        CY = Address; 
+        DP = Year; 
+        ED = Editor; 
+        JA = Journal; 
+        JF = Journal; 
+        JO = Journal; 
+        KW = Keywords; 
+        L1 = "Local-Url"; 
+        LA = Language; 
+        MH = Keywords; 
+        N1 = Annote; 
+        N2 = Abstract; 
+        PB = Publisher; 
+        PG = Pages; 
+        PY = Year; 
+        RP = Status; 
+        SN = Isbn; 
+        T1 = Title; 
+        T2 = Title; 
+        T3 = Title; 
+        TA = Journal; 
+        TI = Title; 
+        UI = Medlineref; 
+        UR = Url; 
+        VI = Volume; 
+        VL = Volume; 
+        Y1 = Year; 
+    }; 
+    BibTeXFieldNamesForWebOfScienceTags = {
+        AB = Abstract; 
+        AR = Pages; 
+        AU = Author; 
+        ID = Keywords; 
+        IS = Number; 
+        J9 = Source; 
+        PD = Date; 
+        PI = Address; 
+        PU = Publisher; 
+        PY = Year; 
+        SE = Booktitle; 
+        SN = Issn; 
+        SO = Journal; 
+        TI = Title; 
+        UT = Isi; 
+        VL = Volume; 
+    }; 
+        BibTeXFieldNamesForDublinCoreTerms = {
+        "DC.description" = Abstract; 
+        "DC.contributor" = Author; 
+        "DC.creator" = Author;
+        "DC.subject" = Keywords; 
+        "DC.created" = "Date-Created";
+        "DC.dateAccepted" = "Date-Accepted";
+        "DC.dateCopyrighted" = "Date-Copyrighted";
+        "DC.dateSubmitted" = "Date-Submitted";
+        "DC.source"= Source; 
+        "DC.date" = Date; 
+        "DC.publisher" = Publisher; 
+        "DC.alternative" = Booktitle; 
+        "DC.title" = Title; 
+        "Url" = Url;
+    }; 
+
+        BibTeXTypesForDublinCoreTypes = {
+        "Conference or Workshop Item" = inproceedings; 
+        "Article" = "article";
+        "Book" = "book";
+        "Book Section" = "inbook";
+        "Technical Report" = "techreport";
+        "Monograph" = techreport;
+        "Thesis" = "phdthesis";
+        "Other" = misc;
+};
+    BibTeXTypesForMODSGenres = {
+        "academic journal" = article; 
+        book = book; 
+        "conference publication" = inproceedings; 
+        instruction = manual; 
+        report = techreport; 
+        unpublished = unpublished; 
+    }; 
+    BibTeXTypesForPubMedTypes = {
+        BOOK = book; 
+        CHAP = inbook; 
+        CONF = inproceedings; 
+        ELEC = electronic; 
+        GEN = misc; 
+        JOUR = article; 
+        "Journal Article" = article; 
+        MGZN = article; 
+        RPRT = techreport; 
+        SER = incollection; 
+        UNPB = unpublished; 
+    }; 
+    BibTeXTypesForWebOfScienceTypes = {
+        "Abstract of Published Item" = misc; 
+        "Art Exhibit Review" = misc; 
+        Article = article; 
+        Bibliography = misc; 
+        "Biographical-Item" = misc; 
+        "Book Review" = misc; 
+        Chronology = misc; 
+        Correction = misc; 
+        "Correction, Addition" = misc; 
+        "Dance Performance Review" = misc; 
+        "Database Review" = misc; 
+        Discussion = misc; 
+        "Editorial Material" = misc; 
+        Excerpt = misc; 
+        "Fiction, Creative Prose" = misc; 
+        "Film Review" = misc; 
+        "Hardware Review" = misc; 
+        "Item About an Individual" = misc; 
+        Letter = misc; 
+        "Meeting Abstract" = misc; 
+        "Music Performance Review" = misc; 
+        "Music Score" = misc; 
+        "Music Score Review" = misc; 
+        "News Item" = misc; 
+        Note = misc; 
+        Poetry = misc; 
+        "Record Review" = misc; 
+        Reprint = misc; 
+        Review = misc; 
+        Script = misc; 
+        "Software Review" = misc; 
+        "TV Review, Radio Review" = misc; 
+        "TV Review, Radio Review, Video" = misc; 
+        "Theater Review" = misc; 
+    }; 
+    FieldDescriptionsForJSTORTags = {
+        AB = Abstract; 
+        AU = Author; 
+        CR = CopyRight; 
+        DA = Date; 
+        EI = "Electronic Identifier"; 
+        FT = "Foreign Title"; 
+        IN = ISSN; 
+        IT = "Item Type"; 
+        KW = Keywords; 
+        NO = Number; 
+        PB = Publisher; 
+        PP = "Article Pages"; 
+        RA = "Reviewed Author"; 
+        RT = "Reviewed Title"; 
+        S2 = "Issue Title"; 
+        SE = Series; 
+        SO = Source; 
+        TI = Title; 
+        VO = Volume; 
+    }; 
+    FieldDescriptionsForWebOfScienceTags = {
+        AB = Abstract; 
+        AR = "Article number"; 
+        AU = Authors; 
+        BP = "Beginning page"; 
+        C1 = "Author address"; 
+        CA = "Group authors"; 
+        CR = "Cited references"; 
+        DE = "Author keywords"; 
+        DT = "Document type"; 
+        EF = "End of file"; 
+        EM = "E-mail address"; 
+        EP = "Ending page"; 
+        ER = "End of record"; 
+        FN = "File name"; 
+        GA = "ISI document delivery number"; 
+        ID = "Keywords Plus\U00ae"; 
+        IS = Issue; 
+        J9 = "29-character source abbreviation"; 
+        JI = "ISO source abbreviation"; 
+        LA = Language; 
+        NR = "Cited reference count"; 
+        PA = "Publisher address"; 
+        PD = "Publication date"; 
+        PG = "Page count"; 
+        PI = "Publisher city"; 
+        PN = "Part number"; 
+        PT = "Publication type"; 
+        PU = Publisher; 
+        PY = "Publication year"; 
+        RP = "Reprint address"; 
+        SC = "Subject category"; 
+        SE = "Book series title"; 
+        SI = "Special issue"; 
+        SN = ISSN; 
+        SO = "Full source title"; 
+        SU = Supplement; 
+        TC = "Times cited"; 
+        TI = "Document title"; 
+        UT = "ISI unique article identifier"; 
+        VL = Volume; 
+        VR = "Version number"; 
+    }; 
+    FieldsForTypes = {
+        article = {
+            optional = (Volume, Number, Pages, Month); 
+            required = (Author, Title, Journal, Year); 
+        }; 
+        book = {
+            optional = (Author, Editor, Volume, Number, Series, Address, Edition, Month); 
+            required = (Title, Publisher, Year); 
+        }; 
+        booklet = {optional = (Author, Howpublished, Address, Month, Year); required = (Title); }; 
+        commented = {
+            optional = (Volumetitle, Editor); 
+            required = (Author, Title, Publisher, Year); 
+        }; 
+        conference = {
+            optional = (
+                Editor, 
+                Volume, 
+                Pages, 
+                Number, 
+                Organization, 
+                Series, 
+                Publisher, 
+                Address, 
+                Month
+            ); 
+            required = (Author, Title, Booktitle, Year); 
+        }; 
+        electronic = {optional = (Urldate, Author, Title); required = (); }; 
+        glossdef = {optional = ("Sort-Word", Short, Group); required = (Word, Definition); }; 
+        inbook = {
+            optional = (
+                Editor, 
+                Author, 
+                Chapter, 
+                Number, 
+                Volume, 
+                Type, 
+                Series, 
+                Month, 
+                Address, 
+                Edition, 
+                Pages
+            ); 
+            required = (Title, Publisher, Year); 
+        }; 
+        incollection = {
+            optional = (Editor, Volume, Number, Series, Type, Chapter, Pages, Address, Edition, Month); 
+            required = (Author, Title, Booktitle, Publisher, Year); 
+        }; 
+        inproceedings = {
+            optional = (
+                Editor, 
+                Volume, 
+                Pages, 
+                Number, 
+                Organization, 
+                Series, 
+                Publisher, 
+                Address, 
+                Month
+            ); 
+            required = (Author, Title, Booktitle, Year); 
+        }; 
+        jurthesis = {optional = (Address, Month, Type); required = (Author, Title, School, Year); }; 
+        manual = {
+            optional = (Author, Organization, Address, Edition, Month, Year); 
+            required = (Title); 
+        }; 
+        mastersthesis = {optional = (Address, Month, Type); required = (Author, Title, School, Year); }; 
+        misc = {optional = (Title, Howpublished, Author, Month, Year); required = (); }; 
+        periodical = {optional = (Year, Volume, Pages); required = (Author, Title, Journal); }; 
+        phdthesis = {optional = (Address, Month, Type); required = (Author, Title, School, Year); }; 
+        proceedings = {
+            optional = (Editor, Number, Publisher, Organization, Address, Month, Volume); 
+            required = (Title, Year); 
+        }; 
+        techreport = {
+            optional = (Type, Number, Address, Month); 
+            required = (Author, Title, Institution, Year); 
+        }; 
+        unpublished = {optional = (Month, Year); required = (Author, Note, Title); }; 
+        url = {optional = (Urldate, Author, Title, Lastchecked); required = (); }; 
+        webpage = {optional = (Lastchecked, Year, Month); required = (Url); }; 
+    }; 
+    FileTypes = {
+        BibTeX = {DefaultType = Inproceedings; FileExtension = ".bib"; }; 
+        "MARC XML" = {DefaultType = Article; FileExtension = ".marc"; }; 
+        "MODS XML" = {DefaultType = Article; FileExtension = ".mods"; }; 
+        RIS = {DefaultType = Article; FileExtension = ".ris"; }; 
+    }; 
+    MODSGenresForBibTeXType = {
+        article = {host = (periodical, "academic journal"); }; 
+        book = {self = (book); }; 
+        booklet = {self = (book); }; 
+        commented = {}; 
+        conference = {host = ("conference publication"); }; 
+        electronic = {self = ("online system or service"); }; 
+        glossdef = {}; 
+        inbook = {host = (book); }; 
+        incollection = {host = ("multivolume monograph"); }; 
+        inproceedings = {host = ("conference publication"); }; 
+        jurthesis = {self = (theses); }; 
+        manual = {self = (instruction); }; 
+        mastersthesis = {self = (theses); }; 
+        misc = {}; 
+        periodical = {self = (periodical); }; 
+        phdthesis = {self = (theses); }; 
+        proceedings = {self = ("conference publication"); }; 
+        techreport = {self = (report); }; 
+        unpublished = {self = (unpublished); }; 
+        url = {self = ("web site"); }; 
+    }; 
+    RequiredTypesForFileType = {
+        BibTeX = (
+            article, 
+            book, 
+            booklet, 
+            conference, 
+            inbook, 
+            incollection, 
+            inproceedings, 
+            jurthesis, 
+            manual, 
+            mastersthesis, 
+            misc, 
+            phdthesis, 
+            proceedings, 
+            techreport, 
+            unpublished
+        ); 
+    }; 
+    TypesForFileType = {
+        BibTeX = (
+            article, 
+            book, 
+            booklet, 
+            commented, 
+            conference, 
+            glossdef, 
+            inbook, 
+            incollection, 
+            inproceedings, 
+            jurthesis, 
+            manual, 
+            mastersthesis, 
+            misc, 
+            periodical, 
+            phdthesis, 
+            proceedings, 
+            techreport, 
+            unpublished, 
+            url, 
+            electronic, 
+            webpage
+        ); 
+        PubMed = (
+            JOUR, 
+            ABST, 
+            ADVS, 
+            ART, 
+            BILL, 
+            BOOK, 
+            CASE, 
+            CHAP, 
+            COMP, 
+            CONF, 
+            CTLG, 
+            DATA, 
+            ELEC, 
+            GEN, 
+            HEAR, 
+            ICOMM, 
+            INPR, 
+            JFULL, 
+            FOUR, 
+            MAP, 
+            MGZN, 
+            MPCT, 
+            MUSIC, 
+            NEWS, 
+            PAMP, 
+            PAT, 
+            PCOMM, 
+            RPRT, 
+            SER, 
+            SLIDE, 
+            SOUND, 
+            STAT, 
+            THES, 
+            UNBILI, 
+            UNPB, 
+            VIDEO
+        ); 
+    }; 
+}

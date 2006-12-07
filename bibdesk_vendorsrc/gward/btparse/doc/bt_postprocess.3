@@ -1,0 +1,478 @@
+.rn '' }`
+''' $RCSfile$$Revision$$Date$
+'''
+''' $Log$
+'''
+.de Sh
+.br
+.if t .Sp
+.ne 5
+.PP
+\fB\\$1\fR
+.PP
+..
+.de Sp
+.if t .sp .5v
+.if n .sp
+..
+.de Ip
+.br
+.ie \\n(.$>=3 .ne \\$3
+.el .ne 3
+.IP "\\$1" \\$2
+..
+.de Vb
+.ft CW
+.nf
+.ne \\$1
+..
+.de Ve
+.ft R
+
+.fi
+..
+'''
+'''
+'''     Set up \*(-- to give an unbreakable dash;
+'''     string Tr holds user defined translation string.
+'''     Bell System Logo is used as a dummy character.
+'''
+.tr \(*W-|\(bv\*(Tr
+.ie n \{\
+.ds -- \(*W-
+.ds PI pi
+.if (\n(.H=4u)&(1m=24u) .ds -- \(*W\h'-12u'\(*W\h'-12u'-\" diablo 10 pitch
+.if (\n(.H=4u)&(1m=20u) .ds -- \(*W\h'-12u'\(*W\h'-8u'-\" diablo 12 pitch
+.ds L" ""
+.ds R" ""
+'''   \*(M", \*(S", \*(N" and \*(T" are the equivalent of
+'''   \*(L" and \*(R", except that they are used on ".xx" lines,
+'''   such as .IP and .SH, which do another additional levels of
+'''   double-quote interpretation
+.ds M" """
+.ds S" """
+.ds N" """""
+.ds T" """""
+.ds L' '
+.ds R' '
+.ds M' '
+.ds S' '
+.ds N' '
+.ds T' '
+'br\}
+.el\{\
+.ds -- \(em\|
+.tr \*(Tr
+.ds L" ``
+.ds R" ''
+.ds M" ``
+.ds S" ''
+.ds N" ``
+.ds T" ''
+.ds L' `
+.ds R' '
+.ds M' `
+.ds S' '
+.ds N' `
+.ds T' '
+.ds PI \(*p
+'br\}
+.\"	If the F register is turned on, we'll generate
+.\"	index entries out stderr for the following things:
+.\"		TH	Title 
+.\"		SH	Header
+.\"		Sh	Subsection 
+.\"		Ip	Item
+.\"		X<>	Xref  (embedded
+.\"	Of course, you have to process the output yourself
+.\"	in some meaninful fashion.
+.if \nF \{
+.de IX
+.tm Index:\\$1\t\\n%\t"\\$2"
+..
+.nr % 0
+.rr F
+.\}
+.TH bt_postprocess 3 "btparse, version 0.33" "22 Decemer, 2000" "btparse"
+.UC
+.if n .hy 0
+.if n .na
+.ds C+ C\v'-.1v'\h'-1p'\s-2+\h'-1p'+\s0\v'.1v'\h'-1p'
+.de CQ          \" put $1 in typewriter font
+.ft CW
+'if n "\c
+'if t \\&\\$1\c
+'if n \\&\\$1\c
+'if n \&"
+\\&\\$2 \\$3 \\$4 \\$5 \\$6 \\$7
+'.ft R
+..
+.\" @(#)ms.acc 1.5 88/02/08 SMI; from UCB 4.2
+.	\" AM - accent mark definitions
+.bd B 3
+.	\" fudge factors for nroff and troff
+.if n \{\
+.	ds #H 0
+.	ds #V .8m
+.	ds #F .3m
+.	ds #[ \f1
+.	ds #] \fP
+.\}
+.if t \{\
+.	ds #H ((1u-(\\\\n(.fu%2u))*.13m)
+.	ds #V .6m
+.	ds #F 0
+.	ds #[ \&
+.	ds #] \&
+.\}
+.	\" simple accents for nroff and troff
+.if n \{\
+.	ds ' \&
+.	ds ` \&
+.	ds ^ \&
+.	ds , \&
+.	ds ~ ~
+.	ds ? ?
+.	ds ! !
+.	ds /
+.	ds q
+.\}
+.if t \{\
+.	ds ' \\k:\h'-(\\n(.wu*8/10-\*(#H)'\'\h"|\\n:u"
+.	ds ` \\k:\h'-(\\n(.wu*8/10-\*(#H)'\`\h'|\\n:u'
+.	ds ^ \\k:\h'-(\\n(.wu*10/11-\*(#H)'^\h'|\\n:u'
+.	ds , \\k:\h'-(\\n(.wu*8/10)',\h'|\\n:u'
+.	ds ~ \\k:\h'-(\\n(.wu-\*(#H-.1m)'~\h'|\\n:u'
+.	ds ? \s-2c\h'-\w'c'u*7/10'\u\h'\*(#H'\zi\d\s+2\h'\w'c'u*8/10'
+.	ds ! \s-2\(or\s+2\h'-\w'\(or'u'\v'-.8m'.\v'.8m'
+.	ds / \\k:\h'-(\\n(.wu*8/10-\*(#H)'\z\(sl\h'|\\n:u'
+.	ds q o\h'-\w'o'u*8/10'\s-4\v'.4m'\z\(*i\v'-.4m'\s+4\h'\w'o'u*8/10'
+.\}
+.	\" troff and (daisy-wheel) nroff accents
+.ds : \\k:\h'-(\\n(.wu*8/10-\*(#H+.1m+\*(#F)'\v'-\*(#V'\z.\h'.2m+\*(#F'.\h'|\\n:u'\v'\*(#V'
+.ds 8 \h'\*(#H'\(*b\h'-\*(#H'
+.ds v \\k:\h'-(\\n(.wu*9/10-\*(#H)'\v'-\*(#V'\*(#[\s-4v\s0\v'\*(#V'\h'|\\n:u'\*(#]
+.ds _ \\k:\h'-(\\n(.wu*9/10-\*(#H+(\*(#F*2/3))'\v'-.4m'\z\(hy\v'.4m'\h'|\\n:u'
+.ds . \\k:\h'-(\\n(.wu*8/10)'\v'\*(#V*4/10'\z.\v'-\*(#V*4/10'\h'|\\n:u'
+.ds 3 \*(#[\v'.2m'\s-2\&3\s0\v'-.2m'\*(#]
+.ds o \\k:\h'-(\\n(.wu+\w'\(de'u-\*(#H)/2u'\v'-.3n'\*(#[\z\(de\v'.3n'\h'|\\n:u'\*(#]
+.ds d- \h'\*(#H'\(pd\h'-\w'~'u'\v'-.25m'\f2\(hy\fP\v'.25m'\h'-\*(#H'
+.ds D- D\\k:\h'-\w'D'u'\v'-.11m'\z\(hy\v'.11m'\h'|\\n:u'
+.ds th \*(#[\v'.3m'\s+1I\s-1\v'-.3m'\h'-(\w'I'u*2/3)'\s-1o\s+1\*(#]
+.ds Th \*(#[\s+2I\s-2\h'-\w'I'u*3/5'\v'-.3m'o\v'.3m'\*(#]
+.ds ae a\h'-(\w'a'u*4/10)'e
+.ds Ae A\h'-(\w'A'u*4/10)'E
+.ds oe o\h'-(\w'o'u*4/10)'e
+.ds Oe O\h'-(\w'O'u*4/10)'E
+.	\" corrections for vroff
+.if v .ds ~ \\k:\h'-(\\n(.wu*9/10-\*(#H)'\s-2\u~\d\s+2\h'|\\n:u'
+.if v .ds ^ \\k:\h'-(\\n(.wu*10/11-\*(#H)'\v'-.4m'^\v'.4m'\h'|\\n:u'
+.	\" for low resolution devices (crt and lpr)
+.if \n(.H>23 .if \n(.V>19 \
+\{\
+.	ds : e
+.	ds 8 ss
+.	ds v \h'-1'\o'\(aa\(ga'
+.	ds _ \h'-1'^
+.	ds . \h'-1'.
+.	ds 3 3
+.	ds o a
+.	ds d- d\h'-1'\(ga
+.	ds D- D\h'-1'\(hy
+.	ds th \o'bp'
+.	ds Th \o'LP'
+.	ds ae ae
+.	ds Ae AE
+.	ds oe oe
+.	ds Oe OE
+.\}
+.rm #[ #] #H #V #F C
+.SH "NAME"
+bt_postprocess \- post-processing of BibTeX strings, values, and entries
+.SH "SYNOPSIS"
+.PP
+.Vb 2
+\&   void bt_postprocess_string (char * s,
+\&                               ushort options)
+.Ve
+.Vb 3
+\&   char * bt_postprocess_value (AST *   value,
+\&                                ushort  options, 
+\&                                boolean replace);
+.Ve
+.Vb 3
+\&   char * bt_postprocess_field (AST *   field, 
+\&                                ushort  options, 
+\&                                boolean replace);
+.Ve
+.Vb 2
+\&   void bt_postprocess_entry (AST *  entry,
+\&                              ushort options);
+.Ve
+.SH "DESCRIPTION"
+When \fBbtparse\fR parses a BibTeX entry, it initially stores the results
+in an abstract syntax tree (AST), in a form exactly mirroring the parsed
+data.  For example, the entry
+.PP
+.Vb 7
+\&   @Article{Jones:1997a,
+\&     AuThOr = "Bob   Jones" # and # "Jim Smith ",
+\&     TITLE = "Feeding Habits of
+\&              the Common Cockroach",
+\&     JoUrNaL = j_ent,
+\&     YEAR = 1997
+\&   }
+.Ve
+would parse to an AST that could be represented as follows:
+.PP
+.Vb 12
+\&   (entry,"Article")
+\&     (key,"Jones:1997a")
+\&     (field,"AuThOr")
+\&       (string,"Bob   Jones")
+\&       (macro,"and")
+\&       (string,"Jim Smith ")
+\&     (field,"TITLE")
+\&       (string,"Feeding Habits of               the Common Cockroach")
+\&     (field,"JoUrNaL")
+\&       (macro,"j_ent")
+\&     (field,"YEAR")
+\&       (number,"1997")
+.Ve
+The advantage of this form is that all the important information in the
+entry is readily available by traversing the tree using the functions
+described in the \fIbt_traversal\fR manpage.  This obvious problem is that the data is
+a little too raw to be immediately useful: entry types and field names
+are inconsistently capitalized, strings are full of unwanted whitespace,
+field values not reduced to single strings, and so forth.
+.PP
+All of these problems are addressed by \fBbtparse\fR's post-processing
+functions, described here.  Normally, you won't have to call these
+functions---the library does the Right Thing for you after parsing each
+entry, and you can customize what exactly the Right Thing is for your
+application.  (For instance, you can tell it to expand macros, but not
+to concatenate substrings together.)  However, it's conceivable that you
+might wish to move the post-processing into your own code and out of the
+library's control.  More likely, you could have strings that come from
+something other than BibTeX files that you would like to have treated as
+BibTeX strings; for that situation, the post-processing functions are
+essential.  Finally, you might just be curious about what exactly
+happens to your data after it's parsed.  If so, you've come to the right
+place for excruciatingly detailed explanations.
+.SH "FUNCTIONS"
+\fBbtparse\fR offers four points of entry to its post-processing code.  Of
+these, probably only the first and last---for processing individual
+strings and whole entries---will be commonly used.
+.Sh "Post-processing entry points"
+To understand why four entry points are offered, an explanation of the
+sample \s-1AST\s0 shown above will help.  First of all, the whole entry is
+represented by the \f(CW(entry,"Article")\fR node; this node has the entry
+key and all its field/value pairs as children.  Entry nodes are returned
+by \f(CWbt_parse_entry()\fR and \f(CWbt_parse_entry_s()\fR (see the \fIbt_input\fR manpage) as
+well as \f(CWbt_next_entry()\fR (which traverses a list of entries returned
+from \f(CWbt_parse_file()\fR---see the \fIbt_traversal\fR manpage).  Whole entries may be
+post-processed with \f(CWbt_postprocess_entry()\fR.
+.PP
+You may also need to post-process a single field, or just the value
+associated with it.  (The difference is that processing the field can
+change the field name---e.g. to lowercase---in addition to the field
+value.)  The \f(CW(field,"AuThOr")\fR node above is an example of a field
+sub-\s-1AST\s0, and \f(CW(string,"Bob   Jones")\fR is the first node in the list of
+simple values representing that field's value.  (Recall that a field
+value is, in general, a list of simple values.)  Field nodes are
+returned by \f(CWbt_next_field()\fR, value nodes by \f(CWbt_next_value()\fR.  The
+former may be passed to \f(CWbt_postprocess_field()\fR for post-processing,
+the latter to \f(CWbt_postprocess_value()\fR.
+.PP
+Finally, individual strings may wander into your program from many
+places other than a \fBbtparse\fR \s-1AST\s0.  For that reason,
+\f(CWbt_postprocess_string()\fR is available for post-processing arbitrary
+strings.
+.Sh "Post-processing options"
+All of the post-processing routines have an \f(CWoptions\fR parameter, which
+you can use to fine-tune the post-processing.  (This is just like the
+per-metatype string-processing options that you can set before parsing
+entries; see \f(CWbt_set_stringopts()\fR in the \fIbt_input\fR manpage.)  Like elsewhere in
+the library, \f(CWoptions\fR is a bitmap constructed by or'ing together
+various predefined constants.  These constants and their effects are
+documented in the section on \fIString processing option macros\fR in the \fIbtparse\fR manpage.
+.Ip "bt_postprocess_string ()" 4
+.Sp
+.Vb 2
+\&   void bt_postprocess_string (char * s,
+\&                               ushort options)
+.Ve
+Post-processes an individual string, \f(CWs\fR, which is modified in place.
+The only post-processing option that makes sense on individual strings
+is whether to collapse whitespace according to the BibTeX rules; thus,
+if \f(CWoptions & BTO_COLLAPSE\fR is false, this function has no effect.
+(Although it makes a complete pass over the string anyways.  This is for
+future expansion.)
+.Sp
+The exact rules for collapsing whitespace are simple: non-space
+whitespace characters (tabs and newlines mainly) are converted to space,
+any strings of more than one space within are collapsed to a single
+space, and any leading or trailing spaces are deleted.  (Ensuring that
+all whitespace is spaces is actually done by \fBbtparse\fR's lexical
+scanner, so strings in \fBbtparse\fR ASTs will never have whitespace apart
+from space.  Likewise, any strings passed to \fIbt_postprocess_string()\fR
+should not contain non-space whitespace characters.)
+.Ip "bt_postprocess_value ()" 4
+.Sp
+.Vb 3
+\&   char * bt_postprocess_value (AST *   value,
+\&                                ushort  options, 
+\&                                boolean replace);
+.Ve
+Post-processes a single field value, which is the head of a list of
+simple values as returned by \f(CWbt_next_value()\fR.  All of the relevant
+string-processing options come into play here: conversion of numbers to
+strings (\f(CWBTO_CONVERT\fR), macro expansion (\f(CWBTO_EXPAND\fR), collapsing of
+whitespace (\f(CWBTO_COLLAPSE\fR), and string pasting (\f(CWBTO_PASTE\fR).  Since
+pasting substrings together without first expanding macros and
+converting numbers would be nonsensical, attempting to do so is a fatal
+error.
+.Sp
+If \f(CWreplace\fR is true, then the list headed by \f(CWvalue\fR will be replaced
+by a list representing the processed value.  That is, if string pasting
+is turned on (\f(CWoptions & BTO_PASTE\fR is true), then this list will be
+collapsed to a single node containing the single string that results
+from pasting together all the substrings.  If string pasting is not on,
+then each node in the list will be left intact, but will have its
+text replaced by processed text.
+.Sp
+If \f(CWreplace\fR is false, then a new string will be built on the fly and
+returned by the function.  Note that if pasting is not on in this case,
+you will only get the last string in the list.  (It doesn't really make
+a lot of sense to post-process a value without pasting unless you're
+replacing it with the new value, though.)
+.Sp
+Returns the string that resulted from processing the whole value, which
+only makes sense if pasting was on or there was only one value in the
+list.  If a multiple-value list was processed without pasting, the last
+string in the list is returned (after processing).
+.Sp
+Consider what might be done to the value of the \f(CWauthor\fR field in the
+above example, which is the concatenation of a string, a macro, and
+another string.  Assume that the macro \f(CWand\fR expands to \f(CW" and "\fR, and
+that the variable \f(CWvalue\fR points to the sub-\s-1AST\s0 for this value.
+The original sub-\s-1AST\s0 corresponding to this value is
+.Sp
+.Vb 3
+\&   (string,"Bob   Jones")
+\&   (macro,"and")
+\&   (string,"Jim Smith ")
+.Ve
+To fully process this value in-place, you would call
+.Sp
+.Vb 1
+\&   bt_postprocess_value (value, BTO_FULL, TRUE);
+.Ve
+This would convert the value to a single-element list,
+.Sp
+.Vb 1
+\&   (string,"Bob Jones and Jim Smith")
+.Ve
+and return the fully-processed string \f(CW"Bob Jones and Jim Smith"\fR.
+Note that the \f(CWand\fR macro has been expanded, interpolated between the
+two literal strings, everything pasted together, and finally whitespace
+collapsed.  (Collapsing whitespace before concatenating the strings
+would be a bad idea.)
+.Sp
+(Incidentally, \f(CWBTO_FULL\fR is just a macro for the combination of all
+possible string-processing options, currently:
+.Sp
+.Vb 1
+\&   BTO_CONVERT | BTO_EXPAND | BTO_PASTE | BTO_COLLAPSE
+.Ve
+There are two other similar shortcut macros: \f(CWBTO_MACRO\fR to express the
+special string-processing done on macro values, which is the same as
+\f(CWBTO_FULL\fR except for the absence of \f(CWBTO_COLLAPSE\fR; and
+\f(CWBTO_MINIMAL\fR, which means no string-processing is to be done.)
+.Sp
+Let's say you'd rather preserve the list nature of the value, while
+expanding macros and converting any numbers to strings.  (This
+conversion is trivial: it just changes the type of the node from
+\f(CWBTAST_NUMBER\fR to \f(CWBTAST_STRING\fR.  \*(L"Number\*(R" values are always stored
+as a string of digits, just as they appear in the file.)  This would be
+done with the call
+.Sp
+.Vb 2
+\&   bt_postprocess_value
+\&      (value, BTO_CONVERT|BTO_EXPAND|BTO_COLLAPSE,TRUE);
+.Ve
+which would change the list to
+.Sp
+.Vb 3
+\&   (string,"Bob Jones")
+\&   (string,"and")
+\&   (string,"Jim Smith")
+.Ve
+Note that whitespace is collapsed here \fIbefore\fR any concatenation can
+be done; this is probably a bad idea.  But you can do it if you wish.
+(If you get any ideas about cooking up your own value post-processing
+scheme by doing it in little steps like this, take a look at the source
+to \f(CWbt_postprocess_value()\fR; it should dissuade you from such a
+venture.)
+.Ip "bt_postprocess_field ()" 4
+.Sp
+.Vb 3
+\&   char * bt_postprocess_field (AST *   field, 
+\&                                ushort  options, 
+\&                                boolean replace);
+.Ve
+This is little more than a front-end to \f(CWbt_postprocess_value()\fR; the
+only difference is that you pass it a \*(L"field\*(R" \s-1AST\s0 node (eg. the
+\f(CW(field,"AuThOr")\fR in the above example), and that it transforms the
+field name in addition to its value.  In particular, the field name is
+forced to lowercase; this behaviour is (currently) not optional.
+.Sp
+Returns the string returned by \f(CWbt_postprocess_value()\fR.
+.Ip "bt_postprocess_entry ()" 4
+.Sp
+.Vb 2
+\&   void bt_postprocess_entry (AST *  entry,
+\&                              ushort options);
+.Ve
+Post-processes all values in an entry.  If \f(CWentry\fR points to the \s-1AST\s0
+for a \*(L"regular\*(R" or \*(L"macro definition\*(R" entry, then the values are just
+what you'd expect: everything on the right-hand side of a field or macro
+\*(L"assignment.\*(R"  You can also post-process comment and preamble entries,
+though.  Comment entries are essentially one big string, so only
+whitespace collapsing makes sense on them.  Preambles may have multiple
+strings pasted together, so all the string-processing options apply to
+them.  (And there's nothing to prevent you from using macros in a
+preamble.)
+.SH "SEE ALSO"
+the \fIbtparse\fR manpage, the \fIbt_input\fR manpage, the \fIbt_traversal\fR manpage
+.SH "AUTHOR"
+Greg Ward <gward@python.net>
+
+.rn }` ''
+.IX Title "bt_postprocess 3"
+.IX Name "bt_postprocess - post-processing of BibTeX strings, values, and entries"
+
+.IX Header "NAME"
+
+.IX Header "SYNOPSIS"
+
+.IX Header "DESCRIPTION"
+
+.IX Header "FUNCTIONS"
+
+.IX Subsection "Post-processing entry points"
+
+.IX Subsection "Post-processing options"
+
+.IX Item "bt_postprocess_string ()"
+
+.IX Item "bt_postprocess_value ()"
+
+.IX Item "bt_postprocess_field ()"
+
+.IX Item "bt_postprocess_entry ()"
+
+.IX Header "SEE ALSO"
+
+.IX Header "AUTHOR"
+

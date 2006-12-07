@@ -1,0 +1,918 @@
+<?xml version="1.0"?>
+<!DOCTYPE dictionary SYSTEM "file://localhost/System/Library/DTDs/sdef.dtd">
+<!--
+ssp: 2004-07-19
+Scripting definition for BibDesk's scripting support.
+
+Currently this support is for the BibDocument (document), BibItem (publication), BibAuthor (author), Bibfield (field) and BDSKScriptHook (script hook) model objects along with the preference for the AutoFile path. There are commands for searching (as used by the BibDeskInputManager autocompletion feature) and opening editor windows for authors and publications.
+
+The command
+
+/Developer/Tools/sdp -f ast BibDesk.sdef
+
+will translate this file into the necessary scriptSuite and scriptTerminology files and an additional .r file with an aete resource. 
+Having all three of these seems to work best for Panther. For Tiger include this .sdef file and set the OSAScriptingDefinition key to this filename.
+-->
+<dictionary title="BibDesk Terminology">
+    
+	<suite name="Standard Suite" code="core"
+		description="Common classes and commands for all applications.">
+
+		<cocoa name="NSCoreSuite"/>
+
+<!-- The definition of AbstractObject is required for Panther -->        
+        <class name="item" code="cobj" description="A scriptable object.">
+            <cocoa class="AbstractObject"/>
+            <property name="class" code="pcls" type="type" access="r" description="The class of the object.">
+                <cocoa key="classCode"/>
+            </property>
+            <property name="properties" code="pALL" type="record" description="All of the object's properties.">
+                <cocoa key="scriptingProperties"/>
+            </property>
+<!--
+                        The blank method declarations are needed to emulate the existing
+                        NSCoreSuite.scriptSuite.framework.  Ordinarily, you wouldn't do this.
+                    -->
+            <responds-to name="count">
+                <cocoa method=""/>
+            </responds-to>
+            <responds-to name="delete">
+                <cocoa method=""/>
+            </responds-to>
+            <responds-to name="duplicate">
+                <cocoa method=""/>
+            </responds-to>
+            <responds-to name="exists">
+                <cocoa method=""/>
+            </responds-to>
+            <responds-to name="get">
+                <cocoa method=""/>
+            </responds-to>
+            <responds-to name="move">
+                <cocoa method=""/>
+            </responds-to>
+            <responds-to name="set">
+                <cocoa method=""/>
+            </responds-to>
+        </class>
+        
+		<class name="window" code="cwin"
+			description="A window.">
+			<cocoa class="NSWindow"/>
+			<property name="name" code="pnam" type="text" access="r"
+				description="The full title of the window.">
+				<cocoa key="title"/>
+			</property>
+			<property name="id" code="ID  " type="integer" access="r"
+				description="The unique identifier of the window.">
+				<cocoa key="uniqueID"/>
+			</property>
+			<property name="index" code="pidx" type="integer"
+				description="The index of the window, ordered front to back.">
+				<cocoa key="orderedIndex"/>
+			</property>
+			<property name="bounds" code="pbnd" type="rectangle"
+				description="The bounding rectangle of the window.">
+				<cocoa key="boundsAsQDRect"/>
+			</property>
+			<property name="closeable" code="hclb" type="boolean" access="r"
+				description="Whether the window has a close box.">
+				<cocoa key="hasCloseBox"/>
+			</property>
+			<property name="minimizable" code="ismn" type="boolean" access="r"
+				description="Whether the window can be minimized.">
+				<cocoa key="isMiniaturizable"/>
+			</property>
+			<property name="minimized" code="pmnd" type="boolean"
+				description="Whether the window is currently minimized.">
+				<cocoa key="isMiniaturized"/>
+			</property>
+			<property name="resizable" code="prsz" type="boolean" access="r"
+				description="Whether the window can be resized.">
+				<cocoa key="isResizable"/>
+			</property>
+			<property name="visible" code="pvis" type="boolean"
+				description="Whether the window is currently visible.">
+				<cocoa key="isVisible"/>
+			</property>
+			<property name="zoomable" code="iszm" type="boolean" access="r"
+				description="Whether the window can be zoomed.">
+				<cocoa key="isZoomable"/>
+			</property>
+			<property name="zoomed" code="pzum" type="boolean"
+				description="Whether the window is currently zoomed.">
+				<cocoa key="isZoomed"/>
+			</property>
+			<property name="document" code="docu" type="document" access="r"
+				description="The document whose contents are being displayed in the window."/>
+			<responds-to name="close">
+				<cocoa method="handleCloseScriptCommand:"/>
+			</responds-to>
+			<responds-to name="print">
+				<cocoa method="handlePrintScriptCommand:"/>
+			</responds-to>
+			<responds-to name="save">
+				<cocoa method="handleSaveScriptCommand:"/>
+			</responds-to>
+		</class>
+        
+		<command name="open" code="aevtodoc"
+			description="Open a document.">
+			<direct-parameter description="The file(s) to be opened.">
+				<type type="file"/>
+				<type type="file" list="yes"/>
+			</direct-parameter>
+			<!--
+				According to TN2106, 'open' should return the resulting document
+				object.  However, the Cocoa implementation does not do this yet.
+			<result type="specifier"/>
+			-->
+		</command>
+        
+        <enumeration name="save options" code="savo">
+			<enumerator name="yes" code="yes "
+			description="Save the file."/>
+			<enumerator name="no" code="no  "
+			description="Do not save the file."/>
+			<enumerator name="ask" code="ask "
+				description="Ask the user whether or not to save the file."/>
+		</enumeration>
+
+		<command name="close" code="coreclos"
+			description="Close a document.">
+			<cocoa class="NSCloseCommand"/>
+			<direct-parameter type="specifier"
+				description="the document(s) or window(s) to close."/>
+			<parameter name="saving" code="savo" type="save options" optional="yes"
+				description="Whether or not changes should be saved before closing.">
+				<cocoa key="SaveOptions"/>
+			</parameter>
+			<parameter name="saving in" code="kfil" type="file" optional="yes"
+				description="The file in which to save the document.">
+				<cocoa key="File"/>
+			</parameter>
+		</command>
+
+		<command name="save" code="coresave"
+			description="Save a document.">
+			<direct-parameter type="specifier"
+				description="The document(s) or window(s) to save."/>
+			<parameter name="in" code="kfil" type="file" optional="yes"
+				description="The file in which to save the document.">
+				<cocoa key="File"/>
+			</parameter>
+			<parameter name="as" code="fltp" type="text" optional="yes"
+				description="The type of file to save.">
+				<cocoa key="FileType"/>
+			</parameter>
+		</command>
+
+		<enumeration name="printing error handling" code="enum">
+			<enumerator name="standard" code="lwst"
+				description="Standard PostScript error handling"/>
+			<enumerator name="detailed" code="lwdt"
+				description="print a detailed report of PostScript errors"/>
+		</enumeration>
+
+		<record-type name="print settings" code="pset">
+			<property name="copies" code="lwcp" type="integer"
+				description="the number of copies of a document to be printed">
+				<cocoa key="NSCopies"/>
+			</property>
+			<property name="collating" code="lwcl" type="boolean"
+				description="Should printed copies be collated?">
+				<cocoa key="NSMustCollate"/>
+			</property>
+			<property name="starting page" code="lwfp" type="integer"
+				description="the first page of the document to be printed">
+				<cocoa key="NSFirstPage"/>
+			</property>
+			<property name="ending page" code="lwlp" type="integer"
+				description="the last page of the document to be printed">
+				<cocoa key="NSLastPage"/>
+			</property>
+			<property name="pages across" code="lwla" type="integer"
+				description="number of logical pages laid across a physical page">
+				<cocoa key="NSPagesAcross"/>
+			</property>
+			<property name="pages down" code="lwld" type="integer"
+				description="number of logical pages laid out down a physical page">
+				<cocoa key="NSPagesDown"/>
+			</property>
+			<property name="error handling" code="lweh" type="printing error handling"
+				description="how errors are handled">
+				<cocoa key="NSDetailedErrorReporting"/>
+			</property>
+			<property name="fax number" code="faxn" type="text"
+				description="for fax number">
+				<cocoa key="NSFaxNumber"/>
+			</property>
+			<property name="target printer" code="trpr" type="text"
+				description="for target printer">
+				<cocoa key="NSPrinterName"/>
+			</property>
+		</record-type>
+
+		<command name="print" code="aevtpdoc"
+			description="Print a document.">
+			<direct-parameter
+				description="The file(s), document(s), or window(s) to be printed.">
+				<type type="file" list="yes"/>
+				<type type="specifier"/>
+			</direct-parameter>
+			<parameter name="with properties" code="prdt" type="print settings" optional="yes"
+				description="The print settings to use.">
+				<cocoa key="PrintSettings"/>
+			</parameter>
+			<parameter name="print dialog" code="pdlg" type="boolean" optional="yes"
+				description="Should the application show the print dialog?">
+				<cocoa key="ShowPrintDialog"/>
+			</parameter>
+		</command>
+        
+		<command name="quit" code="aevtquit"
+			description="Quit the application.">
+			<cocoa class="NSQuitCommand"/>
+			<parameter name="saving" code="savo" type="save options" optional="yes"
+				description="Whether or not changed documents should be saved before closing.">
+				<cocoa key="SaveOptions"/>
+			</parameter>
+		</command>
+        
+		<command name="count" code="corecnte"
+			description="Return the number of elements of a particular class within an object.">
+			<cocoa class="NSCountCommand"/>
+			<direct-parameter type="specifier"
+				description="the object whose elements are to be counted"/>
+			<parameter name="each" code="kocl" type="type" optional="yes"
+				description="The class of objects to be counted.">
+				<cocoa key="ObjectClass"/>
+			</parameter>
+			<result type="integer"
+			description="the number of elements"/>
+		</command>
+
+		<command name="delete" code="coredelo"
+			description="Delete an object.">
+			<cocoa class="NSDeleteCommand"/>
+			<direct-parameter type="specifier"
+			description="the object to delete"/>
+		</command>
+
+		<command name="duplicate" code="coreclon"
+			description="Copy object(s) and put the copies at a new location.">
+			<cocoa class="NSCloneCommand"/>
+			<direct-parameter type="specifier"
+				description="the object(s) to duplicate"/>
+			<parameter name="to" code="insh" type="location specifier" optional="yes"
+				description="The location for the new object(s).">
+				<cocoa key="ToLocation"/>
+			</parameter>
+			<parameter name="with properties" code="prdt" type="record" optional="yes"
+				description="Properties to be set in the new duplicated object(s).">
+				<cocoa key="WithProperties"/>
+			</parameter>
+			<result type="specifier"
+			description="the duplicated object(s)"/>
+		</command>
+        
+		<command name="exists" code="coredoex"
+			description="Verify if an object exists.">
+			<cocoa class="NSExistsCommand"/>
+			<direct-parameter type="any"
+			description="the object in question"/>
+			<result type="boolean"
+			description="true if it exists, false if not"/>
+		</command>
+        
+		<command name="make" code="corecrel"
+			description="Make a new object.">
+			<cocoa class="NSCreateCommand"/>
+			<parameter name="new" code="kocl" type="type"
+				description="The class of the new object.">
+				<cocoa key="ObjectClass"/>
+			</parameter>
+			<parameter name="at" code="insh" type="location specifier" optional="yes"
+				description="The location at which to insert the object.">
+				<cocoa key="Location"/>
+			</parameter>
+			<parameter name="with data" code="data" type="any" optional="yes"
+				description="The initial contents of the object.">
+				<cocoa key="ObjectData"/>
+			</parameter>
+			<parameter name="with properties" code="prdt" type="record" optional="yes"
+				description="The initial values for properties of the object.">
+				<cocoa key="KeyDictionary"/>
+			</parameter>
+			<result type="specifier"
+			description="to the new object"/>
+		</command>
+        
+		<command name="move" code="coremove"
+			description="Move object(s) to a new location.">
+			<cocoa class="NSMoveCommand"/>
+			<direct-parameter type="specifier"
+			description="the object(s) to move"/>
+			<parameter name="to" code="insh" type="location specifier"
+				description="The new location for the object(s).">
+				<cocoa key="ToLocation"/>
+			</parameter>
+			<result type="specifier"
+			description="the moved object(s)"/>
+		</command>
+        
+    </suite>
+    
+    
+<suite name="Text Suite" code="TEXT"
+		description="A set of basic classes for text processing.">
+
+		<cocoa name="NSTextSuite"/>
+
+		<value-type name="color" code="cRGB">
+			<cocoa class="NSColor"/>
+		</value-type>
+
+		<class name="rich text" plural="rich text" code="ctxt"
+			description="Rich (styled) text">
+			<cocoa class="NSTextStorage"/>
+			<!-- this "type" element and the ones that follow, while they
+				contradict the DTD, are NOT errors.  Cocoa Scripting in 10.4
+				uses them to accomplish certain type conversions. -->
+			<type type="text"/>
+			<property name="color" code="colr" type="color"
+				description="The color of the first character.">
+				<cocoa key="foregroundColor"/>
+			</property>
+			<property name="font" code="font" type="text"
+				description="The name of the font of the first character.">
+				<cocoa key="fontName"/>
+			</property>
+			<property name="size" code="ptsz" type="integer"
+				description="The size in points of the first character.">
+				<cocoa key="fontSize"/>
+			</property>
+			<element type="character"/>
+			<element type="paragraph"/>
+			<element type="word"/>
+			<element type="attribute run"/>
+			<element type="attachment"/>
+		</class>
+
+		<class name="character" code="cha "
+			description="This subdivides the text into characters.">
+			<cocoa class="NSTextStorage"/>
+			<type type="text"/>
+			<property name="color" code="colr" type="color"
+				description="The color of the first character.">
+				<cocoa key="foregroundColor"/>
+			</property>
+			<property name="font" code="font" type="text"
+				description="The name of the font of the first character.">
+				<cocoa key="fontName"/>
+			</property>
+			<property name="size" code="ptsz" type="integer"
+				description="The size in points of the first character.">
+				<cocoa key="fontSize"/>
+			</property>
+			<element type="character"/>
+			<element type="paragraph"/>
+			<element type="word"/>
+			<element type="attribute run"/>
+			<element type="attachment"/>
+		</class>
+
+		<class name="paragraph" code="cpar"
+			description="This subdivides the text into paragraphs.">
+			<cocoa class="NSTextStorage"/>
+			<type type="text"/>
+			<property name="color" code="colr" type="color"
+				description="The color of the first character.">
+				<cocoa key="foregroundColor"/>
+			</property>
+			<property name="font" code="font" type="text"
+				description="The name of the font of the first character.">
+				<cocoa key="fontName"/>
+			</property>
+			<property name="size" code="ptsz" type="integer"
+				description="The size in points of the first character.">
+				<cocoa key="fontSize"/>
+			</property>
+			<element type="character"/>
+			<element type="paragraph"/>
+			<element type="word"/>
+			<element type="attribute run"/>
+			<element type="attachment"/>
+		</class>
+
+		<class name="word" code="cwor"
+			description="This subdivides the text into words.">
+			<cocoa class="NSTextStorage"/>
+			<type type="text"/>
+			<property name="color" code="colr" type="color"
+				description="The color of the first character.">
+				<cocoa key="foregroundColor"/>
+			</property>
+			<property name="font" code="font" type="text"
+				description="The name of the font of the first character.">
+				<cocoa key="fontName"/>
+			</property>
+			<property name="size" code="ptsz" type="integer"
+				description="The size in points of the first character.">
+				<cocoa key="fontSize"/>
+			</property>
+			<element type="character"/>
+			<element type="paragraph"/>
+			<element type="word"/>
+			<element type="attribute run"/>
+			<element type="attachment"/>
+		</class>
+
+		<class name="attribute run" code="catr"
+			description="This subdivides the text into chunks that all have the same attributes.">
+			<cocoa class="NSTextStorage"/>
+			<type type="text"/>
+			<property name="color" code="colr" type="color"
+				description="The color of the first character.">
+				<cocoa key="foregroundColor"/>
+			</property>
+			<property name="font" code="font" type="text"
+				description="The name of the font of the first character.">
+				<cocoa key="fontName"/>
+			</property>
+			<property name="size" code="ptsz" type="integer"
+				description="The size in points of the first character.">
+				<cocoa key="fontSize"/>
+			</property>
+			<element type="character"/>
+			<element type="paragraph"/>
+			<element type="word"/>
+			<element type="attribute run"/>
+			<element type="attachment"/>
+		</class>
+
+		<class name="attachment" code="atts" inherits="rich text"
+			description="Represents an inline text attachment. This class is used mainly for make commands.">
+			<cocoa class="NSAttachmentTextStorage"/>
+			<property name="file name" code="atfn" type="text"
+				description="The path to the file for the attachment">
+				<cocoa key="filename"/>
+			</property>
+		</class>
+	</suite>
+    
+    
+    <suite name="Bibdesk Suite" code="BDSK"
+			description="Bibdesk specific commands and classes for dealing with bibliographies and publications.">
+        <cocoa name="BibDeskSuite"/>
+
+		<class name="application" code="capp"
+			description="Bibdesk's top level scripting object.">
+			<cocoa class="OAApplication"/>
+			<element type="document" access="r"
+				description="The bibliography files currently opened by Bibdesk.">
+				<cocoa key="orderedDocuments"/>
+			</element>
+			<element type="window" access="r">
+				<cocoa key="orderedWindows"/>
+			</element>
+			<element type="script hook" access="r"
+				description="The script hook rules known by Bibdesk.">
+				<cocoa key="scriptHooks"/>
+			</element>
+			<property name="name" code="pnam" type="text" access="r"
+				description="The name of the application."/>
+			<property name="frontmost" code="pisf" type="boolean" access="r"
+				description="Is this the frontmost (active) application?">
+				<cocoa key="isActive"/>
+			</property>
+			<property name="version" code="vers" type="text" access="r"
+				description="The version of the application."/>
+			<property name="papers folder" code="pfol" type="text" access="r"
+				description="Path to the papers folder as specified in the Auto File preference.">
+				<cocoa key="papersFolder"/>
+			</property>
+			<property name="all typenames" code="atyp" access="r"
+				description="All the known BibTeX publication types.">
+				<type type="text" list="yes"/>
+				<cocoa key="allTypes"/>
+            </property>
+			<property name="all fieldnames" code="afnm" access="r"
+				description="All the known BibTeX field names">
+				<type type="text" list="yes"/>
+				<cocoa key="allFieldNames"/>
+			</property>
+			<responds-to name="open">
+				<cocoa method="handleOpenScriptCommand:"/>
+			</responds-to>
+			<responds-to name="print">
+				<cocoa method="handlePrintScriptCommand:"/>
+			</responds-to>
+			<responds-to name="quit">
+				<cocoa method="handleQuitScriptCommand:"/>
+			</responds-to>
+			<responds-to name="search">
+				<cocoa method=""/>
+			</responds-to>
+			<responds-to name="parse format">
+				<cocoa method=""/>
+			</responds-to>
+		</class>
+
+		<class name="document" code="docu"
+			description="A Bibdesk bibliography document.">
+			<cocoa class="BibDocument"/>
+			<element type="publication"
+				description="Publications in the bibliography">
+				<cocoa key="publications"/>
+			</element>
+			<element type="author" access="r"
+				description="Authors of publications in the bibliography">
+				<cocoa key="authors"/>
+			</element>
+			<property name="name" code="pnam" type="text" access="r"
+				description="The document's name.">
+				<cocoa key="displayName"/>
+			</property>
+			<property name="modified" code="imod" type="boolean" access="r"
+				description="Has the document been modified since the last save?">
+				<cocoa key="isDocumentEdited"/>
+			</property>
+			<property name="file" code="file" type="file" access="r"
+				description="The document's location on disk.">
+				<cocoa key="fileURL"/>
+			</property>
+            <property name="path" code="ppth" type="text"
+				description="The document's path.">
+				<cocoa key="fileName"/>
+            </property>
+			<property name="filter field" code="filt" type="text"
+			description="Only publications matching this property will be displayed">
+				<cocoa key="searchString"/>
+			</property>
+			<property name="selection" code="sele"
+				description="The selected publications.">
+				<type type="publication" list="yes"/>
+				<cocoa key="selection"/>
+			</property>
+			<property name="displayed publications" code="disp" access="r"
+				description="The publications currently displayed. This can differ from all publications depending on the state of the filter field and recently added publications.">
+				<type type="publication" list="yes"/>
+				<cocoa key="displayedPublications"/>
+			</property>
+			<responds-to name="close">
+				<cocoa method="handleCloseScriptCommand:"/>
+			</responds-to>
+			<responds-to name="save">
+				<cocoa method="handleSaveScriptCommand:"/>
+			</responds-to>
+			<responds-to name="bibliography for">
+				<cocoa method=""/>
+			</responds-to>
+			<responds-to name="templated text">
+				<cocoa method=""/>
+			</responds-to>
+			<responds-to name="templated rich text">
+				<cocoa method=""/>
+			</responds-to>
+			<responds-to name="export">
+				<cocoa method=""/>
+			</responds-to>
+			<responds-to name="search">
+				<cocoa method=""/>
+			</responds-to>
+		</class>
+
+		<class name="publication" plural="publications" code="bibi" inherits="item"
+			description="A publication.">
+            <cocoa class="BibItem"/>
+            <element type="author" name="author"
+                description="Authors of the publication.">
+                <cocoa key="pubAuthors"/>
+            </element>
+            <element type="field"
+			description="The fields of the publication. These should be accessed by name.">
+                <cocoa key="bibFields"/>
+            </element>
+            <property name="cite key" code="ckey" type="text"
+                description="Key for citing the publication.">
+                <cocoa key="asCiteKey"/>
+            </property>  
+            <property name="generated cite key" code="gcky" type="text" access="r"
+                description="Auto-generated key for the publication.">
+                <cocoa key="suggestedCiteKey"/>
+            </property>  
+            <property name="title" code="titl" type="text"
+                description="The publication's title.">
+                <cocoa key="asTitle"/>
+            </property>  
+            <property name="abstract" code="abst" type="text"
+                description="The publication's abstract.">
+                <cocoa key="abstract"/>
+            </property>  
+            <property name="keywords" code="keyw" type="text"
+                description="The publication's keywords.">
+                <cocoa key="keywords"/>
+            </property>
+            <property name="local file" code="lURL" type="text"
+                description="Location of a file containing the publication. This is a POSIX path.">
+                <cocoa key="localURLString"/>
+            </property>  
+            <property name="URL" code="rURL" type="text"
+                description="URL pointing to the publication.">
+                <cocoa key="remoteURLString"/>
+            </property>  
+            <property name="type" code="type" type="text"
+                description="The publication's type. E.g. article, book, unpublished.">
+                <cocoa key="asType"/>
+                <!-- Provide constants for these? This might be bad wrt to using types which aren't provided as constants. -->
+            </property>  
+            <property name="rating" code="rate" type="integer"
+                description="The publication's rating.">
+                <cocoa key="asRating"/>
+            </property>  
+            <property name="publication date" code="pdat" type="date" hidden="yes"
+                description="Deprecated. Use publication year and publication month instead.">
+                <cocoa key="date"/>
+            </property>  
+            <property name="publication month" code="pmon" type="text"
+			description="Month of publication.">
+                <cocoa key="month"/>
+            </property>  
+            <property name="publication year" code="pyer" type="text"
+                description="Year of publication.">
+                <cocoa key="year"/>
+            </property>  
+            <property name="added date" code="adat" type="date" access="r"
+                description="Date on which the publication's record was added to the bibliography.">
+                <cocoa key="asDateAdded"/>
+            </property>
+            <property name="modified date" code="mdat" type="date" access="r"
+                description="Date on which the publication's record was last modified in the bibliography.">
+                <cocoa key="asDateModified"/>
+            </property>
+            <property name="RSS description" code="RSSd" type="text"
+                description="The publication's RSS description as seen in the RSS Description tab.">
+                <cocoa key="rssDescription"/>
+            </property>  
+            <property name="RSS string" code="RSSv" type="text" access="r"
+                description="RSS entry for the publication.">
+                <cocoa key="rssString"/>
+            </property>  
+            <property name="styled text" code="Stxt" type="rich text" access="r"
+                description="Styled text containing bibliography entry for the publication.">
+                <cocoa key="styledTextValue"/>
+            </property>                      
+            <property name="note" code="note" type="text"
+                description="Annotations for the publication as seen in the Annote tab.">
+                <cocoa key="annotation"/>
+            </property>  
+            <property name="BibTeX string" code="BTeX" type="text"
+                description="String for BibTeX entry. Can be set only at or immediately after initialization.">
+                <cocoa key="bibTeXString"/>
+            </property>
+            <property name="RIS string" code="RISs" type="text" access="r"
+                description="RIS representation of the publication record.">
+                <cocoa key="risString"/>
+            </property>
+            <property name="document" code="docu" type="document" access="r"
+                description="The bibliography containing this publication record.">
+                <cocoa key="owner"/>
+            </property>  
+            <responds-to name="show">
+                <cocoa method=""/>
+            </responds-to>
+        </class>
+        
+        <class name="author" plural="authors" code="auth" inherits="item"
+			description="Contains the name of an author, tries to analyze it and list all publications of that author. Author names can be split into four e.g. '(Jean) (de la) (Fontaine) (Jr.)'">
+            <cocoa class="BibAuthor"/>
+            <property name="name" code="pnam" type="text" access="r"
+                description="The author's name. This name is normalized as 'von Last, Jr, First'.">
+                <cocoa key="normalizedName"/>
+            </property>
+            <property name="full name" type="text" code="aunm"
+                description="The author's full name, as 'First von Last, Jr'.">
+                <cocoa key="name"/>
+            </property>
+            <property name="first name" code="aufn" type="text" access="r"
+                description="The author's first name.">
+                <cocoa key="firstName"/>
+            </property>  
+            <property name="von name part" code="auvp" type="text" access="r"
+                description="'von' part of the author's name.">
+                <cocoa key="vonPart"/>
+            </property>  
+            <property name="last name" code="auln" type="text" access="r"
+			description="The author's last name.">
+                <cocoa key="lastName"/>
+            </property>  
+            <property name="jr part" code="aujr" type="text" access="r"
+                description="The 'Jr' part of the author's name.">
+                <cocoa key="jrPart"/>
+            </property>  
+            <property name="abbreviated name" code="auab" type="text" access="r"
+                description="An abbreviated form of the name with first name(s) as initials (e.g. 'F. von Last, Jr').">
+                <cocoa key="abbreviatedName"/>
+            </property>  
+            <property name="abbreviated normalized name" code="aubn" type="text" access="r"
+                description="A normalized form of the name with first name(s) as initials (e.g. 'von Last, Jr, F.').">
+                <cocoa key="abbreviatedNormalizedName"/>
+            </property>  
+            <element type="publication" access="r"
+                description="Publications of the author.">
+                <cocoa key="publications"/>
+            </element>
+            <responds-to name="show">
+                <cocoa method=""/>
+            </responds-to>
+        </class>
+        
+        <class name="field" plural="fields" code="bfld" inherits="item"
+			description="Field containing data for a publication.">
+            <cocoa class="BibField"/>
+            <property name="value" code="fldv" type="text"
+                description="The value of the field">
+                <cocoa key="value"/>
+            </property>  
+            <property name="name" code="pnam" access="r" type="text"
+                description="The name of the field">
+                <cocoa key="name"/>
+            </property>  
+            <property name="BibTeX string" code="BTeX" type="text"
+                description="The value of the field as raw BibTeX">
+                <cocoa key="bibTeXString"/>
+            </property>  
+            <property name="inherited" code="Inhe" type="boolean"
+                description="Whether the value of the field is inherited (crossreffed)">
+                <cocoa key="isInherited"/>
+            </property>  
+        </class>
+        
+        <class name="script hook" plural="script hooks" code="bshk" inherits="item"
+			description="A script hook.">
+            <cocoa class="BDSKScriptHook"/>
+            <property name="name" code="pnam" type="text" access="r"
+                description="Name of the script hook.">
+                <cocoa key="asName"/>
+            </property>  
+            <property name="id" code="ID  " type="integer" access="r"
+                description="Unique ID of the script hook.">
+                <cocoa key="asUniqueID"/>
+            </property>  
+            <property name="document" code="docu" type="document" access="r"
+                description="Document for the script hook.">
+                <cocoa key="document"/>
+            </property>  
+            <property name="field name" code="fnam" type="text" access="r"
+                description="Name of the field relevant for the script hook. This is only set when the there are relevant old and new values for the script hook.">
+                <cocoa key="asField"/>
+            </property>  
+            <property name="old values" code="oVal" access="r"
+                description="List of old values for the field relevant for the script hook. This is only set if the field name is set.">
+                <type type="text" list="yes"/>
+                <cocoa key="asOldValues"/>
+            </property>  
+            <property name="new values" code="nVal" access="r"
+                description="List of new values for the field relevant for the script hook. This is only set if the field name is set.">
+                <type type="text" list="yes"/>
+                <cocoa key="asNewValues"/>
+            </property>  
+        </class>
+        
+        <command name="bibliography for" code="BDSKbibf"
+			description="Returns bibliography information for the publications passed to the command.">
+            <cocoa name="bibliographyFor" class="BibDeskBibliographyCommand"/>
+            <direct-parameter description="The list of publications to generate a bibliography for.">
+                <type type="publication" list="yes"/>
+            </direct-parameter>
+            <result type="rich text"
+			description="Bibliography as styled text"/>
+        </command>
+        
+        <command name="selectionToClipboard" code="BDSKsbtc" hidden="yes" 
+			description="Deprecated. Generates a bibliography from the selected items and puts it on the clipboard. This command has to be sent to a document.">
+            <!-- This is a silly command name. But AppleScript choked on all the reasonable ones as they contained words like copy or bibliography, which are already taken. =&gt; Ugly but less confusing. -->
+        </command>    
+        
+        <command name="templated text" code="BDSKttxt"
+			description="Returns a string representation of publications in the document using a template.">
+            <cocoa name="templatedText" class="BibDeskTemplatedTextCommand"/>
+            <direct-parameter type="document"
+                description="The object responding to the command, the document."/>
+            <parameter name="using" code="usng" type="text"
+                description="The name of the template to use.">
+                <cocoa key="using"/>
+            </parameter>
+            <parameter name="for" code="for " optional="yes"
+                description="Specifies the publication or list of publications to parse.">
+                <type type="publication" list="yes"/>
+                <type type="publication"/>
+                <cocoa key="for"/>
+            </parameter>                
+            <result description="the templated text" type="text">
+            </result>
+        </command>
+        
+        <command name="templated rich text" code="BDSKtrtx"
+			description="Returns a styled text representation of publications in the document using a template.">
+            <cocoa name="templatedRichText" class="BibDeskTemplatedRichTextCommand"/>
+            <direct-parameter type="document"
+                description="The object responding to the command, the document."/>
+            <parameter name="using" code="usng" type="text"
+                description="The name of the template to use.">
+                <cocoa key="using"/>
+            </parameter>
+            <parameter name="for" code="for " optional="yes"
+                description="Specifies the publication or list of publications to parse.">
+                <type type="publication" list="yes"/>
+                <type type="publication"/>
+                <cocoa key="for"/>
+            </parameter>                
+            <result description="the templated rich text" type="rich text">
+            </result>
+        </command>
+        
+        <command name="export" code="BDSKexpt"
+			description="Exports publications in the document using a template to file.">
+            <cocoa name="exportUsingTemplate" class="BibDeskExportUsingTemplateCommand"/>
+            <direct-parameter type="document"
+                description="The object responding to the command, the document."/>
+            <parameter name="using template" code="uset" type="text"
+                description="The name of the template to use.">
+                <cocoa key="using"/>
+            </parameter>
+            <parameter name="to" code="to  " type="file"
+                description="The file to export to">
+                <cocoa key="to"/>
+            </parameter>
+            <parameter name="for" code="for " optional="yes"
+                description="Specifies the publication or list of publications to export.">
+                <type type="publication" list="yes"/>
+                <type type="publication"/>
+                <cocoa key="for"/>
+            </parameter>                
+        </command>
+        
+        <command name="show" code="BDSKshow"
+			description="Shows an author or a publication in a separate window for editing.">
+            <cocoa name="Show" class="BibDeskOpenCommand"/>
+            <direct-parameter description="The author or publication to show in the new window.">
+                <type type="author"/>
+                <type type="publication"/>
+            </direct-parameter>
+        </command>
+        
+        <command name="search" code="BDSKsrch"
+			description="Returns a list of publications matching the given string. Typical usage: search for string.">
+            <cocoa name="Search" class="BibDeskSearchForCommand"/>
+            <!-- this needs to be optional or the autocomplete script handler won't work -->
+            <direct-parameter type="specifier" optional="yes"
+                description="The object responding to the command. Either the application or a document."/>
+            <!-- type is actually application | document above -->
+            <parameter name="for" code="for " type="text"
+                description="The string to search for.">
+                <cocoa key="for"/>
+            </parameter>
+            <parameter name="for completion" code="cmpl" type="boolean" optional="yes"
+                description="Specifies whether to return a string for completion rather than a publication.">
+                <cocoa key="forCompletion"/>
+            </parameter>                
+            <result description="list of results">
+                <type type="publication" list="yes"/>
+                <type type="text" list="yes"/>
+            </result>
+        </command>
+        
+        <command name="parse format" code="BDSKpfmt"
+			description="Parses a format string for a field from a publication. Does not set the field.">
+            <cocoa name="ParseFormat" class="BibDeskParseFormatCommand"/>
+            <direct-parameter type="text"
+                description="The format string to parse."/>
+            <parameter name="for" code="for "
+                description="The field or field name for which to parse the format string.">
+                <type type="field"/>
+                <type type="text"/>
+                <cocoa key="for"/>
+            </parameter>
+            <parameter name="from" type="publication" code="from" optional="yes"
+                description="The publication for which to parse the format string. This is required if the field name was given as a string.">
+                <cocoa key="from"/>
+            </parameter>
+        </command>    
+        
+        <command name="perform BibDesk action with publications" code="BDSKpAct"
+			description="Script handler invoked by script hooks.">
+            <cocoa name="PerformBibdeskActionWithPublications" class="NSScriptCommand"/>
+            <direct-parameter description="A list of publications that is acted upon.">
+                <type type="publication" list="yes"/>
+            </direct-parameter>
+            <parameter name="for script hook" code="fshk" type="script hook"
+                description="The script hook that was invoked.">
+                <cocoa key="forScriptHook"/>
+            </parameter>
+        </command>
+        
+    </suite>
+	
+</dictionary>

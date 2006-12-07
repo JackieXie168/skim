@@ -1,0 +1,14 @@
+{
+    IBClasses = (
+        {
+            ACTIONS = {closeEditor = id; }; 
+            CLASS = BDSKAutoGroupEditor; 
+            LANGUAGE = ObjC; 
+            SUPERCLASS = NSWindowController; 
+        }, 
+        {CLASS = FirstResponder; LANGUAGE = ObjC; SUPERCLASS = NSObject; }, 
+        {CLASS = NSObject; LANGUAGE = ObjC; }, 
+        {CLASS = NSView; LANGUAGE = ObjC; SUPERCLASS = NSResponder; }
+    ); 
+    IBVersion = 1; 
+}

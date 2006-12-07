@@ -1,0 +1,47 @@
+Installation
+
+
+Just execute @vms_make to build the program. This checks if a C compiler is 
+installed and will exit with an error message if none can be found. 
+
+
+Build options
+
+VMS_make.com currently accepts the following options in arbitrary order: 
+
+DEBUG
+  Build the program with debug information and without optimization. 
+lopts=<value>
+  Options to pass to the link command e.g. lopts=/traceback 
+ccopt=<value>
+  Options to pass to the C compiler e.g. ccopt=/float=ieee 
+LINK
+  Do not compile, just link Latex2RTF. 
+CC=<DECC||VAXC||GNUC>
+  Force usage of the given C compiler over the intrinsic selection (which is 
+  DEC C, VAX C, and finally GNU C). 
+
+In case you are on an OpenVMS version prior to 7.3-2 you will need a copy 
+of the Xvmsutils (http://zinser.no-ip.info/vms/sw/xvmstuils.htmlx) library. 
+The procedure will check if or if not this is 
+required and create a config file you need to customize in case it is. 
+
+
+Environment
+
+The operation of Latex2RTF is governed by a number of configuration files, 
+which the program tries to locate using the following logical names: 
+
+L2RCFGDIR
+  This logical should point to the system wide configuration files. 
+RTFPATH
+  This logical should point to user customized configuration files, which the 
+  particular user wants to use on a regular basis. 
+
+Additional for specific customisations you may use the "-P path" commandline 
+qualifier while invoking Latex2RTF 
+
+
+A reasonable set of standard configuration files may be found in the [.cfg] 
+subdirectory. 
+

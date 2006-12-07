@@ -1,0 +1,23 @@
+{
+    IBClasses = (
+        {
+            ACTIONS = {chooseScriptPath = id; }; 
+            CLASS = BDSKScriptGroupSheetController; 
+            LANGUAGE = ObjC; 
+            SUPERCLASS = BDSKSheetController; 
+        }, 
+        {
+            ACTIONS = {dismiss = id; }; 
+            CLASS = BDSKSheetController; 
+            LANGUAGE = ObjC; 
+            SUPERCLASS = NSWindowController; 
+        }, 
+        {
+            ACTIONS = {"" = id; }; 
+            CLASS = FirstResponder; 
+            LANGUAGE = ObjC; 
+            SUPERCLASS = NSObject; 
+        }
+    ); 
+    IBVersion = 1; 
+}

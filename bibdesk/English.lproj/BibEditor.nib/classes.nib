@@ -1,0 +1,104 @@
+{
+    IBClasses = (
+        {CLASS = BDSKContainerView; LANGUAGE = ObjC; SUPERCLASS = NSView; }, 
+        {CLASS = BDSKDragWindow; LANGUAGE = ObjC; SUPERCLASS = NSWindow; }, 
+        {CLASS = BDSKEdgeView; LANGUAGE = ObjC; SUPERCLASS = BDSKContainerView; }, 
+        {CLASS = BDSKEditorTextView; LANGUAGE = ObjC; SUPERCLASS = NSTextView; }, 
+        {CLASS = BDSKForm; LANGUAGE = ObjC; SUPERCLASS = NSForm; }, 
+        {CLASS = BDSKFormCell; LANGUAGE = ObjC; SUPERCLASS = NSFormCell; }, 
+        {CLASS = BDSKGradientView; LANGUAGE = ObjC; SUPERCLASS = NSView; }, 
+        {CLASS = BDSKImagePopUpButton; LANGUAGE = ObjC; SUPERCLASS = NSPopUpButton; }, 
+        {
+            CLASS = BDSKImagePopUpButtonCell; 
+            LANGUAGE = ObjC; 
+            SUPERCLASS = NSPopUpButtonCell; 
+        }, 
+        {
+            CLASS = BDSKPreviewer; 
+            LANGUAGE = ObjC; 
+            OUTLETS = {imagePreviewView = NSImageView; }; 
+            SUPERCLASS = NSWindowController; 
+        }, 
+        {CLASS = BDSKRatingButton; LANGUAGE = ObjC; SUPERCLASS = NSButton; }, 
+        {CLASS = BDSKSplitView; LANGUAGE = ObjC; SUPERCLASS = OASplitView; }, 
+        {CLASS = BDSKStatusBar; LANGUAGE = ObjC; SUPERCLASS = BDSKGradientView; }, 
+        {CLASS = BDSKTabView; LANGUAGE = ObjC; SUPERCLASS = NSTabView; }, 
+        {CLASS = BDSKUndoTextView; LANGUAGE = ObjC; SUPERCLASS = NSTextView; }, 
+        {
+            ACTIONS = {
+                bibTypeDidChange = id; 
+                changeFlag = id; 
+                changeRating = id; 
+                chooseLocalURL = id; 
+                consolidateLinkedFiles = id; 
+                createNewPubUsingCrossrefAction = id; 
+                deletePub = id; 
+                dismissChangeFieldNameSheet = id; 
+                downloadLinkedFileAsLocalUrl = id; 
+                duplicateTitleToBooktitle = id; 
+                editSelectedFieldAsRawBibTeX = id; 
+                generateCiteKey = id; 
+                moveLinkedFile = id; 
+                openLinkedFile = id; 
+                openParentItem = id; 
+                openRemoteURL = id; 
+                raiseAddField = id; 
+                raiseChangeFieldName = id; 
+                raiseDelField = id; 
+                revealLinkedFile = id; 
+                saveFileAsLocalUrl = id; 
+                selectCrossrefParentAction = id; 
+                setLocalURLPathFromMenuItem = id; 
+                setRemoteURLFromMenuItem = id; 
+                showCiteKeyWarning = id; 
+                showPersonDetailCmd = id; 
+                toggleSnoopDrawer = id; 
+                toggleStatusBar = id; 
+            }; 
+            CLASS = BibEditor; 
+            LANGUAGE = ObjC; 
+            OUTLETS = {
+                abstractView = NSTextView; 
+                actionButton = BDSKImagePopUpButton; 
+                actionMenu = NSMenu; 
+                actionMenuButton = BDSKImagePopUpButton; 
+                addFieldButton = NSButton; 
+                authorScrollView = NSScrollView; 
+                authorTableView = NSTableView; 
+                bibFields = BDSKForm; 
+                bibTypeButton = NSPopUpButton; 
+                changeFieldNameSheet = NSPanel; 
+                citeKeyField = NSTextField; 
+                citeKeyTitle = NSTextField; 
+                citeKeyWarningButton = NSButton; 
+                documentSnoopButton = BDSKImagePopUpButton; 
+                documentSnoopDrawer = NSDrawer; 
+                documentSnoopImageView = PDFImageView; 
+                documentSnoopScrollView = NSScrollView; 
+                documentSnoopTextView = NSTextView; 
+                extraBibFields = NSMatrix; 
+                fieldsAccessoryView = NSView; 
+                fieldsPopUpButton = NSPopUpButton; 
+                newFieldNameComboBox = NSComboBox; 
+                notesView = NSTextView; 
+                oldFieldNamePopUp = NSPopUpButton; 
+                pdfSnoopContainerView = NSView; 
+                remoteSnoopWebView = WebView; 
+                rssDescriptionView = NSTextView; 
+                splitView = OASplitView; 
+                statusBar = BDSKStatusBar; 
+                tabView = NSTabView; 
+                textSnoopContainerView = NSView; 
+                viewLocalButton = BDSKImagePopUpButton; 
+                viewRemoteButton = BDSKImagePopUpButton; 
+                webSnoopContainerView = NSView; 
+            }; 
+            SUPERCLASS = NSWindowController; 
+        }, 
+        {CLASS = FirstResponder; LANGUAGE = ObjC; SUPERCLASS = NSObject; }, 
+        {CLASS = NSObject; LANGUAGE = ObjC; }, 
+        {CLASS = OASplitView; LANGUAGE = ObjC; SUPERCLASS = NSSplitView; }, 
+        {CLASS = PDFImageView; LANGUAGE = ObjC; SUPERCLASS = NSImageView; }
+    ); 
+    IBVersion = 1; 
+}

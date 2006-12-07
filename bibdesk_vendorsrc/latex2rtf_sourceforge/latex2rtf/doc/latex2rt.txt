@@ -1,0 +1,178 @@
+latex2rtf(1)                                         latex2rtf(1)
+
+
+
+NAME
+       latex2rtf - Convert a LaTeX file to an RTF file
+
+SYNTAX
+       latex2rtf  [-hlpFSV]  [  -d# ] [ -M# ] [ -a auxfile ] [ -b
+       bblfile ] [ -C codepage ] [ -D dots_per_inch ] [  -i  lan-
+       guage  ] [ -o outputfile ] [ -P /path/to/cfg ] [ inputfile
+       ]
+
+
+DESCRIPTION
+       The latex2rtf command converts a LaTeX file into RTF  text
+       format. The text and much of the formatting information is
+       translated to RTF.
+
+       -a auxfile
+              Used  to  specify  a  particular  cross-referencing
+              file.   When this option is omitted, the auxfile is
+              assumed to be the same as inputfile with  the  .tex
+              suffix replaced by .aux.
+
+       -b bblfile
+              Used to specify a particular bibliography file When
+              this option is omitted, the bblfile is  assumed  to
+              be  the  same  as  inputfile  with  the .tex suffix
+              replaced by .bbl.
+
+       -C codepage
+              used to specify the character set (code page)  used
+              in  the  LaTeX  document  for  non-ansi characters.
+              codepage may be  one  of  the  following:  ansinew,
+              applemac,  cp437,  cp437de,  cp850,  cp852,  cp855,
+              cp865, cp866,  decmulti,  cp1250,  cp1252,  koi8-r,
+              koi8-u,  latin1,  latin2,  latin3,  latin4, latin5,
+              latin9, maccyr, macukr, next, raw, raw437,  raw852,
+              raw1250,  raw1251, and raw1253.  The default behav-
+              ior is to use ansinew (same as cp1252).  For conve-
+              nience, just the numbers 437, 437de, 850, 852, 855,
+              866, 1250 or 1252 may be specified.
+
+              The raw character set encoding prevents  any  8-bit
+              character  translation.   The RTF file is marked to
+              use the same encoding as the default  encoding  for
+              the  program  interpreting  the  RTF file.  This is
+              particularly useful when translating a file written
+              in  a  language (e.g., czech) that maps poorly into
+              the ansinew (western european) character set.
+
+
+       -d#    Write extra debugging  output  to  stderr.   Higher
+              numbers  cause more debugging output and range from
+              0 (only errors) to 6 (absurdly many messages).  The
+              default is 1 (Warnings and Errors only).
+
+       -D dots_per_inch
+              Used  to  specify  the  number  of dots per inch in
+              equations that are converted  to  bitmaps  and  for
+              graphics  that  must  be converted.  Default is 300
+              dpi.
+
+       -F     use LaTeX to create bitmaps for all figures.   This
+              may  help when figures are not translated properly.
+
+       -h     Print a short usage note
+
+       -i language
+              used to set the idiom or language used in the LaTeX
+              document  language  may  be  one  of  the following
+              afrikaans, bahasa, basque, brazil, breton, catalan,
+              croatian, czech, danish, dutch, english, esperanto,
+              estonian, finnish, french, galician,  german,  ice-
+              landic,  irish,italian,  latin,  lsorbian,  magyar,
+              norsk, nynorsk, polish,  portuges,  romanian,  rus-
+              sian,  samin,  scottish,  serbian, slovak, slovene,
+              spanish, swedish, turkish,  usorbian,  welsh.   The
+              default is english.
+
+       -l     Assume  LaTeX source uses ISO 8859-1 (Latin-1) spe-
+              cial characters (default behavior).
+
+       -o outputfile
+              Redirect output to outputfile Unless an  outputfile
+              is  specified with the -o option, the resulting RTF
+              is produced in a file with .tex replaced by .rtf.
+
+       -M#    where # selects the type  of  equation  conversion.
+              -M3  is  the  default  and converts both inline and
+              displayed equations to RTF.   -M6  converts  inline
+              equations   to   RTF  and  displayed  equations  to
+              bitmaps. -M12 converts inline and  displayed  equa-
+              tions  to  bitmaps.   Bitmap  conversion requires a
+              working latex2png  script.   Producing  bitmaps  is
+              slow.
+
+       -p     do  not  quote  printed parentheses in mathematical
+              formulas, as some versions of Word (e.g Word  2000)
+              have  deep  psychological  problems  with EQ fields
+              using quoted parentheses.  If  Word  displays  some
+              formulas  with  parentheses  as  'Error!', try this
+              option.  See also the -S option.
+
+       -P /path/to/cfg
+              used to specify the  directory  that  contains  the
+              @code{.cfg} files
+
+       -S     Use semicolons to separate arguments in RTF fields.
+              This is needed when the  machine  opening  the  RTF
+              file  has  a  version  of Word that uses commas for
+              decimal points.  This also can fix displaying  some
+              formulas  as 'Error!'  You may also need to try the
+              -p option.
+
+       -V     Prints version on standard output and exits.
+
+       -W     Emit warnings directly  in  RTF  file.   Handy  for
+              catching  things  that  do  not get translated cor-
+              rectly.
+
+       -Z#    Add # close braces to end of RTF file.  (Handy when
+              file  is  not converted correctly and will not open
+              in another word processor.)
+
+CONFIGURATION FILES
+       The configuration files are searched first in  any  direc-
+       tory  specified  by  -P, then in the location specified by
+       the environment variable RTFPATH, and finally in the loca-
+       tion CFGDIR specified when latex2rtf was compiled.  If the
+       configuration files are not found then  latex2rtf  aborts.
+       The  configuration files allow additional fonts to be rec-
+       ognized, additional simple commands to be translation, and
+       additional commands to be ignored.
+
+CAUTION
+       The  input  file  must be a valid LaTeX file. Use LaTeX to
+       find and fix errors before converting with latex2rtf.
+
+       The configuration files direct.cfg and  fonts.cfg  are  in
+       the  correct  directory.  You may have to change fonts.cfg
+       or direct.cfg to suit your needs.
+
+BUGS
+       Some might consider RTF to be a bug.
+
+       Some environments are currently ignored.
+
+       Translation without a LaTeX generated .aux file is poor.
+
+REPORTING BUGS
+       Report  bugs  to   to   the   bug   tracking   system   at
+       http://sourceforge.net/projects/latex2rtf/.   Only  report
+       bugs for the latest version of latex2rtf  that  is  avail-
+       able.  Please identify your operating system.
+
+
+       If  the program produces wrong output or does not work for
+       you, INCLUDE A SHORT  LATEX  FILE  that  demonstrates  the
+       problem.  The shorter the LaTeX file, the quicker your bug
+       will get addressed.  Bug reports with  non-existent  LaTeX
+       files  are  not welcomed by the developers.  Do not bother
+       to send RTF files, since these are usually unhelpful.
+
+SEE ALSO
+       latex(1), rtf2LaTeX2e(1), LaTeX User's Guide  &  Reference
+       Manual by Leslie Lamport
+
+       For  complete,  current  documentation,  refer to the Info
+       file latex2rtf.info, the PDF  file  latex2rtf.pdf  or  the
+       HTML  file  latex2rtf.html which are made from the TeXInfo
+       source file latex2rtf.texi.
+
+
+
+
+                                                     latex2rtf(1)

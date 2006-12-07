@@ -1,0 +1,18 @@
+\documentclass{article}
+\usepackage{graphicx}
+\begin{document}
+
+\begin{figure}
+\includegraphics{fig_testb.pdf}
+\end{figure}
+
+\begin{figure}
+\includegraphics{fig_testc.pdf}
+\end{figure}
+
+Figure tests \verb#\includegraphic{fig_testb.pdf}#.  This cannot be in
+\texttt{fig_test.tex} because that file needs to be run through \LaTeX\
+so that the cross-references can be determined.  The problem with
+that is that \LaTeX\ does not handle \texttt{.pdf} files.  
+
+\end{document}

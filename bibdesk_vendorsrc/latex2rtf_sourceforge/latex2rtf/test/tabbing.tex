@@ -1,0 +1,79 @@
+\documentclass{article}
+\begin{document}
+
+Testing the tabbing environment
+
+\begin{table}
+\begin{center}
+\begin{tabbing}
+\hspace*{1cm}\= $M_{38}=10^{38}-1=$ \= $3\times 3 \times 11 \times 909090909090909091$\\
+                \>                     \> $\times 1111111111111111111,$\\
+                \> $M_{39}= 10^{39}-1= 3 \times 3 \times 3 \times 3 \times 37 \times 53 \times 79$\\ 
+                \>                     \> $\times 265371653 \times 900900900900990990990991.$
+\end{tabbing}
+\end{center}
+\end{table}
+
+
+\begin{table}
+\begin{center}
+\begin{tabbing}
+Cheddar cheese \= Recommended \= \$2.00 \kill
+Green Ham \> Recommended \> \$2.00      \\
+Eggs \> 1 a week \> \$1.50              \\
+Cheddar cheese \> Hmmm \> \$0.80        \\
+Yak cheese \> Avoid \> \$0.05
+\end{tabbing}
+\caption{Simplest test case for tabbing environment, should be
+three aligned columns}
+\end{center}
+\end{table}
+
+\begin{table}
+\begin{center}
+\begin{tabbing}
+Entry in position 1,1 \= Entry 1,2 \= Entry 1,3\\
+Entry in position 2,1 \> Entry 2,2 \> Entry 2,3\\
+Entry 3,1 \= Entry 3,2 \> Entry 3,3            \\
+Entry 4,1 \> Entry 4,2 \> Entry 4,3
+\end{tabbing}
+\caption{Another easy test case for tabbing environment, should be
+three aligned columns}
+\end{center}
+\end{table}
+
+\begin{table}
+\begin{center}
+\begin{tabbing}
+Income \=Expenditure \=    \kill
+Income \>Expenditure \>Result \\
+20s 0d \>19s 11d \>Happiness   \\
+20s 0d \>20s 1d  \>Misery    \\
+20s 0d \>40s 0d  \>Bancruptcy    \\
+20s 0d \>80s 0d  \>Government    \\
+\end{tabbing}
+\caption{Another easy test case for tabbing environment, should be
+three aligned columns}
+\end{center}
+\end{table}
+
+\begin{table}
+\begin{center}
+\begin{tabbing}
+Armadillo: \=							\kill
+Gnat:      \> swatted by: \= men \+\+   \\
+                             cows       \\
+                      and \' gnus   \-  \\
+              not very filling    \-    \\
+Armadillo: \> not edible                \\
+\pushtabs
+(note also the: \= aardvark             \\
+                \> albatross \` eton)   \\
+\poptabs
+Gnu:            \> eaten by  \>    gnats
+\end{tabbing}
+\caption{Simplest test case for tabbing environment, should be
+three aligned columns}
+\end{center}
+\end{table}
+\end{document}

@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple Computer//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>bp_ScriptHooks</key>
+	<array>
+		<string>Script hook</string>
+		<string>AppleScript</string>
+	</array>
+	<key>bp_TeX</key>
+	<array>
+		<string>TeX</string>
+		<string>Path</string>
+		<string>BibTeX</string>
+		<string>PDFLaTeX</string>
+		<string>Style</string>
+		<string>Template</string>
+		<string>Encoding</string>
+		<string>Preview</string>
+	</array>
+	<key>bp_autofile</key>
+	<array>
+		<string>Papers folder</string>
+		<string>Format</string>
+		<string>Files</string>
+		<string>PDF</string>
+		<string>Documents</string>
+	</array>
+	<key>bp_cite</key>
+	<array>
+		<string>Drag and drop</string>
+        <string>Copy and paste</string>
+		<string>Cite command</string>
+		<string>Text formats</string>
+		<string>Cite key</string>
+		<string>Brackets</string>
+		<string>Tilde</string>
+		<string>Cite drawer</string>
+	</array>
+	<key>bp_citekey</key>
+	<array>
+		<string>Auto generate</string>
+		<string>Format</string>
+		<string>Cite key</string>
+	</array>
+	<key>bp_crossref</key>
+	<array>
+		<string>Booktitle and title</string>
+		<string>Crossref</string>
+		<string>Sorting</string>
+		<string>Inherit</string>
+		<string>Duplicate</string>
+		<string>Types</string>
+		<string>Saving</string>
+		<string>Ordering</string>
+	</array>
+	<key>bp_defaults</key>
+	<array>
+		<string>Custom fields</string>
+		<string>RSS</string>
+		<string>Global macros</string>
+		<string>BibTeX</string>
+		<string>Types</string>
+	</array>
+	<key>bp_display</key>
+	<array>
+		<string>Sorting stop words</string>
+		<string>Fonts</string>
+		<string>Author and editor name display</string>
+		<string>Preview</string>
+		<string>Annote, abstract, details, template, PDF, text</string>
+	</array>
+	<key>bp_files</key>
+	<array>
+		<string>Save files</string>
+        <string>Encoding (Unicode)</string>
+		<string>TeX accented characters</string>
+		<string>Custom conversions</string>
+		<string>Normalized author</string>
+		<string>Annote, abstract, RSS</string>
+		<string>Backup file time</string>
+		<string>Warnings and errors</string>
+	</array>
+	<key>bp_general</key>
+	<array>
+		<string>Application launch</string>
+		<string>Check for updates</string>
+		<string>Save session</string>
+        <string>Open file by default</string>
+		<string>Edit, paste, drag and drop</string>
+		<string>Warnings</string>
+        <string>Groups</string>
+	</array>
+	<key>bp_inputmanager</key>
+	<array>
+		<string>InputManager (input manager)</string>
+		<string>External completion</string>
+		<string>Autocomplete</string>
+		<string>TeXShop, iTeXMac, TextEdit, Xcode</string>
+		<string>Update or reinstall</string>
+	</array>
+	<key>bp_sharing</key>
+	<array>
+		<string>File sharing</string>
+        <string>File browsing</string>
+        <string>Connect to server</string>
+		<string>Bonjour (Rendezvous)</string>
+		<string>Password</string>
+	</array>
+    <key>bp_export</key>
+    <array>
+        <string>HTML files</string>
+        <string>Templates</string>
+        <string>Text files</string>
+        <string>Export</string>
+        <string>Service</string>
+        <string>RTF files</string>
+        <string>RTFD files</string>
+        <string>Microsoft Word files</string>
+        <string>RSS files</string>
+        <string>Web pages</string>
+        <string>File formats</string>
+    </array>
+</dict>
+</plist>

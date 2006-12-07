@@ -1,0 +1,168 @@
+{
+    IBClasses = (
+        {
+            CLASS = BDSKCollapsibleView; 
+            LANGUAGE = ObjC; 
+            SUPERCLASS = BDSKContainerView; 
+        }, 
+        {CLASS = BDSKColoredBox; LANGUAGE = ObjC; SUPERCLASS = NSBox; }, 
+        {
+            CLASS = BDSKContainerView; 
+            LANGUAGE = ObjC; 
+            OUTLETS = {contentView = id; }; 
+            SUPERCLASS = NSView; 
+        }, 
+        {CLASS = BDSKDragOutlineView; LANGUAGE = ObjC; SUPERCLASS = NSOutlineView; }, 
+        {
+            CLASS = BDSKEncodingPopUpButton; 
+            LANGUAGE = ObjC; 
+            SUPERCLASS = NSPopUpButton; 
+        }, 
+        {CLASS = BDSKGradientView; LANGUAGE = ObjC; SUPERCLASS = NSView; }, 
+        {CLASS = BDSKGroupCell; LANGUAGE = ObjC; SUPERCLASS = OATextWithIconCell; }, 
+        {
+            CLASS = BDSKGroupTableView; 
+            LANGUAGE = ObjC; 
+            SUPERCLASS = OAGradientTableView; 
+        }, 
+        {CLASS = BDSKImagePopUpButton; LANGUAGE = ObjC; SUPERCLASS = NSPopUpButton; }, 
+        {CLASS = BDSKMainTableView; LANGUAGE = ObjC; SUPERCLASS = NSTableView; }, 
+        {
+            CLASS = BDSKPopUpButtonCell; 
+            LANGUAGE = ObjC; 
+            SUPERCLASS = NSPopUpButtonCell; 
+        }, 
+        {CLASS = BDSKPreviewTextView; LANGUAGE = ObjC; SUPERCLASS = NSTextView; }, 
+        {CLASS = BDSKSearchField; LANGUAGE = ObjC; SUPERCLASS = NSSearchField; }, 
+        {CLASS = BDSKSplitView; LANGUAGE = ObjC; SUPERCLASS = OASplitView; }, 
+        {CLASS = BDSKStatusBar; LANGUAGE = ObjC; SUPERCLASS = BDSKGradientView; }, 
+        {
+            ACTIONS = {
+                addGroupButtonAction = id; 
+                addGroupFieldAction = id; 
+                addScriptGroupAction = id; 
+                addSmartGroupAction = id; 
+                addStaticGroupAction = id; 
+                addURLGroupAction = id; 
+                alternateCut = id; 
+                alternateDelete = id; 
+                changeGroupFieldAction = id; 
+                changeGroupTableFont = id; 
+                changeIntersectGroupsAction = id; 
+                changeMainTableFont = id; 
+                changePreviewDisplay = id; 
+                clearQuickSearch = id; 
+                consolidateLinkedFiles = id; 
+                copy = id; 
+                copyAsAction = id; 
+                createNewPubUsingCrossrefAction = id; 
+                cut = id; 
+                deleteSelectedPubs = id; 
+                deselectAllPublications = id; 
+                duplicateTitleToBooktitle = id; 
+                editAction = id; 
+                editGroupAction = id; 
+                editNewGroupWithSelection = id; 
+                editPubCmd = id; 
+                emailPubCmd = id; 
+                exportAsAction = id; 
+                exportAsAtom = id; 
+                exportAsEncodedBib = id; 
+                exportAsEncodedPublicBib = id; 
+                exportAsHTML = id; 
+                exportAsMODS = id; 
+                exportAsRIS = id; 
+                exportAsRSS = id; 
+                exportSelectionAsAction = id; 
+                exportSelectionAsAtom = id; 
+                exportSelectionAsEncodedBib = id; 
+                exportSelectionAsEncodedPublicBib = id; 
+                exportSelectionAsHTML = id; 
+                exportSelectionAsMODS = id; 
+                exportSelectionAsRIS = id; 
+                exportSelectionAsRSS = id; 
+                generateCiteKey = id; 
+                importFromFileAction = id; 
+                importFromPasteboardAction = id; 
+                importFromWebAction = id; 
+                makeSearchFieldKey = id; 
+                mergeInExternalGroup = id; 
+                mergeInExternalPublications = id; 
+                newPub = id; 
+                openLinkedFile = id; 
+                openRemoteURL = id; 
+                pageDownInPreview = id; 
+                pageUpInPreview = id; 
+                paste = id; 
+                postItemToWeblog = id; 
+                quickSearchAddField = id; 
+                quickSearchRemoveField = id; 
+                refreshScriptGroups = id; 
+                refreshSelectedGroups = id; 
+                refreshSharedBrowsing = id; 
+                refreshSharing = id; 
+                refreshURLGroups = id; 
+                removeGroupFieldAction = id; 
+                removeSelectedGroups = id; 
+                removeSelectedPubs = id; 
+                renameGroupAction = id; 
+                revealLinkedFile = id; 
+                search = id; 
+                searchByContent = id; 
+                searchFieldChangeKey = id; 
+                selectAllPublications = id; 
+                selectCrossrefParentAction = id; 
+                selectDuplicates = id; 
+                selectLibraryGroup = id; 
+                selectPossibleDuplicates = id; 
+                sendToLyX = id; 
+                showDocumentInfoWindow = id; 
+                showMacrosWindow = id; 
+                sortForCrossrefs = id; 
+                sortGroupsByCount = id; 
+                sortGroupsByGroup = id; 
+                splitViewDoubleClick = id; 
+                toggleShowingCustomCiteDrawer = id; 
+                toggleStatusBar = id; 
+            }; 
+            CLASS = BibDocument; 
+            LANGUAGE = ObjC; 
+            OUTLETS = {
+                actionMenu = NSMenu; 
+                actionMenuButton = BDSKImagePopUpButton; 
+                currentPreviewView = NSView; 
+                documentWindow = NSWindow; 
+                exportAccessoryView = NSView; 
+                exportSelectionCheckButton = NSButton; 
+                groupActionButton = BDSKImagePopUpButton; 
+                groupActionMenuButton = BDSKImagePopUpButton; 
+                groupAddButton = NSButton; 
+                groupCollapsibleView = BDSKCollapsibleView; 
+                groupGradientView = BDSKGradientView; 
+                groupMenu = NSMenu; 
+                groupSplitView = BDSKSplitView; 
+                groupTableView = BDSKGroupTableView; 
+                mainBox = BDSKColoredBox; 
+                previewTextView = NSTextView; 
+                saveAccessoryView = NSView; 
+                saveTextEncodingPopupButton = BDSKEncodingPopUpButton; 
+                searchField = BDSKSearchField; 
+                splitView = BDSKSplitView; 
+                statusBar = BDSKStatusBar; 
+                tableView = BDSKMainTableView; 
+            }; 
+            SUPERCLASS = NSDocument; 
+        }, 
+        {
+            ACTIONS = {"" = id; clearQuickSearch = id; selectCrossrefParentAction = id; }; 
+            CLASS = FirstResponder; 
+            LANGUAGE = ObjC; 
+            SUPERCLASS = NSObject; 
+        }, 
+        {CLASS = MyTextField; LANGUAGE = ObjC; SUPERCLASS = NSTextField; }, 
+        {CLASS = OAGradientTableView; LANGUAGE = ObjC; SUPERCLASS = NSTableView; }, 
+        {CLASS = OASplitView; LANGUAGE = ObjC; SUPERCLASS = NSSplitView; }, 
+        {CLASS = OATextWithIconCell; LANGUAGE = ObjC; SUPERCLASS = NSTextFieldCell; }
+    ); 
+    IBVersion = 1; 
+}

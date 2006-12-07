@@ -1,0 +1,359 @@
+.rn '' }`
+''' $RCSfile$$Revision$$Date$
+'''
+''' $Log$
+'''
+.de Sh
+.br
+.if t .Sp
+.ne 5
+.PP
+\fB\\$1\fR
+.PP
+..
+.de Sp
+.if t .sp .5v
+.if n .sp
+..
+.de Ip
+.br
+.ie \\n(.$>=3 .ne \\$3
+.el .ne 3
+.IP "\\$1" \\$2
+..
+.de Vb
+.ft CW
+.nf
+.ne \\$1
+..
+.de Ve
+.ft R
+
+.fi
+..
+'''
+'''
+'''     Set up \*(-- to give an unbreakable dash;
+'''     string Tr holds user defined translation string.
+'''     Bell System Logo is used as a dummy character.
+'''
+.tr \(*W-|\(bv\*(Tr
+.ie n \{\
+.ds -- \(*W-
+.ds PI pi
+.if (\n(.H=4u)&(1m=24u) .ds -- \(*W\h'-12u'\(*W\h'-12u'-\" diablo 10 pitch
+.if (\n(.H=4u)&(1m=20u) .ds -- \(*W\h'-12u'\(*W\h'-8u'-\" diablo 12 pitch
+.ds L" ""
+.ds R" ""
+'''   \*(M", \*(S", \*(N" and \*(T" are the equivalent of
+'''   \*(L" and \*(R", except that they are used on ".xx" lines,
+'''   such as .IP and .SH, which do another additional levels of
+'''   double-quote interpretation
+.ds M" """
+.ds S" """
+.ds N" """""
+.ds T" """""
+.ds L' '
+.ds R' '
+.ds M' '
+.ds S' '
+.ds N' '
+.ds T' '
+'br\}
+.el\{\
+.ds -- \(em\|
+.tr \*(Tr
+.ds L" ``
+.ds R" ''
+.ds M" ``
+.ds S" ''
+.ds N" ``
+.ds T" ''
+.ds L' `
+.ds R' '
+.ds M' `
+.ds S' '
+.ds N' `
+.ds T' '
+.ds PI \(*p
+'br\}
+.\"	If the F register is turned on, we'll generate
+.\"	index entries out stderr for the following things:
+.\"		TH	Title 
+.\"		SH	Header
+.\"		Sh	Subsection 
+.\"		Ip	Item
+.\"		X<>	Xref  (embedded
+.\"	Of course, you have to process the output yourself
+.\"	in some meaninful fashion.
+.if \nF \{
+.de IX
+.tm Index:\\$1\t\\n%\t"\\$2"
+..
+.nr % 0
+.rr F
+.\}
+.TH bt_misc 3 "btparse, version 0.33" "22 Decemer, 2000" "btparse"
+.UC
+.if n .hy 0
+.if n .na
+.ds C+ C\v'-.1v'\h'-1p'\s-2+\h'-1p'+\s0\v'.1v'\h'-1p'
+.de CQ          \" put $1 in typewriter font
+.ft CW
+'if n "\c
+'if t \\&\\$1\c
+'if n \\&\\$1\c
+'if n \&"
+\\&\\$2 \\$3 \\$4 \\$5 \\$6 \\$7
+'.ft R
+..
+.\" @(#)ms.acc 1.5 88/02/08 SMI; from UCB 4.2
+.	\" AM - accent mark definitions
+.bd B 3
+.	\" fudge factors for nroff and troff
+.if n \{\
+.	ds #H 0
+.	ds #V .8m
+.	ds #F .3m
+.	ds #[ \f1
+.	ds #] \fP
+.\}
+.if t \{\
+.	ds #H ((1u-(\\\\n(.fu%2u))*.13m)
+.	ds #V .6m
+.	ds #F 0
+.	ds #[ \&
+.	ds #] \&
+.\}
+.	\" simple accents for nroff and troff
+.if n \{\
+.	ds ' \&
+.	ds ` \&
+.	ds ^ \&
+.	ds , \&
+.	ds ~ ~
+.	ds ? ?
+.	ds ! !
+.	ds /
+.	ds q
+.\}
+.if t \{\
+.	ds ' \\k:\h'-(\\n(.wu*8/10-\*(#H)'\'\h"|\\n:u"
+.	ds ` \\k:\h'-(\\n(.wu*8/10-\*(#H)'\`\h'|\\n:u'
+.	ds ^ \\k:\h'-(\\n(.wu*10/11-\*(#H)'^\h'|\\n:u'
+.	ds , \\k:\h'-(\\n(.wu*8/10)',\h'|\\n:u'
+.	ds ~ \\k:\h'-(\\n(.wu-\*(#H-.1m)'~\h'|\\n:u'
+.	ds ? \s-2c\h'-\w'c'u*7/10'\u\h'\*(#H'\zi\d\s+2\h'\w'c'u*8/10'
+.	ds ! \s-2\(or\s+2\h'-\w'\(or'u'\v'-.8m'.\v'.8m'
+.	ds / \\k:\h'-(\\n(.wu*8/10-\*(#H)'\z\(sl\h'|\\n:u'
+.	ds q o\h'-\w'o'u*8/10'\s-4\v'.4m'\z\(*i\v'-.4m'\s+4\h'\w'o'u*8/10'
+.\}
+.	\" troff and (daisy-wheel) nroff accents
+.ds : \\k:\h'-(\\n(.wu*8/10-\*(#H+.1m+\*(#F)'\v'-\*(#V'\z.\h'.2m+\*(#F'.\h'|\\n:u'\v'\*(#V'
+.ds 8 \h'\*(#H'\(*b\h'-\*(#H'
+.ds v \\k:\h'-(\\n(.wu*9/10-\*(#H)'\v'-\*(#V'\*(#[\s-4v\s0\v'\*(#V'\h'|\\n:u'\*(#]
+.ds _ \\k:\h'-(\\n(.wu*9/10-\*(#H+(\*(#F*2/3))'\v'-.4m'\z\(hy\v'.4m'\h'|\\n:u'
+.ds . \\k:\h'-(\\n(.wu*8/10)'\v'\*(#V*4/10'\z.\v'-\*(#V*4/10'\h'|\\n:u'
+.ds 3 \*(#[\v'.2m'\s-2\&3\s0\v'-.2m'\*(#]
+.ds o \\k:\h'-(\\n(.wu+\w'\(de'u-\*(#H)/2u'\v'-.3n'\*(#[\z\(de\v'.3n'\h'|\\n:u'\*(#]
+.ds d- \h'\*(#H'\(pd\h'-\w'~'u'\v'-.25m'\f2\(hy\fP\v'.25m'\h'-\*(#H'
+.ds D- D\\k:\h'-\w'D'u'\v'-.11m'\z\(hy\v'.11m'\h'|\\n:u'
+.ds th \*(#[\v'.3m'\s+1I\s-1\v'-.3m'\h'-(\w'I'u*2/3)'\s-1o\s+1\*(#]
+.ds Th \*(#[\s+2I\s-2\h'-\w'I'u*3/5'\v'-.3m'o\v'.3m'\*(#]
+.ds ae a\h'-(\w'a'u*4/10)'e
+.ds Ae A\h'-(\w'A'u*4/10)'E
+.ds oe o\h'-(\w'o'u*4/10)'e
+.ds Oe O\h'-(\w'O'u*4/10)'E
+.	\" corrections for vroff
+.if v .ds ~ \\k:\h'-(\\n(.wu*9/10-\*(#H)'\s-2\u~\d\s+2\h'|\\n:u'
+.if v .ds ^ \\k:\h'-(\\n(.wu*10/11-\*(#H)'\v'-.4m'^\v'.4m'\h'|\\n:u'
+.	\" for low resolution devices (crt and lpr)
+.if \n(.H>23 .if \n(.V>19 \
+\{\
+.	ds : e
+.	ds 8 ss
+.	ds v \h'-1'\o'\(aa\(ga'
+.	ds _ \h'-1'^
+.	ds . \h'-1'.
+.	ds 3 3
+.	ds o a
+.	ds d- d\h'-1'\(ga
+.	ds D- D\h'-1'\(hy
+.	ds th \o'bp'
+.	ds Th \o'LP'
+.	ds ae ae
+.	ds Ae AE
+.	ds oe oe
+.	ds Oe OE
+.\}
+.rm #[ #] #H #V #F C
+.SH "NAME"
+bt_misc \- miscellaneous BibTeX\-like string-processing utilities
+.SH "SYNOPSIS"
+.PP
+.Vb 2
+\&   void bt_purify_string (char * string, ushort options);
+\&   void bt_change_case (char transform, char * string, ushort options);
+.Ve
+.SH "DESCRIPTION"
+.Ip "bt_purify_string()" 4
+.Sp
+.Vb 1
+\&   void bt_purify_string (char * string, ushort options);
+.Ve
+\*(L"Purifies\*(R" a \f(CWstring\fR in the BibTeX way (usually used for generating
+sort keys).  \f(CWstring\fR is modified in-place.  \f(CWoptions\fR is currently
+unused; just set it to zero for future compatibility.  Purification
+consists of copying alphanumeric characters, converting hyphens and ties
+to space, copying spaces, and skipping (almost) everything else.
+.Sp
+\*(L"Almost\*(R" because \*(L"special characters\*(R" (used for accented and non-English
+letters) are handled specially.  Recall that a BibTeX special character
+is any brace-group that starts at brace-depth zero whose first character
+is a backslash.  For instance, the string
+.Sp
+.Vb 1
+\&   {\efoo bar}Herr M\e"uller went from {P{\er r}erov} to {\eAA}rhus
+.Ve
+contains two special characters: \f(CW"{\efoo bar}"\fR and \f(CW"\eAA"\fR.  Neither
+the \f(CW\e"u\fR nor the \f(CW\er r\fR are special characters, because they are not
+at the right brace depth.
+.Sp
+Special characters are handled as follows: if the control sequence (the
+TeX command that follows the backslash) is recognized as one of LaTeX's
+\*(L"foreign letters\*(R" (\f(CW\eoe\fR, \f(CW\eae\fR, \f(CW\eo\fR, \f(CW\el\fR, \f(CW\eae\fR, \f(CW\ess\fR, plus
+uppercase versions), then it is converted to a reasonable English
+approximation by stripping the backslash and converting the second
+character (if any) to lowercase; thus, \f(CW{\eAA}\fR in the above example
+would become simply \f(CWAa\fR.  All other control sequences in a special
+character are stripped, as are all non-alphabetic characters.
+.Sp
+For example the above string, after \*(L"purification,\*(R" becomes
+.Sp
+.Vb 1
+\&   barHerr Muller went from Pr rerov to Aarhus
+.Ve
+Obviously, something has gone wrong with the word \f(CWP{\er r}erov\fR (a town
+in the Czech Republic).  The accented `r\*(R' should be a special character,
+starting at brace-depth zero.  If the original string were instead
+.Sp
+.Vb 1
+\&   {\efoo bar}Herr M\e"uller went from P{\er r}erov to {\eAA}rhus
+.Ve
+then the purified result would be more sensible:
+.Sp
+.Vb 1
+\&   barHerr Muller went from Prerov to Aarhus
+.Ve
+Note the use of a \*(L"nonsense\*(R" special character \f(CW{\efoo bar}\fR: this trick
+is often used to put certain text in a string solely for generating sort
+keys; the text is then ignored when the document is processed by TeX (as
+long as \f(CW\efoo\fR is defined as a no-op TeX macro).  This assumes, of
+course, that the output is eventually processed by TeX; if not, then
+this trick will backfire on you.
+.Sp
+Also, \f(CWbt_purify_string()\fR is adequate for generating sort keys when
+you want to sort according to English-language conventions.  To follow
+the conventions of other languages, though, a more sophisticated
+approach will be needed; hopefully, future versions of \fBbtparse\fR will
+address this deficiency.
+.Ip "bt_change_case()" 4
+.Sp
+.Vb 1
+\&   void bt_change_case (char transform, char * string, ushort options);
+.Ve
+Converts a string to lowercase, uppercase, or \*(L"non-book title
+capitalization\*(R", with special attention paid to BibTeX special
+characters and other brace-groups.  The form of conversion is selected
+by the single character \f(CWtransform\fR: \f(CW'u'\fR to convert to uppercase,
+\&\f(CW'l'\fR for lowercase, and \f(CW't'\fR for \*(L"title capitalization\*(R".  \f(CWstring\fR
+is modified in-place, and \f(CWoptions\fR is currently unused; set it to zero
+for future compatibility.
+.Sp
+Lowercase and uppercase conversion are obvious, with the proviso that
+text in braces is treated differently (explained below).  Title
+capitalization simply means that everything is converted to lowercase,
+except the first letter of the first word, and words immediately
+following a colon or sentence-ending punctuation.  For instance,
+.Sp
+.Vb 1
+\&   Flying Squirrels: Their Peculiar Habits. Part One
+.Ve
+would be converted to
+.Sp
+.Vb 1
+\&   Flying squirrels: Their peculiar habits. Part one
+.Ve
+Text within braces is handled as follows.  First, in a \*(L"special
+character\*(R" (see above for definition), control sequences that constitute
+one of LaTeX's non-English letters are converted appropriately---e.g.,
+when converting to lowercase, \f(CW\eAE\fR becomes \f(CW\eae\fR).  Any other control
+sequence in a special character (including accents) is preserved, and
+all text in a special character, regardless of depth and punctuation, is
+converted to lowercase or uppercase.  (For \*(L"title capitalization,\*(R" all
+text in a special character is converted to lowercase.)
+.Sp
+Brace groups that are not special characters are left completely
+untouched: neither text nor control sequences within non-special
+character braces are touched.
+.Sp
+For example, the string
+.Sp
+.Vb 1
+\&   A Guide to \eLaTeXe: Document Preparation ...
+.Ve
+would, when \f(CWtransform\fR is \f(CW't'\fR (title capitalization), be converted
+to 
+.Sp
+.Vb 1
+\&   A guide to \elatexe: Document preparation ...
+.Ve
+which is probably not the desired result.  A better attempt is
+.Sp
+.Vb 1
+\&   A Guide to {\eLaTeXe}: Document Preparation ...
+.Ve
+which becomes 
+.Sp
+.Vb 1
+\&   A guide to {\eLaTeXe}: Document preparation ...
+.Ve
+However, if you go back and re-read the description of
+\f(CWbt_purify_string()\fR, you'll discover that \f(CW{\eLaTeXe}\fR here is a
+special character, but not a non-English letter: thus, the control
+sequence is stripped.  Thus, a sort key generated from this title would
+be
+.Sp
+.Vb 1
+\&   A Guide to  Document Preparation
+.Ve
+\&...oops!  The right solution (and this applies to any title with a TeX
+command that becomes actual text) is to bury the control sequence at
+brace-depth two:
+.Sp
+.Vb 1
+\&   A Guide to {{\eLaTeXe}}: Document Preparation ...
+.Ve
+.SH "SEE ALSO"
+the \fIbtparse\fR manpage
+.SH "AUTHOR"
+Greg Ward <gward@python.net>
+
+.rn }` ''
+.IX Title "bt_misc 3"
+.IX Name "bt_misc - miscellaneous BibTeX-like string-processing utilities"
+
+.IX Header "NAME"
+
+.IX Header "SYNOPSIS"
+
+.IX Header "DESCRIPTION"
+
+.IX Item "bt_purify_string()"
+
+.IX Item "bt_change_case()"
+
+.IX Header "SEE ALSO"
+
+.IX Header "AUTHOR"
+

@@ -1,0 +1,27 @@
+\subsection{This is the first subsection from file \texttt{include1.tex}}
+\label{section11}
+
+Here is some text to create a paragraph or two so that we
+can see if this works or not.  It will be interesting to see
+if the labels work properly.  As I create these testing files
+I realize that I need to add parsing support for \verb#\input#
+and \verb#\include# in the getSection function.   Furthermore,
+after reading the \LaTeX{} book, I see that \verb#\include# 
+files will all start on a new page.  This is not the case for
+\verb#\input# files.  Here is a reference to the next subsection \ref{section12}.
+
+\subsection{This is the second subsection from file \texttt{include1.tex}}
+\label{section12}
+
+Here is some text to create a paragraph or two so that we
+can see if this works or not.  It will be interesting to see
+if the labels work properly.  As I create these testing files
+I realize that I need to add parsing support for \verb#\input#
+and \verb#\include# in the getSection function.   Furthermore,
+after reading the \LaTeX{} book, I see that \verb#\include# 
+files will all start on a new page.  This is not the case for
+\verb#\input# files.  Here is a reference to the previous subsection \ref{section11}.
+
+\endinput
+
+Here is text that should never be seen.
