@@ -6,6 +6,7 @@
             ACTIONS = {
                 addNode = id; 
                 changePrefList = id; 
+                dismissChooseMainPageSheet = id; 
                 editFile = id; 
                 openFile = id; 
                 removeNode = id; 
@@ -16,6 +17,8 @@
             LANGUAGE = ObjC; 
             OUTLETS = {
                 addButton = NSButton; 
+                chooseMainPagePopup = NSPopUpButton; 
+                chooseMainPageSheet = NSWindow; 
                 deleteButton = NSButton; 
                 outlineView = NSOutlineView; 
                 prefListRadio = NSMatrix; 

@@ -11,11 +11,16 @@
 	</dict>
 	<key>IBFramework Version</key>
 	<string>446.1</string>
+	<key>IBLockedObjects</key>
+	<array>
+		<integer>86</integer>
+	</array>
 	<key>IBOpenObjects</key>
 	<array>
 		<integer>5</integer>
+		<integer>86</integer>
 	</array>
 	<key>IBSystem Version</key>
-	<string>8J135</string>
+	<string>8L127</string>
 </dict>
 </plist>

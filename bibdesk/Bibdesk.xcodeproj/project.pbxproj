@@ -262,6 +262,8 @@
 		CE42A26A0A99BE2400C62D85 /* BDSKErrorEditWindow.nib in Resources */ = {isa = PBXBuildFile; fileRef = CE42A2680A99BE2400C62D85 /* BDSKErrorEditWindow.nib */; };
 		CE4B691C09E9235200CCA14F /* SmallLock_Locked.tiff in Resources */ = {isa = PBXBuildFile; fileRef = CE4B691A09E9235200CCA14F /* SmallLock_Locked.tiff */; };
 		CE4B691D09E9235200CCA14F /* SmallLock_Unlocked.tiff in Resources */ = {isa = PBXBuildFile; fileRef = CE4B691B09E9235200CCA14F /* SmallLock_Unlocked.tiff */; };
+		CE4D4FD40B25976F00A1ECC2 /* uncheck.tiff in Resources */ = {isa = PBXBuildFile; fileRef = CE4D4FD30B25976F00A1ECC2 /* uncheck.tiff */; };
+		CE4D4FD60B25978800A1ECC2 /* check.tiff in Resources */ = {isa = PBXBuildFile; fileRef = CE4D4FD50B25978800A1ECC2 /* check.tiff */; };
 		CE518F2709E526E000E97C3A /* BDSKTextViewFindController.h in Headers */ = {isa = PBXBuildFile; fileRef = CE518F2509E526E000E97C3A /* BDSKTextViewFindController.h */; };
 		CE518F2809E526E000E97C3A /* BDSKTextViewFindController.m in Sources */ = {isa = PBXBuildFile; fileRef = CE518F2609E526E000E97C3A /* BDSKTextViewFindController.m */; };
 		CE518F6609E52D6A00E97C3A /* BDSKTextViewFindPanel.nib in Resources */ = {isa = PBXBuildFile; fileRef = CE518F6409E52D6A00E97C3A /* BDSKTextViewFindPanel.nib */; };
@@ -1113,6 +1115,8 @@
 		CE42A2690A99BE2400C62D85 /* English */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = English; path = English.lproj/BDSKErrorEditWindow.nib; sourceTree = "<group>"; };
 		CE4B691A09E9235200CCA14F /* SmallLock_Locked.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; name = SmallLock_Locked.tiff; path = Images/SmallLock_Locked.tiff; sourceTree = "<group>"; };
 		CE4B691B09E9235200CCA14F /* SmallLock_Unlocked.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; name = SmallLock_Unlocked.tiff; path = Images/SmallLock_Unlocked.tiff; sourceTree = "<group>"; };
+		CE4D4FD30B25976F00A1ECC2 /* uncheck.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; name = uncheck.tiff; path = Images/uncheck.tiff; sourceTree = "<group>"; };
+		CE4D4FD50B25978800A1ECC2 /* check.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; name = check.tiff; path = Images/check.tiff; sourceTree = "<group>"; };
 		CE518F2509E526E000E97C3A /* BDSKTextViewFindController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BDSKTextViewFindController.h; sourceTree = "<group>"; };
 		CE518F2609E526E000E97C3A /* BDSKTextViewFindController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BDSKTextViewFindController.m; sourceTree = "<group>"; };
 		CE518F6509E52D6A00E97C3A /* English */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = English; path = English.lproj/BDSKTextViewFindPanel.nib; sourceTree = "<group>"; };
@@ -2100,6 +2104,8 @@
 		F9022DDA0758089500C3F701 /* Images */ = {
 			isa = PBXGroup;
 			children = (
+				CE4D4FD50B25978800A1ECC2 /* check.tiff */,
+				CE4D4FD30B25976F00A1ECC2 /* uncheck.tiff */,
 				CE7E207C0A0BF833009D04C3 /* GroupAddSmart_Pressed.tiff */,
 				CE7E207D0A0BF833009D04C3 /* GroupAddSmart.tiff */,
 				F9022DA20758088000C3F701 /* Action_Pressed.tiff */,
@@ -2822,7 +2828,6 @@
 		29B97313FDCFA39411CA2CEA /* Project object */ = {
 			isa = PBXProject;
 			buildConfigurationList = F993F20208553A61007A7657 /* Build configuration list for PBXProject "Bibdesk" */;
-			compatibilityVersion = "Xcode 2.4";
 			hasScannedForEncodings = 1;
 			mainGroup = 29B97314FDCFA39411CA2CEA /* BibDesk */;
 			projectDirPath = "";
@@ -2857,7 +2862,6 @@
 				},
 			);
 			projectRoot = "";
-			shouldCheckCompatibility = 1;
 			targets = (
 				8D1107260486CEB800E47090 /* BibDesk */,
 				3D8A5779082D3077008E818C /* BibDesk Help */,
@@ -3148,6 +3152,8 @@
 				CEEFE2B30B03FAF500668BB0 /* BDSKScriptGroupSheet.nib in Resources */,
 				CE7A4AA50B0B480100D1B333 /* BDSKCustomCiteDrawer.nib in Resources */,
 				CE3A1A570B19C2F700233208 /* SelectEncodingsPanel.nib in Resources */,
+				CE4D4FD40B25976F00A1ECC2 /* uncheck.tiff in Resources */,
+				CE4D4FD60B25978800A1ECC2 /* check.tiff in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
