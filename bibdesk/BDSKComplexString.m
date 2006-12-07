@@ -1,0 +1,489 @@
+#import "BDSKComplexString.h"
+#import "NSSTring_BDSKExtensions.h"
+
+static NSCharacterSet *macroCharSet = nil;
+
+@implementation BDSKStringNode
+
++ (BDSKStringNode *)nodeWithQuotedString:(NSString *)s{
+    BDSKStringNode *node = [[BDSKStringNode alloc] init];
+	[node setType:BSN_STRING];
+	[node setValue:[[BDSKConverter sharedConverter] stringByDeTeXifyingString:s]];
+	return [node autorelease];
+}
+
++ (BDSKStringNode *)nodeWithNumberString:(NSString *)s{
+    BDSKStringNode *node = [[BDSKStringNode alloc] init];
+	[node setType:BSN_NUMBER];
+	[node setValue:s];
+	return [node autorelease];
+}
+
++ (BDSKStringNode *)nodeWithMacroString:(NSString *)s{
+    BDSKStringNode *node = [[BDSKStringNode alloc] init];
+	[node setType:BSN_MACRODEF];
+	[node setValue:s];
+	return [node autorelease];
+}
+
++ (BDSKStringNode *)nodeWithBibTeXString:(NSString *)s{
+    BDSKStringNode *node = [[BDSKStringNode alloc] init];
+
+    // a single string - may be a macro or a quoted string.
+    s = [s stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
+    
+    // unbalanced brackets are always an error, even if the quote style is quotes!
+    
+    unichar startChar = [s characterAtIndex:0];
+    unichar endChar;
+    if(startChar == '{' || startChar == '"'){        // if it's quoted, strip that and call it a simple string
+        if(startChar == '{') endChar = '}';
+        else endChar = '"';
+        
+        s = [s substringFromIndex:1]; // ignore startChar.
+        
+        if([s length] > 0 &&
+		   [s characterAtIndex:([s length] - 1)] == endChar && 
+		   [s isStringTeXQuotingBalancedWithBraces:YES connected:NO range:NSMakeRange(0,[s length] - 1)]){
+            s = [s substringToIndex:([s length] - 1)];
+        }else{
+            // it's an unbalanced string, so we raise
+            [NSException raise:@"BDSKComplexStringException" 
+                        format:@"Unbalanced string: [%@]", s];
+        }
+        [node setType:BSN_STRING];
+        [node setValue:[[BDSKConverter sharedConverter] stringByDeTeXifyingString:s]];
+        return [node autorelease];
+        
+    }else{
+        
+        // it doesn't start with a quote, so it must be a single macro or raw number
+        
+        NSCharacterSet *nonDigitCharset = [[NSCharacterSet decimalDigitCharacterSet] invertedSet];
+        if([s rangeOfCharacterFromSet:nonDigitCharset].location != NSNotFound){
+            // if it contains characters that are not digits, it must be a macro
+			NSCharacterSet *nonMacroCharset = [macroCharSet invertedSet];
+			if([s rangeOfCharacterFromSet:nonMacroCharset].location != NSNotFound ||
+			   [[NSCharacterSet decimalDigitCharacterSet] characterIsMember:[s characterAtIndex:0]]){
+				// the macro contains an invalid character
+				[NSException raise:@"BDSKComplexStringException" 
+							format:@"Invalid character in macro string: [%@]", s];
+            }
+			[node setType:BSN_MACRODEF];
+        }else{
+            // if it doesn't contain characters that are not digits, it is a number.
+            [node setType:BSN_NUMBER];
+        }
+        [node setValue:s];
+        return [node autorelease];
+    }
+    
+}
+
+- (void)dealloc{
+    [value release];
+    [super dealloc];
+}
+
+- (id)copyWithZone:(NSZone *)zone{
+    BDSKStringNode *copy = [[BDSKStringNode allocWithZone:zone] init];
+    [copy setType:type];
+    [copy setValue:value];
+    return copy;
+}
+
+- (id)initWithCoder:(NSCoder *)coder{
+	if (self = [super init]) {
+		[self setType:[coder decodeIntForKey:@"type"]];
+		[self setValue:[coder decodeObjectForKey:@"value"]];
+	}
+	return self;
+}
+
+- (void)encodeWithCoder:(NSCoder *)encoder{
+	[encoder encodeInt:type forKey:@"type"];
+    [encoder encodeObject:value forKey:@"value"];
+}
+
+- (BOOL)isEqual:(BDSKStringNode *)other{
+    if(type == [other type] &&
+       [value isEqualToString:[other value]])
+        return YES;
+    return NO;
+}
+
+- (bdsk_stringnodetype)type {
+    return type;
+}
+
+- (void)setType:(bdsk_stringnodetype)newType {
+    type = newType;
+}
+
+
+- (NSString *)value {
+    return [[value retain] autorelease];
+}
+
+- (void)setValue:(NSString *)newValue {
+    if (value != newValue) {
+        [value release];
+        value = [newValue copy];
+    }
+}
+
+- (NSString *)description{
+    return [NSString stringWithFormat:@"type: %d, %@", type, value];
+}
+
+@end
+
+// stores system-defined macros for the months.
+// we grab their localized versions for display.
+static NSDictionary *globalMacroDefs; 
+
+@implementation BDSKComplexString
+
++ (void)initialize{
+    if (globalMacroDefs == nil){
+        globalMacroDefs = [[NSMutableDictionary alloc] initWithObjects:[[NSUserDefaults standardUserDefaults] objectForKey:NSMonthNameArray]
+                                                               forKeys:[NSArray arrayWithObjects:@"jan", @"feb", @"mar", @"apr", @"may", @"jun", @"jul", @"aug", @"sep", @"oct", @"nov", @"dec", nil]];
+    }
+}
+
++ (id)allocWithZone:(NSZone *)aZone{
+    return NSAllocateObject(self, 0, aZone);
+}
+
+- (id)init{
+    self = [self initWithArray:nil macroResolver:nil];
+	return self;
+}
+
+- (id)initWithArray:(NSArray *)a macroResolver:(id)theMacroResolver{
+    if (self = [super init]) {
+		nodes = [a copy];
+		if(theMacroResolver)
+			[self setMacroResolver:theMacroResolver];
+		else
+			NSLog(@"Warning: complex string being created without macro resolver. Macros in it will not be resolved.");
+		
+		expandedValue = [[self expandedValueFromArray:[self nodes]] retain];
+	}		
+    return self;
+}
+
+- (void)dealloc{
+    [expandedValue release];
+	[nodes release];
+	if (macroResolver)
+		[[NSNotificationCenter defaultCenter] removeObserver:self];
+    [super dealloc];
+}
+
+- (id)copyWithZone:(NSZone *)zone{
+    BDSKComplexString *cs = [[BDSKComplexString allocWithZone:zone] initWithArray:[[nodes copy] autorelease] 
+							macroResolver:macroResolver];
+    return cs;
+}
+
+- (id)initWithCoder:(NSCoder *)coder{
+	if (self = [super initWithCoder:coder]) {
+		nodes = [[coder decodeObjectForKey:@"nodes"] retain];
+		expandedValue = [[coder decodeObjectForKey:@"expandedValue"] retain];
+		[self setMacroResolver:[coder decodeObjectForKey:@"macroResolver"]];
+	}
+	return self;
+}
+
+- (void)encodeWithCoder:(NSCoder *)coder{
+	[super encodeWithCoder:coder];
+    [coder encodeObject:nodes forKey:@"nodes"];
+    [coder encodeObject:expandedValue forKey:@"expandedValue"];
+    [coder encodeConditionalObject:macroResolver forKey:@"macroResolver"];
+}
+
+#pragma mark overridden NSString Methods
+
+- (unsigned int)length{
+    return [expandedValue length];
+}
+
+- (unichar)characterAtIndex:(unsigned)index{
+    return [expandedValue characterAtIndex:index];
+}
+
+- (void)getCharacters:(unichar *)buffer{
+    [expandedValue getCharacters:buffer];
+}
+
+- (void)getCharacters:(unichar *)buffer range:(NSRange)aRange{
+    [expandedValue getCharacters:buffer range:aRange];
+}
+
+#pragma mark overridden methods from the ComplexStringExtensions
+
+- (BOOL)isComplex {
+    return YES;
+}
+
+- (BOOL)isEqualAsComplexString:(NSString *)other{
+	if (![other isComplex])
+		return NO;
+	return [[self nodes] isEqualToArray:[(BDSKComplexString*)other nodes]];
+}
+
+// Returns the bibtex value of the string.
+- (NSString *)stringAsBibTeXString{
+    BDSKConverter *conv = [BDSKConverter sharedConverter];
+    int i = 0;
+    NSMutableString *retStr = [NSMutableString string];
+        
+    for( i = 0; i < [nodes count]; i++){
+        BDSKStringNode *valNode = [nodes objectAtIndex:i];
+        if (i != 0){
+            [retStr appendString:@" # "];
+        }
+        
+        if([valNode type] == BSN_STRING){
+            [retStr appendFormat:@"{%@}", [conv stringByTeXifyingString:[valNode value]]];
+        }else{
+            [retStr appendString:[conv stringByTeXifyingString:[valNode value]]];
+        }
+    }
+    
+    return retStr; 
+}
+
+#pragma mark complex string methods
+
+- (NSArray *)nodes{
+    return nodes;
+}
+
+- (NSString *)expandedValueFromArray:(NSArray *)a{
+    NSMutableString *s = [[NSMutableString alloc] initWithCapacity:10];
+    int i =0;
+    
+	if (a == nil)
+		return nil;
+	
+    for(i = 0 ; i < [a count]; i++){
+        BDSKStringNode *node = [a objectAtIndex:i];
+        if([node type] == BSN_MACRODEF){
+            NSString *exp = nil;
+            if(macroResolver)
+                exp = [macroResolver valueOfMacro:[node value]];
+            if (exp){
+                [s appendString:exp];
+            }else{
+                // there was no expansion. Check the system global dict first.
+                NSString *globalExp = [globalMacroDefs objectForKey:[node value]];
+                if(globalExp) 
+                    [s appendString:globalExp];
+                else 
+                    [s appendString:[node value]];
+            }
+        }else{
+            [s appendString:[node value]];
+        }
+    }
+    [s autorelease];
+    return [[s copy] autorelease];
+}
+
+- (id <BDSKMacroResolver>)macroResolver{
+    return macroResolver;
+}
+
+- (void)setMacroResolver:(id <BDSKMacroResolver>)newMacroResolver{
+	if (newMacroResolver != macroResolver) {
+		NSNotificationCenter *nc = [NSNotificationCenter defaultCenter];
+		if (macroResolver) {
+			[nc removeObserver:self];
+		}
+		macroResolver = newMacroResolver;
+		
+		[expandedValue autorelease];
+		expandedValue = [[self expandedValueFromArray:nodes] retain];
+		
+		if (newMacroResolver) {
+			[nc addObserver:self
+				   selector:@selector(handleMacroKeyChangedNotification:)
+					   name:BDSKBibDocMacroKeyChangedNotification
+					 object:newMacroResolver];
+			[nc addObserver:self
+				   selector:@selector(handleMacroDefinitionChangedNotification:)
+					   name:BDSKBibDocMacroDefinitionChangedNotification
+					 object:newMacroResolver];
+		}
+	}
+}
+
+- (void)handleMacroKeyChangedNotification:(NSNotification *)notification{
+	NSDictionary *userInfo = [notification userInfo];
+	BDSKStringNode *oldMacroNode = [BDSKStringNode nodeWithMacroString:[userInfo objectForKey:@"oldKey"]];
+	BDSKStringNode *newMacroNode = [BDSKStringNode nodeWithMacroString:[userInfo objectForKey:@"newKey"]];
+	
+	if ([nodes containsObject:oldMacroNode] || [nodes containsObject:newMacroNode]) {
+		[expandedValue autorelease];
+		expandedValue = [[self expandedValueFromArray:nodes] retain];
+	}
+}
+
+- (void)handleMacroDefinitionChangedNotification:(NSNotification *)notification{
+	NSDictionary *userInfo = [notification userInfo];
+	BDSKStringNode *macroNode = [BDSKStringNode nodeWithMacroString:[userInfo objectForKey:@"macroKey"]];
+	
+	if ([nodes containsObject:macroNode]) {
+		[expandedValue autorelease];
+		expandedValue = [[self expandedValueFromArray:nodes] retain];
+	}
+}
+
+@end
+
+@implementation NSString (ComplexStringExtensions)
+
++ (NSString *)complexStringWithBibTeXString:(NSString *)btstring macroResolver:(id<BDSKMacroResolver>)theMacroResolver{
+    NSMutableArray *returnNodes = [NSMutableArray array];
+    
+    btstring = [btstring stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
+    
+    if([btstring length] == 0){
+        // if the string was whitespace only, it becomes empty.
+        // empty strings are a special case, they are not complex.
+        return [NSString stringWithString:@""];
+    }
+    
+    NSScanner *sc = [NSScanner scannerWithString:btstring];
+	[sc setCharactersToBeSkipped:nil];
+    NSString *s = nil;
+	int nesting;
+	unichar ch;
+	NSCharacterSet *bracesCharSet = [NSCharacterSet characterSetWithCharactersInString:@"{}"];
+	
+	if (!macroCharSet) {
+		NSMutableCharacterSet *tmpSet = [[[NSCharacterSet whitespaceAndNewlineCharacterSet] mutableCopy] autorelease];
+		[tmpSet addCharactersInString:@"\"#%'(),={}"];
+		[tmpSet invert];
+		macroCharSet = [tmpSet copy];
+	}
+	
+	while (![sc isAtEnd]) {
+		ch = [btstring characterAtIndex:[sc scanLocation]];
+		if (ch == '{') {
+			// a brace-quoted string, we look for the corresponding closing brace
+			NSMutableString *nodeStr = [NSMutableString string];
+			[sc setScanLocation:[sc scanLocation] + 1];
+			nesting = 1;
+			while (nesting > 0 && ![sc isAtEnd]) {
+				if ([sc scanUpToCharactersFromSet:bracesCharSet intoString:&s])
+					[nodeStr appendString:s];
+				if ([sc isAtEnd]) break;
+				if ([btstring characterAtIndex:[sc scanLocation] - 1] != '\\') {
+					// we found an unquoted brace
+					ch = [btstring characterAtIndex:[sc scanLocation]];
+					if (ch == '}') {
+						--nesting;
+					} else {
+						++nesting;
+					}
+					if (nesting > 0) // we don't include the outer braces
+						[nodeStr appendFormat:@"%C",ch];
+				}
+				[sc setScanLocation:[sc scanLocation] + 1];
+			}
+			if (nesting > 0) {
+				[NSException raise:@"BDSKComplexStringException" 
+							format:@"Unbalanced string: [%@]", nodeStr];
+			}
+			[returnNodes addObject:[BDSKStringNode nodeWithQuotedString:nodeStr]];
+		} 
+		else if (ch == '"') {
+			// a doublequote-quoted string
+			NSMutableString *nodeStr = [NSMutableString string];
+			[sc setScanLocation:[sc scanLocation] + 1];
+			nesting = 1;
+			while (nesting > 0 && ![sc isAtEnd]) {
+				if ([sc scanUpToString:@"\"" intoString:&s])
+					[nodeStr appendString:s];
+				if (![sc isAtEnd]) {
+					if ([btstring characterAtIndex:[sc scanLocation] - 1] == '\\')
+						[nodeStr appendString:@"\""];
+					else 
+						nesting = 0;
+					[sc setScanLocation:[sc scanLocation] + 1];
+				}
+			}
+			// we don't accept unbalanced braces, as we always quote with braces
+			// do we want to be more permissive and try to use "-quoted fields?
+			if (nesting > 0 || ![nodeStr isStringTeXQuotingBalancedWithBraces:YES connected:NO]) {
+				[NSException raise:@"BDSKComplexStringException" 
+							format:@"Unbalanced string: [%@]", nodeStr];
+			}
+			[returnNodes addObject:[BDSKStringNode nodeWithQuotedString:nodeStr]];
+		} 
+		else if ([[NSCharacterSet decimalDigitCharacterSet] characterIsMember:ch]) {
+			// this should be all numbers
+			[sc scanCharactersFromSet:[NSCharacterSet decimalDigitCharacterSet] intoString:&s];
+			[returnNodes addObject:[BDSKStringNode nodeWithNumberString:s]];
+		} 
+		else if ([macroCharSet characterIsMember:ch]) {
+			// a macro
+			if ([sc scanCharactersFromSet:macroCharSet intoString:&s])
+				[returnNodes addObject:[BDSKStringNode nodeWithMacroString:s]];
+		}
+		else if (ch == '#') {
+			// we found 2 # or a # at the beginning
+			[NSException raise:@"BDSKComplexStringException" 
+						format:@"Missing component"];
+		} 
+		else {
+			[NSException raise:@"BDSKComplexStringException" 
+						format:@"Invalid first character in component"];
+		}
+		
+		// look for the next #-character, removing spaces around it
+		[sc scanCharactersFromSet:[NSCharacterSet whitespaceAndNewlineCharacterSet] intoString:NULL];
+		if (![sc isAtEnd]) {
+			if (![sc scanString:@"#" intoString:NULL]) {
+				[NSException raise:@"BDSKComplexStringException" 
+							format:@"Missing # character"];
+			}
+			[sc scanCharactersFromSet:[NSCharacterSet whitespaceAndNewlineCharacterSet] intoString:NULL];
+			if ([sc isAtEnd]) {
+				// we found a # at the end
+				[NSException raise:@"BDSKComplexStringException" 
+							format:@"Empty component"];
+			}
+		}
+	}
+	
+	// if we have a single string-type node, we return an NSString
+	if ([returnNodes count] == 1 && [(BDSKStringNode*)[returnNodes objectAtIndex:0] type] == BSN_STRING) {
+		return [[returnNodes objectAtIndex:0] value];
+	}
+	return [NSString complexStringWithArray:returnNodes macroResolver:theMacroResolver];
+}
+
++ (NSString *)complexStringWithArray:(NSArray *)a macroResolver:(id)theMacroResolver{
+    return [[[BDSKComplexString alloc] initWithArray:a macroResolver:theMacroResolver] autorelease];
+}
+
+- (BOOL)isComplex{
+	return NO;
+}
+
+- (BOOL)isEqualAsComplexString:(NSString *)other{
+	// we can assume that we are not complex, as BDSKComplexString overrides this
+	if ([other isComplex])
+		return NO;
+	return [self isEqualToString:other];
+}
+
+- (NSString *)stringAsBibTeXString{
+	return [NSString stringWithFormat:@"{%@}", self];
+}
+
+@end
