@@ -1,0 +1,38 @@
+{
+    "ItemDisplayControllers" = {
+        "BDSKInstitutionItemDisplayController" = {    
+            DisplayableEntities = ("Institution");
+            Bindings = ();
+        };
+        "BDSKNoteItemDisplayController" = {    
+            DisplayableEntities = ("Note");
+            Bindings = ();
+        };
+        "BDSKPersonItemDisplayController" = {    
+            DisplayableEntities = ("Person");
+            Bindings = ();
+        };
+        "BDSKPublicationItemDisplayController" = { 
+            DisplayableEntities = ("Publication");
+            Bindings = ();
+        };
+        "BDSKVenueItemDisplayController" = {    
+            DisplayableEntities = ("Venue");
+            Bindings = ();
+        };
+        "BDSKTagItemDisplayController" = {    
+            DisplayableEntities = ("Tag");
+            Bindings = ();
+        };
+    };
+    "TableDisplayControllers" = {
+        "BDSKTableDisplayController" = {    
+            DisplayableEntities = ("Item");
+            Bindings = ();
+        };
+        "BDSKPersonTableDisplayController" = {    
+            DisplayableEntities = ("Person");
+            Bindings = ();
+        };
+    };
+}

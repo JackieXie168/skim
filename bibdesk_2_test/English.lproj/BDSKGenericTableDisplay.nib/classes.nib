@@ -1,0 +1,23 @@
+{
+    IBClasses = (
+        {
+            CLASS = BDSKDisplayController; 
+            LANGUAGE = ObjC; 
+            OUTLETS = {mainView = NSView; }; 
+            SUPERCLASS = NSWindowController; 
+        }, 
+        {
+            CLASS = BDSKTableDisplayController; 
+            LANGUAGE = ObjC; 
+            OUTLETS = {
+                currentItemDisplayView = NSView; 
+                itemsArrayController = NSArrayController; 
+                itemsTableView = NSTableView; 
+            }; 
+            SUPERCLASS = BDSKDisplayController; 
+        }, 
+        {CLASS = FirstResponder; LANGUAGE = ObjC; SUPERCLASS = NSObject; }, 
+        {CLASS = ImageBackgroundBox; LANGUAGE = ObjC; SUPERCLASS = NSBox; }
+    ); 
+    IBVersion = 1; 
+}

@@ -1,0 +1,51 @@
+\documentclass{article}
+\def\badcheck{A penalty has been added because your
+   check to us was not honored by your bank.\par}
+\def\row#1#2{(#1_1,\ldots,#1_#2)}
+\long\def\result#1{{\smallskip\moveright0.1\textwidth\vbox{\hsize 0.8\textwidth\footnotesize#1}}\smallskip}
+
+\newcommand{\optioncmd}[2][default]{Optional parameter 1 = #1 -- parameter 2 = #2.\\} 
+
+
+\newcommand{\egstart}{\begin{center}\begin{figure}}
+\newcommand{\egmid}{\end{figure}\hfill\begin{figure}}
+\newcommand{\egend}{\end{figure}\end{center}}
+\newcommand{\eempty}[1]{} 
+
+\begin{document}
+
+Here is the first macro:
+
+\badcheck
+
+Yet another macro
+$$
+\row xn
+$$
+
+This should be blank between the parentheses (\eempty{b})
+
+And yet another macro 
+
+\result{%
+Words within a sentence are ended by spaces.  One space
+between words  is     equivalent      to any number. We are only
+interested in separating      one    word      from        the
+next, not in formatting       the space between them.
+}
+
+text
+\egstart
+some example
+\egend
+
+Command with optional parameters
+
+\optioncmd[p1]{p2} 
+
+\optioncmd{p2} 
+
+%latex2rtf: This should only show up in the .rtf file created by 
+%latex2rtf: latex2rtf!
+
+\end{document}

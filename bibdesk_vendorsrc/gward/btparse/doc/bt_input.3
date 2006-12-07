@@ -1,0 +1,382 @@
+.rn '' }`
+''' $RCSfile$$Revision$$Date$
+'''
+''' $Log$
+'''
+.de Sh
+.br
+.if t .Sp
+.ne 5
+.PP
+\fB\\$1\fR
+.PP
+..
+.de Sp
+.if t .sp .5v
+.if n .sp
+..
+.de Ip
+.br
+.ie \\n(.$>=3 .ne \\$3
+.el .ne 3
+.IP "\\$1" \\$2
+..
+.de Vb
+.ft CW
+.nf
+.ne \\$1
+..
+.de Ve
+.ft R
+
+.fi
+..
+'''
+'''
+'''     Set up \*(-- to give an unbreakable dash;
+'''     string Tr holds user defined translation string.
+'''     Bell System Logo is used as a dummy character.
+'''
+.tr \(*W-|\(bv\*(Tr
+.ie n \{\
+.ds -- \(*W-
+.ds PI pi
+.if (\n(.H=4u)&(1m=24u) .ds -- \(*W\h'-12u'\(*W\h'-12u'-\" diablo 10 pitch
+.if (\n(.H=4u)&(1m=20u) .ds -- \(*W\h'-12u'\(*W\h'-8u'-\" diablo 12 pitch
+.ds L" ""
+.ds R" ""
+'''   \*(M", \*(S", \*(N" and \*(T" are the equivalent of
+'''   \*(L" and \*(R", except that they are used on ".xx" lines,
+'''   such as .IP and .SH, which do another additional levels of
+'''   double-quote interpretation
+.ds M" """
+.ds S" """
+.ds N" """""
+.ds T" """""
+.ds L' '
+.ds R' '
+.ds M' '
+.ds S' '
+.ds N' '
+.ds T' '
+'br\}
+.el\{\
+.ds -- \(em\|
+.tr \*(Tr
+.ds L" ``
+.ds R" ''
+.ds M" ``
+.ds S" ''
+.ds N" ``
+.ds T" ''
+.ds L' `
+.ds R' '
+.ds M' `
+.ds S' '
+.ds N' `
+.ds T' '
+.ds PI \(*p
+'br\}
+.\"	If the F register is turned on, we'll generate
+.\"	index entries out stderr for the following things:
+.\"		TH	Title 
+.\"		SH	Header
+.\"		Sh	Subsection 
+.\"		Ip	Item
+.\"		X<>	Xref  (embedded
+.\"	Of course, you have to process the output yourself
+.\"	in some meaninful fashion.
+.if \nF \{
+.de IX
+.tm Index:\\$1\t\\n%\t"\\$2"
+..
+.nr % 0
+.rr F
+.\}
+.TH bt_input 3 "btparse, version 0.33" "22 Decemer, 2000" "btparse"
+.UC
+.if n .hy 0
+.if n .na
+.ds C+ C\v'-.1v'\h'-1p'\s-2+\h'-1p'+\s0\v'.1v'\h'-1p'
+.de CQ          \" put $1 in typewriter font
+.ft CW
+'if n "\c
+'if t \\&\\$1\c
+'if n \\&\\$1\c
+'if n \&"
+\\&\\$2 \\$3 \\$4 \\$5 \\$6 \\$7
+'.ft R
+..
+.\" @(#)ms.acc 1.5 88/02/08 SMI; from UCB 4.2
+.	\" AM - accent mark definitions
+.bd B 3
+.	\" fudge factors for nroff and troff
+.if n \{\
+.	ds #H 0
+.	ds #V .8m
+.	ds #F .3m
+.	ds #[ \f1
+.	ds #] \fP
+.\}
+.if t \{\
+.	ds #H ((1u-(\\\\n(.fu%2u))*.13m)
+.	ds #V .6m
+.	ds #F 0
+.	ds #[ \&
+.	ds #] \&
+.\}
+.	\" simple accents for nroff and troff
+.if n \{\
+.	ds ' \&
+.	ds ` \&
+.	ds ^ \&
+.	ds , \&
+.	ds ~ ~
+.	ds ? ?
+.	ds ! !
+.	ds /
+.	ds q
+.\}
+.if t \{\
+.	ds ' \\k:\h'-(\\n(.wu*8/10-\*(#H)'\'\h"|\\n:u"
+.	ds ` \\k:\h'-(\\n(.wu*8/10-\*(#H)'\`\h'|\\n:u'
+.	ds ^ \\k:\h'-(\\n(.wu*10/11-\*(#H)'^\h'|\\n:u'
+.	ds , \\k:\h'-(\\n(.wu*8/10)',\h'|\\n:u'
+.	ds ~ \\k:\h'-(\\n(.wu-\*(#H-.1m)'~\h'|\\n:u'
+.	ds ? \s-2c\h'-\w'c'u*7/10'\u\h'\*(#H'\zi\d\s+2\h'\w'c'u*8/10'
+.	ds ! \s-2\(or\s+2\h'-\w'\(or'u'\v'-.8m'.\v'.8m'
+.	ds / \\k:\h'-(\\n(.wu*8/10-\*(#H)'\z\(sl\h'|\\n:u'
+.	ds q o\h'-\w'o'u*8/10'\s-4\v'.4m'\z\(*i\v'-.4m'\s+4\h'\w'o'u*8/10'
+.\}
+.	\" troff and (daisy-wheel) nroff accents
+.ds : \\k:\h'-(\\n(.wu*8/10-\*(#H+.1m+\*(#F)'\v'-\*(#V'\z.\h'.2m+\*(#F'.\h'|\\n:u'\v'\*(#V'
+.ds 8 \h'\*(#H'\(*b\h'-\*(#H'
+.ds v \\k:\h'-(\\n(.wu*9/10-\*(#H)'\v'-\*(#V'\*(#[\s-4v\s0\v'\*(#V'\h'|\\n:u'\*(#]
+.ds _ \\k:\h'-(\\n(.wu*9/10-\*(#H+(\*(#F*2/3))'\v'-.4m'\z\(hy\v'.4m'\h'|\\n:u'
+.ds . \\k:\h'-(\\n(.wu*8/10)'\v'\*(#V*4/10'\z.\v'-\*(#V*4/10'\h'|\\n:u'
+.ds 3 \*(#[\v'.2m'\s-2\&3\s0\v'-.2m'\*(#]
+.ds o \\k:\h'-(\\n(.wu+\w'\(de'u-\*(#H)/2u'\v'-.3n'\*(#[\z\(de\v'.3n'\h'|\\n:u'\*(#]
+.ds d- \h'\*(#H'\(pd\h'-\w'~'u'\v'-.25m'\f2\(hy\fP\v'.25m'\h'-\*(#H'
+.ds D- D\\k:\h'-\w'D'u'\v'-.11m'\z\(hy\v'.11m'\h'|\\n:u'
+.ds th \*(#[\v'.3m'\s+1I\s-1\v'-.3m'\h'-(\w'I'u*2/3)'\s-1o\s+1\*(#]
+.ds Th \*(#[\s+2I\s-2\h'-\w'I'u*3/5'\v'-.3m'o\v'.3m'\*(#]
+.ds ae a\h'-(\w'a'u*4/10)'e
+.ds Ae A\h'-(\w'A'u*4/10)'E
+.ds oe o\h'-(\w'o'u*4/10)'e
+.ds Oe O\h'-(\w'O'u*4/10)'E
+.	\" corrections for vroff
+.if v .ds ~ \\k:\h'-(\\n(.wu*9/10-\*(#H)'\s-2\u~\d\s+2\h'|\\n:u'
+.if v .ds ^ \\k:\h'-(\\n(.wu*10/11-\*(#H)'\v'-.4m'^\v'.4m'\h'|\\n:u'
+.	\" for low resolution devices (crt and lpr)
+.if \n(.H>23 .if \n(.V>19 \
+\{\
+.	ds : e
+.	ds 8 ss
+.	ds v \h'-1'\o'\(aa\(ga'
+.	ds _ \h'-1'^
+.	ds . \h'-1'.
+.	ds 3 3
+.	ds o a
+.	ds d- d\h'-1'\(ga
+.	ds D- D\h'-1'\(hy
+.	ds th \o'bp'
+.	ds Th \o'LP'
+.	ds ae ae
+.	ds Ae AE
+.	ds oe oe
+.	ds Oe OE
+.\}
+.rm #[ #] #H #V #F C
+.SH "NAME"
+bt_input \- input/parsing functions in \fBbtparse\fR library
+.SH "SYNOPSIS"
+.PP
+.Vb 13
+\&   void  bt_set_stringopts (bt_metatype_t metatype, ushort options);
+\&   AST * bt_parse_entry_s (char *    entry_text,
+\&                           char *    filename,
+\&                           int       line,
+\&                           ushort    options,
+\&                           boolean * status);
+\&   AST * bt_parse_entry   (FILE *    infile,
+\&                           char *    filename,
+\&                           ushort    options,
+\&                           boolean * status);
+\&   AST * bt_parse_file    (char *    filename, 
+\&                           ushort    options, 
+\&                           boolean * overall_status);
+.Ve
+.SH "DESCRIPTION"
+The functions described here are used to read and parse BibTeX data,
+converting it from raw text to abstract-syntax trees (ASTs).
+.Ip "bt_set_stringopts ()" 4
+.Sp
+.Vb 1
+\&   void bt_set_stringopts (bt_metatype_t metatype, ushort options);
+.Ve
+Set the string-processing options for a particular entry metatype.  This
+affects the entry post-processing done by \f(CWbt_parse_entry_s()\fR,
+\f(CWbt_parse_entry()\fR, and \f(CWbt_parse_file()\fR.  If \f(CWbt_set_stringopts()\fR
+is never called, the four metatypes default to the following sets of
+string options:
+.Sp
+.Vb 4
+\&   BTE_REGULAR    BTO_CONVERT | BTO_EXPAND | BTO_PASTE | BTO_COLLAPSE
+\&   BTE_COMMENT    0
+\&   BTE_PREAMBLE   0
+\&   BTE_MACRODEF   BTO_CONVERT | BTO_EXPAND | BTO_PASTE
+.Ve
+For example,
+.Sp
+.Vb 1
+\&   bt_set_stringopts (BTE_COMMENT, BTO_COLLAPSE);
+.Ve
+will cause the library to collapse whitespace in the value from all
+comment entries; the \s-1AST\s0 returned by one of the \f(CWbt_parse_*\fR functions
+will reflect this change.
+.Ip "bt_parse_entry ()" 4
+.Sp
+.Vb 4
+\&   AST * bt_parse_entry (FILE *    infile,
+\&                         char *    filename,
+\&                         ushort    options,
+\&                         boolean * status);
+.Ve
+Scans and parses the next BibTeX entry in \f(CWinfile\fR.  You should supply
+\f(CWfilename\fR to help \fBbtparse\fR generate accurate error messages; the
+library keeps track of \f(CWinfile\fR's current line number internally, so you
+don't need to pass that in.  \f(CWoptions\fR should be a bitmap of
+non-string-processing options (currently, \f(CWBTO_NOSTORE\fR to disable storing
+macro expansions is the only such option).  \f(CW*status\fR will be set to
+\f(CWTRUE\fR if the entry parsed successfully or with only minor warnings, and
+\f(CWFALSE\fR if there were any serious lexical or syntactic errors.  If
+\f(CWstatus\fR is \f(CWNULL\fR, then the parse status will be unavailable to you.
+Both minor warnings and serious errors are reported on \f(CWstderr\fR.
+.Sp
+Returns a pointer to the abstract-syntax tree (\s-1AST\s0) describing the entry
+just parsed, or \f(CWNULL\fR if no more entries were found in \f(CWinfile\fR (this
+will leave \f(CWinfile\fR at end-of-file).  Do not attempt to second guess
+\f(CWbt_parse_entry()\fR by detecting end-of-file yourself; it must be allowed
+to determine this on its own so it can clean up some static data that is
+preserved between calls on the same file.
+.Sp
+\f(CWbt_parse_entry()\fR has two important restrictions that you should know
+about.  First, you should let \fBbtparse\fR manage all the input on the
+file; this is for reasons both superficial (so the library knows the
+current line number in order to generate accurate error messages) and
+fundamental (the library must be allowed to detect end-of-file in order
+to cleanup certain static variables and allow you to parse another
+file).  Second, you cannot interleave the parsing of two different
+files; attempting to do so will result in a fatal error that will crash
+your program.  This is a direct result of the static state maintained
+between calls of \f(CWbt_parse_entry()\fR.
+.Sp
+Because of two distinct \*(L"failures\*(R" possible for \f(CWbt_parse_entry()\fR
+(end-of-file, which is expected but means to stop processing the current
+file; and error-in-input, which is not expected but allows you to
+continue processing the same file), you should usually call it like
+this:
+.Sp
+.Vb 7
+\&   while (entry = bt_parse_entry (file, filename, options, &ok))
+\&   {
+\&      if (ok)
+\&      {
+\&         /* ... process entry ... */
+\&      }
+\&   }
+.Ve
+At the end of this loop, \f(CWfeof (file)\fR will be true.
+.Ip "bt_parse_entry_s ()" 4
+.Sp
+.Vb 5
+\&   AST * bt_parse_entry_s (char *    entry_text,
+\&                           char *    filename,
+\&                           int       line,
+\&                           ushort    options,
+\&                           boolean * status)
+.Ve
+Scans and parses a single complete BibTeX entry contained in a string,
+\f(CWentry_text\fR.  If you read this string from a file, you should help
+\fBbtparse\fR generate accurate error messages by supplying the name of the
+file as \f(CWfilename\fR and the line number of the beginning of the entry as
+\f(CWline\fR; otherwise, set \f(CWfilename\fR to \f(CWNULL\fR and \f(CWline\fR to \f(CW1\fR.
+\f(CWoptions\fR and \f(CWstatus\fR are the same as for \f(CWbt_parse_entry()\fR.
+.Sp
+Returns a pointer to the abstract-syntax tree (\s-1AST\s0) describing the entry
+just parsed, and \f(CWNULL\fR if no entries were found in \f(CWentry_text\fR or if
+\f(CWentry_text\fR was \f(CWNULL\fR.
+.Sp
+You should call \f(CWbt_parse_entry_s()\fR once more than the total number of
+entries you wish to parse; on the final call, set \f(CWentry_text\fR to
+\f(CWNULL\fR so the function knows there's no more text to parse.  This final
+call allows it to clean up some structures allocated on the first call.
+Thus, \f(CWbt_parse_entry_s()\fR is usually used like this:
+.Sp
+.Vb 4
+\&   char *  entry_text;
+\&   ushort  options = 0;
+\&   boolean ok;
+\&   AST *   entry_ast;
+.Ve
+.Vb 8
+\&   while (entry_text = get_more_text ())
+\&   {
+\&      entry_ast = bt_parse_entry_s (entry_text, NULL, 1, options, &ok);
+\&      if (ok)
+\&      {
+\&         /* ... process entry ... */
+\&      }
+\&   }
+.Ve
+.Vb 1
+\&   bt_parse_entry_s (NULL, NULL, 1, options, NULL);    /* cleanup */
+.Ve
+assuming that \f(CWget_more_text()\fR returns a pointer to the text of an
+entry to parse, or \f(CWNULL\fR if there's no more text available.
+.Ip "bt_parse_file ()" 4
+.Sp
+.Vb 3
+\&   AST * bt_parse_file (char *    filename, 
+\&                        ushort    options, 
+\&                        boolean * status)
+.Ve
+Scans and parses an entire BibTeX file.  If \f(CWfilename\fR is \f(CWNULL\fR or
+\f(CW"-"\fR, then \f(CWstdin\fR will be read; otherwise, attempts to open the named
+file.  If this attempt fails, prints an error message to \f(CWstderr\fR and
+returns \f(CWNULL\fR.  \f(CWoptions\fR and \f(CWstatus\fR are the same as for
+\f(CWbt_parse_entry()\fR---note that \f(CW*status\fR will be \f(CWFALSE\fR if there were
+\fIany\fR errors in the entire file; for finer granularity of error-checking,
+you should use \f(CWbt_parse_entry()\fR.
+.Sp
+Returns a pointer to a linked list of ASTs representing the entries in the
+file, or \f(CWNULL\fR if no entries were found in the file.  This list can
+be traversed with \f(CWbt_next_entry()\fR, and the individual entries then
+traversed as usual (see the \fIbt_traversal\fR manpage).
+.SH "SEE ALSO"
+the \fIbtparse\fR manpage, the \fIbt_postprocess\fR manpage, the \fIbt_traversal\fR manpage
+.SH "AUTHOR"
+Greg Ward <gward@python.net>
+
+.rn }` ''
+.IX Title "bt_input 3"
+.IX Name "bt_input - input/parsing functions in B<btparse> library"
+
+.IX Header "NAME"
+
+.IX Header "SYNOPSIS"
+
+.IX Header "DESCRIPTION"
+
+.IX Item "bt_set_stringopts ()"
+
+.IX Item "bt_parse_entry ()"
+
+.IX Item "bt_parse_entry_s ()"
+
+.IX Item "bt_parse_file ()"
+
+.IX Header "SEE ALSO"
+
+.IX Header "AUTHOR"
+

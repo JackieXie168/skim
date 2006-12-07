@@ -1,0 +1,234 @@
+\documentclass{article}
+
+\usepackage{natbib}
+\bibliographystyle{apalike}
+\parindent=0.0in
+
+\begin{document}
+
+\begin{table}
+\begin{center}
+\begin{tabular}{l}
+	\verb#\citep{allen1995a}# \\
+	\citep{allen1995a} \\
+	(Allen and Carifio, 1995b)\\
+\hline
+	\verb#\citep[chap.~3]{allen1995a}# \\
+	\citep[chap.~3]{allen1995a} \\
+	(Allen and Carifio, 1995b, chap.~3)\\
+\hline 
+	\verb#\citep[chap.~2]{chung2002}#\\
+	\citep[chap.~2]{chung2002} \\
+	(Chung and Worster, 2002, chap.~2)\\
+\hline
+	\verb#\citep[in][chap.~3]{allen1995a}# \\
+	\citep[in][chap.~3]{allen1995a} \\
+	(in Allen and Carifio, 1995b, chap.~3)\\
+\hline
+	\verb#\citep[in][]{allen1995a}# \\
+	\citep[in][]{allen1995a} \\
+	(in Allen and Carifio, 1995b)\\
+\hline
+	\verb#\citep[][chap.~3]{allen1995a}# \\
+	\citep[][chap.~3]{allen1995a} \\
+	(Allen and Carifio, 1995b, chap.~3)\\
+\hline
+	\verb#\citep[e.g.][chap.~2]{bustos1999}#\\
+	\citep[e.g.][chap.~2]{bustos1999} \\
+	(e.g. Bustos et al., 1999, chap. 2)\\
+\hline 
+	\verb#\citep[e.g.][]{chung2002}#\\
+	\citep[e.g.][]{chung2002} \\
+	(e.g. Chung and Worster, 2002)\\
+\end{tabular}
+\end{center}
+\caption{Citation \texttt{citep} entries with a single entry}
+\end{table}
+
+\begin{table}
+\begin{center}
+\begin{tabular}{l}
+	\verb#\citep{allen1995a,allen1995b}# \\
+	\citep{allen1995a,allen1995b} \\
+	(Allen and Carifio, 1995b,a) \\
+\hline
+	\verb#\citep{allen1995a,allen1996}# \\
+	\citep{allen1995a,allen1996} \\
+	(Allen and Carifio, 1995b, 1996) \\
+\hline
+	\verb#\citep[e.g.][]{allen1995a,allen1996}# \\
+	\citep[e.g.][]{allen1995a,allen1996} \\
+	(e.g. Allen and Carifio, 1995b, 1996) \\
+\hline
+	\verb#\citep{hooper1986,ortony1988,russell1979}# \\
+	\citep{hooper1986,ortony1988,russell1979}  \\
+	(Hooper, 1986; Ortony et al., 1988; Russell, 1979)\\
+ \hline
+	\verb#\citep[e.g.][]{chung2002, biot1941}#\\
+	\citep[e.g.][]{chung2002, biot1941} \\
+	(e.g. Chung and Worster, 2002; Biot, 1941)\\
+ \hline
+	\verb#\citep[e.g.][]{chung2002, biot1941}#\\
+	\citep[e.g.][]{chung2002, biot1941} \\
+	(e.g. Chung and Worster, 2002; Biot, 1941)\\
+ \hline
+	\verb#\citep[e.g.][]{bustos1999, chung2002, biot1941}#\\
+	\citep[e.g.][]{bustos1999, chung2002, biot1941} \\
+	(e.g. Bustos et al., 1999; Chung and Worster, 2002; Biot, 1941)\\
+\end{tabular}
+\end{center}
+\caption{Citation \texttt{citep} entries with a multiple entries}
+\end{table}
+
+\begin{table}
+\begin{center}
+\begin{tabular}{l}
+	\verb#\citep[chap.~3]{allen1995a,allen1995b}# \\
+	\citep[chap.~3]{allen1995a,allen1995b} \\
+	(Allen and Carifio, 1995b,a, chap.~3) \\
+\hline
+	\verb#\citep[in][chap.~3]{allen1995a,hooper1986}# \\
+	\citep[in][chap.~3]{allen1995a,hooper1986} \\
+	(in Allen and Carifio, 1995b; Hooper, 1986, chap.~3)\\
+\hline
+	\verb#\citep[in][chap.~3]{allen1995a,allen1995b}# \\
+	\citep[in][chap.~3]{allen1995a,allen1995b} \\
+	(in Allen and Carifio, 1995b,a, chap.~3)\\
+\end{tabular}
+\end{center}
+\caption{Citation \texttt{citep} entries that fail in latex2rtf.  I don't think
+that these can be used too often...how many times do you want to refer to chapter
+three in two different sources?  These probably will not get fixed because they
+are rarely used and are difficult to implement in a one-pass conversion engine.}
+\end{table}
+
+\begin{center}
+\begin{tabular}{l}
+%% Let's test one option on a book citation
+%% According to p. 7 of  Daly's natbib guide, a single
+%% option is a post--note.  1.9.14 makes it a pre--note and omits comma
+\verb#\citet[chap.~5]{bustos1999}#\\
+\citet[chap.~5]{bustos1999}\\
+Bustos et al. (1999, chap. 5)\\
+\hline 
+%% Try the starred versions
+\verb#\citet*{chung2002, biot1941}#\\
+\citet*{chung2002, biot1941}\\
+Chung and Worster (2002); Biot (1941)\\
+\hline
+\verb#\citep*{chung2002, biot1941}#\\
+\citep*{chung2002, biot1941}\\
+(Chung and Worster, 2002; Biot, 1941)\\
+\end{tabular}
+\end{center}
+
+%\bibliography{bib_natbib3.bib}
+
+\begin{thebibliography}{}
+
+\bibitem[Allen and Carifio(1995{\natexlab{a}})]{allen1995b}
+B.~D. Allen and J.~Carifio.
+\newblock The relationship between emotional states and solving complex
+  mathematical problems.
+\newblock May 1995{\natexlab{a}}.
+
+\bibitem[Allen and Carifio(1995{\natexlab{b}})]{allen1995a}
+Bradford~D. Allen and Jim Carifio.
+\newblock A {M}ethodology for the {A}nalysis of {E}motion {E}xperiences during
+  {M}athematical {P}roblem {S}olving.
+\newblock March 1995{\natexlab{b}}.
+
+\bibitem[Allen and Carifio(1996)]{allen1996}
+Bradford~D. Allen and Jim Carifio.
+\newblock Fake title for testing.
+\newblock March 1996.
+
+\bibitem[Biot, 1941]{biot1941}
+Biot, M.~A. (1941).
+\newblock General theory of three-dimensional consolidation.
+\newblock {\em Journal of Applied Physics}, 12:155--165.
+
+\bibitem[Bustos et~al., 1999]{bustos1999}
+Bustos, M.~C., Concha, F., B\"{u}rger, R., and Tory, E.~M. (1999).
+\newblock {\em Sedimentation and Thickening: Phenomenological Foundation and
+  Mathematical Theory}, volume~8 of {\em Mathematical Modelling: Theory and
+  Applications}.
+\newblock Kluwer Academic Publishers, Dordrecht.
+
+\bibitem[Chung and Worster, 2002]{chung2002}
+Chung, C.~A. and Worster, M.~G. (2002).
+\newblock Steady-state chimneys in a mushy layer.
+\newblock {\em Journal of Fluid Mechanics}, 455:387--411.
+
+\bibitem[Hooper(1986)]{hooper1986}
+J.~Hooper.
+\newblock {\em The 3-{P}ound {U}niverse}.
+\newblock Teacher, Inc, Los Angeles, 1986.
+
+\bibitem[Ortony et~al.(1988)Ortony, Clore, and Collins]{ortony1988}
+A.~Ortony, G.~Clore, and A.~Collins.
+\newblock {\em The {C}ognitive {S}tructure of {E}motions}.
+\newblock Cambridge University Press, New York, 1988.
+
+\bibitem[Russell(1979)]{russell1979}
+J.~A. Russell.
+\newblock Affect {S}pace is {B}ipolar.
+\newblock {\em Journal of Personality and Social Psychology}, 37\penalty0
+  (3):\penalty0 345--356, 1979.
+\end{thebibliography}
+
+\end{document}
+
+%% bib_natbib3.bib
+%% @article{biot1941,
+%% Author = {M. A. Biot},
+%% Journal = {Journal of Applied Physics},
+%% Keywords = {consolidation},
+%% Pages = {155-165},
+%% Title = {General theory of three--dimensional consolidation},
+%% Volume = {12},
+%% Year = {1941}}
+%% 
+%% @article{chung2002,
+%% Author = {C. A. Chung and M. Grae Worster},
+%% Journal = {Journal of Fluid Mechanics},
+%% Keywords = {settling},
+%% Pages = {387-411},
+%% Title = {Steady-state chimneys in a mushy layer},
+%% Volume = {455},
+%% Year = {2002}}
+%% 
+%% @book{bustos1999,
+%% Address = {Dordrecht},
+%% Author = {Mar\'{\i}a Cristina Bustos and Fernando Concha and Raimund B\"{u}rger and Elmer M. Tory},
+%% Keywords = {settling, constitutive, consolidation},
+%% Publisher = {Kluwer Academic Publishers},
+%% Series = {Mathematical Modelling: Theory and Applications},
+%% Title = {Sedimentation and Thickening: Phenomenological Foundation and Mathematical Theory},
+%% Volume = {8},
+%% Year = {1999}}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

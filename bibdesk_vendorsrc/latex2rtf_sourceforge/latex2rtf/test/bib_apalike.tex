@@ -1,0 +1,26 @@
+\documentclass[english]{article}
+\usepackage[T1]{fontenc}
+\usepackage[latin1]{inputenc}
+\usepackage{babel}
+\usepackage{apalike}
+
+\begin{document}
+
+\title{Demostration of 8-bit cite bug}
+
+\author{Harri Kiiskinen}
+
+\maketitle
+An example LyX citation \cite[110]{Thebert1985}
+
+\begin{thebibliography}{}
+
+\bibitem[Thébert, 1985]{Thebert1985}
+Thébert, Y. (1985).
+\newblock Vie privée et architecture domestique en afrique romaine.
+\newblock In Veyne, P., editor, {\em Histoire de la vie privée. Tome 1. De
+  {l'Empire} romain à l'an mil}, pages 301--398. Seuil, Paris.
+
+\end{thebibliography}
+
+\end{document}

@@ -1,0 +1,13 @@
+{
+    IBClasses = (
+        {
+            ACTIONS = {remove = id; }; 
+            CLASS = BDSKComparisonPredicateController; 
+            LANGUAGE = ObjC; 
+            OUTLETS = {ownerController = NSObjectController; view = NSView; }; 
+            SUPERCLASS = NSObject; 
+        }, 
+        {CLASS = FirstResponder; LANGUAGE = ObjC; SUPERCLASS = NSObject; }
+    ); 
+    IBVersion = 1; 
+}

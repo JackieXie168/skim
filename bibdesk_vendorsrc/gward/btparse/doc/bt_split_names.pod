@@ -1,0 +1,280 @@
+=head1 NAME
+
+bt_split_names - splitting up BibTeX names and lists of names
+
+=head1 SYNOPSIS
+
+   bt_stringlist * bt_split_list (char *   string,
+                                  char *   delim,
+                                  char *   filename,
+                                  int      line,
+                                  char *   description);
+   void bt_free_list (bt_stringlist *list);
+   bt_name * bt_split_name (char *  name,
+                            char *  filename, 
+                            int     line,
+                            int     name_num);
+   void bt_free_name (bt_name * name);
+
+=head1 DESCRIPTION
+
+When BibTeX files are used for their original purpose---bibliographic
+entries describing scholarly publications---processing lists of names
+(authors and editors mostly) becomes important.  Although such
+name-processing is outside the general-purpose database domain of most
+of the B<btparse> library, these splitting functions are provided as a
+concession to reality: most BibTeX data files use the BibTeX conventions
+for author names, and a library to process that data ought to be capable
+of processing the names.
+
+Name-processing comes in two stages: first, split up a list of names
+into individual strings; second, split up each name into "parts" (first,
+von, last, and jr).  The first is actually quite general: you could pick
+a delimiter (such as C<'and'>, used for lists of names) and use it to
+divide any string into substrings.  C<bt_split_list()> could then be
+called to break up the original string and extract the substrings.
+C<bt_split_name()>, however, is quite specific to four-part author names
+written using BibTeX conventions.  (These conventions are described
+informally in any BibTeX documentation; the description you will find
+here is more formal and algorithmic---and thus harder to understand.)
+
+See L<bt_format_names> for information on turning split-up names back
+into strings in a variety of ways.
+
+=head1 FUNCTIONS
+
+=over 4
+
+=item bt_split_list()
+
+   bt_stringlist * bt_split_list (char *   string,
+                                  char *   delim,
+                                  char *   filename,
+                                  int      line,
+                                  char *   description)
+
+Splits C<string> into substrings delimited by C<delim> (a fixed string).
+The splitting is done according to the rules used by BibTeX for
+splitting up a list of names, in particular:
+
+=over 4
+
+=item * 
+
+delimiters at beginning or end of string are ignored
+
+=item * 
+
+delimiters must be surrounded by whitespace
+
+=item *
+
+matching of delimiters is case insensitive 
+
+=item * 
+
+delimiters at non-zero brace depth are ignored
+
+=back
+
+For instance, if the delimiter is C<"and">, then the string
+
+   Candy and Apples AnD {Green Eggs and Ham}
+
+splits into three substrings: C<"Candy">, C<"Apples">, and 
+C<"{Green Eggs and Ham}">.  
+
+If there are extra delimiters at the extremities of the string---say,
+an C<"and"> at the beginning of the string---then they are included in
+the first/last string; no warning is currently printed, but this may
+change.  Successive delimiters (C<"and and">) result in a warning and a
+NULL string being added to the list of substrings.  For instance, the
+string
+
+   and Joe Q. Blow and and Smith, Jr., John
+
+would split into three substrings: C<"and Joe Q. Blow">, C<NULL>, and
+C<"Smith, Jr., John">.
+
+(If these rules seem somewhat odd, don't blame me: I just implemented
+BibTeX's observed behaviour and added warning messages for one of the
+more obvious and easily-detected mistakes.)
+
+The substrings are returned as a C<bt_stringlist> structure:
+
+   typedef struct
+   {
+      char *  string;
+      int     num_items;
+      char ** items;
+   } bt_stringlist;
+
+There is currently no elegant interface to this structure: you just have
+to poke around in it yourself.  The fields are:
+
+=over 4
+
+=item C<string>
+
+a copy of the C<string> parameter passed to C<bt_split_list()>, but with
+NUL characters replacing the space after each substring.  (This is safe
+because delimiters must be surrounded by whitespace, which means that
+each substring is followed by whitespace which is not part of the
+substring.)  You probably shouldn't fiddle with C<string>; it's just
+there so that C<bt_free_list()> has something to C<free()>.
+
+=item C<num_items>
+
+the number of substrings found in the string passed to
+C<bt_split_list()>.
+
+=item C<items>
+
+an array of C<num_items> pointers into C<string>.  For instance,
+C<items[1]> points to the second substring.  Since C<string> has been
+mangled with NUL characters, it is safe to treat C<items[i]> as a
+regular C string.
+
+C<filename>, C<line>, and C<description> are all used for generating
+warning messages.  C<filename> and C<line> simply describe where the
+string came from, and C<description> is a brief (one word) description
+of the substrings.  For instance, if you are splitting a list of names,
+supply C<"name"> for C<description>---that way, warnings will refer to
+"name X" rather than "substring x".
+
+=back
+
+=item bt_free_list()
+
+   void bt_free_list (bt_stringlist *list)
+
+Frees a C<bt_stringlist> structure as returned by C<bt_split_list()>.
+That is, it frees the copy of the string you passed to
+C<bt_split_list()>, and then frees the structure itself.
+
+=item bt_split_name()
+
+   bt_name * bt_split_name (char *  name,
+                            char *  filename, 
+                            int     line,
+                            int     name_num)
+
+Splits a single BibTeX-style author name into four parts: first, von,
+last, and jr.  This can handle almost all names in the style of the
+major Western European languages, but not quite.  (Alas!)
+
+A name is split by first dividing into tokens; tokens are separated by
+whitespace or commas at brace-level zero.  Thus the name
+
+   van der Graaf, Horace Q.
+
+has five tokens, whereas the name
+
+   {Foo, Bar, and Sons}
+
+consists of a single token.
+
+How tokens are divided into parts depends on the form of the name.  If
+the name has no commas at brace-level zero (as in the second example),
+then it is assumed to be in either "first last" or "first von last"
+form.  If there are no tokens that start with a lower-case letter, then
+"first last" form is assumed: the final token is the last name, and all
+other tokens form the first name.  Otherwise, the earliest contiguous
+sequence of tokens with initial lower-case letters is taken as the `von'
+part; if this sequence includes the final token, then a warning is
+printed and the final token is forced to be the `last' part.
+
+If a name has a single comma, then it is assumed to be in "von last,
+first" form.  A leading sequence of tokens with initial lower-case
+letters, if any, forms the `von' part; tokens between the `von' and the
+comma form the `last' part; tokens following the comma form the `first'
+part.  Again, if there are no token following a leading sequence of
+lowercase tokens, a warning is printed and the token immediately
+preceding the comma is taken to be the `last' part.
+
+If a name has more than two commas, a warning is printed and the name is
+treated as though only the first two commas were present.
+
+Finally, if a name has two commas, it is assumed to be in "von last, jr,
+first" form.  (This is the only way to represent a name with a `jr'
+part.)  The parsing of the name is the same as for a one-comma name,
+except that tokens between the two commas are taken to be the `jr' part.
+
+The one case not properly handled by BibTeX name conventions is a name
+with a 'jr' part not separated from the last name by a comma; for
+example:
+
+   Henry Ford Jr.
+   George Herbert Walker Bush III
+
+Both of these would be incorrectly interpreted by both BibTeX and
+bt_split_name(): the C<"Jr."> or C<"III"> token would be taken as the
+last name, and the other tokekens as a two- or four-part first name.
+The workaround is to shoehorn the 'jr' into the last name:
+
+   Henry {Ford Jr.}
+   George Herbert Walker {Bush III}
+
+but this will make it impossible to extract the last name on its own,
+e.g. to generate "author-year" style citations.  This design flaw may be
+fixed in a future version of B<btparse>.
+
+The split-up name is returned as a C<bt_name> structure:
+
+   typedef struct
+   {
+      bt_stringlist * tokens;
+      char ** parts[BT_MAX_NAMEPARTS];
+      int     part_len[BT_MAX_NAMEPARTS];
+   } bt_name;
+
+Again, there's no nice interface to this structure; you'll just have to
+access the fields individually.  They are:
+
+=over 4
+
+=item C<tokens>
+
+the name, broken down into a flat list of tokens.  See above for a
+description of the C<bt_stringlist> structure.
+
+=item C<parts>
+
+an array of arrays of pointers into the token list.  The major dimension
+of this beast is the "name part;" you should index this dimension using
+the C<bt_namepart> enum.  For instance, C<parts[BTN_LAST]> is an array
+of pointers to the tokens comprising the last name;
+C<parts[BTN_LAST][1]> is a C<char *>: the second token of the 'last'
+part; and C<parts[BTN_LAST][1][0]> is the first character of the second
+token of the 'last' part.
+
+=item C<part_len>
+
+the length, in tokens, of each part.  For instance, you might loop over
+all tokens in the 'first' part as follows (assuming C<name> is a 
+C<bt_name *> returned by C<bt_split_name()>):
+
+   for (i = 0; i < name->part_len[BTN_FIRST]; i++)
+   {
+      printf ("token %d of first name: %s\n",
+              i, name->parts[BTN_FIRST][i]);
+   }
+
+=back
+
+=item bt_free_name()
+
+   void bt_free_name (bt_name * name)
+
+Frees the C<bt_name> structure created by C<bt_split_name()> (including
+the C<bt_stringlist> structure inside the C<bt_name>).
+
+=back
+
+=head1 SEE ALSO
+
+L<btparse>, L<bt_format_names>
+
+=head1 AUTHOR
+
+Greg Ward <gward@python.net>

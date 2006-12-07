@@ -1,0 +1,116 @@
+\documentclass{article}
+
+\usepackage[longnamesfirst]{natbib}
+
+\begin{document}
+
+\verb#\usepackage[longnamesfirst]{natbib}#\\
+
+\begin{center}
+\begin{tabular}{l}
+\verb#\cite{hooper1986,ortony1988,russell1979}# \\
+\cite{hooper1986,ortony1988,russell1979}  \\\hline \hline
+%
+\verb#\citet{allen1995a}# \\
+ \citet{allen1995a} \\\hline
+\verb#\citet[chap.~3]{allen1995a}# \\
+ \citet[chap.~3]{allen1995a} \\\hline
+\verb#\citet*{hooper1986,ortony1988,russell1979}# \\
+ \citet*{hooper1986,ortony1988,russell1979}  \\\hline
+\verb#\citet{hooper1986,ortony1988,russell1979}# \\
+ \citet{hooper1986,ortony1988,russell1979}  \\\hline
+\verb#\citet{allen1995a,allen1995b}# \\
+ \citet{allen1995a,allen1995b} \\\hline\hline
+%
+\verb#\citep{allen1995a}# \\
+ \citep{allen1995a} \\\hline
+\verb#\citep[chap.~3]{allen1995a}# \\
+ \citep[chap.~3]{allen1995a} \\\hline
+\verb#\citep[in][chap.~3]{allen1995a}# \\
+ \citep[in][chap.~3]{allen1995a} \\\hline
+\verb#\citep{allen1995a,allen1995b}# \\
+ \citep{allen1995a,allen1995b} \\\hline
+\verb#\citep{allen1995a,allen1996}# \\
+ \citep{allen1995a,allen1996} \\\hline
+\verb#\citep{hooper1986,ortony1988,russell1979}# \\
+ \citep{hooper1986,ortony1988,russell1979}  \\\hline
+\verb#\citep[in][chap.~3]{allen1995a,hooper1986}# \\
+ \citep[in][chap.~3]{allen1995a,hooper1986} \\\hline
+[Fails in 1.9.15] \verb#\citep[in][chap.~3]{allen1995a,allen1995b}# \\
+ \citep[in][chap.~3]{allen1995a,allen1995b} \\\hline
+%
+\verb#\citeauthor{ortony1988}# \\
+ \citeauthor{ortony1988} \\\hline
+\verb#\citeauthor{allen1995b,allen1995a}# \\
+ \citeauthor{allen1995b,allen1995a} \\\hline
+\verb#\citeauthor*{ortony1988}# \\
+ \citeauthor*{ortony1988} \\\hline
+\verb#\citeauthor*{allen1995b,allen1995a}# \\
+ \citeauthor*{allen1995b,allen1995a} \\\hline\hline
+%
+\verb#\citeyear{allen1995b}# \\
+ \citeyear{allen1995b} \\\hline
+\verb#\citeyear[chap.~3]{allen1995a}# \\
+ \citeyear[chap.~3]{allen1995a} \\\hline
+\verb#\citeyear[in][chap.~3]{allen1995a}# \\
+ \citeyear[in][chap.~3]{allen1995a} \\\hline
+\verb#\citeyear{allen1995b,allen1995a}# \\
+ \citeyear{allen1995b,allen1995a} \\\hline\hline
+%
+\verb#\citeyearpar{allen1995b}# \\
+ \citeyearpar{allen1995b} \\\hline
+\verb#\citeyearpar[chap.~3]{allen1995a}# \\
+ \citeyearpar[chap.~3]{allen1995a} \\\hline
+\verb#\citeyearpar[in][chap.~3]{allen1995a}# \\
+ \citeyearpar[in][chap.~3]{allen1995a} \\\hline
+\verb#\citeyearpar{allen1995b,allen1995a}# \\
+ \citeyearpar{allen1995b,allen1995a} \\
+\hline\hline
+\end{tabular}
+\end{center}
+
+\begin{thebibliography}{5}
+\expandafter\ifx\csname natexlab\endcsname\relax\def\natexlab#1{#1}\fi
+\expandafter\ifx\csname url\endcsname\relax
+  \def\url#1{{\tt #1}}\fi
+
+\bibitem[Allen and Carifio(1995{\natexlab{a}})]{allen1995b}
+B.~D. Allen and J.~Carifio.
+\newblock The relationship between emotional states and solving complex
+  mathematical problems.
+\newblock May 1995{\natexlab{a}}.
+
+\bibitem[Allen and Carifio(1995{\natexlab{b}})]{allen1995a}
+Bradford~D. Allen and Jim Carifio.
+\newblock A {M}ethodology for the {A}nalysis of {E}motion {E}xperiences during
+  {M}athematical {P}roblem {S}olving.
+\newblock March 1995{\natexlab{b}}.
+
+\bibitem[Allen and Carifio(1996)]{allen1996}
+Bradford~D. Allen and Jim Carifio.
+\newblock Fake title for testing.
+\newblock March 1996.
+
+\bibitem[Hooper(1986)]{hooper1986}
+J.~Hooper.
+\newblock {\em The 3-{P}ound {U}niverse}.
+\newblock Teacher, Inc, Los Angeles, 1986.
+
+\bibitem[Ortony et~al.(1988)Ortony, Clore, and Collins]{ortony1988}
+A.~Ortony, G.~Clore, and A.~Collins.
+\newblock {\em The {C}ognitive {S}tructure of {E}motions}.
+\newblock Cambridge University Press, New York, 1988.
+
+\bibitem[Russell(1979)]{russell1979}
+J.~A. Russell.
+\newblock Affect {S}pace is {B}ipolar.
+\newblock {\em Journal of Personality and Social Psychology}, 37\penalty0
+  (3):\penalty0 345--356, 1979.
+
+\end{thebibliography}
+
+\end{document}
+
+
+
+
