@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple Computer//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>Medline</key>
+	<dict>
+		<key>AB</key>
+		<string>abstract</string>
+		<key>AD</key>
+		<string>authoraddress</string>
+		<key>AU</key>
+		<string>author</string>
+		<key>CY</key>
+		<string>country</string>
+		<key>DP</key>
+		<string>date</string>
+		<key>IP</key>
+		<string>number</string>
+		<key>LA</key>
+		<string>language</string>
+		<key>MH</key>
+		<string>keywords</string>
+		<key>PG</key>
+		<string>pages</string>
+		<key>TA</key>
+		<string>journal</string>
+		<key>TI</key>
+		<string>title</string>
+		<key>UI</key>
+		<string>medlineref</string>
+		<key>VI</key>
+		<string>volume</string>
+	</dict>
+	<key>Ovid</key>
+	<dict>
+		<key>abstract</key>
+		<string>abstract</string>
+		<key>author</key>
+		<string>author</string>
+		<key>author keywords</key>
+		<string>keywords</string>
+		<key>classification codes</key>
+		<string>classificationCodes</string>
+		<key>key phrase identifiers</key>
+		<string>keywords</string>
+		<key>keywords+</key>
+		<string>keywords</string>
+		<key>publication type</key>
+		<string>type</string>
+		<key>source</key>
+		<string>source</string>
+		<key>subject headings</key>
+		<string>subjectHeadings</string>
+		<key>title</key>
+		<string>title</string>
+		<key>treatment</key>
+		<string>treatment</string>
+	</dict>
+	<key>Refer</key>
+	<dict>
+		<key>A</key>
+		<string>author</string>
+		<key>B</key>
+		<string>booktitle</string>
+		<key>C</key>
+		<string>address</string>
+		<key>D</key>
+		<string>date</string>
+		<key>E</key>
+		<string>editor</string>
+		<key>F</key>
+		<string>label</string>
+		<key>I</key>
+		<string>publisher</string>
+		<key>J</key>
+		<string>journal</string>
+		<key>K</key>
+		<string>keywords</string>
+		<key>N</key>
+		<string>number</string>
+		<key>O</key>
+		<string>annote</string>
+		<key>P</key>
+		<string>pages</string>
+		<key>Q</key>
+		<string>author</string>
+		<key>R</key>
+		<string>type</string>
+		<key>S</key>
+		<string>series</string>
+		<key>T</key>
+		<string>title</string>
+		<key>U</key>
+		<string>url</string>
+		<key>V</key>
+		<string>volume</string>
+		<key>W</key>
+		<string>location</string>
+		<key>X</key>
+		<string>abstract</string>
+	</dict>
+</dict>
+</plist>
