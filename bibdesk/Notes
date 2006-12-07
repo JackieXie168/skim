@@ -1,0 +1,73 @@
+
+Notes About the Online Help
+===========================
+
+Node splitting and navigation
+-----------------------------
+
+The AppleHelp pages are split according to *sectioning commands*, such as chapter, section, subsection. 
+Note that this is _not_ typically according to @node commands. As @node commands are used for linking, 
+every sectioning commands should be accompanied by a @node command. 
+To allow navigation to lower level nodes, there should be a menu for those lower level sectioning items. 
+We typically add these menus just before these lower level sectioning commands start. 
+This leads to the following type of outlines (similarly for @section/@subsection):
+
+<example>
+
+@node Chapter Title
+@chapter Chapter Title
+@abstract{Short Description}
+
+@cindex conceptual keywords
+
+some text...
+
+@menu
+* Section Title:: short explanation
+...
+@end menu
+
+@node Section Title
+@section Section Title
+@abstract{Short Description}
+
+@cindex conceptual keywords
+
+some text...
+
+(other sections)...
+
+</example>
+
+It is usually also a good idea to add the @abstract command. 
+This is a macro that adds <META> information that is used for searches. 
+
+
+Menu and button titles
+----------------------
+
+Use the @menutitle and @buttontitle macros to write any menu or button title. 
+Now they simply quote the titles, but this allows us to easily change the style if we want to. 
+
+Keyboard shortcuts
+------------------
+
+When you write keyboard shortcuts in the text, use the @cmd{}, @shiftcmd{}, and @optcmd{} 
+macros. The argument is the key. Also add a @kindex command at the beginning of the 'node' 
+to add an item to the key shortcut index. Use Cmd-, Shift-Cmd-, or Option-Cmd- prefixes for those. 
+
+Preference items
+----------------
+
+To explain items in the preferences, we have paragraphs starting with a @prefitem{} command 
+followed by some text explaining what the pref option is for. The @prefitem macro has the 
+title of the item as argument. This should be the title appearing in the preference pane. 
+The macro adds a colon at the end of the title. It also adds the item to the preference index. 
+If you want to add an item to the preference index for which you have no title, 
+use the command @prefindex. 
+
+Texinfo help
+------------
+
+For more information about Texinfo see the online manual at 
+http://www.gnu.org/software/texinfo/manual/texinfo/texinfo.html
