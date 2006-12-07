@@ -1,0 +1,84 @@
+\documentclass{article}
+\usepackage{harvard}
+\begin{document}
+
+\begin{table}
+\begin{tabular}{l}
+\hline
+\verb#\cite{btxdoc}# \\
+\cite{btxdoc} \\
+(Patashnik 1988)\\
+\hline
+\verb#\cite{aharanov1995}# \\
+\cite{aharanov1995} \\
+(Aharanov, Whitehead, Kelemen \& Spiegelman 1995)\\
+\hline
+\verb#\cite[Annex~B]{latex}# \\
+\cite[Annex~B]{latex} \\
+(Lamport 1986, Annex B)\\
+\hline
+\verb#\cite{btxdoc,latex}# \\
+\cite{btxdoc,latex} \\
+(Patashnik 1988, Lamport 1986)\\
+\hline
+\verb#\cite[Annex~B]{btxdoc,latex}# \\
+\cite[Annex~B]{btxdoc,latex} \\
+(Patashnik 1988, Lamport 1986, Annex B)\\
+\hline
+\verb#\citeasnoun{btxdoc}# \\
+\citeasnoun{btxdoc} \\
+Patashnik (1988)\\
+\hline
+\verb#\citeasnoun[Annex~B]{latex}# \\
+\citeasnoun[Annex~B]{latex} \\
+Lamport (1986, Annex B)\\
+\hline
+\verb#\possessivecite{btxdoc}# \\
+\possessivecite{btxdoc} \\
+Patashnik's (1988)\\
+\hline
+\verb#\citeaffixed{latex,btxdoc}{e.g.}# \\
+\citeaffixed{latex,btxdoc}{e.g.} \\
+(e.g. Lamport 1986, Patashnik 1988)\\
+\hline
+\verb#\citeyear{latex}# \\
+\citeyear{latex} \\
+(1986)\\
+\hline
+\verb#\citeyear*{latex}# \\
+\citeyear*{latex} \\
+1986\\
+\hline
+\verb#\citeyear{latex,btxdoc}# \\
+\citeyear{latex,btxdoc} \\
+(1986, 1988)\\
+\hline
+\verb#\citename{btxdoc}# \\
+\citename{btxdoc} \\
+Patashnik\\
+\end{tabular}
+\end{table}
+
+%\bibliographystyle{agsm}
+%\bibliography{bib_harvard}
+
+\begin{thebibliography}{xx}
+
+\harvarditem[Aharanov et~al.]{Aharanov, Whitehead, Kelemen \harvardand\
+  Spiegelman}{1995}{aharanov1995}
+Aharanov, E., Whitehead, J.~A., Kelemen, P.~B. \harvardand\ Spiegelman, M.
+  \harvardyearleft 1995\harvardyearright , `Channeling instability of upwelling
+  melt in the mantle', {\em Journal of Geophysical Research} {\bf
+  100}(B10),~20433--20450.
+
+\harvarditem{Lamport}{1986}{latex}
+Lamport, L.  \harvardyearleft 1986\harvardyearright , {\em {\LaTeX \rm:} {A}
+  Document Preparation System}, Addison-Wesley.
+
+\harvarditem{Patashnik}{1988}{btxdoc}
+Patashnik, O.  \harvardyearleft 1988\harvardyearright , {{BibTeXing}}.
+\newblock Documentation for general BibTeX users.
+
+\end{thebibliography}
+
+\end{document}

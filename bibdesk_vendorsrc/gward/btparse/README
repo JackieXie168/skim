@@ -1,0 +1,268 @@
+                                  btparse
+                    (a C library to parse BibTeX files)
+
+                               version 0.33
+                            22 December, 1999
+                       Greg Ward (gward@python.net)
+                                    
+Copyright (c) 1997-2000 by Gregory P. Ward.  All rights reserved.
+
+This library is free software; you can redistribute it and/or modify it
+under the terms of the GNU Library General Public License as published by
+the Free Software Foundation; either version 2 of the License, or (at your
+option) any later version.
+
+This library is distributed in the hope that it will be useful, but WITHOUT
+ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library General Public
+License for more details.
+
+(Please note that this licence statement only covers the source files in
+the top-level distribution directory.  Source files in the "progs" and "t"
+sub-directories are covered by either the GNU Library General Public
+License (getopt.c, getopt1.c, and getopt.h, which come from the GNU C
+Library) or the GNU General Public Licence (all other files, which were
+written by me).  The files in the "pccts" subdirectory are part of PCCTS
+1.33, and were written (for the most part) by Terence Parr.  They are *not*
+covered by either GNU licence.  In all cases, consult each file for the
+appropriate copyright and licensing information.)
+
+
+INTRODUCTION
+------------
+
+btparse is the C component of btOOL, a pair of libraries for parsing and
+processing BibTeX files.  Its primary use is as the back-end to my
+Text::BibTeX library for Perl (the other half of btOOL), but there's
+nothing to prevent you from writing C programs using btparse -- or from
+writing extensions to other high-level languages using btparse as a
+back-end.  There's even copious documentation on using the library in
+the "doc" directory.
+
+btparse is built on top of a lexical analyzer and parser constructed
+using PCCTS (the Purdue Compiler Construction Tool Set), which provides
+efficient, reliable parsing with excellent error detection, reporting,
+and recovery.  The library provides entry points to the parser,
+functions to traverse and query the abstract-syntax tree that it
+produces, and some functions for processing strings in "the BibTeX way".
+The only requirement for building the library is an ANSI-compliant C
+compiler.  In particular, you do *not* need PCCTS, because enough of it
+is included in the distribution to build btparse.  (Of course, if you
+play with the grammar file (bibtex.g), then you will need PCCTS to
+re-build the library.  If you do this, though, you should know what
+you're doing and already have PCCTS.)
+
+
+AVAILABILITY
+------------
+
+You can find the latest version of both components of btOOL (btparse and
+Text::BibTeX), as well as up-to-date information on btOOL, at:
+
+    http://starship.python.net/~gward/btOOL/
+
+Here you will find HTML versions of the documentation, a technical
+report describing the project, links to download the code, and whatever
+other goodies I can come up with over time.
+
+The software is also available in my author directory on any CPAN
+(Comprehensive Perl Archive Network) site, e.g.
+
+    ftp://cpan.perl.org/pub/CPAN/authors/Greg_Ward/
+
+or on any CTAN (Comprehensive TeX Archive Network) site, in the
+biblio/bibtex/utils/btOOL/ directory, e.g.
+
+    ftp://ftp.ctan.org/tex-archive/biblio/bibtex/utils/btOOL/
+
+
+BUILDING
+--------
+
+To build the library (which you will have to do in any case, even if you
+just want to use it through my Perl module), do the following:
+
+   1) run the 'configure' script provided with the package 
+
+      The 'configure' script will attempt to find an ANSI-compliant C
+      compiler, first by looking for 'gcc', and then for 'cc'; if neither
+      were found, or 'cc' was attempted but is not ANSI compliant, you'll
+      have to tell configure the name of an ANSI-compliant C compiler to
+      use.  You can do this by setting the 'CC' environment variable before
+      running 'configure'; e.g. for csh-like shells:
+         env CC=acc ./configure
+      and for Bourne-like shells:
+         CC=acc ./configure
+      (assuming 'acc' is the name of an ANSI-compliant C compiler on your
+      system).  If you need to supply extra flags to the C compiler to put
+      it in "ANSI mode", use the CFLAGS variable, e.g. (for Bourne-like
+      shells):
+         CC=cc CFLAGS=-ansi ./configure
+      (assuming 'cc' can be made ANSI-compliant by supplying the '-ansi'
+      flag on its command line).
+
+      'configure' also tends to be rather conservative in coming up with
+      optimization flags; if, for instance, you wish to compile with
+      '-O2' instead of '-g -O' (the default for gcc), do this:
+         CFLAGS=-O2 ./configure
+
+      If you plan on installing the library, you might want to set the
+      'installation prefix' before running 'configure'.  See the file
+      INSTALL for more details (and, for that matter, more details on
+      everything that 'configure' does).  The default installation prefix
+      is '/usr/local', which should be fine for most Unix systems.
+
+      Apart from that, 'configure' should work without intervention.
+
+   2) Type `make lib'.
+
+   3) Type `make test'.
+
+If anything goes wrong with the build process, please email me.
+
+If any of the tests fail, *please* contact me and let me know.  It might
+be helpful to run the test program manually (switch into the "t"
+directory and run "simple_test" or "read_test", depending on which one
+failed), as "make test" discards any error messages.
+
+If you're just doing this in order to build Text::BibTeX, you're done --
+go back to the Text::BibTeX README for further instructions.
+
+If you're building btparse for use in your own C programs, you might
+want to build a shared library and/or install the library.  To build the
+shared library :
+
+   4) Type `make shlib'.  This should work on modern, ELF-based systems
+      such as Linux, IRIX 5+, or Solaris 2.x (?).  For installing the
+      shared library, you're on your own; this is just too
+      system-dependent.
+
+To install the library and man pages:
+
+   5) Take a look at Makefile.defs to make sure you like the
+      installation directories; if you don't, either edit Makefile.defs
+      or re-run 'configure' with a custom installation prefix.  For example:
+        configure --prefix=/tmp/junk
+      to install to /tmp/junk/lib, /tmp/junk/include, and
+      /tmp/junk/man/man3).
+
+      Keep in mind that if you edit Makefile.defs, any changes there
+      will be lost the next time you run 'configure'.
+
+   6) Type `make install'.
+
+`make install' will install the static library file (libbtparse.a), the
+header file that you need to include in your programs to use btparse
+(btparse.h), and the man pages from the "doc" directory.  Again,
+installing the shared library is too system-dependent -- you're on your
+own for that.
+
+
+DOCUMENTATION
+-------------
+
+In the "doc" directory you will find several man pages covering all
+aspects of btparse.  Even if you're not planning on using the library
+from C, you might be interested in the bt_language page, which covers
+the lexical and syntactic grammars that btparse uses to parse BibTeX.
+
+The documentation is written using the pod (plain ol' documentation)
+format, but *roff-ready versions (Unix man pages) are included with the
+distribution.  These are the versions that will be installed by `make
+install', so (as long as the INSTALL_MAN directory from Makefile.defs is
+in your manual page search path), you should be able to access the
+documentation using the "man" command.
+
+If you have Perl 5 installed, you can use one of the pod converters
+supplied with it to read or print the documentation; try pod2text,
+pod2man, pod2html, or pod2latex.
+
+If you'd like the documentation in ready-to-print PostScript form, I
+have written a technical report describing btOOL, with the btparse and
+Text::BibTeX documentation included as appendices.  The whole report is
+just over 100 pages, around 30 of which make up the btparse
+documentation (the Text::BibTeX documentation is a further 45 pages).
+It can be downloaded from the same location as the btOOL code:
+
+    http://www.aseonline.net/~gward/btOOL/
+
+I may also make the btparse and Text::BibTeX manuals available as
+separate PostScript files, but they aren't there as of this writing.
+
+Finally, HTML versions of both the technical report and the two
+documentation sets are (or soon will be) available at the btOOL web
+site:
+
+   http://starship.python.net/~gward/btOOL/
+
+If you find the documentation useful and would like to see more, please
+let me know.
+
+
+EXAMPLE PROGRAMS
+----------------
+
+Included in the "progs" directory are three example programs, bibparse,
+biblex, and dumpnames.  bibparse provides an example of a well-behaved,
+useful program based on btparse; by default, it reads a series of BibTeX
+files (named on the command line), parses them, and prints their data
+out in a form that is dead easy to parse in almost any language.  (I
+used this as a preliminary to the full-blown Text::BibTeX Perl module;
+to parse BibTeX data, I just opened a pipe reading the output of
+bibparse, and used simple Perl code to parse the data.)  bibparse uses
+GNU getopt, but I've included the necessary files with the distribution
+so you shouldn't have any problems building it.
+
+biblex is an example of what *not* to do; it rudely pokes into the
+internals of both the library and the PCCTS-generated lexical scanner on
+which it is based.  It prints out the stream of tokens in a BibTeX file
+according to my lexical grammar.  Do *not* use this program as an
+example!  I found it useful in debugging the lexical analyzer and
+parser, and provide it solely for your amusement.
+
+dumpnames is, for variety, well-behaved.  It uses the name-splitting
+algorithm supplied in the library (which emulates BibTeX's behaviour) to
+chop up lists of names and individual names, and dumps all such names
+found in any 'editor' or 'author' fields in a BibTeX file.
+
+These programs are unsupported, under-commented, and undocumented (apart
+from the above paragraphs).  If you would like this to change, tell me
+about it -- if nobody except me is interested in them, then unsupported
+and undocumented they will remain.
+
+
+CREDITS
+-------
+
+Thanks are due to the following people:
+
+  * for pointing out and helping to debug problems with the build process:
+      Jason Christian <jason@primal.ucdavis.edu>
+      Reiner Schlotte <schlotte@geo.palmod.uni-bremen.de>
+      Denis Bergquist <djbergquist@ccgate.hac.com>
+
+  * for reporting bugs (and in some cases, fixing them) and suggesting
+    changes in the library:
+      Reiner Schlotte <schlotte@geo.palmod.uni-bremen.de>
+      Stéphane Genaud <genaud@icps.u-strasbg.fr>
+      Claus Wilke <claus.wilke@gmx.net>
+
+  * for sage wisdom, the voice of experience, and inspiration:
+      Oren Patashnik <opbibtex@labrea.Stanford.EDU>
+      Gerd Neugebauer <gerd@mailhost.uni-koblenz.de>
+      Nelson H. F. Beebe <beebe@math.utah.edu>
+
+
+BUGS AND LIMITATIONS
+--------------------
+
+See the "BUGS AND LIMITATIONS" section of the btparse(3) man page (in the
+"doc/" subdirectory) for details.  Executive summary: due to a heavy
+dependence on global variables in the parser and lexical scanner, btparse
+is not even remotely thread-safe.  Furthermore, you can't have two files
+open and being parsed at the same time; any attempt to do so is an illegal
+use of the library and will result in your program crashing.
+
+Other bugs should be reported to me: Greg Ward <gward@python.net>.
+
+$Id: README,v 1.13 2000/12/23 03:52:02 greg Exp $

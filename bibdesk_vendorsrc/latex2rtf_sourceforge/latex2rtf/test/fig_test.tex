@@ -1,0 +1,47 @@
+\documentclass{article}
+\usepackage{epsf}
+\usepackage{graphicx}
+\usepackage{psfig}
+\begin{document}
+
+\begin{figure}
+\epsffile{fig_test.eps}
+\caption{Figure test using epsffile.} 
+\label{figure1}
+\end{figure}
+
+Figure \ref{figure1} tests \verb#\epsffile{fig_test.eps}#.
+
+\begin{figure*}
+\epsffile{fig_test.eps}
+\caption{Figure* test using epsffile.} 
+\label{figure1a}
+\end{figure*}
+
+Figure \ref{figure1} tests \verb#\epsffile{fig_test.eps}#.
+
+\begin{figure}
+\includegraphics{fig_test.eps}
+\caption{Figure test using includegraphics.} 
+\label{figure2}
+\end{figure}
+
+Figure \ref{figure2} tests \verb#\includegraphic{fig_test.eps}#.
+
+\begin{figure}
+\psfig{figure=fig_test.eps}
+\caption{Figure test using psfig.} 
+\label{figure3}
+\end{figure}
+
+Figure \ref{figure3} tests \verb#\psfig{figure=fig_test.eps}#.
+
+\begin{figure}
+\includegraphics{fig_testc.ps}
+\caption{Figure test using includegraphics.} 
+\label{figure4}
+\end{figure}
+
+Figure  \ref{figure4} tests \verb#\includegraphic{fig_testc.ps}#.  
+
+\end{document}

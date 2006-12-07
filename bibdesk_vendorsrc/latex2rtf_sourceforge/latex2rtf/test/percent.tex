@@ -1,0 +1,28 @@
+\documentclass{article}
+\begin{document}
+\section{Some simple comments}
+Here % this should not show up
+is a comment embedded in text.
+Sometimes one just uses
+% yet another comment
+a comment to hide stuff.
+
+{\it This will work % to hide }
+if the \% is correctly ignored}
+
+Testing \verb#\%# after this: \% chance of failure.
+
+Testing \verb#\\%# after this: \\% chance of failure.
+
+Testing \verb#\\\%# after this: \\\% chance of failure.
+
+\begin{figure}[ht]
+\caption{\label{zoom}The spatial distribution of the total energy density of
+ellipsoidal shaped FeSi-films; a:b:c = 10:10:1, $K_1 = 29\rm kJ/m^3$, $K_2 = -9 \rm kJ/m^3$;
+a) energy scale $e = 500\rm kJ/m^3$,
+b), c), d) reducing the energy scale to 33\% for each picture,
+the total energy reveals the magnetocrystalline energy in the film
+plane}
+\end{figure}
+
+\end{document}

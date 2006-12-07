@@ -1,0 +1,40 @@
+* support for pdf->png files
+	Adam Maxwell
+* leftrightarrows support
+	Nino Vessella
+* Equation Fixes
+	Christophe Bernard
+* Cyrillic support 
+	Mihail Baikov
+* Font fixes for latex test files
+	Peter Dyballa
+* Many bug fixes, patches and suggestions
+	Spago
+* suggestion for -W option
+    Thomas D. Schneider
+* bug fix for citations with space
+    Thomas D. Schneider
+* bug fix reports by
+    W. Hennings
+* various code adapted from ltx2rtf by 
+    D. Taupin
+* core dump (assignment to string constant) in tabular environment:
+    Peter FELECAN, Laurent Mugnier
+* \glq \glqq problem, german umlaut letters
+    Oliver Moldenhauer
+* Problem with superscripts and subscripts $a^2$ vs. $a^{2}$ (only 1.1?????)
+    daniele vigo, Franz-Werner Gergen
+* Problem with environment parsing
+    Vladimir Menkov (fix), Laurent Mugnier
+* Add \oe to direct.cfg
+    Laurent Mugnier
+* Add \oddsidemargin to ignore.cfg
+    Laurent Mugnier
+* Wrong numbering of nested enumerates (+ fix)
+    Ulrich Ziegler 
+* {\em increment\/} -> {\i increment}} (only 1.1?????)
+    J|rgen N|rgaard
+* Problem with wrong braces in \label following \section (only 1.1?????)
+    J|rgen N|rgaard
+* Windows GUI shell (l2rshell):
+    Mikhail Polianski

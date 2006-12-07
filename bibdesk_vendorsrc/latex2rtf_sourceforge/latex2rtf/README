@@ -1,0 +1,31 @@
+latex2rtf is a translator program that translates LaTeX text into the
+RTF format used by various text processors, most notably Word.
+
+For the Copyright of the Program see the file Copyright.
+
+As of version 1.9.13, latex2rtf supports converting equations to
+bitmaps.  This requires TeX and ImageMagick.  See scripts/README.
+
+To install (on a UNIX system)
+- Edit Makefile for your local configuration.  The default install
+  is reasonable, but if you do not have root access, then you might
+  need to set $PREFIX to be your home directory.
+- make
+- If this is not your first-time installation, you may want to preserve
+  your old configuration (*.cfg) files. Copy them to a safe place before
+  installing.
+- make check   (expect warnings but no errors)
+- make install
+
+Reporting bugs to the homepage at Sourceforge
+
+              http://sourceforge.net/projects/latex2rtf/
+
+* Please verify your bug with the most recent version of the program.
+* Please provide the version of the program you are using
+* Please provide your operating system and version number
+* Provide a short latex file that exhibits the bug.  It is
+  imperative that you spend time isolating the problem into a small
+  latex file.  This shows that you actually care enough about the 
+  problem to spend some of your time trying to help isolate the bug.
+* Be patient.  Provide patches.  Enjoy.
