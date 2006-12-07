@@ -1,0 +1,21 @@
+{
+    IBClasses = (
+        {
+            ACTIONS = {handleClick = id; }; 
+            CLASS = BDSKPreviewer; 
+            LANGUAGE = ObjC; 
+            OUTLETS = {imagePreviewView = NSImageView; }; 
+            SUPERCLASS = NSWindowController; 
+        }, 
+        {CLASS = BDSKZoomImageView; LANGUAGE = ObjC; SUPERCLASS = NSImageView; }, 
+        {
+            ACTIONS = {showFindPanel = id; showPreferencePanel = id; }; 
+            CLASS = BibAppController; 
+            LANGUAGE = ObjC; 
+            SUPERCLASS = NSObject; 
+        }, 
+        {CLASS = FirstResponder; LANGUAGE = ObjC; SUPERCLASS = NSObject; }, 
+        {CLASS = PDFImageView; LANGUAGE = ObjC; SUPERCLASS = NSImageView; }
+    ); 
+    IBVersion = 1; 
+}
