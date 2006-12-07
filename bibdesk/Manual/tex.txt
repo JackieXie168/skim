@@ -1,0 +1,41 @@
+Integrating with TeX
+====================
+
+The Cite drawer
+---------------
+
+Choosing Show/Hide Custom Citation Strings from the Window menu (&#8984;&#8679;C) toggles a drawer that allows you to drag and drop citations into a TeX document using custom-defined citation strings, such as fullcite, citet, and citep. Simply dragging from the Reference list (or a copy and paste) inserts just the cite string. Multiple selections in the Reference list produces a single citation containing the highlighted references (i.e., \cite{key1,key2}). The <a href="prefs.htm">Citation preferences</a> allow for separate citations (i.e., \cite{key1}\cite{key2}).
+
+<img src="gfx/citeDrawer.png" alt="" height="381" width="166">
+
+The Preview panel
+-----------------
+
+The preview panel shows you the currently selected references as a formatted bibliography. The bibliography's format is based on the current style file (set in <a href="prefs.htm">Preview preferences</a>). This helps in spotting errors and omissions in your references. The preview file will also reflect any macros you have included in your template file, if you have included them in the current bib-item.
+
+<img src="gfx/typesetPreview.png" alt="" height="301" width="591">
+
+System services
+---------------
+
+In any Services aware app (At least: TeXShop, iTeXMac, TextEdit, but notably not BBEdit for OS X and no Classic or X windows apps) type a string, select it, then choose Complete Citation from the Bibdesk submenu of the Services Menu. This will replace the selected string with the citation(s) of any entries in open BibDesk documents (or, if BibDesk is not open yet, in the default bibliography set in <a href="prefs.htm">Preferences</a>) whose titles contain that string. So:
+
+<img src="gfx/serviceBefore.png" alt="" height="121" width="335">
+
+becomes:
+
+<img src="gfx/serviceAfter.png" alt="" height="102" width="450">
+
+<p><font size="-1" face="Lucida Grande,Geneva,Arial">
+<font color="red">Note</font>: As of version 0.85, the comment shown above will not appear. only the text \cite{CasObe00} would be inserted. **************
+
+
+The service is even more powerful. You can search more than just the title. For example:
+<ul>
+<li>&#8216;foo&#8217; and &#8216;Title = foo&#8217; search for &#8216;foo&#8217; in the title.</li>
+<li>&#8216;Author = Baz &#38; Title = foo &#38; Month = Jan&#8217; searches for those constraints.</li>
+</ul>
+
+
+
+Another service is available, called &#8216;Complete Cite Key&#8217; which allows you to highlight a part of a citation key and BibDesk will complete the key for you. For instance, in our example , selecting &#8216;CasO&#8217; and invoking the &#8216;Complete Cite Key&#8217; service would insert &#8216;CasObe00&#8217;.
