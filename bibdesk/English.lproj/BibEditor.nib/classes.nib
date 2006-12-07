@@ -1,0 +1,65 @@
+{
+    IBClasses = (
+        {CLASS = BDSKDragForm; LANGUAGE = ObjC; SUPERCLASS = NSForm; }, 
+        {CLASS = BDSKDragWindow; LANGUAGE = ObjC; SUPERCLASS = NSWindow; }, 
+        {
+            CLASS = BDSKPreviewer; 
+            LANGUAGE = ObjC; 
+            OUTLETS = {imagePreviewView = NSImageView; }; 
+            SUPERCLASS = NSWindowController; 
+        }, 
+        {
+            ACTIONS = {
+                bibTypeDidChange = id; 
+                cancel = id; 
+                citeKeyDidChange = id; 
+                dismissAddField = id; 
+                dismissDelField = id; 
+                raiseAddField = id; 
+                raiseDelField = id; 
+                revert = id; 
+                save = id; 
+                saveDocument = id; 
+                textFieldDidEndEditing = id; 
+                toggleSnoopDrawer = id; 
+                viewLocal = id; 
+                viewRemote = id; 
+            }; 
+            CLASS = BibEditor; 
+            LANGUAGE = ObjC; 
+            OUTLETS = {
+                abstractView = NSTextView; 
+                bibFields = NSForm; 
+                bibTypeButton = NSPopUpButton; 
+                citeKeyField = NSTextField; 
+                delFieldButtonCancel = NSButton; 
+                delFieldButtonOK = NSButton; 
+                delFieldPopUp = NSPopUpButton; 
+                delFieldWindow = NSWindow; 
+                documentSnoopButton = NSButton; 
+                documentSnoopDrawer = NSDrawer; 
+                documentSnoopImageView = NSImageView; 
+                documentSnoopScrollView = NSScrollView; 
+                documentSnoopTextView = NSTextView; 
+                documentTextSnoopButton = NSButton; 
+                fieldsScrollView = NSScrollView; 
+                newFieldButtonCancel = NSButton; 
+                newFieldButtonOK = NSButton; 
+                newFieldName = NSTextField; 
+                newFieldWindow = NSWindow; 
+                notesView = NSTextView; 
+                pdfSnoopContainerView = NSView; 
+                rssDescriptionView = NSTextView; 
+                tabView = NSTabView; 
+                textSnoopContainerView = NSView; 
+                viewLocalButton = NSButton; 
+                viewRemoteButton = NSButton; 
+            }; 
+            SUPERCLASS = NSWindowController; 
+        }, 
+        {CLASS = DraggableScrollView; LANGUAGE = ObjC; SUPERCLASS = NSScrollView; }, 
+        {CLASS = FirstResponder; LANGUAGE = ObjC; SUPERCLASS = NSObject; }, 
+        {CLASS = PDFImageView; LANGUAGE = ObjC; SUPERCLASS = NSImageView; }
+    ); 
+    IBVersion = 1; 
+}
