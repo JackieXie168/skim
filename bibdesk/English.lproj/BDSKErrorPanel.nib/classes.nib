@@ -1,0 +1,29 @@
+{
+    IBClasses = (
+        {
+            ACTIONS = {
+                hideErrorPanel = id; 
+                reopenDocument = id; 
+                showErrorPanel = id; 
+                toggleShowingErrorPanel = id; 
+            }; 
+            CLASS = BDSKErrorObjectController; 
+            LANGUAGE = ObjC; 
+            OUTLETS = {
+                errorPanel = NSPanel; 
+                errorTableView = NSTableView; 
+                sourceEditTextView = NSTextView; 
+                sourceEditWindow = NSWindow; 
+            }; 
+            SUPERCLASS = NSWindowController; 
+        }, 
+        {CLASS = BDSKSearchableTextView; LANGUAGE = ObjC; SUPERCLASS = NSTextView; }, 
+        {
+            ACTIONS = {reopenDocument = id; }; 
+            CLASS = FirstResponder; 
+            LANGUAGE = ObjC; 
+            SUPERCLASS = NSObject; 
+        }
+    ); 
+    IBVersion = 1; 
+}
