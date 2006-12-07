@@ -1,0 +1,454 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 42;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		2744F56C08889FC2001E0CC9 /* BDSKDocument.m in Sources */ = {isa = PBXBuildFile; fileRef = 2744F55708889FC2001E0CC9 /* BDSKDocument.m */; };
+		2744F56D08889FC2001E0CC9 /* BDSKMainWindowController.m in Sources */ = {isa = PBXBuildFile; fileRef = 2744F55908889FC2001E0CC9 /* BDSKMainWindowController.m */; };
+		2744F56E08889FC2001E0CC9 /* BDSKModel-0.1.xcdatamodel in Sources */ = {isa = PBXBuildFile; fileRef = 2744F55A08889FC2001E0CC9 /* BDSKModel-0.1.xcdatamodel */; };
+		2744F56F08889FC2001E0CC9 /* BDSKNoteGroup.m in Sources */ = {isa = PBXBuildFile; fileRef = 2744F55C08889FC2001E0CC9 /* BDSKNoteGroup.m */; };
+		2744F57008889FC3001E0CC9 /* BDSKNoteTableDisplayController.m in Sources */ = {isa = PBXBuildFile; fileRef = 2744F55E08889FC2001E0CC9 /* BDSKNoteTableDisplayController.m */; };
+		2744F57108889FC3001E0CC9 /* BDSKPersonGroup.m in Sources */ = {isa = PBXBuildFile; fileRef = 2744F56008889FC2001E0CC9 /* BDSKPersonGroup.m */; };
+		2744F57208889FC3001E0CC9 /* BDSKPersonTableDisplayController.m in Sources */ = {isa = PBXBuildFile; fileRef = 2744F56208889FC2001E0CC9 /* BDSKPersonTableDisplayController.m */; };
+		2744F57308889FC3001E0CC9 /* BDSKPublicationGroup.m in Sources */ = {isa = PBXBuildFile; fileRef = 2744F56408889FC2001E0CC9 /* BDSKPublicationGroup.m */; };
+		2744F57408889FC3001E0CC9 /* BDSKPublicationTableDisplayController.m in Sources */ = {isa = PBXBuildFile; fileRef = 2744F56608889FC2001E0CC9 /* BDSKPublicationTableDisplayController.m */; };
+		2744F57508889FC3001E0CC9 /* BDSKSourceListTreeController.m in Sources */ = {isa = PBXBuildFile; fileRef = 2744F56808889FC2001E0CC9 /* BDSKSourceListTreeController.m */; };
+		2744F57608889FC3001E0CC9 /* DisplayControllers.plist in Resources */ = {isa = PBXBuildFile; fileRef = 2744F56908889FC2001E0CC9 /* DisplayControllers.plist */; };
+		2744F57708889FC3001E0CC9 /* ImageAndTextCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 2744F56B08889FC2001E0CC9 /* ImageAndTextCell.m */; };
+		2744F5800888A087001E0CC9 /* BDSKMainWindow.nib in Resources */ = {isa = PBXBuildFile; fileRef = 2744F5780888A087001E0CC9 /* BDSKMainWindow.nib */; };
+		2744F5810888A087001E0CC9 /* BDSKNoteTableDisplayController.nib in Resources */ = {isa = PBXBuildFile; fileRef = 2744F57A0888A087001E0CC9 /* BDSKNoteTableDisplayController.nib */; };
+		2744F5820888A087001E0CC9 /* BDSKPersonTableDisplayController.nib in Resources */ = {isa = PBXBuildFile; fileRef = 2744F57C0888A087001E0CC9 /* BDSKPersonTableDisplayController.nib */; };
+		2744F5830888A087001E0CC9 /* BDSKPublicationTableDisplayController.nib in Resources */ = {isa = PBXBuildFile; fileRef = 2744F57E0888A087001E0CC9 /* BDSKPublicationTableDisplayController.nib */; };
+		8D11072A0486CEB800E47090 /* MainMenu.nib in Resources */ = {isa = PBXBuildFile; fileRef = 29B97318FDCFA39411CA2CEA /* MainMenu.nib */; };
+		8D11072B0486CEB800E47090 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 089C165CFE840E0CC02AAC07 /* InfoPlist.strings */; };
+		8D11072D0486CEB800E47090 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 29B97316FDCFA39411CA2CEA /* main.m */; settings = {ATTRIBUTES = (); }; };
+		8D11072F0486CEB800E47090 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1058C7A1FEA54F0111CA2CBB /* Cocoa.framework */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXBuildStyle section */
+		4A9504CCFFE6A4B311CA0CBA /* Debug */ = {
+			isa = PBXBuildStyle;
+			buildSettings = {
+				COPY_PHASE_STRIP = NO;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_ENABLE_FIX_AND_CONTINUE = YES;
+				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				PREBINDING = NO;
+				ZERO_LINK = YES;
+			};
+			name = Debug;
+		};
+		4A9504CDFFE6A4B311CA0CBA /* Release */ = {
+			isa = PBXBuildStyle;
+			buildSettings = {
+				COPY_PHASE_STRIP = YES;
+				GCC_ENABLE_FIX_AND_CONTINUE = NO;
+				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
+				PREBINDING = NO;
+				ZERO_LINK = NO;
+			};
+			name = Release;
+		};
+/* End PBXBuildStyle section */
+
+/* Begin PBXFileReference section */
+		089C165DFE840E0CC02AAC07 /* English */ = {isa = PBXFileReference; fileEncoding = 10; lastKnownFileType = text.plist.strings; name = English; path = English.lproj/InfoPlist.strings; sourceTree = "<group>"; };
+		1058C7A1FEA54F0111CA2CBB /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = /System/Library/Frameworks/Cocoa.framework; sourceTree = "<absolute>"; };
+		13E42FB307B3F0F600E4EEF1 /* CoreData.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreData.framework; path = /System/Library/Frameworks/CoreData.framework; sourceTree = "<absolute>"; };
+		2744F55508889FC2001E0CC9 /* BDSKDataModelNames.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = BDSKDataModelNames.h; sourceTree = SOURCE_ROOT; };
+		2744F55608889FC2001E0CC9 /* BDSKDocument.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = BDSKDocument.h; sourceTree = SOURCE_ROOT; };
+		2744F55708889FC2001E0CC9 /* BDSKDocument.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = BDSKDocument.m; sourceTree = SOURCE_ROOT; };
+		2744F55808889FC2001E0CC9 /* BDSKMainWindowController.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = BDSKMainWindowController.h; sourceTree = SOURCE_ROOT; };
+		2744F55908889FC2001E0CC9 /* BDSKMainWindowController.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = BDSKMainWindowController.m; sourceTree = SOURCE_ROOT; };
+		2744F55A08889FC2001E0CC9 /* BDSKModel-0.1.xcdatamodel */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = wrapper.xcdatamodel; path = "BDSKModel-0.1.xcdatamodel"; sourceTree = SOURCE_ROOT; };
+		2744F55B08889FC2001E0CC9 /* BDSKNoteGroup.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = BDSKNoteGroup.h; sourceTree = SOURCE_ROOT; };
+		2744F55C08889FC2001E0CC9 /* BDSKNoteGroup.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = BDSKNoteGroup.m; sourceTree = SOURCE_ROOT; };
+		2744F55D08889FC2001E0CC9 /* BDSKNoteTableDisplayController.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = BDSKNoteTableDisplayController.h; sourceTree = SOURCE_ROOT; };
+		2744F55E08889FC2001E0CC9 /* BDSKNoteTableDisplayController.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = BDSKNoteTableDisplayController.m; sourceTree = SOURCE_ROOT; };
+		2744F55F08889FC2001E0CC9 /* BDSKPersonGroup.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = BDSKPersonGroup.h; sourceTree = SOURCE_ROOT; };
+		2744F56008889FC2001E0CC9 /* BDSKPersonGroup.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = BDSKPersonGroup.m; sourceTree = SOURCE_ROOT; };
+		2744F56108889FC2001E0CC9 /* BDSKPersonTableDisplayController.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = BDSKPersonTableDisplayController.h; sourceTree = SOURCE_ROOT; };
+		2744F56208889FC2001E0CC9 /* BDSKPersonTableDisplayController.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = BDSKPersonTableDisplayController.m; sourceTree = SOURCE_ROOT; };
+		2744F56308889FC2001E0CC9 /* BDSKPublicationGroup.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = BDSKPublicationGroup.h; sourceTree = SOURCE_ROOT; };
+		2744F56408889FC2001E0CC9 /* BDSKPublicationGroup.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = BDSKPublicationGroup.m; sourceTree = SOURCE_ROOT; };
+		2744F56508889FC2001E0CC9 /* BDSKPublicationTableDisplayController.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = BDSKPublicationTableDisplayController.h; sourceTree = SOURCE_ROOT; };
+		2744F56608889FC2001E0CC9 /* BDSKPublicationTableDisplayController.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = BDSKPublicationTableDisplayController.m; sourceTree = SOURCE_ROOT; };
+		2744F56708889FC2001E0CC9 /* BDSKSourceListTreeController.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = BDSKSourceListTreeController.h; sourceTree = SOURCE_ROOT; };
+		2744F56808889FC2001E0CC9 /* BDSKSourceListTreeController.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = BDSKSourceListTreeController.m; sourceTree = SOURCE_ROOT; };
+		2744F56908889FC2001E0CC9 /* DisplayControllers.plist */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text.plist; path = DisplayControllers.plist; sourceTree = SOURCE_ROOT; };
+		2744F56A08889FC2001E0CC9 /* ImageAndTextCell.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = ImageAndTextCell.h; sourceTree = SOURCE_ROOT; };
+		2744F56B08889FC2001E0CC9 /* ImageAndTextCell.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = ImageAndTextCell.m; sourceTree = SOURCE_ROOT; };
+		2744F5790888A087001E0CC9 /* English */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = English; path = English.lproj/BDSKMainWindow.nib; sourceTree = "<group>"; };
+		2744F57B0888A087001E0CC9 /* English */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = English; path = English.lproj/BDSKNoteTableDisplayController.nib; sourceTree = "<group>"; };
+		2744F57D0888A087001E0CC9 /* English */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = English; path = English.lproj/BDSKPersonTableDisplayController.nib; sourceTree = "<group>"; };
+		2744F57F0888A087001E0CC9 /* English */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = English; path = English.lproj/BDSKPublicationTableDisplayController.nib; sourceTree = "<group>"; };
+		29B97316FDCFA39411CA2CEA /* main.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
+		29B97319FDCFA39411CA2CEA /* English */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = English; path = English.lproj/MainMenu.nib; sourceTree = "<group>"; };
+		29B97324FDCFA39411CA2CEA /* AppKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AppKit.framework; path = /System/Library/Frameworks/AppKit.framework; sourceTree = "<absolute>"; };
+		29B97325FDCFA39411CA2CEA /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = /System/Library/Frameworks/Foundation.framework; sourceTree = "<absolute>"; };
+		32CA4F630368D1EE00C91783 /* bd2xtest_Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = bd2xtest_Prefix.pch; sourceTree = "<group>"; };
+		8D1107310486CEB800E47090 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
+		8D1107320486CEB800E47090 /* bd2xtest.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = bd2xtest.app; sourceTree = BUILT_PRODUCTS_DIR; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		8D11072E0486CEB800E47090 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				8D11072F0486CEB800E47090 /* Cocoa.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		080E96DDFE201D6D7F000001 /* Classes */ = {
+			isa = PBXGroup;
+			children = (
+				2744F55508889FC2001E0CC9 /* BDSKDataModelNames.h */,
+				2744F55608889FC2001E0CC9 /* BDSKDocument.h */,
+				2744F55708889FC2001E0CC9 /* BDSKDocument.m */,
+				2744F55808889FC2001E0CC9 /* BDSKMainWindowController.h */,
+				2744F55908889FC2001E0CC9 /* BDSKMainWindowController.m */,
+				2744F55A08889FC2001E0CC9 /* BDSKModel-0.1.xcdatamodel */,
+				2744F55B08889FC2001E0CC9 /* BDSKNoteGroup.h */,
+				2744F55C08889FC2001E0CC9 /* BDSKNoteGroup.m */,
+				2744F55D08889FC2001E0CC9 /* BDSKNoteTableDisplayController.h */,
+				2744F55E08889FC2001E0CC9 /* BDSKNoteTableDisplayController.m */,
+				2744F55F08889FC2001E0CC9 /* BDSKPersonGroup.h */,
+				2744F56008889FC2001E0CC9 /* BDSKPersonGroup.m */,
+				2744F56108889FC2001E0CC9 /* BDSKPersonTableDisplayController.h */,
+				2744F56208889FC2001E0CC9 /* BDSKPersonTableDisplayController.m */,
+				2744F56308889FC2001E0CC9 /* BDSKPublicationGroup.h */,
+				2744F56408889FC2001E0CC9 /* BDSKPublicationGroup.m */,
+				2744F56508889FC2001E0CC9 /* BDSKPublicationTableDisplayController.h */,
+				2744F56608889FC2001E0CC9 /* BDSKPublicationTableDisplayController.m */,
+				2744F56708889FC2001E0CC9 /* BDSKSourceListTreeController.h */,
+				2744F56808889FC2001E0CC9 /* BDSKSourceListTreeController.m */,
+				2744F56908889FC2001E0CC9 /* DisplayControllers.plist */,
+				2744F56A08889FC2001E0CC9 /* ImageAndTextCell.h */,
+				2744F56B08889FC2001E0CC9 /* ImageAndTextCell.m */,
+			);
+			name = Classes;
+			sourceTree = "<group>";
+		};
+		1058C7A0FEA54F0111CA2CBB /* Linked Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				1058C7A1FEA54F0111CA2CBB /* Cocoa.framework */,
+			);
+			name = "Linked Frameworks";
+			sourceTree = "<group>";
+		};
+		1058C7A2FEA54F0111CA2CBB /* Other Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				29B97324FDCFA39411CA2CEA /* AppKit.framework */,
+				13E42FB307B3F0F600E4EEF1 /* CoreData.framework */,
+				29B97325FDCFA39411CA2CEA /* Foundation.framework */,
+			);
+			name = "Other Frameworks";
+			sourceTree = "<group>";
+		};
+		19C28FACFE9D520D11CA2CBB /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				8D1107320486CEB800E47090 /* bd2xtest.app */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		29B97314FDCFA39411CA2CEA /* bd2xtest */ = {
+			isa = PBXGroup;
+			children = (
+				080E96DDFE201D6D7F000001 /* Classes */,
+				29B97315FDCFA39411CA2CEA /* Other Sources */,
+				29B97317FDCFA39411CA2CEA /* Resources */,
+				29B97323FDCFA39411CA2CEA /* Frameworks */,
+				19C28FACFE9D520D11CA2CBB /* Products */,
+			);
+			name = bd2xtest;
+			sourceTree = "<group>";
+		};
+		29B97315FDCFA39411CA2CEA /* Other Sources */ = {
+			isa = PBXGroup;
+			children = (
+				32CA4F630368D1EE00C91783 /* bd2xtest_Prefix.pch */,
+				29B97316FDCFA39411CA2CEA /* main.m */,
+			);
+			name = "Other Sources";
+			sourceTree = "<group>";
+		};
+		29B97317FDCFA39411CA2CEA /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				2744F5780888A087001E0CC9 /* BDSKMainWindow.nib */,
+				2744F57A0888A087001E0CC9 /* BDSKNoteTableDisplayController.nib */,
+				2744F57C0888A087001E0CC9 /* BDSKPersonTableDisplayController.nib */,
+				2744F57E0888A087001E0CC9 /* BDSKPublicationTableDisplayController.nib */,
+				8D1107310486CEB800E47090 /* Info.plist */,
+				089C165CFE840E0CC02AAC07 /* InfoPlist.strings */,
+				29B97318FDCFA39411CA2CEA /* MainMenu.nib */,
+			);
+			name = Resources;
+			sourceTree = "<group>";
+		};
+		29B97323FDCFA39411CA2CEA /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				1058C7A0FEA54F0111CA2CBB /* Linked Frameworks */,
+				1058C7A2FEA54F0111CA2CBB /* Other Frameworks */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		8D1107260486CEB800E47090 /* bd2xtest */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 2744F54B08889F9F001E0CC9 /* Build configuration list for PBXNativeTarget "bd2xtest" */;
+			buildPhases = (
+				8D1107290486CEB800E47090 /* Resources */,
+				8D11072C0486CEB800E47090 /* Sources */,
+				8D11072E0486CEB800E47090 /* Frameworks */,
+			);
+			buildRules = (
+			);
+			buildSettings = {
+				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = bd2xtest_Prefix.pch;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				INFOPLIST_FILE = Info.plist;
+				INSTALL_PATH = "$(HOME)/Applications";
+				PRODUCT_NAME = bd2xtest;
+				WRAPPER_EXTENSION = app;
+			};
+			dependencies = (
+			);
+			name = bd2xtest;
+			productInstallPath = "$(HOME)/Applications";
+			productName = bd2xtest;
+			productReference = 8D1107320486CEB800E47090 /* bd2xtest.app */;
+			productType = "com.apple.product-type.application";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		29B97313FDCFA39411CA2CEA /* Project object */ = {
+			isa = PBXProject;
+			buildConfigurationList = 2744F54F08889F9F001E0CC9 /* Build configuration list for PBXProject "bd2xtest" */;
+			buildSettings = {
+			};
+			buildStyles = (
+				4A9504CCFFE6A4B311CA0CBA /* Debug */,
+				4A9504CDFFE6A4B311CA0CBA /* Release */,
+			);
+			hasScannedForEncodings = 1;
+			mainGroup = 29B97314FDCFA39411CA2CEA /* bd2xtest */;
+			projectDirPath = "";
+			targets = (
+				8D1107260486CEB800E47090 /* bd2xtest */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		8D1107290486CEB800E47090 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				8D11072A0486CEB800E47090 /* MainMenu.nib in Resources */,
+				8D11072B0486CEB800E47090 /* InfoPlist.strings in Resources */,
+				2744F57608889FC3001E0CC9 /* DisplayControllers.plist in Resources */,
+				2744F5800888A087001E0CC9 /* BDSKMainWindow.nib in Resources */,
+				2744F5810888A087001E0CC9 /* BDSKNoteTableDisplayController.nib in Resources */,
+				2744F5820888A087001E0CC9 /* BDSKPersonTableDisplayController.nib in Resources */,
+				2744F5830888A087001E0CC9 /* BDSKPublicationTableDisplayController.nib in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		8D11072C0486CEB800E47090 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				8D11072D0486CEB800E47090 /* main.m in Sources */,
+				2744F56C08889FC2001E0CC9 /* BDSKDocument.m in Sources */,
+				2744F56D08889FC2001E0CC9 /* BDSKMainWindowController.m in Sources */,
+				2744F56E08889FC2001E0CC9 /* BDSKModel-0.1.xcdatamodel in Sources */,
+				2744F56F08889FC2001E0CC9 /* BDSKNoteGroup.m in Sources */,
+				2744F57008889FC3001E0CC9 /* BDSKNoteTableDisplayController.m in Sources */,
+				2744F57108889FC3001E0CC9 /* BDSKPersonGroup.m in Sources */,
+				2744F57208889FC3001E0CC9 /* BDSKPersonTableDisplayController.m in Sources */,
+				2744F57308889FC3001E0CC9 /* BDSKPublicationGroup.m in Sources */,
+				2744F57408889FC3001E0CC9 /* BDSKPublicationTableDisplayController.m in Sources */,
+				2744F57508889FC3001E0CC9 /* BDSKSourceListTreeController.m in Sources */,
+				2744F57708889FC3001E0CC9 /* ImageAndTextCell.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXVariantGroup section */
+		089C165CFE840E0CC02AAC07 /* InfoPlist.strings */ = {
+			isa = PBXVariantGroup;
+			children = (
+				089C165DFE840E0CC02AAC07 /* English */,
+			);
+			name = InfoPlist.strings;
+			sourceTree = "<group>";
+		};
+		2744F5780888A087001E0CC9 /* BDSKMainWindow.nib */ = {
+			isa = PBXVariantGroup;
+			children = (
+				2744F5790888A087001E0CC9 /* English */,
+			);
+			name = BDSKMainWindow.nib;
+			sourceTree = SOURCE_ROOT;
+		};
+		2744F57A0888A087001E0CC9 /* BDSKNoteTableDisplayController.nib */ = {
+			isa = PBXVariantGroup;
+			children = (
+				2744F57B0888A087001E0CC9 /* English */,
+			);
+			name = BDSKNoteTableDisplayController.nib;
+			sourceTree = SOURCE_ROOT;
+		};
+		2744F57C0888A087001E0CC9 /* BDSKPersonTableDisplayController.nib */ = {
+			isa = PBXVariantGroup;
+			children = (
+				2744F57D0888A087001E0CC9 /* English */,
+			);
+			name = BDSKPersonTableDisplayController.nib;
+			sourceTree = SOURCE_ROOT;
+		};
+		2744F57E0888A087001E0CC9 /* BDSKPublicationTableDisplayController.nib */ = {
+			isa = PBXVariantGroup;
+			children = (
+				2744F57F0888A087001E0CC9 /* English */,
+			);
+			name = BDSKPublicationTableDisplayController.nib;
+			sourceTree = SOURCE_ROOT;
+		};
+		29B97318FDCFA39411CA2CEA /* MainMenu.nib */ = {
+			isa = PBXVariantGroup;
+			children = (
+				29B97319FDCFA39411CA2CEA /* English */,
+			);
+			name = MainMenu.nib;
+			sourceTree = "<group>";
+		};
+/* End PBXVariantGroup section */
+
+/* Begin XCBuildConfiguration section */
+		2744F54C08889F9F001E0CC9 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				COPY_PHASE_STRIP = NO;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_ENABLE_FIX_AND_CONTINUE = YES;
+				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = bd2xtest_Prefix.pch;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				INFOPLIST_FILE = Info.plist;
+				INSTALL_PATH = "$(HOME)/Applications";
+				PREBINDING = NO;
+				PRODUCT_NAME = bd2xtest;
+				WRAPPER_EXTENSION = app;
+				ZERO_LINK = YES;
+			};
+			name = Debug;
+		};
+		2744F54D08889F9F001E0CC9 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				COPY_PHASE_STRIP = YES;
+				GCC_ENABLE_FIX_AND_CONTINUE = NO;
+				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = bd2xtest_Prefix.pch;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				INFOPLIST_FILE = Info.plist;
+				INSTALL_PATH = "$(HOME)/Applications";
+				PREBINDING = NO;
+				PRODUCT_NAME = bd2xtest;
+				WRAPPER_EXTENSION = app;
+				ZERO_LINK = NO;
+			};
+			name = Release;
+		};
+		2744F54E08889F9F001E0CC9 /* Default */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = bd2xtest_Prefix.pch;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				INFOPLIST_FILE = Info.plist;
+				INSTALL_PATH = "$(HOME)/Applications";
+				PRODUCT_NAME = bd2xtest;
+				WRAPPER_EXTENSION = app;
+			};
+			name = Default;
+		};
+		2744F55008889F9F001E0CC9 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+			};
+			name = Debug;
+		};
+		2744F55108889F9F001E0CC9 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+			};
+			name = Release;
+		};
+		2744F55208889F9F001E0CC9 /* Default */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+			};
+			name = Default;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		2744F54B08889F9F001E0CC9 /* Build configuration list for PBXNativeTarget "bd2xtest" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				2744F54C08889F9F001E0CC9 /* Debug */,
+				2744F54D08889F9F001E0CC9 /* Release */,
+				2744F54E08889F9F001E0CC9 /* Default */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Default;
+		};
+		2744F54F08889F9F001E0CC9 /* Build configuration list for PBXProject "bd2xtest" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				2744F55008889F9F001E0CC9 /* Debug */,
+				2744F55108889F9F001E0CC9 /* Release */,
+				2744F55208889F9F001E0CC9 /* Default */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Default;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 29B97313FDCFA39411CA2CEA /* Project object */;
+}

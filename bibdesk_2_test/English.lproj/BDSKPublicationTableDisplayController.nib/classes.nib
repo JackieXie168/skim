@@ -1,0 +1,18 @@
+{
+    IBClasses = (
+        {
+            CLASS = BDSKPublicationTableDisplayController; 
+            LANGUAGE = ObjC; 
+            OUTLETS = {itemSource = id; mainView = NSView; }; 
+            SUPERCLASS = NSObject; 
+        }, 
+        {
+            CLASS = BDSKTableDisplayController; 
+            LANGUAGE = ObjC; 
+            OUTLETS = {itemSource = id; mainView = NSView; }; 
+            SUPERCLASS = NSObject; 
+        }, 
+        {CLASS = FirstResponder; LANGUAGE = ObjC; SUPERCLASS = NSObject; }
+    ); 
+    IBVersion = 1; 
+}

@@ -1,0 +1,31 @@
+{
+    IBClasses = (
+        {CLASS = BDSKDocument; LANGUAGE = ObjC; SUPERCLASS = NSPersistentDocument; }, 
+        {
+            ACTIONS = {
+                addNewNote = id; 
+                addNewNoteGroup = id; 
+                addNewPublication = id; 
+                addNewPublicationGroup = id; 
+            }; 
+            CLASS = BDSKMainWindowController; 
+            LANGUAGE = ObjC; 
+            OUTLETS = {
+                currentDisplayController = id; 
+                currentDisplayView = NSView; 
+                mainSplitView = NSSplitView; 
+                sourceList = NSOutlineView; 
+                sourceListTreeController = NSTreeController; 
+            }; 
+            SUPERCLASS = NSWindowController; 
+        }, 
+        {
+            CLASS = BDSKSourceListTreeController; 
+            LANGUAGE = ObjC; 
+            SUPERCLASS = NSTreeController; 
+        }, 
+        {CLASS = FirstResponder; LANGUAGE = ObjC; SUPERCLASS = NSObject; }, 
+        {CLASS = NSPersistentDocument; LANGUAGE = ObjC; SUPERCLASS = NSDocument; }
+    ); 
+    IBVersion = 1; 
+}
