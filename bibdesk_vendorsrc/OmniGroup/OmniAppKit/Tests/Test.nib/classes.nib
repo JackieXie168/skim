@@ -1,0 +1,20 @@
+{
+    IBClasses = (
+        {CLASS = FirstResponder; LANGUAGE = ObjC; SUPERCLASS = NSObject; }, 
+        {
+            ACTIONS = {drawString = id; }; 
+            CLASS = TestController; 
+            LANGUAGE = ObjC; 
+            OUTLETS = {
+                drawOldStyleCheckbox = NSButton; 
+                drawStringAlignmentMatrix = NSMatrix; 
+                drawStringInputField = NSTextField; 
+                drawStringOutputView = NSView; 
+                verticallyCenterCheckbox = NSButton; 
+            }; 
+            SUPERCLASS = NSObject; 
+        }, 
+        {CLASS = TestFlippedView; LANGUAGE = ObjC; SUPERCLASS = NSView; }
+    ); 
+    IBVersion = 1; 
+}

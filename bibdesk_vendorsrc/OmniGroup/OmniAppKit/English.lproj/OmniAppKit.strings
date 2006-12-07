@@ -1,0 +1,207 @@
+/* last word of abbreviated bytes string if no abbreviation is necessary
+   resizing byte formatter - this word is separate because of a bug in NSNumberFormatter */
+" bytes" = " bytes";
+
+/* resizing bytes formatter bytes format */
+"#,##0" = "#,##0";
+
+/* resizing bytes formatter gigabytes format */
+"#,##0.0 GB" = "#,##0.0 GB";
+
+/* resizing bytes formatter kilobytes format */
+"#,##0.0 kB" = "#,##0.0 kB";
+
+/* resizing bytes formatter megabytes format */
+"#,##0.0 MB" = "#,##0.0 MB";
+
+/* resizing bytes formatter petabytes format */
+"#,##0.0 PB" = "#,##0.0 PB";
+
+/* resizing bytes formatter terabytes format */
+"#,##0.0 TB" = "#,##0.0 TB";
+
+/* format string for color with brightness description
+   format string for color with saturation description */
+"%@ %@" = "%@ %@";
+
+/* info panel title format */
+"%@ Info" = "%@ Info";
+
+/* preferences panel title format */
+"%@ Preferences" = "%@ Preferences";
+
+/* format string for color with saturation and brightness descriptions */
+"%@, %@ %@" = "%@, %@ %@";
+
+/* word comparing color brightnesss */
+"Bright" = "Bright";
+
+/* alert panel button */
+"Cancel" = "Cancel";
+
+/* informative text for reset-to-defaults alert */
+"Choosing Reset will restore all settings (including options not in this Preferences window, such as window sizes and toolbars) to the state they were in when %@ was first installed." = "Choosing Reset will restore all settings (including options not in this Preferences window, such as window sizes and toolbars) to the state they were in when %@ was first installed.";
+
+/* informative text for reset-to-defaults alert */
+"Choosing Reset will restore all settings in all preference panes to the state they were in when %@ was first installed." = "Choosing Reset will restore all settings in all preference panes to the state they were in when %@ was first installed.";
+
+/* informative text for reset-to-defaults alert */
+"Choosing Reset will restore all settings in this pane to the state they were in when %@ was first installed." = "Choosing Reset will restore all settings in this pane to the state they were in when %@ was first installed.";
+
+/* name of completely transparent color */
+"Clear" = "Clear";
+
+/* Close inspector panel menu item format */
+"Close %@" = "Close %@";
+
+/* generic color name for custom colors */
+"Custom" = "Custom";
+
+/* undo action name for cutting outline view items */
+"Cut" = "Cut";
+
+/* word comparing color brightnesss */
+"Dark" = "Dark";
+
+/* word comparing color saturations */
+"Deep" = "Deep";
+
+/* Delete Workspace menu item */
+"Delete Workspace..." = "Delete Workspace...";
+
+/* undo action name for drag operations in outline view */
+"Drag Operation" = "Drag Operation";
+
+/* internet config error */
+"Error editing InternetConfig preferences for key %@: %@" = "Error editing InternetConfig preferences for key %@: %@";
+
+/* internet config error */
+"Error opening InternetConfig for read-only access: %@" = "Error opening InternetConfig for read-only access: %@";
+
+/* internet config error */
+"Error opening InternetConfig for read-write access: %@" = "Error opening InternetConfig for read-write access: %@";
+
+/* internet config error */
+"Error reading InternetConfig preference for key %@: %@" = "Error reading InternetConfig preference for key %@: %@";
+
+/* word comparing color saturations */
+"Faded" = "Faded";
+
+/* undo action name for grouping outline view items */
+"Group" = "Group";
+
+/* hide the info panel */
+"Hide Info" = "Hide Info";
+
+/* internet config error */
+"ICCountPref returned an error: %@" = "ICCountPref returned an error: %@";
+
+/* internet config error */
+"ICEnd returned an error: %@" = "ICEnd returned an error: %@";
+
+/* internet config error */
+"ICGetIndPref %d/%d returned an error: %@" = "ICGetIndPref %d/%d returned an error: %@";
+
+/* internet config error */
+"ICMapFilename returned an error for file %@: %@" = "ICMapFilename returned an error for file %@: %@";
+
+/* internet config error */
+"ICSetPref returned an error while setting key %@: %@" = "ICSetPref returned an error while setting key %@: %@";
+
+/* internet config error */
+"ICSetPref returned permissions when attempting setting key %@" = "ICSetPref returned permissions when attempting setting key %@";
+
+/* undo action name for indenting outline view items */
+"Indent" = "Indent";
+
+/* generic title of inspector panel if what you are inspecting has no title of its own */
+"Info" = "Info";
+
+/* word comparing color saturations */
+"Intense" = "Intense";
+
+/* launch services error */
+"Launch Services returned an error while opening URL %@: %@" = "Launch Services returned an error while opening URL %@: %@";
+
+/* word comparing color brightnesss */
+"Light" = "Light";
+
+/* preference bundle loading message format */
+"Loading %@..." = "Loading %@...";
+
+/* word comparing color saturations */
+"Mild" = "Mild";
+
+/* word comparing color brightnesss */
+"Near-black" = "Near-black";
+
+/* preferences panel button */
+"Next" = "Next";
+
+/* how many pages in document format for scrollview */
+"of %d" = "of %d";
+
+/* word comparing color brightnesss */
+"Off-white" = "Off-white";
+
+/* page prompt for multipage documents in scrollview */
+"Page" = "Page";
+
+/* generic color name for pattern colors */
+"Pattern" = "Pattern";
+
+/* preferences panel button */
+"Previous" = "Previous";
+
+/* reset-to-defaults button title
+   alert panel button */
+"Reset" = "Reset";
+
+/* message text for reset-to-defaults alert */
+"Reset %@ preferences to their original values?" = "Reset %@ preferences to their original values?";
+
+/* reset-to-defaults button title */
+"Reset All" = "Reset All";
+
+/* message text for reset-to-defaults alert */
+"Reset all preferences and other settings to their original values?" = "Reset all preferences and other settings to their original values?";
+
+/* message text for reset-to-defaults alert */
+"Reset all preferences to their original values?" = "Reset all preferences to their original values?";
+
+/* Reset Inspector Locations menu item */
+"Reset Inspector Locations" = "Reset Inspector Locations";
+
+/* word comparing color saturations */
+"Rich" = "Rich";
+
+/* Save Workspace menu item */
+"Save Workspace..." = "Save Workspace...";
+
+/* preferences panel button */
+"Show All" = "Show All";
+
+/* show the info panel */
+"Show Info" = "Show Info";
+
+/* word comparing color brightnesss */
+"Smokey" = "Smokey";
+
+/* Contents of popup in regular expression find options */
+"Subexpression #%d" = "Subexpression #%d";
+
+/* undo action name for ungrouping outline view items */
+"Ungroup" = "Ungroup";
+
+/* undo action name for unindenting outline view items */
+"Unindent" = "Unindent";
+
+/* Save Workspace default title */
+"Untitled" = "Untitled";
+
+/* word comparing color saturations */
+"Washed-out" = "Washed-out";
+
+/* Workspace submenu item */
+"Workspace" = "Workspace";
+

@@ -1,0 +1,147 @@
+/* abbreviated string for bytes format */
+"%0.1f GB" = "%0.1f GB";
+
+/* abbreviated string for bytes format */
+"%0.1f MB" = "%0.1f MB";
+
+/* abbreviated string for bytes format */
+"%0.1f PB" = "%0.1f PB";
+
+/* abbreviated string for bytes format */
+"%0.1f TB" = "%0.1f TB";
+
+/* abbreviated string for bytes format */
+"%0.1f kB" = "%0.1f kB";
+
+/* time span formatter span singular */
+"%1.2f hour" = "%1.2f hour";
+
+/* time span formatter span */
+"%1.2f hours" = "%1.2f hours";
+
+/* time span formatter span abbreviated */
+"%1.2fh" = "%1.2fh";
+
+/* humanReadableStringForTimeInterval */
+"%@ ago" = "%@ ago";
+
+/* abbreviated string for bytes format */
+"%d bytes" = "%d bytes";
+
+/* time span formatter span singular */
+"%d day" = "%d day";
+
+/* time span formatter span */
+"%d days" = "%d days";
+
+/* time span formatter span singular */
+"%d hour" = "%d hour";
+
+/* time span formatter span */
+"%d hours" = "%d hours";
+
+/* time span formatter span singular */
+"%d week" = "%d week";
+
+/* time span formatter span */
+"%d weeks" = "%d weeks";
+
+/* time span formatter span abbreviated */
+"%dd" = "%dd";
+
+/* time span formatter span abbreviated */
+"%dh" = "%dh";
+
+/* time span formatter span abbreviated */
+"%dw" = "%dw";
+
+/* humanReadableStringForTimeInterval */
+"%ld day, %ld:%02ld:%02ld" = "%ld day, %ld:%02ld:%02ld";
+
+/* humanReadableStringForTimeInterval */
+"%ld days, %ld:%02ld:%02ld" = "%ld days, %ld:%02ld:%02ld";
+
+/* humanReadableStringForTimeInterval */
+"%ld seconds" = "%ld seconds";
+
+/* humanReadableStringForTimeInterval */
+"%ld:%02ld" = "%ld:%02ld";
+
+/* humanReadableStringForTimeInterval */
+"%ld:%02ld:%02ld" = "%ld:%02ld:%02ld";
+
+/* formatter input error format */
+"'%@' is not a valid social security number." = "'%@' is not a valid social security number.";
+
+/* invalid bundle reason */
+"Bundle is obsolete" = "Bundle is obsolete";
+
+/* invalid bundle reason */
+"Bundle requires additional software" = "Bundle requires additional software";
+
+/* reason for failure to check for update if user has canceled the request */
+"Canceled" = "Canceled";
+
+/* timespan formatter uppercase first character in days */
+"D" = "D";
+
+/* invalid bundle reason */
+"Duplicate bundle name" = "Duplicate bundle name";
+
+/* timespan formatter uppercase first character in hours */
+"H" = "H";
+
+/* error text generated when software update is unable to retrieve the list of current software versions */
+"Could not contact %@. Your Internet connection might not be active, or there might be a problem somewhere along the network." = "Could not contact %@. Your Internet connection might not be active, or there might be a problem somewhere along the network.";
+
+/* formatter input error */
+"Invalid time span format" = "Invalid time span format";
+
+/* timespan formatter uppercase first character in months */
+"M" = "M";
+
+/* invalid bundle reason */
+"Not a valid bundle" = "Not a valid bundle";
+
+/* formatter input error */
+"Only enter numbers separated by spaces." = "Only enter numbers separated by spaces.";
+
+/* formatter input error */
+"That is not a valid date." = "That is not a valid date.";
+
+/* formatter input error */
+"That is not a valid phone number." = "That is not a valid phone number.";
+
+/* formatter input error */
+"That is not a valid social security number." = "That is not a valid social security number.";
+
+/* formatter input error */
+"That is not a valid state abbreviation." = "That is not a valid state abbreviation.";
+
+/* formatter input error */
+"That is not a valid zip code." = "That is not a valid zip code.";
+
+/* timespan formatter uppercase first character in weeks */
+"W" = "W";
+
+/* page break placeholder for RTF scanner */
+"\n[New Page]\n" = "\n[New Page]\n";
+
+/* timespan formatter lowercase first character in days */
+"d" = "d";
+
+/* timespan formatter lowercase first character in hours */
+"h" = "h";
+
+/* local bundle path readable string */
+"local configuration file" = "local configuration file";
+
+/* timespan formatter lowercase first character in months */
+"m" = "m";
+
+/* humanReadableStringForTimeInterval */
+"right now" = "right now";
+
+/* timespan formatter lowercase first character in weeks */
+"w" = "w";
+
