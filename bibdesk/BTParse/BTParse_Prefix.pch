@@ -1,0 +1,7 @@
+//
+// Prefix header for all source files of the 'BTParse' target in the 'BTParse' project.
+//
+
+#ifdef __OBJC__
+    #import <Cocoa/Cocoa.h>
+#endif
