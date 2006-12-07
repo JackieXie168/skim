@@ -1,0 +1,25 @@
+{
+    IBClasses = (
+        {CLASS = BDSKBorderlessKeyWindow; LANGUAGE = ObjC; SUPERCLASS = NSWindow; }, 
+        {CLASS = FirstResponder; LANGUAGE = ObjC; SUPERCLASS = NSObject; }, 
+        {
+            ACTIONS = {editMacros = id; }; 
+            CLASS = MacroTextFieldWindowController; 
+            LANGUAGE = ObjC; 
+            OUTLETS = {
+                callBackObject = id; 
+                editMacroButton = NSButton; 
+                expandedValueTextField = NSTextField; 
+                textField = NSTextField; 
+            }; 
+            SUPERCLASS = NSWindowController; 
+        }, 
+        {
+            CLASS = TextWindowController; 
+            LANGUAGE = ObjC; 
+            OUTLETS = {textField = NSTextField; }; 
+            SUPERCLASS = NSWindowController; 
+        }
+    ); 
+    IBVersion = 1; 
+}

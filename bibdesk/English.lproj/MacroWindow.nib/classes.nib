@@ -1,0 +1,13 @@
+{
+    IBClasses = (
+        {CLASS = FirstResponder; LANGUAGE = ObjC; SUPERCLASS = NSObject; }, 
+        {
+            ACTIONS = {addMacro = id; removeSelectedMacros = id; }; 
+            CLASS = MacroWindowController; 
+            LANGUAGE = ObjC; 
+            OUTLETS = {macroDataSource = id; tableView = NSTableView; }; 
+            SUPERCLASS = NSWindowController; 
+        }
+    ); 
+    IBVersion = 1; 
+}
