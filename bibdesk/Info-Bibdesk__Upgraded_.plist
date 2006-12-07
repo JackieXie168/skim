@@ -1,0 +1,384 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple Computer//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>CFBundleDevelopmentRegion</key>
+	<string>English</string>
+	<key>CFBundleDocumentTypes</key>
+	<array>
+		<dict>
+			<key>CFBundleTypeExtensions</key>
+			<array>
+				<string>bib</string>
+			</array>
+			<key>CFBundleTypeIconFile</key>
+			<string>bibDocIcon.icns</string>
+			<key>CFBundleTypeName</key>
+			<string>bibTeX database</string>
+			<key>CFBundleTypeOSTypes</key>
+			<array>
+				<string>BIB</string>
+			</array>
+			<key>CFBundleTypeRole</key>
+			<string>Editor</string>
+			<key>NSDocumentClass</key>
+			<string>BibDocument</string>
+		</dict>
+		<dict>
+			<key>CFBundleTypeExtensions</key>
+			<array>
+				<string>rss</string>
+				<string>xml</string>
+			</array>
+			<key>CFBundleTypeName</key>
+			<string>Rich Site Summary file</string>
+			<key>CFBundleTypeRole</key>
+			<string>Viewer</string>
+			<key>NSDocumentClass</key>
+			<string>BibDocument</string>
+		</dict>
+		<dict>
+			<key>CFBundleTypeExtensions</key>
+			<array>
+				<string>fcgi</string>
+			</array>
+			<key>CFBundleTypeMIMETypes</key>
+			<array>
+				<string>application/x-Research-Info-Systems</string>
+			</array>
+			<key>CFBundleTypeName</key>
+			<string>RIS/Medline File</string>
+			<key>CFBundleTypeRole</key>
+			<string>Viewer</string>
+			<key>NSDocumentClass</key>
+			<string>BibDocument</string>
+		</dict>
+	</array>
+	<key>CFBundleExecutable</key>
+	<string>Bibdesk</string>
+	<key>CFBundleGetInfoHTML</key>
+	<string>&lt;B&gt;BibDesk&lt;/B&gt; Version 0.94</string>
+	<key>CFBundleGetInfoString</key>
+	<string>version 0.94</string>
+	<key>CFBundleHelpBookFolder</key>
+	<string>BibDesk Help</string>
+	<key>CFBundleHelpBookName</key>
+	<string>BibDesk Help</string>
+	<key>CFBundleIconFile</key>
+	<string>FolderPenIcon.icns</string>
+	<key>CFBundleIdentifier</key>
+	<string>edu.ucsd.cs.mmccrack.bibdesk</string>
+	<key>CFBundleInfoDictionaryVersion</key>
+	<string>6.0</string>
+	<key>CFBundleName</key>
+	<string>BibDesk</string>
+	<key>CFBundlePackageType</key>
+	<string>APPL</string>
+	<key>CFBundleShortVersionString</key>
+	<string>0.94</string>
+	<key>CFBundleSignature</key>
+	<string>MMcC</string>
+	<key>CFBundleVersion</key>
+	<string>0.94</string>
+	<key>NSAppleScriptEnabled</key>
+	<string>YES</string>
+	<key>NSMainNibFile</key>
+	<string>MainMenu</string>
+	<key>NSPrincipalClass</key>
+	<string>OAApplication</string>
+	<key>NSServices</key>
+	<array>
+		<dict>
+			<key>NSKeyEquivalent</key>
+			<dict>
+				<key>default</key>
+				<string>k</string>
+			</dict>
+			<key>NSMenuItem</key>
+			<dict>
+				<key>default</key>
+				<string>Bibdesk/Complete Cite Key</string>
+			</dict>
+			<key>NSMessage</key>
+			<string>completeCiteKeyFromSelection</string>
+			<key>NSPortName</key>
+			<string>Bibdesk</string>
+			<key>NSReturnTypes</key>
+			<array>
+				<string>NSStringPboardType</string>
+			</array>
+			<key>NSSendTypes</key>
+			<array>
+				<string>NSStringPboardType</string>
+			</array>
+		</dict>
+		<dict>
+			<key>NSKeyEquivalent</key>
+			<dict>
+				<key>default</key>
+				<string>J</string>
+			</dict>
+			<key>NSMenuItem</key>
+			<dict>
+				<key>default</key>
+				<string>Bibdesk/Complete Citation</string>
+			</dict>
+			<key>NSMessage</key>
+			<string>completeCitationFromSelection</string>
+			<key>NSPortName</key>
+			<string>Bibdesk</string>
+			<key>NSReturnTypes</key>
+			<array>
+				<string>NSStringPboardType</string>
+			</array>
+			<key>NSSendTypes</key>
+			<array>
+				<string>NSStringPboardType</string>
+			</array>
+		</dict>
+		<dict>
+			<key>NSMenuItem</key>
+			<dict>
+				<key>default</key>
+				<string>Bibdesk/Show Matching Reference</string>
+			</dict>
+			<key>NSMessage</key>
+			<string>showPubWithKey</string>
+			<key>NSPortName</key>
+			<string>Bibdesk</string>
+			<key>NSSendTypes</key>
+			<array>
+				<string>NSStringPboardType</string>
+			</array>
+		</dict>
+	</array>
+	<key>OFRegistrations</key>
+	<dict>
+		<key>OAPreferenceController</key>
+		<dict>
+			<key>BibPref_AutoFile</key>
+			<dict>
+				<key>defaultsDictionary</key>
+				<dict>
+					<key>Auto Rename</key>
+					<false/>
+					<key>File Directory</key>
+					<string>~/Documents/Papers</string>
+					<key>Use AutoFile</key>
+					<false/>
+				</dict>
+				<key>icon</key>
+				<string>palm.icns</string>
+				<key>identifier</key>
+				<string>bp_autofile</string>
+				<key>nib</key>
+				<string>BibPref_AutoFile</string>
+				<key>ordering</key>
+				<integer>9</integer>
+				<key>shortTitle</key>
+				<string>AutoFile</string>
+				<key>title</key>
+				<string>AutoFile</string>
+			</dict>
+			<key>BibPref_Cite</key>
+			<dict>
+				<key>defaultsDictionary</key>
+				<dict>
+					<key>Citation End Bracket</key>
+					<string>}</string>
+					<key>Citation Start Bracket</key>
+					<string>{</string>
+					<key>Cite String</key>
+					<string>cite</string>
+					<key>Custom CiteStrings</key>
+					<array>
+						<string>citet</string>
+						<string>citep</string>
+						<string>fullcite</string>
+						<string>citeyear</string>
+						<string>citeauthor</string>
+					</array>
+					<key>Drag and Copy</key>
+					<integer>1</integer>
+					<key>Edit on Paste</key>
+					<integer>0</integer>
+					<key>Separate Cite</key>
+					<integer>0</integer>
+				</dict>
+				<key>icon</key>
+				<string>citation.tiff</string>
+				<key>identifier</key>
+				<string>bp_cite</string>
+				<key>nib</key>
+				<string>BibPref_Cite</string>
+				<key>ordering</key>
+				<integer>1</integer>
+				<key>shortTitle</key>
+				<string>Citation</string>
+				<key>title</key>
+				<string>Citation Behavior</string>
+			</dict>
+			<key>BibPref_Defaults</key>
+			<dict>
+				<key>defaultsDictionary</key>
+				<dict>
+					<key>Default Fields</key>
+					<array>
+						<string>Keywords</string>
+					</array>
+					<key>Output Template File</key>
+					<string>~/Library/Application Support/BibDesk/template.txt</string>
+				</dict>
+				<key>icon</key>
+				<string>defaults.tiff</string>
+				<key>identifier</key>
+				<string>bp_defaults</string>
+				<key>nib</key>
+				<string>BibPref_Defaults</string>
+				<key>ordering</key>
+				<integer>20</integer>
+				<key>shortTitle</key>
+				<string>Defaults</string>
+				<key>title</key>
+				<string>Defaults</string>
+			</dict>
+			<key>BibPref_Display</key>
+			<dict>
+				<key>defaultsDictionary</key>
+				<dict>
+					<key>BlueComponentColor of alternating rows Key</key>
+					<real>1.0109187948158557e-310</real>
+					<key>Current Publication Type</key>
+					<integer>6</integer>
+					<key>Current Publication Type String</key>
+					<string>Inproceedings</string>
+					<key>Current Quick Search Key</key>
+					<string>Keywords</string>
+					<key>Current Quick Search Text Dictionary</key>
+					<dict/>
+					<key>GreenComponentColor of alternating rows Key</key>
+					<real>1.0938888302425979e-310</real>
+					<key>Preview Pane Displays What?</key>
+					<integer>1</integer>
+					<key>Quick Search Keys</key>
+					<array>
+						<string>Keywords</string>
+						<string>Pub Type</string>
+					</array>
+					<key>RedComponentColor of alternating rows Key</key>
+					<real>1.1564877060760734e-310</real>
+					<key>Shown Column Names</key>
+					<array>
+						<string>Keywords</string>
+						<string>Cite Key</string>
+						<string>Title</string>
+						<string>Date</string>
+						<string>1st Author</string>
+						<string>2nd Author</string>
+						<string>3rd Author</string>
+					</array>
+					<key>Shown Columns</key>
+					<array>
+						<integer>1</integer>
+						<integer>1</integer>
+						<integer>1</integer>
+						<integer>1</integer>
+						<integer>0</integer>
+						<integer>0</integer>
+					</array>
+					<key>TableView Font</key>
+					<string>LucidaGrande</string>
+					<key>TableView Font Size</key>
+					<real>1.2939930333306231e-310</real>
+					<key>View-by Field</key>
+					<string>Author</string>
+				</dict>
+				<key>icon</key>
+				<string>display.tiff</string>
+				<key>identifier</key>
+				<string>bp_display</string>
+				<key>nib</key>
+				<string>BibPref_Display</string>
+				<key>ordering</key>
+				<integer>10</integer>
+				<key>shortTitle</key>
+				<string>Display</string>
+				<key>title</key>
+				<string>Display</string>
+			</dict>
+			<key>BibPref_RSS</key>
+			<dict>
+				<key>defaultsDictionary</key>
+				<dict>
+					<key>Auto-save as RSS</key>
+					<integer>0</integer>
+					<key>Field to use as Description in RSS</key>
+					<string>Rss-Description</string>
+				</dict>
+				<key>icon</key>
+				<string>rss.tiff</string>
+				<key>identifier</key>
+				<string>bp_rss</string>
+				<key>nib</key>
+				<string>BibPref_RSS</string>
+				<key>ordering</key>
+				<integer>25</integer>
+				<key>shortTitle</key>
+				<string>RSS</string>
+				<key>title</key>
+				<string>RSS publish &amp; subscribe</string>
+			</dict>
+			<key>BibPref_Startup</key>
+			<dict>
+				<key>defaultsDictionary</key>
+				<dict>
+					<key>Default Bib File</key>
+					<string></string>
+					<key>Show Warnings in Error Panel</key>
+					<false/>
+					<key>Startup Behavior</key>
+					<integer>0</integer>
+				</dict>
+				<key>icon</key>
+				<string>startup.tiff</string>
+				<key>identifier</key>
+				<string>bp_startup</string>
+				<key>nib</key>
+				<string>BibPref_Startup</string>
+				<key>ordering</key>
+				<integer>0</integer>
+				<key>shortTitle</key>
+				<string>Startup</string>
+				<key>title</key>
+				<string>Startup Behavior</string>
+			</dict>
+			<key>BibPref_TeX</key>
+			<dict>
+				<key>defaultsDictionary</key>
+				<dict>
+					<key>BibTeX Binary Path</key>
+					<string>/usr/local/teTeX/bin/powerpc-apple-darwin-current/bibtex</string>
+					<key>BibTeX Style</key>
+					<string>abbrv</string>
+					<key>TeX Binary Path</key>
+					<string>/usr/local/teTeX/bin/powerpc-apple-darwin-current/pdflatex</string>
+					<key>Uses TeX</key>
+					<integer>0</integer>
+				</dict>
+				<key>icon</key>
+				<string>preview.tiff</string>
+				<key>identifier</key>
+				<string>bp_TeX</string>
+				<key>nib</key>
+				<string>BibPref_TeX</string>
+				<key>ordering</key>
+				<integer>2</integer>
+				<key>shortTitle</key>
+				<string>Preview</string>
+				<key>title</key>
+				<string>TeX - Typeset Preview</string>
+			</dict>
+		</dict>
+	</dict>
+</dict>
+</plist>
