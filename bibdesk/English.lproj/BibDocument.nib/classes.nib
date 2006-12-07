@@ -1,0 +1,65 @@
+{
+    IBClasses = (
+        {CLASS = BDSKCustomCiteTableView; LANGUAGE = ObjC; SUPERCLASS = NSTableView; }, 
+        {CLASS = BDSKDragOutlineView; LANGUAGE = ObjC; SUPERCLASS = NSOutlineView; }, 
+        {CLASS = BDSKDragTableView; LANGUAGE = ObjC; SUPERCLASS = NSTableView; }, 
+        {
+            ACTIONS = {
+                clearQuickSearch = id; 
+                contextualMenuAddTableColumn = id; 
+                contextualMenuSelectTableColumn = id; 
+                copyAsBibTex = id; 
+                copyAsPDF = id; 
+                copyAsRTF = id; 
+                copyAsTex = id; 
+                delPub = id; 
+                didChangeSortKey = id; 
+                dismissAddFieldSheet = id; 
+                editPubCmd = id; 
+                emailPubCmd = id; 
+                exportAsHTML = id; 
+                exportAsRSS = id; 
+                makeSearchFieldKey = id; 
+                newPub = id; 
+                openCustomCitePrefPane = id; 
+                quickSearchAddField = id; 
+                searchFieldAction = id; 
+                searchFieldChangeKey = id; 
+                splitViewDoubleClick = id; 
+                toggleShowingCustomCiteDrawer = id; 
+            }; 
+            CLASS = BibDocument; 
+            LANGUAGE = ObjC; 
+            OUTLETS = {
+                addFieldPrompt = NSTextField; 
+                addFieldSheet = NSWindow; 
+                addFieldTextField = NSTextField; 
+                bibListViews = NSWindow; 
+                ccTableView = BDSKCustomCiteTableView; 
+                contextualMenu = NSMenu; 
+                ctxCopyBibTex = NSMenuItem; 
+                ctxCopyPDF = NSMenuItem; 
+                ctxCopyTex = NSMenuItem; 
+                customCiteDrawer = NSDrawer; 
+                documentWindow = NSWindow; 
+                infoLine = NSTextField; 
+                openCustomCitePrefsButton = NSButton; 
+                previewField = NSTextView; 
+                quickSearchButton = NSPopUpButton; 
+                quickSearchClearButton = NSButton; 
+                rssExportAccessoryView = NSView; 
+                rssExportForm = NSForm; 
+                rssExportTextField = NSTextField; 
+                searchField = id; 
+                searchFieldBox = NSBox; 
+                searchFieldTextField = NSTextField; 
+                splitView = OASplitView; 
+                tableView = BDSKDragTableView; 
+            }; 
+            SUPERCLASS = NSDocument; 
+        }, 
+        {CLASS = MyTextField; LANGUAGE = ObjC; SUPERCLASS = NSTextField; }, 
+        {CLASS = OASplitView; LANGUAGE = ObjC; SUPERCLASS = NSSplitView; }
+    ); 
+    IBVersion = 1; 
+}
