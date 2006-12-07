@@ -1,0 +1,27 @@
+{
+    IBClasses = (
+        {CLASS = FirstResponder; LANGUAGE = ObjC; SUPERCLASS = NSObject; }, 
+        {CLASS = NSObject; LANGUAGE = ObjC; }, 
+        {CLASS = NSView; LANGUAGE = ObjC; SUPERCLASS = NSResponder; }, 
+        {
+            CLASS = OAInspector; 
+            LANGUAGE = ObjC; 
+            OUTLETS = {
+                currentInspectableController = id; 
+                inspectorWindow = id; 
+                multiInspectorBox = id; 
+                noInspectorBox = id; 
+                stackView = id; 
+            }; 
+            SUPERCLASS = OBObject; 
+        }, 
+        {
+            CLASS = OAStackView; 
+            LANGUAGE = ObjC; 
+            OUTLETS = {dataSource = id; }; 
+            SUPERCLASS = NSView; 
+        }, 
+        {CLASS = OBObject; LANGUAGE = ObjC; SUPERCLASS = NSObject; }
+    ); 
+    IBVersion = 1; 
+}

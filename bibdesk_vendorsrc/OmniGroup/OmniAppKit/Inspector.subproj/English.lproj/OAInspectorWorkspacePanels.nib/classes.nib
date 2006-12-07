@@ -1,0 +1,25 @@
+{
+    IBClasses = (
+        {CLASS = FirstResponder; LANGUAGE = ObjC; SUPERCLASS = NSObject; }, 
+        {
+            ACTIONS = {
+                cancelWorkspacePanel = id; 
+                deleteWorkspace = id; 
+                editWorkspace = id; 
+                saveWorkspace = id; 
+                saveWorkspaceConfirmed = id; 
+                switchToDefault = id; 
+                switchToWorkspace = id; 
+            }; 
+            CLASS = OAInspectorRegistry; 
+            LANGUAGE = ObjC; 
+            OUTLETS = {
+                deleteWorkspaceButton = NSButton; 
+                editWorkspaceTable = NSTableView; 
+                newWorkspaceTextField = NSTextField; 
+            }; 
+            SUPERCLASS = NSObject; 
+        }
+    ); 
+    IBVersion = 1; 
+}

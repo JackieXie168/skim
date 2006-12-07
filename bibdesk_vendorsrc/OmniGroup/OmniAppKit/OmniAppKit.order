@@ -1,0 +1,283 @@
+NSAppleEventDescriptor-OAExtensions.o:___rcs_id_hack
+NSAppleScript-OAExtensions.o:___rcs_id_hack
+NSApplication-OAExtensions.o:___rcs_id_hack
+NSAttributedString-OAExtensions.o:___rcs_id_hack
+NSBezierPath-OAExtensions.o:___rcs_id_hack
+NSBrowser-OAExtensions.o:___rcs_id_hack
+NSBundle-OAExtensions.o:___rcs_id_hack
+NSCell-OAExtensions.o:___rcs_id_hack
+NSColor-ColorSyncExtensions.o:___rcs_id_hack
+NSColor-OAExtensions.o:___rcs_id_hack
+NSControl-OAExtensions.o:___rcs_id_hack
+NSData-CGDataProvider.o:___rcs_id_hack
+NSDocument-OAExtensions.o:___rcs_id_hack
+NSDocumentController-OAExtensions.o:___rcs_id_hack
+NSFileManager-OAExtensions.o:___rcs_id_hack
+NSFont-OAExtensions.o:___rcs_id_hack
+NSFontManager-OAExtensions.o:___rcs_id_hack
+NSImage-ColorSyncExtensions.o:___rcs_id_hack
+NSImage-OAExtensions.o:___rcs_id_hack
+NSMenu-OAExtensions.o:___rcs_id_hack
+NSOutlineView-OAExtensions.o:___rcs_id_hack
+NSPasteboard-OAExtensions.o:___rcs_id_hack
+NSPopUpButton-OAExtensions.o:___rcs_id_hack
+NSScrollView-OAExtensions.o:___rcs_id_hack
+NSSliderCell-OAExtensions.o:___rcs_id_hack
+NSSplitView-OAExtensions.o:___rcs_id_hack
+NSString-OAExtensions.o:___rcs_id_hack
+NSTableView-OAColumnConfigurationExtensions.o:___rcs_id_hack
+NSTableView-OAExtensions.o:___rcs_id_hack
+NSText-OAExtensions.o:___rcs_id_hack
+NSTextField-OAExtensions.o:___rcs_id_hack
+NSTextStorage-OAExtensions.o:___rcs_id_hack
+NSToolbar-OAExtensions.o:___rcs_id_hack
+NSToolbarItem-OAExtensions.o:___rcs_id_hack
+NSUserDefaults-OAExtensions.o:___rcs_id_hack
+NSView-OAExtensions.o:___rcs_id_hack
+NSWindow-OAExtensions.o:___rcs_id_hack
+NSWorkspace-OAExtensions.o:___rcs_id_hack
+OAAppKitQueueProcessor.o:___rcs_id_hack
+OAApplication.o:___rcs_id_hack
+OAAquaButton.o:___rcs_id_hack
+OABackgroundImageControl.o:___rcs_id_hack
+OABrowserCell.o:___rcs_id_hack
+OACalendarView.o:___rcs_id_hack
+OAChasingArrowsProgressIndicator.o:___rcs_id_hack
+OAColorInspector.o:___rcs_id_hack
+OAColorPalette.o:___rcs_id_hack
+OAColorProfile.o:___rcs_id_hack
+OACompositeColorProfile.o:___rcs_id_hack
+OAConfigurableColumnTableView.o:___rcs_id_hack
+OAContextButton.o:___rcs_id_hack
+OADockStatusItem.o:___rcs_id_hack
+OADocument.o:___rcs_id_hack
+OADocumentPositioningView.o:___rcs_id_hack
+OADottedLine.o:___rcs_id_hack
+OADragController.o:___rcs_id_hack
+OADynamicInspectorMenuItem.o:___rcs_id_hack
+OAExtendedOutlineView.o:___rcs_id_hack
+OAExtendedTableView.o:___rcs_id_hack
+OAFileWell.o:___rcs_id_hack
+OAFindController.o:___rcs_id_hack
+OAFindPattern.o:___rcs_id_hack
+OAFontCache.o:___rcs_id_hack
+OAFontInspector.o:___rcs_id_hack
+OAFontView.o:___rcs_id_hack
+OAGridView.o:___rcs_id_hack
+OAHierarchicalPopUpController.o:___rcs_id_hack
+OAInspectionSet.o:___rcs_id_hack
+OAInspectorController.o:___rcs_id_hack
+OAInspectorGroup.o:___rcs_id_hack
+OAInspectorGroupAnimatedMergeController.o:___rcs_id_hack
+OAInspectorGroupAnimatedMergeView.o:___rcs_id_hack
+OAInspectorHeaderView.o:___rcs_id_hack
+OAInspectorRegistry.o:___rcs_id_hack
+OAInspectorResizer.o:___rcs_id_hack
+OAInspectorResizerAvoidingScrollView.o:___rcs_id_hack
+OAInspectorWindow.o:___rcs_id_hack
+OAInternetConfig.o:___rcs_id_hack
+OAMouseTipView.o:___rcs_id_hack
+OAMouseTipWindow.o:___rcs_id_hack
+OAMultiColumnListView.o:___rcs_id_hack
+OAOSAScript.o:___rcs_id_hack
+OAOutlineViewEnumerator.o:___rcs_id_hack
+OAPasteboardHelper.o:___rcs_id_hack
+OAPopUpButton.o:___rcs_id_hack
+OAPreferenceClient.o:___rcs_id_hack
+OAPreferenceClientRecord.o:___rcs_id_hack
+OAPreferenceController.o:___rcs_id_hack
+OAPreferencesIconView.o:___rcs_id_hack
+OAPreferencesToolbar.o:___rcs_id_hack
+OAPreferencesWindow.o:___rcs_id_hack
+OARegExFindPattern.o:___rcs_id_hack
+OAResizingByteFormatter.o:___rcs_id_hack
+OAScriptMenuItem.o:___rcs_id_hack
+OAScriptToolbarHelper.o:___rcs_id_hack
+OAScrollView.o:___rcs_id_hack
+OASearchField.o:___rcs_id_hack
+OASheetRequest.o:___rcs_id_hack
+OAShrinkingTextDisplayer.o:___rcs_id_hack
+OAShrinkyTextField.o:___rcs_id_hack
+OASplitView.o:___rcs_id_hack
+OAStackView.o:___rcs_id_hack
+OASwitcherBarButtonCell.o:___rcs_id_hack
+OASwitcherBarMatrix.o:___rcs_id_hack
+OASwoopView.o:___rcs_id_hack
+OATabView.o:___rcs_id_hack
+OATabViewController.o:___rcs_id_hack
+OATabbedWindowController.o:___rcs_id_hack
+OATextField.o:___rcs_id_hack
+OATextWithIconCell.o:___rcs_id_hack
+OAThumbnailView.o:___rcs_id_hack
+OAToolbarImageView.o:___rcs_id_hack
+OAToolbarItem.o:___rcs_id_hack
+OAToolbarWindowController.o:___rcs_id_hack
+OATypeAheadSelectionHelper.o:___rcs_id_hack
+OAWindowCascade.o:___rcs_id_hack
+NSView-OAExtensions.o:-[NSView(OAExtensions) debugDictionary]
+OAFontView.o:-[OAFontView debugDictionary]
+OAInspectionSet.o:-[OAInspectionSet debugDictionary]
+OAInspectorController.o:-[OAInspectorController debugDictionary]
+OAInspectorGroup.o:-[OAInspectorGroup debugDictionary]
+OAOutlineViewEnumerator.o:-[OAOutlineViewEnumerator debugDictionary]
+OAPasteboardHelper.o:-[OAPasteboardHelper debugDictionary]
+OAPreferenceClientRecord.o:-[OAPreferenceClientRecord debugDictionary]
+NSView-OAExtensions.o:-[NSView(OAExtensions) shortDescription]
+NSColor-ColorSyncExtensions.o:+[NSColor(ColorSyncExtensions) performPosing]
+NSWindow-OAExtensions.o:+[NSWindow(OAExtensions) performPosing]
+NSAttributedString-OAExtensions.o:+[NSAttributedString(OAExtensions) didLoad]
+NSDocumentController-OAExtensions.o:+[NSDocumentController(OAExtensions) didLoad]
+NSTableView-OAColumnConfigurationExtensions.o:+[NSOutlineView(OAColumnConfigurationExtensions) didLoad]
+NSTableView-OAColumnConfigurationExtensions.o:+[NSTableView(OAColumnConfigurationExtensions) didLoad]
+NSTableView-OAExtensions.o:+[NSTableView(OAExtensions) didLoad]
+NSTextStorage-OAExtensions.o:+[NSTextStorage(OAExtensions) didLoad]
+OAAquaButton.o:+[OAAquaButton didLoad]
+OAInspectorRegistry.o:+[OAInspectorRegistry didLoad]
+OAColorPalette.o:+[OAColorPalette initialize]
+OAColorPalette.o:+[OAColorPalette stringForColor:gamma:]
+OAColorPalette.o:+[OAColorPalette stringForColor:]
+NSUserDefaults-OAExtensions.o:-[NSUserDefaults(OAExtensions) colorForKey:]
+OAAquaButton.o:_OACurrentControlTint
+OAColorInspector.o:-[OAColorInspector init]
+OAColorInspector.o:-[OAColorInspector inspectorName]
+OAColorInspector.o:-[OAColorInspector setInspectorController:]
+OAColorInspector.o:-[OAColorInspector defaultDisplayGroupNumber]
+OAColorInspector.o:-[OAColorInspector defaultDisplayOrderInGroup]
+OAColorInspector.o:-[OAColorInspector keyEquivalent]
+OAColorInspector.o:-[OAColorInspector keyEquivalentModifierMask]
+OAColorInspector.o:-[OAColorInspector imageName]
+OAFontInspector.o:-[OAFontInspector inspectorName]
+OAFontInspector.o:-[OAFontInspector setInspectorController:]
+OAFontInspector.o:-[OAFontInspector defaultDisplayGroupNumber]
+OAFontInspector.o:-[OAFontInspector defaultDisplayOrderInGroup]
+OAFontInspector.o:-[OAFontInspector keyEquivalent]
+OAFontInspector.o:-[OAFontInspector keyEquivalentModifierMask]
+OAFontInspector.o:-[OAFontInspector imageName]
+OADynamicInspectorMenuItem.o:-[OADynamicInspectorMenuItem awakeFromNib]
+OAInspectorController.o:+[OAInspectorController initialize]
+OAInspectorController.o:-[OAInspectorController initWithInspector:]
+OAInspectorController.o:-[OAInspectorController setGroup:]
+OAInspectorController.o:-[OAInspectorController inspector]
+OAInspectorController.o:-[OAInspectorController window]
+OAInspectorController.o:-[OAInspectorController identifier]
+OAInspectorController.o:-[OAInspectorController menuItem]
+OAInspectorController.o:-[OAInspectorController setBottommostInGroup:]
+OAInspectorGroup.o:+[OAInspectorGroup initialize]
+OAInspectorGroup.o:+[OAInspectorGroup restoreInspectorGroupsWithInspectors:]
+OAInspectorGroup.o:+[OAInspectorGroup setDynamicMenuPlaceholder:]
+OAInspectorGroup.o:-[OAInspectorGroup init]
+OAInspectorGroup.o:-[OAInspectorGroup addInspector:]
+OAInspectorGroup.o:-[OAInspectorGroup groupFrame]
+OAInspectorGroup.o:-[OAInspectorGroup(Private) _hideGroup]
+OAInspectorGroup.o:-[OAInspectorGroup(Private) restoreFromIdentifier:withInspectors:]
+OAInspectorGroup.o:-[OAInspectorGroup(Private) setInitialBottommostInspector]
+OAInspectorGroup.o:_sortByGroupAndDisplayOrder
+OAInspectorGroup.o:+[OAInspectorGroup(Private) updateMenuForControllers:]
+OAInspectorRegistry.o:+[OAInspectorRegistry initialize]
+OAInspectorRegistry.o:+[OAInspectorRegistry controllerStartRunning:]
+OAInspectorRegistry.o:+[OAInspectorRegistry registerInspector:]
+OAInspectorRegistry.o:-[OAInspectorRegistry init]
+OAInspectorRegistry.o:-[OAInspectorRegistry workspaceDefaults]
+OAInspectorRegistry.o:-[OAInspectorRegistry resetPanelsItem]
+OAInspectorRegistry.o:-[OAInspectorRegistry(Private) _registerForNotifications]
+OAAppKitQueueProcessor.o:+[OFRunLoopQueueProcessor(OFAppkitQueueProcessor) mainThreadRunLoopModes]
+OAAppKitQueueProcessor.o:+[OFRunLoopQueueProcessor(OFAppkitQueueProcessor) mainThreadRunLoopProcessorClass]
+OAFindController.o:-[OAFindController init]
+OAFindController.o:-[OAFindController(Private) loadInterface]
+OAFindController.o:-[OAFindController findTypeChanged:]
+OABackgroundImageControl.o:-[OABackgroundImageControl setFrameSize:]
+OABackgroundImageControl.o:-[OABackgroundImageControl rebuildBackgroundImage]
+OASearchField.o:+[OASearchField initialize]
+OASearchField.o:+[OASearchField cellClass]
+OASearchField.o:-[OASearchField initWithFrame:]
+OAAppKitQueueProcessor.o:-[OAAppKitQueueProcessor shouldProcessQueueEnd]
+OAInspectorRegistry.o:+[OAInspectorRegistry sharedInspector]
+OAInspectorRegistry.o:+[OAInspectorRegistry updateInspector]
+OAInspectorRegistry.o:-[OAInspectorRegistry(Private) _updateInspector]
+OAInspectorRegistry.o:-[OAInspectorRegistry(Private) _inspectMainWindow]
+OAInspectorRegistry.o:-[OAInspectorRegistry(Private) _inspectWindow:]
+OAInspectorRegistry.o:-[OAInspectorRegistry(Private) _mergeInspectedObjectsFromPotentialController:seenControllers:]
+OAInspectorRegistry.o:-[OAInspectorRegistry(Private) _mergeInspectedObjectsFromResponder:seenControllers:]
+OAInspectorRegistry.o:-[OAInspectorRegistry(Private) _getInspectedObjects]
+OAInspectorRegistry.o:-[OAInspectorRegistry(Private) _recalculateInspectorsAndInspectWindow]
+OAInspectorRegistry.o:-[OAInspectorRegistry(Private) _selectionMightHaveChangedNotification:]
+OAInspectorRegistry.o:-[OAInspectorRegistry(Private) _inspectWindowNotification:]
+OAInspectorRegistry.o:-[OAInspectorRegistry(Private) _uninspectWindowNotification:]
+OAInspectorRegistry.o:-[OAInspectorRegistry(Private) _applicationWillResignActive:]
+OAApplication.o:+[OAApplication setupOmniApplication]
+OAApplication.o:+[OAApplication sharedApplication]
+OAApplication.o:-[OAApplication finishLaunching]
+OAApplication.o:-[OAApplication run]
+OAApplication.o:+[OAApplication controllerStartedRunning:]
+OAApplication.o:+[OAApplication(Private) _setupDynamicMenus:]
+OAApplication.o:+[OAApplication(Private) _makeDynamicItemGroupInMenu:forRangeOfItems:]
+OAApplication.o:+[OAApplication(Private) _activateFontsFromAppWrapper]
+OAScriptToolbarHelper.o:-[OAScriptToolbarHelper itemIdentifierExtension]
+OAScriptMenuItem.o:+[OAScriptMenuItem initialize]
+OAScriptMenuItem.o:-[OAScriptMenuItem _setup]
+OAScriptMenuItem.o:-[OAScriptMenuItem initWithCoder:]
+OAScriptMenuItem.o:-[OAScriptMenuItem dealloc]
+OAScriptMenuItem.o:-[OAScriptMenuItem scriptPaths]
+OAScriptMenuItem.o:_scriptSort
+OAScriptMenuItem.o:-[OAScriptMenuItem scripts]
+OAScriptMenuItem.o:-[OAScriptMenuItem submenu]
+OAToolbarWindowController.o:+[OAToolbarWindowController initialize]
+OAToolbarWindowController.o:+[OAToolbarWindowController registerToolbarHelper:]
+OAToolbarWindowController.o:-[OAToolbarWindowController dealloc]
+OAToolbarWindowController.o:-[OAToolbarWindowController windowDidLoad]
+OAToolbarWindowController.o:-[OAToolbarWindowController toolbar:itemForItemIdentifier:willBeInsertedIntoToolbar:]
+OAToolbarWindowController.o:-[OAToolbarWindowController toolbarWillAddItem:]
+OAToolbarWindowController.o:+[OAToolbarWindowController(Private) _loadToolbarNamed:]
+OAToolbarItem.o:-[OAToolbarItem initWithItemIdentifier:]
+OAToolbarItem.o:-[OAToolbarItem dealloc]
+OAPreferenceClientRecord.o:-[OAPreferenceClientRecord initWithCategoryName:]
+OAPreferenceClientRecord.o:-[OAPreferenceClientRecord ordering]
+OAPreferenceClientRecord.o:-[OAPreferenceClientRecord setIdentifier:]
+OAPreferenceClientRecord.o:-[OAPreferenceClientRecord setClassName:]
+OAPreferenceClientRecord.o:-[OAPreferenceClientRecord setTitle:]
+OAPreferenceClientRecord.o:-[OAPreferenceClientRecord setShortTitle:]
+OAPreferenceClientRecord.o:-[OAPreferenceClientRecord setIconName:]
+OAPreferenceClientRecord.o:-[OAPreferenceClientRecord setNibName:]
+OAPreferenceClientRecord.o:-[OAPreferenceClientRecord setHelpURL:]
+OAPreferenceClientRecord.o:-[OAPreferenceClientRecord setOrdering:]
+OAPreferenceClientRecord.o:-[OAPreferenceClientRecord setDefaultsDictionary:]
+OAPreferenceClientRecord.o:-[OAPreferenceClientRecord setDefaultsArray:]
+OAPreferenceClientRecord.o:-[OAPreferenceClientRecord compareOrdering:]
+OAPreferenceController.o:+[OAPreferenceController registerItemName:bundle:description:]
+OAPreferenceController.o:+[OAPreferenceController sharedPreferenceController]
+OAPreferenceController.o:-[OAPreferenceController init]
+OAPreferenceController.o:-[OAPreferenceController(Private) _defaultsDidChange:]
+OAPreferenceController.o:-[OAPreferenceController(Private) _modifierFlagsChanged:]
+OAPreferenceController.o:-[OAPreferenceController(Private) _registerCategoryName:localizedName:priorityNumber:]
+OAPreferenceController.o:-[OAPreferenceController(Private) _registerClassName:inCategoryNamed:description:]
+OAApplication.o:-[OAApplication sendEvent:]
+OAApplication.o:-[OAApplication validateMenuItem:]
+OAApplication.o:-[OAApplication(Private) processMouseButtonsChangedEvent:]
+NSColor-ColorSyncExtensions.o:-[NSColor(ColorSyncExtensions) _setPattern]
+NSColor-ColorSyncExtensions.o:-[NSColor(ColorSyncExtensions) _setCalibratedRGB]
+NSColor-ColorSyncExtensions.o:-[NSColor(ColorSyncExtensions) _setCalibratedGray]
+NSColor-ColorSyncExtensions.o:-[NSColor(ColorSyncExtensions) _setDeviceRGB]
+OAColorProfile.o:+[OAColorProfile currentProfile]
+NSBezierPath-OAExtensions.o:-[NSBezierPath(OAExtensions) appendBezierPathWithRoundedRectangle:withRadius:]
+NSBundle-OAExtensions.o:-[NSBundle(OAExtensions) loadNibNamed:owner:]
+NSFont-OAExtensions.o:-[NSFont(OAExtensions) isScreenFont]
+NSFontManager-OAExtensions.o:-[NSFontManager(OAExtensions) closestFontWithFamily:traits:weight:size:]
+NSImage-OAExtensions.o:+[NSImage(OAExtensions) imageNamed:inBundleForClass:]
+NSImage-OAExtensions.o:+[NSImage(OAExtensions) imageNamed:inBundle:]
+NSImage-OAExtensions.o:-[NSImage(OAExtensions) drawFlippedInRect:fromRect:operation:fraction:]
+NSImage-OAExtensions.o:-[NSImage(OAExtensions) drawFlippedInRect:operation:fraction:]
+NSImage-OAExtensions.o:-[NSImage(OAExtensions) drawFlippedInRect:operation:]
+NSTableView-OAColumnConfigurationExtensions.o:-[NSTableView(OAColumnConfigurationExtensions) _replacementTableColumnWithIdentifier:]
+NSTableView-OAColumnConfigurationExtensions.o:-[NSTableView(OAColumnConfigurationDelegateDataSourceCoverMethods) _columnConfigurationEnabled]
+NSTableView-OAColumnConfigurationExtensions.o:-[NSTableView(OAColumnConfigurationExtensions) _replacementSetDataSource:]
+NSTableView-OAColumnConfigurationExtensions.o:-[NSTableView(OAColumnConfigurationExtensions) _replacementReloadData]
+NSTableView-OAExtensions.o:-[NSTableView(OAExtensionsPrivate) _buildTooltips]
+NSTableView-OAExtensions.o:-[NSTableView(OATableDelegateDataSourceCoverMethods) _dataSourceHandlesToolTips]
+NSView-OAExtensions.o:+[NSView(OAExtensions) performDeferredScrolling]
+NSWindow-OAExtensions.o:-[NSWindow(OAExtensions) replacement_makeKeyAndOrderFront:]
+OASearchField.o:-[OASearchField(Private) _textRectForBounds:]
+OASearchField.o:-[OASearchField(Private) _middleImageRectForBounds:]
+OASearchField.o:-[OASearchField(Private) _closeBoxVisible]
+OASearchField.o:-[OASearchField(Private) _showSearchModeString]
+OAToolbarItem.o:-[OAToolbarItem validate]
+OAToolbarItem.o:-[OAToolbarItem(NotificationsDelegatesDatasources) modifierFlagsChanged:]

@@ -1,0 +1,620 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 38;
+	objects = {
+		00E51C1BFE8AAE2511C9CC38 = {
+			buildStyles = (
+				07F45147FEDD7C5311CB188F,
+				07F45148FEDD7C5311CB188F,
+				34A1593B0563FE300097A113,
+			);
+			hasScannedForEncodings = 1;
+			isa = PBXProject;
+			mainGroup = 00E51C1CFE8AAE2511C9CC38;
+			projectDirPath = "";
+			targets = (
+				00E51C3FFE8AAE2511C9CC38,
+			);
+		};
+		00E51C1CFE8AAE2511C9CC38 = {
+			children = (
+				00E51C3AFE8AAE2511C9CC38,
+				00E51C1DFE8AAE2511C9CC38,
+				00E51C3BFE8AAE2511C9CC38,
+				00E51C3DFE8AAE2511C9CC38,
+				019D0532FEB295A7C697A14E,
+			);
+			isa = PBXGroup;
+			name = OmniBase;
+			refType = 4;
+		};
+		00E51C1DFE8AAE2511C9CC38 = {
+			children = (
+				34A159450564081F0097A113,
+				00E51C2CFE8AAE2511C9CC38,
+				00E51C24FE8AAE2511C9CC38,
+				00E51C27FE8AAE2511C9CC38,
+				00E51C1EFE8AAE2511C9CC38,
+				07AA829000D177F4C697A14A,
+				07AA829100D177F4C697A14A,
+				00E51C28FE8AAE2511C9CC38,
+				00E51C1FFE8AAE2511C9CC38,
+				00E51C29FE8AAE2511C9CC38,
+				00E51C20FE8AAE2511C9CC38,
+				00E51C2AFE8AAE2511C9CC38,
+				00E51C21FE8AAE2511C9CC38,
+				00E51C2BFE8AAE2511C9CC38,
+				00E51C32FE8AAE2511C9CC38,
+				00E51C2FFE8AAE2511C9CC38,
+				00E51C23FE8AAE2511C9CC38,
+				00E51C31FE8AAE2511C9CC38,
+				00E51C25FE8AAE2511C9CC38,
+				00E51C26FE8AAE2511C9CC38,
+				00E51C2DFE8AAE2511C9CC38,
+				00E51C2EFE8AAE2511C9CC38,
+			);
+			isa = PBXGroup;
+			name = Source;
+			refType = 4;
+		};
+		00E51C1EFE8AAE2511C9CC38 = {
+			fileEncoding = 4;
+			isa = PBXFileReference;
+			path = "NSData-OBObjectCompatibility.m";
+			refType = 4;
+		};
+		00E51C1FFE8AAE2511C9CC38 = {
+			fileEncoding = 4;
+			isa = PBXFileReference;
+			path = "NSObject-OBObjectCompatibility.m";
+			refType = 4;
+		};
+		00E51C20FE8AAE2511C9CC38 = {
+			fileEncoding = 4;
+			isa = PBXFileReference;
+			path = OBObject.m;
+			refType = 4;
+		};
+		00E51C21FE8AAE2511C9CC38 = {
+			fileEncoding = 4;
+			isa = PBXFileReference;
+			path = OBPostLoader.m;
+			refType = 4;
+		};
+		00E51C23FE8AAE2511C9CC38 = {
+			fileEncoding = 4;
+			isa = PBXFileReference;
+			path = assertions.h;
+			refType = 4;
+		};
+		00E51C24FE8AAE2511C9CC38 = {
+			fileEncoding = 4;
+			isa = PBXFileReference;
+			path = FrameworkDefines.h;
+			refType = 4;
+		};
+		00E51C25FE8AAE2511C9CC38 = {
+			fileEncoding = 4;
+			isa = PBXFileReference;
+			path = macros.h;
+			refType = 4;
+		};
+		00E51C26FE8AAE2511C9CC38 = {
+			fileEncoding = 4;
+			isa = PBXFileReference;
+			path = mallocmap.h;
+			refType = 4;
+		};
+		00E51C27FE8AAE2511C9CC38 = {
+			fileEncoding = 4;
+			isa = PBXFileReference;
+			path = "NSData-OBObjectCompatibility.h";
+			refType = 4;
+		};
+		00E51C28FE8AAE2511C9CC38 = {
+			fileEncoding = 4;
+			isa = PBXFileReference;
+			path = "NSObject-OBObjectCompatibility.h";
+			refType = 4;
+		};
+		00E51C29FE8AAE2511C9CC38 = {
+			fileEncoding = 4;
+			isa = PBXFileReference;
+			path = OBObject.h;
+			refType = 4;
+		};
+		00E51C2AFE8AAE2511C9CC38 = {
+			fileEncoding = 4;
+			isa = PBXFileReference;
+			path = OBPostLoader.h;
+			refType = 4;
+		};
+		00E51C2BFE8AAE2511C9CC38 = {
+			fileEncoding = 4;
+			isa = PBXFileReference;
+			path = OBUtilities.h;
+			refType = 4;
+		};
+		00E51C2CFE8AAE2511C9CC38 = {
+			fileEncoding = 4;
+			isa = PBXFileReference;
+			path = OmniBase.h;
+			refType = 4;
+		};
+		00E51C2DFE8AAE2511C9CC38 = {
+			fileEncoding = 4;
+			isa = PBXFileReference;
+			path = rcsid.h;
+			refType = 4;
+		};
+		00E51C2EFE8AAE2511C9CC38 = {
+			fileEncoding = 4;
+			isa = PBXFileReference;
+			path = system.h;
+			refType = 4;
+		};
+		00E51C2FFE8AAE2511C9CC38 = {
+			fileEncoding = 4;
+			isa = PBXFileReference;
+			path = SystemType.h;
+			refType = 4;
+		};
+		00E51C31FE8AAE2511C9CC38 = {
+			fileEncoding = 4;
+			isa = PBXFileReference;
+			path = assertions.m;
+			refType = 4;
+		};
+		00E51C32FE8AAE2511C9CC38 = {
+			fileEncoding = 4;
+			isa = PBXFileReference;
+			path = OBUtilities.m;
+			refType = 4;
+		};
+		00E51C3AFE8AAE2511C9CC38 = {
+			fileEncoding = 4;
+			isa = PBXFileReference;
+			path = OmniSourceLicense.html;
+			refType = 4;
+		};
+		00E51C3BFE8AAE2511C9CC38 = {
+			children = (
+				00E51C3CFE8AAE2511C9CC38,
+			);
+			isa = PBXGroup;
+			name = "Product Frameworks and Libraries";
+			refType = 4;
+		};
+		00E51C3CFE8AAE2511C9CC38 = {
+			isa = PBXFrameworkReference;
+			path = OmniBase.framework;
+			refType = 3;
+		};
+		00E51C3DFE8AAE2511C9CC38 = {
+			children = (
+				00E51C3EFE8AAE2511C9CC38,
+			);
+			isa = PBXGroup;
+			name = "External Frameworks and Libraries";
+			refType = 4;
+		};
+		00E51C3EFE8AAE2511C9CC38 = {
+			isa = PBXFrameworkReference;
+			name = Foundation.framework;
+			path = /System/Library/Frameworks/Foundation.framework;
+			refType = 0;
+		};
+		00E51C3FFE8AAE2511C9CC38 = {
+			buildPhases = (
+				00E51C40FE8AAE2511C9CC38,
+				00E51C4EFE8AAE2511C9CC38,
+				00E51C4FFE8AAE2511C9CC38,
+				00E51C56FE8AAE2511C9CC38,
+				00E51C58FE8AAE2511C9CC38,
+			);
+			buildSettings = {
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				FRAMEWORK_SEARCH_PATHS = "";
+				FRAMEWORK_VERSION = 2001A;
+				GCC_TREAT_WARNINGS_AS_ERRORS = YES;
+				HEADER_SEARCH_PATHS = "";
+				INSTALL_PATH = "$(OMNI_INSTALLED_PRODUCTS)";
+				LIBRARY_SEARCH_PATHS = "";
+				OMNI_PREBIND_FLAGS = "-Wl,-prebind,-image_base,0x30000000";
+				OPTIMIZATION_CFLAGS = "-O2";
+				OTHER_CFLAGS = "";
+				OTHER_LDFLAGS = "";
+				OTHER_LIBTOOL_FLAGS = "";
+				OTHER_REZFLAGS = "";
+				PREBINDING = NO;
+				PRINCIPAL_CLASS = "";
+				PRODUCT_NAME = OmniBase;
+				SECTORDER_FLAGS = "-sectorder __TEXT __text OmniBase.order";
+				WARNING_CFLAGS = "-Wall -Werror -Wno-#warnings";
+				WRAPPER_EXTENSION = framework;
+			};
+			dependencies = (
+			);
+			isa = PBXFrameworkTarget;
+			name = "OmniBase (Framework)";
+			productInstallPath = "$(OMNI_INSTALLED_PRODUCTS)";
+			productName = OmniBase;
+			productReference = 0108BF6AFF699ED3C697A10E;
+			productSettingsXML = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>
+<!DOCTYPE plist PUBLIC \"-//Apple Computer//DTD PLIST 1.0//EN\" \"http://www.apple.com/DTDs/PropertyList-1.0.dtd\">
+<plist version=\"1.0\">
+<dict>
+	<key>CFBundleDevelopmentRegion</key>
+	<string>English</string>
+	<key>CFBundleExecutable</key>
+	<string>OmniBase</string>
+	<key>CFBundleGetInfoString</key>
+	<string></string>
+	<key>CFBundleIconFile</key>
+	<string></string>
+	<key>CFBundleIdentifier</key>
+	<string></string>
+	<key>CFBundleInfoDictionaryVersion</key>
+	<string>6.0</string>
+	<key>CFBundleName</key>
+	<string></string>
+	<key>CFBundlePackageType</key>
+	<string>FMWK</string>
+	<key>CFBundleShortVersionString</key>
+	<string></string>
+	<key>CFBundleSignature</key>
+	<string>????</string>
+	<key>CFBundleVersion</key>
+	<string>2001A</string>
+</dict>
+</plist>
+";
+		};
+		00E51C40FE8AAE2511C9CC38 = {
+			buildActionMask = 2147483647;
+			files = (
+				00E51C41FE8AAE2511C9CC38,
+				00E51C42FE8AAE2511C9CC38,
+				00E51C43FE8AAE2511C9CC38,
+				00E51C44FE8AAE2511C9CC38,
+				00E51C45FE8AAE2511C9CC38,
+				07AA829200D177F4C697A14A,
+				00E51C46FE8AAE2511C9CC38,
+				00E51C47FE8AAE2511C9CC38,
+				00E51C48FE8AAE2511C9CC38,
+				00E51C49FE8AAE2511C9CC38,
+				00E51C4AFE8AAE2511C9CC38,
+				00E51C4BFE8AAE2511C9CC38,
+				00E51C4CFE8AAE2511C9CC38,
+				00E51C4DFE8AAE2511C9CC38,
+			);
+			isa = PBXHeadersBuildPhase;
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		00E51C41FE8AAE2511C9CC38 = {
+			fileRef = 00E51C23FE8AAE2511C9CC38;
+			isa = PBXBuildFile;
+			settings = {
+				ATTRIBUTES = (
+					Public,
+				);
+			};
+		};
+		00E51C42FE8AAE2511C9CC38 = {
+			fileRef = 00E51C24FE8AAE2511C9CC38;
+			isa = PBXBuildFile;
+			settings = {
+				ATTRIBUTES = (
+					Public,
+					Project,
+				);
+			};
+		};
+		00E51C43FE8AAE2511C9CC38 = {
+			fileRef = 00E51C25FE8AAE2511C9CC38;
+			isa = PBXBuildFile;
+			settings = {
+				ATTRIBUTES = (
+					Public,
+				);
+			};
+		};
+		00E51C44FE8AAE2511C9CC38 = {
+			fileRef = 00E51C26FE8AAE2511C9CC38;
+			isa = PBXBuildFile;
+			settings = {
+				ATTRIBUTES = (
+					Public,
+				);
+			};
+		};
+		00E51C45FE8AAE2511C9CC38 = {
+			fileRef = 00E51C27FE8AAE2511C9CC38;
+			isa = PBXBuildFile;
+			settings = {
+				ATTRIBUTES = (
+					Public,
+				);
+			};
+		};
+		00E51C46FE8AAE2511C9CC38 = {
+			fileRef = 00E51C28FE8AAE2511C9CC38;
+			isa = PBXBuildFile;
+			settings = {
+				ATTRIBUTES = (
+					Public,
+				);
+			};
+		};
+		00E51C47FE8AAE2511C9CC38 = {
+			fileRef = 00E51C29FE8AAE2511C9CC38;
+			isa = PBXBuildFile;
+			settings = {
+				ATTRIBUTES = (
+					Public,
+				);
+			};
+		};
+		00E51C48FE8AAE2511C9CC38 = {
+			fileRef = 00E51C2AFE8AAE2511C9CC38;
+			isa = PBXBuildFile;
+			settings = {
+				ATTRIBUTES = (
+					Public,
+				);
+			};
+		};
+		00E51C49FE8AAE2511C9CC38 = {
+			fileRef = 00E51C2BFE8AAE2511C9CC38;
+			isa = PBXBuildFile;
+			settings = {
+				ATTRIBUTES = (
+					Public,
+				);
+			};
+		};
+		00E51C4AFE8AAE2511C9CC38 = {
+			fileRef = 00E51C2CFE8AAE2511C9CC38;
+			isa = PBXBuildFile;
+			settings = {
+				ATTRIBUTES = (
+					Public,
+				);
+			};
+		};
+		00E51C4BFE8AAE2511C9CC38 = {
+			fileRef = 00E51C2DFE8AAE2511C9CC38;
+			isa = PBXBuildFile;
+			settings = {
+				ATTRIBUTES = (
+					Public,
+				);
+			};
+		};
+		00E51C4CFE8AAE2511C9CC38 = {
+			fileRef = 00E51C2EFE8AAE2511C9CC38;
+			isa = PBXBuildFile;
+			settings = {
+				ATTRIBUTES = (
+					Public,
+				);
+			};
+		};
+		00E51C4DFE8AAE2511C9CC38 = {
+			fileRef = 00E51C2FFE8AAE2511C9CC38;
+			isa = PBXBuildFile;
+			settings = {
+				ATTRIBUTES = (
+					Public,
+				);
+			};
+		};
+		00E51C4EFE8AAE2511C9CC38 = {
+			buildActionMask = 2147483647;
+			files = (
+			);
+			isa = PBXResourcesBuildPhase;
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		00E51C4FFE8AAE2511C9CC38 = {
+			buildActionMask = 2147483647;
+			files = (
+				00E51C50FE8AAE2511C9CC38,
+				00E51C51FE8AAE2511C9CC38,
+				00E51C52FE8AAE2511C9CC38,
+				00E51C53FE8AAE2511C9CC38,
+				00E51C54FE8AAE2511C9CC38,
+				00E51C55FE8AAE2511C9CC38,
+				07AA829300D177F4C697A14A,
+			);
+			isa = PBXSourcesBuildPhase;
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		00E51C50FE8AAE2511C9CC38 = {
+			fileRef = 00E51C1EFE8AAE2511C9CC38;
+			isa = PBXBuildFile;
+			settings = {
+				ATTRIBUTES = (
+				);
+			};
+		};
+		00E51C51FE8AAE2511C9CC38 = {
+			fileRef = 00E51C1FFE8AAE2511C9CC38;
+			isa = PBXBuildFile;
+			settings = {
+				ATTRIBUTES = (
+				);
+			};
+		};
+		00E51C52FE8AAE2511C9CC38 = {
+			fileRef = 00E51C20FE8AAE2511C9CC38;
+			isa = PBXBuildFile;
+			settings = {
+				ATTRIBUTES = (
+				);
+			};
+		};
+		00E51C53FE8AAE2511C9CC38 = {
+			fileRef = 00E51C21FE8AAE2511C9CC38;
+			isa = PBXBuildFile;
+			settings = {
+				ATTRIBUTES = (
+				);
+			};
+		};
+		00E51C54FE8AAE2511C9CC38 = {
+			fileRef = 00E51C31FE8AAE2511C9CC38;
+			isa = PBXBuildFile;
+			settings = {
+				ATTRIBUTES = (
+				);
+			};
+		};
+		00E51C55FE8AAE2511C9CC38 = {
+			fileRef = 00E51C32FE8AAE2511C9CC38;
+			isa = PBXBuildFile;
+			settings = {
+				ATTRIBUTES = (
+				);
+			};
+		};
+		00E51C56FE8AAE2511C9CC38 = {
+			buildActionMask = 2147483647;
+			files = (
+				00E51C57FE8AAE2511C9CC38,
+			);
+			isa = PBXFrameworksBuildPhase;
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		00E51C57FE8AAE2511C9CC38 = {
+			fileRef = 00E51C3EFE8AAE2511C9CC38;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		00E51C58FE8AAE2511C9CC38 = {
+			buildActionMask = 2147483647;
+			files = (
+			);
+			isa = PBXRezBuildPhase;
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+//000
+//001
+//002
+//003
+//004
+//010
+//011
+//012
+//013
+//014
+		0108BF6AFF699ED3C697A10E = {
+			isa = PBXFrameworkReference;
+			path = OmniBase.framework;
+			refType = 3;
+		};
+		019D0532FEB295A7C697A14E = {
+			children = (
+				0108BF6AFF699ED3C697A10E,
+			);
+			isa = PBXGroup;
+			name = Products;
+			refType = 4;
+		};
+//010
+//011
+//012
+//013
+//014
+//070
+//071
+//072
+//073
+//074
+		07AA829000D177F4C697A14A = {
+			fileEncoding = 4;
+			isa = PBXFileReference;
+			path = "NSException-OBExtensions.h";
+			refType = 4;
+		};
+		07AA829100D177F4C697A14A = {
+			fileEncoding = 4;
+			isa = PBXFileReference;
+			path = "NSException-OBExtensions.m";
+			refType = 4;
+		};
+		07AA829200D177F4C697A14A = {
+			fileRef = 07AA829000D177F4C697A14A;
+			isa = PBXBuildFile;
+			settings = {
+				ATTRIBUTES = (
+					Public,
+				);
+			};
+		};
+		07AA829300D177F4C697A14A = {
+			fileRef = 07AA829100D177F4C697A14A;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		07F45147FEDD7C5311CB188F = {
+			buildRules = (
+			);
+			buildSettings = {
+				COPY_PHASE_STRIP = NO;
+				OPTIMIZATION_CFLAGS = "-O2";
+				OTHER_CFLAGS = "\U0001-DDEBUG -DDEBUG_$(USER)";
+			};
+			isa = PBXBuildStyle;
+			name = Development;
+		};
+		07F45148FEDD7C5311CB188F = {
+			buildRules = (
+			);
+			buildSettings = {
+				COPY_PHASE_STRIP = YES;
+				DYLIB_INSTALLED_NAME_normal = "$(FRAMEWORK_INSTALLED_NAME)";
+				FRAMEWORK_INSTALLED_NAME = "$(OMNI_FRAMEWORK_TARGET_PATH)$(/)$(PRODUCT_NAME).$(WRAPPER_EXTENSION)$(/)Versions$(/)$(FRAMEWORK_VERSION)$(/)$(PRODUCT_NAME)";
+				INSTALL_MODE_FLAG = "a+rX";
+				OMNI_FRAMEWORK_TARGET_PATH = "@executable_path/../Frameworks";
+				OTHER_LDFLAGS = "\U0001$(OMNI_PREBIND_FLAGS)";
+			};
+			isa = PBXBuildStyle;
+			name = Deployment;
+		};
+//070
+//071
+//072
+//073
+//074
+//340
+//341
+//342
+//343
+//344
+		34A1593B0563FE300097A113 = {
+			buildRules = (
+			);
+			buildSettings = {
+				COPY_PHASE_STRIP = NO;
+				OPTIMIZATION_CFLAGS = "\U0001-O0";
+				OTHER_CFLAGS = "\U0001-fprofile-arcs -ftest-coverage";
+			};
+			isa = PBXBuildStyle;
+			name = Coverage;
+		};
+		34A159450564081F0097A113 = {
+			fileEncoding = 4;
+			isa = PBXFileReference;
+			path = OmniBase.order;
+			refType = 4;
+		};
+	};
+	rootObject = 00E51C1BFE8AAE2511C9CC38;
+}
