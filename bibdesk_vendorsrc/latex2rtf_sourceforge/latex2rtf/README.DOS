@@ -1,0 +1,78 @@
+Last updated July 16, 2003, W. Hennings
+
+The Unix and Mac distributions do not contain an executable for DOS / Windows.
+Instead, get the DOS / Windows port as file latex2rtf-x.xx_dos.zip 
+(where x.xx is the version number) from 
+
+     http://sourceforge.net/projects/latex2rtf/
+
+To install latex2rtf, extract all files from the zip archive to C:\l2r
+ or to another folder (i.e. directory) of your choice,
+ preserving the folder structure (winzip: check "use folder names")
+If you extracted them to another folder,
+ edit the files L2R.BAT, L2RSEM.BAT and L2RPREP.BAT and change the pathes 
+ to LATEX2RT.EXE and to the cfg files to the folder where you put them.
+
+The file L2R.BAT or L2RSEM.BAT 
+will call the DJGPP generated executable LATEX2RT.EXE.
+
+Make sure that the folder containing the files 
+ L2R.BAT, L2RSEM.BAT, L2RPREP.BAT and LATEX2PN.BAT
+ is in your search path
+ (e.g. adding to your autoexcec.bat: "PATH=...;...;C:\l2r")
+ or call L2RPREP.BAT once before starting conversions.
+
+If you want to use the option to convert equations to bitmaps (-M 12),
+you must have TeX, ImageMagick and Ghostscript installed.
+This works only on win32 systems (win95, win98, winNT4, win2000, winXP)
+because ImageMagick is available only for win32, not for pure DOS.
+Get the ImageMagick version for Win2000, it will also work under win95 and win98.
+Either the folders where TeX, ImageMagick and Ghostscript are installed
+must be in your search path, or you must edit the file L2RPREP.BAT 
+and specify the folders where TeX, ImageMagick and Ghostscript are installed 
+in the SET commands, e.g.
+...
+rem set folder containing latex2rt.exe and netpbm executables here:
+set l2rpath=C:\l2r
+
+rem set folder containing Ghostscript executables here:
+%l2rpath%\which gswin32c>nul
+if errorlevel 1 SET PATH=C:\Progra~1\gs\gs8.00\bin;C:\Progra~1\gs\gs8.00\lib;%PATH%
+
+rem set folder containing ImageMagick executables here:
+%l2rpath%\which identify>nul
+if errorlevel 1 SET PATH=C:\Progra~1\ImageM~1;%PATH%
+
+rem set folder containing LaTeX and dvips executables here:
+%l2rpath%\which latex>nul
+if errorlevel 1 SET PATH=C:\TEXMF\MIKTEX\BIN;%PATH%
+
+%l2rpath%\which latex2rt>nul
+if errorlevel 1 SET PATH=%l2rpath%;%PATH%
+
+
+Preparing the conversion:
+------------------------
+If the folders where TeX, ImageMagick and Ghostscript are installed
+are not your search path, call L2RPREP.BAT once after opening the command prompt 
+and before starting conversions.
+
+Starting the conversion:
+------------------------
+Best, copy the file(s) to be converted into an empty folder. 
+cd to this folder.
+Start conversion by calling l2r.bat (without -S option)
+or l2rsem.bat (with -S option).
+Whether you must use the -S option depends on the windows system
+in which the resulting rtf file will be opened ("target system").
+In the target system, check 
+"Start - Settings - Control Panel" ("Start - Einstellungen - Systemsteuerung")
+and open "country settings" ("Ländereinstellungen").
+Click the tab "numbers" ("Zahlen"). 
+The last entry in this menu is "list separator" ("Listentrennzeichen").
+This is either a comma or a semicolon.
+If it's a comma (default for English versions of Windows), 
+use l2r.bat or call latex2rt.exe without -S parameter.
+If it's a semicolon (default for German versions of Windows), 
+use l2rsem.bat or call latex2rt.exe with -S parameter.
+Sorry, I don't know what the defaults are for other countries.

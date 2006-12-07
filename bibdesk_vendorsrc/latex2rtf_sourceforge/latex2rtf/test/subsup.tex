@@ -1,0 +1,31 @@
+\documentclass{article}
+
+\begin{document}
+
+%latex2rtf: \begin{comment}
+\makeatletter
+\def\@textsubscript#1{%
+ {\m@th\ensuremath{_{\mbox{\fontsize\sf@size\z@#1}}}}}
+\DeclareRobustCommand*\textsubscript[1]{%
+ \@textsubscript{\selectfont#1}}
+\makeatother
+%latex2rtf: \end{comment}
+
+
+This text is nonsense but only written to make the use
+of \verb#\textsuperscript{-17}# visible.
+Here it comes: 10 to -17 should be 10\textsuperscript{-17}.
+
+And this is what mathmode would display: $10^{-17}$
+
+The same for subscript. \verb#\textsubscript{x}# isn't (yet)
+implemented in standard \LaTeX\ or \LaTeXe, but it is easy to
+add. The definition in the preamble of this document was
+suggested in the newsgroup comp.text.tex and works similar
+as \verb#\textsuperscript{x}# which is fully supported part of \LaTeXe.
+
+Does \verb#\textsubscript{8}# work?
+Here it is: 10 index 8 should be 10\textsubscript{8}.
+
+And the same in mathmode: $10_{8}$
+\end{document}

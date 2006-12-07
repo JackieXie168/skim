@@ -1,0 +1,21 @@
+1.2.3 (v46)
+- Crash reports now contain the machine architecture to help matching stack crawls from universal binaries
+- Attached console logs are now limited to 512 KB to prevent overloading email accounts
+
+
+1.2.2 (v41)
+
+- The framework should now be useable on Mac OS X 10.2 and newer for PowerPC as well as Intel architectures
+- Can now handle applications running as root - Contributed by Ben Rister
+
+
+1.2.1 (v34)
+
+- Universal Binary with support for PowerPC and Intel architectures
+
+
+1.2 (v33)
+
+- Added fields for filling in contact information
+- The console.log file is now included with the report
+- Fixed bug that prevented launching the reporter on Mac OS X 10.2

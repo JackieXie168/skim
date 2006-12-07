@@ -1,0 +1,651 @@
+% -*-latex-*-
+% Document name: /usr/local/lib/tex/bibtex/authordate1.ltx
+% Creator: David Rhead [David_Rhead@vme.nott.ac.uk]
+% Creation Date: Sun 28 Jun 92 19:10:19 BST
+
+\documentstyle[authordate1-4]{report}
+ 
+\raggedright
+ 
+\begin{document}
+ 
+%\input{testadb.ltx}
+\chapter{Introduction}
+ 
+This document shows the effect of referring to some of the examples given
+by \cite{bs-1629}, \cite{bs-5605}, \cite{bs-6371}, \cite{butcher-81} and
+\cite{chicago-82}.
+ 
+\chapter{Examples given in BS 5605}
+ 
+\section{Citations from section 4}
+ 
+%  Standard LaTeX provides \cite but not \shortcite.  
+%
+Johnson \shortcite{johnson-74} describes \dots\\
+In a recent study \cite{johnson-74}, it is described as \dots\\
+%
+Howells \shortcite{howells-66-pop} discussed the subject briefly \dots\\
+%
+In a further article \cite{howells-66-var}, greater attention was
+given \dots\\
+%
+%  BS 5605 uses &, whereas Chicago (page 402) would use "and" here.
+%  Butcher (page 186) accepts either.
+Johnson and Howells \shortcite{johnson-howells} take a different view \dots\\
+%
+This work \cite{johnson-etc} quotes \dots\\
+%
+Elsewhere \cite{anon-67} it is shown \dots\\
+%
+Howells \shortcite[p.\ 29]{howells-66-var} describes \dots\\
+ 
+\section{Another reference from section 5}
+ 
+In \cite{howells-51} \dots\\
+ 
+\section{References from section 6}
+ 
+\dots\ \cite{fletcher-hopkins} \dots\\
+%
+\dots\ \cite{wright-63} \dots\\
+%
+\dots\ \cite{feigl-58} \dots\\
+ 
+\chapter{Examples given in BS 1629}
+ 
+\dots\ \cite{hoel-71-whole} \dots\\
+%
+\dots\ \cite{hoel-71-portion} \dots\\
+%
+\dots\ \cite{singer-whole} \dots\\
+%
+\dots\ \cite{singer-portion-chapter} \dots\\
+%
+\dots\ \cite{singer-portion-volume} \dots\\
+%
+%  BS 5605 says that "if a contribution is separately paginated ... the part
+%  number should be inserted in parentheses".  BibTeX cannot tell whether
+%  a contribution is separately paginated but, if the number field is present
+%  in the bib file, will produce a reference in the required form.
+\dots\ \cite{godfrey-59} \dots\\
+%
+\dots\ \cite{ramsbottom-31} \dots\\
+%
+\dots\ \cite{bs-2570-manual} \dots\\
+%
+\dots\ \cite{bs-2570-techreport} \dots\\
+%
+\dots\ \cite{bs-2570-inbook} \dots\\
+%
+\dots\ \cite{ellis-walton} \dots\\
+%
+\dots\ \cite{hanlon-72} \dots\\
+%
+\dots\ \cite{winget-67} \dots\\
+%
+\dots\ \cite{bry-afflerbach} \dots\\
+%
+\dots\ \cite{ranganathan-51} \dots\\
+%
+\dots\ \cite{mccolvin-nodate} \dots\\
+ 
+\chapter{Examples given in BS 6371}
+ 
+\dots\ measures which the lords were urging on the king
+\cite[fol. 22]{exchequer-34-39}.  Henry seems to have been ineffectual
+according to Traquair \shortcite{traquair-38}.  With the appointment of a
+new receiver of rents \cite[fol. 2]{exchequer-34-39}, \dots\\
+ 
+\dots\ \cite{pym-24} \dots\\
+%
+\dots\ \cite{croft-78} \dots\\
+ 
+\chapter{Examples given by Butcher}
+ 
+\dots\ the synthesis of amino acids \cite[pp.\ 131--8]{darcy-20-amaz}
+amazed \dots\\
+%
+\dots\ the synthesis of amino acids by D'Arcy
+\shortcite[pp.\ 131--8]{darcy-20-amaz} amazed \dots\\
+%
+\dots\ if more than one is included in one text reference,
+one says \shortcite{darcy-20-amaz,darcy-20-again}.\\
+%
+\dots\ \cite{jones-n-h-r} \dots\\
+%
+\dots\ \cite{jones-s-r} \dots\\
+%
+\dots\ \cite{jones-65} \dots\\
+%
+\dots\ \cite{jones-69} \dots\\
+%
+\dots\ \cite{jones-abrams} \dots\\
+%
+\dots\ \cite{jones-a-s} \dots\\
+%
+\dots\ \cite{jones-smith} \dots\\
+%
+\dots\ \cite{bloggs-60} \dots\\
+%
+\dots\ \cite{bloggs-61} \dots\\
+%
+\dots\ \cite{bloggs-jones} \dots\\
+%
+\dots\ \cite{bloggs-s-j} \dots\\
+%
+\dots\ \cite{brown-f-s} \dots\\
+%
+\dots\ \cite{eckstein-zuckerman} \dots\\
+%
+\dots\ \cite{heller-lederis} \dots\\
+%
+\dots\ \cite{wood-61} \dots\\
+ 
+\chapter{Examples given by Chicago}
+ 
+\section{Citations from chapter 15}
+ 
+\dots\ \cite[121--25]{pratt-75} \dots\\
+%
+\dots\ \cite{light-72,light-wong,kingston-76} \dots\\
+%
+\dots\ \cite{kelley-96-spring,kelley-96-autumn,kelley-07} \dots\\
+ 
+\section{References from chapter 16}
+ 
+\dots\ \cite{brunswick-85} \dots\\
+%
+\dots\ \cite{wright-78-book} \dots\\
+%
+\dots\ \cite{wright-78-incollection} \dots\\
+%
+\dots\ \cite{kendeigh-52} \dots\\
+%
+\dots\ \cite{chapman-75} \dots\\
+%
+\dots\ \cite{hershkovitz-62} \dots\\
+%
+\dots\ \cite{ogilvy-65} \dots\\
+%
+\dots\ \cite{mcneill-63} \dots\\
+%
+\dots\ \cite{thomson-71} \dots\\
+%
+\dots\ \cite{gordon-75} \dots\\
+%
+\dots\ \cite{milton-24} \dots\\
+%
+\dots\ \cite{chomsky-73} \dots\\
+%
+\dots\ \cite{chave-64} \dots\\
+%
+\dots\ \cite{smart-76} \dots\\
+%
+\dots\ \cite{jackson-79} \dots\\
+%
+\dots\ \cite{prufer-64} \dots\\
+%
+\dots\ \cite{mann-68} \dots\\
+%
+\dots\ \cite{maguire-76} \dots\\
+%
+\dots\ \cite{downes-74} \dots\\
+%
+\dots\ \cite{hunt-76} \dots\\
+ 
+%\bibliographystyle{authordate1}
+
+%\bibliography{test}
+ 
+\begin{thebibliography}{}
+
+\bibitem[\protect\citename{Anon., }1967]{anon-67}
+Anon. 1967.
+\newblock {\em Title title title title title title title title title title}.
+\newblock Organization organization organization.
+
+\bibitem[\protect\citename{Bloggs, }1960]{bloggs-60}
+Bloggs, A.~J. 1960.
+\newblock Title title title title title title title title title title.
+\newblock {\em Journal journal journal}.
+
+\bibitem[\protect\citename{Bloggs, }1961]{bloggs-61}
+Bloggs, A.~J. 1961.
+\newblock Title title title title title title title title title title.
+\newblock {\em Journal journal journal}.
+
+\bibitem[\protect\citename{Bloggs \& Jones, }1959]{bloggs-jones}
+Bloggs, A.~J., \& Jones, X.~Y. 1959.
+\newblock Title title title title title title title title title title.
+\newblock {\em Journal journal journal}.
+
+\bibitem[\protect\citename{Bloggs {\em et~al.}, }1955]{bloggs-s-j}
+Bloggs, A.~J., Smith, R.~S., \& Jones, X.~Y. 1955.
+\newblock Title title title title title title title title title title.
+\newblock {\em Journal journal journal}.
+
+\bibitem[\protect\citename{Brown {\em et~al.}, }1900]{brown-f-s}
+Brown, H.~W., Forbes, A.~S., \& Smith, S.~D. 1900.
+\newblock Title title title title title title title title title title.
+\newblock {\em Journal journal journal}.
+
+\bibitem[\protect\citename{`Brunswick', }1985]{brunswick-85}
+`Brunswick'. 1985.
+\newblock {\em The piper and the rats: A musical experiment}.
+\newblock Tech. rept. 1984. Rodent Activities Termination Section (RATS), Pest
+  Control Division, Brunswick Public Welfare Department, Hamelin.
+
+\bibitem[\protect\citename{Bry \& Afflerbach, }1968]{bry-afflerbach}
+Bry, I., \& Afflerbach, L. 1968.
+\newblock In search of an organizing principle for behavioural science
+  literature.
+\newblock {\em Community Mental Health}, {\bf 4}(1), 75--84.
+
+\bibitem[\protect\citename{BSI, }1973a]{bs-2570-inbook}
+BSI. 1973a.
+\newblock {\em {BS} 2570: Natural Fibre Twines}. 3rd edn.
+\newblock London: British Standards Institution.
+\newblock {Table}~5.
+
+\bibitem[\protect\citename{BSI, }1973b]{bs-2570-manual}
+BSI. 1973b.
+\newblock {\em Natural Fibre Twines}. 3rd edn.
+\newblock British Standards Institution, London.
+\newblock BS 2570.
+
+\bibitem[\protect\citename{BSI, }1973c]{bs-2570-techreport}
+BSI. 1973c.
+\newblock {\em Natural Fibre Twines}.
+\newblock BS 2570. British Standards Institution, London.
+\newblock 3rd. edn.
+
+\bibitem[\protect\citename{BSI, }1976]{bs-1629}
+BSI. 1976.
+\newblock {\em Bibliographic References}.
+\newblock BS 1629. British Standards Institution.
+
+\bibitem[\protect\citename{BSI, }1978]{bs-5605}
+BSI. 1978.
+\newblock {\em Citing Publications by Bibliographic References}.
+\newblock BS 5606. British Standards Institution.
+
+\bibitem[\protect\citename{BSI, }1983]{bs-6371}
+BSI. 1983.
+\newblock {\em Citation of unpublished documents}.
+\newblock BS 6371. British Standards Institution.
+
+\bibitem[\protect\citename{Butcher, }1981]{butcher-81}
+Butcher, Judith. 1981.
+\newblock {\em Copy-editing}. 2nd edn.
+\newblock Cambridge University Press.
+
+\bibitem[\protect\citename{Chapman, }1975]{chapman-75}
+Chapman, Jefferson. 1975.
+\newblock {\em The {Icehouse Bottom} Site---{40MR23}}.
+\newblock University of Tennessee Department of Anthropology Publication, no.
+  ~23.
+\newblock Knoxville: Univ. of Tennessee Press.
+
+\bibitem[\protect\citename{Chave, }1964]{chave-64}
+Chave, K.~E. 1964.
+\newblock Skeletal durability and preservation.
+\newblock {\em Pages  377--87 of:} Imbrie, J., \& Newel, N. (eds), {\em
+  Approaches to paleoecology}.
+\newblock New York: Wiley.
+
+\bibitem[\protect\citename{`Chicago', }1982]{chicago-82}
+`Chicago'. 1982.
+\newblock {\em The {C}hicago Manual of Style}. 13th edn.
+\newblock University of Chicago Press.
+
+\bibitem[\protect\citename{Chomsky, }1973]{chomsky-73}
+Chomsky, N. 1973.
+\newblock Conditions on Transformations.
+\newblock {\em In:} Anderson, S.~R., \& Kiparsky, P. (eds), {\em A festschrift
+  for {Morris Halle}}.
+\newblock New York: Holt, Rinehart \& Winston.
+
+\bibitem[\protect\citename{Croft, }1978]{croft-78}
+Croft, W.~B. 1978.
+\newblock {\em Organizing and searching large files of document descriptions}.
+\newblock Ph.D. thesis, Cambridge University.
+
+\bibitem[\protect\citename{D'Arcy, }1920a]{darcy-20-amaz}
+D'Arcy, Firstname. 1920a.
+\newblock {\em Title title title title title title title title title title}.
+\newblock Publisher publisher publisher.
+
+\bibitem[\protect\citename{D'Arcy, }1920b]{darcy-20-again}
+D'Arcy, Firstname. 1920b.
+\newblock {\em Title title title title title title title title title title}.
+\newblock Publisher publisher publisher.
+
+\bibitem[\protect\citename{Downes, }1974]{downes-74}
+Downes, W.~J. 1974.
+\newblock {\em Systemic grammar and structural sentence relatedness}.
+\newblock London School of Economics. Mimeo.
+
+\bibitem[\protect\citename{Eckstein \& Zuckermann, }1960]{eckstein-zuckerman}
+Eckstein, P., \& Zuckermann, S. 1960.
+\newblock Morphology of the Reproductive Tract.
+\newblock {\em Pages  43--154 of:} Parkes, A.~S. (ed), {\em Marshall's
+  Physiology of Reproduction},  vol. 1.
+\newblock London: Longman.
+
+\bibitem[\protect\citename{Ellis \& Walton, }1971]{ellis-walton}
+Ellis, B., \& Walton, A.~K. 1971.
+\newblock {\em A Bibliography on Optical Modulators}.
+\newblock Tech. rept. RAE-TR-71009. Royal Aircraft Establishment.
+
+\bibitem[\protect\citename{Exchequer, }1634--1639]{exchequer-34-39}
+Exchequer. 1634--1639.
+\newblock {\em Act books}.
+\newblock Edinburgh, Scottish Record Office, E.4/5.
+
+\bibitem[\protect\citename{Feigl, }1958]{feigl-58}
+Feigl, F. 1958.
+\newblock {\em Spot Tests in Organic Analysis}. 5th edn.
+\newblock Publisher publisher.
+\newblock Chap.~6.
+
+\bibitem[\protect\citename{Fletcher \& Hopkins, }1907]{fletcher-hopkins}
+Fletcher, W.~M., \& Hopkins, F.~G. 1907.
+\newblock Lactic Acid in Amphibian Muscle.
+\newblock {\em J. Physiol.}, {\bf 35}, 247--309.
+
+\bibitem[\protect\citename{Godfrey, }1959]{godfrey-59}
+Godfrey, G.~Bernard. 1959.
+\newblock Joints in Tubular Structures.
+\newblock {\em Struct. Eng.}, {\bf 37}(4), 126--135.
+
+\bibitem[\protect\citename{Gordon, }1975]{gordon-75}
+Gordon, Robert. 1975.
+\newblock The Tunes of {Chicken Little}.
+\newblock {\em In:} Ballet, Arthur~H. (ed), {\em Playwrights for Tomorrow: A
+  Collection of Plays},  vol. 13.
+\newblock Minneapolis: University of Minnesota Press.
+\newblock One of four plays included in vol. 13.
+
+\bibitem[\protect\citename{Hanlon, }1972]{hanlon-72}
+Hanlon, Joseph. 1972.
+\newblock Designing Buildings by Computer.
+\newblock {\em New Scientist}, 31~Aug., 429--432.
+
+\bibitem[\protect\citename{Heller \& Lederis, }1958]{heller-lederis}
+Heller, H., \& Lederis, K. 1958.
+\newblock Paper chromatography of small amounts of vasopressin and oxytocin.
+\newblock {\em Nature}, {\bf 182}, 1231--2.
+
+\bibitem[\protect\citename{Hershkovitz, }1962]{hershkovitz-62}
+Hershkovitz, P. 1962.
+\newblock {\em Evolution of {Neotropical} cricetine rodents ({Muridae}) with
+  special reference to the phyllotine group}.
+\newblock Fieldiana: Zoology, vol. 46.
+\newblock Chicago: Field Museum of Natural History.
+
+\bibitem[\protect\citename{Hoel, }1971a]{hoel-71-whole}
+Hoel, Paul~Gerhard. 1971a.
+\newblock {\em Elementary Statistics}. 3rd edn.
+\newblock Wiley series in probability and mathematical statistics.
+\newblock New York, Chichester: Wiley.
+\newblock ISBN 0~471~40300.
+
+\bibitem[\protect\citename{Hoel, }1971b]{hoel-71-portion}
+Hoel, Paul~Gerhard. 1971b.
+\newblock {\em Elementary Statistics}. 3rd edn.
+\newblock Wiley series in probability and mathematical statistics.
+\newblock New York, Chichester: Wiley.
+\newblock ISBN 0~471~40300.
+\newblock Pages  19--33.
+
+\bibitem[\protect\citename{Howells, }1951]{howells-51}
+Howells, W.~W. 1951.
+\newblock Factors of Human Physique.
+\newblock {\em American Journal of Physical Anthropology}, {\bf 9}, 159--192.
+
+\bibitem[\protect\citename{Howells, }1966a]{howells-66-pop}
+Howells, W.~W. 1966a.
+\newblock Population Distances: Biological, Linguistic, Geographical and
+  Environmental.
+\newblock {\em Current Anthropology}, {\bf 7}, 531--540.
+
+\bibitem[\protect\citename{Howells, }1966b]{howells-66-var}
+Howells, W.~W. 1966b.
+\newblock Variability in Family Lines vs. Population Variability.
+\newblock {\em Annals of the {New York Academy of Sciences}}, {\bf 134},
+  624--631.
+
+\bibitem[\protect\citename{Jackson, }1979]{jackson-79}
+Jackson, Richard. 1979.
+\newblock Running down the up-escalator: Regional inequality in {Papua New
+  Guinea}.
+\newblock {\em Australian Geographer}, {\bf 14}(May), 175--84.
+
+\bibitem[\protect\citename{Johnson, }1974]{johnson-74}
+Johnson, G.~B. 1974.
+\newblock Enzyme Polymorphism.
+\newblock {\em Science}, {\bf 184}, 28--37.
+
+\bibitem[\protect\citename{Johnson \& Howells, }1974]{johnson-howells}
+Johnson, G.~B., \& Howells, W.~W. 1974.
+\newblock Title title title title title title title title title title.
+\newblock {\em Journal journal journal}.
+
+\bibitem[\protect\citename{Johnson {\em et~al.}, }1976]{johnson-etc}
+Johnson, G.~B., Howells, W.~W., \& Other, A.~N. 1976.
+\newblock Title title title title title title title title title title.
+\newblock {\em Journal journal journal}.
+
+\bibitem[\protect\citename{Jones, }1965]{jones-65}
+Jones, Firstname. 1965.
+\newblock Title title title title title title title title title title.
+\newblock {\em Journal journal journal}.
+
+\bibitem[\protect\citename{Jones, }1969]{jones-69}
+Jones, Firstname. 1969.
+\newblock Title title title title title title title title title title.
+\newblock {\em Journal journal journal}.
+
+\bibitem[\protect\citename{Jones \& Abrams, }1968]{jones-abrams}
+Jones, Firstname, \& Abrams, Firstname. 1968.
+\newblock Title title title title title title title title title title.
+\newblock {\em Journal journal journal}.
+
+\bibitem[\protect\citename{Jones \& Smith, }1965]{jones-smith}
+Jones, Firstname, \& Smith, Firstname. 1965.
+\newblock Title title title title title title title title title title.
+\newblock {\em Journal journal journal}.
+
+\bibitem[\protect\citename{Jones {\em et~al.}, }1962a]{jones-n-h-r}
+Jones, Firstname, Norman, Firstname, Hazel, Firstname, \& Robinson, Firstname.
+  1962a.
+\newblock Title title title title title title title title title title.
+\newblock {\em Journal journal journal}.
+
+\bibitem[\protect\citename{Jones {\em et~al.}, }1962b]{jones-s-r}
+Jones, Firstname, Smith, Firstname, \& Robinson, Firstname. 1962b.
+\newblock Title title title title title title title title title title.
+\newblock {\em Journal journal journal}.
+
+\bibitem[\protect\citename{Jones {\em et~al.}, }1966]{jones-a-s}
+Jones, Firstname, Abrams, Firstname, \& Smith, Firstname. 1966.
+\newblock Title title title title title title title title title title.
+\newblock {\em Journal journal journal}.
+
+\bibitem[\protect\citename{Kelley, }1896a]{kelley-96-spring}
+Kelley, Firstname. 1896a.
+\newblock Title title title title title title title title title title.
+\newblock {\em Journal journal journal}.
+
+\bibitem[\protect\citename{Kelley, }1896b]{kelley-96-autumn}
+Kelley, Firstname. 1896b.
+\newblock Title title title title title title title title title title.
+\newblock {\em Journal journal journal}.
+
+\bibitem[\protect\citename{Kelley, }1907]{kelley-07}
+Kelley, Firstname. 1907.
+\newblock Title title title title title title title title title title.
+\newblock {\em Journal journal journal}.
+
+\bibitem[\protect\citename{Kendeigh, }1952]{kendeigh-52}
+Kendeigh, S.~C. 1952.
+\newblock {\em Parental care and its evolution in birds}.
+\newblock Illinois Biological Monographs, vol. 22, nos.  1--3.
+\newblock Champaign: Univ. of Illinois Press.
+
+\bibitem[\protect\citename{Kingston, }1976]{kingston-76}
+Kingston, Firstname. 1976.
+\newblock Title title title title title title title title title title.
+\newblock {\em Journal journal journal}.
+
+\bibitem[\protect\citename{Light, }1972]{light-72}
+Light, Firstname. 1972.
+\newblock Title title title title title title title title title title.
+\newblock {\em Journal journal journal}.
+
+\bibitem[\protect\citename{Light \& Wong, }1975]{light-wong}
+Light, Firstname, \& Wong, Firstname. 1975.
+\newblock Title title title title title title title title title title.
+\newblock {\em Journal journal journal}.
+
+\bibitem[\protect\citename{Maguire, }1976]{maguire-76}
+Maguire, J. 1976.
+\newblock {\em A taxonomic and ecological study of the living and fossil
+  {Hystricidae} with particular reference to southern {Africa}}.
+\newblock Ph.D. diss., Department of Geology, University of the Witwatersrand,
+  Johannesburg.
+
+\bibitem[\protect\citename{Mann, }1968]{mann-68}
+Mann, A.~E. 1968.
+\newblock {\em The palaeodemography of {Australopithecus}}.
+\newblock Ph.D. diss., University of California, Berkeley.
+
+\bibitem[\protect\citename{McColvin, }n.d.]{mccolvin-nodate}
+McColvin, L.~R.
+\newblock {\em Libraries in {Britain}}.
+\newblock London: {Longmans Green, for the British Council}.
+
+\bibitem[\protect\citename{McNeill, }1963]{mcneill-63}
+McNeill, William~H. 1963.
+\newblock The Era of {Middle Eastern} Dominance to 500 {\sc b.c.}
+\newblock {\em Part 1 of:} {\em The Rise of the {West}}.
+\newblock Chicago: {University of Chicago Press}.
+
+\bibitem[\protect\citename{Milton, }1924]{milton-24}
+Milton, John. 1924.
+\newblock Paradise Lost.
+\newblock {\em In:} Moody, William~Vaughn (ed), {\em The Complete Poetical
+  Works of {John Milton}}, {Student's Cambridge} edn.
+\newblock Boston: Houghton Mifflin.
+
+\bibitem[\protect\citename{Ogilvy, }1965]{ogilvy-65}
+Ogilvy, David. 1965.
+\newblock The Creative Chef.
+\newblock {\em Pages  199--213 of:} Steiner, Gary~A. (ed), {\em The Creative
+  Organization}.
+\newblock Chicago: University of Chicago Press.
+
+\bibitem[\protect\citename{Pratt, }1975]{pratt-75}
+Pratt, Firstname. 1975.
+\newblock {\em Title title title title title title title title title title}.
+\newblock Publisher publisher publisher.
+
+\bibitem[\protect\citename{Prufer, }1964]{prufer-64}
+Prufer, Olaf. 1964.
+\newblock The {Hopewell} Cult.
+\newblock {\em Scientific {American}}, Dec., 90--102.
+
+\bibitem[\protect\citename{[pseud.] Hunt, }1976]{hunt-76}
+[pseud.] Hunt, Horace. 1976.
+\newblock {\em Interview}.
+\newblock Tape recording, Pennsylvania Historical and Museum Commission,
+  Harrisburg.
+\newblock Interview by {Ronald Schatz, 16 May 1976}.
+
+\bibitem[\protect\citename{Pym, }1624]{pym-24}
+Pym, J. 1624.
+\newblock {\em Diary}.
+\newblock Northampton, Northamptonshire Record Office, Finch-Hatton 50.
+
+\bibitem[\protect\citename{Ramsbottom, }1931]{ramsbottom-31}
+Ramsbottom, John. 1931.
+\newblock Fungi Pathogenic to Man.
+\newblock {\em Pages  11--70 of:} {\em A System of Bacteriology in relation to
+  Medicine},  vol. 8.
+\newblock London: HMSO, for Medical Research Council.
+
+\bibitem[\protect\citename{Ranganthan, }1951]{ranganathan-51}
+Ranganthan, S.~R. 1951.
+\newblock Colon classification and its approach to documentation.
+\newblock {\em Pages  94--105 of:} Shera, Jesse~H., \& Egan, Margaret~E. (eds),
+  {\em Bibliographic Organization}.
+
+\bibitem[\protect\citename{Singer {\em et~al.}, }1954--58a]{singer-whole}
+Singer, Charles~Joseph, Holmyard, E.~J., \& Hall, A.~R. (eds). 1954--58a.
+\newblock {\em A history of technology}.
+\newblock London: Oxford University Press.
+\newblock 5 vol.
+
+\bibitem[\protect\citename{Singer {\em et~al.},
+  }1954--58b]{singer-portion-chapter}
+Singer, Charles~Joseph, Holmyard, E.~J., \& Hall, A.~R. (eds). 1954--58b.
+\newblock The late nineteenth century.
+\newblock {\em Vol. 5 of:} Singer, Charles~Joseph, Holmyard, E.~J., \& Hall,
+  A.~R. (eds), {\em A history of technology}.
+\newblock London: Oxford University Press.
+
+\bibitem[\protect\citename{Singer {\em et~al.},
+  }1954--58c]{singer-portion-volume}
+Singer, Charles~Joseph, Holmyard, E.~J., \& Hall, A.~R. (eds). 1954--58c.
+\newblock The late nineteenth century.
+\newblock {\em In:} Singer, Charles~Joseph, Holmyard, E.~J., \& Hall, A.~R.
+  (eds), {\em A history of technology},  vol. 5.
+\newblock London: Oxford University Press.
+
+\bibitem[\protect\citename{Smart, }1976]{smart-76}
+Smart, Ninian. 1976.
+\newblock {\em The religious experience of mankind}. 2nd edn.
+\newblock New York: Schribner.
+
+\bibitem[\protect\citename{Thomson, }1971]{thomson-71}
+Thomson, Virgil. 1971.
+\newblock Cage and the Collage of Noises.
+\newblock {\em Chap. 8 of:} {\em American Music since 1910}.
+\newblock New York: Holt, Rinehart and Winston.
+
+\bibitem[\protect\citename{Traquair, }1638]{traquair-38}
+Traquair, {Earl of}. 1638.
+\newblock {\em Letter to {Marquess of Hamilton, 28 Aug.}}
+\newblock Lennoxlove (E.~Lothian), Muniments of Duke of Hamilton and Brandon,
+  C.1, no. 963.
+
+\bibitem[\protect\citename{{Winget Ltd.}, }1967]{winget-67}
+{Winget Ltd.} 1967 (8~Mar.).
+\newblock {\em Detachable Bulldozer Attachment for Dumper Vehicles}.
+\newblock GB Patent Specification 1060631.
+
+\bibitem[\protect\citename{Wood, }1961]{wood-61}
+Wood, R.~H. 1961.
+\newblock {\em Plastic and Elastic Design of Slabs and Plates}.
+\newblock London: Thames \& Hudson.
+
+\bibitem[\protect\citename{Wright, }1963]{wright-63}
+Wright, R.~C. 1963.
+\newblock {\em Report Literature}.
+\newblock Pages  46--59.
+
+\bibitem[\protect\citename{Wright, }1978a]{wright-78-book}
+Wright, Sewall. 1978a.
+\newblock {\em Evolution and the genetics of populations}.
+\newblock  Vol. 4.
+\newblock Chicago: Univ. of Chicago Press.
+
+\bibitem[\protect\citename{Wright, }1978b]{wright-78-incollection}
+Wright, Sewall. 1978b.
+\newblock Variability within and among natural populations.
+\newblock {\em Vol. 4 of:} {\em Evolution and the genetics of populations}.
+\newblock Chicago: Univ. of Chicago Press.
+
+\end{thebibliography}
+\end{document}
