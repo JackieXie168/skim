@@ -1,0 +1,1460 @@
+\input texinfo @c -*-texinfo-*-
+@c This is the manual for Bibdesk.
+
+@setfilename bibdesk.info
+
+@c get versions of the manual and program from a separate file
+@include version.texi
+
+@c define an index for preference setting entries
+@defindex pref
+
+@settitle BibDesk Help
+@setchapternewpage odd
+@footnotestyle separate
+@ifset shorttitlepage-enabled
+@shorttitlepage BibDesk v@value{VERSION}
+@end ifset
+
+@c A macro for search-result abstracts
+
+@macro cmd {}
+@html
+&#8984;
+@end html
+@ifnothtml
+Command
+@end ifnothtml
+@end macro
+
+@macro shift {}
+@html
+&#8679;
+@end html
+@ifnothtml
+Shift
+@end ifnothtml
+@end macro
+
+@macro opt {}
+@html
+&#8997;
+@end html
+@ifnothtml
+Shift
+@end ifnothtml
+@end macro
+
+
+@macro abstract{text}
+@html
+<META NAME="DESCRIPTION" CONTENT="\text\">
+@end html
+@end macro
+
+@ifnottex
+@node Top
+@top BibDesk 
+
+@image{gfx/bibDeskIcon}
+@heading About BibDesk
+
+BibDesk @value{VERSION} is a BibTeX editor and reference manager. Because it is a
+BibTeX editor, it is important to understand at least a few things
+about the BibTeX file format.
+
+@enumerate
+
+@item If you already have a BibTeX database and are moving from hand-editing
+      or another BibTeX editor, start at the @ref{Quick Start}.
+
+@item If you are just getting started keeping track of references or are
+  moving from a program such as EndNote or
+  another reference manager, see the @ref{BibTeX Intro}.
+@end enumerate
+
+@heading Help Topics
+@menu
+
+* Quick Start::         For those who are already familiar with BibTeX
+* BibTeX Intro::        For those who need to know more about BibTeX
+* Opening and Importing Files:: 
+* Searching Your Database::
+* Managing References:: Browsing, Managing and Editing References
+* Citation Keys::       Automatically Generating Citation Keys
+* AutoFile::            Keeping Local Copies of Articles Organized
+* Inserting Citations:: Adding citation commands in your favorite editor
+* Preferences Guide::
+* Getting More Help::   Where to find more answers about BibDesk
+@end menu
+
+@heading Online Resources
+@itemize
+@item @uref{http://bibdesk.sourceforge.net, BibDesk Website}
+@item @uref{http://bibdesk.sourceforge.net/scripts.html, BibDesk AppleScript Repository}
+@item @uref{http://bibdesk.sourceforge.net/manual/, Online Copy of This Manual}
+@end itemize
+
+@heading Appendices
+@menu
+
+* indexcp::             Concept Index
+* indexpref::           Preference Settings Index
+* indexky::             Key Shortcut Index
+* Citation Key Format Reference:: Citation Key Format Reference
+* Character Conversion::
+@end menu
+
+@shortcontents
+
+@end ifnottex
+
+Portions of Bibdesk:
+
+Copyright @copyright{} 2001 - 2005 Michael O. McCracken@*
+Copyright @copyright{} many others@*
+
+@node Quick Start
+@chapter Quick Start 
+
+Using BibDesk should be pretty natural for the average user of
+BibTeX. Simply open your .bib file with BibDesk and start working. @xref{Managing References}
+To get you up to speed faster, here are a few important features and
+differences from other BibTeX editors.
+
+@heading Accented Characters
+
+@cindex accented characters
+If you are used to writing LaTeX code for accented characters and
+special fonts, you will be glad to know that BibDesk handles most of
+that work for you now. See @ref{Editing References}
+for an overview, or @ref{Character Conversion} for more detail.
+
+@heading Capitalized Letters in Fields
+
+@cindex capitalization
+If you use braces in your BibTeX fields to protect meaningful
+captialization, BibDesk attempts not to interfere. The braces will be
+saved and any previews will show the intended capitalization.
+
+Searches will match the string without the braces - a search for
+"LaTeX" will match a publication with the title "@verb{.{L}a{T}e{X}.}".
+
+@heading File Encodings
+
+@cindex encodings
+If you have a BibTeX file that is not stored with ASCII encoding,
+BibDesk will work with the file's encoding. See @ref{encoding-notes}
+for further information.
+
+@heading Citation Keys
+
+BibDesk can help you maintain useful and readable citation keys
+painlessly. See @ref{Cite Key Preferences} for more information.
+
+@heading Macro Support
+
+@cindex macro
+BibDesk supports BibTeX macros. See @ref{Editing Fields with Macros} and
+@ref{Editing Macro Definitions} for more information on how to edit
+them.
+
+@heading BibDesk Does Not Recognize @code{crossref}
+
+@cindex crossref
+BibDesk does not currently take advantage of the BibTeX crossref
+feature for display or searching, but if you use crossrefs, using
+BibDesk will not break them. If you would like to send feedback about
+this, see @ref{Getting More Help}.
+
+
+@node BibTeX Intro
+@chapter BibTeX Intro
+
+@cindex bibtex
+
+BibTeX database files are in a text format with a few conventions you
+will want to know. See @ref{Formatting Names} and
+ @ref{Publication Types}) for answers to common questions.
+
+It helps to know what the parts of a BibTeX file are. Here's a trivial
+example to help illustrate. First we have a *macro definition*:
+
+@example
+@@string@{"PACT" = "International Conference on Processors, Architectures and Compilation Techniques"@}
+@end example
+
+Next a single entry:
+@example
+@@proceedings@{pact02,
+	    booktitle = PACT,
+	    Year = 2002,
+	    Month = sep,
+	    Address = "Harvard Square"@}
+@end example
+
+The terminology we'll use to describe the entry is as follows:
+
+@example
+@@publication-type@{citation-key, field-name = value@}
+@end example
+
+Any value can be either a quoted string (using either `""` or `@{@}`) or a
+number, or a macro (like `PACT` in the above example).
+
+@anchor{Publication Types}
+@heading Publication Types
+
+Each publication is assigned a type, which along with carrying some
+information about the publication, determines how it will be formatted
+later in conjunction with BibTeX styles.
+
+@heading Citation Keys
+
+Must be unique.
+
+@heading Field data
+
+
+Any field can be in any type.
+
+@anchor{Formatting Names}
+@heading Formatting Names
+
+Author and editor lists in BibTeX files are written as a single string
+using the word "and" as a separator between names, like this example:
+
+@example
+"Adam Maxwell and Michael O. McCracken"
+@end example
+
+If a name has two parts, commas are used to determine which parts are
+the first, middle and last names. For example, the following two names
+are the same:
+
+@example
+"Adam Maxwell" "Maxwell, Adam"
+@end example
+
+BibTeX also handles more complicated names. Prefixes to given names
+such as *van* or *van den* and suffixes such as *Jr.* or *III* are
+OK:
+
+@example
+"van den Huevel, Johan A, Jr."
+@end example
+
+@heading BibTeX Macros
+
+@cindex macro
+
+Macro definitions look like this:
+@example
+@@string@{"PACT" = "International Conference on Processors, Architectures and Compilation Techniques"@}
+@end example
+
+Macro uses just use the first part of the definition without quotes as
+the value for a field in the BibTeX file.
+
+Macros are a time saving feature that save typing when you have to
+repeat the same long journal name over and over. If you define a
+macro, you can just type the short version and BibTeX will substitute
+the full version in processing.
+
+Note that in our example, we also used a macro *sep*, which was not
+defined in the example. Common three-letter month names are usually
+defined appropriately in your `Style Files`_ for the document's
+language, and may also be abbreviated depending on the citation style.
+
+
+BibDesk supports reading, editing and saving BibTeX macros. See
+@ref{Editing Fields with Macros} for further information.
+
+@heading Style Files
+
+.bst
+
+@heading BibTeX References
+
+btxdoc.dvi
+
+@node Opening and Importing Files
+@chapter Opening and Importing Files
+
+@menu
+* Starting a New File::
+* Opening a File::
+* Opening an RIS File::  
+@end menu
+
+@node Starting a New File
+@section Starting a New File
+@abstract{Various ways of Creating a New File}
+
+Choose "New Bibliography" from the File menu or 
+type the keyboard shortcut @cmd{} @shift{} N.
+
+@node Opening a File
+@section Opening a File
+
+@subheading Opening a File in a Specific Encoding
+
+Use the "Open..." menu item in the File menu, and select the encoding
+you want to use from the popup menu at the bottom of the dialog
+box.
+
+@subheading Opening a File Using a Command-Line Filter
+
+This feature lets you specify any command line that produces a BibTeX
+file and open it in BibDesk directly. If you have command line
+conversion tools from other formats, this is a handy way to use them.
+For instance, suppose you have a file called ``searchresults.isi'' in the ISI file format from
+an online database.  Using the @uref{http://www.scripps.edu/~cdputnam/software/bibutils/bibutils.html, BibUtils}
+suite of command line utilities (available here), you can translate that file into BibTeX with the following
+command: @code{/usr/local/bin/isi2xml | /usr/local/bin/xml2bib}, with the paths adjusted appropriately for your
+installation.  
+
+@image{gfx/filterCmd}
+
+The drop-down menu will save the last seven commands used, which should be sufficient for most needs!
+Note that BibDesk can open RIS files directly, so a filter isn't required for them.
+
+@node Opening an RIS File
+@section Opening an RIS File
+
+@cindex PubMed
+@cindex RIS
+@cindex Service
+
+BibDesk expects a file with the extension ``.fcgi'' or ``.ris''.
+Many of the RIS tags are converted into their BibTeX equivalents, but unknown tags are left as-is for you to deal with manually.
+BibDesk's RIS import feature converts some HTML characters and tags into LaTeX commands, which can be handy when importing large
+numbers of references; the LaTeX produced may be rather primitive, however.
+
+@subheading PubMed
+
+Just do your search as usual on
+PubMed, and then select the settings as in the following image:
+
+@image{gfx/pubmed}
+
+The important settings are that it should be set to Display
+``MEDLINE'' and Send to ``File''. Then click the
+``Send to'' button, and a file will
+be saved to your download folder. You can then use BibDesk to open
+this file. Once you have opened the file it cannot be saved back in
+the same format. If you want to, you can save it as a BibTeX file, or
+transfer the translated entries over into a BibTeX file that you use
+permanently.
+
+@subheading Other Online Databases
+
+Many online databases have the capability to export RIS 
+(the @uref{http://www.refman.com/support/risformat_intro.asp, Reference Manager format}), 
+and BibDesk can open those files directly.
+@uref{http://www.sonnysoftware.com/, SonnySoftware} offers a free application
+called ``ReferenceMiner'' which searches PubMed, the Library of Congress, and
+Amazon.  References can be dragged from ReferenceMiner directly into BibDesk's
+publication list, which may be more convenient for those sources.
+
+@subheading Using RIS Services
+
+The Services menu items ``Bibdesk->Add to Bibliography'' and ``Bibdesk->New Document With RIS''
+can be used from a text editor or web browser which supports Services to
+either add selected RIS text to an existing document, or create a new document based on the selected text.  Further, RIS can be pasted or
+dragged directly into BibDesk's publication list as text, so at least one method should be convenient for your particular situation!
+BibDesk can also save RIS files directly, although some modification of the original source will occur, and this is only recommended
+when it is necessary to share files with other people or applications.
+
+@node Searching Your Database
+@chapter Searching Your Database
+
+@cindex searching
+
+@heading Quick Search
+
+The quick search field lets you enter sub-strings that might be in
+author names, titles or dates, and the reference view will display
+only matching publications. There are several built-in options. For
+example, All Fields (search every entry except the pub type at once),
+Keywords (search the keywords entries) and Pub Type (search by pub
+type).
+
+@image{gfx/quickSearchField}
+
+The quick search field is configurable by selecting "Add Field...",
+which allows you to add any string you want to the menu. If a
+publication has that field, it will be searched. Adding the field
+"Cite Key" (with that exact capitalization) will allow you to search
+the citation key of publications. (All Fields also searches the
+citation key.)
+
+@subheading Advanced Searches
+
+@cindex Boolean
+@cindex accents
+
+BibDesk's quick search field also supports a Boolean search, using
+"AND" or "OR" operators (no quotes, but the operator must be
+capitalized).  Please note that grouping is not supported at this
+time.  The search feature will also consider accented and non-accented
+characters as equivalent, and is case-insensitive
+(i.e. "Bürger" can be found by searching for "burger" or
+"BÜrGeR").
+
+
+@node Managing References, Citation Keys, Searching Your Database, Top
+@chapter Managing References
+
+
+@heading Topics
+
+@menu
+* Adding References::           
+* Editing References::          
+* Deleting References::    
+* Browsing References::       
+* Printing References::         
+* Saving The File::             
+* Previewing Typeset Output::   
+@end menu
+
+@node Adding References
+@section Adding References
+@abstract{How to add new references to a database.}
+
+@kindex cmd-shift-N
+@kindex cmd-N
+
+New references are added to the bibliography 
+with "New Reference" from the Bibliography menu, the keyboard
+shortcut @cmd{} N, or the New Reference toolbar button.
+
+@subsection Drag and Drop
+@cindex Drag and Drop
+
+References can also be added to a bibliography by dragging an entry
+from a text source (text editor, web browser). Here's a fancy picture:
+
+@image{gfx/dragIntoBib}
+
+@anchor{Adding from Text}
+@heading Adding from Text
+@cindex creating references, from text
+@cindex creating references, from the web
+@kindex Command-Option-N
+@kindex Command-Control-N
+
+If you have a source of references that isn't in a structured form,
+you can use the ``Add New Publication from Text'' menu item in the
+``Publication'' menu (or the key shortcut @cmd{} @opt{} N) to open a
+sheet that lets you add references by selecting text and assigning
+that text to fields in a new reference.
+
+Examples of reference sources that this would be convenient for are
+emails, conference proceedings web sites, and the text from a list of
+citations at the end of a publication.
+
+When the sheet opens, it loads the data on the clipboard into the
+left-hand side of the sheet. If the last thing you've copied was text,
+it will show that text. If the text is a URL, it will instead load
+that URL and display the web page. If you know you want to use a web
+page that is not on the clipboard, you can use the ``Add New
+Publication from Web'' menu item instead.
+
+The ``Open'' button gives you the option to choose other sources of
+information. If the sheet is displaying a website, there are other
+controls, including back, forward, and a button for reload and stop.
+
+Using the contextual menu on the web page, you can bookmark pages to
+come back to at a later time, or save the URL of a link or the page
+itself as the URL or Local-URL fields for the current publication.
+
+The right hand side is a table representation of a publication. You
+can choose its type and it will load the appropriate field names to
+edit. As you add data, it will update the citation key with the
+current suggested citation key according to the format set in the 
+@ref{Cite Key Preferences} Preferences.
+When you are done editing, choose ``Add'' to add the current
+item to the document, then ``Close'' when you are done adding.
+
+The sheet is designed to make this common task more efficient. Select
+the text from the source on the left, and you can drag or copy and
+paste into the table on the right to fill in the publication's
+information. Edit and make any other changes you want by
+double-clicking on the rightmost column of the table.
+
+@kindex Command-0 through Command-9
+
+You can make adding data faster by just double-clicking the name of
+the field you want the selected text to fill and it will be added for
+you. You can also use the key shortcuts @cmd{}0 through @cmd{}9 to
+copy the selected text over to the corresponding field.
+
+@c note: Double-clicking to transfer the data does not work for the web
+page view yet.
+
+
+
+@node Editing References
+@section Editing References
+@abstract{Editing the data in your references.}
+
+@kindex cmd-E
+
+Once references have been added to the bibliography, they can be
+edited by selecting a reference and choosing "Edit Reference" from the
+Bibliography menu, typing @cmd{}E, or double-clicking the
+reference. When editing, changing pub type never loses information. In
+other words, if you put a booktitle in when it was inproceedings, and
+you change it to phdthesis, it will still have that booktitle.
+
+This opens the Editor window, which looks something
+like this:
+
+@image{gfx/editWindow}
+
+You can then fill in the appropriate fields for your reference. The
+type pop-up menu lets you choose from the canonical BibTeX publication
+types (e.g., article, book, phdthesis). Field titles highlighted in
+red represent required fields for the chosen reference type (article
+in the case of the above screenshot). Fields can be added and removed
+with the plus and minus buttons to the right of the reference-type
+pop-up menu. BibDesk fills in fields as you type based on the
+information contained in other references. Also, BibDesk verifies that
+cite keys are unique before committing a reference to the
+bibliography.
+
+@cindex URL
+@cindex Local-URL
+@cindex Linked file, setting
+@cindex Linked file, viewing
+@cindex PDF
+@cindex Previewing files
+@cindex Viewing PDF as text
+@cindex Drag and drop, files
+
+@heading Viewing a linked file
+
+You can view a linked file in its appropriate application by clicking
+on the ``View File'' button, which has the file's icon as its
+image. If no file is linked, the icon is a question mark.
+
+In either case, you can click and hold on the button to get a menu
+which gives you options to choose a file to link. Another way of
+setting the Local-URL link is by dragging a file onto the Edit window.
+
+If your your linked file is a PDF, you can use the ``View in Drawer''
+button to view it without leaving Bibdesk. Pressing and holding that
+button gives you the option of viewing it as a PDF or viewing just
+the text of the PDF, so you can select the text to copy and paste
+into the data fields.
+
+You can also view the web page specified in the ``URL'' field using
+the ``View in Drawer'' button to view it in the drawer in BibDesk or
+by clicking the ``View Remote'' button to open it in your preferred
+web browser.
+
+If you like to keep the URL set to the download location of the
+paper, clicking and holding the ``View Remote'' button will show a
+menu that lets you choose from the URLs of recently downloaded files
+in Safari.
+
+The "Annote" and "Abstract" tabs provide access to larger text areas
+for these types of information. Rss-Description is covered in
+@ref{RSS Preferences}.
+
+Below the table view is the Notes pane, which shows the contents of
+the highlighted reference. It can also be set (in the 
+@ref{General Preferences} Preferences) to show the entire selected entry as nicely formatted
+text.
+
+@heading Other editing topics
+
+@menu
+* Entering Accented Characters::  
+* Editing Fields with Macros::  
+* Editing Macro Definitions::   
+@end menu
+
+@node Entering Accented Characters
+@subsection Entering Accented Characters
+
+@cindex accented characters
+
+You can enter many common accented characters such as  and o directly, and 
+Bibdesk will take care of translating them into the appropriate LaTeX definitions when the file is saved.
+
+They will also be re-translated upon reopening the file, so that you
+will see the intended character, not the markup LaTeX uses to generate
+it.
+
+@node Editing Fields with Macros
+@subsection Editing Fields with Macros
+@abstract{How to edit a field as Raw BibTeX, to add macro references.}
+
+@cindex macro
+@kindex cmd-R
+
+@c FIXME
+
+You can edit a field as raw BibTeX by pressing @cmd{}R in the edit
+window when one of the form fields has the keyboard focus.
+
+@node Editing Macro Definitions
+@subsection Editing Macro Definitions
+@abstract{How to edit the definitions of a macro.}
+
+@cindex macro
+@image{gfx/macrosWindow}
+
+@node Deleting References
+@section Deleting References
+
+References can be deleted by selecting the reference and choosing
+"Delete Reference" from the Bibliography menu or pressing the delete
+key. Either way, a warning will appear to verify that you want to
+delete the reference.
+
+@node Browsing References
+@section Browsing References
+
+
+The references are presented in a table with a detail pane on the
+bottom of the window. You can sort the table by column by clicking on
+the name of each column, in the header of the table.
+
+@image{gfx/tableView}
+
+@cindex table, customizing
+@cindex customizing
+@cindex displaying custom fields
+@cindex table columns
+
+@heading Customizing the table
+
+You can control the order of the columns by moving them directly.
+
+To add a field that isn't displayed, use the column management
+menu. There are three ways to access this menu; In the menu bar under
+``View->Columns'', by Control-clicking on a column name, or by
+clicking the small button at the top right of the table.
+
+It has a menu of fields you can add, or you can choose to add any
+field that isn't listed by typing in the box. You can add a column for
+any field you like, even if that field doesn't exist in any of the
+publications listed.
+
+The Columns almost always simply display the content of the relevant field.
+There are a few exceptions where Bibdesk tries to `do the right thing' when
+bibtex is difficult.  The inbook type uses Title to refer to the title of 
+the whole work and the Chapter field to refer to the specific part of the 
+work that is cited.  For the inbook type, then, if there is a Chapter field
+that is displayed along with the Book title, thus:
+
+@example
+Chapter : Title
+@end example
+
+If Chapter is empty, Pages must be present so the Title column will display
+
+Title (pp Pages)
+
+@cindex Container
+@heading Container 
+
+The special column 'Container' can be added to the table.  It is useful for
+types that are part of a larger document and displays the title of that
+'Container' document.  It will display a slightly different field depending
+on the type of the item.
+
+@table
+@item article
+Journal
+@item incollection
+@itemx inproceedings
+@itemx conference
+Booktitle
+@item inbook
+Title
+@item book
+Series 
+@item commented
+Volumetitle
+@end table
+
+If you use a special type that has a container concept write to bibdesk-develop
+and it can be added. 
+
+@node Printing References
+@section Printing References
+
+@cindex printing
+
+Choosing "Print" from the File menu (@cmd{}P) prints the contents
+of the lower browser pane of the selected reference.
+
+@node Saving The File
+@section Saving The File
+@abstract{Saving files and dealing with encodings}
+
+@cindex saving
+
+Save (@cmd{}S) and Save As... (@cmd{}@shift{}S) under the File
+menu will save your bibliography as a BibTeX file. 
+
+@cindex encoding
+To save a file with an encoding other than the one it was read in
+using, use the "Export BibTeX With Encoding" command, found in the 
+"Export" sub-menu of the "File Menu". Choose the encoding you want
+from the pop-up button at the bottom of the resulting sheet.
+
+@node Previewing Typeset Output
+@section Previewing Typeset Output
+
+@kindex cmd-T
+
+@cindex LaTeX
+@cindex preview
+@cindex RTF
+@cindex style file
+@cindex .bst
+
+The preview panel shows you the currently selected references as a
+formatted bibliography. The bibliography's format is based on the
+current style file (set in the preference pane 
+``@ref{Preview Preferences}''). This helps in spotting errors and omissions in your
+references. The preview file will also reflect any macros you have
+included in your template file, if you have included them in the
+current bib-item.
+
+@image{gfx/typesetPreview}
+
+@image{gfx/typesetPreview-rtf}
+
+
+@subsection Importing RIS Directly
+@cindex RIS
+
+
+
+FIXME: Notes about using the import RIS service
+
+
+@node Citation Keys
+@chapter Citation Keys
+@abstract{Controlling the automatic generation of citation keys.}
+
+@cindex cite key
+@cindex key
+
+@heading Citation Key Generation
+
+You can set the citation key to be automatically generated for a new
+reference in the preferences (See the @ref{Cite Key Preferences} preference pane).
+
+@menu
+* When the Key is Generated::   
+* Generating a Key for an Existing Publication::  
+* Customizing the Format of Keys::  
+@end menu
+
+@node When the Key is Generated
+@section When the Key is Generated
+@cindex cite key
+@cindex key
+
+
+When there is enough data entered...
+
+@node Generating a Key for an Existing Publication
+@section Generating a Key for an Existing Publication
+
+@cindex cite key
+@cindex key
+
+@cartouche 
+Use the action menu in the editor.
+@end cartouche
+
+@node Customizing the Format of Keys
+@section Customizing the Format of Keys
+@cindex cite key
+@cindex key
+
+
+@c FIXME
+
+See prefs, see the @xref{Citation Key Format Reference}.
+
+
+@node AutoFile
+@chapter AutoFile
+
+@cindex File Management
+@cindex PDF
+@cindex Local Copies of Papers, Organizing
+
+@heading Keeping Local Copies of Papers Organized
+
+This help page describes how to use the AutoFile feature to keep your
+electronic copies of papers organized.  You will need to choose a
+Papers Folder as described in the 
+@ref{AutoFile Preferences} preference help topic.
+
+@menu
+* Automatically Move Files::    How Bibdesk can keep new papers organized automatically once you've consolidated them.
+* Consolidate Linked Files::    A command to move all linked files to your Papers Folder.
+@end menu
+
+@node Automatically Move Files
+@section Automatically Move Files
+
+When linking a file by dragging and dropping it onto an edit window or
+the publications table, or by using the Choose File button in the edit
+window, AutoFile will automatically move the file to the Papers Folder
+if the "File Papers Automatically" preference is selected, as
+described in the @ref{AutoFile Preferences} preference help topic.
+
+
+@node Consolidate Linked Files
+@section Consolidate Linked Files
+
+@image{gfx/consolidateLinkedFiles}
+
+Choose this command to scan all publications in the file for linked
+files. A preview window will be opened that shows you some information
+about each of the linked files. You can then choose to move them all
+to your Papers Folder or cancel.
+
+@image{gfx/consolidateLinkedFilesDialog}
+
+If any files can not be moved or renamed for some reason, an error
+dialog will show you what the problems were:
+
+@image{gfx/consolidateLinkedFilesErrorWindow}
+
+@cindex undo, AutoFile
+@cindex Autofile, undo
+@cindex undo, Consolidating Linked Files
+@cindex Consolidating Linked Files, undo
+
+Consolidating linked files is undoable, so feel free to experiment.
+
+@node Inserting Citations
+@chapter Inserting Citations
+
+@cindex Copy and Paste
+@cindex Drag and Drop
+
+You can copy a publication from the publication table and paste it
+into any text editor to get the TeX citation command for that
+publication's citation key. You can also drag and drop the
+publications.
+
+This also works for multiple publications at once. Multiple selections
+produce a single citation containing the highlighted references (i.e.,
+@code{\cite@{key1,key2@}}).
+
+The @ref{Cite Key Preferences} allow for separate citations
+(i.e., @code{\cite@{key1@}\cite@{key2@}}).
+
+If you need a different citation command, then you will
+want to use the Custom Citation Strings Drawer.
+
+@menu
+* The Custom Citation Strings Drawer::  
+* Autocompletion::              
+* System Service::              
+@end menu
+
+@node The Custom Citation Strings Drawer
+@section The Custom Citation Strings Drawer
+
+Choosing Show/Hide Custom Citation Strings from the Window menu
+(@cmd{}@shift{}C) toggles a drawer that allows you to drag and drop
+citations into a TeX document using custom-defined citation strings,
+such as fullcite, citet, and citep.
+
+@image{gfx/citeDrawer}
+
+@node Autocompletion
+@section Autocompletion
+
+BibDesk can install a plugin that lets you search your database and
+insert citation commands conveniently without leaving your text
+editing application. @xref{External Autocompletion}
+
+@node System Service
+@section System Service
+
+@cindex System Service
+@cindex services
+
+If you can't use the autocompletion plugin because your favorite text
+editor is not compatible (for instance BBEdit or TextWrangler), you
+will be able to use the installed OS X System Services to do much of
+the same thing. 
+
+The services also perform some searching functionality which can help
+if you don't have a photographic memory of citation keys.
+
+In any Services aware app (including: TeXShop, iTeXMac, TextEdit, 
+BBEdit, and TextWrangler, but no Classic or X11 apps) type a
+string, select it, then choose Complete Citation from the Bibdesk
+submenu of the Services Menu. This will replace the selected string
+with the citation(s) of any entries in open BibDesk documents (or, if
+BibDesk is not open yet, in the default bibliography set in
+@ref{General Preferences} Preferences) whose titles contain that
+string. So:
+
+@image{gfx/serviceBefore}
+
+becomes:
+
+@image{gfx/serviceAfter}
+
+
+You can search more than just the title from the service.
+Both of the next two examples search for the string ``foo'' in the title:
+@example
+"foo"
+@end example
+@example 
+"Title = foo"
+@end example
+
+The next example searches for a publication with ``Baz'' in the
+author, ``foo'' in the title, and ``Jan'' in the month:
+
+@example
+"Author = Baz & Title = foo & Month = Jan"
+@end example
+
+
+Another service is available, called "Complete Cite Key" which allows
+you to highlight a part of a citation key and BibDesk will complete
+the key for you. For instance, in our example , selecting
+``CasO'' and invoking the ``Complete Cite Key''
+service would insert ``CasObe00''.
+
+@node Preferences Guide
+@chapter Preferences Guide
+
+
+This help page describes options in the preferences you can use to
+customize Bibdesk. To change your preferences, choose "Preferences"
+from the "Bibdesk" menu, or press the key shortcut @cmd{}-, (Command
+- comma).
+
+@heading Preference Panes
+
+@menu
+* General Preferences::      Change what Bibdesk does when starting up, such as opening specific files, as well as overall appearance.                
+* Citation Preferences::     Set what you get when copying or dragging citations to other apps.               
+* Files Preferences::          Set preferences for opening and saving files.             
+* Preview Preferences::              Change the default settings for using LaTeX in the typeset preview window.       
+* Default Fields Preferences::     Add fields that Bibdesk will add to every entry.         
+* RSS Preferences::                Configure syndication settings.         
+* Cite Key Preferences::              Set a format for autogenerated cite keys.      
+* Autocompletion Preferences::   Install and configure the autocompletion system.           
+* AutoFile Preferences::           Set up a directory to automatically store copies of papers.         
+@end menu
+
+@node General Preferences
+@section General
+
+@image{gfx/generalPrefs}
+
+This panel controls what BibDesk does when it starts up. Clicking the
+``Open this bibliography'' radio button prompts you to
+choose a default bib file to open. You can set the font used in the
+publications list, and whether annotations or complete references are
+displayed in the bottom of the publications list.  Clicking the
+``Display errors panel for warnings'' causes the Error panel
+to be shown at startup (see @ref{Getting More Help} for
+information on the Error panel).
+
+@node Citation Preferences
+@section Citation
+
+@image{gfx/citationPrefs}
+
+
+Copying and Dragging Out: This controls what gets dropped (or copied) on a drag (or copy).
+
+@itemize
+@item BibTeX entry means the whole entry like: @code{@@misc@{key, author="" , @dots{} @}}.
+@item TeX Citation means: @code{\cite@{cite-key@}}
+@item PDF Description means the contents of the PDF Preview pane as a page of PDF.
+@item RTF Description means the contents of the RTF Preview pane.
+@end itemize
+
+Separate Citations lets you choose whether to have bibdesk drop strings like \cite@{key1,key2@} or \cite@{key1@} \cite@{key2@} when multiple items are involved.
+
+The citation text field lets you change the string that is used when dragging from the publications table to whatever you like (e.g. citep or citet ...)
+
+Bracket Style lets you choose to use square brackets for copy/paste and dragging citations, for compatibility with ConTeXt.
+
+Custom Citation Drawer: This allows you to enter further
+strings that you can access via dragging from the custom citation
+strings drawer. This drawer lets you drag the selected publications
+from the publications table, using a different citation string.
+
+Pasting and Dragging in: ``Open edit window when
+paste/dragging in'' lets you decide whether to always immediately
+open the edit window for an item you have pasted or dragged in.
+
+
+
+@node Files Preferences
+@section Files
+
+@image{gfx/filesPrefs}
+
+
+Default string encoding for opening and exporting BibTeX files: This
+popup menu allows you to select the encoding used to open files by
+double-clicking on them in the Finder.
+
+@anchor{encoding-notes}
+Specific notes and warnings:
+
+* Files will be run through the
+@ref{Character Conversion} process when opened so that accented characters
+display properly.
+
+* This is the default behavior in BibDesk 0.97.2 and
+earlier versions.
+
+ * Files opened with a given encoding will be saved with that encoding.  To save with an alternate encoding, choose the
+"File->Export->Export BibTeX With Encoding..." menu option and select
+a particular encoding.  Characters will only be converted to TeX when
+the checkbox for character conversion is marked; otherwise, they are written out as displayed in
+BibDesk.
+
+@node Preview Preferences
+@section Preview
+
+@image{gfx/previewPrefs}
+
+
+Use TeX for Previewing: (More appropriately, use pdflatex for previewing.) If this is checked, the preview pane will be drawn.
+
+
+TeX Options: The style file (just the name, not the whole path) can be specified here.
+Also, the TeX and BibTeX program paths can be changed here, so you are not tied to one distribution of TeX.
+You must enter the full path to the binaries for pdflatex and bibtex, e.g. @code{/usr/local/teTeX/bin/powerpc-apple-darwin-current/pdflatex}.
+
+
+Browser preview pane: Select what you want the lower pane of the main browser window to show.
+
+@node Default Fields Preferences
+@section Default Fields
+
+@image{gfx/defaultsPrefs}
+
+BibTeX Fields: You can set fields to be added to publications by default here. They are added when a file is opened and if a new publication is made.
+Tip: Use this for fields you would like to use on every entry to avoid adding them every time. For example, a rating field or one that reminds you if you've read the cited paper.
+
+Template File: Clicking this button sends you to TextEdit to change the template file that is added to the beginning of every saved bib file. This template file is a great place to put your macros, copyright info (if applicable), or shameless plugs for your software :)
+
+FIXME: incomplete. should use @@enumerate macros too?
+
+@node RSS Preferences
+@section RSS
+
+@image{gfx/rssPrefs}
+
+Hopefully this panel is self explanatory. If you click on the
+``Find out more...'' link, your favorite web browser will
+open the page
+@uref{href="http://www.cs.ucsd.edu/~mmccrack/AboutRSS.html}">
+The RSS publishing preferences control the RSS export features. If you
+check ``Automatically save RSS feeds'', everytime you save a
+.bib file, a correspondingly named .rss file will be saved in the same
+directory. The ``description'' field in RSS is the text that
+shows up as the headline of each item in the RSS feed. See the link
+for more details.
+
+@node Cite Key Preferences
+@section Cite Key
+
+@image{gfx/citeKeyPrefs}
+
+Preset Format: You can choose from several default cite key
+formats. Choosing ``Custom'' allows you to set the cite key
+format string to any valid format.
+
+Format String: This text field shows the cite key format
+field that is used to automatically generate cite keys. The cite key
+format string can contain several special format specifiers, which are
+a %-character followed by a specifier character and optionally zero to
+two numbers. See @ref{Citation Key Format Reference} for a
+more detailed description of the syntax.
+
+Choose a format specifier to add: This allows you to easily
+add format specifiers at the end of the format string. This popup
+button will only be visible in custom mode.
+
+FIXME: out of date: lowercase missing
+
+@node Autocompletion Preferences
+@section Autocompletion
+@abstract{Configuring the Autocompletion feature}
+
+@subsection Internal Autocompletion
+@image{gfx/autocompletePrefs-Internal}
+
+FIXME: What to say here?
+
+@anchor{External Autocompletion}
+@subsection External Autocompletion
+@image{gfx/autocompletePrefs-External}
+
+External autocompletion allows you to install a plugin which enables
+bibliography-item autocompletion in Mac OS X 10.3 and greater using
+the "Install" button.  
+
+When the plugin has been installed, the button title changes to
+"Reinstall" automatically. Autocompletion will only work in Cocoa
+applications, such as the ones in the picture, and they must be added
+to the list manually using the "Add" button below the list.  
+
+@node AutoFile Preferences
+@section AutoFile
+@abstract{Configuring the AutoFile feature}
+
+@image{gfx/autoFilePrefs}
+
+AutoFile lets you choose a folder as your "Papers Folder" to
+automatically move files into when you link to them. You can do this
+to all files at once, or automatically as they are added. Use this
+preference pane to select the Papers Folder and to choose whether to
+automatically move files. 
+
+@xref{Citation Key Format Reference}.
+
+@node Getting More Help
+@chapter Getting More Help
+@abstract{Where to go to figure out problems.}
+
+@heading The Error Panel
+
+The Error panel provides feedback on errors contained in a bib
+file. You can always show the panel by selecting ``Show/Hide
+Error Panel'' from the Window menu (@cmd{}@shift{}E). This is
+what the errors panel looks like:
+
+Clicking on a warning line in this table opens an editing window with
+the offending line highlighted.
+
+@image{gfx/errorWindow}
+
+@heading Mailing List
+If your questions aren't answered in this help file, the
+@uref{http://lists.sourceforge.net/lists/listinfo/bibdesk-users, bibdesk-users mailing list}
+ may have an answer. Your question
+may have been answered already, so you can check the 
+@uref{http://sourceforge.net/mailarchive/forum.php?forum=bibdesk-users,list archives} 
+to get instant gratification.
+
+
+@heading Bug reports
+
+You can submit a bug report to the bug tracker at 
+@uref{http://sourceforge.net/projects/bibdesk/}.
+
+The reports are most useful if they provide a clear description of
+what went wrong, what you expected, and how to reproduce the problem
+at a different computer without you there helping us.
+
+If you're submitting a problem with how it handled a certain file, it
+would help if you sent that file too, or at least the representative
+subset that causes the errors. Crash reports are also useful and can
+be obtained from the Console application (in `Applications/Utilities`).
+
+
+
+
+@c -------------------------------------------
+@c INDEXES
+@c -------------------------------------------
+
+@node indexcp
+@appendix Concept Index
+@printindex cp
+
+@node indexpref
+@appendix Preference Settings Index
+@printindex pref
+
+@node indexky
+@appendix Key Shortcut Index
+@printindex ky
+
+@node Character Conversion
+@appendix Character Conversion
+
+@heading What is character conversion? 
+
+BibDesk automatically converts many accented characters into their
+TeXequivalents when it writes a BibTeX file. For instance, a u
+with umlaut 
+is converted to @code{@{\"u@}} when your file is saved, but presented as-is in
+theinterface. There are some limitations on this process;
+conversion only works when a @code{@{\} sequence is encountered, as in the
+above example, and it only works if BibDesk has the conversion stored
+in its internal dictionary.
+
+If you encounter a warning that BibDesk was unable to convert an
+accented character into aTeX sequence, please e-mail the BibDesk 
+@uref{mailto:bibdesk-develop@@sourceforge.net?Subject=Character%20Conversion%20Error, developers' mailing list} with a description of the character and its TeX
+equivalent. This will enable us to add the character to the next
+release of BibDesk.
+
+@heading Accented characters and TeX 
+
+The following table was taken from The
+Not So Short Introduction to LaTeX2e> (Oetiker et al., 1999).
+Depending on your TeX distribution, it may be available at
+@code{/usr/local/teTeX/share/texmf.tetex/doc/latex/general/lshort.dvi}, or it is available from @uref{http://www.ctan.org/ctan/tex-archive/info/lshort/english/, CTAN}.
+
+Many of the accents listed in this table can be applied to characters
+other than o, as well.  
+
+@image{gfx/accents}
+
+Note: for BibTeX, it is also necessary to enclose the accent sequence in braces (see the @uref{http://www.tex.ac.uk/cgi-bin/texfaq2html?label=bibaccent, TeX FAQ}).
+
+
+@node Citation Key Format Reference
+@appendix Citation Key Format Reference
+
+
+@heading Syntax of the format
+
+The format is used for autogeneration of certain values, such as the cite key and the local-url. The format is a string containing special format specifiers, which are replaced by strings determined by the bibliography data. Most format specifiers have the form of a %-character followed by a single character. It can be followed by optional digits, which serve as parameters for the format specifier. Possible format specifiers are given in the table below.
+
+@macro spec {text}
+@html
+<span class="spec">\text\</span>
+@end html
+@ifnothtml
+@b{\text\}
+@end ifnothtml
+@end macro
+
+@macro param {text}
+@html
+<span class="param">\text\</span>
+@end html
+@ifnothtml
+@i{\text\}
+@end ifnothtml
+@end macro
+
+@macro specparam {spec, param}
+@html
+<span class="spec">\spec\</span><span class="param">\param\</span>
+@end html
+@ifnothtml
+@b{\spec\}@b{\param\}
+@end ifnothtml
+@end macro
+
+@macro specarg {spec, arg}
+@html
+<span class="spec">\spec\{</span><i>\arg\</i><span class="spec">}</span>
+@end html
+@ifnothtml
+@b{\spec\@{}@i{\arg\}@b{@}}
+@end ifnothtml
+@end macro
+
+@macro specargparam {spec, arg, param}
+@html
+<span class="spec">\spec\{</span><i>\arg\</i><span class="spec">}</span><span class="param">\param\</span>
+@end html
+@ifnothtml
+@b{\spec\@{}@i{\arg\}@b{@}}@b{\param\}
+@end ifnothtml
+@end macro
+
+@macro bold {text}
+@html
+<b>\text\</b>
+@end html
+@ifnothtml
+@b{\text\}
+@end ifnothtml
+@end macro
+
+@macro it {text}
+@html
+<i>\text\</i>
+@end html
+@ifnothtml
+@i{\text\}
+@end ifnothtml
+@end macro
+
+@ifhtml
+@set specdescr blue
+@set paramdescr green
+@end ifhtml
+@ifnothtml
+@set specdescr bold
+@set paramdescr italics
+@end ifnothtml
+
+@multitable {@b{%f\{}\i{Field}\b{\}0}} {Keywords concatenated together, with (optional) maximal number of keywords. Keywords must be separated by one of ;:, (semicolon, colon, or comma)}
+@item @b{Specifier} @tab @b{Replaced content description}
+@item @specparam{%a, [][]00}
+@tab Author last names, with (optional) maximal number of authors and number of characters
+@item @specparam{%A, [;][.][]0}
+@tab Author last names with initials, with (optional) maximal number of authors
+@item @specparam{%t, 0 }
+@tab Title, with (optional) maximal length
+@item @specparam{%T, 0 }
+@tab Title, with (optional) maximal number of words
+@item @spec{%y}
+@tab Year without century
+@item @spec{%Y}
+@tab Year with century
+@item @spec{%m}
+@tab Month as decimal number
+@item @specparam{%k, 0 }
+@tab Keywords concatenated together, with (optional) maximal number of keywords. 
+Keywords must be separated by one of ;:, (semicolon, colon, or comma)
+@item @spec{%l}
+@tab File name from Local-Url, without extension
+@item @spec{%L}
+@tab File name from Local-Url, with extension
+@item @spec{%e}
+@tab File extension from Local-Url (including the period)
+@item @specargparam{%f, Field, 0 }
+@tab Arbitrary field, with (optional) maximal length
+@item @specarg{%c, Field}
+@tab Arbitrary field as initials, e.g. @samp{JCIS} for @samp{Journal of Colloid and Interface Science} 
+in the @samp{Journal} BibTeX field
+@item @specparam{%r, 1}
+@tab Random lowercase letter, with (optional) number of characters
+@item @specparam{%R, 1}
+@tab Random uppercase letter, with (optional) number of characters
+@item @specparam{%d, 1}
+@tab Random number, with (optional) number of digits
+@item @specparam{%u, 1}
+@tab Unique lowercase letter, with (optional) number of characters (only once)
+@item @specparam{%U, 1}
+@tab Unique uppercase letter, with (optional) number of characters (only once)
+@item @specparam{%n, 1}
+@tab Unique number, with (optional) number of characters (only once)
+@item @spec{%0}
+@tab Escaped digit (0-9)
+@item @spec{%%}
+@tab Escaped percent character (if allowed)
+@item @spec{%[}
+@tab Escaped square bracket (if allowed)
+@item @spec{%]}
+@tab Escaped square bracket character (if allowed)
+@end multitable
+@noindent
+In the table above, @value{paramdescr} characters after the specifiers 
+indicate the optional parameters (the first number after an author specifier, 
+the number of authors, should be a single digit). Indicated in the table 
+are the parameter values that are used when they are not entered. 
+
+The special value of zero for an optional parameter is interpreted either as 
+@emph{all} (for the @samp{author}, @samp{title}, or @samp{field} specifiers), 
+@emph{sufficient} (for the @samp{unique} specifiers, i.e., sufficient to create a unique cite key), 
+or @emph{none} (for the @samp{random} specifiers). 
+
+The format can contain only a single one of the @samp{unique} specifiers 
+@spec{%u}, @spec{%U} and @spec{%n}. 
+
+The optional parameters delimited by square brackets after an author specifier 
+can be used to control the separator between author names and an optional @samp{et al.} suffix. 
+For @spec{%A}, the first one is the separator between two author names, 
+and the second one is the separator between the last name and the first initial. 
+
+Because a number right after most specifiers is interpreted as an optional parameter, 
+in order to use explicit digits right after a format specifier, one should use one of 
+the escape specifiers @spec{%0}-@spec{%9}. 
+
+The cite key format can contain, apart from the specifiers, only unaccented 
+alphanumeric characters (a-zA-Z0-9), (semi-)colons (:;), dashes (-) or periods (.). 
+Any generated part of the cite key will be converted to contain only those characters. 
+For example, accents are removed and spaces will be converted to dashes. 
+
+The format for the local-url can contain any character apart from colons (:). 
+To use an explicit percent character, use the escape specifier @spec{%%} 
+(except inside an optional argument delimited by square brackets). 
+
+@subheading Examples
+
+@example
+@emph{Bibliography:}
+M. McCracken, A. Maxwell, J. Howison, M. Routley, S. Spiegel, S. S. Porst, and C. M. Hofman,
+Bibdesk, a great application to manage your bibliographies,
+Source Forge, 1:96, 11 2004.
+@end example
+
+@table @asis
+@item Format string:
+@specparam{%a, 1}@bold{:}@spec{%Y}@specparam{%r,2}
+@item Resulting value:
+McCracken:2004yc
+@end table
+
+@table @asis
+@item Format string:
+@specparam{%a, 1}@bold{:}@spec{%Y}@spec{%u}
+@item Resulting value:
+McCracken:2004b
+@end table
+
+@table @asis
+@item Format string:
+@specparam{%a, 03}@spec{%y}@spec{%m}
+@item Resulting value:
+McCMaxHowRouSpiPorHof0411
+@end table
+
+@table @asis
+@item Format string:
+@specparam{%A, [;][.][;etal]2}@bold{:}@spec{%y}@specparam{%t, 20}
+@item Resulting value:
+McCracken.M;Maxwell.A;etal:2004Bibdesk-a-great-appl
+@end table
+
+@table @asis
+@item Format string:
+@specparam{%a, [;][;etal]24}@bold{:}@specarg{%c,Journal}@specarg{%f, Volume}
+@item Resulting value:
+McCr;Maxw;etal:SF1
+@end table
+
+
+@subheading Setting the cite key format
+
+See the discussion in ``@ref{Cite Key Preferences} Preferences'' for
+details on how to set the cite key format.
+
+
+@bye
+
+--nothing past bye gets processed...
+@multitable @columnfractions .12 .88
+@item Portions of Bibdesk
+@item @tab Copyright @copyright{} 2001 - 2005 Michael O. McCracken@*
+@item @tab Copyright @copyright{} 2002 - 2005 Adam Maxwell@*
+@item @tab Copyright @copyright{} 2002 - 2005 Christiaan Hofman@* 
+@item @tab Copyright @copyright{} many others.@*
+@item @tab
+@item Portions of this manual
+@item @tab Copyright @copyright{} 2001 - 2005 Michael O. McCracken (manual)@*
+@item @tab Copyright @copyright{} 2002 - 2005 Adam Maxwell@*
+@item @tab Copyright @copyright{} 2002 - 2005 Christiaan Hofman@* 
+@item @tab Copyright @copyright{} many others.@*
+@end multitable

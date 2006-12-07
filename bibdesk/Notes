@@ -1,0 +1,43 @@
+Notes about the .bdsk File Format Changes.
+
+Now we have a separate NSDocument subclass (BDSKLibrary) and windowcontroller (BDSKLibraryController)
+
+The preliminary code that was in BibDocument is obsolete and being moved over.
+
+BDSKLibraryController only handles the source list and the search field and determining which class to use to display the current pubs.
+The concept of which pubs are the current selected pubs belongs to the librarycontroller, which uses notifications to tell displayers when those change.
+
+The classes that display pubs are BDSKItemDisplayControllers, and they have their own nibs.
+
+Todo:
+
+*** Current work (mike):
+
+* I set up librarycontroller to change status string when selection changes, but the string isn't quite right.
+ - not sure if the selectedItems is being set correctly...
+
+*(related?): undo and display notifications aren't working quite right.
+
+Later todos:
+
+- Undo support for adding/removing collections in BDSKLibrary
+
+- move the custom-cite drawer to an itemdisplaycontroller nib somewhere once we put that part of the tableview datasource somewhere. (Or should this be global, as yet another itemdisplaycontroller?)
+
+- actual support for multiple itemdisplaycontrollers, and for matching the class that the currentCollection contains to what itemDisplayController we want to 
+
+- write more itemdisplaycontrollers, including one that duplicates the current bibdocument functionality, and at least one for bibnote and bibauthor. BDSKExternalSources just provide bibitems, so they will be displayed by the same itemdisplaycontrollers as the bibitem collections.
+
+- exporter creation/editing UI needs to be moved to BDSKLibraryController.
+
+- write more exporters
+
+- write importers
+
+- UI for outlineview is important. There's lots of drag-n-drop I want to support: 
+    - dragging files that contain bib data (.bib, .ris, .xml, etc) should be added as new collections
+    - dragging external sources into the library should create new collections with the copied current contents to 'freeze' the external source, and leave the source itself alone.
+    - dragging notes into the library should create new items, and there ought to be a nice UI for getting info from the notes efficiently into a structured form.
+    - should support modifier keys, since sometimes you want to move and sometimes you want to copy items between collections. Which is the default? Probably try to echo iTunes here.
+
+- flesh out bibnote and bdskremotesource classes.
