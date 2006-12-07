@@ -1,0 +1,109 @@
+{
+    IBClasses = (
+        {
+            ACTIONS = {
+                checkForUpdates = id; 
+                gotoError = id; 
+                gotoErrorObj = id; 
+                hideErrorPanel = id; 
+                openEditWindowWithFile = id; 
+                openUsingFilter = id; 
+                reopenDocument = id; 
+                showErrorPanel = id; 
+                showFindPanel = id; 
+                showPreferencePanel = id; 
+                showPreviewPanel = id; 
+                toggleShowingErrorPanel = id; 
+                toggleShowingPreviewPanel = id; 
+                visitWebSite = id; 
+            }; 
+            CLASS = BibAppController; 
+            LANGUAGE = ObjC; 
+            OUTLETS = {
+                errorPanel = NSPanel; 
+                errorTableView = NSTableView; 
+                openUsingFilterAccessoryView = NSView; 
+                openUsingFilterTextField = NSTextField; 
+                sourceEditTextView = NSTextView; 
+                sourceEditWindow = NSWindow; 
+            }; 
+            SUPERCLASS = NSObject; 
+        }, 
+        {
+            ACTIONS = {
+                clearQuickSearch = id; 
+                contextualMenuAddTableColumn = id; 
+                contextualMenuSelectTableColumn = id; 
+                copyAsBibTex = id; 
+                copyAsPDF = id; 
+                copyAsTex = id; 
+                delPub = id; 
+                didChangeQuickSearchKey = id; 
+                didChangeSortKey = id; 
+                dismissAddFieldSheet = id; 
+                editPubCmd = id; 
+                emailPubCmd = id; 
+                exportAsHTML = id; 
+                exportAsRSS = id; 
+                newPub = id; 
+                openCustomCitePrefPane = id; 
+                quickSearchAddField = id; 
+                splitViewDoubleClick = id; 
+                toggleShowingCustomCiteDrawer = id; 
+            }; 
+            CLASS = BibDocument; 
+            LANGUAGE = ObjC; 
+            OUTLETS = {
+                addFieldPrompt = NSTextField; 
+                addFieldSheet = NSWindow; 
+                addFieldTextField = NSTextField; 
+                bibListViews = NSWindow; 
+                ccTableView = BDSKCustomCiteTableView; 
+                contextualMenu = NSMenu; 
+                ctxCopyBibTex = NSMenuItem; 
+                ctxCopyPDF = NSMenuItem; 
+                ctxCopyTex = NSMenuItem; 
+                customCiteDrawer = NSDrawer; 
+                documentWindow = NSWindow; 
+                dummyView = NSBox; 
+                infoLine = NSTextField; 
+                openCustomCitePrefsButton = NSButton; 
+                outlineBox = NSView; 
+                outlineView = NSOutlineView; 
+                previewField = NSTextView; 
+                quickSearchBox = NSBox; 
+                quickSearchButton = NSPopUpButton; 
+                quickSearchClearButton = NSButton; 
+                quickSearchTextField = NSTextField; 
+                rssExportAccessoryView = NSView; 
+                rssExportForm = NSForm; 
+                rssExportTextField = NSTextField; 
+                sortKeyButton = NSPopUpButton; 
+                sortKeyView = NSView; 
+                splitView = OASplitView; 
+                tableBox = NSView; 
+                tableView = BDSKDragTableView; 
+            }; 
+            SUPERCLASS = NSDocument; 
+        }, 
+        {
+            ACTIONS = {
+                copyAsBibTex = id; 
+                copyAsPDF = id; 
+                copyAsTex = id; 
+                delPub = id; 
+                editPubCmd = id; 
+                emailPubCmd = id; 
+                exportAsHTML = id; 
+                exportAsRSS = id; 
+                newPub = id; 
+                toggle = id; 
+                toggleShowingCustomCiteDrawer = id; 
+            }; 
+            CLASS = FirstResponder; 
+            LANGUAGE = ObjC; 
+            SUPERCLASS = NSObject; 
+        }
+    ); 
+    IBVersion = 1; 
+}
