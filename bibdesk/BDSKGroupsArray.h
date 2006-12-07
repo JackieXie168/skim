@@ -38,6 +38,14 @@
 
 #import <Cocoa/Cocoa.h>
 
+enum {
+    BDSKSharedGroupType,
+	BDSKURLGroupType,
+	BDSKScriptGroupType,
+    BDSKSmartGroupType,
+	BDSKStaticGroupType,
+	BDSKCategoryGroupType
+};
 
 @class BDSKGroup, BDSKSmartGroup, BDSKStaticGroup, BDSKURLGroup, BDSKScriptGroup, BibDocument;
 
@@ -107,13 +115,7 @@
 - (BibDocument *)document;
 - (void)setDocument:(BibDocument *)newDocument;
 
-- (void)setSmartGroupsFromSerializedData:(NSData *)data;
-- (void)setStaticGroupsFromSerializedData:(NSData *)data;
-- (void)setURLGroupsFromSerializedData:(NSData *)data;
-- (void)setScriptGroupsFromSerializedData:(NSData *)data;
-- (NSData *)serializedSmartGroupsData;
-- (NSData *)serializedStaticGroupsData;
-- (NSData *)serializedURLGroupsData;
-- (NSData *)serializedScriptGroupsData;
+- (void)setGroupsOfType:(int)groupType fromSerializedData:(NSData *)data;
+- (NSData *)serializedGroupsDataOfType:(int)groupType;
 
 @end

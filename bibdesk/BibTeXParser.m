@@ -817,13 +817,13 @@ static void appendCommentToFrontmatterOrAddGroups(AST *entry, NSMutableString *f
                 if(range.location != NSNotFound){
                     [commentStr deleteCharactersInRange:NSMakeRange(range.location,[commentStr length] - range.location)];
                     if (isSmartGroup == TRUE)
-                        [[document groups] setSmartGroupsFromSerializedData:[commentStr dataUsingEncoding:NSUTF8StringEncoding]];
+                        [[document groups] setGroupsOfType:BDSKSmartGroupType fromSerializedData:[commentStr dataUsingEncoding:NSUTF8StringEncoding]];
                     else if (isStaticGroup == TRUE)
-                        [[document groups] setStaticGroupsFromSerializedData:[commentStr dataUsingEncoding:NSUTF8StringEncoding]];
+                        [[document groups] setGroupsOfType:BDSKStaticGroupType fromSerializedData:[commentStr dataUsingEncoding:NSUTF8StringEncoding]];
                     else if (isURLGroup == TRUE)
-                        [[document groups] setURLGroupsFromSerializedData:[commentStr dataUsingEncoding:NSUTF8StringEncoding]];
+                        [[document groups] setGroupsOfType:BDSKURLGroupType fromSerializedData:[commentStr dataUsingEncoding:NSUTF8StringEncoding]];
                     else
-                        [[document groups] setScriptGroupsFromSerializedData:[commentStr dataUsingEncoding:NSUTF8StringEncoding]];
+                        [[document groups] setGroupsOfType:BDSKScriptGroupType fromSerializedData:[commentStr dataUsingEncoding:NSUTF8StringEncoding]];
                 }
             }
         }
