@@ -1,0 +1,1001 @@
+% Essential LaTeX - Jon Warbrick 02/88
+
+% Copyright (C) Jon Warbrick and Plymouth Polytechnic 1989
+% Permission is granted to reproduce the document in any way providing
+% that it is distributed for free, except for any reasonable charges for
+% printing, distribution, staff time, etc.  Direct commercial
+% exploitation is not permitted.  Extracts may be made from this
+% document providing an acknolwledgment of the original source is
+% maintained.
+
+\documentstyle[11pt,hndout]{article}
+
+% counters used for the sample file example
+
+\newcounter{savesection}
+\newcounter{savesubsection}
+
+% commands to do 'LaTeX Manual-like' examples
+
+\newlength{\egwidth}\setlength{\egwidth}{0.42\textwidth}
+
+\newenvironment{eg}%
+{\begin{list}{}{\setlength{\leftmargin}{0.05\textwidth}%
+\setlength{\rightmargin}{\leftmargin}}\item[]\footnotesize}%
+{\end{list}}
+
+\newenvironment{egbox}%
+{\begin{minipage}[t]{\egwidth}}%
+{\end{minipage}}
+
+\newcommand{\egstart}{\begin{eg}\begin{egbox}}
+\newcommand{\egmid}{\end{egbox}\hfill\begin{egbox}}
+\newcommand{\egend}{\end{egbox}\end{eg}}
+
+% one or two other commands
+
+\newcommand{\fn}[1]{\hbox{\tt #1}}
+\newcommand{\llo}[1]{(see line #1)}
+\newcommand{\lls}[1]{(see lines #1)}
+\newcommand{\bs}{$\backslash$}
+
+\title{Essential \LaTeX}
+\author{Jon Warbrick}
+\docnumber{U05.04--202}
+
+\begin{document}
+
+\maketitle
+
+\section{Introduction}
+
+This document is an attempt to give you all the essential
+information that you will need in order to use the \LaTeX{} Document
+Preparation System.  Only very basic features are covered, and a
+vast amount of detail has been omitted.  In a document of this size
+it is not possible to include everything that you might need to know,
+and if you intend to make extensive use of the program you should
+refer to a more complete reference.  Attempting to produce complex
+documents using only the information found below will require
+much more work than it should, and will probably produce a less
+than satisfactory result.
+
+The main reference for \LaTeX{} is {\em The \LaTeX{} User's guide and
+Reference Manual\/} by Leslie Lamport (M05.04--200).  This contains
+all the information that you will ever need to know about the program,
+and you will need access to a copy if you are to use \LaTeX{}
+seriously.
+
+Both the Manual and this document avoid mentioning anything that
+depends on the particular computer system that you are using.  This is
+because \LaTeX{} is available on a number of systems and they all
+differ in one way or another.  Instead, they both refer to a {\em local
+guide\/} for their particular system.  For \LaTeX{} on the Prime, the
+{\em local guide\/} is the handout {\em The Local Guide to \LaTeX{} on
+the Plymouth Prime System\/} (U05.04--201).
+
+\section{How does \LaTeX{} work?}
+
+In order to use \LaTeX{} you generate a file containing
+both the text that you wish to print and instructions to tell \LaTeX{}
+how you want it to appear.  You will normally create
+this file using your system's text editor.  You can give the file any name you
+like, but it should end ``\fn{.TEX}'' to identify the file's contents.
+You then get \LaTeX{} to process the file, and it creates a
+new file of typesetting commands; this has the same name as your file but
+the ``\fn{.TEX}'' ending is replaced by ``\fn{.DVI}''.  This stands for
+`{\it D\/}e{\it v\/}ice {\it I\/}ndependent' and, as the name implies, this file
+can be used to create output on a range of printing devices.
+Your {\em local guide\/} will go into more detail.
+
+Rather than encourage you to dictate exactly how your document
+should be laid out, \LaTeX{} instructions allow you describe its
+{\em logical structure\/}.  For example, you can think of a quotation
+embedded within your text as an element of this logical structure: you would
+normally expect a quotation to be displayed in a recognisable style to set it
+off from the rest of the text.
+A human typesetter would recognise the quotation and handle
+it accordingly, but since \LaTeX{} is only a computer program it requires
+your help.  There are therefore \LaTeX{} commands that allow you to
+identify quotations and as a result allow \LaTeX{} to typeset them correctly.
+
+Fundamental to \LaTeX{} is the idea of a {\em document style\/} that
+determines exactly how a document will be formatted.  \LaTeX{} provides
+standard document styles that describe how standard logical structures
+(such as quotations) should be formatted.  You may have to supplement
+these styles by specifying the formatting of logical structures
+peculiar to your document, such as mathematical formulae.  You can
+also modify the standard document styles or even create an entirely
+new one, though you should know the basic principles of typographical
+design before creating a radically new style.
+
+There are a number of good reasons for concentrating on the logical
+structure rather than on the appearance of a document.  It prevents
+you from making elementary typographical errors in the mistaken
+idea that they improve the aesthetics of a document---you should
+remember that the primary function of document design is to make
+documents easier to read, not prettier.  It is more flexible, since
+you only need to alter the definition of the quotation style
+to change the appearance of all the quotations in a document.  Most
+important of all, logical design encourages better writing.
+A visual system makes it easier to create visual effects rather than
+a coherent structure; logical design encourages you to concentrate on
+your writing and makes it harder to use formatting as a substitute
+for good writing.
+
+\section{A Sample \LaTeX{} file}
+
+\begin{figure} %---------------------------------------------------------------
+{\footnotesize\begin{verbatim}
+ 1: % SMALL.TEX -- Released 5 July 1985
+ 2: % USE THIS FILE AS A MODEL FOR MAKING YOUR OWN LaTeX INPUT FILE.
+ 3: % EVERYTHING TO THE RIGHT OF A  %  IS A REMARK TO YOU AND IS IGNORED
+ 4: % BY LaTeX.
+ 5: %
+ 6: % WARNING!  DO NOT TYPE ANY OF THE FOLLOWING 10 CHARACTERS EXCEPT AS
+ 7: % DIRECTED:        &   $   #   %   _   {   }   ^   ~   \
+ 8:
+ 9: \documentstyle[11pt,a4]{article}  % YOUR INPUT FILE MUST CONTAIN THESE
+10: \begin{document}                  % TWO LINES PLUS THE \end COMMAND AT
+11:                                   % THE END
+12:
+13: \section{Simple Text}          % THIS COMMAND MAKES A SECTION TITLE.
+14:
+15: Words are separated by one or    more      spaces.  Paragraphs are
+16:     separated by one or more blank lines.  The output is not affected
+17: by adding extra spaces or extra blank lines to the input file.
+18:
+19:
+20: Double quotes are typed like this: ``quoted text''.
+21: Single quotes are typed like this: `single-quoted text'.
+22:
+23: Long dashes are typed as three dash characters---like this.
+24:
+25: Italic text is typed like this: {\em this is italic text}.
+26: Bold   text is typed like this: {\bf this is  bold  text}.
+27:
+28: \subsection{A Warning or Two}        % THIS MAKES A SUBSECTION TITLE.
+29:
+30: If you get too much space after a mid-sentence period---abbreviations
+31: like etc.\ are the common culprits)---then type a backslash followed by
+32: a space after the period, as in this sentence.
+33:
+34: Remember, don't type the 10 special characters (such as dollar sign and
+35: backslash) except as directed!  The following seven are printed by
+36: typing a backslash in front of them:  \$  \&  \#  \%  \_  \{  and  \}.
+37: The manual tells how to make other symbols.
+38:
+39: \end{document}                    % THE INPUT FILE ENDS LIKE THIS
+\end{verbatim}  }
+
+\caption{A Sample \LaTeX{} File}\label{fig:sample}
+
+\end{figure} %-----------------------------------------------------------------
+
+\begin{figure} %---------------------------------------------------------------
+
+% This figure will only work if the main style of this document
+% is article, or something like article, because that's what the example
+% file thinks it is.  Unfortunately, I can't see how to include a
+% \documentstyle command in a figure!
+
+\setcounter{savesection}{\value{section}}
+\setcounter{section}{0}
+\setcounter{savesubsection}{\value{subsection}}
+\setcounter{subsection}{0}
+
+\setlength{\parindent}{17pt}
+\setlength{\parskip}{0pt}
+
+\noindent\rule{\textwidth}{0.8pt}
+
+% SMALL.TEX -- Released 5 July 1985
+% USE THIS FILE AS A MODEL FOR MAKING YOUR OWN LaTeX INPUT FILE.
+% EVERYTHING TO THE RIGHT OF A  %  IS A REMARK TO YOU AND IS IGNORED
+% BY LaTeX.
+%
+% WARNING!  DO NOT TYPE ANY OF THE FOLLOWING 10 CHARACTERS EXCEPT AS
+% DIRECTED:        &   $   #   %   _   {   }   ^   ~   \
+
+% .........................................................................
+% \documentstyle[a4]{article}    % YOUR INPUT FILE MUST CONTAIN THESE
+% \begin{document}               % TWO LINES PLUS THE \end COMMAND AT
+%                                % THE END
+% .........................................................................
+
+\section{Simple Text}          % THIS COMMAND MAKES A SECTION TITLE.
+
+Words are separated by one or    more      spaces.  Paragraphs are
+    separated by one or more blank lines.  The output is not affected
+by adding extra spaces or extra blank lines to the input file.
+
+
+Double quotes are typed like this: ``quoted text''.
+Single quotes are typed like this: `single-quoted text'.
+
+Long dashes are typed as three dash characters---like this.
+
+Italic text is typed like this: {\em this is italic text}.
+Bold   text is typed like this: {\bf this is  bold  text}.
+
+\subsection{A Warning or Two}        % THIS MAKES A SUBSECTION TITLE.
+
+If you get too much space after a mid-sentence period---abbreviations
+like etc.\ are the common culprits)---then type a backslash followed by
+a space after the period, as in this sentence.
+
+Remember, don't type the 10 special characters (such as dollar sign and
+backslash) except as directed!  The following seven are printed by
+typing a backslash in front of them:  \$  \&  \#  \%  \_  \{  and  \}.
+The manual tells how to make other symbols.
+
+% ................
+% \end{document}
+% ................
+
+\noindent\rule{\textwidth}{0.8pt}
+
+\setcounter{section}{\value{savesection}}
+\setcounter{subsection}{\value{savesubsection}}
+
+\caption{The result of processing the sample file}\label{fig:result}
+
+\end{figure} % ----------------------------------------------------------------
+
+Have a look at the example \LaTeX{} file in Figure~\ref{fig:sample}.  It
+is a slightly modified copy of the standard \LaTeX{} example file
+\fn{SMALL.TEX}.  Your local guide will tell you how you can make
+your own copy of this file.  The line numbers down the left-hand side
+are not part of the file, but have been added to make it easier to
+identify various portions. Also have a look at Figure~\ref{fig:result} which
+shows, more or less, the result of processing this file.
+
+\subsection{Running Text}
+
+Most documents consist almost entirely of running text---words formed
+into sentences, which are in turn formed into paragraphs---and the example file
+is no exception. Describing running text poses no problems, you just type
+it in naturally. In the output that it produces, \LaTeX{} will fill
+lines and adjust the
+spacing between words to give tidy left and right margins.
+The spacing and distribution of the words in your input
+file will have no effect at all on the eventual output.
+Any number of spaces in your input file
+are treated as a single space by \LaTeX{}, it also regards the
+end of each line as a space between words \lls{15--17}.
+A new paragraph is
+indicated by a blank line in your input file, so don't leave
+any blank lines unless you really wish to start a paragraph.
+
+\LaTeX{} reserves a number of the less common keyboard characters for its
+own use. The ten characters
+\begin{quote}\begin{verbatim}
+#  $  %  &  ~  _  ^  \  {  }
+\end{verbatim}\end{quote}
+should not appear as part of your text, because if they do
+\LaTeX{} will get confused.
+
+\subsection{\LaTeX{} Commands}
+
+There are a number of words in the file that start `\verb|\|' \lls{9, 10 and
+13}.  These are \LaTeX{} {\em commands\/} and they describe the structure
+of your document.
+There are a number of things that you should realise about these commands:
+\begin{itemize}
+
+\item All \LaTeX{} commands consist of a `\verb|\|' followed by one or more
+characters.
+
+\item \LaTeX{} commands should be typed using the correct mixture of upper- and
+lower-case letters.  \verb|\BEGIN| is {\em not\/} the same as \verb|\begin|.
+
+\item Some commands are placed within your text.  These are used to
+switch things, like different typestyles, on and off. The \verb|\em| command
+is used like this to emphasise text, normally by changing to an {\it italic\/}
+typestyle \llo{25}.  The command and the text are always enclosed between
+`\verb|{|' and `\verb|}|'---the `\verb|{\em|' turns the effect on and and the
+`\verb|}|' turns it off.
+
+\item There are other commands that look like
+\begin{quote}\begin{verbatim}
+\command{text}
+\end{verbatim}\end{quote}
+In this case the text is called the ``argument'' of the command.  The
+\verb|\section| command is like this \llo{13}.
+Sometimes you have to use curly brackets `\verb|{}|' to enclose the argument,
+sometimes square brackets `\verb|[]|', and sometimes both at once.
+There is method behind this apparent madness, but for the
+time being you should be sure to copy the commands exactly as given.
+
+\item When a command's name is made up entirely of letters, you must make sure
+that the end of the command is marked by something that isn't a letter.
+This is usually either the opening bracket around the command's argument, or
+it's a space.  When it's a space, that space is always ignored by \LaTeX. We
+will see later that this can sometimes be a problem.
+
+\end{itemize}
+
+\subsection{Overall structure}
+
+There are some \LaTeX{} commands that must appear in every document.
+The actual text of the document always starts with a
+\verb|\begin{document}| command and ends with an \verb|\end{document}|
+command \lls{10 and 39}.  Anything that comes after the
+\verb|\end{document}| command is ignored.  Everything that comes
+before the \verb|\begin{document}| command is called the
+{\em preamble\/}. The preamble can only contain \LaTeX{} commands
+to describe the document's style.
+
+One command that must appear in the preamble is the
+\verb|\documentstyle| command \llo{9}.  This command specifies
+the overall style for the document.  Our example file is a simple
+technical document, and uses the {\tt article\/} style, modified to
+print in eleven-point type on A4 paper.
+There are other styles that you can use, as you will
+find out later on in this document.
+
+\subsection{Other Things to Look At}
+
+\LaTeX{} can print both opening and closing quote characters, and can manage
+either of these either single or double.  To do this it uses the two quote
+characters from your keyboard: {\tt `} and {\tt '}. You will probably think of
+{\tt '} as the ordinary single quote character which probably looks like
+{\tt\symbol{'23}} or {\tt\symbol{'15}} on your keyboard,
+and {\tt `} as a ``funny''
+character that probably appears as {\tt\symbol{'22}}.
+You type these characters once for single quote \llo{21},  and twice for
+double quotes \llo{20}. The double quote character {\tt "} itself
+is almost never used.
+
+\LaTeX{} can produce three different kinds of dashes.
+A long dash, for use as a punctuation symbol, as is typed as three dash
+characters in a row, like this `\verb|---|' \llo{23}.  A shorter dash,
+used between numbers as in `10--20', is typed as two dash
+characters in a row, while a single dash character is used as a hyphen.
+
+From time to time you will need to include one or more of the \LaTeX{}
+special symbols in your text.  Seven of them can be printed by
+making them into commands by proceeding them by backslash
+\llo{36}.  The remaining three symbols can be produced by more
+advanced commands, as can symbols that do not appear on your keyboard
+such as \dag, \ddag, \S, \pounds, \copyright, $\sharp$ and $\clubsuit$.
+
+It is sometimes useful to include comments in a \LaTeX{} file, to remind
+you of what you have done or why you did it.  Everything to the
+right of a \verb|%| sign is ignored by \LaTeX{}, and so it can
+be used to introduce a comment.
+
+\section{Document Styles and Style Options}\label{sec:styles}
+
+There are four standard document styles available in \LaTeX:
+\nobreak
+\begin{description}
+
+\item[{\tt article}]  intended for short documents and articles for publication.
+Articles do not have chapters, and when \verb|\maketitle| is used to generate
+a title (see Section~\ref{sec:title}) it appears at the top of the first page
+rather than on a page of its own.
+
+\item[{\tt report}] intended for longer technical documents.
+It is similar to
+{\tt article}, except that it contains chapters and the title appears on a page
+of its own.
+
+\item[{\tt book}] intended as a basis for book publication.  Page layout is
+adjusted assuming that the output will eventually be used to print on
+both sides of the paper.
+
+\item[{\tt letter}]  intended for producing personal letters.  This style
+will allow you to produce all the elements of a well laid out letter:
+addresses, date, signature, etc.
+\end{description}
+
+These standard styles can be modified by a number of {\em style options\/}.
+They appear in square brackets after the \verb|\documentstyle| command.
+Only one style can ever be used but you can have more than one style option,
+in which case their names should be separated by commas.  The standard style
+options are:
+\begin{description}
+
+\item[{\tt 11pt}]  prints the document using eleven-point type for the running
+ text
+rather that the ten-point type normally used. Eleven-point type is about
+ten percent larger than ten-point.
+
+\item[{\tt 12pt}]  prints the document using twelve-point type for the running
+ text
+rather than the ten-point type normally used. Twelve-point type is about
+twenty percent larger than ten-point.
+
+\item[{\tt twoside}]  causes documents in the article or report styles to be
+formatted for printing on both sides of the paper.  This is the default for the
+book style.
+
+\item[{\tt twocolumn}] produces two column on each page.
+
+\item[{\tt titlepage}]  causes the \verb|\maketitle| command to generate a
+title on a separate page for documents in the \fn{article} style.
+A separate page is always used in both the \fn{report} and \fn{book} styles.
+
+\end{description}
+There is one further option which, while not standard to \LaTeX{}, is very
+useful in all European countries. The \fn{a4} option causes the output in all
+of the standard styles to be adjusted to fit correctly on A4 paper.  \LaTeX{}
+was designed in America where the standard paper is shorter and slightly wider
+than A4; without this option you will find that your output looks a little
+strange.
+
+\section{Environments}
+
+We mentioned earlier the idea of identifying a quotation to \LaTeX{} so that
+it could arrange to typeset it correctly. To do this you enclose the
+quotation between the commands \verb|\begin{quotation}| and
+\verb|\end{quotation}|.
+This is an example of a \LaTeX{} construction called an {\em environment\/}.
+A number of
+special effects are obtained by putting text into particular environments.
+
+\subsection{Quotations}
+
+There are two environments for quotations: \fn{quote} and \fn{quotation}.
+\fn{quote} is used either for a short quotation or for a sequence of
+short quotations separated by blank lines:
+
+\egstart
+\begin{verbatim}
+US presidents ... pithy remarks:
+\begin{quote}
+The buck stops here.
+
+I am not a crook.
+\end{quote}
+\end{verbatim}
+\egmid%
+US presidents have been known for their pithy remarks:
+\begin{quote}
+The buck stops here.
+
+I am not a crook.
+\end{quote}
+\egend
+
+Use the \fn{quotation} environment for quotations that consist of more
+than one paragraph.  Paragraphs in the input are separated by blank
+lines as usual:
+\egstart
+\begin{verbatim}
+Here is some advice to remember:
+\begin{quotation}
+Environments for making
+...other things as well.
+
+Many problems
+...environments.
+\end{quotation}
+\end{verbatim}
+\egmid%
+Here is some advice to remember:
+\begin{quotation}
+Environments for making quotations
+can be used for other things as well.
+
+Many problems can be solved by
+novel applications of existing
+environments.
+\end{quotation}
+\egend
+
+\subsection{Centering and Flushing}
+
+Text can be centred on the page by putting it within the \fn{center}
+environment, and it will appear flush against the left or right margins if it
+is placed within the \fn{flushleft} or \fn{flushright} environments.
+Notice the
+spelling of \fn{center}---unfortunately \LaTeX{} doesn't understand the English
+spelling.
+
+Text within these environments will be formatted in the normal way, in
+{\samepage
+particular the ends of the lines that you type are just regarded as spaces.  To
+indicate a ``newline'' you need to type the \verb|\\| command.  For example:
+\egstart
+\begin{verbatim}
+\begin{center}
+one
+two
+three \\
+four \\
+five
+\end{center}
+\end{verbatim}
+\egmid%
+\begin{center}
+one
+two
+three \\
+four \\
+five
+\end{center}
+\egend
+}
+
+\subsection{Lists}
+
+There are three environments for constructing lists.  In each one each new
+item is begun with an \verb|\item| command.  In the \fn{itemize} environment
+the start of each item is given a marker, in the \fn{enumerate}
+environment each item is marked by a number.  These environments can be nested
+within each other in which case the amount of indentation used
+is adjusted accordingly:
+\egstart
+\begin{verbatim}
+\begin{itemize}
+\item Itemized lists are handy.
+\item However, don't forget
+  \begin{enumerate}
+  \item The `item' command.
+  \item The `end' command.
+  \end{enumerate}
+\end{itemize}
+\end{verbatim}
+\egmid%
+\begin{itemize}
+\item Itemized lists are handy.
+\item However, don't forget
+  \begin{enumerate}
+  \item The `item' command.
+  \item The `end' command.
+  \end{enumerate}
+\end{itemize}
+\egend
+
+The third list making environment is \fn{description}.  In a description you
+specify the item labels inside square brackets after the \verb|\item| command.
+For example:
+\egstart
+\begin{verbatim}
+Three animals that you should
+know about are:
+\begin{description}
+  \item[gnat] A small animal...
+  \item[gnu] A large animal...
+  \item[armadillo] A ...
+\end{description}
+\end{verbatim}
+\egmid%
+Three animals that you should
+know about are:
+\begin{description}
+  \item[gnat] A small animal that causes no end of trouble.
+  \item[gnu] A large animal that causes no end of trouble.
+  \item[armadillo] A medium-sized animal.
+\end{description}
+\egend
+
+\subsection{Tables}
+
+Because \LaTeX{} will almost always convert a sequence of spaces
+into a single space,
+it can be rather difficult to lay out tables.  See what happens in this example
+\nolinebreak
+\egstart
+\begin{verbatim}
+\begin{flushleft}
+Income  Expenditure Result   \\
+20s 0d  19s 11d     happiness \\
+20s 0d  20s 1d      misery  \\
+\end{flushleft}
+\end{verbatim}
+\egmid%
+\begin{flushleft}
+Income  Expenditure Result   \\
+20s 0d  19s 11d     happiness \\
+20s 0d  20s 1d      misery  \\
+\end{flushleft}
+\egend
+
+The \fn{tabbing} environment overcomes this problem. Within it you set
+tabstops and tab to them much like you do on a typewriter.  Tabstops are
+set with the \verb|\=| command, and the \verb|\>| command moves to the
+next stop.  The
+\verb|\\| command is used to separate each line.  A line that ends \verb|\kill|
+produces no output, and can be used to set tabstops:
+\nolinebreak
+\egstart
+\begin{verbatim}
+\begin{tabbing}
+Income \=Expenditure \=    \kill
+Income \>Expenditure \>Result \\
+20s 0d \>19s 11d \>Happiness   \\
+20s 0d \>20s 1d  \>Misery    \\
+\end{tabbing}
+\end{verbatim}
+\egmid%
+\begin{tabbing}
+Income \=Expenditure \=    \kill
+Income \>Expenditure \>Result \\
+20s 0d \>19s 11d \>Happiness   \\
+20s 0d \>20s 1d  \>Misery    \\
+\end{tabbing}
+\egend
+
+Unlike a typewriter's tab key, the \verb|\>| command always moves to the next
+tabstop in sequence, even if this means moving to the left.  This can cause
+text to be overwritten if the gap between two tabstops is too small.
+
+\subsection{Verbatim Output}
+
+Sometimes you will want to include text exactly as it appears on a terminal
+screen.  For example, you might want to include part of a computer program.
+Not only do you want \LaTeX{} to stop playing around with the layout of your
+text, you also want to be able to type all the characters on your keyboard
+without confusing \LaTeX. The \fn{verbatim} environment has this effect:
+\egstart
+\begin{flushleft}
+\verb|The section of program in|  \\
+\verb|question is:|               \\
+\verb|\begin{verbatim}|           \\
+\verb|{ this finds %a & %b }|     \\[2ex]
+
+\verb|for i := 1 to 27 do|        \\
+\ \ \ \verb|begin|                \\
+\ \ \ \verb|table[i] := fn(i);|   \\
+\ \ \ \verb|process(i)|           \\
+\ \ \ \verb|end;|                 \\
+\verb|\end{verbatim}|
+\end{flushleft}
+\egmid%
+The section of program in
+question is:
+\begin{verbatim}
+{ this finds %a & %b }
+
+for i := 1 to 27 do
+   begin
+   table[i] := fn(i);
+   process(i)
+   end;
+
+\end{verbatim}
+\egend
+
+\section{Type Styles}
+
+We have already come across the \verb|\em| command for changing
+typeface.  Here is a full list of the available typefaces:
+\begin{quote}\begin{tabbing}
+\verb|\sc|~~ \= \sc Small Caps~~~ \= \verb|\sc|~~ \= \sc Small Caps~~~
+                                  \= \verb|\sc|~~ \=                   \kill
+\verb|\rm|   \> \rm Roman         \> \verb|\it|   \> \it Italic
+                                  \> \verb|\sc|   \> \sc Small Caps    \\
+\verb|\em|   \> \em Emphatic      \> \verb|\sl| \> \sl Slanted
+                                  \> \verb|\tt|   \> \tt Typewriter     \\
+\verb|\bf|   \> \bf Boldface      \> \verb|\sf| \> \sf Sans Serif
+\end{tabbing}\end{quote}
+
+Remember that these commands are used {\em inside\/} a pair of braces to limit
+the amount of text that they effect.  In addition to the eight typeface
+commands, there are a set of commands that alter the size of the type.  These
+commands are:
+\begin{quotation}\begin{tabbing}
+\verb|\footnotesize|~~ \= \verb|\footnotesize|~~ \= \verb|\footnotesize| \=
+ \kill
+\verb|\tiny|           \> \verb|\small|          \> \verb|\large|        \>
+\verb|\huge|  \\
+\verb|\scriptsize|     \> \verb|\normalsize|     \> \verb|\Large|        \>
+\verb|\Huge|  \\
+\verb|\footnotesize|   \>                        \> \verb|\LARGE|
+\end{tabbing}\end{quotation}
+
+\section{Sectioning Commands and Tables of Contents}
+
+Technical documents, like this one, are often divided into sections.
+Each section has a heading containing a title and a number for easy
+reference.  \LaTeX{} has a series of commands that will allow you to identify
+different sorts of sections.  Once you have done this \LaTeX{} takes on the
+responsibility of laying out the title and of providing the numbers.
+
+The commands that you can use are:
+\begin{quote}\begin{tabbing}
+\verb|\subsubsection| \= \verb|\subsubsection|~~~~~~~~~~ \=           \kill
+\verb|\chapter|       \> \verb|\subsection|    \> \verb|\paragraph|    \\
+\verb|\section|       \> \verb|\subsubsection| \> \verb|\subparagraph| \\
+\end{tabbing}\end{quote}
+The naming of these last two is unfortunate, since they do not really have
+anything to do with `paragraphs' in the normal sense of the word; they are just
+lower levels of section.  In most document styles, headings made with
+\verb|\paragraph| and \verb|\subparagraph| are not numbered.  \verb|\chapter|
+is not available in document style \fn{article}.  The commands should be used
+in the order given, since sections are numbered within chapters, subsections
+within sections, etc.
+
+A seventh sectioning command, \verb|\part|, is also available.  Its use is
+always optional, and it is used to divide a large document into series of
+parts.  It does not alter the numbering used for any of the other commands.
+
+Including the command \verb|\tableofcontents| in you document will cause a
+contents list to be included, containing information collected from the various
+sectioning commands.  You will notice that each time your document is run
+through \LaTeX{} the table of contents is always made up of the headings from
+the previous version of the document.  This is because \LaTeX{} collects
+information for the table as it processes the document, and then includes it
+the next time it is run.  This can sometimes mean that the document has to be
+processed through \LaTeX{} twice to get a correct table of contents.
+
+\section{Producing Special Symbols}
+
+You can include in you \LaTeX{} document a wide range of symbols that do not
+appear on you your keyboard. For a start, you can add an accent to any letter:
+\begin{quote}\begin{tabbing}
+
+\t{oo} \= \verb|\t{oo}|~~~ \=
+\t{oo} \= \verb|\t{oo}|~~~ \=
+\t{oo} \= \verb|\t{oo}|~~~ \=
+\t{oo} \= \verb|\t{oo}|~~~ \=
+\t{oo} \= \verb|\t{oo}|~~~ \=
+\t{oo} \=                       \kill
+
+\a`{o} \> \verb|\`{o}|  \> \~{o}  \> \verb|\~{o}|  \> \v{o}  \> \verb|\v{o}| \>
+\c{o}  \> \verb|\c{o}|  \> \a'{o} \> \verb|\'{o}|  \\
+\a={o} \> \verb|\={o}|  \> \H{o}  \> \verb|\H{o}|  \> \d{o}  \> \verb|\d{o}| \>
+\^{o}  \> \verb|\^{o}|  \> \.{o}  \> \verb|\.{o}|  \\
+\t{oo} \> \verb|\t{oo}| \> \b{o}  \> \verb|\b{o}|  \\  \"{o} \> \verb|\"{o}| \>
+\u{o}  \> \verb|\u{o}|  \\
+\end{tabbing}\end{quote}
+
+A number of other symbols are available, and can be used by including the
+following commands:
+\begin{quote}\begin{tabbing}
+
+\LaTeX~\= \verb|\copyright|~~~~ \= \LaTeX~\= \verb|\copyright|~~~~ \=
+\LaTeX~\=  \kill
+
+\dag       \> \verb|\dag|       \> \S     \> \verb|\S|     \>
+\copyright \> \verb|\copyright| \\
+\ddag      \> \verb|\ddag|      \> \P     \> \verb|\P|     \>
+\pounds    \> \verb|\pounds|    \\
+\oe        \> \verb|\oe|        \> \OE    \> \verb|\OE|    \>
+\ae        \> \verb|\AE|        \\
+\AE        \> \verb|\AE|        \> \aa    \> \verb|\aa|    \>
+\AA        \> \verb|\AA|        \\
+\o         \> \verb|\o|         \> \O     \> \verb|\O|     \>
+\l         \> \verb|\l|         \\
+\L         \> \verb|\L|         \> \ss    \> \verb|\ss|    \>
+?`         \> \verb|?`|         \\
+!`         \> \verb|!`|         \> \ldots \> \verb|\ldots| \>
+\LaTeX     \> \verb|\LaTeX|     \\
+\end{tabbing}\end{quote}
+There is also a \verb|\today| command that prints the current date. When you
+use these commands remember that \LaTeX{} will ignore any spaces that
+follow them, so that you can type `\verb|\pounds 20|' to get `\pounds 20'.
+However, if you type `\verb|LaTeX is wonderful|' you will get `\LaTeX is
+wonderful'---notice the lack of space after \LaTeX.
+To overcome this problem you can follow any of these commands by a
+pair of empty brackets and then any spaces that you wish to include,
+and you will see that
+\verb|\LaTeX{} really is wonderful!| (\LaTeX{} really is wonderful!).
+
+Finally, \LaTeX{} `math' mode, normally used to layout mathematical
+formulae, gives access to an even larger range of symbols, including the
+upper and lower case greek mathematical alphabet, calligraphic letters,
+mathematical operators and relations, arrows and a whole lot more.  This
+document has not mentioned math mode, and it isn't going to either, so you
+will have to refer to the manual if you really need something that you
+can't get otherwise.
+
+\section{Titles}\label{sec:title}
+
+Most documents have a title.  To title a \LaTeX{} document, you include the
+following commands in your document, usually just after
+\verb|begin{document}|.
+\begin{quote}\footnotesize\begin{verbatim}
+\title{required title}
+\author{required author}
+\date{required date}
+\maketitle
+\end{verbatim}\end{quote}
+If there are several authors, then their names should be separated by
+\verb|\and|; they can also be separated by \verb|\\| if you want them to be
+centred on different lines.  If the \verb|\date| command is left out, then the
+current date will be printed.
+\egstart
+\begin{verbatim}
+\title{Essential \LaTeX}
+\author{J Warbrick\and A N Other}
+\date{14th February 1988}
+\maketitle
+\end{verbatim}
+\egmid
+\begin{center}
+{\normalsize Essential \LaTeX}\\[4ex]
+J Warbrick\hspace{1em}A N Other\\[2ex]
+14th February 1988
+\end{center}
+\egend
+
+The exact appearance of the title varies depending on
+the document style.  In styles \fn{report} and \fn{book} the title appears on a
+page of its own. In the \fn{article} style it normally appears at the top
+of the first page, the style option \fn{titlepage} will alter this (see
+Section~\ref{sec:styles}).
+
+\section{Letters}
+
+Producing letters is simple with \LaTeX{}. To do this you use the document
+style {\tt letter}. You can make any number of
+letters with a single input file.
+Your name and address, which are likely to be
+the same for all letters, are given once at the top of the file.  Each letter
+is produced by a {\tt letter} environment, having the name and address of the
+recipient as its argument.  The letter itself begins with an \verb|\opening|
+command to generate the salutation.
+
+The letter ends with a \verb|\closing| command, you can use the commands
+\verb|\encl| and \verb|\cc| to generate lists of enclosures and people to whom
+you are sending copies. Any text that follows the \verb|\closing| must be
+proceeded by a \verb|\ps| command.  This command produces no text---you'll have
+to type ``P.S.'' yourself---but is needed to format the additional text
+correctly.
+
+Perhaps an example will make this clearer:
+\begin{quote}\footnotesize\begin{verbatim}
+\documentstyle{letter}
+\begin{document}
+
+\address{1234 Avenue of the Armadillos \\
+         Gnu York, G.Y. 56789}
+\signature{R. (Ma) Dillo \\ Director of Cuisine}
+
+\begin{letter}{G. Natheniel Picking \\
+               Acme Exterminators \\
+               Illinois}
+
+\opening{Dear Nat,}
+
+I'm afraid that the armadillo problem is still with us.
+I did everything ...
+
+... and I hope that you can get rid of the nasty
+beasts this time.
+
+\closing{Best Regards,}
+\cc{Jimmy Carter\\Richard M. Nixon}
+\end{letter}
+
+\end{document}
+\end{verbatim}\end{quote}
+
+\section{Errors}
+
+When you create a new input file for \LaTeX{} you will probably make mistakes.
+Everybody does, and it's nothing to be worried about.  As with most computer
+programs, there are two sorts of mistake that you can make: those that \LaTeX{}
+notices and those that it doesn't.  To take a rather silly example, since
+\LaTeX{} doesn't understand what you are saying it isn't going to be worried if
+you mis-spell some of the words in your text.  You will just have to accurately
+proof-read your printed output.  On the other hand, if you mis-spell one of
+the environment names in your file then \LaTeX won't know what you want it
+to do.
+
+When this sort of thing happens, \LaTeX{} prints an error message on your
+terminal screen and then stops and waits for you to take some action.
+Unfortunately, the error messages that it produces are rather user-unfriendly
+and not a little frightening.  Nevertheless, if you know where to look they
+will probably tell you where the error is and went wrong.
+
+Consider what would happen if you mistyped \verb|\begin{itemize}| so that it
+became \verb|\begin{itemie}|.  When \LaTeX{} processes this instruction, it
+displays the following on your terminal:
+\begin{quote}\footnotesize\begin{verbatim}
+LaTeX error.  See LaTeX manual for explanation.
+              Type  H <return>  for immediate help.
+! Environment itemie undefined.
+\@latexerr ...for immediate help.}\errmessage {#1}
+                                                  \endgroup
+l.140 \begin{itemie}
+
+?
+\end{verbatim}\end{quote}
+After typing the `?' \LaTeX{} stops and waits for you to tell it what to do.
+
+The first two lines of the message just tell you that the error was detected by
+\LaTeX{}. The third line, the one that starts `!' is the {\em error indicator}.
+ It
+tells you what the problem is, though until you have had some experience of
+\LaTeX{} this may not mean a lot to you.  In this case it is just telling you
+that it doesn't recognise an environment called \fn{itemie}.
+The next two lines tell you what
+\LaTeX{} was doing when it found the error, they are irrelevant at the moment
+and can be ignored. The final line is called the {\em error locator}, and is
+a copy of the line from your file that caused the problem.
+It start with a line number to help you to find it in your file, and
+if the error was in the middle of a line it will be shown
+broken at the point where \LaTeX{} realised that there was an error.  \LaTeX{}
+can sometimes pass the point where the real error is before discovering that
+something is wrong, but it doesn't usually get very far.
+
+At this point you could do several things.  If you knew enough about \LaTeX{}
+you might be able to fix the problem, or you could type `X' and press the
+return key to stop \LaTeX{} running while you go and correct the error.  The
+best thing to do, however, is just to press the return key.  This will allow
+\LaTeX{} to go on running as if nothing had happened.  If you have made one
+mistake, then you have probably made several and you may as well try to find
+them all in one go.  It's much more efficient to do it this way than to run
+\LaTeX{} over and over again fixing one error at a time. Don't worry about
+remembering what the errors were---a copy of all the error messages is being
+saved in a {\em log\/} file so that you can look at them afterwards.  See your
+{\em local guide\/} to find out what this file is called.
+
+If you look at the line that caused the error it's normally obvious what the
+problem was.  If you can't work out what you problem is look at the hints
+below, and if they don't help consult Chapter~6 of the manual.  It contains a
+list of all of the error messages that you are likely to encounter together with
+some hints as to what may have caused them.
+
+Some of the most common mistakes that cause errors are
+\begin{itemize}
+\item A mis-spelt command or environment name.
+\item Improperly matched `\verb|{|' and `\verb|}|'---remember that they should
+ always
+come in pairs.
+\item Trying to use one of the ten special characters \verb|# $ % & _ { } ~ ^|
+and \verb|\| as an ordinary printing symbol.
+\item A missing \verb|\end| command.
+\item A missing command argument (that's the bit enclosed in '\verb|{|' and
+`\verb|}|').
+\end{itemize}
+
+One error can get \LaTeX{} so confused that it reports a series of spurious
+errors as a result.  If you have an error that you understand, followed by a
+series that you don't, then try correcting the first error---the rest
+may vanish as if by magic.
+
+Sometimes \LaTeX{} may write a {\tt *} and stop without an error message.  This
+is normally caused by a missing \verb|\end{document}| command, but other errors
+can cause it.  If this happens type \verb|\stop| and press the return key.
+
+Finally, \LaTeX{} will sometimes print {\em warning\/} messages.  They report
+problems that were not bad enough to cause \LaTeX{} to stop processing, but
+nevertheless may require investigation.  The most common problems are
+`overfull' and `underfull' lines of text.  A message like:
+\begin{quote}\footnotesize\begin{verbatim}
+Overfull \hbox (10.58649pt too wide) in paragraph at lines 172--175
+[]\tenrm Mathematical for-mu-las may be dis-played. A dis-played
+\end{verbatim}\end{quote}
+indicates that \LaTeX{} could not find a good place to break a line when laying
+out a paragraph.  As a result, it was forced to let the line stick out into the
+right-hand margin, in this case by 10.6 points.  Since a point is about 1/72nd
+of an inch this may be rather hard to see, but it will be there none the less.
+
+This particular problem happens because \LaTeX{} is rather fussy about line
+breaking, and it would rather generate a line that is too long than generate a
+paragraph that doesn't meet its high standards.  The simplest way around the
+problem is to enclose the entire offending paragraph between
+\verb|\begin{sloppypar}| and \verb|\end{sloppypar}| commands.  This tells
+\LaTeX{} that you are happy for it to break its own rules while it is working on
+that particular bit of text.
+
+Alternatively, messages about ``Underfull \verb|\hbox|'es'' may appear.
+These are lines that had to have more space inserted between
+words than \LaTeX{} would have liked.  In general there is not much that you
+can do about these.  Your output will look fine, even if the line looks a bit
+stretched.  About the only thing you could do is to re-write the offending
+paragraph!
+
+\section{A Final Reminder}
+
+You now know enough \LaTeX{} to produce a wide range of documents.  But this
+document has only scratched the surface of the
+things that \LaTeX{} can do.  This entire document was itself produced with
+\LaTeX{} (with no sticking things in or clever use of a photocopier) and even
+it hasn't used all the features that it could.  From this you may get some
+feeling for the power that \LaTeX{} puts at your disposal.
+
+Please remember what was said in the introduction: if you {\bf do} have a
+complex document to produce then {\bf go and read the manual}.  You will be
+wasting your time if you rely only on what you have read here.
+
+One other warning: having
+dabbled with \LaTeX{} your documents will never be the same again \ldots.
+
+\end{document}

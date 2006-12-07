@@ -1,0 +1,536 @@
+Changes since version 1.9.14
+
+2004-02-08 18:12  prahl
+
+ Update file dependencies
+	Add style.h to preamble.c
+	
+2004-02-08 18:08  prahl
+
+ Separate stylesheet functions into separate file.  Change style.cfg to have
+	the format
+	texcommand,0,0,\rtfstuff,\rtfheader.
+	Later this will support more complicated stylesheet usage.
+	
+2004-02-08 15:45  prahl
+
+ Fix warnings that appear under linux
+	
+2004-02-08 15:36  prahl
+
+ Adding/renaming test files and figures so that the necessary files are
+	included in cvs and the tarball.
+	
+2004-02-08 14:52  prahl
+
+ Test for authordate support.  You need to have authordate1-4.sty installed
+	for this to work.
+	
+2004-02-04 21:39  prahl
+
+ add bib_natbib3.tex to Makefile
+	change a few entries in test/bib_natbib1.tex and test/bib_natbib2.tex
+	to use \citep instead of \citet as suggested by Adam Maxwell
+	
+2004-02-04 08:42  prahl
+
+ Finished support for authordate.  Seems to work fine for me now.
+	
+2004-02-04 08:04  prahl
+
+ Fix \input{file.ltx} to work correctly
+	Allow 'latex2rtf file.ltx' to work
+	Begin support for authordate style.  In particular, implement basic support
+	for \citename and \shortcite.  Still needs work.
+	
+2004-01-21 01:47  whennings
+
+ WH: removed double copyright notice in .info version of documentation
+	
+2004-01-21 01:24  whennings
+
+ WH: a) updated documentation for Windows version (self-installing .exe instead of .zip),
+	    b) better placement of copyright notice in pdf and in html version of documentation
+	
+2004-01-20 07:39  whennings
+
+ WH: a) updated documentation for Windows version,
+	    b) included copyright notice also in html version of documentation
+	
+2004-01-15 07:27  prahl
+
+ Normalize style.cfg
+	
+2004-01-06 01:57  whennings
+
+ WH: in Makefile, changed TEST= ... *.rtf to *.tex
+	    in style.cfg changed style names to lowercase
+	
+2003-12-27 18:55  prahl
+
+ yet more changes for style.cfg and processing.
+	
+2003-12-14 13:24  prahl
+
+ Fix for bug with \lots by Carl Quillen
+	Removed unnecessary debugging info
+	
+2003-12-14 13:13  prahl
+
+ Initial implementation of styles for headings.  These now use styles as
+	defined in style.cfg.  Added three test files head_* that allow simple
+	checking of this new functionality.  Clearly a lot of work remains to
+	add styles for all the relevant latex commands, but the infrastructure
+	needed is now in place to do this.
+	
+2003-12-14 08:39  prahl
+
+ Modifications that use the new style.cfg file to insert the stylesheet
+	into the translated RTF document.
+	
+2003-12-13 22:44  prahl
+
+ First set of changes needed to support stylesheets.  This adds a new
+	configuration style file style.cfg that contains the RTF information
+	needed to convert latex styles.  I also reworked a number of routines
+	in cfg.c and direct.c to streamline some old code.  Actual use of the
+	new routines awaits future coding.
+	
+2003-11-01 07:42  prahl
+
+ Support %latex2rtf: in preamble
+	Remove non-standard option to gzip in Makefile
+	Remove debugging libs from Makefile
+	
+2003-11-01 07:29  prahl
+
+ Eliminate extra spaces after '.', ';', and ':'
+	Add non-breaking spaces before ';' and ':' in FrenchMode
+	
+2003-10-29 22:07  prahl
+
+ remove // comment line
+	
+2003-10-29 22:07  prahl
+
+ Support for frenchb (at least make it like french)
+	Remove spurious warning when babel package is used without option
+	Fix bug in alignment of first paragraph following \maketitle
+	when no \section \chapter are present
+	Fix bug in indentation of first paragraph when french is in use.
+	
+2003-10-29 21:40  prahl
+
+ Trying to fix buffer overrun
+	updated filenames for figtest files
+	fixes for graphic sizing --- still not complete
+	Some natbib fixes
+	
+2003-10-07 01:02  whennings
+
+ WH: documentation updated for win32 version (which will include l2rshell and a win32 installer)
+	
+2003-10-05 10:13  prahl
+
+ Fix bug in tabular environments with a single column which caused the last
+	line of the table to be omitted.
+	
+2003-10-05 09:50  prahl
+
+ Fix parser bug introduced with %latex2rtf: support (% comments were not
+	terminating properly in getSection.)
+	Add comments to bib_natbib3.tex (which exposed the parser bug)
+	
+2003-10-04 15:03  prahl
+
+ Properly support optional parameters in natbib citations.  Thanks to
+	Adam Maxwell for excellent tests.
+	
+2003-09-28 21:46  prahl
+
+ Support for \raggedright and a small test.  Not well tested as I do not
+	use \raggedright much.
+	
+2003-09-28 17:04  prahl
+
+ Support \includegraphics{filename} where filename has no extension.
+	Try all the supported variants in a somewhat arbitrary order.
+	This should facilitate installations that are trying to create
+	.rtf, .html, .pdf, .ps, .dvi all in one try.
+	Thanks to Lars Valentin for the idea.
+	
+2003-09-28 14:00  prahl
+
+ Add file needed to test searching cfg directory for files
+	
+2003-09-28 13:27  prahl
+
+ Make %latex2rtf: more universally useable
+	Add the config directory to the search path for \input and \include files
+	Thus now it is possible to put
+	%latex2rtf: \input{l2rmacros}
+	so that site specific latex2rtf macros can be included only during conversion
+	
+2003-09-28 08:25  prahl
+
+ use ${GREP} in scripts and not just grep.  This may or may not help with
+	Solaris.
+	
+2003-09-28 07:49  prahl
+
+ Split figtest2.tex into figtest2.tex and figtest3.tex so that it is easier
+	to check output using latex/pdflatex (i.e., don't mix .pdf and .ps graphics
+	in the same file)
+	
+2003-09-27 22:37  prahl
+
+ Repair regression for \textsubscript and \textsuperscript
+	Add support for \begin{comment} ... \end{comment} to allow
+	simple multiline commenting of latex files.  This is particularly
+	helpful when you want to hide latex from the latex2rtf converter.
+	For example,
+	%latex2rtf: \begin{comment}
+	some hairy latex macro
+	%latex2rtf: \end{comment}
+	will allow latex to read the included macro, but keep latex2rtf from
+	failing on it.
+	
+	\begin{comment} ... \end{comment} does not work in the preamble
+	
+2003-09-27 21:18  prahl
+
+ Improve handling of \int\limits
+	
+2003-09-27 09:34  prahl
+
+ Actually adding README.Solaris to Makefile so it gets included in the
+	the distribution.  Rebuilt doc files.
+	
+2003-09-27 09:31  prahl
+
+ Add README.Solaris to distribution
+	
+2003-09-27 09:30  prahl
+
+ Document usage of -f# command line option.  Add a few small tweaks
+	to the texinfo documentation.
+	
+2003-09-25 21:34  prahl
+
+ Added %latex2rtf: as an interpreted comment.  Now you can include text that
+	is only intended to be parsed by the latex2rtf converter.  Thanks to
+	m-code at linden dash sahani dot net for this support.
+	
+2003-09-25 21:11  prahl
+
+ Applied patch from William A. Perkins to better support -D with eps graphics
+	
+2003-09-25 20:44  prahl
+
+ Fix bug ocurring when \cite includes TeX comments
+	
+2003-09-16 20:13  prahl
+
+ Fix for COMMENTS Fields
+	
+2003-09-16 02:21  whennings
+
+ WH: added documentation for l2rshell
+	
+2003-09-02 22:27  prahl
+
+ enable REF fields to be suppressed (use -f2)
+	this should allow OpenOffice to have the right numerical references
+	even if they are no longer dynamic.
+	
+2003-09-02 21:28  prahl
+
+ Read optional field for fancyhdr
+	
+2003-09-02 06:31  prahl
+
+ Removing qualisex.aux from CVS
+	
+2003-09-02 06:29  prahl
+
+ add test/subsup.tex to Makefile
+	
+2003-09-01 21:10  prahl
+
+ Add even() and odd() utility functions to clarify code
+	Add new flag -f that processes RTF files without using the EQ fields
+	Remove extraneous whitespace from fonttbl for greater RTF portability
+	
+2003-08-22 08:10  prahl
+
+ Allow commands to be used within fancyhdr macros
+	
+2003-07-30 04:07  whennings
+
+ WH: added test/qualisex.aux (latex2rtf complained about it)
+	note: qualisex.aux may be not correct as I don't have french.sty and I ran LaTeX
+	with a modified qualisex.tex ( \usepackage[french]{babel} instead of \usepackage{a4,french} )
+	
+2003-07-29 22:08  prahl
+
+ support \cite in natbib
+	
+2003-07-29 06:18  whennings
+
+ WH: added doc/latex2rtf.html, doc/latex2rtf.txt and doc/latex2rtf.pdf (needed by make install)
+	
+2003-07-29 05:54  whennings
+
+ WH: in Makefiles, replaced "make" by "$(MAKE)" to allow execution by "gmake" (needed on IBM AIX)
+	
+2003-07-27 20:37  prahl
+
+ Use -q switch for dvips instead of shell redirect
+	
+2003-07-27 09:02  prahl
+
+ Fix bug introduced in recent check-in that broke \include support
+	Slightly better message when color.sty is used.
+	
+2003-07-24 06:50  whennings
+
+ WH: in Makefiles, replaced "make" by "$(MAKE)" to allow execution by "gmake" (needed on IBM AIX)
+	
+2003-07-24 06:23  whennings
+
+ WH: file "latex2pn.bat" modified to suppress output from grep
+	
+2003-07-24 01:49  whennings
+
+ WH: file "latex2pn.bat" modified to suppress output from latex and dvips
+	
+2003-07-22 22:00  prahl
+
+ Fix for /tmp error
+	
+2003-07-16 21:57  prahl
+
+ Support for ignoring two parameter functions patch by Adam Maxwell
+	
+2003-07-16 17:35  prahl
+
+ Properly handle figure* environment patch by Carl Quillen
+	Fix for newcommand definitions that are empty by m-code at linden-sahani dot net
+	
+2003-07-16 05:21  whennings
+
+ WH: file "README.DOS" updated to match current scripts and documentation
+	
+2003-07-16 05:17  whennings
+
+ WH: file "README.DOS" updated to match current scripts and documentation
+	
+2003-07-15 22:22  prahl
+
+ Simple support for \textcolor{color}{text}
+	
+2003-07-11 06:37  whennings
+
+ WH: test file "eqns.tex": some outdated LaTeX commands replaced by current syntax
+	
+2003-06-14 21:57  prahl
+
+ Makefile now adds current date to all builds
+	-h option now emits version and date
+	Fixed several places to avoid printing null string in debug mode
+	
+2003-06-07 19:48  prahl
+
+ Modifications to test/Makefile
+	
+2003-06-07 19:47  prahl
+
+ Change testing to create a local tmp directory
+	This tests the -T switch
+	Extend the -P switch to allow explictly setting the location of latex2png
+	Eliminate some warnings
+	
+2003-06-07 09:06  prahl
+
+ Changes to Makefile to automate time-stamping of version.h
+	
+2003-06-05 04:25  whennings
+
+ WH: file "latex2png.bat": removed "-E" parameter from grep (reflecting recent change to unix version latex2png)
+	
+2003-05-31 12:25  prahl
+
+ Remove non-portable and unnecessary -E switch from grep commands
+	
+2003-05-31 12:13  prahl
+
+ Fix handling of .ps files.  Fix by Thomas D. Schneider.  Added test case.
+	
+2003-05-03 08:02  prahl
+
+ Test files for pdf -> png handling
+	
+2003-05-03 07:20  prahl
+
+ Support for pdf graphics.  Patch by Adam Maxwell
+	
+2003-04-06 19:18  prahl
+
+ Minimal support for apanat
+	
+2003-04-06 18:46  prahl
+
+ Support for apacite
+	Support for natbib
+	New citation test files
+	
+2003-03-28 05:14  whennings
+
+ WH: file "fonts.cfg": www address for downloading MS core fonts added
+	
+2003-03-28 05:06  whennings
+
+ WH: file "fonts.cfg" changed to use Microsoft Office core fonts.
+	
+2003-03-25 02:09  whennings
+
+ WH: test file "subsup.tex" for \textsuperscript{x} and \textsubscript{x} added.
+	
+2003-03-23 10:02  prahl
+
+ Various fixes/improvements in paragraph indentation/positioning.  The quote,
+	quotation, and version enviroments were improved.  Fixed bug with parindent
+	after vbox.
+	
+2003-03-22 14:59  prahl
+
+ Support for optional parameters in macros (patch by Guenther Palfinger)
+	
+2003-03-22 14:16  prahl
+
+ Improve Makefile targets check and dist
+	
+2003-03-22 07:17  prahl
+
+ Support \textsubscript and some code clean up
+	
+2003-03-20 02:08  whennings
+
+ WH: in file "linux.tex" line 39 commented out 
+	as it produces an error under MikTeX 2.2
+	
+2003-03-15 22:17  prahl
+
+ Ignore \psfrag
+	
+2003-03-15 22:10  prahl
+
+ Support \endinput
+	
+2003-03-15 21:49  prahl
+
+ Fix for absolute pathnames in graphics files.
+	
+2003-03-08 07:48  prahl
+
+ Fixes to support apalike.  Also better support for citations with eight-bit chars
+	Thanks to Harri Kiiskinen.
+	
+2003-02-20 20:48  prahl
+
+ Add basic scaling support for \includegraphics
+	Fix bug so that images are handled in horizontal mode.
+	
+2003-01-12 09:24  prahl
+
+ Explicitly handle \fbox and \parbox so contents get into the RTF file
+	Fix off-by-one error in tabbing cell code
+	Improve diagnostics in CmdBox
+	Add new test to tabbing.tex
+	
+2003-01-11 17:03  prahl
+
+ Add support for \surd
+	Test and behave properly for nested tabular environments
+	
+2003-01-05 17:26  prahl
+
+ Fixes suggested by running 'splint -weak *.c' on code.  Specifically
+	making variable casts explicit and eliminating use of sprintf in favor
+	of snprintf. No actual bugs were uncovered or fixed in this process.
+	
+2002-12-31 08:51  prahl
+
+ Fixes to so that info files are installed properly.
+	
+2002-12-15 21:47  prahl
+
+ Accept << and >> ligatures always when not in math mode
+	
+2002-12-11 07:41  prahl
+
+ Fix bibliography indentation
+	
+2002-12-10 22:37  prahl
+
+ Various small fixes for paragraph handling
+	
+2002-12-10 19:59  prahl
+
+ Fix spurious warnings when using some command line options
+	
+2002-12-09 16:38  prahl
+
+ Restore cp865.
+	Fix small bug with itemize environments following section.
+	remove debug noise.
+	
+2002-12-07 11:17  prahl
+
+ Support for \texteuro ... thanks D. Taupin
+	
+2002-12-07 11:09  prahl
+
+ Fix for \\today when used in vertical mode
+	
+2002-12-07 10:57  prahl
+
+ Fix bug with % comments not working properly
+	
+2002-12-02 01:24  whennings
+
+ [no log message]
+	
+2002-11-30 21:09  prahl
+
+ Yet more tweaks to vertical spacing
+	
+2002-11-30 14:05  prahl
+
+ Various tweaks to improve vertical spacing.
+	
+2002-11-30 08:14  prahl
+
+ Remove tabs from description environment
+	Fix indentation of items in description environment
+	Fix indentation of paragraph starting with open brace
+	Fix indentation of first paragraph in FrenchMode
+	New defines for vertical spacing
+	
+2002-11-29 08:36  prahl
+
+ Rename latex2rtf.hlp and latex2png.hlp for DOS
+	
+2002-11-29 07:14  whennings
+
+ WH: changed name "latex2png.bat" to "latex2pn.bat" in cvs and in Makefile
+	
+2002-11-29 05:57  whennings
+
+ [no log message]
+	
+2002-11-29 05:25  whennings
+
+ WH: changed name "latex2png.bat" to "latex2pn.bat" in cvs and in Makefile
+	WH: updated documentation for installing version 1.9.14 under DOS/Windows
+	

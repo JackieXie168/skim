@@ -1,0 +1,126 @@
+\documentclass{article}
+
+\usepackage{natbib}
+\bibliographystyle{apalike}
+\parindent=0.0in
+
+\begin{document}
+
+\begin{center}
+\begin{tabular}{l}
+%% Let's test with two options on a book citation
+%% 1.9.14 omits the e.g. and puts in the tilde
+\verb#\citep[e.g.][chap.~2]{bustos1999}#\\
+\citep[e.g.][chap.~2]{bustos1999} \\
+(e.g. Bustos et al., 1999, chap. 2)\\
+\hline
+%% Let's test one option on a book citation
+%% According to p. 7 of  Daly's natbib guide, a single
+%% option is a post--note.  1.9.14 makes it a pre--note and omits comma
+\verb#\citet[chap.~5]{bustos1999}#\\
+\citet[chap.~5]{bustos1999}\\
+Bustos et al. (1999, chap. 5)\\
+ \hline 
+%% Let's test with a single option on a two--author paper
+%% 1.9.14 omits e.g. and puts comma-space after year
+\verb#\citep[e.g.][]{chung2002}#\\
+\citep[e.g.][]{chung2002} \\
+(e.g. Chung and Worster, 2002)\\
+ \hline
+%% Try the starred versions
+\verb#\citet*{chung2002, biot1941}#\\
+\citet*{chung2002, biot1941}\\
+Chung and Worster (2002); Biot (1941)\\
+\hline
+\verb#\citep*{chung2002, biot1941}#\\
+\citep*{chung2002, biot1941}\\
+(Chung and Worster, 2002; Biot, 1941)\\
+\hline
+%% Let's try a parenthetical list of authors with e.g.
+%% 1.9.14 omits e.g., and uses comma-space-semicolon-space
+%% as separator; it should be semicolon-space.
+\verb#\citep[e.g.][]{bustos1999, chung2002, biot1941}#\\
+\citep[e.g.][]{bustos1999, chung2002, biot1941} \\
+(e.g. Bustos et al., 1999; Chung and Worster, 2002; Biot, 1941)\\
+
+\end{tabular}
+\end{center}
+
+%\bibliography{bib_natbib3.bib}
+
+\begin{thebibliography}{}
+
+\bibitem[Biot, 1941]{biot1941}
+Biot, M.~A. (1941).
+\newblock General theory of three-dimensional consolidation.
+\newblock {\em Journal of Applied Physics}, 12:155--165.
+
+\bibitem[Bustos et~al., 1999]{bustos1999}
+Bustos, M.~C., Concha, F., B\"{u}rger, R., and Tory, E.~M. (1999).
+\newblock {\em Sedimentation and Thickening: Phenomenological Foundation and
+  Mathematical Theory}, volume~8 of {\em Mathematical Modelling: Theory and
+  Applications}.
+\newblock Kluwer Academic Publishers, Dordrecht.
+
+\bibitem[Chung and Worster, 2002]{chung2002}
+Chung, C.~A. and Worster, M.~G. (2002).
+\newblock Steady-state chimneys in a mushy layer.
+\newblock {\em Journal of Fluid Mechanics}, 455:387--411.
+
+\end{thebibliography}
+
+\end{document}
+
+%% bib_natbib3.bib
+%% @article{biot1941,
+%% Author = {M. A. Biot},
+%% Journal = {Journal of Applied Physics},
+%% Keywords = {consolidation},
+%% Pages = {155-165},
+%% Title = {General theory of three--dimensional consolidation},
+%% Volume = {12},
+%% Year = {1941}}
+%% 
+%% @article{chung2002,
+%% Author = {C. A. Chung and M. Grae Worster},
+%% Journal = {Journal of Fluid Mechanics},
+%% Keywords = {settling},
+%% Pages = {387-411},
+%% Title = {Steady-state chimneys in a mushy layer},
+%% Volume = {455},
+%% Year = {2002}}
+%% 
+%% @book{bustos1999,
+%% Address = {Dordrecht},
+%% Author = {Mar\'{\i}a Cristina Bustos and Fernando Concha and Raimund B\"{u}rger and Elmer M. Tory},
+%% Keywords = {settling, constitutive, consolidation},
+%% Publisher = {Kluwer Academic Publishers},
+%% Series = {Mathematical Modelling: Theory and Applications},
+%% Title = {Sedimentation and Thickening: Phenomenological Foundation and Mathematical Theory},
+%% Volume = {8},
+%% Year = {1999}}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

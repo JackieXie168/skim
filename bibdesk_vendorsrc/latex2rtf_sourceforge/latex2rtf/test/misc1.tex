@@ -1,0 +1,90 @@
+%--------------------------------------------------------------------
+%  Basisfile um alle Kapitel auf einmal laufen zu lassen
+%--------------------------------------------------------------------
+
+\documentclass[12pt , twoside , german ,a4paper]{report}
+\usepackage{verbatim}
+\usepackage{a4}
+
+\usepackage{babel}
+\usepackage{colortbl,array,tabularx,graphics,color} %f\"ur besondere Tabellengestaltung
+\usepackage{fancyhdr} %für Seitenkopf und -fuß
+\usepackage{latexsym} %für Symbole (z.B. Box bei Beweisende)
+\usepackage{epic,eepic,ecltree,epsfig}
+
+\setlength{\parindent}{0pt}	%kein Einruecken am Absatzanfang
+\setlength{\parskip}{0.75\baselineskip}	
+\setlength{\baselineskip}{4.2ex}				  	
+
+\setlength{\textheight}{23cm}     
+\setlength{\evensidemargin}{0.5cm}
+\setlength{\oddsidemargin}{0.5cm}
+\setlength{\headsep}{1cm}  
+
+\renewcommand{\textfraction}{0.1}
+\renewcommand{\topfraction}{0.9}
+\renewcommand{\bottomfraction}{0.9}
+
+%-----------------   Definitionen + Abkuerzungen   ------------------
+\def\N{I\!\!N}
+\def\R{I\!\!R}
+\newcommand{\fks}{Fall-Kontroll-Studie}
+\newcommand{\fksn}{Fall-Kontroll-Studien}
+\newcommand{\rnl}{Rhein-Neckar-Larynx Studie}
+\newcommand{\tsd}{Two-Stage-Design}
+\newcommand{\tsds}{Two-Stage-Designs}
+\newcommand{\hd}{h-Design}
+
+%-----------------   Kopfzeile  --------------------------------------
+\newcommand{\kzl}{~}	%--K\"urzel f\"ur Kopfzeile --
+\newcommand{\kzr}{~}
+\renewcommand{\headrulewidth}{0.4pt}
+%-----------------   Textanfang --------------------------------------
+
+\begin{document}
+
+\hd
+
+\tsd
+
+R=(\(R_{1},..,R_{r}) \)
+
+\"Ose
+
+l\"a\ss{}t
+\"Anderung \"Ubung
+
+Nach Little \& Rubin (1987) kann die Response-Wahrscheinlichkeit abh\"angen\\
+\begin{tabular}{lll}
+~~~~& (1) von D und m\"oglicherweise auch R, 	& (weder MAR noch OAR)\\
+		& (2) von R, aber nicht von D, 					& (MAR, aber nicht OAR)\\
+		& (3) weder von R noch von D 						& (MAR und OAR)\\
+\end{tabular}
+
+\begin{description}
+\item[\textbf{Definition 4.1:}]             \mbox{}\\
+Sei D eine bin\"are Responsevariable und seien $R_{1}$ und $R_{2}$ zwei beliebige (d.h. kategorielle oder stetige) unabh\"angige Variablen oder auch Variablen-Vektoren. O.B.d.A. sei die Kovariable $R_{1}$ f\"ur alle Beobachtungen vollst\"andig, die Kovariable $R_{2}$ nicht vollst\"andig vorhanden.
+\renewcommand{\theenumi}{(\roman{enumi})}
+\renewcommand{\labelenumi}{\theenumi.}
+\begin{enumerate}
+\item Die Beobachtbarkeit $O_{2}$ von $R_{2}$ ist definiert als Zufallsvariable
+\begin{displaymath}
+O_{2}:= \left\{
+\begin{array}{ll}
+1&~~~\mbox{ wenn $R_{2}$ beobachtbar ist,} \\
+0&~~~\mbox{ wenn $R_{2}$ nicht beobachtbar ist.}
+\end{array}
+\right.
+\end{displaymath}	
+\item Fehlende Daten sind genau dann {\it missing at random}, wenn f\"ur i = 0,1 gilt:\\ 
+\(P(O_{2}=1 \mid D=i, R_{1}=r_{1}, R_{2}=r_{2}) \equiv  P ( O_{2}=1 \mid D=i, R_{1}=r_{1})\)\\
+\item Fehlende Daten sind genau dann {\it missing completely at random}, wenn f\"ur i = 0,1 gilt:\\ 
+\(P(O_{2}=1 \mid D=i, R_{1}=r_{1}, R_{2}=r_{2}) \equiv  P ( O_{2}=1 ) \)         
+\end{enumerate}
+\end{description}
+
+
+\end{document}
+
+
+
