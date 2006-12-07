@@ -1,0 +1,35 @@
+{
+    IBClasses = (
+        {
+            ACTIONS = {
+                changeCiteKeyAutogenerate = id; 
+                citeKeyFormatAdd = id; 
+                citeKeyFormatChanged = id; 
+                formatHelp = id; 
+                showCiteKeyFormatWarning = id; 
+            }; 
+            CLASS = "BibPref_CiteKey"; 
+            LANGUAGE = ObjC; 
+            OUTLETS = {
+                citeKeyAutogenerateCheckButton = NSButton; 
+                citeKeyLine = NSTextField; 
+                formatField = NSTextField; 
+                formatPresetPopUp = NSPopUpButton; 
+                formatRepositoryPopUp = NSPopUpButton; 
+                formatWarningButton = NSButton; 
+            }; 
+            SUPERCLASS = OAPreferenceClient; 
+        }, 
+        {CLASS = FirstResponder; LANGUAGE = ObjC; SUPERCLASS = NSObject; }, 
+        {
+            ACTIONS = {restoreDefaults = id; setValueForSender = id; }; 
+            CLASS = OAPreferenceClient; 
+            LANGUAGE = ObjC; 
+            OUTLETS = {controlBox = NSView; initialFirstResponder = NSView; lastKeyView = NSView; }; 
+            SUPERCLASS = OFObject; 
+        }, 
+        {CLASS = OBObject; LANGUAGE = ObjC; SUPERCLASS = NSObject; }, 
+        {CLASS = OFObject; LANGUAGE = ObjC; SUPERCLASS = OBObject; }
+    ); 
+    IBVersion = 1; 
+}

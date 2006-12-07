@@ -1,0 +1,78 @@
+{
+    IBClasses = (
+        {CLASS = BDSKDragForm; LANGUAGE = ObjC; SUPERCLASS = NSForm; }, 
+        {CLASS = BDSKDragWindow; LANGUAGE = ObjC; SUPERCLASS = NSWindow; }, 
+        {
+            CLASS = BDSKPreviewer; 
+            LANGUAGE = ObjC; 
+            OUTLETS = {imagePreviewView = NSImageView; }; 
+            SUPERCLASS = NSWindowController; 
+        }, 
+        {
+            ACTIONS = {
+                bibTypeDidChange = id; 
+                chooseLocalURL = id; 
+                citeKeyDidChange = id; 
+                dismissAddAuthorSheet = id; 
+                dismissAddField = id; 
+                dismissDelField = id; 
+                generateCiteKey = id; 
+                generateLocalUrl = id; 
+                raiseAddField = id; 
+                raiseDelField = id; 
+                showCiteKeyWarning = id; 
+                textFieldDidEndEditing = id; 
+                toggleSnoopDrawer = id; 
+                viewLocal = id; 
+                viewRemote = id; 
+            }; 
+            CLASS = BibEditor; 
+            LANGUAGE = ObjC; 
+            OUTLETS = {
+                abstractView = NSTextView; 
+                actionMenuButton = NSPopUpButton; 
+                addAuthorSheet = NSPanel; 
+                addAuthorTextView = NSTextView; 
+                authorTableView = NSTableView; 
+                bibFields = NSForm; 
+                bibTypeButton = NSPopUpButton; 
+                citeKeyField = NSTextField; 
+                citeKeyWarningButton = NSButton; 
+                closeDrawerButton = NSButton; 
+                delFieldButtonCancel = NSButton; 
+                delFieldButtonOK = NSButton; 
+                delFieldPopUp = NSPopUpButton; 
+                delFieldWindow = NSWindow; 
+                documentSnoopButton = NSButton; 
+                documentSnoopDrawer = NSDrawer; 
+                documentSnoopImageView = PDFImageView; 
+                documentSnoopScrollView = NSScrollView; 
+                documentSnoopTextView = NSTextView; 
+                documentTextSnoopButton = NSButton; 
+                fieldsScrollView = NSScrollView; 
+                newFieldButtonCancel = NSButton; 
+                newFieldButtonOK = NSButton; 
+                newFieldName = NSTextField; 
+                newFieldWindow = NSWindow; 
+                notesView = NSTextView; 
+                pdfSnoopContainerView = NSView; 
+                rssDescriptionView = NSTextView; 
+                tabView = NSTabView; 
+                textSnoopContainerView = NSView; 
+                viewLocalButton = RYZImagePopUpButton; 
+                viewRemoteButton = RYZImagePopUpButton; 
+            }; 
+            SUPERCLASS = NSWindowController; 
+        }, 
+        {CLASS = DraggableScrollView; LANGUAGE = ObjC; SUPERCLASS = NSScrollView; }, 
+        {CLASS = FirstResponder; LANGUAGE = ObjC; SUPERCLASS = NSObject; }, 
+        {CLASS = PDFImageView; LANGUAGE = ObjC; SUPERCLASS = NSImageView; }, 
+        {CLASS = RYZImagePopUpButton; LANGUAGE = ObjC; SUPERCLASS = NSPopUpButton; }, 
+        {
+            CLASS = RYZImagePopUpButtonCell; 
+            LANGUAGE = ObjC; 
+            SUPERCLASS = NSPopUpButtonCell; 
+        }
+    ); 
+    IBVersion = 1; 
+}
