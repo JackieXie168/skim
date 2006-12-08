@@ -735,8 +735,8 @@ to the Spotlight index, but this does not allow you to identify a particular rec
 @heading Topics
 
 @menu
-* Adding References::           
-* Adding References From Text Sources::           
+* Adding New References::           
+* Importing References::           
 * Editing References::          
 * Deleting References::    
 * Browsing References::       
@@ -750,10 +750,11 @@ to the Spotlight index, but this does not allow you to identify a particular rec
 
 @c --------------------------------------------------------------------------------------
 
-@node Adding References
-@section Adding References
+@node Adding New References
+@section Adding New References
 @abstract{How to add new references to a database.}
 
+@cindex adding references
 @kindex Cmd-N
 
 New references are added to the bibliography 
@@ -761,13 +762,38 @@ with @menutitle{New Reference} from the @menutitle{Publication} menu, the keyboa
 shortcut @cmd{N}, or the @buttontitle{New Reference} toolbar button.
 Any of these commands will open an editor window with fields for various reference types.
 
-To add existing references to BibDesk, a variety of methods are outlined in
-the following sections.
+@node Importing References
+@section Importing References
+@abstract{How to add existing references to a database.}
+
+@cindex importing references
+
+There are many ways to add existing reference items to a BibDesk database.
+@itemize @bullet
+@item @ref{Drag and Drop} or @ref{Copy and Paste} formatted text on the database window.
+@item @ref{Drag and Drop} or @ref{Copy and Paste} formatted text files on the database window.
+@item @ref{Drag and Drop} or @ref{Copy and Paste} files or URLs to link on the database window.
+@item @ref{Drag and Drop} or @ref{Copy and Paste} on a detail editor window.
+@item @ref{Drag and Drop}, @ref{Copy and Paste}, or @menutitle{Merge In} items from @ref{External Groups}.
+@item Copy text to clipboard and choose @ref{Adding References From Text Sources, @menutitle{New Publications from Clipboard}}.
+@item Choose @ref{Adding References From Text Sources, @menutitle{New Publications from File}} to import from a file.
+@item Choose @ref{Adding References From Text Sources, @menutitle{New Publications from Web}} to import from a web source.
+@item Select formatted text and choose @menutitle{Add to Bibliography} from @ref{Services, System Services}.
+@item Open other file and @ref{Drag and Drop} or @ref{Copy and Paste} between database windows.
+@item Choose @ref{Importing From Other Programs, @menutitle{Open Using Temporary Cite Keys}} to fix bibtex with missing cite keys.
+@item Choose @ref{Opening a File, @menutitle{Open Using Filter}} to preprocess data.
+@end itemize
+
+Here @samp{formatted text} means bibliography data in any of a number of formats that BibDesk can recognize.
+This includes BibTeX, RIS, Medline (PubMed), MARC, JSTOR, and ISI Web of Science. 
+
+More details are given in the following sections.
 
 @menu
 * Drag and Drop::
 * Copy and Paste::
 * Services::
+* Adding References From Text Sources::           
 @end menu
 
 
@@ -777,18 +803,29 @@ the following sections.
 @cindex drag and drop
 @cindex add to bibliography
 
-References can also be added to a bibliography by dragging an entry
-from a text source (text editor, web browser) into BibDesk's main publications
-list.  The text can be BibTeX, RIS (Reference Manager), JSTOR or ISI Web Of Science formatted text.
+References can also be added to a bibliography by dragging entries
+from a text source (text editor, web browser) into BibDesk's main publicationslist.
+The text can be BibTeX, RIS (Reference Manager), MARC, JSTOR or ISI Web Of Science formatted text.
 Here's a fancy picture:
 
 @image{gfx/dragIntoBib}
+
+You can also drag a file containing formatted text in any of these formats and drop them into BibDesk's
+main publications list. 
+
+You can easily add a new bibliography item that links to a file, such as a PDF file.
+Just drag the file from a Finder window (or anywhere else) and drop it into BibDesk's
+main publications list. Similarly, you can add a new bibliography item linking to a remote URL
+by dropping a @samp{webloc} file on the main publications list. 
 
 References can be dragged from the main publications list (or another source)
 and dropped on an editor window, as well, which will
 only set non-empty fields of the publication; this can be quite useful when you are 
 entering a number of items from a common source.  If you do want to overwrite all fields
 when dragging to an editor, simply hold down the option key while you drag.
+
+Moreover, references can be dragged from one publication list and dropped on another,
+to easily copy items between documents. 
 
 @node Copy and Paste
 @subsection Copy and Paste
@@ -798,7 +835,10 @@ when dragging to an editor, simply hold down the option key while you drag.
 
 References can be added to a publications list by copying them from another
 source and pasting them into BibDesk's main window.  The text being pasted must
-be BibTeX, RIS (Reference Manager), JSTOR or ISI Web Of Science formatted text, or an error will occur.
+be BibTeX, RIS (Reference Manager), MARC, JSTOR or ISI Web Of Science formatted text, or an error will occur.
+
+Furthermore, everything that can be @ref{Drag and Drop, dragged and dropped} on a BibDesk window can also
+be added using Copy and Paste. 
 
 @node Services
 @subsection Services
@@ -815,10 +855,8 @@ that supports Services (such as OmniWeb), and choose the @menutitle{Add to Bibli
 menu item of BibDesk's @menutitle{Services} submenu.
 The selected text will be added to the frontmost document in BibDesk automatically.
 
-@c --------------------------------------------------------------------------------------
-
 @node Adding References From Text Sources
-@section Adding References From Text Sources
+@subsection Adding References From Text Sources
 @abstract{Adding new references from text sources.}
 
 @cindex creating references, from pasteboard
@@ -839,6 +877,11 @@ that text to fields in a new reference. You can also choose the
 to add references from an arbitrary text file, or the 
 @menutitle{Add New Publications from Web} menu item (key shortcut @cmd{L}), 
 to add publactions from a website. 
+
+If the clipboard or the file contains formatted text that BibDesk can understand, 
+such as BibTeX, RIS, Medline (PubMed), MARC, JSTOR, and ISI Web of Science formatted text, 
+Bibdesk will parse the text and the new references are immediately added to the database 
+instead of openingthe sheet to do it by hand. 
 
 Examples of reference sources that this would be convenient for are
 emails, conference proceedings web sites, and the text from a list of
@@ -1733,6 +1776,7 @@ want to use the Custom Citation Strings Drawer.
 * The Custom Citation Strings Drawer::  
 * Autocompletion::              
 * System Service::              
+* Inserting Formatted Bibliographies::
 @end menu
 
 @c --------------------------------------------------------------------------------------
@@ -1919,6 +1963,27 @@ you to highlight a part of a citation key and BibDesk will complete
 the key for you. For instance, in our example , selecting
 ``CasO'' and invoking the @menutitle{Complete Cite Key}
 service would insert ``CasObe00''.
+
+@c --------------------------------------------------------------------------------------
+
+@node Inserting Formatted Bibliographies
+@section Inserting Formatted Bibliographies
+@abstract{Inserting Formatted Bibliographies}
+
+@cindex formatted bibliograhy
+@cindex copy and paste
+
+If you don't use LaTeX, but a wysiwyg editor such as Word, you can still use BibDesk 
+to manage your bibliography data and insert formatted bibliographies from BibDesk 
+in a text. 
+@itemize @bullet
+@item You can @ref{Inserting Citations, Drag and Drop or Copy and Paste} items from the main Bibdesk database window. 
+Set your @ref{Citation Preferences,Citation Preferences} to get formatted bibliographies instead of LaTeX or BibTeX.
+@item You can use the @menutitle{Copy As} menu to copy bibliography data in many different formats, including highly customizable @ref{Templates}.
+@item Copy and Paste formatted text from the @ref{Previewing Typeset Output, Previewer}.
+@item @ref{Services, System Services} can also be used to get formatted text, using highly customizable @ref{Templates}.
+@end itemize
+
 
 @c ======================================================================================
 
@@ -2113,7 +2178,7 @@ The alternate default format is used when the Option key is held down during the
 @prefitem{Cite Command Style} This lets you define the default cite command style that is used when dragging TeX cite commands from the publication table.
 
 @itemize
-@item The citation text field lets you change the string that is used when dragging from the publications table to whatever you like (e.g. citep or citet ...)
+@item The citation text field lets you change the string that is used when dragging from the publications table to whatever you like (e.g. citep or citet ...).
 @item Bracket Style lets you choose to use square brackets for copy/paste and dragging citations, for compatibility with ConTeXt.
 @item Separate Citations lets you choose whether to have bibdesk drop strings like \cite@{key1,key2@} or \cite@{key1@} \cite@{key2@} when multiple items are involved.
 @item Prepend a tilde lets you add an extra tilde before the command name.
