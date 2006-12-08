@@ -528,21 +528,24 @@ static NSString *BDSKTemplateRowsPboardType = @"BDSKTemplateRowsPboardType";
 - (NSMenu *)tableView:(NSOutlineView *)tv contextMenuForRow:(int)row column:(int)column;
 {
     NSMenu *menu = nil;
-    NSURL *theURL = nil;
     
-    if(0 == column && row >= 0 && [[outlineView itemAtRow:row] isLeaf])
-        theURL = [[tv itemAtRow:row] representedFileURL];
-    
-    if(nil != theURL){
-        NSMenuItem *item;
-        
+    if(0 == column && row >= 0 && [[outlineView itemAtRow:row] isLeaf]){
         menu = [[[NSMenu allocWithZone:[NSMenu menuZone]] init] autorelease];
         
-        item = [menu addItemWithTitle:NSLocalizedString(@"Open With", @"Menu item title") andSubmenuOfApplicationsForURL:theURL];
+        NSURL *theURL = [[tv itemAtRow:row] representedFileURL];
+        NSMenuItem *item = nil;
+    
+        if(nil != theURL){
+            item = [menu addItemWithTitle:NSLocalizedString(@"Open With", @"Menu item title") andSubmenuOfApplicationsForURL:theURL];
+            
+            item = [menu addItemWithTitle:NSLocalizedString(@"Reveal in Finder", @"Menu item title") action:@selector(revealInFinder:) keyEquivalent:@""];
+            [item setTarget:self];
+        }
         
-        item = [menu addItemWithTitle:NSLocalizedString(@"Reveal in Finder", @"Menu item title") action:@selector(revealInFinder:) keyEquivalent:@""];
+        item = [menu addItemWithTitle:[NSLocalizedString(@"Choose File", @"Menu item title") stringByAppendingEllipsis] action:@selector(chooseFile:) keyEquivalent:@""];
         [item setTarget:self];
     }
+    
     return menu;
 }
 
@@ -552,7 +555,7 @@ static NSString *BDSKTemplateRowsPboardType = @"BDSKTemplateRowsPboardType";
     BOOL validate = NO;
     if(@selector(delete:) == action){
         validate = [self canDeleteSelectedItem];
-    } else if(@selector(revealInFinder:) == action){
+    } else if(@selector(revealInFinder:) == action || @selector(chooseFile:) == action){
         int row = [outlineView selectedRow];
         if(row >= 0)
             validate = [[outlineView itemAtRow:row] isLeaf];
@@ -565,6 +568,28 @@ static NSString *BDSKTemplateRowsPboardType = @"BDSKTemplateRowsPboardType";
     int row = [outlineView selectedRow];
     if(row >= 0)
         [[NSWorkspace sharedWorkspace] selectFile:[[[outlineView itemAtRow:row] representedFileURL] path] inFileViewerRootedAtPath:@""];
+}
+
+- (IBAction)chooseFile:(id)sender;
+{
+    int row = [outlineView selectedRow];
+    id item = [outlineView itemAtRow:row];
+    
+    NSOpenPanel *openPanel = [NSOpenPanel openPanel];
+    [openPanel setCanChooseDirectories:YES];
+    [openPanel setCanCreateDirectories:NO];
+    [openPanel setPrompt:NSLocalizedString(@"Choose", @"Prompt for Choose panel")];
+    
+    // start the panel in the same directory as the item's existing path, or fall back to app support
+    NSString *dirPath = [[[item representedFileURL] path] stringByDeletingLastPathComponent];
+    if(nil == dirPath)
+        dirPath = dirPath;
+    [openPanel beginSheetForDirectory:dirPath 
+                                 file:nil 
+                                types:nil 
+                       modalForWindow:[[BDSKPreferenceController sharedPreferenceController] window] 
+                        modalDelegate:self didEndSelector:@selector(openPanelDidEnd:returnCode:contextInfo:) 
+                          contextInfo:[item retain]];
 }
 
 #pragma mark Combo box
