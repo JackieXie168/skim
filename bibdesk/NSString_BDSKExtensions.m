@@ -1021,6 +1021,12 @@ static NSString *UTIForPath(NSString *aPath)
 {
     return [OFXMLCreateStringWithEntityReferencesInCFEncoding(self, OFXMLBasicEntityMask, nil, kCFStringEncodingUTF8) autorelease];
 }
+    
+#define APPEND_PREVIOUS() \
+    string = [[NSString alloc] initWithCharacters:begin length:(ptr - begin)]; \
+        [result appendString:string]; \
+            [string release]; \
+                begin = ptr + 1;
 
 // Stolen and modified from the OmniFoundation -htmlString.
 - (NSString *)xmlString;
@@ -1030,47 +1036,77 @@ static NSString *UTIForPath(NSString *aPath)
     NSString *string;
     int length;
     
-#define APPEND_PREVIOUS() \
-    string = [[NSString alloc] initWithCharacters:begin length:(ptr - begin)]; \
-        [result appendString:string]; \
-            [string release]; \
-                begin = ptr + 1;
-            
-            length = [self length];
-            ptr = alloca(length * sizeof(unichar));
-            end = ptr + length;
-            [self getCharacters:ptr];
-            result = [NSMutableString stringWithCapacity:length];
-            
-            begin = ptr;
-            while (ptr < end) {
-                if (*ptr > 127) {
-                    APPEND_PREVIOUS();
-                    [result appendFormat:@"&#%d;", (int)*ptr];
-                } else if (*ptr == '&') {
-                    APPEND_PREVIOUS();
-                    [result appendString:@"&amp;"];
-                } else if (*ptr == '\"') {
-                    APPEND_PREVIOUS();
-                    [result appendString:@"&quot;"];
-                } else if (*ptr == '<') {
-                    APPEND_PREVIOUS();
-                    [result appendString:@"&lt;"];
-                } else if (*ptr == '>') {
-                    APPEND_PREVIOUS();
-                    [result appendString:@"&gt;"];
-                } else if (*ptr == '\n') {
-                    APPEND_PREVIOUS();
-                    if (ptr + 1 != end && *(ptr + 1) == '\n') {
-                        [result appendString:@"&lt;p&gt;"];
-                        ptr++;
-                    } else
-                        [result appendString:@"&lt;br&gt;"];
-                }
-                ptr++;
-            }
+    length = [self length];
+    ptr = alloca(length * sizeof(unichar));
+    end = ptr + length;
+    [self getCharacters:ptr];
+    result = [NSMutableString stringWithCapacity:length];
+    
+    begin = ptr;
+    while (ptr < end) {
+        if (*ptr > 127) {
             APPEND_PREVIOUS();
-            return result;
+            [result appendFormat:@"&#%d;", (int)*ptr];
+        } else if (*ptr == '&') {
+            APPEND_PREVIOUS();
+            [result appendString:@"&amp;"];
+        } else if (*ptr == '\"') {
+            APPEND_PREVIOUS();
+            [result appendString:@"&quot;"];
+        } else if (*ptr == '<') {
+            APPEND_PREVIOUS();
+            [result appendString:@"&lt;"];
+        } else if (*ptr == '>') {
+            APPEND_PREVIOUS();
+            [result appendString:@"&gt;"];
+        } else if (*ptr == '\n') {
+            APPEND_PREVIOUS();
+            if (ptr + 1 != end && *(ptr + 1) == '\n') {
+                [result appendString:@"&lt;p&gt;"];
+                ptr++;
+            } else
+                [result appendString:@"&lt;br&gt;"];
+        }
+        ptr++;
+    }
+    APPEND_PREVIOUS();
+    return result;
+}
+
+- (NSString *)csvString;
+{
+    unichar *ptr, *begin, *end;
+    NSMutableString *result;
+    NSString *string;
+    int length;
+    BOOL isQuoted = NO;
+    
+    length = [self length];
+    ptr = alloca(length * sizeof(unichar));
+    end = ptr + length;
+    [self getCharacters:ptr];
+    result = [NSMutableString stringWithCapacity:length];
+    isQuoted = length > 0 && (*ptr == ' ' || *(end-1) == ' ');
+    
+    begin = ptr;
+    while (ptr < end) {
+        if (*ptr == '"') {
+            APPEND_PREVIOUS();
+            [result appendString:@"\"\""];
+            isQuoted = YES;
+        } else if (*ptr == ',') {
+            isQuoted = YES;
+        } else if (*ptr == '\n' || *ptr == '\r') {
+            APPEND_PREVIOUS();
+        }
+        ptr++;
+    }
+    APPEND_PREVIOUS();
+    if(isQuoted){
+        [result insertString:@"\"" atIndex:0];
+        [result appendString:@"\""];
+    }
+    return result;
 }
 
 #pragma mark -
