@@ -390,6 +390,8 @@ An inline buffer is used for speed in accessing each character.
 - (NSString *)stringByEscapingBasicXMLEntitiesUsingUTF8;
 - (NSString *)xmlString;
 
+- (NSString *)csvString;
+
 #pragma mark Search string splitting
 
 - (NSArray *)searchComponents;
