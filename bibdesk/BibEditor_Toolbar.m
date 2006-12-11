@@ -41,16 +41,16 @@
 #import "OAToolbarItem_BDSKExtensions.h"
 #import "BDSKImagePopUpButton.h"
 
-NSString *BibEditorToolbarIdentifier = @"BibEditorToolbarIdentifier";
-NSString *BibEditorToolbarViewLocalItemIdentifier = @"BibEditorToolbarViewLocalItemIdentifier";
-NSString *BibEditorToolbarViewRemoteItemIdentifier = @"BibEditorToolbarViewRemoteItemIdentifier";
-NSString *BibEditorToolbarSnoopDrawerItemIdentifier = @"BibEditorToolbarSnoopDrawerItemIdentifier";
-NSString *BibEditorToolbarActionItemIdentifier = @"BibEditorToolbarActionItemIdentifier";
-NSString *BibEditorToolbarAuthorTableItemIdentifier = @"BibEditorToolbarAuthorTableItemIdentifier";
-NSString *BibEditorToolbarDeleteItemIdentifier = @"BibEditorToolbarDeleteItemIdentifier";
-NSString *BibEditorToolbarAddWithCrossrefItemIdentifier = @"BibEditorToolbarAddWithCrossrefItemIdentifier";
-NSString *BibEditorToolbarEditPreviousItemIdentifier = @"BibEditorToolbarEditPreviousItemIdentifier";
-NSString *BibEditorToolbarEditNextItemIdentifier = @"BibEditorToolbarEditNextItemIdentifier";
+static NSString *BibEditorToolbarIdentifier = @"BibEditorToolbarIdentifier";
+static NSString *BibEditorToolbarViewLocalItemIdentifier = @"BibEditorToolbarViewLocalItemIdentifier";
+static NSString *BibEditorToolbarViewRemoteItemIdentifier = @"BibEditorToolbarViewRemoteItemIdentifier";
+static NSString *BibEditorToolbarSnoopDrawerItemIdentifier = @"BibEditorToolbarSnoopDrawerItemIdentifier";
+static NSString *BibEditorToolbarActionItemIdentifier = @"BibEditorToolbarActionItemIdentifier";
+static NSString *BibEditorToolbarAuthorTableItemIdentifier = @"BibEditorToolbarAuthorTableItemIdentifier";
+static NSString *BibEditorToolbarDeleteItemIdentifier = @"BibEditorToolbarDeleteItemIdentifier";
+static NSString *BibEditorToolbarAddWithCrossrefItemIdentifier = @"BibEditorToolbarAddWithCrossrefItemIdentifier";
+static NSString *BibEditorToolbarEditPreviousItemIdentifier = @"BibEditorToolbarEditPreviousItemIdentifier";
+static NSString *BibEditorToolbarEditNextItemIdentifier = @"BibEditorToolbarEditNextItemIdentifier";
 
 @implementation BibEditor (Toolbar)
 
