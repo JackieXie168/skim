@@ -1120,6 +1120,11 @@ static NSString *UTIForPath(NSString *aPath)
     return result;
 }
 
+- (NSString *)tsvString;
+{
+    return [self stringByReplacingAllOccurrencesOfString:@"\t" withString:@" "]; 
+}
+
 #pragma mark -
 #pragma mark Search string splitting
 
