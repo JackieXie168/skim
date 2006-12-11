@@ -1089,6 +1089,9 @@ static NSString *UTIForPath(NSString *aPath)
     isQuoted = length > 0 && (*ptr == ' ' || *(end-1) == ' ');
     needsSpace = NO;
     
+    if(isQuoted == NO && [self containsCharacterInSet:[NSCharacterSet characterSetWithCharactersInString:@"\n\r\t\","]] == NO)
+        return self;
+    
     begin = ptr;
     while (ptr < end) {
         switch (*ptr) {
@@ -1122,7 +1125,43 @@ static NSString *UTIForPath(NSString *aPath)
 
 - (NSString *)tsvString;
 {
-    return [self stringByReplacingAllOccurrencesOfString:@"\t" withString:@" "]; 
+    if([self containsCharacterInSet:[NSCharacterSet characterSetWithCharactersInString:@"\t\n\r"]] == NO)
+        return self;
+    
+    unichar *ptr, *begin, *end;
+    NSMutableString *result;
+    NSString *string;
+    int length;
+    BOOL needsSpace;
+    
+    length = [self length];
+    ptr = alloca(length * sizeof(unichar));
+    end = ptr + length;
+    [self getCharacters:ptr];
+    result = [NSMutableString stringWithCapacity:length];
+    needsSpace = NO;
+    
+    begin = ptr;
+    while (ptr < end) {
+        switch (*ptr) {
+            case '\t':
+                needsSpace = YES;
+            case '\n':
+            case '\r':
+                APPEND_PREVIOUS();
+                if (needsSpace)
+                    [result appendString:@" "];
+            case ' ':
+                needsSpace = NO;
+                break;
+            default:
+                needsSpace = YES;
+                break;
+        }
+        ptr++;
+    }
+    APPEND_PREVIOUS();
+    return result;
 }
 
 #pragma mark -
