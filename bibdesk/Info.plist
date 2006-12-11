@@ -123,10 +123,6 @@
 			</array>
 			<key>CFBundleTypeRole</key>
 			<string>Viewer</string>
-			<key>LSItemContentTypes</key>
-			<array>
-				<string>public.plain-text</string>
-			</array>
 			<key>NSDocumentClass</key>
 			<string>BibDocument</string>
 			<key>NSExportableAs</key>
@@ -604,6 +600,8 @@
 				<integer>2</integer>
 				<key>defaultsDictionary</key>
 				<dict>
+					<key>BDSKAuthorNameDisplayKey</key>
+					<integer>3</integer>
 					<key>BDSKEditorFontNameKey</key>
 					<string>Helvetica</string>
 					<key>BDSKEditorFontSizeKey</key>
@@ -630,8 +628,6 @@
 					<real>0.0</real>
 					<key>BDSKPreviewTemplateStyleKey</key>
 					<string>Default RSS template</string>
-					<key>BDSKAuthorNameDisplayKey</key>
-					<integer>3</integer>
 					<key>BDSKSortGroupsDescendingKey</key>
 					<false/>
 					<key>BDSKSortGroupsKey</key>
@@ -708,10 +704,10 @@
 				<dict>
 					<key>BDSKAutosaveTimeIntervalKey</key>
 					<integer>300</integer>
-					<key>BDSKStringEncodingsKey</key>
-					<array/>
 					<key>BDSKShouldAutosaveDocumentKey</key>
 					<false/>
+					<key>BDSKStringEncodingsKey</key>
+					<array/>
 					<key>Default string encoding for opening and saving</key>
 					<integer>1</integer>
 					<key>Load files in background</key>
