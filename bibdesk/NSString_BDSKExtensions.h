@@ -418,6 +418,8 @@ An inline buffer is used for speed in accessing each character.
 - (NSAttributedString *)linkedIcon;
 - (NSAttributedString *)linkedSmallIcon;
 
+- (NSString *)titleCapitalizedString;
+
 @end
 
 @interface NSMutableString (BDSKExtensions)
