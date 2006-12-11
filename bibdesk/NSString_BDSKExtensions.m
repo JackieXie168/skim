@@ -1347,6 +1347,38 @@ static NSString *UTIForPath(NSString *aPath)
     return [[self url] linkedSmallIcon];
 }
 
+- (NSString *)titleCapitalizedString {
+    NSScanner *scanner = [[NSScanner alloc] initWithString:self];
+    NSString *s = nil;
+    NSMutableString *returnString = [NSMutableString stringWithCapacity:[self length]];
+    [NSCharacterSet curlyBraceCharacterSet];
+    int nesting = 0;
+    unichar ch;
+    unsigned location;
+    
+    [scanner setCharactersToBeSkipped:nil];
+    
+    
+    while([scanner isAtEnd] == NO){
+        if([scanner scanUpToCharactersFromSet:[NSCharacterSet curlyBraceCharacterSet] intoString:&s])
+            [returnString appendString:nesting == 0 ? [s lowercaseString] : s];
+        if([scanner scanCharacter:&ch] == NO)
+            continue;
+        [returnString appendFormat:@"%C", ch];
+        location = [scanner scanLocation];
+        if(location > 0 && [self characterAtIndex:location - 1] == '\\')
+            continue;
+        if(ch == '{')
+            nesting++;
+        else
+            nesting--;
+    }
+    
+    [scanner release];
+    
+    return returnString;
+}
+
 @end
 
 
