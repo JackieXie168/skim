@@ -1079,7 +1079,7 @@ static NSString *UTIForPath(NSString *aPath)
     NSMutableString *result;
     NSString *string;
     int length;
-    BOOL isQuoted = NO;
+    BOOL isQuoted, needsSpace;
     
     length = [self length];
     ptr = alloca(length * sizeof(unichar));
@@ -1087,22 +1087,33 @@ static NSString *UTIForPath(NSString *aPath)
     [self getCharacters:ptr];
     result = [NSMutableString stringWithCapacity:length];
     isQuoted = length > 0 && (*ptr == ' ' || *(end-1) == ' ');
+    needsSpace = NO;
     
     begin = ptr;
     while (ptr < end) {
-        if (*ptr == '"') {
-            APPEND_PREVIOUS();
-            [result appendString:@"\"\""];
-            isQuoted = YES;
-        } else if (*ptr == ',') {
-            isQuoted = YES;
-        } else if (*ptr == '\n' || *ptr == '\r') {
-            APPEND_PREVIOUS();
+        switch (*ptr) {
+            case '\n':
+            case '\r':
+                APPEND_PREVIOUS();
+                if (needsSpace)
+                    [result appendString:@" "];
+            case ' ':
+            case '\t':
+                needsSpace = NO;
+                break;
+            case '"':
+                APPEND_PREVIOUS();
+                [result appendString:@"\"\""];
+            case ',':
+                isQuoted = YES;
+            default:
+                needsSpace = YES;
+                break;
         }
         ptr++;
     }
     APPEND_PREVIOUS();
-    if(isQuoted){
+    if (isQuoted) {
         [result insertString:@"\"" atIndex:0];
         [result appendString:@"\""];
     }
