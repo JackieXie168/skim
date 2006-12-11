@@ -3843,6 +3843,8 @@ Below are lists of collection keys that could be used in BibDesk export template
 @tab 
 @item xmlString
 @tab 
+@item csvString
+@tab 
 @item stringByRemovingTeX
 @tab 
 @item stringByRemovingCurlyBraces
