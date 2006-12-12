@@ -50,6 +50,7 @@ NSString *BDSKServiceTemplateTree = @"BDSKServiceTemplateTree";
 NSString *BDSKTemplateAccessoryString = @"Accessory File";
 NSString *BDSKTemplateMainPageString = @"Main Page";
 NSString *BDSKTemplateDefaultItemString = @"Default Item";
+NSString *BDSKTemplateScriptString = @"Script";
 
 static inline NSString *itemTemplateSubstring(NSString *templateString){
     int start, end, length = [templateString length];
@@ -325,10 +326,10 @@ static inline NSString *itemTemplateSubstring(NSString *templateString){
         NSString *htmlString = [[[NSString alloc] initWithData:[NSData dataWithContentsOfURL:url] encoding:NSUTF8StringEncoding] autorelease];
         if (htmlString == nil)
             format = BDSKUnknownTemplateFormat;
-        else if ([htmlString rangeOfString:@"<$"].location != NSNotFound)
-            format = BDSKTextTemplateFormat;
-        else
+        else if ([htmlString rangeOfString:@"<$"].location == NSNotFound && [htmlString rangeOfString:@"&lt;$"].location != NSNotFound)
             format = BDSKRichHTMLTemplateFormat;
+        else
+            format = BDSKTextTemplateFormat;
     } else {
         format = BDSKTextTemplateFormat;
     }
@@ -383,6 +384,12 @@ static inline NSString *itemTemplateSubstring(NSString *templateString){
     return [[[NSAttributedString alloc] initWithURL:theURL documentAttributes:NULL] autorelease];
 }
 
+- (NSString *)scriptPath;
+{
+    OBASSERT([self isLeaf] == NO);
+    return [NSString stringWithContentsOfURL:[self scriptURL]];
+}
+
 - (NSURL *)mainPageTemplateURL;
 {
     OBASSERT([self isLeaf] == NO);
@@ -417,6 +424,12 @@ static inline NSString *itemTemplateSubstring(NSString *templateString){
         }
     }
     return fileURLs;
+}
+
+- (NSURL *)scriptURL;
+{
+    OBASSERT([self isLeaf] == NO);
+    return [[self childForRole:BDSKTemplateScriptString] representedFileURL];
 }
 
 - (BOOL)addChildWithURL:(NSURL *)fileURL role:(NSString *)role;

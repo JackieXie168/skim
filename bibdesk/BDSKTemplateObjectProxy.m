@@ -39,24 +39,55 @@
 #import "BDSKTemplateObjectProxy.h"
 #import "BDSKTemplate.h"
 #import "BibItem.h"
+#import "BDSKShellTask.h"
 
 
 @implementation BDSKTemplateObjectProxy
 
 + (NSString *)stringByParsingTemplate:(BDSKTemplate *)template withObject:(id)anObject publications:(NSArray *)items {
     NSString *string = [template mainPageString];
+    NSString *scriptPath = [template scriptPath];
     BDSKTemplateObjectProxy *objectProxy = [[self alloc] initWithObject:anObject publications:items template:template];
     string = [BDSKTemplateParser stringByParsingTemplate:string usingObject:objectProxy delegate:objectProxy];
     [objectProxy release];
+    if(scriptPath)
+        string = [[BDSKShellTask shellTask] runShellCommand:scriptPath withInputString:string];
     return string;
 }
 
 + (NSAttributedString *)attributedStringByParsingTemplate:(BDSKTemplate *)template withObject:(id)anObject publications:(NSArray *)items documentAttributes:(NSDictionary **)docAttributes {
-    NSAttributedString *string = [template mainPageAttributedStringWithDocumentAttributes:docAttributes];
+    NSAttributedString *attrString = nil;
+    NSString *scriptPath = [template scriptPath];
+    if(scriptPath == nil){
+        BDSKTemplateObjectProxy *objectProxy = [[self alloc] initWithObject:anObject publications:items template:template];
+        attrString = [template mainPageAttributedStringWithDocumentAttributes:docAttributes];
+        attrString = [BDSKTemplateParser attributedStringByParsingTemplate:attrString usingObject:objectProxy delegate:objectProxy];
+        [objectProxy release];
+    }else{
+        NSString *docType = nil;
+        BDSKTemplateFormat templateFormat = [template templateFormat];
+        if(templateFormat == BDSKRichHTMLTemplateFormat)
+            docType = NSHTMLTextDocumentType;
+        if(templateFormat == BDSKRTFTemplateFormat)
+            docType = NSRTFTextDocumentType;
+        else if(templateFormat == BDSKRTFDTemplateFormat)
+            docType = NSRTFDTextDocumentType;
+        else if(templateFormat == BDSKDocTemplateFormat)
+            docType = NSDocFormatTextDocumentType;
+        NSData *data = [self dataByParsingTemplate:template withObject:anObject publications:items];
+        attrString = [[[NSAttributedString alloc] initWithData:data options:[NSDictionary dictionaryWithObjectsAndKeys:docType, NSDocumentTypeDocumentOption, nil] documentAttributes:NULL error:NULL] autorelease];
+    }
+    return attrString;
+}
+
++ (NSData *)dataByParsingTemplate:(BDSKTemplate *)template withObject:(id)anObject publications:(NSArray *)items {
+    NSString *string = [template mainPageString];
+    NSString *scriptPath = [template scriptPath];
     BDSKTemplateObjectProxy *objectProxy = [[self alloc] initWithObject:anObject publications:items template:template];
-    string = [BDSKTemplateParser attributedStringByParsingTemplate:string usingObject:objectProxy delegate:objectProxy];
+    string = [BDSKTemplateParser stringByParsingTemplate:string usingObject:objectProxy delegate:objectProxy];
     [objectProxy release];
-    return string;
+    string = [[BDSKShellTask shellTask] runShellCommand:scriptPath withInputString:string];
+    return [string dataUsingEncoding:NSUTF8StringEncoding];
 }
 
 - (id)initWithObject:(id)anObject publications:(NSArray *)items template:(BDSKTemplate *)aTemplate {
