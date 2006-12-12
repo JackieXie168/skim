@@ -1002,6 +1002,8 @@ originalContentsURL:(NSURL *)absoluteOriginalContentsURL
         
         if (templateFormat & BDSKRTFDTemplateFormat) {
             // @@ shouldn't reach here, should have already redirected to fileWrapperOfType:forPublications:error:
+        } else if ([selectedTemplate scriptPath] != nil) {
+            data = [self dataForPublications:items usingTemplate:selectedTemplate];
         } else if (templateFormat & BDSKTextTemplateFormat) {
             data = [self stringDataForPublications:items usingTemplate:selectedTemplate];
         } else {
@@ -1283,6 +1285,15 @@ originalContentsURL:(NSURL *)absoluteOriginalContentsURL
     } else if (format & BDSKDocTemplateFormat) {
         return [fileTemplate docFormatFromRange:NSMakeRange(0,[fileTemplate length]) documentAttributes:mutableAttributes];
     } else return nil;
+}
+
+- (NSData *)dataForPublications:(NSArray *)items usingTemplate:(BDSKTemplate *)template{
+    if([items count]) NSParameterAssert([[items objectAtIndex:0] isKindOfClass:[BibItem class]]);
+    
+    OBPRECONDITION(nil != template && nil != [template scriptPath]);
+    
+    NSData *fileTemplate = [BDSKTemplateObjectProxy dataByParsingTemplate:template withObject:self publications:items];
+    return fileTemplate;
 }
 
 - (NSFileWrapper *)fileWrapperForPublications:(NSArray *)items usingTemplate:(BDSKTemplate *)template{

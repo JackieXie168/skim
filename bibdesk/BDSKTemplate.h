@@ -58,6 +58,7 @@ extern NSString *BDSKServiceTemplateTree;
 extern NSString *BDSKTemplateAccessoryString;
 extern NSString *BDSKTemplateMainPageString;
 extern NSString *BDSKTemplateDefaultItemString;
+extern NSString *BDSKTemplateScriptString;
 
 // concrete subclass with specific accessors for the template tree
 @interface BDSKTemplate : BDSKTreeNode
@@ -94,6 +95,7 @@ extern NSString *BDSKTemplateDefaultItemString;
 
 - (NSString *)mainPageString;
 - (NSAttributedString *)mainPageAttributedStringWithDocumentAttributes:(NSDictionary **)docAttributes;
+- (NSString *)scriptPath;
 
 // returns the contents of a child for the given type or of the default template
 // (pass nil for the type if you explicitly desire the default template content)
@@ -105,6 +107,7 @@ extern NSString *BDSKTemplateDefaultItemString;
 - (NSURL *)defaultItemTemplateURL;
 - (NSURL *)templateURLForType:(NSString *)pubType;
 - (NSArray *)accessoryFileURLs;
+- (NSURL *)scriptURL;
 
 // child template accessors
 - (NSURL *)representedFileURL;
