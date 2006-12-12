@@ -1355,9 +1355,9 @@ static NSString *UTIForPath(NSString *aPath)
     int nesting = 0;
     unichar ch;
     unsigned location;
+    NSRange range;
     
     [scanner setCharactersToBeSkipped:nil];
-    
     
     while([scanner isAtEnd] == NO){
         if([scanner scanUpToCharactersFromSet:[NSCharacterSet curlyBraceCharacterSet] intoString:&s])
@@ -1373,6 +1373,10 @@ static NSString *UTIForPath(NSString *aPath)
         else
             nesting--;
     }
+    
+    range = [returnString rangeOfCharacterFromSet:[NSCharacterSet letterCharacterSet]];
+    if(range.location != NSNotFound)
+        [returnString replaceCharactersInRange:range withString:[[returnString substringWithRange:range] uppercaseString]];
     
     [scanner release];
     
