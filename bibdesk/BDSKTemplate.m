@@ -50,7 +50,7 @@ NSString *BDSKServiceTemplateTree = @"BDSKServiceTemplateTree";
 NSString *BDSKTemplateAccessoryString = @"Accessory File";
 NSString *BDSKTemplateMainPageString = @"Main Page";
 NSString *BDSKTemplateDefaultItemString = @"Default Item";
-NSString *BDSKTemplateScriptString = @"Script";
+NSString *BDSKTemplateScriptString = @"Postprocess Script";
 
 static inline NSString *itemTemplateSubstring(NSString *templateString){
     int start, end, length = [templateString length];
