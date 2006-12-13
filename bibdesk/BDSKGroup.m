@@ -149,7 +149,7 @@
 
 - (BOOL)isExternal { return NO; }
 
-- (BOOL)isValidDropTarget { return YES; }
+- (BOOL)isValidDropTarget { return NO; }
 
 - (BOOL)hasEditableName { return NO; }
 
@@ -217,6 +217,8 @@ static NSString *BDSKLibraryLocalizedString = nil;
 - (unsigned int)hash {
     return( ((unsigned int) self >> 4) | (unsigned int) self << (32 - 4));
 }
+
+- (BOOL)isValidDropTarget { return YES; }
 
 @end
 

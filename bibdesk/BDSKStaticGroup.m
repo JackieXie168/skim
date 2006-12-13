@@ -88,6 +88,8 @@ static NSString *BDSKLastImportLocalizedString = nil;
 
 - (BOOL)isStatic { return YES; }
 
+- (BOOL)isValidDropTarget { return YES; }
+
 - (NSArray *)publications {
     return publications;
 }

@@ -104,8 +104,6 @@
 
 - (BOOL)isEditable { return YES; }
 
-- (BOOL)isValidDropTarget { return NO; }
-
 - (NSImage *)icon {
 	return [NSImage smallImageNamed:@"smartFolderIcon"];
 }
