@@ -295,6 +295,4 @@
     return [publications containsObject:item];
 }
 
-- (BOOL)isValidDropTarget { return NO; }
-
 @end

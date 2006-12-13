@@ -126,6 +126,8 @@
     return [key isPersonField];
 }
 
+- (BOOL)isValidDropTarget { return YES; }
+
 @end
 
 #pragma mark -

@@ -371,8 +371,6 @@
 
 - (BOOL)isEditable { return YES; }
 
-- (BOOL)isValidDropTarget { return NO; }
-
 #pragma mark Shell task thread
 
 - (void)terminate{

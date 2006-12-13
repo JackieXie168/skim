@@ -270,8 +270,6 @@ static NSImage *unlockedIcon = nil;
     return rv;
 }
 
-- (BOOL)isValidDropTarget { return NO; }
-
 - (BOOL)isEqual:(id)other { return self == other; }
 
 - (unsigned int)hash {
