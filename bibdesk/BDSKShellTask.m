@@ -41,11 +41,62 @@
 
 volatile int caughtSignal = 0;
 
+@interface BDSKShellTask (Private)
+// Note: the returned data is not autoreleased
+- (NSData *)privateRunShellCommand:(NSString *)cmd withInputString:(NSString *)input;
+- (NSData *)privateExecuteBinary:(NSString *)executablePath inDirectory:(NSString *)currentDirPath withArguments:(NSArray *)args environment:(NSDictionary *)env inputString:(NSString *)input;
+- (void)stdoutNowAvailable:(NSNotification *)notification;
+@end
+
+
 @implementation BDSKShellTask
 
-+ (BDSKShellTask *)shellTask{
-    return [[[BDSKShellTask alloc] init] autorelease];
++ (NSString *)runShellCommand:(NSString *)cmd withInputString:(NSString *)input{
+    BDSKShellTask *shellTask = [[self alloc] init];
+    NSString *output = nil;
+    NSData *outputData = [shellTask privateRunShellCommand:cmd withInputString:input];
+    if(outputData){
+        output = [[NSString allocWithZone:[self zone]] initWithData:outputData encoding:NSUTF8StringEncoding];
+        if(!output)
+            output = [[NSString allocWithZone:[self zone]] initWithData:outputData encoding:NSASCIIStringEncoding];
+        if(!output)
+            output = [[NSString allocWithZone:[self zone]] initWithData:outputData encoding:[NSString defaultCStringEncoding]];
+    }
+    [shellTask release];
+    return [output autorelease];
 }
+
++ (NSData *)runRawShellCommand:(NSString *)cmd withInputString:(NSString *)input{
+    BDSKShellTask *shellTask = [[self alloc] init];
+    NSData *output = [[shellTask privateRunShellCommand:cmd withInputString:input] retain];
+    [shellTask release];
+    return [output autorelease];
+}
+
++ (NSString *)executeBinary:(NSString *)executablePath inDirectory:(NSString *)currentDirPath withArguments:(NSArray *)args environment:(NSDictionary *)env inputString:(NSString *)input{
+    BDSKShellTask *shellTask = [[self alloc] init];
+    NSString *output = nil;
+    NSData *outputData = [shellTask privateExecuteBinary:executablePath inDirectory:currentDirPath withArguments:args environment:env inputString:input];
+    if(outputData){
+        output = [[NSString allocWithZone:[self zone]] initWithData:outputData encoding:NSUTF8StringEncoding];
+        if(!output)
+            output = [[NSString allocWithZone:[self zone]] initWithData:outputData encoding:NSASCIIStringEncoding];
+        if(!output)
+            output = [[NSString allocWithZone:[self zone]] initWithData:outputData encoding:[NSString defaultCStringEncoding]];
+    }
+    [shellTask release];
+    return [output autorelease];
+}
+
+- (void)dealloc{
+    [stdoutData release];
+    [super dealloc];
+}
+
+@end
+
+
+@implementation BDSKShellTask (Private)
 
 //
 // The following three methods are borrowed from Mike Ferris' TextExtras.
@@ -53,7 +104,7 @@ volatile int caughtSignal = 0;
 // - mmcc
 
 // was runWithInputString in TextExtras' TEPipeCommand class.
-- (NSString *)runShellCommand:(NSString *)cmd withInputString:(NSString *)input{
+- (NSData *)privateRunShellCommand:(NSString *)cmd withInputString:(NSString *)input{
     NSFileManager *fm = [NSFileManager defaultManager];
     NSString *shellPath = @"/bin/sh";
     NSString *shellScriptPath = [[NSApp delegate] temporaryFilePath:@"shellscript" createDirectory:NO];
@@ -61,7 +112,7 @@ volatile int caughtSignal = 0;
     NSData *scriptData;
     NSMutableDictionary *currentAttributes;
     unsigned long currentMode;
-    NSString *output;
+    NSData *output = nil;
 
     // ---------- Check the shell and create the script ----------
     if (![fm isExecutableFileAtPath:shellPath]) {
@@ -94,7 +145,7 @@ volatile int caughtSignal = 0;
     // ---------- Execute the script ----------
 
     // MF:!!! The current working dir isn't too appropriate
-    output = [self executeBinary:shellScriptPath inDirectory:[shellScriptPath stringByDeletingLastPathComponent] withArguments:nil environment:nil inputString:input];
+    output = [self privateExecuteBinary:shellScriptPath inDirectory:[shellScriptPath stringByDeletingLastPathComponent] withArguments:nil environment:nil inputString:input];
 
     // ---------- Remove the script file ----------
     if (![fm removeFileAtPath:shellScriptPath handler:nil]) {
@@ -105,13 +156,12 @@ volatile int caughtSignal = 0;
 }
 
 // This method and the little notification method following implement synchronously running a task with input piped in from a string and output piped back out and returned as a string.   They require only a stdoutData instance variable to function.
-- (NSString *)executeBinary:(NSString *)executablePath inDirectory:(NSString *)currentDirPath withArguments:(NSArray *)args environment:(NSDictionary *)env inputString:(NSString *)input {
+- (NSData *)privateExecuteBinary:(NSString *)executablePath inDirectory:(NSString *)currentDirPath withArguments:(NSArray *)args environment:(NSDictionary *)env inputString:(NSString *)input {
     NSTask *task;
     NSPipe *inputPipe;
     NSPipe *outputPipe;
     NSFileHandle *inputFileHandle;
     NSFileHandle *outputFileHandle;
-    NSString *output = nil;
 
     task = [[NSTask allocWithZone:[self zone]] init];    
     [task setLaunchPath:executablePath];
@@ -156,14 +206,6 @@ volatile int caughtSignal = 0;
         [[NSNotificationCenter defaultCenter] removeObserver:self name:NSFileHandleReadToEndOfFileCompletionNotification object:outputFileHandle];
 
         [task waitUntilExit];
-
-        output = [[NSString allocWithZone:[self zone]] initWithData:stdoutData encoding:NSUTF8StringEncoding];
-        if(!output){
-            output = [[NSString allocWithZone:[self zone]] initWithData:stdoutData encoding:NSASCIIStringEncoding];
-        }
-        
-        [stdoutData release];
-        stdoutData = nil;
     } else {
         NSLog(@"Failed to launch task or task exited without accepting input.  Termination status was %d", [task terminationStatus]);
     }
@@ -176,7 +218,7 @@ volatile int caughtSignal = 0;
     signal(SIGPIPE, SIG_DFL);
     [task release];
 
-    return [output autorelease];
+    return [stdoutData length] ? nil : stdoutData;
 }
 
 - (void)stdoutNowAvailable:(NSNotification *)notification {

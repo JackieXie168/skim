@@ -110,9 +110,7 @@ static NSString *OFControllerAssertionHandlerException = @"OFControllerAssertion
         [args addObjectsFromArray:[stack componentsSeparatedByString:@"  "]];
         // Note: function addresses are separated by double spaces, not a single space.
         
-        BDSKShellTask *task = [[BDSKShellTask alloc] init];
-        stack = [task executeBinary:@"/usr/bin/atos" inDirectory:nil withArguments:args environment:nil inputString:nil];
-        [task release];
+        stack = [BDSKShellTask executeBinary:@"/usr/bin/atos" inDirectory:nil withArguments:args environment:nil inputString:nil];
     } else {
         stack = [NSString stringWithFormat:@"No stack trace for exception %@", self];
     }

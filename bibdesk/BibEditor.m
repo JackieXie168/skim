@@ -2911,7 +2911,7 @@ static int numberOfOpenEditors = 0;
             
             NSString *cmdString = [[NSBundle mainBundle] pathForResource:@"pdftotext" ofType:nil];
             cmdString = [NSString stringWithFormat:@"%@ -f 1 -l 1 \'%@\' -", cmdString, path];
-            NSString *textSnoopString = [[BDSKShellTask shellTask] runShellCommand:cmdString withInputString:nil];
+            NSString *textSnoopString = [BDSKShellTask runShellCommand:cmdString withInputString:nil];
             if([NSString isEmptyString:textSnoopString])
                 [documentSnoopTextView setString:NSLocalizedString(@"Unable to convert this file to text.  It may be a scanned image, or perhaps it's not a PDF file.", @"Message for Local-Url preview")];
             else

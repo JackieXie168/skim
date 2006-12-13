@@ -43,10 +43,7 @@
     // data used to store stdOut from the filter
     NSData *stdoutData;
 }
-
-+ (BDSKShellTask *)shellTask;
-
-- (NSString *)runShellCommand:(NSString *)cmd withInputString:(NSString *)input;
-- (NSString *)executeBinary:(NSString *)executablePath inDirectory:(NSString *)currentDirPath withArguments:(NSArray *)args environment:(NSDictionary *)env inputString:(NSString *)input;
-- (void)stdoutNowAvailable:(NSNotification *)notification;
++ (NSString *)runShellCommand:(NSString *)cmd withInputString:(NSString *)input;
++ (NSData *)runRawShellCommand:(NSString *)cmd withInputString:(NSString *)input;
++ (NSString *)executeBinary:(NSString *)executablePath inDirectory:(NSString *)currentDirPath withArguments:(NSArray *)args environment:(NSDictionary *)env inputString:(NSString *)input;
 @end
