@@ -464,12 +464,12 @@ static void addSubstringToDictionary(NSString *subValue, NSMutableDictionary *pu
 }
 
 - (void)parser:(NSXMLParser *)parser didStartElement:(NSString *)elementName namespaceURI:(NSString *)namespaceURI qualifiedName:(NSString *)qualifiedName attributes:(NSDictionary *)attributeDict{
-    if([elementName isEqualToString:@"record"]){
+    if([elementName isEqualToString:@"record"] || [elementName isEqualToString:@"marc.record"]){
         [pubDict removeAllObjects];
-    }else if([elementName isEqualToString:@"datafield"]){
+    }else if([elementName isEqualToString:@"datafield"] || [elementName isEqualToString:@"marc.datafield"]){
         [tag release];
         tag = [[attributeDict objectForKey:@"tag"] retain];
-    }else if([elementName isEqualToString:@"subfield"]){
+    }else if([elementName isEqualToString:@"subfield"] || [elementName isEqualToString:@"marc.subfield"]){
         [subTag release];
         subTag = [[attributeDict objectForKey:@"code"] retain];
         [currentValue setString:@""];
@@ -477,7 +477,7 @@ static void addSubstringToDictionary(NSString *subValue, NSMutableDictionary *pu
 }
 
 - (void)parser:(NSXMLParser *)parser didEndElement:(NSString *)elementName namespaceURI:(NSString *)namespaceURI qualifiedName:(NSString *)qName{
-    if([elementName isEqualToString:@"record"]){
+    if([elementName isEqualToString:@"record"] || [elementName isEqualToString:@"marc.record"]){
         if([pubDict count] > 0){
             BibItem *newBI = [[BibItem alloc] initWithType:BDSKBookString
                                                   fileType:BDSKBibtexString
@@ -487,7 +487,7 @@ static void addSubstringToDictionary(NSString *subValue, NSMutableDictionary *pu
             [returnArray addObject:newBI];
             [newBI release];
         }
-    }else if([elementName isEqualToString:@"subfield"]){
+    }else if([elementName isEqualToString:@"subfield"] || [elementName isEqualToString:@"marc.subfield"]){
         if(tag && subTag && [currentValue length])
             addSubstringToDictionary(currentValue, pubDict, tag, subTag);
     }
