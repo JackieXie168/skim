@@ -323,8 +323,7 @@
     if (nil == fileInputString){
         [self presentError:error];
     } else {
-        NSString *filterOutput = [[BDSKShellTask shellTask] runShellCommand:shellCommand
-                                                            withInputString:fileInputString];
+        NSString *filterOutput = [BDSKShellTask runShellCommand:shellCommand withInputString:fileInputString];
         
         if ([NSString isEmptyString:filterOutput]){
             NSRunAlertPanel(NSLocalizedString(@"Unable To Open With Filter", @"Message in alert dialog when unable to open a document with filter"),
