@@ -545,12 +545,12 @@ static inline NSRange altTemplateTagRange(NSString *template, NSString *altTag, 
                             }
                         }
                         
-                        altTag = altConditionTagWithTag(tag);
-                        if (splitTemplateStringAtAltTag([subTemplate string], altTag, nil, &altTagRange, NULL)) {
+                        if (altTagRange.location != NSNotFound) {
                             [subTemplates addObject:[subTemplate attributedSubstringFromRange:NSMakeRange(NSMaxRange(altTagRange), [subTemplate length] - NSMaxRange(altTagRange))]];
                             subTemplate = [subTemplate attributedSubstringFromRange:NSMakeRange(0, altTagRange.location)];
                         }
                         [subTemplates addObject:subTemplate];
+                        
                         
                         @try{ keyValue = [object valueForKeyPath:tag]; }
                         @catch (id exception) { keyValue = nil; }
