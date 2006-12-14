@@ -74,10 +74,6 @@ static NSCharacterSet *invertedKeyCharacterSet = nil;
     invertedKeyCharacterSet = [[keyCharacterSet invertedSet] copy];
 }
 
-+ (NSString *)stringByParsingTemplate:(NSString *)template usingObject:(id)object {
-    return [self stringByParsingTemplate:template usingObject:object delegate:nil];
-}
-
 static NSMutableDictionary *endMultiDict = nil;
 static inline NSString *endMultiTagWithTag(NSString *tag){
     if(nil == endMultiDict)
@@ -128,6 +124,10 @@ static inline NSString *sepConditionTagWithTag(NSString *tag){
         [sepConditionDict setObject:sepTag forKey:tag];
     }
     return sepTag;
+}
+
++ (NSString *)stringByParsingTemplate:(NSString *)template usingObject:(id)object {
+    return [self stringByParsingTemplate:template usingObject:object delegate:nil];
 }
 
 + (NSString *)stringByParsingTemplate:(NSString *)template usingObject:(id)object delegate:(id <BDSKTemplateParserDelegate>)delegate {
@@ -538,11 +538,6 @@ static inline NSString *sepConditionTagWithTag(NSString *tag){
     return [self isEqualToString:@""] ? self : [self stringByAppendingString:@"  "];
 }
 
-- (NSString *)stringByAppendingCommaAndSpaceIfNotEmpty
-{
-    return [self isEqualToString:@""] ? self : [self stringByAppendingString:@", "];
-}
-
 - (NSString *)stringByPrependingSpaceIfNotEmpty
 {
     return [self isEqualToString:@""] ? self : [NSString stringWithFormat:@" %@", self];
@@ -556,6 +551,26 @@ static inline NSString *sepConditionTagWithTag(NSString *tag){
 - (NSString *)stringByAppendingFullStopIfNotEmpty
 {
     return [self isEqualToString:@""] ? self : [self stringByAppendingString:@"."];
+}
+
+- (NSString *)stringByAppendingCommaAndSpaceIfNotEmpty
+{
+    return [self isEqualToString:@""] ? self : [self stringByAppendingString:@", "];
+}
+
+- (NSString *)stringByAppendingFullStopAndSpaceIfNotEmpty
+{
+    return [self isEqualToString:@""] ? self : [self stringByAppendingString:@". "];
+}
+
+- (NSString *)stringByPrependingCommaAndSpaceIfNotEmpty
+{
+    return [self isEqualToString:@""] ? self : [NSString stringWithFormat:@", %@", self];
+}
+
+- (NSString *)stringByPrependingFullStopAndSpaceIfNotEmpty
+{
+    return [self isEqualToString:@""] ? self : [NSString stringWithFormat:@". %@", self];
 }
 
 - (NSString *)parenthesizedStringIfNotEmpty
@@ -595,6 +610,11 @@ static inline NSString *sepConditionTagWithTag(NSString *tag){
 
 
 @implementation NSArray (BDSKTemplateParser)
+
+- (NSString *)componentsJoinedByAnd
+{
+    return [self componentsJoinedByString:@" and "];
+}
 
 - (BOOL)isNotEmpty
 {
