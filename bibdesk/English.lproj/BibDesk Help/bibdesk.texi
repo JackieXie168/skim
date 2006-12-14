@@ -3881,13 +3881,19 @@ Below are lists of collection keys that could be used in BibDesk export template
 @tab 
 @item stringByAppendingDoubleSpaceIfNotEmpty
 @tab 
+@item stringByPrependingSpaceIfNotEmpty
+@tab 
 @item stringByAppendingCommaAndSpaceIfNotEmpty
 @tab 
-@item stringByPrependingSpaceIfNotEmpty
+@item stringByAppendingFullStopAndSpaceIfNotEmpty
 @tab 
 @item stringByAppendingCommaIfNotEmpty
 @tab 
 @item stringByAppendingFullStopIfNotEmpty
+@tab 
+@item stringByPrependingCommaAndSpaceIfNotEmpty
+@tab 
+@item stringByPrependingFullStopAndSpaceIfNotEmpty
 @tab 
 @item parenthesizedStringIfNotEmpty
 @tab 
@@ -3990,6 +3996,8 @@ Below are lists of collection keys that could be used in BibDesk export template
 @item @@count
 @tab 
 @item @@componentsJoinedByComma
+@tab 
+@item @@componentsJoinedByAnd
 @tab 
 @item @@componentsJoinedByCommaAndAnd
 @tab 
