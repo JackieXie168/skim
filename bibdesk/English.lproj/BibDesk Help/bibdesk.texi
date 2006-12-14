@@ -3648,6 +3648,28 @@ template for empty condition
 </$conditionKey?>
 @end example
 
+Instead of checking for an empty value, you can also check for fixed values. 
+@example
+<$conditionKey=firstValue?>
+template for match to firstValue
+<?$conditionKey=secondValue?>
+template for match to secondValue
+...
+<?$conditionKey?>
+template for no match
+</$conditionKey?>
+@end example
+
+Or you can match on substrings.
+@example
+<$conditionKey~matchValue?>
+template for substring match
+</$conditionKey?>
+@end example
+
+In these conditions the alternate template tags (starting with @code{<?$}) are optional. 
+There can be an arbitrary number of alternate matches. Matches are case insensitive.
+
 As for collection template tags, if a condition template tag appears by itself on a further empty line, 
 this whole line will be ignored, including the newline at the end of the line. Moreover you can use 
 key paths as well, as long as the combined key path returns a value key.
