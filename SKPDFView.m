@@ -60,8 +60,11 @@
         [self handlePopUpRequest:theEvent];
 	} else if (toolMode == SKAnnotateToolMode) {
         [self handleAnnotationRequest:theEvent];
-    } else {
-        [super mouseDown:theEvent];
+    } else if (toolMode == SKTextToolMode) {
+        if ([theEvent modifierFlags] & NSCommandKeyMask)
+            [self handlePopUpRequest:theEvent];
+        else
+            [super mouseDown:theEvent];
     }
 }
 
