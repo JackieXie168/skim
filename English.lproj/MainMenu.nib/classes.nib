@@ -1,0 +1,21 @@
+{
+    IBClasses = (
+        {
+            ACTIONS = {
+                changeToolMode = id; 
+                createNewNote = id; 
+                myAction = id; 
+                toggleNotesDrawer = id; 
+                zoomIn = id; 
+                zoomOut = id; 
+                zoomToActualSize = id; 
+                zoomToFit = id; 
+            }; 
+            CLASS = FirstResponder; 
+            LANGUAGE = ObjC; 
+            SUPERCLASS = NSObject; 
+        }, 
+        {CLASS = SKApplicationController; LANGUAGE = ObjC; SUPERCLASS = NSObject; }
+    ); 
+    IBVersion = 1; 
+}

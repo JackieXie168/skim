@@ -1,0 +1,34 @@
+//
+
+// SKDocument.h
+
+//  This code is licensed under a BSD license. Please see the file LICENSE for details.
+//
+//  Created by Michael McCracken on 12/5/06.
+//  Copyright Michael O. McCracken 2006 . All rights reserved.
+//
+
+#import <Cocoa/Cocoa.h>
+
+@class PDFDocument;
+
+@interface SKDocument : NSDocument
+{
+    PDFDocument *pdfDoc;
+    
+    // variables to be saved:
+    NSMutableArray *notes;
+}
+
+- (NSArray *)notes;
+- (void)setNotes:(NSArray *)newNotes;
+- (NSArray *)notes;
+- (void)setNotes:(NSArray *)newNotes;
+- (unsigned)countOfNotes;
+- (id)objectInNotesAtIndex:(unsigned)index;
+- (void)insertObject:(id)obj inNotesAtIndex:(unsigned)index;
+- (void)removeObjectFromNotesAtIndex:(unsigned)index;
+
+- (PDFDocument *)pdfDocument;
+
+@end
