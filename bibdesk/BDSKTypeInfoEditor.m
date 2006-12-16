@@ -42,6 +42,7 @@
 #import "BibAppController.h"
 #import "BibTypeManager.h"
 #import "NSFileManager_BDSKExtensions.h"
+#import "NSIndexSet_BDSKExtensions.h"
 
 #define BDSKTypeInfoRowsPboardType	@"BDSKTypeInfoRowsPboardType"
 
@@ -129,7 +130,11 @@ static BDSKTypeInfoEditor *sharedTypeInfoEditor;
 # pragma mark Accessors
 
 - (void)addType:(NSString *)newType withFields:(NSDictionary *)fieldsDict {
-	[types addObject:newType];
+    [self insertType:newType withFields:fieldsDict atIndex:[types count]];
+}
+
+- (void)insertType:(NSString *)newType withFields:(NSDictionary *)fieldsDict atIndex:(unsigned)index {
+	[types insertObject:newType atIndex:index];
 	
 	// create mutable containers for the fields
 	NSMutableArray *requiredFields;
@@ -547,50 +552,76 @@ static BDSKTypeInfoEditor *sharedTypeInfoEditor;
 	if (op == NSTableViewDropOn) // redirect drops on an item
 		[tv setDropRow:row dropOperation:NSTableViewDropAbove];
 	
-	return NSDragOperationMove;
+    if (tv == typeTableView && [info draggingSourceOperationMask] == NSDragOperationCopy)
+        return NSDragOperationCopy;
+	else
+        return NSDragOperationMove;
 }
 
 - (BOOL)tableView:(NSTableView *)tv acceptDrop:(id <NSDraggingInfo> )info row:(int)row dropOperation:(NSTableViewDropOperation)op {
 	NSPasteboard *pboard = [info draggingPasteboard];
 	NSArray *rows = [pboard propertyListForType:BDSKTypeInfoRowsPboardType];
-	NSEnumerator *rowEnum = [rows objectEnumerator];
-	NSNumber *rowNum;
-	int i;
-	int insertRow = row;
-	NSMutableArray *fields = nil;
-	NSArray *draggedFields;
-	NSMutableIndexSet *removeIndexes = [NSMutableIndexSet indexSet];
-	NSIndexSet *insertIndexes;
+    NSIndexSet *insertIndexes;
 	
-	// find the array of fields
-	if (tv == typeTableView) {
-		fields = types;
-	} else if (tv == requiredTableView) {
-		fields = currentRequiredFields;
-	} else if (tv == optionalTableView) {
-		fields = currentOptionalFields;
-	}
-	
-	NSAssert(fields != nil, @"An error occurred:  fields must not be nil when dragging");
-	
-	while (rowNum = [rowEnum nextObject]) {
-		i = [rowNum intValue];
-		if (i < row) insertRow--;
-		[removeIndexes addIndex:i];
-	}
-	
-	draggedFields = [fields objectsAtIndexes:removeIndexes];
-	insertIndexes = [NSIndexSet indexSetWithIndexesInRange:NSMakeRange(insertRow, [rows count])];
-	[fields removeObjectsAtIndexes:removeIndexes];
-	[fields insertObjects:draggedFields atIndexes:insertIndexes];
-	
-	// select the moved rows
-	if(![tv allowsMultipleSelection])
-		insertIndexes = [NSIndexSet indexSetWithIndex:[insertIndexes firstIndex]];
-	[tv selectRowIndexes:insertIndexes byExtendingSelection:NO];
-	[tv reloadData];
-	
-	[self setDocumentEdited:YES];
+    if (tv == typeTableView && [info draggingSourceOperationMask] == NSDragOperationCopy) {
+        
+        NSEnumerator *typeEnum = [[types objectsAtIndexes:[NSIndexSet indexSetWithIndexesInArray:rows]] objectEnumerator];
+        NSString *type;
+        NSString *newType;
+        int i;
+        
+        insertIndexes = [NSIndexSet indexSetWithIndexesInRange:NSMakeRange(row, [rows count])];
+        
+        while (type = [typeEnum nextObject]) {
+            newType = [NSString stringWithFormat:@"%@-copy", type];
+            i = 0;
+            while ([types containsObject:newType]) {
+                newType = [NSString stringWithFormat:@"%@-copy-%i", type, ++i];
+            }
+            [self insertType:newType withFields:[fieldsForTypesDict objectForKey:type] atIndex:row];
+        }
+        
+    } else {
+        
+        NSEnumerator *rowEnum = [rows objectEnumerator];
+        NSNumber *rowNum;
+        int i;
+        int insertRow = row;
+        NSMutableArray *fields = nil;
+        NSArray *draggedFields;
+        NSMutableIndexSet *removeIndexes = [NSMutableIndexSet indexSet];
+        
+        // find the array of fields
+        if (tv == typeTableView) {
+            fields = types;
+        } else if (tv == requiredTableView) {
+            fields = currentRequiredFields;
+        } else if (tv == optionalTableView) {
+            fields = currentOptionalFields;
+        }
+        
+        NSAssert(fields != nil, @"An error occurred:  fields must not be nil when dragging");
+        
+        while (rowNum = [rowEnum nextObject]) {
+            i = [rowNum intValue];
+            if (i < row) insertRow--;
+            [removeIndexes addIndex:i];
+        }
+        
+        draggedFields = [fields objectsAtIndexes:removeIndexes];
+        insertIndexes = [NSIndexSet indexSetWithIndexesInRange:NSMakeRange(insertRow, [rows count])];
+        [fields removeObjectsAtIndexes:removeIndexes];
+        [fields insertObjects:draggedFields atIndexes:insertIndexes];
+        
+    }
+    
+    // select the moved rows
+    if(![tv allowsMultipleSelection])
+        insertIndexes = [NSIndexSet indexSetWithIndex:[insertIndexes firstIndex]];
+    [tv selectRowIndexes:insertIndexes byExtendingSelection:NO];
+    [tv reloadData];
+    
+    [self setDocumentEdited:YES];
     
     return YES;
 }
