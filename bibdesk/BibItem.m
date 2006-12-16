@@ -2282,6 +2282,11 @@ Boolean stringContainsLossySubstring(NSString *theString, NSString *stringToFind
     } else if([value hasPrefix:@"\\url{"] && [value hasSuffix:@"}"]){
         // URLs are often enclosed in a \url tex command in bibtex
         value = [value substringWithRange:NSMakeRange(5, [value length] - 6)];
+    } else if([value hasPrefix:@"\\href{"]){
+        // may also take the form \href{http://arXiv.org/abs/hep-th/0304033}{arXiv:hep-th/0304033}
+        unsigned loc = [value indexOfRightBraceMatchingLeftBraceAtIndex:5];
+        if (NSNotFound != loc)
+            value = [value substringWithRange:NSMakeRange(6, loc - 6)];
     }
 
     return [NSURL URLWithStringByNormalizingPercentEscapes:value baseURL:baseURL];
