@@ -45,6 +45,7 @@
 #import "NSIndexSet_BDSKExtensions.h"
 
 #define BDSKTypeInfoRowsPboardType	@"BDSKTypeInfoRowsPboardType"
+#define BDSKTypeInfoPboardType @"BDSKTypeInfoPboardType"
 
 static BDSKTypeInfoEditor *sharedTypeInfoEditor;
 
@@ -129,10 +130,6 @@ static BDSKTypeInfoEditor *sharedTypeInfoEditor;
 
 # pragma mark Accessors
 
-- (void)addType:(NSString *)newType withFields:(NSDictionary *)fieldsDict {
-    [self insertType:newType withFields:fieldsDict atIndex:[types count]];
-}
-
 - (void)insertType:(NSString *)newType withFields:(NSDictionary *)fieldsDict atIndex:(unsigned)index {
 	[types insertObject:newType atIndex:index];
 	
@@ -149,6 +146,10 @@ static BDSKTypeInfoEditor *sharedTypeInfoEditor;
 	}
 	NSMutableDictionary *newDict = [NSMutableDictionary dictionaryWithObjectsAndKeys: requiredFields, REQUIRED_KEY, optionalFields, OPTIONAL_KEY, nil];
 	[fieldsForTypesDict setObject:newDict forKey:newType];
+}
+
+- (void)addType:(NSString *)newType withFields:(NSDictionary *)fieldsDict {
+    [self insertType:newType withFields:fieldsDict atIndex:[types count]];
 }
 
 - (void)setCurrentType:(NSString *)newCurrentType {
@@ -533,13 +534,58 @@ static BDSKTypeInfoEditor *sharedTypeInfoEditor;
 	}
 }
 
+#pragma mark Paste/Duplicate support
+
+// used by OmniAppKit category methods
+- (BOOL)tableView:(NSTableView *)tv addItemsFromPasteboard:(NSPasteboard *)pboard {
+    NSArray *pbtypes = [pboard types];
+    if ([tv isEqual:typeTableView] && [pbtypes containsObject:BDSKTypeInfoPboardType]) {
+        NSEnumerator *newTypeE = [[pboard propertyListForType:BDSKTypeInfoPboardType] objectEnumerator];
+        NSDictionary *aType;
+        NSString *newType = nil;
+        while (aType = [newTypeE nextObject]) {
+            NSString *name = [[aType objectForKey:@"name"] stringByAppendingString:@"-copy"];
+            newType = name;
+            int i = 0;
+            while ([types containsObject:newType]) {
+                newType = [NSString stringWithFormat:@"%@-%i",name, ++i];
+            }
+            [self addType:newType withFields:[aType objectForKey:@"fields"]];
+            
+        }
+        [typeTableView reloadData];
+        
+        int row = [types indexOfObject:newType];
+        [typeTableView selectRowIndexes:[NSIndexSet indexSetWithIndex:row] byExtendingSelection:NO];
+        [[[typeTableView tableColumnWithIdentifier:@"type"] dataCell] setEnabled:YES];
+        [typeTableView editColumn:0 row:row withEvent:nil select:YES];
+        
+        [self setDocumentEdited:YES];
+        return YES;        
+    }
+    return NO;
+}
+
 #pragma mark NSTableView dragging
 
 - (BOOL)tableView:(NSTableView *)tv writeRows:(NSArray *)rows toPasteboard:(NSPasteboard *)pboard {
 	// we only drag our own rows
-	[pboard declareTypes: [NSArray arrayWithObject:BDSKTypeInfoRowsPboardType] owner:self];
+	[pboard declareTypes: [NSArray arrayWithObjects:BDSKTypeInfoRowsPboardType, BDSKTypeInfoPboardType, nil] owner:nil];
 	// write the rows to the pasteboard
 	[pboard setPropertyList:rows forType:BDSKTypeInfoRowsPboardType];
+    if ([tv isEqual:typeTableView] && [rows count]) {
+        NSMutableArray *newTypes = [NSMutableArray array];
+        NSNumber *row;
+        NSEnumerator *rowE = [rows objectEnumerator];
+        while (row = [rowE nextObject]) {
+            NSMutableDictionary *aType = [NSMutableDictionary dictionary];
+            NSString *name = [types objectAtIndex:[row intValue]];
+            [aType setObject:name forKey:@"name"];
+            [aType setObject:[fieldsForTypesDict objectForKey:name] forKey:@"fields"];
+            [newTypes addObject:aType];
+        }
+        [pboard setPropertyList:newTypes forType:BDSKTypeInfoPboardType];
+    }
 	return YES;
 }
 
