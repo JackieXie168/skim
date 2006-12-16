@@ -330,8 +330,7 @@ static inline NSRange altTemplateTagRange(NSString *template, NSString *altTag, 
                             }
                         }
                         
-                        altTag = altConditionTagWithTag(tag);
-                        altTagRange = altTemplateTagRange(subTemplate, altTag, nil, NULL);
+                        altTagRange = altTemplateTagRange(subTemplate, altConditionTagWithTag(tag), nil, NULL);
                         if (altTagRange.location != NSNotFound) {
                             [subTemplates addObject:[subTemplate substringToIndex:altTagRange.location]];
                             subTemplate = [subTemplate substringFromIndex:NSMaxRange(altTagRange)];
@@ -538,16 +537,17 @@ static inline NSRange altTemplateTagRange(NSString *template, NSString *altTag, 
                             altTag = matchEqual ? equalConditionTagWithTag(tag) : containConditionTagWithTag(tag);
                             altTagRange = altTemplateTagRange([subTemplate string], altTag, CONDITIONTAG_CLOSE_DELIM, &matchString);
                             while (altTagRange.location != NSNotFound) {
-                                [subTemplates addObject:[subTemplate attributedSubstringFromRange:NSMakeRange(NSMaxRange(altTagRange), [subTemplate length] - NSMaxRange(altTagRange))]];
+                                [subTemplates addObject:[subTemplate attributedSubstringFromRange:NSMakeRange(0, altTagRange.location)]];
                                 [matchStrings addObject:matchString];
-                                subTemplate = [subTemplate attributedSubstringFromRange:NSMakeRange(0, altTagRange.location)];
+                                subTemplate = [subTemplate attributedSubstringFromRange:NSMakeRange(NSMaxRange(altTagRange), [subTemplate length] - NSMaxRange(altTagRange))];
                                 altTagRange = altTemplateTagRange([subTemplate string], altTag, CONDITIONTAG_CLOSE_DELIM, &matchString);
                             }
                         }
                         
+                        altTagRange = altTemplateTagRange([subTemplate string], altConditionTagWithTag(tag), nil, NULL);
                         if (altTagRange.location != NSNotFound) {
-                            [subTemplates addObject:[subTemplate attributedSubstringFromRange:NSMakeRange(NSMaxRange(altTagRange), [subTemplate length] - NSMaxRange(altTagRange))]];
-                            subTemplate = [subTemplate attributedSubstringFromRange:NSMakeRange(0, altTagRange.location)];
+                            [subTemplates addObject:[subTemplate attributedSubstringFromRange:NSMakeRange(0, altTagRange.location)]];
+                            subTemplate = [subTemplate attributedSubstringFromRange:NSMakeRange(NSMaxRange(altTagRange), [subTemplate length] - NSMaxRange(altTagRange))];
                         }
                         [subTemplates addObject:subTemplate];
                         
