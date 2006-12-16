@@ -75,6 +75,7 @@ enum {
     BDSKFieldCollection *templateFields;
     int currentIndex;
     BOOL spotlightMetadataChanged;
+    NSMutableDictionary *cachedURLs;
 }
 
 /*!

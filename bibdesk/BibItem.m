@@ -225,6 +225,7 @@ static CFDictionaryRef selectorTable = NULL;
 		[self setNeedsToBeFiled:NO];
 		
 		groups = [[NSMutableDictionary alloc] initWithCapacity:5];
+        cachedURLs = [[NSMutableDictionary alloc] initWithCapacity:5];
 		
         templateFields = nil;
         // updateMetadataForKey with a nil argument will set the dates properly if we read them from a file
@@ -261,6 +262,7 @@ static CFDictionaryRef selectorTable = NULL;
             [self setPubTypeWithoutUndo:[coder decodeObjectForKey:@"pubType"]];
             [self setDateModified:[coder decodeObjectForKey:@"dateModified"]];
             groups = [[NSMutableDictionary alloc] initWithCapacity:5];
+            cachedURLs = [[NSMutableDictionary alloc] initWithCapacity:5];
             // set by the document, which we don't archive
             owner = nil;
             fileOrder = nil;
@@ -300,6 +302,7 @@ static CFDictionaryRef selectorTable = NULL;
     [pubFields release];
     [people release];
 	[groups release];
+    [cachedURLs release];
 
     [pubType release];
     [fileType release];
@@ -2224,10 +2227,9 @@ Boolean stringContainsLossySubstring(NSString *theString, NSString *stringToFind
 
 - (NSImage *)imageForURLField:(NSString *)field{
     
-    if([NSString isEmptyString:[self valueOfField:field]])
-        return nil;
-    
     NSURL *url = [self URLForField:field];
+    if(nil == url)
+        return nil;
     
     if([field isLocalFileField] && (url = [url fileURLByResolvingAliases]) == nil)
         return [NSImage missingFileImage];
@@ -2237,11 +2239,10 @@ Boolean stringContainsLossySubstring(NSString *theString, NSString *stringToFind
 
 - (NSImage *)smallImageForURLField:(NSString *)field{
 
-    if([NSString isEmptyString:[self valueOfField:field]])
-        return nil;
-
     NSURL *url = [self URLForField:field];
-    
+    if(nil == url)
+        return nil;
+   
     if([field isLocalFileField] && (url = [url fileURLByResolvingAliases]) == nil)
         return [NSImage smallMissingFileImage];
     
@@ -2260,6 +2261,12 @@ Boolean stringContainsLossySubstring(NSString *theString, NSString *stringToFind
 }
 
 - (NSURL *)remoteURLForField:(NSString *)field{
+    
+    // check the cache first
+    NSURL *returnURL = [cachedURLs objectForKey:field];
+    if (returnURL)
+        return returnURL;
+    
     NSString *value = [self valueOfField:field inherit:NO];
     NSURL *baseURL = nil;
     
@@ -2289,7 +2296,10 @@ Boolean stringContainsLossySubstring(NSString *theString, NSString *stringToFind
             value = [value substringWithRange:NSMakeRange(6, loc - 6)];
     }
 
-    return [NSURL URLWithStringByNormalizingPercentEscapes:value baseURL:baseURL];
+    returnURL = [NSURL URLWithStringByNormalizingPercentEscapes:value baseURL:baseURL];
+    if (returnURL)
+        [cachedURLs setObject:returnURL forKey:field];
+    return returnURL;
 }
 
 - (NSURL *)localURL{
@@ -2317,9 +2327,17 @@ Boolean stringContainsLossySubstring(NSString *theString, NSString *stringToFind
 }
 
 - (NSURL *)localFileURLForField:(NSString *)field inherit:(BOOL)inherit{
-    NSURL *localURL = nil;
+    
+    // check the cache first
+    NSURL *localURL = [cachedURLs objectForKey:field];
+    if (nil != localURL)
+        return localURL;
+    
     NSURL *resolvedURL = nil;
     NSString *localURLFieldValue = [self valueOfField:field inherit:inherit];
+    
+    // only cache absolute URLs
+    BOOL shouldCache = YES;
     
     if ([NSString isEmptyString:localURLFieldValue]) return nil;
     
@@ -2337,7 +2355,7 @@ Boolean stringContainsLossySubstring(NSString *theString, NSString *stringToFind
             NSString *basePath = [NSString isEmptyString:docPath] ? NSHomeDirectory() : [docPath stringByDeletingLastPathComponent];
 			// It's a relative path from the containing document's path
             localURLFieldValue = [basePath stringByAppendingPathComponent:localURLFieldValue];
-            
+            shouldCache = NO;
         }
 
         localURL = [NSURL fileURLWithPath:[localURLFieldValue stringByStandardizingPath]];
@@ -2349,7 +2367,11 @@ Boolean stringContainsLossySubstring(NSString *theString, NSString *stringToFind
     resolvedURL = [localURL fileURLByResolvingAliasesBeforeLastPathComponent];
     
     // if the path to the file does not exist resolvedURL is nil, so we return the unresolved path
-    return (resolvedURL == nil) ? localURL : resolvedURL;
+    NSURL *returnURL = (resolvedURL == nil) ? localURL : resolvedURL;
+    if (returnURL)
+        [cachedURLs setObject:returnURL forKey:field];
+    
+    return returnURL;
 }
 
 - (BOOL)isValidLocalUrlPath:(NSString *)proposedPath{
@@ -2908,10 +2930,12 @@ Boolean stringContainsLossySubstring(NSString *theString, NSString *stringToFind
 - (void)updateMetadataForKey:(NSString *)key{
     
 	[self setHasBeenEdited:YES];
-    spotlightMetadataChanged = YES;    
+    spotlightMetadataChanged = YES;   
+    
+    BOOL allFieldsChanged = [BDSKAllFieldsString isEqualToString:key];
     
     // invalidate people (authors, editors, etc.) if necessary
-    if ([BDSKAllFieldsString isEqualToString:key] || [key isPersonField]) {
+    if (allFieldsChanged || [key isPersonField]) {
         [people release];
         people = nil;
     }
@@ -2934,19 +2958,25 @@ Boolean stringContainsLossySubstring(NSString *theString, NSString *stringToFind
 	}
  	
 	// invalidate the cached groups; they are rebuilt when needed
-	if([BDSKAllFieldsString isEqualToString:key]){
+	if(allFieldsChanged){
 		[groups removeAllObjects];
         // re-call make type to make sure we still have all the appropriate bibtex defined fields...
         // but only if we have set the full pubFields array, as we should not be able to remove necessary fields.
         [self makeType];
+        
+        // the URL cache is certainly invalid now
+        [cachedURLs removeAllObjects];
 	}else if(key != nil){
 		[groups removeObjectForKey:key];
 	}
+    
+    if([key isURLField])
+        [cachedURLs removeObjectForKey:key];
 	
     NSCalendarDate *theDate = nil;
     
     // pubDate is a derived field based on Month and Year fields; we take the 15th day of the month to avoid edge cases
-    if (key == nil || [BDSKAllFieldsString isEqualToString:key] || [BDSKYearString isEqualToString:key] || [BDSKMonthString isEqualToString:key]) {
+    if (key == nil || allFieldsChanged || [BDSKYearString isEqualToString:key] || [BDSKMonthString isEqualToString:key]) {
 		NSString *yearValue = [pubFields objectForKey:BDSKYearString];
         if([yearValue isComplex])
             yearValue = [(BDSKStringNode *)[[yearValue nodes] objectAtIndex:0] value];
@@ -2968,7 +2998,7 @@ Boolean stringContainsLossySubstring(NSString *theString, NSString *stringToFind
 	}
 	
     // setDateAdded: is only called here; it is derived based on pubFields value of BDSKDateAddedString
-    if (key == nil || [BDSKAllFieldsString isEqualToString:key] || [BDSKDateAddedString isEqualToString:key]) {
+    if (key == nil || allFieldsChanged || [BDSKDateAddedString isEqualToString:key]) {
 		NSString *dateAddedValue = [pubFields objectForKey:BDSKDateAddedString];
 		if (![NSString isEmptyString:dateAddedValue]) {
             theDate = [[NSCalendarDate alloc] initWithNaturalLanguageString:dateAddedValue];
