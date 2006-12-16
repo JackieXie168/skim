@@ -540,24 +540,27 @@ static BDSKTypeInfoEditor *sharedTypeInfoEditor;
 - (BOOL)tableView:(NSTableView *)tv addItemsFromPasteboard:(NSPasteboard *)pboard {
     NSArray *pbtypes = [pboard types];
     if ([tv isEqual:typeTableView] && [pbtypes containsObject:BDSKTypeInfoPboardType]) {
-        NSArray *newTypes = [pboard propertyListForType:BDSKTypeInfoPboardType]
+        NSArray *newTypes = [pboard propertyListForType:BDSKTypeInfoPboardType];
         NSEnumerator *newTypeE = [newTypes objectEnumerator];
         NSDictionary *aType;
         NSString *newType = nil;
-        int row = [newTypes count];
         
         while (aType = [newTypeE nextObject]) {
+            // append "copy" here instead of in the loop
             NSString *name = [[aType objectForKey:@"name"] stringByAppendingString:@"-copy"];
             newType = name;
             int i = 0;
             while ([types containsObject:newType]) {
-                newType = [NSString stringWithFormat:@"%@-copy-%i",name, ++i];
+                newType = [NSString stringWithFormat:@"%@-%i",name, ++i];
             }
             [self addType:newType withFields:[aType objectForKey:@"fields"]];
             
         }
         [typeTableView reloadData];
         
+        // select and edit the first item we added
+        int row = [types count] - [newTypes count];
+
         [typeTableView selectRowIndexes:[NSIndexSet indexSetWithIndex:row] byExtendingSelection:NO];
         [[[typeTableView tableColumnWithIdentifier:@"type"] dataCell] setEnabled:YES];
         [typeTableView editColumn:0 row:row withEvent:nil select:YES];
