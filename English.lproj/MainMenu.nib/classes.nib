@@ -8,12 +8,16 @@
                 displayFacingPages = id; 
                 displayMediaBox = id; 
                 displaySinglePages = id; 
+                getInfo = id; 
                 goBack = id; 
                 goForward = id; 
                 goToAnyPage = id; 
                 goToNextPage = id; 
                 goToPreviousPage = id; 
-                myAction = id; 
+                rotateAllLeft = id; 
+                rotateAllRight = id; 
+                rotateLeft = id; 
+                rotateRight = id; 
                 toggleDisplayAsBook = id; 
                 toggleDisplayContinuous = id; 
                 toggleDisplayPageBreaks = id; 
