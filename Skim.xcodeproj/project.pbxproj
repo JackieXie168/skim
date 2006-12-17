@@ -42,6 +42,7 @@
 		CE5478D70B33456300F8AFB6 /* zoomOut.tiff in Resources */ = {isa = PBXBuildFile; fileRef = CE5478C60B33456300F8AFB6 /* zoomOut.tiff */; };
 		CE5478D80B33456300F8AFB6 /* zoomToFit.tiff in Resources */ = {isa = PBXBuildFile; fileRef = CE5478C70B33456300F8AFB6 /* zoomToFit.tiff */; };
 		CE5478E50B334CAC00F8AFB6 /* magnifyTool.tiff in Resources */ = {isa = PBXBuildFile; fileRef = CE5478E40B334CAC00F8AFB6 /* magnifyTool.tiff */; };
+		CE5487BC0B35A20A00F8AFB6 /* NSFileManager_ExtendedAttributes.m in Sources */ = {isa = PBXBuildFile; fileRef = CE5487BB0B35A20A00F8AFB6 /* NSFileManager_ExtendedAttributes.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -93,6 +94,8 @@
 		CE5478C60B33456300F8AFB6 /* zoomOut.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; name = zoomOut.tiff; path = Images/zoomOut.tiff; sourceTree = "<group>"; };
 		CE5478C70B33456300F8AFB6 /* zoomToFit.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; name = zoomToFit.tiff; path = Images/zoomToFit.tiff; sourceTree = "<group>"; };
 		CE5478E40B334CAC00F8AFB6 /* magnifyTool.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; name = magnifyTool.tiff; path = Images/magnifyTool.tiff; sourceTree = "<group>"; };
+		CE5487BA0B35A20A00F8AFB6 /* NSFileManager_ExtendedAttributes.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = NSFileManager_ExtendedAttributes.h; sourceTree = "<group>"; };
+		CE5487BB0B35A20A00F8AFB6 /* NSFileManager_ExtendedAttributes.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = NSFileManager_ExtendedAttributes.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -164,6 +167,8 @@
 				4530D7E70B27AAB9007C59F4 /* SKSubWindowController.m */,
 				CE546FC20B32D5DB00F8AFB6 /* SKNoteWindowController.h */,
 				CE546FC30B32D5DB00F8AFB6 /* SKNoteWindowController.m */,
+				CE5487BA0B35A20A00F8AFB6 /* NSFileManager_ExtendedAttributes.h */,
+				CE5487BB0B35A20A00F8AFB6 /* NSFileManager_ExtendedAttributes.m */,
 			);
 			name = Classes;
 			sourceTree = "<group>";
@@ -311,6 +316,7 @@
 				4530DCF70B27CACE007C59F4 /* SKPDFView.m in Sources */,
 				45B1116B0B30B09C00DE0660 /* SKNote.m in Sources */,
 				CE546FC40B32D5DB00F8AFB6 /* SKNoteWindowController.m in Sources */,
+				CE5487BC0B35A20A00F8AFB6 /* NSFileManager_ExtendedAttributes.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
