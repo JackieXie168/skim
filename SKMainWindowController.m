@@ -23,6 +23,7 @@ static NSString *SKDocumentToolbarPreviousItemIdentifier = @"SKDocumentPreviousT
 static NSString *SKDocumentToolbarNextItemIdentifier = @"SKDocumentNextToolbarItemIdentifier";
 static NSString *SKDocumentToolbarBackForwardItemIdentifier = @"SKDocumentToolbarBackForwardItemIdentifier";
 static NSString *SKDocumentToolbarPageNumberItemIdentifier = @"SKDocumentToolbarPageNumberItemIdentifier";
+static NSString *SKDocumentToolbarScaleItemIdentifier = @"SKDocumentToolbarScaleItemIdentifier";
 static NSString *SKDocumentToolbarZoomInItemIdentifier = @"SKDocumentZoomInToolbarItemIdentifier";
 static NSString *SKDocumentToolbarZoomOutItemIdentifier = @"SKDocumentZoomOutToolbarItemIdentifier";
 static NSString *SKDocumentToolbarZoomActualItemIdentifier = @"SKDocumentZoomActualToolbarItemIdentifier";
@@ -30,14 +31,20 @@ static NSString *SKDocumentToolbarZoomAutoItemIdentifier = @"SKDocumentZoomAutoT
 static NSString *SKDocumentToolbarRotateRightItemIdentifier = @"SKDocumentRotateRightToolbarItemIdentifier";
 static NSString *SKDocumentToolbarRotateLeftItemIdentifier = @"SKDocumentRotateLeftToolbarItemIdentifier";
 static NSString *SKDocumentToolbarFullScreenItemIdentifier = @"SKDocumentFullScreenToolbarItemIdentifier";
+static NSString *SKDocumentToolbarPresentationItemIdentifier = @"SKDocumentToolbarPresentationItemIdentifier";
 static NSString *SKDocumentToolbarToggleDrawerItemIdentifier = @"SKDocumentToolbarToggleDrawerItemIdentifier";
 static NSString *SKDocumentToolbarInfoItemIdentifier = @"SKDocumentToolbarInfoItemIdentifier";
 static NSString *SKDocumentToolbarToolModeItemIdentifier = @"SKDocumentToolbarToolModeItemIdentifier";
+static NSString *SKDocumentToolbarDisplayBoxItemIdentifier = @"SKDocumentToolbarDisplayBoxItemIdentifier";
 static NSString *SKDocumentToolbarSearchItemIdentifier = @"SKDocumentToolbarSearchItemIdentifier";
-
 
 #define TOOLBAR_SEARCHFIELD_MIN_SIZE NSMakeSize(110.0, 22.0)
 #define TOOLBAR_SEARCHFIELD_MAX_SIZE NSMakeSize(1000.0, 22.0)
+
+
+@interface SKFullScreenWindow : NSWindow
+@end
+
 
 @implementation SKMainWindowController
 
@@ -46,6 +53,7 @@ static NSString *SKDocumentToolbarSearchItemIdentifier = @"SKDocumentToolbarSear
     
     if(self){
         [self setShouldCloseDocument:YES];
+        isPresentation = NO;
     }
     
     return self;
@@ -54,6 +62,8 @@ static NSString *SKDocumentToolbarSearchItemIdentifier = @"SKDocumentToolbarSear
 - (void)setupDocumentNotifications{
 	[[NSNotificationCenter defaultCenter] addObserver: self selector: @selector(handlePageChangedNotification:) 
                                                  name: PDFViewPageChangedNotification object: pdfView];
+	[[NSNotificationCenter defaultCenter] addObserver: self selector: @selector(handleScaleChangedNotification:) 
+                                                 name: PDFViewScaleChangedNotification object: pdfView];
 	[[NSNotificationCenter defaultCenter] addObserver: self selector: @selector(handleChangedHistoryNotification:) 
                                                  name: PDFViewChangedHistoryNotification object: pdfView];
 	[[NSNotificationCenter defaultCenter] addObserver: self selector: @selector(handleToolModeChangedNotification:) 
@@ -115,7 +125,9 @@ static NSString *SKDocumentToolbarSearchItemIdentifier = @"SKDocumentToolbarSear
 	[_sampleStrings release];
 */	
 	if (pdfOutline)	[pdfOutline release];
-	
+	if (fullScreenWindow)	[fullScreenWindow release];
+    if (mainWindow) [mainWindow release];
+    
     [super dealloc];
 }
 
@@ -138,26 +150,39 @@ static NSString *SKDocumentToolbarSearchItemIdentifier = @"SKDocumentToolbarSear
 		}
 	}
     
+    // we retain as we might replace it with the full screen window
+    mainWindow = [[self window] retain];
+    
     [self setupToolbar];
     [pdfView setDocument:pdfDoc];
     
     [self handleChangedHistoryNotification:nil];
     [self handleToolModeChangedNotification:nil];
     [self handlePageChangedNotification:nil];
+    [self handleScaleChangedNotification:nil];
     [pageNumberStepper setMaxValue:[[pdfView document] pageCount]];
     
     [self setupDocumentNotifications];
 }
 
+- (BOOL)isFullScreen {
+    return [self window] == fullScreenWindow;
+}
+
+- (BOOL)isPresentation {
+    return isPresentation;
+}
+
 #pragma mark key handling
 
 - (void)keyDown:(NSEvent *)theEvent{
-    
-    unichar			eventChar;
-	unsigned int	modifierFlags;
-	BOOL			noModifier;
+    NSString *characters;
+    unichar eventChar;
+	unsigned int modifierFlags;
+	BOOL noModifier;
 	
-	eventChar = [[theEvent charactersIgnoringModifiers] characterAtIndex: 0];
+    characters = [theEvent charactersIgnoringModifiers];
+	eventChar = [characters length] > 0 ? [characters characterAtIndex:0] : 0;
 	modifierFlags = [theEvent modifierFlags] & NSDeviceIndependentModifierFlagsMask;
 	noModifier = ((modifierFlags & (NSShiftKeyMask | NSControlKeyMask | NSAlternateKeyMask)) == 0);
     
@@ -216,12 +241,101 @@ static NSString *SKDocumentToolbarSearchItemIdentifier = @"SKDocumentToolbarSear
     [note release];
 }
 
+- (IBAction)displaySinglePages:(id)sender {
+    PDFDisplayMode displayMode = [pdfView displayMode];
+    if (displayMode == kPDFDisplayTwoUp)
+        [pdfView setDisplayMode:kPDFDisplaySinglePage];
+    else if (displayMode == kPDFDisplayTwoUpContinuous)
+        [pdfView setDisplayMode:kPDFDisplaySinglePageContinuous];
+}
+
+- (IBAction)displayFacingPages:(id)sender {
+    PDFDisplayMode displayMode = [pdfView displayMode];
+    if (displayMode == kPDFDisplaySinglePage) 
+        [pdfView setDisplayMode:kPDFDisplayTwoUp];
+    else if (displayMode == kPDFDisplaySinglePageContinuous)
+        [pdfView setDisplayMode:kPDFDisplayTwoUpContinuous];
+}
+
+- (IBAction)toggleDisplayContinuous:(id)sender {
+    PDFDisplayMode displayMode = [pdfView displayMode];
+    if (displayMode == kPDFDisplaySinglePage) 
+        displayMode = kPDFDisplaySinglePageContinuous;
+    else if (displayMode == kPDFDisplaySinglePageContinuous)
+        displayMode = kPDFDisplaySinglePage;
+    else if (displayMode == kPDFDisplayTwoUp)
+        displayMode = kPDFDisplayTwoUpContinuous;
+    else if (displayMode == kPDFDisplayTwoUpContinuous)
+        displayMode = kPDFDisplayTwoUp;
+    [pdfView setDisplayMode:displayMode];
+}
+
+- (IBAction)toggleDisplayAsBook:(id)sender {
+    [pdfView setDisplaysAsBook:[pdfView displaysAsBook] == NO];
+}
+
+- (IBAction)toggleDisplayPageBreaks:(id)sender {
+    [pdfView setDisplaysPageBreaks:[pdfView displaysPageBreaks] == NO];
+}
+
+- (IBAction)displayMediaBox:(id)sender {
+    if ([pdfView displayBox] == kPDFDisplayBoxCropBox)
+        [pdfView setDisplayBox:kPDFDisplayBoxMediaBox];
+}
+
+- (IBAction)displayCropBox:(id)sender {
+    if ([pdfView displayBox] == kPDFDisplayBoxMediaBox)
+        [pdfView setDisplayBox:kPDFDisplayBoxCropBox];
+}
+
+- (IBAction)changeDisplayBox:(id)sender {
+    PDFDisplayBox displayBox = [sender indexOfSelectedItem] == 0 ? kPDFDisplayBoxMediaBox : kPDFDisplayBoxCropBox;
+    [pdfView setDisplayBox:displayBox];
+}
+
 - (IBAction)goToNextPage:(id)sender {
     [pdfView goToNextPage:sender];
 }
 
 - (IBAction)goToPreviousPage:(id)sender {
     [pdfView goToPreviousPage:sender];
+}
+
+- (void)choosePageSheetDidEnd:(NSWindow *)sheet returnCode:(int)returnCode contextInfo:(void *)contextInfo {
+    if (returnCode == NSOKButton) {
+        int page = [choosePageField intValue];
+
+        // Check that the page number exists
+        int pageCount = [[pdfView document] pageCount];
+        if (page > pageCount) {
+            [pdfView goToPage:[[pdfView document] pageAtIndex:pageCount - 1]];
+        } else if (page > 0) {
+            [pdfView goToPage:[[pdfView document] pageAtIndex:page - 1]];
+        }
+    }
+}
+
+- (IBAction)goToAnyPage:(id)sender {
+    [choosePageField setStringValue:@""];
+    
+    [NSApp beginSheet: choosePageSheet
+       modalForWindow: [self window]
+        modalDelegate: self
+       didEndSelector: @selector(choosePageSheetDidEnd:returnCode:contextInfo:)
+          contextInfo: nil];
+}
+
+- (IBAction)dismissChoosePageSheet:(id)sender {
+    [NSApp endSheet:choosePageSheet returnCode:[sender tag]];
+    [choosePageSheet orderOut:self];
+}
+
+- (IBAction)goBack:(id)sender {
+    [pdfView goBack:sender];
+}
+
+- (IBAction)goForward:(id)sender {
+    [pdfView goForward:sender];
 }
 
 - (IBAction)goBackOrForward:(id)sender {
@@ -273,10 +387,6 @@ static NSString *SKDocumentToolbarSearchItemIdentifier = @"SKDocumentToolbarSear
     [pdfView layoutDocumentView];
 }
 
-- (IBAction)fullScreen:(id)sender {
-    // this should open a full screen window
-}
-
 - (IBAction)toggleNotesDrawer:(id)sender {
     [notesDrawer toggle:sender];
 }
@@ -301,15 +411,192 @@ static NSString *SKDocumentToolbarSearchItemIdentifier = @"SKDocumentToolbarSear
     }
 }
 
+- (IBAction)changeScaleFactor:(id)sender {
+    int scale = [sender intValue];
+
+	if (scale >= 10.0 && scale <= 500.0 ) {
+		[pdfView setScaleFactor:scale / 100.0f];
+		[pdfView setAutoScales:NO];
+	}
+}
+
 - (IBAction)changeToolMode:(id)sender {
     SKToolMode toolMode = [sender isKindOfClass:[NSSegmentedControl class]] ? [sender selectedSegment] : [sender tag];
     
     [pdfView setToolMode:toolMode];
 }
 
+- (IBAction)enterFullScreen:(id)sender {
+    // Get the screen information.
+    NSScreen *mainScreen = [NSScreen mainScreen]; 
+    NSNumber *screenID = [[mainScreen deviceDescription] objectForKey:@"NSScreenNumber"];
+ 
+    // Capture the screen.
+    CGDisplayErr err = CGDisplayCapture((CGDirectDisplayID)[screenID longValue]);
+    if (err == CGDisplayNoErr) {
+        // Create the full-screen window if it doesn’t already  exist.
+        if (fullScreenWindow == nil) {
+            fullScreenWindow = [[SKFullScreenWindow alloc] initWithContentRect:[mainScreen frame]
+                                                                     styleMask:NSBorderlessWindowMask 
+                                                                       backing:NSBackingStoreBuffered 
+                                                                         defer:NO 
+                                                                        screen:mainScreen];
+            
+            [fullScreenWindow setReleasedWhenClosed:NO];
+            [fullScreenWindow setDisplaysWhenScreenProfileChanges:YES];
+            [fullScreenWindow setLevel:CGShieldingWindowLevel()];
+            [fullScreenWindow setDelegate:self];
+        }
+        
+        [fullScreenWindow setContentView:pdfView];
+        [pdfView layoutDocumentView];
+        [pdfView setNeedsDisplay:YES];
+        
+        [self setWindow:fullScreenWindow];
+        [fullScreenWindow makeKeyAndOrderFront:self];
+        
+        isPresentation = NO;
+    }
+}
+
+- (IBAction)exitFullScreen:(id)sender {
+	// Exit from presentation mode
+    if (isPresentation) {
+		[pdfView setDisplayMode:savedState.displayMode];
+		if (savedState.autoScales) {
+			[pdfView setAutoScales:YES];
+		} else {
+			[pdfView setAutoScales:NO];
+			[pdfView setScaleFactor:savedState.scaleFactor];
+		}		
+		[[pdfView enclosingScrollView] setHasHorizontalScroller:savedState.hasHorizontalScroller];		
+		[[pdfView enclosingScrollView] setHasVerticalScroller:savedState.hasVerticalScroller];
+		[[pdfView enclosingScrollView] setAutohidesScrollers:savedState.autoHidesScrollers];		
+        
+        isPresentation = NO;
+	}
+    
+    // Get the screen information.
+    NSScreen *mainScreen = [NSScreen mainScreen]; 
+    NSNumber *screenID = [[mainScreen deviceDescription] objectForKey:@"NSScreenNumber"];
+    
+    [fullScreenWindow orderOut:self];
+    
+    // Release the screen.
+    CGDisplayErr err = CGDisplayRelease((CGDirectDisplayID)[screenID longValue]);
+    if (err == CGDisplayNoErr) {
+        [pdfContentBox setContentView:pdfView];
+        [pdfView layoutDocumentView];
+        
+        [self setWindow:mainWindow];
+        [mainWindow makeKeyAndOrderFront:self];
+    }
+}
+
+- (IBAction)toggleFullScreen:(id)sender {
+    if ([self isFullScreen])
+        [self exitFullScreen:sender];
+    else
+        [self enterFullScreen:sender];
+}
+
+- (IBAction)enterPresentation:(id)sender {
+    NSScrollView *scrollView = [[pdfView documentView] enclosingScrollView];
+	// Set up presentation mode
+	savedState.displayMode = [pdfView displayMode];
+	[pdfView setDisplayMode:kPDFDisplaySinglePage];
+	savedState.autoScales = [pdfView autoScales];
+	savedState.scaleFactor = [pdfView scaleFactor];
+	[pdfView setAutoScales:YES];
+	savedState.hasHorizontalScroller = [scrollView hasHorizontalScroller];
+	[scrollView setHasHorizontalScroller:NO];
+	savedState.hasVerticalScroller = [scrollView hasVerticalScroller];
+	[scrollView setHasVerticalScroller:NO];
+	savedState.autoHidesScrollers = [scrollView autohidesScrollers];
+	[scrollView setAutohidesScrollers:YES];
+	
+    if ([self window] != fullScreenWindow)
+        [self enterFullScreen:sender];
+	isPresentation = YES;
+}
+
+- (IBAction)togglePresentation:(id)sender {
+    if ([self isFullScreen])
+        [self exitFullScreen:sender];
+    else
+        [self enterPresentation:sender];
+}
+
 - (IBAction)printDocument:(id)sender{
     [pdfView printWithInfo:[[self document] printInfo] autoRotate:NO];
 }
+
+#pragma mark Menu item validation
+
+- (BOOL)validateMenuItem:(NSMenuItem *)menuItem {
+    SEL action = [menuItem action];
+    if (action == @selector(createNewNote:)) {
+    
+    } else if (action == @selector(displaySinglePages:)) {
+        BOOL displaySinglePages = [pdfView displayMode] == kPDFDisplaySinglePage || [pdfView displayMode] == kPDFDisplaySinglePageContinuous;
+        [menuItem setState:displaySinglePages ? NSOnState : NSOffState];
+        return YES;
+    } else if (action == @selector(displayFacingPages:)) {
+        BOOL displayFacingPages = [pdfView displayMode] == kPDFDisplayTwoUp || [pdfView displayMode] == kPDFDisplayTwoUpContinuous;
+        [menuItem setState:displayFacingPages ? NSOnState : NSOffState];
+        return YES;
+    } else if (action == @selector(toggleDisplayContinuous:)) {
+        BOOL displayContinuous = [pdfView displayMode] == kPDFDisplaySinglePageContinuous || [pdfView displayMode] == kPDFDisplayTwoUpContinuous;
+        [menuItem setState:displayContinuous ? NSOnState : NSOffState];
+        return YES;
+    } else if (action == @selector(toggleDisplayAsBook:)) {
+        [menuItem setState:[pdfView displaysAsBook] ? NSOnState : NSOffState];
+        return [pdfView displayMode] == kPDFDisplayTwoUp || [pdfView displayMode] == kPDFDisplayTwoUpContinuous;
+    } else if (action == @selector(toggleDisplayPageBreaks:)) {
+        [menuItem setState:[pdfView displaysPageBreaks] ? NSOnState : NSOffState];
+        return YES;
+    } else if (action == @selector(displayMediaBox:)) {
+        BOOL displayMediaBox = [pdfView displayBox] == kPDFDisplayBoxMediaBox;
+        [menuItem setState:displayMediaBox ? NSOnState : NSOffState];
+        return YES;
+    } else if (action == @selector(displayCropBox:)) {
+        BOOL displayCropBox = [pdfView displayBox] == kPDFDisplayBoxCropBox;
+        [menuItem setState:displayCropBox ? NSOnState : NSOffState];
+        return YES;
+    } else if (action == @selector(goToNextPage:)) {
+        return [pdfView canGoToNextPage];
+    } else if (action == @selector(goToPreviousPage:)) {
+        return [pdfView canGoToPreviousPage];
+    } else if (action == @selector(goBack:)) {
+        return [pdfView canGoBack];
+    } else if (action == @selector(goForward:)) {
+        return [pdfView canGoForward];
+    } else if (action == @selector(zoomIn:)) {
+        return [pdfView canZoomIn];
+    } else if (action == @selector(zoomOut:)) {
+        return [pdfView canZoomOut];
+    } else if (action == @selector(zoomToActualSize:)) {
+        return [pdfView scaleFactor] != 1.0;
+    } else if (action == @selector(zoomToFit:)) {
+        return [pdfView autoScales] == NO;
+    } else if (action == @selector(toggleFullScreen:)) {
+        return YES;
+    } else if (action == @selector(togglePresentation:)) {
+        return YES;
+    } else if (action == @selector(toggleNotesDrawer:)) {
+        NSDrawerState state = [notesDrawer state];
+        if (state == NSDrawerClosedState || state == NSDrawerClosingState)
+            [menuItem setTitle:NSLocalizedString(@"Show Notes Drawer", @"")];
+        else 
+            [menuItem setTitle:NSLocalizedString(@"Hide Notes Drawer", @"")];
+        return YES;
+    } else if (action == @selector(getInfo:)) {
+        return NO;
+    }
+    return YES;
+}
+
+#pragma mark Sub- and note- windows
 
 - (void)showSubWindowAtPageNumber:(int)pageNum location:(NSPoint)locationInPageSpace{
     
@@ -351,6 +638,10 @@ static NSString *SKDocumentToolbarSearchItemIdentifier = @"SKDocumentToolbarSear
     
     [pageNumberStepper setIntValue:page];
     [pageNumberField setIntValue:page];
+}
+
+- (void)handleScaleChangedNotification:(NSNotification *)notification {
+    [scaleField setFloatValue:[pdfView scaleFactor] * 100.0];
 }
 
 - (void)handleToolModeChangedNotification:(NSNotification *)notification {
@@ -542,6 +833,16 @@ static NSString *SKDocumentToolbarSearchItemIdentifier = @"SKDocumentToolbarSear
     [toolbarItems setObject:item forKey:SKDocumentToolbarPageNumberItemIdentifier];
     [item release];
     
+    item = [[NSToolbarItem alloc] initWithItemIdentifier:SKDocumentToolbarScaleItemIdentifier];
+    [item setLabel:NSLocalizedString(@"Scale", @"Toolbar item label")];
+    [item setPaletteLabel:NSLocalizedString(@"Scale", @"Toolbar item label")];
+    [item setToolTip:NSLocalizedString(@"Scale", @"Tool tip message")];
+    [item setView:scaleField];
+    [item setMinSize:[scaleField bounds].size];
+    [item setMaxSize:[scaleField bounds].size];
+    [toolbarItems setObject:item forKey:SKDocumentToolbarScaleItemIdentifier];
+    [item release];
+    
     item = [[NSToolbarItem alloc] initWithItemIdentifier:SKDocumentToolbarZoomInItemIdentifier];
     [item setLabel:NSLocalizedString(@"Zoom In", @"Toolbar item label")];
     [item setPaletteLabel:NSLocalizedString(@"Zoom In", @"Toolbar item label")];
@@ -608,8 +909,18 @@ static NSString *SKDocumentToolbarSearchItemIdentifier = @"SKDocumentToolbarSear
     [item setToolTip:NSLocalizedString(@"Full Screen", @"Tool tip message")];
     [item setImage:[NSImage imageNamed:@"fullScreen"]];
     [item setTarget:self];
-    [item setAction:@selector(fullScreen:)];
+    [item setAction:@selector(enterFullScreen:)];
     [toolbarItems setObject:item forKey:SKDocumentToolbarFullScreenItemIdentifier];
+    [item release];
+    
+    item = [[NSToolbarItem alloc] initWithItemIdentifier:SKDocumentToolbarPresentationItemIdentifier];
+    [item setLabel:NSLocalizedString(@"Presentation", @"Toolbar item label")];
+    [item setPaletteLabel:NSLocalizedString(@"Presentation", @"Toolbar item label")];
+    [item setToolTip:NSLocalizedString(@"Presentation", @"Tool tip message")];
+    [item setImage:[NSImage imageNamed:@"fullScreen"]];
+    [item setTarget:self];
+    [item setAction:@selector(enterPresentation:)];
+    [toolbarItems setObject:item forKey:SKDocumentToolbarPresentationItemIdentifier];
     [item release];
     
     item = [[NSToolbarItem alloc] initWithItemIdentifier:SKDocumentToolbarToggleDrawerItemIdentifier];
@@ -630,6 +941,16 @@ static NSString *SKDocumentToolbarSearchItemIdentifier = @"SKDocumentToolbarSear
     [item setMinSize:[toolModeButton bounds].size];
     [item setMaxSize:[toolModeButton bounds].size];
     [toolbarItems setObject:item forKey:SKDocumentToolbarToolModeItemIdentifier];
+    [item release];
+    
+    item = [[NSToolbarItem alloc] initWithItemIdentifier:SKDocumentToolbarDisplayBoxItemIdentifier];
+    [item setLabel:NSLocalizedString(@"Display Box", @"Toolbar item label")];
+    [item setPaletteLabel:NSLocalizedString(@"Display Box", @"Toolbar item label")];
+    [item setToolTip:NSLocalizedString(@"Display Box", @"Tool tip message")];
+    [item setView:displayBoxPopUpButton];
+    [item setMinSize:[displayBoxPopUpButton bounds].size];
+    [item setMaxSize:[displayBoxPopUpButton bounds].size];
+    [toolbarItems setObject:item forKey:SKDocumentToolbarDisplayBoxItemIdentifier];
     [item release];
 	
     item = [[NSToolbarItem alloc] initWithItemIdentifier:SKDocumentToolbarSearchItemIdentifier];
@@ -684,6 +1005,7 @@ static NSString *SKDocumentToolbarSearchItemIdentifier = @"SKDocumentToolbarSear
         SKDocumentToolbarNextItemIdentifier, 
         SKDocumentToolbarBackForwardItemIdentifier, 
         SKDocumentToolbarPageNumberItemIdentifier, 
+        SKDocumentToolbarScaleItemIdentifier, 
         SKDocumentToolbarZoomInItemIdentifier, 
         SKDocumentToolbarZoomOutItemIdentifier, 
         SKDocumentToolbarZoomActualItemIdentifier, 
@@ -691,9 +1013,11 @@ static NSString *SKDocumentToolbarSearchItemIdentifier = @"SKDocumentToolbarSear
         SKDocumentToolbarRotateRightItemIdentifier, 
         SKDocumentToolbarRotateLeftItemIdentifier, 
         SKDocumentToolbarFullScreenItemIdentifier, 
+        SKDocumentToolbarPresentationItemIdentifier, 
         SKDocumentToolbarToggleDrawerItemIdentifier, 
         SKDocumentToolbarInfoItemIdentifier, 
         SKDocumentToolbarToolModeItemIdentifier, 
+        SKDocumentToolbarDisplayBoxItemIdentifier, 
         SKDocumentToolbarSearchItemIdentifier, 
 		NSToolbarPrintItemIdentifier,
 		NSToolbarFlexibleSpaceItemIdentifier, 
@@ -703,8 +1027,6 @@ static NSString *SKDocumentToolbarSearchItemIdentifier = @"SKDocumentToolbarSear
 }
 
 - (BOOL)validateToolbarItem:(NSToolbarItem *) toolbarItem {
-    // Optional method   self message is sent to us since we are the target of some toolbar item actions
-    // (for example:  of the save items action)
     NSString *identifier = [toolbarItem itemIdentifier];
     if ([identifier isEqualToString:SKDocumentToolbarPreviousItemIdentifier]) {
         return [pdfView canGoToPreviousPage];
@@ -717,11 +1039,43 @@ static NSString *SKDocumentToolbarSearchItemIdentifier = @"SKDocumentToolbarSear
     } else if ([identifier isEqualToString:SKDocumentToolbarZoomActualItemIdentifier]) {
         return [pdfView scaleFactor] != 1.0;
     } else if ([identifier isEqualToString:SKDocumentToolbarFullScreenItemIdentifier]) {
-        return NO;
+        return YES;
+    } else if ([identifier isEqualToString:SKDocumentToolbarPresentationItemIdentifier]) {
+        return YES;
     } else if ([identifier isEqualToString:SKDocumentToolbarInfoItemIdentifier]) {
         return NO;
     } else {
         return YES;
+    }
+}
+
+@end
+
+
+@implementation SKFullScreenWindow
+
+- (BOOL)canBecomeKeyWindow {
+    return YES;
+}
+
+- (void)keyDown:(NSEvent *)theEvent {
+    NSString *characters = [theEvent charactersIgnoringModifiers];
+    unichar ch = [characters length] > 0 ? [characters characterAtIndex:0] : 0;
+	unsigned modifierFlags = [theEvent modifierFlags] & NSDeviceIndependentModifierFlagsMask;
+    
+    if (modifierFlags == 0) {
+        SKMainWindowController *wc = (SKMainWindowController *)[self windowController];
+        if (ch == 0x1B) {
+            [wc exitFullScreen:self];
+        } else if (ch == '1' && [wc isPresentation]) {
+            [wc displaySinglePages:self];
+        } else if (ch == '2' && [wc isPresentation]) {
+            [wc displayFacingPages:self];
+        } else {
+            [super keyDown:theEvent];
+        }
+    } else {
+        [super keyDown:theEvent];
     }
 }
 

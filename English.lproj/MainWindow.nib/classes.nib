@@ -2,22 +2,40 @@
     IBClasses = (
         {CLASS = FirstResponder; LANGUAGE = ObjC; SUPERCLASS = NSObject; }, 
         {CLASS = NSSegmentedControl; LANGUAGE = ObjC; SUPERCLASS = NSControl; }, 
+        {CLASS = SKFullScreenWindow; LANGUAGE = ObjC; SUPERCLASS = NSWindow; }, 
         {
             ACTIONS = {
+                changeDisplayBox = id; 
                 changePageNumber = id; 
+                changeScaleFactor = id; 
                 changeToolMode = id; 
                 createNewNote = id; 
-                fullScreen = id; 
+                dismissChoosePageSheet = id; 
+                displayCropBox = id; 
+                displayFacingPages = id; 
+                displayMediaBox = id; 
+                displaySinglePages = id; 
+                enterFullScreen = id; 
+                enterPresentation = id; 
+                exitFullScreen = id; 
                 getInfo = id; 
+                goBack = id; 
                 goBackOrForward = id; 
+                goForward = id; 
                 goToNextPage = id; 
+                goToPage = id; 
                 goToPreviousPage = id; 
                 rotateAllLeft = id; 
                 rotateAllRight = id; 
                 rotateLeft = id; 
                 rotateRight = id; 
                 search = id; 
+                toggleDisplayAsBook = id; 
+                toggleDisplayContinuous = id; 
+                toggleDisplayPageBreaks = id; 
+                toggleFullScreen = id; 
                 toggleNotesDrawer = id; 
+                togglePresentation = id; 
                 zoomIn = id; 
                 zoomOut = id; 
                 zoomToActualSize = id; 
@@ -27,12 +45,17 @@
             LANGUAGE = ObjC; 
             OUTLETS = {
                 backForwardButton = NSSegmentedControl; 
+                choosePageField = NSTextField; 
+                choosePageSheet = NSWindow; 
+                displayBoxPopUpButton = NSPopUpButton; 
                 notesDrawer = NSDrawer; 
                 outlineView = NSOutlineView; 
                 pageNumberField = NSTextField; 
                 pageNumberStepper = NSStepper; 
                 pageNumberView = NSView; 
+                pdfContentBox = NSBox; 
                 pdfView = SKPDFView; 
+                scaleField = NSTextField; 
                 searchField = NSSearchField; 
                 toolModeButton = NSSegmentedControl; 
             }; 

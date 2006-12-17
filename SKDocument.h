@@ -29,6 +29,9 @@
 - (void)insertObject:(id)obj inNotesAtIndex:(unsigned)index;
 - (void)removeObjectFromNotesAtIndex:(unsigned)index;
 
+- (BOOL)saveNotesToExtendedAttributesAtURL:(NSURL *)aURL;
+- (BOOL)readNotesFromExtendedAttributesAtURL:(NSURL *)aURL;
+
 - (PDFDocument *)pdfDocument;
 
 @end
