@@ -20,6 +20,25 @@
 }
 @end
 
+@interface NSCursor (SKPDFViewExtensions)
++ (NSCursor *)magnifyCursor;
+@end
+
+@implementation NSCursor (SKPDFViewExtensions)
+
++ (NSCursor *)magnifyCursor {
+    static NSCursor *cursor = nil;
+    if (nil == cursor) {
+        NSImage *cursorImage = [[[NSImage imageNamed:@"magnifyTool"] copy] autorelease];
+        [cursorImage setSize:NSMakeSize(32, 32)];
+        NSSize s = [cursorImage size];
+        cursor = [[NSCursor alloc] initWithImage:cursorImage hotSpot:NSMakePoint(s.height/2, s.width/2)];
+    }
+    return cursor;
+}
+
+@end
+
 
 @implementation SKPDFView
 
@@ -43,14 +62,9 @@
 
 - (void)setToolMode:(SKToolMode)newToolMode {
     toolMode = newToolMode;
-    
-	if (toolMode == SKMoveToolMode) {
-		[self addCursorRect:[self visibleRect] cursor:[NSCursor closedHandCursor]];
-	} else {
-		[self addCursorRect:[self visibleRect] cursor:[NSCursor arrowCursor]];
-	}
-    
 	[[NSNotificationCenter defaultCenter] postNotificationName:@"SKPDFViewToolModeChangedNotification" object:self];
+    // hack to make sure we update the cursor
+    [[self window] makeFirstResponder:self];
 }
 
 - (void)mouseDown:(NSEvent *)theEvent{
@@ -70,19 +84,45 @@
 
 - (void)mouseDragged:(NSEvent *)event {
 	if (toolMode == SKMoveToolMode) {
-		[self scrollByDragging:event];		
+		[self scrollByDragging:event];	
+        // ??? PDFView's delayed layout seems to reset the cursor to an arrow
+        [self performSelector:@selector(mouseMoved:) withObject:event afterDelay:0];
 	} else {
 		[super mouseDragged:event];
 	}
 }
 
-- (void)mouseMoved:(NSEvent *)event
-{
-	if (toolMode == SKMoveToolMode) {
-		[[NSCursor closedHandCursor] set];
-	} else if (toolMode == SKTextToolMode) {
-		[super mouseMoved:event];
-	}
+- (NSCursor *)cursorForMouseMovedEvent:(NSEvent *)event {
+    NSCursor *cursor = nil;
+    NSPoint p = [[self documentView] convertPoint:[event locationInWindow] fromView:nil];
+    if (NSPointInRect(p, [[self documentView] visibleRect])) {
+        switch (toolMode) {
+            case SKMoveToolMode:
+                cursor = [NSCursor openHandCursor];
+                break;
+            case SKMagnifyToolMode:
+                cursor = [NSCursor magnifyCursor];
+                break;
+            case SKPopUpToolMode:
+                cursor = [NSCursor crosshairCursor]; // !!! probably not the most appropriate
+                break;
+            default:
+                cursor = [NSCursor arrowCursor];
+        }
+    } else {
+        // we want this cursor for toolbar and other views, generally
+        cursor = [NSCursor arrowCursor];
+    }
+    return cursor;
+}
+
+- (void)mouseMoved:(NSEvent *)event {
+    // we receive this message whenever we are first responder, so check the location
+    if (toolMode == SKTextToolMode) {
+        [super mouseMoved:event];
+    } else {
+        [[self cursorForMouseMovedEvent:event] set];
+    }
 }
 
 - (void)handlePopUpRequest:(NSEvent *)theEvent{
@@ -145,8 +185,8 @@
 	NSPoint initialLocation = [theEvent locationInWindow];
 	NSRect visibleRect = [[self documentView] visibleRect];
 	BOOL keepGoing = YES;
-	
-	[[NSCursor closedHandCursor] set];
+	    
+	[[NSCursor closedHandCursor] push];
 	
 	while (keepGoing) {
 		theEvent = [[self window] nextEventMatchingMask: NSLeftMouseUpMask | NSLeftMouseDraggedMask];
@@ -182,7 +222,8 @@
 				break;
 		}								// end of switch (event type)
 	}									// end of mouse-tracking loop
-	[self flagsChanged: theEvent]; // update cursor
+    
+    [NSCursor pop];
 }
 
 - (void)handleMagnifyRequest:(NSEvent *)theEvent {
