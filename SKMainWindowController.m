@@ -11,6 +11,7 @@
 #import "SKMainWindowController.h"
 #import "SKSubWindowController.h"
 #import "SKNoteWindowController.h"
+#import "SKInfoWindowController.h"
 #import <Quartz/Quartz.h>
 #import "SKDocument.h"
 #import "SKNote.h"
@@ -392,7 +393,9 @@ static NSString *SKDocumentToolbarSearchItemIdentifier = @"SKDocumentToolbarSear
 }
 
 - (IBAction)getInfo:(id)sender {
-    // this should show a window with pdf document info
+    SKInfoWindowController *infoController = [SKInfoWindowController sharedInstance];
+    [infoController fillInfoForDocument:[self document]];
+    [infoController showWindow:self];
 }
 
 - (IBAction)search:(id)sender {
@@ -591,7 +594,7 @@ static NSString *SKDocumentToolbarSearchItemIdentifier = @"SKDocumentToolbarSear
             [menuItem setTitle:NSLocalizedString(@"Hide Notes Drawer", @"")];
         return YES;
     } else if (action == @selector(getInfo:)) {
-        return NO;
+        return YES;
     }
     return YES;
 }
