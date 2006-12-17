@@ -113,7 +113,7 @@ static NSString *SKNotesDocumentType = @"Skim Notes";
     NSError *error = nil;
     
     if ([aURL isFileURL]) {
-        dict = [fm propertyListFromExtendedAttributeNamed:@"SKNotessInfo" atPath:[aURL path] traverseLink:YES error:&error];
+        dict = [fm propertyListFromExtendedAttributeNamed:@"SKNotesInfo" atPath:[aURL path] traverseLink:YES error:&error];
         if (dict == nil) {
             success = NO;
             NSLog(@"%@: %@", self, error);
