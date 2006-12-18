@@ -1,5 +1,11 @@
 {
     IBClasses = (
+        {
+            ACTIONS = {scalePopUpAction = id; }; 
+            CLASS = BDSKZoomablePDFView; 
+            LANGUAGE = ObjC; 
+            SUPERCLASS = PDFView; 
+        }, 
         {CLASS = FirstResponder; LANGUAGE = ObjC; SUPERCLASS = NSObject; }, 
         {
             CLASS = SKSubWindowController; 
