@@ -96,6 +96,10 @@ static NSString *SKDocumentToolbarSearchItemIdentifier = @"SKDocumentToolbarSear
 	[[NSNotificationCenter defaultCenter] addObserver: self selector: @selector(endFind:) 
                                                  name: PDFDocumentDidEndFindNotification object: [pdfView document]];
 	
+	[[NSNotificationCenter defaultCenter] addObserver: self selector: @selector(handleDocumentWillSaveNotification:) 
+                                                 name: @"SKDocumentWillSaveNotification" object: [self document]];
+	[[NSNotificationCenter defaultCenter] addObserver: self selector: @selector(handleDocumentDidSaveNotification:) 
+                                                 name: @"SKDocumentDidSaveNotification" object: [self document]];
 
 	// Delegate.
 	[[pdfView document] setDelegate: self];
@@ -654,7 +658,7 @@ static NSString *SKDocumentToolbarSearchItemIdentifier = @"SKDocumentToolbarSear
 }
 
 - (void)tableViewSelectionDidChange:(NSNotification *)aNotification {
-    if ([[aNotification object] isEqual:tableView]) {
+    if ([[aNotification object] isEqual:tableView] || aNotification == nil) {
         
         // clear the selection
         [pdfView setCurrentSelection:nil];
@@ -808,6 +812,16 @@ static NSString *SKDocumentToolbarSearchItemIdentifier = @"SKDocumentToolbarSear
 	unsigned toolMode = [pdfView toolMode];
     
     [toolModeButton setSelectedSegment:toolMode];
+}
+
+- (void)handleDocumentWillSaveNotification:(NSNotification *)notification {
+    [self removeTemporaryAnnotations];
+}
+
+- (void)handleDocumentDidSaveNotification:(NSNotification *)notification {
+    if ([tableView window] == [self window]) {
+        [self tableViewSelectionDidChange:nil];
+    }
 }
 
 #pragma mark NSOutlineView methods

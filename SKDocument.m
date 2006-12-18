@@ -58,12 +58,15 @@ static NSString *SKNotesDocumentType = @"Skim Notes";
 }
 
 - (NSData *)dataOfType:(NSString *)typeName error:(NSError **)outError{
+    NSData *data = nil;
     if ([typeName isEqualToString:SKPDFDocumentType]) {
-        return [pdfDoc dataRepresentation];
+        [[NSNotificationCenter defaultCenter] postNotificationName:@"SKDocumentWillSaveNotification" object:self];
+        data = [pdfDoc dataRepresentation];
+        [[NSNotificationCenter defaultCenter] postNotificationName:@"SKDocumentDidSaveNotification" object:self];
     } else if ([typeName isEqualToString:SKNotesDocumentType]) {
-        return [NSKeyedArchiver archivedDataWithRootObject:notes];
+        data = [NSKeyedArchiver archivedDataWithRootObject:notes];
     }
-    return nil;
+    return data;
 }
 
 - (BOOL)readFromURL:(NSURL *)absoluteURL ofType:(NSString *)docType error:(NSError **)outError{
@@ -84,12 +87,28 @@ static NSString *SKNotesDocumentType = @"Skim Notes";
     if ([aURL isFileURL]) {
         NSString *path = [aURL path];
         int i, numberOfNotes = [notes count];
+        NSArray *oldNotes = [fm extendedAttributeNamesAtPath:path traverseLink:YES error:NULL];
         NSDictionary *dictionary = [NSDictionary dictionaryWithObjectsAndKeys:[NSNumber numberWithInt:numberOfNotes], @"numberOfNotes", nil];
         NSString *name = nil;
         NSData *data = nil;
         NSError *error = nil;
         
-        if ([fm setExtendedAttributeNamed:@"SKNotesInfo" toPropertyListValue:dictionary atPath:path options:nil error:&error] == NO) {
+        // first remove all old notes
+        for (i = 0; YES; i++) {
+            name = [NSString stringWithFormat:@"SKNote-%i", i];
+            if ([oldNotes containsObject:name] == NO)
+                break;
+            if ([fm removeExtendedAttribute:name atPath:path traverseLink:YES error:&error] == NO) {
+                NSLog(@"%@: %@", self, error);
+            }
+        }
+        
+        if ([notes count] == 0) {
+            if ([fm removeExtendedAttribute:@"SKNotesInfo" atPath:path traverseLink:YES error:&error] == NO) {
+                success = NO;
+                NSLog(@"%@: %@", self, error);
+            }
+        } else if ([fm setExtendedAttributeNamed:@"SKNotesInfo" toPropertyListValue:dictionary atPath:path options:nil error:&error] == NO) {
             success = NO;
             NSLog(@"%@: %@", self, error);
         }
