@@ -19,7 +19,7 @@ typedef struct _SKPDFViewState {
 	BOOL autoHidesScrollers;
 } SKPDFViewState;
 
-@class SKPDFView, PDFOutline;
+@class SKPDFView, PDFOutline, SKCollapsibleView;
 
 @interface SKMainWindowController : NSWindowController {
     IBOutlet SKPDFView          *pdfView;
@@ -39,6 +39,7 @@ typedef struct _SKPDFViewState {
     IBOutlet NSTextField        *scaleField;
     IBOutlet NSPopUpButton      *displayBoxPopUpButton;
     IBOutlet NSSearchField      *searchField;
+    IBOutlet SKCollapsibleView  *searchBox;
     NSMutableDictionary         *toolbarItems;
     
     IBOutlet NSWindow          *choosePageSheet;

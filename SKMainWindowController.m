@@ -16,6 +16,7 @@
 #import "SKDocument.h"
 #import "SKNote.h"
 #import "SKPDFView.h"
+#import "SKCollapsibleView.h"
 
 
 static NSString *SKDocumentToolbarIdentifier = @"SKDocumentToolbarIdentifier";
@@ -133,6 +134,9 @@ static NSString *SKDocumentToolbarSearchItemIdentifier = @"SKDocumentToolbarSear
     
     // we retain as we might replace it with the full screen window
     mainWindow = [[self window] retain];
+    
+    [searchBox setCollapseEdges:SKMaxXEdgeMask | SKMinYEdgeMask];
+    [searchBox setMinSize:NSMakeSize(100.0, 46.0)];
     
     [self setupToolbar];
     [pdfView setDocument:pdfDoc];
@@ -436,6 +440,7 @@ static NSString *SKDocumentToolbarSearchItemIdentifier = @"SKDocumentToolbarSear
         
         [fullScreenWindow setContentView:pdfView];
         [pdfView layoutDocumentView];
+        [pdfView setBackgroundColor:[NSColor blackColor]];
         [pdfView setNeedsDisplay:YES];
         
         [self setWindow:fullScreenWindow];
@@ -473,6 +478,7 @@ static NSString *SKDocumentToolbarSearchItemIdentifier = @"SKDocumentToolbarSear
     if (err == CGDisplayNoErr) {
         [pdfContentBox setContentView:pdfView];
         [pdfView layoutDocumentView];
+        [pdfView setBackgroundColor:[NSColor colorWithCalibratedWhite:0.5 alpha:1.0]];
         
         [self setWindow:mainWindow];
         [mainWindow makeKeyAndOrderFront:self];
@@ -652,8 +658,9 @@ static NSString *SKDocumentToolbarSearchItemIdentifier = @"SKDocumentToolbarSear
     PDFDocument *doc = [(SKDocument *)[self document] pdfDocument];
     [swc setPdfDocument:doc
             scaleFactor:[pdfView scaleFactor]
-             autoScales:[pdfView autoScales]];
-    [swc goToPageNumber:pageNum point:locationInPageSpace];
+             autoScales:[pdfView autoScales]
+         goToPageNumber:pageNum
+                  point:locationInPageSpace];
     
     [[self document] addWindowController:swc];
     [swc release];
