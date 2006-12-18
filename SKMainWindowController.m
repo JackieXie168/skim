@@ -565,7 +565,7 @@ static NSString *SKDocumentToolbarSearchItemIdentifier = @"SKDocumentToolbarSear
     [findArrayController addObject:instance];
 }
 
-- (void)restoreOutlineView {
+- (void)displayOutlineView {
     NSView *outline = [outlineView enclosingScrollView];
     NSView *table = [tableView enclosingScrollView];
     if ([outline window] != [self window]) {
@@ -577,7 +577,19 @@ static NSString *SKDocumentToolbarSearchItemIdentifier = @"SKDocumentToolbarSear
         
         [findCustomView addSubview:table];
         [table release];
-        [[[self window] contentView] setNeedsDisplay:YES];
+        
+        NSViewAnimation *animation;
+        NSDictionary *fadeOutDict = [[NSDictionary alloc] initWithObjectsAndKeys:table, NSViewAnimationTargetKey, NSViewAnimationFadeOutEffect, NSViewAnimationEffectKey, nil];
+        NSDictionary *fadeInDict = [[NSDictionary alloc] initWithObjectsAndKeys:outline, NSViewAnimationTargetKey, NSViewAnimationFadeInEffect, NSViewAnimationEffectKey, nil];
+        
+        animation = [[[NSViewAnimation alloc] initWithViewAnimations:[NSArray arrayWithObjects:fadeOutDict, fadeInDict, nil]] autorelease];
+        [fadeOutDict release];
+        [fadeInDict release];
+        
+        [animation setAnimationBlockingMode:NSAnimationBlocking];
+        [animation setDuration:0.75];
+        [animation setAnimationCurve:NSAnimationEaseIn];
+        [animation startAnimation];
     }
 }
 
@@ -593,7 +605,19 @@ static NSString *SKDocumentToolbarSearchItemIdentifier = @"SKDocumentToolbarSear
         
         [findCustomView addSubview:outline];
         [outline release];
-        [[[self window] contentView] setNeedsDisplay:YES];
+        
+        NSViewAnimation *animation;
+        NSDictionary *fadeOutDict = [[NSDictionary alloc] initWithObjectsAndKeys:outline, NSViewAnimationTargetKey, NSViewAnimationFadeOutEffect, NSViewAnimationEffectKey, nil];
+        NSDictionary *fadeInDict = [[NSDictionary alloc] initWithObjectsAndKeys:table, NSViewAnimationTargetKey, NSViewAnimationFadeInEffect, NSViewAnimationEffectKey, nil];
+        
+        animation = [[[NSViewAnimation alloc] initWithViewAnimations:[NSArray arrayWithObjects:fadeOutDict, fadeInDict, nil]] autorelease];
+        [fadeOutDict release];
+        [fadeInDict release];
+        
+        [animation setAnimationBlockingMode:NSAnimationBlocking];
+        [animation setDuration:0.75];
+        [animation setAnimationCurve:NSAnimationEaseIn];
+        [animation startAnimation];        
     }
 }
 
@@ -639,14 +663,16 @@ static NSString *SKDocumentToolbarSearchItemIdentifier = @"SKDocumentToolbarSear
         // union all selected objects
         NSEnumerator *selE = [[findArrayController selectedObjects] objectEnumerator];
         PDFSelection *sel;
-        PDFSelection *currentSel = [selE nextObject];
+        
+        // arm:  PDFSelection is mutable, and using -addSelection on an object from selectedObjects will actually mutate the object in searchResults, which does bad things.  MagicHat indicates that PDFSelection implements copyWithZone: even though it doesn't conform to <NSCopying>, so we'll use that since -init doesn't work (-initWithDocument: does, but it's not listed in the header either).
+        PDFSelection *currentSel = [[[selE nextObject] copy] autorelease];
         
         // add an annotation so it's easier to see the search result
         [self addAnnotationsForSelection:currentSel];
         
         while (sel = [selE nextObject]) {
-            [currentSel addSelection:sel];
             [self addAnnotationsForSelection:sel];
+            [currentSel addSelection:sel];
         }
         
         [pdfView setCurrentSelection:currentSel];
@@ -658,7 +684,7 @@ static NSString *SKDocumentToolbarSearchItemIdentifier = @"SKDocumentToolbarSear
     if ([[sender stringValue] isEqualToString:@""]) {
         // get rid of temporary annotations
         [self removeTemporaryAnnotations];
-        [self restoreOutlineView];
+        [self displayOutlineView];
     } else {
         [self displaySearchView];
     }
