@@ -116,7 +116,8 @@ static NSString *SKNotesDocumentType = @"Skim Notes";
         dict = [fm propertyListFromExtendedAttributeNamed:@"SKNotesInfo" atPath:[aURL path] traverseLink:YES error:&error];
         if (dict == nil) {
             success = NO;
-            NSLog(@"%@: %@", self, error);
+            if ([[[error userInfo] objectForKey:NSUnderlyingErrorKey] code] != ENOATTR)
+                NSLog(@"%@: %@", self, error);
         }
     }
     if (dict != nil) {
