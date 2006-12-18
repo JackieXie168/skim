@@ -397,73 +397,6 @@ static NSString *SKDocumentToolbarSearchItemIdentifier = @"SKDocumentToolbarSear
     [infoController showWindow:self];
 }
 
-#pragma mark Searching
-
-- (void)startFind:(NSNotification *)note {
-    [searchResults setArray:[NSArray array]];
-    [spinner startAnimation:nil];
-}
-
-- (void)endFind:(NSNotification *)note {
-    [spinner stopAnimation:nil];
-}
-
-- (void)didMatchString:(PDFSelection *)instance {
-    [findArrayController addObject:instance];
-}
-
-- (void)restoreOutlineView {
-    NSView *outline = [outlineView enclosingScrollView];
-    NSView *table = [tableView enclosingScrollView];
-    if ([outline window] != [self window]) {
-        NSRect frame = [table frame];
-        [table retain];
-        
-        [[table superview] replaceSubview:table with:outline];
-        [outline setFrame:frame];
-
-        [findCustomView addSubview:table];
-        [table release];
-        [[[self window] contentView] setNeedsDisplay:YES];
-    }
-}
-
-- (void)displaySearchView {
-    NSView *outline = [outlineView enclosingScrollView];
-    NSView *table = [tableView enclosingScrollView];
-    if ([table window] != [self window]) {
-        NSRect frame = [outline frame];
-        [outline retain];
-
-        [[outline superview] replaceSubview:outline with:table];
-        [table setFrame:frame];
-        
-        [findCustomView addSubview:outline];
-        [outline release];
-        [[[self window] contentView] setNeedsDisplay:YES];
-    }
-}
-
-- (void)tableViewSelectionDidChange:(NSNotification *)aNotification {
-    if ([[aNotification object] isEqual:tableView]) {
-        PDFSelection *sel = [[findArrayController selectedObjects] lastObject];
-        if (sel) {
-            [pdfView setCurrentSelection:sel];
-            [pdfView scrollSelectionToVisible:self];
-        }
-    }
-}
-
-
-- (IBAction)search:(id)sender {
-    if ([[sender stringValue] isEqualToString:@""]) {
-        [self restoreOutlineView];
-    } else {
-        [self displaySearchView];
-    }
-    [[pdfView document] findString:[sender stringValue] withOptions:NSCaseInsensitiveSearch];
-}
-
 - (IBAction)changePageNumber:(id)sender {
     int page = [sender intValue];
 
@@ -595,6 +528,72 @@ static NSString *SKDocumentToolbarSearchItemIdentifier = @"SKDocumentToolbarSear
 
 - (IBAction)printDocument:(id)sender{
     [pdfView printWithInfo:[[self document] printInfo] autoRotate:NO];
+}
+
+#pragma mark Searching
+
+- (void)startFind:(NSNotification *)note {
+    [searchResults setArray:[NSArray array]];
+    [spinner startAnimation:nil];
+}
+
+- (void)endFind:(NSNotification *)note {
+    [spinner stopAnimation:nil];
+}
+
+- (void)didMatchString:(PDFSelection *)instance {
+    [findArrayController addObject:instance];
+}
+
+- (void)restoreOutlineView {
+    NSView *outline = [outlineView enclosingScrollView];
+    NSView *table = [tableView enclosingScrollView];
+    if ([outline window] != [self window]) {
+        NSRect frame = [table frame];
+        [table retain];
+        
+        [[table superview] replaceSubview:table with:outline];
+        [outline setFrame:frame];
+        
+        [findCustomView addSubview:table];
+        [table release];
+        [[[self window] contentView] setNeedsDisplay:YES];
+    }
+}
+
+- (void)displaySearchView {
+    NSView *outline = [outlineView enclosingScrollView];
+    NSView *table = [tableView enclosingScrollView];
+    if ([table window] != [self window]) {
+        NSRect frame = [outline frame];
+        [outline retain];
+        
+        [[outline superview] replaceSubview:outline with:table];
+        [table setFrame:frame];
+        
+        [findCustomView addSubview:outline];
+        [outline release];
+        [[[self window] contentView] setNeedsDisplay:YES];
+    }
+}
+
+- (void)tableViewSelectionDidChange:(NSNotification *)aNotification {
+    if ([[aNotification object] isEqual:tableView]) {
+        PDFSelection *sel = [[findArrayController selectedObjects] lastObject];
+        if (sel) {
+            [pdfView setCurrentSelection:sel];
+            [pdfView scrollSelectionToVisible:self];
+        }
+    }
+}
+
+- (IBAction)search:(id)sender {
+    if ([[sender stringValue] isEqualToString:@""]) {
+        [self restoreOutlineView];
+    } else {
+        [self displaySearchView];
+    }
+    [[pdfView document] findString:[sender stringValue] withOptions:NSCaseInsensitiveSearch];
 }
 
 #pragma mark Menu item validation
