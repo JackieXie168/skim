@@ -68,18 +68,35 @@
 }
 
 - (void)mouseDown:(NSEvent *)theEvent{
-	if (toolMode == SKMagnifyToolMode) {
-        [self handleMagnifyRequest:theEvent];
-	} else if (toolMode == SKPopUpToolMode) {
-        [self handlePopUpRequest:theEvent];
-	} else if (toolMode == SKAnnotateToolMode) {
-        [self handleAnnotationRequest:theEvent];
-    } else if (toolMode == SKTextToolMode) {
-        if ([theEvent modifierFlags] & NSCommandKeyMask)
+    switch (toolMode) {
+        case SKMoveToolMode:
+            [[NSCursor closedHandCursor] push];
+            break;
+        case SKTextToolMode:
+            if ([theEvent modifierFlags] & NSCommandKeyMask)
+                [self handlePopUpRequest:theEvent];
+            else
+                [super mouseDown:theEvent];
+            break;
+        case SKMagnifyToolMode:
+            [self handleMagnifyRequest:theEvent];
+            break;
+        case SKPopUpToolMode:
             [self handlePopUpRequest:theEvent];
-        else
+            break;
+        case SKAnnotateToolMode:
             [super mouseDown:theEvent];
+            break;
     }
+}
+
+- (void)mouseUp:(NSEvent *)theEvent{
+    if (toolMode == SKMoveToolMode) {
+        [NSCursor pop];
+    } else if (toolMode == SKAnnotateToolMode) {
+        [self handleAnnotationRequest:theEvent];
+    }
+    [super mouseUp:theEvent];
 }
 
 - (void)mouseDragged:(NSEvent *)event {
@@ -185,8 +202,6 @@
 	NSPoint initialLocation = [theEvent locationInWindow];
 	NSRect visibleRect = [[self documentView] visibleRect];
 	BOOL keepGoing = YES;
-	    
-	[[NSCursor closedHandCursor] push];
 	
 	while (keepGoing) {
 		theEvent = [[self window] nextEventMatchingMask: NSLeftMouseUpMask | NSLeftMouseDraggedMask];
@@ -222,8 +237,6 @@
 				break;
 		}								// end of switch (event type)
 	}									// end of mouse-tracking loop
-    
-    [NSCursor pop];
 }
 
 - (void)handleMagnifyRequest:(NSEvent *)theEvent {
