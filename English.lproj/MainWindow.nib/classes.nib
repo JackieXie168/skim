@@ -22,8 +22,8 @@
                 goBack = id; 
                 goBackOrForward = id; 
                 goForward = id; 
+                goToAnyPage = id; 
                 goToNextPage = id; 
-                goToPage = id; 
                 goToPreviousPage = id; 
                 rotateAllLeft = id; 
                 rotateAllRight = id; 
@@ -48,6 +48,8 @@
                 choosePageField = NSTextField; 
                 choosePageSheet = NSWindow; 
                 displayBoxPopUpButton = NSPopUpButton; 
+                findArrayController = NSArrayController; 
+                findCustomView = NSView; 
                 notesDrawer = NSDrawer; 
                 outlineView = NSOutlineView; 
                 pageNumberField = NSTextField; 
@@ -57,6 +59,8 @@
                 pdfView = SKPDFView; 
                 scaleField = NSTextField; 
                 searchField = NSSearchField; 
+                spinner = NSProgressIndicator; 
+                tableView = NSTableView; 
                 toolModeButton = NSSegmentedControl; 
             }; 
             SUPERCLASS = NSWindowController; 
