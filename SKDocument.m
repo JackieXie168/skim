@@ -14,12 +14,19 @@
 #import "SKMainWindowController.h"
 #import "NSFileManager_ExtendedAttributes.h"
 #import "SKNote.h"
+#import "PDFDocument_BDSKExtensions.h"
 
-
-static NSString *SKPDFDocumentType = @"PDF";
+// See CFBundleTypeName in Info.plist
+static NSString *SKPDFDocumentType = nil; /* set to NSPDFPboardType, not @"NSPDFPboardType" */
 static NSString *SKNotesDocumentType = @"Skim Notes";
+static NSString *SKPostScriptDocumentType = @"PostScript document";
 
 @implementation SKDocument
+
++ (void)initialize {
+    if (nil == SKPDFDocumentType)
+        SKPDFDocumentType = [NSPDFPboardType copy];
+}
 
 - (id)init{
     
@@ -70,14 +77,22 @@ static NSString *SKNotesDocumentType = @"Skim Notes";
 }
 
 - (BOOL)readFromURL:(NSURL *)absoluteURL ofType:(NSString *)docType error:(NSError **)outError{
+    BOOL didRead;
     if ([docType isEqualToString:SKPDFDocumentType]) {
         pdfDoc = [[PDFDocument alloc] initWithURL:absoluteURL];    
+        didRead = pdfDoc != nil;
        [self readNotesFromExtendedAttributesAtURL:absoluteURL];
     } else if ([docType isEqualToString:SKNotesDocumentType]) {
         // should we be able to load just notes?
         [self setNotes:[NSKeyedUnarchiver unarchiveObjectWithFile:[absoluteURL path]]];
+        didRead = YES;
+    } else if ([docType isEqualToString:SKPostScriptDocumentType]) {
+        pdfDoc = [[PDFDocument alloc] initWithPostScriptURL:absoluteURL];
+        didRead = pdfDoc != nil;
     }
-    return YES;
+    if (NO == didRead && outError)
+        *outError = [NSError errorWithDomain:@"SKDocumentError" code:0 userInfo:[NSDictionary dictionaryWithObjectsAndKeys:NSLocalizedString(@"Unable to load file", @""), NSLocalizedDescriptionKey, nil]];
+    return didRead;
 }
 
 - (BOOL)saveNotesToExtendedAttributesAtURL:(NSURL *)aURL {
