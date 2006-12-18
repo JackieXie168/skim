@@ -46,6 +46,26 @@ static NSString *SKDocumentToolbarSearchItemIdentifier = @"SKDocumentToolbarSear
 @interface SKFullScreenWindow : NSWindow
 @end
 
+@interface PDFAnnotation (SKExtensions)
+@end
+@implementation PDFAnnotation (SKExtensions)
+- (BOOL)isTemporaryAnnotation { return NO; }
+@end
+
+@interface SKPDFAnnotationTemporary : PDFAnnotationCircle
+@end
+
+// useful for highlighting things; isTemporaryAnnotation is so we know to remove it
+@implementation SKPDFAnnotationTemporary
+- (BOOL)isTemporaryAnnotation { return YES; }
+- (BOOL)shouldPrint { return NO; }
+- (NSColor *)color { return [NSColor redColor]; }
+- (NSRect)bounds {
+    NSRect r = [super bounds];
+    return NSInsetRect(r, -5.0f, -5.0f);
+}
+@end
+
 @implementation SKMainWindowController
 
 - (id)initWithWindowNibName:(NSString *)windowNibName owner:(id)owner{
@@ -577,18 +597,67 @@ static NSString *SKDocumentToolbarSearchItemIdentifier = @"SKDocumentToolbarSear
     }
 }
 
+- (void)addAnnotationsForSelection:(PDFSelection *)sel {
+    NSArray *pages = [sel pages];
+    int i, iMax = [pages count];
+    for (i = 0; i < iMax; i++) {
+        PDFPage *page = [pages objectAtIndex:i];
+        NSRect bounds = [sel boundsForPage:page];
+        SKPDFAnnotationTemporary *circle = [[SKPDFAnnotationTemporary alloc] initWithBounds:bounds];
+        [page addAnnotation:circle];
+        [circle release];
+    }
+}
+
+- (void)removeTemporaryAnnotations {
+    PDFDocument *doc = [pdfView document];
+    unsigned i, iMax = [doc pageCount];
+    for (i = 0; i < iMax; i++) {
+        PDFPage *page = [doc pageAtIndex:i];
+        NSArray *annotations = [[page annotations] copy];
+        unsigned j, jMax = [annotations count];
+        PDFAnnotation *annote;
+        for (j = 0; j < jMax; j++) {
+            annote = [annotations objectAtIndex:j];
+            if ([annote isTemporaryAnnotation])
+                [page removeAnnotation:annote];
+        }
+        [annotations release];
+    }
+    
+    // removing an annotation doesn't mark the page for redisplay; seems like a PDFPage bug
+    [pdfView setNeedsDisplay:YES];
+}
+
 - (void)tableViewSelectionDidChange:(NSNotification *)aNotification {
     if ([[aNotification object] isEqual:tableView]) {
-        PDFSelection *sel = [[findArrayController selectedObjects] lastObject];
-        if (sel) {
-            [pdfView setCurrentSelection:sel];
-            [pdfView scrollSelectionToVisible:self];
+        
+        // clear the selection
+        [pdfView setCurrentSelection:nil];
+        [self removeTemporaryAnnotations];
+        
+        // union all selected objects
+        NSEnumerator *selE = [[findArrayController selectedObjects] objectEnumerator];
+        PDFSelection *sel;
+        PDFSelection *currentSel = [selE nextObject];
+        
+        // add an annotation so it's easier to see the search result
+        [self addAnnotationsForSelection:currentSel];
+        
+        while (sel = [selE nextObject]) {
+            [currentSel addSelection:sel];
+            [self addAnnotationsForSelection:sel];
         }
+        
+        [pdfView setCurrentSelection:currentSel];
+        [pdfView scrollSelectionToVisible:self];
     }
 }
 
 - (IBAction)search:(id)sender {
     if ([[sender stringValue] isEqualToString:@""]) {
+        // get rid of temporary annotations
+        [self removeTemporaryAnnotations];
         [self restoreOutlineView];
     } else {
         [self displaySearchView];
