@@ -28,9 +28,9 @@ typedef enum _SKToolMode {
 - (SKToolMode)toolMode;
 - (void)setToolMode:(SKToolMode)newToolMode;
 
-- (void)handlePopUpRequest:(NSEvent *)theEvent;
-- (void)handleAnnotationRequest:(NSEvent *)theEvent;
-- (void)handleMagnifyRequest:(NSEvent *)theEvent;
-- (void)scrollByDragging:(NSEvent *)theEvent;
+- (void)popUpWithEvent:(NSEvent *)theEvent;
+- (void)annotateWithEvent:(NSEvent *)theEvent;
+- (void)magnifyWithEvent:(NSEvent *)theEvent;
+- (void)dragWithEvent:(NSEvent *)theEvent;
 
 @end
