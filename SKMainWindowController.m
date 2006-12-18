@@ -450,10 +450,6 @@ static NSString *SKDocumentToolbarSearchItemIdentifier = @"SKDocumentToolbarSear
         if (sel) {
             [pdfView setCurrentSelection:sel];
             [pdfView scrollSelectionToVisible:self];
-            /*
-            [pdfView goToSelection:sel];
-            [sel drawForPage:[[sel pages] objectAtIndex:0] active:NO];
-             */
         }
     }
 }
@@ -465,7 +461,7 @@ static NSString *SKDocumentToolbarSearchItemIdentifier = @"SKDocumentToolbarSear
     } else {
         [self displaySearchView];
     }
-    [[pdfView document] findString:[sender stringValue] withOptions:0];
+    [[pdfView document] findString:[sender stringValue] withOptions:NSCaseInsensitiveSearch];
 }
 
 - (IBAction)changePageNumber:(id)sender {
