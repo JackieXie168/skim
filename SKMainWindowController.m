@@ -89,13 +89,6 @@ static NSString *SKDocumentToolbarSearchItemIdentifier = @"SKDocumentToolbarSear
                                                  name: PDFViewChangedHistoryNotification object: pdfView];
 	[[NSNotificationCenter defaultCenter] addObserver: self selector: @selector(handleToolModeChangedNotification:) 
                                                  name: @"SKPDFViewToolModeChangedNotification" object: pdfView];
-    
-	// Find notifications.
-	[[NSNotificationCenter defaultCenter] addObserver: self selector: @selector(startFind:) 
-                                                 name: PDFDocumentDidBeginFindNotification object: [pdfView document]];
-	[[NSNotificationCenter defaultCenter] addObserver: self selector: @selector(endFind:) 
-                                                 name: PDFDocumentDidEndFindNotification object: [pdfView document]];
-	
 	[[NSNotificationCenter defaultCenter] addObserver: self selector: @selector(handleDocumentWillSaveNotification:) 
                                                  name: @"SKDocumentWillSaveNotification" object: [self document]];
 	[[NSNotificationCenter defaultCenter] addObserver: self selector: @selector(handleDocumentDidSaveNotification:) 
@@ -105,48 +98,12 @@ static NSString *SKDocumentToolbarSearchItemIdentifier = @"SKDocumentToolbarSear
 	[[pdfView document] setDelegate: self];
 }
 
-- (void) dealloc{
+- (void)dealloc {
 
 	[[NSNotificationCenter defaultCenter] removeObserver: self];
 	
-/*	// Remove back-forward toolbar item.
-	if (_toolbarBackForwardItem)
-	{
-		[_toolbarBackForwardItem release];
-		[_backForwardView release];
-	}
-	
-	// Remove page number toolbar item.
-	if (_toolbarPageNumberItem)
-	{
-		[_toolbarPageNumberItem release];
-		[_pageNumberView release];
-	}
-    
-	// Remove page number toolbar item.
-	if (_toolbarViewModeItem)
-	{
-		[_toolbarViewModeItem release];
-		[_viewModeView release];
-	}
-    
-	// Remove search toolbar item.
-	if (_toolbarSearchFieldItem)
-	{
-		[_toolbarSearchFieldItem release];
-		[_searchFieldView release];
-	}
-    
-	// Remove back-forward toolbar item.
-	if (_toolbarEditTestItem)
-	{
-		[_toolbarEditTestItem release];
-		[_editTestView release];
-	}
-*/	
 	// Search clean-up.
 	[searchResults release];
-    [findCustomView release];
 
 	if (pdfOutline)	[pdfOutline release];
 	if (fullScreenWindow)	[fullScreenWindow release];
@@ -239,6 +196,12 @@ static NSString *SKDocumentToolbarSearchItemIdentifier = @"SKDocumentToolbarSear
 - (void)newNoteSheetDidEnd:(SKNoteWindowController *)sender returnCode:(int)returnCode contextInfo:(void *)contextInfo{
     if (returnCode == NSOKButton) {
         [[(SKDocument *)[self document] mutableArrayValueForKey:@"notes"] addObject:[sender note]];
+        NSRect bounds = NSMakeRect(0.0, 0.0, 50.0, 20.0);
+        bounds.origin = [[sender note] locationInPageSpace];
+        PDFPage *page = [[pdfView document] pageAtIndex:[[sender note] pageIndex]];
+        SKPDFAnnotationTemporary *circle = [[SKPDFAnnotationTemporary alloc] initWithBounds:bounds];
+        [page addAnnotation:circle];
+        [circle release];
     }
 }
 
@@ -556,35 +519,40 @@ static NSString *SKDocumentToolbarSearchItemIdentifier = @"SKDocumentToolbarSear
 
 #pragma mark Searching
 
-- (void)startFind:(NSNotification *)note {
-    [searchResults setArray:[NSArray array]];
+- (void)documentDidBeginDocumentFind:(NSNotification *)note {
+    [findArrayController removeObjects:searchResults];
     [spinner startAnimation:nil];
 }
 
-- (void)endFind:(NSNotification *)note {
+- (void)documentDidEndDocumentFind:(NSNotification *)note {
     [spinner stopAnimation:nil];
+}
+
+- (void)documentDidEndPageFind:(NSNotification *)note {
+	double pageIndex = [[[note userInfo] objectForKey:@"PDFDocumentPageIndex"] doubleValue];
+	[spinner setDoubleValue: pageIndex / [[pdfView document] pageCount]];
 }
 
 - (void)didMatchString:(PDFSelection *)instance {
     [findArrayController addObject:instance];
 }
 
-- (void)displayOutlineView {
-    NSView *outline = [outlineView enclosingScrollView];
-    NSView *table = [tableView enclosingScrollView];
-    if ([outline window] != [self window]) {
-        NSRect frame = [table frame];
-        [table retain];
+- (void)replaceTable:(NSTableView *)oldTableView withTable:(NSTableView *)newTableView {
+    if ([newTableView window] != [self window]) {
+        NSView *newTable = [newTableView enclosingScrollView];
+        NSView *oldTable = [oldTableView enclosingScrollView];
+        NSRect frame = [oldTable frame];
+        [oldTable retain];
         
-        [[table superview] replaceSubview:table with:outline];
-        [outline setFrame:frame];
+        [[oldTable superview] replaceSubview:oldTable with:newTable];
+        [newTable setFrame:frame];
         
-        [findCustomView addSubview:table];
-        [table release];
+        [findCustomView addSubview:oldTable];
+        [oldTable release];
         
         NSViewAnimation *animation;
-        NSDictionary *fadeOutDict = [[NSDictionary alloc] initWithObjectsAndKeys:table, NSViewAnimationTargetKey, NSViewAnimationFadeOutEffect, NSViewAnimationEffectKey, nil];
-        NSDictionary *fadeInDict = [[NSDictionary alloc] initWithObjectsAndKeys:outline, NSViewAnimationTargetKey, NSViewAnimationFadeInEffect, NSViewAnimationEffectKey, nil];
+        NSDictionary *fadeOutDict = [[NSDictionary alloc] initWithObjectsAndKeys:oldTable, NSViewAnimationTargetKey, NSViewAnimationFadeOutEffect, NSViewAnimationEffectKey, nil];
+        NSDictionary *fadeInDict = [[NSDictionary alloc] initWithObjectsAndKeys:newTable, NSViewAnimationTargetKey, NSViewAnimationFadeInEffect, NSViewAnimationEffectKey, nil];
         
         animation = [[[NSViewAnimation alloc] initWithViewAnimations:[NSArray arrayWithObjects:fadeOutDict, fadeInDict, nil]] autorelease];
         [fadeOutDict release];
@@ -597,32 +565,12 @@ static NSString *SKDocumentToolbarSearchItemIdentifier = @"SKDocumentToolbarSear
     }
 }
 
+- (void)displayOutlineView {
+    [self replaceTable:tableView withTable:outlineView];
+}
+
 - (void)displaySearchView {
-    NSView *outline = [outlineView enclosingScrollView];
-    NSView *table = [tableView enclosingScrollView];
-    if ([table window] != [self window]) {
-        NSRect frame = [outline frame];
-        [outline retain];
-        
-        [[outline superview] replaceSubview:outline with:table];
-        [table setFrame:frame];
-        
-        [findCustomView addSubview:outline];
-        [outline release];
-        
-        NSViewAnimation *animation;
-        NSDictionary *fadeOutDict = [[NSDictionary alloc] initWithObjectsAndKeys:outline, NSViewAnimationTargetKey, NSViewAnimationFadeOutEffect, NSViewAnimationEffectKey, nil];
-        NSDictionary *fadeInDict = [[NSDictionary alloc] initWithObjectsAndKeys:table, NSViewAnimationTargetKey, NSViewAnimationFadeInEffect, NSViewAnimationEffectKey, nil];
-        
-        animation = [[[NSViewAnimation alloc] initWithViewAnimations:[NSArray arrayWithObjects:fadeOutDict, fadeInDict, nil]] autorelease];
-        [fadeOutDict release];
-        [fadeInDict release];
-        
-        [animation setAnimationBlockingMode:NSAnimationBlocking];
-        [animation setDuration:0.75];
-        [animation setAnimationCurve:NSAnimationEaseIn];
-        [animation startAnimation];        
-    }
+    [self replaceTable:outlineView withTable:tableView];
 }
 
 - (void)addAnnotationsForSelection:(PDFSelection *)sel {
@@ -695,71 +643,6 @@ static NSString *SKDocumentToolbarSearchItemIdentifier = @"SKDocumentToolbarSear
     [[pdfView document] findString:[sender stringValue] withOptions:NSCaseInsensitiveSearch];
 }
 
-#pragma mark Menu item validation
-
-- (BOOL)validateMenuItem:(NSMenuItem *)menuItem {
-    SEL action = [menuItem action];
-    if (action == @selector(createNewNote:)) {
-    
-    } else if (action == @selector(displaySinglePages:)) {
-        BOOL displaySinglePages = [pdfView displayMode] == kPDFDisplaySinglePage || [pdfView displayMode] == kPDFDisplaySinglePageContinuous;
-        [menuItem setState:displaySinglePages ? NSOnState : NSOffState];
-        return YES;
-    } else if (action == @selector(displayFacingPages:)) {
-        BOOL displayFacingPages = [pdfView displayMode] == kPDFDisplayTwoUp || [pdfView displayMode] == kPDFDisplayTwoUpContinuous;
-        [menuItem setState:displayFacingPages ? NSOnState : NSOffState];
-        return YES;
-    } else if (action == @selector(toggleDisplayContinuous:)) {
-        BOOL displayContinuous = [pdfView displayMode] == kPDFDisplaySinglePageContinuous || [pdfView displayMode] == kPDFDisplayTwoUpContinuous;
-        [menuItem setState:displayContinuous ? NSOnState : NSOffState];
-        return YES;
-    } else if (action == @selector(toggleDisplayAsBook:)) {
-        [menuItem setState:[pdfView displaysAsBook] ? NSOnState : NSOffState];
-        return [pdfView displayMode] == kPDFDisplayTwoUp || [pdfView displayMode] == kPDFDisplayTwoUpContinuous;
-    } else if (action == @selector(toggleDisplayPageBreaks:)) {
-        [menuItem setState:[pdfView displaysPageBreaks] ? NSOnState : NSOffState];
-        return YES;
-    } else if (action == @selector(displayMediaBox:)) {
-        BOOL displayMediaBox = [pdfView displayBox] == kPDFDisplayBoxMediaBox;
-        [menuItem setState:displayMediaBox ? NSOnState : NSOffState];
-        return YES;
-    } else if (action == @selector(displayCropBox:)) {
-        BOOL displayCropBox = [pdfView displayBox] == kPDFDisplayBoxCropBox;
-        [menuItem setState:displayCropBox ? NSOnState : NSOffState];
-        return YES;
-    } else if (action == @selector(goToNextPage:)) {
-        return [pdfView canGoToNextPage];
-    } else if (action == @selector(goToPreviousPage:)) {
-        return [pdfView canGoToPreviousPage];
-    } else if (action == @selector(goBack:)) {
-        return [pdfView canGoBack];
-    } else if (action == @selector(goForward:)) {
-        return [pdfView canGoForward];
-    } else if (action == @selector(zoomIn:)) {
-        return [pdfView canZoomIn];
-    } else if (action == @selector(zoomOut:)) {
-        return [pdfView canZoomOut];
-    } else if (action == @selector(zoomToActualSize:)) {
-        return [pdfView scaleFactor] != 1.0;
-    } else if (action == @selector(zoomToFit:)) {
-        return [pdfView autoScales] == NO;
-    } else if (action == @selector(toggleFullScreen:)) {
-        return YES;
-    } else if (action == @selector(togglePresentation:)) {
-        return YES;
-    } else if (action == @selector(toggleNotesDrawer:)) {
-        NSDrawerState state = [notesDrawer state];
-        if (state == NSDrawerClosedState || state == NSDrawerClosingState)
-            [menuItem setTitle:NSLocalizedString(@"Show Notes Drawer", @"")];
-        else 
-            [menuItem setTitle:NSLocalizedString(@"Hide Notes Drawer", @"")];
-        return YES;
-    } else if (action == @selector(getInfo:)) {
-        return YES;
-    }
-    return YES;
-}
-
 #pragma mark Sub- and note- windows
 
 - (void)showSubWindowAtPageNumber:(int)pageNum location:(NSPoint)locationInPageSpace{
@@ -798,10 +681,37 @@ static NSString *SKDocumentToolbarSearchItemIdentifier = @"SKDocumentToolbarSear
 }
 
 - (void)handlePageChangedNotification:(NSNotification *)notification {
-	unsigned page = [[pdfView document] indexForPage:[pdfView currentPage]] + 1;
+	PDFDocument *pdfDoc = [pdfView document];
+    unsigned pageIndex = [pdfDoc indexForPage:[pdfView currentPage]];
     
-    [pageNumberStepper setIntValue:page];
-    [pageNumberField setIntValue:page];
+    [pageNumberStepper setIntValue:pageIndex + 1];
+    [pageNumberField setIntValue:pageIndex + 1];
+    
+	// Skip out if there is no outline.
+	if ([pdfDoc outlineRoot] == nil)
+		return;
+	
+	// Walk outline view looking for best firstpage number match.
+	int newlySelectedRow = -1;
+	int i, numRows = [outlineView numberOfRows];
+    
+	for (i = 0; i < numRows; i++) {
+        PDFOutline *outlineItem = (PDFOutline *)[outlineView itemAtRow:i];
+		unsigned int itemPageIndex = [pdfDoc indexForPage:[[outlineItem destination] page]];
+		
+		if (itemPageIndex == pageIndex) {
+			newlySelectedRow = i;
+			break;
+		} else if (itemPageIndex > pageIndex) {
+			newlySelectedRow = i - 1;
+			break;
+		}
+	}
+	
+	if (newlySelectedRow != -1) {
+        [outlineView selectRow:newlySelectedRow byExtendingSelection:NO];
+		[outlineView scrollRowToVisible:newlySelectedRow];
+    }
 }
 
 - (void)handleScaleChangedNotification:(NSNotification *)notification {
@@ -1200,6 +1110,8 @@ static NSString *SKDocumentToolbarSearchItemIdentifier = @"SKDocumentToolbarSear
 		NSToolbarCustomizeToolbarItemIdentifier, nil];
 }
 
+#pragma mark UI validation
+
 - (BOOL)validateToolbarItem:(NSToolbarItem *) toolbarItem {
     NSString *identifier = [toolbarItem itemIdentifier];
     if ([identifier isEqualToString:SKDocumentToolbarPreviousItemIdentifier]) {
@@ -1221,6 +1133,69 @@ static NSString *SKDocumentToolbarSearchItemIdentifier = @"SKDocumentToolbarSear
     } else {
         return YES;
     }
+}
+
+- (BOOL)validateMenuItem:(NSMenuItem *)menuItem {
+    SEL action = [menuItem action];
+    if (action == @selector(createNewNote:)) {
+    
+    } else if (action == @selector(displaySinglePages:)) {
+        BOOL displaySinglePages = [pdfView displayMode] == kPDFDisplaySinglePage || [pdfView displayMode] == kPDFDisplaySinglePageContinuous;
+        [menuItem setState:displaySinglePages ? NSOnState : NSOffState];
+        return YES;
+    } else if (action == @selector(displayFacingPages:)) {
+        BOOL displayFacingPages = [pdfView displayMode] == kPDFDisplayTwoUp || [pdfView displayMode] == kPDFDisplayTwoUpContinuous;
+        [menuItem setState:displayFacingPages ? NSOnState : NSOffState];
+        return YES;
+    } else if (action == @selector(toggleDisplayContinuous:)) {
+        BOOL displayContinuous = [pdfView displayMode] == kPDFDisplaySinglePageContinuous || [pdfView displayMode] == kPDFDisplayTwoUpContinuous;
+        [menuItem setState:displayContinuous ? NSOnState : NSOffState];
+        return YES;
+    } else if (action == @selector(toggleDisplayAsBook:)) {
+        [menuItem setState:[pdfView displaysAsBook] ? NSOnState : NSOffState];
+        return [pdfView displayMode] == kPDFDisplayTwoUp || [pdfView displayMode] == kPDFDisplayTwoUpContinuous;
+    } else if (action == @selector(toggleDisplayPageBreaks:)) {
+        [menuItem setState:[pdfView displaysPageBreaks] ? NSOnState : NSOffState];
+        return YES;
+    } else if (action == @selector(displayMediaBox:)) {
+        BOOL displayMediaBox = [pdfView displayBox] == kPDFDisplayBoxMediaBox;
+        [menuItem setState:displayMediaBox ? NSOnState : NSOffState];
+        return YES;
+    } else if (action == @selector(displayCropBox:)) {
+        BOOL displayCropBox = [pdfView displayBox] == kPDFDisplayBoxCropBox;
+        [menuItem setState:displayCropBox ? NSOnState : NSOffState];
+        return YES;
+    } else if (action == @selector(goToNextPage:)) {
+        return [pdfView canGoToNextPage];
+    } else if (action == @selector(goToPreviousPage:)) {
+        return [pdfView canGoToPreviousPage];
+    } else if (action == @selector(goBack:)) {
+        return [pdfView canGoBack];
+    } else if (action == @selector(goForward:)) {
+        return [pdfView canGoForward];
+    } else if (action == @selector(zoomIn:)) {
+        return [pdfView canZoomIn];
+    } else if (action == @selector(zoomOut:)) {
+        return [pdfView canZoomOut];
+    } else if (action == @selector(zoomToActualSize:)) {
+        return [pdfView scaleFactor] != 1.0;
+    } else if (action == @selector(zoomToFit:)) {
+        return [pdfView autoScales] == NO;
+    } else if (action == @selector(toggleFullScreen:)) {
+        return YES;
+    } else if (action == @selector(togglePresentation:)) {
+        return YES;
+    } else if (action == @selector(toggleNotesDrawer:)) {
+        NSDrawerState state = [notesDrawer state];
+        if (state == NSDrawerClosedState || state == NSDrawerClosingState)
+            [menuItem setTitle:NSLocalizedString(@"Show Notes Drawer", @"")];
+        else 
+            [menuItem setTitle:NSLocalizedString(@"Hide Notes Drawer", @"")];
+        return YES;
+    } else if (action == @selector(getInfo:)) {
+        return YES;
+    }
+    return YES;
 }
 
 @end
