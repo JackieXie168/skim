@@ -46,7 +46,6 @@ static NSString *SKDocumentToolbarSearchItemIdentifier = @"SKDocumentToolbarSear
 @interface SKFullScreenWindow : NSWindow
 @end
 
-
 @implementation SKMainWindowController
 
 - (id)initWithWindowNibName:(NSString *)windowNibName owner:(id)owner{
@@ -55,6 +54,7 @@ static NSString *SKDocumentToolbarSearchItemIdentifier = @"SKDocumentToolbarSear
     if(self){
         [self setShouldCloseDocument:YES];
         isPresentation = NO;
+        searchResults = [[NSMutableArray alloc] init];
     }
     
     return self;
@@ -70,17 +70,16 @@ static NSString *SKDocumentToolbarSearchItemIdentifier = @"SKDocumentToolbarSear
 	[[NSNotificationCenter defaultCenter] addObserver: self selector: @selector(handleToolModeChangedNotification:) 
                                                  name: @"SKPDFViewToolModeChangedNotification" object: pdfView];
     
-/*	// Find notifications.
+	// Find notifications.
 	[[NSNotificationCenter defaultCenter] addObserver: self selector: @selector(startFind:) 
                                                  name: PDFDocumentDidBeginFindNotification object: [pdfView document]];
 	[[NSNotificationCenter defaultCenter] addObserver: self selector: @selector(endFind:) 
                                                  name: PDFDocumentDidEndFindNotification object: [pdfView document]];
-*/	
+	
 
 	// Delegate.
 	[[pdfView document] setDelegate: self];
 }
-
 
 - (void) dealloc{
 
@@ -120,11 +119,11 @@ static NSString *SKDocumentToolbarSearchItemIdentifier = @"SKDocumentToolbarSear
 		[_toolbarEditTestItem release];
 		[_editTestView release];
 	}
-	
-	// Search clean-up.
-	[_searchResults release];
-	[_sampleStrings release];
 */	
+	// Search clean-up.
+	[searchResults release];
+    [findCustomView release];
+
 	if (pdfOutline)	[pdfOutline release];
 	if (fullScreenWindow)	[fullScreenWindow release];
     if (mainWindow) [mainWindow release];
@@ -398,7 +397,75 @@ static NSString *SKDocumentToolbarSearchItemIdentifier = @"SKDocumentToolbarSear
     [infoController showWindow:self];
 }
 
+#pragma mark Searching
+
+- (void)startFind:(NSNotification *)note {
+    [searchResults setArray:[NSArray array]];
+    [spinner startAnimation:nil];
+}
+
+- (void)endFind:(NSNotification *)note {
+    [spinner stopAnimation:nil];
+}
+
+- (void)didMatchString:(PDFSelection *)instance {
+    [findArrayController addObject:instance];
+}
+
+- (void)restoreOutlineView {
+    NSView *outline = [outlineView enclosingScrollView];
+    NSView *table = [tableView enclosingScrollView];
+    if ([outline window] != [self window]) {
+        NSRect frame = [table frame];
+        [table retain];
+        
+        [[table superview] replaceSubview:table with:outline];
+        [outline setFrame:frame];
+
+        [findCustomView addSubview:table];
+        [table release];
+        [[[self window] contentView] setNeedsDisplay:YES];
+    }
+}
+
+- (void)displaySearchView {
+    NSView *outline = [outlineView enclosingScrollView];
+    NSView *table = [tableView enclosingScrollView];
+    if ([table window] != [self window]) {
+        NSRect frame = [outline frame];
+        [outline retain];
+
+        [[outline superview] replaceSubview:outline with:table];
+        [table setFrame:frame];
+        
+        [findCustomView addSubview:outline];
+        [outline release];
+        [[[self window] contentView] setNeedsDisplay:YES];
+    }
+}
+
+- (void)tableViewSelectionDidChange:(NSNotification *)aNotification {
+    if ([[aNotification object] isEqual:tableView]) {
+        PDFSelection *sel = [[findArrayController selectedObjects] lastObject];
+        if (sel) {
+            [pdfView setCurrentSelection:sel];
+            [pdfView scrollSelectionToVisible:self];
+            /*
+            [pdfView goToSelection:sel];
+            [sel drawForPage:[[sel pages] objectAtIndex:0] active:NO];
+             */
+        }
+    }
+}
+
+
 - (IBAction)search:(id)sender {
+    if ([[sender stringValue] isEqualToString:@""]) {
+        [self restoreOutlineView];
+    } else {
+        [self displaySearchView];
+    }
+    [[pdfView document] findString:[sender stringValue] withOptions:0];
 }
 
 - (IBAction)changePageNumber:(id)sender {
@@ -1083,3 +1150,68 @@ static NSString *SKDocumentToolbarSearchItemIdentifier = @"SKDocumentToolbarSear
 }
 
 @end
+
+// the search table columns use these methods for display
+@interface PDFSelection (SKExtensions)
+@end
+
+@implementation PDFSelection (SKExtensions)
+
+// returns the label of the first page (if the selection spans multiple pages)
+- (NSString *)firstPageLabel { 
+    NSArray *pages = [self pages];
+    return [pages count] ? [[pages objectAtIndex:0] label] : nil;
+}
+
+// displays the selection string with some surrounding context as well
+- (NSString *)contextString {
+    
+    NSArray *pages = [self pages];
+    int i, iMax = [pages count];
+    NSMutableString *string = [NSMutableString string];
+    
+    for (i = 0; i < iMax; i++) {
+        
+        PDFPage *page = [pages objectAtIndex:i];
+        NSString *pageString = [page string];
+        if (pageString) {
+            NSRect r = [self boundsForPage:page];
+            
+            int start, end;
+            start = [page characterIndexAtPoint:NSMakePoint(NSMinX(r), NSMinY(r))];
+            end = [page characterIndexAtPoint:NSMakePoint(NSMaxX(r), NSMinY(r))];
+            
+            if (start != -1 && end != -1) {
+                start = MAX(start - 10, 0);
+                end = MIN(end + 20, [pageString length]);
+                [string appendString:[pageString substringWithRange:NSMakeRange(start, end - start)]];
+            } else {
+                // this shouldn't happen, but just in case...
+                [string appendString:[self string]];
+            }
+        }
+    }
+    
+    // we don't want newlines in the tableview
+    static NSCharacterSet *newlineCharacterSet = nil;
+    if (nil == newlineCharacterSet) {
+        NSMutableCharacterSet *cs = [[NSCharacterSet whitespaceCharacterSet] mutableCopy];
+        [cs invert];
+        [cs formIntersectionWithCharacterSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
+        newlineCharacterSet = [cs copy];
+        [cs release];
+    }
+    NSRange r = [string rangeOfCharacterFromSet:newlineCharacterSet];
+    while (r.location != NSNotFound) {
+        [string deleteCharactersInRange:r];
+        r = [string rangeOfCharacterFromSet:newlineCharacterSet];
+    }
+    // trim any leading or trailing whitespace
+    CFStringTrimWhitespace((CFMutableStringRef)string);
+    
+    return string;
+}
+
+@end
+
+

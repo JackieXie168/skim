@@ -49,6 +49,12 @@ typedef struct _SKPDFViewState {
     
     BOOL isPresentation;
     SKPDFViewState savedState;
+    
+    IBOutlet NSView *findCustomView;
+    IBOutlet NSTableView *tableView;
+    NSMutableArray *searchResults;
+    IBOutlet NSArrayController *findArrayController;
+    IBOutlet NSProgressIndicator *spinner;
 }
 
 - (IBAction)createNewNote:(id)sender;
