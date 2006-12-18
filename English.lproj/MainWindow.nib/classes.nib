@@ -2,6 +2,12 @@
     IBClasses = (
         {CLASS = FirstResponder; LANGUAGE = ObjC; SUPERCLASS = NSObject; }, 
         {CLASS = NSSegmentedControl; LANGUAGE = ObjC; SUPERCLASS = NSControl; }, 
+        {
+            CLASS = SKCollapsibleView; 
+            LANGUAGE = ObjC; 
+            OUTLETS = {contentView = id; }; 
+            SUPERCLASS = NSView; 
+        }, 
         {CLASS = SKFullScreenWindow; LANGUAGE = ObjC; SUPERCLASS = NSWindow; }, 
         {
             ACTIONS = {
@@ -58,6 +64,7 @@
                 pdfContentBox = NSBox; 
                 pdfView = SKPDFView; 
                 scaleField = NSTextField; 
+                searchBox = SKCollapsibleView; 
                 searchField = NSSearchField; 
                 spinner = NSProgressIndicator; 
                 tableView = NSTableView; 
