@@ -694,8 +694,9 @@ static NSString *SKDocumentToolbarSearchItemIdentifier = @"SKDocumentToolbarSear
     [pageNumberStepper setIntValue:pageIndex + 1];
     [pageNumberField setIntValue:pageIndex + 1];
     
-	// Skip out if there is no outline.
-	if ([pdfDoc outlineRoot] == nil)
+	// Skip out if there is no outline or if the selected outline item is already on the current page
+	if ([pdfDoc outlineRoot] == nil ||
+        [[pdfView currentPage] isEqual:[[[outlineView itemAtRow:[outlineView selectedRow]] destination] page]])
 		return;
 	
 	// Walk outline view looking for best firstpage number match.
