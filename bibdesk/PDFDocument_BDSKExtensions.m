@@ -49,9 +49,13 @@
     // The CFData versions of the provider/consumer functions are 10.4 only
     CGDataProviderRef provider = CGDataProviderCreateWithCFData((CFDataRef)psData);
     
-    CFMutableDataRef pdfData = CFDataCreateMutable(CFAllocatorGetDefault(), 0);
+    CFMutableDataRef pdfData = CFDataCreateMutable(CFGetAllocator((CFDataRef)psData), 0);
     CGDataConsumerRef consumer = CGDataConsumerCreateWithCFData(pdfData);
     Boolean success = CGPSConverterConvert(converter, provider, consumer, NULL);
+    
+    CGDataProviderRelease(provider);
+    CGDataConsumerRelease(consumer);
+    CFRelease(converter);
     
     if(success == FALSE){
         CFRelease(pdfData);
