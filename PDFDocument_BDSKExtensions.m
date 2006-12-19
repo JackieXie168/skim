@@ -37,22 +37,27 @@
  */
 
 #import "PDFDocument_BDSKExtensions.h"
+#import "SKPSProgressController.h"
 
 @implementation PDFDocument (BDSKExtensions)
 
-+ (NSData *)PDFDataWithPostScriptData:(NSData *)psData;
++ (NSData *)PDFDataWithPostScriptData:(NSData *)psData
 {
     CGPSConverterCallbacks converterCallbacks = { 0, NULL, NULL, NULL, NULL, NULL, NULL, NULL };
+    
     CGPSConverterRef converter = CGPSConverterCreate(NULL, &converterCallbacks, NULL);
     NSAssert(converter != NULL, @"unable to create PS converter");
     
-    // The CFData versions of the provider/consumer functions are 10.4 only
     CGDataProviderRef provider = CGDataProviderCreateWithCFData((CFDataRef)psData);
     
-    CFMutableDataRef pdfData = CFDataCreateMutable(CFAllocatorGetDefault(), 0);
+    CFMutableDataRef pdfData = CFDataCreateMutable(CFGetAllocator((CFDataRef)psData), 0);
     CGDataConsumerRef consumer = CGDataConsumerCreateWithCFData(pdfData);
     Boolean success = CGPSConverterConvert(converter, provider, consumer, NULL);
     
+    CGDataProviderRelease(provider);
+    CGDataConsumerRelease(consumer);
+    CFRelease(converter);
+
     if(success == FALSE){
         CFRelease(pdfData);
         pdfData = nil;
@@ -64,7 +69,10 @@
 // [self note] this is a category, so don't call super...
 - (id)initWithPostScriptData:(NSData *)data;
 {
-    return [self initWithData:[PDFDocument PDFDataWithPostScriptData:data]];
+    SKPSProgressController *progressController = [[SKPSProgressController alloc] init];
+    NSData *pdfData = [progressController PDFDataWithPostScriptData:data];
+    [progressController autorelease];
+    return [self initWithData:pdfData];
 }
         
 - (id)initWithPostScriptURL:(NSURL *)fileURL;
