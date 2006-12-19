@@ -284,11 +284,11 @@ static NSString *SKDocumentToolbarSearchItemIdentifier = @"SKDocumentToolbarSear
     [pdfView setDisplayBox:displayBox];
 }
 
-- (IBAction)goToNextPage:(id)sender {
+- (IBAction)doGoToNextPage:(id)sender {
     [pdfView goToNextPage:sender];
 }
 
-- (IBAction)goToPreviousPage:(id)sender {
+- (IBAction)doGoToPreviousPage:(id)sender {
     [pdfView goToPreviousPage:sender];
 }
 
@@ -306,7 +306,7 @@ static NSString *SKDocumentToolbarSearchItemIdentifier = @"SKDocumentToolbarSear
     }
 }
 
-- (IBAction)goToAnyPage:(id)sender {
+- (IBAction)doGoToPage:(id)sender {
     [choosePageField setStringValue:@""];
     
     [NSApp beginSheet: choosePageSheet
@@ -321,11 +321,11 @@ static NSString *SKDocumentToolbarSearchItemIdentifier = @"SKDocumentToolbarSear
     [choosePageSheet orderOut:self];
 }
 
-- (IBAction)goBack:(id)sender {
+- (IBAction)doGoBack:(id)sender {
     [pdfView goBack:sender];
 }
 
-- (IBAction)goForward:(id)sender {
+- (IBAction)doGoForward:(id)sender {
     [pdfView goForward:sender];
 }
 
@@ -336,19 +336,19 @@ static NSString *SKDocumentToolbarSearchItemIdentifier = @"SKDocumentToolbarSear
         [pdfView goBack:sender];
 }
 
-- (IBAction)zoomIn:(id)sender {
+- (IBAction)doZoomIn:(id)sender {
     [pdfView zoomIn:sender];
 }
 
-- (IBAction)zoomOut:(id)sender {
+- (IBAction)doZoomOut:(id)sender {
     [pdfView zoomOut:sender];
 }
 
-- (IBAction)zoomToActualSize:(id)sender {
+- (IBAction)doZoomToActualSize:(id)sender {
     [pdfView setScaleFactor:1.0];
 }
 
-- (IBAction)zoomToFit:(id)sender {
+- (IBAction)doZoomToFit:(id)sender {
     [pdfView setAutoScales:YES];
 }
 
@@ -896,7 +896,7 @@ static NSString *SKDocumentToolbarSearchItemIdentifier = @"SKDocumentToolbarSear
     [item setToolTip:NSLocalizedString(@"Previous page", @"Tool tip message")];
     [item setImage:[NSImage imageNamed:@"previous"]];
     [item setTarget:self];
-    [item setAction:@selector(goToPreviousPage:)];
+    [item setAction:@selector(doGoToPreviousPage:)];
     [toolbarItems setObject:item forKey:SKDocumentToolbarPreviousItemIdentifier];
     [item release];
     
@@ -906,7 +906,7 @@ static NSString *SKDocumentToolbarSearchItemIdentifier = @"SKDocumentToolbarSear
     [item setToolTip:NSLocalizedString(@"Next page", @"Tool tip message")];
     [item setImage:[NSImage imageNamed:@"next"]];
     [item setTarget:self];
-    [item setAction:@selector(goToNextPage:)];
+    [item setAction:@selector(doGoToNextPage:)];
     [toolbarItems setObject:item forKey:SKDocumentToolbarNextItemIdentifier];
     [item release];
     
@@ -946,7 +946,7 @@ static NSString *SKDocumentToolbarSearchItemIdentifier = @"SKDocumentToolbarSear
     [item setToolTip:NSLocalizedString(@"Zoom In", @"Tool tip message")];
     [item setImage:[NSImage imageNamed:@"zoomIn"]];
     [item setTarget:self];
-    [item setAction:@selector(zoomIn:)];
+    [item setAction:@selector(doZoomIn:)];
     [toolbarItems setObject:item forKey:SKDocumentToolbarZoomInItemIdentifier];
     [item release];
     
@@ -956,7 +956,7 @@ static NSString *SKDocumentToolbarSearchItemIdentifier = @"SKDocumentToolbarSear
     [item setToolTip:NSLocalizedString(@"Zoom Out", @"Tool tip message")];
     [item setImage:[NSImage imageNamed:@"zoomOut"]];
     [item setTarget:self];
-    [item setAction:@selector(zoomOut:)];
+    [item setAction:@selector(doZoomOut:)];
     [toolbarItems setObject:item forKey:SKDocumentToolbarZoomOutItemIdentifier];
     [item release];
     
@@ -966,7 +966,7 @@ static NSString *SKDocumentToolbarSearchItemIdentifier = @"SKDocumentToolbarSear
     [item setToolTip:NSLocalizedString(@"Zoom To Actual Size", @"Tool tip message")];
     [item setImage:[NSImage imageNamed:@"zoomActual"]];
     [item setTarget:self];
-    [item setAction:@selector(zoomToActualSize:)];
+    [item setAction:@selector(doZoomToActualSize:)];
     [toolbarItems setObject:item forKey:SKDocumentToolbarZoomActualItemIdentifier];
     [item release];
     
@@ -976,7 +976,7 @@ static NSString *SKDocumentToolbarSearchItemIdentifier = @"SKDocumentToolbarSear
     [item setToolTip:NSLocalizedString(@"Zoom To Fit", @"Tool tip message")];
     [item setImage:[NSImage imageNamed:@"zoomToFit"]];
     [item setTarget:self];
-    [item setAction:@selector(zoomToFit:)];
+    [item setAction:@selector(doZoomToFit:)];
     [toolbarItems setObject:item forKey:SKDocumentToolbarZoomAutoItemIdentifier];
     [item release];
     
@@ -1178,21 +1178,21 @@ static NSString *SKDocumentToolbarSearchItemIdentifier = @"SKDocumentToolbarSear
         BOOL displayCropBox = [pdfView displayBox] == kPDFDisplayBoxCropBox;
         [menuItem setState:displayCropBox ? NSOnState : NSOffState];
         return YES;
-    } else if (action == @selector(goToNextPage:)) {
+    } else if (action == @selector(doGoToNextPage:)) {
         return [pdfView canGoToNextPage];
-    } else if (action == @selector(goToPreviousPage:)) {
+    } else if (action == @selector(doGoToPreviousPage:)) {
         return [pdfView canGoToPreviousPage];
-    } else if (action == @selector(goBack:)) {
+    } else if (action == @selector(doGoBack:)) {
         return [pdfView canGoBack];
-    } else if (action == @selector(goForward:)) {
+    } else if (action == @selector(doGoForward:)) {
         return [pdfView canGoForward];
-    } else if (action == @selector(zoomIn:)) {
+    } else if (action == @selector(doZoomIn:)) {
         return [pdfView canZoomIn];
-    } else if (action == @selector(zoomOut:)) {
+    } else if (action == @selector(doZoomOut:)) {
         return [pdfView canZoomOut];
-    } else if (action == @selector(zoomToActualSize:)) {
+    } else if (action == @selector(doZoomToActualSize:)) {
         return [pdfView scaleFactor] != 1.0;
-    } else if (action == @selector(zoomToFit:)) {
+    } else if (action == @selector(doZoomToFit:)) {
         return [pdfView autoScales] == NO;
     } else if (action == @selector(toggleFullScreen:)) {
         return YES;
