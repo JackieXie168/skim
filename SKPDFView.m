@@ -9,6 +9,7 @@
 //
 
 #import "SKPDFView.h"
+#import "SKNavigationWindow.h"
 
 
 @interface PDFAnnotation (SKPDFViewExtensions)
@@ -65,7 +66,9 @@
 }
 
 - (void)dealloc {
-    [self setAutohidesCursor:NO]; // invalidates and releases the timer
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
+    [self doAutohide:NO]; // invalidates and releases the timer
+    [navWindow release];
     [super dealloc];
 }
 
@@ -153,8 +156,10 @@
     } else {
         [[self cursorForMouseMovedEvent:event] set];
     }
-    if (autohidesCursor) {
-        [self setAutohidesCursor:YES];
+    if (autohidesCursor || hasNavigation) {
+        if (hasNavigation && [navWindow isVisible] == NO)
+            [navWindow orderFront:self];
+        [self doAutohide:YES];
     }
 }
 
@@ -166,28 +171,46 @@
     }
 }
 
-- (void)hideCursor:(NSTimer *)aTimer {
+- (void)autohideTimerFired:(NSTimer *)aTimer {
     if (autohideTimer) {
         [autohideTimer invalidate];
         [autohideTimer release];
         autohideTimer = nil;
     }
-    [NSCursor setHiddenUntilMouseMoves:YES];
+    if (autohidesCursor)
+        [NSCursor setHiddenUntilMouseMoves:YES];
+    if (hasNavigation)
+        [navWindow hide];
 }
 
-- (BOOL)autohidesCursor {
-    return autohidesCursor;
-}
-
-- (void)setAutohidesCursor:(BOOL)flag {
-    autohidesCursor = flag;
+- (void)doAutohide:(BOOL)flag {
     if (autohideTimer) {
         [autohideTimer invalidate];
         [autohideTimer release];
         autohideTimer = nil;
     }
     if (flag)
-        autohideTimer  = [[NSTimer scheduledTimerWithTimeInterval:3.0 target:self selector:@selector(hideCursor:) userInfo:nil repeats:NO] retain];
+        autohideTimer  = [[NSTimer scheduledTimerWithTimeInterval:3.0 target:self selector:@selector(autohideTimerFired:) userInfo:nil repeats:NO] retain];
+}
+   
+- (void)setHasNavigation:(BOOL)hasNav autohidesCursor:(BOOL)hideCursor {
+    hasNavigation = hasNav;
+    autohidesCursor = hideCursor;
+    
+    if (hasNavigation) {
+        if (navWindow == nil) {
+            navWindow = [[SKNavigationWindow alloc] initWithPDFView:self];
+            [[NSNotificationCenter defaultCenter] addObserver: self selector: @selector(handleWindowWillCloseNotification:) 
+                                                         name: NSWindowWillCloseNotification object: [self window]];
+        }
+    } else if ([navWindow isVisible]) {
+        [navWindow orderOut:self];
+    }
+    [self doAutohide:autohidesCursor || hasNavigation];
+}
+
+- (void)handleWindowWillCloseNotification:(NSNotification *)notification {
+    [navWindow orderOut:self];
 }
 
 - (void)popUpWithEvent:(NSEvent *)theEvent{

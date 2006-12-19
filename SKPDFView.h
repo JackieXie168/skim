@@ -24,14 +24,16 @@ typedef enum _SKToolMode {
 @interface SKPDFView : PDFView {
     SKToolMode toolMode;
     BOOL autohidesCursor;
+    BOOL hasNavigation;
     NSTimer *autohideTimer;
+    SKNavigationWindow *navWindow;
 }
 
 - (SKToolMode)toolMode;
 - (void)setToolMode:(SKToolMode)newToolMode;
 
-- (BOOL)autohidesCursor;
-- (void)setAutohidesCursor:(BOOL)flag;
+- (void)setHasNavigation:(BOOL)hasNav autohidesCursor:(BOOL)hideCursor;
+- (void)doAutohide:(BOOL)flag;
 
 - (void)popUpWithEvent:(NSEvent *)theEvent;
 - (void)annotateWithEvent:(NSEvent *)theEvent;
