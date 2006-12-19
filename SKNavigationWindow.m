@@ -44,7 +44,7 @@
         
         rect.origin.x = NSMaxX(rect);
         rect.size.width = SEP_WIDTH;
-        button = [[[SKNavigationSeparatorButton alloc] initWithFrame:rect] autorelease];NSLog(@"%i",[button isEnabled]);
+        button = [[[SKNavigationSeparatorButton alloc] initWithFrame:rect] autorelease];
         [[self contentView] addSubview:button];
         
         rect.origin.x = NSMaxX(rect);
@@ -132,7 +132,7 @@
 @implementation SKNavigationContentView
 
 - (void)drawRect:(NSRect *)rect {
-    [[NSColor colorWithCalibratedWhite:0.5 alpha:0.6] set];
+    [[NSColor colorWithCalibratedWhite:0.1 alpha:0.6] set];
     [NSBezierPath fillRoundRectInRect:[self bounds] radius:10.0];
 }
 
