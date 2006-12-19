@@ -464,6 +464,8 @@ static NSString *SKDocumentToolbarSearchItemIdentifier = @"SKDocumentToolbarSear
 		[[pdfView enclosingScrollView] setHasVerticalScroller:savedState.hasVerticalScroller];
 		[[pdfView enclosingScrollView] setAutohidesScrollers:savedState.autoHidesScrollers];		
         
+        [pdfView setAutohidesCursor:NO];
+        
         isPresentation = NO;
 	}
     
@@ -509,7 +511,10 @@ static NSString *SKDocumentToolbarSearchItemIdentifier = @"SKDocumentToolbarSear
 	
     if ([self window] != fullScreenWindow)
         [self enterFullScreen:sender];
-	isPresentation = YES;
+    
+    [pdfView setAutohidesCursor:YES];
+	
+    isPresentation = YES;
 }
 
 - (IBAction)togglePresentation:(id)sender {
