@@ -21,20 +21,28 @@
 @end
 
 @interface NSCursor (SKPDFViewExtensions)
-+ (NSCursor *)magnifyCursor;
++ (NSCursor *)zoomInCursor;
++ (NSCursor *)zoomOutCursor;
 @end
 
 @implementation NSCursor (SKPDFViewExtensions)
 
-+ (NSCursor *)magnifyCursor {
-    static NSCursor *cursor = nil;
-    if (nil == cursor) {
-        NSImage *cursorImage = [[[NSImage imageNamed:@"magnifyTool"] copy] autorelease];
-        [cursorImage setSize:NSMakeSize(32, 32)];
-        NSSize s = [cursorImage size];
-        cursor = [[NSCursor alloc] initWithImage:cursorImage hotSpot:NSMakePoint(s.height/2, s.width/2)];
++ (NSCursor *)zoomInCursor {
+    static NSCursor *zoomInCursor = nil;
+    if (nil == zoomInCursor) {
+        NSImage *cursorImage = [[[NSImage imageNamed:@"zoomInCursor"] copy] autorelease];
+        zoomInCursor = [[NSCursor alloc] initWithImage:cursorImage hotSpot:NSMakePoint(6.0, 6.0)];
     }
-    return cursor;
+    return zoomInCursor;
+}
+
++ (NSCursor *)zoomOutCursor {
+    static NSCursor *zoomOutCursor = nil;
+    if (nil == zoomOutCursor) {
+        NSImage *cursorImage = [[[NSImage imageNamed:@"zoomOutCursor"] copy] autorelease];
+        zoomOutCursor = [[NSCursor alloc] initWithImage:cursorImage hotSpot:NSMakePoint(6.0, 6.0)];
+    }
+    return zoomOutCursor;
 }
 
 @end
@@ -118,7 +126,7 @@
                 cursor = [NSCursor openHandCursor];
                 break;
             case SKMagnifyToolMode:
-                cursor = [NSCursor magnifyCursor];
+                cursor = ([event modifierFlags] & NSShiftKeyMask) ? [NSCursor zoomOutCursor] : [NSCursor zoomInCursor];
                 break;
             case SKPopUpToolMode:
                 cursor = [NSCursor crosshairCursor]; // !!! probably not the most appropriate
@@ -139,6 +147,14 @@
         [super mouseMoved:event];
     } else {
         [[self cursorForMouseMovedEvent:event] set];
+    }
+}
+
+- (void)flagsChanged:(NSEvent *)event {
+    [super flagsChanged:event];
+    if (toolMode == SKMagnifyToolMode) {
+        NSCursor *cursor = ([event modifierFlags] & NSShiftKeyMask) ? [NSCursor zoomOutCursor] : [NSCursor zoomInCursor];
+        [cursor set];
     }
 }
 
