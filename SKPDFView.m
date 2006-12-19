@@ -64,6 +64,11 @@
     return self;
 }
 
+- (void)dealloc {
+    [self setAutohidesCursor:NO]; // invalidates and releases the timer
+    [super dealloc];
+}
+
 - (SKToolMode)toolMode {
     return toolMode;
 }
@@ -148,6 +153,9 @@
     } else {
         [[self cursorForMouseMovedEvent:event] set];
     }
+    if (autohidesCursor) {
+        [self setAutohidesCursor:YES];
+    }
 }
 
 - (void)flagsChanged:(NSEvent *)event {
@@ -156,6 +164,30 @@
         NSCursor *cursor = ([event modifierFlags] & NSShiftKeyMask) ? [NSCursor zoomOutCursor] : [NSCursor zoomInCursor];
         [cursor set];
     }
+}
+
+- (void)hideCursor:(NSTimer *)aTimer {
+    if (autohideTimer) {
+        [autohideTimer invalidate];
+        [autohideTimer release];
+        autohideTimer = nil;
+    }
+    [NSCursor setHiddenUntilMouseMoves:YES];
+}
+
+- (BOOL)autohidesCursor {
+    return autohidesCursor;
+}
+
+- (void)setAutohidesCursor:(BOOL)flag {
+    autohidesCursor = flag;
+    if (autohideTimer) {
+        [autohideTimer invalidate];
+        [autohideTimer release];
+        autohideTimer = nil;
+    }
+    if (flag)
+        autohideTimer  = [[NSTimer scheduledTimerWithTimeInterval:3.0 target:self selector:@selector(hideCursor:) userInfo:nil repeats:NO] retain];
 }
 
 - (void)popUpWithEvent:(NSEvent *)theEvent{
@@ -278,6 +310,7 @@
             // shrink the image with shift key -- can be very slow
             if ((modifierFlags & NSShiftKeyMask) == 0)
                 magScale = 1.0 / magScale;
+            [self flagsChanged:theEvent]; // update the cursor
         }
         
         // get Mouse location and check if it is with the view's rect
