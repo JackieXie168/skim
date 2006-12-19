@@ -19,7 +19,7 @@ typedef struct _SKPDFViewState {
 	BOOL autoHidesScrollers;
 } SKPDFViewState;
 
-@class SKPDFView, PDFOutline, SKCollapsibleView;
+@class SKPDFView, PDFOutline, SKCollapsibleView, SKNavigationWindow;
 
 @interface SKMainWindowController : NSWindowController {
     IBOutlet SKPDFView          *pdfView;
@@ -100,6 +100,8 @@ typedef struct _SKPDFViewState {
 
 - (BOOL)isFullScreen;
 - (BOOL)isPresentation;
+
+- (BOOL)autoScales;
 
 - (void)updateOutlineSelection;
 

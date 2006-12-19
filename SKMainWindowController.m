@@ -12,6 +12,7 @@
 #import "SKSubWindowController.h"
 #import "SKNoteWindowController.h"
 #import "SKInfoWindowController.h"
+#import "SKNavigationWindow.h"
 #import <Quartz/Quartz.h>
 #import "SKDocument.h"
 #import "SKNote.h"
@@ -156,6 +157,10 @@ static NSString *SKDocumentToolbarSearchItemIdentifier = @"SKDocumentToolbarSear
 
 - (BOOL)isPresentation {
     return isPresentation;
+}
+
+- (BOOL)autoScales {
+    return [pdfView autoScales];
 }
 
 #pragma mark key handling
@@ -352,6 +357,13 @@ static NSString *SKDocumentToolbarSearchItemIdentifier = @"SKDocumentToolbarSear
     [pdfView setAutoScales:YES];
 }
 
+- (IBAction)toggleZoomToFit:(id)sender {
+    if ([pdfView autoScales])
+        [self doZoomToActualSize:sender];
+    else
+        [self doZoomToFit:sender];
+}
+
 - (IBAction)rotateRight:(id)sender {
     [[pdfView currentPage] setRotation:[[pdfView currentPage] rotation] + 90];
     [pdfView layoutDocumentView];
@@ -418,24 +430,20 @@ static NSString *SKDocumentToolbarSearchItemIdentifier = @"SKDocumentToolbarSear
 
 - (IBAction)enterFullScreen:(id)sender {
     // Get the screen information.
-    NSScreen *mainScreen = [NSScreen mainScreen]; 
-    NSNumber *screenID = [[mainScreen deviceDescription] objectForKey:@"NSScreenNumber"];
+    NSNumber *screenID = [[[NSScreen mainScreen] deviceDescription] objectForKey:@"NSScreenNumber"];
  
     // Capture the screen.
     CGDisplayErr err = CGDisplayCapture((CGDirectDisplayID)[screenID longValue]);
     if (err == CGDisplayNoErr) {
         // Create the full-screen window if it doesn’t already  exist.
         if (fullScreenWindow == nil) {
-            fullScreenWindow = [[SKFullScreenWindow alloc] initWithContentRect:[mainScreen frame]
-                                                                     styleMask:NSBorderlessWindowMask 
-                                                                       backing:NSBackingStoreBuffered 
-                                                                         defer:NO 
-                                                                        screen:mainScreen];
+            fullScreenWindow = [[SKFullScreenWindow alloc] init];
             
             [fullScreenWindow setReleasedWhenClosed:NO];
             [fullScreenWindow setDisplaysWhenScreenProfileChanges:YES];
             [fullScreenWindow setLevel:CGShieldingWindowLevel()];
             [fullScreenWindow setDelegate:self];
+            [fullScreenWindow setAcceptsMouseMovedEvents:YES];
         }
         
         [fullScreenWindow setContentView:pdfView];
@@ -445,6 +453,8 @@ static NSString *SKDocumentToolbarSearchItemIdentifier = @"SKDocumentToolbarSear
         
         [self setWindow:fullScreenWindow];
         [fullScreenWindow makeKeyAndOrderFront:self];
+        
+        [pdfView setHasNavigation:YES autohidesCursor:NO];
         
         isPresentation = NO;
     }
@@ -464,10 +474,11 @@ static NSString *SKDocumentToolbarSearchItemIdentifier = @"SKDocumentToolbarSear
 		[[pdfView enclosingScrollView] setHasVerticalScroller:savedState.hasVerticalScroller];
 		[[pdfView enclosingScrollView] setAutohidesScrollers:savedState.autoHidesScrollers];		
         
-        [pdfView setAutohidesCursor:NO];
         
         isPresentation = NO;
 	}
+    
+    [pdfView setHasNavigation:NO autohidesCursor:NO];
     
     // Get the screen information.
     NSScreen *mainScreen = [NSScreen mainScreen]; 
@@ -512,7 +523,7 @@ static NSString *SKDocumentToolbarSearchItemIdentifier = @"SKDocumentToolbarSear
     if ([self window] != fullScreenWindow)
         [self enterFullScreen:sender];
     
-    [pdfView setAutohidesCursor:YES];
+    [pdfView setHasNavigation:YES autohidesCursor:YES];
 	
     isPresentation = YES;
 }
@@ -1215,6 +1226,11 @@ static NSString *SKDocumentToolbarSearchItemIdentifier = @"SKDocumentToolbarSear
 
 
 @implementation SKFullScreenWindow
+
+- (id)init {
+    self = [[SKFullScreenWindow alloc] initWithContentRect:[[NSScreen mainScreen] frame] styleMask:NSBorderlessWindowMask backing:NSBackingStoreBuffered defer:NO screen:[NSScreen mainScreen]];
+    return self;
+}
 
 - (BOOL)canBecomeKeyWindow {
     return YES;

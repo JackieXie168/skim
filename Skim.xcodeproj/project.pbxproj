@@ -48,6 +48,7 @@
 		CE548DAC0B371ED000F8AFB6 /* SKCollapsibleView.m in Sources */ = {isa = PBXBuildFile; fileRef = CE548DAB0B371ED000F8AFB6 /* SKCollapsibleView.m */; };
 		CE548E550B37F67A00F8AFB6 /* zoomInCursor.tiff in Resources */ = {isa = PBXBuildFile; fileRef = CE548E530B37F67A00F8AFB6 /* zoomInCursor.tiff */; };
 		CE548E560B37F67A00F8AFB6 /* zoomOutCursor.tiff in Resources */ = {isa = PBXBuildFile; fileRef = CE548E540B37F67A00F8AFB6 /* zoomOutCursor.tiff */; };
+		CEFDF8BE0B3848C40091C61A /* SKNavigationWindow.m in Sources */ = {isa = PBXBuildFile; fileRef = CEFDF8BD0B3848C40091C61A /* SKNavigationWindow.m */; };
 		F92DB5AC0B36FE1F002A26E9 /* BDSKHeaderPopUpButtonCell.m in Sources */ = {isa = PBXBuildFile; fileRef = F92DB5A90B36FE1F002A26E9 /* BDSKHeaderPopUpButtonCell.m */; };
 		F92DB5AD0B36FE1F002A26E9 /* BDSKZoomablePDFView.m in Sources */ = {isa = PBXBuildFile; fileRef = F92DB5AB0B36FE1F002A26E9 /* BDSKZoomablePDFView.m */; };
 		F92DB5B30B36FE5E002A26E9 /* BDSKHeaderPopUpButton.m in Sources */ = {isa = PBXBuildFile; fileRef = F92DB5B20B36FE5E002A26E9 /* BDSKHeaderPopUpButton.m */; };
@@ -114,6 +115,8 @@
 		CE548DAB0B371ED000F8AFB6 /* SKCollapsibleView.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = SKCollapsibleView.m; sourceTree = "<group>"; };
 		CE548E530B37F67A00F8AFB6 /* zoomInCursor.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; name = zoomInCursor.tiff; path = Images/zoomInCursor.tiff; sourceTree = "<group>"; };
 		CE548E540B37F67A00F8AFB6 /* zoomOutCursor.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; name = zoomOutCursor.tiff; path = Images/zoomOutCursor.tiff; sourceTree = "<group>"; };
+		CEFDF8BC0B3848C40091C61A /* SKNavigationWindow.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SKNavigationWindow.h; sourceTree = "<group>"; };
+		CEFDF8BD0B3848C40091C61A /* SKNavigationWindow.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SKNavigationWindow.m; sourceTree = "<group>"; };
 		F92DB5A80B36FE1F002A26E9 /* BDSKHeaderPopUpButtonCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BDSKHeaderPopUpButtonCell.h; sourceTree = "<group>"; };
 		F92DB5A90B36FE1F002A26E9 /* BDSKHeaderPopUpButtonCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BDSKHeaderPopUpButtonCell.m; sourceTree = "<group>"; };
 		F92DB5AA0B36FE1F002A26E9 /* BDSKZoomablePDFView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BDSKZoomablePDFView.h; sourceTree = "<group>"; };
@@ -212,6 +215,8 @@
 				CE548DAB0B371ED000F8AFB6 /* SKCollapsibleView.m */,
 				F97751610B37461000DF673B /* SKPSProgressController.h */,
 				F97751620B37461000DF673B /* SKPSProgressController.m */,
+				CEFDF8BC0B3848C40091C61A /* SKNavigationWindow.h */,
+				CEFDF8BD0B3848C40091C61A /* SKNavigationWindow.m */,
 			);
 			name = Classes;
 			sourceTree = "<group>";
@@ -375,6 +380,7 @@
 				F92DB6620B371481002A26E9 /* PDFDocument_BDSKExtensions.m in Sources */,
 				CE548DAC0B371ED000F8AFB6 /* SKCollapsibleView.m in Sources */,
 				F97751630B37461000DF673B /* SKPSProgressController.m in Sources */,
+				CEFDF8BE0B3848C40091C61A /* SKNavigationWindow.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
