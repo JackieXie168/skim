@@ -104,6 +104,12 @@
             [super mouseDown:theEvent];
             break;
     }
+    
+    // Window hides anyway on a mouse click, but we need to cancel the timer and set flags properly
+    if (hasNavigation && [navWindow isVisible]) {
+        [self doAutohide:NO];
+        [navWindow hide];
+    }
 }
 
 - (void)mouseUp:(NSEvent *)theEvent{
@@ -156,6 +162,7 @@
     } else {
         [[self cursorForMouseMovedEvent:event] set];
     }
+
     if (autohidesCursor || hasNavigation) {
         if (hasNavigation && [navWindow isVisible] == NO)
             [navWindow orderFront:self];
