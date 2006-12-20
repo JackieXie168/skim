@@ -447,7 +447,7 @@ static NSString *SKDocumentToolbarSearchItemIdentifier = @"SKDocumentToolbarSear
         fullScreenWindow = nil;
     }
     
-    // Create the full-screen window if it doesn’t already  exist.
+    // Create the full-screen window if it doesn‚Äôt already  exist.
     if (fullScreenWindow == nil) {
         fullScreenWindow = [[SKFullScreenWindow alloc] initWithScreen:screen];
         
@@ -865,9 +865,9 @@ static NSString *SKDocumentToolbarSearchItemIdentifier = @"SKDocumentToolbarSear
 - (void)updateOutlineSelection{
 
 	PDFOutline	*outlineItem;
-	int			pageIndex;
-	int			numRows;
-	int			i;
+	unsigned int pageIndex;
+	int			 numRows;
+	int			 i;
 	
 	// Skip out if this PDF has no outline.
 	if (pdfOutline == NULL)
@@ -1173,7 +1173,7 @@ static NSString *SKDocumentToolbarSearchItemIdentifier = @"SKDocumentToolbarSear
     } else if ([identifier isEqualToString:SKDocumentToolbarZoomAutoItemIdentifier]) {
         return [pdfView autoScales] == NO;
     } else if ([identifier isEqualToString:SKDocumentToolbarZoomActualItemIdentifier]) {
-        return [pdfView scaleFactor] != 1.0;
+        return absf([pdfView scaleFactor] - 1.0) <= 0.01;
     } else if ([identifier isEqualToString:SKDocumentToolbarFullScreenItemIdentifier]) {
         return YES;
     } else if ([identifier isEqualToString:SKDocumentToolbarPresentationItemIdentifier]) {
@@ -1228,7 +1228,7 @@ static NSString *SKDocumentToolbarSearchItemIdentifier = @"SKDocumentToolbarSear
     } else if (action == @selector(doZoomOut:)) {
         return [pdfView canZoomOut];
     } else if (action == @selector(doZoomToActualSize:)) {
-        return [pdfView scaleFactor] != 1.0;
+        return absf([pdfView scaleFactor] - 1.0 ) < 0.01;
     } else if (action == @selector(doZoomToFit:)) {
         return [pdfView autoScales] == NO;
     } else if (action == @selector(toggleFullScreen:)) {
@@ -1317,7 +1317,7 @@ static NSString *SKDocumentToolbarSearchItemIdentifier = @"SKDocumentToolbarSear
             
             if (start != -1 && end != -1) {
                 start = MAX(start - 10, 0);
-                end = MIN(end + 20, [pageString length]);
+                end = MIN(end + 20, (int)[pageString length]);
                 [string appendString:[pageString substringWithRange:NSMakeRange(start, end - start)]];
             } else {
                 // this shouldn't happen, but just in case...
