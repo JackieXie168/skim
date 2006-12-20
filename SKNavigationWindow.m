@@ -17,10 +17,10 @@
 @implementation SKNavigationWindow
 
 - (id)initWithPDFView:(PDFView *)pdfView {
-    NSRect mainScreenFrame = [[NSScreen mainScreen] frame];
-    float width = 4 * BUTTON_WIDTH + + 2 * SEP_WIDTH + 2 * MARGIN;
-    NSRect contentRect = NSMakeRect(NSMidX(mainScreenFrame) - 0.5 * width, OFFSET, width, BUTTON_WIDTH + 2 * MARGIN);
-    if (self = [super initWithContentRect:contentRect styleMask:NSBorderlessWindowMask backing:NSBackingStoreBuffered defer:NO screen:[NSScreen mainScreen]]) {
+    NSScreen *screen = [[pdfView window] screen];
+    float width = 4 * BUTTON_WIDTH + 2 * SEP_WIDTH + 2 * MARGIN;
+    NSRect contentRect = NSMakeRect(NSMidX([screen frame]) - 0.5 * width, OFFSET, width, BUTTON_WIDTH + 2 * MARGIN);
+    if (self = [super initWithContentRect:contentRect styleMask:NSBorderlessWindowMask backing:NSBackingStoreBuffered defer:NO screen:screen]) {
         NSWindowController *controller = [[pdfView window] windowController];
         
 		[self setBackgroundColor:[NSColor clearColor]];
@@ -133,10 +133,10 @@
 
 - (void)drawRect:(NSRect)rect {
     rect = NSInsetRect([self bounds], 1.0, 1.0);
-    [[NSColor colorWithCalibratedWhite:0.0 alpha:0.6] set];
+    [[NSColor colorWithCalibratedWhite:0.0 alpha:0.5] set];
     [NSBezierPath fillRoundRectInRect:rect radius:10.0];
     rect = NSInsetRect([self bounds], 0.5, 0.5);
-    [[NSColor colorWithCalibratedWhite:1.0 alpha:0.5] set];
+    [[NSColor colorWithCalibratedWhite:1.0 alpha:0.2] set];
     [NSBezierPath strokeRoundRectInRect:rect radius:10.0];
 }
 
@@ -222,51 +222,40 @@
 }
 
 - (NSBezierPath *)pathWithFrame:(NSRect)cellFrame {
-    NSRect rect = NSInsetRect(cellFrame, 15.0, 15.0);
-    NSBezierPath *path = [NSBezierPath bezierPathWithRoundRectInRect:rect radius:3.0];
-    rect = NSInsetRect(rect, 1.0, 5.0);
-    [path moveToPoint:NSMakePoint(NSMinX(rect), NSMinY(rect))];
-    [path lineToPoint:NSMakePoint(NSMinX(rect), NSMaxY(rect))];
-    [path lineToPoint:NSMakePoint(NSMaxX(rect), NSMaxY(rect))];
-    [path lineToPoint:NSMakePoint(NSMaxX(rect), NSMinY(rect))];
-    [path lineToPoint:NSMakePoint(NSMinX(rect), NSMinY(rect))];
-    [path setWindingRule:NSEvenOddWindingRule];
-    rect = NSInsetRect(cellFrame, 7.0, 7.0);
+    NSBezierPath *path = [NSBezierPath bezierPathWithRoundRectInRect:NSInsetRect(cellFrame, 15.0, 15.0) radius:3.0];
+    float centerX = NSMidX(cellFrame), centerY = NSMidY(cellFrame);
+    
+    [path appendBezierPath:[NSBezierPath bezierPathWithRect:NSInsetRect(cellFrame, 16.0, 20.0)]];
+    
+    float dy = [self state] == NSOnState ? -5.0 : 5.0;
     NSBezierPath *arrow = [NSBezierPath bezierPath];
-    if ([self state] == NSOnState) {
-        [arrow moveToPoint:NSMakePoint(NSMidX(rect) - 2.0, NSMaxY(rect) + 10.0)];
-        [arrow lineToPoint:NSMakePoint(NSMidX(rect) + 2.0, NSMaxY(rect) + 10.0)];
-        [arrow lineToPoint:NSMakePoint(NSMidX(rect) + 2.0, NSMaxY(rect) + 5.0)];
-        [arrow lineToPoint:NSMakePoint(NSMidX(rect) + 5.0, NSMaxY(rect) + 5.0)];
-        [arrow lineToPoint:NSMakePoint(NSMidX(rect), NSMaxY(rect))];
-        [arrow lineToPoint:NSMakePoint(NSMidX(rect) - 5.0, NSMaxY(rect) + 5.0)];
-        [arrow lineToPoint:NSMakePoint(NSMidX(rect) - 2.0, NSMaxY(rect) + 5.0)];
-        [arrow lineToPoint:NSMakePoint(NSMidX(rect) - 2.0, NSMaxY(rect) + 10.0)];
-    } else {
-        [arrow moveToPoint:NSMakePoint(NSMidX(rect) - 2.0, NSMaxY(rect))];
-        [arrow lineToPoint:NSMakePoint(NSMidX(rect) + 2.0, NSMaxY(rect))];
-        [arrow lineToPoint:NSMakePoint(NSMidX(rect) + 2.0, NSMaxY(rect) + 5.0)];
-        [arrow lineToPoint:NSMakePoint(NSMidX(rect) + 5.0, NSMaxY(rect) + 5.0)];
-        [arrow lineToPoint:NSMakePoint(NSMidX(rect), NSMaxY(rect) + 10.0)];
-        [arrow lineToPoint:NSMakePoint(NSMidX(rect) - 5.0, NSMaxY(rect) + 5.0)];
-        [arrow lineToPoint:NSMakePoint(NSMidX(rect) - 2.0, NSMaxY(rect) + 5.0)];
-        [arrow lineToPoint:NSMakePoint(NSMidX(rect) - 2.0, NSMaxY(rect))];
-    }
+    [arrow moveToPoint:NSMakePoint(centerX, NSMaxY(cellFrame) - 3.0 + dy)];
+    [arrow relativeLineToPoint:NSMakePoint(-5.0, -dy)];
+    [arrow relativeLineToPoint:NSMakePoint(3.0, 0.0)];
+    [arrow relativeLineToPoint:NSMakePoint(0.0, -dy)];
+    [arrow relativeLineToPoint:NSMakePoint(4.0, 0.0)];
+    [arrow relativeLineToPoint:NSMakePoint(0.0, dy)];
+    [arrow relativeLineToPoint:NSMakePoint(3.0, 0.0)];
+    [arrow relativeLineToPoint:NSMakePoint(-5.0, dy)];
+    
     NSAffineTransform *transform = [[[NSAffineTransform alloc] init] autorelease];
-    [transform translateXBy:NSMidX(rect) yBy:NSMidY(rect)];
+    [transform translateXBy:centerX yBy:centerY];
     [transform rotateByDegrees:45.0];
-    [transform translateXBy:-NSMidX(rect) yBy:-NSMidY(rect)];
+    [transform translateXBy:-centerX yBy:-centerY];
     [arrow transformUsingAffineTransform:transform];
     [path appendBezierPath:arrow];
-    [transform translateXBy:NSMidX(rect) yBy:NSMidY(rect)];
+    [transform translateXBy:centerX yBy:centerY];
     [transform rotateByDegrees:45.0];
-    [transform translateXBy:-NSMidX(rect) yBy:-NSMidY(rect)];
+    [transform translateXBy:-centerX yBy:-centerY];
     [arrow transformUsingAffineTransform:transform];
     [path appendBezierPath:arrow];
     [arrow transformUsingAffineTransform:transform];
     [path appendBezierPath:arrow];
     [arrow transformUsingAffineTransform:transform];
     [path appendBezierPath:arrow];
+    
+    [path setWindingRule:NSEvenOddWindingRule];
+    
     return path;
 }
 
@@ -280,25 +269,26 @@
 @implementation SKNavigationCloseButtonCell
 
 - (NSBezierPath *)pathWithFrame:(NSRect)cellFrame {
-    NSRect rect = NSInsetRect(cellFrame, 8.0, 8.0);
-    NSBezierPath *path = [NSBezierPath bezierPathWithOvalInRect:rect];
-    float radius = 2.0;
-    rect = NSInsetRect(rect, 7.0, 7.0);
-    [path moveToPoint:NSMakePoint(NSMidX(rect) + radius, NSMidY(rect) + radius)];
-    [path appendBezierPathWithArcWithCenter:NSMakePoint(NSMidX(rect), NSMaxY(rect)) radius:radius startAngle:0.0 endAngle:180.0];
-    [path lineToPoint:NSMakePoint(NSMidX(rect) - radius, NSMidY(rect) + radius)];
-    [path appendBezierPathWithArcWithCenter:NSMakePoint(NSMinX(rect), NSMidY(rect)) radius:radius startAngle:90.0 endAngle:270.0];
-    [path lineToPoint:NSMakePoint(NSMidX(rect) - radius, NSMidY(rect) - radius)];
-    [path appendBezierPathWithArcWithCenter:NSMakePoint(NSMidX(rect), NSMinY(rect)) radius:radius startAngle:-180.0 endAngle:0.0];
-    [path lineToPoint:NSMakePoint(NSMidX(rect) + radius, NSMidY(rect) - radius)];
-    [path appendBezierPathWithArcWithCenter:NSMakePoint(NSMaxX(rect), NSMidY(rect)) radius:radius startAngle:-90.0 endAngle:90.0];
-    [path lineToPoint:NSMakePoint(NSMidX(rect) + radius, NSMidY(rect) + radius)];
-    [path setWindingRule:NSEvenOddWindingRule];
+    NSBezierPath *path = [NSBezierPath bezierPath];
+    float radius = 2.0, halfWidth = 0.5 * NSWidth(cellFrame) - 15.0, halfHeight = 0.5 * NSHeight(cellFrame) - 15.0;
+    
+    [path moveToPoint:NSMakePoint(radius, radius)];
+    [path appendBezierPathWithArcWithCenter:NSMakePoint(halfWidth, 0.0) radius:radius startAngle:90.0 endAngle:-90.0 clockwise:YES];
+    [path lineToPoint:NSMakePoint(radius, -radius)];
+    [path appendBezierPathWithArcWithCenter:NSMakePoint(0.0, -halfHeight) radius:radius startAngle:360.0 endAngle:180.0 clockwise:YES];
+    [path lineToPoint:NSMakePoint(-radius, -radius)];
+    [path appendBezierPathWithArcWithCenter:NSMakePoint(-halfWidth, 0.0) radius:radius startAngle:270.0 endAngle:90.0 clockwise:YES];
+    [path lineToPoint:NSMakePoint(-radius, radius)];
+    [path appendBezierPathWithArcWithCenter:NSMakePoint(0.0, halfHeight) radius:radius startAngle:180.0 endAngle:0.0 clockwise:YES];
+    [path closePath];
+    
     NSAffineTransform *transform = [[[NSAffineTransform alloc] init] autorelease];
-    [transform translateXBy:NSMidX(rect) yBy:NSMidY(rect)];
+    [transform translateXBy:NSMidX(cellFrame) yBy:NSMidY(cellFrame)];
     [transform rotateByDegrees:45.0];
-    [transform translateXBy:-NSMidX(rect) yBy:-NSMidY(rect)];
     [path transformUsingAffineTransform:transform];
+    
+    [path appendBezierPath:[NSBezierPath bezierPathWithOvalInRect:NSInsetRect(cellFrame, 8.0, 8.0)]];
+    
     return path;
 }
 

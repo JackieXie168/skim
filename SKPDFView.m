@@ -205,6 +205,10 @@
     autohidesCursor = hideCursor;
     
     if (hasNavigation) {
+        if ([[self window] screen] != [navWindow screen]) {
+            [navWindow release];
+            navWindow = nil;
+        }
         if (navWindow == nil) {
             navWindow = [[SKNavigationWindow alloc] initWithPDFView:self];
             [[NSNotificationCenter defaultCenter] addObserver: self selector: @selector(handleWindowWillCloseNotification:) 
