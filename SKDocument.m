@@ -42,7 +42,7 @@ static NSString *SKPostScriptDocumentType = @"PostScript document";
 
 
 - (void)makeWindowControllers{
-    SKMainWindowController *mainWindowController = [[SKMainWindowController alloc] initWithWindowNibName:@"MainWindow"];
+    SKMainWindowController *mainWindowController = [[[SKMainWindowController alloc] initWithWindowNibName:@"MainWindow"] autorelease];
     [self addWindowController:mainWindowController];
 }
 
