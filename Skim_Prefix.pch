@@ -4,4 +4,25 @@
 
 #ifdef __OBJC__
     #import <Cocoa/Cocoa.h>
+    #import <objc/objc-class.h>
+
+#define __FILENAMEASNSSTRING__ \
+[[NSString stringWithCString:__FILE__] lastPathComponent]
+
+#if defined (DEBUG)
+
+#define log_method() \
+NSLog(@"%@[%@ %@] (%@ line %d)", CLS_GETINFO((struct objc_class *)(self->isa), CLS_META) ? @"+" : @"-", \
+      [self class], NSStringFromSelector(_cmd), __FILENAMEASNSSTRING__, __LINE__)
+
+#define log_function() \
+NSLog(@"%s (%@ line %d)", __PRETTY_FUNCTION__, __FILENAMEASNSSTRING__, __LINE__)
+
+#else
+
+#define log_method();
+#define log_function();
+
+#endif
+
 #endif
