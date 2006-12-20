@@ -16,6 +16,10 @@
 #import "SKNote.h"
 #import "PDFDocument_BDSKExtensions.h"
 
+NSString *SKDocumentWillSaveNotification = @"SKDocumentWillSaveNotification";
+NSString *SKDocumentDidSaveNotification = @"SKDocumentDidSaveNotification";
+NSString *SKDocumentErrorDomain = @"SKDocumentErrorDomain";
+
 // See CFBundleTypeName in Info.plist
 static NSString *SKPDFDocumentType = nil; /* set to NSPDFPboardType, not @"NSPDFPboardType" */
 static NSString *SKNotesDocumentType = @"Skim Notes";
@@ -67,9 +71,9 @@ static NSString *SKPostScriptDocumentType = @"PostScript document";
 - (NSData *)dataOfType:(NSString *)typeName error:(NSError **)outError{
     NSData *data = nil;
     if ([typeName isEqualToString:SKPDFDocumentType]) {
-        [[NSNotificationCenter defaultCenter] postNotificationName:@"SKDocumentWillSaveNotification" object:self];
+        [[NSNotificationCenter defaultCenter] postNotificationName:SKDocumentWillSaveNotification object:self];
         data = [pdfDoc dataRepresentation];
-        [[NSNotificationCenter defaultCenter] postNotificationName:@"SKDocumentDidSaveNotification" object:self];
+        [[NSNotificationCenter defaultCenter] postNotificationName:SKDocumentDidSaveNotification object:self];
     } else if ([typeName isEqualToString:SKNotesDocumentType]) {
         data = [NSKeyedArchiver archivedDataWithRootObject:notes];
     }
@@ -91,7 +95,7 @@ static NSString *SKPostScriptDocumentType = @"PostScript document";
         didRead = pdfDoc != nil;
     }
     if (NO == didRead && outError)
-        *outError = [NSError errorWithDomain:@"SKDocumentError" code:0 userInfo:[NSDictionary dictionaryWithObjectsAndKeys:NSLocalizedString(@"Unable to load file", @""), NSLocalizedDescriptionKey, nil]];
+        *outError = [NSError errorWithDomain:SKDocumentErrorDomain code:0 userInfo:[NSDictionary dictionaryWithObjectsAndKeys:NSLocalizedString(@"Unable to load file", @""), NSLocalizedDescriptionKey, nil]];
     return didRead;
 }
 
