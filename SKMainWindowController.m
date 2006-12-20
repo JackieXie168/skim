@@ -95,6 +95,8 @@ static NSString *SKDocumentToolbarSearchItemIdentifier = @"SKDocumentToolbarSear
                                                  name: @"SKDocumentWillSaveNotification" object: [self document]];
 	[[NSNotificationCenter defaultCenter] addObserver: self selector: @selector(handleDocumentDidSaveNotification:) 
                                                  name: @"SKDocumentDidSaveNotification" object: [self document]];
+	[[NSNotificationCenter defaultCenter] addObserver: self selector: @selector(handleAppWillTerminateNotification:) 
+                                                 name: NSApplicationWillTerminateNotification object: NSApp];
 
 	// Delegate.
 	[[pdfView document] setDelegate: self];
@@ -484,8 +486,6 @@ static NSString *SKDocumentToolbarSearchItemIdentifier = @"SKDocumentToolbarSear
     NSScreen *mainScreen = [NSScreen mainScreen]; 
     NSNumber *screenID = [[mainScreen deviceDescription] objectForKey:@"NSScreenNumber"];
     
-    [fullScreenWindow orderOut:self];
-    
     // Release the screen.
     CGDisplayErr err = CGDisplayRelease((CGDirectDisplayID)[screenID longValue]);
     if (err == CGDisplayNoErr) {
@@ -495,7 +495,18 @@ static NSString *SKDocumentToolbarSearchItemIdentifier = @"SKDocumentToolbarSear
         
         [self setWindow:mainWindow];
         [mainWindow makeKeyAndOrderFront:self];
+        [mainWindow display];
     }
+    
+    NSDictionary *fadeOutDict = [[NSDictionary alloc] initWithObjectsAndKeys:fullScreenWindow, NSViewAnimationTargetKey, NSViewAnimationFadeOutEffect, NSViewAnimationEffectKey, nil];
+    NSViewAnimation *animation = [[NSViewAnimation alloc] initWithViewAnimations:[NSArray arrayWithObjects:fadeOutDict, nil]];
+    [fadeOutDict release];
+    
+    [animation setAnimationBlockingMode:NSAnimationBlocking];
+    [animation setDuration:0.5];
+    [animation startAnimation];
+    [fullScreenWindow orderOut:self];
+    [fullScreenWindow setAlphaValue:1.0];
 }
 
 - (IBAction)toggleFullScreen:(id)sender {
@@ -756,6 +767,11 @@ static NSString *SKDocumentToolbarSearchItemIdentifier = @"SKDocumentToolbarSear
     if ([tableView window] == [self window]) {
         [self tableViewSelectionDidChange:nil];
     }
+}
+
+- (void)handleAppWillTerminateNotification:(NSNotification *)notification {
+    if ([self isFullScreen])
+        [self exitFullScreen:self];
 }
 
 #pragma mark NSOutlineView methods

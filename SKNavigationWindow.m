@@ -10,7 +10,7 @@
 #import <Quartz/Quartz.h>
 
 #define BUTTON_WIDTH 50.0
-#define SEP_WIDTH 20.0
+#define SEP_WIDTH 21.0
 #define MARGIN 7.0
 #define OFFSET 20.0
 
@@ -131,9 +131,13 @@
 
 @implementation SKNavigationContentView
 
-- (void)drawRect:(NSRect *)rect {
-    [[NSColor colorWithCalibratedWhite:0.1 alpha:0.6] set];
-    [NSBezierPath fillRoundRectInRect:[self bounds] radius:10.0];
+- (void)drawRect:(NSRect)rect {
+    rect = NSInsetRect([self bounds], 1.0, 1.0);
+    [[NSColor colorWithCalibratedWhite:0.0 alpha:0.6] set];
+    [NSBezierPath fillRoundRectInRect:rect radius:10.0];
+    rect = NSInsetRect([self bounds], 0.5, 0.5);
+    [[NSColor colorWithCalibratedWhite:1.0 alpha:0.5] set];
+    [NSBezierPath strokeRoundRectInRect:rect radius:10.0];
 }
 
 @end
@@ -279,7 +283,7 @@
     NSRect rect = NSInsetRect(cellFrame, 8.0, 8.0);
     NSBezierPath *path = [NSBezierPath bezierPathWithOvalInRect:rect];
     float radius = 2.0;
-    rect = NSInsetRect(rect, 5.0, 5.0);
+    rect = NSInsetRect(rect, 7.0, 7.0);
     [path moveToPoint:NSMakePoint(NSMidX(rect) + radius, NSMidY(rect) + radius)];
     [path appendBezierPathWithArcWithCenter:NSMakePoint(NSMidX(rect), NSMaxY(rect)) radius:radius startAngle:0.0 endAngle:180.0];
     [path lineToPoint:NSMakePoint(NSMidX(rect) - radius, NSMidY(rect) + radius)];
@@ -310,7 +314,7 @@
 - (BOOL)isEnabled { return NO; }
 
 - (NSBezierPath *)pathWithFrame:(NSRect)cellFrame {
-    NSBezierPath *path = [NSBezierPath bezierPathWithRect:NSMakeRect(NSMidX(cellFrame) - 1.0, NSMinY(cellFrame), 2.0, NSHeight(cellFrame))];
+    NSBezierPath *path = [NSBezierPath bezierPathWithRect:NSMakeRect(NSMidX(cellFrame) - 0.5, NSMinY(cellFrame), 1.0, NSHeight(cellFrame))];
     return path;
 }
 

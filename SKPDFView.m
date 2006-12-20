@@ -164,7 +164,7 @@
     }
 
     if (autohidesCursor || hasNavigation) {
-        if (hasNavigation && [navWindow isVisible] == NO)
+        if (hasNavigation)
             [navWindow orderFront:self];
         [self doAutohide:YES];
     }
