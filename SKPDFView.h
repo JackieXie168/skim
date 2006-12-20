@@ -12,6 +12,7 @@
 #import <Quartz/Quartz.h>
 #import "SKMainWindowController.h"
 
+extern NSString *SKPDFViewToolModeChangedNotification;
 
 typedef enum _SKToolMode {
     SKMoveToolMode,

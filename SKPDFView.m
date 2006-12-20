@@ -11,6 +11,7 @@
 #import "SKPDFView.h"
 #import "SKNavigationWindow.h"
 
+NSString *SKPDFViewToolModeChangedNotification = @"SKPDFViewToolModeChangedNotification";
 
 @interface PDFAnnotation (SKPDFViewExtensions)
 @end
@@ -78,7 +79,7 @@
 
 - (void)setToolMode:(SKToolMode)newToolMode {
     toolMode = newToolMode;
-	[[NSNotificationCenter defaultCenter] postNotificationName:@"SKPDFViewToolModeChangedNotification" object:self];
+	[[NSNotificationCenter defaultCenter] postNotificationName:SKPDFViewToolModeChangedNotification object:self];
     // hack to make sure we update the cursor
     [[self window] makeFirstResponder:self];
 }

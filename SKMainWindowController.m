@@ -91,11 +91,11 @@ static NSString *SKDocumentToolbarSearchItemIdentifier = @"SKDocumentToolbarSear
 	[[NSNotificationCenter defaultCenter] addObserver: self selector: @selector(handleChangedHistoryNotification:) 
                                                  name: PDFViewChangedHistoryNotification object: pdfView];
 	[[NSNotificationCenter defaultCenter] addObserver: self selector: @selector(handleToolModeChangedNotification:) 
-                                                 name: @"SKPDFViewToolModeChangedNotification" object: pdfView];
+                                                 name: SKPDFViewToolModeChangedNotification object: pdfView];
 	[[NSNotificationCenter defaultCenter] addObserver: self selector: @selector(handleDocumentWillSaveNotification:) 
-                                                 name: @"SKDocumentWillSaveNotification" object: [self document]];
+                                                 name: SKDocumentWillSaveNotification object: [self document]];
 	[[NSNotificationCenter defaultCenter] addObserver: self selector: @selector(handleDocumentDidSaveNotification:) 
-                                                 name: @"SKDocumentDidSaveNotification" object: [self document]];
+                                                 name: SKDocumentDidSaveNotification object: [self document]];
 	[[NSNotificationCenter defaultCenter] addObserver: self selector: @selector(handleAppWillTerminateNotification:) 
                                                  name: NSApplicationWillTerminateNotification object: NSApp];
 
