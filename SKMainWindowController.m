@@ -1173,7 +1173,7 @@ static NSString *SKDocumentToolbarSearchItemIdentifier = @"SKDocumentToolbarSear
     } else if ([identifier isEqualToString:SKDocumentToolbarZoomAutoItemIdentifier]) {
         return [pdfView autoScales] == NO;
     } else if ([identifier isEqualToString:SKDocumentToolbarZoomActualItemIdentifier]) {
-        return fabs([pdfView scaleFactor] - 1.0) <= 0.01;
+        return fabs([pdfView scaleFactor] - 1.0) > 0.01;
     } else if ([identifier isEqualToString:SKDocumentToolbarFullScreenItemIdentifier]) {
         return YES;
     } else if ([identifier isEqualToString:SKDocumentToolbarPresentationItemIdentifier]) {
@@ -1228,7 +1228,7 @@ static NSString *SKDocumentToolbarSearchItemIdentifier = @"SKDocumentToolbarSear
     } else if (action == @selector(doZoomOut:)) {
         return [pdfView canZoomOut];
     } else if (action == @selector(doZoomToActualSize:)) {
-        return fabs([pdfView scaleFactor] - 1.0 ) < 0.01;
+        return fabs([pdfView scaleFactor] - 1.0 ) > 0.01;
     } else if (action == @selector(doZoomToFit:)) {
         return [pdfView autoScales] == NO;
     } else if (action == @selector(toggleFullScreen:)) {
