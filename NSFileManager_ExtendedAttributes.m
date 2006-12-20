@@ -31,9 +31,6 @@
 #import "NSFileManager_ExtendedAttributes.h"
 #include <sys/xattr.h>
 
-#import <bzlib.h>
-#import <zlib.h>
-
 // private function to print error messages
 static NSString *xattrError(int err, const char *path);
 
