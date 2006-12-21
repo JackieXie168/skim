@@ -163,9 +163,11 @@ NSString *SKPDFViewToolModeChangedNotification = @"SKPDFViewToolModeChangedNotif
     } else {
         [[self cursorForMouseMovedEvent:event] set];
     }
-
-    if (autohidesCursor || hasNavigation) {
-        if (hasNavigation)
+    
+    // in presentation mode only show the navigation window only by moving the mouse to the bottom edge
+    BOOL shouldShowNavWindow = hasNavigation && (autohidesCursor == NO || [navWindow isVisible] || [event locationInWindow].y < 5.0);
+    if (autohidesCursor || shouldShowNavWindow) {
+        if (shouldShowNavWindow)
             [navWindow orderFront:self];
         [self doAutohide:YES];
     }
