@@ -13,15 +13,15 @@
 #define SEP_WIDTH 21.0
 #define MARGIN 7.0
 #define OFFSET 20.0
-#define LABEL_MARGIN_X 10.0
-#define LABEL_MARGIN_Y 25.0
+#define LABEL_OFFSET 10.0
+#define LABEL_TEXT_MARGIN 2.0
 
 @implementation SKNavigationWindow
 
 - (id)initWithPDFView:(PDFView *)pdfView {
     NSScreen *screen = [[pdfView window] screen];
-    float width = 4 * BUTTON_WIDTH + 2 * SEP_WIDTH + 2 * MARGIN + 2 * LABEL_MARGIN_X;
-    NSRect contentRect = NSMakeRect(NSMidX([screen frame]) - 0.5 * width, OFFSET, width, BUTTON_WIDTH + 2 * MARGIN + LABEL_MARGIN_Y);
+    float width = 4 * BUTTON_WIDTH + 2 * SEP_WIDTH + 2 * MARGIN;
+    NSRect contentRect = NSMakeRect(NSMidX([screen frame]) - 0.5 * width, OFFSET, width, BUTTON_WIDTH + 2 * MARGIN);
     if (self = [super initWithContentRect:contentRect styleMask:NSBorderlessWindowMask backing:NSBackingStoreBuffered defer:NO screen:screen]) {
         NSWindowController *controller = [[pdfView window] windowController];
         
@@ -32,19 +32,21 @@
         
         [self setContentView:[[[SKNavigationContentView alloc] init] autorelease]];
         
-        NSRect rect = NSMakeRect(MARGIN + LABEL_MARGIN_X, MARGIN, BUTTON_WIDTH, BUTTON_WIDTH);
+        NSRect rect = NSMakeRect(MARGIN, MARGIN, BUTTON_WIDTH, BUTTON_WIDTH);
         SKNavigationButton *button = [[[SKNavigationPreviousButton alloc] initWithFrame:rect] autorelease];
         [button setTarget:controller];
         [button setAction:@selector(doGoToPreviousPage:)];
+        [button setToolTip:NSLocalizedString(@"Previous", @"Tool tip message")];
         [[self contentView] addSubview:button];
-        [button addTrackingRect:NSInsetRect([button bounds], 1.0, 0.0) owner:self userData:button assumeInside:NO];
+        [button addTrackingRect:NSInsetRect([button bounds], 3.0, 0.0) owner:button userData:nil assumeInside:NO];
         
         rect.origin.x = NSMaxX(rect);
         button = [[[SKNavigationNextButton alloc] initWithFrame:rect] autorelease];
         [button setTarget:controller];
         [button setAction:@selector(doGoToNextPage:)];
+        [button setToolTip:NSLocalizedString(@"Next", @"Tool tip message")];
         [[self contentView] addSubview:button];
-        [button addTrackingRect:NSInsetRect([button bounds], 1.0, 0.0) owner:self userData:button assumeInside:NO];
+        [button addTrackingRect:NSInsetRect([button bounds], 3.0, 0.0) owner:button userData:nil assumeInside:NO];
         
         rect.origin.x = NSMaxX(rect);
         rect.size.width = SEP_WIDTH;
@@ -56,10 +58,13 @@
         button = [[[SKNavigationZoomButton alloc] initWithFrame:rect] autorelease];
         [button setTarget:controller];
         [button setAction:@selector(toggleZoomToFit:)];
+        [button setToolTip:NSLocalizedString(@"Fit to Screen", @"Tool tip message")];
+        [button setAlternateToolTip:NSLocalizedString(@"Actual Size", @"Tool tip message")];
+        [button setState:[pdfView autoScales]];
         [[self contentView] addSubview:button];
-        [button addTrackingRect:NSInsetRect([button bounds], 1.0, 0.0) owner:self userData:button assumeInside:NO];
-        zoomButton = [button retain];
-        [zoomButton setState:[pdfView autoScales]];
+        [button addTrackingRect:NSInsetRect([button bounds], 3.0, 0.0) owner:button userData:nil assumeInside:NO];
+        [[NSNotificationCenter defaultCenter] addObserver: button selector: @selector(handleScaleChangedNotification:) 
+                                                     name: PDFViewScaleChangedNotification object: pdfView];
         
         rect.origin.x = NSMaxX(rect);
         rect.size.width = SEP_WIDTH;
@@ -71,33 +76,21 @@
         button = [[[SKNavigationCloseButton alloc] initWithFrame:rect] autorelease];
         [button setTarget:controller];
         [button setAction:@selector(exitFullScreen:)];
+        [button setToolTip:NSLocalizedString(@"Close", @"Tool tip message")];
         [[self contentView] addSubview:button];
-        [button addTrackingRect:NSInsetRect([button bounds], 1.0, 0.0) owner:self userData:button assumeInside:NO];
-        
-        labelView = [[[SKNavigationLabelView alloc] initWithFrame:NSMakeRect(LABEL_MARGIN_X, BUTTON_WIDTH + 2 * MARGIN + 2.0, 0.0, 0.0)] autorelease];
-        [labelView setHidden:YES];
-        [[self contentView] addSubview:labelView];
-        
-        [[NSNotificationCenter defaultCenter] addObserver: self selector: @selector(handleScaleChangedNotification:) 
-                                                     name: PDFViewScaleChangedNotification object: pdfView];
+        [button addTrackingRect:NSInsetRect([button bounds], 3.0, 0.0) owner:button userData:nil assumeInside:NO];
     }
     return self;
 }
 
 - (void)dealloc {
-    [[NSNotificationCenter defaultCenter] removeObserver:self];
     [animation stopAnimation];
-    [zoomButton release];
     [super dealloc];
 }
 
 - (BOOL)canBecomeKeyWindow { return NO; }
 
 - (BOOL)canBecomeMainWindow { return NO; }
-
-- (void)handleScaleChangedNotification:(NSNotification *)notification {
-    [zoomButton setState:[[notification object] autoScales]];
-}
 
 - (void)orderFront:(id)sender {
     [animation stopAnimation];
@@ -106,16 +99,19 @@
 
 - (void)orderOut:(id)sender {
     [animation stopAnimation];
+    [[SKNavigationToolTipWindow sharedToolTipWindow] orderOut:self];
     [super orderOut:sender];
 }
 
 - (void)hide {
     [animation stopAnimation];
     
-    NSDictionary *fadeOutDict = [[NSDictionary alloc] initWithObjectsAndKeys:self, NSViewAnimationTargetKey, NSViewAnimationFadeOutEffect, NSViewAnimationEffectKey, nil];
+    NSDictionary *fadeOutDict1 = [[NSDictionary alloc] initWithObjectsAndKeys:self, NSViewAnimationTargetKey, NSViewAnimationFadeOutEffect, NSViewAnimationEffectKey, nil];
+    NSDictionary *fadeOutDict2 = [[NSDictionary alloc] initWithObjectsAndKeys:[SKNavigationToolTipWindow sharedToolTipWindow], NSViewAnimationTargetKey, NSViewAnimationFadeOutEffect, NSViewAnimationEffectKey, nil];
     
-    animation = [[NSViewAnimation alloc] initWithViewAnimations:[NSArray arrayWithObjects:fadeOutDict, nil]];
-    [fadeOutDict release];
+    animation = [[NSViewAnimation alloc] initWithViewAnimations:[NSArray arrayWithObjects:fadeOutDict1, fadeOutDict2, nil]];
+    [fadeOutDict1 release];
+    [fadeOutDict2 release];
     
     [animation setAnimationBlockingMode:NSAnimationNonblocking];
     [animation setDuration:1.0];
@@ -126,31 +122,16 @@
 - (void)animationDidEnd:(NSAnimation*)anAnimation {
     [animation release];
     animation = nil;
-    [super orderOut:self];
+    [self orderOut:self];
     [self setAlphaValue:1.0];
+    [[SKNavigationToolTipWindow sharedToolTipWindow] setAlphaValue:1.0];
 }
 
 - (void)animationDidStop:(NSAnimation*)anAnimation {
     [animation release];
     animation = nil;
     [self setAlphaValue:1.0];
-}
-
-- (void)mouseEntered:(NSEvent *)theEvent {
-    if ([labelView isHidden] == NO) 
-        [[self contentView] setNeedsDisplayInRect:[labelView frame]];
-    SKNavigationButton *button = (SKNavigationButton *)[theEvent userData];
-    [labelView setStringValue:[button label]];
-    [labelView sizeToFit];
-    NSRect labelRect = [labelView frame];
-    NSRect buttonRect = [button frame];
-    labelRect.origin.x = NSMidX(buttonRect) - 0.5 * NSWidth(labelRect);
-    [labelView setFrameOrigin:labelRect.origin];
-    [labelView setHidden:NO];
-}
-
-- (void)mouseExited:(NSEvent *)theEvent {
-    [labelView setHidden:YES];
+    [[SKNavigationToolTipWindow sharedToolTipWindow] setAlphaValue:1.0];
 }
 
 @end
@@ -159,19 +140,64 @@
 @implementation SKNavigationContentView
 
 - (void)drawRect:(NSRect)rect {
-    rect = [self bounds];
-    rect = NSInsetRect([self bounds], 1.0 + LABEL_MARGIN_X, 1.0);
-    rect.size.height -= LABEL_MARGIN_Y;
+    rect = NSInsetRect([self bounds], 1.0, 1.0);
     [[NSColor colorWithCalibratedWhite:0.0 alpha:0.5] set];
     [NSBezierPath fillRoundRectInRect:rect radius:10.0];
-    rect = NSInsetRect(rect, -0.5, -0.5);
+    rect = NSInsetRect([self bounds], 0.5, 0.5);
     [[NSColor colorWithCalibratedWhite:1.0 alpha:0.2] set];
     [NSBezierPath strokeRoundRectInRect:rect radius:10.0];
 }
 
 @end
 
-@implementation SKNavigationLabelView
+
+@implementation SKNavigationToolTipWindow : NSWindow {
+    SKNavigationToolTipView *toolTipView;
+}
+
+static SKNavigationToolTipWindow *sharedToolTipWindow = nil;
+
++ (id)sharedToolTipWindow {
+    if (sharedToolTipWindow == nil)
+        sharedToolTipWindow = [[self alloc] init];
+    return sharedToolTipWindow;
+}
+
+- (id)init {
+    if (self = [super initWithContentRect:NSZeroRect styleMask:NSBorderlessWindowMask backing:NSBackingStoreBuffered defer:YES screen:[NSScreen mainScreen]]) {
+		[self setBackgroundColor:[NSColor clearColor]];
+		[self setOpaque:NO];
+        [self setDisplaysWhenScreenProfileChanges:YES];
+        [self setLevel:CGShieldingWindowLevel()];
+        
+        toolTipView = [[[SKNavigationToolTipView alloc] init] autorelease];
+        [[self contentView] addSubview:toolTipView];
+    }
+    return self;
+}
+
+- (void)dealloc {
+    [super dealloc];
+}
+
+- (BOOL)canBecomeKeyWindow { return NO; }
+
+- (BOOL)canBecomeMainWindow { return NO; }
+
+- (void)showToolTip:(NSString *)toolTip forView:(NSView *)view {
+    [toolTipView setStringValue:toolTip];
+    [toolTipView sizeToFit];
+    NSRect newFrame = [self frameRectForContentRect:[toolTipView frame]];
+    NSRect viewRect = [view convertRect:[view bounds] toView:nil];
+    viewRect.origin = [[view window] convertBaseToScreen:viewRect.origin];
+    newFrame.origin = NSMakePoint(NSMidX(viewRect) - 0.5 * NSWidth(newFrame), NSMaxY(viewRect) + LABEL_OFFSET);
+    [self setFrame:newFrame display:YES];
+    [self orderFront:self];
+}
+
+@end
+
+@implementation SKNavigationToolTipView
 
 - (id)initWithFrame:(NSRect)frameRect {
     if (self = [super initWithFrame:frameRect]) {
@@ -227,8 +253,6 @@
     return [[[NSAttributedString alloc] initWithString:stringValue attributes:attrs] autorelease];
 }
 
-#define LABEL_TEXT_MARGIN 2.0
-
 - (void)sizeToFit {
     NSSize size = [[self attributedStringValue] size];
     size.width += 2 * LABEL_TEXT_MARGIN;
@@ -246,8 +270,39 @@
 
 
 @implementation SKNavigationButton
+
 + (Class)cellClass { return [SKNavigationButtonCell class]; }
-- (NSString *)label { return [[self cell] label]; }
+
+- (void)dealloc {
+    [alternateToolTip release];
+    [super dealloc];
+}
+
+- (NSString *)toolTip { return nil; }
+
+- (NSString *)currentToolTip {
+    return [self state] == NSOnState && [self alternateToolTip] ? [self alternateToolTip] : [super toolTip];
+}
+
+- (NSString *)alternateToolTip {
+    return alternateToolTip;
+}
+
+- (void)setAlternateToolTip:(NSString *)string {
+    if (alternateToolTip != string) {
+        [alternateToolTip release];
+        alternateToolTip = [string retain];
+    }
+}
+
+- (void)mouseEntered:(NSEvent *)theEvent {
+    [[SKNavigationToolTipWindow sharedToolTipWindow] showToolTip:[self currentToolTip] forView:self];
+}
+
+- (void)mouseExited:(NSEvent *)theEvent {
+    [[SKNavigationToolTipWindow sharedToolTipWindow] orderOut:self];
+}
+
 @end
 
 @implementation SKNavigationButtonCell
@@ -270,10 +325,6 @@
     return nil;
 }
 
-- (NSString *)label {
-    return nil;
-}
-
 @end
 
 
@@ -291,10 +342,6 @@
     [path lineToPoint:NSMakePoint(NSMinX(rect), NSMinY(rect))];
     [path closePath];
     return path;
-}
-
-- (NSString *)label {
-    return NSLocalizedString(@"Next", @"");
 }
 
 @end
@@ -316,15 +363,24 @@
     return path;
 }
 
-- (NSString *)label {
-    return NSLocalizedString(@"Previous", @"");
-}
-
 @end
 
 
 @implementation SKNavigationZoomButton
+
 + (Class)cellClass { return [SKNavigationZoomButtonCell class]; }
+
+- (void)dealloc {
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
+    [super dealloc];
+}
+
+- (void)handleScaleChangedNotification:(NSNotification *)notification {
+    [self setState:[[notification object] autoScales]];
+    [[SKNavigationToolTipWindow sharedToolTipWindow] showToolTip:[self currentToolTip] forView:self];
+    [self setNeedsDisplay:YES];
+}
+
 @end
 
 @implementation SKNavigationZoomButtonCell
@@ -374,10 +430,6 @@
     return path;
 }
 
-- (NSString *)label {
-    return [[self target] autoScales] ? NSLocalizedString(@"Actual Size", @"") : NSLocalizedString(@"Fit to Screen", @"");
-}
-
 @end
 
 
@@ -411,10 +463,6 @@
     return path;
 }
 
-- (NSString *)label {
-    return NSLocalizedString(@"Close", @"");
-}
-
 @end
 
 
@@ -429,10 +477,6 @@
 - (NSBezierPath *)pathWithFrame:(NSRect)cellFrame {
     NSBezierPath *path = [NSBezierPath bezierPathWithRect:NSMakeRect(NSMidX(cellFrame) - 0.5, NSMinY(cellFrame), 1.0, NSHeight(cellFrame))];
     return path;
-}
-
-- (NSString *)label {
-    return @"";
 }
 
 @end
@@ -483,10 +527,6 @@
     [path closePath];
     
     return path;
-}
-
-- (NSString *)label {
-    return NSLocalizedString(@"", @"");
 }
 
 @end

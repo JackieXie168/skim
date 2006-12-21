@@ -8,12 +8,11 @@
 
 #import <Cocoa/Cocoa.h>
 
-@class PDFView, SKNavigationLabelView;
+@class PDFView, SKNavigationToolTipView, SKNavigationButton;
 
 @interface SKNavigationWindow : NSWindow {
-    NSButton *zoomButton;
+    NSMutableArray *buttons;
     NSViewAnimation *animation;
-    SKNavigationLabelView *labelView;
 }
 - (id)initWithPDFView:(PDFView *)pdfView;
 - (void)hide;
@@ -24,7 +23,14 @@
 @end
 
 
-@interface SKNavigationLabelView : NSView {
+@interface SKNavigationToolTipWindow : NSWindow {
+    SKNavigationToolTipView *toolTipView;
+}
++ (id)sharedToolTipWindow;
+- (void)showToolTip:(NSString *)toolTip forView:(NSView *)view;
+@end
+
+@interface SKNavigationToolTipView : NSView {
     NSString *stringValue;
 }
 - (NSString *)stringValue;
@@ -35,14 +41,17 @@
 @end
 
 
-@interface SKNavigationButton : NSButton
-- (NSString *)label;
+@interface SKNavigationButton : NSButton {
+    NSString *alternateToolTip;
+}
+- (NSString *)currentToolTip;
+- (NSString *)alternateToolTip;
+- (void)setAlternateToolTip:(NSString *)string;
 @end
 
 
 @interface SKNavigationButtonCell : NSButtonCell
 - (NSBezierPath *)pathWithFrame:(NSRect)cellFrame;
-- (NSString *)label;
 @end
 
 
