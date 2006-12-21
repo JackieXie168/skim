@@ -8,12 +8,12 @@
 
 #import <Cocoa/Cocoa.h>
 
-@class PDFView;
+@class PDFView, SKNavigationLabelView;
 
 @interface SKNavigationWindow : NSWindow {
     NSButton *zoomButton;
     NSViewAnimation *animation;
-    NSTextField *labelField;
+    SKNavigationLabelView *labelView;
 }
 - (id)initWithPDFView:(PDFView *)pdfView;
 - (void)hide;
@@ -24,10 +24,14 @@
 @end
 
 
-@interface SKNavigationLabelField : NSTextField
-@end
-
-@interface SKNavigationLabelFieldCell : NSTextFieldCell
+@interface SKNavigationLabelView : NSView {
+    NSString *stringValue;
+}
+- (NSString *)stringValue;
+- (void)setStringValue:(NSString *)newStringValue;
+- (NSAttributedString *)attributedStringValue;
+- (NSAttributedString *)outlineAttributedStringValue;
+- (void)sizeToFit;
 @end
 
 
