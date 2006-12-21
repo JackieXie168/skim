@@ -13,13 +13,15 @@
 #define SEP_WIDTH 21.0
 #define MARGIN 7.0
 #define OFFSET 20.0
+#define LABEL_MARGIN_X 10.0
+#define LABEL_MARGIN_Y 20.0
 
 @implementation SKNavigationWindow
 
 - (id)initWithPDFView:(PDFView *)pdfView {
     NSScreen *screen = [[pdfView window] screen];
-    float width = 4 * BUTTON_WIDTH + 2 * SEP_WIDTH + 2 * MARGIN;
-    NSRect contentRect = NSMakeRect(NSMidX([screen frame]) - 0.5 * width, OFFSET, width, BUTTON_WIDTH + 2 * MARGIN);
+    float width = 4 * BUTTON_WIDTH + 2 * SEP_WIDTH + 2 * MARGIN + 2 * LABEL_MARGIN_Y;
+    NSRect contentRect = NSMakeRect(NSMidX([screen frame]) - 0.5 * width, OFFSET, width, BUTTON_WIDTH + 2 * MARGIN + LABEL_MARGIN_Y);
     if (self = [super initWithContentRect:contentRect styleMask:NSBorderlessWindowMask backing:NSBackingStoreBuffered defer:NO screen:screen]) {
         NSWindowController *controller = [[pdfView window] windowController];
         
@@ -30,17 +32,19 @@
         
         [self setContentView:[[[SKNavigationContentView alloc] init] autorelease]];
         
-        NSRect rect = NSMakeRect(MARGIN, MARGIN, BUTTON_WIDTH, BUTTON_WIDTH);
+        NSRect rect = NSMakeRect(MARGIN + LABEL_MARGIN_X, MARGIN, BUTTON_WIDTH, BUTTON_WIDTH);
         SKNavigationButton *button = [[[SKNavigationPreviousButton alloc] initWithFrame:rect] autorelease];
         [button setTarget:controller];
         [button setAction:@selector(doGoToPreviousPage:)];
         [[self contentView] addSubview:button];
+        [button addTrackingRect:NSInsetRect([button bounds], 1.0, 0.0) owner:self userData:button assumeInside:NO];
         
         rect.origin.x = NSMaxX(rect);
         button = [[[SKNavigationNextButton alloc] initWithFrame:rect] autorelease];
         [button setTarget:controller];
         [button setAction:@selector(doGoToNextPage:)];
         [[self contentView] addSubview:button];
+        [button addTrackingRect:NSInsetRect([button bounds], 1.0, 0.0) owner:self userData:button assumeInside:NO];
         
         rect.origin.x = NSMaxX(rect);
         rect.size.width = SEP_WIDTH;
@@ -53,6 +57,7 @@
         [button setTarget:controller];
         [button setAction:@selector(toggleZoomToFit:)];
         [[self contentView] addSubview:button];
+        [button addTrackingRect:NSInsetRect([button bounds], 1.0, 0.0) owner:self userData:button assumeInside:NO];
         zoomButton = [button retain];
         [zoomButton setState:[pdfView autoScales]];
         
@@ -67,6 +72,17 @@
         [button setTarget:controller];
         [button setAction:@selector(exitFullScreen:)];
         [[self contentView] addSubview:button];
+        [button addTrackingRect:NSInsetRect([button bounds], 1.0, 0.0) owner:self userData:button assumeInside:NO];
+        
+        labelField = [[[SKNavigationLabelField alloc] initWithFrame:NSMakeRect(LABEL_MARGIN_X, BUTTON_WIDTH + 2 * MARGIN + 2.0, 0.0, 0.0)] autorelease];
+        [labelField setEditable:NO];
+        [labelField setBordered:NO];
+        [labelField setDrawsBackground:NO];
+        [labelField setBackgroundColor:[NSColor clearColor]];
+        [labelField setFont:[NSFont boldSystemFontOfSize:16.0]];
+        [labelField setTextColor:[NSColor whiteColor]];
+        [labelField setHidden:YES];
+        [[self contentView] addSubview:labelField];
         
         [[NSNotificationCenter defaultCenter] addObserver: self selector: @selector(handleScaleChangedNotification:) 
                                                      name: PDFViewScaleChangedNotification object: pdfView];
@@ -126,16 +142,35 @@
     [self setAlphaValue:1.0];
 }
 
+- (void)mouseEntered:(NSEvent *)theEvent {
+    if ([labelField isHidden] == NO) 
+        [[self contentView] setNeedsDisplayInRect:[labelField frame]];
+    SKNavigationButton *button = (SKNavigationButton *)[theEvent userData];
+    [labelField setStringValue:[button label]];
+    [labelField sizeToFit];
+    NSRect labelRect = [labelField frame];
+    NSRect buttonRect = [button frame];
+    labelRect.origin.x = NSMidX(buttonRect) - 0.5 * NSWidth(labelRect);
+    [labelField setFrameOrigin:labelRect.origin];
+    [labelField setHidden:NO];
+}
+
+- (void)mouseExited:(NSEvent *)theEvent {
+    [labelField setHidden:YES];
+}
+
 @end
 
 
 @implementation SKNavigationContentView
 
 - (void)drawRect:(NSRect)rect {
-    rect = NSInsetRect([self bounds], 1.0, 1.0);
+    rect = [self bounds];
+    rect = NSInsetRect([self bounds], 1.0 + LABEL_MARGIN_X, 1.0);
+    rect.size.height -= LABEL_MARGIN_Y;
     [[NSColor colorWithCalibratedWhite:0.0 alpha:0.5] set];
     [NSBezierPath fillRoundRectInRect:rect radius:10.0];
-    rect = NSInsetRect([self bounds], 0.5, 0.5);
+    rect = NSInsetRect(rect, -0.5, -0.5);
     [[NSColor colorWithCalibratedWhite:1.0 alpha:0.2] set];
     [NSBezierPath strokeRoundRectInRect:rect radius:10.0];
 }
@@ -143,8 +178,34 @@
 @end
 
 
+@implementation SKNavigationLabelField
++ (Class)cellClass { return [SKNavigationLabelFieldCell class]; }
+@end
+
+@implementation SKNavigationLabelFieldCell
+
+- (void)drawInteriorWithFrame:(NSRect)cellFrame inView:(NSView *)controlView {
+    NSMutableAttributedString *attrString = [[[self attributedStringValue] mutableCopy] autorelease];
+    NSRect rect = [self drawingRectForBounds:cellFrame];
+    NSRange range = NSMakeRange(0, [attrString length]);
+    NSShadow *shadow = [[[NSShadow alloc] init] autorelease];
+    [shadow setShadowColor:[NSColor blackColor]];
+    [shadow setShadowBlurRadius:3.0];
+    [shadow setShadowOffset:NSMakeSize(0.0, -2.0)];
+    [attrString addAttribute:NSShadowAttributeName value:shadow range:range];
+    [attrString drawInRect:rect];
+    [attrString removeAttribute:NSShadowAttributeName range:range];
+    [attrString addAttribute:NSStrokeColorAttributeName value:[NSColor blackColor] range:range];
+    [attrString addAttribute:NSStrokeWidthAttributeName value:[NSNumber numberWithInt:1.0] range:range];
+    [attrString drawInRect:rect];
+}
+
+@end
+
+
 @implementation SKNavigationButton
 + (Class)cellClass { return [SKNavigationButtonCell class]; }
+- (NSString *)label { return [[self cell] label]; }
 @end
 
 @implementation SKNavigationButtonCell
@@ -167,6 +228,10 @@
     return nil;
 }
 
+- (NSString *)label {
+    return nil;
+}
+
 @end
 
 
@@ -186,6 +251,10 @@
     return path;
 }
 
+- (NSString *)label {
+    return NSLocalizedString(@"Next", @"");
+}
+
 @end
 
 
@@ -203,6 +272,10 @@
     [path lineToPoint:NSMakePoint(NSMaxX(rect), NSMinY(rect))];
     [path closePath];
     return path;
+}
+
+- (NSString *)label {
+    return NSLocalizedString(@"Previous", @"");
 }
 
 @end
@@ -259,6 +332,10 @@
     return path;
 }
 
+- (NSString *)label {
+    return [[self target] autoScales] ? NSLocalizedString(@"Actual Size", @"") : NSLocalizedString(@"Fit to Screen", @"");
+}
+
 @end
 
 
@@ -292,6 +369,10 @@
     return path;
 }
 
+- (NSString *)label {
+    return NSLocalizedString(@"Close", @"");
+}
+
 @end
 
 
@@ -308,6 +389,10 @@
     return path;
 }
 
+- (NSString *)label {
+    return @"";
+}
+
 @end
 
 
@@ -318,7 +403,6 @@
     NSBezierPath *p = [self bezierPathWithRoundRectInRect:rect radius:radius];
     [p fill];
 }
-
 
 + (void)strokeRoundRectInRect:(NSRect)rect radius:(float)radius
 {
@@ -357,6 +441,10 @@
     [path closePath];
     
     return path;
+}
+
+- (NSString *)label {
+    return NSLocalizedString(@"", @"");
 }
 
 @end

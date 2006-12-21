@@ -13,6 +13,7 @@
 @interface SKNavigationWindow : NSWindow {
     NSButton *zoomButton;
     NSViewAnimation *animation;
+    NSTextField *labelField;
 }
 - (id)initWithPDFView:(PDFView *)pdfView;
 - (void)hide;
@@ -23,12 +24,21 @@
 @end
 
 
+@interface SKNavigationLabelField : NSTextField
+@end
+
+@interface SKNavigationLabelFieldCell : NSTextFieldCell
+@end
+
+
 @interface SKNavigationButton : NSButton
+- (NSString *)label;
 @end
 
 
 @interface SKNavigationButtonCell : NSButtonCell
 - (NSBezierPath *)pathWithFrame:(NSRect)cellFrame;
+- (NSString *)label;
 @end
 
 
