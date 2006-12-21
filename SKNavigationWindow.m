@@ -14,13 +14,13 @@
 #define MARGIN 7.0
 #define OFFSET 20.0
 #define LABEL_MARGIN_X 10.0
-#define LABEL_MARGIN_Y 20.0
+#define LABEL_MARGIN_Y 25.0
 
 @implementation SKNavigationWindow
 
 - (id)initWithPDFView:(PDFView *)pdfView {
     NSScreen *screen = [[pdfView window] screen];
-    float width = 4 * BUTTON_WIDTH + 2 * SEP_WIDTH + 2 * MARGIN + 2 * LABEL_MARGIN_Y;
+    float width = 4 * BUTTON_WIDTH + 2 * SEP_WIDTH + 2 * MARGIN + 2 * LABEL_MARGIN_X;
     NSRect contentRect = NSMakeRect(NSMidX([screen frame]) - 0.5 * width, OFFSET, width, BUTTON_WIDTH + 2 * MARGIN + LABEL_MARGIN_Y);
     if (self = [super initWithContentRect:contentRect styleMask:NSBorderlessWindowMask backing:NSBackingStoreBuffered defer:NO screen:screen]) {
         NSWindowController *controller = [[pdfView window] windowController];
@@ -74,15 +74,9 @@
         [[self contentView] addSubview:button];
         [button addTrackingRect:NSInsetRect([button bounds], 1.0, 0.0) owner:self userData:button assumeInside:NO];
         
-        labelField = [[[SKNavigationLabelField alloc] initWithFrame:NSMakeRect(LABEL_MARGIN_X, BUTTON_WIDTH + 2 * MARGIN + 2.0, 0.0, 0.0)] autorelease];
-        [labelField setEditable:NO];
-        [labelField setBordered:NO];
-        [labelField setDrawsBackground:NO];
-        [labelField setBackgroundColor:[NSColor clearColor]];
-        [labelField setFont:[NSFont boldSystemFontOfSize:16.0]];
-        [labelField setTextColor:[NSColor whiteColor]];
-        [labelField setHidden:YES];
-        [[self contentView] addSubview:labelField];
+        labelView = [[[SKNavigationLabelView alloc] initWithFrame:NSMakeRect(LABEL_MARGIN_X, BUTTON_WIDTH + 2 * MARGIN + 2.0, 0.0, 0.0)] autorelease];
+        [labelView setHidden:YES];
+        [[self contentView] addSubview:labelView];
         
         [[NSNotificationCenter defaultCenter] addObserver: self selector: @selector(handleScaleChangedNotification:) 
                                                      name: PDFViewScaleChangedNotification object: pdfView];
@@ -143,20 +137,20 @@
 }
 
 - (void)mouseEntered:(NSEvent *)theEvent {
-    if ([labelField isHidden] == NO) 
-        [[self contentView] setNeedsDisplayInRect:[labelField frame]];
+    if ([labelView isHidden] == NO) 
+        [[self contentView] setNeedsDisplayInRect:[labelView frame]];
     SKNavigationButton *button = (SKNavigationButton *)[theEvent userData];
-    [labelField setStringValue:[button label]];
-    [labelField sizeToFit];
-    NSRect labelRect = [labelField frame];
+    [labelView setStringValue:[button label]];
+    [labelView sizeToFit];
+    NSRect labelRect = [labelView frame];
     NSRect buttonRect = [button frame];
     labelRect.origin.x = NSMidX(buttonRect) - 0.5 * NSWidth(labelRect);
-    [labelField setFrameOrigin:labelRect.origin];
-    [labelField setHidden:NO];
+    [labelView setFrameOrigin:labelRect.origin];
+    [labelView setHidden:NO];
 }
 
 - (void)mouseExited:(NSEvent *)theEvent {
-    [labelField setHidden:YES];
+    [labelView setHidden:YES];
 }
 
 @end
@@ -177,27 +171,75 @@
 
 @end
 
+@implementation SKNavigationLabelView
 
-@implementation SKNavigationLabelField
-+ (Class)cellClass { return [SKNavigationLabelFieldCell class]; }
-@end
+- (id)initWithFrame:(NSRect)frameRect {
+    if (self = [super initWithFrame:frameRect]) {
+        stringValue = nil;
+    }
+    return self;
+}
 
-@implementation SKNavigationLabelFieldCell
+- (void)dealloc {
+    [stringValue release];
+    [super dealloc];
+}
 
-- (void)drawInteriorWithFrame:(NSRect)cellFrame inView:(NSView *)controlView {
-    NSMutableAttributedString *attrString = [[[self attributedStringValue] mutableCopy] autorelease];
-    NSRect rect = [self drawingRectForBounds:cellFrame];
-    NSRange range = NSMakeRange(0, [attrString length]);
+- (NSString *)stringValue {
+    return stringValue;
+}
+
+- (void)setStringValue:(NSString *)newStringValue {
+    if (stringValue != newStringValue) {
+        [stringValue release];
+        stringValue = [newStringValue retain];;
+    }
+}
+
+- (NSAttributedString *)attributedStringValue {
+    if (stringValue == nil)
+        return nil;
+    NSMutableParagraphStyle *parStyle = [[[NSMutableParagraphStyle alloc] init] autorelease];
+    [parStyle setLineBreakMode:NSLineBreakByClipping];
     NSShadow *shadow = [[[NSShadow alloc] init] autorelease];
     [shadow setShadowColor:[NSColor blackColor]];
     [shadow setShadowBlurRadius:3.0];
     [shadow setShadowOffset:NSMakeSize(0.0, -2.0)];
-    [attrString addAttribute:NSShadowAttributeName value:shadow range:range];
-    [attrString drawInRect:rect];
-    [attrString removeAttribute:NSShadowAttributeName range:range];
-    [attrString addAttribute:NSStrokeColorAttributeName value:[NSColor blackColor] range:range];
-    [attrString addAttribute:NSStrokeWidthAttributeName value:[NSNumber numberWithInt:1.0] range:range];
-    [attrString drawInRect:rect];
+    NSDictionary *attrs = [NSDictionary dictionaryWithObjectsAndKeys:
+        [NSFont boldSystemFontOfSize:16.0], NSFontAttributeName, 
+        [NSColor whiteColor], NSForegroundColorAttributeName, 
+        parStyle, NSParagraphStyleAttributeName, 
+        shadow, NSShadowAttributeName, nil];
+    return [[[NSAttributedString alloc] initWithString:stringValue attributes:attrs] autorelease];
+}
+
+- (NSAttributedString *)outlineAttributedStringValue {
+    if (stringValue == nil)
+        return nil;
+    NSMutableParagraphStyle *parStyle = [[[NSMutableParagraphStyle alloc] init] autorelease];
+    [parStyle setLineBreakMode:NSLineBreakByClipping];
+    NSDictionary *attrs = [NSDictionary dictionaryWithObjectsAndKeys:
+        [NSFont boldSystemFontOfSize:16.0] , NSFontAttributeName, 
+        [NSColor whiteColor], NSForegroundColorAttributeName, 
+        parStyle, NSParagraphStyleAttributeName, 
+        [NSColor blackColor], NSStrokeColorAttributeName, 
+        [NSNumber numberWithInt:1.0], NSStrokeWidthAttributeName, nil];
+    return [[[NSAttributedString alloc] initWithString:stringValue attributes:attrs] autorelease];
+}
+
+#define LABEL_TEXT_MARGIN 2.0
+
+- (void)sizeToFit {
+    NSSize size = [[self attributedStringValue] size];
+    size.width += 2 * LABEL_TEXT_MARGIN;
+    size.height += 2 * LABEL_TEXT_MARGIN;
+    [self setFrameSize:size];
+}
+
+- (void)drawRect:(NSRect)rect {
+    NSRect textRect = NSInsetRect(rect, LABEL_TEXT_MARGIN, LABEL_TEXT_MARGIN);
+    [[self attributedStringValue] drawInRect:textRect];
+    [[self outlineAttributedStringValue] drawInRect:textRect];
 }
 
 @end
