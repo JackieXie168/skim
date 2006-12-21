@@ -182,11 +182,8 @@ NSString *SKPDFViewToolModeChangedNotification = @"SKPDFViewToolModeChangedNotif
 }
 
 - (void)autohideTimerFired:(NSTimer *)aTimer {
-    if (autohideTimer) {
-        [autohideTimer invalidate];
-        [autohideTimer release];
-        autohideTimer = nil;
-    }
+    if (NSPointInRect([[self window] convertBaseToScreen:[[self window] mouseLocationOutsideOfEventStream]], [navWindow frame]))
+        return;
     if (autohidesCursor)
         [NSCursor setHiddenUntilMouseMoves:YES];
     if (hasNavigation)
