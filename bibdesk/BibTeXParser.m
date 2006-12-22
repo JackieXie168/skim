@@ -88,7 +88,22 @@ static NSString *copyStringFromNoteField(AST *field, const char *data, NSString 
 }
 
 + (BOOL)canParseString:(NSString *)string{
-    AGRegex *btRegex = [[AGRegex alloc] initWithPattern:@"^@[[:alpha:]]+[ \t]*[{(].+?[ \t]*," options:AGRegexMultiline];
+    
+    /* This regex needs to handle the following, for example:
+     
+     @Article{
+     citeKey ,
+     Author = {Some One}}
+     
+     The cite key regex is from Maarten Sneep on the TextMate mailing list.  Spaces and linebreaks must be fixed first.
+     
+     */
+
+    AGRegex *btRegex = [[AGRegex alloc] initWithPattern:/* type of item */ @"^@[[:alpha:]]+[ \\t]*[{(]" 
+                                                        /* spaces       */ @"[ \\n\\t]*" 
+                                                        /* cite key     */ @"[a-zA-Z0-9\\.,:/*!^_-]+?" 
+                                                        /* spaces       */ @"[ \\n\\t]*," 
+                                                options:AGRegexMultiline];
     
     // AGRegex doesn't recognize \r as a $, so we normalize it first (bug #1420791)
     NSString *normalizedString = [string stringByNormalizingSpacesAndLineBreaks];
