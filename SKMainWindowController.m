@@ -515,6 +515,7 @@ static NSString *SKDocumentToolbarSearchItemIdentifier = @"SKDocumentToolbarSear
     [animation setAnimationBlockingMode:NSAnimationBlocking];
     [animation setDuration:0.5];
     [animation startAnimation];
+    [animation release];
     [fullScreenWindow orderOut:self];
     [fullScreenWindow setAlphaValue:1.0];
 }
