@@ -105,12 +105,6 @@ NSString *SKPDFViewToolModeChangedNotification = @"SKPDFViewToolModeChangedNotif
             [super mouseDown:theEvent];
             break;
     }
-    
-    // Window hides anyway on a mouse click, but we need to cancel the timer and set flags properly
-    if (hasNavigation && [navWindow isVisible]) {
-        [self doAutohide:NO];
-        [navWindow hide];
-    }
 }
 
 - (void)mouseUp:(NSEvent *)theEvent{
@@ -167,8 +161,10 @@ NSString *SKPDFViewToolModeChangedNotification = @"SKPDFViewToolModeChangedNotif
     // in presentation mode only show the navigation window only by moving the mouse to the bottom edge
     BOOL shouldShowNavWindow = hasNavigation && (autohidesCursor == NO || [event locationInWindow].y < 5.0);
     if (autohidesCursor || shouldShowNavWindow) {
-        if (shouldShowNavWindow)
+        if (shouldShowNavWindow && [navWindow isVisible] == NO) {
+            [[self window] addChildWindow:navWindow ordered:NSWindowAbove];
             [navWindow orderFront:self];
+        }
         [self doAutohide:YES];
     }
 }
