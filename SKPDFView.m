@@ -165,7 +165,7 @@ NSString *SKPDFViewToolModeChangedNotification = @"SKPDFViewToolModeChangedNotif
     }
     
     // in presentation mode only show the navigation window only by moving the mouse to the bottom edge
-    BOOL shouldShowNavWindow = hasNavigation && (autohidesCursor == NO || [navWindow isVisible] || [event locationInWindow].y < 5.0);
+    BOOL shouldShowNavWindow = hasNavigation && (autohidesCursor == NO || [event locationInWindow].y < 5.0);
     if (autohidesCursor || shouldShowNavWindow) {
         if (shouldShowNavWindow)
             [navWindow orderFront:self];
@@ -182,7 +182,7 @@ NSString *SKPDFViewToolModeChangedNotification = @"SKPDFViewToolModeChangedNotif
 }
 
 - (void)autohideTimerFired:(NSTimer *)aTimer {
-    if (NSPointInRect([[self window] convertBaseToScreen:[[self window] mouseLocationOutsideOfEventStream]], [navWindow frame]))
+    if (NSPointInRect([NSEvent mouseLocation], [navWindow frame]))
         return;
     if (autohidesCursor)
         [NSCursor setHiddenUntilMouseMoves:YES];
