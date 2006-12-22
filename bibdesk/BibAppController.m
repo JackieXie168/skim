@@ -243,6 +243,14 @@ static void createTemporaryDirectory()
 			[[OFPreferenceWrapper sharedPreferenceWrapper] setObject:ratingFields forKey:BDSKRatingFieldsKey];
 		}
 		[ratingFields release];
+        
+        // register server for cite key completion
+        completionConnection = [[NSConnection alloc] initWithReceivePort:[NSPort port] sendPort:nil];
+        NSProtocolChecker *checker = [NSProtocolChecker protocolCheckerWithTarget:self protocol:@protocol(BDSKCompletionServer)];
+        [completionConnection setRootObject:checker];
+        
+        if ([completionConnection registerName:BIBDESK_SERVER_NAME] == NO)
+            NSLog(@"failed to register completion connection %@", completionConnection);  
     }
     return self;
 }
@@ -325,14 +333,6 @@ static void createTemporaryDirectory()
     [self copyAllExportTemplatesToApplicationSupportAndOverwrite:NO];        
     [fileManager copyFileFromResourcesToApplicationSupport:@"previewtemplate.tex" overwrite:NO];
     [fileManager copyFileFromResourcesToApplicationSupport:@"template.txt" overwrite:NO];   
-    
-    // register server for cite key completion
-    completionConnection = [[NSConnection alloc] initWithReceivePort:[NSPort port] sendPort:nil];
-    NSProtocolChecker *checker = [NSProtocolChecker protocolCheckerWithTarget:self protocol:@protocol(BDSKCompletionServer)];
-    [completionConnection setRootObject:checker];
-    
-    if ([completionConnection registerName:BIBDESK_SERVER_NAME] == NO)
-        NSLog(@"failed to register completion connection %@", completionConnection);    
 }
 
 - (void)applicationWillTerminate:(NSNotification *)aNotification{
