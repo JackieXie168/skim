@@ -314,7 +314,7 @@ static inline BOOL dataHasUnicodeByteOrderMark(NSData *data)
 - (NSString *)stringWithPhoneyCiteKeys:(NSString *)tmpKey{
 		// ^(@[[:alpha:]]+{),?$ will grab either "@type{,eol" or "@type{eol", which is what we get
 		// from Bookends and EndNote, respectively.
-		AGRegex *theRegex = [AGRegex regexWithPattern:@"^(@[[:alpha:]]+[ \t]*{)[ \t]*,?$" options:AGRegexCaseInsensitive];
+		AGRegex *theRegex = [AGRegex regexWithPattern:@"^(@[[:alpha:]]+[ \\t]*{)[ \\t]*,?$" options:AGRegexCaseInsensitive];
 
 		// should assert that the noKeysString matches theRegex
 		//NSAssert([theRegex findInString:self] != nil, @"stringWithPhoneyCiteKeys called on non-matching string");
