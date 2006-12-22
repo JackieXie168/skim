@@ -92,6 +92,12 @@
 
 - (BOOL)canBecomeMainWindow { return NO; }
 
+- (void)moveToScreen:(NSScreen *)screen {
+    NSRect winFrame = [self frame];
+    winFrame.origin.x = NSMidX([screen frame]) - 0.5 * NSWidth(winFrame);
+    [self setFrame:winFrame display:NO];
+}
+
 - (void)orderFront:(id)sender {
     [animation stopAnimation];
     [super orderFront:sender];
