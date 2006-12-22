@@ -36,12 +36,12 @@
 - (NSString *)stringValue;
 - (void)setStringValue:(NSString *)newStringValue;
 - (NSAttributedString *)attributedStringValue;
-- (NSAttributedString *)outlineAttributedStringValue;
 - (void)sizeToFit;
 @end
 
 
 @interface SKNavigationButton : NSButton {
+    NSString *toolTip;
     NSString *alternateToolTip;
 }
 - (NSString *)currentToolTip;

@@ -106,12 +106,10 @@
 - (void)hide {
     [animation stopAnimation];
     
-    NSDictionary *fadeOutDict1 = [[NSDictionary alloc] initWithObjectsAndKeys:self, NSViewAnimationTargetKey, NSViewAnimationFadeOutEffect, NSViewAnimationEffectKey, nil];
-    NSDictionary *fadeOutDict2 = [[NSDictionary alloc] initWithObjectsAndKeys:[SKNavigationToolTipWindow sharedToolTipWindow], NSViewAnimationTargetKey, NSViewAnimationFadeOutEffect, NSViewAnimationEffectKey, nil];
+    NSDictionary *fadeOutDict = [[NSDictionary alloc] initWithObjectsAndKeys:self, NSViewAnimationTargetKey, NSViewAnimationFadeOutEffect, NSViewAnimationEffectKey, nil];
     
-    animation = [[NSViewAnimation alloc] initWithViewAnimations:[NSArray arrayWithObjects:fadeOutDict1, fadeOutDict2, nil]];
-    [fadeOutDict1 release];
-    [fadeOutDict2 release];
+    animation = [[NSViewAnimation alloc] initWithViewAnimations:[NSArray arrayWithObjects:fadeOutDict, nil]];
+    [fadeOutDict release];
     
     [animation setAnimationBlockingMode:NSAnimationNonblocking];
     [animation setDuration:1.0];
@@ -124,14 +122,12 @@
     animation = nil;
     [self orderOut:self];
     [self setAlphaValue:1.0];
-    [[SKNavigationToolTipWindow sharedToolTipWindow] setAlphaValue:1.0];
 }
 
 - (void)animationDidStop:(NSAnimation*)anAnimation {
     [animation release];
     animation = nil;
     [self setAlphaValue:1.0];
-    [[SKNavigationToolTipWindow sharedToolTipWindow] setAlphaValue:1.0];
 }
 
 @end
@@ -218,7 +214,7 @@ static SKNavigationToolTipWindow *sharedToolTipWindow = nil;
 - (void)setStringValue:(NSString *)newStringValue {
     if (stringValue != newStringValue) {
         [stringValue release];
-        stringValue = [newStringValue retain];;
+        stringValue = [newStringValue retain];
     }
 }
 
@@ -230,26 +226,12 @@ static SKNavigationToolTipWindow *sharedToolTipWindow = nil;
     NSShadow *shadow = [[[NSShadow alloc] init] autorelease];
     [shadow setShadowColor:[NSColor blackColor]];
     [shadow setShadowBlurRadius:3.0];
-    [shadow setShadowOffset:NSMakeSize(0.0, -2.0)];
+    [shadow setShadowOffset:NSMakeSize(0.0, -1.5)];
     NSDictionary *attrs = [NSDictionary dictionaryWithObjectsAndKeys:
-        [NSFont boldSystemFontOfSize:16.0], NSFontAttributeName, 
+        [NSFont boldSystemFontOfSize:15.0], NSFontAttributeName, 
         [NSColor whiteColor], NSForegroundColorAttributeName, 
         parStyle, NSParagraphStyleAttributeName, 
         shadow, NSShadowAttributeName, nil];
-    return [[[NSAttributedString alloc] initWithString:stringValue attributes:attrs] autorelease];
-}
-
-- (NSAttributedString *)outlineAttributedStringValue {
-    if (stringValue == nil)
-        return nil;
-    NSMutableParagraphStyle *parStyle = [[[NSMutableParagraphStyle alloc] init] autorelease];
-    [parStyle setLineBreakMode:NSLineBreakByClipping];
-    NSDictionary *attrs = [NSDictionary dictionaryWithObjectsAndKeys:
-        [NSFont boldSystemFontOfSize:16.0] , NSFontAttributeName, 
-        [NSColor whiteColor], NSForegroundColorAttributeName, 
-        parStyle, NSParagraphStyleAttributeName, 
-        [NSColor blackColor], NSStrokeColorAttributeName, 
-        [NSNumber numberWithInt:1.0], NSStrokeWidthAttributeName, nil];
     return [[[NSAttributedString alloc] initWithString:stringValue attributes:attrs] autorelease];
 }
 
@@ -262,8 +244,11 @@ static SKNavigationToolTipWindow *sharedToolTipWindow = nil;
 
 - (void)drawRect:(NSRect)rect {
     NSRect textRect = NSInsetRect(rect, LABEL_TEXT_MARGIN, LABEL_TEXT_MARGIN);
-    [[self attributedStringValue] drawInRect:textRect];
-    [[self outlineAttributedStringValue] drawInRect:textRect];
+    NSAttributedString *attrString = [self attributedStringValue];
+    // draw it 3x to see some shadow
+    [attrString drawInRect:textRect];
+    [attrString drawInRect:textRect];
+    [attrString drawInRect:textRect];
 }
 
 @end
@@ -274,14 +259,25 @@ static SKNavigationToolTipWindow *sharedToolTipWindow = nil;
 + (Class)cellClass { return [SKNavigationButtonCell class]; }
 
 - (void)dealloc {
+    [toolTip release];
     [alternateToolTip release];
     [super dealloc];
 }
 
-- (NSString *)toolTip { return nil; }
+- (NSString *)toolTip {
+    return toolTip;
+}
+
+// we don't use the superclass's ivar because we don't want the system toolTips
+- (void)setToolTip:(NSString *)string {
+    if (toolTip != string) {
+        [toolTip release];
+        toolTip = [string retain];
+    }
+}
 
 - (NSString *)currentToolTip {
-    return [self state] == NSOnState && [self alternateToolTip] ? [self alternateToolTip] : [super toolTip];
+    return [self state] == NSOnState && alternateToolTip ? alternateToolTip : toolTip;
 }
 
 - (NSString *)alternateToolTip {
@@ -376,9 +372,11 @@ static SKNavigationToolTipWindow *sharedToolTipWindow = nil;
 }
 
 - (void)handleScaleChangedNotification:(NSNotification *)notification {
-    [self setState:[[notification object] autoScales]];
-    [[SKNavigationToolTipWindow sharedToolTipWindow] showToolTip:[self currentToolTip] forView:self];
-    [self setNeedsDisplay:YES];
+    if ([[self window] isVisible] && NSPointInRect([self convertPoint:[[self window] mouseLocationOutsideOfEventStream] fromView:nil], [self bounds])) {
+        [self setState:[[notification object] autoScales]];
+        [[SKNavigationToolTipWindow sharedToolTipWindow] showToolTip:[self currentToolTip] forView:self];
+        [self setNeedsDisplay:YES];
+    }
 }
 
 @end
