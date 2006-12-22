@@ -201,14 +201,12 @@ NSString *SKPDFViewToolModeChangedNotification = @"SKPDFViewToolModeChangedNotif
     autohidesCursor = hideCursor;
     
     if (hasNavigation) {
-        if ([[self window] screen] != [navWindow screen]) {
-            [navWindow release];
-            navWindow = nil;
-        }
         if (navWindow == nil) {
             navWindow = [[SKNavigationWindow alloc] initWithPDFView:self];
             [[NSNotificationCenter defaultCenter] addObserver: self selector: @selector(handleWindowWillCloseNotification:) 
                                                          name: NSWindowWillCloseNotification object: [self window]];
+        } else if ([[self window] screen] != [navWindow screen]) {
+            [navWindow moveToScreen:[[self window] screen]];
         }
     } else if ([navWindow isVisible]) {
         [navWindow orderOut:self];

@@ -442,20 +442,12 @@ static NSString *SKDocumentToolbarSearchItemIdentifier = @"SKDocumentToolbarSear
     if (CGDisplayNoErr != CGDisplayCapture((CGDirectDisplayID)[screenID longValue]))
         return;
     
-    if (screen != [fullScreenWindow screen]) {
-        [fullScreenWindow release];
-        fullScreenWindow = nil;
-    }
-    
     // Create the full-screen window if it doesn‚Äôt already  exist.
     if (fullScreenWindow == nil) {
         fullScreenWindow = [[SKFullScreenWindow alloc] initWithScreen:screen];
-        
-        [fullScreenWindow setReleasedWhenClosed:NO];
-        [fullScreenWindow setDisplaysWhenScreenProfileChanges:YES];
-        [fullScreenWindow setLevel:CGShieldingWindowLevel()];
         [fullScreenWindow setDelegate:self];
-        [fullScreenWindow setAcceptsMouseMovedEvents:YES];
+    } else if (screen != [fullScreenWindow screen]) {
+        [fullScreenWindow setFrame:[screen frame] display:NO];
     }
     
     [fullScreenWindow setContentView:pdfView];
@@ -1255,7 +1247,12 @@ static NSString *SKDocumentToolbarSearchItemIdentifier = @"SKDocumentToolbarSear
 @implementation SKFullScreenWindow
 
 - (id)initWithScreen:(NSScreen *)screen {
-    self = [[SKFullScreenWindow alloc] initWithContentRect:[screen frame] styleMask:NSBorderlessWindowMask backing:NSBackingStoreBuffered defer:NO screen:screen];
+    if (self = [[SKFullScreenWindow alloc] initWithContentRect:[screen frame] styleMask:NSBorderlessWindowMask backing:NSBackingStoreBuffered defer:NO screen:screen]) {
+        [self setReleasedWhenClosed:NO];
+        [self setDisplaysWhenScreenProfileChanges:YES];
+        [self setLevel:CGShieldingWindowLevel()];
+        [self setAcceptsMouseMovedEvents:YES];
+    }
     return self;
 }
 

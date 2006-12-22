@@ -15,6 +15,7 @@
     NSViewAnimation *animation;
 }
 - (id)initWithPDFView:(PDFView *)pdfView;
+- (void)moveToScreen:(NSScreen *)screen;
 - (void)hide;
 @end
 
