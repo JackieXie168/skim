@@ -13,16 +13,10 @@
 
 
 @implementation SKSubWindowController
-- (id)init{
-    self = [super initWithWindowNibName:@"SubWindow" owner:self];
-    
-    if(self){
-        subWindowControllers = [[NSMutableArray alloc] initWithCapacity:10];
-    }
-    
-    return self;
-}
 
+- (NSString *)windowNibName {
+    return @"SubWindow";
+}
 
 - (void)setPdfDocument:(PDFDocument *)pdfDocument scaleFactor:(int)factor autoScales:(BOOL)autoScales goToPageNumber:(int)pageNum point:(NSPoint)locationInPageSpace{
     [self window];

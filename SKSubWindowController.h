@@ -14,9 +14,7 @@
 @class PDFView, PDFDocument;
 
 @interface SKSubWindowController : NSWindowController {
-    NSMutableArray *subWindowControllers;
     IBOutlet PDFView* pdfView;
-    NSPoint startPoint;  
 }
 - (void)setPdfDocument:(PDFDocument *)pdfDocument scaleFactor:(int)factor autoScales:(BOOL)autoScales goToPageNumber:(int)pageNum point:(NSPoint)locationInPageSpace;
 
