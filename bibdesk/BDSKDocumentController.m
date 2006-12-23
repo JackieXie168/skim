@@ -51,6 +51,7 @@
 #import "BibItem.h"
 #import "BDSKTemplate.h"
 #import "NSString_BDSKExtensions.h"
+#import "NSError_BDSKExtensions.h"
 
 @implementation BDSKDocumentController
 
@@ -268,6 +269,17 @@
     NSString *tmpFilePath = [[[NSApp delegate] temporaryFilePath:nil createDirectory:NO] stringByAppendingPathExtension:@"bib"];
     NSURL *tmpFileURL = [NSURL fileURLWithPath:tmpFilePath];
     NSData *data = [fileString dataUsingEncoding:encoding];
+    
+    // If data is nil, then [data writeToFile:error:] is interpreted as NO since it's a message to nil...but doesn't initialize &error, so we crash!
+    if (nil == data) {
+        if (outError) {
+            *outError = [NSError mutableLocalErrorWithCode:kBDSKStringEncodingError localizedDescription:NSLocalizedString(@"Incorrect string encoding", @"")];
+            [*outError setValue:[NSNumber numberWithInt:encoding] forKey:NSStringEncodingErrorKey];
+            [*outError setValue:[NSString stringWithFormat:NSLocalizedString(@"The file could not be converted to encoding \"%@\".  Please try a different encoding.", @""), [NSString localizedNameOfStringEncoding:encoding]] forKey:NSLocalizedRecoverySuggestionErrorKey];
+        }
+        return nil;
+    }
+    
     NSError *error;
     
     // bail out if we can't write the temp file
