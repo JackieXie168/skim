@@ -314,23 +314,36 @@ static BDSKErrorObjectController *sharedErrorObjectController = nil;
 	unsigned index = [self countOfErrors];
     BibItem *pub;
     
+    NSMutableIndexSet *indexesToRemove = [NSMutableIndexSet indexSet];
+     
     while (index--) {
 		pub = [[self objectInErrorsAtIndex:index] publication];
         if(pub && [pubs containsObject:pub])
-            [self removeObjectFromErrorsAtIndex:index];
+            [indexesToRemove addIndex:index];
     }
+    
+    // batch changes
+    [self willChange:NSKeyValueChangeRemoval valuesAtIndexes:indexesToRemove forKey:@"errors"];
+    [errors removeObjectsAtIndexes:indexesToRemove];
+    [self didChange:NSKeyValueChangeRemoval valuesAtIndexes:indexesToRemove forKey:@"errors"];
 }
 
 - (void)removeErrorsForEditor:(BDSKErrorEditor *)editor{
 	unsigned index = [self countOfErrors];
     BDSKErrorObject *errObj;
     
+    NSMutableIndexSet *indexesToRemove = [NSMutableIndexSet indexSet];
+
     while (index--) {
 		errObj = [self objectInErrorsAtIndex:index];
         if ([[errObj editor] isEqual:editor]) {
-            [self removeObjectFromErrorsAtIndex:index];
+            [indexesToRemove addIndex:index];
     	}
     }
+    // batch these; this method is particularly slow (order of minutes) with a large number of errors, when closing the associated document, since using [self removeObjectFromErrorsAtIndex:index] in the loop causes KVO notifications to reload the tableview (although the tooltip rebuild appears to be what kills performance)
+    [self willChange:NSKeyValueChangeRemoval valuesAtIndexes:indexesToRemove forKey:@"errors"];
+    [errors removeObjectsAtIndexes:indexesToRemove];
+    [self didChange:NSKeyValueChangeRemoval valuesAtIndexes:indexesToRemove forKey:@"errors"];
 }
 
 #pragma mark Actions
