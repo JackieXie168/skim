@@ -312,6 +312,11 @@
     if([self hasLTB] && 0 == pthread_rwlock_tryrdlock(&dataFileLock)) {
         string = [NSString stringWithContentsOfFile:bblFilePath encoding:[[OFPreferenceWrapper sharedPreferenceWrapper] integerForKey:BDSKTeXPreviewFileEncodingKey] error:NULL];
         pthread_rwlock_unlock(&dataFileLock);
+        unsigned start, end;
+        start = [string rangeOfString:@"\\bib{"].location;
+        end = [string rangeOfString:@"\\end{biblist}" options:NSBackwardsSearch].location;
+        if (start != NSNotFound && end != NSNotFound)
+            string = [string substringWithRange:NSMakeRange(start, end - start)];
     }
     return string;    
 }
@@ -321,6 +326,11 @@
     if([self hasLaTeX] && 0 == pthread_rwlock_tryrdlock(&dataFileLock)) {
         string = [NSString stringWithContentsOfFile:bblFilePath encoding:[[OFPreferenceWrapper sharedPreferenceWrapper] integerForKey:BDSKTeXPreviewFileEncodingKey] error:NULL];
         pthread_rwlock_unlock(&dataFileLock);
+        unsigned start, end;
+        start = [string rangeOfString:@"\\bibitem"].location;
+        end = [string rangeOfString:@"\\end{thebibliography}" options:NSBackwardsSearch].location;
+        if (start != NSNotFound && end != NSNotFound)
+            string = [string substringWithRange:NSMakeRange(start, end - start)];
     }
     return string;
 }
