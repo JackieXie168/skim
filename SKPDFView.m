@@ -233,7 +233,7 @@ NSString *SKPDFViewToolModeChangedNotification = @"SKPDFViewToolModeChangedNotif
     
     if (([self areaOfInterestForMouse: theEvent] &  kPDFLinkArea) != 0) {
         PDFAnnotation *ann = [page annotationAtPoint:pageSpaceMouseLoc];
-        if (ann != NULL){
+        if (ann != NULL && [[ann destination] page]){
             dest = [ann destination];
         }
     }    
