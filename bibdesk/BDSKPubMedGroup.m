@@ -75,9 +75,13 @@
 
 - (void)search;
 {
-    [self createURL];
-    // may need to make this public, or find some other update means; setURL should do it
-    [self startDownload];
+    if ([NSString isEmptyString:searchTerm]) {
+        [self setURL:nil];
+    } else {
+        [self createURL];
+        // may need to make this public, or find some other update means; setURL should do it
+        [self startDownload];
+    }
 }
 
 - (void)setMaxResults:(int)n;
@@ -115,7 +119,7 @@
 
 // this returns nil if no searchTerm has been set, to avoid an error message
 - (id)publications {
-    return [self searchTerm] ? [super publications] : nil;
+    return [NSString isEmptyString:searchTerm] ? nil : [super publications];
 }
 
 @end
