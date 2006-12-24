@@ -31,7 +31,7 @@
 {
     self = [super initWithName:aName URL:[[self class] baseURL]];
     if (self) {
-        //
+        // max number of results from NCBI is 100, except on evenings and weekends
         [self setMaxResults:50];
     }
     return self;
@@ -39,6 +39,7 @@
 
 - (void)createURL;
 {
+    // get the initial XML document with our search parameters in it
     NSString *esearch = [[[[self class] baseURL] absoluteString] stringByAppendingFormat:@"/esearch.fcgi?db=pubmed&retmax=1&usehistory=y&term=%@&tool=bibdesk", [self searchTerm]];
     NSURL *initialURL = [NSURL URLWithString:esearch]; 
     NSAssert(initialURL, @"unable to create initial query URL");
@@ -75,6 +76,7 @@
 - (void)search;
 {
     [self createURL];
+    // may need to make this public, or find some other update means; setURL should do it
     [self startDownload];
 }
 
@@ -111,6 +113,7 @@
 
 - (NSString *)searchKey { return searchKey; }
 
+// this returns nil if no searchTerm has been set, to avoid an error message
 - (id)publications {
     return [self searchTerm] ? [super publications] : nil;
 }
