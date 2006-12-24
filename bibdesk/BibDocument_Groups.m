@@ -66,6 +66,8 @@
 #import "BDSKScriptGroupSheetController.h"
 #import "BibEditor.h"
 #import "BibPersonController.h"
+#import "BDSKColoredBox.h"
+#import "BDSKCollapsibleView.h"
 #import "BDSKPubMedGroup.h"
 
 @implementation BibDocument (Groups)
@@ -143,40 +145,37 @@ The groupedPublications array is a subset of the publications array, developed b
 
 - (void)showPubMedEditor {
     NSScrollView *sv = [tableView enclosingScrollView];
-    NSRect searchFrame = [pubmedGradientView frame];
-    NSRect svFrame = [sv frame];
+    NSRect searchFrame = [pubmedView frame];
+    NSRect svFrame = [splitView frame];
     searchFrame.size.width = NSWidth(svFrame);
     searchFrame.origin.x = svFrame.origin.x;
-    
-    if ([sv isFlipped]) {
-        if ([pubmedGradientView isFlipped])
-            searchFrame.origin.y = svFrame.origin.y;
-        else
-            searchFrame.origin.y = svFrame.origin.y - NSHeight(searchFrame);
-        svFrame.origin.y += NSHeight(searchFrame);
+    svFrame.size.height -= NSHeight(searchFrame) + 1.0;
+    if ([[splitView superview] isFlipped]) {
+        searchFrame.origin.y = svFrame.origin.y;
+        svFrame.origin.y += NSHeight(searchFrame) + 1.0;
     } else {
-        if ([pubmedGradientView isFlipped])
-            searchFrame.origin.y = NSMaxY(svFrame);
-        else
-            searchFrame.origin.y = NSMaxY(svFrame) - NSHeight(searchFrame);
-        svFrame.origin.y -= NSHeight(searchFrame);
+        searchFrame.origin.y = NSMaxY(svFrame);
     }
     
-#warning fixme adds another splitview pane
-    // I wanted to add a separate view as in the file content search
-    [pubmedGradientView setFrame:searchFrame];
-    [sv setFrame:svFrame];
-    [[sv superview] addSubview:pubmedGradientView];
-    [[documentWindow contentView] setNeedsDisplay:YES];
+    [pubmedView setFrame:searchFrame];
+    [splitView setFrame:svFrame];
+    [mainBox addSubview:pubmedView];
+    [mainBox setNeedsDisplay:YES];
     
     [pubmedMaxResultsField setIntValue:[[self currentPubMedGroup] maxResults]];
-    [pubmedSearchField setStringValue:[[self currentPubMedGroup] searchTerm]];
+    [pubmedSearchField setStringValue:[[self currentPubMedGroup] searchTerm] ? [[self currentPubMedGroup] searchTerm] : @""];
 }
 
 - (void)hidePubMedEditor
 {
-    [pubmedGradientView removeFromSuperview];
-    [[documentWindow contentView] setNeedsDisplay:YES];
+    NSRect searchFrame = [pubmedView frame];
+    NSRect svFrame = [splitView frame];
+    if ([[splitView superview] isFlipped])
+        svFrame.origin.y -= NSHeight(searchFrame) + 1.0;
+    svFrame.size.height += NSHeight(searchFrame) + 1.0;
+    [pubmedView removeFromSuperview];
+    [splitView setFrame:svFrame];
+    [mainBox setNeedsDisplay:YES];
 }
 
 #pragma mark Notification handlers

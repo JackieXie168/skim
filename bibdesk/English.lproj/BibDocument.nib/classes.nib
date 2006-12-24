@@ -13,6 +13,7 @@
             SUPERCLASS = NSView; 
         }, 
         {CLASS = BDSKDragOutlineView; LANGUAGE = ObjC; SUPERCLASS = NSOutlineView; }, 
+        {CLASS = BDSKEdgeView; LANGUAGE = ObjC; SUPERCLASS = BDSKContainerView; }, 
         {
             CLASS = BDSKEncodingPopUpButton; 
             LANGUAGE = ObjC; 
@@ -144,9 +145,10 @@
                 groupTableView = BDSKGroupTableView; 
                 mainBox = BDSKColoredBox; 
                 previewTextView = NSTextView; 
-                pubmedGradientView = BDSKGradientView; 
+                pubmedEdgeView = BDSKEdgeView; 
                 pubmedMaxResultsField = NSTextField; 
                 pubmedSearchField = NSSearchField; 
+                pubmedView = BDSKCollapsibleView; 
                 saveAccessoryView = NSView; 
                 saveTextEncodingPopupButton = BDSKEncodingPopUpButton; 
                 searchField = BDSKSearchField; 

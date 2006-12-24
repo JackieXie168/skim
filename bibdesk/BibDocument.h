@@ -183,7 +183,8 @@ extern NSString* BDSKWeblocFilePboardType; // core pasteboard type for webloc fi
     BDSKItemPasteboardHelper *pboardHelper;
     
     // !!! temporary
-    IBOutlet BDSKGradientView *pubmedGradientView;
+    IBOutlet BDSKCollapsibleView *pubmedView;
+    IBOutlet BDSKEdgeView *pubmedEdgeView;
     IBOutlet NSSearchField *pubmedSearchField;
     IBOutlet NSTextField *pubmedMaxResultsField;
     
