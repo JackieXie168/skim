@@ -182,6 +182,11 @@ extern NSString* BDSKWeblocFilePboardType; // core pasteboard type for webloc fi
     NSString *promiseDragColumnIdentifier;
     BDSKItemPasteboardHelper *pboardHelper;
     
+    // !!! temporary
+    IBOutlet BDSKGradientView *pubmedGradientView;
+    IBOutlet NSSearchField *pubmedSearchField;
+    IBOutlet NSTextField *pubmedMaxResultsField;
+    
 #pragma mark Scalar state variables
 
     struct _docState {

@@ -66,6 +66,7 @@
 #import "BDSKScriptGroupSheetController.h"
 #import "BibEditor.h"
 #import "BibPersonController.h"
+#import "BDSKPubMedGroup.h"
 
 @implementation BibDocument (Groups)
 
@@ -124,6 +125,60 @@ The groupedPublications array is a subset of the publications array, developed b
 	return nil == indexSet ? nil : [groups objectsAtIndexes:indexSet];
 }
 
+#pragma mark PubMed ** TEMPORARY **
+
+- (id)currentPubMedGroup {
+#warning hack
+    id group = [[self selectedGroups] firstObject];
+    return [group isKindOfClass:[BDSKPubMedGroup class]] ? group : nil;
+}
+
+- (IBAction)changeMaxResultsForPubMedSearch:(id)sender {
+    [[self currentPubMedGroup] setMaxResults:[sender intValue]];
+}
+
+- (IBAction)changePubMedSearchTerm:(id)sender {
+    [[self currentPubMedGroup] setSearchTerm:[sender stringValue]];
+}
+
+- (void)showPubMedEditor {
+    NSScrollView *sv = [tableView enclosingScrollView];
+    NSRect searchFrame = [pubmedGradientView frame];
+    NSRect svFrame = [sv frame];
+    searchFrame.size.width = NSWidth(svFrame);
+    searchFrame.origin.x = svFrame.origin.x;
+    
+    if ([sv isFlipped]) {
+        if ([pubmedGradientView isFlipped])
+            searchFrame.origin.y = svFrame.origin.y;
+        else
+            searchFrame.origin.y = svFrame.origin.y - NSHeight(searchFrame);
+        svFrame.origin.y += NSHeight(searchFrame);
+    } else {
+        if ([pubmedGradientView isFlipped])
+            searchFrame.origin.y = NSMaxY(svFrame);
+        else
+            searchFrame.origin.y = NSMaxY(svFrame) - NSHeight(searchFrame);
+        svFrame.origin.y -= NSHeight(searchFrame);
+    }
+    
+#warning fixme adds another splitview pane
+    // I wanted to add a separate view as in the file content search
+    [pubmedGradientView setFrame:searchFrame];
+    [sv setFrame:svFrame];
+    [[sv superview] addSubview:pubmedGradientView];
+    [[documentWindow contentView] setNeedsDisplay:YES];
+    
+    [pubmedMaxResultsField setIntValue:[[self currentPubMedGroup] maxResults]];
+    [pubmedSearchField setStringValue:[[self currentPubMedGroup] searchTerm]];
+}
+
+- (void)hidePubMedEditor
+{
+    [pubmedGradientView removeFromSuperview];
+    [[documentWindow contentView] setNeedsDisplay:YES];
+}
+
 #pragma mark Notification handlers
 
 - (void)handleGroupFieldChangedNotification:(NSNotification *)notification{
@@ -135,8 +190,12 @@ The groupedPublications array is a subset of the publications array, developed b
 - (void)handleFilterChangedNotification:(NSNotification *)notification{
 	[self updateSmartGroupsCountAndContent:YES];
 }
-
+    
 - (void)handleGroupTableSelectionChangedNotification:(NSNotification *)notification{
+    if ([self currentPubMedGroup])
+        [self showPubMedEditor];
+    else
+        [self hidePubMedEditor];
     // Mail and iTunes clear search when changing groups; users don't like this, though.  Xcode doesn't clear its search field, so at least there's some precedent for the opposite side.
     [self displaySelectedGroups];
     // could force selection of row 0 in the main table here, so we always display a preview, but that flashes the group table highlights annoyingly and may cause other selection problems
@@ -760,6 +819,15 @@ The groupedPublications array is a subset of the publications array, developed b
     [groupTableView editColumn:0 row:insertIndex withEvent:nil select:YES];
     [[self undoManager] setActionName:NSLocalizedString(@"Add Static Group", @"Undo action name")];
     // updating of the tables is done when finishing the edit of the name
+}
+
+- (IBAction)pubmedSearch:(id)sender {
+    BDSKPubMedGroup *group = [[[BDSKPubMedGroup alloc] initWithName:@"pubmed"] autorelease];
+    unsigned int insertIndex = NSMaxRange([groups rangeOfURLGroups]);
+    [groups addURLGroup:group];
+    [groupTableView selectRowIndexes:[NSIndexSet indexSetWithIndex:insertIndex] byExtendingSelection:NO];
+    [groupTableView editColumn:0 row:insertIndex withEvent:nil select:YES];
+    [[self undoManager] setActionName:NSLocalizedString(@"Add PubMed Search Group", @"Undo action name")];
 }
 
 - (IBAction)addURLGroupAction:(id)sender {

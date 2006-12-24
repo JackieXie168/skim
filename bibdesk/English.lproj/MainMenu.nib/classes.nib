@@ -135,6 +135,7 @@
                 openDocumentUsingPhonyCiteKeys = id; 
                 openLinkedFile = id; 
                 openRemoteURL = id; 
+                pubmedSearch = id; 
                 refreshAllExternalGroups = id; 
                 refreshScriptGroups = id; 
                 refreshSharedBrowsing = id; 
