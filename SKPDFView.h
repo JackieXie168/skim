@@ -28,6 +28,9 @@ typedef enum _SKToolMode {
     BOOL hasNavigation;
     NSTimer *autohideTimer;
     SKNavigationWindow *navWindow;
+	NSRect selectedRect;
+	NSRect oldVisibleRect;
+    NSTimer *selRectTimer;
 }
 
 - (SKToolMode)toolMode;
