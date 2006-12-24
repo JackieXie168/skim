@@ -116,15 +116,16 @@
 
 - (NSString *)description;
 {
-    return [NSString stringWithFormat:@"<%@ %p>: {\n\tis downloading: %@\n\tname: %@\n\tURL: %@\n }", [self class], self, (isRetrieving ? @"yes" : @"no"), name, URL];
+    return [NSString stringWithFormat:@"<%@ %p>: {\n\tis downloading: %@\n\tname: %@\n\tURL: %@\n }", [self class], self, (isRetrieving ? @"yes" : @"no"), name, [self URL]];
 }
 
 #pragma mark Downloading
 
 - (void)startDownload;
 {
-    if ([URL isFileURL]) {
-        NSString *path = [[URL fileURLByResolvingAliases] path];
+    NSURL *theURL = [self URL];
+    if ([theURL isFileURL]) {
+        NSString *path = [[theURL fileURLByResolvingAliases] path];
         BOOL isDir;
         if([[NSFileManager defaultManager] fileExistsAtPath:path isDirectory:&isDir] && NO == isDir){
             [self download:nil didCreateDestination:path];
@@ -135,11 +136,11 @@
                 [error setValue:NSLocalizedString(@"URL points to a directory instead of a file", @"Error description") forKey:NSLocalizedDescriptionKey];
             else
                 [error setValue:NSLocalizedString(@"The URL points to a file that does not exist", @"Error description") forKey:NSLocalizedDescriptionKey];
-            [error setValue:[URL path] forKey:NSFilePathErrorKey];
+            [error setValue:[theURL path] forKey:NSFilePathErrorKey];
             [self download:nil didFailWithError:error];
         }
     } else {
-        NSURLRequest *request = [NSURLRequest requestWithURL:URL];
+        NSURLRequest *request = [NSURLRequest requestWithURL:theURL];
         // we use a WebDownload since it's supposed to add authentication dialog capability
         if ([self isRetrieving])
             [URLDownload cancel];
