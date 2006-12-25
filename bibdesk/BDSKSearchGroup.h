@@ -12,7 +12,6 @@
 @interface BDSKSearchGroup : BDSKURLGroup {
     int maxResults;
     int availableResults;
-    int fetchedResults;
     NSString *webEnv;
     NSString *queryKey;
     NSString *searchTerm;
@@ -24,7 +23,10 @@
 - (void)setSearchKey:(NSString *)aKey;
 - (NSString *)searchKey;
 
-- (BOOL)hasMoreResults;
+- (void)setNumberOfAvailableResults:(int)value;
+- (int)numberOfAvailableResults;
+
+- (BOOL)canGetMoreResults;
 
 - (void)search;
 - (void)searchNext;
