@@ -92,23 +92,14 @@
 }
 
 - (void)addSubview:(NSView *)aView {
-	NSRect frame = [aView frame];
-	frame = [contentView convertRect:frame fromView:self];
-	[aView setFrame:frame];
 	[contentView addSubview:aView];
 }
 
 - (void)addSubview:(NSView *)aView positioned:(NSWindowOrderingMode)place relativeTo:(NSView *)otherView {
-	NSRect frame = [aView frame];
-	frame = [contentView convertRect:frame fromView:self];
-	[aView setFrame:frame];
 	[contentView addSubview:aView positioned:place relativeTo:otherView];
 }
 
 - (void)replaceSubview:(NSView *)aView with:(NSView *)newView {
-	NSRect frame = [aView frame];
-	frame = [contentView convertRect:frame fromView:self];
-	[aView setFrame:frame];
 	[contentView replaceSubview:aView with:newView];
 }
 
