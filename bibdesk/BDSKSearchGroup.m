@@ -101,9 +101,9 @@
 - (void)resetSearch;
 {
     // get the initial XML document with our search parameters in it
-    NSString *esearch = [[[self class] baseURLString] stringByAppendingFormat:@"/esearch.fcgi?db=pubmed&retmax=1&usehistory=y&term=%@&tool=bibdesk", [self searchTerm]];
+    NSString *esearch = [[[self class] baseURLString] stringByAppendingFormat:@"/esearch.fcgi?db=pubmed&retmax=1&usehistory=y&term=%@&tool=bibdesk", [[self searchTerm] stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding]];
     NSURL *initialURL = [NSURL URLWithString:esearch]; 
-    NSAssert(initialURL, @"unable to create initial query URL");
+    OBPRECONDITION(initialURL);
     
     NSURLRequest *request = [NSURLRequest requestWithURL:initialURL];
     NSURLResponse *response;
@@ -139,9 +139,11 @@
         return;
     
     int numResults = MIN([self numberOfAvailableResults] - [self count], MAX_RESULTS);
-    NSString *efetch = [[[self class] baseURLString] stringByAppendingFormat:@"/efetch.fcgi?rettype=medline&retmode=text&retstart=%d&retmax=%d&db=pubmed&query_key=%@&WebEnv=%@&tool=bibdesk", [self count], numResults, [self queryKey], [self webEnv]];
+    
+    // need to escape queryKey, but the rest should be valid for a URL
+    NSString *efetch = [[[self class] baseURLString] stringByAppendingFormat:@"/efetch.fcgi?rettype=medline&retmode=text&retstart=%d&retmax=%d&db=pubmed&query_key=%@&WebEnv=%@&tool=bibdesk", [self count], numResults, [[self queryKey] stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding], [self webEnv]];
     NSURL *theURL = [NSURL URLWithString:efetch];
-    NSAssert(theURL, @"unable to create fetch URL");
+    OBPOSTCONDITION(theURL);
     
     [self setURL:theURL];
     [self startDownload];
