@@ -7,6 +7,7 @@
 //
 
 #import "BDSKSearchGroup.h"
+#import "NSImage+Toolbox.h"
 
 // max number of results from NCBI is 100, except on evenings and weekends
 #define MAX_RESULTS 50
@@ -23,16 +24,30 @@
 
 @implementation BDSKSearchGroup
 
-+ (NSURL *)baseURL { 
-    static NSURL *baseURL = nil;
-    if (nil == baseURL)
-        baseURL = [[NSURL alloc] initWithString:@"http://eutils.ncbi.nlm.nih.gov/entrez/eutils"];
-    return baseURL;
++ (NSString *)baseURLString { return @"http://eutils.ncbi.nlm.nih.gov/entrez/eutils"; }
+
+// may be useful for UI validation
++ (BOOL)canConnect;
+{
+    CFURLRef theURL = (CFURLRef)[NSURL URLWithString:[self baseURLString]];
+    CFNetDiagnosticRef diagnostic = CFNetDiagnosticCreateWithURL(CFGetAllocator(theURL), theURL);
+    
+    NSString *details;
+    CFNetDiagnosticStatus status = CFNetDiagnosticCopyNetworkStatusPassively(diagnostic, (CFStringRef *)&details);
+    CFRelease(diagnostic);
+    [details autorelease];
+    
+    BOOL canConnect = kCFNetDiagnosticConnectionUp == status;
+    if (NO == canConnect)
+        NSLog(@"%@", details);
+    
+    return canConnect;
 }
 
 - (id)initWithName:(NSString *)aName;
 {
-    self = [super initWithName:aName URL:[[self class] baseURL]];
+    // this URL is basically just to prevent an assertion failure in the superclass
+    self = [super initWithName:aName URL:[NSURL URLWithString:[[self class] baseURLString]]];
     if (self) {
     }
     return self;
@@ -47,11 +62,37 @@
     [super dealloc];
 }
 
+// note that pointer equality is used for these groups, so names can overlap, and users can have duplicate searches
+
 - (NSImage *)icon {
     return [NSImage smallImageNamed:@"searchFolderIcon"];
 }
 
 - (BOOL)isSearch { return YES; }
+- (void)setWebEnv:(NSString *)env;
+{
+    [webEnv autorelease];
+    webEnv = [env copy];
+}
+
+- (void)setQueryKey:(NSString *)aKey;
+{
+    [queryKey autorelease];
+    queryKey = [aKey copy];
+}
+
+// super's implementation does some things that we don't want (undo, setPublications:nil, setName:)
+- (void)setURL:(NSURL *)newURL;
+{
+    if (URL != newURL) {
+        [URL release];
+        URL = [newURL copy];
+    }
+}
+
+- (NSString *)queryKey { return queryKey; }
+
+- (NSString *)webEnv { return webEnv; }
 
 - (BOOL)isURL { return NO; }
 
@@ -60,7 +101,7 @@
 - (void)resetSearch;
 {
     // get the initial XML document with our search parameters in it
-    NSString *esearch = [[[[self class] baseURL] absoluteString] stringByAppendingFormat:@"/esearch.fcgi?db=pubmed&retmax=1&usehistory=y&term=%@&tool=bibdesk", [self searchTerm]];
+    NSString *esearch = [[[self class] baseURLString] stringByAppendingFormat:@"/esearch.fcgi?db=pubmed&retmax=1&usehistory=y&term=%@&tool=bibdesk", [self searchTerm]];
     NSURL *initialURL = [NSURL URLWithString:esearch]; 
     NSAssert(initialURL, @"unable to create initial query URL");
     
@@ -79,27 +120,32 @@
         NSXMLElement *root = [document rootElement];
         
         // we need to extract WebEnv, Count, and QueryKey to construct our final URL
-        webEnv = [[[[root nodesForXPath:@"/eSearchResult[1]/WebEnv[1]" error:NULL] lastObject] stringValue] retain];
-        queryKey = [[[[root nodesForXPath:@"/eSearchResult[1]/QueryKey[1]" error:NULL] lastObject] stringValue] retain];
+        [self setWebEnv:[[[root nodesForXPath:@"/eSearchResult[1]/WebEnv[1]" error:NULL] lastObject] stringValue]];
+        [self setQueryKey:[[[root nodesForXPath:@"/eSearchResult[1]/QueryKey[1]" error:NULL] lastObject] stringValue]];
         NSString *countString = [[[root nodesForXPath:@"/eSearchResult[1]/Count[1]" error:NULL] lastObject] stringValue];
         availableResults = countString ? [countString intValue] : 0;
+        
+        [document release];
+        
+    } else if (nil != esearchResult) {
+        // make sure error was actually initialized by NSXMLDocument
+        NSLog(@"unable to create an XML document: %@", error);
     }
 }
 
 - (void)fetch;
 {
-    if (webEnv == nil || queryKey == nil || availableResults <= fetchedResults)
+    if ([self webEnv] == nil || [self queryKey] == nil || availableResults <= fetchedResults)
         return;
     
     int numResults = MIN(availableResults - fetchedResults, MAX_RESULTS);
-    NSString *efetch = [[[[self class] baseURL] absoluteString] stringByAppendingFormat:@"/efetch.fcgi?rettype=medline&retmode=text&retstart=%d&retmax=%d&db=pubmed&query_key=%@&WebEnv=%@&tool=bibdesk", fetchedResults, numResults, queryKey, webEnv];
+    NSString *efetch = [[[self class] baseURLString] stringByAppendingFormat:@"/efetch.fcgi?rettype=medline&retmode=text&retstart=%d&retmax=%d&db=pubmed&query_key=%@&WebEnv=%@&tool=bibdesk", fetchedResults, numResults, [self queryKey], [self webEnv]];
     NSURL *theURL = [NSURL URLWithString:efetch];
     NSAssert(theURL, @"unable to create fetch URL");
 
     fetchedResults += numResults;
     
-    [URL release];
-    URL = [theURL copy];
+    [self setURL:theURL];
     [self startDownload];
     
     // use this to notify the tableview to start the progress indicators and disable the button
@@ -112,17 +158,15 @@
     if ([self isRetrieving])
         return;
     
-    [webEnv release];
-    webEnv = nil;
-    [queryKey release];
-    queryKey = nil;
+    [self setWebEnv:nil];
+    [self setQueryKey:nil];
+
     fetchedResults = 0;
     availableResults = 0;
     
     
-    if ([NSString isEmptyString:searchTerm]) {
-        [URL release];
-        URL = nil;
+    if ([NSString isEmptyString:[self searchTerm]]) {
+        [self setURL:nil];
         [self setPublications:[NSArray array]];
     } else {
         [self setPublications:nil];
@@ -135,11 +179,11 @@
 {
     if ([self isRetrieving])
         return;
-    if ([NSString isEmptyString:searchTerm]) {
-        [URL release];
-        URL = nil;
+    
+    if ([NSString isEmptyString:[self searchTerm]]) {
+        [self setURL:nil];
     } else {
-        if (searchKey == nil || webEnv == nil)
+        if ([self searchKey] == nil || [self webEnv] == nil)
             [self resetSearch];
         [self fetch];
     }
@@ -164,10 +208,9 @@
         [searchKey autorelease];
         searchKey = [aKey copy];
         
-        [webEnv release];
-        webEnv = nil;
-        [queryKey release];
-        queryKey = nil;
+        [self setWebEnv:nil];
+        [self setQueryKey:nil];
+
         fetchedResults = 0;
         
         [self search];
@@ -178,7 +221,7 @@
 
 // this returns nil if no searchTerm has been set, to avoid an error message
 - (id)publications {
-    return [NSString isEmptyString:searchTerm] ? nil : [super publications];
+    return [NSString isEmptyString:[self searchTerm]] ? nil : [super publications];
 }
 
 - (BOOL)hasMoreResults;
