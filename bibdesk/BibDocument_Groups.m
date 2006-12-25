@@ -834,11 +834,10 @@ The groupedPublications array is a subset of the publications array, developed b
 }
 
 - (IBAction)pubmedSearch:(id)sender {
-    BDSKSearchGroup *group = [[[BDSKSearchGroup alloc] initWithName:@"pubmed"] autorelease];
+    BDSKSearchGroup *group = [[[BDSKSearchGroup alloc] initWithName:@"PubMed"] autorelease];
     unsigned int insertIndex = NSMaxRange([groups rangeOfSearchGroups]);
     [groups addSearchGroup:group];
     [groupTableView selectRowIndexes:[NSIndexSet indexSetWithIndex:insertIndex] byExtendingSelection:NO];
-    [groupTableView editColumn:0 row:insertIndex withEvent:nil select:YES];
     [[self undoManager] setActionName:NSLocalizedString(@"Add PubMed Search Group", @"Undo action name")];
 }
 

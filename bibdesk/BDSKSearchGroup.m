@@ -98,6 +98,10 @@
 
 - (BOOL)isEditable { return NO; }
 
+- (BOOL)hasEditableName { return NO; }
+
+- (NSString *)name { return [NSString isEmptyString:[self searchTerm]] ? NSLocalizedString(@"Empty", @"") : [self searchTerm]; }
+
 - (void)resetSearch;
 {
     // get the initial XML document with our search parameters in it
