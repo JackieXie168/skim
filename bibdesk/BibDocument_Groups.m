@@ -140,6 +140,7 @@ The groupedPublications array is a subset of the publications array, developed b
 }
 
 - (IBAction)nextPubMedSearch:(id)sender {
+    [self changePubMedSearchTerm:pubmedSearchField];
     BDSKSearchGroup *group = [[self selectedGroups] firstObject];
     OBASSERT([group isSearch]);
     [group searchNext];
@@ -153,10 +154,10 @@ The groupedPublications array is a subset of the publications array, developed b
         NSRect svFrame = [splitView frame];
         searchFrame.size.width = NSWidth(svFrame);
         searchFrame.origin.x = svFrame.origin.x;
-        svFrame.size.height -= NSHeight(searchFrame) + 1.0;
+        svFrame.size.height -= NSHeight(searchFrame);
         if ([[splitView superview] isFlipped]) {
             searchFrame.origin.y = svFrame.origin.y;
-            svFrame.origin.y += NSHeight(searchFrame) + 1.0;
+            svFrame.origin.y += NSHeight(searchFrame);
         } else {
             searchFrame.origin.y = NSMaxY(svFrame);
         }
@@ -171,6 +172,7 @@ The groupedPublications array is a subset of the publications array, developed b
     OBASSERT([group isSearch]);
     [pubmedSearchField setStringValue:[group searchTerm] ? [group searchTerm] : @""];
     [pubmedSearchNextButton setEnabled:[group canGetMoreResults]];
+    [pubmedMatchResultsField setStringValue:[group numberOfAvailableResults] ? [NSString stringWithFormat:NSLocalizedString(@"%i matches", @"Search group label"), [group numberOfAvailableResults]] : @""];
 }
 
 - (void)hidePubMedEditor
@@ -273,8 +275,9 @@ The groupedPublications array is a subset of the publications array, developed b
             [self displaySelectedGroups];
     }
     
-    if ([[groups searchGroups] containsObject:group]) {
+    if ([group isSearch]) {
         [pubmedSearchNextButton setEnabled:[(BDSKSearchGroup *)group canGetMoreResults]];
+        [pubmedMatchResultsField setStringValue:[(BDSKSearchGroup *)group numberOfAvailableResults] ? [NSString stringWithFormat:NSLocalizedString(@"%i matches", @"Search group label"), [(BDSKSearchGroup *)group numberOfAvailableResults]] : @""];
     }
 }
 
@@ -301,6 +304,7 @@ The groupedPublications array is a subset of the publications array, developed b
 
 - (void)handleDidAddRemoveGroupNotification:(NSNotification *)notification{
     [groupTableView reloadData];
+    [self handleGroupTableSelectionChangedNotification:nil];
 }
 
 #pragma mark UI updating
