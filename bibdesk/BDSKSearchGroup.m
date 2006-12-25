@@ -38,6 +38,15 @@
     return self;
 }
 
+- (void)dealloc
+{
+    [webEnv release];
+    [queryKey release];
+    [searchTerm release];
+    [searchKey release];
+    [super dealloc];
+}
+
 - (NSImage *)icon {
     return [NSImage smallImageNamed:@"searchFolderIcon"];
 }
