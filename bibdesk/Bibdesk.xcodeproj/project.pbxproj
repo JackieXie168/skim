@@ -315,6 +315,7 @@
 		CE7E207F0A0BF833009D04C3 /* GroupAddSmart.tiff in Resources */ = {isa = PBXBuildFile; fileRef = CE7E207D0A0BF833009D04C3 /* GroupAddSmart.tiff */; };
 		CE7EA95C0AAC55B2000FE8FD /* NSWindowController_BDSKExtensions.h in Headers */ = {isa = PBXBuildFile; fileRef = CE7EA95A0AAC55B2000FE8FD /* NSWindowController_BDSKExtensions.h */; };
 		CE7EA95D0AAC55B2000FE8FD /* NSWindowController_BDSKExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = CE7EA95B0AAC55B2000FE8FD /* NSWindowController_BDSKExtensions.m */; };
+		CE7F5E480B3F5F1800A919D0 /* searchFolderIcon.tiff in Resources */ = {isa = PBXBuildFile; fileRef = CE7F5E470B3F5F1800A919D0 /* searchFolderIcon.tiff */; };
 		CE8C731E0B0CA6C500E31E5A /* NSObject_BDSKExtensions.h in Headers */ = {isa = PBXBuildFile; fileRef = CE8C731C0B0CA6C500E31E5A /* NSObject_BDSKExtensions.h */; };
 		CE8C731F0B0CA6C500E31E5A /* NSObject_BDSKExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = CE8C731D0B0CA6C500E31E5A /* NSObject_BDSKExtensions.m */; };
 		CE8F83480AFB989C009EE6F9 /* BDSKThreadSafeMutableArray.h in Headers */ = {isa = PBXBuildFile; fileRef = CE8F83460AFB989B009EE6F9 /* BDSKThreadSafeMutableArray.h */; };
@@ -1169,6 +1170,7 @@
 		CE7E29D70A0E84AB009D04C3 /* CIImage_BDSKExtensions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CIImage_BDSKExtensions.m; sourceTree = "<group>"; };
 		CE7EA95A0AAC55B2000FE8FD /* NSWindowController_BDSKExtensions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NSWindowController_BDSKExtensions.h; sourceTree = "<group>"; };
 		CE7EA95B0AAC55B2000FE8FD /* NSWindowController_BDSKExtensions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NSWindowController_BDSKExtensions.m; sourceTree = "<group>"; };
+		CE7F5E470B3F5F1800A919D0 /* searchFolderIcon.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; name = searchFolderIcon.tiff; path = Images/searchFolderIcon.tiff; sourceTree = "<group>"; };
 		CE8C731C0B0CA6C500E31E5A /* NSObject_BDSKExtensions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NSObject_BDSKExtensions.h; sourceTree = "<group>"; };
 		CE8C731D0B0CA6C500E31E5A /* NSObject_BDSKExtensions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NSObject_BDSKExtensions.m; sourceTree = "<group>"; };
 		CE8F83460AFB989B009EE6F9 /* BDSKThreadSafeMutableArray.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BDSKThreadSafeMutableArray.h; sourceTree = "<group>"; };
@@ -1634,8 +1636,6 @@
 				CE38FA7E091D235700BCB69D /* Foundation Extensions */,
 				CE38FA7D091D210C00BCB69D /* AppKit Extensions */,
 				F918104307583A6E00CF822D /* Headers */,
-				F94DB0F60B3E2FA1006F37A2 /* BDSKSearchGroup.h */,
-				F94DB0F70B3E2FA1006F37A2 /* BDSKSearchGroup.m */,
 			);
 			name = Classes;
 			sourceTree = "<group>";
@@ -1992,6 +1992,7 @@
 				CE51914A09E5615300E97C3A /* BDSKRegExFindPattern.m */,
 				CED65AB30906BCC6003EED90 /* BDSKScriptHook.m */,
 				CE11AC090AE7E0DC008C47AC /* BDSKScriptGroup.m */,
+				F94DB0F70B3E2FA1006F37A2 /* BDSKSearchGroup.m */,
 				F925332208FC9FB80045D563 /* BDSKSearchIndex.m */,
 				F92EF32109E6242100A244D0 /* BDSKSharedGroup.m */,
 				CEFDBDBC0AEA86BA009EE99D /* BDSKSmartGroup.m */,
@@ -2164,6 +2165,7 @@
 				F9EF21C808B1575D00AAC9A9 /* ScrollArrowLeft.tiff */,
 				F9EF21C908B1575D00AAC9A9 /* ScrollArrowRight_Pressed.tiff */,
 				F9EF21CA08B1575D00AAC9A9 /* ScrollArrowRight.tiff */,
+				CE7F5E470B3F5F1800A919D0 /* searchFolderIcon.tiff */,
 				CE386D0609D7075C00B9D1F0 /* sharedFolderIcon.tiff */,
 				CE4B691A09E9235200CCA14F /* SmallLock_Locked.tiff */,
 				CE4B691B09E9235200CCA14F /* SmallLock_Unlocked.tiff */,
@@ -2302,6 +2304,7 @@
 				F9EF21B208B1572500AAC9A9 /* BDSKScrollableTextField.h */,
 				F9A2245A0AE02C8E0046CA3D /* BDSKSearch.h */,
 				CE7A3E2C0B0A18CC00D1B333 /* BDSKSearchField.h */,
+				F94DB0F60B3E2FA1006F37A2 /* BDSKSearchGroup.h */,
 				F925332108FC9FB80045D563 /* BDSKSearchIndex.h */,
 				F925352708FDFAE40045D563 /* BDSKSearchResult.h */,
 				F92EF32009E6242100A244D0 /* BDSKSharedGroup.h */,
@@ -3153,6 +3156,7 @@
 				CEEFE2B30B03FAF500668BB0 /* BDSKScriptGroupSheet.nib in Resources */,
 				CE7A4AA50B0B480100D1B333 /* BDSKCustomCiteDrawer.nib in Resources */,
 				CE3A1A570B19C2F700233208 /* SelectEncodingsPanel.nib in Resources */,
+				CE7F5E480B3F5F1800A919D0 /* searchFolderIcon.tiff in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -38,6 +38,10 @@
     return self;
 }
 
+- (NSImage *)icon {
+    return [NSImage smallImageNamed:@"searchFolderIcon"];
+}
+
 - (BOOL)isSearch { return YES; }
 
 - (BOOL)isURL { return NO; }
