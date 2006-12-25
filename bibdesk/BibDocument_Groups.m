@@ -144,6 +144,8 @@ The groupedPublications array is a subset of the publications array, developed b
 }
 
 - (void)showPubMedEditor {
+    if ([pubmedView window])
+        return;
     NSScrollView *sv = [tableView enclosingScrollView];
     NSRect searchFrame = [pubmedView frame];
     NSRect svFrame = [splitView frame];
@@ -167,13 +169,10 @@ The groupedPublications array is a subset of the publications array, developed b
 
 - (void)hidePubMedEditor
 {
-    NSRect searchFrame = [pubmedView frame];
-    NSRect svFrame = [splitView frame];
-    if ([[splitView superview] isFlipped])
-        svFrame.origin.y -= NSHeight(searchFrame) + 1.0;
-    svFrame.size.height += NSHeight(searchFrame) + 1.0;
+    if ([pubmedView window] == nil)
+        return;
     [pubmedView removeFromSuperview];
-    [splitView setFrame:svFrame];
+    [splitView setFrame:[mainBox bounds]];
     [mainBox setNeedsDisplay:YES];
 }
 
