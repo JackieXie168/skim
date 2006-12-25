@@ -202,8 +202,8 @@ static int numberOfOpenEditors = 0;
     // Setup the form and the matrix
 	BDSKEdgeView *edgeView = (BDSKEdgeView *)[[splitView subviews] objectAtIndex:0];
 	[edgeView setEdges:BDSKMinYEdgeMask];
-    NSRect ignored, frame = [edgeView contentRect];
-    NSDivideRect([edgeView contentRect], &ignored, &frame, FORM_OFFSET, NSMinXEdge);
+    NSRect ignored, frame;
+    NSDivideRect([[edgeView contentView] bounds], &ignored, &frame, FORM_OFFSET, NSMinXEdge);
     [[bibFields enclosingScrollView] setFrame:frame];
 	[edgeView addSubview:[bibFields enclosingScrollView]];
     // don't know why, but this is broken
@@ -211,7 +211,7 @@ static int numberOfOpenEditors = 0;
     
     edgeView = (BDSKEdgeView *)[[splitView subviews] objectAtIndex:1];
 	[edgeView setEdges:BDSKMinYEdgeMask | BDSKMaxYEdgeMask];
-    NSDivideRect([edgeView contentRect], &ignored, &frame, FORM_OFFSET, NSMinXEdge);
+    NSDivideRect([[edgeView contentView] bounds], &ignored, &frame, FORM_OFFSET, NSMinXEdge);
     [[extraBibFields enclosingScrollView] setFrame:frame];
 	[edgeView addSubview:[extraBibFields enclosingScrollView]];
 
