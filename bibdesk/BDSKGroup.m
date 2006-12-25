@@ -147,6 +147,8 @@
 
 - (BOOL)isScript { return NO; }
 
+- (BOOL)isSearch { return NO; }
+
 - (BOOL)isExternal { return NO; }
 
 - (BOOL)isValidDropTarget { return NO; }

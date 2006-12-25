@@ -41,6 +41,7 @@
 #import "BDSKSharedGroup.h"
 #import "BDSKURLGroup.h"
 #import "BDSKScriptGroup.h"
+#import "BDSKSearchGroup.h"
 #import "BDSKSmartGroup.h"
 #import "BDSKStaticGroup.h"
 #import "BDSKCategoryGroup.h"
@@ -66,6 +67,7 @@
         sharedGroups = [[NSMutableArray alloc] init];
         urlGroups = [[NSMutableArray alloc] init];
         scriptGroups = [[NSMutableArray alloc] init];
+        searchGroups = [[NSMutableArray alloc] init];
         smartGroups = [[NSMutableArray alloc] init];
         staticGroups = [[NSMutableArray alloc] init];
         tmpStaticGroups = nil;
@@ -81,6 +83,7 @@
     [sharedGroups release];
     [urlGroups release];
     [scriptGroups release];
+    [searchGroups release];
     [smartGroups release];
     [staticGroups release];
     [tmpStaticGroups release];
@@ -118,6 +121,11 @@
     count = [scriptGroups count];
     if (index < count)
         return [scriptGroups objectAtIndex:index];
+    index -= count;
+    
+    count = [searchGroups count];
+    if (index < count)
+        return [searchGroups objectAtIndex:index];
     index -= count;
     
     if ([lastImportGroup count] != 0) {
@@ -161,6 +169,10 @@
     return scriptGroups;
 }
 
+- (NSArray *)searchGroups{
+    return searchGroups;
+}
+
 - (NSArray *)smartGroups{
     return smartGroups;
 }
@@ -188,8 +200,12 @@
     return NSMakeRange(NSMaxRange([self rangeOfURLGroups]), [scriptGroups count]);
 }
 
+- (NSRange)rangeOfSearchGroups{
+    return NSMakeRange(NSMaxRange([self rangeOfScriptGroups]), [scriptGroups count]);
+}
+
 - (NSRange)rangeOfSmartGroups{
-    unsigned startIndex = NSMaxRange([self rangeOfScriptGroups]);
+    unsigned startIndex = NSMaxRange([self rangeOfSearchGroups]);
     if([lastImportGroup count] > 0) startIndex++;
     return NSMakeRange(startIndex, [smartGroups count]);
 }
@@ -222,6 +238,13 @@
     unsigned int maxCount = MIN([indexes count], scriptRange.length);
     unsigned int buffer[maxCount];
     return [indexes getIndexes:buffer maxCount:maxCount inIndexRange:&scriptRange];
+}
+
+- (unsigned int)numberOfSearchGroupsAtIndexes:(NSIndexSet *)indexes{
+    NSRange searchRange = [self rangeOfSearchGroups];
+    unsigned int maxCount = MIN([indexes count], searchRange.length);
+    unsigned int buffer[maxCount];
+    return [indexes getIndexes:buffer maxCount:maxCount inIndexRange:&searchRange];
 }
 
 - (unsigned int)numberOfSmartGroupsAtIndexes:(NSIndexSet *)indexes{
@@ -260,6 +283,11 @@
     return [indexes intersectsIndexesInRange:scriptRange];
 }
 
+- (BOOL)hasSearchGroupsAtIndexes:(NSIndexSet *)indexes{
+    NSRange searchRange = [self rangeOfSearchGroups];
+    return [indexes intersectsIndexesInRange:searchRange];
+}
+
 - (BOOL)hasSmartGroupsAtIndexes:(NSIndexSet *)indexes{
     NSRange smartRange = [self rangeOfSmartGroups];
     return [indexes intersectsIndexesInRange:smartRange];
@@ -276,7 +304,7 @@
 }
 
 - (BOOL)hasExternalGroupsAtIndexes:(NSIndexSet *)indexes{
-    return [self hasSharedGroupsAtIndexes:indexes] || [self hasURLGroupsAtIndexes:indexes] || [self hasScriptGroupsAtIndexes:indexes];
+    return [self hasSharedGroupsAtIndexes:indexes] || [self hasURLGroupsAtIndexes:indexes] || [self hasScriptGroupsAtIndexes:indexes] || [self hasSearchGroupsAtIndexes:indexes];
 }
 
 #pragma mark Mutable accessors
@@ -338,6 +366,28 @@
     
 	[group setUndoManager:nil];
 	[scriptGroups removeObjectIdenticalTo:group];
+    
+	[[NSNotificationCenter defaultCenter] postNotificationName:BDSKDidAddRemoveGroupNotification object:self];
+}
+
+- (void)addSearchGroup:(BDSKSearchGroup *)group {
+	[[[self undoManager] prepareWithInvocationTarget:self] removeSearchGroup:group];
+    
+	[searchGroups addObject:group];
+	[group setUndoManager:[self undoManager]];
+    
+	[[NSNotificationCenter defaultCenter] postNotificationName:BDSKDidAddRemoveGroupNotification object:self];
+}
+
+- (void)removeSearchGroup:(BDSKSearchGroup *)group {
+    [[NSNotificationCenter defaultCenter] postNotificationName:BDSKWillAddRemoveGroupNotification object:self];
+    
+	[[[self undoManager] prepareWithInvocationTarget:self] addSearchGroup:group];
+    
+    [self removeSpinnerForGroup:group];
+    
+	[group setUndoManager:nil];
+	[searchGroups removeObjectIdenticalTo:group];
     
 	[[NSNotificationCenter defaultCenter] postNotificationName:BDSKDidAddRemoveGroupNotification object:self];
 }
@@ -404,6 +454,7 @@
     [lastImportGroup setPublications:[NSArray array]];
     [urlGroups removeAllObjects];
     [scriptGroups removeAllObjects];
+    [searchGroups removeAllObjects];
     [staticGroups removeAllObjects];
     [smartGroups removeAllObjects];
     [staticGroups removeAllObjects];
@@ -474,6 +525,7 @@
     [sharedGroups sortUsingDescriptors:sortDescriptors];
     [urlGroups sortUsingDescriptors:sortDescriptors];
     [scriptGroups sortUsingDescriptors:sortDescriptors];
+    [searchGroups sortUsingDescriptors:sortDescriptors];
     [smartGroups sortUsingDescriptors:sortDescriptors];
     [staticGroups sortUsingDescriptors:sortDescriptors];
     [categoryGroups sortUsingDescriptors:sortDescriptors];
@@ -568,7 +620,37 @@
             [array addObject:group];
         }
         @catch(id exception) {
-            NSLog(@"Ignoring exception \"%@\" while parsing URL groups data.", exception);
+            NSLog(@"Ignoring exception \"%@\" while parsing script groups data.", exception);
+        }
+        @finally {
+            [group release];
+            group = nil;
+        }
+    }
+	
+	[scriptGroups setArray:array];
+}
+
+#warning Temporary
+- (void)setSearchGroupsFromPlist:(NSArray *)plist {
+    NSString *name = nil;
+    NSString *path = nil;
+    NSString *arguments = nil;
+    int type;
+    NSEnumerator *groupEnum = [plist objectEnumerator];
+    NSDictionary *groupDict;
+    NSMutableArray *array = [NSMutableArray arrayWithCapacity:[(NSArray *)plist count]];
+    BDSKSearchGroup *group = nil;
+    
+    while (groupDict = [groupEnum nextObject]) {
+        @try {
+            name = [[groupDict objectForKey:@"group name"] stringByUnescapingGroupPlistEntities];
+            group = [[BDSKSearchGroup alloc] initWithName:name];
+            [group setUndoManager:[self undoManager]];
+            [array addObject:group];
+        }
+        @catch(id exception) {
+            NSLog(@"Ignoring exception \"%@\" while parsing search groups data.", exception);
         }
         @finally {
             [group release];
@@ -659,6 +741,27 @@
 	return array;
 }
 
+#warning Temporary
+- (NSArray *)plistFromSearchGroups {
+	NSMutableArray *array = [NSMutableArray arrayWithCapacity:[searchGroups count]];
+    NSString *name;
+    NSString *path;
+    NSString *args;
+    NSNumber *type;
+    NSDictionary *groupDict;
+	NSEnumerator *groupEnum = [searchGroups objectEnumerator];
+	BDSKScriptGroup *group;
+	
+	while (group = [groupEnum nextObject]) {
+        name = [[group stringValue] stringByEscapingGroupPlistEntities];
+        groupDict = [[NSDictionary alloc] initWithObjectsAndKeys:name, @"group name", nil];
+		[array addObject:groupDict];
+		[groupDict release];
+	}
+	
+	return array;
+}
+
 - (void)setGroupsOfType:(int)groupType fromSerializedData:(NSData *)data {
 	NSString *error = nil;
 	NSPropertyListFormat format = NSPropertyListXMLFormat_v1_0;
@@ -698,6 +801,8 @@
         array = [self plistFromURLGroups];
 	else if (groupType == BDSKScriptGroupType)
         array = [self plistFromScriptGroups];
+	else if (groupType == BDSKSearchGroupType)
+        array = [self plistFromSearchGroups];
     else return nil;
     
 	NSString *error = nil;

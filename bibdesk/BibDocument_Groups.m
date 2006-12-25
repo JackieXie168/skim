@@ -90,6 +90,10 @@
     return [groups hasScriptGroupsAtIndexes:[groupTableView selectedRowIndexes]];
 }
 
+- (BOOL)hasSearchGroupsSelected{
+    return [groups hasSearchGroupsAtIndexes:[groupTableView selectedRowIndexes]];
+}
+
 - (BOOL)hasSmartGroupsSelected{
     return [groups hasSmartGroupsAtIndexes:[groupTableView selectedRowIndexes]];
 }
@@ -256,7 +260,7 @@ The groupedPublications array is a subset of the publications array, developed b
     BDSKGroup *group = [notification object];
     BOOL succeeded = [[[notification userInfo] objectForKey:@"succeeded"] boolValue];
     
-    if ([[groups URLGroups] containsObject:group] == NO)
+    if ([[groups URLGroups] containsObject:group] == NO && [[groups searchGroups] containsObject:group] == NO)
         return; /// must be from another document
     
     if([sortGroupsKey isEqualToString:BDSKGroupCellCountKey]){
@@ -267,8 +271,8 @@ The groupedPublications array is a subset of the publications array, developed b
             [self displaySelectedGroups];
     }
     
-    if ([self currentPubMedGroup]) {
-        [pubmedSearchNextButton setEnabled:[[self currentPubMedGroup] isRetrieving] == NO && [[self currentPubMedGroup] hasMoreResults]];
+    if ([[groups searchGroups] containsObject:group]) {
+        [pubmedSearchNextButton setEnabled:[group isRetrieving] == NO && [(BDSKSearchGroup *)group hasMoreResults]];
     }
 }
 
@@ -586,6 +590,7 @@ The groupedPublications array is a subset of the publications array, developed b
     NSMutableIndexSet *indexes = [NSMutableIndexSet indexSetWithIndexesInRange:[groups rangeOfSharedGroups]];
     [indexes addIndexesInRange:[groups rangeOfURLGroups]];
     [indexes addIndexesInRange:[groups rangeOfScriptGroups]];
+    [indexes addIndexesInRange:[groups rangeOfSearchGroups]];
     [indexes addIndex:0];
     return indexes;
 }
@@ -823,9 +828,9 @@ The groupedPublications array is a subset of the publications array, developed b
 }
 
 - (IBAction)pubmedSearch:(id)sender {
-    BDSKSearchGroup *group = [[[BDSKPubMedGroup alloc] initWithName:@"pubmed"] autorelease];
-    unsigned int insertIndex = NSMaxRange([groups rangeOfURLGroups]);
-    [groups addURLGroup:group];
+    BDSKSearchGroup *group = [[[BDSKSearchGroup alloc] initWithName:@"pubmed"] autorelease];
+    unsigned int insertIndex = NSMaxRange([groups rangeOfSearchGroups]);
+    [groups addSearchGroup:group];
     [groupTableView selectRowIndexes:[NSIndexSet indexSetWithIndex:insertIndex] byExtendingSelection:NO];
     [groupTableView editColumn:0 row:insertIndex withEvent:nil select:YES];
     [[self undoManager] setActionName:NSLocalizedString(@"Add PubMed Search Group", @"Undo action name")];
@@ -904,6 +909,9 @@ The groupedPublications array is a subset of the publications array, developed b
 			count++;
 		} else if ([group isScript] == YES) {
 			[groups removeScriptGroup:(BDSKScriptGroup *)group];
+			count++;
+		} else if ([group isSearch] == YES) {
+			[groups removeSearchGroup:(BDSKSearchGroup *)group];
 			count++;
         }
 		rowIndex = [rowIndexes indexLessThanIndex:rowIndex];
@@ -1037,10 +1045,15 @@ The groupedPublications array is a subset of the publications array, developed b
     [[groups scriptGroups] makeObjectsPerformSelector:@selector(setPublications:) withObject:nil];
 }
 
+- (IBAction)refreshSearchGroups:(id)sender{
+    [[groups searchGroups] makeObjectsPerformSelector:@selector(setPublications:) withObject:nil];
+}
+
 - (IBAction)refreshAllExternalGroups:(id)sender{
     [self refreshSharedBrowsing:sender];
     [self refreshURLGroups:sender];
     [self refreshScriptGroups:sender];
+    [self refreshSearchGroups:sender];
 }
 
 - (IBAction)refreshSelectedGroups:(id)sender{

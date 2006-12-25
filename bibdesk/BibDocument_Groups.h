@@ -46,6 +46,7 @@
 - (BOOL)hasSharedGroupsSelected;
 - (BOOL)hasURLGroupsSelected;
 - (BOOL)hasScriptGroupsSelected;
+- (BOOL)hasSearchGroupsSelected;
 - (BOOL)hasSmartGroupsSelected;
 - (BOOL)hasStaticGroupsSelected;
 - (BOOL)hasCategoryGroupsSelected;
@@ -105,6 +106,7 @@
 - (NSArray *)mergeInPublications:(NSArray *)items;
 - (IBAction)refreshURLGroups:(id)sender;
 - (IBAction)refreshScriptGroups:(id)sender;
+- (IBAction)refreshSearchGroups:(id)sender;
 - (IBAction)refreshAllExternalGroups:(id)sender;
 - (IBAction)refreshSelectedGroups:(id)sender;
 

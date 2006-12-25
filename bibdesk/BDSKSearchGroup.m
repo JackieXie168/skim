@@ -38,6 +38,12 @@
     return self;
 }
 
+- (BOOL)isSearch { return YES; }
+
+- (BOOL)isURL { return NO; }
+
+- (BOOL)isEditable { return NO; }
+
 - (void)resetSearch;
 {
     // get the initial XML document with our search parameters in it
