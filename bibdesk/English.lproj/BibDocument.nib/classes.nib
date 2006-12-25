@@ -52,6 +52,7 @@
                 changeIntersectGroupsAction = id; 
                 changeMainTableFont = id; 
                 changePreviewDisplay = id; 
+                changePubMedSearchTerm = id; 
                 clearQuickSearch = id; 
                 consolidateLinkedFiles = id; 
                 copy = id; 
@@ -90,6 +91,7 @@
                 mergeInExternalGroup = id; 
                 mergeInExternalPublications = id; 
                 newPub = id; 
+                nextPubMedSearch = id; 
                 openLinkedFile = id; 
                 openRemoteURL = id; 
                 pageDownInPreview = id; 
@@ -146,6 +148,7 @@
                 mainBox = BDSKColoredBox; 
                 previewTextView = NSTextView; 
                 pubmedEdgeView = BDSKEdgeView; 
+                pubmedMatchResultsField = NSTextField; 
                 pubmedSearchField = NSSearchField; 
                 pubmedSearchNextButton = NSButton; 
                 pubmedView = BDSKCollapsibleView; 
@@ -159,12 +162,7 @@
             SUPERCLASS = NSDocument; 
         }, 
         {
-            ACTIONS = {
-                changePubMedSearchTerm = id; 
-                clearQuickSearch = id; 
-                nextPubMedSearch = id; 
-                selectCrossrefParentAction = id; 
-            }; 
+            ACTIONS = {"" = id; clearQuickSearch = id; selectCrossrefParentAction = id; }; 
             CLASS = FirstResponder; 
             LANGUAGE = ObjC; 
             SUPERCLASS = NSObject; 
