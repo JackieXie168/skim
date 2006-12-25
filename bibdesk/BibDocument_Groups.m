@@ -68,7 +68,7 @@
 #import "BibPersonController.h"
 #import "BDSKColoredBox.h"
 #import "BDSKCollapsibleView.h"
-#import "BDSKPubMedGroup.h"
+#import "BDSKSearchGroup.h"
 
 @implementation BibDocument (Groups)
 
@@ -132,7 +132,7 @@ The groupedPublications array is a subset of the publications array, developed b
 - (id)currentPubMedGroup {
 #warning hack
     id group = [[self selectedGroups] firstObject];
-    return [group isKindOfClass:[BDSKPubMedGroup class]] ? group : nil;
+    return [group isKindOfClass:[BDSKSearchGroup class]] ? group : nil;
 }
 
 - (IBAction)changePubMedSearchTerm:(id)sender {
@@ -823,7 +823,7 @@ The groupedPublications array is a subset of the publications array, developed b
 }
 
 - (IBAction)pubmedSearch:(id)sender {
-    BDSKPubMedGroup *group = [[[BDSKPubMedGroup alloc] initWithName:@"pubmed"] autorelease];
+    BDSKSearchGroup *group = [[[BDSKPubMedGroup alloc] initWithName:@"pubmed"] autorelease];
     unsigned int insertIndex = NSMaxRange([groups rangeOfURLGroups]);
     [groups addURLGroup:group];
     [groupTableView selectRowIndexes:[NSIndexSet indexSetWithIndex:insertIndex] byExtendingSelection:NO];
