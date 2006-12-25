@@ -42,12 +42,13 @@ enum {
     BDSKSharedGroupType,
 	BDSKURLGroupType,
 	BDSKScriptGroupType,
+	BDSKSearchGroupType,
     BDSKSmartGroupType,
 	BDSKStaticGroupType,
 	BDSKCategoryGroupType
 };
 
-@class BDSKGroup, BDSKSmartGroup, BDSKStaticGroup, BDSKURLGroup, BDSKScriptGroup, BibDocument;
+@class BDSKGroup, BDSKSmartGroup, BDSKStaticGroup, BDSKURLGroup, BDSKScriptGroup, BDSKSearchGroup, BibDocument;
 
 @interface BDSKGroupsArray : NSArray {
     BDSKGroup *libraryGroup;
@@ -55,6 +56,7 @@ enum {
     NSMutableArray *sharedGroups;
     NSMutableArray *urlGroups;
     NSMutableArray *scriptGroups;
+    NSMutableArray *searchGroups;
     NSMutableArray *smartGroups;
     NSMutableArray *staticGroups;
     NSArray *tmpStaticGroups;
@@ -66,6 +68,7 @@ enum {
 - (NSRange)rangeOfSharedGroups;
 - (NSRange)rangeOfURLGroups;
 - (NSRange)rangeOfScriptGroups;
+- (NSRange)rangeOfSearchGroups;
 - (NSRange)rangeOfSmartGroups;
 - (NSRange)rangeOfStaticGroups;
 - (NSRange)rangeOfCategoryGroups;
@@ -73,6 +76,7 @@ enum {
 - (unsigned int)numberOfSharedGroupsAtIndexes:(NSIndexSet *)indexes;
 - (unsigned int)numberOfURLGroupsAtIndexes:(NSIndexSet *)indexes;
 - (unsigned int)numberOfScriptGroupsAtIndexes:(NSIndexSet *)indexes;
+- (unsigned int)numberOfSearchGroupsAtIndexes:(NSIndexSet *)indexes;
 - (unsigned int)numberOfSmartGroupsAtIndexes:(NSIndexSet *)indexes;
 - (unsigned int)numberOfStaticGroupsAtIndexes:(NSIndexSet *)indexes;
 - (unsigned int)numberOfCategoryGroupsAtIndexes:(NSIndexSet *)indexes;
@@ -80,6 +84,7 @@ enum {
 - (BOOL)hasSharedGroupsAtIndexes:(NSIndexSet *)indexes;
 - (BOOL)hasURLGroupsAtIndexes:(NSIndexSet *)indexes;
 - (BOOL)hasScriptGroupsAtIndexes:(NSIndexSet *)indexes;
+- (BOOL)hasSearchGroupsAtIndexes:(NSIndexSet *)indexes;
 - (BOOL)hasSmartGroupsAtIndexes:(NSIndexSet *)indexes;
 - (BOOL)hasStaticGroupsAtIndexes:(NSIndexSet *)indexes;
 - (BOOL)hasCategoryGroupsAtIndexes:(NSIndexSet *)indexes;
@@ -90,6 +95,7 @@ enum {
 - (NSArray *)sharedGroups;
 - (NSArray *)URLGroups;
 - (NSArray *)scriptGroups;
+- (NSArray *)searchGroups;
 - (NSArray *)smartGroups;
 - (NSArray *)staticGroups;
 - (NSArray *)categoryGroups;
@@ -100,6 +106,8 @@ enum {
 - (void)removeURLGroup:(BDSKURLGroup *)group;
 - (void)addScriptGroup:(BDSKScriptGroup *)group;
 - (void)removeScriptGroup:(BDSKScriptGroup *)group;
+- (void)addSearchGroup:(BDSKSearchGroup *)group;
+- (void)removeSearchGroup:(BDSKSearchGroup *)group;
 - (void)addSmartGroup:(BDSKSmartGroup *)group;
 - (void)removeSmartGroup:(BDSKSmartGroup *)group;
 - (void)addStaticGroup:(BDSKStaticGroup *)group;

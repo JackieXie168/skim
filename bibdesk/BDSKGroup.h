@@ -135,6 +135,13 @@
 - (BOOL)isScript;
 
 /*!
+	@method isSearch
+	@abstract Boolean, returns whether the receiver is a search group. 
+	@discussion -
+*/
+- (BOOL)isSearch;
+
+/*!
 	@method isExternal
 	@abstract Boolean, returns whether the receiver is an external source group (shared, URL or script). 
 	@discussion -

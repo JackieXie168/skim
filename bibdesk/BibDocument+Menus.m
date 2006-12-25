@@ -629,7 +629,8 @@
     int n = [groups numberOfSmartGroupsAtIndexes:[groupTableView selectedRowIndexes]] + 
             [groups numberOfStaticGroupsAtIndexes:[groupTableView selectedRowIndexes]] + 
             [groups numberOfURLGroupsAtIndexes:[groupTableView selectedRowIndexes]] + 
-            [groups numberOfScriptGroupsAtIndexes:[groupTableView selectedRowIndexes]];
+            [groups numberOfScriptGroupsAtIndexes:[groupTableView selectedRowIndexes]] + 
+            [groups numberOfSearchGroupsAtIndexes:[groupTableView selectedRowIndexes]];
 	
 	NSString *s = @"";
 	
@@ -795,6 +796,9 @@
     } else if ([self hasScriptGroupsSelected]) {
         [menuItem setTitle:NSLocalizedString(@"Merge In Script Group", @"Menu item title")];
         return YES;
+    } else if ([self hasSearchGroupsSelected]) {
+        [menuItem setTitle:NSLocalizedString(@"Merge In Search Group", @"Menu item title")];
+        return YES;
     } else {
         [menuItem setTitle:NSLocalizedString(@"Merge In Shared Group", @"Menu item title")];
         return NO;
@@ -805,7 +809,7 @@
     if ([self hasSharedGroupsSelected]) {
         [menuItem setTitle:NSLocalizedString(@"Merge In Shared Publications", @"Menu item title")];
         return [self numberOfSelectedPubs] > 0;
-    } else if ([self hasURLGroupsSelected] || [self hasScriptGroupsSelected]) {
+    } else if ([self hasURLGroupsSelected] || [self hasScriptGroupsSelected] || [self hasSearchGroupsSelected]) {
         [menuItem setTitle:NSLocalizedString(@"Merge In External Publications", @"Menu item title")];
         return [self numberOfSelectedPubs] > 0;
     } else {
@@ -832,6 +836,10 @@
     return [[groups scriptGroups] count] > 0;
 }
 
+- (BOOL)validateRefreshSearchGroupsMenuItem:(NSMenuItem *)menuItem {
+    return [[groups searchGroups] count] > 0;
+}
+
 - (BOOL)validateRefreshSelectedGroupsMenuItem:(NSMenuItem *)menuItem {
     if([self hasSharedGroupsSelected]){
         [menuItem setTitle:NSLocalizedString(@"Refresh Shared Group", @"Menu item title")];
@@ -841,6 +849,9 @@
         return YES;
     }else if([self hasScriptGroupsSelected]){
         [menuItem setTitle:NSLocalizedString(@"Refresh Script Group", @"Menu item title")];
+        return YES;
+    }else if([self hasSearchGroupsSelected]){
+        [menuItem setTitle:NSLocalizedString(@"Refresh Search Group", @"Menu item title")];
         return YES;
     } else {
         [menuItem setTitle:NSLocalizedString(@"Refresh External Group", @"Menu item title")];
@@ -1018,6 +1029,9 @@
     }
     else if (act == @selector(refreshScriptGroups:)){
         return [self validateRefreshScriptGroupsMenuItem:menuItem];
+    }
+    else if (act == @selector(refreshSearchGroups:)){
+        return [self validateRefreshSearchGroupsMenuItem:menuItem];
     }
     else if (act == @selector(refreshAllExternalGroups:)){
         return [self validateRefreshAllExternalGroupsMenuItem:menuItem];

@@ -2551,6 +2551,8 @@ originalContentsURL:(NSURL *)absoluteOriginalContentsURL
         [statusStr appendFormat:@" %@ \"%@\"", NSLocalizedString(@"in external file group", @"Partial status message"), [[[self selectedGroups] lastObject] stringValue]];
 	} else if ([self hasScriptGroupsSelected] == YES) {
         [statusStr appendFormat:@" %@ \"%@\"", NSLocalizedString(@"in script group", @"Partial status message"), [[[self selectedGroups] lastObject] stringValue]];
+	} else if ([self hasSearchGroupsSelected] == YES) {
+        [statusStr appendFormat:@" %@ \"%@\"", NSLocalizedString(@"in search group", @"Partial status message"), [[[self selectedGroups] lastObject] stringValue]];
 	} else if (groupPubsCount != totalPubsCount) {
 		NSString *groupStr = ([groupTableView numberOfSelectedRows] == 1) ?
 			[NSString stringWithFormat:@"%@ \"%@\"", NSLocalizedString(@"in group", @"Partial status message"), [[[self selectedGroups] lastObject] stringValue]] :
