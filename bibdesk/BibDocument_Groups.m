@@ -148,36 +148,37 @@ The groupedPublications array is a subset of the publications array, developed b
 }
 
 - (void)showPubMedEditor {
-    if ([pubmedView window])
-        return;
-    NSScrollView *sv = [tableView enclosingScrollView];
-    NSRect searchFrame = [pubmedView frame];
-    NSRect svFrame = [splitView frame];
-    searchFrame.size.width = NSWidth(svFrame);
-    searchFrame.origin.x = svFrame.origin.x;
-    svFrame.size.height -= NSHeight(searchFrame) + 1.0;
-    if ([[splitView superview] isFlipped]) {
-        searchFrame.origin.y = svFrame.origin.y;
-        svFrame.origin.y += NSHeight(searchFrame) + 1.0;
-    } else {
-        searchFrame.origin.y = NSMaxY(svFrame);
+
+    if (nil == [pubmedView window]) {
+        NSScrollView *sv = [tableView enclosingScrollView];
+        NSRect searchFrame = [pubmedView frame];
+        NSRect svFrame = [splitView frame];
+        searchFrame.size.width = NSWidth(svFrame);
+        searchFrame.origin.x = svFrame.origin.x;
+        svFrame.size.height -= NSHeight(searchFrame) + 1.0;
+        if ([[splitView superview] isFlipped]) {
+            searchFrame.origin.y = svFrame.origin.y;
+            svFrame.origin.y += NSHeight(searchFrame) + 1.0;
+        } else {
+            searchFrame.origin.y = NSMaxY(svFrame);
+        }
+        
+        [pubmedView setFrame:searchFrame];
+        [splitView setFrame:svFrame];
+        [mainBox addSubview:pubmedView];
+        [mainBox setNeedsDisplay:YES];
     }
-    
-    [pubmedView setFrame:searchFrame];
-    [splitView setFrame:svFrame];
-    [mainBox addSubview:pubmedView];
-    [mainBox setNeedsDisplay:YES];
     
     [pubmedSearchField setStringValue:[[self currentPubMedGroup] searchTerm] ? [[self currentPubMedGroup] searchTerm] : @""];
 }
 
 - (void)hidePubMedEditor
 {
-    if ([pubmedView window] == nil)
-        return;
-    [pubmedView removeFromSuperview];
-    [splitView setFrame:[mainBox bounds]];
-    [mainBox setNeedsDisplay:YES];
+    if (nil != [pubmedView window]) {
+        [pubmedView removeFromSuperview];
+        [splitView setFrame:[mainBox bounds]];
+        [mainBox setNeedsDisplay:YES];
+    }
 }
 
 #pragma mark Notification handlers
