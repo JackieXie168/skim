@@ -123,7 +123,7 @@
         [self setWebEnv:[[[root nodesForXPath:@"/eSearchResult[1]/WebEnv[1]" error:NULL] lastObject] stringValue]];
         [self setQueryKey:[[[root nodesForXPath:@"/eSearchResult[1]/QueryKey[1]" error:NULL] lastObject] stringValue]];
         NSString *countString = [[[root nodesForXPath:@"/eSearchResult[1]/Count[1]" error:NULL] lastObject] stringValue];
-        availableResults = countString ? [countString intValue] : 0;
+        [self setNumberOfAvailableResults:[countString intValue]];
         
         [document release];
         
@@ -135,15 +135,13 @@
 
 - (void)fetch;
 {
-    if ([self webEnv] == nil || [self queryKey] == nil || availableResults <= fetchedResults)
+    if ([self webEnv] == nil || [self queryKey] == nil || [self numberOfAvailableResults] <= [self count])
         return;
     
-    int numResults = MIN(availableResults - fetchedResults, MAX_RESULTS);
-    NSString *efetch = [[[self class] baseURLString] stringByAppendingFormat:@"/efetch.fcgi?rettype=medline&retmode=text&retstart=%d&retmax=%d&db=pubmed&query_key=%@&WebEnv=%@&tool=bibdesk", fetchedResults, numResults, [self queryKey], [self webEnv]];
+    int numResults = MIN([self numberOfAvailableResults] - [self count], MAX_RESULTS);
+    NSString *efetch = [[[self class] baseURLString] stringByAppendingFormat:@"/efetch.fcgi?rettype=medline&retmode=text&retstart=%d&retmax=%d&db=pubmed&query_key=%@&WebEnv=%@&tool=bibdesk", [self count], numResults, [self queryKey], [self webEnv]];
     NSURL *theURL = [NSURL URLWithString:efetch];
     NSAssert(theURL, @"unable to create fetch URL");
-
-    fetchedResults += numResults;
     
     [self setURL:theURL];
     [self startDownload];
@@ -156,14 +154,12 @@
 - (void)search;
 {
     if ([self isRetrieving])
-        return;
+        [self terminate];
     
     [self setWebEnv:nil];
     [self setQueryKey:nil];
 
-    fetchedResults = 0;
-    availableResults = 0;
-    
+    [self setNumberOfAvailableResults:0];
     
     if ([NSString isEmptyString:[self searchTerm]]) {
         [self setURL:nil];
@@ -208,11 +204,6 @@
         [searchKey autorelease];
         searchKey = [aKey copy];
         
-        [self setWebEnv:nil];
-        [self setQueryKey:nil];
-
-        fetchedResults = 0;
-        
         [self search];
     }
 }
@@ -224,9 +215,19 @@
     return [NSString isEmptyString:[self searchTerm]] ? nil : [super publications];
 }
 
-- (BOOL)hasMoreResults;
+- (void)setNumberOfAvailableResults:(int)value;
 {
-    return availableResults > fetchedResults;
+    availableResults = value;
+}
+
+- (int)numberOfAvailableResults;
+{
+    return availableResults;
+}
+
+- (BOOL)canGetMoreResults;
+{
+    return [self isRetrieving] == NO && ([self numberOfAvailableResults] > [self count] || ([NSString isEmptyString:[self searchTerm]] == NO && publications == nil));
 }
 
 @end

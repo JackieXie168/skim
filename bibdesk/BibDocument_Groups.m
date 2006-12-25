@@ -133,18 +133,16 @@ The groupedPublications array is a subset of the publications array, developed b
 
 #pragma mark PubMed ** TEMPORARY **
 
-- (id)currentPubMedGroup {
-#warning hack
-    id group = [[self selectedGroups] firstObject];
-    return [group isKindOfClass:[BDSKSearchGroup class]] ? group : nil;
-}
-
 - (IBAction)changePubMedSearchTerm:(id)sender {
-    [[self currentPubMedGroup] setSearchTerm:[sender stringValue]];
+    BDSKSearchGroup *group = [[self selectedGroups] firstObject];
+    OBASSERT([group isSearch]);
+    [group setSearchTerm:[sender stringValue]];
 }
 
 - (IBAction)nextPubMedSearch:(id)sender {
-    [[self currentPubMedGroup] searchNext];
+    BDSKSearchGroup *group = [[self selectedGroups] firstObject];
+    OBASSERT([group isSearch]);
+    [group searchNext];
 }
 
 - (void)showPubMedEditor {
@@ -169,7 +167,10 @@ The groupedPublications array is a subset of the publications array, developed b
         [mainBox setNeedsDisplay:YES];
     }
     
-    [pubmedSearchField setStringValue:[[self currentPubMedGroup] searchTerm] ? [[self currentPubMedGroup] searchTerm] : @""];
+    BDSKSearchGroup *group = [[self selectedGroups] firstObject];
+    OBASSERT([group isSearch]);
+    [pubmedSearchField setStringValue:[group searchTerm] ? [group searchTerm] : @""];
+    [pubmedSearchNextButton setEnabled:[group canGetMoreResults]];
 }
 
 - (void)hidePubMedEditor
@@ -194,7 +195,7 @@ The groupedPublications array is a subset of the publications array, developed b
 }
     
 - (void)handleGroupTableSelectionChangedNotification:(NSNotification *)notification{
-    if ([self currentPubMedGroup])
+    if ([self hasSearchGroupsSelected])
         [self showPubMedEditor];
     else
         [self hidePubMedEditor];
@@ -273,7 +274,7 @@ The groupedPublications array is a subset of the publications array, developed b
     }
     
     if ([[groups searchGroups] containsObject:group]) {
-        [pubmedSearchNextButton setEnabled:[group isRetrieving] == NO && [(BDSKSearchGroup *)group hasMoreResults]];
+        [pubmedSearchNextButton setEnabled:[(BDSKSearchGroup *)group canGetMoreResults]];
     }
 }
 
