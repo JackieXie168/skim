@@ -96,7 +96,7 @@
 
 - (unsigned int)count {
     [self updateStaticGroupsIfNeeded];
-    return [sharedGroups count] + [urlGroups count] + [scriptGroups count] + [smartGroups count] + [staticGroups count] + [categoryGroups count] + ([lastImportGroup count] ? 2 : 1) /* add 1 for all publications group */ ;
+    return [sharedGroups count] + [urlGroups count] + [scriptGroups count] + [searchGroups count] + [smartGroups count] + [staticGroups count] + [categoryGroups count] + ([lastImportGroup count] ? 2 : 1) /* add 1 for all publications group */ ;
 }
 
 - (id)objectAtIndex:(unsigned int)index {
@@ -201,7 +201,7 @@
 }
 
 - (NSRange)rangeOfSearchGroups{
-    return NSMakeRange(NSMaxRange([self rangeOfScriptGroups]), [scriptGroups count]);
+    return NSMakeRange(NSMaxRange([self rangeOfScriptGroups]), [searchGroups count]);
 }
 
 - (NSRange)rangeOfSmartGroups{
