@@ -146,8 +146,8 @@
                 mainBox = BDSKColoredBox; 
                 previewTextView = NSTextView; 
                 pubmedEdgeView = BDSKEdgeView; 
-                pubmedMaxResultsField = NSTextField; 
                 pubmedSearchField = NSSearchField; 
+                pubmedSearchNextButton = NSButton; 
                 pubmedView = BDSKCollapsibleView; 
                 saveAccessoryView = NSView; 
                 saveTextEncodingPopupButton = BDSKEncodingPopUpButton; 
@@ -160,9 +160,9 @@
         }, 
         {
             ACTIONS = {
-                changeMaxResultsForPubMedSearch = id; 
                 changePubMedSearchTerm = id; 
                 clearQuickSearch = id; 
+                nextPubMedSearch = id; 
                 selectCrossrefParentAction = id; 
             }; 
             CLASS = FirstResponder; 

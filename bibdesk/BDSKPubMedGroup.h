@@ -12,15 +12,21 @@
 @interface BDSKPubMedGroup : BDSKURLGroup {
     int maxResults;
     int availableResults;
+    int fetchedResults;
+    NSString *webEnv;
+    NSString *queryKey;
     NSString *searchTerm;
     NSString *searchKey;
 }
 
-- (void)setMaxResults:(int)count;
-- (int)maxResults;
 - (void)setSearchTerm:(NSString *)aTerm;
 - (NSString *)searchTerm;
 - (void)setSearchKey:(NSString *)aKey;
 - (NSString *)searchKey;
+
+- (BOOL)hasMoreResults;
+
+- (void)search;
+- (void)searchNext;
 
 @end
