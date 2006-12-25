@@ -170,6 +170,11 @@
 	}
 }
 
+- (NSString *)tableView:(NSTableView *)tv toolTipForTableColumn:(NSTableColumn *)aTableColumn row:(int)row {
+    return (tv == groupTableView ? [[groups objectAtIndex:row] stringValue] : nil);
+}
+    
+
 #pragma mark TableView delegate
 
 - (void)disableGroupRenameWarningAlertDidEnd:(BDSKAlert *)alert returnCode:(int)returnCode contextInfo:(void *)contextInfo {
