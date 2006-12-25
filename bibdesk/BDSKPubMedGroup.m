@@ -8,6 +8,9 @@
 
 #import "BDSKPubMedGroup.h"
 
+// max number of results from NCBI is 100, except on evenings and weekends
+#define MAX_RESULTS 50
+
 /* Based on public domain sample code written by Oleg Khovayko, available at
  http://www.ncbi.nlm.nih.gov/entrez/query/static/eutils_example.pl
  
@@ -31,13 +34,11 @@
 {
     self = [super initWithName:aName URL:[[self class] baseURL]];
     if (self) {
-        // max number of results from NCBI is 100, except on evenings and weekends
-        [self setMaxResults:50];
     }
     return self;
 }
 
-- (void)createURL;
+- (void)resetSearch;
 {
     // get the initial XML document with our search parameters in it
     NSString *esearch = [[[[self class] baseURL] absoluteString] stringByAppendingFormat:@"/esearch.fcgi?db=pubmed&retmax=1&usehistory=y&term=%@&tool=bibdesk", [self searchTerm]];
@@ -55,50 +56,82 @@
     else
         document = [[NSXMLDocument alloc] initWithData:esearchResult options:NSXMLNodeOptionsNone error:&error];
     
-    NSURL *theURL = nil;
-    
     if (nil != document) {
         NSXMLElement *root = [document rootElement];
         
         // we need to extract WebEnv, Count, and QueryKey to construct our final URL
-        NSString *webEnv = [[[root nodesForXPath:@"/eSearchResult[1]/WebEnv[1]" error:NULL] lastObject] stringValue];
+        webEnv = [[[[root nodesForXPath:@"/eSearchResult[1]/WebEnv[1]" error:NULL] lastObject] stringValue] retain];
+        queryKey = [[[[root nodesForXPath:@"/eSearchResult[1]/QueryKey[1]" error:NULL] lastObject] stringValue] retain];
         NSString *countString = [[[root nodesForXPath:@"/eSearchResult[1]/Count[1]" error:NULL] lastObject] stringValue];
         availableResults = countString ? [countString intValue] : 0;
-        NSString *queryKey = [[[root nodesForXPath:@"/eSearchResult[1]/QueryKey[1]" error:NULL] lastObject] stringValue];
-        
-        NSString *efetch = [[[[self class] baseURL] absoluteString] stringByAppendingFormat:@"/efetch.fcgi?rettype=medline&retmode=text&retstart=0&retmax=%d&db=pubmed&query_key=%@&WebEnv=%@&tool=bibdesk", MIN(availableResults, maxResults), queryKey, webEnv];
-        theURL = [NSURL URLWithString:efetch];
-        NSAssert(theURL, @"unable to create fetch URL");
     }
-    [self setURL:theURL];
+}
+
+- (void)fetch;
+{
+    if (webEnv == nil || queryKey == nil || availableResults <= fetchedResults)
+        return;
+    
+    int numResults = MIN(availableResults - fetchedResults, MAX_RESULTS);
+    NSString *efetch = [[[[self class] baseURL] absoluteString] stringByAppendingFormat:@"/efetch.fcgi?rettype=medline&retmode=text&retstart=%d&retmax=%d&db=pubmed&query_key=%@&WebEnv=%@&tool=bibdesk", fetchedResults, numResults, queryKey, webEnv];
+    NSURL *theURL = [NSURL URLWithString:efetch];
+    NSAssert(theURL, @"unable to create fetch URL");
+
+    fetchedResults += numResults;
+    
+    [URL release];
+    URL = [theURL copy];
+    [self startDownload];
+    
+    // use this to notify the tableview to start the progress indicators and disable the button
+    NSDictionary *userInfo = [NSDictionary dictionaryWithObject:[NSNumber numberWithBool:NO] forKey:@"succeeded"];
+    [[NSNotificationCenter defaultCenter] postNotificationName:BDSKURLGroupUpdatedNotification object:self userInfo:userInfo];
 }
 
 - (void)search;
 {
+    if ([self isRetrieving])
+        return;
+    
+    [webEnv release];
+    webEnv = nil;
+    [queryKey release];
+    queryKey = nil;
+    fetchedResults = 0;
+    availableResults = 0;
+    
+    
     if ([NSString isEmptyString:searchTerm]) {
-        [self setURL:nil];
+        [URL release];
+        URL = nil;
+        [self setPublications:[NSArray array]];
     } else {
-        [self createURL];
-        // may need to make this public, or find some other update means; setURL should do it
-        [self startDownload];
+        [self setPublications:nil];
+        [self resetSearch];
+        [self fetch];
     }
 }
 
-- (void)setMaxResults:(int)n;
+- (void)searchNext;
 {
-    if (n != maxResults) {
-        maxResults = n;
-        [self search];
+    if ([self isRetrieving])
+        return;
+    if ([NSString isEmptyString:searchTerm]) {
+        [URL release];
+        URL = nil;
+    } else {
+        if (searchKey == nil || webEnv == nil)
+            [self resetSearch];
+        [self fetch];
     }
 }
-
-- (int)maxResults { return maxResults; }
 
 - (void)setSearchTerm:(NSString *)aTerm;
 {
     if ([aTerm isEqualToString:searchTerm] == NO) {
         [searchTerm autorelease];
         searchTerm = [aTerm copy];
+        
         [self search];
     }
 }
@@ -111,6 +144,13 @@
     if ([aKey isEqualToString:searchKey] == NO) {
         [searchKey autorelease];
         searchKey = [aKey copy];
+        
+        [webEnv release];
+        webEnv = nil;
+        [queryKey release];
+        queryKey = nil;
+        fetchedResults = 0;
+        
         [self search];
     }
 }
@@ -120,6 +160,11 @@
 // this returns nil if no searchTerm has been set, to avoid an error message
 - (id)publications {
     return [NSString isEmptyString:searchTerm] ? nil : [super publications];
+}
+
+- (BOOL)hasMoreResults;
+{
+    return availableResults > fetchedResults;
 }
 
 @end

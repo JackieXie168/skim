@@ -63,9 +63,11 @@
 
 - (BDSKPublicationsArray *)publications;
 - (void)setPublications:(NSArray *)newPublications;
+- (void)addPublications:(NSArray *)newPublications;
 
 - (BOOL)isRetrieving;
 
+- (void)startDownload;
 - (void)terminate;
 
 @end

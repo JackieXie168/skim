@@ -135,12 +135,12 @@ The groupedPublications array is a subset of the publications array, developed b
     return [group isKindOfClass:[BDSKPubMedGroup class]] ? group : nil;
 }
 
-- (IBAction)changeMaxResultsForPubMedSearch:(id)sender {
-    [[self currentPubMedGroup] setMaxResults:[sender intValue]];
-}
-
 - (IBAction)changePubMedSearchTerm:(id)sender {
     [[self currentPubMedGroup] setSearchTerm:[sender stringValue]];
+}
+
+- (IBAction)nextPubMedSearch:(id)sender {
+    [[self currentPubMedGroup] searchNext];
 }
 
 - (void)showPubMedEditor {
@@ -162,7 +162,6 @@ The groupedPublications array is a subset of the publications array, developed b
     [mainBox addSubview:pubmedView];
     [mainBox setNeedsDisplay:YES];
     
-    [pubmedMaxResultsField setIntValue:[[self currentPubMedGroup] maxResults]];
     [pubmedSearchField setStringValue:[[self currentPubMedGroup] searchTerm] ? [[self currentPubMedGroup] searchTerm] : @""];
 }
 
@@ -267,6 +266,10 @@ The groupedPublications array is a subset of the publications array, developed b
         [groupTableView setNeedsDisplay:YES];
         if ([[self selectedGroups] containsObject:group] && succeeded == YES)
             [self displaySelectedGroups];
+    }
+    
+    if ([self currentPubMedGroup]) {
+        [pubmedSearchNextButton setEnabled:[[self currentPubMedGroup] isRetrieving] == NO && [[self currentPubMedGroup] hasMoreResults]];
     }
 }
 

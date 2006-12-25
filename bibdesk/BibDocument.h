@@ -186,7 +186,7 @@ extern NSString* BDSKWeblocFilePboardType; // core pasteboard type for webloc fi
     IBOutlet BDSKCollapsibleView *pubmedView;
     IBOutlet BDSKEdgeView *pubmedEdgeView;
     IBOutlet NSSearchField *pubmedSearchField;
-    IBOutlet NSTextField *pubmedMaxResultsField;
+    IBOutlet NSButton *pubmedSearchNextButton;
     
 #pragma mark Scalar state variables
 
