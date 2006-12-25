@@ -1,5 +1,5 @@
 //
-//  BDSKPubMedGroup.h
+//  BDSKSearchGroup.h
 //  Bibdesk
 //
 //  Created by Adam Maxwell on 12/23/06.
@@ -9,7 +9,7 @@
 #import <Cocoa/Cocoa.h>
 #import "BDSKURLGroup.h"
 
-@interface BDSKPubMedGroup : BDSKURLGroup {
+@interface BDSKSearchGroup : BDSKURLGroup {
     int maxResults;
     int availableResults;
     int fetchedResults;

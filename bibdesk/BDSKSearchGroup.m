@@ -1,12 +1,12 @@
 //
-//  BDSKPubMedGroup.m
+//  BDSKSearchGroup.m
 //  Bibdesk
 //
 //  Created by Adam Maxwell on 12/23/06.
 //  Copyright 2006 __MyCompanyName__. All rights reserved.
 //
 
-#import "BDSKPubMedGroup.h"
+#import "BDSKSearchGroup.h"
 
 // max number of results from NCBI is 100, except on evenings and weekends
 #define MAX_RESULTS 50
@@ -21,7 +21,7 @@
  
  */
 
-@implementation BDSKPubMedGroup
+@implementation BDSKSearchGroup
 
 + (NSURL *)baseURL { 
     static NSURL *baseURL = nil;
