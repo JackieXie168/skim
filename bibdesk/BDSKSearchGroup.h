@@ -12,10 +12,10 @@
 @interface BDSKSearchGroup : BDSKURLGroup {
     int maxResults;
     int availableResults;
-    NSString *webEnv;
-    NSString *queryKey;
-    NSString *searchTerm;
-    NSString *searchKey;
+    NSString *webEnv;     // cookie-like data returned by PubMed
+    NSString *queryKey;   // searchTerm as returned by PubMed
+    NSString *searchTerm; // passed in by caller
+    NSString *searchKey;  // unused
 }
 
 - (void)setSearchTerm:(NSString *)aTerm;
