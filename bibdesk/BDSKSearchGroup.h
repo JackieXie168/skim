@@ -18,6 +18,9 @@
     NSString *searchKey;  // unused
 }
 
+- (id)initWithName:(NSString *)aName;
+- (id)initWithName:(NSString *)aName searchTerm:(NSString *)string;
+
 - (void)setSearchTerm:(NSString *)aTerm;
 - (NSString *)searchTerm;
 - (void)setSearchKey:(NSString *)aKey;
