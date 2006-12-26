@@ -47,7 +47,11 @@
     // datasource methods to support this are over in BibDocument_DataSource
     BDSKTypeSelectHelper *typeSelectHelper;
     NSMutableArray *trackingRects;
+    NSArray *alternatingRowBackgroundColors;
 }
+
+- (void)setAlternatingRowBackgroundColors:(NSArray *)colorArray;
+- (NSArray *)alternatingRowBackgroundColors;
 
 - (BDSKTypeSelectHelper *)typeSelectHelper;
 - (void)rebuildTrackingRects;
@@ -63,4 +67,9 @@
 - (void)tableView:(NSTableView *)aTableView mouseEnteredTableColumn:(NSTableColumn *)aTableColumn row:(int)rowIndex;
 - (void)tableView:(NSTableView *)aTableView mouseExitedTableColumn:(NSTableColumn *)aTableColumn row:(int)rowIndex;
 - (NSDictionary *)defaultColumnWidthsForTableView:(NSTableView *)aTableView;
+@end
+
+
+@interface NSColor (BDSKExtensions)
++ (NSArray *)alternateControlAlternatingRowBackgroundColors;
 @end

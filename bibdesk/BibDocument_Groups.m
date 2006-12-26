@@ -69,6 +69,7 @@
 #import "BDSKColoredBox.h"
 #import "BDSKCollapsibleView.h"
 #import "BDSKSearchGroup.h"
+#import "BDSKMainTableView.h"
 
 @implementation BibDocument (Groups)
 
@@ -201,6 +202,10 @@ The groupedPublications array is a subset of the publications array, developed b
         [self showPubMedEditor];
     else
         [self hidePubMedEditor];
+    if ([self hasExternalGroupsSelected])
+        [tableView setAlternatingRowBackgroundColors:[NSColor alternateControlAlternatingRowBackgroundColors]];
+    else
+        [tableView setAlternatingRowBackgroundColors:[NSColor controlAlternatingRowBackgroundColors]];
     // Mail and iTunes clear search when changing groups; users don't like this, though.  Xcode doesn't clear its search field, so at least there's some precedent for the opposite side.
     [self displaySelectedGroups];
     // could force selection of row 0 in the main table here, so we always display a preview, but that flashes the group table highlights annoyingly and may cause other selection problems
