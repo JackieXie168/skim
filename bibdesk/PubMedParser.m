@@ -92,9 +92,9 @@
 			options:NSLiteralSearch range:NSMakeRange(0, [value length])];
         // see bug #1584054, PubMed now doesn't use a comma between the lastName and the firstName
         // this should be OK for valid RIS, as that should be in the format "last, first"
-        int firstSpace = [value rangeOfString:@" "].location;
-        if([value rangeOfString:@","].location == NSNotFound && firstSpace != NSNotFound)
-            [value insertString:@"," atIndex:firstSpace];
+        int lastSpace = [value rangeOfString:@" " options:NSBackwardsSearch].location;
+        if([value rangeOfString:@","].location == NSNotFound && lastSpace != NSNotFound)
+            [value insertString:@"," atIndex:lastSpace];
     }
 	// concatenate authors and keywords, as they can appear multiple times
 	// other duplicates keys should have at least different tags, so we use the tag instead
