@@ -323,9 +323,6 @@ static NSString *BDSKRecentSearchesKey = @"BDSKRecentSearchesKey";
     [searchField setRecentSearches:[xattrDefaults objectForKey:BDSKRecentSearchesKey defaultObject:[NSArray array]]];
     [self setupToolbar];
     
-    [pubmedView setMinSize:NSMakeSize(300.0, 43.0)];
-    [pubmedEdgeView setEdges:BDSKMinXEdgeMask | BDSKMaxXEdgeMask];
-    
     // First remove the statusbar if we should, as it affects proper resizing of the window and splitViews
 	[statusBar retain]; // we need to retain, as we might remove it from the window
 	if (![pw boolForKey:BDSKShowStatusBarKey]) {

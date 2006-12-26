@@ -147,9 +147,21 @@ The groupedPublications array is a subset of the publications array, developed b
     [group searchNext];
 }
 
+- (void)loadSearchGroupView {
+    if (NO == [NSBundle loadNibNamed:@"BDSKSearchGroupView" owner:self]) {
+        NSLog(@"Unable to load BDSKSearchGroupView.nib.");
+        return;
+    }
+    [pubmedView setMinSize:[pubmedView frame].size];
+    [pubmedEdgeView setEdges:BDSKMinXEdgeMask | BDSKMaxXEdgeMask];
+}
+
 - (void)showPubMedEditor {
 
     if (nil == [pubmedView window]) {
+        if (nil == pubmedView)
+            [self loadSearchGroupView];
+        
         NSScrollView *sv = [tableView enclosingScrollView];
         NSRect searchFrame = [pubmedView frame];
         NSRect svFrame = [splitView frame];

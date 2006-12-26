@@ -110,6 +110,9 @@
 - (IBAction)refreshAllExternalGroups:(id)sender;
 - (IBAction)refreshSelectedGroups:(id)sender;
 
+- (IBAction)changePubMedSearchTerm:(id)sender;
+- (IBAction)nextPubMedSearch:(id)sender;
+
 - (void)handleFilterChangedNotification:(NSNotification *)notification;
 - (void)sortGroupsByKey:(NSString *)key;
 
