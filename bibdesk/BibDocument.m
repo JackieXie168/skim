@@ -2562,7 +2562,9 @@ originalContentsURL:(NSURL *)absoluteOriginalContentsURL
 	}
     if ([self hasSearchGroupsSelected] == YES) {
         int matchCount = [[[self selectedGroups] firstObject] numberOfAvailableResults];
-        if (matchCount > 0)
+        if (matchCount == 1)
+            [statusStr appendFormat:NSLocalizedString(@". There was 1 match.", @"Partial status message")];
+        else if (matchCount > 1)
             [statusStr appendFormat:NSLocalizedString(@". There were %i matches.", @"Partial status message"), matchCount];
         if (matchCount > groupPubsCount)
             [statusStr appendString:NSLocalizedString(@" Hit \"Search\" to load more.", @"Partial status message")];

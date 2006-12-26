@@ -185,7 +185,6 @@ The groupedPublications array is a subset of the publications array, developed b
     BDSKSearchGroup *group = [[self selectedGroups] firstObject];
     OBASSERT([group isSearch]);
     [pubmedSearchField setStringValue:[group searchTerm] ? [group searchTerm] : @""];
-    [pubmedSearchNextButton setEnabled:[group canGetMoreResults]];
 }
 
 - (void)hidePubMedEditor
@@ -290,10 +289,6 @@ The groupedPublications array is a subset of the publications array, developed b
         [groupTableView setNeedsDisplay:YES];
         if ([[self selectedGroups] containsObject:group] && succeeded == YES)
             [self displaySelectedGroups];
-    }
-    
-    if ([group isSearch]) {
-        [pubmedSearchNextButton setEnabled:[(BDSKSearchGroup *)group canGetMoreResults]];
     }
 }
 
