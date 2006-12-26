@@ -187,7 +187,6 @@ extern NSString* BDSKWeblocFilePboardType; // core pasteboard type for webloc fi
     IBOutlet BDSKEdgeView *pubmedEdgeView;
     IBOutlet NSSearchField *pubmedSearchField;
     IBOutlet NSButton *pubmedSearchNextButton;
-    IBOutlet NSTextField *pubmedMatchResultsField;
     
 #pragma mark Scalar state variables
 
@@ -352,7 +351,7 @@ extern NSString* BDSKWeblocFilePboardType; // core pasteboard type for webloc fi
 - (void)handleMacroChangedNotification:(NSNotification *)aNotification;
 
 /* Paste related methods */
-- (BOOL)addPublicationsFromPasteboard:(NSPasteboard *)pb error:(NSError **)error;
+- (BOOL)addPublicationsFromPasteboard:(NSPasteboard *)pb selectLibrary:(BOOL)select error:(NSError **)error;
 - (BOOL)addPublicationsFromFile:(NSString *)fileName error:(NSError **)outError;
 - (NSArray *)newPublicationsFromArchivedData:(NSData *)data;
 - (NSArray *)newPublicationsForString:(NSString *)string type:(int)type error:(NSError **)error;

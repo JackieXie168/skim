@@ -1148,7 +1148,7 @@ static void createTemporaryDirectory()
     BibDocument *doc = [[[BibDocument alloc] init] autorelease];
     NSError *nsError = nil;
     
-    if([doc addPublicationsFromPasteboard:pboard error:&nsError]){
+    if([doc addPublicationsFromPasteboard:pboard selectLibrary:YES error:&nsError]){
         [[NSDocumentController sharedDocumentController] setShouldCreateUI:YES];
         [[NSDocumentController sharedDocumentController] addDocument:doc];
         [doc makeWindowControllers];
@@ -1171,7 +1171,7 @@ static void createTemporaryDirectory()
         [self newDocumentFromSelection:pboard userData:userData error:error];
 	} else {
         NSError *addError = nil;
-        if([doc addPublicationsFromPasteboard:pboard error:&addError] == NO || addError != nil)
+        if([doc addPublicationsFromPasteboard:pboard selectLibrary:YES error:&addError] == NO || addError != nil)
         if(error) *error = [addError localizedDescription];
     }
 }

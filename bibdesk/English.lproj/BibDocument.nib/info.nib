@@ -26,12 +26,12 @@
 	<key>IBOpenObjects</key>
 	<array>
 		<integer>433</integer>
-		<integer>5</integer>
-		<integer>702</integer>
-		<integer>923</integer>
 		<integer>819</integer>
+		<integer>923</integer>
 		<integer>1082</integer>
+		<integer>702</integer>
 		<integer>661</integer>
+		<integer>5</integer>
 	</array>
 	<key>IBSystem Version</key>
 	<string>8L127</string>

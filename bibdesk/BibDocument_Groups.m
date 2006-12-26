@@ -173,7 +173,6 @@ The groupedPublications array is a subset of the publications array, developed b
     OBASSERT([group isSearch]);
     [pubmedSearchField setStringValue:[group searchTerm] ? [group searchTerm] : @""];
     [pubmedSearchNextButton setEnabled:[group canGetMoreResults]];
-    [pubmedMatchResultsField setStringValue:[group numberOfAvailableResults] ? [NSString stringWithFormat:NSLocalizedString(@"%i matches", @"Search group label"), [group numberOfAvailableResults]] : @""];
 }
 
 - (void)hidePubMedEditor
@@ -278,7 +277,6 @@ The groupedPublications array is a subset of the publications array, developed b
     
     if ([group isSearch]) {
         [pubmedSearchNextButton setEnabled:[(BDSKSearchGroup *)group canGetMoreResults]];
-        [pubmedMatchResultsField setStringValue:[(BDSKSearchGroup *)group numberOfAvailableResults] ? [NSString stringWithFormat:NSLocalizedString(@"%i matches", @"Search group label"), [(BDSKSearchGroup *)group numberOfAvailableResults]] : @""];
     }
 }
 
