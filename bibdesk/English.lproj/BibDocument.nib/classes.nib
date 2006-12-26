@@ -148,7 +148,6 @@
                 mainBox = BDSKColoredBox; 
                 previewTextView = NSTextView; 
                 pubmedEdgeView = BDSKEdgeView; 
-                pubmedMatchResultsField = NSTextField; 
                 pubmedSearchField = NSSearchField; 
                 pubmedSearchNextButton = NSButton; 
                 pubmedView = BDSKCollapsibleView; 

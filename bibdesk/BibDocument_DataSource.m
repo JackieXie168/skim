@@ -856,7 +856,7 @@
                 }
             }
             
-            return [self addPublicationsFromPasteboard:pboard error:NULL];
+            return [self addPublicationsFromPasteboard:pboard selectLibrary:YES error:NULL];
         }
     } else if(tv == groupTableView){
         NSArray *pubs = nil;
@@ -869,7 +869,7 @@
         BOOL shouldSelect = row == -1 || [[self selectedGroups] containsObject:group];
 		
 		if ((isDragFromGroupTable || isDragFromMainTable) && docState.dragFromSharedGroups && row == 0) {
-            return [self addPublicationsFromPasteboard:pboard error:NULL];
+            return [self addPublicationsFromPasteboard:pboard selectLibrary:NO error:NULL];
         } else if(isDragFromGroupTable || isDragFromDrawer || (row >= 0 && [group isValidDropTarget] == NO)) {
             return NO;
         } else if(isDragFromMainTable){
@@ -877,7 +877,7 @@
             
 			pubs = [pboardHelper promisedItemsForPasteboard:[NSPasteboard pasteboardWithName:NSDragPboard]];
         } else {
-            if([self addPublicationsFromPasteboard:pboard error:NULL] == NO)
+            if([self addPublicationsFromPasteboard:pboard selectLibrary:YES error:NULL] == NO)
                 return NO;
             
             pubs = [self selectedPublications];            
@@ -1030,7 +1030,7 @@
 	}
 
     NSError *error = nil;
-	if ([self addPublicationsFromPasteboard:pboard error:&error] == NO) {
+	if ([self addPublicationsFromPasteboard:pboard selectLibrary:YES error:&error] == NO) {
         if(error != nil && [NSResponder instancesRespondToSelector:@selector(presentError:)])
             [tv presentError:error];
 		else

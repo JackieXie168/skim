@@ -45,6 +45,7 @@
 #import "BibPrefController.h"
 #import "BDSKGroup.h"
 #import "BDSKStaticGroup.h"
+#import "BDSKSearchGroup.h"
 #import "BDSKPublicationsArray.h"
 #import "BDSKGroupsArray.h"
 
@@ -1655,10 +1656,12 @@ originalContentsURL:(NSURL *)absoluteOriginalContentsURL
 #pragma mark -
 #pragma mark New publications from pasteboard
 
-- (void)addPublications:(NSArray *)newPubs publicationsToAutoFile:(NSArray *)pubsToAutoFile temporaryCiteKey:(NSString *)tmpCiteKey{
-    [self selectLibraryGroup:nil];    
+- (void)addPublications:(NSArray *)newPubs publicationsToAutoFile:(NSArray *)pubsToAutoFile temporaryCiteKey:(NSString *)tmpCiteKey selectLibrary:(BOOL)select{
+    if (select)
+        [self selectLibraryGroup:nil];    
 	[self addPublications:newPubs];
-	[self selectPublications:newPubs];
+    if ([self hasLibraryGroupSelected])
+        [self selectPublications:newPubs];
 	if (pubsToAutoFile != nil){
         // tried checking [pb isEqual:[NSPasteboard pasteboardWithName:NSDragPboard]] before using delay, but pb is a CFPasteboardUnique
         [pubsToAutoFile makeObjectsPerformSelector:@selector(autoFilePaper)];
@@ -1682,7 +1685,7 @@ originalContentsURL:(NSURL *)absoluteOriginalContentsURL
         [self reportTemporaryCiteKeys:tmpCiteKey forNewDocument:NO];
 }
 
-- (BOOL)addPublicationsFromPasteboard:(NSPasteboard *)pb error:(NSError **)outError{
+- (BOOL)addPublicationsFromPasteboard:(NSPasteboard *)pb selectLibrary:(BOOL)select error:(NSError **)outError{
 	// these are the types we support, the order here is important!
     NSString *type = [pb availableTypeFromArray:[NSArray arrayWithObjects:BDSKBibItemPboardType, BDSKWeblocFilePboardType, BDSKReferenceMinerStringPboardType, NSStringPboardType, NSFilenamesPboardType, NSURLPboardType, nil]];
     NSArray *newPubs = nil;
@@ -1740,7 +1743,7 @@ originalContentsURL:(NSURL *)absoluteOriginalContentsURL
     }
     
 	if ([newPubs count] > 0) 
-		[self addPublications:newPubs publicationsToAutoFile:newFilePubs temporaryCiteKey:temporaryCiteKey];
+		[self addPublications:newPubs publicationsToAutoFile:newFilePubs temporaryCiteKey:temporaryCiteKey selectLibrary:select];
     
     return YES;
 }
@@ -1758,7 +1761,7 @@ originalContentsURL:(NSURL *)absoluteOriginalContentsURL
         return NO;
     }
     
-    [self addPublications:newPubs publicationsToAutoFile:nil temporaryCiteKey:temporaryCiteKey];
+    [self addPublications:newPubs publicationsToAutoFile:nil temporaryCiteKey:temporaryCiteKey selectLibrary:YES];
     
     return YES;
 }
@@ -2559,6 +2562,13 @@ originalContentsURL:(NSURL *)absoluteOriginalContentsURL
 			NSLocalizedString(@"in multiple groups", @"Partial status message");
         [statusStr appendFormat:@" %@ (%@ %i)", groupStr, ofStr, totalPubsCount];
 	}
+    if ([self hasSearchGroupsSelected] == YES) {
+        int matchCount = [[[self selectedGroups] firstObject] numberOfAvailableResults];
+        if (matchCount > 0)
+            [statusStr appendFormat:NSLocalizedString(@". There were %i matches.", @"Partial status message"), matchCount];
+        if (matchCount > groupPubsCount)
+            [statusStr appendString:NSLocalizedString(@" Hit \"Search\" to load more.", @"Partial status message")];
+    }
 	[self setStatus:statusStr];
     [statusStr release];
 }

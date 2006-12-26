@@ -877,7 +877,7 @@
 			isKnownFormat = ([pboardString contentStringType] != BDSKUnknownStringType);
 		}
 		
-        if(isKnownFormat && [self addPublicationsFromPasteboard:pasteboard error:&error] && error == nil)
+        if(isKnownFormat && [self addPublicationsFromPasteboard:pasteboard selectLibrary:YES error:&error] && error == nil)
             return; // it worked, so we're done here
     }
     
