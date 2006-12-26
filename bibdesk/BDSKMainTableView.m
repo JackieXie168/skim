@@ -96,6 +96,7 @@
     [typeSelectHelper setDataSource:nil];
     [typeSelectHelper release];
     [trackingRects release];
+    [alternatingRowBackgroundColors release];
     [super dealloc];
 }
 
@@ -150,6 +151,27 @@
     // we use the same for Delete and the Backspace
     // Omni's implementation of deleteForward: selects the next item, which selects the wrong item too early because we may delay for the warning
     [self deleteBackward:sender];
+}
+
+#pragma mark Alternating row color
+
+- (void)setAlternatingRowBackgroundColors:(NSArray *)colorArray{
+    if (alternatingRowBackgroundColors != colorArray) {
+        [alternatingRowBackgroundColors release];
+        alternatingRowBackgroundColors = [colorArray copy];
+        [self setNeedsDisplay:YES];
+    }
+}
+
+- (NSArray *)alternatingRowBackgroundColors{
+    if (alternatingRowBackgroundColors == nil)
+        alternatingRowBackgroundColors = [[NSColor controlAlternatingRowBackgroundColors] copy];
+    return alternatingRowBackgroundColors;
+}
+
+// override this private method
+- (NSArray *)_alternatingRowBackgroundColors{
+    return [self alternatingRowBackgroundColors];
 }
 
 #pragma mark Tracking rects
@@ -484,6 +506,18 @@
 // override private method from OmniAppKit/NSTableView-OAColumnConfigurationExtensions
 - (BOOL)_allowsAutoresizing{
     return YES;
+}
+
+@end
+
+
+@implementation NSColor (BDSKExtensions)
+
++ (NSArray *)alternateControlAlternatingRowBackgroundColors {
+    static NSArray *altColors = nil;
+    if (altColors == nil)
+        altColors = [[NSArray alloc] initWithObjects:[NSColor controlBackgroundColor], [NSColor colorWithCalibratedRed:0.934203 green:0.991608 blue:0.953552 alpha:1.0]];
+    return altColors;
 }
 
 @end
