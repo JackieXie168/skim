@@ -738,7 +738,7 @@
 }
 
 - (BOOL) validateSelectDuplicatesMenuItem:(NSMenuItem *)menuItem{
-    return ([self hasExternalGroupsSelected] == NO);
+    return YES;
 }
 
 - (BOOL) validateSelectPossibleDuplicatesMenuItem:(NSMenuItem *)menuItem{

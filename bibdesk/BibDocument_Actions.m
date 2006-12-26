@@ -1184,27 +1184,38 @@
 	[self setSearchString:@""]; // make sure we can see everything
     
     [documentWindow makeFirstResponder:tableView]; // make sure tableview has the focus
+    
+    NSMutableArray *pubsToRemove = nil;
     NSZone *zone = [self zone];
+    CFIndex countOfItems = 0;
+    BibItem **pubs;
     
-    NSMutableArray *pubsToRemove = [[NSMutableArray alloc] initWithArray:publications];
-    CFIndex countOfItems = [pubsToRemove count];
-    BibItem **pubs = (BibItem **)NSZoneMalloc(zone, sizeof(BibItem *) * countOfItems);
-    [pubsToRemove getObjects:pubs];
+    if ([self hasExternalGroupsSelected]) {
+        countOfItems = [publications count];
+        pubs = (BibItem **)NSZoneMalloc(zone, sizeof(BibItem *) * countOfItems);
+        [publications getObjects:pubs];
+        pubsToRemove = [[NSMutableArray alloc] initWithArray:groupedPublications];
+    } else {
+        pubsToRemove = [[NSMutableArray alloc] initWithArray:publications];
+        countOfItems = [publications count];
+        pubs = (BibItem **)NSZoneMalloc(zone, sizeof(BibItem *) * countOfItems);
+        [pubsToRemove getObjects:pubs];
+        
+        // Tests equality based on standard fields (high probability that these will be duplicates)
+        countOfItems = [pubsToRemove count];
+        NSSet *uniquePubs = (NSSet *)CFSetCreate(CFAllocatorGetDefault(), (const void **)pubs, countOfItems, &BDSKBibItemEqualityCallBacks);
+        [pubsToRemove removeIdenticalObjectsFromArray:[uniquePubs allObjects]]; // remove all unique ones based on pointer equality
+        [uniquePubs release];
+        
+        // original buffer should be large enough, since we've only removed items from pubsToRemove
+        countOfItems = [pubsToRemove count];
+        [pubsToRemove getObjects:pubs];
+        [pubsToRemove setArray:publications];
+    }
     
-    // Tests equality based on standard fields (high probability that these will be duplicates)
-    NSSet *uniquePubs = (NSSet *)CFSetCreate(CFAllocatorGetDefault(), (const void **)pubs, countOfItems, &BDSKBibItemEqualityCallBacks);
-    [pubsToRemove removeIdenticalObjectsFromArray:[uniquePubs allObjects]]; // remove all unique ones based on pointer equality
-    [uniquePubs release];
-    
-    // original buffer should be large enough, since we've only removed items from pubsToRemove
-    countOfItems = [pubsToRemove count];
-    [pubsToRemove getObjects:pubs];
     NSSet *removeSet = (NSSet *)CFSetCreate(CFAllocatorGetDefault(), (const void **)pubs, countOfItems, &BDSKBibItemEqualityCallBacks);
-    
     NSZoneFree(zone, pubs);
     
-    [pubsToRemove removeAllObjects];
-    [pubsToRemove addObjectsFromArray:publications];
     CFIndex idx = [pubsToRemove count];
     
     while(idx--){
