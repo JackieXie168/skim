@@ -166,6 +166,7 @@ The groupedPublications array is a subset of the publications array, developed b
         [splitView setFrame:svFrame];
         [mainBox addSubview:pubmedView];
         [mainBox setNeedsDisplay:YES];
+        [pubmedSearchField selectText:self];
     }
     
     BDSKSearchGroup *group = [[self selectedGroups] firstObject];

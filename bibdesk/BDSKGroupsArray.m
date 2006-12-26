@@ -634,9 +634,7 @@
 #warning Temporary
 - (void)setSearchGroupsFromPlist:(NSArray *)plist {
     NSString *name = nil;
-    NSString *path = nil;
-    NSString *arguments = nil;
-    int type;
+    NSString *searchTerm = nil;
     NSEnumerator *groupEnum = [plist objectEnumerator];
     NSDictionary *groupDict;
     NSMutableArray *array = [NSMutableArray arrayWithCapacity:[(NSArray *)plist count]];
@@ -645,7 +643,8 @@
     while (groupDict = [groupEnum nextObject]) {
         @try {
             name = [[groupDict objectForKey:@"group name"] stringByUnescapingGroupPlistEntities];
-            group = [[BDSKSearchGroup alloc] initWithName:name];
+            searchTerm = [[groupDict objectForKey:@"search term"] stringByUnescapingGroupPlistEntities];
+            group = [[BDSKSearchGroup alloc] initWithName:name searchTerm:searchTerm];
             [group setUndoManager:[self undoManager]];
             [array addObject:group];
         }
@@ -745,16 +744,15 @@
 - (NSArray *)plistFromSearchGroups {
 	NSMutableArray *array = [NSMutableArray arrayWithCapacity:[searchGroups count]];
     NSString *name;
-    NSString *path;
-    NSString *args;
-    NSNumber *type;
+    NSString *searchTerm;
     NSDictionary *groupDict;
 	NSEnumerator *groupEnum = [searchGroups objectEnumerator];
-	BDSKScriptGroup *group;
+	BDSKSearchGroup *group;
 	
 	while (group = [groupEnum nextObject]) {
         name = [[group stringValue] stringByEscapingGroupPlistEntities];
-        groupDict = [[NSDictionary alloc] initWithObjectsAndKeys:name, @"group name", nil];
+        searchTerm = [[group searchTerm] stringByEscapingGroupPlistEntities];
+        groupDict = [[NSDictionary alloc] initWithObjectsAndKeys:name, @"group name", searchTerm, @"search term", nil];
 		[array addObject:groupDict];
 		[groupDict release];
 	}

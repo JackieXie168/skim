@@ -46,9 +46,16 @@
 
 - (id)initWithName:(NSString *)aName;
 {
+    self = [self initWithName:aName searchTerm:nil];
+    return self;
+}
+
+- (id)initWithName:(NSString *)aName searchTerm:(NSString *)string;
+{
     // this URL is basically just to prevent an assertion failure in the superclass
     self = [super initWithName:aName URL:[NSURL URLWithString:[[self class] baseURLString]]];
     if (self) {
+        searchTerm = [string retain];
     }
     return self;
 }
