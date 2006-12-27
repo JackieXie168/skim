@@ -352,7 +352,7 @@ static void addSubstringToDictionary(NSString *subValue, NSMutableDictionary *pu
         // This is used for stripping extraneous characters from BibTeX year fields
         static AGRegex *findYearRegex = nil;
         if(findYearRegex == nil)
-            findYearRegex = [AGRegex regexWithPattern:@"(.*)(\\d{4})(.*)"];
+            findYearRegex = [[AGRegex alloc] initWithPattern:@"(.*)(\\d{4})(.*)"];
         subValue = [findYearRegex replaceWithString:@"$2" inString:subValue];
     }
     
