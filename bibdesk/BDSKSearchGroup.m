@@ -92,6 +92,13 @@
 }
 
 - (BOOL)isSearch { return YES; }
+
+- (BOOL)isURL { return NO; }
+
+- (BOOL)isEditable { return YES; }
+
+- (BOOL)hasEditableName { return NO; }
+
 - (void)setWebEnv:(NSString *)env;
 {
     [webEnv autorelease];
@@ -116,12 +123,6 @@
 - (NSString *)queryKey { return queryKey; }
 
 - (NSString *)webEnv { return webEnv; }
-
-- (BOOL)isURL { return NO; }
-
-- (BOOL)isEditable { return NO; }
-
-- (BOOL)hasEditableName { return NO; }
 
 - (NSString *)name { return [NSString isEmptyString:[self searchTerm]] ? NSLocalizedString(@"Empty", @"") : [self searchTerm]; }
 

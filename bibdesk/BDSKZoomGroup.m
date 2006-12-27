@@ -111,8 +111,17 @@ typedef struct _BDSKZoomGroupFlags {
 }
 
 - (NSString *)name { return [NSString isEmptyString:[self searchTerm]] ? NSLocalizedString(@"Empty", @"") : [self searchTerm]; }
+
 - (BOOL)isRetrieving { return [server isRetrieving]; }
+
 - (BOOL)failedDownload { return [server failedDownload]; }
+
+- (BOOL)isEditable { return YES; }
+
+- (BOOL)hasEditableName { return NO; }
+
+- (BOOL)isSearch { return YES; }
+
 - (void)setSearchTerm:(NSString *)aTerm;
 {
     if ([searchTerm isEqualToString:aTerm] == NO) {
@@ -180,15 +189,11 @@ typedef struct _BDSKZoomGroupFlags {
 
 - (NSUndoManager *)undoManager { return nil; }
 
-- (BOOL)hasEditableName { return NO; }
-
 - (NSURL *)fileURL { return nil; }
 
 - (NSString *)documentInfoForKey:(NSString *)key { return nil; }
 
 - (BOOL)isDocument { return NO; }
-
-- (BOOL)isSearch { return YES; }
 
 #warning Need formal protocol for search groups
 - (void)search;

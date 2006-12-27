@@ -92,12 +92,22 @@ static NSArray *entrezServers = nil;
             else
                 group = [[BDSKZoomGroup alloc] initWithHost:host port:0 searchTerm:nil];
         }else{
-#warning editing is broken when type changes
             if(type == 0){
-                [(BDSKSearchGroup *)group setDatabase:database];
+                if([[group class] isKindOfClass:[BDSKSearchGroup class]]){
+                    [(BDSKSearchGroup *)group setDatabase:database];
+                }else{
+                   BDSKSearchGroup *newGroup = [[BDSKSearchGroup alloc] initWithName:[group name] database:database searchTerm:[(BDSKZoomGroup *)group searchTerm]];
+                   [group release];
+                   group = newGroup;
+                }
             }else{
-                [(BDSKZoomGroup *)group setHost:host];
-                [(BDSKZoomGroup *)group setPort:port];
+                if([[group class] isKindOfClass:[BDSKZoomGroup class]]){
+                    [(BDSKZoomGroup *)group setHost:host];
+                }else{
+                    BDSKZoomGroup *newGroup = [[BDSKZoomGroup alloc] initWithHost:host port:0 searchTerm:[(BDSKSearchGroup *)group searchTerm]];
+                    [group release];
+                    group = newGroup;
+                }
             }
             [[(BDSKMutableGroup *)group undoManager] setActionName:NSLocalizedString(@"Edit Search Group", @"Undo action name")];
         }

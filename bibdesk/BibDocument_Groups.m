@@ -849,18 +849,18 @@ The groupedPublications array is a subset of the publications array, developed b
     BDSKSearchGroupSheetController *sheetController = [[BDSKSearchGroupSheetController alloc] init];
     [sheetController beginSheetModalForWindow:documentWindow
                                 modalDelegate:self
-                               didEndSelector:@selector(zoomGroupSheetDidEnd:returnCode:contextInfo:)
+                               didEndSelector:@selector(searchGroupSheetDidEnd:returnCode:contextInfo:)
                                   contextInfo:NULL];
     [sheetController release];
 }
 
-- (void)zoomGroupSheetDidEnd:(BDSKSearchGroupSheetController *)sheetController returnCode:(int) returnCode contextInfo:(void *)contextInfo{
+- (void)searchGroupSheetDidEnd:(BDSKSearchGroupSheetController *)sheetController returnCode:(int) returnCode contextInfo:(void *)contextInfo{
 	if(returnCode == NSOKButton){
         unsigned int insertIndex = NSMaxRange([groups rangeOfSearchGroups]);
         BDSKGroup *group = [sheetController group];
 		[groups addSearchGroup:(id)group];        
 		[groupTableView selectRowIndexes:[NSIndexSet indexSetWithIndex:insertIndex] byExtendingSelection:NO];
-		[[self undoManager] setActionName:NSLocalizedString(@"Add Zoom Search Group", @"Undo action name")];
+		[[self undoManager] setActionName:NSLocalizedString(@"Add Search Group", @"Undo action name")];
 		// updating of the tables is done when finishing the edit of the name
 	}
 }
@@ -986,6 +986,29 @@ The groupedPublications array is a subset of the publications array, developed b
         BDSKScriptGroupSheetController *sheetController = [(BDSKScriptGroupSheetController *)[BDSKScriptGroupSheetController alloc] initWithGroup:(BDSKScriptGroup *)group];
         [sheetController beginSheetModalForWindow:documentWindow];
         [sheetController release];
+	} else if ([group isSearch]) {
+        BDSKSearchGroupSheetController *sheetController = [(BDSKSearchGroupSheetController *)[BDSKSearchGroupSheetController alloc] initWithGroup:(BDSKSearchGroup *)group];
+        [sheetController beginSheetModalForWindow:documentWindow
+                                    modalDelegate:self
+                                   didEndSelector:@selector(editSearchGroupSheetDidEnd:returnCode:contextInfo:)
+                                      contextInfo:NULL];
+        [sheetController release];
+	}
+}
+
+- (void)editSearchGroupSheetDidEnd:(BDSKSearchGroupSheetController *)sheetController returnCode:(int) returnCode contextInfo:(void *)contextInfo{
+	if(returnCode == NSOKButton){
+        int row = [groupTableView selectedRow];
+        OBASSERT(row != -1);
+        if(row <= 0) return;
+        id oldGroup = [groups objectAtIndex:row];
+        id newGroup = [sheetController group];
+        if(newGroup != oldGroup){
+            [groups removeSearchGroup:oldGroup];
+            [groups addSearchGroup:newGroup];
+            [groupTableView selectRowIndexes:[NSIndexSet indexSetWithIndex:[groups indexOfObjectIdenticalTo:newGroup]] byExtendingSelection:NO];
+            [[self undoManager] setActionName:NSLocalizedString(@"Edit Search Group", @"Undo action name")];
+        }
 	}
 }
 
