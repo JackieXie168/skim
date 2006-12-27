@@ -1,0 +1,212 @@
+NegotiationRecordDefinition-charSetandLanguageNegotiation-3
+{Z39-50-negotiationRecordDefinition CharSetandLanguageNegotiation-3 (3)}
+DEFINITIONS ::= BEGIN
+IMPORTS LanguageCode FROM RecordSyntax-explain;
+
+CharSetandLanguageNegotiation ::= CHOICE{
+   proposal [1]   IMPLICIT OriginProposal,
+   response [2]   IMPLICIT TargetResponse}
+--
+-- For character sets:
+--  Origin proposes one, two, or all three of the following, in order of
+--  preference:
+--       (a) 2022 character sets.
+--       (b) 10646 character set.
+--       (c) Private character set.
+--
+--    The target responds with one of (a), (b), or (c), indicating the
+--    character set(s) to be supported for all name and message strings.
+--
+--    If the origin includes (a),
+--     the origin proposes:
+--        (1)  A proposed environment: 7-bit, 8-bit, or no-preference.
+--        (2)  A set of iso 2022 registration numbers.
+--        (3)  One or more proposed initial sets of registration numbers,
+--             for c0, c1, g0, g1, g2 and g3. These must come from (2).
+--        (4)  The proposed encoding level.
+--      And if the target selects (a), it responds with:
+--        (1)  A selected environment: 7-bit or 8-bit.
+--        (2)  A subset of the set of iso 2022 registration numbers proposed
+--             by the origin.
+--        (3)  The initial set of registrations, which must come from (2)
+--             but need not be from the set of initial registrations proposed
+--             by the origin.
+--        (4)  The encoding level; less than or equal to that proposed.
+--
+--    If the origin includes (b),
+--     The origin proposes:
+--        (1)  (optionally) A list of collections (i.e. subsets of characters from the
+--             complete 10646 definition).
+--        (2)  An implementation level.
+--        (3) Syntax/form: e.g. ucs-2, ucs-4, utf-8, utf-16.
+--    And if the target selects (b), it responds by choosing a subset of the
+--    collections proposed by the origin in (1) and an implementation level less
+--    than or equal to that proposed by the origin in (2).
+--
+--    If the origin includes (c), the origin proposes one of the following:
+--        (1)  A list of private character sets, by one or more object
+--             identifiers.
+--        (2)  A list of private character sets, by an EXTERNAL.
+--        (3)  An indication to use a private, previously agreed upon
+--             character set.
+--    And if the target selects (c):
+--    -  If the origin proposed (1), the target should respond with (1), and
+--       the list of object identifiers should be a subset of the list that
+--       the origin included.
+--    -  If the origin proposed (2), the target should respond with (2), using
+--       the same EXTERNAL definition (but not necessarily the same content)
+--       used by the origin.
+--    -  If the origin proposed (3), the target should respond with (3).
+--
+--    For Languages:
+--     The origin optionally proposes one or more language codes. The target
+--     response may include a single language code, which indicates the
+--     language to be used for all message strings. The target may include or
+--     omit this, whether or not the origin included a proposed set, and the
+--     language code indicated need not be from among those proposed.
+--
+--
+
+OriginProposal ::= SEQUENCE {
+  proposedCharSets           [1] IMPLICIT SEQUENCE OF CHOICE{
+               -- Each should occur at most once, and in order of preference
+               -- (the "order of preference" is the reason why this is
+               -- "SEQUENCE OF CHOICE" rather than just "SEQUENCE")
+                                iso2022        [1] Iso2022,
+                                iso10646       [2] IMPLICIT Iso10646,
+                                private        [3] PrivateCharacterSet} OPTIONAL,
+                                   -- proposedCharSets must be omitted
+                                   -- if origin proposes version 2
+  proposedlanguages          [2] IMPLICIT SEQUENCE OF LanguageCode OPTIONAL,
+  recordsInSelectedCharSets  [3] IMPLICIT BOOLEAN OPTIONAL
+                       -- default 'false'. See rule 6 above.
+                       }
+
+TargetResponse ::= SEQUENCE{
+  selectedCharSets           [1] CHOICE{
+                                   iso2022        [1] Iso2022,
+                                   iso10646       [2] IMPLICIT Iso10646,
+                                   private        [3] PrivateCharacterSet,
+                                   none           [4] IMPLICIT NULL
+                                            -- If selected, no negotiation
+                                            -- is assumed to be in force
+                                            -- for character sets.
+                                                     } OPTIONAL,
+                                   -- Omitted if and only if proposedCharSets
+                                   -- was Omitted in the request.
+  selectedLanguage           [2] IMPLICIT LanguageCode OPTIONAL,
+  recordsInSelectedCharSets  [3] IMPLICIT BOOLEAN OPTIONAL
+                  -- Omitted if and only if 'recordsInSelectedCharSets' was omitted
+                  -- in the request.  See rule 6 above.
+                       }
+
+
+PrivateCharacterSet ::= CHOICE{
+   viaOid                 [1] IMPLICIT SEQUENCE OF OBJECT IDENTIFIER,
+   externallySpecified    [2] IMPLICIT EXTERNAL,
+   previouslyAgreedUpon   [3] IMPLICIT NULL}
+
+-- IMPORTED
+-- LanguageCode ::= GeneralString -- from ANSI Z39.53-1994
+
+-- Definition of ISO2022
+-- For ISO 2022, the following is negotiated:
+--   1)   The environment: 7-bit or 8-bit;
+--   2)   a set of registration numbers (from the ISO Register of coded
+--        character sets) for graphical and  control character sets;
+--   3)   g0, g1, g2, g3, c0, c1, the registration numbers of the graphical and
+--        control character sets that are  initially designated to g0, g1, etc.
+--       The origin submits one or more sequences of values for
+--        g0, g1, g2, g3, c0, c1 (for each sequence: at least one of
+--        g0 and g1 must be included; g2 and g3 are optional and
+--         may be included only if g1 is included;
+--        c0 should be included; and c1 is optional); the target
+--        selects one of the proposed sequences.
+--   4)   gleft: which of g0, g1, g2 or g3, initially has GL shift status in
+--        an 8-bit environment or has shift status in a 7-bit environment; and
+--   5)   gright: which of g1, g2 or g3 initially has GR shift status in an
+--        8-bit environment.
+
+Iso2022 ::= CHOICE{
+ originProposal   [1] IMPLICIT SEQUENCE{
+            proposedEnvironment    [0] Environment OPTIONAL,
+                                         -- omitted means no preference
+            proposedSets           [1] IMPLICIT SEQUENCE OF INTEGER,
+            proposedInitialSets    [2] IMPLICIT SEQUENCE OF
+                                             InitialSet,
+            proposedLeftAndRight   [3] IMPLICIT LeftAndRight},
+ targetResponse   [2] IMPLICIT SEQUENCE{
+            selectedEnvironment    [0] Environment,
+            selectedSets           [1] IMPLICIT SEQUENCE OF INTEGER,
+            selectedinitialSet     [2] IMPLICIT InitialSet,
+            selectedLeftAndRight   [3] IMPLICIT LeftAndRight}}
+
+Environment ::= CHOICE{
+   sevenBit    [1] IMPLICIT NULL,
+   eightBit    [2] IMPLICIT NULL}
+
+InitialSet::= SEQUENCE{
+      g0    [0] IMPLICIT INTEGER OPTIONAL,
+      g1    [1] IMPLICIT INTEGER OPTIONAL,
+                           -- one of g0 and g1 must be included
+      g2    [2] IMPLICIT INTEGER OPTIONAL,
+      g3    [3] IMPLICIT INTEGER OPTIONAL,
+                           --g2 and/or g3 may be included
+                           -- only if g1 was included
+      c0    [4] IMPLICIT INTEGER,
+      c1    [5] IMPLICIT INTEGER OPTIONAL}
+
+LeftAndRight ::= SEQUENCE{
+            gLeft         [3] IMPLICIT INTEGER{
+                                   g0 (0),
+                                   g1 (1),
+                                   g2 (2),
+                                   g3 (3)},
+            gRight        [4] IMPLICIT INTEGER{
+                                   g1 (1),
+                                   g2 (2),
+                                   g3 (3)} OPTIONAL}
+
+-- Definition of Iso10646
+--
+-- The 10646 object identifier looks like:
+--        1.0.10646.1.implementationLevel.repertoireSubset.arc1.arc2. ....
+--
+-- (The second '1' is for "part 1" of 10646.)
+--
+-- ImplementationLevel is 1-3
+--
+-- repertoireSubset is 0 or 1, for 'all' or 'collections'.
+-- The arcs are present only if repertoireSubset is 'collections',
+-- in which case  arc1, arc2, etc., are the
+-- identifiers of collections of character repertoires.
+--
+-- There is a second 10646 oid, for specifying syntax/form:
+--        1.0.10646.1.0.form
+--
+-- (The second '0' represents "transfer syntax".)
+--
+--  where values of form include:
+--  2: ucs-2
+--  4: ucs-4
+--  5: utf-16
+--  8: utf-8
+
+Iso10646 ::= SEQUENCE{
+   collections    [1] IMPLICIT OBJECT IDENTIFIER OPTIONAL,
+                       --oid of form 1.0.10646.1.implementationLevel
+                       -- .repertoireSubset.arc1.arc2. ....
+                       -- Target to choose a subset of the collections
+                       -- proposed by the origin, and an implementation level
+                       -- less than or equal to that proposed.
+                       --
+                       -- when 'collections' is omitted,
+                       -- 'implementationLevel' defaults to 3.
+                       --
+   encodingLevel  [2] IMPLICIT OBJECT IDENTIFIER
+                       -- oid of form 1.0.10646.1.0.form
+                    -- where value of 'form' is 2, 4, 5, or 8
+                      -- for ucs-2, ucs-4, utf-16, utf-8
+                                   }
+END
+

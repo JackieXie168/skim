@@ -1,0 +1,7 @@
+2006-12-26  arm
+
+Created a framework from the relevant parts (and some not-so-relevant) of the yaz 2.1.42 source release.  Right now it consists of five classes and an umbrella header.  The only source modification was to the include statements, changing to a relative path.
+
+Preprocessor flags were added by trial-and-error, except the icon and wchar flags, which I found poking around in the source.  There are some encoding issues to work out; in particular, I think we're supposed to be getting UTF-8 back all the time, but -[NSString stringWithUTF8String:] fails on some of them.
+
+A trivial Cocoa test application called z3950Test is in the source directory.

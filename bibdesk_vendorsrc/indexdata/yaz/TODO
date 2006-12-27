@@ -1,0 +1,10 @@
+YAZ TODO $Id: TODO,v 1.14 2006/04/21 12:40:56 adam Exp $
+
+Versions to be put automatically in
+   configure.ac
+   include/yaz/yaz-version.h
+   debian/changelog
+   NEWS
+   win/yaz.rc (4 places)
+   win/yaz.nsi
+   debian/rules (dh_makeshlibs line if API has been extended)

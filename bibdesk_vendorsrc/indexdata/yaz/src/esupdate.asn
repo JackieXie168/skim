@@ -1,0 +1,103 @@
+ESFormat-Update
+{Z39-50-extendedService Update (5) revisions (1)  revision-1 (1)} DEFINITIONS ::=
+  -- oid is 1.2.840.10003.9.5.1.1
+BEGIN
+IMPORTS DiagRec, InternationalString
+FROM Z39-50-APDU-1995;
+Update ::= CHOICE{
+    esRequest      [1] IMPLICIT SEQUENCE{
+       toKeep         [1] OriginPartToKeep,
+       notToKeep      [2] OriginPartNotToKeep},
+    taskPackage    [2] IMPLICIT SEQUENCE{
+                       originPart     [1]
+                                   OriginPartToKeep,
+                       targetPart     [2] TargetPart}}
+
+OriginPartToKeep ::= SEQUENCE{
+action                  [1] IMPLICIT INTEGER{
+                                recordInsert    (1),
+                                recordReplace   (2),
+                                recordDelete    (3),
+                                elementUpdate   (4),
+                                specialUpdate   (5)},
+ databaseName           [2] IMPLICIT InternationalString,
+ schema                 [3] IMPLICIT OBJECT IDENTIFIER OPTIONAL,
+ elementSetName         [4] IMPLICIT InternationalString OPTIONAL,
+ actionQualifier        [5] IMPLICIT EXTERNAL OPTIONAL}
+
+OriginPartNotToKeep ::= SuppliedRecords
+
+TargetPart ::= SEQUENCE{
+  updateStatus        [1] IMPLICIT INTEGER{
+                          success (1),
+                          partial (2),
+                          failure (3)},
+  globalDiagnostics   [2] IMPLICIT SEQUENCE OF
+                              DiagRec OPTIONAL,
+                    -- These are non-surrogate
+                    -- diagnosticsrelating to the task,
+                    -- not to individual records.
+  taskPackageRecords  [3] IMPLICIT SEQUENCE OF
+TaskPackageRecordStructure
+                    -- There should be a
+                    -- TaskPackageRecordStructure
+                    -- for every record supplied.
+                    -- The target should create
+                    -- such a structure for every
+                    -- record immediately upon
+                    -- creating the task package
+                    -- to include correlation
+                    -- information and status.
+                    -- The record itself would not
+                    -- be included until processing
+                    -- for that record is complete.
+               }
+
+-- Auxiliary definitions for Update
+SuppliedRecords ::= SEQUENCE OF SEQUENCE{
+  recordId     [1] CHOICE{
+                number  [1] IMPLICIT INTEGER,
+                string  [2] IMPLICIT  InternationalString,
+                opaque  [3] IMPLICIT OCTET STRING} OPTIONAL,
+  supplementalId [2] CHOICE{
+                 timeStamp       [1] IMPLICIT  GeneralizedTime,
+                 versionNumber   [2] IMPLICIT InternationalString,
+                 previousVersion [3] IMPLICIT EXTERNAL} OPTIONAL,
+  correlationInfo   [3] IMPLICIT CorrelationInfo OPTIONAL,
+  record            [4] IMPLICIT EXTERNAL}
+
+CorrelationInfo ::= SEQUENCE{
+            -- origin may supply one or both for any record:
+  note [1] IMPLICIT InternationalString OPTIONAL,
+  id   [2] IMPLICIT INTEGER OPTIONAL}
+
+TaskPackageRecordStructure ::= SEQUENCE{
+     recordOrSurDiag  [1] CHOICE {
+                    record     [1] IMPLICIT EXTERNAL,
+                      -- Choose 'record' if
+                      -- recordStatus is 'success', and
+                      -- elementSetName was supplied.
+
+                  surrogateDiagnostics   [2] IMPLICIT
+                              SEQUENCE OF DiagRec
+                         -- Choose 'SurrogateDiagnostics', if
+                         -- RecordStatus is failure.
+                                } OPTIONAL,
+                -- The parameter recordOrSurDiag
+                    -- will thus be omitted only if
+                    -- 'elementSetName' was omitted and
+                    -- recordStatus is 'success'; or
+                    --if record status is 'queued'
+                    -- or in 'process'.
+     correlationInfo [2] IMPLICIT
+                         CorrelationInfo OPTIONAL,
+                    -- This should be included
+                    -- if it was supplied by the origin.
+     recordStatus    [3] IMPLICIT INTEGER{
+                                        success   (1),
+                                        queued    (2),
+                                        inProcess (3),
+                                        failure   (4)},
+      supplementalDiagnostics   [4] IMPLICIT
+                SEQUENCE OF DiagRec OPTIONAL}
+END

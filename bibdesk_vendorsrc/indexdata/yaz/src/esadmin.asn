@@ -1,0 +1,49 @@
+ESFormat-Admin
+{Z39-50-extendedService Index-Data(81) AdminES (1)} DEFINITIONS ::=
+  -- oid is 1.2.840.10003.9.81.1
+BEGIN
+IMPORTS DiagRec, InternationalString, Segment
+FROM Z39-50-APDU-1995;
+Admin ::= CHOICE{
+    esRequest      [1] IMPLICIT SEQUENCE{
+       toKeep         [1] OriginPartToKeep,
+       notToKeep      [2] OriginPartNotToKeep},
+    taskPackage    [2] IMPLICIT SEQUENCE{
+                       originPart     [1]
+                                   OriginPartToKeep,
+                       targetPart     [2] TargetPart}}
+
+OriginPartToKeep ::= SEQUENCE{
+action              [1] CHOICE{
+    reIndex         [1] NULL,
+    truncate        [2] NULL,
+    drop            [3] NULL,
+    create          [4] NULL,
+    import          [5] ImportParameters,
+    refresh         [6] NULL,   -- Review internal representation of records against source files on disk to
+		                -- see if they have been updated.
+    commit          [7] NULL,
+    shutdown        [8] NULL,
+    start           [9] NULL},
+databaseName           [2] IMPLICIT InternationalString OPTIONAL}
+
+OriginPartNotToKeep ::= CHOICE{
+records                 [1] Segment,
+recordsWillFollow       [0] NULL}
+
+TargetPart ::= SEQUENCE{
+  updateStatus        [1] IMPLICIT INTEGER{
+                          success (1),
+                          partial (2),
+                          failure (3)},
+  globalDiagnostics   [2] IMPLICIT SEQUENCE OF
+                              DiagRec OPTIONAL
+               }
+	       
+-- Auxiliary definitions for Admin
+
+ImportParameters ::= SEQUENCE{
+ recordType          [1] IMPLICIT InternationalString
+}
+
+END
