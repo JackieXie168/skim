@@ -42,6 +42,7 @@
                 addGroupButtonAction = id; 
                 addGroupFieldAction = id; 
                 addScriptGroupAction = id; 
+                addSearchGroupAction = id; 
                 addSmartGroupAction = id; 
                 addStaticGroupAction = id; 
                 addURLGroupAction = id; 

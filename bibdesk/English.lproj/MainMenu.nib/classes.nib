@@ -98,10 +98,10 @@
         {
             ACTIONS = {
                 addScriptGroupAction = id; 
+                addSearchGroupAction = id; 
                 addSmartGroupAction = id; 
                 addStaticGroupAction = id; 
                 addURLGroupAction = id; 
-                addZoomGroupAction = id; 
                 alternateCut = id; 
                 alternateDelete = id; 
                 changePreviewDisplay = id; 
@@ -136,7 +136,6 @@
                 openDocumentUsingPhonyCiteKeys = id; 
                 openLinkedFile = id; 
                 openRemoteURL = id; 
-                pubmedSearch = id; 
                 refreshAllExternalGroups = id; 
                 refreshScriptGroups = id; 
                 refreshSharedBrowsing = id; 

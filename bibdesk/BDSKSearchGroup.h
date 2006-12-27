@@ -16,15 +16,18 @@
     NSString *queryKey;   // searchTerm as returned by PubMed
     NSString *searchTerm; // passed in by caller
     NSString *searchKey;  // unused
+    NSString *database; // passed in by caller
 }
 
 - (id)initWithName:(NSString *)aName;
-- (id)initWithName:(NSString *)aName searchTerm:(NSString *)string;
+- (id)initWithName:(NSString *)aName database:(NSString *)aDb searchTerm:(NSString *)string;
 
 - (void)setSearchTerm:(NSString *)aTerm;
 - (NSString *)searchTerm;
 - (void)setSearchKey:(NSString *)aKey;
 - (NSString *)searchKey;
+- (void)setDatabase:(NSString *)newDb;
+- (NSString *)database;
 
 - (void)setNumberOfAvailableResults:(int)value;
 - (int)numberOfAvailableResults;

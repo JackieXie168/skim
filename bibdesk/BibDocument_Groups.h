@@ -90,6 +90,7 @@
 - (IBAction)addStaticGroupAction:(id)sender;
 - (IBAction)addURLGroupAction:(id)sender;
 - (IBAction)addScriptGroupAction:(id)sender;
+- (IBAction)addSearchGroupAction:(id)sender;
 - (IBAction)addGroupButtonAction:(id)sender;
 - (IBAction)removeSelectedGroups:(id)sender;
 - (IBAction)editGroupAction:(id)sender;
