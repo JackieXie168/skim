@@ -55,7 +55,7 @@
     // this URL is basically just to prevent an assertion failure in the superclass
     self = [super initWithName:aName URL:[NSURL URLWithString:[[self class] baseURLString]]];
     if (self) {
-        searchTerm = [string retain];
+        searchTerm = [string copy];
     }
     return self;
 }
