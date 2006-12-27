@@ -10,8 +10,8 @@
 #import "BDSKZoomGroup.h"
 
 // !!! move to a plist
-static const NSString *hosts[] = { @"z3950.loc.gov:7090/Voyager", @"other" };
-static const NSString *names[] = { @"Library of Congress", @"Other" };
+static const NSString *BDSKZoomGroupHosts[] = { @"z3950.loc.gov:7090/Voyager" };
+static const NSString *BDSKZoomGroupNames[] = { @"Library of Congress" };
 
 @implementation BDSKZoomGroupSheetController
 
@@ -46,13 +46,17 @@ static const NSString *names[] = { @"Library of Congress", @"Other" };
 {
     [serverPopup removeAllItems];
     // !!! this will be a loop
-    [serverPopup addItemWithTitle:names[0]];
+    NSArray *names = [NSArray arrayWithObjects:BDSKZoomGroupNames count:sizeof(BDSKZoomGroupNames) / sizeof(NSString*)];
+    [serverPopup addItemsWithTitles:names];
+    [serverPopup addItemWithTitle:NSLocalizedString(@"Other", @"Popup menu item name for other search group server")];
     [serverPopup selectItemAtIndex:0];
-    host = [hosts[0] copy];
+    host = [BDSKZoomGroupHosts[0] copy];
     
     [serverComboBox setEnabled:NO];
     [serverComboBox setEnabled:NO];
     [portTextField setEnabled:NO];
+    [serverComboBox setStringValue:host];
+    [portTextField setIntValue:port];
 }
     
 
@@ -82,15 +86,13 @@ static const NSString *names[] = { @"Library of Congress", @"Other" };
     if (i = [sender numberOfItems] - 1) {
         [serverComboBox setEnabled:NO];
         [serverComboBox setEnabled:NO];
+    } else {
+        [host release];
+        host = [BDSKZoomGroupHosts[i] copy];
+        [serverComboBox setEnabled:NO];
+        [serverComboBox setEnabled:NO];
         [serverComboBox setStringValue:host];
         [portTextField setIntValue:port];
-    } else {
-        [serverComboBox setEnabled:NO];
-        [serverComboBox setEnabled:NO];
-        [serverComboBox setStringValue:@""];
-        [portTextField setIntValue:port];
-        [host release];
-        host = [hosts[i] copy];
     }
 }
         
