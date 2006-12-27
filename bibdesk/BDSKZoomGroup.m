@@ -279,12 +279,13 @@ typedef struct _BDSKZoomGroupFlags {
 
 - (oneway void)downloadWithSearchTerm:(NSString *)searchTerm groupCount:(int)groupCount;
 {
-    flags.isRetrieving = 1;
-    flags.failedDownload = 0;
+    OSAtomicCompareAndSwap32Barrier(0, 1, (int32_t *)&flags.isRetrieving);
+    OSAtomicCompareAndSwap32Barrier(1, 0, (int32_t *)&flags.failedDownload);
+    
     BDSKZoomResultSet *resultSet = [connection resultsForCCLQuery:searchTerm];
     
     if (nil == resultSet)
-        flags.failedDownload = 1;
+        OSAtomicCompareAndSwap32Barrier(0, 1, (int32_t *)&flags.failedDownload);
     
     [self setNumberOfAvailableResults:[resultSet countOfRecords]];
     
@@ -306,7 +307,7 @@ typedef struct _BDSKZoomGroupFlags {
     
     // this will create the array if it doesn't exist
     [[self serverOnMainThread] addPublicationsToGroup:pubs];
-    flags.isRetrieving = 0;
+    OSAtomicCompareAndSwap32Barrier(1, 0, (int32_t *)&flags.isRetrieving);
 }
 
 - (void)retrievePublications
