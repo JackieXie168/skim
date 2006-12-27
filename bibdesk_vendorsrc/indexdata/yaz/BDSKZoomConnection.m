@@ -92,6 +92,7 @@
 
 - (BDSKZoomResultSet *)resultsForQuery:(BDSKZoomQuery *)query;
 {
+    NSParameterAssert(nil != query);
     BDSKZoomResultSet *resultSet = [_results objectForKey:query];
     if (nil == resultSet) {
         [self connect];
@@ -105,7 +106,8 @@
 
 - (BDSKZoomResultSet *)resultsForCCLQuery:(NSString *)queryString;
 {
-    return [self resultsForQuery:[BDSKZoomQuery queryWithCCLString:queryString config:nil]];
+    BDSKZoomQuery *query = [BDSKZoomQuery queryWithCCLString:queryString config:nil];
+    return query ? [self resultsForQuery:query] : nil;
 }
 
 @end

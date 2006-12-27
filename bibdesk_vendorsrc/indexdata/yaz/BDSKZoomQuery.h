@@ -20,3 +20,6 @@
 - (id)initWithCCLString:(NSString *)queryString config:(NSString *)confString;
 - (ZOOM_query)zoomQuery;
 @end
+
+@interface BDSKZoomCCLQueryFormatter : NSFormatter
+@end
