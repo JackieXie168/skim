@@ -299,6 +299,7 @@
 		CE6FB32309DFFCB5005E3E14 /* BDSKSharingBrowser.m in Sources */ = {isa = PBXBuildFile; fileRef = CE6FB32109DFFCB5005E3E14 /* BDSKSharingBrowser.m */; };
 		CE7595FF0ADDB0E0009C1329 /* BDSKContainerView.h in Headers */ = {isa = PBXBuildFile; fileRef = CE7595FD0ADDB0E0009C1329 /* BDSKContainerView.h */; };
 		CE7596000ADDB0E1009C1329 /* BDSKContainerView.m in Sources */ = {isa = PBXBuildFile; fileRef = CE7595FE0ADDB0E0009C1329 /* BDSKContainerView.m */; };
+		CE76A5430B430EA500E61066 /* BDSKSearchGroupSheet.nib in Resources */ = {isa = PBXBuildFile; fileRef = CE76A53D0B430EA500E61066 /* BDSKSearchGroupSheet.nib */; };
 		CE77A7FD0923BEBA0019D901 /* NSTableView_BDSKExtensions.h in Headers */ = {isa = PBXBuildFile; fileRef = CE77A7FB0923BEBA0019D901 /* NSTableView_BDSKExtensions.h */; };
 		CE77A7FE0923BEBA0019D901 /* NSTableView_BDSKExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = CE77A7FC0923BEBA0019D901 /* NSTableView_BDSKExtensions.m */; };
 		CE7A31400B08EA1F00D1B333 /* BDSKItemPasteboardHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = CE7A313E0B08EA1F00D1B333 /* BDSKItemPasteboardHelper.m */; };
@@ -660,7 +661,6 @@
 		F9ABECC7086E12B700741FC5 /* BTParse.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = F9ABEC9E086E11B500741FC5 /* BTParse.framework */; };
 		F9B800940B41DFAF00A5A615 /* BDSKZoomGroupSheetController.h in Headers */ = {isa = PBXBuildFile; fileRef = F9B800920B41DFAF00A5A615 /* BDSKZoomGroupSheetController.h */; };
 		F9B800950B41DFAF00A5A615 /* BDSKZoomGroupSheetController.m in Sources */ = {isa = PBXBuildFile; fileRef = F9B800930B41DFAF00A5A615 /* BDSKZoomGroupSheetController.m */; };
-		F9B8009C0B41E00800A5A615 /* BDSKZoomGroupSheet.nib in Resources */ = {isa = PBXBuildFile; fileRef = F9B8009A0B41E00800A5A615 /* BDSKZoomGroupSheet.nib */; };
 		F9B801840B41E89500A5A615 /* yaz.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F9B801830B41E89500A5A615 /* yaz.framework */; };
 		F9B801930B41E8D600A5A615 /* yaz.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = F9B801830B41E89500A5A615 /* yaz.framework */; };
 		F9B8019E0B41E91F00A5A615 /* BDSKZoomGroup.h in Headers */ = {isa = PBXBuildFile; fileRef = F9B8019C0B41E91F00A5A615 /* BDSKZoomGroup.h */; };
@@ -1175,6 +1175,7 @@
 		CE6FB32109DFFCB5005E3E14 /* BDSKSharingBrowser.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BDSKSharingBrowser.m; sourceTree = "<group>"; };
 		CE7595FD0ADDB0E0009C1329 /* BDSKContainerView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BDSKContainerView.h; sourceTree = "<group>"; };
 		CE7595FE0ADDB0E0009C1329 /* BDSKContainerView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BDSKContainerView.m; sourceTree = "<group>"; };
+		CE76A53E0B430EA500E61066 /* English */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = English; path = English.lproj/BDSKSearchGroupSheet.nib; sourceTree = "<group>"; };
 		CE77A7FB0923BEBA0019D901 /* NSTableView_BDSKExtensions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NSTableView_BDSKExtensions.h; sourceTree = "<group>"; };
 		CE77A7FC0923BEBA0019D901 /* NSTableView_BDSKExtensions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NSTableView_BDSKExtensions.m; sourceTree = "<group>"; };
 		CE7A313E0B08EA1F00D1B333 /* BDSKItemPasteboardHelper.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = BDSKItemPasteboardHelper.m; sourceTree = "<group>"; };
@@ -1543,7 +1544,6 @@
 		F9ABECF2086E142100741FC5 /* BTParse.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = BTParse.xcodeproj; path = BTParse/BTParse.xcodeproj; sourceTree = "<group>"; };
 		F9B800920B41DFAF00A5A615 /* BDSKZoomGroupSheetController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BDSKZoomGroupSheetController.h; sourceTree = "<group>"; };
 		F9B800930B41DFAF00A5A615 /* BDSKZoomGroupSheetController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BDSKZoomGroupSheetController.m; sourceTree = "<group>"; };
-		F9B8009B0B41E00800A5A615 /* English */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = English; path = English.lproj/BDSKZoomGroupSheet.nib; sourceTree = "<group>"; };
 		F9B801830B41E89500A5A615 /* yaz.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = yaz.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		F9B8019C0B41E91F00A5A615 /* BDSKZoomGroup.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BDSKZoomGroup.h; sourceTree = "<group>"; };
 		F9B8019D0B41E91F00A5A615 /* BDSKZoomGroup.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BDSKZoomGroup.m; sourceTree = "<group>"; };
@@ -1789,7 +1789,7 @@
 				CE518F6409E52D6A00E97C3A /* BDSKTextViewFindPanel.nib */,
 				3D8663770802CF5C00FF1724 /* BDSKTypeInfoEditor.nib */,
 				CEEFE2B60B03FB0100668BB0 /* BDSKURLGroupSheet.nib */,
-				F9B8009A0B41E00800A5A615 /* BDSKZoomGroupSheet.nib */,
+				CE76A53D0B430EA500E61066 /* BDSKSearchGroupSheet.nib */,
 				F9022CC2075804A600C3F701 /* BibDocument.nib */,
 				F9022CC4075804A600C3F701 /* BibEditor.nib */,
 				CE67E314092B569000410758 /* BibEditorDrawer.nib */,
@@ -3220,7 +3220,7 @@
 				CE3A1A570B19C2F700233208 /* SelectEncodingsPanel.nib in Resources */,
 				CE7F5E480B3F5F1800A919D0 /* searchFolderIcon.tiff in Resources */,
 				CE7F64C40B41694A00A919D0 /* BDSKSearchGroupView.nib in Resources */,
-				F9B8009C0B41E00800A5A615 /* BDSKZoomGroupSheet.nib in Resources */,
+				CE76A5430B430EA500E61066 /* BDSKSearchGroupSheet.nib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -3887,6 +3887,14 @@
 			name = BibEditorDrawer.nib;
 			sourceTree = "<group>";
 		};
+		CE76A53D0B430EA500E61066 /* BDSKSearchGroupSheet.nib */ = {
+			isa = PBXVariantGroup;
+			children = (
+				CE76A53E0B430EA500E61066 /* English */,
+			);
+			name = BDSKSearchGroupSheet.nib;
+			sourceTree = "<group>";
+		};
 		CE7A4AA40B0B480100D1B333 /* BDSKCustomCiteDrawer.nib */ = {
 			isa = PBXVariantGroup;
 			children = (
@@ -4109,14 +4117,6 @@
 				F97965E30869098200050427 /* English */,
 			);
 			name = BDSKFindPanel.nib;
-			sourceTree = "<group>";
-		};
-		F9B8009A0B41E00800A5A615 /* BDSKZoomGroupSheet.nib */ = {
-			isa = PBXVariantGroup;
-			children = (
-				F9B8009B0B41E00800A5A615 /* English */,
-			);
-			name = BDSKZoomGroupSheet.nib;
 			sourceTree = "<group>";
 		};
 		F9E0BCCB0895ADFB005E5FAA /* BibPref_Display.nib */ = {
