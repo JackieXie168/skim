@@ -659,8 +659,8 @@
 		F9A6772E07D2D57F00782ACD /* MultiplePageView.m in Sources */ = {isa = PBXBuildFile; fileRef = F9A6772C07D2D57F00782ACD /* MultiplePageView.m */; };
 		F9ABEC9F086E11B500741FC5 /* BTParse.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F9ABEC9E086E11B500741FC5 /* BTParse.framework */; };
 		F9ABECC7086E12B700741FC5 /* BTParse.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = F9ABEC9E086E11B500741FC5 /* BTParse.framework */; };
-		F9B800940B41DFAF00A5A615 /* BDSKZoomGroupSheetController.h in Headers */ = {isa = PBXBuildFile; fileRef = F9B800920B41DFAF00A5A615 /* BDSKZoomGroupSheetController.h */; };
-		F9B800950B41DFAF00A5A615 /* BDSKZoomGroupSheetController.m in Sources */ = {isa = PBXBuildFile; fileRef = F9B800930B41DFAF00A5A615 /* BDSKZoomGroupSheetController.m */; };
+		F9B800940B41DFAF00A5A615 /* BDSKSearchGroupSheetController.h in Headers */ = {isa = PBXBuildFile; fileRef = F9B800920B41DFAF00A5A615 /* BDSKSearchGroupSheetController.h */; };
+		F9B800950B41DFAF00A5A615 /* BDSKSearchGroupSheetController.m in Sources */ = {isa = PBXBuildFile; fileRef = F9B800930B41DFAF00A5A615 /* BDSKSearchGroupSheetController.m */; };
 		F9B801840B41E89500A5A615 /* yaz.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F9B801830B41E89500A5A615 /* yaz.framework */; };
 		F9B801930B41E8D600A5A615 /* yaz.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = F9B801830B41E89500A5A615 /* yaz.framework */; };
 		F9B8019E0B41E91F00A5A615 /* BDSKZoomGroup.h in Headers */ = {isa = PBXBuildFile; fileRef = F9B8019C0B41E91F00A5A615 /* BDSKZoomGroup.h */; };
@@ -1542,8 +1542,8 @@
 		F9AA030C092FA2E20094A059 /* OmniAppKit.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = OmniAppKit.xcodeproj; path = ../bibdesk_vendorsrc/OmniGroup/OmniAppKit/OmniAppKit.xcodeproj; sourceTree = SOURCE_ROOT; };
 		F9ABEC9E086E11B500741FC5 /* BTParse.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = BTParse.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		F9ABECF2086E142100741FC5 /* BTParse.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = BTParse.xcodeproj; path = BTParse/BTParse.xcodeproj; sourceTree = "<group>"; };
-		F9B800920B41DFAF00A5A615 /* BDSKZoomGroupSheetController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BDSKZoomGroupSheetController.h; sourceTree = "<group>"; };
-		F9B800930B41DFAF00A5A615 /* BDSKZoomGroupSheetController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BDSKZoomGroupSheetController.m; sourceTree = "<group>"; };
+		F9B800920B41DFAF00A5A615 /* BDSKSearchGroupSheetController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BDSKSearchGroupSheetController.h; sourceTree = "<group>"; };
+		F9B800930B41DFAF00A5A615 /* BDSKSearchGroupSheetController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BDSKSearchGroupSheetController.m; sourceTree = "<group>"; };
 		F9B801830B41E89500A5A615 /* yaz.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = yaz.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		F9B8019C0B41E91F00A5A615 /* BDSKZoomGroup.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BDSKZoomGroup.h; sourceTree = "<group>"; };
 		F9B8019D0B41E91F00A5A615 /* BDSKZoomGroup.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BDSKZoomGroup.m; sourceTree = "<group>"; };
@@ -1786,10 +1786,10 @@
 				F97965E20869098200050427 /* BDSKFindPanel.nib */,
 				CE22E1CF0A8CCFBD002CEFB8 /* BDSKOrphanedFilesFinder.nib */,
 				CEEFE2B20B03FAF500668BB0 /* BDSKScriptGroupSheet.nib */,
+				CE76A53D0B430EA500E61066 /* BDSKSearchGroupSheet.nib */,
 				CE518F6409E52D6A00E97C3A /* BDSKTextViewFindPanel.nib */,
 				3D8663770802CF5C00FF1724 /* BDSKTypeInfoEditor.nib */,
 				CEEFE2B60B03FB0100668BB0 /* BDSKURLGroupSheet.nib */,
-				CE76A53D0B430EA500E61066 /* BDSKSearchGroupSheet.nib */,
 				F9022CC2075804A600C3F701 /* BibDocument.nib */,
 				F9022CC4075804A600C3F701 /* BibEditor.nib */,
 				CE67E314092B569000410758 /* BibEditorDrawer.nib */,
@@ -2000,7 +2000,7 @@
 				CE518F2609E526E000E97C3A /* BDSKTextViewFindController.m */,
 				3D86633E0802C25800FF1724 /* BDSKTypeInfoEditor.m */,
 				CEEFDDFF0B03ED0200668BB0 /* BDSKURLGroupSheetController.m */,
-				F9B800930B41DFAF00A5A615 /* BDSKZoomGroupSheetController.m */,
+				F9B800930B41DFAF00A5A615 /* BDSKSearchGroupSheetController.m */,
 				F9022C5E075802E300C3F701 /* BibAppController.m */,
 				F9022C68075802E300C3F701 /* BibEditor.m */,
 				3DE3916607FEF5E600BE3AE7 /* BibEditor_Toolbar.m */,
@@ -2381,7 +2381,7 @@
 				F98F33C80892D4B700C1427D /* BDSKZoomablePDFView.h */,
 				CE27D9590AF92BFD00419879 /* BDSKZoomableTextView.h */,
 				F9B8019C0B41E91F00A5A615 /* BDSKZoomGroup.h */,
-				F9B800920B41DFAF00A5A615 /* BDSKZoomGroupSheetController.h */,
+				F9B800920B41DFAF00A5A615 /* BDSKSearchGroupSheetController.h */,
 				F920DAFA075C2B69000C5FCA /* BibAppController+Scripting.h */,
 				F9022C5D075802E300C3F701 /* BibAppController.h */,
 				F9022C5F075802E300C3F701 /* BibAuthor.h */,
@@ -2803,7 +2803,7 @@
 				CE69FF800B1DB719005D6187 /* BDSKCategoryGroup.h in Headers */,
 				CE34A5730B249E0B00755730 /* BDSKMARCParser.h in Headers */,
 				F94DB0F80B3E2FA1006F37A2 /* BDSKSearchGroup.h in Headers */,
-				F9B800940B41DFAF00A5A615 /* BDSKZoomGroupSheetController.h in Headers */,
+				F9B800940B41DFAF00A5A615 /* BDSKSearchGroupSheetController.h in Headers */,
 				F9B8019E0B41E91F00A5A615 /* BDSKZoomGroup.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -3611,7 +3611,7 @@
 				CE8C731F0B0CA6C500E31E5A /* NSObject_BDSKExtensions.m in Sources */,
 				CE34A5740B249E0B00755730 /* BDSKMARCParser.m in Sources */,
 				F94DB0F90B3E2FA1006F37A2 /* BDSKSearchGroup.m in Sources */,
-				F9B800950B41DFAF00A5A615 /* BDSKZoomGroupSheetController.m in Sources */,
+				F9B800950B41DFAF00A5A615 /* BDSKSearchGroupSheetController.m in Sources */,
 				F9B8019F0B41E91F00A5A615 /* BDSKZoomGroup.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

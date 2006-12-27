@@ -1,5 +1,5 @@
 //
-//  BDSKZoomGroupSheetController.h
+//  BDSKSearchGroupSheetController.h
 //  Bibdesk
 //
 //  Created by Adam Maxwell on 12/26/06.
@@ -11,7 +11,7 @@
 
 @class BDSKGroup;
 
-@interface BDSKZoomGroupSheetController : BDSKSheetController {
+@interface BDSKSearchGroupSheetController : BDSKSheetController {
     BDSKGroup *group;
     NSString *address;
     NSString *database;
