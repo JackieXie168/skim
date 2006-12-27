@@ -46,16 +46,17 @@
 
 - (id)initWithName:(NSString *)aName;
 {
-    self = [self initWithName:aName searchTerm:nil];
+    self = [self initWithName:aName database:@"pubmed" searchTerm:nil];
     return self;
 }
 
-- (id)initWithName:(NSString *)aName searchTerm:(NSString *)string;
+- (id)initWithName:(NSString *)aName database:(NSString *)aDb searchTerm:(NSString *)string;
 {
     // this URL is basically just to prevent an assertion failure in the superclass
     self = [super initWithName:aName URL:[NSURL URLWithString:[[self class] baseURLString]]];
     if (self) {
         searchTerm = [string copy];
+        database = [aDb copy];
     }
     return self;
 }
@@ -63,14 +64,16 @@
 - (id)initWithDictionary:(NSDictionary *)groupDict {
     NSString *aName = [[groupDict objectForKey:@"group name"] stringByUnescapingGroupPlistEntities];
     NSString *aSearchTerm = [[groupDict objectForKey:@"search term"] stringByUnescapingGroupPlistEntities];
-    self = [self initWithName:aName searchTerm:aSearchTerm];
+    NSString *aDatabase = [[groupDict objectForKey:@"database"] stringByUnescapingGroupPlistEntities];
+    self = [self initWithName:aName database:aDatabase searchTerm:aSearchTerm];
     return self;
 }
 
 - (NSDictionary *)dictionaryValue {
     NSString *aName = [[self stringValue] stringByEscapingGroupPlistEntities];
     NSString *aSearchTerm = [[self searchTerm] stringByEscapingGroupPlistEntities];
-    return [NSDictionary dictionaryWithObjectsAndKeys:aName, @"group name", aSearchTerm, @"search term", nil];
+    NSString *aDatabase = [[self database] stringByEscapingGroupPlistEntities];
+    return [NSDictionary dictionaryWithObjectsAndKeys:aName, @"group name", aSearchTerm, @"search term", aDatabase, @"database", nil];
 }
 
 - (void)dealloc
@@ -125,7 +128,7 @@
 - (void)resetSearch;
 {
     // get the initial XML document with our search parameters in it
-    NSString *esearch = [[[self class] baseURLString] stringByAppendingFormat:@"/esearch.fcgi?db=pubmed&retmax=1&usehistory=y&term=%@&tool=bibdesk", [[self searchTerm] stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding]];
+    NSString *esearch = [[[self class] baseURLString] stringByAppendingFormat:@"/esearch.fcgi?db=%@&retmax=1&usehistory=y&term=%@&tool=bibdesk", [self database], [[self searchTerm] stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding]];
     NSURL *initialURL = [NSURL URLWithString:esearch]; 
     OBPRECONDITION(initialURL);
     
@@ -165,7 +168,7 @@
     int numResults = MIN([self numberOfAvailableResults] - [self count], MAX_RESULTS);
     
     // need to escape queryKey, but the rest should be valid for a URL
-    NSString *efetch = [[[self class] baseURLString] stringByAppendingFormat:@"/efetch.fcgi?rettype=medline&retmode=text&retstart=%d&retmax=%d&db=pubmed&query_key=%@&WebEnv=%@&tool=bibdesk", [self count], numResults, [[self queryKey] stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding], [self webEnv]];
+    NSString *efetch = [[[self class] baseURLString] stringByAppendingFormat:@"/efetch.fcgi?rettype=medline&retmode=text&retstart=%d&retmax=%d&db=%@&query_key=%@&WebEnv=%@&tool=bibdesk", [self count], [self database], numResults, [[self queryKey] stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding], [self webEnv]];
     NSURL *theURL = [NSURL URLWithString:efetch];
     OBPOSTCONDITION(theURL);
     
@@ -235,6 +238,15 @@
 }
 
 - (NSString *)searchKey { return searchKey; }
+
+- (void)setDatabase:(NSString *)newDb {
+    if(database != newDb){
+        [database release];
+        database = [newDb retain];
+    }
+}
+
+- (NSString *)database { return database; }
 
 // this returns nil if no searchTerm has been set, to avoid an error message
 - (id)publications {

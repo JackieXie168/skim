@@ -845,15 +845,7 @@ The groupedPublications array is a subset of the publications array, developed b
     // updating of the tables is done when finishing the edit of the name
 }
 
-- (IBAction)pubmedSearch:(id)sender {
-    BDSKSearchGroup *group = [[[BDSKSearchGroup alloc] initWithName:@"PubMed"] autorelease];
-    unsigned int insertIndex = NSMaxRange([groups rangeOfSearchGroups]);
-    [groups addSearchGroup:group];
-    [groupTableView selectRowIndexes:[NSIndexSet indexSetWithIndex:insertIndex] byExtendingSelection:NO];
-    [[self undoManager] setActionName:NSLocalizedString(@"Add PubMed Search Group", @"Undo action name")];
-}
-
-- (IBAction)addZoomGroupAction:(id)sender {
+- (IBAction)addSearchGroupAction:(id)sender {
     BDSKZoomGroupSheetController *sheetController = [[BDSKZoomGroupSheetController alloc] init];
     [sheetController beginSheetModalForWindow:documentWindow
                                 modalDelegate:self
@@ -865,8 +857,8 @@ The groupedPublications array is a subset of the publications array, developed b
 - (void)zoomGroupSheetDidEnd:(BDSKZoomGroupSheetController *)sheetController returnCode:(int) returnCode contextInfo:(void *)contextInfo{
 	if(returnCode == NSOKButton){
         unsigned int insertIndex = NSMaxRange([groups rangeOfSearchGroups]);
-        BDSKZoomGroup *group = [sheetController group];
-		[groups addSearchGroup:group];        
+        BDSKGroup *group = [sheetController group];
+		[groups addSearchGroup:(id)group];        
 		[groupTableView selectRowIndexes:[NSIndexSet indexSetWithIndex:insertIndex] byExtendingSelection:NO];
 		[[self undoManager] setActionName:NSLocalizedString(@"Add Zoom Search Group", @"Undo action name")];
 		// updating of the tables is done when finishing the edit of the name

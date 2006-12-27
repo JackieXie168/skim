@@ -7,25 +7,34 @@
 //
 
 #import "BDSKZoomGroupSheetController.h"
+#import "BDSKSearchGroup.h"
 #import "BDSKZoomGroup.h"
 
-// !!! move to a plist
-static const NSString *BDSKZoomGroupHosts[] = { @"z3950.loc.gov:7090/Voyager" };
-static const NSString *BDSKZoomGroupNames[] = { @"Library of Congress" };
+static NSArray *zoomServers = nil;
+static NSArray *entrezServers = nil;
 
 @implementation BDSKZoomGroupSheetController
+
++ (void)initialize {
+// !!! move to a plist
+    entrezServers = [[NSArray alloc] initWithObjects:
+        [NSDictionary dictionaryWithObjectsAndKeys:@"PubMed", @"name", @"pubmed", @"database", nil], nil];
+    zoomServers = [[NSArray alloc] initWithObjects:
+        [NSDictionary dictionaryWithObjectsAndKeys:@"Library of Congress", @"name", @"z3950.loc.gov", @"address", @"Voyager", @"database", [NSNumber numberWithInt:7090], @"port", nil], nil];
+}
 
 - (id)init {
     return [self initWithGroup:nil];
 }
 
-- (id)initWithGroup:(BDSKZoomGroup *)aGroup;
+- (id)initWithGroup:(BDSKGroup *)aGroup;
 {
     if (self = [super init]) {
         group = [aGroup retain];
         editors = CFArrayCreateMutable(kCFAllocatorMallocZone, 0, NULL);
         undoManager = nil;
         port = 0;
+        type = 0;
     }
     return self;
 }
@@ -34,31 +43,38 @@ static const NSString *BDSKZoomGroupNames[] = { @"Library of Congress" };
 {
     [group release];
     [undoManager release];
-    [host release];
+    [address release];
+    [database release];
     CFRelease(editors);    
     [super dealloc];
 }
 
-- (BDSKZoomGroup *)group { return group; }
 - (NSString *)windowNibName { return @"BDSKZoomGroupSheet"; }
+
+- (void)setDefaultValues{
+    NSArray *servers = type == 0 ? entrezServers : zoomServers;
+    [serverPopup removeAllItems];
+    // !!! this will be a loop
+    [serverPopup addItemsWithTitles:[servers valueForKey:@"name"]];
+    [serverPopup addItemWithTitle:NSLocalizedString(@"Other", @"Popup menu item name for other search group server")];
+    [serverPopup selectItemAtIndex:0];
+    
+    NSDictionary *host = [servers objectAtIndex:0];
+    [self setAddress:[host objectForKey:@"address"]];
+    [self setPort:[[host objectForKey:@"port"] intValue]];
+    [self setDatabase:[host objectForKey:@"database"]];
+    
+    [addressField setEnabled:NO];
+    [portField setEnabled:NO];
+    [databaseField setEnabled:NO];
+}
 
 - (void)awakeFromNib
 {
-    [serverPopup removeAllItems];
-    // !!! this will be a loop
-    NSArray *names = [NSArray arrayWithObjects:BDSKZoomGroupNames count:sizeof(BDSKZoomGroupNames) / sizeof(NSString*)];
-    [serverPopup addItemsWithTitles:names];
-    [serverPopup addItemWithTitle:NSLocalizedString(@"Other", @"Popup menu item name for other search group server")];
-    [serverPopup selectItemAtIndex:0];
-    host = [BDSKZoomGroupHosts[0] copy];
-    
-    [serverComboBox setEnabled:NO];
-    [serverComboBox setEnabled:NO];
-    [portTextField setEnabled:NO];
-    [serverComboBox setStringValue:host];
-    [portTextField setIntValue:port];
+    [self setDefaultValues];
 }
-    
+
+- (BDSKGroup *)group { return group; }
 
 - (IBAction)dismiss:(id)sender {
     if ([sender tag] == NSOKButton) {
@@ -68,12 +84,22 @@ static const NSString *BDSKZoomGroupNames[] = { @"Library of Congress" };
             return;
         }
         
+        NSString *host = [NSString stringWithFormat:@"%@:%i/%@", address, port, database];
+        
         if(group == nil){
-            group = [[BDSKZoomGroup alloc] initWithHost:host port:port searchTerm:nil];
+            if(type == 0)
+                group = [[BDSKSearchGroup alloc] initWithName:@"Empty" database:database searchTerm:nil];
+            else
+                group = [[BDSKZoomGroup alloc] initWithHost:host port:0 searchTerm:nil];
         }else{
-            [group setHost:host];
-            [group setPort:port];
-            [[group undoManager] setActionName:NSLocalizedString(@"Edit External File Group", @"Undo action name")];
+#warning editing is broken when type changes
+            if(type == 0){
+                [(BDSKSearchGroup *)group setDatabase:database];
+            }else{
+                [(BDSKZoomGroup *)group setHost:host];
+                [(BDSKZoomGroup *)group setPort:port];
+            }
+            [[(BDSKMutableGroup *)group undoManager] setActionName:NSLocalizedString(@"Edit Search Group", @"Undo action name")];
         }
     }
     
@@ -83,28 +109,84 @@ static const NSString *BDSKZoomGroupNames[] = { @"Library of Congress" };
 - (IBAction)selectPredefinedServer:(id)sender;
 {
     int i = [sender indexOfSelectedItem];
-    if (i = [sender numberOfItems] - 1) {
-        [serverComboBox setEnabled:NO];
-        [serverComboBox setEnabled:NO];
+    if (i == [sender numberOfItems] - 1) {
+        [addressField setEnabled:type == 1];
+        [portField setEnabled:type == 1];
+        [databaseField setEnabled:YES];
     } else {
-        [host release];
-        host = [BDSKZoomGroupHosts[i] copy];
-        [serverComboBox setEnabled:NO];
-        [serverComboBox setEnabled:NO];
-        [serverComboBox setStringValue:host];
-        [portTextField setIntValue:port];
+        NSArray *servers = type == 0 ? entrezServers : zoomServers;
+        NSDictionary *host = [servers objectAtIndex:i];
+        [self setAddress:[host objectForKey:@"address"]];
+        [self setPort:[[host objectForKey:@"port"] intValue]];
+        [self setDatabase:[host objectForKey:@"database"]];
+        [addressField setEnabled:NO];
+        [portField setEnabled:NO];
+        [databaseField setEnabled:NO];
     }
 }
-        
-- (IBAction)changeServer:(id)sender;
-{
-    [host release];
-    host = [[sender stringValue] copy];
+
+- (NSString *)address {
+    return address;
 }
-    
-- (IBAction)changePort:(id)sender;
-{
-    port = [sender intValue];
+
+- (void)setAddress:(NSString *)newAddress {
+    if(address != newAddress){
+        [address release];
+        address = [newAddress retain];
+    }
+}
+
+- (BOOL)validateAddress:(id *)value error:(NSError **)error {
+    NSString *string = *value;
+    NSRange range = [string rangeOfString:@"/"];
+    if(range.location != NSNotFound){
+        [self setDatabase:[string substringFromIndex:NSMaxRange(range)]];
+        string = [string substringToIndex:range.location];
+    }
+    range = [string rangeOfString:@":"];
+    if(range.location != NSNotFound){
+        [self setPort:[[string substringFromIndex:NSMaxRange(range)] intValue]];
+        string = [string substringToIndex:range.location];
+    }
+    *value = string;
+    return YES;
+}
+
+- (NSString *)database {
+    return database;
+}
+
+- (void)setDatabase:(NSString *)newDb {
+    if(database != newDb){
+        [database release];
+        database = [newDb retain];
+    }
+}
+  
+- (int)port {
+    return port;
+}
+  
+- (void)setPort:(int)newPort {
+    port = newPort;
+}
+  
+- (int)type {
+    return type;
+}
+  
+- (void)setType:(int)newType {
+    if(type != newType) {
+        type = newType;
+        [self setDefaultValues];
+    }
+}
+
+- (void)setNilValueForKey:(NSString *)key {
+    if ([key isEqualToString:@"port"])
+        [self setPort:0];
+    else
+        [super setNilValueForKey:key];
 }
 
 #pragma mark NSEditorRegistration
@@ -127,12 +209,19 @@ static const NSString *BDSKZoomGroupNames[] = { @"Library of Congress" };
 		if([(NSObject *)(CFArrayGetValueAtIndex(editors, index)) commitEditing] == NO)
         return NO;
     
-    if ([NSString isEmptyString:host]) {
-        NSAlert *alert = [NSAlert alertWithMessageText:NSLocalizedString(@"Empty Host", @"Message in alert dialog when URL for external file group is invalid")
+    NSString *message = nil;
+    
+    if (type == 0 && [NSString isEmptyString:database]) {
+        message = NSLocalizedString(@"Unable to create a search group with an empty database", @"Informative text in alert dialog when search group is invalid");
+    } else if (type == 1 && ([NSString isEmptyString:address] || [NSString isEmptyString:database] || port == 0)) {
+        message = NSLocalizedString(@"Unable to create a search group with an empty address, database or port", @"Informative text in alert dialog when search group is invalid");
+    }
+    if (message) {
+        NSAlert *alert = [NSAlert alertWithMessageText:NSLocalizedString(@"Empty value", @"Message in alert dialog when data for a search group is invalid")
                                          defaultButton:nil
                                        alternateButton:nil
                                            otherButton:nil
-                             informativeTextWithFormat:NSLocalizedString(@"Unable to create a host name with an empty string", @"Informative text in alert dialog when host name for external file group is invalid")];
+                             informativeTextWithFormat:message];
         [alert beginSheetModalForWindow:[self window] modalDelegate:self didEndSelector:NULL contextInfo:NULL];
         return NO;
     }

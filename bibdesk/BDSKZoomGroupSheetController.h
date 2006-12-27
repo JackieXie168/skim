@@ -9,26 +9,37 @@
 #import <Cocoa/Cocoa.h>
 #import "BDSKSheetController.h"
 
-@class BDSKZoomGroup;
+@class BDSKGroup;
 
 @interface BDSKZoomGroupSheetController : BDSKSheetController {
-    BDSKZoomGroup *group;
-    NSString *host;
+    BDSKGroup *group;
+    NSString *address;
+    NSString *database;
     int port;
+    int type;
     NSUndoManager *undoManager;
     CFArrayRef editors;
     
-    IBOutlet NSComboBox *serverComboBox;
     IBOutlet NSPopUpButton *serverPopup;
-    IBOutlet NSTextField *portTextField;
+    IBOutlet NSTextField *addressField;
+    IBOutlet NSTextField *portField;
+    IBOutlet NSTextField *databaseField;
+    IBOutlet NSMatrix *typematrix;
 }
 
-- (id)initWithGroup:(BDSKZoomGroup *)aGroup;
-- (BDSKZoomGroup *)group;
+- (id)initWithGroup:(BDSKGroup *)aGroup;
+- (BDSKGroup *)group;
+
+- (NSString *)address;
+- (void)setAddress:(NSString *)newAddress;
+
+- (NSString *)database;
+- (void)setDatabase:(NSString *)newDb;
+
+- (int)port;
+- (void)setPort:(int)newPort;
 
 - (IBAction)selectPredefinedServer:(id)sender;
-- (IBAction)changeServer:(id)sender;
-- (IBAction)changePort:(id)sender;
 
 - (BOOL)commitEditing;
 - (NSUndoManager *)undoManager;

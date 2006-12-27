@@ -8,12 +8,13 @@
             SUPERCLASS = NSWindowController; 
         }, 
         {
-            ACTIONS = {changePort = id; changeServer = id; selectPredefinedServer = id; }; 
+            ACTIONS = {selectPredefinedServer = id; }; 
             CLASS = BDSKZoomGroupSheetController; 
             LANGUAGE = ObjC; 
             OUTLETS = {
-                portTextField = NSTextField; 
-                serverComboBox = NSComboBox; 
+                addressField = NSTextField; 
+                databaseField = NSTextField; 
+                portField = NSTextField; 
                 serverPopup = NSPopUpButton; 
             }; 
             SUPERCLASS = BDSKSheetController; 
