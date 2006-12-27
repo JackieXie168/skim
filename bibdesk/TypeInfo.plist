@@ -19,7 +19,7 @@
         050 = {a = "Call-Number"; }; 
         082 = {a = "Dewey-Call-Number"; }; 
         100 = {a = Author; }; 
-        245 = {a = Title; b = Title; c = Author; }; 
+        245 = {a = Title; b = Title; }; 
         250 = {a = Edition; }; 
         260 = {a = Address; b = Publisher; c = Year; }; 
         440 = {v = Volume; }; 
@@ -29,7 +29,7 @@
         505 = {a = Annote; }; 
         520 = {a = Abstract; }; 
         650 = {a = Genre; }; 
-        700 = {a = Author; }; 
+        700 = {a = Author; e = Editor; }; 
         856 = {u = Url; }; 
     }; 
     BibTeXFieldNamesForPubMedTags = {
