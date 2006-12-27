@@ -9,8 +9,19 @@
 #import "BDSKZoomConnection.h"
 #import "BDSKZoomQuery.h"
 #import "BDSKZoomRecord.h"
+#import "log.h"
 
 @implementation BDSKZoomConnection
+
++ (void)initialize;
+{
+    static BOOL didInit = NO;
+    if (NO == didInit) {
+        // pass empty string to use stderr
+        yaz_log_init(YLOG_DEFAULT_LEVEL, NULL, "");
+        didInit = YES;
+    }
+}
 
 - (id)initWithHost:(NSString *)hostName port:(int)portNum database:(NSString *)dbase;
 {
