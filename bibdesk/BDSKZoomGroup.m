@@ -174,6 +174,7 @@ typedef struct _BDSKZoomGroupFlags {
 
 - (BOOL)isSearch { return YES; }
 
+#warning Need formal protocol for search groups
 - (void)search;
 {
     [[server serverOnServerThread] setNumberOfAvailableResults:0];
@@ -271,6 +272,7 @@ typedef struct _BDSKZoomGroupFlags {
     
     [self setNumberOfAvailableResults:[resultSet countOfRecords]];
     
+    // !!! maximum download of 25 is low, but this is really slow for some reason, at least using my canonical "bob dylan" search
     int numResults = MIN([self numberOfAvailableResults] - groupCount, 25);
     NSAssert(numResults >= 0, @"number of results to get must be non-negative");
     
