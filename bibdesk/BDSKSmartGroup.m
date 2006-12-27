@@ -75,7 +75,7 @@
     NSString *aName = [[groupDict objectForKey:@"group name"] stringByUnescapingGroupPlistEntities];
     BDSKFilter *aFilter = [[BDSKFilter alloc] initWithDictionary:groupDict];
     self = [self initWithName:aName count:0 filter:aFilter];
-    [filter release];
+    [aFilter release];
     return self;
 }
 
