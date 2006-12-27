@@ -1,0 +1,46 @@
+YAZ toolkit - $Id: README,v 1.49 2006/10/13 11:25:24 adam Exp $
+
+Copyright (C) 1995-2006, Index Data ApS.
+See the file LICENSE for details.
+
+The primary output of the source here is the YAZ library, which
+contains support functions for implementing the server or client
+role of Z39.50 and SRU.
+
+On Unix, GNU configure is used to configure YAZ and generate Makefiles.
+Type "./configure", then "make" to build YAZ. Read
+doc/installation.unix.html for details.
+
+On Windows, a MS Visual Studio makefile is provided (nmake). The commands
+  cd \win
+  nmake
+should do. Refer to doc/installation.win32.html for details.
+
+Note: If you are using the CVS snapshot of YAZ you must have autoconf,
+automake, libtool and xsltproc installed. Before running configure, create
+support files by running buildconf.sh in the top-level directory of YAZ.  
+
+In any case refer to the documentation in sub directory doc or read
+it online at http://www.indexdata.com/yaz/
+
+File organisation:
+
+doc      Documentation.
+
+src      Source for the YAZ library.
+
+util     Utility programs, ASN.1 compiler, MARC dump utility, and others.
+
+client   A demonstration client for testing the protocol. It's bug'n
+         ugly. But, it supports many features.
+
+ztest    A demonstration server that implements a backend.
+
+etc      Various configuration files.
+
+include/yaz The various header files.
+
+To get more information or assistance, send mail to yaz-help@indexdata.dk.
+Even better, sign on to the YAZ mailing list here:
+http://lists.indexdata.dk/cgi-bin/mailman/listinfo/yazlist
+

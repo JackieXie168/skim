@@ -1,0 +1,58 @@
+Z39.50-extendedService-ItemOrder-ItemRequest-1 DEFINITIONS ::=
+BEGIN
+IMPORTS
+	Transaction-Id,
+	Service-Date-Time,
+	System-Id,
+	Transaction-Type,
+	Delivery-Address,
+	ILL-Service-Type,
+	Requester-Optional-Messages-Type,
+	Search-Type,
+	Supply-Medium-Info-Type,
+	Place-On-Hold-Type,
+	Client-Id,
+	Item-Id,
+	Supplemental-Item-Description,
+	Cost-Info-Type,
+	ILL-String,
+	Third-Party-Info-Type,
+	Extension
+FROM ISO-10161-ILL-1;
+
+ItemRequest ::=SEQUENCE {
+	protocol-version-num	[0]	IMPLICIT INTEGER {
+				version-1 (1),
+				version-2 (2)
+				},
+	transaction-id		[1]	IMPLICIT Transaction-Id OPTIONAL,
+	service-date-time	[2]	IMPLICIT Service-Date-Time OPTIONAL,
+	requester-id		[3]	IMPLICIT System-Id OPTIONAL,
+	responder-id		[4]	IMPLICIT System-Id OPTIONAL,
+	transaction-type	[5]	IMPLICIT Transaction-Type DEFAULT 1,
+	delivery-address	[6]	IMPLICIT Delivery-Address OPTIONAL, 
+	delivery-service		Delivery-Service OPTIONAL,
+	billing-address		[8]	IMPLICIT Delivery-Address OPTIONAL,
+	iLL-service-type	[9]	IMPLICIT SEQUENCE SIZE (1..5) OF 
+					ILL-Service-Type OPTIONAL,
+	responder-specific-service	[10]	EXTERNAL OPTIONAL,
+		-- use direct reference style
+	requester-optional-messages	[11]	IMPLICIT Requester-Optional-Messages-Type OPTIONAL,
+	search-type		[12]	IMPLICIT Search-Type OPTIONAL,
+	supply-medium-info-type [13]	IMPLICIT SEQUENCE SIZE (1..7) OF
+				Supply-Medium-Info-Type OPTIONAL,
+	place-on-hold		[14]	IMPLICIT Place-On-Hold-Type DEFAULT 3,
+	client-id		[15]	IMPLICIT Client-Id OPTIONAL,     
+	item-id			[16]	IMPLICIT Item-Id OPTIONAL,
+	supplemental-item-description	[17]	IMPLICIT Supplemental-Item-Description OPTIONAL,
+	cost-info-type		[18]	IMPLICIT Cost-Info-Type OPTIONAL,
+	copyright-compliance	[19]	ILL-String OPTIONAL,
+	third-party-info-type	[20]	IMPLICIT Third-Party-Info-Type OPTIONAL,
+	retry-flag		[21]	IMPLICIT BOOLEAN DEFAULT FALSE,
+	forward-flag		[22]	IMPLICIT BOOLEAN DEFAULT FALSE,
+	requester-note		[46]	ILL-String OPTIONAL,
+	forward-note		[47]	ILL-String OPTIONAL,
+	iLL-request-extensions 	[49]	IMPLICIT SEQUENCE OF Extension OPTIONAL
+ 	}
+END
+  

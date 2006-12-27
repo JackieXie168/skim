@@ -1,0 +1,10 @@
+UserInfoFormat-multipleSearchTerms-2
+{Z39-50-userInfoFormat MultipleSearchTerms-2 (5)} DEFINITIONS ::=
+BEGIN
+IMPORTS Term FROM Z39-50-APDU-1995;
+
+MultipleSearchTerms-2 ::= SEQUENCE OF SEQUENCE{
+                             term  [1]   Term,
+                             flag  [2]   IMPLICIT BOOLEAN OPTIONAL}
+
+END

@@ -1,0 +1,17 @@
+{
+    IBClasses = (
+        {
+            ACTIONS = {changeType = id; search = id; }; 
+            CLASS = Controller; 
+            LANGUAGE = ObjC; 
+            OUTLETS = {
+                "_popup" = NSPopUpButton; 
+                "_searchField" = NSSearchField; 
+                "_textView" = NSTextView; 
+            }; 
+            SUPERCLASS = NSObject; 
+        }, 
+        {CLASS = FirstResponder; LANGUAGE = ObjC; SUPERCLASS = NSObject; }
+    ); 
+    IBVersion = 1; 
+}

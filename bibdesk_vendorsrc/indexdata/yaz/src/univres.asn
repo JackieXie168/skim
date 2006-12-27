@@ -1,0 +1,23 @@
+ResourceReport-Format-Universe-1
+{Z39-50-resourceReport universe-1 (1000)} DEFINITIONS ::=
+BEGIN
+IMPORTS StringOrNumeric FROM Z39-50-APDU-1995;
+--
+
+UniverseReportHits ::= SEQUENCE {
+	database	StringOrNumeric,
+	hits	StringOrNumeric
+}
+
+UniverseReportDuplicate ::= SEQUENCE {
+	hitno StringOrNumeric
+}
+
+UniverseReport ::= SEQUENCE {
+	totalHits INTEGER,
+	report CHOICE {
+		databaseHits 	[0] IMPLICIT UniverseReportHits,
+		duplicate 		[1] IMPLICIT UniverseReportDuplicate
+	}
+}
+END
