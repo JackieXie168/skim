@@ -1,11 +1,20 @@
 {
     IBClasses = (
         {
-            ACTIONS = {changeType = id; search = id; }; 
+            ACTIONS = {
+                changeAddress = id; 
+                changeDbase = id; 
+                changePort = id; 
+                changeType = id; 
+                search = id; 
+            }; 
             CLASS = Controller; 
             LANGUAGE = ObjC; 
             OUTLETS = {
+                "_addressField" = NSTextField; 
+                "_dbaseField" = NSTextField; 
                 "_popup" = NSPopUpButton; 
+                "_portField" = NSTextField; 
                 "_searchField" = NSSearchField; 
                 "_textView" = NSTextView; 
             }; 
