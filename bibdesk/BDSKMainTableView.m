@@ -158,14 +158,14 @@
 - (void)setAlternatingRowBackgroundColors:(NSArray *)colorArray{
     if (alternatingRowBackgroundColors != colorArray) {
         [alternatingRowBackgroundColors release];
-        alternatingRowBackgroundColors = [colorArray copy];
+        alternatingRowBackgroundColors = [colorArray retain];
         [self setNeedsDisplay:YES];
     }
 }
 
 - (NSArray *)alternatingRowBackgroundColors{
     if (alternatingRowBackgroundColors == nil)
-        alternatingRowBackgroundColors = [[NSColor controlAlternatingRowBackgroundColors] copy];
+        alternatingRowBackgroundColors = [[NSColor controlAlternatingRowBackgroundColors] retain];
     return alternatingRowBackgroundColors;
 }
 
@@ -516,7 +516,7 @@
 + (NSArray *)alternateControlAlternatingRowBackgroundColors {
     static NSArray *altColors = nil;
     if (altColors == nil)
-        altColors = [[NSArray alloc] initWithObjects:[NSColor controlBackgroundColor], [NSColor colorWithCalibratedRed:0.934203 green:0.991608 blue:0.953552 alpha:1.0]];
+        altColors = [[NSArray alloc] initWithObjects:[NSColor controlBackgroundColor], [NSColor colorWithCalibratedRed:0.934203 green:0.991608 blue:0.953552 alpha:1.0], nil];
     return altColors;
 }
 
