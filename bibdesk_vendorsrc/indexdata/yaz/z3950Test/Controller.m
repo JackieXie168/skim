@@ -13,19 +13,25 @@
 
 - (void)awakeFromNib
 {
-    _connection = [[BDSKZoomConnection alloc] initWithHost:@"z3950.loc.gov:7090/Voyager" port:0];
-    [BDSKZoomRecord setFallbackEncoding:NSISOLatin1StringEncoding];
+    //_connection = [[BDSKZoomConnection alloc] initWithHost:@"z3950.loc.gov:7090/Voyager" port:0];
     
-    connection = ZOOM_connection_create(0);
-    ZOOM_connection_option_set(connection, "preferredRecordSyntax", "USMARC");
-    ZOOM_connection_option_set(connection, "charset", "UTF-8");
-    ZOOM_connection_option_set(connection, "lang", "en-US");
-    ZOOM_connection_connect(connection, "z3950.loc.gov:7090/Voyager", 0);
+    _hostname = [@"z3950.loc.gov" copy];
+    _port = 7090;
+    _database = [@"Voyager" copy];
+    
+    [_addressField setStringValue:_hostname];
+    [_dbaseField setStringValue:_database];
+    [_portField setIntValue:_port];
+    
+    [self makeNewConnection];
+    [BDSKZoomRecord setFallbackEncoding:NSISOLatin1StringEncoding];
     
     [_popup removeAllItems];
     [_popup addItemsWithTitles:[BDSKZoomRecord validKeys]];
     [_popup selectItemAtIndex:0];
     _currentType = [[[BDSKZoomRecord validKeys] objectAtIndex:0] copy];
+
+    
 }
 
 - (void)dealloc
@@ -33,6 +39,29 @@
     [_connection release];
     [_currentType release];
     [super dealloc];
+}
+
+- (void)makeNewConnection
+{
+    [_connection release];
+    _connection = [[BDSKZoomConnection alloc] initWithHost:_hostname port:_port database:_database];
+}
+
+- (IBAction)changeAddress:(id)sender;
+{
+    [_hostname release];
+    _hostname = [[sender stringValue] copy];
+}
+
+- (IBAction)changePort:(id)sender;
+{
+    _port = [sender intValue];
+}
+
+- (IBAction)changeDbase:(id)sender;
+{
+    [_database release];
+    _database = [[sender stringValue] copy];
 }
 
 - (void)applicationWillTerminate:(NSNotification *)notification;
@@ -47,6 +76,10 @@
 - (IBAction)search:(id)sender;
 {
     NSString *searchString = [sender stringValue];
+    
+    // stupidly inefficient, but we hang or get a SIGPIPE if the host/dbase/port combination is invalid
+    [self makeNewConnection];
+    
     if (nil == searchString || [searchString isEqualToString:@""]) {
         [_textView setString:@""];
     } else {

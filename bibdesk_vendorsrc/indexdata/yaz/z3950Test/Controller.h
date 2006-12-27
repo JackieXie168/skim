@@ -16,6 +16,14 @@
     IBOutlet NSTextView *_textView;
     IBOutlet NSPopUpButton *_popup;
     
+    NSString *_hostname;
+    NSString *_database;
+    int _port;
+    
+    IBOutlet NSTextField *_addressField;
+    IBOutlet NSTextField *_dbaseField;
+    IBOutlet NSTextField *_portField;
+    
     ZOOM_connection connection;
     BDSKZoomConnection *_connection;
     NSString *_currentType;
@@ -23,5 +31,9 @@
 
 - (IBAction)search:(id)sender;
 - (IBAction)changeType:(id)sender;
+- (IBAction)changeAddress:(id)sender;
+- (IBAction)changePort:(id)sender;
+- (IBAction)changeDbase:(id)sender;
+
 
 @end
