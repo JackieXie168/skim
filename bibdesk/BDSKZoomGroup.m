@@ -205,6 +205,10 @@ typedef struct _BDSKZoomGroupFlags {
     } else {
         [self setPublications:nil];
         [server retrievePublications];
+        
+        // use this to notify the tableview to start the progress indicators and disable the button
+        NSDictionary *userInfo = [NSDictionary dictionaryWithObject:[NSNumber numberWithBool:NO] forKey:@"succeeded"];
+        [[NSNotificationCenter defaultCenter] postNotificationName:BDSKURLGroupUpdatedNotification object:self userInfo:userInfo];
     }
 }
 
@@ -216,6 +220,10 @@ typedef struct _BDSKZoomGroupFlags {
         [self setPublications:[NSArray array]];
     } else {
         [server retrievePublications];
+        
+        // use this to notify the tableview to start the progress indicators and disable the button
+        NSDictionary *userInfo = [NSDictionary dictionaryWithObject:[NSNumber numberWithBool:NO] forKey:@"succeeded"];
+        [[NSNotificationCenter defaultCenter] postNotificationName:BDSKURLGroupUpdatedNotification object:self userInfo:userInfo];
     }
 }
 
