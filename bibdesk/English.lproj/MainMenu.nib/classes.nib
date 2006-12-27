@@ -101,6 +101,7 @@
                 addSmartGroupAction = id; 
                 addStaticGroupAction = id; 
                 addURLGroupAction = id; 
+                addZoomGroupAction = id; 
                 alternateCut = id; 
                 alternateDelete = id; 
                 changePreviewDisplay = id; 
