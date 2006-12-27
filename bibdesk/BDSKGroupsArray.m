@@ -585,7 +585,7 @@
         
         while (groupDict = [groupEnum nextObject]) {
             @try {
-                group = [[BDSKSearchGroup alloc] initWithDictionary:groupDict];
+                group = [[groupClass alloc] initWithDictionary:groupDict];
                 if ([group respondsToSelector:@selector(setUndoManager:)])
                     [(BDSKMutableGroup *)group setUndoManager:[self undoManager]];
                 [array addObject:group];
