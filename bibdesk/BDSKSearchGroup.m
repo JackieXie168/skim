@@ -169,7 +169,7 @@
     int numResults = MIN([self numberOfAvailableResults] - [self count], MAX_RESULTS);
     
     // need to escape queryKey, but the rest should be valid for a URL
-    NSString *efetch = [[[self class] baseURLString] stringByAppendingFormat:@"/efetch.fcgi?rettype=medline&retmode=text&retstart=%d&retmax=%d&db=%@&query_key=%@&WebEnv=%@&tool=bibdesk", [self count], [self database], numResults, [[self queryKey] stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding], [self webEnv]];
+    NSString *efetch = [[[self class] baseURLString] stringByAppendingFormat:@"/efetch.fcgi?rettype=medline&retmode=text&retstart=%d&retmax=%d&db=%@&query_key=%@&WebEnv=%@&tool=bibdesk", [self count], numResults, [self database], [[self queryKey] stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding], [self webEnv]];
     NSURL *theURL = [NSURL URLWithString:efetch];
     OBPOSTCONDITION(theURL);
     
