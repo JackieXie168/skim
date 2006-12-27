@@ -76,6 +76,18 @@ static NSString *BDSKLastImportLocalizedString = nil;
     return self;
 }
 
+- (id)initWithDictionary:(NSDictionary *)groupDict {
+    NSString *aName = [[groupDict objectForKey:@"group name"] stringByUnescapingGroupPlistEntities];
+    self = [self initWithName:aName count:0];
+    return self;
+}
+
+- (NSDictionary *)dictionaryValue {
+    NSString *aName = [[self stringValue] stringByEscapingGroupPlistEntities];
+	NSString *keys = [[[self publications] valueForKeyPath:@"@distinctUnionOfObjects.citeKey"] componentsJoinedByString:@","];
+    return [NSDictionary dictionaryWithObjectsAndKeys:aName, @"group name", keys, @"keys", nil];
+}
+
 - (void)dealloc {
 	[[self undoManager] removeAllActionsWithTarget:self];
     [publications release];

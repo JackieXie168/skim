@@ -68,7 +68,6 @@ typedef struct _BDSKZoomGroupFlags {
     
     [BDSKZoomRecord setFallbackEncoding:NSISOLatin1StringEncoding];
     
-    // this URL is basically just to prevent an assertion failure in the superclass
     self = [super initWithName:hostname count:0];
     if (self) {
         searchTerm = [string copy];
@@ -76,6 +75,23 @@ typedef struct _BDSKZoomGroupFlags {
         server = [[BDSKZoomGroupServer alloc] initWithGroup:self host:hostname port:num];
     }
     return self;
+}
+
+- (id)initWithDictionary:(NSDictionary *)groupDict {
+    NSString *aName = [[groupDict objectForKey:@"group name"] stringByUnescapingGroupPlistEntities];
+    NSString *aHostName = [[groupDict objectForKey:@"host name"] stringByUnescapingGroupPlistEntities];
+    int aPort = [[groupDict objectForKey:@"port"] intValue];
+    NSString *aSearchTerm = [[groupDict objectForKey:@"search term"] stringByUnescapingGroupPlistEntities];
+    self = [self initWithHost:aHostName port:aPort searchTerm:aSearchTerm];
+    return self;
+}
+
+- (NSDictionary *)dictionaryValue {
+    NSString *aName = [[self stringValue] stringByEscapingGroupPlistEntities];
+    NSString *aHostName = [[self host] stringByEscapingGroupPlistEntities];
+    NSString *aSearchTerm = [[self searchTerm] stringByEscapingGroupPlistEntities];
+    NSNumber *aPort = [NSNumber numberWithInt:[self port]];
+    return [NSDictionary dictionaryWithObjectsAndKeys:aName, @"group name", aHostName, @"host name", aPort, @"port", aSearchTerm, @"search term", nil];
 }
 
 - (void)dealloc

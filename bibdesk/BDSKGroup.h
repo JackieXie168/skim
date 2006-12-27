@@ -63,6 +63,9 @@
 */
 - (id)initLibraryGroup;
 
+- (id)initWithDictionary:(NSDictionary *)groupDict;
+- (NSDictionary *)dictionaryValue;
+
 /*!
 	@method name
 	@abstract Returns the name of the group.

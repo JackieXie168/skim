@@ -70,6 +70,19 @@
     return [[BDSKEmptyGroup allocWithZone:zone] initWithName:aName key:aKey count:aCount];
 }
 
+- (id)initWithDictionary:(NSDictionary *)groupDict {
+    NSString *aName = [[groupDict objectForKey:@"group name"] stringByUnescapingGroupPlistEntities];
+    NSString *aKey = [[groupDict objectForKey:@"key"] stringByUnescapingGroupPlistEntities];
+    self = [self initWithName:aName key:aKey count:0];
+    return self;
+}
+
+- (NSDictionary *)dictionaryValue {
+    NSString *aName = [[self stringValue] stringByEscapingGroupPlistEntities];
+    NSString *aKey = [[self key] stringByEscapingGroupPlistEntities];
+    return [NSDictionary dictionaryWithObjectsAndKeys:aName, @"group name", aKey, @"key", nil];
+}
+
 - (id)initWithCoder:(NSCoder *)decoder {
     if (self = [super initWithCoder:decoder]) {
         key = [[decoder decodeObjectForKey:@"key"] retain];

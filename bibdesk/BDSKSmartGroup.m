@@ -71,6 +71,21 @@
 	return self;
 }
 
+- (id)initWithDictionary:(NSDictionary *)groupDict {
+    NSString *aName = [[groupDict objectForKey:@"group name"] stringByUnescapingGroupPlistEntities];
+    BDSKFilter *aFilter = [[BDSKFilter alloc] initWithDictionary:groupDict];
+    self = [self initWithName:aName count:0 filter:aFilter];
+    [filter release];
+    return self;
+}
+
+- (NSDictionary *)dictionaryValue {
+    NSMutableDictionary *groupDict = [[filter dictionaryValue] mutableCopy];
+    NSString *aName = [[self stringValue] stringByEscapingGroupPlistEntities];
+    [groupDict setObject:aName forKey:@"group name"];
+    return [groupDict autorelease];
+}
+
 - (id)initWithCoder:(NSCoder *)decoder {
     if (self = [super initWithCoder:decoder]) {
         filter = [[decoder decodeObjectForKey:@"filter"] retain];

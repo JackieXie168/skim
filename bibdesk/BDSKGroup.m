@@ -71,6 +71,17 @@
     return self;
 }
 
+- (id)initWithDictionary:(NSDictionary *)groupDict {
+    NSString *aName = [[groupDict objectForKey:@"group name"] stringByUnescapingGroupPlistEntities];
+    self = [self initWithName:aName count:0];
+    return self;
+}
+
+- (NSDictionary *)dictionaryValue {
+    NSString *aName = [[self stringValue] stringByEscapingGroupPlistEntities];
+    return [NSDictionary dictionaryWithObjectsAndKeys:aName, @"group name", nil];
+}
+
 // NSCoding protocol, should never be used
 
 - (id)initWithCoder:(NSCoder *)decoder {
