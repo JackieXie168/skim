@@ -60,6 +60,19 @@
     return self;
 }
 
+- (id)initWithDictionary:(NSDictionary *)groupDict {
+    NSString *aName = [[groupDict objectForKey:@"group name"] stringByUnescapingGroupPlistEntities];
+    NSString *aSearchTerm = [[groupDict objectForKey:@"search term"] stringByUnescapingGroupPlistEntities];
+    self = [self initWithName:aName searchTerm:aSearchTerm];
+    return self;
+}
+
+- (NSDictionary *)dictionaryValue {
+    NSString *aName = [[self stringValue] stringByEscapingGroupPlistEntities];
+    NSString *aSearchTerm = [[self searchTerm] stringByEscapingGroupPlistEntities];
+    return [NSDictionary dictionaryWithObjectsAndKeys:aName, @"group name", aSearchTerm, @"search term", nil];
+}
+
 - (void)dealloc
 {
     [webEnv release];

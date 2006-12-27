@@ -76,6 +76,19 @@
     return self;
 }
 
+- (id)initWithDictionary:(NSDictionary *)groupDict {
+    NSString *aName = [[groupDict objectForKey:@"group name"] stringByUnescapingGroupPlistEntities];
+    NSURL *anURL = [NSURL URLWithString:[groupDict objectForKey:@"URL"]];
+    self = [self initWithName:aName URL:anURL];
+    return self;
+}
+
+- (NSDictionary *)dictionaryValue {
+    NSString *aName = [[self stringValue] stringByEscapingGroupPlistEntities];
+    NSString *anURL = [[self URL] absoluteString];
+    return [NSDictionary dictionaryWithObjectsAndKeys:aName, @"group name", anURL, @"URL", nil];
+}
+
 - (id)initWithCoder:(NSCoder *)aCoder
 {
     [NSException raise:BDSKUnimplementedException format:@"Instances of %@ do not conform to NSCoding", [self class]];

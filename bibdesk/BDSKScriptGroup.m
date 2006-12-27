@@ -92,6 +92,23 @@
     return self;
 }
 
+- (id)initWithDictionary:(NSDictionary *)groupDict {
+    NSString *aName = [[groupDict objectForKey:@"group name"] stringByUnescapingGroupPlistEntities];
+    NSString *aPath = [[groupDict objectForKey:@"script path"] stringByUnescapingGroupPlistEntities];
+    NSString *anArguments = [[groupDict objectForKey:@"script arguments"] stringByUnescapingGroupPlistEntities];
+    int aType = [[groupDict objectForKey:@"script type"] intValue];
+    self = [self initWithName:aName scriptPath:aPath scriptArguments:anArguments scriptType:aType];
+    return self;
+}
+
+- (NSDictionary *)dictionaryValue {
+    NSString *aName = [[self stringValue] stringByEscapingGroupPlistEntities];
+    NSString *aPath = [[self scriptPath] stringByEscapingGroupPlistEntities];
+    NSString *anArgs = [[self scriptArguments] stringByEscapingGroupPlistEntities];
+    NSNumber *aType = [NSNumber numberWithInt:[self scriptType]];
+    return [NSDictionary dictionaryWithObjectsAndKeys:aName, @"group name", aPath, @"script path", anArgs, @"script arguments", aType, @"script type", nil];
+}
+
 - (id)initWithCoder:(NSCoder *)aCoder
 {
     [NSException raise:BDSKUnimplementedException format:@"Instances of %@ do not conform to NSCoding", [self class]];

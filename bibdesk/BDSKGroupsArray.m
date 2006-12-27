@@ -49,6 +49,7 @@
 #import "BibAuthor.h"
 #import "NSObject_BDSKExtensions.h"
 #import "BDSKFilter.h"
+#import <OmniFoundation/NSArray-OFExtensions.h>
 
 @interface BDSKGroupsArray (Private)
 
@@ -538,228 +539,6 @@
 
 #pragma mark Serializing
 
-- (void)setSmartGroupsFromPlist:(NSArray *)plist {
-    NSEnumerator *groupEnum = [plist objectEnumerator];
-    NSDictionary *groupDict;
-    NSMutableArray *array = [NSMutableArray arrayWithCapacity:[(NSArray *)plist count]];
-    BDSKSmartGroup *group = nil;
-    BDSKFilter *filter = nil;
-    
-    while (groupDict = [groupEnum nextObject]) {
-        @try {
-            filter = [[BDSKFilter alloc] initWithDictionary:groupDict];
-            group = [[BDSKSmartGroup alloc] initWithName:[groupDict objectForKey:@"group name"] count:0 filter:filter];
-            [group setUndoManager:[self undoManager]];
-            [array addObject:group];
-        }
-        @catch(id exception) {
-            NSLog(@"Ignoring exception \"%@\" while parsing smart groups data.", exception);
-        }
-        @finally {
-            [group release];
-            group = nil;
-            [filter release];
-            filter = nil;
-        }
-    }
-	
-	[smartGroups setArray:array];
-}
-
-- (void)setStaticGroupsFromPlist:(NSArray *)plist {
-    [tmpStaticGroups release]; // just to be sure, for revert
-    tmpStaticGroups = [plist retain];
-}
-
-- (void)setURLGroupsFromPlist:(NSArray *)plist {
-    NSString *name = nil;
-    NSURL *url = nil;
-    NSEnumerator *groupEnum = [plist objectEnumerator];
-    NSDictionary *groupDict;
-    NSMutableArray *array = [NSMutableArray arrayWithCapacity:[(NSArray *)plist count]];
-    BDSKURLGroup *group = nil;
-    
-    while (groupDict = [groupEnum nextObject]) {
-        @try {
-            name = [[groupDict objectForKey:@"group name"] stringByUnescapingGroupPlistEntities];
-            url = [NSURL URLWithString:[groupDict objectForKey:@"URL"]];
-            group = [[BDSKURLGroup alloc] initWithName:name URL:url];
-            [group setUndoManager:[self undoManager]];
-            [array addObject:group];
-        }
-        @catch(id exception) {
-            NSLog(@"Ignoring exception \"%@\" while parsing URL groups data.", exception);
-        }
-        @finally {
-            [group release];
-            group = nil;
-        }
-    }
-	
-	[urlGroups setArray:array];
-}
-
-- (void)setScriptGroupsFromPlist:(NSArray *)plist {
-    NSString *name = nil;
-    NSString *path = nil;
-    NSString *arguments = nil;
-    int type;
-    NSEnumerator *groupEnum = [plist objectEnumerator];
-    NSDictionary *groupDict;
-    NSMutableArray *array = [NSMutableArray arrayWithCapacity:[(NSArray *)plist count]];
-    BDSKScriptGroup *group = nil;
-    
-    while (groupDict = [groupEnum nextObject]) {
-        @try {
-            name = [[groupDict objectForKey:@"group name"] stringByUnescapingGroupPlistEntities];
-            path = [[groupDict objectForKey:@"script path"] stringByUnescapingGroupPlistEntities];
-            arguments = [[groupDict objectForKey:@"script arguments"] stringByUnescapingGroupPlistEntities];
-            type = [[groupDict objectForKey:@"script type"] intValue];
-            group = [[BDSKScriptGroup alloc] initWithName:name scriptPath:path scriptArguments:arguments scriptType:type];
-            [group setUndoManager:[self undoManager]];
-            [array addObject:group];
-        }
-        @catch(id exception) {
-            NSLog(@"Ignoring exception \"%@\" while parsing script groups data.", exception);
-        }
-        @finally {
-            [group release];
-            group = nil;
-        }
-    }
-	
-	[scriptGroups setArray:array];
-}
-
-#warning Temporary
-- (void)setSearchGroupsFromPlist:(NSArray *)plist {
-    NSString *name = nil;
-    NSString *searchTerm = nil;
-    NSEnumerator *groupEnum = [plist objectEnumerator];
-    NSDictionary *groupDict;
-    NSMutableArray *array = [NSMutableArray arrayWithCapacity:[(NSArray *)plist count]];
-    BDSKSearchGroup *group = nil;
-    
-    while (groupDict = [groupEnum nextObject]) {
-        @try {
-            name = [[groupDict objectForKey:@"group name"] stringByUnescapingGroupPlistEntities];
-            searchTerm = [[groupDict objectForKey:@"search term"] stringByUnescapingGroupPlistEntities];
-            group = [[BDSKSearchGroup alloc] initWithName:name searchTerm:searchTerm];
-            [group setUndoManager:[self undoManager]];
-            [array addObject:group];
-        }
-        @catch(id exception) {
-            NSLog(@"Ignoring exception \"%@\" while parsing search groups data.", exception);
-        }
-        @finally {
-            [group release];
-            group = nil;
-        }
-    }
-	
-	[scriptGroups setArray:array];
-}
-
-- (NSArray *)plistFromSmartGroups {
-	NSMutableArray *array = [NSMutableArray arrayWithCapacity:[smartGroups count]];
-    NSString *name;
-    NSMutableDictionary *groupDict;
-	NSEnumerator *groupEnum = [smartGroups objectEnumerator];
-	BDSKSmartGroup *group;
-	
-	while (group = [groupEnum nextObject]) {
-        name = [[group stringValue] stringByEscapingGroupPlistEntities];
-		groupDict = [[[group filter] dictionaryValue] mutableCopy];
-		[groupDict setObject:name forKey:@"group name"];
-		[array addObject:groupDict];
-		[groupDict release];
-	}
-	
-	return array;
-}
-
-- (NSArray *)plistFromStaticGroups {
-    [self updateStaticGroupsIfNeeded];
-	NSMutableArray *array = [NSMutableArray arrayWithCapacity:[staticGroups count]];
-	NSString *keys;
-    NSString *name;
-    NSDictionary *groupDict;
-	NSEnumerator *groupEnum = [staticGroups objectEnumerator];
-	BDSKStaticGroup *group;
-	
-	while (group = [groupEnum nextObject]) {
-        name = [[group stringValue] stringByEscapingGroupPlistEntities];
-		keys = [[[group publications] valueForKeyPath:@"@distinctUnionOfObjects.citeKey"] componentsJoinedByString:@","];
-        groupDict = [[NSDictionary alloc] initWithObjectsAndKeys:name, @"group name", keys, @"keys", nil];
-		[array addObject:groupDict];
-		[groupDict release];
-	}
-	
-	return array;
-}
-
-- (NSArray *)plistFromURLGroups {
-	NSMutableArray *array = [NSMutableArray arrayWithCapacity:[urlGroups count]];
-    NSString *name;
-    NSString *url;
-    NSDictionary *groupDict;
-	NSEnumerator *groupEnum = [urlGroups objectEnumerator];
-	BDSKURLGroup *group;
-	
-	while (group = [groupEnum nextObject]) {
-        name = [[group stringValue] stringByEscapingGroupPlistEntities];
-        url = [[group URL] absoluteString];
-        groupDict = [[NSDictionary alloc] initWithObjectsAndKeys:name, @"group name", url, @"URL", nil];
-		[array addObject:groupDict];
-		[groupDict release];
-	}
-	
-	return array;
-}
-
-- (NSArray *)plistFromScriptGroups {
-	NSMutableArray *array = [NSMutableArray arrayWithCapacity:[scriptGroups count]];
-    NSString *name;
-    NSString *path;
-    NSString *args;
-    NSNumber *type;
-    NSDictionary *groupDict;
-	NSEnumerator *groupEnum = [scriptGroups objectEnumerator];
-	BDSKScriptGroup *group;
-	
-	while (group = [groupEnum nextObject]) {
-        name = [[group stringValue] stringByEscapingGroupPlistEntities];
-        path = [[group scriptPath] stringByEscapingGroupPlistEntities];
-        args = [[group scriptArguments] stringByEscapingGroupPlistEntities];
-        type = [NSNumber numberWithInt:[group scriptType]];
-        groupDict = [[NSDictionary alloc] initWithObjectsAndKeys:name, @"group name", path, @"script path", args, @"script arguments", type, @"script type", nil];
-		[array addObject:groupDict];
-		[groupDict release];
-	}
-	
-	return array;
-}
-
-#warning Temporary
-- (NSArray *)plistFromSearchGroups {
-	NSMutableArray *array = [NSMutableArray arrayWithCapacity:[searchGroups count]];
-    NSString *name;
-    NSString *searchTerm;
-    NSDictionary *groupDict;
-	NSEnumerator *groupEnum = [searchGroups objectEnumerator];
-	BDSKSearchGroup *group;
-	
-	while (group = [groupEnum nextObject]) {
-        name = [[group stringValue] stringByEscapingGroupPlistEntities];
-        searchTerm = [[group searchTerm] stringByEscapingGroupPlistEntities];
-        groupDict = [[NSDictionary alloc] initWithObjectsAndKeys:name, @"group name", searchTerm, @"search term", nil];
-		[array addObject:groupDict];
-		[groupDict release];
-	}
-	
-	return array;
-}
-
 - (void)setGroupsOfType:(int)groupType fromSerializedData:(NSData *)data {
 	NSString *error = nil;
 	NSPropertyListFormat format = NSPropertyListXMLFormat_v1_0;
@@ -778,43 +557,92 @@
 		return;
 	}
 	
-    if (groupType == BDSKSmartGroupType)
-        [self setSmartGroupsFromPlist:plist];
-	else if (groupType == BDSKStaticGroupType)
-        [self setStaticGroupsFromPlist:plist];
-	else if (groupType == BDSKURLGroupType)
-        [self setURLGroupsFromPlist:plist];
-	else if (groupType == BDSKScriptGroupType)
-        [self setScriptGroupsFromPlist:plist];
+    Class groupClass = Nil;
+    NSMutableArray *groupArray = nil;
+    
+    if (groupType == BDSKSmartGroupType) {
+        groupClass = [BDSKSmartGroup class];
+        groupArray = smartGroups;
+	} else if (groupType == BDSKStaticGroupType) {
+        [tmpStaticGroups release]; // just to be sure, for revert
+        tmpStaticGroups = [plist retain];
+	} else if (groupType == BDSKURLGroupType) {
+        groupClass = [BDSKURLGroup class];
+        groupArray = urlGroups;
+	} else if (groupType == BDSKScriptGroupType) {
+        groupClass = [BDSKScriptGroup class];
+        groupArray = scriptGroups;
+	//} else if (groupType == BDSKSearchGroupType) {
+    //    groupClass = BDSKSearchGroup;
+    //    groupArray = searchGroups;
+    }
+    
+    if (groupClass && groupArray) {
+        NSEnumerator *groupEnum = [plist objectEnumerator];
+        NSDictionary *groupDict;
+        NSMutableArray *array = [[NSMutableArray alloc] initWithCapacity:[(NSArray *)plist count]];
+        BDSKGroup *group = nil;
+        
+        while (groupDict = [groupEnum nextObject]) {
+            @try {
+                group = [[BDSKSearchGroup alloc] initWithDictionary:groupDict];
+                if ([group respondsToSelector:@selector(setUndoManager:)])
+                    [(BDSKMutableGroup *)group setUndoManager:[self undoManager]];
+                [array addObject:group];
+            }
+            @catch(id exception) {
+                NSLog(@"Ignoring exception \"%@\" while parsing group data.", exception);
+            }
+            @finally {
+                [group release];
+                group = nil;
+            }
+        }
+        
+        [groupArray setArray:array];
+        [array release];
+    }
 }
 
 - (NSData *)serializedGroupsDataOfType:(int)groupType {
-	NSArray *array = nil;
+    Class groupClass = Nil;
+    NSMutableArray *groupArray = nil;
     
-    if (groupType == BDSKSmartGroupType)
-        array = [self plistFromSmartGroups];
-	else if (groupType == BDSKStaticGroupType)
-        array = [self plistFromStaticGroups];
-	else if (groupType == BDSKURLGroupType)
-        array = [self plistFromURLGroups];
-	else if (groupType == BDSKScriptGroupType)
-        array = [self plistFromScriptGroups];
-	else if (groupType == BDSKSearchGroupType)
-        array = [self plistFromSearchGroups];
-    else return nil;
+    if (groupType == BDSKSmartGroupType) {
+        groupClass = [BDSKSmartGroup class];
+        groupArray = smartGroups;
+	} else if (groupType == BDSKStaticGroupType) {
+        groupClass = [BDSKStaticGroup class];
+        groupArray = staticGroups;
+	} else if (groupType == BDSKURLGroupType) {
+        groupClass = [BDSKURLGroup class];
+        groupArray = urlGroups;
+	} else if (groupType == BDSKScriptGroupType) {
+        groupClass = [BDSKScriptGroup class];
+        groupArray = scriptGroups;
+	//} else if (groupType == BDSKSearchGroupType) {
+    //    groupClass = BDSKSearchGroup;
+    //    groupArray = searchGroups;
+    }
     
-	NSString *error = nil;
-	NSPropertyListFormat format = NSPropertyListXMLFormat_v1_0;
-	NSData *data = [NSPropertyListSerialization dataFromPropertyList:array
-															  format:format 
-													errorDescription:&error];
-    	
-	if (error) {
-		NSLog(@"Error serializing: %@", error);
-        [error release];
-		return nil;
+    NSData *data = nil;
+    
+    if (groupClass && groupArray) {
+        NSArray *array = [groupArray arrayByPerformingSelector:@selector(dictionaryValue)];
+        
+        NSString *error = nil;
+        NSPropertyListFormat format = NSPropertyListXMLFormat_v1_0;
+        NSData *data = [NSPropertyListSerialization dataFromPropertyList:array
+                                                                  format:format 
+                                                        errorDescription:&error];
+            
+        if (error) {
+            NSLog(@"Error serializing: %@", error);
+            [error release];
+            return nil;
+        }
 	}
-	return data;
+    return data;
 }
 
 @end
