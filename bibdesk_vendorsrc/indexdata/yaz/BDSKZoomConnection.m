@@ -12,19 +12,34 @@
 
 @implementation BDSKZoomConnection
 
-- (id)initWithHost:(NSString *)hostName port:(int)portNum;
+- (id)initWithHost:(NSString *)hostName port:(int)portNum database:(NSString *)dbase;
 {
-    self = [super init];
-    if (self) {
+    if (self = [super init]) {
+        
         _connection = ZOOM_connection_create(0);
-        _hostName = [hostName copy];
         _portNum = portNum;
+        _dataBase = [dbase copy];
+        
+        if (_dataBase) {
+            // we have to append port as well, if there's a specific database
+            if (_portNum)
+                _hostName = [[hostName stringByAppendingFormat:@":%d/%@", _portNum, _dataBase] copy];
+            else
+                _hostName = [[hostName stringByAppendingFormat:@"/%@", _dataBase] copy];
+            
+            // set portNum to zero, since we've integrated it into the host name now
+            _portNum = 0;
+        } else {
+            _hostName = [hostName copy];
+        }
+        
+        // we maintain our own result cache, keyed by query, since a particular connection is only instantiated per-host
         _results = [[NSMutableDictionary alloc] init];
         
         // default options
-        ZOOM_connection_option_set(_connection, "preferredRecordSyntax", "USMARC");
-        ZOOM_connection_option_set(_connection, "charset", "UTF-8");
-        ZOOM_connection_option_set(_connection, "lang", "en-US");   
+        [self setOption:@"USMARC" forKey:@"preferredRecordSyntax"];
+        [self setOption:@"UTF-8" forKey:@"charset"];
+        [self setOption:@"en-US" forKey:@"lang"];
         
         [[NSNotificationCenter defaultCenter] addObserver:self 
                                                  selector:@selector(handleApplicationWillTerminate:) 
@@ -34,6 +49,11 @@
         [self connect];
     }
     return self;
+}
+
+- (id)initWithHost:(NSString *)hostName port:(int)portNum;
+{
+    return [self initWithHost:hostName port:portNum database:nil];
 }
 
 - (void)handleApplicationWillTerminate:(NSNotification *)note

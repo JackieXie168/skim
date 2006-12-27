@@ -15,8 +15,10 @@
     NSMutableDictionary  *_results;
     NSString             *_hostName;
     int                   _portNum;
+    NSString             *_dataBase;
 }
 
+- (id)initWithHost:(NSString *)hostName port:(int)portNum database:(NSString *)dbase;
 - (id)initWithHost:(NSString *)hostName port:(int)portNum;
 - (void)connect;
 - (void)setOption:(NSString *)option forKey:(NSString *)key;
