@@ -1,0 +1,24 @@
+{
+    IBClasses = (
+        {
+            ACTIONS = {dismiss = id; }; 
+            CLASS = BDSKSheetController; 
+            LANGUAGE = ObjC; 
+            OUTLETS = {theModalDelegate = id; }; 
+            SUPERCLASS = NSWindowController; 
+        }, 
+        {
+            ACTIONS = {changePort = id; changeServer = id; selectPredefinedServer = id; }; 
+            CLASS = BDSKZoomGroupSheetController; 
+            LANGUAGE = ObjC; 
+            OUTLETS = {
+                portTextField = NSTextField; 
+                serverComboBox = NSComboBox; 
+                serverPopup = NSPopUpButton; 
+            }; 
+            SUPERCLASS = BDSKSheetController; 
+        }, 
+        {CLASS = FirstResponder; LANGUAGE = ObjC; SUPERCLASS = NSObject; }
+    ); 
+    IBVersion = 1; 
+}
