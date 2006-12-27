@@ -79,6 +79,7 @@
 				F9A66E4C092FAF9400AF31D5 /* PBXTargetDependency */,
 				F9A66E52092FAFB400AF31D5 /* PBXTargetDependency */,
 				F9A66E50092FAFAC00AF31D5 /* PBXTargetDependency */,
+				F9377F630B423A6C00ECCB3A /* PBXTargetDependency */,
 			);
 			name = BuildMeFirst;
 			productName = BuildMeFirst;
@@ -657,6 +658,13 @@
 		F9A6772E07D2D57F00782ACD /* MultiplePageView.m in Sources */ = {isa = PBXBuildFile; fileRef = F9A6772C07D2D57F00782ACD /* MultiplePageView.m */; };
 		F9ABEC9F086E11B500741FC5 /* BTParse.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F9ABEC9E086E11B500741FC5 /* BTParse.framework */; };
 		F9ABECC7086E12B700741FC5 /* BTParse.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = F9ABEC9E086E11B500741FC5 /* BTParse.framework */; };
+		F9B800940B41DFAF00A5A615 /* BDSKZoomGroupSheetController.h in Headers */ = {isa = PBXBuildFile; fileRef = F9B800920B41DFAF00A5A615 /* BDSKZoomGroupSheetController.h */; };
+		F9B800950B41DFAF00A5A615 /* BDSKZoomGroupSheetController.m in Sources */ = {isa = PBXBuildFile; fileRef = F9B800930B41DFAF00A5A615 /* BDSKZoomGroupSheetController.m */; };
+		F9B8009C0B41E00800A5A615 /* BDSKZoomGroupSheet.nib in Resources */ = {isa = PBXBuildFile; fileRef = F9B8009A0B41E00800A5A615 /* BDSKZoomGroupSheet.nib */; };
+		F9B801840B41E89500A5A615 /* yaz.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F9B801830B41E89500A5A615 /* yaz.framework */; };
+		F9B801930B41E8D600A5A615 /* yaz.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = F9B801830B41E89500A5A615 /* yaz.framework */; };
+		F9B8019E0B41E91F00A5A615 /* BDSKZoomGroup.h in Headers */ = {isa = PBXBuildFile; fileRef = F9B8019C0B41E91F00A5A615 /* BDSKZoomGroup.h */; };
+		F9B8019F0B41E91F00A5A615 /* BDSKZoomGroup.m in Sources */ = {isa = PBXBuildFile; fileRef = F9B8019D0B41E91F00A5A615 /* BDSKZoomGroup.m */; };
 		F9CE58EC0842411D0072DF55 /* ArrowImage.tiff in Resources */ = {isa = PBXBuildFile; fileRef = F9CE58EB0842411D0072DF55 /* ArrowImage.tiff */; };
 		F9CEFCBB0A90090B00A0E54E /* BDSKOrphanedFileServer.h in Headers */ = {isa = PBXBuildFile; fileRef = F9CEFCB90A90090B00A0E54E /* BDSKOrphanedFileServer.h */; };
 		F9CEFCBC0A90090B00A0E54E /* BDSKOrphanedFileServer.m in Sources */ = {isa = PBXBuildFile; fileRef = F9CEFCBA0A90090B00A0E54E /* BDSKOrphanedFileServer.m */; };
@@ -745,6 +753,20 @@
 			proxyType = 1;
 			remoteGlobalIDString = F935665E0912D56F002B6957;
 			remoteInfo = AGRegex;
+		};
+		F9377F5C0B423A4D00ECCB3A /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = F9377F550B423A4C00ECCB3A /* yaz.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 8DC2EF5B0486A6940098B216 /* yaz.framework */;
+			remoteInfo = yaz;
+		};
+		F9377F620B423A6C00ECCB3A /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = F9377F550B423A4C00ECCB3A /* yaz.xcodeproj */;
+			proxyType = 1;
+			remoteGlobalIDString = 8DC2EF4F0486A6940098B216 /* yaz */;
+			remoteInfo = yaz;
 		};
 		F95CC112087F54BF002C5694 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
@@ -935,6 +957,7 @@
 			dstPath = "";
 			dstSubfolderSpec = 10;
 			files = (
+				F9B801930B41E8D600A5A615 /* yaz.framework in CopyFiles */,
 				F9ABECC7086E12B700741FC5 /* BTParse.framework in CopyFiles */,
 				F9022FB107580A9600C3F701 /* AGRegex.framework in CopyFiles */,
 				F9022FB207580A9600C3F701 /* OmniAppKit.framework in CopyFiles */,
@@ -1435,6 +1458,7 @@
 		F92F4E460788DEDD001B8F82 /* genericBibDocIcon.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; name = genericBibDocIcon.tiff; path = Images/genericBibDocIcon.tiff; sourceTree = "<group>"; };
 		F92F4E4C0788DEFC001B8F82 /* BibPref_Files.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = BibPref_Files.h; sourceTree = "<group>"; };
 		F92F4E4D0788DEFC001B8F82 /* BibPref_Files.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = BibPref_Files.m; sourceTree = "<group>"; };
+		F9377F550B423A4C00ECCB3A /* yaz.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = yaz.xcodeproj; path = ../bibdesk_vendorsrc/indexdata/yaz/yaz.xcodeproj; sourceTree = SOURCE_ROOT; };
 		F93840890906DD1F00FC37F2 /* scripthook.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; name = scripthook.tiff; path = Images/scripthook.tiff; sourceTree = "<group>"; };
 		F941135209B549BF00EE8463 /* BDSKEditorTextView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BDSKEditorTextView.h; sourceTree = "<group>"; };
 		F941135309B549BF00EE8463 /* BDSKEditorTextView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BDSKEditorTextView.m; sourceTree = "<group>"; };
@@ -1517,6 +1541,12 @@
 		F9AA030C092FA2E20094A059 /* OmniAppKit.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = OmniAppKit.xcodeproj; path = ../bibdesk_vendorsrc/OmniGroup/OmniAppKit/OmniAppKit.xcodeproj; sourceTree = SOURCE_ROOT; };
 		F9ABEC9E086E11B500741FC5 /* BTParse.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = BTParse.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		F9ABECF2086E142100741FC5 /* BTParse.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = BTParse.xcodeproj; path = BTParse/BTParse.xcodeproj; sourceTree = "<group>"; };
+		F9B800920B41DFAF00A5A615 /* BDSKZoomGroupSheetController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BDSKZoomGroupSheetController.h; sourceTree = "<group>"; };
+		F9B800930B41DFAF00A5A615 /* BDSKZoomGroupSheetController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BDSKZoomGroupSheetController.m; sourceTree = "<group>"; };
+		F9B8009B0B41E00800A5A615 /* English */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = English; path = English.lproj/BDSKZoomGroupSheet.nib; sourceTree = "<group>"; };
+		F9B801830B41E89500A5A615 /* yaz.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = yaz.framework; path = ../../BuildProducts/Debug/yaz.framework; sourceTree = SOURCE_ROOT; };
+		F9B8019C0B41E91F00A5A615 /* BDSKZoomGroup.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BDSKZoomGroup.h; sourceTree = "<group>"; };
+		F9B8019D0B41E91F00A5A615 /* BDSKZoomGroup.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BDSKZoomGroup.m; sourceTree = "<group>"; };
 		F9B9E17E089479FC00C21B17 /* Quartz.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Quartz.framework; path = /System/Library/Frameworks/Quartz.framework; sourceTree = "<absolute>"; };
 		F9CE58EB0842411D0072DF55 /* ArrowImage.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; name = ArrowImage.tiff; path = Images/ArrowImage.tiff; sourceTree = "<group>"; };
 		F9CEFCB90A90090B00A0E54E /* BDSKOrphanedFileServer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BDSKOrphanedFileServer.h; sourceTree = "<group>"; };
@@ -1602,6 +1632,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				F9B801840B41E89500A5A615 /* yaz.framework in Frameworks */,
 				F9937E6C0AD82700001D1DFB /* QuartzCore.framework in Frameworks */,
 				F9937E4E0AD826EB001D1DFB /* Quartz.framework in Frameworks */,
 				8D11072F0486CEB800E47090 /* Cocoa.framework in Frameworks */,
@@ -1758,6 +1789,7 @@
 				CE518F6409E52D6A00E97C3A /* BDSKTextViewFindPanel.nib */,
 				3D8663770802CF5C00FF1724 /* BDSKTypeInfoEditor.nib */,
 				CEEFE2B60B03FB0100668BB0 /* BDSKURLGroupSheet.nib */,
+				F9B8009A0B41E00800A5A615 /* BDSKZoomGroupSheet.nib */,
 				F9022CC2075804A600C3F701 /* BibDocument.nib */,
 				F9022CC4075804A600C3F701 /* BibEditor.nib */,
 				CE67E314092B569000410758 /* BibEditorDrawer.nib */,
@@ -1812,6 +1844,7 @@
 		29B97323FDCFA39411CA2CEA /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				F9B801830B41E89500A5A615 /* yaz.framework */,
 				F95ED6910B07BA4E00000BBF /* ExceptionHandling.framework */,
 				F92ECB6B09DEF86500A244D0 /* Security.framework */,
 				F9DF3BC109B7605E00342ADE /* SystemConfiguration.framework */,
@@ -1967,6 +2000,7 @@
 				CE518F2609E526E000E97C3A /* BDSKTextViewFindController.m */,
 				3D86633E0802C25800FF1724 /* BDSKTypeInfoEditor.m */,
 				CEEFDDFF0B03ED0200668BB0 /* BDSKURLGroupSheetController.m */,
+				F9B800930B41DFAF00A5A615 /* BDSKZoomGroupSheetController.m */,
 				F9022C5E075802E300C3F701 /* BibAppController.m */,
 				F9022C68075802E300C3F701 /* BibEditor.m */,
 				3DE3916607FEF5E600BE3AE7 /* BibEditor_Toolbar.m */,
@@ -2010,6 +2044,7 @@
 				F9022C60075802E300C3F701 /* BibAuthor.m */,
 				F9022C6E075802E300C3F701 /* BibItem.m */,
 				F925352808FDFAE40045D563 /* BDSKSearchResult.m */,
+				F9B8019D0B41E91F00A5A615 /* BDSKZoomGroup.m */,
 				F91F284709A661A700419960 /* PDFMetadata.m */,
 			);
 			name = Data;
@@ -2345,6 +2380,8 @@
 				F9E069B40981A03B00AEFBE7 /* BDSKWebOfScienceParser.h */,
 				F98F33C80892D4B700C1427D /* BDSKZoomablePDFView.h */,
 				CE27D9590AF92BFD00419879 /* BDSKZoomableTextView.h */,
+				F9B8019C0B41E91F00A5A615 /* BDSKZoomGroup.h */,
+				F9B800920B41DFAF00A5A615 /* BDSKZoomGroupSheetController.h */,
 				F920DAFA075C2B69000C5FCA /* BibAppController+Scripting.h */,
 				F9022C5D075802E300C3F701 /* BibAppController.h */,
 				F9022C5F075802E300C3F701 /* BibAuthor.h */,
@@ -2426,6 +2463,14 @@
 			name = Headers;
 			sourceTree = "<group>";
 		};
+		F9377F560B423A4C00ECCB3A /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				F9377F5D0B423A4D00ECCB3A /* yaz.framework */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
 		F95CC10F087F54BF002C5694 /* Products */ = {
 			isa = PBXGroup;
 			children = (
@@ -2458,6 +2503,7 @@
 		F98F307A088E0F2800C1427D /* Subprojects */ = {
 			isa = PBXGroup;
 			children = (
+				F9377F550B423A4C00ECCB3A /* yaz.xcodeproj */,
 				F9AA030C092FA2E20094A059 /* OmniAppKit.xcodeproj */,
 				F9AA02F3092FA2CA0094A059 /* OmniFoundation.xcodeproj */,
 				F9AA02ED092FA2AB0094A059 /* OmniBase.xcodeproj */,
@@ -2757,6 +2803,8 @@
 				CE69FF800B1DB719005D6187 /* BDSKCategoryGroup.h in Headers */,
 				CE34A5730B249E0B00755730 /* BDSKMARCParser.h in Headers */,
 				F94DB0F80B3E2FA1006F37A2 /* BDSKSearchGroup.h in Headers */,
+				F9B800940B41DFAF00A5A615 /* BDSKZoomGroupSheetController.h in Headers */,
+				F9B8019E0B41E91F00A5A615 /* BDSKZoomGroup.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -2835,6 +2883,7 @@
 		29B97313FDCFA39411CA2CEA /* Project object */ = {
 			isa = PBXProject;
 			buildConfigurationList = F993F20208553A61007A7657 /* Build configuration list for PBXProject "Bibdesk" */;
+			compatibilityVersion = "Xcode 2.4";
 			hasScannedForEncodings = 1;
 			mainGroup = 29B97314FDCFA39411CA2CEA /* BibDesk */;
 			projectDirPath = "";
@@ -2867,8 +2916,13 @@
 					ProductGroup = F9AA02F4092FA2CA0094A059 /* Products */;
 					ProjectRef = F9AA02F3092FA2CA0094A059 /* OmniFoundation.xcodeproj */;
 				},
+				{
+					ProductGroup = F9377F560B423A4C00ECCB3A /* Products */;
+					ProjectRef = F9377F550B423A4C00ECCB3A /* yaz.xcodeproj */;
+				},
 			);
 			projectRoot = "";
+			shouldCheckCompatibility = 1;
 			targets = (
 				8D1107260486CEB800E47090 /* BibDesk */,
 				3D8A5779082D3077008E818C /* BibDesk Help */,
@@ -2903,6 +2957,13 @@
 			fileType = wrapper.application;
 			path = RegexTest.app;
 			remoteRef = F911CB4808972F7300ABDAC6 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		F9377F5D0B423A4D00ECCB3A /* yaz.framework */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.framework;
+			path = yaz.framework;
+			remoteRef = F9377F5C0B423A4D00ECCB3A /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
 		F95CC113087F54BF002C5694 /* BibImporter.mdimporter */ = {
@@ -3161,6 +3222,7 @@
 				CE3A1A570B19C2F700233208 /* SelectEncodingsPanel.nib in Resources */,
 				CE7F5E480B3F5F1800A919D0 /* searchFolderIcon.tiff in Resources */,
 				CE7F64C40B41694A00A919D0 /* BDSKSearchGroupView.nib in Resources */,
+				F9B8009C0B41E00800A5A615 /* BDSKZoomGroupSheet.nib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -3551,6 +3613,8 @@
 				CE8C731F0B0CA6C500E31E5A /* NSObject_BDSKExtensions.m in Sources */,
 				CE34A5740B249E0B00755730 /* BDSKMARCParser.m in Sources */,
 				F94DB0F90B3E2FA1006F37A2 /* BDSKSearchGroup.m in Sources */,
+				F9B800950B41DFAF00A5A615 /* BDSKZoomGroupSheetController.m in Sources */,
+				F9B8019F0B41E91F00A5A615 /* BDSKZoomGroup.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -3566,6 +3630,11 @@
 			isa = PBXTargetDependency;
 			name = AGRegex;
 			targetProxy = F911CBFC089737C000ABDAC6 /* PBXContainerItemProxy */;
+		};
+		F9377F630B423A6C00ECCB3A /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			name = yaz;
+			targetProxy = F9377F620B423A6C00ECCB3A /* PBXContainerItemProxy */;
 		};
 		F98870D807580EA1001D4D49 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
@@ -4044,6 +4113,14 @@
 			name = BDSKFindPanel.nib;
 			sourceTree = "<group>";
 		};
+		F9B8009A0B41E00800A5A615 /* BDSKZoomGroupSheet.nib */ = {
+			isa = PBXVariantGroup;
+			children = (
+				F9B8009B0B41E00800A5A615 /* English */,
+			);
+			name = BDSKZoomGroupSheet.nib;
+			sourceTree = "<group>";
+		};
 		F9E0BCCB0895ADFB005E5FAA /* BibPref_Display.nib */ = {
 			isa = PBXVariantGroup;
 			children = (
@@ -4069,7 +4146,11 @@
 				COPY_PHASE_STRIP = NO;
 				CURRENT_PROJECT_VERSION = 603;
 				DEBUG_INFORMATION_FORMAT = stabs;
-				FRAMEWORK_SEARCH_PATHS = "";
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(FRAMEWORK_SEARCH_PATHS_QUOTED_FOR_TARGET_1)",
+				);
+				FRAMEWORK_SEARCH_PATHS_QUOTED_FOR_TARGET_1 = "\"$(SRCROOT)/../../BuildProducts/Debug\"";
 				GCC_DEBUGGING_SYMBOLS = default;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_ENABLE_CPP_EXCEPTIONS = NO;
@@ -4116,7 +4197,11 @@
 				);
 				COPY_PHASE_STRIP = YES;
 				CURRENT_PROJECT_VERSION = 603;
-				FRAMEWORK_SEARCH_PATHS = "";
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(FRAMEWORK_SEARCH_PATHS_QUOTED_1)",
+				);
+				FRAMEWORK_SEARCH_PATHS_QUOTED_1 = "\"$(SRCROOT)/../../BuildProducts/Debug\"";
 				GCC_AUTO_VECTORIZATION = NO;
 				GCC_ENABLE_CPP_EXCEPTIONS = NO;
 				GCC_ENABLE_CPP_RTTI = NO;
@@ -4169,7 +4254,11 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CURRENT_PROJECT_VERSION = 603;
-				FRAMEWORK_SEARCH_PATHS = "";
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(FRAMEWORK_SEARCH_PATHS_QUOTED_1)",
+				);
+				FRAMEWORK_SEARCH_PATHS_QUOTED_1 = "\"$(SRCROOT)/../../BuildProducts/Debug\"";
 				GCC_ENABLE_CPP_EXCEPTIONS = NO;
 				GCC_ENABLE_CPP_RTTI = NO;
 				GCC_ENABLE_OBJC_EXCEPTIONS = YES;
@@ -4200,7 +4289,11 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CURRENT_PROJECT_VERSION = 603;
-				FRAMEWORK_SEARCH_PATHS = "";
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(FRAMEWORK_SEARCH_PATHS_QUOTED_1)",
+				);
+				FRAMEWORK_SEARCH_PATHS_QUOTED_1 = "\"$(SRCROOT)/../../BuildProducts/Debug\"";
 				GCC_ENABLE_CPP_EXCEPTIONS = NO;
 				GCC_ENABLE_CPP_RTTI = NO;
 				GCC_ENABLE_OBJC_EXCEPTIONS = YES;
