@@ -1,19 +1,19 @@
 //
-//  BDSKZoomGroupSheetController.m
+//  BDSKSearchGroupSheetController.m
 //  Bibdesk
 //
 //  Created by Adam Maxwell on 12/26/06.
 //  Copyright 2006 __MyCompanyName__. All rights reserved.
 //
 
-#import "BDSKZoomGroupSheetController.h"
+#import "BDSKSearchGroupSheetController.h"
 #import "BDSKSearchGroup.h"
 #import "BDSKZoomGroup.h"
 
 static NSArray *zoomServers = nil;
 static NSArray *entrezServers = nil;
 
-@implementation BDSKZoomGroupSheetController
+@implementation BDSKSearchGroupSheetController
 
 + (void)initialize {
 // !!! move to a plist
@@ -49,7 +49,7 @@ static NSArray *entrezServers = nil;
     [super dealloc];
 }
 
-- (NSString *)windowNibName { return @"BDSKZoomGroupSheet"; }
+- (NSString *)windowNibName { return @"BDSKSearchGroupSheet"; }
 
 - (void)setDefaultValues{
     NSArray *servers = type == 0 ? entrezServers : zoomServers;

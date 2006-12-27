@@ -1,15 +1,8 @@
 {
     IBClasses = (
         {
-            ACTIONS = {dismiss = id; }; 
-            CLASS = BDSKSheetController; 
-            LANGUAGE = ObjC; 
-            OUTLETS = {theModalDelegate = id; }; 
-            SUPERCLASS = NSWindowController; 
-        }, 
-        {
             ACTIONS = {selectPredefinedServer = id; }; 
-            CLASS = BDSKZoomGroupSheetController; 
+            CLASS = BDSKSearchGroupSheetController; 
             LANGUAGE = ObjC; 
             OUTLETS = {
                 addressField = NSTextField; 
@@ -18,6 +11,13 @@
                 serverPopup = NSPopUpButton; 
             }; 
             SUPERCLASS = BDSKSheetController; 
+        }, 
+        {
+            ACTIONS = {dismiss = id; }; 
+            CLASS = BDSKSheetController; 
+            LANGUAGE = ObjC; 
+            OUTLETS = {theModalDelegate = id; }; 
+            SUPERCLASS = NSWindowController; 
         }, 
         {CLASS = FirstResponder; LANGUAGE = ObjC; SUPERCLASS = NSObject; }
     ); 

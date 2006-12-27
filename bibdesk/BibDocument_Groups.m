@@ -70,7 +70,7 @@
 #import "BDSKCollapsibleView.h"
 #import "BDSKSearchGroup.h"
 #import "BDSKMainTableView.h"
-#import "BDSKZoomGroupSheetController.h"
+#import "BDSKSearchGroupSheetController.h"
 
 @implementation BibDocument (Groups)
 
@@ -846,7 +846,7 @@ The groupedPublications array is a subset of the publications array, developed b
 }
 
 - (IBAction)addSearchGroupAction:(id)sender {
-    BDSKZoomGroupSheetController *sheetController = [[BDSKZoomGroupSheetController alloc] init];
+    BDSKSearchGroupSheetController *sheetController = [[BDSKSearchGroupSheetController alloc] init];
     [sheetController beginSheetModalForWindow:documentWindow
                                 modalDelegate:self
                                didEndSelector:@selector(zoomGroupSheetDidEnd:returnCode:contextInfo:)
@@ -854,7 +854,7 @@ The groupedPublications array is a subset of the publications array, developed b
     [sheetController release];
 }
 
-- (void)zoomGroupSheetDidEnd:(BDSKZoomGroupSheetController *)sheetController returnCode:(int) returnCode contextInfo:(void *)contextInfo{
+- (void)zoomGroupSheetDidEnd:(BDSKSearchGroupSheetController *)sheetController returnCode:(int) returnCode contextInfo:(void *)contextInfo{
 	if(returnCode == NSOKButton){
         unsigned int insertIndex = NSMaxRange([groups rangeOfSearchGroups]);
         BDSKGroup *group = [sheetController group];
