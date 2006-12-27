@@ -31,6 +31,8 @@
     [_popup selectItemAtIndex:0];
     _currentType = [[[BDSKZoomRecord validKeys] objectAtIndex:0] copy];
 
+    [_searchField setDelegate:self];
+    [_searchField setFormatter:[[[BDSKZoomCCLQueryFormatter alloc] init] autorelease]];
     
 }
 
@@ -69,6 +71,11 @@
     ZOOM_connection_destroy(connection);
 }
 
+- (BOOL)control:(NSControl *)control didFailToFormatString:(NSString *)string errorDescription:(NSString *)error
+{
+    NSBeginAlertSheet(@"Invalid query string", nil, nil, nil, [_textView window], nil, NULL, NULL, NULL, error);
+    return NO;
+}
 /*
  use e.g. "render;charset=ISO-8859-1" to specify the record's charset; will be converted to UTF-8
  */
