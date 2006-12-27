@@ -309,7 +309,9 @@ static void addStringToDictionary(NSString *value, NSMutableDictionary *pubDict,
 
 static NSString *titleTag = @"245";
 static NSString *subtitleSubTag = @"b";
-static NSString *authorSubTag = @"c";
+static NSString *personTag = @"700";
+static NSString *nameSubTag = @"a";
+static NSString *relatorSubTag = @"e";
 
 static void addSubstringToDictionary(NSString *subValue, NSMutableDictionary *pubDict, NSString *tag, NSString *subTag){
     NSString *key = [[[BibTypeManager sharedManager] fieldNamesForMARCTag:tag] objectForKey:subTag];
@@ -321,33 +323,34 @@ static void addSubstringToDictionary(NSString *subValue, NSMutableDictionary *pu
     subValue = [subValue stringByRemovingSurroundingWhitespace];
     
     if([tag isEqualToString:titleTag]){
-        if([subTag isEqualToString:authorSubTag]){
-            // this contains the rest of the cover text, usually authors and/or editors
-            // it usually contains all authors, while 100 contains only the first author
-            // editors are often added at the end of authors after "edited by" or "[edited by]"
-            subValue = [subValue stringByReplacingAllOccurrencesOfString:@" and, " withString:@" and "];
-            subValue = [subValue stringByReplacingAllOccurrencesOfString:@", " withString:@" and "];
-            NSRange range = [subValue rangeOfString:@"[edited by]"];
-            if(range.location == NSNotFound)
-                range = [subValue rangeOfString:@"edited by"];
-            if(range.location != NSNotFound){
-                tmpValue = [subValue substringFromIndex:NSMaxRange(range)];
-                tmpValue = [tmpValue stringByRemovingSurroundingWhitespace];
-                subValue = [subValue substringToIndex:range.location];
-                subValue = [subValue stringByRemovingSurroundingWhitespace];
-                if(tmpValue)
-                    [pubDict setObject:[tmpValue stringByRemovingPunctuationCharactersAndBracketedText] forKey:BDSKEditorString];
-            }
-            [pubDict removeObjectForKey:BDSKAuthorString];
-        }else if([subTag isEqualToString:subtitleSubTag] && (tmpValue = [pubDict objectForKey:key])){
+        if([subTag isEqualToString:subtitleSubTag] && (tmpValue = [pubDict objectForKey:key])){
             // this is the subtitle, append it to the title if present
             
             subValue = [NSString stringWithFormat:@"%@: %@", tmpValue, subValue];
             [pubDict removeObjectForKey:key];
         }
+    }else if([tag isEqualToString:personTag]){
+        tmpValue = [pubDict objectForKey:BDSKAuthorString];
+        if([subTag isEqualToString:nameSubTag] && tmpValue){
+            subValue = [NSString stringWithFormat:@"%@ and %@", tmpValue, subValue];
+        }else if([subTag isEqualToString:relatorSubTag]){
+            // this is the person role, see if it is an editor
+            if([subValue caseInsensitiveCompare:@"editor"] != NSOrderedSame || tmpValue == nil)
+                return;
+            NSRange range = [tmpValue rangeOfString:@" and " options:NSBackwardsSearch];
+            if(range.location == NSNotFound){
+                [pubDict removeObjectForKey:BDSKAuthorString];
+                subValue = tmpValue;
+            }else{
+                [pubDict setObject:[tmpValue substringToIndex:range.location] forKey:BDSKAuthorString];
+                subValue = [tmpValue substringFromIndex:NSMaxRange(range)];
+            }
+            if(tmpValue = [pubDict objectForKey:BDSKEditorString]){
+                subValue = [NSString stringWithFormat:@"%@ and %@", tmpValue, subValue];
+            }
+        }
     }else if([key isEqualToString:BDSKAnnoteString] && (tmpValue = [pubDict objectForKey:key])){
         subValue = [NSString stringWithFormat:@"%@. %@", tmpValue, subValue];
-        [pubDict removeObjectForKey:key];
     }else if([key isEqualToString:BDSKYearString]){
         // This is used for stripping extraneous characters from BibTeX year fields
         static AGRegex *findYearRegex = nil;
