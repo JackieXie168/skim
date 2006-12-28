@@ -8,7 +8,6 @@
 
 #import "BDSKSearchGroupSheetController.h"
 #import "BDSKSearchGroup.h"
-#import "BDSKZoomGroup.h"
 
 static NSArray *zoomServers = nil;
 static NSArray *entrezServers = nil;
@@ -27,7 +26,7 @@ static NSArray *entrezServers = nil;
     return [self initWithGroup:nil];
 }
 
-- (id)initWithGroup:(BDSKGroup *)aGroup;
+- (id)initWithGroup:(BDSKSearchGroup *)aGroup;
 {
     if (self = [super init]) {
         group = [aGroup retain];
@@ -83,7 +82,7 @@ static NSArray *entrezServers = nil;
     [self setDefaultValues];
 }
 
-- (BDSKGroup *)group { return group; }
+- (BDSKSearchGroup *)group { return group; }
 
 - (IBAction)dismiss:(id)sender {
     if ([sender tag] == NSOKButton) {
@@ -95,40 +94,19 @@ static NSArray *entrezServers = nil;
                 
         // we don't have a group, so create  a new one
         if(group == nil){
-            if(type == 0)
-                group = [[BDSKSearchGroup alloc] initWithName:@"Empty" database:database searchTerm:nil];
-            else
-                group = [[BDSKZoomGroup alloc] initWithHost:address port:port database:database searchTerm:nil];
+            group = [[BDSKSearchGroup alloc] initWithType:BDSKSearchGroupEntrez serverInfo:[entrezServers objectAtIndex:0] searchTerm:nil];
         }else{
             
             // we have a pubmed/web search group, and we're modifiying it
-            if(type == 0){
-                if([[group class] isKindOfClass:[BDSKSearchGroup class]]){
-                    [(BDSKSearchGroup *)group setDatabase:database];
-                }else{
-                    // we have a z39.50 group, and need to replace it with a pubmed/web group
-                   BDSKSearchGroup *newGroup = [[BDSKSearchGroup alloc] initWithName:[group name] database:database searchTerm:[(BDSKZoomGroup *)group searchTerm]];
-                   [group release];
-                   group = newGroup;
-                }
+            NSMutableDictionary *serverInfo = [NSMutableDictionary dictionaryWithCapacity:6];
+            if(type == BDSKSearchGroupEntrez){
+                [serverInfo setObject:[self database] forKey:@"database"];
             }else{
-                // we have a z39.50 group, and just need to change some parameters
-                if([[group class] isKindOfClass:[BDSKZoomGroup class]]){
-                    [(BDSKZoomGroup *)group setHost:address];
-                    [(BDSKZoomGroup *)group setPort:port];
-                    [(BDSKZoomGroup *)group setDatabase:database];
-                    [(BDSKZoomGroup *)group setUser:username];
-                    [(BDSKZoomGroup *)group setPass:password];
-                }else{
-                    // replace our group with a different class
-                    BDSKZoomGroup *newGroup = [[BDSKZoomGroup alloc] initWithHost:address port:port database:database searchTerm:[(BDSKSearchGroup *)group searchTerm]];
-                    [(BDSKZoomGroup *)group setUser:username];
-                    [(BDSKZoomGroup *)group setPass:password];
-                    [group release];
-                    group = newGroup;
-                }
+                [serverInfo setObject:[self address] forKey:@"host"];
+                [serverInfo setObject:[self database] forKey:@"database"];
+                [serverInfo setObject:[NSNumber numberWithInt:[self port]] forKey:@"port"];
             }
-            [[(BDSKMutableGroup *)group undoManager] setActionName:NSLocalizedString(@"Edit Search Group", @"Undo action name")];
+            [group setServerInfo:serverInfo];
         }
     }
     

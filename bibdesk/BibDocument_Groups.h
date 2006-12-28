@@ -80,6 +80,7 @@
 - (void)handleGroupTableSelectionChangedNotification:(NSNotification *)notification;
 - (void)handleURLGroupUpdatedNotification:(NSNotification *)notification;
 - (void)handleScriptGroupUpdatedNotification:(NSNotification *)notification;
+- (void)handleSearchGroupUpdatedNotification:(NSNotification *)notification;
 - (void)handleWillAddRemoveGroupNotification:(NSNotification *)notification;
 - (void)handleDidAddRemoveGroupNotification:(NSNotification *)notification;
 

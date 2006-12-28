@@ -9,10 +9,10 @@
 #import <Cocoa/Cocoa.h>
 #import "BDSKSheetController.h"
 
-@class BDSKGroup;
+@class BDSKSearchGroup;
 
 @interface BDSKSearchGroupSheetController : BDSKSheetController {
-    BDSKGroup *group;
+    BDSKSearchGroup *group;
     NSString *address;
     NSString *database;
     int port;
@@ -32,8 +32,8 @@
     IBOutlet NSTextField *userField;
 }
 
-- (id)initWithGroup:(BDSKGroup *)aGroup;
-- (BDSKGroup *)group;
+- (id)initWithGroup:(BDSKSearchGroup *)aGroup;
+- (BDSKSearchGroup *)group;
 
 - (NSString *)address;
 - (void)setAddress:(NSString *)newAddress;
