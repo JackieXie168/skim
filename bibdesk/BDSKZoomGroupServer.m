@@ -59,7 +59,11 @@
 {
     OSAtomicCompareAndSwap32Barrier(0, 1, (int32_t *)&flags.isRetrieving);
     OSAtomicCompareAndSwap32Barrier(1, 0, (int32_t *)&flags.failedDownload);
-    [[self serverOnServerThread] downloadWithSearchTerm:[group searchTerm]];
+    id server = [self serverOnServerThread];
+    if (server)
+        [server downloadWithSearchTerm:[group searchTerm]];
+    else
+        [self performSelector:_cmd withObject:nil afterDelay:0.1];
 }
 
 // @@ should the password/username be included in the serverInfo?
