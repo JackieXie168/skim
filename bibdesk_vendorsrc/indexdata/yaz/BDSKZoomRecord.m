@@ -42,13 +42,18 @@ static NSStringEncoding fallbackEncoding = 0;
     self = [super init];
     if (self) {
         
-        // copy it, since the owning result set could go away
-        _record = ZOOM_record_clone(record);
-        _representations = [[NSMutableDictionary allocWithZone:[self zone]] init];
-        
-        // make sure we always have these
-        [self cacheRepresentationForKey:renderKey];
-        [self cacheRepresentationForKey:rawKey];
+        if(record){
+            // copy it, since the owning result set could go away
+            _record = ZOOM_record_clone(record);
+            _representations = [[NSMutableDictionary allocWithZone:[self zone]] init];
+            
+            // make sure we always have these
+            [self cacheRepresentationForKey:renderKey];
+            [self cacheRepresentationForKey:rawKey];
+        }else{
+            [self release];
+            self = nil;
+        }
     }
     return self;
 }

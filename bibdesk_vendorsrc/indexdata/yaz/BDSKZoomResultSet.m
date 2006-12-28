@@ -52,7 +52,8 @@
 
     while (i != NSNotFound) {
         BDSKZoomRecord *record = [[BDSKZoomRecord allocWithZone:zone] initWithZoomRecord:ZOOM_resultset_record(_resultSet, i)];
-        [array addObject:record];
+        if(record)
+            [array addObject:record];
         [record release];
         i = [indexes indexGreaterThanIndex:i];
     }
