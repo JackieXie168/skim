@@ -53,7 +53,7 @@
                 changeIntersectGroupsAction = id; 
                 changeMainTableFont = id; 
                 changePreviewDisplay = id; 
-                changePubMedSearchTerm = id; 
+                changeSearchGroupSearchTerm = id; 
                 clearQuickSearch = id; 
                 consolidateLinkedFiles = id; 
                 copy = id; 
@@ -92,7 +92,7 @@
                 mergeInExternalGroup = id; 
                 mergeInExternalPublications = id; 
                 newPub = id; 
-                nextPubMedSearch = id; 
+                nextSearchGroupSearch = id; 
                 openLinkedFile = id; 
                 openRemoteURL = id; 
                 pageDownInPreview = id; 
@@ -148,13 +148,13 @@
                 groupTableView = BDSKGroupTableView; 
                 mainBox = BDSKColoredBox; 
                 previewTextView = NSTextView; 
-                pubmedEdgeView = BDSKEdgeView; 
-                pubmedSearchField = NSSearchField; 
-                pubmedSearchNextButton = NSButton; 
-                pubmedView = BDSKCollapsibleView; 
                 saveAccessoryView = NSView; 
                 saveTextEncodingPopupButton = BDSKEncodingPopUpButton; 
                 searchField = BDSKSearchField; 
+                searchGroupEdgeView = BDSKEdgeView; 
+                searchGroupSearchButton = NSButton; 
+                searchGroupSearchField = NSSearchField; 
+                searchGroupView = BDSKCollapsibleView; 
                 splitView = BDSKSplitView; 
                 statusBar = BDSKStatusBar; 
                 tableView = BDSKMainTableView; 

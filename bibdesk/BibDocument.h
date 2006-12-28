@@ -182,11 +182,12 @@ extern NSString* BDSKWeblocFilePboardType; // core pasteboard type for webloc fi
     NSString *promiseDragColumnIdentifier;
     BDSKItemPasteboardHelper *pboardHelper;
     
-    // !!! temporary
-    IBOutlet BDSKCollapsibleView *pubmedView;
-    IBOutlet BDSKEdgeView *pubmedEdgeView;
-    IBOutlet NSSearchField *pubmedSearchField;
-    IBOutlet NSButton *pubmedSearchNextButton;
+#pragma mark Search group view
+
+    IBOutlet BDSKCollapsibleView *searchGroupView;
+    IBOutlet BDSKEdgeView *searchGroupEdgeView;
+    IBOutlet NSSearchField *searchGroupSearchField;
+    IBOutlet NSButton *searchGroupSearchButton;
     
 #pragma mark Scalar state variables
 

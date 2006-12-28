@@ -135,14 +135,14 @@ The groupedPublications array is a subset of the publications array, developed b
 
 #pragma mark PubMed ** TEMPORARY **
 
-- (IBAction)changePubMedSearchTerm:(id)sender {
+- (IBAction)changeSearchGroupSearchTerm:(id)sender {
     BDSKSearchGroup *group = [[self selectedGroups] firstObject];
     OBASSERT([group isSearch]);
     [group setSearchTerm:[sender stringValue]];
 }
 
-- (IBAction)nextPubMedSearch:(id)sender {
-    [self changePubMedSearchTerm:pubmedSearchField];
+- (IBAction)nextSearchGroupSearch:(id)sender {
+    [self changeSearchGroupSearchTerm:searchGroupSearchField];
     BDSKSearchGroup *group = [[self selectedGroups] firstObject];
     OBASSERT([group isSearch]);
     [group searchNext];
@@ -153,18 +153,18 @@ The groupedPublications array is a subset of the publications array, developed b
         NSLog(@"Unable to load BDSKSearchGroupView.nib.");
         return;
     }
-    [pubmedView setMinSize:[pubmedView frame].size];
-    [pubmedEdgeView setEdges:BDSKMinXEdgeMask | BDSKMaxXEdgeMask];
+    [searchGroupView setMinSize:[searchGroupView frame].size];
+    [searchGroupEdgeView setEdges:BDSKMinXEdgeMask | BDSKMaxXEdgeMask];
 }
 
-- (void)showPubMedEditor {
+- (void)showSearchGroupView {
 
-    if (nil == [pubmedView window]) {
-        if (nil == pubmedView)
+    if (nil == [searchGroupView window]) {
+        if (nil == searchGroupView)
             [self loadSearchGroupView];
         
         NSScrollView *sv = [tableView enclosingScrollView];
-        NSRect searchFrame = [pubmedView frame];
+        NSRect searchFrame = [searchGroupView frame];
         NSRect svFrame = [splitView frame];
         searchFrame.size.width = NSWidth(svFrame);
         searchFrame.origin.x = svFrame.origin.x;
@@ -176,23 +176,23 @@ The groupedPublications array is a subset of the publications array, developed b
             searchFrame.origin.y = NSMaxY(svFrame);
         }
         
-        [pubmedView setFrame:searchFrame];
+        [searchGroupView setFrame:searchFrame];
         [splitView setFrame:svFrame];
-        [mainBox addSubview:pubmedView];
+        [mainBox addSubview:searchGroupView];
         [mainBox setNeedsDisplay:YES];
-        [pubmedSearchField selectText:self];
+        [searchGroupSearchField selectText:self];
     }
     
     BDSKSearchGroup *group = [[self selectedGroups] firstObject];
     OBASSERT([group isSearch]);
-    [pubmedSearchField setStringValue:[group searchTerm] ? [group searchTerm] : @""];
-    [pubmedSearchNextButton setEnabled:[group isRetrieving] == NO];
+    [searchGroupSearchField setStringValue:[group searchTerm] ? [group searchTerm] : @""];
+    [searchGroupSearchButton setEnabled:[group isRetrieving] == NO];
 }
 
-- (void)hidePubMedEditor
+- (void)hideSearchGroupView
 {
-    if (nil != [pubmedView window]) {
-        [pubmedView removeFromSuperview];
+    if (nil != [searchGroupView window]) {
+        [searchGroupView removeFromSuperview];
         [splitView setFrame:[mainBox bounds]];
         [mainBox setNeedsDisplay:YES];
     }
@@ -212,9 +212,9 @@ The groupedPublications array is a subset of the publications array, developed b
     
 - (void)handleGroupTableSelectionChangedNotification:(NSNotification *)notification{
     if ([self hasSearchGroupsSelected])
-        [self showPubMedEditor];
+        [self showSearchGroupView];
     else
-        [self hidePubMedEditor];
+        [self hideSearchGroupView];
     if ([self hasExternalGroupsSelected])
         [tableView setAlternatingRowBackgroundColors:[NSColor alternateControlAlternatingRowBackgroundColors]];
     else
@@ -282,7 +282,7 @@ The groupedPublications array is a subset of the publications array, developed b
     BDSKGroup *group = [notification object];
     BOOL succeeded = [[[notification userInfo] objectForKey:@"succeeded"] boolValue];
     
-    if ([[groups URLGroups] containsObject:group] == NO && [[groups searchGroups] containsObject:group] == NO)
+    if ([[groups URLGroups] containsObject:group] == NO)
         return; /// must be from another document
     
     if([sortGroupsKey isEqualToString:BDSKGroupCellCountKey]){
@@ -314,7 +314,7 @@ The groupedPublications array is a subset of the publications array, developed b
     BDSKGroup *group = [notification object];
     BOOL succeeded = [[[notification userInfo] objectForKey:@"succeeded"] boolValue];
     
-    if ([[groups URLGroups] containsObject:group] == NO && [[groups searchGroups] containsObject:group] == NO)
+    if ([[groups searchGroups] containsObject:group] == NO)
         return; /// must be from another document
     
     if([sortGroupsKey isEqualToString:BDSKGroupCellCountKey]){
@@ -324,7 +324,7 @@ The groupedPublications array is a subset of the publications array, developed b
         if ([[self selectedGroups] containsObject:group] && succeeded == YES)
             [self displaySelectedGroups];
     }
-    [pubmedSearchNextButton setEnabled:[group isRetrieving] == NO];
+    [searchGroupSearchButton setEnabled:[group isRetrieving] == NO];
 }
 
 - (void)handleWillAddRemoveGroupNotification:(NSNotification *)notification{

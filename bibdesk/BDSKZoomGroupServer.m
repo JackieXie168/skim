@@ -10,6 +10,8 @@
 #import "BDSKSearchGroup.h"
 #import "BDSKStringParser.h"
 
+// !!! maximum download of 25 is low, but this is really slow for some reason, at least using my canonical "bob dylan" search
+#define MAX_RESULTS 25
 
 @implementation BDSKZoomGroupServer
 
@@ -18,7 +20,7 @@
     self = [super init];
     if (self) {
         group = aGroup;
-        host = [[info objectForKey:@"host name"] copy];
+        host = [[info objectForKey:@"host"] copy];
         port = [[info objectForKey:@"port"] intValue];
         database = [[info objectForKey:@"database"] copy];
         flags.failedDownload = 0;
@@ -44,69 +46,6 @@
 - (Protocol *)protocolForMainThread { return @protocol(BDSKZoomGroupServerMainThread); }
 - (Protocol *)protocolForServerThread { return @protocol(BDSKZoomGroupServerLocalThread); }
 
-- (void)addPublicationsToGroup:(bycopy NSArray *)pubs;
-{
-    [group addPublications:pubs];
-}
-
-- (oneway void)downloadWithSearchTerm:(NSString *)searchTerm;
-{
-    OSAtomicCompareAndSwap32Barrier(0, 1, (int32_t *)&flags.isRetrieving);
-    OSAtomicCompareAndSwap32Barrier(1, 0, (int32_t *)&flags.failedDownload);
-    
-    // only reset the connection when we're actually going to use it, since a mixed host/database/port won't work
-    if (flags.needsReset)
-        [self resetConnection];
-    
-    BDSKZoomResultSet *resultSet = [connection resultsForCCLQuery:searchTerm];
-    
-    if (nil == resultSet)
-        OSAtomicCompareAndSwap32Barrier(0, 1, (int32_t *)&flags.failedDownload);
-    
-    [self setAvailableResults:[resultSet countOfRecords]];
-    
-    // !!! maximum download of 25 is low, but this is really slow for some reason, at least using my canonical "bob dylan" search
-    int numResults = MIN([self availableResults] - [self fetchedResults], 25);
-    NSAssert(numResults >= 0, @"number of results to get must be non-negative");
-    
-    NSMutableArray *pubs = nil;
-    
-    if(numResults > 0){
-        NSArray *records = [resultSet recordsInRange:NSMakeRange([self fetchedResults], numResults)];
-        
-        [self setFetchedResults:[self fetchedResults] + numResults];
-        
-        pubs = [NSMutableArray array];
-        BDSKZoomRecord *record;
-        int i, iMax = [records count];
-        for (i = 0; i < iMax; i++) {
-            record = [records objectAtIndex:i];
-            BibItem *anItem = [[BDSKStringParser itemsFromString:[record rawString] error:NULL] lastObject];
-            if (anItem)
-                [pubs addObject:anItem];
-        }
-    }
-    
-    // set this flag before adding pubs, or the client will think we're still retrieving (and spinners don't stop)
-    OSAtomicCompareAndSwap32Barrier(1, 0, (int32_t *)&flags.isRetrieving);
-
-    // this will create the array if it doesn't exist
-    [[self serverOnMainThread] addPublicationsToGroup:pubs];
-}
-
-- (void)resetConnection;
-{
-    [connection release];
-    connection = [[BDSKZoomConnection alloc] initWithHost:[self host] port:[self port] database:[self database]];
-    if (password)
-        [connection setOption:password forKey:@"password"];
-    if (user)
-        [connection setOption:user forKey:@"user"];
-    flags.needsReset = 0;
-    [self setNumberOfAvailableResults:0];
-    [self setNumberOfFetchedResults:0];
-} 
-
 #pragma mark BDSKSearchGroupServer protocol
 
 // these are called on the main thread
@@ -118,6 +57,8 @@
 
 - (void)retrievePublications
 {
+    OSAtomicCompareAndSwap32Barrier(0, 1, (int32_t *)&flags.isRetrieving);
+    OSAtomicCompareAndSwap32Barrier(1, 0, (int32_t *)&flags.failedDownload);
     [[self serverOnServerThread] downloadWithSearchTerm:[group searchTerm]];
 }
 
@@ -173,7 +114,27 @@
 
 - (BOOL)needsReset { return 1 == flags.needsReset; }
 
+#pragma mark Main thread 
+
+- (void)addPublicationsToGroup:(bycopy NSArray *)pubs;
+{
+    [group addPublications:pubs];
+}
+
 #pragma mark Server thread 
+
+- (void)resetConnection;
+{
+    [connection release];
+    connection = [[BDSKZoomConnection alloc] initWithHost:[self host] port:[self port] database:[self database]];
+    if (password)
+        [connection setOption:password forKey:@"password"];
+    if (user)
+        [connection setOption:user forKey:@"user"];
+    flags.needsReset = 0;
+    [self setNumberOfAvailableResults:0];
+    [self setNumberOfFetchedResults:0];
+} 
 
 - (oneway void)terminateConnection;
 {
@@ -182,6 +143,47 @@
     flags.needsReset = 1;
     flags.isRetrieving = 0;
 } 
+
+- (oneway void)downloadWithSearchTerm:(NSString *)searchTerm;
+{
+    // only reset the connection when we're actually going to use it, since a mixed host/database/port won't work
+    if (flags.needsReset)
+        [self resetConnection];
+    
+    BDSKZoomResultSet *resultSet = [connection resultsForCCLQuery:searchTerm];
+    
+    if (nil == resultSet)
+        OSAtomicCompareAndSwap32Barrier(0, 1, (int32_t *)&flags.failedDownload);
+    
+    [self setAvailableResults:[resultSet countOfRecords]];
+    
+    int numResults = MIN([self availableResults] - [self fetchedResults], MAX_RESULTS);
+    //NSAssert(numResults >= 0, @"number of results to get must be non-negative");
+    
+    NSMutableArray *pubs = nil;
+    
+    if(numResults > 0){
+        NSArray *records = [resultSet recordsInRange:NSMakeRange([self fetchedResults], numResults)];
+        
+        [self setFetchedResults:[self fetchedResults] + numResults];
+        
+        pubs = [NSMutableArray array];
+        BDSKZoomRecord *record;
+        int i, iMax = [records count];
+        for (i = 0; i < iMax; i++) {
+            record = [records objectAtIndex:i];
+            BibItem *anItem = [[BDSKStringParser itemsFromString:[record rawString] error:NULL] lastObject];
+            if (anItem)
+                [pubs addObject:anItem];
+        }
+    }
+    
+    // set this flag before adding pubs, or the client will think we're still retrieving (and spinners don't stop)
+    OSAtomicCompareAndSwap32Barrier(1, 0, (int32_t *)&flags.isRetrieving);
+
+    // this will create the array if it doesn't exist
+    [[self serverOnMainThread] addPublicationsToGroup:pubs];
+}
 
 - (oneway void)cleanup{
     [self terminateConnection];

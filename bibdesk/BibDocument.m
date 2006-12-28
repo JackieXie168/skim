@@ -229,7 +229,7 @@ static NSString *BDSKRecentSearchesKey = @"BDSKRecentSearchesKey";
     [promiseDragColumnIdentifier release];
     [sortKey release];
     [sortGroupsKey release];
-    [pubmedView release];
+    [searchGroupView release];
     [super dealloc];
 }
 
