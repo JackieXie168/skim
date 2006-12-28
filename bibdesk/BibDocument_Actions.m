@@ -360,14 +360,15 @@
 }
 
 - (void)editPubAlertDidEnd:(NSAlert *)alert returnCode:(int)returnCode contextInfo:(void *)contextInfo {
-    if (returnCode == NSAlertDefaultReturn)
-        return;
-    
-    [self performSelector:@selector(editPub:) withObjectsFromArray:[self selectedPublications]];
+    NSArray *pubs = (NSArray *)contextInfo;
+    if (returnCode == NSAlertAlternateReturn) {
+        [self performSelector:@selector(editPub:) withObjectsFromArray:pubs];
+    }
+    [pubs release];
 }
 
-- (IBAction)editPubCmd:(id)sender{
-    int n = [self numberOfSelectedPubs];
+- (void)editPublications:(NSArray *)pubs{
+    int n = [pubs count];
     if (n > 6) {
         // Do we really want a gazillion of editor windows?
         NSAlert *alert = [NSAlert alertWithMessageText:NSLocalizedString(@"Edit publications", @"Message in alert dialog when trying to open a lot of publication editors")
@@ -378,10 +379,14 @@
         [alert beginSheetModalForWindow:documentWindow
                           modalDelegate:self
                          didEndSelector:@selector(editPubAlertDidEnd:returnCode:contextInfo:) 
-                            contextInfo:NULL];
+                            contextInfo:[pubs retain]];
     } else {
-        [self editPubAlertDidEnd:nil returnCode:NSAlertAlternateReturn contextInfo:NULL];
+        [self editPubAlertDidEnd:nil returnCode:NSAlertAlternateReturn contextInfo:[pubs retain]];
     }
+}
+
+- (IBAction)editPubCmd:(id)sender{
+    [self editPublications:[self selectedPublications]];
 }
 
 - (void)editAction:(id)sender {
