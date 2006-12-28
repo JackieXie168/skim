@@ -199,7 +199,7 @@
             [NSApp presentError:error];
         }
     }
-    [self addPublications:pubs];
+    [self setPublications:pubs];
 }
 
 - (void)download:(NSURLDownload *)download didFailWithError:(NSError *)error
@@ -213,7 +213,7 @@
     }
     
     // redraw 
-    [self addPublications:nil];
+    [self setPublications:nil];
     [NSApp presentError:error];
 }
 
@@ -272,26 +272,6 @@
     [self setCount:[publications count]];
     
     NSDictionary *userInfo = [NSDictionary dictionaryWithObject:[NSNumber numberWithBool:(publications != nil)] forKey:@"succeeded"];
-    [[NSNotificationCenter defaultCenter] postNotificationName:BDSKURLGroupUpdatedNotification object:self userInfo:userInfo];
-}
-
-- (void)addPublications:(NSArray *)newPublications;
-{
-    if ([self isRetrieving])
-        [self terminate];
-    
-    if(newPublications != publications && newPublications != nil){
-        
-        if (publications == nil)
-             publications = [[BDSKPublicationsArray alloc] initWithArray:newPublications];
-        else 
-            [publications addObjectsFromArray:newPublications];
-        [newPublications makeObjectsPerformSelector:@selector(setOwner:) withObject:self];
-    }
-    
-    [self setCount:[publications count]];
-    
-    NSDictionary *userInfo = [NSDictionary dictionaryWithObject:[NSNumber numberWithBool:(newPublications != nil)] forKey:@"succeeded"];
     [[NSNotificationCenter defaultCenter] postNotificationName:BDSKURLGroupUpdatedNotification object:self userInfo:userInfo];
 }
 
