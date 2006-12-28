@@ -8,6 +8,9 @@
 
 #import "BDSKZoomRecord.h"
 
+static NSString *renderKey = @"render;charset=marc-8";
+static NSString *rawKey = @"raw;charset=marc-8";
+
 @interface BDSKZoomRecord (Private)
 - (void)cacheRepresentationForKey:(NSString *)aKey;
 @end
@@ -44,8 +47,8 @@ static NSStringEncoding fallbackEncoding = 0;
         _representations = [[NSMutableDictionary allocWithZone:[self zone]] init];
         
         // make sure we always have these
-        [self cacheRepresentationForKey:@"render"];
-        [self cacheRepresentationForKey:@"raw"];
+        [self cacheRepresentationForKey:renderKey];
+        [self cacheRepresentationForKey:rawKey];
     }
     return self;
 }
@@ -74,12 +77,12 @@ static NSStringEncoding fallbackEncoding = 0;
 
 - (NSString *)renderedString;
 {
-    return [_representations objectForKey:@"render"];
+    return [_representations objectForKey:renderKey];
 }
 
 - (NSString *)rawString;
 {
-    return [_representations objectForKey:@"raw"];
+    return [_representations objectForKey:rawKey];
 }
 
 @end
@@ -88,7 +91,10 @@ static NSStringEncoding fallbackEncoding = 0;
 
 - (void)cacheRepresentationForKey:(NSString *)aKey;
 {
-    // !!! The key can use e.g. "render;charset=ISO-8859-1" to specify the record's charset, but from the source, it looks like it only converts to UTF-8.  I get weird conversion failures with Library of Congress' server searching for "ventin", so fall back to 8859-1 in that case.  I'm not really sure what the problem is.
+    /* !!! The key can use e.g. "render;charset=ISO-8859-1" to specify the record's charset, but from the source, it looks like it only converts to UTF-8.  I get weird conversion failures with Library of Congress' server searching for "ventin", so fall back to 8859-1 in that case.  I'm not really sure what the problem is.  
+     
+     Update: looks like we need to pass marc-8 as the encoding, so the caller should be aware of that.
+     */
 
     id nsString = nil;
     const char *cstr = ZOOM_record_get(_record, [aKey UTF8String], NULL);
