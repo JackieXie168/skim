@@ -1006,27 +1006,8 @@ The groupedPublications array is a subset of the publications array, developed b
         [sheetController release];
 	} else if ([group isSearch]) {
         BDSKSearchGroupSheetController *sheetController = [(BDSKSearchGroupSheetController *)[BDSKSearchGroupSheetController alloc] initWithGroup:(BDSKSearchGroup *)group];
-        [sheetController beginSheetModalForWindow:documentWindow
-                                    modalDelegate:self
-                                   didEndSelector:@selector(editSearchGroupSheetDidEnd:returnCode:contextInfo:)
-                                      contextInfo:NULL];
+        [sheetController beginSheetModalForWindow:documentWindow];
         [sheetController release];
-	}
-}
-
-- (void)editSearchGroupSheetDidEnd:(BDSKSearchGroupSheetController *)sheetController returnCode:(int) returnCode contextInfo:(void *)contextInfo{
-	if(returnCode == NSOKButton){
-        int row = [groupTableView selectedRow];
-        OBASSERT(row != -1);
-        if(row <= 0) return;
-        id oldGroup = [groups objectAtIndex:row];
-        id newGroup = [sheetController group];
-        if(newGroup != oldGroup){
-            [groups removeSearchGroup:oldGroup];
-            [groups addSearchGroup:newGroup];
-            [groupTableView selectRowIndexes:[NSIndexSet indexSetWithIndex:[groups indexOfObjectIdenticalTo:newGroup]] byExtendingSelection:NO];
-            [[self undoManager] setActionName:NSLocalizedString(@"Edit Search Group", @"Undo action name")];
-        }
 	}
 }
 
