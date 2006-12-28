@@ -245,7 +245,9 @@
 		F918767A0B406D9900D75891 /* zgdu.h in Headers */ = {isa = PBXBuildFile; fileRef = F918762A0B406D9900D75891 /* zgdu.h */; };
 		F918767B0B406D9900D75891 /* zoom.h in Headers */ = {isa = PBXBuildFile; fileRef = F918762B0B406D9900D75891 /* zoom.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		F91876AE0B409E7900D75891 /* libxml2.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = F91876AD0B409E7900D75891 /* libxml2.dylib */; };
+		F92B955D0B4381470089909F /* libcrypto.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = F92B955C0B4381470089909F /* libcrypto.dylib */; };
 		F937812E0B43207800ECCB3A /* default.bib in Resources */ = {isa = PBXBuildFile; fileRef = F937812D0B43207800ECCB3A /* default.bib */; };
+		F93784AC0B43800800ECCB3A /* libssl.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = F93784AB0B43800800ECCB3A /* libssl.dylib */; };
 		F9B8FD890B40D19300A5A615 /* BDSKZoomConnection.h in Headers */ = {isa = PBXBuildFile; fileRef = F9B8FD870B40D19300A5A615 /* BDSKZoomConnection.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		F9B8FD8A0B40D19300A5A615 /* BDSKZoomConnection.m in Sources */ = {isa = PBXBuildFile; fileRef = F9B8FD880B40D19300A5A615 /* BDSKZoomConnection.m */; };
 		F9B8FE150B41984A00A5A615 /* libiconv.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = F9B8FE140B41984A00A5A615 /* libiconv.dylib */; };
@@ -503,7 +505,9 @@
 		F918762A0B406D9900D75891 /* zgdu.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = zgdu.h; sourceTree = "<group>"; };
 		F918762B0B406D9900D75891 /* zoom.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = zoom.h; sourceTree = "<group>"; };
 		F91876AD0B409E7900D75891 /* libxml2.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libxml2.dylib; path = /usr/lib/libxml2.dylib; sourceTree = "<absolute>"; };
+		F92B955C0B4381470089909F /* libcrypto.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libcrypto.dylib; path = /usr/lib/libcrypto.dylib; sourceTree = "<absolute>"; };
 		F937812D0B43207800ECCB3A /* default.bib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = default.bib; sourceTree = "<group>"; };
+		F93784AB0B43800800ECCB3A /* libssl.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libssl.dylib; path = /usr/lib/libssl.dylib; sourceTree = "<absolute>"; };
 		F9B8FD870B40D19300A5A615 /* BDSKZoomConnection.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BDSKZoomConnection.h; sourceTree = "<group>"; };
 		F9B8FD880B40D19300A5A615 /* BDSKZoomConnection.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BDSKZoomConnection.m; sourceTree = "<group>"; };
 		F9B8FE140B41984A00A5A615 /* libiconv.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libiconv.dylib; path = /usr/lib/libiconv.dylib; sourceTree = "<absolute>"; };
@@ -524,6 +528,8 @@
 				8DC2EF570486A6940098B216 /* Cocoa.framework in Frameworks */,
 				F91876AE0B409E7900D75891 /* libxml2.dylib in Frameworks */,
 				F9B8FE150B41984A00A5A615 /* libiconv.dylib in Frameworks */,
+				F93784AC0B43800800ECCB3A /* libssl.dylib in Frameworks */,
+				F92B955D0B4381470089909F /* libcrypto.dylib in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -553,6 +559,8 @@
 		0867D69AFE84028FC02AAC07 /* External Frameworks and Libraries */ = {
 			isa = PBXGroup;
 			children = (
+				F92B955C0B4381470089909F /* libcrypto.dylib */,
+				F93784AB0B43800800ECCB3A /* libssl.dylib */,
 				F9B8FE140B41984A00A5A615 /* libiconv.dylib */,
 				F91876AD0B409E7900D75891 /* libxml2.dylib */,
 				1058C7B0FEA5585E11CA2CBB /* Linked Frameworks */,
@@ -1215,6 +1223,7 @@
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = yaz_Prefix.pch;
 				GCC_PREPROCESSOR_DEFINITIONS = (
+					HAVE_OPENSSL_SSL_H,
 					HAVE_WCHAR_H,
 					HAVE_ICONV_H,
 					HAVE_SYS_STAT_H,
@@ -1251,6 +1260,7 @@
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = yaz_Prefix.pch;
 				GCC_PREPROCESSOR_DEFINITIONS = (
+					HAVE_OPENSSL_SSL_H,
 					HAVE_ICONV_H,
 					HAVE_WCHAR_H,
 					HAVE_SYS_STAT_H,
