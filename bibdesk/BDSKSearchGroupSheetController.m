@@ -35,6 +35,8 @@ static NSArray *entrezServers = nil;
         undoManager = nil;
         port = 0;
         type = 0;
+        username = nil;
+        password = nil;
     }
     return self;
 }
@@ -45,6 +47,8 @@ static NSArray *entrezServers = nil;
     [undoManager release];
     [address release];
     [database release];
+    [username release];
+    [password release];
     CFRelease(editors);    
     [super dealloc];
 }
@@ -67,6 +71,11 @@ static NSArray *entrezServers = nil;
     [addressField setEnabled:NO];
     [portField setEnabled:NO];
     [databaseField setEnabled:NO];
+    
+    [self setUsername:nil];
+    [self setPassword:nil];
+    [userField setEnabled:NO];
+    [passwordField setEnabled:NO];
 }
 
 - (void)awakeFromNib
@@ -108,9 +117,13 @@ static NSArray *entrezServers = nil;
                     [(BDSKZoomGroup *)group setHost:address];
                     [(BDSKZoomGroup *)group setPort:port];
                     [(BDSKZoomGroup *)group setDatabase:database];
+                    [(BDSKZoomGroup *)group setUser:username];
+                    [(BDSKZoomGroup *)group setPass:password];
                 }else{
                     // replace our group with a different class
                     BDSKZoomGroup *newGroup = [[BDSKZoomGroup alloc] initWithHost:address port:port database:database searchTerm:[(BDSKSearchGroup *)group searchTerm]];
+                    [(BDSKZoomGroup *)group setUser:username];
+                    [(BDSKZoomGroup *)group setPass:password];
                     [group release];
                     group = newGroup;
                 }
@@ -199,6 +212,21 @@ static NSArray *entrezServers = nil;
         [self setDefaultValues];
     }
 }
+
+- (void)setUsername:(NSString *)user
+{
+    [username autorelease];
+    username = [user copy];
+}
+
+- (void)setPassword:(NSString *)pw
+{
+    [password autorelease];
+    password = [pw copy];
+}
+
+- (NSString *)password { return password; }
+- (NSString *)username { return username; }
 
 - (void)setNilValueForKey:(NSString *)key {
     if ([key isEqualToString:@"port"])

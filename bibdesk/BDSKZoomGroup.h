@@ -29,6 +29,8 @@
 - (NSString *)searchTerm;
 - (NSString *)database;
 - (void)setDatabase:(NSString *)dbase;
+- (void)setUser:(NSString *)user;
+- (void)setPass:(NSString *)pass;
 
 - (BDSKPublicationsArray *)publications;
 - (void)setPublications:(NSArray *)newPublications;
