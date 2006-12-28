@@ -185,8 +185,10 @@ The groupedPublications array is a subset of the publications array, developed b
     
     BDSKSearchGroup *group = [[self selectedGroups] firstObject];
     OBASSERT([group isSearch]);
+    NSString *dbase = [[group serverInfo] objectForKey:@"database"];
     [searchGroupSearchField setStringValue:[group searchTerm] ? [group searchTerm] : @""];
     [searchGroupSearchButton setEnabled:[group isRetrieving] == NO];
+    [[searchGroupSearchField cell] setPlaceholderString:[NSString stringWithFormat:NSLocalizedString(@"Search %@", @"search group field placeholder"), dbase ? dbase : @""]];
 }
 
 - (void)hideSearchGroupView
