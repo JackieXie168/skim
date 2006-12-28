@@ -632,9 +632,9 @@
         
         NSString *error = nil;
         NSPropertyListFormat format = NSPropertyListXMLFormat_v1_0;
-        NSData *data = [NSPropertyListSerialization dataFromPropertyList:array
-                                                                  format:format 
-                                                        errorDescription:&error];
+        data = [NSPropertyListSerialization dataFromPropertyList:array
+                                                          format:format 
+                                                errorDescription:&error];
             
         if (error) {
             NSLog(@"Error serializing: %@", error);
