@@ -1670,7 +1670,7 @@ originalContentsURL:(NSURL *)absoluteOriginalContentsURL
     [newPubs makeObjectsPerformSelector:@selector(setField:toValue:) withObject:BDSKDateAddedString withObject:[importDate description]];
 	
 	if([[OFPreferenceWrapper sharedPreferenceWrapper] boolForKey:BDSKEditOnPasteKey]) {
-		[self editPubCmd:nil]; // this will ask the user when there are many pubs
+		[self editPublications:newPubs]; // this will ask the user when there are many pubs
 	}
 	
 	[[self undoManager] setActionName:NSLocalizedString(@"Add Publication", @"Undo action name")];
