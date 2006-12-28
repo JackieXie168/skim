@@ -48,7 +48,6 @@ enum {
 - (void)setPublications:(NSArray *)newPublications;
 - (void)addPublications:(NSArray *)newPublications;
 
-- (void)setType:(int)newType;
 - (int)type;
 
 - (void)setServerInfo:(NSDictionary *)info;
@@ -65,6 +64,6 @@ enum {
 - (void)search;
 - (void)searchNext;
 
-- (void)resetServer;
+- (void)resetServerWithInfo:(NSDictionary *)info;
 
 @end

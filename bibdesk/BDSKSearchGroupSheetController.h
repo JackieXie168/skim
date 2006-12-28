@@ -33,6 +33,7 @@
 }
 
 - (id)initWithGroup:(BDSKSearchGroup *)aGroup;
+
 - (BDSKSearchGroup *)group;
 
 - (NSString *)address;
@@ -44,12 +45,15 @@
 - (int)port;
 - (void)setPort:(int)newPort;
 
+- (NSString *)username;
+- (void)setUsername:(NSString *)user;
+
+- (NSString *)password;
+- (void)setPassword:(NSString *)pw;
+
 - (IBAction)selectPredefinedServer:(id)sender;
 
 - (BOOL)commitEditing;
 - (NSUndoManager *)undoManager;
-
-- (void)setUsername:(NSString *)user;
-- (void)setPassword:(NSString *)pw;
 
 @end
