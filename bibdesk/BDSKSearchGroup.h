@@ -30,6 +30,7 @@ enum {
 - (void)setNeedsReset:(BOOL)flag;
 - (BOOL)needsReset;
 - (void)retrievePublications;
+- (void)stop;
 - (void)terminate;
 @end
 

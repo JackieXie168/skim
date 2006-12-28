@@ -216,7 +216,7 @@
 - (void)search;
 {
     if ([self isRetrieving])
-        [server terminate];
+        [server stop];
     
     [server setNumberOfAvailableResults:0];
     [server setNumberOfFetchedResults:0];
