@@ -33,8 +33,7 @@
         searchTerm = [string copy];
         publications = nil;
         macroResolver = [[BDSKMacroResolver alloc] initWithOwner:self];
-        [self resetServer];
-        [server setServerInfo:info];
+        [self resetServerWithInfo:info];
     }
     return self;
 }
@@ -203,13 +202,13 @@
 
 #pragma mark Searching
 
-- (void)resetServer {
+- (void)resetServerWithInfo:(NSDictionary *)info {
     [server terminate];
     [server release];
     if (type == BDSKSearchGroupEntrez)
-        server = [[BDSKEntrezGroupServer alloc] initWithGroup:self serverInfo:nil];
+        server = [[BDSKEntrezGroupServer alloc] initWithGroup:self serverInfo:info];
     else if (type == BDSKSearchGroupZoom)
-        server = [[BDSKZoomGroupServer alloc] initWithGroup:self serverInfo:nil];
+        server = [[BDSKZoomGroupServer alloc] initWithGroup:self serverInfo:info];
     else
         OBASSERT_NOT_REACHED("unknown search group type");
 }
@@ -255,20 +254,18 @@
 
 #pragma mark Accessors
 
-- (void)setType:(int)newType {
-    if (type != newType) {
-        type = newType;
-        [self resetServer];
-    }
-}   
-
 - (int)type { return type; }
 
 - (NSDictionary *)serverInfo { return [server serverInfo]; }
 
 - (void)setServerInfo:(NSDictionary *)info;
 {
-    [server setServerInfo:info];
+    int newType = [[info objectForKey:@"type"] intValue];
+    if(newType != type){
+        type = newType;
+        [self resetServerWithInfo:info];
+    } else
+        [server setServerInfo:info];
 }
 
 - (void)setSearchTerm:(NSString *)aTerm;

@@ -97,7 +97,7 @@
 
 - (NSDictionary *)serverInfo;
 {
-    return [NSDictionary dictionaryWithObjectsAndKeys:database, @"database", nil];
+    return [NSDictionary dictionaryWithObjectsAndKeys:[NSNumber numberWithInt:BDSKSearchGroupEntrez], @"type", database, @"database", nil];
 }
 
 - (void)setNumberOfAvailableResults:(int)value;

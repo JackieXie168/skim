@@ -134,16 +134,12 @@
 - (NSDictionary *)serverInfo;
 {
     NSMutableDictionary *info = [NSMutableDictionary dictionaryWithCapacity:3];
-    NSString *hostname = [[self serverOnServerThread] host];
-    NSString *dbase = [[self serverOnServerThread] database];
-    NSString *pass = [[self serverOnServerThread] password];
-    NSString *username = [[self serverOnServerThread] user];
-    int p = [(BDSKZoomGroupServer *)[self serverOnServerThread] port];
-    if (hostname) [info setObject:hostname forKey:@"host"];
-    if (dbase) [info setObject:dbase forKey:@"database"];
-    if (pass) [info setObject:pass forKey:@"password"];
-    if (username) [info setObject:username forKey:@"username"];
-    [info setObject:[NSNumber numberWithInt:p] forKey:@"database"];
+    [info setValue:[NSNumber numberWithInt:BDSKSearchGroupZoom] forKey:@"type"];
+    [info setValue:[[self serverOnServerThread] host] forKey:@"host"];
+    [info setValue:[NSNumber numberWithInt:[(BDSKZoomGroupServer *)[self serverOnServerThread] port]] forKey:@"port"];
+    [info setValue:[[self serverOnServerThread] database] forKey:@"database"];
+    [info setValue:[[self serverOnServerThread] password] forKey:@"password"];
+    [info setValue:[[self serverOnServerThread] user] forKey:@"username"];
     return info;
 }
 

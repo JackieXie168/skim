@@ -19,7 +19,7 @@ static NSArray *entrezServers = nil;
     entrezServers = [[NSArray alloc] initWithObjects:
         [NSDictionary dictionaryWithObjectsAndKeys:@"PubMed", @"name", @"pubmed", @"database", nil], nil];
     zoomServers = [[NSArray alloc] initWithObjects:
-        [NSDictionary dictionaryWithObjectsAndKeys:@"Library of Congress", @"name", @"z3950.loc.gov", @"address", @"Voyager", @"database", [NSNumber numberWithInt:7090], @"port", nil], nil];
+        [NSDictionary dictionaryWithObjectsAndKeys:@"Library of Congress", @"name", @"z3950.loc.gov", @"host", @"Voyager", @"database", [NSNumber numberWithInt:7090], @"port", nil], nil];
 }
 
 - (id)init {
@@ -32,10 +32,14 @@ static NSArray *entrezServers = nil;
         group = [aGroup retain];
         editors = CFArrayCreateMutable(kCFAllocatorMallocZone, 0, NULL);
         undoManager = nil;
-        port = 0;
-        type = 0;
-        username = nil;
-        password = nil;
+        
+        NSDictionary *info = group ? [group serverInfo] : [entrezServers objectAtIndex:0];
+        type = [group type];
+        address = [[info objectForKey:@"host"] copy];
+        port = [[info objectForKey:@"port"] intValue];
+        database = [[info objectForKey:@"database"] copy];
+        username = [[info objectForKey:@"username"] copy];
+        password = [[info objectForKey:@"password"] copy];
     }
     return self;
 }
@@ -55,7 +59,7 @@ static NSArray *entrezServers = nil;
 - (NSString *)windowNibName { return @"BDSKSearchGroupSheet"; }
 
 - (void)setDefaultValues{
-    NSArray *servers = type == 0 ? entrezServers : zoomServers;
+    NSArray *servers = type == BDSKSearchGroupEntrez ? entrezServers : zoomServers;
     [serverPopup removeAllItems];
     // !!! this will be a loop
     [serverPopup addItemsWithTitles:[servers valueForKey:@"name"]];
@@ -63,23 +67,30 @@ static NSArray *entrezServers = nil;
     [serverPopup selectItemAtIndex:0];
     
     NSDictionary *host = [servers objectAtIndex:0];
-    [self setAddress:[host objectForKey:@"address"]];
+    
+    [self setAddress:[host objectForKey:@"host"]];
     [self setPort:[[host objectForKey:@"port"] intValue]];
     [self setDatabase:[host objectForKey:@"database"]];
+    [self setUsername:nil];
+    [self setPassword:nil];
     
     [addressField setEnabled:NO];
     [portField setEnabled:NO];
     [databaseField setEnabled:NO];
     
-    [self setUsername:nil];
-    [self setPassword:nil];
     [userField setEnabled:NO];
     [passwordField setEnabled:NO];
 }
 
 - (void)awakeFromNib
 {
-    [self setDefaultValues];
+    BOOL isCustom = [serverPopup indexOfSelectedItem] == [serverPopup numberOfItems] - 1;
+    BOOL isZoom = type == BDSKSearchGroupZoom;
+    [addressField setEnabled:isCustom && isZoom];
+    [portField setEnabled:isCustom && isZoom];
+    [databaseField setEnabled:isCustom];
+    [userField setEnabled:isCustom && isZoom];
+    [passwordField setEnabled:isCustom && isZoom];
 }
 
 - (BDSKSearchGroup *)group { return group; }
@@ -92,20 +103,21 @@ static NSArray *entrezServers = nil;
             return;
         }
                 
+        NSMutableDictionary *serverInfo = [NSMutableDictionary dictionaryWithCapacity:6];
+        [serverInfo setValue:[NSNumber numberWithInt:type] forKey:@"type"];
+        [serverInfo setValue:[self database] forKey:@"database"];
+        if(type == BDSKSearchGroupEntrez){
+            [serverInfo setValue:[self address] forKey:@"host"];
+            [serverInfo setValue:[self database] forKey:@"database"];
+            [serverInfo setValue:[NSNumber numberWithInt:[self port]] forKey:@"port"];
+            [serverInfo setValue:[self password] forKey:@"password"];
+            [serverInfo setValue:[self username] forKey:@"username"];
+        }
+        
         // we don't have a group, so create  a new one
         if(group == nil){
-            group = [[BDSKSearchGroup alloc] initWithType:BDSKSearchGroupEntrez serverInfo:[entrezServers objectAtIndex:0] searchTerm:nil];
+            group = [[BDSKSearchGroup alloc] initWithType:type serverInfo:serverInfo searchTerm:nil];
         }else{
-            
-            // we have a pubmed/web search group, and we're modifiying it
-            NSMutableDictionary *serverInfo = [NSMutableDictionary dictionaryWithCapacity:6];
-            if(type == BDSKSearchGroupEntrez){
-                [serverInfo setObject:[self database] forKey:@"database"];
-            }else{
-                [serverInfo setObject:[self address] forKey:@"host"];
-                [serverInfo setObject:[self database] forKey:@"database"];
-                [serverInfo setObject:[NSNumber numberWithInt:[self port]] forKey:@"port"];
-            }
             [group setServerInfo:serverInfo];
         }
     }
@@ -117,18 +129,22 @@ static NSArray *entrezServers = nil;
 {
     int i = [sender indexOfSelectedItem];
     if (i == [sender numberOfItems] - 1) {
-        [addressField setEnabled:type == 1];
-        [portField setEnabled:type == 1];
+        [addressField setEnabled:type == BDSKSearchGroupZoom];
+        [portField setEnabled:type == BDSKSearchGroupZoom];
         [databaseField setEnabled:YES];
+        [passwordField setEnabled:YES];
+        [userField setEnabled:YES];
     } else {
-        NSArray *servers = type == 0 ? entrezServers : zoomServers;
+        NSArray *servers = type == BDSKSearchGroupEntrez ? entrezServers : zoomServers;
         NSDictionary *host = [servers objectAtIndex:i];
-        [self setAddress:[host objectForKey:@"address"]];
+        [self setAddress:[host objectForKey:@"host"]];
         [self setPort:[[host objectForKey:@"port"] intValue]];
         [self setDatabase:[host objectForKey:@"database"]];
         [addressField setEnabled:NO];
         [portField setEnabled:NO];
         [databaseField setEnabled:NO];
+        [passwordField setEnabled:NO];
+        [userField setEnabled:NO];
     }
 }
 
