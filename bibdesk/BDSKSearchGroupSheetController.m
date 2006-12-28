@@ -83,28 +83,34 @@ static NSArray *entrezServers = nil;
             NSBeep();
             return;
         }
-        
-        NSString *host = [NSString stringWithFormat:@"%@:%i/%@", address, port, database];
-        
+                
+        // we don't have a group, so create  a new one
         if(group == nil){
             if(type == 0)
                 group = [[BDSKSearchGroup alloc] initWithName:@"Empty" database:database searchTerm:nil];
             else
-                group = [[BDSKZoomGroup alloc] initWithHost:host port:0 searchTerm:nil];
+                group = [[BDSKZoomGroup alloc] initWithHost:address port:port database:database searchTerm:nil];
         }else{
+            
+            // we have a pubmed/web search group, and we're modifiying it
             if(type == 0){
                 if([[group class] isKindOfClass:[BDSKSearchGroup class]]){
                     [(BDSKSearchGroup *)group setDatabase:database];
                 }else{
+                    // we have a z39.50 group, and need to replace it with a pubmed/web group
                    BDSKSearchGroup *newGroup = [[BDSKSearchGroup alloc] initWithName:[group name] database:database searchTerm:[(BDSKZoomGroup *)group searchTerm]];
                    [group release];
                    group = newGroup;
                 }
             }else{
+                // we have a z39.50 group, and just need to change some parameters
                 if([[group class] isKindOfClass:[BDSKZoomGroup class]]){
-                    [(BDSKZoomGroup *)group setHost:host];
+                    [(BDSKZoomGroup *)group setHost:address];
+                    [(BDSKZoomGroup *)group setPort:port];
+                    [(BDSKZoomGroup *)group setDatabase:database];
                 }else{
-                    BDSKZoomGroup *newGroup = [[BDSKZoomGroup alloc] initWithHost:host port:0 searchTerm:[(BDSKSearchGroup *)group searchTerm]];
+                    // replace our group with a different class
+                    BDSKZoomGroup *newGroup = [[BDSKZoomGroup alloc] initWithHost:address port:port database:database searchTerm:[(BDSKSearchGroup *)group searchTerm]];
                     [group release];
                     group = newGroup;
                 }
@@ -142,7 +148,7 @@ static NSArray *entrezServers = nil;
 - (void)setAddress:(NSString *)newAddress {
     if(address != newAddress){
         [address release];
-        address = [newAddress retain];
+        address = [newAddress copy];
     }
 }
 
@@ -151,11 +157,13 @@ static NSArray *entrezServers = nil;
     NSRange range = [string rangeOfString:@"/"];
     if(range.location != NSNotFound){
         [self setDatabase:[string substringFromIndex:NSMaxRange(range)]];
+        [databaseField setStringValue:database];
         string = [string substringToIndex:range.location];
     }
     range = [string rangeOfString:@":"];
     if(range.location != NSNotFound){
         [self setPort:[[string substringFromIndex:NSMaxRange(range)] intValue]];
+        [portField setIntValue:port];
         string = [string substringToIndex:range.location];
     }
     *value = string;
@@ -169,7 +177,7 @@ static NSArray *entrezServers = nil;
 - (void)setDatabase:(NSString *)newDb {
     if(database != newDb){
         [database release];
-        database = [newDb retain];
+        database = [newDb copy];
     }
 }
   

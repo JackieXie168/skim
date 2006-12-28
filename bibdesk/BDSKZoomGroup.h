@@ -21,12 +21,14 @@
     BDSKZoomGroupServer *server;
 }
 
-- (id)initWithHost:(NSString *)aName port:(int)num searchTerm:(NSString *)string;
+- (id)initWithHost:(NSString *)hostname port:(int)num database:(NSString *)dbase searchTerm:(NSString *)string;
 - (void)setHost:(NSString *)aHost;
 - (void)setPort:(int)p;
 - (NSString *)host;
 - (int)port;
 - (NSString *)searchTerm;
+- (NSString *)database;
+- (void)setDatabase:(NSString *)dbase;
 
 - (BDSKPublicationsArray *)publications;
 - (void)setPublications:(NSArray *)newPublications;
