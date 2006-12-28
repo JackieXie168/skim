@@ -2151,6 +2151,10 @@ originalContentsURL:(NSURL *)absoluteOriginalContentsURL
                    name:BDSKScriptGroupUpdatedNotification
                  object:nil];
         [nc addObserver:self
+               selector:@selector(handleSearchGroupUpdatedNotification:)
+                   name:BDSKSearchGroupUpdatedNotification
+                 object:nil];
+        [nc addObserver:self
                selector:@selector(handleWillAddRemoveGroupNotification:)
                    name:BDSKWillAddRemoveGroupNotification
                  object:nil];

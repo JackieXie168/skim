@@ -292,8 +292,6 @@ The groupedPublications array is a subset of the publications array, developed b
         if ([[self selectedGroups] containsObject:group] && succeeded == YES)
             [self displaySelectedGroups];
     }
-    if([group isSearch])
-        [pubmedSearchNextButton setEnabled:[group isRetrieving] == NO];
 }
 
 - (void)handleScriptGroupUpdatedNotification:(NSNotification *)notification{
@@ -310,6 +308,23 @@ The groupedPublications array is a subset of the publications array, developed b
         if ([[self selectedGroups] containsObject:group] && succeeded == YES)
             [self displaySelectedGroups];
     }
+}
+
+- (void)handleSearchGroupUpdatedNotification:(NSNotification *)notification{
+    BDSKGroup *group = [notification object];
+    BOOL succeeded = [[[notification userInfo] objectForKey:@"succeeded"] boolValue];
+    
+    if ([[groups URLGroups] containsObject:group] == NO && [[groups searchGroups] containsObject:group] == NO)
+        return; /// must be from another document
+    
+    if([sortGroupsKey isEqualToString:BDSKGroupCellCountKey]){
+        [self sortGroupsByKey:sortGroupsKey];
+    }else{
+        [groupTableView setNeedsDisplay:YES];
+        if ([[self selectedGroups] containsObject:group] && succeeded == YES)
+            [self displaySelectedGroups];
+    }
+    [pubmedSearchNextButton setEnabled:[group isRetrieving] == NO];
 }
 
 - (void)handleWillAddRemoveGroupNotification:(NSNotification *)notification{

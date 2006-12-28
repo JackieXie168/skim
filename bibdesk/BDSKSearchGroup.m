@@ -7,197 +7,231 @@
 //
 
 #import "BDSKSearchGroup.h"
+#import "BDSKEntrezGroupServer.h"
+#import "BDSKZoomGroupServer.h"
+#import "BDSKMacroResolver.h"
 #import "NSImage+Toolbox.h"
+#import "BDSKPublicationsArray.h"
 
-// max number of results from NCBI is 100, except on evenings and weekends
-#define MAX_RESULTS 50
-
-/* Based on public domain sample code written by Oleg Khovayko, available at
- http://www.ncbi.nlm.nih.gov/entrez/query/static/eutils_example.pl
- 
- - We limit requests to 100 in the editor interface, per NCBI's request.  
- - We also pass tool=bibdesk for their tracking purposes.  
- - We use lower case characters in the URL /except/ for WebEnv
- - See http://www.ncbi.nlm.nih.gov/entrez/query/static/eutils_help.html for details.
- 
- */
 
 @implementation BDSKSearchGroup
 
-+ (NSString *)baseURLString { return @"http://eutils.ncbi.nlm.nih.gov/entrez/eutils"; }
-
-// may be useful for UI validation
-+ (BOOL)canConnect;
-{
-    CFURLRef theURL = (CFURLRef)[NSURL URLWithString:[self baseURLString]];
-    CFNetDiagnosticRef diagnostic = CFNetDiagnosticCreateWithURL(CFGetAllocator(theURL), theURL);
-    
-    NSString *details;
-    CFNetDiagnosticStatus status = CFNetDiagnosticCopyNetworkStatusPassively(diagnostic, (CFStringRef *)&details);
-    CFRelease(diagnostic);
-    [details autorelease];
-    
-    BOOL canConnect = kCFNetDiagnosticConnectionUp == status;
-    if (NO == canConnect)
-        NSLog(@"%@", details);
-    
-    return canConnect;
-}
-
 - (id)initWithName:(NSString *)aName;
 {
-    self = [self initWithName:aName database:@"pubmed" searchTerm:nil];
-    return self;
+    return [self initWithType:BDSKSearchGroupEntrez serverInfo:[NSDictionary dictionaryWithObject:aName forKey:@"database"] searchTerm:nil];
 }
 
-- (id)initWithName:(NSString *)aName database:(NSString *)aDb searchTerm:(NSString *)string;
+- (id)initWithType:(int)aType serverInfo:(NSDictionary *)info searchTerm:(NSString *)string;
 {
-    // this URL is basically just to prevent an assertion failure in the superclass
-    self = [super initWithName:aName URL:[NSURL URLWithString:[[self class] baseURLString]]];
-    if (self) {
+    NSString *aName = [info objectForKey:@"database"];
+    if (aName == nil)
+        aName = string;
+    if (aName == nil)
+        aName = NSLocalizedString(@"Empty", @"Name for empty search group");
+    if (self = [super initWithName:aName count:0]) {
+        type = aType;
         searchTerm = [string copy];
-        database = [aDb copy];
+        publications = nil;
+        macroResolver = [[BDSKMacroResolver alloc] initWithOwner:self];
+        [self resetServer];
+        [server setServerInfo:info];
     }
     return self;
 }
 
 - (id)initWithDictionary:(NSDictionary *)groupDict {
-    NSString *aName = [[groupDict objectForKey:@"group name"] stringByUnescapingGroupPlistEntities];
-    NSString *aSearchTerm = [[groupDict objectForKey:@"search term"] stringByUnescapingGroupPlistEntities];
-    NSString *aDatabase = [[groupDict objectForKey:@"database"] stringByUnescapingGroupPlistEntities];
-    self = [self initWithName:aName database:aDatabase searchTerm:aSearchTerm];
+    NSEnumerator *keyEnum = [groupDict keyEnumerator];
+    NSString *key;
+    id value;
+    NSMutableDictionary *info = [groupDict mutableCopy];
+    
+    while (key = [keyEnum nextObject]) {
+        value = [groupDict objectForKey:key];
+        if ([value respondsToSelector:@selector(stringByUnescapingGroupPlistEntities)])
+            [info setObject:[value stringByUnescapingGroupPlistEntities] forKey:key];
+    }
+    
+    int aType = [[info objectForKey:@"type"] intValue];
+    NSString *aSearchTerm = [info objectForKey:@"searchTerm"];
+    [info removeObjectForKey:@"type"];
+    [info removeObjectForKey:@"search term"];
+    
+    self = [self initWithType:aType serverInfo:info searchTerm:aSearchTerm];
+    [info release];
     return self;
 }
 
 - (NSDictionary *)dictionaryValue {
-    NSString *aName = [[self stringValue] stringByEscapingGroupPlistEntities];
-    NSString *aSearchTerm = [[self searchTerm] stringByEscapingGroupPlistEntities];
-    NSString *aDatabase = [[self database] stringByEscapingGroupPlistEntities];
-    return [NSDictionary dictionaryWithObjectsAndKeys:aName, @"group name", aSearchTerm, @"search term", aDatabase, @"database", nil];
+    NSDictionary *info = [server serverInfo];
+    NSEnumerator *keyEnum = [info keyEnumerator];
+    NSString *key;
+    id value;
+    NSMutableDictionary *groupDict = [info mutableCopy];
+    
+    while (key = [keyEnum nextObject]) {
+        value = [info objectForKey:key];
+        if ([value respondsToSelector:@selector(stringByEscapingGroupPlistEntities)])
+            [groupDict setObject:[value stringByEscapingGroupPlistEntities] forKey:key];
+    }
+    
+    [groupDict setObject:[NSNumber numberWithInt:[self type]] forKey:@"type"];
+    [groupDict setObject:[self searchTerm] forKey:@"search term"];
+    
+    return [groupDict autorelease];
+}
+
+- (id)initWithCoder:(NSCoder *)aCoder
+{
+    [NSException raise:BDSKUnimplementedException format:@"Instances of %@ do not conform to NSCoding", [self class]];
+    return nil;
+}
+
+- (void)encodeWithCoder:(NSCoder *)aCoder
+{
+    [NSException raise:BDSKUnimplementedException format:@"Instances of %@ do not conform to NSCoding", [self class]];
 }
 
 - (void)dealloc
 {
-    [webEnv release];
-    [queryKey release];
+    [publications makeObjectsPerformSelector:@selector(setOwner:) withObject:nil];
+    [server terminate];
+    [server release];
     [searchTerm release];
-    [searchKey release];
     [super dealloc];
 }
 
+- (BOOL)isEqual:(id)other { return self == other; }
+
+- (unsigned int)hash {
+    return( ((unsigned int) self >> 4) | (unsigned int) self << (32 - 4));
+}
+
+// Logging
+
+- (NSString *)description;
+{
+    return [NSString stringWithFormat:@"<%@ %p>: {\n\tis downloading: %@\n\tname: %@\ntype: %i\nserverInfo: %@\n }", [self class], self, ([self isRetrieving] ? @"yes" : @"no"), [self name], [self type], [self serverInfo]];
+}
+
+#pragma mark BDSKGroup overrides
+
 // note that pointer equality is used for these groups, so names can overlap, and users can have duplicate searches
 
-- (NSImage *)icon {
-    return [NSImage smallImageNamed:@"searchFolderIcon"];
-}
+- (NSImage *)icon { return [NSImage smallImageNamed:@"searchFolderIcon"]; }
+
+- (NSString *)name { return [NSString isEmptyString:[self searchTerm]] ? NSLocalizedString(@"Empty", @"Name for empty search group") : [self searchTerm]; }
 
 - (BOOL)isSearch { return YES; }
 
-- (BOOL)isURL { return NO; }
+- (BOOL)isExternal { return YES; }
 
 - (BOOL)isEditable { return YES; }
 
 - (BOOL)hasEditableName { return NO; }
 
-- (void)setWebEnv:(NSString *)env;
-{
-    [webEnv autorelease];
-    webEnv = [env copy];
+- (BOOL)isRetrieving { return [server isRetrieving]; }
+
+- (BOOL)failedDownload { return [server failedDownload]; }
+
+- (BOOL)containsItem:(BibItem *)item {
+    return [publications containsObject:item];
 }
 
-- (void)setQueryKey:(NSString *)aKey;
-{
-    [queryKey autorelease];
-    queryKey = [aKey copy];
-}
+#pragma mark BDSKOwner protocol
 
-// super's implementation does some things that we don't want (undo, setPublications:nil, setName:)
-- (void)setURL:(NSURL *)newURL;
+- (BDSKPublicationsArray *)publications;
 {
-    if (URL != newURL) {
-        [URL release];
-        URL = [newURL copy];
+    if([self isRetrieving] == NO && publications == nil && [NSString isEmptyString:[self searchTerm]] == NO){
+        // get initial batch of publications
+        [server retrievePublications];
+        
+        // use this to notify the tableview to start the progress indicators
+        NSDictionary *userInfo = [NSDictionary dictionaryWithObject:[NSNumber numberWithBool:NO] forKey:@"succeeded"];
+        [[NSNotificationCenter defaultCenter] postNotificationName:BDSKSearchGroupUpdatedNotification object:self userInfo:userInfo];
     }
+    // this posts a notification that the publications of the group changed, forcing a redisplay of the table cell
+    return publications;
 }
 
-- (NSString *)queryKey { return queryKey; }
-
-- (NSString *)webEnv { return webEnv; }
-
-- (NSString *)name { return [NSString isEmptyString:[self searchTerm]] ? NSLocalizedString(@"Empty", @"") : [self searchTerm]; }
-
-- (void)resetSearch;
+- (void)setPublications:(NSArray *)newPublications;
 {
-    // get the initial XML document with our search parameters in it
-    NSString *esearch = [[[self class] baseURLString] stringByAppendingFormat:@"/esearch.fcgi?db=%@&retmax=1&usehistory=y&term=%@&tool=bibdesk", [self database], [[self searchTerm] stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding]];
-    NSURL *initialURL = [NSURL URLWithString:esearch]; 
-    OBPRECONDITION(initialURL);
+    if(newPublications != publications){
+        [publications makeObjectsPerformSelector:@selector(setOwner:) withObject:nil];
+        [publications release];
+        publications = newPublications == nil ? nil : [[BDSKPublicationsArray alloc] initWithArray:newPublications];
+        [publications makeObjectsPerformSelector:@selector(setOwner:) withObject:self];
+        
+        if (publications == nil)
+            [macroResolver removeAllMacros];
+    }
     
-    NSURLRequest *request = [NSURLRequest requestWithURL:initialURL];
-    NSURLResponse *response;
-    NSError *error;
-    NSData *esearchResult = [NSURLConnection sendSynchronousRequest:request returningResponse:&response error:&error];
+    [self setCount:[publications count]];
     
-    NSXMLDocument *document = nil;
-    if (nil == esearchResult)
-        NSLog(@"failed to download %@ with error %@", initialURL, error);
+    NSDictionary *userInfo = [NSDictionary dictionaryWithObject:[NSNumber numberWithBool:(publications != nil)] forKey:@"succeeded"];
+    [[NSNotificationCenter defaultCenter] postNotificationName:BDSKSearchGroupUpdatedNotification object:self userInfo:userInfo];
+}
+
+- (void)addPublications:(NSArray *)newPublications;
+{    
+    if(newPublications != publications && newPublications != nil){
+        
+        if (publications == nil)
+            publications = [[BDSKPublicationsArray alloc] initWithArray:newPublications];
+        else 
+            [publications addObjectsFromArray:newPublications];
+        [newPublications makeObjectsPerformSelector:@selector(setOwner:) withObject:self];
+    }
+    
+    [self setCount:[publications count]];
+    
+    NSDictionary *userInfo = [NSDictionary dictionaryWithObject:[NSNumber numberWithBool:(newPublications != nil)] forKey:@"succeeded"];
+    [[NSNotificationCenter defaultCenter] postNotificationName:BDSKSearchGroupUpdatedNotification object:self userInfo:userInfo];
+}
+
+- (BDSKMacroResolver *)macroResolver;
+{
+    return macroResolver;
+}
+
+- (NSUndoManager *)undoManager { return nil; }
+
+- (NSURL *)fileURL { return nil; }
+
+- (NSString *)documentInfoForKey:(NSString *)key { return nil; }
+
+- (BOOL)isDocument { return NO; }
+
+#pragma mark Searching
+
+- (void)resetServer {
+    [server terminate];
+    [server release];
+    if (type == BDSKSearchGroupEntrez)
+        server = [[BDSKEntrezGroupServer alloc] initWithGroup:self serverInfo:nil];
+    else if (type == BDSKSearchGroupZoom)
+        server = [[BDSKZoomGroupServer alloc] initWithGroup:self serverInfo:nil];
     else
-        document = [[NSXMLDocument alloc] initWithData:esearchResult options:NSXMLNodeOptionsNone error:&error];
-    
-    if (nil != document) {
-        NSXMLElement *root = [document rootElement];
-        
-        // we need to extract WebEnv, Count, and QueryKey to construct our final URL
-        [self setWebEnv:[[[root nodesForXPath:@"/eSearchResult[1]/WebEnv[1]" error:NULL] lastObject] stringValue]];
-        [self setQueryKey:[[[root nodesForXPath:@"/eSearchResult[1]/QueryKey[1]" error:NULL] lastObject] stringValue]];
-        NSString *countString = [[[root nodesForXPath:@"/eSearchResult[1]/Count[1]" error:NULL] lastObject] stringValue];
-        [self setNumberOfAvailableResults:[countString intValue]];
-        
-        [document release];
-        
-    } else if (nil != esearchResult) {
-        // make sure error was actually initialized by NSXMLDocument
-        NSLog(@"unable to create an XML document: %@", error);
-    }
-}
-
-- (void)fetch;
-{
-    if ([self webEnv] == nil || [self queryKey] == nil || [self numberOfAvailableResults] <= [self count])
-        return;
-    
-    int numResults = MIN([self numberOfAvailableResults] - [self count], MAX_RESULTS);
-    
-    // need to escape queryKey, but the rest should be valid for a URL
-    NSString *efetch = [[[self class] baseURLString] stringByAppendingFormat:@"/efetch.fcgi?rettype=medline&retmode=text&retstart=%d&retmax=%d&db=%@&query_key=%@&WebEnv=%@&tool=bibdesk", [self count], numResults, [self database], [[self queryKey] stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding], [self webEnv]];
-    NSURL *theURL = [NSURL URLWithString:efetch];
-    OBPOSTCONDITION(theURL);
-    
-    [self setURL:theURL];
-    [self startDownload];
-    
-    // use this to notify the tableview to start the progress indicators and disable the button
-    NSDictionary *userInfo = [NSDictionary dictionaryWithObject:[NSNumber numberWithBool:NO] forKey:@"succeeded"];
-    [[NSNotificationCenter defaultCenter] postNotificationName:BDSKURLGroupUpdatedNotification object:self userInfo:userInfo];
+        OBASSERT_NOT_REACHED("unknown search group type");
 }
 
 - (void)search;
 {
     if ([self isRetrieving])
-        [self terminate];
+        [server terminate];
     
-    [self setWebEnv:nil];
-    [self setQueryKey:nil];
-
-    [self setNumberOfAvailableResults:0];
+    [server setNumberOfAvailableResults:0];
+    [server setNumberOfFetchedResults:0];
+    [server setNeedsReset:YES];
     
     if ([NSString isEmptyString:[self searchTerm]]) {
-        [self setURL:nil];
         [self setPublications:[NSArray array]];
     } else {
         [self setPublications:nil];
-        [self resetSearch];
-        [self fetch];
+        [server retrievePublications];
+        
+        // use this to notify the tableview to start the progress indicators and disable the button
+        NSDictionary *userInfo = [NSDictionary dictionaryWithObject:[NSNumber numberWithBool:NO] forKey:@"succeeded"];
+        [[NSNotificationCenter defaultCenter] postNotificationName:BDSKSearchGroupUpdatedNotification object:self userInfo:userInfo];
     }
 }
 
@@ -207,12 +241,34 @@
         return;
     
     if ([NSString isEmptyString:[self searchTerm]]) {
-        [self setURL:nil];
+        [server setNumberOfAvailableResults:0];
+        [server setNumberOfFetchedResults:0];
+        [self setPublications:[NSArray array]];
     } else {
-        if ([self searchKey] == nil || [self webEnv] == nil)
-            [self resetSearch];
-        [self fetch];
+        [server retrievePublications];
+        
+        // use this to notify the tableview to start the progress indicators and disable the button
+        NSDictionary *userInfo = [NSDictionary dictionaryWithObject:[NSNumber numberWithBool:NO] forKey:@"succeeded"];
+        [[NSNotificationCenter defaultCenter] postNotificationName:BDSKSearchGroupUpdatedNotification object:self userInfo:userInfo];
     }
+}
+
+#pragma mark Accessors
+
+- (void)setType:(int)newType {
+    if (type != newType) {
+        type = newType;
+        [self resetServer];
+    }
+}   
+
+- (int)type { return type; }
+
+- (NSDictionary *)serverInfo { return [server serverInfo]; }
+
+- (void)setServerInfo:(NSDictionary *)info;
+{
+    [server setServerInfo:info];
 }
 
 - (void)setSearchTerm:(NSString *)aTerm;
@@ -227,46 +283,16 @@
 
 - (NSString *)searchTerm { return searchTerm; }
 
-// searchKey is currently unused
-- (void)setSearchKey:(NSString *)aKey;
-{
-    if ([aKey isEqualToString:searchKey] == NO) {
-        [searchKey autorelease];
-        searchKey = [aKey copy];
-        
-        [self search];
-    }
-}
-
-- (NSString *)searchKey { return searchKey; }
-
-- (void)setDatabase:(NSString *)newDb {
-    if(database != newDb){
-        [database release];
-        database = [newDb retain];
-    }
-}
-
-- (NSString *)database { return database; }
-
-// this returns nil if no searchTerm has been set, to avoid an error message
-- (id)publications {
-    return [NSString isEmptyString:[self searchTerm]] ? nil : [super publications];
-}
-
 - (void)setNumberOfAvailableResults:(int)value;
 {
-    availableResults = value;
+    [server setNumberOfAvailableResults:value];
 }
 
-- (int)numberOfAvailableResults;
-{
-    return availableResults;
-}
+- (int)numberOfAvailableResults { return [server numberOfAvailableResults]; }
 
-- (BOOL)canGetMoreResults;
+- (BOOL)hasMoreResults;
 {
-    return [self isRetrieving] == NO && ([self numberOfAvailableResults] > [self count] || ([NSString isEmptyString:[self searchTerm]] == NO && publications == nil));
+    return [server numberOfAvailableResults] > [server numberOfFetchedResults];
 }
 
 @end

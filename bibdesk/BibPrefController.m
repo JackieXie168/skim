@@ -296,6 +296,7 @@ NSString *BDSKSharedGroupUpdatedNotification = @"BDSKSharedGroupUpdatedNotificat
 NSString *BDSKSharingNameChangedNotification = @"BDSKSharingNameChangedNotification";
 NSString *BDSKURLGroupUpdatedNotification = @"BDSKURLGroupUpdatedNotification";
 NSString *BDSKScriptGroupUpdatedNotification = @"BDSKScriptGroupUpdatedNotification";
+NSString *BDSKSearchGroupUpdatedNotification = @"BDSKSearchGroupUpdatedNotification";
 NSString *BDSKDidAddRemoveGroupNotification = @"BDSKDidAddRemoveGroupNotification";
 NSString *BDSKWillAddRemoveGroupNotification = @"BDSKWillAddRemoveGroupNotification";
 NSString *BDSKClientConnectionsChangedNotification = @"BDSKClientConnectionsChangedNotification";

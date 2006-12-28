@@ -189,6 +189,8 @@
 		CE11AC0A0AE7E0DC008C47AC /* BDSKScriptGroup.h in Headers */ = {isa = PBXBuildFile; fileRef = CE11AC080AE7E0DC008C47AC /* BDSKScriptGroup.h */; };
 		CE11AC0B0AE7E0DC008C47AC /* BDSKScriptGroup.m in Sources */ = {isa = PBXBuildFile; fileRef = CE11AC090AE7E0DC008C47AC /* BDSKScriptGroup.m */; };
 		CE11B0060AE8FD53008C47AC /* scriptFolderIcon.tiff in Resources */ = {isa = PBXBuildFile; fileRef = CE11B0050AE8FD53008C47AC /* scriptFolderIcon.tiff */; };
+		CE129A170B44088900416D19 /* BDSKEntrezGroupServer.h in Headers */ = {isa = PBXBuildFile; fileRef = CE129A150B44088900416D19 /* BDSKEntrezGroupServer.h */; };
+		CE129A180B44088900416D19 /* BDSKEntrezGroupServer.m in Sources */ = {isa = PBXBuildFile; fileRef = CE129A160B44088900416D19 /* BDSKEntrezGroupServer.m */; };
 		CE15C0D70AA5B9A3002C555F /* BDSKErrorManager.h in Headers */ = {isa = PBXBuildFile; fileRef = CE15C0D50AA5B9A3002C555F /* BDSKErrorManager.h */; };
 		CE15C0D80AA5B9A3002C555F /* BDSKErrorManager.m in Sources */ = {isa = PBXBuildFile; fileRef = CE15C0D60AA5B9A3002C555F /* BDSKErrorManager.m */; };
 		CE1A7F40090BEC3800ACC864 /* BDSKHeaderPopUpButtonCell.h in Headers */ = {isa = PBXBuildFile; fileRef = CE1A7ED4090BDEB600ACC864 /* BDSKHeaderPopUpButtonCell.h */; };
@@ -663,8 +665,8 @@
 		F9B800950B41DFAF00A5A615 /* BDSKSearchGroupSheetController.m in Sources */ = {isa = PBXBuildFile; fileRef = F9B800930B41DFAF00A5A615 /* BDSKSearchGroupSheetController.m */; };
 		F9B801840B41E89500A5A615 /* yaz.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F9B801830B41E89500A5A615 /* yaz.framework */; };
 		F9B801930B41E8D600A5A615 /* yaz.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = F9B801830B41E89500A5A615 /* yaz.framework */; };
-		F9B8019E0B41E91F00A5A615 /* BDSKZoomGroup.h in Headers */ = {isa = PBXBuildFile; fileRef = F9B8019C0B41E91F00A5A615 /* BDSKZoomGroup.h */; };
-		F9B8019F0B41E91F00A5A615 /* BDSKZoomGroup.m in Sources */ = {isa = PBXBuildFile; fileRef = F9B8019D0B41E91F00A5A615 /* BDSKZoomGroup.m */; };
+		F9B8019E0B41E91F00A5A615 /* BDSKZoomGroupServer.h in Headers */ = {isa = PBXBuildFile; fileRef = F9B8019C0B41E91F00A5A615 /* BDSKZoomGroupServer.h */; };
+		F9B8019F0B41E91F00A5A615 /* BDSKZoomGroupServer.m in Sources */ = {isa = PBXBuildFile; fileRef = F9B8019D0B41E91F00A5A615 /* BDSKZoomGroupServer.m */; };
 		F9CE58EC0842411D0072DF55 /* ArrowImage.tiff in Resources */ = {isa = PBXBuildFile; fileRef = F9CE58EB0842411D0072DF55 /* ArrowImage.tiff */; };
 		F9CEFCBB0A90090B00A0E54E /* BDSKOrphanedFileServer.h in Headers */ = {isa = PBXBuildFile; fileRef = F9CEFCB90A90090B00A0E54E /* BDSKOrphanedFileServer.h */; };
 		F9CEFCBC0A90090B00A0E54E /* BDSKOrphanedFileServer.m in Sources */ = {isa = PBXBuildFile; fileRef = F9CEFCBA0A90090B00A0E54E /* BDSKOrphanedFileServer.m */; };
@@ -1072,6 +1074,8 @@
 		CE11AC080AE7E0DC008C47AC /* BDSKScriptGroup.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BDSKScriptGroup.h; sourceTree = "<group>"; };
 		CE11AC090AE7E0DC008C47AC /* BDSKScriptGroup.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BDSKScriptGroup.m; sourceTree = "<group>"; };
 		CE11B0050AE8FD53008C47AC /* scriptFolderIcon.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; name = scriptFolderIcon.tiff; path = Images/scriptFolderIcon.tiff; sourceTree = "<group>"; };
+		CE129A150B44088900416D19 /* BDSKEntrezGroupServer.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = BDSKEntrezGroupServer.h; sourceTree = "<group>"; };
+		CE129A160B44088900416D19 /* BDSKEntrezGroupServer.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = BDSKEntrezGroupServer.m; sourceTree = "<group>"; };
 		CE15C0D50AA5B9A3002C555F /* BDSKErrorManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BDSKErrorManager.h; sourceTree = "<group>"; };
 		CE15C0D60AA5B9A3002C555F /* BDSKErrorManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BDSKErrorManager.m; sourceTree = "<group>"; };
 		CE1A7ED4090BDEB600ACC864 /* BDSKHeaderPopUpButtonCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BDSKHeaderPopUpButtonCell.h; sourceTree = "<group>"; };
@@ -1545,8 +1549,8 @@
 		F9B800920B41DFAF00A5A615 /* BDSKSearchGroupSheetController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BDSKSearchGroupSheetController.h; sourceTree = "<group>"; };
 		F9B800930B41DFAF00A5A615 /* BDSKSearchGroupSheetController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BDSKSearchGroupSheetController.m; sourceTree = "<group>"; };
 		F9B801830B41E89500A5A615 /* yaz.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = yaz.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		F9B8019C0B41E91F00A5A615 /* BDSKZoomGroup.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BDSKZoomGroup.h; sourceTree = "<group>"; };
-		F9B8019D0B41E91F00A5A615 /* BDSKZoomGroup.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BDSKZoomGroup.m; sourceTree = "<group>"; };
+		F9B8019C0B41E91F00A5A615 /* BDSKZoomGroupServer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BDSKZoomGroupServer.h; sourceTree = "<group>"; };
+		F9B8019D0B41E91F00A5A615 /* BDSKZoomGroupServer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BDSKZoomGroupServer.m; sourceTree = "<group>"; };
 		F9B9E17E089479FC00C21B17 /* Quartz.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Quartz.framework; path = /System/Library/Frameworks/Quartz.framework; sourceTree = "<absolute>"; };
 		F9CE58EB0842411D0072DF55 /* ArrowImage.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; name = ArrowImage.tiff; path = Images/ArrowImage.tiff; sourceTree = "<group>"; };
 		F9CEFCB90A90090B00A0E54E /* BDSKOrphanedFileServer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BDSKOrphanedFileServer.h; sourceTree = "<group>"; };
@@ -2019,6 +2023,7 @@
 				2730077807CF20B500F2E485 /* BDSKComplexString.m */,
 				CE38FB83091D946900BCB69D /* BDSKCondition.m */,
 				F96769FF0916B63900B42F6A /* BDSKCountedSet.m */,
+				CE129A160B44088900416D19 /* BDSKEntrezGroupServer.m */,
 				F9E5F6D80A96ABF1004A6D79 /* BDSKFile.m */,
 				CE38FB8B091D94A100BCB69D /* BDSKFilter.m */,
 				CE21D10909208B9D0075E607 /* BDSKGroup.m */,
@@ -2044,7 +2049,7 @@
 				F9022C60075802E300C3F701 /* BibAuthor.m */,
 				F9022C6E075802E300C3F701 /* BibItem.m */,
 				F925352808FDFAE40045D563 /* BDSKSearchResult.m */,
-				F9B8019D0B41E91F00A5A615 /* BDSKZoomGroup.m */,
+				F9B8019D0B41E91F00A5A615 /* BDSKZoomGroupServer.m */,
 				F91F284709A661A700419960 /* PDFMetadata.m */,
 			);
 			name = Data;
@@ -2281,6 +2286,7 @@
 				F9022C420758027800C3F701 /* BDSKDragWindow.h */,
 				CE28373F0917D31D006B4C63 /* BDSKEdgeView.h */,
 				F941135209B549BF00EE8463 /* BDSKEditorTextView.h */,
+				CE129A150B44088900416D19 /* BDSKEntrezGroupServer.h */,
 				CE35DCE70A99B1A700029B66 /* BDSKErrorEditor.h */,
 				CE15C0D50AA5B9A3002C555F /* BDSKErrorManager.h */,
 				F9E43AD508AD8BDB00A0354B /* BDSKErrorObjectController.h */,
@@ -2380,7 +2386,7 @@
 				F9E069B40981A03B00AEFBE7 /* BDSKWebOfScienceParser.h */,
 				F98F33C80892D4B700C1427D /* BDSKZoomablePDFView.h */,
 				CE27D9590AF92BFD00419879 /* BDSKZoomableTextView.h */,
-				F9B8019C0B41E91F00A5A615 /* BDSKZoomGroup.h */,
+				F9B8019C0B41E91F00A5A615 /* BDSKZoomGroupServer.h */,
 				F9B800920B41DFAF00A5A615 /* BDSKSearchGroupSheetController.h */,
 				F920DAFA075C2B69000C5FCA /* BibAppController+Scripting.h */,
 				F9022C5D075802E300C3F701 /* BibAppController.h */,
@@ -2804,7 +2810,8 @@
 				CE34A5730B249E0B00755730 /* BDSKMARCParser.h in Headers */,
 				F94DB0F80B3E2FA1006F37A2 /* BDSKSearchGroup.h in Headers */,
 				F9B800940B41DFAF00A5A615 /* BDSKSearchGroupSheetController.h in Headers */,
-				F9B8019E0B41E91F00A5A615 /* BDSKZoomGroup.h in Headers */,
+				F9B8019E0B41E91F00A5A615 /* BDSKZoomGroupServer.h in Headers */,
+				CE129A170B44088900416D19 /* BDSKEntrezGroupServer.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -3612,7 +3619,8 @@
 				CE34A5740B249E0B00755730 /* BDSKMARCParser.m in Sources */,
 				F94DB0F90B3E2FA1006F37A2 /* BDSKSearchGroup.m in Sources */,
 				F9B800950B41DFAF00A5A615 /* BDSKSearchGroupSheetController.m in Sources */,
-				F9B8019F0B41E91F00A5A615 /* BDSKZoomGroup.m in Sources */,
+				F9B8019F0B41E91F00A5A615 /* BDSKZoomGroupServer.m in Sources */,
+				CE129A180B44088900416D19 /* BDSKEntrezGroupServer.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

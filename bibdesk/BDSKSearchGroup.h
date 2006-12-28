@@ -7,34 +7,64 @@
 //
 
 #import <Cocoa/Cocoa.h>
-#import "BDSKURLGroup.h"
+#import "BDSKGroup.h"
+#import "BDSKOwnerProtocol.h"
 
-@interface BDSKSearchGroup : BDSKURLGroup {
-    int maxResults;
-    int availableResults;
-    NSString *webEnv;     // cookie-like data returned by PubMed
-    NSString *queryKey;   // searchTerm as returned by PubMed
+enum {
+    BDSKSearchGroupEntrez,
+    BDSKSearchGroupZoom
+};
+
+@class BDSKSearchGroup;
+
+@protocol BDSKSearchGroupServer <NSObject>
+- (id)initWithGroup:(BDSKSearchGroup *)aGroup serverInfo:(NSDictionary *)info;
+- (NSDictionary *)serverInfo;
+- (void)setServerInfo:(NSDictionary *)info;
+- (void)setNumberOfAvailableResults:(int)value;
+- (int)numberOfAvailableResults;
+- (void)setNumberOfFetchedResults:(int)value;
+- (int)numberOfFetchedResults;
+- (BOOL)failedDownload;
+- (BOOL)isRetrieving;
+- (void)setNeedsReset:(BOOL)flag;
+- (BOOL)needsReset;
+- (void)retrievePublications;
+- (void)terminate;
+@end
+
+@interface BDSKSearchGroup : BDSKMutableGroup <BDSKOwner> {
+    BDSKPublicationsArray *publications;
+    BDSKMacroResolver *macroResolver;
+    int type;
     NSString *searchTerm; // passed in by caller
-    NSString *searchKey;  // unused
-    NSString *database; // passed in by caller
+    id<BDSKSearchGroupServer> server;
 }
 
 - (id)initWithName:(NSString *)aName;
-- (id)initWithName:(NSString *)aName database:(NSString *)aDb searchTerm:(NSString *)string;
+- (id)initWithType:(int)aType serverInfo:(NSDictionary *)info searchTerm:(NSString *)string;
+
+- (BDSKPublicationsArray *)publications;
+- (void)setPublications:(NSArray *)newPublications;
+- (void)addPublications:(NSArray *)newPublications;
+
+- (void)setType:(int)newType;
+- (int)type;
+
+- (void)setServerInfo:(NSDictionary *)info;
+- (NSDictionary *)serverInfo;
 
 - (void)setSearchTerm:(NSString *)aTerm;
 - (NSString *)searchTerm;
-- (void)setSearchKey:(NSString *)aKey;
-- (NSString *)searchKey;
-- (void)setDatabase:(NSString *)newDb;
-- (NSString *)database;
 
 - (void)setNumberOfAvailableResults:(int)value;
 - (int)numberOfAvailableResults;
 
-- (BOOL)canGetMoreResults;
+- (BOOL)hasMoreResults;
 
 - (void)search;
 - (void)searchNext;
+
+- (void)resetServer;
 
 @end
