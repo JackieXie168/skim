@@ -192,6 +192,8 @@
     return macroResolver;
 }
 
+- (NSUndoManager *)undoManager { return [super undoManager]; }
+
 - (NSURL *)fileURL { return nil; }
 
 - (NSString *)documentInfoForKey:(NSString *)key { return nil; }
