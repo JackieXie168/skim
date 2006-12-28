@@ -17,6 +17,8 @@
 
 - (id)initWithGroup:(BDSKSearchGroup *)aGroup serverInfo:(NSDictionary *)info;
 {
+    [BDSKZoomRecord setFallbackEncoding:NSISOLatin1StringEncoding];
+    
     self = [super init];
     if (self) {
         group = aGroup;
