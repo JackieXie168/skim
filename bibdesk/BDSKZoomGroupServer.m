@@ -34,7 +34,7 @@
 
 - (void)dealloc
 {
-    [self terminate];
+    group = nil;
     [connection release];
     [host release];
     [database release];
@@ -51,6 +51,11 @@
 // these are called on the main thread
 
 - (void)terminate
+{
+    [self stopDOServer];
+}
+
+- (void)stop
 {
     [[self serverOnServerThread] terminateConnection];
 }

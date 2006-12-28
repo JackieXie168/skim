@@ -67,7 +67,6 @@
 
 - (void)dealloc
 {
-    [self terminate];
     [database release];
     [filePath release];
     [super dealloc];
@@ -76,6 +75,11 @@
 #pragma mark BDSKSearchGroupServer protocol
 
 - (void)terminate;
+{
+    [self stop];
+}
+
+- (void)stop;
 {
     [URLDownload cancel];
     [URLDownload release];
