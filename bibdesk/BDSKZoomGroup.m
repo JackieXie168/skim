@@ -336,9 +336,11 @@ typedef struct _BDSKZoomGroupFlags {
             [pubs addObject:anItem];
     }
     
+    // set this flag before adding pubs, or the client will think we're still retrieving (and spinners don't stop)
+    OSAtomicCompareAndSwap32Barrier(1, 0, (int32_t *)&flags.isRetrieving);
+
     // this will create the array if it doesn't exist
     [[self serverOnMainThread] addPublicationsToGroup:pubs];
-    OSAtomicCompareAndSwap32Barrier(1, 0, (int32_t *)&flags.isRetrieving);
 }
 
 - (void)retrievePublications
