@@ -192,8 +192,6 @@
     return macroResolver;
 }
 
-- (NSUndoManager *)undoManager { return nil; }
-
 - (NSURL *)fileURL { return nil; }
 
 - (NSString *)documentInfoForKey:(NSString *)key { return nil; }
@@ -260,6 +258,8 @@
 
 - (void)setServerInfo:(NSDictionary *)info;
 {
+    [[[self undoManager] prepareWithInvocationTarget:self] setServerInfo:[self serverInfo]];
+
     int newType = [[info objectForKey:@"type"] intValue];
     if(newType != type){
         type = newType;
@@ -270,6 +270,8 @@
 
 - (void)setSearchTerm:(NSString *)aTerm;
 {
+    // should this be undoable?
+    
     if ([aTerm isEqualToString:searchTerm] == NO) {
         [searchTerm autorelease];
         searchTerm = [aTerm copy];
