@@ -58,10 +58,27 @@ static NSArray *entrezServers = nil;
 
 - (NSString *)windowNibName { return @"BDSKSearchGroupSheet"; }
 
+- (void)awakeFromNib
+{
+    BOOL isCustom = [serverPopup indexOfSelectedItem] == [serverPopup numberOfItems] - 1;
+    BOOL isZoom = type == BDSKSearchGroupZoom;
+    NSArray *servers = isZoom ? zoomServers : entrezServers;
+    
+    [addressField setEnabled:isCustom && isZoom];
+    [portField setEnabled:isCustom && isZoom];
+    [databaseField setEnabled:isCustom];
+    [userField setEnabled:isCustom && isZoom];
+    [passwordField setEnabled:isCustom && isZoom];
+    
+    [serverPopup removeAllItems];
+    [serverPopup addItemsWithTitles:[servers valueForKey:@"name"]];
+    [serverPopup addItemWithTitle:NSLocalizedString(@"Other", @"Popup menu item name for other search group server")];
+    [serverPopup selectItemAtIndex:0];
+}
+
 - (void)setDefaultValues{
     NSArray *servers = type == BDSKSearchGroupEntrez ? entrezServers : zoomServers;
     [serverPopup removeAllItems];
-    // !!! this will be a loop
     [serverPopup addItemsWithTitles:[servers valueForKey:@"name"]];
     [serverPopup addItemWithTitle:NSLocalizedString(@"Other", @"Popup menu item name for other search group server")];
     [serverPopup selectItemAtIndex:0];
@@ -82,17 +99,6 @@ static NSArray *entrezServers = nil;
     [passwordField setEnabled:NO];
 }
 
-- (void)awakeFromNib
-{
-    BOOL isCustom = [serverPopup indexOfSelectedItem] == [serverPopup numberOfItems] - 1;
-    BOOL isZoom = type == BDSKSearchGroupZoom;
-    [addressField setEnabled:isCustom && isZoom];
-    [portField setEnabled:isCustom && isZoom];
-    [databaseField setEnabled:isCustom];
-    [userField setEnabled:isCustom && isZoom];
-    [passwordField setEnabled:isCustom && isZoom];
-}
-
 - (BDSKSearchGroup *)group { return group; }
 
 - (IBAction)dismiss:(id)sender {
@@ -106,7 +112,7 @@ static NSArray *entrezServers = nil;
         NSMutableDictionary *serverInfo = [NSMutableDictionary dictionaryWithCapacity:6];
         [serverInfo setValue:[NSNumber numberWithInt:type] forKey:@"type"];
         [serverInfo setValue:[self database] forKey:@"database"];
-        if(type == BDSKSearchGroupEntrez){
+        if(type == BDSKSearchGroupZoom){
             [serverInfo setValue:[self address] forKey:@"host"];
             [serverInfo setValue:[self database] forKey:@"database"];
             [serverInfo setValue:[NSNumber numberWithInt:[self port]] forKey:@"port"];
