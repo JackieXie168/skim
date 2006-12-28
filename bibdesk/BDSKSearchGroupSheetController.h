@@ -19,12 +19,17 @@
     int type;
     NSUndoManager *undoManager;
     CFArrayRef editors;
+    NSString *username;
+    NSString *password;
     
     IBOutlet NSPopUpButton *serverPopup;
     IBOutlet NSTextField *addressField;
     IBOutlet NSTextField *portField;
     IBOutlet NSTextField *databaseField;
     IBOutlet NSMatrix *typematrix;
+    
+    IBOutlet NSSecureTextField *passwordField;
+    IBOutlet NSTextField *userField;
 }
 
 - (id)initWithGroup:(BDSKGroup *)aGroup;
@@ -43,5 +48,8 @@
 
 - (BOOL)commitEditing;
 - (NSUndoManager *)undoManager;
+
+- (void)setUsername:(NSString *)user;
+- (void)setPassword:(NSString *)pw;
 
 @end

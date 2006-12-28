@@ -7,8 +7,11 @@
             OUTLETS = {
                 addressField = NSTextField; 
                 databaseField = NSTextField; 
+                passwordField = NSSecureTextField; 
                 portField = NSTextField; 
                 serverPopup = NSPopUpButton; 
+                typematrix = NSMatrix; 
+                userField = NSTextField; 
             }; 
             SUPERCLASS = BDSKSheetController; 
         }, 

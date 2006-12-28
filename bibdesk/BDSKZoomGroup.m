@@ -24,6 +24,16 @@
 - (oneway void)downloadWithSearchTerm:(NSString *)searchTerm groupCount:(int)groupCount;
 - (void)setHost:(NSString *)aHost;
 - (void)setPort:(int)n;
+- (NSString *)host;
+- (int)port;
+- (void)setDatabase:(NSString *)dbase;
+- (NSString *)user;
+- (NSString *)pass;
+- (void)setUser:(NSString *)aUser;
+- (void)setPass:(NSString *)aPass;
+- (NSString *)database;
+- (BOOL)failedDownload;
+- (BOOL)isRetrieving;
 @end
 
 typedef struct _BDSKZoomGroupFlags {
@@ -38,6 +48,8 @@ typedef struct _BDSKZoomGroupFlags {
     BDSKZoomConnection *connection;
     NSString *host;
     int port;
+    NSString *user;
+    NSString *pass;
     NSString *database;
     int availableResults;
     BDSKZoomGroupFlags flags;
@@ -52,6 +64,10 @@ typedef struct _BDSKZoomGroupFlags {
 - (void)setDatabase:(NSString *)dbase;
 - (NSString *)host;
 - (int)port;
+- (NSString *)user;
+- (NSString *)pass;
+- (void)setUser:(NSString *)aUser;
+- (void)setPass:(NSString *)aPass;
 - (NSString *)database;
 - (BOOL)failedDownload;
 - (BOOL)isRetrieving;
@@ -253,9 +269,22 @@ typedef struct _BDSKZoomGroupFlags {
     [[server serverOnServerThread] setDatabase:dbase];
 }
 
-- (NSString *)host { return [server host]; }
-- (int)port { return [server port]; }
-- (NSString *)database { return [server database]; }
+- (void)setUser:(NSString *)user;
+{
+    [[server serverOnServerThread] setUser:user];
+}
+
+- (void)setPass:(NSString *)pass;
+{
+    [[server serverOnServerThread] setPass:pass];
+}
+
+- (NSString *)user { return [[server serverOnServerThread] user]; }
+- (NSString *)pass { return [[server serverOnServerThread] pass]; }
+
+- (NSString *)host { return [[server serverOnServerThread] host]; }
+- (int)port { return [(BDSKZoomGroupServer *)[server serverOnServerThread] port]; }
+- (NSString *)database { return [[server serverOnServerThread] database]; }
 
 @end
 
@@ -352,6 +381,10 @@ typedef struct _BDSKZoomGroupFlags {
 {
     [connection release];
     connection = [[BDSKZoomConnection alloc] initWithHost:[self host] port:[self port] database:[self database]];
+    if (pass)
+        [connection setOption:pass forKey:@"password"];
+    if (user)
+        [connection setOption:user forKey:@"user"];
     flags.needsReset = 0;
 } 
 
@@ -375,6 +408,20 @@ typedef struct _BDSKZoomGroupFlags {
     flags.needsReset = 1;
 }
 
+- (void)setUser:(NSString *)aUser;
+{
+    [user autorelease];
+    user = [aUser copy];
+}
+
+- (void)setPass:(NSString *)aPass;
+{
+    [pass autorelease];
+    pass = [aPass copy];
+}
+
+- (NSString *)pass { return [[pass retain] autorelease]; }
+- (NSString *)user { return [[user retain] autorelease]; }
 - (NSString *)host { return [[host retain] autorelease]; }
 - (int)port { return port; }
 - (NSString *)database { return [[database retain] autorelease]; }
