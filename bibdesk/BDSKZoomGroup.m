@@ -27,8 +27,9 @@
 @end
 
 typedef struct _BDSKZoomGroupFlags {
-    volatile int32_t isRetrieving __attribute__ ((aligned (4)));
+    volatile int32_t isRetrieving   __attribute__ ((aligned (4)));
     volatile int32_t failedDownload __attribute__ ((aligned (4)));
+    volatile int32_t needsReset     __attribute__ ((aligned (4)));
 } BDSKZoomGroupFlags;    
 
 @interface BDSKZoomGroupServer : BDSKAsynchronousDOServer
@@ -37,18 +38,21 @@ typedef struct _BDSKZoomGroupFlags {
     BDSKZoomConnection *connection;
     NSString *host;
     int port;
+    NSString *database;
     int availableResults;
     BDSKZoomGroupFlags flags;
 }
-- (id)initWithGroup:(BDSKZoomGroup *)aGroup host:(NSString *)hostname port:(int)n;
+- (id)initWithGroup:(BDSKZoomGroup *)aGroup host:(NSString *)hostname port:(int)n database:(NSString *)dbase;
 - (void)setNumberOfAvailableResults:(int)value;
 - (int)numberOfAvailableResults;
 - (void)retrievePublications;
 - (void)resetConnection;
 - (void)setHost:(NSString *)aHost;
 - (void)setPort:(int)n;
+- (void)setDatabase:(NSString *)dbase;
 - (NSString *)host;
 - (int)port;
+- (NSString *)database;
 - (BOOL)failedDownload;
 - (BOOL)isRetrieving;
 
@@ -59,11 +63,10 @@ typedef struct _BDSKZoomGroupFlags {
 
 - (id)initWithName:(NSString *)aName;
 {
-    self = [self initWithHost:aName port:0 searchTerm:nil];
-    return self;
+    return [self initWithHost:aName port:0 database:nil searchTerm:nil];
 }
 
-- (id)initWithHost:(NSString *)hostname port:(int)num searchTerm:(NSString *)string;
+- (id)initWithHost:(NSString *)hostname port:(int)num database:(NSString *)dbase searchTerm:(NSString *)string;
 {
     
     [BDSKZoomRecord setFallbackEncoding:NSISOLatin1StringEncoding];
@@ -72,7 +75,7 @@ typedef struct _BDSKZoomGroupFlags {
     if (self) {
         searchTerm = [string copy];
         macroResolver = [[BDSKMacroResolver alloc] initWithOwner:self];
-        server = [[BDSKZoomGroupServer alloc] initWithGroup:self host:hostname port:num];
+        server = [[BDSKZoomGroupServer alloc] initWithGroup:self host:hostname port:num database:dbase];
     }
     return self;
 }
@@ -82,7 +85,8 @@ typedef struct _BDSKZoomGroupFlags {
     NSString *aHostName = [[groupDict objectForKey:@"host name"] stringByUnescapingGroupPlistEntities];
     int aPort = [[groupDict objectForKey:@"port"] intValue];
     NSString *aSearchTerm = [[groupDict objectForKey:@"search term"] stringByUnescapingGroupPlistEntities];
-    self = [self initWithHost:aHostName port:aPort searchTerm:aSearchTerm];
+    NSString *dbase = [[groupDict objectForKey:@"database"] stringByUnescapingGroupPlistEntities];
+    self = [self initWithHost:aHostName port:aPort database:dbase searchTerm:aSearchTerm];
     return self;
 }
 
@@ -91,7 +95,8 @@ typedef struct _BDSKZoomGroupFlags {
     NSString *aHostName = [[self host] stringByEscapingGroupPlistEntities];
     NSString *aSearchTerm = [[self searchTerm] stringByEscapingGroupPlistEntities];
     NSNumber *aPort = [NSNumber numberWithInt:[self port]];
-    return [NSDictionary dictionaryWithObjectsAndKeys:aName, @"group name", aHostName, @"host name", aPort, @"port", aSearchTerm, @"search term", nil];
+    NSString *dbase = [[self database] stringByEscapingGroupPlistEntities];
+    return [NSDictionary dictionaryWithObjectsAndKeys:aName, @"group name", aHostName, @"host name", aPort, @"port", aSearchTerm, @"search term", dbase, @"database", nil];
 }
 
 - (void)dealloc
@@ -241,25 +246,33 @@ typedef struct _BDSKZoomGroupFlags {
 
 - (void)setPort:(int)n { 
     [[server serverOnServerThread] setPort:n]; 
-}    
+}   
+
+- (void)setDatabase:(NSString *)dbase;
+{
+    [[server serverOnServerThread] setDatabase:dbase];
+}
 
 - (NSString *)host { return [server host]; }
 - (int)port { return [server port]; }
+- (NSString *)database { return [server database]; }
 
 @end
 
 @implementation BDSKZoomGroupServer
 
-- (id)initWithGroup:(BDSKZoomGroup *)aGroup host:(NSString *)hostname port:(int)n;
+- (id)initWithGroup:(BDSKZoomGroup *)aGroup host:(NSString *)hostname port:(int)n database:(NSString *)dbase;
 {
     self = [super init];
     if (self) {
         group = aGroup;
         host = [hostname copy];
         port = n;
+        database = [dbase copy];
         [self resetConnection];
         flags.failedDownload = 0;
         flags.isRetrieving = 0;
+        flags.needsReset = 0;
         [self setNumberOfAvailableResults:0];
     }
     return self;
@@ -268,6 +281,7 @@ typedef struct _BDSKZoomGroupFlags {
 - (void)dealloc
 {
     [host release];
+    [database release];
     [connection release];
     [super dealloc];
 }
@@ -294,6 +308,10 @@ typedef struct _BDSKZoomGroupFlags {
 {
     OSAtomicCompareAndSwap32Barrier(0, 1, (int32_t *)&flags.isRetrieving);
     OSAtomicCompareAndSwap32Barrier(1, 0, (int32_t *)&flags.failedDownload);
+    
+    // only reset the connection when we're actually going to use it, since a mixed host/database/port won't work
+    if (flags.needsReset)
+        [self resetConnection];
     
     BDSKZoomResultSet *resultSet = [connection resultsForCCLQuery:searchTerm];
     
@@ -331,24 +349,33 @@ typedef struct _BDSKZoomGroupFlags {
 - (void)resetConnection;
 {
     [connection release];
-    connection = [[BDSKZoomConnection alloc] initWithHost:host port:port];
+    connection = [[BDSKZoomConnection alloc] initWithHost:[self host] port:[self port] database:[self database]];
+    flags.needsReset = 0;
 } 
 
 - (void)setHost:(NSString *)aHost;
 {
     [host autorelease];
     host = [aHost copy];
-    [self resetConnection];
+    flags.needsReset = 1;
 }
 
 - (void)setPort:(int)n;
 { 
     port = n; 
-    [self resetConnection];
+    flags.needsReset = 1;
 }    
+
+- (void)setDatabase:(NSString *)dbase;
+{
+    [database release];
+    database = [dbase copy];
+    flags.needsReset = 1;
+}
 
 - (NSString *)host { return [[host retain] autorelease]; }
 - (int)port { return port; }
+- (NSString *)database { return [[database retain] autorelease]; }
 
 - (BOOL)failedDownload { return 1 == flags.failedDownload; }
 - (BOOL)isRetrieving { return 1 == flags.isRetrieving; }
