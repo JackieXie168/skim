@@ -108,6 +108,8 @@
 */
 - (IBAction)editPubCmd:(id)sender;
 
+- (void)editPublications:(NSArray *)pubs;
+
 /*!
     @method editPub
     @abstract Opens the edit window
