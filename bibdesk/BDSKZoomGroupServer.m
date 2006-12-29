@@ -11,8 +11,7 @@
 #import "BDSKStringParser.h"
 #import "BDSKThreadSafeMutableDictionary.h"
 
-// !!! maximum download of 25 is low, but this is really slow for some reason, at least using my canonical "bob dylan" search
-#define MAX_RESULTS 25
+#define MAX_RESULTS 100
 
 @implementation BDSKZoomGroupServer
 
