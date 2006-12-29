@@ -30,6 +30,7 @@
         flags.needsReset = 1;
         availableResults = 0;
         fetchedResults = 0;
+        pthread_rwlock_init(&infolock, NULL);
     }
     return self;
 }
@@ -37,11 +38,14 @@
 - (void)dealloc
 {
     group = nil;
-    [connection release];
-    [host release];
-    [database release];
-    [user release];
-    [password release];
+    [connection release], connection = nil;
+    pthread_rwlock_wrlock(&infolock);
+    [host release], host = nil;
+    [database release], database = nil;
+    [user release], user = nil;
+    [password release], password = nil;
+    pthread_rwlock_unlock(&infolock);
+    pthread_rwlock_destroy(&infolock);
     [super dealloc];
 }
 
@@ -76,22 +80,22 @@
 // @@ should the password/username be included in the serverInfo?
 - (void)setServerInfo:(NSDictionary *)info;
 {
-    [[self serverOnServerThread] setHost:[info objectForKey:@"host"]];
-    [[self serverOnServerThread] setPort:[[info objectForKey:@"port"] intValue]];
-    [[self serverOnServerThread] setDatabase:[info objectForKey:@"database"]];
-    [[self serverOnServerThread] setPassword:[info objectForKey:@"password"]];
-    [[self serverOnServerThread] setUser:[info objectForKey:@"username"]];
+    [self setHost:[info objectForKey:@"host"]];
+    [self setPort:[[info objectForKey:@"port"] intValue]];
+    [self setDatabase:[info objectForKey:@"database"]];
+    [self setPassword:[info objectForKey:@"password"]];
+    [self setUser:[info objectForKey:@"username"]];
 }
 
 - (NSDictionary *)serverInfo;
 {
     NSMutableDictionary *info = [NSMutableDictionary dictionaryWithCapacity:3];
     [info setValue:[NSNumber numberWithInt:BDSKSearchGroupZoom] forKey:@"type"];
-    [info setValue:[[self serverOnServerThread] host] forKey:@"host"];
-    [info setValue:[NSNumber numberWithInt:[(BDSKZoomGroupServer *)[self serverOnServerThread] port]] forKey:@"port"];
-    [info setValue:[[self serverOnServerThread] database] forKey:@"database"];
-    [info setValue:[[self serverOnServerThread] password] forKey:@"password"];
-    [info setValue:[[self serverOnServerThread] user] forKey:@"username"];
+    [info setValue:[self host] forKey:@"host"];
+    [info setValue:[NSNumber numberWithInt:[(BDSKZoomGroupServer *)self port]] forKey:@"port"];
+    [info setValue:[self database] forKey:@"database"];
+    [info setValue:[self password] forKey:@"password"];
+    [info setValue:[self user] forKey:@"username"];
     return info;
 }
 
@@ -119,8 +123,9 @@
 
 - (BOOL)isRetrieving { return 1 == flags.isRetrieving; }
 
-- (void)setNeedsReset:(BOOL)flag { 
-    OSAtomicCompareAndSwap32Barrier(1-flag, flag, (int32_t *)&flags.needsReset);
+- (void)setNeedsReset:(BOOL)flag {
+    int32_t new = flag ? 1 : 0, old = flag ? 0 : 1;
+    OSAtomicCompareAndSwap32Barrier(old, new, (int32_t *)&flags.needsReset);
 }
 
 - (BOOL)needsReset { return 1 == flags.needsReset; }
@@ -138,11 +143,13 @@
 {
     [connection release];
     connection = [[BDSKZoomConnection alloc] initWithHost:[self host] port:[self port] database:[self database]];
-    if (password)
-        [connection setOption:password forKey:@"password"];
-    if (user)
-        [connection setOption:user forKey:@"user"];
-    flags.needsReset = 0;
+    NSString *value = [self password];
+    if ([NSString isEmptyString:value] == NO)
+        [connection setOption:value forKey:@"password"];
+    value = [self user];
+    if ([NSString isEmptyString:value] == NO)
+        [connection setOption:value forKey:@"user"];
+    OSAtomicCompareAndSwap32Barrier(1, 0, (int32_t *)&flags.needsReset);
     [self setNumberOfAvailableResults:0];
     [self setNumberOfFetchedResults:0];
 } 
@@ -151,8 +158,8 @@
 {
     [connection release];
     connection = nil;
-    flags.needsReset = 1;
-    flags.isRetrieving = 0;
+    OSAtomicCompareAndSwap32Barrier(0, 1, (int32_t *)&flags.needsReset);
+    OSAtomicCompareAndSwap32Barrier(1, 0, (int32_t *)&flags.isRetrieving);
 } 
 
 - (oneway void)downloadWithSearchTerm:(NSString *)searchTerm;
@@ -223,44 +230,79 @@
 
 - (void)setHost:(NSString *)aHost;
 {
+    pthread_rwlock_wrlock(&infolock);
     [host autorelease];
     host = [aHost copy];
-    flags.needsReset = 1;
+    pthread_rwlock_unlock(&infolock);
+    OSAtomicCompareAndSwap32Barrier(0, 1, (int32_t *)&flags.needsReset);
 }
 
-- (NSString *)host { return [[host retain] autorelease]; }
+- (NSString *)host {
+    pthread_rwlock_rdlock(&infolock);
+    NSString *aHost = [[host retain] autorelease];
+    pthread_rwlock_unlock(&infolock);
+    return aHost;
+}
 
 - (void)setPort:(int)n;
 { 
+    pthread_rwlock_wrlock(&infolock);
     port = n; 
-    flags.needsReset = 1;
+    pthread_rwlock_unlock(&infolock);
+    OSAtomicCompareAndSwap32Barrier(0, 1, (int32_t *)&flags.needsReset);
 }    
 
-- (int)port { return port; }
+- (int)port {
+    pthread_rwlock_rdlock(&infolock);
+    int n = port;
+    pthread_rwlock_unlock(&infolock);
+    return n;
+}
 
 - (void)setDatabase:(NSString *)dbase;
 {
+    pthread_rwlock_wrlock(&infolock);
     [database release];
     database = [dbase copy];
-    flags.needsReset = 1;
+    pthread_rwlock_unlock(&infolock);
+    OSAtomicCompareAndSwap32Barrier(0, 1, (int32_t *)&flags.needsReset);
 }
 
-- (NSString *)database { return [[database retain] autorelease]; }
+- (NSString *)database {
+    pthread_rwlock_rdlock(&infolock);
+    NSString *dbase = [[database retain] autorelease];
+    pthread_rwlock_unlock(&infolock);
+    return dbase;
+}
 
 - (void)setUser:(NSString *)aUser;
 {
+    pthread_rwlock_wrlock(&infolock);
     [user autorelease];
     user = [aUser copy];
+    pthread_rwlock_unlock(&infolock);
 }
 
-- (NSString *)user { return [[user retain] autorelease]; }
+- (NSString *)user {
+    pthread_rwlock_rdlock(&infolock);
+    NSString *aUser = [[user retain] autorelease];
+    pthread_rwlock_unlock(&infolock);
+    return aUser;
+}
 
 - (void)setPassword:(NSString *)aPassword;
 {
+    pthread_rwlock_wrlock(&infolock);
     [password autorelease];
     password = [aPassword copy];
+    pthread_rwlock_unlock(&infolock);
 }
 
-- (NSString *)password { return [[password retain] autorelease]; }
+- (NSString *)password { 
+    pthread_rwlock_rdlock(&infolock);
+    NSString *aPassword = [[password retain] autorelease];
+    pthread_rwlock_unlock(&infolock);
+    return aPassword;
+}
 
 @end
