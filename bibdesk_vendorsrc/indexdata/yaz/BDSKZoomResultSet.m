@@ -61,7 +61,7 @@
 
 - (NSArray *)recordsInRange:(NSRange)range;
 {
-    unsigned count = range.length, start = range.location;
+    unsigned count = range.length;
 
     if (count)
         NSParameterAssert(NSMaxRange(range) < [self countOfRecords]);
@@ -72,11 +72,11 @@
     BDSKZoomRecord *record;
     unsigned i;
     
-    memset(recs, 0, count * sizeof(ZOOM_record));
-    ZOOM_resultset_records(_resultSet, recs, start, count);
+    memset(recs, 0, sizeof(ZOOM_record) * count);
+    ZOOM_resultset_records(_resultSet, recs, range.location, count);
     
     for (i = 0; i < count; i++) {
-        if (record = [[BDSKZoomRecord allocWithZone:zone] initWithZoomRecord:recs[start + i]])
+        if (record = [[BDSKZoomRecord allocWithZone:zone] initWithZoomRecord:recs[i]])
             [array addObject:record];
         [record release];
     }
