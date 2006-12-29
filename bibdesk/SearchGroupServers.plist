@@ -16,7 +16,7 @@
         { name = UniSTS; database = unists; }
     ),
     (
-        { name = "Library of Congress"; database = Voyager; host = "z3950.loc.gov"; port = 7090; },
-        { name = "University of Southern California"; database = unicorn; host = "128.125.19.173"; port = 2200; },
+        { name = "Library of Congress"; database = Voyager; host = "z3950.loc.gov"; port = "7090"; },
+        { name = "University of Southern California"; database = unicorn; host = "128.125.19.173"; port = "2200"; },
     )
 )

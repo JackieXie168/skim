@@ -15,7 +15,7 @@
     BDSKSearchGroup *group;
     NSString *address;
     NSString *database;
-    int port;
+    NSString *port;
     int type;
     NSUndoManager *undoManager;
     CFArrayRef editors;
@@ -42,8 +42,8 @@
 - (NSString *)database;
 - (void)setDatabase:(NSString *)newDb;
 
-- (int)port;
-- (void)setPort:(int)newPort;
+- (NSString *)port;
+- (void)setPort:(NSString *)newPort;
 
 - (NSString *)username;
 - (void)setUsername:(NSString *)user;
