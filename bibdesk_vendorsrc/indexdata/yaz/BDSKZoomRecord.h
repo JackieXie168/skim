@@ -25,6 +25,7 @@ typedef enum {
 }
 
 + (NSArray *)validKeys;
++ (NSString *)stringWithSyntaxType:(BDSKZoomSyntaxType)type;
 
 // encoding of 0 (not used) means that only UTF-8 will be tried
 + (void)setFallbackEncoding:(NSStringEncoding)enc;
