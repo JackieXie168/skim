@@ -165,7 +165,13 @@ static NSArray *searchGroupServers = nil;
 
 - (BOOL)validateAddress:(id *)value error:(NSError **)error {
     NSString *string = *value;
-    NSRange range = [string rangeOfString:@"/"];
+    NSRange range = [string rangeOfString:@"://"];
+    if(range.location != NSNotFound){
+        // ZOOM gets confused when the host has a protocol
+        string = [string substringFromIndex:NSMaxRange(range)];
+    }
+    // split address:port/dbase in components
+    range = [string rangeOfString:@"/"];
     if(range.location != NSNotFound){
         [self setDatabase:[string substringFromIndex:NSMaxRange(range)]];
         [databaseField setStringValue:database];
