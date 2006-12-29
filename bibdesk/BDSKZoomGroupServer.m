@@ -23,7 +23,7 @@
     self = [super init];
     if (self) {
         group = aGroup;
-        serverInfo = [[BDSKThreadSafeMutableDictionary alloc] initWithCapacity:4];
+        serverInfo = [[BDSKThreadSafeMutableDictionary alloc] initWithDictionary:info];
         flags.failedDownload = 0;
         flags.isRetrieving = 0;
         flags.needsReset = 1;
@@ -74,7 +74,7 @@
 - (void)setServerInfo:(NSDictionary *)info;
 {
     [serverInfo setDictionary:info];
-    [serverInfo setObject:[NSNumber numberWithInt:BDSKSearchGroupZoom] forKey:@"type"];
+    [serverInfo setObject:[NSNumber numberWithInt:BDSKSearchGroupZoom] forKey:@"type"];NSLog(@"%@",serverInfo);
     OSAtomicCompareAndSwap32Barrier(0, 1, (int32_t *)&flags.needsReset);
 }
 
@@ -124,13 +124,19 @@
     NSString *password = [serverInfo objectForKey:@"password"];
     NSString *user = [serverInfo objectForKey:@"username"];
     
+    OBASSERT(host != nil);
+    
     [connection release];
-    connection = [[BDSKZoomConnection alloc] initWithHost:host port:port database:database];
-    if ([NSString isEmptyString:password] == NO)
-        [connection setOption:password forKey:@"password"];
-    if ([NSString isEmptyString:user] == NO)
-        [connection setOption:user forKey:@"user"];
-    OSAtomicCompareAndSwap32Barrier(1, 0, (int32_t *)&flags.needsReset);
+    if (host != nil) {
+        connection = [[BDSKZoomConnection alloc] initWithHost:host port:port database:database];
+        if ([NSString isEmptyString:password] == NO)
+            [connection setOption:password forKey:@"password"];
+        if ([NSString isEmptyString:user] == NO)
+            [connection setOption:user forKey:@"user"];
+        OSAtomicCompareAndSwap32Barrier(1, 0, (int32_t *)&flags.needsReset);
+    }else {
+        connection = nil;
+    }
     [self setNumberOfAvailableResults:0];
     [self setNumberOfFetchedResults:0];
 } 
