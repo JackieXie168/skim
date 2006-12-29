@@ -64,7 +64,7 @@
     unsigned count = range.length;
 
     if (count)
-        NSParameterAssert(NSMaxRange(range) < [self countOfRecords]);
+        NSParameterAssert(NSMaxRange(range) <= [self countOfRecords]);
     
     NSMutableArray *array = [NSMutableArray arrayWithCapacity:count];
     NSZone *zone = [self zone];
