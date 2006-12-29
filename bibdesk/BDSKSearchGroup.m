@@ -34,6 +34,7 @@
         publications = nil;
         macroResolver = [[BDSKMacroResolver alloc] initWithOwner:self];
         [self resetServerWithInfo:info];
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(applicationWillTerminate:) name:NSApplicationWillTerminateNotification object:nil];
     }
     return self;
 }
@@ -92,6 +93,7 @@
 
 - (void)dealloc
 {
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
     [publications makeObjectsPerformSelector:@selector(setOwner:) withObject:nil];
     [server terminate];
     [server release];
@@ -110,6 +112,12 @@
 - (NSString *)description;
 {
     return [NSString stringWithFormat:@"<%@ %p>: {\n\tis downloading: %@\n\tname: %@\ntype: %i\nserverInfo: %@\n }", [self class], self, ([self isRetrieving] ? @"yes" : @"no"), [self name], [self type], [self serverInfo]];
+}
+
+- (void)applicationWillTerminate:(NSNotification *)aNotification{
+    [server terminate];
+    [server release];
+    server = nil;
 }
 
 #pragma mark BDSKGroup overrides
