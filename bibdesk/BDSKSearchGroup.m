@@ -226,9 +226,10 @@
     if ([self isRetrieving])
         return;
     
+    // call this also for empty searchTerm, so the server can reset itself
+    [server retrievePublications];
+    
     if ([NSString isEmptyString:[self searchTerm]] == NO) {
-        [server retrievePublications];
-        
         // use this to notify the tableview to start the progress indicators and disable the button
         NSDictionary *userInfo = [NSDictionary dictionaryWithObject:[NSNumber numberWithBool:NO] forKey:@"succeeded"];
         [[NSNotificationCenter defaultCenter] postNotificationName:BDSKSearchGroupUpdatedNotification object:self userInfo:userInfo];

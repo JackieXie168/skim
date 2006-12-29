@@ -155,35 +155,37 @@
     if (flags.needsReset)
         [self resetConnection];
     
-    // the resultSet is cached for each searchTerm, so we have no overhead calling it for retrieving more results
-    BDSKZoomResultSet *resultSet = [connection resultsForCCLQuery:searchTerm];
-    
-    if (nil == resultSet)
-        OSAtomicCompareAndSwap32Barrier(0, 1, (int32_t *)&flags.failedDownload);
-    
-    [self setAvailableResults:[resultSet countOfRecords]];
-    
-    int numResults = MIN([self availableResults] - [self fetchedResults], MAX_RESULTS);
-    //NSAssert(numResults >= 0, @"number of results to get must be non-negative");
-    
     NSMutableArray *pubs = nil;
     
-    if(numResults > 0){
-        NSArray *records = [resultSet recordsInRange:NSMakeRange([self fetchedResults], numResults)];
+    if(NO == [NSString isEmptyString:searchTerm]){
+        // the resultSet is cached for each searchTerm, so we have no overhead calling it for retrieving more results
+        BDSKZoomResultSet *resultSet = [connection resultsForCCLQuery:searchTerm];
         
-        [self setFetchedResults:[self fetchedResults] + numResults];
+        if (nil == resultSet)
+            OSAtomicCompareAndSwap32Barrier(0, 1, (int32_t *)&flags.failedDownload);
         
-        pubs = [NSMutableArray array];
-        BDSKZoomRecord *record;
-        int i, iMax = [records count];
-        for (i = 0; i < iMax; i++) {
-            record = [records objectAtIndex:i];
-            BibItem *anItem = [[BDSKStringParser itemsFromString:[record rawString] error:NULL] lastObject];
-            if (anItem)
-                [pubs addObject:anItem];
+        [self setAvailableResults:[resultSet countOfRecords]];
+        
+        int numResults = MIN([self availableResults] - [self fetchedResults], MAX_RESULTS);
+        //NSAssert(numResults >= 0, @"number of results to get must be non-negative");
+        
+        if(numResults > 0){
+            NSArray *records = [resultSet recordsInRange:NSMakeRange([self fetchedResults], numResults)];
+            
+            [self setFetchedResults:[self fetchedResults] + numResults];
+            
+            pubs = [NSMutableArray array];
+            BDSKZoomRecord *record;
+            int i, iMax = [records count];
+            for (i = 0; i < iMax; i++) {
+                record = [records objectAtIndex:i];
+                BibItem *anItem = [[BDSKStringParser itemsFromString:[record rawString] error:NULL] lastObject];
+                if (anItem)
+                    [pubs addObject:anItem];
+            }
         }
+        
     }
-    
     // set this flag before adding pubs, or the client will think we're still retrieving (and spinners don't stop)
     OSAtomicCompareAndSwap32Barrier(1, 0, (int32_t *)&flags.isRetrieving);
 

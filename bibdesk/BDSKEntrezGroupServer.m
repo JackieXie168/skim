@@ -171,44 +171,47 @@
 - (void)resetSearch;
 {
     [self setSearchTerm:[group searchTerm]];
-    
-    // get the initial XML document with our search parameters in it
-    NSString *esearch = [[[self class] baseURLString] stringByAppendingFormat:@"/esearch.fcgi?db=%@&retmax=1&usehistory=y&term=%@&tool=bibdesk", [self database], [[self searchTerm] stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding]];
-    NSURL *initialURL = [NSURL URLWithString:esearch]; 
-    OBPRECONDITION(initialURL);
-    
-    NSURLRequest *request = [NSURLRequest requestWithURL:initialURL];
-    NSURLResponse *response;
-    NSError *error;
-    NSData *esearchResult = [NSURLConnection sendSynchronousRequest:request returningResponse:&response error:&error];
+    [self setWebEnv:nil];
+    [self setQueryKey:nil];
+    [self setNumberOfAvailableResults:0];
+    [self setNumberOfFetchedResults:0];
     
     NSXMLDocument *document = nil;
-    if (nil == esearchResult)
-        NSLog(@"failed to download %@ with error %@", initialURL, error);
-    else
-        document = [[NSXMLDocument alloc] initWithData:esearchResult options:NSXMLNodeOptionsNone error:&error];
     
-    if (nil != document) {
-        NSXMLElement *root = [document rootElement];
+    if(NO != [NSString isEmptyString:[self searchTerm]]){
+        // get the initial XML document with our search parameters in it
+        NSString *esearch = [[[self class] baseURLString] stringByAppendingFormat:@"/esearch.fcgi?db=%@&retmax=1&usehistory=y&term=%@&tool=bibdesk", [self database], [[self searchTerm] stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding]];
+        NSURL *initialURL = [NSURL URLWithString:esearch]; 
+        OBPRECONDITION(initialURL);
         
-        // we need to extract WebEnv, Count, and QueryKey to construct our final URL
-        [self setWebEnv:[[[root nodesForXPath:@"/eSearchResult[1]/WebEnv[1]" error:NULL] lastObject] stringValue]];
-        [self setQueryKey:[[[root nodesForXPath:@"/eSearchResult[1]/QueryKey[1]" error:NULL] lastObject] stringValue]];
-        NSString *countString = [[[root nodesForXPath:@"/eSearchResult[1]/Count[1]" error:NULL] lastObject] stringValue];
-        [self setNumberOfAvailableResults:[countString intValue]];
+        NSURLRequest *request = [NSURLRequest requestWithURL:initialURL];
+        NSURLResponse *response;
+        NSError *error;
+        NSData *esearchResult = [NSURLConnection sendSynchronousRequest:request returningResponse:&response error:&error];
         
-        [document release];
+        if (nil == esearchResult)
+            NSLog(@"failed to download %@ with error %@", initialURL, error);
+        else
+            document = [[NSXMLDocument alloc] initWithData:esearchResult options:NSXMLNodeOptionsNone error:&error];
         
-    } else if (nil != esearchResult) {
-        // make sure error was actually initialized by NSXMLDocument
-        NSLog(@"unable to create an XML document: %@", error);
-        [self setWebEnv:nil];
-        [self setQueryKey:nil];
-        [self setNumberOfAvailableResults:0];
+        if (nil != document) {
+            NSXMLElement *root = [document rootElement];
+            
+            // we need to extract WebEnv, Count, and QueryKey to construct our final URL
+            [self setWebEnv:[[[root nodesForXPath:@"/eSearchResult[1]/WebEnv[1]" error:NULL] lastObject] stringValue]];
+            [self setQueryKey:[[[root nodesForXPath:@"/eSearchResult[1]/QueryKey[1]" error:NULL] lastObject] stringValue]];
+            NSString *countString = [[[root nodesForXPath:@"/eSearchResult[1]/Count[1]" error:NULL] lastObject] stringValue];
+            [self setNumberOfAvailableResults:[countString intValue]];
+            
+            [document release];
+            
+        } else if (nil != esearchResult) {
+            // make sure error was actually initialized by NSXMLDocument
+            NSLog(@"unable to create an XML document: %@", error);
+        }
+        
+        needsReset = NO;
     }
-    
-    [self setNumberOfFetchedResults:0];
-    needsReset = NO;
 }
 
 - (void)fetch;
