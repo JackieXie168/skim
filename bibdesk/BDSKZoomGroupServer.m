@@ -73,7 +73,7 @@
 - (void)setServerInfo:(NSDictionary *)info;
 {
     [serverInfo setDictionary:info];
-    [serverInfo setObject:[NSNumber numberWithInt:BDSKSearchGroupZoom] forKey:@"type"];NSLog(@"%@",serverInfo);
+    [serverInfo setObject:[NSNumber numberWithInt:BDSKSearchGroupZoom] forKey:@"type"];
     OSAtomicCompareAndSwap32Barrier(0, 1, (int32_t *)&flags.needsReset);
 }
 
