@@ -241,9 +241,9 @@
     if ([self isRetrieving])
         [server stop];
     
-    [self setPublications:[NSArray array]];
     [server setNumberOfAvailableResults:0];
     [server setNumberOfFetchedResults:0];
+    [self setPublications:[NSArray array]];
     
     [self search];
 }
