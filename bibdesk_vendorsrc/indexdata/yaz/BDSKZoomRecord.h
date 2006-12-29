@@ -9,6 +9,15 @@
 #import <Cocoa/Cocoa.h>
 #import <yaz/zoom.h>
 
+typedef enum {
+	UNKNOWN,
+    GRS1,
+    SUTRS,
+    USMARC,
+    UKMARC,
+    XML
+} BDSKZoomSyntaxType;
+
 @interface BDSKZoomRecord : NSObject
 {
     ZOOM_record          _record;
@@ -25,5 +34,6 @@
 
 - (NSString *)renderedString;
 - (NSString *)rawString;
+- (BDSKZoomSyntaxType)syntaxType;
 
 @end
