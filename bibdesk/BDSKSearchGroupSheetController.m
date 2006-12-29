@@ -9,17 +9,12 @@
 #import "BDSKSearchGroupSheetController.h"
 #import "BDSKSearchGroup.h"
 
-static NSArray *zoomServers = nil;
-static NSArray *entrezServers = nil;
+static NSArray *searchGroupServers = nil;
 
 @implementation BDSKSearchGroupSheetController
 
 + (void)initialize {
-// !!! move to a plist
-    entrezServers = [[NSArray alloc] initWithObjects:
-        [NSDictionary dictionaryWithObjectsAndKeys:@"PubMed", @"name", @"pubmed", @"database", nil], nil];
-    zoomServers = [[NSArray alloc] initWithObjects:
-        [NSDictionary dictionaryWithObjectsAndKeys:@"Library of Congress", @"name", @"z3950.loc.gov", @"host", @"Voyager", @"database", [NSNumber numberWithInt:7090], @"port", nil], nil];
+    searchGroupServers = [[NSArray alloc] initWithContentsOfFile:[[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:@"SearchGroupServers.plist"]];
 }
 
 - (id)init {
@@ -33,7 +28,7 @@ static NSArray *entrezServers = nil;
         editors = CFArrayCreateMutable(kCFAllocatorMallocZone, 0, NULL);
         undoManager = nil;
         
-        NSDictionary *info = group ? [group serverInfo] : [entrezServers objectAtIndex:0];
+        NSDictionary *info = group ? [group serverInfo] : [[searchGroupServers objectAtIndex:BDSKSearchGroupEntrez] objectAtIndex:0];
         type = [group type];
         address = [[info objectForKey:@"host"] copy];
         port = [[info objectForKey:@"port"] intValue];
@@ -62,7 +57,7 @@ static NSArray *entrezServers = nil;
 {
     BOOL isCustom = [serverPopup indexOfSelectedItem] == [serverPopup numberOfItems] - 1;
     BOOL isZoom = type == BDSKSearchGroupZoom;
-    NSArray *servers = isZoom ? zoomServers : entrezServers;
+    NSArray *servers = [searchGroupServers objectAtIndex:type];
     
     [addressField setEnabled:isCustom && isZoom];
     [portField setEnabled:isCustom && isZoom];
@@ -72,14 +67,16 @@ static NSArray *entrezServers = nil;
     
     [serverPopup removeAllItems];
     [serverPopup addItemsWithTitles:[servers valueForKey:@"name"]];
+    [[serverPopup menu] addItem:[NSMenuItem separatorItem]];
     [serverPopup addItemWithTitle:NSLocalizedString(@"Other", @"Popup menu item name for other search group server")];
     [serverPopup selectItemAtIndex:0];
 }
 
 - (void)setDefaultValues{
-    NSArray *servers = type == BDSKSearchGroupEntrez ? entrezServers : zoomServers;
+    NSArray *servers = [searchGroupServers objectAtIndex:type];
     [serverPopup removeAllItems];
     [serverPopup addItemsWithTitles:[servers valueForKey:@"name"]];
+    [[serverPopup menu] addItem:[NSMenuItem separatorItem]];
     [serverPopup addItemWithTitle:NSLocalizedString(@"Other", @"Popup menu item name for other search group server")];
     [serverPopup selectItemAtIndex:0];
     
@@ -142,7 +139,7 @@ static NSArray *entrezServers = nil;
         [passwordField setEnabled:YES];
         [userField setEnabled:YES];
     } else {
-        NSArray *servers = type == BDSKSearchGroupEntrez ? entrezServers : zoomServers;
+        NSArray *servers = [searchGroupServers objectAtIndex:type];
         NSDictionary *host = [servers objectAtIndex:i];
         [self setAddress:[host objectForKey:@"host"]];
         [self setPort:[[host objectForKey:@"port"] intValue]];

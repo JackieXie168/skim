@@ -191,6 +191,7 @@
 		CE11B0060AE8FD53008C47AC /* scriptFolderIcon.tiff in Resources */ = {isa = PBXBuildFile; fileRef = CE11B0050AE8FD53008C47AC /* scriptFolderIcon.tiff */; };
 		CE129A170B44088900416D19 /* BDSKEntrezGroupServer.h in Headers */ = {isa = PBXBuildFile; fileRef = CE129A150B44088900416D19 /* BDSKEntrezGroupServer.h */; };
 		CE129A180B44088900416D19 /* BDSKEntrezGroupServer.m in Sources */ = {isa = PBXBuildFile; fileRef = CE129A160B44088900416D19 /* BDSKEntrezGroupServer.m */; };
+		CE12A1700B44AED200416D19 /* SearchGroupServers.plist in Resources */ = {isa = PBXBuildFile; fileRef = CE12A16F0B44AED100416D19 /* SearchGroupServers.plist */; };
 		CE15C0D70AA5B9A3002C555F /* BDSKErrorManager.h in Headers */ = {isa = PBXBuildFile; fileRef = CE15C0D50AA5B9A3002C555F /* BDSKErrorManager.h */; };
 		CE15C0D80AA5B9A3002C555F /* BDSKErrorManager.m in Sources */ = {isa = PBXBuildFile; fileRef = CE15C0D60AA5B9A3002C555F /* BDSKErrorManager.m */; };
 		CE1A7F40090BEC3800ACC864 /* BDSKHeaderPopUpButtonCell.h in Headers */ = {isa = PBXBuildFile; fileRef = CE1A7ED4090BDEB600ACC864 /* BDSKHeaderPopUpButtonCell.h */; };
@@ -1076,6 +1077,7 @@
 		CE11B0050AE8FD53008C47AC /* scriptFolderIcon.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; name = scriptFolderIcon.tiff; path = Images/scriptFolderIcon.tiff; sourceTree = "<group>"; };
 		CE129A150B44088900416D19 /* BDSKEntrezGroupServer.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = BDSKEntrezGroupServer.h; sourceTree = "<group>"; };
 		CE129A160B44088900416D19 /* BDSKEntrezGroupServer.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = BDSKEntrezGroupServer.m; sourceTree = "<group>"; };
+		CE12A16F0B44AED100416D19 /* SearchGroupServers.plist */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text.plist; path = SearchGroupServers.plist; sourceTree = "<group>"; };
 		CE15C0D50AA5B9A3002C555F /* BDSKErrorManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BDSKErrorManager.h; sourceTree = "<group>"; };
 		CE15C0D60AA5B9A3002C555F /* BDSKErrorManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BDSKErrorManager.m; sourceTree = "<group>"; };
 		CE1A7ED4090BDEB600ACC864 /* BDSKHeaderPopUpButtonCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BDSKHeaderPopUpButtonCell.h; sourceTree = "<group>"; };
@@ -1831,6 +1833,7 @@
 				F9022D6E0758073E00C3F701 /* latex2rtf */,
 				F9022D150758066000C3F701 /* CharacterConversion.plist */,
 				F9022D1B0758066000C3F701 /* TypeInfo.plist */,
+				CE12A16F0B44AED100416D19 /* SearchGroupServers.plist */,
 				CE2944000A7F939A00A46D05 /* PreferenceSearchTerms.plist */,
 				F91B5CC7076579830011ED22 /* previewtemplate.tex */,
 				F9022D410758073E00C3F701 /* cfg */,
@@ -3228,6 +3231,7 @@
 				CE7F5E480B3F5F1800A919D0 /* searchFolderIcon.tiff in Resources */,
 				CE7F64C40B41694A00A919D0 /* BDSKSearchGroupView.nib in Resources */,
 				CE76A5430B430EA500E61066 /* BDSKSearchGroupSheet.nib in Resources */,
+				CE12A1700B44AED200416D19 /* SearchGroupServers.plist in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
