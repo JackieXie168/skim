@@ -31,6 +31,8 @@
         _portNum = portNum;
         _dataBase = [dbase copy];
         
+        NSParameterAssert(nil != hostName);
+        
         if (_dataBase) {
             // we have to append port as well, if there's a specific database
             if (_portNum)
