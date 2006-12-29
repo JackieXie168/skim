@@ -53,6 +53,7 @@ typedef struct _BDSKZoomGroupFlags {
     int availableResults;
     int fetchedResults;
     BDSKZoomGroupFlags flags;
+    pthread_rwlock_t infolock;
 }
 - (void)resetConnection;
 @end
