@@ -145,7 +145,7 @@ The groupedPublications array is a subset of the publications array, developed b
     [self changeSearchGroupSearchTerm:searchGroupSearchField];
     BDSKSearchGroup *group = [[self selectedGroups] firstObject];
     OBASSERT([group isSearch]);
-    [group searchNext];
+    [group search];
 }
 
 - (void)loadSearchGroupView {

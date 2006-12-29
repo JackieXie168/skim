@@ -55,6 +55,7 @@
     if (self) {
         group = aGroup;
         database = [[info objectForKey:@"database"] copy];
+        searchTerm = nil;
         failedDownload = NO;
         isRetrieving = NO;
         needsReset = NO;
@@ -89,7 +90,7 @@
 
 - (void)retrievePublications {
     isRetrieving = YES;
-    if (needsReset)
+    if ([[self searchTerm] isEqualToString:[group searchTerm]] == NO || needsReset)
         [self resetSearch];
     [self fetch];
 }
@@ -122,20 +123,28 @@
 
 - (BOOL)isRetrieving { return isRetrieving; }
 
-- (void)setNeedsReset:(BOOL)flag { needsReset = flag; }
-
-- (BOOL)needsReset { return needsReset; }
-
 #pragma mark Other accessors
 
 - (void)setDatabase:(NSString *)dbase;
 {
-    [database release];
-    database = [dbase copy];
-    [self setNeedsReset:YES];
+    if(database != dbase){
+        [database release];
+        database = [dbase copy];
+        needsReset = YES;
+    }
 }
 
 - (NSString *)database { return database; }
+
+- (void)setSearchTerm:(NSString *)string;
+{
+    if(searchTerm != string){
+        [searchTerm release];
+        searchTerm = [string copy];
+    }
+}
+
+- (NSString *)searchTerm { return searchTerm; }
 
 - (void)setWebEnv:(NSString *)env;
 {
@@ -161,8 +170,10 @@
 
 - (void)resetSearch;
 {
+    [self setSearchTerm:[group searchTerm]];
+    
     // get the initial XML document with our search parameters in it
-    NSString *esearch = [[[self class] baseURLString] stringByAppendingFormat:@"/esearch.fcgi?db=%@&retmax=1&usehistory=y&term=%@&tool=bibdesk", [self database], [[group searchTerm] stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding]];
+    NSString *esearch = [[[self class] baseURLString] stringByAppendingFormat:@"/esearch.fcgi?db=%@&retmax=1&usehistory=y&term=%@&tool=bibdesk", [self database], [[self searchTerm] stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding]];
     NSURL *initialURL = [NSURL URLWithString:esearch]; 
     OBPRECONDITION(initialURL);
     
@@ -197,6 +208,7 @@
     }
     
     [self setNumberOfFetchedResults:0];
+    needsReset = NO;
 }
 
 - (void)fetch;

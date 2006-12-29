@@ -51,11 +51,13 @@
 - (void)terminate
 {
     [self stopDOServer];
+    OSAtomicCompareAndSwap32Barrier(1, 0, (int32_t *)&flags.isRetrieving);
 }
 
 - (void)stop
 {
     [[self serverOnServerThread] terminateConnection];
+    OSAtomicCompareAndSwap32Barrier(1, 0, (int32_t *)&flags.isRetrieving);
 }
 
 - (void)retrievePublications
@@ -73,7 +75,7 @@
 {
     [serverInfo setDictionary:info];
     [serverInfo setObject:[NSNumber numberWithInt:BDSKSearchGroupZoom] forKey:@"type"];
-    [self setNeedsReset:YES];
+    OSAtomicCompareAndSwap32Barrier(0, 1, (int32_t *)&flags.needsReset);
 }
 
 - (NSDictionary *)serverInfo;
@@ -104,13 +106,6 @@
 - (BOOL)failedDownload { return 1 == flags.failedDownload; }
 
 - (BOOL)isRetrieving { return 1 == flags.isRetrieving; }
-
-- (void)setNeedsReset:(BOOL)flag {
-    int32_t new = flag ? 1 : 0, old = flag ? 0 : 1;
-    OSAtomicCompareAndSwap32Barrier(old, new, (int32_t *)&flags.needsReset);
-}
-
-- (BOOL)needsReset { return 1 == flags.needsReset; }
 
 #pragma mark Main thread 
 
@@ -154,6 +149,7 @@
     if (flags.needsReset)
         [self resetConnection];
     
+    // the resultSet is cached for each searchTerm, so we have no overhead calling it for retrieving more results
     BDSKZoomResultSet *resultSet = [connection resultsForCCLQuery:searchTerm];
     
     if (nil == resultSet)

@@ -224,16 +224,9 @@
 - (void)search;
 {
     if ([self isRetrieving])
-        [server stop];
+        return;
     
-    [server setNumberOfAvailableResults:0];
-    [server setNumberOfFetchedResults:0];
-    [server setNeedsReset:YES];
-    
-    if ([NSString isEmptyString:[self searchTerm]]) {
-        [self setPublications:[NSArray array]];
-    } else {
-        [self setPublications:nil];
+    if ([NSString isEmptyString:[self searchTerm]] == NO) {
         [server retrievePublications];
         
         // use this to notify the tableview to start the progress indicators and disable the button
@@ -242,22 +235,16 @@
     }
 }
 
-- (void)searchNext;
+- (void)resetAndSearch;
 {
     if ([self isRetrieving])
-        return;
+        [server stop];
     
-    if ([NSString isEmptyString:[self searchTerm]]) {
-        [server setNumberOfAvailableResults:0];
-        [server setNumberOfFetchedResults:0];
-        [self setPublications:[NSArray array]];
-    } else {
-        [server retrievePublications];
-        
-        // use this to notify the tableview to start the progress indicators and disable the button
-        NSDictionary *userInfo = [NSDictionary dictionaryWithObject:[NSNumber numberWithBool:NO] forKey:@"succeeded"];
-        [[NSNotificationCenter defaultCenter] postNotificationName:BDSKSearchGroupUpdatedNotification object:self userInfo:userInfo];
-    }
+    [self setPublications:nil];
+    [server setNumberOfAvailableResults:0];
+    [server setNumberOfFetchedResults:0];
+    
+    [self search];
 }
 
 #pragma mark Accessors
@@ -286,7 +273,7 @@
         [searchTerm autorelease];
         searchTerm = [aTerm copy];
         
-        [self search];
+        [self resetAndSearch];
     }
 }
 

@@ -13,6 +13,7 @@
 {
     BDSKSearchGroup *group;
     NSString *database;
+    NSString *searchTerm;
     NSString *webEnv;     // cookie-like data returned by PubMed
     NSString *queryKey;   // searchTerm as returned by PubMed
     NSString *filePath;
@@ -27,6 +28,8 @@
 + (BOOL)canConnect;
 - (void)setDatabase:(NSString *)dbase;
 - (NSString *)database;
+- (void)setSearchTerm:(NSString *)string;
+- (NSString *)searchTerm;
 - (void)setWebEnv:(NSString *)env;
 - (NSString *)webEnv;
 - (void)setQueryKey:(NSString *)aKey;
