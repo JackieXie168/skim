@@ -52,8 +52,7 @@
 
     while (i != NSNotFound) {
         BDSKZoomRecord *record = [[BDSKZoomRecord allocWithZone:zone] initWithZoomRecord:ZOOM_resultset_record(_resultSet, i)];
-        if(record)
-            [array addObject:record];
+        [array addObject:record];
         [record release];
         i = [indexes indexGreaterThanIndex:i];
     }
@@ -62,7 +61,26 @@
 
 - (NSArray *)recordsInRange:(NSRange)range;
 {
-    return [self recordsAtIndexes:[NSIndexSet indexSetWithIndexesInRange:range]];
+    unsigned count = range.length, start = range.location;
+
+    if (count)
+        NSParameterAssert(NSMaxRange(range) < [self countOfRecords]);
+    
+    NSMutableArray *array = [NSMutableArray arrayWithCapacity:count];
+    NSZone *zone = [self zone];
+    ZOOM_record recs[count];
+    BDSKZoomRecord *record;
+    unsigned i;
+    
+    memset(recs, 0, count * sizeof(ZOOM_record));
+    ZOOM_resultset_records(_resultSet, recs, start, count);
+    
+    for (i = 0; i < count; i++) {
+        if (record = [[BDSKZoomRecord allocWithZone:zone] initWithZoomRecord:recs[start + i]])
+            [array addObject:record];
+        [record release];
+    }
+    return array;
 }
 
 - (unsigned int)countOfRecords;
