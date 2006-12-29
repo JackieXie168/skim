@@ -27,8 +27,6 @@ enum {
 - (int)numberOfFetchedResults;
 - (BOOL)failedDownload;
 - (BOOL)isRetrieving;
-- (void)setNeedsReset:(BOOL)flag;
-- (BOOL)needsReset;
 - (void)retrievePublications;
 - (void)stop;
 - (void)terminate;
@@ -63,7 +61,6 @@ enum {
 - (BOOL)hasMoreResults;
 
 - (void)search;
-- (void)searchNext;
 
 - (void)resetServerWithInfo:(NSDictionary *)info;
 
