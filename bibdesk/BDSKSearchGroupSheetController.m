@@ -31,7 +31,7 @@ static NSArray *searchGroupServers = nil;
         NSDictionary *info = group ? [group serverInfo] : [[searchGroupServers objectAtIndex:BDSKSearchGroupEntrez] objectAtIndex:0];
         type = [group type];
         address = [[info objectForKey:@"host"] copy];
-        port = [[info objectForKey:@"port"] intValue];
+        port = [[info objectForKey:@"port"] copy];
         database = [[info objectForKey:@"database"] copy];
         username = [[info objectForKey:@"username"] copy];
         password = [[info objectForKey:@"password"] copy];
@@ -44,6 +44,7 @@ static NSArray *searchGroupServers = nil;
     [group release];
     [undoManager release];
     [address release];
+    [port release];
     [database release];
     [username release];
     [password release];
@@ -83,7 +84,7 @@ static NSArray *searchGroupServers = nil;
     NSDictionary *host = [servers objectAtIndex:0];
     
     [self setAddress:[host objectForKey:@"host"]];
-    [self setPort:[[host objectForKey:@"port"] intValue]];
+    [self setPort:[host objectForKey:@"port"]];
     [self setDatabase:[host objectForKey:@"database"]];
     [self setUsername:nil];
     [self setPassword:nil];
@@ -112,7 +113,7 @@ static NSArray *searchGroupServers = nil;
         if(type == BDSKSearchGroupZoom){
             [serverInfo setValue:[self address] forKey:@"host"];
             [serverInfo setValue:[self database] forKey:@"database"];
-            [serverInfo setValue:[NSNumber numberWithInt:[self port]] forKey:@"port"];
+            [serverInfo setValue:[self port] forKey:@"port"];
             [serverInfo setValue:[self password] forKey:@"password"];
             [serverInfo setValue:[self username] forKey:@"username"];
         }
@@ -142,7 +143,7 @@ static NSArray *searchGroupServers = nil;
         NSArray *servers = [searchGroupServers objectAtIndex:type];
         NSDictionary *host = [servers objectAtIndex:i];
         [self setAddress:[host objectForKey:@"host"]];
-        [self setPort:[[host objectForKey:@"port"] intValue]];
+        [self setPort:[host objectForKey:@"port"]];
         [self setDatabase:[host objectForKey:@"database"]];
         [addressField setEnabled:NO];
         [portField setEnabled:NO];
@@ -179,8 +180,8 @@ static NSArray *searchGroupServers = nil;
     }
     range = [string rangeOfString:@":"];
     if(range.location != NSNotFound){
-        [self setPort:[[string substringFromIndex:NSMaxRange(range)] intValue]];
-        [portField setIntValue:port];
+        [self setPort:[string substringFromIndex:NSMaxRange(range)]];
+        [portField setStringValue:port];
         string = [string substringToIndex:range.location];
     }
     *value = string;
@@ -198,12 +199,21 @@ static NSArray *searchGroupServers = nil;
     }
 }
   
-- (int)port {
+- (NSString *)port {
     return port;
 }
   
-- (void)setPort:(int)newPort {
-    port = newPort;
+- (void)setPort:(NSString *)newPort {
+    if(port != newPort){
+        [port release];
+        port = [newPort retain];
+    }
+}
+
+- (BOOL)validatePort:(id *)value error:(NSError **)error {
+    if (nil != *value)
+        *value = [NSString stringWithFormat:@"%i", [*value intValue]];
+    return YES;
 }
   
 - (int)type {
@@ -223,6 +233,8 @@ static NSArray *searchGroupServers = nil;
     username = [user copy];
 }
 
+- (NSString *)username { return username; }
+
 - (void)setPassword:(NSString *)pw
 {
     [password autorelease];
@@ -230,14 +242,6 @@ static NSArray *searchGroupServers = nil;
 }
 
 - (NSString *)password { return password; }
-- (NSString *)username { return username; }
-
-- (void)setNilValueForKey:(NSString *)key {
-    if ([key isEqualToString:@"port"])
-        [self setPort:0];
-    else
-        [super setNilValueForKey:key];
-}
 
 #pragma mark NSEditorRegistration
 
