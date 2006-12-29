@@ -240,7 +240,7 @@
     if ([self isRetrieving])
         [server stop];
     
-    [self setPublications:nil];
+    [self setPublications:[NSArray array]];
     [server setNumberOfAvailableResults:0];
     [server setNumberOfFetchedResults:0];
     
