@@ -15,6 +15,7 @@
 {
     self = [super init];
     if (self) {
+        NSParameterAssert(NULL != resultSet);
         _resultSet = resultSet;
     }
     return self;
@@ -52,12 +53,15 @@
 
     while (i != NSNotFound) {
         BDSKZoomRecord *record = [[BDSKZoomRecord allocWithZone:zone] initWithZoomRecord:ZOOM_resultset_record(_resultSet, i)];
-        [array addObject:record];
+        if (record)
+            [array addObject:record];
         [record release];
         i = [indexes indexGreaterThanIndex:i];
     }
     return array;
 }
+
+#define STACK_BUFFER_SIZE 256
 
 - (NSArray *)recordsInRange:(NSRange)range;
 {
@@ -68,18 +72,30 @@
     
     NSMutableArray *array = [NSMutableArray arrayWithCapacity:count];
     NSZone *zone = [self zone];
-    ZOOM_record recs[count];
+    
+    ZOOM_record *recordBuffer, stackBuffer[STACK_BUFFER_SIZE];
     BDSKZoomRecord *record;
     unsigned i;
     
-    memset(recs, 0, sizeof(ZOOM_record) * count);
-    ZOOM_resultset_records(_resultSet, recs, range.location, count);
+    size_t bufferSize = sizeof(ZOOM_record) * count;
+    if (count > STACK_BUFFER_SIZE) {
+        recordBuffer = NSZoneMalloc(zone, bufferSize);
+    } else {
+        recordBuffer = stackBuffer;
+    }
+    NSAssert1(NULL != recordBuffer, @"failed to allocate memory for results of length %d", count);
+    
+    memset(recordBuffer, 0, bufferSize);
+    ZOOM_resultset_records(_resultSet, recordBuffer, range.location, count);
     
     for (i = 0; i < count; i++) {
-        if (record = [[BDSKZoomRecord allocWithZone:zone] initWithZoomRecord:recs[i]])
+        if (record = [[BDSKZoomRecord allocWithZone:zone] initWithZoomRecord:recordBuffer[i]])
             [array addObject:record];
         [record release];
     }
+    
+    // BDSKZoomRecord copies the record, so we can dispose of them safely
+    if (recordBuffer != stackBuffer) NSZoneFree(zone, recordBuffer);
     return array;
 }
 
