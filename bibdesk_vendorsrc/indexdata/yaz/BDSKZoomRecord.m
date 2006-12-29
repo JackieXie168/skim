@@ -28,8 +28,26 @@ static NSStringEncoding fallbackEncoding = 0;
 {
     static NSArray *keys = nil;
     if (nil == keys)
-        keys = [[NSArray alloc] initWithObjects:@"render", @"xml", @"raw", @"ext", @"opac", nil];
+        keys = [[NSArray alloc] initWithObjects:@"render", @"xml", @"raw", @"ext", @"opac", @"syntax", nil];
     return keys;
+}
+
++ (NSString *)stringWithSyntaxType:(BDSKZoomSyntaxType)type;
+{
+    switch (type) {
+    case XML:
+        return @"xml";
+    case GRS1:
+        return @"grs-1";
+    case SUTRS:
+        return @"sutrs";
+    case USMARC:
+        return @"usmarc";
+    case UKMARC:
+        return @"ukmarc";
+    default:
+        return @"unknown";
+    }
 }
 
 + (id)recordWithZoomRecord:(ZOOM_record)record;
