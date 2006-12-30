@@ -13,17 +13,26 @@
 
 @class BDSKZoomQuery;
 
-@interface BDSKZoomConnection : NSObject {
+@interface BDSKZoomConnection : NSObject 
+{
+    @private
     ZOOM_connection       _connection;
-    NSMutableDictionary  *_results;
     NSString             *_hostName;
     int                   _portNum;
     NSString             *_dataBase;
+    
+    NSString             *_connectHost; // derived from arguments
+    NSMutableDictionary  *_results;     // results cached by query
+    NSMutableDictionary  *_options;     // copy explicitly set ZOOM_options
 }
 
 - (id)initWithHost:(NSString *)hostName port:(int)portNum database:(NSString *)dbase;
 - (id)initWithHost:(NSString *)hostName port:(int)portNum;
-- (void)connect;
+
+- (id)initWithPropertyList:(id)plist;
+- (id)propertyList;
+
+// pass nil for option to clear options for a particular key
 - (void)setOption:(NSString *)option forKey:(NSString *)key;
 - (NSString *)optionForKey:(NSString *)key;
 

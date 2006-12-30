@@ -30,24 +30,30 @@
         _connection = ZOOM_connection_create(0);
         _portNum = portNum;
         _dataBase = [dbase copy];
+        _hostName = [hostName copy];
         
         NSParameterAssert(nil != hostName);
         
+        // we'll ignore the arguments when calling ZOOM_connection... functions by composing a host string
         if (_dataBase) {
             // we have to append port as well, if there's a specific database
             if (_portNum)
-                _hostName = [[hostName stringByAppendingFormat:@":%d/%@", _portNum, _dataBase] copy];
+                _connectHost = [[hostName stringByAppendingFormat:@":%d/%@", _portNum, _dataBase] copy];
             else
-                _hostName = [[hostName stringByAppendingFormat:@"/%@", _dataBase] copy];
+                _connectHost = [[hostName stringByAppendingFormat:@"/%@", _dataBase] copy];
             
-            // set portNum to zero, since we've integrated it into the host name now
-            _portNum = 0;
         } else {
-            _hostName = [hostName copy];
+            if (_portNum)
+                _connectHost = [[hostName stringByAppendingFormat:@":%d", _portNum] copy];
+            else
+                _connectHost = [hostName copy];
         }
         
         // we maintain our own result cache, keyed by query, since a particular connection is only instantiated per-host
         _results = [[NSMutableDictionary alloc] init];
+        
+        // maintain a cache of options, only so we can archive the object
+        _options = [[NSMutableDictionary alloc] init];
         
         // default options
         [self setPreferredRecordSyntax:USMARC];
@@ -59,7 +65,7 @@
                                                      name:NSApplicationWillTerminateNotification 
                                                    object:nil];
         
-        [self connect];
+        // no need to connect yet; resultsForQuery will do that for us, and this allows initWithPropertyList to setup first
     }
     return self;
 }
@@ -84,12 +90,48 @@
     _connection = NULL;
     [_results release]; // will destroy the result sets
     [_hostName release];
+    [_connectHost release];
+    [_options release];
     [super dealloc];
 }
 
+- (id)propertyList;
+{
+    NSMutableDictionary *plist = [NSMutableDictionary dictionary];
+    [plist setObject:_hostName forKey:@"_hostName"];
+    [plist setObject:[NSNumber numberWithInt:_portNum] forKey:@"_portNum"];
+    [plist setObject:_options forKey:@"_options"];
+    
+    // this is the only object ivar that may be nil
+    if (_dataBase)
+        [plist setObject:_dataBase forKey:@"_dataBase"];
+
+    // don't store any derived values
+    return plist;
+}
+
+- (id)initWithPropertyList:(id)plist;
+{
+    self = [self initWithHost:[plist objectForKey:@"_hostName"] 
+                         port:[[plist objectForKey:@"_portNum"] intValue] 
+                     database:[plist objectForKey:@"_dataBase"]];
+    
+    // options from the plist override any default options we've set (noop is self is nil)
+    NSDictionary *options = [plist objectForKey:@"_options"];
+    NSEnumerator *keyEnumerator = [options keyEnumerator];
+    NSString *key;
+    while (key = [keyEnumerator nextObject]) {
+        // this will update the connection's options and our _options ivar
+        [self setOption:[options objectForKey:key] forKey:key];
+    }
+    
+    return self;
+}
+
+// no need to have this in the API at present
 - (void)connect
 {
-    ZOOM_connection_connect(_connection, [_hostName UTF8String], _portNum);
+    ZOOM_connection_connect(_connection, [_connectHost UTF8String], 0);
     int error;
     const char *errmsg, *addinfo;
     if ((error = ZOOM_connection_error(_connection, &errmsg, &addinfo)))
@@ -98,10 +140,16 @@
 
 - (void)setOption:(NSString *)option forKey:(NSString *)key;
 {
+    // passing NULL for option will zero it out
     ZOOM_connection_option_set(_connection, [key UTF8String], [option UTF8String]);
     
     // cached results may now be invalid, if we're asking for a different charset/syntax
     [_results removeAllObjects];
+    
+    if (option)
+        [_options setObject:option forKey:key];
+    else
+        [_options removeObjectForKey:key];
 }
 
 - (NSString *)optionForKey:(NSString *)key;
