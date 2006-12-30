@@ -50,6 +50,30 @@ static NSStringEncoding fallbackEncoding = 0;
     }
 }
 
++ (BDSKZoomSyntaxType)syntaxTypeWithString:(NSString *)string;
+{
+    // these calls and the corresponding enum were lifted from zrec.cpp in yazpp-1.0.0
+    const char *syn = [string UTF8String];
+
+    // These string constants are from yaz/util/oid.c
+    if (!yaz_matchstr(syn, "xml"))
+        return XML;
+    else if (!yaz_matchstr(syn, "GRS-1"))
+        return GRS1;
+    else if (!yaz_matchstr(syn, "SUTRS"))
+        return SUTRS;
+    else if (!yaz_matchstr(syn, "USmarc"))
+        return USMARC;
+    else if (!yaz_matchstr(syn, "UKmarc"))
+        return UKMARC;
+    else if (!yaz_matchstr(syn, "XML") ||
+             !yaz_matchstr(syn, "text-XML") ||
+             !yaz_matchstr(syn, "application-XML"))
+        return XML;
+    else 
+        return UNKNOWN;
+}
+
 + (id)recordWithZoomRecord:(ZOOM_record)record;
 {
     return [[[self allocWithZone:[self zone]] initWithZoomRecord:record] autorelease];
@@ -110,25 +134,7 @@ static NSStringEncoding fallbackEncoding = 0;
 
 - (BDSKZoomSyntaxType)syntaxType;
 {
-    // these calls and the corresponding enum were lifted from zrec.cpp in yazpp-1.0.0
-    const char *syn = ZOOM_record_get(_record, "syntax", 0);
-    
-    // These string constants are from yaz/util/oid.c
-    if (!yaz_matchstr(syn, "xml"))
-        return XML;
-    else if (!yaz_matchstr(syn, "GRS-1"))
-        return GRS1;
-    else if (!yaz_matchstr(syn, "SUTRS"))
-        return SUTRS;
-    else if (!yaz_matchstr(syn, "USmarc"))
-        return USMARC;
-    else if (!yaz_matchstr(syn, "UKmarc"))
-        return UKMARC;
-    else if (!yaz_matchstr(syn, "XML") ||
-             !yaz_matchstr(syn, "text-XML") ||
-             !yaz_matchstr(syn, "application-XML"))
-    return XML;
-    else return UNKNOWN;
+    return [BDSKZoomRecord syntaxTypeWithString:[self valueForKey:@"syntax"]];
 }
 
 @end
