@@ -50,7 +50,7 @@
         _results = [[NSMutableDictionary alloc] init];
         
         // default options
-        [self setOption:@"USMARC" forKey:@"preferredRecordSyntax"];
+        [self setPreferredRecordSyntax:USMARC];
         [self setOption:@"UTF-8" forKey:@"charset"];
         [self setOption:@"en-US" forKey:@"lang"];
         
@@ -90,6 +90,10 @@
 - (void)connect
 {
     ZOOM_connection_connect(_connection, [_hostName UTF8String], _portNum);
+    int error;
+    const char *errmsg, *addinfo;
+    if ((error = ZOOM_connection_error(_connection, &errmsg, &addinfo)))
+        NSLog(@"Error: %s (%d) %s\n", errmsg, error, addinfo);    
 }
 
 - (void)setOption:(NSString *)option forKey:(NSString *)key;
@@ -103,6 +107,11 @@
     return val ? [NSString stringWithUTF8String:val] : nil;
 }
 
+- (void)setPreferredRecordSyntax:(BDSKZoomSyntaxType)type;
+{
+    [self setOption:[BDSKZoomRecord stringWithSyntaxType:type] forKey:@"preferredRecordSyntax"];
+}
+
 - (BDSKZoomResultSet *)resultsForQuery:(BDSKZoomQuery *)query;
 {
     NSParameterAssert(nil != query);
@@ -110,6 +119,12 @@
     if (nil == resultSet) {
         [self connect];
         ZOOM_resultset r = ZOOM_connection_search(_connection, [query zoomQuery]);
+
+        int error;
+        const char *errmsg, *addinfo;
+        if ((error = ZOOM_connection_error(_connection, &errmsg, &addinfo)))
+            NSLog(@"Error: %s (%d) %s\n", errmsg, error, addinfo);
+
         resultSet = [[BDSKZoomResultSet allocWithZone:[self zone]] initWithZoomResultSet:r];
         [_results setObject:resultSet forKey:query];
         [resultSet release];
