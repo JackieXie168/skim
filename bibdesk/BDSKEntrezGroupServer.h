@@ -9,10 +9,12 @@
 #import <Cocoa/Cocoa.h>
 #import "BDSKSearchGroup.h"
 
+@class BDSKServerInfo;
+
 @interface BDSKEntrezGroupServer : NSObject <BDSKSearchGroupServer>
 {
     BDSKSearchGroup *group;
-    NSString *database;
+    BDSKServerInfo *serverInfo;
     NSString *searchTerm;
     NSString *webEnv;     // cookie-like data returned by PubMed
     NSString *queryKey;   // searchTerm as returned by PubMed
@@ -26,8 +28,8 @@
 }
 + (NSString *)baseURLString;
 + (BOOL)canConnect;
-- (void)setDatabase:(NSString *)dbase;
-- (NSString *)database;
+- (void)setServerInfo:(BDSKServerInfo *)info;
+- (BDSKServerInfo *)serverInfo;
 - (void)setSearchTerm:(NSString *)string;
 - (NSString *)searchTerm;
 - (void)setWebEnv:(NSString *)env;

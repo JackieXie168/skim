@@ -15,12 +15,12 @@ enum {
     BDSKSearchGroupZoom
 };
 
-@class BDSKSearchGroup;
+@class BDSKSearchGroup, BDSKServerInfo;
 
 @protocol BDSKSearchGroupServer <NSObject>
-- (id)initWithGroup:(BDSKSearchGroup *)aGroup serverInfo:(NSDictionary *)info;
-- (NSDictionary *)serverInfo;
-- (void)setServerInfo:(NSDictionary *)info;
+- (id)initWithGroup:(BDSKSearchGroup *)aGroup serverInfo:(BDSKServerInfo *)info;
+- (BDSKServerInfo *)serverInfo;
+- (void)setServerInfo:(BDSKServerInfo *)info;
 - (void)setNumberOfAvailableResults:(int)value;
 - (int)numberOfAvailableResults;
 - (void)setNumberOfFetchedResults:(int)value;
@@ -41,7 +41,7 @@ enum {
 }
 
 - (id)initWithName:(NSString *)aName;
-- (id)initWithType:(int)aType serverInfo:(NSDictionary *)info searchTerm:(NSString *)string;
+- (id)initWithType:(int)aType serverInfo:(BDSKServerInfo *)info searchTerm:(NSString *)string;
 
 - (BDSKPublicationsArray *)publications;
 - (void)setPublications:(NSArray *)newPublications;
@@ -49,8 +49,8 @@ enum {
 
 - (int)type;
 
-- (void)setServerInfo:(NSDictionary *)info;
-- (NSDictionary *)serverInfo;
+- (void)setServerInfo:(BDSKServerInfo *)info;
+- (BDSKServerInfo *)serverInfo;
 
 - (void)setSearchTerm:(NSString *)aTerm;
 - (NSString *)searchTerm;
@@ -62,6 +62,6 @@ enum {
 
 - (void)search;
 
-- (void)resetServerWithInfo:(NSDictionary *)info;
+- (void)resetServerWithInfo:(BDSKServerInfo *)info;
 
 @end

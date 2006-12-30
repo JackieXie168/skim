@@ -1,16 +1,23 @@
 {
     IBClasses = (
         {
-            ACTIONS = {selectPredefinedServer = id; }; 
+            ACTIONS = {
+                addServer = id; 
+                editServer = id; 
+                removeServer = id; 
+                resetServers = id; 
+                selectPredefinedServer = id; 
+            }; 
             CLASS = BDSKSearchGroupSheetController; 
             LANGUAGE = ObjC; 
             OUTLETS = {
                 addressField = NSTextField; 
                 databaseField = NSTextField; 
+                nameField = NSTextField; 
                 passwordField = NSSecureTextField; 
                 portField = NSTextField; 
                 serverPopup = NSPopUpButton; 
-                typematrix = NSMatrix; 
+                typeMatrix = NSMatrix; 
                 userField = NSTextField; 
             }; 
             SUPERCLASS = BDSKSheetController; 
@@ -19,7 +26,7 @@
             ACTIONS = {dismiss = id; }; 
             CLASS = BDSKSheetController; 
             LANGUAGE = ObjC; 
-            OUTLETS = {theModalDelegate = id; }; 
+            OUTLETS = {}; 
             SUPERCLASS = NSWindowController; 
         }, 
         {CLASS = FirstResponder; LANGUAGE = ObjC; SUPERCLASS = NSObject; }

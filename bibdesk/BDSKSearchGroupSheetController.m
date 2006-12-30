@@ -8,14 +8,87 @@
 
 #import "BDSKSearchGroupSheetController.h"
 #import "BDSKSearchGroup.h"
+#import "BDSKServerInfo.h"
+#import "NSFileManager_BDSKExtensions.h"
+
+#define SERVERS_FILENAME @"SearchGroupServers.plist"
 
 static NSArray *searchGroupServers = nil;
 
 @implementation BDSKSearchGroupSheetController
 
+#pragma mark Server info
+
 + (void)initialize {
-    searchGroupServers = [[NSArray alloc] initWithContentsOfFile:[[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:@"SearchGroupServers.plist"]];
+    [self resetServers];
 }
+
++ (void)resetServers;
+{
+    NSArray *serverDicts = [NSArray arrayWithContentsOfFile:[[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:SERVERS_FILENAME]];
+    int type, count = [serverDicts count];
+    NSMutableArray *array = [NSMutableArray arrayWithCapacity:count];
+    
+    for (type = 0; type < count; type++) {
+        NSArray *dicts = [serverDicts objectAtIndex:type];
+        NSEnumerator *dictEnum = [dicts objectEnumerator];
+        NSDictionary *dict;
+        NSMutableArray *infos = [NSMutableArray arrayWithCapacity:[dicts count]];
+        while (dict = [dictEnum nextObject]) {
+            BDSKServerInfo *info = [[BDSKServerInfo alloc] initWithType:type dictionary:dict];
+            [infos addObject:info];
+            [info release];
+        }
+        [array addObject:infos];
+    }
+    [searchGroupServers release];
+    searchGroupServers = [array copy];
+}
+
++ (void)saveServers;
+{
+    int type, count = [searchGroupServers count];
+    NSMutableArray *array = [NSMutableArray arrayWithCapacity:count];
+    
+    for (type = 0; type < count; type++) {
+        NSArray *infos = [searchGroupServers objectAtIndex:type];
+        [array addObject:[infos valueForKey:@"dictionaryValue"]];
+    }
+    
+    NSString *error = nil;
+    NSPropertyListFormat format = NSPropertyListXMLFormat_v1_0;
+    NSData *data = [NSPropertyListSerialization dataFromPropertyList:array format:format errorDescription:&error];
+    if (error) {
+        NSLog(@"Error writing: %@", error);
+        [error release];
+    } else {
+        NSString *applicationSupportPath = [[NSFileManager defaultManager] currentApplicationSupportPathForCurrentUser]; 
+        NSString *path = [applicationSupportPath stringByAppendingPathComponent:SERVERS_FILENAME];
+        [data writeToFile:path atomically:YES];
+    }
+}
+
++ (NSArray *)serversForType:(int)type;
+{
+    return [searchGroupServers objectAtIndex:type];
+}
+
++ (void)addServer:(BDSKServerInfo *)serverInfo forType:(int)type;
+{
+    [[searchGroupServers objectAtIndex:type] addObject:serverInfo];
+}
+
++ (void)setServer:(BDSKServerInfo *)serverInfo atIndex:(unsigned)index forType:(int)type;
+{
+    [[searchGroupServers objectAtIndex:type] replaceObjectAtIndex:index withObject:serverInfo];
+}
+
++ (void)removeServerAtIndex:(unsigned)index forType:(int)type;
+{
+    [[searchGroupServers objectAtIndex:type] removeObjectAtIndex:index];
+}
+
+#pragma mark Initialization
 
 - (id)init {
     return [self initWithGroup:nil];
@@ -28,13 +101,13 @@ static NSArray *searchGroupServers = nil;
         editors = CFArrayCreateMutable(kCFAllocatorMallocZone, 0, NULL);
         undoManager = nil;
         
-        NSDictionary *info = group ? [group serverInfo] : [[searchGroupServers objectAtIndex:BDSKSearchGroupEntrez] objectAtIndex:0];
-        type = [group type];
-        address = [[info objectForKey:@"host"] copy];
-        port = [[info objectForKey:@"port"] copy];
-        database = [[info objectForKey:@"database"] copy];
-        username = [[info objectForKey:@"username"] copy];
-        password = [[info objectForKey:@"password"] copy];
+        type = group ? [group type] : BDSKSearchGroupEntrez;
+        name = nil;
+        address = nil;
+        port = nil;
+        database = nil;
+        username = nil;
+        password = nil;
     }
     return self;
 }
@@ -43,6 +116,7 @@ static NSArray *searchGroupServers = nil;
 {
     [group release];
     [undoManager release];
+    [name release];
     [address release];
     [port release];
     [database release];
@@ -54,50 +128,33 @@ static NSArray *searchGroupServers = nil;
 
 - (NSString *)windowNibName { return @"BDSKSearchGroupSheet"; }
 
+- (void)reloadServersSelectingIndex:(unsigned)index{
+    NSArray *servers = [[self class] serversForType:type];
+    [serverPopup removeAllItems];
+    [serverPopup addItemsWithTitles:[servers valueForKey:@"name"]];
+    [[serverPopup menu] addItem:[NSMenuItem separatorItem]];
+    [serverPopup addItemWithTitle:NSLocalizedString(@"Other", @"Popup menu item name for other search group server")];
+    [serverPopup selectItemAtIndex:index];
+    [self selectPredefinedServer:serverPopup];
+}
+
 - (void)awakeFromNib
 {
-    BOOL isCustom = [serverPopup indexOfSelectedItem] == [serverPopup numberOfItems] - 1;
-    BOOL isZoom = type == BDSKSearchGroupZoom;
-    NSArray *servers = [searchGroupServers objectAtIndex:type];
+    NSArray *servers = [[self class] serversForType:type];
+    unsigned index = 0;
     
-    [addressField setEnabled:isCustom && isZoom];
-    [portField setEnabled:isCustom && isZoom];
-    [databaseField setEnabled:isCustom];
-    [userField setEnabled:isCustom && isZoom];
-    [passwordField setEnabled:isCustom && isZoom];
+    if ([servers count] == 0) {
+        index = 1;
+    } else if (group) {
+        index = [servers indexOfObject:[group serverInfo]];
+        if (index == NSNotFound)
+            index = [servers count] + 1;
+    }
     
-    [serverPopup removeAllItems];
-    [serverPopup addItemsWithTitles:[servers valueForKey:@"name"]];
-    [[serverPopup menu] addItem:[NSMenuItem separatorItem]];
-    [serverPopup addItemWithTitle:NSLocalizedString(@"Other", @"Popup menu item name for other search group server")];
-    [serverPopup selectItemAtIndex:0];
+    [self reloadServersSelectingIndex:index];
 }
 
-- (void)setDefaultValues{
-    NSArray *servers = [searchGroupServers objectAtIndex:type];
-    [serverPopup removeAllItems];
-    [serverPopup addItemsWithTitles:[servers valueForKey:@"name"]];
-    [[serverPopup menu] addItem:[NSMenuItem separatorItem]];
-    [serverPopup addItemWithTitle:NSLocalizedString(@"Other", @"Popup menu item name for other search group server")];
-    [serverPopup selectItemAtIndex:0];
-    
-    NSDictionary *host = [servers objectAtIndex:0];
-    
-    [self setAddress:[host objectForKey:@"host"]];
-    [self setPort:[host objectForKey:@"port"]];
-    [self setDatabase:[host objectForKey:@"database"]];
-    [self setUsername:nil];
-    [self setPassword:nil];
-    
-    [addressField setEnabled:NO];
-    [portField setEnabled:NO];
-    [databaseField setEnabled:NO];
-    
-    [userField setEnabled:NO];
-    [passwordField setEnabled:NO];
-}
-
-- (BDSKSearchGroup *)group { return group; }
+#pragma mark Actions
 
 - (IBAction)dismiss:(id)sender {
     if ([sender tag] == NSOKButton) {
@@ -106,17 +163,8 @@ static NSArray *searchGroupServers = nil;
             NSBeep();
             return;
         }
-                
-        NSMutableDictionary *serverInfo = [NSMutableDictionary dictionaryWithCapacity:6];
-        [serverInfo setValue:[NSNumber numberWithInt:type] forKey:@"type"];
-        [serverInfo setValue:[self database] forKey:@"database"];
-        if(type == BDSKSearchGroupZoom){
-            [serverInfo setValue:[self address] forKey:@"host"];
-            [serverInfo setValue:[self database] forKey:@"database"];
-            [serverInfo setValue:[self port] forKey:@"port"];
-            [serverInfo setValue:[self password] forKey:@"password"];
-            [serverInfo setValue:[self username] forKey:@"username"];
-        }
+        
+        BDSKServerInfo *serverInfo = [[BDSKServerInfo alloc] initWithType:[self type] name:[self name] host:[self address] port:[self port] database:[self database] password:[self password] username:[self username]];
         
         // we don't have a group, so create  a new one
         if(group == nil){
@@ -133,23 +181,112 @@ static NSArray *searchGroupServers = nil;
 - (IBAction)selectPredefinedServer:(id)sender;
 {
     int i = [sender indexOfSelectedItem];
+    
+    [self willChangeValueForKey:@"canAddServer"];
+    [self willChangeValueForKey:@"canRemoveServer"];
+    [self willChangeValueForKey:@"canEditServer"];
+    
     if (i == [sender numberOfItems] - 1) {
-        [addressField setEnabled:type == BDSKSearchGroupZoom];
-        [portField setEnabled:type == BDSKSearchGroupZoom];
+        [nameField setEnabled:YES];
+        [addressField setEnabled:[self type] == BDSKSearchGroupZoom];
+        [portField setEnabled:[self type] == BDSKSearchGroupZoom];
         [databaseField setEnabled:YES];
-        [passwordField setEnabled:YES];
-        [userField setEnabled:YES];
+        [passwordField setEnabled:[self type] == BDSKSearchGroupZoom];
+        [userField setEnabled:[self type] == BDSKSearchGroupZoom];
     } else {
         NSArray *servers = [searchGroupServers objectAtIndex:type];
-        NSDictionary *host = [servers objectAtIndex:i];
-        [self setAddress:[host objectForKey:@"host"]];
-        [self setPort:[host objectForKey:@"port"]];
-        [self setDatabase:[host objectForKey:@"database"]];
+        BDSKServerInfo *serverInfo = [servers objectAtIndex:i];
+        [self setName:[serverInfo name]];
+        [self setAddress:[serverInfo host]];
+        [self setPort:[serverInfo port]];
+        [self setDatabase:[serverInfo database]];
+        [self setPassword:[serverInfo password]];
+        [self setUsername:[serverInfo username]];
+        [nameField setEnabled:NO];
         [addressField setEnabled:NO];
         [portField setEnabled:NO];
         [databaseField setEnabled:NO];
         [passwordField setEnabled:NO];
         [userField setEnabled:NO];
+    }
+    [self didChangeValueForKey:@"canAddServer"];
+    [self didChangeValueForKey:@"canRemoveServer"];
+    [self didChangeValueForKey:@"canEditServer"];
+}
+
+- (IBAction)addServer:(id)sender;
+{
+    unsigned index = [serverPopup indexOfSelectedItem];
+    
+    if ((int)index != [serverPopup numberOfItems] - 1 || [self commitEditing] == NO) {
+        NSBeep();
+        return;
+    }
+    
+    BDSKServerInfo *serverInfo = [[BDSKServerInfo alloc] initWithType:[self type] name:[self name] host:[self address] port:[self port] database:[self database] password:[self password] username:[self username]];
+    index = [[[self class] serversForType:[self type]] count];
+    [[self class] addServer:serverInfo forType:[self type]];
+    [self reloadServersSelectingIndex:index];
+}
+
+- (IBAction)removeServer:(id)sender;
+{
+    unsigned index = [serverPopup indexOfSelectedItem];
+    
+    if ((int)index >= [serverPopup numberOfItems] - 2 || [serverPopup numberOfItems] < 4) {
+        NSBeep();
+        return;
+    }
+    
+    [[self class] removeServerAtIndex:index forType:[self type]];
+    [self reloadServersSelectingIndex:0];
+}
+
+- (IBAction)editServer:(id)sender;
+{
+    unsigned index = [serverPopup indexOfSelectedItem];
+    
+    if ((int)index >= [serverPopup numberOfItems] - 2) {
+        NSBeep();
+        return;
+    }
+    
+    // @@ unimplemented
+}
+
+- (IBAction)resetServers:(id)sender;
+{
+    [[self class] resetServers];
+    [self reloadServersSelectingIndex:0];
+}
+
+#pragma mark Accessors
+
+- (BOOL)canAddServer;
+{
+    return [serverPopup indexOfSelectedItem] == [serverPopup numberOfItems] - 1;
+}
+
+- (BOOL)canRemoveServer;
+{
+    return [serverPopup indexOfSelectedItem] < [serverPopup numberOfItems] - 2;
+}
+
+- (BOOL)canEditServer;
+{
+    return NO;//[serverPopup indexOfSelectedItem] < [serverPopup numberOfItems] - 2;
+}
+
+- (BDSKSearchGroup *)group { return group; }
+
+- (NSString *)name {
+    return name;
+}
+
+- (void)setName:(NSString *)newName {
+    if(name != newName){
+        [name release];
+        name = [newName copy];
     }
 }
 
@@ -223,7 +360,7 @@ static NSArray *searchGroupServers = nil;
 - (void)setType:(int)newType {
     if(type != newType) {
         type = newType;
-        [self setDefaultValues];
+        [self reloadServersSelectingIndex:0];
     }
 }
 
@@ -265,10 +402,10 @@ static NSArray *searchGroupServers = nil;
     
     NSString *message = nil;
     
-    if (type == 0 && [NSString isEmptyString:database]) {
-        message = NSLocalizedString(@"Unable to create a search group with an empty database", @"Informative text in alert dialog when search group is invalid");
-    } else if (type == 1 && ([NSString isEmptyString:address] || [NSString isEmptyString:database] || port == 0)) {
-        message = NSLocalizedString(@"Unable to create a search group with an empty address, database or port", @"Informative text in alert dialog when search group is invalid");
+    if (type == 0 && ([NSString isEmptyString:name] || [NSString isEmptyString:database])) {
+        message = NSLocalizedString(@"Unable to create a search group with an empty server name or database", @"Informative text in alert dialog when search group is invalid");
+    } else if (type == 1 && ([NSString isEmptyString:name] || [NSString isEmptyString:address] || [NSString isEmptyString:database] || port == 0)) {
+        message = NSLocalizedString(@"Unable to create a search group with an empty server name, address, database or port", @"Informative text in alert dialog when search group is invalid");
     }
     if (message) {
         NSAlert *alert = [NSAlert alertWithMessageText:NSLocalizedString(@"Empty value", @"Message in alert dialog when data for a search group is invalid")
