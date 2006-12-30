@@ -15,10 +15,14 @@
 
 @implementation BDSKZoomGroupServer
 
-- (id)initWithGroup:(BDSKSearchGroup *)aGroup serverInfo:(NSDictionary *)info;
++ (void)initialize
 {
+    OBINITIALIZE;
     [BDSKZoomRecord setFallbackEncoding:NSISOLatin1StringEncoding];
-    
+}
+
+- (id)initWithGroup:(BDSKSearchGroup *)aGroup serverInfo:(NSDictionary *)info;
+{    
     self = [super init];
     if (self) {
         group = aGroup;
