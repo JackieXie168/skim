@@ -25,6 +25,7 @@
 #import "BDSKStringParser.h"
 #import "BibAppController.h"
 #import <WebKit/WebKit.h>
+#import "BDSKServerInfo.h"
 
 
 @implementation BDSKEntrezGroupServer
@@ -49,12 +50,12 @@
     return canConnect;
 }
 
-- (id)initWithGroup:(BDSKSearchGroup *)aGroup serverInfo:(NSDictionary *)info;
+- (id)initWithGroup:(BDSKSearchGroup *)aGroup serverInfo:(BDSKServerInfo *)info;
 {
     self = [super init];
     if (self) {
         group = aGroup;
-        database = [[info objectForKey:@"database"] copy];
+        serverInfo = [info copy];
         searchTerm = nil;
         failedDownload = NO;
         isRetrieving = NO;
@@ -68,7 +69,7 @@
 
 - (void)dealloc
 {
-    [database release];
+    [serverInfo release];
     [filePath release];
     [super dealloc];
 }
@@ -95,14 +96,15 @@
     [self fetch];
 }
 
-- (void)setServerInfo:(NSDictionary *)info;
-{
-    [self setDatabase:[info objectForKey:@"database"]];
-}
+- (BDSKServerInfo *)serverInfo { return serverInfo; }
 
-- (NSDictionary *)serverInfo;
+- (void)setServerInfo:(BDSKServerInfo *)info;
 {
-    return [NSDictionary dictionaryWithObjectsAndKeys:[NSNumber numberWithInt:BDSKSearchGroupEntrez], @"type", database, @"database", nil];
+    if(serverInfo != info){
+        [serverInfo release];
+        serverInfo = [info copy];
+        needsReset = YES;
+    }
 }
 
 - (void)setNumberOfAvailableResults:(int)value;
@@ -124,17 +126,6 @@
 - (BOOL)isRetrieving { return isRetrieving; }
 
 #pragma mark Other accessors
-
-- (void)setDatabase:(NSString *)dbase;
-{
-    if(database != dbase){
-        [database release];
-        database = [dbase copy];
-        needsReset = YES;
-    }
-}
-
-- (NSString *)database { return database; }
 
 - (void)setSearchTerm:(NSString *)string;
 {
@@ -180,7 +171,7 @@
     
     if(NO != [NSString isEmptyString:[self searchTerm]]){
         // get the initial XML document with our search parameters in it
-        NSString *esearch = [[[self class] baseURLString] stringByAppendingFormat:@"/esearch.fcgi?db=%@&retmax=1&usehistory=y&term=%@&tool=bibdesk", [self database], [[self searchTerm] stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding]];
+        NSString *esearch = [[[self class] baseURLString] stringByAppendingFormat:@"/esearch.fcgi?db=%@&retmax=1&usehistory=y&term=%@&tool=bibdesk", [[self serverInfo] database], [[self searchTerm] stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding]];
         NSURL *initialURL = [NSURL URLWithString:esearch]; 
         OBPRECONDITION(initialURL);
         
@@ -222,7 +213,7 @@
     int numResults = MIN([self numberOfAvailableResults] - [self numberOfFetchedResults], MAX_RESULTS);
     
     // need to escape queryKey, but the rest should be valid for a URL
-    NSString *efetch = [[[self class] baseURLString] stringByAppendingFormat:@"/efetch.fcgi?rettype=medline&retmode=text&retstart=%d&retmax=%d&db=%@&query_key=%@&WebEnv=%@&tool=bibdesk", [self numberOfFetchedResults], numResults, [self database], [[self queryKey] stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding], [self webEnv]];
+    NSString *efetch = [[[self class] baseURLString] stringByAppendingFormat:@"/efetch.fcgi?rettype=medline&retmode=text&retstart=%d&retmax=%d&db=%@&query_key=%@&WebEnv=%@&tool=bibdesk", [self numberOfFetchedResults], numResults, [[self serverInfo] database], [[self queryKey] stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding], [self webEnv]];
     NSURL *theURL = [NSURL URLWithString:efetch];
     OBPOSTCONDITION(theURL);
     

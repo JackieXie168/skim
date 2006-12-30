@@ -9,7 +9,7 @@
 #import "BDSKZoomGroupServer.h"
 #import "BDSKSearchGroup.h"
 #import "BDSKStringParser.h"
-#import "BDSKThreadSafeMutableDictionary.h"
+#import "BDSKServerInfo.h"
 
 #define MAX_RESULTS 100
 
@@ -21,23 +21,25 @@
     [BDSKZoomRecord setFallbackEncoding:NSISOLatin1StringEncoding];
 }
 
-- (id)initWithGroup:(BDSKSearchGroup *)aGroup serverInfo:(NSDictionary *)info;
+- (id)initWithGroup:(BDSKSearchGroup *)aGroup serverInfo:(BDSKServerInfo *)info;
 {    
     self = [super init];
     if (self) {
         group = aGroup;
-        serverInfo = [[BDSKThreadSafeMutableDictionary alloc] initWithDictionary:info];
+        serverInfo = [info copy];
         flags.failedDownload = 0;
         flags.isRetrieving = 0;
         flags.needsReset = 1;
         availableResults = 0;
         fetchedResults = 0;
+        pthread_rwlock_init(&infolock, NULL);
     }
     return self;
 }
 
 - (void)dealloc
 {
+    pthread_rwlock_destroy(&infolock);
     group = nil;
     [connection release], connection = nil;
     [serverInfo release], serverInfo = nil;
@@ -74,16 +76,23 @@
         [self performSelector:_cmd withObject:nil afterDelay:0.1];
 }
 
-- (void)setServerInfo:(NSDictionary *)info;
+- (void)setServerInfo:(BDSKServerInfo *)info;
 {
-    [serverInfo setDictionary:info];
-    [serverInfo setObject:[NSNumber numberWithInt:BDSKSearchGroupZoom] forKey:@"type"];
+    pthread_rwlock_wrlock(&infolock);
+    if (serverInfo != info) {
+        [serverInfo release];
+        serverInfo = [info copy];
+    }
+    pthread_rwlock_unlock(&infolock);
     OSAtomicCompareAndSwap32Barrier(0, 1, (int32_t *)&flags.needsReset);
 }
 
-- (NSDictionary *)serverInfo;
+- (BDSKServerInfo *)serverInfo;
 {
-    return [[serverInfo copy] autorelease];
+    pthread_rwlock_rdlock(&infolock);
+    BDSKServerInfo *info = [[serverInfo copy] autorelease];
+    pthread_rwlock_unlock(&infolock);
+    return info;
 }
 
 - (void)setNumberOfAvailableResults:(int)value;
@@ -121,21 +130,17 @@
 
 - (void)resetConnection;
 {
-    NSString *host = [serverInfo objectForKey:@"host"];
-    int port = [[serverInfo objectForKey:@"port"] intValue];
-    NSString *database = [serverInfo objectForKey:@"database"];
-    NSString *password = [serverInfo objectForKey:@"password"];
-    NSString *user = [serverInfo objectForKey:@"username"];
+    BDSKServerInfo *info = [self serverInfo];
     
-    OBASSERT(host != nil);
+    OBASSERT([info host] != nil);
     
     [connection release];
-    if (host != nil) {
-        connection = [[BDSKZoomConnection alloc] initWithHost:host port:port database:database];
-        if ([NSString isEmptyString:password] == NO)
-            [connection setOption:password forKey:@"password"];
-        if ([NSString isEmptyString:user] == NO)
-            [connection setOption:user forKey:@"user"];
+    if ([info host] != nil) {
+        connection = [[BDSKZoomConnection alloc] initWithHost:[info host] port:[[info port] intValue] database:[info database]];
+        if ([NSString isEmptyString:[info password]] == NO)
+            [connection setOption:[info password] forKey:@"password"];
+        if ([NSString isEmptyString:[info username]] == NO)
+            [connection setOption:[info username] forKey:@"user"];
         OSAtomicCompareAndSwap32Barrier(1, 0, (int32_t *)&flags.needsReset);
     }else {
         connection = nil;

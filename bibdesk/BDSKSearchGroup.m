@@ -12,6 +12,7 @@
 #import "BDSKMacroResolver.h"
 #import "NSImage+Toolbox.h"
 #import "BDSKPublicationsArray.h"
+#import "BDSKServerInfo.h"
 
 
 @implementation BDSKSearchGroup
@@ -21,9 +22,11 @@
     return [self initWithType:BDSKSearchGroupEntrez serverInfo:[NSDictionary dictionaryWithObject:aName forKey:@"database"] searchTerm:nil];
 }
 
-- (id)initWithType:(int)aType serverInfo:(NSDictionary *)info searchTerm:(NSString *)string;
+- (id)initWithType:(int)aType serverInfo:(BDSKServerInfo *)info searchTerm:(NSString *)string;
 {
-    NSString *aName = [info objectForKey:@"database"];
+    NSString *aName = [info name];
+    if (aName == nil)
+        aName = [info database];
     if (aName == nil)
         aName = string;
     if (aName == nil)
@@ -40,42 +43,21 @@
 }
 
 - (id)initWithDictionary:(NSDictionary *)groupDict {
-    NSEnumerator *keyEnum = [groupDict keyEnumerator];
-    NSString *key;
-    id value;
-    NSMutableDictionary *info = [groupDict mutableCopy];
+    int aType = [[groupDict objectForKey:@"type"] intValue];
+    NSString *aSearchTerm = [[groupDict objectForKey:@"search term"] stringByUnescapingGroupPlistEntities];
+    BDSKServerInfo *serverInfo = [[BDSKServerInfo alloc] initWithType:aType dictionary:groupDict];
     
-    while (key = [keyEnum nextObject]) {
-        value = [groupDict objectForKey:key];
-        if ([value respondsToSelector:@selector(stringByUnescapingGroupPlistEntities)])
-            [info setObject:[value stringByUnescapingGroupPlistEntities] forKey:key];
-    }
+    self = [self initWithType:aType serverInfo:serverInfo searchTerm:aSearchTerm];
+    [serverInfo release];
     
-    int aType = [[info objectForKey:@"type"] intValue];
-    NSString *aSearchTerm = [info objectForKey:@"searchTerm"];
-    [info removeObjectForKey:@"type"];
-    [info removeObjectForKey:@"search term"];
-    
-    self = [self initWithType:aType serverInfo:info searchTerm:aSearchTerm];
-    [info release];
     return self;
 }
 
 - (NSDictionary *)dictionaryValue {
-    NSDictionary *info = [server serverInfo];
-    NSEnumerator *keyEnum = [info keyEnumerator];
-    NSString *key;
-    id value;
-    NSMutableDictionary *groupDict = [info mutableCopy];
-    
-    while (key = [keyEnum nextObject]) {
-        value = [info objectForKey:key];
-        if ([value respondsToSelector:@selector(stringByEscapingGroupPlistEntities)])
-            [groupDict setObject:[value stringByEscapingGroupPlistEntities] forKey:key];
-    }
+    NSMutableDictionary *groupDict = [[[server serverInfo] dictionaryValue] mutableCopy];
     
     [groupDict setObject:[NSNumber numberWithInt:[self type]] forKey:@"type"];
-    [groupDict setObject:[self searchTerm] forKey:@"search term"];
+    [groupDict setObject:[[self searchTerm] stringByEscapingGroupPlistEntities] forKey:@"search term"];
     
     return [groupDict autorelease];
 }
@@ -210,7 +192,7 @@
 
 #pragma mark Searching
 
-- (void)resetServerWithInfo:(NSDictionary *)info {
+- (void)resetServerWithInfo:(BDSKServerInfo *)info {
     [server terminate];
     [server release];
     if (type == BDSKSearchGroupEntrez)
@@ -252,13 +234,13 @@
 
 - (int)type { return type; }
 
-- (NSDictionary *)serverInfo { return [server serverInfo]; }
+- (BDSKServerInfo *)serverInfo { return [server serverInfo]; }
 
-- (void)setServerInfo:(NSDictionary *)info;
+- (void)setServerInfo:(BDSKServerInfo *)info;
 {
     [[[self undoManager] prepareWithInvocationTarget:self] setServerInfo:[self serverInfo]];
 
-    int newType = [[info objectForKey:@"type"] intValue];
+    int newType = [info type];
     if(newType != type){
         type = newType;
         [self resetServerWithInfo:info];

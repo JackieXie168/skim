@@ -32,16 +32,17 @@ typedef struct _BDSKZoomGroupFlags {
 } BDSKZoomGroupFlags;    
 
 
-@class BDSKThreadSafeMutableDictionary;
+@class BDSKServerInfo;
 
 @interface BDSKZoomGroupServer : BDSKAsynchronousDOServer <BDSKSearchGroupServer, BDSKZoomGroupServerMainThread, BDSKZoomGroupServerLocalThread>
 {
     BDSKSearchGroup *group;
     BDSKZoomConnection *connection;
-    BDSKThreadSafeMutableDictionary *serverInfo;
+    BDSKServerInfo *serverInfo;
     int availableResults;
     int fetchedResults;
     BDSKZoomGroupFlags flags;
+    pthread_rwlock_t infolock;
 }
 - (void)resetConnection;
 @end
