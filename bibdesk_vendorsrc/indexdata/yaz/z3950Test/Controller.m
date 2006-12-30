@@ -7,8 +7,6 @@
 //
 
 #import "Controller.h"
-#import <yaz/BDSKZoom.h>
-
 @implementation Controller
 
 - (void)awakeFromNib
@@ -23,16 +21,22 @@
     [_dbaseField setStringValue:_database];
     [_portField setIntValue:_port];
     
-    [self makeNewConnection];
-    [BDSKZoomRecord setFallbackEncoding:NSISOLatin1StringEncoding];
+    [BDSKZoomRecord setFallbackEncoding:NSWindowsCP1252StringEncoding];
     
     [_popup removeAllItems];
     [_popup addItemsWithTitles:[BDSKZoomRecord validKeys]];
     [_popup selectItemAtIndex:0];
     _currentType = [[[BDSKZoomRecord validKeys] objectAtIndex:0] copy];
-
+    _syntaxType = USMARC;
+    
     [_searchField setDelegate:self];
     [_searchField setFormatter:[[[BDSKZoomCCLQueryFormatter alloc] init] autorelease]];
+    
+    [_syntaxPopup removeAllItems];
+    [_syntaxPopup addItemsWithTitles:[NSArray arrayWithObjects:@"USMARC", @"GRS-1", @"SUTRS", @"XML", @"UKMARC", nil]];
+    [_syntaxPopup selectItemAtIndex:0];
+    
+    _connectionNeedsReset = YES;
     
 }
 
@@ -43,27 +47,39 @@
     [super dealloc];
 }
 
+- (IBAction)changeSyntaxType:(id)sender;
+{
+    _syntaxType = [BDSKZoomRecord syntaxTypeWithString:[sender titleOfSelectedItem]];
+    [_connection setPreferredRecordSyntax:_syntaxType];
+    [self search:_searchField];
+}
+
 - (void)makeNewConnection
 {
     [_connection release];
     _connection = [[BDSKZoomConnection alloc] initWithHost:_hostname port:_port database:_database];
+    [_connection setPreferredRecordSyntax:_syntaxType];
+    _connectionNeedsReset = NO;
 }
 
 - (IBAction)changeAddress:(id)sender;
 {
     [_hostname release];
     _hostname = [[sender stringValue] copy];
+    _connectionNeedsReset = YES;
 }
 
 - (IBAction)changePort:(id)sender;
 {
     _port = [sender intValue];
+    _connectionNeedsReset = YES;
 }
 
 - (IBAction)changeDbase:(id)sender;
 {
     [_database release];
     _database = [[sender stringValue] copy];
+    _connectionNeedsReset = YES;
 }
 
 - (void)applicationWillTerminate:(NSNotification *)notification;
@@ -84,8 +100,8 @@
 {
     NSString *searchString = [sender stringValue];
     
-    // stupidly inefficient, but we hang or get a SIGPIPE if the host/dbase/port combination is invalid
-    [self makeNewConnection];
+    if (_connectionNeedsReset)
+        [self makeNewConnection];
     
     if (nil == searchString || [searchString isEqualToString:@""]) {
         [_textView setString:@""];
@@ -105,7 +121,10 @@
                 [mutableString appendString:@"\n\n"];
                 [mutableString appendFormat:@"***** RECORD %d *****\n", i];
                 record = [resultSet recordAtIndex:i];
-                [mutableString appendString:[record valueForKey:_currentType]];
+                [mutableString appendFormat:@"Syntax: %@\n", [BDSKZoomRecord stringWithSyntaxType:[record syntaxType]]];
+                
+                NSString *value = [record valueForKey:_currentType];
+                [mutableString appendString:(value ? value : [NSString stringWithFormat:@"record returned nil for %@", _currentType])];
             }
         }
     }
