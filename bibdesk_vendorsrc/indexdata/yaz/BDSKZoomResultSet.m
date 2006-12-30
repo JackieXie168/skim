@@ -61,7 +61,8 @@
     return array;
 }
 
-#define STACK_BUFFER_SIZE 256
+// We define a fairly small batch size since some servers (library.usc.edu) return nil records if you ask for too many.  Calling ZOOM_resultset_records to get 25 at a time is still a significant performance improvement over call ZOOM_resultset_record on each one.
+#define BATCH_SIZE 25
 
 - (NSArray *)recordsInRange:(NSRange)range;
 {
@@ -73,29 +74,35 @@
     NSMutableArray *array = [NSMutableArray arrayWithCapacity:count];
     NSZone *zone = [self zone];
     
-    ZOOM_record *recordBuffer, stackBuffer[STACK_BUFFER_SIZE];
+    // since we're using a small buffer, we can keep everything on the stack
+    ZOOM_record recordBuffer[BATCH_SIZE];
     BDSKZoomRecord *record;
     unsigned i;
     
-    size_t bufferSize = sizeof(ZOOM_record) * count;
-    if (count > STACK_BUFFER_SIZE) {
-        recordBuffer = NSZoneMalloc(zone, bufferSize);
-    } else {
-        recordBuffer = stackBuffer;
+    size_t bufferSize = sizeof(ZOOM_record) * BATCH_SIZE;
+    
+    NSRange rangeToGet = NSMakeRange(range.location, MIN(BATCH_SIZE, NSMaxRange(range)-range.location));
+    
+    while (rangeToGet.length) {
+
+        memset(recordBuffer, 0, bufferSize);
+        ZOOM_resultset_records(_resultSet, recordBuffer, rangeToGet.location, rangeToGet.length);
+        
+        // reset count, since we're now operating on a subrange
+        count = rangeToGet.length;
+        
+        for (i = 0; i < count; i++) {
+            if (record = [[BDSKZoomRecord allocWithZone:zone] initWithZoomRecord:recordBuffer[i]])
+                [array addObject:record];
+            [record release];
+        }        
+        
+        // advance the start of the range by it's previous length, since we know that was valid
+        rangeToGet.location = rangeToGet.location + rangeToGet.length;
+        
+        // change the range length to be either our batch size or whatever's left in the original range
+        rangeToGet.length = MIN(BATCH_SIZE, NSMaxRange(range)-rangeToGet.location);
     }
-    NSAssert1(NULL != recordBuffer, @"failed to allocate memory for results of length %d", count);
-    
-    memset(recordBuffer, 0, bufferSize);
-    ZOOM_resultset_records(_resultSet, recordBuffer, range.location, count);
-    
-    for (i = 0; i < count; i++) {
-        if (record = [[BDSKZoomRecord allocWithZone:zone] initWithZoomRecord:recordBuffer[i]])
-            [array addObject:record];
-        [record release];
-    }
-    
-    // BDSKZoomRecord copies the record, so we can dispose of them safely
-    if (recordBuffer != stackBuffer) NSZoneFree(zone, recordBuffer);
     return array;
 }
 
