@@ -13,6 +13,7 @@
             OUTLETS = {
                 addressField = NSTextField; 
                 databaseField = NSTextField; 
+                editButton = NSButton; 
                 nameField = NSTextField; 
                 passwordField = NSSecureTextField; 
                 portField = NSTextField; 
@@ -26,7 +27,6 @@
             ACTIONS = {dismiss = id; }; 
             CLASS = BDSKSheetController; 
             LANGUAGE = ObjC; 
-            OUTLETS = {}; 
             SUPERCLASS = NSWindowController; 
         }, 
         {CLASS = FirstResponder; LANGUAGE = ObjC; SUPERCLASS = NSObject; }

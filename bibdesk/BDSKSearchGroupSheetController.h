@@ -32,6 +32,8 @@
     IBOutlet NSTextField *databaseField;
     IBOutlet NSSecureTextField *passwordField;
     IBOutlet NSTextField *userField;
+    
+    IBOutlet NSButton *editButton;
 }
 
 + (void)resetServers;
