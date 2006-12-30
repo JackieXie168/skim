@@ -5,6 +5,7 @@
                 changeAddress = id; 
                 changeDbase = id; 
                 changePort = id; 
+                changeSyntaxType = id; 
                 changeType = id; 
                 search = id; 
             }; 
@@ -16,6 +17,7 @@
                 "_popup" = NSPopUpButton; 
                 "_portField" = NSTextField; 
                 "_searchField" = NSSearchField; 
+                "_syntaxPopup" = NSPopUpButton; 
                 "_textView" = NSTextView; 
             }; 
             SUPERCLASS = NSObject; 
