@@ -76,16 +76,19 @@ static NSArray *searchGroupServers = nil;
 + (void)addServer:(BDSKServerInfo *)serverInfo forType:(int)type;
 {
     [[searchGroupServers objectAtIndex:type] addObject:serverInfo];
+    //[self saveServers];
 }
 
 + (void)setServer:(BDSKServerInfo *)serverInfo atIndex:(unsigned)index forType:(int)type;
 {
     [[searchGroupServers objectAtIndex:type] replaceObjectAtIndex:index withObject:serverInfo];
+    //[self saveServers];
 }
 
 + (void)removeServerAtIndex:(unsigned)index forType:(int)type;
 {
     [[searchGroupServers objectAtIndex:type] removeObjectAtIndex:index];
+    //[self saveServers];
 }
 
 #pragma mark Initialization
@@ -186,6 +189,8 @@ static NSArray *searchGroupServers = nil;
     [self willChangeValueForKey:@"canRemoveServer"];
     [self willChangeValueForKey:@"canEditServer"];
     
+    [editButton setTitle:NSLocalizedString(@"Edit", @"")];
+    
     if (i == [sender numberOfItems] - 1) {
         [nameField setEnabled:YES];
         [addressField setEnabled:[self type] == BDSKSearchGroupZoom];
@@ -251,13 +256,45 @@ static NSArray *searchGroupServers = nil;
         return;
     }
     
-    // @@ unimplemented
+    if ([nameField isEnabled]) {
+        BDSKServerInfo *serverInfo = [[BDSKServerInfo alloc] initWithType:[self type] name:[self name] host:[self address] port:[self port] database:[self database] password:[self password] username:[self username]];
+        [[self class] setServer:serverInfo atIndex:index forType:[self type]];
+        [self reloadServersSelectingIndex:index];
+    } else {
+        [editButton setTitle:NSLocalizedString(@"Set", @"")];
+        
+        [nameField setEnabled:YES];
+        [addressField setEnabled:[self type] == BDSKSearchGroupZoom];
+        [portField setEnabled:[self type] == BDSKSearchGroupZoom];
+        [databaseField setEnabled:YES];
+        [passwordField setEnabled:[self type] == BDSKSearchGroupZoom];
+        [userField setEnabled:[self type] == BDSKSearchGroupZoom];
+        
+        NSAlert *alert = [NSAlert alertWithMessageText:NSLocalizedString(@"Edit Server Setting", @"Message in alert dialog when editing default search group server")
+                                         defaultButton:NSLocalizedString(@"OK", @"Button title")
+                                       alternateButton:nil
+                                           otherButton:nil
+                             informativeTextWithFormat:NSLocalizedString(@"After editing, commit by choosing Set.", @"Informative text in alert dialog when editing default search group server")];
+        [alert beginSheetModalForWindow:[self window] modalDelegate:nil didEndSelector:NULL contextInfo:NULL];
+    }
 }
 
 - (IBAction)resetServers:(id)sender;
 {
-    [[self class] resetServers];
-    [self reloadServersSelectingIndex:0];
+    NSAlert *alert = [NSAlert alertWithMessageText:NSLocalizedString(@"Reset Servers", @"Message in alert dialog when resetting default search group servers")
+                                     defaultButton:NSLocalizedString(@"OK", @"Button title")
+                                   alternateButton:NSLocalizedString(@"Cancel", @"Button title")
+                                       otherButton:nil
+                         informativeTextWithFormat:NSLocalizedString(@"This will restore the default server settings to their original values. This action cannot be undone.", @"Informative text in alert dialog when resetting default search group servers")];
+    [alert beginSheetModalForWindow:[self window] modalDelegate:self didEndSelector:@selector(resetAlertDidEnd:returnCode:contextInfo:) contextInfo:NULL];
+}
+
+- (void)resetAlertDidEnd:(NSAlert *)alert returnCode:(int)returnCode contextInfo:(void *)contextInfo;
+{
+    if (returnCode == NSOKButton) {
+        [[self class] resetServers];
+        [self reloadServersSelectingIndex:0];
+    }
 }
 
 #pragma mark Accessors
@@ -274,7 +311,7 @@ static NSArray *searchGroupServers = nil;
 
 - (BOOL)canEditServer;
 {
-    return NO;//[serverPopup indexOfSelectedItem] < [serverPopup numberOfItems] - 2;
+    return [serverPopup indexOfSelectedItem] < [serverPopup numberOfItems] - 2;
 }
 
 - (BDSKSearchGroup *)group { return group; }
