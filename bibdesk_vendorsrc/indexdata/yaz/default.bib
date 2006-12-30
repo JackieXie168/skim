@@ -1,8 +1,12 @@
 # CCL field mappings
-# $Id: default.bib,v 1.9 2004/09/29 20:37:50 adam Exp $
 # 
 # The rule below is used when no fields are specified
-term t=l,r  s=al
+#
+# ARM: added u=1016 to term, which means that any field is matched
+# but s=al means that all words are required.  This requires the
+# BIB-1 attribute set, though.
+#
+term u=1016 t=l,r  s=al
 #
 # Simple rule for a field called "clean"
 clean t=l,r
