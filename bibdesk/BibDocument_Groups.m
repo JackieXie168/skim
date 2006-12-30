@@ -71,6 +71,7 @@
 #import "BDSKSearchGroup.h"
 #import "BDSKMainTableView.h"
 #import "BDSKSearchGroupSheetController.h"
+#import "BDSKServerInfo.h"
 
 @implementation BibDocument (Groups)
 
@@ -185,10 +186,10 @@ The groupedPublications array is a subset of the publications array, developed b
     
     BDSKSearchGroup *group = [[self selectedGroups] firstObject];
     OBASSERT([group isSearch]);
-    NSString *dbase = [[group serverInfo] objectForKey:@"database"];
+    NSString *name = [[group serverInfo] name];
     [searchGroupSearchField setStringValue:[group searchTerm] ? [group searchTerm] : @""];
     [searchGroupSearchButton setEnabled:[group isRetrieving] == NO];
-    [[searchGroupSearchField cell] setPlaceholderString:[NSString stringWithFormat:NSLocalizedString(@"Search %@", @"search group field placeholder"), dbase ? dbase : @""]];
+    [[searchGroupSearchField cell] setPlaceholderString:[NSString stringWithFormat:NSLocalizedString(@"Search %@", @"search group field placeholder"), name ? name : @""]];
 }
 
 - (void)hideSearchGroupView
