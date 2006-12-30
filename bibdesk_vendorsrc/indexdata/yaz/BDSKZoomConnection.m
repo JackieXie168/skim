@@ -99,6 +99,9 @@
 - (void)setOption:(NSString *)option forKey:(NSString *)key;
 {
     ZOOM_connection_option_set(_connection, [key UTF8String], [option UTF8String]);
+    
+    // cached results may now be invalid, if we're asking for a different charset/syntax
+    [_results removeAllObjects];
 }
 
 - (NSString *)optionForKey:(NSString *)key;
