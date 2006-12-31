@@ -9,6 +9,8 @@
 #import "BDSKZoomGroupServer.h"
 #import "BDSKSearchGroup.h"
 #import "BDSKStringParser.h"
+#import "BDSKMARCParser.h"
+#import "BDSKDublinCoreXMLParser.h"
 #import "BDSKServerInfo.h"
 #import "BibItem.h"
 
@@ -143,10 +145,10 @@
             [connection setOption:[info password] forKey:@"password"];
         if ([NSString isEmptyString:[info username]] == NO)
             [connection setOption:[info username] forKey:@"user"];
-        if ([info valueForKeyPath:@"options.preferredRecordSyntax"]) {
-            [connection setOption:[info valueForKeyPath:@"options.preferredRecordSyntax"]       
-                           forKey:@"preferredRecordSyntax"];
-        }
+        NSEnumerator *keyEnum = [[info options] keyEnumerator];
+        NSString *key;
+        while (key = [keyEnum nextObject])
+            [connection setOption:[[info options] objectForKey:key] forKey:key];       
         OSAtomicCompareAndSwap32Barrier(1, 0, (int32_t *)&flags.needsReset);
     }else {
         connection = nil;
@@ -165,8 +167,15 @@
 
 - (Class)parserClass
 {
-    NSString *parserClassName = [[[self serverInfo] options] objectForKey:@"parserClass"];
-    return nil == parserClassName ? [BDSKStringParser class] : NSClassFromString(parserClassName);
+    NSString *preferredRecordSyntax = [[serverInfo options] objectForKey:@"preferredRecordSyntax"];
+    Class parserClass = Nil;
+    if([preferredRecordSyntax isEqualToString:[BDSKZoomRecord stringWithSyntaxType:USMARC]] || [preferredRecordSyntax isEqualToString:[BDSKZoomRecord stringWithSyntaxType:UKMARC]])
+        parserClass = [BDSKDublinCoreXMLParser class];
+    else if([preferredRecordSyntax isEqualToString:[BDSKZoomRecord stringWithSyntaxType:XML]])
+        parserClass = [BDSKMARCParser class];
+    else
+        parserClass = [BDSKStringParser class];
+    return parserClass;
 }
 
 - (oneway void)downloadWithSearchTerm:(NSString *)searchTerm;
