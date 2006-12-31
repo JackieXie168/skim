@@ -19,7 +19,9 @@
                 expand = id; 
                 removeServer = id; 
                 resetServers = id; 
+                selectEncoding = id; 
                 selectPredefinedServer = id; 
+                selectSyntax = id; 
                 toggle = id; 
             }; 
             CLASS = BDSKSearchGroupSheetController; 
@@ -28,12 +30,14 @@
                 addressField = NSTextField; 
                 databaseField = NSTextField; 
                 editButton = NSButton; 
+                encodingPopup = NSPopUpButton; 
                 nameField = NSTextField; 
                 passwordField = NSSecureTextField; 
                 portField = NSTextField; 
                 revealButton = NSButton; 
                 serverPopup = NSPopUpButton; 
                 serverView = BDSKCollapsibleView; 
+                syntaxPopup = NSPopUpButton; 
                 typeMatrix = NSMatrix; 
                 userField = NSTextField; 
             }; 
