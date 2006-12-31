@@ -29,6 +29,8 @@
     IBOutlet NSTextField *databaseField;
     IBOutlet NSSecureTextField *passwordField;
     IBOutlet NSTextField *userField;
+    IBOutlet NSPopUpButton *syntaxPopup;
+    IBOutlet NSPopUpButton *encodingPopup;
     
     IBOutlet NSButton *editButton;
     
@@ -46,6 +48,9 @@
 - (id)initWithGroup:(BDSKSearchGroup *)aGroup;
 
 - (IBAction)selectPredefinedServer:(id)sender;
+- (IBAction)selectSyntax:(id)sender;
+- (IBAction)selectEncoding:(id)sender;
+
 - (IBAction)addServer:(id)sender;
 - (IBAction)removeServer:(id)sender;
 - (IBAction)editServer:(id)sender;

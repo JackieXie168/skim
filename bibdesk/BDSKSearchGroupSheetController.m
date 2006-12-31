@@ -11,6 +11,7 @@
 #import "BDSKServerInfo.h"
 #import "BDSKCollapsibleView.h"
 #import "NSFileManager_BDSKExtensions.h"
+#import <yaz/BDSKZoomRecord.h>>
 
 #define SERVERS_FILENAME @"SearchGroupServers.plist"
 
@@ -138,6 +139,62 @@ static NSArray *searchGroupServers = nil;
     [self selectPredefinedServer:serverPopup];
 }
 
+- (void)setupOptionPopups {
+    [syntaxPopup addItemWithTitle:@"USMarc"];
+    [[syntaxPopup lastItem] setRepresentedObject:[BDSKZoomRecord stringWithSyntaxType:USMARC]];
+    [syntaxPopup addItemWithTitle:@"XML"];
+    [[syntaxPopup lastItem] setRepresentedObject:[BDSKZoomRecord stringWithSyntaxType:XML]];
+    /*
+    [syntaxPopup addItemWithTitle:@"UKMarc"];
+    [[syntaxPopup lastItem] setRepresentedObject:[BDSKZoomRecord stringWithSyntaxType:UKMARC]];
+    [syntaxPopup addItemWithTitle:@"SUTRS"];
+    [[syntaxPopup lastItem] setRepresentedObject:[BDSKZoomRecord stringWithSyntaxType:SUTRS]];
+    [syntaxPopup addItemWithTitle:@"GRS-1"];
+    [[syntaxPopup lastItem] setRepresentedObject:[BDSKZoomRecord stringWithSyntaxType:GRS1]];
+    */
+    
+    [encodingPopup addItemWithTitle:@"Marc-8"];
+    [[encodingPopup lastItem] setRepresentedObject:@"marc-8"];
+    [encodingPopup addItemWithTitle:@"UTF-8"];
+    [[encodingPopup lastItem] setRepresentedObject:@"utf-8"];
+    [encodingPopup addItemWithTitle:@"ISO Latin-1"];
+    [[encodingPopup lastItem] setRepresentedObject:@"iso-8859-1"];
+}
+
+- (void)changeOptions {
+    NSString *value = [[serverInfo options] objectForKey:@"preferredRecordSyntax"];
+    int index = 0;
+    if (value != nil) {
+        index = [syntaxPopup numberOfItems];
+        while (--index) {
+            if ([[[syntaxPopup itemAtIndex:index] representedObject] isEqualToString:value])
+                break;
+        }
+        if (index == 0) {
+            index = [syntaxPopup numberOfItems];
+            [syntaxPopup addItemWithTitle:value];
+            [[syntaxPopup lastItem] setRepresentedObject:value];
+        }
+    }
+    [syntaxPopup selectItemAtIndex:index];
+    
+    value = [[serverInfo options] objectForKey:@"charset"];
+    index = 0;
+    if (value != nil) {
+        index = [encodingPopup numberOfItems];
+        while (--index) {
+            if ([[[encodingPopup itemAtIndex:index] representedObject] isEqualToString:value])
+                break;
+        }
+        if (index == 0) {
+            index = [encodingPopup numberOfItems];
+            [encodingPopup addItemWithTitle:value];
+            [[encodingPopup lastItem] setRepresentedObject:value];
+        }
+    }
+    [encodingPopup selectItemAtIndex:index];
+}
+
 - (void)awakeFromNib
 {
     [serverView retain];
@@ -156,6 +213,7 @@ static NSArray *searchGroupServers = nil;
             index = [servers count] + 1;
     }
     
+    [self setupOptionPopups];
     [self reloadServersSelectingIndex:index];
 }
 
@@ -192,13 +250,16 @@ static NSArray *searchGroupServers = nil;
     [editButton setTitle:NSLocalizedString(@"Edit", @"")];
     
     if (i == [sender numberOfItems] - 1) {
+        BOOL isZoom = [self type] == BDSKSearchGroupZoom;
         [self setServerInfo:[BDSKServerInfo defaultServerInfoWithType:[self type]]];
         [nameField setEnabled:YES];
-        [addressField setEnabled:[self type] == BDSKSearchGroupZoom];
-        [portField setEnabled:[self type] == BDSKSearchGroupZoom];
+        [addressField setEnabled:isZoom];
+        [portField setEnabled:isZoom];
         [databaseField setEnabled:YES];
-        [passwordField setEnabled:[self type] == BDSKSearchGroupZoom];
-        [userField setEnabled:[self type] == BDSKSearchGroupZoom];
+        [passwordField setEnabled:isZoom];
+        [userField setEnabled:isZoom];
+        [syntaxPopup setEnabled:isZoom];
+        [encodingPopup setEnabled:isZoom];
         
         [self expand:self];
     } else {
@@ -210,10 +271,28 @@ static NSArray *searchGroupServers = nil;
         [databaseField setEnabled:NO];
         [passwordField setEnabled:NO];
         [userField setEnabled:NO];
+        [syntaxPopup setEnabled:NO];
+        [encodingPopup setEnabled:NO];
     }
     [self didChangeValueForKey:@"canAddServer"];
     [self didChangeValueForKey:@"canRemoveServer"];
     [self didChangeValueForKey:@"canEditServer"];
+}
+
+- (IBAction)selectSyntax:(id)sender;
+{
+    NSString *syntax = [sender indexOfSelectedItem] == 0 ? nil : [[sender selectedItem] representedObject];
+    NSMutableDictionary *options = [NSMutableDictionary dictionaryWithDictionary:[serverInfo options]];
+    [options setValue:syntax forKey:@"preferredRecordSyntax"];
+    [serverInfo setOptions:[options count] ? options : nil];
+}
+
+- (IBAction)selectEncoding:(id)sender;
+{
+    NSString *encoding = [sender indexOfSelectedItem] == 0 ? nil : [[sender selectedItem] representedObject];
+    NSMutableDictionary *options = [NSMutableDictionary dictionaryWithDictionary:[serverInfo options]];
+    [options setValue:encoding forKey:@"charset"];
+    [serverInfo setOptions:[options count] ? options : nil];
 }
 
 - (IBAction)addServer:(id)sender;
@@ -262,12 +341,15 @@ static NSArray *searchGroupServers = nil;
     } else {
         [editButton setTitle:NSLocalizedString(@"Set", @"")];
         
+        BOOL isZoom = [self type] == BDSKSearchGroupZoom;
         [nameField setEnabled:YES];
-        [addressField setEnabled:[self type] == BDSKSearchGroupZoom];
-        [portField setEnabled:[self type] == BDSKSearchGroupZoom];
+        [addressField setEnabled:isZoom];
+        [portField setEnabled:isZoom];
         [databaseField setEnabled:YES];
-        [passwordField setEnabled:[self type] == BDSKSearchGroupZoom];
-        [userField setEnabled:[self type] == BDSKSearchGroupZoom];
+        [passwordField setEnabled:isZoom];
+        [userField setEnabled:isZoom];
+        [syntaxPopup setEnabled:isZoom];
+        [encodingPopup setEnabled:isZoom];
         
         NSAlert *alert = [NSAlert alertWithMessageText:NSLocalizedString(@"Edit Server Setting", @"Message in alert dialog when editing default search group server")
                                          defaultButton:NSLocalizedString(@"OK", @"Button title")
@@ -301,17 +383,15 @@ static NSArray *searchGroupServers = nil;
     if (isExpanded)
         return;
     
-    NSRect viewRect = [serverView frame];
     NSRect winRect = [[self window] frame];
     NSSize minSize = [[self window] minSize];
     NSSize maxSize = [[self window] maxSize];
-    float dh = [serverView minSize].height - 4.0;
-    viewRect.size.width = NSWidth([[[self window] contentView] frame]);
+    float dh = [serverView minSize].height;
     winRect.size.height += dh;
     winRect.origin.y -= dh;
     minSize.height += dh;
     maxSize.height += dh;
-    [[[self window] contentView] addSubview:serverView];
+    [serverView setHidden:NO];
     [[self window] setFrame:winRect display:YES animate:YES];
     [[self window] setMinSize:minSize];
     [[self window] setMaxSize:maxSize];
@@ -328,7 +408,7 @@ static NSArray *searchGroupServers = nil;
     NSRect winRect = [[self window] frame];
     NSSize minSize = [[self window] minSize];
     NSSize maxSize = [[self window] maxSize];
-    float dh = [serverView minSize].height - 4.0;
+    float dh = [serverView minSize].height;
     winRect.size.height -= dh;
     winRect.origin.y += dh;
     minSize.height -= dh;
@@ -336,7 +416,7 @@ static NSArray *searchGroupServers = nil;
     [[self window] setFrame:winRect display:YES animate:YES];
     [[self window] setMinSize:minSize];
     [[self window] setMaxSize:maxSize];
-    [serverView removeFromSuperview];
+    [serverView setHidden:YES];
     
     [revealButton setState:NSOffState];
     isExpanded = NO;
@@ -375,6 +455,7 @@ static NSArray *searchGroupServers = nil;
 {
     [serverInfo autorelease];
     serverInfo = [info copy];
+    [self changeOptions];
 }
 
 - (void)setType:(int)t { 
