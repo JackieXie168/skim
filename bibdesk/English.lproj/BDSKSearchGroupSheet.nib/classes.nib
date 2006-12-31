@@ -1,12 +1,26 @@
 {
     IBClasses = (
         {
+            CLASS = BDSKCollapsibleView; 
+            LANGUAGE = ObjC; 
+            SUPERCLASS = BDSKContainerView; 
+        }, 
+        {
+            CLASS = BDSKContainerView; 
+            LANGUAGE = ObjC; 
+            OUTLETS = {contentView = id; }; 
+            SUPERCLASS = NSView; 
+        }, 
+        {
             ACTIONS = {
                 addServer = id; 
+                collapse = id; 
                 editServer = id; 
+                expand = id; 
                 removeServer = id; 
                 resetServers = id; 
                 selectPredefinedServer = id; 
+                toggle = id; 
             }; 
             CLASS = BDSKSearchGroupSheetController; 
             LANGUAGE = ObjC; 
@@ -17,7 +31,9 @@
                 nameField = NSTextField; 
                 passwordField = NSSecureTextField; 
                 portField = NSTextField; 
+                revealButton = NSButton; 
                 serverPopup = NSPopUpButton; 
+                serverView = BDSKCollapsibleView; 
                 typeMatrix = NSMatrix; 
                 userField = NSTextField; 
             }; 
