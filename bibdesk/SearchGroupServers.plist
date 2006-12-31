@@ -16,7 +16,41 @@
         { name = UniSTS; database = unists; }
     ),
     (
-        { name = "Library of Congress"; database = Voyager; host = "z3950.loc.gov"; port = "7090"; },
-        { name = "University of Southern California"; database = unicorn; host = "library.usc.edu"; port = "2200"; },
+        /* Library of Congress z39.50 connection */
+        {   
+            name = "Library of Congress"; 
+            database = Voyager; 
+            host = "z3950.loc.gov"; 
+            port = "7090"; 
+            options = {
+                preferredRecordSyntax = "usmarc";
+                recordCharset = "marc-8";
+                parserClass = "BDSKMARCParser";
+            };
+        },
+        /* USC z39.50 connection */
+        {   
+            name = "University of Southern California"; 
+            database = unicorn; 
+            host = "library.usc.edu"; 
+            port = "2200"; 
+            options = {
+                preferredRecordSyntax = "usmarc";
+                recordCharset = "marc-8";
+                parserClass = "BDSKMARCParser";
+            };
+        },
+        /* COPAC z39.50 connection */
+        {
+            name = "COPAC";
+            database = "copac";
+            host = "z3950.copac.ac.uk";
+            port = "2100";
+            options = {
+                preferredRecordSyntax = "xml";
+                recordCharset = "iso-8859-1";
+                parserClass = "BDSKDublinCoreXMLParser";
+            };
+        }
     )
 )
