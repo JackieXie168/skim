@@ -9,8 +9,6 @@
 #import "BDSKZoomGroupServer.h"
 #import "BDSKSearchGroup.h"
 #import "BDSKStringParser.h"
-#import "BDSKMARCParser.h"
-#import "BDSKDublinCoreXMLParser.h"
 #import "BDSKServerInfo.h"
 #import "BibItem.h"
 
@@ -163,17 +161,18 @@
     OSAtomicCompareAndSwap32Barrier(1, 0, (int32_t *)&flags.isRetrieving);
 } 
 
-- (Class)parserClassForString:(NSString *)string
+- (int)stringTypeForRecordString:(NSString *)string
 {
     NSString *preferredRecordSyntax = [[serverInfo options] objectForKey:@"preferredRecordSyntax"];
-    Class parserClass = Nil;
-    if([preferredRecordSyntax isEqualToString:[BDSKZoomRecord stringWithSyntaxType:USMARC]] || [preferredRecordSyntax isEqualToString:[BDSKZoomRecord stringWithSyntaxType:UKMARC]])
-        parserClass = [BDSKDublinCoreXMLParser class];
-    else if([preferredRecordSyntax isEqualToString:[BDSKZoomRecord stringWithSyntaxType:XML]])
-        parserClass = [BDSKMARCParser class];
-    if (NO == [parserClass canParseString:string])
-        parserClass = [BDSKStringParser class];
-    return parserClass;
+    int stringType = BDSKUnknownStringType;
+    if([preferredRecordSyntax isEqualToString:[BDSKZoomRecord stringWithSyntaxType:USMARC]] || [preferredRecordSyntax isEqualToString:[BDSKZoomRecord stringWithSyntaxType:UKMARC]]) {
+        stringType = BDSKMARCStringType;
+    } else if([preferredRecordSyntax isEqualToString:[BDSKZoomRecord stringWithSyntaxType:XML]]) {
+        stringType = [BDSKStringParser canParseString:string ofType:BDSKMARCStringType] ? BDSKMARCStringType : BDSKDublinCoreStringType;
+    }
+    if (NO == [BDSKStringParser canParseString:string ofType:stringType])
+        stringType = BDSKUnknownStringType;
+    return stringType;
 }
 
 - (oneway void)downloadWithSearchTerm:(NSString *)searchTerm;
@@ -204,10 +203,12 @@
             pubs = [NSMutableArray array];
             int i, iMax = [records count];
             NSString *record;
+            int stringType;
             BibItem *anItem;
             for (i = 0; i < iMax; i++) {
                 record = [[records objectAtIndex:i] rawString];
-                if (anItem = [[[self parserClassForString:record] itemsFromString:record error:NULL] lastObject])
+                stringType = [self stringTypeForRecordString:record];
+                if (anItem = [[BDSKStringParser itemsFromString:record ofType:stringType error:NULL] lastObject])
                     [pubs addObject:anItem];
             }
         }
