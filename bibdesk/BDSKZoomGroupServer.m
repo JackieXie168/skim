@@ -163,7 +163,7 @@
     OSAtomicCompareAndSwap32Barrier(1, 0, (int32_t *)&flags.isRetrieving);
 } 
 
-- (Class)parserClass
+- (Class)parserClassForString:(NSString *)string
 {
     NSString *preferredRecordSyntax = [[serverInfo options] objectForKey:@"preferredRecordSyntax"];
     Class parserClass = Nil;
@@ -171,7 +171,7 @@
         parserClass = [BDSKDublinCoreXMLParser class];
     else if([preferredRecordSyntax isEqualToString:[BDSKZoomRecord stringWithSyntaxType:XML]])
         parserClass = [BDSKMARCParser class];
-    else
+    if (NO == [parserClass canParseString:string])
         parserClass = [BDSKStringParser class];
     return parserClass;
 }
@@ -202,12 +202,12 @@
             [self setFetchedResults:[self fetchedResults] + numResults];
             
             pubs = [NSMutableArray array];
-            BDSKZoomRecord *record;
             int i, iMax = [records count];
+            NSString *record;
+            BibItem *anItem;
             for (i = 0; i < iMax; i++) {
-                record = [records objectAtIndex:i];
-                BibItem *anItem = [[[self parserClass] itemsFromString:[record rawString] error:NULL] lastObject];
-                if (anItem)
+                record = [[records objectAtIndex:i] rawString];
+                if (anItem = [[[self parserClassForString:record] itemsFromString:record error:NULL] lastObject])
                     [pubs addObject:anItem];
             }
         }
