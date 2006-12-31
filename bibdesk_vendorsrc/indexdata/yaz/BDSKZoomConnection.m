@@ -57,8 +57,9 @@
         
         // default options
         [self setPreferredRecordSyntax:USMARC];
-        [self setOption:@"UTF-8" forKey:@"charset"];
-        [self setOption:@"en-US" forKey:@"lang"];
+        
+        // encoding to use when returning strings from records
+        [self setResultEncoding:NSUTF8StringEncoding];
         
         [[NSNotificationCenter defaultCenter] addObserver:self 
                                                  selector:@selector(handleApplicationWillTerminate:) 
@@ -100,6 +101,7 @@
     NSMutableDictionary *plist = [NSMutableDictionary dictionary];
     [plist setObject:_hostName forKey:@"_hostName"];
     [plist setObject:[NSNumber numberWithInt:_portNum] forKey:@"_portNum"];
+    [plist setObject:[NSNumber numberWithInt:_resultEncoding] forKey:@"_resultEncoding"];
     [plist setObject:_options forKey:@"_options"];
     
     // this is the only object ivar that may be nil
@@ -115,6 +117,10 @@
     self = [self initWithHost:[plist objectForKey:@"_hostName"] 
                          port:[[plist objectForKey:@"_portNum"] intValue] 
                      database:[plist objectForKey:@"_dataBase"]];
+    
+    // set to UTF-8 in init...
+    if ([plist objectForKey:@"_resultEncoding"])
+        _resultEncoding = [[plist objectForKey:@"_resultEncoding"] intValue];
     
     // options from the plist override any default options we've set (noop is self is nil)
     NSDictionary *options = [plist objectForKey:@"_options"];
@@ -163,6 +169,12 @@
     [self setOption:[BDSKZoomRecord stringWithSyntaxType:type] forKey:@"preferredRecordSyntax"];
 }
 
+- (void)setResultEncoding:(NSStringEncoding)encoding;
+{
+    NSParameterAssert(encoding > 0);
+    _resultEncoding = encoding;
+}
+
 - (BDSKZoomResultSet *)resultsForQuery:(BDSKZoomQuery *)query;
 {
     NSParameterAssert(nil != query);
@@ -176,7 +188,7 @@
         if ((error = ZOOM_connection_error(_connection, &errmsg, &addinfo)))
             NSLog(@"Error: %s (%d) %s\n", errmsg, error, addinfo);
 
-        resultSet = [[BDSKZoomResultSet allocWithZone:[self zone]] initWithZoomResultSet:r];
+        resultSet = [[BDSKZoomResultSet allocWithZone:[self zone]] initWithZoomResultSet:r encoding:_resultEncoding];
         [_results setObject:resultSet forKey:query];
         [resultSet release];
     }

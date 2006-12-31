@@ -11,12 +11,13 @@
 
 @implementation BDSKZoomResultSet
 
-- (id)initWithZoomResultSet:(ZOOM_resultset)resultSet;
+- (id)initWithZoomResultSet:(ZOOM_resultset)resultSet encoding:(NSStringEncoding)encoding;
 {
     self = [super init];
     if (self) {
         NSParameterAssert(NULL != resultSet);
         _resultSet = resultSet;
+        _resultEncoding = encoding;
     }
     return self;
 }
@@ -30,7 +31,7 @@
 - (BDSKZoomRecord *)recordAtIndex:(unsigned int)index;
 {
     NSParameterAssert(index < [self countOfRecords]);
-    return [BDSKZoomRecord recordWithZoomRecord:ZOOM_resultset_record(_resultSet, index)];
+    return [BDSKZoomRecord recordWithZoomRecord:ZOOM_resultset_record(_resultSet, index) encoding:_resultEncoding];
 }
 
 - (NSArray *)allRecords;
@@ -52,7 +53,7 @@
     unsigned i = [indexes firstIndex];
 
     while (i != NSNotFound) {
-        BDSKZoomRecord *record = [[BDSKZoomRecord allocWithZone:zone] initWithZoomRecord:ZOOM_resultset_record(_resultSet, i)];
+        BDSKZoomRecord *record = [[BDSKZoomRecord allocWithZone:zone] initWithZoomRecord:ZOOM_resultset_record(_resultSet, i) encoding:_resultEncoding];
         if (record)
             [array addObject:record];
         [record release];
@@ -92,7 +93,7 @@
         count = rangeToGet.length;
         
         for (i = 0; i < count; i++) {
-            if (record = [[BDSKZoomRecord allocWithZone:zone] initWithZoomRecord:recordBuffer[i]])
+            if (record = [[BDSKZoomRecord allocWithZone:zone] initWithZoomRecord:recordBuffer[i] encoding:_resultEncoding])
                 [array addObject:record];
             [record release];
         }        

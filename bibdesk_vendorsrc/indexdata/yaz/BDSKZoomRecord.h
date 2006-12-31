@@ -21,6 +21,7 @@ typedef enum {
 @interface BDSKZoomRecord : NSObject
 {
     ZOOM_record          _record;
+    NSStringEncoding     _recordEncoding;
     NSMutableDictionary *_representations;
 }
 
@@ -31,8 +32,8 @@ typedef enum {
 // encoding of 0 (not used) means that only UTF-8 will be tried
 + (void)setFallbackEncoding:(NSStringEncoding)enc;
 
-+ (id)recordWithZoomRecord:(ZOOM_record)record;
-- (id)initWithZoomRecord:(ZOOM_record)record;
++ (id)recordWithZoomRecord:(ZOOM_record)record encoding:(NSStringEncoding)encoding;
+- (id)initWithZoomRecord:(ZOOM_record)record encoding:(NSStringEncoding)encoding;
 
 - (NSString *)renderedString;
 - (NSString *)rawString;
