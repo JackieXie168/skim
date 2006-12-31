@@ -145,10 +145,8 @@
             [connection setOption:[info password] forKey:@"password"];
         if ([NSString isEmptyString:[info username]] == NO)
             [connection setOption:[info username] forKey:@"user"];
-        NSEnumerator *keyEnum = [[info options] keyEnumerator];
-        NSString *key;
-        while (key = [keyEnum nextObject])
-            [connection setOption:[[info options] objectForKey:key] forKey:key];       
+        if ([[info options] objectForKey:@"preferredRecordSyntax"])
+            [connection setOption:[[info options] objectForKey:@"preferredRecordSyntax"] forKey:@"preferredRecordSyntax"];       
         OSAtomicCompareAndSwap32Barrier(1, 0, (int32_t *)&flags.needsReset);
     }else {
         connection = nil;
