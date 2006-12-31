@@ -46,6 +46,7 @@
 #import "BDSKReferenceMinerParser.h"
 #import "BDSKJSTORParser.h"
 #import "BDSKWebOfScienceParser.h"
+#import "BDSKDublinCoreXMLParser.h"
 
 @implementation BDSKStringParser
 
@@ -73,6 +74,9 @@
             break;
         case BDSKWOSStringType:
             parserClass = [BDSKWebOfScienceParser class];
+            break;
+        case BDSKDublinCoreStringType:
+            parserClass = [BDSKDublinCoreXMLParser class];
             break;
     }
     return [parserClass itemsFromString:itemString error:outError];
@@ -107,6 +111,8 @@
 		return BDSKJSTORStringType;
 	if([BDSKWebOfScienceParser canParseString:self])
 		return BDSKWOSStringType;
+	if([BDSKDublinCoreXMLParser canParseString:self])
+		return BDSKDublinCoreStringType;
 	if([BibTeXParser canParseStringAfterFixingKeys:self])
 		return BDSKNoKeyBibTeXStringType;
 	return BDSKUnknownStringType;

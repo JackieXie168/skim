@@ -1,11 +1,11 @@
 //
-// BDSKStringParser.h
-// Bibdesk
+//  BDSKDublinCoreXMLParser.h
+//  Bibdesk
 //
-// Created by Adam Maxwell on 02/07/06.
+//  Created by Christiaan Hofman on 12/31/06.
 /*
  This software is Copyright (c) 2006
- Adam Maxwell. All rights reserved.
+ Christiaan Hofman. All rights reserved.
  
  Redistribution and use in source and binary forms, with or without
  modification, are permitted provided that the following conditions
@@ -19,7 +19,7 @@
  the documentation and/or other materials provided with the
  distribution.
  
- - Neither the name of Adam Maxwell nor the names of any
+ - Neither the name of Christiaan Hofman nor the names of any
  contributors may be used to endorse or promote products derived
  from this software without specific prior written permission.
  
@@ -36,32 +36,9 @@
  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-#import <Foundation/NSObject.h>
-
-enum {
-	BDSKUnknownStringType = -1, 
-	BDSKBibTeXStringType, 
-	BDSKNoKeyBibTeXStringType, 
-	BDSKPubMedStringType, 
-	BDSKRISStringType, 
-	BDSKMARCStringType, 
-	BDSKReferenceMinerStringType, 
-	BDSKJSTORStringType, 
-	BDSKWOSStringType, 
-	BDSKDublinCoreStringType
-};
-
-@interface BDSKStringParser : NSObject {
-}
-
-+ (BOOL)canParseString:(NSString *)string;
-
-+ (NSArray *)itemsFromString:(NSString *)itemString ofType:(int)stringType error:(NSError **)outError;
-+ (NSArray *)itemsFromString:(NSString *)itemString error:(NSError **)outError;
-
-@end
+#import <Cocoa/Cocoa.h>
+#import "BDSKStringParser.h"
 
 
-@interface NSString (BDSKStringParserExtensions)
-- (int)contentStringType;
+@interface BDSKDublinCoreXMLParser : BDSKStringParser
 @end
