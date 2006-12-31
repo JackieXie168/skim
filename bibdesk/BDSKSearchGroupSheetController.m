@@ -9,6 +9,7 @@
 #import "BDSKSearchGroupSheetController.h"
 #import "BDSKSearchGroup.h"
 #import "BDSKServerInfo.h"
+#import "BDSKCollapsibleView.h"
 #import "NSFileManager_BDSKExtensions.h"
 
 #define SERVERS_FILENAME @"SearchGroupServers.plist"
@@ -111,6 +112,9 @@ static NSArray *searchGroupServers = nil;
         database = nil;
         username = nil;
         password = nil;
+        
+        isExpanded = YES;
+
     }
     return self;
 }
@@ -125,6 +129,7 @@ static NSArray *searchGroupServers = nil;
     [database release];
     [username release];
     [password release];
+    [serverView release];
     CFRelease(editors);    
     [super dealloc];
 }
@@ -143,6 +148,11 @@ static NSArray *searchGroupServers = nil;
 
 - (void)awakeFromNib
 {
+    [serverView retain];
+    [serverView setMinSize:[serverView frame].size];
+    [serverView setCollapseEdges:BDSKMaxXEdgeMask | BDSKMinYEdgeMask];
+    [self collapse:self];
+    
     NSArray *servers = [[self class] serversForType:type];
     unsigned index = 0;
     
@@ -198,6 +208,8 @@ static NSArray *searchGroupServers = nil;
         [databaseField setEnabled:YES];
         [passwordField setEnabled:[self type] == BDSKSearchGroupZoom];
         [userField setEnabled:[self type] == BDSKSearchGroupZoom];
+        
+        [self expand:self];
     } else {
         NSArray *servers = [searchGroupServers objectAtIndex:type];
         BDSKServerInfo *serverInfo = [servers objectAtIndex:i];
@@ -249,6 +261,8 @@ static NSArray *searchGroupServers = nil;
 
 - (IBAction)editServer:(id)sender;
 {
+    [self expand:sender];
+    
     unsigned index = [serverPopup indexOfSelectedItem];
     
     if ((int)index >= [serverPopup numberOfItems] - 2) {
@@ -295,6 +309,60 @@ static NSArray *searchGroupServers = nil;
         [[self class] resetServers];
         [self reloadServersSelectingIndex:0];
     }
+}
+
+- (IBAction)expand:(id)sender;
+{
+    if (isExpanded)
+        return;
+    
+    NSRect viewRect = [serverView frame];
+    NSRect winRect = [[self window] frame];
+    NSSize minSize = [[self window] minSize];
+    NSSize maxSize = [[self window] maxSize];
+    float dh = [serverView minSize].height - 4.0;
+    viewRect.size.width = NSWidth([[[self window] contentView] frame]);
+    winRect.size.height += dh;
+    winRect.origin.y -= dh;
+    minSize.height += dh;
+    maxSize.height += dh;
+    [[[self window] contentView] addSubview:serverView];
+    [[self window] setFrame:winRect display:YES animate:YES];
+    [[self window] setMinSize:minSize];
+    [[self window] setMaxSize:maxSize];
+    
+    [revealButton setState:NSOnState];
+    isExpanded = YES;
+}
+
+- (IBAction)collapse:(id)sender;
+{
+    if (isExpanded == NO)
+        return;
+    
+    NSRect winRect = [[self window] frame];
+    NSSize minSize = [[self window] minSize];
+    NSSize maxSize = [[self window] maxSize];
+    float dh = [serverView minSize].height - 4.0;
+    winRect.size.height -= dh;
+    winRect.origin.y += dh;
+    minSize.height -= dh;
+    maxSize.height -= dh;
+    [[self window] setFrame:winRect display:YES animate:YES];
+    [[self window] setMinSize:minSize];
+    [[self window] setMaxSize:maxSize];
+    [serverView removeFromSuperview];
+    
+    [revealButton setState:NSOffState];
+    isExpanded = NO;
+}
+
+- (IBAction)toggle:(id)sender;
+{
+    if (isExpanded)
+        [self collapse:sender];
+    else
+        [self expand:sender];
 }
 
 #pragma mark Accessors

@@ -9,7 +9,7 @@
 #import <Cocoa/Cocoa.h>
 #import "BDSKSheetController.h"
 
-@class BDSKSearchGroup, BDSKServerInfo;
+@class BDSKSearchGroup, BDSKServerInfo, BDSKCollapsibleView;
 
 @interface BDSKSearchGroupSheetController : BDSKSheetController {
     BDSKSearchGroup *group;
@@ -23,6 +23,8 @@
     NSString *username;
     NSString *password;
     
+    BOOL isExpanded;
+    
     IBOutlet NSPopUpButton *serverPopup;
     IBOutlet NSMatrix *typeMatrix;
     
@@ -34,6 +36,9 @@
     IBOutlet NSTextField *userField;
     
     IBOutlet NSButton *editButton;
+    
+    IBOutlet BDSKCollapsibleView *serverView;
+    IBOutlet NSButton *revealButton;
 }
 
 + (void)resetServers;
@@ -50,6 +55,10 @@
 - (IBAction)removeServer:(id)sender;
 - (IBAction)editServer:(id)sender;
 - (IBAction)resetServers:(id)sender;
+
+- (IBAction)expand:(id)sender;
+- (IBAction)collapse:(id)sender;
+- (IBAction)toggle:(id)sender;
 
 - (BOOL)canAddServer;
 - (BOOL)canRemoveServer;
