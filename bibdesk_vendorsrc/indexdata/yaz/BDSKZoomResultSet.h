@@ -12,10 +12,11 @@
 @class BDSKZoomRecord;
 @interface BDSKZoomResultSet : NSObject
 {
-    ZOOM_resultset _resultSet;
+    ZOOM_resultset   _resultSet;
+    NSStringEncoding _resultEncoding;
 }
 
-- (id)initWithZoomResultSet:(ZOOM_resultset)resultSet;
+- (id)initWithZoomResultSet:(ZOOM_resultset)resultSet encoding:(NSStringEncoding)encoding;
 - (BDSKZoomRecord *)recordAtIndex:(unsigned int)index;
 - (unsigned int)countOfRecords;
 - (NSArray *)allRecords;

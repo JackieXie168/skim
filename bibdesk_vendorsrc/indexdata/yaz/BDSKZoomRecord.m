@@ -7,9 +7,11 @@
 //
 
 #import "BDSKZoomRecord.h"
+#import "yaz-iconv.h"
 
-static NSString *renderKey = @"render;charset=marc-8";
-static NSString *rawKey = @"raw;charset=marc-8";
+// could specify explicit character set conversions in the keys, but that's not very flexible
+static NSString *renderKey = @"render";
+static NSString *rawKey = @"raw";
 
 @interface BDSKZoomRecord (Private)
 - (void)cacheRepresentationForKey:(NSString *)aKey;
@@ -56,6 +58,7 @@ static NSStringEncoding fallbackEncoding = 0;
     const char *syn = [string UTF8String];
 
     // These string constants are from yaz/util/oid.c
+    // Note: yaz_matchstr() is case-insensitive and removes "-" characters
     if (!yaz_matchstr(syn, "xml"))
         return XML;
     else if (!yaz_matchstr(syn, "GRS-1"))
@@ -74,12 +77,12 @@ static NSStringEncoding fallbackEncoding = 0;
         return UNKNOWN;
 }
 
-+ (id)recordWithZoomRecord:(ZOOM_record)record;
++ (id)recordWithZoomRecord:(ZOOM_record)record encoding:(NSStringEncoding)encoding;
 {
-    return [[[self allocWithZone:[self zone]] initWithZoomRecord:record] autorelease];
+    return [[[self allocWithZone:[self zone]] initWithZoomRecord:record encoding:encoding] autorelease];
 }
 
-- (id)initWithZoomRecord:(ZOOM_record)record;
+- (id)initWithZoomRecord:(ZOOM_record)record encoding:(NSStringEncoding)encoding;
 {
     self = [super init];
     if (self) {
@@ -88,6 +91,7 @@ static NSStringEncoding fallbackEncoding = 0;
             // copy it, since the owning result set could go away
             _record = ZOOM_record_clone(record);
             _representations = [[NSMutableDictionary allocWithZone:[self zone]] init];
+            _recordEncoding = encoding;
             
             // make sure we always have these
             [self cacheRepresentationForKey:renderKey];
@@ -132,29 +136,86 @@ static NSStringEncoding fallbackEncoding = 0;
     return [_representations objectForKey:rawKey];
 }
 
+// this doesn't use valueForKey:, since cacheRepresentationForKey: calls syntaxType
 - (BDSKZoomSyntaxType)syntaxType;
 {
-    return [BDSKZoomRecord syntaxTypeWithString:[self valueForKey:@"syntax"]];
+    const char *cstr = ZOOM_record_get(_record, "syntax", NULL);
+    return [BDSKZoomRecord syntaxTypeWithString:[NSString stringWithUTF8String:cstr]];
 }
 
 @end
 
 @implementation BDSKZoomRecord (Private)
 
+// yaz_iconv() usage example is in record_iconv_return() in zoom-c.c
+static NSData *copyMARC8BytesToUTF8(const char *buf)
+{
+    yaz_iconv_t cd = 0;
+    size_t sz = strlen(buf);
+    
+    NSMutableData *outputData = [[NSMutableData alloc] initWithCapacity:sz];
+    
+    if ((cd = yaz_iconv_open("utf-8", "marc-8")))
+    {
+        char outbuf[12];
+        size_t inbytesleft = sz;
+        const char *inp = buf;
+                
+        while (inbytesleft)
+        {
+            size_t outbytesleft = sizeof(outbuf);
+            char *outp = outbuf;
+            size_t r = yaz_iconv(cd, (char**) &inp, &inbytesleft,  &outp, &outbytesleft);
+            
+            if (r == (size_t) (-1))
+            {
+                int e = yaz_iconv_error(cd);
+                if (e != YAZ_ICONV_E2BIG) {
+                    [outputData release];
+                    outputData = nil;
+                    break;
+                }
+            }
+            [outputData appendBytes:outbuf length:(outp - outbuf)];
+        }
+        yaz_iconv_close(cd);
+    }
+    return outputData;
+}
+
 - (void)cacheRepresentationForKey:(NSString *)aKey;
 {
-    /* !!! The key can use e.g. "render;charset=ISO-8859-1" to specify the record's charset, but from the source, it looks like it only converts to UTF-8.  I get weird conversion failures with Library of Congress' server searching for "ventin", so fall back to 8859-1 in that case.  I'm not really sure what the problem is.  
+    /* MARC-8 is a common encoding for MARC, but useless everywhere else.  We can pass "render;charset=marc-8,utf-8" to specify a source and destination charset, but yaz defaults to UTF-8 as destination.  
      
-     Update: looks like we need to pass marc-8 as the encoding, so the caller should be aware of that.
+     - For keys without a specified charset, bytes are returned without conversion.
+     - The "raw" key always ignores charset options.
+     
+     see http://www.loc.gov/marc/specifications/specchartables.html
+     
      */
 
     id nsString = nil;
     const char *cstr = ZOOM_record_get(_record, [aKey UTF8String], NULL);
     if (NULL != cstr) {
-        nsString = [[NSString allocWithZone:[self zone]] initWithUTF8String:cstr];
+        
+        BDSKZoomSyntaxType type = [self syntaxType];
+        NSData *utf8Data;
+        
+        // MARC records use MARC-8 encoding (MARC-21 is supposed to be UTF-8)
+        // !!! Since there's no NSStringEncoding for MARC-8, we'll check the syntax type to see if that's what we should use.  Perhaps we should use a zero encoding to signify that MARC-8 is used?
+        if ((USMARC == type || UKMARC == type) && (utf8Data = copyMARC8BytesToUTF8(cstr))) {
+            nsString = [[NSString allocWithZone:[self zone]] initWithData:utf8Data encoding:NSUTF8StringEncoding];
+        } else {
+            // If it's not MARC, we'll hope that the sender knows the correct encoding, and use _recordEncoding; this is required for e.g. XML that is explicitly encoded as iso-8859-1 (COPAC does this).
+            nsString = [[NSString allocWithZone:[self zone]] initWithCString:cstr encoding:_recordEncoding];
+        }
+        
+        // should mainly be useful for debugging
         if (nil == nsString && fallbackEncoding)
             nsString = [[NSString allocWithZone:[self zone]] initWithCString:cstr encoding:fallbackEncoding];
     }
+    
+    // if a given key fails, set @"" so we don't compute it again
     [_representations setObject:(nsString ? nsString : @"") forKey:aKey];
 }
 
