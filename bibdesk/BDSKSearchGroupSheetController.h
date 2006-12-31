@@ -13,15 +13,10 @@
 
 @interface BDSKSearchGroupSheetController : BDSKSheetController {
     BDSKSearchGroup *group;
-    NSString *name;
-    NSString *address;
-    NSString *database;
-    NSString *port;
-    int type;
     NSUndoManager *undoManager;
     CFArrayRef editors;
-    NSString *username;
-    NSString *password;
+    BDSKServerInfo *serverInfo;
+    int type;
     
     BOOL isExpanded;
     
@@ -44,8 +39,8 @@
 + (void)resetServers;
 + (void)saveServers;
 + (NSArray *)serversForType:(int)type;
-+ (void)addServer:(BDSKServerInfo *)serverInfo forType:(int)type;
-+ (void)setServer:(BDSKServerInfo *)serverInfo atIndex:(unsigned)index forType:(int)type;
++ (void)addServer:(BDSKServerInfo *)info forType:(int)type;
++ (void)setServer:(BDSKServerInfo *)info atIndex:(unsigned)index forType:(int)type;
 + (void)removeServerAtIndex:(unsigned)index forType:(int)type;
 
 - (id)initWithGroup:(BDSKSearchGroup *)aGroup;
@@ -64,29 +59,11 @@
 - (BOOL)canRemoveServer;
 - (BOOL)canEditServer;
 
-- (BDSKSearchGroup *)group;
-
+- (void)setType:(int)t;
 - (int)type;
-  - (void)setType:(int)newType;
+- (void)setServerInfo:(BDSKServerInfo *)info;
 
-- (NSString *)name;
-- (void)setName:(NSString *)newName;
-
-- (NSString *)address;
-- (void)setAddress:(NSString *)newAddress;
-
-- (NSString *)database;
-- (void)setDatabase:(NSString *)newDb;
-
-- (NSString *)port;
-- (void)setPort:(NSString *)newPort;
-
-- (NSString *)username;
-- (void)setUsername:(NSString *)user;
-
-- (NSString *)password;
-- (void)setPassword:(NSString *)pw;
-
+- (BDSKSearchGroup *)group;
 - (IBAction)selectPredefinedServer:(id)sender;
 
 - (BOOL)commitEditing;
