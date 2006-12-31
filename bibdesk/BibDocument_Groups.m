@@ -320,13 +320,10 @@ The groupedPublications array is a subset of the publications array, developed b
     if ([[groups searchGroups] containsObject:group] == NO)
         return; /// must be from another document
     
-    if([sortGroupsKey isEqualToString:BDSKGroupCellCountKey]){
-        [self sortGroupsByKey:sortGroupsKey];
-    }else{
-        [groupTableView setNeedsDisplay:YES];
-        if ([[self selectedGroups] containsObject:group] && succeeded == YES)
-            [self displaySelectedGroups];
-    }
+    [groupTableView setNeedsDisplay:YES];
+    if ([[self selectedGroups] containsObject:group] && succeeded == YES)
+        [self displaySelectedGroups];
+    
     [searchGroupSearchButton setEnabled:[group isRetrieving] == NO];
 }
 

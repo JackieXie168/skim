@@ -15,10 +15,14 @@
 
 + (id)defaultServerInfoWithType:(int)aType;
 {
-    return [[[[self class] alloc] initWithType:aType name:NSLocalizedString(@"New Server",@"")
-                                          host:@"host.domain.com"
-                                          port:@"0" database:@"database" 
-                                      password:@"" username:@""] autorelease];
+    return [[[[self class] alloc] initWithType:aType 
+                                          name:NSLocalizedString(@"New Server",@"")
+                                          host:BDSKSearchGroupEntrez ? nil : @"host.domain.com"
+                                          port:aType == BDSKSearchGroupEntrez ? nil : @"0" 
+                                      database:@"database" 
+                                      password:nil
+                                      username:nil
+                                       options:nil] autorelease];
 }
 
 - (id)initWithType:(int)aType name:(NSString *)aName host:(NSString *)aHost port:(NSString *)aPort database:(NSString *)aDbase password:(NSString *)aPassword username:(NSString *)aUser options:(NSDictionary *)opts;
@@ -52,6 +56,16 @@
 
 - (id)initWithType:(int)aType dictionary:(NSDictionary *)info;
 {
+    NSMutableDictionary *opts = [[[info objectForKey:@"options"] mutableCopy] autorelease];
+    NSEnumerator *keyEnum = [opts  keyEnumerator];
+    NSString *key;
+    id value;
+    while (key = [keyEnum nextObject]) {
+        value = [opts objectForKey:key];
+        if ([value respondsToSelector:@selector(stringByUnescapingGroupPlistEntities)])
+            [opts setObject:[value stringByUnescapingGroupPlistEntities] forKey:key];
+    }
+    
     self = [self initWithType:aType
                          name:[[info objectForKey:@"name"] stringByUnescapingGroupPlistEntities]
                          host:[[info objectForKey:@"host"] stringByUnescapingGroupPlistEntities]
@@ -59,7 +73,7 @@
                      database:[[info objectForKey:@"database"] stringByUnescapingGroupPlistEntities]
                      password:[[info objectForKey:@"password"] stringByUnescapingGroupPlistEntities]
                      username:[[info objectForKey:@"username"] stringByUnescapingGroupPlistEntities]
-                      options:[info objectForKey:@"options"]];
+                      options:opts];
     return self;
 }
 
@@ -102,12 +116,22 @@ static inline BOOL BDSKIsEqualOrNil(id first, id second) {
     if ([self type] == BDSKSearchGroupEntrez) {
         [info setValue:[[self database] stringByEscapingGroupPlistEntities] forKey:@"database"];
     } else {
+        NSMutableDictionary *opts = [[[self options] mutableCopy] autorelease];
+        NSEnumerator *keyEnum = [opts  keyEnumerator];
+        NSString *key;
+        id value;
+        while (key = [keyEnum nextObject]) {
+            value = [opts objectForKey:key];
+            if ([value respondsToSelector:@selector(stringByEscapingGroupPlistEntities)])
+                [opts setObject:[value stringByEscapingGroupPlistEntities] forKey:key];
+        }
+        
         [info setValue:[[self host] stringByEscapingGroupPlistEntities] forKey:@"host"];
         [info setValue:[[self port] stringByEscapingGroupPlistEntities] forKey:@"port"];
         [info setValue:[[self database] stringByEscapingGroupPlistEntities] forKey:@"database"];
         [info setValue:[[self password] stringByEscapingGroupPlistEntities] forKey:@"password"];
         [info setValue:[[self username] stringByEscapingGroupPlistEntities] forKey:@"username"];
-        [info setValue:[self options] forKey:@"options"];
+        [info setValue:opts forKey:@"options"];
     }
     return info;
 }

@@ -523,10 +523,11 @@
     
     [self updateStaticGroupsIfNeeded];
     
+    // we don't sort serachGroups, as their names change and the order-as-added can be useful to track them
+    
     [sharedGroups sortUsingDescriptors:sortDescriptors];
     [urlGroups sortUsingDescriptors:sortDescriptors];
     [scriptGroups sortUsingDescriptors:sortDescriptors];
-    [searchGroups sortUsingDescriptors:sortDescriptors];
     [smartGroups sortUsingDescriptors:sortDescriptors];
     [staticGroups sortUsingDescriptors:sortDescriptors];
     [categoryGroups sortUsingDescriptors:sortDescriptors];
