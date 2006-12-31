@@ -30,7 +30,6 @@
     IBOutlet NSSecureTextField *passwordField;
     IBOutlet NSTextField *userField;
     IBOutlet NSPopUpButton *syntaxPopup;
-    IBOutlet NSPopUpButton *encodingPopup;
     
     IBOutlet NSButton *editButton;
     
@@ -49,7 +48,6 @@
 
 - (IBAction)selectPredefinedServer:(id)sender;
 - (IBAction)selectSyntax:(id)sender;
-- (IBAction)selectEncoding:(id)sender;
 
 - (IBAction)addServer:(id)sender;
 - (IBAction)removeServer:(id)sender;

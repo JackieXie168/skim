@@ -30,7 +30,6 @@
                 addressField = NSTextField; 
                 databaseField = NSTextField; 
                 editButton = NSButton; 
-                encodingPopup = NSPopUpButton; 
                 nameField = NSTextField; 
                 passwordField = NSSecureTextField; 
                 portField = NSTextField; 

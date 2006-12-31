@@ -152,13 +152,6 @@ static NSArray *searchGroupServers = nil;
     [syntaxPopup addItemWithTitle:@"GRS-1"];
     [[syntaxPopup lastItem] setRepresentedObject:[BDSKZoomRecord stringWithSyntaxType:GRS1]];
     */
-    
-    [encodingPopup addItemWithTitle:@"Marc-8"];
-    [[encodingPopup lastItem] setRepresentedObject:@"marc-8"];
-    [encodingPopup addItemWithTitle:@"UTF-8"];
-    [[encodingPopup lastItem] setRepresentedObject:@"utf-8"];
-    [encodingPopup addItemWithTitle:@"ISO Latin-1"];
-    [[encodingPopup lastItem] setRepresentedObject:@"iso-8859-1"];
 }
 
 - (void)changeOptions {
@@ -177,22 +170,6 @@ static NSArray *searchGroupServers = nil;
         }
     }
     [syntaxPopup selectItemAtIndex:index];
-    
-    value = [[serverInfo options] objectForKey:@"charset"];
-    index = 0;
-    if (value != nil) {
-        index = [encodingPopup numberOfItems];
-        while (--index) {
-            if ([[[encodingPopup itemAtIndex:index] representedObject] isEqualToString:value])
-                break;
-        }
-        if (index == 0) {
-            index = [encodingPopup numberOfItems];
-            [encodingPopup addItemWithTitle:value];
-            [[encodingPopup lastItem] setRepresentedObject:value];
-        }
-    }
-    [encodingPopup selectItemAtIndex:index];
 }
 
 - (void)awakeFromNib
@@ -259,7 +236,6 @@ static NSArray *searchGroupServers = nil;
         [passwordField setEnabled:isZoom];
         [userField setEnabled:isZoom];
         [syntaxPopup setEnabled:isZoom];
-        [encodingPopup setEnabled:isZoom];
         
         [self expand:self];
     } else {
@@ -272,7 +248,6 @@ static NSArray *searchGroupServers = nil;
         [passwordField setEnabled:NO];
         [userField setEnabled:NO];
         [syntaxPopup setEnabled:NO];
-        [encodingPopup setEnabled:NO];
     }
     [self didChangeValueForKey:@"canAddServer"];
     [self didChangeValueForKey:@"canRemoveServer"];
@@ -284,14 +259,6 @@ static NSArray *searchGroupServers = nil;
     NSString *syntax = [sender indexOfSelectedItem] == 0 ? nil : [[sender selectedItem] representedObject];
     NSMutableDictionary *options = [NSMutableDictionary dictionaryWithDictionary:[serverInfo options]];
     [options setValue:syntax forKey:@"preferredRecordSyntax"];
-    [serverInfo setOptions:[options count] ? options : nil];
-}
-
-- (IBAction)selectEncoding:(id)sender;
-{
-    NSString *encoding = [sender indexOfSelectedItem] == 0 ? nil : [[sender selectedItem] representedObject];
-    NSMutableDictionary *options = [NSMutableDictionary dictionaryWithDictionary:[serverInfo options]];
-    [options setValue:encoding forKey:@"charset"];
     [serverInfo setOptions:[options count] ? options : nil];
 }
 
@@ -349,7 +316,6 @@ static NSArray *searchGroupServers = nil;
         [passwordField setEnabled:isZoom];
         [userField setEnabled:isZoom];
         [syntaxPopup setEnabled:isZoom];
-        [encodingPopup setEnabled:isZoom];
         
         NSAlert *alert = [NSAlert alertWithMessageText:NSLocalizedString(@"Edit Server Setting", @"Message in alert dialog when editing default search group server")
                                          defaultButton:NSLocalizedString(@"OK", @"Button title")
