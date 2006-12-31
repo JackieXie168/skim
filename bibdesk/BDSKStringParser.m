@@ -54,8 +54,30 @@
     return NO;
 }
 
++ (BOOL)canParseString:(NSString *)string ofType:(int)stringType{
+    switch(stringType){
+		case BDSKPubMedStringType: 
+            return [PubMedParser canParseString:string];
+		case BDSKRISStringType:
+            return [BDSKRISParser canParseString:string];
+		case BDSKMARCStringType:
+            return [BDSKMARCParser canParseString:string];
+		case BDSKReferenceMinerStringType:
+            return [BDSKReferenceMinerParser canParseString:string];
+		case BDSKJSTORStringType:
+            return [BDSKJSTORParser canParseString:string];
+        case BDSKWOSStringType:
+            return [BDSKWebOfScienceParser canParseString:string];
+        case BDSKDublinCoreStringType:
+            return [BDSKDublinCoreXMLParser canParseString:string];
+    }
+    return NO;
+}
+
 + (NSArray *)itemsFromString:(NSString *)itemString ofType:(int)stringType error:(NSError **)outError{
     Class parserClass = Nil;
+    if (stringType == BDSKUnknownStringType)
+        stringType = [itemString contentStringType];
     switch(stringType){
 		case BDSKPubMedStringType: 
             parserClass = [PubMedParser class];
@@ -84,7 +106,7 @@
 
 + (NSArray *)itemsFromString:(NSString *)itemString error:(NSError **)outError{
     if([self class] == [BDSKStringParser class]){
-        return [self itemsFromString:itemString ofType:[itemString contentStringType] error:outError];
+        return [self itemsFromString:itemString ofType:BDSKUnknownStringType error:outError];
     }else{
         OBRequestConcreteImplementation(self, _cmd);
         return nil;
@@ -111,11 +133,10 @@
 		return BDSKJSTORStringType;
 	if([BDSKWebOfScienceParser canParseString:self])
 		return BDSKWOSStringType;
-	if([BDSKDublinCoreXMLParser canParseString:self])
-		return BDSKDublinCoreStringType;
 	if([BibTeXParser canParseStringAfterFixingKeys:self])
 		return BDSKNoKeyBibTeXStringType;
-	return BDSKUnknownStringType;
+	// don't check DC, as the check is too unreliable
+    return BDSKUnknownStringType;
 }
 
 @end

@@ -54,6 +54,7 @@ enum {
 @interface BDSKStringParser : NSObject {
 }
 
++ (BOOL)canParseString:(NSString *)string ofType:(int)stringType;
 + (BOOL)canParseString:(NSString *)string;
 
 + (NSArray *)itemsFromString:(NSString *)itemString ofType:(int)stringType error:(NSError **)outError;
