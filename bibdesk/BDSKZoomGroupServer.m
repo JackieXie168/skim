@@ -14,8 +14,6 @@
 
 #define MAX_RESULTS 100
 
-@interface BDSKDublinCoreXMLParser : BDSKStringParser
-@end
 
 @implementation BDSKZoomGroupServer
 
@@ -241,66 +239,3 @@
 }
 
 @end
-
-@implementation BDSKDublinCoreXMLParser
-
-+ (BOOL)canParseString:(NSString *)string{
-    return [string rangeOfString:@"<dc-record>"].length;
-}
-
-static NSString *joinedArrayComponents(NSArray *arrayOfXMLNodes)
-{
-    NSArray *strings = [arrayOfXMLNodes valueForKeyPath:@"stringValue"];
-    return [strings componentsJoinedByString:@"; "];
-}
-
-+ (NSArray *)itemsFromString:(NSString *)xmlString error:(NSError **)outError
-{
-    NSXMLDocument *doc = [[NSXMLDocument alloc] initWithXMLString:xmlString options:0 error:outError];
-    if (nil == doc)
-        return nil;
-    
-    NSXMLElement *root = [doc rootElement];
-    
-    NSMutableArray *arrayOfPubs = [NSMutableArray array];
-    unsigned i, iMax = [root childCount];
-    NSXMLNode *node;
-    for (i = 0; i < iMax; i++) {
-        
-        node = [root childAtIndex:i];
-        NSMutableDictionary *pubDict = [[NSMutableDictionary alloc] initWithCapacity:5];
-        
-        NSArray *array = [node nodesForXPath:@"title" error:NULL];
-        [pubDict setObject:joinedArrayComponents(array) forKey:@"Title"];
-        
-        array = [node nodesForXPath:@"creator" error:NULL];
-        [pubDict setObject:joinedArrayComponents(array) forKey:@"Author"];
-        
-        array = [node nodesForXPath:@"subject" error:NULL];
-        [pubDict setObject:joinedArrayComponents(array) forKey:@"Keywords"];
-        
-        array = [node nodesForXPath:@"publisher" error:NULL];
-        [pubDict setObject:joinedArrayComponents(array) forKey:@"Publisher"];
-        
-        array = [node nodesForXPath:@"location" error:NULL];
-        [pubDict setObject:joinedArrayComponents(array) forKey:@"Location"];
-
-        BibItem *pub = [[BibItem alloc] initWithType:BDSKBookString
-                                            fileType:BDSKBibtexString 
-                                             citeKey:nil 
-                                           pubFields:pubDict 
-                                               isNew:YES];
-        [pubDict release];
-        [arrayOfPubs addObject:pub];
-        [pub release];
-    }
-    
-    [doc release];
-    return arrayOfPubs;
-    
-}
-    
-
-@end
-
-
