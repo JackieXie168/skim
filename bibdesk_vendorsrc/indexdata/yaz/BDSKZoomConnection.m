@@ -61,12 +61,7 @@
         // encoding to use when returning strings from records
         [self setResultEncoding:NSUTF8StringEncoding];
         
-        [[NSNotificationCenter defaultCenter] addObserver:self 
-                                                 selector:@selector(handleApplicationWillTerminate:) 
-                                                     name:NSApplicationWillTerminateNotification 
-                                                   object:nil];
-        
-        // no need to connect yet; resultsForQuery will do that for us, and this allows initWithPropertyList to setup first
+        // Do not connect yet; resultsForQuery will do that for us, and this allows initWithPropertyList to setup first (and for user/password to be set if needed).  We were registering for NSApplicationWillTerminateNotification and destroying the ZOOM_connection in that callback, but since NSApplicationWillTerminateNotification can be delivered on a different thread, we end up with a race condition with -dealloc and possible crash.  Therefore, the owner is responsible for releasing the connection appropriately in order to destroy the underlying ZOOM_connection.
     }
     return self;
 }
@@ -76,20 +71,12 @@
     return [self initWithHost:hostName port:portNum database:nil];
 }
 
-- (void)handleApplicationWillTerminate:(NSNotification *)note
-{
-    if (_connection)
-        ZOOM_connection_destroy(_connection);
-    _connection = NULL;
-}
-
 - (void)dealloc
 {
-    [[NSNotificationCenter defaultCenter] removeObserver:self];
+    [_results release]; // will destroy the result sets
     if (_connection)
         ZOOM_connection_destroy(_connection);
     _connection = NULL;
-    [_results release]; // will destroy the result sets
     [_hostName release];
     [_connectHost release];
     [_options release];
