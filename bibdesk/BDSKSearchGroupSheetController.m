@@ -8,10 +8,10 @@
 
 #import "BDSKSearchGroupSheetController.h"
 #import "BDSKSearchGroup.h"
+#import "BDSKZoomGroupServer.h"
 #import "BDSKServerInfo.h"
 #import "BDSKCollapsibleView.h"
 #import "NSFileManager_BDSKExtensions.h"
-#import <yaz/BDSKZoomRecord.h>>
 
 #define SERVERS_FILENAME @"SearchGroupServers.plist"
 
@@ -166,37 +166,15 @@ static NSArray *searchGroupServers = nil;
     [self selectPredefinedServer:serverPopup];
 }
 
-- (void)setupOptionPopups {
-    [syntaxPopup addItemWithTitle:@"USMarc"];
-    [[syntaxPopup lastItem] setRepresentedObject:[BDSKZoomRecord stringWithSyntaxType:USMARC]];
-    [syntaxPopup addItemWithTitle:@"XML"];
-    [[syntaxPopup lastItem] setRepresentedObject:[BDSKZoomRecord stringWithSyntaxType:XML]];
-    /*
-    [syntaxPopup addItemWithTitle:@"UKMarc"];
-    [[syntaxPopup lastItem] setRepresentedObject:[BDSKZoomRecord stringWithSyntaxType:UKMARC]];
-    [syntaxPopup addItemWithTitle:@"SUTRS"];
-    [[syntaxPopup lastItem] setRepresentedObject:[BDSKZoomRecord stringWithSyntaxType:SUTRS]];
-    [syntaxPopup addItemWithTitle:@"GRS-1"];
-    [[syntaxPopup lastItem] setRepresentedObject:[BDSKZoomRecord stringWithSyntaxType:GRS1]];
-    */
-}
-
 - (void)changeOptions {
-    NSString *value = [[serverInfo options] objectForKey:@"preferredRecordSyntax"];
-    int index = 0;
-    if (value != nil) {
-        index = [syntaxPopup numberOfItems];
-        while (--index) {
-            if ([[[syntaxPopup itemAtIndex:index] representedObject] isEqualToString:value])
-                break;
-        }
-        if (index == 0) {
-            index = [syntaxPopup numberOfItems];
+    NSString *value = [[serverInfo options] objectForKey:@"recordSyntax"];
+    if (value == nil) {
+        [syntaxPopup selectItemAtIndex:0];
+    } else {
+        if ([syntaxPopup itemWithTitle:value] == nil)
             [syntaxPopup addItemWithTitle:value];
-            [[syntaxPopup lastItem] setRepresentedObject:value];
-        }
+        [syntaxPopup selectItemWithTitle:value];
     }
-    [syntaxPopup selectItemAtIndex:index];
 }
 
 - (void)awakeFromNib
@@ -217,7 +195,8 @@ static NSArray *searchGroupServers = nil;
             index = [servers count] + 1;
     }
     
-    [self setupOptionPopups];
+    [syntaxPopup addItemsWithTitles:[BDSKZoomGroupServer supportedRecordSyntaxes]];
+    
     [self reloadServersSelectingIndex:index];
 }
 

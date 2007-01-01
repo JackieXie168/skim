@@ -1,39 +1,83 @@
 (
+    /* Entrez databases */
     (
-        { name = PubMed; database = pubmed; },
-        { name = "3D Domains"; database = domains; },
-        { name = Domains; database = cdd; },
-        { name = Genome; database = genome; },
-        { name = Nucleotide; database = nucleotide; },
-        { name = OMIM; database = omim; },
-        { name = PopSet; database = popset; },
-        { name = Protein; database = protein; },
-        { name = ProbeSet; database = geo; },
-        { name = Structure; database = structure; },
-        { name = SNP; database = snp; },
-        { name = Taxonomy; database = taxonomy; },
-        { name = UniGene; database = unigene; },
-        { name = UniSTS; database = unists; }
+        {
+            name = PubMed;
+            database = pubmed;
+        },
+        {
+            name = "3D Domains";
+            database = domains;
+        },
+        {
+            name = Domains;
+            database = cdd;
+        },
+        {
+            name = Genome;
+            database = genome;
+        },
+        {
+            name = Nucleotide;
+            database = nucleotide;
+        },
+        {
+            name = OMIM;
+            database = omim;
+        },
+        {
+            name = PopSet;
+            database = popset;
+        },
+        {
+            name = Protein;
+            database = protein;
+        },
+        {
+            name = ProbeSet;
+            database = geo;
+        },
+        {
+            name = Structure;
+            database = structure;
+        },
+        {
+            name = SNP;
+            database = snp;
+        },
+        {
+            name = Taxonomy;
+            database = taxonomy;
+        },
+        {
+            name = UniGene;
+            database = unigene;
+        },
+        {
+            name = UniSTS;
+            database = unists;
+        }
     ),
+    /* z39.50 servers */
     (
         /* Library of Congress z39.50 connection */
-        {   
-            name = "Library of Congress"; 
-            database = Voyager; 
-            host = "z3950.loc.gov"; 
-            port = "7090"; 
+        {
+            name = "Library of Congress";
+            database = Voyager;
+            host = "z3950.loc.gov";
+            port = "7090";
             options = {
-                preferredRecordSyntax = "usmarc";
+                recordSyntax = "US MARC";
             };
         },
         /* USC z39.50 connection */
-        {   
-            name = "University of Southern California"; 
-            database = unicorn; 
-            host = "library.usc.edu"; 
-            port = "2200"; 
+        {
+            name = "University of Southern California";
+            database = unicorn;
+            host = "library.usc.edu";
+            port = "2200";
             options = {
-                preferredRecordSyntax = "usmarc";
+                recordSyntax = "US MARC";
             };
         },
         /* COPAC z39.50 connection */
@@ -43,7 +87,7 @@
             host = "z3950.copac.ac.uk";
             port = "2100";
             options = {
-                preferredRecordSyntax = "xml";
+                recordSyntax = "DC XML";
                 resultEncoding = "iso-8859-1";
             };
         }
