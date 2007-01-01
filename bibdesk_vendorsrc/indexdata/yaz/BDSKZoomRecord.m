@@ -35,6 +35,12 @@
 #import "z-core.h"
 #include "zoom-p.h"
 
+@interface NSString (BDSKZoomExtensions)
+// avoid polluting the NSString namespace by using this ugly prefix...
++ (NSStringEncoding)ZOOM_encodingWithIANACharSetName:(NSString *)charSetName;
+@end
+
+
 // could specify explicit character set conversions in the keys, but that's not very flexible
 static NSString *renderKey = @"render";
 static NSString *rawKey = @"raw";
@@ -103,29 +109,25 @@ static NSStringEncoding fallbackEncoding = kCFStringEncodingInvalidId;
         return UNKNOWN;
 }
 
-+ (id)recordWithZoomRecord:(ZOOM_record)record encoding:(NSStringEncoding)encoding;
++ (id)recordWithZoomRecord:(ZOOM_record)record charSet:(NSString *)charSetName;
 {
-    return [[[self allocWithZone:[self zone]] initWithZoomRecord:record encoding:encoding] autorelease];
+    return [[[self allocWithZone:[self zone]] initWithZoomRecord:record charSet:charSetName] autorelease];
 }
 
-- (id)initWithZoomRecord:(ZOOM_record)record encoding:(NSStringEncoding)encoding;
+- (id)initWithZoomRecord:(ZOOM_record)record charSet:(NSString *)charSetName;
 {
+    NSParameterAssert(NULL != record);
+    NSParameterAssert(nil != charSetName);
     self = [super init];
-    if (self) {
+    if (self) {        
+        // copy it, since the owning result set could go away
+        _record = ZOOM_record_clone(record);
+        _representations = [[NSMutableDictionary allocWithZone:[self zone]] init];
+        _charSetName = [charSetName copy];
         
-        if(record){
-            // copy it, since the owning result set could go away
-            _record = ZOOM_record_clone(record);
-            _representations = [[NSMutableDictionary allocWithZone:[self zone]] init];
-            _recordEncoding = encoding;
-            
-            // make sure we always have these
-            [self cacheRepresentationForKey:renderKey];
-            [self cacheRepresentationForKey:rawKey];
-        }else{
-            [self release];
-            self = nil;
-        }
+        // make sure we always have these
+        [self cacheRepresentationForKey:renderKey];
+        [self cacheRepresentationForKey:rawKey];
     }
     return self;
 }
@@ -139,6 +141,7 @@ static NSStringEncoding fallbackEncoding = kCFStringEncodingInvalidId;
 {
     ZOOM_record_destroy(_record);
     [_representations release];
+    [_charSetName release];
     [super dealloc];
 }
 
@@ -207,63 +210,67 @@ static NSData *copyMARC8BytesToUTF8(const char *buf)
         yaz_iconv_close(cd);
     }
     return outputData;
-}
+}   
 
-// Returns IANA charset names, except for MARC-8 (which doesn't have one, and prevents us from using NSStringEncoding).  This relies on poking around in the ZOOM_record structure, which is generally a bad idea, but follows the same code as client.c for autodetection of encoding.  This is useful for debugging, or for determining if a MARC record is UTF-8, since the octet_buf[9] check is defined by the spec.
-- (NSString *)guessedCharSetName;
+// This relies on poking around in the ZOOM_record structure, which is generally a bad idea, but follows the same code as client.c for autodetection of encoding.  This is useful for debugging, or for determining if a MARC record is UTF-8, since the octet_buf[9] check is defined by the spec.  Unfortunately, it doesn't work with aleph.unibas.ch:9909/IDS_ANSEL which returns the 'a' even for MARC-8.  That seems like a server problem, but means that we shouldn't try to guess encoding.
+- (NSStringEncoding)guessedEncoding;
 {
     Z_NamePlusRecord *npr;
     npr = _record->npr;
     
     Z_External *r = (Z_External *)npr->u.databaseRecord;
     
-    const char *guessedSet = NULL;
-
+    NSStringEncoding enc = kCFStringEncodingInvalidId;
+    
     if (r->which == Z_External_octet) {
         
         oident *ent = oid_getentbyoid(r->direct_reference);
         const char *octet_buf = (char*)r->u.octet_aligned->buf;
-        
-        char *charset = NULL;
-
+                
         if (ent->value == VAL_USMARC) {
             if (octet_buf[9] == 'a')
-                charset = "UTF-8";
+                enc = NSUTF8StringEncoding;
             else
-                charset = "MARC-8";
+                enc = kCFStringEncodingInvalidId;
         } else {
-            charset = "ISO-8859-1";
+            enc = NSISOLatin1StringEncoding;
         }
-        guessedSet = charset;
     }
-    return guessedSet ? [NSString stringWithUTF8String:guessedSet] : nil;
-}    
+    return enc;
+}
+
+// Returns IANA charset names, except for MARC-8 (which doesn't have one).  
+- (NSString *)guessedCharSetName;
+{
+    NSStringEncoding enc = [self guessedEncoding];
+    return (kCFStringEncodingInvalidId != enc) ? (NSString *)CFStringConvertEncodingToIANACharSetName(CFStringConvertNSStringEncodingToEncoding(enc)) : @"MARC-8";
+}
 
 - (void)cacheRepresentationForKey:(NSString *)aKey;
 {
     /* MARC-8 is a common encoding for MARC, but useless everywhere else.  We can pass "render;charset=marc-8,utf-8" to specify a source and destination charset, but yaz defaults to UTF-8 as destination.  
      
-     - For keys without a specified charset, bytes are returned without conversion.
+     - For keys without a specified charset in the key, bytes are returned without conversion.
      - The "raw" key always ignores charset options.
+     - Checking syntax type is unreliable as a proxy for character set.
+     - kCFStringEncodingInvalidId indicates that we should use MARC-8.
      
      see http://www.loc.gov/marc/specifications/specchartables.html
      
      */
 
-    id nsString = nil;
+    NSString *nsString = nil;
     const char *cstr = ZOOM_record_get(_record, [aKey UTF8String], NULL);
     if (NULL != cstr) {
         
-        BDSKZoomSyntaxType type = [self syntaxType];
         NSData *utf8Data;
         
-        // MARC records use MARC-8 encoding (MARC-21 is supposed to be UTF-8)
-        // !!! Since there's no NSStringEncoding for MARC-8, we'll check the syntax type to see if that's what we should use.  Perhaps we should use a zero encoding to signify that MARC-8 is used?
-        if ((USMARC == type || UKMARC == type) && (utf8Data = copyMARC8BytesToUTF8(cstr))) {
+        NSStringEncoding enc = [NSString ZOOM_encodingWithIANACharSetName:_charSetName];
+        if (kCFStringEncodingInvalidId != enc) {
+            // We'll hope that the sender knows the correct encoding, and use _recordEncoding; this is required for e.g. XML that is explicitly encoded as iso-8859-1 (COPAC does this).
+            nsString = [[NSString allocWithZone:[self zone]] initWithCString:cstr encoding:enc];       
+        } else if((utf8Data = copyMARC8BytesToUTF8(cstr))) {
             nsString = [[NSString allocWithZone:[self zone]] initWithData:utf8Data encoding:NSUTF8StringEncoding];
-        } else {
-            // If it's not MARC, we'll hope that the sender knows the correct encoding, and use _recordEncoding; this is required for e.g. XML that is explicitly encoded as iso-8859-1 (COPAC does this).
-            nsString = [[NSString allocWithZone:[self zone]] initWithCString:cstr encoding:_recordEncoding];
         }
         
         // should mainly be useful for debugging
@@ -276,3 +283,57 @@ static NSData *copyMARC8BytesToUTF8(const char *buf)
 }
 
 @end
+
+@implementation NSString (BDSKZoomExtensions)
+
+// yaz_iconv() usage example is in record_iconv_return() in zoom-c.c
+- (const char *)ZOOM_MARC8String;
+{
+    const char *buf = [self UTF8String];
+    yaz_iconv_t cd = 0;
+    size_t sz = strlen(buf);
+    
+    NSMutableData *outputData = [NSMutableData dataWithCapacity:sz];
+    
+    if ((cd = yaz_iconv_open("marc-8", "utf-8")))
+    {
+        char outbuf[12];
+        size_t inbytesleft = sz;
+        const char *inp = buf;
+        
+        while (inbytesleft)
+        {
+            size_t outbytesleft = sizeof(outbuf);
+            char *outp = outbuf;
+            size_t r = yaz_iconv(cd, (char**) &inp, &inbytesleft,  &outp, &outbytesleft);
+            
+            if (r == (size_t) (-1))
+            {
+                int e = yaz_iconv_error(cd);
+                if (e != YAZ_ICONV_E2BIG) {
+                    [outputData release];
+                    outputData = nil;
+                    break;
+                }
+            }
+            [outputData appendBytes:outbuf length:(outp - outbuf)];
+        }
+        yaz_iconv_close(cd);
+    }
+    const char terminator = 0;
+    // have to null-terminate!
+    [outputData appendBytes:&terminator length:sizeof(char)];
+    return [outputData bytes];
+}   
+
+// Converts the _charSetName ivar to an encoding; returns kCFStringEncodingInvalidId for unrecognized names (ANSEL, MARC-8)
++ (NSStringEncoding)ZOOM_encodingWithIANACharSetName:(NSString *)charSetName;
+{
+    CFStringEncoding cfEnc = kCFStringEncodingInvalidId;
+    if (charSetName)
+        cfEnc = CFStringConvertIANACharSetNameToEncoding((CFStringRef)charSetName);
+    return (kCFStringEncodingInvalidId != cfEnc) ? CFStringConvertEncodingToNSStringEncoding(cfEnc) : cfEnc;
+}
+
+@end
+

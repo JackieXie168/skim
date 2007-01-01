@@ -82,8 +82,8 @@
         // default options
         [self setPreferredRecordSyntax:USMARC];
         
-        // encoding to use when returning strings from records
-        [self setResultEncoding:NSUTF8StringEncoding];
+        // encoding to use when returning strings from records; default to marc-8
+        [self setResultEncodingToIANACharSetName:nil];
         
         // Do not connect yet; resultsForQuery will do that for us, and this allows initWithPropertyList to setup first (and for user/password to be set if needed).  We were registering for NSApplicationWillTerminateNotification and destroying the ZOOM_connection in that callback, but since NSApplicationWillTerminateNotification can be delivered on a different thread, we end up with a race condition with -dealloc and possible crash.  Therefore, the owner is responsible for releasing the connection appropriately in order to destroy the underlying ZOOM_connection.
     }
@@ -102,6 +102,8 @@
         ZOOM_connection_destroy(_connection);
     _connection = NULL;
     [_hostName release];
+    [_dataBase release];
+    [_charSetName release];
     [_connectHost release];
     [_options release];
     [super dealloc];
@@ -112,7 +114,7 @@
     NSMutableDictionary *plist = [NSMutableDictionary dictionary];
     [plist setObject:_hostName forKey:@"_hostName"];
     [plist setObject:[NSNumber numberWithInt:_portNum] forKey:@"_portNum"];
-    [plist setObject:[NSNumber numberWithInt:_resultEncoding] forKey:@"_resultEncoding"];
+    [plist setObject:_charSetName forKey:@"_charSetName"];
     [plist setObject:_options forKey:@"_options"];
     
     // this is the only object ivar that may be nil
@@ -129,9 +131,8 @@
                          port:[[plist objectForKey:@"_portNum"] intValue] 
                      database:[plist objectForKey:@"_dataBase"]];
     
-    // set to UTF-8 in init...
-    if ([plist objectForKey:@"_resultEncoding"])
-        _resultEncoding = [[plist objectForKey:@"_resultEncoding"] intValue];
+    // set to default in init...
+    [self setResultEncodingToIANACharSetName:[plist objectForKey:@"_charSetName"]];
     
     // options from the plist override any default options we've set (noop is self is nil)
     NSDictionary *options = [plist objectForKey:@"_options"];
@@ -180,10 +181,12 @@
     [self setOption:[BDSKZoomRecord stringWithSyntaxType:type] forKey:@"preferredRecordSyntax"];
 }
 
-- (void)setResultEncoding:(NSStringEncoding)encoding;
+- (void)setResultEncodingToIANACharSetName:(NSString *)encodingName;
 {
-    NSParameterAssert(encoding > 0);
-    _resultEncoding = encoding;
+    if (nil == encodingName)
+        encodingName = @"MARC-8";
+    _charSetName = [encodingName copy];
+    [_results removeAllObjects];
 }
 
 - (BDSKZoomResultSet *)resultsForQuery:(BDSKZoomQuery *)query;
@@ -199,7 +202,7 @@
         if ((error = ZOOM_connection_error(_connection, &errmsg, &addinfo)))
             NSLog(@"Error: %s (%d) %s\n", errmsg, error, addinfo);
 
-        resultSet = [[BDSKZoomResultSet allocWithZone:[self zone]] initWithZoomResultSet:r encoding:_resultEncoding];
+        resultSet = [[BDSKZoomResultSet allocWithZone:[self zone]] initWithZoomResultSet:r charSet:_charSetName];
         [_results setObject:resultSet forKey:query];
         [resultSet release];
     }

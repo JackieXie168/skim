@@ -35,13 +35,14 @@
 
 @implementation BDSKZoomResultSet
 
-- (id)initWithZoomResultSet:(ZOOM_resultset)resultSet encoding:(NSStringEncoding)encoding;
+- (id)initWithZoomResultSet:(ZOOM_resultset)resultSet charSet:(NSString *)charSetName;
 {
     self = [super init];
     if (self) {
         NSParameterAssert(NULL != resultSet);
+        NSParameterAssert(nil != charSetName);
         _resultSet = resultSet;
-        _resultEncoding = encoding;
+        _charSetName = [charSetName copy];
     }
     return self;
 }
@@ -49,13 +50,14 @@
 - (void)dealloc
 {
     ZOOM_resultset_destroy(_resultSet);
+    [_charSetName release];
     [super dealloc];
 }
 
 - (BDSKZoomRecord *)recordAtIndex:(unsigned int)index;
 {
     NSParameterAssert(index < [self countOfRecords]);
-    return [BDSKZoomRecord recordWithZoomRecord:ZOOM_resultset_record(_resultSet, index) encoding:_resultEncoding];
+    return [BDSKZoomRecord recordWithZoomRecord:ZOOM_resultset_record(_resultSet, index) charSet:_charSetName];
 }
 
 - (NSArray *)allRecords;
@@ -77,7 +79,7 @@
     unsigned i = [indexes firstIndex];
 
     while (i != NSNotFound) {
-        BDSKZoomRecord *record = [[BDSKZoomRecord allocWithZone:zone] initWithZoomRecord:ZOOM_resultset_record(_resultSet, i) encoding:_resultEncoding];
+        BDSKZoomRecord *record = [[BDSKZoomRecord allocWithZone:zone] initWithZoomRecord:ZOOM_resultset_record(_resultSet, i) charSet:_charSetName];
         if (record)
             [array addObject:record];
         [record release];
@@ -117,7 +119,7 @@
         count = rangeToGet.length;
         
         for (i = 0; i < count; i++) {
-            if (record = [[BDSKZoomRecord allocWithZone:zone] initWithZoomRecord:recordBuffer[i] encoding:_resultEncoding])
+            if (record = [[BDSKZoomRecord allocWithZone:zone] initWithZoomRecord:recordBuffer[i] charSet:_charSetName])
                 [array addObject:record];
             [record release];
         }        

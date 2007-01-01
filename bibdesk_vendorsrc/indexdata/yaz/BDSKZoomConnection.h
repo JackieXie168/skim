@@ -44,7 +44,7 @@
     NSString             *_hostName;
     int                   _portNum;
     NSString             *_dataBase;
-    NSStringEncoding      _resultEncoding; // force result encoding, since we require a connection per-host
+    NSString             *_charSetName;    // can force result encoding, since we require a connection per-host
     
     NSString             *_connectHost;    // derived from arguments
     NSMutableDictionary  *_results;        // results cached by query
@@ -64,8 +64,8 @@
 // default record syntax is USMARC
 - (void)setPreferredRecordSyntax:(BDSKZoomSyntaxType)type;
 
-// default is UTF-8, which is suitable for XML MARC21, but not raw USMARC
-- (void)setResultEncoding:(NSStringEncoding)encoding;
+// pass nil to use MARC-8 (default)
+- (void)setResultEncodingToIANACharSetName:(NSString *)encodingName;
 
 - (BDSKZoomResultSet *)resultsForQuery:(BDSKZoomQuery *)query;
 
