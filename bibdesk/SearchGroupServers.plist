@@ -59,6 +59,11 @@
         }
     ),
     /* z39.50 servers */
+    
+    /* We use IANA charset names for encoding, since the NSString localized
+     * names are not suitable for keys.  An empty resultEncoding will be
+     * interpreted as MARC-8.
+     */
     (
         /* Library of Congress z39.50 connection */
         {
@@ -68,6 +73,7 @@
             port = "7090";
             options = {
                 recordSyntax = "US MARC";
+                resultEncoding = "marc-8";
             };
         },
         /* USC z39.50 connection */
@@ -89,6 +95,18 @@
             options = {
                 recordSyntax = "DC XML";
                 resultEncoding = "iso-8859-1";
+            };
+        },
+        /* University of Basel z39.50 connection */
+        {
+            name = "UB Basel";
+            database = "IDS_UTF";
+            host = "aleph.unibas.ch";
+            port = "9909";
+            options = {
+                recordSyntax = "US MARC";
+                resultEncoding = "utf-8";
+                allowDiacritics = "YES";
             };
         }
     )
