@@ -255,6 +255,8 @@ static NSDictionary *searchGroupServers = nil;
         [passwordField setEnabled:isZoom];
         [userField setEnabled:isZoom];
         [syntaxPopup setEnabled:isZoom];
+        [encodingComboBox setEnabled:isZoom];
+        [removeDiacriticsButton setEnabled:isZoom];
         
         [self expand:self];
     } else {
@@ -266,6 +268,9 @@ static NSDictionary *searchGroupServers = nil;
         [databaseField setEnabled:NO];
         [passwordField setEnabled:NO];
         [userField setEnabled:NO];
+        [encodingComboBox setEnabled:NO];
+        [removeDiacriticsButton setEnabled:NO];
+
         [syntaxPopup setEnabled:NO];
     }
     [self didChangeValueForKey:@"canAddServer"];
@@ -335,7 +340,9 @@ static NSDictionary *searchGroupServers = nil;
         [passwordField setEnabled:isZoom];
         [userField setEnabled:isZoom];
         [syntaxPopup setEnabled:isZoom];
-        
+        [encodingComboBox setEnabled:isZoom];
+        [removeDiacriticsButton setEnabled:isZoom];
+
         NSAlert *alert = [NSAlert alertWithMessageText:NSLocalizedString(@"Edit Server Setting", @"Message in alert dialog when editing default search group server")
                                          defaultButton:NSLocalizedString(@"OK", @"Button title")
                                        alternateButton:nil

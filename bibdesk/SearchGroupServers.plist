@@ -84,6 +84,7 @@
             port = "2200";
             options = {
                 recordSyntax = "US MARC";
+                resultEncoding = "marc-8";
             };
         },
         /* COPAC z39.50 connection */

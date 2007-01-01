@@ -17,7 +17,7 @@
     NSString *database;
     NSString *password;
     NSString *username;
-    NSDictionary *options;
+    NSMutableDictionary *options;
 }
 
 + (id)defaultServerInfoWithType:(NSString *)aType;

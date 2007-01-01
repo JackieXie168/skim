@@ -30,6 +30,8 @@
     IBOutlet NSSecureTextField *passwordField;
     IBOutlet NSTextField *userField;
     IBOutlet NSPopUpButton *syntaxPopup;
+    IBOutlet NSComboBox *encodingComboBox;
+    IBOutlet NSButton *removeDiacriticsButton;
     
     IBOutlet NSButton *editButton;
     

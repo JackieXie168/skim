@@ -30,9 +30,11 @@
                 addressField = NSTextField; 
                 databaseField = NSTextField; 
                 editButton = NSButton; 
+                encodingComboBox = NSComboBox; 
                 nameField = NSTextField; 
                 passwordField = NSSecureTextField; 
                 portField = NSTextField; 
+                removeDiacriticsButton = NSButton; 
                 revealButton = NSButton; 
                 serverPopup = NSPopUpButton; 
                 serverView = BDSKCollapsibleView; 
