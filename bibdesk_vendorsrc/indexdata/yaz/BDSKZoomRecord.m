@@ -32,6 +32,8 @@
 
 #import "BDSKZoomRecord.h"
 #import "yaz-iconv.h"
+#import "z-core.h"
+#include "zoom-p.h"
 
 // could specify explicit character set conversions in the keys, but that's not very flexible
 static NSString *renderKey = @"render";
@@ -43,7 +45,7 @@ static NSString *rawKey = @"raw";
 
 @implementation BDSKZoomRecord
 
-static NSStringEncoding fallbackEncoding = 0;
+static NSStringEncoding fallbackEncoding = kCFStringEncodingInvalidId;
 
 + (void)setFallbackEncoding:(NSStringEncoding)enc;
 {
@@ -207,6 +209,36 @@ static NSData *copyMARC8BytesToUTF8(const char *buf)
     return outputData;
 }
 
+// Returns IANA charset names, except for MARC-8 (which doesn't have one, and prevents us from using NSStringEncoding).  This relies on poking around in the ZOOM_record structure, which is generally a bad idea, but follows the same code as client.c for autodetection of encoding.  This is useful for debugging, or for determining if a MARC record is UTF-8, since the octet_buf[9] check is defined by the spec.
+- (NSString *)guessedCharSetName;
+{
+    Z_NamePlusRecord *npr;
+    npr = _record->npr;
+    
+    Z_External *r = (Z_External *)npr->u.databaseRecord;
+    
+    const char *guessedSet = NULL;
+
+    if (r->which == Z_External_octet) {
+        
+        oident *ent = oid_getentbyoid(r->direct_reference);
+        const char *octet_buf = (char*)r->u.octet_aligned->buf;
+        
+        char *charset = NULL;
+
+        if (ent->value == VAL_USMARC) {
+            if (octet_buf[9] == 'a')
+                charset = "UTF-8";
+            else
+                charset = "MARC-8";
+        } else {
+            charset = "ISO-8859-1";
+        }
+        guessedSet = charset;
+    }
+    return guessedSet ? [NSString stringWithUTF8String:guessedSet] : nil;
+}    
+
 - (void)cacheRepresentationForKey:(NSString *)aKey;
 {
     /* MARC-8 is a common encoding for MARC, but useless everywhere else.  We can pass "render;charset=marc-8,utf-8" to specify a source and destination charset, but yaz defaults to UTF-8 as destination.  
@@ -235,7 +267,7 @@ static NSData *copyMARC8BytesToUTF8(const char *buf)
         }
         
         // should mainly be useful for debugging
-        if (nil == nsString && fallbackEncoding)
+        if (nil == nsString && kCFStringEncodingInvalidId != fallbackEncoding)
             nsString = [[NSString allocWithZone:[self zone]] initWithCString:cstr encoding:fallbackEncoding];
     }
     
