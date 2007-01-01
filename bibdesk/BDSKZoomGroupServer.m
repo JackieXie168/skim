@@ -14,6 +14,9 @@
 
 #define MAX_RESULTS 100
 
+static NSString *BDSKUSMARCString = @"US MARC";
+static NSString *BDSKMARCXMLString = @"MARC XML";
+static NSString *BDSKDCXMLString = @"DC XML";
 
 @implementation BDSKZoomGroupServer
 
@@ -21,6 +24,19 @@
 {
     OBINITIALIZE;
     [BDSKZoomRecord setFallbackEncoding:NSISOLatin1StringEncoding];
+}
+
++ (NSArray *)supportedRecordSyntaxes {
+    return [NSArray arrayWithObjects:BDSKUSMARCString, BDSKMARCXMLString, BDSKDCXMLString, nil];
+}
+
++ (NSString *)zoomRecordSyntaxForRecordSyntax:(NSString *)syntax{
+    if ([syntax isEqualToString:BDSKUSMARCString]) 
+        return [BDSKZoomRecord stringWithSyntaxType:USMARC];
+    else if ([syntax isEqualToString:BDSKMARCXMLString] || [syntax isEqualToString:BDSKDCXMLString]) 
+        return [BDSKZoomRecord stringWithSyntaxType:XML];
+    else
+        return [BDSKZoomRecord stringWithSyntaxType:UNKNOWN];
 }
 
 - (id)initWithGroup:(BDSKSearchGroup *)aGroup serverInfo:(BDSKServerInfo *)info;
@@ -143,8 +159,8 @@
             [connection setOption:[info password] forKey:@"password"];
         if ([NSString isEmptyString:[info username]] == NO)
             [connection setOption:[info username] forKey:@"user"];
-        if ([[info options] objectForKey:@"preferredRecordSyntax"])
-            [connection setOption:[[info options] objectForKey:@"preferredRecordSyntax"] forKey:@"preferredRecordSyntax"];    
+        if ([[info options] objectForKey:@"recordSyntax"])
+            [connection setOption:[[self class] zoomRecordSyntaxForRecordSyntax:[[info options] objectForKey:@"recordSyntax"]] forKey:@"preferredRecordSyntax"];    
         NSStringEncoding enc = [NSString encodingForIANACharSetName:[[info options] objectForKey:@"resultEncoding"]];
         if (enc)
             [connection setResultEncoding:enc];
@@ -166,15 +182,21 @@
 
 - (int)stringTypeForRecordString:(NSString *)string
 {
-    NSString *preferredRecordSyntax = [[serverInfo options] objectForKey:@"preferredRecordSyntax"];
+    NSString *recordSyntax = [[serverInfo options] objectForKey:@"recordSyntax"];
     int stringType = BDSKUnknownStringType;
-    if([preferredRecordSyntax isEqualToString:[BDSKZoomRecord stringWithSyntaxType:USMARC]] || [preferredRecordSyntax isEqualToString:[BDSKZoomRecord stringWithSyntaxType:UKMARC]]) {
+    if([recordSyntax isEqualToString:BDSKUSMARCString]) {
         stringType = BDSKMARCStringType;
-    } else if([preferredRecordSyntax isEqualToString:[BDSKZoomRecord stringWithSyntaxType:XML]]) {
-        stringType = [BDSKStringParser canParseString:string ofType:BDSKMARCStringType] ? BDSKMARCStringType : BDSKDublinCoreStringType;
+    } else if([recordSyntax isEqualToString:BDSKMARCXMLString]) {
+        stringType = BDSKMARCStringType;
+        if ([BDSKStringParser canParseString:string ofType:stringType] == NO)
+            stringType = BDSKDublinCoreStringType;
+    } else if([recordSyntax isEqualToString:BDSKDCXMLString]) {
+        stringType = BDSKDublinCoreStringType;
+        if ([BDSKStringParser canParseString:string ofType:stringType] == NO)
+            stringType = BDSKMARCStringType;
     }
     if (NO == [BDSKStringParser canParseString:string ofType:stringType])
-        stringType = BDSKUnknownStringType;
+        stringType = [string contentStringType];
     return stringType;
 }
 
