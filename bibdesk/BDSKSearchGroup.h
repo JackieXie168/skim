@@ -37,6 +37,7 @@ enum {
     BDSKMacroResolver *macroResolver;
     int type;
     NSString *searchTerm; // passed in by caller
+    NSArray *history;
     id<BDSKSearchGroupServer> server;
 }
 
@@ -54,6 +55,9 @@ enum {
 
 - (void)setSearchTerm:(NSString *)aTerm;
 - (NSString *)searchTerm;
+
+- (void)setHistory:(NSArray *)newHistory;
+- (NSArray *)history;
 
 - (void)setNumberOfAvailableResults:(int)value;
 - (int)numberOfAvailableResults;

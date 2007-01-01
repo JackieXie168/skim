@@ -573,9 +573,9 @@
 	} else if (groupType == BDSKScriptGroupType) {
         groupClass = [BDSKScriptGroup class];
         groupArray = scriptGroups;
-	//} else if (groupType == BDSKSearchGroupType) {
-    //    groupClass = BDSKSearchGroup;
-    //    groupArray = searchGroups;
+	} else if (groupType == BDSKSearchGroupType) {
+        groupClass = [BDSKSearchGroup class];
+        groupArray = searchGroups;
     }
     
     if (groupClass && groupArray) {
@@ -621,9 +621,9 @@
 	} else if (groupType == BDSKScriptGroupType) {
         groupClass = [BDSKScriptGroup class];
         groupArray = scriptGroups;
-	//} else if (groupType == BDSKSearchGroupType) {
-    //    groupClass = BDSKSearchGroup;
-    //    groupArray = searchGroups;
+	} else if (groupType == BDSKSearchGroupType) {
+        groupClass = [BDSKSearchGroup class];
+        groupArray = searchGroups;
     }
     
     NSData *data = nil;

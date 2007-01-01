@@ -795,6 +795,9 @@ static void appendCommentToFrontmatterOrAddGroups(AST *entry, NSMutableString *f
     const char *scriptGroupStr = "BibDesk Script Groups";
     size_t scriptGroupStrLength = strlen(scriptGroupStr);
     Boolean isScriptGroup = FALSE;
+    const char *searchGroupStr = "BibDesk Search Groups";
+    size_t searchGroupStrLength = strlen(searchGroupStr);
+    Boolean isSearchGroup = FALSE;
     Boolean firstValue = TRUE;
     
     NSStringEncoding groupsEncoding = [[BDSKStringEncodingManager sharedEncodingManager] isUnparseableEncoding:encoding] ? encoding : NSUTF8StringEncoding;
@@ -811,10 +814,12 @@ static void appendCommentToFrontmatterOrAddGroups(AST *entry, NSMutableString *f
                     isURLGroup = TRUE;
                 else if(strlen(text) >= scriptGroupStrLength && strncmp(text, scriptGroupStr, scriptGroupStrLength) == 0)
                     isScriptGroup = TRUE;
+                else if(strlen(text) >= searchGroupStrLength && strncmp(text, searchGroupStr, searchGroupStrLength) == 0)
+                    isSearchGroup = TRUE;
             }
             
             // encoding will be UTF-8 for the plist, so make sure we use it for each line
-            tmpStr = copyCheckedString(text, field->line, filePath, ((isSmartGroup || isStaticGroup || isURLGroup || isScriptGroup)? groupsEncoding : encoding));
+            tmpStr = copyCheckedString(text, field->line, filePath, ((isSmartGroup || isStaticGroup || isURLGroup || isScriptGroup || isSearchGroup)? groupsEncoding : encoding));
             
             if(tmpStr) 
                 [commentStr appendString:tmpStr];
@@ -823,7 +828,7 @@ static void appendCommentToFrontmatterOrAddGroups(AST *entry, NSMutableString *f
             [tmpStr release];
         }
     }
-    if(isSmartGroup == TRUE || isStaticGroup == TRUE || isURLGroup == TRUE || isScriptGroup == TRUE){
+    if(isSmartGroup || isStaticGroup || isURLGroup || isScriptGroup || isSearchGroup){
         if(document){
             NSRange range = [commentStr rangeOfString:@"{"];
             if(range.location != NSNotFound){
@@ -831,14 +836,16 @@ static void appendCommentToFrontmatterOrAddGroups(AST *entry, NSMutableString *f
                 range = [commentStr rangeOfString:@"}" options:NSBackwardsSearch];
                 if(range.location != NSNotFound){
                     [commentStr deleteCharactersInRange:NSMakeRange(range.location,[commentStr length] - range.location)];
-                    if (isSmartGroup == TRUE)
+                    if (isSmartGroup)
                         [[document groups] setGroupsOfType:BDSKSmartGroupType fromSerializedData:[commentStr dataUsingEncoding:NSUTF8StringEncoding]];
-                    else if (isStaticGroup == TRUE)
+                    else if (isStaticGroup)
                         [[document groups] setGroupsOfType:BDSKStaticGroupType fromSerializedData:[commentStr dataUsingEncoding:NSUTF8StringEncoding]];
-                    else if (isURLGroup == TRUE)
+                    else if (isURLGroup)
                         [[document groups] setGroupsOfType:BDSKURLGroupType fromSerializedData:[commentStr dataUsingEncoding:NSUTF8StringEncoding]];
-                    else
+                    else if (isScriptGroup)
                         [[document groups] setGroupsOfType:BDSKScriptGroupType fromSerializedData:[commentStr dataUsingEncoding:NSUTF8StringEncoding]];
+                    else if (isSearchGroup)
+                        [[document groups] setGroupsOfType:BDSKSearchGroupType fromSerializedData:[commentStr dataUsingEncoding:NSUTF8StringEncoding]];
                 }
             }
         }
