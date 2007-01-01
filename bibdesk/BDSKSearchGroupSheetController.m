@@ -22,7 +22,30 @@ static NSArray *searchGroupServers = nil;
 #pragma mark Server info
 
 + (void)initialize {
-    [self resetServers];
+    NSString *applicationSupportPath = [[NSFileManager defaultManager] currentApplicationSupportPathForCurrentUser]; 
+    NSString *path = [applicationSupportPath stringByAppendingPathComponent:SERVERS_FILENAME];
+    
+    if (NO == [[NSFileManager defaultManager] fileExistsAtPath:path])
+        path = [[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:SERVERS_FILENAME];
+    
+    NSArray *serverDicts = [NSArray arrayWithContentsOfFile:path];
+    int type, count = [serverDicts count];
+    NSMutableArray *array = [NSMutableArray arrayWithCapacity:count];
+    
+    for (type = 0; type < count; type++) {
+        NSArray *dicts = [serverDicts objectAtIndex:type];
+        NSEnumerator *dictEnum = [dicts objectEnumerator];
+        NSDictionary *dict;
+        NSMutableArray *infos = [NSMutableArray arrayWithCapacity:[dicts count]];
+        while (dict = [dictEnum nextObject]) {
+            BDSKServerInfo *info = [[BDSKServerInfo alloc] initWithType:type dictionary:dict];
+            [infos addObject:info];
+            [info release];
+        }
+        [array addObject:infos];
+    }
+    [searchGroupServers release];
+    searchGroupServers = [array copy];
 }
 
 + (void)resetServers;
@@ -45,10 +68,14 @@ static NSArray *searchGroupServers = nil;
     }
     [searchGroupServers release];
     searchGroupServers = [array copy];
+    [self saveServers];
 }
 
 + (void)saveServers;
 {
+    // @@ temporary
+    return;
+    
     int type, count = [searchGroupServers count];
     NSMutableArray *array = [NSMutableArray arrayWithCapacity:count];
     
@@ -78,19 +105,19 @@ static NSArray *searchGroupServers = nil;
 + (void)addServer:(BDSKServerInfo *)serverInfo forType:(int)type;
 {
     [[searchGroupServers objectAtIndex:type] addObject:serverInfo];
-    //[self saveServers];
+    [self saveServers];
 }
 
 + (void)setServer:(BDSKServerInfo *)serverInfo atIndex:(unsigned)index forType:(int)type;
 {
     [[searchGroupServers objectAtIndex:type] replaceObjectAtIndex:index withObject:serverInfo];
-    //[self saveServers];
+    [self saveServers];
 }
 
 + (void)removeServerAtIndex:(unsigned)index forType:(int)type;
 {
     [[searchGroupServers objectAtIndex:type] removeObjectAtIndex:index];
-    //[self saveServers];
+    [self saveServers];
 }
 
 #pragma mark Initialization
