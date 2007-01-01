@@ -207,7 +207,14 @@ static NSString *BDSKDCXMLString = @"DC XML";
     
     NSMutableArray *pubs = nil;
     
-    if(NO == [NSString isEmptyString:searchTerm]){
+    if (searchTerm && [[[self serverInfo] options] boolForKey:@"allowDiacritics"] == NO) {
+        CFMutableStringRef mutableCopy = (CFMutableStringRef)[[searchTerm mutableCopy] autorelease];
+        CFStringNormalize(mutableCopy, kCFStringNormalizationFormD);
+        BDDeleteCharactersInCharacterSet(mutableCopy, CFCharacterSetGetPredefined(kCFCharacterSetNonBase));
+        searchTerm = (NSString *)mutableCopy;
+    }
+            
+    if (NO == [NSString isEmptyString:searchTerm]){
         // the resultSet is cached for each searchTerm, so we have no overhead calling it for retrieving more results
         BDSKZoomResultSet *resultSet = [connection resultsForCCLQuery:searchTerm];
         
