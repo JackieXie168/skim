@@ -13,6 +13,7 @@
 #import "NSImage+Toolbox.h"
 #import "BDSKPublicationsArray.h"
 #import "BDSKServerInfo.h"
+#import <OmniFoundation/NSArray-OFExtensions.h>
 
 
 @implementation BDSKSearchGroup
@@ -34,6 +35,7 @@
     if (self = [super initWithName:aName count:0]) {
         type = aType;
         searchTerm = [string copy];
+        history = nil;
         publications = nil;
         macroResolver = [[BDSKMacroResolver alloc] initWithOwner:self];
         [self resetServerWithInfo:info];
@@ -45,11 +47,13 @@
 - (id)initWithDictionary:(NSDictionary *)groupDict {
     int aType = [[groupDict objectForKey:@"type"] intValue];
     NSString *aSearchTerm = [[groupDict objectForKey:@"search term"] stringByUnescapingGroupPlistEntities];
+    NSArray *aHistory = [[groupDict objectForKey:@"history"] arrayByPerformingSelector:@selector(stringByUnescapingGroupPlistEntities)];
     BDSKServerInfo *serverInfo = [[BDSKServerInfo alloc] initWithType:aType dictionary:groupDict];
     
-    self = [self initWithType:aType serverInfo:serverInfo searchTerm:aSearchTerm];
+    if (self = [self initWithType:aType serverInfo:serverInfo searchTerm:aSearchTerm]) {
+        [self setHistory:aHistory];
+    }
     [serverInfo release];
-    
     return self;
 }
 
@@ -58,6 +62,7 @@
     
     [groupDict setObject:[NSNumber numberWithInt:[self type]] forKey:@"type"];
     [groupDict setObject:[[self searchTerm] stringByEscapingGroupPlistEntities] forKey:@"search term"];
+    [groupDict setObject:[[self history] arrayByPerformingSelector:@selector(stringByEscapingGroupPlistEntities)] forKey:@"history"];
     
     return [groupDict autorelease];
 }
@@ -261,6 +266,16 @@
 }
 
 - (NSString *)searchTerm { return searchTerm; }
+
+- (void)setHistory:(NSArray *)newHistory;
+{
+    if (history != newHistory) {
+        [history release];
+        history = [newHistory copy];
+    }
+}
+
+- (NSArray *)history {return history; }
 
 - (void)setNumberOfAvailableResults:(int)value;
 {

@@ -140,6 +140,7 @@ The groupedPublications array is a subset of the publications array, developed b
     BDSKSearchGroup *group = [[self selectedGroups] firstObject];
     OBASSERT([group isSearch]);
     [group setSearchTerm:[sender stringValue]];
+    [group setHistory:[sender recentSearches]];
 }
 
 - (IBAction)nextSearchGroupSearch:(id)sender {
@@ -188,6 +189,7 @@ The groupedPublications array is a subset of the publications array, developed b
     OBASSERT([group isSearch]);
     NSString *name = [[group serverInfo] name];
     [searchGroupSearchField setStringValue:[group searchTerm] ? [group searchTerm] : @""];
+    [searchGroupSearchField setRecentSearches:[group history]];
     [searchGroupSearchButton setEnabled:[group isRetrieving] == NO];
     [[searchGroupSearchField cell] setPlaceholderString:[NSString stringWithFormat:NSLocalizedString(@"Search %@", @"search group field placeholder"), name ? name : @""]];
 }
