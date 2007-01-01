@@ -31,6 +31,7 @@
 */ 
 
 #import "BDSKZoomQuery.h"
+#import "yaz-iconv.h"
 
 @implementation BDSKZoomQuery
 
@@ -83,6 +84,8 @@
         
         int status, error, errorPosition;
         const char *errstring;
+        
+        // Accented chars don't seem to be handled properly by some servers, but they appear to work if the accents are removed first, so the sender may wish to do that transformation.  I tried passing a MARC-8 string, but it either returns 0 results or wrong results.
         status = ZOOM_query_ccl2rpn(_query, [_queryString UTF8String], conf, &error, &errstring, &errorPosition);
         if (status) {
             [self release];
@@ -121,7 +124,6 @@
 - (ZOOM_query)zoomQuery { return _query; }
 
 @end
-
         
 @implementation BDSKZoomCCLQueryFormatter
 

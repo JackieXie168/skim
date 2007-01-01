@@ -37,10 +37,10 @@
 @interface BDSKZoomResultSet : NSObject
 {
     ZOOM_resultset   _resultSet;
-    NSStringEncoding _resultEncoding;
+    NSString        *_charSetName;
 }
 
-- (id)initWithZoomResultSet:(ZOOM_resultset)resultSet encoding:(NSStringEncoding)encoding;
+- (id)initWithZoomResultSet:(ZOOM_resultset)resultSet charSet:(NSString *)charSetName;
 - (BDSKZoomRecord *)recordAtIndex:(unsigned int)index;
 - (unsigned int)countOfRecords;
 - (NSArray *)allRecords;
