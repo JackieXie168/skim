@@ -77,12 +77,15 @@
     NSMutableArray *array = [NSMutableArray arrayWithCapacity:count];
     NSZone *zone = [self zone];
     unsigned i = [indexes firstIndex];
+    ZOOM_record rec;
 
     while (i != NSNotFound) {
-        BDSKZoomRecord *record = [[BDSKZoomRecord allocWithZone:zone] initWithZoomRecord:ZOOM_resultset_record(_resultSet, i) charSet:_charSetName];
-        if (record)
+        rec = ZOOM_resultset_record(_resultSet, i);
+        if (rec) {
+            BDSKZoomRecord *record = [[BDSKZoomRecord allocWithZone:zone] initWithZoomRecord:rec charSet:_charSetName];
             [array addObject:record];
-        [record release];
+            [record release];
+        }
         i = [indexes indexGreaterThanIndex:i];
     }
     return array;
@@ -117,11 +120,15 @@
         
         // reset count, since we're now operating on a subrange
         count = rangeToGet.length;
+        ZOOM_record rec;
         
         for (i = 0; i < count; i++) {
-            if (record = [[BDSKZoomRecord allocWithZone:zone] initWithZoomRecord:recordBuffer[i] charSet:_charSetName])
+            rec = recordBuffer[i];
+            if (rec) {
+                record = [[BDSKZoomRecord allocWithZone:zone] initWithZoomRecord:rec charSet:_charSetName];
                 [array addObject:record];
-            [record release];
+                [record release];
+            }
         }        
         
         // advance the start of the range by it's previous length, since we know that was valid
