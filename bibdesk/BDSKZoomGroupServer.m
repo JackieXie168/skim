@@ -161,9 +161,8 @@ static NSString *BDSKDCXMLString = @"DC XML";
             [connection setOption:[info username] forKey:@"user"];
         if ([[info options] objectForKey:@"recordSyntax"])
             [connection setOption:[[self class] zoomRecordSyntaxForRecordSyntax:[[info options] objectForKey:@"recordSyntax"]] forKey:@"preferredRecordSyntax"];    
-        NSStringEncoding enc = [NSString encodingForIANACharSetName:[[info options] objectForKey:@"resultEncoding"]];
-        if (enc)
-            [connection setResultEncoding:enc];
+
+        [connection setResultEncodingToIANACharSetName:[[info options] objectForKey:@"resultEncoding"]];
         OSAtomicCompareAndSwap32Barrier(1, 0, (int32_t *)&flags.needsReset);
     }else {
         connection = nil;
