@@ -24,7 +24,6 @@
             port = "7090"; 
             options = {
                 preferredRecordSyntax = "usmarc";
-                charset = "marc-8";
             };
         },
         /* USC z39.50 connection */
@@ -35,7 +34,6 @@
             port = "2200"; 
             options = {
                 preferredRecordSyntax = "usmarc";
-                charset = "marc-8";
             };
         },
         /* COPAC z39.50 connection */
@@ -46,7 +44,7 @@
             port = "2100";
             options = {
                 preferredRecordSyntax = "xml";
-                charset = "iso-8859-1";
+                resultEncoding = "iso-8859-1";
             };
         }
     )

@@ -105,6 +105,23 @@
      @result     (description)
      */
 + (NSString *)unicodeNameOfCharacter:(unichar)ch;
+
+/*!
+    @method     IANACharSetNameForEncoding:
+    @abstract   See http://www.iana.org/assignments/character-sets.  Returns nil if conversion failed.
+    @discussion (comprehensive description)
+    @param      enc (description)
+    @result     (description)
+*/
++ (NSString *)IANACharSetNameForEncoding:(NSStringEncoding)enc;
+
+/*!
+    @method     encodingForIANACharSetName:
+    @abstract   Name is in the list at http://www.iana.org/assignments/character-sets.  Returns 0 if conversion failed.
+    @discussion (comprehensive description)
+    @param      name
+*/
++ (NSStringEncoding)encodingForIANACharSetName:(NSString *)name;
     
 /*!
     @method     initWithContentsOfFile:encoding:guessEncoding:

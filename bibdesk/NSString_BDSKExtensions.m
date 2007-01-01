@@ -129,7 +129,30 @@ static int MAX_RATING = 5;
     
     return [(id)charString autorelease];
 } 
- 
+
++ (NSString *)IANACharSetNameForEncoding:(NSStringEncoding)enc;
+{
+    CFStringEncoding cfEnc = CFStringConvertNSStringEncodingToEncoding(enc);
+    NSString *encName = nil;
+    if (kCFStringEncodingInvalidId != cfEnc)
+        encName = (NSString *)CFStringConvertEncodingToIANACharSetName(cfEnc);
+    return encName;
+}
+
++ (NSStringEncoding)encodingForIANACharSetName:(NSString *)name
+{
+    NSStringEncoding nsEnc = 0;
+    CFStringEncoding cfEnc = kCFStringEncodingInvalidId;
+    
+    if (name)
+        cfEnc = CFStringConvertIANACharSetNameToEncoding((CFStringRef)name);
+
+    if (kCFStringEncodingInvalidId != cfEnc)
+        nsEnc = CFStringConvertEncodingToNSStringEncoding(cfEnc);
+    
+    return nsEnc;
+}
+
 static inline BOOL dataHasUnicodeByteOrderMark(NSData *data)
 {
     unsigned len = [data length];

@@ -144,7 +144,10 @@
         if ([NSString isEmptyString:[info username]] == NO)
             [connection setOption:[info username] forKey:@"user"];
         if ([[info options] objectForKey:@"preferredRecordSyntax"])
-            [connection setOption:[[info options] objectForKey:@"preferredRecordSyntax"] forKey:@"preferredRecordSyntax"];       
+            [connection setOption:[[info options] objectForKey:@"preferredRecordSyntax"] forKey:@"preferredRecordSyntax"];    
+        NSStringEncoding enc = [NSString encodingForIANACharSetName:[[info options] objectForKey:@"resultEncoding"]];
+        if (enc)
+            [connection setResultEncoding:enc];
         OSAtomicCompareAndSwap32Barrier(1, 0, (int32_t *)&flags.needsReset);
     }else {
         connection = nil;
