@@ -69,7 +69,6 @@
 
 - (void)dealloc
 {
-    [self terminate];
     [filePath release];
     [serverInfo release];
     [webEnv release];
