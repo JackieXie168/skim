@@ -69,8 +69,12 @@
 
 - (void)dealloc
 {
-    [serverInfo release];
+    [self terminate];
+    [publications makeObjectsPerformSelector:@selector(setOwner:) withObject:nil];
     [filePath release];
+    [serverInfo release];
+    [webEnv release];
+    [queryKey release];
     [super dealloc];
 }
 
