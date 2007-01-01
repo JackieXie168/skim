@@ -1,6 +1,6 @@
-(
+{
     /* Entrez databases */
-    (
+    entrez = (
         {
             name = PubMed;
             database = pubmed;
@@ -57,14 +57,14 @@
             name = UniSTS;
             database = unists;
         }
-    ),
+    );
     /* z39.50 servers */
     
     /* We use IANA charset names for encoding, since the NSString localized
      * names are not suitable for keys.  An empty resultEncoding will be
      * interpreted as MARC-8.
      */
-    (
+    zoom = (
         /* Library of Congress z39.50 connection */
         {
             name = "Library of Congress";
@@ -109,5 +109,5 @@
                 allowDiacritics = "YES";
             };
         }
-    )
-)
+    );
+}

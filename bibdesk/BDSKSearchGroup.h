@@ -10,10 +10,8 @@
 #import "BDSKGroup.h"
 #import "BDSKOwnerProtocol.h"
 
-enum {
-    BDSKSearchGroupEntrez,
-    BDSKSearchGroupZoom
-};
+extern NSString *BDSKSearchGroupEntrez;
+extern NSString *BDSKSearchGroupZoom;
 
 @class BDSKSearchGroup, BDSKServerInfo;
 
@@ -35,20 +33,20 @@ enum {
 @interface BDSKSearchGroup : BDSKMutableGroup <BDSKOwner> {
     BDSKPublicationsArray *publications;
     BDSKMacroResolver *macroResolver;
-    int type;
+    NSString *type;
     NSString *searchTerm; // passed in by caller
     NSArray *history;
     id<BDSKSearchGroupServer> server;
 }
 
 - (id)initWithName:(NSString *)aName;
-- (id)initWithType:(int)aType serverInfo:(BDSKServerInfo *)info searchTerm:(NSString *)string;
+- (id)initWithType:(NSString *)aType serverInfo:(BDSKServerInfo *)info searchTerm:(NSString *)string;
 
 - (BDSKPublicationsArray *)publications;
 - (void)setPublications:(NSArray *)newPublications;
 - (void)addPublications:(NSArray *)newPublications;
 
-- (int)type;
+- (NSString *)type;
 
 - (void)setServerInfo:(BDSKServerInfo *)info;
 - (BDSKServerInfo *)serverInfo;

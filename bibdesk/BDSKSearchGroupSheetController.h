@@ -16,7 +16,7 @@
     NSUndoManager *undoManager;
     CFArrayRef editors;
     BDSKServerInfo *serverInfo;
-    int type;
+    NSString *type;
     
     BOOL isExpanded;
     
@@ -39,13 +39,14 @@
 
 + (void)resetServers;
 + (void)saveServers;
-+ (NSArray *)serversForType:(int)type;
-+ (void)addServer:(BDSKServerInfo *)info forType:(int)type;
-+ (void)setServer:(BDSKServerInfo *)info atIndex:(unsigned)index forType:(int)type;
-+ (void)removeServerAtIndex:(unsigned)index forType:(int)type;
++ (NSArray *)serversForType:(NSString *)type;
++ (void)addServer:(BDSKServerInfo *)info forType:(NSString *)type;
++ (void)setServer:(BDSKServerInfo *)info atIndex:(unsigned)index forType:(NSString *)type;
++ (void)removeServerAtIndex:(unsigned)index forType:(NSString *)type;
 
 - (id)initWithGroup:(BDSKSearchGroup *)aGroup;
 
+- (IBAction)selectServerType:(id)sender;
 - (IBAction)selectPredefinedServer:(id)sender;
 - (IBAction)selectSyntax:(id)sender;
 
@@ -62,8 +63,8 @@
 - (BOOL)canRemoveServer;
 - (BOOL)canEditServer;
 
-- (void)setType:(int)t;
-- (int)type;
+- (void)setType:(NSString *)t;
+- (NSString *)type;
 - (void)setServerInfo:(BDSKServerInfo *)info;
 
 - (BDSKSearchGroup *)group;

@@ -15,6 +15,8 @@
 #import "BDSKServerInfo.h"
 #import <OmniFoundation/NSArray-OFExtensions.h>
 
+NSString *BDSKSearchGroupEntrez = @"entrez";
+NSString *BDSKSearchGroupZoom = @"zoom";
 
 @implementation BDSKSearchGroup
 
@@ -23,7 +25,7 @@
     return [self initWithType:BDSKSearchGroupEntrez serverInfo:[NSDictionary dictionaryWithObject:aName forKey:@"database"] searchTerm:nil];
 }
 
-- (id)initWithType:(int)aType serverInfo:(BDSKServerInfo *)info searchTerm:(NSString *)string;
+- (id)initWithType:(NSString *)aType serverInfo:(BDSKServerInfo *)info searchTerm:(NSString *)string;
 {
     NSString *aName = [info name];
     if (aName == nil)
@@ -33,7 +35,7 @@
     if (aName == nil)
         aName = NSLocalizedString(@"Empty", @"Name for empty search group");
     if (self = [super initWithName:aName count:0]) {
-        type = aType;
+        type = [aType copy];
         searchTerm = [string copy];
         history = nil;
         publications = nil;
@@ -45,7 +47,7 @@
 }
 
 - (id)initWithDictionary:(NSDictionary *)groupDict {
-    int aType = [[groupDict objectForKey:@"type"] intValue];
+    NSString *aType = [groupDict objectForKey:@"type"];
     NSString *aSearchTerm = [[groupDict objectForKey:@"search term"] stringByUnescapingGroupPlistEntities];
     NSArray *aHistory = [[groupDict objectForKey:@"history"] arrayByPerformingSelector:@selector(stringByUnescapingGroupPlistEntities)];
     BDSKServerInfo *serverInfo = [[BDSKServerInfo alloc] initWithType:aType dictionary:groupDict];
@@ -60,7 +62,7 @@
 - (NSDictionary *)dictionaryValue {
     NSMutableDictionary *groupDict = [[[server serverInfo] dictionaryValue] mutableCopy];
     
-    [groupDict setObject:[NSNumber numberWithInt:[self type]] forKey:@"type"];
+    [groupDict setObject:[self type] forKey:@"type"];
     [groupDict setObject:[[self searchTerm] stringByEscapingGroupPlistEntities] forKey:@"search term"];
     [groupDict setObject:[[self history] arrayByPerformingSelector:@selector(stringByEscapingGroupPlistEntities)] forKey:@"history"];
     
@@ -84,6 +86,7 @@
     [publications makeObjectsPerformSelector:@selector(setOwner:) withObject:nil];
     [server terminate];
     [server release];
+    [type release];
     [searchTerm release];
     [super dealloc];
 }
@@ -98,7 +101,7 @@
 
 - (NSString *)description;
 {
-    return [NSString stringWithFormat:@"<%@ %p>: {\n\tis downloading: %@\n\tname: %@\ntype: %i\nserverInfo: %@\n }", [self class], self, ([self isRetrieving] ? @"yes" : @"no"), [self name], [self type], [self serverInfo]];
+    return [NSString stringWithFormat:@"<%@ %p>: {\n\tis downloading: %@\n\tname: %@\ntype: %@\nserverInfo: %@\n }", [self class], self, ([self isRetrieving] ? @"yes" : @"no"), [self name], [self type], [self serverInfo]];
 }
 
 - (void)applicationWillTerminate:(NSNotification *)aNotification{
@@ -200,9 +203,9 @@
 - (void)resetServerWithInfo:(BDSKServerInfo *)info {
     [server terminate];
     [server release];
-    if (type == BDSKSearchGroupEntrez)
+    if ([type isEqualToString:BDSKSearchGroupEntrez])
         server = [[BDSKEntrezGroupServer alloc] initWithGroup:self serverInfo:info];
-    else if (type == BDSKSearchGroupZoom)
+    else if ([type isEqualToString:BDSKSearchGroupZoom])
         server = [[BDSKZoomGroupServer alloc] initWithGroup:self serverInfo:info];
     else
         OBASSERT_NOT_REACHED("unknown search group type");
@@ -237,7 +240,7 @@
 
 #pragma mark Accessors
 
-- (int)type { return type; }
+- (NSString *)type { return type; }
 
 - (BDSKServerInfo *)serverInfo { return [server serverInfo]; }
 
@@ -245,9 +248,10 @@
 {
     [[[self undoManager] prepareWithInvocationTarget:self] setServerInfo:[self serverInfo]];
 
-    int newType = [info type];
-    if(newType != type){
-        type = newType;
+    NSString *newType = [info type];
+    if([newType isEqualToString:type] == NO){
+        [type release];
+        type = [newType copy];
         [self resetServerWithInfo:info];
     } else
         [server setServerInfo:info];

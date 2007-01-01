@@ -15,7 +15,7 @@
 
 #define SERVERS_FILENAME @"SearchGroupServers.plist"
 
-static NSArray *searchGroupServers = nil;
+static NSDictionary *searchGroupServers = nil;
 
 @implementation BDSKSearchGroupSheetController
 
@@ -28,12 +28,13 @@ static NSArray *searchGroupServers = nil;
     if (NO == [[NSFileManager defaultManager] fileExistsAtPath:path])
         path = [[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:SERVERS_FILENAME];
     
-    NSArray *serverDicts = [NSArray arrayWithContentsOfFile:path];
-    int type, count = [serverDicts count];
-    NSMutableArray *array = [NSMutableArray arrayWithCapacity:count];
+    NSDictionary *serverDicts = [NSDictionary dictionaryWithContentsOfFile:path];
+    NSMutableDictionary *newServerDicts = [NSMutableDictionary dictionaryWithCapacity:[serverDicts count]];
+    NSEnumerator *typeEnum = [[NSArray arrayWithObjects:BDSKSearchGroupEntrez, BDSKSearchGroupZoom, nil] objectEnumerator];
+    NSString *type;
     
-    for (type = 0; type < count; type++) {
-        NSArray *dicts = [serverDicts objectAtIndex:type];
+    while (type = [typeEnum nextObject]) {
+        NSArray *dicts = [serverDicts objectForKey:type];
         NSEnumerator *dictEnum = [dicts objectEnumerator];
         NSDictionary *dict;
         NSMutableArray *infos = [NSMutableArray arrayWithCapacity:[dicts count]];
@@ -42,20 +43,21 @@ static NSArray *searchGroupServers = nil;
             [infos addObject:info];
             [info release];
         }
-        [array addObject:infos];
+        [newServerDicts setObject:infos forKey:type];
     }
     [searchGroupServers release];
-    searchGroupServers = [array copy];
+    searchGroupServers = [newServerDicts copy];
 }
 
 + (void)resetServers;
 {
-    NSArray *serverDicts = [NSArray arrayWithContentsOfFile:[[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:SERVERS_FILENAME]];
-    int type, count = [serverDicts count];
-    NSMutableArray *array = [NSMutableArray arrayWithCapacity:count];
+    NSDictionary *serverDicts = [NSDictionary dictionaryWithContentsOfFile:[[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:SERVERS_FILENAME]];
+    NSMutableDictionary *newServerDicts = [NSMutableDictionary dictionaryWithCapacity:[serverDicts count]];
+    NSEnumerator *typeEnum = [[NSArray arrayWithObjects:BDSKSearchGroupEntrez, BDSKSearchGroupZoom, nil] objectEnumerator];
+    NSString *type;
     
-    for (type = 0; type < count; type++) {
-        NSArray *dicts = [serverDicts objectAtIndex:type];
+    while (type = [typeEnum nextObject]) {
+        NSArray *dicts = [serverDicts objectForKey:type];
         NSEnumerator *dictEnum = [dicts objectEnumerator];
         NSDictionary *dict;
         NSMutableArray *infos = [NSMutableArray arrayWithCapacity:[dicts count]];
@@ -64,10 +66,10 @@ static NSArray *searchGroupServers = nil;
             [infos addObject:info];
             [info release];
         }
-        [array addObject:infos];
+        [newServerDicts setObject:infos forKey:type];
     }
     [searchGroupServers release];
-    searchGroupServers = [array copy];
+    searchGroupServers = [newServerDicts copy];
     [self saveServers];
 }
 
@@ -76,17 +78,19 @@ static NSArray *searchGroupServers = nil;
     // @@ temporary
     return;
     
-    int type, count = [searchGroupServers count];
-    NSMutableArray *array = [NSMutableArray arrayWithCapacity:count];
+    NSMutableDictionary *dict = [NSMutableDictionary dictionaryWithCapacity:[searchGroupServers count]];
     
-    for (type = 0; type < count; type++) {
-        NSArray *infos = [searchGroupServers objectAtIndex:type];
-        [array addObject:[infos valueForKey:@"dictionaryValue"]];
+    NSEnumerator *typeEnum = [dict keyEnumerator];
+    NSString *type;
+    
+    while (type = [typeEnum nextObject]) {
+        NSArray *infos = [searchGroupServers objectForKey:type];
+        [dict setObject:[infos valueForKey:@"dictionaryValue"] forKey:type];
     }
     
     NSString *error = nil;
     NSPropertyListFormat format = NSPropertyListXMLFormat_v1_0;
-    NSData *data = [NSPropertyListSerialization dataFromPropertyList:array format:format errorDescription:&error];
+    NSData *data = [NSPropertyListSerialization dataFromPropertyList:dict format:format errorDescription:&error];
     if (error) {
         NSLog(@"Error writing: %@", error);
         [error release];
@@ -97,26 +101,26 @@ static NSArray *searchGroupServers = nil;
     }
 }
 
-+ (NSArray *)serversForType:(int)type;
++ (NSArray *)serversForType:(NSString *)type;
 {
-    return [searchGroupServers objectAtIndex:type];
+    return [searchGroupServers objectForKey:type];
 }
 
-+ (void)addServer:(BDSKServerInfo *)serverInfo forType:(int)type;
++ (void)addServer:(BDSKServerInfo *)serverInfo forType:(NSString *)type;
 {
-    [[searchGroupServers objectAtIndex:type] addObject:serverInfo];
+    [[searchGroupServers objectForKey:type] addObject:serverInfo];
     [self saveServers];
 }
 
-+ (void)setServer:(BDSKServerInfo *)serverInfo atIndex:(unsigned)index forType:(int)type;
++ (void)setServer:(BDSKServerInfo *)serverInfo atIndex:(unsigned)index forType:(NSString *)type;
 {
-    [[searchGroupServers objectAtIndex:type] replaceObjectAtIndex:index withObject:serverInfo];
+    [[searchGroupServers objectForKey:type] replaceObjectAtIndex:index withObject:serverInfo];
     [self saveServers];
 }
 
-+ (void)removeServerAtIndex:(unsigned)index forType:(int)type;
++ (void)removeServerAtIndex:(unsigned)index forType:(NSString *)type;
 {
-    [[searchGroupServers objectAtIndex:type] removeObjectAtIndex:index];
+    [[searchGroupServers objectForKey:type] removeObjectAtIndex:index];
     [self saveServers];
 }
 
@@ -133,7 +137,7 @@ static NSArray *searchGroupServers = nil;
         editors = CFArrayCreateMutable(kCFAllocatorMallocZone, 0, NULL);
         undoManager = nil;
         
-        type = group ? [group type] : BDSKSearchGroupEntrez;
+        type = group ? [[group type] copy] : [BDSKSearchGroupEntrez copy];
         serverInfo = [[group serverInfo] copy];
         if (nil == serverInfo)
             serverInfo = [[BDSKServerInfo defaultServerInfoWithType:type] retain];
@@ -147,6 +151,7 @@ static NSArray *searchGroupServers = nil;
 - (void)dealloc
 {
     [group release];
+    [type release];
     [undoManager release];
     [serverInfo release];
     [serverView release];
@@ -183,6 +188,8 @@ static NSArray *searchGroupServers = nil;
     [serverView setMinSize:[serverView frame].size];
     [serverView setCollapseEdges:BDSKMaxXEdgeMask | BDSKMinYEdgeMask];
     [self collapse:self];
+    
+    [typeMatrix selectCellWithTag:[type isEqualToString:BDSKSearchGroupEntrez] ? 0 : 1];
     
     NSArray *servers = [[self class] serversForType:type];
     unsigned index = 0;
@@ -222,6 +229,12 @@ static NSArray *searchGroupServers = nil;
     [super dismiss:sender];
 }
 
+- (IBAction)selectServerType:(id)sender;
+{
+    int t = [[sender selectedCell] tag];
+    [self setType:t == 0 ? BDSKSearchGroupEntrez : BDSKSearchGroupZoom];
+}
+
 - (IBAction)selectPredefinedServer:(id)sender;
 {
     int i = [sender indexOfSelectedItem];
@@ -233,7 +246,7 @@ static NSArray *searchGroupServers = nil;
     [editButton setTitle:NSLocalizedString(@"Edit", @"")];
     
     if (i == [sender numberOfItems] - 1) {
-        BOOL isZoom = [self type] == BDSKSearchGroupZoom;
+        BOOL isZoom = [[self type] isEqualToString:BDSKSearchGroupZoom];
         [self setServerInfo:[BDSKServerInfo defaultServerInfoWithType:[self type]]];
         [nameField setEnabled:YES];
         [addressField setEnabled:isZoom];
@@ -245,8 +258,8 @@ static NSArray *searchGroupServers = nil;
         
         [self expand:self];
     } else {
-        NSArray *servers = [searchGroupServers objectAtIndex:type];
-        [self setServerInfo:[[searchGroupServers objectAtIndex:type] objectAtIndex:i]];
+        NSArray *servers = [[self class] serversForType:type];
+        [self setServerInfo:[servers objectAtIndex:i]];
         [nameField setEnabled:NO];
         [addressField setEnabled:NO];
         [portField setEnabled:NO];
@@ -314,7 +327,7 @@ static NSArray *searchGroupServers = nil;
     } else {
         [editButton setTitle:NSLocalizedString(@"Set", @"")];
         
-        BOOL isZoom = [self type] == BDSKSearchGroupZoom;
+        BOOL isZoom = [[self type] isEqualToString:BDSKSearchGroupZoom];
         [nameField setEnabled:YES];
         [addressField setEnabled:isZoom];
         [portField setEnabled:isZoom];
@@ -430,12 +443,13 @@ static NSArray *searchGroupServers = nil;
     [self changeOptions];
 }
 
-- (void)setType:(int)t { 
-    type = t; 
+- (void)setType:(NSString *)t {
+    [type autorelease];
+    type = [t copy];
     [self reloadServersSelectingIndex:0];
 }
 
-- (int)type { return type; }
+- (NSString *)type { return type; }
   
 #pragma mark NSEditorRegistration
 
@@ -459,9 +473,9 @@ static NSArray *searchGroupServers = nil;
     
     NSString *message = nil;
     
-    if (type == 0 && ([NSString isEmptyString:[serverInfo name]] || [NSString isEmptyString:[serverInfo database]])) {
+    if ([type isEqualToString:BDSKSearchGroupEntrez] && ([NSString isEmptyString:[serverInfo name]] || [NSString isEmptyString:[serverInfo database]])) {
         message = NSLocalizedString(@"Unable to create a search group with an empty server name or database", @"Informative text in alert dialog when search group is invalid");
-    } else if (type == 1 && ([NSString isEmptyString:[serverInfo name]] || [NSString isEmptyString:[serverInfo host]] || [NSString isEmptyString:[serverInfo database]] || [[serverInfo port] intValue] == 0)) {
+    } else if ([type isEqualToString:BDSKSearchGroupZoom] && ([NSString isEmptyString:[serverInfo name]] || [NSString isEmptyString:[serverInfo host]] || [NSString isEmptyString:[serverInfo database]] || [[serverInfo port] intValue] == 0)) {
         message = NSLocalizedString(@"Unable to create a search group with an empty server name, address, database or port", @"Informative text in alert dialog when search group is invalid");
     }
     if (message) {

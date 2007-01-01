@@ -13,24 +13,24 @@
 
 @implementation BDSKServerInfo
 
-+ (id)defaultServerInfoWithType:(int)aType;
++ (id)defaultServerInfoWithType:(NSString *)aType;
 {
     return [[[[self class] alloc] initWithType:aType 
                                           name:NSLocalizedString(@"New Server",@"")
                                           host:BDSKSearchGroupEntrez ? nil : @"host.domain.com"
-                                          port:aType == BDSKSearchGroupEntrez ? nil : @"0" 
+                                          port:[aType isEqualToString:BDSKSearchGroupEntrez] ? nil : @"0" 
                                       database:@"database" 
                                       password:nil
                                       username:nil
                                        options:nil] autorelease];
 }
 
-- (id)initWithType:(int)aType name:(NSString *)aName host:(NSString *)aHost port:(NSString *)aPort database:(NSString *)aDbase password:(NSString *)aPassword username:(NSString *)aUser options:(NSDictionary *)opts;
+- (id)initWithType:(NSString *)aType name:(NSString *)aName host:(NSString *)aHost port:(NSString *)aPort database:(NSString *)aDbase password:(NSString *)aPassword username:(NSString *)aUser options:(NSDictionary *)opts;
 {
     if (self = [super init]) {
-        type = aType;
+        type = [aType copy];
         name = [aName copy];
-        if (type == BDSKSearchGroupEntrez) {
+        if ([[self type] isEqualToString:BDSKSearchGroupEntrez]) {
             host = nil;
             port = nil;
             database = [aDbase copy];
@@ -49,12 +49,12 @@
     return self;
 }
 
-- (id)initWithType:(int)aType name:(NSString *)aName host:(NSString *)aHost port:(NSString *)aPort database:(NSString *)aDbase password:(NSString *)aPassword username:(NSString *)aUser;
+- (id)initWithType:(NSString *)aType name:(NSString *)aName host:(NSString *)aHost port:(NSString *)aPort database:(NSString *)aDbase password:(NSString *)aPassword username:(NSString *)aUser;
 {
     return [self initWithType:aType name:aName host:aHost port:aPort database:aDbase password:aPassword username:aUser options:nil];
 }
 
-- (id)initWithType:(int)aType dictionary:(NSDictionary *)info;
+- (id)initWithType:(NSString *)aType dictionary:(NSDictionary *)info;
 {
     NSMutableDictionary *opts = [[[info objectForKey:@"options"] mutableCopy] autorelease];
     NSEnumerator *keyEnum = [opts  keyEnumerator];
@@ -83,6 +83,7 @@
 }
 
 - (void)dealloc {
+    [type release];
     [name release];
     [host release];
     [port release];
@@ -100,9 +101,9 @@ static inline BOOL BDSKIsEqualOrNil(id first, id second) {
 - (BOOL)isEqual:(id)other {
     BOOL isEqual = NO;
     // we don't compare the name, as that is just a label
-    if ([self isMemberOfClass:[other class]] == NO || [self type] != [(BDSKServerInfo *)other type])
+    if ([self isMemberOfClass:[other class]] == NO || [[self type] isEqualToString:[(BDSKServerInfo *)other type]] == NO)
         isEqual = NO;
-    else if ([self type] == BDSKSearchGroupEntrez)
+    else if ([[self type] isEqualToString:BDSKSearchGroupEntrez])
         isEqual = BDSKIsEqualOrNil([self database], [other database]);
     else
         isEqual = BDSKIsEqualOrNil([self host], [other host]) && BDSKIsEqualOrNil([self port], [other port]) && BDSKIsEqualOrNil([self database], [other database]) && BDSKIsEqualOrNil([self password], [other password]) && BDSKIsEqualOrNil([self username], [other username]);
@@ -111,9 +112,9 @@ static inline BOOL BDSKIsEqualOrNil(id first, id second) {
 
 - (NSDictionary *)dictionaryValue {
     NSMutableDictionary *info = [NSMutableDictionary dictionaryWithCapacity:7];
-    [info setValue:[NSNumber numberWithInt:[self type]] forKey:@"type"];
+    [info setValue:[self type] forKey:@"type"];
     [info setValue:[self name] forKey:@"name"];
-    if ([self type] == BDSKSearchGroupEntrez) {
+    if ([[self type] isEqualToString:BDSKSearchGroupEntrez]) {
         [info setValue:[[self database] stringByEscapingGroupPlistEntities] forKey:@"database"];
     } else {
         NSMutableDictionary *opts = [[[self options] mutableCopy] autorelease];
@@ -136,7 +137,7 @@ static inline BOOL BDSKIsEqualOrNil(id first, id second) {
     return info;
 }
 
-- (int)type { return type; }
+- (NSString *)type { return type; }
 
 - (NSString *)name { return name; }
 
@@ -152,7 +153,11 @@ static inline BOOL BDSKIsEqualOrNil(id first, id second) {
 
 - (NSDictionary *)options { return options; }
 
-- (void)setType:(int)t { type = t; }
+- (void)setType:(NSString *)t;
+{
+    [type autorelease];
+    type = [t copy];
+}
 
 - (void)setName:(NSString *)s;
 {
