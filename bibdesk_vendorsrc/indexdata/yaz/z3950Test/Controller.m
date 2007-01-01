@@ -13,9 +13,9 @@
 {
     //_connection = [[BDSKZoomConnection alloc] initWithHost:@"z3950.loc.gov:7090/Voyager" port:0];
     
-    _hostname = [@"z3950.loc.gov" copy];
-    _port = 7090;
-    _database = [@"Voyager" copy];
+    _hostname = [@"z3950.copac.ac.uk" copy];
+    _port = 2100;
+    _database = [@"copac" copy];
     
     [_addressField setStringValue:_hostname];
     [_dbaseField setStringValue:_database];
@@ -27,14 +27,14 @@
     [_popup addItemsWithTitles:[BDSKZoomRecord validKeys]];
     [_popup selectItemAtIndex:0];
     _currentType = [[[BDSKZoomRecord validKeys] objectAtIndex:0] copy];
-    _syntaxType = USMARC;
+    _syntaxType = XML; //USMARC;
     
     [_searchField setDelegate:self];
     [_searchField setFormatter:[[[BDSKZoomCCLQueryFormatter alloc] init] autorelease]];
     
     [_syntaxPopup removeAllItems];
     [_syntaxPopup addItemsWithTitles:[NSArray arrayWithObjects:@"USMARC", @"GRS-1", @"SUTRS", @"XML", @"UKMARC", nil]];
-    [_syntaxPopup selectItemAtIndex:0];
+    [_syntaxPopup selectItemAtIndex:3];
     
     _connectionNeedsReset = YES;
     
@@ -52,6 +52,7 @@
     _syntaxType = [BDSKZoomRecord syntaxTypeWithString:[sender titleOfSelectedItem]];
     [_connection setPreferredRecordSyntax:_syntaxType];
     [self search:_searchField];
+    NSLog(@"%@", [_connection propertyList]);
 }
 
 - (void)makeNewConnection
@@ -60,6 +61,7 @@
     _connection = [[BDSKZoomConnection alloc] initWithHost:_hostname port:_port database:_database];
     [_connection setPreferredRecordSyntax:_syntaxType];
     _connectionNeedsReset = NO;
+    NSLog(@"%@", [_connection propertyList]);
 }
 
 - (IBAction)changeAddress:(id)sender;
@@ -96,6 +98,53 @@
  use e.g. "render;charset=ISO-8859-1" to specify the record's charset; will be converted to UTF-8
  */
 
+static NSString *joinedArrayComponents(NSArray *arrayOfXMLNodes)
+{
+    NSArray *strings = [arrayOfXMLNodes valueForKeyPath:@"stringValue"];
+    return [strings componentsJoinedByString:@"; "];
+}
+
+- (NSArray *)dictionariesWithXMLString:(NSString *)xmlString
+{
+    NSError *error = nil;
+    NSXMLDocument *doc = [[NSXMLDocument alloc] initWithXMLString:xmlString options:0 error:&error];
+    
+    NSXMLElement *root = [doc rootElement];
+    
+    NSMutableArray *arrayOfPubs = [NSMutableArray array];
+    unsigned i, iMax = [root childCount];
+    NSXMLNode *node;
+    for (i = 0; i < iMax; i++) {
+        
+        node = [root childAtIndex:i];
+        NSMutableDictionary *pubDict = [[NSMutableDictionary alloc] initWithCapacity:5];
+
+        NSArray *array = [node nodesForXPath:@"title" error:NULL];
+        [pubDict setObject:joinedArrayComponents(array) forKey:@"Title"];
+        
+        array = [node nodesForXPath:@"creator" error:NULL];
+        [pubDict setObject:joinedArrayComponents(array) forKey:@"Author"];
+
+        array = [node nodesForXPath:@"subject" error:NULL];
+        [pubDict setObject:joinedArrayComponents(array) forKey:@"Keywords"];
+
+        array = [node nodesForXPath:@"publisher" error:NULL];
+        [pubDict setObject:joinedArrayComponents(array) forKey:@"Publisher"];
+
+        array = [node nodesForXPath:@"location" error:NULL];
+        [pubDict setObject:joinedArrayComponents(array) forKey:@"Location"];
+        
+        [arrayOfPubs addObject:pubDict];
+        [pubDict release];
+    }
+
+    [doc release];
+    
+    return arrayOfPubs;
+}
+    
+    
+
 - (IBAction)search:(id)sender;
 {
     NSString *searchString = [sender stringValue];
@@ -125,6 +174,7 @@
                 
                 NSString *value = [record valueForKey:_currentType];
                 [mutableString appendString:(value ? value : [NSString stringWithFormat:@"record returned nil for %@", _currentType])];
+                NSLog(@"%@", [self dictionariesWithXMLString:value]);
             }
         }
     }
