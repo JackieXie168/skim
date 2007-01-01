@@ -43,7 +43,7 @@
 @implementation BDSKDublinCoreXMLParser
 
 + (BOOL)canParseString:(NSString *)string{
-    return [string rangeOfString:@"<dc-record>"].location != NSNotFound;
+    return [string rangeOfString:@"<dc-record>"].location != NSNotFound || [string rangeOfString:@"<dc:dc-record>"].location != NSNotFound;
 }
 
 static NSString *joinedArrayComponents(NSArray *arrayOfXMLNodes, NSString *separator)
@@ -63,25 +63,28 @@ static NSString *joinedArrayComponents(NSArray *arrayOfXMLNodes, NSString *separ
     NSMutableArray *arrayOfPubs = [NSMutableArray array];
     unsigned i, iMax = [root childCount];
     NSXMLNode *node;
+    
+    BOOL hasPrefix = [[root name] hasPrefix:@"dc:"];
+    
     for (i = 0; i < iMax; i++) {
         
         node = [root childAtIndex:i];
         NSMutableDictionary *pubDict = [[NSMutableDictionary alloc] initWithCapacity:5];
         
-        NSMutableArray *authors = [NSMutableArray arrayWithArray:[node nodesForXPath:@"creator" error:NULL]];
-        [authors addObjectsFromArray:[node nodesForXPath:@"contributor" error:NULL]];
+        NSMutableArray *authors = [NSMutableArray arrayWithArray:[node nodesForXPath:hasPrefix ? @"dc:creator" : @"creator" error:NULL]];
+        [authors addObjectsFromArray:[node nodesForXPath:hasPrefix ? @"dc:contributor" : @"contributor" error:NULL]];
         [pubDict setObject:joinedArrayComponents(authors, @" and ") forKey:BDSKAuthorString];
         
-        NSArray *array = [node nodesForXPath:@"title" error:NULL];
+        NSArray *array = [node nodesForXPath:hasPrefix ? @"dc:title" : @"title" error:NULL];
         [pubDict setObject:joinedArrayComponents(array, @"; ") forKey:BDSKTitleString];
         
-        array = [node nodesForXPath:@"subject" error:NULL];
+        array = [node nodesForXPath:hasPrefix ? @"dc:subject" : @"subject" error:NULL];
         [pubDict setObject:joinedArrayComponents(array, @"; ") forKey:BDSKKeywordsString];
         
-        array = [node nodesForXPath:@"publisher" error:NULL];
+        array = [node nodesForXPath:hasPrefix ? @"dc:publisher" : @"publisher" error:NULL];
         [pubDict setObject:joinedArrayComponents(array, @"; ") forKey:BDSKPublisherString];
         
-        array = [node nodesForXPath:@"location" error:NULL];
+        array = [node nodesForXPath:hasPrefix ? @"dc:location" : @"location" error:NULL];
         [pubDict setObject:joinedArrayComponents(array, @"; ") forKey:@"Location"];
 
         BibItem *pub = [[BibItem alloc] initWithType:BDSKBookString
