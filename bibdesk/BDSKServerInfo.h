@@ -10,7 +10,7 @@
 
 
 @interface BDSKServerInfo : NSObject {
-    int type;
+    NSString *type;
     NSString *name;
     NSString *host;
     NSString *port;
@@ -20,16 +20,16 @@
     NSDictionary *options;
 }
 
-+ (id)defaultServerInfoWithType:(int)aType;
++ (id)defaultServerInfoWithType:(NSString *)aType;
 
-- (id)initWithType:(int)aType name:(NSString *)aName host:(NSString *)aHost port:(NSString *)aPort database:(NSString *)aDbase password:(NSString *)aPassword username:(NSString *)aUser options:(NSDictionary *)options;
-- (id)initWithType:(int)aType name:(NSString *)aName host:(NSString *)aHost port:(NSString *)aPort database:(NSString *)aDbase password:(NSString *)aPassword username:(NSString *)aUser;
+- (id)initWithType:(NSString *)aType name:(NSString *)aName host:(NSString *)aHost port:(NSString *)aPort database:(NSString *)aDbase password:(NSString *)aPassword username:(NSString *)aUser options:(NSDictionary *)options;
+- (id)initWithType:(NSString *)aType name:(NSString *)aName host:(NSString *)aHost port:(NSString *)aPort database:(NSString *)aDbase password:(NSString *)aPassword username:(NSString *)aUser;
 
-- (id)initWithType:(int)aType dictionary:(NSDictionary *)info;
+- (id)initWithType:(NSString *)aType dictionary:(NSDictionary *)info;
 
 - (NSDictionary *)dictionaryValue;
 
-- (int)type;
+- (NSString *)type;
 - (NSString *)name;
 - (NSString *)host;
 - (NSString *)port;

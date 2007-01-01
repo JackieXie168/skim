@@ -19,8 +19,8 @@
                 expand = id; 
                 removeServer = id; 
                 resetServers = id; 
-                selectEncoding = id; 
                 selectPredefinedServer = id; 
+                selectServerType = id; 
                 selectSyntax = id; 
                 toggle = id; 
             }; 
