@@ -22,7 +22,7 @@
                                       database:@"database" 
                                       password:nil
                                       username:nil
-                                       options:nil] autorelease];
+                                       options:[NSDictionary dictionary]] autorelease];
 }
 
 - (id)initWithType:(NSString *)aType name:(NSString *)aName host:(NSString *)aHost port:(NSString *)aPort database:(NSString *)aDbase password:(NSString *)aPassword username:(NSString *)aUser options:(NSDictionary *)opts;
@@ -43,7 +43,7 @@
             database = [aDbase copy];
             password = [aPassword copy];
             username = [aUser copy];
-            options = [opts copy];
+            options = [opts mutableCopy];
         }
     }
     return self;
@@ -51,7 +51,7 @@
 
 - (id)initWithType:(NSString *)aType name:(NSString *)aName host:(NSString *)aHost port:(NSString *)aPort database:(NSString *)aDbase password:(NSString *)aPassword username:(NSString *)aUser;
 {
-    return [self initWithType:aType name:aName host:aHost port:aPort database:aDbase password:aPassword username:aUser options:nil];
+    return [self initWithType:aType name:aName host:aHost port:aPort database:aDbase password:aPassword username:aUser options:[NSDictionary dictionary]];
 }
 
 - (id)initWithType:(NSString *)aType dictionary:(NSDictionary *)info;
@@ -198,7 +198,7 @@ static inline BOOL BDSKIsEqualOrNil(id first, id second) {
 - (void)setOptions:(NSDictionary *)o;
 {
     [options autorelease];
-    options = [o copy];
+    options = [o mutableCopy];
 }
 
 - (BOOL)validateHost:(id *)value error:(NSError **)error {
