@@ -46,4 +46,9 @@
 @end
 
 @interface BDSKZoomCCLQueryFormatter : NSFormatter
+{
+    const void *_config;
+}
+- (id)initWithConfigString:(NSString *)config;
+
 @end
