@@ -109,6 +109,36 @@
                 resultEncoding = "utf-8";
                 allowDiacritics = "YES";
             };
+        },
+        /* Columbia University */
+        {
+            name = "Columbia University";
+            database = "voyager";
+            host = "clio-db.cc.columbia.edu";
+            port = "7090";
+            options = {
+                recordSyntax = "US MARC";
+                resultEncoding = "marc-8";
+                /* config string that maps CCL keys to numeric fields */
+                /* http://www.loc.gov/z3950/agency/defns/bib1.html    */
+                /* http://www.loc.gov/z3950/agency/bib1.html          */
+                /* http://www.indexdata.com/yaz/doc/tools.tkl#CCL     */
+                queryConfig =  "term u=1016 t=l,r  s=al
+                                au   u=1003 s=pw 
+                                ti   u=4    s=pw
+                                isbn u=7
+                                issn u=8
+                                cc   u=20
+                                su   u=21   s=pw
+                                date u=30   r=r
+                                dp   u=31   r=r
+                                da   u=32   r=r
+                                la   u=54   s=pw
+                                ab   u=62   s=pw
+                                note u=63   s=pw";
+                allowDiacrities = "NO";
+                
+            };
         }
     );
 }
