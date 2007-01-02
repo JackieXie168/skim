@@ -148,7 +148,13 @@ NSString *BDSKSearchGroupZoom = @"zoom";
 
 - (NSImage *)icon { return [NSImage smallImageNamed:@"searchFolderIcon"]; }
 
-- (NSString *)name { return [NSString isEmptyString:[self searchTerm]] ? NSLocalizedString(@"Empty", @"Name for empty search group") : [self searchTerm]; }
+- (NSString *)name {
+    return [NSString isEmptyString:[self searchTerm]] ? NSLocalizedString(@"Empty", @"Name for empty search group") : [self searchTerm];
+}
+
+- (NSString *)toolTip {
+    return [NSString stringWithFormat:@"%@: %@", [[self serverInfo] name], [self searchTerm]];
+}
 
 - (BOOL)isSearch { return YES; }
 
