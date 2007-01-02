@@ -14,9 +14,7 @@
         {
             ACTIONS = {
                 addServer = id; 
-                collapse = id; 
                 editServer = id; 
-                expand = id; 
                 removeServer = id; 
                 resetServers = id; 
                 selectPredefinedServer = id; 

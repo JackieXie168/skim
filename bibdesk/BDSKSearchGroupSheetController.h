@@ -48,8 +48,6 @@
     BDSKServerInfo *serverInfo;
     NSString *type;
     
-    BOOL isExpanded;
-    
     IBOutlet NSPopUpButton *serverPopup;
     IBOutlet NSMatrix *typeMatrix;
     
@@ -87,8 +85,6 @@
 - (IBAction)editServer:(id)sender;
 - (IBAction)resetServers:(id)sender;
 
-- (IBAction)expand:(id)sender;
-- (IBAction)collapse:(id)sender;
 - (IBAction)toggle:(id)sender;
 
 - (BOOL)canAddServer;
