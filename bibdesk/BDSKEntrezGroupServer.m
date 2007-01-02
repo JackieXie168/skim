@@ -127,6 +127,8 @@
 
 - (BOOL)isRetrieving { return isRetrieving; }
 
+- (NSFormatter *)searchStringFormatter { return nil; }
+
 #pragma mark Other accessors
 
 - (void)setSearchTerm:(NSString *)string;

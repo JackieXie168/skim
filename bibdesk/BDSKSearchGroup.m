@@ -238,6 +238,8 @@ NSString *BDSKSearchGroupZoom = @"zoom";
     [self search];
 }
 
+- (NSFormatter *)searchStringFormatter { return [server searchStringFormatter]; }
+
 #pragma mark Accessors
 
 - (NSString *)type { return type; }

@@ -136,6 +136,13 @@ The groupedPublications array is a subset of the publications array, developed b
 
 #pragma mark PubMed ** TEMPORARY **
 
+// currently only used by the search group search field
+- (BOOL)control:(NSControl *)control didFailToFormatString:(NSString *)aString errorDescription:(NSString *)error {
+    NSAlert *alert = [NSAlert alertWithMessageText:NSLocalizedString(@"Invalid search string syntax", @"") defaultButton:nil alternateButton:nil otherButton:nil informativeTextWithFormat:error];
+    [alert beginSheetModalForWindow:documentWindow modalDelegate:nil didEndSelector:nil contextInfo:NULL];
+    return YES;
+}
+
 - (IBAction)changeSearchGroupSearchTerm:(id)sender {
     BDSKSearchGroup *group = [[self selectedGroups] firstObject];
     OBASSERT([group isSearch]);
@@ -192,6 +199,8 @@ The groupedPublications array is a subset of the publications array, developed b
     [searchGroupSearchField setRecentSearches:[group history]];
     [searchGroupSearchButton setEnabled:[group isRetrieving] == NO];
     [[searchGroupSearchField cell] setPlaceholderString:[NSString stringWithFormat:NSLocalizedString(@"Search %@", @"search group field placeholder"), name ? name : @""]];
+    [searchGroupSearchField setFormatter:[group searchStringFormatter]];
+    [searchGroupSearchField setDelegate:self];
 }
 
 - (void)hideSearchGroupView
