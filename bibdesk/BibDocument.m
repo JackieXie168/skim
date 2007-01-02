@@ -2569,6 +2569,15 @@ originalContentsURL:(NSURL *)absoluteOriginalContentsURL
 	} else if ([self hasScriptGroupsSelected] == YES) {
         [statusStr appendFormat:@" %@ \"%@\"", NSLocalizedString(@"in script group", @"Partial status message"), [[[self selectedGroups] lastObject] stringValue]];
 	} else if ([self hasSearchGroupsSelected] == YES) {
+        BDSKSearchGroup *group = [[self selectedGroups] firstObject];
+        [statusStr appendFormat:NSLocalizedString(@"in \"%@\" search group", @"Partial status message"), [[group serverInfo] name]];
+        int matchCount = [group numberOfAvailableResults];
+        if (matchCount == 1)
+            [statusStr appendFormat:NSLocalizedString(@". There was 1 match.", @"Partial status message")];
+        else if (matchCount > 1)
+            [statusStr appendFormat:NSLocalizedString(@". There were %i matches.", @"Partial status message"), matchCount];
+        if (matchCount > groupPubsCount)
+            [statusStr appendString:NSLocalizedString(@" Hit \"Search\" to load more.", @"Partial status message")];
         [statusStr appendFormat:@" %@ \"%@\"", NSLocalizedString(@"in search group", @"Partial status message"), [[[self selectedGroups] lastObject] stringValue]];
 	} else if (groupPubsCount != totalPubsCount) {
 		NSString *groupStr = ([groupTableView numberOfSelectedRows] == 1) ?
@@ -2576,15 +2585,6 @@ originalContentsURL:(NSURL *)absoluteOriginalContentsURL
 			NSLocalizedString(@"in multiple groups", @"Partial status message");
         [statusStr appendFormat:@" %@ (%@ %i)", groupStr, ofStr, totalPubsCount];
 	}
-    if ([self hasSearchGroupsSelected] == YES) {
-        int matchCount = [[[self selectedGroups] firstObject] numberOfAvailableResults];
-        if (matchCount == 1)
-            [statusStr appendFormat:NSLocalizedString(@". There was 1 match.", @"Partial status message")];
-        else if (matchCount > 1)
-            [statusStr appendFormat:NSLocalizedString(@". There were %i matches.", @"Partial status message"), matchCount];
-        if (matchCount > groupPubsCount)
-            [statusStr appendString:NSLocalizedString(@" Hit \"Search\" to load more.", @"Partial status message")];
-    }
 	[self setStatus:statusStr];
     [statusStr release];
 }
