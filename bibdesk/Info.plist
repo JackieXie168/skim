@@ -22,6 +22,22 @@
 				<string>net.sourceforge.bibdesk.bdskcache</string>
 			</array>
 		</dict>
+        <dict>
+			<key>CFBundleTypeExtensions</key>
+			<array>
+				<string>bdsksearch</string>
+			</array>
+			<key>CFBundleTypeIconFile</key>
+			<string>searchDocIcon.icns</string>
+			<key>CFBundleTypeName</key>
+			<string>Search Group</string>
+			<key>CFBundleTypeRole</key>
+			<string>Viewer</string>
+			<key>LSItemContentTypes</key>
+			<array>
+				<string>net.sourceforge.bibdesk.bdsksearch</string>
+			</array>
+		</dict>
 		<dict>
 			<key>CFBundleTypeExtensions</key>
 			<array>
