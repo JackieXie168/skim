@@ -155,12 +155,9 @@ static NSString *BDSKDCXMLString = @"DC XML";
     [connection release];
     if ([info host] != nil) {
         connection = [[BDSKZoomConnection alloc] initWithHost:[info host] port:[[info port] intValue] database:[info database]];
-        if ([NSString isEmptyString:[info password]] == NO)
-            [connection setOption:[info password] forKey:@"password"];
-        if ([NSString isEmptyString:[info username]] == NO)
-            [connection setOption:[info username] forKey:@"user"];
-        if ([[info options] objectForKey:@"recordSyntax"])
-            [connection setOption:[[self class] zoomRecordSyntaxForRecordSyntax:[[info options] objectForKey:@"recordSyntax"]] forKey:@"preferredRecordSyntax"];    
+        [connection setOption:[info password] forKey:@"password"];
+        [connection setOption:[info username] forKey:@"user"];
+        [connection setOption:[[self class] zoomRecordSyntaxForRecordSyntax:[[info options] objectForKey:@"recordSyntax"]] forKey:@"preferredRecordSyntax"];    
 
         [connection setResultEncodingToIANACharSetName:[[info options] objectForKey:@"resultEncoding"]];
         OSAtomicCompareAndSwap32Barrier(1, 0, (int32_t *)&flags.needsReset);
@@ -216,7 +213,9 @@ static NSString *BDSKDCXMLString = @"DC XML";
             
     if (NO == [NSString isEmptyString:searchTerm]){
         // the resultSet is cached for each searchTerm, so we have no overhead calling it for retrieving more results
-        BDSKZoomResultSet *resultSet = [connection resultsForCCLQuery:searchTerm];
+        BDSKZoomQuery *query = [BDSKZoomQuery queryWithCCLString:searchTerm config:[[[self serverInfo] options] objectForKey:@"queryConfig"]];
+        
+        BDSKZoomResultSet *resultSet = query ? [connection resultsForQuery:query] : nil;
         
         if (nil == resultSet)
             OSAtomicCompareAndSwap32Barrier(0, 1, (int32_t *)&flags.failedDownload);
