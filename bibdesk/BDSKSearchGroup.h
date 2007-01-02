@@ -28,6 +28,7 @@ extern NSString *BDSKSearchGroupZoom;
 - (void)retrievePublications;
 - (void)stop;
 - (void)terminate;
+- (NSFormatter *)searchStringFormatter;
 @end
 
 @interface BDSKSearchGroup : BDSKMutableGroup <BDSKOwner> {
@@ -65,5 +66,6 @@ extern NSString *BDSKSearchGroupZoom;
 - (void)search;
 
 - (void)resetServerWithInfo:(BDSKServerInfo *)info;
+- (NSFormatter *)searchStringFormatter;
 
 @end

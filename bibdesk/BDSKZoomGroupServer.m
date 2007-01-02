@@ -137,6 +137,8 @@ static NSString *BDSKDCXMLString = @"DC XML";
 
 - (BOOL)isRetrieving { return 1 == flags.isRetrieving; }
 
+- (NSFormatter *)searchStringFormatter { return [[[BDSKZoomCCLQueryFormatter alloc] initWithConfigString:[[[self serverInfo] options] objectForKey:@"queryConfig"]] autorelease]; }
+
 #pragma mark Main thread 
 
 - (void)addPublicationsToGroup:(bycopy NSArray *)pubs;
@@ -203,8 +205,9 @@ static NSString *BDSKDCXMLString = @"DC XML";
         [self resetConnection];
     
     NSMutableArray *pubs = nil;
+    BDSKServerInfo *info = [self serverInfo];
     
-    if (searchTerm && [[[self serverInfo] options] boolForKey:@"allowDiacritics"] == NO) {
+    if (searchTerm && [[info options] boolForKey:@"allowDiacritics"] == NO) {
         CFMutableStringRef mutableCopy = (CFMutableStringRef)[[searchTerm mutableCopy] autorelease];
         CFStringNormalize(mutableCopy, kCFStringNormalizationFormD);
         BDDeleteCharactersInCharacterSet(mutableCopy, CFCharacterSetGetPredefined(kCFCharacterSetNonBase));
@@ -213,7 +216,7 @@ static NSString *BDSKDCXMLString = @"DC XML";
             
     if (NO == [NSString isEmptyString:searchTerm]){
         // the resultSet is cached for each searchTerm, so we have no overhead calling it for retrieving more results
-        BDSKZoomQuery *query = [BDSKZoomQuery queryWithCCLString:searchTerm config:[[[self serverInfo] options] objectForKey:@"queryConfig"]];
+        BDSKZoomQuery *query = [BDSKZoomQuery queryWithCCLString:searchTerm config:[[info options] objectForKey:@"queryConfig"]];
         
         BDSKZoomResultSet *resultSet = query ? [connection resultsForQuery:query] : nil;
         
