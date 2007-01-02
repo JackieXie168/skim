@@ -414,6 +414,10 @@
             BDSKGroup *group = [groups objectAtIndex:[rowIndexes firstIndex]];
             if ([group isExternal]) {
                 pubs = [NSArray arrayWithArray:[(id)group publications]];
+                if ([self hasSearchGroupsSelected]) {
+                    [pboard declareTypes:[NSArray arrayWithObject:NSFilesPromisePboardType] owner:self];
+                    yn = [pboard setPropertyList:[NSArray arrayWithObject:[[group name] stringByAppendingPathExtension:@"bdsksearch"]] forType:NSFilesPromisePboardType];
+                }
 			} else {
                 NSMutableArray *pubsInGroup = [NSMutableArray arrayWithCapacity:[publications count]];
                 NSEnumerator *pubEnum = [publications objectEnumerator];
@@ -427,7 +431,7 @@
             }
             docState.dragFromSharedGroups = [groups hasExternalGroupsAtIndexes:rowIndexes];
 		}
-		if([pubs count] == 0){
+		if([pubs count] == 0 && [self hasSearchGroupsSelected] == NO){
             NSBeginAlertSheet(NSLocalizedString(@"Empty Groups", @"Message in alert dialog when dragging from empty groups"),nil,nil,nil,documentWindow,nil,NULL,NULL,NULL,
                               NSLocalizedString(@"The groups you want to drag do not contain any items.", @"Informative text in alert dialog"));
             return NO;
@@ -611,13 +615,14 @@
 	} else if ([dragType isEqualToString:NSFilesPromisePboardType]) {
 		NSArray *fileNames = [pb propertyListForType:NSFilesPromisePboardType];
 		count = [fileNames count];
-        image = [[NSWorkspace sharedWorkspace] iconForFiles:fileNames];
+        NSString *pathExt = count ? [[fileNames objectAtIndex:0] pathExtension] : @"";
+        // promise drags don't use full paths
+        image = [[NSWorkspace sharedWorkspace] iconForFileType:pathExt];
     
 	} else {
 		OFPreferenceWrapper *sud = [OFPreferenceWrapper sharedPreferenceWrapper];
         int index = ([NSApp currentModifierFlags] & NSAlternateKeyMask) ? 1 : 0;
 		NSMutableString *s = [NSMutableString string];
-		BibItem *firstItem = [promisedDraggedItems objectAtIndex:0];
         NSString *bibString;
         
         dragCopyType = [[[sud arrayForKey:BDSKDragCopyTypesKey] objectAtIndex:index] intValue];
@@ -626,56 +631,59 @@
 		count = [promisedDraggedItems count];
 		
 		// we draw only the first item and indicate other items using ellipsis
-		switch (dragCopyType) {
-			case BDSKBibTeXDragCopyType:
-			case BDSKMinimalBibTeXDragCopyType:
-				bibString = [firstItem bibTeXStringDroppingInternal:YES error:NULL];
-                if(bibString)
-                    [s appendString:bibString];
-				if (count > 1) {
-					[s appendString:@"\n"];
-					[s appendString:[NSString horizontalEllipsisString]];
-				}
-                inside = YES;
-				break;
-			case BDSKCiteDragCopyType:
-				// Are we using a custom citeString (from the drawer?)
-                [s appendString:[self citeStringForPublications:[NSArray arrayWithObject:firstItem] citeString:citeString]];
-				if (count > 1) 
-					[s appendString:[NSString horizontalEllipsisString]];
-				break;
-			case BDSKPDFDragCopyType:
-			case BDSKRTFDragCopyType:
-				[s appendString:@"["];
-				[s appendString:[firstItem citeKey]]; 
-				[s appendString:@"]"];
-				if (count > 1) 
-					[s appendString:[NSString horizontalEllipsisString]];
-				break;
-			case BDSKLaTeXDragCopyType:
-				[s appendString:@"\\bibitem{"];
-				[s appendString:[firstItem citeKey]];
-				[s appendString:@"}"];
-				if (count > 1) 
-					[s appendString:[NSString horizontalEllipsisString]];
-				break;
-			case BDSKLTBDragCopyType:
-				[s appendString:@"\\bib{"];
-				[s appendString:[firstItem citeKey]];
-				[s appendString:@"}{"];
-				[s appendString:[firstItem pubType]];
-				[s appendString:@"}"];
-				if (count > 1) 
-					[s appendString:[NSString horizontalEllipsisString]];
-				break;
-			case BDSKRISDragCopyType:
-                [s appendString:[firstItem RISStringValue]];
-				if (count > 1) 
-					[s appendString:[NSString horizontalEllipsisString]];
-                inside = YES;
-				break;
+        if (count) {
+            BibItem *firstItem = [promisedDraggedItems objectAtIndex:0];
+
+            switch (dragCopyType) {
+                case BDSKBibTeXDragCopyType:
+                case BDSKMinimalBibTeXDragCopyType:
+                    bibString = [firstItem bibTeXStringDroppingInternal:YES error:NULL];
+                    if(bibString)
+                        [s appendString:bibString];
+                    if (count > 1) {
+                        [s appendString:@"\n"];
+                        [s appendString:[NSString horizontalEllipsisString]];
+                    }
+                    inside = YES;
+                    break;
+                case BDSKCiteDragCopyType:
+                    // Are we using a custom citeString (from the drawer?)
+                    [s appendString:[self citeStringForPublications:[NSArray arrayWithObject:firstItem] citeString:citeString]];
+                    if (count > 1) 
+                        [s appendString:[NSString horizontalEllipsisString]];
+                    break;
+                case BDSKPDFDragCopyType:
+                case BDSKRTFDragCopyType:
+                    [s appendString:@"["];
+                    [s appendString:[firstItem citeKey]]; 
+                    [s appendString:@"]"];
+                    if (count > 1) 
+                        [s appendString:[NSString horizontalEllipsisString]];
+                    break;
+                case BDSKLaTeXDragCopyType:
+                    [s appendString:@"\\bibitem{"];
+                    [s appendString:[firstItem citeKey]];
+                    [s appendString:@"}"];
+                    if (count > 1) 
+                        [s appendString:[NSString horizontalEllipsisString]];
+                    break;
+                case BDSKLTBDragCopyType:
+                    [s appendString:@"\\bib{"];
+                    [s appendString:[firstItem citeKey]];
+                    [s appendString:@"}{"];
+                    [s appendString:[firstItem pubType]];
+                    [s appendString:@"}"];
+                    if (count > 1) 
+                        [s appendString:[NSString horizontalEllipsisString]];
+                    break;
+                case BDSKRISDragCopyType:
+                    [s appendString:[firstItem RISStringValue]];
+                    if (count > 1) 
+                        [s appendString:[NSString horizontalEllipsisString]];
+                    inside = YES;
+                    break;
+            }
 		}
-		
 		NSAttributedString *attrString = [[[NSAttributedString alloc] initWithString:s] autorelease];
 		NSSize size = [attrString size];
 		NSRect rect = NSZeroRect;
@@ -928,52 +936,66 @@
 - (NSArray *)tableView:(NSTableView *)tv namesOfPromisedFilesDroppedAtDestination:(NSURL *)dropDestination forDraggedRowsWithIndexes:(NSIndexSet *)indexSet;
 {
 
-    unsigned rowIdx = [indexSet firstIndex];
-    NSMutableDictionary *fullPathDict = [NSMutableDictionary dictionaryWithCapacity:[indexSet count]];
-    
-    // We're supposed to return this to our caller (usually the Finder); just an array of file names, not full paths
-    NSMutableArray *fileNames = [NSMutableArray arrayWithCapacity:[indexSet count]];
-    
-    NSURL *url = nil;
-    NSString *fullPath = nil;
-    BibItem *theBib = nil;
-    
-    // this ivar stores the field name (e.g. Url, L2)
-    NSString *fieldName = [self promiseDragColumnIdentifier];
-    BOOL isLocalFile = [fieldName isLocalFileField];
-    
-    NSString *originalPath;
-    NSString *fileName;
-    NSString *basePath = [dropDestination path];
+    if ([tv isEqual:tableView]) {
+        unsigned rowIdx = [indexSet firstIndex];
+        NSMutableDictionary *fullPathDict = [NSMutableDictionary dictionaryWithCapacity:[indexSet count]];
+        
+        // We're supposed to return this to our caller (usually the Finder); just an array of file names, not full paths
+        NSMutableArray *fileNames = [NSMutableArray arrayWithCapacity:[indexSet count]];
+        
+        NSURL *url = nil;
+        NSString *fullPath = nil;
+        BibItem *theBib = nil;
+        
+        // this ivar stores the field name (e.g. Url, L2)
+        NSString *fieldName = [self promiseDragColumnIdentifier];
+        BOOL isLocalFile = [fieldName isLocalFileField];
+        
+        NSString *originalPath;
+        NSString *fileName;
+        NSString *basePath = [dropDestination path];
 
-    while(rowIdx != NSNotFound){
-        theBib = [shownPublications objectAtIndex:rowIdx];
-        if(isLocalFile){
-            originalPath = [theBib localFilePathForField:fieldName];
-            fileName = [originalPath lastPathComponent];
-            NSParameterAssert(fileName);
-            fullPath = [basePath stringByAppendingPathComponent:fileName];
-            [fileNames addObject:fileName];
-            // create a dictionary with each original file path (source) as key, and destination path as value
-            [fullPathDict setValue:fullPath forKey:originalPath];
-            
-        } else if((url = [theBib remoteURLForField:fieldName])){
+        while(rowIdx != NSNotFound){
+            theBib = [shownPublications objectAtIndex:rowIdx];
+            if(isLocalFile){
+                originalPath = [theBib localFilePathForField:fieldName];
+                fileName = [originalPath lastPathComponent];
+                NSParameterAssert(fileName);
+                fullPath = [basePath stringByAppendingPathComponent:fileName];
+                [fileNames addObject:fileName];
+                // create a dictionary with each original file path (source) as key, and destination path as value
+                [fullPathDict setValue:fullPath forKey:originalPath];
+                
+            } else if((url = [theBib remoteURLForField:fieldName])){
                 fullPath = [[basePath stringByAppendingPathComponent:[theBib displayTitle]] stringByAppendingPathExtension:@"webloc"];
                 // create a dictionary with each destination file path as key (handed to us from the Finder/dropDestination) and each item's URL as value
                 [fullPathDict setValue:url forKey:fullPath];
                 [fileNames addObject:[theBib displayTitle]];
+            }
+            rowIdx = [indexSet indexGreaterThanIndex:rowIdx];
         }
-        rowIdx = [indexSet indexGreaterThanIndex:rowIdx];
-    }
-    [self setPromiseDragColumnIdentifier:nil];
-    
-    // We generally want to run promised file creation in the background to avoid blocking our UI, although webloc files are so small it probably doesn't matter.
-    if(isLocalFile)
-        [[NSFileManager defaultManager] copyFilesInBackgroundThread:fullPathDict];
-    else
-        [[NSFileManager defaultManager] createWeblocFilesInBackgroundThread:fullPathDict];
+        [self setPromiseDragColumnIdentifier:nil];
+        
+        // We generally want to run promised file creation in the background to avoid blocking our UI, although webloc files are so small it probably doesn't matter.
+        if(isLocalFile)
+            [[NSFileManager defaultManager] copyFilesInBackgroundThread:fullPathDict];
+        else
+            [[NSFileManager defaultManager] createWeblocFilesInBackgroundThread:fullPathDict];
 
-    return fileNames;
+        return fileNames;
+    } else if ([tv isEqual:groupTableView]) {
+        BDSKGroup *group = [groups objectAtIndex:[indexSet firstIndex]];
+        NSDictionary *plist = [group dictionaryValue];
+        if (plist) {
+            NSString *fileName = [[group name] stringByAppendingPathExtension:@"bdsksearch"];
+            NSString *fullPath = [[dropDestination path] stringByAppendingPathComponent:fileName];
+            // !!! check for existence?
+            return ([plist writeToFile:fullPath atomically:YES]) ? [NSArray arrayWithObject:fileName] : nil;
+        } else
+            return nil;
+    }
+    NSAssert(0, @"code path should be unreached");
+    return nil;
 }
 
 - (void)setPromiseDragColumnIdentifier:(NSString *)identifier;

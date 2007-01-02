@@ -84,7 +84,8 @@
 - (void)declareType:(NSString *)type dragCopyType:(int)dragCopyType forItems:(NSArray *)items forPasteboard:(NSPasteboard *)pboard{
 	NSArray *types = [NSArray arrayWithObjects:type, BDSKBibItemPboardType, nil];
     [self clearPromisedTypesForPasteboard:pboard];
-    [pboard declareTypes:types owner:self];
+    // add so we don't overwrite anyone else's pboard data
+    [pboard addTypes:types owner:self];
 	[self setPromisedItems:items types:types dragCopyType:dragCopyType forPasteboard:pboard];
 }
 
