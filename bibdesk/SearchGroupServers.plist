@@ -136,7 +136,7 @@
                                 la   u=54   s=pw
                                 ab   u=62   s=pw
                                 note u=63   s=pw";
-                allowDiacrities = "NO";
+                allowDiacritics = "NO";
                 
             };
         }
