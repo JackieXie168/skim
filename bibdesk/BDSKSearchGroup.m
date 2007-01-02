@@ -86,6 +86,8 @@ NSString *BDSKSearchGroupZoom = @"zoom";
         [self setHistory:aHistory];
     }
     [serverInfo release];
+
+    NSAssert2([NSClassFromString([groupDict objectForKey:@"class"]) isSubclassOfClass:[self class]], @"attempt to instantiate %@ instead of %@", [self class], [groupDict objectForKey:@"class"]);
     return self;
 }
 
@@ -97,6 +99,7 @@ NSString *BDSKSearchGroupZoom = @"zoom";
         [groupDict setObject:[[self searchTerm] stringByEscapingGroupPlistEntities] forKey:@"search term"];
     if ([self history])
         [groupDict setObject:[[self history] arrayByPerformingSelector:@selector(stringByEscapingGroupPlistEntities)] forKey:@"history"];
+    [groupDict setObject:NSStringFromClass([self class]) forKey:@"class"];
     
     return [groupDict autorelease];
 }

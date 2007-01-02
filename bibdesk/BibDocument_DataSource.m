@@ -70,6 +70,7 @@
 #import "BDSKItemPasteboardHelper.h"
 #import "NSMenu_BDSKExtensions.h"
 #import "NSIndexSet_BDSKExtensions.h"
+#import "BDSKSearchGroup.h"
 
 #define MAX_DRAG_IMAGE_WIDTH 700.0
 
@@ -415,8 +416,8 @@
             BDSKGroup *group = [groups objectAtIndex:[rowIndexes firstIndex]];
             if ([group isExternal]) {
                 pubs = [NSArray arrayWithArray:[(id)group publications]];
-                if ([self hasSearchGroupsSelected])
-                    additionalFilenames = [NSArray arrayWithObject:[[group name] stringByAppendingPathExtension:@"bdsksearch"]];
+                if ([group isSearch])
+                    additionalFilenames = [NSArray arrayWithObject:[[[(BDSKSearchGroup *)group serverInfo] name] stringByAppendingPathExtension:@"bdsksearch"]];
 			} else {
                 NSMutableArray *pubsInGroup = [NSMutableArray arrayWithCapacity:[publications count]];
                 NSEnumerator *pubEnum = [publications objectEnumerator];
@@ -991,11 +992,17 @@
         return fileNames;
     } else if ([tv isEqual:groupTableView]) {
         BDSKGroup *group = [groups objectAtIndex:[indexSet firstIndex]];
-        NSDictionary *plist = [group dictionaryValue];
+        NSMutableDictionary *plist = [[[group dictionaryValue] mutableCopy] autorelease];
         if (plist) {
-            NSString *fileName = [[group name] stringByAppendingPathExtension:@"bdsksearch"];
+            // we probably don't want to share this info with anyone else
+            [plist removeObjectForKey:@"search term"];
+            
+            NSString *fileName = [group respondsToSelector:@selector(serverInfo)] ? [[(BDSKSearchGroup *)group serverInfo] name] : [group name];
+            fileName = [fileName stringByAppendingPathExtension:@"bdsksearch"];
             NSString *fullPath = [[dropDestination path] stringByAppendingPathComponent:fileName];
-            // !!! check for existence?
+            
+            // make sure the filename is unique
+            fullPath = [[NSFileManager defaultManager] uniqueFilePath:fullPath createDirectory:NO];
             return ([plist writeToFile:fullPath atomically:YES]) ? [NSArray arrayWithObject:fileName] : nil;
         } else
             return nil;
