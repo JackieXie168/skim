@@ -38,12 +38,19 @@
 
 #import "BDSKDublinCoreXMLParser.h"
 #import "BibItem.h"
+#import <AGRegex/AGRegex.h>
+
+
+@interface NSString (BDSKDublinCoreXMLParserExtensions)
+- (BOOL)isDublinCoreXMLString;
+- (BOOL)isOAIDublinCoreXMLString;
+@end
 
 
 @implementation BDSKDublinCoreXMLParser
 
 + (BOOL)canParseString:(NSString *)string{
-    return [string rangeOfString:@"<dc-record>"].location != NSNotFound || [string rangeOfString:@"<dc:dc-record>"].location != NSNotFound;
+    return [string isDublinCoreXMLString] || [string isOAIDublinCoreXMLString];
 }
 
 static NSString *joinedArrayComponents(NSArray *arrayOfXMLNodes, NSString *separator)
@@ -60,15 +67,19 @@ static NSString *joinedArrayComponents(NSArray *arrayOfXMLNodes, NSString *separ
     
     NSXMLElement *root = [doc rootElement];
     
+    BOOL isOAI = [xmlString isOAIDublinCoreXMLString];
+    BOOL hasPrefix = isOAI;
+    
+    if (isOAI == NO && [[root nodesForXPath:@"record-list" error:NULL] count] == 0 && [[root nodesForXPath:@"dc:record-list" error:NULL] count] != 0)
+        hasPrefix = YES;
+    
+    NSString *recordsXPath = isOAI ? @"OAI-PMH[1]/ListRecords/record/metadata/oai_dc:dc" : hasPrefix ? @"dc:record-list/dc:dc-record" : @"record-list/dc-record";
     NSMutableArray *arrayOfPubs = [NSMutableArray array];
-    unsigned i, iMax = [root childCount];
+    NSEnumerator *nodeEnum = [[root nodesForXPath:recordsXPath error:NULL] objectEnumerator];
     NSXMLNode *node;
     
-    BOOL hasPrefix = [[root name] hasPrefix:@"dc:"];
-    
-    for (i = 0; i < iMax; i++) {
+    while (node = [nodeEnum nextObject]) {
         
-        node = [root childAtIndex:i];
         NSMutableDictionary *pubDict = [[NSMutableDictionary alloc] initWithCapacity:5];
         
         NSMutableArray *authors = [NSMutableArray arrayWithArray:[node nodesForXPath:hasPrefix ? @"dc:creator" : @"creator" error:NULL]];
@@ -100,6 +111,23 @@ static NSString *joinedArrayComponents(NSArray *arrayOfXMLNodes, NSString *separ
     [doc release];
     return arrayOfPubs;
     
+}
+
+@end
+
+
+@implementation NSString (BDSKDublinCoreXMLParserExtensions)
+
+- (BOOL)isDublinCoreXMLString{
+    AGRegex *regex = [AGRegex regexWithPattern:@"<(dc:)?record-list>[ \t\n\r]*<(dc:)?dc-record>" options:0];
+    
+    return nil != [regex findInString:[self stringByNormalizingSpacesAndLineBreaks]];
+}
+
+- (BOOL)isOAIDublinCoreXMLString{
+    AGRegex *regex = [AGRegex regexWithPattern:@"<OAI-PMH.*>.*<metadata>[ \t\n\r]*<oai_dc:dc.*>[ \t\n\r]*<dc:" options:0];
+    
+    return nil != [regex findInString:[self stringByNormalizingSpacesAndLineBreaks]];
 }
 
 @end
