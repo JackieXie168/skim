@@ -46,7 +46,7 @@
 
 @class BibItem, BibAuthor, BDSKGroup, BDSKStaticGroup, BDSKSmartGroup, BDSKTemplate, BDSKPublicationsArray, BDSKGroupsArray;
 @class AGRegex, BDSKTeXTask, BDSKMacroResolver, BDSKItemPasteboardHelper;
-@class BibEditor, MacroWindowController, BDSKDocumentInfoWindowController, BDSKPreviewer, BDSKFileContentSearchController, BDSKCustomCiteDrawerController;
+@class BibEditor, MacroWindowController, BDSKDocumentInfoWindowController, BDSKPreviewer, BDSKFileContentSearchController, BDSKCustomCiteDrawerController, BDSKSearchGroupViewController;
 @class BDSKAlert, BDSKStatusBar, BDSKMainTableView, BDSKGroupTableView, BDSKGradientView, BDSKSplitView, BDSKCollapsibleView, BDSKImagePopUpButton, BDSKColoredBox, BDSKSearchField, BDSKEncodingPopUpButton;
 
 enum {
@@ -110,6 +110,8 @@ extern NSString* BDSKWeblocFilePboardType; // core pasteboard type for webloc fi
     IBOutlet BDSKStatusBar *statusBar;
     
     BDSKFileContentSearchController *fileSearchController;
+    
+    BDSKSearchGroupViewController *searchGroupViewController;
     
 #pragma mark Group pane variables
 
@@ -181,13 +183,6 @@ extern NSString* BDSKWeblocFilePboardType; // core pasteboard type for webloc fi
 
     NSString *promiseDragColumnIdentifier;
     BDSKItemPasteboardHelper *pboardHelper;
-    
-#pragma mark Search group view
-
-    IBOutlet BDSKCollapsibleView *searchGroupView;
-    IBOutlet BDSKEdgeView *searchGroupEdgeView;
-    IBOutlet NSSearchField *searchGroupSearchField;
-    IBOutlet NSButton *searchGroupSearchButton;
     
 #pragma mark Scalar state variables
 

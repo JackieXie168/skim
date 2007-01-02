@@ -71,6 +71,7 @@
 #import "BDSKSearchGroup.h"
 #import "BDSKMainTableView.h"
 #import "BDSKSearchGroupSheetController.h"
+#import "BDSKSearchGroupViewController.h"
 #import "BDSKServerInfo.h"
 
 @implementation BibDocument (Groups)
@@ -136,42 +137,12 @@ The groupedPublications array is a subset of the publications array, developed b
 
 #pragma mark PubMed ** TEMPORARY **
 
-// currently only used by the search group search field
-- (BOOL)control:(NSControl *)control didFailToFormatString:(NSString *)aString errorDescription:(NSString *)error {
-    NSAlert *alert = [NSAlert alertWithMessageText:NSLocalizedString(@"Invalid search string syntax", @"") defaultButton:nil alternateButton:nil otherButton:nil informativeTextWithFormat:error];
-    [alert beginSheetModalForWindow:documentWindow modalDelegate:nil didEndSelector:nil contextInfo:NULL];
-    return YES;
-}
-
-- (IBAction)changeSearchGroupSearchTerm:(id)sender {
-    BDSKSearchGroup *group = [[self selectedGroups] firstObject];
-    OBASSERT([group isSearch]);
-    [group setSearchTerm:[sender stringValue]];
-    [group setHistory:[sender recentSearches]];
-}
-
-- (IBAction)nextSearchGroupSearch:(id)sender {
-    [self changeSearchGroupSearchTerm:searchGroupSearchField];
-    BDSKSearchGroup *group = [[self selectedGroups] firstObject];
-    OBASSERT([group isSearch]);
-    [group search];
-}
-
-- (void)loadSearchGroupView {
-    if (NO == [NSBundle loadNibNamed:@"BDSKSearchGroupView" owner:self]) {
-        NSLog(@"Unable to load BDSKSearchGroupView.nib.");
-        return;
-    }
-    [searchGroupView setMinSize:[searchGroupView frame].size];
-    [searchGroupEdgeView setEdges:BDSKMinXEdgeMask | BDSKMaxXEdgeMask];
-}
-
 - (void)showSearchGroupView {
+    if (nil == searchGroupViewController)
+        searchGroupViewController = [[BDSKSearchGroupViewController alloc] init];
+    NSView *searchGroupView = [searchGroupViewController view];
 
-    if (nil == [searchGroupView window]) {
-        if (nil == searchGroupView)
-            [self loadSearchGroupView];
-        
+    if (documentWindow != [searchGroupView window]) {
         NSScrollView *sv = [tableView enclosingScrollView];
         NSRect searchFrame = [searchGroupView frame];
         NSRect svFrame = [splitView frame];
@@ -189,27 +160,22 @@ The groupedPublications array is a subset of the publications array, developed b
         [splitView setFrame:svFrame];
         [mainBox addSubview:searchGroupView];
         [mainBox setNeedsDisplay:YES];
-        [searchGroupSearchField selectText:self];
     }
     
     BDSKSearchGroup *group = [[self selectedGroups] firstObject];
     OBASSERT([group isSearch]);
-    NSString *name = [[group serverInfo] name];
-    [searchGroupSearchField setStringValue:[group searchTerm] ? [group searchTerm] : @""];
-    [searchGroupSearchField setRecentSearches:[group history]];
-    [searchGroupSearchButton setEnabled:[group isRetrieving] == NO];
-    [[searchGroupSearchField cell] setPlaceholderString:[NSString stringWithFormat:NSLocalizedString(@"Search %@", @"search group field placeholder"), name ? name : @""]];
-    [searchGroupSearchField setFormatter:[group searchStringFormatter]];
-    [searchGroupSearchField setDelegate:self];
+    [searchGroupViewController setGroup:group];
 }
 
 - (void)hideSearchGroupView
 {
-    if (nil != [searchGroupView window]) {
+    NSView *searchGroupView = [searchGroupViewController view];
+    if (documentWindow != [searchGroupView window]) {
         [searchGroupView removeFromSuperview];
         [splitView setFrame:[mainBox bounds]];
         [mainBox setNeedsDisplay:YES];
     }
+    [searchGroupViewController setGroup:nil];
 }
 
 #pragma mark Notification handlers
@@ -334,8 +300,6 @@ The groupedPublications array is a subset of the publications array, developed b
     [groupTableView setNeedsDisplay:YES];
     if ([[self selectedGroups] containsObject:group] && succeeded == YES)
         [self displaySelectedGroups];
-    
-    [searchGroupSearchButton setEnabled:[group isRetrieving] == NO];
 }
 
 - (void)handleWillAddRemoveGroupNotification:(NSNotification *)notification{
