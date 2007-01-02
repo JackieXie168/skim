@@ -84,19 +84,29 @@
 - (void)declareType:(NSString *)type dragCopyType:(int)dragCopyType forItems:(NSArray *)items forPasteboard:(NSPasteboard *)pboard{
 	NSArray *types = [NSArray arrayWithObjects:type, BDSKBibItemPboardType, nil];
     [self clearPromisedTypesForPasteboard:pboard];
-    // add so we don't overwrite anyone else's pboard data
-    [pboard addTypes:types owner:self];
+    [pboard declareTypes:types owner:self];
 	[self setPromisedItems:items types:types dragCopyType:dragCopyType forPasteboard:pboard];
 }
 
-- (BOOL)setString:(NSString *)string forType:(NSString *)type forPasteboard:pboard{
+- (void)addTypes:(NSArray *)newTypes forPasteboard:(NSPasteboard *)pboard{
+    [pboard addTypes:newTypes owner:self];
+	NSMutableArray *types = [[promisedPboardTypes objectForKey:[pboard name]] objectForKey:@"types"];
+    [types addObjectsFromArray:newTypes];
+}
+
+- (BOOL)setString:(NSString *)string forType:(NSString *)type forPasteboard:(NSPasteboard *)pboard{
     [self removePromisedType:type forPasteboard:pboard];
     return [pboard setString:string forType:type];
 }
 
-- (BOOL)setData:(NSData *)data forType:(NSString *)type forPasteboard:pboard{
+- (BOOL)setData:(NSData *)data forType:(NSString *)type forPasteboard:(NSPasteboard *)pboard{
     [self removePromisedType:type forPasteboard:pboard];
     return [pboard setData:data forType:type];
+}
+
+- (BOOL)setPropertyList:(id)propertyList forType:(NSString *)type forPasteboard:(NSPasteboard *)pboard{
+    [self removePromisedType:type forPasteboard:pboard];
+    return [pboard setPropertyList:propertyList forType:type];
 }
 
 - (void)absolveDelegateResponsibility{
@@ -113,9 +123,7 @@
         if([types containsObject:BDSKBibItemPboardType])
             [self pasteboard:pboard provideDataForType:BDSKBibItemPboardType];
         
-        NSString *type = [[self promisedTypesForPasteboard:pboard] firstObject];
-        
-        if(type != nil){
+        if([[self promisedTypesForPasteboard:pboard] count]){
             NSArray *items = [self promisedItemsForPasteboard:pboard];
             NSString *bibString = nil;
             if(items != nil)
@@ -125,7 +133,7 @@
                 [dict removeObjectForKey:@"items"];
                 [dict setObject:bibString forKey:@"bibTeXString"];
             }else{
-                [pboard setData:nil forType:type];
+                [pboard performSelector:@selector(setData:forType:) withObject:nil withObjectsFromArray:[self promisedTypesForPasteboard:pboard]];
                 [self clearPromisedTypesForPasteboard:pboard];
             }
         }
