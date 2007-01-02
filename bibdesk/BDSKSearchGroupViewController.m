@@ -44,7 +44,7 @@
 
 @implementation BDSKSearchGroupViewController
 
-- (NSString *)windowNibname { return @"BDSKSearchGroupView"; }
+- (NSString *)windowNibName { return @"BDSKSearchGroupView"; }
 
 - (void)dealloc {
     [[NSNotificationCenter defaultCenter] removeObserver:self];

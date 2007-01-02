@@ -170,7 +170,7 @@ The groupedPublications array is a subset of the publications array, developed b
 - (void)hideSearchGroupView
 {
     NSView *searchGroupView = [searchGroupViewController view];
-    if (documentWindow != [searchGroupView window]) {
+    if (documentWindow == [searchGroupView window]) {
         [searchGroupView removeFromSuperview];
         [splitView setFrame:[mainBox bounds]];
         [mainBox setNeedsDisplay:YES];
