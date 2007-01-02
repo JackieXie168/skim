@@ -52,6 +52,8 @@
 #import "BDSKTemplate.h"
 #import "NSString_BDSKExtensions.h"
 #import "NSError_BDSKExtensions.h"
+#import "BDSKSearchGroup.h"
+#import "BDSKGroupsArray.h"
 
 @implementation BDSKDocumentController
 
@@ -354,32 +356,56 @@
 - (id)openDocumentWithContentsOfURL:(NSURL *)absoluteURL display:(BOOL)displayDocument error:(NSError **)outError{
             
     NSString *theUTI = [[NSWorkspace sharedWorkspace] UTIForURL:absoluteURL];
-    if(theUTI == nil || [theUTI isEqualToUTI:@"net.sourceforge.bibdesk.bdskcache"] == NO)
-        return [super openDocumentWithContentsOfURL:absoluteURL display:displayDocument error:outError];
+    id document = nil;
     
-    NSDictionary *dictionary = [NSDictionary dictionaryWithContentsOfURL:absoluteURL];
-    BDAlias *fileAlias = [BDAlias aliasWithData:[dictionary valueForKey:@"FileAlias"]];
-    NSString *fullPath = [fileAlias fullPath];
-    
-    if(fullPath == nil) // if the alias didn't work, let's see if we have a filepath key...
-        fullPath = [dictionary valueForKey:@"net_sourceforge_bibdesk_owningfilepath"];
-    
-    if(fullPath == nil){
-        if(outError != nil) 
-            *outError = [NSError errorWithDomain:NSCocoaErrorDomain code:NSFileNoSuchFileError userInfo:[NSDictionary dictionaryWithObjectsAndKeys:NSLocalizedString(@"Unable to find the file associated with this item.", @"Error description"), NSLocalizedDescriptionKey, nil]];
-        return nil;
-    }
+    if ([theUTI isEqualToUTI:@"net.sourceforge.bibdesk.bdskcache"]) {
+        NSDictionary *dictionary = [NSDictionary dictionaryWithContentsOfURL:absoluteURL];
+        BDAlias *fileAlias = [BDAlias aliasWithData:[dictionary valueForKey:@"FileAlias"]];
+        NSString *fullPath = [fileAlias fullPath];
         
-    NSURL *fileURL = [NSURL fileURLWithPath:fullPath];
-    
-    NSError *error = nil; // this is a garbage pointer if the document is already open
-    BibDocument *document = [super openDocumentWithContentsOfURL:fileURL display:YES error:&error];
-    
-    if(document == nil)
-        NSLog(@"document at URL %@ failed to open for reason: %@", fileURL, [error localizedFailureReason]);
-    else
-        if(![document selectItemForPartialItem:dictionary])
-            NSBeep();
+        if(fullPath == nil) // if the alias didn't work, let's see if we have a filepath key...
+            fullPath = [dictionary valueForKey:@"net_sourceforge_bibdesk_owningfilepath"];
+        
+        if(fullPath == nil){
+            if(outError != nil) 
+                *outError = [NSError errorWithDomain:NSCocoaErrorDomain code:NSFileNoSuchFileError userInfo:[NSDictionary dictionaryWithObjectsAndKeys:NSLocalizedString(@"Unable to find the file associated with this item.", @"Error description"), NSLocalizedDescriptionKey, nil]];
+            return nil;
+        }
+            
+        NSURL *fileURL = [NSURL fileURLWithPath:fullPath];
+        
+        NSError *error = nil; // this is a garbage pointer if the document is already open
+        document = [super openDocumentWithContentsOfURL:fileURL display:YES error:&error];
+        
+        if(document == nil)
+            NSLog(@"document at URL %@ failed to open for reason: %@", fileURL, [error localizedFailureReason]);
+        else
+            if(![document selectItemForPartialItem:dictionary])
+                NSBeep();
+    } else if ([theUTI isEqualToUTI:@"net.sourceforge.bibdesk.bdsksearch"]) {
+        
+        BDSKSearchGroup *group = [[BDSKSearchGroup alloc] initWithDictionary:[NSDictionary dictionaryWithContentsOfURL:absoluteURL]];
+        
+        if (nil == group) {
+            if (outError) *outError = [NSError mutableLocalErrorWithCode:kBDSKPropertyListDeserializationFailed localizedDescription:NSLocalizedString(@"Unable to read this file as a search group property list", @"error when opening search group file")];
+            // make sure we return nil
+            document = nil;
+            
+        } else {
+            // try the main document first
+            document = [self mainDocument];
+            if (nil == document) {
+                document = [self openUntitledDocumentAndDisplay:YES error:outError];
+                [document showWindows];
+            }
+            
+            [[document groups] addSearchGroup:group];
+            [group release];
+        }
+        
+    } else {
+        document = [super openDocumentWithContentsOfURL:absoluteURL display:displayDocument error:outError];
+    }
     
     return document;
 }
