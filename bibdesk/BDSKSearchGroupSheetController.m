@@ -171,9 +171,6 @@ static NSDictionary *searchGroupServers = nil;
         serverInfo = [[group serverInfo] copy];
         if (nil == serverInfo)
             serverInfo = [[BDSKServerInfo defaultServerInfoWithType:type] retain];
-        
-        isExpanded = YES;
-
     }
     return self;
 }
@@ -217,7 +214,10 @@ static NSDictionary *searchGroupServers = nil;
     [serverView retain];
     [serverView setMinSize:[serverView frame].size];
     [serverView setCollapseEdges:BDSKMaxXEdgeMask | BDSKMinYEdgeMask];
-    [self collapse:self];
+    
+    [revealButton setBezelStyle:NSRoundedDisclosureBezelStyle];
+    [revealButton performClick:self];
+    
     
     [typeMatrix selectCellWithTag:[type isEqualToString:BDSKSearchGroupEntrez] ? 0 : 1];
     
@@ -288,7 +288,8 @@ static NSDictionary *searchGroupServers = nil;
         [encodingComboBox setEnabled:isZoom];
         [removeDiacriticsButton setEnabled:isZoom];
         
-        [self expand:self];
+        if ([revealButton state] == NSOffState)
+            [revealButton performClick:self];
     } else {
         NSArray *servers = [[self class] serversForType:type];
         [self setServerInfo:[servers objectAtIndex:i]];
@@ -346,7 +347,8 @@ static NSDictionary *searchGroupServers = nil;
 
 - (IBAction)editServer:(id)sender;
 {
-    [self expand:sender];
+    if ([revealButton state] == NSOffState)
+        [revealButton performClick:sender];
     
     unsigned index = [serverPopup indexOfSelectedItem];
     
@@ -400,56 +402,26 @@ static NSDictionary *searchGroupServers = nil;
     }
 }
 
-- (IBAction)expand:(id)sender;
+- (IBAction)toggle:(id)sender;
 {
-    if (isExpanded)
-        return;
-    
+    BOOL collapse = [revealButton state] == NSOffState;
     NSRect winRect = [[self window] frame];
     NSSize minSize = [[self window] minSize];
     NSSize maxSize = [[self window] maxSize];
     float dh = [serverView minSize].height;
+    if (collapse)
+        dh *= -1;
     winRect.size.height += dh;
     winRect.origin.y -= dh;
     minSize.height += dh;
     maxSize.height += dh;
-    [serverView setHidden:NO];
-    [[self window] setFrame:winRect display:YES animate:YES];
+    if (collapse == NO)
+        [serverView setHidden:NO];
+    [[self window] setFrame:winRect display:[[self window] isVisible] animate:[[self window] isVisible]];
     [[self window] setMinSize:minSize];
     [[self window] setMaxSize:maxSize];
-    
-    [revealButton setState:NSOnState];
-    isExpanded = YES;
-}
-
-- (IBAction)collapse:(id)sender;
-{
-    if (isExpanded == NO)
-        return;
-    
-    NSRect winRect = [[self window] frame];
-    NSSize minSize = [[self window] minSize];
-    NSSize maxSize = [[self window] maxSize];
-    float dh = [serverView minSize].height;
-    winRect.size.height -= dh;
-    winRect.origin.y += dh;
-    minSize.height -= dh;
-    maxSize.height -= dh;
-    [[self window] setFrame:winRect display:YES animate:YES];
-    [[self window] setMinSize:minSize];
-    [[self window] setMaxSize:maxSize];
-    [serverView setHidden:YES];
-    
-    [revealButton setState:NSOffState];
-    isExpanded = NO;
-}
-
-- (IBAction)toggle:(id)sender;
-{
-    if (isExpanded)
-        [self collapse:sender];
-    else
-        [self expand:sender];
+    if (collapse)
+        [serverView setHidden:YES];
 }
 
 #pragma mark Accessors
