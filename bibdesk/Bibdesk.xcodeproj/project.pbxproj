@@ -592,7 +592,7 @@
 		F941135509B549BF00EE8463 /* BDSKEditorTextView.m in Sources */ = {isa = PBXBuildFile; fileRef = F941135309B549BF00EE8463 /* BDSKEditorTextView.m */; };
 		F941B7EA08AA574200F04ECD /* BDSKOverlay.h in Headers */ = {isa = PBXBuildFile; fileRef = F941B7E808AA574200F04ECD /* BDSKOverlay.h */; };
 		F941B7EB08AA574200F04ECD /* BDSKOverlay.m in Sources */ = {isa = PBXBuildFile; fileRef = F941B7E908AA574200F04ECD /* BDSKOverlay.m */; };
-		F94521B80B4AE8F2000A5E12 /* searchDocIcon.icns in Resources */ = {isa = PBXBuildFile; fileRef = F94521B70B4AE8F2000A5E12 /* searchDocIcon.icns */; };
+		F945240C0B4B15A6000A5E12 /* searchDocIcon.icns in Resources */ = {isa = PBXBuildFile; fileRef = F945240B0B4B15A6000A5E12 /* searchDocIcon.icns */; };
 		F9463F4509436F7500CC4549 /* NSSet_BDSKExtensions.h in Headers */ = {isa = PBXBuildFile; fileRef = F9463F4309436F7500CC4549 /* NSSet_BDSKExtensions.h */; };
 		F9463F4609436F7500CC4549 /* NSSet_BDSKExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = F9463F4409436F7500CC4549 /* NSSet_BDSKExtensions.m */; };
 		F946DCE809FDC4B600D471DF /* BDSKAsynchronousDOServer.h in Headers */ = {isa = PBXBuildFile; fileRef = F946DCE609FDC4B600D471DF /* BDSKAsynchronousDOServer.h */; };
@@ -1077,7 +1077,7 @@
 		3DFF35600816B55B0052F37C /* forward_small.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; name = forward_small.tiff; path = Images/forward_small.tiff; sourceTree = "<group>"; };
 		3DFF35620816B5780052F37C /* reload_small.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; name = reload_small.tiff; path = Images/reload_small.tiff; sourceTree = "<group>"; };
 		8D1107310486CEB800E47090 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
-		8D1107320486CEB800E47090 /* BibDesk.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = BibDesk.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		8D1107320486CEB800E47090 /* BibDesk.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = BibDesk.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		CE11A6340AE6BB77008C47AC /* urlFolderIcon.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; name = urlFolderIcon.tiff; path = Images/urlFolderIcon.tiff; sourceTree = "<group>"; };
 		CE11AC080AE7E0DC008C47AC /* BDSKScriptGroup.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BDSKScriptGroup.h; sourceTree = "<group>"; };
 		CE11AC090AE7E0DC008C47AC /* BDSKScriptGroup.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BDSKScriptGroup.m; sourceTree = "<group>"; };
@@ -1484,7 +1484,7 @@
 		F941135309B549BF00EE8463 /* BDSKEditorTextView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BDSKEditorTextView.m; sourceTree = "<group>"; };
 		F941B7E808AA574200F04ECD /* BDSKOverlay.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BDSKOverlay.h; sourceTree = "<group>"; };
 		F941B7E908AA574200F04ECD /* BDSKOverlay.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BDSKOverlay.m; sourceTree = "<group>"; };
-		F94521B70B4AE8F2000A5E12 /* searchDocIcon.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; name = searchDocIcon.icns; path = Images/searchDocIcon.icns; sourceTree = "<group>"; };
+		F945240B0B4B15A6000A5E12 /* searchDocIcon.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; name = searchDocIcon.icns; path = Images/searchDocIcon.icns; sourceTree = "<group>"; };
 		F9463F4309436F7500CC4549 /* NSSet_BDSKExtensions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NSSet_BDSKExtensions.h; sourceTree = "<group>"; };
 		F9463F4409436F7500CC4549 /* NSSet_BDSKExtensions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NSSet_BDSKExtensions.m; sourceTree = "<group>"; };
 		F946DCE609FDC4B600D471DF /* BDSKAsynchronousDOServer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BDSKAsynchronousDOServer.h; sourceTree = "<group>"; };
@@ -1792,7 +1792,7 @@
 		29B97317FDCFA39411CA2CEA /* Resources */ = {
 			isa = PBXGroup;
 			children = (
-				F94521B70B4AE8F2000A5E12 /* searchDocIcon.icns */,
+				F945240B0B4B15A6000A5E12 /* searchDocIcon.icns */,
 				CE97A3B90A28F19A00CF2DF3 /* Templates */,
 				F9022DDA0758089500C3F701 /* Images */,
 				3D8A54F6082D1F86008E818C /* BibDesk Help */,
@@ -3256,7 +3256,7 @@
 				CE7F64C40B41694A00A919D0 /* BDSKSearchGroupView.nib in Resources */,
 				CE76A5430B430EA500E61066 /* BDSKSearchGroupSheet.nib in Resources */,
 				CE12A1700B44AED200416D19 /* SearchGroupServers.plist in Resources */,
-				F94521B80B4AE8F2000A5E12 /* searchDocIcon.icns in Resources */,
+				F945240C0B4B15A6000A5E12 /* searchDocIcon.icns in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -4178,6 +4178,50 @@
 /* End PBXVariantGroup section */
 
 /* Begin XCBuildConfiguration section */
+		F993F1BD08553A61007A7657 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				COPY_PHASE_STRIP = NO;
+				CURRENT_PROJECT_VERSION = 613;
+				DEBUG_INFORMATION_FORMAT = stabs;
+				FRAMEWORK_SEARCH_PATHS = "";
+				GCC_DEBUGGING_SYMBOLS = default;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_ENABLE_CPP_EXCEPTIONS = NO;
+				GCC_ENABLE_CPP_RTTI = NO;
+				GCC_ENABLE_FIX_AND_CONTINUE = YES;
+				GCC_ENABLE_OBJC_EXCEPTIONS = YES;
+				GCC_ENABLE_SYMBOL_SEPARATION = NO;
+				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
+				GCC_MODEL_TUNING = G4;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = Bibdesk_Prefix.pch;
+				GCC_PREPROCESSOR_DEFINITIONS = OMNI_FORCE_ASSERTIONS;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_ALLOW_INCOMPLETE_PROTOCOL = YES;
+				GCC_WARN_INITIALIZER_NOT_FULLY_BRACKETED = YES;
+				GCC_WARN_SHADOW = NO;
+				GCC_WARN_SIGN_COMPARE = YES;
+				GCC_WARN_TYPECHECK_CALLS_TO_PRINTF = YES;
+				HEADER_SEARCH_PATHS = "";
+				INFOPLIST_FILE = Info.plist;
+				INFOPLIST_OTHER_PREPROCESSOR_FLAGS = "-C";
+				INFOPLIST_PREPROCESS = YES;
+				INSTALL_PATH = "$(HOME)/Applications";
+				LIBRARY_SEARCH_PATHS = "";
+				MACOSX_DEPLOYMENT_TARGET = 10.4;
+				OTHER_CFLAGS = "";
+				OTHER_LDFLAGS = "";
+				PREBINDING = NO;
+				PRODUCT_NAME = BibDesk;
+				VERSIONING_SYSTEM = "apple-generic";
+				WARNING_CFLAGS = "-Wfloat-equal";
+				WRAPPER_EXTENSION = app;
+				ZERO_LINK = YES;
+			};
+			name = Debug;
+		};
 		F993F1BE08553A61007A7657 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -4267,34 +4311,29 @@
 			};
 			name = Test;
 		};
-		F993F1C008553A61007A7657 /* Default */ = {
+		F993F1C208553A61007A7657 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				CURRENT_PROJECT_VERSION = 613;
-				FRAMEWORK_SEARCH_PATHS = "";
-				GCC_ENABLE_CPP_EXCEPTIONS = NO;
-				GCC_ENABLE_CPP_RTTI = NO;
-				GCC_ENABLE_OBJC_EXCEPTIONS = YES;
-				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
-				GCC_PRECOMPILE_PREFIX_HEADER = YES;
-				GCC_PREFIX_HEADER = Bibdesk_Prefix.pch;
-				GCC_WARN_ABOUT_RETURN_TYPE = YES;
-				GCC_WARN_TYPECHECK_CALLS_TO_PRINTF = YES;
-				HEADER_SEARCH_PATHS = "";
-				INFOPLIST_FILE = Info.plist;
-				INFOPLIST_OTHER_PREPROCESSOR_FLAGS = "-C";
-				INFOPLIST_PREPROCESS = YES;
-				INSTALL_PATH = "$(HOME)/Applications";
-				LIBRARY_SEARCH_PATHS = "";
-				MACOSX_DEPLOYMENT_TARGET = 10.4;
-				OTHER_LDFLAGS = "-lSystem";
-				PRODUCT_NAME = BibDesk;
-				VERSIONING_SYSTEM = "apple-generic";
-				WARNING_CFLAGS = "";
-				WRAPPER_EXTENSION = app;
+				COPY_PHASE_STRIP = NO;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_ENABLE_FIX_AND_CONTINUE = YES;
+				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = "";
+				GCC_WARN_ALLOW_INCOMPLETE_PROTOCOL = NO;
+				OTHER_CFLAGS = "";
+				OTHER_LDFLAGS = "";
+				OTHER_REZFLAGS = "";
+				PRODUCT_NAME = "BibDesk Help";
+				SECTORDER_FLAGS = "";
+				WARNING_CFLAGS = (
+					"-Wmost",
+					"-Wno-four-char-constants",
+					"-Wno-unknown-pragmas",
+				);
 				ZERO_LINK = YES;
 			};
-			name = Default;
+			name = Debug;
 		};
 		F993F1C308553A61007A7657 /* Release */ = {
 			isa = XCBuildConfiguration;
@@ -4342,21 +4381,29 @@
 			};
 			name = Test;
 		};
-		F993F1C508553A61007A7657 /* Default */ = {
+		F993F1D608553A61007A7657 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				COPY_PHASE_STRIP = NO;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_ENABLE_FIX_AND_CONTINUE = YES;
+				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = "";
+				GCC_WARN_ALLOW_INCOMPLETE_PROTOCOL = NO;
 				OTHER_CFLAGS = "";
 				OTHER_LDFLAGS = "";
 				OTHER_REZFLAGS = "";
-				PRODUCT_NAME = "BibDesk Help";
+				PRODUCT_NAME = latex2rtf;
 				SECTORDER_FLAGS = "";
 				WARNING_CFLAGS = (
 					"-Wmost",
 					"-Wno-four-char-constants",
 					"-Wno-unknown-pragmas",
 				);
+				ZERO_LINK = YES;
 			};
-			name = Default;
+			name = Debug;
 		};
 		F993F1D708553A61007A7657 /* Release */ = {
 			isa = XCBuildConfiguration;
@@ -4404,21 +4451,29 @@
 			};
 			name = Test;
 		};
-		F993F1D908553A61007A7657 /* Default */ = {
+		F993F1DB08553A61007A7657 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				COPY_PHASE_STRIP = NO;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_ENABLE_FIX_AND_CONTINUE = YES;
+				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = "";
+				GCC_WARN_ALLOW_INCOMPLETE_PROTOCOL = NO;
 				OTHER_CFLAGS = "";
 				OTHER_LDFLAGS = "";
 				OTHER_REZFLAGS = "";
-				PRODUCT_NAME = latex2rtf;
+				PRODUCT_NAME = pdftotext;
 				SECTORDER_FLAGS = "";
 				WARNING_CFLAGS = (
 					"-Wmost",
 					"-Wno-four-char-constants",
 					"-Wno-unknown-pragmas",
 				);
+				ZERO_LINK = YES;
 			};
-			name = Default;
+			name = Debug;
 		};
 		F993F1DC08553A61007A7657 /* Release */ = {
 			isa = XCBuildConfiguration;
@@ -4466,21 +4521,29 @@
 			};
 			name = Test;
 		};
-		F993F1DE08553A61007A7657 /* Default */ = {
+		F993F1EA08553A61007A7657 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				COPY_PHASE_STRIP = NO;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_ENABLE_FIX_AND_CONTINUE = YES;
+				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = "";
+				GCC_WARN_ALLOW_INCOMPLETE_PROTOCOL = NO;
 				OTHER_CFLAGS = "";
 				OTHER_LDFLAGS = "";
 				OTHER_REZFLAGS = "";
-				PRODUCT_NAME = pdftotext;
+				PRODUCT_NAME = HeaderDoc;
 				SECTORDER_FLAGS = "";
 				WARNING_CFLAGS = (
 					"-Wmost",
 					"-Wno-four-char-constants",
 					"-Wno-unknown-pragmas",
 				);
+				ZERO_LINK = YES;
 			};
-			name = Default;
+			name = Debug;
 		};
 		F993F1EB08553A61007A7657 /* Release */ = {
 			isa = XCBuildConfiguration;
@@ -4528,21 +4591,29 @@
 			};
 			name = Test;
 		};
-		F993F1ED08553A61007A7657 /* Default */ = {
+		F993F1EF08553A61007A7657 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				COPY_PHASE_STRIP = NO;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_ENABLE_FIX_AND_CONTINUE = YES;
+				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = "";
+				GCC_WARN_ALLOW_INCOMPLETE_PROTOCOL = NO;
 				OTHER_CFLAGS = "";
 				OTHER_LDFLAGS = "";
 				OTHER_REZFLAGS = "";
-				PRODUCT_NAME = HeaderDoc;
+				PRODUCT_NAME = DiskImage;
 				SECTORDER_FLAGS = "";
 				WARNING_CFLAGS = (
 					"-Wmost",
 					"-Wno-four-char-constants",
 					"-Wno-unknown-pragmas",
 				);
+				ZERO_LINK = YES;
 			};
-			name = Default;
+			name = Debug;
 		};
 		F993F1F008553A61007A7657 /* Release */ = {
 			isa = XCBuildConfiguration;
@@ -4590,21 +4661,29 @@
 			};
 			name = Test;
 		};
-		F993F1F208553A61007A7657 /* Default */ = {
+		F993F1F408553A61007A7657 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				COPY_PHASE_STRIP = NO;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_ENABLE_FIX_AND_CONTINUE = YES;
+				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = "";
+				GCC_WARN_ALLOW_INCOMPLETE_PROTOCOL = NO;
 				OTHER_CFLAGS = "";
 				OTHER_LDFLAGS = "";
 				OTHER_REZFLAGS = "";
-				PRODUCT_NAME = DiskImage;
+				PRODUCT_NAME = BuildMeFirst;
 				SECTORDER_FLAGS = "";
 				WARNING_CFLAGS = (
 					"-Wmost",
 					"-Wno-four-char-constants",
 					"-Wno-unknown-pragmas",
 				);
+				ZERO_LINK = YES;
 			};
-			name = Default;
+			name = Debug;
 		};
 		F993F1F508553A61007A7657 /* Release */ = {
 			isa = XCBuildConfiguration;
@@ -4652,27 +4731,39 @@
 			};
 			name = Test;
 		};
-		F993F1F708553A61007A7657 /* Default */ = {
+		F993F1F908553A61007A7657 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				COPY_PHASE_STRIP = NO;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_ENABLE_FIX_AND_CONTINUE = YES;
+				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "$(SYSTEM_LIBRARY_DIR)/Frameworks/Foundation.framework/Headers/Foundation.h";
+				GCC_PREPROCESSOR_DEFINITIONS = "";
+				GCC_WARN_ALLOW_INCOMPLETE_PROTOCOL = NO;
+				GCC_WARN_FOUR_CHARACTER_CONSTANTS = NO;
+				GCC_WARN_UNKNOWN_PRAGMAS = NO;
+				INFOPLIST_FILE = "TestBibItem-Info.plist";
+				INSTALL_PATH = "$(USER_LIBRARY_DIR)/Bundles";
 				OTHER_CFLAGS = "";
-				OTHER_LDFLAGS = "";
-				OTHER_REZFLAGS = "";
-				PRODUCT_NAME = BuildMeFirst;
-				SECTORDER_FLAGS = "";
-				WARNING_CFLAGS = (
-					"-Wmost",
-					"-Wno-four-char-constants",
-					"-Wno-unknown-pragmas",
+				OTHER_LDFLAGS = (
+					"-framework",
+					Foundation,
 				);
+				OTHER_REZFLAGS = "";
+				PRODUCT_NAME = TestBibItem;
+				SECTORDER_FLAGS = "";
+				WARNING_CFLAGS = "-Wmost";
+				ZERO_LINK = YES;
 			};
-			name = Default;
+			name = Debug;
 		};
 		F993F1FA08553A61007A7657 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				COPY_PHASE_STRIP = YES;
-				FRAMEWORK_SEARCH_PATHS = /Users/mike/Code/bibdesk_vendorsrc/infinite_loop;
 				GCC_ENABLE_FIX_AND_CONTINUE = NO;
 				GCC_MODEL_TUNING = G4;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
@@ -4689,7 +4780,6 @@
 				GCC_WARN_UNUSED_VALUE = YES;
 				INFOPLIST_FILE = "TestBibItem-Info.plist";
 				INSTALL_PATH = "$(USER_LIBRARY_DIR)/Bundles";
-				LIBRARY_SEARCH_PATHS = /Users/mike/Code/bibdesk_vendorsrc/gward/btparse;
 				OTHER_CFLAGS = "";
 				OTHER_LDFLAGS = (
 					"-framework",
@@ -4706,7 +4796,6 @@
 		F993F1FB08553A61007A7657 /* Test */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				FRAMEWORK_SEARCH_PATHS = /Users/mike/Code/bibdesk_vendorsrc/infinite_loop;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "$(SYSTEM_LIBRARY_DIR)/Frameworks/Foundation.framework/Headers/Foundation.h";
 				GCC_PREPROCESSOR_DEFINITIONS = UNIT_TESTING;
@@ -4714,7 +4803,6 @@
 				GCC_WARN_UNKNOWN_PRAGMAS = NO;
 				INFOPLIST_FILE = "TestBibItem-Info.plist";
 				INSTALL_PATH = "$(USER_LIBRARY_DIR)/Bundles";
-				LIBRARY_SEARCH_PATHS = /Users/mike/Code/bibdesk_vendorsrc/gward/btparse;
 				OTHER_CFLAGS = "";
 				OTHER_LDFLAGS = (
 					"-framework",
@@ -4728,28 +4816,35 @@
 			};
 			name = Test;
 		};
-		F993F1FC08553A61007A7657 /* Default */ = {
+		F993F1FE08553A61007A7657 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				FRAMEWORK_SEARCH_PATHS = /Users/mike/Code/bibdesk_vendorsrc/infinite_loop;
+				COPY_PHASE_STRIP = NO;
+				FRAMEWORK_SEARCH_PATHS = $BUILD_DIR/;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_ENABLE_FIX_AND_CONTINUE = YES;
+				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "$(SYSTEM_LIBRARY_DIR)/Frameworks/Foundation.framework/Headers/Foundation.h";
+				GCC_PREPROCESSOR_DEFINITIONS = "";
+				GCC_WARN_ALLOW_INCOMPLETE_PROTOCOL = NO;
 				GCC_WARN_FOUR_CHARACTER_CONSTANTS = NO;
 				GCC_WARN_UNKNOWN_PRAGMAS = NO;
-				INFOPLIST_FILE = "TestBibItem-Info.plist";
+				INFOPLIST_FILE = "TestComplexString-Info.plist";
 				INSTALL_PATH = "$(USER_LIBRARY_DIR)/Bundles";
-				LIBRARY_SEARCH_PATHS = /Users/mike/Code/bibdesk_vendorsrc/gward/btparse;
 				OTHER_CFLAGS = "";
 				OTHER_LDFLAGS = (
 					"-framework",
 					Foundation,
 				);
 				OTHER_REZFLAGS = "";
-				PRODUCT_NAME = TestBibItem;
+				PRODUCT_NAME = TestComplexString;
 				SECTORDER_FLAGS = "";
 				WARNING_CFLAGS = "-Wmost";
+				ZERO_LINK = YES;
 			};
-			name = Default;
+			name = Debug;
 		};
 		F993F1FF08553A61007A7657 /* Release */ = {
 			isa = XCBuildConfiguration;
@@ -4809,27 +4904,24 @@
 			};
 			name = Test;
 		};
-		F993F20108553A61007A7657 /* Default */ = {
+		F993F20308553A61007A7657 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				FRAMEWORK_SEARCH_PATHS = $BUILD_DIR/;
-				GCC_PRECOMPILE_PREFIX_HEADER = YES;
-				GCC_PREFIX_HEADER = "$(SYSTEM_LIBRARY_DIR)/Frameworks/Foundation.framework/Headers/Foundation.h";
-				GCC_WARN_FOUR_CHARACTER_CONSTANTS = NO;
-				GCC_WARN_UNKNOWN_PRAGMAS = NO;
-				INFOPLIST_FILE = "TestComplexString-Info.plist";
-				INSTALL_PATH = "$(USER_LIBRARY_DIR)/Bundles";
-				OTHER_CFLAGS = "";
-				OTHER_LDFLAGS = (
-					"-framework",
-					Foundation,
+				ARCHS = ppc;
+				CURRENT_PROJECT_VERSION = 613;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				GCC_AUTO_VECTORIZATION = NO;
+				GCC_PREPROCESSOR_DEFINITIONS = "";
+				MACOSX_DEPLOYMENT_TARGET = 10.3;
+				SDKROOT = /Developer/SDKs/MacOSX10.4u.sdk;
+				VERSIONING_SYSTEM = "apple-generic";
+				WARNING_CFLAGS = (
+					"-Wall",
+					"-Wextra",
 				);
-				OTHER_REZFLAGS = "";
-				PRODUCT_NAME = TestComplexString;
-				SECTORDER_FLAGS = "";
-				WARNING_CFLAGS = "-Wmost";
+				ZERO_LINK = YES;
 			};
-			name = Default;
+			name = Debug;
 		};
 		F993F20408553A61007A7657 /* Release */ = {
 			isa = XCBuildConfiguration;
@@ -4853,118 +4945,108 @@
 			};
 			name = Test;
 		};
-		F993F20608553A61007A7657 /* Default */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				ARCHS = ppc;
-				GCC_AUTO_VECTORIZATION = NO;
-				MACOSX_DEPLOYMENT_TARGET = 10.3;
-				SDKROOT = /Developer/SDKs/MacOSX10.4u.sdk;
-			};
-			name = Default;
-		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
 		F993F1BC08553A61007A7657 /* Build configuration list for PBXNativeTarget "BibDesk" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
+				F993F1BD08553A61007A7657 /* Debug */,
 				F993F1BE08553A61007A7657 /* Release */,
 				F993F1BF08553A61007A7657 /* Test */,
-				F993F1C008553A61007A7657 /* Default */,
 			);
 			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Default;
+			defaultConfigurationName = Debug;
 		};
 		F993F1C108553A61007A7657 /* Build configuration list for PBXAggregateTarget "BibDesk Help" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
+				F993F1C208553A61007A7657 /* Debug */,
 				F993F1C308553A61007A7657 /* Release */,
 				F993F1C408553A61007A7657 /* Test */,
-				F993F1C508553A61007A7657 /* Default */,
 			);
 			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Default;
+			defaultConfigurationName = Debug;
 		};
 		F993F1D508553A61007A7657 /* Build configuration list for PBXAggregateTarget "latex2rtf" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
+				F993F1D608553A61007A7657 /* Debug */,
 				F993F1D708553A61007A7657 /* Release */,
 				F993F1D808553A61007A7657 /* Test */,
-				F993F1D908553A61007A7657 /* Default */,
 			);
 			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Default;
+			defaultConfigurationName = Debug;
 		};
 		F993F1DA08553A61007A7657 /* Build configuration list for PBXAggregateTarget "pdftotext" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
+				F993F1DB08553A61007A7657 /* Debug */,
 				F993F1DC08553A61007A7657 /* Release */,
 				F993F1DD08553A61007A7657 /* Test */,
-				F993F1DE08553A61007A7657 /* Default */,
 			);
 			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Default;
+			defaultConfigurationName = Debug;
 		};
 		F993F1E908553A61007A7657 /* Build configuration list for PBXAggregateTarget "HeaderDoc" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
+				F993F1EA08553A61007A7657 /* Debug */,
 				F993F1EB08553A61007A7657 /* Release */,
 				F993F1EC08553A61007A7657 /* Test */,
-				F993F1ED08553A61007A7657 /* Default */,
 			);
 			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Default;
+			defaultConfigurationName = Debug;
 		};
 		F993F1EE08553A61007A7657 /* Build configuration list for PBXAggregateTarget "DiskImage" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
+				F993F1EF08553A61007A7657 /* Debug */,
 				F993F1F008553A61007A7657 /* Release */,
 				F993F1F108553A61007A7657 /* Test */,
-				F993F1F208553A61007A7657 /* Default */,
 			);
 			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Default;
+			defaultConfigurationName = Debug;
 		};
 		F993F1F308553A61007A7657 /* Build configuration list for PBXAggregateTarget "BuildMeFirst" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
+				F993F1F408553A61007A7657 /* Debug */,
 				F993F1F508553A61007A7657 /* Release */,
 				F993F1F608553A61007A7657 /* Test */,
-				F993F1F708553A61007A7657 /* Default */,
 			);
 			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Default;
+			defaultConfigurationName = Debug;
 		};
 		F993F1F808553A61007A7657 /* Build configuration list for PBXNativeTarget "TestBibItem" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
+				F993F1F908553A61007A7657 /* Debug */,
 				F993F1FA08553A61007A7657 /* Release */,
 				F993F1FB08553A61007A7657 /* Test */,
-				F993F1FC08553A61007A7657 /* Default */,
 			);
 			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Default;
+			defaultConfigurationName = Debug;
 		};
 		F993F1FD08553A61007A7657 /* Build configuration list for PBXNativeTarget "TestComplexString" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
+				F993F1FE08553A61007A7657 /* Debug */,
 				F993F1FF08553A61007A7657 /* Release */,
 				F993F20008553A61007A7657 /* Test */,
-				F993F20108553A61007A7657 /* Default */,
 			);
 			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Default;
+			defaultConfigurationName = Debug;
 		};
 		F993F20208553A61007A7657 /* Build configuration list for PBXProject "Bibdesk" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
+				F993F20308553A61007A7657 /* Debug */,
 				F993F20408553A61007A7657 /* Release */,
 				F993F20508553A61007A7657 /* Test */,
-				F993F20608553A61007A7657 /* Default */,
 			);
 			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Default;
+			defaultConfigurationName = Debug;
 		};
 /* End XCConfigurationList section */
 	};
