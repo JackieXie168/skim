@@ -63,8 +63,10 @@ NSString *BDSKSearchGroupZoom = @"zoom";
     NSMutableDictionary *groupDict = [[[server serverInfo] dictionaryValue] mutableCopy];
     
     [groupDict setObject:[self type] forKey:@"type"];
-    [groupDict setObject:[[self searchTerm] stringByEscapingGroupPlistEntities] forKey:@"search term"];
-    [groupDict setObject:[[self history] arrayByPerformingSelector:@selector(stringByEscapingGroupPlistEntities)] forKey:@"history"];
+    if ([self searchTerm])
+        [groupDict setObject:[[self searchTerm] stringByEscapingGroupPlistEntities] forKey:@"search term"];
+    if ([self history])
+        [groupDict setObject:[[self history] arrayByPerformingSelector:@selector(stringByEscapingGroupPlistEntities)] forKey:@"history"];
     
     return [groupDict autorelease];
 }
