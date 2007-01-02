@@ -112,9 +112,6 @@
 - (IBAction)refreshAllExternalGroups:(id)sender;
 - (IBAction)refreshSelectedGroups:(id)sender;
 
-- (IBAction)changeSearchGroupSearchTerm:(id)sender;
-- (IBAction)nextSearchGroupSearch:(id)sender;
-
 - (void)handleFilterChangedNotification:(NSNotification *)notification;
 - (void)sortGroupsByKey:(NSString *)key;
 
