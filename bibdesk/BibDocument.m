@@ -2570,7 +2570,7 @@ originalContentsURL:(NSURL *)absoluteOriginalContentsURL
         [statusStr appendFormat:@" %@ \"%@\"", NSLocalizedString(@"in script group", @"Partial status message"), [[[self selectedGroups] lastObject] stringValue]];
 	} else if ([self hasSearchGroupsSelected] == YES) {
         BDSKSearchGroup *group = [[self selectedGroups] firstObject];
-        [statusStr appendFormat:NSLocalizedString(@"in \"%@\" search group", @"Partial status message"), [[group serverInfo] name]];
+        [statusStr appendFormat:NSLocalizedString(@" in \"%@\" search group", @"Partial status message"), [[group serverInfo] name]];
         int matchCount = [group numberOfAvailableResults];
         if (matchCount == 1)
             [statusStr appendFormat:NSLocalizedString(@". There was 1 match.", @"Partial status message")];
