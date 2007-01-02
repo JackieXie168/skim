@@ -127,6 +127,32 @@
         
 @implementation BDSKZoomCCLQueryFormatter
 
+- (id)init
+{
+    return [self initWithConfigString:nil];
+}
+
+- (id)initWithConfigString:(NSString *)config;
+{
+    self = [super init];
+    if (self) {
+        const char *config_cstr = config ? [config UTF8String] : [BDSKZoomQuery defaultConfigCString];
+        unsigned len = strlen(config_cstr) + 1;
+        char *copy = NSZoneMalloc([self zone], len * sizeof(char));
+        
+        // copy so that we can free it later
+        strncpy(copy, config_cstr, len);
+        _config = copy;
+    }
+    return self;
+}
+
+- (void)dealloc
+{
+    NSZoneFree([self zone], (void *)_config);
+    [super dealloc];
+}
+
 - (NSString *)stringForObjectValue:(id)obj { return obj; }
 
 - (BOOL)getObjectValue:(id *)obj forString:(NSString *)string errorDescription:(NSString **)error;
@@ -136,9 +162,9 @@
         int status, err, errorPosition;
         const char *errstring;
         ZOOM_query query = ZOOM_query_create();
-        status = ZOOM_query_ccl2rpn(query, [string UTF8String], [BDSKZoomQuery defaultConfigCString], &err, &errstring, &errorPosition);
+        status = ZOOM_query_ccl2rpn(query, [string UTF8String], _config, &err, &errstring, &errorPosition);
         if (status) {
-            if (error) *error = [NSString stringWithFormat:@"%s (at position %d).", errstring, errorPosition];
+            if (error) *error = [NSString stringWithFormat:@"This is not a valid CCL query.  The parser reports \"%s\" (at position %d).", errstring, errorPosition];
             success = NO;
         } else {
             success = YES;
