@@ -53,7 +53,7 @@
 
 // these should correspond to the items in the popups set in IB
 static NSString *presetFormatStrings[] = {@"%L", @"%l%n0%e", @"%a1/%Y%u0%e", @"%a1/%T5%e"};
-static NSString *repositorySpecifierStrings[] = {@"", @"%a00", @"%A0", @"%t0", @"%T0", @"%Y", @"%y", @"%m", @"%k0", @"%L", @"%l", @"%e", @"%b", @"%f{}0", @"%s{}[][][]0", @"%c{}", @"%f{Cite Key}", @"%u0", @"%U0", @"%n0", @"%0", @"%%"};
+static NSString *repositorySpecifierStrings[] = {@"", @"%a00", @"%A0", @"%p00", @"%P0", @"%t0", @"%T0", @"%Y", @"%y", @"%m", @"%k0", @"%L", @"%l", @"%e", @"%b", @"%f{}0", @"%s{}[][][]0", @"%c{}", @"%f{Cite Key}", @"%u0", @"%U0", @"%n0", @"%0", @"%%"};
 
 - (void)dealloc{
     [coloringEditor release];
