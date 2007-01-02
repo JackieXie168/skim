@@ -182,6 +182,10 @@
 	return [NSNumber numberWithInt:count];
 }
 
+- (NSString *)toolTip {
+    return [self stringValue];
+}
+
 // comparisons
 
 - (NSComparisonResult)nameCompare:(BDSKGroup *)otherGroup {

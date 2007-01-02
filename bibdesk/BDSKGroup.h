@@ -197,6 +197,8 @@
 */
 - (NSNumber *)numberValue;
 
+- (NSString *)toolTip;
+
 /*!
 	@method nameCompare:
 	@abstract Compares the string value of the receiver and the otherGroup. 

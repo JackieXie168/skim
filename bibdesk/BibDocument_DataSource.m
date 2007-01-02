@@ -171,7 +171,7 @@
 }
 
 - (NSString *)tableView:(NSTableView *)tv toolTipForTableColumn:(NSTableColumn *)aTableColumn row:(int)row {
-    return (tv == groupTableView ? [[groups objectAtIndex:row] stringValue] : nil);
+    return (tv == groupTableView ? [[groups objectAtIndex:row] toolTip] : nil);
 }
     
 
