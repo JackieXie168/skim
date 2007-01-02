@@ -398,6 +398,7 @@
     BOOL yn = NO;
 	NSString *citeString = [sud stringForKey:BDSKCiteStringKey];
     NSArray *pubs = nil;
+    NSArray *additionalFilenames = nil;
     
 	OBPRECONDITION(pboard == [NSPasteboard pasteboardWithName:NSDragPboard] || pboard == [NSPasteboard pasteboardWithName:NSGeneralPboard]);
 
@@ -414,10 +415,8 @@
             BDSKGroup *group = [groups objectAtIndex:[rowIndexes firstIndex]];
             if ([group isExternal]) {
                 pubs = [NSArray arrayWithArray:[(id)group publications]];
-                if ([self hasSearchGroupsSelected]) {
-                    [pboard declareTypes:[NSArray arrayWithObject:NSFilesPromisePboardType] owner:self];
-                    yn = [pboard setPropertyList:[NSArray arrayWithObject:[[group name] stringByAppendingPathExtension:@"bdsksearch"]] forType:NSFilesPromisePboardType];
-                }
+                if ([self hasSearchGroupsSelected])
+                    additionalFilenames = [NSArray arrayWithObject:[[group name] stringByAppendingPathExtension:@"bdsksearch"]];
 			} else {
                 NSMutableArray *pubsInGroup = [NSMutableArray arrayWithCapacity:[publications count]];
                 NSEnumerator *pubEnum = [publications objectEnumerator];
@@ -506,7 +505,14 @@
 		}
     }
 	
-	return [self writePublications:pubs forDragCopyType:dragCopyType citeString:citeString toPasteboard:pboard];
+	BOOL success = [self writePublications:pubs forDragCopyType:dragCopyType citeString:citeString toPasteboard:pboard];
+	
+    if(success && additionalFilenames){
+        [pboardHelper addTypes:[NSArray arrayWithObject:NSFilesPromisePboardType] forPasteboard:pboard];
+        [pboardHelper setPropertyList:additionalFilenames forType:NSFilesPromisePboardType forPasteboard:pboard];
+    }
+    
+    return success;
 }
 	
 - (BOOL)writePublications:(NSArray *)pubs forDragCopyType:(int)dragCopyType citeString:(NSString *)citeString toPasteboard:(NSPasteboard*)pboard{
@@ -567,12 +573,12 @@
 	}
     
 	[pboardHelper declareType:mainType dragCopyType:dragCopyType forItems:pubs forPasteboard:pboard];
-	
+    
     if(string != nil)
         [pboardHelper setString:string forType:mainType forPasteboard:pboard];
 	else if(data != nil)
         [pboardHelper setData:data forType:mainType forPasteboard:pboard];
-
+    
     return YES;
 }
 
