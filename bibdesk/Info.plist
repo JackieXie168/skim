@@ -30,7 +30,7 @@
 			<key>CFBundleTypeIconFile</key>
 			<string>searchDocIcon.icns</string>
 			<key>CFBundleTypeName</key>
-			<string>Search Group</string>
+			<string>BibDesk Search Group</string>
 			<key>CFBundleTypeRole</key>
 			<string>Viewer</string>
 			<key>LSItemContentTypes</key>
@@ -1097,6 +1097,25 @@
 				<key>public.filename-extension</key>
 				<array>
 					<string>bdskcache</string>
+				</array>
+			</dict>
+		</dict>
+		<dict>
+			<key>UTTypeConformsTo</key>
+			<array>
+				<string>public.plain-text</string>
+			</array>
+			<key>UTTypeDescription</key>
+			<string>BibDesk Search Group</string>
+			<key>UTTypeIconFile</key>
+			<string>searchGroupIcon.icns</string>
+			<key>UTTypeIdentifier</key>
+			<string>net.sourceforge.bibdesk.bdsksearch</string>
+			<key>UTTypeTagSpecification</key>
+			<dict>
+				<key>public.filename-extension</key>
+				<array>
+					<string>bdsksearch</string>
 				</array>
 			</dict>
 		</dict>
