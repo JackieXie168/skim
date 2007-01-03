@@ -148,21 +148,22 @@
     [super dealloc];
 }
 
-static inline BOOL BDSKIsEqualOrNil(id first, id second) {
-    return (first == nil && second == nil) || [first isEqual:second];
-}
-
 - (BOOL)isEqual:(id)other {
     BOOL isEqual = NO;
     // we don't compare the name, as that is just a label
     if ([self isMemberOfClass:[other class]] == NO || [[self type] isEqualToString:[(BDSKServerInfo *)other type]] == NO)
         isEqual = NO;
     else if ([[self type] isEqualToString:BDSKSearchGroupEntrez])
-        isEqual = BDSKIsEqualOrNil([self database], [other database]);
+        isEqual = OFISEQUAL([self database], [other database]);
     else if ([[self type] isEqualToString:BDSKSearchGroupZoom])
-        isEqual = BDSKIsEqualOrNil([self host], [other host]) && BDSKIsEqualOrNil([self port], [other port]) && BDSKIsEqualOrNil([self database], [other database]) && BDSKIsEqualOrNil([self password], [other password]) && BDSKIsEqualOrNil([self username], [other username]) && (BDSKIsEqualOrNil([self options], (NSDictionary *)[other options]) || [[self options] isEqualToDictionary:(NSDictionary *)[other options]]);
+        isEqual = OFISEQUAL([self host], [other host]) && 
+                  OFISEQUAL([self port], [other port]) && 
+                  OFISEQUAL([self database], [other database]) && 
+                  OFISEQUAL([self password], [other password]) && 
+                  OFISEQUAL([self username], [other username]) && 
+                  (OFISEQUAL([self options], [(BDSKServerInfo *)other options]) || ([[self options] count] == 0 && [[(BDSKServerInfo *)other options] count] == 0));
     else
-        isEqual = BDSKIsEqualOrNil([self host], [other host]);
+        isEqual = OFISEQUAL([self host], [other host]);
     return isEqual;
 }
 
