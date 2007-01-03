@@ -526,7 +526,7 @@ static NSDictionary *searchGroupServers = nil;
 
 - (void)setServerInfo:(BDSKServerInfo *)info;
 {
-    CFArrayRemoveAllValue(editors);
+    CFArrayRemoveAllValues(editors);
     [serverInfo setDelegate:nil];
     [serverInfo autorelease];
     serverInfo = [info mutableCopy];
@@ -546,13 +546,13 @@ static NSDictionary *searchGroupServers = nil;
 
 - (void)objectDidBeginEditing:(id)editor {
     if (CFArrayGetFirstIndexOfValue(editors, CFRangeMake(0, CFArrayGetCount(editors)), editor) == -1)
-		CFArrayAppendValue((CFMutableArrayRef)editors, editor);		
+		CFArrayAppendValue(editors, editor);		
 }
 
 - (void)objectDidEndEditing:(id)editor {
     CFIndex index = CFArrayGetFirstIndexOfValue(editors, CFRangeMake(0, CFArrayGetCount(editors)), editor);
     if (index != -1)
-		CFArrayRemoveValueAtIndex((CFMutableArrayRef)editors, index);		
+		CFArrayRemoveValueAtIndex(editors, index);		
 }
 
 - (BOOL)commitEditing {
