@@ -203,8 +203,9 @@ static void addSubstringToDictionary(NSString *subValue, NSMutableDictionary *pu
     //dictionary is the publication entry
     NSMutableDictionary *pubDict = [[NSMutableDictionary alloc] init];
     
-    NSString *tag = nil, *value = nil, *dir = nil;
-    unsigned base, fieldStart, fieldLength, i, dirLength;
+    NSArray *fields;
+    NSString *tag = nil, *field = nil, *value = nil, *dir = nil;
+    unsigned base, fieldsStart, i, dirLength;
     
     while(record = [recordEnum nextObject]){
         
@@ -213,23 +214,25 @@ static void addSubstringToDictionary(NSString *subValue, NSMutableDictionary *pu
         
         base = [[record substringWithRange:NSMakeRange(12, 5)] intValue];
         dir = [record substringWithRange:NSMakeRange(24, base - 1)];
-        dirLength = [dir length];
+        dirLength = [dir length] / 12;
         
-        for(i = 0; i < dirLength; i += 12){
+        fieldsStart = base + [[dir substringWithRange:NSMakeRange(7, 5)] intValue];
+        fields = [[record substringFromIndex:fieldsStart] componentsSeparatedByString:[NSString stringWithFormat:@"%C", fieldTerminator]];
+        
+        for(i = 0; i < dirLength; i++){
             
-            tag = [dir substringWithRange:NSMakeRange(i, 3)];
-            fieldLength = [[dir substringWithRange:NSMakeRange(i + 3, 4)] intValue];
-            fieldStart = base + [[dir substringWithRange:NSMakeRange(i + 7, 5)] intValue];
-            
-            if(fieldLength < 4)
-                continue;
-            if([record length] <= fieldStart + fieldLength)
+            if ([fields count] <= i)
                 break;
             
-            OBASSERT([record characterAtIndex:fieldStart + fieldLength - 1] == fieldTerminator);
+            field = [fields objectAtIndex:i];
             
-            // the first 2 characters are indicators, which we ignore, the last character is a field terminator
-            value = [record substringWithRange:NSMakeRange(fieldStart + 2, fieldLength - 3)];
+            if([field length] < 3)
+                continue;
+            
+            tag = [dir substringWithRange:NSMakeRange(12 * i, 3)];
+            
+            // the first 2 characters are indicators
+            value = [field substringFromIndex:2];
             
             addStringToDictionary(value, pubDict, tag, subFieldIndicator);
         }
@@ -370,14 +373,11 @@ static void addSubstringToDictionary(NSString *subValue, NSMutableDictionary *pu
 @implementation NSString (BDSKMARCParserExtensions)
 
 - (BOOL)isMARCString{
-    unsigned fieldTerminator = 0x1E, recordTerminator = 0x1D;
+    unsigned fieldTerminator = 0x1E;
     NSString *pattern = [NSString stringWithFormat:@"^[0-9]{5}[a-z]{3}[ a]{2}22[0-9]{5}[ 1-8uz][ a-z][ r]4500([0-9]{12})+%C", fieldTerminator];
     AGRegex *regex = [AGRegex regexWithPattern:pattern];
     
-    if([regex findInString:self] == NO)
-        return NO;
-    unsigned eor = [[self substringToIndex:5] intValue] - 1;
-    return [self length] > eor && [self characterAtIndex:eor] == recordTerminator;
+    return nil != [regex findInString:self];
 }
 
 - (BOOL)isFormattedMARCString{
