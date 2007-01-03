@@ -152,7 +152,7 @@
         document = [[NSXMLDocument alloc] initWithData:listSetsResult options:NSXMLNodeOptionsNone error:&error];
     
     if (nil != document) {
-        [self setSets:[[[document rootElement] nodesForXPath:@"/OAI-PMH[1]/ListSets/set/setSpec" error:NULL] arrayByPerformingSelector:@selector(stringvalue)]];
+        [self setSets:[[[document rootElement] nodesForXPath:@"/OAI-PMH[1]/ListSets/set/setSpec" error:NULL] arrayByPerformingSelector:@selector(stringValue)]];
         
         [document release];
         
@@ -173,7 +173,6 @@
 
 - (void)fetch;
 {
-    NSMutableArray *escapedComponents = [NSMutableArray arrayWithCapacity:3]; 
     NSEnumerator *componentsEnum = [[[self searchTerm] componentsSeparatedByString:@"&"] objectEnumerator];
     NSString *component;
     NSMutableString *urlString = [NSMutableString stringWithFormat:@"%@?verb=ListRecords&", [[self serverInfo] host]];
