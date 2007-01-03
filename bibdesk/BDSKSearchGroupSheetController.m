@@ -44,6 +44,7 @@
 #import "NSFileManager_BDSKExtensions.h"
 
 #define SERVERS_FILENAME @"SearchGroupServers.plist"
+#define SERVERS_DIRNAME @"SearchGroupServers"
 
 static NSDictionary *searchGroupServers = nil;
 
@@ -53,10 +54,7 @@ static NSDictionary *searchGroupServers = nil;
 
 + (void)initialize {
     NSString *applicationSupportPath = [[NSFileManager defaultManager] currentApplicationSupportPathForCurrentUser]; 
-    NSString *path = [applicationSupportPath stringByAppendingPathComponent:SERVERS_FILENAME];
-    
-    if (NO == [[NSFileManager defaultManager] fileExistsAtPath:path])
-        path = [[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:SERVERS_FILENAME];
+    NSString *path = [[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:SERVERS_FILENAME];
     
     NSDictionary *serverDicts = [NSDictionary dictionaryWithContentsOfFile:path];
     NSMutableDictionary *newServerDicts = [NSMutableDictionary dictionaryWithCapacity:[serverDicts count]];
@@ -75,6 +73,31 @@ static NSDictionary *searchGroupServers = nil;
         }
         [newServerDicts setObject:infos forKey:type];
     }
+    
+    NSString *serversPath = [applicationSupportPath stringByAppendingPathComponent:SERVERS_DIRNAME];
+    BOOL isDir = NO;
+    if ([[NSFileManager defaultManager] fileExistsAtPath:serversPath isDirectory:&isDir] && isDir) {
+        NSDirectoryEnumerator *dirEnum = [[NSFileManager defaultManager] enumeratorAtPath:serversPath];
+        NSString *file;
+        while (file = [dirEnum nextObject]) {
+            if ([[[dirEnum fileAttributes] valueForKey:NSFileType] isEqualToString:NSFileTypeDirectory]) {
+                [dirEnum skipDescendents];
+            } else if ([[file pathExtension] isEqualToString:@"bdsksearch"]) {
+                NSDictionary *dict = [NSDictionary dictionaryWithContentsOfFile:[serversPath stringByAppendingPathComponent:file]];
+                BDSKServerInfo *info = [[BDSKServerInfo alloc] initWithDictionary:dict];
+                if (info) {
+                    NSMutableArray *servers = [[newServerDicts objectForKey:[info type]] valueForKey:@"name"];
+                    unsigned index = [servers indexOfObject:[info name]];
+                    if (index != NSNotFound)
+                        [servers replaceObjectAtIndex:index withObject:info];
+                    else
+                        [servers addObject:info];
+                    [info release];
+                }
+            }
+        }
+    }
+    
     [searchGroupServers release];
     searchGroupServers = [newServerDicts copy];
 }
@@ -98,37 +121,69 @@ static NSDictionary *searchGroupServers = nil;
         }
         [newServerDicts setObject:infos forKey:type];
     }
+    
+    NSString *applicationSupportPath = [[NSFileManager defaultManager] currentApplicationSupportPathForCurrentUser];
+    NSString *serversPath = [applicationSupportPath stringByAppendingPathComponent:SERVERS_DIRNAME];
+    BOOL isDir = NO;
+    if ([[NSFileManager defaultManager] fileExistsAtPath:serversPath isDirectory:&isDir] && isDir) {
+        NSDirectoryEnumerator *dirEnum = [[NSFileManager defaultManager] enumeratorAtPath:serversPath];
+        NSString *file;
+        while (file = [dirEnum nextObject]) {
+            if ([[[dirEnum fileAttributes] valueForKey:NSFileType] isEqualToString:NSFileTypeDirectory]) {
+                [dirEnum skipDescendents];
+            } else if ([[file pathExtension] isEqualToString:@"bdsksearch"]) {
+                [[NSFileManager defaultManager] removeFileAtPath:[serversPath stringByAppendingPathComponent:file] handler:nil];
+            }
+        }
+    }
+    
     [searchGroupServers release];
     searchGroupServers = [newServerDicts copy];
-    [self saveServers];
 }
 
-+ (void)saveServers;
++ (void)saveServer:(BDSKServerInfo *)serverInfo;
 {
     // @@ temporary
     return;
     
-    NSMutableDictionary *dict = [NSMutableDictionary dictionaryWithCapacity:[searchGroupServers count]];
-    
-    NSEnumerator *typeEnum = [dict keyEnumerator];
-    NSString *type;
-    
-    while (type = [typeEnum nextObject]) {
-        NSArray *infos = [searchGroupServers objectForKey:type];
-        [dict setObject:[infos valueForKey:@"dictionaryValue"] forKey:type];
-    }
-    
     NSString *error = nil;
     NSPropertyListFormat format = NSPropertyListXMLFormat_v1_0;
-    NSData *data = [NSPropertyListSerialization dataFromPropertyList:dict format:format errorDescription:&error];
+    NSData *data = [NSPropertyListSerialization dataFromPropertyList:[serverInfo dictionaryValue] format:format errorDescription:&error];
     if (error) {
         NSLog(@"Error writing: %@", error);
         [error release];
     } else {
-        NSString *applicationSupportPath = [[NSFileManager defaultManager] currentApplicationSupportPathForCurrentUser]; 
-        NSString *path = [applicationSupportPath stringByAppendingPathComponent:SERVERS_FILENAME];
+        NSString *applicationSupportPath = [[NSFileManager defaultManager] currentApplicationSupportPathForCurrentUser];
+        NSString *serversPath = [applicationSupportPath stringByAppendingPathComponent:SERVERS_DIRNAME];
+        BOOL isDir = NO;
+        if ([[NSFileManager defaultManager] fileExistsAtPath:serversPath isDirectory:&isDir] == NO) {
+            if ([[NSFileManager defaultManager] createDirectoryAtPath:serversPath attributes:nil] == NO) {
+                NSLog(@"Unable to save server info");
+                return;
+            }
+        } else if (isDir == NO) {
+            NSLog(@"Unable to save server info");
+            return;
+        }
+        
+        NSString *path = [serversPath stringByAppendingPathComponent:[[serverInfo name] stringByAppendingPathExtension:@"bdsksearch"]];
         [data writeToFile:path atomically:YES];
     }
+}
+
++ (void)deleteServer:(BDSKServerInfo *)serverInfo;
+{
+    // @@ temporary
+    return;
+    
+    NSString *applicationSupportPath = [[NSFileManager defaultManager] currentApplicationSupportPathForCurrentUser];
+    NSString *serversPath = [applicationSupportPath stringByAppendingPathComponent:SERVERS_DIRNAME];
+    NSString *path = [serversPath stringByAppendingPathComponent:[[serverInfo name] stringByAppendingPathExtension:@"bdsksearch"]];
+    BOOL isDir = NO;
+    if ([[NSFileManager defaultManager] fileExistsAtPath:path isDirectory:&isDir] && isDir == NO) {
+        [[NSFileManager defaultManager] removeFileAtPath:path handler:nil];
+    }
+    
 }
 
 + (NSArray *)serversForType:(NSString *)type;
@@ -139,19 +194,20 @@ static NSDictionary *searchGroupServers = nil;
 + (void)addServer:(BDSKServerInfo *)serverInfo forType:(NSString *)type;
 {
     [[searchGroupServers objectForKey:type] addObject:serverInfo];
-    [self saveServers];
+    [self saveServer:serverInfo];
 }
 
 + (void)setServer:(BDSKServerInfo *)serverInfo atIndex:(unsigned)index forType:(NSString *)type;
 {
+    [self deleteServer:[[searchGroupServers objectForKey:type] objectAtIndex:index]];
     [[searchGroupServers objectForKey:type] replaceObjectAtIndex:index withObject:serverInfo];
-    [self saveServers];
+    [self saveServer:serverInfo];
 }
 
 + (void)removeServerAtIndex:(unsigned)index forType:(NSString *)type;
 {
+    [self deleteServer:[[searchGroupServers objectForKey:type] objectAtIndex:index]];
     [[searchGroupServers objectForKey:type] removeObjectAtIndex:index];
-    [self saveServers];
 }
 
 #pragma mark Initialization

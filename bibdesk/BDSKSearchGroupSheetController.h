@@ -68,7 +68,8 @@
 }
 
 + (void)resetServers;
-+ (void)saveServers;
++ (void)saveServer:(BDSKServerInfo *)serverInfo;
++ (void)deleteServer:(BDSKServerInfo *)serverInfo;
 + (NSArray *)serversForType:(NSString *)type;
 + (void)addServer:(BDSKServerInfo *)info forType:(NSString *)type;
 + (void)setServer:(BDSKServerInfo *)info atIndex:(unsigned)index forType:(NSString *)type;
