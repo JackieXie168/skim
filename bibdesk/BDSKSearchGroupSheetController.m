@@ -277,6 +277,8 @@ static NSDictionary *searchGroupServers = nil;
     [self willChangeValueForKey:@"canEditServer"];
     
     [editButton setTitle:NSLocalizedString(@"Edit", @"")];
+    [editButton setTitle:NSLocalizedString(@"Edit", @"Button title")];
+    [editButton setTitle:NSLocalizedString(@"Edit the selected default server settings", @"Tool tip message")];
     
     if (i == [sender numberOfItems] - 1) {
         BOOL isZoom = [[self type] isEqualToString:BDSKSearchGroupZoom];
@@ -330,9 +332,19 @@ static NSDictionary *searchGroupServers = nil;
         return;
     }
     
-    BDSKServerInfo *info = [BDSKServerInfo defaultServerInfoWithType:[self type]];
-    index = [[[self class] serversForType:0] count];
-    [[self class] addServer:info forType:[self type]];
+    NSArray *servers = [[self class] serversForType:[self type]];
+    if ([[servers valueForKey:@"name"] containsObject:[[self serverInfo] name]]) {
+        NSAlert *alert = [NSAlert alertWithMessageText:NSLocalizedString(@"Duplicate Server Name", @"Message in alert dialog when adding a search group server with a duplicate name")
+                                         defaultButton:nil
+                                       alternateButton:nil
+                                           otherButton:nil
+                             informativeTextWithFormat:NSLocalizedString(@"A default server with the specified name already exists. Edit and Set the default server or use a different name.", @"Informative text in alert dialog when adding a search group server server with a duplicate name")];
+        [alert beginSheetModalForWindow:[self window] modalDelegate:nil didEndSelector:NULL contextInfo:NULL];
+        return;
+    }
+    
+    index = [servers count];
+    [[self class] addServer:[self serverInfo] forType:[self type]];
     [self reloadServersSelectingIndex:index];
 }
 
@@ -362,11 +374,23 @@ static NSDictionary *searchGroupServers = nil;
     }
     
     if ([nameField isEnabled]) {
+        unsigned existingIndex = [[[[self class] serversForType:[self type]] valueForKey:@"name"] indexOfObject:[[self serverInfo] name]];
+        if (existingIndex != NSNotFound && existingIndex != index) {
+            NSAlert *alert = [NSAlert alertWithMessageText:NSLocalizedString(@"Duplicate Server Name", @"Message in alert dialog when setting a search group server with a duplicate name")
+                                             defaultButton:nil
+                                           alternateButton:nil
+                                               otherButton:nil
+                                 informativeTextWithFormat:NSLocalizedString(@"Another default server with the specified name already exists. Edit and Set the default server or use a different name.", @"Informative text in alert dialog when setting a search group server server with a duplicate name")];
+            [alert beginSheetModalForWindow:[self window] modalDelegate:nil didEndSelector:NULL contextInfo:NULL];
+            return;
+        }
+        
         BDSKServerInfo *info = [[serverInfo copy] autorelease];
         [[self class] setServer:info atIndex:index forType:[self type]];
         [self reloadServersSelectingIndex:index];
     } else {
-        [editButton setTitle:NSLocalizedString(@"Set", @"")];
+        [editButton setTitle:NSLocalizedString(@"Set", @"Button title")];
+        [editButton setTitle:NSLocalizedString(@"Set the selected default server settings", @"Tool tip message")];
         
         BOOL isZoom = [[self type] isEqualToString:BDSKSearchGroupZoom];
         BOOL isOAI = [[self type] isEqualToString:BDSKSearchGroupOAI];
@@ -452,8 +476,10 @@ static NSDictionary *searchGroupServers = nil;
 
 - (void)setServerInfo:(BDSKServerInfo *)info;
 {
+    [serverInfo setDelegate:nil];
     [serverInfo autorelease];
-    serverInfo = [info copy];
+    serverInfo = [info mutableCopy];
+    [serverInfo setDelegate:self];
     [self changeOptions];
 }
 
