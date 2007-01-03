@@ -94,7 +94,7 @@ NSString *BDSKSearchGroupOAI = @"oai";
 }
 
 - (NSDictionary *)dictionaryValue {
-    NSMutableDictionary *groupDict = [[[server serverInfo] dictionaryValue] mutableCopy];
+    NSMutableDictionary *groupDict = [[[self serverInfo] dictionaryValue] mutableCopy];
     
     [groupDict setObject:[self type] forKey:@"type"];
     if ([self searchTerm])
