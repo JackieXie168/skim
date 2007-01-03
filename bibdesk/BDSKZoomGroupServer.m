@@ -189,9 +189,9 @@ static NSString *BDSKDCXMLString = @"DC XML";
         connection = [[BDSKZoomConnection alloc] initWithHost:[info host] port:[[info port] intValue] database:[info database]];
         [connection setOption:[info password] forKey:@"password"];
         [connection setOption:[info username] forKey:@"user"];
-        [connection setOption:[[self class] zoomRecordSyntaxForRecordSyntax:[[info options] objectForKey:@"recordSyntax"]] forKey:@"preferredRecordSyntax"];    
+        [connection setOption:[[self class] zoomRecordSyntaxForRecordSyntax:[info recordSyntax]] forKey:@"preferredRecordSyntax"];    
 
-        [connection setResultEncodingToIANACharSetName:[[info options] objectForKey:@"resultEncoding"]];
+        [connection setResultEncodingToIANACharSetName:[info resultEncoding]];
         OSAtomicCompareAndSwap32Barrier(1, 0, (int32_t *)&flags.needsReset);
     }else {
         connection = nil;
@@ -210,7 +210,7 @@ static NSString *BDSKDCXMLString = @"DC XML";
 
 - (int)stringTypeForRecordString:(NSString *)string
 {
-    NSString *recordSyntax = [[serverInfo options] objectForKey:@"recordSyntax"];
+    NSString *recordSyntax = [serverInfo recordSyntax];
     int stringType = BDSKUnknownStringType;
     if([recordSyntax isEqualToString:BDSKUSMARCString]) {
         stringType = BDSKMARCStringType;
@@ -237,7 +237,7 @@ static NSString *BDSKDCXMLString = @"DC XML";
     NSMutableArray *pubs = nil;
     BDSKServerInfo *info = [self serverInfo];
     
-    if (searchTerm && [[info options] boolForKey:@"allowDiacritics"] == NO) {
+    if (searchTerm && [info allowDiacritics] == NO) {
         CFMutableStringRef mutableCopy = (CFMutableStringRef)[[searchTerm mutableCopy] autorelease];
         CFStringNormalize(mutableCopy, kCFStringNormalizationFormD);
         BDDeleteCharactersInCharacterSet(mutableCopy, CFCharacterSetGetPredefined(kCFCharacterSetNonBase));
