@@ -66,6 +66,7 @@
      */
     zoom = (
         /* Library of Congress z39.50 connection */
+        /* Canonical test server.                */
         {
             name = "Library of Congress";
             database = Voyager;
@@ -77,6 +78,8 @@
             };
         },
         /* USC z39.50 connection */
+        /* This server limits the number of results that can be    */
+        /* returned in a single query, so it's useful for testing. */
         {
             name = "University of Southern California";
             database = unicorn;
@@ -88,6 +91,7 @@
             };
         },
         /* COPAC z39.50 connection */
+        /* Shows an alternate syntax and encoding specification. */
         {
             name = "COPAC";
             database = "copac";
@@ -99,6 +103,8 @@
             };
         },
         /* University of Basel z39.50 connection */
+        /* Example of a UTF-8 server which accepts diacritics */
+        /* in search strings.                                 */
         {
             name = "UB Basel";
             database = "IDS_UTF";
@@ -111,6 +117,9 @@
             };
         },
         /* Columbia University */
+        /* Illustrates the use of a customized query config string. */
+        /* Note that the query config lines are separated by \n and */
+        /* there must be no leading space in the first line.        */
         {
             name = "Columbia University";
             database = "voyager";
@@ -137,7 +146,22 @@
                                 ab   u=62   s=pw
                                 note u=63   s=pw";
                 allowDiacritics = "NO";
-                
+            };
+        },
+        /* University of Zurich */
+        /* Illustrates the use of username/password keys and */
+        /* Unicode characters in an ASCII property list.     */
+        {
+            name = "University of Z\U00FCrich";
+            database = "IDS_UTF";
+            host = "biblio.unizh.ch";
+            port = "9909";
+            options = {
+                recordSyntax = "US MARC";
+                resultEncoding = "utf-8";
+                username = "z39";
+                password = "z39";
+                allowDiacritics = "YES";
             };
         }
     );
