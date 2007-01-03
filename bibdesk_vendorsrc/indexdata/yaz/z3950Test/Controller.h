@@ -31,8 +31,13 @@
     NSString *_currentType;
     
     BOOL _connectionNeedsReset;
+    
+    IBOutlet NSPopUpButton *_charSetPopup;
+    NSString *_currentCharSet;
+    NSDictionary *_options;
 }
 
+- (IBAction)changeCharSet:(id)sender;
 - (IBAction)search:(id)sender;
 - (IBAction)changeType:(id)sender;
 - (IBAction)changeAddress:(id)sender;

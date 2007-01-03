@@ -3,6 +3,7 @@
         {
             ACTIONS = {
                 changeAddress = id; 
+                changeCharSet = id; 
                 changeDbase = id; 
                 changePort = id; 
                 changeSyntaxType = id; 
@@ -13,6 +14,7 @@
             LANGUAGE = ObjC; 
             OUTLETS = {
                 "_addressField" = NSTextField; 
+                "_charSetPopup" = NSPopUpButton; 
                 "_dbaseField" = NSTextField; 
                 "_popup" = NSPopUpButton; 
                 "_portField" = NSTextField; 
