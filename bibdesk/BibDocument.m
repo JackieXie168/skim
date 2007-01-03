@@ -1853,7 +1853,14 @@ originalContentsURL:(NSURL *)absoluteOriginalContentsURL
         type = BDSKUnknownStringType;
         
         // we /can/ create a string from these (usually), but there's no point in wasting the memory
-        if([unreadableTypes containsObject:[fileName pathExtension]]){
+        if([[fileName pathExtension] isEqualToString:@"bdsksearch"]){
+            NSDictionary *dictionary = [NSDictionary dictionaryWithContentsOfFile:fileName];
+            Class aClass = NSClassFromString([dictionary objectForKey:@"class"]);
+            BDSKSearchGroup *group = [[aClass alloc] initWithDictionary:dictionary];
+            if(group)
+                [groups addSearchGroup:group];
+            continue;
+        }else if([unreadableTypes containsObject:[fileName pathExtension]]){
             [unparseableFiles addObject:fileName];
             continue;
         }
