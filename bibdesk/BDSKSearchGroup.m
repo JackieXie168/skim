@@ -158,7 +158,7 @@ NSString *BDSKSearchGroupOAI = @"oai";
 }
 
 - (NSString *)toolTip {
-    return [NSString stringWithFormat:@"%@: %@", [[self serverInfo] name], [self searchTerm]];
+    return [NSString stringWithFormat:@"%@: %@", [[self serverInfo] name] ? [[self serverInfo] name] : @"", [self name]];
 }
 
 - (BOOL)isSearch { return YES; }
