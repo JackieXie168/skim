@@ -13,9 +13,41 @@
 {
     //_connection = [[BDSKZoomConnection alloc] initWithHost:@"z3950.loc.gov:7090/Voyager" port:0];
     
+    
+    
+    /* standard server */
+    /*
+    _hostname = [@"z3950.loc.gov" copy];
+    _port = 7090;
+    _database = [@"voyager" copy];  
+     */
+    
+    /* copac has XML only */
+    /*
     _hostname = [@"z3950.copac.ac.uk" copy];
     _port = 2100;
     _database = [@"copac" copy];
+     */
+    
+    /* http://www.ub.unibas.ch/lib/aleph/z3950.htm */
+    /* USMARC as MARC-8 */
+    /*
+    _hostname = [@"aleph.unibas.ch" copy];
+    _port = 9909;
+    _database = [@"IDS_ANSEL" copy];    
+    */
+    
+    /* USMARC as UTF-8 */
+    /*
+    _hostname = [@"aleph.unibas.ch" copy];
+    _port = 9909;
+    _database = [@"IDS_UTF" copy];    
+     */
+    
+    _hostname = [@"biblio.unizh.ch" copy];
+    _port = 9909;
+    _database = [@"ids_utf" copy];
+    _options = [[NSDictionary alloc] initWithObjectsAndKeys:@"z39", @"user", @"z39", @"password", nil];
     
     [_addressField setStringValue:_hostname];
     [_dbaseField setStringValue:_database];
@@ -27,16 +59,22 @@
     [_popup addItemsWithTitles:[BDSKZoomRecord validKeys]];
     [_popup selectItemAtIndex:0];
     _currentType = [[[BDSKZoomRecord validKeys] objectAtIndex:0] copy];
-    _syntaxType = XML; //USMARC;
+    _syntaxType = USMARC;
     
     [_searchField setDelegate:self];
     [_searchField setFormatter:[[[BDSKZoomCCLQueryFormatter alloc] init] autorelease]];
     
     [_syntaxPopup removeAllItems];
     [_syntaxPopup addItemsWithTitles:[NSArray arrayWithObjects:@"USMARC", @"GRS-1", @"SUTRS", @"XML", @"UKMARC", nil]];
-    [_syntaxPopup selectItemAtIndex:3];
+    [_syntaxPopup selectItemAtIndex:0];
     
     _connectionNeedsReset = YES;
+    
+    NSArray *charsets = [NSArray arrayWithObjects:@"MARC-8", @"UTF-8", @"ISO-8859-1", nil];
+    [_charSetPopup removeAllItems];
+    [_charSetPopup addItemsWithTitles:charsets];
+    [_charSetPopup selectItemAtIndex:0];
+    _currentCharSet = [[charsets objectAtIndex:0] copy];
     
 }
 
@@ -45,6 +83,14 @@
     [_connection release];
     [_currentType release];
     [super dealloc];
+}
+
+- (IBAction)changeCharSet:(id)sender;
+{
+    [_currentCharSet autorelease];
+    _currentCharSet = [[sender titleOfSelectedItem] copy];
+    [_connection setResultEncodingToIANACharSetName:_currentCharSet];
+    [self search:_searchField];
 }
 
 - (IBAction)changeSyntaxType:(id)sender;
@@ -61,6 +107,10 @@
     _connection = [[BDSKZoomConnection alloc] initWithHost:_hostname port:_port database:_database];
     [_connection setPreferredRecordSyntax:_syntaxType];
     _connectionNeedsReset = NO;
+    NSEnumerator *keyE = [_options keyEnumerator];
+    NSString *key;
+    while (key = [keyE nextObject])
+        [_connection setOption:[_options objectForKey:key] forKey:key];
     NSLog(@"%@", [_connection propertyList]);
 }
 
