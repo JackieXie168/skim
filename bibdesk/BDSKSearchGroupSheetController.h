@@ -44,7 +44,7 @@
 @interface BDSKSearchGroupSheetController : BDSKSheetController {
     BDSKSearchGroup *group;
     NSUndoManager *undoManager;
-    CFArrayRef editors;
+    CFMutableArrayRef editors;
     BDSKMutableServerInfo *serverInfo;
     NSString *type;
     
