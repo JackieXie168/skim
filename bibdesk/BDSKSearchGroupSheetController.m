@@ -253,7 +253,7 @@ static NSDictionary *searchGroupServers = nil;
 }
 
 - (void)changeOptions {
-    NSString *value = [[serverInfo options] objectForKey:@"recordSyntax"];
+    NSString *value = [serverInfo recordSyntax];
     if (value == nil) {
         [syntaxPopup selectItemAtIndex:0];
     } else {
@@ -272,7 +272,6 @@ static NSDictionary *searchGroupServers = nil;
     [revealButton setBezelStyle:NSRoundedDisclosureBezelStyle];
     [revealButton performClick:self];
     
-    
     [typeMatrix selectCellWithTag:[type isEqualToString:BDSKSearchGroupEntrez] ? 0 : [type isEqualToString:BDSKSearchGroupZoom] ? 1 : 2];
     
     NSArray *servers = [[self class] serversForType:type];
@@ -289,6 +288,7 @@ static NSDictionary *searchGroupServers = nil;
     [syntaxPopup addItemsWithTitles:[BDSKZoomGroupServer supportedRecordSyntaxes]];
     
     [self reloadServersSelectingIndex:index];
+    [self changeOptions];
 }
 
 #pragma mark Actions
@@ -367,10 +367,8 @@ static NSDictionary *searchGroupServers = nil;
 
 - (IBAction)selectSyntax:(id)sender;
 {
-    NSString *syntax = [sender indexOfSelectedItem] == 0 ? nil : [[sender selectedItem] representedObject];
-    NSMutableDictionary *options = [NSMutableDictionary dictionaryWithDictionary:[serverInfo options]];
-    [options setValue:syntax forKey:@"preferredRecordSyntax"];
-    [serverInfo setOptions:[options count] ? options : nil];
+    NSString *syntax = [sender indexOfSelectedItem] == 0 ? nil : [sender titleOfSelectedItem];
+    [serverInfo setRecordSyntax:syntax];
 }
 
 - (IBAction)addServer:(id)sender;
