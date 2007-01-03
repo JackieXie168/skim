@@ -39,6 +39,7 @@
 #import "BDSKSearchGroup.h"
 #import "BDSKEntrezGroupServer.h"
 #import "BDSKZoomGroupServer.h"
+#import "BDSKOAIGroupServer.h"
 #import "BDSKMacroResolver.h"
 #import "NSImage+Toolbox.h"
 #import "BDSKPublicationsArray.h"
@@ -47,6 +48,7 @@
 
 NSString *BDSKSearchGroupEntrez = @"entrez";
 NSString *BDSKSearchGroupZoom = @"zoom";
+NSString *BDSKSearchGroupOAI = @"oai";
 
 @implementation BDSKSearchGroup
 
@@ -248,6 +250,8 @@ NSString *BDSKSearchGroupZoom = @"zoom";
         server = [[BDSKEntrezGroupServer alloc] initWithGroup:self serverInfo:info];
     else if ([type isEqualToString:BDSKSearchGroupZoom])
         server = [[BDSKZoomGroupServer alloc] initWithGroup:self serverInfo:info];
+    else if ([type isEqualToString:BDSKSearchGroupOAI])
+        server = [[BDSKOAIGroupServer alloc] initWithGroup:self serverInfo:info];
     else
         OBASSERT_NOT_REACHED("unknown search group type");
 }
@@ -260,11 +264,9 @@ NSString *BDSKSearchGroupZoom = @"zoom";
     // call this also for empty searchTerm, so the server can reset itself
     [server retrievePublications];
     
-    if ([NSString isEmptyString:[self searchTerm]] == NO) {
-        // use this to notify the tableview to start the progress indicators and disable the button
-        NSDictionary *userInfo = [NSDictionary dictionaryWithObject:[NSNumber numberWithBool:NO] forKey:@"succeeded"];
-        [[NSNotificationCenter defaultCenter] postNotificationName:BDSKSearchGroupUpdatedNotification object:self userInfo:userInfo];
-    }
+    // use this to notify the tableview to start the progress indicators and disable the button
+    NSDictionary *userInfo = [NSDictionary dictionaryWithObject:[NSNumber numberWithBool:NO] forKey:@"succeeded"];
+    [[NSNotificationCenter defaultCenter] postNotificationName:BDSKSearchGroupUpdatedNotification object:self userInfo:userInfo];
 }
 
 - (void)resetAndSearch;

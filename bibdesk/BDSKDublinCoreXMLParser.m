@@ -62,23 +62,28 @@ static NSString *joinedArrayComponents(NSArray *arrayOfXMLNodes, NSString *separ
 + (NSArray *)itemsFromString:(NSString *)xmlString error:(NSError **)outError
 {
     NSXMLDocument *doc = [[NSXMLDocument alloc] initWithXMLString:xmlString options:0 error:outError];
+    
     if (nil == doc)
         return nil;
     
     NSXMLElement *root = [doc rootElement];
     
     BOOL isOAI = [xmlString isOAIDublinCoreXMLString];
-    BOOL hasPrefix = isOAI;
+    BOOL hasPrefix = YES;
     
-    if (isOAI == NO && [[root nodesForXPath:@"record-list" error:NULL] count] == 0 && [[root nodesForXPath:@"dc:record-list" error:NULL] count] != 0)
+    if (isOAI == NO && [[root nodesForXPath:@"record-list/record-list" error:NULL] count] == 0 && [[root nodesForXPath:@"dc:record-list/dc:record-list" error:NULL] count] != 0)
         hasPrefix = YES;
     
-    NSString *recordsXPath = isOAI ? @"OAI-PMH[1]/ListRecords/record/metadata/oai_dc:dc" : hasPrefix ? @"dc:record-list/dc:dc-record" : @"record-list/dc-record";
+    NSString *recordsXPath = isOAI ? @"/OAI-PMH/ListRecords/record/metadata" : hasPrefix ? @"dc:record-list/dc:dc-record" : @"record-list/dc-record";
     NSMutableArray *arrayOfPubs = [NSMutableArray array];
     NSEnumerator *nodeEnum = [[root nodesForXPath:recordsXPath error:NULL] objectEnumerator];
     NSXMLNode *node;
     
     while (node = [nodeEnum nextObject]) {
+        
+        // I don't know how to include "oai_dc:dc" in an XPath
+        if (isOAI)
+            node = [node childAtIndex:0];
         
         NSMutableDictionary *pubDict = [[NSMutableDictionary alloc] initWithCapacity:5];
         
@@ -119,15 +124,15 @@ static NSString *joinedArrayComponents(NSArray *arrayOfXMLNodes, NSString *separ
 @implementation NSString (BDSKDublinCoreXMLParserExtensions)
 
 - (BOOL)isDublinCoreXMLString{
-    AGRegex *regex = [AGRegex regexWithPattern:@"<(dc:)?record-list>[ \t\n\r]*<(dc:)?dc-record>" options:0];
+    AGRegex *regex = [AGRegex regexWithPattern:@"<(dc:)?record-list>[ \t\n\r]*<(dc:)?dc-record>"];
     
-    return nil != [regex findInString:[self stringByNormalizingSpacesAndLineBreaks]];
+    return nil != [regex findInString:self];
 }
 
 - (BOOL)isOAIDublinCoreXMLString{
-    AGRegex *regex = [AGRegex regexWithPattern:@"<OAI-PMH.*>.*<metadata>[ \t\n\r]*<oai_dc:dc.*>[ \t\n\r]*<dc:" options:0];
+    AGRegex *regex = [AGRegex regexWithPattern:@"<OAI-PMH.*>[\n\r\t -~]*<metadata>[ \t\n\r]*<oai_dc:dc.*>[ \t\n\r]*<dc:"];
     
-    return nil != [regex findInString:[self stringByNormalizingSpacesAndLineBreaks]];
+    return nil != [regex findInString:self];
 }
 
 @end
