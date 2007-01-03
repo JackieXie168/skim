@@ -996,6 +996,7 @@
         if (plist) {
             // we probably don't want to share this info with anyone else
             [plist removeObjectForKey:@"search term"];
+            [plist removeObjectForKey:@"history"];
             
             NSString *fileName = [group respondsToSelector:@selector(serverInfo)] ? [[(BDSKSearchGroup *)group serverInfo] name] : [group name];
             fileName = [fileName stringByAppendingPathExtension:@"bdsksearch"];
