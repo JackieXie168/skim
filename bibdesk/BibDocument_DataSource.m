@@ -898,9 +898,7 @@
             pubs = [self selectedPublications];            
         }
 
-        OBPRECONDITION([pubs count]);
-        
-        if(row == -1){
+        if(row == -1 && [pubs count]){
             // add a new static groups with the added items, use a common author name or keyword if available
             NSEnumerator *pubEnum = [pubs objectEnumerator];
             BibItem *pub = [pubEnum nextObject];
