@@ -39,7 +39,7 @@
 #import <Cocoa/Cocoa.h>
 
 
-@interface BDSKServerInfo : NSObject {
+@interface BDSKServerInfo : NSObject <NSCopying, NSMutableCopying> {
     NSString *type;
     NSString *name;
     NSString *host;
@@ -68,6 +68,16 @@
 - (NSString *)username;
 - (NSDictionary *)options;
 
+@end
+
+@interface BDSKMutableServerInfo : BDSKServerInfo {
+    id delegate;
+}
+
+- (void)setDelegate:(id)newDelegate;
+- (id)delegate;
+
+- (void)setType:(NSString *)t;
 - (void)setName:(NSString *)s;
 - (void)setPort:(NSString *)p;
 - (void)setHost:(NSString *)h;

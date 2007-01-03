@@ -39,13 +39,13 @@
 #import <Cocoa/Cocoa.h>
 #import "BDSKSheetController.h"
 
-@class BDSKSearchGroup, BDSKServerInfo, BDSKCollapsibleView;
+@class BDSKSearchGroup, BDSKServerInfo, BDSKMutableServerInfo, BDSKCollapsibleView;
 
 @interface BDSKSearchGroupSheetController : BDSKSheetController {
     BDSKSearchGroup *group;
     NSUndoManager *undoManager;
     CFArrayRef editors;
-    BDSKServerInfo *serverInfo;
+    BDSKMutableServerInfo *serverInfo;
     NSString *type;
     
     IBOutlet NSPopUpButton *serverPopup;
@@ -94,6 +94,7 @@
 - (void)setType:(NSString *)t;
 - (NSString *)type;
 - (void)setServerInfo:(BDSKServerInfo *)info;
+- (BDSKServerInfo *)serverInfo;
 
 - (BDSKSearchGroup *)group;
 - (IBAction)selectPredefinedServer:(id)sender;

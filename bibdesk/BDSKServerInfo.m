@@ -127,7 +127,12 @@
 }
 
 - (id)copyWithZone:(NSZone *)aZone {
-    id copy = [[[self class] allocWithZone:aZone] initWithType:[self type] name:[self name] host:[self host] port:[self port] database:[self database] password:[self password] username:[self username] options:[self options]];
+    id copy = [[BDSKServerInfo allocWithZone:aZone] initWithType:[self type] name:[self name] host:[self host] port:[self port] database:[self database] password:[self password] username:[self username] options:[self options]];
+    return copy;
+}
+
+- (id)mutableCopyWithZone:(NSZone *)aZone {
+    id copy = [[BDSKMutableServerInfo allocWithZone:aZone] initWithType:[self type] name:[self name] host:[self host] port:[self port] database:[self database] password:[self password] username:[self username] options:[self options]];
     return copy;
 }
 
@@ -205,6 +210,15 @@ static inline BOOL BDSKIsEqualOrNil(id first, id second) {
 - (NSString *)username { return username; }
 
 - (NSDictionary *)options { return options; }
+
+@end
+
+
+@implementation BDSKMutableServerInfo
+
+- (void)setDelegate:(id)newDelegate { delegate = newDelegate; }
+
+- (id)delegate { return delegate; }
 
 - (void)setType:(NSString *)t;
 {
@@ -288,5 +302,14 @@ static inline BOOL BDSKIsEqualOrNil(id first, id second) {
     return YES;
 }
 
+- (void)objectDidBeginEditing:(id)editor {
+    if ([delegate respondsToSelector:@selector(objectDidBeginEditing:)])
+        [delegate objectDidBeginEditing:editor];
+}
+
+- (void)objectDidEndEditing:(id)editor {
+    if ([delegate respondsToSelector:@selector(objectDidEndEditing:)])
+        [delegate objectDidEndEditing:editor];
+}
 
 @end
