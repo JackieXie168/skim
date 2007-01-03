@@ -99,15 +99,20 @@
 {    
     // enumerate the immutable dictionary
     NSDictionary *originalOptions = [info objectForKey:@"options"];
-    NSEnumerator *keyEnum = [originalOptions keyEnumerator];
+    NSMutableDictionary *opts;
+    if (originalOptions) {
+        opts = [[originalOptions mutableCopy] autorelease];
+        NSEnumerator *keyEnum = [originalOptions keyEnumerator];
     
-    NSMutableDictionary *opts = [[originalOptions mutableCopy] autorelease];
-    NSString *key;
-    id value;
-    while (key = [keyEnum nextObject]) {
-        value = [originalOptions objectForKey:key];
-        if ([value respondsToSelector:@selector(stringByUnescapingGroupPlistEntities)])
-            [opts setObject:[value stringByUnescapingGroupPlistEntities] forKey:key];
+        NSString *key;
+        id value;
+        while (key = [keyEnum nextObject]) {
+            value = [originalOptions objectForKey:key];
+            if ([value respondsToSelector:@selector(stringByUnescapingGroupPlistEntities)])
+                [opts setObject:[value stringByUnescapingGroupPlistEntities] forKey:key];
+        }
+    } else {
+        opts = [NSMutableDictionary dictionary];
     }
     
     self = [self initWithType:aType
