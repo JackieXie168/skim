@@ -170,11 +170,7 @@ static NSDictionary *searchGroupServers = nil;
         type = group ? [[group type] copy] : [BDSKSearchGroupEntrez copy];
 
         BDSKServerInfo *info = [group serverInfo];
-        if (nil != info) {
-            // need to allow editing, but currently awakeFromNib clobbers items that aren't in the list 
-            if ([[[self class] serversForType:type] containsObject:serverInfo] == NO)
-                [[self class] addServer:info forType:type];
-        } else {
+        if (nil == info) {
             info = [BDSKServerInfo defaultServerInfoWithType:type];
         }
         [self setServerInfo:info];
