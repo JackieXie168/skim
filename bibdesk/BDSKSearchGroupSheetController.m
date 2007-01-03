@@ -332,9 +332,8 @@ static NSDictionary *searchGroupServers = nil;
     [self willChangeValueForKey:@"canRemoveServer"];
     [self willChangeValueForKey:@"canEditServer"];
     
-    [editButton setTitle:NSLocalizedString(@"Edit", @"")];
     [editButton setTitle:NSLocalizedString(@"Edit", @"Button title")];
-    [editButton setTitle:NSLocalizedString(@"Edit the selected default server settings", @"Tool tip message")];
+    [editButton setToolTip:NSLocalizedString(@"Edit the selected default server settings", @"Tool tip message")];
     
     if (i == [sender numberOfItems] - 1) {
         BOOL isZoom = [[self type] isEqualToString:BDSKSearchGroupZoom];
@@ -446,7 +445,7 @@ static NSDictionary *searchGroupServers = nil;
         [self reloadServersSelectingIndex:index];
     } else {
         [editButton setTitle:NSLocalizedString(@"Set", @"Button title")];
-        [editButton setTitle:NSLocalizedString(@"Set the selected default server settings", @"Tool tip message")];
+        [editButton setToolTip:NSLocalizedString(@"Set the selected default server settings", @"Tool tip message")];
         
         BOOL isZoom = [[self type] isEqualToString:BDSKSearchGroupZoom];
         BOOL isOAI = [[self type] isEqualToString:BDSKSearchGroupOAI];
