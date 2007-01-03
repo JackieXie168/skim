@@ -45,15 +45,13 @@
     NSString *host;
     NSString *port;
     NSString *database;
-    NSString *password;
-    NSString *username;
     NSMutableDictionary *options;
 }
 
 + (id)defaultServerInfoWithType:(NSString *)aType;
 
-- (id)initWithType:(NSString *)aType name:(NSString *)aName host:(NSString *)aHost port:(NSString *)aPort database:(NSString *)aDbase password:(NSString *)aPassword username:(NSString *)aUser options:(NSDictionary *)options;
-- (id)initWithType:(NSString *)aType name:(NSString *)aName host:(NSString *)aHost port:(NSString *)aPort database:(NSString *)aDbase password:(NSString *)aPassword username:(NSString *)aUser;
+- (id)initWithType:(NSString *)aType name:(NSString *)aName host:(NSString *)aHost port:(NSString *)aPort database:(NSString *)aDbase options:(NSDictionary *)options;
+- (id)initWithType:(NSString *)aType name:(NSString *)aName host:(NSString *)aHost port:(NSString *)aPort database:(NSString *)aDbase;
 
 - (id)initWithType:(NSString *)aType dictionary:(NSDictionary *)info;
 
@@ -66,6 +64,9 @@
 - (NSString *)database;
 - (NSString *)password;
 - (NSString *)username;
+- (NSString *)recordSyntax;
+- (NSString *)resultEncoding;
+- (BOOL)allowDiacritics;
 - (NSDictionary *)options;
 
 @end
@@ -77,13 +78,15 @@
 - (void)setDelegate:(id)newDelegate;
 - (id)delegate;
 
-- (void)setType:(NSString *)t;
-- (void)setName:(NSString *)s;
-- (void)setPort:(NSString *)p;
-- (void)setHost:(NSString *)h;
-- (void)setDatabase:(NSString *)d;
-- (void)setPassword:(NSString *)p;
-- (void)setUsername:(NSString *)u;
-- (void)setOptions:(NSDictionary *)o;
+- (void)setName:(NSString *)newName;
+- (void)setPort:(NSString *)newPort;
+- (void)setHost:(NSString *)newHost;
+- (void)setDatabase:(NSString *)newDbase;
+- (void)setPassword:(NSString *)newPassword;
+- (void)setUsername:(NSString *)newUser;
+- (void)setRecordSyntax:(NSString *)newSyntax;
+- (void)setResultEncoding:(NSString *)newEncoding;
+- (void)setAllowDiacritics:(BOOL)flag;
+- (void)setOptions:(NSDictionary *)newOptions;
 
 @end

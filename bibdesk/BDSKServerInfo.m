@@ -54,12 +54,10 @@
                                           host:isEntrez ? nil : isZoom ? @"host.domain.com" : @"http://an.oa.org/OAI-script"
                                           port:isZoom ? @"0" : nil 
                                       database:isOAI ? nil : @"database" 
-                                      password:nil
-                                      username:nil
                                        options:[NSDictionary dictionary]] autorelease];
 }
 
-- (id)initWithType:(NSString *)aType name:(NSString *)aName host:(NSString *)aHost port:(NSString *)aPort database:(NSString *)aDbase password:(NSString *)aPassword username:(NSString *)aUser options:(NSDictionary *)opts;
+- (id)initWithType:(NSString *)aType name:(NSString *)aName host:(NSString *)aHost port:(NSString *)aPort database:(NSString *)aDbase options:(NSDictionary *)opts;
 {
     if (self = [super init]) {
         type = [aType copy];
@@ -68,31 +66,25 @@
             host = nil;
             port = nil;
             database = [aDbase copy];
-            password = nil;
-            username = nil;
             options = nil;
         } else if ([[self type] isEqualToString:BDSKSearchGroupZoom]) {
             host = [aHost copy];
             port = [aPort copy];
             database = [aDbase copy];
-            password = [aPassword copy];
-            username = [aUser copy];
             options = [opts mutableCopy];
         } else {
             host = [aHost copy];
             port = nil;
             database = nil;
-            password = nil;
-            username = [aUser copy];
             options = nil;
         }
     }
     return self;
 }
 
-- (id)initWithType:(NSString *)aType name:(NSString *)aName host:(NSString *)aHost port:(NSString *)aPort database:(NSString *)aDbase password:(NSString *)aPassword username:(NSString *)aUser;
+- (id)initWithType:(NSString *)aType name:(NSString *)aName host:(NSString *)aHost port:(NSString *)aPort database:(NSString *)aDbase;
 {
-    return [self initWithType:aType name:aName host:aHost port:aPort database:aDbase password:aPassword username:aUser options:[NSDictionary dictionary]];
+    return [self initWithType:aType name:aName host:aHost port:aPort database:aDbase options:[NSDictionary dictionary]];
 }
 
 - (id)initWithType:(NSString *)aType dictionary:(NSDictionary *)info;
@@ -120,19 +112,17 @@
                          host:[[info objectForKey:@"host"] stringByUnescapingGroupPlistEntities]
                          port:[[info objectForKey:@"port"] stringByUnescapingGroupPlistEntities]
                      database:[[info objectForKey:@"database"] stringByUnescapingGroupPlistEntities]
-                     password:[[info objectForKey:@"password"] stringByUnescapingGroupPlistEntities]
-                     username:[[info objectForKey:@"username"] stringByUnescapingGroupPlistEntities]
                       options:opts];
     return self;
 }
 
 - (id)copyWithZone:(NSZone *)aZone {
-    id copy = [[BDSKServerInfo allocWithZone:aZone] initWithType:[self type] name:[self name] host:[self host] port:[self port] database:[self database] password:[self password] username:[self username] options:[self options]];
+    id copy = [[BDSKServerInfo allocWithZone:aZone] initWithType:[self type] name:[self name] host:[self host] port:[self port] database:[self database] options:[self options]];
     return copy;
 }
 
 - (id)mutableCopyWithZone:(NSZone *)aZone {
-    id copy = [[BDSKMutableServerInfo allocWithZone:aZone] initWithType:[self type] name:[self name] host:[self host] port:[self port] database:[self database] password:[self password] username:[self username] options:[self options]];
+    id copy = [[BDSKMutableServerInfo allocWithZone:aZone] initWithType:[self type] name:[self name] host:[self host] port:[self port] database:[self database] options:[self options]];
     return copy;
 }
 
@@ -142,8 +132,6 @@
     [host release];
     [port release];
     [database release];
-    [password release];
-    [username release];
     [options release];
     [super dealloc];
 }
@@ -206,9 +194,15 @@
 
 - (NSString *)database { return database; }
 
-- (NSString *)password { return password; }
+- (NSString *)password { return [options objectForKey:@"password"]; }
 
-- (NSString *)username { return username; }
+- (NSString *)username { return [options objectForKey:@"username"]; }
+
+- (NSString *)recordSyntax { return [options objectForKey:@"recordSyntax"]; }
+
+- (NSString *)resultEncoding { return [options objectForKey:@"resultEncoding"]; }
+
+- (BOOL)allowDiacritics { return [[options objectForKey:@"allowDiacritics"] boolValue]; }
 
 - (NSDictionary *)options { return options; }
 
@@ -221,52 +215,74 @@
 
 - (id)delegate { return delegate; }
 
-- (void)setType:(NSString *)t;
-{
-    [type autorelease];
-    type = [t copy];
-}
-
-- (void)setName:(NSString *)s;
+- (void)setName:(NSString *)newName;
 {
     [name autorelease];
-    name = [s copy];
+    name = [newName copy];
 }
 
-- (void)setPort:(NSString *)p;
+- (void)setPort:(NSString *)newPort;
 {
     [port autorelease];
-    port = [p copy];
+    port = [newPort copy];
 }
 
-- (void)setHost:(NSString *)h;
+- (void)setHost:(NSString *)newHost;
 {
     [host autorelease];
-    host = [h copy];
+    host = [newHost copy];
 }
 
-- (void)setDatabase:(NSString *)d;
+- (void)setDatabase:(NSString *)newDbase;
 {
     [database autorelease];
-    database = [d copy];
+    database = [newDbase copy];
 }
 
-- (void)setPassword:(NSString *)p;
+- (void)setPassword:(NSString *)newPassword;
 {
-    [password autorelease];
-    password = [p copy];
+    if (options)
+        [options setValue:newPassword forKey:@"password"];
+    else if (newPassword)
+        [self setOptions:[NSDictionary dictionaryWithObjectsAndKeys:newPassword, @"password", nil]];
 }
 
-- (void)setUsername:(NSString *)u;
+- (void)setUsername:(NSString *)newUser;
 {
-    [username autorelease];
-    username = [u copy];
+    if (options)
+        [options setValue:newUser forKey:@"username"];
+    else if (newUser)
+        [self setOptions:[NSDictionary dictionaryWithObjectsAndKeys:newUser, @"username", nil]];
 }
 
-- (void)setOptions:(NSDictionary *)o;
+- (void)setRecordSyntax:(NSString *)newSyntax;
+{
+    if (options)
+        [options setValue:newSyntax forKey:@"recordSyntax"];
+    else if (newSyntax)
+        [self setOptions:[NSDictionary dictionaryWithObjectsAndKeys:newSyntax, @"recordSyntax", nil]];
+}
+
+- (void)setResultEncoding:(NSString *)newEncoding;
+{
+    if (options)
+        [options setValue:newEncoding forKey:@"resultEncoding"];
+    else if (newEncoding)
+        [self setOptions:[NSDictionary dictionaryWithObjectsAndKeys:newEncoding, @"resultEncoding", nil]];
+}
+
+- (void)setAllowDiacritics:(BOOL)flag;
+{
+    if (options)
+        [options setValue:[NSNumber numberWithBool:flag] forKey:@"allowDiacritics"];
+    else 
+        [self setOptions:[NSDictionary dictionaryWithObjectsAndKeys:[NSNumber numberWithBool:flag], @"allowDiacritics", nil]];
+}
+
+- (void)setOptions:(NSDictionary *)newOptions;
 {
     [options autorelease];
-    options = [o mutableCopy];
+    options = [newOptions mutableCopy];
 }
 
 - (BOOL)validateHost:(id *)value error:(NSError **)error {
