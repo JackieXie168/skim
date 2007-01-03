@@ -177,10 +177,10 @@ static NSStringEncoding fallbackEncoding = kCFStringEncodingInvalidId;
 @implementation BDSKZoomRecord (Private)
 
 // yaz_iconv() usage example is in record_iconv_return() in zoom-c.c
-static NSData *copyMARC8BytesToUTF8(const char *buf)
+static NSData *copyMARC8BytesToUTF8(const char *buf, int length)
 {
     yaz_iconv_t cd = 0;
-    size_t sz = strlen(buf);
+    size_t sz = length;
     
     NSMutableData *outputData = [[NSMutableData alloc] initWithCapacity:sz];
     
@@ -254,28 +254,37 @@ static NSData *copyMARC8BytesToUTF8(const char *buf)
      - The "raw" key always ignores charset options.
      - Checking syntax type is unreliable as a proxy for character set.
      - kCFStringEncodingInvalidId indicates that we should use MARC-8.
+     - strlen() may give wrong results for MARC buffers, so should be avoided.
      
      see http://www.loc.gov/marc/specifications/specchartables.html
      
      */
 
     NSString *nsString = nil;
-    const char *cstr = ZOOM_record_get(_record, [aKey UTF8String], NULL);
-    if (NULL != cstr) {
-        
-        NSData *utf8Data;
-        
+    int length;
+    
+    // length will be -1 for some types, so we'll use strlen for those
+    const void *bytes = ZOOM_record_get(_record, [aKey UTF8String], &length);
+    if (-1 == length)
+        length = strlen((const char *)bytes);
+    
+    if (NULL != bytes) {
+                
+        NSData *utf8Data = nil;
         NSStringEncoding enc = [NSString ZOOM_encodingWithIANACharSetName:_charSetName];
         if (kCFStringEncodingInvalidId != enc) {
-            // We'll hope that the sender knows the correct encoding, and use _recordEncoding; this is required for e.g. XML that is explicitly encoded as iso-8859-1 (COPAC does this).
-            nsString = [[NSString allocWithZone:[self zone]] initWithCString:cstr encoding:enc];       
-        } else if((utf8Data = copyMARC8BytesToUTF8(cstr))) {
+            // We'll hope that the sender knows the correct encoding; this is required for e.g. XML that is explicitly encoded as iso-8859-1 (COPAC does this).
+            nsString = [[NSString allocWithZone:[self zone]] initWithBytes:bytes length:length encoding:enc];  
+            
+        } else if((utf8Data = copyMARC8BytesToUTF8(bytes, length))) {
+            // now we've assumed it was MARC-8
             nsString = [[NSString allocWithZone:[self zone]] initWithData:utf8Data encoding:NSUTF8StringEncoding];
+            [utf8Data release];
         }
         
         // should mainly be useful for debugging
         if (nil == nsString && kCFStringEncodingInvalidId != fallbackEncoding)
-            nsString = [[NSString allocWithZone:[self zone]] initWithCString:cstr encoding:fallbackEncoding];
+            nsString = [[NSString allocWithZone:[self zone]] initWithBytes:bytes length:length encoding:fallbackEncoding];
     }
     
     // if a given key fails, set @"" so we don't compute it again
