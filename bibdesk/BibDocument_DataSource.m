@@ -923,7 +923,7 @@
         }
         
         // add to the group we're dropping on, /not/ the currently selected group; no need to add to all pubs group, though
-        if(group != nil && row != 0){
+        if(group != nil && row != 0 && [pubs count]){
             [self addPublications:pubs toGroup:group];
             // reselect if necessary, or we default to selecting the all publications group (which is really annoying when creating a new pub by dropping a PDF on a group)
             // don't use row, because we might have added the Last Import group
