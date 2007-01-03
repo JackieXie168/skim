@@ -96,13 +96,16 @@
 }
 
 - (id)initWithType:(NSString *)aType dictionary:(NSDictionary *)info;
-{
-    NSMutableDictionary *opts = [[[info objectForKey:@"options"] mutableCopy] autorelease];
-    NSEnumerator *keyEnum = [opts  keyEnumerator];
+{    
+    // enumerate the immutable dictionary
+    NSDictionary *originalOptions = [info objectForKey:@"options"];
+    NSEnumerator *keyEnum = [originalOptions keyEnumerator];
+    
+    NSMutableDictionary *opts = [[originalOptions mutableCopy] autorelease];
     NSString *key;
     id value;
     while (key = [keyEnum nextObject]) {
-        value = [opts objectForKey:key];
+        value = [originalOptions objectForKey:key];
         if ([value respondsToSelector:@selector(stringByUnescapingGroupPlistEntities)])
             [opts setObject:[value stringByUnescapingGroupPlistEntities] forKey:key];
     }
@@ -147,7 +150,7 @@ static inline BOOL BDSKIsEqualOrNil(id first, id second) {
     else if ([[self type] isEqualToString:BDSKSearchGroupEntrez])
         isEqual = BDSKIsEqualOrNil([self database], [other database]);
     else if ([[self type] isEqualToString:BDSKSearchGroupZoom])
-        isEqual = BDSKIsEqualOrNil([self host], [other host]) && BDSKIsEqualOrNil([self port], [other port]) && BDSKIsEqualOrNil([self database], [other database]) && BDSKIsEqualOrNil([self password], [other password]) && BDSKIsEqualOrNil([self username], [other username]);
+        isEqual = BDSKIsEqualOrNil([self host], [other host]) && BDSKIsEqualOrNil([self port], [other port]) && BDSKIsEqualOrNil([self database], [other database]) && BDSKIsEqualOrNil([self password], [other password]) && BDSKIsEqualOrNil([self username], [other username]) && (BDSKIsEqualOrNil([self options], (NSDictionary *)[other options]) || [[self options] isEqualToDictionary:(NSDictionary *)[other options]]);
     else
         isEqual = BDSKIsEqualOrNil([self host], [other host]);
     return isEqual;
@@ -161,11 +164,11 @@ static inline BOOL BDSKIsEqualOrNil(id first, id second) {
         [info setValue:[[self database] stringByEscapingGroupPlistEntities] forKey:@"database"];
     } else if ([[self type] isEqualToString:BDSKSearchGroupZoom]) {
         NSMutableDictionary *opts = [[[self options] mutableCopy] autorelease];
-        NSEnumerator *keyEnum = [opts  keyEnumerator];
+        NSEnumerator *keyEnum = [[self options]  keyEnumerator];
         NSString *key;
         id value;
         while (key = [keyEnum nextObject]) {
-            value = [opts objectForKey:key];
+            value = [[self options] objectForKey:key];
             if ([value respondsToSelector:@selector(stringByEscapingGroupPlistEntities)])
                 [opts setObject:[value stringByEscapingGroupPlistEntities] forKey:key];
         }
