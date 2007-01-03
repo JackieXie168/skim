@@ -224,12 +224,7 @@ static NSDictionary *searchGroupServers = nil;
         undoManager = nil;
         
         type = group ? [[group type] copy] : [BDSKSearchGroupEntrez copy];
-
-        BDSKServerInfo *info = [group serverInfo];
-        if (nil == info) {
-            info = [BDSKServerInfo defaultServerInfoWithType:type];
-        }
-        [self setServerInfo:info];
+        serverInfo = nil; // this will be set indirectly in awakeFromNib
     }
     return self;
 }
@@ -338,7 +333,7 @@ static NSDictionary *searchGroupServers = nil;
     if (i == [sender numberOfItems] - 1) {
         BOOL isZoom = [[self type] isEqualToString:BDSKSearchGroupZoom];
         BOOL isOAI = [[self type] isEqualToString:BDSKSearchGroupOAI];
-        [self setServerInfo:[BDSKServerInfo defaultServerInfoWithType:[self type]]];
+        [self setServerInfo:(serverInfo == nil && group) ? [group serverInfo] : [BDSKServerInfo defaultServerInfoWithType:[self type]]];
         [nameField setEnabled:YES];
         [addressField setEnabled:isZoom || isOAI];
         [portField setEnabled:isZoom];
@@ -531,6 +526,7 @@ static NSDictionary *searchGroupServers = nil;
 
 - (void)setServerInfo:(BDSKServerInfo *)info;
 {
+    CFArrayRemoveAllValue(editors);
     [serverInfo setDelegate:nil];
     [serverInfo autorelease];
     serverInfo = [info mutableCopy];
