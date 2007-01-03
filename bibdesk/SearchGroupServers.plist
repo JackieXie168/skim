@@ -141,4 +141,15 @@
             };
         }
     );
+    /* OAI servers */
+    oai = (
+        {
+            name = "Citeseer";
+            host = "http://cs1.ist.psu.edu/cgi-bin/oai.cgi";
+        };
+        {
+            name = "ArXiv";
+            host = "http://arXiv.org/oai2";
+        }
+    );
 }

@@ -45,11 +45,15 @@
 
 + (id)defaultServerInfoWithType:(NSString *)aType;
 {
+    BOOL isEntrez = [aType isEqualToString:BDSKSearchGroupEntrez];
+    BOOL isZoom = [aType isEqualToString:BDSKSearchGroupZoom];
+    BOOL isOAI = [aType isEqualToString:BDSKSearchGroupOAI];
+    
     return [[[[self class] alloc] initWithType:aType 
                                           name:NSLocalizedString(@"New Server",@"")
-                                          host:BDSKSearchGroupEntrez ? nil : @"host.domain.com"
-                                          port:[aType isEqualToString:BDSKSearchGroupEntrez] ? nil : @"0" 
-                                      database:@"database" 
+                                          host:isEntrez ? nil : isZoom ? @"host.domain.com" : @"http://an.oa.org/OAI-script"
+                                          port:isZoom ? @"0" : nil 
+                                      database:isOAI ? nil : @"database" 
                                       password:nil
                                       username:nil
                                        options:[NSDictionary dictionary]] autorelease];
@@ -67,13 +71,20 @@
             password = nil;
             username = nil;
             options = nil;
-        } else {
+        } else if ([[self type] isEqualToString:BDSKSearchGroupZoom]) {
             host = [aHost copy];
             port = [aPort copy];
             database = [aDbase copy];
             password = [aPassword copy];
             username = [aUser copy];
             options = [opts mutableCopy];
+        } else {
+            host = [aHost copy];
+            port = nil;
+            database = nil;
+            password = nil;
+            username = [aUser copy];
+            options = nil;
         }
     }
     return self;
@@ -135,8 +146,10 @@ static inline BOOL BDSKIsEqualOrNil(id first, id second) {
         isEqual = NO;
     else if ([[self type] isEqualToString:BDSKSearchGroupEntrez])
         isEqual = BDSKIsEqualOrNil([self database], [other database]);
-    else
+    else if ([[self type] isEqualToString:BDSKSearchGroupZoom])
         isEqual = BDSKIsEqualOrNil([self host], [other host]) && BDSKIsEqualOrNil([self port], [other port]) && BDSKIsEqualOrNil([self database], [other database]) && BDSKIsEqualOrNil([self password], [other password]) && BDSKIsEqualOrNil([self username], [other username]);
+    else
+        isEqual = BDSKIsEqualOrNil([self host], [other host]);
     return isEqual;
 }
 
@@ -146,7 +159,7 @@ static inline BOOL BDSKIsEqualOrNil(id first, id second) {
     [info setValue:[self name] forKey:@"name"];
     if ([[self type] isEqualToString:BDSKSearchGroupEntrez]) {
         [info setValue:[[self database] stringByEscapingGroupPlistEntities] forKey:@"database"];
-    } else {
+    } else if ([[self type] isEqualToString:BDSKSearchGroupZoom]) {
         NSMutableDictionary *opts = [[[self options] mutableCopy] autorelease];
         NSEnumerator *keyEnum = [opts  keyEnumerator];
         NSString *key;
@@ -163,6 +176,8 @@ static inline BOOL BDSKIsEqualOrNil(id first, id second) {
         [info setValue:[[self password] stringByEscapingGroupPlistEntities] forKey:@"password"];
         [info setValue:[[self username] stringByEscapingGroupPlistEntities] forKey:@"username"];
         [info setValue:opts forKey:@"options"];
+    } else {
+        [info setValue:[[self host] stringByEscapingGroupPlistEntities] forKey:@"host"];
     }
     return info;
 }
@@ -234,20 +249,26 @@ static inline BOOL BDSKIsEqualOrNil(id first, id second) {
 - (BOOL)validateHost:(id *)value error:(NSError **)error {
     NSString *string = *value;
     NSRange range = [string rangeOfString:@"://"];
-    if(range.location != NSNotFound){
-        // ZOOM gets confused when the host has a protocol
-        string = [string substringFromIndex:NSMaxRange(range)];
-    }
-    // split address:port/dbase in components
-    range = [string rangeOfString:@"/"];
-    if(range.location != NSNotFound){
-        [self setDatabase:[string substringFromIndex:NSMaxRange(range)]];
-        string = [string substringToIndex:range.location];
-    }
-    range = [string rangeOfString:@":"];
-    if(range.location != NSNotFound){
-        [self setPort:[string substringFromIndex:NSMaxRange(range)]];
-        string = [string substringToIndex:range.location];
+    if ([[self type] isEqualToString:BDSKSearchGroupOAI]) {
+        if(range.location == NSNotFound){
+            string = [NSString stringWithFormat:@"http://%@", string];
+        }
+    } else if ([[self type] isEqualToString:BDSKSearchGroupZoom]) {
+        if(range.location != NSNotFound){
+            // ZOOM gets confused when the host has a protocol
+            string = [string substringFromIndex:NSMaxRange(range)];
+        }
+        // split address:port/dbase in components
+        range = [string rangeOfString:@"/"];
+        if(range.location != NSNotFound){
+            [self setDatabase:[string substringFromIndex:NSMaxRange(range)]];
+            string = [string substringToIndex:range.location];
+        }
+        range = [string rangeOfString:@":"];
+        if(range.location != NSNotFound){
+            [self setPort:[string substringFromIndex:NSMaxRange(range)]];
+            string = [string substringToIndex:range.location];
+        }
     }
     *value = string;
     return YES;
