@@ -53,6 +53,10 @@ static NSDictionary *searchGroupServers = nil;
 #pragma mark Server info
 
 + (void)initialize {
+    [self setKeys:[NSArray arrayWithObjects:@"type", nil] triggerChangeNotificationsForDependentKey:@"entrez"];
+    [self setKeys:[NSArray arrayWithObjects:@"type", nil] triggerChangeNotificationsForDependentKey:@"zoom"];
+    [self setKeys:[NSArray arrayWithObjects:@"type", nil] triggerChangeNotificationsForDependentKey:@"oai"];
+    
     NSString *applicationSupportPath = [[NSFileManager defaultManager] currentApplicationSupportPathForCurrentUser]; 
     NSString *path = [[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:SERVERS_FILENAME];
     
@@ -227,6 +231,9 @@ static NSDictionary *searchGroupServers = nil;
         
         type = group ? [[group type] copy] : [BDSKSearchGroupEntrez copy];
         serverInfo = nil; // this will be set indirectly in awakeFromNib
+        
+        isCustom = NO;
+        isEditable = NO;
     }
     return self;
 }
@@ -274,7 +281,7 @@ static NSDictionary *searchGroupServers = nil;
     [revealButton setBezelStyle:NSRoundedDisclosureBezelStyle];
     [revealButton performClick:self];
     
-    [typeMatrix selectCellWithTag:[type isEqualToString:BDSKSearchGroupEntrez] ? 0 : [type isEqualToString:BDSKSearchGroupZoom] ? 1 : 2];
+    [typeMatrix selectCellWithTag:[self isEntrez] ? 0 : [self isZoom] ? 1 : 2];
     
     NSArray *servers = [[self class] serversForType:type];
     unsigned index = 0;
@@ -325,46 +332,21 @@ static NSDictionary *searchGroupServers = nil;
 {
     int i = [sender indexOfSelectedItem];
     
-    [self willChangeValueForKey:@"canAddServer"];
-    [self willChangeValueForKey:@"canRemoveServer"];
-    [self willChangeValueForKey:@"canEditServer"];
-    
     [editButton setTitle:NSLocalizedString(@"Edit", @"Button title")];
     [editButton setToolTip:NSLocalizedString(@"Edit the selected default server settings", @"Tool tip message")];
     
     if (i == [sender numberOfItems] - 1) {
-        BOOL isZoom = [[self type] isEqualToString:BDSKSearchGroupZoom];
-        BOOL isOAI = [[self type] isEqualToString:BDSKSearchGroupOAI];
         [self setServerInfo:(serverInfo == nil && group) ? [group serverInfo] : [BDSKServerInfo defaultServerInfoWithType:[self type]]];
-        [nameField setEnabled:YES];
-        [addressField setEnabled:isZoom || isOAI];
-        [portField setEnabled:isZoom];
-        [databaseField setEnabled:isOAI == NO];
-        [passwordField setEnabled:isZoom];
-        [userField setEnabled:isZoom];
-        [syntaxPopup setEnabled:isZoom];
-        [encodingComboBox setEnabled:isZoom];
-        [removeDiacriticsButton setEnabled:isZoom];
-        
         if ([revealButton state] == NSOffState)
             [revealButton performClick:self];
+        [self setCustom:YES];
+        [self setEditable:YES];
     } else {
         NSArray *servers = [[self class] serversForType:type];
         [self setServerInfo:[servers objectAtIndex:i]];
-        [nameField setEnabled:NO];
-        [addressField setEnabled:NO];
-        [portField setEnabled:NO];
-        [databaseField setEnabled:NO];
-        [passwordField setEnabled:NO];
-        [userField setEnabled:NO];
-        [encodingComboBox setEnabled:NO];
-        [removeDiacriticsButton setEnabled:NO];
-
-        [syntaxPopup setEnabled:NO];
+        [self setCustom:NO];
+        [self setEditable:NO];
     }
-    [self didChangeValueForKey:@"canAddServer"];
-    [self didChangeValueForKey:@"canRemoveServer"];
-    [self didChangeValueForKey:@"canEditServer"];
 }
 
 - (IBAction)selectSyntax:(id)sender;
@@ -375,9 +357,7 @@ static NSDictionary *searchGroupServers = nil;
 
 - (IBAction)addServer:(id)sender;
 {
-    unsigned index = [serverPopup indexOfSelectedItem];
-    
-    if ((int)index != [serverPopup numberOfItems] - 1 || [self commitEditing] == NO) {
+    if ([self isCustom] == NO || [self commitEditing] == NO) {
         NSBeep();
         return;
     }
@@ -393,21 +373,19 @@ static NSDictionary *searchGroupServers = nil;
         return;
     }
     
-    index = [servers count];
+    unsigned index = [servers count];
     [[self class] addServer:[self serverInfo] forType:[self type]];
     [self reloadServersSelectingIndex:index];
 }
 
 - (IBAction)removeServer:(id)sender;
 {
-    unsigned index = [serverPopup indexOfSelectedItem];
-    
-    if ((int)index >= [serverPopup numberOfItems] - 2 || [serverPopup numberOfItems] < 4) {
+    if ([self isCustom] || [self commitEditing] == NO) {
         NSBeep();
         return;
     }
     
-    [[self class] removeServerAtIndex:index forType:[self type]];
+    [[self class] removeServerAtIndex:[serverPopup indexOfSelectedItem] forType:[self type]];
     [self reloadServersSelectingIndex:0];
 }
 
@@ -416,14 +394,13 @@ static NSDictionary *searchGroupServers = nil;
     if ([revealButton state] == NSOffState)
         [revealButton performClick:sender];
     
-    unsigned index = [serverPopup indexOfSelectedItem];
-    
-    if ((int)index >= [serverPopup numberOfItems] - 2) {
+    if ([self isCustom]) {
         NSBeep();
         return;
     }
     
-    if ([nameField isEnabled]) {
+    if ([self isEditable]) {
+        unsigned index = [serverPopup indexOfSelectedItem];
         unsigned existingIndex = [[[[self class] serversForType:[self type]] valueForKey:@"name"] indexOfObject:[[self serverInfo] name]];
         if (existingIndex != NSNotFound && existingIndex != index) {
             NSAlert *alert = [NSAlert alertWithMessageText:NSLocalizedString(@"Duplicate Server Name", @"Message in alert dialog when setting a search group server with a duplicate name")
@@ -441,19 +418,8 @@ static NSDictionary *searchGroupServers = nil;
     } else {
         [editButton setTitle:NSLocalizedString(@"Set", @"Button title")];
         [editButton setToolTip:NSLocalizedString(@"Set the selected default server settings", @"Tool tip message")];
+        [self setEditable:YES];
         
-        BOOL isZoom = [[self type] isEqualToString:BDSKSearchGroupZoom];
-        BOOL isOAI = [[self type] isEqualToString:BDSKSearchGroupOAI];
-        [nameField setEnabled:YES];
-        [addressField setEnabled:isZoom || isOAI];
-        [portField setEnabled:isZoom];
-        [databaseField setEnabled:isOAI == NO];
-        [passwordField setEnabled:isZoom];
-        [userField setEnabled:isZoom];
-        [syntaxPopup setEnabled:isZoom];
-        [encodingComboBox setEnabled:isZoom];
-        [removeDiacriticsButton setEnabled:isZoom];
-
         NSAlert *alert = [NSAlert alertWithMessageText:NSLocalizedString(@"Edit Server Setting", @"Message in alert dialog when editing default search group server")
                                          defaultButton:NSLocalizedString(@"OK", @"Button title")
                                        alternateButton:nil
@@ -505,20 +471,25 @@ static NSDictionary *searchGroupServers = nil;
 
 #pragma mark Accessors
 
-- (BOOL)canAddServer;
+- (void)setCustom:(BOOL)flag;
 {
-    return [serverPopup indexOfSelectedItem] == [serverPopup numberOfItems] - 1;
+    isCustom = flag;
 }
 
-- (BOOL)canRemoveServer;
-{
-    return [serverPopup indexOfSelectedItem] < [serverPopup numberOfItems] - 2;
+- (BOOL)isCustom { return isCustom; }
+
+- (void)setEditable:(BOOL)flag;
+{ 
+    isEditable = flag;
 }
 
-- (BOOL)canEditServer;
-{
-    return [serverPopup indexOfSelectedItem] < [serverPopup numberOfItems] - 2;
-}
+- (BOOL)isEditable { return isEditable; }
+
+- (BOOL)isEntrez { return [[self type] isEqualToString:BDSKSearchGroupEntrez]; }
+
+- (BOOL)isZoom { return [[self type] isEqualToString:BDSKSearchGroupZoom]; }
+
+- (BOOL)isOai { return [[self type] isEqualToString:BDSKSearchGroupOAI]; }
 
 - (BDSKSearchGroup *)group { return group; }
 
@@ -564,11 +535,11 @@ static NSDictionary *searchGroupServers = nil;
     
     NSString *message = nil;
     
-    if ([type isEqualToString:BDSKSearchGroupEntrez] && ([NSString isEmptyString:[serverInfo name]] || [NSString isEmptyString:[serverInfo database]])) {
+    if ([self isEntrez] && ([NSString isEmptyString:[serverInfo name]] || [NSString isEmptyString:[serverInfo database]])) {
         message = NSLocalizedString(@"Unable to create a search group with an empty server name or database", @"Informative text in alert dialog when search group is invalid");
-    } else if ([type isEqualToString:BDSKSearchGroupZoom] && ([NSString isEmptyString:[serverInfo name]] || [NSString isEmptyString:[serverInfo host]] || [NSString isEmptyString:[serverInfo database]] || [[serverInfo port] intValue] == 0)) {
+    } else if ([self isZoom] && ([NSString isEmptyString:[serverInfo name]] || [NSString isEmptyString:[serverInfo host]] || [NSString isEmptyString:[serverInfo database]] || [[serverInfo port] intValue] == 0)) {
         message = NSLocalizedString(@"Unable to create a search group with an empty server name, address, database or port", @"Informative text in alert dialog when search group is invalid");
-    } else if ([type isEqualToString:BDSKSearchGroupOAI] && ([NSString isEmptyString:[serverInfo name]] || [NSString isEmptyString:[serverInfo host]])) {
+    } else if ([self isOai] && ([NSString isEmptyString:[serverInfo name]] || [NSString isEmptyString:[serverInfo host]])) {
         message = NSLocalizedString(@"Unable to create a search group with an empty server name or address", @"Informative text in alert dialog when search group is invalid");
     }
     if (message) {

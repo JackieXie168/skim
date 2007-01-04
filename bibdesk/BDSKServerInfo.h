@@ -69,6 +69,10 @@
 - (BOOL)removeDiacritics;
 - (NSDictionary *)options;
 
+- (BOOL)isEntrez;
+- (BOOL)isZoom;
+- (BOOL)isOAI;
+
 @end
 
 @interface BDSKMutableServerInfo : BDSKServerInfo {

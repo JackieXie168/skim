@@ -48,6 +48,9 @@
     BDSKMutableServerInfo *serverInfo;
     NSString *type;
     
+    BOOL isCustom;
+    BOOL isEditable;
+    
     IBOutlet NSPopUpButton *serverPopup;
     IBOutlet NSMatrix *typeMatrix;
     
@@ -88,9 +91,13 @@
 
 - (IBAction)toggle:(id)sender;
 
-- (BOOL)canAddServer;
-- (BOOL)canRemoveServer;
-- (BOOL)canEditServer;
+- (void)setCustom:(BOOL)flag;
+- (BOOL)isCustom;
+- (void)setEditable:(BOOL)flag;
+- (BOOL)isEditable;
+- (BOOL)isEntrez;
+- (BOOL)isOai;
+- (BOOL)isZoom;
 
 - (void)setType:(NSString *)t;
 - (NSString *)type;

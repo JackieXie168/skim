@@ -50,11 +50,11 @@
     BOOL isOAI = [aType isEqualToString:BDSKSearchGroupOAI];
     
     return [[[[self class] alloc] initWithType:aType 
-                                          name:NSLocalizedString(@"New Server",@"")
+                                          name:NSLocalizedString(@"New Server", @"")
                                           host:isEntrez ? nil : isZoom ? @"host.domain.com" : @"http://an.oa.org/OAI-script"
                                           port:isZoom ? @"0" : nil 
                                       database:isOAI ? nil : @"database" 
-                                       options:[NSDictionary dictionary]] autorelease];
+                                       options:isZoom ? [NSDictionary dictionary] : nil] autorelease];
 }
 
 - (id)initWithType:(NSString *)aType name:(NSString *)aName host:(NSString *)aHost port:(NSString *)aPort database:(NSString *)aDbase options:(NSDictionary *)opts;
@@ -62,12 +62,12 @@
     if (self = [super init]) {
         type = [aType copy];
         name = [aName copy];
-        if ([[self type] isEqualToString:BDSKSearchGroupEntrez]) {
+        if ([self isEntrez]) {
             host = nil;
             port = nil;
             database = [aDbase copy];
             options = nil;
-        } else if ([[self type] isEqualToString:BDSKSearchGroupZoom]) {
+        } else if ([self isZoom]) {
             host = [aHost copy];
             port = [aPort copy];
             database = [aDbase copy];
@@ -141,9 +141,9 @@
     // we don't compare the name, as that is just a label
     if ([self isMemberOfClass:[other class]] == NO || [[self type] isEqualToString:[(BDSKServerInfo *)other type]] == NO)
         isEqual = NO;
-    else if ([[self type] isEqualToString:BDSKSearchGroupEntrez])
+    else if ([self isEntrez])
         isEqual = OFISEQUAL([self database], [other database]);
-    else if ([[self type] isEqualToString:BDSKSearchGroupZoom])
+    else if ([self isZoom])
         isEqual = OFISEQUAL([self host], [other host]) && 
                   OFISEQUAL([self port], [other port]) && 
                   OFISEQUAL([self database], [other database]) && 
@@ -159,9 +159,9 @@
     NSMutableDictionary *info = [NSMutableDictionary dictionaryWithCapacity:7];
     [info setValue:[self type] forKey:@"type"];
     [info setValue:[self name] forKey:@"name"];
-    if ([[self type] isEqualToString:BDSKSearchGroupEntrez]) {
+    if ([self isEntrez]) {
         [info setValue:[[self database] stringByEscapingGroupPlistEntities] forKey:@"database"];
-    } else if ([[self type] isEqualToString:BDSKSearchGroupZoom]) {
+    } else if ([self isZoom]) {
         NSMutableDictionary *opts = [[[self options] mutableCopy] autorelease];
         NSEnumerator *keyEnum = [[self options]  keyEnumerator];
         NSString *key;
@@ -205,6 +205,10 @@
 - (BOOL)removeDiacritics { return [[options objectForKey:@"removeDiacritics"] boolValue]; }
 
 - (NSDictionary *)options { return options; }
+
+- (BOOL)isEntrez { return [[self type] isEqualToString:BDSKSearchGroupEntrez]; }
+- (BOOL)isZoom { return [[self type] isEqualToString:BDSKSearchGroupZoom]; }
+- (BOOL)isOAI { return [[self type] isEqualToString:BDSKSearchGroupOAI]; }
 
 @end
 
@@ -292,11 +296,11 @@
 - (BOOL)validateHost:(id *)value error:(NSError **)error {
     NSString *string = *value;
     NSRange range = [string rangeOfString:@"://"];
-    if ([[self type] isEqualToString:BDSKSearchGroupOAI]) {
+    if ([self isOAI]) {
         if(range.location == NSNotFound){
             string = [NSString stringWithFormat:@"http://%@", string];
         }
-    } else if ([[self type] isEqualToString:BDSKSearchGroupZoom]) {
+    } else if ([self isZoom]) {
         if(range.location != NSNotFound){
             // ZOOM gets confused when the host has a protocol
             string = [string substringFromIndex:NSMaxRange(range)];
