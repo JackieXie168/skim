@@ -386,6 +386,7 @@
         
         NSDictionary *dictionary = [NSDictionary dictionaryWithContentsOfURL:absoluteURL];
         Class aClass = NSClassFromString([dictionary objectForKey:@"class"]);
+        if (aClass == Nil) aClass = [BDSKSearchGroup class];
         BDSKSearchGroup *group = [[aClass alloc] initWithDictionary:dictionary];
         
         if (nil == group) {
