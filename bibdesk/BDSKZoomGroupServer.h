@@ -75,6 +75,6 @@ typedef struct _BDSKZoomGroupFlags {
     pthread_rwlock_t infolock;
 }
 + (NSArray *)supportedRecordSyntaxes;
-+ (NSString *)zoomRecordSyntaxForRecordSyntax:(NSString *)syntax;
++ (BDSKZoomSyntaxType)zoomRecordSyntaxForRecordSyntaxString:(NSString *)syntax;
 - (void)resetConnection;
 @end
