@@ -113,7 +113,6 @@
             options = {
                 recordSyntax = "US MARC";
                 resultEncoding = "utf-8";
-                allowDiacritics = "YES";
             };
         },
         /* Columbia University */
@@ -145,7 +144,7 @@
                                 la   u=54   s=pw
                                 ab   u=62   s=pw
                                 note u=63   s=pw";
-                allowDiacritics = "NO";
+                removeDiacritics = "YES";
             };
         },
         /* University of Zurich */
@@ -161,7 +160,6 @@
                 resultEncoding = "utf-8";
                 username = "z39";
                 password = "z39";
-                allowDiacritics = "YES";
             };
         }
     );

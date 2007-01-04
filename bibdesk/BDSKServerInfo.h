@@ -66,7 +66,7 @@
 - (NSString *)username;
 - (NSString *)recordSyntax;
 - (NSString *)resultEncoding;
-- (BOOL)allowDiacritics;
+- (BOOL)removeDiacritics;
 - (NSDictionary *)options;
 
 @end
@@ -86,7 +86,7 @@
 - (void)setUsername:(NSString *)newUser;
 - (void)setRecordSyntax:(NSString *)newSyntax;
 - (void)setResultEncoding:(NSString *)newEncoding;
-- (void)setAllowDiacritics:(BOOL)flag;
+- (void)setRemoveDiacritics:(BOOL)flag;
 - (void)setOptions:(NSDictionary *)newOptions;
 
 @end
