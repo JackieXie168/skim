@@ -324,16 +324,16 @@ static void addSubstringToDictionary(NSString *subValue, NSMutableDictionary *pu
         return;
     
     subValue = [subValue stringByRemovingSurroundingWhitespace];
+    tmpValue = [pubDict objectForKey:key];
     
     if([tag isEqualToString:titleTag]){
-        if([subTag isEqualToString:subtitleSubTag] && (tmpValue = [pubDict objectForKey:key])){
+        if([subTag isEqualToString:subtitleSubTag] && tmpValue){
             // this is the subtitle, append it to the title if present
             
             subValue = [NSString stringWithFormat:@"%@: %@", tmpValue, subValue];
-            [pubDict removeObjectForKey:key];
+            tmpValue = nil;
         }
     }else if([tag isEqualToString:personTag]){
-        tmpValue = [pubDict objectForKey:BDSKAuthorString];
         if([subTag isEqualToString:nameSubTag] && tmpValue){
             subValue = [NSString stringWithFormat:@"%@ and %@", tmpValue, subValue];
         }else if([subTag isEqualToString:relatorSubTag]){
@@ -352,8 +352,10 @@ static void addSubstringToDictionary(NSString *subValue, NSMutableDictionary *pu
                 subValue = [NSString stringWithFormat:@"%@ and %@", tmpValue, subValue];
             }
         }
-    }else if([key isEqualToString:BDSKAnnoteString] && (tmpValue = [pubDict objectForKey:key])){
+        tmpValue = nil;
+    }else if([key isEqualToString:BDSKAnnoteString] && tmpValue){
         subValue = [NSString stringWithFormat:@"%@. %@", tmpValue, subValue];
+        tmpValue = nil;
     }else if([key isEqualToString:BDSKYearString]){
         // This is used for stripping extraneous characters from BibTeX year fields
         static AGRegex *findYearRegex = nil;
@@ -361,6 +363,9 @@ static void addSubstringToDictionary(NSString *subValue, NSMutableDictionary *pu
             findYearRegex = [[AGRegex alloc] initWithPattern:@"(.*)(\\d{4})(.*)"];
         subValue = [findYearRegex replaceWithString:@"$2" inString:subValue];
     }
+    
+    if (tmpValue)
+        return;
     
     subValue = [[subValue stringByRemovingPunctuationCharactersAndBracketedText] copy];
     [pubDict setObject:subValue forKey:key];
