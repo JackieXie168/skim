@@ -79,7 +79,6 @@
 				F9A66E4C092FAF9400AF31D5 /* PBXTargetDependency */,
 				F9A66E52092FAFB400AF31D5 /* PBXTargetDependency */,
 				F9A66E50092FAFAC00AF31D5 /* PBXTargetDependency */,
-				F9377F630B423A6C00ECCB3A /* PBXTargetDependency */,
 			);
 			name = BuildMeFirst;
 			productName = BuildMeFirst;
@@ -745,6 +744,13 @@
 			remoteGlobalIDString = 8D5B49AC048680CD000E48DA;
 			remoteInfo = BibDeskInputManager;
 		};
+		CEBC820C0B4D0D2500CE0B2D /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = F9377F550B423A4C00ECCB3A /* yaz.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 8DC2EF5B0486A6940098B216 /* yaz.framework */;
+			remoteInfo = yaz;
+		};
 		F911CB4608972F7300ABDAC6 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = F911CB4008972F7300ABDAC6 /* AGRegex.xcodeproj */;
@@ -765,20 +771,6 @@
 			proxyType = 1;
 			remoteGlobalIDString = F935665E0912D56F002B6957;
 			remoteInfo = AGRegex;
-		};
-		F9377F5C0B423A4D00ECCB3A /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = F9377F550B423A4C00ECCB3A /* yaz.xcodeproj */;
-			proxyType = 2;
-			remoteGlobalIDString = 8DC2EF5B0486A6940098B216;
-			remoteInfo = yaz;
-		};
-		F9377F620B423A6C00ECCB3A /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = F9377F550B423A4C00ECCB3A /* yaz.xcodeproj */;
-			proxyType = 1;
-			remoteGlobalIDString = 8DC2EF4F0486A6940098B216;
-			remoteInfo = yaz;
 		};
 		F95CC112087F54BF002C5694 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
@@ -1482,7 +1474,7 @@
 		F92F4E460788DEDD001B8F82 /* genericBibDocIcon.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; name = genericBibDocIcon.tiff; path = Images/genericBibDocIcon.tiff; sourceTree = "<group>"; };
 		F92F4E4C0788DEFC001B8F82 /* BibPref_Files.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = BibPref_Files.h; sourceTree = "<group>"; };
 		F92F4E4D0788DEFC001B8F82 /* BibPref_Files.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = BibPref_Files.m; sourceTree = "<group>"; };
-		F9377F550B423A4C00ECCB3A /* yaz.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = yaz.xcodeproj; path = ../bibdesk_vendorsrc/indexdata/yaz/yaz.xcodeproj; sourceTree = SOURCE_ROOT; };
+		F9377F550B423A4C00ECCB3A /* yaz.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = yaz.xcodeproj; path = ../bibdesk_vendorsrc/indexdata/yaz/objc/yaz.xcodeproj; sourceTree = "<group>"; };
 		F93840890906DD1F00FC37F2 /* scripthook.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; name = scripthook.tiff; path = Images/scripthook.tiff; sourceTree = "<group>"; };
 		F941135209B549BF00EE8463 /* BDSKEditorTextView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BDSKEditorTextView.h; sourceTree = "<group>"; };
 		F941135309B549BF00EE8463 /* BDSKEditorTextView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BDSKEditorTextView.m; sourceTree = "<group>"; };
@@ -2160,6 +2152,14 @@
 			name = Products;
 			sourceTree = "<group>";
 		};
+		CEBC82090B4D0D2500CE0B2D /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				CEBC820D0B4D0D2500CE0B2D /* yaz.framework */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
 		F9022D410758073E00C3F701 /* cfg */ = {
 			isa = PBXGroup;
 			children = (
@@ -2497,14 +2497,6 @@
 				F9022CA60758038000C3F701 /* PubMedParser.h */,
 			);
 			name = Headers;
-			sourceTree = "<group>";
-		};
-		F9377F560B423A4C00ECCB3A /* Products */ = {
-			isa = PBXGroup;
-			children = (
-				F9377F5D0B423A4D00ECCB3A /* yaz.framework */,
-			);
-			name = Products;
 			sourceTree = "<group>";
 		};
 		F95CC10F087F54BF002C5694 /* Products */ = {
@@ -2957,7 +2949,7 @@
 					ProjectRef = F9AA02F3092FA2CA0094A059 /* OmniFoundation.xcodeproj */;
 				},
 				{
-					ProductGroup = F9377F560B423A4C00ECCB3A /* Products */;
+					ProductGroup = CEBC82090B4D0D2500CE0B2D /* Products */;
 					ProjectRef = F9377F550B423A4C00ECCB3A /* yaz.xcodeproj */;
 				},
 			);
@@ -2984,6 +2976,13 @@
 			remoteRef = CE67E7CE092C9CCE00410758 /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
+		CEBC820D0B4D0D2500CE0B2D /* yaz.framework */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.framework;
+			path = yaz.framework;
+			remoteRef = CEBC820C0B4D0D2500CE0B2D /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
 		F911CB4708972F7300ABDAC6 /* AGRegex.framework */ = {
 			isa = PBXReferenceProxy;
 			fileType = wrapper.framework;
@@ -2996,13 +2995,6 @@
 			fileType = wrapper.application;
 			path = RegexTest.app;
 			remoteRef = F911CB4808972F7300ABDAC6 /* PBXContainerItemProxy */;
-			sourceTree = BUILT_PRODUCTS_DIR;
-		};
-		F9377F5D0B423A4D00ECCB3A /* yaz.framework */ = {
-			isa = PBXReferenceProxy;
-			fileType = wrapper.framework;
-			path = yaz.framework;
-			remoteRef = F9377F5C0B423A4D00ECCB3A /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
 		F95CC113087F54BF002C5694 /* BibImporter.mdimporter */ = {
@@ -3676,11 +3668,6 @@
 			isa = PBXTargetDependency;
 			name = AGRegex;
 			targetProxy = F911CBFC089737C000ABDAC6 /* PBXContainerItemProxy */;
-		};
-		F9377F630B423A6C00ECCB3A /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			name = yaz;
-			targetProxy = F9377F620B423A6C00ECCB3A /* PBXContainerItemProxy */;
 		};
 		F98870D807580EA1001D4D49 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
