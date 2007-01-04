@@ -166,7 +166,7 @@ static NSDictionary *searchGroupServers = nil;
             return;
         }
         
-        NSString *path = [serversPath stringByAppendingPathComponent:[[serverInfo name] stringByAppendingPathExtension:@"bdsksearch"]];
+        NSString *path = [serversPath stringByAppendingPathComponent:[NSString stringWithFormat:@"%@-%@.bdsksearch", [serverInfo name], [serverInfo type]]];
         [data writeToFile:path atomically:YES];
     }
 }
@@ -178,7 +178,7 @@ static NSDictionary *searchGroupServers = nil;
     
     NSString *applicationSupportPath = [[NSFileManager defaultManager] currentApplicationSupportPathForCurrentUser];
     NSString *serversPath = [applicationSupportPath stringByAppendingPathComponent:SERVERS_DIRNAME];
-    NSString *path = [serversPath stringByAppendingPathComponent:[[serverInfo name] stringByAppendingPathExtension:@"bdsksearch"]];
+    NSString *path = [serversPath stringByAppendingPathComponent:[NSString stringWithFormat:@"%@-%@.bdsksearch", [serverInfo name], [serverInfo type]]];
     BOOL isDir = NO;
     if ([[NSFileManager defaultManager] fileExistsAtPath:path isDirectory:&isDir] && isDir == NO) {
         [[NSFileManager defaultManager] removeFileAtPath:path handler:nil];
@@ -199,15 +199,17 @@ static NSDictionary *searchGroupServers = nil;
 
 + (void)setServer:(BDSKServerInfo *)serverInfo atIndex:(unsigned)index forType:(NSString *)type;
 {
-    [self deleteServer:[[searchGroupServers objectForKey:type] objectAtIndex:index]];
-    [[searchGroupServers objectForKey:type] replaceObjectAtIndex:index withObject:serverInfo];
+    NSMutableArray *servers = [searchGroupServers objectForKey:type];
+    [self deleteServer:[servers objectAtIndex:index]];
+    [servers replaceObjectAtIndex:index withObject:serverInfo];
     [self saveServer:serverInfo];
 }
 
 + (void)removeServerAtIndex:(unsigned)index forType:(NSString *)type;
 {
-    [self deleteServer:[[searchGroupServers objectForKey:type] objectAtIndex:index]];
-    [[searchGroupServers objectForKey:type] removeObjectAtIndex:index];
+    NSMutableArray *servers = [searchGroupServers objectForKey:type];
+    [self deleteServer:[servers objectAtIndex:index]];
+    [servers removeObjectAtIndex:index];
 }
 
 #pragma mark Initialization
