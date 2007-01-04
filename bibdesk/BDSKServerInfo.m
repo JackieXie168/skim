@@ -202,7 +202,7 @@
 
 - (NSString *)resultEncoding { return [options objectForKey:@"resultEncoding"]; }
 
-- (BOOL)allowDiacritics { return [[options objectForKey:@"allowDiacritics"] boolValue]; }
+- (BOOL)removeDiacritics { return [[options objectForKey:@"removeDiacritics"] boolValue]; }
 
 - (NSDictionary *)options { return options; }
 
@@ -271,15 +271,15 @@
         [self setOptions:[NSDictionary dictionaryWithObjectsAndKeys:newEncoding, @"resultEncoding", nil]];
 }
 
-- (void)setAllowDiacritics:(BOOL)flag;
+- (void)setRemoveDiacritics:(BOOL)flag;
 {
     if (flag) {
         if (options)
-            [options setValue:@"YES" forKey:@"allowDiacritics"];
+            [options setValue:@"YES" forKey:@"removeDiacritics"];
         else
-            [self setOptions:[NSDictionary dictionaryWithObjectsAndKeys:@"YES", @"allowDiacritics", nil]];
+            [self setOptions:[NSDictionary dictionaryWithObjectsAndKeys:@"YES", @"removeDiacritics", nil]];
     } else if (options) {
-        [options setValue:nil forKey:@"allowDiacritics"];
+        [options setValue:nil forKey:@"removeDiacritics"];
     }
 }
 

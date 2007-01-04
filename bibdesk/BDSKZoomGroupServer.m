@@ -237,7 +237,7 @@ static NSString *BDSKDCXMLString = @"DC XML";
     NSMutableArray *pubs = nil;
     BDSKServerInfo *info = [self serverInfo];
     
-    if (searchTerm && [info allowDiacritics] == NO) {
+    if (searchTerm && [info removeDiacritics]) {
         CFMutableStringRef mutableCopy = (CFMutableStringRef)[[searchTerm mutableCopy] autorelease];
         CFStringNormalize(mutableCopy, kCFStringNormalizationFormD);
         BDDeleteCharactersInCharacterSet(mutableCopy, CFCharacterSetGetPredefined(kCFCharacterSetNonBase));
