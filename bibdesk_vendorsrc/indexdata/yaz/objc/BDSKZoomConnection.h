@@ -61,6 +61,10 @@
 - (void)setOption:(NSString *)option forKey:(NSString *)key;
 - (NSString *)optionForKey:(NSString *)key;
 
+// convenience methods that use setOption:forKey:
+- (void)setUsername:(NSString *)user;
+- (void)setPassword:(NSString *)pass;
+
 // default record syntax is USMARC
 - (void)setPreferredRecordSyntax:(BDSKZoomSyntaxType)type;
 

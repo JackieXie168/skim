@@ -181,6 +181,16 @@
     [self setOption:[BDSKZoomRecord stringWithSyntaxType:type] forKey:@"preferredRecordSyntax"];
 }
 
+- (void)setUsername:(NSString *)user;
+{
+    [self setOption:user forKey:@"user"];
+}
+
+- (void)setPassword:(NSString *)pass;
+{
+    [self setOption:pass forKey:@"password"];
+}
+
 - (void)setResultEncodingToIANACharSetName:(NSString *)encodingName;
 {
     if (nil == encodingName)
