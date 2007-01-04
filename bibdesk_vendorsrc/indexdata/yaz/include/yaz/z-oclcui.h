@@ -7,7 +7,7 @@
 #ifndef z_oclcui_H
 #define z_oclcui_H
 
-#include "odr.h"
+#include <yaz/odr.h>
 #ifdef __cplusplus
 extern "C" {
 #endif

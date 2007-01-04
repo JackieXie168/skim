@@ -11,7 +11,7 @@
 #include <stdio.h>
 #include <string.h>
 
-#include "otherinfo.h"
+#include <yaz/otherinfo.h>
 
 void yaz_oi_APDU(Z_APDU *apdu, Z_OtherInformation ***oip)
 {

@@ -34,8 +34,8 @@
 #ifndef PQUERY_H
 #define PQUERY_H
 
-#include "yconfig.h"
-#include "proto.h"
+#include <yaz/yconfig.h>
+#include <yaz/proto.h>
 
 YAZ_BEGIN_CDECL
 

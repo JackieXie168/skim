@@ -19,7 +19,7 @@
 #include <string.h>
 #include <stdarg.h>
 
-#include "wrbuf.h"
+#include <yaz/wrbuf.h>
 #include <yaz/yaz-iconv.h>
 
 WRBUF wrbuf_alloc(void)

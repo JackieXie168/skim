@@ -24,10 +24,10 @@
 #include <string.h>
 #include <errno.h>
 #include <stddef.h>
-#include "xmalloc.h"
-#include "nmem.h"
-#include "log.h"
-#include "oid.h"
+#include <yaz/xmalloc.h>
+#include <yaz/nmem.h>
+#include <yaz/log.h>
+#include <yaz/oid.h>
 
 #ifdef WIN32
 #include <windows.h>

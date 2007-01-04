@@ -37,9 +37,9 @@
 #ifndef BACKEND_H
 #define BACKEND_H
 
-#include "yconfig.h"
-#include "proto.h"
-#include "srw.h"
+#include <yaz/yconfig.h>
+#include <yaz/proto.h>
+#include <yaz/srw.h>
 
 YAZ_BEGIN_CDECL
     

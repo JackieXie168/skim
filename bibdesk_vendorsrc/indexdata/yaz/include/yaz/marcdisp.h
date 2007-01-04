@@ -34,12 +34,12 @@
 #ifndef MARCDISP_H
 #define MARCDISP_H
 
-#include "yconfig.h"
+#include <yaz/yconfig.h>
 #include <stdio.h>
-#include "wrbuf.h"
+#include <yaz/wrbuf.h>
 
-#include "nmem.h"
-#include "xmltypes.h"
+#include <yaz/nmem.h>
+#include <yaz/xmltypes.h>
 
 YAZ_BEGIN_CDECL
 

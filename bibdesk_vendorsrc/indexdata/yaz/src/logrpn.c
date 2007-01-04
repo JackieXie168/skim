@@ -13,8 +13,8 @@
 #include <stdio.h>
 #include <assert.h>
 
-#include "log.h"
-#include "logrpn.h"
+#include <yaz/log.h>
+#include <yaz/logrpn.h>
 
 static const char *relToStr(int v)
 {

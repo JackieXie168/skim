@@ -37,8 +37,8 @@
 #include <stdio.h>
 #include <string.h>
 
-#include "yconfig.h"
-#include "nmem.h"
+#include <yaz/yconfig.h>
+#include <yaz/nmem.h>
 
 YAZ_BEGIN_CDECL
 
@@ -345,7 +345,7 @@ YAZ_EXPORT const char **odr_get_element_path(ODR o);
 
 YAZ_END_CDECL
 
-#include "xmalloc.h"
+#include <yaz/xmalloc.h>
 
 #endif
 /*

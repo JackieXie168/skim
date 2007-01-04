@@ -31,7 +31,7 @@
  */
 #ifndef YAZ_VERSION
 
-#include "yconfig.h"
+#include <yaz/yconfig.h>
 
 #define YAZ_VERSION "2.1.42"
 #define YAZ_VERSIONL 0x02012A

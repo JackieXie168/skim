@@ -15,7 +15,7 @@
 #endif
 
 #include <string.h>
-#include "nmem.h"
+#include <yaz/nmem.h>
 #if YAZ_HAVE_XML2
 #include <libxml/tree.h>
 #endif

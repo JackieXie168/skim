@@ -21,7 +21,7 @@
 #include <string.h>
 #include <ctype.h>
 
-#include "oid.h"
+#include <yaz/oid.h>
 #include <yaz/yaz-util.h>
 
 static int z3950_prefix[] = { 1, 2, 840, 10003, -1 };

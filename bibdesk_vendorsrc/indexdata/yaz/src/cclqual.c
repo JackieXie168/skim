@@ -86,7 +86,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include "ccl.h"
+#include <yaz/ccl.h>
 
 /** Definition of CCL_bibset pointer */
 struct ccl_qualifiers {

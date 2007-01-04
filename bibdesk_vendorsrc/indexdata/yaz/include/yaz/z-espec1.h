@@ -7,7 +7,7 @@
 #ifndef z_espec1_H
 #define z_espec1_H
 
-#include "odr.h"
+#include <yaz/odr.h>
 #include <yaz/z-grs.h>
 #include <yaz/z-core.h>
 #ifdef __cplusplus

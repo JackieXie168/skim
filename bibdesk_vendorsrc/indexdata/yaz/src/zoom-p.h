@@ -9,11 +9,11 @@
  * \brief Internal header for ZOOM implementation
  */
 
-#include "proto.h"
-#include "comstack.h"
-#include "wrbuf.h"
-#include "zoom.h"
-#include "sortspec.h"
+#include <yaz/proto.h>
+#include <yaz/comstack.h>
+#include <yaz/wrbuf.h>
+#include <yaz/zoom.h>
+#include <yaz/sortspec.h>
 typedef struct ZOOM_Event_p *ZOOM_Event;
 
 struct ZOOM_query_p {

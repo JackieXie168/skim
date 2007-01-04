@@ -81,7 +81,7 @@
  *
  */
 
-#include "ccl.h"
+#include <yaz/ccl.h>
 
 static char *err_msg_array[] = {
     "Ok",

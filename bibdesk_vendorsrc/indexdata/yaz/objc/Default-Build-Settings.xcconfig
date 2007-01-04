@@ -2,4 +2,4 @@ GCC_PREPROCESSOR_DEFINITIONS = STDC_HEADERS=1 HAVE_SYS_TYPES_H=1 HAVE_SYS_STAT_H
 
 INSTALL_PATH = @executable_path/../Frameworks
 
-HEADER_SEARCH_PATHS = /usr/include/libxml2
+HEADER_SEARCH_PATHS = /usr/include/libxml2 "$(SRCROOT)"/../include "$(SRCROOT)"/../src

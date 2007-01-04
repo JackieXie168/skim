@@ -31,8 +31,8 @@
 */ 
 
 #import "BDSKZoomRecord.h"
-#import "yaz-iconv.h"
-#import "z-core.h"
+#import <yaz/yaz-iconv.h>
+#import <yaz/z-core.h>
 #include "zoom-p.h"
 
 @interface NSString (BDSKZoomExtensions)

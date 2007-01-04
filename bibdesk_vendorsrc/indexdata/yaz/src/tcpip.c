@@ -58,9 +58,9 @@
 #include <openssl/err.h>
 #endif
 
-#include "comstack.h"
-#include "tcpip.h"
-#include "nmem.h"
+#include <yaz/comstack.h>
+#include <yaz/tcpip.h>
+#include <yaz/nmem.h>
 
 static int tcpip_close(COMSTACK h);
 static int tcpip_put(COMSTACK h, char *buf, int size);

@@ -7,7 +7,7 @@
 #ifndef item_req_H
 #define item_req_H
 
-#include "odr.h"
+#include <yaz/odr.h>
 #include <yaz/ill-core.h>
 #ifdef __cplusplus
 extern "C" {

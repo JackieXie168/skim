@@ -34,18 +34,18 @@
 #ifndef YAZ_UTIL_H
 #define YAZ_UTIL_H
 
-#include "yconfig.h"
+#include <yaz/yconfig.h>
 #include <yaz/yaz-version.h>
-#include "xmalloc.h"
+#include <yaz/xmalloc.h>
 
-#include "log.h"  
+#include <yaz/log.h>  
 
-#include "tpath.h"
-#include "options.h"
-#include "wrbuf.h"
-#include "nmem.h"
-#include "readconf.h"
-#include "marcdisp.h"
+#include <yaz/tpath.h>
+#include <yaz/options.h>
+#include <yaz/wrbuf.h>
+#include <yaz/nmem.h>
+#include <yaz/readconf.h>
+#include <yaz/marcdisp.h>
 #include <yaz/yaz-iconv.h>
 
 #endif

@@ -21,8 +21,8 @@
 #include <stdio.h>
 #include <string.h>
 #include <ctype.h>
-#include "marcdisp.h"
-#include "wrbuf.h"
+#include <yaz/marcdisp.h>
+#include <yaz/wrbuf.h>
 #include <yaz/yaz-util.h>
 
 int yaz_marc_read_iso2709(yaz_marc_t mt, const char *buf, int bsize)

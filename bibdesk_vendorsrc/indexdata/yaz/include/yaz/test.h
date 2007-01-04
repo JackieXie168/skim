@@ -33,7 +33,7 @@
 #ifndef YAZ_TEST_H
 #define YAZ_TEST_H
 
-#include "yconfig.h"
+#include <yaz/yconfig.h>
 #include <stdio.h>
 
 /** \brief Get the verbosity level */

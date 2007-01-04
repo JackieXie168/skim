@@ -15,7 +15,7 @@
 #include <stdlib.h>
 #include <ctype.h>
 
-#include "proto.h"
+#include <yaz/proto.h>
 
 static void display_variant(WRBUF w, Z_Variant *v, int level)
 {

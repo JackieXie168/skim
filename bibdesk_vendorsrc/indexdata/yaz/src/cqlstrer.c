@@ -12,7 +12,7 @@ See the file LICENSE details.
  * \brief Implements CQL error code map to description string.
  */
 
-#include "cql.h"
+#include <yaz/cql.h>
 
 /*
  * The error-messages associated with these codes are taken from

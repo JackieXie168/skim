@@ -35,9 +35,9 @@
 #define YAZ_RECORD_CONV_H
 
 #include <stddef.h>
-#include "wrbuf.h"
-#include "yconfig.h"
-#include "xmltypes.h"
+#include <yaz/wrbuf.h>
+#include <yaz/yconfig.h>
+#include <yaz/xmltypes.h>
 
 YAZ_BEGIN_CDECL
 

@@ -36,8 +36,8 @@
 
 #ifndef WIN32
 
-#include "comstack.h"
-#include "oid.h"
+#include <yaz/comstack.h>
+#include <yaz/oid.h>
 
 YAZ_BEGIN_CDECL
 

@@ -69,7 +69,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include "ccl.h"
+#include <yaz/ccl.h>
 
 void ccl_qual_field (CCL_bibset bibset, const char *cp, const char *qual_name)
 {

@@ -20,8 +20,8 @@
 #include <stdlib.h>
 #include <stdarg.h>
 
-#include "xmalloc.h"
-#include "log.h"
+#include <yaz/xmalloc.h>
+#include <yaz/log.h>
 #include "odr-priv.h"
 
 static int log_level=0;

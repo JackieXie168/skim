@@ -34,9 +34,9 @@
 #ifndef YAZ_LOGRPN_H
 #define YAZ_LOGRPN_H
 
-#include "yconfig.h"
-#include "proto.h"
-#include "wrbuf.h"
+#include <yaz/yconfig.h>
+#include <yaz/proto.h>
+#include <yaz/wrbuf.h>
 
 YAZ_BEGIN_CDECL
 

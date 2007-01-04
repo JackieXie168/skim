@@ -65,12 +65,12 @@
 #include <yaz/zes-update0.h>
 #include <yaz/z-charneg.h>
 #include <yaz/z-mterm2.h>
-#include "oid.h"
-#include "wrbuf.h"
-#include "zgdu.h"
+#include <yaz/oid.h>
+#include <yaz/wrbuf.h>
+#include <yaz/zgdu.h>
 #include <yaz/z-oclcui.h>
 
-#include "marcdisp.h"
+#include <yaz/marcdisp.h>
 YAZ_BEGIN_CDECL
 
 #if 1

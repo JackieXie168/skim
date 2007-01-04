@@ -15,17 +15,17 @@
 #include "zoom-p.h"
 
 #include <yaz/yaz-util.h>
-#include "xmalloc.h"
-#include "otherinfo.h"
-#include "log.h"
-#include "pquery.h"
-#include "marcdisp.h"
+#include <yaz/xmalloc.h>
+#include <yaz/otherinfo.h>
+#include <yaz/log.h>
+#include <yaz/pquery.h>
+#include <yaz/marcdisp.h>
 #include <yaz/diagbib1.h>
-#include "charneg.h"
-#include "ill.h"
-#include "srw.h"
-#include "cql.h"
-#include "ccl.h"
+#include <yaz/charneg.h>
+#include <yaz/ill.h>
+#include <yaz/srw.h>
+#include <yaz/cql.h>
+#include <yaz/ccl.h>
 
 #if HAVE_SYS_TYPES_H
 #include <sys/types.h>

@@ -12,9 +12,9 @@
  * Helper functions for Character Set and Language Negotiation - 3
  */
 #include <stdio.h>
-#include "otherinfo.h"
+#include <yaz/otherinfo.h>
 #include <yaz/z-charneg.h>
-#include "charneg.h"
+#include <yaz/charneg.h>
 #include <yaz/yaz-util.h>
 
 static Z_External* z_ext_record2(ODR o, int oid_class, int oid_value,

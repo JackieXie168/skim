@@ -35,7 +35,7 @@
 #define YAZ_LOG_H
 
 #include <stdio.h>
-#include "yconfig.h"
+#include <yaz/yconfig.h>
 
 YAZ_BEGIN_CDECL
 
@@ -198,7 +198,7 @@ YAZ_EXPORT void log_event_end(void (*func)(int level, const char *msg,
 
 #if YAZ_USE_OLD_LOG
 
-#include "xmalloc.h"
+#include <yaz/xmalloc.h>
 
 /** The old LOG_ bit names are here for compatibility only. They may 
     conflict with bits defined in syslog.h, or other places. 'LOG'

@@ -34,7 +34,7 @@
 #ifndef WRBUF_H
 #define WRBUF_H
 
-#include "xmalloc.h"
+#include <yaz/xmalloc.h>
 #include <yaz/yaz-iconv.h>
 
 YAZ_BEGIN_CDECL

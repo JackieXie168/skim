@@ -7,7 +7,7 @@
 #ifndef z_sutrs_H
 #define z_sutrs_H
 
-#include "odr.h"
+#include <yaz/odr.h>
 #ifdef __cplusplus
 extern "C" {
 #endif

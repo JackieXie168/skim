@@ -14,12 +14,12 @@
 #endif
 
 #include <string.h>
-#include "retrieval.h"
-#include "wrbuf.h"
-#include "xmalloc.h"
-#include "nmem.h"
-#include "tpath.h"
-#include "proto.h"
+#include <yaz/retrieval.h>
+#include <yaz/wrbuf.h>
+#include <yaz/xmalloc.h>
+#include <yaz/nmem.h>
+#include <yaz/tpath.h>
+#include <yaz/proto.h>
 
 #if YAZ_HAVE_XML2
 #include <libxml/parser.h>

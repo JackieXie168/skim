@@ -7,7 +7,7 @@
 #ifndef z_rrf2_H
 #define z_rrf2_H
 
-#include "odr.h"
+#include <yaz/odr.h>
 #include <yaz/z-core.h>
 #ifdef __cplusplus
 extern "C" {

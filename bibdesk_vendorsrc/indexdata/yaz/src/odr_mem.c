@@ -14,7 +14,7 @@
 
 #include <stdlib.h>
 #include "odr-priv.h"
-#include "xmalloc.h"
+#include <yaz/xmalloc.h>
 
 /* ------------------------ NIBBLE MEMORY ---------------------- */
 

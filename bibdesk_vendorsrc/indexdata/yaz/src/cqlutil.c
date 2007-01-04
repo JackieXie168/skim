@@ -15,7 +15,7 @@ See the file LICENSE for details.
 #include <stdlib.h>
 #include <string.h>
 
-#include "cql.h"
+#include <yaz/cql.h>
 
 void cql_fputs(const char *buf, void *client_data)
 {

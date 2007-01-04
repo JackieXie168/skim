@@ -15,12 +15,12 @@
 
 #include <string.h>
 #include <yaz/yaz-iconv.h>
-#include "marcdisp.h"
+#include <yaz/marcdisp.h>
 #include <yaz/record_conv.h>
-#include "wrbuf.h"
-#include "xmalloc.h"
-#include "nmem.h"
-#include "tpath.h"
+#include <yaz/wrbuf.h>
+#include <yaz/xmalloc.h>
+#include <yaz/nmem.h>
+#include <yaz/tpath.h>
 
 #if YAZ_HAVE_XML2
 #include <libxml/parser.h>

@@ -12,7 +12,7 @@ See the file LICENSE for details.
  * \brief Implements query stream reading using FILE handle.
  */
 
-#include "cql.h"
+#include <yaz/cql.h>
 
 int getbyte_stream(void *client_data)
 {

@@ -12,8 +12,8 @@
 #include <stdio.h>
 #include <assert.h>
 
-#include "logrpn.h"
-#include "querytowrbuf.h"
+#include <yaz/logrpn.h>
+#include <yaz/querytowrbuf.h>
 
 static void yaz_term_to_wrbuf(WRBUF b, const char *term, int len)
 {

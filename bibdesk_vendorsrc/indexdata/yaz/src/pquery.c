@@ -13,9 +13,9 @@
 #include <stdlib.h>
 #include <ctype.h>
 
-#include "proto.h"
-#include "oid.h"
-#include "pquery.h"
+#include <yaz/proto.h>
+#include <yaz/oid.h>
+#include <yaz/pquery.h>
 
 static oid_value p_query_dfset = VAL_NONE;
 

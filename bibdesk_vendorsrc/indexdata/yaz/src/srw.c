@@ -9,7 +9,7 @@
  * \brief Implements SRW/SRU package encoding and decoding
  */
 
-#include "srw.h"
+#include <yaz/srw.h>
 #if YAZ_HAVE_XML2
 #include <libxml/parser.h>
 #include <libxml/tree.h>

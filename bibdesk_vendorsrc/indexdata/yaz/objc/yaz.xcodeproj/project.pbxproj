@@ -247,7 +247,7 @@
 		F918767B0B406D9900D75891 /* zoom.h in Headers */ = {isa = PBXBuildFile; fileRef = F918762B0B406D9900D75891 /* zoom.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		F91876AE0B409E7900D75891 /* libxml2.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = F91876AD0B409E7900D75891 /* libxml2.dylib */; };
 		F92B955D0B4381470089909F /* libcrypto.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = F92B955C0B4381470089909F /* libcrypto.dylib */; };
-		F937812E0B43207800ECCB3A /* default.bib in Resources */ = {isa = PBXBuildFile; fileRef = F937812D0B43207800ECCB3A /* default.bib */; };
+		F937812E0B43207800ECCB3A /* objc_default.bib in Resources */ = {isa = PBXBuildFile; fileRef = F937812D0B43207800ECCB3A /* objc_default.bib */; };
 		F93784AC0B43800800ECCB3A /* libssl.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = F93784AB0B43800800ECCB3A /* libssl.dylib */; };
 		F9B8FD890B40D19300A5A615 /* BDSKZoomConnection.h in Headers */ = {isa = PBXBuildFile; fileRef = F9B8FD870B40D19300A5A615 /* BDSKZoomConnection.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		F9B8FD8A0B40D19300A5A615 /* BDSKZoomConnection.m in Sources */ = {isa = PBXBuildFile; fileRef = F9B8FD880B40D19300A5A615 /* BDSKZoomConnection.m */; };
@@ -509,7 +509,7 @@
 		F91876AD0B409E7900D75891 /* libxml2.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libxml2.dylib; path = /usr/lib/libxml2.dylib; sourceTree = "<absolute>"; };
 		F92B955C0B4381470089909F /* libcrypto.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libcrypto.dylib; path = /usr/lib/libcrypto.dylib; sourceTree = "<absolute>"; };
 		F92B98C60B45E9C60089909F /* Default-Build-Settings.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; path = "Default-Build-Settings.xcconfig"; sourceTree = "<group>"; };
-		F937812D0B43207800ECCB3A /* default.bib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = default.bib; sourceTree = "<group>"; };
+		F937812D0B43207800ECCB3A /* objc_default.bib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = objc_default.bib; sourceTree = "<group>"; };
 		F93784AB0B43800800ECCB3A /* libssl.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libssl.dylib; path = /usr/lib/libssl.dylib; sourceTree = "<absolute>"; };
 		F9B8FD870B40D19300A5A615 /* BDSKZoomConnection.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BDSKZoomConnection.h; sourceTree = "<group>"; };
 		F9B8FD880B40D19300A5A615 /* BDSKZoomConnection.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BDSKZoomConnection.m; sourceTree = "<group>"; };
@@ -580,7 +580,7 @@
 		089C1665FE841158C02AAC07 /* Resources */ = {
 			isa = PBXGroup;
 			children = (
-				F937812D0B43207800ECCB3A /* default.bib */,
+				F937812D0B43207800ECCB3A /* objc_default.bib */,
 				8DC2EF5A0486A6940098B216 /* Info.plist */,
 				089C1666FE841158C02AAC07 /* InfoPlist.strings */,
 			);
@@ -792,7 +792,8 @@
 				F91875320B406D3300D75891 /* zoom-opt.c */,
 				F91875330B406D3300D75891 /* zoom-p.h */,
 			);
-			path = src;
+			name = src;
+			path = ../src;
 			sourceTree = "<group>";
 		};
 		F91875DA0B406D9800D75891 /* include */ = {
@@ -800,7 +801,8 @@
 			children = (
 				F91875DD0B406D9800D75891 /* yaz */,
 			);
-			path = include;
+			name = include;
+			path = ../include;
 			sourceTree = "<group>";
 		};
 		F91875DD0B406D9800D75891 /* yaz */ = {
@@ -1052,7 +1054,7 @@
 				F91875A80B406D3300D75891 /* univres.asn in Resources */,
 				F91875C50B406D3300D75891 /* z.tcl in Resources */,
 				F91875C70B406D3300D75891 /* z3950v3.asn in Resources */,
-				F937812E0B43207800ECCB3A /* default.bib in Resources */,
+				F937812E0B43207800ECCB3A /* objc_default.bib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

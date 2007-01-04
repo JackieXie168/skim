@@ -14,11 +14,11 @@
 #include <ctype.h>
 #include <errno.h>
 
-#include "log.h"
-#include "comstack.h"
-#include "tcpip.h"
-#include "unix.h"
-#include "odr.h"
+#include <yaz/log.h>
+#include <yaz/comstack.h>
+#include <yaz/tcpip.h>
+#include <yaz/unix.h>
+#include <yaz/odr.h>
 
 #ifdef WIN32
 #define strncasecmp _strnicmp

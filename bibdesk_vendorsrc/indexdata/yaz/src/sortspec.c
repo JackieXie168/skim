@@ -13,9 +13,9 @@
 #include <string.h>
 #include <stdlib.h>
 
-#include "proto.h"
-#include "oid.h"
-#include "sortspec.h"
+#include <yaz/proto.h>
+#include <yaz/oid.h>
+#include <yaz/sortspec.h>
 
 Z_SortKeySpecList *yaz_sort_spec (ODR out, const char *arg)
 {

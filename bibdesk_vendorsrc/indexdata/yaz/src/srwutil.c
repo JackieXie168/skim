@@ -10,7 +10,7 @@
  */
 
 #include <stdlib.h>
-#include "srw.h"
+#include <yaz/srw.h>
 #include <yaz/yaz-iconv.h>
 
 static int hex_digit (int ch)

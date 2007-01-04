@@ -34,9 +34,9 @@
 #ifndef COMSTACK_H
 #define COMSTACK_H
 
-#include "yconfig.h"
-#include "oid.h"
-#include "xmalloc.h"
+#include <yaz/yconfig.h>
+#include <yaz/oid.h>
+#include <yaz/xmalloc.h>
 
 YAZ_BEGIN_CDECL
 

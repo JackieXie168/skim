@@ -7,7 +7,7 @@
 #ifndef z_uifr1_H
 #define z_uifr1_H
 
-#include "odr.h"
+#include <yaz/odr.h>
 #include <yaz/z-core.h>
 #ifdef __cplusplus
 extern "C" {

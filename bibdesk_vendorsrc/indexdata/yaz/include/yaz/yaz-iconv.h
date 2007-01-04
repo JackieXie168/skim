@@ -35,7 +35,7 @@
 #define YAZ_ICONV_H
 
 #include <stddef.h>
-#include "yconfig.h"
+#include <yaz/yconfig.h>
 
 YAZ_BEGIN_CDECL
 

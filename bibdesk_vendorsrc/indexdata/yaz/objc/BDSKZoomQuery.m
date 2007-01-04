@@ -31,7 +31,7 @@
 */ 
 
 #import "BDSKZoomQuery.h"
-#import "yaz-iconv.h"
+#import <yaz/yaz-iconv.h>
 
 @implementation BDSKZoomQuery
 
@@ -45,7 +45,7 @@
     static NSString *config = nil;
     if (nil == config) {
         NSBundle *bundle = [NSBundle bundleWithIdentifier:@"net.sourceforge.bibdesk.yaz"];
-        config = [[NSString alloc] initWithContentsOfFile:[bundle pathForResource:@"default" ofType:@"bib"] encoding:NSASCIIStringEncoding error:NULL];
+        config = [[NSString alloc] initWithContentsOfFile:[bundle pathForResource:@"objc_default" ofType:@"bib"] encoding:NSASCIIStringEncoding error:NULL];
         if (nil == config) config = [@"" copy];
     }
     return config;

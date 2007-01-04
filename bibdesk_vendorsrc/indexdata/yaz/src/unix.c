@@ -40,8 +40,8 @@
 #include <sys/un.h>
 #endif
 
-#include "unix.h"
-#include "nmem.h"
+#include <yaz/unix.h>
+#include <yaz/nmem.h>
 
 #ifndef YAZ_SOCKLEN_T
 #define YAZ_SOCKLEN_T int

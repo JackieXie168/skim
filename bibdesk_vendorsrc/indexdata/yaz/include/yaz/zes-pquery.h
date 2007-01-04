@@ -7,7 +7,7 @@
 #ifndef zes_pquery_H
 #define zes_pquery_H
 
-#include "odr.h"
+#include <yaz/odr.h>
 #include <yaz/z-core.h>
 #ifdef __cplusplus
 extern "C" {

@@ -14,8 +14,8 @@
 #include <stdlib.h>
 #include <ctype.h>
 
-#include "proto.h"
-#include "marcdisp.h"
+#include <yaz/proto.h>
+#include <yaz/marcdisp.h>
 
 static void opac_element_str(WRBUF wrbuf, int l, const char *elem,
                              const char *data)

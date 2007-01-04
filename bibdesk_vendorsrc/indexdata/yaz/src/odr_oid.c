@@ -13,7 +13,7 @@
 #endif
 
 #include "odr-priv.h"
-#include "oid.h"
+#include <yaz/oid.h>
 
 /*
  * Top level oid en/decoder.

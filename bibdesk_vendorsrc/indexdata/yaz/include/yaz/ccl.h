@@ -89,10 +89,10 @@
 #ifndef CCL_H
 #define CCL_H
 
-#include "yconfig.h"
+#include <yaz/yconfig.h>
 #include <stdio.h>
-#include "xmalloc.h"
-#include "wrbuf.h"
+#include <yaz/xmalloc.h>
+#include <yaz/wrbuf.h>
 
 YAZ_BEGIN_CDECL
     

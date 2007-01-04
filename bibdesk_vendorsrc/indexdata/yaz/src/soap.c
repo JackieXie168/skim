@@ -12,7 +12,7 @@
  * Libxml2.
  */
 
-#include "soap.h"
+#include <yaz/soap.h>
 
 #if YAZ_HAVE_XML2
 #include <libxml/parser.h>

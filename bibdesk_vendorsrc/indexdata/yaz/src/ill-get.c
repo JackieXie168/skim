@@ -11,7 +11,7 @@
  */
 
 #include <stdlib.h>
-#include "ill.h"
+#include <yaz/ill.h>
 
 bool_t *ill_get_bool (struct ill_get_ctl *gc, const char *name,
                       const char *sub, int val)

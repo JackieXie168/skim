@@ -7,7 +7,7 @@
 #ifndef z_charneg_H
 #define z_charneg_H
 
-#include "odr.h"
+#include <yaz/odr.h>
 #include <yaz/z-exp.h>
 #ifdef __cplusplus
 extern "C" {

@@ -33,9 +33,9 @@
 #ifndef NMEM_XML_H
 #define NMEM_XML_H
 
-#include "nmem.h"
+#include <yaz/nmem.h>
 
-#include "xmltypes.h"
+#include <yaz/xmltypes.h>
 
 YAZ_BEGIN_CDECL
 

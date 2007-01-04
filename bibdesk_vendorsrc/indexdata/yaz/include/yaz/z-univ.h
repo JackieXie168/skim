@@ -7,7 +7,7 @@
 #ifndef z_univ_H
 #define z_univ_H
 
-#include "odr.h"
+#include <yaz/odr.h>
 #include <yaz/z-core.h>
 #ifdef __cplusplus
 extern "C" {

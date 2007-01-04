@@ -37,7 +37,7 @@
 #ifndef OID_H
 #define OID_H
 
-#include "yconfig.h"
+#include <yaz/yconfig.h>
 
 YAZ_BEGIN_CDECL
 

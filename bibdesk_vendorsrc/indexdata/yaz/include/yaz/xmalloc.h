@@ -36,7 +36,7 @@
 
 #include <stddef.h>
 
-#include "yconfig.h"
+#include <yaz/yconfig.h>
 
 YAZ_BEGIN_CDECL
 

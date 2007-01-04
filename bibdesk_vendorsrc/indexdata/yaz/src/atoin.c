@@ -16,7 +16,7 @@
 
 #include <string.h>
 #include <ctype.h>
-#include "marcdisp.h"
+#include <yaz/marcdisp.h>
 
 /**
  * atoi_n: like atoi but reads at most len characters.

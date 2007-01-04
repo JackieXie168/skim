@@ -11,13 +11,13 @@
 #ifndef SESSION_H
 #define SESSION_H
 
-#include "comstack.h"
-#include "cql.h"
-#include "odr.h"
-#include "oid.h"
-#include "proto.h"
-#include "backend.h"
-#include "retrieval.h"
+#include <yaz/comstack.h>
+#include <yaz/cql.h>
+#include <yaz/odr.h>
+#include <yaz/oid.h>
+#include <yaz/proto.h>
+#include <yaz/backend.h>
+#include <yaz/retrieval.h>
 #include "eventl.h"
 
 struct gfs_server {

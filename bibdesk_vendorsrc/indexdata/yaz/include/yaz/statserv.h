@@ -34,8 +34,8 @@
 #ifndef STATSERVER_H
 #define STATSERVER_H
 
-#include "yconfig.h"
-#include "backend.h"
+#include <yaz/yconfig.h>
+#include <yaz/backend.h>
 
 #endif
 /*

@@ -7,7 +7,7 @@
 #ifndef z_acckrb1_H
 #define z_acckrb1_H
 
-#include "odr.h"
+#include <yaz/odr.h>
 #include <yaz/z-core.h>
 #ifdef __cplusplus
 extern "C" {

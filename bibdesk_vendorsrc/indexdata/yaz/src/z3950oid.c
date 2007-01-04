@@ -13,7 +13,7 @@
 #include <config.h>
 #endif
 
-#include "proto.h"
+#include <yaz/proto.h>
 
 Odr_oid *yaz_oidval_to_z3950oid (ODR o, int oid_class, int oid_value)
 {

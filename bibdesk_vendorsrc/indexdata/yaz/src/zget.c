@@ -9,7 +9,7 @@
  * \brief Implements Z39.50 package creator utilities
  */
 
-#include "proto.h"
+#include <yaz/proto.h>
 
 Z_InitRequest *zget_InitRequest(ODR o)
 {

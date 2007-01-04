@@ -14,7 +14,7 @@
 
 #include <stdlib.h>
 
-#include "xmalloc.h"
+#include <yaz/xmalloc.h>
 #include "session.h"
 
 void request_enq(request_q *q, request *r)

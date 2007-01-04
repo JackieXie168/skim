@@ -15,7 +15,7 @@
 #include <ctype.h>
 
 #include <yaz/yaz-ccl.h>
-#include "pquery.h"
+#include <yaz/pquery.h>
 
 Z_RPNQuery *ccl_rpn_query (ODR o, struct ccl_rpn_node *p)
 {
