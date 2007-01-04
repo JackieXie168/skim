@@ -273,10 +273,14 @@
 
 - (void)setAllowDiacritics:(BOOL)flag;
 {
-    if (options)
-        [options setValue:[NSNumber numberWithBool:flag] forKey:@"allowDiacritics"];
-    else 
-        [self setOptions:[NSDictionary dictionaryWithObjectsAndKeys:[NSNumber numberWithBool:flag], @"allowDiacritics", nil]];
+    if (flag) {
+        if (options)
+            [options setValue:@"YES" forKey:@"allowDiacritics"];
+        else
+            [self setOptions:[NSDictionary dictionaryWithObjectsAndKeys:@"YES", @"allowDiacritics", nil]];
+    } else if (options) {
+        [options setValue:nil forKey:@"allowDiacritics"];
+    }
 }
 
 - (void)setOptions:(NSDictionary *)newOptions;
