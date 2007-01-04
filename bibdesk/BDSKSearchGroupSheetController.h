@@ -65,6 +65,7 @@
     IBOutlet NSButton *removeDiacriticsButton;
     
     IBOutlet NSButton *editButton;
+    IBOutlet NSButton *addRemoveButton;
     
     IBOutlet BDSKCollapsibleView *serverView;
     IBOutlet NSButton *revealButton;

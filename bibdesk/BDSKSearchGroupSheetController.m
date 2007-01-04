@@ -341,11 +341,15 @@ static NSDictionary *searchGroupServers = nil;
             [revealButton performClick:self];
         [self setCustom:YES];
         [self setEditable:YES];
+        [addRemoveButton setTitle:NSLocalizedString(@"Add", @"Button title")];
+        [addRemoveButton setToolTip:NSLocalizedString(@"Add a new default server with the current settings", @"Tool tip message")];
     } else {
         NSArray *servers = [[self class] serversForType:type];
         [self setServerInfo:[servers objectAtIndex:i]];
         [self setCustom:NO];
         [self setEditable:NO];
+        [addRemoveButton setTitle:NSLocalizedString(@"Remove", @"Button title")];
+        [addRemoveButton setToolTip:NSLocalizedString(@"Remove the selected default server", @"Tool tip message")];
     }
 }
 
