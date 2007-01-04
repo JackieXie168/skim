@@ -1,0 +1,30 @@
+{
+    IBClasses = (
+        {
+            ACTIONS = {
+                changeAddress = id; 
+                changeCharSet = id; 
+                changeDbase = id; 
+                changePort = id; 
+                changeSyntaxType = id; 
+                changeType = id; 
+                search = id; 
+            }; 
+            CLASS = Controller; 
+            LANGUAGE = ObjC; 
+            OUTLETS = {
+                "_addressField" = NSTextField; 
+                "_charSetPopup" = NSPopUpButton; 
+                "_dbaseField" = NSTextField; 
+                "_popup" = NSPopUpButton; 
+                "_portField" = NSTextField; 
+                "_searchField" = NSSearchField; 
+                "_syntaxPopup" = NSPopUpButton; 
+                "_textView" = NSTextView; 
+            }; 
+            SUPERCLASS = NSObject; 
+        }, 
+        {CLASS = FirstResponder; LANGUAGE = ObjC; SUPERCLASS = NSObject; }
+    ); 
+    IBVersion = 1; 
+}
