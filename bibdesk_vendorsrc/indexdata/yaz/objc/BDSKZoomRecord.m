@@ -165,6 +165,17 @@ static NSStringEncoding fallbackEncoding = kCFStringEncodingInvalidId;
     return [_representations objectForKey:rawKey];
 }
 
+- (NSData *)rawData;
+{
+    int length;
+    
+    // length will be -1 for some types, so we'll use strlen for those
+    const void *bytes = ZOOM_record_get(_record, "raw", &length);
+    if (-1 == length)
+        length = strlen((const char *)bytes);
+    return length && bytes ? [NSData dataWithBytes:bytes length:length] : nil;
+}
+
 // this doesn't use valueForKey:, since cacheRepresentationForKey: calls syntaxType
 - (BDSKZoomSyntaxType)syntaxType;
 {

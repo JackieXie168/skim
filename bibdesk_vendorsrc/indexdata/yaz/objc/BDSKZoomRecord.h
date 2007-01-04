@@ -61,6 +61,7 @@ typedef enum {
 
 - (NSString *)renderedString;
 - (NSString *)rawString;
+- (NSData *)rawData;
 - (BDSKZoomSyntaxType)syntaxType;
 
 @end
