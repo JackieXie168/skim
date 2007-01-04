@@ -203,7 +203,7 @@
     
     NSXMLDocument *document = nil;
     
-    if(NO != [NSString isEmptyString:[self searchTerm]]){
+    if(NO == [NSString isEmptyString:[self searchTerm]]){
         // get the initial XML document with our search parameters in it
         NSString *esearch = [[[self class] baseURLString] stringByAppendingFormat:@"/esearch.fcgi?db=%@&retmax=1&usehistory=y&term=%@&tool=bibdesk", [[self serverInfo] database], [[self searchTerm] stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding]];
         NSURL *initialURL = [NSURL URLWithString:esearch]; 
@@ -241,8 +241,11 @@
 
 - (void)fetch;
 {
-    if ([self webEnv] == nil || [self queryKey] == nil || [self numberOfAvailableResults] <= [self numberOfFetchedResults])
+    if ([self webEnv] == nil || [self queryKey] == nil || [self numberOfAvailableResults] <= [self numberOfFetchedResults]) {
+        isRetrieving = NO;
+        [group addPublications:[NSArray array]];
         return;
+    }
     
     int numResults = MIN([self numberOfAvailableResults] - [self numberOfFetchedResults], MAX_RESULTS);
     
