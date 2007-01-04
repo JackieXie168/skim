@@ -269,7 +269,7 @@ NSString *BDSKSearchGroupOAI = @"oai";
     [[NSNotificationCenter defaultCenter] postNotificationName:BDSKSearchGroupUpdatedNotification object:self userInfo:userInfo];
 }
 
-- (void)resetAndSearch;
+- (void)reset;
 {
     if ([self isRetrieving])
         [server stop];
@@ -277,8 +277,6 @@ NSString *BDSKSearchGroupOAI = @"oai";
     [server setNumberOfAvailableResults:0];
     [server setNumberOfFetchedResults:0];
     [self setPublications:[NSArray array]];
-    
-    [self search];
 }
 
 - (NSFormatter *)searchStringFormatter { return [server searchStringFormatter]; }
@@ -300,6 +298,7 @@ NSString *BDSKSearchGroupOAI = @"oai";
         [self resetServerWithInfo:info];
     } else
         [server setServerInfo:info];
+    [self reset];
 }
 
 - (void)setSearchTerm:(NSString *)aTerm;
@@ -310,7 +309,8 @@ NSString *BDSKSearchGroupOAI = @"oai";
         [searchTerm autorelease];
         searchTerm = [aTerm copy];
         
-        [self resetAndSearch];
+        [self reset];
+        [self search];
     }
 }
 
