@@ -60,8 +60,15 @@ typedef enum {
 - (id)initWithZoomRecord:(ZOOM_record)record charSet:(NSString *)charSetName;
 
 - (NSString *)renderedString;
+
+/* NOTE: the directory information for character counts in a MARC record 
+   will not be correct if you use -rawString.  It converts the octets to
+   a Unicode string, so e.g. [rawString length] != [rawData length]
+   unless the record is entirely ASCII.
+*/
 - (NSString *)rawString;
 - (NSData *)rawData;
+
 - (BDSKZoomSyntaxType)syntaxType;
 
 @end
