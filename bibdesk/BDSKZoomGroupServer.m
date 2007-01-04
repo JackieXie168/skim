@@ -60,13 +60,13 @@ static NSString *BDSKDCXMLString = @"DC XML";
     return [NSArray arrayWithObjects:BDSKUSMARCString, BDSKMARCXMLString, BDSKDCXMLString, nil];
 }
 
-+ (NSString *)zoomRecordSyntaxForRecordSyntax:(NSString *)syntax{
++ (BDSKZoomSyntaxType)zoomRecordSyntaxForRecordSyntaxString:(NSString *)syntax{
     if ([syntax isEqualToString:BDSKUSMARCString]) 
-        return [BDSKZoomRecord stringWithSyntaxType:USMARC];
+        return USMARC;
     else if ([syntax isEqualToString:BDSKMARCXMLString] || [syntax isEqualToString:BDSKDCXMLString]) 
-        return [BDSKZoomRecord stringWithSyntaxType:XML];
+        return XML;
     else
-        return [BDSKZoomRecord stringWithSyntaxType:UNKNOWN];
+        return UNKNOWN;
 }
 
 - (id)initWithGroup:(BDSKSearchGroup *)aGroup serverInfo:(BDSKServerInfo *)info;
@@ -187,9 +187,9 @@ static NSString *BDSKDCXMLString = @"DC XML";
     [connection release];
     if ([info host] != nil) {
         connection = [[BDSKZoomConnection alloc] initWithHost:[info host] port:[[info port] intValue] database:[info database]];
-        [connection setOption:[info password] forKey:@"password"];
-        [connection setOption:[info username] forKey:@"user"];
-        [connection setOption:[[self class] zoomRecordSyntaxForRecordSyntax:[info recordSyntax]] forKey:@"preferredRecordSyntax"];    
+        [connection setPassword:[info password]];
+        [connection setUsername:[info username]];
+        [connection setPreferredRecordSyntax:[[self class] zoomRecordSyntaxForRecordSyntaxString:[info recordSyntax]]];    
 
         [connection setResultEncodingToIANACharSetName:[info resultEncoding]];
         OSAtomicCompareAndSwap32Barrier(1, 0, (int32_t *)&flags.needsReset);
