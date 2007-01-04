@@ -1,0 +1,207 @@
+.\"     Title: yaz\-log
+.\"    Author: 
+.\" Generator: DocBook XSL Stylesheets v1.71.0 <http://docbook.sf.net/>
+.\"      Date: 12/17/2006
+.\"    Manual: 
+.\"    Source: YAZ 2.1.42
+.\"
+.TH "YAZ\-LOG" "7" "12/17/2006" "YAZ 2.1.42" ""
+.\" disable hyphenation
+.nh
+.\" disable justification (adjust text to left margin only)
+.ad l
+.SH "NAME"
+yaz\-log \- Log handling in all yaz\-based programs
+.SH "SYNOPSIS"
+.HP 9
+\fByaz\-XXXX\fR [\fB\-v\ \fR\fB\fIloglevel,...\fR\fR] [\fB\-l\ \fR\fB\fIlogfile\fR\fR]
+.SH "DESCRIPTION"
+.PP
+All YAZ\-based programs use a common log subsystem, and should support common command line options for controlling it. This man page documents those.
+.PP
+.SH "OPTIONS"
+.PP
+\-l\fI logfile\fR
+.RS 3n
+Specify the file where the log is to be written. If none is specified,
+\fIstderr\fR
+is used. The log is appended to this file. If the file grows overly large, it is silently rotated: It is renamed to
+\fIlogfile\fR.1,
+\fIlogfile\fR.2, .., 9 (old such file is deleted), and a new file is opened. The limit defaults to 1GB, but can be set by the program. The rotating limit can be specified with option
+\-r
+for the YAZ frontend server (yaz\-ztest).
+.sp
+Rotation can also be implicitly enabled by using a filename which gets changed for a given date, due to substitutions as given by the strftime(3) function.
+.RE
+.PP
+\-v\fI loglevel\fR
+.RS 3n
+Specify the logging level. The argument is a set of log level names, separated by commas (no whitespace!), optionally preceded by a '\-' to negate that level. Most programs have their own default, often containing
+fatal,warn,log, and some application\-specific values. The default list can be cleared with the word
+none, or individual bits can be removed by prefixing them with a dash '\-'.
+.RE
+.SH "LOG LEVELS TO CONTROL LOGGING"
+.PP
+Some of the log levels control the way the log is written.
+.PP
+
+flush
+causes the log to be flushed after every write. This can have serious implications to performance, and should not be used in production. On the other hand, when debugging a program crash, this can be extremely useful. The option
+debug
+implies
+flush
+as well.
+.PP
+
+notime
+prevents the writing of time stamps. This is intended for automatic test scripts, which should produce predictable log files that are easy to compare.
+.SH "GENERAL LOG LEVELS IN YAZ ITSELF"
+.PP
+YAZ itself uses the following log levels:
+.PP
+
+fatal
+for fatal errors, that prevent further execution of the program.
+.PP
+
+warn
+for warnings about things that should be corrected.
+.PP
+
+debug
+for debugging. This flag may be used temporarily when developing or debugging yaz, or a program that uses yaz. It is practically deprecated, you should be defining and using your own log levels (see below).
+.PP
+
+all
+turns on almost all hard\-coded log levels.
+.PP
+
+loglevel
+logs information about the log levels used by the program. Every time the log level is changed, lists all bits that are on. Every time a module asks for its log bits, this is logged. This can be used for getting an idea of what log levels are available in any program that uses yaz\-log. Start the program with
+\-v none,loglevel, and do some common operations with it. Another way is to grep for
+\fByaz_log_module_level\fR
+in the source code, as in
+.sp
+.RS 3n
+.nf
+      find . \-name '*.[ch]' \-print | 
+         xargs grep yaz_log_module_level | 
+         grep '"' |
+         cut \-d'"' \-f2 | 
+         sort \-u   
+   
+.fi
+.RE
+.sp
+.PP
+
+eventl,
+malloc,
+nmem,
+odr
+are used internally for debugging yaz.
+.PP
+.SH "LOG LEVELS FOR CLIENTS"
+.PP
+
+zoom
+logs the calls to the zoom API, which may be useful in debugging client applications.
+.SH "LOG LEVELS FOR SERVERS"
+.PP
+
+server
+logs the server functions on a high level, starting up, listening on a port, etc.
+.PP
+
+session
+logs individual sessions (connections).
+.PP
+
+request
+logs a one\-liner for each request (init, search, etc).
+.PP
+
+requestdetail
+logs the details of every request, before it is passed to the back\-end, and the results received from it.
+.PP
+Each server program (zebra, etc) is supposed to define its own log levels in addition to these. As they depend on the server in question, they can not be described here. See above how to find out about them.
+.SH "LOGGING EXAMPLES"
+.PP
+See what log levels yaz\-ztest is using:
+.sp
+.RS 3n
+.nf
+    yaz\-ztest \-1 \-v none,loglevel
+    14:43:29\-23/11 [loglevel] Setting log level to 4096 = 0x00001000
+    14:43:29\-23/11 [loglevel] Static  log bit 00000001 'fatal' is off
+    14:43:29\-23/11 [loglevel] Static  log bit 00000002 'debug' is off
+    14:43:29\-23/11 [loglevel] Static  log bit 00000004 'warn' is off
+    14:43:29\-23/11 [loglevel] Static  log bit 00000008 'log' is off
+    14:43:29\-23/11 [loglevel] Static  log bit 00000080 'malloc' is off
+    14:43:29\-23/11 [loglevel] Static  log bit 00000800 'flush' is off
+    14:43:29\-23/11 [loglevel] Static  log bit 00001000 'loglevel' is ON
+    14:43:29\-23/11 [loglevel] Static  log bit 00002000 'server' is off
+    14:43:29\-23/11 [loglevel] Dynamic log bit 00004000 'session' is off
+    14:43:29\-23/11 [loglevel] Dynamic log bit 00008000 'request' is off
+    14:44:13\-23/11 yaz\-ztest [loglevel] returning log bit 0x4000 for 'session'
+    14:44:13\-23/11 yaz\-ztest [loglevel] returning log bit 0x2000 for 'server'
+    14:44:13\-23/11 yaz\-ztest [loglevel] returning NO log bit for 'eventl'
+    14:44:20\-23/11 yaz\-ztest [loglevel] returning log bit 0x4000 for 'session'
+    14:44:20\-23/11 yaz\-ztest [loglevel] returning log bit 0x8000 for 'request'
+    14:44:20\-23/11 yaz\-ztest [loglevel] returning NO log bit for 'requestdetail'
+    14:44:20\-23/11 yaz\-ztest [loglevel] returning NO log bit for 'odr'
+    14:44:20\-23/11 yaz\-ztest [loglevel] returning NO log bit for 'ztest'
+   
+.fi
+.RE
+.sp
+.PP
+See the details of the requests for yaz\-ztest
+.sp
+.RS 3n
+.nf
+   ./yaz\-ztest \-1 \-v requestdetail
+   14:45:35\-23/11 yaz\-ztest [server] Adding static Z3950 listener on tcp:@:9999
+   14:45:35\-23/11 yaz\-ztest [server] Starting server ./yaz\-ztest pid=32200
+   14:45:38\-23/11 yaz\-ztest [session] Starting session from tcp:127.0.0.1 (pid=32200)
+   14:45:38\-23/11 yaz\-ztest [requestdetail] Got initRequest
+   14:45:38\-23/11 yaz\-ztest [requestdetail] Id:        81
+   14:45:38\-23/11 yaz\-ztest [requestdetail] Name:      YAZ
+   14:45:38\-23/11 yaz\-ztest [requestdetail] Version:   2.0.28
+   14:45:38\-23/11 yaz\-ztest [requestdetail] Negotiated to v3: srch prst del extendedServices namedresults scan sort
+   14:45:38\-23/11 yaz\-ztest [request] Init from 'YAZ' (81) (ver 2.0.28) OK
+   14:45:39\-23/11 yaz\-ztest [requestdetail] Got SearchRequest.
+   14:45:39\-23/11 yaz\-ztest [requestdetail] ResultSet '1'
+   14:45:39\-23/11 yaz\-ztest [requestdetail] Database 'Default'
+   14:45:39\-23/11 yaz\-ztest [requestdetail] RPN query. Type: Bib\-1
+   14:45:39\-23/11 yaz\-ztest [requestdetail]  term 'foo' (general)
+   14:45:39\-23/11 yaz\-ztest [requestdetail] resultCount: 7
+   14:45:39\-23/11 yaz\-ztest [request] Search Z: @attrset Bib\-1 foo  OK:7 hits
+   14:45:41\-23/11 yaz\-ztest [requestdetail] Got PresentRequest.
+   14:45:41\-23/11 yaz\-ztest [requestdetail] Request to pack 1+1 1
+   14:45:41\-23/11 yaz\-ztest [requestdetail] pms=1048576, mrs=1048576
+   14:45:41\-23/11 yaz\-ztest [request] Present: [1] 1+1  OK 1 records returned
+   
+.fi
+.RE
+.sp
+.SH "LOG FILENAME EXAMPLES"
+.PP
+A file with format my_YYYYMMDD.log is where Y, M, D is year, month, and day digits is given as follows
+\-l my_%Y%m%d.log
+. And since the filename is depending on day, rotaion will occur on midnight.
+.PP
+A weekly log could be specified as
+\-l my_%Y%U.log.
+.SH "FILES"
+.PP
+
+\fI\fIprefix\fR\fR\fI/include/yaz/log.h\fR
+\fI\fIprefix\fR\fR\fI/src/log.c\fR
+.SH "SEE ALSO"
+.PP
+
+\fByaz\fR(7)
+\fByaz\-ztest\fR(8)
+\fByaz\-client\fR(1)
+\fBstrftime\fR(3)

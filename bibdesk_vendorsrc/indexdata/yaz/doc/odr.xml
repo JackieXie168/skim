@@ -1,0 +1,1312 @@
+<!-- $Id: odr.xml,v 1.19 2006/10/05 08:26:58 adam Exp $ -->
+ <chapter id="odr"><title>The ODR Module</title>
+  
+  <sect1 id="odr.introduction"><title>Introduction</title>
+
+   <para>
+     &odr; is the BER-encoding/decoding subsystem of &yaz;. Care as been taken
+    to isolate &odr; from the rest of the package - specifically from the
+    transport interface. &odr; may be used in any context where basic
+    ASN.1/BER representations are used.
+   </para>
+
+   <para>
+    If you are only interested in writing a Z39.50 implementation based on
+    the PDUs that are already provided with &yaz;, you only need to concern
+    yourself with the section on managing ODR streams
+    (<xref linkend="odr.use"/>). Only if you need to
+    implement ASN.1 beyond that which has been provided, should you
+    worry about the second half of the documentation
+    (<xref linkend="odr.programming"/>).
+    If you use one of the higher-level interfaces, you can skip this
+    section entirely.
+   </para>
+
+   <para>
+    This is important, so we'll repeat it for emphasis: <emphasis>You do
+     not need to read <xref linkend="odr.programming"/>
+     to implement Z39.50 with &yaz;.</emphasis>
+   </para>
+
+   <para>
+    If you need a part of the protocol that isn't already in &yaz;, you
+    should contact the authors before going to work on it yourself: We
+    might already be working on it. Conversely, if you implement a useful
+    part of the protocol before us, we'd be happy to include it in a
+    future release.
+   </para>
+
+  </sect1>
+  <sect1 id="odr.use"><title>Using ODR</title>
+
+   <sect2 id="odr.streams"><title>ODR Streams</title>
+
+    <para>
+     Conceptually, the ODR stream is the source of encoded data in the
+     decoding mode; when encoding, it is the receptacle for the encoded
+     data. Before you can use an ODR stream it must be allocated. This is
+     done with the function
+    </para>
+
+    <synopsis>
+     ODR odr_createmem(int direction);
+    </synopsis>
+
+    <para>
+     The <function>odr_createmem()</function> function takes as argument one
+     of three manifest constants: <literal>ODR_ENCODE</literal>,
+     <literal>ODR_DECODE</literal>, or <literal>ODR_PRINT</literal>.
+     An &odr; stream can be in only one mode - it is not possible to change
+     its mode once it's selected. Typically, your program will allocate
+     at least two ODR streams - one for decoding, and one for encoding.
+    </para>
+
+    <para>
+     When you're done with the stream, you can use
+    </para>
+
+    <synopsis>
+     void odr_destroy(ODR o);
+    </synopsis>
+
+    <para>
+     to release the resources allocated for the stream.
+    </para>
+   </sect2>
+
+   <sect2 id="odr.memory.management"><title id="memory">Memory Management</title>
+
+    <para>
+     Two forms of memory management take place in the &odr; system. The first
+     one, which has to do with allocating little bits of memory (sometimes
+     quite large bits of memory, actually) when a protocol package is
+     decoded, and turned into a complex of interlinked structures. This
+     section deals with this system, and how you can use it for your own
+     purposes. The next section deals with the memory management which is
+     required when encoding data - to make sure that a large enough buffer is
+     available to hold the fully encoded PDU.
+    </para>
+
+    <para>
+     The &odr; module has its own memory management system, which is
+     used whenever memory is required. Specifically, it is used to allocate
+     space for data when decoding incoming PDUs. You can use the memory
+     system for your own purposes, by using the function
+    </para>
+
+    <synopsis>
+     void *odr_malloc(ODR o, int size);
+    </synopsis>
+
+    <para>
+     You can't use the normal <function>free(2)</function> routine to free
+     memory allocated by this function, and &odr; doesn't provide a parallel
+     function. Instead, you can call
+    </para>
+
+    <synopsis>
+     void odr_reset(ODR o, int size);
+    </synopsis>
+
+    <para>
+     when you are done with the
+     memory: Everything allocated since the last call to
+     <function>odr_reset()</function> is released.
+     The <function>odr_reset()</function> call is also required to clear
+     up an error condition on a stream.
+    </para>
+
+    <para>
+     The function
+    </para>
+
+    <synopsis>
+     int odr_total(ODR o);
+    </synopsis>
+
+    <para>
+     returns the number of bytes allocated on the stream since the last call to
+     <function>odr_reset()</function>.
+    </para>
+
+    <para>
+     The memory subsystem of &odr; is fairly efficient at allocating and
+     releasing little bits of memory. Rather than managing the individual,
+     small bits of space, the system maintains a free-list of larger chunks
+     of memory, which are handed out in small bits. This scheme is
+     generally known as a <emphasis>nibble memory</emphasis> system.
+     It is very useful for maintaining short-lived constructions such
+     as protocol PDUs.
+    </para>
+
+    <para>
+     If you want to retain a bit of memory beyond the next call to
+     <function>odr_reset()</function>, you can use the function
+    </para>
+
+    <synopsis>
+     ODR_MEM odr_extract_mem(ODR o);
+    </synopsis>
+
+    <para>
+     This function will give you control of the memory recently allocated
+     on the ODR stream. The memory will live (past calls to
+     <function>odr_reset()</function>), until you call the function
+    </para>
+
+    <synopsis>
+     void odr_release_mem(ODR_MEM p);
+    </synopsis>
+
+    <para>
+     The opaque <literal>ODR_MEM</literal> handle has no other purpose than
+     referencing the memory block for you until you want to release it.
+    </para>
+
+    <para>
+     You can use <function>odr_extract_mem()</function> repeatedly between
+     allocating data, to retain individual control of separate chunks of data.
+    </para>
+
+   </sect2>
+   <sect2 id="odr.encoding.and.decoding"><title>Encoding and Decoding Data</title>
+
+    <para>
+     When encoding data, the ODR stream will write the encoded octet string
+     in an internal buffer. To retrieve the data, use the function
+    </para>
+
+    <synopsis>
+     char *odr_getbuf(ODR o, int *len, int *size);
+    </synopsis>
+
+    <para>
+     The integer pointed to by len is set to the length of the encoded
+     data, and a pointer to that data is returned. <literal>*size</literal>
+     is set to the size of the buffer (unless <literal>size</literal> is null,
+     signaling that you are not interested in the size). The next call to
+     a primitive function using the same &odr; stream will overwrite the
+     data, unless a different buffer has been supplied using the call
+    </para>
+
+    <synopsis>
+     void odr_setbuf(ODR o, char *buf, int len, int can_grow);
+    </synopsis>
+
+    <para>
+     which sets the encoding (or decoding) buffer used by
+     <literal>o</literal> to <literal>buf</literal>, using the length
+     <literal>len</literal>.
+     Before a call to an encoding function, you can use
+     <function>odr_setbuf()</function> to provide the stream with an encoding
+     buffer of sufficient size (length). The <literal>can_grow</literal>
+     parameter tells the encoding &odr; stream whether it is allowed to use
+     <function>realloc(2)</function> to increase the size of the buffer when
+     necessary. The default condition of a new encoding stream is equivalent
+     to the results of calling
+    </para>
+
+    <synopsis>
+     odr_setbuf(stream, 0, 0, 1);
+    </synopsis>
+
+    <para>
+     In this case, the stream will allocate and reallocate memory as
+     necessary. The stream reallocates memory by repeatedly doubling the
+     size of the buffer - the result is that the buffer will typically
+     reach its maximum, working size with only a small number of reallocation
+     operations. The memory is freed by the stream when the latter is destroyed,
+     unless it was assigned by the user with the <literal>can_grow</literal>
+     parameter set to zero (in this case, you are expected to retain
+     control of the memory yourself).
+    </para>
+
+    <para>
+     To assume full control of an encoded buffer, you must first call
+     <function>odr_getbuf()</function> to fetch the buffer and its length.
+     Next, you should call <function>odr_setbuf()</function> to provide a
+     different buffer (or a null pointer) to the stream. In the simplest
+     case, you will reuse the same buffer over and over again, and you
+     will just need to call <function>odr_getbuf()</function> after each
+     encoding operation to get the length and address of the buffer.
+     Note that the stream may reallocate the buffer during an encoding
+     operation, so it is necessary to retrieve the correct address after
+     each encoding operation.
+    </para>
+
+    <para>
+     It is important to realize that the ODR stream will not release this
+     memory when you call <function>odr_reset()</function>: It will
+     merely update its internal pointers to prepare for the encoding of a
+     new data value.
+     When the stream is released by the <function>odr_destroy()</function>
+     function, the memory given to it by <function>odr_setbuf</function> will
+     be released <emphasis>only</emphasis> if the <literal>can_grow</literal>
+     parameter to <function>odr_setbuf()</function> was nonzero. The
+     <literal>can_grow</literal> parameter, in other words, is a way of
+     signaling who is to own the buffer, you or the ODR stream. If you never call
+     <function>odr_setbuf()</function> on your encoding stream, which is
+     typically the case, the buffer allocated by the stream will belong to
+     the stream by default.
+    </para>
+
+    <para>
+     When you wish to decode data, you should first call
+     <function>odr_setbuf()</function>, to tell the decoding stream
+     where to find the encoded data, and how long the buffer is
+     (the <literal>can_grow</literal> parameter is ignored by a decoding
+     stream). After this, you can call the function corresponding to the
+     data you wish to decode (eg, <function>odr_integer()</function> odr
+     <function>z_APDU()</function>).
+    </para>
+    
+    <example id="example.odr.encoding.and.decoding.functions">
+     <title>Encoding and decoding functions</title>
+     <synopsis>
+      int odr_integer(ODR o, int **p, int optional, const char *name);
+      
+      int z_APDU(ODR o, Z_APDU **p, int optional, const char *name);
+     </synopsis>
+    </example>
+
+    <para>
+     If the data is absent (or doesn't match the tag corresponding to
+     the type), the return value will be either 0 or 1 depending on the
+     <literal>optional</literal> flag. If <literal>optional</literal>
+     is 0 and the data is absent, an error flag will be raised in the
+     stream, and you'll need to call <function>odr_reset()</function> before
+     you can use the stream again. If <literal>optional</literal> is
+     nonzero, the pointer <emphasis>pointed</emphasis> to/ by
+     <literal>p</literal> will be set to the null value, and the function
+     will return 1.
+     The <literal>name</literal> argument is used to pretty-print the
+     tag in question. It may be set to <literal>NULL</literal> if
+     pretty-printing is not desired.
+    </para>
+
+    <para>
+     If the data value is found where it's expected, the pointer
+     <emphasis>pointed to</emphasis> by the <literal>p</literal> argument
+     will be set to point to the decoded type.
+     The space for the type will be allocated and owned by the &odr;
+     stream, and it will live until you call
+     <function>odr_reset()</function> on the stream. You cannot use
+     <function>free(2)</function> to release the memory.
+     You can decode several data elements (by repeated calls to
+     <function>odr_setbuf()</function> and your decoding function), and
+     new memory will be allocated each time. When you do call 
+     <function>odr_reset()</function>, everything decoded since the
+     last call to <function>odr_reset()</function> will be released.
+    </para>
+
+    <example id="example.odr.encoding.of.integer">
+     <title>Encoding and decoding of an integer</title>
+     <para>
+      The use of the double indirection can be a little confusing at first
+      (its purpose will become clear later on, hopefully),
+      so an example is in order. We'll encode an integer value, and
+      immediately decode it again using a different stream. A useless, but
+      informative operation.
+     </para>
+     <programlisting><![CDATA[
+void do_nothing_useful(int value)
+{
+    ODR encode, decode;
+    int *valp, *resvalp;
+    char *bufferp;
+    int len;
+     
+    /* allocate streams */
+    if (!(encode = odr_createmem(ODR_ENCODE)))
+        return;
+    if (!(decode = odr_createmem(ODR_DECODE)))
+        return;
+
+    valp = &amp;value;
+    if (odr_integer(encode, &amp;valp, 0, 0) == 0)
+    {
+        printf("encoding went bad\n");
+        return;
+    }
+    bufferp = odr_getbuf(encode, &amp;len);
+    printf("length of encoded data is &percnt;d\n", len);
+
+    /* now let's decode the thing again */
+    odr_setbuf(decode, bufferp, len);
+    if (odr_integer(decode, &amp;resvalp, 0, 0) == 0)
+    {
+        printf("decoding went bad\n");
+        return;
+    }
+    printf("the value is &percnt;d\n", *resvalp);
+
+    /* clean up */
+    odr_destroy(encode);
+    odr_destroy(decode);
+}
+]]>
+     </programlisting>
+     <para>
+      This looks like a lot of work, offhand. In practice, the &odr; streams
+      will typically be allocated once, in the beginning of your program
+      (or at the beginning of a new network session), and the encoding
+      and decoding will only take place in a few, isolated places in your
+      program, so the overhead is quite manageable.
+     </para>
+    </example>
+    
+   </sect2>
+
+   <sect2 id="odr.printing"><title>Printing</title>
+    <para>
+     When an ODR stream is created of type <literal>ODR_PRINT</literal>
+     the ODR module will print the contents of a PDU in a readable format.
+     By default output is written to the <literal>stderr</literal> stream.
+     This behavior can be changed, however, by calling the function
+     <synopsis>
+      odr_setprint(ODR o, FILE *file);
+     </synopsis>
+     before encoders or decoders are being invoked.
+     It is also possible to direct the output to a buffer (of indeed
+     another file), by using the more generic mechanism:
+     <synopsis>
+      void odr_set_stream(ODR o, void *handle,
+                         void (*stream_write)(ODR o, void *handle, int type,
+                                              const char *buf, int len),
+                         void (*stream_close)(void *handle));
+     </synopsis>
+     Here the user provides an opaque handle and two handlers,
+     <replaceable>stream_write</replaceable> for writing,
+     and <replaceable>stream_close</replaceable> which is supposed
+     to close/free resources associated with handle. 
+     The <replaceable>stream_close</replaceable> handler is optional and
+     if NULL for the function is provided, it will not be invoked.
+     The <replaceable>stream_write</replaceable> takes the ODR handle
+     as parameter, the user defined handle, a type 
+     <literal>ODR_OCTETSTRING</literal>, <literal>ODR_VISIBLESTRING</literal>
+     which indicates the type of contents is being written.
+    </para>
+    <para>
+     Another utility useful for diagnostics (error handling) or as
+     part of the printing facilities is:
+     <synopsis>
+      const char **odr_get_element_path(ODR o);
+     </synopsis>
+     which returns a list of current elements that ODR deals with at the 
+     moment. For the returned array, say <literal>ar</literal>, 
+     <literal>ar[0]</literal> is the top level element,
+     <literal>ar[n]</literal> is the last. The last element has the
+     property that <literal>ar[n+1] == NULL</literal>.
+    </para>
+    <example id="example.odr.element.path.record">
+     <title>Element Path for record</title>
+     <para>
+      For a database record part of a PresentResponse the
+      array returned by <function>odr_get_element</function>
+      is <literal>presentResponse</literal>, <literal>databaseOrSurDiagnostics</literal>, <literal>?</literal>, <literal>record</literal>, <literal>?</literal>, <literal>databaseRecord</literal> . The question mark appears due to 
+      unnamed constructions.
+     </para>
+     </example>
+   </sect2>
+   <sect2 id="odr.diagnostics"><title>Diagnostics</title>
+
+    <para>
+     The encoding/decoding functions all return 0 when an error occurs.
+     Until you call <function>odr_reset()</function>, you cannot use the
+     stream again, and any function called will immediately return 0.
+    </para>
+
+    <para>
+     To provide information to the programmer or administrator, the function
+    </para>
+
+    <synopsis>
+     void odr_perror(ODR o, char *message);
+    </synopsis>
+
+    <para>
+     is provided, which prints the <literal>message</literal> argument to
+     <literal>stderr</literal> along with an error message from the stream.
+    </para>
+
+    <para>
+     You can also use the function
+    </para>
+
+    <synopsis>
+     int odr_geterror(ODR o);
+    </synopsis>
+
+    <para>
+     to get the current error number from the screen. The number will be
+     one of these constants:
+    </para>
+
+    <table frame="top" id="odr.error.codes">
+     <title>ODR Error codes</title>
+     <tgroup cols="2">
+      <thead>
+       <row>
+	<entry>code</entry>
+	<entry>Description</entry>
+       </row>
+      </thead>
+      <tbody>
+       <row>
+	<entry>OMEMORY</entry><entry>Memory allocation failed.</entry>
+       </row>
+
+       <row>
+	<entry>OSYSERR</entry><entry>A system- or library call has failed.
+	 The standard diagnostic variable <literal>errno</literal> should be
+	 examined to determine the actual error.</entry>
+       </row>
+
+       <row>
+	<entry>OSPACE</entry><entry>No more space for encoding.
+	 This will only occur when the user has explicitly provided a
+	 buffer for an encoding stream without allowing the system to
+	 allocate more space.</entry>
+       </row>
+
+       <row>
+	<entry>OREQUIRED</entry><entry>This is a common protocol error; A
+	 required data element was missing during encoding or decoding.</entry>
+       </row>
+
+       <row>
+	<entry>OUNEXPECTED</entry><entry>An unexpected data element was
+	 found during decoding.</entry>
+       </row>
+
+       <row><entry>OOTHER</entry><entry>Other error. This is typically an
+	 indication of misuse of the &odr; system by the programmer, and also
+	 that the diagnostic system isn't as good as it should be, yet.</entry>
+       </row>
+      </tbody>
+     </tgroup>
+    </table>
+
+    <para>
+     The character string array
+    </para>
+
+    <synopsis>
+     char *odr_errlist&lsqb;&rsqb;
+    </synopsis>
+
+    <para>
+     can be indexed by the error code to obtain a human-readable
+     representation of the problem.
+    </para>
+
+   </sect2>
+   <sect2 id="odr.summary.and.synopsis">
+    <title>Summary and Synopsis</title>
+
+    <synopsis>
+     #include &lt;odr.h>
+
+     ODR odr_createmem(int direction);
+
+     void odr_destroy(ODR o);
+
+     void odr_reset(ODR o);
+
+     char *odr_getbuf(ODR o, int *len);
+
+     void odr_setbuf(ODR o, char *buf, int len);
+
+     void *odr_malloc(ODR o, int size);
+
+     ODR_MEM odr_extract_mem(ODR o);
+
+     void odr_release_mem(ODR_MEM r);
+
+     int odr_geterror(ODR o);
+
+     void odr_perror(char *message);
+
+     extern char *odr_errlist[];
+    </synopsis>
+
+   </sect2>
+  </sect1>
+
+  <sect1 id="odr.programming"><title>Programming with ODR</title>
+
+   <para>
+    The API of &odr; is designed to reflect the structure of ASN.1, rather
+    than BER itself. Future releases may be able to represent data in
+    other external forms.
+   </para>
+
+   <tip>
+    <para>
+     There is an ASN.1 tutorial available at
+     <ulink url="&url.asn.1.tutorial;">this site</ulink>.
+     This site also has standards for ASN.1 (X.680) and BER (X.690) 
+     <ulink url="&url.asn.1.standards;">online</ulink>.
+    </para>
+   </tip>
+   
+   <para>
+    The ODR interface is based loosely on that of the Sun Microsystems
+    XDR routines.
+    Specifically, each function which corresponds to an ASN.1 primitive
+    type has a dual function. Depending on the settings of the ODR
+    stream which is supplied as a parameter, the function may be used
+    either to encode or decode data. The functions that can be built
+    using these primitive functions, to represent more complex data types,
+    share this quality. The result is that you only have to enter the
+    definition for a type once - and you have the functionality of encoding,
+    decoding (and pretty-printing) all in one unit.
+    The resulting C source code is quite compact, and is a pretty
+    straightforward representation of the source ASN.1 specification. 
+   </para>
+   
+   <para>
+    In many cases, the model of the XDR functions works quite well in this
+    role.
+    In others, it is less elegant. Most of the hassle comes from the optional
+    SEQUENCE members which don't exist in XDR.
+   </para>
+
+   <sect2 id="odr.primitive.asn1.types">
+    <title>The Primitive ASN.1 Types</title>
+
+    <para>
+     ASN.1 defines a number of primitive types (many of which correspond
+     roughly to primitive types in structured programming languages, such as C).
+    </para>
+
+    <sect3 id="odr.integer"><title>INTEGER</title>
+
+     <para>
+      The &odr; function for encoding or decoding (or printing) the ASN.1
+      INTEGER type looks like this:
+     </para>
+
+     <synopsis>
+      int odr_integer(ODR o, int **p, int optional, const char *name);
+     </synopsis>
+
+     <para>
+      (we don't allow values that can't be contained in a C integer.)
+     </para>
+     
+     <para>
+      This form is typical of the primitive &odr; functions. They are named
+      after the type of data that they encode or decode. They take an &odr;
+      stream, an indirect reference to the type in question, and an
+      <literal>optional</literal> flag (corresponding to the OPTIONAL keyword
+      of ASN.1) as parameters. They all return an integer value of either one
+      or zero.
+      When you use the primitive functions to construct encoders for complex
+      types of your own, you should follow this model as well. This
+      ensures that your new types can be reused as elements in yet more
+      complex types.
+     </para>
+
+     <para>
+      The <literal>o</literal> parameter should obviously refer to a properly
+      initialized &odr; stream of the right type (encoding/decoding/printing)
+      for the operation that you wish to perform.
+     </para>
+
+     <para>
+      When encoding or printing, the function first looks at
+      <literal>* p</literal>. If <literal>* p</literal> (the pointer pointed
+      to by <literal>p</literal>) is a null pointer, this is taken to mean that
+      the data element is absent. If the <literal>optional</literal> parameter
+      is nonzero, the function will return one (signifying success) without
+      any further processing. If the <literal>optional</literal> is zero, an
+      internal error flag is set in the &odr; stream, and the function will
+      return 0. No further operations can be carried out on the stream without
+      a call to the function <function>odr_reset()</function>.
+     </para>
+
+     <para>
+      If <literal>*p</literal> is not a null pointer, it is expected to
+      point to an instance of the data type. The data will be subjected to
+      the encoding rules, and the result will be placed in the buffer held
+      by the &odr; stream.
+     </para>
+
+     <para>
+      The other ASN.1 primitives have similar functions that operate in
+      similar manners:
+     </para>
+    </sect3>
+    <sect3 id="odr.boolean"><title>BOOLEAN</title>
+
+     <synopsis>
+int odr_bool(ODR o, bool_t **p, int optional, const char *name);
+     </synopsis>
+
+    </sect3>
+    <sect3 id="odr.real"><title>REAL</title>
+
+     <para>
+      Not defined.
+     </para>
+
+    </sect3>
+    <sect3 id="odr.null"><title>NULL</title>
+
+     <synopsis>
+int odr_null(ODR o, bool_t **p, int optional, const char *name);
+     </synopsis>
+
+     <para>
+      In this case, the value of **p is not important. If <literal>*p</literal>
+      is different from the null pointer, the null value is present, otherwise
+      it's absent.
+     </para>
+
+    </sect3>
+    <sect3 id="odr.octet.string"><title>OCTET STRING</title>
+
+     <synopsis>
+typedef struct odr_oct
+{
+    unsigned char *buf;
+    int len;
+    int size;
+} Odr_oct;
+
+int odr_octetstring(ODR o, Odr_oct **p, int optional,
+                    const char *name);
+     </synopsis>
+
+     <para>
+      The <literal>buf</literal> field should point to the character array
+      that holds the octetstring. The <literal>len</literal> field holds the
+      actual length, while the <literal>size</literal> field gives the size
+      of the allocated array (not of interest to you, in most cases).
+      The character array need not be null terminated.
+     </para>
+
+     <para>
+      To make things a little easier, an alternative is given for string
+      types that are not expected to contain embedded NULL characters (eg.
+      VisibleString):
+     </para>
+
+     <synopsis>
+      int odr_cstring(ODR o, char **p, int optional, const char *name);
+     </synopsis>
+
+     <para>
+      Which encoded or decodes between OCTETSTRING representations and
+      null-terminates C strings.
+     </para>
+
+     <para>
+      Functions are provided for the derived string types, eg:
+     </para>
+
+     <synopsis>
+int odr_visiblestring(ODR o, char **p, int optional,
+                      const char *name);
+     </synopsis>
+
+    </sect3>
+    <sect3 id="odr.bit.string"><title>BIT STRING</title>
+
+     <synopsis>
+int odr_bitstring(ODR o, Odr_bitmask **p, int optional,
+                  const char *name);
+     </synopsis>
+
+     <para>
+      The opaque type <literal>Odr_bitmask</literal> is only suitable for
+      holding relatively brief bit strings, eg. for options fields, etc.
+      The constant <literal>ODR_BITMASK_SIZE</literal> multiplied by 8
+      gives the maximum possible number of bits.
+     </para>
+
+     <para>
+      A set of macros are provided for manipulating the
+      <literal>Odr_bitmask</literal> type:
+     </para>
+
+     <synopsis>
+void ODR_MASK_ZERO(Odr_bitmask *b);
+
+void ODR_MASK_SET(Odr_bitmask *b, int bitno);
+
+void ODR_MASK_CLEAR(Odr_bitmask *b, int bitno);
+
+int ODR_MASK_GET(Odr_bitmask *b, int bitno);
+     </synopsis>
+
+     <para>
+      The functions are modeled after the manipulation functions that
+      accompany the <literal>fd_set</literal> type used by the
+      <function>select(2)</function> call.
+      <literal>ODR_MASK_ZERO</literal> should always be called first on a
+      new bitmask, to initialize the bits to zero.
+     </para>
+    </sect3>
+
+    <sect3 id="odr.object.identifier"><title>OBJECT IDENTIFIER</title>
+
+     <synopsis>
+int odr_oid(ODR o, Odr_oid **p, int optional, const char *name);
+     </synopsis>
+
+     <para>
+      The C OID representation is simply an array of integers, terminated by
+      the value -1 (the <literal>Odr_oid</literal> type is synonymous with
+      the <literal>int</literal> type).
+      We suggest that you use the OID database module (see
+      <xref linkend="asn.oid"/>) to handle object identifiers
+      in your application.
+     </para>
+
+    </sect3>
+   </sect2>
+   <sect2 id="odr.tagging.primitive.types"><title>Tagging Primitive Types</title> <!-- tag.prim -->
+
+    <para>
+     The simplest way of tagging a type is to use the
+     <function>odr_implicit_tag()</function> or 
+     <function>odr_explicit_tag()</function> macros:
+    </para>
+
+    <synopsis>
+int odr_implicit_tag(ODR o, Odr_fun fun, int class, int tag,
+                     int optional, const char *name);
+
+int odr_explicit_tag(ODR o, Odr_fun fun, int class, int tag,
+                     int optional, const char *name);
+    </synopsis>
+
+    <para>
+     To create a type derived from the integer type by implicit tagging, you
+     might write:
+    </para>
+
+    <screen>
+     MyInt ::= &lsqb;210&rsqb; IMPLICIT INTEGER
+    </screen>
+
+    <para>
+     In the &odr; system, this would be written like:
+    </para>
+
+    <screen>
+int myInt(ODR o, int **p, int optional, const char *name)
+{
+    return odr_implicit_tag(o, odr_integer, p,
+			    ODR_CONTEXT, 210, optional, name);
+}
+    </screen>
+
+    <para>
+     The function <function>myInt()</function> can then be used like any of
+     the primitive functions provided by &odr;. Note that the behavior of
+     <function>odr_explicit_tag()</function>
+     and <function>odr_implicit_tag()</function> macros
+     act exactly the same as the functions they are applied to - they
+     respond to error conditions, etc, in the same manner - they
+     simply have three extra parameters. The class parameter may
+     take one of the values: <literal>ODR_CONTEXT</literal>,
+     <literal>ODR_PRIVATE</literal>, <literal>ODR_UNIVERSAL</literal>, or
+     <literal>/ODR_APPLICATION</literal>.
+    </para>
+
+   </sect2>
+   <sect2 id="odr.constructed.types"><title>Constructed Types</title>
+
+    <para>
+     Constructed types are created by combining primitive types. The
+      &odr; system only implements the SEQUENCE and SEQUENCE OF constructions
+     (although adding the rest of the container types should be simple
+     enough, if the need arises).
+    </para>
+
+    <para>
+     For implementing SEQUENCEs, the functions
+    </para>
+
+    <synopsis>
+int odr_sequence_begin(ODR o, void *p, int size, const char *name);
+int odr_sequence_end(ODR o);
+    </synopsis>
+
+    <para>
+     are provided.
+    </para>
+
+    <para>
+     The <function>odr_sequence_begin()</function> function should be
+     called in the beginning of a function that implements a SEQUENCE type.
+     Its parameters are the &odr; stream, a pointer (to a pointer to the type
+     you're implementing), and the <literal>size</literal> of the type
+     (typically a C structure). On encoding, it returns 1 if
+     <literal>* p</literal> is a null pointer. The <literal>size</literal>
+     parameter is ignored. On decoding, it returns 1 if the type is found in
+     the data stream. <literal>size</literal> bytes of memory are allocated,
+     and <literal>*p</literal> is set to point to this space.
+     <function>odr_sequence_end()</function> is called at the end of the
+     complex function. Assume that a type is defined like this:
+    </para>
+
+    <screen>
+MySequence ::= SEQUENCE {
+     intval INTEGER,
+     boolval BOOLEAN OPTIONAL
+}
+    </screen>
+
+    <para>
+     The corresponding &odr; encoder/decoder function and the associated data
+     structures could be written like this:
+    </para>
+
+    <screen>
+typedef struct MySequence
+{
+    int *intval;
+    bool_t *boolval;
+} MySequence;
+     
+int mySequence(ODR o, MySequence **p, int optional, const char *name)
+{
+    if (odr_sequence_begin(o, p, sizeof(**p), name) == 0)
+        return optional &amp;&amp; odr_ok(o);
+    return
+        odr_integer(o, &amp;(*p)->intval, 0, "intval") &amp;&amp;
+        odr_bool(o, &amp;(*p)->boolval, 1, "boolval") &amp;&amp;
+        odr_sequence_end(o);
+}
+
+    </screen>
+
+    <para>
+     Note the 1 in the call to <function>odr_bool()</function>, to mark
+     that the sequence member is optional.
+     If either of the member types had been tagged, the macros
+     <function>odr_implicit_tag()</function> or
+     <function>odr_explicit_tag()</function>
+     could have been used.
+     The new function can be used exactly like the standard functions provided
+     with &odr;. It will encode, decode or pretty-print a data value of the
+     <literal>MySequence</literal> type. We like to name types with an
+     initial capital, as done in ASN.1 definitions, and to name the
+     corresponding function with the first character of the name in lower case.
+     You could, of course, name your structures, types, and functions any way
+     you please - as long as you're consistent, and your code is easily readable.
+     <literal>odr_ok</literal> is just that - a predicate that returns the
+     state of the stream. It is used to ensure that the behavior of the new
+     type is compatible with the interface of the primitive types.
+    </para>
+
+   </sect2>
+   <sect2 id="odr.tagging.constructed.types">
+    <title>Tagging Constructed Types</title>
+
+    <note>
+     <para>
+      See <xref linkend="odr.tagging.primitive.types"/> for information on how to tag
+      the primitive types, as well as types that are already defined.
+     </para>
+    </note>
+
+    <sect3 id="odr.implicit.tagging">
+     <title>Implicit Tagging</title>
+
+     <para>
+      Assume the type above had been defined as
+     </para>
+
+     <screen>
+MySequence ::= &lsqb;10&rsqb; IMPLICIT SEQUENCE {
+      intval INTEGER,
+      boolval BOOLEAN OPTIONAL
+}
+     </screen>
+
+     <para>
+      You would implement this in &odr; by calling the function
+     </para>
+
+     <synopsis>
+int odr_implicit_settag(ODR o, int class, int tag);
+     </synopsis>
+
+     <para>
+      which overrides the tag of the type immediately following it. The
+      macro <function>odr_implicit_tag()</function> works by calling
+      <function>odr_implicit_settag()</function> immediately
+      before calling the function pointer argument.
+      Your type function could look like this:
+     </para>
+
+     <screen>
+int mySequence(ODR o, MySequence **p, int optional, const char *name)
+{
+    if (odr_implicit_settag(o, ODR_CONTEXT, 10) == 0 ||
+        odr_sequence_begin(o, p, sizeof(**p), name) == 0)
+        return optional &amp;&amp; odr_ok(o);
+    return
+        odr_integer(o, &amp;(*p)->intval, 0, "intval") &amp;&amp;
+        odr_bool(o, &amp;(*p)->boolval, 1, "boolval") &amp;&amp;
+        odr_sequence_end(o);
+}
+     </screen>
+
+     <para>
+      The definition of the structure <literal>MySequence</literal> would be
+      the same.
+     </para>
+    </sect3>
+
+    <sect3 id="odr.explicit.tagging"><title>Explicit Tagging</title>
+
+     <para>
+      Explicit tagging of constructed types is a little more complicated,
+      since you are in effect adding a level of construction to the data.
+     </para>
+
+     <para>
+      Assume the definition:
+     </para>
+
+     <screen>
+MySequence ::= &lsqb;10&rsqb; IMPLICIT SEQUENCE {
+   intval INTEGER,
+   boolval BOOLEAN OPTIONAL
+}
+     </screen>
+
+     <para>
+      Since the new type has an extra level of construction, two new functions
+      are needed to encapsulate the base type:
+     </para>
+
+     <synopsis>
+int odr_constructed_begin(ODR o, void *p, int class, int tag,
+                          const char *name);
+
+int odr_constructed_end(ODR o);
+     </synopsis>
+
+     <para>
+      Assume that the IMPLICIT in the type definition above were replaced
+      with EXPLICIT (or that the IMPLICIT keyword were simply deleted, which
+      would be equivalent). The structure definition would look the same,
+      but the function would look like this:
+     </para>
+
+     <screen>
+int mySequence(ODR o, MySequence **p, int optional, const char *name)
+{
+    if (odr_constructed_begin(o, p, ODR_CONTEXT, 10, name) == 0)
+        return optional &amp;&amp; odr_ok(o);
+    if (o->direction == ODR_DECODE)
+        *p = odr_malloc(o, sizeof(**p));
+    if (odr_sequence_begin(o, p, sizeof(**p), 0) == 0)
+    {
+        *p = 0; /* this is almost certainly a protocol error */
+        return 0;
+    }
+    return
+        odr_integer(o, &amp;(*p)->intval, 0, "intval") &amp;&amp;
+        odr_bool(o, &amp;(*p)->boolval, 1, "boolval") &amp;&amp;
+        odr_sequence_end(o) &amp;&amp;
+        odr_constructed_end(o);
+}
+     </screen>
+
+     <para>
+      Notice that the interface here gets kind of nasty. The reason is
+      simple: Explicitly tagged, constructed types are fairly rare in
+      the protocols that we care about, so the
+      esthetic annoyance (not to mention the dangers of a cluttered
+      interface) is less than the time that would be required to develop a
+      better interface. Nevertheless, it is far from satisfying, and it's a
+      point that will be worked on in the future. One option for you would
+      be to simply apply the <function>odr_explicit_tag()</function> macro to
+      the first function, and not
+      have to worry about <function>odr_constructed_*</function> yourself.
+      Incidentally, as you might have guessed, the
+      <function>odr_sequence_</function> functions are themselves
+      implemented using the <function>/odr_constructed_</function> functions.
+     </para>
+
+    </sect3>
+   </sect2>
+   <sect2 id="odr.sequence.of"><title>SEQUENCE OF</title>
+
+    <para>
+     To handle sequences (arrays) of a specific type, the function
+    </para>
+
+    <synopsis>
+int odr_sequence_of(ODR o, int (*fun)(ODR o, void *p, int optional),
+                    void *p, int *num, const char *name);
+    </synopsis>
+
+    <para>
+     The <literal>fun</literal> parameter is a pointer to the decoder/encoder
+     function of the type. <literal>p</literal> is a pointer to an array of
+     pointers to your type. <literal>num</literal> is the number of elements
+     in the array.
+    </para>
+
+    <para>
+     Assume a type
+    </para>
+
+    <screen>
+MyArray ::= SEQUENCE OF INTEGER
+    </screen>
+
+    <para>
+     The C representation might be
+    </para>
+
+    <screen>
+typedef struct MyArray
+{
+    int num_elements;
+    int **elements;
+} MyArray;
+    </screen>
+
+    <para>
+     And the function might look like
+    </para>
+
+    <screen>
+int myArray(ODR o, MyArray **p, int optional, const char *name)
+{
+    if (o->direction == ODR_DECODE)
+        *p = odr_malloc(o, sizeof(**p));
+    if (odr_sequence_of(o, odr_integer, &amp;(*p)->elements,
+        &amp;(*p)->num_elements, name))
+        return 1;
+    *p = 0;
+        return optional &amp;&amp; odr_ok(o);
+}
+    </screen>
+
+   </sect2>
+   <sect2 id="odr.choice.types"><title>CHOICE Types</title>
+
+    <para>
+     The choice type is used fairly often in some ASN.1 definitions, so
+     some work has gone into streamlining its interface.
+    </para>
+
+    <para>
+     CHOICE types are handled by the function:
+    </para>
+
+    <synopsis>
+int odr_choice(ODR o, Odr_arm arm&lsqb;&rsqb;, void *p, void *whichp,
+               const char *name);
+    </synopsis>
+
+    <para>
+     The <literal>arm</literal> array is used to describe each of the possible
+     types that the CHOICE type may assume. Internally in your application,
+     the CHOICE type is represented as a discriminated union. That is, a
+     C union accompanied by an integer (or enum) identifying the active
+     'arm' of the union.
+     <literal>whichp</literal> is a pointer to the union discriminator.
+     When encoding, it is examined to determine the current type.
+     When decoding, it is set to reference the type that was found in
+     the input stream.
+    </para>
+
+    <para>
+     The Odr_arm type is defined thus:
+    </para>
+
+    <screen>
+typedef struct odr_arm
+{
+    int tagmode;
+    int class;
+    int tag;
+    int which;
+    Odr_fun fun;
+    char *name;
+} Odr_arm;
+    </screen>
+
+    <para>
+     The interpretation of the fields are:
+    </para>
+
+    <variablelist>
+     <varlistentry><term>tagmode</term>
+      <listitem><para>Either <literal>ODR_IMPLICIT</literal>,
+	<literal>ODR_EXPLICIT</literal>, or <literal>ODR_NONE</literal> (-1)
+	to mark	no tagging.</para></listitem>
+     </varlistentry>
+
+     <varlistentry><term>which</term>
+      <listitem><para>The value of the discriminator that corresponds to
+	this CHOICE element. Typically, it will be a &num;defined constant, or
+	an enum member.</para></listitem>
+     </varlistentry>
+
+     <varlistentry><term>fun</term>
+      <listitem><para>A pointer to a function that implements the type of
+	the CHOICE member. It may be either a standard &odr; type or a type
+	defined by yourself.</para></listitem>
+     </varlistentry>
+
+     <varlistentry><term>name</term>
+      <listitem><para>Name of tag.</para></listitem>
+     </varlistentry>
+    </variablelist>
+
+    <para>
+     A handy way to prepare the array for use by the
+     <function>odr_choice()</function> function is to
+     define it as a static, initialized array in the beginning of your
+     decoding/encoding function. Assume the type definition:
+    </para>
+
+    <screen>
+MyChoice ::= CHOICE {
+    untagged INTEGER,
+    tagged   &lsqb;99&rsqb; IMPLICIT INTEGER,
+    other    BOOLEAN
+}
+    </screen>
+
+    <para>
+     Your C type might look like
+    </para>
+
+    <screen>
+typedef struct MyChoice
+{
+    enum
+    {
+        MyChoice_untagged,
+        MyChoice_tagged,
+        MyChoice_other
+    } which;
+    union
+    {
+        int *untagged;
+        int *tagged;
+        bool_t *other;
+    } u;
+};
+    </screen>
+
+    <para>
+     And your function could look like this:
+    </para>
+
+    <screen>
+int myChoice(ODR o, MyChoice **p, int optional, const char *name)
+{
+    static Odr_arm arm&lsqb;&rsqb; =
+    {
+      {-1, -1, -1, MyChoice_untagged, odr_integer, "untagged"},
+      {ODR_IMPLICIT, ODR_CONTEXT, 99, MyChoice_tagged, odr_integer,
+      "tagged"},
+      {-1, -1, -1, MyChoice_other, odr_boolean, "other"},
+      {-1, -1, -1, -1, 0}
+    };
+
+    if (o->direction == ODR_DECODE)
+        *p = odr_malloc(o, sizeof(**p);
+    else if (!*p)
+        return optional &amp;&amp; odr_ok(o);
+
+    if (odr_choice(o, arm, &amp;(*p)->u, &amp;(*p)->which), name)
+        return 1;
+    *p = 0;
+        return optional &amp;&amp; odr_ok(o);
+}
+    </screen>
+
+    <para>
+     In some cases (say, a non-optional choice which is a member of a
+     sequence), you can "embed" the union and its discriminator in the
+     structure belonging to the enclosing type, and you won't need to
+     fiddle with memory allocation to create a separate structure to
+     wrap the discriminator and union.
+    </para>
+
+    <para>
+     The corresponding function is somewhat nicer in the Sun XDR interface.
+     Most of the complexity of this interface comes from the possibility of
+     declaring sequence elements (including CHOICEs) optional.
+    </para>
+
+    <para>
+     The ASN.1 specifications naturally requires that each member of a
+     CHOICE have a distinct tag, so they can be told apart on decoding.
+     Sometimes it can be useful to define a CHOICE that has multiple types
+     that share the same tag. You'll need some other mechanism, perhaps
+     keyed to the context of the CHOICE type. In effect, we would like to
+     introduce a level of context-sensitiveness to our ASN.1 specification.
+     When encoding an internal representation, we have no problem, as long
+     as each CHOICE member has a distinct discriminator value. For
+     decoding, we need a way to tell the choice function to look for a
+     specific arm of the table. The function
+    </para>
+
+    <synopsis>
+void odr_choice_bias(ODR o, int what);
+    </synopsis>
+
+    <para>
+     provides this functionality. When called, it leaves a notice for the next
+     call to <function>odr_choice()</function> to be called on the decoding
+     stream <literal>o</literal> that only the <literal>arm</literal> entry with
+     a <literal>which</literal> field equal to <literal>what</literal>
+     should be tried.
+    </para>
+
+    <para>
+     The most important application (perhaps the only one, really) is in
+     the definition of application-specific EXTERNAL encoders/decoders
+     which will automatically decode an ANY member given the direct or
+     indirect reference.
+    </para>
+
+   </sect2>
+  </sect1>
+
+  <sect1 id="odr.debugging"><title>Debugging</title>
+
+   <para>
+    The protocol modules are suffering somewhat from a lack of diagnostic
+    tools at the moment. Specifically ways to pretty-print PDUs that
+    aren't recognized by the system. We'll include something to this end
+    in a not-too-distant release. In the meantime, what we do when we get
+    packages we don't understand is to compile the ODR module with
+    <literal>ODR_DEBUG</literal> defined. This causes the module to dump tracing
+    information as it processes data units. With this output and the
+    protocol specification (Z39.50), it is generally fairly easy to see
+    what goes wrong.
+   </para>
+  </sect1>
+ </chapter>
+ <!-- Keep this comment at the end of the file
+ Local variables:
+ mode: sgml
+ sgml-omittag:t
+ sgml-shorttag:t
+ sgml-minimize-attributes:nil
+ sgml-always-quote-attributes:t
+ sgml-indent-step:1
+ sgml-indent-data:t
+ sgml-parent-document: "yaz.xml"
+ sgml-local-catalogs: nil
+ sgml-namecase-general:t
+ End:
+ -->

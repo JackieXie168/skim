@@ -1,0 +1,89 @@
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"><title>2. Preparing PDUs</title><meta name="generator" content="DocBook XSL Stylesheets V1.71.0"><link rel="start" href="index.html" title="YAZ User's Guide and Reference"><link rel="up" href="asn.html" title="Chapter 7. The Z39.50 ASN.1 Module"><link rel="prev" href="asn.html" title="Chapter 7. The Z39.50 ASN.1 Module"><link rel="next" href="asn.oid.html" title="3. Object Identifiers"></head><body><link rel="stylesheet" type="text/css" href="common/style1.css"><div class="navheader"><table width="100%" summary="Navigation header"><tr><th colspan="3" align="center">2. Preparing PDUs</th></tr><tr><td width="20%" align="left"><a accesskey="p" href="asn.html">Prev</a> </td><th width="60%" align="center">Chapter 7. The Z39.50 ASN.1 Module</th><td width="20%" align="right"> <a accesskey="n" href="asn.oid.html">Next</a></td></tr></table><hr></div><div class="sect1" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="asn.preparing"></a>2. Preparing PDUs</h2></div></div></div><p>
+    A structure representing a complex ASN.1 type doesn't in itself contain the
+    members of that type. Instead, the structure contains
+    <span class="emphasis"><em>pointers</em></span> to the members of the type.
+    This is necessary, in part, to allow a mechanism for specifying which
+    of the optional structure (SEQUENCE) members are present, and which
+    are not. It follows that you will need to somehow provide space for
+    the individual members of the structure, and set the pointers to
+    refer to the members.
+   </p><p>
+    The conversion routines don't care how you allocate and maintain your
+    C structures - they just follow the pointers that you provide.
+    Depending on the complexity of your application, and your personal
+    taste, there are at least three different approaches that you may take
+    when you allocate the structures.
+   </p><p>
+    You can use static or automatic local variables in the function that
+    prepares the PDU. This is a simple approach, and it provides the most
+    efficient form of memory management. While it works well for flat
+    PDUs like the InitReqest, it will generally not be sufficient for say,
+    the generation of an arbitrarily complex RPN query structure.
+   </p><p>
+    You can individually create the structure and its members using the
+    <code class="function">malloc(2)</code> function. If you want to ensure that
+    the data is freed when it is no longer needed, you will have to
+    define a function that individually releases each member of a
+    structure before freeing the structure itself.
+   </p><p>
+    You can use the <code class="function">odr_malloc()</code> function (see
+    <a href="odr.use.html" title="2. Using ODR">Section 2, &#8220;Using ODR&#8221;</a> for details). When you use
+    <code class="function">odr_malloc()</code>, you can release all of the
+    allocated data in a single operation, independent of any pointers and
+    relations between the data. <code class="function">odr_malloc()</code> is based on a
+    "nibble-memory"
+    scheme, in which large portions of memory are allocated, and then
+    gradually handed out with each call to <code class="function">odr_malloc()</code>.
+    The next time you call <code class="function">odr_reset()</code>, all of the
+    memory allocated since the last call is recycled for future use (actually,
+    it is placed on a free-list).
+   </p><p>
+    You can combine all of the methods described here. This will often be
+    the most practical approach. For instance, you might use
+    <code class="function">odr_malloc()</code> to allocate an entire structure and
+    some of its elements, while you leave other elements pointing to global
+    or per-session default variables.
+   </p><p>
+    The Z39.50 ASN.1 module provides an important aid in creating new PDUs. For
+    each of the PDU types (say, <code class="function">Z_InitRequest</code>), a
+    function is provided that allocates and initializes an instance of
+    that PDU type for you. In the case of the InitRequest, the function is
+    simply named <code class="function">zget_InitRequest()</code>, and it sets up
+    reasonable default value for all of the mandatory members. The optional
+    members are generally initialized to null pointers. This last aspect
+    is very important: it ensures that if the PDU definitions are
+    extended after you finish your implementation (to accommodate
+    new versions of the protocol, say), you won't get into trouble with
+    uninitialized pointers in your structures. The functions use
+    <code class="function">odr_malloc()</code> to
+    allocate the PDUs and its members, so you can free everything again with a
+    single call to <code class="function">odr_reset()</code>. We strongly recommend
+    that you use the <code class="literal">zget_*</code>
+    functions whenever you are preparing a PDU (in a C++ API, the
+    <code class="literal">zget_</code>
+    functions would probably be promoted to constructors for the
+    individual types).
+   </p><p>
+   The prototype for the individual PDU types generally look like this:
+   </p><pre class="synopsis">
+    Z_&lt;type&gt; *zget_&lt;type&gt;(ODR o);
+   </pre><p>
+    eg.:
+   </p><pre class="synopsis">
+    Z_InitRequest *zget_InitRequest(ODR o);
+   </pre><p>
+   The <acronym class="acronym">ODR</acronym> handle should generally be your encoding stream, but it
+    needn't be.
+   </p><p>
+   As well as the individual PDU functions, a function
+    <code class="function">zget_APDU()</code> is provided, which allocates
+    a top-level Z-APDU of the type requested:
+   </p><pre class="synopsis">
+    Z_APDU *zget_APDU(ODR o, int which);
+   </pre><p>
+    The <code class="varname">which</code> parameter is (of course) the discriminator
+    belonging to the <code class="varname">Z_APDU</code> <code class="literal">CHOICE</code> type.
+    All of the interface described here is provided by the Z39.50 ASN.1 module, and
+    you access it through the <code class="filename">proto.h</code> header file.
+    
+   </p></div><div class="navfooter"><hr><table width="100%" summary="Navigation footer"><tr><td width="40%" align="left"><a accesskey="p" href="asn.html">Prev</a> </td><td width="20%" align="center"><a accesskey="u" href="asn.html">Up</a></td><td width="40%" align="right"> <a accesskey="n" href="asn.oid.html">Next</a></td></tr><tr><td width="40%" align="left" valign="top">Chapter 7. The Z39.50 ASN.1 Module </td><td width="20%" align="center"><a accesskey="h" href="index.html">Home</a></td><td width="40%" align="right" valign="top"> 3. Object Identifiers</td></tr></table></div></body></html>

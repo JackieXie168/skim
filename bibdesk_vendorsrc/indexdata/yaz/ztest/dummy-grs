@@ -1,0 +1,98 @@
+#1
+(1,1) This is a test record
+(0,0)
+
+#2
+(1,2) title
+(1,8) {
+    (1,9) Author thing
+    (1,10) Other thing
+    (1,11) {
+	(1,12) test
+	(1,14) Deeper
+    }
+}
+(0,0)
+
+#3
+(3,title) The Ugly Duckling
+(3,author) {
+    (3,nationality) Danish
+    (3,name) Andersen, H.C.
+}
+(3,subject) Fairy tale about duck who would be swan and does so in end.
+(0,0)
+
+#4
+(3,title) This is a fairly deeply nested GRS-1 Record
+(3,level1) {
+    (3,level2) {
+	(3,level3) {
+	    (3,level4) {
+		(3,level5) {
+		    (3,level6) {
+			(3,level7) Whew!! This is silly
+			(3,hmm) Let's hope it never comes to this.
+		    }
+		    (3,level6) Uhm.
+		}
+		(3,level5) Down again.
+	    }
+	    (3,level4) Down further.
+	}
+	(3,level3) Down...
+    }
+    (3,level2) Down...
+}
+(3,level1) Down...
+(0,0)
+
+#5
+(1,1) Data
+(1,2) Stuff
+(0,0)
+
+#6
+(1,1) GGGGGGGGGGGGGGGGGGG
+(1,1) GGGGGGGGGGGGGGGGGGG
+(1,1) GGGGGGGGGGGGGGGGGGG
+(1,1) GGGGGGGGGGGGGGGGGGG
+(1,1) GGGGGGGGGGGGGGGGGGG
+(1,1) GGGGGGGGGGGGGGGGGGG
+(1,1) GGGGGGGGGGGGGGGGGGG
+(1,1) GGGGGGGGGGGGGGGGGGG
+(1,1) GGGGGGGGGGGGGGGGGGG
+(1,1) GGGGGGGGGGGGGGGGGGG
+(1,1) GGGGGGGGGGGGGGGGGGG
+(1,1) GGGGGGGGGGGGGGGGGGG
+(0,0)
+
+#7
+(2,1) Zen and the Art of Motorcycle Maintenance
+(2,6) An inquiry into values
+(4,52) Robert M. Pirsig
+(4,70) {
+    (4,90) {
+	(2,7) Transworld Publishers, ltd.
+	(2,11) Century House, 61-63 Uxbridge Road, London
+    }
+}
+(4,27) Just a silly test record, really.
+(0,0)
+
+#8
+(3,someField) Ok.. this is the last of the test records.
+(3,someFIeld) It's time to get back to work.
+(0,0)
+
+#9
+(1,1) This is a test record
+(0,0)
+
+#10
+(1,1) This is a test record
+(0,0)
+
+#11
+(1,1) This is a test record
+(0,0)

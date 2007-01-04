@@ -1,0 +1,645 @@
+<!-- $Id: comstack.xml,v 1.14 2006/10/05 08:26:58 adam Exp $ -->
+ <chapter id="comstack"><title>The COMSTACK Module</title>
+  
+  <sect1 id="comstack.synopsis"><title>Synopsis (blocking mode)</title>
+   
+   <programlisting>
+    
+COMSTACK stack;
+char *buf = 0;
+int size = 0, length_incoming;
+char *protocol_package; 
+int protocol_package_length;
+char server_address_str[] = "myserver.com:2100";
+void *server_address_ip;
+int status;
+
+stack = cs_create(tcpip_type, 1, PROTO_Z3950);
+if (!stack) {
+    perror("cs_create");  /* use perror() here since we have no stack yet */
+    exit(1);
+}
+
+server_address_ip = cs_addrstr (stack, server_address_str);
+
+status = cs_connect(stack, server_address_ip);
+if (status != 0) {
+    cs_perror(stack, "cs_connect");
+    exit(1);
+}
+
+status = cs_put(stack, protocol_package, protocol_package_length);
+if (status) {
+    cs_perror(stack, "cs_put");
+    exit(1);
+}
+
+/* Now get a response */
+
+length_incoming = cs_get(stack, &amp;buf, &amp;size);
+if (!length_incoming) {
+    fprintf(stderr, "Connection closed\n");
+    exit(1);
+} else if (length_incoming &lt; 0) {
+    cs_perror(stack, "cs_get");
+    exit(1);
+}
+
+/* Do stuff with buf here */
+
+/* clean up */
+cs_close(stack);
+if (buf)
+    free(buf);
+    
+   </programlisting>
+
+  </sect1>
+  <sect1 id="comstack.introduction"><title>Introduction</title>
+
+   <para>
+    The &comstack;
+    subsystem provides a transparent interface to different types of transport
+    stacks for the exchange of BER-encoded data and HTTP packets.
+    At present, the RFC1729 method (BER over TCP/IP), local UNIX socket and an
+    experimental SSL stack are supported, but others may be added in time.
+    The philosophy of the
+    module is to provide a simple interface by hiding unused options and
+    facilities of the underlying libraries. This is always done at the risk
+    of losing generality, and it may prove that the interface will need
+    extension later on.
+   </para>
+   
+   <note>
+    <para>
+     There hasn't been interest in the XTImOSI stack for some years.
+     Therefore, it is no longer supported.
+     </para>
+   </note>
+
+   <para>
+    The interface is implemented in such a fashion that only the
+    sub-layers constructed to the transport methods that you wish to
+    use in your application are linked in.
+   </para>
+
+   <para>
+    You will note that even though simplicity was a goal in the design,
+    the interface is still orders of magnitudes more complex than the
+    transport systems found in many other packages. One reason is that
+    the interface needs to support the somewhat different requirements of
+    the different lower-layer communications stacks; another important
+    reason is that the interface seeks to provide a more or less
+    industrial-strength approach to asynchronous event-handling.
+    When no function is allowed to block, things get more complex -
+    particularly on the server side.
+    We urge you to have a look at the demonstration client and server
+    provided with the package. They are meant to be easily readable and
+    instructive, while still being at least moderately useful.
+   </para>
+
+  </sect1>
+  <sect1 id="comstack.common"><title>Common Functions</title>
+
+   <sect2 id="comstack.managing.endpoints"><title>Managing Endpoints</title>
+
+    <synopsis>
+     COMSTACK cs_create(CS_TYPE type, int blocking, int protocol);
+    </synopsis>
+    
+    <para>
+     Creates an instance of the protocol stack - a communications endpoint.
+     The <literal>type</literal> parameter determines the mode
+     of communication. At present the following values are supported:
+    </para>
+    
+    <variablelist>
+     <varlistentry><term><literal>tcpip_type</literal></term>
+      <listitem><para>TCP/IP (BER over TCP/IP or HTTP over TCP/IP)
+       </para></listitem>
+     </varlistentry>
+     <varlistentry><term><literal>ssl_type</literal></term>
+      <listitem><para>Secure Socket Layer (SSL). This COMSTACK 
+        is experimental and is not fully implemented. If
+        HTTP is used, this effectively is HTTPS.
+       </para></listitem>
+     </varlistentry>
+     <varlistentry><term><literal>unix_type</literal></term>
+      <listitem><para>Unix socket (unix only). Local Transfer via
+        file socket. See <citerefentry><refentrytitle>unix</refentrytitle>
+         <manvolnum>7</manvolnum></citerefentry>.
+       </para></listitem>
+      </varlistentry>
+     </variablelist>
+     
+    <para>
+     The <function>cs_create</function> function returns a null-pointer
+     if a system error occurs.
+     The <literal>blocking</literal> parameter should be one if
+     you wish the association to operate in blocking mode, zero otherwise.
+     The <literal>protocol</literal> field should be
+     <literal>PROTO_Z3950</literal> or <literal>PROTO_HTTP</literal>.
+     Protocol <literal>PROTO_SR</literal> is no longer supported.
+    </para>
+
+    <synopsis>
+     int cs_close(COMSTACK handle);
+    </synopsis>
+
+    <para>
+     Closes the connection (as elegantly as the lower layers will permit),
+     and releases the resources pointed to by the
+     <literal>handle</literal>
+     parameter. The
+     <literal>handle</literal>
+     should not be referenced again after this call.
+    </para>
+
+    <note>
+     <para>
+      We really need a soft disconnect, don't we?
+     </para>
+    </note>
+   </sect2>
+
+   <sect2 id="comstack.data.exchange"><title>Data Exchange</title>
+
+    <synopsis>
+     int cs_put(COMSTACK handle, char *buf, int len);
+    </synopsis>
+
+    <para>
+     Sends
+     <literal>buf</literal>
+     down the wire. In blocking mode, this function will return only when a
+     full buffer has been written, or an error has occurred. In nonblocking
+     mode, it's possible that the function will be unable to send the full
+     buffer at once, which will be indicated by a return value of 1. The
+     function will keep track of the number of octets already written; you
+     should call it repeatedly with the same values of <literal>buf</literal>
+     and <literal>len</literal>, until the buffer has been transmitted.
+     When a full buffer has been sent, the function will return 0 for
+     success. -1 indicates an error condition (see below).
+    </para>
+
+    <synopsis>
+     int cs_get(COMSTACK handle, char **buf, int *size);
+    </synopsis>
+
+    <para>
+     Receives a PDU or HTTP Response from the peer. Returns the number of
+     bytes read.
+     In nonblocking mode, it is possible that not all of the packet can be
+     read at once. In this case, the function returns 1. To simplify the
+     interface, the function is
+     responsible for managing the size of the buffer. It will be reallocated
+     if necessary to contain large packages, and will sometimes be moved
+     around internally by the subsystem when partial packages are read. Before
+     calling
+     <function>cs_get</function>
+     for the fist time, the buffer can be initialized to the null pointer,
+     and the length should also be set to 0 - cs_get will perform a
+     <function>malloc(2)</function>
+     on the buffer for you. When a full buffer has been read, the size of
+     the package is returned (which will always be greater than 1). -1
+     indicates an error condition.
+    </para>
+
+    <para>
+     See also the <function>cs_more()</function> function below.
+    </para>
+
+    <synopsis>
+     int cs_more(COMSTACK handle);
+    </synopsis>
+
+    <para>
+     The <function>cs_more()</function> function should be used in conjunction
+     with <function>cs_get</function> and
+     <function>select(2)</function>.
+     The <function>cs_get()</function> function will sometimes
+     (notably in the TCP/IP mode) read more than a single protocol package
+     off the network. When this happens, the extra package is stored
+     by the subsystem. After calling <function>cs_get()</function>, and before
+     waiting for more input, You should always call
+     <function>cs_more()</function>
+     to check if there's a full protocol package already read. If
+     <function>cs_more()</function>
+     returns 1,
+     <function>cs_get()</function>
+     can be used to immediately fetch the new package. For the
+     mOSI
+     subsystem, the function should always return 0, but if you want your
+     stuff to be protocol independent, you should use it.
+    </para>
+
+    <note>
+     <para>
+      The <function>cs_more()</function>
+      function is required because the RFC1729-method
+      does not provide a way of separating individual PDUs, short of
+      partially decoding the BER. Some other implementations will carefully
+      nibble at the packet by calling
+      <function>read(2)</function>
+      several times. This was felt to be too inefficient (or at least
+      clumsy) - hence the call for this extra function.
+     </para>
+    </note>
+
+    <synopsis>
+     int cs_look(COMSTACK handle);
+    </synopsis>
+
+    <para>
+     This function is useful when you're operating in nonblocking
+     mode. Call it when
+     <function>select(2)</function>
+     tells you there's something happening on the line. It returns one of
+     the following values:
+    </para>
+
+    <variablelist>
+     <varlistentry><term>CS_NONE</term><listitem><para>
+	No event is pending. The data found on the line was not a
+        complete package.
+       </para></listitem></varlistentry>
+
+     <varlistentry><term>CS_CONNECT</term><listitem><para>
+	A response to your connect request has been received. Call
+	<function>cs_rcvconnect</function>
+	to process the event and to finalize the connection establishment.
+       </para></listitem></varlistentry>
+
+     <varlistentry><term>CS_DISCON</term><listitem><para>
+	The other side has closed the connection (or maybe sent a disconnect
+	request - but do we care? Maybe later). Call
+	<function>cs_close</function> to close your end of the association
+        as well.
+       </para></listitem></varlistentry>
+
+     <varlistentry><term>CS_LISTEN</term><listitem><para>
+	A connect request has been received.
+        Call <function>cs_listen</function> to process the event.
+       </para></listitem></varlistentry>
+
+     <varlistentry><term>CS_DATA</term><listitem><para>
+	There's data to be found on the line.
+        Call <function>cs_get</function> to get it.
+       </para></listitem></varlistentry>
+    </variablelist>
+
+    <note>
+     <para>
+      You should be aware that even if
+      <function>cs_look()</function>
+      tells you that there's an event event pending, the corresponding
+      function may still return and tell you there was nothing to be found.
+      This means that only part of a package was available for reading. The
+      same event will show up again, when more data has arrived.
+     </para>
+    </note>
+
+    <synopsis>
+     int cs_fileno(COMSTACK h);
+    </synopsis>
+
+    <para>
+     Returns the file descriptor of the association. Use this when
+     file-level operations on the endpoint are required
+     (<function>select(2)</function> operations, specifically).
+    </para>
+   </sect2>
+
+  </sect1>
+
+  <sect1 id="comstack.client"><title>Client Side</title>
+
+   <synopsis>
+    int cs_connect(COMSTACK handle, void *address);
+   </synopsis>
+
+   <para>
+    Initiate a connection with the target at <literal>address</literal>
+    (more on addresses below). The function will return 0 on success, and 1 if
+    the operation does not complete immediately (this will only
+    happen on a nonblocking endpoint). In this case, use
+    <function>cs_rcvconnect</function> to complete the operation,
+    when <function>select(2)</function> or <function>poll(2)</function>
+    reports input pending on the association.
+   </para>
+
+   <synopsis>
+    int cs_rcvconnect(COMSTACK handle);
+   </synopsis>
+
+   <para>
+    Complete a connect operation initiated by <function>cs_connect()</function>.
+    It will return 0 on success; 1 if the operation has not yet completed (in
+    this case, call the function again later); -1 if an error has occurred.
+   </para>
+
+  </sect1>
+
+  <sect1 id="comstack.server"><title>Server Side</title>
+
+   <para>
+    To establish a server under the <application>inetd</application>
+    server, you can use
+   </para>
+
+   <synopsis>
+    COMSTACK cs_createbysocket(int socket, CS_TYPE type, int blocking,
+                               int protocol);
+   </synopsis>
+
+   <para>
+    The <literal>socket</literal> parameter is an established socket (when
+    your application is invoked from <application>inetd</application>, the
+    socket will typically be 0.
+    The following parameters are identical to the ones for
+    <function>cs_create</function>.
+   </para>
+
+   <synopsis>
+    int cs_bind(COMSTACK handle, void *address, int mode)
+   </synopsis>
+
+   <para>
+    Binds a local address to the endpoint. Read about addresses below. The
+    <literal>mode</literal> parameter should be either
+    <literal>CS_CLIENT</literal> or <literal>CS_SERVER</literal>.
+   </para>
+
+   <synopsis>
+    int cs_listen(COMSTACK handle, char *addr, int *addrlen);
+   </synopsis>
+
+   <para>
+    Call this to process incoming events on an endpoint that has been
+    bound in listening mode. It will return 0 to indicate that the connect
+    request has been received, 1 to signal a partial reception, and -1 to
+    indicate an error condition.
+   </para>
+
+   <synopsis>
+    COMSTACK cs_accept(COMSTACK handle);
+   </synopsis>
+
+   <para>
+    This finalizes the server-side association establishment, after
+    cs_listen has completed successfully. It returns a new connection
+    endpoint, which represents the new association. The application will
+    typically wish to fork off a process to handle the association at this
+    point, and continue listen for new connections on the old
+    <literal>handle</literal>.
+   </para>
+
+   <para>
+    You can use the call
+   </para>
+
+   <synopsis>
+    char *cs_addrstr(COMSTACK);
+   </synopsis>
+
+   <para>
+    on an established connection to retrieve the host-name of the remote host.
+   </para>
+
+   <note>
+    <para>You may need to use this function with some care if your
+     name server service is slow or unreliable
+    </para>
+   </note>
+
+  </sect1>
+  <sect1 id="comstack.addresses"><title>Addresses</title>
+
+   <para>
+    The low-level format of the addresses are different depending on the
+    mode of communication you have chosen. A function is provided by each
+    of the lower layers to map a user-friendly string-form address to the
+    binary form required by the lower layers.
+   </para>
+
+   <synopsis>
+    void *cs_straddr(COMSTACK handle, const char *str);
+   </synopsis>
+
+   <para>
+    The format for TCP/IP and SSL addresses is:
+   </para>
+
+   <synopsis>
+    &lt;host> &lsqb; ':' &lt;portnum> &rsqb;
+   </synopsis>
+
+   <para>
+    The <literal>hostname</literal> can be either a domain name or an
+    IP address. The port number, if omitted, defaults to 210.
+   </para>
+
+   <para>
+    For TCP/IP and SSL transport modes, the special hostname &quot;@&quot;
+    is mapped to any local address
+    (the manifest constant <literal>INADDR_ANY</literal>).
+    It is used to establish local listening endpoints in the server role.
+   </para>
+
+   <para>
+    For UNIX sockets, the format of an address is the socket filename.
+   </para>
+   
+   <para>
+    When a connection has been established, you can use
+   </para>
+
+   <synopsis>
+    char *cs_addrstr(COMSTACK h);
+   </synopsis>
+
+   <para>
+    to retrieve the host name of the peer system. The function returns
+    a pointer to a static area, which is overwritten on the next call
+    to the function.
+   </para>
+
+   <para>
+    A fairly recent addition to the &comstack; module is the utility
+    function
+   </para>
+   <synopsis>
+    COMSTACK cs_create_host (const char *str, int blocking, void **vp);
+   </synopsis>
+   <para>
+    which is just a wrapper for <function>cs_create</function> and
+    <function>cs_straddr</function>. The <parameter>str</parameter>
+    is similar to that described for <function>cs_straddr</function>
+    but with a prefix denoting the &comstack; type. Prefixes supported
+    are <literal>tcp:</literal>, <literal>unix:</literal> and
+    <literal>ssl:</literal> for TCP/IP, UNIX and SSL respectively.
+    If no prefix is given, then TCP/IP is used.
+    The <parameter>blocking</parameter> is passed to
+    function <function>cs_create</function>. The third parameter
+    <parameter>vp</parameter> is a pointer to &comstack; stack type
+    specific values.
+    For SSL (ssl_type) <parameter>vp</parameter> is an already create
+    OpenSSL CTX. For TCP/IP and UNIX <parameter>vp</parameter>
+    is unused (can be set to <literal>NULL</literal>.
+   </para>
+
+  </sect1>
+
+  <sect1 id="comstack.ssl"><title>SSL</title>
+   <para>
+    <synopsis>
+     void *cs_get_ssl(COMSTACK cs);
+    </synopsis>
+    Returns the SSL handle, <literal>SSL *</literal> for comstack. If comstack
+    is not of type SSL, NULL is returned.
+   </para>
+
+   <para>
+    <synopsis>
+     int cs_set_ssl_ctx(COMSTACK cs, void *ctx);
+    </synopsis>
+    Sets SSL context for comstack. The parameter is expected to be of type
+    <literal>SSL_CTX *</literal>. This function should be called just
+    after comstack has been created (before connect, bind, etc).
+    This function returns 1 for success; 0 for failure.
+   </para>
+
+   <para>
+    <synopsis>
+     int cs_set_ssl_certificate_file(COMSTACK cs, const char *fname);
+    </synopsis>
+    Sets SSL certificate for comstack as a PEM file. This function
+    returns 1 for success; 0 for failure.
+   </para>
+
+
+   <para>
+    <synopsis>
+     int cs_get_ssl_peer_certificate_x509(COMSTACK cs, char **buf, int *len);
+    </synopsis>
+    This function returns the peer certificate. If successful,
+    <literal>*buf</literal> and <literal>*len</literal> holds
+    X509 buffer and length respectively. Buffer should be freed
+    with <literal>xfree</literal>. This function returns 1 for success;
+    0 for failure.
+   </para>
+
+  </sect1>
+  
+  <sect1 id="comstack.diagnostics"><title>Diagnostics</title>
+
+   <para>
+    All functions return -1 if an error occurs. Typically, the functions
+    will return 0 on success, but the data exchange functions
+    (<function>cs_get</function>, <function>cs_put</function>,
+    <function>cs_more</function>) follow special rules. Consult their
+    descriptions.
+   </para>
+
+   <para>
+    When a function (including the data exchange functions) reports an
+    error condition, use the function
+    <function>cs_errno()</function> to determine the cause of the
+    problem. The function
+   </para>
+
+   <synopsis>
+    void cs_perror(COMSTACK handle char *message);
+   </synopsis>
+
+   <para>
+    works like <function>perror(2)</function> and prints the
+    <literal>message</literal> argument, along with a system message, to
+    <literal>stderr</literal>. Use the character array
+   </para>
+
+   <synopsis>
+    extern const char *cs_errlist&lsqb;&rsqb;;
+   </synopsis>
+
+   <para>
+    to get hold of the message, if you want to process it differently.
+    The function
+   </para>
+
+   <synopsis>
+    const char *cs_stackerr(COMSTACK handle);
+   </synopsis>
+
+   <para>
+    Returns an error message from the lower layer, if one has been
+    provided.
+   </para>
+  </sect1>
+  <sect1 id="comstack.summary"><title>Summary and Synopsis</title>
+
+   <synopsis>
+    #include &lt;yaz/comstack.h>
+    
+    #include &lt;yaz/tcpip.h>  /* this is for TCP/IP and SSL support */
+    #include &lt;yaz/unix.h>   /* this is for UNIX sockeL support */
+    
+     
+    COMSTACK cs_create(CS_TYPE type, int blocking, int protocol);
+     
+    COMSTACK cs_createbysocket(int s, CS_TYPE type, int blocking,
+                               int protocol);
+    COMSTACK cs_create_host (const char *str, int blocking,
+                             void **vp);
+     
+    int cs_bind(COMSTACK handle, int mode);
+     
+    int cs_connect(COMSTACK handle, void *address);
+     
+    int cs_rcvconnect(COMSTACK handle);
+     
+    int cs_listen(COMSTACK handle);
+
+    COMSTACK cs_accept(COMSTACK handle);
+
+    int cs_put(COMSTACK handle, char *buf, int len);
+
+    int cs_get(COMSTACK handle, char **buf, int *size);
+
+    int cs_more(COMSTACK handle);
+
+    int cs_close(COMSTACK handle);
+
+    int cs_look(COMSTACK handle);
+
+    void *cs_straddr(COMSTACK handle, const char *str);
+
+    char *cs_addrstr(COMSTACK h);
+
+    extern int cs_errno;
+
+    void cs_perror(COMSTACK handle char *message);
+
+    const char *cs_stackerr(COMSTACK handle);
+
+    extern const char *cs_errlist[];
+   </synopsis>
+  </sect1>
+
+ </chapter>
+
+ <!-- Keep this comment at the end of the file
+ Local variables:
+ mode: sgml
+ sgml-omittag:t
+ sgml-shorttag:t
+ sgml-minimize-attributes:nil
+ sgml-always-quote-attributes:t
+ sgml-indent-step:1
+ sgml-indent-data:t
+ sgml-parent-document: "yaz.xml"
+ sgml-local-catalogs: nil
+ sgml-namecase-general:t
+ End:
+ -->
+

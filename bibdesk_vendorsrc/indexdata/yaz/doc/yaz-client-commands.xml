@@ -1,0 +1,736 @@
+<!-- 
+   $Id: yaz-client-commands.xml,v 1.16 2006/06/13 16:01:51 adam Exp $
+   Commands for YAZ client.
+   Included in both manual and man page for yaz-client.
+-->
+<variablelist>
+ <varlistentry id="command-open"><term>
+   <literal>open </literal><replaceable>zurl</replaceable>
+  </term>
+  <listitem>
+   <para>Opens a connection to a server. The syntax for
+    <replaceable>zurl</replaceable> is the same as described
+    above for connecting from the command line.
+   </para>
+   <para>
+    Syntax:
+   </para>
+   <para>
+    [<literal>(tcp|ssl|unix|http)':'</literal>]<replaceable>host</replaceable>
+    [:<replaceable>port</replaceable>][/<replaceable>base</replaceable>]
+   </para>
+  </listitem>
+ </varlistentry>
+ <varlistentry><term>
+   <literal>quit</literal>
+  </term>
+  <listitem>
+   <para>Quits YAZ client</para>
+  </listitem>
+ </varlistentry>
+ <varlistentry id="command-find"><term>
+   <literal>find </literal><replaceable>query</replaceable></term>
+  <listitem>
+   <para>Sends a Search Request using the <replaceable>query</replaceable>
+    given. By default the query is assumed to be PQF. See command
+    <link linkend="command-querytype"><literal>querytype</literal></link>.
+   </para>
+  </listitem>
+ </varlistentry>
+ <varlistentry><term>
+   <literal>delete</literal> <replaceable>setname</replaceable></term>
+  <listitem>
+   <para>Deletes result set with name <replaceable>setname</replaceable>
+    on the server.</para>
+  </listitem>
+ </varlistentry>
+ <varlistentry><term>
+   <literal>base </literal><replaceable>base1</replaceable>
+   <replaceable>base2</replaceable> ...
+  </term>
+  <listitem>
+   <para>Sets the name(s) of the database(s) to search. One or more
+    databases may be specified separated by blanks. This commands overrides
+    the database given in <replaceable>zurl</replaceable>.
+   </para>
+  </listitem>
+ </varlistentry>
+ <varlistentry><term>
+   <literal>show </literal>
+   [<replaceable>start</replaceable>[+<replaceable>number</replaceable>]]
+  </term>
+  <listitem>
+   <para>Fetches records by sending a Present Request from the start
+    position given by
+    <replaceable>start</replaceable>
+    a number of records given by <replaceable>number</replaceable>. If
+    <replaceable>start</replaceable> is not given, then the client
+    will fetch from position of the last retrieved record plus 1. If
+    <replaceable>number</replaceable> is not given, then one record will
+    be fetched at a time.
+   </para>
+  </listitem>
+ </varlistentry>
+ <varlistentry><term>
+   <literal>scan</literal> <replaceable>term</replaceable>
+  </term>
+  <listitem>
+   <simpara>Scans
+    database index for a term. The syntax resembles the syntax
+    for <link linkend="command-find"><literal>find</literal></link>.
+    If you want to scan for the word <literal>water</literal> you could
+    write
+   </simpara>
+   <screen>
+    scan water
+   </screen>
+   <simpara>
+    but if you want to scan only in, say the title field, you would write
+   </simpara>
+   <screen>
+    scan @attr 1=4 water
+   </screen>
+  </listitem>
+ </varlistentry>
+ <varlistentry><term>
+   <literal>scanpos</literal> <replaceable>pos</replaceable>
+  </term>
+  <listitem>
+   <simpara>
+    Sets preferred position for scan. This value
+    is used in next scan. By default position is 1.
+   </simpara>
+  </listitem>
+ </varlistentry>
+ <varlistentry><term>
+   <literal>scansize</literal> <replaceable>size</replaceable>
+  </term>
+  <listitem>
+   <simpara>
+    Sets number of entries to be returned by scan. Default
+    number of entries is 20.
+   </simpara>
+  </listitem>
+ </varlistentry>
+ <varlistentry><term>
+   <literal>scanstep</literal> <replaceable>step</replaceable>
+  </term>
+  <listitem>
+   <simpara>
+    Set step-size for scan. This value is used in next scan
+    sent to the target. By default step-size is 0.
+   </simpara>
+  </listitem>
+ </varlistentry>
+ <varlistentry id="sortspec"><term>
+   <literal>sort</literal> <replaceable>sortspecs</replaceable>
+  </term>
+  <listitem>
+   <para>Sorts a result set. The sort command takes a
+    sequence of space-separated sort specifications, with each sort
+    specification consisting of two space-separated words (so that the
+    whole specification list is made up of an even number of words).
+    The first word of each specification
+    holds a field (sort criterion) and the second holds flags.
+    If the sort criterion includes <literal>=</literal> it is assumed
+    that the <literal>SortKey</literal> is of type
+    <literal>sortAttributes</literal> using Bib-1: in this case
+    the integer before <literal>=</literal> is
+    the attribute type and the integer following <literal>=</literal>
+    is the attribute value.
+    If no <literal>=</literal> is in the criterion it is treated as a
+    sortfield of type InternationalString.
+    The flags word of each sort specification must consist of
+    <literal>s</literal> 
+    for case sensitive or <literal>i</literal> for case insensitive, and
+    <literal>&lt;</literal> for ascending order or <literal>&gt;</literal>
+    for descending order.
+   </para>
+  </listitem>
+ </varlistentry>
+ <varlistentry><term>
+   <literal>sort+</literal>
+  </term>
+  <listitem>
+   <para>Same as <literal>sort</literal> but stores the sorted
+    result set in a new result set.
+   </para>
+  </listitem>
+ </varlistentry>
+ <varlistentry><term>
+   <literal>authentication</literal> <replaceable>openauth</replaceable>
+  </term>
+  <listitem>
+   <para>Sets up a authentication string if a server requires
+    authentication (v2 OpenStyle). The authentication string is first
+    sent to the server when the 
+    <link linkend="command-open"><literal>open</literal></link> command is
+    issued and the Z39.50 Initialize Request is sent, so this command
+    must be used before <literal>open</literal> in order to be effective.
+    A common convention for the <replaceable>authopen</replaceable> string
+    is that the username - and password is separated by a slash, e.g.
+    <literal>myusername/mysecret</literal>.
+   </para>
+  </listitem>
+ </varlistentry>
+
+ <varlistentry><term>
+   <literal>sru</literal> <replaceable>method</replaceable>
+  </term>
+  <listitem>
+   <para>Selects SRU method. Must be one of <literal>POST</literal>,
+    <literal>GET</literal>, <literal>SOAP</literal> (default).
+   </para>
+  </listitem>
+ </varlistentry>
+
+ <varlistentry><term>
+   <literal>list_all</literal>
+  </term>
+  <listitem>
+   <para>This command displays status and values for many settings.
+   </para>
+  </listitem>
+ </varlistentry>
+ 
+ <varlistentry><term>
+   <literal>lslb</literal> <replaceable>n</replaceable>
+  </term>
+  <listitem>
+   <para>Sets the limit for when no records should be returned
+    together with the search result.
+    See the
+    <ulink
+     url="http://www.loc.gov/z3950/agency/markup/04.html#3.2.2.1.6">
+     Z39.50 standard
+    </ulink>
+    for more details.
+   </para>
+  </listitem>
+ </varlistentry>
+
+ <varlistentry><term>
+   <literal>ssub</literal> <replaceable>n</replaceable>
+  </term>
+  <listitem>
+   <para>Sets the limit for when all records should be returned with
+    the search result.
+    See the
+    <ulink
+     url="http://www.loc.gov/z3950/agency/markup/04.html#3.2.2.1.6">
+     Z39.50 standard
+    </ulink> for more details.
+   </para>
+  </listitem>
+ </varlistentry>
+ 
+ <varlistentry><term>
+   <literal>mspn</literal> <replaceable>n</replaceable>
+  </term>
+  <listitem>
+   <para>Sets the number of records should be returned if the
+    number of records in the result set is between the values of
+    <literal>lslb</literal> and <literal>ssub</literal>.
+    See the
+    <ulink
+     url="http://www.loc.gov/z3950/agency/markup/04.html#3.2.2.1.6">
+     Z39.50 standard
+    </ulink>
+    for more details.
+   </para>
+  </listitem>
+ </varlistentry>
+ <varlistentry><term>
+   <literal>status</literal>
+  </term>
+  <listitem>
+   <para>Displays the values of <literal>lslb</literal>,
+    <literal>ssub</literal> and <literal>mspn</literal>.
+   </para>
+  </listitem>
+ </varlistentry>
+ <varlistentry><term>
+   <literal>setname</literal>
+  </term>
+  <listitem>
+   <para>Switches named result sets on and off. Default is on.
+   </para>
+  </listitem>
+ </varlistentry>
+ <varlistentry><term>
+   <literal>cancel</literal>
+  </term>
+  <listitem>
+   <para>Sends a Trigger Resource Control Request to the target.
+   </para>
+  </listitem>
+ </varlistentry>
+ <varlistentry><term>
+   <literal>format</literal> <replaceable>oid</replaceable>
+  </term>
+  <listitem>
+   <para>Sets the preferred transfer syntax for retrieved records.
+    yaz-client supports all the record syntaxes that currently
+    are registered. See
+    <ulink
+     url="http://www.loc.gov/z3950/agency/defns/oids.html#5">
+     Z39.50 Standard
+    </ulink>
+    for more details. Commonly used records syntaxes include usmarc,
+    sutrs, grs1 and xml.
+   </para>
+  </listitem>
+ </varlistentry>
+ <varlistentry><term>
+   <literal>elements</literal> <replaceable>e</replaceable>
+  </term>
+  <listitem>
+   <para>Sets the element set name for the records. Many targets support
+    element sets are B (for brief) and F (for full).
+   </para>
+  </listitem>
+ </varlistentry>
+ <varlistentry><term>
+   <literal>close</literal>
+  </term>
+  <listitem>
+   <para>Sends a Z39.50 Close APDU and closes connection with the peer
+   </para>
+  </listitem>
+ </varlistentry>
+ <varlistentry id="command-querytype"><term>
+   <literal>querytype</literal> <replaceable>type</replaceable>
+  </term>
+  <listitem>
+   <para>Sets the query type as used by command 
+   <link linkend="command-find"><literal>find</literal></link>.
+    The following is supported:
+    <literal>prefix</literal> for
+	<link linkend="PQF">Prefix Query Notation</link> (Type-1 Query);
+    <literal>ccl</literal> for CCL search (Type-2 Query),
+    <literal>cql</literal> for CQL (Type-104 search with CQL OID),
+    <literal>ccl2rpn</literal> for
+	<link linkend="CCL">CCL</link> to RPN conversion (Type-1 Query).
+    <literal>cql2rpn</literal> for
+	CQL to RPN conversion (Type-1 Query).
+   </para>
+  </listitem>
+ </varlistentry>
+ <varlistentry><term>
+   <literal>attributeset</literal> <replaceable>set</replaceable>
+  </term>
+  <listitem>
+   <para>
+    Sets attribute set OID for prefix queries (RPN, Type-1).
+   </para>
+  </listitem>
+ </varlistentry>
+ <varlistentry><term>
+   <literal>refid</literal> <replaceable>id</replaceable>
+  </term>
+  <listitem>
+   <para>Sets reference ID for Z39.50 Request(s).
+   </para>
+  </listitem>
+ </varlistentry>
+ <varlistentry><term>
+   <literal>itemorder</literal>
+   <replaceable>type</replaceable> <replaceable>no</replaceable>
+  </term>
+  <listitem>
+   <para>Sends an Item Order Request using the ILL External. 
+    <replaceable>type</replaceable> is either 1 or 2 which corresponds to
+    ILL-Profile 1 and 2 respectively. The <replaceable>no</replaceable>
+    is the Result Set position of the record to be ordered.
+   </para>
+  </listitem>
+ </varlistentry>
+ <varlistentry><term>
+   <literal>update</literal>
+   <replaceable>action</replaceable>
+   <replaceable>recid</replaceable>
+   <replaceable>doc</replaceable>
+  </term>
+  <listitem>
+   <para>Sends Item Update Request. The <replaceable>action</replaceable>
+    argument must be the action type: one of <literal>insert</literal>,
+    <literal>replace</literal>, <literal>delete</literal> and
+    <literal>update</literal>. The second argument, 
+    <replaceable>recid</replaceable>, is the
+    record identifier (any string). Third argument which is optional is
+    the record document for the request. If doc is a quoted string
+    (double quotes) the string content is used verbatim. If doc is not
+    a quoted string, it is assumed to be a filename which is read, then
+    sent as the docuemnt content. If doc is omitted, the last received
+    record (as parf of present response or piggybacked search response) 
+    is used for the update.
+   </para>
+  </listitem>
+ </varlistentry>
+
+ <varlistentry><term>
+   <literal>.</literal>
+   <replaceable>filename</replaceable>
+  </term>
+  <listitem>
+   <para>Executes list of commands from
+    file <replaceable>filename</replaceable>, just like source on
+    most UNIX shells.
+   </para>
+  </listitem>
+ </varlistentry>
+
+ <varlistentry><term>
+   <literal>!</literal>
+   <replaceable>args</replaceable>
+  </term>
+  <listitem>
+   <para>Executes command <replaceable>args</replaceable> in subshell
+    using the <literal>system</literal> call.
+   </para>
+  </listitem>
+ </varlistentry>
+
+ <varlistentry><term>
+   <literal>push_command</literal>
+   <replaceable>command</replaceable>
+  </term>
+  <listitem>
+   <para>The push_command takes another command as its argument.
+    That command is then added to the history information (so
+    you can retrieve it later). The command itself is not
+    executed. This command only works if you have GNU readline/history
+    enabled.
+   </para>
+  </listitem>
+ </varlistentry>
+
+ <varlistentry><term>
+   <literal>set_apdufile</literal>
+   <replaceable>filename</replaceable>
+  </term>
+  <listitem>
+   <para>Sets that APDU should be logged to file
+    <replaceable>filename</replaceable>. Another way to achieve
+    APDU log is by using command-line option <literal>-a</literal>.
+   </para>
+  </listitem>
+ </varlistentry>
+
+ <varlistentry><term>
+   <literal>set_auto_reconnect</literal>
+   <replaceable>flag</replaceable>
+  </term>
+  <listitem>
+   <para>Specifies whether YAZ client automatically reconnect if
+    target closes connection (Z39.50 only).
+   </para>
+   <para>
+    <replaceable>flag</replaceable> must be either
+    <literal>on</literal> or <literal>off</literal>.
+   </para>
+  </listitem>
+ </varlistentry>
+
+ <varlistentry id="command-set-auto-wait"><term>
+   <literal>set_auto_wait</literal>
+   <replaceable>flag</replaceable>
+  </term>
+  <listitem>
+   <para>Specifies whether YAZ client should wait for
+   response protocol packages after a request.
+   By default YAZ client waits (on) for response packages immediately
+   after a command (find, show) has been issued. If <literal>off</literal>
+   is used, YAZ client does not attempt to receive packages automatically.
+   These will have to be manually received when command 
+   <link linkend="command-wait-response">
+    <literal>wait_response</literal>
+   </link> is used.
+   </para>
+   <para>
+   <replaceable>flag</replaceable> must be either
+   <literal>on</literal> or <literal>off</literal>.
+   </para>
+  </listitem>
+ </varlistentry>
+
+ <varlistentry><term>
+   <literal>set_marcdump</literal>
+   <replaceable>filename</replaceable>
+  </term>
+  <listitem>
+   <para>Specifies that all retrieved records should be appended to
+    file <replaceable>filename</replaceable>. This command does the
+    thing as option <literal>-m</literal>.
+   </para>
+  </listitem>
+ </varlistentry>
+
+ <varlistentry><term>
+   <literal>schema</literal>
+   <replaceable>schemaid</replaceable>
+  </term>
+  <listitem>
+   <para>Specifies schema for retrieval.
+    Schema may be specified as an OID for Z39.50.
+    For SRU, schema is a simple string URI.
+   </para>
+  </listitem>
+ </varlistentry>
+
+ <varlistentry id="command-charset"><term>
+   <literal>charset</literal>
+   <replaceable>negotiationcharset</replaceable>
+   [<replaceable>displaycharset</replaceable>]
+   [[<replaceable>marccharset</replaceable>]]
+  </term>
+  <listitem>
+   <para>Specifies character set (encoding) for Z39.50
+    negotiation / SRU encoding and/or character set for output (terminal).
+   </para>
+   <para>
+    <replaceable>negotiationcharset</replaceable> is the name
+    of the character set to be negotiated by the server. The special name
+    <literal>-</literal> for <replaceable>negotiationcharset</replaceable>
+    specifies <emphasis>no</emphasis> character set to be negotiated.
+   </para>
+   <para>
+    If <replaceable>displaycharset</replaceable> is given, it specifies name
+    of the character set of the output (on the terminal on which
+    YAZ client is running). To disable conversion of characters
+    to the output encoding, the special name <literal>-</literal> (dash)
+    can be used.
+    If the special name <literal>auto</literal> is given, YAZ client will
+    convert strings to the encoding of the
+    terminal as returned by <function>nl_langinfo</function> call.
+   </para>
+   <para>
+    If <replaceable>marcharset</replaceable> is given, it specifies name
+    of the character set of retrieved MARC records from server. See
+    also <literal>marcharset</literal> command.
+   </para>
+   <note>
+    <para>
+     Since character set negotation takes effect in the Z39.50
+     Initialize Request you should issue this command before
+     command <link linkend="command-open"><literal>open</literal></link>
+     is used.
+    </para>
+   </note>
+   <note>
+    <para>
+     MARC records are not covered by Z39.50 character set negotiation,
+     so that's why there is a separate character that must be known
+     in order to do meaningful converson(s).
+    </para>
+   </note>
+  </listitem>
+ </varlistentry>
+
+ <varlistentry><term>
+   <literal>negcharset</literal>
+   <replaceable>charset</replaceable>
+  </term>
+  <listitem>
+   <para>Specifies character set for negotiation (Z39.50). The
+    argument is the same as second argument for command
+    <link linkend="command-charset"><literal>charset</literal></link>.
+   </para>
+  </listitem>
+ </varlistentry>
+
+ <varlistentry><term>
+   <literal>displaycharset</literal>
+   <replaceable>charset</replaceable>
+  </term>
+  <listitem>
+   <para>Specifies character set for output (display). The
+    argument is the same as second argument for command 
+    <link linkend="command-charset"><literal>charset</literal></link>.
+   </para>
+  </listitem>
+ </varlistentry>
+
+ <varlistentry><term>
+   <literal>marccharset</literal>
+   <replaceable>charset</replaceable>
+  </term>
+  <listitem>
+   <para>Specifies character set for retrieved MARC records so
+    that YAZ client can display them in a character suitable
+    for your display. See <literal>charset</literal> command.
+    If <literal>auto</literal> is given, YAZ will assume
+    that MARC21/USMARC is using MARC8/UTF8 and ISO-8859-1
+    for all other MARC variants. The charset argument is the
+    same as third argument for command
+    <link linkend="command-charset"><literal>charset</literal></link>.
+   </para>
+  </listitem>
+ </varlistentry>
+
+ <varlistentry><term>
+   <literal>set_cclfile</literal>
+   <replaceable>filename</replaceable>
+  </term>
+  <listitem>
+   <para>Specifies that CCL fields should be read from file
+    file <replaceable>filename</replaceable>. This command does the
+    thing as option <literal>-c</literal>.
+   </para>
+  </listitem>
+ </varlistentry>
+
+ <varlistentry><term>
+   <literal>set_cqlfile</literal>
+   <replaceable>filename</replaceable>
+  </term>
+  <listitem>
+   <para>Specifies that CQL fields should be read from file
+    file <replaceable>filename</replaceable>. This command does the
+    thing as option <literal>-q</literal>.
+   </para>
+  </listitem>
+ </varlistentry>
+
+ <varlistentry><term>
+   <literal>register_oid</literal>
+   <replaceable>name</replaceable>
+   <replaceable>class</replaceable>
+   <replaceable>OID</replaceable>
+  </term>
+  <listitem>
+   <para>This command allows you to register your own object
+    identifier - so that instead of entering a long dot-notation
+    you can use a short name instead.
+    The <replaceable>name</replaceable> is your
+    name for the OID, <replaceable>class</replaceable> is the
+    class, and <replaceable>OID</replaceable> is the raw OID in
+    dot notation. Class is one <literal>appctx</literal>,
+    <literal>absyn</literal>, <literal>attet</literal>,
+    <literal>transyn</literal>, <literal>diagset</literal>,
+    <literal>recsyn</literal>, <literal>resform</literal>,
+    <literal>accform</literal>, <literal>extserv</literal>,
+    <literal>userinfo</literal>, <literal>elemspec</literal>,
+    <literal>varset</literal>, <literal>schema</literal>,
+    <literal>tagset</literal>, <literal>general</literal>.
+    If you're in doubt use the <literal>general</literal>
+    class.
+   </para>
+  </listitem>
+ </varlistentry>
+
+ <varlistentry><term>
+   <literal>register_tab</literal>
+   <replaceable>command</replaceable>
+   <replaceable>string</replaceable>
+  </term>
+  <listitem>
+   <para>This command registers a TAB completion string for
+    the command given.
+   </para>
+  </listitem>
+ </varlistentry>
+
+ <varlistentry><term>
+   <literal>sleep</literal>
+   <replaceable>seconds</replaceable>
+  </term>
+  <listitem>
+   <para>This command makes YAZ client sleep (be idle) for
+    the number of seconds given.
+   </para>
+  </listitem>
+ </varlistentry>
+
+ <varlistentry id="command-wait-response"><term>
+   <literal>wait_response</literal>
+   [ <replaceable>number</replaceable>]
+  </term>
+  <listitem>
+   <para>This command makes YAZ client wait for a number of
+    response packages from target. If <replaceable>number</replaceable> is
+    omitted, 1 is assumed. 
+   </para>
+   <para>This command is rarely used and is only useful if command
+    <link linkend="command-set-auto-wait">
+     <literal>set_auto_wait</literal>
+    </link> is set to off.
+   </para>
+  </listitem>
+ </varlistentry>
+
+ <varlistentry id="command-xmles"><term>
+   <literal>xmles</literal>
+   <replaceable>OID</replaceable>
+   <replaceable>doc</replaceable>
+  </term>
+  <listitem>
+   <para>Sends XML Extended Services request using the OID and doc given.
+   </para>
+  </listitem>
+ </varlistentry>
+
+ <varlistentry><term>
+   <literal>zversion</literal>
+   <replaceable>ver</replaceable>
+  </term>
+  <listitem>
+   <para>This command sets Z39.50 version for negotiation. 
+    Should be used before 
+    <link linkend="command-open"><literal>open</literal></link>.
+    By default 3 (version 3) is used.
+   </para>
+  </listitem>
+ </varlistentry>
+
+ <varlistentry><term>
+   <literal>options</literal>
+   <replaceable>op1 op2..</replaceable>
+  </term>
+  <listitem>
+   <para>This command sets Z39.50 options for negotiation. 
+    Should be used before 
+   <link linkend="command-open"><literal>open</literal></link>.
+   </para>
+   <para>
+    The following options are supported:
+    <literal>search</literal>,  
+    <literal>present</literal>,  
+    <literal>delSet</literal>,  
+    <literal>resourceReport</literal>,  
+    <literal>triggerResourceCtrl</literal>,  
+    <literal>resourceCtrl</literal>,  
+    <literal>accessCtrl</literal>,  
+    <literal>scan</literal>,  
+    <literal>sort</literal>,  
+    <literal>extendedServices</literal>,  
+    <literal>level_1Segmentation</literal>,  
+    <literal>level_2Segmentation</literal>,  
+    <literal>concurrentOperations</literal>,  
+    <literal>namedResultSets</literal>,  
+    <literal>encapsulation</literal>,  
+    <literal>resultCount</literal>,  
+    <literal>negotiationModel</literal>,  
+    <literal>duplicationDetection</literal>,  
+    <literal>queryType104</literal>,  
+    <literal>pQESCorrection</literal>,  
+    <literal>stringSchema</literal>.
+   </para>
+  </listitem>
+ </varlistentry>
+ 
+</variablelist>
+<!-- Keep this comment at the end of the file
+Local variables:
+mode: sgml
+sgml-omittag:t
+sgml-shorttag:t
+sgml-minimize-attributes:nil
+sgml-always-quote-attributes:t
+sgml-indent-step:1
+sgml-indent-data:t
+sgml-parent-document: "yaz.xml"
+sgml-local-catalogs: nil
+sgml-namecase-general:t
+End:
+-->

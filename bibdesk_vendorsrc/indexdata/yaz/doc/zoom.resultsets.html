@@ -1,0 +1,161 @@
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"><title>3. Result sets</title><meta name="generator" content="DocBook XSL Stylesheets V1.71.0"><link rel="start" href="index.html" title="YAZ User's Guide and Reference"><link rel="up" href="zoom.html" title="Chapter 3. ZOOM"><link rel="prev" href="zoom.query.html" title="2. Queries"><link rel="next" href="zoom.records.html" title="4. Records"></head><body><link rel="stylesheet" type="text/css" href="common/style1.css"><div class="navheader"><table width="100%" summary="Navigation header"><tr><th colspan="3" align="center">3. Result sets</th></tr><tr><td width="20%" align="left"><a accesskey="p" href="zoom.query.html">Prev</a> </td><th width="60%" align="center">Chapter 3. ZOOM</th><td width="20%" align="right"> <a accesskey="n" href="zoom.records.html">Next</a></td></tr></table><hr></div><div class="sect1" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="zoom.resultsets"></a>3. Result sets</h2></div></div></div><p>
+    The result set object is a container for records returned from
+    a target.
+   </p><pre class="synopsis">
+     ZOOM_resultset ZOOM_connection_search(ZOOM_connection,
+                                           ZOOM_query q);
+
+     ZOOM_resultset ZOOM_connection_search_pqf(ZOOM_connection c,
+                                               const char *q);
+
+     void ZOOM_resultset_destroy(ZOOM_resultset r);
+   </pre><p>
+    Function <code class="function">ZOOM_connection_search</code> creates
+     a result set given a connection and query.
+    Destroy a result set by calling
+    <code class="function">ZOOM_resultset_destroy</code>.
+    Simple clients may using PQF only may use function
+    <code class="function">ZOOM_connection_search_pqf</code> in which case
+    creating query objects is not necessary.
+   </p><pre class="synopsis">
+     void ZOOM_resultset_option_set (ZOOM_resultset r,
+                                      const char *key,
+                                      const char *val);
+
+     const char *ZOOM_resultset_option_get (ZOOM_resultset r,
+                                             const char *key);
+
+     size_t ZOOM_resultset_size (ZOOM_resultset r);
+   </pre><p>
+    Functions <code class="function">ZOOM_resultset_options_set</code> and
+    <code class="function">ZOOM_resultset_get</code> sets and gets an option
+    for a result set similar to <code class="function">ZOOM_connection_option_get</code>
+    and <code class="function">ZOOM_connection_option_set</code>.
+   </p><p>
+    The number of hits also called result-count is returned by
+    function <code class="function">ZOOM_resultset_size</code>.
+   </p><div class="table"><a name="zoom.resultset.options"></a><p class="title"><b>Table 3.2. ZOOM Result set Options</b></p><div class="table-contents"><table summary="ZOOM Result set Options" border="1"><colgroup><col><col><col></colgroup><thead><tr><th>Option</th><th>Description</th><th>Default</th></tr></thead><tbody><tr><td>
+        start</td><td>Offset of first record to be 
+        retrieved from target. First record has offset 0 unlike the
+        protocol specifications where first record has position 1.
+       </td><td>0</td></tr><tr><td>
+        count</td><td>Number of records to be retrieved.
+       </td><td>0</td></tr><tr><td>
+	presentChunk</td><td>The number of records to be
+	requested from the server in each chunk (present requst).  The
+	value 0 means to request all the records in a single chunk.
+	(The old <code class="literal">step</code>
+	option is also supported for the benefit of old applications.)
+       </td><td>0</td></tr><tr><td>
+        elementSetName</td><td>Element-Set name of records. 
+        Most targets should honor element set name <code class="literal">B</code>
+        and <code class="literal">F</code> for brief and full respectively.
+       </td><td>none</td></tr><tr><td>
+        preferredRecordSyntax</td><td>Preferred Syntax, such as
+        <code class="literal">USMARC</code>, <code class="literal">SUTRS</code>, etc.
+       </td><td>none</td></tr><tr><td>
+        schema</td><td>Schema for retrieval, such as
+        <code class="literal">Gils-schema</code>, <code class="literal">Geo-schema</code>, etc.
+       </td><td>none</td></tr><tr><td>
+        setname</td><td>Name of Result Set (Result Set ID).
+        If this option isn't set, the ZOOM module will automatically
+        allocate a result set name.
+       </td><td>default</td></tr></tbody></table></div></div><br class="table-break"><p>
+    For servers that support Search Info report, the following
+    options may be read using <code class="function">ZOOM_resultset_get</code>.
+    This detailed information is read after a successful search has
+    completed.
+   </p><p>
+    This information is a list of of items, where each item is
+    information about a term or subquery. All items in the list 
+    are prefixed by 
+    <code class="literal">SearchResult.</code><em class="replaceable"><code>no</code></em>
+    where no presents the item number (0=first, 1=second). 
+    Read <code class="literal">searchresult.size</code> to determine the
+    number of items.
+   </p><div class="table"><a name="zoom.search.info.report.options"></a><p class="title"><b>Table 3.3. Search Info Report Options</b></p><div class="table-contents"><table summary="Search Info Report Options" border="1"><colgroup><col><col></colgroup><thead><tr><th>Option</th><th>Description</th></tr></thead><tbody><tr><td>searchresult.size</td><td>
+	number of search result entries. This option is-nonexistant
+	if no entries are returned by the server.
+       </td></tr><tr><td>searchresult.<em class="replaceable"><code>no</code></em>.id</td><td>sub query ID</td></tr><tr><td>searchresult.<em class="replaceable"><code>no</code></em>.count</td><td>result count for item (number of hits)</td></tr><tr><td>searchresult.<em class="replaceable"><code>no</code></em>.subquery.term</td><td>subquery term</td></tr><tr><td>
+	searchresult.<em class="replaceable"><code>no</code></em>.interpretation.term
+       </td><td>interpretation term</td></tr><tr><td>
+	searchresult.<em class="replaceable"><code>no</code></em>.recommendation.term
+       </td><td>recommendation term</td></tr></tbody></table></div></div><br class="table-break"><div class="sect2" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="zoom.z3950.resultset.behavior"></a>3.1. Z39.50 Protocol behavior</h3></div></div></div><p>
+     The creation of a result set involves at least a SearchRequest
+     - SearchResponse protocol handshake. Following that, if a sort
+     criteria was specified as part of the query, a SortRequest -
+     SortResponse handshake takes place. Note that it is necessary to
+     perform sorting before any retrieval takes place, so no records will
+     be returned from the target as part of the SearchResponse because these
+     would be unsorted. Hence, piggyback is disabled when sort criteria
+     are set. Following Search - and a possible sort - Retrieval takes
+     place - as one or more Present Requests/Response pairs being
+     transferred.
+     </p><p>
+     The API allows for two different modes for retrieval. A high level
+     mode which is somewhat more powerful and a low level one.
+     The low level is enabled when searching on a Connection object
+     for which the settings
+     <code class="literal">smallSetUpperBound</code>,
+     <code class="literal">mediumSetPresentNumber</code> and
+     <code class="literal">largeSetLowerBound</code> are set. The low level mode
+     thus allows you to precisely set how records are returned as part
+     of a search response as offered by the Z39.50 protocol.
+     Since the client may be retrieving records as part of the
+     search response, this mode doesn't work well if sorting is used.
+     </p><p>
+     The high-level mode allows you to fetch a range of records from
+     the result set with a given start offset. When you use this mode
+     the client will automatically use piggyback if that is possible
+     with the target and perform one or more present requests as needed.
+     Even if the target returns fewer records as part of a present response
+     because of a record size limit, etc. the client will repeat sending
+     present requests. As an example, if option <code class="literal">start</code>
+     is 0 (default) and <code class="literal">count</code> is 4, and
+     <code class="literal">piggyback</code> is 1 (default) and no sorting criteria
+     is specified, then the client will attempt to retrieve the 4
+     records as part the search response (using piggyback). On the other
+     hand, if either <code class="literal">start</code> is positive or if
+     a sorting criteria is set, or if <code class="literal">piggyback</code>
+     is 0, then the client will not perform piggyback but send Present
+     Requests instead.
+    </p><p>
+     If either of the options <code class="literal">mediumSetElementSetName</code> and
+     <code class="literal">smallSetElementSetName</code> are unset, the value
+     of option <code class="literal">elementSetName</code> is used for piggyback
+     searches. This means that for the high-level mode you only have
+     to specify one elementSetName option rather than three.
+     </p></div><div class="sect2" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="zoom.sru.resultset.behavior"></a>3.2. SRU Protocol behavior</h3></div></div></div><p>
+     Current version of YAZ does not take advantage of a result set id
+     returned by the SRU server. Future versions might do, however.
+     Since, the ZOOM driver does not save result set IDs any
+     present (retrieval) is transformed to a SRU SearchRetrieveRequest
+     with same query but, possibly, different offsets.
+    </p><p>
+     Option <code class="literal">schema</code> specifies SRU schema
+     for retrieval. However, options <code class="literal">elementSetName</code> and
+     <code class="literal">preferredRecordSyntax</code> are ignored.
+    </p><p>
+     Options <code class="literal">start</code> and <code class="literal">count</code> 
+     are supported by SRU.
+     The remaining options
+     <code class="literal">piggyback</code>, 
+     <code class="literal">smallSetUpperBound</code>, 
+     <code class="literal">largeSetLowerBound</code>, 
+     <code class="literal">mediumSetPresentNumber</code>, 
+     <code class="literal">mediumSetElementSetName</code>,
+      <code class="literal">smallSetElementSetName</code> are
+     unsupported.
+    </p><p>
+     SRU supports CQL queries, <span class="emphasis"><em>not</em></span> PQF.
+     If PQF is used, however, the PQF query is transferred anyway
+     using non-standard element <code class="literal">pQuery</code> in
+     SRU SearchRetrieveRequest.
+    </p><p>
+     Unfortunately, SRU does not define a database setting. Hence,
+     <code class="literal">databaseName</code> is unsupported and ignored.
+     However, the path part in host parameter for functions 
+     <code class="function">ZOOM_connecton_new</code> and
+     <code class="function">ZOOM_connection_connect</code> acts as a
+     database (at least for the YAZ SRU server).
+    </p></div></div><div class="navfooter"><hr><table width="100%" summary="Navigation footer"><tr><td width="40%" align="left"><a accesskey="p" href="zoom.query.html">Prev</a> </td><td width="20%" align="center"><a accesskey="u" href="zoom.html">Up</a></td><td width="40%" align="right"> <a accesskey="n" href="zoom.records.html">Next</a></td></tr><tr><td width="40%" align="left" valign="top">2. Queries </td><td width="20%" align="center"><a accesskey="h" href="index.html">Home</a></td><td width="40%" align="right" valign="top"> 4. Records</td></tr></table></div></body></html>

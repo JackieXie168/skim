@@ -1,0 +1,46 @@
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"><title>3. Nibble Memory</title><meta name="generator" content="DocBook XSL Stylesheets V1.71.0"><link rel="start" href="index.html" title="YAZ User's Guide and Reference"><link rel="up" href="tools.html" title="Chapter 9. Supporting Tools"><link rel="prev" href="tools.oid.html" title="2. Object Identifiers"><link rel="next" href="tools.log.html" title="4. Log"></head><body><link rel="stylesheet" type="text/css" href="common/style1.css"><div class="navheader"><table width="100%" summary="Navigation header"><tr><th colspan="3" align="center">3. Nibble Memory</th></tr><tr><td width="20%" align="left"><a accesskey="p" href="tools.oid.html">Prev</a> </td><th width="60%" align="center">Chapter 9. Supporting Tools</th><td width="20%" align="right"> <a accesskey="n" href="tools.log.html">Next</a></td></tr></table><hr></div><div class="sect1" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="tools.nmem"></a>3. Nibble Memory</h2></div></div></div><p>
+    Sometimes when you need to allocate and construct a large,
+    interconnected complex of structures, it can be a bit of a pain to
+    release the associated memory again. For the structures describing the
+    Z39.50 PDUs and related structures, it is convenient to use the
+    memory-management system of the <acronym class="acronym">ODR</acronym> subsystem (see
+    <a href="odr.use.html" title="2. Using ODR">Section 2, &#8220;Using ODR&#8221;</a>). However, in some circumstances
+    where you might otherwise benefit from using a simple nibble memory
+    management system, it may be impractical to use
+    <code class="function">odr_malloc()</code> and <code class="function">odr_reset()</code>.
+    For this purpose, the memory manager which also supports the <acronym class="acronym">ODR</acronym>
+    streams is made available in the NMEM module. The external interface
+    to this module is given in the <code class="filename">nmem.h</code> file.
+   </p><p>
+    The following prototypes are given:
+   </p><pre class="screen">
+    NMEM nmem_create(void);
+    void nmem_destroy(NMEM n);
+    void *nmem_malloc(NMEM n, int size);
+    void nmem_reset(NMEM n);
+    int nmem_total(NMEM n);
+    void nmem_init(void);
+    void nmem_exit(void);
+   </pre><p>
+    The <code class="function">nmem_create()</code> function returns a pointer to a
+    memory control handle, which can be released again by
+    <code class="function">nmem_destroy()</code> when no longer needed.
+    The function <code class="function">nmem_malloc()</code> allocates a block of
+    memory of the requested size. A call to <code class="function">nmem_reset()</code>
+    or <code class="function">nmem_destroy()</code> will release all memory allocated
+    on the handle since it was created (or since the last call to
+    <code class="function">nmem_reset()</code>. The function
+    <code class="function">nmem_total()</code> returns the number of bytes currently
+    allocated on the handle.
+   </p><p>
+    The nibble memory pool is shared amongst threads. POSIX
+    mutex'es and WIN32 Critical sections are introduced to keep the
+    module thread safe. Function <code class="function">nmem_init()</code>
+    initializes the nibble memory library and it is called automatically
+    the first time the <code class="literal">YAZ.DLL</code> is loaded. YAZ uses
+    function <code class="function">DllMain</code> to achieve this. You should
+    <span class="emphasis"><em>not</em></span> call <code class="function">nmem_init</code> or
+    <code class="function">nmem_exit</code> unless you're absolute sure what
+    you're doing. Note that in previous YAZ versions you'd have to call
+    <code class="function">nmem_init</code> yourself. 
+   </p></div><div class="navfooter"><hr><table width="100%" summary="Navigation footer"><tr><td width="40%" align="left"><a accesskey="p" href="tools.oid.html">Prev</a> </td><td width="20%" align="center"><a accesskey="u" href="tools.html">Up</a></td><td width="40%" align="right"> <a accesskey="n" href="tools.log.html">Next</a></td></tr><tr><td width="40%" align="left" valign="top">2. Object Identifiers </td><td width="20%" align="center"><a accesskey="h" href="index.html">Home</a></td><td width="40%" align="right" valign="top"> 4. Log</td></tr></table></div></body></html>

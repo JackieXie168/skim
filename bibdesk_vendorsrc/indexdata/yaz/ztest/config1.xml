@@ -1,0 +1,28 @@
+<!-- $Id: config1.xml,v 1.3 2005/03/14 11:13:12 adam Exp $ -->
+ <yazgfs>
+  <listen id="public">tcp:@:9900</listen>
+  <listen id="internal">unix:/var/tmp/socket</listen>
+  <server id="server1">
+    <host>server1.mydomain</host>
+    <directory>/var/www/s1</directory>
+    <config>config.cfg</config>
+  </server>
+  <server id="server2">
+    <host>localhost</host>
+    <directory>/var/www/s2</directory>
+    <config>config.cfg</config>
+    <cql2rpn>../etc/pqf.properties</cql2rpn>
+    <explain xmlns="http://explain.z3950.org/dtd/2.0/">
+      <serverInfo>
+        <host>server2.mydomain</host>
+        <port>9900</port>
+        <database>a</database>
+      </serverInfo>
+    </explain>
+  </server>
+  <server id="server3" listenref="internal">
+    <directory>/var/www/s3</directory>
+    <config>config.cfg</config>
+  </server>
+ </yazgfs>
+

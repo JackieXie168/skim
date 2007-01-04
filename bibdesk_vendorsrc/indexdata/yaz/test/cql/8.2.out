@@ -1,0 +1,12 @@
+<searchClause>
+  <prefixes>
+    <prefix>
+      <identifier>info:srw/cql-context-set/1/dc-v1.1</identifier>
+    </prefix>
+  </prefixes>
+  <index>title</index>
+  <relation>
+    <value>=</value>
+  </relation>
+  <term>fish</term>
+</searchClause>

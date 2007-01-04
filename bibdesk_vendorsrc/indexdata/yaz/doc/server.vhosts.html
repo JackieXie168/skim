@@ -1,0 +1,145 @@
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"><title>7. Virtual Hosts</title><meta name="generator" content="DocBook XSL Stylesheets V1.71.0"><link rel="start" href="index.html" title="YAZ User's Guide and Reference"><link rel="up" href="server.html" title="Chapter 4. Generic server"><link rel="prev" href="server.invocation.html" title="6. Application Invocation"><link rel="next" href="client.html" title="Chapter 5. The YAZ client"></head><body><link rel="stylesheet" type="text/css" href="common/style1.css"><div class="navheader"><table width="100%" summary="Navigation header"><tr><th colspan="3" align="center">7. Virtual Hosts</th></tr><tr><td width="20%" align="left"><a accesskey="p" href="server.invocation.html">Prev</a> </td><th width="60%" align="center">Chapter 4. Generic server</th><td width="20%" align="right"> <a accesskey="n" href="client.html">Next</a></td></tr></table><hr></div><div class="sect1" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="server.vhosts"></a>7. Virtual Hosts</h2></div></div></div><p>
+ The Virtual hosts mechanism allows a YAZ frontend server to
+ support multiple backends. A backend is selected on the basis of
+ the TCP/IP binding (port+listening adddress) and/or the virtual host.
+</p><p>
+ A backend can be configured to execute in a particular working
+ directory. Or the YAZ frontend may perform CQL to RPN conversion, thus
+ allowing traditional Z39.50 backends to be offered as a SRW/SRU
+ service. SRW/SRU Explain information for a particular backend may also
+ be specified.
+</p><p>
+ For the HTTP protocol, the virtual host is specified in the Host header.
+ For the Z39.50 protocol, the virtual host is specified as in the
+ Initialize Request in the OtherInfo, OID 1.2.840.10003.10.1000.81.1.
+</p><div class="note" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title">Note</h3><p>
+  Not all Z39.50 clients allows the VHOST information to be set.
+  For those the selection of the backend must rely on the
+  TCP/IP information alone (port and address).
+ </p></div><p>
+ The YAZ frontend server uses XML to describe the backend
+ configurations. Command-line option <code class="literal">-f</code> 
+ specifies filename of the XML configuration.
+</p><p>
+ The configuration uses the root element <code class="literal">yazgfs</code>.
+ This element includes a list of <code class="literal">listen</code> elements,
+ followed by one or more <code class="literal">server</code> elements.
+</p><p>
+ The <code class="literal">listen</code> describes listener (transport end point),
+ such as TCP/IP, Unix file socket or SSL server. Content for 
+ a listener:
+ </p><div class="variablelist"><dl><dt><span class="term">CDATA (required)</span></dt><dd><p>
+     The CDATA for the <code class="literal">listen</code> element holds the
+     listener string, such as <code class="literal">tcp:@:210</code>, 
+     <code class="literal">tcp:server1:2100</code>,
+     etc.
+    </p></dd><dt><span class="term">attribute <code class="literal">id</code> (optional)</span></dt><dd><p>
+      identifier for this listener. This may be referred to from
+      server sections.
+     </p></dd></dl></div><p>
+ </p><div class="note" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title">Note</h3><p>
+   We expect more information to be added for the listen section in
+   a future version, such as CERT file for SSL servers.
+  </p></div><p>
+</p><p>
+ The <code class="literal">server</code> describes a server and the parameters
+ for this server type. Content for a server:
+ </p><div class="variablelist"><dl><dt><span class="term">attribute <code class="literal">id</code> (optional)</span></dt><dd><p>
+     Identifier for this server. Currently not used for anything,
+     but it might be for logging purposes.
+   </p></dd><dt><span class="term">attribute <code class="literal">listenref</code> (optional)</span></dt><dd><p>
+     Specifies listener for this server. If this attribute is not
+     given, the server is accessible from all listener. In order
+     for the server to be used for real, howeever, the virtual host
+     must match (if specified in the configuration).
+    </p></dd><dt><span class="term">element <code class="literal">config</code> (optional)</span></dt><dd><p>
+     Specifies the server configuration. This is equivalent
+     to the config specified using command line option
+     <code class="literal">-c</code>.
+    </p></dd><dt><span class="term">element <code class="literal">directory</code> (optional)</span></dt><dd><p>
+     Specifies a working directory for this backend server. If
+     specifid, the YAZ fronend changes current working directory
+     to this directory whenever a backend of this type is
+     started (backend handler bend_start), stopped (backend handler hand_stop)
+     and initialized (bend_init).
+    </p></dd><dt><span class="term">element <code class="literal">host</code> (optional)</span></dt><dd><p>
+     Specifies the virtual host for this server. If this is specified
+     a client <span class="emphasis"><em>must</em></span> specify this host string in
+     order to use this backend.
+    </p></dd><dt><span class="term">element <code class="literal">cql2rpn</code> (optional)</span></dt><dd><p>
+     Specifies a filename that includes CQL to RPN conversion for this
+     backend server. See <a href="tools.html#cql.to.rpn" title="1.3.4. Specification of CQL to RPN mappings">Section 1.3.4, &#8220;Specification of CQL to RPN mappings&#8221;</a>
+     If given, the backend server will only "see" a Type-1/RPN query. 
+    </p></dd><dt><span class="term">element <code class="literal">stylesheet</code> (optional)</span></dt><dd><p>
+     Specifies the stylesheet reference to be part of SRU HTTP responses
+     when the client does not specify one. If neither this is given, nor
+     the client specifies one, no stylesheet reference is part of the
+     SRU HTTP response.
+    </p></dd><dt><span class="term">element <code class="literal">docpath</code> (optional)</span></dt><dd><p>
+     Specifies a path for local file access using HTTP. All URLs with
+     a leading prefix (/ exluded) that matches the value of docpath
+     are used for file access. For example, if the server is to offer
+     access in directory <code class="literal">xsl</code>, the docpath would be
+     <code class="literal">xsl</code> and all URLs of the form
+     <code class="literal">http://host/exl</code> will result in a local file access.
+    </p></dd><dt><span class="term">element <code class="literal">explain</code> (optional)</span></dt><dd><p>
+     Specifies SRW/SRU ZeeRex content for this server. Copied verbatim
+     to the client. As things are now, some of the Explain content
+     seeem redundant because host information, etc. is also stored
+     elsewhere.
+    </p></dd><dt><span class="term">element <code class="literal">maximumrecordsize</code> (optional)</span></dt><dd><p>
+     Specifies maximum record size/message size, in bytes. This
+     value also servers as maximum size of <span class="emphasis"><em>incoming</em></span>
+     packages (for Record Updates etc). It's the same value as that
+     given by the <code class="literal">-k</code> option.
+    </p></dd></dl></div><p>
+</p><p>
+ The XML below configures a server that accepts connections from
+ two ports, TCP/IP port 9900 and a local UNIX file socket.
+ We name the TCP/IP server <code class="literal">public</code> and the
+ other server <code class="literal">internal</code>.
+ </p><pre class="screen">
+  
+ &lt;yazgfs&gt;
+  &lt;listen id="public"&gt;tcp:@:9900&lt;/listen&gt;
+  &lt;listen id="internal"&gt;unix:/var/tmp/socket&lt;/listen&gt;
+  &lt;server id="server1"&gt;
+    &lt;host&gt;server1.mydomain&lt;/host&gt;
+    &lt;directory&gt;/var/www/s1&lt;/directory&gt;
+    &lt;config&gt;config.cfg&lt;/config&gt;
+  &lt;/server&gt;
+  &lt;server id="server2"&gt;
+    &lt;host&gt;server2.mydomain&lt;/host&gt;
+    &lt;directory&gt;/var/www/s2&lt;/directory&gt;
+    &lt;config&gt;config.cfg&lt;/config&gt;
+    &lt;cql2rpn&gt;../etc/pqf.properties&lt;/cql2rpn&gt;
+    &lt;explain xmlns="http://explain.z3950.org/dtd/2.0/"&gt;
+      &lt;serverInfo&gt;
+        &lt;host&gt;server2.mydomain&lt;/host&gt;
+        &lt;port&gt;9900&lt;/port&gt;
+        &lt;database&gt;a&lt;/database&gt;
+      &lt;/serverInfo&gt;
+    &lt;/explain&gt;
+  &lt;/server&gt;
+  &lt;server id="server3" listenref="internal"&gt;
+    &lt;directory&gt;/var/www/s3&lt;/directory&gt;
+    &lt;config&gt;config.cfg&lt;/config&gt;
+  &lt;/server&gt;
+ &lt;/yazgfs&gt;
+
+ </pre><p>
+ There are three configured backend servers. The first two
+ servers, <code class="literal">"server1"</code> and <code class="literal">"server2"</code>,
+ can be reached by both listener addresses - since
+ no <code class="literal">listenref</code> attribute is specified.
+ In order to distinguish between the two a virtual host has
+ been specified for each of server in the <code class="literal">host</code>
+ elements.
+</p><p>
+ For <code class="literal">"server2"</code> elements for CQL to RPN conversion
+ is supported and explain information has been added (a short one here
+ to keep the example small).
+</p><p>
+ The third server, <code class="literal">"server3"</code> can only be reached
+ via listener <code class="literal">"internal"</code>.
+</p></div><div class="navfooter"><hr><table width="100%" summary="Navigation footer"><tr><td width="40%" align="left"><a accesskey="p" href="server.invocation.html">Prev</a> </td><td width="20%" align="center"><a accesskey="u" href="server.html">Up</a></td><td width="40%" align="right"> <a accesskey="n" href="client.html">Next</a></td></tr><tr><td width="40%" align="left" valign="top">6. Application Invocation </td><td width="20%" align="center"><a accesskey="h" href="index.html">Home</a></td><td width="40%" align="right" valign="top"> Chapter 5. The YAZ client</td></tr></table></div></body></html>

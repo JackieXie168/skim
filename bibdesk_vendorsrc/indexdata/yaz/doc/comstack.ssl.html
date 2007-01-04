@@ -1,0 +1,30 @@
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"><title>7. SSL</title><meta name="generator" content="DocBook XSL Stylesheets V1.71.0"><link rel="start" href="index.html" title="YAZ User's Guide and Reference"><link rel="up" href="comstack.html" title="Chapter 11. The COMSTACK Module"><link rel="prev" href="comstack.addresses.html" title="6. Addresses"><link rel="next" href="comstack.diagnostics.html" title="8. Diagnostics"></head><body><link rel="stylesheet" type="text/css" href="common/style1.css"><div class="navheader"><table width="100%" summary="Navigation header"><tr><th colspan="3" align="center">7. SSL</th></tr><tr><td width="20%" align="left"><a accesskey="p" href="comstack.addresses.html">Prev</a> </td><th width="60%" align="center">Chapter 11. The COMSTACK Module</th><td width="20%" align="right"> <a accesskey="n" href="comstack.diagnostics.html">Next</a></td></tr></table><hr></div><div class="sect1" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="comstack.ssl"></a>7. SSL</h2></div></div></div><p>
+    </p><pre class="synopsis">
+     void *cs_get_ssl(COMSTACK cs);
+    </pre><p>
+    Returns the SSL handle, <code class="literal">SSL *</code> for comstack. If comstack
+    is not of type SSL, NULL is returned.
+   </p><p>
+    </p><pre class="synopsis">
+     int cs_set_ssl_ctx(COMSTACK cs, void *ctx);
+    </pre><p>
+    Sets SSL context for comstack. The parameter is expected to be of type
+    <code class="literal">SSL_CTX *</code>. This function should be called just
+    after comstack has been created (before connect, bind, etc).
+    This function returns 1 for success; 0 for failure.
+   </p><p>
+    </p><pre class="synopsis">
+     int cs_set_ssl_certificate_file(COMSTACK cs, const char *fname);
+    </pre><p>
+    Sets SSL certificate for comstack as a PEM file. This function
+    returns 1 for success; 0 for failure.
+   </p><p>
+    </p><pre class="synopsis">
+     int cs_get_ssl_peer_certificate_x509(COMSTACK cs, char **buf, int *len);
+    </pre><p>
+    This function returns the peer certificate. If successful,
+    <code class="literal">*buf</code> and <code class="literal">*len</code> holds
+    X509 buffer and length respectively. Buffer should be freed
+    with <code class="literal">xfree</code>. This function returns 1 for success;
+    0 for failure.
+   </p></div><div class="navfooter"><hr><table width="100%" summary="Navigation footer"><tr><td width="40%" align="left"><a accesskey="p" href="comstack.addresses.html">Prev</a> </td><td width="20%" align="center"><a accesskey="u" href="comstack.html">Up</a></td><td width="40%" align="right"> <a accesskey="n" href="comstack.diagnostics.html">Next</a></td></tr><tr><td width="40%" align="left" valign="top">6. Addresses </td><td width="20%" align="center"><a accesskey="h" href="index.html">Home</a></td><td width="40%" align="right" valign="top"> 8. Diagnostics</td></tr></table></div></body></html>

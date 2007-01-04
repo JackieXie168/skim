@@ -1,0 +1,23 @@
+<triple>
+  <boolean>
+    <value>and</value>
+  </boolean>
+  <leftOperand>
+    <searchClause>
+      <index>cql.serverChoice</index>
+      <relation>
+        <value>scr</value>
+      </relation>
+      <term>xml</term>
+    </searchClause>
+  </leftOperand>
+  <rightOperand>
+    <searchClause>
+      <index>cql.serverChoice</index>
+      <relation>
+        <value>scr</value>
+      </relation>
+      <term>prox///</term>
+    </searchClause>
+  </rightOperand>
+</triple>

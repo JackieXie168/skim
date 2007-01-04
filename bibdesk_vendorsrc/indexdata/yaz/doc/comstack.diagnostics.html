@@ -1,0 +1,28 @@
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"><title>8. Diagnostics</title><meta name="generator" content="DocBook XSL Stylesheets V1.71.0"><link rel="start" href="index.html" title="YAZ User's Guide and Reference"><link rel="up" href="comstack.html" title="Chapter 11. The COMSTACK Module"><link rel="prev" href="comstack.ssl.html" title="7. SSL"><link rel="next" href="comstack.summary.html" title="9. Summary and Synopsis"></head><body><link rel="stylesheet" type="text/css" href="common/style1.css"><div class="navheader"><table width="100%" summary="Navigation header"><tr><th colspan="3" align="center">8. Diagnostics</th></tr><tr><td width="20%" align="left"><a accesskey="p" href="comstack.ssl.html">Prev</a> </td><th width="60%" align="center">Chapter 11. The COMSTACK Module</th><td width="20%" align="right"> <a accesskey="n" href="comstack.summary.html">Next</a></td></tr></table><hr></div><div class="sect1" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="comstack.diagnostics"></a>8. Diagnostics</h2></div></div></div><p>
+    All functions return -1 if an error occurs. Typically, the functions
+    will return 0 on success, but the data exchange functions
+    (<code class="function">cs_get</code>, <code class="function">cs_put</code>,
+    <code class="function">cs_more</code>) follow special rules. Consult their
+    descriptions.
+   </p><p>
+    When a function (including the data exchange functions) reports an
+    error condition, use the function
+    <code class="function">cs_errno()</code> to determine the cause of the
+    problem. The function
+   </p><pre class="synopsis">
+    void cs_perror(COMSTACK handle char *message);
+   </pre><p>
+    works like <code class="function">perror(2)</code> and prints the
+    <code class="literal">message</code> argument, along with a system message, to
+    <code class="literal">stderr</code>. Use the character array
+   </p><pre class="synopsis">
+    extern const char *cs_errlist[];
+   </pre><p>
+    to get hold of the message, if you want to process it differently.
+    The function
+   </p><pre class="synopsis">
+    const char *cs_stackerr(COMSTACK handle);
+   </pre><p>
+    Returns an error message from the lower layer, if one has been
+    provided.
+   </p></div><div class="navfooter"><hr><table width="100%" summary="Navigation footer"><tr><td width="40%" align="left"><a accesskey="p" href="comstack.ssl.html">Prev</a> </td><td width="20%" align="center"><a accesskey="u" href="comstack.html">Up</a></td><td width="40%" align="right"> <a accesskey="n" href="comstack.summary.html">Next</a></td></tr><tr><td width="40%" align="left" valign="top">7. SSL </td><td width="20%" align="center"><a accesskey="h" href="index.html">Home</a></td><td width="40%" align="right" valign="top"> 9. Summary and Synopsis</td></tr></table></div></body></html>

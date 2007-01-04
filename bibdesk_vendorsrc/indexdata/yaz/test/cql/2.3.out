@@ -1,0 +1,7 @@
+<searchClause>
+  <index>title</index>
+  <relation>
+    <value>any</value>
+  </relation>
+  <term>fish</term>
+</searchClause>

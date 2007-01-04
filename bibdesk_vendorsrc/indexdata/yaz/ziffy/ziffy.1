@@ -1,0 +1,186 @@
+.\"
+.\" -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
+.\" ziffy.1 - a promiscuous Z39.50 APDU sniffer for Ethernet
+.\"
+.\" Copyright (c) 1998 R. Carbone - Finsiel S.p.A.
+.\" -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
+.\"
+.\" This program is free software; you can redistribute it and/or modify
+.\" it under the terms of the GNU General Public License as published by
+.\" the Free Software Foundation; either version 2 of the License, or
+.\" (at your option) any later version.
+.\"
+.\" This program is distributed in the hope that it will be useful,
+.\" but WITHOUT ANY WARRANTY; without even the implied warranty of
+.\" MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+.\" GNU General Public License for more details.
+.\"
+.\" You should have received a copy of the GNU General Public License
+.\" along with this program; if not, write to the Free Software
+.\" Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
+.\" 
+.TH ZIFFY 1 "0.0.2" "28 December 1998" "The Z39.50 Network Sniffer"
+.SH NAME
+ziffy \- capture and display Z39.50 APDUs on a live network
+.SH SYNOPSYS
+.na
+.B ziffy
+[
+.B \-alloptionshere
+]
+.br
+.ti +6
+[
+.B \-i
+.I interface
+] [
+.B \-r
+.I file
+]
+[
+.B \-s
+.I snaplen
+]
+.br
+.ti +8
+[
+.B \-T
+.I type
+]
+[
+.B \-w
+.I file
+]
+[
+.I expression
+]
+.br
+.ad
+.SH DESCRIPTION
+\fBziffy\fR is a Z39.50 protocol analyzer based on the \fBLIBPCAP\fR,
+the current standard Unix library for packet capturing. It can be started both in interactive
+mode to capture, decode and show all information in the Z39.50 APDUs from a live network,
+and in batch mode to analyze the APDUs off-line from a previously created file.
+\fBziffy\fR uses the standard BPF network packet filter for more reliable capture mechanism.
+An additional expression can be given on the command line to capture only packets
+for which \fIexpression\fP is `true'.
+By default \fBziffy\fR displays Z39.50 APDUs in a single-line summary form. In this format
+only the name of the captured APDU is displayed in the summary line while the underlaying TCP,
+IP, and Ethernet frames information are discarded.
+Multi-lines are also supported if either of verbose modes are enabled.
+This allows an high degree of monitoring, from simple checks of functional processes down
+to full APDUs hexacimal dump for interoperability and debugging testing phases.
+.SH OPTIONS
+.TP
+.B \-a
+Attempt to convert network addresses to names. By default, \fBziffy\fR will ___not___
+resolve IP addresses to FQDN's.
+.TP
+.B \-c
+Capture a maximum of \fIcount\fP number of APDUs and then exit.
+.TP
+.B \-e
+Enable the display of the link-level header.
+.TP
+.B \-f
+Do not traslate `foreign' internet addresses.
+.TP
+.B \-h
+Display a help screen and quit.
+.TP
+.B \-i
+Define the name of the interface to use for live packet capture. It should match
+one of the names listed in \*(L"\fBnetstat \-i\fR\*(R" or \*(L"\fBifconfig \-a\fR\*(R".
+By default \fBziffy\fR will automatically choose the first non-loopback interface it finds.
+.TP
+.B \-l
+Make stdout line buffered. Useful if you want to see the data while capturing it.
+.TP
+.B \-n
+Disable domain name qualification of host names.
+.TP
+.B \-p
+Set the interface in non-promiscuous mode. Only packets addressed to the local host machine
+will be captured.
+.TP
+.B \-r
+Read packet data from \fIfile\fR.  Currently, \fBziffy\fR only understands
+\fBpcap\fR / \fBtcpdump\fR formatted files.
+.TP
+.B \-s
+Truncate each packet after \fIsnaplen\fP bytes when capturing live data.
+No more than \fIsnaplen\fR bytes of each network packet will be read into memory,
+or saved to disk.
+.br
+While 68 bytes is adequate for lower-level protocol such as IP, ICMP, TCP and UDP,
+it is inadeguate for Z39.50 and the exact cut-off is not easy to determine.
+The default value is set to 10K which should be enough for most networks.
+You should limit \fIsnaplen\fP to the smallest number that will allow you to
+capture all the Z39.50 protocol information.
+.br
+Note that taking larger snapshots both increases the amount of time it takes to
+process packets and, effectively, decreases the amount of packet buffering.
+This may cause packets to be lost.
+.TP
+.B \-t
+Sets the format of the packet timestamp displayed.
+
+INSERIRE QUI LA SBRODOLATA PER I VARI FORMATI DI PRESENTAZIONE
+
+.TP
+.B \-v
+Print the program version and exit.
+.TP
+.B \-w
+Write the raw Z39.50 APDUs to \fIfile\fR rather than printing them out.
+They can later be printed with the \-r option.
+Standard output is used if \fIfile\fR is ``-''.
+.TP
+.B \-1
+Set verbose output at level 1.
+.TP
+.B \-2
+Set verbose output at level 2.
+.TP
+.B \-T
+With this option you can filter out certain APDU types from beeing 
+shown. For example, if you only wanted to see all APDU's except 
+"init" and "sort" you could use:
+.B % \fBziffy\fR -T init -T sort
+Currently known APDU types are:
+\fBinit\fR
+\fBseach\fR
+\fBpresent\fR
+\fBscan\fR
+\fBsort\fR
+
+
+.Sp
+A display filter can be entered into the strip at the bottom.  It must
+have the same format as \fBtcpdump\fR filter strings, since both programs use
+the same underlying library.
+.SH EXAMPLES
+.LP
+To print all APDUs arriving at or departing from \fIzeta.tlcpi.finsiel.it\fP:
+.RS
+.nf
+\fBziffy host zeta.tlcpi.finsiel.it\fP
+.fi
+.RE
+.SH OUTPUT FORMAT
+The output of \fIziffy\fP is Z39.50 APDU dependent. The following
+gives a brief description and examples of most of the formats.
+.SH WARNING
+To run
+.I ziffy
+you must be root or it must be installed setuid to root.
+.SH "SEE ALSO"
+tcpdump(1), pcap(3), xasn1(3), yaz(7), snacc(3)
+.SH NOTES
+The latest version of \fBziffy\fR can be found at
+\fBhttp://zeta.tlcpi.finsiel.it/ziffy\fR
+.SH AUTHOR
+Rocco Carbone <rocco@ntop.org>
+.SH BUGS
+Please send bug reports to the author <rocco@ntop.org>
+

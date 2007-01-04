@@ -1,0 +1,80 @@
+.\"     Title: yaz\-iconv
+.\"    Author: 
+.\" Generator: DocBook XSL Stylesheets v1.71.0 <http://docbook.sf.net/>
+.\"      Date: 12/17/2006
+.\"    Manual: 
+.\"    Source: YAZ 2.1.42
+.\"
+.TH "YAZ\-ICONV" "1" "12/17/2006" "YAZ 2.1.42" ""
+.\" disable hyphenation
+.nh
+.\" disable justification (adjust text to left margin only)
+.ad l
+.SH "NAME"
+yaz\-iconv \- YAZ Charcter set conversion utility
+.SH "SYNOPSIS"
+.HP 10
+\fByaz\-iconv\fR [\fB\-f\ \fR\fB\fIfrom\fR\fR] [\fB\-t\ \fR\fB\fIto\fR\fR] [\fB\-v\fR] [file...]
+.SH "DESCRIPTION"
+.PP
+
+\fByaz\-iconv\fR
+converts data in file in character set specified by
+\fIfrom\fR
+to output in character set as specified by
+\fIto\fR.
+.PP
+This
+\fByaz\-iconv\fR
+utility similar to the
+\fBiconv\fR
+found on many POSIX systems (Glibc, Solaris, etc).
+.PP
+If no
+\fIfile\fR
+is specified,
+\fByaz\-iconv\fR
+reads from standard input.
+.SH "OPTIONS"
+.PP
+\-f\fIfrom\fR]
+.RS 3n
+Specify the character set
+\fIfrom\fR
+of the input file. Should be used in conjunction with option
+\-t.
+.RE
+.PP
+\-t\fIto\fR]
+.RS 3n
+Specify the character set
+\fIof\fR
+of the output. Should be used in conjunction with option
+\-f.
+.RE
+.PP
+\-v
+.RS 3n
+Print more information about the conversion process.
+.RE
+.SH "EXAMPLES"
+.PP
+The following command converts from ISO\-8859\-1 (Latin\-1) to UTF\-8.
+.sp
+.RS 3n
+.nf
+    yaz\-iconv \-f ISO\-8859\-1 \-t UTF\-8 \-X <input.lst >output.lst
+   
+.fi
+.RE
+.sp
+.SH "FILES"
+.PP
+
+\fI\fIprefix\fR\fR\fI/bin/yaz\-iconv\fR
+.PP
+
+\fI\fIprefix\fR\fR\fI/include/yaz/yaz\-iconv.h\fR
+.SH "SEE ALSO"
+.PP
+yaz(7) iconv(1)

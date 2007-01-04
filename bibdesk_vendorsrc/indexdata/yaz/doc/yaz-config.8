@@ -1,0 +1,75 @@
+.\"     Title: yaz\-config
+.\"    Author: 
+.\" Generator: DocBook XSL Stylesheets v1.71.0 <http://docbook.sf.net/>
+.\"      Date: 12/17/2006
+.\"    Manual: 
+.\"    Source: YAZ 2.1.42
+.\"
+.TH "YAZ\-CONFIG" "8" "12/17/2006" "YAZ 2.1.42" ""
+.\" disable hyphenation
+.nh
+.\" disable justification (adjust text to left margin only)
+.ad l
+.SH "NAME"
+yaz\-config \- Script to get information about YAZ.
+.SH "SYNOPSIS"
+.HP 11
+\fByaz\-config\fR [\fB\-\-prefix[=\fR\fB\fIDIR\fR\fR\fB]\fR] [\fB\-\-version\fR] [\fB\-\-libs\fR] [\fB\-\-lalibs\fR] [\fB\-\-cflags\fR] [\fB\-\-comp\fR] [libraries...]
+.SH "DESCRIPTION"
+.PP
+
+\fByaz\-config\fR
+is a script that returns information that your own software should use to build software that uses YAZ.
+.PP
+The following libraries are supported:
+.PP
+threads
+.RS 3n
+Use the threaded version of YAZ.
+.RE
+.SH "OPTIONS"
+.PP
+\-\-prefix[=\fIDIR\fR]
+.RS 3n
+Returns prefix of YAZ or assume a different one if DIR is specified.
+.RE
+.PP
+\-\-version
+.RS 3n
+Returns version of YAZ.
+.RE
+.PP
+\-\-libs
+.RS 3n
+Library specification be used when using YAZ.
+.RE
+.PP
+\-\-lalibs
+.RS 3n
+Return library specification.
+.RE
+.PP
+\-\-cflags
+.RS 3n
+Return C Compiler flags.
+.RE
+.PP
+\-\-comp
+.RS 3n
+Returns full path to YAZ' ASN.1 compiler: yaz\-asncomp.
+.RE
+.SH "FILES"
+.PP
+
+\fI/usr/local/bin/yaz\-config\fR
+.PP
+
+\fI/usr/local/lib/libyaz*.a\fR
+.PP
+
+\fI/usr/local/include/yaz/*.h\fR
+.SH "SEE ALSO"
+.PP
+yaz(7)
+.PP
+Section "How to make apps using YAZ on UNIX" in the YAZ manual.

@@ -1,0 +1,63 @@
+
+.table table {
+	border-collapse;
+	border: 1px solid black;
+	border-spacing: 0;	
+	width: 94%;
+	margin-left: auto;
+	margin-right: 0;
+}
+
+.author {
+	font-style: italic;
+}
+
+.TITLEPAGE, .LOT, .TOC {
+	font-family: sans-serif;
+}
+
+.TITLEPAGE .abstract {
+	margin: 0 150px 1em 0;	
+	font-style: oblique;
+}
+
+.TITLEPAGE .inlinemediaobject {
+	position: absolute;
+	top: 60px;
+	right: 0;
+	width: 140px;
+}
+
+.table th {
+	padding: 3px 6px;
+	border: 1px solid black;
+}
+.table td {
+	text-align: left;
+	padding: 3px 6px;
+}
+
+h1, h3, h4 {
+	font-family: sans-serif;
+}
+
+h2 {
+	font-style: italic;
+	font-family: sans-serif;
+}
+
+.figure b, .table b, .example b {
+	font-style: italic;
+}
+
+.example , .figure {
+	margin-left: 3%;
+}
+
+.screen, .synopsis, .programlisting {
+	margin-left: 6%;
+	padding: 4px;
+	border-style: solid;
+	border-width: 1px;
+	border-color: #bbbbbb;
+}

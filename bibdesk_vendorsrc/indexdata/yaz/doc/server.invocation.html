@@ -1,0 +1,167 @@
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"><title>6. Application Invocation</title><meta name="generator" content="DocBook XSL Stylesheets V1.71.0"><link rel="start" href="index.html" title="YAZ User's Guide and Reference"><link rel="up" href="server.html" title="Chapter 4. Generic server"><link rel="prev" href="server.backendfunctions.html" title="5. The Backend Functions"><link rel="next" href="server.vhosts.html" title="7. Virtual Hosts"></head><body><link rel="stylesheet" type="text/css" href="common/style1.css"><div class="navheader"><table width="100%" summary="Navigation header"><tr><th colspan="3" align="center">6. Application Invocation</th></tr><tr><td width="20%" align="left"><a accesskey="p" href="server.backendfunctions.html">Prev</a> </td><th width="60%" align="center">Chapter 4. Generic server</th><td width="20%" align="right"> <a accesskey="n" href="server.vhosts.html">Next</a></td></tr></table><hr></div><div class="sect1" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="server.invocation"></a>6. Application Invocation</h2></div></div></div><p>
+    The finished application has the following
+    invocation syntax (by way of <code class="function">statserv_main()</code>):
+   </p><div class="cmdsynopsis"><p><code class="command">application</code>  [<code class="option">-install</code>] [<code class="option">-installa</code>] [<code class="option">-remove</code>] [<code class="option">-a <em class="replaceable"><code>file</code></em></code>] [<code class="option">-v <em class="replaceable"><code>level</code></em></code>] [<code class="option">-l <em class="replaceable"><code>file</code></em></code>] [<code class="option">-u <em class="replaceable"><code>uid</code></em></code>] [<code class="option">-c <em class="replaceable"><code>config</code></em></code>] [<code class="option">-f <em class="replaceable"><code>vconfig</code></em></code>] [<code class="option">-C <em class="replaceable"><code>fname</code></em></code>] [<code class="option">-t <em class="replaceable"><code>minutes</code></em></code>] [<code class="option">-k <em class="replaceable"><code>kilobytes</code></em></code>] [<code class="option">-d <em class="replaceable"><code>daemon</code></em></code>] [<code class="option">-w <em class="replaceable"><code>dir</code></em></code>] [<code class="option">-p <em class="replaceable"><code>pidfile</code></em></code>] [<code class="option">-r <em class="replaceable"><code>kilobytes</code></em></code>] [<code class="option">-ziDST1</code>] [listener-spec...]</p></div><p>
+    The options are:
+
+    
+
+</p><div class="variablelist"><dl><dt><span class="term"><code class="literal">-a </code>
+   <em class="replaceable"><code>file</code></em></span></dt><dd><p>
+    Specify a file for dumping PDUs (for diagnostic purposes).
+    The special name <code class="literal">-</code> (dash) sends output to
+    <code class="literal">stderr</code>.
+   </p></dd><dt><span class="term"><code class="literal">-S</code></span></dt><dd><p>
+    Don't fork or make threads on connection requests. This is good for
+    debugging, but not recommended for real operation: Although the
+    server is asynchronous and non-blocking, it can be nice to keep
+    a software malfunction (okay then, a crash) from affecting all
+    current users.
+   </p></dd><dt><span class="term"><code class="literal">-1</code></span></dt><dd><p>
+    Like <code class="literal">-S</code> but after one session the server
+    exits. This mode is for debugging <span class="emphasis"><em>only</em></span>.
+   </p></dd><dt><span class="term"><code class="literal">-T</code></span></dt><dd><p>
+    Operate the server in threaded mode. The server creates a thread
+    for each connection rather than a fork a process. Only available
+    on UNIX systems that offers POSIX threads.
+   </p></dd><dt><span class="term"><code class="literal">-s</code></span></dt><dd><p>
+    Use the SR protocol (obsolete).
+   </p></dd><dt><span class="term"><code class="literal">-z</code></span></dt><dd><p>
+    Use the Z39.50 protocol (default). This option and <code class="literal">-s</code>
+    complement each other.
+    You can use both multiple times on the same command
+    line, between listener-specifications (see below). This way, you
+    can set up the server to listen for connections in both protocols
+    concurrently, on different local ports.
+   </p></dd><dt><span class="term"><code class="literal">-l </code>
+   <em class="replaceable"><code>file</code></em></span></dt><dd><p>The logfile.
+   </p></dd><dt><span class="term"><code class="literal">-c </code>
+   <em class="replaceable"><code>config</code></em></span></dt><dd><p>A user option that serves as a specifier for some
+    sort of configuration, usually a filename.
+    The argument to this option is transferred to member
+    <code class="literal">configname</code> of the
+    <code class="literal">statserv_options_block</code>.
+   </p></dd><dt><span class="term"><code class="literal">-f </code>
+   <em class="replaceable"><code>vconfig</code></em></span></dt><dd><p>This specifies an XML file that describes
+    one or more YAZ frontend virtual servers.
+   </p></dd><dt><span class="term"><code class="literal">-C </code>
+   <em class="replaceable"><code>fname</code></em></span></dt><dd><p>Sets SSL certificate file name for server (PEM).
+   </p></dd><dt><span class="term"><code class="literal">-v </code>
+   <em class="replaceable"><code>level</code></em></span></dt><dd><p>
+    The log level. Use a comma-separated list of members of the set
+    {fatal,debug,warn,log,malloc,all,none}.
+   </p></dd><dt><span class="term"><code class="literal">-u </code>
+   <em class="replaceable"><code>uid</code></em></span></dt><dd><p>
+    Set user ID. Sets the real UID of the server process to that of the
+    given user. It's useful if you aren't comfortable with having the
+    server run as root, but you need to start it as such to bind a
+    privileged port.
+   </p></dd><dt><span class="term"><code class="literal">-w </code>
+   <em class="replaceable"><code>dir</code></em></span></dt><dd><p>
+    The server changes to this directory during before listening 
+    on incoming connections. This option is useful
+    when the server is operating from the <span class="application">inetd</span>
+    daemon (see <code class="literal">-i</code>).
+   </p></dd><dt><span class="term"><code class="literal">-p </code>
+   <em class="replaceable"><code>pidfile</code></em></span></dt><dd><p>
+    Specifies that the server should write its Process ID to
+    file given by <em class="replaceable"><code>pidfile</code></em>. 
+    A typical location would be <code class="filename">/var/run/yaz-ztest.pid</code>.
+   </p></dd><dt><span class="term"><code class="literal">-i</code></span></dt><dd><p>
+    Use this to make the the server run from the
+    <span class="application">inetd</span> server (UNIX only).
+   </p></dd><dt><span class="term"><code class="literal">-D</code></span></dt><dd><p>
+    Use this to make the server put itself in the background and
+    run as a daemon. If neither <code class="literal">-i</code> nor 
+    <code class="literal">-D</code> is given, the server starts in the foreground.
+   </p></dd><dt><span class="term"><code class="literal">-install</code></span></dt><dd><p>
+    Use this to install the server as an NT service
+    (Windows NT/2000/XP only). 
+    Control the server by going to the Services in the Control Panel.
+   </p></dd><dt><span class="term"><code class="literal">-installa</code></span></dt><dd><p>
+    Use this to install and activate the server as an NT service
+    (Windows NT/2000/XP only). 
+    Control the server by going to the Services in the Control Panel.
+   </p></dd><dt><span class="term"><code class="literal">-remove</code></span></dt><dd><p>
+    Use this to remove the server from the NT services
+    (Windows NT/2000/XP only). 
+   </p></dd><dt><span class="term"><code class="literal">-t </code>
+   <em class="replaceable"><code>minutes</code></em></span></dt><dd><p>
+    Idle session timeout, in minutes.
+   </p></dd><dt><span class="term"><code class="literal">-k </code>
+   <em class="replaceable"><code>size</code></em></span></dt><dd><p>
+    Maximum record size/message size, in kilobytes.
+   </p></dd><dt><span class="term"><code class="literal">-r </code>
+   <em class="replaceable"><code>size</code></em></span></dt><dd><p>
+    Maximum size of log file before rotation occurs, in kilobytes.
+    Default size is 1048576 k (=1 GB).
+   </p></dd><dt><span class="term"><code class="literal">-d </code>
+   <em class="replaceable"><code>daemon</code></em></span></dt><dd><p>
+    Set name of daemon to be used in hosts access file.
+    See
+    <span class="citerefentry"><span class="refentrytitle">hosts_access</span>(5)</span>
+    and 
+    <span class="citerefentry"><span class="refentrytitle">tcpd</span>(8)</span>.
+   </p></dd><dt><span class="term"><code class="literal">-m </code>
+   <em class="replaceable"><code>time-format</code></em></span></dt><dd><p>
+   Sets the format of time-stamps in the log-file. Specify a string in
+   the input format to <code class="literal">strftime()</code>.
+   </p></dd></dl></div><p>
+
+
+
+
+   </p><p>
+    A listener specification consists of a transport mode followed by a
+    colon (:) followed by a listener address. The transport mode is
+    either <code class="literal">tcp</code>, <code class="literal">unix:</code> or
+    <code class="literal">ssl</code>.
+   </p><p>
+    For TCP and SSL, an address has the form
+   </p><pre class="synopsis">
+    hostname | IP-number [: portnumber]
+   </pre><p>
+    The port number defaults to 210 (standard Z39.50 port).
+   </p><p>
+    For UNIX, the address is the filename of socket.
+   </p><p>
+    For TCP/IP and SSL, the special hostname <code class="literal">@</code> 
+    (at sign) is mapped to the address <code class="literal">INADDR_ANY</code>,
+    which causes the server to listen on any local interface. 
+   </p><div class="example"><a name="server.example.running.unix"></a><p class="title"><b>Example 4.1. Running the GFS on Unix</b></p><div class="example-contents"><p>
+     Assuming the server application <em class="replaceable"><code>appname</code></em> is
+     started as root, the following will make it listen on port 210.
+     The server will change identity to <code class="literal">nobody</code>
+     and write its log to <code class="filename">/var/log/app.log</code>.
+     </p><pre class="screen">
+      <em class="replaceable"><code>appname</code></em> -l /var/log/app.log -u nobody tcp:@:210
+     </pre><p>
+    </p><p>
+     The server will accept Z39.50 requests and offer SRU service on port 210.
+    </p></div></div><br class="example-break"><div class="example"><a name="server.example.apache.sru"></a><p class="title"><b>Example 4.2. Setting up Apache as SRU Frontend</b></p><div class="example-contents"><p>
+     If you use <a href="http://httpd.apache.org/" target="_top">Apache</a>
+     as your public web server and want to offer HTTP port 80
+     access to the YAZ server on 210, you can use the
+     <a href="http://httpd.apache.org/docs/mod/mod_proxy.html#proxypass" target="_top">
+      <code class="literal">ProxyPass</code></a> 
+     directive.
+     If you have virtual host
+     <code class="literal">srw.mydomain</code> you can use the following directives
+     in Apache's httpd.conf:
+     </p><pre class="screen">
+      &lt;VirtualHost *&gt;
+       ErrorLog /home/srw/logs/error_log
+       TransferLog /home/srw/logs/access_log
+       ProxyPass / http://srw.mydomain:210/
+      &lt;/VirtualHost&gt;
+     </pre><p>
+    </p><p>
+     The above for the Apache 1.3 series.
+    </p></div></div><br class="example-break"><div class="example"><a name="server.example.local.access"></a><p class="title"><b>Example 4.3. Running a server with local access only</b></p><div class="example-contents"><p>
+     Servers that is only being accessed from the local host should listen
+     on UNIX file socket rather than a Internet socket. To listen on
+     <code class="filename">/tmp/mysocket</code> start the server as follows:
+     </p><pre class="screen">
+      <em class="replaceable"><code>appname</code></em> tcp:/tmp/mysocket
+     </pre><p>
+    </p></div></div><br class="example-break"></div><div class="navfooter"><hr><table width="100%" summary="Navigation footer"><tr><td width="40%" align="left"><a accesskey="p" href="server.backendfunctions.html">Prev</a> </td><td width="20%" align="center"><a accesskey="u" href="server.html">Up</a></td><td width="40%" align="right"> <a accesskey="n" href="server.vhosts.html">Next</a></td></tr><tr><td width="40%" align="left" valign="top">5. The Backend Functions </td><td width="20%" align="center"><a accesskey="h" href="index.html">Home</a></td><td width="40%" align="right" valign="top"> 7. Virtual Hosts</td></tr></table></div></body></html>

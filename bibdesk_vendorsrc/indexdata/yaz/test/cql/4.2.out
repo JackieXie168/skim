@@ -1,0 +1,29 @@
+<triple>
+  <boolean>
+    <value>or</value>
+  </boolean>
+  <leftOperand>
+    <searchClause>
+      <index>title</index>
+      <relation>
+        <value>any</value>
+        <modifiers>
+          <modifier>
+            <type>stem</type>
+            <relation>=</relation>
+          </modifier>
+        </modifiers>
+      </relation>
+      <term>fish dog</term>
+    </searchClause>
+  </leftOperand>
+  <rightOperand>
+    <searchClause>
+      <index>cql.serverChoice</index>
+      <relation>
+        <value>scr</value>
+      </relation>
+      <term>and</term>
+    </searchClause>
+  </rightOperand>
+</triple>

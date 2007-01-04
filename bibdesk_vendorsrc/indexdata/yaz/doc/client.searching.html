@@ -1,0 +1,32 @@
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"><title>4. Searching</title><meta name="generator" content="DocBook XSL Stylesheets V1.71.0"><link rel="start" href="index.html" title="YAZ User's Guide and Reference"><link rel="up" href="client.html" title="Chapter 5. The YAZ client"><link rel="prev" href="client.commands.html" title="3. Commands"><link rel="next" href="ziffy.html" title="Chapter 6. ziffy"></head><body><link rel="stylesheet" type="text/css" href="common/style1.css"><div class="navheader"><table width="100%" summary="Navigation header"><tr><th colspan="3" align="center">4. Searching</th></tr><tr><td width="20%" align="left"><a accesskey="p" href="client.commands.html">Prev</a> </td><th width="60%" align="center">Chapter 5. The YAZ client</th><td width="20%" align="right"> <a accesskey="n" href="ziffy.html">Next</a></td></tr></table><hr></div><div class="sect1" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="client.searching"></a>4. Searching</h2></div></div></div><p>
+    The simplest example of a Prefix Query would be something like
+    </p><pre class="screen">
+     f knuth
+    </pre><p>
+    or
+    </p><pre class="screen">
+     f "donald knuth"
+    </pre><p>
+    In those queries no attributes was specified.
+    This leaves it up to the server what fields to search but
+    most servers will search in all fields. Some servers does not
+    support this feature though, and require that some attributes
+    are defined. To add one attribute you could do:
+    </p><pre class="screen">
+     f @attr 1=4 computer
+    </pre><p>
+    where we search in the title field, since the use(1) is title(4).
+    If we want to search in the author field <span class="emphasis"><em>and</em></span>
+    in the title field, and in the title field using right truncation
+    it could look something like this:
+    </p><pre class="screen">
+     f @and @attr 1=1003 knuth @attr 1=4 @attr 5=1 computer
+    </pre><p>
+    Finally using a mix of Bib-1 and GILS attributes could look
+    something like this:
+    </p><pre class="screen">
+     f @attrset Bib-1 @and @attr GILS 1=2008 Washington @attr 1=21 weather
+    </pre><p>
+    For the full specification of the Prefix Query see the section
+     <a href="tools.html#PQF" title="1.1. Prefix Query Format">Prefix Query Format</a>.
+   </p></div><div class="navfooter"><hr><table width="100%" summary="Navigation footer"><tr><td width="40%" align="left"><a accesskey="p" href="client.commands.html">Prev</a> </td><td width="20%" align="center"><a accesskey="u" href="client.html">Up</a></td><td width="40%" align="right"> <a accesskey="n" href="ziffy.html">Next</a></td></tr><tr><td width="40%" align="left" valign="top">3. Commands </td><td width="20%" align="center"><a accesskey="h" href="index.html">Home</a></td><td width="40%" align="right" valign="top"> Chapter 6. ziffy</td></tr></table></div></body></html>
