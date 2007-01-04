@@ -22,8 +22,8 @@
 #include <stdio.h>
 #include <string.h>
 #include <ctype.h>
-#include "marcdisp.h"
-#include "wrbuf.h"
+#include <yaz/marcdisp.h>
+#include <yaz/wrbuf.h>
 #include <yaz/yaz-util.h>
 #include <yaz/nmem_xml.h>
 

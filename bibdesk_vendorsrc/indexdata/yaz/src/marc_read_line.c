@@ -23,8 +23,8 @@
 #include <string.h>
 #include <ctype.h>
 
-#include "marcdisp.h"
-#include "wrbuf.h"
+#include <yaz/marcdisp.h>
+#include <yaz/wrbuf.h>
 #include <yaz/yaz-util.h>
 
 int yaz_gets(int (*getbyte)(void *client_data),

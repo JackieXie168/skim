@@ -11,10 +11,10 @@
  */
 
 #include <ctype.h>
-#include "odr.h"
+#include <yaz/odr.h>
 #include <yaz/yaz-version.h>
 #include <yaz/yaz-iconv.h>
-#include "zgdu.h"
+#include <yaz/zgdu.h>
 
 #ifdef WIN32
 #define strncasecmp _strnicmp

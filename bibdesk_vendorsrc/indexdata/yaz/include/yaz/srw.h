@@ -34,9 +34,9 @@
 #ifndef YAZ_SRW_H
 #define YAZ_SRW_H
 
-#include "soap.h"
-#include "zgdu.h"
-#include "diagsrw.h"
+#include <yaz/soap.h>
+#include <yaz/zgdu.h>
+#include <yaz/diagsrw.h>
 #include <yaz/diagsru_update.h>
 
 YAZ_BEGIN_CDECL

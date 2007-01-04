@@ -20,8 +20,8 @@
 #include <unistd.h>
 #endif
 
-#include "test.h"
-#include "log.h"
+#include <yaz/test.h>
+#include <yaz/log.h>
 
 static FILE *test_fout = 0; /* can't use '= stdout' on some systems */
 static int test_total = 0;

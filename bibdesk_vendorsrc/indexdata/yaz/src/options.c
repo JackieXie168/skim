@@ -14,7 +14,7 @@
 
 #include <stdlib.h>
 
-#include "options.h"
+#include <yaz/options.h>
 
 static int arg_no = 1;
 static int arg_off = 0;

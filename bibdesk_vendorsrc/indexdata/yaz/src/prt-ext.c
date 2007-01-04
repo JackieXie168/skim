@@ -10,12 +10,12 @@
  * \brief Implements handling of various Z39.50 Externals
  */
 
-#include "proto.h"
+#include <yaz/proto.h>
 
 #define PRT_EXT_DEBUG 0
 
 #if PRT_EXT_DEBUG
-#include "log.h"
+#include <yaz/log.h>
 #endif
 
 /*

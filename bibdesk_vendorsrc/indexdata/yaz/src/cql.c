@@ -111,9 +111,9 @@
 #include <stdlib.h>
 #include <string.h>
 #include <ctype.h>
-#include "xmalloc.h"
-#include "nmem.h"
-#include "cql.h"
+#include <yaz/xmalloc.h>
+#include <yaz/nmem.h>
+#include <yaz/cql.h>
 
     /** Node in the LALR parse tree. */
     typedef struct {

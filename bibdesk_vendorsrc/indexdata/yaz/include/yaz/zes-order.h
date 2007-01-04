@@ -7,7 +7,7 @@
 #ifndef zes_order_H
 #define zes_order_H
 
-#include "odr.h"
+#include <yaz/odr.h>
 #include <yaz/z-core.h>
 #ifdef __cplusplus
 extern "C" {

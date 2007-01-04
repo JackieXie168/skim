@@ -16,7 +16,7 @@
 #include <string.h>
 #include <ctype.h>
 #include "odr-priv.h"
-#include "oid.h"
+#include <yaz/oid.h>
 
 void odr_prname(ODR o, const char *name)
 {

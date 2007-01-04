@@ -14,7 +14,7 @@
 #include <config.h>
 #endif
 
-#include "proto.h"
+#include <yaz/proto.h>
 
 static struct {
     char *name;

@@ -35,7 +35,7 @@
 #ifndef CHARNEG_H
 #define CHARNEG_H
 
-#include "proto.h"
+#include <yaz/proto.h>
 
 YAZ_BEGIN_CDECL
 

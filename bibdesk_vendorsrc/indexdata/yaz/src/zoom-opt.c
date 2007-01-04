@@ -11,7 +11,7 @@
 #include <assert.h>
 #include "zoom-p.h"
 
-#include "xmalloc.h"
+#include <yaz/xmalloc.h>
 
 ZOOM_API(ZOOM_options)
 ZOOM_options_create_with_parent (ZOOM_options parent)

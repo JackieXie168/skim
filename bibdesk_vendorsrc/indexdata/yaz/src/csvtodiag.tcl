@@ -28,7 +28,7 @@ struct yaz_diag_entry yaz_diag_${name}_tab\[\] = \{
 "
     puts $hfile $preamble
     puts $hfile "
-\#include "yconfig.h"
+\#include <yaz/yconfig.h>
 
 \#ifndef YAZ_DIAG_${name}_H
 \#define YAZ_DIAG_${name}_H

@@ -34,10 +34,10 @@
 #ifndef YAZ_CCL_H
 #define YAZ_CCL_H
 
-#include "yconfig.h"
-#include "proto.h"
-#include "ccl.h"
-#include "odr.h"
+#include <yaz/yconfig.h>
+#include <yaz/proto.h>
+#include <yaz/ccl.h>
+#include <yaz/odr.h>
 
 YAZ_BEGIN_CDECL
 

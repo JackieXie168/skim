@@ -33,7 +33,7 @@
 #ifndef CQL_H_INCLUDED
 #define CQL_H_INCLUDED
 #include <stdio.h>
-#include "nmem.h"
+#include <yaz/nmem.h>
 
 YAZ_BEGIN_CDECL
 

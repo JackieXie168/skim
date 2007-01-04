@@ -68,7 +68,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#include "ccl.h"
+#include <yaz/ccl.h>
 
 static int ccli_toupper (int c)
 {

@@ -34,7 +34,7 @@
 #ifndef TPATH_H
 #define TPATH_H
 
-#include "yconfig.h"
+#include <yaz/yconfig.h>
 #include <stdio.h>
 
 YAZ_BEGIN_CDECL

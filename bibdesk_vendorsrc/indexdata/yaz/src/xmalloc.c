@@ -17,8 +17,8 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include "log.h"
-#include "xmalloc.h"
+#include <yaz/log.h>
+#include <yaz/xmalloc.h>
 
 #ifndef TRACE_XMALLOC
 #define TRACE_XMALLOC 1

@@ -7,7 +7,7 @@
 #ifndef z_accdes1_H
 #define z_accdes1_H
 
-#include "odr.h"
+#include <yaz/odr.h>
 #ifdef __cplusplus
 extern "C" {
 #endif

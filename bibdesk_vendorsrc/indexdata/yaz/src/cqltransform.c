@@ -25,9 +25,9 @@ See the file LICENSE.
 #include <assert.h>
 #include <stdlib.h>
 #include <string.h>
-#include "cql.h"
-#include "xmalloc.h"
-#include "diagsrw.h"
+#include <yaz/cql.h>
+#include <yaz/xmalloc.h>
+#include <yaz/diagsrw.h>
 
 struct cql_prop_entry {
     char *pattern;

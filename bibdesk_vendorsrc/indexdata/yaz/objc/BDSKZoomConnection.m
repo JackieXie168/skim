@@ -33,7 +33,7 @@
 #import "BDSKZoomConnection.h"
 #import "BDSKZoomQuery.h"
 #import "BDSKZoomRecord.h"
-#import "log.h"
+#import <yaz/log.h>
 
 @implementation BDSKZoomConnection
 

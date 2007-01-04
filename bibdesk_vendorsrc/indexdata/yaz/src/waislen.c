@@ -10,8 +10,8 @@
  */
 
 #include <stdio.h>
-#include "comstack.h"
-#include "tcpip.h"
+#include <yaz/comstack.h>
+#include <yaz/tcpip.h>
 /*
  * Return length of WAIS package or 0
  */

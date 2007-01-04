@@ -81,7 +81,7 @@
 #include <string.h>
 #include <ctype.h>
 
-#include "ccl.h"
+#include <yaz/ccl.h>
 
 void fprintSpaces(int indent,FILE * fd_out) 
 {

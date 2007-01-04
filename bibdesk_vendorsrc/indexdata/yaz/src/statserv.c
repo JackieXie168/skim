@@ -52,16 +52,16 @@
 #include <signal.h>
 #include <errno.h>
 
-#include "comstack.h"
-#include "tcpip.h"
-#include "options.h"
+#include <yaz/comstack.h>
+#include <yaz/tcpip.h>
+#include <yaz/options.h>
 #ifdef USE_XTIMOSI
-#include "xmosi.h"
+#include <yaz/xmosi.h>
 #endif
-#include "log.h"
+#include <yaz/log.h>
 #include "eventl.h"
 #include "session.h"
-#include "statserv.h"
+#include <yaz/statserv.h>
 
 static IOCHAN pListener = NULL;
 

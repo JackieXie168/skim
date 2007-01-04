@@ -17,8 +17,8 @@
 #include <libxml/parser.h>
 #include <libxml/tree.h>
 
-#include "logrpn.h"
-#include "xmlquery.h"
+#include <yaz/logrpn.h>
+#include <yaz/xmlquery.h>
 #include <yaz/nmem_xml.h>
 
 void yaz_query2xml_attribute_element(const Z_AttributeElement *element,

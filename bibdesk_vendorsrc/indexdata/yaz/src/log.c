@@ -34,9 +34,9 @@
 #include <stdarg.h>
 #include <errno.h>
 #include <time.h>
-#include "nmem.h"
-#include "log.h"
-#include "xmalloc.h"
+#include <yaz/nmem.h>
+#include <yaz/log.h>
+#include <yaz/xmalloc.h>
 
 static NMEM_MUTEX log_mutex = 0;
 

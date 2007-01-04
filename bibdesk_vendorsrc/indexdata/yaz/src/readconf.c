@@ -17,8 +17,8 @@
 #include <stdio.h>
 #include <ctype.h>
 
-#include "log.h"
-#include "readconf.h"
+#include <yaz/log.h>
+#include <yaz/readconf.h>
 
 #define l_isspace(c) ((c) == '\t' || (c) == ' ' || (c) == '\n' || (c) == '\r')
 

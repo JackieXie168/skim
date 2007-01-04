@@ -16,7 +16,7 @@ See the file LICENSE.
 #include <string.h>
 #include <stdio.h>
 
-#include "cql.h"
+#include <yaz/cql.h>
 
 static void pr_n(const char *buf, 
                 void (*pr)(const char *buf, void *client_data),

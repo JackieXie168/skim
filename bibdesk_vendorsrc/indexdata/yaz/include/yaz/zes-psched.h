@@ -7,7 +7,7 @@
 #ifndef zes_psched_H
 #define zes_psched_H
 
-#include "odr.h"
+#include <yaz/odr.h>
 #include <yaz/z-core.h>
 #include <yaz/zes-exps.h>
 #ifdef __cplusplus

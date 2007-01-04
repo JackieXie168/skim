@@ -32,7 +32,7 @@
  */
 
 #include <stdlib.h>
-#include "yconfig.h"
+#include <yaz/yconfig.h>
 
 #define ZOOM_BEGIN_CDECL YAZ_BEGIN_CDECL
 #define ZOOM_END_CDECL YAZ_END_CDECL

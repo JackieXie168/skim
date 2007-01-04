@@ -91,7 +91,7 @@
 #include <stdlib.h>
 #include <ctype.h>
 
-#include "ccl.h"
+#include <yaz/ccl.h>
 
 /*
  * token_cmp: Compare token with keyword(s)

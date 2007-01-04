@@ -11,7 +11,7 @@
 
 #include <stdlib.h>
 #include <stdarg.h>
-#include "log.h"
+#include <yaz/log.h>
 #include <yaz/libxml2_error.h>
 
 #if YAZ_HAVE_XML2

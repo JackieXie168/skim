@@ -113,7 +113,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include "ccl.h"
+#include <yaz/ccl.h>
 
 /* returns type of current lookahead */
 #define KIND (cclp->look_token->kind)

@@ -34,7 +34,7 @@
 #ifndef YAZ_SOAP_H
 #define YAZ_SOAP_H
 
-#include "odr.h"
+#include <yaz/odr.h>
 
 YAZ_BEGIN_CDECL
 

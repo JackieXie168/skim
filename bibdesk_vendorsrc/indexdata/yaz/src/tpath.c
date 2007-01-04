@@ -17,8 +17,8 @@
 #include <stdio.h>
 #include <string.h>
 #include <ctype.h>
-#include "tpath.h"
-#include "log.h"
+#include <yaz/tpath.h>
+#include <yaz/log.h>
 #include <sys/types.h>
 #include <sys/stat.h>
 #if HAVE_UNISTD_H

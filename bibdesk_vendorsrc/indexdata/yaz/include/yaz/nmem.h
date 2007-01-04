@@ -37,7 +37,7 @@
 #define NMEM_H
 
 #include <stddef.h>
-#include "yconfig.h"
+#include <yaz/yconfig.h>
 
 #define NMEM_DEBUG 0
 

@@ -35,13 +35,13 @@
 #include <sys/select.h>
 #endif
 
-#include "yconfig.h"
-#include "log.h"
-#include "comstack.h"
-#include "xmalloc.h"
+#include <yaz/yconfig.h>
+#include <yaz/log.h>
+#include <yaz/comstack.h>
+#include <yaz/xmalloc.h>
 #include "eventl.h"
 #include "session.h"
-#include "statserv.h"
+#include <yaz/statserv.h>
 
 #if YAZ_GNU_THREADS
 #include <pth.h>

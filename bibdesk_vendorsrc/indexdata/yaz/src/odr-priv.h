@@ -7,7 +7,7 @@
 
 #define ODR_PRIV_H
 
-#include "odr.h"
+#include <yaz/odr.h>
 #include <yaz/yaz-util.h>
 
 /** \brief Utility structure used by ber_tag */

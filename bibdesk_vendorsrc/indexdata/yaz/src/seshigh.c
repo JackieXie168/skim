@@ -55,26 +55,26 @@
 #include <libxml/tree.h>
 #endif
 
-#include "yconfig.h"
-#include "xmalloc.h"
-#include "comstack.h"
+#include <yaz/yconfig.h>
+#include <yaz/xmalloc.h>
+#include <yaz/comstack.h>
 #include "eventl.h"
 #include "session.h"
 #include "mime.h"
-#include "proto.h"
-#include "oid.h"
-#include "log.h"
-#include "logrpn.h"
-#include "querytowrbuf.h"
-#include "statserv.h"
+#include <yaz/proto.h>
+#include <yaz/oid.h>
+#include <yaz/log.h>
+#include <yaz/logrpn.h>
+#include <yaz/querytowrbuf.h>
+#include <yaz/statserv.h>
 #include <yaz/diagbib1.h>
-#include "charneg.h"
-#include "otherinfo.h"
+#include <yaz/charneg.h>
+#include <yaz/otherinfo.h>
 #include <yaz/yaz-util.h>
-#include "pquery.h"
+#include <yaz/pquery.h>
 
-#include "srw.h"
-#include "backend.h"
+#include <yaz/srw.h>
+#include <yaz/backend.h>
 
 static void process_gdu_request(association *assoc, request *req);
 static int process_z_request(association *assoc, request *req, char **msg);

@@ -38,8 +38,8 @@
 #ifndef PRT_EXT_H
 #define PRT_EXT_H
 
-#include "yconfig.h"
-#include "oid.h"
+#include <yaz/yconfig.h>
+#include <yaz/oid.h>
 
 
 YAZ_BEGIN_CDECL

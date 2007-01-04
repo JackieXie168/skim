@@ -29,10 +29,10 @@
 #include <sys/socket.h>
 #endif
 
-#include "yconfig.h"
-#include "comstack.h"
-#include "statserv.h"
-#include "log.h"
+#include <yaz/yconfig.h>
+#include <yaz/comstack.h>
+#include <yaz/statserv.h>
+#include <yaz/log.h>
 
 
 #if HAVE_TCPD_H

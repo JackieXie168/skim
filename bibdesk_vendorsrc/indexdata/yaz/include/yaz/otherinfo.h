@@ -33,7 +33,7 @@
 #ifndef OTHERINFO_H
 #define OTHERINFO_H
 
-#include "proto.h"
+#include <yaz/proto.h>
 
 YAZ_BEGIN_CDECL
 

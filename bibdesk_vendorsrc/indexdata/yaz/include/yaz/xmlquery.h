@@ -33,9 +33,9 @@
 #ifndef YAZ_XMLQUERY_H
 #define YAZ_XMLQUERY_H
 
-#include "yconfig.h"
-#include "proto.h"
-#include "xmltypes.h"
+#include <yaz/yconfig.h>
+#include <yaz/proto.h>
+#include <yaz/xmltypes.h>
 
 YAZ_BEGIN_CDECL
 

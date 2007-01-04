@@ -35,8 +35,8 @@
 #define YAZ_RETRIEVAL_H
 
 #include <stddef.h>
-#include "wrbuf.h"
-#include "yconfig.h"
+#include <yaz/wrbuf.h>
+#include <yaz/yconfig.h>
 
 #include <yaz/record_conv.h>
 

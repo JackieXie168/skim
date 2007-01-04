@@ -12,7 +12,7 @@ See the file LICENSE for details.
  * \brief Implements query stream reader that reads from a C string.
  */
 
-#include "cql.h"
+#include <yaz/cql.h>
 
 struct cql_buf_info {
     const char *str;

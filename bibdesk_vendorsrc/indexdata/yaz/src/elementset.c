@@ -13,7 +13,7 @@
 #include <config.h>
 #endif
 
-#include "proto.h"
+#include <yaz/proto.h>
 
 const char *yaz_get_esn(Z_RecordComposition *comp)
 {
