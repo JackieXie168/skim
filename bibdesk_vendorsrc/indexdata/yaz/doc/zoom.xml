@@ -1,0 +1,1375 @@
+<!--
+### Still to document:
+ZOOM_connection_errcode(c)
+ZOOM_connection_errmsg(c)
+ZOOM_connection_addinfo(c)
+ZOOM_connection_addinfo(c)
+ZOOM_connection_diagset(c);
+ZOOM_diag_str(error)
+ZOOM_resultset_record_immediate(s, pos)
+ZOOM_resultset_cache_reset(r)
+ZOOM_resultset_sort(r, sort_type, sort_spec)
+ZOOM_resultset_sort1(r, sort_type, sort_spec)
+ZOOM_options_set_callback(opt, function, handle)
+ZOOM_options_create_with_parent2(parent1, parent2)
+ZOOM_options_getl(opt, name, len)
+ZOOM_options_setl(opt, name, value, len)
+ZOOM_options_get_bool(opt, name, defa)
+ZOOM_options_get_int(opt, name, defa)
+ZOOM_options_set_int(opt, name, value)
+ZOOM_connection_scan1 (ZOOM_connection c, ZOOM_query startterm)
+ZOOM_query_cql2rpn(ZOOM_query s, const char *str, ZOOM_connection conn)
+-->
+<!-- $Id: zoom.xml,v 1.55 2006/12/06 11:12:14 mike Exp $ -->
+ <chapter id="zoom"><title>ZOOM</title>
+  <para>
+    &zoom; is an acronym for 'Z39.50 Object-Orientation Model' and is
+   an initiative started by Mike Taylor (Mike is from the UK, which
+   explains the peculiar name of the model). The goal of &zoom; is to
+   provide a common Z39.50 client API not bound to a particular
+   programming language or toolkit.
+  </para>
+
+  <note>
+   <para>
+    A recent addition to &yaz; is SRU support. You can now make
+    SRU ZOOM connections by specifying scheme <literal>http://</literal>
+    for the hostname for a connection.  The dialect of SRU used is
+    specified by the value of the connection's <literal>sru</literal>
+    option, which may be SRU over HTTP GET (<literal>get</literal>),
+    SRU over HTTP POST (<literal>post</literal>) or SRW (SRU over
+    SOAP) (<literal>soap</literal>).
+   </para>
+  </note>
+
+  <para>
+   The lack of a simple Z39.50 client API for &yaz; has become more
+   and more apparent over time. So when the first &zoom; specification
+   became available,
+   an implementation for &yaz; was quickly developed. For the first time, it is
+   now as easy (or easier!) to develop clients than servers with &yaz;. This
+   chapter describes the &zoom; C binding. Before going further, please
+   reconsider whether C is the right programming language for the job.
+   There are other language bindings available for &yaz;, and still
+   more
+   are in active development. See the
+   <ulink url="&url.zoom;">ZOOM web-site</ulink> for
+   more information.
+  </para>
+  
+  <para>
+   In order to fully understand this chapter you should read and
+   try the example programs <literal>zoomtst1.c</literal>,
+   <literal>zoomtst2.c</literal>, .. in the <literal>zoom</literal>
+   directory.
+  </para>
+  
+  <para>
+   The C language misses features found in object oriented languages
+   such as C++, Java, etc. For example, you'll have to manually,
+   destroy all objects you create, even though you may think of them as
+   temporary. Most objects has a <literal>_create</literal> - and a
+   <literal>_destroy</literal> variant.
+   All objects are in fact pointers to internal stuff, but you don't see
+   that because of typedefs. All destroy methods should gracefully ignore a
+   <literal>NULL</literal> pointer.
+  </para>
+  <para>
+   In each of the sections below you'll find a sub section called
+   protocol behavior, that describes how the API maps to the Z39.50
+   protocol.
+  </para>
+  <sect1 id="zoom-connections"><title>Connections</title>
+   
+   <para>The Connection object is a session with a target.
+   </para>
+   <synopsis>
+    #include &lt;yaz/zoom.h>
+    
+    ZOOM_connection ZOOM_connection_new (const char *host, int portnum);
+    
+    ZOOM_connection ZOOM_connection_create (ZOOM_options options);
+    
+    void ZOOM_connection_connect(ZOOM_connection c, const char *host,
+                                 int portnum);
+    void ZOOM_connection_destroy (ZOOM_connection c);
+   </synopsis>
+   <para>
+    Connection objects are created with either function
+    <function>ZOOM_connection_new</function> or 
+    <function>ZOOM_connection_create</function>.
+    The former creates and automatically attempts to establish a network
+    connection with the target. The latter doesn't establish
+    a connection immediately, thus allowing you to specify options
+    before establishing network connection using the function
+    <function>ZOOM_connection_connect</function>. 
+    If the port number, <literal>portnum</literal>, is zero, the
+    <literal>host</literal> is consulted for a port specification.
+    If no port is given, 210 is used. A colon denotes the beginning of
+    a port number in the host string. If the host string includes a
+    slash, the following part specifies a database for the connection.
+   </para>
+   <para>
+    You can prefix the host with a scheme followed by colon. The
+    default scheme is <literal>tcp</literal> (Z39.50 protocol).
+    The scheme <literal>http</literal> selects SRU over HTTP.
+   </para>
+   <para>
+    You can prefix the scheme-qualified host-string with one or more
+    comma-separated
+    <literal><parameter>key</parameter>=<parameter>value</parameter></literal>
+    sequences, each of which represents an option to be set into the
+    connection structure <emphasis>before</emphasis> the
+    protocol-level connection is forged and the initialisation
+    handshake takes place.  This facility can be used to provide
+    authentication credentials, as in host-strings such as:
+    <literal>user=admin,password=halfAm4n,tcp:localhost:8017/db</literal>
+   </para>
+   <para>
+    Connection objects should be destroyed using the function
+    <function>ZOOM_connection_destroy</function>.
+   </para>
+   <synopsis>
+    void ZOOM_connection_option_set(ZOOM_connection c,
+                                    const char *key, const char *val);
+
+    void ZOOM_connection_option_setl(ZOOM_connection c,
+                                     const char *key,
+                                     const char *val, int len);
+
+    const char *ZOOM_connection_option_get(ZOOM_connection c,
+                                           const char *key);
+    const char *ZOOM_connection_option_getl(ZOOM_connection c,
+                                            const char *key,
+                                            int *lenp);
+   </synopsis>
+   <para>
+    The functions <function>ZOOM_connection_option_set</function> and
+    <function>ZOOM_connection_option_setl</function> allows you to
+    set an option given by <parameter>key</parameter> to the value
+    <parameter>value</parameter> for the connection. 
+    For <function>ZOOM_connection_option_set</function>, the
+    value is assumed to be a 0-terminated string. Function
+    <function>ZOOM_connection_option_setl</function> specifies a
+    value of a certain size (len).
+   </para>
+   <para>
+    Functions <function>ZOOM_connection_option_get</function> and
+    <function>ZOOM_connection_option_getl</function> returns
+    the value for an option given by <parameter>key</parameter>.
+   </para>
+   <table id="zoom-connection-options" frame="top">
+    <title>ZOOM Connection Options</title>
+    <tgroup cols="3">
+     <colspec colwidth="4*" colname="name"></colspec>
+     <colspec colwidth="7*" colname="description"></colspec>
+     <colspec colwidth="3*" colname="default"></colspec>
+     <thead>
+      <row>
+       <entry>Option</entry>
+       <entry>Description</entry>
+       <entry>Default</entry>
+      </row>
+     </thead>
+     <tbody>
+      <row><entry>
+        implementationName</entry><entry>Name of Your client
+       </entry><entry>none</entry></row>
+      <row><entry>
+        user</entry><entry>Authentication user name
+       </entry><entry>none</entry></row>
+      <row><entry>
+        group</entry><entry>Authentication group name
+       </entry><entry>none</entry></row>
+      <row><entry>
+        password</entry><entry>Authentication password.
+       </entry><entry>none</entry></row>
+      <row><entry>
+        host</entry><entry>Target host. This setting is "read-only".
+        It's automatically set internally when connecting to a target.
+       </entry><entry>none</entry></row>
+      <row><entry>
+        proxy</entry><entry>Proxy host
+       </entry><entry>none</entry></row>
+      <row><entry>
+        async</entry><entry>If true (1) the connection operates in 
+        asynchronous operation which means that all calls are non-blocking
+        except
+        <link linkend="zoom.events"><function>ZOOM_event</function></link>.
+       </entry><entry>0</entry></row>
+      <row><entry>
+        maximumRecordSize</entry><entry> Maximum size of single record.
+       </entry><entry>1 MB</entry></row>
+      <row><entry>
+        preferredMessageSize</entry><entry> Maximum size of multiple records.
+       </entry><entry>1 MB</entry></row>
+      <row><entry>
+        lang</entry><entry> Language for negotiation.
+       </entry><entry>none</entry></row>
+      <row><entry>
+        charset</entry><entry> Character set for negotiation.
+       </entry><entry>none</entry></row>
+      <row><entry>
+        serverImplementationId</entry><entry>
+	Implementation ID of server.  (The old targetImplementationId
+	option is also supported for the benefit of old applications.)
+       </entry><entry>none</entry></row>
+      <row><entry>
+        targetImplementationName</entry><entry>
+	Implementation Name of server.  (The old
+	targetImplementationName option is also supported for the
+	benefit of old applications.)
+       </entry><entry>none</entry></row>
+      <row><entry>
+        serverImplementationVersion</entry><entry>
+	Implementation Version of server.  (the old
+	targetImplementationVersion option is also supported for the
+	benefit of old applications.)
+       </entry><entry>none</entry></row>
+      <row><entry>
+        databaseName</entry><entry>One or more database names
+        separated by character plus (<literal>+</literal>), which to
+        be used by subsequent search requests on this Connection.
+       </entry><entry>Default</entry></row>
+      <row><entry>
+        piggyback</entry><entry>True (1) if piggyback should be
+        used in searches; false (0) if not.
+       </entry><entry>1</entry></row>
+      <row><entry>
+        smallSetUpperBound</entry><entry>If hits is less than or equal to this
+        value, then target will return all records using small element set name
+       </entry><entry>0</entry></row>
+      <row><entry>
+        largeSetLowerBound</entry><entry>If hits is greater than this
+        value, the target will return no records.
+       </entry><entry>1</entry></row>
+      <row><entry>
+        mediumSetPresentNumber</entry><entry>This value represents
+        the number of records to be returned as part of a search when when
+        hits is less than or equal to large set lower bound and if hits
+        is greater than small set upper bound.
+       </entry><entry>0</entry></row>
+      <row><entry>
+        smallSetElementSetName</entry><entry>
+        The element set name to be used for small result sets.
+       </entry><entry>none</entry></row>
+      <row><entry>
+        mediumSetElementSetName</entry><entry>
+        The element set name to be for medium-sized result sets.
+       </entry><entry>none</entry></row>
+      <row><entry>
+        init_opt_search, init_opt_present, init_opt_delSet, etc.</entry><entry>
+        After a successful Init, these options may be interrogated to
+	discover whether the server claims to support the specified
+	operations.
+       </entry><entry>none</entry></row>
+     </tbody>
+    </tgroup>
+   </table>
+   <para>
+    If either option <literal>lang</literal> or <literal>charset</literal>
+    is set, then 
+    <ulink url="&url.z39.50.charneg;">
+     Character Set and Language Negotiation</ulink> is in effect.
+   </para>
+   <synopsis>
+     int ZOOM_connection_error (ZOOM_connection c, const char **cp,
+                                const char **addinfo);
+     int ZOOM_connection_error_x (ZOOM_connection c, const char **cp,
+                                  const char **addinfo, const char **dset);
+   </synopsis>
+   <para>
+    Function <function>ZOOM_connection_error</function> checks for
+    errors for the last operation(s) performed. The function returns
+    zero if no errors occurred; non-zero otherwise indicating the error.
+    Pointers <parameter>cp</parameter> and <parameter>addinfo</parameter>
+    holds messages for the error and additional-info if passed as
+    non-<literal>NULL</literal>. Function
+    <function>ZOOM_connection_error_x</function> is an extended version
+    of <function>ZOOM_connection_error</function> that is capable of
+    returning name of diagnostic set in <parameter>dset</parameter>.
+   </para>
+   <sect2 id="zoom-connection-z39.50">
+    <title>Z39.50 Protocol behavior</title>
+    <para>
+     The calls <function>ZOOM_connection_new</function> and
+     <function>ZOOM_connection_connect</function> establishes a TCP/IP
+      connection and sends an Initialize Request to the target if
+      possible. In addition, the calls waits for an Initialize Response
+      from the target and the result is inspected (OK or rejected).
+    </para>
+    <para>
+     If <literal>proxy</literal> is set then the client will establish
+     a TCP/IP connection with the peer as specified by the
+     <literal>proxy</literal> host and the hostname as part of the
+     connect calls will be set as part of the Initialize Request.
+     The proxy server will then "forward" the PDU's transparently
+     to the target behind the proxy.
+    </para>
+    <para>
+     For the authentication parameters, if option <literal>user</literal>
+     is set and both options <literal>group</literal> and
+     <literal>pass</literal> are unset, then Open style
+     authentication is used (Version 2/3) in which case the username
+     is usually followed by a slash, then by a password.
+     If either <literal>group</literal>
+     or <literal>pass</literal> is set then idPass authentication
+     (Version 3 only) is used. If none of the options are set, no
+     authentication parameters are set as part of the Initialize Request
+     (obviously).
+    </para>
+    <para>
+     When option <literal>async</literal> is 1, it really means that
+     all network operations are postponed (and queued) until the
+     function <literal>ZOOM_event</literal> is invoked. When doing so
+     it doesn't make sense to check for errors after
+     <literal>ZOOM_connection_new</literal> is called since that
+     operation "connecting - and init" is still incomplete and the
+     API cannot tell the outcome (yet).
+    </para>
+    </sect2>
+   <sect2 id="zoom.sru.init.behavior">
+    <title>SRU Protocol behavior</title>
+    <para>
+     The SRU protocol doesn't feature an Inititialize Request, so
+     the connection phase merely establishes a TCP/IP connection
+     with the SOAP service.
+    </para>
+    <para>Most of the ZOOM connection options do not
+     affect SRU and they are ignored. However, future versions
+     of &yaz; might honor <literal>implementationName</literal> and
+     put that as part of User-Agent header for HTTP requests.
+     </para>
+    <para>
+     The <literal>charset</literal> is used in the Content-Type header
+     of HTTP requests.
+    </para>
+   </sect2>
+  </sect1>
+  <sect1 id="zoom.query"><title>Queries</title>
+   <para>
+    Query objects represents queries.
+   </para>
+   <synopsis>
+     ZOOM_query ZOOM_query_create(void);
+
+     void ZOOM_query_destroy(ZOOM_query q);
+
+     int ZOOM_query_prefix(ZOOM_query q, const char *str);
+
+     int ZOOM_query_cql(ZOOM_query s, const char *str);
+
+     int ZOOM_query_sortby(ZOOM_query q, const char *criteria);
+   </synopsis>
+   <para>
+    Create query objects using <function>ZOOM_query_create</function>
+    and destroy them by calling <function>ZOOM_query_destroy</function>.
+    RPN-queries can be specified in <link linkend="PQF">PQF</link>
+    notation by using the
+    function <function>ZOOM_query_prefix</function>.
+    The <function>ZOOM_query_cql</function> specifies a CQL
+    query to be sent to the server/target.
+    More query types will be added in future versions of &yaz;, such as
+    <link linkend="CCL">CCL</link> to RPN-mapping, native CCL query,
+    etc. In addition to a search, a sort criteria may be set. Function
+    <function>ZOOM_query_sortby</function> specifies a 
+    sort criteria using the same string notation for sort as offered by
+    the <link linkend="sortspec">YAZ client</link>.
+   </para>
+   <sect2 id="zoom.sort.behavior"><title>Protocol behavior</title>
+    <para>
+     The query object is just an interface for the member Query
+     in the SearchRequest. The sortby-function is an interface to the
+     sortSequence member of the SortRequest.
+    </para>
+   </sect2>
+  </sect1>
+  <sect1 id="zoom.resultsets"><title>Result sets</title>
+   <para>
+    The result set object is a container for records returned from
+    a target.
+   </para>
+   <synopsis>
+     ZOOM_resultset ZOOM_connection_search(ZOOM_connection,
+                                           ZOOM_query q);
+
+     ZOOM_resultset ZOOM_connection_search_pqf(ZOOM_connection c,
+                                               const char *q);
+
+     void ZOOM_resultset_destroy(ZOOM_resultset r);
+   </synopsis>
+   <para>
+    Function <function>ZOOM_connection_search</function> creates
+     a result set given a connection and query.
+    Destroy a result set by calling
+    <function>ZOOM_resultset_destroy</function>.
+    Simple clients may using PQF only may use function
+    <function>ZOOM_connection_search_pqf</function> in which case
+    creating query objects is not necessary.
+   </para>
+   <synopsis>
+     void ZOOM_resultset_option_set (ZOOM_resultset r,
+                                      const char *key,
+                                      const char *val);
+
+     const char *ZOOM_resultset_option_get (ZOOM_resultset r,
+                                             const char *key);
+
+     size_t ZOOM_resultset_size (ZOOM_resultset r);
+   </synopsis>
+   <para>
+    Functions <function>ZOOM_resultset_options_set</function> and
+    <function>ZOOM_resultset_get</function> sets and gets an option
+    for a result set similar to <function>ZOOM_connection_option_get</function>
+    and <function>ZOOM_connection_option_set</function>.
+   </para>
+   <para>
+    The number of hits also called result-count is returned by
+    function <function>ZOOM_resultset_size</function>.
+   </para>
+   <table id="zoom.resultset.options" 
+    frame="top"><title>ZOOM Result set Options</title>
+    <tgroup cols="3">
+     <colspec colwidth="4*" colname="name"></colspec>
+     <colspec colwidth="7*" colname="description"></colspec>
+     <colspec colwidth="2*" colname="default"></colspec>
+     <thead>
+      <row>
+       <entry>Option</entry>
+       <entry>Description</entry>
+       <entry>Default</entry>
+      </row>
+     </thead>
+     <tbody>
+      <row><entry>
+        start</entry><entry>Offset of first record to be 
+        retrieved from target. First record has offset 0 unlike the
+        protocol specifications where first record has position 1.
+       </entry><entry>0</entry></row>
+      <row><entry>
+        count</entry><entry>Number of records to be retrieved.
+       </entry><entry>0</entry></row>
+      <row><entry>
+	presentChunk</entry><entry>The number of records to be
+	requested from the server in each chunk (present requst).  The
+	value 0 means to request all the records in a single chunk.
+	(The old <literal>step</literal>
+	option is also supported for the benefit of old applications.)
+       </entry><entry>0</entry></row>
+      <row><entry>
+        elementSetName</entry><entry>Element-Set name of records. 
+        Most targets should honor element set name <literal>B</literal>
+        and <literal>F</literal> for brief and full respectively.
+       </entry><entry>none</entry></row>
+      <row><entry>
+        preferredRecordSyntax</entry><entry>Preferred Syntax, such as
+        <literal>USMARC</literal>, <literal>SUTRS</literal>, etc.
+       </entry><entry>none</entry></row>
+      <row><entry>
+        schema</entry><entry>Schema for retrieval, such as
+        <literal>Gils-schema</literal>, <literal>Geo-schema</literal>, etc.
+       </entry><entry>none</entry></row>
+      <row><entry>
+        setname</entry><entry>Name of Result Set (Result Set ID).
+        If this option isn't set, the ZOOM module will automatically
+        allocate a result set name.
+       </entry><entry>default</entry></row>
+     </tbody>
+    </tgroup>
+   </table>
+   <para>
+    For servers that support Search Info report, the following
+    options may be read using <function>ZOOM_resultset_get</function>.
+    This detailed information is read after a successful search has
+    completed.
+   </para>
+   <para>
+    This information is a list of of items, where each item is
+    information about a term or subquery. All items in the list 
+    are prefixed by 
+    <literal>SearchResult.</literal><replaceable>no</replaceable>
+    where no presents the item number (0=first, 1=second). 
+    Read <literal>searchresult.size</literal> to determine the
+    number of items.
+   </para>
+   <table id="zoom.search.info.report.options" 
+    frame="top"><title>Search Info Report Options</title>
+    <tgroup cols="2">
+     <colspec colwidth="4*" colname="name"></colspec>
+     <colspec colwidth="7*" colname="description"></colspec>
+     <thead>
+      <row>
+       <entry>Option</entry>
+       <entry>Description</entry>
+      </row>
+     </thead>
+     <tbody>
+      <row>
+       <entry>searchresult.size</entry>
+       <entry>
+	number of search result entries. This option is-nonexistant
+	if no entries are returned by the server.
+       </entry>
+      </row>
+      <row>
+       <entry>searchresult.<replaceable>no</replaceable>.id</entry>
+       <entry>sub query ID</entry>
+      </row>
+      <row>
+       <entry>searchresult.<replaceable>no</replaceable>.count</entry>
+       <entry>result count for item (number of hits)</entry>
+      </row>
+      <row>
+       <entry>searchresult.<replaceable>no</replaceable>.subquery.term</entry>
+       <entry>subquery term</entry>
+      </row>
+      <row>
+       <entry>
+	searchresult.<replaceable>no</replaceable>.interpretation.term
+       </entry>
+       <entry>interpretation term</entry>
+      </row>
+      <row>
+       <entry>
+	searchresult.<replaceable>no</replaceable>.recommendation.term
+       </entry>
+       <entry>recommendation term</entry>
+      </row>
+     </tbody>
+    </tgroup>
+   </table>
+   <sect2 id="zoom.z3950.resultset.behavior">
+    <title>Z39.50 Protocol behavior</title>
+    <para>
+     The creation of a result set involves at least a SearchRequest
+     - SearchResponse protocol handshake. Following that, if a sort
+     criteria was specified as part of the query, a SortRequest -
+     SortResponse handshake takes place. Note that it is necessary to
+     perform sorting before any retrieval takes place, so no records will
+     be returned from the target as part of the SearchResponse because these
+     would be unsorted. Hence, piggyback is disabled when sort criteria
+     are set. Following Search - and a possible sort - Retrieval takes
+     place - as one or more Present Requests/Response pairs being
+     transferred.
+     </para>
+    <para>
+     The API allows for two different modes for retrieval. A high level
+     mode which is somewhat more powerful and a low level one.
+     The low level is enabled when searching on a Connection object
+     for which the settings
+     <literal>smallSetUpperBound</literal>,
+     <literal>mediumSetPresentNumber</literal> and
+     <literal>largeSetLowerBound</literal> are set. The low level mode
+     thus allows you to precisely set how records are returned as part
+     of a search response as offered by the Z39.50 protocol.
+     Since the client may be retrieving records as part of the
+     search response, this mode doesn't work well if sorting is used.
+     </para>
+    <para>
+     The high-level mode allows you to fetch a range of records from
+     the result set with a given start offset. When you use this mode
+     the client will automatically use piggyback if that is possible
+     with the target and perform one or more present requests as needed.
+     Even if the target returns fewer records as part of a present response
+     because of a record size limit, etc. the client will repeat sending
+     present requests. As an example, if option <literal>start</literal>
+     is 0 (default) and <literal>count</literal> is 4, and
+     <literal>piggyback</literal> is 1 (default) and no sorting criteria
+     is specified, then the client will attempt to retrieve the 4
+     records as part the search response (using piggyback). On the other
+     hand, if either <literal>start</literal> is positive or if
+     a sorting criteria is set, or if <literal>piggyback</literal>
+     is 0, then the client will not perform piggyback but send Present
+     Requests instead.
+    </para>
+    <para>
+     If either of the options <literal>mediumSetElementSetName</literal> and
+     <literal>smallSetElementSetName</literal> are unset, the value
+     of option <literal>elementSetName</literal> is used for piggyback
+     searches. This means that for the high-level mode you only have
+     to specify one elementSetName option rather than three.
+     </para>
+   </sect2>
+   <sect2 id="zoom.sru.resultset.behavior">
+    <title>SRU Protocol behavior</title>
+    <para>
+     Current version of &yaz; does not take advantage of a result set id
+     returned by the SRU server. Future versions might do, however.
+     Since, the ZOOM driver does not save result set IDs any
+     present (retrieval) is transformed to a SRU SearchRetrieveRequest
+     with same query but, possibly, different offsets.
+    </para>
+    <para>
+     Option <literal>schema</literal> specifies SRU schema
+     for retrieval. However, options <literal>elementSetName</literal> and
+     <literal>preferredRecordSyntax</literal> are ignored.
+    </para>
+    <para>
+     Options <literal>start</literal> and <literal>count</literal> 
+     are supported by SRU.
+     The remaining options
+     <literal>piggyback</literal>, 
+     <literal>smallSetUpperBound</literal>, 
+     <literal>largeSetLowerBound</literal>, 
+     <literal>mediumSetPresentNumber</literal>, 
+     <literal>mediumSetElementSetName</literal>,
+      <literal>smallSetElementSetName</literal> are
+     unsupported.
+    </para>
+    <para>
+     SRU supports CQL queries, <emphasis>not</emphasis> PQF.
+     If PQF is used, however, the PQF query is transferred anyway
+     using non-standard element <literal>pQuery</literal> in
+     SRU SearchRetrieveRequest.
+    </para>
+    <para>
+     Unfortunately, SRU does not define a database setting. Hence,
+     <literal>databaseName</literal> is unsupported and ignored.
+     However, the path part in host parameter for functions 
+     <function>ZOOM_connecton_new</function> and
+     <function>ZOOM_connection_connect</function> acts as a
+     database (at least for the &yaz; SRU server).
+    </para>
+   </sect2>
+  </sect1>
+  <sect1 id="zoom.records"><title>Records</title>
+   <para>
+    A record object is a retrieval record on the client side -
+    created from result sets.
+   </para>
+   <synopsis>
+     void ZOOM_resultset_records(ZOOM_resultset r,
+                                 ZOOM_record *recs,
+                                 size_t start, size_t count);
+     ZOOM_record ZOOM_resultset_record(ZOOM_resultset s, size_t pos);
+
+     const char *ZOOM_record_get(ZOOM_record rec, const char *type,
+                                 size_t *len);
+
+     int ZOOM_record_error(ZOOM_record rec, const char **msg,
+                           const char **addinfo, const char **diagset);
+
+     ZOOM_record ZOOM_record_clone (ZOOM_record rec);
+
+     void ZOOM_record_destroy (ZOOM_record rec);
+   </synopsis>
+   <para>
+    References to temporary records are returned by functions 
+    <function>ZOOM_resultset_records</function> or
+    <function>ZOOM_resultset_record</function>.
+    </para>
+   <para>
+    If a persistent reference to a record is desired
+    <function>ZOOM_record_clone</function> should be used.
+    It returns a record reference that should be destroyed
+    by a call to <function>ZOOM_record_destroy</function>.
+   </para>
+   <para>
+    A single record is returned by function
+    <function>ZOOM_resultset_record</function> that takes a 
+    position as argument. First record has position zero.
+    If no record could be obtained <literal>NULL</literal> is returned.
+   </para>
+   <para>
+    Error information for a record can be checked with
+    <function>ZOOM_record_error</function> which returns non-zero
+    (error code) if record is in error, called <emphasis>Surrogate
+     Diagnostics</emphasis> in Z39.50.
+   </para>
+   <para>
+    Function <function>ZOOM_resultset_records</function> retrieves
+    a number of records from a result set. Parameter <literal>start</literal>
+    and <literal>count</literal> specifies the range of records to
+    be returned. Upon completion array
+    <literal>recs[0], ..recs[count-1]</literal>
+    holds record objects for the records. The array of records
+     <literal>recs</literal> should be allocated prior the call
+    <function>ZOOM_resultset_records</function>. Note that for those
+    records that couldn't be retrieved from the target
+    <literal>recs[ ..]</literal> is set to <literal>NULL</literal>.
+   </para>
+   <para id="zoom.record.get">
+    In order to extract information about a single record,
+    <function>ZOOM_record_get</function> is provided. The
+    function returns a pointer to certain record information. The
+    nature (type) of the pointer depends on the parameter,
+    <parameter>type</parameter>.
+   </para>
+   <para>
+    The <parameter>type</parameter> is a string of the format:
+   </para>
+   <para>
+    <replaceable>form</replaceable>[; charset=<replaceable>from</replaceable>[,<replaceable>to</replaceable>]]
+   </para>
+   <para>
+    where <replaceable>form</replaceable> specifies the format of the
+    returned record, <replaceable>from</replaceable>
+    specifies the character set of the record in its original form
+    (as returned by the server), <replaceable>to</replaceable> specifies
+    the output (returned)
+    character set encoding.
+    If charset is not given, then no character set conversion takes place.
+    If <replaceable>to</replaceable> is omitted UTF-8 is assumed.
+   </para>
+   <para>
+    In addition, for certain types, the length
+    <literal>len</literal> passed will be set to the size in bytes of
+    the returned information. 
+    </para>
+   <para>
+    The following are the supported values for <replaceable>form</replaceable>.
+    <variablelist>
+     <varlistentry><term><literal>database</literal></term>
+      <listitem><para>Database of record is returned
+        as a C null-terminated string. Return type
+        <literal>const char *</literal>. 
+       </para></listitem>
+     </varlistentry>
+     <varlistentry><term><literal>syntax</literal></term>
+      <listitem><para>The transfer syntax of the record is returned
+        as a C null-terminated string containing the symbolic name of
+	the record syntax, e.g. <literal>Usmarc</literal>. Return type
+	is
+        <literal>const char *</literal>. 
+       </para></listitem>
+     </varlistentry>
+     <varlistentry><term><literal>render</literal></term>
+      <listitem><para>The record is returned in a display friendly
+        format. Upon completion buffer is returned
+        (type <literal>const char *</literal>) and length is stored in
+        <literal>*len</literal>.
+       </para></listitem>
+     </varlistentry>
+     <varlistentry><term><literal>raw</literal></term>
+      <listitem><para>The record is returned in the internal
+        YAZ specific format. For GRS-1, Explain, and others, the
+        raw data is returned as type 
+        <literal>Z_External *</literal> which is just the type for
+        the member <literal>retrievalRecord</literal> in
+        type <literal>NamePlusRecord</literal>.
+        For SUTRS and octet aligned record (including all MARCs) the
+        octet buffer is returned and the length of the buffer.
+       </para></listitem>
+     </varlistentry>
+     <varlistentry><term><literal>xml</literal></term>
+      <listitem><para>The record is returned in XML if possible.
+	SRU and Z39.50 records with transfer syntax XML are
+	returned verbatim. MARC records are returned in
+	<ulink url="&url.marcxml;">
+	 MARCXML
+	 </ulink> 
+	(converted from ISO2709 to MARCXML by YAZ).
+	GRS-1 and OPAC records are not supported for this form.
+        Upon completion, the XML buffer is returned
+	(type <literal>const char *</literal>) and length is stored in
+        <literal>*len</literal>.
+       </para></listitem>
+     </varlistentry>
+     <varlistentry><term><literal>opac</literal></term>
+      <listitem><para>OPAC for record is returned in XML.
+       </para></listitem>
+     </varlistentry>
+    </variablelist>
+   </para>
+   <para>
+    Most
+    <ulink url="&url.marc21;">MARC21</ulink>
+    records uses the 
+    <ulink url="&url.marc8;">MARC-8</ulink>
+    character set encoding.
+    An application that wishes to display in Latin-1 would use
+    <screen>
+     render; charset=marc8,iso-8859-1
+    </screen>
+   </para>
+   <sect2 id="zoom.z3950.record.behavior">
+    <title>Z39.50 Protocol behavior</title>
+    <para>
+     The functions <function>ZOOM_resultset_record</function> and
+     <function>ZOOM_resultset_records</function> inspects the client-side
+     record cache. Records not found in cache are fetched using
+     Present.
+     The functions may block (and perform network I/O)  - even though option
+     <literal>async</literal> is 1, because they return records objects.
+     (and there's no way to return records objects without retrieving them!).
+     </para>
+    <para>
+     There is a trick, however, in the usage of function
+     <function>ZOOM_resultset_records</function> that allows for
+     delayed retrieval (and makes it non-blocking). By using
+     a null pointer for <parameter>recs</parameter> you're indicating
+     you're not interested in getting records objects
+     <emphasis>now</emphasis>.
+    </para>
+   </sect2>
+   <sect2 id="zoom.sru.record.behavior">
+    <title>SRU Protocol behavior</title>
+    <para>
+     The ZOOM driver for SRU treats records returned by a SRU server
+     as if they where Z39.50 records with transfer syntax XML and
+     no element set name or database name.
+    </para>
+   </sect2>
+  </sect1>
+  <sect1 id="zoom.scan"><title>Scan</title>
+   <para>
+    This section describes an interface for Scan. Scan is not an
+    official part of the ZOOM model yet. The result of a scan operation
+    is the <literal>ZOOM_scanset</literal> which is a set of terms
+    returned by a target.
+   </para>
+
+   <para>
+    The Scan interface is Z39.50 only. SRW version 1.0 does not
+    support this.
+   </para>
+
+   <synopsis>
+    ZOOM_scanset ZOOM_connection_scan(ZOOM_connection c,
+                                      const char *startpqf);
+
+    size_t ZOOM_scanset_size(ZOOM_scanset scan);
+
+    const char * ZOOM_scanset_term(ZOOM_scanset scan, size_t pos,
+                                   int *occ, size_t *len);
+
+    const char * ZOOM_scanset_display_term(ZOOM_scanset scan, size_t pos,
+                                           int *occ, size_t *len);
+
+    void ZOOM_scanset_destroy (ZOOM_scanset scan);
+
+    const char *ZOOM_scanset_option_get(ZOOM_scanset scan,
+                                         const char *key);
+
+    void ZOOM_scanset_option_set(ZOOM_scanset scan, const char *key,
+                                 const char *val);
+    </synopsis>
+   <para>
+    The scan set is created by function
+    <function>ZOOM_connection_scan</function> which performs a scan
+    operation on the connection using the specified
+    <parameter>startpqf</parameter>.
+    If the operation was successful, the size of the scan set can be
+    retrieved by a call to <function>ZOOM_scanset_size</function>.
+    Like result sets, the items are numbered 0,..size-1.
+    To obtain information about a particular scan term, call function
+    <function>ZOOM_scanset_term</function>. This function takes
+    a scan set offset <literal>pos</literal> and returns a pointer
+    to a <emphasis>raw term</emphasis> or <literal>NULL</literal> if
+    non-present.
+    If present, the <literal>occ</literal> and <literal>len</literal> 
+    are set to the number of occurrences and the length
+    of the actual term respectively.
+    <function>ZOOM_scanset_display_term</function> is similar to
+    <function>ZOOM_scanset_term</function> except that it returns
+    the <emphasis>display term</emphasis> rather than the raw term.
+    In a few cases, the term is different from display term. Always
+    use the display term for display and the raw term for subsequent
+    scan operations (to get more terms, next scan result, etc).
+   </para>
+   <para>
+    A scan set may be freed by a call to function
+    <function>ZOOM_scanset_destroy</function>.
+    Functions <function>ZOOM_scanset_option_get</function> and
+    <function>ZOOM_scanset_option_set</function> retrieves and sets
+    an option respectively.
+   </para>
+
+   <para>
+    The <parameter>startpqf</parameter> is a subset of PQF, namely
+    the Attributes+Term part. Multiple <literal>@attr</literal> can
+    be used. For example to scan in title (complete) phrases:
+    <literallayout>
+     @attr 1=4 @attr 6=2 "science o"
+    </literallayout>
+   </para>
+   
+   <table frame="top" id="zoom.scanset.options">
+    <title>ZOOM Scan Set Options</title>
+    <tgroup cols="3">
+     <colspec colwidth="4*" colname="name"></colspec>
+     <colspec colwidth="7*" colname="description"></colspec>
+     <colspec colwidth="2*" colname="default"></colspec>
+     <thead>
+      <row>
+       <entry>Option</entry>
+       <entry>Description</entry>
+       <entry>Default</entry>
+      </row>
+     </thead>
+     <tbody>
+      <row><entry>
+        number</entry><entry>Number of Scan Terms requested in next scan.
+        After scan it holds the actual number of terms returned.
+       </entry><entry>10</entry></row>
+      <row><entry>
+        position</entry><entry>Preferred Position of term in response
+        in next scan; actual position after completion of scan.
+       </entry><entry>1</entry></row>
+      <row><entry>
+        stepSize</entry><entry>Step Size
+       </entry><entry>0</entry></row>
+      <row><entry>
+        scanStatus</entry><entry>An integer indicating the Scan Status
+        of last scan.
+       </entry><entry>0</entry></row>
+     </tbody>
+    </tgroup>
+   </table>
+  </sect1>
+
+  <sect1 id="zoom.extendedservices"><title>Extended Services</title>
+   <para>
+    ZOOM offers an interface to a subset of the Z39.50 extended services
+    as well as a few privately defined ones:
+   </para>
+   <itemizedlist>
+    <listitem>
+     <para>
+      Z39.50 Item Order (ILL).
+      See <xref linkend="zoom.item.order"/>.
+     </para>
+    </listitem>
+    <listitem>
+     <para>
+      Record Update. This allows a client to insert, modify or delete
+      records.
+      See <xref linkend="zoom.record.update"/>.
+     </para>
+    </listitem>
+    <listitem>
+     <para>
+      Database Create. This a non-standard feature. Allows a client
+      to create a database.
+      See <xref linkend="zoom.database.create"/>.
+     </para>
+    </listitem>
+    <listitem>
+     <para>
+      Database Drop. This a non-standard feature. Allows a client
+      to delete/drop a database.
+      See <xref linkend="zoom.database.drop"/>.
+     </para>
+     </listitem>
+    <listitem>
+     <para>
+      Commit operation. This a non-standard feature. Allows a client
+      to commit operations.
+      See <xref linkend="zoom.commit"/>.
+     </para>
+    </listitem>
+    <!-- all the ILL PDU options should go here too -->
+   </itemizedlist>
+   <para>
+    To create an extended service operation a <literal>ZOOM_package</literal>
+    must be created. The operation is a five step operation. The
+    package is created, package is configured by means of options,
+    the package is send, result is inspected (by means of options),
+    the package is destroyed.
+   </para>
+   <synopsis>
+    ZOOM_package ZOOM_connection_package(ZOOM_connection c,
+                                         ZOOM_options options);
+
+    const char *ZOOM_package_option_get(ZOOM_package p,
+                                        const char *key);
+    void ZOOM_package_option_set(ZOOM_package p, const char *key,
+                                 const char *val);
+    void ZOOM_package_send(ZOOM_package p, const char *type);
+
+    void ZOOM_package_destroy(ZOOM_package p);
+   </synopsis>
+   <para>
+    The <function>ZOOM_connection_package</function> creates a
+    package for the connection given using the options specified.
+   </para>
+   <para>
+    Functions <function>ZOOM_package_option_get</function> and
+    <function>ZOOM_package_option_set</function> gets and sets
+    options.
+   </para>
+   <para>
+    <function>ZOOM_package_send</function> sends
+    the package the via connection specified in 
+    <function>ZOOM_connection_package</function>.
+    The <parameter>type</parameter> specifies the actual extended service
+    package type to be sent.
+   </para>
+
+   <table frame="top" id="zoom.extendedservices.options">
+    <title>Extended Service Common Options</title>
+    <tgroup cols="3">
+     <colspec colwidth="4*" colname="name"></colspec>
+     <colspec colwidth="7*" colname="description"></colspec>
+     <colspec colwidth="3*" colname="default"></colspec>
+     <thead>
+      <row>
+       <entry>Option</entry>
+       <entry>Description</entry>
+       <entry>Default</entry>
+      </row>
+     </thead>
+     <tbody>
+      <row>
+       <entry>package-name</entry>
+       <entry>Extended Service Request package name. Must be specified
+       as part of a request</entry>
+       <entry>none</entry>
+      </row>
+      <row>
+       <entry>user-id</entry>
+       <entry>User ID of Extended Service Package. Is a request option</entry>
+       <entry>none</entry>
+      </row>
+      <row>
+       <entry>function</entry>
+       <entry>
+	Function of package - one of <literal>create</literal>,
+	<literal>delete</literal>, <literal>modify</literal>. Is
+	a request option.
+       </entry>
+       <entry><literal>create</literal></entry>
+      </row>
+      <row>
+       <entry>targetReference</entry>
+       <entry>
+	Target Reference. This is part of the response as returned
+	by the server. Read it after a succesful operation.
+       </entry>
+       <entry><literal>none</literal></entry>
+      </row>
+     </tbody>
+    </tgroup>
+   </table>
+
+   <sect2 id="zoom.item.order"><title>Item Order</title>
+    <para>
+     For Item Order, type must be set to <literal>itemorder</literal> in
+     <function>ZOOM_package_send</function>.
+    </para>
+
+    <table frame="top" id="zoom.item.order.options">
+     <title>Item Order Options</title>
+     <tgroup cols="3">
+      <colspec colwidth="4*" colname="name"></colspec>
+      <colspec colwidth="7*" colname="description"></colspec>
+      <colspec colwidth="3*" colname="default"></colspec>
+      <thead>
+       <row>
+	<entry>Option</entry>
+	<entry>Description</entry>
+	<entry>Default</entry>
+       </row>
+      </thead>
+      <tbody>
+       <row>
+	<entry>contact-name</entry>
+	<entry>ILL contact name</entry>
+	<entry>none</entry>
+       </row>
+       <row>
+	<entry>contact-phone</entry>
+	<entry>ILL contact phone</entry>
+	<entry>none</entry>
+       </row>
+       <row>
+	<entry>contact-email</entry>
+	<entry>ILL contact email</entry>
+	<entry>none</entry>
+       </row>
+       <row>
+	<entry>itemorder-item</entry>
+	<entry>Position for item (record) requested. An integer</entry>
+	<entry>1</entry>
+       </row>
+      </tbody>
+     </tgroup>
+    </table>
+
+   </sect2>
+
+   <sect2 id="zoom.record.update"><title>Record Update</title>
+    <para>
+     For Record Update, type must be set to <literal>update</literal> in
+     <function>ZOOM_package_send</function>.
+    </para>
+
+    <table frame="top" id="zoom.record.update.options">
+     <title>Record Update Options</title>
+     <tgroup cols="3">
+      <colspec colwidth="4*" colname="name"></colspec>
+      <colspec colwidth="7*" colname="description"></colspec>
+      <colspec colwidth="3*" colname="default"></colspec>
+      <thead>
+       <row>
+	<entry>Option</entry>
+	<entry>Description</entry>
+	<entry>Default</entry>
+       </row>
+      </thead>
+      <tbody>
+       <row>
+	<entry>action</entry>
+	<entry>
+	 The update action. One of 
+	 <literal>specialUpdate</literal>,
+	 <literal>recordInsert</literal>,
+	 <literal>recordReplace</literal>,
+	 <literal>recordDelete</literal>,
+	 <literal>elementUpdate</literal>.
+	</entry>
+	<entry><literal>specialUpdate</literal></entry>
+       </row>
+       <row>
+	<entry>recordIdOpaque</entry>
+	<entry>Opaque Record ID</entry>
+	<entry>none</entry>
+       </row>
+       <row>
+	<entry>recordIdNumber</entry>
+	<entry>Record ID number</entry>
+	<entry>none</entry>
+       </row>
+       <row>
+	<entry>record</entry>
+	<entry>The record itself</entry>
+	<entry>none</entry>
+       </row>
+       <row>
+	<entry>syntax</entry>
+	<entry>The record syntax (transfer syntax). Is a string that
+	 is a known record syntax.
+	</entry>
+	<entry>no syntax</entry>
+       </row>
+       <row>
+	<entry>databaseName</entry>
+	<entry>Database from connection object</entry>
+	<entry>Default</entry>
+       </row>
+      </tbody>
+     </tgroup>
+    </table>
+    
+   </sect2>
+
+   <sect2 id="zoom.database.create"><title>Database Create</title>
+    <para>
+     For Database Create, type must be set to <literal>create</literal> in
+     <function>ZOOM_package_send</function>.
+    </para>
+    
+    <table frame="top" id="zoom.database.create.options">
+     <title>Database Create Options</title>
+     <tgroup cols="3">
+      <colspec colwidth="4*" colname="name"></colspec>
+      <colspec colwidth="7*" colname="description"></colspec>
+      <colspec colwidth="3*" colname="default"></colspec>
+      <thead>
+       <row>
+	<entry>Option</entry>
+	<entry>Description</entry>
+	<entry>Default</entry>
+       </row>
+      </thead>
+      <tbody>
+       <row>
+	<entry>databaseName</entry>
+	<entry>Database from connection object</entry>
+	<entry>Default</entry>
+       </row>
+      </tbody>
+     </tgroup>
+    </table>
+   </sect2>
+   
+   <sect2 id="zoom.database.drop"><title>Database Drop</title>
+    <para>
+     For Database Drop, type must be set to <literal>drop</literal> in
+     <function>ZOOM_package_send</function>.
+    </para>
+    
+    <table frame="top" id="zoom.database.drop.options">
+     <title>Database Drop Options</title>
+     <tgroup cols="3">
+      <colspec colwidth="4*" colname="name"></colspec>
+      <colspec colwidth="7*" colname="description"></colspec>
+      <colspec colwidth="3*" colname="default"></colspec>
+      <thead>
+       <row>
+	<entry>Option</entry>
+	<entry>Description</entry>
+	<entry>Default</entry>
+       </row>
+      </thead>
+      <tbody>
+       <row>
+	<entry>databaseName</entry>
+	<entry>Database from connection object</entry>
+	<entry>Default</entry>
+       </row>
+      </tbody>
+     </tgroup>
+    </table>
+   </sect2>
+   
+   <sect2 id="zoom.commit"><title>Commit Operation</title>
+    <para>
+     For Commit, type must be set to <literal>commit</literal> in
+     <function>ZOOM_package_send</function>.
+    </para>
+   </sect2>
+
+   <sect2 id="zoom.extended.services.behavior">
+    <title>Protocol behavior</title>
+    <para>
+     All the extended services are Z39.50-only.
+    </para>
+    <note>
+     <para>
+      The database create, drop and commit services are privately defined
+      operations.
+      Refer to <filename>esadmin.asn</filename> in YAZ for the ASN.1
+      definitions.
+     </para>
+    </note>
+   </sect2>
+  </sect1>
+
+  <sect1 id="zoom.options"><title>Options</title>
+   <para>
+    Most &zoom; objects provide a way to specify options to change behavior.
+    From an implementation point of view a set of options is just like
+    an associative array / hash.
+   </para>
+   <synopsis>
+     ZOOM_options ZOOM_options_create (void);
+
+     ZOOM_options ZOOM_options_create_with_parent (ZOOM_options parent);
+
+     void ZOOM_options_destroy (ZOOM_options opt);
+   </synopsis>
+   <synopsis>
+     const char *ZOOM_options_get (ZOOM_options opt, const char *name);
+
+     void ZOOM_options_set (ZOOM_options opt, const char *name,
+                            const char *v);
+   </synopsis>
+   <synopsis>
+     typedef const char *(*ZOOM_options_callback)
+                                     (void *handle, const char *name);
+
+     ZOOM_options_callback
+             ZOOM_options_set_callback (ZOOM_options opt,
+                                        ZOOM_options_callback c,
+                                        void *handle);
+   </synopsis>
+  </sect1>
+  <sect1 id="zoom.events"><title>Events</title>
+   <para>
+    If you're developing non-blocking applications, you have to deal 
+    with events.
+   </para>
+   <synopsis>
+    int ZOOM_event (int no, ZOOM_connection *cs);
+   </synopsis>
+   <para>
+    The <function>ZOOM_event</function> executes pending events for
+    a number of connections. Supply the number of connections in
+    <literal>no</literal> and an array of connections in
+    <literal>cs</literal> (<literal>cs[0] ... cs[no-1]</literal>).
+    A pending event could be a sending a search, receiving a response,
+    etc.
+    When an event has occurred for one of the connections, this function
+    returns a positive integer <literal>n</literal> denoting that an event
+    occurred for connection <literal>cs[n-1]</literal>.
+    When no events are pending for the connections, a value of zero is
+    returned.
+    To ensure that all outstanding requests are performed call this function
+    repeatedly until zero is returned.
+   </para>
+   <para>
+    If <function>ZOOM_event</function> returns and returns non-zero, the
+    last event that occurred can be expected.
+   </para>
+   <synopsis>
+    int ZOOM_connection_last_event(ZOOM_connection cs);
+   </synopsis>
+   <para>
+    <function>ZOOM_connection_last_event</function> returns an event type
+    (integer) for the last event.
+   </para>
+
+   <table frame="top" id="zoom.event.ids">
+    <title>ZOOM Event IDs</title>
+    <tgroup cols="2">
+     <colspec colwidth="4*" colname="name"></colspec>
+     <colspec colwidth="7*" colname="description"></colspec>
+     <thead>
+      <row>
+       <entry>Event</entry>
+       <entry>Description</entry>
+      </row>
+     </thead>
+     <tbody>
+      <row>
+       <entry>ZOOM_EVENT_NONE</entry>
+       <entry>No event has occurred</entry>
+      </row>
+      <row>
+       <entry>ZOOM_EVENT_CONNECT</entry>
+       <entry>TCP/IP connect has initiated</entry>
+      </row>
+      <row>
+       <entry>ZOOM_EVENT_SEND_DATA</entry>
+       <entry>Data has been transmitted (sending)</entry>
+      </row>
+      <row>
+       <entry>ZOOM_EVENT_RECV_DATA</entry>
+       <entry>Data has been received)</entry>
+      </row>
+      <row>
+       <entry>ZOOM_EVENT_TIMEOUT</entry>
+       <entry>Timeout</entry>
+      </row>
+      <row>
+       <entry>ZOOM_EVENT_UNKNOWN</entry>
+       <entry>Unknown event</entry>
+      </row>
+      <row>
+       <entry>ZOOM_EVENT_SEND_APDU</entry>
+       <entry>An APDU has been transmitted (sending)</entry>
+      </row>
+      <row>
+       <entry>ZOOM_EVENT_RECV_APDU</entry>
+       <entry>An APDU has been received</entry>
+      </row>
+      <row>
+       <entry>ZOOM_EVENT_RECV_RECORD</entry>
+       <entry>A result-set record has been received</entry>
+      </row>
+      <row>
+       <entry>ZOOM_EVENT_RECV_SEARCH</entry>
+       <entry>A search result been received</entry>
+      </row>
+     </tbody>
+    </tgroup>
+   </table>
+  </sect1>
+ </chapter>
+ 
+ <!-- Keep this comment at the end of the file
+ Local variables:
+ mode: sgml
+ sgml-omittag:t
+ sgml-shorttag:t
+ sgml-minimize-attributes:nil
+ sgml-always-quote-attributes:t
+ sgml-indent-step:1
+ sgml-indent-data:t
+ sgml-parent-document: "yaz.xml"
+ sgml-local-catalogs: nil
+ sgml-namecase-general:t
+ End:
+ -->
+ 

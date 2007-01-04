@@ -1,0 +1,330 @@
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"><title>2. Using ODR</title><meta name="generator" content="DocBook XSL Stylesheets V1.71.0"><link rel="start" href="index.html" title="YAZ User's Guide and Reference"><link rel="up" href="odr.html" title="Chapter 10. The ODR Module"><link rel="prev" href="odr.html" title="Chapter 10. The ODR Module"><link rel="next" href="odr.programming.html" title="3. Programming with ODR"></head><body><link rel="stylesheet" type="text/css" href="common/style1.css"><div class="navheader"><table width="100%" summary="Navigation header"><tr><th colspan="3" align="center">2. Using ODR</th></tr><tr><td width="20%" align="left"><a accesskey="p" href="odr.html">Prev</a> </td><th width="60%" align="center">Chapter 10. The ODR Module</th><td width="20%" align="right"> <a accesskey="n" href="odr.programming.html">Next</a></td></tr></table><hr></div><div class="sect1" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="odr.use"></a>2. Using ODR</h2></div></div></div><div class="sect2" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="odr.streams"></a>2.1. ODR Streams</h3></div></div></div><p>
+     Conceptually, the ODR stream is the source of encoded data in the
+     decoding mode; when encoding, it is the receptacle for the encoded
+     data. Before you can use an ODR stream it must be allocated. This is
+     done with the function
+    </p><pre class="synopsis">
+     ODR odr_createmem(int direction);
+    </pre><p>
+     The <code class="function">odr_createmem()</code> function takes as argument one
+     of three manifest constants: <code class="literal">ODR_ENCODE</code>,
+     <code class="literal">ODR_DECODE</code>, or <code class="literal">ODR_PRINT</code>.
+     An <acronym class="acronym">ODR</acronym> stream can be in only one mode - it is not possible to change
+     its mode once it's selected. Typically, your program will allocate
+     at least two ODR streams - one for decoding, and one for encoding.
+    </p><p>
+     When you're done with the stream, you can use
+    </p><pre class="synopsis">
+     void odr_destroy(ODR o);
+    </pre><p>
+     to release the resources allocated for the stream.
+    </p></div><div class="sect2" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="odr.memory.management"></a>2.2. Memory Management</h3></div></div></div><p>
+     Two forms of memory management take place in the <acronym class="acronym">ODR</acronym> system. The first
+     one, which has to do with allocating little bits of memory (sometimes
+     quite large bits of memory, actually) when a protocol package is
+     decoded, and turned into a complex of interlinked structures. This
+     section deals with this system, and how you can use it for your own
+     purposes. The next section deals with the memory management which is
+     required when encoding data - to make sure that a large enough buffer is
+     available to hold the fully encoded PDU.
+    </p><p>
+     The <acronym class="acronym">ODR</acronym> module has its own memory management system, which is
+     used whenever memory is required. Specifically, it is used to allocate
+     space for data when decoding incoming PDUs. You can use the memory
+     system for your own purposes, by using the function
+    </p><pre class="synopsis">
+     void *odr_malloc(ODR o, int size);
+    </pre><p>
+     You can't use the normal <code class="function">free(2)</code> routine to free
+     memory allocated by this function, and <acronym class="acronym">ODR</acronym> doesn't provide a parallel
+     function. Instead, you can call
+    </p><pre class="synopsis">
+     void odr_reset(ODR o, int size);
+    </pre><p>
+     when you are done with the
+     memory: Everything allocated since the last call to
+     <code class="function">odr_reset()</code> is released.
+     The <code class="function">odr_reset()</code> call is also required to clear
+     up an error condition on a stream.
+    </p><p>
+     The function
+    </p><pre class="synopsis">
+     int odr_total(ODR o);
+    </pre><p>
+     returns the number of bytes allocated on the stream since the last call to
+     <code class="function">odr_reset()</code>.
+    </p><p>
+     The memory subsystem of <acronym class="acronym">ODR</acronym> is fairly efficient at allocating and
+     releasing little bits of memory. Rather than managing the individual,
+     small bits of space, the system maintains a free-list of larger chunks
+     of memory, which are handed out in small bits. This scheme is
+     generally known as a <span class="emphasis"><em>nibble memory</em></span> system.
+     It is very useful for maintaining short-lived constructions such
+     as protocol PDUs.
+    </p><p>
+     If you want to retain a bit of memory beyond the next call to
+     <code class="function">odr_reset()</code>, you can use the function
+    </p><pre class="synopsis">
+     ODR_MEM odr_extract_mem(ODR o);
+    </pre><p>
+     This function will give you control of the memory recently allocated
+     on the ODR stream. The memory will live (past calls to
+     <code class="function">odr_reset()</code>), until you call the function
+    </p><pre class="synopsis">
+     void odr_release_mem(ODR_MEM p);
+    </pre><p>
+     The opaque <code class="literal">ODR_MEM</code> handle has no other purpose than
+     referencing the memory block for you until you want to release it.
+    </p><p>
+     You can use <code class="function">odr_extract_mem()</code> repeatedly between
+     allocating data, to retain individual control of separate chunks of data.
+    </p></div><div class="sect2" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="odr.encoding.and.decoding"></a>2.3. Encoding and Decoding Data</h3></div></div></div><p>
+     When encoding data, the ODR stream will write the encoded octet string
+     in an internal buffer. To retrieve the data, use the function
+    </p><pre class="synopsis">
+     char *odr_getbuf(ODR o, int *len, int *size);
+    </pre><p>
+     The integer pointed to by len is set to the length of the encoded
+     data, and a pointer to that data is returned. <code class="literal">*size</code>
+     is set to the size of the buffer (unless <code class="literal">size</code> is null,
+     signaling that you are not interested in the size). The next call to
+     a primitive function using the same <acronym class="acronym">ODR</acronym> stream will overwrite the
+     data, unless a different buffer has been supplied using the call
+    </p><pre class="synopsis">
+     void odr_setbuf(ODR o, char *buf, int len, int can_grow);
+    </pre><p>
+     which sets the encoding (or decoding) buffer used by
+     <code class="literal">o</code> to <code class="literal">buf</code>, using the length
+     <code class="literal">len</code>.
+     Before a call to an encoding function, you can use
+     <code class="function">odr_setbuf()</code> to provide the stream with an encoding
+     buffer of sufficient size (length). The <code class="literal">can_grow</code>
+     parameter tells the encoding <acronym class="acronym">ODR</acronym> stream whether it is allowed to use
+     <code class="function">realloc(2)</code> to increase the size of the buffer when
+     necessary. The default condition of a new encoding stream is equivalent
+     to the results of calling
+    </p><pre class="synopsis">
+     odr_setbuf(stream, 0, 0, 1);
+    </pre><p>
+     In this case, the stream will allocate and reallocate memory as
+     necessary. The stream reallocates memory by repeatedly doubling the
+     size of the buffer - the result is that the buffer will typically
+     reach its maximum, working size with only a small number of reallocation
+     operations. The memory is freed by the stream when the latter is destroyed,
+     unless it was assigned by the user with the <code class="literal">can_grow</code>
+     parameter set to zero (in this case, you are expected to retain
+     control of the memory yourself).
+    </p><p>
+     To assume full control of an encoded buffer, you must first call
+     <code class="function">odr_getbuf()</code> to fetch the buffer and its length.
+     Next, you should call <code class="function">odr_setbuf()</code> to provide a
+     different buffer (or a null pointer) to the stream. In the simplest
+     case, you will reuse the same buffer over and over again, and you
+     will just need to call <code class="function">odr_getbuf()</code> after each
+     encoding operation to get the length and address of the buffer.
+     Note that the stream may reallocate the buffer during an encoding
+     operation, so it is necessary to retrieve the correct address after
+     each encoding operation.
+    </p><p>
+     It is important to realize that the ODR stream will not release this
+     memory when you call <code class="function">odr_reset()</code>: It will
+     merely update its internal pointers to prepare for the encoding of a
+     new data value.
+     When the stream is released by the <code class="function">odr_destroy()</code>
+     function, the memory given to it by <code class="function">odr_setbuf</code> will
+     be released <span class="emphasis"><em>only</em></span> if the <code class="literal">can_grow</code>
+     parameter to <code class="function">odr_setbuf()</code> was nonzero. The
+     <code class="literal">can_grow</code> parameter, in other words, is a way of
+     signaling who is to own the buffer, you or the ODR stream. If you never call
+     <code class="function">odr_setbuf()</code> on your encoding stream, which is
+     typically the case, the buffer allocated by the stream will belong to
+     the stream by default.
+    </p><p>
+     When you wish to decode data, you should first call
+     <code class="function">odr_setbuf()</code>, to tell the decoding stream
+     where to find the encoded data, and how long the buffer is
+     (the <code class="literal">can_grow</code> parameter is ignored by a decoding
+     stream). After this, you can call the function corresponding to the
+     data you wish to decode (eg, <code class="function">odr_integer()</code> odr
+     <code class="function">z_APDU()</code>).
+    </p><div class="example"><a name="example.odr.encoding.and.decoding.functions"></a><p class="title"><b>Example 10.1. Encoding and decoding functions</b></p><div class="example-contents"><pre class="synopsis">
+      int odr_integer(ODR o, int **p, int optional, const char *name);
+      
+      int z_APDU(ODR o, Z_APDU **p, int optional, const char *name);
+     </pre></div></div><br class="example-break"><p>
+     If the data is absent (or doesn't match the tag corresponding to
+     the type), the return value will be either 0 or 1 depending on the
+     <code class="literal">optional</code> flag. If <code class="literal">optional</code>
+     is 0 and the data is absent, an error flag will be raised in the
+     stream, and you'll need to call <code class="function">odr_reset()</code> before
+     you can use the stream again. If <code class="literal">optional</code> is
+     nonzero, the pointer <span class="emphasis"><em>pointed</em></span> to/ by
+     <code class="literal">p</code> will be set to the null value, and the function
+     will return 1.
+     The <code class="literal">name</code> argument is used to pretty-print the
+     tag in question. It may be set to <code class="literal">NULL</code> if
+     pretty-printing is not desired.
+    </p><p>
+     If the data value is found where it's expected, the pointer
+     <span class="emphasis"><em>pointed to</em></span> by the <code class="literal">p</code> argument
+     will be set to point to the decoded type.
+     The space for the type will be allocated and owned by the <acronym class="acronym">ODR</acronym>
+     stream, and it will live until you call
+     <code class="function">odr_reset()</code> on the stream. You cannot use
+     <code class="function">free(2)</code> to release the memory.
+     You can decode several data elements (by repeated calls to
+     <code class="function">odr_setbuf()</code> and your decoding function), and
+     new memory will be allocated each time. When you do call 
+     <code class="function">odr_reset()</code>, everything decoded since the
+     last call to <code class="function">odr_reset()</code> will be released.
+    </p><div class="example"><a name="example.odr.encoding.of.integer"></a><p class="title"><b>Example 10.2. Encoding and decoding of an integer</b></p><div class="example-contents"><p>
+      The use of the double indirection can be a little confusing at first
+      (its purpose will become clear later on, hopefully),
+      so an example is in order. We'll encode an integer value, and
+      immediately decode it again using a different stream. A useless, but
+      informative operation.
+     </p><pre class="programlisting">
+void do_nothing_useful(int value)
+{
+    ODR encode, decode;
+    int *valp, *resvalp;
+    char *bufferp;
+    int len;
+     
+    /* allocate streams */
+    if (!(encode = odr_createmem(ODR_ENCODE)))
+        return;
+    if (!(decode = odr_createmem(ODR_DECODE)))
+        return;
+
+    valp = &amp;amp;value;
+    if (odr_integer(encode, &amp;amp;valp, 0, 0) == 0)
+    {
+        printf("encoding went bad\n");
+        return;
+    }
+    bufferp = odr_getbuf(encode, &amp;amp;len);
+    printf("length of encoded data is &amp;percnt;d\n", len);
+
+    /* now let's decode the thing again */
+    odr_setbuf(decode, bufferp, len);
+    if (odr_integer(decode, &amp;amp;resvalp, 0, 0) == 0)
+    {
+        printf("decoding went bad\n");
+        return;
+    }
+    printf("the value is &amp;percnt;d\n", *resvalp);
+
+    /* clean up */
+    odr_destroy(encode);
+    odr_destroy(decode);
+}
+
+     </pre><p>
+      This looks like a lot of work, offhand. In practice, the <acronym class="acronym">ODR</acronym> streams
+      will typically be allocated once, in the beginning of your program
+      (or at the beginning of a new network session), and the encoding
+      and decoding will only take place in a few, isolated places in your
+      program, so the overhead is quite manageable.
+     </p></div></div><br class="example-break"></div><div class="sect2" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="odr.printing"></a>2.4. Printing</h3></div></div></div><p>
+     When an ODR stream is created of type <code class="literal">ODR_PRINT</code>
+     the ODR module will print the contents of a PDU in a readable format.
+     By default output is written to the <code class="literal">stderr</code> stream.
+     This behavior can be changed, however, by calling the function
+     </p><pre class="synopsis">
+      odr_setprint(ODR o, FILE *file);
+     </pre><p>
+     before encoders or decoders are being invoked.
+     It is also possible to direct the output to a buffer (of indeed
+     another file), by using the more generic mechanism:
+     </p><pre class="synopsis">
+      void odr_set_stream(ODR o, void *handle,
+                         void (*stream_write)(ODR o, void *handle, int type,
+                                              const char *buf, int len),
+                         void (*stream_close)(void *handle));
+     </pre><p>
+     Here the user provides an opaque handle and two handlers,
+     <em class="replaceable"><code>stream_write</code></em> for writing,
+     and <em class="replaceable"><code>stream_close</code></em> which is supposed
+     to close/free resources associated with handle. 
+     The <em class="replaceable"><code>stream_close</code></em> handler is optional and
+     if NULL for the function is provided, it will not be invoked.
+     The <em class="replaceable"><code>stream_write</code></em> takes the ODR handle
+     as parameter, the user defined handle, a type 
+     <code class="literal">ODR_OCTETSTRING</code>, <code class="literal">ODR_VISIBLESTRING</code>
+     which indicates the type of contents is being written.
+    </p><p>
+     Another utility useful for diagnostics (error handling) or as
+     part of the printing facilities is:
+     </p><pre class="synopsis">
+      const char **odr_get_element_path(ODR o);
+     </pre><p>
+     which returns a list of current elements that ODR deals with at the 
+     moment. For the returned array, say <code class="literal">ar</code>, 
+     <code class="literal">ar[0]</code> is the top level element,
+     <code class="literal">ar[n]</code> is the last. The last element has the
+     property that <code class="literal">ar[n+1] == NULL</code>.
+    </p><div class="example"><a name="example.odr.element.path.record"></a><p class="title"><b>Example 10.3. Element Path for record</b></p><div class="example-contents"><p>
+      For a database record part of a PresentResponse the
+      array returned by <code class="function">odr_get_element</code>
+      is <code class="literal">presentResponse</code>, <code class="literal">databaseOrSurDiagnostics</code>, <code class="literal">?</code>, <code class="literal">record</code>, <code class="literal">?</code>, <code class="literal">databaseRecord</code> . The question mark appears due to 
+      unnamed constructions.
+     </p></div></div><br class="example-break"></div><div class="sect2" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="odr.diagnostics"></a>2.5. Diagnostics</h3></div></div></div><p>
+     The encoding/decoding functions all return 0 when an error occurs.
+     Until you call <code class="function">odr_reset()</code>, you cannot use the
+     stream again, and any function called will immediately return 0.
+    </p><p>
+     To provide information to the programmer or administrator, the function
+    </p><pre class="synopsis">
+     void odr_perror(ODR o, char *message);
+    </pre><p>
+     is provided, which prints the <code class="literal">message</code> argument to
+     <code class="literal">stderr</code> along with an error message from the stream.
+    </p><p>
+     You can also use the function
+    </p><pre class="synopsis">
+     int odr_geterror(ODR o);
+    </pre><p>
+     to get the current error number from the screen. The number will be
+     one of these constants:
+    </p><div class="table"><a name="odr.error.codes"></a><p class="title"><b>Table 10.1. ODR Error codes</b></p><div class="table-contents"><table summary="ODR Error codes" border="1"><colgroup><col><col></colgroup><thead><tr><th>code</th><th>Description</th></tr></thead><tbody><tr><td>OMEMORY</td><td>Memory allocation failed.</td></tr><tr><td>OSYSERR</td><td>A system- or library call has failed.
+	 The standard diagnostic variable <code class="literal">errno</code> should be
+	 examined to determine the actual error.</td></tr><tr><td>OSPACE</td><td>No more space for encoding.
+	 This will only occur when the user has explicitly provided a
+	 buffer for an encoding stream without allowing the system to
+	 allocate more space.</td></tr><tr><td>OREQUIRED</td><td>This is a common protocol error; A
+	 required data element was missing during encoding or decoding.</td></tr><tr><td>OUNEXPECTED</td><td>An unexpected data element was
+	 found during decoding.</td></tr><tr><td>OOTHER</td><td>Other error. This is typically an
+	 indication of misuse of the <acronym class="acronym">ODR</acronym> system by the programmer, and also
+	 that the diagnostic system isn't as good as it should be, yet.</td></tr></tbody></table></div></div><br class="table-break"><p>
+     The character string array
+    </p><pre class="synopsis">
+     char *odr_errlist[]
+    </pre><p>
+     can be indexed by the error code to obtain a human-readable
+     representation of the problem.
+    </p></div><div class="sect2" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="odr.summary.and.synopsis"></a>2.6. Summary and Synopsis</h3></div></div></div><pre class="synopsis">
+     #include &lt;odr.h&gt;
+
+     ODR odr_createmem(int direction);
+
+     void odr_destroy(ODR o);
+
+     void odr_reset(ODR o);
+
+     char *odr_getbuf(ODR o, int *len);
+
+     void odr_setbuf(ODR o, char *buf, int len);
+
+     void *odr_malloc(ODR o, int size);
+
+     ODR_MEM odr_extract_mem(ODR o);
+
+     void odr_release_mem(ODR_MEM r);
+
+     int odr_geterror(ODR o);
+
+     void odr_perror(char *message);
+
+     extern char *odr_errlist[];
+    </pre></div></div><div class="navfooter"><hr><table width="100%" summary="Navigation footer"><tr><td width="40%" align="left"><a accesskey="p" href="odr.html">Prev</a> </td><td width="20%" align="center"><a accesskey="u" href="odr.html">Up</a></td><td width="40%" align="right"> <a accesskey="n" href="odr.programming.html">Next</a></td></tr><tr><td width="40%" align="left" valign="top">Chapter 10. The ODR Module </td><td width="20%" align="center"><a accesskey="h" href="index.html">Home</a></td><td width="40%" align="right" valign="top"> 3. Programming with ODR</td></tr></table></div></body></html>

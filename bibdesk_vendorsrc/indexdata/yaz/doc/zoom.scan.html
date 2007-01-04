@@ -1,0 +1,74 @@
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"><title>5. Scan</title><meta name="generator" content="DocBook XSL Stylesheets V1.71.0"><link rel="start" href="index.html" title="YAZ User's Guide and Reference"><link rel="up" href="zoom.html" title="Chapter 3. ZOOM"><link rel="prev" href="zoom.records.html" title="4. Records"><link rel="next" href="zoom.extendedservices.html" title="6. Extended Services"></head><body><link rel="stylesheet" type="text/css" href="common/style1.css"><div class="navheader"><table width="100%" summary="Navigation header"><tr><th colspan="3" align="center">5. Scan</th></tr><tr><td width="20%" align="left"><a accesskey="p" href="zoom.records.html">Prev</a> </td><th width="60%" align="center">Chapter 3. ZOOM</th><td width="20%" align="right"> <a accesskey="n" href="zoom.extendedservices.html">Next</a></td></tr></table><hr></div><div class="sect1" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="zoom.scan"></a>5. Scan</h2></div></div></div><p>
+    This section describes an interface for Scan. Scan is not an
+    official part of the ZOOM model yet. The result of a scan operation
+    is the <code class="literal">ZOOM_scanset</code> which is a set of terms
+    returned by a target.
+   </p><p>
+    The Scan interface is Z39.50 only. SRW version 1.0 does not
+    support this.
+   </p><pre class="synopsis">
+    ZOOM_scanset ZOOM_connection_scan(ZOOM_connection c,
+                                      const char *startpqf);
+
+    size_t ZOOM_scanset_size(ZOOM_scanset scan);
+
+    const char * ZOOM_scanset_term(ZOOM_scanset scan, size_t pos,
+                                   int *occ, size_t *len);
+
+    const char * ZOOM_scanset_display_term(ZOOM_scanset scan, size_t pos,
+                                           int *occ, size_t *len);
+
+    void ZOOM_scanset_destroy (ZOOM_scanset scan);
+
+    const char *ZOOM_scanset_option_get(ZOOM_scanset scan,
+                                         const char *key);
+
+    void ZOOM_scanset_option_set(ZOOM_scanset scan, const char *key,
+                                 const char *val);
+    </pre><p>
+    The scan set is created by function
+    <code class="function">ZOOM_connection_scan</code> which performs a scan
+    operation on the connection using the specified
+    <em class="parameter"><code>startpqf</code></em>.
+    If the operation was successful, the size of the scan set can be
+    retrieved by a call to <code class="function">ZOOM_scanset_size</code>.
+    Like result sets, the items are numbered 0,..size-1.
+    To obtain information about a particular scan term, call function
+    <code class="function">ZOOM_scanset_term</code>. This function takes
+    a scan set offset <code class="literal">pos</code> and returns a pointer
+    to a <span class="emphasis"><em>raw term</em></span> or <code class="literal">NULL</code> if
+    non-present.
+    If present, the <code class="literal">occ</code> and <code class="literal">len</code> 
+    are set to the number of occurrences and the length
+    of the actual term respectively.
+    <code class="function">ZOOM_scanset_display_term</code> is similar to
+    <code class="function">ZOOM_scanset_term</code> except that it returns
+    the <span class="emphasis"><em>display term</em></span> rather than the raw term.
+    In a few cases, the term is different from display term. Always
+    use the display term for display and the raw term for subsequent
+    scan operations (to get more terms, next scan result, etc).
+   </p><p>
+    A scan set may be freed by a call to function
+    <code class="function">ZOOM_scanset_destroy</code>.
+    Functions <code class="function">ZOOM_scanset_option_get</code> and
+    <code class="function">ZOOM_scanset_option_set</code> retrieves and sets
+    an option respectively.
+   </p><p>
+    The <em class="parameter"><code>startpqf</code></em> is a subset of PQF, namely
+    the Attributes+Term part. Multiple <code class="literal">@attr</code> can
+    be used. For example to scan in title (complete) phrases:
+    </p><div class="literallayout"><p><br>
+     @attr 1=4 @attr 6=2 "science o"<br>
+    </p></div><p>
+   </p><div class="table"><a name="zoom.scanset.options"></a><p class="title"><b>Table 3.4. ZOOM Scan Set Options</b></p><div class="table-contents"><table summary="ZOOM Scan Set Options" border="1"><colgroup><col><col><col></colgroup><thead><tr><th>Option</th><th>Description</th><th>Default</th></tr></thead><tbody><tr><td>
+        number</td><td>Number of Scan Terms requested in next scan.
+        After scan it holds the actual number of terms returned.
+       </td><td>10</td></tr><tr><td>
+        position</td><td>Preferred Position of term in response
+        in next scan; actual position after completion of scan.
+       </td><td>1</td></tr><tr><td>
+        stepSize</td><td>Step Size
+       </td><td>0</td></tr><tr><td>
+        scanStatus</td><td>An integer indicating the Scan Status
+        of last scan.
+       </td><td>0</td></tr></tbody></table></div></div><br class="table-break"></div><div class="navfooter"><hr><table width="100%" summary="Navigation footer"><tr><td width="40%" align="left"><a accesskey="p" href="zoom.records.html">Prev</a> </td><td width="20%" align="center"><a accesskey="u" href="zoom.html">Up</a></td><td width="40%" align="right"> <a accesskey="n" href="zoom.extendedservices.html">Next</a></td></tr><tr><td width="40%" align="left" valign="top">4. Records </td><td width="20%" align="center"><a accesskey="h" href="index.html">Home</a></td><td width="40%" align="right" valign="top"> 6. Extended Services</td></tr></table></div></body></html>

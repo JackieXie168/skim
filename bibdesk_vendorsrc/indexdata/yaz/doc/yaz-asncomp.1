@@ -1,0 +1,175 @@
+.\"     Title: yaz\-asncomp
+.\"    Author: 
+.\" Generator: DocBook XSL Stylesheets v1.71.0 <http://docbook.sf.net/>
+.\"      Date: 12/17/2006
+.\"    Manual: 
+.\"    Source: YAZ 2.1.42
+.\"
+.TH "YAZ\-ASNCOMP" "1" "12/17/2006" "YAZ 2.1.42" ""
+.\" disable hyphenation
+.nh
+.\" disable justification (adjust text to left margin only)
+.ad l
+.SH "NAME"
+yaz\-asncomp \- YAZ ASN.1 compiler
+.SH "SYNOPSIS"
+.HP 12
+\fByaz\-asncomp\fR [\fB\-v\fR] [\fB\-c\ \fR\fB\fIcfile\fR\fR] [\fB\-h\ \fR\fB\fIhfile\fR\fR] [\fB\-p\ \fR\fB\fIpfile\fR\fR] [\fB\-d\ \fR\fB\fIconfig\fR\fR] [\fB\-I\ \fR\fB\fIincludeout\fR\fR] [\fB\-i\ \fR\fB\fIincludedir\fR\fR] [\fB\-m\ \fR\fB\fImodule\fR\fR] [filename]
+.SH "DESCRIPTION"
+.PP
+
+\fByaz\-asncomp\fR
+is an ASN.1 compiler that reads an ASN.1 specification in
+\fIfilename\fR
+and produces C/C++ definitions and BER encoders/decoders for it.
+.PP
+The produced C/C++ code and header files uses the ODR module of YAZ which is a library that encodes/decodes/prints BER packages.
+\fByaz\-asncomp\fR
+allows you to specify name of resulting source via options. Alternatively, you can specify a DEFINISIONS file, which provides customized output to many output files \- if the ASN.1 specification file consists of many modules.
+.PP
+This utility is written in Tcl. Any version of Tcl should work.
+.SH "OPTIONS"
+.PP
+\-v
+.RS 3n
+Makes the ASN.1 compiler print more verbose about the various stages of operations.
+.RE
+.PP
+\-c \fIcfile\fR
+.RS 3n
+Specifies the name of the C/C++ file with encoders/decoders.
+.RE
+.PP
+\-h \fIhfile\fR
+.RS 3n
+Specifies the name of header file with definitions.
+.RE
+.PP
+\-p \fIpfile\fR
+.RS 3n
+Specifies the name of the a private header file with definitions. By default all definitions are put in header file (option \-h).
+.RE
+.PP
+\-d \fIdfile\fR
+.RS 3n
+Specifies the name of a definitions file.
+.RE
+.PP
+\-I \fIiout\fR
+.RS 3n
+Specifies first part of directory in which header files are written.
+.RE
+.PP
+\-i \fIidir\fR
+.RS 3n
+Specifies second part of directory in which header files are written.
+.RE
+.PP
+\-m \fImodule\fR
+.RS 3n
+Specifies that ASN.1 compiler should only process the module given. If this option is not specified, all modules in the ASN.1 file are processed.
+.RE
+.SH "DEFINITIONS FILE"
+.PP
+The definitions file is really a Tcl script but follows traditional rules for Shell like configuration files. That is # denotes the beginning of a comment. Definitions are line oriented. The definitions files usually consists of a series of variable assignments of the form:
+.PP
+
+set
+\fIname\fR
+\fIvalue\fR
+.PP
+Available variables are:
+.PP
+default\-prefix
+.RS 3n
+Sets prefix for names in the produced output. The value consists of three tokens: C function prefix, C typedef prefix and preprocessor prefix respectively.
+.RE
+.PP
+prefix(\fImodule\fR)
+.RS 3n
+This value sets prefix values for module
+\fImodule\fR. The value has same form as
+default\-prefix.
+.RE
+.PP
+filename(\fImodule\fR)
+.RS 3n
+Specifies filename for C/header file for module
+\fImodule\fR.
+.RE
+.PP
+init(\fImodule\fR,h)
+.RS 3n
+Code fragment to be put in first part of public header for module
+\fImodule\fR.
+.RE
+.PP
+body(\fImodule\fR,h)
+.RS 3n
+Code fragment to be put in last part of public header for module
+\fImodule\fR
+(trailer).
+.RE
+.PP
+init(\fImodule\fR,c)
+.RS 3n
+Code fragment to be put in first part of C based encoder/decoder for module
+\fImodule\fR.
+.RE
+.PP
+body(\fImodule\fR,c)
+.RS 3n
+Code fragment to be put in last part of C based encoder/decoder for module
+\fImodule\fR
+(trailer).
+.RE
+.PP
+map(\fImodule\fR,\fIname\fR)
+.RS 3n
+Maps ASN.1 type in module
+\fImodule\fR
+of
+\fIname\fR
+to value.
+.RE
+.PP
+membermap(\fImodule\fR,\fIname\fR,\fImember\fR)
+.RS 3n
+Maps member
+\fImember\fR
+in SEQUENCE/CHOICE of
+\fIname\fR
+in module
+\fImodule\fR
+to value. The value consists of one or two tokens. First token is name of C preprocessor part. Second token is resulting C member name. If second token is omitted the value (one token) is both preprocessor part and C
+struct,union.
+.RE
+.PP
+unionmap(\fImodule\fR,\fIname\fR,\fImember\fR)
+.RS 3n
+Maps member
+\fImember\fR
+in CHOICE of
+\fIname\fR
+in module
+\fImodule\fR
+to value. Value consists of to or three tokens. The first token is name of the integer in the
+union
+that is used as selector for the
+union
+itself. The second token is name of the
+union. The third token overrides the name of the CHOICE member; if omitted the member name is used.
+.RE
+.SH "FILES"
+.PP
+
+\fI/usr/share/yaz/z39.50/z.tcl\fR
+.PP
+
+\fI/usr/share/yaz/z39.50/*.asn\fR
+.SH "SEE ALSO"
+.PP
+
+\fByaz\fR(7)
+.PP
+Section "The ODR Module" in the YAZ manual.

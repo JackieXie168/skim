@@ -1,0 +1,50 @@
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"><title>6. Addresses</title><meta name="generator" content="DocBook XSL Stylesheets V1.71.0"><link rel="start" href="index.html" title="YAZ User's Guide and Reference"><link rel="up" href="comstack.html" title="Chapter 11. The COMSTACK Module"><link rel="prev" href="comstack.server.html" title="5. Server Side"><link rel="next" href="comstack.ssl.html" title="7. SSL"></head><body><link rel="stylesheet" type="text/css" href="common/style1.css"><div class="navheader"><table width="100%" summary="Navigation header"><tr><th colspan="3" align="center">6. Addresses</th></tr><tr><td width="20%" align="left"><a accesskey="p" href="comstack.server.html">Prev</a> </td><th width="60%" align="center">Chapter 11. The COMSTACK Module</th><td width="20%" align="right"> <a accesskey="n" href="comstack.ssl.html">Next</a></td></tr></table><hr></div><div class="sect1" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="comstack.addresses"></a>6. Addresses</h2></div></div></div><p>
+    The low-level format of the addresses are different depending on the
+    mode of communication you have chosen. A function is provided by each
+    of the lower layers to map a user-friendly string-form address to the
+    binary form required by the lower layers.
+   </p><pre class="synopsis">
+    void *cs_straddr(COMSTACK handle, const char *str);
+   </pre><p>
+    The format for TCP/IP and SSL addresses is:
+   </p><pre class="synopsis">
+    &lt;host&gt; [ ':' &lt;portnum&gt; ]
+   </pre><p>
+    The <code class="literal">hostname</code> can be either a domain name or an
+    IP address. The port number, if omitted, defaults to 210.
+   </p><p>
+    For TCP/IP and SSL transport modes, the special hostname "@"
+    is mapped to any local address
+    (the manifest constant <code class="literal">INADDR_ANY</code>).
+    It is used to establish local listening endpoints in the server role.
+   </p><p>
+    For UNIX sockets, the format of an address is the socket filename.
+   </p><p>
+    When a connection has been established, you can use
+   </p><pre class="synopsis">
+    char *cs_addrstr(COMSTACK h);
+   </pre><p>
+    to retrieve the host name of the peer system. The function returns
+    a pointer to a static area, which is overwritten on the next call
+    to the function.
+   </p><p>
+    A fairly recent addition to the <acronym class="acronym">COMSTACK</acronym> module is the utility
+    function
+   </p><pre class="synopsis">
+    COMSTACK cs_create_host (const char *str, int blocking, void **vp);
+   </pre><p>
+    which is just a wrapper for <code class="function">cs_create</code> and
+    <code class="function">cs_straddr</code>. The <em class="parameter"><code>str</code></em>
+    is similar to that described for <code class="function">cs_straddr</code>
+    but with a prefix denoting the <acronym class="acronym">COMSTACK</acronym> type. Prefixes supported
+    are <code class="literal">tcp:</code>, <code class="literal">unix:</code> and
+    <code class="literal">ssl:</code> for TCP/IP, UNIX and SSL respectively.
+    If no prefix is given, then TCP/IP is used.
+    The <em class="parameter"><code>blocking</code></em> is passed to
+    function <code class="function">cs_create</code>. The third parameter
+    <em class="parameter"><code>vp</code></em> is a pointer to <acronym class="acronym">COMSTACK</acronym> stack type
+    specific values.
+    For SSL (ssl_type) <em class="parameter"><code>vp</code></em> is an already create
+    OpenSSL CTX. For TCP/IP and UNIX <em class="parameter"><code>vp</code></em>
+    is unused (can be set to <code class="literal">NULL</code>.
+   </p></div><div class="navfooter"><hr><table width="100%" summary="Navigation footer"><tr><td width="40%" align="left"><a accesskey="p" href="comstack.server.html">Prev</a> </td><td width="20%" align="center"><a accesskey="u" href="comstack.html">Up</a></td><td width="40%" align="right"> <a accesskey="n" href="comstack.ssl.html">Next</a></td></tr><tr><td width="40%" align="left" valign="top">5. Server Side </td><td width="20%" align="center"><a accesskey="h" href="index.html">Home</a></td><td width="40%" align="right" valign="top"> 7. SSL</td></tr></table></div></body></html>

@@ -1,0 +1,17 @@
+<searchClause>
+  <index>dc.fish</index>
+  <relation>
+    <value>all</value>
+    <modifiers>
+      <modifier>
+        <type>fuzzy</type>
+        <relation>=</relation>
+      </modifier>
+      <modifier>
+        <type>stem</type>
+        <relation>=</relation>
+      </modifier>
+    </modifiers>
+  </relation>
+  <term>fish chips</term>
+</searchClause>

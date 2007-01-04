@@ -1,0 +1,2107 @@
+<!-- $Id: tools.xml,v 1.54 2006/10/31 09:15:00 mike Exp $ -->
+ <chapter id="tools"><title>Supporting Tools</title>
+  
+  <para>
+   In support of the service API - primarily the ASN module, which
+   provides the pro-grammatic interface to the Z39.50 APDUs, &yaz; contains
+   a collection of tools that support the development of applications.
+  </para>
+
+  <sect1 id="tools.query"><title>Query Syntax Parsers</title>
+
+   <para>
+    Since the type-1 (RPN) query structure has no direct, useful string
+    representation, every origin application needs to provide some form of
+    mapping from a local query notation or representation to a
+    <token>Z_RPNQuery</token> structure. Some programmers will prefer to
+    construct the query manually, perhaps using
+    <function>odr_malloc()</function> to simplify memory management.
+    The &yaz; distribution includes three separate, query-generating tools
+    that may be of use to you.
+   </para>
+
+   <sect2 id="PQF"><title>Prefix Query Format</title>
+
+    <para>
+     Since RPN or reverse polish notation is really just a fancy way of
+     describing a suffix notation format (operator follows operands), it
+     would seem that the confusion is total when we now introduce a prefix
+     notation for RPN. The reason is one of simple laziness - it's somewhat
+     simpler to interpret a prefix format, and this utility was designed
+     for maximum simplicity, to provide a baseline representation for use
+     in simple test applications and scripting environments (like Tcl). The
+     demonstration client included with YAZ uses the PQF.
+    </para>
+
+    <note>
+     <para>
+      The PQF have been adopted by other parties developing Z39.50
+      software. It is often referred to as Prefix Query Notation
+      - PQN.
+     </para>
+    </note>
+    <para>
+     The PQF is defined by the pquery module in the YAZ library. 
+     There are two sets of function that have similar behavior. First
+     set operates on a PQF parser handle, second set doesn't. First set
+     set of functions are more flexible than the second set. Second set
+     is obsolete and is only provided to ensure backwards compatibility.
+    </para>
+    <para>
+     First set of functions all operate on a PQF parser handle:
+    </para>
+    <synopsis>
+     #include &lt;yaz/pquery.h&gt;
+
+     YAZ_PQF_Parser yaz_pqf_create (void);
+
+     void yaz_pqf_destroy (YAZ_PQF_Parser p);
+
+     Z_RPNQuery *yaz_pqf_parse (YAZ_PQF_Parser p, ODR o, const char *qbuf);
+
+     Z_AttributesPlusTerm *yaz_pqf_scan (YAZ_PQF_Parser p, ODR o,
+                          Odr_oid **attributeSetId, const char *qbuf);
+
+
+     int yaz_pqf_error (YAZ_PQF_Parser p, const char **msg, size_t *off);
+    </synopsis>
+    <para>
+     A PQF parser is created and destructed by functions
+     <function>yaz_pqf_create</function> and
+     <function>yaz_pqf_destroy</function> respectively.
+     Function <function>yaz_pqf_parse</function> parses query given
+     by string <literal>qbuf</literal>. If parsing was successful,
+     a Z39.50 RPN Query is returned which is created using ODR stream
+     <literal>o</literal>. If parsing failed, a NULL pointer is
+     returned.
+     Function <function>yaz_pqf_scan</function> takes a scan query in 
+     <literal>qbuf</literal>. If parsing was successful, the function
+     returns attributes plus term pointer and modifies
+     <literal>attributeSetId</literal> to hold attribute set for the
+     scan request - both allocated using ODR stream <literal>o</literal>.
+     If parsing failed, yaz_pqf_scan returns a NULL pointer.
+     Error information for bad queries can be obtained by a call to
+     <function>yaz_pqf_error</function> which returns an error code and
+     modifies <literal>*msg</literal> to point to an error description,
+     and modifies <literal>*off</literal> to the offset within last
+     query were parsing failed.
+    </para>
+    <para>
+     The second set of functions are declared as follows:
+    </para>
+    <synopsis>
+     #include &lt;yaz/pquery.h&gt;
+
+     Z_RPNQuery *p_query_rpn (ODR o, oid_proto proto, const char *qbuf);
+
+     Z_AttributesPlusTerm *p_query_scan (ODR o, oid_proto proto,
+                             Odr_oid **attributeSetP, const char *qbuf);
+
+     int p_query_attset (const char *arg);
+    </synopsis>
+    <para>
+     The function <function>p_query_rpn()</function> takes as arguments an
+      &odr; stream (see section <link linkend="odr">The ODR Module</link>)
+     to provide a memory source (the structure created is released on
+     the next call to <function>odr_reset()</function> on the stream), a
+     protocol identifier (one of the constants <token>PROTO_Z3950</token> and
+     <token>PROTO_SR</token>), an attribute set reference, and
+     finally a null-terminated string holding the query string.
+    </para>
+    <para>
+     If the parse went well, <function>p_query_rpn()</function> returns a
+     pointer to a <literal>Z_RPNQuery</literal> structure which can be
+     placed directly into a <literal>Z_SearchRequest</literal>. 
+     If parsing failed, due to syntax error, a NULL pointer is returned.
+    </para>
+    <para>
+     The <literal>p_query_attset</literal> specifies which attribute set
+     to use if the query doesn't specify one by the
+     <literal>@attrset</literal> operator.
+     The <literal>p_query_attset</literal> returns 0 if the argument is a
+     valid attribute set specifier; otherwise the function returns -1.
+    </para>
+
+    <para>
+     The grammar of the PQF is as follows:
+    </para>
+
+    <literallayout>
+     query ::= top-set query-struct.
+
+     top-set ::= &lsqb; '@attrset' string &rsqb;
+
+     query-struct ::= attr-spec | simple | complex | '@term' term-type query
+
+     attr-spec ::= '@attr' &lsqb; string &rsqb; string query-struct
+
+     complex ::= operator query-struct query-struct.
+
+     operator ::= '@and' | '@or' | '@not' | '@prox' proximity.
+
+     simple ::= result-set | term.
+
+     result-set ::= '@set' string.
+
+     term ::= string.
+
+     proximity ::= exclusion distance ordered relation which-code unit-code.
+
+     exclusion ::= '1' | '0' | 'void'.
+
+     distance ::= integer.
+
+     ordered ::= '1' | '0'.
+
+     relation ::= integer.
+
+     which-code ::= 'known' | 'private' | integer.
+
+     unit-code ::= integer.
+
+     term-type ::= 'general' | 'numeric' | 'string' | 'oid' | 'datetime' | 'null'.
+    </literallayout>
+
+    <para>
+     You will note that the syntax above is a fairly faithful
+     representation of RPN, except for the Attribute, which has been
+     moved a step away from the term, allowing you to associate one or more
+     attributes with an entire query structure. The parser will
+     automatically apply the given attributes to each term as required.
+    </para>
+
+    <para>
+     The @attr operator is followed by an attribute specification 
+     (<literal>attr-spec</literal> above). The specification consists
+     of an optional attribute set, an attribute type-value pair and
+     a sub-query. The attribute type-value pair is packed in one string:
+     an attribute type, an equals sign, and an attribute value, like this:
+     <literal>@attr 1=1003</literal>.
+     The type is always an integer but the value may be either an
+     integer or a string (if it doesn't start with a digit character).
+     A string attribute-value is encoded as a Type-1 ``complex''
+     attribute with the list of values containing the single string
+     specified, and including no semantic indicators.
+    </para>
+
+    <para>
+     Version 3 of the Z39.50 specification defines various encoding of terms.
+     Use <literal>@term </literal> <replaceable>type</replaceable>
+     <replaceable>string</replaceable>,
+     where type is one of: <literal>general</literal>,
+     <literal>numeric</literal> or <literal>string</literal>
+     (for InternationalString).
+     If no term type has been given, the <literal>general</literal> form
+     is used.  This is the only encoding allowed in both versions 2 and 3
+     of the Z39.50 standard.
+    </para>
+    
+    <sect3 id="PQF-prox">
+      <title>Using Proximity Operators with PQF</title>
+      <note>
+        <para>
+	  This is an advanced topic, describing how to construct
+	  queries that make very specific requirements on the
+	  relative location of their operands.
+	  You may wish to skip this section and go straight to
+	  <link linkend="pqf-examples">the example PQF queries</link>.
+	</para>
+	<para>
+	  <warning>
+	    <para>
+	      Most Z39.50 servers do not support proximity searching, or
+	      support only a small subset of the full functionality that
+	      can be expressed using the PQF proximity operator.  Be
+	      aware that the ability to <emphasis>express</emphasis> a
+	      query in PQF is no guarantee that any given server will
+	      be able to <emphasis>execute</emphasis> it.
+	    </para>
+          </warning>
+	</para>
+      </note>
+      <para>
+        The proximity operator <literal>@prox</literal> is a special
+        and more restrictive version of the conjunction operator
+        <literal>@and</literal>.  Its semantics are described in 
+	section 3.7.2 (Proximity) of Z39.50 the standard itself, which
+        can be read on-line at
+	<ulink url="&url.z39.50.proximity;"/>
+      </para>
+      <para>
+	In PQF, the proximity operation is represented by a sequence
+	of the form
+	<screen>
+@prox <replaceable>exclusion</replaceable> <replaceable>distance</replaceable> <replaceable>ordered</replaceable> <replaceable>relation</replaceable> <replaceable>which-code</replaceable> <replaceable>unit-code</replaceable>
+	</screen>
+	in which the meanings of the parameters are as described in in
+	the standard, and they can take the following values:
+	<itemizedlist>
+	  <listitem><formalpara><title>exclusion</title><para>
+	    0 = false (i.e. the proximity condition specified by the
+	    remaining parameters must be satisfied) or
+	    1 = true (the proximity condition specified by the
+	    remaining parameters must <emphasis>not</emphasis> be
+	    satisifed).
+	  </para></formalpara></listitem>
+	  <listitem><formalpara><title>distance</title><para>
+	    An integer specifying the difference between the locations
+	    of the operands: e.g. two adjacent words would have
+	    distance=1 since their locations differ by one unit.
+	  </para></formalpara></listitem>
+	  <listitem><formalpara><title>ordered</title><para>
+	    1 = ordered (the operands must occur in the order the
+	    query specifies them) or
+	    0 = unordered (they may appear in either order).
+	  </para></formalpara></listitem>
+	  <listitem><formalpara><title>relation</title><para>
+	    Recognised values are
+	    1 (lessThan),
+	    2 (lessThanOrEqual),
+	    3 (equal),
+	    4 (greaterThanOrEqual),
+	    5 (greaterThan) and
+	    6 (notEqual).
+	  </para></formalpara></listitem>
+	  <listitem><formalpara><title>which-code</title><para>
+	    <literal>known</literal>
+	    or
+	    <literal>k</literal>
+	    (the unit-code parameter is taken from the well-known list
+	    of alternatives described in below) or
+	    <literal>private</literal>
+	    or
+	    <literal>p</literal>
+	    (the unit-code paramater has semantics specific to an
+	    out-of-band agreement such as a profile).
+	  </para></formalpara></listitem>
+	  <listitem><formalpara><title>unit-code</title><para>
+	    If the which-code parameter is <literal>known</literal>
+	    then the recognised values are
+	    1 (character),
+	    2 (word),
+	    3 (sentence),
+	    4 (paragraph),
+	    5 (section),
+	    6 (chapter),
+	    7 (document),
+	    8 (element),
+	    9 (subelement),
+	    10 (elementType) and
+	    11 (byte).
+	    If which-code is <literal>private</literal> then the
+	    acceptable values are determined by the profile.
+	  </para></formalpara></listitem>
+	</itemizedlist>
+	(The numeric values of the relation and well-known unit-code
+	parameters are taken straight from
+	<ulink url="&url.z39.50.proximity.asn1;"
+	>the ASN.1</ulink> of the proximity structure in the standard.)
+      </para>
+    </sect3>
+
+    <sect3 id="pqf-examples"><title>PQF queries</title>
+
+     <example id="example.pqf.simple.terms">
+      <title>PQF queries using simple terms</title>
+      <para>
+       <screen>
+	dylan
+
+	"bob dylan"
+       </screen>
+      </para>
+     </example>
+     <example id="pqf.example.pqf.boolean.operators">
+      <title>PQF boolean operators</title>
+      <para>
+       <screen>
+	@or "dylan" "zimmerman"
+
+	@and @or dylan zimmerman when
+
+	@and when @or dylan zimmerman
+       </screen>
+      </para>
+     </example>
+     <example id="example.pqf.result.sets">
+      <title>PQF references to result sets</title>
+      <para>
+       <screen>
+	@set Result-1
+
+	@and @set seta @set setb
+       </screen>
+      </para>
+     </example>
+     <example id="example.pqf.attributes">
+      <title>Attributes for terms</title>
+      <para>
+       <screen>
+	@attr 1=4 computer
+
+	@attr 1=4 @attr 4=1 "self portrait"
+
+	@attrset exp1 @attr 1=1 CategoryList
+
+	@attr gils 1=2008 Copenhagen
+
+	@attr 1=/book/title computer
+       </screen>
+      </para>
+     </example>
+     <example id="example.pqf.proximity">
+      <title>PQF Proximity queries</title>
+      <para>
+       <screen>
+	@prox 0 3 1 2 k 2 dylan zimmerman
+       </screen>
+       <note><para>
+	 Here the parameters 0, 3, 1, 2, k and 2 represent exclusion,
+	 distance, ordered, relation, which-code and unit-code, in that
+	 order.  So:
+	 <itemizedlist>
+	  <listitem><para>
+	    exclusion = 0: the proximity condition must hold
+	   </para></listitem>
+	  <listitem><para>
+	    distance = 3: the terms must be three units apart
+	   </para></listitem>
+	  <listitem><para>
+	    ordered = 1: they must occur in the order they are specified
+	   </para></listitem>
+	  <listitem><para>
+	    relation = 2: lessThanOrEqual (to the distance of 3 units)
+	   </para></listitem>
+	  <listitem><para>
+	    which-code is ``known'', so the standard unit-codes are used
+	   </para></listitem>
+	  <listitem><para>
+	    unit-code = 2: word.
+	   </para></listitem>
+	 </itemizedlist>
+	 So the whole proximity query means that the words
+	 <literal>dylan</literal> and <literal>zimmerman</literal> must
+	 both occur in the record, in that order, differing in position
+	 by three or fewer words (i.e. with two or fewer words between
+	 them.)  The query would find ``Bob Dylan, aka. Robert
+	 Zimmerman'', but not ``Bob Dylan, born as Robert Zimmerman''
+	 since the distance in this case is four.
+	</para></note>
+      </para>
+     </example>
+     <example id="example.pqf.search.term.type">
+      <title>PQF specification of search term type</title>
+      <para>
+       <screen>
+	@term string "a UTF-8 string, maybe?"
+       </screen>
+      </para>
+     </example>
+     <example id="example.pqf.mixed.queries">
+      <title>PQF mixed queries</title>
+      <para>
+       <screen>
+	@or @and bob dylan @set Result-1
+	
+	@attr 4=1 @and @attr 1=1 "bob dylan" @attr 1=4 "slow train coming"
+	
+	@and @attr 2=4 @attr gils 1=2038 -114 @attr 2=2 @attr gils 1=2039 -109
+      </screen>
+       <note>
+	<para>
+	 The last of these examples is a spatial search: in
+	 <ulink url="http://www.gils.net/prof_v2.html#sec_7_4"
+	  >the GILS attribute set</ulink>,
+	 access point
+	 2038 indicates West Bounding Coordinate and
+	 2030 indicates East Bounding Coordinate,
+	 so the query is for areas extending from -114 degrees
+	 to no more than -109 degrees.
+	</para>
+       </note>
+      </para>
+     </example>
+    </sect3>
+   </sect2>
+   <sect2 id="CCL"><title>CCL</title>
+
+    <para>
+     Not all users enjoy typing in prefix query structures and numerical
+     attribute values, even in a minimalistic test client. In the library
+     world, the more intuitive Common Command Language - CCL (ISO 8777)
+     has enjoyed some popularity - especially before the widespread
+     availability of graphical interfaces. It is still useful in
+     applications where you for some reason or other need to provide a
+     symbolic language for expressing boolean query structures.
+    </para>
+
+    <para>
+     The EUROPAGATE research project working under the Libraries programme
+     of the European Commission's DG XIII has, amongst other useful tools,
+     implemented a general-purpose CCL parser which produces an output
+     structure that can be trivially converted to the internal RPN
+     representation of &yaz; (The <literal>Z_RPNQuery</literal> structure).
+     Since the CCL utility - along with the rest of the software
+     produced by EUROPAGATE - is made freely available on a liberal
+     license, it is included as a supplement to &yaz;.
+    </para>
+
+    <sect3 id="ccl.syntax">
+     <title>CCL Syntax</title>
+
+     <para>
+      The CCL parser obeys the following grammar for the FIND argument.
+      The syntax is annotated by in the lines prefixed by
+      <literal>&dash;&dash;</literal>.
+     </para>
+
+     <screen>
+      CCL-Find ::= CCL-Find Op Elements
+                | Elements.
+
+      Op ::= "and" | "or" | "not"
+      -- The above means that Elements are separated by boolean operators.
+
+      Elements ::= '(' CCL-Find ')'
+                | Set
+                | Terms
+                | Qualifiers Relation Terms
+                | Qualifiers Relation '(' CCL-Find ')'
+                | Qualifiers '=' string '-' string
+      -- Elements is either a recursive definition, a result set reference, a
+      -- list of terms, qualifiers followed by terms, qualifiers followed
+      -- by a recursive definition or qualifiers in a range (lower - upper).
+
+      Set ::= 'set' = string
+      -- Reference to a result set
+
+      Terms ::= Terms Prox Term
+             | Term
+      -- Proximity of terms.
+
+      Term ::= Term string
+            | string
+      -- This basically means that a term may include a blank
+
+      Qualifiers ::= Qualifiers ',' string
+                  | string
+      -- Qualifiers is a list of strings separated by comma
+
+      Relation ::= '=' | '>=' | '&lt;=' | '&lt;>' | '>' | '&lt;'
+      -- Relational operators. This really doesn't follow the ISO8777
+      -- standard.
+
+      Prox ::= '%' | '!'
+      -- Proximity operator
+
+     </screen>
+     
+     <example id="example.ccl.queries">
+      <title>CCL queries</title>
+      <para>
+       The following queries are all valid:
+      </para>
+      
+      <screen>
+       dylan
+       
+       "bob dylan"
+       
+       dylan or zimmerman
+       
+       set=1
+       
+       (dylan and bob) or set=1
+       
+      </screen>
+      <para>
+       Assuming that the qualifiers <literal>ti</literal>,
+       <literal>au</literal>
+       and <literal>date</literal> are defined we may use:
+      </para>
+      
+      <screen>
+       ti=self portrait
+       
+       au=(bob dylan and slow train coming)
+
+       date>1980 and (ti=((self portrait)))
+       
+      </screen>
+     </example>
+     
+    </sect3>
+    <sect3 id="ccl.qualifiers">
+     <title>CCL Qualifiers</title>
+     
+     <para>
+      Qualifiers are used to direct the search to a particular searchable
+      index, such as title (ti) and author indexes (au). The CCL standard
+      itself doesn't specify a particular set of qualifiers, but it does
+      suggest a few short-hand notations. You can customize the CCL parser
+      to support a particular set of qualifiers to reflect the current target
+      profile. Traditionally, a qualifier would map to a particular
+      use-attribute within the BIB-1 attribute set. It is also
+      possible to set other attributes, such as the structure
+      attribute.
+     </para>
+
+     <para>
+      A  CCL profile is a set of predefined CCL qualifiers that may be
+      read from a file or set in the CCL API.
+      The YAZ client reads its CCL qualifiers from a file named
+      <filename>default.bib</filename>. There are four types of
+      lines in a CCL profile: qualifier specification,
+      qualifier alias, comments and directives.
+     </para>
+     <sect4 id="ccl.qualifier.specification">
+      <title>Qualifier specification</title>
+      <para>
+       A qualifier specification is of the form:
+      </para>
+      
+      <para>
+       <replaceable>qualifier-name</replaceable>  
+       [<replaceable>attributeset</replaceable><literal>,</literal>]<replaceable>type</replaceable><literal>=</literal><replaceable>val</replaceable>
+       [<replaceable>attributeset</replaceable><literal>,</literal>]<replaceable>type</replaceable><literal>=</literal><replaceable>val</replaceable> ...      
+      </para>
+      
+      <para>
+       where <replaceable>qualifier-name</replaceable> is the name of the
+       qualifier to be used (eg. <literal>ti</literal>),
+       <replaceable>type</replaceable> is attribute type in the attribute
+       set (Bib-1 is used if no attribute set is given) and
+       <replaceable>val</replaceable> is attribute value.
+       The <replaceable>type</replaceable> can be specified as an
+       integer or as it be specified either as a single-letter:
+       <literal>u</literal> for use, 
+       <literal>r</literal> for relation,<literal>p</literal> for position,
+       <literal>s</literal> for structure,<literal>t</literal> for truncation
+       or <literal>c</literal> for completeness.
+       The attributes for the special qualifier name <literal>term</literal>
+       are used when no CCL qualifier is given in a query.
+       <table id="ccl.common.bib1.attributes">
+	<title>Common Bib-1 attributes</title>
+	<tgroup cols="2">
+	 <colspec colwidth="2*" colname="type"></colspec>
+	 <colspec colwidth="9*" colname="description"></colspec>
+	 <thead>
+	  <row>
+	   <entry>Type</entry>
+	   <entry>Description</entry>
+	  </row>
+	 </thead>
+	 <tbody>
+	  <row>
+	   <entry><literal>u=</literal><replaceable>value</replaceable></entry>
+	   <entry>
+	    Use attribute (1). Common use attributes are
+	    1 Personal-name, 4 Title, 7 ISBN, 8 ISSN, 30 Date,
+	    62 Subject, 1003 Author), 1016 Any. Specify value
+	    as an integer.
+	   </entry>
+	  </row>
+
+	  <row>
+	   <entry><literal>r=</literal><replaceable>value</replaceable></entry>
+	   <entry>
+	    Relation attribute (2). Common values are
+	    1 &lt;, 2 &lt;=, 3 =, 4 &gt;=, 5 &gt;, 6 &lt;&gt;,
+	    100 phonetic, 101 stem, 102 relevance, 103 always matches.
+	   </entry>
+	  </row>
+
+	  <row>
+	   <entry><literal>p=</literal><replaceable>value</replaceable></entry>
+	   <entry>
+	    Position attribute (3). Values: 1 first in field, 2
+	    first in any subfield, 3 any position in field.
+	   </entry>
+	  </row>
+
+	  <row>
+	   <entry><literal>s=</literal><replaceable>value</replaceable></entry>
+	   <entry>
+	    Structure attribute (4). Values: 1 phrase, 2 word,
+	    3 key, 4 year, 5 date, 6 word list, 100 date (un),
+	    101 name (norm), 102 name (un), 103 structure, 104 urx,
+	    105 free-form-text, 106 document-text, 107 local-number,
+	    108 string, 109 numeric string.
+	   </entry>
+	  </row>
+
+	  <row>
+	   <entry><literal>t=</literal><replaceable>value</replaceable></entry>
+	   <entry>
+	    Truncation attribute (5). Values: 1 right, 2 left,
+	    3 left&amp; right, 100 none, 101 process #, 102 regular-1,
+	    103 regular-2, 104 CCL.
+	   </entry>
+	  </row>
+
+	  <row>
+	   <entry><literal>c=</literal><replaceable>value</replaceable></entry>
+	   <entry>
+	    Completeness attribute (6). Values: 1 incomplete subfield,
+	    2 complete subfield, 3 complete field.
+	   </entry>
+	  </row>
+
+	 </tbody>
+	 </tgroup>
+	</table>
+      </para>
+      <para>
+       Refer to the complete
+       <ulink url="&url.z39.50.attset.bib1;">list of Bib-1 attributes</ulink>
+      </para>
+      <para>
+       It is also possible to specify non-numeric attribute values, 
+       which are used in combination with certain types.
+       The special combinations are:
+       
+       <table id="ccl.special.attribute.combos">
+	<title>Special attribute combos</title>
+	<tgroup cols="2">
+	 <colspec colwidth="2*" colname="name"></colspec>
+	 <colspec colwidth="9*" colname="description"></colspec>
+	 <thead>
+	  <row>
+	   <entry>Name</entry>
+	   <entry>Description</entry>
+	  </row>
+	 </thead>
+	 <tbody>
+	  <row>
+	   <entry><literal>s=pw</literal></entry><entry>
+	    The structure is set to either word or phrase depending
+	    on the number of tokens in a term (phrase-word).
+	   </entry>
+	  </row>
+	  <row>
+	   <entry><literal>s=al</literal></entry><entry>
+	    Each token in the term is ANDed. (and-list).
+	    This does not set the structure at all.
+	   </entry>
+	  </row>
+	  
+	  <row><entry><literal>s=ol</literal></entry><entry>
+	    Each token in the term is ORed. (or-list).
+	    This does not set the structure at all.
+	   </entry>
+	  </row>
+	  
+	  <row><entry><literal>r=o</literal></entry><entry>
+	    Allows ranges and the operators greather-than, less-than, ...
+	    equals.
+	    This sets Bib-1 relation attribute accordingly (relation
+	    ordered). A query construct is only treated as a range if
+	    dash is used and that is surrounded by white-space. So
+	    <literal>-1980</literal> is treated as term 
+	    <literal>"-1980"</literal> not <literal>&lt;= 1980</literal>.
+	    If <literal>- 1980</literal> is used, however, that is
+	    treated as a range.
+	   </entry>
+	  </row>
+	  
+	  <row><entry><literal>r=r</literal></entry><entry>
+	    Similar to <literal>r=o</literal> but assumes that terms
+	    are non-negative (not prefixed with <literal>-</literal>).
+	    Thus, a dash will always be treated as a range.
+	    The construct <literal>1980-1990</literal> is
+	    treated as a range with <literal>r=r</literal> but as a
+	    single term <literal>"1980-1990"</literal> with
+	    <literal>r=o</literal>. The special attribute
+	    <literal>r=r</literal> is available in YAZ 2.0.24 or later.
+	   </entry>
+	  </row>
+	  
+	  <row><entry><literal>t=l</literal></entry><entry>
+	    Allows term to be left-truncated.
+	    If term is of the form <literal>?x</literal>, the resulting
+	    Type-1 term is <literal>x</literal> and truncation is left.
+	   </entry>
+	  </row>
+	  
+	  <row><entry><literal>t=r</literal></entry><entry>
+	    Allows term to be right-truncated.
+	    If term is of the form <literal>x?</literal>, the resulting
+	    Type-1 term is <literal>x</literal> and truncation is right.
+	   </entry>
+	  </row>
+	  
+	  <row><entry><literal>t=n</literal></entry><entry>
+	    If term is does not include <literal>?</literal>, the
+	    truncation attribute is set to none (100).
+	   </entry>
+	  </row>
+	  
+	  <row><entry><literal>t=b</literal></entry><entry>
+	    Allows term to be both left&amp;right truncated.
+	    If term is of the form <literal>?x?</literal>, the
+	    resulting term is <literal>x</literal> and trunctation is
+	    set to both left&amp;right.
+	   </entry>
+	  </row>
+	 </tbody>
+	</tgroup>
+       </table>
+      </para>
+      <example id="example.ccl.profile"><title>CCL profile</title>
+       <para>
+	Consider the following definition:
+       </para>
+       
+       <screen>
+	ti       u=4 s=1
+	au       u=1 s=1
+	term     s=105
+	ranked   r=102
+	date     u=30 r=o
+      </screen>
+       <para>
+	<literal>ti</literal> and <literal>au</literal> both set 
+	structure attribute to phrase (s=1).
+	<literal>ti</literal>
+	sets the use-attribute to 4. <literal>au</literal> sets the
+	use-attribute to 1.
+	When no qualifiers are used in the query the structure-attribute is
+	set to free-form-text (105) (rule for <literal>term</literal>).
+	The <literal>date</literal> sets the relation attribute to
+	the relation used in the CCL query and sets the use attribute
+	to 30 (Bib-1 Date).
+       </para>
+       <para>
+	You can combine attributes. To Search for "ranked title" you
+	can do 
+	<screen>
+	 ti,ranked=knuth computer
+	</screen>
+	which will set relation=ranked, use=title, structure=phrase.
+       </para>
+       <para>
+	Query
+	<screen>
+	 date > 1980
+	</screen>
+	is a valid query. But
+	<screen>
+	 ti > 1980
+	</screen>
+	is invalid.
+       </para>
+      </example>
+     </sect4>
+     <sect4 id="ccl.qualifier.alias">
+      <title>Qualifier alias</title>
+      <para>
+       A qualifier alias is of the form:
+      </para>
+      <para>
+       <replaceable>q</replaceable>  
+       <replaceable>q1</replaceable> <replaceable>q2</replaceable> ..
+      </para>
+      <para>
+       which declares <replaceable>q</replaceable> to
+       be an alias for <replaceable>q1</replaceable>, 
+       <replaceable>q2</replaceable>... such that the CCL
+       query <replaceable>q=x</replaceable> is equivalent to
+       <replaceable>q1=x or q2=x or ...</replaceable>.
+      </para>
+     </sect4>
+
+     <sect4 id="ccl.comments">
+      <title>Comments</title>
+      <para>
+       Lines with white space or lines that begin with
+       character <literal>#</literal> are treated as comments.
+      </para>
+     </sect4>
+
+     <sect4 id="ccl.directives">
+      <title>Directives</title>
+      <para>
+       Directive specifications takes the form
+      </para>
+      <para><literal>@</literal><replaceable>directive</replaceable> <replaceable>value</replaceable>
+      </para>
+      <table id="ccl.directives.table">
+       <title>CCL directives</title>
+       <tgroup cols="3">
+	<colspec colwidth="2*" colname="name"></colspec>
+	<colspec colwidth="8*" colname="description"></colspec>
+	<colspec colwidth="1*" colname="default"></colspec>
+	<thead>
+	 <row>
+	  <entry>Name</entry>
+	  <entry>Description</entry>
+	  <entry>Default</entry>
+	 </row>
+	</thead>
+	<tbody>
+	 <row>
+	  <entry>truncation</entry>
+	  <entry>Truncation character</entry>
+	  <entry><literal>?</literal></entry>
+	 </row>
+	 <row>
+	  <entry>field</entry>
+	  <entry>Specifies how multiple fields are to be
+	   combined. There are two modes: <literal>or</literal>:
+	   multiple qualifier fields are ORed,
+	   <literal>merge</literal>: attributes for the qualifier
+	   fields are merged and assigned to one term.
+	   </entry>
+	  <entry><literal>merge</literal></entry>
+	 </row>
+	 <row>
+	  <entry>case</entry>
+	  <entry>Specificies if CCL operatores and qualifiers should be
+	   compared with case sensitivity or not. Specify 0 for
+	   case sensitive; 1 for case insensitive.</entry>
+	  <entry><literal>0</literal></entry>
+	 </row>
+
+	 <row>
+	  <entry>and</entry>
+	  <entry>Specifies token for CCL operator AND.</entry>
+	  <entry><literal>and</literal></entry>
+	 </row>
+
+	 <row>
+	  <entry>or</entry>
+	  <entry>Specifies token for CCL operator OR.</entry>
+	  <entry><literal>or</literal></entry>
+	 </row>
+
+	 <row>
+	  <entry>not</entry>
+	  <entry>Specifies token for CCL operator NOT.</entry>
+	  <entry><literal>not</literal></entry>
+	 </row>
+
+	 <row>
+	  <entry>set</entry>
+	  <entry>Specifies token for CCL operator SET.</entry>
+	  <entry><literal>set</literal></entry>
+	 </row>
+	</tbody>
+	</tgroup>
+      </table>
+     </sect4>
+    </sect3>
+    <sect3 id="ccl.api">
+     <title>CCL API</title>
+     <para>
+      All public definitions can be found in the header file
+      <filename>ccl.h</filename>. A profile identifier is of type
+      <literal>CCL_bibset</literal>. A profile must be created with the call
+      to the function <function>ccl_qual_mk</function> which returns a profile
+      handle of type <literal>CCL_bibset</literal>.
+     </para>
+
+     <para>
+      To read a file containing qualifier definitions the function
+      <function>ccl_qual_file</function> may be convenient. This function
+      takes an already opened <literal>FILE</literal> handle pointer as
+      argument along with a <literal>CCL_bibset</literal> handle.
+     </para>
+
+     <para>
+      To parse a simple string with a FIND query use the function
+     </para>
+     <screen>
+struct ccl_rpn_node *ccl_find_str (CCL_bibset bibset, const char *str,
+                                   int *error, int *pos);
+     </screen>
+     <para>
+      which takes the CCL profile (<literal>bibset</literal>) and query
+      (<literal>str</literal>) as input. Upon successful completion the RPN
+      tree is returned. If an error occur, such as a syntax error, the integer
+      pointed to by <literal>error</literal> holds the error code and
+      <literal>pos</literal> holds the offset inside query string in which
+      the parsing failed.
+     </para>
+
+     <para>
+      An English representation of the error may be obtained by calling
+      the <literal>ccl_err_msg</literal> function. The error codes are
+      listed in <filename>ccl.h</filename>.
+     </para>
+
+     <para>
+      To convert the CCL RPN tree (type
+      <literal>struct ccl_rpn_node *</literal>)
+      to the Z_RPNQuery of YAZ the function <function>ccl_rpn_query</function>
+      must be used. This function which is part of YAZ is implemented in
+      <filename>yaz-ccl.c</filename>.
+      After calling this function the CCL RPN tree is probably no longer
+      needed. The <literal>ccl_rpn_delete</literal> destroys the CCL RPN tree.
+     </para>
+
+     <para>
+      A CCL profile may be destroyed by calling the
+      <function>ccl_qual_rm</function> function.
+     </para>
+
+     <para>
+      The token names for the CCL operators may be changed by setting the
+      globals (all type <literal>char *</literal>)
+      <literal>ccl_token_and</literal>, <literal>ccl_token_or</literal>,
+      <literal>ccl_token_not</literal> and <literal>ccl_token_set</literal>.
+      An operator may have aliases, i.e. there may be more than one name for
+      the operator. To do this, separate each alias with a space character.
+     </para>
+    </sect3>
+   </sect2>
+   <sect2 id="cql"><title>CQL</title>
+    <para>
+     <ulink url="&url.cql;">CQL</ulink>
+      - Common Query Language - was defined for the
+     <ulink url="&url.sru;">SRU</ulink> protocol.
+     In many ways CQL has a similar syntax to CCL.
+     The objective of CQL is different. Where CCL aims to be
+     an end-user language, CQL is <emphasis>the</emphasis> protocol
+     query language for SRU.
+    </para>
+    <tip>
+     <para>
+      If you are new to CQL, read the 
+      <ulink url="&url.cql.intro;">Gentle Introduction</ulink>.
+     </para>
+    </tip>
+    <para>
+     The CQL parser in &yaz; provides the following:
+     <itemizedlist>
+      <listitem>
+       <para>
+        It parses and validates a CQL query.
+       </para>
+      </listitem>
+      <listitem>
+       <para>
+        It generates a C structure that allows you to convert
+        a CQL query to some other query language, such as SQL.
+       </para>
+      </listitem>
+      <listitem>
+       <para>
+        The parser converts a valid CQL query to PQF, thus providing a
+        way to use CQL for both SRU servers and Z39.50 targets at the
+        same time.
+       </para>
+      </listitem>
+      <listitem>
+       <para>
+        The parser converts CQL to
+        <ulink url="&url.xcql;">XCQL</ulink>.
+        XCQL is an XML representation of CQL.
+        XCQL is part of the SRU specification. However, since SRU
+        supports CQL only, we don't expect XCQL to be widely used.
+        Furthermore, CQL has the advantage over XCQL that it is
+        easy to read.
+       </para>
+      </listitem>
+     </itemizedlist>
+    </para>
+    <sect3 id="cql.parsing"><title>CQL parsing</title>
+     <para>
+      A CQL parser is represented by the <literal>CQL_parser</literal>
+      handle. Its contents should be considered &yaz; internal (private).
+      <synopsis>
+#include &lt;yaz/cql.h&gt;
+
+typedef struct cql_parser *CQL_parser;
+
+CQL_parser cql_parser_create(void);
+void cql_parser_destroy(CQL_parser cp);
+      </synopsis>
+     A parser is created by <function>cql_parser_create</function> and
+     is destroyed by <function>cql_parser_destroy</function>.
+     </para>
+     <para>
+      To parse a CQL query string, the following function
+      is provided:
+      <synopsis>
+int cql_parser_string(CQL_parser cp, const char *str);
+      </synopsis>
+      A CQL query is parsed by the <function>cql_parser_string</function>
+      which takes a query <parameter>str</parameter>.
+      If the query was valid (no syntax errors), then zero is returned;
+      otherwise -1 is returned to indicate a syntax error.
+     </para>
+     <para>
+      <synopsis>
+int cql_parser_stream(CQL_parser cp,
+                      int (*getbyte)(void *client_data),
+                      void (*ungetbyte)(int b, void *client_data),
+                      void *client_data);
+
+int cql_parser_stdio(CQL_parser cp, FILE *f);
+      </synopsis>
+      The functions <function>cql_parser_stream</function> and
+      <function>cql_parser_stdio</function> parses a CQL query
+      - just like <function>cql_parser_string</function>.
+      The only difference is that the CQL query can be
+      fed to the parser in different ways.
+      The <function>cql_parser_stream</function> uses a generic
+      byte stream as input. The <function>cql_parser_stdio</function>
+      uses a <literal>FILE</literal> handle which is opened for reading.
+     </para>
+    </sect3>
+    
+    <sect3 id="cql.tree"><title>CQL tree</title>
+     <para>
+      The the query string is valid, the CQL parser
+      generates a tree representing the structure of the
+      CQL query.
+     </para>
+     <para>
+      <synopsis>
+struct cql_node *cql_parser_result(CQL_parser cp);
+      </synopsis>
+      <function>cql_parser_result</function> returns the
+      a pointer to the root node of the resulting tree.
+     </para>
+     <para>
+      Each node in a CQL tree is represented by a 
+      <literal>struct cql_node</literal>.
+      It is defined as follows:
+      <synopsis>
+#define CQL_NODE_ST 1
+#define CQL_NODE_BOOL 2
+struct cql_node {
+    int which;
+    union {
+        struct {
+            char *index;
+	    char *index_uri;
+            char *term;
+            char *relation;
+	    char *relation_uri;
+            struct cql_node *modifiers;
+        } st;
+        struct {
+            char *value;
+            struct cql_node *left;
+            struct cql_node *right;
+            struct cql_node *modifiers;
+        } boolean;
+    } u;
+};
+      </synopsis>
+      There are two node types: search term (ST) and boolean (BOOL).
+      A modifier is treated as a search term too.
+     </para>
+     <para>
+      The search term node has five members:
+      <itemizedlist>
+       <listitem>
+        <para>
+         <literal>index</literal>: index for search term.
+         If an index is unspecified for a search term,
+         <literal>index</literal> will be NULL.
+        </para>
+       </listitem>
+       <listitem>
+        <para>
+         <literal>index_uri</literal>: index URi for search term
+	 or NULL if none could be resolved for the index.
+        </para>
+       </listitem>
+       <listitem>
+        <para>
+         <literal>term</literal>: the search term itself.
+        </para>
+       </listitem>
+       <listitem>
+        <para>
+         <literal>relation</literal>: relation for search term.
+        </para>
+       </listitem>
+       <listitem>
+        <para>
+         <literal>relation_uri</literal>: relation URI for search term.
+        </para>
+       </listitem>
+       <listitem>
+        <para>
+         <literal>modifiers</literal>: relation modifiers for search
+         term. The <literal>modifiers</literal> list itself of cql_nodes
+	 each of type <literal>ST</literal>.
+        </para>
+       </listitem>
+      </itemizedlist>
+     </para>
+
+     <para>
+      The boolean node represents both <literal>and</literal>,
+      <literal>or</literal>, not as well as
+      proximity.
+      <itemizedlist>
+       <listitem>
+        <para>
+         <literal>left</literal> and <literal>right</literal>: left
+         - and right operand respectively.
+        </para>
+       </listitem>
+       <listitem>
+        <para>
+         <literal>modifiers</literal>: proximity arguments.
+        </para>
+       </listitem>
+      </itemizedlist>
+     </para>
+
+    </sect3>
+    <sect3 id="cql.to.pqf"><title>CQL to PQF conversion</title>
+     <para>
+      Conversion to PQF (and Z39.50 RPN) is tricky by the fact
+      that the resulting RPN depends on the Z39.50 target
+      capabilities (combinations of supported attributes). 
+      In addition, the CQL and SRU operates on index prefixes
+      (URI or strings), whereas the RPN uses Object Identifiers
+      for attribute sets.
+     </para>
+     <para>
+      The CQL library of &yaz; defines a <literal>cql_transform_t</literal>
+      type. It represents a particular mapping between CQL and RPN.
+      This handle is created and destroyed by the functions:
+     <synopsis>
+cql_transform_t cql_transform_open_FILE (FILE *f);
+cql_transform_t cql_transform_open_fname(const char *fname);
+void cql_transform_close(cql_transform_t ct);
+      </synopsis>
+      The first two functions create a tranformation handle from
+      either an already open FILE or from a filename respectively.
+     </para>
+     <para>
+      The handle is destroyed by <function>cql_transform_close</function> 
+      in which case no further reference of the handle is allowed.
+     </para>
+     <para>
+      When a <literal>cql_transform_t</literal> handle has been created
+      you can convert to RPN.
+      <synopsis>
+int cql_transform_buf(cql_transform_t ct,
+                      struct cql_node *cn, char *out, int max);
+      </synopsis>
+      This function converts the CQL tree <literal>cn</literal> 
+      using handle <literal>ct</literal>.
+      For the resulting PQF, you supply a buffer <literal>out</literal>
+      which must be able to hold at at least <literal>max</literal>
+      characters.
+     </para>
+     <para>
+      If conversion failed, <function>cql_transform_buf</function>
+      returns a non-zero SRU error code; otherwise zero is returned
+      (conversion successful).  The meanings of the numeric error
+      codes are listed in the SRU specifications at
+      <ulink url="&url.sru.diagnostics.list;"/>
+     </para>
+     <para>
+      If conversion fails, more information can be obtained by calling
+      <synopsis>
+int cql_transform_error(cql_transform_t ct, char **addinfop);
+      </synopsis>
+      This function returns the most recently returned numeric
+      error-code and sets the string-pointer at
+      <literal>*addinfop</literal> to point to a string containing
+      additional information about the error that occurred: for
+      example, if the error code is 15 (``Illegal or unsupported context
+      set''), the additional information is the name of the requested
+      context set that was not recognised.
+     </para>
+     <para>
+      The SRU error-codes may be translated into brief human-readable
+      error messages using
+      <synopsis>
+const char *cql_strerror(int code);
+      </synopsis>
+     </para>
+     <para>
+      If you wish to be able to produce a PQF result in a different
+      way, there are two alternatives.
+      <synopsis>
+void cql_transform_pr(cql_transform_t ct,
+                      struct cql_node *cn,
+                      void (*pr)(const char *buf, void *client_data),
+                      void *client_data);
+
+int cql_transform_FILE(cql_transform_t ct,
+                       struct cql_node *cn, FILE *f);
+      </synopsis>
+      The former function produces output to a user-defined
+      output stream. The latter writes the result to an already
+      open <literal>FILE</literal>.
+     </para>
+    </sect3>
+    <sect3 id="cql.to.rpn">
+     <title>Specification of CQL to RPN mappings</title>
+     <para>
+      The file supplied to functions 
+      <function>cql_transform_open_FILE</function>,
+      <function>cql_transform_open_fname</function> follows
+      a structure found in many Unix utilities.
+      It consists of mapping specifications - one per line.
+      Lines starting with <literal>#</literal> are ignored (comments).
+     </para>
+     <para>
+      Each line is of the form
+      <literallayout>
+       <replaceable>CQL pattern</replaceable><literal> = </literal> <replaceable> RPN equivalent</replaceable>
+      </literallayout>
+     </para>
+     <para>
+      An RPN pattern is a simple attribute list. Each attribute pair
+      takes the form:
+      <literallayout>
+       [<replaceable>set</replaceable>] <replaceable>type</replaceable><literal>=</literal><replaceable>value</replaceable>
+      </literallayout>
+      The attribute <replaceable>set</replaceable> is optional.
+      The <replaceable>type</replaceable> is the attribute type,
+      <replaceable>value</replaceable> the attribute value.
+     </para>
+     <para>
+      The following CQL patterns are recognized:
+      <variablelist>
+       <varlistentry><term>
+         <literal>index.</literal><replaceable>set</replaceable><literal>.</literal><replaceable>name</replaceable>
+        </term>
+        <listitem>
+         <para>
+          This pattern is invoked when a CQL index, such as 
+          dc.title is converted. <replaceable>set</replaceable>
+          and <replaceable>name</replaceable> are the context set and index
+          name respectively.
+          Typically, the RPN specifies an equivalent use attribute.
+         </para>
+         <para>
+          For terms not bound by an index the pattern
+          <literal>index.cql.serverChoice</literal> is used.
+          Here, the prefix <literal>cql</literal> is defined as
+          <literal>http://www.loc.gov/zing/cql/cql-indexes/v1.0/</literal>.
+          If this pattern is not defined, the mapping will fail.
+         </para>
+        </listitem>
+       </varlistentry>
+       <varlistentry><term>
+         <literal>qualifier.</literal><replaceable>set</replaceable><literal>.</literal><replaceable>name</replaceable>
+	 (DEPRECATED)
+        </term>
+        <listitem>
+         <para>
+	  For backwards compatibility, this is recognised as a synonym of
+          <literal>index.</literal><replaceable>set</replaceable><literal>.</literal><replaceable>name</replaceable>
+         </para>
+        </listitem>
+       </varlistentry>
+       <varlistentry><term>
+         <literal>relation.</literal><replaceable>relation</replaceable>
+        </term>
+        <listitem>
+         <para>
+          This pattern specifies how a CQL relation is mapped to RPN.
+          <replaceable>pattern</replaceable> is name of relation
+          operator. Since <literal>=</literal> is used as
+          separator between CQL pattern and RPN, CQL relations
+          including <literal>=</literal> cannot be
+          used directly. To avoid a conflict, the names
+          <literal>ge</literal>,
+          <literal>eq</literal>,
+          <literal>le</literal>,
+          must be used for CQL operators, greater-than-or-equal,
+          equal, less-than-or-equal respectively.
+          The RPN pattern is supposed to include a relation attribute.
+         </para>
+         <para>
+          For terms not bound by a relation, the pattern
+          <literal>relation.scr</literal> is used. If the pattern
+          is not defined, the mapping will fail.
+         </para>
+         <para>
+          The special pattern, <literal>relation.*</literal> is used
+          when no other relation pattern is matched.
+         </para>
+        </listitem>
+       </varlistentry>
+
+       <varlistentry><term>
+         <literal>relationModifier.</literal><replaceable>mod</replaceable>
+        </term>
+        <listitem>
+         <para>
+          This pattern specifies how a CQL relation modifier is mapped to RPN.
+          The RPN pattern is usually a relation attribute.
+         </para>
+        </listitem>
+       </varlistentry>
+
+       <varlistentry><term>
+         <literal>structure.</literal><replaceable>type</replaceable>
+        </term>
+        <listitem>
+         <para>
+          This pattern specifies how a CQL structure is mapped to RPN.
+          Note that this CQL pattern is somewhat to similar to
+          CQL pattern <literal>relation</literal>. 
+          The <replaceable>type</replaceable> is a CQL relation.
+         </para>
+         <para>
+          The pattern, <literal>structure.*</literal> is used
+          when no other structure pattern is matched.
+          Usually, the RPN equivalent specifies a structure attribute.
+         </para>
+        </listitem>
+       </varlistentry>
+
+       <varlistentry><term>
+         <literal>position.</literal><replaceable>type</replaceable>
+        </term>
+        <listitem>
+         <para>
+          This pattern specifies how the anchor (position) of
+          CQL is mapped to RPN.
+          The <replaceable>type</replaceable> is one
+          of <literal>first</literal>, <literal>any</literal>,
+          <literal>last</literal>, <literal>firstAndLast</literal>.
+         </para>
+         <para>
+          The pattern, <literal>position.*</literal> is used
+          when no other position pattern is matched.
+         </para>
+        </listitem>
+       </varlistentry>
+
+       <varlistentry><term>
+         <literal>set.</literal><replaceable>prefix</replaceable>
+        </term>
+        <listitem>
+         <para>
+          This specification defines a CQL context set for a given prefix.
+          The value on the right hand side is the URI for the set - 
+          <emphasis>not</emphasis> RPN. All prefixes used in
+          index patterns must be defined this way.
+         </para>
+        </listitem>
+       </varlistentry>
+      </variablelist>
+     </para>
+     <example id="example.cql.to.rpn.mapping"><title>CQL to RPN mapping file</title>
+      <para>
+       This simple file defines two context sets, three indexes and three
+       relations, a position pattern and a default structure.
+      </para>
+      <programlisting><![CDATA[
+       set.cql    = http://www.loc.gov/zing/cql/context-sets/cql/v1.1/
+       set.dc     = http://www.loc.gov/zing/cql/dc-indexes/v1.0/
+
+       index.cql.serverChoice = 1=1016
+       index.dc.title         = 1=4
+       index.dc.subject       = 1=21
+  
+       relation.<                 = 2=1
+       relation.eq                = 2=3
+       relation.scr               = 2=3
+
+       position.any               = 3=3 6=1
+
+       structure.*                = 4=1
+]]>
+      </programlisting>
+      <para>
+       With the mappings above, the CQL query
+       <screen>
+        computer
+       </screen>
+       is converted to the PQF:
+       <screen>
+        @attr 1=1016 @attr 2=3 @attr 4=1 @attr 3=3 @attr 6=1 "computer"
+       </screen>
+       by rules <literal>index.cql.serverChoice</literal>,
+       <literal>relation.scr</literal>, <literal>structure.*</literal>,
+       <literal>position.any</literal>.
+      </para>
+      <para>
+       CQL query
+       <screen>
+        computer^
+       </screen>
+       is rejected, since <literal>position.right</literal> is
+       undefined.
+      </para>
+      <para>
+       CQL query
+       <screen>
+        >my = "http://www.loc.gov/zing/cql/dc-indexes/v1.0/" my.title = x
+       </screen>
+       is converted to
+       <screen>
+        @attr 1=4 @attr 2=3 @attr 4=1 @attr 3=3 @attr 6=1 "x"
+       </screen>
+      </para>
+     </example>
+     <example id="example.cql.to.rpn.bathprofile">
+      <title>CQL to RPN using Bath Profile</title>
+      <para>
+       The file <filename>etc/pqf.properties</filename> has mappings from
+       the Bath Profile and Dublin Core to RPN.
+       If YAZ is installed as a package it's usually located
+       in <filename>/usr/share/yaz/etc</filename> and part of the
+       development package, such as <literal>libyaz-dev</literal>.
+      </para>
+     </example>
+    </sect3>
+    <sect3 id="cql.xcql"><title>CQL to XCQL conversion</title>
+     <para>
+      Conversion from CQL to XCQL is trivial and does not
+      require a mapping to be defined.
+      There three functions to choose from depending on the
+      way you wish to store the resulting output (XML buffer
+      containing XCQL).
+      <synopsis>
+int cql_to_xml_buf(struct cql_node *cn, char *out, int max);
+void cql_to_xml(struct cql_node *cn, 
+                void (*pr)(const char *buf, void *client_data),
+                void *client_data);
+void cql_to_xml_stdio(struct cql_node *cn, FILE *f);
+      </synopsis>
+      Function <function>cql_to_xml_buf</function> converts
+      to XCQL and stores result in a user supplied buffer of a given
+      max size.
+     </para>
+     <para>
+      <function>cql_to_xml</function> writes the result in
+      a user defined output stream.
+      <function>cql_to_xml_stdio</function> writes to a
+      a file.
+     </para>
+    </sect3>
+   </sect2>
+  </sect1>
+  <sect1 id="tools.oid"><title>Object Identifiers</title>
+
+   <para>
+    The basic YAZ representation of an OID is an array of integers,
+    terminated with the value -1. The &odr; module provides two
+    utility-functions to create and copy this type of data elements:
+   </para>
+
+   <screen>
+    Odr_oid *odr_getoidbystr(ODR o, char *str);
+   </screen>
+
+   <para>
+    Creates an OID based on a string-based representation using dots (.)
+    to separate elements in the OID.
+   </para>
+
+   <screen>
+    Odr_oid *odr_oiddup(ODR odr, Odr_oid *o);
+   </screen>
+
+   <para>
+    Creates a copy of the OID referenced by the <emphasis>o</emphasis>
+    parameter.
+    Both functions take an &odr; stream as parameter. This stream is used to
+    allocate memory for the data elements, which is released on a
+    subsequent call to <function>odr_reset()</function> on that stream.
+   </para>
+
+   <para>
+    The OID module provides a higher-level representation of the
+    family of object identifiers which describe the Z39.50 protocol and its
+    related objects. The definition of the module interface is given in
+    the <filename>oid.h</filename> file.
+   </para>
+
+   <para>
+    The interface is mainly based on the <literal>oident</literal> structure.
+    The definition of this structure looks like this:
+   </para>
+
+   <screen>
+typedef struct oident
+{
+    oid_proto proto;
+    oid_class oclass;
+    oid_value value;
+    int oidsuffix[OID_SIZE];
+    char *desc;
+} oident;
+   </screen>
+
+   <para>
+    The proto field takes one of the values
+   </para>
+
+   <screen>
+    PROTO_Z3950
+    PROTO_GENERAL
+   </screen>
+
+   <para>
+    Use <literal>PROTO_Z3950</literal> for Z39.50 Object Identifers,
+    <literal>PROTO_GENERAL</literal> for other types (such as
+    those associated with ILL).
+   </para>
+   <para>
+
+    The oclass field takes one of the values
+   </para>
+
+   <screen>
+    CLASS_APPCTX
+    CLASS_ABSYN
+    CLASS_ATTSET
+    CLASS_TRANSYN
+    CLASS_DIAGSET
+    CLASS_RECSYN
+    CLASS_RESFORM
+    CLASS_ACCFORM
+    CLASS_EXTSERV
+    CLASS_USERINFO
+    CLASS_ELEMSPEC
+    CLASS_VARSET
+    CLASS_SCHEMA
+    CLASS_TAGSET
+    CLASS_GENERAL
+   </screen>
+
+   <para>
+    corresponding to the OID classes defined by the Z39.50 standard.
+
+    Finally, the value field takes one of the values
+   </para>
+
+   <screen>
+    VAL_APDU
+    VAL_BER
+    VAL_BASIC_CTX
+    VAL_BIB1
+    VAL_EXP1
+    VAL_EXT1
+    VAL_CCL1
+    VAL_GILS
+    VAL_WAIS
+    VAL_STAS
+    VAL_DIAG1
+    VAL_ISO2709
+    VAL_UNIMARC
+    VAL_INTERMARC
+    VAL_CCF
+    VAL_USMARC
+    VAL_UKMARC
+    VAL_NORMARC
+    VAL_LIBRISMARC
+    VAL_DANMARC
+    VAL_FINMARC
+    VAL_MAB
+    VAL_CANMARC
+    VAL_SBN
+    VAL_PICAMARC
+    VAL_AUSMARC
+    VAL_IBERMARC
+    VAL_EXPLAIN
+    VAL_SUTRS
+    VAL_OPAC
+    VAL_SUMMARY
+    VAL_GRS0
+    VAL_GRS1
+    VAL_EXTENDED
+    VAL_RESOURCE1
+    VAL_RESOURCE2
+    VAL_PROMPT1
+    VAL_DES1
+    VAL_KRB1
+    VAL_PRESSET
+    VAL_PQUERY
+    VAL_PCQUERY
+    VAL_ITEMORDER
+    VAL_DBUPDATE
+    VAL_EXPORTSPEC
+    VAL_EXPORTINV
+    VAL_NONE
+    VAL_SETM
+    VAL_SETG
+    VAL_VAR1
+    VAL_ESPEC1
+   </screen>
+
+   <para>
+    again, corresponding to the specific OIDs defined by the standard.
+    Refer to the
+    <ulink url="&url.z39.50.oids;">
+     Registry of Z39.50 Object Identifiers</ulink> for the
+     whole list.
+   </para>
+
+   <para>
+    The desc field contains a brief, mnemonic name for the OID in question.
+   </para>
+
+   <para>
+    The function
+   </para>
+
+   <screen>
+    struct oident *oid_getentbyoid(int *o);
+   </screen>
+
+   <para>
+    takes as argument an OID, and returns a pointer to a static area
+    containing an <literal>oident</literal> structure. You typically use
+    this function when you receive a PDU containing an OID, and you wish
+    to branch out depending on the specific OID value.
+   </para>
+
+   <para>
+    The function
+   </para>
+
+   <screen>
+    int *oid_ent_to_oid(struct oident *ent, int *dst);
+   </screen>
+
+   <para>
+    Takes as argument an <literal>oident</literal> structure - in which
+    the <literal>proto</literal>, <literal>oclass</literal>/, and
+    <literal>value</literal> fields are assumed to be set correctly -
+    and returns a pointer to a the buffer as given by <literal>dst</literal>
+    containing the base
+    representation of the corresponding OID. The function returns
+    NULL and the array dst is unchanged if a mapping couldn't place.
+    The array <literal>dst</literal> should be at least of size
+    <literal>OID_SIZE</literal>.
+   </para>
+   <para>
+
+    The <function>oid_ent_to_oid()</function> function can be used whenever
+    you need to prepare a PDU containing one or more OIDs. The separation of
+    the <literal>protocol</literal> element from the remainder of the
+    OID-description makes it simple to write applications that can
+    communicate with either Z39.50 or OSI SR-based applications.
+   </para>
+
+   <para>
+    The function
+   </para>
+
+   <screen>
+    oid_value oid_getvalbyname(const char *name);
+   </screen>
+
+   <para>
+    takes as argument a mnemonic OID name, and returns the
+    <literal>/value</literal> field of the first entry in the database that 
+    contains the given name in its <literal>desc</literal> field.
+   </para>
+
+   <para>
+    Three utility functions are provided for translating OIDs'
+    symbolic names (e.g. <literal>Usmarc</literal> into OID structures
+    (int arrays) and strings containing the OID in dotted notation
+    (e.g. <literal>1.2.840.10003.9.5.1</literal>).  They are:
+   </para>
+
+   <screen>
+    int *oid_name_to_oid(oid_class oclass, const char *name, int *oid);
+    char *oid_to_dotstring(const int *oid, char *oidbuf);
+    char *oid_name_to_dotstring(oid_class oclass, const char *name, char *oidbuf);
+   </screen>
+
+   <para>
+    <literal>oid_name_to_oid()</literal>
+     translates the specified symbolic <literal>name</literal>,
+     interpreted as being of class <literal>oclass</literal>.  (The
+     class must be specified as many symbolic names exist within
+     multiple classes - for example, <literal>Zthes</literal> is the
+     symbolic name of an attribute set, a schema and a tag-set.)  The
+     sequence of integers representing the OID is written into the
+     area <literal>oid</literal> provided by the caller; it is the
+     caller's responsibility to ensure that this area is large enough
+     to contain the translated OID.  As a convenience, the address of
+     the buffer (i.e. the value of <literal>oid</literal>) is
+     returned.
+   </para>
+   <para>
+    <literal>oid_to_dotstring()</literal>
+    Translates the int-array <literal>oid</literal> into a dotted
+    string which is written into the area <literal>oidbuf</literal>
+    supplied by the caller; it is the caller's responsibility to
+    ensure that this area is large enough.  The address of the buffer
+    is returned.
+   </para>
+   <para>
+    <literal>oid_name_to_dotstring()</literal>
+    combines the previous two functions to derive a dotted string
+    representing the OID specified by <literal>oclass</literal> and
+    <literal>name</literal>, writing it into the buffer passed as
+    <literal>oidbuf</literal> and returning its address.
+   </para>
+
+   <para>
+    Finally, the module provides the following utility functions, whose
+    meaning should be obvious:
+   </para>
+
+   <screen>
+    void oid_oidcpy(int *t, int *s);
+    void oid_oidcat(int *t, int *s);
+    int oid_oidcmp(int *o1, int *o2);
+    int oid_oidlen(int *o);
+   </screen>
+
+   <note>
+    <para>
+     The OID module has been criticized - and perhaps rightly so
+     - for needlessly abstracting the
+     representation of OIDs. Other toolkits use a simple
+     string-representation of OIDs with good results. In practice, we have
+     found the interface comfortable and quick to work with, and it is a
+     simple matter (for what it's worth) to create applications compatible
+     with both ISO SR and Z39.50. Finally, the use of the
+     <literal>/oident</literal> database is by no means mandatory.
+     You can easily create your own system for representing OIDs, as long
+     as it is compatible with the low-level integer-array representation
+     of the ODR module.
+    </para>
+   </note>
+
+  </sect1>
+
+  <sect1 id="tools.nmem"><title>Nibble Memory</title>
+
+   <para>
+    Sometimes when you need to allocate and construct a large,
+    interconnected complex of structures, it can be a bit of a pain to
+    release the associated memory again. For the structures describing the
+    Z39.50 PDUs and related structures, it is convenient to use the
+    memory-management system of the &odr; subsystem (see
+    <xref linkend="odr.use"/>). However, in some circumstances
+    where you might otherwise benefit from using a simple nibble memory
+    management system, it may be impractical to use
+    <function>odr_malloc()</function> and <function>odr_reset()</function>.
+    For this purpose, the memory manager which also supports the &odr;
+    streams is made available in the NMEM module. The external interface
+    to this module is given in the <filename>nmem.h</filename> file.
+   </para>
+
+   <para>
+    The following prototypes are given:
+   </para>
+
+   <screen>
+    NMEM nmem_create(void);
+    void nmem_destroy(NMEM n);
+    void *nmem_malloc(NMEM n, int size);
+    void nmem_reset(NMEM n);
+    int nmem_total(NMEM n);
+    void nmem_init(void);
+    void nmem_exit(void);
+   </screen>
+
+   <para>
+    The <function>nmem_create()</function> function returns a pointer to a
+    memory control handle, which can be released again by
+    <function>nmem_destroy()</function> when no longer needed.
+    The function <function>nmem_malloc()</function> allocates a block of
+    memory of the requested size. A call to <function>nmem_reset()</function>
+    or <function>nmem_destroy()</function> will release all memory allocated
+    on the handle since it was created (or since the last call to
+    <function>nmem_reset()</function>. The function
+    <function>nmem_total()</function> returns the number of bytes currently
+    allocated on the handle.
+   </para>
+
+   <para>
+    The nibble memory pool is shared amongst threads. POSIX
+    mutex'es and WIN32 Critical sections are introduced to keep the
+    module thread safe. Function <function>nmem_init()</function>
+    initializes the nibble memory library and it is called automatically
+    the first time the <literal>YAZ.DLL</literal> is loaded. &yaz; uses
+    function <function>DllMain</function> to achieve this. You should
+    <emphasis>not</emphasis> call <function>nmem_init</function> or
+    <function>nmem_exit</function> unless you're absolute sure what
+    you're doing. Note that in previous &yaz; versions you'd have to call
+    <function>nmem_init</function> yourself. 
+   </para>
+
+  </sect1>
+
+  <sect1 id="tools.log"><title>Log</title>
+  <para>
+   &yaz; has evolved a fairly complex log system which should be useful both 
+   for debugging &yaz; itself, debugging applications that use &yaz;, and for
+   production use of those applications.  
+  </para>
+  <para>
+   The log functions are declared in header <filename>yaz/log.h</filename>
+    and implemented in <filename>src/log.c</filename>.
+    Due to name clash with syslog and some math utilities the logging
+    interface has been modified as of YAZ 2.0.29. The obsolete interface
+    is still available if in header file <filename>yaz/log.h</filename>.
+    The key points of the interface are:
+  </para>
+  <screen>
+   void yaz_log(int level, const char *fmt, ...)
+
+   void yaz_log_init(int level, const char *prefix, const char *name);
+   void yaz_log_init_file(const char *fname);
+   void yaz_log_init_level(int level);
+   void yaz_log_init_prefix(const char *prefix);
+   void yaz_log_time_format(const char *fmt);
+   void yaz_log_init_max_size(int mx);
+
+   int yaz_log_mask_str(const char *str);
+   int yaz_log_module_level(const char *name);
+  </screen>
+
+  <para>
+   The reason for the whole log module is the <function>yaz_log</function>
+   function. It takes a bitmask indicating the log levels, a
+   <literal>printf</literal>-like format string, and a variable number of
+   arguments to log.
+  </para>
+
+  <para>
+   The <literal>log level</literal> is a bit mask, that says on which level(s)
+   the log entry should be made, and optionally set some behaviour of the
+   logging. In the most simple cases, it can be one of <literal>YLOG_FATAL,
+   YLOG_DEBUG, YLOG_WARN, YLOG_LOG</literal>. Those can be combined with bits
+   that modify the way the log entry is written:<literal>YLOG_ERRNO,
+   YLOG_NOTIME, YLOG_FLUSH</literal>.
+   Most of the rest of the bits are deprecated, and should not be used. Use
+   the dynamic log levels instead.
+  </para>
+
+  <para>
+   Applications that use &yaz;, should not use the LOG_LOG for ordinary
+   messages, but should make use of the dynamic loglevel system. This consists
+   of two parts, defining the loglevel and checking it.
+  </para>
+
+  <para>
+   To define the log levels, the (main) program should pass a string to
+   <function>yaz_log_mask_str</function> to define which log levels are to be
+   logged. This string should be a comma-separated list of log level names,
+   and can contain both hard-coded names and dynamic ones. The log level
+   calculation starts with <literal>YLOG_DEFAULT_LEVEL</literal> and adds a bit
+   for each word it meets, unless the word starts with a '-', in which case it 
+   clears the bit. If the string <literal>'none'</literal> is found,
+   all bits are cleared. Typically this string comes from the command-line,
+   often identified by <literal>-v</literal>. The
+   <function>yaz_log_mask_str</function> returns a log level that should be
+   passed to <function>yaz_log_init_level</function> for it to take effect.
+  </para>
+
+  <para>
+   Each module should check what log bits it should be used, by calling 
+   <function>yaz_log_module_level</function> with a suitable name for the
+   module. The name is cleared from a preceding path and an extension, if any,
+   so it is quite possible to use <literal>__FILE__</literal> for it. If the
+   name has been passed to <function>yaz_log_mask_str</function>, the routine
+   returns a non-zero bitmask, which should then be used in consequent calls
+   to yaz_log. (It can also be tested, so as to avoid unnecessary calls to
+   yaz_log, in time-critical places, or when the log entry would take time 
+   to construct.) 
+  </para>
+
+  <para>
+   Yaz uses the following dynamic log levels:
+   <literal>server, session, request, requestdetail</literal> for the server
+   functionality.
+   <literal>zoom</literal> for the zoom client api.
+   <literal>ztest</literal> for the simple test server.
+   <literal>malloc, nmem, odr, eventl</literal> for internal debugging of yaz itself.
+   Of course, any program using yaz is welcome to define as many new ones, as
+   it needs.
+  </para>
+
+  <para>
+   By default the log is written to stderr, but this can be changed by a call
+   to <function>yaz_log_init_file</function> or
+   <function>yaz_log_init</function>. If the log is directed to a file, the
+   file size is checked at every write, and if it exceeds the limit given in
+   <function>yaz_log_init_max_size</function>, the log is rotated. The
+   rotation keeps one old version (with a <literal>.1</literal> appended to
+   the name). The size defaults to 1GB. Setting it to zero will disable the
+   rotation feature.
+  </para>
+
+  <screen>
+  A typical yaz-log looks like this
+  13:23:14-23/11 yaz-ztest(1) [session] Starting session from tcp:127.0.0.1 (pid=30968)
+  13:23:14-23/11 yaz-ztest(1) [request] Init from 'YAZ' (81) (ver 2.0.28) OK
+  13:23:17-23/11 yaz-ztest(1) [request] Search Z: @attrset Bib-1 foo  OK:7 hits
+  13:23:22-23/11 yaz-ztest(1) [request] Present: [1] 2+2  OK 2 records returned
+  13:24:13-23/11 yaz-ztest(1) [request] Close OK
+  </screen>
+
+  <para>
+   The log entries start with a time stamp. This can be omitted by setting the
+   <literal>YLOG_NOTIME</literal> bit in the loglevel. This way automatic tests
+   can be hoped to produce identical log files, that are easy to diff. The
+   format of the time stamp can be set with
+   <function>yaz_log_time_format</function>, which takes a format string just
+   like <function>strftime</function>.
+  </para>
+
+  <para>
+   Next in a log line comes the prefix, often the name of the program. For
+   yaz-based servers, it can also contain the session number. Then
+   comes one or more logbits in square brackets, depending on the logging
+   level set by <function>yaz_log_init_level</function> and the loglevel
+   passed to <function>yaz_log_init_level</function>. Finally comes the format
+   string and additional values passed to <function>yaz_log</function>
+  </para>
+
+  <para>
+   The log level <literal>YLOG_LOGLVL</literal>, enabled by the string
+   <literal>loglevel</literal>, will log all the log-level affecting
+   operations. This can come in handy if you need to know what other log
+   levels would be useful. Grep the logfile for <literal>[loglevel]</literal>.
+  </para>
+
+  <para>
+   The log system is almost independent of the rest of &yaz;, the only
+   important dependence is of <filename>nmem</filename>, and that only for
+   using the semaphore definition there. 
+  </para>
+
+  <para>
+   The dynamic log levels and log rotation were introduced in &yaz; 2.0.28. At
+   the same time, the log bit names were changed from
+   <literal>LOG_something</literal> to <literal>YLOG_something</literal>, 
+   to avoid collision with <filename>syslog.h</filename>.
+  </para>
+
+  </sect1>
+  
+  <sect1 id="marc"><title>MARC</title>
+   
+   <para>
+    YAZ provides a fast utility that decodes MARC records and
+    encodes to a varity of output formats. The MARC records must
+    be encoded in ISO2709.
+   </para>
+   <synopsis><![CDATA[
+    #include <yaz/marcdisp.h>
+
+    /* create handler */
+    yaz_marc_t yaz_marc_create(void);
+    /* destroy */
+    void yaz_marc_destroy(yaz_marc_t mt);
+
+    /* set XML mode YAZ_MARC_LINE, YAZ_MARC_SIMPLEXML, ... */
+    void yaz_marc_xml(yaz_marc_t mt, int xmlmode);
+    #define YAZ_MARC_LINE      0
+    #define YAZ_MARC_SIMPLEXML 1
+    #define YAZ_MARC_OAIMARC   2
+    #define YAZ_MARC_MARCXML   3
+    #define YAZ_MARC_ISO2709   4
+    #define YAZ_MARC_XCHANGE   5
+
+    /* supply iconv handle for character set conversion .. */
+    void yaz_marc_iconv(yaz_marc_t mt, yaz_iconv_t cd);
+
+    /* set debug level, 0=none, 1=more, 2=even more, .. */
+    void yaz_marc_debug(yaz_marc_t mt, int level);
+
+    /* decode MARC in buf of size bsize. Returns >0 on success; <=0 on failure.
+    On success, result in *result with size *rsize. */
+    int yaz_marc_decode_buf (yaz_marc_t mt, const char *buf, int bsize,
+                             char **result, int *rsize);
+
+    /* decode MARC in buf of size bsize. Returns >0 on success; <=0 on failure.
+       On success, result in WRBUF */
+    int yaz_marc_decode_wrbuf (yaz_marc_t mt, const char *buf,
+                               int bsize, WRBUF wrbuf);
+]]>
+   </synopsis>
+   <para>
+    A MARC conversion handle must be created by using
+    <function>yaz_marc_create</function> and destroyed
+    by calling <function>yaz_marc_destroy</function>.
+  </para>
+   <para>
+    All other function operate on a <literal>yaz_marc_t</literal> handle.
+    The output is specified by a call to <function>yaz_marc_xml</function>.
+    The <literal>xmlmode</literal> must be one of
+    <variablelist>
+     <varlistentry>
+      <term>YAZ_MARC_LINE</term>
+      <listitem>
+       <para>
+	A simple line-by-line format suitable for display but not
+	recommend for further (machine) processing.
+       </para>
+      </listitem>
+     </varlistentry>
+
+     <varlistentry>
+      <term>YAZ_MARC_MARCXML</term>
+      <listitem>
+       <para>
+	The resulting record is converted to MARCXML.
+       </para>
+      </listitem>
+     </varlistentry>
+
+     <varlistentry>
+      <term>YAZ_MARC_ISO2709</term>
+      <listitem>
+       <para>
+	The resulting record is converted to ISO2709 (MARC).
+       </para>
+      </listitem>
+     </varlistentry>
+    </variablelist>
+   </para>
+   <para>
+    The actual conversion functions are 
+    <function>yaz_marc_decode_buf</function> and
+    <function>yaz_marc_decode_wrbuf</function> which decodes and encodes
+    a MARC record. The former function operates on simple buffers, the
+    stores the resulting record in a WRBUF handle (WRBUF is a simple string
+    type).
+   </para>
+   <example id="example.marc.display">
+    <title>Display of MARC record</title>
+    <para>
+     The followint program snippet illustrates how the MARC API may
+     be used to convert a MARC record to the line-by-line format:
+     <programlisting><![CDATA[
+      void print_marc(const char *marc_buf, int marc_buf_size)
+      {
+         char *result;      /* for result buf */
+         int result_len;    /* for size of result */
+         yaz_marc_t mt = yaz_marc_create();
+         yaz_marc_xml(mt, YAZ_MARC_LINE);
+         yaz_marc_decode_buf(mt, marc_buf, marc_buf_size,
+                             &result, &result_len);
+         fwrite(result, result_len, 1, stdout);
+         yaz_marc_destroy(mt);  /* note that result is now freed... */
+      }
+]]>
+      </programlisting>
+    </para>
+   </example>
+  </sect1>
+
+ </chapter>
+ 
+ <!-- Keep this comment at the end of the file
+ Local variables:
+ mode: sgml
+ sgml-omittag:t
+ sgml-shorttag:t
+ sgml-minimize-attributes:nil
+ sgml-always-quote-attributes:t
+ sgml-indent-step:1
+ sgml-indent-data:t
+ sgml-parent-document: "yaz.xml"
+ sgml-local-catalogs: nil
+ sgml-namecase-general:t
+ End:
+ -->

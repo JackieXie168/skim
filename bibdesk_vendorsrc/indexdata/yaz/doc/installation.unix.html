@@ -1,0 +1,252 @@
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"><title>2. UNIX</title><meta name="generator" content="DocBook XSL Stylesheets V1.71.0"><link rel="start" href="index.html" title="YAZ User's Guide and Reference"><link rel="up" href="installation.html" title="Chapter 2. Compilation and Installation"><link rel="prev" href="installation.html" title="Chapter 2. Compilation and Installation"><link rel="next" href="installation.win32.html" title="3. WIN32"></head><body><link rel="stylesheet" type="text/css" href="common/style1.css"><div class="navheader"><table width="100%" summary="Navigation header"><tr><th colspan="3" align="center">2. UNIX</th></tr><tr><td width="20%" align="left"><a accesskey="p" href="installation.html">Prev</a> </td><th width="60%" align="center">Chapter 2. Compilation and Installation</th><td width="20%" align="right"> <a accesskey="n" href="installation.win32.html">Next</a></td></tr></table><hr></div><div class="sect1" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="installation.unix"></a>2. UNIX</h2></div></div></div><p>
+    We provide 
+    <a href="http://www.debian.org/" target="_top">Debian GNU/Linux</a>
+    and 
+    <a href="http://www.redhat.com/" target="_top">Redhat</a> packages for YAZ. 
+    Only i386 binary packages are available. You should be able to
+    create packages for other CPUs by building them from the source
+    package.
+   </p><div class="sect2" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="installation.source.unix"></a>2.1. Compiling from source on Unix</h3></div></div></div><p>
+     Note that if your system doesn't have a native ANSI C compiler, you may
+     have to acquire one separately. We recommend
+     <a href="http://gcc.gnu.org/" target="_top">GCC</a>.
+    </p><p>
+     If you wish to use character set conversion facilities in YAZ or if you
+     are compiling YAZ for use with Zebra it is a good idea to ensure that
+     the iconv library is installed. Some Unixes today already have it
+     - if not, we suggest 
+     <a href="http://www.gnu.org/software/libiconv/" target="_top">GNU libiconv</a>.
+    </p><p>
+     The <a href="http://xmlsoft.org/XSLT/" target="_top">libxslt</a>,
+     <a href="http://xmlsoft.org/" target="_top">libxml2</a> librararies are required
+     if YAZ is to support SRU.
+     These libraries are very portable and should compile out-of-the
+     box on virtually all Unix platforms. It is available in binary
+     forms for Linux and others.
+    </p><p>
+     The GNU tools
+     <a href="http://www.gnu.org/software/autoconf/" target="_top">Autoconf</a>,
+     <a href="http://www.gnu.org/software/automake/" target="_top">Automake</a> and
+     <a href="http://www.gnu.org/software/libtool/" target="_top">Libtool</a>
+     are used to generate Makefiles and configure YAZ for the system.
+     You do <span class="emphasis"><em>not</em></span> these tools unless you're using the
+     CVS version of YAZ.
+    </p><p>
+     YAZ can optionally be compiled with 
+     <a href="http://www.tcpdump.org/" target="_top">libpcap</a> support. By default,
+     configure enables libpcap if it is available. 
+     The libpcap library is required for
+     <a href="ziffy.html" title="Chapter 6. ziffy">ziffy</a>. And without libpcap,
+     ziffy will not be built.
+    </p><p>
+     The CQL parser for YAZ is built using
+     GNU <a href="http://www.gnu.org/software/bison/" target="_top">Bison</a>.
+     This tool is only needed if you're using the CVS version of YAZ.
+    </p><p>
+     YAZ includes a tiny ASN.1 compiler. This compiler is
+     written in <a href="http://www.tcl.tk/" target="_top">Tcl</a>.
+     But as for Bison you do not need it unless you're using CVS
+     version of YAZ or you're using the compiler to built own codecs
+     for private ASN.1. 
+    </p><p>
+     Generally it should be sufficient to run configure without options,
+     like this:
+    </p><pre class="screen">
+     ./configure
+    </pre><p>
+     The configure script attempts to use use the C compiler specified by
+     the <code class="literal">CC</code> environment variable. If not set, GNU C will be
+     used if it is available. The <code class="literal">CFLAGS</code> environment
+     variable holds options to be passed to the C compiler. If you're using
+     Bourne-compatible shell you may pass something like this to use a
+     particular C compiler with optimization enabled:
+    </p><pre class="screen">
+     CC=/opt/ccs/bin/cc CFLAGS=-O ./configure
+    </pre><p>
+     To customize YAZ, the configure script also accepts a set of options.
+     The most important are:
+     
+     </p><div class="variablelist"><dl><dt><span class="term">
+        <code class="literal">--prefix</code>=<em class="replaceable"><code>prefix</code></em></span></dt><dd><p>Specifies installation prefix for YAZ. This is
+         only needed if you run <code class="literal">make install</code> later to
+         perform a "system" installation. The prefix is
+         <code class="literal">/usr/local</code> if not specified.
+        </p></dd><dt><span class="term"><code class="literal">--enable-tcpd</code></span></dt><dd><p>The front end server will be built using Wietse's
+         <a href="ftp://ftp.porcupine.org/pub/security/index.html" target="_top">TCP wrapper library</a>.
+	 It allows you to allow/deny clients depending on IP number.
+	 The TCP wrapper library is often used in GNU/Linux and
+	 BSD distributions.
+         See
+         <span class="citerefentry"><span class="refentrytitle">hosts_access</span>(5)</span>
+         and 
+         <span class="citerefentry"><span class="refentrytitle">tcpd</span>(8)</span>.
+        </p></dd><dt><span class="term"><code class="literal">--enable-threads</code></span></dt><dd><p>YAZ will be built using POSIX threads.
+	Specifically, <code class="constant">_REENTRANT</code> will be defined during
+         compilation.
+        </p></dd><dt><span class="term"><code class="literal">--disable-shared</code></span></dt><dd><p>The make process will not create shared
+         libraries (also known as shared objects <code class="filename">.so</code>).
+         By default, shared libraries are created -
+         equivalent to <code class="literal">--enable-shared</code>.
+        </p></dd><dt><span class="term"><code class="literal">--disable-shared</code></span></dt><dd><p>The make process will not create
+         static libraries (<code class="filename">.a</code>).
+         By default, static libraries are created -
+         equivalent to <code class="literal">--enable-static</code>.
+        </p></dd><dt><span class="term">
+        <code class="literal">--with-iconv</code>[=<em class="replaceable"><code>prefix</code></em>]
+       </span></dt><dd><p>Compile YAZ with iconv library in directory
+         <em class="replaceable"><code>prefix</code></em>. By default configure will
+         search for iconv on the system. Use this option if it
+         doesn't find iconv. Alternatively, 
+         <code class="literal">--without-iconv</code>, can be uset to force YAZ
+	 not to use iconv.
+        </p></dd><dt><span class="term">
+        <code class="literal">--with-xslt</code>[=<em class="replaceable"><code>prefix</code></em>]
+       </span></dt><dd><p>Compile YAZ with 
+         <a href="http://xmlsoft.org/XSLT/" target="_top">libxslt</a> in directory
+         <em class="replaceable"><code>prefix</code></em>. 
+         Use this option if you want SRU support.
+         By default, configure will
+         search for libxslt on the system. Use this option if it
+         libxslt is not found automatically. Alternatively, 
+         <code class="literal">--without-xslt</code>, can be used to force YAZ
+	 not to use libxslt.
+        </p></dd><dt><span class="term">
+        <code class="literal">--with-openssl</code>[=<em class="replaceable"><code>prefix</code></em>]
+       </span></dt><dd><p>YAZ will be linked with the OpenSSL libraries and
+         an SSL COMSTACK will be provided. Note that SSL support is still
+         experimental.
+        </p></dd><dt><span class="term">
+        <code class="literal">--with-libpcap</code>[=<em class="replaceable"><code>prefix</code></em>]
+       </span></dt><dd><p>Compile YAZ with
+	 <a href="http://www.tcpdump.org/" target="_top">libpcap</a> support and the
+	 <a href="ziffy.html" title="Chapter 6. ziffy">ziffy</a> utility.
+        </p></dd></dl></div><p>
+     
+    </p><p>
+     When configured, build the software by typing:
+     </p><pre class="screen">
+      make
+     </pre><p>
+    </p><p>
+     The following files are generated by the make process:
+     </p><div class="variablelist"><dl><dt><span class="term"><code class="filename">src/libyaz.la</code></span></dt><dd><p>
+         Main YAZ library. This is no ordinary library. It's
+         a Libtool archive.
+         By default, YAZ creates a static library in 
+         <code class="filename">lib/.libs/libyaz.a</code>.
+        </p></dd><dt><span class="term"><code class="filename">src/libyazthread.la</code></span></dt><dd><p>
+         When threading is supported/enabled by configure this Libtool
+         library is created. It includes functions that allows YAZ
+         to use threads.
+        </p></dd><dt><span class="term"><code class="filename">ztest/yaz-ztest</code></span></dt><dd><p>Test Z39.50 server. 
+        </p></dd><dt><span class="term"><code class="filename">client/yaz-client</code></span></dt><dd><p>Z39.50 client for testing the protocol.
+         See chapter <a href="client.html" title="Chapter 5. The YAZ client">
+          YAZ client</a> for more information.
+        </p></dd><dt><span class="term"><code class="filename">ziffy/ziffy</code></span></dt><dd><p>A promiscuous Z39.50 APDU sniffer. 
+         ziffy is only built on systems where libpcap is available.
+	 See <a href="ziffy.html" title="Chapter 6. ziffy">Chapter 6, <i>ziffy</i></a> for more information. 
+        </p></dd><dt><span class="term"><code class="filename">util/yaz-config</code></span></dt><dd><p>A Bourne-shell script, generated by configure, that
+         specifies how external applications should compile - and link with
+         YAZ.
+        </p></dd><dt><span class="term"><code class="filename">util/yaz-asncomp</code></span></dt><dd><p>The ASN.1 compiler for YAZ. Requires the
+         Tcl Shell, <span class="application">tclsh</span>, in
+         <code class="literal">PATH</code> to operate.
+        </p></dd><dt><span class="term"><code class="filename">util/yaz-iconv</code></span></dt><dd><p>This program converts data in one character set to
+	 another. This command exercises the YAZ character set
+	 conversion API.
+        </p></dd><dt><span class="term"><code class="filename">util/yaz-marcdump</code></span></dt><dd><p>This program parses ISO2709 encoded MARC records
+	 and prints them in line-format or XML.
+        </p></dd><dt><span class="term"><code class="filename">zoom/zoomsh</code></span></dt><dd><p>
+         A simple shell implemented on top of the 
+         <a href="zoom.html" title="Chapter 3. ZOOM">ZOOM</a> functions.
+         The shell is a command line application that allows you to enter
+         simple commands to perform ZOOM operations.
+        </p></dd><dt><span class="term"><code class="filename">zoom/zoomtst1</code>, 
+        <code class="filename">zoom/zoomtst2</code>, ..</span></dt><dd><p>
+         Several small applications that demonstrates the ZOOM API.
+        </p></dd></dl></div><p>
+     
+    </p><p>
+     If you wish to install YAZ in system directories  
+     <code class="filename">/usr/local/bin</code>,
+     <code class="filename">/usr/local/lib</code> .. etc, you can type:
+    </p><pre class="screen">
+     make install
+    </pre><p>
+     You probably need to have root access in order to perform this.
+     You must specify the <code class="literal">--prefix</code> option for configure if
+     you wish to install YAZ in other directories than the default 
+     <code class="filename">/usr/local/</code>.
+    </p><p>
+     If you wish to perform an un-installation of YAZ, use:
+    </p><pre class="screen">
+     make uninstall
+    </pre><p>
+     This will only work if you haven't reconfigured YAZ (and therefore
+     changed installation prefix). Note that uninstall will not
+     remove directories created by make install, e.g.
+     <code class="filename">/usr/local/include/yaz</code>.
+    </p></div><div class="sect2" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="installation-linking-yaz-unix"></a>2.2. How to make apps using YAZ on UNIX</h3></div></div></div><p>
+     This section describes how to compile - and link your own
+     applications using the YAZ toolkit.
+     If you're used to Makefiles this shouldn't be hard. As for
+     other libraries you have used before, you have to set a proper include
+     path for your C/C++ compiler and specify the location of
+     YAZ libraries. You can do it by hand, but generally we suggest
+     you use the <code class="filename">yaz-config</code> that is generated
+     by <code class="filename">configure</code>. This is especially
+     important if you're using the threaded version of YAZ which
+     require you to pass more options to your linker/compiler.
+    </p><p>
+     The <code class="filename">yaz-config</code> script accepts command line
+     options that makes the <code class="filename">yaz-config</code> script print
+     options that you should use in your make process.
+     The most important ones are:
+     <code class="literal">--cflags</code>, <code class="literal">--libs</code>
+     which prints C compiler flags, and linker flags respectively.
+     </p><p>
+     A small and complete <code class="literal">Makefile</code> for a C
+     application consisting of one source file,
+     <code class="filename">myprog.c</code>, may look like this:
+     </p><pre class="screen">
+      YAZCONFIG=/usr/local/bin/yaz-config
+      CFLAGS=`$(YAZCONFIG) --cflags`
+      LIBS=`$(YAZCONFIG) --libs`
+      myprog: myprog.o
+         $(CC) $(CFLAGS) -o myprog myprog.o $(LIBS)
+      </pre><p>
+     </p><p>
+     The CFLAGS variable consists of a C compiler directive that will set
+     the include path to the <span class="emphasis"><em>parent</em></span> directory
+     of <code class="filename">yaz</code>. That is, if YAZ header files were
+     installed in <code class="filename">/usr/local/include/yaz</code>,
+     then include path is set to <code class="filename">/usr/local/include</code>.
+     Therefore, in your applications you should use
+     </p><pre class="screen">
+      #include &lt;yaz/proto.h&gt;
+     </pre><p>
+     and <span class="emphasis"><em>not</em></span>
+     </p><pre class="screen">
+      #include &lt;proto.h&gt;
+     </pre><p>
+    </p><p>
+     For Libtool users, the <code class="filename">yaz-config</code> script provides
+     a different variant of option <code class="literal">--libs</code>, called
+     <code class="literal">--lalibs</code> that returns the name of the
+     Libtool acrhive(s) for YAZ rather than the ordinary ones.
+    </p><p>
+     For applications using the threaded version of YAZ,
+     specify <code class="literal">threads</code> after the
+     other options. When <code class="literal">threads</code> is given,
+     more flags and linker flags will be printed by
+     <code class="filename">yaz-config</code>. If our previous example was
+      using threads, you'd have to modify the lines that set
+     <code class="literal">CFLAGS</code> and <code class="literal">LIBS</code> as
+     follows:
+     </p><pre class="screen">
+      CFLAGS=`$(YAZCONFIG) --cflags threads`
+      LIBS=`$(YAZCONFIG) --libs threads`
+     </pre><p>
+     There is no need specify POSIX thread libraries in your Makefile.
+     The <code class="literal">LIBS</code> variable includes that as well.
+    </p></div></div><div class="navfooter"><hr><table width="100%" summary="Navigation footer"><tr><td width="40%" align="left"><a accesskey="p" href="installation.html">Prev</a> </td><td width="20%" align="center"><a accesskey="u" href="installation.html">Up</a></td><td width="40%" align="right"> <a accesskey="n" href="installation.win32.html">Next</a></td></tr><tr><td width="40%" align="left" valign="top">Chapter 2. Compilation and Installation </td><td width="20%" align="center"><a accesskey="h" href="index.html">Home</a></td><td width="40%" align="right" valign="top"> 3. WIN32</td></tr></table></div></body></html>

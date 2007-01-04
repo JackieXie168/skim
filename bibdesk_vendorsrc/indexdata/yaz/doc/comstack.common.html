@@ -1,0 +1,135 @@
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"><title>3. Common Functions</title><meta name="generator" content="DocBook XSL Stylesheets V1.71.0"><link rel="start" href="index.html" title="YAZ User's Guide and Reference"><link rel="up" href="comstack.html" title="Chapter 11. The COMSTACK Module"><link rel="prev" href="comstack.introduction.html" title="2. Introduction"><link rel="next" href="comstack.client.html" title="4. Client Side"></head><body><link rel="stylesheet" type="text/css" href="common/style1.css"><div class="navheader"><table width="100%" summary="Navigation header"><tr><th colspan="3" align="center">3. Common Functions</th></tr><tr><td width="20%" align="left"><a accesskey="p" href="comstack.introduction.html">Prev</a> </td><th width="60%" align="center">Chapter 11. The COMSTACK Module</th><td width="20%" align="right"> <a accesskey="n" href="comstack.client.html">Next</a></td></tr></table><hr></div><div class="sect1" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="comstack.common"></a>3. Common Functions</h2></div></div></div><div class="sect2" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="comstack.managing.endpoints"></a>3.1. Managing Endpoints</h3></div></div></div><pre class="synopsis">
+     COMSTACK cs_create(CS_TYPE type, int blocking, int protocol);
+    </pre><p>
+     Creates an instance of the protocol stack - a communications endpoint.
+     The <code class="literal">type</code> parameter determines the mode
+     of communication. At present the following values are supported:
+    </p><div class="variablelist"><dl><dt><span class="term"><code class="literal">tcpip_type</code></span></dt><dd><p>TCP/IP (BER over TCP/IP or HTTP over TCP/IP)
+       </p></dd><dt><span class="term"><code class="literal">ssl_type</code></span></dt><dd><p>Secure Socket Layer (SSL). This COMSTACK 
+        is experimental and is not fully implemented. If
+        HTTP is used, this effectively is HTTPS.
+       </p></dd><dt><span class="term"><code class="literal">unix_type</code></span></dt><dd><p>Unix socket (unix only). Local Transfer via
+        file socket. See <span class="citerefentry"><span class="refentrytitle">unix</span>(7)</span>.
+       </p></dd></dl></div><p>
+     The <code class="function">cs_create</code> function returns a null-pointer
+     if a system error occurs.
+     The <code class="literal">blocking</code> parameter should be one if
+     you wish the association to operate in blocking mode, zero otherwise.
+     The <code class="literal">protocol</code> field should be
+     <code class="literal">PROTO_Z3950</code> or <code class="literal">PROTO_HTTP</code>.
+     Protocol <code class="literal">PROTO_SR</code> is no longer supported.
+    </p><pre class="synopsis">
+     int cs_close(COMSTACK handle);
+    </pre><p>
+     Closes the connection (as elegantly as the lower layers will permit),
+     and releases the resources pointed to by the
+     <code class="literal">handle</code>
+     parameter. The
+     <code class="literal">handle</code>
+     should not be referenced again after this call.
+    </p><div class="note" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title">Note</h3><p>
+      We really need a soft disconnect, don't we?
+     </p></div></div><div class="sect2" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="comstack.data.exchange"></a>3.2. Data Exchange</h3></div></div></div><pre class="synopsis">
+     int cs_put(COMSTACK handle, char *buf, int len);
+    </pre><p>
+     Sends
+     <code class="literal">buf</code>
+     down the wire. In blocking mode, this function will return only when a
+     full buffer has been written, or an error has occurred. In nonblocking
+     mode, it's possible that the function will be unable to send the full
+     buffer at once, which will be indicated by a return value of 1. The
+     function will keep track of the number of octets already written; you
+     should call it repeatedly with the same values of <code class="literal">buf</code>
+     and <code class="literal">len</code>, until the buffer has been transmitted.
+     When a full buffer has been sent, the function will return 0 for
+     success. -1 indicates an error condition (see below).
+    </p><pre class="synopsis">
+     int cs_get(COMSTACK handle, char **buf, int *size);
+    </pre><p>
+     Receives a PDU or HTTP Response from the peer. Returns the number of
+     bytes read.
+     In nonblocking mode, it is possible that not all of the packet can be
+     read at once. In this case, the function returns 1. To simplify the
+     interface, the function is
+     responsible for managing the size of the buffer. It will be reallocated
+     if necessary to contain large packages, and will sometimes be moved
+     around internally by the subsystem when partial packages are read. Before
+     calling
+     <code class="function">cs_get</code>
+     for the fist time, the buffer can be initialized to the null pointer,
+     and the length should also be set to 0 - cs_get will perform a
+     <code class="function">malloc(2)</code>
+     on the buffer for you. When a full buffer has been read, the size of
+     the package is returned (which will always be greater than 1). -1
+     indicates an error condition.
+    </p><p>
+     See also the <code class="function">cs_more()</code> function below.
+    </p><pre class="synopsis">
+     int cs_more(COMSTACK handle);
+    </pre><p>
+     The <code class="function">cs_more()</code> function should be used in conjunction
+     with <code class="function">cs_get</code> and
+     <code class="function">select(2)</code>.
+     The <code class="function">cs_get()</code> function will sometimes
+     (notably in the TCP/IP mode) read more than a single protocol package
+     off the network. When this happens, the extra package is stored
+     by the subsystem. After calling <code class="function">cs_get()</code>, and before
+     waiting for more input, You should always call
+     <code class="function">cs_more()</code>
+     to check if there's a full protocol package already read. If
+     <code class="function">cs_more()</code>
+     returns 1,
+     <code class="function">cs_get()</code>
+     can be used to immediately fetch the new package. For the
+     mOSI
+     subsystem, the function should always return 0, but if you want your
+     stuff to be protocol independent, you should use it.
+    </p><div class="note" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title">Note</h3><p>
+      The <code class="function">cs_more()</code>
+      function is required because the RFC1729-method
+      does not provide a way of separating individual PDUs, short of
+      partially decoding the BER. Some other implementations will carefully
+      nibble at the packet by calling
+      <code class="function">read(2)</code>
+      several times. This was felt to be too inefficient (or at least
+      clumsy) - hence the call for this extra function.
+     </p></div><pre class="synopsis">
+     int cs_look(COMSTACK handle);
+    </pre><p>
+     This function is useful when you're operating in nonblocking
+     mode. Call it when
+     <code class="function">select(2)</code>
+     tells you there's something happening on the line. It returns one of
+     the following values:
+    </p><div class="variablelist"><dl><dt><span class="term">CS_NONE</span></dt><dd><p>
+	No event is pending. The data found on the line was not a
+        complete package.
+       </p></dd><dt><span class="term">CS_CONNECT</span></dt><dd><p>
+	A response to your connect request has been received. Call
+	<code class="function">cs_rcvconnect</code>
+	to process the event and to finalize the connection establishment.
+       </p></dd><dt><span class="term">CS_DISCON</span></dt><dd><p>
+	The other side has closed the connection (or maybe sent a disconnect
+	request - but do we care? Maybe later). Call
+	<code class="function">cs_close</code> to close your end of the association
+        as well.
+       </p></dd><dt><span class="term">CS_LISTEN</span></dt><dd><p>
+	A connect request has been received.
+        Call <code class="function">cs_listen</code> to process the event.
+       </p></dd><dt><span class="term">CS_DATA</span></dt><dd><p>
+	There's data to be found on the line.
+        Call <code class="function">cs_get</code> to get it.
+       </p></dd></dl></div><div class="note" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title">Note</h3><p>
+      You should be aware that even if
+      <code class="function">cs_look()</code>
+      tells you that there's an event event pending, the corresponding
+      function may still return and tell you there was nothing to be found.
+      This means that only part of a package was available for reading. The
+      same event will show up again, when more data has arrived.
+     </p></div><pre class="synopsis">
+     int cs_fileno(COMSTACK h);
+    </pre><p>
+     Returns the file descriptor of the association. Use this when
+     file-level operations on the endpoint are required
+     (<code class="function">select(2)</code> operations, specifically).
+    </p></div></div><div class="navfooter"><hr><table width="100%" summary="Navigation footer"><tr><td width="40%" align="left"><a accesskey="p" href="comstack.introduction.html">Prev</a> </td><td width="20%" align="center"><a accesskey="u" href="comstack.html">Up</a></td><td width="40%" align="right"> <a accesskey="n" href="comstack.client.html">Next</a></td></tr><tr><td width="40%" align="left" valign="top">2. Introduction </td><td width="20%" align="center"><a accesskey="h" href="index.html">Home</a></td><td width="40%" align="right" valign="top"> 4. Client Side</td></tr></table></div></body></html>

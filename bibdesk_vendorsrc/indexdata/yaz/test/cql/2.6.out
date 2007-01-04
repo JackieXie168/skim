@@ -1,0 +1,7 @@
+<searchClause>
+  <index>title</index>
+  <relation>
+    <value>&gt;=</value>
+  </relation>
+  <term>23</term>
+</searchClause>

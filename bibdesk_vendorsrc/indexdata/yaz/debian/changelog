@@ -1,0 +1,695 @@
+yaz (2.1.42-1) unstable; urgency=low
+
+  * Upstream.
+
+ -- Adam Dickmeiss <adam@indexdata.dk>  Sun, 17 Dec 2006 16:44:31 +0100
+
+yaz (2.1.41-5) unstable; urgency=low
+
+  * Fixed bug #722.
+
+ -- Adam Dickmeiss <adam@indexdata.dk>  Wed,  6 Dec 2006 14:26:09 +0100
+
+yaz (2.1.41-4) unstable; urgency=low
+
+  * Fixed bug #740.
+
+ -- Adam Dickmeiss <adam@indexdata.dk>  Mon,  4 Dec 2006 10:14:48 +0100
+
+yaz (2.1.41-3) unstable; urgency=low
+
+  * yaz-ziffy is architecture all (not any).
+
+ -- Adam Dickmeiss <adam@indexdata.dk>  Fri,  1 Dec 2006 09:09:39 +0100
+
+yaz (2.1.41-2) unstable; urgency=low
+
+  * With bug fix #740.
+
+ -- Adam Dickmeiss <adam@indexdata.dk>  Fri,  1 Dec 2006 08:57:26 +0100
+
+yaz (2.1.41-1) unstable; urgency=low
+
+  * With ziffy.
+
+ -- Adam Dickmeiss <adam@indexdata.dk>  Thu, 30 Nov 2006 09:53:06 +0100
+
+yaz (2.1.40-1) unstable; urgency=low
+
+  * Upstream.
+
+ -- Adam Dickmeiss <adam@indexdata.dk>  Mon, 27 Nov 2006 15:11:55 +0100
+
+yaz (2.1.39-1) unstable; urgency=low
+
+  * Upstream.
+
+ -- Marc Cromme <marc@indexdata.dk>  Mon, 06 Nov 2006 14:11:34 +0100
+
+yaz (2.1.38-1) unstable; urgency=low
+
+  * Upstream.
+
+ -- Adam Dickmeiss <adam@indexdata.dk>  Tue, 31 Oct 2006 11:06:12 +0100
+
+yaz (2.1.36-1) unstable; urgency=low
+
+  * Upstream. Revised BSD License.
+
+ -- Adam Dickmeiss <adam@indexdata.dk>  Fri, 13 Oct 2006 13:33:49 +0200
+
+yaz (2.1.34-1) unstable; urgency=low
+
+  * Upstream.
+
+ -- Adam Dickmeiss <adam@indexdata.dk>  Wed,  4 Oct 2006 10:01:51 +0200
+
+yaz (2.1.32-1) unstable; urgency=low
+
+  * Upstream.
+
+ -- Adam Dickmeiss <adam@indexdata.dk>  Thu, 21 Sep 2006 08:57:44 +0200
+
+yaz (2.1.30-1) unstable; urgency=low
+
+  * Upstream.
+
+ -- Adam Dickmeiss <adam@indexdata.dk>  Sun, 17 Sep 2006 12:51:58 +0200
+
+yaz (2.1.28-1) unstable; urgency=low
+
+  * Upstream.
+
+ -- Adam Dickmeiss <adam@indexdata.dk>  Mon,  4 Sep 2006 12:11:24 +0200
+
+yaz (2.1.27-3) unstable; urgency=low
+
+  * More testing of MARC-8 encoding. Using getaddrinfo.
+
+ -- Adam Dickmeiss <adam@indexdata.dk>  Thu, 31 Aug 2006 17:39:18 +0200
+
+yaz (2.1.27-2) unstable; urgency=low
+
+  * Testing of MARC-8 encoding bugs.
+
+ -- Adam Dickmeiss <adam@indexdata.dk>  Mon, 28 Aug 2006 18:54:11 +0200
+
+yaz (2.1.27-1) unstable; urgency=low
+
+  * Upstream.
+
+ -- Adam Dickmeiss <adam@indexdata.dk>  Thu, 17 Aug 2006 00:48:40 +0200
+
+yaz (2.1.26-1) unstable; urgency=low
+
+  * Upstream.
+
+ -- Adam Dickmeiss <adam@indexdata.dk>  Tue, 15 Aug 2006 15:18:26 +0200
+
+yaz (2.1.24-1) unstable; urgency=low
+
+  * Upstream.
+
+ -- Adam Dickmeiss <adam@indexdata.dk>  Tue,  8 Aug 2006 10:32:04 +0200
+
+yaz (2.1.23-2) unstable; urgency=low
+
+  * Second attempt to fix bug #612.
+
+ -- Adam Dickmeiss <adam@flurry.index>  Fri, 16 Jun 2006 14:30:56 +0200
+
+yaz (2.1.23-1) unstable; urgency=low
+
+  * Internal build to work with bug #612.
+
+ -- Adam Dickmeiss <adam@flurry.index>  Fri, 16 Jun 2006 12:07:10 +0200
+
+yaz (2.1.22-1) unstable; urgency=low
+
+  * Upstream.
+
+ -- Adam Dickmeiss <adam@indexdata.dk>  Thu, 15 Jun 2006 15:35:17 +0200
+
+yaz (2.1.20-1) unstable; urgency=low
+
+  * Upstream.
+
+ -- Adam Dickmeiss <adam@indexdata.dk>  Fri,  2 Jun 2006 15:16:22 +0200
+
+yaz (2.1.19-1) unstable; urgency=low
+
+  * Upstream
+  * added yaz_filepath_resolve(...) to API
+  * API version 2.1.17.
+
+ -- Marc Cromme <marc@indexdata.dk>  Thu, 27 Apr 2006 21:56:29 +0200
+
+yaz (2.1.18-1) unstable; urgency=low
+
+  * Moved yaz.7 from libyaz to libyaz-dev.
+  * Moved man page lists to .manpages files.
+  * Added common directory to be part of yaz-doc
+  * API version 2.1.17.
+
+ -- Marc Cromme <marc@indexdata.dk>  Thu, 20 Apr 2006 10:43:56 +0200
+
+yaz (2.1.17-1) unstable; urgency=low
+
+  * Upstream.
+
+ -- Marc Cromme <marc@indexdata.dk>  Thu, 20 Apr 2006 10:03:06 +0200
+
+yaz (2.1.16-1) unstable; urgency=low
+
+  * Upstream.
+
+ -- Adam Dickmeiss <adam@indexdata.dk>  Fri, 31 Mar 2006 14:44:12 +0200
+
+yaz (2.1.15-1) unstable; urgency=low
+
+  * Upstream.
+
+ -- Adam Dickmeiss <adam@indexdata.dk>  Thu, 16 Mar 2006 09:34:01 +0100
+
+yaz (2.1.14-1) unstable; urgency=low
+
+  * Upstream.
+
+ -- Adam Dickmeiss <adam@indexdata.dk>  Tue, 14 Mar 2006 10:01:57 +0100
+
+yaz (2.1.12-1) unstable; urgency=low
+
+  * Upstream.
+
+ -- Adam Dickmeiss <adam@indexdata.dk>  Wed,  1 Feb 2006 21:07:50 +0100
+
+yaz (2.1.10-2) unstable; urgency=low
+
+  * updated number for new release cycle
+
+ -- Marc Cromme <marc@indexdata.dk>  Fri, 09 Dec 2005 11:43:10 +0100
+
+yaz (2.1.10-1) unstable; urgency=low
+
+  * Upstream.
+
+ -- Adam Dickmeiss <adam@indexdata.dk>  Tue, 29 Nov 2005 21:17:15 +0100
+
+yaz (2.1.9-2) unstable; urgency=low
+
+  * Removed /usr/share/yaz/etc from libyaz. All /usr/share/yaz content is
+    now part of libyaz-dev.
+
+ -- Adam Dickmeiss <adam@indexdata.dk>  Wed, 10 Aug 2005 10:28:39 +0200
+
+yaz (2.1.9-1) unstable; urgency=low
+
+  * Upstream updated number for new development version
+
+ -- Marc Cromme <marc@indexdata.dk>  Mon, 18 Jul 2005 11:52:09 +0200
+
+yaz (2.1.8-1) unstable; urgency=low
+
+  * Upstream.
+
+ -- Adam Dickmeiss <adam@indexdata.dk>  Tue,  7 Jun 2005 21:28:19 +0200
+
+yaz (2.1.7-1) unstable; urgency=low
+
+  * Internal package for testing.
+
+ -- Adam Dickmeiss <adam@indexdata.dk>  Mon,  6 Jun 2005 12:36:35 +0200
+
+yaz (2.1.6-1) unstable; urgency=low
+
+  * Upstream.
+
+ -- Adam Dickmeiss <adam@indexdata.dk>  Tue, 24 May 2005 14:12:36 +0200
+
+yaz (2.1.4-1) unstable; urgency=low
+
+  * Upstream.
+
+ -- Adam Dickmeiss <adam@indexdata.dk>  Tue, 26 Apr 2005 20:39:54 +0200
+
+yaz (2.1.2-1) unstable; urgency=low
+
+  * Upstream.
+
+ -- Adam Dickmeiss <adam@indexdata.dk>  Wed, 16 Mar 2005 22:29:43 +0100
+
+yaz (2.1.0-1) unstable; urgency=low
+
+  * Upstream.
+
+ -- Adam Dickmeiss <adam@indexdata.dk>  Mon, 14 Mar 2005 13:46:27 +0100
+
+yaz (2.0.34-2) unstable; urgency=low
+
+  * Fix tests and man page description for yaz-marcdump.
+
+ -- Adam Dickmeiss <adam@indexdata.dk>  Wed,  9 Feb 2005 13:40:20 +0100
+
+yaz (2.0.34-1) unstable; urgency=low
+
+  * Upstream.
+
+ -- Adam Dickmeiss <adam@indexdata.dk>  Tue,  8 Feb 2005 15:18:31 +0100
+
+yaz (2.0.32-1) unstable; urgency=low
+
+  * Upstream.
+
+ -- Adam Dickmeiss <adam@indexdata.dk>  Tue, 11 Jan 2005 13:09:29 +0100
+
+yaz (2.0.30-1) unstable; urgency=low
+
+  * Upstream.
+
+ -- Adam Dickmeiss <adam@indexdata.dk>  Tue,  4 Jan 2005 09:33:20 +0100
+
+yaz (2.0.28-1) unstable; urgency=low
+
+  * Upstream.
+
+ -- Adam Dickmeiss <adam@indexdata.dk>  Tue,  9 Nov 2004 21:34:03 +0100
+
+yaz (2.0.26-2) unstable; urgency=low
+
+  * Testing.
+
+ -- Adam Dickmeiss <adam@indexdata.dk>  Mon, 11 Oct 2004 00:20:29 +0200
+
+yaz (2.0.26-1) unstable; urgency=low
+
+  * Upstream.
+
+ -- Adam Dickmeiss <adam@indexdata.dk>  Fri,  1 Oct 2004 14:31:47 +0200
+
+yaz (2.0.25-1) unstable; urgency=low
+
+  * Upstream.
+
+ -- Adam Dickmeiss <adam@indexdata.dk>  Thu, 30 Sep 2004 13:20:47 +0200
+
+yaz (2.0.24-1) unstable; urgency=low
+
+  * Upstream.
+
+ -- Adam Dickmeiss <adam@indexdata.dk>  Wed, 29 Sep 2004 22:41:47 +0200
+
+yaz (2.0.23-3) unstable; urgency=low
+
+  * Added ccl_qual_buf.
+
+ -- Adam Dickmeiss <adam@indexdata.dk>  Wed, 22 Sep 2004 15:57:01 +0200
+
+yaz (2.0.23-2) unstable; urgency=low
+
+  * Fix bug regarding HTTP GET.
+
+ -- Adam Dickmeiss <adam@indexdata.dk>  Wed, 22 Sep 2004 11:29:53 +0200
+
+yaz (2.0.23-1) unstable; urgency=low
+
+  * Upstream.
+
+ -- Adam Dickmeiss <adam@indexdata.dk>  Wed, 11 Aug 2004 11:04:42 +0200
+
+yaz (2.0.22-1) unstable; urgency=low
+
+  * Upstream.
+
+ -- Adam Dickmeiss <adam@indexdata.dk>  Fri,  6 Aug 2004 10:29:27 +0200
+
+yaz (2.0.21-1) unstable; urgency=low
+
+  * Upstream.
+
+ -- Adam Dickmeiss <adam@indexdata.dk>  Fri, 14 May 2004 10:18:22 +0200
+
+yaz (2.0.20-1) unstable; urgency=low
+
+  * Upstream.
+
+ -- Adam Dickmeiss <adam@indexdata.dk>  Mon, 10 May 2004 13:23:35 +0200
+
+yaz (2.0.19-2) unstable; urgency=low
+
+  * Upstream.
+
+ -- Adam Dickmeiss <adam@indexdata.dk>  Mon, 29 Mar 2004 22:12:15 +0200
+
+yaz (2.0.18-1) unstable; urgency=low
+
+  * Upstream.
+
+ -- Adam Dickmeiss <adam@indexdata.dk>  Sat, 20 Mar 2004 08:00:23 +0100
+
+yaz (2.0.17-1) unstable; urgency=low
+
+  * Upstream.
+
+ -- Adam Dickmeiss <adam@indexdata.dk>  Wed, 17 Mar 2004 19:44:51 +0100
+
+yaz (2.0.16-1) unstable; urgency=low
+
+  * Character set conversion fixes, MARC-8.
+
+ -- Adam Dickmeiss <adam@indexdata.dk>  Tue, 16 Mar 2004 14:27:01 +0100
+
+yaz (2.0.15-1) unstable; urgency=low
+
+  * Upstream.
+
+ -- Adam Dickmeiss <adam@indexdata.dk>  Mon,  1 Mar 2004 17:58:23 +0100
+
+yaz (2.0.14-1) unstable; urgency=low
+
+  * Upstream.
+
+ -- Adam Dickmeiss <adam@indexdata.dk>  Wed, 25 Feb 2004 13:58:34 +0100
+
+yaz (2.0.13-2) unstable; urgency=low
+
+  * API version 2.0.13. Fix NS for diagnostic elements.
+
+ -- Adam Dickmeiss <adam@indexdata.dk>  Wed, 25 Feb 2004 09:46:37 +0100
+
+yaz (2.0.13-1) unstable; urgency=low
+
+  * Upstream.
+
+ -- Adam Dickmeiss <adam@indexdata.dk>  Mon, 23 Feb 2004 10:29:01 +0100
+
+yaz (2.0.12-1) unstable; urgency=low
+
+  * Upstream.
+
+ -- Adam Dickmeiss <adam@indexdata.dk>  Mon, 16 Feb 2004 18:52:25 +0100
+
+yaz (2.0.11-1) unstable; urgency=low
+
+  * Upstream.
+
+ -- Adam Dickmeiss <adam@indexdata.dk>  Mon, 16 Feb 2004 12:30:20 +0100
+
+yaz (2.0.10-1) unstable; urgency=low
+
+  * Update Debian rules to newer policy.
+
+ -- Adam Dickmeiss <adam@indexdata.dk>  Mon,  9 Feb 2004 10:59:20 +0100
+
+yaz (2.0.9-6) unstable; urgency=low
+
+  * Make the SRU server more picky WRT unknown params, etc.
+
+ -- Adam Dickmeiss <adam@indexdata.dk>  Mon, 12 Jan 2004 14:16:42 +0100
+
+yaz (2.0.9-5) unstable; urgency=low
+
+  * Add SRW/SRU stylesheet support.
+
+ -- Adam Dickmeiss <adam@indexdata.dk>  Wed,  7 Jan 2004 22:42:39 +0100
+
+yaz (2.0.9-4) unstable; urgency=low
+
+  * Fix HTTP decode: Content-Length case insensitive.
+
+ -- Adam Dickmeiss <adam@indexdata.dk>  Tue,  6 Jan 2004 14:35:37 +0100
+
+yaz (2.0.9-3) unstable; urgency=low
+
+  * Upstream.
+
+ -- Adam Dickmeiss <adam@indexdata.dk>  Tue,  6 Jan 2004 14:35:37 +0100
+
+yaz (2.0.9-2) unstable; urgency=low
+
+  * Upstream.
+
+ -- Adam Dickmeiss <adam@indexdata.dk>  Mon,  5 Jan 2004 15:46:06 +0100
+
+yaz (2.0.9-1) unstable; urgency=low
+
+  * Upstream.
+
+ -- Adam Dickmeiss <adam@indexdata.dk>  Mon,  5 Jan 2004 10:32:40 +0100
+
+yaz (2.0.8-1) unstable; urgency=low
+
+  * Upstream.
+
+ -- Adam Dickmeiss <adam@indexdata.dk>  Mon, 22 Dec 2003 15:25:06 +0100
+
+yaz (2.0.7-1) unstable; urgency=low
+
+  * Upstream.
+
+ -- Adam Dickmeiss <adam@indexdata.dk>  Tue, 16 Dec 2003 15:46:11 +0100
+
+yaz (2.0.6-1) unstable; urgency=low
+
+  * Official 2.0.6
+
+ -- Adam Dickmeiss <adam@indexdata.dk>  Thu,  4 Dec 2003 14:17:02 +0100
+
+yaz (2.0.5-4) unstable; urgency=low
+
+  * HTML Documentation uses CSS.
+
+ -- Adam Dickmeiss <adam@indexdata.dk>  Mon, 17 Nov 2003 23:35:22 +0100
+
+yaz (2.0.5-3) unstable; urgency=low
+
+  * Source restructure. yaz-marcump man page.
+
+ -- Adam Dickmeiss <adam@indexdata.dk>  Mon, 27 Oct 2003 13:30:34 +0100
+
+yaz (2.0.5-2) unstable; urgency=low
+
+  * Compress man pages.
+
+ -- Adam Dickmeiss <adam@indexdata.dk>  Thu, 16 Oct 2003 10:28:37 +0200
+
+yaz (2.0.5-1) unstable; urgency=low
+
+  * Upstream.
+
+ -- Adam Dickmeiss <adam@indexdata.dk>  Mon, 13 Oct 2003 23:22:06 +0200
+
+yaz (2.0.4-2) unstable; urgency=low
+
+  * Reinstate THESAURUS since Elvil (better named 'evil') uses it.
+
+ -- Adam Dickmeiss <adam@indexdata.dk>  Thu, 11 Sep 2003 14:43:15 +0200
+
+yaz (2.0.4-1) unstable; urgency=low
+
+  * Upstream.
+
+ -- Adam Dickmeiss <adam@indexdata.dk>  Thu,  4 Sep 2003 20:16:16 +0200
+
+yaz (2.0.3-7) unstable; urgency=low
+
+  * Use smallSetUpperBound=1 for ZOOM piggyback searches.
+
+ -- Adam Dickmeiss <adam@indexdata.dk>  Tue, 19 Aug 2003 14:31:23 +0200
+
+yaz (2.0.3-6) unstable; urgency=low
+
+  * Yet one more OPAC fix.
+
+ -- Adam Dickmeiss <adam@indexdata.dk>  Wed, 30 Jul 2003 13:39:16 +0200
+
+yaz (2.0.3-5) unstable; urgency=low
+
+  * OPAC record fixes.
+
+ -- Adam Dickmeiss <adam@indexdata.dk>  Wed, 30 Jul 2003 10:56:34 +0200
+
+yaz (2.0.3-4) unstable; urgency=low
+
+  * More ZOOM logging.
+
+ -- Adam Dickmeiss <adam@indexdata.dk>  Tue, 22 Jul 2003 15:04:04 +0200
+
+yaz (2.0.3-3) unstable; urgency=low
+
+  * Fix CCL->RPN code for attribute strings.
+
+ -- Adam Dickmeiss <adam@indexdata.dk>  Mon, 23 Jun 2003 14:41:49 +0200
+
+yaz (2.0.3-2) unstable; urgency=low
+
+  * String attributes for CCL parser.
+
+ -- Adam Dickmeiss <adam@indexdata.dk>  Mon, 23 Jun 2003 12:23:12 +0200
+
+yaz (2.0.3-1) unstable; urgency=low
+
+  * Upstream.
+
+ -- Adam Dickmeiss <adam@indexdata.dk>  Fri, 20 Jun 2003 13:14:02 +0200
+
+yaz (2.0.2-3) unstable; urgency=low
+
+  * SRW support for YAZ client.
+  * Minor updates to documenation Makefiles.
+  * Man page yaz-comp.1.
+
+ -- Adam Dickmeiss <adam@indexdata.dk>  Tue, 27 May 2003 15:50:53 +0200
+
+yaz (2.0.2-2) unstable; urgency=low
+
+  * yaz.7 moved from yaz to libyaz.
+  * Fix last event setting.
+
+ -- Adam Dickmeiss <adam@indexdata.dk>  Wed, 14 May 2003 22:56:32 +0100
+
+yaz (2.0.2-1) unstable; urgency=low
+
+  * Upstream.
+
+ -- Adam Dickmeiss <adam@indexdata.dk>  Tue, 29 Apr 2003 11:54:24 +0100
+
+yaz (2.0.1-2) unstable; urgency=low
+
+  * Event extensions.
+
+ -- Adam Dickmeiss <adam@indexdata.dk>  Mon, 28 Apr 2003 12:22:50 +0100
+
+yaz (2.0.1-1) unstable; urgency=low
+
+  * Upstream.
+
+ -- Adam Dickmeiss <adam@indexdata.dk>  Thu, 24 Apr 2003 22:35:57 +0100
+
+yaz (2.0-2) unstable; urgency=low
+
+  * Use an older version of libxml2 (2.4.19-4)
+
+ -- Adam Dickmeiss <adam@indexdata.dk>  Mon, 24 Feb 2003 15:05:44 +0100
+
+yaz (2.0-1) unstable; urgency=low
+
+  * Upstream.
+
+ -- Adam Dickmeiss <adam@indexdata.dk>  Sun, 23 Feb 2003 22:38:58 +0100
+
+yaz (1.9.2-2) unstable; urgency=low
+
+  * Fix element set for piggyback in ZOOM.
+
+ -- Adam Dickmeiss <adam@indexdata.dk>  Fri, 24 Jan 2003 13:15:55 +0100
+
+yaz (1.9.2-1) unstable; urgency=low
+
+  * Upstream release.
+
+ -- Adam Dickmeiss <adam@indexdata.dk>  Tue, 26 Nov 2002 14:44:52 +0100
+
+yaz (1.9.1-5) unstable; urgency=low
+
+  * GRS-1 render for ZOOM. data1 moved to zebra.
+
+ -- Adam Dickmeiss <adam@indexdata.dk>  Thu, 24 Oct 2002  9:54:29 +0100
+
+yaz (1.9.1-4) unstable; urgency=low
+
+  * fix interpretation of dash in CCL queries (and-lists).
+
+ -- Adam Dickmeiss <adam@indexdata.dk>  Wed, 15 Oct 2002 10:41:03 +0100
+
+yaz (1.9.1-3) unstable; urgency=low
+
+  * don't let grs.sgml interpret &-entities.
+
+ -- Adam Dickmeiss <adam@indexdata.dk>  Wed,  9 Oct 2002 22:38:03 +0100
+
+yaz (1.9.1-2) unstable; urgency=low
+
+  * official release.
+
+ -- Adam Dickmeiss <adam@indexdata.dk>  Fri,  4 Oct 2002 20:25:51 +0100
+
+yaz (1.9.1-1) unstable; urgency=low
+
+  * New upstream version
+
+ -- Adam Dickmeiss <adam@indexdata.dk>  Thu, 20 Sep 2002 12:23:33 +0100
+
+yaz (1.9-1) unstable; urgency=low
+
+  * New upstream version
+
+ -- Adam Dickmeiss <adam@indexdata.dk>  Thu,  6 Sep 2002 15:05:16 +0100
+
+yaz (1.8.9-1) unstable; urgency=low
+
+  * New upstream version
+
+ -- Adam Dickmeiss <adam@indexdata.dk>  Fri, 20 Aug 2002 02:02:21 +0100
+
+yaz (1.8.8-1) unstable; urgency=low
+
+  * New upstream version
+
+ -- Adam Dickmeiss <adam@indexdata.dk>  Fri, 02 Aug 2002 11:09:10 +0100
+
+yaz (1.8.7-1) unstable; urgency=low
+
+  * New upstream version
+
+ -- Adam Dickmeiss <adam@indexdata.dk>  Wed, 22 May 2002 13:33:37 +0100
+
+yaz (1.8.6-1) unstable; urgency=low
+
+  * Package yaz-ssl instead of yaz-runtime-ssl.
+
+ -- Adam Dickmeiss <adam@indexdata.dk>  Sat, 23 Mar 2002 02:39:07 +0100
+
+yaz (1.8.6-1MGH) unstable; urgency=low
+
+  * New upstrean release
+  * Heavy debian/rules modification adds yazrelease target for conveniency
+  * Not lintian clean yet. (only warnings left)
+
+ -- Morten Garkier Hendriksen <mgh@dbc.dk>  Mon, 18 Mar 2002 21:46:59 +0100
+
+yaz (1.8.5-1MGH) unstable; urgency=low
+
+  * New upstream version
+
+ -- Morten Garkier Hendriksen <mgh@dbc.dk>  Fri, 15 Feb 2002 13:01:15 +0100
+
+yaz (1.8.4-1MGH) unstable; urgency=low
+
+  * Modified build scripts
+
+ -- Morten Garkier Hendriksen <mgh@dbc.dk>  Sat, 24 Nov 2001 16:09:25 +0100
+
+yaz (1.8.4-1) unstable; urgency=low
+
+  * new YAZ version.
+
+ -- Adam Dickmeiss <adam@indexdata.dk>  Fri,  4 Jan 2002 00:10:00 +0200
+
+yaz (1.7-CVS20010925) unstable; urgency=low
+
+  * control generated from control.templ before dh_testdir is run
+
+ -- Adam Dickmeiss <adam@indexdata.dk>  Wed, 26 Sep 2001 09:27:58 +0200
+
+yaz (1.7-CVS20010507) unstable; urgency=low
+
+  * New upstream
+
+ -- Morten Garkier Hendriksen <mgh@dbc.dk>  Mon,  7 May 2001 15:41:54 +0200
+
+yaz (1.7-1) unstable; urgency=low
+
+  * First debian package
+
+ -- Morten Garkier Hendriksen <mgh@dbc.dk>  Sat, 27 Jan 2001 19:09:57 +0100
+

@@ -1,0 +1,35 @@
+<?xml version="1.0"?>
+<!-- 
+  $Id: maps.xml,v 1.1 2003/01/06 08:20:27 adam Exp $
+  XSLT for each schema conversion.
+-->
+<schema-mappings xmlns="http://indexdata.dk/srw/schema-mappings/v1.0/">
+ <map>
+   <schema source="MARC21"/>
+   <schema target="http://www.loc.gov/marcxml/"/>
+ </map>
+ <map>
+   <schema source="MARC21"/>
+   <schema target="http://www.loc.gov/MARC21/slim"/>
+ </map>
+ <map>
+   <schema source="MARC21"/>
+   <schema target="http://www.loc.gov/zing/srw/dcschema/v1.0/"/>
+   <schema alias="dc"/>
+   <schema alias="DC"/>
+   <stylesheet filename="MARC21slim2DC.xsl"/>
+ </map>
+ <map>
+   <schema source="MARC21"/>
+   <schema target="rdfdc"/>
+   <schema alias="RDFDC"/>
+   <stylesheet filename="MARC21slim2RDFDC.xsl"/>
+ </map>
+ <map>
+   <schema source="MARC21"/>
+   <schema target="http://www.loc.gov/mods/"/>
+   <schema alias="mods"/>
+   <schema alias="MODS"/>
+   <stylesheet filename="MARC21slim2MODS.xsl"/>
+ </map>
+</schema-mappings>

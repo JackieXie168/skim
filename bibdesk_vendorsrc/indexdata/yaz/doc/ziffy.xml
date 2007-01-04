@@ -1,0 +1,56 @@
+<!-- $Id: ziffy.xml,v 1.2 2006/12/13 14:18:03 adam Exp $ -->
+ <chapter id="ziffy"><title>ziffy</title>
+  <sect1 id="ziffy.introduction"><title>Introduction</title>
+   <para>
+    ziffy is a promiscuous Z39.50 APDU sniffer, like the popular tcpdump.
+    ziffy can capture and show all Z39.50 traffic on your LAN segment.
+   </para>
+   <para>
+    ziffy is copyright Rocco Carbone and is covered by the GPL. ziffy
+    uses <ulink url="&url.libpcap;">libpcap</ulink> to capture the packages
+    and is part of YAZ 2.1.42 or later.
+    Source and documentation for the ziffy utility is part of the sub
+    directory <filename>ziffy</filename> in the YAZ source package.
+   </para>
+   <para>
+    The ziffy software is also a standalone piece of software and
+    can be obtained separately. The ziffy as part of YAZ, uses
+    YAZ for decoding Z39.50 packages. The standalone version can
+    use different decoders (SNACC and X/ASN.1)
+   </para>
+  </sect1>
+  <sect1 id="ziffy.using"><title>Using Ziffy</title>
+   <para>
+    ziffy must be executed with root priviledge.
+   </para>
+   <example id="starting-ziffy">
+    <title>Starting ziffy from the command line</title>
+    <para>
+     In the command below ziffy is started and dumps all Z39.50 traffic
+     on ethernet device <literal>eth0</literal>
+    </para>
+    <screen>
+     # ziffy -i eth0
+    </screen>
+   </example>
+   <para>
+    For more information about ziffy refer to the man page ziffy(1) and
+    the material in sub directory <filename>ziffy</filename>.
+   </para>
+  </sect1>
+ </chapter>
+ 
+ <!-- Keep this comment at the end of the file
+ Local variables:
+ mode: sgml
+ sgml-omittag:t
+ sgml-shorttag:t
+ sgml-minimize-attributes:nil
+ sgml-always-quote-attributes:t
+ sgml-indent-step:1
+ sgml-indent-data:t
+ sgml-parent-document: "yaz.xml"
+ sgml-local-catalogs: nil
+ sgml-namecase-general:t
+ End:
+ -->

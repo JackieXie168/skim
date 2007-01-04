@@ -1,0 +1,23 @@
+<triple>
+  <boolean>
+    <value>and</value>
+  </boolean>
+  <leftOperand>
+    <searchClause>
+      <index>bath.uniformTitle</index>
+      <relation>
+        <value>any</value>
+      </relation>
+      <term>fish</term>
+    </searchClause>
+  </leftOperand>
+  <rightOperand>
+    <searchClause>
+      <index>dc.title</index>
+      <relation>
+        <value>any</value>
+      </relation>
+      <term>cat dog</term>
+    </searchClause>
+  </rightOperand>
+</triple>

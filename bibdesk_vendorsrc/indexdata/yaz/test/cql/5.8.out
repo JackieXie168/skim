@@ -1,0 +1,30 @@
+<triple>
+  <boolean>
+    <value>and</value>
+    <modifiers>
+      <modifier>
+        <type>rel.algorithm</type>
+        <relation>=</relation>
+        <value>CORI</value>
+      </modifier>
+    </modifiers>
+  </boolean>
+  <leftOperand>
+    <searchClause>
+      <index>cql.serverChoice</index>
+      <relation>
+        <value>scr</value>
+      </relation>
+      <term>a</term>
+    </searchClause>
+  </leftOperand>
+  <rightOperand>
+    <searchClause>
+      <index>cql.serverChoice</index>
+      <relation>
+        <value>scr</value>
+      </relation>
+      <term>b</term>
+    </searchClause>
+  </rightOperand>
+</triple>

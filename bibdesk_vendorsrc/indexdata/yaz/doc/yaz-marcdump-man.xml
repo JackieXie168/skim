@@ -1,0 +1,176 @@
+<!DOCTYPE refentry PUBLIC "-//OASIS//DTD DocBook V4.1//EN"
+ "http://www.oasis-open.org/docbook/xml/4.1/docbookx.dtd"
+[
+     <!ENTITY % local SYSTEM "local.ent">
+     %local;
+     <!ENTITY % entities SYSTEM "entities.ent">
+     %entities;
+     <!ENTITY % common SYSTEM "common/common.ent">
+     %common;
+]>
+<!-- $Id: yaz-marcdump-man.xml,v 1.13 2006/12/15 19:28:46 adam Exp $ -->
+<refentry id="yaz-marcdump">
+ <refentryinfo>
+  <productname>YAZ</productname>
+  <productnumber>&version;</productnumber>
+ </refentryinfo>
+ <refmeta>
+  <refentrytitle>yaz-marcdump</refentrytitle>
+  <manvolnum>1</manvolnum>
+ </refmeta>
+ 
+ <refnamediv>
+  <refname>yaz-marcdump</refname>
+  <refpurpose>MARC record dump utility</refpurpose>
+ </refnamediv>
+ 
+ <refsynopsisdiv>
+  <cmdsynopsis>
+   <command>yaz-marcdump</command>
+   <arg choice="opt"><option>-i <replaceable>format</replaceable></option></arg>
+   <arg choice="opt"><option>-o <replaceable>format</replaceable></option></arg>
+   <arg choice="opt"><option>-f <replaceable>from</replaceable></option></arg>
+   <arg choice="opt"><option>-t <replaceable>to</replaceable></option></arg>
+   <arg choice="opt"><option>-l <replaceable>spec</replaceable></option></arg>
+   <arg choice="opt"><option>-v</option></arg>
+   <arg choice="opt"><option>-c <replaceable>cfile</replaceable></option></arg>
+   <arg choice="opt" rep="repeat">file</arg>
+  </cmdsynopsis>
+ </refsynopsisdiv>
+ 
+ <refsect1><title>DESCRIPTION</title>
+  <para>
+   <command>yaz-marcdump</command> reads MARC records from one or
+   more files.
+   It parses each record and supports output in line-format, 
+   ISO2709, MARCXML, MarcXchange as well as Hex output.
+  </para>
+  <para>
+   This utility parses records ISO2709(raw MARC) as well as XML
+   if that is structured as MARCXML/MarcXchange.
+  </para>
+  <note>
+   <para>
+    As of YAZ 2.1.18, OAI-MARC is no longer supported.
+    OAI-MARC is deprecated. Use MARCXML instead.
+   </para>
+  </note>
+  <para>
+   By default, each record is written to standard output in a line
+   format with newline for each field, $x for each subfield x.
+   The output format may be changed with option <literal>-o</literal>,
+  </para>
+  <para>
+   <command>yaz-marcdump</command> can also be requested to perform
+   character set conversion of each record.
+  </para>
+ </refsect1>
+ 
+ <refsect1><title>OPTIONS</title>
+  
+  <variablelist>
+   <varlistentry>
+    <term>-i <replaceable>format</replaceable></term>
+    <listitem><para>
+      Specifies input format. Must be one of
+      <literal>marcxml</literal>, <literal>marc</literal> (ISO2709),
+      <literal>line</literal> (line mode MARC).
+     </para></listitem>
+   </varlistentry>
+
+   <varlistentry>
+    <term>-o <replaceable>format</replaceable></term>
+    <listitem><para>
+      Specifies output format. Must be one of
+      <literal>marcxml</literal>, <literal>marc</literal> (ISO2709),
+      <literal>line</literal> (line mode MARC).
+     </para></listitem>
+   </varlistentry>
+
+   <varlistentry>
+    <term>-f <replaceable>from</replaceable></term>
+    <listitem><para>
+      Specify the character set <replaceable>from</replaceable>
+      of the input MARC record.
+      Should be used in conjunction with option <literal>-t</literal>.
+     </para></listitem>
+   </varlistentry>
+
+   <varlistentry>
+    <term>-t <replaceable>to</replaceable></term>
+    <listitem><para>
+      Specify the character set <replaceable>of</replaceable>
+      of the output.
+      Should be used in conjunction with option <literal>-f</literal>.
+     </para></listitem>
+   </varlistentry>
+
+   <varlistentry>
+    <term>-l <replaceable>leaderspec</replaceable></term>
+    <listitem><para>
+      Specify a simple modification string for MARC leader. The
+      <replaceable>leaderspec</replaceable> is a list of pos=value
+      pairs, where pos is an integer offset (0 - 23) for leader. Value
+      is either a quoted string or an integer (character value in decimal).
+      Pairs are comma separated. For example, to set leader at offset 9
+      to a, use <literal>9=a</literal>.
+     </para></listitem>
+   </varlistentry>
+
+   <varlistentry>
+    <term>-v</term>
+    <listitem><para>
+      Writes more information about the parsing process.
+      Useful if you have ill-formatted ISO2709 records as input.
+     </para></listitem>
+   </varlistentry>
+
+  </variablelist>
+ </refsect1>
+
+ <refsect1><title>EXAMPLES</title>
+  <para>
+   The following command converts MARC21/USMARC in MARC-8 encoding to
+   MARC21/USMARC in UTF-8 encoding. Leader offset 9 is set to 'a'.
+   Both input and output records are ISO2709 encoded.
+   <screen>
+    yaz-marcdump -f MARC-8 -t UTF-8 -o marc -l 9=97 marc21.raw >marc21.utf8.raw
+   </screen>
+  </para>
+  <para>
+   The same records may be converted to MARCXML instead in UTF-8:
+   <screen>
+    yaz-marcdump -f MARC-8 -t UTF-8 -o marcxml marc21.raw >marcxml.xml
+   </screen>
+  </para>
+ </refsect1> 
+
+ <refsect1><title>FILES</title>
+  <para>
+   <filename><replaceable>prefix</replaceable>/bin/yaz-marcdump</filename>
+  </para>
+  <para>
+   <filename><replaceable>prefix</replaceable>/include/yaz/marcdisp.h</filename>
+  </para>
+  </refsect1>
+ <refsect1><title>SEE ALSO</title>
+  <para>
+   yaz(7)
+  </para>
+ </refsect1>
+</refentry>
+
+<!-- Keep this comment at the end of the file
+Local variables:
+mode: sgml
+sgml-omittag:t
+sgml-shorttag:t
+sgml-minimize-attributes:nil
+sgml-always-quote-attributes:t
+sgml-indent-step:1
+sgml-indent-data:t
+sgml-parent-document:nil
+sgml-local-catalogs: nil
+sgml-namecase-general:t
+End:
+-->

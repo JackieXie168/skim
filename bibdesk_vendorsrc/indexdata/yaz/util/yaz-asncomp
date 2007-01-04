@@ -1,0 +1,1407 @@
+#!/bin/sh
+# the next line restarts using tclsh \
+if [ -f /usr/local/bin/tclsh8.4 ]; then exec tclsh8.4 "$0" "$@"; else exec tclsh "$0" "$@"; fi
+#
+# yaz-comp: ASN.1 Compiler for YAZ
+# (c) Index Data 1996-2004
+# See the file LICENSE for details.
+#
+# $Id: yaz-asncomp,v 1.7 2006/05/22 19:08:38 adam Exp $
+#
+
+set yc_version 0.4
+
+# Syntax for the ASN.1 supported:
+# file   -> file module
+#         | module
+# module -> name skip DEFINITIONS ::= mbody END
+# mbody  -> EXPORTS { nlist }
+#         | IMPORTS { imlist }
+#         | name ::= tmt
+#         | skip
+# tmt    -> tag mod type
+# type   -> SEQUENCE { sqlist }
+#         | SEQUENCE OF type
+#         | CHOICE { chlist }
+#         | basic enlist
+#
+# basic  -> INTEGER
+#         | BOOLEAN
+#         | OCTET STRING
+#         | BIT STRING
+#         | EXTERNAL
+#         | name
+# sqlist -> sqlist , name tmt opt
+#         | name tmt opt
+# chlist -> chlist , name tmt 
+#         | name tmt 
+# enlist -> enlist , name (n)
+#         | name (n)
+# imlist -> nlist FROM name
+#           imlist nlist FROM name
+# nlist  -> name
+#         | nlist , name
+# mod   -> IMPLICIT | EXPLICIT | e
+# tag   -> [tagtype n] | [n] | e
+# opt   -> OPTIONAL | e
+#
+# name    identifier/token 
+# e       epsilon/empty 
+# skip    one token skipped
+# n       number
+# tagtype APPLICATION, CONTEXT, etc.
+
+# lex: moves input file pointer and returns type of token.
+# The globals $type and $val are set. $val holds name if token
+# is normal identifier name.
+# sets global var type to one of:
+#     {}     eof-of-file
+#     \{     left curly brace 
+#     \}     right curly brace
+#     ,      comma
+#     ;      semicolon
+#     (      (n)
+#     [      [n]
+#     :      ::=
+#     n      other token n
+proc lex {} {
+    global inf val type
+    while {![string length $inf(str)]} {
+        incr inf(lineno)
+        set inf(cnt) [gets $inf(inf) inf(str)]
+        if {$inf(cnt) < 0} {
+            set type {}
+            return {}
+        }
+	lappend inf(asn,$inf(asndef)) $inf(str)
+        set l [string first -- $inf(str)]
+        if {$l >= 0} {
+            incr l -1
+            set inf(str) [string range $inf(str) 0 $l]
+        }
+        set inf(str) [string trim $inf(str)]
+    }
+    set s [string index $inf(str) 0]
+    set type $s
+    set val {}
+    switch -- $s {
+        \{ { }
+        \} { }
+        ,  { }
+        ;  { }
+	\(  { }
+	\)  { }
+        \[ { regexp {^\[[ ]*(.+)[ ]*\]} $inf(str) s val }
+        :  { regexp {^::=} $inf(str) s }
+        default {
+             regexp "^\[^,\t :\{\}();\]+" $inf(str) s
+             set type n
+             set val $s
+           }
+    }
+    set off [string length $s]
+    set inf(str) [string trim [string range $inf(str) $off end]]
+    return $type
+}
+
+# lex-expect: move pointer and expect token $t
+proc lex-expect {t} {
+    global type val
+    lex
+    if {[string compare $t $type]} {
+        asnError "Got $type '$val', expected $t"
+    }
+}
+
+# lex-name-move: see if token is $name; moves pointer and returns
+# 1 if it is; returns 0 otherwise.
+proc lex-name-move {name} {
+    global type val
+    if {![string compare $type n] && ![string compare $val $name]} {
+        lex
+        return 1
+    }
+    return 0
+}
+
+# asnError: Report error and die
+proc asnError {msg} {
+    global inf
+   
+    puts "Error in line $inf(lineno) in module $inf(module)"
+    puts " $msg"
+    error
+    exit 1
+}
+
+# asnWarning: Report warning and return
+proc asnWarning {msg} {
+    global inf
+   
+    puts "Warning in line $inf(lineno) in module $inf(module)"
+    puts " $msg"
+}
+
+# asnEnum: parses enumerated list - { name1 (n), name2 (n), ... }
+# Uses $name as prefix. If there really is a list, $lx holds the C
+# preprocessor definitions on return; otherwise lx isn't set.
+proc asnEnum {name lx} {
+    global type val inf
+
+    if {[string compare $type \{]} return
+    upvar $lx l
+    while {1} {
+	set pq [asnName $name]
+        set id [lindex $pq 0]
+	set id ${name}_$id
+	lex-expect n
+        lappend l "#define $inf(dprefix)$id $val"
+	lex-expect ")"
+        lex
+        if {[string compare $type ,]} break
+    }
+    if {[string compare $type \}]} {
+        asnError "Missing \} in enum list got $type '$val'"
+    }
+    lex
+}
+
+# asnMod: parses tag and modifier.
+# $xtag and $ximplicit holds tag and implicit-indication on return.
+# $xtag is empty if no tag was specified. $ximplicit is 1 on implicit
+# tagging; 0 otherwise.
+proc asnMod {xtag ximplicit xtagtype} {
+    global type val inf
+
+    upvar $xtag tag
+    upvar $ximplicit implicit
+    upvar $xtagtype tagtype
+
+    set tag {} 
+    set tagtype {}
+    if {![string compare $type \[]} {
+        if {[regexp {^([a-zA-Z]+)[ ]+([0-9]+)$} $val x tagtype tag]} {
+            set tagtype ODR_$tagtype 
+        } elseif {[regexp {^([0-9]+)$} $val x tag]} {
+            set tagtype ODR_CONTEXT
+        } else {
+            asnError "bad tag specification: $val"
+        }
+	lex
+    }
+    set implicit $inf(implicit-tags)
+    if {![string compare $type n]} {
+        if {![string compare $val EXPLICIT]} {
+            lex
+            set implicit 0
+        } elseif {![string compare $val IMPLICIT]} {
+            lex
+            set implicit 1
+        }
+    }
+}
+
+# asnName: moves pointer and expects name. Returns C-validated name.
+proc asnName {name} {
+    global val inf
+    lex-expect n
+    if {[info exists inf(membermap,$inf(module),$name,$val)]} {
+	    set nval $inf(membermap,$inf(module),$name,$val)
+	if {$inf(verbose)} {
+	    puts " mapping member $name,$val to $nval"
+	}
+	if {![string match {[A-Z]*} $val]} {
+	    lex
+	}
+    } else {
+	set nval $val
+	if {![string match {[A-Z]*} $val]} {
+	    lex
+	}
+    }
+    return [join [split $nval -] _]
+}
+
+# asnOptional: parses optional modifier. Returns 1 if OPTIONAL was 
+# specified; 0 otherwise.
+proc asnOptional {} {
+    global type val
+    if {[lex-name-move OPTIONAL]} {
+        return 1
+    } elseif {[lex-name-move DEFAULT]} {
+	lex
+	return 0
+    }
+    return 0
+}
+
+# asnSizeConstraint: parses the optional SizeConstraint.
+# Currently not used for anything.
+proc asnSizeConstraint {} {
+    global type val
+    if {[lex-name-move SIZE]} {
+	asnSubtypeSpec
+    }
+}
+
+# asnSubtypeSpec: parses the SubtypeSpec ...
+# Currently not used for anything. We now it's balanced however, i.e.
+# (... ( ... ) .. )
+proc asnSubtypeSpec {} {
+    global type val
+
+    if {[string compare $type "("]} {
+	return 
+    }
+    lex
+    set level 1
+    while {$level > 0} {
+	if {![string compare $type "("]} {
+	    incr level
+	} elseif {![string compare $type ")"]} {
+	    incr level -1
+	}
+	lex
+    }
+}
+
+# asnType: parses ASN.1 type.
+# On entry $name should hold the name we are currently defining.
+# Returns type indicator:
+#   SequenceOf     SEQUENCE OF
+#   Sequence       SEQUENCE 
+#   SetOf          SET OF
+#   Set            SET
+#   Choice         CHOICE
+#   Simple         Basic types.
+#   In this casecalling procedure's $tname variable is a list holding:
+#        {C-Function C-Type} if the type is IMPORTed or ODR defined.
+#      or
+#        {C-Function C-Type 1} if the type should be defined in this module
+proc asnType {name} {
+    global type val inf
+    upvar tname tname
+
+    set tname {}
+    if {[string compare $type n]} {
+        asnError "Expects type specifier, but got $type"
+    }
+    set v $val
+    lex
+    switch -- $v {
+        SEQUENCE {
+	    asnSizeConstraint
+	    if {[lex-name-move OF]} {
+		asnSubtypeSpec
+		return SequenceOf
+	    } else {
+		asnSubtypeSpec
+		return Sequence
+	    }
+	}
+	SET {
+	    asnSizeConstraint
+	    if {[lex-name-move OF]} {
+		asnSubtypeSpec
+		return SetOf
+	    } else {
+		asnSubtypeSpec
+		return Set
+	    }
+        }
+        CHOICE {
+	    asnSubtypeSpec
+            return Choice
+        }
+    }
+    if {[string length [info commands asnBasic$v]]} {
+        set tname [asnBasic$v]
+    } else {
+        if {[info exists inf(map,$inf(module),$v)]} {
+            set v $inf(map,$inf(module),$v)
+        }
+        if {[info exists inf(imports,$v)]} {
+            set tname $inf(imports,$v)
+        } else {
+            set w [join [split $v -] _]
+            set tname [list $inf(fprefix)$w $inf(vprefix)$w 1]
+        }
+    }
+    if {[lex-name-move DEFINED]} {
+	if {[lex-name-move BY]} {
+	    lex
+	}
+    }
+    asnSubtypeSpec
+    return Simple
+}
+
+proc mapName {name} {
+    global inf
+    if {[info exists inf(map,$inf(module),$name)]} {
+        set name $inf(map,$inf(module),$name)
+	if {$inf(verbose)} {
+	    puts -nonewline " $name ($inf(lineno))"
+	    puts " mapping to $name"
+	}
+    } else {
+	if {$inf(verbose)} {
+	    puts " $name ($inf(lineno))"
+	}
+    }
+    return $name
+}
+
+# asnDef: parses type definition (top-level) and generates C code
+# On entry $name holds the type we are defining.
+proc asnDef {name} {
+    global inf file
+
+    set name [mapName $name]
+    if {[info exist inf(defined,$inf(fprefix)$name)]} {
+        incr inf(definedl,$name)
+        if {$inf(verbose) > 1} {
+            puts "set map($inf(module),$name) $name$inf(definedl,$name)"
+        }
+    } else {
+        set inf(definedl,$name) 0
+    }
+    set mname [join [split $name -] _]
+    asnMod tag implicit tagtype
+    set t [asnType $mname]
+    asnSub $mname $t $tname $tag $implicit $tagtype
+}
+
+
+# asnSub: parses type and generates C-code
+# On entry,
+#   $name holds the type we are defining.
+#   $t is the type returned by the asnType procedure.
+#   $tname is the $tname set by the asnType procedure.
+#   $tag is the tag as returned by asnMod
+#   $implicit is the implicit indicator as returned by asnMod
+proc asnSub {name t tname tag implicit tagtype} {
+    global file inf
+   
+    set ignore 0
+    set defname defined,$inf(fprefix)$name
+    if {[info exist inf($defname)]} {
+        asnWarning "$name already defined in line $inf($defname)"
+        set ignore 1
+    }
+    set inf($defname) $inf(lineno)
+    switch -- $t {
+        Sequence   { set l [asnSequence $name $tag $implicit $tagtype] }
+        SequenceOf { set l [asnOf $name $tag $implicit $tagtype 0] }
+	SetOf      { set l [asnOf $name $tag $implicit $tagtype 1] }
+        Choice     { set l [asnChoice $name $tag $implicit $tagtype] }
+        Simple     { set l [asnSimple $name $tname $tag $implicit $tagtype] }
+        default    { asnError "switch asnType case not handled" }
+    }
+    if {$ignore} return
+
+    puts $file(outc) {}
+    puts $file(outc) "int $inf(fprefix)$name (ODR o, $inf(vprefix)$name **p, int opt, const char *name)"
+    puts $file(outc) \{
+    puts $file(outc) [lindex $l 0]
+    puts $file(outc) \}
+    set ok 1
+    set fdef "$inf(cprefix)int $inf(fprefix)$name (ODR o, $inf(vprefix)$name **p, int opt, const char *name);"
+    switch -- $t {
+        Simple {
+            set decl "typedef [lindex $l 1] $inf(vprefix)$name;"
+            if {![string compare [lindex $tname 2] 1]} {
+                if {![info exist inf(defined,[lindex $tname 0])]} {
+                    set ok 0
+                }
+            }
+	    set inf(var,$inf(nodef)) [join [lindex $l 2] \n]
+	    incr inf(nodef)
+        }
+        default {
+            set decl "typedef struct $inf(vprefix)$name $inf(vprefix)$name;"
+	    set inf(var,$inf(nodef)) "[lindex $l 1];"
+	    incr inf(nodef)
+        }
+    }
+    if {$ok} {
+        puts $file(outh) {}
+        puts $file(outh) $decl
+        puts $file(outh) $fdef
+	asnForwardTypes $name
+    } else {
+        lappend inf(forward,code,[lindex $tname 0]) {} $decl $fdef
+        lappend inf(forward,ref,[lindex $tname 0]) $name
+    }
+}
+
+proc asnForwardTypes {name} {
+    global inf file
+
+    if {![info exists inf(forward,code,$inf(fprefix)$name)]} {
+	return 0
+    }
+    foreach r $inf(forward,code,$inf(fprefix)$name) {
+	puts $file(outh) $r
+    }
+    unset inf(forward,code,$inf(fprefix)$name)
+
+    while {[info exists inf(forward,ref,$inf(fprefix)$name)]} {
+	set n $inf(forward,ref,$inf(fprefix)$name)
+	set m [lrange $n 1 end]
+	if {[llength $m]} {
+	    set inf(forward,ref,$inf(fprefix)$name) $m
+	} else {
+	    unset inf(forward,ref,$inf(fprefix)$name)
+	}
+	asnForwardTypes [lindex $n 0]
+    }
+}
+
+# asnSimple: parses simple type definition and generates C code
+# On entry,
+#   $name is the name we are defining
+#   $tname is the tname as returned by asnType
+#   $tag is the tag as returned by asnMod
+#   $implicit is the implicit indicator as returned by asnMod
+# Returns,
+#   {c-code, h-code}
+# Note: Doesn't take care of enum lists yet.
+proc asnSimple {name tname tag implicit tagtype} {
+    global inf
+
+    set j "[lindex $tname 1] "
+
+    if {[info exists inf(unionmap,$inf(module),$name)]} {
+	set uName $inf(unionmap,$inf(module),$name)
+    } else {
+	set uName $name
+    }
+
+    asnEnum $uName jj
+    if {![string length $tag]} {
+        set l "\treturn [lindex $tname 0] (o, p, opt, name);" 
+    } elseif {$implicit} {
+        set l \
+  "\treturn odr_implicit_tag (o, [lindex $tname 0], p, $tagtype, $tag, opt, name);" 
+    } else {
+        set l \
+  "\treturn odr_explicit_tag (o, [lindex $tname 0], p, $tagtype, $tag, opt, name);" \
+    }
+    if {[info exists jj]} {
+	return [list $l $j $jj]
+    } else {
+	return [list $l $j]
+    }
+}
+
+# asnSequence: parses "SEQUENCE { s-list }" and generates C code.
+# On entry,
+#   $name is the type we are defining
+#   $tag tag 
+#   $implicit
+# Returns,
+#   {c-code, h-code}
+proc asnSequence {name tag implicit tagtype} {
+    global val type inf
+
+    lappend j "struct $inf(vprefix)$name \{"
+    set level 0
+    set nchoice 0
+    if {![string length $tag]} {
+        lappend l "\tif (!odr_sequence_begin (o, p, sizeof(**p), name))"
+        lappend l "\t\treturn odr_missing(o, opt, name) && odr_ok (o);"
+    } elseif {$implicit} {
+        lappend l "\tif (!odr_implicit_settag (o, $tagtype, $tag) ||"
+        lappend l "\t\t!odr_sequence_begin (o, p, sizeof(**p), name))"
+        lappend l "\t\treturn odr_missing(o, opt, name);"
+    } else {
+        lappend l "\tif (!odr_constructed_begin (o, p, $tagtype, $tag, name))"
+        lappend l "\t\treturn odr_missing(o, opt, name);"
+        lappend l "\tif (o->direction == ODR_DECODE)"
+        lappend l "\t\t*p = ($inf(vprefix)$name *) odr_malloc (o, sizeof(**p));"
+
+        lappend l "\tif (!odr_sequence_begin (o, p, sizeof(**p), 0))"
+        lappend l "\t\{"
+	lappend l "\t\tif(o->direction == ODR_DECODE)"
+        lappend l "\t\t\t*p = 0;"
+        lappend l "\t\treturn 0;"
+        lappend l "\t\}"
+    }
+    lappend l "\treturn"
+    while {1} {
+        set p [lindex [asnName $name] 0]
+        asnMod ltag limplicit ltagtype
+        set t [asnType $p]
+
+	set uName { }
+	if {[info exists inf(unionmap,$inf(module),$name,$p)]} {
+	    set uName $inf(unionmap,$inf(module),$name,$p)
+	}
+
+        if {![string compare $t Simple]} {
+	    if {[string compare $uName { }]} {
+		set enumName $uName
+	    } else {
+		set enumName $name
+	    }
+            asnEnum $enumName j
+            set opt [asnOptional]
+            if {![string length $ltag]} {
+                lappend l "\t\t[lindex $tname 0](o, &(*p)->$p, $opt, \"$p\") &&"
+            } elseif {$limplicit} {
+                lappend l "\t\todr_implicit_tag (o, [lindex $tname 0],"
+                lappend l "\t\t\t&(*p)->$p, $ltagtype, $ltag, $opt, \"$p\") &&"
+            } else {
+                lappend l "\t\todr_explicit_tag (o, [lindex $tname 0],"
+                lappend l "\t\t\t&(*p)->$p, $ltagtype, $ltag, $opt, \"$p\") &&"
+            }
+            set dec "\t[lindex $tname 1] *$p;"
+        } elseif {![string compare $t SequenceOf] && [string length $uName] &&\
+		      (![string length $ltag] || $limplicit)} {
+            set u [asnType $p]
+           
+	    if {[llength $uName] < 2} {
+		set uName [list num_$p $p]
+	    }
+            if {[string length $ltag]} {
+                if {!$limplicit} {
+                    asnError explicittag
+                }
+                lappend l "\t\todr_implicit_settag (o, $ltagtype, $ltag) &&"
+            }
+            switch -- $u {
+                Simple {
+                    asnEnum $name j
+                    set tmpa "odr_sequence_of(o, (Odr_fun) [lindex $tname 0], &(*p)->$p,"
+                    set tmpb "&(*p)->[lindex $uName 0], \"$p\")"
+                    lappend j "\tint [lindex $uName 0];"
+                    set dec "\t[lindex $tname 1] **[lindex $uName 1];"
+                }
+                default {
+                    set subName [mapName ${name}_$level]
+                    asnSub $subName $u {} {} 0 {}
+                    
+                    set tmpa "odr_sequence_of(o, (Odr_fun) $inf(fprefix)$subName, &(*p)->$p,"
+                    set tmpb "&(*p)->[lindex $uName 0], \"$p\")"
+                    lappend j "\tint [lindex $uName 0];"
+                    set dec "\t$inf(vprefix)$subName **[lindex $uName 1];"
+                    incr level
+                }
+            }
+            set opt [asnOptional]
+            if {$opt} {
+                lappend l "\t\t($tmpa"
+                lappend l "\t\t  $tmpb || odr_ok(o)) &&"
+            } else {
+                lappend l "\t\t$tmpa"
+                lappend l "\t\t  $tmpb &&"
+            }
+        } elseif {!$nchoice && ![string compare $t Choice] && \
+		      [string length $uName]} {
+	    if {[llength $uName] < 3} {
+		set uName [list which u $name]
+		incr nchoice
+	    }
+            lappend j "\tint [lindex $uName 0];"
+            lappend j "\tunion \{"
+            lappend v "\tstatic Odr_arm arm\[\] = \{"
+            asnArm $name [lindex $uName 2] v j
+            lappend v "\t\};"
+            set dec "\t\} [lindex $uName 1];"
+            set opt [asnOptional]
+            set oa {}
+            set ob {}
+            if {[string length $ltag]} {
+                if {$limplicit} {
+                    lappend l "\t\todr_implicit_settag (o, $ltagtype, $ltag) &&"
+                    if {$opt} {
+                        asnWarning "optional handling missing in CHOICE in SEQUENCE"
+			asnWarning " set unionmap($inf(module),$name,$p) to {}"
+                    }
+                } else {
+                    if {$opt} {
+                        set la "(("
+                    } else {
+                        set la ""
+                    }
+                    lappend l "\t\t${la}odr_constructed_begin (o, &(*p)->[lindex $uName 1], $ltagtype, $ltag, \"$p\") &&"
+                }
+            } else {
+                if {$opt} {
+                    set oa "("
+                    set ob " || odr_ok(o))" 
+                }
+            }
+            lappend l "\t\t${oa}odr_choice (o, arm, &(*p)->[lindex $uName 1], &(*p)->[lindex $uName 0], 0)${ob} &&"
+            if {[string length $ltag]} {
+                if {!$limplicit} {
+                    if {$opt} {
+                        set lb ") || odr_ok(o))"
+                    } else {
+                        set lb ""
+                    }
+                    lappend l "\t\todr_constructed_end (o)${lb} &&"
+                } 
+            }
+        } else {
+	    set subName [mapName ${name}_$level]
+            asnSub $subName $t {} {} 0 {}
+            set opt [asnOptional]
+            if {![string length $ltag]} {
+                lappend l "\t\t$inf(fprefix)${subName} (o, &(*p)->$p, $opt, \"$p\") &&"
+            } elseif {$limplicit} {
+                lappend l "\t\todr_implicit_tag (o, $inf(fprefix)${subName},"
+                lappend l "\t\t\t&(*p)->$p, $ltagtype, $ltag, $opt, \"$p\") &&"
+            } else {
+                lappend l "\t\todr_explicit_tag (o, $inf(fprefix)${subName},"
+                lappend l "\t\t\t&(*p)->$p, $ltagtype, $ltag, $opt, \"$p\") &&"
+            }
+            set dec "\t$inf(vprefix)${subName} *$p;"
+            incr level
+        }
+        if {$opt} {
+            lappend j "$dec /* OPT */"
+        } else {
+            lappend j $dec
+        }
+        if {[string compare $type ,]} break
+    }
+    lappend j "\}"
+    if {[string length $tag] && !$implicit} {
+        lappend l "\t\todr_sequence_end (o) &&"
+        lappend l "\t\todr_constructed_end (o);"
+    } else {
+        lappend l "\t\todr_sequence_end (o);"
+    }
+    if {[string compare $type \}]} {
+        asnError "Missing \} got $type '$val'"
+    }
+    lex
+    if {[info exists v]} {
+        set l [concat $v $l]
+    }
+    return [list [join $l \n] [join $j \n]]
+}
+
+# asnOf: parses "SEQUENCE/SET OF type" and generates C code.
+# On entry,
+#   $name is the type we are defining
+#   $tag tag 
+#   $implicit
+# Returns,
+#   {c-code, h-code}
+proc asnOf {name tag implicit tagtype isset} { 
+    global inf
+
+    if {$isset} {
+	set func odr_set_of
+    } else {
+	set func odr_sequence_of
+    }
+
+    if {[info exists inf(unionmap,$inf(module),$name)]} {
+	set numName $inf(unionmap,$inf(module),$name)
+    } else {
+	set numName {num elements}
+    }
+
+    lappend j "struct $inf(vprefix)$name \{"
+    lappend j "\tint [lindex $numName 0];"
+
+    lappend l "\tif (!odr_initmember (o, p, sizeof(**p)))"
+    lappend l "\t\treturn odr_missing(o, opt, name);"
+    if {[string length $tag]} {
+        if {$implicit} {
+            lappend l "\todr_implicit_settag (o, $tagtype, $tag);"
+        } else {
+            asnWarning "Constructed SEQUENCE/SET OF not handled"
+        }
+    }
+    set t [asnType $name]
+    switch -- $t {
+        Simple {
+            asnEnum $name j
+            lappend l "\tif ($func (o, (Odr_fun) [lindex $tname 0], &(*p)->[lindex $numName 1],"
+            lappend l "\t\t&(*p)->[lindex $numName 0], name))"
+            lappend j "\t[lindex $tname 1] **[lindex $numName 1];"
+        }
+        default {
+            set subName [mapName ${name}_s]
+            lappend l "\tif ($func (o, (Odr_fun) $inf(fprefix)$subName, &(*p)->[lindex $numName 1],"
+            lappend l "\t\t&(*p)->[lindex $numName 0], name))"
+            lappend j "\t$inf(vprefix)$subName **[lindex $numName 1];"
+            asnSub $subName $t {} {} 0 {}
+        }
+    }
+    lappend j "\}"
+    lappend l "\t\treturn 1;"
+    lappend l "\tif(o->direction == ODR_DECODE)"
+    lappend l "\t\t*p = 0;"
+    lappend l "\treturn odr_missing(o, opt, name);"
+    return [list [join $l \n] [join $j \n]]
+}
+
+# asnArm: parses c-list in choice
+proc asnArm {name defname lx jx} {
+    global type val inf
+
+    upvar $lx l
+    upvar $jx j
+    while {1} {
+        set pq [asnName $name]
+        set p [lindex $pq 0]
+        set q [lindex $pq 1]
+        if {![string length $q]} {
+            set q $p
+	    set p ${defname}_$p
+        }
+        asnMod ltag limplicit ltagtype
+        set t [asnType $q]
+
+        lappend enums "$inf(dprefix)$p"
+        if {![string compare $t Simple]} {
+            asnEnum $name j
+            if {![string length $ltag]} {
+                lappend l "\t\t\{-1, -1, -1, $inf(dprefix)$p,"
+		lappend l "\t\t (Odr_fun) [lindex $tname 0], \"$q\"\},"
+            } elseif {$limplicit} {
+                lappend l "\t\t\{ODR_IMPLICIT, $ltagtype, $ltag, $inf(dprefix)$p,"
+                lappend l "\t\t(Odr_fun) [lindex $tname 0], \"$q\"\},"
+            } else {
+                lappend l "\t\t\{ODR_EXPLICIT, $ltagtype, $ltag, $inf(dprefix)$p,"
+                lappend l "\t\t(Odr_fun) [lindex $tname 0], \"$q\"\},"
+            }
+            lappend j "\t\t[lindex $tname 1] *$q;"
+        } else {
+            set subName [mapName ${name}_$q]
+            if {![string compare $inf(dprefix)${name}_$q \
+                                 $inf(vprefix)$subName]} {
+                set po [string toupper [string index $q 0]][string \
+                                                            range $q 1 end]
+                set subName [mapName ${name}${po}]
+            }
+            asnSub $subName $t $tname {} 0 {}
+            if {![string length $ltag]} {
+                lappend l "\t\t\{-1, -1, -1, $inf(dprefix)$p,"
+		lappend l "\t\t (Odr_fun) $inf(fprefix)$subName, \"$q\"\},"
+            } elseif {$limplicit} {
+                lappend l "\t\t\{ODR_IMPLICIT, $ltagtype, $ltag, $inf(dprefix)$p,"
+                lappend l "\t\t(Odr_fun) $inf(fprefix)$subName, \"$q\"\},"
+            } else {
+                lappend l "\t\t\{ODR_EXPLICIT, $ltagtype, $ltag, $inf(dprefix)$p,"
+                lappend l "\t\t(Odr_fun) $inf(fprefix)$subName, \"$q\"\},"
+            }
+            lappend j "\t\t$inf(vprefix)$subName *$q;"
+        }
+        if {[string compare $type ,]} break
+    }
+    if {[string compare $type \}]} {
+        asnError "Missing \} got $type '$val'"
+    }
+    lex
+    set level 1
+    foreach e $enums {
+        lappend j "#define $e $level"
+        incr level
+    }
+    lappend l "\t\t\{-1, -1, -1, -1, (Odr_fun) 0, 0\}"
+}
+
+# asnChoice: parses "CHOICE {c-list}" and generates C code.
+# On entry,
+#   $name is the type we are defining
+#   $tag tag 
+#   $implicit
+# Returns,
+#   {c-code, h-code}
+proc asnChoice {name tag implicit tagtype} {
+    global type val inf
+
+    if {[info exists inf(unionmap,$inf(module),$name)]} {
+	set uName $inf(unionmap,$inf(module),$name)
+    } else {
+	set uName [list which u $name]
+    }
+
+    lappend j "struct $inf(vprefix)$name \{"
+    lappend j "\tint [lindex $uName 0];"
+    lappend j "\tunion \{"
+    lappend l "\tstatic Odr_arm arm\[\] = \{"
+    asnArm $name [lindex $uName 2] l j
+    lappend j "\t\} [lindex $uName 1];"
+    lappend j "\}"
+    lappend l "\t\};"
+    if {![string length $tag]} {
+	lappend l "\tif (!odr_initmember(o, p, sizeof(**p)))"
+	lappend l "\t\treturn odr_missing(o, opt, name);"
+	lappend l "\tif (odr_choice(o, arm, &(*p)->[lindex $uName 1], &(*p)->[lindex $uName 0], name))"
+    } elseif {$implicit} {
+	lappend l "\tif (!odr_initmember(o, p, sizeof(**p)))"
+	lappend l "\t\treturn odr_missing(o, opt, name);"
+	lappend l "\todr_implicit_settag(o, $tagtype, $tag);"
+	lappend l "\tif (odr_choice(o, arm, &(*p)->[lindex $uName 1], &(*p)->[lindex $uName 0], name))"
+    } else {
+	lappend l "\tif (!odr_constructed_begin(o, p, $tagtype, $tag, 0))"
+	lappend l "\t\treturn odr_missing(o, opt, name);"
+	lappend l "\tif (!odr_initmember(o, p, sizeof(**p)))"
+	lappend l "\t\treturn odr_missing(o, opt, name);"
+	lappend l "\tif (odr_choice(o, arm, &(*p)->[lindex $uName 1], &(*p)->[lindex $uName 0], name) &&"
+	lappend l "\t\todr_constructed_end(o))"
+    }
+    lappend l "\t\treturn 1;"
+
+    lappend l "\tif(o->direction == ODR_DECODE)"
+    lappend l "\t\t*p = 0;"
+
+    lappend l "\treturn odr_missing(o, opt, name);"
+    return [list [join $l \n] [join $j \n]]
+}
+
+# asnImports: parses i-list in "IMPORTS {i-list}" 
+# On return inf(import,..)-array is updated.
+# inf(import,"module") is a list of {C-handler, C-type} elements.
+# The {C-handler, C-type} is compatible with the $tname as is used by the
+# asnType procedure to solve external references.
+proc asnImports {} {
+    global type val inf file
+
+    while {1} {
+        if {[string compare $type n]} {
+            asnError "Missing name in IMPORTS list"
+        }
+        lappend nam $val
+        lex
+        if {![string compare $type n] && ![string compare $val FROM]} {
+            lex
+	    
+	    if {[info exists inf(filename,$val)]} {
+		set fname $inf(filename,$val)
+	    } else {
+		set fname $val
+	    }
+	    puts $file(outh) "\#include <$inf(h-dir)${fname}.h>"
+
+            if {[info exists inf(prefix,$val)]} {
+                set prefix $inf(prefix,$val)
+            } else {
+                set prefix $inf(prefix)
+            }
+            foreach n $nam {
+		if {[info exists inf(map,$val,$n)]} {
+		    set v $inf(map,$val,$n)
+		} else {
+		    set v $n
+		}
+                set w [join [split $v -] _]
+                set inf(imports,$n) [list [lindex $prefix 0]$w \
+                                          [lindex $prefix 1]$w]
+            }
+            unset nam
+            lex
+            if {[string compare $type n]} break
+        } elseif {![string compare $type ,]} {
+            lex
+        } else break
+    }
+    if {[string compare $type \;]} {
+        asnError "Missing ; after IMPORTS list - got $type '$val'"
+    }
+    lex
+}
+
+# asnExports: parses e-list in "EXPORTS {e-list}" 
+# This function does nothing with elements in the list.
+proc asnExports {} {
+    global type val inf
+
+    while {1} {
+        if {[string compare $type n]} {
+            asnError "Missing name in EXPORTS list"
+        }
+        set inf(exports,$val) 1
+        lex
+        if {[string compare $type ,]} break
+        lex
+    }
+    if {[string compare $type \;]} {
+        asnError "Missing ; after EXPORTS list - got $type ($val)"
+    }
+    lex
+}
+
+# asnModuleBody: parses a module specification and generates C code.
+# Exports lists, imports lists, and type definitions are handled;
+# other things are silently ignored.
+proc asnModuleBody {} {
+    global type val file inf
+
+    if {[info exists inf(prefix,$inf(module))]} {
+        set prefix $inf(prefix,$inf(module))
+    } else {
+        set prefix $inf(prefix)
+    }
+    set inf(fprefix) [lindex $prefix 0]
+    set inf(vprefix) [lindex $prefix 1]
+    set inf(dprefix) [lindex $prefix 2]
+    if {[llength $prefix] > 3} {
+	set inf(cprefix) [lindex $prefix 3]
+    } else {
+	set inf(cprefix) {YAZ_EXPORT }
+    }
+
+    if {$inf(verbose)} {
+        puts "Module $inf(module), $inf(lineno)"
+    }
+
+    set defblock 0
+    if {[info exists inf(init,$inf(module),c)]} {
+	puts $file(outc) $inf(init,$inf(module),c)
+    }
+    if {[info exists inf(init,$inf(module),h)]} {
+	puts $file(outh) "\#ifdef __cplusplus"
+	puts $file(outh) "extern \"C\" \{"
+	puts $file(outh) "\#endif"
+	set defblock 1
+	puts $file(outh) $inf(init,$inf(module),h)
+    }
+    if {[info exists inf(init,$inf(module),p)]} {
+	puts $file(outp) $inf(init,$inf(module),p)
+    }
+
+    while {[string length $type]} {
+	if {[string compare $type n]} {
+	    lex
+	    continue
+	}
+	if {![string compare $val END]} {
+	    break
+	} elseif {![string compare $val EXPORTS]} {
+	    lex
+	    asnExports
+	} elseif {![string compare $val IMPORTS]} {
+	    if {$defblock} {
+		puts $file(outh) "\#ifdef __cplusplus"
+		puts $file(outh) "\}"
+		puts $file(outh) "\#endif"
+		set defblock 0
+	    }
+	    lex
+	    asnImports
+	} else {
+	    if {!$defblock} {
+		puts $file(outh) "\#ifdef __cplusplus"
+		puts $file(outh) "extern \"C\" \{"
+		puts $file(outh) "\#endif"
+		set defblock 1
+	    }
+	    set inf(asndef) $inf(nodef)
+	    set oval $val
+	    lex
+	    if {![string compare $type :]} {
+		lex
+		asnDef $oval
+		set inf(asndef) 0
+	    } elseif {![string compare $type n]} {
+		lex
+		if {[string length $type]} {
+		    lex
+		}
+	    }
+	}
+    }
+    if {$defblock} {
+	puts $file(outh) "\#ifdef __cplusplus"
+	puts $file(outh) "\}"
+	puts $file(outh) "\#endif"
+	set defblock 0
+    }
+    foreach x [array names inf imports,*] {
+        unset inf($x)
+    }
+}
+
+# asnTagDefault: parses TagDefault section
+proc asnTagDefault {} {
+    global type val inf file
+    
+    set inf(implicit-tags) 0
+    while {[string length $type]} {
+	if {[lex-name-move EXPLICIT]} {
+	    lex
+	    set inf(implicit-tags) 0
+	} elseif {[lex-name-move  IMPLICIT]} {
+	    lex
+	    set inf(implicit-tags) 1
+	} else {
+	    break
+	}
+    }
+}
+
+# asnModules: parses a collection of module specifications.
+# Depending on the module pattern, $inf(moduleP), a module is either
+# skipped or processed.
+proc asnModules {} {
+    global type val inf file yc_version
+
+    set inf(nodef) 0
+    set inf(asndef) 0
+    lex
+    while {![string compare $type n]} {
+	set inf(module) $val
+        if {[info exists inf(moduleP)] && ![string match $inf(moduleP) $val]} {
+            if {$inf(verbose)} {
+                puts "Skipping $id"
+            }
+            while {![lex-name-move END]} {
+		lex
+	    }
+        } else {
+	    set inf(nodef) 1
+	    set inf(asndef) 1
+
+	    while {![lex-name-move DEFINITIONS]} {
+		lex
+		if {![string length $type]} return
+	    }
+	    if {[info exists inf(filename,$inf(module))]} {
+		set fname $inf(filename,$inf(module))
+	    } else {
+		set fname $inf(module)
+	    }
+            set ppname [join [split $fname -] _]
+
+	    if {![info exists inf(c-file)]} {
+		set inf(c-file) ${fname}.c
+	    }
+	    set file(outc) [open $inf(c-file) w]
+
+	    if {![info exists inf(h-file)]} {
+		set inf(h-file) ${fname}.h
+	    }
+	    set file(outh) [open $inf(h-path)/$inf(h-dir)$inf(h-file) w]
+
+	    if {0} {
+	        if {![info exists inf(p-file)]} {
+		    set inf(p-file) ${fname}-p.h
+	        }
+	        set file(outp) [open $inf(h-path)/$inf(h-dir)$inf(p-file) w]
+            }
+
+	    set greeting {Generated automatically by YAZ ASN.1 Compiler}
+
+	    puts $file(outc) "/** \\file $inf(c-file)"
+	    puts $file(outc) "    \\brief ASN.1 Module $inf(module)"
+	    puts $file(outc) ""
+	    puts $file(outc) "    ${greeting} ${yc_version}"
+	    puts $file(outc) "*/"
+	    puts $file(outc) {}
+
+	    puts $file(outh) "/** \\file $inf(h-file)"
+	    puts $file(outh) "    \\brief ASN.1 Module $inf(module)"
+	    puts $file(outh) ""
+	    puts $file(outh) "    ${greeting} ${yc_version}"
+	    puts $file(outh) "*/"
+	    puts $file(outh) {}
+
+	    if {[info exists file(outp)]} {
+		puts $file(outp) "/** \\file $inf(p-file)"
+		puts $file(outp) "    \\brief ASN.1 Module $inf(module)"
+		puts $file(outp) ""
+		puts $file(outp) "    ${greeting} ${yc_version}"
+		puts $file(outp) "*/"
+		puts $file(outp) {}
+            }
+
+            if {[info exists inf(p-file)]} {
+	        puts $file(outc) "\#include <$inf(h-dir)$inf(p-file)>"
+            } else {
+	        puts $file(outc) "\#include <$inf(h-dir)$inf(h-file)>"
+            }
+	    puts $file(outh) "\#ifndef ${ppname}_H"
+	    puts $file(outh) "\#define ${ppname}_H"
+	    puts $file(outh) {}
+	    puts $file(outh) "\#include <yaz/odr.h>"
+	   
+            if {[info exists file(outp)]} { 
+	        puts $file(outp) "\#ifndef ${ppname}_P_H"
+	        puts $file(outp) "\#define ${ppname}_P_H"
+	        puts $file(outp) {}
+	        puts $file(outp) "\#include <$inf(h-dir)$inf(h-file)>"
+
+            }
+	    
+	    asnTagDefault
+	    if {[string compare $type :]} {
+		asnError "::= expected got $type '$val'"
+	    } 
+	    lex
+	    if {![lex-name-move BEGIN]} {
+		asnError "BEGIN expected"
+	    }
+	    asnModuleBody
+	    lex
+
+	    if {[info exists file(outp)]} {
+		set f $file(outp)
+	    } else {
+		set f $file(outh)
+	    }
+	    puts $f "\#ifdef __cplusplus"
+	    puts $f "extern \"C\" \{"
+	    puts $f "\#endif"
+	    for {set i 1} {$i < $inf(nodef)} {incr i} {
+		puts $f $inf(var,$i)
+		if {[info exists inf(asn,$i)]} {
+		    if {0} {
+			puts $f "/*"
+			foreach comment $inf(asn,$i) {
+			    puts $f $comment
+			}
+			puts $f " */"
+		    }
+		    unset inf(asn,$i)
+		}
+		unset inf(var,$i)
+		puts $f {}
+	    }
+	    puts $f "\#ifdef __cplusplus"
+	    puts $f "\}"
+	    puts $f "\#endif"
+
+	    if {[info exists inf(body,$inf(module),h)]} {
+		puts $file(outh) $inf(body,$inf(module),h)
+	    }
+	    if {[info exists inf(body,$inf(module),c)]} {
+		puts $file(outc) $inf(body,$inf(module),c)
+	    }
+	    if {[info exists inf(body,$inf(module),p)]} {
+                if {[info exists file(outp)]} {
+		    puts $file(outp) $inf(body,$inf(module),p)
+                }
+	    }
+	    puts $file(outh) "\#endif"
+            if {[info exists file(outp)]} {
+	        puts $file(outp) "\#endif"
+            }
+	    foreach f [array names file] {
+		close $file($f)
+	    }
+	    unset inf(c-file)
+	    unset inf(h-file)
+	    catch {unset inf(p-file)}
+	}
+    }
+}
+
+# asnFile: parses an ASN.1 specification file as specified in $inf(iname).
+proc asnFile {} {
+    global inf file
+
+    if {$inf(verbose) > 1} {
+        puts "Reading ASN.1 file $inf(iname)"
+    }
+    set inf(str) {}
+    set inf(lineno) 0
+    set inf(inf) [open $inf(iname) r]
+    
+    asnModules
+    
+}
+
+# The following procedures are invoked by the asnType function. 
+# Each procedure takes the form: asnBasic<TYPE> and they must return
+# two elements: the C function handler and the C type.
+# On entry upvar $name is the type we are defining and global, $inf(module), is
+# the current module name.
+
+proc asnBasicEXTERNAL {} {
+    return {odr_external {Odr_external}}
+}
+
+proc asnBasicINTEGER {} {
+    return {odr_integer {int}}
+}
+
+proc asnBasicENUMERATED {} {
+    return {odr_enum {int}}
+}
+
+proc asnBasicNULL {} {
+    return {odr_null {Odr_null}}
+}
+
+proc asnBasicBOOLEAN {} {
+    return {odr_bool {bool_t}}
+}
+
+proc asnBasicOCTET {} {
+    global type val
+    lex-name-move STRING
+    return {odr_octetstring {Odr_oct}}
+}
+
+proc asnBasicBIT {} {
+    global type val
+    lex-name-move STRING
+    return {odr_bitstring {Odr_bitmask}}
+}
+
+proc asnBasicOBJECT {} {
+    global type val
+    lex-name-move IDENTIFIER
+    return {odr_oid {Odr_oid}}
+}
+
+proc asnBasicGeneralString {} {
+    return {odr_generalstring char}
+}
+
+proc asnBasicVisibleString {} {
+    return {odr_visiblestring char}
+}
+
+proc asnBasicGeneralizedTime {} {
+    return {odr_generalizedtime char}
+}
+
+proc asnBasicANY {} {
+    upvar name name
+    global inf
+    return [list $inf(fprefix)ANY_$name void]
+}
+
+# userDef: reads user definitions file $name
+proc userDef {name} {
+    global inf
+
+    if {$inf(verbose) > 1} {
+        puts "Reading definitions file $name"
+    }
+    source $name
+
+    if {[info exists default-prefix]} {
+        set inf(prefix) ${default-prefix}
+    }
+    if {[info exists h-path]} {
+        set inf(h-path) ${h-path}
+    }
+    foreach m [array names prefix] {
+        set inf(prefix,$m) $prefix($m)
+    }
+    foreach m [array names body] {
+	set inf(body,$m) $body($m)
+    }
+    foreach m [array names init] {
+	set inf(init,$m) $init($m)
+    }
+    foreach m [array names filename] {
+	set inf(filename,$m) $filename($m)
+    }
+    foreach m [array names map] {
+        set inf(map,$m) $map($m)
+    }
+    foreach m [array names membermap] {
+        set inf(membermap,$m) $membermap($m)
+    }
+    foreach m [array names unionmap] {
+        set inf(unionmap,$m) $unionmap($m)
+    }
+}
+
+set inf(verbose) 0
+set inf(prefix) {yc_ Yc_ YC_}
+set inf(h-path) .
+set inf(h-dir) ""
+
+# Parse command line
+set l [llength $argv]
+set i 0
+while {$i < $l} {
+    set arg [lindex $argv $i]
+    switch -glob -- $arg {
+        -v {
+	    incr inf(verbose) 
+        }
+        -c {
+	    set p [string range $arg 2 end]
+	    if {![string length $p]} {
+                 set p [lindex $argv [incr i]]
+             }
+	    set inf(c-file) $p
+        }
+        -I* {
+	    set p [string range $arg 2 end]
+	    if {![string length $p]} {
+                 set p [lindex $argv [incr i]]
+             }
+	    set inf(h-path) $p
+        }
+	-i* {
+	    set p [string range $arg 2 end]
+	    if {![string length $p]} {
+                 set p [lindex $argv [incr i]]
+            }
+	    set inf(h-dir) [string trim $p \\/]/
+	}
+        -h* {
+	    set p [string range $arg 2 end]
+	    if {![string length $p]} {
+                 set p [lindex $argv [incr i]]
+             }
+	    set inf(h-file) $p
+        }
+        -p* {
+	    set p [string range $arg 2 end]
+	    if {![string length $p]} {
+		set p [lindex $argv [incr i]]
+	    }
+	    set inf(p-file) $p
+        }
+        -d* {
+	    set p [string range $arg 2 end]
+	    if {![string length $p]} {
+		set p [lindex $argv [incr i]]
+	    }
+	    userDef $p
+        }
+        -m* {
+	    set p [string range $arg 2 end]
+	    if {![string length $p]} {
+		set p [lindex $argv [incr i]]
+	    }
+	    set inf(moduleP) $p
+        }
+	-x* {
+	    set p [string range $arg 2 end]
+	    if {![string length $p]} {
+		set p [lindex $argv [incr i]]
+	    }
+	    if {[llength $p] == 1} {
+		set inf(prefix) [list [string tolower $p] \
+				     [string toupper $p] [string toupper $p]]
+	    } elseif {[llength $p] == 3} {
+		set inf(prefix) $p
+	    } else {
+		puts [llength $p]
+		exit 1
+	    }
+	}	    
+        default {
+	    set inf(iname) $arg
+        }
+    }
+    incr i
+}
+
+if {![info exists inf(iname)]} {
+    puts "YAZ ASN.1 Compiler ${yc_version}"
+    puts "Usage:"	
+    puts -nonewline ${argv0}
+    puts { [-v] [-c cfile] [-h hfile] [-p hfile] [-d dfile] [-I iout]}
+    puts {    [-i idir] [-m module] file}
+    exit 1
+}
+
+asnFile

@@ -1,0 +1,97 @@
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"><title>4. SRU</title><meta name="generator" content="DocBook XSL Stylesheets V1.71.0"><link rel="start" href="index.html" title="YAZ User's Guide and Reference"><link rel="up" href="soap.html" title="Chapter 8. SOAP and SRU"><link rel="prev" href="soap.xml.html" title="3. SOAP Packages"><link rel="next" href="tools.html" title="Chapter 9. Supporting Tools"></head><body><link rel="stylesheet" type="text/css" href="common/style1.css"><div class="navheader"><table width="100%" summary="Navigation header"><tr><th colspan="3" align="center">4. SRU</th></tr><tr><td width="20%" align="left"><a accesskey="p" href="soap.xml.html">Prev</a> </td><th width="60%" align="center">Chapter 8. SOAP and SRU</th><td width="20%" align="right"> <a accesskey="n" href="tools.html">Next</a></td></tr></table><hr></div><div class="sect1" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="soap.srw"></a>4. SRU</h2></div></div></div><p>
+      SRU SOAP is just one implementation of a SOAP handler as described
+      in the previous section.
+      The encoder/decoder handler for SRU is defined as
+      follows:
+      </p><pre class="synopsis">
+#include &lt;yaz/srw.h&gt;
+
+int yaz_srw_codec(ODR o, void * pptr,
+                  Z_SRW_GDU **handler_data,
+                  void *client_data, const char *ns);
+      </pre><p>
+      Here, <code class="literal">Z_SRW_GDU</code> is either
+      searchRetrieveRequest or a searchRetrieveResponse. 
+    </p><div class="note" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title">Note</h3><p>
+        The xQuery and xSortKeys are not handled yet by
+        the SRW implementation of YAZ. Explain is also missing.
+        Future versions of YAZ will include these features.
+      </p></div><p>
+      The definition of searchRetrieveRequest is:
+      </p><pre class="synopsis">
+typedef struct {
+
+#define Z_SRW_query_type_cql  1
+#define Z_SRW_query_type_xcql 2
+#define Z_SRW_query_type_pqf  3
+    int query_type;
+    union {
+        char *cql;
+        char *xcql;
+        char *pqf;
+    } query;
+
+#define Z_SRW_sort_type_none 1
+#define Z_SRW_sort_type_sort 2
+#define Z_SRW_sort_type_xSort 3
+    int sort_type;
+    union {
+        char *none;
+        char *sortKeys;
+        char *xSortKeys;
+    } sort;
+    int  *startRecord;
+    int  *maximumRecords;
+    char *recordSchema;
+    char *recordPacking;
+    char *database;
+} Z_SRW_searchRetrieveRequest;
+      </pre><p>
+      Please observe that data of type xsd:string is represented
+      as a char pointer (<code class="literal">char *</code>). A null pointer
+      means that the element is absent.
+      Data of type xsd:integer is representd as a pointer to
+      an int (<code class="literal">int *</code>). Again, a null pointer
+      us used for absent elements.
+    </p><p>
+      The SearchRetrieveResponse has the following definition.
+      </p><pre class="synopsis">
+typedef struct {
+    int * numberOfRecords;
+    char * resultSetId;
+    int * resultSetIdleTime;
+    
+    Z_SRW_record *records;
+    int num_records;
+
+    Z_SRW_diagnostic *diagnostics;
+    int num_diagnostics;
+    int *nextRecordPosition;
+} Z_SRW_searchRetrieveResponse;
+      </pre><p>
+      The <code class="literal">num_records</code> and <code class="literal">num_diagnostics</code>
+      is number of returned records and diagnostics respectively and also
+      correspond to the "size of" arrays <code class="literal">records</code>
+      and <code class="literal">diagnostics</code>.
+    </p><p>
+      A retrieval record is defined as follows:
+      </p><pre class="synopsis">
+typedef struct {
+    char *recordSchema;
+    char *recordData_buf;
+    int recordData_len;
+    int *recordPosition;
+} Z_SRW_record;
+      </pre><p>
+      The record data is defined as a buffer of some length so that
+      data can be of any type. SRW 1.0 currenly doesn't allow for this
+      (only XML), but future versions might do.
+    </p><p>
+      And, a diagnostic as:
+      </p><pre class="synopsis">
+typedef struct {
+    int  *code;
+    char *details;
+} Z_SRW_diagnostic;
+      </pre><p>
+    </p></div><div class="navfooter"><hr><table width="100%" summary="Navigation footer"><tr><td width="40%" align="left"><a accesskey="p" href="soap.xml.html">Prev</a> </td><td width="20%" align="center"><a accesskey="u" href="soap.html">Up</a></td><td width="40%" align="right"> <a accesskey="n" href="tools.html">Next</a></td></tr><tr><td width="40%" align="left" valign="top">3. SOAP Packages </td><td width="20%" align="center"><a accesskey="h" href="index.html">Home</a></td><td width="40%" align="right" valign="top"> Chapter 9. Supporting Tools</td></tr></table></div></body></html>

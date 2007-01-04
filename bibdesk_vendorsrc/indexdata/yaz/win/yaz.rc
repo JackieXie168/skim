@@ -1,0 +1,38 @@
+#include "winver.h"
+
+VS_VERSION_INFO VERSIONINFO 
+  FILEVERSION 2,1,42,1
+  PRODUCTVERSION  2,1,42,1
+ FILEFLAGSMASK 0x3fL
+#ifdef _DEBUG
+  FILEFLAGS 0x1L
+#else
+  FILEFLAGS 0x0L
+#endif
+  FILEOS VOS_NT
+  FILETYPE VFT_DLL
+  FILESUBTYPE VFT2_UNKNOWN
+{
+ BLOCK "StringFileInfo"
+ {
+        BLOCK "000004b0"
+        BEGIN
+            VALUE "Comments", "Z39.50/SRU Library\0"
+            VALUE "CompanyName", "Index Data ApS\0"
+            VALUE "FileDescription", "YAZ Library\0"
+            VALUE "FileVersion", "2, 1, 42, 1\0"
+            VALUE "InternalName", "YAZ\0"
+            VALUE "LegalCopyright", "Copyright © 1995-2006 Index Data ApS\0"
+            VALUE "LegalTrademarks", "\0"
+            VALUE "OriginalFilename", "yaz.rc\0"
+            VALUE "PrivateBuild", "\0"
+            VALUE "ProductName", "YAZ Toolkit\0"
+            VALUE "ProductVersion", "2, 1, 42, 1\0"
+            VALUE "SpecialBuild", "\0"
+        END
+ }
+ BLOCK "VarFileInfo"
+ BEGIN
+        VALUE "Translation", 0x0, 1200
+ END 
+}

@@ -1,0 +1,97 @@
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"><title>3. SOAP Packages</title><meta name="generator" content="DocBook XSL Stylesheets V1.71.0"><link rel="start" href="index.html" title="YAZ User's Guide and Reference"><link rel="up" href="soap.html" title="Chapter 8. SOAP and SRU"><link rel="prev" href="soap.http.html" title="2. HTTP"><link rel="next" href="soap.srw.html" title="4. SRU"></head><body><link rel="stylesheet" type="text/css" href="common/style1.css"><div class="navheader"><table width="100%" summary="Navigation header"><tr><th colspan="3" align="center">3. SOAP Packages</th></tr><tr><td width="20%" align="left"><a accesskey="p" href="soap.http.html">Prev</a> </td><th width="60%" align="center">Chapter 8. SOAP and SRU</th><td width="20%" align="right"> <a accesskey="n" href="soap.srw.html">Next</a></td></tr></table><hr></div><div class="sect1" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="soap.xml"></a>3. SOAP Packages</h2></div></div></div><p>
+      Every SOAP package in YAZ is represented as follows:
+      </p><pre class="synopsis">
+#include &lt;yaz/soap.h&gt;
+
+typedef struct {
+    char *fault_code;
+    char *fault_string;
+    char *details;
+} Z_SOAP_Fault;
+
+typedef struct {
+    int no;
+    char *ns;
+    void *p;
+} Z_SOAP_Generic;
+
+#define Z_SOAP_fault 1
+#define Z_SOAP_generic 2
+#define Z_SOAP_error 3
+typedef struct {
+    int which;
+    union {
+        Z_SOAP_Fault   *fault;
+        Z_SOAP_Generic *generic;
+        Z_SOAP_Fault   *soap_error;
+    } u;
+    const char *ns;
+} Z_SOAP;
+      </pre><p>
+    </p><p>
+      The <code class="literal">fault</code> and <code class="literal">soap_error</code>
+      arms represent both a SOAP fault - struct
+      <code class="literal">Z_SOAP_Fault</code>. Any other generic
+        (valid) package is represented by <code class="literal">Z_SOAP_Generic</code>.
+    </p><p>
+      The <code class="literal">ns</code> as part of <code class="literal">Z_SOAP</code>
+      is the namespace for SOAP itself and reflects the SOAP
+      version. For version 1.1 it is
+      <code class="literal">http://schemas.xmlsoap.org/soap/envelope/</code>,
+      for version 1.2 it is
+      <code class="literal">http://www.w3.org/2001/06/soap-envelope</code>.
+    </p><pre class="synopsis">
+int z_soap_codec(ODR o, Z_SOAP **pp,
+                 char **content_buf, int *content_len,
+                 Z_SOAP_Handler *handlers);
+    </pre><p>
+      The <code class="literal">content_buf</code> and <code class="literal">content_len</code>
+      is XML buffer and length of buffer respectively.
+    </p><p>
+      The <code class="literal">handlers</code> is a list of SOAP codec
+      handlers - one handler for each service namespace. For SRU SOAP, the
+      namespace would be <code class="literal">http://www.loc.gov/zing/srw/v1.0/</code>.
+    </p><p>
+      When decoding, the <code class="function">z_soap_codec</code>
+      inspects the XML content
+      and tries to match one of the services namespaces of the
+      supplied handlers. If there is a match a handler function
+      is invoked which decodes that particular SOAP package.
+      If successful, the returned <code class="literal">Z_SOAP</code> package will be
+      of type <code class="literal">Z_SOAP_Generic</code>.
+      Member <code class="literal">no</code> is
+      set the offset of handler that matched; <code class="literal">ns</code>
+      is set to namespace of matching handler; the void pointer
+      <code class="literal">p</code> is set to the C data structure assocatiated
+      with the handler.
+    </p><p>
+      When a NULL namespace is met (member <code class="literal">ns</code> bwlow),
+      that specifies end-of-list.
+    </p><p>
+      Each handler is defined as follows:
+      </p><pre class="synopsis">
+typedef struct {
+    char *ns;
+    void *client_data;
+    Z_SOAP_fun f;
+} Z_SOAP_Handler;
+      </pre><p>
+      The <code class="literal">ns</code> is namespace of service associated with
+      handler <code class="literal">f</code>. <code class="literal">client_data</code>
+      is user-defined data which is passed to handler.
+    </p><p>
+      The prototype for a SOAP service handler is:
+      </p><pre class="synopsis">
+int handler(ODR o, void * ptr, void **handler_data,
+            void *client_data, const char *ns);
+      </pre><p>
+      The <em class="parameter"><code>o</code></em> specifies the mode (decode/encode)
+      as usual. The second argument, <em class="parameter"><code>ptr</code></em>,
+      is a libxml2 tree node pointer (<code class="literal">xmlNodePtr</code>)
+      and is a pointer to the <code class="literal">Body</code> element
+      of the SOAP package. The <em class="parameter"><code>handler_data</code></em>
+      is an opaque pointer to a C definitions associated with the
+      SOAP service. <em class="parameter"><code>client_data</code></em> is the pointer
+      which was set as part of the <code class="literal">Z_SOAP_handler</code>.
+      Finally, <em class="parameter"><code>ns</code></em> the service namespace.
+    </p></div><div class="navfooter"><hr><table width="100%" summary="Navigation footer"><tr><td width="40%" align="left"><a accesskey="p" href="soap.http.html">Prev</a> </td><td width="20%" align="center"><a accesskey="u" href="soap.html">Up</a></td><td width="40%" align="right"> <a accesskey="n" href="soap.srw.html">Next</a></td></tr><tr><td width="40%" align="left" valign="top">2. HTTP </td><td width="20%" align="center"><a accesskey="h" href="index.html">Home</a></td><td width="40%" align="right" valign="top"> 4. SRU</td></tr></table></div></body></html>

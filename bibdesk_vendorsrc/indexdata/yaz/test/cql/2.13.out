@@ -1,0 +1,14 @@
+<searchClause>
+  <index>dc.title</index>
+  <relation>
+    <value>=</value>
+    <modifiers>
+      <modifier>
+        <type>rel.algorithm</type>
+        <relation>=</relation>
+        <value>CORI</value>
+      </modifier>
+    </modifiers>
+  </relation>
+  <term>squid</term>
+</searchClause>

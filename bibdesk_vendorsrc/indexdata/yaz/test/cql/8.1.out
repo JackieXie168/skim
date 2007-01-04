@@ -1,0 +1,7 @@
+<searchClause>
+  <index>dc.title</index>
+  <relation>
+    <value>=</value>
+  </relation>
+  <term>fish</term>
+</searchClause>

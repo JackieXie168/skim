@@ -1,0 +1,379 @@
+.\"     Title: yaz\-ztest
+.\"    Author: 
+.\" Generator: DocBook XSL Stylesheets v1.71.0 <http://docbook.sf.net/>
+.\"      Date: 12/17/2006
+.\"    Manual: 
+.\"    Source: YAZ 2.1.42
+.\"
+.TH "YAZ\-ZTEST" "8" "12/17/2006" "YAZ 2.1.42" ""
+.\" disable hyphenation
+.nh
+.\" disable justification (adjust text to left margin only)
+.ad l
+.SH "NAME"
+yaz\-ztest \- Z39.50 Test Server
+.SH "SYNOPSIS"
+.HP 12
+\fBapplication\fR [\fB\-install\fR] [\fB\-installa\fR] [\fB\-remove\fR] [\fB\-a\ \fR\fB\fIfile\fR\fR] [\fB\-v\ \fR\fB\fIlevel\fR\fR] [\fB\-l\ \fR\fB\fIfile\fR\fR] [\fB\-u\ \fR\fB\fIuid\fR\fR] [\fB\-c\ \fR\fB\fIconfig\fR\fR] [\fB\-f\ \fR\fB\fIvconfig\fR\fR] [\fB\-C\ \fR\fB\fIfname\fR\fR] [\fB\-t\ \fR\fB\fIminutes\fR\fR] [\fB\-k\ \fR\fB\fIkilobytes\fR\fR] [\fB\-d\ \fR\fB\fIdaemon\fR\fR] [\fB\-w\ \fR\fB\fIdir\fR\fR] [\fB\-p\ \fR\fB\fIpidfile\fR\fR] [\fB\-r\ \fR\fB\fIkilobytes\fR\fR] [\fB\-ziDST1\fR] [listener\-spec...]
+.SH "DESCRIPTION"
+.PP
+
+\fByaz\-ztest\fR
+is a Z39.50 test server that uses the YAZ generic frontend server API. The server acts as a real Z39.50 server but does not use a database. It returns a random hit count and returns a subset of a few built\-in records.
+.PP
+The
+\fIlistener\-spec\fR
+consists of a transport mode followed by a colon, followed by a listener address. The transport mode is either
+tcp,
+unix, or
+ssl.
+.PP
+For TCP and SSL, an address has the form:
+.sp
+.RS 3n
+.nf
+    hostname | IP\-number [ : portnumber ]
+   
+.fi
+.RE
+.sp
+.PP
+For UNIX local socket the address is the filename of the local socket.
+.SH "OPTIONS"
+.PP
+\-a \fIfile\fR
+.RS 3n
+Specify a file for dumping PDUs (for diagnostic purposes). The special name
+\-
+(dash) sends output to
+stderr.
+.RE
+.PP
+\-S
+.RS 3n
+Don't fork or make threads on connection requests. This is good for debugging, but not recommended for real operation: Although the server is asynchronous and non\-blocking, it can be nice to keep a software malfunction (okay then, a crash) from affecting all current users.
+.RE
+.PP
+\-1
+.RS 3n
+Like
+\-S
+but after one session the server exits. This mode is for debugging
+\fIonly\fR.
+.RE
+.PP
+\-T
+.RS 3n
+Operate the server in threaded mode. The server creates a thread for each connection rather than a fork a process. Only available on UNIX systems that offers POSIX threads.
+.RE
+.PP
+\-s
+.RS 3n
+Use the SR protocol (obsolete).
+.RE
+.PP
+\-z
+.RS 3n
+Use the Z39.50 protocol (default). This option and
+\-s
+complement each other. You can use both multiple times on the same command line, between listener\-specifications (see below). This way, you can set up the server to listen for connections in both protocols concurrently, on different local ports.
+.RE
+.PP
+\-l \fIfile\fR
+.RS 3n
+The logfile.
+.RE
+.PP
+\-c \fIconfig\fR
+.RS 3n
+A user option that serves as a specifier for some sort of configuration, usually a filename. The argument to this option is transferred to member
+configname
+of the
+statserv_options_block.
+.RE
+.PP
+\-f \fIvconfig\fR
+.RS 3n
+This specifies an XML file that describes one or more YAZ frontend virtual servers.
+.RE
+.PP
+\-C \fIfname\fR
+.RS 3n
+Sets SSL certificate file name for server (PEM).
+.RE
+.PP
+\-v \fIlevel\fR
+.RS 3n
+The log level. Use a comma\-separated list of members of the set {fatal,debug,warn,log,malloc,all,none}.
+.RE
+.PP
+\-u \fIuid\fR
+.RS 3n
+Set user ID. Sets the real UID of the server process to that of the given user. It's useful if you aren't comfortable with having the server run as root, but you need to start it as such to bind a privileged port.
+.RE
+.PP
+\-w \fIdir\fR
+.RS 3n
+The server changes to this directory during before listening on incoming connections. This option is useful when the server is operating from the
+inetd
+daemon (see
+\-i).
+.RE
+.PP
+\-p \fIpidfile\fR
+.RS 3n
+Specifies that the server should write its Process ID to file given by
+\fIpidfile\fR. A typical location would be
+\fI/var/run/yaz\-ztest.pid\fR.
+.RE
+.PP
+\-i
+.RS 3n
+Use this to make the the server run from the
+inetd
+server (UNIX only).
+.RE
+.PP
+\-D
+.RS 3n
+Use this to make the server put itself in the background and run as a daemon. If neither
+\-i
+nor
+\-D
+is given, the server starts in the foreground.
+.RE
+.PP
+\-install
+.RS 3n
+Use this to install the server as an NT service (Windows NT/2000/XP only). Control the server by going to the Services in the Control Panel.
+.RE
+.PP
+\-installa
+.RS 3n
+Use this to install and activate the server as an NT service (Windows NT/2000/XP only). Control the server by going to the Services in the Control Panel.
+.RE
+.PP
+\-remove
+.RS 3n
+Use this to remove the server from the NT services (Windows NT/2000/XP only).
+.RE
+.PP
+\-t \fIminutes\fR
+.RS 3n
+Idle session timeout, in minutes.
+.RE
+.PP
+\-k \fIsize\fR
+.RS 3n
+Maximum record size/message size, in kilobytes.
+.RE
+.PP
+\-r \fIsize\fR
+.RS 3n
+Maximum size of log file before rotation occurs, in kilobytes. Default size is 1048576 k (=1 GB).
+.RE
+.PP
+\-d \fIdaemon\fR
+.RS 3n
+Set name of daemon to be used in hosts access file. See
+\fBhosts_access\fR(5)
+and
+\fBtcpd\fR(8).
+.RE
+.PP
+\-m \fItime\-format\fR
+.RS 3n
+Sets the format of time\-stamps in the log\-file. Specify a string in the input format to
+strftime().
+.RE
+.SH "VIRTUAL HOSTS"
+.PP
+The Virtual hosts mechanism allows a YAZ frontend server to support multiple backends. A backend is selected on the basis of the TCP/IP binding (port+listening adddress) and/or the virtual host.
+.PP
+A backend can be configured to execute in a particular working directory. Or the YAZ frontend may perform CQL to RPN conversion, thus allowing traditional Z39.50 backends to be offered as a SRW/SRU service. SRW/SRU Explain information for a particular backend may also be specified.
+.PP
+For the HTTP protocol, the virtual host is specified in the Host header. For the Z39.50 protocol, the virtual host is specified as in the Initialize Request in the OtherInfo, OID 1.2.840.10003.10.1000.81.1.
+.sp
+.it 1 an-trap
+.nr an-no-space-flag 1
+.nr an-break-flag 1
+.br
+\fBNote\fR
+.PP
+Not all Z39.50 clients allows the VHOST information to be set. For those the selection of the backend must rely on the TCP/IP information alone (port and address).
+.PP
+The YAZ frontend server uses XML to describe the backend configurations. Command\-line option
+\-f
+specifies filename of the XML configuration.
+.PP
+The configuration uses the root element
+yazgfs. This element includes a list of
+listen
+elements, followed by one or more
+server
+elements.
+.PP
+The
+listen
+describes listener (transport end point), such as TCP/IP, Unix file socket or SSL server. Content for a listener:
+.PP
+CDATA (required)
+.RS 3n
+The CDATA for the
+listen
+element holds the listener string, such as
+tcp:@:210,
+tcp:server1:2100, etc.
+.RE
+.PP
+attribute id (optional)
+.RS 3n
+identifier for this listener. This may be referred to from server sections.
+.RE
+.sp
+.it 1 an-trap
+.nr an-no-space-flag 1
+.nr an-break-flag 1
+.br
+\fBNote\fR
+.PP
+We expect more information to be added for the listen section in a future version, such as CERT file for SSL servers.
+.PP
+The
+server
+describes a server and the parameters for this server type. Content for a server:
+.PP
+attribute id (optional)
+.RS 3n
+Identifier for this server. Currently not used for anything, but it might be for logging purposes.
+.RE
+.PP
+attribute listenref (optional)
+.RS 3n
+Specifies listener for this server. If this attribute is not given, the server is accessible from all listener. In order for the server to be used for real, howeever, the virtual host must match (if specified in the configuration).
+.RE
+.PP
+element config (optional)
+.RS 3n
+Specifies the server configuration. This is equivalent to the config specified using command line option
+\-c.
+.RE
+.PP
+element directory (optional)
+.RS 3n
+Specifies a working directory for this backend server. If specifid, the YAZ fronend changes current working directory to this directory whenever a backend of this type is started (backend handler bend_start), stopped (backend handler hand_stop) and initialized (bend_init).
+.RE
+.PP
+element host (optional)
+.RS 3n
+Specifies the virtual host for this server. If this is specified a client
+\fImust\fR
+specify this host string in order to use this backend.
+.RE
+.PP
+element cql2rpn (optional)
+.RS 3n
+Specifies a filename that includes CQL to RPN conversion for this backend server. See
+the section called \(lqSEE ALSO\(rq
+If given, the backend server will only "see" a Type\-1/RPN query.
+.RE
+.PP
+element stylesheet (optional)
+.RS 3n
+Specifies the stylesheet reference to be part of SRU HTTP responses when the client does not specify one. If neither this is given, nor the client specifies one, no stylesheet reference is part of the SRU HTTP response.
+.RE
+.PP
+element docpath (optional)
+.RS 3n
+Specifies a path for local file access using HTTP. All URLs with a leading prefix (/ exluded) that matches the value of docpath are used for file access. For example, if the server is to offer access in directory
+xsl, the docpath would be
+xsl
+and all URLs of the form
+http://host/exl
+will result in a local file access.
+.RE
+.PP
+element explain (optional)
+.RS 3n
+Specifies SRW/SRU ZeeRex content for this server. Copied verbatim to the client. As things are now, some of the Explain content seeem redundant because host information, etc. is also stored elsewhere.
+.RE
+.PP
+element maximumrecordsize (optional)
+.RS 3n
+Specifies maximum record size/message size, in bytes. This value also servers as maximum size of
+\fIincoming\fR
+packages (for Record Updates etc). It's the same value as that given by the
+\-k
+option.
+.RE
+.PP
+The XML below configures a server that accepts connections from two ports, TCP/IP port 9900 and a local UNIX file socket. We name the TCP/IP server
+public
+and the other server
+internal.
+.sp
+.RS 3n
+.nf
+  
+ <yazgfs>
+  <listen id="public">tcp:@:9900</listen>
+  <listen id="internal">unix:/var/tmp/socket</listen>
+  <server id="server1">
+    <host>server1.mydomain</host>
+    <directory>/var/www/s1</directory>
+    <config>config.cfg</config>
+  </server>
+  <server id="server2">
+    <host>server2.mydomain</host>
+    <directory>/var/www/s2</directory>
+    <config>config.cfg</config>
+    <cql2rpn>../etc/pqf.properties</cql2rpn>
+    <explain xmlns="http://explain.z3950.org/dtd/2.0/">
+      <serverInfo>
+        <host>server2.mydomain</host>
+        <port>9900</port>
+        <database>a</database>
+      </serverInfo>
+    </explain>
+  </server>
+  <server id="server3" listenref="internal">
+    <directory>/var/www/s3</directory>
+    <config>config.cfg</config>
+  </server>
+ </yazgfs>
+
+ 
+.fi
+.RE
+.PP
+There are three configured backend servers. The first two servers,
+"server1"
+and
+"server2", can be reached by both listener addresses \- since no
+listenref
+attribute is specified. In order to distinguish between the two a virtual host has been specified for each of server in the
+host
+elements.
+.PP
+For
+"server2"
+elements for CQL to RPN conversion is supported and explain information has been added (a short one here to keep the example small).
+.PP
+The third server,
+"server3"
+can only be reached via listener
+"internal".
+.SH "FILES"
+.PP
+
+\fIyaz\-<version>/ztest/yaz\-ztest.c\fR
+.PP
+
+\fIyaz\-<version>/include/yaz/backend.h\fR
+.SH "SEE ALSO"
+.PP
+
+\fByaz\fR(7)
+\fByaz\-log\fR(7)
+.PP
+Section "Generic server" in the YAZ manual.

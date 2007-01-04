@@ -1,0 +1,30 @@
+<triple>
+  <boolean>
+    <value>prox</value>
+    <modifiers>
+      <modifier>
+        <type>distance</type>
+        <relation>&lt;=</relation>
+        <value>5</value>
+      </modifier>
+    </modifiers>
+  </boolean>
+  <leftOperand>
+    <searchClause>
+      <index>title</index>
+      <relation>
+        <value>all</value>
+      </relation>
+      <term>chips frog</term>
+    </searchClause>
+  </leftOperand>
+  <rightOperand>
+    <searchClause>
+      <index>cql.serverChoice</index>
+      <relation>
+        <value>scr</value>
+      </relation>
+      <term>exact</term>
+    </searchClause>
+  </rightOperand>
+</triple>

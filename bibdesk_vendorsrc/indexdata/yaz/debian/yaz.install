@@ -1,0 +1,5 @@
+debian/tmp/usr/bin/yaz-client
+debian/tmp/usr/bin/yaz-ztest
+debian/tmp/usr/bin/zoomsh
+debian/tmp/usr/bin/yaz-marcdump
+debian/tmp/usr/bin/yaz-iconv

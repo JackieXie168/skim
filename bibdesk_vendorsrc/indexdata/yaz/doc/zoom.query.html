@@ -1,0 +1,31 @@
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"><title>2. Queries</title><meta name="generator" content="DocBook XSL Stylesheets V1.71.0"><link rel="start" href="index.html" title="YAZ User's Guide and Reference"><link rel="up" href="zoom.html" title="Chapter 3. ZOOM"><link rel="prev" href="zoom.html" title="Chapter 3. ZOOM"><link rel="next" href="zoom.resultsets.html" title="3. Result sets"></head><body><link rel="stylesheet" type="text/css" href="common/style1.css"><div class="navheader"><table width="100%" summary="Navigation header"><tr><th colspan="3" align="center">2. Queries</th></tr><tr><td width="20%" align="left"><a accesskey="p" href="zoom.html">Prev</a> </td><th width="60%" align="center">Chapter 3. ZOOM</th><td width="20%" align="right"> <a accesskey="n" href="zoom.resultsets.html">Next</a></td></tr></table><hr></div><div class="sect1" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="zoom.query"></a>2. Queries</h2></div></div></div><p>
+    Query objects represents queries.
+   </p><pre class="synopsis">
+     ZOOM_query ZOOM_query_create(void);
+
+     void ZOOM_query_destroy(ZOOM_query q);
+
+     int ZOOM_query_prefix(ZOOM_query q, const char *str);
+
+     int ZOOM_query_cql(ZOOM_query s, const char *str);
+
+     int ZOOM_query_sortby(ZOOM_query q, const char *criteria);
+   </pre><p>
+    Create query objects using <code class="function">ZOOM_query_create</code>
+    and destroy them by calling <code class="function">ZOOM_query_destroy</code>.
+    RPN-queries can be specified in <a href="tools.html#PQF" title="1.1. Prefix Query Format">PQF</a>
+    notation by using the
+    function <code class="function">ZOOM_query_prefix</code>.
+    The <code class="function">ZOOM_query_cql</code> specifies a CQL
+    query to be sent to the server/target.
+    More query types will be added in future versions of YAZ, such as
+    <a href="tools.html#CCL" title="1.2. CCL">CCL</a> to RPN-mapping, native CCL query,
+    etc. In addition to a search, a sort criteria may be set. Function
+    <code class="function">ZOOM_query_sortby</code> specifies a 
+    sort criteria using the same string notation for sort as offered by
+    the <a href="client.commands.html#sortspec">YAZ client</a>.
+   </p><div class="sect2" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="zoom.sort.behavior"></a>2.1. Protocol behavior</h3></div></div></div><p>
+     The query object is just an interface for the member Query
+     in the SearchRequest. The sortby-function is an interface to the
+     sortSequence member of the SortRequest.
+    </p></div></div><div class="navfooter"><hr><table width="100%" summary="Navigation footer"><tr><td width="40%" align="left"><a accesskey="p" href="zoom.html">Prev</a> </td><td width="20%" align="center"><a accesskey="u" href="zoom.html">Up</a></td><td width="40%" align="right"> <a accesskey="n" href="zoom.resultsets.html">Next</a></td></tr><tr><td width="40%" align="left" valign="top">Chapter 3. ZOOM </td><td width="20%" align="center"><a accesskey="h" href="index.html">Home</a></td><td width="40%" align="right" valign="top"> 3. Result sets</td></tr></table></div></body></html>
