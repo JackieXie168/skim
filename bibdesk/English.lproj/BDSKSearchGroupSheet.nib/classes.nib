@@ -25,6 +25,7 @@
             CLASS = BDSKSearchGroupSheetController; 
             LANGUAGE = ObjC; 
             OUTLETS = {
+                addRemoveButton = NSButton; 
                 addressField = NSTextField; 
                 databaseField = NSTextField; 
                 editButton = NSButton; 
