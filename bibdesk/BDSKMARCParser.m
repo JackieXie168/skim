@@ -82,7 +82,7 @@ static void addSubstringToDictionary(NSString *subValue, NSMutableDictionary *pu
 	
     itemString = [itemString stringByFixingFormattedMARCStart];
     
-    AGRegex *regex = [AGRegex regexWithPattern:@"^([ \t]*)1[01]{2}[ \t]*[0-9]{0,1}[ \t]+[^ \t[:alnum:]]a" options:AGRegexMultiline];
+    AGRegex *regex = [AGRegex regexWithPattern:@"^([ \t]*)1[013]{2}[ \t]*[0-9]{0,1}[ \t]+[^ \t[:alnum:]]a" options:AGRegexMultiline];
     AGRegexMatch *match = [regex findInString:itemString];
     
     if(match == nil){
