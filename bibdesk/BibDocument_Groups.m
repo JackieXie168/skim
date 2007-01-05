@@ -931,13 +931,10 @@ The groupedPublications array is a subset of the publications array, developed b
 			count++;
 		} else if ([group isSearch] == YES) {
 			[groups removeSearchGroup:(BDSKSearchGroup *)group];
-			count++;
         }
 		rowIndex = [rowIndexes indexLessThanIndex:rowIndex];
 	}
-	if (count == 0) {
-		NSBeep();
-	} else {
+	if (count > 0) {
 		[[self undoManager] setActionName:NSLocalizedString(@"Remove Groups", @"Undo action name")];
         [self displaySelectedGroups];
 	}
