@@ -89,7 +89,7 @@
 
 - (id)initWithType:(NSString *)aType dictionary:(NSDictionary *)info;
 {    
-    self = [self initWithType:aType
+    self = [self initWithType:aType ? aType : [info objectForKey:@"type"]
                          name:[info objectForKey:@"name"]
                          host:[info objectForKey:@"host"]
                          port:[info objectForKey:@"port"]
