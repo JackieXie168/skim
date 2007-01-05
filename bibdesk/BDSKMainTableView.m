@@ -346,11 +346,11 @@
 @implementation BDSKMainTableView (Private)
 
 - (NSImage *)headerImageForField:(NSString *)field {
-	static NSMutableDictionary *headerImageCache = nil;
+	static NSDictionary *headerImageCache = nil;
 	
 	if (headerImageCache == nil) {
 		NSDictionary *paths = [[OFPreferenceWrapper sharedPreferenceWrapper] objectForKey:BDSKTableHeaderImagesKey];
-		headerImageCache = [[NSMutableDictionary alloc] initWithCapacity:1];
+		NSMutableDictionary *tmpDict = [[NSMutableDictionary alloc] initWithObjectsAndKeys:[NSImage imageNamed:@"TinyFile"], BDSKLocalUrlString, nil];
 		if (paths) {
 			NSEnumerator *keyEnum = [paths keyEnumerator];
 			NSString *key, *path;
@@ -360,35 +360,26 @@
 				path = [paths objectForKey:key];
 				if ([[NSFileManager defaultManager] fileExistsAtPath:path] &&
 					(image = [[NSImage alloc] initWithContentsOfFile:path])) {
-					[headerImageCache setObject:image forKey:key];
+					[tmpDict setObject:image forKey:key];
 					[image release];
 				}
 			}
 		}
-		if ([headerImageCache objectForKey:BDSKLocalUrlString] == nil)
-			[headerImageCache setObject:[NSImage imageNamed:@"TinyFile"] forKey:BDSKLocalUrlString];
+        headerImageCache = [tmpDict copy];
+        [tmpDict release];
 	}
 	
 	return [headerImageCache objectForKey:field];
 }
 
 - (NSString *)headerTitleForField:(NSString *)field {
-	static NSMutableDictionary *headerTitleCache = nil;
+	static NSDictionary *headerTitleCache = nil;
 	
 	if (headerTitleCache == nil) {
-		NSDictionary *titles = [[OFPreferenceWrapper sharedPreferenceWrapper] objectForKey:BDSKTableHeaderTitlesKey];
-		headerTitleCache = [[NSMutableDictionary alloc] initWithCapacity:1];
-		if (titles) {
-			NSEnumerator *keyEnum = [titles keyEnumerator];
-			NSString *key, *title;
-			
-			while (key = [keyEnum nextObject]) {
-				title = [titles objectForKey:key];
-				[headerTitleCache setObject:title forKey:key];
-			}
-		}
-		if ([headerTitleCache objectForKey:BDSKUrlString] == nil)
-			[headerTitleCache setObject:@"@" forKey:BDSKUrlString];
+        NSMutableDictionary *tmpDict = [[NSMutableDictionary alloc] initWithObjectsAndKeys:@"@", BDSKUrlString, nil];
+		[tmpDict addEntriesFromDictionary:[[OFPreferenceWrapper sharedPreferenceWrapper] objectForKey:BDSKTableHeaderTitlesKey]];
+        headerTitleCache = [tmpDict copy];
+        [tmpDict release];
 	}
 	
 	return [headerTitleCache objectForKey:field];
