@@ -2641,6 +2641,10 @@ originalContentsURL:(NSURL *)absoluteOriginalContentsURL
     return [self _tableViewSingleSelectionIndexes:tview];
 }
 
+- (void)tableView:(BDSKGroupTableView *)tview doubleClickedOnIconOfRow:(int)row{
+    [self editGroupAtRow:row];
+}
+
 #pragma mark DisplayName KVO
 
 - (void)setFileURL:(NSURL *)absoluteURL{ 

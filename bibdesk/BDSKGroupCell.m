@@ -222,6 +222,18 @@ textRect.origin.y -= floorf(vOffset); \
 else \
 textRect.origin.y += floorf(vOffset); \
 
+- (NSRect)textRectForBounds:(NSRect)aRect {
+    NSView *controlView = [self controlView];
+    _calculateDrawingRectsAndSizes;
+    return textRect;
+}
+
+- (NSRect)iconRectForBounds:(NSRect)aRect {
+    NSView *controlView = [self controlView];
+    _calculateDrawingRectsAndSizes;
+    return imageRect;
+}
+
 - (void)drawInteriorWithFrame:(NSRect)aRect inView:(NSView *)controlView {
     /* Shark and sample indicate that we're spending a lot of time in NSAttributedString drawing, if you test by holding down an arrow key and scrolling through the main table */
 

@@ -943,17 +943,10 @@ The groupedPublications array is a subset of the publications array, developed b
 	}
 }
 
-- (IBAction)editGroupAction:(id)sender {
-	if ([groupTableView numberOfSelectedRows] != 1) {
-		NSBeep();
-		return;
-	} 
-	
-	int row = [groupTableView selectedRow];
+- (void)editGroupAtRow:(int)row {
 	OBASSERT(row != -1);
-	if(row <= 0) return;
 	BDSKGroup *group = [groups objectAtIndex:row];
-	
+    
     if ([group isEditable] == NO) {
 		NSBeep();
         return;
@@ -981,6 +974,17 @@ The groupedPublications array is a subset of the publications array, developed b
         [sheetController beginSheetModalForWindow:documentWindow];
         [sheetController release];
 	}
+}
+
+- (IBAction)editGroupAction:(id)sender {
+	if ([groupTableView numberOfSelectedRows] != 1) {
+		NSBeep();
+		return;
+	} 
+	
+	int row = [groupTableView selectedRow];
+	OBASSERT(row != -1);
+	if(row > 0) [self editGroupAtRow:row];
 }
 
 - (IBAction)renameGroupAction:(id)sender {
