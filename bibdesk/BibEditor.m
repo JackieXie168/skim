@@ -2135,6 +2135,20 @@ static int numberOfOpenEditors = 0;
     [rssDescriptionViewUndoManager removeAllActions];
 }
 
+- (BOOL)tabView:(NSTabView *)tabView shouldSelectTabViewItem:(NSTabViewItem *)tabViewItem{
+    if (currentEditedView && [[currentEditedView string] isStringTeXQuotingBalancedWithBraces:YES connected:NO] == NO) {
+        NSAlert *alert = [NSAlert alertWithMessageText:NSLocalizedString(@"Invalid Value", @"Message in alert dialog when entering an invalid value") 
+                                         defaultButton:NSLocalizedString(@"OK", @"Button title")
+                                       alternateButton:nil
+                                           otherButton:nil
+                             informativeTextWithFormat:NSLocalizedString(@"The value you entered contains unbalanced braces and cannot be saved.", @"Informative text in alert dialog")];
+    
+        [alert beginSheetModalForWindow:[self window] modalDelegate:nil didEndSelector:NULL contextInfo:NULL];
+        return NO;
+    }
+    return YES;
+}
+
 - (void)tabView:(NSTabView *)tabView didSelectTabViewItem:(NSTabViewItem *)tabViewItem{
     // fix a weird keyview loop bug
     if([[tabViewItem identifier] isEqualToString:BDSKBibtexString])
@@ -2144,6 +2158,16 @@ static int numberOfOpenEditors = 0;
 // sent by the notesView and the abstractView
 - (void)textDidEndEditing:(NSNotification *)aNotification{
 	currentEditedView = nil;
+    
+    if ([[[aNotification object] string] isStringTeXQuotingBalancedWithBraces:YES connected:NO] == NO) {
+        NSAlert *alert = [NSAlert alertWithMessageText:NSLocalizedString(@"Invalid Value", @"Message in alert dialog when entering an invalid value") 
+                                         defaultButton:NSLocalizedString(@"OK", @"Button title")
+                                       alternateButton:nil
+                                           otherButton:nil
+                             informativeTextWithFormat:NSLocalizedString(@"The value you entered contains unbalanced braces. If you save you might not be able to reopen the file.", @"Informative text in alert dialog")];
+    
+        [alert beginSheetModalForWindow:[self window] modalDelegate:nil didEndSelector:NULL contextInfo:NULL];
+    }
 }
 
 // sent by the notesView and the abstractView; this ensures that the annote/abstract preview gets updated
