@@ -66,6 +66,7 @@ static void addSubstringToDictionary(NSString *subValue, NSMutableDictionary *pu
     NSMutableString *currentValue;
     NSString *tag;
     NSString *subTag;
+    NSMutableString *formattedString;
 }
 - (NSArray *)parsedItems;
 @end
@@ -134,6 +135,8 @@ static void addSubstringToDictionary(NSString *subValue, NSMutableDictionary *pu
                 addStringToDictionary(mutableValue, pubDict, tag, subFieldIndicator);
             
             if([pubDict count] > 0){
+                [pubDict setObject:itemString forKey:BDSKAnnoteString];
+                
                 newBI = [[BibItem alloc] initWithType:BDSKBookString
                                              fileType:BDSKBibtexString
                                               citeKey:nil
@@ -190,12 +193,11 @@ static void addSubstringToDictionary(NSString *subValue, NSMutableDictionary *pu
     BibItem *newBI = nil;
     NSMutableArray *returnArray = [NSMutableArray arrayWithCapacity:10];
     
-    unsigned recordTerminator = 0x1D, fieldTerminator = 0x1E, subFieldChar = 0x1F;
-    NSString *subFieldIndicator = [NSString stringWithFormat:@"%C", subFieldChar];
-    
-#pragma unused (fieldTerminator)
+    NSString *recordTerminator = [NSString stringWithFormat:@"%C", 0x1D];
+    NSString *fieldTerminator = [NSString stringWithFormat:@"%C", 0x1E];
+    NSString *subFieldIndicator = [NSString stringWithFormat:@"%C", 0x1F];
 	
-    NSArray *records = [itemString componentsSeparatedByString:[NSString stringWithFormat:@"%C", recordTerminator]];
+    NSArray *records = [itemString componentsSeparatedByString:recordTerminator];
     
     NSEnumerator *recordEnum = [records objectEnumerator];
     NSString *record = nil;
@@ -203,9 +205,12 @@ static void addSubstringToDictionary(NSString *subValue, NSMutableDictionary *pu
     //dictionary is the publication entry
     NSMutableDictionary *pubDict = [[NSMutableDictionary alloc] init];
     
+    NSMutableString *formattedString = [NSMutableString string];
+    
     NSArray *fields;
     NSString *tag = nil, *field = nil, *value = nil, *dir = nil;
     unsigned base, fieldsStart, i, dirLength;
+    BOOL isControlField;
     
     while(record = [recordEnum nextObject]){
         
@@ -213,31 +218,41 @@ static void addSubstringToDictionary(NSString *subValue, NSMutableDictionary *pu
             continue;
         
         base = [[record substringWithRange:NSMakeRange(12, 5)] intValue];
-        dir = [record substringWithRange:NSMakeRange(24, base - 1)];
+        dir = [record substringWithRange:NSMakeRange(24, base - 25)];
         dirLength = [dir length] / 12;
         
         fieldsStart = base + [[dir substringWithRange:NSMakeRange(7, 5)] intValue];
-        fields = [[record substringFromIndex:fieldsStart] componentsSeparatedByString:[NSString stringWithFormat:@"%C", fieldTerminator]];
+        fields = [[record substringFromIndex:fieldsStart] componentsSeparatedByString:fieldTerminator];
+        
+        [formattedString setString:@""];
+        [formattedString appendStrings:@"LDR    ", [record substringToIndex:24], @"\n"];
         
         for(i = 0; i < dirLength; i++){
             
             if ([fields count] <= i)
                 break;
             
+            tag = [dir substringWithRange:NSMakeRange(12 * i, 3)];
             field = [fields objectAtIndex:i];
+            isControlField = [tag hasPrefix:@"00"];
             
-            if([field length] < 3)
+            if (isControlField == NO && [field length] < 2)
                 continue;
             
-            tag = [dir substringWithRange:NSMakeRange(12 * i, 3)];
-            
             // the first 2 characters are indicators
-            value = [field substringFromIndex:2];
+            value = [field substringFromIndex:isControlField ? 0 : 2];
             
             addStringToDictionary(value, pubDict, tag, subFieldIndicator);
+            
+            [formattedString appendStrings:tag, @" ", isControlField ? @"  " : [field substringToIndex:2], @" "];
+            [formattedString appendStrings:[value stringByReplacingAllOccurrencesOfString:subFieldIndicator withString:@"$"], @"\n"];
         }
         
         if([pubDict count] > 0){
+            value = [formattedString copy];
+            [pubDict setObject:value forKey:BDSKAnnoteString];
+            [value release];
+            
             newBI = [[BibItem alloc] initWithType:BDSKBookString
                                          fileType:BDSKBibtexString
                                           citeKey:nil
@@ -451,6 +466,7 @@ static void addSubstringToDictionary(NSString *subValue, NSMutableDictionary *pu
         currentValue = [[NSMutableString alloc] initWithCapacity:50];
         tag = nil;
         subTag = nil;
+        formattedString = [[NSMutableString alloc] initWithCapacity:1000];
         
         [self setDelegate:self];
         
@@ -464,6 +480,7 @@ static void addSubstringToDictionary(NSString *subValue, NSMutableDictionary *pu
     [tag release];
     [subTag release];
     [currentValue release];
+    [formattedString release];
     [super dealloc];
 }
 
@@ -474,19 +491,32 @@ static void addSubstringToDictionary(NSString *subValue, NSMutableDictionary *pu
 - (void)parser:(NSXMLParser *)parser didStartElement:(NSString *)elementName namespaceURI:(NSString *)namespaceURI qualifiedName:(NSString *)qualifiedName attributes:(NSDictionary *)attributeDict{
     if([elementName isEqualToString:@"record"] || [elementName isEqualToString:@"marc:record"]){
         [pubDict removeAllObjects];
+        [formattedString setString:@""];
+    }else if([elementName isEqualToString:@"leader"] || [elementName isEqualToString:@"marc:leader"]){
+        [formattedString appendString:@"LDR    "];
+    }else if([elementName isEqualToString:@"controlfield"] || [elementName isEqualToString:@"marc:controlfield"]){
+        [tag release];
+        tag = [[attributeDict objectForKey:@"tag"] retain];
+        [formattedString appendStrings:tag, @"    "];
     }else if([elementName isEqualToString:@"datafield"] || [elementName isEqualToString:@"marc:datafield"]){
         [tag release];
         tag = [[attributeDict objectForKey:@"tag"] retain];
+        [formattedString appendStrings:tag, @" ", [attributeDict objectForKey:@"ind1"], [attributeDict objectForKey:@"ind2"], @" "];
     }else if([elementName isEqualToString:@"subfield"] || [elementName isEqualToString:@"marc:subfield"]){
         [subTag release];
         subTag = [[attributeDict objectForKey:@"code"] retain];
-        [currentValue setString:@""];
+        [formattedString appendStrings:tag, @"$", subTag];
     }
+    [currentValue setString:@""];
 }
 
 - (void)parser:(NSXMLParser *)parser didEndElement:(NSString *)elementName namespaceURI:(NSString *)namespaceURI qualifiedName:(NSString *)qName{
     if([elementName isEqualToString:@"record"] || [elementName isEqualToString:@"marc:record"]){
         if([pubDict count] > 0){
+            NSString *value = [formattedString copy];
+            [pubDict setObject:value forKey:BDSKAnnoteString];
+            [value release];
+            
             BibItem *newBI = [[BibItem alloc] initWithType:BDSKBookString
                                                   fileType:BDSKBibtexString
                                                    citeKey:nil
@@ -495,9 +525,15 @@ static void addSubstringToDictionary(NSString *subValue, NSMutableDictionary *pu
             [returnArray addObject:newBI];
             [newBI release];
         }
+    }else if([elementName isEqualToString:@"leader"] || [elementName isEqualToString:@"marc:leader"] ||
+             [elementName isEqualToString:@"controlfield"] || [elementName isEqualToString:@"marc:controlfield"]){
+        [formattedString appendStrings:currentValue, @"\n"];
+    }else if([elementName isEqualToString:@"datafield"] || [elementName isEqualToString:@"marc:datafield"]){
+        [formattedString appendString:@"\n"];
     }else if([elementName isEqualToString:@"subfield"] || [elementName isEqualToString:@"marc:subfield"]){
         if(tag && subTag && [currentValue length])
             addSubstringToDictionary(currentValue, pubDict, tag, subTag);
+        [formattedString appendString:currentValue];
     }
 }
 
