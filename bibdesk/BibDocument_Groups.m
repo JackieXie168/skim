@@ -143,7 +143,6 @@ The groupedPublications array is a subset of the publications array, developed b
     NSView *searchGroupView = [searchGroupViewController view];
 
     if (documentWindow != [searchGroupView window]) {
-        NSScrollView *sv = [tableView enclosingScrollView];
         NSRect searchFrame = [searchGroupView frame];
         NSRect svFrame = [splitView frame];
         searchFrame.size.width = NSWidth(svFrame);
@@ -838,15 +837,6 @@ The groupedPublications array is a subset of the publications array, developed b
     // updating of the tables is done when finishing the edit of the name
 }
 
-- (IBAction)addSearchGroupAction:(id)sender {
-    BDSKSearchGroupSheetController *sheetController = [[BDSKSearchGroupSheetController alloc] init];
-    [sheetController beginSheetModalForWindow:documentWindow
-                                modalDelegate:self
-                               didEndSelector:@selector(searchGroupSheetDidEnd:returnCode:contextInfo:)
-                                  contextInfo:NULL];
-    [sheetController release];
-}
-
 - (void)searchGroupSheetDidEnd:(BDSKSearchGroupSheetController *)sheetController returnCode:(int) returnCode contextInfo:(void *)contextInfo{
 	if(returnCode == NSOKButton){
         unsigned int insertIndex = NSMaxRange([groups rangeOfSearchGroups]);
@@ -854,6 +844,15 @@ The groupedPublications array is a subset of the publications array, developed b
 		[groups addSearchGroup:(id)group];        
 		[groupTableView selectRowIndexes:[NSIndexSet indexSetWithIndex:insertIndex] byExtendingSelection:NO];
 	}
+}
+
+- (IBAction)addSearchGroupAction:(id)sender {
+    BDSKSearchGroupSheetController *sheetController = [[BDSKSearchGroupSheetController alloc] init];
+    [sheetController beginSheetModalForWindow:documentWindow
+                                modalDelegate:self
+                               didEndSelector:@selector(searchGroupSheetDidEnd:returnCode:contextInfo:)
+                                  contextInfo:NULL];
+    [sheetController release];
 }
 
 - (IBAction)addURLGroupAction:(id)sender {

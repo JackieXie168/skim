@@ -432,6 +432,14 @@ static NSDictionary *searchGroupServers = nil;
     }
 }
 
+- (void)resetAlertDidEnd:(NSAlert *)alert returnCode:(int)returnCode contextInfo:(void *)contextInfo;
+{
+    if (returnCode == NSOKButton) {
+        [[self class] resetServers];
+        [self reloadServersSelectingIndex:0];
+    }
+}
+
 - (IBAction)resetServers:(id)sender;
 {
     NSAlert *alert = [NSAlert alertWithMessageText:NSLocalizedString(@"Reset Servers", @"Message in alert dialog when resetting default search group servers")
@@ -440,14 +448,6 @@ static NSDictionary *searchGroupServers = nil;
                                        otherButton:nil
                          informativeTextWithFormat:NSLocalizedString(@"This will restore the default server settings to their original values. This action cannot be undone.", @"Informative text in alert dialog when resetting default search group servers")];
     [alert beginSheetModalForWindow:[self window] modalDelegate:self didEndSelector:@selector(resetAlertDidEnd:returnCode:contextInfo:) contextInfo:NULL];
-}
-
-- (void)resetAlertDidEnd:(NSAlert *)alert returnCode:(int)returnCode contextInfo:(void *)contextInfo;
-{
-    if (returnCode == NSOKButton) {
-        [[self class] resetServers];
-        [self reloadServersSelectingIndex:0];
-    }
 }
 
 - (IBAction)toggle:(id)sender;
