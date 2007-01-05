@@ -1207,15 +1207,6 @@ originalContentsURL:(NSURL *)absoluteOriginalContentsURL
             if(NO == isOK)
                 [error setValue:NSLocalizedString(@"Unable to convert script groups.", @"string encoding error context") forKey:NSLocalizedRecoverySuggestionErrorKey];
         }
-/* @@ temporary
-        if(isOK && ([[groups searchGroups] count] > 0)){
-            isOK = [outputData appendDataFromString:@"\n\n@comment{BibDesk Search Groups{\n" encoding:encoding error:&error] &&
-                   [outputData appendStringData:[groups serializedGroupsDataOfType:BDSKSearchGroupType] convertedFromUTF8ToEncoding:groupsEncoding error:&error] &&
-                   [outputData appendDataFromString:@"}}" encoding:encoding error:&error];
-            if(NO == isOK)
-                [error setValue:NSLocalizedString(@"Unable to convert search groups.", @"string encoding error context") forKey:NSLocalizedRecoverySuggestionErrorKey];
-        }
-*/
     }
     
     if(isOK)

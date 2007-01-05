@@ -89,30 +89,12 @@
 
 - (id)initWithType:(NSString *)aType dictionary:(NSDictionary *)info;
 {    
-    // enumerate the immutable dictionary
-    NSDictionary *originalOptions = [info objectForKey:@"options"];
-    NSMutableDictionary *opts;
-    if (originalOptions) {
-        opts = [[originalOptions mutableCopy] autorelease];
-        NSEnumerator *keyEnum = [originalOptions keyEnumerator];
-    
-        NSString *key;
-        id value;
-        while (key = [keyEnum nextObject]) {
-            value = [originalOptions objectForKey:key];
-            if ([value respondsToSelector:@selector(stringByUnescapingGroupPlistEntities)])
-                [opts setObject:[value stringByUnescapingGroupPlistEntities] forKey:key];
-        }
-    } else {
-        opts = [NSMutableDictionary dictionary];
-    }
-    
     self = [self initWithType:aType
-                         name:[[info objectForKey:@"name"] stringByUnescapingGroupPlistEntities]
-                         host:[[info objectForKey:@"host"] stringByUnescapingGroupPlistEntities]
-                         port:[[info objectForKey:@"port"] stringByUnescapingGroupPlistEntities]
-                     database:[[info objectForKey:@"database"] stringByUnescapingGroupPlistEntities]
-                      options:opts];
+                         name:[info objectForKey:@"name"]
+                         host:[info objectForKey:@"host"]
+                         port:[info objectForKey:@"port"]
+                     database:[info objectForKey:@"database"]
+                      options:[info objectForKey:@"options"]];
     return self;
 }
 
@@ -160,26 +142,16 @@
     [info setValue:[self type] forKey:@"type"];
     [info setValue:[self name] forKey:@"name"];
     if ([self isEntrez]) {
-        [info setValue:[[self database] stringByEscapingGroupPlistEntities] forKey:@"database"];
+        [info setValue:[self database] forKey:@"database"];
     } else if ([self isZoom]) {
-        NSMutableDictionary *opts = [[[self options] mutableCopy] autorelease];
-        NSEnumerator *keyEnum = [[self options]  keyEnumerator];
-        NSString *key;
-        id value;
-        while (key = [keyEnum nextObject]) {
-            value = [[self options] objectForKey:key];
-            if ([value respondsToSelector:@selector(stringByEscapingGroupPlistEntities)])
-                [opts setObject:[value stringByEscapingGroupPlistEntities] forKey:key];
-        }
-        
-        [info setValue:[[self host] stringByEscapingGroupPlistEntities] forKey:@"host"];
-        [info setValue:[[self port] stringByEscapingGroupPlistEntities] forKey:@"port"];
-        [info setValue:[[self database] stringByEscapingGroupPlistEntities] forKey:@"database"];
-        [info setValue:[[self password] stringByEscapingGroupPlistEntities] forKey:@"password"];
-        [info setValue:[[self username] stringByEscapingGroupPlistEntities] forKey:@"username"];
-        [info setValue:opts forKey:@"options"];
-    } else {
-        [info setValue:[[self host] stringByEscapingGroupPlistEntities] forKey:@"host"];
+        [info setValue:[self host] forKey:@"host"];
+        [info setValue:[self port] forKey:@"port"];
+        [info setValue:[self database] forKey:@"database"];
+        [info setValue:[self password] forKey:@"password"];
+        [info setValue:[self username] forKey:@"username"];
+        [info setValue:[self options] forKey:@"options"];
+    } else if ([self isOAI]) {
+        [info setValue:[self host] forKey:@"host"];
     }
     return info;
 }

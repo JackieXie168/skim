@@ -80,8 +80,8 @@ NSString *BDSKSearchGroupOAI = @"oai";
 
 - (id)initWithDictionary:(NSDictionary *)groupDict {
     NSString *aType = [groupDict objectForKey:@"type"];
-    NSString *aSearchTerm = [[groupDict objectForKey:@"search term"] stringByUnescapingGroupPlistEntities];
-    NSArray *aHistory = [[groupDict objectForKey:@"history"] arrayByPerformingSelector:@selector(stringByUnescapingGroupPlistEntities)];
+    NSString *aSearchTerm = [groupDict objectForKey:@"search term"];
+    NSArray *aHistory = [groupDict objectForKey:@"history"];
     BDSKServerInfo *serverInfo = [[BDSKServerInfo alloc] initWithType:aType dictionary:groupDict];
     
     if (self = [self initWithType:aType serverInfo:serverInfo searchTerm:aSearchTerm]) {
@@ -89,19 +89,17 @@ NSString *BDSKSearchGroupOAI = @"oai";
     }
     [serverInfo release];
 
-    NSAssert2([NSClassFromString([groupDict objectForKey:@"class"]) isSubclassOfClass:[self class]], @"attempt to instantiate %@ instead of %@", [self class], [groupDict objectForKey:@"class"]);
+    NSAssert2([groupDict objectForKey:@"class"] == nil || [NSClassFromString([groupDict objectForKey:@"class"]) isSubclassOfClass:[self class]], @"attempt to instantiate %@ instead of %@", [self class], [groupDict objectForKey:@"class"]);
     return self;
 }
 
 - (NSDictionary *)dictionaryValue {
     NSMutableDictionary *groupDict = [[[self serverInfo] dictionaryValue] mutableCopy];
     
-    [groupDict setObject:[self type] forKey:@"type"];
-    if ([self searchTerm])
-        [groupDict setObject:[[self searchTerm] stringByEscapingGroupPlistEntities] forKey:@"search term"];
-    if ([self history])
-        [groupDict setObject:[[self history] arrayByPerformingSelector:@selector(stringByEscapingGroupPlistEntities)] forKey:@"history"];
-    [groupDict setObject:NSStringFromClass([self class]) forKey:@"class"];
+    [groupDict setValue:[self type] forKey:@"type"];
+    [groupDict setValue:[self searchTerm] forKey:@"search term"];
+    [groupDict setValue:[self history] forKey:@"history"];
+    [groupDict setValue:NSStringFromClass([self class]) forKey:@"class"];
     
     return [groupDict autorelease];
 }
@@ -233,7 +231,7 @@ NSString *BDSKSearchGroupOAI = @"oai";
     return macroResolver;
 }
 
-- (NSUndoManager *)undoManager { return [super undoManager]; }
+- (NSUndoManager *)undoManager { return nil; }
 
 - (NSURL *)fileURL { return nil; }
 
@@ -289,8 +287,6 @@ NSString *BDSKSearchGroupOAI = @"oai";
 
 - (void)setServerInfo:(BDSKServerInfo *)info;
 {
-    [[[self undoManager] prepareWithInvocationTarget:self] setServerInfo:[self serverInfo]];
-
     NSString *newType = [info type];
     if([newType isEqualToString:type] == NO){
         [type release];
