@@ -216,7 +216,7 @@
 	<key>CFBundleExecutable</key>
 	<string>BibDesk</string>
 	<key>CFBundleGetInfoString</key>
-	<string>BibDesk 1.3.0 (v${CURRENT_PROJECT_VERSION}), Copyright 2001-06 Michael O. McCracken.</string>
+	<string>BibDesk 1.3.0 (v${CURRENT_PROJECT_VERSION}), Copyright 2001-07 Michael O. McCracken.</string>
 	<key>CFBundleHelpBookFolder</key>
 	<string>BibDesk Help</string>
 	<key>CFBundleHelpBookName</key>
@@ -240,7 +240,7 @@
 	<key>NSAppleScriptEnabled</key>
 	<string>YES</string>
 	<key>NSHumanReadableCopyright</key>
-	<string>Copyright 2001-06 Michael O. McCracken.</string>
+	<string>Copyright 2001-07 Michael O. McCracken.</string>
 	<key>NSMainNibFile</key>
 	<string>MainMenu</string>
 	<key>NSPrincipalClass</key>

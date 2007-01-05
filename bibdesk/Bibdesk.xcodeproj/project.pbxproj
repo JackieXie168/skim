@@ -930,49 +930,49 @@
 			isa = PBXContainerItemProxy;
 			containerPortal = F9AA02F3092FA2CA0094A059 /* OmniFoundation.xcodeproj */;
 			proxyType = 1;
-			remoteGlobalIDString = 4A4E05FE08AA72B10098FF0F /* OmniFoundation */;
+			remoteGlobalIDString = 4A4E05FE08AA72B10098FF0F;
 			remoteInfo = OmniFoundation;
 		};
 		F9EF0CD90B4EFC7700A1F282 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = F9AA02ED092FA2AB0094A059 /* OmniBase.xcodeproj */;
 			proxyType = 1;
-			remoteGlobalIDString = 4A33D40608A0191B003A3FA5 /* OmniBase */;
+			remoteGlobalIDString = 4A33D40608A0191B003A3FA5;
 			remoteInfo = OmniBase;
 		};
 		F9EF0CDB0B4EFC7B00A1F282 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = F9ABECF2086E142100741FC5 /* BTParse.xcodeproj */;
 			proxyType = 1;
-			remoteGlobalIDString = 8DC2EF4F0486A6940098B216 /* BTParse */;
+			remoteGlobalIDString = 8DC2EF4F0486A6940098B216;
 			remoteInfo = BTParse;
 		};
 		F9EF0CDD0B4EFC8100A1F282 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = F9377F550B423A4C00ECCB3A /* yaz.xcodeproj */;
 			proxyType = 1;
-			remoteGlobalIDString = 8DC2EF4F0486A6940098B216 /* yaz */;
+			remoteGlobalIDString = 8DC2EF4F0486A6940098B216;
 			remoteInfo = yaz;
 		};
 		F9EF0CDF0B4EFC8500A1F282 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = F911CB4008972F7300ABDAC6 /* AGRegex.xcodeproj */;
 			proxyType = 1;
-			remoteGlobalIDString = F935665E0912D56F002B6957 /* AGRegex */;
+			remoteGlobalIDString = F935665E0912D56F002B6957;
 			remoteInfo = AGRegex;
 		};
 		F9EF0CE10B4EFC8F00A1F282 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = F95CC0C6087F53AE002C5694 /* BibImporter.xcodeproj */;
 			proxyType = 1;
-			remoteGlobalIDString = 8D57630D048677EA00EA77CD /* BibImporter */;
+			remoteGlobalIDString = 8D57630D048677EA00EA77CD;
 			remoteInfo = BibImporter;
 		};
 		F9EF0CE30B4EFC9500A1F282 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = F9AA030C092FA2E20094A059 /* OmniAppKit.xcodeproj */;
 			proxyType = 1;
-			remoteGlobalIDString = 4AA1E67A08AA764600E2FF6B /* OmniAppKit (Framework) */;
+			remoteGlobalIDString = 4AA1E67A08AA764600E2FF6B;
 			remoteInfo = "OmniAppKit (Framework)";
 		};
 		F9F14A4E075811DA008BA22F /* PBXContainerItemProxy */ = {
@@ -1120,7 +1120,7 @@
 		3DFF35600816B55B0052F37C /* forward_small.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; name = forward_small.tiff; path = Images/forward_small.tiff; sourceTree = "<group>"; };
 		3DFF35620816B5780052F37C /* reload_small.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; name = reload_small.tiff; path = Images/reload_small.tiff; sourceTree = "<group>"; };
 		8D1107310486CEB800E47090 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
-		8D1107320486CEB800E47090 /* BibDesk.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = BibDesk.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		8D1107320486CEB800E47090 /* BibDesk.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = BibDesk.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		CE11A6340AE6BB77008C47AC /* urlFolderIcon.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; name = urlFolderIcon.tiff; path = Images/urlFolderIcon.tiff; sourceTree = "<group>"; };
 		CE11AC080AE7E0DC008C47AC /* BDSKScriptGroup.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BDSKScriptGroup.h; sourceTree = "<group>"; };
 		CE11AC090AE7E0DC008C47AC /* BDSKScriptGroup.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BDSKScriptGroup.m; sourceTree = "<group>"; };
