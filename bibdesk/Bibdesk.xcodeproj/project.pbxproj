@@ -748,7 +748,7 @@
 			isa = PBXContainerItemProxy;
 			containerPortal = F9377F550B423A4C00ECCB3A /* yaz.xcodeproj */;
 			proxyType = 2;
-			remoteGlobalIDString = 8DC2EF5B0486A6940098B216 /* yaz.framework */;
+			remoteGlobalIDString = 8DC2EF5B0486A6940098B216;
 			remoteInfo = yaz;
 		};
 		F911CB4608972F7300ABDAC6 /* PBXContainerItemProxy */ = {

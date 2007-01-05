@@ -372,10 +372,7 @@
 }
 
 - (void)addSearchGroup:(BDSKSearchGroup *)group {
-	[[[self undoManager] prepareWithInvocationTarget:self] removeSearchGroup:group];
-    
 	[searchGroups addObject:group];
-	[group setUndoManager:[self undoManager]];
     
 	[[NSNotificationCenter defaultCenter] postNotificationName:BDSKDidAddRemoveGroupNotification object:self];
 }
@@ -383,11 +380,8 @@
 - (void)removeSearchGroup:(BDSKSearchGroup *)group {
     [[NSNotificationCenter defaultCenter] postNotificationName:BDSKWillAddRemoveGroupNotification object:self];
     
-	[[[self undoManager] prepareWithInvocationTarget:self] addSearchGroup:group];
-    
     [self removeSpinnerForGroup:group];
     
-	[group setUndoManager:nil];
 	[searchGroups removeObjectIdenticalTo:group];
     
 	[[NSNotificationCenter defaultCenter] postNotificationName:BDSKDidAddRemoveGroupNotification object:self];
@@ -573,9 +567,6 @@
 	} else if (groupType == BDSKScriptGroupType) {
         groupClass = [BDSKScriptGroup class];
         groupArray = scriptGroups;
-	} else if (groupType == BDSKSearchGroupType) {
-        groupClass = [BDSKSearchGroup class];
-        groupArray = searchGroups;
     }
     
     if (groupClass && groupArray) {
@@ -621,9 +612,6 @@
 	} else if (groupType == BDSKScriptGroupType) {
         groupClass = [BDSKScriptGroup class];
         groupArray = scriptGroups;
-	} else if (groupType == BDSKSearchGroupType) {
-        groupClass = [BDSKSearchGroup class];
-        groupArray = searchGroups;
     }
     
     NSData *data = nil;

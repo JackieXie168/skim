@@ -853,8 +853,6 @@ The groupedPublications array is a subset of the publications array, developed b
         BDSKGroup *group = [sheetController group];
 		[groups addSearchGroup:(id)group];        
 		[groupTableView selectRowIndexes:[NSIndexSet indexSetWithIndex:insertIndex] byExtendingSelection:NO];
-		[[self undoManager] setActionName:NSLocalizedString(@"Add Search Group", @"Undo action name")];
-		// updating of the tables is done when finishing the edit of the name
 	}
 }
 
