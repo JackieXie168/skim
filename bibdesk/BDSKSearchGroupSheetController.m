@@ -90,8 +90,8 @@ static NSDictionary *searchGroupServers = nil;
                 NSDictionary *dict = [NSDictionary dictionaryWithContentsOfFile:[serversPath stringByAppendingPathComponent:file]];
                 BDSKServerInfo *info = [[BDSKServerInfo alloc] initWithType:nil dictionary:dict];
                 if (info) {
-                    NSMutableArray *servers = [[newServerDicts objectForKey:[info type]] valueForKey:@"name"];
-                    unsigned index = [servers indexOfObject:[info name]];
+                    NSMutableArray *servers = [newServerDicts objectForKey:[info type]];
+                    unsigned index = [[servers valueForKey:@"name"] indexOfObject:[info name]];
                     if (index != NSNotFound)
                         [servers replaceObjectAtIndex:index withObject:info];
                     else
