@@ -81,7 +81,7 @@ static NSString *SKPostScriptDocumentType = @"PostScript document";
 }
 
 - (BOOL)readFromURL:(NSURL *)absoluteURL ofType:(NSString *)docType error:(NSError **)outError{
-    BOOL didRead;
+    BOOL didRead = NO;
     if ([docType isEqualToString:SKPDFDocumentType]) {
         pdfDoc = [[PDFDocument alloc] initWithURL:absoluteURL];    
         didRead = pdfDoc != nil;
