@@ -45,6 +45,7 @@
 
 - (NSIndexSet *)indexesOfRowsToHighlightInRange:(NSRange)indexRange tableView:(BDSKGroupTableView *)tview;
 - (NSIndexSet *)tableViewSingleSelectionIndexes:(BDSKGroupTableView *)tview;
+- (void)tableView:(BDSKGroupTableView *)tview doubleClickedOnIconOfRow:(int)row;
 
 @end
 

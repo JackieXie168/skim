@@ -49,6 +49,7 @@
 #import "BDSKTypeSelectHelper.h"
 #import "BDSKGroup.h"
 #import "BibAuthor.h"
+#import "BDSKGroupCell.h"
 
 @interface BDSKGroupCellFormatter : NSFormatter
 @end
@@ -163,6 +164,23 @@
 
 	[self tile];
     [self reloadData]; // otherwise the change isn't immediately visible
+}
+
+- (void)mouseDown:(NSEvent *)theEvent{
+    if ([theEvent clickCount] == 2) {
+        NSPoint point = [self convertPoint:[theEvent locationInWindow] fromView:nil];
+        int row = [self rowAtPoint:point];
+        int column = [self columnAtPoint:point];
+        if (row != -1 && column == 0) {
+            BDSKGroupCell *cell = [[[self tableColumns] objectAtIndex:0] dataCellForRow:row];
+            NSRect iconRect = [cell iconRectForBounds:[self frameOfCellAtColumn:column row:row]];
+            if (NSPointInRect(point, iconRect)) {
+                [[self delegate] tableView:self doubleClickedOnIconOfRow:row];
+                return;
+            }
+        }
+    }
+    [super mouseDown:theEvent];
 }
 
 - (void)drawHighlightOnRows:(NSIndexSet *)rows usingColor:(NSColor *)highlightColor

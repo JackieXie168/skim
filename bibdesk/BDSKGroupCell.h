@@ -53,4 +53,7 @@ extern NSString *BDSKGroupCellCountKey;
     NSMutableAttributedString *countString;
 }
 
+- (NSRect)textRectForBounds:(NSRect)theRect;
+- (NSRect)iconRectForBounds:(NSRect)theRect;
+
 @end

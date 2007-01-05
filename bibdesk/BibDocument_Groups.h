@@ -94,6 +94,7 @@
 - (IBAction)addSearchGroupAction:(id)sender;
 - (IBAction)addGroupButtonAction:(id)sender;
 - (IBAction)removeSelectedGroups:(id)sender;
+- (void)editGroupAtRow:(int)row;
 - (IBAction)editGroupAction:(id)sender;
 - (IBAction)renameGroupAction:(id)sender;
 - (IBAction)selectLibraryGroup:(id)sender;
