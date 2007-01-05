@@ -88,7 +88,7 @@ static NSDictionary *searchGroupServers = nil;
                 [dirEnum skipDescendents];
             } else if ([[file pathExtension] isEqualToString:@"bdsksearch"]) {
                 NSDictionary *dict = [NSDictionary dictionaryWithContentsOfFile:[serversPath stringByAppendingPathComponent:file]];
-                BDSKServerInfo *info = [[BDSKServerInfo alloc] initWithDictionary:dict];
+                BDSKServerInfo *info = [[BDSKServerInfo alloc] initWithType:nil dictionary:dict];
                 if (info) {
                     NSMutableArray *servers = [[newServerDicts objectForKey:[info type]] valueForKey:@"name"];
                     unsigned index = [servers indexOfObject:[info name]];
