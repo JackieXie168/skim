@@ -1643,6 +1643,17 @@ Boolean stringContainsLossySubstring(NSString *theString, NSString *stringToFind
 	return [self bibTeXStringDroppingInternal:NO error:error];
 }
 
+// Only used by AppleScript
+- (NSString *)bibTeXString{
+    NSError *error;
+    NSString *str = [self bibTeXStringReturningError:&error];
+    if (nil == str) {
+        NSLog(@"error %@ occurred when asking for bibTeXString of %@", error, self);
+        str = @"";
+    }
+    return str;
+}
+
 #pragma mark Other text representations
 
 - (NSData *)RTFValue{
