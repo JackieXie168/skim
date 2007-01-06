@@ -1,7 +1,5 @@
 //
 //  SKMainWindowController.h
-
-
 //  This code is licensed under a BSD license. Please see the file LICENSE for details.
 //
 //  Created by Michael McCracken on 12/6/06.
@@ -9,6 +7,7 @@
 //
 
 #import <Cocoa/Cocoa.h>
+#import "SKStringConstants.h"
 
 typedef struct _SKPDFViewState {
 	int displayMode;

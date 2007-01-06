@@ -138,6 +138,7 @@ static NSString *SKDocumentToolbarSearchItemIdentifier = @"SKDocumentToolbarSear
     
     // we retain as we might replace it with the full screen window
     mainWindow = [[self window] retain];
+    [mainWindow setFrameAutosaveName:SKMainWindowFrameAutosaveName];
     
     [searchBox setCollapseEdges:SKMaxXEdgeMask | SKMinYEdgeMask];
     [searchBox setMinSize:NSMakeSize(100.0, 46.0)];
