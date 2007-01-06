@@ -90,11 +90,6 @@
     return self;
 }
 
-- (id)initWithHost:(NSString *)hostName port:(int)portNum;
-{
-    return [self initWithHost:hostName port:portNum database:nil];
-}
-
 - (void)dealloc
 {
     [_results release]; // will destroy the result sets

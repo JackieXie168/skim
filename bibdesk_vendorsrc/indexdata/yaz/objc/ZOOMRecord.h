@@ -33,15 +33,33 @@
 #import <Cocoa/Cocoa.h>
 #import <yaz/zoom.h>
 
-typedef enum {
-	UNKNOWN,
-    GRS1,
-    SUTRS,
-    USMARC,
-    UKMARC,
-    XML
-} ZOOMSyntaxType;
+/*!
+ @enum       ZOOMSyntaxType
+ @abstract   Syntax types supported by the framework.
+ @discussion Use these constants in favor of strings whenever possible.
+ @constant   UNKNOWN 
+ @constant   GRS1 
+ @constant   SUTRS 
+ @constant   USMARC 
+ @constant   UKMARC 
+ @constant   XML 
+ */
+enum {
+	UNKNOWN = -1,
+    GRS1    =  0,
+    SUTRS   =  1,
+    USMARC  =  2,
+    UKMARC  =  3,
+    XML     =  4
+};
+typedef int ZOOMSyntaxType;
 
+/*!
+    @class       ZOOMRecord 
+    @superclass  NSObject
+    @abstract    Provides a Cocoa interface to the low-level ZOOM_record results returned from a query.  Handles conversion to Unicode string objects.
+    @discussion  Accessors are provided for the primary values of interest, but this object is KVC-compliant.  A list of valid keys is provided by the class method +validKeys; any key may return nil.  Values returned are NSData objects in the native encoding of the underlying ZOOM_record, unless you use one of the accessors that explicitly returns an NSString object.
+*/
 @interface ZOOMRecord : NSObject
 {
     ZOOM_record          _record;
@@ -49,26 +67,80 @@ typedef enum {
     NSMutableDictionary *_representations;
 }
 
+/*!
+    @method     validKeys
+    @abstract   Provides a list of keys for which instances of the class are KVC-compliant.
+    @result     An array of strings.
+*/
 + (NSArray *)validKeys;
+
+/*!
+    @method     stringWithSyntaxType:
+    @abstract   Returns a string description of the specified enumerated type value.
+    @discussion Generally used by the framework to set options for a ZOOM_connection.
+    @param      type The syntax type of interest.
+*/
 + (NSString *)stringWithSyntaxType:(ZOOMSyntaxType)type;
+
+/*!
+    @method     syntaxTypeWithString:
+    @abstract   Converts the given string to a syntax type.
+    @discussion This comparison is case-insensitive, and ignores "-" characters.
+    @param      string String description of the syntax type.
+*/
 + (ZOOMSyntaxType)syntaxTypeWithString:(NSString *)string;
 
-// encoding of 0 (not used) means that only UTF-8 will be tried
+/*!
+    @method     setFallbackEncoding:
+    @abstract   Sets the fallback string encoding to be used when converting data to NSStrings.
+    @discussion This is mainly useful for debugging, or if you don't know the encoding beforehand.
+    @param      enc Pass kCFStringEncodingInvalidId to ensure that only the charset passed in initialization is used.
+*/
 + (void)setFallbackEncoding:(NSStringEncoding)enc;
 
+/*!
+    @method     recordWithZoomRecord:charSet:
+    @abstract   Factory method, returns an autoreleased instance.  See designated initializer for parameters.
+*/
 + (id)recordWithZoomRecord:(ZOOM_record)record charSet:(NSString *)charSetName;
+
+/*!
+    @method     initWithZoomRecord:charSet:
+    @abstract   Returns an initialized record instance using the provided ZOOM_record.  It copies the record in case the owning result set goes away.
+    @param      record ZOOM_record, may not be nil.
+    @param      charSetName An IANA character set name, used to convert data to NSStrings.  May not be nil.
+*/
 - (id)initWithZoomRecord:(ZOOM_record)record charSet:(NSString *)charSetName;
 
-- (NSString *)renderedString;
-
-/* NOTE: the directory information for character counts in a MARC record 
-   will not be correct if you use -rawString.  It converts the octets to
-   a Unicode string, so e.g. [rawString length] != [rawData length]
-   unless the record is entirely ASCII.
+/*!
+    @method     rawString
+    @abstract   Converts the underlying data in its "raw" syntax to an NSString, using the character set supplied at initialization time.
+    @discussion The directory information for character counts in a MARC record may not be correct if you use this accessor.  It converts the octets to a Unicode string, and the returned string length is not identical to the data length unless the record is entirely ASCII.
 */
 - (NSString *)rawString;
-- (NSData *)rawData;
 
+/*!
+    @method     renderedString
+    @abstract   Converts the raw data to a format that is more-or-less human readable.
+    @result     NSString instance.
+*/
+- (NSString *)renderedString;
+
+/*!
+    @method     stringValueForKey:
+    @abstract   Converts the specified key to an NSString instance.
+    @discussion Uses the character set passed at init time to create an NSString from the underlying data.
+    @param      aKey An object for which instances of this class are KVC-compliant.
+    @result     The call is responsible for retaining the value.  Guaranteed to be non-nil (may be the empty string).
+*/
+- (NSString *)stringValueForKey:(NSString *)aKey;
+
+/*!
+    @method     syntaxType
+    @abstract   Returns the syntax type of the receiver.
+    @discussion Other types (e.g. XML) may be available via an internal YAZ conversion.
+    @result     Enumerated type.
+*/
 - (ZOOMSyntaxType)syntaxType;
 
 @end

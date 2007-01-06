@@ -6,6 +6,20 @@
 	objectVersion = 42;
 	objects = {
 
+/* Begin PBXAggregateTarget section */
+		F9BB53030B505D73006E9D11 /* HeaderDoc */ = {
+			isa = PBXAggregateTarget;
+			buildConfigurationList = F9BB53040B505D94006E9D11 /* Build configuration list for PBXAggregateTarget "HeaderDoc" */;
+			buildPhases = (
+				F9BB53020B505D73006E9D11 /* ShellScript */,
+			);
+			dependencies = (
+			);
+			name = HeaderDoc;
+			productName = HeaderDoc;
+		};
+/* End PBXAggregateTarget section */
+
 /* Begin PBXBuildFile section */
 		8DC2EF530486A6940098B216 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 089C1666FE841158C02AAC07 /* InfoPlist.strings */; };
 		8DC2EF570486A6940098B216 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1058C7B1FEA5585E11CA2CBB /* Cocoa.framework */; };
@@ -521,6 +535,7 @@
 		F9B8FE7A0B41BBD500A5A615 /* ZOOMQuery.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ZOOMQuery.h; sourceTree = "<group>"; };
 		F9B8FE7B0B41BBD500A5A615 /* ZOOMQuery.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ZOOMQuery.m; sourceTree = "<group>"; };
 		F9B8FEE10B41CE8100A5A615 /* ZOOMObjC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ZOOMObjC.h; sourceTree = "<group>"; };
+		F9BB53250B505F85006E9D11 /* Documentation */ = {isa = PBXFileReference; lastKnownFileType = folder; path = Documentation; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -553,6 +568,7 @@
 			children = (
 				F92B98C60B45E9C60089909F /* Default-Build-Settings.xcconfig */,
 				08FB77AEFE84172EC02AAC07 /* Classes */,
+				F9BB53250B505F85006E9D11 /* Documentation */,
 				F91875DA0B406D9800D75891 /* include */,
 				F91874910B406D3000D75891 /* src */,
 				32C88DFF0371C24200C91783 /* Other Sources */,
@@ -1023,6 +1039,7 @@
 			shouldCheckCompatibility = 1;
 			targets = (
 				8DC2EF4F0486A6940098B216 /* yaz */,
+				F9BB53030B505D73006E9D11 /* HeaderDoc */,
 			);
 		};
 /* End PBXProject section */
@@ -1059,6 +1076,22 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXResourcesBuildPhase section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		F9BB53020B505D73006E9D11 /* ShellScript */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "/usr/bin/gatherHeaderDoc $SRCROOT/Documentation\n/usr/bin/headerDoc2HTML -o $SRCROOT/Documentation $SRCROOT/*.h\nexit 0";
+		};
+/* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
 		8DC2EF540486A6940098B216 /* Sources */ = {
@@ -1279,6 +1312,27 @@
 			};
 			name = Release;
 		};
+		F9BB53050B505D94006E9D11 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				COPY_PHASE_STRIP = NO;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				PRODUCT_NAME = HeaderDoc;
+			};
+			name = Debug;
+		};
+		F9BB53060B505D94006E9D11 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				COPY_PHASE_STRIP = YES;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				GCC_ENABLE_FIX_AND_CONTINUE = NO;
+				PRODUCT_NAME = HeaderDoc;
+				ZERO_LINK = NO;
+			};
+			name = Release;
+		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -1296,6 +1350,15 @@
 			buildConfigurations = (
 				1DEB91B208733DA50010E9CD /* Debug */,
 				1DEB91B308733DA50010E9CD /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		F9BB53040B505D94006E9D11 /* Build configuration list for PBXAggregateTarget "HeaderDoc" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				F9BB53050B505D94006E9D11 /* Debug */,
+				F9BB53060B505D94006E9D11 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;

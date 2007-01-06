@@ -33,6 +33,12 @@
 #import <Cocoa/Cocoa.h>
 #import <yaz/zoom.h>
 
+/*!
+    @class       ZOOMQuery 
+    @superclass  NSObject
+    @abstract    Provides a convenient way to initialize a query instance to be used with a connection.
+    @discussion  Unlike most of the classes in the Obj-C ZOOM API, this one is provided solely as a convenience for initializing and returning a primitive ZOOM type.  However, the underlying ZOOM_query should really only be used by the framework internally, and instances of the ZOOMQuery class should be used whenever possible.  This class conforms to NSCopying and instances may be used as keys in hashing collections.
+*/
 @interface ZOOMQuery : NSObject <NSCopying>
 {
     ZOOM_query  _query;
@@ -40,15 +46,47 @@
     NSString   *_queryString;
 }
 
+/*!
+    @method     queryWithCCLString:config:
+    @abstract   Returns an autoreleased instance.  See designated initializer for parameters.
+*/
 + (id)queryWithCCLString:(NSString *)queryString config:(NSString *)confString;
+
+/*!
+    @method     initWithCCLString:config:
+    @abstract   CCL initializer.
+    @discussion Creates and initializes a ZOOM_query instance using the provided query string.
+    @param      queryString Should be a valid CCL query string.  See the YAZ documentation for supported syntax.
+    @param      confString A configuration string that maps query terms to record fields.  Pass nil for the default.
+    @result     Uses objc-default.bib as the default config, but other config strings may be provided.
+*/
 - (id)initWithCCLString:(NSString *)queryString config:(NSString *)confString;
+
+/*!
+    @method     zoomQuery
+    @abstract   Returns an initialized ZOOM_query.
+    @result     A ZOOM_query that may be used with a ZOOM_connection.
+*/
 - (ZOOM_query)zoomQuery;
+
 @end
 
+/*!
+    @class       ZOOMCCLQueryFormatter 
+    @superclass  NSFormatter
+    @abstract    An NSFormatter subclass that validates the query syntax by attempting to convert it to RPN.  The formatter's control delegate should implement the appropriate failure message to display an error to the user.
+*/
 @interface ZOOMCCLQueryFormatter : NSFormatter
 {
     const void *_config;
 }
+
+/*!
+    @method     initWithConfigString:
+    @abstract   Initializes an NSFormatter.
+    @discussion (comprehensive description)
+    @param      config A config string.  Pass nil or simply use -init to use the framework's objc-default.bib config.
+*/
 - (id)initWithConfigString:(NSString *)config;
 
 @end

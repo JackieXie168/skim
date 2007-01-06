@@ -54,6 +54,11 @@
     [super dealloc];
 }
 
+- (unsigned int)countOfRecords;
+{
+    return ZOOM_resultset_size(_resultSet);
+}
+
 - (ZOOMRecord *)recordAtIndex:(unsigned int)index;
 {
     NSParameterAssert(index < [self countOfRecords]);
@@ -63,32 +68,6 @@
 - (NSArray *)allRecords;
 {
     return [self recordsInRange:NSMakeRange(0, [self countOfRecords])];
-}
-
-- (NSArray *)recordsAtIndexes:(NSIndexSet *)indexes;
-{
-    NSParameterAssert(nil != indexes);
-    
-    unsigned count = [indexes count];
-
-    if (count)
-        NSParameterAssert([indexes lastIndex] < [self countOfRecords]);
-    
-    NSMutableArray *array = [NSMutableArray arrayWithCapacity:count];
-    NSZone *zone = [self zone];
-    unsigned i = [indexes firstIndex];
-    ZOOM_record rec;
-
-    while (i != NSNotFound) {
-        rec = ZOOM_resultset_record(_resultSet, i);
-        if (rec) {
-            ZOOMRecord *record = [[ZOOMRecord allocWithZone:zone] initWithZoomRecord:rec charSet:_charSetName];
-            [array addObject:record];
-            [record release];
-        }
-        i = [indexes indexGreaterThanIndex:i];
-    }
-    return array;
 }
 
 // We define a fairly small batch size since some servers (library.usc.edu) return nil records if you ask for too many.  Calling ZOOM_resultset_records to get 25 at a time is still a significant performance improvement over call ZOOM_resultset_record on each one.
@@ -136,27 +115,6 @@
         
         // change the range length to be either our batch size or whatever's left in the original range
         rangeToGet.length = MIN(BATCH_SIZE, NSMaxRange(range)-rangeToGet.location);
-    }
-    return array;
-}
-
-- (unsigned int)countOfRecords;
-{
-    return ZOOM_resultset_size(_resultSet);
-}
-
-- (NSString *)rawStringForRecordAtIndex:(unsigned int)index;
-{
-    return [[self recordAtIndex:index] rawString];
-}
-
-- (NSArray *)rawStrings;
-{
-    unsigned i, iMax = [self countOfRecords];
-    NSMutableArray *array = [NSMutableArray array];
-    
-    for (i = 0; i < iMax; i++) {
-        [array addObject:[self rawStringForRecordAtIndex:i]];
     }
     return array;
 }
