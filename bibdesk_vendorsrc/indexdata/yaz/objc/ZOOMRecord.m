@@ -1,5 +1,5 @@
 //
-//  BDSKZoomRecord.m
+//  ZOOMRecord.m
 //  yaz
 //
 //  Created by Adam Maxwell on 12/26/06.
@@ -30,12 +30,12 @@
  THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */ 
 
-#import "BDSKZoomRecord.h"
+#import "ZOOMRecord.h"
 #import <yaz/yaz-iconv.h>
 #import <yaz/z-core.h>
 #include "zoom-p.h"
 
-@interface NSString (BDSKZoomExtensions)
+@interface NSString (ZOOMExtensions)
 // avoid polluting the NSString namespace by using this ugly prefix...
 + (NSStringEncoding)ZOOM_encodingWithIANACharSetName:(NSString *)charSetName;
 @end
@@ -45,11 +45,11 @@
 static NSString *renderKey = @"render";
 static NSString *rawKey = @"raw";
 
-@interface BDSKZoomRecord (Private)
+@interface ZOOMRecord (Private)
 - (void)cacheRepresentationForKey:(NSString *)aKey;
 @end
 
-@implementation BDSKZoomRecord
+@implementation ZOOMRecord
 
 static NSStringEncoding fallbackEncoding = kCFStringEncodingInvalidId;
 
@@ -66,7 +66,7 @@ static NSStringEncoding fallbackEncoding = kCFStringEncodingInvalidId;
     return keys;
 }
 
-+ (NSString *)stringWithSyntaxType:(BDSKZoomSyntaxType)type;
++ (NSString *)stringWithSyntaxType:(ZOOMSyntaxType)type;
 {
     switch (type) {
     case XML:
@@ -84,7 +84,7 @@ static NSStringEncoding fallbackEncoding = kCFStringEncodingInvalidId;
     }
 }
 
-+ (BDSKZoomSyntaxType)syntaxTypeWithString:(NSString *)string;
++ (ZOOMSyntaxType)syntaxTypeWithString:(NSString *)string;
 {
     // these calls and the corresponding enum were lifted from zrec.cpp in yazpp-1.0.0
     const char *syn = [string UTF8String];
@@ -177,15 +177,15 @@ static NSStringEncoding fallbackEncoding = kCFStringEncodingInvalidId;
 }
 
 // this doesn't use valueForKey:, since cacheRepresentationForKey: calls syntaxType
-- (BDSKZoomSyntaxType)syntaxType;
+- (ZOOMSyntaxType)syntaxType;
 {
     const char *cstr = ZOOM_record_get(_record, "syntax", NULL);
-    return [BDSKZoomRecord syntaxTypeWithString:[NSString stringWithUTF8String:cstr]];
+    return [ZOOMRecord syntaxTypeWithString:[NSString stringWithUTF8String:cstr]];
 }
 
 @end
 
-@implementation BDSKZoomRecord (Private)
+@implementation ZOOMRecord (Private)
 
 // yaz_iconv() usage example is in record_iconv_return() in zoom-c.c
 static NSData *copyMARC8BytesToUTF8(const char *buf, int length)
@@ -304,7 +304,7 @@ static NSData *copyMARC8BytesToUTF8(const char *buf, int length)
 
 @end
 
-@implementation NSString (BDSKZoomExtensions)
+@implementation NSString (ZOOMExtensions)
 
 // yaz_iconv() usage example is in record_iconv_return() in zoom-c.c
 - (const char *)ZOOM_MARC8String;

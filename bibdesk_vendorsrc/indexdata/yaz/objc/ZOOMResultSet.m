@@ -1,5 +1,5 @@
 //
-//  BDSKZoomResultSet.m
+//  ZOOMResultSet.m
 //  yaz
 //
 //  Created by Adam Maxwell on 12/26/06.
@@ -30,10 +30,10 @@
  THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */ 
 
-#import "BDSKZoomResultSet.h"
-#import "BDSKZoomRecord.h"
+#import "ZOOMResultSet.h"
+#import "ZOOMRecord.h"
 
-@implementation BDSKZoomResultSet
+@implementation ZOOMResultSet
 
 - (id)initWithZoomResultSet:(ZOOM_resultset)resultSet charSet:(NSString *)charSetName;
 {
@@ -54,10 +54,10 @@
     [super dealloc];
 }
 
-- (BDSKZoomRecord *)recordAtIndex:(unsigned int)index;
+- (ZOOMRecord *)recordAtIndex:(unsigned int)index;
 {
     NSParameterAssert(index < [self countOfRecords]);
-    return [BDSKZoomRecord recordWithZoomRecord:ZOOM_resultset_record(_resultSet, index) charSet:_charSetName];
+    return [ZOOMRecord recordWithZoomRecord:ZOOM_resultset_record(_resultSet, index) charSet:_charSetName];
 }
 
 - (NSArray *)allRecords;
@@ -82,7 +82,7 @@
     while (i != NSNotFound) {
         rec = ZOOM_resultset_record(_resultSet, i);
         if (rec) {
-            BDSKZoomRecord *record = [[BDSKZoomRecord allocWithZone:zone] initWithZoomRecord:rec charSet:_charSetName];
+            ZOOMRecord *record = [[ZOOMRecord allocWithZone:zone] initWithZoomRecord:rec charSet:_charSetName];
             [array addObject:record];
             [record release];
         }
@@ -106,7 +106,7 @@
     
     // since we're using a small buffer, we can keep everything on the stack
     ZOOM_record recordBuffer[BATCH_SIZE];
-    BDSKZoomRecord *record;
+    ZOOMRecord *record;
     unsigned i;
     
     size_t bufferSize = sizeof(ZOOM_record) * BATCH_SIZE;
@@ -125,7 +125,7 @@
         for (i = 0; i < count; i++) {
             rec = recordBuffer[i];
             if (rec) {
-                record = [[BDSKZoomRecord allocWithZone:zone] initWithZoomRecord:rec charSet:_charSetName];
+                record = [[ZOOMRecord allocWithZone:zone] initWithZoomRecord:rec charSet:_charSetName];
                 [array addObject:record];
                 [record release];
             }

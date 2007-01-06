@@ -1,5 +1,5 @@
 //
-//  BDSKZoomConnection.m
+//  ZOOMConnection.m
 //  yaz
 //
 //  Created by Adam Maxwell on 12/25/06.
@@ -30,12 +30,12 @@
  THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */ 
 
-#import "BDSKZoomConnection.h"
-#import "BDSKZoomQuery.h"
-#import "BDSKZoomRecord.h"
+#import "ZOOMConnection.h"
+#import "ZOOMQuery.h"
+#import "ZOOMRecord.h"
 #import <yaz/log.h>
 
-@implementation BDSKZoomConnection
+@implementation ZOOMConnection
 
 + (void)initialize;
 {
@@ -176,9 +176,9 @@
     return val ? [NSString stringWithUTF8String:val] : nil;
 }
 
-- (void)setPreferredRecordSyntax:(BDSKZoomSyntaxType)type;
+- (void)setPreferredRecordSyntax:(ZOOMSyntaxType)type;
 {
-    [self setOption:[BDSKZoomRecord stringWithSyntaxType:type] forKey:@"preferredRecordSyntax"];
+    [self setOption:[ZOOMRecord stringWithSyntaxType:type] forKey:@"preferredRecordSyntax"];
 }
 
 - (void)setUsername:(NSString *)user;
@@ -199,10 +199,10 @@
     [_results removeAllObjects];
 }
 
-- (BDSKZoomResultSet *)resultsForQuery:(BDSKZoomQuery *)query;
+- (ZOOMResultSet *)resultsForQuery:(ZOOMQuery *)query;
 {
     NSParameterAssert(nil != query);
-    BDSKZoomResultSet *resultSet = [_results objectForKey:query];
+    ZOOMResultSet *resultSet = [_results objectForKey:query];
     if (nil == resultSet) {
         [self connect];
         ZOOM_resultset r = ZOOM_connection_search(_connection, [query zoomQuery]);
@@ -212,16 +212,16 @@
         if ((error = ZOOM_connection_error(_connection, &errmsg, &addinfo)))
             NSLog(@"Error: %s (%d) %s\n", errmsg, error, addinfo);
 
-        resultSet = [[BDSKZoomResultSet allocWithZone:[self zone]] initWithZoomResultSet:r charSet:_charSetName];
+        resultSet = [[ZOOMResultSet allocWithZone:[self zone]] initWithZoomResultSet:r charSet:_charSetName];
         [_results setObject:resultSet forKey:query];
         [resultSet release];
     }
     return resultSet;
 }
 
-- (BDSKZoomResultSet *)resultsForCCLQuery:(NSString *)queryString;
+- (ZOOMResultSet *)resultsForCCLQuery:(NSString *)queryString;
 {
-    BDSKZoomQuery *query = [BDSKZoomQuery queryWithCCLString:queryString config:nil];
+    ZOOMQuery *query = [ZOOMQuery queryWithCCLString:queryString config:nil];
     return query ? [self resultsForQuery:query] : nil;
 }
 

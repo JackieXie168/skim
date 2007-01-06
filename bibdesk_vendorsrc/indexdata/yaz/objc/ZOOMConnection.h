@@ -1,5 +1,5 @@
 //
-//  BDSKZoomConnection.h
+//  ZOOMConnection.h
 //  yaz
 //
 //  Created by Adam Maxwell on 12/25/06.
@@ -32,12 +32,12 @@
  
 #import <Cocoa/Cocoa.h>
 #import <yaz/zoom.h>
-#import <yaz/BDSKZoomResultSet.h>
-#import <yaz/BDSKZoomRecord.h>
+#import <yaz/ZOOMResultSet.h>
+#import <yaz/ZOOMRecord.h>
 
-@class BDSKZoomQuery;
+@class ZOOMQuery;
 
-@interface BDSKZoomConnection : NSObject 
+@interface ZOOMConnection : NSObject 
 {
     @private
     ZOOM_connection       _connection;
@@ -66,14 +66,14 @@
 - (void)setPassword:(NSString *)pass;
 
 // default record syntax is USMARC
-- (void)setPreferredRecordSyntax:(BDSKZoomSyntaxType)type;
+- (void)setPreferredRecordSyntax:(ZOOMSyntaxType)type;
 
 // pass nil to use MARC-8 (default)
 - (void)setResultEncodingToIANACharSetName:(NSString *)encodingName;
 
-- (BDSKZoomResultSet *)resultsForQuery:(BDSKZoomQuery *)query;
+- (ZOOMResultSet *)resultsForQuery:(ZOOMQuery *)query;
 
 // add methods for other query syntaxes as needed
-- (BDSKZoomResultSet *)resultsForCCLQuery:(NSString *)queryString;
+- (ZOOMResultSet *)resultsForCCLQuery:(NSString *)queryString;
 
 @end
