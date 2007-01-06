@@ -7,9 +7,9 @@
 //
 
 #import <Cocoa/Cocoa.h>
-#import <yaz/BDSKZoom.h>
+#import <yaz/ZOOMObjC.h>
 
-@class BDSKZoomConnection;
+@class ZOOMConnection;
 
 @interface Controller : NSObject {
     IBOutlet NSSearchField *_searchField;
@@ -19,15 +19,14 @@
     NSString *_hostname;
     NSString *_database;
     int _port;
-    BDSKZoomSyntaxType _syntaxType;
+    ZOOMSyntaxType _syntaxType;
     
     IBOutlet NSTextField *_addressField;
     IBOutlet NSTextField *_dbaseField;
     IBOutlet NSTextField *_portField;
     IBOutlet NSPopUpButton *_syntaxPopup;
     
-    ZOOM_connection connection;
-    BDSKZoomConnection *_connection;
+    ZOOMConnection *_connection;
     NSString *_currentType;
     
     BOOL _connectionNeedsReset;
