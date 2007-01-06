@@ -35,6 +35,7 @@
     BibTeXFieldNamesForPubMedTags = {
         AB = Abstract; 
         AD = Address; 
+        AU = Author;
         BT = Title; 
         CP = Address; 
         CT = Title; 
