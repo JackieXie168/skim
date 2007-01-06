@@ -49,6 +49,7 @@
 #import "BDSKComplexStringFormatter.h"
 #import "BDSKCrossrefFormatter.h"
 #import "BDSKCiteKeyFormatter.h"
+#import "BDSKCitationFormatter.h"
 #import "BDSKFieldNameFormatter.h"
 #import "BDSKEdgeView.h"
 #import "BibDocument.h"
@@ -62,6 +63,7 @@
 #import "BibFiler.h"
 #import "BDSKStringParser.h"
 #import "NSArray_BDSKExtensions.h"
+#import "BDSKPublicationsArray.h"
 
 @interface BDSKTextImportController (Private)
 
@@ -123,6 +125,7 @@
 		webSelection = nil;
 		tableCellFormatter = [[BDSKComplexStringFormatter alloc] initWithDelegate:self macroResolver:[doc macroResolver]];
 		crossrefFormatter = [[BDSKCrossrefFormatter alloc] init];
+		citationFormatter = [[BDSKCitationFormatter alloc] initWithDelegate:self];
 		
 		NSString *applicationSupportPath = [[NSFileManager defaultManager] currentApplicationSupportPathForCurrentUser]; 
 		NSString *bookmarksPath = [applicationSupportPath stringByAppendingPathComponent:@"Bookmarks.plist"];
@@ -159,6 +162,7 @@
     [itemsAdded release];
     [tableCellFormatter release];
     [crossrefFormatter release];
+    [citationFormatter release];
     [sourceBox release];
     [webViewView release];
 	[macroTextFieldWC release];
@@ -1376,6 +1380,12 @@
 	return [self editSelectedCellAsMacro];
 }
 
+#pragma mark BDSKCitationFormatter delegate
+
+- (BOOL)citationFormatter:(BDSKCitationFormatter *)formatter isValidKey:(NSString *)key {
+    return [[self publications] itemForCiteKey:key] != nil;
+}
+
 #pragma mark NSControl text delegate
 
 // @@ should we do some more error chacking for valid entries and cite keys, as well as showing warnings for formatter errors?
@@ -1552,6 +1562,8 @@
 		NSFormatter *formatter;
 		if ([field isEqualToString:BDSKCrossrefString]) {
 			formatter = crossrefFormatter;
+		} else if ([field isCitationField]) {
+			formatter = citationFormatter;
 		} else {
 			formatter = tableCellFormatter;
 			[(BDSKComplexStringFormatter *)formatter setHighlighted:[tv isRowSelected:row]];
