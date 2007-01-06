@@ -225,7 +225,7 @@ static void addSubstringToDictionary(NSString *subValue, NSMutableDictionary *pu
         fields = [[record substringFromIndex:fieldsStart] componentsSeparatedByString:fieldTerminator];
         
         [formattedString setString:@""];
-        [formattedString appendStrings:@"LDR    ", [record substringToIndex:24], @"\n"];
+        [formattedString appendStrings:@"LDR    ", [record substringToIndex:24], @"\n", nil];
         
         for(i = 0; i < dirLength; i++){
             
@@ -244,8 +244,8 @@ static void addSubstringToDictionary(NSString *subValue, NSMutableDictionary *pu
             
             addStringToDictionary(value, pubDict, tag, subFieldIndicator);
             
-            [formattedString appendStrings:tag, @" ", isControlField ? @"  " : [field substringToIndex:2], @" "];
-            [formattedString appendStrings:[value stringByReplacingAllOccurrencesOfString:subFieldIndicator withString:@"$"], @"\n"];
+            [formattedString appendStrings:tag, @" ", isControlField ? @"  " : [field substringToIndex:2], @" ", nil];
+            [formattedString appendStrings:[value stringByReplacingAllOccurrencesOfString:subFieldIndicator withString:@"$"], @"\n", nil];
         }
         
         if([pubDict count] > 0){
@@ -497,15 +497,15 @@ static void addSubstringToDictionary(NSString *subValue, NSMutableDictionary *pu
     }else if([elementName isEqualToString:@"controlfield"] || [elementName isEqualToString:@"marc:controlfield"]){
         [tag release];
         tag = [[attributeDict objectForKey:@"tag"] retain];
-        [formattedString appendStrings:tag, @"    "];
+        [formattedString appendStrings:tag, @"    ", nil];
     }else if([elementName isEqualToString:@"datafield"] || [elementName isEqualToString:@"marc:datafield"]){
         [tag release];
         tag = [[attributeDict objectForKey:@"tag"] retain];
-        [formattedString appendStrings:tag, @" ", [attributeDict objectForKey:@"ind1"], [attributeDict objectForKey:@"ind2"], @" "];
+        [formattedString appendStrings:tag, @" ", [attributeDict objectForKey:@"ind1"], [attributeDict objectForKey:@"ind2"], @" ", nil];
     }else if([elementName isEqualToString:@"subfield"] || [elementName isEqualToString:@"marc:subfield"]){
         [subTag release];
         subTag = [[attributeDict objectForKey:@"code"] retain];
-        [formattedString appendStrings:tag, @"$", subTag];
+        [formattedString appendStrings:tag, @"$", subTag, nil];
     }
     [currentValue setString:@""];
 }
@@ -527,7 +527,7 @@ static void addSubstringToDictionary(NSString *subValue, NSMutableDictionary *pu
         }
     }else if([elementName isEqualToString:@"leader"] || [elementName isEqualToString:@"marc:leader"] ||
              [elementName isEqualToString:@"controlfield"] || [elementName isEqualToString:@"marc:controlfield"]){
-        [formattedString appendStrings:currentValue, @"\n"];
+        [formattedString appendStrings:currentValue, @"\n", nil];
     }else if([elementName isEqualToString:@"datafield"] || [elementName isEqualToString:@"marc:datafield"]){
         [formattedString appendString:@"\n"];
     }else if([elementName isEqualToString:@"subfield"] || [elementName isEqualToString:@"marc:subfield"]){
