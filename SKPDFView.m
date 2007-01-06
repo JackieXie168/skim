@@ -49,12 +49,20 @@ NSString *SKPDFViewToolModeChangedNotification = @"SKPDFViewToolModeChangedNotif
 
 @end
 
+static NSPanel *PDFHoverPanel = nil;
+static PDFView *PDFHoverPDFView = nil;
+
+@interface SKPDFView (private)
+
+- (NSRect)_hoverWindowRectFittingScreenFromRect:(NSRect)rect;
+@end
 
 @implementation SKPDFView
 
 - (id)initWithFrame:(NSRect)frameRect {
     if (self = [super initWithFrame:frameRect]) {
         toolMode = SKTextToolMode;
+        [[self window] setAcceptsMouseMovedEvents:YES];
     }
     return self;
 }
@@ -73,6 +81,9 @@ NSString *SKPDFViewToolModeChangedNotification = @"SKPDFViewToolModeChangedNotif
     [super dealloc];
 }
 
+
+#pragma mark Accessors
+
 - (SKToolMode)toolMode {
     return toolMode;
 }
@@ -84,7 +95,12 @@ NSString *SKPDFViewToolModeChangedNotification = @"SKPDFViewToolModeChangedNotif
     [[self window] makeFirstResponder:self];
 }
 
+#pragma mark Event Handling
+
+
 - (void)mouseDown:(NSEvent *)theEvent{
+    [self cleanupPDFHoverView];
+    
     switch (toolMode) {
         case SKMoveToolMode:
             [[NSCursor closedHandCursor] push];
@@ -151,12 +167,15 @@ NSString *SKPDFViewToolModeChangedNotification = @"SKPDFViewToolModeChangedNotif
 }
 
 - (void)mouseMoved:(NSEvent *)event {
+    
     // we receive this message whenever we are first responder, so check the location
     if (toolMode == SKTextToolMode) {
         [super mouseMoved:event];
     } else {
         [[self cursorForMouseMovedEvent:event] set];
     }
+    
+    [self showHoverViewWithEvent:event];
     
     // in presentation mode only show the navigation window only by moving the mouse to the bottom edge
     BOOL shouldShowNavWindow = hasNavigation && (autohidesCursor == NO || [event locationInWindow].y < 5.0);
@@ -167,6 +186,85 @@ NSString *SKPDFViewToolModeChangedNotification = @"SKPDFViewToolModeChangedNotif
         }
         [self doAutohide:YES];
     }
+}
+
+
+- (void)showHoverViewWithEvent:(NSEvent *)theEvent{
+    NSPoint windowMouseLoc = [theEvent locationInWindow];
+    
+    NSPoint viewMouseLoc = [self convertPoint:windowMouseLoc fromView:nil];
+    PDFPage *page = [self pageForPoint:viewMouseLoc nearest:YES];
+    
+    NSPoint pageSpaceMouseLoc = [self convertPoint:viewMouseLoc toPage:page];  
+    
+    
+    PDFDestination *dest = [[[PDFDestination alloc] initWithPage:page atPoint:pageSpaceMouseLoc] autorelease];
+    
+    if (([self areaOfInterestForMouse: theEvent] &  kPDFLinkArea) != 0) {
+        // If it's a link, show PDF hover view with the destination
+        PDFAnnotation *ann = [page annotationAtPoint:pageSpaceMouseLoc];
+        if (ann != NULL && [[ann destination] page]){
+            dest = [ann destination];
+        }
+        
+        // tooltip window
+        [self showPDFHoverWindowWithDestination:dest
+                                        atPoint:windowMouseLoc];
+        
+    }else{
+        [self cleanupPDFHoverView];
+    }
+}
+
+
+- (void)showPDFHoverWindowWithDestination:(PDFDestination *)dest atPoint:(NSPoint)point{
+
+    NSPoint locationInScreenCoordinates = [[self window] convertBaseToScreen:point];
+    NSRect contentRect = NSMakeRect(locationInScreenCoordinates.x,
+                                    locationInScreenCoordinates.y + 15,
+                                    // FIXME: magic number 15 ought to be calculated from the line height of the current line?
+                                    400, 50);
+    
+    contentRect = [self _hoverWindowRectFittingScreenFromRect:contentRect];
+    
+    if(!PDFHoverPanel){
+        PDFHoverPanel = [[NSPanel alloc] initWithContentRect:contentRect
+                                                   styleMask:NSBorderlessWindowMask
+                                                     backing:NSBackingStoreBuffered
+                                                       defer:NO];
+        	                [PDFHoverPanel setHidesOnDeactivate:NO];
+        	                //[PDFHoverPanel setIgnoresMouseEvents:YES];
+        	                [PDFHoverPanel setBackgroundColor:[NSColor whiteColor]];
+        	                [PDFHoverPanel setHasShadow:YES];
+                            [PDFHoverPanel setLevel:NSStatusWindowLevel];
+                            [PDFHoverPanel orderFrontRegardless];
+    }
+    
+    if(!PDFHoverPDFView){
+        PDFHoverPDFView = [[PDFView alloc] initWithFrame:NSMakeRect(0,0, 400, 50)];
+        [[PDFHoverPanel contentView] addSubview:PDFHoverPDFView];
+    }
+    
+    [PDFHoverPDFView setDocument:[self document]];
+    
+    NSScrollView *scrollView = [[PDFHoverPDFView documentView] enclosingScrollView];
+    [scrollView setHasVerticalScroller:NO];
+    [scrollView setHasHorizontalScroller:NO];
+    
+    [PDFHoverPDFView performSelector:@selector(goToDestination:)
+                          withObject:dest
+                          afterDelay:0.01];
+
+}
+
+
+- (void)cleanupPDFHoverView{
+    if(PDFHoverPanel){
+        [PDFHoverPanel orderOut:self];
+        [PDFHoverPanel release]; 
+    }
+    PDFHoverPanel = nil;
+    if(PDFHoverPDFView) [PDFHoverPDFView release]; PDFHoverPDFView = nil;
 }
 
 - (void)flagsChanged:(NSEvent *)event {
@@ -310,9 +408,10 @@ NSString *SKPDFViewToolModeChangedNotification = @"SKPDFViewToolModeChangedNotif
 	NSRect originalBounds = [[self documentView] bounds];
     NSRect visibleRect = [self convertRect:[self visibleRect] toView: nil];
     NSRect magBounds, magRect;
-	float magScale;
+	float magScale = 1.0;
     BOOL cursorVisible = YES;
-	int currentLevel, originalLevel = [theEvent clickCount]; // this should be at least 1
+	int currentLevel = 0;
+    int originalLevel = [theEvent clickCount]; // this should be at least 1
 	BOOL postNote = [[self documentView] postsBoundsChangedNotifications];
     
 	[[self documentView] setPostsBoundsChangedNotifications: NO];
@@ -397,6 +496,35 @@ NSString *SKPDFViewToolModeChangedNotification = @"SKPDFViewToolModeChangedNotif
 	[NSCursor unhide];
 	[[self documentView] setPostsBoundsChangedNotifications:postNote];
 	[self flagsChanged:theEvent]; // update cursor
+}
+
+@end
+
+@implementation SKPDFView (private)
+
+- (NSRect)_hoverWindowRectFittingScreenFromRect:(NSRect)rect{
+    
+    NSRect screenRect;
+    screenRect = [[NSScreen mainScreen] visibleFrame];
+    NSPoint hoverWindowOrigin = rect.origin;
+    
+    if (rect.origin.x > 
+        (screenRect.origin.x + screenRect.size.width - rect.size.width)) {
+        hoverWindowOrigin.x = rect.origin.x - 2 - rect.size.width;
+    } else {
+        hoverWindowOrigin.x = rect.origin.x;
+    }
+    
+    if (rect.origin.y > (screenRect.origin.y + screenRect.size.height - rect.size.height)) {
+        hoverWindowOrigin.y = screenRect.origin.y + screenRect.size.height - rect.size.height;
+    } else {
+        hoverWindowOrigin.y = rect.origin.y + 2;
+    }
+    
+    if (hoverWindowOrigin.y < 0) hoverWindowOrigin.y = 0;
+    
+    return NSMakeRect(hoverWindowOrigin.x, hoverWindowOrigin.y,
+                      rect.size.width, rect.size.height);
 }
 
 @end

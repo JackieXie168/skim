@@ -34,8 +34,12 @@ typedef enum _SKToolMode {
 - (void)setToolMode:(SKToolMode)newToolMode;
 
 - (void)setHasNavigation:(BOOL)hasNav autohidesCursor:(BOOL)hideCursor;
-- (void)doAutohide:(BOOL)flag;
 
+- (void)showPDFHoverWindowWithDestination:(PDFDestination *)dest atPoint:(NSPoint)point;
+- (void)cleanupPDFHoverView;
+
+- (void)doAutohide:(BOOL)flag;
+- (void)showHoverViewWithEvent:(NSEvent *)event;
 - (void)popUpWithEvent:(NSEvent *)theEvent;
 - (void)annotateWithEvent:(NSEvent *)theEvent;
 - (void)magnifyWithEvent:(NSEvent *)theEvent;
