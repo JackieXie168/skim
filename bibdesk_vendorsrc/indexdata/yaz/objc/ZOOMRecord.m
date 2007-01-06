@@ -42,16 +42,24 @@
 
 
 // could specify explicit character set conversions in the keys, but that's not very flexible
-static NSString *renderKey = @"render";
-static NSString *rawKey = @"raw";
+static NSString *renderKey = @"__renderedString";
+static NSString *rawKey = @"__rawString";
+static NSStringEncoding fallbackEncoding = kCFStringEncodingInvalidId;
 
 @interface ZOOMRecord (Private)
+
+// converts the supplied buffer to an NSData instance in UTF-8 encoding; if buf is not MARC-8, you get garbage back
+static NSData *copyMARC8BytesToUTF8(const char *buf, int length);
+
+// converts the NSData instance for the specified key to an NSString; guaranteed non-nil
+- (NSString *)copyStringValueForKey:(NSString *)aKey;
+
+// caches values as NSData instances
 - (void)cacheRepresentationForKey:(NSString *)aKey;
+
 @end
 
 @implementation ZOOMRecord
-
-static NSStringEncoding fallbackEncoding = kCFStringEncodingInvalidId;
 
 + (void)setFallbackEncoding:(NSStringEncoding)enc;
 {
@@ -124,10 +132,6 @@ static NSStringEncoding fallbackEncoding = kCFStringEncodingInvalidId;
         _record = ZOOM_record_clone(record);
         _representations = [[NSMutableDictionary allocWithZone:[self zone]] init];
         _charSetName = [charSetName copy];
-        
-        // make sure we always have these
-        [self cacheRepresentationForKey:renderKey];
-        [self cacheRepresentationForKey:rawKey];
     }
     return self;
 }
@@ -157,26 +161,31 @@ static NSStringEncoding fallbackEncoding = kCFStringEncodingInvalidId;
 
 - (NSString *)renderedString;
 {
-    return [_representations objectForKey:renderKey];
+    NSString *string = [_representations objectForKey:renderKey];
+    if (nil == string) {
+        string = [self copyStringValueForKey:@"render"];
+        [_representations setObject:string forKey:renderKey];
+        [string release];
+    }
+    return string;
 }
 
 - (NSString *)rawString;
 {
-    return [_representations objectForKey:rawKey];
+    NSString *string = [_representations objectForKey:rawKey];
+    if (nil == string) {
+        string = [self copyStringValueForKey:@"raw"];
+        [_representations setObject:string forKey:renderKey];
+        [string release];
+    }
+    return string;
 }
 
-- (NSData *)rawData;
+- (NSString *)stringValueForKey:(NSString *)aKey;
 {
-    int length;
-    
-    // length will be -1 for some types, so we'll use strlen for those
-    const void *bytes = ZOOM_record_get(_record, "raw", &length);
-    if (-1 == length)
-        length = strlen((const char *)bytes);
-    return length && bytes ? [NSData dataWithBytes:bytes length:length] : nil;
+    return [[self copyStringValueForKey:aKey] autorelease];
 }
 
-// this doesn't use valueForKey:, since cacheRepresentationForKey: calls syntaxType
 - (ZOOMSyntaxType)syntaxType;
 {
     const char *cstr = ZOOM_record_get(_record, "syntax", NULL);
@@ -257,30 +266,29 @@ static NSData *copyMARC8BytesToUTF8(const char *buf, int length)
     return (kCFStringEncodingInvalidId != enc) ? (NSString *)CFStringConvertEncodingToIANACharSetName(CFStringConvertNSStringEncodingToEncoding(enc)) : @"MARC-8";
 }
 
-- (void)cacheRepresentationForKey:(NSString *)aKey;
-{
-    /* MARC-8 is a common encoding for MARC, but useless everywhere else.  We can pass "render;charset=marc-8,utf-8" to specify a source and destination charset, but yaz defaults to UTF-8 as destination.  
-     
-     - For keys without a specified charset in the key, bytes are returned without conversion.
-     - The "raw" key always ignores charset options.
-     - Checking syntax type is unreliable as a proxy for character set.
-     - kCFStringEncodingInvalidId indicates that we should use MARC-8.
-     - strlen() may give wrong results for MARC buffers, so should be avoided.
-     
-     see http://www.loc.gov/marc/specifications/specchartables.html
-     
-     */
+/* MARC-8 is a common encoding for MARC, but useless everywhere else.  We can pass "render;charset=marc-8,utf-8" to specify a source and destination charset, but yaz defaults to UTF-8 as destination.  
+ 
+ - For keys without a specified charset in the key passed to ZOOM_record_get, bytes are returned without conversion.
+ - The "raw" key always ignores charset options.
+ - Checking syntax type is unreliable as a proxy for character set.
+ - kCFStringEncodingInvalidId indicates that we should use MARC-8.
+ - strlen() may give wrong results for MARC buffers, so should be avoided.
+ 
+ see http://www.loc.gov/marc/specifications/specchartables.html
+ 
+ */
 
+- (NSString *)copyStringValueForKey:(NSString *)aKey;
+{
+    NSData *data = [self valueForKey:aKey];
+    unsigned length = [data length];
+    
     NSString *nsString = nil;
-    int length;
     
-    // length will be -1 for some types, so we'll use strlen for those
-    const void *bytes = ZOOM_record_get(_record, [aKey UTF8String], &length);
-    if (-1 == length)
-        length = strlen((const char *)bytes);
-    
-    if (NULL != bytes) {
-                
+    if (length) {
+        
+        const void *bytes = [data bytes];
+        
         NSData *utf8Data = nil;
         NSStringEncoding enc = [NSString ZOOM_encodingWithIANACharSetName:_charSetName];
         if (kCFStringEncodingInvalidId != enc) {
@@ -297,9 +305,26 @@ static NSData *copyMARC8BytesToUTF8(const char *buf, int length)
         if (nil == nsString && kCFStringEncodingInvalidId != fallbackEncoding)
             nsString = [[NSString allocWithZone:[self zone]] initWithBytes:bytes length:length encoding:fallbackEncoding];
     }
+    return nsString ? nsString : [@"" copy];
+}
+
+
+- (void)cacheRepresentationForKey:(NSString *)aKey;
+{
+    int length;
     
-    // if a given key fails, set @"" so we don't compute it again
-    [_representations setObject:(nsString ? nsString : @"") forKey:aKey];
+    // length will be -1 for some types, so we'll use strlen for those
+    const void *bytes = ZOOM_record_get(_record, [aKey UTF8String], &length);
+    if (-1 == length)
+        length = bytes ? strlen((const char *)bytes) : 0;
+    
+    NSData *data = nil;
+    if (length > 0)
+        data = [[NSData allocWithZone:[self zone]] initWithBytes:bytes length:length];;
+    
+    // if a given key fails, set to empty data so we don't compute it again
+    [_representations setObject:(data ? data : [NSData data]) forKey:aKey];
+    [data release];
 }
 
 @end

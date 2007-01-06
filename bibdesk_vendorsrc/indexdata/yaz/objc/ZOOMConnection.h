@@ -37,6 +37,12 @@
 
 @class ZOOMQuery;
 
+/*!
+    @class       ZOOMConnection 
+    @superclass  NSObject
+    @abstract    This is the primary interface with the ZOOM objects.
+    @discussion  ZOOMConnection allows you to create a connection, set various options, and fetch results for a given query.  All instance variables are private, and should not be relied upon.  A new ZOOMConnection instance should be created for a given host, which allows cleaner caching and option handling.  The connection is not established until results are asked for.
+*/
 @interface ZOOMConnection : NSObject 
 {
     @private
@@ -51,29 +57,97 @@
     NSMutableDictionary  *_options;        // copy explicitly set ZOOM_options
 }
 
+/*!
+    @method     initWithHost:port:database:
+    @abstract   Designated initializer.
+    @discussion Creates and initializes a new instance, with default record syntax of USMARC and result encoding of MARC-8.
+    @param      hostName Must not be nil.  May take the form "host.domain.com:port/database" if portNum is zero.
+    @param      portNum Port number on the remote host.
+    @param      dbase Database name.
+    @result     (description)
+*/
 - (id)initWithHost:(NSString *)hostName port:(int)portNum database:(NSString *)dbase;
-- (id)initWithHost:(NSString *)hostName port:(int)portNum;
 
+/*!
+    @method     initWithPropertyList:
+    @abstract   Initializes a new connection using the supplied property list, which should be provided by -propertyList.
+    @discussion Property list keys are private and should not be relied upon.
+    @param      plist (description)
+    @result     (description)
+*/
 - (id)initWithPropertyList:(id)plist;
+
+/*!
+    @method     propertyList
+    @abstract   Returns a property list representation of the receiver, suitable for archiving.
+    @discussion Should only be used in conjunction with -initWithPropertyList:.  Keys are private.
+    @result     (description)
+*/
 - (id)propertyList;
 
-// pass nil for option to clear options for a particular key
+/*!
+    @method     setOption:forKey:
+    @abstract   Sets options for the underlying ZOOM_connection instance.  Any valid ZOOM_connection option and key may be supplied.
+    @discussion (comprehensive description)
+    @param      option Option value.  Pass nil to clear the option.
+    @param      key Option name.
+*/
 - (void)setOption:(NSString *)option forKey:(NSString *)key;
+
+/*!
+    @method     optionForKey:
+    @abstract   Returns the current ZOOM_connection option value for the specified key.
+    @param      key (description)
+    @result     (description)
+*/
 - (NSString *)optionForKey:(NSString *)key;
 
-// convenience methods that use setOption:forKey:
+/*!
+    @method     setUsername:
+    @abstract   Calls setOption:forKey: with the correct key.
+    @param      user (description)
+*/
 - (void)setUsername:(NSString *)user;
+
+/*!
+    @method     setPassword:
+    @abstract   Calls setOption:forKey: with the correct key.
+    @param      pass Password is not encrypted.
+*/
 - (void)setPassword:(NSString *)pass;
 
 // default record syntax is USMARC
+/*!
+    @method     setPreferredRecordSyntax:
+    @abstract   Calls setOption:forKey: with the correct key, converting type to a string.
+    @discussion Sets the preferredRecordSyntax option on the ZOOM_connection.  Valid options are given by the ZOOMSyntaxType enum.
+    @param      type Must be a valid ZOOMSyntaxType, or uses "Unknown".
+*/
 - (void)setPreferredRecordSyntax:(ZOOMSyntaxType)type;
 
-// pass nil to use MARC-8 (default)
+/*!
+    @method     setResultEncodingToIANACharSetName:
+    @abstract   Sets the encoding that will be used when interpreting results.  This is not the charset used for communication.
+    @discussion This is really a result option, but is server-specific, so provided here as a convenience.
+    @param      encodingName Must be a valid IANA character set name.  Pass nil to use MARC-8 (default).
+*/
 - (void)setResultEncodingToIANACharSetName:(NSString *)encodingName;
 
+/*!
+    @method     resultsForQuery:
+    @abstract   Returns results for the given query.  Returns nil in case of failure, and error messages may be loggged to the console.
+    @param      query An initialized query object.  May not be nil.
+    @result     Returns all results available for the given query.
+*/
 - (ZOOMResultSet *)resultsForQuery:(ZOOMQuery *)query;
 
-// add methods for other query syntaxes as needed
+/*!
+    @method     resultsForCCLQuery:
+    @abstract   Creates a ZOOMQuery instance from the provided string and returns the result of resultsForQuery:.
+    @discussion This is a quick method to get results, but has no options for configuring the query.
+    @param      queryString Must be a valid CCL query.
+    @result     Returns nil in case of a failure.
+*/
 - (ZOOMResultSet *)resultsForCCLQuery:(NSString *)queryString;
 
 @end
