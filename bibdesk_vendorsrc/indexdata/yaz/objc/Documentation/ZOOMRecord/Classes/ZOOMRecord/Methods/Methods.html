@@ -1,0 +1,160 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN"
+    "http://www.w3.org/TR/1998/REC-html40-19980424/loose.dtd">
+<html><head>
+    <title>Methods</title>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+ <meta name="generator" content="HeaderDoc">
+<style type="text/css"><!--a:link {text-decoration: none; font-family: lucida grande, geneva, helvetica, arial, sans-serif; font-size: small; color: #0000ff;}a:visited {text-decoration: none; font-family: lucida grande, geneva, helvetica, arial, sans-serif; font-size: small; color: #0000ff;}a:visited:hover {text-decoration: underline; font-family: lucida grande, geneva, helvetica, arial, sans-serif; font-size: small; color: #ff6600;}a:active {text-decoration: none; font-family: lucida grande, geneva, helvetica, arial, sans-serif; font-size: small; color: #ff6600;}a:hover {text-decoration: underline; font-family: lucida grande, geneva, helvetica, arial, sans-serif; font-size: small; color: #ff6600;}h4 {text-decoration: none; font-family: lucida grande, geneva, helvetica, arial, sans-serif; font-size: tiny; font-weight: bold;}body {text-decoration: none; font-family: lucida grande, geneva, helvetica, arial, sans-serif; font-size: 10pt;}--></style></head><body bgcolor="#ffffff">
+<a name="top"></a>
+<a name="HeaderDoc_methods"></a>
+<dl>
+<dt><tt><a href="Methods.html#//apple_ref/occ/instm/ZOOMRecord/initWithZoomRecord:charSet:" target="doc">-initWithZoomRecord:charSet:</a></tt></dt>
+<dd>Returns an initialized record instance using the provided ZOOM_record. It copies the record in case the owning result set goes away.
+</dd>
+<dt><tt><a href="Methods.html#//apple_ref/occ/instm/ZOOMRecord/rawString" target="doc">-rawString</a></tt></dt>
+<dd>Converts the underlying data in its "raw" syntax to an NSString, using the character set supplied at initialization time.
+</dd>
+<dt><tt><a href="Methods.html#//apple_ref/occ/clm/ZOOMRecord/recordWithZoomRecord:charSet:" target="doc">+recordWithZoomRecord:charSet:</a></tt></dt>
+<dd>Factory method, returns an autoreleased instance. See designated initializer for parameters.
+</dd>
+<dt><tt><a href="Methods.html#//apple_ref/occ/instm/ZOOMRecord/renderedString" target="doc">-renderedString</a></tt></dt>
+<dd>Converts the raw data to a format that is more-or-less human readable.
+</dd>
+<dt><tt><a href="Methods.html#//apple_ref/occ/clm/ZOOMRecord/setFallbackEncoding:" target="doc">+setFallbackEncoding:</a></tt></dt>
+<dd>Sets the fallback string encoding to be used when converting data to NSStrings.
+</dd>
+<dt><tt><a href="Methods.html#//apple_ref/occ/instm/ZOOMRecord/stringValueForKey:" target="doc">-stringValueForKey:</a></tt></dt>
+<dd>Converts the specified key to an NSString instance.
+</dd>
+<dt><tt><a href="Methods.html#//apple_ref/occ/clm/ZOOMRecord/stringWithSyntaxType:" target="doc">+stringWithSyntaxType:</a></tt></dt>
+<dd>Returns a string description of the specified enumerated type value.
+</dd>
+<dt><tt><a href="Methods.html#//apple_ref/occ/instm/ZOOMRecord/syntaxType" target="doc">-syntaxType</a></tt></dt>
+<dd>Returns the syntax type of the receiver.
+</dd>
+<dt><tt><a href="Methods.html#//apple_ref/occ/clm/ZOOMRecord/syntaxTypeWithString:" target="doc">+syntaxTypeWithString:</a></tt></dt>
+<dd>Converts the given string to a syntax type.
+</dd>
+<dt><tt><a href="Methods.html#//apple_ref/occ/clm/ZOOMRecord/validKeys" target="doc">+validKeys</a></tt></dt>
+<dd>Provides a list of keys for which instances of the class are KVC-compliant.
+</dd>
+</dl>
+<hr><!-- headerDoc=instm;  uid=//apple_ref/occ/instm/ZOOMRecord/initWithZoomRecord:charSet:;  name=ZOOMRecord::initWithZoomRecord:charSet: -->
+<a name="//apple_ref/occ/instm/ZOOMRecord/initWithZoomRecord:charSet:"></a>
+<table border="0"  cellpadding="2" cellspacing="2" width="300"><tr><td valign="top" height="12" colspan="5"><h3><a name="initWithZoomRecord:charSet:">initWithZoomRecord:charSet:</a></h3>
+</td></tr></table><hr><p><!-- begin abstract -->Returns an initialized record instance using the provided ZOOM_record. It copies the record in case the owning result set goes away.
+<!-- end abstract --></p>
+<pre><tt>private</tt>
+<br>- (<!-- a logicalPath="//apple_ref/occ/cl/id //apple_ref/occ/tdef/id //apple_ref/occ/tag/id //apple_ref/occ/econst/id //apple_ref/occ/struct/id //apple_ref/occ/clconst/id //apple_ref/occ/intf/id" --><span class="type">id</span><!-- /a -->)<!-- a logicalPath="//apple_ref/occ/instm/initWithZoomRecord //apple_ref/occ/clm/initWithZoomRecord //apple_ref/occ/intfcm/initWithZoomRecord //apple_ref/occ/intfm/initWithZoomRecord //apple_ref/occ/func/initWithZoomRecord //apple_ref/occ/ftmplt/initWithZoomRecord //apple_ref/occ/defn/initWithZoomRecord //apple_ref/occ/macro/initWithZoomRecord" --><span class="function">initWithZoomRecord</span><!-- /a -->:(<!-- a logicalPath="//apple_ref/occ/cl/ZOOM_record //apple_ref/occ/tdef/ZOOM_record //apple_ref/occ/tag/ZOOM_record //apple_ref/occ/econst/ZOOM_record //apple_ref/occ/struct/ZOOM_record //apple_ref/occ/clconst/ZOOM_record //apple_ref/occ/intf/ZOOM_record" --><span class="type">ZOOM_record</span><!-- /a -->)<span class="param">record</span> <!-- a logicalPath="//apple_ref/occ/instm/charSet //apple_ref/occ/clm/charSet //apple_ref/occ/intfcm/charSet //apple_ref/occ/intfm/charSet //apple_ref/occ/func/charSet //apple_ref/occ/ftmplt/charSet //apple_ref/occ/defn/charSet //apple_ref/occ/macro/charSet" --><span class="function">charSet</span><!-- /a -->:(<!-- a logicalPath="//apple_ref/occ/cl/NSString //apple_ref/occ/tdef/NSString //apple_ref/occ/tag/NSString //apple_ref/occ/econst/NSString //apple_ref/occ/struct/NSString //apple_ref/occ/clconst/NSString //apple_ref/occ/intf/NSString" --><span class="type">NSString</span><!-- /a --> <span class="type">*</span>)<span class="var">charSetName</span>; </pre>
+<h5 class="tight"><font face="Lucida Grande,Helvetica,Arial">Parameters</font></h5>
+<dl>
+<dt><code>record</code></dt><dd>ZOOM_record, may not be nil.</dd>
+<dt><code>charSetName</code></dt><dd>An IANA character set name, used to convert data to NSStrings. May not be nil.</dd>
+</dl>
+<hr><!-- headerDoc=instm;  uid=//apple_ref/occ/instm/ZOOMRecord/rawString;  name=ZOOMRecord::rawString -->
+<a name="//apple_ref/occ/instm/ZOOMRecord/rawString"></a>
+<table border="0"  cellpadding="2" cellspacing="2" width="300"><tr><td valign="top" height="12" colspan="5"><h3><a name="rawString">rawString</a></h3>
+</td></tr></table><hr><p><!-- begin abstract -->Converts the underlying data in its "raw" syntax to an NSString, using the character set supplied at initialization time.
+<!-- end abstract --></p>
+<pre><tt>private</tt>
+<br>- (<!-- a logicalPath="//apple_ref/occ/cl/NSString //apple_ref/occ/tdef/NSString //apple_ref/occ/tag/NSString //apple_ref/occ/econst/NSString //apple_ref/occ/struct/NSString //apple_ref/occ/clconst/NSString //apple_ref/occ/intf/NSString" --><span class="type">NSString</span><!-- /a --> <span class="type">*</span>)<span class="var">rawString</span>; </pre>
+<h5 class="tight"><font face="Lucida Grande,Helvetica,Arial">Discussion</font>
+</h5><p><!-- begin discussion -->The directory information for character counts in a MARC record may not be correct if you use this accessor. It converts the octets to a Unicode string, and the returned string length is not identical to the data length unless the record is entirely ASCII.
+<!-- end discussion --></p>
+<hr><!-- headerDoc=clm;  uid=//apple_ref/occ/clm/ZOOMRecord/recordWithZoomRecord:charSet:;  name=ZOOMRecord::recordWithZoomRecord:charSet: -->
+<a name="//apple_ref/occ/clm/ZOOMRecord/recordWithZoomRecord:charSet:"></a>
+<table border="0"  cellpadding="2" cellspacing="2" width="300"><tr><td valign="top" height="12" colspan="5"><h3><a name="recordWithZoomRecord:charSet:">recordWithZoomRecord:charSet:</a></h3>
+</td></tr></table><hr><p><!-- begin abstract -->Factory method, returns an autoreleased instance. See designated initializer for parameters.
+<!-- end abstract --></p>
+<pre><tt>private</tt>
+<br>+ (<!-- a logicalPath="//apple_ref/occ/cl/id //apple_ref/occ/tdef/id //apple_ref/occ/tag/id //apple_ref/occ/econst/id //apple_ref/occ/struct/id //apple_ref/occ/clconst/id //apple_ref/occ/intf/id" --><span class="type">id</span><!-- /a -->)<!-- a logicalPath="//apple_ref/occ/instm/recordWithZoomRecord //apple_ref/occ/clm/recordWithZoomRecord //apple_ref/occ/intfcm/recordWithZoomRecord //apple_ref/occ/intfm/recordWithZoomRecord //apple_ref/occ/func/recordWithZoomRecord //apple_ref/occ/ftmplt/recordWithZoomRecord //apple_ref/occ/defn/recordWithZoomRecord //apple_ref/occ/macro/recordWithZoomRecord" --><span class="function">recordWithZoomRecord</span><!-- /a -->:(<!-- a logicalPath="//apple_ref/occ/cl/ZOOM_record //apple_ref/occ/tdef/ZOOM_record //apple_ref/occ/tag/ZOOM_record //apple_ref/occ/econst/ZOOM_record //apple_ref/occ/struct/ZOOM_record //apple_ref/occ/clconst/ZOOM_record //apple_ref/occ/intf/ZOOM_record" --><span class="type">ZOOM_record</span><!-- /a -->)<span class="param">record</span> <!-- a logicalPath="//apple_ref/occ/instm/charSet //apple_ref/occ/clm/charSet //apple_ref/occ/intfcm/charSet //apple_ref/occ/intfm/charSet //apple_ref/occ/func/charSet //apple_ref/occ/ftmplt/charSet //apple_ref/occ/defn/charSet //apple_ref/occ/macro/charSet" --><span class="function">charSet</span><!-- /a -->:(<!-- a logicalPath="//apple_ref/occ/cl/NSString //apple_ref/occ/tdef/NSString //apple_ref/occ/tag/NSString //apple_ref/occ/econst/NSString //apple_ref/occ/struct/NSString //apple_ref/occ/clconst/NSString //apple_ref/occ/intf/NSString" --><span class="type">NSString</span><!-- /a --> <span class="type">*</span>)<span class="var">charSetName</span>; </pre>
+<hr><!-- headerDoc=instm;  uid=//apple_ref/occ/instm/ZOOMRecord/renderedString;  name=ZOOMRecord::renderedString -->
+<a name="//apple_ref/occ/instm/ZOOMRecord/renderedString"></a>
+<table border="0"  cellpadding="2" cellspacing="2" width="300"><tr><td valign="top" height="12" colspan="5"><h3><a name="renderedString">renderedString</a></h3>
+</td></tr></table><hr><p><!-- begin abstract -->Converts the raw data to a format that is more-or-less human readable.
+<!-- end abstract --></p>
+<pre><tt>private</tt>
+<br>- (<!-- a logicalPath="//apple_ref/occ/cl/NSString //apple_ref/occ/tdef/NSString //apple_ref/occ/tag/NSString //apple_ref/occ/econst/NSString //apple_ref/occ/struct/NSString //apple_ref/occ/clconst/NSString //apple_ref/occ/intf/NSString" --><span class="type">NSString</span><!-- /a --> <span class="type">*</span>)<span class="var">renderedString</span>; </pre>
+<h5 class="tight"><font face="Lucida Grande,Helvetica,Arial">Return Value</font></h5><p><!-- begin return value -->NSString instance.
+
+<!-- end return value --></p><hr><!-- headerDoc=clm;  uid=//apple_ref/occ/clm/ZOOMRecord/setFallbackEncoding:;  name=ZOOMRecord::setFallbackEncoding: -->
+<a name="//apple_ref/occ/clm/ZOOMRecord/setFallbackEncoding:"></a>
+<table border="0"  cellpadding="2" cellspacing="2" width="300"><tr><td valign="top" height="12" colspan="5"><h3><a name="setFallbackEncoding:">setFallbackEncoding:</a></h3>
+</td></tr></table><hr><p><!-- begin abstract -->Sets the fallback string encoding to be used when converting data to NSStrings.
+<!-- end abstract --></p>
+<pre><tt>private</tt>
+<br>+ (<!-- a logicalPath="//apple_ref/occ/cl/void //apple_ref/occ/tdef/void //apple_ref/occ/tag/void //apple_ref/occ/econst/void //apple_ref/occ/struct/void //apple_ref/occ/clconst/void //apple_ref/occ/intf/void" --><span class="type">void</span><!-- /a -->)<!-- a logicalPath="//apple_ref/occ/instm/setFallbackEncoding //apple_ref/occ/clm/setFallbackEncoding //apple_ref/occ/intfcm/setFallbackEncoding //apple_ref/occ/intfm/setFallbackEncoding //apple_ref/occ/func/setFallbackEncoding //apple_ref/occ/ftmplt/setFallbackEncoding //apple_ref/occ/defn/setFallbackEncoding //apple_ref/occ/macro/setFallbackEncoding" --><span class="function">setFallbackEncoding</span><!-- /a -->:(<!-- a logicalPath="//apple_ref/occ/cl/NSStringEncoding //apple_ref/occ/tdef/NSStringEncoding //apple_ref/occ/tag/NSStringEncoding //apple_ref/occ/econst/NSStringEncoding //apple_ref/occ/struct/NSStringEncoding //apple_ref/occ/clconst/NSStringEncoding //apple_ref/occ/intf/NSStringEncoding" --><span class="type">NSStringEncoding</span><!-- /a -->)<span class="var">enc</span>; </pre>
+<h5 class="tight"><font face="Lucida Grande,Helvetica,Arial">Parameters</font></h5>
+<dl>
+<dt><code>enc</code></dt><dd>Pass kCFStringEncodingInvalidId to ensure that only the charset passed in initialization is used.</dd>
+</dl>
+<h5 class="tight"><font face="Lucida Grande,Helvetica,Arial">Discussion</font>
+</h5><p><!-- begin discussion -->This is mainly useful for debugging, or if you don't know the encoding beforehand.
+<!-- end discussion --></p>
+<hr><!-- headerDoc=instm;  uid=//apple_ref/occ/instm/ZOOMRecord/stringValueForKey:;  name=ZOOMRecord::stringValueForKey: -->
+<a name="//apple_ref/occ/instm/ZOOMRecord/stringValueForKey:"></a>
+<table border="0"  cellpadding="2" cellspacing="2" width="300"><tr><td valign="top" height="12" colspan="5"><h3><a name="stringValueForKey:">stringValueForKey:</a></h3>
+</td></tr></table><hr><p><!-- begin abstract -->Converts the specified key to an NSString instance.
+<!-- end abstract --></p>
+<pre><tt>private</tt>
+<br>- (<!-- a logicalPath="//apple_ref/occ/cl/NSString //apple_ref/occ/tdef/NSString //apple_ref/occ/tag/NSString //apple_ref/occ/econst/NSString //apple_ref/occ/struct/NSString //apple_ref/occ/clconst/NSString //apple_ref/occ/intf/NSString" --><span class="type">NSString</span><!-- /a --> <span class="type">*</span>)<!-- a logicalPath="//apple_ref/occ/instm/stringValueForKey //apple_ref/occ/clm/stringValueForKey //apple_ref/occ/intfcm/stringValueForKey //apple_ref/occ/intfm/stringValueForKey //apple_ref/occ/func/stringValueForKey //apple_ref/occ/ftmplt/stringValueForKey //apple_ref/occ/defn/stringValueForKey //apple_ref/occ/macro/stringValueForKey" --><span class="function">stringValueForKey</span><!-- /a -->:(<!-- a logicalPath="//apple_ref/occ/cl/NSString //apple_ref/occ/tdef/NSString //apple_ref/occ/tag/NSString //apple_ref/occ/econst/NSString //apple_ref/occ/struct/NSString //apple_ref/occ/clconst/NSString //apple_ref/occ/intf/NSString" --><span class="type">NSString</span><!-- /a --> <span class="type">*</span>)<span class="var">aKey</span>; </pre>
+<h5 class="tight"><font face="Lucida Grande,Helvetica,Arial">Parameters</font></h5>
+<dl>
+<dt><code>aKey</code></dt><dd>An object for which instances of this class are KVC-compliant.</dd>
+</dl>
+<h5 class="tight"><font face="Lucida Grande,Helvetica,Arial">Return Value</font></h5><p><!-- begin return value -->The call is responsible for retaining the value. Guaranteed to be non-nil (may be the empty string).
+
+<!-- end return value --></p><h5 class="tight"><font face="Lucida Grande,Helvetica,Arial">Discussion</font>
+</h5><p><!-- begin discussion -->Uses the character set passed at init time to create an NSString from the underlying data.
+<!-- end discussion --></p>
+<hr><!-- headerDoc=clm;  uid=//apple_ref/occ/clm/ZOOMRecord/stringWithSyntaxType:;  name=ZOOMRecord::stringWithSyntaxType: -->
+<a name="//apple_ref/occ/clm/ZOOMRecord/stringWithSyntaxType:"></a>
+<table border="0"  cellpadding="2" cellspacing="2" width="300"><tr><td valign="top" height="12" colspan="5"><h3><a name="stringWithSyntaxType:">stringWithSyntaxType:</a></h3>
+</td></tr></table><hr><p><!-- begin abstract -->Returns a string description of the specified enumerated type value.
+<!-- end abstract --></p>
+<pre><tt>private</tt>
+<br>+ (<!-- a logicalPath="//apple_ref/occ/cl/NSString //apple_ref/occ/tdef/NSString //apple_ref/occ/tag/NSString //apple_ref/occ/econst/NSString //apple_ref/occ/struct/NSString //apple_ref/occ/clconst/NSString //apple_ref/occ/intf/NSString" --><span class="type">NSString</span><!-- /a --> <span class="type">*</span>)<!-- a logicalPath="//apple_ref/occ/instm/stringWithSyntaxType //apple_ref/occ/clm/stringWithSyntaxType //apple_ref/occ/intfcm/stringWithSyntaxType //apple_ref/occ/intfm/stringWithSyntaxType //apple_ref/occ/func/stringWithSyntaxType //apple_ref/occ/ftmplt/stringWithSyntaxType //apple_ref/occ/defn/stringWithSyntaxType //apple_ref/occ/macro/stringWithSyntaxType" --><span class="function">stringWithSyntaxType</span><!-- /a -->:(<!-- a logicalPath="//apple_ref/occ/cl/ZOOMSyntaxType //apple_ref/occ/tdef/ZOOMSyntaxType //apple_ref/occ/tag/ZOOMSyntaxType //apple_ref/occ/econst/ZOOMSyntaxType //apple_ref/occ/struct/ZOOMSyntaxType //apple_ref/occ/clconst/ZOOMSyntaxType //apple_ref/occ/intf/ZOOMSyntaxType" --><span class="type">ZOOMSyntaxType</span><!-- /a -->)<span class="var">type</span>; </pre>
+<h5 class="tight"><font face="Lucida Grande,Helvetica,Arial">Parameters</font></h5>
+<dl>
+<dt><code>type</code></dt><dd>The syntax type of interest.</dd>
+</dl>
+<h5 class="tight"><font face="Lucida Grande,Helvetica,Arial">Discussion</font>
+</h5><p><!-- begin discussion -->Generally used by the framework to set options for a ZOOM_connection.
+<!-- end discussion --></p>
+<hr><!-- headerDoc=instm;  uid=//apple_ref/occ/instm/ZOOMRecord/syntaxType;  name=ZOOMRecord::syntaxType -->
+<a name="//apple_ref/occ/instm/ZOOMRecord/syntaxType"></a>
+<table border="0"  cellpadding="2" cellspacing="2" width="300"><tr><td valign="top" height="12" colspan="5"><h3><a name="syntaxType">syntaxType</a></h3>
+</td></tr></table><hr><p><!-- begin abstract -->Returns the syntax type of the receiver.
+<!-- end abstract --></p>
+<pre><tt>private</tt>
+<br>- (<!-- a logicalPath="//apple_ref/occ/cl/ZOOMSyntaxType //apple_ref/occ/tdef/ZOOMSyntaxType //apple_ref/occ/tag/ZOOMSyntaxType //apple_ref/occ/econst/ZOOMSyntaxType //apple_ref/occ/struct/ZOOMSyntaxType //apple_ref/occ/clconst/ZOOMSyntaxType //apple_ref/occ/intf/ZOOMSyntaxType" --><span class="type">ZOOMSyntaxType</span><!-- /a -->)<span class="var">syntaxType</span>; </pre>
+<h5 class="tight"><font face="Lucida Grande,Helvetica,Arial">Return Value</font></h5><p><!-- begin return value -->Enumerated type.
+
+<!-- end return value --></p><h5 class="tight"><font face="Lucida Grande,Helvetica,Arial">Discussion</font>
+</h5><p><!-- begin discussion -->Other types (e.g. XML) may be available via an internal YAZ conversion.
+<!-- end discussion --></p>
+<hr><!-- headerDoc=clm;  uid=//apple_ref/occ/clm/ZOOMRecord/syntaxTypeWithString:;  name=ZOOMRecord::syntaxTypeWithString: -->
+<a name="//apple_ref/occ/clm/ZOOMRecord/syntaxTypeWithString:"></a>
+<table border="0"  cellpadding="2" cellspacing="2" width="300"><tr><td valign="top" height="12" colspan="5"><h3><a name="syntaxTypeWithString:">syntaxTypeWithString:</a></h3>
+</td></tr></table><hr><p><!-- begin abstract -->Converts the given string to a syntax type.
+<!-- end abstract --></p>
+<pre><tt>private</tt>
+<br>+ (<!-- a logicalPath="//apple_ref/occ/cl/ZOOMSyntaxType //apple_ref/occ/tdef/ZOOMSyntaxType //apple_ref/occ/tag/ZOOMSyntaxType //apple_ref/occ/econst/ZOOMSyntaxType //apple_ref/occ/struct/ZOOMSyntaxType //apple_ref/occ/clconst/ZOOMSyntaxType //apple_ref/occ/intf/ZOOMSyntaxType" --><span class="type">ZOOMSyntaxType</span><!-- /a -->)<!-- a logicalPath="//apple_ref/occ/instm/syntaxTypeWithString //apple_ref/occ/clm/syntaxTypeWithString //apple_ref/occ/intfcm/syntaxTypeWithString //apple_ref/occ/intfm/syntaxTypeWithString //apple_ref/occ/func/syntaxTypeWithString //apple_ref/occ/ftmplt/syntaxTypeWithString //apple_ref/occ/defn/syntaxTypeWithString //apple_ref/occ/macro/syntaxTypeWithString" --><span class="function">syntaxTypeWithString</span><!-- /a -->:(<!-- a logicalPath="//apple_ref/occ/cl/NSString //apple_ref/occ/tdef/NSString //apple_ref/occ/tag/NSString //apple_ref/occ/econst/NSString //apple_ref/occ/struct/NSString //apple_ref/occ/clconst/NSString //apple_ref/occ/intf/NSString" --><span class="type">NSString</span><!-- /a --> <span class="type">*</span>)<span class="var">string</span>; </pre>
+<h5 class="tight"><font face="Lucida Grande,Helvetica,Arial">Parameters</font></h5>
+<dl>
+<dt><code>string</code></dt><dd>String description of the syntax type.</dd>
+</dl>
+<h5 class="tight"><font face="Lucida Grande,Helvetica,Arial">Discussion</font>
+</h5><p><!-- begin discussion -->This comparison is case-insensitive, and ignores "-" characters.
+<!-- end discussion --></p>
+<hr><!-- headerDoc=clm;  uid=//apple_ref/occ/clm/ZOOMRecord/validKeys;  name=ZOOMRecord::validKeys -->
+<a name="//apple_ref/occ/clm/ZOOMRecord/validKeys"></a>
+<table border="0"  cellpadding="2" cellspacing="2" width="300"><tr><td valign="top" height="12" colspan="5"><h3><a name="validKeys">validKeys</a></h3>
+</td></tr></table><hr><p><!-- begin abstract -->Provides a list of keys for which instances of the class are KVC-compliant.
+<!-- end abstract --></p>
+<pre><tt>private</tt>
+<br>+ (<!-- a logicalPath="//apple_ref/occ/cl/NSArray //apple_ref/occ/tdef/NSArray //apple_ref/occ/tag/NSArray //apple_ref/occ/econst/NSArray //apple_ref/occ/struct/NSArray //apple_ref/occ/clconst/NSArray //apple_ref/occ/intf/NSArray" --><span class="type">NSArray</span><!-- /a --> <span class="type">*</span>)<span class="var">validKeys</span>; </pre>
+<h5 class="tight"><font face="Lucida Grande,Helvetica,Arial">Return Value</font></h5><p><!-- begin return value -->An array of strings.
+
+<!-- end return value --></p><p>Last Updated: 1月 06, 2007
+</p></body></html>
