@@ -1380,10 +1380,24 @@
 	return [self editSelectedCellAsMacro];
 }
 
-#pragma mark BDSKCitationFormatter delegate
+#pragma mark BDSKCitationFormatter and TextImportItemTableView delegate
 
 - (BOOL)citationFormatter:(BDSKCitationFormatter *)formatter isValidKey:(NSString *)key {
     return [[self publications] itemForCiteKey:key] != nil;
+}
+
+- (BOOL)tableView:(NSTableView *)tView textViewShouldLinkKeys:(NSTextView *)textView {
+    int row = [tView editedRow];
+    return row != -1 && [[fields objectAtIndex:row] isCitationField];
+}
+
+- (BOOL)tableView:(NSTableView *)tView textView:(NSTextView *)textView isValidKey:(NSString *)key {
+    return [[self publications] itemForCiteKey:key] != nil;
+}
+
+- (BOOL)tableView:(NSTableView *)tView textView:(NSTextView *)aTextView clickedOnLink:(id)link atIndex:(unsigned)charIndex {
+    // we don't open the linked item from the text import sheet
+    return NO;
 }
 
 #pragma mark NSControl text delegate
@@ -1958,6 +1972,18 @@
 - (void)reloadData{
     [super reloadData];
     [typeSelectHelper rebuildTypeSelectSearchCache];
+}
+
+- (BOOL)textViewShouldLinkKeys:(NSTextView *)textView{
+    return [[self delegate] tableView:self textViewShouldLinkKeys:textView];
+}
+
+- (BOOL)textView:(NSTextView *)textView isValidKey:(NSString *)key{
+    return [[self delegate] tableView:self textView:textView isValidKey:key];
+}
+
+- (BOOL)textView:(NSTextView *)aTextView clickedOnLink:(id)link atIndex:(unsigned)charIndex{
+    return [[self delegate] tableView:self textView:aTextView clickedOnLink:link atIndex:charIndex];
 }
 
 @end
