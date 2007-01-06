@@ -427,40 +427,63 @@
 }
 
 - (BOOL)writeTeXFile:(BOOL)ltb{
+    
     NSMutableString *texFile = nil;
     NSString *style = [[OFPreferenceWrapper sharedPreferenceWrapper] objectForKey:BDSKBTStyleKey];
-	
-	if (ltb)
-		texFile = [[NSMutableString alloc] initWithString:@"\\documentclass{article}\n\\usepackage{amsrefs}\n\\begin{document}\n\\nocite{*}\n\\bibliography{<<File>>}\n\\end{document}\n"];
-	else
-		texFile = [[NSMutableString alloc] initWithContentsOfFile:texTemplatePath];
-	
-	[texFile replaceOccurrencesOfString:@"<<File>>" withString:fileName options:NSCaseInsensitiveSearch range:NSMakeRange(0,[texFile length])];
-	[texFile replaceOccurrencesOfString:@"<<Style>>" withString:style options:NSCaseInsensitiveSearch range:NSMakeRange(0,[texFile length])];
-
-    // overwrites the old tmpbib.tex file, replacing the previous bibliographystyle
     NSStringEncoding encoding = [[OFPreferenceWrapper sharedPreferenceWrapper] integerForKey:BDSKTeXPreviewFileEncodingKey];
-    BOOL didWrite;
-    didWrite = [[texFile dataUsingEncoding:encoding] writeToFile:texFilePath atomically:YES];
-    if(NO == didWrite)
-        NSLog(@"error writing TeX file with encoding %@ for task %@", [NSString localizedNameOfStringEncoding:encoding], self);
+    NSError *error = nil;
+    BOOL didWrite = NO;
+
+	if (ltb) {
+		texFile = [[NSMutableString alloc] initWithString:@"\\documentclass{article}\n\\usepackage{amsrefs}\n\\begin{document}\n\\nocite{*}\n\\bibliography{<<File>>}\n\\end{document}\n"];
+	} else {
+		texFile = [[NSMutableString alloc] initWithContentsOfFile:texTemplatePath encoding:encoding error:&error];
+    }
+    
+    if (nil != texFile) {
 	
-	[texFile release];
+        [texFile replaceOccurrencesOfString:@"<<File>>" withString:fileName options:NSCaseInsensitiveSearch range:NSMakeRange(0,[texFile length])];
+        [texFile replaceOccurrencesOfString:@"<<Style>>" withString:style options:NSCaseInsensitiveSearch range:NSMakeRange(0,[texFile length])];
+
+        // overwrites the old tmpbib.tex file, replacing the previous bibliographystyle
+        didWrite = [[texFile dataUsingEncoding:encoding] writeToFile:texFilePath atomically:YES];
+        if(NO == didWrite)
+            NSLog(@"error writing TeX file with encoding %@ for task %@", [NSString localizedNameOfStringEncoding:encoding], self);
+	
+        [texFile release];
+    } else {
+        NSLog(@"Unable to read preview template using encoding %@ for task %@", [NSString localizedNameOfStringEncoding:encoding], self);
+        NSLog(@"Foundation reported error %@", error);
+    }
+    
 	return didWrite;
 }
 
 - (BOOL)writeBibTeXFile:(NSString *)bibStr{
+    
+    NSStringEncoding encoding = [[OFPreferenceWrapper sharedPreferenceWrapper] integerForKey:BDSKTeXPreviewFileEncodingKey];
+    NSError *error;
+    
+    // this should likely be the same encoding as our other files; presumably it's here because the user can have a default @preamble or something that's relevant?
     NSMutableString *bibTemplate = [[NSMutableString alloc] initWithContentsOfFile:
-        [[[OFPreferenceWrapper sharedPreferenceWrapper] stringForKey:BDSKOutputTemplateFileKey] stringByExpandingTildeInPath]];
+                                    [[[OFPreferenceWrapper sharedPreferenceWrapper] stringForKey:BDSKOutputTemplateFileKey] stringByStandardizingPath] encoding:encoding error:&error];
+    
+    if (nil == bibTemplate) {
+        NSLog(@"unable to read file %@ in task %@", [[OFPreferenceWrapper sharedPreferenceWrapper] stringForKey:BDSKOutputTemplateFileKey], self);
+        NSLog(@"Foundation reported error %@", error);
+        bibTemplate = [[NSMutableString alloc] init];
+    }
     
 	[bibTemplate appendString:@"\n"];
     [bibTemplate appendString:bibStr];
-    NSStringEncoding encoding = [[OFPreferenceWrapper sharedPreferenceWrapper] integerForKey:BDSKTeXPreviewFileEncodingKey];
-    
+    [bibTemplate appendString:@"\n"];
+        
     BOOL didWrite;
-    didWrite = [[bibTemplate dataUsingEncoding:encoding] writeToFile:bibFilePath atomically:YES];
-    if(NO == didWrite)
+    didWrite = [bibTemplate writeToFile:bibFilePath atomically:NO encoding:encoding error:&error];
+    if(NO == didWrite) {
         NSLog(@"error writing BibTeX file with encoding %@ for task %@", [NSString localizedNameOfStringEncoding:encoding], self);
+        NSLog(@"Foundation reported error %@", error);
+    }
 	
 	[bibTemplate release];
 	return didWrite;
