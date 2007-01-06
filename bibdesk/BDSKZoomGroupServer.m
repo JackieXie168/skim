@@ -53,14 +53,14 @@ static NSString *BDSKDCXMLString = @"DC XML";
 + (void)initialize
 {
     OBINITIALIZE;
-    [BDSKZoomRecord setFallbackEncoding:NSISOLatin1StringEncoding];
+    [ZOOMRecord setFallbackEncoding:NSISOLatin1StringEncoding];
 }
 
 + (NSArray *)supportedRecordSyntaxes {
     return [NSArray arrayWithObjects:BDSKUSMARCString, BDSKMARCXMLString, BDSKDCXMLString, nil];
 }
 
-+ (BDSKZoomSyntaxType)zoomRecordSyntaxForRecordSyntaxString:(NSString *)syntax{
++ (ZOOMSyntaxType)zoomRecordSyntaxForRecordSyntaxString:(NSString *)syntax{
     if ([syntax isEqualToString:BDSKUSMARCString]) 
         return USMARC;
     else if ([syntax isEqualToString:BDSKMARCXMLString] || [syntax isEqualToString:BDSKDCXMLString]) 
@@ -167,7 +167,7 @@ static NSString *BDSKDCXMLString = @"DC XML";
 
 - (BOOL)isRetrieving { return 1 == flags.isRetrieving; }
 
-- (NSFormatter *)searchStringFormatter { return [[[BDSKZoomCCLQueryFormatter alloc] initWithConfigString:[[[self serverInfo] options] objectForKey:@"queryConfig"]] autorelease]; }
+- (NSFormatter *)searchStringFormatter { return [[[ZOOMCCLQueryFormatter alloc] initWithConfigString:[[[self serverInfo] options] objectForKey:@"queryConfig"]] autorelease]; }
 
 #pragma mark Main thread 
 
@@ -186,7 +186,7 @@ static NSString *BDSKDCXMLString = @"DC XML";
     
     [connection release];
     if ([info host] != nil) {
-        connection = [[BDSKZoomConnection alloc] initWithHost:[info host] port:[[info port] intValue] database:[info database]];
+        connection = [[ZOOMConnection alloc] initWithHost:[info host] port:[[info port] intValue] database:[info database]];
         [connection setPassword:[info password]];
         [connection setUsername:[info username]];
         [connection setPreferredRecordSyntax:[[self class] zoomRecordSyntaxForRecordSyntaxString:[info recordSyntax]]];    
@@ -246,9 +246,9 @@ static NSString *BDSKDCXMLString = @"DC XML";
             
     if (NO == [NSString isEmptyString:searchTerm]){
         // the resultSet is cached for each searchTerm, so we have no overhead calling it for retrieving more results
-        BDSKZoomQuery *query = [BDSKZoomQuery queryWithCCLString:searchTerm config:[[info options] objectForKey:@"queryConfig"]];
+        ZOOMQuery *query = [ZOOMQuery queryWithCCLString:searchTerm config:[[info options] objectForKey:@"queryConfig"]];
         
-        BDSKZoomResultSet *resultSet = query ? [connection resultsForQuery:query] : nil;
+        ZOOMResultSet *resultSet = query ? [connection resultsForQuery:query] : nil;
         
         if (nil == resultSet)
             OSAtomicCompareAndSwap32Barrier(0, 1, (int32_t *)&flags.failedDownload);

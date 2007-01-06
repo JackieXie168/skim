@@ -37,7 +37,7 @@
  */
 
 #import <Cocoa/Cocoa.h>
-#import <yaz/BDSKZoom.h>
+#import <yaz/ZOOMObjC.h>
 #import "BDSKSearchGroup.h"
 #import "BDSKAsynchronousDOServer.h"
 
@@ -67,7 +67,7 @@ typedef struct _BDSKZoomGroupFlags {
 @interface BDSKZoomGroupServer : BDSKAsynchronousDOServer <BDSKSearchGroupServer, BDSKZoomGroupServerMainThread, BDSKZoomGroupServerLocalThread>
 {
     BDSKSearchGroup *group;
-    BDSKZoomConnection *connection;
+    ZOOMConnection *connection;
     BDSKServerInfo *serverInfo;
     int availableResults;
     int fetchedResults;
@@ -75,6 +75,6 @@ typedef struct _BDSKZoomGroupFlags {
     pthread_rwlock_t infolock;
 }
 + (NSArray *)supportedRecordSyntaxes;
-+ (BDSKZoomSyntaxType)zoomRecordSyntaxForRecordSyntaxString:(NSString *)syntax;
++ (ZOOMSyntaxType)zoomRecordSyntaxForRecordSyntaxString:(NSString *)syntax;
 - (void)resetConnection;
 @end
