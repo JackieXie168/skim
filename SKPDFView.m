@@ -166,6 +166,27 @@ static PDFView *PDFHoverPDFView = nil;
     return cursor;
 }
 
+- (PDFDestination *)destinationForEvent:(NSEvent *)theEvent isLink:(BOOL *)isLink {
+    NSPoint windowMouseLoc = [theEvent locationInWindow];
+    
+    NSPoint viewMouseLoc = [self convertPoint:windowMouseLoc fromView:nil];
+    PDFPage *page = [self pageForPoint:viewMouseLoc nearest:YES];
+    NSPoint pageSpaceMouseLoc = [self convertPoint:viewMouseLoc toPage:page];  
+    PDFDestination *dest = [[[PDFDestination alloc] initWithPage:page atPoint:pageSpaceMouseLoc] autorelease];
+    BOOL link = NO;
+    
+    if (([self areaOfInterestForMouse: theEvent] &  kPDFLinkArea) != 0) {
+        link = YES;
+        PDFAnnotation *ann = [page annotationAtPoint:pageSpaceMouseLoc];
+        if (ann != NULL && [[ann destination] page]){
+            dest = [ann destination];
+        }
+    }
+    
+    if (isLink) *isLink = link;
+    return dest;
+}
+
 - (void)mouseMoved:(NSEvent *)event {
     
     // we receive this message whenever we are first responder, so check the location
@@ -190,27 +211,11 @@ static PDFView *PDFHoverPDFView = nil;
 
 
 - (void)showHoverViewWithEvent:(NSEvent *)theEvent{
-    NSPoint windowMouseLoc = [theEvent locationInWindow];
+    BOOL isLink = NO;
+    PDFDestination *dest = [self destinationForEvent:theEvent isLink:&isLink];
     
-    NSPoint viewMouseLoc = [self convertPoint:windowMouseLoc fromView:nil];
-    PDFPage *page = [self pageForPoint:viewMouseLoc nearest:YES];
-    
-    NSPoint pageSpaceMouseLoc = [self convertPoint:viewMouseLoc toPage:page];  
-    
-    
-    PDFDestination *dest = [[[PDFDestination alloc] initWithPage:page atPoint:pageSpaceMouseLoc] autorelease];
-    
-    if (([self areaOfInterestForMouse: theEvent] &  kPDFLinkArea) != 0) {
-        // If it's a link, show PDF hover view with the destination
-        PDFAnnotation *ann = [page annotationAtPoint:pageSpaceMouseLoc];
-        if (ann != NULL && [[ann destination] page]){
-            dest = [ann destination];
-        }
-        
-        // tooltip window
-        [self showPDFHoverWindowWithDestination:dest
-                                        atPoint:windowMouseLoc];
-        
+    if (isLink) {
+        [self showPDFHoverWindowWithDestination:dest atPoint:[theEvent locationInWindow]];
     }else{
         [self cleanupPDFHoverView];
     }
@@ -317,51 +322,17 @@ static PDFView *PDFHoverPDFView = nil;
 }
 
 - (void)popUpWithEvent:(NSEvent *)theEvent{
-    
     SKMainWindowController* controller = [[self window] windowController];
-    NSPoint windowMouseLoc = [theEvent locationInWindow];
-
-    NSPoint viewMouseLoc = [self convertPoint:windowMouseLoc fromView:nil];
-    PDFPage *page = [self pageForPoint:viewMouseLoc nearest:YES];
-
-    NSPoint pageSpaceMouseLoc = [self convertPoint:viewMouseLoc toPage:page];  
+    PDFDestination *dest = [self destinationForEvent:theEvent isLink:NULL];
     
-    
-    PDFDestination *dest = [[[PDFDestination alloc] initWithPage:page atPoint:pageSpaceMouseLoc] autorelease];
-    
-    if (([self areaOfInterestForMouse: theEvent] &  kPDFLinkArea) != 0) {
-        PDFAnnotation *ann = [page annotationAtPoint:pageSpaceMouseLoc];
-        if (ann != NULL && [[ann destination] page]){
-            dest = [ann destination];
-        }
-    }    
-
     [controller showSubWindowAtPageNumber:[[self document] indexForPage:[dest page]] location:[dest point]];        
 }
 
 - (void)annotateWithEvent:(NSEvent *)theEvent {
-    
     SKMainWindowController* controller = [[self window] windowController];
-    NSPoint windowMouseLoc = [theEvent locationInWindow];
+    PDFDestination *dest = [self destinationForEvent:theEvent isLink:NULL];
 
-    NSPoint viewMouseLoc = [self convertPoint:windowMouseLoc fromView:nil];
-    PDFPage *page = [self pageForPoint:viewMouseLoc nearest:YES];
-
-    NSPoint pageSpaceMouseLoc = [self convertPoint:viewMouseLoc toPage:page];  
-    
-    
-    PDFDestination *dest = [[[PDFDestination alloc] initWithPage:page
-                                                         atPoint:pageSpaceMouseLoc] autorelease];
-    
-    if (([self areaOfInterestForMouse: theEvent] &  kPDFLinkArea) != 0) {
-        PDFAnnotation *ann = [page annotationAtPoint:pageSpaceMouseLoc];
-        if (ann != NULL){
-            dest = [ann destination];
-        }
-    }    
-
-    [controller createNewNoteAtPageNumber:[[self document] indexForPage:[dest page]]
-                                 location:[dest point]];        
+    [controller createNewNoteAtPageNumber:[[self document] indexForPage:[dest page]] location:[dest point]];        
 }
 
 - (void)dragWithEvent:(NSEvent *)theEvent {
