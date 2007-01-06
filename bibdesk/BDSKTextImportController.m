@@ -1008,7 +1008,7 @@
 		return YES;
 	} else if ([menuItem action] == @selector(editSelectedFieldAsRawBibTeX:)) {
 		int row = [itemTableView selectedRow];
-		return (row != -1 && ![macroTextFieldWC isEditing] && ![[fields objectAtIndex:row] isEqualToString:BDSKCrossrefString]);
+		return (row != -1 && [macroTextFieldWC isEditing] == NO && [[fields objectAtIndex:row] isEqualToString:BDSKCrossrefString] == NO && [[fields objectAtIndex:row] isCitationField] == NO);
 	} else if ([menuItem action] == @selector(generateCiteKey:)) {
 		// need to set the title, as the document can change it in the main menu
 		[menuItem setTitle: NSLocalizedString(@"Generate Cite Key", @"Menu item title")];
@@ -1359,7 +1359,7 @@
 
 - (BOOL)editSelectedCellAsMacro{
 	int row = [itemTableView selectedRow];
-	if ([macroTextFieldWC isEditing] || row == -1 || [[fields objectAtIndex:row] isEqualToString:BDSKCrossrefString]) 
+	if ([macroTextFieldWC isEditing] || row == -1 || [[fields objectAtIndex:row] isEqualToString:BDSKCrossrefString] || [[fields objectAtIndex:row] isCitationField]) 
 		return NO;
 	if (macroTextFieldWC == nil)
     	macroTextFieldWC = [[MacroTableViewWindowController alloc] init];

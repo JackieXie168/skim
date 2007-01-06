@@ -974,8 +974,8 @@ static int numberOfOpenEditors = 0;
         if (isEditable == NO)
             return NO;
         id cell = [bibFields selectedCell];
-		return (cell != nil && [bibFields currentEditor] != nil &&
-				![macroTextFieldWC isEditing] && ![[cell title] isEqualToString:BDSKCrossrefString]);
+		return (cell != nil && [bibFields currentEditor] != nil && [macroTextFieldWC isEditing] == NO && 
+                [[cell title] isEqualToString:BDSKCrossrefString] == NO && [[cell title] isCitationField] == NO);
     }
     else if (theAction == @selector(toggleStatusBar:)) {
 		if ([statusBar isVisible]) {
@@ -1497,7 +1497,7 @@ static int numberOfOpenEditors = 0;
 
 - (BOOL)editSelectedFormCellAsMacro{
 	NSCell *cell = [bibFields selectedCell];
-	if ([macroTextFieldWC isEditing] || cell == nil || [[cell title] isEqualToString:BDSKCrossrefString]) 
+	if ([macroTextFieldWC isEditing] || cell == nil || [[cell title] isEqualToString:BDSKCrossrefString] || [[cell title] isCitationField]) 
 		return NO;
 	NSString *value = [publication valueOfField:[cell title]];
 	
@@ -1574,6 +1574,22 @@ static int numberOfOpenEditors = 0;
             // this may occur if the cite key formatter fails to format
             if(error != nil){
                 BDSKAlert *alert = [BDSKAlert alertWithMessageText:NSLocalizedString(@"Invalid Crossref Key", @"Message in alert dialog when entering invalid Crossref key") 
+                                                     defaultButton:nil
+                                                   alternateButton:nil
+                                                       otherButton:nil
+                                         informativeTextWithFormat:@"%@", error];
+                
+                [alert runSheetModalForWindow:[self window]];
+                if(forceEndEditing)
+                    [cell setStringValue:[publication valueOfField:fieldName]];
+            }else{
+                NSLog(@"%@:%d formatter for control %@ failed for unknown reason", __FILENAMEASNSSTRING__, __LINE__, control);
+            }
+            return forceEndEditing;
+		} else if ([fieldName isCitationField]) {
+            // this may occur if the citation formatter fails to format
+            if(error != nil){
+                BDSKAlert *alert = [BDSKAlert alertWithMessageText:NSLocalizedString(@"Invalid Citation Key", @"Message in alert dialog when entering invalid Crossref key") 
                                                      defaultButton:nil
                                                    alternateButton:nil
                                                        otherButton:nil
