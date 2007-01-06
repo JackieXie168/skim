@@ -1,0 +1,210 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN"
+    "http://www.w3.org/TR/1998/REC-html40-19980424/loose.dtd">
+<html><head>
+    <title>ZOOMConnection</title>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+ <meta name="generator" content="HeaderDoc">
+<style type="text/css"><!--a:link {text-decoration: none; font-family: lucida grande, geneva, helvetica, arial, sans-serif; font-size: small; color: #0000ff;}a:visited {text-decoration: none; font-family: lucida grande, geneva, helvetica, arial, sans-serif; font-size: small; color: #0000ff;}a:visited:hover {text-decoration: underline; font-family: lucida grande, geneva, helvetica, arial, sans-serif; font-size: small; color: #ff6600;}a:active {text-decoration: none; font-family: lucida grande, geneva, helvetica, arial, sans-serif; font-size: small; color: #ff6600;}a:hover {text-decoration: underline; font-family: lucida grande, geneva, helvetica, arial, sans-serif; font-size: small; color: #ff6600;}h4 {text-decoration: none; font-family: lucida grande, geneva, helvetica, arial, sans-serif; font-size: tiny; font-weight: bold;}body {text-decoration: none; font-family: lucida grande, geneva, helvetica, arial, sans-serif; font-size: 10pt;}--></style></head><body bgcolor="#ffffff">
+<a name="top"></a>
+<a name="//apple_ref/doc/class/ZOOMConnection" title="ZOOMConnection"></a>
+<hr><table border="0"  cellpadding="2" cellspacing="2" width="300"><tr><td valign="top" height="12" colspan="5"><h1><a name="ZOOMConnection">ZOOMConnection</a></h1>
+</td></tr></table><hr><p><!-- begin abstract -->    This is the primary interface with the ZOOM objects.
+<!-- end abstract --></p>
+<b>Superclass:</b> <!-- a logicalPath="//apple_ref/occ/cl/NSObject" -->NSObject<!-- /a --><br>
+<b>Declared In:</b> <a href="../../index.html" target="_top">ZOOMConnection.h</a><br>
+<h5 class="tight"><font face="Lucida Grande,Helvetica,Arial">Discussion</font>
+</h5><p><!-- begin discussion -->  ZOOMConnection allows you to create a connection, set various options, and fetch results for a given query.  All instance variables are private, and should not be relied upon.  A new ZOOMConnection instance should be created for a given host, which allows cleaner caching and option handling.  The connection is not established until results are asked for.
+<!-- end discussion --></p>
+<hr><br><h2>Methods</h2>
+<a name="HeaderDoc_methods"></a>
+<dl>
+<dt><tt><a href="CompositePage.html#//apple_ref/doc/compositePage/occ/instm/ZOOMConnection/initWithHost:port:database:" target="_top">-initWithHost:port:database:</a></tt></dt>
+<dd>Designated initializer.
+</dd>
+<dt><tt><a href="CompositePage.html#//apple_ref/doc/compositePage/occ/instm/ZOOMConnection/initWithPropertyList:" target="_top">-initWithPropertyList:</a></tt></dt>
+<dd>Initializes a new connection using the supplied property list, which should be provided by -propertyList.
+</dd>
+<dt><tt><a href="CompositePage.html#//apple_ref/doc/compositePage/occ/instm/ZOOMConnection/optionForKey:" target="_top">-optionForKey:</a></tt></dt>
+<dd>Returns the current ZOOM_connection option value for the specified key.
+</dd>
+<dt><tt><a href="CompositePage.html#//apple_ref/doc/compositePage/occ/instm/ZOOMConnection/propertyList" target="_top">-propertyList</a></tt></dt>
+<dd>Returns a property list representation of the receiver, suitable for archiving.
+</dd>
+<dt><tt><a href="CompositePage.html#//apple_ref/doc/compositePage/occ/instm/ZOOMConnection/resultsForCCLQuery:" target="_top">-resultsForCCLQuery:</a></tt></dt>
+<dd>Creates a ZOOMQuery instance from the provided string and returns the result of resultsForQuery:.
+</dd>
+<dt><tt><a href="CompositePage.html#//apple_ref/doc/compositePage/occ/instm/ZOOMConnection/resultsForQuery:" target="_top">-resultsForQuery:</a></tt></dt>
+<dd>Returns results for the given query. Returns nil in case of failure, and error messages may be loggged to the console.
+</dd>
+<dt><tt><a href="CompositePage.html#//apple_ref/doc/compositePage/occ/instm/ZOOMConnection/setOption:forKey:" target="_top">-setOption:forKey:</a></tt></dt>
+<dd>Sets options for the underlying ZOOM_connection instance. Any valid ZOOM_connection option and key may be supplied.
+</dd>
+<dt><tt><a href="CompositePage.html#//apple_ref/doc/compositePage/occ/instm/ZOOMConnection/setPassword:" target="_top">-setPassword:</a></tt></dt>
+<dd>Calls setOption:forKey: with the correct key.
+</dd>
+<dt><tt><a href="CompositePage.html#//apple_ref/doc/compositePage/occ/instm/ZOOMConnection/setPreferredRecordSyntax:" target="_top">-setPreferredRecordSyntax:</a></tt></dt>
+<dd>Calls setOption:forKey: with the correct key, converting type to a string.
+</dd>
+<dt><tt><a href="CompositePage.html#//apple_ref/doc/compositePage/occ/instm/ZOOMConnection/setResultEncodingToIANACharSetName:" target="_top">-setResultEncodingToIANACharSetName:</a></tt></dt>
+<dd>Sets the encoding that will be used when interpreting results. This is not the charset used for communication.
+</dd>
+<dt><tt><a href="CompositePage.html#//apple_ref/doc/compositePage/occ/instm/ZOOMConnection/setUsername:" target="_top">-setUsername:</a></tt></dt>
+<dd>Calls setOption:forKey: with the correct key.
+</dd>
+</dl>
+<hr><!-- headerDoc=instm;  uid=//apple_ref/doc/compositePage/occ/instm/ZOOMConnection/initWithHost:port:database:;  name=ZOOMConnection::initWithHost:port:database: -->
+<a name="//apple_ref/doc/compositePage/occ/instm/ZOOMConnection/initWithHost:port:database:"></a>
+<table border="0"  cellpadding="2" cellspacing="2" width="300"><tr><td valign="top" height="12" colspan="5"><h3><a name="initWithHost:port:database:">initWithHost:port:database:</a></h3>
+</td></tr></table><hr><p><!-- begin abstract -->Designated initializer.
+<!-- end abstract --></p>
+<pre><tt>private</tt>
+<br>- (<!-- a logicalPath="//apple_ref/occ/cl/id //apple_ref/occ/tdef/id //apple_ref/occ/tag/id //apple_ref/occ/econst/id //apple_ref/occ/struct/id //apple_ref/occ/clconst/id //apple_ref/occ/intf/id" --><span class="type">id</span><!-- /a -->)<!-- a logicalPath="//apple_ref/occ/instm/initWithHost //apple_ref/occ/clm/initWithHost //apple_ref/occ/intfcm/initWithHost //apple_ref/occ/intfm/initWithHost //apple_ref/occ/func/initWithHost //apple_ref/occ/ftmplt/initWithHost //apple_ref/occ/defn/initWithHost //apple_ref/occ/macro/initWithHost" --><span class="function">initWithHost</span><!-- /a -->:(<!-- a logicalPath="//apple_ref/occ/cl/NSString //apple_ref/occ/tdef/NSString //apple_ref/occ/tag/NSString //apple_ref/occ/econst/NSString //apple_ref/occ/struct/NSString //apple_ref/occ/clconst/NSString //apple_ref/occ/intf/NSString" --><span class="type">NSString</span><!-- /a --> <span class="type">*</span>)<span class="param">hostName</span> <!-- a logicalPath="//apple_ref/occ/instm/port //apple_ref/occ/clm/port //apple_ref/occ/intfcm/port //apple_ref/occ/intfm/port //apple_ref/occ/func/port //apple_ref/occ/ftmplt/port //apple_ref/occ/defn/port //apple_ref/occ/macro/port" --><span class="function">port</span><!-- /a -->:(<!-- a logicalPath="//apple_ref/occ/cl/int //apple_ref/occ/tdef/int //apple_ref/occ/tag/int //apple_ref/occ/econst/int //apple_ref/occ/struct/int //apple_ref/occ/clconst/int //apple_ref/occ/intf/int" --><span class="type">int</span><!-- /a -->)<span class="param">portNum</span> 
+        <!-- a logicalPath="//apple_ref/occ/instm/database //apple_ref/occ/clm/database //apple_ref/occ/intfcm/database //apple_ref/occ/intfm/database //apple_ref/occ/func/database //apple_ref/occ/ftmplt/database //apple_ref/occ/defn/database //apple_ref/occ/macro/database" --><span class="function">database</span><!-- /a -->:(<!-- a logicalPath="//apple_ref/occ/cl/NSString //apple_ref/occ/tdef/NSString //apple_ref/occ/tag/NSString //apple_ref/occ/econst/NSString //apple_ref/occ/struct/NSString //apple_ref/occ/clconst/NSString //apple_ref/occ/intf/NSString" --><span class="type">NSString</span><!-- /a --> <span class="type">*</span>)<span class="var">dbase</span>; </pre>
+<h5 class="tight"><font face="Lucida Grande,Helvetica,Arial">Parameters</font></h5>
+<dl>
+<dt><code>hostName</code></dt><dd>Must not be nil. May take the form "host.domain.com:port/database" if portNum is zero.</dd>
+<dt><code>portNum</code></dt><dd>Port number on the remote host.</dd>
+<dt><code>dbase</code></dt><dd>Database name.</dd>
+</dl>
+<h5 class="tight"><font face="Lucida Grande,Helvetica,Arial">Return Value</font></h5><p><!-- begin return value -->(description)
+
+<!-- end return value --></p><h5 class="tight"><font face="Lucida Grande,Helvetica,Arial">Discussion</font>
+</h5><p><!-- begin discussion -->Creates and initializes a new instance, with default record syntax of USMARC and result encoding of MARC-8.
+<!-- end discussion --></p>
+<hr><!-- headerDoc=instm;  uid=//apple_ref/doc/compositePage/occ/instm/ZOOMConnection/initWithPropertyList:;  name=ZOOMConnection::initWithPropertyList: -->
+<a name="//apple_ref/doc/compositePage/occ/instm/ZOOMConnection/initWithPropertyList:"></a>
+<table border="0"  cellpadding="2" cellspacing="2" width="300"><tr><td valign="top" height="12" colspan="5"><h3><a name="initWithPropertyList:">initWithPropertyList:</a></h3>
+</td></tr></table><hr><p><!-- begin abstract -->Initializes a new connection using the supplied property list, which should be provided by -propertyList.
+<!-- end abstract --></p>
+<pre><tt>private</tt>
+<br>- (<!-- a logicalPath="//apple_ref/occ/cl/id //apple_ref/occ/tdef/id //apple_ref/occ/tag/id //apple_ref/occ/econst/id //apple_ref/occ/struct/id //apple_ref/occ/clconst/id //apple_ref/occ/intf/id" --><span class="type">id</span><!-- /a -->)<!-- a logicalPath="//apple_ref/occ/instm/initWithPropertyList //apple_ref/occ/clm/initWithPropertyList //apple_ref/occ/intfcm/initWithPropertyList //apple_ref/occ/intfm/initWithPropertyList //apple_ref/occ/func/initWithPropertyList //apple_ref/occ/ftmplt/initWithPropertyList //apple_ref/occ/defn/initWithPropertyList //apple_ref/occ/macro/initWithPropertyList" --><span class="function">initWithPropertyList</span><!-- /a -->:(<!-- a logicalPath="//apple_ref/occ/cl/id //apple_ref/occ/tdef/id //apple_ref/occ/tag/id //apple_ref/occ/econst/id //apple_ref/occ/struct/id //apple_ref/occ/clconst/id //apple_ref/occ/intf/id" --><span class="type">id</span><!-- /a -->)<span class="var">plist</span>; </pre>
+<h5 class="tight"><font face="Lucida Grande,Helvetica,Arial">Parameters</font></h5>
+<dl>
+<dt><code>plist</code></dt><dd>(description)</dd>
+</dl>
+<h5 class="tight"><font face="Lucida Grande,Helvetica,Arial">Return Value</font></h5><p><!-- begin return value -->(description)
+
+<!-- end return value --></p><h5 class="tight"><font face="Lucida Grande,Helvetica,Arial">Discussion</font>
+</h5><p><!-- begin discussion -->Property list keys are private and should not be relied upon.
+<!-- end discussion --></p>
+<hr><!-- headerDoc=instm;  uid=//apple_ref/doc/compositePage/occ/instm/ZOOMConnection/optionForKey:;  name=ZOOMConnection::optionForKey: -->
+<a name="//apple_ref/doc/compositePage/occ/instm/ZOOMConnection/optionForKey:"></a>
+<table border="0"  cellpadding="2" cellspacing="2" width="300"><tr><td valign="top" height="12" colspan="5"><h3><a name="optionForKey:">optionForKey:</a></h3>
+</td></tr></table><hr><p><!-- begin abstract -->Returns the current ZOOM_connection option value for the specified key.
+<!-- end abstract --></p>
+<pre><tt>private</tt>
+<br>- (<!-- a logicalPath="//apple_ref/occ/cl/NSString //apple_ref/occ/tdef/NSString //apple_ref/occ/tag/NSString //apple_ref/occ/econst/NSString //apple_ref/occ/struct/NSString //apple_ref/occ/clconst/NSString //apple_ref/occ/intf/NSString" --><span class="type">NSString</span><!-- /a --> <span class="type">*</span>)<!-- a logicalPath="//apple_ref/occ/instm/optionForKey //apple_ref/occ/clm/optionForKey //apple_ref/occ/intfcm/optionForKey //apple_ref/occ/intfm/optionForKey //apple_ref/occ/func/optionForKey //apple_ref/occ/ftmplt/optionForKey //apple_ref/occ/defn/optionForKey //apple_ref/occ/macro/optionForKey" --><span class="function">optionForKey</span><!-- /a -->:(<!-- a logicalPath="//apple_ref/occ/cl/NSString //apple_ref/occ/tdef/NSString //apple_ref/occ/tag/NSString //apple_ref/occ/econst/NSString //apple_ref/occ/struct/NSString //apple_ref/occ/clconst/NSString //apple_ref/occ/intf/NSString" --><span class="type">NSString</span><!-- /a --> <span class="type">*</span>)<span class="var">key</span>; </pre>
+<h5 class="tight"><font face="Lucida Grande,Helvetica,Arial">Parameters</font></h5>
+<dl>
+<dt><code>key</code></dt><dd>(description)</dd>
+</dl>
+<h5 class="tight"><font face="Lucida Grande,Helvetica,Arial">Return Value</font></h5><p><!-- begin return value -->(description)
+
+<!-- end return value --></p><hr><!-- headerDoc=instm;  uid=//apple_ref/doc/compositePage/occ/instm/ZOOMConnection/propertyList;  name=ZOOMConnection::propertyList -->
+<a name="//apple_ref/doc/compositePage/occ/instm/ZOOMConnection/propertyList"></a>
+<table border="0"  cellpadding="2" cellspacing="2" width="300"><tr><td valign="top" height="12" colspan="5"><h3><a name="propertyList">propertyList</a></h3>
+</td></tr></table><hr><p><!-- begin abstract -->Returns a property list representation of the receiver, suitable for archiving.
+<!-- end abstract --></p>
+<pre><tt>private</tt>
+<br>- (<!-- a logicalPath="//apple_ref/occ/cl/id //apple_ref/occ/tdef/id //apple_ref/occ/tag/id //apple_ref/occ/econst/id //apple_ref/occ/struct/id //apple_ref/occ/clconst/id //apple_ref/occ/intf/id" --><span class="type">id</span><!-- /a -->)<span class="var">propertyList</span>; </pre>
+<h5 class="tight"><font face="Lucida Grande,Helvetica,Arial">Return Value</font></h5><p><!-- begin return value -->(description)
+
+<!-- end return value --></p><h5 class="tight"><font face="Lucida Grande,Helvetica,Arial">Discussion</font>
+</h5><p><!-- begin discussion -->Should only be used in conjunction with -initWithPropertyList:. Keys are private.
+<!-- end discussion --></p>
+<hr><!-- headerDoc=instm;  uid=//apple_ref/doc/compositePage/occ/instm/ZOOMConnection/resultsForCCLQuery:;  name=ZOOMConnection::resultsForCCLQuery: -->
+<a name="//apple_ref/doc/compositePage/occ/instm/ZOOMConnection/resultsForCCLQuery:"></a>
+<table border="0"  cellpadding="2" cellspacing="2" width="300"><tr><td valign="top" height="12" colspan="5"><h3><a name="resultsForCCLQuery:">resultsForCCLQuery:</a></h3>
+</td></tr></table><hr><p><!-- begin abstract -->Creates a ZOOMQuery instance from the provided string and returns the result of resultsForQuery:.
+<!-- end abstract --></p>
+<pre><tt>private</tt>
+<br>- (<!-- a logicalPath="//apple_ref/occ/cl/ZOOMResultSet //apple_ref/occ/tdef/ZOOMResultSet //apple_ref/occ/tag/ZOOMResultSet //apple_ref/occ/econst/ZOOMResultSet //apple_ref/occ/struct/ZOOMResultSet //apple_ref/occ/clconst/ZOOMResultSet //apple_ref/occ/intf/ZOOMResultSet" --><span class="type">ZOOMResultSet</span><!-- /a --> <span class="type">*</span>)<!-- a logicalPath="//apple_ref/occ/instm/resultsForCCLQuery //apple_ref/occ/clm/resultsForCCLQuery //apple_ref/occ/intfcm/resultsForCCLQuery //apple_ref/occ/intfm/resultsForCCLQuery //apple_ref/occ/func/resultsForCCLQuery //apple_ref/occ/ftmplt/resultsForCCLQuery //apple_ref/occ/defn/resultsForCCLQuery //apple_ref/occ/macro/resultsForCCLQuery" --><span class="function">resultsForCCLQuery</span><!-- /a -->:(<!-- a logicalPath="//apple_ref/occ/cl/NSString //apple_ref/occ/tdef/NSString //apple_ref/occ/tag/NSString //apple_ref/occ/econst/NSString //apple_ref/occ/struct/NSString //apple_ref/occ/clconst/NSString //apple_ref/occ/intf/NSString" --><span class="type">NSString</span><!-- /a --> <span class="type">*</span>)<span class="var">queryString</span>; </pre>
+<h5 class="tight"><font face="Lucida Grande,Helvetica,Arial">Parameters</font></h5>
+<dl>
+<dt><code>queryString</code></dt><dd>Must be a valid CCL query.</dd>
+</dl>
+<h5 class="tight"><font face="Lucida Grande,Helvetica,Arial">Return Value</font></h5><p><!-- begin return value -->Returns nil in case of a failure.
+
+<!-- end return value --></p><h5 class="tight"><font face="Lucida Grande,Helvetica,Arial">Discussion</font>
+</h5><p><!-- begin discussion -->This is a quick method to get results, but has no options for configuring the query.
+<!-- end discussion --></p>
+<hr><!-- headerDoc=instm;  uid=//apple_ref/doc/compositePage/occ/instm/ZOOMConnection/resultsForQuery:;  name=ZOOMConnection::resultsForQuery: -->
+<a name="//apple_ref/doc/compositePage/occ/instm/ZOOMConnection/resultsForQuery:"></a>
+<table border="0"  cellpadding="2" cellspacing="2" width="300"><tr><td valign="top" height="12" colspan="5"><h3><a name="resultsForQuery:">resultsForQuery:</a></h3>
+</td></tr></table><hr><p><!-- begin abstract -->Returns results for the given query. Returns nil in case of failure, and error messages may be loggged to the console.
+<!-- end abstract --></p>
+<pre><tt>private</tt>
+<br>- (<!-- a logicalPath="//apple_ref/occ/cl/ZOOMResultSet //apple_ref/occ/tdef/ZOOMResultSet //apple_ref/occ/tag/ZOOMResultSet //apple_ref/occ/econst/ZOOMResultSet //apple_ref/occ/struct/ZOOMResultSet //apple_ref/occ/clconst/ZOOMResultSet //apple_ref/occ/intf/ZOOMResultSet" --><span class="type">ZOOMResultSet</span><!-- /a --> <span class="type">*</span>)<!-- a logicalPath="//apple_ref/occ/instm/resultsForQuery //apple_ref/occ/clm/resultsForQuery //apple_ref/occ/intfcm/resultsForQuery //apple_ref/occ/intfm/resultsForQuery //apple_ref/occ/func/resultsForQuery //apple_ref/occ/ftmplt/resultsForQuery //apple_ref/occ/defn/resultsForQuery //apple_ref/occ/macro/resultsForQuery" --><span class="function">resultsForQuery</span><!-- /a -->:(<!-- a logicalPath="//apple_ref/occ/cl/ZOOMQuery //apple_ref/occ/tdef/ZOOMQuery //apple_ref/occ/tag/ZOOMQuery //apple_ref/occ/econst/ZOOMQuery //apple_ref/occ/struct/ZOOMQuery //apple_ref/occ/clconst/ZOOMQuery //apple_ref/occ/intf/ZOOMQuery" --><span class="type">ZOOMQuery</span><!-- /a --> <span class="type">*</span>)<span class="var">query</span>; </pre>
+<h5 class="tight"><font face="Lucida Grande,Helvetica,Arial">Parameters</font></h5>
+<dl>
+<dt><code>query</code></dt><dd>An initialized query object. May not be nil.</dd>
+</dl>
+<h5 class="tight"><font face="Lucida Grande,Helvetica,Arial">Return Value</font></h5><p><!-- begin return value -->Returns all results available for the given query.
+
+<!-- end return value --></p><hr><!-- headerDoc=instm;  uid=//apple_ref/doc/compositePage/occ/instm/ZOOMConnection/setOption:forKey:;  name=ZOOMConnection::setOption:forKey: -->
+<a name="//apple_ref/doc/compositePage/occ/instm/ZOOMConnection/setOption:forKey:"></a>
+<table border="0"  cellpadding="2" cellspacing="2" width="300"><tr><td valign="top" height="12" colspan="5"><h3><a name="setOption:forKey:">setOption:forKey:</a></h3>
+</td></tr></table><hr><p><!-- begin abstract -->Sets options for the underlying ZOOM_connection instance. Any valid ZOOM_connection option and key may be supplied.
+<!-- end abstract --></p>
+<pre><tt>private</tt>
+<br>- (<!-- a logicalPath="//apple_ref/occ/cl/void //apple_ref/occ/tdef/void //apple_ref/occ/tag/void //apple_ref/occ/econst/void //apple_ref/occ/struct/void //apple_ref/occ/clconst/void //apple_ref/occ/intf/void" --><span class="type">void</span><!-- /a -->)<!-- a logicalPath="//apple_ref/occ/instm/setOption //apple_ref/occ/clm/setOption //apple_ref/occ/intfcm/setOption //apple_ref/occ/intfm/setOption //apple_ref/occ/func/setOption //apple_ref/occ/ftmplt/setOption //apple_ref/occ/defn/setOption //apple_ref/occ/macro/setOption" --><span class="function">setOption</span><!-- /a -->:(<!-- a logicalPath="//apple_ref/occ/cl/NSString //apple_ref/occ/tdef/NSString //apple_ref/occ/tag/NSString //apple_ref/occ/econst/NSString //apple_ref/occ/struct/NSString //apple_ref/occ/clconst/NSString //apple_ref/occ/intf/NSString" --><span class="type">NSString</span><!-- /a --> <span class="type">*</span>)<span class="param">option</span> <!-- a logicalPath="//apple_ref/occ/instm/forKey //apple_ref/occ/clm/forKey //apple_ref/occ/intfcm/forKey //apple_ref/occ/intfm/forKey //apple_ref/occ/func/forKey //apple_ref/occ/ftmplt/forKey //apple_ref/occ/defn/forKey //apple_ref/occ/macro/forKey" --><span class="function">forKey</span><!-- /a -->:(<!-- a logicalPath="//apple_ref/occ/cl/NSString //apple_ref/occ/tdef/NSString //apple_ref/occ/tag/NSString //apple_ref/occ/econst/NSString //apple_ref/occ/struct/NSString //apple_ref/occ/clconst/NSString //apple_ref/occ/intf/NSString" --><span class="type">NSString</span><!-- /a --> <span class="type">*</span>)<span class="var">key</span>; </pre>
+<h5 class="tight"><font face="Lucida Grande,Helvetica,Arial">Parameters</font></h5>
+<dl>
+<dt><code>option</code></dt><dd>Option value. Pass nil to clear the option.</dd>
+<dt><code>key</code></dt><dd>Option name.</dd>
+</dl>
+<h5 class="tight"><font face="Lucida Grande,Helvetica,Arial">Discussion</font>
+</h5><p><!-- begin discussion -->(comprehensive description)
+<!-- end discussion --></p>
+<hr><!-- headerDoc=instm;  uid=//apple_ref/doc/compositePage/occ/instm/ZOOMConnection/setPassword:;  name=ZOOMConnection::setPassword: -->
+<a name="//apple_ref/doc/compositePage/occ/instm/ZOOMConnection/setPassword:"></a>
+<table border="0"  cellpadding="2" cellspacing="2" width="300"><tr><td valign="top" height="12" colspan="5"><h3><a name="setPassword:">setPassword:</a></h3>
+</td></tr></table><hr><p><!-- begin abstract -->Calls setOption:forKey: with the correct key.
+<!-- end abstract --></p>
+<pre><tt>private</tt>
+<br>- (<!-- a logicalPath="//apple_ref/occ/cl/void //apple_ref/occ/tdef/void //apple_ref/occ/tag/void //apple_ref/occ/econst/void //apple_ref/occ/struct/void //apple_ref/occ/clconst/void //apple_ref/occ/intf/void" --><span class="type">void</span><!-- /a -->)<!-- a logicalPath="//apple_ref/occ/instm/setPassword //apple_ref/occ/clm/setPassword //apple_ref/occ/intfcm/setPassword //apple_ref/occ/intfm/setPassword //apple_ref/occ/func/setPassword //apple_ref/occ/ftmplt/setPassword //apple_ref/occ/defn/setPassword //apple_ref/occ/macro/setPassword" --><span class="function">setPassword</span><!-- /a -->:(<!-- a logicalPath="//apple_ref/occ/cl/NSString //apple_ref/occ/tdef/NSString //apple_ref/occ/tag/NSString //apple_ref/occ/econst/NSString //apple_ref/occ/struct/NSString //apple_ref/occ/clconst/NSString //apple_ref/occ/intf/NSString" --><span class="type">NSString</span><!-- /a --> <span class="type">*</span>)<span class="var">pass</span>; </pre>
+<h5 class="tight"><font face="Lucida Grande,Helvetica,Arial">Parameters</font></h5>
+<dl>
+<dt><code>pass</code></dt><dd>Password is not encrypted.</dd>
+</dl>
+<hr><!-- headerDoc=instm;  uid=//apple_ref/doc/compositePage/occ/instm/ZOOMConnection/setPreferredRecordSyntax:;  name=ZOOMConnection::setPreferredRecordSyntax: -->
+<a name="//apple_ref/doc/compositePage/occ/instm/ZOOMConnection/setPreferredRecordSyntax:"></a>
+<table border="0"  cellpadding="2" cellspacing="2" width="300"><tr><td valign="top" height="12" colspan="5"><h3><a name="setPreferredRecordSyntax:">setPreferredRecordSyntax:</a></h3>
+</td></tr></table><hr><p><!-- begin abstract -->Calls setOption:forKey: with the correct key, converting type to a string.
+<!-- end abstract --></p>
+<pre><tt>private</tt>
+<br>- (<!-- a logicalPath="//apple_ref/occ/cl/void //apple_ref/occ/tdef/void //apple_ref/occ/tag/void //apple_ref/occ/econst/void //apple_ref/occ/struct/void //apple_ref/occ/clconst/void //apple_ref/occ/intf/void" --><span class="type">void</span><!-- /a -->)<!-- a logicalPath="//apple_ref/occ/instm/setPreferredRecordSyntax //apple_ref/occ/clm/setPreferredRecordSyntax //apple_ref/occ/intfcm/setPreferredRecordSyntax //apple_ref/occ/intfm/setPreferredRecordSyntax //apple_ref/occ/func/setPreferredRecordSyntax //apple_ref/occ/ftmplt/setPreferredRecordSyntax //apple_ref/occ/defn/setPreferredRecordSyntax //apple_ref/occ/macro/setPreferredRecordSyntax" --><span class="function">setPreferredRecordSyntax</span><!-- /a -->:(<!-- a logicalPath="//apple_ref/occ/cl/ZOOMSyntaxType //apple_ref/occ/tdef/ZOOMSyntaxType //apple_ref/occ/tag/ZOOMSyntaxType //apple_ref/occ/econst/ZOOMSyntaxType //apple_ref/occ/struct/ZOOMSyntaxType //apple_ref/occ/clconst/ZOOMSyntaxType //apple_ref/occ/intf/ZOOMSyntaxType" --><span class="type">ZOOMSyntaxType</span><!-- /a -->)<span class="var">type</span>; </pre>
+<h5 class="tight"><font face="Lucida Grande,Helvetica,Arial">Parameters</font></h5>
+<dl>
+<dt><code>type</code></dt><dd>Must be a valid ZOOMSyntaxType, or uses "Unknown".</dd>
+</dl>
+<h5 class="tight"><font face="Lucida Grande,Helvetica,Arial">Discussion</font>
+</h5><p><!-- begin discussion -->Sets the preferredRecordSyntax option on the ZOOM_connection. Valid options are given by the ZOOMSyntaxType enum.
+<!-- end discussion --></p>
+<hr><!-- headerDoc=instm;  uid=//apple_ref/doc/compositePage/occ/instm/ZOOMConnection/setResultEncodingToIANACharSetName:;  name=ZOOMConnection::setResultEncodingToIANACharSetName: -->
+<a name="//apple_ref/doc/compositePage/occ/instm/ZOOMConnection/setResultEncodingToIANACharSetName:"></a>
+<table border="0"  cellpadding="2" cellspacing="2" width="300"><tr><td valign="top" height="12" colspan="5"><h3><a name="setResultEncodingToIANACharSetName:">setResultEncodingToIANACharSetName:</a></h3>
+</td></tr></table><hr><p><!-- begin abstract -->Sets the encoding that will be used when interpreting results. This is not the charset used for communication.
+<!-- end abstract --></p>
+<pre><tt>private</tt>
+<br>- (<!-- a logicalPath="//apple_ref/occ/cl/void //apple_ref/occ/tdef/void //apple_ref/occ/tag/void //apple_ref/occ/econst/void //apple_ref/occ/struct/void //apple_ref/occ/clconst/void //apple_ref/occ/intf/void" --><span class="type">void</span><!-- /a -->)<!-- a logicalPath="//apple_ref/occ/instm/setResultEncodingToIANACharSetName //apple_ref/occ/clm/setResultEncodingToIANACharSetName //apple_ref/occ/intfcm/setResultEncodingToIANACharSetName //apple_ref/occ/intfm/setResultEncodingToIANACharSetName //apple_ref/occ/func/setResultEncodingToIANACharSetName //apple_ref/occ/ftmplt/setResultEncodingToIANACharSetName //apple_ref/occ/defn/setResultEncodingToIANACharSetName //apple_ref/occ/macro/setResultEncodingToIANACharSetName" --><span class="function">setResultEncodingToIANACharSetName</span><!-- /a -->:(<!-- a logicalPath="//apple_ref/occ/cl/NSString //apple_ref/occ/tdef/NSString //apple_ref/occ/tag/NSString //apple_ref/occ/econst/NSString //apple_ref/occ/struct/NSString //apple_ref/occ/clconst/NSString //apple_ref/occ/intf/NSString" --><span class="type">NSString</span><!-- /a --> <span class="type">*</span>)<span class="var">encodingName</span>; </pre>
+<h5 class="tight"><font face="Lucida Grande,Helvetica,Arial">Parameters</font></h5>
+<dl>
+<dt><code>encodingName</code></dt><dd>Must be a valid IANA character set name. Pass nil to use MARC-8 (default).</dd>
+</dl>
+<h5 class="tight"><font face="Lucida Grande,Helvetica,Arial">Discussion</font>
+</h5><p><!-- begin discussion -->This is really a result option, but is server-specific, so provided here as a convenience.
+<!-- end discussion --></p>
+<hr><!-- headerDoc=instm;  uid=//apple_ref/doc/compositePage/occ/instm/ZOOMConnection/setUsername:;  name=ZOOMConnection::setUsername: -->
+<a name="//apple_ref/doc/compositePage/occ/instm/ZOOMConnection/setUsername:"></a>
+<table border="0"  cellpadding="2" cellspacing="2" width="300"><tr><td valign="top" height="12" colspan="5"><h3><a name="setUsername:">setUsername:</a></h3>
+</td></tr></table><hr><p><!-- begin abstract -->Calls setOption:forKey: with the correct key.
+<!-- end abstract --></p>
+<pre><tt>private</tt>
+<br>- (<!-- a logicalPath="//apple_ref/occ/cl/void //apple_ref/occ/tdef/void //apple_ref/occ/tag/void //apple_ref/occ/econst/void //apple_ref/occ/struct/void //apple_ref/occ/clconst/void //apple_ref/occ/intf/void" --><span class="type">void</span><!-- /a -->)<!-- a logicalPath="//apple_ref/occ/instm/setUsername //apple_ref/occ/clm/setUsername //apple_ref/occ/intfcm/setUsername //apple_ref/occ/intfm/setUsername //apple_ref/occ/func/setUsername //apple_ref/occ/ftmplt/setUsername //apple_ref/occ/defn/setUsername //apple_ref/occ/macro/setUsername" --><span class="function">setUsername</span><!-- /a -->:(<!-- a logicalPath="//apple_ref/occ/cl/NSString //apple_ref/occ/tdef/NSString //apple_ref/occ/tag/NSString //apple_ref/occ/econst/NSString //apple_ref/occ/struct/NSString //apple_ref/occ/clconst/NSString //apple_ref/occ/intf/NSString" --><span class="type">NSString</span><!-- /a --> <span class="type">*</span>)<span class="var">user</span>; </pre>
+<h5 class="tight"><font face="Lucida Grande,Helvetica,Arial">Parameters</font></h5>
+<dl>
+<dt><code>user</code></dt><dd>(description)</dd>
+</dl>
+<p>Last Updated: 1月 06, 2007
+</p></body></html>
