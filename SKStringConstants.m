@@ -8,3 +8,4 @@
 #import "SKStringConstants.h"
 
 NSString *SKMainWindowFrameAutosaveName = @"SKIM: main window frame autosave";
+NSString *SKLastOpenFileNamesKey = @"Aliases of last opened files";
