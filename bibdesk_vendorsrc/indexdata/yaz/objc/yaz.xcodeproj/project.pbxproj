@@ -249,15 +249,15 @@
 		F92B955D0B4381470089909F /* libcrypto.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = F92B955C0B4381470089909F /* libcrypto.dylib */; };
 		F937812E0B43207800ECCB3A /* objc_default.bib in Resources */ = {isa = PBXBuildFile; fileRef = F937812D0B43207800ECCB3A /* objc_default.bib */; };
 		F93784AC0B43800800ECCB3A /* libssl.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = F93784AB0B43800800ECCB3A /* libssl.dylib */; };
-		F9B8FD890B40D19300A5A615 /* BDSKZoomConnection.h in Headers */ = {isa = PBXBuildFile; fileRef = F9B8FD870B40D19300A5A615 /* BDSKZoomConnection.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		F9B8FD8A0B40D19300A5A615 /* BDSKZoomConnection.m in Sources */ = {isa = PBXBuildFile; fileRef = F9B8FD880B40D19300A5A615 /* BDSKZoomConnection.m */; };
+		F9B8FD890B40D19300A5A615 /* ZOOMConnection.h in Headers */ = {isa = PBXBuildFile; fileRef = F9B8FD870B40D19300A5A615 /* ZOOMConnection.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		F9B8FD8A0B40D19300A5A615 /* ZOOMConnection.m in Sources */ = {isa = PBXBuildFile; fileRef = F9B8FD880B40D19300A5A615 /* ZOOMConnection.m */; };
 		F9B8FE150B41984A00A5A615 /* libiconv.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = F9B8FE140B41984A00A5A615 /* libiconv.dylib */; };
-		F9B8FE700B41BB2E00A5A615 /* BDSKZoomResultSet.h in Headers */ = {isa = PBXBuildFile; fileRef = F9B8FE6E0B41BB2E00A5A615 /* BDSKZoomResultSet.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		F9B8FE710B41BB2E00A5A615 /* BDSKZoomResultSet.m in Sources */ = {isa = PBXBuildFile; fileRef = F9B8FE6F0B41BB2E00A5A615 /* BDSKZoomResultSet.m */; };
-		F9B8FE760B41BB8300A5A615 /* BDSKZoomRecord.h in Headers */ = {isa = PBXBuildFile; fileRef = F9B8FE740B41BB8300A5A615 /* BDSKZoomRecord.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		F9B8FE770B41BB8300A5A615 /* BDSKZoomRecord.m in Sources */ = {isa = PBXBuildFile; fileRef = F9B8FE750B41BB8300A5A615 /* BDSKZoomRecord.m */; };
-		F9B8FE7C0B41BBD500A5A615 /* BDSKZoomQuery.h in Headers */ = {isa = PBXBuildFile; fileRef = F9B8FE7A0B41BBD500A5A615 /* BDSKZoomQuery.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		F9B8FE7D0B41BBD500A5A615 /* BDSKZoomQuery.m in Sources */ = {isa = PBXBuildFile; fileRef = F9B8FE7B0B41BBD500A5A615 /* BDSKZoomQuery.m */; };
+		F9B8FE700B41BB2E00A5A615 /* ZOOMResultSet.h in Headers */ = {isa = PBXBuildFile; fileRef = F9B8FE6E0B41BB2E00A5A615 /* ZOOMResultSet.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		F9B8FE710B41BB2E00A5A615 /* ZOOMResultSet.m in Sources */ = {isa = PBXBuildFile; fileRef = F9B8FE6F0B41BB2E00A5A615 /* ZOOMResultSet.m */; };
+		F9B8FE760B41BB8300A5A615 /* ZOOMRecord.h in Headers */ = {isa = PBXBuildFile; fileRef = F9B8FE740B41BB8300A5A615 /* ZOOMRecord.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		F9B8FE770B41BB8300A5A615 /* ZOOMRecord.m in Sources */ = {isa = PBXBuildFile; fileRef = F9B8FE750B41BB8300A5A615 /* ZOOMRecord.m */; };
+		F9B8FE7C0B41BBD500A5A615 /* ZOOMQuery.h in Headers */ = {isa = PBXBuildFile; fileRef = F9B8FE7A0B41BBD500A5A615 /* ZOOMQuery.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		F9B8FE7D0B41BBD500A5A615 /* ZOOMQuery.m in Sources */ = {isa = PBXBuildFile; fileRef = F9B8FE7B0B41BBD500A5A615 /* ZOOMQuery.m */; };
 		F9B8FEE20B41CE8100A5A615 /* ZOOMObjC.h in Headers */ = {isa = PBXBuildFile; fileRef = F9B8FEE10B41CE8100A5A615 /* ZOOMObjC.h */; settings = {ATTRIBUTES = (Public, ); }; };
 /* End PBXBuildFile section */
 
@@ -511,15 +511,15 @@
 		F92B98C60B45E9C60089909F /* Default-Build-Settings.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; path = "Default-Build-Settings.xcconfig"; sourceTree = "<group>"; };
 		F937812D0B43207800ECCB3A /* objc_default.bib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = objc_default.bib; sourceTree = "<group>"; };
 		F93784AB0B43800800ECCB3A /* libssl.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libssl.dylib; path = /usr/lib/libssl.dylib; sourceTree = "<absolute>"; };
-		F9B8FD870B40D19300A5A615 /* BDSKZoomConnection.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file; path = BDSKZoomConnection.h; sourceTree = "<group>"; };
-		F9B8FD880B40D19300A5A615 /* BDSKZoomConnection.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file; path = BDSKZoomConnection.m; sourceTree = "<group>"; };
+		F9B8FD870B40D19300A5A615 /* ZOOMConnection.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ZOOMConnection.h; sourceTree = "<group>"; };
+		F9B8FD880B40D19300A5A615 /* ZOOMConnection.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ZOOMConnection.m; sourceTree = "<group>"; };
 		F9B8FE140B41984A00A5A615 /* libiconv.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libiconv.dylib; path = /usr/lib/libiconv.dylib; sourceTree = "<absolute>"; };
-		F9B8FE6E0B41BB2E00A5A615 /* BDSKZoomResultSet.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file; path = BDSKZoomResultSet.h; sourceTree = "<group>"; };
-		F9B8FE6F0B41BB2E00A5A615 /* BDSKZoomResultSet.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file; path = BDSKZoomResultSet.m; sourceTree = "<group>"; };
-		F9B8FE740B41BB8300A5A615 /* BDSKZoomRecord.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file; path = BDSKZoomRecord.h; sourceTree = "<group>"; };
-		F9B8FE750B41BB8300A5A615 /* BDSKZoomRecord.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file; path = BDSKZoomRecord.m; sourceTree = "<group>"; };
-		F9B8FE7A0B41BBD500A5A615 /* BDSKZoomQuery.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file; path = BDSKZoomQuery.h; sourceTree = "<group>"; };
-		F9B8FE7B0B41BBD500A5A615 /* BDSKZoomQuery.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file; path = BDSKZoomQuery.m; sourceTree = "<group>"; };
+		F9B8FE6E0B41BB2E00A5A615 /* ZOOMResultSet.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ZOOMResultSet.h; sourceTree = "<group>"; };
+		F9B8FE6F0B41BB2E00A5A615 /* ZOOMResultSet.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ZOOMResultSet.m; sourceTree = "<group>"; };
+		F9B8FE740B41BB8300A5A615 /* ZOOMRecord.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ZOOMRecord.h; sourceTree = "<group>"; };
+		F9B8FE750B41BB8300A5A615 /* ZOOMRecord.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ZOOMRecord.m; sourceTree = "<group>"; };
+		F9B8FE7A0B41BBD500A5A615 /* ZOOMQuery.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ZOOMQuery.h; sourceTree = "<group>"; };
+		F9B8FE7B0B41BBD500A5A615 /* ZOOMQuery.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ZOOMQuery.m; sourceTree = "<group>"; };
 		F9B8FEE10B41CE8100A5A615 /* ZOOMObjC.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ZOOMObjC.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -591,14 +591,14 @@
 			isa = PBXGroup;
 			children = (
 				F9B8FEE10B41CE8100A5A615 /* ZOOMObjC.h */,
-				F9B8FD870B40D19300A5A615 /* BDSKZoomConnection.h */,
-				F9B8FD880B40D19300A5A615 /* BDSKZoomConnection.m */,
-				F9B8FE6E0B41BB2E00A5A615 /* BDSKZoomResultSet.h */,
-				F9B8FE6F0B41BB2E00A5A615 /* BDSKZoomResultSet.m */,
-				F9B8FE740B41BB8300A5A615 /* BDSKZoomRecord.h */,
-				F9B8FE750B41BB8300A5A615 /* BDSKZoomRecord.m */,
-				F9B8FE7A0B41BBD500A5A615 /* BDSKZoomQuery.h */,
-				F9B8FE7B0B41BBD500A5A615 /* BDSKZoomQuery.m */,
+				F9B8FD870B40D19300A5A615 /* ZOOMConnection.h */,
+				F9B8FD880B40D19300A5A615 /* ZOOMConnection.m */,
+				F9B8FE6E0B41BB2E00A5A615 /* ZOOMResultSet.h */,
+				F9B8FE6F0B41BB2E00A5A615 /* ZOOMResultSet.m */,
+				F9B8FE740B41BB8300A5A615 /* ZOOMRecord.h */,
+				F9B8FE750B41BB8300A5A615 /* ZOOMRecord.m */,
+				F9B8FE7A0B41BBD500A5A615 /* ZOOMQuery.h */,
+				F9B8FE7B0B41BBD500A5A615 /* ZOOMQuery.m */,
 			);
 			name = Classes;
 			sourceTree = "<group>";
@@ -978,10 +978,10 @@
 				F91876790B406D9900D75891 /* zes-update0.h in Headers */,
 				F918767A0B406D9900D75891 /* zgdu.h in Headers */,
 				F918767B0B406D9900D75891 /* zoom.h in Headers */,
-				F9B8FD890B40D19300A5A615 /* BDSKZoomConnection.h in Headers */,
-				F9B8FE700B41BB2E00A5A615 /* BDSKZoomResultSet.h in Headers */,
-				F9B8FE760B41BB8300A5A615 /* BDSKZoomRecord.h in Headers */,
-				F9B8FE7C0B41BBD500A5A615 /* BDSKZoomQuery.h in Headers */,
+				F9B8FD890B40D19300A5A615 /* ZOOMConnection.h in Headers */,
+				F9B8FE700B41BB2E00A5A615 /* ZOOMResultSet.h in Headers */,
+				F9B8FE760B41BB8300A5A615 /* ZOOMRecord.h in Headers */,
+				F9B8FE7C0B41BBD500A5A615 /* ZOOMQuery.h in Headers */,
 				F9B8FEE20B41CE8100A5A615 /* ZOOMObjC.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -1196,10 +1196,10 @@
 				F91875D20B406D3300D75891 /* zget.c in Sources */,
 				F91875D30B406D3300D75891 /* zoom-c.c in Sources */,
 				F91875D40B406D3300D75891 /* zoom-opt.c in Sources */,
-				F9B8FD8A0B40D19300A5A615 /* BDSKZoomConnection.m in Sources */,
-				F9B8FE710B41BB2E00A5A615 /* BDSKZoomResultSet.m in Sources */,
-				F9B8FE770B41BB8300A5A615 /* BDSKZoomRecord.m in Sources */,
-				F9B8FE7D0B41BBD500A5A615 /* BDSKZoomQuery.m in Sources */,
+				F9B8FD8A0B40D19300A5A615 /* ZOOMConnection.m in Sources */,
+				F9B8FE710B41BB2E00A5A615 /* ZOOMResultSet.m in Sources */,
+				F9B8FE770B41BB8300A5A615 /* ZOOMRecord.m in Sources */,
+				F9B8FE7D0B41BBD500A5A615 /* ZOOMQuery.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

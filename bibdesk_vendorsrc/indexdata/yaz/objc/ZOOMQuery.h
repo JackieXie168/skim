@@ -1,5 +1,5 @@
 //
-//  BDSKZoomQuery.h
+//  ZOOMQuery.h
 //  yaz
 //
 //  Created by Adam Maxwell on 12/26/06.
@@ -33,7 +33,7 @@
 #import <Cocoa/Cocoa.h>
 #import <yaz/zoom.h>
 
-@interface BDSKZoomQuery : NSObject <NSCopying>
+@interface ZOOMQuery : NSObject <NSCopying>
 {
     ZOOM_query  _query;
     NSString   *_config;
@@ -45,7 +45,7 @@
 - (ZOOM_query)zoomQuery;
 @end
 
-@interface BDSKZoomCCLQueryFormatter : NSFormatter
+@interface ZOOMCCLQueryFormatter : NSFormatter
 {
     const void *_config;
 }

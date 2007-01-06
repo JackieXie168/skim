@@ -1,5 +1,5 @@
 //
-//  BDSKZoomResultSet.h
+//  ZOOMResultSet.h
 //  yaz
 //
 //  Created by Adam Maxwell on 12/26/06.
@@ -33,15 +33,15 @@
 #import <Cocoa/Cocoa.h>
 #import <yaz/zoom.h>
 
-@class BDSKZoomRecord;
-@interface BDSKZoomResultSet : NSObject
+@class ZOOMRecord;
+@interface ZOOMResultSet : NSObject
 {
     ZOOM_resultset   _resultSet;
     NSString        *_charSetName;
 }
 
 - (id)initWithZoomResultSet:(ZOOM_resultset)resultSet charSet:(NSString *)charSetName;
-- (BDSKZoomRecord *)recordAtIndex:(unsigned int)index;
+- (ZOOMRecord *)recordAtIndex:(unsigned int)index;
 - (unsigned int)countOfRecords;
 - (NSArray *)allRecords;
 

@@ -1,5 +1,5 @@
 //
-//  BDSKZoomRecord.h
+//  ZOOMRecord.h
 //  yaz
 //
 //  Created by Adam Maxwell on 12/26/06.
@@ -40,9 +40,9 @@ typedef enum {
     USMARC,
     UKMARC,
     XML
-} BDSKZoomSyntaxType;
+} ZOOMSyntaxType;
 
-@interface BDSKZoomRecord : NSObject
+@interface ZOOMRecord : NSObject
 {
     ZOOM_record          _record;
     NSString            *_charSetName;
@@ -50,8 +50,8 @@ typedef enum {
 }
 
 + (NSArray *)validKeys;
-+ (NSString *)stringWithSyntaxType:(BDSKZoomSyntaxType)type;
-+ (BDSKZoomSyntaxType)syntaxTypeWithString:(NSString *)string;
++ (NSString *)stringWithSyntaxType:(ZOOMSyntaxType)type;
++ (ZOOMSyntaxType)syntaxTypeWithString:(NSString *)string;
 
 // encoding of 0 (not used) means that only UTF-8 will be tried
 + (void)setFallbackEncoding:(NSStringEncoding)enc;
@@ -69,6 +69,6 @@ typedef enum {
 - (NSString *)rawString;
 - (NSData *)rawData;
 
-- (BDSKZoomSyntaxType)syntaxType;
+- (ZOOMSyntaxType)syntaxType;
 
 @end

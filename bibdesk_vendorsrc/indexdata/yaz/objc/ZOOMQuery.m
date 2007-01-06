@@ -1,5 +1,5 @@
 //
-//  BDSKZoomQuery.m
+//  ZOOMQuery.m
 //  yaz
 //
 //  Created by Adam Maxwell on 12/26/06.
@@ -30,10 +30,10 @@
  THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */ 
 
-#import "BDSKZoomQuery.h"
+#import "ZOOMQuery.h"
 #import <yaz/yaz-iconv.h>
 
-@implementation BDSKZoomQuery
+@implementation ZOOMQuery
 
 + (id)queryWithCCLString:(NSString *)queryString config:(NSString *)confString;
 {
@@ -107,7 +107,7 @@
 
 - (unsigned int)hash { return [_queryString hash]; }
 
-- (BOOL)isEqualToQuery:(BDSKZoomQuery *)aQuery;
+- (BOOL)isEqualToQuery:(ZOOMQuery *)aQuery;
 {
     if (self == aQuery)
         return YES;
@@ -125,7 +125,7 @@
 
 @end
         
-@implementation BDSKZoomCCLQueryFormatter
+@implementation ZOOMCCLQueryFormatter
 
 - (id)init
 {
@@ -136,7 +136,7 @@
 {
     self = [super init];
     if (self) {
-        const char *config_cstr = config ? [config UTF8String] : [BDSKZoomQuery defaultConfigCString];
+        const char *config_cstr = config ? [config UTF8String] : [ZOOMQuery defaultConfigCString];
         unsigned len = strlen(config_cstr) + 1;
         char *copy = NSZoneMalloc([self zone], len * sizeof(char));
         
