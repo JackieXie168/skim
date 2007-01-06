@@ -2128,6 +2128,7 @@
 		CE38FA88091D258000BCB69D /* Data Handling */ = {
 			isa = PBXGroup;
 			children = (
+				CEAB9F580B4FF20800673AC2 /* BDSKCitationFormatter.m */,
 				F9022C390758027800C3F701 /* BDSKCiteKeyFormatter.m */,
 				F9022C490758027800C3F701 /* BDSKComplexStringFormatter.m */,
 				CEBA63D60A7CA0B400588BB7 /* BDSKCrossrefFormatter.m */,
@@ -2137,8 +2138,6 @@
 				CEF94340092656BB00750FFA /* BDSKPathIconTransformer.m */,
 				F90C64050AC62B7B008B2DDA /* BDSKShellCommandFormatter.m */,
 				CEF94413092668EA00750FFA /* BDSKTableSortDescriptor.m */,
-				CEAB9F570B4FF20800673AC2 /* BDSKCitationFormatter.h */,
-				CEAB9F580B4FF20800673AC2 /* BDSKCitationFormatter.m */,
 			);
 			name = "Data Handling";
 			sourceTree = "<group>";
@@ -2344,6 +2343,7 @@
 				2730077607CF20B500F2E485 /* BDSKBorderlessKeyWindow.h */,
 				CEFDBDDB0AEA87F8009EE99D /* BDSKCategoryGroup.h */,
 				3D866C2608031CEC00FF1724 /* BDSKCharacterConversion.h */,
+				CEAB9F570B4FF20800673AC2 /* BDSKCitationFormatter.h */,
 				F9022C380758027800C3F701 /* BDSKCiteKeyFormatter.h */,
 				CEEC6C52093A411D00A64F54 /* BDSKCollapsibleView.h */,
 				CE6003260AF3E465000B5680 /* BDSKColoredBox.h */,
