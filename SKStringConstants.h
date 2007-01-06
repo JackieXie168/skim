@@ -7,3 +7,5 @@
 
 
 extern NSString *SKMainWindowFrameAutosaveName;
+extern NSString *SKLastOpenFileNamesKey;
+

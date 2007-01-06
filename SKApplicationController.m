@@ -13,10 +13,6 @@
 
 @implementation SKApplicationController
 
-- (BOOL)applicationShouldOpenUntitledFile:(NSApplication *)sender{
-    return NO;
-}
-
 + (void)initialize{
     [self setupDefaults];
 }
@@ -46,5 +42,40 @@
     // Set the initial values in the shared user defaults controller 
     [[NSUserDefaultsController sharedUserDefaultsController] setInitialValues:initialValuesDict];
 }
+
+- (BOOL)applicationShouldOpenUntitledFile:(NSApplication *)sender{
+    return NO;
+}
+
+- (void)applicationWillTerminate:(NSNotification *)aNotification{
+
+    NSArray *fileNames = [[[NSDocumentController sharedDocumentController] documents] valueForKeyPath:@"@distinctUnionOfObjects.fileName"];
+    NSMutableArray *array = [NSMutableArray arrayWithCapacity:[fileNames count]];
+    NSEnumerator *fEnum = [fileNames objectEnumerator];
+    NSString *fileName;
+    while(fileName = [fEnum nextObject]){
+        NSData *data = [[BDAlias aliasWithPath:fileName] aliasData];
+        if(data)
+            [array addObject:[NSDictionary dictionaryWithObjectsAndKeys:fileName, @"fileName", data, @"_BDAlias", nil]];
+        else
+            [array addObject:[NSDictionary dictionaryWithObjectsAndKeys:fileName, @"fileName", nil]];
+    }
+    [[NSUserDefaults standardUserDefaults] setObject:array forKey:SKLastOpenFileNamesKey];
+}
+
+
+- (void)applicationDidFinishLaunching:(NSNotification *)aNotification{
+ 
+    NSArray *files = [[NSUserDefaults standardUserDefaults] objectForKey:SKLastOpenFileNamesKey];
+    NSEnumerator *fileEnum = [files objectEnumerator];
+    NSDictionary *dict;
+    NSURL *fileURL;
+    while (dict = [fileEnum nextObject]){ 
+        fileURL = [[BDAlias aliasWithData:[dict objectForKey:@"_BDAlias"]] fileURL];
+        if(fileURL == nil)
+            fileURL = [NSURL fileURLWithPath:[dict objectForKey:@"fileName"]];
+        [[NSDocumentController sharedDocumentController] openDocumentWithContentsOfURL:fileURL display:YES error:NULL];
+    }
+}    
 
 @end

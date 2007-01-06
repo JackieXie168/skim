@@ -13,6 +13,7 @@
 		4530D8200B27ACD0007C59F4 /* SubWindow.nib in Resources */ = {isa = PBXBuildFile; fileRef = 4530D81E0B27ACD0007C59F4 /* SubWindow.nib */; };
 		4530D8C90B27B04D007C59F4 /* SKApplicationController.m in Sources */ = {isa = PBXBuildFile; fileRef = 4530D8C80B27B04D007C59F4 /* SKApplicationController.m */; };
 		4530DCF70B27CACE007C59F4 /* SKPDFView.m in Sources */ = {isa = PBXBuildFile; fileRef = 4530DCF60B27CACE007C59F4 /* SKPDFView.m */; };
+		453DC2770B4F242200A72509 /* BDAlias.m in Sources */ = {isa = PBXBuildFile; fileRef = 453DC2750B4F242200A72509 /* BDAlias.m */; };
 		455989F80B2662FF00E5419B /* Quartz.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 455989F70B2662FF00E5419B /* Quartz.framework */; };
 		45A3BD080B4F0770002B297F /* SKStringConstants.m in Sources */ = {isa = PBXBuildFile; fileRef = 45A3BD070B4F0770002B297F /* SKStringConstants.m */; };
 		45A3BD390B4F097D002B297F /* InitialUserDefaults.plist in Resources */ = {isa = PBXBuildFile; fileRef = 45A3BD380B4F097D002B297F /* InitialUserDefaults.plist */; };
@@ -81,6 +82,8 @@
 		4530D8C80B27B04D007C59F4 /* SKApplicationController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SKApplicationController.m; sourceTree = "<group>"; };
 		4530DCF50B27CACE007C59F4 /* SKPDFView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SKPDFView.h; sourceTree = "<group>"; };
 		4530DCF60B27CACE007C59F4 /* SKPDFView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SKPDFView.m; sourceTree = "<group>"; };
+		453DC2750B4F242200A72509 /* BDAlias.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; name = BDAlias.m; path = ../bibdesk_vendorsrc/BDistributed/BDAlias/BDAlias.m; sourceTree = SOURCE_ROOT; };
+		453DC2760B4F242200A72509 /* BDAlias.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = BDAlias.h; path = ../bibdesk_vendorsrc/BDistributed/BDAlias/BDAlias.h; sourceTree = SOURCE_ROOT; };
 		455989F70B2662FF00E5419B /* Quartz.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Quartz.framework; path = /System/Library/Frameworks/Quartz.framework; sourceTree = "<absolute>"; };
 		45A3BD060B4F0770002B297F /* SKStringConstants.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SKStringConstants.h; sourceTree = "<group>"; };
 		45A3BD070B4F0770002B297F /* SKStringConstants.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SKStringConstants.m; sourceTree = "<group>"; };
@@ -177,6 +180,7 @@
 		2A37F4AAFDCFA73011CA2CEA /* Skim */ = {
 			isa = PBXGroup;
 			children = (
+				453DC2740B4F23E500A72509 /* 3rd-party Sources */,
 				2A37F4ABFDCFA73011CA2CEA /* Classes */,
 				2A37F4AFFDCFA73011CA2CEA /* Other Sources */,
 				2A37F4B8FDCFA73011CA2CEA /* Resources */,
@@ -263,6 +267,15 @@
 				1058C7A8FEA54F5311CA2CBB /* Other Frameworks */,
 			);
 			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		453DC2740B4F23E500A72509 /* 3rd-party Sources */ = {
+			isa = PBXGroup;
+			children = (
+				453DC2750B4F242200A72509 /* BDAlias.m */,
+				453DC2760B4F242200A72509 /* BDAlias.h */,
+			);
+			name = "3rd-party Sources";
 			sourceTree = "<group>";
 		};
 		CE5475A00B33058B00F8AFB6 /* Images */ = {
@@ -391,6 +404,7 @@
 				F97751630B37461000DF673B /* SKPSProgressController.m in Sources */,
 				CEFDF8BE0B3848C40091C61A /* SKNavigationWindow.m in Sources */,
 				45A3BD080B4F0770002B297F /* SKStringConstants.m in Sources */,
+				453DC2770B4F242200A72509 /* BDAlias.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
