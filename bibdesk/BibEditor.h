@@ -54,6 +54,7 @@
 @class BDSKAlert;
 @class BibAuthor;
 @class BDSKZoomablePDFView;
+@class BDSKCitationFormatter;
 
 /*!
     @class BibEditor
@@ -131,7 +132,8 @@
 // form cell formatter
     BDSKComplexStringFormatter *formCellFormatter;
     BDSKCrossrefFormatter *crossrefFormatter;
-	
+	BDSKCitationFormatter *citationFormatter;
+    
 // Author tableView
 	IBOutlet NSTableView *authorTableView;
 	IBOutlet NSScrollView *authorScrollView;

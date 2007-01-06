@@ -1243,6 +1243,8 @@ static Boolean stringIsEqualToString(const void *value1, const void *value2) { r
 		return [NSString stringWithBool:[self boolValueOfField:field]];
     }else if([field isTriStateField]){
 		return [NSString stringWithTriStateValue:[self triStateValueOfField:field]];
+    }else if([field isCitationField]){
+		return [self valueOfField:field inherit:NO];
 	}else if([field isEqualToString:BDSKPubTypeString]){
 		return [self pubType];
 	}else if([field isEqualToString:BDSKCiteKeyString]){
@@ -1374,6 +1376,8 @@ static Boolean stringIsEqualToString(const void *value1, const void *value2) { r
         return [NSNumber numberWithBool:[self boolValueOfField:field]];
     }else if([field isTriStateField]){
         return [NSNumber numberWithInt:[self triStateValueOfField:field]];
+    }else if([field isCitationField]){
+        return [self valueOfField:field inherit:NO];
     }else if([field isEqualToString:BDSKPubTypeString]){
         return [self pubType];
     }else{
@@ -2564,6 +2568,8 @@ Boolean stringContainsLossySubstring(NSString *theString, NSString *stringToFind
 		// Use default separator string, unless this is an author/editor field
         if([field isPersonField])
             [string appendString:@" and "];
+        else if ([field isCitationField])
+            [string appendString:@","];
         else
             [string appendString:[[OFPreferenceWrapper sharedPreferenceWrapper] objectForKey:BDSKDefaultGroupFieldSeparatorKey]];
     }

@@ -250,10 +250,27 @@
     return dragSourceCell;
 }
 
+#pragma mark BDSKFieldEditorDelegate protocol
+
+- (BOOL)textViewShouldLinkKeys:(NSTextView *)textView{
+    return [[self delegate] textViewShouldLinkKeys:textView forFormCell:[self selectedCell]];
+}
+
+- (BOOL)textView:(NSTextView *)textView isValidKey:(NSString *)key{
+    return [[self delegate] textView:textView isValidKey:key forFormCell:[self selectedCell]];
+}
+
+- (BOOL)textView:(NSTextView *)aTextView clickedOnLink:(id)link atIndex:(unsigned)charIndex{
+    return [[self delegate] textView:aTextView clickedOnLink:link atIndex:charIndex forFormCell:[self selectedCell]];
+}
+
 #pragma mark NSDraggingDestination protocol 
 
 - (NSDragOperation)draggingEntered:(id <NSDraggingInfo>)sender{
-    return [self draggingUpdated:sender];
+    NSDragOperation dragOp = [self draggingUpdated:sender];
+    if (dragOp == NSDragOperationNone && [[self window] respondsToSelector:@selector(draggingEntered:)])
+        dragOp = [[self window] draggingEntered:sender];
+    return dragOp;
 }
 
 - (NSDragOperation)draggingUpdated:(id <NSDraggingInfo>)sender{
@@ -262,49 +279,65 @@
 	id cell;
     NSDragOperation dragOp = NSDragOperationNone;
 	
-	if (![self delegate]) return NSDragOperationNone;
-	
-	[self getRow:&row column:&column forPoint:mouseLoc];
-	if (cell = [self cellAtRow:row column:0])
-        dragOp = [[self delegate] canReceiveDrag:sender forFormCell:cell];
-	if (dragOp != NSDragOperationNone) {	
-		if (row != dragRow) {
-			[self setNeedsDisplayInRect:[self cellFrameAtRow:row column:0]];
-			if (highlight)
-				[self setNeedsDisplayInRect:[self cellFrameAtRow:dragRow column:0]];
-		}
-		dragRow = row;
-		highlight = YES;
+	if ([self delegate] == nil) {
+        dragOp = NSDragOperationNone;
 	} else {
-		if (highlight)
-			[self setNeedsDisplayInRect:[self cellFrameAtRow:dragRow column:0]];
-		highlight = NO;
-		dragRow = -1;
-	}
+        [self getRow:&row column:&column forPoint:mouseLoc];
+        if (cell = [self cellAtRow:row column:0])
+            dragOp = [[self delegate] canReceiveDrag:sender forFormCell:cell];
+        if (dragOp != NSDragOperationNone) {	
+            if (row != dragRow) {
+                [self setNeedsDisplayInRect:[self cellFrameAtRow:row column:0]];
+                if (highlight)
+                    [self setNeedsDisplayInRect:[self cellFrameAtRow:dragRow column:0]];
+            }
+            dragRow = row;
+            highlight = YES;
+        } else {
+            if (highlight)
+                [self setNeedsDisplayInRect:[self cellFrameAtRow:dragRow column:0]];
+            highlight = NO;
+            dragRow = -1;
+        }
+    }
+    if (dragOp == NSDragOperationNone && [[self window] respondsToSelector:@selector(draggingUpdated:)])
+        dragOp = [[self window] draggingUpdated:sender];
     return dragOp;
 }
 
 - (void)draggingExited:(id <NSDraggingInfo>)sender{
-	if (highlight)
+	if (highlight && dragRow != -1)
 		[self setNeedsDisplayInRect:[self cellFrameAtRow:dragRow column:0]];
     highlight = NO;
 	dragRow = -1;
 }
 
 - (BOOL)prepareForDragOperation:(id <NSDraggingInfo>)sender{
-	highlight = NO;
-	[self setNeedsDisplayInRect:[self cellFrameAtRow:dragRow column:0]];
+	BOOL accept = dragRow != -1;
+    
+    highlight = NO;
 	
-	return (dragRow != -1);
+    if (accept) {
+        [self setNeedsDisplayInRect:[self cellFrameAtRow:dragRow column:0]];
+    } else if ([[self window] respondsToSelector:@selector(prepareForDragOperation:)]) {
+        accept = [[self window] prepareForDragOperation:sender];
+    }
+	return accept;
 } 
 
 - (BOOL)performDragOperation:(id <NSDraggingInfo>)sender{
-    if(![self delegate]) return NO;
+	BOOL accept = dragRow != -1 && [self delegate];
     
-	id cell = [self cellAtRow:dragRow column:0];
+    if (accept) {
+        id cell = [self cellAtRow:dragRow column:0];
+        accept = [[self delegate] receiveDrag:sender forFormCell:cell];
+	} else if ([[self window] respondsToSelector:@selector(performDragOperation:)]) {
+        accept = [[self window] performDragOperation:sender];
+    }
+    
     dragRow = -1;
 	
-	return ([[self delegate] receiveDrag:sender forFormCell:cell]);
+    return accept;
 }
 
 #pragma mark -

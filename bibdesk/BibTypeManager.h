@@ -92,6 +92,7 @@
     NSMutableSet *ratingFieldsSet;
     NSMutableSet *triStateFieldsSet;
     NSMutableSet *booleanFieldsSet;
+    NSMutableSet *citationFieldsSet;
     NSMutableSet *singleValuedGroupFieldsSet;
     NSMutableSet *invalidGroupFieldsSet;
 }
@@ -161,6 +162,7 @@
 - (NSSet *)booleanFieldsSet;
 - (NSSet *)triStateFieldsSet;
 - (NSSet *)ratingFieldsSet;
+- (NSSet *)citationFieldsSet;
 - (NSSet *)numericFieldsSet;
 
 /*!
@@ -261,6 +263,7 @@
 - (BOOL)isRemoteURLField;
 - (BOOL)isPersonField;
 - (BOOL)isURLField;
+- (BOOL)isCitationField;
 - (BOOL)isNoteField;
 - (BOOL)isNumericField;
 - (BOOL)isSingleValuedField;

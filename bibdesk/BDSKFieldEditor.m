@@ -74,6 +74,59 @@
 	[super dealloc];
 }
 
+#pragma mark Linking methods
+
+- (void)updateLinks {    
+    if ([[self delegate] respondsToSelector:@selector(textViewShouldLinkKeys:)] == NO ||
+        [[self delegate] textViewShouldLinkKeys:self] == NO)
+        return;
+    
+    static NSCharacterSet *keySepCharSet = nil;
+    static NSCharacterSet *keyCharSet = nil;
+    
+    if (keySepCharSet == nil) {
+        keySepCharSet = [[NSCharacterSet characterSetWithCharactersInString:@","] retain];
+        keyCharSet = [[keySepCharSet invertedSet] retain];
+    }
+    
+    NSTextStorage *textStorage = [self textStorage];
+    NSString *string = [textStorage string];
+    
+    unsigned start, length = [string length];
+    NSRange range = NSMakeRange(0, 0);
+    NSString *keyString;
+    
+    [textStorage removeAttribute:NSLinkAttributeName range:NSMakeRange(0, length)];
+    
+    do {
+        start = NSMaxRange(range);
+        range = [string rangeOfCharacterFromSet:keyCharSet options:0 range:NSMakeRange(start, length - start)];
+        
+        if (range.length) {
+            start = range.location;
+            range = [string rangeOfCharacterFromSet:keySepCharSet options:0 range:NSMakeRange(start, length - start)];
+            if (range.length == 0)
+                range.location = length;
+            if (range.location > start) {
+                range = NSMakeRange(start, range.location - start);
+                keyString = [string substringWithRange:range];
+                if ([[self delegate] textView:self isValidKey:keyString])
+                    [textStorage addAttribute:NSLinkAttributeName value:keyString range:range];
+            }
+        }
+    } while (range.length);
+}
+
+- (void)setSelectedRange:(NSRange)charRange {
+    [super setSelectedRange:charRange];
+    [self updateLinks];
+}
+
+- (void)didChangeText {
+    [super didChangeText];
+    [self updateLinks];
+}
+
 #pragma mark Delegated drag methods
 
 - (void)registerForDelegatedDraggedTypes:(NSArray *)pboardTypes {
