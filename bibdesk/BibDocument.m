@@ -2297,8 +2297,27 @@ originalContentsURL:(NSURL *)absoluteOriginalContentsURL
         if ([key caseInsensitiveCompare:crossref] == NSOrderedSame)
             [pub invalidateGroupNames];
         // change the crossrefs if we change the parent cite key
-        if (oldKey && [oldKey caseInsensitiveCompare:crossref] == NSOrderedSame)
-            [pub setField:BDSKCrossrefString toValue:key];
+        if (oldKey) {
+            if ([oldKey caseInsensitiveCompare:crossref] == NSOrderedSame)
+                [pub setField:BDSKCrossrefString toValue:key];
+            if (oldKey) {
+                NSCharacterSet *invalidSet = [[BibTypeManager sharedManager] invalidCharactersForField:BDSKCiteKeyString inFileType:BDSKBibtexString];
+                NSEnumerator *fieldEnum = [[[BibTypeManager sharedManager] citationFieldsSet] objectEnumerator];
+                NSString *field;
+                while (field = [fieldEnum nextObject]) {
+                    NSString *value = [pub valueOfField:field inherit:NO];
+                    NSRange range = [value rangeOfString:oldKey];
+                    if (range.location != NSNotFound &&
+                        (range.location == 0 || [invalidSet characterIsMember:[value characterAtIndex:range.location]]) &&
+                        (NSMaxRange(range) == [value length] || [invalidSet characterIsMember:[value characterAtIndex:NSMaxRange(range)]])) {
+                        NSMutableString *tmpString = [value mutableCopy];
+                        [tmpString replaceCharactersInRange:range withString:key];
+                        [pub setField:field toValue:tmpString];
+                        [tmpString release];
+                    }
+                }
+            }
+        }
     }
     
     // queue for UI updating, in case the item is changed as part of a batch process such as Find & Replace or AutoFile

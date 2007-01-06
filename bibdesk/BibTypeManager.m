@@ -221,6 +221,7 @@ static BibTypeManager *sharedInstance = nil;
         [allFields addObjectsFromArray:[pw stringArrayForKey:BDSKBooleanFieldsKey]];
         [allFields addObjectsFromArray:[pw stringArrayForKey:BDSKRatingFieldsKey]];
         [allFields addObjectsFromArray:[pw stringArrayForKey:BDSKTriStateFieldsKey]];
+        [allFields addObjectsFromArray:[pw stringArrayForKey:BDSKCitationFieldsKey]];
         
         [self setAllFieldNames:allFields];
     }
