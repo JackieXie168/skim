@@ -41,7 +41,7 @@
 #import "BDSKOwnerProtocol.h"
 
 @class BibDocument, BibItem, BDSKEdgeView, WebView, WebDownload, BDSKImagePopUpButton, MacroTableViewWindowController;
-@class BDSKComplexStringFormatter, BDSKCiteKeyFormatter, BDSKCrossrefFormatter, BDSKTypeSelectHelper;
+@class BDSKComplexStringFormatter, BDSKCiteKeyFormatter, BDSKCrossrefFormatter, BDSKCitationFormatter, BDSKTypeSelectHelper;
 
 @interface BDSKTextImportController : BDSKSheetController <BDSKOwner> {
     IBOutlet NSTextView* sourceTextView;
@@ -82,6 +82,7 @@
 	BDSKComplexStringFormatter *tableCellFormatter;
 	BDSKCrossrefFormatter *crossrefFormatter;
 	BDSKCiteKeyFormatter *citeKeyFormatter;
+	BDSKCitationFormatter *citationFormatter;
 	NSTextView *tableFieldEditor;
 	
 	BOOL showingWebView;

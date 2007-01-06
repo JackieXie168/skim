@@ -255,6 +255,8 @@ static NSString *copyStringFromNoteField(AST *field, const char *data, NSString 
                         tmpStr = copyCheckedString(bt_entry_key(entry), entry->line, filePath, parserEncoding);
                         if (nil == tmpStr) @throw BibTeXParserInternalException;
                         
+                        [[NSApp delegate] addString:tmpStr forCompletionEntry:BDSKCrossrefString];
+                        
                         newBI = [[BibItem alloc] initWithType:entryType
                                                      fileType:BDSKBibtexString
                                                       citeKey:tmpStr
