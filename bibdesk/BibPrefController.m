@@ -146,6 +146,7 @@ NSString *BDSKRemoteURLFieldsKey = @"Remote URL Fields";
 NSString *BDSKRatingFieldsKey = @"Rating fields";
 NSString *BDSKBooleanFieldsKey = @"Boolean fields";
 NSString *BDSKTriStateFieldsKey = @"Three state fields";
+NSString *BDSKCitationFieldsKey = @"Citation fields";
 NSString *BDSKOutputTemplateFileKey = @"Output Template File";
 
 NSString *BDSKCustomCiteStringsKey = @"Custom CiteStrings";

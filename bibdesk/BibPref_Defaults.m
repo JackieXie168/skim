@@ -46,7 +46,8 @@ enum {
     BDSKRemoteURLType,
     BDSKBooleanType,
     BDSKTriStateType,
-    BDSKRatingType
+    BDSKRatingType,
+    BDSKCitationType
 };
 
 @implementation BibPref_Defaults
@@ -115,6 +116,16 @@ enum {
 			[customFieldsArray addObject:dict];
 			[customFieldsSet addObject:field];
 		}
+        
+		// Add Citation fields
+		e = [[defaults arrayForKey:BDSKCitationFieldsKey] objectEnumerator];
+		type = [NSNumber numberWithInt:BDSKCitationType];
+		while(field = [e nextObject]){
+			isDefault = [NSNumber numberWithBool:[defaultFields containsObject:field]];
+			dict = [NSMutableDictionary dictionaryWithObjectsAndKeys:field, @"field", type, @"type", isDefault, @"default", nil];
+			[customFieldsArray addObject:dict];
+			[customFieldsSet addObject:field];
+		}
 		
 		// Add any remaining Textual default fields at the beginning
 		e = [defaultFields reverseObjectEnumerator];
@@ -147,6 +158,7 @@ enum {
     NSMutableArray *ratingFields = [[NSMutableArray alloc] initWithCapacity:1];
     NSMutableArray *booleanFields = [[NSMutableArray alloc] initWithCapacity:1];
     NSMutableArray *triStateFields = [[NSMutableArray alloc] initWithCapacity:1];
+    NSMutableArray *citationFields = [[NSMutableArray alloc] initWithCapacity:1];
 	
 	NSEnumerator *e = [customFieldsArray objectEnumerator];
 	NSDictionary *dict = nil;
@@ -178,6 +190,9 @@ enum {
             case BDSKTriStateType:
                 [triStateFields addObject:field];
                 break;
+            case BDSKCitationType:
+                [citationFields addObject:field];
+                break;
             default:
                 [NSException raise:NSInvalidArgumentException format:@"Attempt to set unrecognized type"];
         }
@@ -188,12 +203,14 @@ enum {
     [defaults setObject:ratingFields forKey:BDSKRatingFieldsKey];
     [defaults setObject:booleanFields forKey:BDSKBooleanFieldsKey];
     [defaults setObject:triStateFields forKey:BDSKTriStateFieldsKey];
+    [defaults setObject:citationFields forKey:BDSKCitationFieldsKey];
     [defaultFields release];
     [localFileFields release];
     [remoteURLFields release];
     [ratingFields release];
     [booleanFields release];
     [triStateFields release];
+    [citationFields release];
     
 	[defaultFieldsTableView reloadData];
 	[self valuesHaveChanged];

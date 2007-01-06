@@ -50,6 +50,8 @@
 @interface NSObject (BDSKFieldEditorDelegate)
 - (NSRange)textView:(NSTextView *)textView rangeForUserCompletion:(NSRange)charRange;
 - (BOOL)textViewShouldAutoComplete:(NSTextView *)textView;
+- (BOOL)textViewShouldLinkKeys:(NSTextView *)textView;
+- (BOOL)textView:(NSTextView *)textView isValidKey:(NSString *)key;
 @end
 
 @interface NSControl (NSControlBDSKFieldEditorDelegate)

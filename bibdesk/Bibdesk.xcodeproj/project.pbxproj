@@ -340,6 +340,8 @@
 		CE9DBEE0093CF2640008648B /* BibDeskBibliographyCommand.m in Sources */ = {isa = PBXBuildFile; fileRef = CE9DBEDE093CF2640008648B /* BibDeskBibliographyCommand.m */; };
 		CE9F85400956A2C50073FCAD /* BDSKFieldEditor.h in Headers */ = {isa = PBXBuildFile; fileRef = CE9F853E0956A2C50073FCAD /* BDSKFieldEditor.h */; };
 		CE9F85410956A2C50073FCAD /* BDSKFieldEditor.m in Sources */ = {isa = PBXBuildFile; fileRef = CE9F853F0956A2C50073FCAD /* BDSKFieldEditor.m */; };
+		CEAB9F590B4FF20800673AC2 /* BDSKCitationFormatter.h in Headers */ = {isa = PBXBuildFile; fileRef = CEAB9F570B4FF20800673AC2 /* BDSKCitationFormatter.h */; };
+		CEAB9F5A0B4FF20800673AC2 /* BDSKCitationFormatter.m in Sources */ = {isa = PBXBuildFile; fileRef = CEAB9F580B4FF20800673AC2 /* BDSKCitationFormatter.m */; };
 		CEAC48500A96589A00B8DF43 /* BibDeskTemplatedTextCommand.h in Headers */ = {isa = PBXBuildFile; fileRef = CEAC484E0A96589A00B8DF43 /* BibDeskTemplatedTextCommand.h */; };
 		CEAC48510A96589A00B8DF43 /* BibDeskTemplatedTextCommand.m in Sources */ = {isa = PBXBuildFile; fileRef = CEAC484F0A96589A00B8DF43 /* BibDeskTemplatedTextCommand.m */; };
 		CEAC51560A97730800B8DF43 /* BibDeskExportUsingTemplateCommand.h in Headers */ = {isa = PBXBuildFile; fileRef = CEAC51540A97730800B8DF43 /* BibDeskExportUsingTemplateCommand.h */; };
@@ -1120,7 +1122,7 @@
 		3DFF35600816B55B0052F37C /* forward_small.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; name = forward_small.tiff; path = Images/forward_small.tiff; sourceTree = "<group>"; };
 		3DFF35620816B5780052F37C /* reload_small.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; name = reload_small.tiff; path = Images/reload_small.tiff; sourceTree = "<group>"; };
 		8D1107310486CEB800E47090 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
-		8D1107320486CEB800E47090 /* BibDesk.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = BibDesk.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		8D1107320486CEB800E47090 /* BibDesk.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = BibDesk.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		CE11A6340AE6BB77008C47AC /* urlFolderIcon.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; name = urlFolderIcon.tiff; path = Images/urlFolderIcon.tiff; sourceTree = "<group>"; };
 		CE11AC080AE7E0DC008C47AC /* BDSKScriptGroup.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BDSKScriptGroup.h; sourceTree = "<group>"; };
 		CE11AC090AE7E0DC008C47AC /* BDSKScriptGroup.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BDSKScriptGroup.m; sourceTree = "<group>"; };
@@ -1272,6 +1274,8 @@
 		CE9DBEDE093CF2640008648B /* BibDeskBibliographyCommand.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BibDeskBibliographyCommand.m; sourceTree = "<group>"; };
 		CE9F853E0956A2C50073FCAD /* BDSKFieldEditor.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BDSKFieldEditor.h; sourceTree = "<group>"; };
 		CE9F853F0956A2C50073FCAD /* BDSKFieldEditor.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BDSKFieldEditor.m; sourceTree = "<group>"; };
+		CEAB9F570B4FF20800673AC2 /* BDSKCitationFormatter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BDSKCitationFormatter.h; sourceTree = "<group>"; };
+		CEAB9F580B4FF20800673AC2 /* BDSKCitationFormatter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BDSKCitationFormatter.m; sourceTree = "<group>"; };
 		CEAC484E0A96589A00B8DF43 /* BibDeskTemplatedTextCommand.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = BibDeskTemplatedTextCommand.h; path = Scripting/BibDeskTemplatedTextCommand.h; sourceTree = "<group>"; };
 		CEAC484F0A96589A00B8DF43 /* BibDeskTemplatedTextCommand.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BibDeskTemplatedTextCommand.m; sourceTree = "<group>"; };
 		CEAC51540A97730800B8DF43 /* BibDeskExportUsingTemplateCommand.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = BibDeskExportUsingTemplateCommand.h; path = Scripting/BibDeskExportUsingTemplateCommand.h; sourceTree = "<group>"; };
@@ -2133,6 +2137,8 @@
 				CEF94340092656BB00750FFA /* BDSKPathIconTransformer.m */,
 				F90C64050AC62B7B008B2DDA /* BDSKShellCommandFormatter.m */,
 				CEF94413092668EA00750FFA /* BDSKTableSortDescriptor.m */,
+				CEAB9F570B4FF20800673AC2 /* BDSKCitationFormatter.h */,
+				CEAB9F580B4FF20800673AC2 /* BDSKCitationFormatter.m */,
 			);
 			name = "Data Handling";
 			sourceTree = "<group>";
@@ -2887,6 +2893,7 @@
 				CE966C700B47CF25003BAB9A /* BDSKDublinCoreXMLParser.h in Headers */,
 				CEBC676E0B4A845F00CE0B2D /* BDSKSearchGroupViewController.h in Headers */,
 				CEBC70220B4ABDF500CE0B2D /* BDSKOAIGroupServer.h in Headers */,
+				CEAB9F590B4FF20800673AC2 /* BDSKCitationFormatter.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -3709,6 +3716,7 @@
 				CE966C710B47CF25003BAB9A /* BDSKDublinCoreXMLParser.m in Sources */,
 				CEBC676F0B4A845F00CE0B2D /* BDSKSearchGroupViewController.m in Sources */,
 				CEBC70230B4ABDF500CE0B2D /* BDSKOAIGroupServer.m in Sources */,
+				CEAB9F5A0B4FF20800673AC2 /* BDSKCitationFormatter.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

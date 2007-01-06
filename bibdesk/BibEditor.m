@@ -78,6 +78,8 @@
 #import "NSArray_BDSKExtensions.h"
 #import "PDFDocument_BDSKExtensions.h"
 #import "NSWindowController_BDSKExtensions.h"
+#import "BDSKPublicationsArray.h"
+#import "BDSKCitationFormatter.h"
 
 static NSString *BDSKBibEditorFrameAutosaveName = @"BibEditor window autosave name";
 
@@ -217,10 +219,11 @@ static int numberOfOpenEditors = 0;
 
     formCellFormatter = [[BDSKComplexStringFormatter alloc] initWithDelegate:self macroResolver:[[publication owner] macroResolver]];
     crossrefFormatter = [[BDSKCrossrefFormatter alloc] init];
+    citationFormatter = [[BDSKCitationFormatter alloc] initWithDelegate:self];
     
     [self setupForm];
     if (isEditable)
-        [bibFields registerForDraggedTypes:[NSArray arrayWithObjects:NSFilenamesPboardType, NSURLPboardType, BDSKWeblocFilePboardType, nil]];
+        [bibFields registerForDraggedTypes:[NSArray arrayWithObjects:BDSKBibItemPboardType, NSFilenamesPboardType, NSURLPboardType, BDSKWeblocFilePboardType, nil]];
     
     // Setup the citekey textfield
     BDSKCiteKeyFormatter *citeKeyFormatter = [[BDSKCiteKeyFormatter alloc] init];
@@ -325,6 +328,7 @@ static int numberOfOpenEditors = 0;
 	[webSnoopContainerView release];
     [formCellFormatter release];
     [crossrefFormatter release];
+    [citationFormatter release];
     [super dealloc];
 }
 
@@ -2333,6 +2337,23 @@ static int numberOfOpenEditors = 0;
 	}
 }
 
+- (BOOL)textViewShouldLinkKeys:(NSTextView *)textView forFormCell:(id)aCell {
+    return [[aCell title] isCitationField];
+}
+
+- (BOOL)textView:(NSTextView *)textView isValidKey:(NSString *)key forFormCell:(id)aCell {
+    return [[[publication owner] publications] itemForCiteKey:key] != nil;
+}
+
+- (BOOL)textView:(NSTextView *)aTextView clickedOnLink:(id)link atIndex:(unsigned)charIndex forFormCell:(id)aCell {
+    [[self document] editPub:[[[publication owner] publications] itemForCiteKey:link]];
+    return YES;
+}
+
+- (BOOL)citationFormatter:(BDSKCitationFormatter *)formatter isValidKey:(NSString *)key {
+    return [[[publication owner] publications] itemForCiteKey:key] != nil;
+}
+
 #pragma mark dragging destination delegate methods
 
 - (NSDragOperation)canReceiveDrag:(id <NSDraggingInfo>)sender forField:(NSString *)field{
@@ -2352,7 +2373,7 @@ static int numberOfOpenEditors = 0;
         return NSDragOperationNone;
     
 	// we put webloc types first, as we always want to accept them for remote URLs, but never for local files
-	dragType = [pboard availableTypeFromArray:[NSArray arrayWithObjects:BDSKWeblocFilePboardType, NSFilenamesPboardType, NSURLPboardType, nil]];
+	dragType = [pboard availableTypeFromArray:[NSArray arrayWithObjects:BDSKWeblocFilePboardType, NSFilenamesPboardType, NSURLPboardType, BDSKBibItemPboardType, nil]];
 	
 	if ([field isLocalFileField]) {
 		if ([dragType isEqualToString:NSFilenamesPboardType]) {
@@ -2376,6 +2397,11 @@ static int numberOfOpenEditors = 0;
 				return NSDragOperationEvery;
 		}
         return NSDragOperationNone;
+	} else if ([field isCitationField]){
+		if ([dragType isEqualToString:BDSKBibItemPboardType]) {
+			return NSDragOperationEvery;
+        }
+        return NSDragOperationNone;
 	} else {
 		// we don't support dropping on a textual field. This is handled by the window
 	}
@@ -2387,7 +2413,7 @@ static int numberOfOpenEditors = 0;
 	NSString *dragType;
     
 	// we put webloc types first, as we always want to accept them for remote URLs, but never for local files
-	dragType = [pboard availableTypeFromArray:[NSArray arrayWithObjects:BDSKWeblocFilePboardType, NSFilenamesPboardType, NSURLPboardType, nil]];
+	dragType = [pboard availableTypeFromArray:[NSArray arrayWithObjects:BDSKWeblocFilePboardType, NSFilenamesPboardType, NSURLPboardType, BDSKBibItemPboardType, nil]];
     
 	if ([field isLocalFileField]) {
 		// a file, we link the local file field
@@ -2449,6 +2475,27 @@ static int numberOfOpenEditors = 0;
 			
 		}
 		
+	} else if ([field isCitationField]){
+        
+		if ([dragType isEqualToString:BDSKBibItemPboardType]) {
+            
+            NSData *pbData = [pboard dataForType:BDSKBibItemPboardType];
+            NSArray *draggedPubs = [[self document] newPublicationsFromArchivedData:pbData];
+            NSString *citeKeys = [[draggedPubs valueForKey:@"citeKey"] componentsJoinedByString:@","];
+            NSString *string = [publication valueOfField:field inherit:NO];
+            
+            if ([draggedPubs count]) {
+                if ([NSString isEmptyString:string])   
+                    string = citeKeys;
+                else
+                    string = [NSString stringWithFormat:@"%@,%@", string, citeKeys];
+                [publication setField:field toValue:string];
+                
+                return YES;
+            }
+            
+        }
+        
 	} else {
 		// we don't at the moment support dropping on a textual field
 	}
@@ -2627,7 +2674,7 @@ static int numberOfOpenEditors = 0;
 		return nil;
 	if (dragFieldEditor == nil) {
 		dragFieldEditor = [[BDSKFieldEditor alloc] init];
-		[(BDSKFieldEditor *)dragFieldEditor registerForDelegatedDraggedTypes:[NSArray arrayWithObjects:NSFilenamesPboardType, NSURLPboardType, BDSKWeblocFilePboardType, nil]];
+		[(BDSKFieldEditor *)dragFieldEditor registerForDelegatedDraggedTypes:[NSArray arrayWithObjects:NSFilenamesPboardType, NSURLPboardType, BDSKWeblocFilePboardType, BDSKBibItemPboardType, nil]];
 	}
 	return dragFieldEditor;
 }
@@ -3406,6 +3453,8 @@ static int numberOfOpenEditors = 0;
 		entry = [bibFields insertEntry:tmp usingTitleFont:requiredFont attributesForTitle:attrs indexAndTag:i objectValue:[publication valueOfField:tmp]]; \
 		if ([tmp isEqualToString:BDSKCrossrefString]) \
 			[entry setFormatter:crossrefFormatter]; \
+		else if ([tmp isCitationField]) \
+			[entry setFormatter:citationFormatter]; \
 		else \
 			[entry setFormatter:formCellFormatter]; \
 		if([editedTitle isEqualToString:tmp]) editedRow = i; \

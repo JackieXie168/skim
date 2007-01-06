@@ -110,6 +110,7 @@ static BibTypeManager *sharedInstance = nil;
     ratingFieldsSet = [[NSMutableSet alloc] initWithCapacity:5];
     triStateFieldsSet = [[NSMutableSet alloc] initWithCapacity:5];
     booleanFieldsSet = [[NSMutableSet alloc] initWithCapacity:5];
+    citationFieldsSet = [[NSMutableSet alloc] initWithCapacity:5];
     [self reloadSpecialFields];
     
     singleValuedGroupFieldsSet = [[NSMutableSet alloc] initWithCapacity:10];
@@ -155,6 +156,7 @@ static BibTypeManager *sharedInstance = nil;
     [ratingFieldsSet release];
     [triStateFieldsSet release];
     [booleanFieldsSet release];
+    [citationFieldsSet release];
     [singleValuedGroupFieldsSet release];
     [invalidGroupFieldsSet release];
 	[super dealloc];
@@ -243,10 +245,12 @@ static BibTypeManager *sharedInstance = nil;
         [ratingFieldsSet removeAllObjects];
         [triStateFieldsSet removeAllObjects];
         [booleanFieldsSet removeAllObjects];
+        [citationFieldsSet removeAllObjects];
         
         [ratingFieldsSet addObjectsFromArray:[[OFPreferenceWrapper sharedPreferenceWrapper] stringArrayForKey:BDSKRatingFieldsKey]];
         [triStateFieldsSet addObjectsFromArray:[[OFPreferenceWrapper sharedPreferenceWrapper] stringArrayForKey:BDSKTriStateFieldsKey]];
         [booleanFieldsSet addObjectsFromArray:[[OFPreferenceWrapper sharedPreferenceWrapper] stringArrayForKey:BDSKBooleanFieldsKey]];    
+        [citationFieldsSet addObjectsFromArray:[[OFPreferenceWrapper sharedPreferenceWrapper] stringArrayForKey:BDSKCitationFieldsKey]];    
     }
 }
 
@@ -548,6 +552,10 @@ static BibTypeManager *sharedInstance = nil;
     return remoteURLFieldsSet;
 }
 
+- (NSSet *)citationFieldsSet{
+    return citationFieldsSet;
+}
+
 - (NSSet *)noteFieldsSet{
     static NSSet *noteFieldsSet = nil;
     if(nil == noteFieldsSet)
@@ -624,6 +632,7 @@ static BibTypeManager *sharedInstance = nil;
 - (BOOL)isRatingField { return [[[BibTypeManager sharedManager] ratingFieldsSet] containsObject:self]; }
 - (BOOL)isLocalFileField { return [[[BibTypeManager sharedManager] localFileFieldsSet] containsObject:self]; }
 - (BOOL)isRemoteURLField { return [[[BibTypeManager sharedManager] remoteURLFieldsSet] containsObject:self]; }
+- (BOOL)isCitationField { return [[[BibTypeManager sharedManager] citationFieldsSet] containsObject:self]; }
 - (BOOL)isPersonField { return [[[BibTypeManager sharedManager] personFieldsSet] containsObject:self]; }
 - (BOOL)isURLField { return [[[BibTypeManager sharedManager] allURLFieldsSet] containsObject:self]; }
 - (BOOL)isNoteField { return [[[BibTypeManager sharedManager] noteFieldsSet] containsObject:self]; }

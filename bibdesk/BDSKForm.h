@@ -52,6 +52,9 @@
 - (void)cleanUpAfterDragOperation:(NSDragOperation)operation forFormCell:(id)cell;
 - (NSDragOperation)canReceiveDrag:(id <NSDraggingInfo>)sender forFormCell:(id)aCell;
 - (BOOL)receiveDrag:(id <NSDraggingInfo>)sender forFormCell:(id)aCell;
+- (BOOL)textViewShouldLinkKeys:(NSTextView *)textView forFormCell:(id)aCell;
+- (BOOL)textView:(NSTextView *)textView isValidKey:(NSString *)key forFormCell:(id)aCell;
+- (BOOL)textView:(NSTextView *)aTextView clickedOnLink:(id)link atIndex:(unsigned)charIndex forFormCell:(id)aCell;
 @end
 
 @interface BDSKForm : NSForm {
