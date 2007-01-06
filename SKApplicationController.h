@@ -13,7 +13,6 @@
 #import "BDAlias.h"
 
 @interface SKApplicationController : NSObject {
-
 }
-
++ (void)setupDefaults;
 @end
