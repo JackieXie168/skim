@@ -530,7 +530,7 @@ static NSString *BDSKRecentSearchesKey = @"BDSKRecentSearchesKey";
         // We could set each of these as a separate attribute name on the file, but then we'd need to muck around with prepending net.sourceforge.bibdesk. to each key, and that seems messy.
         NSMutableDictionary *dictionary = [[self mainWindowSetupDictionaryFromExtendedAttributes] mutableCopy];
         
-        [dictionary setObject:[tableView tableColumnIdentifiers] forKey:BDSKShownColsNamesKey];
+        [dictionary setObject:[[tableView tableColumnIdentifiers] arrayByRemovingObject:BDSKImportOrderString] forKey:BDSKShownColsNamesKey];
         [dictionary setObject:[self currentTableColumnWidthsAndIdentifiers] forKey:BDSKColumnWidthsKey];
         [dictionary setObject:sortKey forKey:BDSKDefaultSortedTableColumnKey];
         [dictionary setBoolValue:docState.sortDescending forKey:BDSKDefaultSortedTableColumnIsDescendingKey];
@@ -1658,6 +1658,8 @@ originalContentsURL:(NSURL *)absoluteOriginalContentsURL
 #pragma mark New publications from pasteboard
 
 - (void)addPublications:(NSArray *)newPubs publicationsToAutoFile:(NSArray *)pubsToAutoFile temporaryCiteKey:(NSString *)tmpCiteKey selectLibrary:(BOOL)select{
+    [self flagAsImported:newPubs forGroup:nil];
+    
     if (select)
         [self selectLibraryGroup:nil];    
 	[self addPublications:newPubs];
@@ -2017,7 +2019,15 @@ originalContentsURL:(NSURL *)absoluteOriginalContentsURL
 - (void)saveSortOrder{ 
     // @@ if we switch to NSArrayController, we should just archive the sort descriptors (see BDSKFileContentSearchController)
     OFPreferenceWrapper *pw = [OFPreferenceWrapper sharedPreferenceWrapper];
-    [pw setObject:sortKey forKey:BDSKDefaultSortedTableColumnKey];
+    NSString *savedSortKey = nil;
+    if ([sortKey isEqualToString:BDSKImportOrderString]) {
+        if ([previousSortKey isEqualToString:BDSKImportOrderString] == NO) 
+            savedSortKey = previousSortKey;
+    } else {
+        savedSortKey = sortKey;
+    }
+    if (savedSortKey)
+        [pw setObject:savedSortKey forKey:BDSKDefaultSortedTableColumnKey];
     [pw setBool:docState.sortDescending forKey:BDSKDefaultSortedTableColumnIsDescendingKey];
     [pw setObject:sortGroupsKey forKey:BDSKSortGroupsKey];
     [pw setBool:docState.sortGroupsDescending forKey:BDSKSortGroupsDescendingKey];    

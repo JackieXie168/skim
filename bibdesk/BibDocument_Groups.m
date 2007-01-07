@@ -73,6 +73,7 @@
 #import "BDSKSearchGroupSheetController.h"
 #import "BDSKSearchGroupViewController.h"
 #import "BDSKServerInfo.h"
+#import "NSObject_BDSKExtensions.h"
 
 @implementation BibDocument (Groups)
 
@@ -188,18 +189,40 @@ The groupedPublications array is a subset of the publications array, developed b
 - (void)handleFilterChangedNotification:(NSNotification *)notification{
 	[self updateSmartGroupsCountAndContent:YES];
 }
-    
+
 - (void)handleGroupTableSelectionChangedNotification:(NSNotification *)notification{
-    if ([self hasSearchGroupsSelected])
-        [self showSearchGroupView];
-    else
-        [self hideSearchGroupView];
-    if ([self hasExternalGroupsSelected])
+    // called with notification == nil from searchByContent action, shouldn't redisplay group content in that case to avoid a loop
+    
+    NSString *newSearchKey = nil;
+    
+    if ([self hasExternalGroupsSelected]) {
         [tableView setAlternatingRowBackgroundColors:[NSColor alternateControlAlternatingRowBackgroundColors]];
-    else
+        [tableView insertTableColumnWithIdentifier:BDSKImportOrderString atIndex:0];
+        if ([self hasSearchGroupsSelected]) {
+            newSearchKey = BDSKImportOrderString;
+            docState.sortDescending = [sortKey isEqualToString:BDSKImportOrderString];
+            [self showSearchGroupView];
+        } else {
+            [self hideSearchGroupView];
+        }
+    } else {
         [tableView setAlternatingRowBackgroundColors:[NSColor controlAlternatingRowBackgroundColors]];
+        [tableView removeTableColumnWithIdentifier:BDSKImportOrderString];
+        if ([previousSortKey isEqualToString:BDSKImportOrderString]) {
+            [previousSortKey release];
+            previousSortKey = [BDSKTitleString retain];
+        }
+        if ([sortKey isEqualToString:BDSKImportOrderString]) {
+            newSearchKey = previousSortKey;
+            docState.sortDescending = NO;
+        }
+        [self hideSearchGroupView];
+    }
     // Mail and iTunes clear search when changing groups; users don't like this, though.  Xcode doesn't clear its search field, so at least there's some precedent for the opposite side.
-    [self displaySelectedGroups];
+    if (notification)
+        [self displaySelectedGroups];
+    if (newSearchKey)
+        [self sortPubsByKey:newSearchKey];
     // could force selection of row 0 in the main table here, so we always display a preview, but that flashes the group table highlights annoyingly and may cause other selection problems
 }
 
@@ -230,6 +253,9 @@ The groupedPublications array is a subset of the publications array, developed b
         if ([[self selectedGroups] containsObject:group] && succeeded == YES)
             [self displaySelectedGroups];
     }
+    
+    if (succeeded)
+        [self flagAsImported:publications forGroup:group];
 }
 
 - (void)handleSharedGroupsChangedNotification:(NSNotification *)notification{
@@ -252,6 +278,8 @@ The groupedPublications array is a subset of the publications array, developed b
 	// select the current groups, if still around. Otherwise this selects Library
     [self selectGroups:selectedGroups];
     [self displaySelectedGroups]; // the selection may not have changed, so we won't get this from the notification, and we're not the delegate now anyway
+        
+    [self performSelector:@selector(flagAsImported:forGroup:) withObject:publications withObjectsFromArray:[groups sharedGroups]];
     
 	// reset ourself as delegate
     [groupTableView setDelegate:self];
@@ -271,6 +299,9 @@ The groupedPublications array is a subset of the publications array, developed b
         if ([[self selectedGroups] containsObject:group] && succeeded == YES)
             [self displaySelectedGroups];
     }
+    
+    if (succeeded)
+        [self flagAsImported:publications forGroup:group];
 }
 
 - (void)handleScriptGroupUpdatedNotification:(NSNotification *)notification{
@@ -287,6 +318,9 @@ The groupedPublications array is a subset of the publications array, developed b
         if ([[self selectedGroups] containsObject:group] && succeeded == YES)
             [self displaySelectedGroups];
     }
+    
+    if (succeeded)
+        [self flagAsImported:publications forGroup:group];
 }
 
 - (void)handleSearchGroupUpdatedNotification:(NSNotification *)notification{
@@ -299,6 +333,9 @@ The groupedPublications array is a subset of the publications array, developed b
     [groupTableView setNeedsDisplay:YES];
     if ([[self selectedGroups] containsObject:group] && succeeded == YES)
         [self displaySelectedGroups];
+    
+    if (succeeded)
+        [self flagAsImported:publications forGroup:group];
 }
 
 - (void)handleWillAddRemoveGroupNotification:(NSNotification *)notification{
@@ -308,7 +345,7 @@ The groupedPublications array is a subset of the publications array, developed b
 
 - (void)handleDidAddRemoveGroupNotification:(NSNotification *)notification{
     [groupTableView reloadData];
-    [self handleGroupTableSelectionChangedNotification:nil];
+    [self handleGroupTableSelectionChangedNotification:notification];
 }
 
 #pragma mark UI updating
@@ -1101,8 +1138,10 @@ The groupedPublications array is a subset of the publications array, developed b
     BibItem *pub;
     
     while (pub = [pubEnum nextObject]) {
-        if ([currentPubs containsObject:pub] == NO)
+        if ([currentPubs containsObject:pub] == NO) {
             [array addObject:pub];
+            [pub setImported:YES];
+        }
     }
     
     if ([array count] == 0)
@@ -1125,7 +1164,7 @@ The groupedPublications array is a subset of the publications array, developed b
     
     [groups setLastImportedPublications:newPubs];
 	
-	[[self undoManager] setActionName:NSLocalizedString(@"Merge Shared Publications", @"Undo action name")];
+	[[self undoManager] setActionName:NSLocalizedString(@"Merge External Publications", @"Undo action name")];
     
     return newPubs;
 }
@@ -1342,6 +1381,65 @@ The groupedPublications array is a subset of the publications array, developed b
 	
     // reset ourself as delegate
     [groupTableView setDelegate:self];
+}
+
+#pragma mark Importing
+
+- (void)flagAsImported:(NSArray *)pubs forGroup:(BDSKGroup *)aGroup{
+    CFIndex countOfItems = [pubs count];
+    BibItem **items = (BibItem **)NSZoneMalloc([self zone], sizeof(BibItem *) * countOfItems);
+    [pubs getObjects:items];
+    NSSet *addedPubs = (NSSet *)CFSetCreate(CFAllocatorGetDefault(), (const void **)items, countOfItems, &BDSKBibItemEqualityCallBacks);
+    NSZoneFree([self zone], items);
+    
+    NSMutableIndexSet *indexes = [NSMutableIndexSet indexSet];
+    
+    if (aGroup) {
+        [indexes addIndex:[groups indexOfObjectIdenticalTo:aGroup]];
+    } else {
+        [indexes addIndexesInRange:[groups rangeOfSharedGroups]];
+        [indexes addIndexesInRange:[groups rangeOfURLGroups]];
+        [indexes addIndexesInRange:[groups rangeOfScriptGroups]];
+        [indexes addIndexesInRange:[groups rangeOfSearchGroups]];
+    }
+    
+    unsigned index = [indexes firstIndex];
+    
+    while (index != NSNotFound) {
+        id group = [groups objectAtIndex:index];
+        NSEnumerator *pubEnum = [[group publications] objectEnumerator];
+        BibItem *pub;
+        while (pub = [pubEnum nextObject]) {
+            if ([addedPubs containsObject:pub])
+                [pub setImported:YES];
+        }
+        index = [indexes indexGreaterThanIndex:index];
+    }
+    [addedPubs release];
+	
+    [tableView reloadData];
+}
+
+- (void)tableView:(NSTableView *)aTableView importItemAtRow:(int)rowIndex{
+    BibItem *pub = [shownPublications objectAtIndex:rowIndex];
+    
+    NSMutableData *data = [NSMutableData data];
+    NSKeyedArchiver *archiver = [[NSKeyedArchiver alloc] initForWritingWithMutableData:data];
+    NSArray *newPubs;
+    
+    [archiver encodeObject:[NSArray arrayWithObjects:pub, nil] forKey:@"publications"];
+    [archiver finishEncoding];
+    [archiver release];
+    
+    newPubs = [self newPublicationsFromArchivedData:data];
+    
+	[self addPublications:newPubs];
+    
+    [groups setLastImportedPublications:newPubs];
+    
+    [pub setImported:YES];
+    
+	[[self undoManager] setActionName:NSLocalizedString(@"Import Publication", @"Undo action name")];
 }
 
 @end

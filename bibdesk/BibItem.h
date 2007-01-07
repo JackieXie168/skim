@@ -76,6 +76,7 @@ enum {
     int currentIndex;
     BOOL spotlightMetadataChanged;
     NSMutableDictionary *cachedURLs;
+    BOOL isImported;
 }
 
 /*!
@@ -899,6 +900,9 @@ enum {
 - (int)removeFromGroup:(BDSKGroup *)group handleInherited:(int)operation;
 - (int)replaceGroup:(BDSKGroup *)group withGroupNamed:(NSString *)newGroupName handleInherited:(int)operation;
 - (void)invalidateGroupNames;
+
+- (BOOL)isImported;
+- (void)setImported:(BOOL)flag;
 
 @end
 

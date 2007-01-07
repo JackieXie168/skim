@@ -172,7 +172,13 @@
 }
 
 - (NSString *)tableView:(NSTableView *)tv toolTipForTableColumn:(NSTableColumn *)aTableColumn row:(int)row {
-    return (tv == groupTableView ? [[groups objectAtIndex:row] toolTip] : nil);
+    if (tv == tableView) {
+        if ([[aTableColumn identifier] isEqualToString:BDSKImportOrderString] && [[shownPublications objectAtIndex:row] isImported] == NO)
+            return NSLocalizedString(@"Click to import this item", @"Tool tip message");
+    } else if (tv == groupTableView) {
+        return [[groups objectAtIndex:row] toolTip];
+    }
+    return nil;
 }
     
 
@@ -214,8 +220,12 @@
 - (void)tableView:(NSTableView *)tv willDisplayCell:(id)aCell forTableColumn:(NSTableColumn *)aTableColumn row:(int)row{
     if (row == -1) return;
     if (tv == tableView) {
-        if([aCell isKindOfClass:[NSButtonCell class]])
-            [aCell setEnabled:[self hasExternalGroupsSelected] == NO];
+        if([aCell isKindOfClass:[NSButtonCell class]]){
+            if ([[aTableColumn identifier] isEqualToString:BDSKImportOrderString])
+                [aCell setEnabled:[[shownPublications objectAtIndex:row] isImported] == NO];
+            else
+                [aCell setEnabled:[self hasExternalGroupsSelected] == NO];
+        }
     } else if (tv == groupTableView) {
         BDSKGroup *group = [groups objectAtIndex:row];
         NSProgressIndicator *spinner = [groups spinnerForGroup:group];

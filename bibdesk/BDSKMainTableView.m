@@ -56,10 +56,11 @@
 
 - (NSImage *)headerImageForField:(NSString *)field;
 - (NSString *)headerTitleForField:(NSString *)field;
-- (IBAction)columnsMenuSelectTableColumn:(id)sender;
-- (IBAction)columnsMenuAddTableColumn:(id)sender;
+- (void)columnsMenuSelectTableColumn:(id)sender;
+- (void)columnsMenuAddTableColumn:(id)sender;
 - (void)addColumnSheetDidEnd:(BDSKAddFieldSheetController *)addFieldController returnCode:(int)returnCode contextInfo:(void *)contextInfo;
 - (void)updateColumnsMenu;
+- (IBAction)importItem:(id)sender;
 
 @end
 
@@ -303,6 +304,16 @@
 				[switchButtonCell setControlSize:NSSmallControlSize];
                 [switchButtonCell setAllowsMixedState:YES];
                 [tc setDataCell:switchButtonCell];
+            }else if ([colName isEqualToString:BDSKImportOrderString]){
+				NSButtonCell *importButtonCell = [[[NSButtonCell alloc] initTextCell:@""] autorelease];
+				[importButtonCell setButtonType:NSMomentaryChangeButton];
+				[importButtonCell setBordered:NO];
+				[importButtonCell setImagePosition:NSImageOnly];
+				[importButtonCell setControlSize:NSSmallControlSize];
+				[importButtonCell setImage:[NSImage imageNamed:@"ArrowImage"]];
+				[importButtonCell setAction:@selector(importItem:)];
+				[importButtonCell setTarget:self];
+                [tc setDataCell:importButtonCell];
 			}
 			if(image = [self headerImageForField:colName]){
 				[(NSCell *)[tc headerCell] setImage:image];
@@ -338,6 +349,45 @@
     }
     [menu removeItem:[menu itemWithAction:@selector(autosizeColumn:)]];
     return [menu autorelease];
+}
+
+- (void)insertTableColumnWithIdentifier:(NSString *)identifier atIndex:(unsigned)index {
+    NSMutableArray *shownColumns = [NSMutableArray arrayWithArray:[self tableColumnIdentifiers]];
+    unsigned oldIndex = [shownColumns indexOfObject:identifier];
+    
+    // Check if an object already exists in the tableview, remove the old one if it does
+    // This means we can't have a column more than once.
+    if (oldIndex != NSNotFound) {
+        if (index > oldIndex)
+            index--;
+        else if (oldIndex == index)
+            return;
+        [shownColumns removeObject:identifier];
+    }
+    
+    // Store the new column in the preferences
+    [shownColumns insertObject:identifier atIndex:index];
+    [[OFPreferenceWrapper sharedPreferenceWrapper] setObject:shownColumns
+                                                      forKey:BDSKShownColsNamesKey];
+    
+    // Actually redraw the view now with the new column.
+    [self setupTableColumnsWithIdentifiers:shownColumns];
+}
+
+- (void)removeTableColumnWithIdentifier:(NSString *)identifier {
+    NSMutableArray *shownColumns = [NSMutableArray arrayWithArray:[self tableColumnIdentifiers]];
+
+    // Check if an object already exists in the tableview.
+    if ([shownColumns containsObject:identifier] == NO)
+        return;
+
+    // Store the new column in the preferences
+    [shownColumns removeObject:identifier];
+    [[OFPreferenceWrapper sharedPreferenceWrapper] setObject:shownColumns
+                                                      forKey:BDSKShownColsNamesKey];
+    
+    // Actually redraw the view now with the new column.
+    [self setupTableColumnsWithIdentifiers:shownColumns];
 }
 
 @end
@@ -376,7 +426,7 @@
 	static NSDictionary *headerTitleCache = nil;
 	
 	if (headerTitleCache == nil) {
-        NSMutableDictionary *tmpDict = [[NSMutableDictionary alloc] initWithObjectsAndKeys:@"@", BDSKUrlString, nil];
+        NSMutableDictionary *tmpDict = [[NSMutableDictionary alloc] initWithObjectsAndKeys:@"@", BDSKUrlString, @"#", BDSKImportOrderString, nil];
 		[tmpDict addEntriesFromDictionary:[[OFPreferenceWrapper sharedPreferenceWrapper] objectForKey:BDSKTableHeaderTitlesKey]];
         headerTitleCache = [tmpDict copy];
         [tmpDict release];
@@ -385,47 +435,21 @@
 	return [headerTitleCache objectForKey:field];
 }
 
-- (IBAction)columnsMenuSelectTableColumn:(id)sender{
-    
-    NSMutableArray *shownColumns = [NSMutableArray arrayWithArray:[self tableColumnIdentifiers]];
-
-    if ([sender state] == NSOnState) {
-        [shownColumns removeObject:[sender title]];
-        [sender setState:NSOffState];
-    }else{
-        if(![shownColumns containsObject:[sender title]]){
-            [shownColumns addObject:[sender title]];
-        }
-        [sender setState:NSOnState];
-    }
-    [[OFPreferenceWrapper sharedPreferenceWrapper] setObject:shownColumns
-                                                      forKey:BDSKShownColsNamesKey];
-    [self setupTableColumnsWithIdentifiers:shownColumns];
+- (void)columnsMenuSelectTableColumn:(id)sender{
+    if ([sender state] == NSOnState)
+        [self removeTableColumnWithIdentifier:[sender title]];
+    else
+        [self insertTableColumnWithIdentifier:[sender title] atIndex:[self numberOfColumns]];
 }
 
 - (void)addColumnSheetDidEnd:(BDSKAddFieldSheetController *)addFieldController returnCode:(int)returnCode contextInfo:(void *)contextInfo{
     NSString *newColumnName = [addFieldController field];
     
-    if(newColumnName == nil || returnCode == NSCancelButton)
-        return;
-    
-    NSMutableArray *shownColumns = [NSMutableArray arrayWithArray:[self tableColumnIdentifiers]];
-
-    // Check if an object already exists in the tableview, bail without notification if it does
-    // This means we can't have a column more than once.
-    if ([shownColumns containsObject:newColumnName])
-        return;
-
-    // Store the new column in the preferences
-    [shownColumns addObject:newColumnName];
-    [[OFPreferenceWrapper sharedPreferenceWrapper] setObject:shownColumns
-                                                      forKey:BDSKShownColsNamesKey];
-    
-    // Actually redraw the view now with the new column.
-    [self setupTableColumnsWithIdentifiers:shownColumns];
+    if(newColumnName && returnCode == NSOKButton)
+        [self insertTableColumnWithIdentifier:newColumnName atIndex:[self numberOfColumns]];
 }
 
-- (IBAction)columnsMenuAddTableColumn:(id)sender{
+- (void)columnsMenuAddTableColumn:(id)sender{
     // first we fill the popup
 	BibTypeManager *typeMan = [BibTypeManager sharedManager];
     NSArray *colNames = [typeMan allFieldNamesIncluding:[NSArray arrayWithObjects:BDSKPubTypeString, BDSKCiteKeyString, BDSKDateString, BDSKDateAddedString, BDSKDateModifiedString, BDSKFirstAuthorString, BDSKSecondAuthorString, BDSKThirdAuthorString, BDSKLastAuthorString, BDSKFirstAuthorEditorString, BDSKSecondAuthorEditorString, BDSKThirdAuthorEditorString, BDSKAuthorEditorString, BDSKLastAuthorEditorString, BDSKItemNumberString, BDSKContainerString, nil]
@@ -487,7 +511,7 @@
 - (BOOL)validateMenuItem:(NSMenuItem *)menuItem{
 	SEL action = [menuItem action];
 	if (action == @selector(columnsMenuSelectTableColumn:))
-		return ([self numberOfColumns] > 1);
+		return ([[menuItem title] isEqualToString:BDSKImportOrderString] == NO && [self numberOfColumns] > 1);
 	else if (action == @selector(columnsMenuAddTableColumn:))
         return YES;
 	else
@@ -497,6 +521,15 @@
 // override private method from OmniAppKit/NSTableView-OAColumnConfigurationExtensions
 - (BOOL)_allowsAutoresizing{
     return YES;
+}
+
+- (void)importItem:(id)sender {
+    int row = [self clickedRow];
+    OBASSERT(row != -1);
+    if (row == -1)
+        return;
+    if([[self delegate] respondsToSelector:@selector(tableView:importItemAtRow:)])
+        [[self delegate] tableView:self importItemAtRow:row];
 }
 
 @end

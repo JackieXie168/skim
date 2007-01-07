@@ -231,6 +231,7 @@ extern NSString *BDSKThirdAuthorEditorString;
 extern NSString *BDSKAuthorEditorString;
 extern NSString *BDSKLastAuthorEditorString;
 extern NSString *BDSKItemNumberString;
+extern NSString *BDSKImportOrderString;
 extern NSString *BDSKTypeString;
 extern NSString *BDSKAddressString;
 extern NSString *BDSKDoiString;
