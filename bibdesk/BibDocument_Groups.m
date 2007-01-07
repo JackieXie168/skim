@@ -213,7 +213,7 @@ The groupedPublications array is a subset of the publications array, developed b
             previousSortKey = [BDSKTitleString retain];
         }
         if ([sortKey isEqualToString:BDSKImportOrderString]) {
-            newSearchKey = previousSortKey;
+            newSearchKey = [[previousSortKey retain] autorelease];
             docState.sortDescending = NO;
         }
         [self hideSearchGroupView];
