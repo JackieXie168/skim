@@ -51,6 +51,8 @@
 #import "BDSKPreviewer.h"
 #import "BDSKOverlay.h"
 #import "BDSKSearchField.h"
+#import "BibDocument_Groups.h"
+#import "BDSKMainTableView.h"
 
 NSString *BDSKDocumentFormatForSearchingDates = nil;
 
