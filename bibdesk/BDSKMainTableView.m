@@ -311,6 +311,7 @@
 				[importButtonCell setImagePosition:NSImageOnly];
 				[importButtonCell setControlSize:NSSmallControlSize];
 				[importButtonCell setImage:[NSImage imageNamed:@"ArrowImage"]];
+				[importButtonCell setAlternateImage:[NSImage imageNamed:@"ArrowImage_Pressed"]];
 				[importButtonCell setAction:@selector(importItem:)];
 				[importButtonCell setTarget:self];
                 [tc setDataCell:importButtonCell];
@@ -426,7 +427,7 @@
 	static NSDictionary *headerTitleCache = nil;
 	
 	if (headerTitleCache == nil) {
-        NSMutableDictionary *tmpDict = [[NSMutableDictionary alloc] initWithObjectsAndKeys:@"@", BDSKUrlString, @"#", BDSKImportOrderString, nil];
+        NSMutableDictionary *tmpDict = [[NSMutableDictionary alloc] initWithObjectsAndKeys:@"@", BDSKUrlString, @"#", BDSKImportOrderString, @"#", BDSKImportOrderString, nil];
 		[tmpDict addEntriesFromDictionary:[[OFPreferenceWrapper sharedPreferenceWrapper] objectForKey:BDSKTableHeaderTitlesKey]];
         headerTitleCache = [tmpDict copy];
         [tmpDict release];
