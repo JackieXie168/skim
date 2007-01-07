@@ -261,6 +261,7 @@ The groupedPublications array is a subset of the publications array, developed b
 }
 
 - (void)handleSharedGroupsChangedNotification:(NSNotification *)notification{
+
     // this is a hack to keep us from getting selection change notifications while sorting (which updates the TeX and attributed text previews)
     [groupTableView setDelegate:nil];
 	NSArray *selectedGroups = [self selectedGroups];
@@ -356,8 +357,11 @@ The groupedPublications array is a subset of the publications array, developed b
 // and a count, and a group knows how to compare itself with other groups for sorting/equality, but doesn't know 
 // which pubs are associated with it
 - (void)updateCategoryGroupsPreservingSelection:(BOOL)preserve{
+
     // this is a hack to keep us from getting selection change notifications while sorting (which updates the TeX and attributed text previews)
     [groupTableView setDelegate:nil];
+    
+    NSPoint scrollPoint = [[tableView enclosingScrollView] scrollPositionAsPercentage];    
     
 	NSArray *selectedGroups = [self selectedGroups];
 	
@@ -427,9 +431,13 @@ The groupedPublications array is a subset of the publications array, developed b
     [groupTableView reloadData];
 	
 	// select the current groups, if still around. Otherwise select Library
-	[self selectGroups:selectedGroups];
-	
+	BOOL didSelect = [self selectGroups:selectedGroups];
+    
 	[self displaySelectedGroups]; // the selection may not have changed, so we won't get this from the notification
+    
+    // The search: in displaySelectedGroups will change the main table's scroll location, which isn't necessarily what we want (say when clicking the add button for a search group pub).  If we selected the same groups as previously, we should scroll to the old location instead of centering.
+    if (didSelect)
+        [[tableView enclosingScrollView] setScrollPositionAsPercentage:scrollPoint];
     
 	// reset ourself as delegate
     [groupTableView setDelegate:self];
@@ -510,17 +518,20 @@ The groupedPublications array is a subset of the publications array, developed b
     [self search:searchField]; // redo the search to update the table
 }
 
-- (void)selectGroups:(NSArray *)theGroups{
+- (BOOL)selectGroups:(NSArray *)theGroups{
     NSIndexSet *indexes = [groups indexesOfObjects:theGroups];
     
-    if([indexes count] == 0)
+    if([indexes count] == 0) {
         [groupTableView deselectAll:nil];
-    else
+        return NO;
+    } else {
         [groupTableView selectRowIndexes:indexes byExtendingSelection:NO];
+        return YES;
+    }
 }
 
-- (void)selectGroup:(BDSKGroup *)aGroup{
-    [self selectGroups:[NSArray arrayWithObject:aGroup]];
+- (BOOL)selectGroup:(BDSKGroup *)aGroup{
+    return [self selectGroups:[NSArray arrayWithObject:aGroup]];
 }
 
 - (NSIndexSet *)_indexesOfRowsToHighlightInRange:(NSRange)indexRange tableView:(BDSKGroupTableView *)tview{
