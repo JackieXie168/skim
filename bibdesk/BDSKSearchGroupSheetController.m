@@ -147,9 +147,6 @@ static NSDictionary *searchGroupServers = nil;
 
 + (void)saveServer:(BDSKServerInfo *)serverInfo;
 {
-    // @@ temporary
-    return;
-    
     NSString *error = nil;
     NSPropertyListFormat format = NSPropertyListXMLFormat_v1_0;
     NSData *data = [NSPropertyListSerialization dataFromPropertyList:[serverInfo dictionaryValue] format:format errorDescription:&error];
