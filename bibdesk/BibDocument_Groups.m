@@ -193,14 +193,16 @@ The groupedPublications array is a subset of the publications array, developed b
 - (void)handleGroupTableSelectionChangedNotification:(NSNotification *)notification{
     // called with notification == nil from searchByContent action, shouldn't redisplay group content in that case to avoid a loop
     
-    NSString *newSearchKey = nil;
+    NSString *newSortKey = nil;
     
     if ([self hasExternalGroupsSelected]) {
         [tableView setAlternatingRowBackgroundColors:[NSColor alternateControlAlternatingRowBackgroundColors]];
         [tableView insertTableColumnWithIdentifier:BDSKImportOrderString atIndex:0];
         if ([self hasSearchGroupsSelected]) {
-            newSearchKey = BDSKImportOrderString;
-            docState.sortDescending = [sortKey isEqualToString:BDSKImportOrderString];
+            if ([sortKey isEqualToString:BDSKImportOrderString] == NO) {
+                newSortKey = BDSKImportOrderString;
+                docState.sortDescending = NO;
+            }
             [self showSearchGroupView];
         } else {
             [self hideSearchGroupView];
@@ -213,7 +215,7 @@ The groupedPublications array is a subset of the publications array, developed b
             previousSortKey = [BDSKTitleString retain];
         }
         if ([sortKey isEqualToString:BDSKImportOrderString]) {
-            newSearchKey = [[previousSortKey retain] autorelease];
+            newSortKey = [[previousSortKey retain] autorelease];
             docState.sortDescending = NO;
         }
         [self hideSearchGroupView];
@@ -221,8 +223,8 @@ The groupedPublications array is a subset of the publications array, developed b
     // Mail and iTunes clear search when changing groups; users don't like this, though.  Xcode doesn't clear its search field, so at least there's some precedent for the opposite side.
     if (notification)
         [self displaySelectedGroups];
-    if (newSearchKey)
-        [self sortPubsByKey:newSearchKey];
+    if (newSortKey)
+        [self sortPubsByKey:newSortKey];
     // could force selection of row 0 in the main table here, so we always display a preview, but that flashes the group table highlights annoyingly and may cause other selection problems
 }
 
