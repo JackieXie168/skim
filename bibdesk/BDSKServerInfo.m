@@ -39,7 +39,7 @@
 #import "BDSKServerInfo.h"
 #import "BDSKSearchGroup.h"
 #import "NSString_BDSKExtensions.h"
-
+#import "NSError_BDSKExtensions.h"
 
 @implementation BDSKServerInfo
 
@@ -297,6 +297,28 @@
     if (nil != *value)
     *value = [NSString stringWithFormat:@"%i", [*value intValue]];
     return YES;
+}
+
+- (BOOL)validateResultEncoding:(id *)value error:(NSError **)error {
+    BOOL isValid = NO;
+    if (*value) {
+        CFStringRef charsetName = (CFStringRef)*value;
+        CFStringEncoding enc = CFStringConvertIANACharSetNameToEncoding(charsetName);
+        isValid = enc != kCFStringEncodingInvalidId;
+        
+        // ZOOMConnection will consider any unrecognized string to be marc-8, but check here
+        if (NO == isValid) {
+            if ([[*value stringByRemovingString:@"-"] caseInsensitiveCompare:@"marc8"] == NSOrderedSame || 
+                [[*value stringByRemovingString:@"-"] caseInsensitiveCompare:@"ansel"] == NSOrderedSame)
+                isValid = YES;
+        }
+    }
+    
+    if (NO == isValid && error) {
+        *error = [NSError mutableLocalErrorWithCode:kBDSKUnknownError localizedDescription:NSLocalizedString(@"Not a recognized IANA character set name", @"error title for setting zoom result encoding")];
+        [*error setValue:NSLocalizedString(@"See http://www.iana.org/assignments/character-sets for recognized values.", @"error suggestion for setting zoom result encoding") forKey:NSLocalizedRecoverySuggestionErrorKey];
+    }
+    return isValid;
 }
 
 - (void)objectDidBeginEditing:(id)editor {
