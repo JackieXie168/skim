@@ -1380,6 +1380,8 @@ static Boolean stringIsEqualToString(const void *value1, const void *value2) { r
         return [self valueOfField:field inherit:NO];
     }else if([field isEqualToString:BDSKPubTypeString]){
         return [self pubType];
+    }else if([field isEqualToString:BDSKImportOrderString]){
+        return nil;
     }else{
         // the tableColumn isn't something we handle in a custom way.
         return [self valueOfField:field];
@@ -2849,7 +2851,17 @@ Boolean stringContainsLossySubstring(NSString *theString, NSString *stringToFind
 - (void)invalidateGroupNames{
 	[groups removeAllObjects];
 }
-        
+
+- (BOOL)isImported{
+    return isImported;
+}
+
+- (void)setImported:(BOOL)flag{
+    if (isImported != flag) {
+        isImported = flag;
+    }
+}
+     
 @end
 
 #pragma mark -

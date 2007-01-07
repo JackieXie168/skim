@@ -253,6 +253,7 @@ NSString *BDSKThirdAuthorEditorString = @"3rd Author or Editor";
 NSString *BDSKAuthorEditorString = @"Author or Editor";
 NSString *BDSKLastAuthorEditorString = @"Last Author or Editor";
 NSString *BDSKItemNumberString = @"Item Number";
+NSString *BDSKImportOrderString = @"Import Order";
 NSString *BDSKTypeString = @"Type";
 NSString *BDSKAddressString = @"Address";
 NSString *BDSKDoiString = @"Doi";

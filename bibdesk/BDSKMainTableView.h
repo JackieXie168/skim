@@ -58,6 +58,8 @@
 
 - (void)setupTableColumnsWithIdentifiers:(NSArray *)identifiers;
 - (NSMenu *)columnsMenu;
+- (void)insertTableColumnWithIdentifier:(NSString *)identifier atIndex:(unsigned)index;
+- (void)removeTableColumnWithIdentifier:(NSString *)identifier;
 
 @end
 
@@ -67,6 +69,7 @@
 - (void)tableView:(NSTableView *)aTableView mouseEnteredTableColumn:(NSTableColumn *)aTableColumn row:(int)rowIndex;
 - (void)tableView:(NSTableView *)aTableView mouseExitedTableColumn:(NSTableColumn *)aTableColumn row:(int)rowIndex;
 - (NSDictionary *)defaultColumnWidthsForTableView:(NSTableView *)aTableView;
+- (void)tableView:(NSTableView *)aTableView importItemAtRow:(int)rowIndex;
 @end
 
 
