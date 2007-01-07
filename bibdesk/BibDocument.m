@@ -530,9 +530,17 @@ static NSString *BDSKRecentSearchesKey = @"BDSKRecentSearchesKey";
         // We could set each of these as a separate attribute name on the file, but then we'd need to muck around with prepending net.sourceforge.bibdesk. to each key, and that seems messy.
         NSMutableDictionary *dictionary = [[self mainWindowSetupDictionaryFromExtendedAttributes] mutableCopy];
         
+        NSString *savedSortKey = nil;
+        if ([sortKey isEqualToString:BDSKImportOrderString]) {
+            if ([previousSortKey isEqualToString:BDSKImportOrderString] == NO) 
+                savedSortKey = previousSortKey;
+        } else {
+            savedSortKey = sortKey;
+        }
+        
         [dictionary setObject:[[tableView tableColumnIdentifiers] arrayByRemovingObject:BDSKImportOrderString] forKey:BDSKShownColsNamesKey];
         [dictionary setObject:[self currentTableColumnWidthsAndIdentifiers] forKey:BDSKColumnWidthsKey];
-        [dictionary setObject:sortKey forKey:BDSKDefaultSortedTableColumnKey];
+        [dictionary setObject:savedSortKey ? savedSortKey : BDSKTitleString forKey:BDSKDefaultSortedTableColumnKey];
         [dictionary setBoolValue:docState.sortDescending forKey:BDSKDefaultSortedTableColumnIsDescendingKey];
         [dictionary setObject:sortGroupsKey forKey:BDSKSortGroupsKey];
         [dictionary setBoolValue:docState.sortGroupsDescending forKey:BDSKSortGroupsDescendingKey];
