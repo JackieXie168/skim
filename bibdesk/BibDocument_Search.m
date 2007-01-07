@@ -203,6 +203,8 @@ NSString *BDSKDocumentFormatForSearchingDates = nil;
     
     // this is what displaySelectedGroup normally ends up doing
     [shownPublications setArray:publications];
+    [self hideSearchGroupView];
+    [tableView setAlternatingRowBackgroundColors:[NSColor controlAlternatingRowBackgroundColors]];
     [tableView reloadData];
     [self sortPubsByKey:nil];
     
