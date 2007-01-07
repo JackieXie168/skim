@@ -72,13 +72,6 @@
 			dependencies = (
 				F9F14A4F075811DA008BA22F /* PBXTargetDependency */,
 				F9F14A51075811DA008BA22F /* PBXTargetDependency */,
-				F9ABEE42086E578700741FC5 /* PBXTargetDependency */,
-				F9D3E273088D9D9200E70D49 /* PBXTargetDependency */,
-				F911CBFD089737C000ABDAC6 /* PBXTargetDependency */,
-				CE67F055092DEEB200410758 /* PBXTargetDependency */,
-				F9A66E4C092FAF9400AF31D5 /* PBXTargetDependency */,
-				F9A66E52092FAFB400AF31D5 /* PBXTargetDependency */,
-				F9A66E50092FAFAC00AF31D5 /* PBXTargetDependency */,
 			);
 			name = BuildMeFirst;
 			productName = BuildMeFirst;
@@ -739,13 +732,6 @@
 			remoteGlobalIDString = 8D5B49B6048680CD000E48DA;
 			remoteInfo = BibDeskInputManager;
 		};
-		CE67F054092DEEB200410758 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = F9F14A5A075811F9008BA22F /* BibDeskInputManager.xcodeproj */;
-			proxyType = 1;
-			remoteGlobalIDString = 8D5B49AC048680CD000E48DA;
-			remoteInfo = BibDeskInputManager;
-		};
 		CEBC820C0B4D0D2500CE0B2D /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = F9377F550B423A4C00ECCB3A /* yaz.xcodeproj */;
@@ -767,13 +753,6 @@
 			remoteGlobalIDString = 2467EEE8050859D30078EF04;
 			remoteInfo = RegexTest;
 		};
-		F911CBFC089737C000ABDAC6 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = F911CB4008972F7300ABDAC6 /* AGRegex.xcodeproj */;
-			proxyType = 1;
-			remoteGlobalIDString = F935665E0912D56F002B6957;
-			remoteInfo = AGRegex;
-		};
 		F95CC112087F54BF002C5694 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = F95CC0C6087F53AE002C5694 /* BibImporter.xcodeproj */;
@@ -787,27 +766,6 @@
 			proxyType = 1;
 			remoteGlobalIDString = 8D1107260486CEB800E47090;
 			remoteInfo = BibDesk;
-		};
-		F9A66E4B092FAF9400AF31D5 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = F9AA02ED092FA2AB0094A059 /* OmniBase.xcodeproj */;
-			proxyType = 1;
-			remoteGlobalIDString = 4A33D40608A0191B003A3FA5;
-			remoteInfo = OmniBase;
-		};
-		F9A66E4F092FAFAC00AF31D5 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = F9AA030C092FA2E20094A059 /* OmniAppKit.xcodeproj */;
-			proxyType = 1;
-			remoteGlobalIDString = 4AA1E67A08AA764600E2FF6B;
-			remoteInfo = "OmniAppKit (Framework)";
-		};
-		F9A66E51092FAFB400AF31D5 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = F9AA02F3092FA2CA0094A059 /* OmniFoundation.xcodeproj */;
-			proxyType = 1;
-			remoteGlobalIDString = 4A4E05FE08AA72B10098FF0F;
-			remoteInfo = OmniFoundation;
 		};
 		F9AA02F1092FA2AB0094A059 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
@@ -899,20 +857,6 @@
 			proxyType = 2;
 			remoteGlobalIDString = 8DC2EF5B0486A6940098B216;
 			remoteInfo = BTParse;
-		};
-		F9ABEE41086E578700741FC5 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = F9ABECF2086E142100741FC5 /* BTParse.xcodeproj */;
-			proxyType = 1;
-			remoteGlobalIDString = 8DC2EF4F0486A6940098B216;
-			remoteInfo = BTParse;
-		};
-		F9D3E272088D9D9200E70D49 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = F95CC0C6087F53AE002C5694 /* BibImporter.xcodeproj */;
-			proxyType = 1;
-			remoteGlobalIDString = 8D57630D048677EA00EA77CD;
-			remoteInfo = BibImporter;
 		};
 		F9DE7866097F29D00033FBA8 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
@@ -2979,6 +2923,7 @@
 		29B97313FDCFA39411CA2CEA /* Project object */ = {
 			isa = PBXProject;
 			buildConfigurationList = F993F20208553A61007A7657 /* Build configuration list for PBXProject "Bibdesk" */;
+			compatibilityVersion = "Xcode 2.4";
 			hasScannedForEncodings = 1;
 			mainGroup = 29B97314FDCFA39411CA2CEA /* BibDesk */;
 			projectDirPath = "";
@@ -3017,6 +2962,7 @@
 				},
 			);
 			projectRoot = "";
+			shouldCheckCompatibility = 1;
 			targets = (
 				8D1107260486CEB800E47090 /* BibDesk */,
 				3D8A5779082D3077008E818C /* BibDesk Help */,
@@ -3723,45 +3669,10 @@
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
-		CE67F055092DEEB200410758 /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			name = BibDeskInputManager;
-			targetProxy = CE67F054092DEEB200410758 /* PBXContainerItemProxy */;
-		};
-		F911CBFD089737C000ABDAC6 /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			name = AGRegex;
-			targetProxy = F911CBFC089737C000ABDAC6 /* PBXContainerItemProxy */;
-		};
 		F98870D807580EA1001D4D49 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			target = 8D1107260486CEB800E47090 /* BibDesk */;
 			targetProxy = F98870D707580EA1001D4D49 /* PBXContainerItemProxy */;
-		};
-		F9A66E4C092FAF9400AF31D5 /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			name = OmniBase;
-			targetProxy = F9A66E4B092FAF9400AF31D5 /* PBXContainerItemProxy */;
-		};
-		F9A66E50092FAFAC00AF31D5 /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			name = "OmniAppKit (Framework)";
-			targetProxy = F9A66E4F092FAFAC00AF31D5 /* PBXContainerItemProxy */;
-		};
-		F9A66E52092FAFB400AF31D5 /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			name = OmniFoundation;
-			targetProxy = F9A66E51092FAFB400AF31D5 /* PBXContainerItemProxy */;
-		};
-		F9ABEE42086E578700741FC5 /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			name = BTParse;
-			targetProxy = F9ABEE41086E578700741FC5 /* PBXContainerItemProxy */;
-		};
-		F9D3E273088D9D9200E70D49 /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			name = BibImporter;
-			targetProxy = F9D3E272088D9D9200E70D49 /* PBXContainerItemProxy */;
 		};
 		F9DE7867097F29D00033FBA8 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
