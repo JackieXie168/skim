@@ -34,7 +34,6 @@
 		F918753B0B406D3300D75891 /* ber_oct.c in Sources */ = {isa = PBXBuildFile; fileRef = F91874990B406D3000D75891 /* ber_oct.c */; };
 		F918753C0B406D3300D75891 /* ber_oid.c in Sources */ = {isa = PBXBuildFile; fileRef = F918749A0B406D3000D75891 /* ber_oid.c */; };
 		F918753D0B406D3300D75891 /* ber_tag.c in Sources */ = {isa = PBXBuildFile; fileRef = F918749B0B406D3000D75891 /* ber_tag.c */; };
-		F918753E0B406D3300D75891 /* bib1.csv in Resources */ = {isa = PBXBuildFile; fileRef = F918749C0B406D3000D75891 /* bib1.csv */; };
 		F918753F0B406D3300D75891 /* cclerrms.c in Sources */ = {isa = PBXBuildFile; fileRef = F918749D0B406D3000D75891 /* cclerrms.c */; };
 		F91875400B406D3300D75891 /* cclfind.c in Sources */ = {isa = PBXBuildFile; fileRef = F918749E0B406D3000D75891 /* cclfind.c */; };
 		F91875410B406D3300D75891 /* cclptree.c in Sources */ = {isa = PBXBuildFile; fileRef = F918749F0B406D3000D75891 /* cclptree.c */; };
@@ -42,10 +41,7 @@
 		F91875430B406D3300D75891 /* cclqual.c in Sources */ = {isa = PBXBuildFile; fileRef = F91874A10B406D3000D75891 /* cclqual.c */; };
 		F91875440B406D3300D75891 /* cclstr.c in Sources */ = {isa = PBXBuildFile; fileRef = F91874A20B406D3000D75891 /* cclstr.c */; };
 		F91875450B406D3300D75891 /* ccltoken.c in Sources */ = {isa = PBXBuildFile; fileRef = F91874A30B406D3000D75891 /* ccltoken.c */; };
-		F91875460B406D3300D75891 /* charconv.tcl in Resources */ = {isa = PBXBuildFile; fileRef = F91874A40B406D3000D75891 /* charconv.tcl */; };
-		F91875470B406D3300D75891 /* charneg-3.asn in Resources */ = {isa = PBXBuildFile; fileRef = F91874A50B406D3000D75891 /* charneg-3.asn */; };
 		F91875480B406D3300D75891 /* charneg.c in Sources */ = {isa = PBXBuildFile; fileRef = F91874A60B406D3000D75891 /* charneg.c */; };
-		F91875490B406D3300D75891 /* codetables.xml in Resources */ = {isa = PBXBuildFile; fileRef = F91874A70B406D3100D75891 /* codetables.xml */; };
 		F918754A0B406D3300D75891 /* comstack.c in Sources */ = {isa = PBXBuildFile; fileRef = F91874A80B406D3100D75891 /* comstack.c */; };
 		F918754B0B406D3300D75891 /* cql.c in Sources */ = {isa = PBXBuildFile; fileRef = F91874A90B406D3100D75891 /* cql.c */; };
 		F918754D0B406D3300D75891 /* cqlstdio.c in Sources */ = {isa = PBXBuildFile; fileRef = F91874AB0B406D3100D75891 /* cqlstdio.c */; };
@@ -53,11 +49,6 @@
 		F918754F0B406D3300D75891 /* cqlstring.c in Sources */ = {isa = PBXBuildFile; fileRef = F91874AD0B406D3100D75891 /* cqlstring.c */; };
 		F91875500B406D3300D75891 /* cqltransform.c in Sources */ = {isa = PBXBuildFile; fileRef = F91874AE0B406D3100D75891 /* cqltransform.c */; };
 		F91875510B406D3300D75891 /* cqlutil.c in Sources */ = {isa = PBXBuildFile; fileRef = F91874AF0B406D3100D75891 /* cqlutil.c */; };
-		F91875520B406D3300D75891 /* csvtobib1.tcl in Resources */ = {isa = PBXBuildFile; fileRef = F91874B00B406D3100D75891 /* csvtobib1.tcl */; };
-		F91875530B406D3300D75891 /* csvtodiag.tcl in Resources */ = {isa = PBXBuildFile; fileRef = F91874B10B406D3100D75891 /* csvtodiag.tcl */; };
-		F91875540B406D3300D75891 /* csvtosru_update.tcl in Resources */ = {isa = PBXBuildFile; fileRef = F91874B20B406D3100D75891 /* csvtosru_update.tcl */; };
-		F91875550B406D3300D75891 /* csvtosrw.tcl in Resources */ = {isa = PBXBuildFile; fileRef = F91874B30B406D3100D75891 /* csvtosrw.tcl */; };
-		F91875560B406D3300D75891 /* datetime.asn in Resources */ = {isa = PBXBuildFile; fileRef = F91874B40B406D3100D75891 /* datetime.asn */; };
 		F91875570B406D3300D75891 /* diag-entry.c in Sources */ = {isa = PBXBuildFile; fileRef = F91874B50B406D3100D75891 /* diag-entry.c */; };
 		F91875580B406D3300D75891 /* diag-entry.h in Headers */ = {isa = PBXBuildFile; fileRef = F91874B60B406D3100D75891 /* diag-entry.h */; };
 		F91875590B406D3300D75891 /* diagbib1.c in Sources */ = {isa = PBXBuildFile; fileRef = F91874B70B406D3100D75891 /* diagbib1.c */; };
@@ -65,17 +56,12 @@
 		F918755B0B406D3300D75891 /* diagsrw.c in Sources */ = {isa = PBXBuildFile; fileRef = F91874B90B406D3100D75891 /* diagsrw.c */; };
 		F918755C0B406D3300D75891 /* dumpber.c in Sources */ = {isa = PBXBuildFile; fileRef = F91874BA0B406D3100D75891 /* dumpber.c */; };
 		F918755D0B406D3300D75891 /* elementset.c in Sources */ = {isa = PBXBuildFile; fileRef = F91874BB0B406D3100D75891 /* elementset.c */; };
-		F918755E0B406D3300D75891 /* esadmin.asn in Resources */ = {isa = PBXBuildFile; fileRef = F91874BC0B406D3100D75891 /* esadmin.asn */; };
-		F918755F0B406D3300D75891 /* esupdate.asn in Resources */ = {isa = PBXBuildFile; fileRef = F91874BD0B406D3100D75891 /* esupdate.asn */; };
 		F91875600B406D3300D75891 /* eventl.c in Sources */ = {isa = PBXBuildFile; fileRef = F91874BE0B406D3100D75891 /* eventl.c */; };
 		F91875610B406D3300D75891 /* eventl.h in Headers */ = {isa = PBXBuildFile; fileRef = F91874BF0B406D3100D75891 /* eventl.h */; };
 		F91875620B406D3300D75891 /* grs1disp.c in Sources */ = {isa = PBXBuildFile; fileRef = F91874C00B406D3100D75891 /* grs1disp.c */; };
 		F91875630B406D3300D75891 /* ill-core.c in Sources */ = {isa = PBXBuildFile; fileRef = F91874C10B406D3100D75891 /* ill-core.c */; };
 		F91875640B406D3300D75891 /* ill-get.c in Sources */ = {isa = PBXBuildFile; fileRef = F91874C20B406D3100D75891 /* ill-get.c */; };
-		F91875650B406D3300D75891 /* ill.tcl in Resources */ = {isa = PBXBuildFile; fileRef = F91874C30B406D3100D75891 /* ill.tcl */; };
-		F91875660B406D3300D75891 /* ill9702.asn in Resources */ = {isa = PBXBuildFile; fileRef = F91874C40B406D3100D75891 /* ill9702.asn */; };
 		F91875670B406D3300D75891 /* initopt.c in Sources */ = {isa = PBXBuildFile; fileRef = F91874C50B406D3100D75891 /* initopt.c */; };
-		F91875680B406D3300D75891 /* item-req.asn in Resources */ = {isa = PBXBuildFile; fileRef = F91874C60B406D3100D75891 /* item-req.asn */; };
 		F91875690B406D3300D75891 /* item-req.c in Sources */ = {isa = PBXBuildFile; fileRef = F91874C70B406D3100D75891 /* item-req.c */; };
 		F918756A0B406D3300D75891 /* libxml2_error.c in Sources */ = {isa = PBXBuildFile; fileRef = F91874C80B406D3100D75891 /* libxml2_error.c */; };
 		F918756B0B406D3300D75891 /* log.c in Sources */ = {isa = PBXBuildFile; fileRef = F91874C90B406D3100D75891 /* log.c */; };
@@ -89,10 +75,8 @@
 		F91875750B406D3300D75891 /* matchstr.c in Sources */ = {isa = PBXBuildFile; fileRef = F91874D30B406D3200D75891 /* matchstr.c */; };
 		F91875760B406D3300D75891 /* mime.c in Sources */ = {isa = PBXBuildFile; fileRef = F91874D40B406D3200D75891 /* mime.c */; };
 		F91875770B406D3300D75891 /* mime.h in Headers */ = {isa = PBXBuildFile; fileRef = F91874D50B406D3200D75891 /* mime.h */; };
-		F91875780B406D3300D75891 /* mterm2.asn in Resources */ = {isa = PBXBuildFile; fileRef = F91874D60B406D3200D75891 /* mterm2.asn */; };
 		F91875790B406D3300D75891 /* nmem.c in Sources */ = {isa = PBXBuildFile; fileRef = F91874D70B406D3200D75891 /* nmem.c */; };
 		F918757A0B406D3300D75891 /* nmemsdup.c in Sources */ = {isa = PBXBuildFile; fileRef = F91874D80B406D3200D75891 /* nmemsdup.c */; };
-		F918757B0B406D3300D75891 /* oclcui.asn in Resources */ = {isa = PBXBuildFile; fileRef = F91874D90B406D3200D75891 /* oclcui.asn */; };
 		F918757C0B406D3300D75891 /* odr-priv.h in Headers */ = {isa = PBXBuildFile; fileRef = F91874DA0B406D3200D75891 /* odr-priv.h */; };
 		F918757D0B406D3300D75891 /* odr.c in Sources */ = {isa = PBXBuildFile; fileRef = F91874DB0B406D3200D75891 /* odr.c */; };
 		F918757E0B406D3300D75891 /* odr_any.c in Sources */ = {isa = PBXBuildFile; fileRef = F91874DC0B406D3200D75891 /* odr_any.c */; };
@@ -128,16 +112,13 @@
 		F918759C0B406D3300D75891 /* siconv.c in Sources */ = {isa = PBXBuildFile; fileRef = F91874FA0B406D3200D75891 /* siconv.c */; };
 		F918759D0B406D3300D75891 /* soap.c in Sources */ = {isa = PBXBuildFile; fileRef = F91874FB0B406D3200D75891 /* soap.c */; };
 		F918759E0B406D3300D75891 /* sortspec.c in Sources */ = {isa = PBXBuildFile; fileRef = F91874FC0B406D3200D75891 /* sortspec.c */; };
-		F918759F0B406D3300D75891 /* sru_update.csv in Resources */ = {isa = PBXBuildFile; fileRef = F91874FD0B406D3200D75891 /* sru_update.csv */; };
 		F91875A00B406D3300D75891 /* srw.c in Sources */ = {isa = PBXBuildFile; fileRef = F91874FE0B406D3200D75891 /* srw.c */; };
-		F91875A10B406D3300D75891 /* srw.csv in Resources */ = {isa = PBXBuildFile; fileRef = F91874FF0B406D3200D75891 /* srw.csv */; };
 		F91875A20B406D3300D75891 /* srwutil.c in Sources */ = {isa = PBXBuildFile; fileRef = F91875000B406D3200D75891 /* srwutil.c */; };
 		F91875A30B406D3300D75891 /* statserv.c in Sources */ = {isa = PBXBuildFile; fileRef = F91875010B406D3200D75891 /* statserv.c */; };
 		F91875A40B406D3300D75891 /* tcpdchk.c in Sources */ = {isa = PBXBuildFile; fileRef = F91875020B406D3200D75891 /* tcpdchk.c */; };
 		F91875A50B406D3300D75891 /* tcpip.c in Sources */ = {isa = PBXBuildFile; fileRef = F91875030B406D3200D75891 /* tcpip.c */; };
 		F91875A60B406D3300D75891 /* test.c in Sources */ = {isa = PBXBuildFile; fileRef = F91875040B406D3200D75891 /* test.c */; };
 		F91875A70B406D3300D75891 /* tpath.c in Sources */ = {isa = PBXBuildFile; fileRef = F91875050B406D3200D75891 /* tpath.c */; };
-		F91875A80B406D3300D75891 /* univres.asn in Resources */ = {isa = PBXBuildFile; fileRef = F91875060B406D3200D75891 /* univres.asn */; };
 		F91875A90B406D3300D75891 /* unix.c in Sources */ = {isa = PBXBuildFile; fileRef = F91875070B406D3200D75891 /* unix.c */; };
 		F91875AA0B406D3300D75891 /* version.c in Sources */ = {isa = PBXBuildFile; fileRef = F91875080B406D3200D75891 /* version.c */; };
 		F91875AB0B406D3300D75891 /* waislen.c in Sources */ = {isa = PBXBuildFile; fileRef = F91875090B406D3200D75891 /* waislen.c */; };
@@ -166,9 +147,7 @@
 		F91875C20B406D3300D75891 /* z-sutrs.c in Sources */ = {isa = PBXBuildFile; fileRef = F91875200B406D3200D75891 /* z-sutrs.c */; };
 		F91875C30B406D3300D75891 /* z-uifr1.c in Sources */ = {isa = PBXBuildFile; fileRef = F91875210B406D3200D75891 /* z-uifr1.c */; };
 		F91875C40B406D3300D75891 /* z-univ.c in Sources */ = {isa = PBXBuildFile; fileRef = F91875220B406D3200D75891 /* z-univ.c */; };
-		F91875C50B406D3300D75891 /* z.tcl in Resources */ = {isa = PBXBuildFile; fileRef = F91875230B406D3200D75891 /* z.tcl */; };
 		F91875C60B406D3300D75891 /* z3950oid.c in Sources */ = {isa = PBXBuildFile; fileRef = F91875240B406D3200D75891 /* z3950oid.c */; };
-		F91875C70B406D3300D75891 /* z3950v3.asn in Resources */ = {isa = PBXBuildFile; fileRef = F91875250B406D3200D75891 /* z3950v3.asn */; };
 		F91875C80B406D3300D75891 /* zes-admin.c in Sources */ = {isa = PBXBuildFile; fileRef = F91875260B406D3200D75891 /* zes-admin.c */; };
 		F91875C90B406D3300D75891 /* zes-expi.c in Sources */ = {isa = PBXBuildFile; fileRef = F91875270B406D3200D75891 /* zes-expi.c */; };
 		F91875CA0B406D3300D75891 /* zes-exps.c in Sources */ = {isa = PBXBuildFile; fileRef = F91875280B406D3300D75891 /* zes-exps.c */; };
@@ -1050,27 +1029,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				8DC2EF530486A6940098B216 /* InfoPlist.strings in Resources */,
-				F918753E0B406D3300D75891 /* bib1.csv in Resources */,
-				F91875460B406D3300D75891 /* charconv.tcl in Resources */,
-				F91875470B406D3300D75891 /* charneg-3.asn in Resources */,
-				F91875490B406D3300D75891 /* codetables.xml in Resources */,
-				F91875520B406D3300D75891 /* csvtobib1.tcl in Resources */,
-				F91875530B406D3300D75891 /* csvtodiag.tcl in Resources */,
-				F91875540B406D3300D75891 /* csvtosru_update.tcl in Resources */,
-				F91875550B406D3300D75891 /* csvtosrw.tcl in Resources */,
-				F91875560B406D3300D75891 /* datetime.asn in Resources */,
-				F918755E0B406D3300D75891 /* esadmin.asn in Resources */,
-				F918755F0B406D3300D75891 /* esupdate.asn in Resources */,
-				F91875650B406D3300D75891 /* ill.tcl in Resources */,
-				F91875660B406D3300D75891 /* ill9702.asn in Resources */,
-				F91875680B406D3300D75891 /* item-req.asn in Resources */,
-				F91875780B406D3300D75891 /* mterm2.asn in Resources */,
-				F918757B0B406D3300D75891 /* oclcui.asn in Resources */,
-				F918759F0B406D3300D75891 /* sru_update.csv in Resources */,
-				F91875A10B406D3300D75891 /* srw.csv in Resources */,
-				F91875A80B406D3300D75891 /* univres.asn in Resources */,
-				F91875C50B406D3300D75891 /* z.tcl in Resources */,
-				F91875C70B406D3300D75891 /* z3950v3.asn in Resources */,
 				F937812E0B43207800ECCB3A /* objc_default.bib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
