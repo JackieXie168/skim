@@ -71,6 +71,9 @@
 - (IBAction)addGroupFieldAction:(id)sender;
 - (IBAction)removeGroupFieldAction:(id)sender;
 
+- (void)showSearchGroupView;
+- (void)hideSearchGroupView;
+
 - (void)handleGroupFieldChangedNotification:(NSNotification *)notification;
 - (void)handleGroupFieldAddRemoveNotification:(NSNotification *)notification;
 - (void)handleGroupNameChangedNotification:(NSNotification *)notification;
