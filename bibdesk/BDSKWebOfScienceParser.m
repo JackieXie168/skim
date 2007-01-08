@@ -249,6 +249,9 @@ static void fixDateBySplittingString(NSMutableDictionary *pubDict)
             if([tag isEqualToString:@"AU"]){
                 [mutableValue appendString:@" and "];
                 [mutableValue appendString:fixedAuthorName([sourceLine stringByTrimmingCharactersInSet:whitespaceAndNewlineCharacterSet])];
+            } else if([tag isEqualToString:@"CR"]){
+                [mutableValue appendString:@";"];
+                [mutableValue appendString:[sourceLine stringByTrimmingCharactersInSet:whitespaceAndNewlineCharacterSet]];
             } else {
                 [mutableValue appendString:@" "];
                 [mutableValue appendString:[sourceLine stringByTrimmingCharactersInSet:whitespaceAndNewlineCharacterSet]];
