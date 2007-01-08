@@ -571,6 +571,7 @@
 					<key>Citation fields</key>
 					<array>
 						<string>Cited-By</string>
+						<string>Cites</string>
 					</array>
 					<key>Default Fields</key>
 					<array>
