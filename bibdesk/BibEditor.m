@@ -2364,12 +2364,8 @@ static NSString *queryStringWithCiteKey(NSString *citekey)
 
 - (BOOL)textView:(NSTextView *)textView isValidKey:(NSString *)key forFormCell:(id)aCell {
     if ([[[publication owner] publications] itemForCiteKey:key] == nil) {
+        // don't add a search with the query here, since it gets called on every keystroke; the formatter method gets called at the end, or when scrolling
         NSString *queryString = queryStringWithCiteKey(key);
-        if ([[BDSKPersistentSearch sharedSearch] hasQuery:queryString] == NO) {
-            [[BDSKPersistentSearch sharedSearch] addQuery:queryString scopes:[NSArray arrayWithObject:(id)kMDQueryScopeHome]];
-            // avoid possible blocking immediately
-            return NO;
-        }
         return [[[BDSKPersistentSearch sharedSearch] resultsForQuery:queryString attribute:(id)kMDItemPath] count] > 0;
     }
     return YES;
@@ -2391,16 +2387,17 @@ static NSString *queryStringWithCiteKey(NSString *citekey)
 }
 
 - (BOOL)citationFormatter:(BDSKCitationFormatter *)formatter isValidKey:(NSString *)key {
+    BOOL isValid;
     if ([[[publication owner] publications] itemForCiteKey:key] == nil) {
         NSString *queryString = queryStringWithCiteKey(key);
         if ([[BDSKPersistentSearch sharedSearch] hasQuery:queryString] == NO) {
             [[BDSKPersistentSearch sharedSearch] addQuery:queryString scopes:[NSArray arrayWithObject:(id)kMDQueryScopeHome]];
-            // avoid possible blocking immediately
-            return NO;
         }
-        return [[[BDSKPersistentSearch sharedSearch] resultsForQuery:queryString attribute:(id)kMDItemPath] count] > 0;
+        isValid = ([[[BDSKPersistentSearch sharedSearch] resultsForQuery:queryString attribute:(id)kMDItemPath] count] > 0);
+    } else {
+        isValid = YES;
     }
-    return YES;
+    return isValid;
 }
 
 #pragma mark dragging destination delegate methods
@@ -3502,7 +3499,7 @@ static NSString *queryStringWithCiteKey(NSString *citekey)
 		entry = [bibFields insertEntry:tmp usingTitleFont:requiredFont attributesForTitle:attrs indexAndTag:i objectValue:[publication valueOfField:tmp]]; \
 		if ([tmp isEqualToString:BDSKCrossrefString]) \
 			[entry setFormatter:crossrefFormatter]; \
-		else if ([tmp isCitationField]) \
+        else if ([tmp isCitationField]) \
 			[entry setFormatter:citationFormatter]; \
 		else \
 			[entry setFormatter:formCellFormatter]; \
