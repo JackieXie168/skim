@@ -89,8 +89,9 @@
                 range = NSMakeRange(start, range.location - start);
                 keyString = [string substringWithRange:range];
                 if ([[self delegate] citationFormatter:self isValidKey:keyString]) {
+                    [attrString addAttribute:NSLinkAttributeName value:keyString range:range];
                     [attrString addAttribute:NSForegroundColorAttributeName value:[NSColor blueColor] range:range];
-                    [attrString addAttribute:NSUnderlineStyleAttributeName value:[NSNumber numberWithInt:NSSingleUnderlineStyle] range:range];
+                    [attrString addAttribute:NSUnderlineStyleAttributeName value:[NSNumber numberWithInt:NSUnderlineStyleSingle] range:range];
                 }
             }
         }
