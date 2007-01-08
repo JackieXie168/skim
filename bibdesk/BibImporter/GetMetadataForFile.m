@@ -2,7 +2,7 @@
 #import <Foundation/Foundation.h>
 //  Created by Adam Maxwell on 09/26/04.
 /*
- This software is Copyright (c) 2005,2006
+ This software is Copyright (c) 2005,2006,2007
  Adam Maxwell. All rights reserved.
  
  Redistribution and use in source and binary forms, with or without
@@ -34,47 +34,6 @@
  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE
 */
 
-/* -----------------------------------------------------------------------------
-   Step 1
-   Set the UTI types the importer supports
-  
-   Modify the CFBundleDocumentTypes entry in Info.plist to contain
-   an array of Uniform Type Identifiers (UTI) for the LSItemContentTypes 
-   that your importer can handle
-  
-   ----------------------------------------------------------------------------- */
-
-/* -----------------------------------------------------------------------------
-   Step 2 
-   Implement the GetMetadataForFile function
-  
-   Implement the GetMetadataForFile function below to scrape the relevant
-   metadata from your document and return it as a CFDictionary using standard keys
-   (defined in MDItem.h) whenever possible.
-   ----------------------------------------------------------------------------- */
-
-/* -----------------------------------------------------------------------------
-   Step 3 (optional) 
-   If you have defined new attributes, update the schema.xml file
-  
-   Edit the schema.xml file to include the metadata keys that your importer returns.
-   Add them to the <allattrs> and <displayattrs> elements.
-  
-   Add any custom types that your importer requires to the <attributes> element
-  
-   <attribute name="com_mycompany_metadatakey" type="CFString" multivalued="true"/>
-  
-   ----------------------------------------------------------------------------- */
-
-
-
-/* -----------------------------------------------------------------------------
-    Get metadata attributes from file
-   
-   This function's job is to extract useful information your file format supports
-   and return it as a dictionary
-   ----------------------------------------------------------------------------- */
-
 Boolean GetMetadataForFile(void* thisInterface, 
 			   CFMutableDictionaryRef attributes, 
 			   CFStringRef contentTypeUTI,
@@ -86,41 +45,35 @@ Boolean GetMetadataForFile(void* thisInterface,
     
     NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
     Boolean success = FALSE;
-    id savedException = nil;
-    
-    NSString *exceptionString = @"BDSKGenericImportFailureException";
     
     CFStringRef cacheUTI = CFSTR("net.sourceforge.bibdesk.bdskcache");
     CFStringRef bibtexUTI = CFSTR("edu.ucsd.cs.mmccrack.bibdesk.bib");
     CFStringRef risUTI = CFSTR("edu.ucsd.cs.mmccrack.bibdesk.ris");
     
-    @try{
-        if(UTTypeEqual(contentTypeUTI, cacheUTI)){
-            
-            NSDictionary *dictionary = [[NSDictionary alloc] initWithContentsOfFile:(NSString *)pathToFile];
-            
-            if(dictionary == nil)
-                @throw exceptionString;
-            
-            [(NSMutableDictionary *)attributes addEntriesFromDictionary:dictionary];
-            [(NSMutableDictionary *)attributes removeObjectForKey:@"FileAlias"]; // don't index this, since it's not useful to mds
-            [dictionary release];
+    if(UTTypeEqual(contentTypeUTI, cacheUTI)){
+        
+        NSDictionary *dictionary = [[NSDictionary alloc] initWithContentsOfFile:(NSString *)pathToFile];
+        [(NSMutableDictionary *)attributes addEntriesFromDictionary:dictionary];
+        
+        // don't index this, since it's not useful to mds
+        [(NSMutableDictionary *)attributes removeObjectForKey:@"FileAlias"]; 
+        [dictionary release];
 
-            success = TRUE;
+        success = TRUE;
+        
+    } else if(UTTypeEqual(contentTypeUTI, bibtexUTI) || UTTypeEqual(contentTypeUTI, risUTI)){
+        
+        NSStringEncoding encoding;
+        NSError *error = nil;
+        
+        // try to interpret as Unicode, then default C encoding (likely MacOSRoman)
+        NSString *fileString = [[NSString alloc] initWithContentsOfFile:(NSString *)pathToFile usedEncoding:&encoding error:&error];
+        
+        if(fileString == nil || error != nil){
+            // read file as data instead
+            NSData *data = [[NSData alloc] initWithContentsOfFile:(NSString *)pathToFile];
             
-        } else if(UTTypeEqual(contentTypeUTI, bibtexUTI) || UTTypeEqual(contentTypeUTI, risUTI)){
-            
-            NSStringEncoding encoding;
-            NSError *error = nil;
-            
-            // try to interpret as Unicode, then default C encoding (likely MacOSRoman)
-            NSString *fileString = [[NSString alloc] initWithContentsOfFile:(NSString *)pathToFile usedEncoding:&encoding error:&error];
-            
-            if(fileString == nil || error != nil){
-                // read file as data instead
-                NSData *data = [[NSData alloc] initWithContentsOfFile:(NSString *)pathToFile];
-                if(data == nil || [data length] == 0)
-                    @throw exceptionString;
+            if (nil != data) {
                 
                 // try UTF-8 next (covers ASCII as well)
                 fileString = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
@@ -131,36 +84,20 @@ Boolean GetMetadataForFile(void* thisInterface,
                 
                 // done with this, whether we succeeded or not
                 [data release];
-                
-                // could use TEC here, but that seems like overkill
-                if(fileString == nil)
-                    @throw exceptionString;
             }
-            
+        }
+        
+        if (nil != fileString) {
             [(NSMutableDictionary *)attributes setObject:fileString forKey:(NSString *)kMDItemTextContent];
             [fileString release];
-            
             success = TRUE;
-        } else
-            @throw exceptionString;
-    }
-    
-    @catch(id exception){
-
-        success = FALSE;
-
-        if([[exception description] isEqualToString:exceptionString] == NO){
-            savedException = [exception retain];
-            @throw;
         }
+        
+    } else {
+        NSLog(@"Importer asked to handle unknown UTI %@ at path", contentTypeUTI, pathToFile);
     }
     
-    // this gets executed on all exit paths
-    @finally{
-        [pool release];
-        [savedException autorelease];
-    }
-    
+    [pool release];
     return success;
     
 }
