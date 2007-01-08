@@ -261,7 +261,7 @@ static int numberOfOpenEditors = 0;
     [self needsToBeFiledDidChange:nil];
 	[self updateCiteKeyAutoGenerateStatus];
     
-    BDSKCiteKeyFormatter *fieldNameFormatter = [[BDSKFieldNameFormatter alloc] init];
+    BDSKFieldNameFormatter *fieldNameFormatter = [[BDSKFieldNameFormatter alloc] init];
     [newFieldNameComboBox setFormatter:fieldNameFormatter];
     [fieldNameFormatter release];
     
