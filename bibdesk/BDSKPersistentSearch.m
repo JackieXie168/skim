@@ -63,6 +63,12 @@ static id sharedSearch = nil;
     [super dealloc];
 }
 
+- (BOOL)hasQuery:(NSString *)queryString;
+{ 
+    NSParameterAssert(queryString != nil);
+    return CFDictionaryContainsKey(queries, (CFStringRef)queryString);
+}
+
 - (BOOL)addQuery:(NSString *)queryString scopes:(NSArray *)searchScopes;
 {
     NSParameterAssert(queryString != nil);
