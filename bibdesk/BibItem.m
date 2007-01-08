@@ -1475,7 +1475,7 @@ Boolean stringContainsLossySubstring(NSString *theString, NSString *stringToFind
     unsigned int rating;
     
     if(value = [self citeKey])
-        [info setObject:citeKey forKey:@"net_sourceforge_bibdesk_citekey"];
+        [info setObject:value forKey:@"net_sourceforge_bibdesk_citekey"];
 
     // A given item is not guaranteed to have all of these, so make sure they are non-nil
     if(value = [self displayTitle])
