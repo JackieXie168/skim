@@ -2357,17 +2357,50 @@ static int numberOfOpenEditors = 0;
     return [[aCell title] isCitationField];
 }
 
+static NSString *queryStringWithCiteKey(NSString *citekey)
+{
+    return [NSString stringWithFormat:@"(net_sourceforge_bibdesk_citekey = '%@'cd) && ((kMDItemContentType != *) || (kMDItemContentType != com.apple.mail.emlx))", citekey];
+}
+
 - (BOOL)textView:(NSTextView *)textView isValidKey:(NSString *)key forFormCell:(id)aCell {
-    return [[[publication owner] publications] itemForCiteKey:key] != nil;
+    if ([[[publication owner] publications] itemForCiteKey:key] == nil) {
+        NSString *queryString = queryStringWithCiteKey(key);
+        if ([[BDSKPersistentSearch sharedSearch] hasQuery:queryString] == NO) {
+            [[BDSKPersistentSearch sharedSearch] addQuery:queryString scopes:[NSArray arrayWithObject:(id)kMDQueryScopeHome]];
+            // avoid possible blocking immediately
+            return NO;
+        }
+        return [[[BDSKPersistentSearch sharedSearch] resultsForQuery:queryString attribute:(id)kMDItemPath] count] > 0;
+    }
+    return YES;
 }
 
 - (BOOL)textView:(NSTextView *)aTextView clickedOnLink:(id)link atIndex:(unsigned)charIndex forFormCell:(id)aCell {
-    [[self document] editPub:[[[publication owner] publications] itemForCiteKey:link]];
+    BibItem *pub = [[[publication owner] publications] itemForCiteKey:link];
+    if (nil == pub) {
+        NSString *path = [[[BDSKPersistentSearch sharedSearch] resultsForQuery:queryStringWithCiteKey(link) attribute:(id)kMDItemPath] firstObject];
+        // if it was a valid key/link, we should definitely have a path, but better make sure
+        if (path)
+            [[NSWorkspace sharedWorkspace] openFile:path];
+        else
+            NSBeep();
+    } else {
+        [[self document] editPub:[[[publication owner] publications] itemForCiteKey:link]];
+    }
     return YES;
 }
 
 - (BOOL)citationFormatter:(BDSKCitationFormatter *)formatter isValidKey:(NSString *)key {
-    return [[[publication owner] publications] itemForCiteKey:key] != nil;
+    if ([[[publication owner] publications] itemForCiteKey:key] == nil) {
+        NSString *queryString = queryStringWithCiteKey(key);
+        if ([[BDSKPersistentSearch sharedSearch] hasQuery:queryString] == NO) {
+            [[BDSKPersistentSearch sharedSearch] addQuery:queryString scopes:[NSArray arrayWithObject:(id)kMDQueryScopeHome]];
+            // avoid possible blocking immediately
+            return NO;
+        }
+        return [[[BDSKPersistentSearch sharedSearch] resultsForQuery:queryString attribute:(id)kMDItemPath] count] > 0;
+    }
+    return YES;
 }
 
 #pragma mark dragging destination delegate methods
@@ -3362,7 +3395,7 @@ static int numberOfOpenEditors = 0;
 }
 
 - (float)splitView:(NSSplitView *)sender constrainMinCoordinate:(float)proposedMin ofSubviewAt:(int)offset{
-	// don't loose the top edge of the splitter
+	// don't lose the top edge of the splitter
 	return proposedMin + 1.0;
 }
 

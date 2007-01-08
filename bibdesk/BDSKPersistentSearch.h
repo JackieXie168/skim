@@ -46,6 +46,8 @@
 // returns nil if functionality is not supported
 + (id)sharedSearch;
 
+- (BOOL)hasQuery:(NSString *)queryString;
+
 // queryString syntax is same as MDQuery (can be copied directly from a Finder saved search)
 // returns NO if there was an error in creating the asynchronous query
 // searchScopes is an array of NSURL or NSString path objects
