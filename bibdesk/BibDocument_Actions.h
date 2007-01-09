@@ -100,6 +100,8 @@
 
 - (IBAction)duplicate:(id)sender;
 
+- (BibEditor *)editorForPublication:(BibItem *)pub create:(BOOL)createNew;
+
 /*!
     @method editPubCmd
     @abstract an action to edit a publication has happened. 
@@ -260,7 +262,7 @@
 
 #pragma mark Cite Keys and Crossref support
 
-- (void)generateCiteKeysForSelectedPublications;
+- (void)generateCiteKeysForPublications:(NSArray *)pubs;
 - (IBAction)generateCiteKey:(id)sender;
 
 - (IBAction)sortForCrossrefs:(id)sender;
