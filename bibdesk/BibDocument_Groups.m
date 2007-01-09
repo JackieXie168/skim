@@ -1198,7 +1198,7 @@ The groupedPublications array is a subset of the publications array, developed b
     NSMutableArray *changedPubs = [NSMutableArray arrayWithCapacity:[pubs count]];
     NSMutableArray *oldValues = [NSMutableArray arrayWithCapacity:[pubs count]];
     NSMutableArray *newValues = [NSMutableArray arrayWithCapacity:[pubs count]];
-    NSString *oldValue;
+    NSString *oldValue = nil;
     NSString *field = [group isCategory] ? [(BDSKCategoryGroup *)group key] : nil;
     int count = 0;
     int handleInherited = BDSKOperationAsk;
@@ -1281,7 +1281,7 @@ The groupedPublications array is a subset of the publications array, developed b
         NSMutableArray *changedPubs = [NSMutableArray arrayWithCapacity:[pubs count]];
         NSMutableArray *oldValues = [NSMutableArray arrayWithCapacity:[pubs count]];
         NSMutableArray *newValues = [NSMutableArray arrayWithCapacity:[pubs count]];
-        NSString *oldValue;
+        NSString *oldValue = nil;
         NSString *field = [group isCategory] ? [(BDSKCategoryGroup *)group key] : nil;
 		int rv;
         int tmpCount = 0;
@@ -1351,7 +1351,7 @@ The groupedPublications array is a subset of the publications array, developed b
     NSMutableArray *changedPubs = [NSMutableArray arrayWithCapacity:[pubs count]];
     NSMutableArray *oldValues = [NSMutableArray arrayWithCapacity:[pubs count]];
     NSMutableArray *newValues = [NSMutableArray arrayWithCapacity:[pubs count]];
-    NSString *oldValue;
+    NSString *oldValue = nil;
     NSString *field = [(BDSKCategoryGroup *)group key];
 	
 	while(pub = [pubEnum nextObject]){
