@@ -113,13 +113,7 @@
 			int newRating = [object intValue];
 			if(newRating != oldRating) {
 				[pub setField:tcID toRatingValue:newRating];
-				BDSKScriptHook *scriptHook = [[BDSKScriptHookManager sharedManager] makeScriptHookWithName:BDSKChangeFieldScriptHookName];
-				if (scriptHook) {
-					[scriptHook setField:tcID];
-					[scriptHook setOldValues:[NSArray arrayWithObject:[NSString stringWithFormat:@"%i", oldRating]]];
-					[scriptHook setNewValues:[NSArray arrayWithObject:[NSString stringWithFormat:@"%i", newRating]]];
-					[[BDSKScriptHookManager sharedManager] runScriptHook:scriptHook forPublications:[NSArray arrayWithObject:pub] document:self];
-				}
+                [self userChangedField:tcID ofPublications:[NSArray arrayWithObject:pub] from:[NSArray arrayWithObject:[NSString stringWithFormat:@"%i", oldRating]] to:[NSArray arrayWithObject:[NSString stringWithFormat:@"%i", newRating]]];
 				[[pub undoManager] setActionName:NSLocalizedString(@"Change Rating", @"Undo action name")];
 			}
 		}else if([tcID isBooleanField]){
@@ -128,13 +122,7 @@
 			NSCellStateValue newStatus = [object intValue];
 			if(newStatus != oldStatus) {
 				[pub setField:tcID toBoolValue:newStatus];
-				BDSKScriptHook *scriptHook = [[BDSKScriptHookManager sharedManager] makeScriptHookWithName:BDSKChangeFieldScriptHookName];
-				if (scriptHook) {
-					[scriptHook setField:tcID];
-					[scriptHook setOldValues:[NSArray arrayWithObject:[NSString stringWithBool:oldStatus]]];
-					[scriptHook setNewValues:[NSArray arrayWithObject:[NSString stringWithBool:newStatus]]];
-					[[BDSKScriptHookManager sharedManager] runScriptHook:scriptHook forPublications:[NSArray arrayWithObject:pub] document:self];
-				}
+                [self userChangedField:tcID ofPublications:[NSArray arrayWithObject:pub] from:[NSArray arrayWithObject:[NSString stringWithBool:oldStatus]] to:[NSArray arrayWithObject:[NSString stringWithBool:newStatus]]];
 				[[pub undoManager] setActionName:NSLocalizedString(@"Change Check Box", @"Undo action name")];
 			}
 		}else if([tcID isTriStateField]){
@@ -143,13 +131,7 @@
 			NSCellStateValue newStatus = [object intValue];
 			if(newStatus != oldStatus) {
 				[pub setField:tcID toTriStateValue:newStatus];
-				BDSKScriptHook *scriptHook = [[BDSKScriptHookManager sharedManager] makeScriptHookWithName:BDSKChangeFieldScriptHookName];
-				if (scriptHook) {
-					[scriptHook setField:tcID];
-					[scriptHook setOldValues:[NSArray arrayWithObject:[NSString stringWithTriStateValue:oldStatus]]];
-					[scriptHook setNewValues:[NSArray arrayWithObject:[NSString stringWithTriStateValue:newStatus]]];
-					[[BDSKScriptHookManager sharedManager] runScriptHook:scriptHook forPublications:[NSArray arrayWithObject:pub] document:self];
-				}
+                [self userChangedField:tcID ofPublications:[NSArray arrayWithObject:pub] from:[NSArray arrayWithObject:[NSString stringWithTriStateValue:oldStatus]] to:[NSArray arrayWithObject:[NSString stringWithTriStateValue:newStatus]]];
 				[[pub undoManager] setActionName:NSLocalizedString(@"Change Check Box", @"Undo action name")];
 			}
 		}

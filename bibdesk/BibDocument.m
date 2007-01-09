@@ -68,6 +68,7 @@
 #import "BDSKFieldSheetController.h"
 #import "BDSKPreviewer.h"
 #import "BDSKOverlay.h"
+#import "BibEditor.h"
 
 #import "BDSKItemPasteboardHelper.h"
 #import "BDSKMainTableView.h"
@@ -114,6 +115,7 @@
 #import "BDSKCustomCiteDrawerController.h"
 #import "NSObject_BDSKExtensions.h"
 #import "BDSKDocumentController.h"
+#import "BibFiler.h"
 
 // these are the same as in Info.plist
 NSString *BDSKBibTeXDocumentType = @"BibTeX Database";
@@ -1495,7 +1497,7 @@ originalContentsURL:(NSURL *)absoluteOriginalContentsURL
     if(returnCode == NSAlertDefaultReturn){
         NSArray *selItems = [self selectedPublications];
         [self selectPublications:[[self publications] allItemsForCiteKey:tmpKey]];
-        [self generateCiteKeysForSelectedPublications];
+        [self generateCiteKeysForPublications:[self selectedPublications]];
         [self selectPublications:selItems];
     }
 }
@@ -2660,6 +2662,48 @@ originalContentsURL:(NSURL *)absoluteOriginalContentsURL
     NSPrintInfo *info = [self printInfo];
     [[info dictionary] addEntriesFromDictionary:printSettings];
     return [NSPrintOperation printOperationWithView:[self printableView] printInfo:info];
+}
+
+#pragma mark -
+
+- (int)userChangedField:(NSString *)fieldName ofPublications:(NSArray *)pubs from:(NSArray *)oldValues to:(NSArray *)newValues{
+    int rv = 0;
+    
+    NSEnumerator *pubEnum = [pubs objectEnumerator];
+    BibItem *pub;
+    NSMutableArray *generateKeyPubs = [NSMutableArray arrayWithCapacity:[pubs count]];
+    NSMutableArray *autofilePubs = [NSMutableArray arrayWithCapacity:[pubs count]];
+    
+    while(pub = [pubEnum nextObject]){
+        [[self editorForPublication:pub create:NO] finalizeChanges:nil];
+        
+        // generate cite key if we have enough information
+        if ([[OFPreferenceWrapper sharedPreferenceWrapper] boolForKey:BDSKCiteKeyAutogenerateKey] && [pub canGenerateAndSetCiteKey])
+            [generateKeyPubs addObject:pub];
+        
+        // autofile paper if we have enough information
+        if ([[OFPreferenceWrapper sharedPreferenceWrapper] boolForKey:BDSKFilePapersAutomaticallyKey] && [pub needsToBeFiled] && [pub canSetLocalUrl])
+            [autofilePubs addObject:pub];
+	}
+    
+    if([generateKeyPubs count]){
+        [self generateCiteKeysForPublications:generateKeyPubs];
+        rv |= 1;
+    }
+    if([autofilePubs count]){
+        [[BibFiler sharedFiler] filePapers:autofilePubs fromDocument:self check:NO];
+        rv |= 2;
+    }
+    
+	BDSKScriptHook *scriptHook = [[BDSKScriptHookManager sharedManager] makeScriptHookWithName:BDSKChangeFieldScriptHookName];
+	if (scriptHook) {
+		[scriptHook setField:fieldName];
+		[scriptHook setOldValues:oldValues];
+		[scriptHook setNewValues:newValues];
+		[[BDSKScriptHookManager sharedManager] runScriptHook:scriptHook forPublications:pubs document:self];
+	}
+    
+    return rv;
 }
 
 #pragma mark -

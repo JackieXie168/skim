@@ -317,24 +317,29 @@
     }
 }
 
-- (BibEditor *)editPub:(BibItem *)pub{
-    BibEditor *e = nil;
+- (BibEditor *)editorForPublication:(BibItem *)pub create:(BOOL)createNew{
+    BibEditor *editor = nil;
 	NSEnumerator *wcEnum = [[self windowControllers] objectEnumerator];
 	NSWindowController *wc;
 	
 	while(wc = [wcEnum nextObject]){
 		if([wc isKindOfClass:[BibEditor class]] && [[(BibEditor*)wc publication] isEqual:pub]){
-			e = (BibEditor*)wc;
+			editor = (BibEditor*)wc;
 			break;
 		}
 	}
-    if(e == nil){
-        e = [[BibEditor alloc] initWithPublication:pub];
-        [self addWindowController:e];
-        [e release];
+    if(editor == nil && createNew){
+        editor = [[BibEditor alloc] initWithPublication:pub];
+        [self addWindowController:editor];
+        [editor release];
     }
-    [e show];
-    return e;
+    return editor;
+}
+
+- (BibEditor *)editPub:(BibItem *)pub{
+    BibEditor *editor = [self editorForPublication:pub create:YES];
+    [editor show];
+    return editor;
 }
 
 - (BibEditor *)editPubBeforePub:(BibItem *)pub{
@@ -945,14 +950,14 @@
 
 #pragma mark Cite Keys and Crossref support
 
-- (void)generateCiteKeysForSelectedPublications{
+- (void)generateCiteKeysForPublications:(NSArray *)pubs{
     
-    unsigned int numberOfSelectedPubs = [self numberOfSelectedPubs];
-    NSEnumerator *selEnum = [[self selectedPublications] objectEnumerator];
+    unsigned int numberOfPubs = [pubs count];
+    NSEnumerator *selEnum = [pubs objectEnumerator];
     BibItem *aPub;
-    NSMutableArray *arrayOfPubs = [NSMutableArray arrayWithCapacity:numberOfSelectedPubs];
-    NSMutableArray *arrayOfOldValues = [NSMutableArray arrayWithCapacity:numberOfSelectedPubs];
-    NSMutableArray *arrayOfNewValues = [NSMutableArray arrayWithCapacity:numberOfSelectedPubs];
+    NSMutableArray *arrayOfPubs = [NSMutableArray arrayWithCapacity:numberOfPubs];
+    NSMutableArray *arrayOfOldValues = [NSMutableArray arrayWithCapacity:numberOfPubs];
+    NSMutableArray *arrayOfNewValues = [NSMutableArray arrayWithCapacity:numberOfPubs];
     BDSKScriptHook *scriptHook = [[BDSKScriptHookManager sharedManager] makeScriptHookWithName:BDSKWillGenerateCiteKeyScriptHookName];
     
     // first we make sure all edits are committed
@@ -1019,7 +1024,7 @@
         [[BDSKScriptHookManager sharedManager] runScriptHook:scriptHook forPublications:arrayOfPubs document:self];
     }
     
-    [[self undoManager] setActionName:(numberOfSelectedPubs > 1 ? NSLocalizedString(@"Generate Cite Keys", @"Undo action name") : NSLocalizedString(@"Generate Cite Key", @"Undo action name"))];
+    [[self undoManager] setActionName:(numberOfPubs > 1 ? NSLocalizedString(@"Generate Cite Keys", @"Undo action name") : NSLocalizedString(@"Generate Cite Key", @"Undo action name"))];
 }    
 
 - (void)generateCiteKeyAlertDidEnd:(BDSKAlert *)alert returnCode:(int)returnCode contextInfo:(void *)contextInfo {
@@ -1027,7 +1032,7 @@
 		[[OFPreferenceWrapper sharedPreferenceWrapper] setBool:NO forKey:BDSKWarnOnCiteKeyChangeKey];
     
     if(returnCode == NSAlertDefaultReturn)
-        [self generateCiteKeysForSelectedPublications];
+        [self generateCiteKeysForPublications:[self selectedPublications]];
 }
 
 - (IBAction)generateCiteKey:(id)sender
@@ -1051,7 +1056,7 @@
                          didEndSelector:@selector(generateCiteKeyAlertDidEnd:returnCode:contextInfo:) 
                             contextInfo:NULL];
     } else {
-        [self generateCiteKeysForSelectedPublications];
+        [self generateCiteKeysForPublications:[self selectedPublications]];
     }
 }
 
