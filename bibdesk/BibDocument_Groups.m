@@ -280,9 +280,11 @@ The groupedPublications array is a subset of the publications array, developed b
 	
 	// select the current groups, if still around. Otherwise this selects Library
     [self selectGroups:selectedGroups];
-    [self displaySelectedGroups]; // the selection may not have changed, so we won't get this from the notification, and we're not the delegate now anyway
+    
+    // the selection may not have changed, so we won't get this from the notification, and we're not the delegate now anyway
+    [self displaySelectedGroups]; 
         
-    [self performSelector:@selector(flagAsImported:forGroup:) withObject:publications withObjectsFromArray:[groups sharedGroups]];
+    // Don't flag as imported here, since that forces a (re)load of the shared groups, and causes the spinners to start when just opening a document.  The handleSharedGroupUpdatedNotification: should be enough.
     
 	// reset ourself as delegate
     [groupTableView setDelegate:self];
