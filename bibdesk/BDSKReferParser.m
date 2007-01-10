@@ -65,17 +65,25 @@
     
 	// concatenate authors and keywords, as they can appear multiple times
 	// other duplicates keys should have at least different tags, so we use the tag instead
-	if (![NSString isEmptyString:oldString]) {
-		if (isAuthor){
+	if ([NSString isEmptyString:oldString] == NO) {
+		if (isAuthor) {
             newString = [[NSString alloc] initWithFormat:@"%@ and %@", oldString, value];
             // This next step isn't strictly necessary for splitting the names, since the name parsing will do it for us, but you still see duplicate whitespace when editing the author field
             NSString *collapsedWhitespaceString = (NSString *)BDStringCreateByCollapsingAndTrimmingWhitespace(NULL, (CFStringRef)newString);
             [newString release];
             newString = collapsedWhitespaceString;
-        } else if([key isEqualToString:BDSKKeywordsString]){
-            newString = [[NSString alloc] initWithFormat:@"%@, %@", oldString, value];
-		} else {
-			// append to old value
+        } else if([key isSingleValuedField] || [key isURLField]) {
+            // for single valued and URL fields, create a new field name
+            int i = 1;
+            NSString *newKey = [key stringByAppendingFormat:@"%d", i];
+            while ([pubDict objectForKey:newKey] != nil) {
+                i++;
+                newKey = [key stringByAppendingFormat:@"%d", i];
+            }
+            key = newKey;
+            newString = [value copy];
+        } else {
+			// append to old value, using separator from prefs
             newString = [[NSString alloc] initWithFormat:@"%@%@%@", oldString, [[OFPreferenceWrapper sharedPreferenceWrapper] objectForKey:BDSKDefaultGroupFieldSeparatorKey], value];
 		}
     } else {
@@ -183,11 +191,16 @@ static inline BOOL isTagLine(NSString *sourceLine)
             
 			[mutableValue setString:value];                
 			
-		} else if ([sourceLine length] == 0 || [sourceLine containsCharacterInSet:invertedWhitespaceAndNewlineSet] == NO) {
+		} else if ([sourceLine isEqualToString:@""] || [sourceLine containsCharacterInSet:invertedWhitespaceAndNewlineSet] == NO) {
+            
+            // add the last line, if available; different from other parsers, since we don't have a real end tag
+            if (tag && mutableValue) {
+                [self addString:mutableValue toDictionary:pubDict forTag:tag];
+            }
             
             // we are done with this publication
 				
-            if([pubDict count] > 0){
+            if ([pubDict count] > 0) {
                 
                 // numeric keys end up with "Refer" prepended in the type manager
                 // !!! maybe we should move type conversion dictionaries into parsers?
@@ -210,9 +223,7 @@ static inline BOOL isTagLine(NSString *sourceLine)
             [pubDict removeAllObjects];
             tag = nil;
             [mutableValue setString:@""];
-            
-            continue;
-            
+                        
         } else {
         
             [mutableValue appendString:@" "];
