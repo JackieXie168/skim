@@ -584,6 +584,8 @@
 		F92F4E4E0788DEFC001B8F82 /* BibPref_Files.h in Headers */ = {isa = PBXBuildFile; fileRef = F92F4E4C0788DEFC001B8F82 /* BibPref_Files.h */; };
 		F92F4E4F0788DEFC001B8F82 /* BibPref_Files.m in Sources */ = {isa = PBXBuildFile; fileRef = F92F4E4D0788DEFC001B8F82 /* BibPref_Files.m */; };
 		F938408A0906DD1F00FC37F2 /* scripthook.tiff in Resources */ = {isa = PBXBuildFile; fileRef = F93840890906DD1F00FC37F2 /* scripthook.tiff */; };
+		F940D1090B5568E400B5917A /* BDSKReferParser.h in Headers */ = {isa = PBXBuildFile; fileRef = F940D1070B5568E400B5917A /* BDSKReferParser.h */; };
+		F940D10A0B5568E400B5917A /* BDSKReferParser.m in Sources */ = {isa = PBXBuildFile; fileRef = F940D1080B5568E400B5917A /* BDSKReferParser.m */; };
 		F941135409B549BF00EE8463 /* BDSKEditorTextView.h in Headers */ = {isa = PBXBuildFile; fileRef = F941135209B549BF00EE8463 /* BDSKEditorTextView.h */; };
 		F941135509B549BF00EE8463 /* BDSKEditorTextView.m in Sources */ = {isa = PBXBuildFile; fileRef = F941135309B549BF00EE8463 /* BDSKEditorTextView.m */; };
 		F941B7EA08AA574200F04ECD /* BDSKOverlay.h in Headers */ = {isa = PBXBuildFile; fileRef = F941B7E808AA574200F04ECD /* BDSKOverlay.h */; };
@@ -1066,7 +1068,7 @@
 		3DFF35600816B55B0052F37C /* forward_small.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; name = forward_small.tiff; path = Images/forward_small.tiff; sourceTree = "<group>"; };
 		3DFF35620816B5780052F37C /* reload_small.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; name = reload_small.tiff; path = Images/reload_small.tiff; sourceTree = "<group>"; };
 		8D1107310486CEB800E47090 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
-		8D1107320486CEB800E47090 /* BibDesk.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = BibDesk.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		8D1107320486CEB800E47090 /* BibDesk.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = BibDesk.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		CE11A6340AE6BB77008C47AC /* urlFolderIcon.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; name = urlFolderIcon.tiff; path = Images/urlFolderIcon.tiff; sourceTree = "<group>"; };
 		CE11AC080AE7E0DC008C47AC /* BDSKScriptGroup.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BDSKScriptGroup.h; sourceTree = "<group>"; };
 		CE11AC090AE7E0DC008C47AC /* BDSKScriptGroup.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BDSKScriptGroup.m; sourceTree = "<group>"; };
@@ -1473,6 +1475,8 @@
 		F92F4E4D0788DEFC001B8F82 /* BibPref_Files.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = BibPref_Files.m; sourceTree = "<group>"; };
 		F9377F550B423A4C00ECCB3A /* yaz.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = yaz.xcodeproj; path = ../bibdesk_vendorsrc/indexdata/yaz/objc/yaz.xcodeproj; sourceTree = "<group>"; };
 		F93840890906DD1F00FC37F2 /* scripthook.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; name = scripthook.tiff; path = Images/scripthook.tiff; sourceTree = "<group>"; };
+		F940D1070B5568E400B5917A /* BDSKReferParser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BDSKReferParser.h; sourceTree = "<group>"; };
+		F940D1080B5568E400B5917A /* BDSKReferParser.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BDSKReferParser.m; sourceTree = "<group>"; };
 		F941135209B549BF00EE8463 /* BDSKEditorTextView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BDSKEditorTextView.h; sourceTree = "<group>"; };
 		F941135309B549BF00EE8463 /* BDSKEditorTextView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BDSKEditorTextView.m; sourceTree = "<group>"; };
 		F941B7E808AA574200F04ECD /* BDSKOverlay.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BDSKOverlay.h; sourceTree = "<group>"; };
@@ -2115,6 +2119,7 @@
 				3D44F5610812A91D003C67F0 /* BDSKFormatParser.m */,
 				CEAE613D097FF60A000B618C /* BDSKJSTORParser.m */,
 				CE34A5720B249E0B00755730 /* BDSKMARCParser.m */,
+				F940D1080B5568E400B5917A /* BDSKReferParser.m */,
 				CE601A4D0AF4C488000B5680 /* BDSKReferenceMinerParser.m */,
 				CE600E2E0AF405D6000B5680 /* BDSKRISParser.m */,
 				F9022C5A075802E300C3F701 /* BDSKShellTask.m */,
@@ -2361,6 +2366,7 @@
 				CE392F5B08D04083001CEAC8 /* BDSKRatingButton.h */,
 				CE392ED208D034E4001CEAC8 /* BDSKRatingButtonCell.h */,
 				CE95A5790A88883300334DFA /* BDSKReadMeController.h */,
+				F940D1070B5568E400B5917A /* BDSKReferParser.h */,
 				CE601A4C0AF4C488000B5680 /* BDSKReferenceMinerParser.h */,
 				CE51914B09E5615400E97C3A /* BDSKRegExFindPattern.h */,
 				CE600E2D0AF405D6000B5680 /* BDSKRISParser.h */,
@@ -2838,6 +2844,7 @@
 				CEBC676E0B4A845F00CE0B2D /* BDSKSearchGroupViewController.h in Headers */,
 				CEBC70220B4ABDF500CE0B2D /* BDSKOAIGroupServer.h in Headers */,
 				CEAB9F590B4FF20800673AC2 /* BDSKCitationFormatter.h in Headers */,
+				F940D1090B5568E400B5917A /* BDSKReferParser.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -2923,7 +2930,6 @@
 		29B97313FDCFA39411CA2CEA /* Project object */ = {
 			isa = PBXProject;
 			buildConfigurationList = F993F20208553A61007A7657 /* Build configuration list for PBXProject "Bibdesk" */;
-			compatibilityVersion = "Xcode 2.4";
 			hasScannedForEncodings = 1;
 			mainGroup = 29B97314FDCFA39411CA2CEA /* BibDesk */;
 			projectDirPath = "";
@@ -2962,7 +2968,6 @@
 				},
 			);
 			projectRoot = "";
-			shouldCheckCompatibility = 1;
 			targets = (
 				8D1107260486CEB800E47090 /* BibDesk */,
 				3D8A5779082D3077008E818C /* BibDesk Help */,
@@ -3663,6 +3668,7 @@
 				CEBC676F0B4A845F00CE0B2D /* BDSKSearchGroupViewController.m in Sources */,
 				CEBC70230B4ABDF500CE0B2D /* BDSKOAIGroupServer.m in Sources */,
 				CEAB9F5A0B4FF20800673AC2 /* BDSKCitationFormatter.m in Sources */,
+				F940D10A0B5568E400B5917A /* BDSKReferParser.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
