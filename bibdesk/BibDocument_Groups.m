@@ -257,7 +257,7 @@ The groupedPublications array is a subset of the publications array, developed b
     }
     
     if (succeeded)
-        [self flagAsImported:publications forGroup:group];
+        [self setImported:YES forPublications:publications inGroup:group];
 }
 
 - (void)handleSharedGroupsChangedNotification:(NSNotification *)notification{
@@ -306,7 +306,7 @@ The groupedPublications array is a subset of the publications array, developed b
     }
     
     if (succeeded)
-        [self flagAsImported:publications forGroup:group];
+        [self setImported:YES forPublications:publications inGroup:group];
 }
 
 - (void)handleScriptGroupUpdatedNotification:(NSNotification *)notification{
@@ -325,7 +325,7 @@ The groupedPublications array is a subset of the publications array, developed b
     }
     
     if (succeeded)
-        [self flagAsImported:publications forGroup:group];
+        [self setImported:YES forPublications:publications inGroup:group];
 }
 
 - (void)handleSearchGroupUpdatedNotification:(NSNotification *)notification{
@@ -340,7 +340,7 @@ The groupedPublications array is a subset of the publications array, developed b
         [self displaySelectedGroups];
     
     if (succeeded)
-        [self flagAsImported:publications forGroup:group];
+        [self setImported:YES forPublications:publications inGroup:group];
 }
 
 - (void)handleWillAddRemoveGroupNotification:(NSNotification *)notification{
@@ -1153,10 +1153,8 @@ The groupedPublications array is a subset of the publications array, developed b
     BibItem *pub;
     
     while (pub = [pubEnum nextObject]) {
-        if ([currentPubs containsObject:pub] == NO) {
+        if ([currentPubs containsObject:pub] == NO)
             [array addObject:pub];
-            [pub setImported:YES];
-        }
     }
     
     if ([array count] == 0)
@@ -1460,11 +1458,11 @@ The groupedPublications array is a subset of the publications array, developed b
 
 #pragma mark Importing
 
-- (void)flagAsImported:(NSArray *)pubs forGroup:(BDSKGroup *)aGroup{
+- (void)setImported:(BOOL)flag forPublications:(NSArray *)pubs inGroup:(BDSKGroup *)aGroup{
     CFIndex countOfItems = [pubs count];
     BibItem **items = (BibItem **)NSZoneMalloc([self zone], sizeof(BibItem *) * countOfItems);
     [pubs getObjects:items];
-    NSSet *addedPubs = (NSSet *)CFSetCreate(CFAllocatorGetDefault(), (const void **)items, countOfItems, &BDSKBibItemEqualityCallBacks);
+    NSSet *pubSet = (NSSet *)CFSetCreate(CFAllocatorGetDefault(), (const void **)items, countOfItems, &BDSKBibItemEqualityCallBacks);
     NSZoneFree([self zone], items);
     
     NSMutableIndexSet *indexes = [NSMutableIndexSet indexSet];
@@ -1482,17 +1480,20 @@ The groupedPublications array is a subset of the publications array, developed b
     
     while (index != NSNotFound) {
         id group = [groups objectAtIndex:index];
+        index = [indexes indexGreaterThanIndex:index];
+        if ([group count] == 0) continue; // otherwise the group will load
         NSEnumerator *pubEnum = [[group publications] objectEnumerator];
         BibItem *pub;
         while (pub = [pubEnum nextObject]) {
-            if ([addedPubs containsObject:pub])
-                [pub setImported:YES];
+            if ([pubSet containsObject:pub])
+                [pub setImported:flag];
         }
-        index = [indexes indexGreaterThanIndex:index];
     }
-    [addedPubs release];
+    [pubSet release];
 	
-    [tableView reloadData];
+    NSTableColumn *tc = [tableView tableColumnWithIdentifier:BDSKImportOrderString];
+    if(tc && [self hasExternalGroupsSelected])
+        [tableView setNeedsDisplayInRect:[tableView rectOfColumn:[[tableView tableColumns] indexOfObject:tc]]];
 }
 
 - (void)tableView:(NSTableView *)aTableView importItemAtRow:(int)rowIndex{
@@ -1511,8 +1512,6 @@ The groupedPublications array is a subset of the publications array, developed b
 	[self addPublications:newPubs];
     
     [groups setLastImportedPublications:newPubs];
-    
-    [pub setImported:YES];
     
 	[[self undoManager] setActionName:NSLocalizedString(@"Import Publication", @"Undo action name")];
 }
