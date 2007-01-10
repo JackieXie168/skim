@@ -842,8 +842,6 @@
 						<real>300</real>
 						<key>Url</key>
 						<real>23</real>
-						<key>Import Order</key>
-						<real>18</real>
 					</dict>
 					<key>Current Publication Type String</key>
 					<string>Inproceedings</string>

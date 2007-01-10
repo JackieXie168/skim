@@ -305,16 +305,14 @@
                 [switchButtonCell setAllowsMixedState:YES];
                 [tc setDataCell:switchButtonCell];
             }else if ([colName isEqualToString:BDSKImportOrderString]){
-				NSButtonCell *importButtonCell = [[[NSButtonCell alloc] initTextCell:@""] autorelease];
-				[importButtonCell setButtonType:NSMomentaryChangeButton];
-				[importButtonCell setBordered:NO];
-				[importButtonCell setImagePosition:NSImageOnly];
+				NSButtonCell *importButtonCell = [[[NSButtonCell alloc] initTextCell:NSLocalizedString(@"Import", @"button title")] autorelease];
+				[importButtonCell setBezelStyle:NSShadowlessSquareBezelStyle];
+				[importButtonCell setImagePosition:NSNoImage];
 				[importButtonCell setControlSize:NSSmallControlSize];
-				[importButtonCell setImage:[NSImage imageNamed:@"ArrowImage"]];
-				[importButtonCell setAlternateImage:[NSImage imageNamed:@"ArrowImage_Pressed"]];
 				[importButtonCell setAction:@selector(importItem:)];
 				[importButtonCell setTarget:self];
                 [tc setDataCell:importButtonCell];
+                [tc setWidth:[importButtonCell cellSize].width];
 			}
 			if(image = [self headerImageForField:colName]){
 				[(NSCell *)[tc headerCell] setImage:image];
@@ -324,7 +322,7 @@
 				[[tc headerCell] setStringValue:NSLocalizedStringFromTable(colName, @"BibTeXKeys", @"")];
 			}
             
-            if(tcWidth = [defaultTableColumnWidths objectForKey:colName])
+            if([colName isEqualToString:BDSKImportOrderString] == NO && (tcWidth = [defaultTableColumnWidths objectForKey:colName]))
                 [tc setWidth:[tcWidth intValue]];
 		}
 		

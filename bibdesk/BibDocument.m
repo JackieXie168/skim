@@ -1668,8 +1668,6 @@ originalContentsURL:(NSURL *)absoluteOriginalContentsURL
 #pragma mark New publications from pasteboard
 
 - (void)addPublications:(NSArray *)newPubs publicationsToAutoFile:(NSArray *)pubsToAutoFile temporaryCiteKey:(NSString *)tmpCiteKey selectLibrary:(BOOL)select{
-    [self flagAsImported:newPubs forGroup:nil];
-    
     if (select)
         [self selectLibraryGroup:nil];    
 	[self addPublications:newPubs];
@@ -2236,13 +2234,17 @@ originalContentsURL:(NSURL *)absoluteOriginalContentsURL
 
 - (void)handleBibItemAddDelNotification:(NSNotification *)notification{
     // NB: this method gets called for setPublications: also, so checking for AddItemNotification might not do what you expect
-	if([[notification name] isEqualToString:BDSKDocDelItemNotification] == NO)
+	BOOL isDelete = [[notification name] isEqualToString:BDSKDocDelItemNotification];
+    if(isDelete == NO)
 		[self setSearchString:@""]; // clear the search when adding
 
     // update smart group counts
     [self updateSmartGroupsCountAndContent:NO];
     // this handles the remaining UI updates necessary (tableView and previews)
 	[self updateCategoryGroupsPreservingSelection:YES];
+    
+    NSArray *pubs = [[notification userInfo] objectForKey:@"pubs"];
+    [self setImported:isDelete == NO forPublications:pubs inGroup:nil];
 }
 
 - (BOOL)sortKeyDependsOnKey:(NSString *)key{
