@@ -400,8 +400,7 @@ static NSString *BDSKRecentSearchesKey = @"BDSKRecentSearchesKey";
     // TableView setup
     [tableView removeAllTableColumns];
     
-    // BDSKImportOrderString ends up in the prefs via tableViewColumnDidMove:; should we remove it there?
-    [tableView setupTableColumnsWithIdentifiers:[xattrDefaults objectForKey:BDSKShownColsNamesKey defaultObject:[[pw objectForKey:BDSKShownColsNamesKey] arrayByRemovingObject:BDSKImportOrderString]]];
+    [tableView setupTableColumnsWithIdentifiers:[xattrDefaults objectForKey:BDSKShownColsNamesKey defaultObject:[pw objectForKey:BDSKShownColsNamesKey]]];
     sortKey = [[xattrDefaults objectForKey:BDSKDefaultSortedTableColumnKey defaultObject:[pw objectForKey:BDSKDefaultSortedTableColumnKey]] retain];
     previousSortKey = [sortKey retain];
     docState.sortDescending = [xattrDefaults  boolForKey:BDSKDefaultSortedTableColumnIsDescendingKey defaultValue:[pw boolForKey:BDSKDefaultSortedTableColumnIsDescendingKey]];
