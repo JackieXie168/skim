@@ -553,7 +553,11 @@ static BibTypeManager *sharedInstance = nil;
     NSString *name = [fieldNameForReferTagDict objectForKey:tag];
     if (nil == name) {
         NSLog(@"Unknown Refer tag %@.  Please report this.", tag);
-        name = [tag fieldName];
+        // numeric tags don't work with BibTeX; we could have fieldName check this, but it's specific to Refer at this point
+        if ([tag length] && [[NSCharacterSet decimalDigitCharacterSet] characterIsMember:[tag characterAtIndex:0]])
+            name = [@"Refer" stringByAppendingString:tag];
+        else
+            name = [tag fieldName];
     }
     return name;
 }
