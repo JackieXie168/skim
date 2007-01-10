@@ -2402,6 +2402,11 @@ static NSString *queryStringWithCiteKey(NSString *citekey)
 			return NSDragOperationEvery;
         }
         return NSDragOperationNone;
+	} else if ([field isEqualToString:BDSKCrossrefString]){
+		if ([dragType isEqualToString:BDSKBibItemPboardType]) {
+			return NSDragOperationEvery;
+        }
+        return NSDragOperationNone;
 	} else {
 		// we don't support dropping on a textual field. This is handled by the window
 	}
@@ -2490,9 +2495,48 @@ static NSString *queryStringWithCiteKey(NSString *citekey)
                 else
                     string = [NSString stringWithFormat:@"%@,%@", string, citeKeys];
                 [publication setField:field toValue:string];
+                [[self undoManager] setActionName:NSLocalizedString(@"Edit Publication", @"Undo action name")];
                 
                 return YES;
             }
+            
+        }
+        
+	} else if ([field isEqualToString:BDSKCrossrefString]){
+        
+		if ([dragType isEqualToString:BDSKBibItemPboardType]) {
+            
+            NSData *pbData = [pboard dataForType:BDSKBibItemPboardType];
+            NSArray *draggedPubs = [[self document] newPublicationsFromArchivedData:pbData];
+            NSString *crossref = [[draggedPubs firstObject] citeKey];
+            
+            if ([NSString isEmptyString:crossref])
+                return NO;
+            
+            // first check if we don't create a Crossref chain
+            int errorCode = [publication canSetCrossref:crossref andCiteKey:[publication citeKey]];
+            NSString *message = nil;
+            if (errorCode == BDSKSelfCrossrefError)
+                message = NSLocalizedString(@"An item cannot cross reference to itself.", @"Informative text in alert dialog");
+            else if (errorCode == BDSKChainCrossrefError)
+                message = NSLocalizedString(@"Cannot cross reference to an item that has the Crossref field set.", @"Informative text in alert dialog");
+            else if (errorCode == BDSKIsCrossreffedCrossrefError)
+                message = NSLocalizedString(@"Cannot set the Crossref field, as the current item is cross referenced.", @"Informative text in alert dialog");
+            
+            if (message) {
+                NSAlert *alert = [NSAlert alertWithMessageText:NSLocalizedString(@"Invalid Crossref Value", @"Message in alert dialog when entering an invalid Crossref key") 
+                                                 defaultButton:NSLocalizedString(@"OK", @"Button title")
+                                               alternateButton:nil
+                                                   otherButton:nil
+                                      informativeTextWithFormat:message];
+                [alert beginSheetModalForWindow:[self window] modalDelegate:nil didEndSelector:NULL contextInfo:NULL];
+                return NO;
+            }
+            
+            [publication setField:BDSKCrossrefString toValue:crossref];
+            [[self undoManager] setActionName:NSLocalizedString(@"Edit Publication", @"Undo action name")];
+            
+            return YES;
             
         }
         
