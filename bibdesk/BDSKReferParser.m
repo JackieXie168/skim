@@ -7,8 +7,6 @@
 //
 
 #import "BDSKReferParser.h"
-
-
 #import "BibItem.h"
 #import "NSString_BDSKExtensions.h"
 #import "BibTypeManager.h"
@@ -49,18 +47,20 @@
     return [[string stringByTrimmingCharactersInSet:[NSCharacterSet newlineCharacterSet]] hasPrefix:@"%"];
 }
 
-+ (void)addString:(NSMutableString *)value toDictionary:(NSMutableDictionary *)pubDict forTag:(NSString *)tag;
++ (void)addString:(NSString *)value toDictionary:(NSMutableDictionary *)pubDict forTag:(NSString *)tag;
 {
 	NSString *key = nil;
 	NSString *oldString = nil;
     NSString *newString = nil;
 	
-    key = [[BibTypeManager sharedManager] fieldNameForReferTag:tag];
-	if (key == nil) 
-        key = [tag fieldName];
-	
+    // returns [tag fieldName] if nothing in the dictionary
+    key = [[BibTypeManager sharedManager] fieldNameForReferTag:tag];	
     oldString = [pubDict objectForKey:key];
-	
+    
+    // this is likely only useful for AGU
+	if ([key isURLField] && [value hasPrefix:@"[URL-Abstract] "])
+        value = [value stringByRemovingPrefix:@"[URL-Abstract] "];
+    
 	BOOL isAuthor = [key isPersonField];
     
 	// concatenate authors and keywords, as they can appear multiple times
@@ -75,14 +75,8 @@
         } else if([key isEqualToString:BDSKKeywordsString]){
             newString = [[NSString alloc] initWithFormat:@"%@, %@", oldString, value];
 		} else {
-			// we already had a tag mapping to the same fieldname, so use the tag instead
-			key = [tag fieldName];
-            oldString = [pubDict objectForKey:key];
-            if (![NSString isEmptyString:oldString]){
-                newString = [[NSString alloc] initWithFormat:@"%@, %@", oldString, value];
-            }else{
-                newString = [value copy];
-            }
+			// append to old value
+            newString = [[NSString alloc] initWithFormat:@"%@%@%@", oldString, [[OFPreferenceWrapper sharedPreferenceWrapper] objectForKey:BDSKDefaultGroupFieldSeparatorKey], value];
 		}
     } else {
         // the default, just set the value
@@ -195,10 +189,12 @@ static inline BOOL isTagLine(NSString *sourceLine)
 				
             if([pubDict count] > 0){
                 
-                type = [pubDict objectForKey:@"0"];
+                // numeric keys end up with "Refer" prepended in the type manager
+                // !!! maybe we should move type conversion dictionaries into parsers?
+                type = [pubDict objectForKey:@"Refer0"];
                 if (nil != type) {
                     type = [typeManager bibtexTypeForReferType:type];
-                    [pubDict removeObjectForKey:@"0"];
+                    [pubDict removeObjectForKey:@"Refer0"];
                 } else {
                     type = BDSKMiscString;
                 }
