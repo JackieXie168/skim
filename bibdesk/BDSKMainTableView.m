@@ -366,7 +366,7 @@
     
     // Store the new column in the preferences
     [shownColumns insertObject:identifier atIndex:index];
-    [[OFPreferenceWrapper sharedPreferenceWrapper] setObject:shownColumns
+    [[OFPreferenceWrapper sharedPreferenceWrapper] setObject:[shownColumns arrayByRemovingObject:BDSKImportOrderString]
                                                       forKey:BDSKShownColsNamesKey];
     
     // Actually redraw the view now with the new column.
@@ -382,7 +382,7 @@
 
     // Store the new column in the preferences
     [shownColumns removeObject:identifier];
-    [[OFPreferenceWrapper sharedPreferenceWrapper] setObject:shownColumns
+    [[OFPreferenceWrapper sharedPreferenceWrapper] setObject:[shownColumns arrayByRemovingObject:BDSKImportOrderString]
                                                       forKey:BDSKShownColsNamesKey];
     
     // Actually redraw the view now with the new column.
