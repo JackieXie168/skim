@@ -50,7 +50,14 @@ static BibTypeManager *sharedInstance = nil;
     }
     return sharedInstance;
 }
-
+/*
+- (NSString *)fieldNameForReferTag:(NSString *)tag;
+- (NSString *)bibtexTypeForReferType:(NSString *)type;
+- (void)setFieldNameForReferTagDict:(NSDictionary *)newNames;
+- (void)setBibtexTypeForReferTypeDict:(NSDictionary *)newNames;
+    NSDictionary *fieldNameForReferTagDict;
+    NSDictionary *bibtexTypeForReferTypeDict;
+*/
 - (id)init{
     self = [super init];
     
@@ -138,6 +145,8 @@ static BibTypeManager *sharedInstance = nil;
     [fieldNameForWebOfScienceTagDict release];
     [fieldDescriptionForWebOfScienceTagDict release];
     [bibtexTypeForWebOfScienceTypeDict release];
+    [fieldNameForReferTagDict release];
+    [bibtexTypeForReferTypeDict release];
     [bibtexTypeForDublinCoreTypeDict release];
     [fieldNameForDublinCoreTermDict release];
 	[MODSGenresForBibTeXTypeDict release];
@@ -195,6 +204,8 @@ static BibTypeManager *sharedInstance = nil;
         [self setBibtexTypeForWebOfScienceTypeDict:[typeInfoDict objectForKey:BIBTEX_TYPES_FOR_WOS_TYPES_KEY]];
         [self setBibtexTypeForDublinCoreTypeDict:[typeInfoDict objectForKey:BIBTEX_TYPES_FOR_DC_TYPES_KEY]];        
         [self setFieldNameForDublinCoreTermDict:[typeInfoDict objectForKey:BIBTEX_FIELDS_FOR_DC_TERMS_KEY]];
+        [self setFieldNameForReferTagDict:[typeInfoDict objectForKey:BIBTEX_FIELDS_FOR_REFER_TAGS_KEY]];
+        [self setBibtexTypeForReferTypeDict:[typeInfoDict objectForKey:BIBTEX_TYPES_FOR_REFER_TYPES_KEY]];
     }
 	
 	[self reloadAllFieldNames];
@@ -391,6 +402,20 @@ static BibTypeManager *sharedInstance = nil;
     }
 }
 
+- (void)setFieldNameForReferTagDict:(NSDictionary *)newNames {
+    if(fieldNameForReferTagDict != newNames) {
+        [fieldNameForReferTagDict release];
+        fieldNameForReferTagDict = [newNames copy];
+    }
+}
+
+- (void)setBibtexTypeForReferTypeDict:(NSDictionary *)newNames {
+    if(bibtexTypeForReferTypeDict != newNames) {
+        [bibtexTypeForReferTypeDict release];
+        bibtexTypeForReferTypeDict = [newNames copy];
+    }
+}
+
 #pragma mark Getters
 
 - (NSString *)defaultTypeForFileFormat:(NSString *)fileFormat{
@@ -523,6 +548,22 @@ static BibTypeManager *sharedInstance = nil;
         return [fieldNameForWebOfScienceTagDict objectForKey:[tags objectAtIndex:0]];
     return [[name fieldName] stringByReplacingAllOccurrencesOfString:@" " withString:@"-"];
 }    
+
+- (NSString *)fieldNameForReferTag:(NSString *)tag {
+    NSString *name = [fieldNameForReferTagDict objectForKey:tag];
+    if (nil == name) {
+        NSLog(@"Unknown Refer tag %@.  Please report this.", tag);
+        name = [tag fieldName];
+    }
+    return name;
+}
+
+- (NSString *)bibtexTypeForReferType:(NSString *)type {
+    NSString *btType = [bibtexTypeForReferTypeDict objectForKey:type];
+    if (nil == btType)
+        btType = BDSKMiscString;
+    return btType;
+}
 
 - (NSSet *)booleanFieldsSet{
     return booleanFieldsSet;

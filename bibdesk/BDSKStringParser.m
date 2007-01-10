@@ -47,6 +47,7 @@
 #import "BDSKJSTORParser.h"
 #import "BDSKWebOfScienceParser.h"
 #import "BDSKDublinCoreXMLParser.h"
+#import "BDSKReferParser.h"
 
 @implementation BDSKStringParser
 
@@ -54,30 +55,9 @@
     return NO;
 }
 
-+ (BOOL)canParseString:(NSString *)string ofType:(int)stringType{
-    switch(stringType){
-		case BDSKPubMedStringType: 
-            return [PubMedParser canParseString:string];
-		case BDSKRISStringType:
-            return [BDSKRISParser canParseString:string];
-		case BDSKMARCStringType:
-            return [BDSKMARCParser canParseString:string];
-		case BDSKReferenceMinerStringType:
-            return [BDSKReferenceMinerParser canParseString:string];
-		case BDSKJSTORStringType:
-            return [BDSKJSTORParser canParseString:string];
-        case BDSKWOSStringType:
-            return [BDSKWebOfScienceParser canParseString:string];
-        case BDSKDublinCoreStringType:
-            return [BDSKDublinCoreXMLParser canParseString:string];
-    }
-    return NO;
-}
-
-+ (NSArray *)itemsFromString:(NSString *)itemString ofType:(int)stringType error:(NSError **)outError{
+static Class classForType(int stringType)
+{
     Class parserClass = Nil;
-    if (stringType == BDSKUnknownStringType)
-        stringType = [itemString contentStringType];
     switch(stringType){
 		case BDSKPubMedStringType: 
             parserClass = [PubMedParser class];
@@ -100,7 +80,25 @@
         case BDSKDublinCoreStringType:
             parserClass = [BDSKDublinCoreXMLParser class];
             break;
-    }
+        case BDSKReferStringType:
+            parserClass = [BDSKReferParser class];
+            break;
+        default:
+            parserClass = Nil;
+    }    
+    return parserClass;
+}
+
++ (BOOL)canParseString:(NSString *)string ofType:(int)stringType{
+    Class parserClass = classForType(stringType);
+    return parserClass != Nil ? [parserClass canParseString:string] : NO;
+}
+
++ (NSArray *)itemsFromString:(NSString *)itemString ofType:(int)stringType error:(NSError **)outError{
+    Class parserClass = Nil;
+    if (stringType == BDSKUnknownStringType)
+        stringType = [itemString contentStringType];
+    parserClass = classForType(stringType);
     return [parserClass itemsFromString:itemString error:outError];
 }
 
@@ -135,6 +133,8 @@
 		return BDSKWOSStringType;
 	if([BibTeXParser canParseStringAfterFixingKeys:self])
 		return BDSKNoKeyBibTeXStringType;
+    if([BDSKReferParser canParseString:self])
+        return BDSKReferStringType;
 	// don't check DC, as the check is too unreliable
     return BDSKUnknownStringType;
 }
