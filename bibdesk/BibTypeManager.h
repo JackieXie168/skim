@@ -58,6 +58,8 @@
 #define MODS_GENRES_FOR_BIBTEX_TYPES_KEY      @"MODSGenresForBibTeXType"
 #define BIBTEX_TYPES_FOR_DC_TYPES_KEY         @"BibTeXTypesForDublinCoreTypes"
 #define BIBTEX_FIELDS_FOR_DC_TERMS_KEY        @"BibTeXFieldNamesForDublinCoreTerms"
+#define BIBTEX_FIELDS_FOR_REFER_TAGS_KEY     @"BibTeXFieldNamesForReferTags"
+#define BIBTEX_TYPES_FOR_REFER_TYPES_KEY     @"BibTeXTypesForReferTypes"
 
 @interface BibTypeManager : NSObject {
 	NSDictionary *fileTypesDict;
@@ -73,6 +75,8 @@
     NSDictionary *bibtexTypeForWebOfScienceTypeDict;
     NSDictionary *bibtexTypeForDublinCoreTypeDict;
     NSDictionary *fieldNameForDublinCoreTermDict;
+    NSDictionary *fieldNameForReferTagDict;
+    NSDictionary *bibtexTypeForReferTypeDict;
 	NSDictionary *MODSGenresForBibTeXTypeDict;
 	NSSet *allFieldNames;
 	NSCharacterSet *invalidCiteKeyCharSet;
@@ -120,6 +124,8 @@
 - (void)setBibtexTypeForWebOfScienceTypeDict:(NSDictionary *)dict;
 - (void)setBibtexTypeForDublinCoreTypeDict:(NSDictionary *)dict;
 - (void)setFieldNameForDublinCoreTermDict:(NSDictionary *)dict;
+- (void)setBibtexTypeForReferTypeDict:(NSDictionary *)newNames;
+- (void)setFieldNameForReferTagDict:(NSDictionary *)newNames;
 
 - (NSString *)defaultTypeForFileFormat:(NSString *)fileFormat;
 - (NSSet *)allFieldNames;
@@ -133,6 +139,7 @@
 - (NSString *)fieldNameForPubMedTag:(NSString *)tag;
 - (NSString *)bibtexTypeForPubMedType:(NSString *)type;
 - (NSString *)bibtexTypeForWebOfScienceType:(NSString *)type;
+- (NSString *)bibtexTypeForReferType:(NSString *)type;
 
 
 /*!
@@ -194,6 +201,7 @@
 - (NSString *)fieldNameForWebOfScienceTag:(NSString *)tag;
 
 - (NSString *)fieldNameForWebOfScienceDescription:(NSString *)name;
+- (NSString *)fieldNameForReferTag:(NSString *)tag;
 
     /*!
               @method     MODSGenresForBibTeXType:

@@ -85,7 +85,33 @@
         UT = Isi; 
         VL = Volume; 
     }; 
-        BibTeXFieldNamesForDublinCoreTerms = {
+    BibTeXFieldNamesForReferTags = {
+        A = Author; 
+        B = Booktitle; 
+        C = Address;
+        D = Date;
+        E = Editor;
+        F = Caption; 
+        I = Publisher;
+        J = Journal;
+        K = Keywords; 
+        N = Number; 
+        O = Annote;
+        P = Pages; 
+        Q = Author;
+        R = Type;      /* report, paper, or thesis type */
+        S = Booktitle; /* series title */
+        T = Title;
+        U = Url; 
+        V = Volume;
+        X = Abstract; 
+        Y = Editor; /* series editor */
+        3 = Doi;    /* maybe AGU only */
+        6 = Volume; /* the number of volumes? */
+        8 = Date;
+        9 = Type;   /* report type */
+    };
+    BibTeXFieldNamesForDublinCoreTerms = {
         "DC.description" = Abstract; 
         "DC.contributor" = Author; 
         "DC.creator" = Author;
@@ -101,8 +127,7 @@
         "DC.title" = Title; 
         "Url" = Url;
     }; 
-
-        BibTeXTypesForDublinCoreTypes = {
+    BibTeXTypesForDublinCoreTypes = {
         "Conference or Workshop Item" = inproceedings; 
         "Article" = "article";
         "Book" = "book";
@@ -111,7 +136,7 @@
         "Monograph" = techreport;
         "Thesis" = "phdthesis";
         "Other" = misc;
-};
+    };
     BibTeXTypesForMODSGenres = {
         "academic journal" = article; 
         book = book; 
@@ -133,6 +158,25 @@
         SER = incollection; 
         UNPB = unpublished; 
     }; 
+    /* http://www.ecst.csuchico.edu/~jacobsd/bib/formats/endnote.html */
+    BibTeXTypesForReferTypes = {
+        Artwork = misc; 
+        "Audiovisual Material" = misc; 
+        Book = book;
+        "Book Section" = inbook;
+        "Computer Program" = misc;
+        "Conference Proceedings" = book; 
+        "Edited Book" = book; 
+        Generic = misc; 
+        "Journal Article" = article; 
+        "Magazine Article" = misc; 
+        Map = misc;
+        "Newspaper Article" = misc;
+        Patent = misc;
+        "Personal Communication" = misc;
+        Report = techreport;
+        Thesis = thesis;
+    };
     BibTeXTypesForWebOfScienceTypes = {
         "Abstract of Published Item" = misc; 
         "Art Exhibit Review" = misc; 
