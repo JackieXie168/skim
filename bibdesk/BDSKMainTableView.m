@@ -306,7 +306,7 @@
                 [tc setDataCell:switchButtonCell];
             }else if ([colName isEqualToString:BDSKImportOrderString]){
 				NSButtonCell *importButtonCell = [[[NSButtonCell alloc] initTextCell:NSLocalizedString(@"Import", @"button title")] autorelease];
-				[importButtonCell setBezelStyle:NSShadowlessSquareBezelStyle];
+				[importButtonCell setBezelStyle:NSRecessedBezelStyle];
 				[importButtonCell setImagePosition:NSNoImage];
 				[importButtonCell setControlSize:NSSmallControlSize];
 				[importButtonCell setAction:@selector(importItem:)];
