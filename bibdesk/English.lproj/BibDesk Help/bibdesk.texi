@@ -169,7 +169,7 @@ about the BibTeX file format.
 
 Portions of BibDesk:
 
-Copyright @copyright{} 2001 - 2006 Michael O. McCracken@*
+Copyright @copyright{} 2001 - 2007 Michael O. McCracken@*
 Copyright @copyright{} many others@*
 
 @c ======================================================================================
@@ -4212,14 +4212,14 @@ Below are lists of collection keys that could be used in BibDesk export template
 
 @multitable @columnfractions .12 .88
 @item Portions of BibDesk
-@item @tab Copyright @copyright{} 2001 - 2006 Michael O. McCracken@*
-@item @tab Copyright @copyright{} 2002 - 2006 Adam Maxwell@*
-@item @tab Copyright @copyright{} 2002 - 2006 Christiaan Hofman@* 
+@item @tab Copyright @copyright{} 2001 - 2007 Michael O. McCracken@*
+@item @tab Copyright @copyright{} 2002 - 2007 Adam Maxwell@*
+@item @tab Copyright @copyright{} 2002 - 2007 Christiaan Hofman@* 
 @item @tab Copyright @copyright{} many others.@*
 @item @tab
 @item Portions of this manual
-@item @tab Copyright @copyright{} 2001 - 2006 Michael O. McCracken (manual)@*
-@item @tab Copyright @copyright{} 2002 - 2006 Adam Maxwell@*
-@item @tab Copyright @copyright{} 2002 - 2006 Christiaan Hofman@* 
+@item @tab Copyright @copyright{} 2001 - 2007 Michael O. McCracken (manual)@*
+@item @tab Copyright @copyright{} 2002 - 2007 Adam Maxwell@*
+@item @tab Copyright @copyright{} 2002 - 2007 Christiaan Hofman@* 
 @item @tab Copyright @copyright{} many others.@*
 @end multitable
