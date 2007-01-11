@@ -470,12 +470,17 @@ CFStringRef __BDStringCreateByNormalizingWhitespaceAndNewlines(CFAllocatorRef al
         ch = CFStringGetCharacterFromInlineBuffer(&inlineBuffer, cnt);
         if(__BDCharacterIsWhitespace(ch)){
             ignoreNextNewline = NO;
-            buffer[bufCnt++] = ' '; // replace with a single space
+            buffer[bufCnt++] = ' ';   // replace with a single space
+        } else if('\r' == ch){        // we can have \r\n, which should appear as a single \n
+            ignoreNextNewline = YES;
+            buffer[bufCnt++] = '\n';
+        } else if('\n' == ch){        // see if previous char was \r
+            if(!ignoreNextNewline)  
+                buffer[bufCnt++] = '\n';
+            ignoreNextNewline = NO;
         } else if(BDIsNewlineCharacter(ch)){
-            if(!ignoreNextNewline){      // we can have \r\n, which should appear as a single \n
-                buffer[bufCnt++] = '\n'; // any newline would work here
-                ignoreNextNewline = YES;
-            }
+            ignoreNextNewline = NO;
+            buffer[bufCnt++] = '\n';
         } else { 
             ignoreNextNewline = NO;
             buffer[bufCnt++] = ch;
