@@ -216,7 +216,10 @@
 
 - (void)updateCiteKeyAutoGenerateStatus;
 
-- (void)autoFilePaper;
+- (BOOL)autoFilePaper;
+
+- (int)userChangedField:(NSString *)fieldName from:(NSString *)oldValue to:(NSString *)newValue;
+- (int)userChangedField:(NSString *)fieldName from:(NSString *)oldValue to:(NSString *)newValue didAutoGenerate:(int)mask;
 
 - (NSString *)status;
 - (void)setStatus:(NSString *)status;
