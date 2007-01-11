@@ -131,7 +131,7 @@ static inline BOOL isTagLine(NSString *sourceLine)
     
     // !!! need to keep our items separated by whitespace
     // make sure that we only have one type of space and line break to deal with, since HTML copy/paste can have odd whitespace characters
-    //itemString = [itemString stringByNormalizingSpacesAndLineBreaks];
+    itemString = [itemString stringByNormalizingSpacesAndLineBreaks];
     
     NSMutableArray *returnArray = [NSMutableArray arrayWithCapacity:10];
     NSError *error = nil;
