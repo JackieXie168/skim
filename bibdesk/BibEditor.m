@@ -1931,6 +1931,9 @@ static int numberOfOpenEditors = 0;
     // Rebuild the form if the crossref changed, or our parent's cite key changed.
 	if([changeKey isEqualToString:BDSKCrossrefString] || 
 	   (parentDidChange && [changeKey isEqualToString:BDSKCiteKeyString])){
+        // if we are editing a crossref field, we should first set the new value, because setupForm will set the edited value. This happens when it is set through drag/drop
+        if ([[[bibFields selectedCell] title] isEqualToString:changeKey])
+            [[bibFields selectedCell] setObjectValue:[publication valueOfField:changeKey]];
 		[self setupForm];
 		[[self window] setTitle:[publication displayTitle]];
 		[authorTableView reloadData];
