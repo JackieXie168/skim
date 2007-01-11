@@ -356,7 +356,7 @@ static CFDictionaryRef selectorTable = NULL;
 		return [NSString isEmptyString:crossref2];
 	else if ([NSString isEmptyString:crossref2] == YES)
 		return NO;
-	return ([crossref1 caseInsensitiveCompare:crossref2] != NSOrderedSame);
+	return ([crossref1 caseInsensitiveCompare:crossref2] == NSOrderedSame);
 }
 
 - (BOOL)isIdenticalToItem:(BibItem *)aBI{ 
