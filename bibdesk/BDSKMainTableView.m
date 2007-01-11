@@ -50,6 +50,8 @@
 #import "NSObject_BDSKExtensions.h"
 #import <OmniAppKit/NSMenu-OAExtensions.h>
 #import <OmniAppKit/NSTableView-OAColumnConfigurationExtensions.h>
+#import "NSBezierPath_BDSKExtensions.h"
+#import "NSBezierPath_CoreImageExtensions.h"
 
 
 @interface BDSKMainTableView (Private)
@@ -305,8 +307,7 @@
                 [switchButtonCell setAllowsMixedState:YES];
                 [tc setDataCell:switchButtonCell];
             }else if ([colName isEqualToString:BDSKImportOrderString]){
-				NSButtonCell *importButtonCell = [[[NSButtonCell alloc] initTextCell:NSLocalizedString(@"Import", @"button title")] autorelease];
-				[importButtonCell setBezelStyle:NSRecessedBezelStyle];
+				NSButtonCell *importButtonCell = [[[BDSKRoundRectButtonCell alloc] initTextCell:NSLocalizedString(@"Import", @"button title")] autorelease];
 				[importButtonCell setImagePosition:NSNoImage];
 				[importButtonCell setControlSize:NSSmallControlSize];
 				[importButtonCell setAction:@selector(importItem:)];
@@ -541,6 +542,34 @@
     if (altColors == nil)
         altColors = [[NSArray alloc] initWithObjects:[NSColor controlBackgroundColor], [NSColor colorWithCalibratedRed:0.934203 green:0.991608 blue:0.953552 alpha:1.0], nil];
     return altColors;
+}
+
+@end
+
+
+@implementation BDSKRoundRectButtonCell
+
+- (id)initTextCell:(NSString *)aString {
+    if (self = [super initTextCell:aString]) {
+        [self setButtonType:NSMomentaryPushInButton];
+        [self setBezelStyle:NSRoundRectBezelStyle];
+    }
+    return self;
+}
+
+- (void)drawWithFrame:(NSRect)cellFrame inView:(NSView *)controlView{
+    float startWhite = [self isHighlighted] ? 0.95 : 0.9;
+    float endWhite = [self isHighlighted] ? 0.9 : 1.0;
+    float alpha = [self isEnabled] ? 1.0 : 0.8;
+    NSRect rect = cellFrame;
+    rect.size.height -= 1.0;
+    rect = NSInsetRect(rect, 0.5 * NSHeight(rect), 0.5);
+    NSBezierPath *path = [NSBezierPath bezierPathWithHorizontalOvalAroundRect:rect];
+
+    [path fillPathVerticallyWithStartColor:[CIColor colorWithRed:startWhite green:startWhite blue:startWhite alpha:alpha] endColor:[CIColor colorWithRed:endWhite green:endWhite blue:endWhite alpha:alpha]];
+    [[NSColor colorWithCalibratedWhite:0.8 alpha:alpha] set];
+    [path stroke];
+    [super drawInteriorWithFrame:cellFrame inView:controlView];
 }
 
 @end

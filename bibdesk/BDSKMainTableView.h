@@ -76,3 +76,7 @@
 @interface NSColor (BDSKExtensions)
 + (NSArray *)alternateControlAlternatingRowBackgroundColors;
 @end
+
+
+@interface BDSKRoundRectButtonCell : NSButtonCell
+@end
