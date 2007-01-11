@@ -153,7 +153,7 @@
 	}
 }
 
-- (NSString *)tableView:(NSTableView *)tv toolTipForTableColumn:(NSTableColumn *)aTableColumn row:(int)row {
+- (NSString *)tableView:(NSTableView *)tv toolTipForCell:(NSCell *)aCell rect:(NSRectPointer)rect tableColumn:(NSTableColumn *)aTableColumn row:(int)row mouseLocation:(NSPoint)mouseLocation{
     if (tv == tableView) {
         if ([[aTableColumn identifier] isEqualToString:BDSKImportOrderString] && [[shownPublications objectAtIndex:row] isImported] == NO)
             return NSLocalizedString(@"Click to import this item", @"Tool tip message");

@@ -421,7 +421,7 @@ static BibFiler *sharedFiler = nil;
 - (int)numberOfRowsInTableView:(NSTableView *)tView{ return 0; }
 - (id)tableView:(NSTableView *)tView objectValueForTableColumn:(NSTableColumn *)tableColumn row:(int)row{ return nil; }
 
-- (NSString *)tableView:(NSTableView *)tableView toolTipForTableColumn:(NSTableColumn *)tableColumn row:(int)row{
+- (NSString *)tableView:(NSTableView *)tv toolTipForCell:(NSCell *)aCell rect:(NSRectPointer)rect tableColumn:(NSTableColumn *)tableColumn row:(int)row mouseLocation:(NSPoint)mouseLocation{
 	NSString *tcid = [tableColumn identifier];
     if ([tcid isEqualToString:@"select"]) {
         return NSLocalizedString(@"Select items to Try Again or to Force.", @"Tool tip message");

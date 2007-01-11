@@ -60,7 +60,6 @@
 
 @interface NSObject (NSTableBDSKExtendedDataSource)
 
-- (NSString *)tableView:(NSTableView *)aTableView toolTipForTableColumn:(NSTableColumn *)aTableColumn row:(int)rowIndex;
 - (NSImage *)tableView:(NSTableView *)aTableView dragImageForRowsWithIndexes:(NSIndexSet *)dragRows;
 - (void)tableView:(NSTableView *)aTableView concludeDragOperation:(NSDragOperation)operation;
 

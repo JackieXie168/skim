@@ -221,7 +221,7 @@ static BDSKOrphanedFilesFinder *sharedFinder = nil;
 - (int)numberOfRowsInTableView:(NSTableView *)tView{ return 0; }
 - (id)tableView:(NSTableView *)tView objectValueForTableColumn:(NSTableColumn *)tableColumn row:(int)row{ return nil; }
 
-- (NSString *)tableView:(NSTableView *)tableView toolTipForTableColumn:(NSTableColumn *)tableColumn row:(int)row{
+- (NSString *)tableView:(NSTableView *)tv toolTipForCell:(NSCell *)aCell rect:(NSRectPointer)rect tableColumn:(NSTableColumn *)aTableColumn row:(int)row mouseLocation:(NSPoint)mouseLocation{
     return [[[arrayController arrangedObjects] objectAtIndex:row] path];
 }
 
