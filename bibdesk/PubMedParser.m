@@ -105,17 +105,19 @@
             NSString *collapsedWhitespaceString = (NSString *)BDStringCreateByCollapsingAndTrimmingWhitespace(NULL, (CFStringRef)newString);
             [newString release];
             newString = collapsedWhitespaceString;
-        }else if([key isEqualToString:BDSKKeywordsString]){
-            newString = [[NSString alloc] initWithFormat:@"%@, %@", oldString, value];
-		}else{
-			// we already had a tag mapping to the same fieldname, so use the tag instead
-			key = [tag fieldName];
-            oldString = [pubDict objectForKey:key];
-            if (![NSString isEmptyString:oldString]){
-                newString = [[NSString alloc] initWithFormat:@"%@, %@", oldString, value];
-            }else{
-                newString = [value copy];
+        } else if([key isSingleValuedField] || [key isURLField]) {
+            // for single valued and URL fields, create a new field name
+            int i = 1;
+            NSString *newKey = [key stringByAppendingFormat:@"%d", i];
+            while ([pubDict objectForKey:newKey] != nil) {
+                i++;
+                newKey = [key stringByAppendingFormat:@"%d", i];
             }
+            key = newKey;
+            newString = [value copy];
+        } else {
+			// append to old value, using separator from prefs
+            newString = [[NSString alloc] initWithFormat:@"%@%@%@", oldString, [[OFPreferenceWrapper sharedPreferenceWrapper] objectForKey:BDSKDefaultGroupFieldSeparatorKey], value];
 		}
     }else{
         // the default, just set the value
