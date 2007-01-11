@@ -134,6 +134,7 @@ about the BibTeX file format.
 * Opening and Importing Files:: Opening new and existing files of different formats
 * Searching Your Database:: Searching references in the BibDesk database
 * Managing References:: Browsing, adding, and editing references
+* Searching External Databases:: Searching external satabases
 * Citation Keys::       Automatically generating citation keys
 * AutoFile::            Keeping local copies of articles organized
 * Inserting Citations:: Adding citation commands in your favorite editor
@@ -1529,7 +1530,7 @@ To add publications to the group, just drag the items and drop them on the group
 
 @cindex external group
 
-BibDesk can automatically fetch publications from external sources.  There are three types of external groups.  
+BibDesk can automatically fetch publications from external sources.  There are four types of external groups.  
 
 Shared Groups contain items that others share on your local network.  
 They are fetched using Bonjour.  This is similar to sharing of music files in iTunes.  
@@ -1540,6 +1541,9 @@ External File Groups get their items from a remote URL on the internet or from a
 Script Groups generate their items using a script, either a shell script or an AppleScript.  
 For example, the script can download content from a remote location and parse the content to get the items.  
 The script should return valid BibTeX. 
+
+@ref{Searching External Databases, Search Groups} contain items obtained from searching an external database, 
+such as PubMed or libraries allowing z39.50 searches. 
 
 Items in external groups are not included in the Library and can not be edited.  
 You can add external items to your Library by dragging them to the Library group.  
@@ -1564,6 +1568,180 @@ publications in the main list, and then choose @menutitle{Send via Email} from t
 This feature is known to work with Apple's Mail.app and with the Microsoft@registeredsymbol{} 
 Entourage@registeredsymbol{} client.  Other programs may be supported, especially if users
 provide the necessary AppleScript commands for their favorite software.
+
+@c ======================================================================================
+
+@node Searching External Databases
+@chapter Searching External Databases
+@abstract{How to search external databases.}
+
+@cindex search
+@cindex search group
+
+With BibDesk, you can search the NCBI's Entrez set of databases and
+the catalogs at many research libraries using the z39.50 protocol. To
+search these databases, select "New Search Group" from the "File" menu
+and select the desired search from the menu that appears.
+
+@menu
+* Syntax for Z39.50 Searching::
+* Syntax for Entrez Searching::
+@end menu
+
+@c --------------------------------------------------------------------------------------
+
+@node Syntax for Z39.50 Searching
+@section Syntax for Z39.50 Searching
+@abstract{Syntax for searching z39.50 databases}
+
+@cindex z39.50
+
+To search a z39.50 database, enter a string of the following kind into
+the search field for z39.50 databases:
+@example
+foo="SearchForMe"
+@end example
+where @samp{foo} is an index specifying the fields of database records to
+be searched, and @samp{SearchForMe} is the text string of interest. 
+If the index is left out, all fields will be searched for the text.  
+
+For example, a search for works written by Sewall Wright can be
+conducted as follows:
+@example
+au="Wright, Sewall"
+@end example
+The indexes available in BibDesk are represented in the table
+below. If a search supports relations, operators such as @samp{>}, @samp{<},
+@samp{<>}, @samp{<=}, and @samp{>=} can be used, for instance, to search for works
+published after a certain year. Note that, though the use of relations
+is supported in BibDesk, many z39.50 servers do not support them.
+
+For more information about MARC fields that are searched, consult OCLC's 
+@uref{http://www.oclc.org/bibformats/default.htm,Bibliographic Formats and Standards} pages.
+
+Boolean operators may be used to search several indexes at once, as in:
+@example
+au="Wright, Sewall" and ti="livestock breeding"
+@end example
+which will find works by Wright with the phrase @samp{livestock breeding}
+in the title. When different indexes are used, Boolean operators must be included. 
+
+@multitable {Index} {Conference as author name} {This includes a variety of different types of dates associated with the item; if you are looking for a publication date in particular, use "dp". Supports relations.}
+@headitem Index @tab Meaning 
+@item au @tab Personal author name 
+@tab Name of a person; will not search corporate authors. See note for @samp{af} below.
+@item ti @tab Title 
+@tab 
+@item isbn @tab ISBN 
+@tab International Standard Book Number
+@item issn @tab ISSN 
+@tab International Standard Serial Number
+@item cc @tab Local classification number
+ @tab Call number of the item in the library being queried 
+@item su @tab Subject key words 
+@tab Includes persons, corporate bodies, and meetings as subjects; includes places
+as subjects; and also includes topical terms from the LCSH controlled
+vocabulary.
+@item date @tab Date 
+@tab This includes a
+variety of different types of dates associated with the item; if you
+are looking for a publication date in particular, use @samp{dp}. Supports relations.
+@item dp @tab Date of publication 
+@tab Supports relations.
+@item da @tab Acquisition date 
+@tab Date on which item was acquired by library being queried. Supports relations.
+@item la @tab Language code 
+@tab Language codes are defined by each library.
+@item ab @tab Abstract 
+@tab Library records rarely include abstracts.
+@item note @tab Note 
+@tab May include table of contents notes.
+@item af @tab Conference as author name 
+@tab For instance, the
+Proceedings of the Philosophy of Science Association Meeting for a
+given year might have @samp{Philosophy of Science Association} as its
+author. Contrast with @samp{au}, personal author name
+@end multitable
+
+@c --------------------------------------------------------------------------------------
+
+@node Syntax for Entrez Searching
+@section Syntax for Entrez Searching
+@abstract{Syntax for searching Entrez databases}
+
+@cindex Entrez
+@cindex Searching PubMed
+
+Entrez databases use a search syntax closer to natural language than
+does z39.50 databases. Enter key words, and the Entrez server will
+generate a custom set of search results based on its retrieval
+algorithms. Note that when searching PubMed for personal author  
+names, @samp{,}
+should not be entered between first names and last initials, and that
+first initials (as opposed to first names) are typically used, as in
+@samp{wright s} or @samp{fisher ra}.
+
+For more focused searching, Entrez allows terms to be combined using
+Boolean operators. According to the Entrez documentation, available at
+@uref{http://www.ncbi.nlm.nih.gov/books/bv.fcgi?rid=helpentrez.section.EntrezHelp.Boolean_Operators,Boolean Operators},
+these must be entered as follows.
+
+@multitable {AND:} {}
+@item @samp{AND:}
+@tab Combine two search terms together to find all documents that contain BOTH terms.
+@item @samp{OR:}
+@tab Combine two search terms together to find all documents that contain EITHER term.
+@item @samp{NOT:}
+@tab Combine two search terms together to find all documents that contain search term 1 BUT NOT search term 2.
+@end multitable
+
+The Entrez search rules and syntax for using Boolean operators
+are:
+@itemize
+@item Boolean operators AND, OR, NOT must be entered in UPPERCASE
+(e.g., promoters OR response elements).
+@item Entrez processes all Boolean operators in a left-to-right
+sequence. The order in which Entrez processes a search statement can
+be changed by enclosing individual concepts in parentheses. The terms
+inside the parentheses are processed first as a unit and then
+incorporated into the overall strategy. For example, the search
+statement: @samp{g1p3 AND (response element OR promoter)} is processed by
+Entrez by OR-ing the terms @samp{response element OR promoter} first and then
+AND-ing the resulting set of @samp{documents with g1p3}.
+@end itemize
+Another way in which searches can be focused in PubMed is by the use
+of extensions to the search terms. For instance, to search for @samp{random
+genetic drift} in the MeSH terms field only, enter the following:
+@example
+random genetic drift [hm]
+@end example
+into the search field. Note that the extension appears in brackets
+after the search key (@samp{random genetic drift,} in this case).
+
+Other useful extensions include the following.
+
+@multitable {lastau} {language (use the first three letters of the language's name, but not that "ja" means "japanese".)}
+@headitem Extension @tab Meaning
+@item au 
+@tab Author
+@item 1au 
+@tab First author
+@item lastau 
+@tab Last author name
+@item la 
+@tab Language (use the first three letters of the language's name, but note that "ja" means "japanese".)
+@item sh 
+@tab MeSH Subheadings
+@item dp 
+@tab Publication date in YYYY/MM/DD format. Month and day are optional.
+@item ti 
+@tab Title
+@item tiab 
+@tab Title or abstract
+@end multitable
+
+Complete documentation of the extensions is provided at 
+@uref{http://www.ncbi.nlm.nih.gov/books/bv.fcgi?rid=helppubmed.section.pubmedhelp.Search_Field_Descrip, Search Field Description and Tags}.
 
 @c ======================================================================================
 
