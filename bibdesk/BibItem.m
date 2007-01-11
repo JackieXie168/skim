@@ -1736,7 +1736,7 @@ Boolean stringContainsLossySubstring(NSString *theString, NSString *stringToFind
                     valueStr = [[NSAttributedString alloc] initWithString:stringValue
                                                                attributes:bodyAttributes];
                 
-			}else if([key isURLField]){
+			}else if([key isURLField] || [key hasPrefix:@"Url"] /* Url1, Url2...UrlN can come from parsers */){
                 // make this a clickable link if possible, showing an abbreviated path for file URLs
                 NSURL *theURL = [self URLForField:key];
 				if(theURL != nil){
@@ -2267,14 +2267,7 @@ Boolean stringContainsLossySubstring(NSString *theString, NSString *stringToFind
 }
 
 - (NSURL *)URLForField:(NSString *)field{
-    if([field isLocalFileField]){
-        return [self localFileURLForField:field];
-    } else if([field isRemoteURLField])
-        return [self remoteURLForField:field];
-    else 
-        [NSException raise:NSInvalidArgumentException format:@"Field \"%@\" is not a valid URL field.", field];
-    // not reached
-    return nil;
+    return ([field isLocalFileField] ? [self localFileURLForField:field] : [self remoteURLForField:field]);
 }
 
 - (NSURL *)remoteURLForField:(NSString *)field{
@@ -2299,10 +2292,7 @@ Boolean stringContainsLossySubstring(NSString *theString, NSString *stringToFind
     } else if([field isEqualToString:BDSKCiteseerUrlString] && [value rangeOfString:@"://"].length == 0){
         // JabRef and CiteSeer use Citeseerurl for CiteSeer links
         // cache this base URL; it's a hidden pref, so you have to quit/relaunch to set it anyway
-        static NSURL *citeSeerBaseURL = nil;
-        if(citeSeerBaseURL == nil)
-            citeSeerBaseURL = [[NSURL alloc] initWithString:[[OFPreferenceWrapper sharedPreferenceWrapper] objectForKey:BDSKCiteseerHostKey]];
-        baseURL = citeSeerBaseURL;
+        baseURL = [NSURL URLWithString:[[OFPreferenceWrapper sharedPreferenceWrapper] objectForKey:BDSKCiteseerHostKey]];
     } else if([value hasPrefix:@"\\url{"] && [value hasSuffix:@"}"]){
         // URLs are often enclosed in a \url tex command in bibtex
         value = [value substringWithRange:NSMakeRange(5, [value length] - 6)];
