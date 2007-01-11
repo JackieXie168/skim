@@ -514,7 +514,7 @@ static NSString *BDSKTemplateRowsPboardType = @"BDSKTemplateRowsPboardType";
 
 #pragma mark ToolTips and Context menu
 
-- (NSString *)tableView:(NSTableView *)tv toolTipForTableColumn:(NSTableColumn *)tableColumn row:(int)row;
+- (NSString *)outlineView:(NSOutlineView *)ov toolTipForCell:(NSCell *)aCell rect:(NSRectPointer)rect tableColumn:(NSTableColumn *)tableColumn row:(int)row mouseLocation:(NSPoint)mouseLocation;
 {
     NSString *tooltip = nil;
     if(row >= 0){

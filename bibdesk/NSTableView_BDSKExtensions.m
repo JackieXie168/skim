@@ -44,10 +44,6 @@
 #import <OmniFoundation/OFPreference.h>
 
 @interface NSTableView (BDSKExtensionsPrivate)
-- (void)rebuildToolTips;
-- (void)replacementSetDataSource:(id)anObject;
-- (void)replacementReloadData;
-- (void)replacementNoteNumberOfRowsChanged;
 - (BOOL)replacementBecomeFirstResponder;
 - (void)replacementDealloc;
 - (void)replacementDraggedImage:(NSImage *)anImage endedAt:(NSPoint)aPoint operation:(NSDragOperation)operation;
@@ -59,9 +55,6 @@
 
 @implementation NSTableView (BDSKExtensions)
 
-static IMP originalSetDataSource;
-static IMP originalReloadData;
-static IMP originalNoteNumberOfRowsChanged;
 static BOOL (*originalBecomeFirstResponder)(id self, SEL _cmd);
 static IMP originalDealloc;
 static IMP originalDraggedImageEndedAtOperation;
@@ -69,9 +62,6 @@ static IMP originalDragImageForRowsWithIndexesTableColumnsEventOffset;
 
 + (void)didLoad;
 {
-    originalSetDataSource = OBReplaceMethodImplementationWithSelector(self, @selector(setDataSource:), @selector(replacementSetDataSource:));
-    originalReloadData = OBReplaceMethodImplementationWithSelector(self, @selector(reloadData), @selector(replacementReloadData));
-    originalNoteNumberOfRowsChanged = OBReplaceMethodImplementationWithSelector(self, @selector(noteNumberOfRowsChanged), @selector(replacementNoteNumberOfRowsChanged));
     originalBecomeFirstResponder = (typeof(originalBecomeFirstResponder))OBReplaceMethodImplementationWithSelector(self, @selector(becomeFirstResponder), @selector(replacementBecomeFirstResponder));
     originalDealloc = OBReplaceMethodImplementationWithSelector(self, @selector(dealloc), @selector(replacementDealloc));
     originalDraggedImageEndedAtOperation = OBReplaceMethodImplementationWithSelector(self, @selector(draggedImage:endedAt:operation:), @selector(replacementDraggedImage:endedAt:operation:));
@@ -286,59 +276,6 @@ static IMP originalDragImageForRowsWithIndexesTableColumnsEventOffset;
 @implementation NSTableView (BDSKExtensionsPrivate)
 
 #pragma mark ToolTips for individual rows and columns
-
-// These are copied and modified from OAXTableView, as it was removed from NSTableView-OAExtensions
-
-- (void)resetCursorRects {
-	[self rebuildToolTips];
-}
-
-- (void)replacementSetDataSource:(id)anObject {
-	originalSetDataSource(self, _cmd, anObject);
-	[self rebuildToolTips];
-}
-
-- (void)replacementReloadData {
-	originalReloadData(self, _cmd);
-	[self rebuildToolTips];
-}
-
-- (void)replacementNoteNumberOfRowsChanged {
-	originalNoteNumberOfRowsChanged(self, _cmd);
-	[self rebuildToolTips];
-}
-
-- (void)rebuildToolTips {
-    NSRange rowRange, columnRange;
-    unsigned int rowIndex, columnIndex;
-	NSTableColumn *tableColumn;
-
-    if (![_dataSource respondsToSelector:@selector(tableView:toolTipForTableColumn:row:)])
-        return;
-
-    [self removeAllToolTips];
-    rowRange = [self rowsInRect:[self visibleRect]];
-    columnRange = [self columnsInRect:[self visibleRect]];
-    for (columnIndex = columnRange.location; columnIndex < NSMaxRange(columnRange); columnIndex++) {
-        tableColumn = [[self tableColumns] objectAtIndex:columnIndex];
-		for (rowIndex = rowRange.location; rowIndex < NSMaxRange(rowRange); rowIndex++) {
-            if ([_dataSource tableView:self toolTipForTableColumn:tableColumn row:rowIndex] != nil)
-                [self addToolTipRect:[self frameOfCellAtColumn:columnIndex row:rowIndex] owner:self userData:NULL];
-        }
-    }
-}
-
-- (NSString *)view:(NSView *)view stringForToolTip:(NSToolTipTag)tag point:(NSPoint)point userData:(void *)data {
-    if ([_dataSource respondsToSelector:@selector(tableView:toolTipForTableColumn:row:)]) {
-		int column = [self columnAtPoint:point];
-		int row = [self rowAtPoint:point];
-        if (column == -1 || row == -1)
-            return nil;
-		NSTableColumn *tableColumn = [[self tableColumns] objectAtIndex:column];
-		return [_dataSource tableView:self toolTipForTableColumn:tableColumn row:row];
-	}
-	return nil;
-}
 
 #pragma mark Font preferences overrides
 

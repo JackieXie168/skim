@@ -440,8 +440,8 @@ static BDSKErrorObjectController *sharedErrorObjectController = nil;
 
 #pragma mark TableView tooltips
 
-- (NSString *)tableView:(NSTableView *)aTableView toolTipForTableColumn:(NSTableColumn *)aTableColumn row:(int)rowIndex{
-	return [[[errorsController arrangedObjects] objectAtIndex:rowIndex] errorMessage];
+- (NSString *)tableView:(NSTableView *)tv toolTipForCell:(NSCell *)aCell rect:(NSRectPointer)rect tableColumn:(NSTableColumn *)aTableColumn row:(int)row mouseLocation:(NSPoint)mouseLocation{
+	return [[[errorsController arrangedObjects] objectAtIndex:row] errorMessage];
 }
 
 @end
