@@ -460,7 +460,6 @@
                     BibItem *pub = nil;
                     NSString *path;
                     NSMutableArray *filePaths = [NSMutableArray arrayWithCapacity:[rowIndexes count]];
-                    [pboard declareTypes:[NSArray arrayWithObjects:NSFilenamesPboardType, nil] owner:nil];
 
                     while(row != NSNotFound){
                         pub = [shownPublications objectAtIndex:row];
@@ -477,8 +476,11 @@
                         }
                         row = [rowIndexes indexGreaterThanIndex:row];
                     }
-
-                    return [pboard setPropertyList:filePaths forType:NSFilenamesPboardType];
+                    
+                    if([filePaths count]){
+                        [pboard declareTypes:[NSArray arrayWithObjects:NSFilenamesPboardType, nil] owner:nil];
+                        return [pboard setPropertyList:filePaths forType:NSFilenamesPboardType];
+                    }
                     
 				}else if([dragColumnId isRemoteURLField]){
 					// cache this so we know which column (field) was dragged
