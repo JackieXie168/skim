@@ -560,7 +560,7 @@
 - (void)drawWithFrame:(NSRect)cellFrame inView:(NSView *)controlView{
     float startWhite = [self isHighlighted] ? 0.95 : 0.9;
     float endWhite = [self isHighlighted] ? 0.9 : 1.0;
-    float alpha = [self isEnabled] ? 1.0 : 0.8;
+    float alpha = [self isEnabled] ? 1.0 : 0.6;
     NSRect rect = cellFrame;
     rect.size.height -= 1.0;
     rect = NSInsetRect(rect, 0.5 * NSHeight(rect), 0.5);
