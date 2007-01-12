@@ -1858,7 +1858,7 @@ originalContentsURL:(NSURL *)absoluteOriginalContentsURL
         if([[fileName pathExtension] isEqualToString:@"bdsksearch"]){
             NSDictionary *dictionary = [NSDictionary dictionaryWithContentsOfFile:fileName];
             Class aClass = NSClassFromString([dictionary objectForKey:@"class"]);
-            BDSKSearchGroup *group = [[aClass alloc] initWithDictionary:dictionary];
+            BDSKSearchGroup *group = [[(aClass ? aClass : [BDSKSearchGroup class]) alloc] initWithDictionary:dictionary];
             if(group)
                 [groups addSearchGroup:group];
             continue;
