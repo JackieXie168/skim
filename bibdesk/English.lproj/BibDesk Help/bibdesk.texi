@@ -1600,14 +1600,26 @@ the menu that appears.
 
 @cindex z39.50
 
-To search a z39.50 database, enter a string of the following kind into
-the search field for z39.50 databases:
+To search a z39.50 database, simply enter one or more terms into the  
+z39.50 search field:
 @example
-foo="SearchForMe"
+morgenthau politics
+@end example
+This will return all records that contain both @samp{morgenthau} and  
+@samp{politics}. These search terms can appear in any field, 
+and all the words are matched (each token is implicitly AND-ed.) 
+
+To search for a phrase, put it in quotes:
+@example
+morgenthau "politics among"
+@end example
+To search in a particular field (see below for valid fields), enter a  
+string of the following kind into the z39.50 search field:
+@example
+foo=SearchForMe
 @end example
 where @samp{foo} is an index specifying the fields of database records to
 be searched, and @samp{SearchForMe} is the text string of interest. 
-If the index is left out, all fields will be searched for the text.  
 
 For example, a search for works written by Sewall Wright can be
 conducted as follows:
