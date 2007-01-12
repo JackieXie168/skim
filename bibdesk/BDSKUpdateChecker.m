@@ -175,12 +175,6 @@
     OFVersionNumber *localVersion = [self localVersionNumber];
     OFVersionNumber *notifiedVersion = [self latestNotifiedVersionNumber];
     
-    // @@ special check for the 1.3 release from the 1.3.0 nightlies, remove this for the release!
-    if ([[localVersion cleanVersionString] isEqualToString:@"1.3.0"] && [[remoteVersion cleanVersionString] isEqualToString:@"1.3"]){
-        [[OFPreferenceWrapper sharedPreferenceWrapper] setObject:[remoteVersion cleanVersionString] forKey:BDSKUpdateLatestNotifiedVersionKey];
-        [self displayUpdateAvailableWindow:[remoteVersion cleanVersionString] alternativeVersion:nil];
-    }
-    
     // simplification if we already have the latest major
     if(remoteVersionForCurrentMajor && [remoteVersionForCurrentMajor compareToVersionNumber:remoteVersion] != NSOrderedAscending){
         remoteVersion = nil;
@@ -484,12 +478,6 @@
     OFVersionNumber *remoteVersionForCurrentMajor = [self latestReleasedVersionNumberForCurrentMajor];
     OFVersionNumber *localVersion = [self localVersionNumber];
     OFVersionNumber *notifiedVersion = [self latestNotifiedVersionNumber];
-    
-    // @@ special check for the 1.3 release from the 1.3.0 nightlies, remove this for the release!
-    if ([[localVersion cleanVersionString] isEqualToString:@"1.3.0"] && [[remoteVersion cleanVersionString] isEqualToString:@"1.3"]){
-        [[OFPreferenceWrapper sharedPreferenceWrapper] setObject:[remoteVersion cleanVersionString] forKey:BDSKUpdateLatestNotifiedVersionKey];
-        [[OFMessageQueue mainQueue] queueSelector:@selector(displayUpdateAvailableWindow:alternativeVersion:) forObject:self withObject:[remoteVersion cleanVersionString] withObject:nil];
-    }
     
     // simplification if we're already have the latest major
     if(remoteVersionForCurrentMajor && [remoteVersionForCurrentMajor compareToVersionNumber:remoteVersion] != NSOrderedAscending){
