@@ -1146,21 +1146,15 @@ static void createTemporaryDirectory()
 
 }
 
-// this gets called when text is dropped on the dock icon
 - (void)newDocumentFromSelection:(NSPasteboard *)pboard userData:(NSString *)userData error:(NSString **)error{	
 
-    BibDocument *doc = [[[BibDocument alloc] init] autorelease];
+    id doc = [[NSDocumentController sharedDocumentController] openUntitledDocumentAndDisplay:YES error:NULL];
     NSError *nsError = nil;
     
-    if([doc addPublicationsFromPasteboard:pboard selectLibrary:YES error:&nsError]){
-        [[NSDocumentController sharedDocumentController] setShouldCreateUI:YES];
-        [[NSDocumentController sharedDocumentController] addDocument:doc];
-        [doc makeWindowControllers];
-        [doc showWindows];
-    } else {
+    if([doc addPublicationsFromPasteboard:pboard selectLibrary:YES error:&nsError] == NO){
         if(error)
-            *error = nsError == nil ? NSLocalizedString(@"Unable to interpret text as bibliography data.", @"Error description") : [nsError localizedDescription];
-        [[NSDocumentController sharedDocumentController] presentError:nsError];
+            *error = [nsError localizedDescription];
+        [doc presentError:nsError];
     }
 }
 
