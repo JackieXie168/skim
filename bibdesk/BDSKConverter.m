@@ -265,7 +265,7 @@ static BOOL convertComposedCharacterToTeX(NSMutableString *charString, NSCharact
 - (NSString *)copyStringByDeTeXifyingString:(NSString *)s{
 
     if([NSString isEmptyString:s]){
-        return [@"" retain];
+        return [s retain];
     }
     
 	// deTeXify only string nodes of complex strings;
@@ -323,6 +323,10 @@ static BOOL convertComposedCharacterToTeX(NSMutableString *charString, NSCharact
                 // this is inside the if() since if there were no closing braces, there's no point in repeating the search
                 length = [convertedSoFar length];
                 range = [convertedSoFar rangeOfString:@"{\\" options:0 range:NSMakeRange(replaceRange.location + 1, length - replaceRange.location - 1)];
+            } else {
+                NSLog(@"missing brace in string %@", convertedSoFar);
+                [convertedSoFar release];
+                return nil;
             }
             
         }
