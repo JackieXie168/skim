@@ -39,7 +39,7 @@
 #import <Cocoa/Cocoa.h>
 #import "BDSKCondition.h"
 
-@class BDSKFilterController;
+@class BDSKFilterController, BDSKRatingButton;
 
 
 @interface BDSKConditionController : NSWindowController {
@@ -53,6 +53,9 @@
     IBOutlet NSTextField *toDateTextField;
     IBOutlet NSTextField *agoText;
     IBOutlet NSPopUpButton *periodPopUp;
+    IBOutlet NSButton *booleanButton;
+    IBOutlet NSButton *triStateButton;
+    IBOutlet BDSKRatingButton *ratingButton;
     IBOutlet NSBox *comparisonBox;
     IBOutlet NSBox *valueBox;
 	IBOutlet NSView *view;
@@ -69,6 +72,7 @@
 - (NSView *)view;
 - (IBAction)addNewCondition:(id)sender;
 - (IBAction)removeThisCondition:(id)sender;
+- (IBAction)changeRating:(id)sender;
 - (BDSKCondition *)condition;
 - (BOOL)canRemove;
 - (void)setCanRemove:(BOOL)flag;

@@ -70,6 +70,14 @@ typedef enum {
     BDSKInDateRange
 } BDSKDateComparison;
 
+enum {
+    BDSKDateField,
+    BDSKBooleanField,
+    BDSKTriStateField,
+    BDSKRatingField,
+    BDSKStringField
+};
+
 @interface BDSKCondition : NSObject <NSCopying, NSCoding> {
 	NSString *key;
 	BDSKStringComparison stringComparison;
@@ -125,4 +133,9 @@ typedef enum {
 
 - (BOOL)isDateCondition;
 
+@end
+
+
+@interface NSString (BDSKConditionExtensions)
+- (int)fieldType;
 @end

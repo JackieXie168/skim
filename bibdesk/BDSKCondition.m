@@ -41,6 +41,7 @@
 #import "NSString_BDSKExtensions.h"
 #import "NSDate_BDSKExtensions.h"
 #import <OmniBase/assertions.h>
+#import "BibTypeManager.h"
 
 @interface BDSKCondition (Private)
 - (NSDate *)cachedEndDate;
@@ -415,7 +416,7 @@
 #pragma mark Other 
 
 - (BOOL)isDateCondition {
-    return ([key isEqualToString:BDSKDateAddedString] || [key isEqualToString:BDSKDateModifiedString]);
+    return [key fieldType] == BDSKDateField;
 }
 
 - (void)setDefaultValue {
@@ -427,6 +428,12 @@
         [self setPeriodValue:BDSKPeriodDay];
         [self setDateValue:today];
         [self setToDateValue:today];
+    } else if ([key isBooleanField]) {
+        [self setStringValue:[NSString stringWithBool:NO]];
+    } else if ([key isTriStateField]) {
+        [self setStringValue:[NSString stringWithTriStateValue:NSOffState]];
+    } else if ([key isRatingField]) {
+        [self setStringValue:@"0"];
     } else {
         [self setStringValue:@""];
     }
@@ -574,15 +581,15 @@
     if ([keyPath isEqualToString:@"key"]) {
         NSString *oldKey = [change objectForKey:NSKeyValueChangeOldKey];
         NSString *newKey = [change objectForKey:NSKeyValueChangeNewKey];
-        BOOL wasDate = ([oldKey isEqualToString:BDSKDateModifiedString] || [oldKey isEqualToString:BDSKDateAddedString]);
-        BOOL isDate = ([newKey isEqualToString:BDSKDateModifiedString] || [newKey isEqualToString:BDSKDateAddedString]);
-        if(wasDate != isDate){
-            if ([self isDateCondition]) {
+        int oldFieldType = [oldKey fieldType];
+        int newFieldType = [newKey fieldType];
+        if(oldFieldType != newFieldType){
+            if (newFieldType == BDSKDateField) {
                 [self setDateComparison:BDSKToday];
                 [self setDefaultValue];
             } else {
                 [self updateCachedDates]; // remove the cached date and stop the timer
-                [self setStringComparison:BDSKContain];
+                [self setStringComparison:newFieldType == BDSKStringField ? BDSKContain : BDSKEqual];
                 [self setDefaultValue];
             }
         }
@@ -591,6 +598,24 @@
             [self updateCachedDates];
         }
     }
+}
+
+@end
+
+
+@implementation NSString (BDSKConditionExtensions)
+
+- (int)fieldType {
+    if ([self isEqualToString:BDSKDateAddedString] || [self isEqualToString:BDSKDateModifiedString])
+        return BDSKDateField;
+    else if ([self isBooleanField])
+        return BDSKBooleanField;
+    else if ([self isTriStateField])
+        return BDSKTriStateField;
+    else if ([self isRatingField])
+        return BDSKRatingField;
+    else
+        return BDSKStringField;
 }
 
 @end
