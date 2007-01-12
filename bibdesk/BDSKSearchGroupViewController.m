@@ -102,6 +102,10 @@
     [group search];
 }
 
+- (IBAction)searchHelp:(id)sender{
+	[[NSHelpManager sharedHelpManager] openHelpAnchor:@"Searching-External-Databases" inBook:@"BibDesk Help"];
+}
+
 - (BOOL)control:(NSControl *)control didFailToFormatString:(NSString *)aString errorDescription:(NSString *)error {
     NSAlert *alert = [NSAlert alertWithMessageText:NSLocalizedString(@"Invalid search string syntax", @"") defaultButton:nil alternateButton:nil otherButton:nil informativeTextWithFormat:error];
     [alert beginSheetModalForWindow:[view window] modalDelegate:nil didEndSelector:nil contextInfo:NULL];
