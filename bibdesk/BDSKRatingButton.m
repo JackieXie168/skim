@@ -115,6 +115,7 @@
 		// Handle number keys to set the rating
 		if (character >= '0' && character <= '9') {
 			[self setRating:(int)(character - '0')];
+            [self sendAction:[self action] to:[self target]];
 			return;
 		}   
 	}
