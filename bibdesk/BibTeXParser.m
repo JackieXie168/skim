@@ -243,6 +243,7 @@ static NSString *copyStringFromNoteField(AST *field, const char *data, NSString 
                                 
                                 [errorObject report];
                                 [errorObject release];    
+                                OFErrorWithInfo(&error, BDSKParserError, NSLocalizedDescriptionKey, NSLocalizedString(@"Syntax error while parsing BibTeX file", @"Error description"), nil);
                                 break;
                             }
                             [tmpStr release];
