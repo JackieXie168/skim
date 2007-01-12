@@ -1855,34 +1855,40 @@ originalContentsURL:(NSURL *)absoluteOriginalContentsURL
         type = BDSKUnknownStringType;
         
         // we /can/ create a string from these (usually), but there's no point in wasting the memory
-        if([[fileName pathExtension] isEqualToString:@"bdsksearch"]){
+        
+        NSString *theUTI = [[NSWorkspace sharedWorkspace] UTIForURL:[NSURL fileURLWithPath:fileName]];
+        if([theUTI isEqualToUTI:@"net.sourceforge.bibdesk.bdsksearch"]){
             NSDictionary *dictionary = [NSDictionary dictionaryWithContentsOfFile:fileName];
             Class aClass = NSClassFromString([dictionary objectForKey:@"class"]);
-            BDSKSearchGroup *group = [[(aClass ? aClass : [BDSKSearchGroup class]) alloc] initWithDictionary:dictionary];
+            BDSKSearchGroup *group = [[[(aClass ? aClass : [BDSKSearchGroup class]) alloc] initWithDictionary:dictionary] autorelease];
             if(group)
                 [groups addSearchGroup:group];
-            continue;
         }else if([unreadableTypes containsObject:[fileName pathExtension]]){
             [unparseableFiles addObject:fileName];
-            continue;
-        }
+        }else {
         
-        contentString = [[NSString alloc] initWithContentsOfFile:fileName encoding:[self documentStringEncoding] guessEncoding:YES];
+            // try to create a string
+            contentString = [[NSString alloc] initWithContentsOfFile:fileName encoding:[self documentStringEncoding] guessEncoding:YES];
+            
+            if(contentString != nil){
+                type = [contentString contentStringType];
         
-        if(contentString != nil){
-            type = [contentString contentStringType];
-    
-            if(type >= 0){
-                NSError *parseError = nil;
-                [array addObjectsFromArray:[self newPublicationsForString:contentString type:type error:&parseError]];
-                if(parseError && outError) *outError = parseError;
-            } else {
+                if(type >= 0){
+                    NSError *parseError = nil;
+                    [array addObjectsFromArray:[self newPublicationsForString:contentString type:type error:&parseError]];
+                    if(parseError && outError) *outError = parseError;
+                } else {
+                    [unparseableFiles addObject:fileName];
+                }
+                
                 [contentString release];
                 contentString = nil;
+                
+            } else {
+                // unable to create the string
+                [unparseableFiles addObject:fileName];
             }
         }
-        if(contentString == nil || type == BDSKUnknownStringType)
-            [unparseableFiles addObject:fileName];
     }
 
     return array;
