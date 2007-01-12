@@ -196,8 +196,6 @@ The groupedPublications array is a subset of the publications array, developed b
     NSString *newSortKey = nil;
     
     if ([self hasExternalGroupsSelected]) {
-        [tableView setAlternatingRowBackgroundColors:[NSColor alternateControlAlternatingRowBackgroundColors]];
-        [tableView insertTableColumnWithIdentifier:BDSKImportOrderString atIndex:0];
         if ([self hasSearchGroupsSelected]) {
             if ([sortKey isEqualToString:BDSKImportOrderString] == NO) {
                 newSortKey = BDSKImportOrderString;
@@ -207,6 +205,8 @@ The groupedPublications array is a subset of the publications array, developed b
         } else {
             [self hideSearchGroupView];
         }
+        [tableView setAlternatingRowBackgroundColors:[NSColor alternateControlAlternatingRowBackgroundColors]];
+        [tableView insertTableColumnWithIdentifier:BDSKImportOrderString atIndex:0];
     } else {
         [tableView setAlternatingRowBackgroundColors:[NSColor controlAlternatingRowBackgroundColors]];
         [tableView removeTableColumnWithIdentifier:BDSKImportOrderString];
