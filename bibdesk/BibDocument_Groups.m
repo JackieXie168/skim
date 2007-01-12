@@ -1206,7 +1206,7 @@ The groupedPublications array is a subset of the publications array, developed b
         OBASSERT([pub isKindOfClass:[BibItem class]]);        
         
         if(field)
-            oldValue = [pub valueOfField:field];
+            oldValue = [[[pub valueOfField:field] retain] autorelease];
 		rv = [pub addToGroup:group handleInherited:handleInherited];
 		
 		if(rv == BDSKOperationSet || rv == BDSKOperationAppend){
@@ -1288,7 +1288,7 @@ The groupedPublications array is a subset of the publications array, developed b
 			OBASSERT([pub isKindOfClass:[BibItem class]]);        
 			
             if(field)
-                oldValue = [pub valueOfField:field];
+                oldValue = [[[pub valueOfField:field] retain] autorelease];
 			rv = [pub removeFromGroup:group handleInherited:handleInherited];
 			
 			if(rv == BDSKOperationSet || rv == BDSKOperationAppend){
@@ -1356,7 +1356,7 @@ The groupedPublications array is a subset of the publications array, developed b
 		OBASSERT([pub isKindOfClass:[BibItem class]]);        
 		
         if(field)
-            oldValue = [pub valueOfField:field];
+            oldValue = [[[pub valueOfField:field] retain] autorelease];
 		rv = [pub replaceGroup:group withGroupNamed:newGroupName handleInherited:handleInherited];
 		
 		if(rv == BDSKOperationSet || rv == BDSKOperationAppend){
@@ -1366,7 +1366,7 @@ The groupedPublications array is a subset of the publications array, developed b
                 [oldValues addObject:oldValue ? oldValue : @""];
                 [newValues addObject:[pub valueOfField:field]];
             }
-		}else if(rv == BDSKOperationAsk){
+        }else if(rv == BDSKOperationAsk){
 			BDSKAlert *alert = [BDSKAlert alertWithMessageText:NSLocalizedString(@"Inherited Value", @"Message in alert dialog when trying to edit inherited value")
 												 defaultButton:NSLocalizedString(@"Don't Change", @"Button title")
 											   alternateButton:nil
@@ -1383,7 +1383,7 @@ The groupedPublications array is a subset of the publications array, developed b
                     [newValues addObject:[pub valueOfField:field]];
                 }
 			}
-		}
+        }
 	}
 	
 	if(count > 0){

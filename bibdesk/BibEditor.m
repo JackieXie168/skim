@@ -1741,7 +1741,7 @@ static int numberOfOpenEditors = 0;
 	} else if (control == citeKeyField) {
 
         NSString *newKey = [control stringValue];
-        NSString *oldKey = [publication citeKey];
+        NSString *oldKey = [[[publication citeKey] retain] autorelease];
         
         if(isEditable && [newKey isEqualToString:oldKey] == NO){
             [publication setCiteKey:newKey];
@@ -2445,7 +2445,7 @@ static NSString *queryStringWithCiteKey(NSString *citekey)
             [fileURL isEqual:[publication URLForField:field]])
 			return NO;
         
-        NSString *oldValue = [publication valueOfField:field];
+        NSString *oldValue = [[[publication valueOfField:field] retain] autorelease];
         NSString *newValue = [fileURL absoluteString];
         BOOL didFile = NO;
         
@@ -2464,7 +2464,7 @@ static NSString *queryStringWithCiteKey(NSString *citekey)
 		if ([dragType isEqualToString:BDSKWeblocFilePboardType]) {
 			
 			NSString *remoteURLString = [pboard stringForType:BDSKWeblocFilePboardType];
-            NSString *oldValue = [publication valueOfField:field];
+            NSString *oldValue = [[[publication valueOfField:field] retain] autorelease];
 			
 			if (remoteURLString == nil ||
 				[[NSURL URLWithString:remoteURLString] isEqual:[publication remoteURLForField:field]])
@@ -2485,7 +2485,7 @@ static NSString *queryStringWithCiteKey(NSString *citekey)
 				[remoteURL isEqual:[publication remoteURLForField:field]])
 				return NO;
 			
-            NSString *oldValue = [publication valueOfField:field];
+            NSString *oldValue = [[[publication valueOfField:field] retain] autorelease];
             NSString *newValue = [remoteURL absoluteString];
 			
 			[publication setField:field toValue:newValue];
@@ -2504,7 +2504,7 @@ static NSString *queryStringWithCiteKey(NSString *citekey)
             NSData *pbData = [pboard dataForType:BDSKBibItemPboardType];
             NSArray *draggedPubs = [[self document] newPublicationsFromArchivedData:pbData];
             NSString *citeKeys = [[draggedPubs valueForKey:@"citeKey"] componentsJoinedByString:@","];
-            NSString *oldValue = [publication valueOfField:field inherit:NO];
+            NSString *oldValue = [[[publication valueOfField:field inherit:NO] retain] autorelease];
             NSString *newValue;
             
             if ([draggedPubs count]) {
@@ -2555,7 +2555,7 @@ static NSString *queryStringWithCiteKey(NSString *citekey)
                 return NO;
             }
             
-            oldValue = [publication valueOfField:BDSKCrossrefString];
+            oldValue = [[[publication valueOfField:BDSKCrossrefString] retain] autorelease];
             
             [publication setField:BDSKCrossrefString toValue:crossref];
             
@@ -2667,7 +2667,7 @@ static NSString *queryStringWithCiteKey(NSString *citekey)
 		// linking, try to set the crossref field
         NSString *crossref = [tempBI citeKey];
 		NSString *message = nil;
-        NSString *oldValue = [publication valueOfField:BDSKCrossrefString];
+        NSString *oldValue = [[[publication valueOfField:BDSKCrossrefString] retain] autorelease];
 		
 		// first check if we don't create a Crossref chain
         int errorCode = [publication canSetCrossref:crossref andCiteKey:[publication citeKey]];
@@ -2713,7 +2713,7 @@ static NSString *queryStringWithCiteKey(NSString *citekey)
             if([newValue isEqualToString:@""])
                 continue;
             
-            oldValue = [publication valueOfField:key inherit:NO]; // value is the value of key in the dragged-onto window.
+            oldValue = [[[publication valueOfField:key inherit:NO] retain] autorelease]; // value is the value of key in the dragged-onto window.
             
             // only set the field if we force or the value was empty
             if(shouldOverwrite || [NSString isEmptyString:oldValue]){
@@ -2730,7 +2730,7 @@ static NSString *queryStringWithCiteKey(NSString *citekey)
         if((shouldOverwrite || [publication hasEmptyOrDefaultCiteKey]) && 
            [tempBI hasEmptyOrDefaultCiteKey] == NO && hasTemporaryCiteKey == NO && 
            [publication canSetCrossref:[publication valueOfField:BDSKCrossrefString inherit:NO] andCiteKey:[tempBI citeKey]] == BDSKNoCrossrefError) {
-            oldValue = [publication citeKey];
+            oldValue = [[[publication citeKey] retain] autorelease];
             newValue = [tempBI citeKey];
             [publication setCiteKey:newValue];
             autoGenerateStatus = [self userChangedField:BDSKCiteKeyString from:oldValue to:newValue didAutoGenerate:autoGenerateStatus];
