@@ -231,6 +231,20 @@ static NSString *copyStringFromNoteField(AST *field, const char *data, NSString 
                                 @throw BibTeXParserInternalException;
                             }
                             complexString = [tmpStr copyDeTeXifiedString];
+                            // this returns nil in case of a syntax error; it isn't an encoding failure, so don't throw
+                            if (nil == complexString) {
+                                NSString *type = NSLocalizedString(@"error", @"");
+                                NSString *message = [NSString stringWithFormat:NSLocalizedString(@"Unable to convert TeX string \"%@\"", @"Error description"), tmpStr];
+                                BDSKErrorObject *errorObject = [[BDSKErrorObject alloc] init];
+                                [errorObject setFileName:filePath];
+                                [errorObject setLineNumber:field->line];
+                                [errorObject setErrorClassName:type];
+                                [errorObject setErrorMessage:message];
+                                
+                                [errorObject report];
+                                [errorObject release];    
+                                break;
+                            }
                             [tmpStr release];
                         }else{
                             complexString = copyStringFromBTField(field, filePath, macroResolver, parserEncoding);
@@ -696,12 +710,13 @@ static NSString *copyStringFromBTField(AST *field, NSString *filePath, BDSKMacro
                     break;
                 case BTAST_STRING:
                     s = copyCheckedString(simple_value->text, field->line, filePath, parserEncoding);
-                    if (!s) {
+                    NSString *translatedString = [s copyDeTeXifiedString];
+                
+                    if (nil == s || nil == translatedString) {
                         [nodes release];
                         return nil;
                     }
                         
-                    NSString *translatedString = [s copyDeTeXifiedString];
                     sNode = [[BDSKStringNode alloc] initWithQuotedString:translatedString];
                     [translatedString release];
 
