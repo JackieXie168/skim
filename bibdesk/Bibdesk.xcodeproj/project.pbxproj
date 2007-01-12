@@ -363,6 +363,8 @@
 		CED65DC90907A2FD003EED90 /* BibDeskParseFormatCommand.m in Sources */ = {isa = PBXBuildFile; fileRef = CED65DC70907A2FD003EED90 /* BibDeskParseFormatCommand.m */; };
 		CED65DCC0907A338003EED90 /* BDSKScriptHook+Scripting.h in Headers */ = {isa = PBXBuildFile; fileRef = CED65DCA0907A338003EED90 /* BDSKScriptHook+Scripting.h */; };
 		CED65DCD0907A338003EED90 /* BDSKScriptHook+Scripting.m in Sources */ = {isa = PBXBuildFile; fileRef = CED65DCB0907A338003EED90 /* BDSKScriptHook+Scripting.m */; };
+		CEEA4C6A0B57B0D400434059 /* BDSKBooleanValueTransformer.m in Sources */ = {isa = PBXBuildFile; fileRef = CEEA4C680B57B0D400434059 /* BDSKBooleanValueTransformer.m */; };
+		CEEA4C6B0B57B0D400434059 /* BDSKBooleanValueTransformer.h in Headers */ = {isa = PBXBuildFile; fileRef = CEEA4C690B57B0D400434059 /* BDSKBooleanValueTransformer.h */; };
 		CEEC6C54093A411E00A64F54 /* BDSKCollapsibleView.h in Headers */ = {isa = PBXBuildFile; fileRef = CEEC6C52093A411D00A64F54 /* BDSKCollapsibleView.h */; };
 		CEEC6C55093A411E00A64F54 /* BDSKCollapsibleView.m in Sources */ = {isa = PBXBuildFile; fileRef = CEEC6C53093A411E00A64F54 /* BDSKCollapsibleView.m */; };
 		CEEC70E1093B6EC200A64F54 /* BDSKDragImageView.h in Headers */ = {isa = PBXBuildFile; fileRef = CEEC70DF093B6EC200A64F54 /* BDSKDragImageView.h */; };
@@ -1252,6 +1254,8 @@
 		CED65DC70907A2FD003EED90 /* BibDeskParseFormatCommand.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = BibDeskParseFormatCommand.m; sourceTree = "<group>"; };
 		CED65DCA0907A338003EED90 /* BDSKScriptHook+Scripting.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = "BDSKScriptHook+Scripting.h"; path = "Scripting/BDSKScriptHook+Scripting.h"; sourceTree = "<group>"; };
 		CED65DCB0907A338003EED90 /* BDSKScriptHook+Scripting.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = "BDSKScriptHook+Scripting.m"; sourceTree = "<group>"; };
+		CEEA4C680B57B0D400434059 /* BDSKBooleanValueTransformer.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = BDSKBooleanValueTransformer.m; sourceTree = "<group>"; };
+		CEEA4C690B57B0D400434059 /* BDSKBooleanValueTransformer.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = BDSKBooleanValueTransformer.h; sourceTree = "<group>"; };
 		CEEC6C52093A411D00A64F54 /* BDSKCollapsibleView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BDSKCollapsibleView.h; sourceTree = "<group>"; };
 		CEEC6C53093A411E00A64F54 /* BDSKCollapsibleView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BDSKCollapsibleView.m; sourceTree = "<group>"; };
 		CEEC70DF093B6EC200A64F54 /* BDSKDragImageView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BDSKDragImageView.h; sourceTree = "<group>"; };
@@ -2075,6 +2079,7 @@
 		CE38FA88091D258000BCB69D /* Data Handling */ = {
 			isa = PBXGroup;
 			children = (
+				CEEA4C680B57B0D400434059 /* BDSKBooleanValueTransformer.m */,
 				CEAB9F580B4FF20800673AC2 /* BDSKCitationFormatter.m */,
 				F9022C390758027800C3F701 /* BDSKCiteKeyFormatter.m */,
 				F9022C490758027800C3F701 /* BDSKComplexStringFormatter.m */,
@@ -2289,6 +2294,7 @@
 				CEFA07F20AF0E52100A3B4B1 /* BDSKApplication.h */,
 				F946DCE609FDC4B600D471DF /* BDSKAsynchronousDOServer.h */,
 				3D824AA607D099C300FB2F67 /* BDSKBackgroundView.h */,
+				CEEA4C690B57B0D400434059 /* BDSKBooleanValueTransformer.h */,
 				2730077607CF20B500F2E485 /* BDSKBorderlessKeyWindow.h */,
 				CEFDBDDB0AEA87F8009EE99D /* BDSKCategoryGroup.h */,
 				3D866C2608031CEC00FF1724 /* BDSKCharacterConversion.h */,
@@ -2845,6 +2851,7 @@
 				CEBC70220B4ABDF500CE0B2D /* BDSKOAIGroupServer.h in Headers */,
 				CEAB9F590B4FF20800673AC2 /* BDSKCitationFormatter.h in Headers */,
 				F940D1090B5568E400B5917A /* BDSKReferParser.h in Headers */,
+				CEEA4C6B0B57B0D400434059 /* BDSKBooleanValueTransformer.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -3669,6 +3676,7 @@
 				CEBC70230B4ABDF500CE0B2D /* BDSKOAIGroupServer.m in Sources */,
 				CEAB9F5A0B4FF20800673AC2 /* BDSKCitationFormatter.m in Sources */,
 				F940D10A0B5568E400B5917A /* BDSKReferParser.m in Sources */,
+				CEEA4C6A0B57B0D400434059 /* BDSKBooleanValueTransformer.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

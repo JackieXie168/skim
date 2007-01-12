@@ -40,9 +40,17 @@
 #import "BDSKFilterController.h"
 #import "BibItem.h"
 #import "BDSKFieldNameFormatter.h"
+#import "BDSKBooleanValueTransformer.h"
+#import "BDSKRatingButton.h"
 #import <OmniBase/assertions.h>
 
 @implementation BDSKConditionController
+
++ (void)initialize
+{
+    [NSValueTransformer setValueTransformer:[[[BDSKBooleanValueTransformer alloc] init] autorelease] forName:@"BDSKBooleanValueTransformer"];
+    [NSValueTransformer setValueTransformer:[[[BDSKTriStateValueTransformer alloc] init] autorelease] forName:@"BDSKTriStateValueTransformer"];
+}
 
 - (id)initWithFilterController:(BDSKFilterController *)aFilterController
 {
@@ -94,6 +102,9 @@
     [[agoText superview] release];
     [[dateTextField superview] release];
     [[toDateTextField superview] release];
+    [[booleanButton superview] release];
+    [[triStateButton superview] release];
+    [[ratingButton superview] release];
     [super dealloc];
 }
 
@@ -113,6 +124,11 @@
     [[agoText superview] retain];
     [[dateTextField superview] retain];
     [[toDateTextField superview] retain];
+    [[booleanButton superview] retain];
+    [[triStateButton superview] retain];
+    [[ratingButton superview] retain];
+    
+    [ratingButton setRating:[[condition stringValue] unsignedIntValue]];
     
     // @@ can we safely upgrade to NSDateFormatterShortStyle and drop natural language?
     NSDateFormatter *formatter = [[[NSDateFormatter alloc] initWithDateFormat:[[NSUserDefaults standardUserDefaults] objectForKey:NSShortDateFormatString] allowNaturalLanguage:YES] autorelease];
@@ -124,7 +140,7 @@
     
     [self layoutComparisonControls];
     [self layoutValueControls];
-	
+    
     [condition addObserver:self forKeyPath:@"key" options:NSKeyValueObservingOptionNew | NSKeyValueObservingOptionOld  context:NULL];
     [condition addObserver:self forKeyPath:@"dateComparison" options: NSKeyValueObservingOptionOld  context:NULL];
     [condition addObserver:self forKeyPath:@"stringComparison" options:NSKeyValueObservingOptionOld  context:NULL];
@@ -152,6 +168,11 @@
 	[filterController removeConditionController:self];
 }
 
+// we could implement binding in BDSKRatingButton, but that's a lot of hassle and exposes us to the binding-to-owner bug
+- (IBAction)changeRating:(id)sender {
+    [condition setStringValue:[NSString stringWithFormat:@"%i", [sender rating]]];
+}
+
 - (BDSKCondition *)condition {
     return [[condition retain] autorelease];
 }
@@ -177,31 +198,42 @@
 
 - (void)layoutValueControls {
     NSArray *controls = nil;
-    if ([condition isDateCondition]) {
-        switch ([condition dateComparison]) {
-            case BDSKExactly: 
-                controls = [NSArray arrayWithObjects:numberTextField, periodPopUp, agoText, nil];
-                break;
-            case BDSKInLast: 
-            case BDSKNotInLast: 
-                controls = [NSArray arrayWithObjects:numberTextField, periodPopUp, nil];
-                break;
-            case BDSKBetween: 
-                controls = [NSArray arrayWithObjects:numberTextField, andNumberTextField, periodPopUp, agoText, nil];
-                break;
-            case BDSKDate: 
-            case BDSKAfterDate: 
-            case BDSKBeforeDate: 
-                controls = [NSArray arrayWithObjects:dateTextField, nil];
-                break;
-            case BDSKInDateRange:
-                controls = [NSArray arrayWithObjects:dateTextField, toDateTextField, nil];
-                break;
-            default:
-                break;
-        }
-    } else {
-        controls = [NSArray arrayWithObjects:valueTextField, nil];
+    switch ([[condition key] fieldType]) {
+        case BDSKDateField:
+            switch ([condition dateComparison]) {
+                case BDSKExactly: 
+                    controls = [NSArray arrayWithObjects:numberTextField, periodPopUp, agoText, nil];
+                    break;
+                case BDSKInLast: 
+                case BDSKNotInLast: 
+                    controls = [NSArray arrayWithObjects:numberTextField, periodPopUp, nil];
+                    break;
+                case BDSKBetween: 
+                    controls = [NSArray arrayWithObjects:numberTextField, andNumberTextField, periodPopUp, agoText, nil];
+                    break;
+                case BDSKDate: 
+                case BDSKAfterDate: 
+                case BDSKBeforeDate: 
+                    controls = [NSArray arrayWithObjects:dateTextField, nil];
+                    break;
+                case BDSKInDateRange:
+                    controls = [NSArray arrayWithObjects:dateTextField, toDateTextField, nil];
+                    break;
+                default:
+                    break;
+            }
+        break;
+        case BDSKBooleanField:
+            controls = [NSArray arrayWithObjects:booleanButton, nil];
+        break;
+        case BDSKTriStateField:
+            controls = [NSArray arrayWithObjects:triStateButton, nil];
+        break;
+        case BDSKRatingField:
+            controls = [NSArray arrayWithObjects:ratingButton, nil];
+        break;
+        default:
+            controls = [NSArray arrayWithObjects:valueTextField, nil];
     }
     
     NSRect rect = NSZeroRect;
@@ -250,10 +282,12 @@
             oldValue = nil;
         if ([keyPath isEqualToString:@"key"]){
             NSString *newValue = [change objectForKey:NSKeyValueChangeNewKey];
-            BOOL wasDate = ([oldValue isEqualToString:BDSKDateModifiedString] || [oldValue isEqualToString:BDSKDateAddedString]);
-            BOOL isDate = ([newValue isEqualToString:BDSKDateModifiedString] || [newValue isEqualToString:BDSKDateAddedString]);
-            if(wasDate != isDate){
+            int oldFieldType = [oldValue fieldType];
+            int newFieldType = [newValue fieldType];
+            if((oldFieldType == BDSKDateField) != (newFieldType == BDSKDateField)){
                 [self layoutComparisonControls];
+            }else if(oldFieldType != newFieldType){
+                [self layoutValueControls];
             }
             [[undoManager prepareWithInvocationTarget:condition] setKey:oldValue];
         } else if ([keyPath isEqualToString:@"dateComparison"]) {
@@ -263,6 +297,7 @@
             [[undoManager prepareWithInvocationTarget:condition] setStringComparison:[oldValue intValue]];
         } else if ([keyPath isEqualToString:@"stringValue"]) {
             [[undoManager prepareWithInvocationTarget:condition] setStringValue:oldValue];
+            [ratingButton setRating:[[condition stringValue] unsignedIntValue]];
         } else if ([keyPath isEqualToString:@"numberValue"]) {
             [[undoManager prepareWithInvocationTarget:condition] setNumberValue:[oldValue intValue]];
         } else if ([keyPath isEqualToString:@"andNumberValue"]) {
