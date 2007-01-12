@@ -14,7 +14,7 @@
         {CLASS = BDSKEdgeView; LANGUAGE = ObjC; SUPERCLASS = BDSKContainerView; }, 
         {CLASS = BDSKGradientView; LANGUAGE = ObjC; SUPERCLASS = NSView; }, 
         {
-            ACTIONS = {changeSearchTerm = id; nextSearch = id; }; 
+            ACTIONS = {changeSearchTerm = id; nextSearch = id; searchHelp = id; }; 
             CLASS = BDSKSearchGroupViewController; 
             LANGUAGE = ObjC; 
             OUTLETS = {

@@ -56,6 +56,8 @@
 
 - (IBAction)changeSearchTerm:(id)sender;
 - (IBAction)nextSearch:(id)sender;
+- (IBAction)searchHelp:(id)sender;
+
 - (void)handleSearchGroupUpdatedNotification:(NSNotification *)notification;
 
 @end
