@@ -198,8 +198,8 @@
                     rating = newRating;
                     [controlView setNeedsDisplayInRect:buttonRect];
                 }
-                if (keepOn == NO && [self target] && [self action])
-                    [[self target] performSelector:[self action] withObject:controlView];
+                if (keepOn == NO)
+                    [(NSControl *)controlView sendAction:[self action] to:[self target]];
                 break;
             default:
                 break;
