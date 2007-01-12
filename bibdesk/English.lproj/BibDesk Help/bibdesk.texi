@@ -1578,10 +1578,14 @@ provide the necessary AppleScript commands for their favorite software.
 @cindex search
 @cindex search group
 
-With BibDesk, you can search the NCBI's Entrez set of databases and
-the catalogs at many research libraries using the z39.50 protocol. To
-search these databases, select "New Search Group" from the "File" menu
-and select the desired search from the menu that appears.
+With BibDesk, you can search the 
+@uref{http://www.ncbi.nlm.nih.gov/Database/index.html,NCBI's Entrez set of databases}
+and the catalogs at many 
+@uref{http://targettest.indexdata.com/,research libraries using the z39.50 protocol}.
+
+To search these databases, select @menutitle{New Search Group} 
+from the @menutitle{File} menu and select the desired search from 
+the menu that appears.
 
 @menu
 * Syntax for Z39.50 Searching::
