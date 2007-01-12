@@ -241,12 +241,19 @@
     NSString *expandedFileName = [[self fileName] stringByExpandingTildeInPath];
     
     expandedFileName = [[NSFileManager defaultManager] uniqueFilePath:expandedFileName createDirectory:NO];
+    NSURL *expandedFileURL = [NSURL fileURLWithPath:expandedFileName];
     
     // write this out with the user's default encoding, so the openDocumentWithContentsOfFile is more likely to succeed
     NSData *fileData = [[textView string] dataUsingEncoding:[BDSKStringEncodingManager defaultEncoding] allowLossyConversion:NO];
     [fileData writeToFile:expandedFileName atomically:YES];
     
-    [[NSDocumentController sharedDocumentController] openDocumentWithContentsOfFile:expandedFileName display:YES];
+    NSError *err = nil;
+    [[NSDocumentController sharedDocumentController] openDocumentWithContentsOfURL:expandedFileURL display:YES error:&err];
+
+    if(err != nil){
+        NSLog(@"error opening newly created document from error editor: %@", err);
+    }
+
 }
 
 - (IBAction)changeSyntaxHighlighting:(id)sender;
