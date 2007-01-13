@@ -1351,12 +1351,14 @@ static int numberOfOpenEditors = 0;
 
 - (void)removeFieldSheetDidEnd:(BDSKRemoveFieldSheetController *)removeFieldController returnCode:(int)returnCode contextInfo:(void *)contextInfo{
 	NSString *oldField = [removeFieldController field];
+    NSString *oldValue = [[[publication valueOfField:oldField] retain] autorelease];
     NSArray *removableFields = [removeFieldController fieldsArray];
     if(returnCode == NSCancelButton || oldField == nil || [removableFields count] == 0)
         return;
 	
     [tabView selectFirstTabViewItem:nil];
     [publication removeField:oldField];
+    [self userChangedField:oldField from:oldValue to:@""];
     [[self undoManager] setActionName:NSLocalizedString(@"Remove Field", @"Undo action name")];
     [self setupForm];
 }
@@ -1403,6 +1405,7 @@ static int numberOfOpenEditors = 0;
 - (void)changeFieldNameSheetDidEnd:(NSWindow *)sheet returnCode:(int)returnCode contextInfo:(void *)contextInfo{
 	NSString *oldField = [oldFieldNamePopUp titleOfSelectedItem];
     NSString *newField = [[newFieldNameComboBox stringValue] fieldName];
+    NSString *oldValue = [[[publication valueOfField:oldField] retain] autorelease];
     
     if(returnCode == NSCancelButton || [NSString isEmptyString:newField] || 
        [newField isEqualToString:oldField] || [[publication allFieldNames] containsObject:newField])
@@ -1412,6 +1415,8 @@ static int numberOfOpenEditors = 0;
     [publication addField:newField];
     [publication setField:newField toValue:[publication valueOfField:oldField]];
     [publication removeField:oldField];
+    [self userChangedField:oldField from:oldValue to:@""];
+    [self userChangedField:newField from:@"" to:oldValue];
     [[self undoManager] setActionName:NSLocalizedString(@"Change Field Name", @"Undo action name")];
     [self setupForm];
     [self setKeyField:newField];
