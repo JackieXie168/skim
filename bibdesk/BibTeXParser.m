@@ -57,7 +57,6 @@
 #import "BDSKStringEncodingManager.h"
 #import "NSScanner_BDSKExtensions.h"
 
-static NSString *BibTeXParserInternalException = @"BibTeXParserInternalException";
 static NSLock *parserLock = nil;
 
 @interface BibTeXParser (Private)
@@ -77,7 +76,10 @@ static void addMacroToResolver(AST *entry, BDSKMacroResolver *macroResolver, NSS
 static void appendCommentToFrontmatterOrAddGroups(AST *entry, NSMutableString *frontMatter, NSString *filePath, BibDocument *document, NSStringEncoding encoding);
 
 // private function for preserving newlines in annote/abstract fields; does not lock the parser
-static NSString *copyStringFromNoteField(AST *field, const char *data, NSString *filePath, NSStringEncoding encoding, NSError **error);
+static NSString *copyStringFromNoteField(AST *field, const char *data, NSString *filePath, NSStringEncoding encoding, NSString **error);
+
+// parses an individual entry and adds it's field/value pairs to the dictionary
+static BOOL addValuesFromEntryToDictionary(AST *entry, NSMutableDictionary *dictionary, const char *buf, BDSKMacroResolver *macroResolver, NSString *filePath, NSStringEncoding parserEncoding);
 
 @end
 
@@ -126,16 +128,20 @@ static NSString *copyStringFromNoteField(AST *field, const char *data, NSString 
 }
 
 /// libbtparse methods
-+ (NSMutableArray *)itemsFromString:(NSString *)aString document:(id<BDSKOwner>)anOwner error:(NSError **)outError{
++ (NSArray *)itemsFromString:(NSString *)aString document:(id<BDSKOwner>)anOwner isPartialData:(BOOL *)isPartialData
+error:(NSError **)outError{
     NSData *inData = [aString dataUsingEncoding:NSUTF8StringEncoding];
-    return [self itemsFromData:inData frontMatter:nil filePath:BDSKParserPasteDragString document:anOwner encoding:NSUTF8StringEncoding error:outError];
+    return [self itemsFromData:inData frontMatter:nil filePath:BDSKParserPasteDragString document:anOwner encoding:NSUTF8StringEncoding isPartialData:isPartialData error:outError];
 }
 
-+ (NSMutableArray *)itemsFromData:(NSData *)inData frontMatter:(NSMutableString *)frontMatter filePath:(NSString *)filePath document:(id<BDSKOwner>)anOwner encoding:(NSStringEncoding)parserEncoding error:(NSError **)outError{
++ (NSArray *)itemsFromData:(NSData *)inData frontMatter:(NSMutableString *)frontMatter filePath:(NSString *)filePath document:(id<BDSKOwner>)anOwner encoding:(NSStringEncoding)parserEncoding isPartialData:(BOOL *)isPartialData error:(NSError **)outError{
     
     // btparse will crash if we pass it a zero-length data, so we'll return here for empty files
+    if (isPartialData)
+        *isPartialData = NO;
+    
     if ([inData length] == 0)
-        return [NSMutableArray array];
+        return [NSArray array];
     
     [[BDSKErrorObjectController sharedErrorObjectController] startObservingErrors];
     		
@@ -143,16 +149,9 @@ static NSString *copyStringFromNoteField(AST *field, const char *data, NSString 
     
     BibItem *newBI = nil;
     BibDocument *document = [anOwner isDocument] ? (BibDocument *)anOwner : nil;
-    BDSKMacroResolver *macroResolver = [anOwner macroResolver];
-
-    // Strings read from file and added to Dictionary object
-    char *fieldname = "\0";
-    NSString *sFieldName = nil;
-    NSString *complexString = nil;
-	
+    BDSKMacroResolver *macroResolver = [anOwner macroResolver];	
+    
     AST *entry = NULL;
-    AST *field = NULL;
-
     NSString *entryType = nil;
     NSMutableArray *returnArray = [NSMutableArray arrayWithCapacity:100];
     
@@ -187,136 +186,91 @@ static NSString *copyStringFromNoteField(AST *field, const char *data, NSString 
     bt_set_stringopts(BTE_REGULAR, BTO_COLLAPSE);
     
     NSString *tmpStr = nil;
+    BOOL hadProblems = NO;
 
-    @try {
-        while(entry =  bt_parse_entry(infile, (char *)fs_path, 0, &ok)){
+    while(entry =  bt_parse_entry(infile, (char *)fs_path, 0, &ok)){
 
-            if (ok){
-                // Adding a new BibItem
+        if (ok) {
+            
+            bt_metatype metatype = bt_entry_metatype (entry);
+            if (metatype != BTE_REGULAR && nil != frontMatter) {
+                
+                // without frontMatter, e.g. with paste or drag, we just ignore these entries
+                // put @preamble etc. into the frontmatter string so we carry them along.
+                if (BTE_PREAMBLE == metatype){
+                    appendPreambleToFrontmatter(entry, frontMatter, filePath, parserEncoding);
+                }else if(BTE_MACRODEF == metatype){
+                    addMacroToResolver(entry, macroResolver, filePath, parserEncoding, &error);
+                }else if(BTE_COMMENT == metatype && document){
+                    appendCommentToFrontmatterOrAddGroups(entry, frontMatter, filePath, document, parserEncoding);
+                }
+                
+            } else {
+                
+                // regular type (@article, @proceedings, etc.)
+                // don't skip the loop if this fails, since it'll have partial data in the dictionary
+                if (NO == addValuesFromEntryToDictionary(entry, dictionary, buf, macroResolver, filePath, parserEncoding))
+                    hadProblems = YES;
+                
+                // get the entry type as a string
                 tmpStr = copyCheckedString(bt_entry_type(entry), entry->line, filePath, parserEncoding);
-                if (nil == tmpStr) @throw BibTeXParserInternalException;
                 entryType = [tmpStr entryType];
                 [tmpStr release];
                 
-                if (bt_entry_metatype (entry) != BTE_REGULAR){
-                    // without frontMatter, e.g. with paste or drag, we just ignore these entries
-                    if(nil != frontMatter){
-                        // put @preamble etc. into the frontmatter string so we carry them along.
-                        if ([entryType isEqualToString:@"preamble"]){
-                            appendPreambleToFrontmatter(entry, frontMatter, filePath, parserEncoding);
-                        }else if([entryType isEqualToString:@"string"]){
-                            addMacroToResolver(entry, macroResolver, filePath, parserEncoding, &error);
-                        }else if([entryType isEqualToString:@"comment"] && document){
-                            appendCommentToFrontmatterOrAddGroups(entry, frontMatter, filePath, document, parserEncoding);
-                        }
-                    }
+                if ([entryType isEqualToString:@"bibdesk_info"]) {
+                    if(nil != frontMatter)
+                        [document setDocumentInfoWithoutUndo:dictionary];
+                } else if (entryType) {
                     
-                }else{
-                    // regular type (@article, @proceedings, etc.)
-                    field = NULL;
-                    while (field = bt_next_field (entry, field, &fieldname))
-                    {
-                        // Get fieldname as a capitalized NSString
-                        tmpStr = copyCheckedString(fieldname, field->line, filePath, parserEncoding);
-                        if (nil == tmpStr) @throw BibTeXParserInternalException;
-                        sFieldName = [tmpStr fieldName];
-                        [tmpStr release];
-                        
-                        // Special case handling of abstract & annote is to avoid losing newlines in preexisting files.
-                        if([sFieldName isNoteField]){
-                            tmpStr = copyStringFromNoteField(field, buf, filePath, parserEncoding, &error);
-                            if(nil == tmpStr){
-                                // this can happen with badly formed annote/abstract fields, and leads to data loss
-                                bt_free_ast(entry);
-                                @throw BibTeXParserInternalException;
-                            }
-                            complexString = [tmpStr copyDeTeXifiedString];
-                            // this returns nil in case of a syntax error; it isn't an encoding failure, so don't throw
-                            if (nil == complexString) {
-                                NSString *type = NSLocalizedString(@"error", @"");
-                                NSString *message = [NSString stringWithFormat:NSLocalizedString(@"Unable to convert TeX string \"%@\"", @"Error description"), tmpStr];
-                                BDSKErrorObject *errorObject = [[BDSKErrorObject alloc] init];
-                                [errorObject setFileName:filePath];
-                                [errorObject setLineNumber:field->line];
-                                [errorObject setErrorClassName:type];
-                                [errorObject setErrorMessage:message];
-                                
-                                [errorObject report];
-                                [errorObject release];    
-                                OFErrorWithInfo(&error, BDSKParserError, NSLocalizedDescriptionKey, NSLocalizedString(@"Syntax error while parsing BibTeX file", @"Error description"), nil);
-                                break;
-                            }
-                            [tmpStr release];
-                        }else{
-                            complexString = copyStringFromBTField(field, filePath, macroResolver, parserEncoding);
-                        }
-                        
-                        if (nil == complexString)
-                            @throw BibTeXParserInternalException;
-                        
-                        // add the expanded values to the autocomplete dictionary; authors are handled elsewhere
-                        if ([sFieldName isPersonField] == NO)
-                            [[NSApp delegate] addString:complexString forCompletionEntry:sFieldName];
-                        
-                        [dictionary setObject:complexString forKey:sFieldName];
-                        [complexString release];
-                        
-                    }// end while field - process next bt field                    
+                    NSString *citeKey = copyCheckedString(bt_entry_key(entry), entry->line, filePath, parserEncoding);
                     
-                    if([entryType isEqualToString:@"bibdesk_info"]){
-                        if(nil != frontMatter)
-                            [document setDocumentInfoWithoutUndo:dictionary];
-                    }else{
-                        
-                        tmpStr = copyCheckedString(bt_entry_key(entry), entry->line, filePath, parserEncoding);
-                        if (nil == tmpStr) @throw BibTeXParserInternalException;
-                        
-                        [[NSApp delegate] addString:tmpStr forCompletionEntry:BDSKCrossrefString];
+                    if(citeKey) {
+                        [[NSApp delegate] addString:citeKey forCompletionEntry:BDSKCrossrefString];
                         
                         newBI = [[BibItem alloc] initWithType:entryType
                                                      fileType:BDSKBibtexString
-                                                      citeKey:tmpStr
+                                                      citeKey:citeKey
                                                     pubFields:dictionary
                                                         isNew:isPasteOrDrag];
 
-                        [tmpStr release];
+                        [citeKey release];
                         
                         [returnArray addObject:newBI];
                         [newBI release];
+                    } else {
+                        // no citekey
+                        hadProblems = YES;
                     }
                     
-                    [dictionary removeAllObjects];
-                } // end generate BibItem from ENTRY metatype.
-            }else{
-                // wasn't ok, record it and deal with it later.
-                OFErrorWithInfo(&error, BDSKParserError, NSLocalizedDescriptionKey, NSLocalizedString(@"Unable to parse string as BibTeX", @"Error description"), nil);
-            }
-            bt_free_ast(entry);
-
-        } // while (scanning through file) 
-        
-        if(ok == 0 && error == nil){
-            // couldn't parse a single item, record it and deal with it later.
-            OFErrorWithInfo(&error, BDSKParserError, NSLocalizedDescriptionKey, NSLocalizedString(@"Unable to parse string as BibTeX", @"Error description"), nil);
+                } else {
+                    // no entry type
+                    hadProblems = YES;
+                }
+                
+                [dictionary removeAllObjects];
+            } // end generate BibItem from ENTRY metatype.
+        } else {
+            // wasn't ok, record it and deal with it later.
+            hadProblems = YES;
         }
-    }
-    
-    @catch (id exception) {
-        if([exception isEqual:BibTeXParserInternalException] == NO)
-            @throw;
-        else
-            OFErrorWithInfo(&error, BDSKParserError, NSLocalizedDescriptionKey, NSLocalizedString(@"Encoding conversion failure", @"Error description"), NSStringEncodingErrorKey, [NSNumber numberWithInt:parserEncoding], nil);
-    }
-    
-    @finally {
-        // execute this regardless, so the parser isn't left in an inconsistent state
-        bt_cleanup();
-        fclose(infile);
+        bt_free_ast(entry);
+
+    } // while (scanning through file) 
         
-        // docs say to return nil in an error condition, rather than checking the NSError itself, but we may want to return partial data
-        if(error && outError) *outError = error;
-        [parserLock unlock];
+    // generic error message; the error tableview will have specific errors and context
+    if(ok == 0 || hadProblems){
+        OFErrorWithInfo(&error, BDSKParserError, NSLocalizedDescriptionKey, NSLocalizedString(@"Unable to parse string as BibTeX", @"Error description"), nil);
     }
+
+    // execute this regardless, so the parser isn't left in an inconsistent state
+    bt_cleanup();
+    fclose(infile);
+    
+    if(outError) *outError = error;
+    [parserLock unlock];
+    
+    if (isPartialData)
+        *isPartialData = hadProblems;
 	
     [[BDSKErrorObjectController sharedErrorObjectController] endObservingErrorsForDocument:document pasteDragData:isPasteOrDrag ? inData : nil];
     
@@ -767,8 +721,6 @@ static void appendPreambleToFrontmatter(AST *entry, NSMutableString *frontMatter
             tmpStr = copyCheckedString(text, field->line, filePath, encoding);
             if(tmpStr) 
                 [frontMatter appendString:tmpStr];
-            else
-                @throw BibTeXParserInternalException;
             [tmpStr release];
             paste = YES;
         }
@@ -784,10 +736,10 @@ static void addMacroToResolver(AST *entry, BDSKMacroResolver *macroResolver, NSS
     
     while (field = bt_next_field (entry, field, &fieldname)){
         NSString *macroKey = copyCheckedString(field->text, field->line, filePath, encoding);
-        if (nil == macroKey) @throw BibTeXParserInternalException;
+        NSCAssert(macroKey != nil, @"Macro keys must be ASCII");
         NSString *macroString = copyStringFromBTField(field, filePath, macroResolver, encoding); // handles TeXification
         if([macroResolver macroDefinition:macroString dependsOnMacro:macroKey]){
-            NSString *type = NSLocalizedString(@"Error", @"");
+            NSString *type = NSLocalizedString(@"error", @"");
             NSString *message = NSLocalizedString(@"Macro leads to circular definition, ignored.", @"Error description");
             
             BDSKErrorObject *errorObject = [[BDSKErrorObject alloc] init];
@@ -851,8 +803,7 @@ static void appendCommentToFrontmatterOrAddGroups(AST *entry, NSMutableString *f
             
             if(tmpStr) 
                 [commentStr appendString:tmpStr];
-            else
-                @throw BibTeXParserInternalException;
+
             [tmpStr release];
         }
     }
@@ -883,7 +834,7 @@ static void appendCommentToFrontmatterOrAddGroups(AST *entry, NSMutableString *f
     [commentStr release];    
 }
 
-static NSString *copyStringFromNoteField(AST *field, const char *data, NSString *filePath, NSStringEncoding encoding, NSError **error)
+static NSString *copyStringFromNoteField(AST *field, const char *data, NSString *filePath, NSStringEncoding encoding, NSString **errorString)
 {
     NSString *returnString = nil;
     long cidx = 0; // used to scan through buf for annotes.
@@ -905,14 +856,91 @@ static NSString *copyStringFromNoteField(AST *field, const char *data, NSString 
             for(; data[cidx] != '"' || data[cidx-1] == '\\'; cidx++);
         }else{ 
             // no brace and no quote => unknown problem
-            NSString *errorString = [NSString stringWithFormat:NSLocalizedString(@"Unexpected delimiter \"%@\" encountered at line %d.", @"Error description"), [[[NSString alloc] initWithBytes:&data[cidx-1] length:1 encoding:encoding] autorelease], field->line];
-            OFErrorWithInfo(error, BDSKParserError, NSLocalizedDescriptionKey, errorString, nil);
+            if (errorString)
+                *errorString = [NSString stringWithFormat:NSLocalizedString(@"Unexpected delimiter \"%@\" encountered at line %d.", @"Error description"), [[[NSString alloc] initWithBytes:&data[cidx-1] length:1 encoding:encoding] autorelease], field->line];
         }
         returnString = [[NSString alloc] initWithBytes:&data[field->down->offset] length:(cidx- (field->down->offset)) encoding:encoding];
-        if (NO == checkStringForEncoding(returnString, field->line, filePath, encoding))
-            @throw BibTeXParserInternalException;
+        if (NO == checkStringForEncoding(returnString, field->line, filePath, encoding) && errorString) {
+            *errorString = NSLocalizedString(@"Encoding conversion failure", @"Error description");
+            [returnString release];
+            returnString = nil;
+        }
     }else{
-        OFErrorWithInfo(error, BDSKParserError, NSLocalizedDescriptionKey, NSLocalizedString(@"Unable to parse string as BibTeX", @"Error description"), nil);
+        if(errorString)
+            *errorString = NSLocalizedString(@"Unable to parse string as BibTeX", @"Error description");
     }
     return returnString;
+}
+
+static BOOL addValuesFromEntryToDictionary(AST *entry, NSMutableDictionary *dictionary, const char *buf, BDSKMacroResolver *macroResolver, NSString *filePath, NSStringEncoding parserEncoding)
+{
+    AST *field = NULL;
+    NSString *sFieldName, *complexString, *tmpStr;
+    char *fieldname;
+    BOOL hadProblems = NO;
+    
+    while (field = bt_next_field (entry, field, &fieldname))
+    {
+        // Get fieldname as a capitalized NSString
+        tmpStr = copyCheckedString(fieldname, field->line, filePath, parserEncoding);
+        sFieldName = [tmpStr fieldName];
+        [tmpStr release];
+        
+        // Special case handling of abstract & annote is to avoid losing newlines in preexisting files.
+        if([sFieldName isNoteField]){
+            NSString *errorString;
+            tmpStr = copyStringFromNoteField(field, buf, filePath, parserEncoding, &errorString);
+            
+            // this can happen with badly formed annote/abstract fields, and leads to data loss
+            if(nil == tmpStr){
+                hadProblems = YES;
+                NSString *type = NSLocalizedString(@"error", @"");
+                NSString *message = [NSString stringWithFormat:NSLocalizedString(@"Syntax error in \"%@\"", @"Error description"), tmpStr];
+                BDSKErrorObject *errorObject = [[BDSKErrorObject alloc] init];
+                [errorObject setFileName:filePath];
+                [errorObject setLineNumber:field->line];
+                [errorObject setErrorClassName:type];
+                [errorObject setErrorMessage:message];
+                
+                [errorObject report];
+                [errorObject release];    
+            } else {
+                
+                // this returns nil in case of a syntax error; it isn't an encoding failure
+                complexString = [tmpStr copyDeTeXifiedString];
+                
+                if (nil == complexString) {
+                    hadProblems = YES;
+                    NSString *type = NSLocalizedString(@"error", @"");
+                    NSString *message = [NSString stringWithFormat:NSLocalizedString(@"Unable to convert TeX string \"%@\"", @"Error description"), tmpStr];
+                    BDSKErrorObject *errorObject = [[BDSKErrorObject alloc] init];
+                    [errorObject setFileName:filePath];
+                    [errorObject setLineNumber:field->line];
+                    [errorObject setErrorClassName:type];
+                    [errorObject setErrorMessage:message];
+                    
+                    [errorObject report];
+                    [errorObject release];    
+                }
+            }
+            [tmpStr release];
+            
+        }else{
+            // this method returns nil and posts an error in case of failure
+            complexString = copyStringFromBTField(field, filePath, macroResolver, parserEncoding);
+        }
+        
+        if (sFieldName && complexString) {
+            // add the expanded values to the autocomplete dictionary; authors are handled elsewhere
+            if ([sFieldName isPersonField] == NO)
+                [[NSApp delegate] addString:complexString forCompletionEntry:sFieldName];
+            
+            [dictionary setObject:complexString forKey:sFieldName];
+        } else {
+            hadProblems = YES;
+        }
+        [complexString release];
+        
+    }// end while field - process next bt field      
+    return hadProblems == NO;
 }

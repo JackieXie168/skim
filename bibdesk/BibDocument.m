@@ -1465,11 +1465,12 @@ originalContentsURL:(NSURL *)absoluteOriginalContentsURL
     }
     
     NSError *error = nil;
-	NSArray *newPubs = [BibTeXParser itemsFromData:data frontMatter:frontMatter filePath:filePath document:self encoding:parserEncoding error:&error];
-	if(outError) *outError = error;	
+    BOOL isPartialData;
+	NSArray *newPubs = [BibTeXParser itemsFromData:data frontMatter:frontMatter filePath:filePath document:self encoding:parserEncoding isPartialData:&isPartialData error:&error];
+	if(isPartialData && outError) *outError = error;	
     [self setPublicationsWithoutUndo:newPubs];
     
-    return error == nil;
+    return isPartialData == NO;
 }
 
 - (BOOL)readFromData:(NSData *)data ofStringType:(int)type fromURL:(NSURL *)absoluteURL encoding:(NSStringEncoding)encoding error:(NSError **)outError {
@@ -1813,24 +1814,24 @@ originalContentsURL:(NSURL *)absoluteOriginalContentsURL
 - (NSArray *)newPublicationsForString:(NSString *)string type:(int)type error:(NSError **)outError {
     NSArray *newPubs = nil;
     NSError *parseError = nil;
+    BOOL isPartialData = NO;
     
     if(type == BDSKBibTeXStringType){
-        newPubs = [BibTeXParser itemsFromString:string document:self error:&parseError];
+        newPubs = [BibTeXParser itemsFromString:string document:self isPartialData:&isPartialData error:&parseError];
     }else if(type == BDSKNoKeyBibTeXStringType){
-        newPubs = [BibTeXParser itemsFromString:[string stringWithPhoneyCiteKeys:@"FixMe"] document:self error:&parseError];
+        newPubs = [BibTeXParser itemsFromString:[string stringWithPhoneyCiteKeys:@"FixMe"] document:self isPartialData:&isPartialData error:&parseError];
 	}else if (type != BDSKUnknownStringType){
         newPubs = [BDSKStringParser itemsFromString:string ofType:type error:&parseError];
     }
     
-    // The parser methods may return a non-empty array (partial data) if they failed; we check for parseError != nil as an error condition, then, although that's generally not correct
-	if(parseError != nil) {
+	if(nil == newPubs || isPartialData) {
 
 		// run a modal dialog asking if we want to use partial data or give up
         NSAlert *alert = [NSAlert alertWithMessageText:NSLocalizedString(@"Error Reading String", @"Message in alert dialog when failing to parse dropped or copied string")
                                          defaultButton:NSLocalizedString(@"Cancel", @"Button title")
                                        alternateButton:NSLocalizedString(@"Edit data", @"Button title")
                                            otherButton:NSLocalizedString(@"Keep going", @"Button title")
-                             informativeTextWithFormat:NSLocalizedString(@"There was a problem inserting the data. Do you want to ignore this data, open a window containing the data to edit it and remove the errors, or keep going and use everything that BibDesk could analyse?\n(It's likely that choosing \"Keep Going\" will lose some data.)", @"Informative text in alert dialog")];
+                             informativeTextWithFormat:NSLocalizedString(@"There was a problem inserting the data. Do you want to ignore this data, open a window containing the data to edit it and remove the errors, or keep going and use everything that BibDesk could parse?\n(It's likely that choosing \"Keep Going\" will lose some data.)", @"Informative text in alert dialog")];
 		int rv = [alert runModal];
         
 		if(rv == NSAlertDefaultReturn){
@@ -1928,7 +1929,9 @@ originalContentsURL:(NSURL *)absoluteOriginalContentsURL
                 NSData *btData = [[NSFileManager defaultManager] extendedAttributeNamed:OMNI_BUNDLE_IDENTIFIER @".bibtexstring" atPath:fnStr traverseLink:NO error:&xerror];
                 if(btData){
                     NSString *btString = [[NSString alloc] initWithData:btData encoding:NSUTF8StringEncoding];
-                    newBI = [[BibTeXParser itemsFromString:btString document:self error:&xerror] firstObject];
+                    BOOL isPartialData;
+                    NSArray *items = [BibTeXParser itemsFromString:btString document:self isPartialData:&isPartialData error:&xerror];
+                    newBI = isPartialData ? nil : [items firstObject];
                     [btString release];
                 }
             }
