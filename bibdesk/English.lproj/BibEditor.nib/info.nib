@@ -21,11 +21,10 @@
 	<array/>
 	<key>IBOpenObjects</key>
 	<array>
-		<integer>782</integer>
-		<integer>640</integer>
-		<integer>74</integer>
-		<integer>608</integer>
 		<integer>759</integer>
+		<integer>608</integer>
+		<integer>74</integer>
+		<integer>640</integer>
 		<integer>726</integer>
 	</array>
 	<key>IBSystem Version</key>

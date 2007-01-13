@@ -54,7 +54,6 @@
 #import "BDSKDragWindow.h"
 #import "BibItem.h"
 #import "BDSKCiteKeyFormatter.h"
-#import "BDSKFieldNameFormatter.h"
 #import "BDSKComplexStringFormatter.h"
 #import "BDSKCrossrefFormatter.h"
 #import "BibAppController.h"
@@ -260,10 +259,6 @@ static int numberOfOpenEditors = 0;
 	// Update the statusbar message and icons
     [self needsToBeFiledDidChange:nil];
 	[self updateCiteKeyAutoGenerateStatus];
-    
-    BDSKFieldNameFormatter *fieldNameFormatter = [[BDSKFieldNameFormatter alloc] init];
-    [newFieldNameComboBox setFormatter:fieldNameFormatter];
-    [fieldNameFormatter release];
     
     [self registerForNotifications];
     
@@ -1402,9 +1397,9 @@ static int numberOfOpenEditors = 0;
 
 #pragma mark Change field name
 
-- (void)changeFieldNameSheetDidEnd:(NSWindow *)sheet returnCode:(int)returnCode contextInfo:(void *)contextInfo{
-	NSString *oldField = [oldFieldNamePopUp titleOfSelectedItem];
-    NSString *newField = [[newFieldNameComboBox stringValue] fieldName];
+- (void)changeFieldSheetDidEnd:(BDSKChangeFieldSheetController *)changeFieldController returnCode:(int)returnCode contextInfo:(void *)contextInfo{
+	NSString *oldField = [changeFieldController field];
+    NSString *newField = [changeFieldController newField];
     NSString *oldValue = [[[publication valueOfField:oldField] retain] autorelease];
     int autoGenerateStatus = 0;
     
@@ -1440,33 +1435,36 @@ static int numberOfOpenEditors = 0;
         return;
     }
     
-    [oldFieldNamePopUp removeAllItems];
-    [oldFieldNamePopUp addItemsWithTitles:removableFields];
-    [newFieldNameComboBox removeAllItems];
-    [newFieldNameComboBox addItemsWithObjectValues:fieldNames];
+    NSString *prompt = NSLocalizedString(@"Name of field to remove:", @"Label for removing field");
+	if ([removableFields count]) {
+		[removableFields sortUsingSelector:@selector(caseInsensitiveCompare:)];
+	} else {
+		prompt = NSLocalizedString(@"No fields to remove", @"Label when no field to remove");
+	}
+    
+    BDSKChangeFieldSheetController *changeFieldController = [[BDSKChangeFieldSheetController alloc] initWithPrompt:NSLocalizedString(@"Name of field to change:", @"Label for changing field name")
+                                                                                                       fieldsArray:removableFields
+                                                                                                         newPrompt:NSLocalizedString(@"New field name:", @"Label for changing field name")
+                                                                                                    newFieldsArray:fieldNames];
     
     NSString *selectedCellTitle = [[bibFields selectedCell] title];
     if([removableFields containsObject:selectedCellTitle]){
-        [oldFieldNamePopUp selectItemWithTitle:selectedCellTitle];
+        [changeFieldController setField:selectedCellTitle];
         // if we don't deselect this cell, we can't remove it from the form
         [self finalizeChangesPreservingSelection:NO];
     }else if(sender == self){
         // double clicked title of a field we cannot change
+        [changeFieldController release];
         return;
     }
     
 	[removableFields release];
     
-	[NSApp beginSheet:changeFieldNameSheet
-       modalForWindow:[self window]
-        modalDelegate:self
-       didEndSelector:@selector(changeFieldNameSheetDidEnd:returnCode:contextInfo:)
-          contextInfo:NULL];
-}
-
-- (IBAction)dismissChangeFieldNameSheet:(id)sender{
-    [changeFieldNameSheet orderOut:sender];
-    [NSApp endSheet:changeFieldNameSheet returnCode:[sender tag]];
+	[changeFieldController beginSheetModalForWindow:[self window]
+                                      modalDelegate:self
+                                     didEndSelector:@selector(changeFieldSheetDidEnd:returnCode:contextInfo:)
+                                        contextInfo:NULL];
+	[changeFieldController release];
 }
 
 #pragma mark Text Change handling
