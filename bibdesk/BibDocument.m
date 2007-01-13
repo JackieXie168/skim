@@ -294,9 +294,9 @@ static NSString *BDSKRecentSearchesKey = @"BDSKRecentSearchesKey";
     NSPoint scrollPoint = [xattrDefaults pointForKey:BDSKDocumentScrollPercentageKey defaultValue:NSZeroPoint];
     [[tableView enclosingScrollView] setScrollPositionAsPercentage:scrollPoint];
         
-    // this is a sanity check; an encoding of kCFStringEncodingInvalidId is not valid, so is a signal we should ignore xattrs
-    NSStringEncoding encodingFromFile = [xattrDefaults unsignedIntForKey:BDSKDocumentStringEncodingKey defaultValue:kCFStringEncodingInvalidId];
-    if (encodingFromFile != kCFStringEncodingInvalidId && encodingFromFile != [self documentStringEncoding]) {
+    // this is a sanity check; an encoding of 0 is not valid, so is a signal we should ignore xattrs
+    NSStringEncoding encodingFromFile = [xattrDefaults unsignedIntForKey:BDSKDocumentStringEncodingKey defaultValue:0];
+    if (encodingFromFile != 0 && encodingFromFile != [self documentStringEncoding]) {
         NSAlert *alert = [NSAlert alertWithMessageText:NSLocalizedString(@"Document was opened with incorrect encoding", @"Message in alert dialog when opening a document with different encoding")
                                          defaultButton:NSLocalizedString(@"Close", @"Button title")
                                        alternateButton:NSLocalizedString(@"Ignore", @"Button title")
@@ -475,6 +475,8 @@ static NSString *BDSKRecentSearchesKey = @"BDSKRecentSearchesKey";
     // @@ awakeFromNib is called long after the document's data is loaded, so the UI update from setPublications is too early when loading a new document; there may be a better way to do this
     [self updateSmartGroupsCountAndContent:NO];
     [self updateCategoryGroupsPreservingSelection:NO];
+    
+    [saveTextEncodingPopupButton setEncoding:0];
 }
 
 - (BOOL)undoManagerShouldUndoChange:(id)sender{
@@ -841,11 +843,16 @@ static NSPopUpButton *popUpButtonSubview(NSView *view)
 
 - (BOOL)saveToURL:(NSURL *)absoluteURL ofType:(NSString *)typeName forSaveOperation:(NSSaveOperationType)saveOperation error:(NSError **)outError{
     
-    // Set the string encoding according to the popup.  NB: the popup has the incorrect encoding if it wasn't displayed, so don't reset encoding unless we're actually modifying this document.
-    if (NSSaveAsOperation == saveOperation)
+    // Set the string encoding according to the popup.  
+    // NB: the popup has the incorrect encoding if it wasn't displayed, for example for the Save action and saving using AppleScript, so don't reset encoding unless we're actually modifying this document through a menu .
+    if (NSSaveAsOperation == saveOperation && [saveTextEncodingPopupButton encoding] != 0)
         [self setDocumentStringEncoding:[saveTextEncodingPopupButton encoding]];
     
     BOOL success = [super saveToURL:absoluteURL ofType:typeName forSaveOperation:saveOperation error:outError];
+    
+    // reset the encoding popup so we know when it wasn't shown to the user next time
+    [saveTextEncodingPopupButton setEncoding:0];
+    
     if(success == NO)
         return NO;
     
@@ -1002,8 +1009,8 @@ originalContentsURL:(NSURL *)absoluteOriginalContentsURL
     
     // export operations need their own encoding
     if(NSSaveToOperation == docState.currentSaveOperationType)
-        encoding = [saveTextEncodingPopupButton encoding];
-        
+        encoding = [saveTextEncodingPopupButton encoding] ? [saveTextEncodingPopupButton encoding] : [BDSKStringEncodingManager defaultEncoding];
+    
     if ([aType isEqualToString:BDSKBibTeXDocumentType] || [aType isEqualToUTI:[[NSWorkspace sharedWorkspace] UTIForPathExtension:@"bib"]]){
         if([[OFPreferenceWrapper sharedPreferenceWrapper] boolForKey:BDSKAutoSortForCrossrefsKey])
             [self performSortForCrossrefs];
