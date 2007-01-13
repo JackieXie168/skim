@@ -60,7 +60,7 @@ enum {
     OFMessageQueue *messageQueue;
     NSTask *currentTask;
     NSString *workingDirPath;
-    NSData *stdoutData;
+    NSMutableData *stdoutData;
     OFSimpleLockType processingLock;    
     OFSimpleLockType currentTaskLock;
 }

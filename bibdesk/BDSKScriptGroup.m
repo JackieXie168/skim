@@ -434,6 +434,11 @@
 
     OFSimpleLock(&processingLock);
     
+    if (nil == stdoutData)
+        stdoutData = [[NSMutableData alloc] init];
+    else
+        [stdoutData setData:[NSData data]];
+    
     NSString *outputString = nil;
     NSError *error = nil;
     NSTask *task;
@@ -442,7 +447,7 @@
     BOOL isRunning;
 
     task = [[NSTask allocWithZone:[self zone]] init];    
-    [task setStandardError:[NSFileHandle fileHandleWithNullDevice]];
+    [task setStandardError:[NSFileHandle fileHandleWithStandardError]];
     [task setLaunchPath:path];
     [task setCurrentDirectoryPath:workingDirPath];
     [task setStandardOutput:outputPipe];
@@ -454,7 +459,7 @@
     
     OFSimpleLock(&currentTaskLock);
     currentTask = task;
-    // we keep the lock, as the task is now the currentTask
+    OFSimpleUnlock(&currentTaskLock);
     
     @try{ [task launch]; }
     @catch(id exception){
@@ -463,40 +468,43 @@
     }
     
     isRunning = [task isRunning];
-    OFSimpleUnlock(&currentTaskLock);
+    int terminationStatus = 1;
     
     @try{
         if (isRunning) {
-            [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(stdoutNowAvailable:) name:NSFileHandleReadToEndOfFileCompletionNotification object:outputFileHandle];
-            [outputFileHandle readToEndOfFileInBackgroundAndNotifyForModes:[NSArray arrayWithObject:@"BDSKSpecialPipeServiceRunLoopMode"]];
+            NSNotificationCenter *nc = [NSNotificationCenter defaultCenter];
+            [nc addObserver:self selector:@selector(stdoutNowAvailable:) name:NSFileHandleReadCompletionNotification object:outputFileHandle];
+            [outputFileHandle readInBackgroundAndNotify];
             
-            // Now loop the runloop in the special mode until we've processed the notification.
-            stdoutData = nil;
-            while (stdoutData == nil && isRunning) {
-                // Run the run loop, briefly, until we get the notification...
-                [[NSRunLoop currentRunLoop] runMode:@"BDSKSpecialPipeServiceRunLoopMode" beforeDate:[NSDate dateWithTimeIntervalSinceNow:1.0]];
-                OFSimpleLock(&currentTaskLock);
+            BOOL didRunLoop;
+            do {
+                // Run the run loop until the task is finished, and pick up the notifications
+                didRunLoop = [[NSRunLoop currentRunLoop] runMode:NSDefaultRunLoopMode beforeDate:[NSDate distantFuture]];
                 isRunning = [task isRunning];
-                OFSimpleUnlock(&currentTaskLock);
-            }
-            [[NSNotificationCenter defaultCenter] removeObserver:self name:NSFileHandleReadToEndOfFileCompletionNotification object:outputFileHandle];
-
-            OFSimpleLock(&currentTaskLock);
-            [task waitUntilExit];
-            OFSimpleUnlock(&currentTaskLock);        
+            } while (isRunning && didRunLoop);
+                        
+            [nc removeObserver:self name:NSFileHandleReadCompletionNotification object:outputFileHandle];
+            
+            // get leftover data, since the background method won't get the last read
+            NSData *remainingData = [outputFileHandle availableData];
+            if ([remainingData length])
+                [stdoutData appendData:remainingData];
 
             outputString = [[NSString allocWithZone:[self zone]] initWithData:stdoutData encoding:NSUTF8StringEncoding];
             if(outputString == nil)
-                outputString = [[NSString allocWithZone:[self zone]] initWithData:stdoutData encoding:NSASCIIStringEncoding];
+                outputString = [[NSString allocWithZone:[self zone]] initWithData:stdoutData encoding:[NSString defaultCStringEncoding]];
             
-            [stdoutData release];
-            stdoutData = nil;
+            terminationStatus = [task terminationStatus];
+
         } else {
+            terminationStatus = 1;
             error = [NSError mutableLocalErrorWithCode:kBDSKUnknownError localizedDescription:NSLocalizedString(@"Failed to Run Script", @"Error description")];
             [error setValue:[NSString stringWithFormat:NSLocalizedString(@"Failed to launch shell script %@", @"Error description"), path] forKey:NSLocalizedRecoverySuggestionErrorKey];
         }
     }
     @catch(id exception){
+        terminationStatus = 1;
+        
         // if the pipe failed, we catch an exception here and ignore it
         error = [NSError mutableLocalErrorWithCode:kBDSKUnknownError localizedDescription:NSLocalizedString(@"Failed to Run Script", @"Error description")];
         [error setValue:[NSString stringWithFormat:NSLocalizedString(@"Exception %@ encountered while trying to run shell script %@", @"Error description"), [exception name], path] forKey:NSLocalizedRecoverySuggestionErrorKey];
@@ -511,7 +519,7 @@
     
     [task release];
     
-    if (error || nil == outputString) {
+    if (terminationStatus != EXIT_SUCCESS || nil == outputString) {
         if(error == nil)
             error = [NSError mutableLocalErrorWithCode:kBDSKUnknownError localizedDescription:NSLocalizedString(@"Script Did Not Return Anything", @"Error description")];
         [[OFMessageQueue mainQueue] queueSelector:@selector(scriptDidFailWithError:) forObject:self withObject:error];
@@ -526,9 +534,11 @@
 }
 
 - (void)stdoutNowAvailable:(NSNotification *)notification {
-    // This is the notification method that executeBinary:inDirectory:withArguments:environment:inputString: registers to get called when all the data has been read. It just grabs the data and stuffs it in an ivar.  The setting of this ivar signals the main method that the output is complete and available.
     NSData *outputData = [[notification userInfo] objectForKey:NSFileHandleNotificationDataItem];
-    stdoutData = (outputData ? [outputData retain] : [[NSData allocWithZone:[self zone]] init]);
+    if ([outputData length]) {
+        [stdoutData appendData:outputData];
+        [[[notification userInfo] objectForKey:NSFileHandleNotificationFileHandleItem] readInBackgroundAndNotify];
+    }
 }
 
 @end
