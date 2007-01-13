@@ -47,7 +47,7 @@
 - (void)clearPromisedDraggedItems;
 - (NSString *)promiseDragColumnIdentifier;
 - (NSDictionary *)currentTableColumnWidthsAndIdentifiers;
-- (BOOL)isDragFromSharedGroups;
-- (void)setDragFromSharedGroups:(BOOL)flag;
+- (BOOL)isDragFromExternalGroups;
+- (void)setDragFromExternalGroups:(BOOL)flag;
 
 @end
