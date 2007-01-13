@@ -10,7 +10,7 @@ How To Release BibDesk
   *  version.texi
 - update release notes as necessary by reading commit-list messages
 - commit changes
-- tag the source using `svn copy https://svn.sourceforge.net/svnroot/bibdesk/trunk https://svn.sourceforge.net/svnroot/bibdesk/tags/REL_1_x_x` where REL_1_x_x is the new version number
+- tag the source using `svn copy https://bibdesk.svn.sourceforge.net/svnroot/bibdesk/trunk https://bibdesk.svn.sourceforge.net/svnroot/bibdesk/tags/REL_1_x_x` where REL_1_x_x is the new version number
 - recompile the "BibDesk" target in Release configuration
 - build the "DiskImage" target, which should drop a disk image on your desktop
 - rename the disk image as e.g. BibDesk-1.x.x.dmg
