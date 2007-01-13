@@ -70,7 +70,7 @@ enum {
 	if (self = [super initWithFrame:frameRect]) {
             [self setAutoenablesItems:NO];
             
-            defaultEncoding = [BDSKStringEncodingManager defaultEncoding];
+            defaultEncoding = 0;
             
             [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleEncodingsListChanged:) name:BDSKEncodingsListChangedNotification object:nil];
 	}
@@ -115,7 +115,7 @@ enum {
 // Update contents based on encodings list customization
 - (void)handleEncodingsListChanged:(NSNotification *)notification {
     int tag = [[self selectedItem] tag];
-    if (tag != 0 && (unsigned)tag != 0) defaultEncoding = tag;
+    defaultEncoding = tag;
     [[BDSKStringEncodingManager sharedEncodingManager] setupPopUp:self selectedEncoding:defaultEncoding];
 }
 
@@ -248,14 +248,14 @@ static int encodingCompare(const void *firstPtr, const void *secondPtr) {
     [popup removeAllItems];
 
     // Make sure the initial selected encoding appears in the list
-    if ((selectedEncoding != 0) && NO == [encs containsObject:[NSNumber numberWithUnsignedInt:selectedEncoding]]) encs = [encs arrayByAddingObject:[NSNumber numberWithUnsignedInt:selectedEncoding]];
+    if (NO == [encs containsObject:[NSNumber numberWithUnsignedInt:selectedEncoding]]) encs = [encs arrayByAddingObject:[NSNumber numberWithUnsignedInt:selectedEncoding]];
 
     numEncodings = [encs count];
 
     // Fill with encodings
     for (cnt = 0; cnt < numEncodings; cnt++) {
         NSStringEncoding enc = [[encs objectAtIndex:cnt] unsignedIntValue];
-        [popup addItemWithTitle:[NSString localizedNameOfStringEncoding:enc]];
+        [popup addItemWithTitle:enc ? [NSString localizedNameOfStringEncoding:enc] : @""];
         [[popup lastItem] setTag:enc];
         [[popup lastItem] setEnabled:YES];
         if (enc == selectedEncoding) itemToSelect = [popup numberOfItems] - 1;
