@@ -280,7 +280,7 @@
             }
         }
     }
-    [self setDelegate:nil];
+    delegate = nil;
     if([promisedPboardTypes count] == 0)
         [self absolveResponsibility];
 }
