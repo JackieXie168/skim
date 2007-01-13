@@ -245,6 +245,13 @@ static NSString *BDSKRecentSearchesKey = @"BDSKRecentSearchesKey";
         [documentWindow setDelegate:nil];
         [documentWindow close];
         [self close];
+    } else if (NSAlertOtherReturn == code) {
+        // setting delegate to nil ensures that xattrs won't be written out; the cleanup isn't an issue, since this doc just opened
+        NSURL *fileURL = [[[self fileURL] retain] autorelease];
+        [documentWindow setDelegate:nil];
+        [documentWindow close];
+        [self close];
+        [[NSDocumentController sharedDocumentController] openDocumentWithContentsOfURL:fileURL encoding:(int)ctxt];
     } else {
         NSLog(@"User decided to ignore an encoding warning.");
     }    
@@ -291,10 +298,11 @@ static NSString *BDSKRecentSearchesKey = @"BDSKRecentSearchesKey";
     if (encodingFromFile != kCFStringEncodingInvalidId && encodingFromFile != [self documentStringEncoding]) {
         NSAlert *alert = [NSAlert alertWithMessageText:NSLocalizedString(@"Document was opened with incorrect encoding", @"Message in alert dialog when opening a document with different encoding")
                                          defaultButton:NSLocalizedString(@"Close", @"Button title")
-                                       alternateButton:NSLocalizedString(@"Ignore", @"Button title") otherButton:nil
+                                       alternateButton:NSLocalizedString(@"Ignore", @"Button title")
+                                           otherButton:NSLocalizedString(@"Reopen", @"Button title")
                              informativeTextWithFormat:NSLocalizedString(@"The document was opened with encoding %@, but it was previously saved with encoding %@.  You should close it without saving and reopen with the correct encoding.", @"Informative text in alert dialog when opening a document with different encoding"), [NSString localizedNameOfStringEncoding:[self documentStringEncoding]], [NSString localizedNameOfStringEncoding:encodingFromFile]];
         [alert setAlertStyle:NSCriticalAlertStyle];
-        [alert beginSheetModalForWindow:documentWindow modalDelegate:self didEndSelector:@selector(encodingAlertDidEnd:returnCode:contextInfo:) contextInfo:NULL];
+        [alert beginSheetModalForWindow:documentWindow modalDelegate:self didEndSelector:@selector(encodingAlertDidEnd:returnCode:contextInfo:) contextInfo:(void *)encodingFromFile];
     }    
 }
 
