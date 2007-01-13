@@ -543,6 +543,7 @@
         [stdoutData appendData:outputData];
         [[[notification userInfo] objectForKey:NSFileHandleNotificationFileHandleItem] readInBackgroundAndNotify];
     }
+    [[notification object] readInBackgroundAndNotify];
 }
 
 @end
