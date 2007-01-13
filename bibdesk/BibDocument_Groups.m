@@ -1347,25 +1347,28 @@ The groupedPublications array is a subset of the publications array, developed b
 		return NO;
     
     NSMutableArray *changedPubs = [NSMutableArray arrayWithCapacity:[pubs count]];
-    NSMutableArray *oldValues = [NSMutableArray arrayWithCapacity:[pubs count]];
-    NSMutableArray *newValues = [NSMutableArray arrayWithCapacity:[pubs count]];
-    NSString *oldValue = nil;
+    NSMutableArray *oldValues1 = [NSMutableArray arrayWithCapacity:[pubs count]];
+    NSMutableArray *newValues1 = [NSMutableArray arrayWithCapacity:[pubs count]];
+    NSMutableArray *oldValues2 = [NSMutableArray arrayWithCapacity:[pubs count]];
+    NSMutableArray *newValues2 = [NSMutableArray arrayWithCapacity:[pubs count]];
+    NSString *oldValue1 = nil;
+    NSString *oldValue2 = nil;
     NSString *field = [(BDSKCategoryGroup *)group key];
 	
 	while(pub = [pubEnum nextObject]){
 		OBASSERT([pub isKindOfClass:[BibItem class]]);        
 		
-        if(field)
-            oldValue = [[[pub valueOfField:field] retain] autorelease];
+        oldValue1 = [[[pub valueOfField:field] retain] autorelease];
+        oldValue2 = [[[pub valueOfField:newGroupName] retain] autorelease];
 		rv = [pub replaceGroup:group withGroupNamed:newGroupName handleInherited:handleInherited];
 		
 		if(rv == BDSKOperationSet || rv == BDSKOperationAppend){
 			count++;
-            if(field){
-                [changedPubs addObject:pub];
-                [oldValues addObject:oldValue ? oldValue : @""];
-                [newValues addObject:[pub valueOfField:field]];
-            }
+            [changedPubs addObject:pub];
+            [oldValues1 addObject:oldValue1 ? oldValue1 : @""];
+            [oldValues2 addObject:oldValue2 ? oldValue2 : @""];
+            [newValues1 addObject:[pub valueOfField:field]];
+            [newValues2 addObject:[pub valueOfField:newGroupName]];
         }else if(rv == BDSKOperationAsk){
 			BDSKAlert *alert = [BDSKAlert alertWithMessageText:NSLocalizedString(@"Inherited Value", @"Message in alert dialog when trying to edit inherited value")
 												 defaultButton:NSLocalizedString(@"Don't Change", @"Button title")
@@ -1377,19 +1380,21 @@ The groupedPublications array is a subset of the publications array, developed b
 			if(handleInherited != BDSKOperationIgnore){
 				[pub replaceGroup:group withGroupNamed:newGroupName handleInherited:handleInherited];
                 count++;
-                if(field){
-                    [changedPubs addObject:pub];
-                    [oldValues addObject:oldValue ? oldValue : @""];
-                    [newValues addObject:[pub valueOfField:field]];
-                }
+                [changedPubs addObject:pub];
+                [oldValues1 addObject:oldValue1 ? oldValue1 : @""];
+                [oldValues2 addObject:oldValue2 ? oldValue2 : @""];
+                [newValues1 addObject:[pub valueOfField:field]];
+                [newValues2 addObject:[pub valueOfField:newGroupName]];
 			}
         }
 	}
 	
 	if(count > 0){
-        if([changedPubs count])
-            [self userChangedField:field ofPublications:changedPubs from:oldValues to:newValues];
-		[[self undoManager] setActionName:NSLocalizedString(@"Rename Group", @"Undo action name")];
+        if([changedPubs count]){
+            [self userChangedField:field ofPublications:changedPubs from:oldValues1 to:newValues1];
+            [self userChangedField:newGroupName ofPublications:changedPubs from:oldValues2 to:newValues2];
+		}
+        [[self undoManager] setActionName:NSLocalizedString(@"Rename Group", @"Undo action name")];
     }
     
     return YES;
