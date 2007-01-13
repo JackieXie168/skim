@@ -1347,28 +1347,22 @@ The groupedPublications array is a subset of the publications array, developed b
 		return NO;
     
     NSMutableArray *changedPubs = [NSMutableArray arrayWithCapacity:[pubs count]];
-    NSMutableArray *oldValues1 = [NSMutableArray arrayWithCapacity:[pubs count]];
-    NSMutableArray *newValues1 = [NSMutableArray arrayWithCapacity:[pubs count]];
-    NSMutableArray *oldValues2 = [NSMutableArray arrayWithCapacity:[pubs count]];
-    NSMutableArray *newValues2 = [NSMutableArray arrayWithCapacity:[pubs count]];
-    NSString *oldValue1 = nil;
-    NSString *oldValue2 = nil;
+    NSMutableArray *oldValues = [NSMutableArray arrayWithCapacity:[pubs count]];
+    NSMutableArray *newValues = [NSMutableArray arrayWithCapacity:[pubs count]];
+    NSString *oldValue = nil;
     NSString *field = [(BDSKCategoryGroup *)group key];
 	
 	while(pub = [pubEnum nextObject]){
 		OBASSERT([pub isKindOfClass:[BibItem class]]);        
 		
-        oldValue1 = [[[pub valueOfField:field] retain] autorelease];
-        oldValue2 = [[[pub valueOfField:newGroupName] retain] autorelease];
+        oldValue = [[[pub valueOfField:field] retain] autorelease];
 		rv = [pub replaceGroup:group withGroupNamed:newGroupName handleInherited:handleInherited];
 		
 		if(rv == BDSKOperationSet || rv == BDSKOperationAppend){
 			count++;
             [changedPubs addObject:pub];
-            [oldValues1 addObject:oldValue1 ? oldValue1 : @""];
-            [oldValues2 addObject:oldValue2 ? oldValue2 : @""];
-            [newValues1 addObject:[pub valueOfField:field]];
-            [newValues2 addObject:[pub valueOfField:newGroupName]];
+            [oldValues addObject:oldValue ? oldValue : @""];
+            [newValues addObject:[pub valueOfField:field]];
         }else if(rv == BDSKOperationAsk){
 			BDSKAlert *alert = [BDSKAlert alertWithMessageText:NSLocalizedString(@"Inherited Value", @"Message in alert dialog when trying to edit inherited value")
 												 defaultButton:NSLocalizedString(@"Don't Change", @"Button title")
@@ -1381,19 +1375,15 @@ The groupedPublications array is a subset of the publications array, developed b
 				[pub replaceGroup:group withGroupNamed:newGroupName handleInherited:handleInherited];
                 count++;
                 [changedPubs addObject:pub];
-                [oldValues1 addObject:oldValue1 ? oldValue1 : @""];
-                [oldValues2 addObject:oldValue2 ? oldValue2 : @""];
-                [newValues1 addObject:[pub valueOfField:field]];
-                [newValues2 addObject:[pub valueOfField:newGroupName]];
+                [oldValues addObject:oldValue ? oldValue : @""];
+                [newValues addObject:[pub valueOfField:field]];
 			}
         }
 	}
 	
 	if(count > 0){
-        if([changedPubs count]){
-            [self userChangedField:field ofPublications:changedPubs from:oldValues1 to:newValues1];
-            [self userChangedField:newGroupName ofPublications:changedPubs from:oldValues2 to:newValues2];
-		}
+        if([changedPubs count])
+            [self userChangedField:field ofPublications:changedPubs from:oldValues to:newValues];
         [[self undoManager] setActionName:NSLocalizedString(@"Rename Group", @"Undo action name")];
     }
     
