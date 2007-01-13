@@ -44,9 +44,9 @@
 
 @class BDSKRatingButton;
 @class BDSKRatingButtonCell;
-@class BDSKFieldNameFormatter;
 @class BDSKComplexStringFormatter;
 @class BDSKCrossrefFormatter;
+@class BDSKCitationFormatter;
 @class MacroFormWindowController;
 @class BDSKImagePopUpButton;
 @class BibItem;
@@ -54,7 +54,6 @@
 @class BDSKAlert;
 @class BibAuthor;
 @class BDSKZoomablePDFView;
-@class BDSKCitationFormatter;
 
 /*!
     @class BibEditor
@@ -98,9 +97,6 @@
     IBOutlet NSMenu *actionMenu;
 	IBOutlet NSButton *addFieldButton;
 	
-    IBOutlet NSPanel *changeFieldNameSheet;
-    IBOutlet NSPopUpButton *oldFieldNamePopUp;
-    IBOutlet NSComboBox *newFieldNameComboBox;
     // ----------------------------------------------------------------------------------------
     BibItem *publication;
     BOOL isEditable;
@@ -181,18 +177,9 @@
 
 - (IBAction)toggleStatusBar:(id)sender;
 
-// ----------------------------------------------------------------------------------------
-// Add-field sheet support
-// ----------------------------------------------------------------------------------------
 - (IBAction)raiseAddField:(id)sender;
-
-// ----------------------------------------------------------------------------------------
-// Delete-field sheet support
-// ----------------------------------------------------------------------------------------
 - (IBAction)raiseDelField:(id)sender;
-
 - (IBAction)raiseChangeFieldName:(id)sender;
-- (IBAction)dismissChangeFieldNameSheet:(id)sender;
 
 /*!
     @method     editSelectedFieldAsRawBibTeX:
