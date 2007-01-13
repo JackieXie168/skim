@@ -388,8 +388,14 @@
 
 - (BOOL)isEditable { return YES; }
 
+- (void)applicationWillTerminate:(NSNotification *)aNotification{
+    [self terminate];
+    [[NSFileManager defaultManager] deleteObjectAtFileURL:[NSURL fileURLWithPath:workingDirPath] error:NULL];
+}
+
 #pragma mark Shell task thread
 
+// this method is called from the main thread
 - (void)terminate{
     
     NSDate *referenceDate = [NSDate date];
@@ -418,11 +424,6 @@
 		return NO;
 	}
 	return YES;
-}
-
-- (void)applicationWillTerminate:(NSNotification *)aNotification{
-    [self terminate];
-    [[NSFileManager defaultManager] deleteObjectAtFileURL:[NSURL fileURLWithPath:workingDirPath] error:NULL];
 }
 
 // this runs in the background thread
@@ -457,24 +458,23 @@
     // ignore SIGPIPE, as it causes a crash (seems to happen if the binaries don't exist and you try writing to the pipe)
     signal(SIGPIPE, SIG_IGN);
     
+    // The only time we need to use the lock is when accessing the ivar; since it's not released in -terminate or -dealloc, we always have a valid reference
     OFSimpleLock(&currentTaskLock);
     currentTask = task;
     OFSimpleUnlock(&currentTaskLock);
-    
-    @try{ [task launch]; }
-    @catch(id exception){
-        if([task isRunning])
-            [task terminate];
-    }
-    
-    isRunning = [task isRunning];
+        
     int terminationStatus = 1;
-    
+    NSNotificationCenter *nc = [NSNotificationCenter defaultCenter];
+
     @try{
+        
+        [nc addObserver:self selector:@selector(stdoutNowAvailable:) name:NSFileHandleReadCompletionNotification object:outputFileHandle];
+        [outputFileHandle readInBackgroundAndNotify];
+        
+        [task launch];
+        isRunning = [task isRunning];
+        
         if (isRunning) {
-            NSNotificationCenter *nc = [NSNotificationCenter defaultCenter];
-            [nc addObserver:self selector:@selector(stdoutNowAvailable:) name:NSFileHandleReadCompletionNotification object:outputFileHandle];
-            [outputFileHandle readInBackgroundAndNotify];
             
             BOOL didRunLoop;
             do {
@@ -504,7 +504,11 @@
     }
     @catch(id exception){
         terminationStatus = 1;
+        if([task isRunning])
+            [task terminate];
         
+        [nc removeObserver:self name:NSFileHandleReadCompletionNotification object:outputFileHandle];
+
         // if the pipe failed, we catch an exception here and ignore it
         error = [NSError mutableLocalErrorWithCode:kBDSKUnknownError localizedDescription:NSLocalizedString(@"Failed to Run Script", @"Error description")];
         [error setValue:[NSString stringWithFormat:NSLocalizedString(@"Exception %@ encountered while trying to run shell script %@", @"Error description"), [exception name], path] forKey:NSLocalizedRecoverySuggestionErrorKey];
