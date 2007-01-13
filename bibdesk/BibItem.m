@@ -2510,7 +2510,7 @@ Boolean stringContainsLossySubstring(NSString *theString, NSString *stringToFind
         [mutableGroupSet addObjectsFromArray:[self peopleArrayForField:field]];
 	}else{
         NSArray *groupArray;   
-        NSCharacterSet *acSet = [NSCharacterSet autocompletePunctuationCharacterSet];
+        NSCharacterSet *acSet = [field isCitationField] ? [NSCharacterSet characterSetWithCharactersInString:@","] : [NSCharacterSet autocompletePunctuationCharacterSet];
         if([value containsCharacterInSet:acSet])
 			groupArray = [value componentsSeparatedByCharactersInSet:acSet trimWhitespace:YES];
         else 
@@ -2667,11 +2667,11 @@ Boolean stringContainsLossySubstring(NSString *theString, NSString *stringToFind
     }
 	
 	// otherwise we have a multivalued string, we should parse to get the order and delimiters right
-    OFCharacterSet *delimiterCharSet = [OFCharacterSet autocompletePunctuationCharacterSet];
+    OFCharacterSet *delimiterCharSet = [field isCitationField] ? [OFCharacterSet characterSetWithString:@","] : [OFCharacterSet autocompletePunctuationCharacterSet];
     OFCharacterSet *whitespaceCharSet = [OFCharacterSet whitespaceCharacterSet];
 	
 	BOOL useDelimiters = NO;
-	if([oldString containsCharacterInSet:[NSCharacterSet autocompletePunctuationCharacterSet]])
+	if([oldString containsCharacterInOFCharacterSet:delimiterCharSet])
 		useDelimiters = YES;
 	
 	OFStringScanner *scanner = [[OFStringScanner alloc] initWithString:oldString];
@@ -2785,11 +2785,11 @@ Boolean stringContainsLossySubstring(NSString *theString, NSString *stringToFind
     }
 	
 	// otherwise we have a multivalued string, we should parse to get the order and delimiters right
-    OFCharacterSet *delimiterCharSet = [OFCharacterSet autocompletePunctuationCharacterSet];
+    OFCharacterSet *delimiterCharSet = [field isCitationField] ? [OFCharacterSet characterSetWithString:@","] : [OFCharacterSet autocompletePunctuationCharacterSet];
     OFCharacterSet *whitespaceCharSet = [OFCharacterSet whitespaceCharacterSet];
 	
 	BOOL useDelimiters = NO;
-	if([oldString containsCharacterInSet:[NSCharacterSet autocompletePunctuationCharacterSet]])
+	if([oldString containsCharacterInOFCharacterSet:delimiterCharSet])
 		useDelimiters = YES;
 	
 	OFStringScanner *scanner = [[OFStringScanner alloc] initWithString:oldString];
