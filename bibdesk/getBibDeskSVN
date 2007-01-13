@@ -31,13 +31,13 @@ ENDHERE
 system 'open bibdesk/Bibdesk.xcodeproj' if <STDIN> =~ /^y/;
 
 sub getsources {
-   $GETMAIN = "svn co https://svn.sourceforge.net/svnroot/bibdesk/trunk/bibdesk bibdesk";
+   $GETMAIN = "svn co https://bibdesk.svn.sourceforge.net/svnroot/bibdesk/trunk/bibdesk bibdesk";
    tryGet($GETMAIN);
 
-   $GETVENDOR = "svn co https://svn.sourceforge.net/svnroot/bibdesk/trunk/bibdesk_vendorsrc bibdesk_vendorsrc";
+   $GETVENDOR = "svn co https://bibdesk.svn.sourceforge.net/svnroot/bibdesk/trunk/bibdesk_vendorsrc bibdesk_vendorsrc";
    tryGet($GETVENDOR);
    
-   $GETINPUTMANAGER = "svn co https://svn.sourceforge.net/svnroot/bibdesk/trunk/bibdeskinputmanager bibdeskinputmanager";
+   $GETINPUTMANAGER = "svn co https://bibdesk.svn.sourceforge.net/svnroot/bibdesk/trunk/bibdeskinputmanager bibdeskinputmanager";
    tryGet($GETINPUTMANAGER);
 
 }
