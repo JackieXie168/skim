@@ -55,7 +55,8 @@
     @param      outError (description)
     @result     (description)
 */
-+ (NSMutableArray *)itemsFromString:(NSString *)aString document:(id<BDSKOwner>)anOwner error:(NSError **)outError;
++ (NSArray *)itemsFromString:(NSString *)aString document:(id<BDSKOwner>)anOwner isPartialData:(BOOL *)isPartialData
+error:(NSError **)outError;
 
 /*!
     @method     itemsFromData:error:frontMatter:filePath:document:encoding:error:
@@ -66,14 +67,16 @@
     @param      filePath (description)
     @param      anOwner (description)
     @param      parserEncoding (description)
-    @param      outError (description)
+    @param      isPartialData Returns by reference an indication of whether problems occurred
+    @param      outError May be NULL.  If non-NULL and the item has partial data, will be filled.
     @result     (description)
 */
-+ (NSMutableArray *)itemsFromData:(NSData *)inData
++ (NSArray *)itemsFromData:(NSData *)inData
                       frontMatter:(NSMutableString *)frontMatter
                          filePath:(NSString *)filePath
 						 document:(id<BDSKOwner>)anOwner
                          encoding:(NSStringEncoding)parserEncoding
+                    isPartialData:(BOOL *)isPartialData
                             error:(NSError **)outError;
 
 /*!

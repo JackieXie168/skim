@@ -236,15 +236,17 @@
         outputString = [outputString stringWithPhoneyCiteKeys:@"FixMe"];
         type = BDSKBibTeXStringType;
     }
+    BOOL isPartialData = NO;
+
     if (type == BDSKBibTeXStringType) {
         NSMutableString *frontMatter = [NSMutableString string];
-        pubs = [BibTeXParser itemsFromData:[outputString dataUsingEncoding:NSUTF8StringEncoding] frontMatter:frontMatter filePath:@"" document:self encoding:NSUTF8StringEncoding error:&error];
+        pubs = [BibTeXParser itemsFromData:[outputString dataUsingEncoding:NSUTF8StringEncoding] frontMatter:frontMatter filePath:@"" document:self encoding:NSUTF8StringEncoding isPartialData:&isPartialData error:&error];
     } else if (type != BDSKUnknownStringType){
         pubs = [BDSKStringParser itemsFromString:outputString ofType:type error:&error];
     } else {
         error = [NSError mutableLocalErrorWithCode:kBDSKUnknownError localizedDescription:NSLocalizedString(@"Script Did Not Return BibTeX", @"Error description")];
     }
-    if (pubs == nil || error) {
+    if (pubs == nil || isPartialData) {
         failedDownload = YES;
         [NSApp presentError:error];
     }
@@ -541,7 +543,6 @@
     NSData *outputData = [[notification userInfo] objectForKey:NSFileHandleNotificationDataItem];
     if ([outputData length]) {
         [stdoutData appendData:outputData];
-        [[[notification userInfo] objectForKey:NSFileHandleNotificationFileHandleItem] readInBackgroundAndNotify];
     }
     [[notification object] readInBackgroundAndNotify];
 }

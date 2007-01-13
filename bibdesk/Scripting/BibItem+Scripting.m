@@ -288,10 +288,11 @@ Extra wrapping of the created and modified date methods to
 	}
 
     NSError *error = nil;
-    NSArray *newPubs = [BibTeXParser itemsFromString:btString document:[self owner] error:&error];
+    BOOL isPartialData;
+    NSArray *newPubs = [BibTeXParser itemsFromString:btString document:[self owner] isPartialData:&isPartialData error:&error];
 	
 	// try to do some error handling for AppleScript
-	if(error) {
+	if(isPartialData) {
 		if (cmd) {
 			[cmd setScriptErrorNumber:NSInternalScriptError];
 			[cmd setScriptErrorString:[NSString stringWithFormat:NSLocalizedString(@"BibDesk failed to process the BibTeX entry %@ with error %@. It may be malformed.",@"Error description"), btString, [error localizedDescription]]];
