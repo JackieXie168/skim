@@ -53,20 +53,9 @@
 - (BOOL)setString:(NSString *)string forType:(NSString *)type forPasteboard:(NSPasteboard *)pboard;
 - (BOOL)setData:(NSData *)data forType:(NSString *)type forPasteboard:(NSPasteboard *)pboard;
 - (BOOL)setPropertyList:(id)propertyList forType:(NSString *)type forPasteboard:(NSPasteboard *)pboard;
-- (void)absolveDelegateResponsibility;
 
-- (void)setPromisedItems:(NSArray *)items types:(NSArray *)types dragCopyType:(int)dragCopyType forPasteboard:(NSPasteboard *)pboard;
-- (NSArray *)promisedTypesForPasteboard:(NSPasteboard *)pboard;
 - (NSArray *)promisedItemsForPasteboard:(NSPasteboard *)pboard;
-- (int)promisedDragCopyTypeForPasteboard:(NSPasteboard *)pboard;
-- (NSString *)promisedBibTeXStringForPasteboard:(NSPasteboard *)pboard;
-- (void)removePromisedType:(NSString *)type forPasteboard:(NSPasteboard *)pboard;
-- (void)removePromisedTypesForPasteboard:(NSPasteboard *)pboard;
 - (void)clearPromisedTypesForPasteboard:(NSPasteboard *)pboard;
-- (void)provideAllPromisedTypes;
-- (void)absolveResponsibility;
-
-- (void)handleApplicationWillTerminateNotification:(NSNotification *)aNotification;
 
 @end
 

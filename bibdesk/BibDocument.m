@@ -212,6 +212,7 @@ static NSString *BDSKRecentSearchesKey = @"BDSKRecentSearchesKey";
     [publications makeObjectsPerformSelector:@selector(setOwner:) withObject:nil];
     [[NSNotificationCenter defaultCenter] removeObserver:self];
     [OFPreference removeObserver:self forPreference:nil];
+    [pboardHelper setDelegate:nil];
     [pboardHelper release];
     [macroResolver release];
     [publications release];
@@ -516,7 +517,9 @@ static NSString *BDSKRecentSearchesKey = @"BDSKRecentSearchesKey";
        [tableView selectedRow] != -1 )
         [[BDSKPreviewer sharedPreviewer] updateWithBibTeXString:nil];    
 	
-	[pboardHelper absolveDelegateResponsibility];
+	[pboardHelper setDelegate:nil];
+    [pboardHelper release];
+    pboardHelper = nil;
     
     // safety call here, in case the pasteboard is retaining the document; we don't want notifications after the window closes, since all the pointers to UI elements will be garbage
     [[NSNotificationCenter defaultCenter] removeObserver:self];

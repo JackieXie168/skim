@@ -43,6 +43,22 @@
 #import <OmniBase/assertions.h>
 
 
+@interface BDSKItemPasteboardHelper (Private)
+
+- (NSMutableArray *)promisedTypesForPasteboard:(NSPasteboard *)pboard;
+- (int)promisedDragCopyTypeForPasteboard:(NSPasteboard *)pboard;
+- (NSString *)promisedBibTeXStringForPasteboard:(NSPasteboard *)pboard;
+- (void)removePromisedType:(NSString *)type forPasteboard:(NSPasteboard *)pboard;
+- (void)removePromisedTypesForPasteboard:(NSPasteboard *)pboard;
+- (void)provideAllPromisedTypes;
+
+- (void)absolveDelegateResponsibility;
+- (void)absolveResponsibility;
+
+- (void)handleApplicationWillTerminateNotification:(NSNotification *)aNotification;
+
+@end
+
 @implementation BDSKItemPasteboardHelper
 
 - (id)init{
@@ -51,6 +67,8 @@
 		texTask = [[BDSKTeXTask alloc] initWithFileName:@"bibcopy"];
 		[texTask setDelegate:self];
         delegate = nil;
+        
+        [self retain]; // we should stay around as pboard owner
         
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleApplicationWillTerminateNotification:) name:NSApplicationWillTerminateNotification object:nil];
     }
@@ -65,32 +83,32 @@
     [super dealloc];
 }
 
-- (void)handleApplicationWillTerminateNotification:(NSNotification *)aNotification{
-    // the built-in AppKit variant of this comes too late, when the temporary workingDir of the texTask is already removed
-    [self provideAllPromisedTypes];
-}
+#pragma mark Delegate
 
 - (id)delegate{
     return delegate;
 }
 
 - (void)setDelegate:(id)newDelegate{
-    OBASSERT(newDelegate == nil || [newDelegate respondsToSelector:@selector(pasteboardHelper:bibTeXStringForItems:)]);
+    OBASSERT(newDelegate == nil || ([newDelegate respondsToSelector:@selector(pasteboardHelper:bibTeXStringForItems:)] && delegate == nil));
+    if (newDelegate == nil && delegate != nil)
+        [self absolveDelegateResponsibility];
     delegate = newDelegate;
 }
 
 #pragma mark Promising and adding data
 
 - (void)declareType:(NSString *)type dragCopyType:(int)dragCopyType forItems:(NSArray *)items forPasteboard:(NSPasteboard *)pboard{
-	NSArray *types = [NSArray arrayWithObjects:type, BDSKBibItemPboardType, nil];
+	NSMutableArray *types = [NSMutableArray arrayWithObjects:type, BDSKBibItemPboardType, nil];
     [self clearPromisedTypesForPasteboard:pboard];
     [pboard declareTypes:types owner:self];
-	[self setPromisedItems:items types:types dragCopyType:dragCopyType forPasteboard:pboard];
+	NSMutableDictionary *dict = [NSMutableDictionary dictionaryWithObjectsAndKeys:items, @"items", types, @"types", [NSNumber numberWithInt:dragCopyType], @"dragCopyType", nil];
+	[promisedPboardTypes setObject:dict forKey:[pboard name]];
 }
 
 - (void)addTypes:(NSArray *)newTypes forPasteboard:(NSPasteboard *)pboard{
     [pboard addTypes:newTypes owner:self];
-	NSMutableArray *types = [[promisedPboardTypes objectForKey:[pboard name]] objectForKey:@"types"];
+	NSMutableArray *types = [self promisedTypesForPasteboard:pboard];
     [types addObjectsFromArray:newTypes];
 }
 
@@ -107,41 +125,6 @@
 - (BOOL)setPropertyList:(id)propertyList forType:(NSString *)type forPasteboard:(NSPasteboard *)pboard{
     [self removePromisedType:type forPasteboard:pboard];
     return [pboard setPropertyList:propertyList forType:type];
-}
-
-- (void)absolveDelegateResponsibility{
-    if(delegate == nil)
-        return;
-    
-	NSEnumerator *nameEnum = [promisedPboardTypes keyEnumerator];
-	NSString *name;
-    
-	while(name = [nameEnum nextObject]){
-        NSPasteboard *pboard = [NSPasteboard pasteboardWithName:name];
-        NSArray *types = [self promisedTypesForPasteboard:pboard];
-        
-        if([types containsObject:BDSKBibItemPboardType])
-            [self pasteboard:pboard provideDataForType:BDSKBibItemPboardType];
-        
-        if([[self promisedTypesForPasteboard:pboard] count]){
-            NSArray *items = [self promisedItemsForPasteboard:pboard];
-            NSString *bibString = nil;
-            if(items != nil)
-                bibString = [delegate pasteboardHelper:self bibTeXStringForItems:items];
-            if(bibString != nil){
-                NSMutableDictionary *dict = [promisedPboardTypes objectForKey:[pboard name]];
-                [dict removeObjectForKey:@"items"];
-                [dict setObject:bibString forKey:@"bibTeXString"];
-            }else{
-                [pboard performSelector:@selector(setData:forType:) withObject:nil withObjectsFromArray:[self promisedTypesForPasteboard:pboard]];
-                [self clearPromisedTypesForPasteboard:pboard];
-            }
-        }
-    }
-    [self setDelegate:nil];
-    [self retain]; // we should stay around as pboard owner
-    if([promisedPboardTypes count] == 0)
-        [self absolveResponsibility];
 }
 
 #pragma mark NSPasteboard delegate methods
@@ -168,20 +151,22 @@
         else
             bibString = [self promisedBibTeXStringForPasteboard:pboard];
         if(bibString != nil){
+            int dragCopyType = [self promisedDragCopyTypeForPasteboard:pboard];
             if([type isEqualToString:NSPDFPboardType]){
+                OBASSERT(dragCopyType == BDSKPDFDragCopyType);
                 [texTask runWithBibTeXString:bibString generatedTypes:BDSKGeneratePDF];
                 [pboard setData:[texTask PDFData] forType:NSPDFPboardType];
             }else if([type isEqualToString:NSRTFPboardType]){
+                OBASSERT(dragCopyType == BDSKRTFDragCopyType);
                 [texTask runWithBibTeXString:bibString generatedTypes:BDSKGenerateRTF];
                 [pboard setData:[texTask RTFData] forType:NSRTFPboardType];
             }else if([type isEqualToString:NSStringPboardType]){
-                // this must be LaTeX or amsrefs LTB
-                int dragCopyType = [self promisedDragCopyTypeForPasteboard:pboard];
+                OBASSERT(dragCopyType == BDSKLTBDragCopyType || dragCopyType == BDSKLaTeXDragCopyType);
                 NSString *string = nil;
                 if(dragCopyType == BDSKLTBDragCopyType){
                     if([texTask runWithBibTeXString:bibString generatedTypes:BDSKGenerateLTB])
                         string = [texTask LTBString];
-                }else{
+                }else if(dragCopyType == BDSKLaTeXDragCopyType){
                     if([texTask runWithBibTeXString:bibString generatedTypes:BDSKGenerateLaTeX])
                         string = [texTask LaTeXString];
                 }
@@ -203,12 +188,34 @@
 
 #pragma mark Promised items and types
 
-- (void)setPromisedItems:(NSArray *)items types:(NSArray *)types dragCopyType:(int)dragCopyType forPasteboard:(NSPasteboard *)pboard {
-	NSMutableDictionary *dict = [NSMutableDictionary dictionaryWithObjectsAndKeys:items, @"items", [[types mutableCopy] autorelease], @"types", [NSNumber numberWithInt:dragCopyType], @"dragCopyType", nil];
-	[promisedPboardTypes setObject:dict forKey:[pboard name]];
+- (NSArray *)promisedItemsForPasteboard:(NSPasteboard *)pboard {
+	return [[promisedPboardTypes objectForKey:[pboard name]] objectForKey:@"items"];
 }
 
-- (NSArray *)promisedTypesForPasteboard:(NSPasteboard *)pboard {
+- (void)clearPromisedTypesForPasteboard:(NSPasteboard *)pboard {
+	[pboard performSelector:@selector(setData:forType:) withObject:nil withObjectsFromArray:[self promisedTypesForPasteboard:pboard]];
+    [self removePromisedTypesForPasteboard:pboard];
+}
+
+#pragma mark TeXTask delegate
+
+- (BOOL)texTaskShouldStartRunning:(BDSKTeXTask *)aTexTask{
+    if([delegate respondsToSelector:@selector(pasteboardHelperWillBeginGenerating:)])
+        [delegate pasteboardHelperWillBeginGenerating:self];
+	return YES;
+}
+
+- (void)texTask:(BDSKTeXTask *)aTexTask finishedWithResult:(BOOL)success{
+    if([delegate respondsToSelector:@selector(pasteboardHelperDidEndGenerating:)])
+        [delegate pasteboardHelperDidEndGenerating:self];
+}
+
+@end
+
+
+@implementation BDSKItemPasteboardHelper (Private)
+
+- (NSMutableArray *)promisedTypesForPasteboard:(NSPasteboard *)pboard {
 	return [[promisedPboardTypes objectForKey:[pboard name]] objectForKey:@"types"];
 }
 
@@ -216,16 +223,12 @@
 	return [[[promisedPboardTypes objectForKey:[pboard name]] objectForKey:@"dragCopyType"] intValue];
 }
 
-- (NSArray *)promisedItemsForPasteboard:(NSPasteboard *)pboard {
-	return [[promisedPboardTypes objectForKey:[pboard name]] objectForKey:@"items"];
-}
-
 - (NSString *)promisedBibTeXStringForPasteboard:(NSPasteboard *)pboard {
 	return [[promisedPboardTypes objectForKey:[pboard name]] objectForKey:@"bibTeXString"];
 }
 
 - (void)removePromisedType:(NSString *)type forPasteboard:(NSPasteboard *)pboard {
-	NSMutableArray *types = [[promisedPboardTypes objectForKey:[pboard name]] objectForKey:@"types"];
+	NSMutableArray *types = [self promisedTypesForPasteboard:pboard];
 	[types removeObject:type];
 	if([types count] == 0)
 		[self removePromisedTypesForPasteboard:pboard];
@@ -237,11 +240,6 @@
         [self absolveResponsibility];
 }
 
-- (void)clearPromisedTypesForPasteboard:(NSPasteboard *)pboard {
-	[pboard performSelector:@selector(setData:forType:) withObject:nil withObjectsFromArray:[self promisedTypesForPasteboard:pboard]];
-    [self removePromisedTypesForPasteboard:pboard];
-}
-
 - (void)provideAllPromisedTypes {
 	NSEnumerator *nameEnum = [[promisedPboardTypes allKeys] objectEnumerator];
 	NSString *name;
@@ -249,10 +247,42 @@
 	while(name = [nameEnum nextObject]){
         NSPasteboard *pboard = [NSPasteboard pasteboardWithName:name];
         NSArray *types = [[self promisedTypesForPasteboard:pboard] copy]; // we need to copy as types can be removed
-        if(types == nil) continue;
         [self performSelector:@selector(pasteboard:provideDataForType:) withObject:pboard withObjectsFromArray:types];
         [types release];
     }
+}
+
+- (void)absolveDelegateResponsibility{
+    if(delegate == nil)
+        return;
+    
+	NSEnumerator *nameEnum = [promisedPboardTypes keyEnumerator];
+	NSString *name;
+    
+	while(name = [nameEnum nextObject]){
+        NSPasteboard *pboard = [NSPasteboard pasteboardWithName:name];
+        NSMutableArray *types = [self promisedTypesForPasteboard:pboard];
+        
+        if([types containsObject:BDSKBibItemPboardType])
+            [self pasteboard:pboard provideDataForType:BDSKBibItemPboardType];
+        
+        if([types count]){
+            NSArray *items = [self promisedItemsForPasteboard:pboard];
+            NSString *bibString = nil;
+            if(items != nil)
+                bibString = [delegate pasteboardHelper:self bibTeXStringForItems:items];
+            if(bibString != nil){
+                NSMutableDictionary *dict = [promisedPboardTypes objectForKey:name];
+                [dict removeObjectForKey:@"items"];
+                [dict setObject:bibString forKey:@"bibTeXString"];
+            }else{
+                [self clearPromisedTypesForPasteboard:pboard];
+            }
+        }
+    }
+    [self setDelegate:nil];
+    if([promisedPboardTypes count] == 0)
+        [self absolveResponsibility];
 }
 
 - (void)absolveResponsibility {
@@ -268,17 +298,9 @@
     }
 }
 
-#pragma mark TeXTask delegate
-
-- (BOOL)texTaskShouldStartRunning:(BDSKTeXTask *)aTexTask{
-    if([delegate respondsToSelector:@selector(pasteboardHelperWillBeginGenerating:)])
-        [delegate pasteboardHelperWillBeginGenerating:self];
-	return YES;
-}
-
-- (void)texTask:(BDSKTeXTask *)aTexTask finishedWithResult:(BOOL)success{
-    if([delegate respondsToSelector:@selector(pasteboardHelperDidEndGenerating:)])
-        [delegate pasteboardHelperDidEndGenerating:self];
+- (void)handleApplicationWillTerminateNotification:(NSNotification *)aNotification{
+    // the built-in AppKit variant of this comes too late, when the temporary workingDir of the texTask is already removed
+    [self provideAllPromisedTypes];
 }
 
 @end
