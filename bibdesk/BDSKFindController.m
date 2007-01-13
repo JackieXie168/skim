@@ -630,7 +630,7 @@ enum {
         return;
 	}else if([theDocument hasExternalGroupsSelected]){
         NSBeep();
-		[statusBar setStringValue:NSLocalizedString(@"Cannot replace in shared items", @"Status message")];
+		[statusBar setStringValue:NSLocalizedString(@"Cannot replace in external items", @"Status message")];
         return;
 	}
     
@@ -657,7 +657,7 @@ enum {
         return;
 	}else if(replace && ([theDocument hasExternalGroupsSelected])){
         NSBeep();
-		[statusBar setStringValue:NSLocalizedString(@"Cannot replace in shared items", @"Status message")];
+		[statusBar setStringValue:NSLocalizedString(@"Cannot replace in external items", @"Status message")];
         return;
     }else if([self commitEditing] == NO){
         NSBeep();
@@ -721,7 +721,7 @@ enum {
         return;
 	}else if([theDocument hasExternalGroupsSelected]){
         NSBeep();
-		[statusBar setStringValue:NSLocalizedString(@"Cannot replace in shared items", @"Status message")];
+		[statusBar setStringValue:NSLocalizedString(@"Cannot replace in external items", @"Status message")];
         return;
     }else if([self commitEditing] == NO){
         NSBeep();
@@ -913,7 +913,7 @@ enum {
 		paperInfos = [NSMutableArray arrayWithCapacity:[arrayOfPubs count]];
     
     while(bibItem = [pubE nextObject]){
-        // don't touch shared items
+        // don't touch external items
         if ([bibItem owner] != theDocument) 
             continue;
         
@@ -965,7 +965,7 @@ enum {
 		paperInfos = [NSMutableArray arrayWithCapacity:[arrayOfPubs count]];
 	
     while(bibItem = [pubE nextObject]){
-        // don't touch shared items
+        // don't touch external items
         if ([bibItem owner] != theDocument) 
             continue;
         
@@ -1021,7 +1021,7 @@ enum {
 		paperInfos = [NSMutableArray arrayWithCapacity:[arrayOfPubs count]];
 
     while(bibItem = [pubE nextObject]){
-        // don't touch shared items
+        // don't touch external items
         if ([bibItem owner] != theDocument) 
             continue;
         
