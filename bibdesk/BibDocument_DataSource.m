@@ -395,7 +395,7 @@
     
 	OBPRECONDITION(pboard == [NSPasteboard pasteboardWithName:NSDragPboard] || pboard == [NSPasteboard pasteboardWithName:NSGeneralPboard]);
 
-    docState.dragFromSharedGroups = NO;
+    docState.dragFromExternalGroups = NO;
 	
     if(tv == groupTableView){
 		if([rowIndexes containsIndex:0]){
@@ -421,7 +421,7 @@
                 }
                 pubs = pubsInGroup;
             }
-            docState.dragFromSharedGroups = [groups hasExternalGroupsAtIndexes:rowIndexes];
+            docState.dragFromExternalGroups = [groups hasExternalGroupsAtIndexes:rowIndexes];
 		}
 		if([pubs count] == 0 && [self hasSearchGroupsSelected] == NO){
             NSBeginAlertSheet(NSLocalizedString(@"Empty Groups", @"Message in alert dialog when dragging from empty groups"),nil,nil,nil,documentWindow,nil,NULL,NULL,NULL,
@@ -433,7 +433,7 @@
 		// drag from the main table
 		pubs = [shownPublications objectsAtIndexes:rowIndexes];
         
-        docState.dragFromSharedGroups = [self hasExternalGroupsSelected];
+        docState.dragFromExternalGroups = [self hasExternalGroupsSelected];
 
 		if(pboard == [NSPasteboard pasteboardWithName:NSDragPboard]){
 			// see where we clicked in the table
@@ -740,7 +740,7 @@
     if(tv == tableView){
         if([self hasExternalGroupsSelected] || type == nil) 
 			return NSDragOperationNone;
-		if (isDragFromGroupTable && docState.dragFromSharedGroups && [self hasLibraryGroupSelected]) {
+		if (isDragFromGroupTable && docState.dragFromExternalGroups && [self hasLibraryGroupSelected]) {
             [tv setDropRow:-1 dropOperation:NSTableViewDropOn];
             return NSDragOperationCopy;
         }
@@ -760,7 +760,7 @@
         else
             return NSDragOperationEvery;
     }else if(tv == groupTableView){
-		if ((isDragFromGroupTable || isDragFromMainTable) && docState.dragFromSharedGroups) {
+		if ((isDragFromGroupTable || isDragFromMainTable) && docState.dragFromExternalGroups) {
             if (row != 0)
                 return NSDragOperationNone;
             [tv setDropRow:row dropOperation:NSTableViewDropOn];
@@ -877,7 +877,7 @@
         BDSKGroup *group = row == -1 ? nil : [[[groups objectAtIndex:row] retain] autorelease];
         BOOL shouldSelect = row == -1 || [[self selectedGroups] containsObject:group];
 		
-		if ((isDragFromGroupTable || isDragFromMainTable) && docState.dragFromSharedGroups && row == 0) {
+		if ((isDragFromGroupTable || isDragFromMainTable) && docState.dragFromExternalGroups && row == 0) {
             return [self addPublicationsFromPasteboard:pboard selectLibrary:NO error:NULL];
         } else if(isDragFromGroupTable || isDragFromDrawer || (row >= 0 && [group isValidDropTarget] == NO)) {
             return NO;
@@ -1019,14 +1019,14 @@
 
 #pragma mark -
 
-- (BOOL)isDragFromSharedGroups;
+- (BOOL)isDragFromExternalGroups;
 {
-    return docState.dragFromSharedGroups;
+    return docState.dragFromExternalGroups;
 }
 
-- (void)setDragFromSharedGroups:(BOOL)flag;
+- (void)setDragFromExternalGroups:(BOOL)flag;
 {
-    docState.dragFromSharedGroups = flag;
+    docState.dragFromExternalGroups = flag;
 }
 
 #pragma mark TableView actions

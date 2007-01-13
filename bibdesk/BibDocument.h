@@ -193,7 +193,7 @@ extern NSString* BDSKWeblocFilePboardType; // core pasteboard type for webloc fi
         NSSaveOperationType currentSaveOperationType; // used to check for autosave during writeToFile:ofType:
         BOOL                sortDescending;
         BOOL                sortGroupsDescending;
-        BOOL                dragFromSharedGroups;
+        BOOL                dragFromExternalGroups;
         BOOL                isDocumentClosed;
     } docState;
     

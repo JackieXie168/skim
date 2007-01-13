@@ -195,7 +195,7 @@ static NSString *BDSKRecentSearchesKey = @"BDSKRecentSearchesKey";
         
         // these are temporary state variables
         promiseDragColumnIdentifier = nil;
-        docState.dragFromSharedGroups = NO;
+        docState.dragFromExternalGroups = NO;
         docState.currentSaveOperationType = 0;
         
         [self registerForNotifications];
