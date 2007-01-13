@@ -1406,6 +1406,7 @@ static int numberOfOpenEditors = 0;
 	NSString *oldField = [oldFieldNamePopUp titleOfSelectedItem];
     NSString *newField = [[newFieldNameComboBox stringValue] fieldName];
     NSString *oldValue = [[[publication valueOfField:oldField] retain] autorelease];
+    int autoGenerateStatus = 0;
     
     if(returnCode == NSCancelButton || [NSString isEmptyString:newField] || 
        [newField isEqualToString:oldField] || [[publication allFieldNames] containsObject:newField])
@@ -1415,8 +1416,8 @@ static int numberOfOpenEditors = 0;
     [publication addField:newField];
     [publication setField:newField toValue:[publication valueOfField:oldField]];
     [publication removeField:oldField];
-    [self userChangedField:oldField from:oldValue to:@""];
-    [self userChangedField:newField from:@"" to:oldValue];
+    autoGenerateStatus = [self userChangedField:oldField from:oldValue to:@""];
+    [self userChangedField:newField from:@"" to:oldValue didAutoGenerate:autoGenerateStatus];
     [[self undoManager] setActionName:NSLocalizedString(@"Change Field Name", @"Undo action name")];
     [self setupForm];
     [self setKeyField:newField];
