@@ -137,8 +137,10 @@
 
 - (void)setUrlString:(NSString *)newUrlString {
     if (urlString != newUrlString) {
+        [[[self undoManager] prepareWithInvocationTarget:self] setUrlString:urlString];
         [urlString release];
         urlString = [newUrlString copy];
+        [[self undoManager] setActionName:NSLocalizedString(@"Edit URL", @"Undo action name")];
     }
 }
 
