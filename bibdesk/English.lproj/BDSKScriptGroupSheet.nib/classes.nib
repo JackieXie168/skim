@@ -1,9 +1,11 @@
 {
     IBClasses = (
+        {CLASS = BDSKDragTextField; LANGUAGE = ObjC; SUPERCLASS = NSTextField; }, 
         {
             ACTIONS = {chooseScriptPath = id; }; 
             CLASS = BDSKScriptGroupSheetController; 
             LANGUAGE = ObjC; 
+            OUTLETS = {pathField = BDSKDragTextField; }; 
             SUPERCLASS = BDSKSheetController; 
         }, 
         {

@@ -40,6 +40,8 @@
 #import "BDSKScriptGroup.h"
 #import "NSArray_BDSKExtensions.h"
 #import "NSWorkspace_BDSKExtensions.h"
+#import "BDSKFieldEditor.h"
+#import "BDSKDragTextField.h"
 
 static BOOL isAppleScriptAtPath(NSString *path)
 {
@@ -79,8 +81,9 @@ static BOOL isExecutableFileAtPath(NSString *path)
         path = [[group scriptPath] retain];
         arguments = [[group scriptArguments] retain];
         type = [group scriptType];
-        editors = CFArrayCreateMutable(kCFAllocatorMallocZone, 0, NULL);
         undoManager = nil;
+        dragFieldEditor = nil;
+        editors = CFArrayCreateMutable(kCFAllocatorMallocZone, 0, NULL);
     }
     return self;
 }
@@ -90,8 +93,13 @@ static BOOL isExecutableFileAtPath(NSString *path)
     [arguments release];
     [group release];
     [undoManager release];
+    [dragFieldEditor release];
     CFRelease(editors);
     [super dealloc];
+}
+
+- (void)awakeFromNib {
+    [pathField registerForDraggedTypes:[NSArray arrayWithObjects:NSFilenamesPboardType, nil]];
 }
 
 - (NSString *)windowNibName {
@@ -236,6 +244,43 @@ static BOOL isExecutableFileAtPath(NSString *path)
     }
     
     return YES;
+}
+
+#pragma mark Dragging support
+
+- (id)windowWillReturnFieldEditor:(NSWindow *)sender toObject:(id)anObject {
+    if (anObject == pathField) {
+        if (dragFieldEditor == nil) {
+            dragFieldEditor = [[BDSKFieldEditor alloc] init];
+            [(BDSKFieldEditor *)dragFieldEditor registerForDelegatedDraggedTypes:[NSArray arrayWithObjects:NSFilenamesPboardType, nil]];
+        }
+        return dragFieldEditor;
+    }
+    return nil;
+}
+
+- (NSDragOperation)dragTextField:(BDSKDragTextField *)textField validateDrop:(id <NSDraggingInfo>)sender {
+    NSPasteboard *pboard = [sender draggingPasteboard];
+	NSString *dragType = [pboard availableTypeFromArray:[NSArray arrayWithObjects:NSFilenamesPboardType, nil]];
+    
+    return dragType ? NSDragOperationEvery : NSDragOperationNone;
+}
+
+- (BOOL)dragTextField:(BDSKDragTextField *)textField acceptDrop:(id <NSDraggingInfo>)sender {
+    NSPasteboard *pboard = [sender draggingPasteboard];
+    
+    if ([pboard availableTypeFromArray:[NSArray arrayWithObjects:NSFilenamesPboardType, nil]]) {
+        NSArray *fileNames = [pboard propertyListForType:NSFilenamesPboardType];
+        if ([fileNames count]) {
+            NSString *thePath = [[fileNames objectAtIndex:0] stringByExpandingTildeInPath];
+            NSString *message = nil;
+            if ([self isValidScriptFileAtPath:thePath error:&message]) {
+                [self setPath:thePath];
+                return YES;
+            }
+        }
+    }
+    return NO;
 }
 
 #pragma mark Undo support
