@@ -157,9 +157,7 @@ static NSString *BDSKRecentSearchesKey = @"BDSKRecentSearchesKey";
         [groups setDocument:self];
         
         frontMatter = [[NSMutableString alloc] initWithString:@""];
-		
-        documentInfo = [[NSMutableDictionary alloc] initForCaseInsensitiveKeys];
-        
+		        
         macroResolver = [[BDSKMacroResolver alloc] initWithOwner:self];
         
         BDSKUndoManager *newUndoManager = [[[BDSKUndoManager alloc] init] autorelease];
