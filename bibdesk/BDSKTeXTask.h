@@ -86,8 +86,14 @@ typedef struct _BDSKTeXTaskFlags {
 - (id)delegate;
 - (void)setDelegate:(id)newDelegate;
 
+// the next few methods are thread-unsafe
+
 - (BOOL)runWithBibTeXString:(NSString *)bibStr;
 - (BOOL)runWithBibTeXString:(NSString *)bibStr generatedTypes:(int)flag;
+
+- (void)terminate;
+
+// these methods are thread-safe
 
 - (NSString *)logFileString;
 - (NSString *)LTBString;
@@ -107,7 +113,6 @@ typedef struct _BDSKTeXTaskFlags {
 - (BOOL)hasRTFData;
 
 - (BOOL)isProcessing;
-- (void)terminate;
 
 @end
 
