@@ -201,6 +201,8 @@
 		CE2391610A334890009F3A5B /* BDSKDocumentInfoWindowController.h in Headers */ = {isa = PBXBuildFile; fileRef = CE23915F0A334890009F3A5B /* BDSKDocumentInfoWindowController.h */; };
 		CE2391620A334890009F3A5B /* BDSKDocumentInfoWindowController.m in Sources */ = {isa = PBXBuildFile; fileRef = CE2391600A334890009F3A5B /* BDSKDocumentInfoWindowController.m */; };
 		CE23916A0A3348B2009F3A5B /* DocumentInfoWindow.nib in Resources */ = {isa = PBXBuildFile; fileRef = CE2391630A3348B1009F3A5B /* DocumentInfoWindow.nib */; };
+		CE26481C0B5AB4B800D4B5B8 /* BDSKDragTextField.h in Headers */ = {isa = PBXBuildFile; fileRef = CE26481A0B5AB4B700D4B5B8 /* BDSKDragTextField.h */; };
+		CE26481D0B5AB4B800D4B5B8 /* BDSKDragTextField.m in Sources */ = {isa = PBXBuildFile; fileRef = CE26481B0B5AB4B700D4B5B8 /* BDSKDragTextField.m */; };
 		CE27D95B0AF92BFD00419879 /* BDSKZoomableTextView.h in Headers */ = {isa = PBXBuildFile; fileRef = CE27D9590AF92BFD00419879 /* BDSKZoomableTextView.h */; };
 		CE27D95C0AF92BFD00419879 /* BDSKZoomableTextView.m in Sources */ = {isa = PBXBuildFile; fileRef = CE27D95A0AF92BFD00419879 /* BDSKZoomableTextView.m */; };
 		CE28346309176C88006B4C63 /* NSBezierPath_CoreImageExtensions.h in Headers */ = {isa = PBXBuildFile; fileRef = CE28346109176C88006B4C63 /* NSBezierPath_CoreImageExtensions.h */; };
@@ -1096,6 +1098,8 @@
 		CE23915F0A334890009F3A5B /* BDSKDocumentInfoWindowController.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = BDSKDocumentInfoWindowController.h; sourceTree = "<group>"; };
 		CE2391600A334890009F3A5B /* BDSKDocumentInfoWindowController.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = BDSKDocumentInfoWindowController.m; sourceTree = "<group>"; };
 		CE2391640A3348B1009F3A5B /* English */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = English; path = English.lproj/DocumentInfoWindow.nib; sourceTree = "<group>"; };
+		CE26481A0B5AB4B700D4B5B8 /* BDSKDragTextField.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BDSKDragTextField.h; sourceTree = "<group>"; };
+		CE26481B0B5AB4B700D4B5B8 /* BDSKDragTextField.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BDSKDragTextField.m; sourceTree = "<group>"; };
 		CE27D9590AF92BFD00419879 /* BDSKZoomableTextView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BDSKZoomableTextView.h; sourceTree = "<group>"; };
 		CE27D95A0AF92BFD00419879 /* BDSKZoomableTextView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BDSKZoomableTextView.m; sourceTree = "<group>"; };
 		CE28346109176C88006B4C63 /* NSBezierPath_CoreImageExtensions.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = NSBezierPath_CoreImageExtensions.h; sourceTree = "<group>"; };
@@ -1914,6 +1918,7 @@
 				CE34E9780A03C16B00222942 /* BDSKConditionsView.m */,
 				CE7595FE0ADDB0E0009C1329 /* BDSKContainerView.m */,
 				CEEC70E0093B6EC200A64F54 /* BDSKDragImageView.m */,
+				CE26481B0B5AB4B700D4B5B8 /* BDSKDragTextField.m */,
 				F9022C410758027800C3F701 /* BDSKMainTableView.m */,
 				F9022C430758027800C3F701 /* BDSKDragWindow.m */,
 				CE2837400917D31D006B4C63 /* BDSKEdgeView.m */,
@@ -2322,6 +2327,7 @@
 				CE966C6E0B47CF25003BAB9A /* BDSKDublinCoreXMLParser.h */,
 				CEFA0F4C0AF1400900A3B4B1 /* BDSKOwnerProtocol.h */,
 				CEEC70DF093B6EC200A64F54 /* BDSKDragImageView.h */,
+				CE26481A0B5AB4B700D4B5B8 /* BDSKDragTextField.h */,
 				F9022C400758027800C3F701 /* BDSKMainTableView.h */,
 				F9022C420758027800C3F701 /* BDSKDragWindow.h */,
 				CE28373F0917D31D006B4C63 /* BDSKEdgeView.h */,
@@ -2855,6 +2861,7 @@
 				CEAB9F590B4FF20800673AC2 /* BDSKCitationFormatter.h in Headers */,
 				F940D1090B5568E400B5917A /* BDSKReferParser.h in Headers */,
 				CEEA4C6B0B57B0D400434059 /* BDSKBooleanValueTransformer.h in Headers */,
+				CE26481C0B5AB4B800D4B5B8 /* BDSKDragTextField.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -3681,6 +3688,7 @@
 				CEAB9F5A0B4FF20800673AC2 /* BDSKCitationFormatter.m in Sources */,
 				F940D10A0B5568E400B5917A /* BDSKReferParser.m in Sources */,
 				CEEA4C6A0B57B0D400434059 /* BDSKBooleanValueTransformer.m in Sources */,
+				CE26481D0B5AB4B800D4B5B8 /* BDSKDragTextField.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -1,5 +1,6 @@
 {
     IBClasses = (
+        {CLASS = BDSKDragTextField; LANGUAGE = ObjC; SUPERCLASS = NSTextField; }, 
         {
             ACTIONS = {dismiss = id; }; 
             CLASS = BDSKSheetController; 
@@ -10,6 +11,7 @@
             ACTIONS = {chooseURL = id; }; 
             CLASS = BDSKURLGroupSheetController; 
             LANGUAGE = ObjC; 
+            OUTLETS = {urlField = BDSKDragTextField; }; 
             SUPERCLASS = BDSKSheetController; 
         }, 
         {CLASS = FirstResponder; LANGUAGE = ObjC; SUPERCLASS = NSObject; }

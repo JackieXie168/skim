@@ -157,7 +157,7 @@
 	
 	if (highlight == NO) return;
 	
-	[[NSColor selectedControlColor] set];
+	[[NSColor alternateSelectedControlColor] set];
 	[NSBezierPath setDefaultLineWidth:2.0];
 	[NSBezierPath strokeRoundRectInRect:NSInsetRect(aRect, 2.0, 2.0) radius:5.0];
 }
