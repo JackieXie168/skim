@@ -404,7 +404,7 @@
     
     NSDate *referenceDate = [NSDate date];
     
-    while ([self isProcessing] && currentTask){
+    while ([self isProcessing]){
         // if the task is still running after 2 seconds, kill it; we can't sleep here, because the main thread (usually this one) may be updating the UI for a task
         if([referenceDate timeIntervalSinceNow] > -2 && OFSimpleLockTry(&currentTaskLock)){
             if([currentTask isRunning])
