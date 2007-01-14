@@ -122,6 +122,7 @@
 
 - (void)dealloc;
 {
+    // don't release currentTask; it's managed in the thread
     [[NSFileManager defaultManager] deleteObjectAtFileURL:[NSURL fileURLWithPath:workingDirPath] error:NULL];
     [[NSNotificationCenter defaultCenter] removeObserver:self];
     [self terminate];
@@ -135,6 +136,7 @@
     [macroResolver release];
     [workingDirPath release];
     [stdoutData release];
+    [messageQueue release];
     [super dealloc];
 }
 
