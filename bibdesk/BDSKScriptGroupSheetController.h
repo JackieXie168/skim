@@ -39,16 +39,18 @@
 #import <Cocoa/Cocoa.h>
 #import "BDSKSheetController.h"
 
-@class BDSKScriptGroup;
+@class BDSKScriptGroup, BDSKDragTextField, BDSKFieldEditor;
 
 @interface BDSKScriptGroupSheetController : BDSKSheetController
 {
+    IBOutlet BDSKDragTextField *pathField;
     BDSKScriptGroup *group;
     NSString *path;
     NSString *arguments;
     int type;
-    CFArrayRef editors;
     NSUndoManager *undoManager;
+    BDSKFieldEditor *dragFieldEditor;
+    CFArrayRef editors;
 }
 
 - (id)initWithGroup:(BDSKScriptGroup *)aGroup;
