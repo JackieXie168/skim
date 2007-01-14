@@ -1,10 +1,10 @@
 //
-//  BDSKURLGroupSheetController.h
+//  BDSKDragTextField.h
 //  Bibdesk
 //
-//  Created by Christiaan Hofman on 11/10/06.
+//  Created by Christiaan Hofman on 1/14/07.
 /*
- This software is Copyright (c) 2006,2007
+ This software is Copyright (c) 2007
  Christiaan Hofman. All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
@@ -37,31 +37,15 @@
  */
 
 #import <Cocoa/Cocoa.h>
-#import "BDSKSheetController.h"
 
-@class BDSKURLGroup, BDSKDragTextField, BDSKFieldEditor;
 
-@interface BDSKURLGroupSheetController : BDSKSheetController
-{
-    IBOutlet BDSKDragTextField *urlField;
-    BDSKURLGroup *group;
-    NSString *urlString;
-    NSUndoManager *undoManager;
-    BDSKFieldEditor *dragFieldEditor;
-    CFArrayRef editors;
+@interface BDSKDragTextField : NSTextField {
+    BOOL highlight;
 }
+@end
 
-- (id)initWithGroup:(BDSKURLGroup *)aGroup;
 
-- (IBAction)chooseURL:(id)sender;
-
-- (BDSKURLGroup *)group;
-
-- (NSString *)urlString;
-- (void)setUrlString:(NSString *)newUrlString;
-
-- (BOOL)commitEditing;
-
-- (NSUndoManager *)undoManager;
-
+@interface NSObject (BDSKDragTextFieldDelegate)
+- (NSDragOperation)dragTextField:(BDSKDragTextField *)textField validateDrop:(id <NSDraggingInfo>)sender;
+- (BOOL)dragTextField:(BDSKDragTextField *)textField acceptDrop:(id <NSDraggingInfo>)sender;
 @end

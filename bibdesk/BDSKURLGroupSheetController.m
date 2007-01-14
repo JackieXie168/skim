@@ -40,6 +40,8 @@
 #import "BDSKURLGroup.h"
 #import "NSArray_BDSKExtensions.h"
 #import "NSError_BDSKExtensions.h"
+#import "BibDocument.h"
+#import "BDSKFieldEditor.h"
 
 @implementation BDSKURLGroupSheetController
 
@@ -54,6 +56,7 @@
         urlString = [[[group URL] absoluteString] retain];
         editors = CFArrayCreateMutable(kCFAllocatorMallocZone, 0, NULL);
         undoManager = nil;
+        dragFieldEditor = nil;
     }
     return self;
 }
@@ -62,8 +65,13 @@
     [urlString release];
     [group release];
     [undoManager release];
+    [dragFieldEditor release];
     CFRelease(editors);
     [super dealloc];
+}
+
+- (void)awakeFromNib {
+    [urlField registerForDraggedTypes:[NSArray arrayWithObjects:NSFilenamesPboardType, NSURLPboardType, BDSKWeblocFilePboardType, nil]];
 }
 
 - (NSString *)windowNibName {
@@ -164,6 +172,44 @@
         return NO;
     }
     return YES;
+}
+
+#pragma mark Dragging support
+
+- (id)windowWillReturnFieldEditor:(NSWindow *)sender toObject:(id)anObject {
+	if (dragFieldEditor == nil) {
+		dragFieldEditor = [[BDSKFieldEditor alloc] init];
+		[(BDSKFieldEditor *)dragFieldEditor registerForDelegatedDraggedTypes:[NSArray arrayWithObjects:NSFilenamesPboardType, NSURLPboardType, BDSKWeblocFilePboardType, nil]];
+	}
+	return dragFieldEditor;
+}
+
+- (NSDragOperation)dragTextField:(BDSKDragTextField *)textField validateDrop:(id <NSDraggingInfo>)sender {
+    NSPasteboard *pboard = [sender draggingPasteboard];
+	NSString *dragType = [pboard availableTypeFromArray:[NSArray arrayWithObjects:BDSKWeblocFilePboardType, NSFilenamesPboardType, NSURLPboardType, nil]];
+    
+    return dragType ? NSDragOperationEvery : NSDragOperationNone;
+}
+
+- (BOOL)dragTextField:(BDSKDragTextField *)textField acceptDrop:(id <NSDraggingInfo>)sender {
+    NSPasteboard *pboard = [sender draggingPasteboard];
+	NSString *dragType = [pboard availableTypeFromArray:[NSArray arrayWithObjects:BDSKWeblocFilePboardType, NSFilenamesPboardType, NSURLPboardType, nil]];
+    NSURL *url = nil;
+    
+    if ([dragType isEqualToString:NSFilenamesPboardType]) {
+        NSArray *fileNames = [pboard propertyListForType:NSFilenamesPboardType];
+        if ([fileNames count])
+            url = [NSURL fileURLWithPath:[[fileNames objectAtIndex:0] stringByExpandingTildeInPath]]; 
+    } else if ([dragType isEqualToString:NSURLPboardType]) {
+        url = [NSURL URLFromPasteboard:pboard];
+    } else if ([dragType isEqualToString:BDSKWeblocFilePboardType]) {
+        url = [NSURL URLWithString:[pboard stringForType:BDSKWeblocFilePboardType]];
+    }
+    if (url) {
+        [self setUrlString:[url absoluteString]];
+        return YES;
+    }
+    return NO;
 }
 
 #pragma mark Undo support
