@@ -875,7 +875,7 @@ static NSString *copyStringFromNoteField(AST *field, const char *data, NSString 
 static BOOL addValuesFromEntryToDictionary(AST *entry, NSMutableDictionary *dictionary, const char *buf, BDSKMacroResolver *macroResolver, NSString *filePath, NSStringEncoding parserEncoding)
 {
     AST *field = NULL;
-    NSString *sFieldName, *complexString, *tmpStr;
+    NSString *fieldName, *fieldValue, *tmpStr;
     char *fieldname;
     BOOL hadProblems = NO;
     
@@ -883,11 +883,13 @@ static BOOL addValuesFromEntryToDictionary(AST *entry, NSMutableDictionary *dict
     {
         // Get fieldname as a capitalized NSString
         tmpStr = copyCheckedString(fieldname, field->line, filePath, parserEncoding);
-        sFieldName = [tmpStr fieldName];
+        fieldName = [tmpStr fieldName];
         [tmpStr release];
         
+        fieldValue = nil;
+        
         // Special case handling of abstract & annote is to avoid losing newlines in preexisting files.
-        if([sFieldName isNoteField]){
+        if([fieldName isNoteField]){
             NSString *errorString;
             tmpStr = copyStringFromNoteField(field, buf, filePath, parserEncoding, &errorString);
             
@@ -907,9 +909,9 @@ static BOOL addValuesFromEntryToDictionary(AST *entry, NSMutableDictionary *dict
             } else {
                 
                 // this returns nil in case of a syntax error; it isn't an encoding failure
-                complexString = [tmpStr copyDeTeXifiedString];
+                fieldValue = [tmpStr copyDeTeXifiedString];
                 
-                if (nil == complexString) {
+                if (nil == fieldValue) {
                     hadProblems = YES;
                     NSString *type = NSLocalizedString(@"error", @"");
                     NSString *message = [NSString stringWithFormat:NSLocalizedString(@"Unable to convert TeX string \"%@\"", @"Error description"), tmpStr];
@@ -927,19 +929,19 @@ static BOOL addValuesFromEntryToDictionary(AST *entry, NSMutableDictionary *dict
             
         }else{
             // this method returns nil and posts an error in case of failure
-            complexString = copyStringFromBTField(field, filePath, macroResolver, parserEncoding);
+            fieldValue = copyStringFromBTField(field, filePath, macroResolver, parserEncoding);
         }
         
-        if (sFieldName && complexString) {
+        if (fieldName && fieldValue) {
             // add the expanded values to the autocomplete dictionary; authors are handled elsewhere
-            if ([sFieldName isPersonField] == NO)
-                [[NSApp delegate] addString:complexString forCompletionEntry:sFieldName];
+            if ([fieldName isPersonField] == NO)
+                [[NSApp delegate] addString:fieldValue forCompletionEntry:fieldName];
             
-            [dictionary setObject:complexString forKey:sFieldName];
+            [dictionary setObject:fieldValue forKey:fieldName];
         } else {
             hadProblems = YES;
         }
-        [complexString release];
+        [fieldValue release];
         
     }// end while field - process next bt field      
     return hadProblems == NO;
