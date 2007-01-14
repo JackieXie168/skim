@@ -112,7 +112,7 @@ static BibAuthor *emptyAuthorInstance = nil;
 		// set this first so we have the document for parser errors
         publication = aPub; // don't retain this, since it retains us
         
-        originalName = [aName retain];
+        originalName = [aName copy];
         // this does all the name parsing
 		[self splitName:aName];
 	}
@@ -121,16 +121,18 @@ static BibAuthor *emptyAuthorInstance = nil;
 }
 
 - (void)dealloc{
-    [firstNames release];
+    [originalName release];
     [name release];
 	[firstName release];
 	[vonPart release];
 	[lastName release];
 	[jrPart release];
+    [fullLastName release];
 	[normalizedName release];
     [sortableName release];
     [abbreviatedName release];
     [abbreviatedNormalizedName release];
+    [firstNames release];
     [fuzzyName release];
     [super dealloc];
 }
