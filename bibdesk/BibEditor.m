@@ -2003,7 +2003,7 @@ static int numberOfOpenEditors = 0;
 	else if([changeKey isEqualToString:BDSKTitleString] || [changeKey isEqualToString:BDSKChapterString] || [changeKey isEqualToString:BDSKPagesString]){
 		[[self window] setTitle:[publication displayTitle]];
 	}
-	else if([changeKey isEqualToString:BDSKAuthorString]){
+	else if([changeKey isPersonField]){
 		[authorTableView reloadData];
 	}
     else if([changeKey isEqualToString:BDSKAnnoteString]){

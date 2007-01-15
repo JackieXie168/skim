@@ -47,10 +47,18 @@ enum {
     BDSKBooleanType,
     BDSKTriStateType,
     BDSKRatingType,
-    BDSKCitationType
+    BDSKCitationType,
+    BDSKPersonType
 };
 
+static NSSet *alwaysDisabledFields = nil;
+
 @implementation BibPref_Defaults
+
++ (void)initialize {
+    if (nil == alwaysDisabledFields)
+        alwaysDisabledFields = [[NSSet alloc] initWithObjects:BDSKLocalUrlString, BDSKUrlString, BDSKAuthorString, BDSKEditorString, nil];
+}
 
 - (id)initWithTitle:(NSString *)newTitle defaultsArray:(NSArray *)newDefaultsArray controller:(OAPreferenceController *)controller{
 	if(self = [super initWithTitle:newTitle defaultsArray:newDefaultsArray controller:controller]){
@@ -126,6 +134,16 @@ enum {
 			[customFieldsArray addObject:dict];
 			[customFieldsSet addObject:field];
 		}
+        
+		// Add Person fields
+		e = [[defaults arrayForKey:BDSKPersonFieldsKey] objectEnumerator];
+		type = [NSNumber numberWithInt:BDSKPersonType];
+		while(field = [e nextObject]){
+			isDefault = [NSNumber numberWithBool:[defaultFields containsObject:field]];
+			dict = [NSMutableDictionary dictionaryWithObjectsAndKeys:field, @"field", type, @"type", isDefault, @"default", nil];
+			[customFieldsArray addObject:dict];
+			[customFieldsSet addObject:field];
+		}        
 		
 		// Add any remaining Textual default fields at the beginning
 		e = [defaultFields reverseObjectEnumerator];
@@ -159,6 +177,7 @@ enum {
     NSMutableArray *booleanFields = [[NSMutableArray alloc] initWithCapacity:1];
     NSMutableArray *triStateFields = [[NSMutableArray alloc] initWithCapacity:1];
     NSMutableArray *citationFields = [[NSMutableArray alloc] initWithCapacity:1];
+    NSMutableArray *personFields = [[NSMutableArray alloc] initWithCapacity:1];
 	
 	NSEnumerator *e = [customFieldsArray objectEnumerator];
 	NSDictionary *dict = nil;
@@ -193,6 +212,9 @@ enum {
             case BDSKCitationType:
                 [citationFields addObject:field];
                 break;
+            case BDSKPersonType:
+                [personFields addObject:field];
+                break;
             default:
                 [NSException raise:NSInvalidArgumentException format:@"Attempt to set unrecognized type"];
         }
@@ -204,6 +226,7 @@ enum {
     [defaults setObject:booleanFields forKey:BDSKBooleanFieldsKey];
     [defaults setObject:triStateFields forKey:BDSKTriStateFieldsKey];
     [defaults setObject:citationFields forKey:BDSKCitationFieldsKey];
+    [defaults setObject:personFields forKey:BDSKPersonFieldsKey];
     [defaultFields release];
     [localFileFields release];
     [remoteURLFields release];
@@ -211,6 +234,7 @@ enum {
     [booleanFields release];
     [triStateFields release];
     [citationFields release];
+    [personFields release];
     
 	[defaultFieldsTableView reloadData];
 	[self valuesHaveChanged];
@@ -227,7 +251,7 @@ enum {
 		return;
 	}
 	NSString *field = [[customFieldsArray objectAtIndex:row] objectForKey:@"field"];
-	if([field isEqualToString:BDSKLocalUrlString] || [field isEqualToString:BDSKUrlString] || [field isEqualToString:BDSKRatingString])
+	if([alwaysDisabledFields containsObject:field] || [field isEqualToString:BDSKRatingString])
 		[delSelectedDefaultFieldButton setEnabled:NO];
 	else
 		[delSelectedDefaultFieldButton setEnabled:YES];
@@ -368,7 +392,7 @@ enum {
         NSString *colID = [tableColumn identifier];
         NSString *field = [[customFieldsArray objectAtIndex:row] objectForKey:@"field"];
         
-        if([field isEqualToString:BDSKLocalUrlString] || [field isEqualToString:BDSKUrlString])
+        if([alwaysDisabledFields containsObject:field])
             [cell setEnabled:NO];
         else if([field isEqualToString:BDSKRatingString] &&
                 ([colID isEqualToString:@"field"] || [colID isEqualToString:@"type"]))
@@ -386,7 +410,7 @@ enum {
             return;
         }
         NSString *field = [[customFieldsArray objectAtIndex:row] objectForKey:@"field"];
-        if([field isEqualToString:BDSKLocalUrlString] || [field isEqualToString:BDSKUrlString] || [field isEqualToString:BDSKRatingString])
+        if([alwaysDisabledFields containsObject:field] || [field isEqualToString:BDSKRatingString])
             [delSelectedDefaultFieldButton setEnabled:NO];
         else
             [delSelectedDefaultFieldButton setEnabled:YES];

@@ -573,6 +573,11 @@
 						<string>Cited-By</string>
 						<string>Cites</string>
 					</array>
+                    <key>Person fields</key>
+                    <array>
+                        <string>Author</string>
+                        <string>Editor</string>
+                    </array>
 					<key>Default Fields</key>
 					<array>
 						<string>Keywords</string>

@@ -109,7 +109,7 @@
         sortDescriptor = [[BDSKTableSortDescriptor alloc] initWithKey:@"dateModified" ascending:ascend selector:@selector(compare:)];
         
 	}else if([tcID isEqualToString:BDSKFirstAuthorString] ||
-             [tcID isEqualToString:BDSKAuthorString] || [tcID isEqualToString:@"Authors"]){
+             [tcID isEqualToString:BDSKAuthorString]){
         
         sortDescriptor = [[BDSKTableSortDescriptor alloc] initWithKey:@"firstAuthor" ascending:ascend selector:@selector(sortCompare:)];
         
