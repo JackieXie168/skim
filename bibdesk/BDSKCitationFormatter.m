@@ -64,7 +64,7 @@
     static NSCharacterSet *keyCharSet = nil;
     
     if (keySepCharSet == nil) {
-        keySepCharSet = [[NSCharacterSet characterSetWithCharactersInString:@","] retain];
+        keySepCharSet = [[NSCharacterSet characterSetWithCharactersInString:@", "] retain];
         keyCharSet = [[keySepCharSet invertedSet] retain];
     }
     
@@ -112,7 +112,7 @@
 	static NSCharacterSet *invalidSet = nil;
     if (invalidSet == nil) {
         NSMutableCharacterSet *tmpSet = [[[BibTypeManager sharedManager] invalidCharactersForField:BDSKCiteKeyString inFileType:BDSKBibtexString] mutableCopy];
-        [tmpSet removeCharactersInString:@","];
+        [tmpSet removeCharactersInString:@", "];
         invalidSet = [tmpSet copy];
         [tmpSet release];
     }

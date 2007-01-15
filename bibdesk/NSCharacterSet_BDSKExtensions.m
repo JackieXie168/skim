@@ -42,6 +42,7 @@
 
 static NSCharacterSet *curlyBraceCharacterSet = nil;
 static NSCharacterSet *autocompletePunctuationCharacterSet = nil;
+static NSCharacterSet *commaCharacterSet = nil;
 static NSCharacterSet *searchStringSeparatorCharacterSet = nil;
 static NSCharacterSet *upAndDownArrowCharacterSet = nil;
 static NSCharacterSet *newlineCharacterSet = nil;
@@ -50,7 +51,8 @@ static NSCharacterSet *nonWhitespaceCharacterSet = nil;
 + (void)didLoad;
 {
     curlyBraceCharacterSet = [[NSCharacterSet characterSetWithCharactersInString:@"{}"] retain];
-    autocompletePunctuationCharacterSet = [[NSCharacterSet characterSetWithCharactersInString:@",:;"] retain];
+    autocompletePunctuationCharacterSet = [[NSCharacterSet characterSetWithCharactersInString:[[OFPreferenceWrapper sharedPreferenceWrapper] stringForKey:BDSKGroupFieldSeparatorCharactersKey]] retain];
+    commaCharacterSet = [[NSCharacterSet characterSetWithCharactersInString:@","] retain];
     searchStringSeparatorCharacterSet = [[NSCharacterSet characterSetWithCharactersInString:@"+| "] retain];
     
     // up arrow and down arrow character set
@@ -82,6 +84,11 @@ static NSCharacterSet *nonWhitespaceCharacterSet = nil;
 + (NSCharacterSet *)autocompletePunctuationCharacterSet;
 {
     return autocompletePunctuationCharacterSet;
+}
+
++ (NSCharacterSet *)commaCharacterSet;
+{
+    return commaCharacterSet;
 }
 
 + (NSCharacterSet *)searchStringSeparatorCharacterSet;

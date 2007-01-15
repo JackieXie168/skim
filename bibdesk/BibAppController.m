@@ -631,7 +631,7 @@ static void createTemporaryDirectory()
         return;
     }
     
-    NSCharacterSet *acSet = [NSCharacterSet autocompletePunctuationCharacterSet];
+    NSCharacterSet *acSet = [[BibTypeManager sharedManager] separatorCharacterSetForField:entry];
     if([string rangeOfCharacterFromSet:acSet].location != NSNotFound){
         [completionSet addObjectsFromArray:[string componentsSeparatedByCharactersInSet:acSet trimWhitespace:YES]];
     } else if([entry isEqualToString:BDSKKeywordsString]){
@@ -652,6 +652,7 @@ static void createTemporaryDirectory()
 
 - (NSRange)entry:(NSString *)entry rangeForUserCompletion:(NSRange)charRange ofString:(NSString *)fullString {
     OFCharacterSet *wsCharSet = [OFCharacterSet whitespaceCharacterSet];
+    NSCharacterSet *acSet = [[BibTypeManager sharedManager] separatorCharacterSetForField:entry];
 
 	if ([entry isEqualToString:BDSKEditorString])	
 		entry = BDSKAuthorString;
@@ -663,7 +664,7 @@ static void createTemporaryDirectory()
 	// find a string to match, be consistent with addString:forCompletionEntry:
 	NSRange searchRange = NSMakeRange(0, charRange.location);
 	// find the first separator preceding the current word being entered
-    NSRange punctuationRange = [fullString rangeOfCharacterFromSet:[NSCharacterSet autocompletePunctuationCharacterSet]
+    NSRange punctuationRange = [fullString rangeOfCharacterFromSet:acSet
 														   options:NSBackwardsSearch
 															 range:searchRange]; // check to see if this is a keyword-type
     NSRange andRange = [fullString rangeOfString:@" and "

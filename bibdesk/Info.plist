@@ -782,6 +782,8 @@
 						<string>Keywords</string>
 						<string>Group</string>
 					</array>
+					<key>BDSKGroupFieldSeparatorCharactersKey</key>
+					<string>,:;</string>
 					<key>BDSKIntersectGroupsKey</key>
 					<false/>
 					<key>BDSKReadExtendedAttributesKey</key>

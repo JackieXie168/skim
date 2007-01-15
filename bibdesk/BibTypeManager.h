@@ -61,6 +61,8 @@
 #define BIBTEX_FIELDS_FOR_REFER_TAGS_KEY     @"BibTeXFieldNamesForReferTags"
 #define BIBTEX_TYPES_FOR_REFER_TYPES_KEY     @"BibTeXTypesForReferTypes"
 
+@class OFCharacterSet;
+
 @interface BibTypeManager : NSObject {
 	NSDictionary *fileTypesDict;
 	NSDictionary *fieldsForTypesDict;
@@ -259,6 +261,9 @@
     @result     (description)
 */
 - (NSCharacterSet *)fragileCiteKeyCharacterSet;
+
+- (NSCharacterSet *)separatorCharacterSetForField:(NSString *)fieldName;
+- (OFCharacterSet *)separatorOFCharacterSetForField:(NSString *)fieldName;
 
 @end
 

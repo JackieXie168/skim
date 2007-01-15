@@ -1271,10 +1271,6 @@ static NSString *UTIForPath(NSString *aPath)
 
 // parses a comma separated list of AppleScript type arguments
 - (NSArray *)appleScriptArgumentsArray {
-    static NSCharacterSet *commaChars = nil;
-    if (commaChars == nil)
-        commaChars = [[NSCharacterSet characterSetWithCharactersInString:@","] retain];
-    
     NSMutableArray *arguments = [NSMutableArray array];
     NSScanner *scanner = [NSScanner scannerWithString:self];
     unichar ch = 0;
@@ -1283,7 +1279,7 @@ static NSString *UTIForPath(NSString *aPath)
     [scanner setCharactersToBeSkipped:nil];
     
     while ([scanner isAtEnd] == NO) {
-        if ([scanner scanAppleScriptValueUpToCharactersInSet:commaChars intoObject:&object])
+        if ([scanner scanAppleScriptValueUpToCharactersInSet:[NSCharacterSet commaCharacterSet] intoObject:&object])
             [arguments addObject:object];
         if ([scanner scanCharacter:&ch] == NO)
             break;

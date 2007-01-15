@@ -85,7 +85,7 @@
     static NSCharacterSet *keyCharSet = nil;
     
     if (keySepCharSet == nil) {
-        keySepCharSet = [[NSCharacterSet characterSetWithCharactersInString:@","] retain];
+        keySepCharSet = [[NSCharacterSet characterSetWithCharactersInString:@", "] retain];
         keyCharSet = [[keySepCharSet invertedSet] retain];
     }
     
