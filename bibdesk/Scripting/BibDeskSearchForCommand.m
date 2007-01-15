@@ -202,7 +202,7 @@ There could be other extensions, like matching for every word with conjunction o
 	
     // these are all guaranteed to be non-nil
     [string appendString:[self citeKey]];
-    [string appendString:[[self title] stringByRemovingTeX]];
+    [string appendString:[self displayTitle]];
     [string appendString:[self keywords]];
 
 	Boolean result = CFStringFindWithOptions((CFStringRef)string,(CFStringRef)searchterm, CFRangeMake(0, [string length]), kCFCompareCaseInsensitive, NULL);
@@ -230,7 +230,7 @@ There could be other extensions, like matching for every word with conjunction o
         }
 	}
 	
-	return [[self citeKey] stringByAppendingFormat: @" %% %@, %@", surnames, [[self title] stringByRemovingTeX]];
+	return [[self citeKey] stringByAppendingFormat: @" %% %@, %@", surnames, [self displayTitle]];
 	
 }
 @end
