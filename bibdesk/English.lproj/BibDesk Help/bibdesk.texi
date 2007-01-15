@@ -1461,6 +1461,11 @@ your group list will show 6 groups:
 few points to note:  groups are case-sensitive, and partial matches are not accepted, and
 one group (cohesion) will have two entries visible when it is selected in the group list.
 Separators that are recognized for groups are @samp{;:,} and @samp{and}, at present.
+@samp{and} will be ignored as separator when the entry contains any of the separator characters. 
+The separator characters can be changed with a hidden preference using Terminal.app. 
+To change it to, say, @samp{;,}, quit BibDesk and enter the following command in Terminal (exclude double quotes): 
+``@code{defaults write edu.ucsd.cs.mmccrack.bibdesk BDSKGroupFieldSeparatorCharactersKey ';,'}''
+then hit return.
 
 You can add entries or files to a group via drag-and-drop by dragging the selected files to a
 particular group's icon.  New items created in BibDesk are added to the presently selected group, 
@@ -3492,7 +3497,7 @@ Possible format specifiers are given in the table below.
 
 @c End of macro definitions
 
-@multitable {@b{%s\{}\i{Field}\b{[][][]\}0}} {Keywords concatenated together, with (optional) maximal number of keywords. Keywords must be separated by one of ;:, (semicolon, colon, or comma)}
+@multitable {@b{%s\{}\i{Field}\b{[][][]\}0}} {Arbitrary field as initials, e.g. @samp{JCIS} for @samp{J. of Colloid and Interface Science}, with (optional) length of words to ignore}
 @headitem Specifier @tab Replaced content description
 @item @specparam{%a, [][]00}
 @tab Author last names, with (optional) maximal number of authors and number of characters
@@ -3514,7 +3519,6 @@ Possible format specifiers are given in the table below.
 @tab Month as decimal number
 @item @specparam{%k, [/]0 }
 @tab Keywords concatenated together, with (optional) maximal number of keywords. 
-Keywords must be separated by one of ;:, (semicolon, colon, or comma)
 @item @spec{%l}
 @tab File name of the linked file, without extension
 @item @spec{%L}
@@ -3589,6 +3593,9 @@ The cite key format can contain, apart from the specifiers, only unaccented
 alphanumeric characters (a-zA-Z0-9), (semi-)colons (:;), dashes (-), slashes (/) or periods (.). 
 Any generated part of the cite key will be converted to contain only those characters. 
 For example, accents are removed and spaces will be converted to dashes. 
+
+Keywords are, by default, separated by one of ;:, (semicolon, colon, or comma.) 
+The precise way keywords are separated and how to change these defaults is described in @ref{Field Groups}. 
 
 The format for the local-url can contain any character apart from colons (:). 
 To use an explicit percent character, use the escape specifier @spec{%%} 
