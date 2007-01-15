@@ -263,7 +263,7 @@ NSString *BDSKDocumentFormatForSearchingDates = nil;
             NSEnumerator *pubEnum = [shownPublications objectEnumerator];
             BibItem *item;
             while(item = [pubEnum nextObject])
-                if([titlesToSelect containsObject:[item title]]) 
+                if([titlesToSelect containsObject:[[item title] stringByRemovingTeX]]) 
                     [pubsToSelect addObject:item];
             [self selectPublications:pubsToSelect];
             [tableView scrollRowToCenter:[tableView selectedRow]];

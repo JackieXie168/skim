@@ -101,7 +101,7 @@ void *setupThreading(void *anObject);
         int err = pthread_create(&notificationThread, &attr, &setupThreading, [[self retain] autorelease]);
         pthread_attr_destroy(&attr);
         
-        // maintain a dictionary mapping URL -> -[BibItem title], since SKIndex properties are slow
+        // maintain a dictionary mapping URL -> -[[BibItem title] stringByRemovingTeX], since SKIndex properties are slow
         titles = [[NSMutableDictionary alloc] initWithCapacity:128];
         
         progressValue = 0.0;
