@@ -825,7 +825,7 @@ static Boolean stringIsEqualToString(const void *value1, const void *value2) { r
 	return c;
 }
 
-// this is used for the main table and lower pane and for various window titles
+// this is used for the lower pane
 - (NSString *)title{
     NSString *title = [self valueOfField:BDSKTitleString];
 	if (title == nil) 
@@ -847,11 +847,13 @@ static Boolean stringIsEqualToString(const void *value1, const void *value2) { r
 	return title;
 }
 
+// used for the main tableview and other places we don't want a TeX string (window titles)
 - (NSString *)displayTitle{
+    // -title is always non-nil
 	NSString *title = [self title];
 	static NSString	*emptyTitle = nil;
 	
-	if ([NSString isEmptyString:title]) {
+	if ([@"" isEqualToString:title]) {
 		if (emptyTitle == nil)
 			emptyTitle = [NSLocalizedString(@"Empty Title", @"Publication display title for empty title") retain];
 		title = emptyTitle;
@@ -1329,7 +1331,7 @@ static Boolean stringIsEqualToString(const void *value1, const void *value2) { r
     }else if([field isEqualToString:BDSKItemNumberString]){
         return [self fileOrder];
     }else if([field isEqualToString: BDSKTitleString] ){
-        return [[self title] stringByRemovingTeX];
+        return [self displayTitle];
     }else if([field isEqualToString: BDSKContainerString] ){
         return [self container];
     }else if([field isEqualToString: BDSKDateAddedString]){
@@ -1454,7 +1456,7 @@ Boolean stringContainsLossySubstring(NSString *theString, NSString *stringToFind
         if(aURL) [urls addObject:aURL];
     }
     
-    NSDictionary *info = [NSDictionary dictionaryWithObjectsAndKeys:[self citeKey], @"citeKey", [[self title] stringByRemovingTeX], @"title", urls, @"urls", nil];
+    NSDictionary *info = [NSDictionary dictionaryWithObjectsAndKeys:[self citeKey], @"citeKey", [self displayTitle], @"title", urls, @"urls", nil];
     [urls release];
     return info;
 }
@@ -1700,6 +1702,7 @@ Boolean stringContainsLossySubstring(NSString *theString, NSString *stringToFind
     [reqStr appendString:[self citeKey] attributes:typeAttributes];
     [reqStr appendString:@"\n"];
 
+    // make sure we don't use -displayTitle here
     valueStr = [[NSAttributedString alloc] initWithTeXString:[self title]
                                                   attributes:titleAttributes
                                           collapseWhitespace:YES];
@@ -2109,7 +2112,7 @@ Boolean stringContainsLossySubstring(NSString *theString, NSString *stringToFind
     NSMutableString *s = [[[NSMutableString alloc] init] autorelease];
 
     [s appendString:@"<item>\n<title>"];
-	[s appendString:[[self title] xmlString]];
+	[s appendString:[[self displayTitle] xmlString]];
     [s appendString:@"</title>\n<description>"];
     [s appendString:[[self valueOfField:BDSKRssDescriptionString] xmlString]];
     [s appendString:@"</description>\n<link>"];
