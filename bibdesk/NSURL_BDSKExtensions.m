@@ -40,8 +40,6 @@
 #import "CFString_BDSKExtensions.h"
 #import "NSImage+Toolbox.h"
 
-static NSString *BDSKAliasResolutionException = @"BDSKAliasResolutionException";
-
 @implementation NSURL (BDSKExtensions)
 
 /* This could as easily have been implemented in the NSFileManager category, but it mainly uses CFURL (and Carbon File Manager) functionality.  Omni has a method in their NSFileManager category that does the same thing, but it assumes PATH_MAX*4 for a max path length, uses malloc instead of NSZoneMalloc, uses path buffers instead of string/URL objects, uses some unnecessary autoreleases, and will resolve aliases on remote volumes.  Of course, it's also been debugged more thoroughly than my version. */
