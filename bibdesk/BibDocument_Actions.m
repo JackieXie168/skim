@@ -157,6 +157,7 @@
 			[newBI setPubType:BDSKIncollectionString];
 	}
     [self addNewPubAndEdit:newBI];
+    [newBI release];
 }
 
 - (IBAction)createNewPubUsingCrossrefAction:(id)sender{
