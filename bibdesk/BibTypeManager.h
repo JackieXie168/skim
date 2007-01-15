@@ -91,6 +91,8 @@
 	NSCharacterSet *strictInvalidRemoteUrlCharSet;
 	NSCharacterSet *invalidGeneralCharSet;
 	NSCharacterSet *strictInvalidGeneralCharSet;
+	NSCharacterSet *separatorCharSet;
+	OFCharacterSet *separatorOFCharSet;
     
     NSMutableSet *localFileFieldsSet;
     NSMutableSet *remoteURLFieldsSet;

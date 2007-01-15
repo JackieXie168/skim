@@ -1844,14 +1844,15 @@ Boolean stringContainsLossySubstring(NSString *theString, NSString *stringToFind
 			v = [auths componentsJoinedByString:[NSString stringWithFormat:@"\n%@  - ", tag]];
         }else if([k isEqualToString:BDSKKeywordsString]){
 			NSMutableArray *arr = [NSMutableArray arrayWithCapacity:1];
-			if([v rangeOfCharacterFromSet:[NSCharacterSet autocompletePunctuationCharacterSet]].location != NSNotFound) {
+            NSCharacterSet *sepCharSet = [btm separatorCharacterSetForField:BDSKKeywordsString];
+			if([v rangeOfCharacterFromSet:sepCharSet].location != NSNotFound) {
 				NSScanner *wordScanner = [NSScanner scannerWithString:v];
 				[wordScanner setCharactersToBeSkipped:nil];
 				
 				while(![wordScanner isAtEnd]) {
-					if([wordScanner scanUpToCharactersFromSet:[NSCharacterSet autocompletePunctuationCharacterSet] intoString:&v])
+					if([wordScanner scanUpToCharactersFromSet:sepCharSet intoString:&v])
 						[arr addObject:v];
-					[wordScanner scanCharactersFromSet:[NSCharacterSet autocompletePunctuationCharacterSet] intoString:nil];
+					[wordScanner scanCharactersFromSet:sepCharSet intoString:nil];
 				}
 				v = [arr componentsJoinedByString:[NSString stringWithFormat:@"\n%@  - ", tag]];
 			}

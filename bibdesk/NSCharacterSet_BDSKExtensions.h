@@ -41,7 +41,6 @@
 @interface NSCharacterSet (BDSKExtensions)
 
 + (NSCharacterSet *)curlyBraceCharacterSet;
-+ (NSCharacterSet *)autocompletePunctuationCharacterSet;
 + (NSCharacterSet *)commaCharacterSet;
 + (NSCharacterSet *)searchStringSeparatorCharacterSet;
 + (NSCharacterSet *)upAndDownArrowCharacterSet;

@@ -111,6 +111,9 @@ static BibTypeManager *sharedInstance = nil;
 	
 	strictInvalidGeneralCharSet = [[NSCharacterSet alloc] init];
     
+    separatorCharSet = [[NSCharacterSet characterSetWithCharactersInString:[[OFPreferenceWrapper sharedPreferenceWrapper] stringForKey:BDSKGroupFieldSeparatorCharactersKey]] retain];
+    separatorOFCharSet = [[OFCharacterSet alloc] initWithString:[[OFPreferenceWrapper sharedPreferenceWrapper] stringForKey:BDSKGroupFieldSeparatorCharactersKey]];
+    
     localFileFieldsSet = [[NSMutableSet alloc] initWithCapacity:5];
     remoteURLFieldsSet = [[NSMutableSet alloc] initWithCapacity:5];
     allURLFieldsSet = [[NSMutableSet alloc] initWithCapacity:10];
@@ -672,11 +675,11 @@ static BibTypeManager *sharedInstance = nil;
 }
 
 - (NSCharacterSet *)separatorCharacterSetForField:(NSString *)fieldName{
-	return [fieldName isCitationField] ? [NSCharacterSet commaCharacterSet] : [NSCharacterSet autocompletePunctuationCharacterSet];
+	return [fieldName isCitationField] ? [NSCharacterSet commaCharacterSet] : separatorCharSet;
 }
 
 - (OFCharacterSet *)separatorOFCharacterSetForField:(NSString *)fieldName{
-	return [fieldName isCitationField] ? [OFCharacterSet commaCharacterSet] : [OFCharacterSet autocompletePunctuationCharacterSet];
+	return [fieldName isCitationField] ? [OFCharacterSet commaCharacterSet] : separatorOFCharSet;
 }
 
 @end
