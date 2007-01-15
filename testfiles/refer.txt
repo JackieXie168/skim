@@ -1,0 +1,477 @@
+%0 Journal Article 
+%A S. G. Ackleson 
+%D 2006-07-11 
+%T Optical determinations of suspended sediment dynamics in western Long Island Sound and the Connecticut River plume 
+%J J. Geophys. Res. 
+%V 111 
+%N C7 
+%P 1-13 
+%F 2005JC003214 
+%2 C07009 
+%3 doi:10.1029/2005JC003214 
+%K 4558 Oceanography: Physical: Sediment transport
+%K 4264 Oceanography: General: Ocean optics
+%K 4211 Oceanography: General: Benthic boundary layers
+%K 4528 Oceanography: Physical: Fronts and jets 
+%X The magnitude of beam attenuation attributed to suspended sediments, c p, and the slope of the log-transformed attenuation spectrum, γ, were used to investigate the properties and dynamic nature of matter suspended in the waters of western Long Island Sound (LIS) and the adjacent Connecticut River plume (CRP). Within the LIS, c p and γ indicate a robust relationship between sediment concentration and particle size distribution (PSD). As concentration increased, the PSD shifted to larger particles. The highest concentrations and particle sizes were found in a nepheloid layer adjacent to the sound floor. Within the adjacent CRP, sediments were observed to shift towards smaller particles at the lateral plume boundary, where current shear stress may have disrupted large particle aggregates, relative to sediments in the more quiescent plume interior. A strong linear correlation between γ and salinity was also found, indicating that mixing between the two water masses may also have altered the PSD of the plume sediments. A suspended sediment attenuation model based on Mie theory, a power law form of the PSD, and a single sediment source indicates that the observed changes in LIS c p and γ are consistent with sediment removal as particles settle with size-dependent rates. In contrast, within the CRP, the model supports the hypothesis that turbulence-induced aggregate disruption at the lateral plume boundary is responsible for the observed variability in c p and γ. However, mixing between the LIS and CRP particle populations would violate the single source requirement of the model and necessitate a more complicated set of particle dynamics in order to correctly interpret the observed variability in particulate attenuation. 
+%U [URL-Abstract] http://www.agu.org/pubs/crossref/2006.../2005JC003214.shtml 
+%U [URL-Abstract] http://dx.doi.org/10.1029/2005JC003214
+
+
+%0 Journal Article 
+%A K. Akitomo 
+%D 2006-09-23 
+%T Thermobaric deep convection, baroclinic instability, and their roles in vertical heat transport around Maud Rise in the Weddell Sea 
+%J J. Geophys. Res. 
+%V 111 
+%N C9 
+%P 1-10 
+%F 2005JC003284 
+%2 C09027 
+%3 doi:10.1029/2005JC003284 
+%K 4207 Oceanography: General: Arctic and Antarctic oceanography
+%K 4255 Oceanography: General: Numerical modeling
+%K 4515 Oceanography: Physical: Deep recirculations 
+%X Numerical experiments with two- and three-dimensional nonhydrostatic models in a rotating frame have been executed to investigate thermobaric deep convection, subsequent baroclinic instability, and their roles in vertical heat transport, using hydrographic data around Maud Rise in the Weddell Sea, Antarctica. Overturning of the water column due to thermobaric convection is apt to occur on the southern and northern flanks of the rise, and induces upward heat transport. The depth of overturning is two times larger on the northern flank (∼1.5 km) than on the southern flank (∼0.7 km). To the contrary, no overturning occurs over the top of the rise in 90 days. Baroclinic instability develops at a density front formed between the overturned and unoverturned regions since a density contrast at the front is enhanced by thermobaricity. Heat transport due to baroclinic instability is similarly upward, and at peak becomes comparable to that due to the overturning. Applicability of the results to the cooling events previously reported is also discussed. 
+%U [URL-Abstract] http://www.agu.org/pubs/crossref/2006.../2005JC003284.shtml 
+%U [URL-Abstract] http://dx.doi.org/10.1029/2005JC003284
+
+
+%0 Journal Article 
+%A D. Antoine
+%A A. Morel
+%A H. R. Gordon
+%A V. F. Banzon
+%A R. H. Evans 
+%D 2005-06-22 
+%T Bridging ocean color observations of the 1980s and 2000s in search of long-term trends 
+%J J. Geophys. Res. 
+%V 110 
+%N C6 
+%P 1-22 
+%F 2004JC002620 
+%2 C06009 
+%3 doi:10.1029/2004JC002620 
+%K 0480 Biogeosciences: Remote sensing
+%K 1615 Global Change: Biogeochemical cycles, processes, and modeling
+%K 1635 Global Change: Oceans
+%K 1640 Global Change: Remote sensing 
+%X A comprehensive revision of the Coastal Zone Color Scanner (CZCS) data-processing algorithms has been undertaken to generate a revised level 2 data set from the near-8-year archive (1979–1986) collected during this “proof-of-concept” mission. The final goal of this work is to establish a baseline for a global, multiyear, multisensor ocean color record, to be built from observations of past (i.e., CZCS), present, and future missions. To produce an internally consistent time series, the same revised algorithms also have been applied to the first 5 years of the Sea-viewing Wide Field-of-view Sensor (SeaWiFS) ocean color observations (1998–2002). Such a database is necessary in order to determine whether or not the ocean biogeochemistry has evolved in the past years and, if so, to be able to detect near future trends. Algorithmic and calibration aspects, along with validation results presented in this paper, are tailored toward the identification of long-term trends, which mandated this reprocessing effort. The analysis of decadal changes from the CZCS to the SeaWiFS era shows an overall increase of the world ocean average chlorophyll concentration by about 22%, mainly due to large increases in the intertropical areas, where the seasonal cycles also substantially changed over the past 2 decades. Increases in higher latitudes, where seasonal cycles did not change, contribute to a lesser extent to the general trend. In contrast, oligotrophic gyres display declining concentrations. 
+%U [URL-Abstract] http://www.agu.org/pubs/crossref/2005.../2004JC002620.shtml 
+%U [URL-Abstract] http://dx.doi.org/10.1029/2004JC002620
+
+
+%0 Journal Article 
+%A N. S. Banas
+%A B. M. Hickey 
+%D 2005-11-17 
+%T Mapping exchange and residence time in a model of Willapa Bay, Washington, a branching, macrotidal estuary 
+%J J. Geophys. Res. 
+%V 110 
+%N C11 
+%P 1-20 
+%F 2005JC002950 
+%2 C11011 
+%3 doi:10.1029/2005JC002950 
+%K 4235 Oceanography: General: Estuarine processes
+%K 4534 Oceanography: Physical: Hydrodynamic modeling
+%K 4560 Oceanography: Physical: Surface waves and tides
+%K 4562 Oceanography: Physical: Topographic/bathymetric interactions
+%K 4568 Oceanography: Physical: Turbulence, diffusion, and mixing processes 
+%X The numerical model GETM is used to examine transport pathways and residence time in Willapa Bay, Washington, a macrotidal estuary with a complex channel geometry. When the model is run with realistic forcing, it reproduces both tidal velocities and the decrease of the salt intrusion length with increasing river flow with errors of 5–20%. Furthermore, a more stringent test, when the model is run with tidal forcing only, it reproduces the along-channel profile of the effective horizontal diffusivity K, a direct measure of the strength of subtidal dispersion, which is known from previous empirical estimates. A Lagrangian, particle-tracking method is used to map subtidal transport pathways at the resolution of the model grid. This analysis reveals an interweaving of coherent lateral exchange flows with discontinuous, small-scale dispersion as well as tidal residual currents that in some locations, sharpen rather than smooth gradients between water masses. Comparison between these Lagrangian results and an Eulerian salt flux decomposition suggests that along-channel complexity (channel junctions and channel curvature) is at least as important as cross-sectional depth variation in shaping the subtidal circulation. Finally, a nonconservative tracer method is used to produce high-resolution, three-dimensional maps of residence time. This analysis shows that consistent with previous observational work in Willapa, at all except the highest winter-storm-level river flows, river- and ocean-density-driven exchanges are discernable but secondary to tidal stirring. In all seasons, despite the fact that half the volume of the bay enters and leaves with every tide, average retention times in the upper third of the estuary are 3–5 weeks. 
+%U [URL-Abstract] http://www.agu.org/pubs/crossref/2005.../2005JC002950.shtml 
+%U [URL-Abstract] http://dx.doi.org/10.1029/2005JC002950
+
+
+%0 Journal Article 
+%A J. P. Barry
+%A K. R. Buck
+%A C. Lovera
+%A L. Kuhnz
+%A P. J. Whaling 
+%D 2005-09-09 
+%T Utility of deep sea CO 2 release experiments in understanding the biology of a high-CO 2 ocean: Effects of hypercapnia on deep sea meiofauna 
+%J J. Geophys. Res. 
+%V 110 
+%N C9 
+%P 1-18 
+%F 2004JC002629 
+%2 C09S12 
+%3 doi:10.1029/2004JC002629 
+%K 1694 Global Change: Instruments and techniques
+%K 4251 Oceanography: General: Marine pollution
+%K 4804 Oceanography: Biological and Chemical: Benthic processes, benthos
+%K 0439 Biogeosciences: Ecosystems, structure and dynamics
+%K 0408 Biogeosciences: Benthic processes 
+%X Oceanic CO 2 levels are expected to rise during the next 2 centuries to levels not seen for 10–150 million years by the uptake of atmospheric CO 2 in surface waters or potentially through the disposal of waste CO 2 in the deep sea. Changes in ocean chemistry caused by CO 2 influx may have broad impacts on ocean ecosystems. Physiological processes animals use to cope with CO 2 -related stress are known, but the range of sensitivities and effects of changes in ocean chemistry on most ocean life remain unclear. We evaluate the effectiveness of various designs for in situ CO 2 release experiments in producing stable perturbations in seawater chemistry over experimental seafloor plots, as is desirable for evaluating the CO 2 sensitivities of deep sea animals. We also discuss results from a subset of these experiments on the impacts of hypercapnia on deep sea meiofauna, in the context of experimental designs. Five experiments off central California show that pH perturbations were greatest for experiments using “point source” CO 2 pools surrounded by experimental plots. CO 2 enclosure experiments with experimental plots positioned within a circular arrangement of CO 2 pools had more moderate pH variation. The concentration of dissolution plumes from CO 2 pools were related to the speed and turbulence of near-bottom currents, which influence CO 2 dissolution and advection. Survival of meiofauna (nematodes, amoebae, euglenoid flagellates) was low after episodic severe hypercapnia but lower and variable where pH changes ranged from 0 to 0.2 pH units below normal. 
+%U [URL-Abstract] http://www.agu.org/pubs/crossref/2005.../2004JC002629.shtml 
+%U [URL-Abstract] http://dx.doi.org/10.1029/2004JC002629
+
+
+%0 Journal Article 
+%A J. A. Barth
+%A P. A. Wheeler 
+%D 2005-10-25 
+%T Introduction to special section: Coastal Advances in Shelf Transport 
+%J J. Geophys. Res. 
+%V 110 
+%N C10 
+%P 1-11 
+%F 2005JC003124 
+%2 C10S01 
+%3 doi:10.1029/2005JC003124 
+%K 4219 Oceanography: General: Continental shelf and slope processes
+%K 4279 Oceanography: General: Upwelling and convergences
+%K 4528 Oceanography: Physical: Fronts and jets
+%K 4815 Oceanography: Biological and Chemical: Ecosystems, structure, dynamics, and modeling 
+%X The Coastal Ocean Advances in Shelf Transport (COAST) program conducted an interdisciplinary study of coastal upwelling off central Oregon during summer 2001. Two intensive field efforts during May–June and August 2001 were coordinated with ocean circulation, ecosystem, and atmospheric modeling of the region. A primary goal was to contrast the coastal ocean response to wind forcing in a region of relatively simple alongshore bottom topography versus that associated with a substantial submarine bank. In this overview we provide background motivation for the COAST project and summarize the major research findings. 
+%U [URL-Abstract] http://www.agu.org/pubs/crossref/2005.../2005JC003124.shtml 
+%U [URL-Abstract] http://dx.doi.org/10.1029/2005JC003124
+
+
+%0 Journal Article 
+%A N. R. Bates 
+%D 2006-10-25 
+%T Air-sea CO 2 fluxes and the continental shelf pump of carbon in the Chukchi Sea adjacent to the Arctic Ocean 
+%J J. Geophys. Res. 
+%V 111 
+%N C10 
+%P 1-21 
+%F 2005JC003083 
+%2 C10013 
+%3 doi:10.1029/2005JC003083 
+%K 4806 Oceanography: Biological and Chemical: Carbon cycling
+%K 4820 Oceanography: Biological and Chemical: Gases
+%K 4207 Oceanography: General: Arctic and Antarctic oceanography
+%K 4805 Oceanography: Biological and Chemical: Biogeochemical cycles, processes, and modeling
+%K 4217 Oceanography: General: Coastal processes 
+%X The Chukchi Sea, a shallow sea-ice covered coastal sea adjacent to the Arctic Ocean, exhibits an intense bloom of phytoplankton each year due to the exposure of nutrient-laden surface waters during the brief summertime retreat and melting of sea-ice. The impact of phytoplankton production and other factors on the seasonal dynamics of carbon and air-sea CO 2 fluxes were investigated during two survey cruises (5 May–15 June 2002, and 17 July–26 August 2002), as part of the Western Arctic Shelf-Basins-Interactions (SBI) project. In springtime, most of the Chukchi Sea was sea-ice covered (>95%) and remnant winter water was present across the shelf. Surface layer seawater partial pressure of CO 2 (p CO 2) ranged from ∼200–320 μ atm, indicative of undersaturation with respect to atmospheric p CO 2, although sea-ice cover kept rates of air-to-sea CO 2 flux generally low (<1 mmoles CO 2 m 2 d −1). By summertime, after sea-ice retreat, seawater p CO 2 contents had decreased to very low values (<80–220 μ atm) in response to high rates of localized primary and net community production (NCP) and biological uptake of dissolved inorganic carbon (DIC). In the seasonally sea-ice free regions of the Chukchi Sea shelf, rates of air-to-sea CO 2 fluxes, determined using the quadratic wind speed-transfer velocity relationships of Wanninkhof (1992), were high, ranging from ∼30–90 mmoles CO 2 m −2 d −1. In regions of the Chukchi Sea slope (and western Beaufort Sea shelf and Arctic Ocean basin) where sea-ice cover remained high (>80%), air-to-sea CO 2 fluxes remained generally low (<2 mmoles CO 2 m −2 d −1). Seasonal (i.e., May to September) and annual net air-to-sea CO 2 fluxes from the Chukchi Sea shelf were estimated at ∼27 ± 7 Tg C yr −1, and 38 ± 7 Tg C yr −1, respectively. The Chukchi Sea represents the largest oceanic CO 2 sink in the marginal coastal seas adjacent to the Arctic Ocean. An active continental shelf pump of carbon, driven by the northward transport of nutrient-rich water of Pacific Ocean origin, high rates of primary and net community production during the sea-ice free period, and lateral export of organic carbon, maintains the Chukchi Sea shelf and slope as a perennial ocean CO 2 sink. 
+%U [URL-Abstract] http://www.agu.org/pubs/crossref/2006.../2005JC003083.shtml 
+%U [URL-Abstract] http://dx.doi.org/10.1029/2005JC003083
+
+
+%0 Journal Article 
+%A S. Bonnet
+%A C. Guieu 
+%D 2006-09-07 
+%T Atmospheric forcing on the annual iron cycle in the western Mediterranean Sea: A 1-year survey 
+%J J. Geophys. Res. 
+%V 111 
+%N C9 
+%P 1-13 
+%F 2005JC003213 
+%2 C09010 
+%3 doi:10.1029/2005JC003213 
+%K 4875 Oceanography: Biological and Chemical: Trace elements
+%K 4855 Oceanography: Biological and Chemical: Phytoplankton
+%K 4277 Oceanography: General: Time series experiments
+%K 1615 Global Change: Biogeochemical cycles, processes, and modeling 
+%X A 1-year survey of simultaneous measurements of total atmospheric deposition and dissolved iron concentrations in surface waters (0–40 m) was performed in the northwestern Mediterranean Sea, an area with a marked seasonal hydrological regime. The total atmospheric iron flux was 1118 mg m −2 (i.e., 20.4 mmol m −2). By using aluminium as a crustal marker the deposition was mainly attributed to Saharan dust deposition. Dissolved iron flux was estimated to be 42 μmol m −2 yr −1, of which 44% was anthropogenic in origin and 56% was of Saharan origin. Dissolved iron profiles revealed four typical situations throughout the year: (1) a winter situation with homogenous dissolved iron concentrations ranging from 0.8 to 0.9 nmol L −1, (2) a spring situation with uniformly low concentrations ranging from 0.2 to 0.5 nmol L −1, (3) a summer situation with enriched surface waters up to 1.2 nmol L −1, and (4) an autumnal situation with homogenous concentrations ranging from 0.9 to 1.1 nmol L −1. The results demonstrate that the iron enrichment in the mixed layer observed during the stratified period was of the same order of magnitude as the cumulative atmospheric inputs for the same period. The seasonal variability of dissolved iron (DFe) concentrations in surface waters was driven by a combination of factors, including aeolian Fe deposition, nature of aerosols, vertical mixing, phytoplankton uptake, and particle scavenging. Iron distribution can have a clear biogeochemical effect on the autotrophic communities: The low Fe:P ratio observed during the bloom indicates a possible iron limitation for phytoplankton, and the dissolved iron enrichment during summer is certainly at the origin of the development of diazotrophs populations in the system. 
+%U [URL-Abstract] http://www.agu.org/pubs/crossref/2006.../2005JC003213.shtml 
+%U [URL-Abstract] http://dx.doi.org/10.1029/2005JC003213
+
+
+%0 Journal Article 
+%A P. Bouruet-Aubertot
+%A H. Mercier
+%A F. Gaillard
+%A P. Lherminier 
+%D 2005-07-28 
+%T Evidence of strong inertia-gravity wave activity during the POMME experiment 
+%J J. Geophys. Res. 
+%V 110 
+%N C7 
+%P 1-15 
+%F 2004JC002747 
+%2 C07S06 
+%3 doi:10.1029/2004JC002747 
+%K 4544 Oceanography: Physical: Internal and inertial waves
+%K 4568 Oceanography: Physical: Turbulence, diffusion, and mixing processes
+%K 4572 Oceanography: Physical: Upper ocean and mixed layer processes 
+%X The purpose of this paper is to characterize inertia-gravity waves (IGW) activity and to investigate the variability of these waves in relationship to atmospheric forcing and larger-scale motions. To this aim, we analyzed Eulerian measurements of horizontal currents and temperature collected over 1 year during the Programme Océan Multidisciplinaire Méso Echelle (POMME). We focused on the main frequency components of the IGW spectrum, namely the inertial frequency f and the semidiurnal frequency M 2. Time evolution of the relative energy of these two components gave evidence of isolated events of high intensity. We performed a detailed analysis of these events and identified mechanisms of generation of these waves. Localized spots of intense, near-inertial IGW were observed in winter. During the mixed layer deepening, one event was correlated with plume-like structures resulting from peaks of intense surface cooling. This suggests a local generation process driven by strong downward vertical motions. Instead, other events of strong IGW could be related to submesoscale features, characteristic of a frontal region, in particular, wave trapping within anticyclonic eddies. In contrast, a downward energy propagation down to about 500 m below the mixed layer was isolated after a stormy period. Eventually, internal tidal beams, possibly generated at a nearby seamount, intermittently crossed the mooring, though less energetically than the previous events. Last, we estimated the eddy diffusivity from the velocity vertical shear. Large variations were obtained, from 10 −6 m 2 /s up to 10 −3 m 2 /s, consistent with the intense events previously isolated. 
+%U [URL-Abstract] http://www.agu.org/pubs/crossref/2005.../2004JC002747.shtml 
+%U [URL-Abstract] http://dx.doi.org/10.1029/2004JC002747
+
+
+%0 Journal Article 
+%A D.-S. Byun
+%A X. H. Wang 
+%D 2005-03-08 
+%T The effect of sediment stratification on tidal dynamics and sediment transport patterns 
+%J J. Geophys. Res. 
+%V 110 
+%N C3 
+%P 1-16 
+%F 2004JC002459 
+%2 C03011 
+%3 doi:10.1029/2004JC002459 
+%K 4211 Oceanography: General: Benthic boundary layers
+%K 4255 Oceanography: General: Numerical modeling
+%K 4558 Oceanography: Physical: Sediment transport
+%K 4568 Oceanography: Physical: Turbulence, diffusion, and mixing processes 
+%X The western tip of southwest Korea is characterized by a tidally dominated, turbid, coastal environment. There are well-developed tidal flats along the coast and around islands, together with offshore sand ridges several tens of kilometers long in the west. The effects of bottom boundary layer (BBL) sediment stratification on sediment-transport and tidal dynamics in this environment were examined using a sediment transport model coupled with a three-dimensional tidal hydrodynamic model. Model experiments using two scenarios, with and without the effect of sediment-induced stratification, showed that BBL sediment-stratification influenced the spatial distribution and reduced the magnitude of net sedimentation. The presence of a sediment-stratified BBL also led to a reduction in suspended sediment fluxes and an increase in the vertical gradient of sediment concentrations in the water column. These variations occurred because sediment-induced BBL stratification leads to not only a reduction in bottom shear stress but also a decrease in buoyancy production of turbulent kinetic energy and an associated dampening of turbulence. The significant reductions in turbulence and bottom shear stress result in changes to the vertical-current structure of the M 2 tide, including alteration of the tidal ellipse configuration and an increase in vertical shears of the tidal current amplitude and phase. These reductions also lead to a slight increase in tidal amplitudes due to the decreased tidal-energy dissipation. The model results indicate that feedback between the sediment-transport dynamics and hydrodynamics is an important factor in modeling sediment transport dynamics in tidally dominated, turbid, coastal environments. Such environments include the west coast of Korea and the Yellow Sea. A suitable approach to simulating the effects of this feedback may be the use of a modified bottom-drag coefficient as a stability function, together with the inclusion of the effect of sediment stratification on the hydrodynamics. 
+%U [URL-Abstract] http://www.agu.org/pubs/crossref/2005.../2004JC002459.shtml 
+%U [URL-Abstract] http://dx.doi.org/10.1029/2004JC002459
+
+
+%0 Journal Article 
+%A R. M. Castelao
+%A T. P. Mavor
+%A J. A. Barth
+%A L. C. Breaker 
+%D 2006-09-23 
+%T Sea surface temperature fronts in the California Current System from geostationary satellite observations 
+%J J. Geophys. Res. 
+%V 111 
+%N C9 
+%P 1-13 
+%F 2006JC003541 
+%2 C09026 
+%3 doi:10.1029/2006JC003541 
+%K 4516 Oceanography: Physical: Eastern boundary currents
+%K 4520 Oceanography: Physical: Eddies and mesoscale processes
+%K 4528 Oceanography: Physical: Fronts and jets
+%K 4562 Oceanography: Physical: Topographic/bathymetric interactions
+%K 4279 Oceanography: General: Upwelling and convergences 
+%X Sea surface temperature (SST) fronts are determined for the 2001–2004 time period from Geostationary Operational Environmental Satellites (GOES) data in the California Current System (CCS). The probability of detecting a SST front at an individual pixel location in the CCS is presented as a bi-monthly climatology. Fronts clearly indicate the seasonal evolution of coastal upwelling, as well as meanders and filaments that are often linked with irregularities in coastline geometry. Winter is characterized by low frontal activity along the entire coast. Fronts first appear close to the coast during spring, particularly south of Cape Blanco, where upwelling favorable winds are already persistent. The area of high frontal activity continues to increase during summer, especially between Monterey Bay and Cape Blanco, extending more than 300 km from the coast. The region with high frontal activity widens at ∼2.6 km day −1. Off northern Baja California, a band with persistent fronts is found close to the coast year-round, but there is no evidence of a seasonal widening of the area of higher activity. During fall, the weakening of upwelling favorable winds leads to a gradual decrease in frontal activity. An empirical orthogonal function (EOF) decomposition reveals the development of SST fronts associated with seasonal upwelling for locations north of Monterey Bay, with less summer intensification to the south. The first appearance of fronts close to the coast during spring and the occurrence of the fronts offshore later in the season are represented by additional statistically significant EOF modes. 
+%U [URL-Abstract] http://www.agu.org/pubs/crossref/2006.../2006JC003541.shtml 
+%U [URL-Abstract] http://dx.doi.org/10.1029/2006JC003541
+
+
+%0 Journal Article 
+%A C. Cenedese
+%A C. Adduce
+%A D. M. Fratantoni 
+%D 2005-09-30 
+%T Laboratory experiments on mesoscale vortices interacting with two islands 
+%J J. Geophys. Res. 
+%V 110 
+%N C9 
+%P 1-15 
+%F 2004JC002734 
+%2 C09023 
+%3 doi:10.1029/2004JC002734 
+%K 4203 Oceanography: General: Analytical modeling and laboratory experiments
+%K 4520 Oceanography: Physical: Eddies and mesoscale processes
+%K 4562 Oceanography: Physical: Topographic/bathymetric interactions 
+%X The present study investigates the interaction between a self-propagating cyclonic vortex with two right vertical cylinders and determines the conditions for a vortex to bifurcate into two or more vortices. As in previous studies, after the cyclonic vortex came in contact with a cylinder, fluid peeled off the outer edge of the vortex and a so-called “streamer” went around the cylinder in a counterclockwise direction. Under the right conditions, this fluid formed a new cyclonic vortex in the wake of the cylinder, causing bifurcation of the original vortex into two vortices. In some cases, two streamers formed and went around the two cylinders, each forming a new cyclonic vortex. During the experiments, three parameters were varied: G, the separation between the cylinders; d, the diameter of the incident vortex; and y, the distance of the center of the vortex from an axis passing through the center of the gap between the cylinders. The number of vortices generated by the interaction depends on the ratio G / d and on the geometry of the encounter, which is given by the ratio y / g, where g = G /2. An unexpected and revealing result was the formation of a dipole vortex downstream of the two islands for values of −2 < y / g < 0, 0.25 ≤ G / d ≤ 0.4, and Re G > 200, where Re G = U G G /ν is the Reynolds number and U G is the maximum velocity of the vortex fluid in the gap. A possible mechanism is that the flow within the vortex was funneled between the two islands, and provided it had a sufficiently high velocity, a dipole formed, much like water ejected from a circular nozzle generates a dipole ring. The formation of a vortex of opposite sign to the incident vortex (i.e., anticyclonic) is in agreement with recent observations of North Brazil Current (NBC) rings interacting with the islands of Saint Vincent and Barbados in the eastern Caribbean. The passage between the islands of Saint Vincent and Barbados has values of G / d of approximately 0.5; hence the laboratory result suggests that both cyclonic and anticyclonic vortices could form downstream of them. 
+%U [URL-Abstract] http://www.agu.org/pubs/crossref/2005.../2004JC002734.shtml 
+%U [URL-Abstract] http://dx.doi.org/10.1029/2004JC002734
+
+
+%0 Journal Article 
+%A Z. Chase
+%A B. Hales
+%A T. Cowles
+%A R. Schwartz
+%A A. van Geen 
+%D 2005-09-09 
+%T Distribution and variability of iron input to Oregon coastal waters during the upwelling season 
+%J J. Geophys. Res. 
+%V 110 
+%N C10 
+%P 1-14 
+%F 2004JC002590 
+%2 C10S12 
+%3 doi:10.1029/2004JC002590 
+%K 4219 Oceanography: General: Continental shelf and slope processes
+%K 4279 Oceanography: General: Upwelling and convergences
+%K 4805 Oceanography: Biological and Chemical: Biogeochemical cycles, processes, and modeling
+%K 4835 Oceanography: Biological and Chemical: Marine inorganic chemistry
+%K 4875 Oceanography: Biological and Chemical: Trace elements 
+%X We measured iron concentrations off the Oregon coast in spring (May–June) and summer (August) of 2001 as part of the Coastal Ocean Advances in Shelf Transport (COAST) program. Dissolvable and total dissolvable iron levels in surface waters were generally higher in spring (mean of 2.1 and 33.9 nmol L −1, respectively) than in summer (means of 1.4 and 15.4 nmol L −1). In spring and summer, high iron concentrations in surface waters were associated with both cold and saline, recently upwelled waters, and with fresh, relatively warm water influenced by the Columbia River. Comparison of total dissolvable iron in 0.45 μm filtered and in unfiltered samples indicated a substantial contribution from particulate iron. Iron concentrations in summer were generally lower than in spring throughout the water column, with the exception of the near-bottom, where concentrations were generally higher in summer than spring. Optical backscatter data from moored sensors were used to infer the vertical and cross-shelf transport of iron-bearing particles during the upwelling season over a steep shelf. Cross-correlation analysis showed downslope movement of particles from the deep inner shelf to the deep midshelf. There was also evidence for sinking of biogenic particles at the midshelf and inner shelf, but we found no evidence of upslope transport of benthic particles. Sufficient iron is available in this system to meet the demands of the phytoplankton, which are able to make full use of available nitrate. 
+%U [URL-Abstract] http://www.agu.org/pubs/crossref/2005.../2004JC002590.shtml 
+%U [URL-Abstract] http://dx.doi.org/10.1029/2004JC002590
+
+
+%0 Journal Article 
+%A B. Chen
+%A Y. Song
+%A M. Nishio
+%A S. Someya
+%A M. Akai 
+%D 2005-09-27 
+%T Modeling near-field dispersion from direct injection of carbon dioxide into the ocean 
+%J J. Geophys. Res. 
+%V 110 
+%N C9 
+%P 1-13 
+%F 2004JC002567 
+%2 C09S15 
+%3 doi:10.1029/2004JC002567 
+%K 1616 Global Change: Climate variability
+%K 1635 Global Change: Oceans
+%K 4255 Oceanography: General: Numerical modeling
+%K 4524 Oceanography: Physical: Fine structure and microstructure
+%K 4568 Oceanography: Physical: Turbulence, diffusion, and mixing processes 
+%X In this paper we have predicted the dynamics of double plume formation and dispersion from direct injection of liquid CO 2 into middle-depth ocean water. To do so, we used a three-dimensional, two-fluid numerical model. The model consists of a CO 2 droplet submodel and a small-scale turbulent ocean submodel, both of which were calibrated against field observation data. With an injection rate of 100 kg s −1 CO 2, numerical simulations indicated that the injection of 8-mm-diameter CO 2 droplets from fixed ports at 858 m (20 m above the seafloor) into a current flowing at 2.5 cm s −1 could create a plume that reaches the bottom and has at most a 2.6-unit decrease in pH. The strong interaction between the buoyant rise of the liquid CO 2 and the fall of the CO 2 -enriched water produced a vertically wavy plume tip at about 190 m above the seafloor. The maximum pH decrease, however, was kept to 1.7 units when the liquid CO 2 had an initial droplet diameter of 20 mm and it was injected at 1500 m from a towed pipe with a ship speed of 3.0 m s −1. After 70 min the double plume developed into a single-phase passive plume with a vertical scale of 450 m and a horizontal scale larger than 150 m. This development was attributable to the droplets' buoyant rise and dissolution, along with ocean turbulence, which together diluted the plume and reduced the decrease in pH to less than 0.5 units. 
+%U [URL-Abstract] http://www.agu.org/pubs/crossref/2005.../2004JC002567.shtml 
+%U [URL-Abstract] http://dx.doi.org/10.1029/2004JC002567
+
+
+%0 Journal Article 
+%A F. Chen
+%A D. G. MacDonald 
+%D 2006-11-04 
+%T Role of mixing in the structure and evolution of a buoyant discharge plume 
+%J J. Geophys. Res. 
+%V 111 
+%N C11 
+%P 1-13 
+%F 2006JC003563 
+%2 C11002 
+%3 doi:10.1029/2006JC003563 
+%K 4568 Oceanography: Physical: Turbulence, diffusion, and mixing processes
+%K 4235 Oceanography: General: Estuarine processes
+%K 4528 Oceanography: Physical: Fronts and jets
+%K 4546 Oceanography: Physical: Nearshore processes 
+%X A field study to examine the near-field structure of a buoyant discharge plume, and the turbulent mixing associated with its evolution, was conducted in Mount Hope Bay near Somerset, Massachusetts. The study focused on a 50 m 3 /s thermal discharge, approximately 5° C warmer than ambient waters, emanating from an electrical generating facility. The discharge enters the Bay through a 10 m wide surface canal creating a plume that has many attributes in common with larger scale river plumes. At a distance of 200 m, the plume was characterized by a core with high velocity and 2 ∼ 3°C higher temperature than ambient water. At this location the core of the plume was observed with a width of approximately 150 m during ebb tide, remaining bottom attached along the plume centerline. Analysis of the temperature budget with respect to specific isotherms yielded values of Reynolds temperature flux , on the order of 10 −2 °C m/s, suggesting buoyancy flux values (B = g α ) of order 10 −5 m 2 /s 3. These values are consistent with the turbulent energy expected to enter the system as a result of bottom stress, implying that mixing across the first 200 m is driven by bottom friction and is most active along the edges of the plume where thermal gradients are strong. The industrial plume studied here is dynamically similar to larger geophysical plumes, such as river plumes. However, the aspect ratio is critical in determining whether mixing driven by bottom friction is important in the overall evolution of the plume. 
+%U [URL-Abstract] http://www.agu.org/pubs/crossref/2006.../2006JC003563.shtml 
+%U [URL-Abstract] http://dx.doi.org/10.1029/2006JC003563
+
+
+%0 Journal Article 
+%A X. Chen
+%A F. Qiao
+%A R. Ge
+%A C. Xia
+%A Y. Yuan 
+%D 2006-08-05 
+%T Development of subsurface warm water in the East China Sea in fall 
+%J J. Geophys. Res. 
+%V 111 
+%N C11 
+%P 1-15 
+%F 2005JC003163 
+%2 C11S10 
+%3 doi:10.1029/2005JC003163 
+%K 4217 Oceanography: General: Coastal processes
+%K 4255 Oceanography: General: Numerical modeling
+%K 4572 Oceanography: Physical: Upper ocean and mixed layer processes 
+%X The development of subsurface warm water (SSWW) in the East China Sea (ECS) in fall is analyzed using two observational data sets and the results of a one-dimensional numerical model. During October, the SSWW is developed in the ECS and remains till the end of November. The analysis shows that it is the Changjiang River (also known as Yangtze River) diluted water (CRDW) that maintains the vertical structure of water column with a subsurface maximum temperature in this region. In fall, the diluted water flows southward in the ECS, leading to a lower salinity layer in the upper ocean. The existence of this lower salinity layer limits the depth of the vertical mixing induced by the loss of heat on the sea surface in fall, and therefore, maintains the higher temperature of the subsurface water. In winter, when the density's vertical gradient of the low salinity layer cannot balance the negative surface buoyancy flux, the SSWW vanishes. However, this situation does not occur outside the region where the CRDW extends, because the stratification becomes unstable while the sea surface loses heat and the convective overturn will readjust the whole water column. Numerical results of a one-dimensional model reveal that the SSWW appears if the impact of the CRDW is included in the model; otherwise, the SSWW does not occur. 
+%U [URL-Abstract] http://www.agu.org/pubs/crossref/2006.../2005JC003163.shtml 
+%U [URL-Abstract] http://dx.doi.org/10.1029/2005JC003163
+
+
+%0 Journal Article 
+%A S. R. Cooley
+%A P. L. Yager 
+%D 2006-08-19 
+%T Physical and biological contributions to the western tropical North Atlantic Ocean carbon sink formed by the Amazon River plume 
+%J J. Geophys. Res. 
+%V 111 
+%N C8 
+%P 1-14 
+%F 2005JC002954 
+%2 C08018 
+%3 doi:10.1029/2005JC002954 
+%K 4271 Oceanography: General: Physical and chemical properties of seawater
+%K 4805 Oceanography: Biological and Chemical: Biogeochemical cycles, processes, and modeling
+%K 4806 Oceanography: Biological and Chemical: Carbon cycling
+%K 9325 Geographic Location: Atlantic Ocean 
+%X Dissolved inorganic carbon (DIC) and total alkalinity (TA) were measured in the upper 1000 m of the western tropical North Atlantic Ocean (WTNA; study area 3–15°N, 40–59°W) in January–February and July–August 2001. Concentrations of DIC and TA in surface samples (0–10 m) influenced by the Amazon River plume were up to 400 μmol C kg −1 (∼20%) lower than oceanic surface samples. In this region, physical dilution by river water dominates DIC and TA inventories, driving CO 2 partial pressure (pCO 2) well below atmospheric levels. Nevertheless, DIC concentrations at most plume-influenced stations were 10–90 μmol C kg −1 below levels expected from conservative mixing of seawater with low-salinity, low-CO 2 Amazon River water. In this otherwise oligotrophic region, the diazotrophs Trichodesmium spp. and Richelia intracellularis were often abundant, supporting a link between increased carbon drawdown and nitrogen fixation in the outer plume. Net community production in the plume must surpass the fluxes of inorganic carbon from below and air-sea CO 2 replacement to leave biologically mediated DIC deficits, which is possible under observed conditions. Biological activity lowers plume pCO 2 30–120 μatm below the conservative mixing line, and contributes to a CO 2 deficit in the northern WTNA that outlasts the plume's physical structure. 
+%U [URL-Abstract] http://www.agu.org/pubs/crossref/2006.../2005JC002954.shtml 
+%U [URL-Abstract] http://dx.doi.org/10.1029/2005JC002954
+
+
+%0 Journal Article 
+%A S. Danielson
+%A K. Aagaard
+%A T. Weingartner
+%A S. Martin
+%A P. Winsor
+%A G. Gawarkiewicz
+%A D. Quadfasel 
+%D 2006-09-19 
+%T The St. Lawrence polynya and the Bering shelf circulation: New observations and a model comparison 
+%J J. Geophys. Res. 
+%V 111 
+%N C9 
+%P 1-18 
+%F 2005JC003268 
+%2 C09023 
+%3 doi:10.1029/2005JC003268 
+%K 0752 Cryosphere: Polynas
+%K 4207 Oceanography: General: Arctic and Antarctic oceanography
+%K 4223 Oceanography: General: Descriptive and regional oceanography 
+%X Using 14 yearlong instrumented moorings deployed south of St. Lawrence Island, along with oceanographic drifters, we investigate the circulation over the central Bering shelf and the role of polynyas in forming and disseminating saline waters over the shelf. We focus also on evaluating the Gawarkiewicz and Chapman (1995) model of eddy production within coastal polynyas. Principal results include the following. (1) The northern central shelf near-surface waters exhibit westward flow, carrying low-salinity waters from the Alaskan coast in fall and early winter, with consequences for water mass formation and biological production. (2) Within the St. Lawrence polynya the freshening effect of winter advection is about half as large as the salting effect of surface brine flux resulting from freezing. (3) Brine production over the Bering shelf occurs primarily offshore, rather than within coastal polynyas, even though ice production per unit area is much larger within the polynyas. (4) We find little evidence for the geostrophic flow adjustment predicted by recent polynya models. (5) In contrast to the theoretical prediction that dense water from the polynya is carried offshore by eddies, we find negligible cross-shelf eddy density fluxes within and surrounding the polynya and very low levels of eddy energy that decreased from fall to winter, even though dense water accumulated within the polynya and large cross-shore density gradients developed. (6) It is possible that dense polynya water was advected downstream of our array before appreciable eddy fluxes materialized. 
+%U [URL-Abstract] http://www.agu.org/pubs/crossref/2006.../2005JC003268.shtml 
+%U [URL-Abstract] http://dx.doi.org/10.1029/2005JC003268
+
+
+%0 Journal Article 
+%A H. J. W. de Baar
+%A P. W. Boyd
+%A K. H. Coale
+%A M. R. Landry
+%A A. Tsuda
+%A P. Assmy
+%A D. C. E. Bakker
+%A Y. Bozec
+%A R. T. Barber
+%A M. A. Brzezinski
+%A K. O. Buesseler
+%A M. Boyé
+%A P. L. Croot
+%A F. Gervais
+%A M. Y. Gorbunov
+%A P. J. Harrison
+%A W. T. Hiscock
+%A P. Laan
+%A C. Lancelot
+%A C. S. Law
+%A M. Levasseur
+%A A. Marchetti
+%A F. J. Millero
+%A J. Nishioka
+%A Y. Nojiri
+%A T. van Oijen
+%A U. Riebesell
+%A M. J. A. Rijkenberg
+%A H. Saito
+%A S. Takeda
+%A K. R. Timmermans
+%A M. J. W. Veldhuis
+%A A. M. Waite
+%A C-S. Wong 
+%D 2005-09-28 
+%T Synthesis of iron fertilization experiments: From the Iron Age in the Age of Enlightenment 
+%J J. Geophys. Res. 
+%V 110 
+%N C9 
+%P 1-24 
+%F 2004JC002601 
+%2 C09S16 
+%3 doi:10.1029/2004JC002601 
+%K 4806 Oceanography: Biological and Chemical: Carbon cycling
+%K 4807 Oceanography: Biological and Chemical: Chemical speciation and complexation
+%K 4853 Oceanography: Biological and Chemical: Photosynthesis
+%K 4855 Oceanography: Biological and Chemical: Phytoplankton
+%K 4875 Oceanography: Biological and Chemical: Trace elements 
+%X Comparison of eight iron experiments shows that maximum Chl a, the maximum DIC removal, and the overall DIC/Fe efficiency all scale inversely with depth of the wind mixed layer (WML) defining the light environment. Moreover, lateral patch dilution, sea surface irradiance, temperature, and grazing play additional roles. The Southern Ocean experiments were most influenced by very deep WMLs. In contrast, light conditions were most favorable during SEEDS and SERIES as well as during IronEx-2. The two extreme experiments, EisenEx and SEEDS, can be linked via EisenEx bottle incubations with shallower simulated WML depth. Large diatoms always benefit the most from Fe addition, where a remarkably small group of thriving diatom species is dominated by universal response of Pseudo - nitzschia spp. Significant response of these moderate (10–30 μm), medium (30–60 μm), and large (>60 μm) diatoms is consistent with growth physiology determined for single species in natural seawater. The minimum level of “dissolved” Fe (filtrate < 0.2 μm) maintained during an experiment determines the dominant diatom size class. However, this is further complicated by continuous transfer of original truly dissolved reduced Fe(II) into the colloidal pool, which may constitute some 75% of the “dissolved” pool. Depth integration of carbon inventory changes partly compensates the adverse effects of a deep WML due to its greater integration depths, decreasing the differences in responses between the eight experiments. About half of depth-integrated overall primary productivity is reflected in a decrease of DIC. The overall C/Fe efficiency of DIC uptake is DIC/Fe ∼ 5600 for all eight experiments. The increase of particulate organic carbon is about a quarter of the primary production, suggesting food web losses for the other three quarters. Replenishment of DIC by air/sea exchange tends to be a minor few percent of primary CO 2 fixation but will continue well after observations have stopped. Export of carbon into deeper waters is difficult to assess and is until now firmly proven and quite modest in only two experiments. 
+%U [URL-Abstract] http://www.agu.org/pubs/crossref/2005.../2004JC002601.shtml 
+%U [URL-Abstract] http://dx.doi.org/10.1029/2004JC002601
+
+
+%0 Journal Article 
+%A Y. Drillet
+%A R. Bourdallé-Badie
+%A L. Siefridt
+%A C. Le Provost 
+%D 2005-03-17 
+%T Meddies in the Mercator North Atlantic and Mediterranean Sea eddy-resolving model 
+%J J. Geophys. Res. 
+%V 110 
+%N C3 
+%P 1-16 
+%F 2003JC002170 
+%2 C03016 
+%3 doi:10.1029/2003JC002170 
+%K 4255 Oceanography: General: Numerical modeling
+%K 4283 Oceanography: General: Water masses
+%K 4512 Oceanography: Physical: Currents
+%K 4520 Oceanography: Physical: Eddies and mesoscale processes
+%K 4534 Oceanography: Physical: Hydrodynamic modeling 
+%X The new generation of high-resolution ocean models offers a new way to investigate the characteristics and the evolution of the ocean mesoscale. An analysis of the simulated Mediterranean eddies, the so-called “meddies,” is presented. The model used in this study is the Mercator North Atlantic [9°N, 70°N] and Mediterranean Sea Prototype (PAM), a high-resolution configuration (3.5–8 km horizontal grid) based on the OPA ocean general circulation model. The meddies are coherent structures of warm and salt Mediterranean Water (MW) advected in the northeast Atlantic. A 5 year experiment performed with PAM reproduced the main observed characteristics of the meddies: thermohaline properties (11.8°C, 36 psu), sizes (radius between 25 and 110 km), thickness (between 500 and 1000 m), westward advection velocities (1.4 cm.s −1), angular velocities (a period of 20 days), a good estimate of the number of meddies in the northeast Atlantic (∼22), and their realistic geographical distribution (80% south of 40°N). Moreover, and in agreement with a previous study based on an observation cruise, these modeled meddies represent half of the westward salinity transport of MW. 
+%U [URL-Abstract] http://www.agu.org/pubs/crossref/2005.../2003JC002170.shtml 
+%U [URL-Abstract] http://dx.doi.org/10.1029/2003JC002170
