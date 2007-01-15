@@ -116,7 +116,7 @@
     // Reference Miner puts its own goo at the front of each entry, so we remove it.  From looking at
     // the input string in gdb, we're getting something like "PubMed,RM122,PMID- 15639629," as the first line.
     AGRegex *startTags = [AGRegex regexWithPattern:@"^(.+)(PMID- [0-9]+\n[A-Z]{3} - )" options:AGRegexMultiline];
-    return [startTags replaceWithString:@"\2" inString:self];
+    return [startTags replaceWithString:@"$2" inString:self];
 }
 
 - (NSString *)stringByFixingRefMinerLoCString;
