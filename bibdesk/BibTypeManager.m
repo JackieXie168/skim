@@ -39,6 +39,8 @@
 #import "BibTypeManager.h"
 #import "BibAppController.h"
 #import "NSFileManager_BDSKExtensions.h"
+#import "NSCharacterSet_BDSKExtensions.h"
+#import "OFCharacterSet_BDSKExtensions.h"
 
 static BibTypeManager *sharedInstance = nil;
 
@@ -667,6 +669,14 @@ static BibTypeManager *sharedInstance = nil;
 
 - (NSCharacterSet *)fragileCiteKeyCharacterSet{
 	return fragileCiteKeyCharSet;
+}
+
+- (NSCharacterSet *)separatorCharacterSetForField:(NSString *)fieldName{
+	return [fieldName isCitationField] ? [NSCharacterSet commaCharacterSet] : [NSCharacterSet autocompletePunctuationCharacterSet];
+}
+
+- (OFCharacterSet *)separatorOFCharacterSetForField:(NSString *)fieldName{
+	return [fieldName isCitationField] ? [OFCharacterSet commaCharacterSet] : [OFCharacterSet autocompletePunctuationCharacterSet];
 }
 
 @end

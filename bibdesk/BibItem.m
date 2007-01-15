@@ -2510,7 +2510,7 @@ Boolean stringContainsLossySubstring(NSString *theString, NSString *stringToFind
         [mutableGroupSet addObjectsFromArray:[self peopleArrayForField:field]];
 	}else{
         NSArray *groupArray;   
-        NSCharacterSet *acSet = [field isCitationField] ? [NSCharacterSet characterSetWithCharactersInString:@","] : [NSCharacterSet autocompletePunctuationCharacterSet];
+        NSCharacterSet *acSet = [[BibTypeManager sharedManager] separatorCharacterSetForField:field];
         if([value containsCharacterInSet:acSet])
 			groupArray = [value componentsSeparatedByCharactersInSet:acSet trimWhitespace:YES];
         else 
@@ -2572,7 +2572,7 @@ Boolean stringContainsLossySubstring(NSString *theString, NSString *stringToFind
         if([field isPersonField])
             [string appendString:@" and "];
         else if ([field isCitationField])
-            [string appendString:@","];
+            [string appendString:@", "];
         else
             [string appendString:[[OFPreferenceWrapper sharedPreferenceWrapper] objectForKey:BDSKDefaultGroupFieldSeparatorKey]];
     }
@@ -2667,7 +2667,7 @@ Boolean stringContainsLossySubstring(NSString *theString, NSString *stringToFind
     }
 	
 	// otherwise we have a multivalued string, we should parse to get the order and delimiters right
-    OFCharacterSet *delimiterCharSet = [field isCitationField] ? [OFCharacterSet characterSetWithString:@","] : [OFCharacterSet autocompletePunctuationCharacterSet];
+    OFCharacterSet *delimiterCharSet = [[BibTypeManager sharedManager] separatorOFCharacterSetForField:field];
     OFCharacterSet *whitespaceCharSet = [OFCharacterSet whitespaceCharacterSet];
 	
 	BOOL useDelimiters = NO;
@@ -2785,7 +2785,7 @@ Boolean stringContainsLossySubstring(NSString *theString, NSString *stringToFind
     }
 	
 	// otherwise we have a multivalued string, we should parse to get the order and delimiters right
-    OFCharacterSet *delimiterCharSet = [field isCitationField] ? [OFCharacterSet characterSetWithString:@","] : [OFCharacterSet autocompletePunctuationCharacterSet];
+    OFCharacterSet *delimiterCharSet = [[BibTypeManager sharedManager] separatorOFCharacterSetForField:field];
     OFCharacterSet *whitespaceCharSet = [OFCharacterSet whitespaceCharacterSet];
 	
 	BOOL useDelimiters = NO;

@@ -175,6 +175,7 @@ extern NSString *BDSKScriptHooksKey;
 extern NSString *BDSKGroupFieldsKey;
 extern NSString *BDSKCurrentGroupFieldKey;
 extern NSString *BDSKDefaultGroupFieldSeparatorKey;
+extern NSString *BDSKGroupFieldSeparatorCharactersKey;
 extern NSString *BDSKTableHeaderImagesKey;
 extern NSString *BDSKTableHeaderTitlesKey;
 extern NSString *BDSKCiteseerHostKey;

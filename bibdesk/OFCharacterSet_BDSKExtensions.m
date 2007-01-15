@@ -42,13 +42,15 @@
 
 static OFCharacterSet *curlyBraceCharacterSet = nil;
 static OFCharacterSet *autocompletePunctuationCharacterSet = nil;
+static OFCharacterSet *commaCharacterSet = nil;
 static OFCharacterSet *newlineCharacterSet = nil;
 static OFCharacterSet *whitespaceCharacterSet = nil;
 
 + (void)didLoad;
 {
     curlyBraceCharacterSet = [[OFCharacterSet alloc] initWithString:@"{}"];
-    autocompletePunctuationCharacterSet = [[OFCharacterSet alloc] initWithString:@",:;"];
+    autocompletePunctuationCharacterSet = [[OFCharacterSet alloc] initWithString:[[OFPreferenceWrapper sharedPreferenceWrapper] stringForKey:BDSKGroupFieldSeparatorCharactersKey]];
+    commaCharacterSet = [[OFCharacterSet alloc] initWithString:@","];
         
     // character set with all newline characters (including the weird Unicode ones)
     // character set with all newline characters (including the weird Unicode ones)
@@ -71,6 +73,11 @@ static OFCharacterSet *whitespaceCharacterSet = nil;
 + (OFCharacterSet *)autocompletePunctuationCharacterSet;
 {
     return autocompletePunctuationCharacterSet;
+}
+
++ (OFCharacterSet *)commaCharacterSet;
+{
+    return commaCharacterSet;
 }
 
 + (OFCharacterSet *)newlineCharacterSet;

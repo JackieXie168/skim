@@ -196,6 +196,7 @@ NSString *BDSKScriptHooksKey = @"Script Hooks";
 NSString *BDSKGroupFieldsKey = @"BDSKGroupFieldsKey";
 NSString *BDSKCurrentGroupFieldKey = @"BDSKCurrentGroupFieldKey";
 NSString *BDSKDefaultGroupFieldSeparatorKey = @"BDSKDefaultGroupFieldSeparatorKey";
+NSString *BDSKGroupFieldSeparatorCharactersKey = @"BDSKGroupFieldSeparatorCharactersKey";
 
 NSString *BDSKTableHeaderImagesKey = @"BDSKTableHeaderImages";
 NSString *BDSKTableHeaderTitlesKey = @"BDSKTableHeaderTitles";

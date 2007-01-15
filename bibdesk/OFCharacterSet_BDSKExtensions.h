@@ -42,6 +42,7 @@
 
 + (OFCharacterSet *)curlyBraceCharacterSet;
 + (OFCharacterSet *)autocompletePunctuationCharacterSet;
++ (OFCharacterSet *)commaCharacterSet;
 + (OFCharacterSet *)newlineCharacterSet;
 + (OFCharacterSet *)whitespaceCharacterSet;
 
