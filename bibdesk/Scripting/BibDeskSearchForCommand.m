@@ -230,7 +230,7 @@ There could be other extensions, like matching for every word with conjunction o
         }
 	}
 	
-	return [[self citeKey] stringByAppendingFormat: @" %% %@, %@", surnames, [self title]];
+	return [[self citeKey] stringByAppendingFormat: @" %% %@, %@", surnames, [[self title] stringByRemovingTeX]];
 	
 }
 @end

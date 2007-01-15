@@ -1329,7 +1329,7 @@ static Boolean stringIsEqualToString(const void *value1, const void *value2) { r
     }else if([field isEqualToString:BDSKItemNumberString]){
         return [self fileOrder];
     }else if([field isEqualToString: BDSKTitleString] ){
-        return [self title];
+        return [[self title] stringByRemovingTeX];
     }else if([field isEqualToString: BDSKContainerString] ){
         return [self container];
     }else if([field isEqualToString: BDSKDateAddedString]){
@@ -1454,7 +1454,7 @@ Boolean stringContainsLossySubstring(NSString *theString, NSString *stringToFind
         if(aURL) [urls addObject:aURL];
     }
     
-    NSDictionary *info = [NSDictionary dictionaryWithObjectsAndKeys:[self citeKey], @"citeKey", [self title], @"title", urls, @"urls", nil];
+    NSDictionary *info = [NSDictionary dictionaryWithObjectsAndKeys:[self citeKey], @"citeKey", [[self title] stringByRemovingTeX], @"title", urls, @"urls", nil];
     [urls release];
     return info;
 }
