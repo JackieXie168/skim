@@ -299,15 +299,16 @@
 					if (string != nil) {
 						arr = [NSMutableArray array];
 						// split the keyword string using the same methodology as addString:forCompletionEntry:, treating ,:; as possible dividers
-						NSRange keywordPunctuationRange = [string rangeOfCharacterFromSet:[NSCharacterSet autocompletePunctuationCharacterSet]];
+                        NSCharacterSet *sepCharSet = [[BibTypeManager sharedManager] separatorCharacterSetForField:BDSKKeywordsString];
+                        NSRange keywordPunctuationRange = [string rangeOfCharacterFromSet:sepCharSet];
 						if (keywordPunctuationRange.location != NSNotFound) {
 							wordScanner = [NSScanner scannerWithString:string];
 							[wordScanner setCharactersToBeSkipped:nil];
 							
 							while (![wordScanner isAtEnd]) {
-								if ([wordScanner scanUpToCharactersFromSet:[NSCharacterSet autocompletePunctuationCharacterSet] intoString:&string])
+								if ([wordScanner scanUpToCharactersFromSet:sepCharSet intoString:&string])
 									[arr addObject:string];
-								[wordScanner scanCharactersFromSet:[NSCharacterSet autocompletePunctuationCharacterSet] intoString:nil];
+								[wordScanner scanCharactersFromSet:sepCharSet intoString:nil];
 							}
 						} else {
 							[arr addObject:string];
