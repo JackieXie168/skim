@@ -123,6 +123,7 @@ static BibTypeManager *sharedInstance = nil;
     triStateFieldsSet = [[NSMutableSet alloc] initWithCapacity:5];
     booleanFieldsSet = [[NSMutableSet alloc] initWithCapacity:5];
     citationFieldsSet = [[NSMutableSet alloc] initWithCapacity:5];
+    personFieldsSet = [[NSMutableSet alloc] initWithCapacity:2];
     [self reloadSpecialFields];
     
     singleValuedGroupFieldsSet = [[NSMutableSet alloc] initWithCapacity:10];
@@ -171,6 +172,7 @@ static BibTypeManager *sharedInstance = nil;
     [triStateFieldsSet release];
     [booleanFieldsSet release];
     [citationFieldsSet release];
+    [personFieldsSet release];
     [singleValuedGroupFieldsSet release];
     [invalidGroupFieldsSet release];
 	[super dealloc];
@@ -238,6 +240,7 @@ static BibTypeManager *sharedInstance = nil;
         [allFields addObjectsFromArray:[pw stringArrayForKey:BDSKRatingFieldsKey]];
         [allFields addObjectsFromArray:[pw stringArrayForKey:BDSKTriStateFieldsKey]];
         [allFields addObjectsFromArray:[pw stringArrayForKey:BDSKCitationFieldsKey]];
+        [allFields addObjectsFromArray:[pw stringArrayForKey:BDSKPersonFieldsKey]];
         
         [self setAllFieldNames:allFields];
     }
@@ -267,7 +270,8 @@ static BibTypeManager *sharedInstance = nil;
         [ratingFieldsSet addObjectsFromArray:[[OFPreferenceWrapper sharedPreferenceWrapper] stringArrayForKey:BDSKRatingFieldsKey]];
         [triStateFieldsSet addObjectsFromArray:[[OFPreferenceWrapper sharedPreferenceWrapper] stringArrayForKey:BDSKTriStateFieldsKey]];
         [booleanFieldsSet addObjectsFromArray:[[OFPreferenceWrapper sharedPreferenceWrapper] stringArrayForKey:BDSKBooleanFieldsKey]];    
-        [citationFieldsSet addObjectsFromArray:[[OFPreferenceWrapper sharedPreferenceWrapper] stringArrayForKey:BDSKCitationFieldsKey]];    
+        [citationFieldsSet addObjectsFromArray:[[OFPreferenceWrapper sharedPreferenceWrapper] stringArrayForKey:BDSKCitationFieldsKey]];   
+        [personFieldsSet addObjectsFromArray:[[OFPreferenceWrapper sharedPreferenceWrapper] stringArrayForKey:BDSKPersonFieldsKey]];
     }
 }
 
@@ -615,10 +619,7 @@ static BibTypeManager *sharedInstance = nil;
 }
 
 - (NSSet *)personFieldsSet{
-    static NSSet *persons = nil;
-    if(persons == nil)
-        persons = [[NSSet alloc] initWithObjects:BDSKAuthorString, BDSKEditorString, nil];
-    return persons;
+    return personFieldsSet;
 }
 
 - (NSSet *)numericFieldsSet{

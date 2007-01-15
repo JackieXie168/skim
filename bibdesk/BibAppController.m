@@ -671,8 +671,8 @@ static void createTemporaryDirectory()
 										 options:NSBackwardsSearch | NSLiteralSearch
 										   range:searchRange]; // check to see if it's an author (not robust)
 	unsigned matchStart = 0;
-	// now find the beginning of the match, reflecting addString:forCompletionEntry:. We might be more sofisticated, like in groups
-    if ([entry isEqualToString:BDSKAuthorString]) {
+	// now find the beginning of the match, reflecting addString:forCompletionEntry:. We might be more sophisticated, like in groups
+    if ([entry isPersonField]) {
 		// these are delimited by "and"
 		if (andRange.location != NSNotFound)
 			matchStart = NSMaxRange(andRange);
@@ -692,7 +692,8 @@ static void createTemporaryDirectory()
 }
 
 - (NSArray *)entry:(NSString *)entry completions:(NSArray *)words forPartialWordRange:(NSRange)charRange ofString:(NSString *)fullString indexOfSelectedItem:(int *)index{
-	if ([entry isEqualToString:BDSKEditorString])	
+    // all persons are keyed to author
+	if ([entry isPersonField])	
 		entry = BDSKAuthorString;
 	else if ([entry isEqualToString:BDSKBooktitleString])	
 		entry = BDSKTitleString;

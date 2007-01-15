@@ -101,6 +101,7 @@
     NSMutableSet *triStateFieldsSet;
     NSMutableSet *booleanFieldsSet;
     NSMutableSet *citationFieldsSet;
+    NSMutableSet *personFieldsSet;
     NSMutableSet *singleValuedGroupFieldsSet;
     NSMutableSet *invalidGroupFieldsSet;
 }

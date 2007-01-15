@@ -147,6 +147,7 @@ NSString *BDSKRatingFieldsKey = @"Rating fields";
 NSString *BDSKBooleanFieldsKey = @"Boolean fields";
 NSString *BDSKTriStateFieldsKey = @"Three state fields";
 NSString *BDSKCitationFieldsKey = @"Citation fields";
+NSString *BDSKPersonFieldsKey = @"Person fields";
 NSString *BDSKOutputTemplateFileKey = @"Output Template File";
 
 NSString *BDSKCustomCiteStringsKey = @"Custom CiteStrings";
