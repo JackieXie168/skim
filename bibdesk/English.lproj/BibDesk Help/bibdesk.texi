@@ -134,7 +134,7 @@ about the BibTeX file format.
 * Opening and Importing Files:: Opening new and existing files of different formats
 * Searching Your Database:: Searching references in the BibDesk database
 * Managing References:: Browsing, adding, and editing references
-* Searching External Databases:: Searching external satabases
+* Searching External Databases:: Searching external databases
 * Citation Keys::       Automatically generating citation keys
 * AutoFile::            Keeping local copies of articles organized
 * Inserting Citations:: Adding citation commands in your favorite editor
