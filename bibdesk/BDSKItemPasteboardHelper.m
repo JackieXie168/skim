@@ -193,7 +193,13 @@
 }
 
 - (void)clearPromisedTypesForPasteboard:(NSPasteboard *)pboard {
-	[pboard performSelector:@selector(setData:forType:) withObject:nil withObjectsFromArray:[self promisedTypesForPasteboard:pboard]];
+    @try {
+        // can raise NSPasteboardCommunicationException
+        [pboard performSelector:@selector(setData:forType:) withObject:nil withObjectsFromArray:[self promisedTypesForPasteboard:pboard]];
+    }
+    @catch(id exception) {
+        NSLog(@"ignoring exception %@ in -[%@ %@]", exception, [self class], NSStringFromSelector(_cmd));
+    }
     [self removePromisedTypesForPasteboard:pboard];
 }
 
@@ -228,6 +234,7 @@
 }
 
 - (void)removePromisedType:(NSString *)type forPasteboard:(NSPasteboard *)pboard {
+    NSParameterAssert(nil != pboard);
 	NSMutableArray *types = [self promisedTypesForPasteboard:pboard];
 	[types removeObject:type];
 	if([types count] == 0)
@@ -235,6 +242,7 @@
 }
 
 - (void)removePromisedTypesForPasteboard:(NSPasteboard *)pboard {
+    NSParameterAssert(nil != [pboard name]);
 	[promisedPboardTypes removeObjectForKey:[pboard name]];
     if([promisedPboardTypes count] == 0 && promisedPboardTypes != nil && delegate == nil)   
         [self absolveResponsibility];
@@ -261,10 +269,15 @@
     
 	while(name = [nameEnum nextObject]){
         NSPasteboard *pboard = [NSPasteboard pasteboardWithName:name];
+        
+        // if we have BDSKBibItemPboardType, call to pasteboard:provideDataForType: will make this array go away
         NSMutableArray *types = [self promisedTypesForPasteboard:pboard];
         
         if([types containsObject:BDSKBibItemPboardType])
             [self pasteboard:pboard provideDataForType:BDSKBibItemPboardType];
+        
+        // now operate on any remaining types
+        types = [self promisedTypesForPasteboard:pboard];
         
         if([types count]){
             NSArray *items = [self promisedItemsForPasteboard:pboard];
