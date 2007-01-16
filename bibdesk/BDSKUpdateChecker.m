@@ -38,6 +38,7 @@
 
 #import "BDSKUpdateChecker.h"
 #import "BDSKReadMeController.h"
+#import <SystemConfiguration/SystemConfiguration.h>
 
 #define PROPERTY_LIST_URL @"http://bibdesk.sourceforge.net/bibdesk-versions-xml.txt"
 #define DOWNLOAD_URL @"http://bibdesk.sourceforge.net/"
