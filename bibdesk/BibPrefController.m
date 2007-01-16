@@ -217,6 +217,9 @@ NSString *BDSKShouldLookForSharedFilesKey = @"BDSKShouldLookForSharedFilesKey";
 NSString *BDSKSharingRequiresPasswordKey = @"BDSKBrowsingRequiresPasswordKey";
 NSString *BDSKSharingNameKey = @"BDSKSharingNameKey";
 NSString *BDSKWarnOnCiteKeyChangeKey = @"BDSKWarnOnCiteKeyChangeKey";
+NSString *BDSKUpdateCheckIntervalKey = @"BDSKUpdateCheckIntervalKey";
+NSString *BDSKUpdateCheckLastDateKey = @"BDSKUpdateCheckLastDateKey";
+NSString *BDSKUpdateLatestNotifiedVersionKey = @"BDSKUpdateLatestNotifiedVersionKey";
 
 #pragma mark Field name strings
 

@@ -692,6 +692,14 @@
 					<false/>
 					<key>BDSKShouldWritePDFMetadata</key>
 					<false/>
+					<key>BDSKShouldWritePDFMetadata</key>
+					<false/>
+					<key>BDSKUpdateCheckIntervalKey</key>
+					<integer>1</integer>
+					<key>BDSKUpdateCheckLastDateKey</key>
+					<string></string>
+					<key>BDSKUpdateLatestNotifiedVersionKey</key>
+					<string></string>
 					<key>BDSKWarnOnCiteKeyChangeKey</key>
 					<true/>
 					<key>BDSKWarnOnDelete</key>

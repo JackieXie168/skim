@@ -198,6 +198,10 @@ extern NSString *BDSKShouldDisplayFirstNamesKey;
 extern NSString *BDSKShouldAbbreviateFirstNamesKey;
 extern NSString *BDSKShouldDisplayLastNameFirstKey;
 
+extern NSString *BDSKUpdateCheckIntervalKey;
+extern NSString *BDSKUpdateCheckLastDateKey;
+extern NSString *BDSKUpdateLatestNotifiedVersionKey;
+
 #pragma mark Field name strings
 
 extern NSString *BDSKCiteKeyString;
