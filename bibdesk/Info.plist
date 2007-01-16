@@ -83,10 +83,6 @@
 			</array>
 			<key>CFBundleTypeRole</key>
 			<string>Viewer</string>
-			<key>LSItemContentTypes</key>
-			<array>
-				<string>public.plain-text</string>
-			</array>
 			<key>NSDocumentClass</key>
 			<string>BibDocument</string>
 			<key>NSExportableAs</key>

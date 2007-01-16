@@ -188,7 +188,7 @@ static BDSKOrphanedFilesFinder *sharedFinder = nil;
     [arrayController setSearchString:[sender stringValue]];
     [arrayController rearrangeObjects];
     unsigned int count = [[arrayController arrangedObjects] count];
-    NSString *message = count == 1 ? [NSString stringWithFormat:NSLocalizedString(@"%d orphaned file found.", @""), count] : [NSString stringWithFormat:NSLocalizedString(@"%d orphaned files found.", @""), count];
+    NSString *message = count == 1 ? [NSString stringWithFormat:NSLocalizedString(@"%d orphaned file found", @""), count] : [NSString stringWithFormat:NSLocalizedString(@"%d orphaned files found", @""), count];
     [statusField setStringValue:message];
 }    
 
@@ -221,7 +221,7 @@ static BDSKOrphanedFilesFinder *sharedFinder = nil;
 - (id)tableView:(NSTableView *)tView objectValueForTableColumn:(NSTableColumn *)tableColumn row:(int)row{ return nil; }
 
 - (NSString *)tableView:(NSTableView *)tableView toolTipForTableColumn:(NSTableColumn *)tableColumn row:(int)row{
-    return [[self objectInOrphanedFilesAtIndex:row] path];
+    return [[[arrayController arrangedObjects] objectAtIndex:row] path];
 }
 
 - (NSMenu *)tableView:(NSTableView *)tableView contextMenuForRow:(int)row column:(int)column{
@@ -229,8 +229,8 @@ static BDSKOrphanedFilesFinder *sharedFinder = nil;
 }
 
 - (IBAction)showFile:(id)sender{
-    NSIndexSet *rowIndexes = [tableView selectedRowIndexes];
-    if ([rowIndexes count] == 0)
+    NSArray *paths = [[arrayController selectedObjects] valueForKey:@"path"];
+    if ([paths count] == 0)
         return;
     
     int type = -1;
@@ -244,15 +244,13 @@ static BDSKOrphanedFilesFinder *sharedFinder = nil;
     }
     
     NSString *path;
-    unsigned int index = [rowIndexes firstIndex];
+    NSEnumerator *pathEnum = [paths objectEnumerator];
     
-    while (index != NSNotFound) {
-        path = [[self objectInOrphanedFilesAtIndex:index] path];
+    while (path = [pathEnum nextObject]) {
         if(type == 1)
             [[NSWorkspace sharedWorkspace] openFile:path];
         else
             [[NSWorkspace sharedWorkspace] selectFile:path inFileViewerRootedAtPath:nil];
-        index = [rowIndexes indexGreaterThanIndex:index];
     }
 }   
 
@@ -269,7 +267,7 @@ static BDSKOrphanedFilesFinder *sharedFinder = nil;
 }
 
 - (BOOL)tableView:(NSTableView *)tv writeRowsWithIndexes:(NSIndexSet *)rowIndexes toPasteboard:(NSPasteboard *)pboard{
-    NSArray *filePaths = [[[self mutableArrayValueForKey:@"orphanedFiles"] objectsAtIndexes:rowIndexes] valueForKey:@"path"];
+    NSArray *filePaths = [[[arrayController arrangedObjects] objectsAtIndexes:rowIndexes] valueForKey:@"path"];
     [pboard declareTypes:[NSArray arrayWithObjects:NSFilenamesPboardType, nil] owner:nil];
     [pboard setPropertyList:filePaths forType:NSFilenamesPboardType];
     return YES;
@@ -286,9 +284,8 @@ static BDSKOrphanedFilesFinder *sharedFinder = nil;
     if ([dragType isEqualToString:NSFilenamesPboardType]) {
 		NSArray *fileNames = [pboard propertyListForType:NSFilenamesPboardType];
         count = [fileNames count];
-        NSString *filePath = count ? [[pboard propertyListForType:NSFilenamesPboardType] objectAtIndex:0] : nil;
-		if (filePath)
-            image = [NSImage imageForFile:filePath];
+		if (count)
+            image = [[NSWorkspace sharedWorkspace] iconForFiles:fileNames];
     }
     
     return image ? [image dragImageWithCount:count] : nil;

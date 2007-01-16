@@ -44,33 +44,65 @@
 #import <OmniFoundation/NSString-OFExtensions.h>
 #import "NSURL_BDSKExtensions.h"
 
-@interface NSScrollView (BDSKZoomablePDFViewExtensions)
+@interface NSScrollView (BDSKZoomablePDFViewExtensions) 
+- (void)replacementDealloc;
+- (BOOL)replacementHasHorizontalScroller;
+- (void)replacementSetHasHorizontalScroller:(BOOL)flag;
+
+// new API allows ignoring PDFView's attempts to remove the horizontal scroller
+- (void)setAlwaysHasHorizontalScroller:(BOOL)flag;
+
 @end
 
 @implementation NSScrollView (BDSKZoomablePDFViewExtensions)
 
-static IMP originalTile;
+static IMP originalSetHasHorizontalScroller = NULL;
+static BOOL (*originalHasHorizontalScroller)(id, SEL) = NULL;
+static IMP originalDealloc = NULL;
 
-+ (void)didLoad;
-{
-    originalTile = OBReplaceMethodImplementationWithSelector(self, @selector(tile), @selector(_replacementTile));
-}
+static CFMutableSetRef nonretainedScrollviews = NULL;
 
-- (void)_replacementTile;
-{
-    // ARM: This is simpler than replacing the scrollview in the PDFView hierarchy, since we need to make sure the popup gets drawn at the right time in the scrollview, yet the popup action is handled by the PDFView.
-    // Further, using [self replaceSubview:] in the PDFView init method to reimplement -tile in a trivial NSScrollView subclass will crash with the following backtrace:
-    // 0   <<00000000>> 	0xfffeff18 objc_msgSend_rtp + 24
-    // 1   com.apple.PDFKit             	0x96441778 -[PDFView adjustScrollbars:] + 592
-    // 2   com.apple.Foundation         	0x9294d4c0 __NSFirePerformTimer + 308
++ (void)didLoad{
+    originalSetHasHorizontalScroller = OBReplaceMethodImplementationWithSelector(self, @selector(setHasHorizontalScroller:), @selector(replacementSetHasHorizontalScroller:));
+    originalHasHorizontalScroller = (typeof(originalHasHorizontalScroller))OBReplaceMethodImplementationWithSelector(self, @selector(hasHorizontalScroller), @selector(replacementHasHorizontalScroller));
+    originalDealloc = OBReplaceMethodImplementationWithSelector(self, @selector(dealloc), @selector(replacementDealloc));
     
-    originalTile(self, _cmd);
-    NSView *superview = [self superview];
-        
-    if([superview respondsToSelector:@selector(layoutScrollView)])
-        [superview performSelector:@selector(layoutScrollView)];
+    // set doesn't retain, so no retain cycles; pointer equality used to compare views
+    nonretainedScrollviews = CFSetCreateMutable(CFAllocatorGetDefault(), 0, NULL);
 }
 
+- (void)replacementDealloc;
+{
+    CFSetRemoveValue(nonretainedScrollviews, self);
+    originalDealloc(self, _cmd);
+}
+
+- (void)setAlwaysHasHorizontalScroller:(BOOL)flag;
+{
+    if (flag) {
+        CFSetAddValue(nonretainedScrollviews, self);
+        [self setHasHorizontalScroller:YES];
+    } else {
+        CFSetRemoveValue(nonretainedScrollviews, self);
+    }
+}
+
+- (void)replacementSetHasHorizontalScroller:(BOOL)flag;
+{
+    if (CFSetContainsValue(nonretainedScrollviews, self))
+        flag = YES;
+    originalSetHasHorizontalScroller(self, _cmd, flag);
+}
+
+- (BOOL)replacementHasHorizontalScroller;
+{
+    return CFSetContainsValue(nonretainedScrollviews, self) ? YES : originalHasHorizontalScroller(self, _cmd);
+}
+
+@end
+
+@interface PDFView (BDSKApplePrivateOverride)
+- (void)adjustScrollbars:(id)obj;
 @end
 
 @implementation BDSKZoomablePDFView
@@ -94,7 +126,6 @@ static float BDSKScaleMenuFontSize = 11.0;
 
 - (id)initWithFrame:(NSRect)rect {
     if (self = [super initWithFrame:rect]) {
-		scaleFactor = 1.0;
         pasteboardInfo = [[NSMutableDictionary alloc] initWithCapacity:2];
     }
     return self;
@@ -102,7 +133,6 @@ static float BDSKScaleMenuFontSize = 11.0;
 
 - (id)initWithCoder:(NSCoder *)coder {
     if (self = [super initWithCoder:coder]) {
-		scaleFactor = 1.0;
         pasteboardInfo = [[NSMutableDictionary alloc] initWithCapacity:2];
     }
     return self;
@@ -191,22 +221,22 @@ static float BDSKScaleMenuFontSize = 11.0;
 - (void)saveDocumentAs:(id)sender;
 {
     NSString *name = [[[self document] documentURL] lastPathComponent];
-    [[NSSavePanel savePanel] beginSheetForDirectory:nil file:(name ? name : NSLocalizedString(@"Untitled.pdf", @"")) modalForWindow:[self window] modalDelegate:self didEndSelector:@selector(saveDocumentSheetDidEnd:returnCode:contextInfo:) contextInfo:NULL];
+    [[NSSavePanel savePanel] beginSheetForDirectory:nil file:(name ? name : NSLocalizedString(@"Untitled.pdf", @"Default file name for saved PDF")) modalForWindow:[self window] modalDelegate:self didEndSelector:@selector(saveDocumentSheetDidEnd:returnCode:contextInfo:) contextInfo:NULL];
 }
 
 - (NSMenu *)menuForEvent:(NSEvent *)theEvent;
 {
     NSMenu *menu = [super menuForEvent:theEvent];
     [menu addItem:[NSMenuItem separatorItem]];
-    NSMenuItem *item = [[NSMenuItem allocWithZone:[NSMenu menuZone]] initWithTitle:NSLocalizedString(@"Copy Document as PDF", @"") action:@selector(copyAsPDF:) keyEquivalent:@""];
+    NSMenuItem *item = [[NSMenuItem allocWithZone:[NSMenu menuZone]] initWithTitle:NSLocalizedString(@"Copy Document as PDF", @"Menu item title") action:@selector(copyAsPDF:) keyEquivalent:@""];
     [menu addItem:item];
     [item release];
     
-    item = [[NSMenuItem allocWithZone:[NSMenu menuZone]] initWithTitle:NSLocalizedString(@"Copy Page as PDF", @"") action:@selector(copyPDFPage:) keyEquivalent:@""];
+    item = [[NSMenuItem allocWithZone:[NSMenu menuZone]] initWithTitle:NSLocalizedString(@"Copy Page as PDF", @"Menu item title") action:@selector(copyPDFPage:) keyEquivalent:@""];
     [menu addItem:item];
     [item release];
 
-    NSString *title = (nil == [self currentSelection]) ? NSLocalizedString(@"Copy All Text", @"") : NSLocalizedString(@"Copy Selected Text", @"");
+    NSString *title = (nil == [self currentSelection]) ? NSLocalizedString(@"Copy All Text", @"Menu item title") : NSLocalizedString(@"Copy Selected Text", @"Menu item title");
     
     item = [[NSMenuItem allocWithZone:[NSMenu menuZone]] initWithTitle:title action:@selector(copyAsText:) keyEquivalent:@""];
     [menu addItem:item];
@@ -214,7 +244,7 @@ static float BDSKScaleMenuFontSize = 11.0;
     
     [menu addItem:[NSMenuItem separatorItem]];
     
-    item = [[NSMenuItem allocWithZone:[NSMenu menuZone]] initWithTitle:[NSLocalizedString(@"Save PDF As", @"") stringByAppendingEllipsis] action:@selector(saveDocumentAs:) keyEquivalent:@""];
+    item = [[NSMenuItem allocWithZone:[NSMenu menuZone]] initWithTitle:[NSLocalizedString(@"Save PDF As", @"Menu item title") stringByAppendingEllipsis] action:@selector(saveDocumentAs:) keyEquivalent:@""];
     [menu addItem:item];
     [item release];
 
@@ -228,6 +258,7 @@ static float BDSKScaleMenuFontSize = 11.0;
     if (scalePopUpButton == nil) {
         
         NSScrollView *scrollView = [self scrollView];
+        [scrollView setAlwaysHasHorizontalScroller:YES];
 
         unsigned cnt, numberOfDefaultItems = (sizeof(BDSKDefaultScaleMenuLabels) / sizeof(NSString *));
         id curItem;
@@ -242,10 +273,13 @@ static float BDSKScaleMenuFontSize = 11.0;
         for (cnt = 0; cnt < numberOfDefaultItems; cnt++) {
             [scalePopUpButton addItemWithTitle:NSLocalizedStringFromTable(BDSKDefaultScaleMenuLabels[cnt], @"ZoomValues", nil)];
             curItem = [scalePopUpButton itemAtIndex:cnt];
-            [curItem setRepresentedObject:(BDSKDefaultScaleMenuFactors[cnt] != 0.0 ? [NSNumber numberWithFloat:BDSKDefaultScaleMenuFactors[cnt]] : nil)];
+            [curItem setRepresentedObject:(BDSKDefaultScaleMenuFactors[cnt] > 0.0 ? [NSNumber numberWithFloat:BDSKDefaultScaleMenuFactors[cnt]] : nil)];
         }
         // select the appropriate item, adjusting the scaleFactor if necessary
-		[self setScaleFactor:scaleFactor adjustPopup:YES];
+        if([self autoScales])
+            [self setScaleFactor:0.0 adjustPopup:YES];
+        else
+            [self setScaleFactor:[self scaleFactor] adjustPopup:YES];
 
         // hook it up
         [scalePopUpButton setTarget:self];
@@ -272,6 +306,7 @@ static float BDSKScaleMenuFontSize = 11.0;
 }
 
 - (void)drawRect:(NSRect)rect {
+    [self layoutScrollView];
     [super drawRect:rect];
 
     if ([scalePopUpButton superview]) {
@@ -314,13 +349,71 @@ static float BDSKScaleMenuFontSize = 11.0;
 		newScaleFactor = BDSKDefaultScaleMenuFactors[cnt];
     }
     
-    if(!newScaleFactor)
+    if(fabs(newScaleFactor) < 0.01)
         [self setAutoScales:YES];
     else
         [super setScaleFactor:newScaleFactor];
+}
+
+- (void)setAutoScales:(BOOL)newAuto {
+    [super setAutoScales:newAuto];
     
-    scaleFactor = newScaleFactor;
-	
+    if(newAuto)
+		[scalePopUpButton selectItemAtIndex:0];
+}
+
+- (IBAction)zoomIn:(id)sender{
+    if([self autoScales]){
+        [super zoomIn:sender];
+    }else{
+        int cnt = 0, numberOfDefaultItems = (sizeof(BDSKDefaultScaleMenuFactors) / sizeof(float));
+        float scaleFactor = [self scaleFactor];
+        
+        // We only work with some preset zoom values, so choose one of the appropriate values (Fudge a little for floating point == to work)
+        while (cnt < numberOfDefaultItems && scaleFactor * .99 > BDSKDefaultScaleMenuFactors[cnt]) cnt++;
+        cnt++;
+        while (cnt >= numberOfDefaultItems) cnt--;
+        [self setScaleFactor:BDSKDefaultScaleMenuFactors[cnt]];
+    }
+}
+
+- (IBAction)zoomOut:(id)sender{
+    if([self autoScales]){
+        [super zoomOut:sender];
+    }else{
+        int cnt = 0, numberOfDefaultItems = (sizeof(BDSKDefaultScaleMenuFactors) / sizeof(float));
+        float scaleFactor = [self scaleFactor];
+        
+        // We only work with some preset zoom values, so choose one of the appropriate values (Fudge a little for floating point == to work)
+        while (cnt < numberOfDefaultItems && scaleFactor * .99 > BDSKDefaultScaleMenuFactors[cnt]) cnt++;
+        cnt--;
+        if (cnt < 0) cnt++;
+        [self setScaleFactor:BDSKDefaultScaleMenuFactors[cnt]];
+    }
+}
+
+- (BOOL)canZoomIn{
+    if ([super canZoomIn] == NO)
+        return NO;
+    if([self autoScales])   
+        return YES;
+    unsigned cnt = 0, numberOfDefaultItems = (sizeof(BDSKDefaultScaleMenuFactors) / sizeof(float));
+    float scaleFactor = [self scaleFactor];
+    // We only work with some preset zoom values, so choose one of the appropriate values (Fudge a little for floating point == to work)
+    while (cnt < numberOfDefaultItems && scaleFactor * .99 > BDSKDefaultScaleMenuFactors[cnt]) cnt++;
+    return cnt < numberOfDefaultItems - 1;
+}
+
+- (BOOL)canZoomOut{
+    if ([super canZoomOut] == NO)
+        return NO;
+    if([self autoScales])   
+        return YES;
+    unsigned cnt = 0, numberOfDefaultItems = (sizeof(BDSKDefaultScaleMenuFactors) / sizeof(float));
+    float scaleFactor = [self scaleFactor];
+    // We only work with some preset zoom values, so choose one of the appropriate values (Fudge a little for floating point == to work)
+    while (cnt < numberOfDefaultItems && scaleFactor * .99 > BDSKDefaultScaleMenuFactors[cnt]) cnt++;
+    return cnt > 0;
 }
 
 #pragma mark Scrollview
@@ -343,34 +436,54 @@ static float BDSKScaleMenuFontSize = 11.0;
 	}
 }
 
+- (void)adjustScrollbars:(id)obj;
+{
+    // this private method is only called by PDFView, so super must implement it if it's called
+    [super adjustScrollbars:obj];
+    [self layoutScrollView];
+    // be careful here; check the comment in -layoutScrollView before changing anything
+}
+
 - (void)layoutScrollView;
 {
     NSScrollView *scrollView = [self scrollView];
     
-    // make sure we always have a scroller; disabling autohide isn't enough
-    [scrollView setHasHorizontalScroller:YES];
-    [scrollView setAutohidesScrollers:NO];
+    // Don't force scroller display on the scrollview; PDFView apparently uses a timer to call adjustScrollbars:, and preventing autohide will cause an endless loop if you zoom so that the vertical scroller is not displayed (regardless of whether we swizzle -[NSScrollView tile] or override -[PDFView adjustScrollbars:]).  Therefore, we always display the button,  even though it looks stupid without the scrollers.  Since it's not really readable anyway at 25%, this probably isn't a big deal, since this isn't supposed to be a thumbnail view.
+    
+    NSControlSize controlSize = NSRegularControlSize;
+    
+    if ([scrollView hasHorizontalScroller])
+        controlSize = [[scrollView horizontalScroller] controlSize];
+    else if ([scrollView hasVerticalScroller])
+        controlSize = [[scrollView verticalScroller] controlSize];
+    
+    float scrollerWidth = [NSScroller scrollerWidthForControlSize:controlSize];
     
     if (!scalePopUpButton) [self makeScalePopUpButton];
-
+    
     NSRect horizScrollerFrame, buttonFrame;
     buttonFrame = [scalePopUpButton frame];
-	if (![scrollView hasHorizontalScroller]) {
-        if (scalePopUpButton) [scalePopUpButton removeFromSuperview];
-        scalePopUpButton = nil;
-    } else {
-        NSScroller *horizScroller;
-        horizScroller = [scrollView horizontalScroller];
+    
+    NSScroller *horizScroller = [scrollView horizontalScroller];
+    
+    if (horizScroller) {
         horizScrollerFrame = [horizScroller frame];
         
         // Now we'll just adjust the horizontal scroller size and set the button size and location.
-        // Set it based on our frame, not the scroller's frame, since this gets called repeatedly; 15 is for the window's thumb.
-        horizScrollerFrame.size.width = [scrollView frame].size.width - buttonFrame.size.width - NSWidth([[scrollView verticalScroller] frame]) - 1.0;
+        // Set it based on our frame, not the scroller's frame, since this gets called repeatedly.
+        horizScrollerFrame.size.width = NSWidth([scrollView frame]) - NSWidth(buttonFrame) - scrollerWidth;
         [horizScroller setFrameSize:horizScrollerFrame.size];
+    }
+    buttonFrame.size.height = scrollerWidth;
 
-        buttonFrame.origin.x = NSMaxX(horizScrollerFrame) + 1.0;
-        buttonFrame.origin.y = horizScrollerFrame.origin.y + 1.0;
-        buttonFrame.size.height = horizScrollerFrame.size.height - 1.0;
+    // @@ resolution independence: 2.0 may not work
+    if ([scrollView isFlipped]) {
+        buttonFrame.origin.x = NSMaxX([scrollView frame]) - scrollerWidth - NSWidth(buttonFrame);
+        buttonFrame.origin.y = NSMaxY([scrollView frame]) - NSHeight(buttonFrame) - 2.0;            
+    }
+    else {
+        buttonFrame.origin.x = NSMaxX([scrollView frame]) - scrollerWidth - NSWidth(buttonFrame);
+        buttonFrame.origin.y = NSMinY([scrollView frame]) + 2.0;
     }
     [scalePopUpButton setFrame:buttonFrame];
 }

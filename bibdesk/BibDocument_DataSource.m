@@ -459,12 +459,12 @@
         pubs = [self selectedPublications];
         dragCopyType = 1; // only type that makes sense here
         
-        dragFromSharedGroups = [self hasSharedGroupsAtIndexes:[groupTableView selectedRowIndexes]];
+        dragFromSharedGroups = [self hasSharedGroupsSelected];
     }else{
 		// drag from the main table
 		pubs = [shownPublications objectsAtIndexes:rowIndexes];
         
-        dragFromSharedGroups = [self hasSharedGroupsAtIndexes:[groupTableView selectedRowIndexes]];
+        dragFromSharedGroups = [self hasSharedGroupsSelected];
 
 		if(pboard == [NSPasteboard pasteboardWithName:NSDragPboard]){
 			// see where we clicked in the table
@@ -720,9 +720,7 @@
     if ([dragType isEqualToString:NSFilenamesPboardType]) {
 		NSArray *fileNames = [pb propertyListForType:NSFilenamesPboardType];
 		count = [fileNames count];
-        NSURL *fileURL = count ? [NSURL fileURLWithPath:[[pb propertyListForType:NSFilenamesPboardType] objectAtIndex:0]] : nil;
-        fileURL = [fileURL fileURLByResolvingAliases];
-		image = fileURL != nil ? [NSImage imageForURL:fileURL] : [NSImage missingFileImage];
+		image = [[NSWorkspace sharedWorkspace] iconForFiles:fileNames];
     
     } else if ([dragType isEqualToString:NSURLPboardType]) {
         count = 1;
@@ -732,7 +730,9 @@
 	} else if ([dragType isEqualToString:NSFilesPromisePboardType]) {
 		NSArray *fileNames = [pb propertyListForType:NSFilesPromisePboardType];
 		count = [fileNames count];
-        image = [NSImage imageForFileType:[[fileNames lastObject] pathExtension]];
+        NSString *pathExt = count ? [[fileNames objectAtIndex:0] pathExtension] : @"";
+        // promise drags don't use full paths
+        image = [[NSWorkspace sharedWorkspace] iconForFileType:pathExt];
     
 	} else {
 		OFPreferenceWrapper *sud = [OFPreferenceWrapper sharedPreferenceWrapper];
@@ -1219,20 +1219,20 @@
 - (BOOL)tableView:(NSTableView *)tv shouldTrackTableColumn:(NSTableColumn *)tableColumn row:(int)row;
 {
     // this can happen when we revert
-    if (row == -1 || row >= [[self publications] count])
+    if (row == -1 || row >= [self numberOfRowsInTableView:tv])
         return NO;
     
     NSString *tcID = [tableColumn identifier];
-    return [[BibTypeManager sharedManager] isURLField:tcID] && [[[self publications] objectAtIndex:row] URLForField:tcID];
+    return [[BibTypeManager sharedManager] isURLField:tcID] && [[shownPublications objectAtIndex:row] URLForField:tcID];
 }
 
 - (void)tableView:(NSTableView *)tv mouseEnteredTableColumn:(NSTableColumn *)tableColumn row:(int)row;
 {
-    if (row == -1 || row >= [[self publications] count])
+    if (row == -1 || row >= [self numberOfRowsInTableView:tv])
         return;
     
     NSString *tcID = [tableColumn identifier];
-    BibItem *pub = [[self publications] objectAtIndex:row];
+    BibItem *pub = [shownPublications objectAtIndex:row];
     NSURL *url = [pub URLForField:tcID];
     if (url)
         [self setStatus:[url isFileURL] ? [[url path] stringByAbbreviatingWithTildeInPath] : [url absoluteString]];

@@ -47,6 +47,10 @@
     return (NSMutableDictionary *)CFDictionaryCreateMutable(CFAllocatorGetDefault(), 0, &BDSKCaseInsensitiveStringKeyDictionaryCallBacks, &OFNSObjectDictionaryValueCallbacks);
 }
 
+@end
+
+@implementation NSDictionary (BDSKExtensions)
+
 // ARM:  Apple's implementation of -[NSDictionary valueForKey:] doesn't check [key length]
 // before using characterAtIndex:, so an empty string will raise an exception.  We reimplement
 // it as specified in the docs to avoid this problem.  rdar://problem/4759413

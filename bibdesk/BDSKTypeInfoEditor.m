@@ -472,7 +472,8 @@ static BDSKTypeInfoEditor *sharedTypeInfoEditor;
 	NSString *newValue;
 	
 	if (tv == typeTableView) {
-		oldValue = [types objectAtIndex:row];
+        // NSDictionary copies its keys, so types may be the only thing retaining oldValue (see bug #1596532)
+		oldValue = [[[types objectAtIndex:row] retain] autorelease];
 		newValue = [(NSString *)object lowercaseString];
 		if (![newValue isEqualToString:oldValue] && 
 			![types containsObject:newValue]) {

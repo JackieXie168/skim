@@ -75,8 +75,6 @@
 				F9ABEE42086E578700741FC5 /* PBXTargetDependency */,
 				F9D3E273088D9D9200E70D49 /* PBXTargetDependency */,
 				F911CBFD089737C000ABDAC6 /* PBXTargetDependency */,
-				F91B8025092BFEE100976F6F /* PBXTargetDependency */,
-				F9A66E4E092FAFA200AF31D5 /* PBXTargetDependency */,
 				CE67F055092DEEB200410758 /* PBXTargetDependency */,
 				F9A66E4C092FAF9400AF31D5 /* PBXTargetDependency */,
 				F9A66E52092FAFB400AF31D5 /* PBXTargetDependency */,
@@ -503,8 +501,6 @@
 		F91B5CE0076579FE0011ED22 /* rssTemplate.txt in Resources */ = {isa = PBXBuildFile; fileRef = F91B5CDF076579FE0011ED22 /* rssTemplate.txt */; };
 		F91B5CE507657A200011ED22 /* template.txt in Resources */ = {isa = PBXBuildFile; fileRef = F91B5CE407657A200011ED22 /* template.txt */; };
 		F91B7F28092BEB5A00976F6F /* AddressBook.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F91B7F27092BEB5A00976F6F /* AddressBook.framework */; };
-		F91B8027092BFF6100976F6F /* ILCrashReporter.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F91B8026092BFF6100976F6F /* ILCrashReporter.framework */; };
-		F91B81DC092C0AED00976F6F /* ILCrashReporter.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = F91B8026092BFF6100976F6F /* ILCrashReporter.framework */; };
 		F91F275909A6467900419960 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1058C7A1FEA54F0111CA2CBB /* Cocoa.framework */; };
 		F91F286A09A6684900419960 /* PDFMetadata.m in Sources */ = {isa = PBXBuildFile; fileRef = F91F284709A661A700419960 /* PDFMetadata.m */; };
 		F920DAFF075C2B69000C5FCA /* BibAppController+Scripting.h in Headers */ = {isa = PBXBuildFile; fileRef = F920DAFA075C2B69000C5FCA /* BibAppController+Scripting.h */; };
@@ -693,27 +689,6 @@
 			remoteGlobalIDString = F935665E0912D56F002B6957;
 			remoteInfo = AGRegex;
 		};
-		F91B7FC3092BFBD900976F6F /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = F91B7FBD092BFBD900976F6F /* ILCrashReporter.xcodeproj */;
-			proxyType = 2;
-			remoteGlobalIDString = 8DC2EF5B0486A6940098B216;
-			remoteInfo = ILCrashReporter;
-		};
-		F91B7FC5092BFBD900976F6F /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = F91B7FBD092BFBD900976F6F /* ILCrashReporter.xcodeproj */;
-			proxyType = 2;
-			remoteGlobalIDString = 6AF6C41806B18B4800C4D0C9;
-			remoteInfo = CrashReporter;
-		};
-		F91B8024092BFEE100976F6F /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = F91B7FBD092BFBD900976F6F /* ILCrashReporter.xcodeproj */;
-			proxyType = 1;
-			remoteGlobalIDString = 8DC2EF4F0486A6940098B216;
-			remoteInfo = ILCrashReporter;
-		};
 		F9234FF2089A7E0300EFEB06 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 29B97313FDCFA39411CA2CEA /* Project object */;
@@ -741,13 +716,6 @@
 			proxyType = 1;
 			remoteGlobalIDString = 4A33D40608A0191B003A3FA5;
 			remoteInfo = OmniBase;
-		};
-		F9A66E4D092FAFA200AF31D5 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = F91B7FBD092BFBD900976F6F /* ILCrashReporter.xcodeproj */;
-			proxyType = 1;
-			remoteGlobalIDString = 6AF6C41706B18B4800C4D0C9;
-			remoteInfo = CrashReporter;
 		};
 		F9A66E4F092FAFAC00AF31D5 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
@@ -917,7 +885,6 @@
 			dstPath = "";
 			dstSubfolderSpec = 10;
 			files = (
-				F91B81DC092C0AED00976F6F /* ILCrashReporter.framework in CopyFiles */,
 				F9ABECC7086E12B700741FC5 /* BTParse.framework in CopyFiles */,
 				F9022FB107580A9600C3F701 /* AGRegex.framework in CopyFiles */,
 				F9022FB207580A9600C3F701 /* OmniAppKit.framework in CopyFiles */,
@@ -1027,7 +994,7 @@
 		3DFF35600816B55B0052F37C /* forward_small.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; name = forward_small.tiff; path = Images/forward_small.tiff; sourceTree = "<group>"; };
 		3DFF35620816B5780052F37C /* reload_small.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; name = reload_small.tiff; path = Images/reload_small.tiff; sourceTree = "<group>"; };
 		8D1107310486CEB800E47090 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
-		8D1107320486CEB800E47090 /* BibDesk.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = BibDesk.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		8D1107320486CEB800E47090 /* BibDesk.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = BibDesk.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		CE15C0D50AA5B9A3002C555F /* BDSKErrorManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BDSKErrorManager.h; sourceTree = "<group>"; };
 		CE15C0D60AA5B9A3002C555F /* BDSKErrorManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BDSKErrorManager.m; sourceTree = "<group>"; };
 		CE1A7ED4090BDEB600ACC864 /* BDSKHeaderPopUpButtonCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BDSKHeaderPopUpButtonCell.h; sourceTree = "<group>"; };
@@ -1341,8 +1308,6 @@
 		F91B5CDF076579FE0011ED22 /* rssTemplate.txt */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text; path = rssTemplate.txt; sourceTree = SOURCE_ROOT; };
 		F91B5CE407657A200011ED22 /* template.txt */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text; path = template.txt; sourceTree = SOURCE_ROOT; };
 		F91B7F27092BEB5A00976F6F /* AddressBook.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AddressBook.framework; path = /System/Library/Frameworks/AddressBook.framework; sourceTree = "<absolute>"; };
-		F91B7FBD092BFBD900976F6F /* ILCrashReporter.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = ILCrashReporter.xcodeproj; path = ../bibdesk_vendorsrc/infinite_loop/ILCrashReporter/ILCrashReporter.xcodeproj; sourceTree = SOURCE_ROOT; };
-		F91B8026092BFF6100976F6F /* ILCrashReporter.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = ILCrashReporter.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		F91F284609A661A700419960 /* PDFMetadata.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PDFMetadata.h; sourceTree = "<group>"; };
 		F91F284709A661A700419960 /* PDFMetadata.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PDFMetadata.m; sourceTree = "<group>"; };
 		F920DAFA075C2B69000C5FCA /* BibAppController+Scripting.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = "BibAppController+Scripting.h"; path = "Scripting/BibAppController+Scripting.h"; sourceTree = "<group>"; };
@@ -1540,7 +1505,6 @@
 				3D9EC25307C66B1E00DE459D /* WebKit.framework in Frameworks */,
 				F9ABEC9F086E11B500741FC5 /* BTParse.framework in Frameworks */,
 				F91B7F28092BEB5A00976F6F /* AddressBook.framework in Frameworks */,
-				F91B8027092BFF6100976F6F /* ILCrashReporter.framework in Frameworks */,
 				F9DF3BC209B7605E00342ADE /* SystemConfiguration.framework in Frameworks */,
 				F92ECBA009DEF86600A244D0 /* Security.framework in Frameworks */,
 			);
@@ -1753,7 +1717,6 @@
 			children = (
 				F92ECB6B09DEF86500A244D0 /* Security.framework */,
 				F9DF3BC109B7605E00342ADE /* SystemConfiguration.framework */,
-				F91B8026092BFF6100976F6F /* ILCrashReporter.framework */,
 				F91B7F27092BEB5A00976F6F /* AddressBook.framework */,
 				F9706DB909102DA800526FC8 /* QuartzCore.framework */,
 				F9B9E17E089479FC00C21B17 /* Quartz.framework */,
@@ -2310,15 +2273,6 @@
 			name = Headers;
 			sourceTree = "<group>";
 		};
-		F91B7FBE092BFBD900976F6F /* Products */ = {
-			isa = PBXGroup;
-			children = (
-				F91B7FC4092BFBD900976F6F /* ILCrashReporter.framework */,
-				F91B7FC6092BFBD900976F6F /* CrashReporter.app */,
-			);
-			name = Products;
-			sourceTree = "<group>";
-		};
 		F95CC10F087F54BF002C5694 /* Products */ = {
 			isa = PBXGroup;
 			children = (
@@ -2351,7 +2305,6 @@
 		F98F307A088E0F2800C1427D /* Subprojects */ = {
 			isa = PBXGroup;
 			children = (
-				F91B7FBD092BFBD900976F6F /* ILCrashReporter.xcodeproj */,
 				F9AA030C092FA2E20094A059 /* OmniAppKit.xcodeproj */,
 				F9AA02F3092FA2CA0094A059 /* OmniFoundation.xcodeproj */,
 				F9AA02ED092FA2AB0094A059 /* OmniBase.xcodeproj */,
@@ -2739,10 +2692,6 @@
 					ProjectRef = F9ABECF2086E142100741FC5 /* BTParse.xcodeproj */;
 				},
 				{
-					ProductGroup = F91B7FBE092BFBD900976F6F /* Products */;
-					ProjectRef = F91B7FBD092BFBD900976F6F /* ILCrashReporter.xcodeproj */;
-				},
-				{
 					ProductGroup = F9AA030D092FA2E20094A059 /* Products */;
 					ProjectRef = F9AA030C092FA2E20094A059 /* OmniAppKit.xcodeproj */;
 				},
@@ -2790,20 +2739,6 @@
 			fileType = wrapper.application;
 			path = RegexTest.app;
 			remoteRef = F911CB4808972F7300ABDAC6 /* PBXContainerItemProxy */;
-			sourceTree = BUILT_PRODUCTS_DIR;
-		};
-		F91B7FC4092BFBD900976F6F /* ILCrashReporter.framework */ = {
-			isa = PBXReferenceProxy;
-			fileType = wrapper.framework;
-			path = ILCrashReporter.framework;
-			remoteRef = F91B7FC3092BFBD900976F6F /* PBXContainerItemProxy */;
-			sourceTree = BUILT_PRODUCTS_DIR;
-		};
-		F91B7FC6092BFBD900976F6F /* CrashReporter.app */ = {
-			isa = PBXReferenceProxy;
-			fileType = wrapper.application;
-			path = CrashReporter.app;
-			remoteRef = F91B7FC5092BFBD900976F6F /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
 		F95CC113087F54BF002C5694 /* BibImporter.mdimporter */ = {
@@ -3468,11 +3403,6 @@
 			name = AGRegex;
 			targetProxy = F911CBFC089737C000ABDAC6 /* PBXContainerItemProxy */;
 		};
-		F91B8025092BFEE100976F6F /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			name = ILCrashReporter;
-			targetProxy = F91B8024092BFEE100976F6F /* PBXContainerItemProxy */;
-		};
 		F9234FF3089A7E0300EFEB06 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			target = F91A2D65089A7CF70009B1C1 /* Tiger */;
@@ -3487,11 +3417,6 @@
 			isa = PBXTargetDependency;
 			name = OmniBase;
 			targetProxy = F9A66E4B092FAF9400AF31D5 /* PBXContainerItemProxy */;
-		};
-		F9A66E4E092FAFA200AF31D5 /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			name = CrashReporter;
-			targetProxy = F9A66E4D092FAFA200AF31D5 /* PBXContainerItemProxy */;
 		};
 		F9A66E50092FAFAC00AF31D5 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;

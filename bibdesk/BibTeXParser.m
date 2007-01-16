@@ -196,10 +196,14 @@ static NSString *copyStringFromNoteField(AST *field, const char *data, NSString 
                             complexString = copyStringFromBTField(field, filePath, macroResolver, parserEncoding);
                         }
                         
-                        // add the expanded values to the autocomplete dictionary
-                        [[NSApp delegate] addString:complexString forCompletionEntry:sFieldName];
-                        
-                        [dictionary setObject:complexString forKey:sFieldName];
+                        if (complexString && sFieldName) {
+                            // add the expanded values to the autocomplete dictionary
+                            [[NSApp delegate] addString:complexString forCompletionEntry:sFieldName];
+                            
+                            [dictionary setObject:complexString forKey:sFieldName];
+                        } else {
+                            @throw BibTeXParserInternalException;
+                        }
                         [complexString release];
                         
                     }// end while field - process next bt field                    
@@ -264,18 +268,15 @@ static NSString *copyStringFromNoteField(AST *field, const char *data, NSString 
     NSString *key = nil;
     NSMutableString *value;
     BOOL endOfValue;
+    BOOL quoted;
 
-	NSCharacterSet *bracesCharSet = [NSCharacterSet curlyBraceCharacterSet];
 	NSString *s;
 	int nesting;
 	unichar ch;
     
-    static NSCharacterSet *bracesAndCommaCharSet = nil;
-    if (bracesAndCommaCharSet == nil) {
-        NSMutableCharacterSet *tmpSet = [bracesCharSet mutableCopy];
-        [tmpSet addCharactersInString:@","];
-        bracesAndCommaCharSet = [tmpSet copy];
-        [tmpSet release];
+    static NSCharacterSet *bracesQuotesAndCommaCharSet = nil;
+    if (bracesQuotesAndCommaCharSet == nil) {
+        bracesQuotesAndCommaCharSet = [[NSCharacterSet characterSetWithCharactersInString:@"{}\","] retain];
     }
     
     // NSScanner is case-insensitive by default
@@ -306,26 +307,34 @@ static NSString *copyStringFromNoteField(AST *field, const char *data, NSString 
             endOfValue = NO;
             value = [NSMutableString string];
             while(endOfValue == NO && ![scanner isAtEnd]){
-                if([scanner scanUpToCharactersFromSet:bracesAndCommaCharSet intoString:&s])
+                if([scanner scanUpToCharactersFromSet:bracesQuotesAndCommaCharSet intoString:&s])
                     [value appendString:s];
                 if([scanner isAtEnd]) break;
-                if([stringContents characterAtIndex:[scanner scanLocation] - 1] != '\\'){
+                ch = [stringContents characterAtIndex:[scanner scanLocation]];
+                [scanner setScanLocation:[scanner scanLocation] + 1];
+                if([stringContents characterAtIndex:[scanner scanLocation] - 2] != '\\'){
                     // we found an unquoted brace
-                    ch = [stringContents characterAtIndex:[scanner scanLocation]];
                     if(ch == '{'){
+                        if(nesting == 1)
+                            quoted = NO;
                         ++nesting;
                     }else if(ch == '}'){
                         if(nesting == 1)
                             endOfValue = YES;
                         --nesting;
+                    }else if(ch == '"'){
+                        if(nesting == 1){
+                            quoted = YES;
+                            ++nesting;
+                        }else if(quoted && nesting == 2)
+                            --nesting;
                     }else if(ch == ','){
                         if(nesting == 1)
                             endOfValue = YES;
                     }
-                    if (endOfValue == NO) // we don't include the outer braces or the separating commas
-                        [value appendCharacter:ch];
                 }
-                [scanner setScanLocation:[scanner scanLocation] + 1];
+                if (endOfValue == NO) // we don't include the outer braces or the separating commas
+                    [value appendCharacter:ch];
             }
             if(endOfValue == NO)
                 break;
@@ -338,10 +347,10 @@ static NSString *copyStringFromNoteField(AST *field, const char *data, NSString 
                 [macros setObject:value forKey:key];
             }
             @catch(id exception){
-                if([[exception name] isEqualToString:BDSKComplexStringException])
-                    NSLog(@"Ignoring invalid complex macro: %@",[exception reason]);
+                if([exception respondsToSelector:@selector(name)] && [[exception name] isEqual:BDSKComplexStringException])
+                    NSLog(@"Ignoring invalid complex macro: %@", exception);
                 else
-                    NSLog(@"Ignoring exception %@ while parsing macro: %@", [exception name], [exception reason]);
+                    NSLog(@"Ignoring exception while parsing macro: %@", exception);
             }
             
         }
@@ -360,11 +369,16 @@ static NSString *copyStringFromNoteField(AST *field, const char *data, NSString 
     NSMutableDictionary *macros = [NSMutableDictionary dictionary];
     NSString *key = nil;
     NSMutableString *value;
+    BOOL quoted;
 
-	NSCharacterSet *bracesCharSet = [NSCharacterSet curlyBraceCharacterSet];
 	NSString *s;
 	int nesting;
 	unichar ch;
+    
+    static NSCharacterSet *bracesAndQuotesCharSet = nil;
+    if (bracesAndQuotesCharSet == nil) {
+        bracesAndQuotesCharSet = [[NSCharacterSet characterSetWithCharactersInString:@"{}\""] retain];
+    }
     
     // NSScanner is case-insensitive by default
     
@@ -392,21 +406,29 @@ static NSString *copyStringFromNoteField(AST *field, const char *data, NSString 
         value = [NSMutableString string];
         nesting = 1;
         while(nesting > 0 && ![scanner isAtEnd]){
-            if([scanner scanUpToCharactersFromSet:bracesCharSet intoString:&s])
+            if([scanner scanUpToCharactersFromSet:bracesAndQuotesCharSet intoString:&s])
                 [value appendString:s];
             if([scanner isAtEnd]) break;
-            if([styleContents characterAtIndex:[scanner scanLocation] - 1] != '\\'){
-                // we found an unquoted brace
-                ch = [styleContents characterAtIndex:[scanner scanLocation]];
-                if(ch == '}'){
-                    --nesting;
-                }else{
-                    ++nesting;
-                }
-                if (nesting > 0) // we don't include the outer braces
-                    [value appendFormat:@"%C",ch];
-            }
+            ch = [styleContents characterAtIndex:[scanner scanLocation]];
             [scanner setScanLocation:[scanner scanLocation] + 1];
+            if([styleContents characterAtIndex:[scanner scanLocation] - 2] != '\\'){
+                // we found an unquoted brace
+                if(ch == '{'){
+                    if(nesting == 1)
+                        quoted = NO;
+                    ++nesting;
+                }else if(ch == '}'){
+                    --nesting;
+                }else if(ch == '"'){
+                    if(nesting == 1){
+                        quoted = YES;
+                        ++nesting;
+                    }else if(quoted && nesting == 2)
+                        --nesting;
+                }
+            }
+            if (nesting > 0) // we don't include the outer braces
+                [value appendFormat:@"%C",ch];
         }
         if(nesting > 0)
             continue;
@@ -419,10 +441,10 @@ static NSString *copyStringFromNoteField(AST *field, const char *data, NSString 
             [macros setObject:value forKey:key];
         }
         @catch(id exception){
-            if([[exception name] isEqualToString:BDSKComplexStringException])
-                NSLog(@"Ignoring invalid complex macro: %@",[exception reason]);
+            if([exception respondsToSelector:@selector(name)] && [[exception name] isEqual:BDSKComplexStringException])
+                NSLog(@"Ignoring invalid complex macro: %@", exception);
             else
-                NSLog(@"Ignoring exception %@ while parsing macro: %@", [exception name], [exception reason]);
+                NSLog(@"Ignoring exception while parsing macro: %@", exception);
         }
 		
     }
@@ -794,13 +816,13 @@ static NSString *copyStringFromNoteField(AST *field, const char *data, NSString 
         if(data[cidx-1] == '{'){
             // scan up to the balanced brace
             for(braceDepth = 1; braceDepth > 0; cidx++){
-                if(data[cidx] == '{') braceDepth++;
-                if(data[cidx] == '}') braceDepth--;
+                if(data[cidx] == '{' && data[cidx-1] != '\\') braceDepth++;
+                if(data[cidx] == '}' && data[cidx-1] != '\\') braceDepth--;
             }
             cidx--;     // just advanced cidx one past the end of the field.
         }else if(data[cidx-1] == '"'){
             // scan up to the next quote.
-            for(; data[cidx] != '"'; cidx++);
+            for(; data[cidx] != '"' || data[cidx-1] == '\\'; cidx++);
         }else{ 
             // no brace and no quote => unknown problem
             NSString *errorString = [NSString stringWithFormat:NSLocalizedString(@"Unexpected delimiter \"%@\" encountered at line %d.", @""), [[[NSString alloc] initWithBytes:&data[cidx-1] length:1 encoding:encoding] autorelease], field->line];

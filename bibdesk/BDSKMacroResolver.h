@@ -61,6 +61,7 @@
 - (void)addMacroDefinition:(NSString *)macroString forMacro:(NSString *)macroKey;
 - (NSString *)valueOfMacro:(NSString *)macro;
 - (void)removeMacro:(NSString *)macroKey;
+- (void)removeAllMacros;
 - (void)changeMacroKey:(NSString *)oldKey to:(NSString *)newKey;
 - (void)setMacroDefinition:(NSString *)newDefinition forMacro:(NSString *)macroKey;
 - (void)addMacroDefinitionWithoutUndo:(NSString *)macroString forMacro:(NSString *)macroKey;

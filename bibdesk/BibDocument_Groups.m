@@ -553,23 +553,26 @@ The groupedPublications array is a subset of the publications array, developed b
 
 	NSRange smartRange = [self rangeOfSmartGroups];
     unsigned int row = NSMaxRange(smartRange);
-    NSArray *array = [publications copy];
 	BOOL shouldUpdate = NO;
     
     while(NSLocationInRange(--row, smartRange)){
-		[(BDSKSmartGroup *)[self objectInGroupsAtIndex:row] filterItems:array];
+		[(BDSKSmartGroup *)[self objectInGroupsAtIndex:row] filterItems:publications];
 		if([groupTableView isRowSelected:row])
 			shouldUpdate = YES;
     }
     
-    [array release];
-    [groupTableView reloadData];
-    
-    if(shouldUpdate == YES){
-        // fix for bug #1362191: after changing a checkbox that removed an item from a smart group, the table scrolled to the top
+    if([sortGroupsKey isEqualToString:BDSKGroupCellCountKey]){
         NSPoint scrollPoint = [[tableView enclosingScrollView] scrollPositionAsPercentage];
-		[self displaySelectedGroups];
+        [self sortGroupsByKey:sortGroupsKey];
         [[tableView enclosingScrollView] setScrollPositionAsPercentage:scrollPoint];
+    }else{
+        [groupTableView reloadData];
+        if(shouldUpdate == YES){
+            // fix for bug #1362191: after changing a checkbox that removed an item from a smart group, the table scrolled to the top
+            NSPoint scrollPoint = [[tableView enclosingScrollView] scrollPositionAsPercentage];
+            [self displaySelectedGroups];
+            [[tableView enclosingScrollView] setScrollPositionAsPercentage:scrollPoint];
+        }
     }
 }
 
@@ -982,7 +985,7 @@ The groupedPublications array is a subset of the publications array, developed b
 
 - (IBAction)removeSelectedGroups:(id)sender {
 	NSIndexSet *rowIndexes = [groupTableView selectedRowIndexes];
-    unsigned int rowIndex = [rowIndexes firstIndex];
+    unsigned int rowIndex = [rowIndexes lastIndex];
 	BDSKGroup *group;
 	unsigned int count = 0;
 	
@@ -995,7 +998,7 @@ The groupedPublications array is a subset of the publications array, developed b
 			[self removeStaticGroup:(BDSKStaticGroup *)group];
 			count++;
         }
-		rowIndex = [rowIndexes indexGreaterThanIndex:rowIndex];
+		rowIndex = [rowIndexes indexLessThanIndex:rowIndex];
 	}
 	if (count == 0) {
 		NSBeep();
@@ -1348,7 +1351,7 @@ The groupedPublications array is a subset of the publications array, developed b
             nameSort = [countSort reversedSortDescriptor];
         sortDescriptors = [NSArray arrayWithObjects:countSort, nameSort, nil];
     } else {
-        if(sortGroupsDescending)
+        if(sortGroupsDescending == NO)
             countSort = [countSort reversedSortDescriptor];
         sortDescriptors = [NSArray arrayWithObjects:nameSort, countSort, nil];
     }

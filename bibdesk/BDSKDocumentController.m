@@ -286,7 +286,7 @@
 
     // ^(@[[:alpha:]]+{),?$ will grab either "@type{,eol" or "@type{eol", which is what we get
     // from Bookends and EndNote, respectively.
-    AGRegex *theRegex = [AGRegex regexWithPattern:@"^(@[[:alpha:]]+[ \t]*{)[ \t]*,?$" options:AGRegexCaseInsensitive];
+    AGRegex *theRegex = [AGRegex regexWithPattern:@"^(@[[:alpha:]]+[ \\t]*{)[ \\t]*,?$" options:AGRegexCaseInsensitive];
 
     // replace with "@type{FixMe,eol" (add the comma in, since we remove it if present)
     NSCharacterSet *newlineCharacterSet = [NSCharacterSet newlineCharacterSet];

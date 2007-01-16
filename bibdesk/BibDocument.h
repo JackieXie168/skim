@@ -616,20 +616,20 @@ extern NSString* BDSKWeblocFilePboardType; // core pasteboard type for webloc fi
 
 // Private methods
 /*!
-    @method createNewBlankPub
+    @method createNewPub
     @abstract Action method for the new pub button.
- @discussion calls [createNewBlankPubAndEdit:YES]
+ @discussion Creates a new blank pub and calls addNewPubAndEdit
     
 */
-- (void)createNewBlankPub;
+- (void)createNewPub;
 
 /*!
-    @method createNewBlankPubAndEdit
-    @abstract Supports creating new publications
-    @discussion adds a new publication and may edit it.
-    @param yn A boolean -- whether or not to tell the new pub to open an editor window.
+    @method addNewPubAndEdit
+    @abstract Supports adding a new publications
+    @discussion adds a new publication and edits it.
+    @param newBI The new item to add.
 */
-- (void)createNewBlankPubAndEdit:(BOOL)yn;
+- (void)addNewPubAndEdit:(BibItem *)newBI;
 
 /*!
     @method handleTableSelectionChangedNotification:

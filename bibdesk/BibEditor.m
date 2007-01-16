@@ -822,31 +822,35 @@ static int numberOfOpenEditors = 0;
     
     // this should always return nil on OS versions < 10.4
     if(nil != [BDSKPersistentSearch sharedSearch]){
-        
-        // this was copied verbatim from a Finder saved search for all documents modified in the last week
-        NSString *query = @"(kMDItemContentTypeTree = 'public.content') && (kMDItemFSContentChangeDate >= $time.today(-7)) && (kMDItemContentType != com.apple.mail.emlx) && (kMDItemContentType != public.vcard)";
-        
         // limit the scope to the default downloads directory (from Internet Config)
-        [[BDSKPersistentSearch sharedSearch] addQuery:query scopes:[NSArray arrayWithObject:[[NSFileManager defaultManager] internetConfigDownloadURL]]];
-        paths = [[BDSKPersistentSearch sharedSearch] resultsForQuery:query attribute:(NSString *)kMDItemPath];
+        NSURL *downloadURL = [[NSFileManager defaultManager] internetConfigDownloadURL];
+        if(downloadURL){
+            // this was copied verbatim from a Finder saved search for all documents modified in the last week
+            NSString *query = @"(kMDItemContentTypeTree = 'public.content') && (kMDItemFSContentChangeDate >= $time.today(-7)) && (kMDItemContentType != com.apple.mail.emlx) && (kMDItemContentType != public.vcard)";
+            [[BDSKPersistentSearch sharedSearch] addQuery:query scopes:[NSArray arrayWithObject:[[NSFileManager defaultManager] internetConfigDownloadURL]]];
+            
+            paths = [[BDSKPersistentSearch sharedSearch] resultsForQuery:query attribute:(NSString *)kMDItemPath];
+        }
     }
     
-    NSEnumerator *e = [paths objectEnumerator];
-    
-    NSString *filePath;
-    NSImage *image;
-    NSMenuItem *item;
-    
-    [menu removeAllItems];
-    
-    while(filePath = [e nextObject]){
-        image = [NSImage smallImageForFile:filePath];
+    if (paths) {
+        NSEnumerator *e = [paths objectEnumerator];
         
-        item = [menu addItemWithTitle:[filePath lastPathComponent]
-                               action:@selector(setLocalURLPathFromMenuItem:)
-                        keyEquivalent:@""];
-        [item setRepresentedObject:filePath];
-        [item setImage:image];
+        NSString *filePath;
+        NSImage *image;
+        NSMenuItem *item;
+        
+        [menu removeAllItems];
+        
+        while(filePath = [e nextObject]){
+            image = [NSImage smallImageForFile:filePath];
+            
+            item = [menu addItemWithTitle:[filePath lastPathComponent]
+                                   action:@selector(setLocalURLPathFromMenuItem:)
+                            keyEquivalent:@""];
+            [item setRepresentedObject:filePath];
+            [item setImage:image];
+        }
     }
 }
 
@@ -2074,6 +2078,20 @@ static int numberOfOpenEditors = 0;
     [rssDescriptionViewUndoManager removeAllActions];
 }
 
+- (BOOL)tabView:(NSTabView *)tabView shouldSelectTabViewItem:(NSTabViewItem *)tabViewItem{
+    if (currentEditedView && [[currentEditedView string] isStringTeXQuotingBalancedWithBraces:YES connected:NO] == NO) {
+        NSAlert *alert = [NSAlert alertWithMessageText:NSLocalizedString(@"Invalid Value", @"Message in alert dialog when entering an invalid value") 
+                                         defaultButton:NSLocalizedString(@"OK", @"Button title")
+                                       alternateButton:nil
+                                           otherButton:nil
+                             informativeTextWithFormat:NSLocalizedString(@"The value you entered contains unbalanced braces and cannot be saved.", @"Informative text in alert dialog")];
+    
+        [alert beginSheetModalForWindow:[self window] modalDelegate:nil didEndSelector:NULL contextInfo:NULL];
+        return NO;
+    }
+    return YES;
+}
+
 - (void)tabView:(NSTabView *)tabView didSelectTabViewItem:(NSTabViewItem *)tabViewItem{
     // fix a weird keyview loop bug
     if([[tabViewItem identifier] isEqualToString:BDSKBibtexString])
@@ -2083,6 +2101,16 @@ static int numberOfOpenEditors = 0;
 // sent by the notesView and the abstractView
 - (void)textDidEndEditing:(NSNotification *)aNotification{
 	currentEditedView = nil;
+    
+    if ([[[aNotification object] string] isStringTeXQuotingBalancedWithBraces:YES connected:NO] == NO) {
+        NSAlert *alert = [NSAlert alertWithMessageText:NSLocalizedString(@"Invalid Value", @"Message in alert dialog when entering an invalid value") 
+                                         defaultButton:NSLocalizedString(@"OK", @"Button title")
+                                       alternateButton:nil
+                                           otherButton:nil
+                             informativeTextWithFormat:NSLocalizedString(@"The value you entered contains unbalanced braces. If you save you might not be able to reopen the file.", @"Informative text in alert dialog")];
+    
+        [alert beginSheetModalForWindow:[self window] modalDelegate:nil didEndSelector:NULL contextInfo:NULL];
+    }
 }
 
 // sent by the notesView and the abstractView; this ensures that the annote/abstract preview gets updated

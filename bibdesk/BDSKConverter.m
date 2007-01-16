@@ -112,10 +112,9 @@ static BOOL convertComposedCharacterToTeX(NSMutableString *charString, NSCharact
 	
 	// create a characterset from the characters we know how to convert
     NSMutableCharacterSet *workingSet;
-    NSRange highCharRange = NSMakeRange('~' + 1, 256); //this should get all the characters in the upper-range. exclude tilde, or we'll get an alert on it
-	
-    workingSet = [[NSCharacterSet decomposableCharacterSet] mutableCopy];
-    [workingSet addCharactersInRange:highCharRange];
+    
+    workingSet = [[NSCharacterSet characterSetWithRange:NSMakeRange(461, 103)] mutableCopy]; //this should get all the composed characters in Latin Extended-B. exclude tilde, or we'll get an alert on it
+    [workingSet addCharactersInRange:NSMakeRange('~' + 1, 256)]; //this should get all the characters composed characters in Latin Extended-A.
 
     NSEnumerator *e = [tmpTexifyDict keyEnumerator];
     NSString *key;
@@ -308,6 +307,10 @@ static BOOL convertComposedCharacterToTeX(NSMutableString *charString, NSCharact
                 // this is inside the if() since if there were no closing braces, there's no point in repeating the search
                 length = [convertedSoFar length];
                 range = [convertedSoFar rangeOfString:@"{\\" options:0 range:NSMakeRange(replaceRange.location + 1, length - replaceRange.location - 1)];
+            } else {
+                NSLog(@"missing brace in string %@", convertedSoFar);
+                [convertedSoFar release];
+                return nil;
             }
             
         }

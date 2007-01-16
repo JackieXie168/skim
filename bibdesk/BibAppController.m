@@ -53,7 +53,6 @@
 #import "BDSKFormatParser.h"
 #import "BDAlias.h"
 #import "BDSKErrorObjectController.h"
-#import <ILCrashReporter/ILCrashReporter.h>
 #import "NSMutableArray+ThreadSafety.h"
 #import "NSMutableDictionary+ThreadSafety.h"
 #import "NSFileManager_BDSKExtensions.h"
@@ -106,6 +105,28 @@ static NSArray *fixLegacyTableColumnIdentifiers(NSArray *tableColumnIdentifiers)
     return array;
 }
 
+static NSString *temporaryBaseDirectory = nil;
+static void createTemporaryDirectory()
+{
+    OBASSERT([NSThread inMainThread]);
+    // somewhere in /var/tmp, generally; contents moved to Trash on relaunch
+    NSString *temporaryPath = NSTemporaryDirectory();
+    
+    // chewable items are automatically cleaned up at restart
+    FSRef fileRef;
+    OSErr err = FSFindFolder(kUserDomain, kChewableItemsFolderType, TRUE, &fileRef);
+    
+    NSURL *fileURL = nil;
+    if (noErr == err)
+        fileURL = [(id)CFURLCreateFromFSRef(CFAllocatorGetDefault(), &fileRef) autorelease];
+    
+    if (NULL != fileURL)
+        temporaryPath = [fileURL path];
+    
+    temporaryBaseDirectory = [[[NSFileManager defaultManager] uniqueFilePath:[temporaryPath stringByAppendingPathComponent:@"bibdesk"] 
+    createDirectory:YES] copy];    
+}
+
 + (void)initialize
 {
     OBINITIALIZE;
@@ -115,12 +136,11 @@ static NSArray *fixLegacyTableColumnIdentifiers(NSArray *tableColumnIdentifiers)
     if(floor(NSAppKitVersionNumber) > NSAppKitVersionNumber10_3)
         [[NSBundle bundleWithPath:[[NSBundle mainBundle] pathForResource:@"Tiger" ofType:@"bundle"]] load];
     
+    // do this now to avoid race condition instead of creating it lazily and locking
+    createTemporaryDirectory();    
+    
     // make sure we use Spotlight's plugins on 10.4 and later
     SKLoadDefaultExtractorPlugIns();
-
-#ifdef USECRASHREPORTER
-    [[ILCrashReporter defaultReporter] launchReporterForCompany:@"BibDesk Project" reportAddr:@"bibdesk-crashes@lists.sourceforge.net"];
-#endif
         
     // register services
     [NSApp registerServicesMenuSendTypes:[NSArray arrayWithObjects:NSStringPboardType,nil] returnTypes:[NSArray arrayWithObjects:NSStringPboardType,nil]];
@@ -319,11 +339,6 @@ static NSArray *fixLegacyTableColumnIdentifiers(NSArray *tableColumnIdentifiers)
 }
 
 - (void)applicationWillTerminate:(NSNotification *)aNotification{
-	NSFileManager *fm = [NSFileManager defaultManager];
-	NSString *tmpDirPath = [self temporaryBaseDirectoryCreating:NO];
-	if(tmpDirPath && [fm fileExistsAtPath:tmpDirPath])
-		[fm removeFileAtPath:tmpDirPath handler:nil];
-	
     [metadataCacheLock lock];
     canWriteMetadata = NO;
     [metadataCacheLock unlock];
@@ -437,20 +452,15 @@ static NSArray *fixLegacyTableColumnIdentifiers(NSArray *tableColumnIdentifiers)
 
 #pragma mark Temporary files and directories
 
-- (NSString *)temporaryBaseDirectoryCreating:(BOOL)create{
-	static NSString *temporaryDirectory = nil;
-	
-	if (!temporaryDirectory && create) {
-		temporaryDirectory = [[[NSFileManager defaultManager] uniqueFilePath:[NSTemporaryDirectory() stringByAppendingPathComponent:@"bibdesk"] 
-															 createDirectory:YES] retain];
-	}
-	return temporaryDirectory;
-}
-
 - (NSString *)temporaryFilePath:(NSString *)fileName createDirectory:(BOOL)create{
-	if(!fileName)
-		fileName = [[NSProcessInfo processInfo] globallyUniqueString];
-	NSString *tmpFilePath = [[self temporaryBaseDirectoryCreating:YES] stringByAppendingPathComponent:fileName];
+	if(nil == fileName) {
+        // NSProcessInfo isn't thread-safe, so use CFUUID instead of globallyUniqueString
+        CFAllocatorRef alloc = CFAllocatorGetDefault();
+        CFUUIDRef uuid = CFUUIDCreate(alloc);
+        fileName = [(id)CFUUIDCreateString(alloc, uuid) autorelease];
+        CFRelease(uuid);
+    }
+	NSString *tmpFilePath = [temporaryBaseDirectory stringByAppendingPathComponent:fileName];
 	return [[NSFileManager defaultManager] uniqueFilePath:tmpFilePath 
 										  createDirectory:create];
 }

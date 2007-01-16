@@ -10,7 +10,7 @@
 	<lastBuildDate><$currentDate.rssDescription/></lastBuildDate>
 	<$publications>
 	<item>
-		<pubDate><$pubDate.rssDesciption/></pubDate>
+		<pubDate><$pubDate.rssDescription/></pubDate>
 		<title><$fields.Title.xmlString/></title>
 		<description><$fields.Rss-Description.xmlString/></description>
 		<link><$remoteURL/></link>

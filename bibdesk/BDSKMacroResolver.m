@@ -268,6 +268,16 @@ static BDSKGlobalMacroResolver *defaultMacroResolver;
                                                       userInfo:userInfo];    
 }
 
+- (void)removeAllMacros{
+    [macroDefinitions release];
+    macroDefinitions = nil;
+    
+    NSDictionary *userInfo = [NSDictionary dictionaryWithObjectsAndKeys:@"Remove macro", @"type", nil];
+    [[NSNotificationCenter defaultCenter] postNotificationName:BDSKMacroDefinitionChangedNotification 
+                                                        object:self
+                                                      userInfo:userInfo];    
+}
+
 - (NSString *)valueOfMacro:(NSString *)macroString{
     return [[self macroDefinitions] objectForKey:macroString];
 }

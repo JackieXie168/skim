@@ -342,7 +342,7 @@ static CFDictionaryRef selectorTable = NULL;
 		return [NSString isEmptyString:crossref2];
 	else if ([NSString isEmptyString:crossref2] == YES)
 		return NO;
-	return ([crossref1 caseInsensitiveCompare:crossref2] != NSOrderedSame);
+	return ([crossref1 caseInsensitiveCompare:crossref2] == NSOrderedSame);
 }
 
 - (BOOL)isIdenticalToItem:(BibItem *)aBI{ 
@@ -1835,6 +1835,8 @@ Boolean stringContainsLossySubstring(NSString *theString, NSString *stringToFind
     NSMutableString *s = [NSMutableString stringWithString:@"<record>"];
     NSString *value;
     
+    NSString *fileName = [[self document] fileName];
+    
     int refTypeID;
     NSString *entryType = [self pubType];
     NSString *publisherField = BDSKPublisherString;
@@ -1893,6 +1895,14 @@ Boolean stringContainsLossySubstring(NSString *theString, NSString *stringToFind
     }
     
     // begin writing record
+    
+    // see bug # 1594134; some EndNote versions seem to require the source-app tag
+    if(fileName)
+        [s appendFormat:@"<database name=\"%@\" path=\"%@\">%@</database>", [fileName lastPathComponent], fileName, [fileName lastPathComponent]];
+    [s appendFormat:@"<source-app name=\"BibDesk\" version=\"%@\">BibDesk</source-app>", [[[NSBundle mainBundle] infoDictionary] objectForKey:@"CFBundleShortVersionString"]];
+    
+    // record number; or should we use itemIndex?
+    [s appendFormat:@"<rec-number>%@</rec-number>", [self fileOrder]];
     
     // ref-type
     [s appendFormat:@"<ref-type>%i</ref-type>", refTypeID];
@@ -2912,7 +2922,7 @@ Boolean stringContainsLossySubstring(NSString *theString, NSString *stringToFind
         [self setDateModified:nil];
     }
     
-    if([[BibTypeManager sharedManager] isURLField:key] || [key isEqualToString:BDSKTitleString]){
+    if([self document] != nil && ([[BibTypeManager sharedManager] isURLField:key] || [key isEqualToString:BDSKTitleString] || [key isEqualToString:BDSKAllFieldsString])){
         [[NSNotificationCenter defaultCenter] postNotificationName:BDSKSearchIndexInfoChangedNotification
                                                             object:[self document]
                                                           userInfo:[self searchIndexInfo]];

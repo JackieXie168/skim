@@ -166,11 +166,13 @@
     CFTypeRef theUTI = NULL;
     OSStatus err = LSCopyItemAttribute(&fileRef, kLSRolesAll, kLSItemContentType, &theUTI);
     
-    [(id)theUTI autorelease];
+    if(err == noErr && theUTI != NULL){
 
-    NSAssert((CFGetTypeID(theUTI) == CFStringGetTypeID()), @"Unexpected CF type returned from LSCopyItemAttribute");
-    
-    return err == noErr ? (NSString *)theUTI : nil;
+        NSAssert((CFGetTypeID(theUTI) == CFStringGetTypeID()), @"Unexpected CF type returned from LSCopyItemAttribute");
+        return [(NSString *)theUTI autorelease];
+    }else{
+        return nil;
+    }
 }
 
 - (NSString *)UTIForPathExtension:(NSString *)extension;

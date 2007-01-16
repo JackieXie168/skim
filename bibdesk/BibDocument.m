@@ -1335,11 +1335,14 @@ NSString *BDSKWeblocFilePboardType = @"CorePasteboardFlavorType 0x75726C20";
     while(--index)
         [[[self windowControllers] objectAtIndex:index] close];
     
-    // invalidate static groups so they will be reloaded
-    [staticGroups release];
-    staticGroups = nil;
+    [[sharedGroupSpinners allValues] makeObjectsPerformSelector:@selector(removeFromSuperview)];
+    [sharedGroupSpinners removeAllObjects];
     
     if([super revertToSavedFromFile:fileName ofType:type]){
+        [self setFilterField:@""];
+        [self updateAllSmartGroups];
+        [self updateGroupsPreservingSelection:YES];
+        [self sortGroupsByKey:sortGroupsKey]; // resort
 		[tableView deselectAll:self]; // clear before resorting
 		[self searchFieldAction:searchField]; // redo the search
         [self sortPubsByColumn:nil]; // resort
@@ -1354,11 +1357,14 @@ NSString *BDSKWeblocFilePboardType = @"CorePasteboardFlavorType 0x75726C20";
     while(--index)
         [[[self windowControllers] objectAtIndex:index] close];
     
-    // invalidate static groups so they will be reloaded
-    [staticGroups release];
-    staticGroups = nil;
+    [[sharedGroupSpinners allValues] makeObjectsPerformSelector:@selector(removeFromSuperview)];
+    [sharedGroupSpinners removeAllObjects];
     
 	if([super revertToSavedFromURL:aURL ofType:type]){
+        [self setFilterField:@""];
+        [self updateAllSmartGroups];
+        [self updateGroupsPreservingSelection:YES];
+        [self sortGroupsByKey:sortGroupsKey]; // resort
         [tableView deselectAll:self]; // clear before resorting
 		[self searchFieldAction:searchField]; // redo the search
         [self sortPubsByColumn:nil]; // resort
@@ -1383,6 +1389,19 @@ NSString *BDSKWeblocFilePboardType = @"CorePasteboardFlavorType 0x75726C20";
 {
     BOOL success;
     NSData *data = [NSData dataWithContentsOfURL:absoluteURL];
+    if (nil == data) {
+        if (outError) 
+            OFError(outError, "BDSKReadError", NSLocalizedDescriptionKey, [NSString stringWithFormat:NSLocalizedString(@"Unable to read file %@", @""), absoluteURL], nil);
+        return NO;
+    }
+    
+    // make sure we clear all macros and groups that are saved in the file, should only have those for revert
+    // better do this here, so we don't remove them when reading the data fails
+    [macroResolver removeAllMacros];
+    [frontMatter setString:@""];
+    // invalidate static groups so they will be reloaded
+    [staticGroups release];
+    staticGroups = nil;
     
     NSError *error = nil;
 	if ([aType isEqualToString:BDSKBibTeXDocumentType] || [aType isEqualToUTI:[[NSWorkspace sharedWorkspace] UTIForPathExtension:@"bib"]]){
@@ -1518,7 +1537,7 @@ NSString *BDSKWeblocFilePboardType = @"CorePasteboardFlavorType 0x75726C20";
     if ([[NSApp currentEvent] modifierFlags] & NSAlternateKeyMask) {
         [self createNewPubUsingCrossrefAction:sender];
     } else {
-        [self createNewBlankPubAndEdit:YES];
+        [self createNewPub];
     }
 }
 
@@ -2104,32 +2123,59 @@ NSString *BDSKWeblocFilePboardType = @"CorePasteboardFlavorType 0x75726C20";
     }
 }
 
-- (void)createNewBlankPub{
-    [self createNewBlankPubAndEdit:NO];
+- (void)createNewPub{
+    BibItem *newBI = [[[BibItem alloc] init] autorelease];
+    [self addNewPubAndEdit:newBI];
 }
 
-- (void)createNewBlankPubAndEdit:(BOOL)yn{
-    BibItem *newBI = [[[BibItem alloc] init] autorelease];
-    
+- (void)addNewPubAndEdit:(BibItem *)newBI{
     // add the publication; addToGroup:handleInherited: depends on the pub having a document
     [self addPublication:newBI];
 
-	NSEnumerator *groupEnum = [[self selectedGroups] objectEnumerator];
+	[[self undoManager] setActionName:NSLocalizedString(@"Add Publication", @"Undo action name")];
+	
+    NSEnumerator *groupEnum = [[self selectedGroups] objectEnumerator];
 	BDSKGroup *group;
-    int op;
-	while (group = [groupEnum nextObject]) {
+	BOOL isSingleValued = [[[BibTypeManager sharedManager] singleValuedGroupFields] containsObject:[self currentGroupField]];
+    int count = 0;
+    // we don't overwrite inherited single valued fields, they already have the field set through inheritance
+    int op, handleInherited = isSingleValued ? BDSKOperationIgnore : BDSKOperationAsk;
+    
+    while (group = [groupEnum nextObject]) {
 		if ([group isCategory]){
-			op = [newBI addToGroup:group handleInherited:BDSKOperationSet];
-            NSAssert1(BDSKOperationSet == op, @"Unable to add to group %@", group);
+            if (isSingleValued && count > 0)
+                continue;
+			op = [newBI addToGroup:group handleInherited:handleInherited];
+            if(op == BDSKOperationSet || op == BDSKOperationAppend){
+                count++;
+            }else if(op == BDSKOperationAsk){
+                BDSKAlert *alert = [BDSKAlert alertWithMessageText:NSLocalizedString(@"Inherited Value", @"Message in alert dialog when trying to edit inherited value")
+                                                     defaultButton:NSLocalizedString(@"Don't Change", @"Button title")
+                                                   alternateButton:nil // "Set" would end up choosing an arbitrary one
+                                                       otherButton:NSLocalizedString(@"Append", @"Button title")
+                                         informativeTextWithFormat:NSLocalizedString(@"The new item has a group value that was inherited from an item linked to by the Crossref field. This operation would break the inheritance for this value. What do you want me to do with inherited values?", @"Informative text in alert dialog")];
+                handleInherited = [alert runSheetModalForWindow:documentWindow];
+                if(handleInherited != BDSKOperationIgnore){
+                    [newBI addToGroup:group handleInherited:handleInherited];
+                    count++;
+                }
+            }
+        } else if ([group isStatic]) {
+            [(BDSKStaticGroup *)group addPublication:newBI];
         }
     }
 	
-	[[self undoManager] setActionName:NSLocalizedString(@"Add Publication",@"")];
-    [self highlightBib:newBI];
-    if(yn == YES)
-    {
-        [self editPub:newBI];
+	if (isSingleValued && [self numberOfCategoryGroupsAtIndexes:[groupTableView selectedRowIndexes]] > 1) {
+        NSAlert *alert = [NSAlert alertWithMessageText:NSLocalizedString(@"Cannot Add to All Groups", @"Message in alert dialog when trying to add to multiple single-valued field groups")
+                                         defaultButton:nil
+                                       alternateButton:nil
+                                           otherButton:nil
+                             informativeTextWithFormat:NSLocalizedString(@"The new item can only be added to one of the selected \"%@\" groups", @"Informative text in alert dialog"), [self currentGroupField]];
+        [alert beginSheetModalForWindow:documentWindow modalDelegate:nil didEndSelector:NULL contextInfo:NULL];
     }
+    
+    [self highlightBib:newBI];
+    [self editPub:newBI];
 }
 
 - (BOOL)addPublicationsFromPasteboard:(NSPasteboard *)pb error:(NSError **)outError{
@@ -3862,9 +3908,8 @@ NSString *BDSKWeblocFilePboardType = @"CorePasteboardFlavorType 0x75726C20";
 		if (![[[OFPreferenceWrapper sharedPreferenceWrapper] stringForKey:BDSKPubTypeStringKey] isEqualToString:BDSKInbookString]) 
 			[newBI setPubType:BDSKIncollectionString];
 	}
-    [self addPublication:newBI];
+    [self addNewPubAndEdit:newBI];
     [newBI release];
-    [self editPub:newBI];
 }
 
 - (IBAction)createNewPubUsingCrossrefAction:(id)sender{
