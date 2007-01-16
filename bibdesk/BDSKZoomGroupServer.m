@@ -189,7 +189,9 @@ static NSString *BDSKDCXMLString = @"DC XML";
         connection = [[ZOOMConnection alloc] initWithHost:[info host] port:[[info port] intValue] database:[info database]];
         [connection setPassword:[info password]];
         [connection setUsername:[info username]];
-        [connection setPreferredRecordSyntax:[[self class] zoomRecordSyntaxForRecordSyntaxString:[info recordSyntax]]];    
+        ZOOMSyntaxType syntax = [[self class] zoomRecordSyntaxForRecordSyntaxString:[info recordSyntax]];
+        if(syntax != UNKNOWN)
+            [connection setPreferredRecordSyntax:syntax];    
 
         [connection setResultEncodingToIANACharSetName:[info resultEncoding]];
         OSAtomicCompareAndSwap32Barrier(1, 0, (int32_t *)&flags.needsReset);
