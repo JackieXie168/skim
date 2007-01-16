@@ -41,11 +41,20 @@
 #import "NSFileManager_BDSKExtensions.h"
 #import "NSWindowController_BDSKExtensions.h"
 #import "BDSKShellCommandFormatter.h"
+#import <OmniAppKit/OAPreferenceClientRecord.h>
 
 #define BDSK_TEX_DOWNLOAD_URL @"http://ii2.sourceforge.net/tex-index.html"
 
+static NSSet *standardStyles = nil;
 
 @implementation BibPref_TeX
+
++ (void)initialize{
+    
+    // contents of /usr/local/gwTeX/texmf.texlive/bibtex/bst/base
+    if (nil == standardStyles)
+        standardStyles = [[NSSet alloc] initWithObjects:@"abbrv", @"acm", @"alpha", @"apalike", @"ieeetr", @"plain", @"siam", @"unsrt", nil];
+}
 
 - (void)awakeFromNib{
     [super awakeFromNib];
@@ -116,9 +125,54 @@
     return YES;
 }
 
-- (IBAction)changeStyle:(id)sender{
-    [defaults setObject:[sender stringValue] forKey:BDSKBTStyleKey];
+- (void)styleAlertDidEnd:(NSAlert *)alert returnCode:(int)returnCode contextInfo:(void *)contextInfo{
+    NSString *newStyle = [(id)contextInfo autorelease];
+    if (NSAlertFirstButtonReturn == returnCode) {
+        [defaults setObject:newStyle forKey:BDSKBTStyleKey];
+    } else {
+        [bibTeXStyleField setStringValue:[defaults objectForKey:BDSKBTStyleKey]];
+    }
     [defaults autoSynchronize];
+}
+
+- (BOOL)alertShowHelp:(NSAlert *)alert;
+{
+    OAPreferenceController *pc = [OAPreferenceController sharedPreferenceController];
+    NSEnumerator *recordsEnum = [[pc clientRecords] objectEnumerator];
+    
+    // this is crazy, but there's no way to get a client record from a client, since we don't know the identifier or short title
+    OAPreferenceClientRecord *record;
+    while(record = [recordsEnum nextObject]) {
+        if ([[record title] isEqualToString:title])
+            break;
+    }
+    if (record) {
+        NSString *helpAnchor = [record helpURL];
+        NSString *helpBookName = [[NSBundle mainBundle] objectForInfoDictionaryKey: @"CFBundleHelpBookName"];
+        [[NSHelpManager sharedHelpManager] openHelpAnchor:helpAnchor inBook:helpBookName];
+    }
+    return YES;
+}
+
+- (IBAction)changeStyle:(id)sender{
+    NSString *newStyle = [sender stringValue];
+    if ([standardStyles containsObject:newStyle]){
+        [defaults setObject:[sender stringValue] forKey:BDSKBTStyleKey];
+        [defaults autoSynchronize];
+    } else {
+        NSAlert *alert = [[[NSAlert alloc] init] autorelease];
+        [alert setMessageText:NSLocalizedString(@"This is a not a standard BibTeX style", @"")];
+        [alert addButtonWithTitle:NSLocalizedString(@"Use Anyway", @"")];
+        [alert addButtonWithTitle:NSLocalizedString(@"Use Previous", @"")];
+        [alert setInformativeText:NSLocalizedString(@"This style is not one of the standard 8 BibTeX styles.  As such, it may require editing the TeX template manually to add necessary \\usepackage commands.", @"")];
+        
+        // for the help delegate method
+        [alert setShowsHelp:YES];
+        [alert setDelegate:self];
+        
+        [alert setAlertStyle:NSInformationalAlertStyle];
+        [alert beginSheetModalForWindow:[[self controlBox] window] modalDelegate:self didEndSelector:@selector(styleAlertDidEnd:returnCode:contextInfo:) contextInfo:[newStyle copy]];
+    }
 }
 
 - (void)openTemplateFailureSheetDidEnd:(NSWindow *)sheet returnCode:(int)returnCode path:(void *)path{
