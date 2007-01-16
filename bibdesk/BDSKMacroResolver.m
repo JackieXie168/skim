@@ -202,9 +202,12 @@ static BDSKGlobalMacroResolver *defaultMacroResolver;
     [[[self undoManager] prepareWithInvocationTarget:self]
         changeMacroKey:newKey to:oldKey];
     NSString *val = [macroDefinitions valueForKey:oldKey];
-    [val retain]; // so the next line doesn't kill it
+    
+    // retain in case these go away with removeObjectForKey:
+    [[val retain] autorelease]; 
+    [[oldKey retain] autorelease];
     [macroDefinitions removeObjectForKey:oldKey];
-    [macroDefinitions setObject:[val autorelease] forKey:newKey];
+    [macroDefinitions setObject:val forKey:newKey];
 	
     [self synchronize];
     
