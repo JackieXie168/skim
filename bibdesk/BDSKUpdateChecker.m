@@ -388,35 +388,24 @@
     [self scheduleUpdateCheckIfNeeded];
 }
 
-- (BOOL)checkForNetworkAvailability:(NSError **)error;
-{
-    BOOL success == YES;
-    
-    // network availability code is 10.4 only
-    if(floor(NSAppKitVersionNumber) > NSAppKitVersionNumber10_3){
-        CFURLRef theURL = (CFURLRef)[self propertyListURL];
-        CFNetDiagnosticRef diagnostic = CFNetDiagnosticCreateWithURL(CFGetAllocator(theURL), theURL);
-        
-        NSString *details;
-        CFNetDiagnosticStatus status = CFNetDiagnosticCopyNetworkStatusPassively(diagnostic, (CFStringRef *)&details);
-        CFRelease(diagnostic);
-        [details autorelease];
-        
-        
-        if (kCFNetDiagnosticConnectionUp == status) {
-            success = YES;
-        } else {
-            if (nil == details) details = NSLocalizedString(@"Unknown network error", @"Error description");
-            
-            // This error contains all the information needed for NSErrorRecoveryAttempting.  
-            // Note that buttons in the alert will be ordered right-to-left {0, 1, 2} and correspond to objects in the NSLocalizedRecoveryOptionsErrorKey array.
-            if (error) {
-                OFError(error, "BDSKNetworkError", NSLocalizedDescriptionKey, details, nil);
-            }
-            success = NO;
-        }
+- (BOOL)checkForNetworkAvailability:(NSError **)error{
+ 
+    BOOL result = NO;
+    SCNetworkConnectionFlags flags;
+    const char *hostName = "bibdesk.sourceforge.net";
+
+    if( SCNetworkCheckReachabilityByName(hostName, &flags) ){
+        result = !(flags & kSCNetworkFlagsConnectionRequired) && (flags & kSCNetworkFlagsReachable);
     }
-    return success;
+
+    if(result == NO){
+        if(error)
+            OFError(error, BDSKNetworkError, NSLocalizedDescriptionKey, NSLocalizedString(@"Network Unavailable", @""), @"NSLocalizedRecoverySuggestion", NSLocalizedString(@"BibDesk is unable to establish a network connection, possibly because your network is down or a firewall is blocking the connection.", @""), nil);
+        else
+            NSLog(@"Unable to contact %s, possibly because your network is down or a firewall is prevening the connection.", hostName);
+    }
+
+    return result;
 }
 
 - (void)checkForUpdatesInBackground;
