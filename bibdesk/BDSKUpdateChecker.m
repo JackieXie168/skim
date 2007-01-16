@@ -390,29 +390,32 @@
 
 - (BOOL)checkForNetworkAvailability:(NSError **)error;
 {
-    CFURLRef theURL = (CFURLRef)[self propertyListURL];
-    CFNetDiagnosticRef diagnostic = CFNetDiagnosticCreateWithURL(CFGetAllocator(theURL), theURL);
+    BOOL success == YES;
     
-    NSString *details;
-    CFNetDiagnosticStatus status = CFNetDiagnosticCopyNetworkStatusPassively(diagnostic, (CFStringRef *)&details);
-    CFRelease(diagnostic);
-    [details autorelease];
-    
-    BOOL success;
-    
-    if (kCFNetDiagnosticConnectionUp == status) {
-        success = YES;
-    } else {
-        if (nil == details) details = NSLocalizedString(@"Unknown network error", @"Error description");
+    // network availability code is 10.4 only
+    if(floor(NSAppKitVersionNumber) > NSAppKitVersionNumber10_3){
+        CFURLRef theURL = (CFURLRef)[self propertyListURL];
+        CFNetDiagnosticRef diagnostic = CFNetDiagnosticCreateWithURL(CFGetAllocator(theURL), theURL);
         
-        // This error contains all the information needed for NSErrorRecoveryAttempting.  
-        // Note that buttons in the alert will be ordered right-to-left {0, 1, 2} and correspond to objects in the NSLocalizedRecoveryOptionsErrorKey array.
-        if (error) {
-            OFError(error, "BDSKNetworkError", NSLocalizedDescriptionKey, details, nil);
+        NSString *details;
+        CFNetDiagnosticStatus status = CFNetDiagnosticCopyNetworkStatusPassively(diagnostic, (CFStringRef *)&details);
+        CFRelease(diagnostic);
+        [details autorelease];
+        
+        
+        if (kCFNetDiagnosticConnectionUp == status) {
+            success = YES;
+        } else {
+            if (nil == details) details = NSLocalizedString(@"Unknown network error", @"Error description");
+            
+            // This error contains all the information needed for NSErrorRecoveryAttempting.  
+            // Note that buttons in the alert will be ordered right-to-left {0, 1, 2} and correspond to objects in the NSLocalizedRecoveryOptionsErrorKey array.
+            if (error) {
+                OFError(error, "BDSKNetworkError", NSLocalizedDescriptionKey, details, nil);
+            }
+            success = NO;
         }
-        success = NO;
     }
-    
     return success;
 }
 
