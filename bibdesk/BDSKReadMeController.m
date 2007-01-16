@@ -115,7 +115,9 @@ static BDSKRelNotesController *sharedRelNotesController = nil;
 
 - (void)reportError:(id)sender {
     @try {
-        NSString *body = [NSString stringWithFormat:@"%@\n\n\t ***** ERROR LOG ***** \n\n%@", NSLocalizedString(@"Please tell us what you were doing at the time this error occurred.", @"Message when error occurs"), [textView string]];
+        NSString *shortVersion = [[NSBundle mainBundle] objectForInfoDictionaryKey:@"CFBundleShortVersionString"];
+        NSString *version = [[NSBundle mainBundle] objectForInfoDictionaryKey:@"CFBundleVersionString"];
+        NSString *body = [NSString stringWithFormat:@"%@\n\n\t ***** ERROR LOG ***** \n\nBibDesk Version:\n%@ (%@)\n\n%@", NSLocalizedString(@"Please tell us what you were doing at the time this error occurred.", @"Message when error occurs"), shortVersion, version, [textView string]];
         
         OAInternetConfig *ic = [OAInternetConfig internetConfig];
         [ic launchMailTo:@"bibdesk-develop@lists.sourceforge.net"
