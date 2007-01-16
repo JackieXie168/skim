@@ -24,6 +24,8 @@
     IBOutlet NSTextField *_addressField;
     IBOutlet NSTextField *_dbaseField;
     IBOutlet NSTextField *_portField;
+    IBOutlet NSTextField *_userField;
+    IBOutlet NSTextField *_passwordField;
     IBOutlet NSPopUpButton *_syntaxPopup;
     
     ZOOMConnection *_connection;
@@ -42,6 +44,8 @@
 - (IBAction)changeAddress:(id)sender;
 - (IBAction)changePort:(id)sender;
 - (IBAction)changeDbase:(id)sender;
+- (IBAction)changeUser:(id)sender;
+- (IBAction)changePassword:(id)sender;
 - (IBAction)changeSyntaxType:(id)sender;
 
 @end

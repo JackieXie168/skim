@@ -52,6 +52,9 @@
     [_dbaseField setStringValue:_database];
     [_portField setIntValue:_port];
     
+    [_userField setStringValue:[_options objectForKey:@"user"]];
+    [_passwordField setStringValue:[_options objectForKey:@"password"]];
+    
     [ZOOMRecord setFallbackEncoding:NSISOLatin1StringEncoding];
     
     [_popup removeAllItems];
@@ -130,6 +133,26 @@
 {
     [_database release];
     _database = [[sender stringValue] copy];
+    _connectionNeedsReset = YES;
+}
+
+- (IBAction)changeUser:(id)sender;
+{
+    NSMutableDictionary *options = [_options mutableCopy];
+    [options setValue:[sender stringValue] forKey:@"user"];
+    [_options release];
+    _options = [options copy];
+    [options release];
+    _connectionNeedsReset = YES;
+}
+
+- (IBAction)changePassword:(id)sender;
+{
+    NSMutableDictionary *options = [_options mutableCopy];
+    [options setValue:[sender stringValue] forKey:@"password"];
+    [_options release];
+    _options = [options copy];
+    [options release];
     _connectionNeedsReset = YES;
 }
 
