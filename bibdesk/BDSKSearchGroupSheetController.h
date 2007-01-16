@@ -85,8 +85,7 @@
 - (IBAction)selectPredefinedServer:(id)sender;
 - (IBAction)selectSyntax:(id)sender;
 
-- (IBAction)addServer:(id)sender;
-- (IBAction)removeServer:(id)sender;
+- (IBAction)addRemoveServer:(id)sender;
 - (IBAction)editServer:(id)sender;
 - (IBAction)resetServers:(id)sender;
 

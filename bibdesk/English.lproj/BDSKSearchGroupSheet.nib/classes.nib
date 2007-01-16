@@ -13,9 +13,8 @@
         }, 
         {
             ACTIONS = {
-                addServer = id; 
+                addRemoveServer = id; 
                 editServer = id; 
-                removeServer = id; 
                 resetServers = id; 
                 selectPredefinedServer = id; 
                 selectServerType = id; 

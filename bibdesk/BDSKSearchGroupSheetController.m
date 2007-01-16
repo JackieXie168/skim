@@ -174,9 +174,6 @@ static NSDictionary *searchGroupServers = nil;
 
 + (void)deleteServer:(BDSKServerInfo *)serverInfo;
 {
-    // @@ temporary
-    return;
-    
     NSString *applicationSupportPath = [[NSFileManager defaultManager] currentApplicationSupportPathForCurrentUser];
     NSString *serversPath = [applicationSupportPath stringByAppendingPathComponent:SERVERS_DIRNAME];
     NSString *path = [serversPath stringByAppendingPathComponent:[NSString stringWithFormat:@"%@-%@.bdsksearch", [serverInfo name], [serverInfo type]]];
@@ -355,38 +352,38 @@ static NSDictionary *searchGroupServers = nil;
     [serverInfo setRecordSyntax:syntax];
 }
 
-- (IBAction)addServer:(id)sender;
+- (IBAction)addRemoveServer:(id)sender;
 {
-    if ([self isCustom] == NO || [self commitEditing] == NO) {
+    if ([self commitEditing] == NO) {
         NSBeep();
         return;
     }
     
-    NSArray *servers = [[self class] serversForType:[self type]];
-    if ([[servers valueForKey:@"name"] containsObject:[[self serverInfo] name]]) {
-        NSAlert *alert = [NSAlert alertWithMessageText:NSLocalizedString(@"Duplicate Server Name", @"Message in alert dialog when adding a search group server with a duplicate name")
-                                         defaultButton:nil
-                                       alternateButton:nil
-                                           otherButton:nil
-                             informativeTextWithFormat:NSLocalizedString(@"A default server with the specified name already exists. Edit and Set the default server or use a different name.", @"Informative text in alert dialog when adding a search group server server with a duplicate name")];
-        [alert beginSheetModalForWindow:[self window] modalDelegate:nil didEndSelector:NULL contextInfo:NULL];
-        return;
+    if ([self isCustom]) {
+        // add the custom server as a default server
+        
+        NSArray *servers = [[self class] serversForType:[self type]];
+        if ([[servers valueForKey:@"name"] containsObject:[[self serverInfo] name]]) {
+            NSAlert *alert = [NSAlert alertWithMessageText:NSLocalizedString(@"Duplicate Server Name", @"Message in alert dialog when adding a search group server with a duplicate name")
+                                             defaultButton:nil
+                                           alternateButton:nil
+                                               otherButton:nil
+                                 informativeTextWithFormat:NSLocalizedString(@"A default server with the specified name already exists. Edit and Set the default server or use a different name.", @"Informative text in alert dialog when adding a search group server server with a duplicate name")];
+            [alert beginSheetModalForWindow:[self window] modalDelegate:nil didEndSelector:NULL contextInfo:NULL];
+            return;
+        }
+        
+        unsigned index = [servers count];
+        [[self class] addServer:[self serverInfo] forType:[self type]];
+        [self reloadServersSelectingIndex:index];
+        
+    } else {
+        // remove the selected default server
+        
+        [[self class] removeServerAtIndex:[serverPopup indexOfSelectedItem] forType:[self type]];
+        [self reloadServersSelectingIndex:0];
+        
     }
-    
-    unsigned index = [servers count];
-    [[self class] addServer:[self serverInfo] forType:[self type]];
-    [self reloadServersSelectingIndex:index];
-}
-
-- (IBAction)removeServer:(id)sender;
-{
-    if ([self isCustom] || [self commitEditing] == NO) {
-        NSBeep();
-        return;
-    }
-    
-    [[self class] removeServerAtIndex:[serverPopup indexOfSelectedItem] forType:[self type]];
-    [self reloadServersSelectingIndex:0];
 }
 
 - (IBAction)editServer:(id)sender;
