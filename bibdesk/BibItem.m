@@ -231,7 +231,14 @@ static CFDictionaryRef selectorTable = NULL;
         // updateMetadataForKey with a nil argument will set the dates properly if we read them from a file
         [self updateMetadataForKey:nil];
         
-        [self setCiteKeyString: key == nil ? [self suggestedCiteKey] : key];
+        if (key == nil) {
+            if ([[OFPreferenceWrapper sharedPreferenceWrapper] boolForKey:BDSKCiteKeyAutogenerateKey])
+                [self setCiteKeyString: BDSKDefaultCiteKey];
+            else 
+                [self setCiteKeyString: [self suggestedCiteKey]];
+        } else {
+            [self setCiteKeyString: key];
+        }
         
         // used for determining if we need to re-save Spotlight metadata
         // set to YES initially so the first save after opening a file always writes the metadata, since we don't know beforehand if it's been written
