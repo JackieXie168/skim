@@ -1887,9 +1887,14 @@ originalContentsURL:(NSURL *)absoluteOriginalContentsURL
             contentString = [[NSString alloc] initWithContentsOfFile:fileName encoding:[self documentStringEncoding] guessEncoding:YES];
             
             if(contentString != nil){
-                type = [contentString contentStringType];
-        
-                if(type >= 0){
+                if([theUTI isEqualToUTI:@"edu.ucsd.cs.mmccrack.bibdesk.bib"])
+                    type = BDSKBibTeXStringType;
+                else if([theUTI isEqualToUTI:@"edu.ucsd.cs.mmccrack.bibdesk.ris"])
+                    type = BDSKRISStringType;
+                else
+                    type = [contentString contentStringType];
+                
+                if(type != BDSKUnknownStringType){
                     NSError *parseError = nil;
                     [array addObjectsFromArray:[self newPublicationsForString:contentString type:type error:&parseError]];
                     if(parseError && outError) *outError = parseError;
