@@ -187,4 +187,11 @@
 */
 - (void)privateRebuildMetadataCache:(id)userInfo;
 
+/*!
+    @method     doSpotlightImportIfNeeded
+    @abstract   Reruns the bundled metadata importer when a new app version or OS version is detected.
+    @discussion (comprehensive description)
+*/
+- (void)doSpotlightImportIfNeeded;
+
 @end
