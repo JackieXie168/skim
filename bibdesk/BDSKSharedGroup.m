@@ -420,7 +420,7 @@ static NSImage *unlockedIcon = nil;
 - (int)runAuthenticationFailedAlert;
 {
     NSAssert([NSThread inMainThread] == 1, @"runAuthenticationFailedAlert must be run from the main thread");
-    return NSRunAlertPanel(NSLocalizedString(@"Authentication Failed", @"Message in alert dialog when authentication failed"), [NSString stringWithFormat:NSLocalizedString(@"Incorrect password for BibDesk Sharing on server %@.  Reselect to try again.", @"Informative text in alert dialog"), [service name]], nil, nil, nil);
+    return NSRunAlertPanel(NSLocalizedString(@"Authentication Failed", @"Message in alert dialog when authentication failed"), [NSString stringWithFormat:NSLocalizedString(@"Incorrect password for BibDesk Sharing on server %@.  Reselect to try again.", @"Informative text in alert dialog"), [[service name] safeFormatString]], nil, nil, nil);
 }
 
 // this can be called from any thread

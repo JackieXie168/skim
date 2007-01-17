@@ -383,6 +383,14 @@ An inline buffer is used for speed in accessing each character.
 - (NSString *)stringByNormalizingSpacesAndLineBreaks;
 
 /*!
+    @method     safeFormatString
+    @abstract   Add necessary percent escapes to a string that may contain unexpected format codes.
+    @discussion Various security vulnerabilities have been reported in NSRunAlertPanel and other functions that accept a format string as input.  If we pass user input to these functions, we run the risk of unintentionally passing format codes to a function with incorrect varargs.  See http://projects.info-pull.com/moab/MOAB-16-01-2007.html for details.
+    @result     (description)
+*/
+- (NSString *)safeFormatString;
+
+/*!
 @method     stringByTrimmingFromLastPunctuation
 @abstract   Returns the portion of a string following the last punctuation character.
 @discussion (comprehensive description)

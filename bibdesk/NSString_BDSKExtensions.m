@@ -999,6 +999,28 @@ static NSString *UTIForPath(NSString *aPath)
     return [(id)BDStringCreateByNormalizingWhitespaceAndNewlines(CFAllocatorGetDefault(), (CFStringRef)self) autorelease];
 }
 
+- (NSString *)safeFormatString;
+{
+    NSRange r = [self rangeOfString:@"%" options:NSLiteralSearch];
+    NSMutableString *toReturn = r.length ? [[self mutableCopy] autorelease] : self;
+    unsigned len = [toReturn length];
+    while (r.length > 0 && r.location < len && (r.location == len - 1 || [toReturn characterAtIndex:(r.location + 1)] != '%') ) {
+        
+        [toReturn replaceCharactersInRange:NSMakeRange(r.location, 0) withString:@"%"];
+        len = [toReturn length];
+        unsigned start = r.location + 2;
+        if (start < len)
+            r = [toReturn rangeOfString:@"%" options:NSLiteralSearch range:NSMakeRange(start, len - start)];
+        else
+            r = NSMakeRange(NSNotFound, 0);
+    }
+    return toReturn;    
+}
+
+- (NSString *)stringByAppendingEllipsis{
+    return [self stringByAppendingString:[NSString horizontalEllipsisString]];
+}
+
 - (NSString *)stringByTrimmingFromLastPunctuation{
     NSRange range = [self rangeOfCharacterFromSet:[NSCharacterSet punctuationCharacterSet] options:NSBackwardsSearch];
     
@@ -1023,10 +1045,6 @@ static NSString *UTIForPath(NSString *aPath)
         string = [mutableCopy autorelease];
     }
     return string ? string : self;
-}
-
-- (NSString *)stringByAppendingEllipsis{
-    return [self stringByAppendingString:[NSString horizontalEllipsisString]];
 }
 
 #pragma mark HTML/XML
