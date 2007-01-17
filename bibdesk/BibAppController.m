@@ -160,7 +160,7 @@ static void createTemporaryDirectory()
     NSString *importerVersion = [importerBundle objectForInfoDictionaryKey:(NSString *)kCFBundleVersionKey];
     if (importerVersion) {
         OFVersionNumber *importerVersionNumber = [[[OFVersionNumber alloc] initWithVersionString:importerVersion] autorelease];
-        NSDictionary *versionInfo = [[OFPreferenceWrapper sharedPreferenceWrapper] objectForKey:@"BDSKSpotlightVersionInfo"];
+        NSDictionary *versionInfo = [[OFPreferenceWrapper sharedPreferenceWrapper] objectForKey:BDSKSpotlightVersionInfo];
         
         long sysVersion;
         OSStatus err = Gestalt(gestaltSystemVersion, &sysVersion);
@@ -185,7 +185,7 @@ static void createTemporaryDirectory()
                 [importerTask launch];
                 
                 NSDictionary *info = [NSDictionary dictionaryWithObjectsAndKeys:[NSNumber numberWithLong:sysVersion], @"lastSysVersion", importerVersion, @"lastImporterVersion", nil];
-                [[OFPreferenceWrapper sharedPreferenceWrapper] setObject:info forKey:@"BDSKSpotlightVersionInfo"];
+                [[OFPreferenceWrapper sharedPreferenceWrapper] setObject:info forKey:BDSKSpotlightVersionInfo];
                 
             }
             else NSLog(@"/usr/bin/mdimport not found!");
