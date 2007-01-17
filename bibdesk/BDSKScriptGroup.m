@@ -56,7 +56,19 @@
 
 #define APPLESCRIPT_HANDLER_NAME @"main"
 
+static OFMessageQueue *messageQueue = nil;
+
 @implementation BDSKScriptGroup
+
++ (void)initialize
+{
+    if (nil == messageQueue) {
+        messageQueue = [[OFMessageQueue alloc] init];
+        // use a small pool of threads for running NSTasks
+        [messageQueue startBackgroundProcessors:2];
+        [messageQueue setSchedulesBasedOnPriority:NO];
+    }
+}
 
 - (id)initWithScriptPath:(NSString *)path scriptArguments:(NSString *)arguments scriptType:(int)type;
 {
@@ -77,10 +89,6 @@
         argsArray = nil;
         scriptType = type;
         failedDownload = NO;
-        
-        messageQueue = [[OFMessageQueue alloc] init];
-        [messageQueue startBackgroundProcessors:1];
-        [messageQueue setSchedulesBasedOnPriority:NO];
         
         workingDirPath = [[[NSApp delegate] temporaryFilePath:nil createDirectory:YES] retain];
         
@@ -136,7 +144,6 @@
     [macroResolver release];
     [workingDirPath release];
     [stdoutData release];
-    [messageQueue release];
     [super dealloc];
 }
 

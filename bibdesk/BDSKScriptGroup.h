@@ -57,7 +57,6 @@ enum {
     int scriptType;
     BOOL isRetrieving;
     BOOL failedDownload;
-    OFMessageQueue *messageQueue;
     NSTask *currentTask;
     NSString *workingDirPath;
     NSMutableData *stdoutData;
