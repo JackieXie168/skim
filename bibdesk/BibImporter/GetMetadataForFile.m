@@ -47,8 +47,8 @@ Boolean GetMetadataForFile(void* thisInterface,
     Boolean success = FALSE;
     
     CFStringRef cacheUTI = CFSTR("net.sourceforge.bibdesk.bdskcache");
-    CFStringRef bibtexUTI = CFSTR("edu.ucsd.cs.mmccrack.bibdesk.bib");
-    CFStringRef risUTI = CFSTR("edu.ucsd.cs.mmccrack.bibdesk.ris");
+    CFStringRef bibtexUTI = CFSTR("net.sourceforge.bibdesk.bib");
+    CFStringRef risUTI = CFSTR("net.sourceforge.bibdesk.ris");
     
     if(UTTypeEqual(contentTypeUTI, cacheUTI)){
         
