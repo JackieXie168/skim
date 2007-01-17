@@ -51,7 +51,7 @@
 			<string>Editor</string>
 			<key>LSItemContentTypes</key>
 			<array>
-				<string>edu.ucsd.cs.mmccrack.bibdesk.bib</string>
+				<string>net.sourceforge.bibdesk.bib</string>
 			</array>
 			<key>NSDocumentClass</key>
 			<string>BibDocument</string>
@@ -78,7 +78,7 @@
 			<string>None</string>
 			<key>LSItemContentTypes</key>
 			<array>
-				<string>edu.ucsd.cs.mmccrack.bibdesk.bib</string>
+				<string>net.sourceforge.bibdesk.bib</string>
 			</array>
 			<key>LSTypeIsPackage</key>
 			<true/>
@@ -106,7 +106,7 @@
 			<string>Editor</string>
 			<key>LSItemContentTypes</key>
 			<array>
-				<string>edu.ucsd.cs.mmccrack.bibdesk.ris</string>
+				<string>net.sourceforge.bibdesk.ris</string>
 			</array>
 			<key>NSDocumentClass</key>
 			<string>BibDocument</string>
@@ -148,8 +148,8 @@
 			</array>
 			<key>NSExportableTypes</key>
 			<array>
-				<string>edu.ucsd.cs.mmccrack.bibdesk.bib</string>
-				<string>edu.ucsd.cs.mmccrack.bibdesk.ris</string>
+				<string>net.sourceforge.bibdesk.bib</string>
+				<string>net.sourceforge.bibdesk.ris</string>
 			</array>
 		</dict>
 		<dict>
@@ -1057,7 +1057,7 @@
 			<key>UTTypeIconFile</key>
 			<string>bibDocIcon.icns</string>
 			<key>UTTypeIdentifier</key>
-			<string>edu.ucsd.cs.mmccrack.bibdesk.bib</string>
+			<string>net.sourceforge.bibdesk.bib</string>
 			<key>UTTypeTagSpecification</key>
 			<dict>
 				<key>public.filename-extension</key>
@@ -1076,7 +1076,7 @@
 			<key>UTTypeIconFile</key>
 			<string>risDocIcon.icns</string>
 			<key>UTTypeIdentifier</key>
-			<string>edu.ucsd.cs.mmccrack.bibdesk.ris</string>
+			<string>net.sourceforge.bibdesk.ris</string>
 			<key>UTTypeReferenceURL</key>
 			<string>http://www.refman.com/support/risformat_intro.asp</string>
 			<key>UTTypeTagSpecification</key>
