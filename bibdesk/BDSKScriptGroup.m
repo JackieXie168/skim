@@ -409,12 +409,14 @@
         if([referenceDate timeIntervalSinceNow] > -2 && OFSimpleLockTry(&currentTaskLock)){
             if([currentTask isRunning])
                 [currentTask terminate];
+            [currentTask release];
             currentTask = nil;
             OFSimpleUnlock(&currentTaskLock);
             break;
         } else if([referenceDate timeIntervalSinceNow] > -2.1){ // just in case this ever happens
             NSLog(@"%@ failed to lock for task %@", self, currentTask);
             [currentTask terminate];
+            [currentTask release];
             currentTask = nil;
             break;
         }
@@ -446,27 +448,23 @@
     
     NSString *outputString = nil;
     NSError *error = nil;
-    NSTask *task;
     NSPipe *outputPipe = [NSPipe pipe];
     NSFileHandle *outputFileHandle = [outputPipe fileHandleForReading];
     BOOL isRunning;
 
-    task = [[NSTask allocWithZone:[self zone]] init];    
-    [task setStandardError:[NSFileHandle fileHandleWithStandardError]];
-    [task setLaunchPath:path];
-    [task setCurrentDirectoryPath:workingDirPath];
-    [task setStandardOutput:outputPipe];
+    OFSimpleLock(&currentTaskLock);
+    currentTask = [[NSTask allocWithZone:[self zone]] init];    
+    [currentTask setStandardError:[NSFileHandle fileHandleWithStandardError]];
+    [currentTask setLaunchPath:path];
+    [currentTask setCurrentDirectoryPath:workingDirPath];
+    [currentTask setStandardOutput:outputPipe];
     if ([args count])
-        [task setArguments:args];
+        [currentTask setArguments:args];
+    OFSimpleUnlock(&currentTaskLock);        
     
     // ignore SIGPIPE, as it causes a crash (seems to happen if the binaries don't exist and you try writing to the pipe)
     signal(SIGPIPE, SIG_IGN);
     
-    // The only time we need to use the lock is when accessing the ivar; since it's not released in -terminate or -dealloc, we always have a valid reference
-    OFSimpleLock(&currentTaskLock);
-    currentTask = task;
-    OFSimpleUnlock(&currentTaskLock);
-        
     int terminationStatus = 1;
     NSNotificationCenter *nc = [NSNotificationCenter defaultCenter];
 
@@ -475,8 +473,10 @@
         [nc addObserver:self selector:@selector(stdoutNowAvailable:) name:NSFileHandleReadCompletionNotification object:outputFileHandle];
         [outputFileHandle readInBackgroundAndNotify];
         
-        [task launch];
-        isRunning = [task isRunning];
+        OFSimpleLock(&currentTaskLock);
+        [currentTask launch];
+        isRunning = [currentTask isRunning];
+        OFSimpleUnlock(&currentTaskLock);        
         
         if (isRunning) {
             
@@ -484,7 +484,9 @@
             do {
                 // Run the run loop until the task is finished, and pick up the notifications
                 didRunLoop = [[NSRunLoop currentRunLoop] runMode:NSDefaultRunLoopMode beforeDate:[NSDate distantFuture]];
-                isRunning = [task isRunning];
+                OFSimpleLock(&currentTaskLock);
+                isRunning = [currentTask isRunning];
+                OFSimpleUnlock(&currentTaskLock);        
             } while (isRunning && didRunLoop);
                         
             [nc removeObserver:self name:NSFileHandleReadCompletionNotification object:outputFileHandle];
@@ -498,7 +500,9 @@
             if(outputString == nil)
                 outputString = [[NSString allocWithZone:[self zone]] initWithData:stdoutData encoding:[NSString defaultCStringEncoding]];
             
-            terminationStatus = [task terminationStatus];
+            OFSimpleLock(&currentTaskLock);
+            terminationStatus = [currentTask terminationStatus];
+            OFSimpleUnlock(&currentTaskLock);        
 
         } else {
             terminationStatus = 1;
@@ -508,8 +512,10 @@
     }
     @catch(id exception){
         terminationStatus = 1;
-        if([task isRunning])
-            [task terminate];
+        OFSimpleLock(&currentTaskLock);
+        if([currentTask isRunning])
+            [currentTask terminate];
+        OFSimpleUnlock(&currentTaskLock);        
         
         [nc removeObserver:self name:NSFileHandleReadCompletionNotification object:outputFileHandle];
 
@@ -522,10 +528,9 @@
     signal(SIGPIPE, SIG_DFL);
     
     OFSimpleLock(&currentTaskLock);
+    [currentTask release];
     currentTask = nil;
     OFSimpleUnlock(&currentTaskLock);        
-    
-    [task release];
     
     if (terminationStatus != EXIT_SUCCESS || nil == outputString) {
         if(error == nil)
