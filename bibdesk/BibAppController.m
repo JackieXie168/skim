@@ -217,7 +217,7 @@ static void createTemporaryDirectory()
 											 @"%@",
 											 NSLocalizedString(@"Go to Preferences", @"Button title"), 
 											 NSLocalizedString(@"Revert to Default", @"Button title"), 
-											 nil, error, nil);
+											 nil, [error safeFormatString], nil);
 			if (button == NSAlertAlternateReturn){
 				formatString = [[[OFPreferenceWrapper sharedPreferenceWrapper] preferenceForKey:BDSKCiteKeyFormatKey] defaultObjectValue];
                 [[OFPreferenceWrapper sharedPreferenceWrapper] setObject:formatString forKey:BDSKCiteKeyFormatKey];
@@ -239,7 +239,7 @@ static void createTemporaryDirectory()
 											 @"%@",
 											 NSLocalizedString(@"Go to Preferences", @"Button title"), 
 											 NSLocalizedString(@"Revert to Default", @"Button title"), 
-											 nil, error, nil);
+											 nil, [error safeFormatString], nil);
 			if (button == NSAlertAlternateReturn){
 				formatString = [[[OFPreferenceWrapper sharedPreferenceWrapper] preferenceForKey:BDSKLocalUrlFormatKey] defaultObjectValue];			
 				[[OFPreferenceWrapper sharedPreferenceWrapper] setObject:formatString forKey:BDSKLocalUrlFormatKey];

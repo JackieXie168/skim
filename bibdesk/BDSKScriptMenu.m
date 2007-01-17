@@ -290,7 +290,7 @@ static NSDate *earliestDateFromBaseScriptsFolders(NSArray *folders)
         errorText = [NSString stringWithFormat:NSLocalizedString(@"The script file '%@' could not be opened.", @"Message in alert dialog when failing to load script"), scriptName];
         messageText = [NSString stringWithFormat:NSLocalizedString(@"AppleScript reported the following error:\n%@", @"Informative text in alert dialog"), [errorDictionary objectForKey:NSAppleScriptErrorMessage]];
         okButton = NSLocalizedString(@"OK", @"Button title");
-        NSRunAlertPanel(errorText, messageText, okButton, nil, nil);
+        NSRunAlertPanel([errorText safeFormatString], [messageText safeFormatString], okButton, nil, nil);
         return;
     }
     result = [script executeAndReturnError:&errorDictionary];
@@ -301,7 +301,7 @@ static NSDate *earliestDateFromBaseScriptsFolders(NSArray *folders)
         messageText = [NSString stringWithFormat:NSLocalizedString(@"AppleScript reported the following error:\n%@", @"Informative text in alert dialog"), [errorDictionary objectForKey:NSAppleScriptErrorMessage]];
         okButton = NSLocalizedString(@"OK", "Button title");
         editButton = NSLocalizedString(@"Edit Script", @"Button title");
-        if (NSRunAlertPanel(errorText, messageText, okButton, editButton, nil) == NSAlertAlternateReturn) {
+        if (NSRunAlertPanel([errorText safeFormatString], [messageText safeFormatString], okButton, editButton, nil) == NSAlertAlternateReturn) {
             [[NSWorkspace sharedWorkspace] openFile:scriptFilename];
         }
         return;
