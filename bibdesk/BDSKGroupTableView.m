@@ -189,8 +189,8 @@
     NSParameterAssert(rows != nil);
     NSParameterAssert(highlightColor != nil);
     
-    float lineWidth = 1.0f;
-    float heightOffset = MAX(0.0f, roundf(0.25f * [self intercellSpacing].height) - 1.0f);
+    float lineWidth = 1.0;
+    float heightOffset = MAX(0.0f, roundf(0.25 * [self intercellSpacing].height) - lineWidth);
     
     [self lockFocus];
     [NSGraphicsContext saveGraphicsState];
@@ -203,11 +203,14 @@
     NSRect drawRect;
     NSBezierPath *path;
     
+    float dX = 0.5 * lineWidth;
+    float dY = heightOffset + 0.5 * lineWidth;
+    
     while(rowIndex != NSNotFound){
         
-        drawRect = NSInsetRect([self rectOfRow:rowIndex], 0.5f * lineWidth, heightOffset + 0.5f * lineWidth);
+        drawRect = NSInsetRect([self rectOfRow:rowIndex], dX, dY);
         
-        path = [NSBezierPath bezierPathWithRoundRectInRect:drawRect radius:4.0];
+        path = [NSBezierPath bezierPathWithRoundRectInRect:drawRect radius:4.0f];
         [path setLineWidth:lineWidth];
         [path fill];
         [path stroke];
@@ -227,23 +230,23 @@
 {
     NSColor *highlightColor = [NSColor alternateSelectedControlColor];
     float lineWidth = 2.0;
-    float heightOffset = rowIndex == -1 ? 0.0f : MAX(0.0f, roundf(0.25f * [self intercellSpacing].height) - 1.0f);
+    float heightOffset = rowIndex == -1 ? 0.0f : MAX(0.0f, roundf(0.25 * [self intercellSpacing].height) - lineWidth);
     
     [self lockFocus];
     [NSGraphicsContext saveGraphicsState];
     
     NSRect drawRect = (rowIndex == -1) ? [self visibleRect] : [self rectOfRow:rowIndex];
     
-    drawRect = NSInsetRect(drawRect, 0.5f * lineWidth, 0.5f * lineWidth + heightOffset);
+    drawRect = NSInsetRect(drawRect, 0.5 * lineWidth, 0.5 * lineWidth + heightOffset);
     
-    NSBezierPath *path = [NSBezierPath bezierPathWithRoundRectInRect:drawRect radius:4.0];
+    NSBezierPath *path = [NSBezierPath bezierPathWithRoundRectInRect:drawRect radius:4.0f];
     
     [path setLineWidth:lineWidth];
     
-    [[highlightColor colorWithAlphaComponent:0.2] set];
+    [[highlightColor colorWithAlphaComponent:0.2] setFill];
     [path fill];
     
-    [[highlightColor colorWithAlphaComponent:0.8] set];
+    [[highlightColor colorWithAlphaComponent:0.8] setStroke];
     [path stroke];
     
     [NSGraphicsContext restoreGraphicsState];
