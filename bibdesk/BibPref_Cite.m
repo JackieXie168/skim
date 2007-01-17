@@ -59,7 +59,7 @@
     [alternateDragCopyPopup selectItemWithTag:[[[defaults arrayForKey:BDSKDragCopyTypesKey] objectAtIndex:1] intValue]];
     [separateCiteCheckButton setState:[defaults boolForKey:BDSKSeparateCiteKey] ? NSOnState : NSOffState];
     [prependTildeCheckButton setState:[defaults boolForKey:BDSKCitePrependTildeKey] ? NSOnState : NSOffState];
-    [citeBracketRadio selectCellWithTag:[[defaults objectForKey:BDSKCiteStartBracketKey] isEqualToString:@"{"] ? 0 : 1];
+    [citeBracketRadio selectCellWithTag:[[defaults objectForKey:BDSKCiteStartBracketKey] isEqualToString:@"{"] ? 1 : 2];
     [citeStringField setStringValue:[NSString stringWithFormat:@"\\%@", citeString]];
     if([separateCiteCheckButton state] == NSOnState){
         [citeBehaviorLine setStringValue:[NSString stringWithFormat:@"%@key1%@%@key2%@", startCite, endCiteBracket, startCite, endCiteBracket]];
