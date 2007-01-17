@@ -166,7 +166,7 @@ static void createTemporaryDirectory()
         OSStatus err = Gestalt(gestaltSystemVersion, &sysVersion);
         
         BOOL runImporter = NO;
-        if (nil == versionInfo) {
+        if ([versionInfo count] == 0) {
             runImporter = YES;
         } else {
             NSString *lastImporterVersion = [versionInfo objectForKey:@"lastImporterVersion"];
