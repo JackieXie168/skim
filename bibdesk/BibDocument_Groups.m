@@ -627,22 +627,20 @@ The groupedPublications array is a subset of the publications array, developed b
         id aGroup;
         
         while(groupIndex != NSNotFound){
-            if([visibleIndexes containsIndex:groupIndex] == NO)
-                continue;
-            
-            aGroup = [groups objectAtIndex:groupIndex];
-            
-            rowIndex = [rowIndexes firstIndex];
-            
-            while(rowIndex != NSNotFound){
-            
-                if([aGroup containsItem:[shownPublications objectAtIndex:rowIndex]]){
-                    [indexSet addIndex:groupIndex];
-                    break;
+            if([visibleIndexes containsIndex:groupIndex]){
+                
+                aGroup = [groups objectAtIndex:groupIndex];
+                rowIndex = [rowIndexes firstIndex];
+                
+                while(rowIndex != NSNotFound){
+                
+                    if([aGroup containsItem:[shownPublications objectAtIndex:rowIndex]]){
+                        [indexSet addIndex:groupIndex];
+                        break;
+                    }
+                    rowIndex = [rowIndexes indexGreaterThanIndex:rowIndex];
                 }
-                rowIndex = [rowIndexes indexGreaterThanIndex:rowIndex];
             }
-            
             groupIndex = [staticAndSmartIndexes indexGreaterThanIndex:groupIndex];
         }
     }
