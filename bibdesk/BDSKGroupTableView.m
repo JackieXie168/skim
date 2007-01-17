@@ -159,7 +159,8 @@
     [self setRowHeight:rowHeight];
     
     // default is (3.0, 2.0); use a larger spacing for the gradient and drop highlights
-    NSSize intercellSize = NSMakeSize(3.0, roundf(0.5f * rowHeight));
+    NSSize intercellSize = [self intercellSpacing];
+    intercellSize.height = MAX(intercellSize.height, roundf(0.5f * rowHeight));
     [self setIntercellSpacing:intercellSize];
 
 	[self tile];
