@@ -159,7 +159,7 @@
     [self setRowHeight:rowHeight];
     
     // default is (3.0, 2.0); use a larger spacing for the gradient and drop highlights
-    NSSize intercellSize = NSMakeSize(3.0, 0.5f * rowHeight);
+    NSSize intercellSize = NSMakeSize(3.0, roundf(0.5f * rowHeight));
     [self setIntercellSpacing:intercellSize];
 
 	[self tile];
@@ -189,7 +189,7 @@
     NSParameterAssert(highlightColor != nil);
     
     float lineWidth = 1.0f;
-    float heightOffset = 0.5f * [self intercellSpacing].height;
+    float heightOffset = roundf(0.25f * [self intercellSpacing].height);
     
     [self lockFocus];
     [NSGraphicsContext saveGraphicsState];
@@ -204,7 +204,7 @@
     
     while(rowIndex != NSNotFound){
         
-        drawRect = NSInsetRect([self rectOfRow:rowIndex], lineWidth, 0.5f * heightOffset);
+        drawRect = NSInsetRect([self rectOfRow:rowIndex], 0.5f * lineWidth, heightOffset + 0.5f * lineWidth);
         
         path = [NSBezierPath bezierPathWithRoundRectInRect:drawRect radius:4.0];
         [path setLineWidth:lineWidth];
@@ -225,28 +225,28 @@
 -(void)_drawDropHighlightOnRow:(int)rowIndex
 {
     NSColor *highlightColor = [NSColor alternateSelectedControlColor];
-    if(rowIndex == -1){
-        float lineWidth = 2.0;
-        
-        [self lockFocus];
-        [NSGraphicsContext saveGraphicsState];
-        
-        // use a dark stroke with a light center fill
-        [[highlightColor colorWithAlphaComponent:0.2] setFill];
-        [[highlightColor colorWithAlphaComponent:0.8] setStroke];
-        
-        NSRect drawRect = NSInsetRect([self visibleRect], 0.5f * lineWidth, 0.5f * lineWidth);
-        NSBezierPath *path = [NSBezierPath bezierPathWithRoundRectInRect:drawRect radius:4.0];
-        
-        [path setLineWidth:lineWidth];
-        [path fill];
-        [path stroke];
-        
-        [NSGraphicsContext restoreGraphicsState];
-        [self unlockFocus];
-    }else{
-        [self drawHighlightOnRows:[NSIndexSet indexSetWithIndex:rowIndex] usingColor:highlightColor];
-    }
+    float lineWidth = 2.0;
+    float heightOffset = rowIndex == -1 ? 0.0f : roundf(0.25f * [self intercellSpacing].height) - 1.0;
+    
+    [self lockFocus];
+    [NSGraphicsContext saveGraphicsState];
+    
+    NSRect drawRect = (rowIndex == -1) ? [self visibleRect] : [self rectOfRow:rowIndex];
+    
+    drawRect = NSInsetRect(drawRect, 0.5f * lineWidth, 0.5f * lineWidth + heightOffset);
+    
+    NSBezierPath *path = [NSBezierPath bezierPathWithRoundRectInRect:drawRect radius:4.0];
+    
+    [path setLineWidth:lineWidth];
+    
+    [[highlightColor colorWithAlphaComponent:0.2] set];
+    [path fill];
+    
+    [[highlightColor colorWithAlphaComponent:0.8] set];
+    [path stroke];
+    
+    [NSGraphicsContext restoreGraphicsState];
+    [self unlockFocus];
 }
 
 // public method for updating the highlights (as when another table's selection changes)
