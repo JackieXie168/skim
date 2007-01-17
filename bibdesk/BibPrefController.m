@@ -213,6 +213,7 @@ NSString *BDSKWarnOnCiteKeyChangeKey = @"BDSKWarnOnCiteKeyChangeKey";
 NSString *BDSKUpdateCheckIntervalKey = @"BDSKUpdateCheckIntervalKey";
 NSString *BDSKUpdateCheckLastDateKey = @"BDSKUpdateCheckLastDateKey";
 NSString *BDSKUpdateLatestNotifiedVersionKey = @"BDSKUpdateLatestNotifiedVersionKey";
+NSString *BDSKSpotlightVersionInfo = @"BDSKSpotlightVersionInfo";
 
 #pragma mark Field name strings
 

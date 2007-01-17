@@ -797,6 +797,13 @@
 					<false/>
 					<key>BDSKShouldWritePDFMetadata</key>
 					<false/>
+					<key>BDSKSpotlightVersionInfo</key>
+                    <dict>
+                        <key>lastImporterVersion</key>
+                        <string>0</string>
+                        <key>lastSysVersion</key>
+                        <string>0</string>
+                    </dict>
 					<key>BDSKUpdateCheckIntervalKey</key>
 					<integer>1</integer>
 					<key>BDSKUpdateCheckLastDateKey</key>
