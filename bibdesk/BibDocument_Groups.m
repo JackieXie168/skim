@@ -543,10 +543,11 @@ The groupedPublications array is a subset of the publications array, developed b
         return [NSIndexSet indexSet];
     
     // This allows us to be slightly lazy, only putting the visible group rows in the dictionary
-    NSIndexSet *visibleIndexes = [NSIndexSet indexSetWithIndexesInRange:indexRange];
-    NSIndexSet *selectedIndexes = [groupTableView selectedRowIndexes];
-    unsigned int cnt = [visibleIndexes count];
-    NSRange categoryRange = [groups rangeOfCategoryGroups];
+    NSMutableIndexSet *visibleIndexes = [NSMutableIndexSet indexSetWithIndexesInRange:indexRange];
+    [visibleIndexes removeIndexes:[groupTableView selectedRowIndexes]];
+    
+    NSMutableIndexSet *categoryIndexes = [NSMutableIndexSet indexSetWithIndexesInRange:[groups rangeOfCategoryGroups]];
+    unsigned int cnt = [categoryIndexes count];
     NSString *groupField = [self currentGroupField];
 
     // Mutable dictionary with fixed capacity using NSObjects for keys with ints for values; this gives us a fast lookup of row name->index.  Dictionaries can use any pointer-size element for a key or value; see /Developer/Examples/CoreFoundation/Dictionary.  Keys are retained rather than copied for efficiency.  Shark says that BibAuthors are created with alloc/init when using the copy callbacks, so NSShouldRetainWithZone() must be returning NO?
@@ -559,13 +560,13 @@ The groupedPublications array is a subset of the publications array, developed b
         rowDict = CFDictionaryCreateMutable(CFAllocatorGetDefault(), cnt, &BDSKCaseInsensitiveStringKeyDictionaryCallBacks, &OFIntegerDictionaryValueCallbacks);
     }
     
-    cnt = [visibleIndexes firstIndex];
+    unsigned int groupIndex = [categoryIndexes firstIndex];
     
     // exclude smart and shared groups
-    while(cnt != NSNotFound){
-		if(NSLocationInRange(cnt, categoryRange) && [selectedIndexes containsIndex:cnt] == NO)
-			CFDictionaryAddValue(rowDict, (void *)[[[groups categoryGroups] objectAtIndex:cnt - categoryRange.location] name], (void *)cnt);
-        cnt = [visibleIndexes indexGreaterThanIndex:cnt];
+    while(groupIndex != NSNotFound){
+		if([visibleIndexes containsIndex:groupIndex])
+			CFDictionaryAddValue(rowDict, (void *)[[groups objectAtIndex:groupIndex] name], (void *)groupIndex);
+        groupIndex = [visibleIndexes indexGreaterThanIndex:groupIndex];
     }
     
     // Use this for the indexes we're going to return
@@ -620,14 +621,15 @@ The groupedPublications array is a subset of the publications array, developed b
     // handle smart and static groups separately, since they have a different approach to containment
     NSMutableIndexSet *staticAndSmartIndexes = [NSMutableIndexSet indexSetWithIndexesInRange:[groups rangeOfSmartGroups]];
     [staticAndSmartIndexes addIndexesInRange:[groups rangeOfStaticGroups]];
-    [staticAndSmartIndexes removeIndexes:visibleIndexes];
-    [staticAndSmartIndexes removeIndexes:selectedIndexes];
     
     if([staticAndSmartIndexes count]){
-        int groupIndex = [staticAndSmartIndexes firstIndex];
+        groupIndex = [staticAndSmartIndexes firstIndex];
         id aGroup;
         
-        while(groupIndex != NSNotFound && [visibleIndexes containsIndex:groupIndex]){
+        while(groupIndex != NSNotFound){
+            if([visibleIndexes containsIndex:groupIndex] == NO)
+                continue;
+            
             aGroup = [groups objectAtIndex:groupIndex];
             
             rowIndex = [rowIndexes firstIndex];
