@@ -1497,6 +1497,15 @@ Boolean stringContainsLossySubstring(NSString *theString, NSString *stringToFind
 
     if(value = [[self valueOfField:BDSKAbstractString] stringByRemovingTeX])
         [info setObject:value forKey:(NSString *)kMDItemDescription];
+    
+    if(value = [[self container] stringByRemovingTeX])
+        [info setObject:value forKey:@"net_sourceforge_bibdesk_container"];
+    
+    if(value = [self pubType])
+        [info setObject:value forKey:@"net_sourceforge_bibdesk_pubtype"];
+    
+    if(date = [self date])
+        [info setObject:date forKey:@"net_sourceforge_bibdesk_publicationdate"];
 
     if(date = [self dateModified])
         [info setObject:date forKey:(NSString *)kMDItemContentModificationDate];

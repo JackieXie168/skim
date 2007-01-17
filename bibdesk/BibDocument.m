@@ -1897,9 +1897,9 @@ originalContentsURL:(NSURL *)absoluteOriginalContentsURL
             contentString = [[NSString alloc] initWithContentsOfFile:fileName encoding:[self documentStringEncoding] guessEncoding:YES];
             
             if(contentString != nil){
-                if([theUTI isEqualToUTI:@"edu.ucsd.cs.mmccrack.bibdesk.bib"])
+                if([theUTI isEqualToUTI:@"net.sourceforge.bibdesk.bib"])
                     type = BDSKBibTeXStringType;
-                else if([theUTI isEqualToUTI:@"edu.ucsd.cs.mmccrack.bibdesk.ris"])
+                else if([theUTI isEqualToUTI:@"net.sourceforge.bibdesk.ris"])
                     type = BDSKRISStringType;
                 else
                     type = [contentString contentStringType];

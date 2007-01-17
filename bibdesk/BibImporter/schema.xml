@@ -7,6 +7,9 @@
         <attribute name="net_sourceforge_bibdesk_itemreadstatus" multivalued="false" type="CFBoolean"/>
         <attribute name="net_sourceforge_bibdesk_owningfilepath" multivalued="false" type="CFString"/>
         <attribute name="net_sourceforge_bibdesk_citekey" multivalued="false" type="CFString"/>
+        <attribute name="net_sourceforge_bibdesk_container" multivalued="false" type="CFString"/>
+        <attribute name="net_sourceforge_bibdesk_publicationdate" multivalued="false" type="CFDate"/>
+        <attribute name="net_sourceforge_bibdesk_pubtype" multivalued="false" type="CFString"/>
     </attributes>
 
     <types>
@@ -15,14 +18,20 @@
 		The keys that this metadata importer handles.
             </note>
             <allattrs>
-        net_sourceforge_bibdesk_citekey
-        net_sourceforge_bibdesk_owningfilepath
-        net_sourceforge_bibdesk_itemreadstatus
+                net_sourceforge_bibdesk_citekey
+                net_sourceforge_bibdesk_owningfilepath
+                net_sourceforge_bibdesk_itemreadstatus
+                net_sourceforge_bibdesk_container
+                net_sourceforge_bibdesk_publicationdate
+                net_sourceforge_bibdesk_pubtype
             </allattrs>
             <displayattrs>
-        net_sourceforge_bibdesk_citekey
-        net_sourceforge_bibdesk_owningfilepath
-        net_sourceforge_bibdesk_itemreadstatus
+                net_sourceforge_bibdesk_citekey
+                net_sourceforge_bibdesk_owningfilepath
+                net_sourceforge_bibdesk_itemreadstatus
+                net_sourceforge_bibdesk_container
+                net_sourceforge_bibdesk_publicationdate
+                net_sourceforge_bibdesk_pubtype
             </displayattrs>
         </type>
     </types>

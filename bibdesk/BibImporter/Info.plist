@@ -11,9 +11,9 @@
 			<string>MDImporter</string>
 			<key>LSItemContentTypes</key>
 			<array>
-				<string>edu.ucsd.cs.mmccrack.bibdesk.bib</string>
+				<string>net.sourceforge.bibdesk.bib</string>
                 <string>net.sourceforge.bibdesk.bdskcache</string>
-                <string>edu.ucsd.cs.mmccrack.bibdesk.ris</string>
+                <string>net.sourceforge.bibdesk.ris</string>
 			</array>
 		</dict>
 	</array>
@@ -30,7 +30,7 @@
 	<key>CFBundleSignature</key>
 	<string>????</string>
 	<key>CFBundleVersion</key>
-	<string>1.2</string>
+	<string>1.3</string>
 	<key>CFPlugInDynamicRegisterFunction</key>
 	<string></string>
 	<key>CFPlugInDynamicRegistration</key>
