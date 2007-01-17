@@ -160,7 +160,7 @@
     
     // default is (3.0, 2.0); use a larger spacing for the gradient and drop highlights
     NSSize intercellSize = [self intercellSpacing];
-    intercellSize.height = MAX(intercellSize.height, roundf(0.5f * rowHeight));
+    intercellSize.height = MAX(2.0f, roundf(0.5f * rowHeight));
     [self setIntercellSpacing:intercellSize];
 
 	[self tile];
