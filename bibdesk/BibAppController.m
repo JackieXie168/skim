@@ -645,7 +645,7 @@ static void createTemporaryDirectory()
 
 - (void)addString:(NSString *)string forCompletionEntry:(NSString *)entry{
     
-	if(BDIsEmptyString((CFStringRef)entry) || [entry isNumericField] || [entry isURLField] || [entry isPersonField] || [entry isCitationField] || [entry isEqualToString:BDSKCrossrefString])	
+	if(BDIsEmptyString((CFStringRef)entry) || [entry isNumericField] || [entry isURLField] || [entry isPersonField] || [entry isCitationField])	
 		return;
 
     if([entry isEqualToString:BDSKBooktitleString])	
@@ -696,8 +696,6 @@ static void createTemporaryDirectory()
 		entry = BDSKAuthorString;
 	else if ([entry isEqualToString:BDSKBooktitleString])	
 		entry = BDSKTitleString;
-	else if ([entry isCitationField])	
-		entry = BDSKCrossrefString;
 	
 	// find a string to match, be consistent with addString:forCompletionEntry:
 	NSRange searchRange = NSMakeRange(0, charRange.location);
