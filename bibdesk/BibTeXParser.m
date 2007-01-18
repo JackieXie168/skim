@@ -71,9 +71,9 @@ static inline NSString *copyCheckedString(const char *cString, int line, NSStrin
 static NSString *copyStringFromBTField(AST *field, NSString *filePath, BDSKMacroResolver *macroResolver, NSStringEncoding parserEncoding);
 
 // private functions for handling different entry types; these functions do not do any locking around the parser
-static void appendPreambleToFrontmatter(AST *entry, NSMutableString *frontMatter, NSString *filePath, NSStringEncoding encoding);
-static void addMacroToResolver(AST *entry, BDSKMacroResolver *macroResolver, NSString *filePath, NSStringEncoding encoding, NSError **error);
-static void appendCommentToFrontmatterOrAddGroups(AST *entry, NSMutableString *frontMatter, NSString *filePath, BibDocument *document, NSStringEncoding encoding);
+static BOOL appendPreambleToFrontmatter(AST *entry, NSMutableString *frontMatter, NSString *filePath, NSStringEncoding encoding);
+static BOOL addMacroToResolver(AST *entry, BDSKMacroResolver *macroResolver, NSString *filePath, NSStringEncoding encoding, NSError **error);
+static BOOL appendCommentToFrontmatterOrAddGroups(AST *entry, NSMutableString *frontMatter, NSString *filePath, BibDocument *document, NSStringEncoding encoding);
 
 // private function for preserving newlines in annote/abstract fields; does not lock the parser
 static NSString *copyStringFromNoteField(AST *field, const char *data, NSString *filePath, NSStringEncoding encoding, NSString **error);
@@ -198,11 +198,14 @@ error:(NSError **)outError{
                 // without frontMatter, e.g. with paste or drag, we just ignore these entries
                 // put @preamble etc. into the frontmatter string so we carry them along.
                 if (BTE_PREAMBLE == metatype){
-                    appendPreambleToFrontmatter(entry, frontMatter, filePath, parserEncoding);
+                    if(NO == appendPreambleToFrontmatter(entry, frontMatter, filePath, parserEncoding))
+                        hadProblems = YES;
                 }else if(BTE_MACRODEF == metatype){
-                    addMacroToResolver(entry, macroResolver, filePath, parserEncoding, &error);
+                    if(NO == addMacroToResolver(entry, macroResolver, filePath, parserEncoding, &error))
+                        hadProblems = YES;
                 }else if(BTE_COMMENT == metatype && document){
-                    appendCommentToFrontmatterOrAddGroups(entry, frontMatter, filePath, document, parserEncoding);
+                    if(NO == appendCommentToFrontmatterOrAddGroups(entry, frontMatter, filePath, document, parserEncoding))
+                        hadProblems = YES;
                 }
                 
             } else {
@@ -704,7 +707,7 @@ static NSString *copyStringFromBTField(AST *field, NSString *filePath, BDSKMacro
     return returnValue;
 }
 
-static void appendPreambleToFrontmatter(AST *entry, NSMutableString *frontMatter, NSString *filePath, NSStringEncoding encoding)
+static BOOL appendPreambleToFrontmatter(AST *entry, NSMutableString *frontMatter, NSString *filePath, NSStringEncoding encoding)
 {
     
     [frontMatter appendString:@"\n@preamble{\""];
@@ -712,6 +715,7 @@ static void appendPreambleToFrontmatter(AST *entry, NSMutableString *frontMatter
     bt_nodetype type = BTAST_STRING;
     BOOL paste = NO;
     NSString *tmpStr = nil;
+    BOOL success = YES;
     
     // bt_get_text() just gives us \\ne for the field, so we'll manually traverse it and poke around in the AST to get what we want.  This is sort of nasty, so if someone finds a better way, go for it.
     while(field = bt_next_value(entry, field, &type, NULL)){
@@ -721,18 +725,22 @@ static void appendPreambleToFrontmatter(AST *entry, NSMutableString *frontMatter
             tmpStr = copyCheckedString(text, field->line, filePath, encoding);
             if(tmpStr) 
                 [frontMatter appendString:tmpStr];
+            else
+                success = NO;
             [tmpStr release];
             paste = YES;
         }
     }
     [frontMatter appendString:@"\"}"];
+    return success;
 }
 
-static void addMacroToResolver(AST *entry, BDSKMacroResolver *macroResolver, NSString *filePath, NSStringEncoding encoding, NSError **error)
+static BOOL addMacroToResolver(AST *entry, BDSKMacroResolver *macroResolver, NSString *filePath, NSStringEncoding encoding, NSError **error)
 {
     // get the field name, there can be several macros in a single entry
     AST *field = NULL;
     char *fieldname = NULL;
+    BOOL success = YES;
     
     while (field = bt_next_field (entry, field, &fieldname)){
         NSString *macroKey = copyCheckedString(field->text, field->line, filePath, encoding);
@@ -752,15 +760,19 @@ static void addMacroToResolver(AST *entry, BDSKMacroResolver *macroResolver, NSS
             [errorObject release];
             
             OFErrorWithInfo(error, BDSKParserError, NSLocalizedDescriptionKey, NSLocalizedString(@"Circular macro ignored.", @"Error description"), nil);
-        }else{
+        }else if(nil != macroString){
             [macroResolver addMacroDefinitionWithoutUndo:macroString forMacro:macroKey];
+        }else {
+            // set this to NO, but don't subsequently set it to YES; signals partial data
+            success = NO;
         }
         [macroKey release];
         [NSString release];
     } // end while field - process next macro    
+    return success;
 }
 
-static void appendCommentToFrontmatterOrAddGroups(AST *entry, NSMutableString *frontMatter, NSString *filePath, BibDocument *document, NSStringEncoding encoding)
+static BOOL appendCommentToFrontmatterOrAddGroups(AST *entry, NSMutableString *frontMatter, NSString *filePath, BibDocument *document, NSStringEncoding encoding)
 {
     NSMutableString *commentStr = [[NSMutableString alloc] init];
     AST *field = NULL;
@@ -783,6 +795,7 @@ static void appendCommentToFrontmatterOrAddGroups(AST *entry, NSMutableString *f
     Boolean firstValue = TRUE;
     
     NSStringEncoding groupsEncoding = [[BDSKStringEncodingManager sharedEncodingManager] isUnparseableEncoding:encoding] ? encoding : NSUTF8StringEncoding;
+    BOOL success = YES;
     
     while(field = bt_next_value(entry, field, NULL, &text)){
         if(text){
@@ -803,6 +816,8 @@ static void appendCommentToFrontmatterOrAddGroups(AST *entry, NSMutableString *f
             
             if(tmpStr) 
                 [commentStr appendString:tmpStr];
+            else
+                success = NO;
 
             [tmpStr release];
         }
@@ -832,6 +847,7 @@ static void appendCommentToFrontmatterOrAddGroups(AST *entry, NSMutableString *f
         [frontMatter appendString:@"}"];
     }
     [commentStr release];    
+    return success;
 }
 
 static NSString *copyStringFromNoteField(AST *field, const char *data, NSString *filePath, NSStringEncoding encoding, NSString **errorString)
