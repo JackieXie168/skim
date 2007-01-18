@@ -40,6 +40,7 @@
 #import <ExceptionHandling/NSExceptionHandler.h>
 #import "BDSKReadMeController.h"
 #import "BDSKShellTask.h"
+#import <unistd.h>
 
 @interface NSException (BDSKExtensions)
 - (NSString *)stackTrace;
@@ -102,7 +103,7 @@ static NSString *OFControllerAssertionHandlerException = @"OFControllerAssertion
     // copied from Apple's exception handling docs
     NSString *stack = [[self userInfo] objectForKey:NSStackTraceKey];
     if (stack) {
-        NSString *pid = [[NSNumber numberWithInt:[[NSProcessInfo processInfo] processIdentifier]] stringValue];
+        NSString *pid = [[NSNumber numberWithInt:getpid()] stringValue];
         NSMutableArray *args = [NSMutableArray arrayWithCapacity:20];
         
         [args addObject:@"-p"];
