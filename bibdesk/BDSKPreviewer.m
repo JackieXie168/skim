@@ -332,6 +332,13 @@ static NSString *BDSKPreviewPanelFrameAutosaveName = @"BDSKPreviewPanel";
 			NSMutableString *errorString = [[NSMutableString alloc] initWithCapacity:200];
 			[errorString appendString:NSLocalizedString(@"TeX preview generation failed.  Please review the log below to determine the cause.", @"Preview message")];
 			[errorString appendString:@"\n\n"];
+            
+            // now that we correctly check return codes from the NSTask, users blame us for TeX preview failures that have been failing all along, so we'll try to give them a clue to the error if possible (which may save a LART later on)
+            NSSet *standardStyles = [NSSet setWithObjects:@"abbrv", @"acm", @"alpha", @"apalike", @"ieeetr", @"plain", @"siam", @"unsrt", nil];
+            NSString *btStyle = [[OFPreferenceWrapper sharedPreferenceWrapper] objectForKey:BDSKBTStyleKey];
+            if([standardStyles containsObject:btStyle] == NO)
+                [errorString appendFormat:NSLocalizedString(@"***** WARNING: You are using a non-standard BibTeX style *****\nThe style \"%@\" may require additional \\usepackage commands to function correctly.\n\n", @"possible cause of TeX failure"), btStyle];
+            
             NSString *logString = [[server texTask] logFileString];
             if (nil == logString)
                 logString = NSLocalizedString(@"Unable to read log file from TeX run.", @"Preview message");
