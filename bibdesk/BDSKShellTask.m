@@ -88,6 +88,13 @@ volatile int caughtSignal = 0;
     return [output autorelease];
 }
 
+- (id)init{
+    self = [super init];
+    if(self)
+        stdoutData = [[NSMutableData alloc] init];
+    return self;
+}
+
 - (void)dealloc{
     [stdoutData release];
     [super dealloc];
@@ -175,6 +182,7 @@ volatile int caughtSignal = 0;
         [task setEnvironment:env];
     }
 
+    [task setStandardError:[NSFileHandle fileHandleWithStandardError]];
     inputPipe = [NSPipe pipe];
     inputFileHandle = [inputPipe fileHandleForWriting];
     [task setStandardInput:inputPipe];
@@ -185,46 +193,45 @@ volatile int caughtSignal = 0;
     // ignore SIGPIPE, as it causes a crash (seems to happen if the binaries don't exist and you try writing to the pipe)
     signal(SIGPIPE, SIG_IGN);
 
-    [task launch];
+    NSNotificationCenter *nc = [NSNotificationCenter defaultCenter];
 
-    NS_DURING
-    if ([task isRunning]) {
-        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(stdoutNowAvailable:) name:NSFileHandleReadToEndOfFileCompletionNotification object:outputFileHandle];
-        [outputFileHandle readToEndOfFileInBackgroundAndNotifyForModes:[NSArray arrayWithObject:@"BDSKSpecialPipeServiceRunLoopMode"]];
+    @try{
+        
+        [nc addObserver:self selector:@selector(stdoutNowAvailable:) name:NSFileHandleReadCompletionNotification object:outputFileHandle];
+        [outputFileHandle readInBackgroundAndNotify];
 
-        if (input) {
-            [inputFileHandle writeData:[input dataUsingEncoding:NSUTF8StringEncoding allowLossyConversion:YES]];
+        [task launch];
+
+        if ([task isRunning]) {
+            
+            // run the runloop and pick up our notifications
+            [task waitUntilExit];
+            
+            [nc removeObserver:self name:NSFileHandleReadCompletionNotification object:outputFileHandle];
+            
+        } else {
+            NSLog(@"Failed to launch task or task exited without accepting input.  Termination status was %d", [task terminationStatus]);
         }
-        [inputFileHandle closeFile];
-
-        // Now loop the runloop in the special mode until we've processed the notification.
-        stdoutData = nil;
-        while (stdoutData == nil) {
-            // Run the run loop, briefly, until we get the notification...
-            [[NSRunLoop currentRunLoop] runMode:@"BDSKSpecialPipeServiceRunLoopMode" beforeDate:[NSDate dateWithTimeIntervalSinceNow:1.0]];
-        }
-        [[NSNotificationCenter defaultCenter] removeObserver:self name:NSFileHandleReadToEndOfFileCompletionNotification object:outputFileHandle];
-
-        [task waitUntilExit];
-    } else {
-        NSLog(@"Failed to launch task or task exited without accepting input.  Termination status was %d", [task terminationStatus]);
     }
-    NS_HANDLER
+    @catch(id exception){
         // if the pipe failed, we catch an exception here and ignore it
-        NSLog(@"exception %@ encountered while trying to launch task %@", [localException name], executablePath);
-    NS_ENDHANDLER
+        NSLog(@"exception %@ encountered while trying to launch task %@", exception, executablePath);
+        [nc removeObserver:self name:NSFileHandleReadCompletionNotification object:outputFileHandle];
+    }
     
     // reset signal handling to default behavior
     signal(SIGPIPE, SIG_DFL);
     [task release];
 
-    return [stdoutData length] ? nil : stdoutData;
+    return [stdoutData length] ? stdoutData : nil;
 }
 
 - (void)stdoutNowAvailable:(NSNotification *)notification {
-    // This is the notification method that executeBinary:inDirectory:withArguments:environment:inputString: registers to get called when all the data has been read. It just grabs the data and stuffs it in an ivar.  The setting of this ivar signals the main method that the output is complete and available.
     NSData *outputData = [[notification userInfo] objectForKey:NSFileHandleNotificationDataItem];
-    stdoutData = (outputData ? [outputData retain] : [[NSData allocWithZone:[self zone]] init]);
+    if ([outputData length]) {
+        [stdoutData appendData:outputData];
+    }
+    [[notification object] readInBackgroundAndNotify];
 }
 
 

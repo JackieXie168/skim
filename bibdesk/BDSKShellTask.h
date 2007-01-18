@@ -41,7 +41,7 @@
 
 @interface BDSKShellTask : NSObject {
     // data used to store stdOut from the filter
-    NSData *stdoutData;
+    NSMutableData *stdoutData;
 }
 + (NSString *)runShellCommand:(NSString *)cmd withInputString:(NSString *)input;
 + (NSData *)runRawShellCommand:(NSString *)cmd withInputString:(NSString *)input;
