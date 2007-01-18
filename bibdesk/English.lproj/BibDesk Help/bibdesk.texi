@@ -1419,11 +1419,15 @@ current group field).
 @section Grouping References
 @abstract{Ways of grouping references in a database.}
 
+@cindex group
+
 @heading Grouping References
 
 BibDesk offers a variety of ways to browse, organize, and search your bibliographic database.
-Field Groups and Smart Groups are the easiest way to keep a large file separated into distinct
-categories without managing many small files scattered around your hard drive.
+BibDesk allows you to group references in a BibTeX file, similar to the way in which Apple
+Mail allows you to group messages in folders, or iTunes in playlists.  
+Field Groups, Smart Groups and Static Groups are the easiest way to keep a large file separated 
+into distinct categories without managing many small files scattered around your hard drive.
 
 @menu
 * Field Groups::     Grouping references based on a particular field.
@@ -1435,17 +1439,14 @@ categories without managing many small files scattered around your hard drive.
 @node Field Groups
 @subsection Field Groups
 
-@cindex group
-@cindex smart group
+@cindex field group
 
 @subheading Features
 
-BibDesk allows you to group references in a BibTeX file, similar to the way in which Apple
-Mail allows you to group messages in folders, or iTunes in playlists.  
-Since the BibTeX file format doesn't provide a way to store metadata such as group information,
-BibDesk's groups are based on the contents of a certain field, such as the @samp{Group} field.
+Field Groups groups organize entries based on the contents of a certain field, 
+the @samp{group field,} such as the @samp{Group} or @samp{Keywords} field.
 
-In order to select a field to use as a group source, use the popup menu at the top of the list
+In order to select a field to use as a group field, use the popup menu at the top of the list
 on the left-hand side of BibDesk's window.  Add a BibTeX field name to this menu, or use one
 of the existing options.  When you choose a group field from the popup menu, a list of all
 possible groups is constructed, using the contents of the selected field for all entries in
@@ -1457,8 +1458,8 @@ Suppose you use the @samp{Keywords} field to group entries.  If you
 have an entry with @samp{Keywords = @{models, constitutive relation, cohesion@}}
 and another entry with @samp{Keywords = @{Models, constitutive, stress, cohesion@}},
 your group list will show 6 groups: 
-@samp{models, constitutive relation, cohesion, Models, constitutive, stress}.  A
-few points to note:  groups are case-sensitive, and partial matches are not accepted, and
+@samp{models, constitutive relation, cohesion, Models, constitutive, stress}.
+A few points to note:  groups are case-sensitive, and partial matches are not accepted, and
 one group (cohesion) will have two entries visible when it is selected in the group list.
 Separators that are recognized for groups are @samp{;:,} and @samp{and}, at present.
 @samp{and} will be ignored as separator when the entry contains any of the separator characters. 
@@ -1480,9 +1481,9 @@ then hit return.
 
 @subheading Editing
 
-Groups can be edited, which will change the relevant field for all items in the group.  
-In the case of authors, they will be matched using fuzzy logic, so
-be sure that you really want to change the author name for all items in the group!
+Field groups can be edited:  Changing the name of the group, will change the current value of
+the current group field for all the items in the group.  In the case of authors, they will be matched 
+using fuzzy logic, so be sure that you really want to change the author name for all items in the group!
 
 For authors, you can get more info about the author using the command @menutitle{Get Info} 
 (@cmd{I}) from the @menutitle{File} menu. 
