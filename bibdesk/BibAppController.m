@@ -74,7 +74,7 @@
 #import "BibDeskSearchForCommand.h"
 #import "BDSKCompletionServerProtocol.h"
 #import "BDSKDocumentController.h"
-
+#import "NSError_BDSKExtensions.h"
 
 @implementation BibAppController
 
@@ -1206,7 +1206,11 @@ OFWeakRetainConcreteImplementation_NULL_IMPLEMENTATION
     NSFileManager *fileManager = [NSFileManager defaultManager];
     
     @try{
-        
+
+        // hidden option to use XML plists for easier debugging, but the binary plists are more efficient
+        BOOL useXMLFormat = [[NSUserDefaults standardUserDefaults] boolForKey:@"BDSKUseXMLSpotlightCache"];
+        NSPropertyListFormat plistFormat = useXMLFormat ? NSPropertyListXMLFormat_v1_0 : NSPropertyListBinaryFormat_v1_0;
+
         NSString *cachePath = [fileManager spotlightCacheFolderPathByCreating:&error];
         if(cachePath == nil){
             OFErrorWithInfo(&error, NSCocoaErrorDomain, NSLocalizedDescriptionKey, NSLocalizedString(@"Unable to create the cache folder for Spotlight metadata.", @"Error description"), nil);
@@ -1250,12 +1254,21 @@ OFWeakRetainConcreteImplementation_NULL_IMPLEMENTATION
             [metadata addEntriesFromDictionary:anItem];
 			
             path = [fileManager spotlightCacheFilePathWithCiteKey:citeKey];
-            
+
             // Save the plist; we can get an error if these are not plist objects, or the file couldn't be written.  The first case is a programmer error, and the second should have been caught much earlier in this code.
-            if(nil == path || [metadata writeToFile:path atomically:YES] == NO){
-                error = [NSError errorWithDomain:NSCocoaErrorDomain code:NSFileWriteUnknownError userInfo:[NSDictionary dictionaryWithObjectsAndKeys:[NSString stringWithFormat:NSLocalizedString(@"Unable to save metadata cache file for item with cite key \"%@\".", @"Error description"), citeKey], NSLocalizedDescriptionKey, path, NSFilePathErrorKey, nil]];
-                @throw [NSException exceptionWithName:NSInternalInconsistencyException reason:[NSString stringWithFormat:@"Unable to create cache file for %@", [anItem description]] userInfo:nil];
-            }                
+            if(path) {
+                
+                NSString *errString = nil;
+                NSData *data = [NSPropertyListSerialization dataFromPropertyList:metadata format:plistFormat errorDescription:&errString];
+                if(nil == data) {
+                    error = [NSError mutableLocalErrorWithCode:kBDSKPropertyListSerializationFailed localizedDescription:[NSString stringWithFormat:NSLocalizedString(@"Unable to save metadata cache file for item with cite key \"%@\".  The error was \"%@\"", @"Error description"), citeKey, errString]];
+                    [errString release];
+                    @throw [NSException exceptionWithName:NSInternalInconsistencyException reason:[NSString stringWithFormat:@"Unable to create cache file for %@", [anItem description]] userInfo:nil];
+                } else {
+                    if(NO == [data writeToFile:path options:0 error:&error])
+                        @throw [NSException exceptionWithName:NSInternalInconsistencyException reason:[NSString stringWithFormat:@"Unable to create cache file for %@", [anItem description]] userInfo:nil];
+                }
+            }
             [metadata removeAllObjects];
         }
     }    

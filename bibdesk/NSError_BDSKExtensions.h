@@ -49,9 +49,10 @@ enum {
     kBDSKStringEncodingError = 2,                 /* unable to convert to desired encoding   */
     kBDSKTeXifyError = 3,                         /* TeXification failed                     */
     kBDSKPropertyListDeserializationFailed = 4,   /* NSPropertyListSerialization failed      */
-    kBDSKNetworkConnectionFailed = 5,             /* Unable to connect to a network          */
-    kBDSKFileNotFound = 6,                        /* File not found (should have URL/path)   */
-    kBDSKAppleScriptError = 7,                    /* AppleScript failed                      */
+    kBDSKPropertyListSerializationFailed = 5,
+    kBDSKNetworkConnectionFailed = 6,             /* Unable to connect to a network          */
+    kBDSKFileNotFound = 7,                        /* File not found (should have URL/path)   */
+    kBDSKAppleScriptError = 8,                    /* AppleScript failed                      */
 };
 
 extern NSString *BDSKUnderlyingItemErrorKey;
