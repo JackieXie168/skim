@@ -899,6 +899,8 @@ Having all three of these seems to work best for Panther. For Tiger include this
                 description="The publication for which to parse the format string. This is required if the field name was given as a string.">
                 <cocoa key="from"/>
             </parameter>
+            <result description="the parsed format" type="text">
+            </result>
         </command>    
         
         <command name="perform BibDesk action with publications" code="BDSKpAct"
