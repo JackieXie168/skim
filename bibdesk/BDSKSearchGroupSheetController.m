@@ -42,6 +42,7 @@
 #import "BDSKServerInfo.h"
 #import "BDSKCollapsibleView.h"
 #import "NSFileManager_BDSKExtensions.h"
+#import "NSWorkspace_BDSKExtensions.h"
 
 #define SERVERS_FILENAME @"SearchGroupServers.plist"
 #define SERVERS_DIRNAME @"SearchGroupServers"
@@ -52,6 +53,11 @@ static NSDictionary *searchGroupServers = nil;
 
 #pragma mark Server info
 
+static BOOL isSearchFileAtPath(NSString *path)
+{
+    return [[[NSWorkspace sharedWorkspace] UTIForURL:[NSURL fileURLWithPath:path]] isEqualToUTI:@"net.sourceforge.bibdesk.bdsksearch"];
+}
+    
 + (void)initialize {
     [self setKeys:[NSArray arrayWithObjects:@"type", nil] triggerChangeNotificationsForDependentKey:@"entrez"];
     [self setKeys:[NSArray arrayWithObjects:@"type", nil] triggerChangeNotificationsForDependentKey:@"zoom"];
@@ -86,7 +92,7 @@ static NSDictionary *searchGroupServers = nil;
         while (file = [dirEnum nextObject]) {
             if ([[[dirEnum fileAttributes] valueForKey:NSFileType] isEqualToString:NSFileTypeDirectory]) {
                 [dirEnum skipDescendents];
-            } else if ([[file pathExtension] isEqualToString:@"bdsksearch"]) {
+            } else if (isSearchFileAtPath([serversPath stringByAppendingPathComponent:file])) {
                 NSDictionary *dict = [NSDictionary dictionaryWithContentsOfFile:[serversPath stringByAppendingPathComponent:file]];
                 BDSKServerInfo *info = [[BDSKServerInfo alloc] initWithType:nil dictionary:dict];
                 if (info) {
@@ -135,7 +141,7 @@ static NSDictionary *searchGroupServers = nil;
         while (file = [dirEnum nextObject]) {
             if ([[[dirEnum fileAttributes] valueForKey:NSFileType] isEqualToString:NSFileTypeDirectory]) {
                 [dirEnum skipDescendents];
-            } else if ([[file pathExtension] isEqualToString:@"bdsksearch"]) {
+            } else if (isSearchFileAtPath([serversPath stringByAppendingPathComponent:file])) {
                 [[NSFileManager defaultManager] removeFileAtPath:[serversPath stringByAppendingPathComponent:file] handler:nil];
             }
         }
