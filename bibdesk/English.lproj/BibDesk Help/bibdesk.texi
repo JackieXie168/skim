@@ -628,24 +628,32 @@ example.
 @kindex Shift-Cmd-F
 
 BibDesk supports Find and Replace operations on bibliographies, either on the entire
-file or selected items.  Use the @menutitle{Find and Replace@dots{}} item of the 
+file or selected items.  Use the @menutitle{Database Find and Replace@dots{}} item of the 
 @menutitle{Edit} menu (key shortcut @shiftcmd{F}) to show the find panel.
 
 @image{gfx/findAndReplace}
 
 In this panel, you can enter the name of a field to search (such as Author or Title),
 and choose whether the search is case-sensitive and whether it searches only the
-current selection or all items.  The @buttontitle{Find Next} button will highlight each
-matching reference in turn, and the @buttontitle{Replace & Find} button will replace
-the text in the currently selected entry and highlight the next match.  The
-@buttontitle{Replace All} button will replace all entries matching the search, either
-in the current selection or the entire file (depending on the check box).
+current selection or all items in the current groups.  The @buttontitle{Find Next} button 
+will highlight eachmatching reference in turn, and the @buttontitle{Replace & Find} button 
+will replace the text in the currently selected entry and highlight the next match.
+The @buttontitle{Replace All} button will replace all entries matching the search, either
+in the current selection or in all the displayed items (depending on the check box).
 
 Note that this feature is complementary to the @ref{Quick Search} feature, and does
 not replace it.  For instance, the Find and Replace panel will not match cross-referenced
 (inherited) fields, and does not strip accents or braces.  Further, searching by
 "All Fields" is not possible at this time, since it doesn't make sense in the context of
 the Find and Replace operation.
+
+@heading Batch-Adding a Field
+
+This panel also allows you to set the value of a field for all (selected) items at once.
+The field will be added if necessary.  Check the "Overwrite or Add this field" button 
+to the right of the field name, and enter the value to set in the "Replace with" field.
+Then hit the @buttontitle{Replace All} button to set this field in all the currently 
+selected or displayed items (depending on your settings).
 
 @heading Regular Expressions
 
