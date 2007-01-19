@@ -373,7 +373,7 @@ static void createTemporaryDirectory()
         case 1:
             return NO;
         case 2:
-            do{
+            {
                 // this will be called each time the dock icon is clicked, but we only want to show the open dialog once
                 static BOOL isOpening = NO;
                 if(NO == isOpening){
@@ -381,16 +381,18 @@ static void createTemporaryDirectory()
                     [[NSDocumentController sharedDocumentController] openDocument:nil];
                     isOpening = NO;
                 }
-            }while(0);
+            }
             return NO;
         case 3:
-            do{
-                NSURL *fileURL = [NSURL fileURLWithPath:[[OFPreferenceWrapper sharedPreferenceWrapper] objectForKey:BDSKDefaultBibFilePathKey]];
-                [[NSDocumentController sharedDocumentController] openDocumentWithContentsOfURL:fileURL display:YES error:NULL];
-            }while(0);
+            {
+                NSString *filePath = [[OFPreferenceWrapper sharedPreferenceWrapper] objectForKey:BDSKDefaultBibFilePathKey];
+                NSURL *fileURL = nil;
+                if(filePath && (fileURL = [NSURL fileURLWithPath:filePath]))
+                    [[NSDocumentController sharedDocumentController] openDocumentWithContentsOfURL:fileURL display:YES error:NULL];
+            }
             return NO;
         case 4:
-            do{
+            {
                 NSArray *files = [[OFPreferenceWrapper sharedPreferenceWrapper] objectForKey:BDSKLastOpenFileNamesKey];
                 NSEnumerator *fileEnum = [files objectEnumerator];
                 NSDictionary *dict;
@@ -399,9 +401,10 @@ static void createTemporaryDirectory()
                     fileURL = [[BDAlias aliasWithData:[dict objectForKey:@"_BDAlias"]] fileURL];
                     if(fileURL == nil)
                         fileURL = [NSURL fileURLWithPath:[dict objectForKey:@"fileName"]];
-                    [[NSDocumentController sharedDocumentController] openDocumentWithContentsOfURL:fileURL display:YES error:NULL];
+                    if(fileURL)
+                        [[NSDocumentController sharedDocumentController] openDocumentWithContentsOfURL:fileURL display:YES error:NULL];
                 }
-            }while(0);
+            }
             return NO;
         default:
             return NO;
