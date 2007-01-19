@@ -172,6 +172,9 @@
                 }
                 [pboard setString:string forType:NSStringPboardType];
                 if(string == nil) NSBeep();
+            }else{
+                [pboard setData:nil forType:type];
+                NSBeep();
             }
         }else{
             [pboard setData:nil forType:type];
