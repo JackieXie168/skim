@@ -98,6 +98,8 @@ enum{
 - (void)setupDrawer;
 - (void)setupButtons;
 - (void)setupForm;
+- (void)setupMatrix;
+- (void)matrixFrameDidChange:(NSNotification *)notification;
 - (void)setupTypePopUp;
 - (void)registerForNotifications;
 - (void)fixURLs;
@@ -3538,25 +3540,6 @@ static NSString *queryStringWithCiteKey(NSString *citekey)
 		i++; \
     }
 
-#define AddMatrixEntries(fields, cell) \
-    e = [fields objectEnumerator]; \
-    while(tmp = [e nextObject]){ \
-		if (++j >= nc) { \
-			j = 0; \
-			i++; \
-			[extraBibFields addRow]; \
-		} \
-		NSButtonCell *buttonCell = [cell copy]; \
-		[buttonCell setTitle:tmp]; \
-		[buttonCell setIntValue:[publication intValueOfField:tmp]]; \
-		[extraBibFields putCell:buttonCell atRow:i column:j]; \
-		[buttonCell release]; \
-		if([editedTitle isEqualToString:tmp]){ \
-			editedRow = i; \
-			editedColumn = j; \
-		} \
-    }
-
 - (void)setupForm{
     static NSFont *requiredFont = nil;
     if(!requiredFont){
@@ -3580,8 +3563,6 @@ static NSString *queryStringWithCiteKey(NSString *citekey)
 		if (![[self window] makeFirstResponder:[self window]])
 			[[self window] endEditingFor:nil];
 		forceEndEditing = NO;
-	}else if(firstResponder == extraBibFields){
-		editedTitle = [(NSFormCell *)[extraBibFields selectedCell] title];
 	}
 	
     NSString *tmp;
@@ -3626,35 +3607,12 @@ static NSString *queryStringWithCiteKey(NSString *citekey)
     [bibFields setFrameOrigin:origin];
     [bibFields setNeedsDisplay:YES];
     
-	rect = [extraBibFields frame];
-	origin = rect.origin;
-	
-    while ([extraBibFields numberOfRows])
-		[extraBibFields removeRow:0];
-	
-	int nc = [extraBibFields numberOfColumns];
-	int j = nc;
-	
-	i = -1;
-	AddMatrixEntries(ratingFields, ratingButtonCell);
-	AddMatrixEntries(booleanFields, booleanButtonCell);
-	AddMatrixEntries(triStateFields, triStateButtonCell);
-	
-	[extraBibFields sizeToFit];
-    
-    [extraBibFields setFrameOrigin:origin];
-    [extraBibFields setNeedsDisplay:YES];
-	
 	// restore the edited cell and its selection
 	if(editedRow != -1){
-		if(fieldEditor){
-			[[self window] makeFirstResponder:bibFields];
-			[bibFields selectTextAtRow:editedRow column:0];
-			[fieldEditor setSelectedRange:selection];
-		}else{
-			[[self window] makeFirstResponder:extraBibFields];
-			[extraBibFields selectCellAtRow:editedRow column:editedColumn];
-		}
+        OBASSERT(fieldEditor);
+        [[self window] makeFirstResponder:bibFields];
+        [bibFields selectTextAtRow:editedRow column:0];
+        [fieldEditor setSelectedRange:selection];
 	}
     
     // align the cite key field with the form cells
@@ -3671,6 +3629,87 @@ static NSString *queryStringWithCiteKey(NSString *citekey)
     }
     
 	didSetupForm = YES;
+    
+	[self setupMatrix];
+}
+
+#define AddMatrixEntries(fields, cell) \
+    e = [fields objectEnumerator]; \
+    while(tmp = [e nextObject]){ \
+		NSButtonCell *buttonCell = [cell copy]; \
+		[buttonCell setTitle:tmp]; \
+		[buttonCell setIntValue:[publication intValueOfField:tmp]]; \
+        cellWidth = MAX(cellWidth, [buttonCell cellSize].width); \
+        [cells addObject:buttonCell]; \
+		[buttonCell release]; \
+		if([editedTitle isEqualToString:tmp]) \
+			editedIndex = [cells count] - 1; \
+    }
+
+- (void)setupMatrix{
+	OFPreferenceWrapper *pw = [OFPreferenceWrapper sharedPreferenceWrapper];
+	NSArray *ratingFields = [pw stringArrayForKey:BDSKRatingFieldsKey];
+	NSArray *booleanFields = [pw stringArrayForKey:BDSKBooleanFieldsKey];
+	NSArray *triStateFields = [pw stringArrayForKey:BDSKTriStateFieldsKey];
+    int numEntries = [ratingFields count] + [booleanFields count] + [triStateFields count];
+    
+	NSString *editedTitle = nil;
+	int editedIndex = -1;
+    if([[self window] firstResponder] == extraBibFields)
+        editedTitle = [(NSFormCell *)[extraBibFields selectedCell] title];
+	
+	NSEnumerator *e;
+    NSString *tmp;
+    NSMutableArray *cells = [NSMutableArray arrayWithCapacity:numEntries];
+    float cellWidth = 0.0;
+	
+	AddMatrixEntries(ratingFields, ratingButtonCell);
+	AddMatrixEntries(booleanFields, booleanButtonCell);
+	AddMatrixEntries(triStateFields, triStateButtonCell);
+	
+    NSPoint origin = [extraBibFields frame].origin;
+    float width = NSWidth([[extraBibFields enclosingScrollView] frame]) - [NSScroller scrollerWidth];
+    float spacing = [extraBibFields intercellSpacing].width;
+    int numCols = MAX(MIN(floor((width + spacing) / (cellWidth + spacing)), numEntries), 1);
+    
+    while ([extraBibFields numberOfRows])
+		[extraBibFields removeRow:0];
+	
+    [extraBibFields renewRows:ceil(((float)numEntries) / numCols) columns:numCols];
+    
+    e = [cells objectEnumerator];
+    NSCell *cell;
+    int column = numCols;
+    int row = -1;
+    while(cell = [e nextObject]){
+		if (++column >= numCols) {
+			column = 0;
+			row++;
+		}
+		[extraBibFields putCell:cell atRow:row column:column];
+    }
+    
+	[extraBibFields sizeToFit];
+    
+    [extraBibFields setFrameOrigin:origin];
+    [extraBibFields setNeedsDisplay:YES];
+	
+	// restore the edited cell
+	if(editedIndex != -1){
+        [[self window] makeFirstResponder:extraBibFields];
+        [extraBibFields selectCellAtRow:editedIndex / numCols column:editedIndex % numCols];
+	}
+}
+
+- (void)matrixFrameDidChange:(NSNotification *)notification {
+    BibTypeManager *typeMan = [BibTypeManager sharedManager];
+    int numEntries = [[typeMan booleanFieldsSet] count] + [[typeMan triStateFieldsSet] count] + [[typeMan ratingFieldsSet] count];
+    float width = NSWidth([[extraBibFields enclosingScrollView] frame]) - [NSScroller scrollerWidth];
+    float spacing = [extraBibFields intercellSpacing].width;
+    float cellWidth = [extraBibFields cellSize].width;
+    int numCols = MAX(MIN(floor((width + spacing) / (cellWidth + spacing)), numEntries), 1);
+    if (numCols != [extraBibFields numberOfColumns])
+        [self setupMatrix];
 }
 
 - (void)setupTypePopUp{
@@ -3722,6 +3761,10 @@ static NSString *queryStringWithCiteKey(NSString *citekey)
 											 selector:@selector(macrosDidChange:)
 												 name:BDSKMacroDefinitionChangedNotification
 											   object:nil];
+	[[NSNotificationCenter defaultCenter] addObserver:self
+											 selector:@selector(matrixFrameDidChange:)
+												 name:NSViewFrameDidChangeNotification
+											   object:[extraBibFields enclosingScrollView]];
 }
 
 - (void)fixURLs{
