@@ -55,66 +55,6 @@
 
 + (NSString *)parseFormat:(NSString *)format forField:(NSString *)fieldName ofItem:(id <BDSKParseableItem>)pub suggestion:(NSString *)suggestion
 {
-    NSDictionary *components = [self parsedComponentsWithFormat:format forField:fieldName ofItem:pub];
-    NSString *prefixStr = [components objectForKey:@"prefix"];
-    NSString *suffixStr = [components objectForKey:@"suffix"];
-    NSString *uniqueSpecifier = [components objectForKey:@"uniqueSpecifier"];
-    unsigned int uniqueNumber = [[components objectForKey:@"uniqueNumber"] unsignedIntValue];
-    NSString *parsedStr = prefixStr;
-    
-    if ([self parsedComponents:components matchesString:suggestion])
-        return suggestion;
-    
-    if ([NSString isEmptyString:uniqueSpecifier] == NO) {
-		if ([uniqueSpecifier isEqualToString:@"u"]) {
-            // unique lowercase letters
-            parsedStr = [self uniqueString:prefixStr 
-                                    suffix:suffixStr
-                                  forField:fieldName
-                                    ofItem:pub
-                             numberOfChars:uniqueNumber 
-                                      from:'a' to:'z' 
-                                     force:(uniqueNumber == 0)];
-		} else if ([uniqueSpecifier isEqualToString:@"U"]) {
-            // unique uppercase letters
-            parsedStr = [self uniqueString:prefixStr 
-                                    suffix:suffixStr
-                                  forField:fieldName
-                                    ofItem:pub
-                             numberOfChars:uniqueNumber 
-                                      from:'A' to:'Z' 
-                                     force:(uniqueNumber == 0)];
-		} else if ([uniqueSpecifier isEqualToString:@"n"]) {
-            parsedStr = [self uniqueString:prefixStr 
-                                    suffix:suffixStr
-                                  forField:fieldName
-                                    ofItem:pub
-                             numberOfChars:uniqueNumber 
-                                      from:'0' to:'9' 
-                                     force:(uniqueNumber == 0)];
-		}
-	}
-	
-	if([NSString isEmptyString:parsedStr]) {
-		NSString *string = nil;
-        int number = 0;
-		do {
-			string = [@"empty" stringByAppendingFormat:@"%i", number++];
-		} while (![self stringIsValid:string forField:fieldName ofItem:pub]);
-		return string;
-	} else {
-	   return parsedStr;
-	}
-}
-
-+ (BOOL)format:(NSString *)format forField:(NSString *)fieldName ofItem:(id <BDSKParseableItem>)pub matchesString:(NSString *)suggestion
-{
-    NSDictionary *components = [self parsedComponentsWithFormat:format forField:fieldName ofItem:pub];
-    return [self parsedComponents:components matchesString:suggestion];
-}
-
-+ (BOOL)parsedComponents:(NSDictionary *)components matchesString:(NSString *)suggestion
-{
 	static NSCharacterSet *nonLowercaseLetterCharSet = nil;
 	static NSCharacterSet *nonUppercaseLetterCharSet = nil;
 	static NSCharacterSet *nonDecimalDigitCharSet = nil;
@@ -125,41 +65,6 @@
         nonDecimalDigitCharSet = [[[NSCharacterSet characterSetWithRange:NSMakeRange('0',10)] invertedSet] copy];
     }
     
-    NSString *prefixStr = [components objectForKey:@"prefix"];
-    NSString *uniqueSpecifier = [components objectForKey:@"uniqueSpecifier"];
-    
-    if ([NSString isEmptyString:suggestion]) {
-        return NO;
-    } else if ([NSString isEmptyString:uniqueSpecifier] == NO) {
-        NSString *suffixStr = [components objectForKey:@"suffix"];
-        unsigned uniqueNumber = [[components objectForKey:@"uniqueNumber"] unsignedIntValue];
-        unsigned prefixLength = [prefixStr length];
-        unsigned suffixLength = [suffixStr length];
-        int suggestionLength = [suggestion length] - prefixLength - suffixLength;
-        NSString *suggestedUnique = nil;
-        
-        if (suggestionLength >= 0 &&
-            (prefixLength == 0 || [suggestion hasPrefix:prefixStr]) &&
-            (suffixLength == 0 || [suggestion hasSuffix:suffixStr]) &&
-            (uniqueNumber == 0 || (unsigned)suggestionLength == uniqueNumber)) {
-            
-            NSString *suggestedUnique = [suggestion substringWithRange:NSMakeRange(prefixLength, suggestionLength)];
-            
-            if (([uniqueSpecifier isEqualToString:@"u"] && [suggestedUnique rangeOfCharacterFromSet:nonLowercaseLetterCharSet].location == NSNotFound) ||
-                ([uniqueSpecifier isEqualToString:@"U"] && [suggestedUnique rangeOfCharacterFromSet:nonUppercaseLetterCharSet].location == NSNotFound) ||
-                ([uniqueSpecifier isEqualToString:@"n"] && [suggestedUnique rangeOfCharacterFromSet:nonDecimalDigitCharSet].location == NSNotFound))
-                
-                return YES;
-        }
-	} else if ([prefixStr isEqualToString:suggestion]) {
-        return YES;
-    }
-	
-    return NO;
-}
-
-+ (NSDictionary *)parsedComponentsWithFormat:(NSString *)format forField:(NSString *)fieldName ofItem:(id <BDSKParseableItem>)pub
-{
     NSMutableString *parsedStr = [NSMutableString string];
 	NSString *prefixStr = nil;
 	NSScanner *scanner = [NSScanner scannerWithString:format];
@@ -629,13 +534,70 @@
 		}
 	}
 	
-    NSDictionary *components;
-	if (uniqueSpecifier != 0)
-        components = [NSDictionary dictionaryWithObjectsAndKeys:prefixStr, @"prefix", parsedStr, @"suffix", [NSString stringWithFormat:@"%C", uniqueSpecifier], @"uniqueSpecifier", [NSNumber numberWithUnsignedInt:uniqueNumber], @"uniqueNumber", nil];
-    else
-        components = [NSDictionary dictionaryWithObjectsAndKeys:parsedStr, @"prefix", nil];
-    
-    return components;
+	if (uniqueSpecifier != 0) {
+        NSString *suggestedUnique = nil;
+        unsigned prefixLength = [prefixStr length];
+        unsigned suffixLength = [parsedStr length];
+        unsigned suggestionLength = [suggestion length] - prefixLength - suffixLength;
+        if (suggestion && ((uniqueNumber == 0 && suggestionLength >= 0) || suggestionLength == uniqueNumber) &&
+            (prefixLength == 0 || [suggestion hasPrefix:prefixStr]) && (suffixLength == 0 || [suggestion hasSuffix:parsedStr])) {
+            suggestedUnique = [suggestion substringWithRange:NSMakeRange(prefixLength, suggestionLength)];
+        }
+		switch (uniqueSpecifier) {
+			case 'u':
+				// unique lowercase letters
+                if (suggestedUnique && [suggestedUnique rangeOfCharacterFromSet:nonLowercaseLetterCharSet].location == NSNotFound) {
+                    [parsedStr setString:suggestion];
+                } else {
+                    [parsedStr setString:[self uniqueString:prefixStr 
+                                                     suffix:parsedStr
+                                                   forField:fieldName
+                                                     ofItem:pub
+                                              numberOfChars:uniqueNumber 
+                                                       from:'a' to:'z' 
+                                                      force:(uniqueNumber == 0)]];
+                }
+				break;
+			case 'U':
+				// unique uppercase letters
+                if (suggestedUnique && [suggestedUnique rangeOfCharacterFromSet:nonUppercaseLetterCharSet].location == NSNotFound) {
+                    [parsedStr setString:suggestion];
+                } else {
+                    [parsedStr setString:[self uniqueString:prefixStr 
+                                                     suffix:parsedStr
+                                                   forField:fieldName
+                                                     ofItem:pub
+                                              numberOfChars:uniqueNumber 
+                                                       from:'A' to:'Z' 
+                                                      force:(uniqueNumber == 0)]];
+				}
+                break;
+			case 'n':
+				// unique number
+                if (suggestedUnique && [suggestedUnique rangeOfCharacterFromSet:nonDecimalDigitCharSet].location == NSNotFound) {
+                    [parsedStr setString:suggestion];
+                } else {
+                    [parsedStr setString:[self uniqueString:prefixStr 
+                                                     suffix:parsedStr
+                                                   forField:fieldName
+                                                     ofItem:pub
+                                              numberOfChars:uniqueNumber 
+                                                       from:'0' to:'9' 
+                                                      force:(uniqueNumber == 0)]];
+				}
+                break;
+		}
+	}
+	
+	if([NSString isEmptyString:parsedStr]) {
+		number = 0;
+		do {
+			string = [@"empty" stringByAppendingFormat:@"%i", number++];
+		} while (![self stringIsValid:string forField:fieldName ofItem:pub]);
+		return string;
+	} else {
+	   return parsedStr;
+	}
 }
 
 // returns a 'valid' string rather than a 'unique' one
