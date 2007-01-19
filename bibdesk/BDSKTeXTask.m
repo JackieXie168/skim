@@ -106,6 +106,7 @@
         pdfFilePath = [[filePath stringByAppendingPathExtension:@"pdf"] retain];
         rtfFilePath = [[filePath stringByAppendingPathExtension:@"rtf"] retain];
         logFilePath = [[filePath stringByAppendingPathExtension:@"log"] retain];
+        blgFilePath = [[filePath stringByAppendingPathExtension:@"blg"] retain];
         
 		binDirPath = nil; // set from where we run the tasks, since some programs (e.g. XeLaTeX) need a real path setting     
         
@@ -143,6 +144,7 @@
     [pdfFilePath release];
     [rtfFilePath release];
     [logFilePath release];
+    [blgFilePath release];
     [taskShouldStartInvocation release];
     [taskFinishedInvocation release];
     OFSimpleLockFree(&processingLock);
@@ -152,7 +154,7 @@
 
 - (NSString *)description{
     NSMutableString *temporaryDescription = [[NSMutableString alloc] initWithString:[super description]];
-    [temporaryDescription appendFormat:@" {\nivars:\n\tdelegate = \"%@\"\n\tfile name = \"%@\"\n\ttemplate = \"%@\"\n\tTeX file = \"%@\"\n\tBibTeX file = \"%@\"\n\tTeX binary path = \"%@\"\n\nenvironment:\n\tSHELL = \"%s\"\n\tBIBINPUTS = \"%s\"\n\tBSTINPUTS = \"%s\"\n\tPATH = \"%s\" }", delegate, fileName, texTemplatePath, texFilePath, bibFilePath, binDirPath, getenv("SHELL"), getenv("BIBINPUTS"), getenv("BSTINPUTS"), getenv("PATH")];
+    [temporaryDescription appendFormat:@" {\nivars:\n\tdelegate = \"%@\"\n\tfile name = \"%@\"\n\ttemplate = \"%@\"\n\tTeX file = \"%@\"\n\tBibTeX file = \"%@\"\n\tTeX binary path = \"%@\"\n\tEncoding = \"%@\"\n\tBibTeX style = \"%@\"\n\nenvironment:\n\tSHELL = \"%s\"\n\tBIBINPUTS = \"%s\"\n\tBSTINPUTS = \"%s\"\n\tPATH = \"%s\" }", delegate, fileName, texTemplatePath, texFilePath, bibFilePath, binDirPath, [NSString localizedNameOfStringEncoding:[[OFPreferenceWrapper sharedPreferenceWrapper] integerForKey:BDSKTeXPreviewFileEncodingKey]], [[OFPreferenceWrapper sharedPreferenceWrapper] objectForKey:BDSKBTStyleKey], getenv("SHELL"), getenv("BIBINPUTS"), getenv("BSTINPUTS"), getenv("PATH")];
     NSString *description = [temporaryDescription copy];
     [temporaryDescription release];
     return [description autorelease];
@@ -291,18 +293,26 @@
 #pragma mark Data accessors
 
 - (NSString *)logFileString{
-    NSString *logstring = nil;
+    NSString *logString = nil;
+    NSString *blgString = nil;
     if(0 == pthread_rwlock_tryrdlock(&dataFileLock)) {
         // @@ unclear if log files will always be written with ASCII encoding
-        logstring = [NSString stringWithContentsOfFile:logFilePath encoding:NSASCIIStringEncoding error:NULL];
+        // these will be nil if the file doesn't exist
+        logString = [NSString stringWithContentsOfFile:logFilePath encoding:NSASCIIStringEncoding error:NULL];
+        blgString = [NSString stringWithContentsOfFile:blgFilePath encoding:NSASCIIStringEncoding error:NULL];
         pthread_rwlock_unlock(&dataFileLock);
     }
-    return [NSString stringWithFormat:@"%@\nFile: \"%@\"\n%@\n\n%@\n%@", 
-        @"---------- TeX log file ----------",
-        logFilePath,
-        logstring,
-        @"---------- BibDesk info ----------", 
-        [self description]];    
+    
+    NSMutableString *toReturn = [NSMutableString string];
+    [toReturn setString:@"---------- TeX log file ----------\n"];
+    [toReturn appendFormat:@"File: \"%@\"\n", logFilePath];
+    [toReturn appendFormat:@"%@\n\n", logString];
+    [toReturn appendString:@"---------- BibTeX log file -------\n"];
+    [toReturn appendFormat:@"File: \"%@\"\n", blgFilePath];
+    [toReturn appendFormat:@"%@\n\n", blgString];
+    [toReturn appendString:@"---------- BibDesk info ----------\n"];
+    [toReturn appendString:[self description]];
+    return toReturn;
 }    
 
 // the .bbl file contains either a LaTeX style bilbiography or an Amsrefs ltb style bibliography
