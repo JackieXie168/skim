@@ -573,7 +573,9 @@
         [pboardHelper setString:string forType:mainType forPasteboard:pboard];
 	else if(data != nil)
         [pboardHelper setData:data forType:mainType forPasteboard:pboard];
-    
+    else if(dragCopyType >= BDSKTemplateDragCopyType)
+        [pboardHelper setData:nil forType:mainType forPasteboard:pboard];
+        
     return YES;
 }
 
