@@ -115,8 +115,9 @@ static BOOL convertComposedCharacterToTeX(NSMutableString *charString, NSCharact
 	// create a characterset from the characters we know how to convert
     NSMutableCharacterSet *workingSet;
 	
-    workingSet = [[NSCharacterSet characterSetWithRange:NSMakeRange(461, 103)] mutableCopy]; //this should get all the composed characters in Latin Extended-B. exclude tilde, or we'll get an alert on it
-    [workingSet addCharactersInRange:NSMakeRange('~' + 1, 256)]; //this should get all the characters composed characters in Latin Extended-A.
+    workingSet = [[NSCharacterSet characterSetWithRange:NSMakeRange(0x7f, 0x100)] mutableCopy]; //this should get all the composed characters in Latin Extended-A; exclude tilde, or we'll get an alert on it
+    [workingSet addCharactersInRange:NSMakeRange(0x1cd, 0x55)]; //this should get all the composed characters in Latin Extended-B.
+    [workingSet addCharactersInRange:NSMakeRange(0x1e00, 0xfa)]; //this should get all the composed characters in Latin Extended Additional.
     [workingSet performSelector:@selector(addCharactersInString:) withObjectsFromArray:[tmpTexifyDict allKeys]];
 	
     [self setFinalCharSet:workingSet];
