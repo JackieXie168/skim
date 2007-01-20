@@ -53,6 +53,7 @@
 #import "BDSKSearchField.h"
 #import "BibDocument_Groups.h"
 #import "BDSKMainTableView.h"
+#import "BDSKFindController.h"
 
 NSString *BDSKDocumentFormatForSearchingDates = nil;
 
@@ -329,16 +330,19 @@ NSString *BDSKDocumentFormatForSearchingDates = nil;
 
 	switch ([sender tag]) {
 		case NSFindPanelActionShowFindPanel:
-            [self makeSearchFieldKey:sender];
+            [[BDSKFindController sharedFindController] showWindow:self];
             break;
 		case NSFindPanelActionSetFindString:
-            selString = nil;
-            findPasteboard = [NSPasteboard pasteboardWithName:NSFindPboard];
-            if ([findPasteboard availableTypeFromArray:[NSArray arrayWithObject:NSStringPboardType]])
-                selString = [findPasteboard stringForType:NSStringPboardType];    
-            if ([NSString isEmptyString:selString] == NO)
+            selString = [self selectedStringForFind];
+            if ([NSString isEmptyString:selString])
+                return;
+            id firstResponder = [documentWindow firstResponder];
+            if (firstResponder == searchField || ([firstResponder isKindOfClass:[NSText class]] && [firstResponder delegate] == searchField)) {
                 [searchField setStringValue:selString];
-            [searchField selectText:nil];
+                [searchField selectText:nil];
+            } else {
+                [[BDSKFindController sharedFindController] setFindString:selString];
+            }
             break;
         default:
             NSBeep();

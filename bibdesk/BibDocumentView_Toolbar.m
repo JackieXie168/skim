@@ -145,9 +145,8 @@ static NSString *BibDocumentToolbarCiteDrawerItemIdentifier = @"BibDocumentToolb
 	
 	// Search
 	menuItem = [[[NSMenuItem allocWithZone:[NSMenu menuZone]] initWithTitle:NSLocalizedString(@"Search", @"Toolbar item label") 
-										   action:@selector(performFindPanelAction:)
+										   action:@selector(makeSearchFieldKey:)
 									keyEquivalent:@""] autorelease];
-	[menuItem setTag:NSFindPanelActionShowFindPanel];
 	[menuItem setTarget:self];
     item = [[OAToolbarItem alloc] initWithItemIdentifier:BibDocumentToolbarSearchItemIdentifier];
     [item setDelegate:self];
