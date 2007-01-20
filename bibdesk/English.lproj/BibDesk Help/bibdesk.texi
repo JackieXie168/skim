@@ -147,6 +147,8 @@ about the BibTeX file format.
 @heading Online Resources
 @itemize
 @item @uref{http://bibdesk.sourceforge.net, BibDesk Website}
+@item @uref{http://bibdesk.sourceforge.net/wiki/, BibDesk Wiki}
+@item @uref{http://bibdesk.sourceforge.net/wiki/index.php/FAQ, BibDesk FAQ}
 @item @uref{http://bibdesk.sourceforge.net/scripts.html, BibDesk AppleScript Repository}
 @item @uref{http://bibdesk.sourceforge.net/manual/, Online Copy of This Manual}
 @end itemize
