@@ -68,7 +68,7 @@ NSString *BDSKAllFieldsString = nil;
 @end
 
 
-NSString *BDSKDefaultBibFilePathKey = @"Default Bib File";
+NSString *BDSKDefaultBibFileAliasKey = @"BDSKDefaultBibFileAliasKey";
 NSString *BDSKStartupBehaviorKey = @"Startup Behavior";
 NSString *BDSKLastOpenFileNamesKey = @"Last Open FileNames";
 NSString *BDSKAutoCheckForUpdatesKey = @"Check for updates when starting";

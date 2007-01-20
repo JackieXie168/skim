@@ -37,6 +37,7 @@
 #import "BibPref_General.h"
 #import "BDSKUpdateChecker.h"
 #import "BDSKTemplate.h"
+#import "BDAlias.h"
 
 @implementation BibPref_General
 
@@ -56,7 +57,12 @@
     else
         [defaultBibFileTextField setEnabled:YES];
 	
-    [defaultBibFileTextField setStringValue:[[defaults objectForKey:BDSKDefaultBibFilePathKey] stringByAbbreviatingWithTildeInPath]];
+    NSData *aliasData = [defaults objectForKey:BDSKDefaultBibFileAliasKey];
+    BDAlias *alias;
+    if(aliasData && (alias = [BDAlias aliasWithData:aliasData]))
+        [defaultBibFileTextField setStringValue:[[alias fullPath] stringByAbbreviatingWithTildeInPath]];
+    else
+        [defaultBibFileTextField setStringValue:@""];
 	
     prevStartupBehaviorTag = [[defaults objectForKey:BDSKStartupBehaviorKey] intValue];
     
@@ -90,7 +96,9 @@
 }
 
 - (IBAction)setAutoOpenFilePath:(id)sender{
-    [defaults setObject:[[sender stringValue] stringByExpandingTildeInPath] forKey:BDSKDefaultBibFilePathKey];
+    BDAlias *alias = [BDAlias aliasWithPath:[[sender stringValue] stringByStandardizingPath]];
+    if(alias)
+        [defaults setObject:[alias aliasData] forKey:BDSKDefaultBibFileAliasKey];
     [defaults autoSynchronize];
 }
 
@@ -120,11 +128,11 @@
     if (returnCode == NSCancelButton)
         return;
     
-    NSString * path = [[sheet filenames] objectAtIndex: 0];
-    [defaultBibFileTextField setStringValue:[path stringByAbbreviatingWithTildeInPath]];    
+    BDAlias *alias = [BDAlias aliasWithURL:[sheet URL]];
+    NSString *path = [[sheet filenames] objectAtIndex: 0];
+    [defaultBibFileTextField setStringValue:[[[sheet URL] path] stringByAbbreviatingWithTildeInPath]];    
     
-    [defaults setObject:path forKey:BDSKDefaultBibFilePathKey];
-    [defaults setObject:path forKey:@"NSOpen"]; // -- what did this do?
+    [defaults setObject:[alias aliasData] forKey:BDSKDefaultBibFileAliasKey];
     [defaults setObject:[NSNumber numberWithInt:3] forKey:BDSKStartupBehaviorKey];
     [self valuesHaveChanged];
 }

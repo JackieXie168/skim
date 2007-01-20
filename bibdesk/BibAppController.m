@@ -153,6 +153,15 @@ static void createTemporaryDirectory()
         searchKeys = fixLegacyTableColumnIdentifiers(searchKeys);
         [[OFPreferenceWrapper sharedPreferenceWrapper] setObject:searchKeys forKey:BDSKQuickSearchKeys];
     }
+    
+    // @@ legacy pref key removed prior to release of 1.3.1 (stored path instead of alias)
+    NSString *filePath = [[OFPreferenceWrapper sharedPreferenceWrapper] objectForKey:@"Default Bib File"];
+    if(filePath) {
+        BDAlias *alias = [BDAlias aliasWithPath:filePath];
+        if(alias)
+            [[OFPreferenceWrapper sharedPreferenceWrapper] setObject:[alias aliasData] forKey:BDSKDefaultBibFileAliasKey];
+        [[OFPreferenceWrapper sharedPreferenceWrapper] removeObjectForKey:@"Default Bib File"];
+    }
 }
 
 - (id)init
@@ -366,7 +375,8 @@ static void createTemporaryDirectory()
 
 - (BOOL)applicationShouldOpenUntitledFile:(NSApplication *)sender
 {
-    int flag = [[[OFPreferenceWrapper sharedPreferenceWrapper] objectForKey:BDSKStartupBehaviorKey] intValue];
+    OFPreferenceWrapper *defaults = [OFPreferenceWrapper sharedPreferenceWrapper];
+    int flag = [[defaults objectForKey:BDSKStartupBehaviorKey] intValue];
     switch(flag){
         case 0:
             return YES;
@@ -385,9 +395,12 @@ static void createTemporaryDirectory()
             return NO;
         case 3:
             {
-                NSString *filePath = [[OFPreferenceWrapper sharedPreferenceWrapper] objectForKey:BDSKDefaultBibFilePathKey];
-                NSURL *fileURL = nil;
-                if(filePath && (fileURL = [NSURL fileURLWithPath:filePath]))
+                NSData *data = [defaults objectForKey:BDSKDefaultBibFileAliasKey];
+                BDAlias *alias = nil;
+                if(data)
+                    alias = [BDAlias aliasWithData:data];
+                NSURL *fileURL = [alias fileURL];
+                if(fileURL)
                     [[NSDocumentController sharedDocumentController] openDocumentWithContentsOfURL:fileURL display:YES error:NULL];
             }
             return NO;
