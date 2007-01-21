@@ -115,9 +115,9 @@ static BOOL convertComposedCharacterToTeX(NSMutableString *charString, NSCharact
 	// create a characterset from the characters we know how to convert
     NSMutableCharacterSet *workingSet;
 	
-    workingSet = [[NSCharacterSet characterSetWithRange:NSMakeRange(0x7f, 0x100)] mutableCopy]; //this should get all the composed characters in Latin Extended-A; exclude tilde, or we'll get an alert on it
-    [workingSet addCharactersInRange:NSMakeRange(0x1cd, 0x55)]; //this should get all the composed characters in Latin Extended-B.
-    [workingSet addCharactersInRange:NSMakeRange(0x1e00, 0xfa)]; //this should get all the composed characters in Latin Extended Additional.
+    workingSet = [[NSCharacterSet characterSetWithRange:NSMakeRange(0x80, 0x1d0)] mutableCopy]; //this should get all the characters in Latin-1 Supplement, Latin Extended-A, and Latin Extended-B
+    [workingSet addCharactersInRange:NSMakeRange(0x1e00, 0x100)]; //this should get all the characters in Latin Extended Additional.
+    [workingSet formIntersectionWithCharacterSet:[NSCharacterSet decomposableCharacterSet]];
     [workingSet performSelector:@selector(addCharactersInString:) withObjectsFromArray:[tmpTexifyDict allKeys]];
 	
     [self setFinalCharSet:workingSet];
@@ -207,6 +207,7 @@ static BOOL convertComposedCharacterToTeX(NSMutableString *charString, NSCharact
                 offset += [tmpConv length] - 1;
                 
             // if tmpConv is non-nil and decomposition failed, return an error
+            // @@ should we do this, as it is somewhat arbitrary?
             } else if(tmpConv != nil){
                 NSString *charString = [NSString unicodeNameOfCharacter:ch];
                 NSLog(@"unable to convert \"%@\" (unichar %@)", charString, [NSString hexStringForCharacter:ch]);
@@ -239,11 +240,14 @@ static BOOL convertComposedCharacterToTeX(NSMutableString *charString, NSCharact
         return NO;
     else if (decomposedLength == 1)
         return YES;
+    // @@ we could allow decomposedLength > 2, it doesn't break TeX (though it gives funny results)
     else if (decomposedLength > 2 || [accentCharSet characterIsMember:[charString characterAtIndex:1]] == NO)
         return NO;
     
     // isolate accent
-    NSString *accent = [texifyAccents objectForKey:[charString substringFromIndex:1]];
+    NSString *accentChar = (NSString *)CFStringCreateWithSubstring(CFAllocatorGetDefault(), (CFStringRef)charString, CFRangeMake(1, 1));
+    NSString *accent = [texifyAccents objectForKey:accentChar];
+    [accentChar release];
     
     // isolate character
     NSString *character = [charString substringToIndex:1];
