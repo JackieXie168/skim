@@ -107,7 +107,7 @@ static BDSKGlobalMacroResolver *defaultMacroResolver;
     return [owner undoManager];
 }
 
-- (NSString *)bibTeXStringReturningError:(NSError **)error{
+- (NSString *)bibTeXString{
     if (macroDefinitions == nil)
         return @"";
     
