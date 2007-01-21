@@ -1582,9 +1582,11 @@ Boolean stringContainsLossySubstring(NSString *theString, NSString *stringToFind
     NSAssert1(type != nil, @"Tried to use a nil pubtype in %@.  You will need to quit and relaunch BibDesk after fixing the error manually.", self );
 	[keys sortUsingSelector:@selector(caseInsensitiveCompare:)];
 	if ([pw boolForKey:BDSKSaveAnnoteAndAbstractAtEndOfItemKey]) {
-		NSArray *finalKeys = [[btm noteFieldsSet] allObjects];
-		[keys removeObjectsInArray:finalKeys]; // make sure these fields are at the end, as they can be long
-		[keys addObjectsFromArray:finalKeys];
+		NSMutableArray *noteKeys = [[[btm noteFieldsSet] allObjects] mutableCopy];
+        [noteKeys sortUsingSelector:@selector(caseInsensitiveCompare:)];
+        [keys removeObjectsInArray:noteKeys]; // make sure these fields are at the end, as they can be long
+		[keys addObjectsFromArray:noteKeys];
+        [noteKeys release];
 	}
 	if (drop) {
         knownKeys = [[NSMutableSet alloc] initWithCapacity:14];
