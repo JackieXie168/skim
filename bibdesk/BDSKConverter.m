@@ -250,7 +250,7 @@ static BOOL convertComposedCharacterToTeX(NSMutableString *charString, NSCharact
     [accentChar release];
     
     // isolate character
-    NSString *character = [charString substringToIndex:1];
+    NSString *character = (NSString *)CFStringCreateWithSubstring(CFAllocatorGetDefault(), (CFStringRef)charString, CFRangeMake(0, 1));
     
     // handle i and j (others as well?)
     if (([character isEqualToString:@"i"] || [character isEqualToString:@"j"]) &&
@@ -263,6 +263,8 @@ static BOOL convertComposedCharacterToTeX(NSMutableString *charString, NSCharact
     [charString appendString:accent];
     [charString appendString:character];
     [charString appendString:@"}"];
+    
+    [character release];
     
     return YES;
 }
