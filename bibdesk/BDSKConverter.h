@@ -79,14 +79,13 @@
 - (void)loadDict;
 
 /*!
- @method copyStringByTeXifyingString:error:
+ @method copyStringByTeXifyingString:
  @abstract UTF-8 -> TeX
- @discussion Uses a dictionary to find replacements for candidate special characters.  Returns an error with code kBDSKTeXifyError if an error occurred.
+ @discussion Uses a dictionary to find replacements for candidate special characters.
  @param s the string to convert into ASCII TeX encoding
- @param error texification error
  @result the retained string converted into ASCI TeX encoding
 */
-- (NSString *)copyStringByTeXifyingString:(NSString *)s error:(NSError **)error;
+- (NSString *)copyStringByTeXifyingString:(NSString *)s;
 
 /*!
  @method copyStringByDeTeXifyingString:
@@ -101,8 +100,8 @@
 
 @interface NSString (BDSKConverter)
 
-- (NSString *)copyTeXifiedStringReturningError:(NSError **)error;
-- (NSString *)stringByTeXifyingStringReturningError:(NSError **)error;
+- (NSString *)copyTeXifiedString;
+- (NSString *)stringByTeXifyingString;
 - (NSString *)copyDeTeXifiedString;
 - (NSString *)stringByDeTeXifyingString;
 

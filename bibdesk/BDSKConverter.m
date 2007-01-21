@@ -137,8 +137,7 @@ static BOOL convertTeXStringToComposedCharacter(NSMutableString *texString, NSDi
     [self setDetexifyAccents:[wholeDict objectForKey:TEX_TO_ROMAN_ACCENTS_KEY]];
 }
 
-- (NSString *)copyStringByTeXifyingString:(NSString *)s error:(NSError **)outError{
-    NSError *error = nil;
+- (NSString *)copyStringByTeXifyingString:(NSString *)s{
     
 	// TeXify only string nodes of complex strings;
 	if([s isComplex]){
@@ -150,7 +149,7 @@ static BOOL convertTeXStringToComposedCharacter(NSMutableString *texString, NSDi
 		
 		while(node = [nodeEnum nextObject]){
 			if([node type] == BSN_STRING){
-				string = [self copyStringByTeXifyingString:[node value] error:&error];
+				string = [self copyStringByTeXifyingString:[node value]];
                 if(string == nil) break;
                 newNode = [[BDSKStringNode alloc] initWithQuotedString:string];
                 [string release];
@@ -161,13 +160,7 @@ static BOOL convertTeXStringToComposedCharacter(NSMutableString *texString, NSDi
 			[newNode release];
 		}
         
-        if(error == nil){
-            string = [[NSString alloc] initWithNodes:nodes macroResolver:[cs macroResolver]];
-        }else{
-            if(outError) *outError = error;
-            string = nil;
-        }
-            
+        string = [[NSString alloc] initWithNodes:nodes macroResolver:[cs macroResolver]];
         [nodes release];
 		return string;
 	}
@@ -187,7 +180,7 @@ static BOOL convertTeXStringToComposedCharacter(NSMutableString *texString, NSDi
     CFStringInlineBuffer inlineBuffer;
     CFStringInitInlineBuffer((CFStringRef)precomposedString, &inlineBuffer, CFRangeMake(0, numberOfCharacters));
     
-    for (index = 0; (error == nil) && (index < numberOfCharacters); index++) {
+    for (index = 0; (index < numberOfCharacters); index++) {
             
         ch = CFStringGetCharacterFromInlineBuffer(&inlineBuffer, index);
         
@@ -213,12 +206,6 @@ static BOOL convertTeXStringToComposedCharacter(NSMutableString *texString, NSDi
     }
     
     [precomposedString release];
-    
-    if(error != nil){
-        if(outError) *outError = error;
-        [convertedSoFar release];
-        convertedSoFar = nil;
-    }
     
     return convertedSoFar;
 }
@@ -485,8 +472,8 @@ static BOOL convertTeXStringToComposedCharacter(NSMutableString *texString, NSDi
 
 @implementation NSString (BDSKConverter)
 
-- (NSString *)copyTeXifiedStringReturningError:(NSError **)error { return [[BDSKConverter sharedConverter] copyStringByTeXifyingString:self error:error]; }
-- (NSString *)stringByTeXifyingStringReturningError:(NSError **)error { return [[self copyTeXifiedStringReturningError:error] autorelease]; }
+- (NSString *)copyTeXifiedString { return [[BDSKConverter sharedConverter] copyStringByTeXifyingString:self]; }
+- (NSString *)stringByTeXifyingString { return [[self copyTeXifiedString] autorelease]; }
 - (NSString *)copyDeTeXifiedString { return [[BDSKConverter sharedConverter] copyStringByDeTeXifyingString:self]; }
 - (NSString *)stringByDeTeXifyingString { return [[self copyDeTeXifiedString] autorelease]; }
 

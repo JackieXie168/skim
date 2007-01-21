@@ -1606,8 +1606,6 @@ Boolean stringContainsLossySubstring(NSString *theString, NSString *stringToFind
     [s appendString:[self citeKey]];
     
     NSSet *personFields = [btm personFieldsSet];
-    NSError *texifyError = nil;
-    BOOL hasError = NO;
     
     while(field = [e nextObject]){
         if (drop && ![knownKeys containsObject:field])
@@ -1621,11 +1619,7 @@ Boolean stringContainsLossySubstring(NSString *theString, NSString *stringToFind
         }
         
         if(shouldTeXify && ![urlKeys containsObject:field]){
-            value = [value stringByTeXifyingStringReturningError:&texifyError];
-            if(value == nil){
-                hasError = YES;
-                break;
-            }
+            value = [value stringByTeXifyingString];
         }                
         
         if(expand == YES)
@@ -1643,14 +1637,6 @@ Boolean stringContainsLossySubstring(NSString *theString, NSString *stringToFind
     [knownKeys release];
     [s appendString:@"}"];
     
-    // the error from the converter has a description of the unichar that couldn't convert; we add some useful context to it
-    if(hasError){
-        s = nil;
-        if(error != NULL){
-            *error = [NSError mutableLocalErrorWithCode:kBDSKTeXifyError localizedDescription:[NSString stringWithFormat: NSLocalizedString(@"Character \"%@\" in the %@ of %@ can't be converted to TeX.", @"Error description"), [texifyError localizedDescription], field, [self citeKey]]];
-            [*error setValue:self forKey:BDSKUnderlyingItemErrorKey];
-        }
-    }
     return s;
 }
 
