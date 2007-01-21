@@ -52,6 +52,7 @@
 - (void)setTexifyConversions:(NSDictionary *)newConversions;
 - (void)setDeTexifyConversions:(NSDictionary *)newConversions;
 static BOOL convertComposedCharacterToTeX(NSMutableString *charString, NSCharacterSet *baseCharacterSetForTeX, NSCharacterSet *accentCharSet, NSDictionary *texifyAccents);
+static BOOL convertTeXStringToComposedCharacter(NSMutableString *texString, NSDictionary *detexifyAccents);
 @end
 
 @implementation BDSKConverter
@@ -206,13 +207,6 @@ static BOOL convertComposedCharacterToTeX(NSMutableString *charString, NSCharact
                 // we're adding length-1 characters, so we have to make sure we insert at the right point in the future.
                 offset += [tmpConv length] - 1;
                 
-            // if tmpConv is non-nil and decomposition failed, return an error
-            // @@ should we do this, as it is somewhat arbitrary?
-            } else if(tmpConv != nil){
-                NSString *charString = [NSString unicodeNameOfCharacter:ch];
-                NSLog(@"unable to convert \"%@\" (unichar %@)", charString, [NSString hexStringForCharacter:ch]);
-                error = [NSError mutableLocalErrorWithCode:kBDSKTeXifyError localizedDescription:charString];
-                [error setValue:self forKey:BDSKUnderlyingItemErrorKey];
             }
             [tmpConv release];
         }
@@ -297,7 +291,8 @@ static BOOL convertComposedCharacterToTeX(NSMutableString *charString, NSCharact
 		return [[NSString alloc] initWithNodes:nodes macroResolver:[cs macroResolver]];
 	}
 	
-    NSString *tmpConv = nil;
+    NSMutableString *tmpConv = nil;
+    CFStringRef tmpString;
     NSString *TEXString = nil;
 
     NSMutableString *convertedSoFar = nil;
@@ -317,12 +312,15 @@ static BOOL convertComposedCharacterToTeX(NSMutableString *charString, NSCharact
             if (closingRange.length) {
                 
                 replaceRange = NSMakeRange(range.location, closingRange.location - range.location + 1);
-                tmpConv = (NSString *)CFStringCreateWithSubstring(NULL, (CFStringRef)convertedSoFar, CFRangeMake(replaceRange.location, replaceRange.length));
+                CFStringRef tmpString = CFStringCreateWithSubstring(NULL, (CFStringRef)convertedSoFar, CFRangeMake(replaceRange.location, replaceRange.length));
+                tmpConv = [(NSString *)tmpString mutableCopy];
+                CFRelease(tmpString);
                 
                 // see if the dictionary has a conversion, or try Unicode composition
-                if((TEXString = [detexifyConversions objectForKey:tmpConv]) ||
-                    (TEXString = [self composedStringFromTeXString:tmpConv])){
+                if(TEXString = [detexifyConversions objectForKey:tmpConv]){
                     [convertedSoFar replaceCharactersInRange:replaceRange withString:TEXString];
+                }else if(convertTeXStringToComposedCharacter(tmpConv, detexifyAccents)) {
+                    [convertedSoFar replaceCharactersInRange:replaceRange withString:tmpConv];
                 }
                 [tmpConv release];
                 
@@ -348,8 +346,12 @@ static BOOL convertComposedCharacterToTeX(NSMutableString *charString, NSCharact
 
 // takes a sequence such as "{\'i}" or "{\v S}" (no quotes) and converts to appropriate composed characters
 // returns nil if unable to convert
-- (NSString *)composedStringFromTeXString:(NSString *)texString{
-        
+static BOOL convertTeXStringToComposedCharacter(NSMutableString *texString, NSDictionary *detexifyAccents)
+{        
+    // check this before creating a scanner
+    if (nil == texString)
+        return NO;
+    
 	NSString *texAccent = nil;
 	NSString *accent = nil;
     unsigned int idx = 0, length = [texString length];
@@ -357,14 +359,10 @@ static BOOL convertComposedCharacterToTeX(NSMutableString *charString, NSCharact
     CFStringInlineBuffer inlineBuffer;
     CFStringInitInlineBuffer((CFStringRef)texString, &inlineBuffer, CFRangeMake(0, length));
     
-    // check this before creating a scanner
-    if (nil == texString)
-        return nil;
-    
     // check for {\ prefix
     if (CFStringGetCharacterFromInlineBuffer(&inlineBuffer, idx++) != '{' ||
         CFStringGetCharacterFromInlineBuffer(&inlineBuffer, idx++) != '\\')
-        return nil;
+        return NO;
     
     UniChar ch, accentCh = CFStringGetCharacterFromInlineBuffer(&inlineBuffer, idx++);
     
@@ -374,13 +372,13 @@ static BOOL convertComposedCharacterToTeX(NSMutableString *charString, NSCharact
     [texAccent release];
     
     if (nil == accent)
-        return nil;    
+        return NO;    
     
     // get the character immediately following the accent
     ch = CFStringGetCharacterFromInlineBuffer(&inlineBuffer, idx);
     
     if ([[NSCharacterSet letterCharacterSet] characterIsMember:accentCh] && ch != ' ')
-        return nil; // error: if accentCh was a letter (e.g. {\v S}), it must be followed by a space
+        return NO; // error: if accentCh was a letter (e.g. {\v S}), it must be followed by a space
     else if (ch == ' ')
         idx++;      // TeX accepts {\' i} or {\'i}, but space shouldn't be included in the letter token
     
@@ -408,24 +406,24 @@ static BOOL convertComposedCharacterToTeX(NSMutableString *charString, NSCharact
             
             if ([character length] == 1) {
                 CFMutableStringRef mutableCharacter = CFStringCreateMutableCopy(alloc, 0, (CFStringRef)character);
-                CFRelease(character);
                 CFStringAppend(mutableCharacter, (CFStringRef)accent);
                 CFStringNormalize(mutableCharacter, kCFStringNormalizationFormC);
-                character = [(id)mutableCharacter autorelease];
+                
+                [texString setString:(NSString *)mutableCharacter];
                 
                 // should be at idx = length anyway
-                break;
+                [character release];
+                return YES;
             } else {
                 
                 // incorrect length of the character
                 [character release];
-                character = nil;
-                break;
+                return NO;
             }
         }
     }
     
-    return character;
+    return NO;
 }
 
 @end
