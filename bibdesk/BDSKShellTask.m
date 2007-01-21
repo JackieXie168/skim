@@ -209,6 +209,11 @@ volatile int caughtSignal = 0;
             
             [nc removeObserver:self name:NSFileHandleReadCompletionNotification object:outputFileHandle];
             
+            // get leftover data, since the background method won't get the last read
+            NSData *remainingData = [outputFileHandle availableData];
+            if ([remainingData length])
+                [stdoutData appendData:remainingData];
+            
         } else {
             NSLog(@"Failed to launch task or task exited without accepting input.  Termination status was %d", [task terminationStatus]);
         }
