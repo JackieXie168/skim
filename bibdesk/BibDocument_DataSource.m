@@ -626,7 +626,6 @@
 		OFPreferenceWrapper *sud = [OFPreferenceWrapper sharedPreferenceWrapper];
         int index = ([NSApp currentModifierFlags] & NSAlternateKeyMask) ? 1 : 0;
 		NSMutableString *s = [NSMutableString string];
-        NSString *bibString;
         
         dragCopyType = [[[sud arrayForKey:BDSKDragCopyTypesKey] objectAtIndex:index] intValue];
 		
@@ -640,9 +639,7 @@
             switch (dragCopyType) {
                 case BDSKBibTeXDragCopyType:
                 case BDSKMinimalBibTeXDragCopyType:
-                    bibString = [firstItem bibTeXStringDroppingInternal:YES];
-                    if(bibString)
-                        [s appendString:bibString];
+                    [s appendString:[firstItem bibTeXStringDroppingInternal:YES]];
                     if (count > 1) {
                         [s appendString:@"\n"];
                         [s appendString:[NSString horizontalEllipsisString]];

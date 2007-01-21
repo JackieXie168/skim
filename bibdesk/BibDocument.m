@@ -1131,7 +1131,6 @@ originalContentsURL:(NSURL *)absoluteOriginalContentsURL
     NSEnumerator *e = [items objectEnumerator];
 	BibItem *pub = nil;
     NSMutableData *outputData = [NSMutableData dataWithCapacity:4096];
-    NSString *tmpString = nil;
     NSError *error = nil;
     BOOL isOK = YES;
         
@@ -1179,11 +1178,11 @@ originalContentsURL:(NSURL *)absoluteOriginalContentsURL
     }
     
     // output the document's macros:
-    if(isOK)
-        tmpString = [[self macroResolver] bibTeXString];
-    isOK = (nil != tmpString) && [outputData appendDataFromString:tmpString encoding:encoding error:&error];
-    if(NO == isOK)
-        [error setValue:NSLocalizedString(@"Unable to convert macros.", @"string encoding error context") forKey:NSLocalizedRecoverySuggestionErrorKey];
+    if(isOK){
+        isOK = [outputData appendDataFromString:[[self macroResolver] bibTeXString] encoding:encoding error:&error];
+        if(NO == isOK)
+            [error setValue:NSLocalizedString(@"Unable to convert macros.", @"string encoding error context") forKey:NSLocalizedRecoverySuggestionErrorKey];
+    }
     
     // output the bibs
     
@@ -1191,11 +1190,9 @@ originalContentsURL:(NSURL *)absoluteOriginalContentsURL
 
     while(isOK && (pub = [e nextObject])){
         [outputData appendData:doubleNewlineData];
-        tmpString = [pub bibTeXStringDroppingInternal:drop];
-        isOK = (nil != tmpString) && [outputData appendDataFromString:tmpString encoding:encoding error:&error];
-        if(NO == isOK){
+        isOK = [outputData appendDataFromString:[pub bibTeXStringDroppingInternal:drop] encoding:encoding error:&error];
+        if(NO == isOK)
             [error setValue:[NSString stringWithFormat:NSLocalizedString(@"Unable to convert item with cite key %@.", @"string encoding error context"), [pub citeKey]] forKey:NSLocalizedRecoverySuggestionErrorKey];
-        }
     }
     
     if (drop == NO) {
@@ -1553,13 +1550,8 @@ originalContentsURL:(NSURL *)absoluteOriginalContentsURL
 	BibItem *pub;
     NSString *bibString = nil;
 	
-    while(pub = [e nextObject]){
-        if(bibString = [pub bibTeXStringDroppingInternal:drop]){
-            [s appendString:@"\n"];
-            [s appendString:bibString];
-            [s appendString:@"\n"];
-        }
-    }
+    while(pub = [e nextObject])
+            [s appendStrings:@"\n", [pub bibTeXStringDroppingInternal:drop], @"\n", nil];
 	
 	return s;
 }
@@ -1570,14 +1562,12 @@ originalContentsURL:(NSURL *)absoluteOriginalContentsURL
 
 	unsigned numberOfPubs = [items count];
 	NSMutableString *bibString = [[NSMutableString alloc] initWithCapacity:(numberOfPubs * 100)];
-    NSString *tmpString = nil;
 
 	// in case there are @preambles in it
 	[bibString appendString:frontMatter];
 	[bibString appendString:@"\n"];
 	
-    if(tmpString = [[self macroResolver] bibTeXString])
-        [bibString appendString:tmpString];
+    [bibString appendString:[[self macroResolver] bibTeXString]];
 	
 	NSEnumerator *e = [items objectEnumerator];
 	BibItem *aPub = nil;
@@ -1599,21 +1589,18 @@ originalContentsURL:(NSURL *)absoluteOriginalContentsURL
 			[parentItems removeObject:aPub];
 			[selParentItems addObject:aPub];
 		}else{
-            if(tmpString = [aPub bibTeXString])
-                [bibString appendString:tmpString];
+            [bibString appendString:[aPub bibTeXString]];
 		}
 	}
 	
 	e = [selParentItems objectEnumerator];
 	while(aPub = [e nextObject]){
-        if(tmpString = [aPub bibTeXString])
-            [bibString appendString:tmpString];
+        [bibString appendString:[aPub bibTeXString]];
 	}
 	
 	e = [parentItems objectEnumerator];        
 	while(aPub = [e nextObject]){
-        if(tmpString = [aPub bibTeXString])
-            [bibString appendString:tmpString];
+        [bibString appendString:[aPub bibTeXString]];
 	}
 					
 	[selItems release];
