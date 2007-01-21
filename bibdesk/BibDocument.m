@@ -1131,6 +1131,7 @@ originalContentsURL:(NSURL *)absoluteOriginalContentsURL
     NSEnumerator *e = [items objectEnumerator];
 	BibItem *pub = nil;
     NSMutableData *outputData = [NSMutableData dataWithCapacity:4096];
+    NSData *pubData;
     NSError *error = nil;
     BOOL isOK = YES;
         
@@ -1189,9 +1190,11 @@ originalContentsURL:(NSURL *)absoluteOriginalContentsURL
     if([items count]) NSParameterAssert([[items objectAtIndex:0] isKindOfClass:[BibItem class]]);
 
     while(isOK && (pub = [e nextObject])){
-        [outputData appendData:doubleNewlineData];
-        isOK = [outputData appendDataFromString:[pub bibTeXStringDroppingInternal:drop] encoding:encoding error:&error];
-        if(NO == isOK)
+        pubData = [pub bibTeXDataDroppingInternal:drop encoding:encoding error:&error];
+        if(isOK = pubData != nil){
+            [outputData appendData:doubleNewlineData];
+            [outputData appendData:pubData];
+        }else if([error valueForKey:NSLocalizedRecoverySuggestionErrorKey] == nil)
             [error setValue:[NSString stringWithFormat:NSLocalizedString(@"Unable to convert item with cite key %@.", @"string encoding error context"), [pub citeKey]] forKey:NSLocalizedRecoverySuggestionErrorKey];
     }
     
