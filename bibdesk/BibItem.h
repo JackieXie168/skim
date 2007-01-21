@@ -663,35 +663,32 @@ enum {
 - (id)completionObject;
 
 /*!
-    @method bibTeXStringReturningError:(NSError *)error
+    @method bibTeXString
     @abstract  returns the bibtex source for this bib item.  Is TeXified based on default preferences for the application.
-    @param      error Set to an error when a texification error occurs, can be NULL.
     @discussion «discussion»
     
 */
-- (NSString *)bibTeXStringReturningError:(NSError **)error;
+- (NSString *)bibTeXString;
 
 /*!
-    @method     bibTeXStringDroppingInternal:error:
+    @method     bibTeXStringDroppingInternal:
     @abstract   Returns the BibTeX value of this bib item.  It is TeXified based on default prefs for the application.
     @param      drop Boolean determines whether internal fields are dropped. 
-    @param      error Set to an error when a texification error occurs, can be NULL.
     @discussion (comprehensive description)
     @result     (description)
 */
-- (NSString *)bibTeXStringDroppingInternal:(BOOL)drop error:(NSError **)error;
+- (NSString *)bibTeXStringDroppingInternal:(BOOL)drop;
 
 /*!
-    @method     bibTeXStringByExpandingMacros:dropInternal:texify:error:
+    @method     bibTeXStringByExpandingMacros:dropInternal:texify:
     @abstract   Returns a BibTeX value with optionally macros expanded, optionally without internal fields, optionally teXified (converted to TeX)
     @discussion (comprehensive description)
     @param      expand Boolean determines whether macros are expanded.
     @param      drop Boolean determines whether internal fields are dropped. 
     @param      shouldTeXify Boolean determines whether accented characters are converted to TeX.
-    @param      error Set to an error when a texification error occurs, can be NULL.
     @result     (description)
 */
-- (NSString *)bibTeXStringByExpandingMacros:(BOOL)expand dropInternal:(BOOL)drop texify:(BOOL)shouldTeXify error:(NSError **)error;
+- (NSString *)bibTeXStringByExpandingMacros:(BOOL)expand dropInternal:(BOOL)drop texify:(BOOL)shouldTeXify;
 
 /*!
     @method     RISStringValue

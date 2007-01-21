@@ -1567,7 +1567,7 @@ Boolean stringContainsLossySubstring(NSString *theString, NSString *stringToFind
 #pragma mark -
 #pragma mark BibTeX strings
 
-- (NSString *)bibTeXStringByExpandingMacros:(BOOL)expand dropInternal:(BOOL)drop texify:(BOOL)shouldTeXify error:(NSError **)error{
+- (NSString *)bibTeXStringByExpandingMacros:(BOOL)expand dropInternal:(BOOL)drop texify:(BOOL)shouldTeXify{
 	OFPreferenceWrapper *pw = [OFPreferenceWrapper sharedPreferenceWrapper];
 	NSMutableSet *knownKeys = nil;
 	NSSet *urlKeys = nil;
@@ -1642,24 +1642,13 @@ Boolean stringContainsLossySubstring(NSString *theString, NSString *stringToFind
     return s;
 }
 
-- (NSString *)bibTeXStringDroppingInternal:(BOOL)drop error:(NSError **)error{
+- (NSString *)bibTeXStringDroppingInternal:(BOOL)drop{
     BOOL shouldTeXify = [[OFPreferenceWrapper sharedPreferenceWrapper] boolForKey:BDSKShouldTeXifyWhenSavingAndCopyingKey];
-    return [self bibTeXStringByExpandingMacros:NO dropInternal:drop texify:shouldTeXify error:error];
+    return [self bibTeXStringByExpandingMacros:NO dropInternal:drop texify:shouldTeXify];
 }
 
-- (NSString *)bibTeXStringReturningError:(NSError **)error{
-	return [self bibTeXStringDroppingInternal:NO error:error];
-}
-
-// Only used by AppleScript
 - (NSString *)bibTeXString{
-    NSError *error;
-    NSString *str = [self bibTeXStringReturningError:&error];
-    if (nil == str) {
-        NSLog(@"error %@ occurred when asking for bibTeXString of %@", error, self);
-        str = @"";
-    }
-    return str;
+	return [self bibTeXStringDroppingInternal:NO];
 }
 
 #pragma mark Other text representations
