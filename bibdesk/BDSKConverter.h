@@ -97,16 +97,6 @@
 */
 - (NSString *)copyStringByDeTeXifyingString:(NSString *)s;
 
-/*!
-    @method     composedStringFromTeXString:
-    @abstract   Returns a composed string with canonical mapping (Unicode normalization form C) based on a given TeX accent sequence, if possible.  Used as a fallback
-                if CharacterConversion.plist doesn't have a match when deTeXifying a string.
-    @discussion (comprehensive description)
-    @param      texString A TeX accent fragment as {\u g}.
-    @result     (description)
-*/
-- (NSString *)composedStringFromTeXString:(NSString *)texString;
-
 @end
 
 @interface NSString (BDSKConverter)

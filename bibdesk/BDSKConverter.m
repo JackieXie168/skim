@@ -232,19 +232,21 @@ static BOOL convertComposedCharacterToTeX(NSMutableString *charString, NSCharact
     // first check if we can convert this, we should have a base character + an accent we know
     if (decomposedLength == 0 || [baseCharacterSetForTeX characterIsMember:[charString characterAtIndex:0]] == NO)
         return NO;
+    // no-op; this case will likely never happen
     else if (decomposedLength == 1)
         return YES;
     // @@ we could allow decomposedLength > 2, it doesn't break TeX (though it gives funny results)
     else if (decomposedLength > 2 || [accentCharSet characterIsMember:[charString characterAtIndex:1]] == NO)
         return NO;
     
+    CFAllocatorRef alloc = CFGetAllocator(charString);
     // isolate accent
-    NSString *accentChar = (NSString *)CFStringCreateWithSubstring(CFAllocatorGetDefault(), (CFStringRef)charString, CFRangeMake(1, 1));
+    NSString *accentChar = (NSString *)CFStringCreateWithSubstring(alloc, (CFStringRef)charString, CFRangeMake(1, 1));
     NSString *accent = [texifyAccents objectForKey:accentChar];
     [accentChar release];
     
     // isolate character
-    NSString *character = (NSString *)CFStringCreateWithSubstring(CFAllocatorGetDefault(), (CFStringRef)charString, CFRangeMake(0, 1));
+    NSString *character = (NSString *)CFStringCreateWithSubstring(alloc, (CFStringRef)charString, CFRangeMake(0, 1));
     
     // handle i and j (others as well?)
     if (([character isEqualToString:@"i"] || [character isEqualToString:@"j"]) &&
@@ -392,7 +394,7 @@ static BOOL convertTeXStringToComposedCharacter(NSMutableString *texString, NSDi
         // scan up to the closing brace, since we don't know the character substring length beforehand
         if (ch == '}') {
 
-            CFAllocatorRef alloc = CFAllocatorGetDefault();
+            CFAllocatorRef alloc = CFGetAllocator(texString);
             character = (NSString *)CFStringCreateWithSubstring(alloc, (CFStringRef)texString, CFRangeMake(letterStart, idx - letterStart));
             
             // special cases for old style i, j
