@@ -690,6 +690,8 @@ enum {
 */
 - (NSString *)bibTeXStringByExpandingMacros:(BOOL)expand dropInternal:(BOOL)drop texify:(BOOL)shouldTeXify;
 
+- (NSData *)bibTeXDataDroppingInternal:(BOOL)drop encoding:(NSStringEncoding)encoding error:(NSError **)outError;
+
 /*!
     @method     RISStringValue
     @abstract   Returns the value of the BibItem in Reference Manager (RIS) format.  BibTeX tags are converted to RIS by the type manager.

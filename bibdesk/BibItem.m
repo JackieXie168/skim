@@ -68,6 +68,7 @@
 #import "BDSKTemplateParser.h"
 #import "BibDocument_Search.h"
 #import "BDSKPublicationsArray.h"
+#import "NSData_BDSKExtensions.h"
 
 static NSString *BDSKDefaultCiteKey = @"cite-key";
 
@@ -1640,6 +1641,88 @@ Boolean stringContainsLossySubstring(NSString *theString, NSString *stringToFind
     [s appendString:@"}"];
     
     return s;
+}
+
+- (NSData *)bibTeXDataDroppingInternal:(BOOL)drop encoding:(NSStringEncoding)encoding error:(NSError **)outError{
+	OFPreferenceWrapper *pw = [OFPreferenceWrapper sharedPreferenceWrapper];
+    BOOL shouldTeXify = [pw boolForKey:BDSKShouldTeXifyWhenSavingAndCopyingKey];
+	NSMutableSet *knownKeys = nil;
+	NSSet *urlKeys = nil;
+	NSString *field;
+    NSString *value;
+    NSMutableData *data = [NSMutableData dataWithCapacity:200];
+    NSMutableArray *keys = [[self allFieldNames] mutableCopy];
+	NSEnumerator *e;
+    NSError *error= nil;
+    BOOL isOK = YES;
+    
+    BibTypeManager *btm = [BibTypeManager sharedManager];
+    NSString *type = [self pubType];
+    NSAssert1(type != nil, @"Tried to use a nil pubtype in %@.  You will need to quit and relaunch BibDesk after fixing the error manually.", self );
+	[keys sortUsingSelector:@selector(caseInsensitiveCompare:)];
+	if ([pw boolForKey:BDSKSaveAnnoteAndAbstractAtEndOfItemKey]) {
+		NSMutableArray *noteKeys = [[[btm noteFieldsSet] allObjects] mutableCopy];
+        [noteKeys sortUsingSelector:@selector(caseInsensitiveCompare:)];
+        [keys removeObjectsInArray:noteKeys]; // make sure these fields are at the end, as they can be long
+		[keys addObjectsFromArray:noteKeys];
+        [noteKeys release];
+	}
+	if (drop) {
+        knownKeys = [[NSMutableSet alloc] initWithCapacity:14];
+		[knownKeys addObjectsFromArray:[btm requiredFieldsForType:type]];
+		[knownKeys addObjectsFromArray:[btm optionalFieldsForType:type]];
+		[knownKeys addObject:BDSKCrossrefString];
+	}
+	if(shouldTeXify)
+        urlKeys = [[BibTypeManager sharedManager] allURLFieldsSet];
+	
+	e = [keys objectEnumerator];
+	[keys release];
+
+    //build BibTeX entry:
+    isOK = [data appendDataFromString:@"@" encoding:encoding error:&error];
+           [data appendDataFromString:type encoding:encoding error:&error];
+           [data appendDataFromString:@"{" encoding:encoding error:&error];
+           [data appendDataFromString:[self citeKey] encoding:encoding error:&error];
+    if(isOK == NO)
+        [error setValue:[NSString stringWithFormat:NSLocalizedString(@"Unable to convert cite key of item with cite key \"%@\".", @"string encoding error context"), field, [self citeKey]] forKey:NSLocalizedRecoverySuggestionErrorKey];
+    
+    NSSet *personFields = [btm personFieldsSet];
+    
+    while(isOK && (field = [e nextObject])){
+        if (drop && ![knownKeys containsObject:field])
+            continue;
+        
+        value = [pubFields objectForKey:field];
+        NSString *valString;
+        
+        if([personFields containsObject:field] && [pw boolForKey:BDSKShouldSaveNormalizedAuthorNamesKey] && ![value isComplex]){ // only if it's not complex, use the normalized author name
+            value = [self bibTeXNameStringForField:field normalized:YES inherit:NO];
+        }
+        
+        if(shouldTeXify && ![urlKeys containsObject:field]){
+            value = [value stringByTeXifyingString];
+        }                
+        
+        valString = [value stringAsBibTeXString];
+        
+        if(NO == [value isEqualToString:@""]){
+            isOK = [data appendDataFromString:@",\n\t" encoding:encoding error:&error] &&
+                   [data appendDataFromString:field encoding:encoding error:&error] &&
+                   [data appendDataFromString:@" = " encoding:encoding error:&error] &&
+                   [data appendDataFromString:valString encoding:encoding error:&error];
+            if(isOK == NO)
+                [error setValue:[NSString stringWithFormat:NSLocalizedString(@"Unable to convert field \"%@\" of item with cite key \"%@\".", @"string encoding error context"), field, [self citeKey]] forKey:NSLocalizedRecoverySuggestionErrorKey];
+        }
+    }
+    [knownKeys release];
+    if(isOK)
+        isOK = [data appendDataFromString:@"}" encoding:encoding error:&error];
+    
+    if(isOK == NO && outError)
+        *outError = error;
+    
+    return isOK ? data : nil;
 }
 
 - (NSString *)bibTeXStringDroppingInternal:(BOOL)drop{
