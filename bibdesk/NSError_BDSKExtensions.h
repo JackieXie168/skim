@@ -45,14 +45,13 @@
 
 enum {
     kBDSKUnknownError = coreFoundationUnknownErr, /* -4960 */
-    kBDSKDocumentSaveError = 1,                   /* umbrella error type for document saving */
-    kBDSKStringEncodingError = 2,                 /* unable to convert to desired encoding   */
-    kBDSKTeXifyError = 3,                         /* TeXification failed                     */
-    kBDSKPropertyListDeserializationFailed = 4,   /* NSPropertyListSerialization failed      */
-    kBDSKPropertyListSerializationFailed = 5,
-    kBDSKNetworkConnectionFailed = 6,             /* Unable to connect to a network          */
-    kBDSKFileNotFound = 7,                        /* File not found (should have URL/path)   */
-    kBDSKAppleScriptError = 8,                    /* AppleScript failed                      */
+    kBDSKDocumentSaveError,                      /* umbrella error type for document saving */
+    kBDSKStringEncodingError,                    /* unable to convert to desired encoding   */
+    kBDSKPropertyListDeserializationFailed,      /* NSPropertyListSerialization failed      */
+    kBDSKPropertyListSerializationFailed,
+    kBDSKNetworkConnectionFailed,                /* Unable to connect to a network          */
+    kBDSKFileNotFound,                           /* File not found (should have URL/path)   */
+    kBDSKAppleScriptError,                       /* AppleScript failed                      */
 };
 
 extern NSString *BDSKUnderlyingItemErrorKey;
