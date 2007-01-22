@@ -1443,13 +1443,6 @@ static int numberOfOpenEditors = 0;
         return;
     }
     
-    NSString *prompt = NSLocalizedString(@"Name of field to remove:", @"Label for removing field");
-	if ([removableFields count]) {
-		[removableFields sortUsingSelector:@selector(caseInsensitiveCompare:)];
-	} else {
-		prompt = NSLocalizedString(@"No fields to remove", @"Label when no field to remove");
-	}
-    
     BDSKChangeFieldSheetController *changeFieldController = [[BDSKChangeFieldSheetController alloc] initWithPrompt:NSLocalizedString(@"Name of field to change:", @"Label for changing field name")
                                                                                                        fieldsArray:removableFields
                                                                                                          newPrompt:NSLocalizedString(@"New field name:", @"Label for changing field name")
