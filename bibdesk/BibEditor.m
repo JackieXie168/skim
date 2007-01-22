@@ -3176,7 +3176,10 @@ static NSString *queryStringWithCiteKey(NSString *citekey)
 }
 
 - (BOOL)windowShouldClose:(id)sender{
-	
+	// we shouldn't check external items
+    if (isEditable == NO)
+        return YES;
+    
     // User may have started editing some field, e.g. deleted the citekey and not tabbed out; if the user then chooses to discard, the finalizeChangesPreservingSelection: in windowWillClose: ultimately results in a crash due to OAApplication's sheet queue interaction with modal BDSKAlerts.  Hence, we need to call it earlier.
     [self finalizeChangesPreservingSelection:NO];
     
