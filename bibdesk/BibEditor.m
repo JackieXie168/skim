@@ -3556,7 +3556,7 @@ static NSString *queryStringWithCiteKey(NSString *citekey)
 	NSText *fieldEditor = nil;
 	NSString *editedTitle = nil;
 	int editedRow = -1;
-	NSRange selection;
+	NSRange selection = NSMakeRange(0, 0);
 	if([firstResponder isKindOfClass:[NSText class]] && [[(NSText *)firstResponder delegate] isEqual:bibFields]){
 		fieldEditor = (NSText *)firstResponder;
 		selection = [fieldEditor selectedRange];
