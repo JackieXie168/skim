@@ -281,7 +281,6 @@ static BOOL convertComposedCharacterToTeX(NSMutableString *charString, NSCharact
 	}
 	
     NSMutableString *tmpConv = nil;
-    CFStringRef tmpString;
     NSString *TEXString = nil;
 
     NSMutableString *convertedSoFar = nil;

@@ -157,7 +157,7 @@ NSString *BDSKDocumentFormatForSearchingDates = nil;
     SEL matchSelector = @selector(matchesSubstring:withOptions:inField:removeDiacritics:);
     searchIMP itemMatches = (searchIMP)[BibItem instanceMethodForSelector:matchSelector];
     OBASSERT(NULL != itemMatches);
-    
+
     for(i = 0; i < pubCount; i++){
         pub = [arrayToSearch objectAtIndex:i];
         
@@ -326,7 +326,6 @@ NSString *BDSKDocumentFormatForSearchingDates = nil;
 
 - (IBAction)performFindPanelAction:(id)sender{
     NSString *selString = nil;
-    NSPasteboard *findPasteboard;
 
 	switch ([sender tag]) {
 		case NSFindPanelActionShowFindPanel:
