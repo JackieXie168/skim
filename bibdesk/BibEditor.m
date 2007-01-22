@@ -3165,16 +3165,6 @@ static NSString *queryStringWithCiteKey(NSString *citekey)
     }
 }
 
-// ivar to allow us to determine if the window has a sheet, and hence should wait for user input before closing
-- (void)windowWillBeginSheet:(NSNotification *)aNotification
-{
-    windowHasSheet = YES;
-}
-- (void)windowDidEndSheet:(NSNotification *)aNotification
-{
-    windowHasSheet = NO;
-}
-
 - (BOOL)windowShouldClose:(id)sender{
 	// we shouldn't check external items
     if (isEditable == NO)
@@ -3184,7 +3174,7 @@ static NSString *queryStringWithCiteKey(NSString *citekey)
     [self finalizeChangesPreservingSelection:NO];
     
     // finalizeChangesPreservingSelection: may end up triggering other sheets, as well (move file, for example; bug #1565645), and we don't want to close the window when it has a sheet attached, since it's waiting for user input at that point.  This is sort of a hack, but there's too much state for us to keep track of and decide if the window should really close.
-    if (windowHasSheet)
+    if ([sender attachedSheet])
         return NO;
     
     NSString *errMsg = nil;
