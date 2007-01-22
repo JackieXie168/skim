@@ -59,7 +59,7 @@
 	
     NSData *aliasData = [defaults objectForKey:BDSKDefaultBibFileAliasKey];
     BDAlias *alias;
-    if(aliasData && (alias = [BDAlias aliasWithData:aliasData]))
+    if([aliasData length] && (alias = [BDAlias aliasWithData:aliasData]))
         [defaultBibFileTextField setStringValue:[[alias fullPath] stringByAbbreviatingWithTildeInPath]];
     else
         [defaultBibFileTextField setStringValue:@""];
