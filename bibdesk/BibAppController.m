@@ -397,7 +397,7 @@ static void createTemporaryDirectory()
             {
                 NSData *data = [defaults objectForKey:BDSKDefaultBibFileAliasKey];
                 BDAlias *alias = nil;
-                if(data)
+                if([data length])
                     alias = [BDAlias aliasWithData:data];
                 NSURL *fileURL = [alias fileURL];
                 if(fileURL)

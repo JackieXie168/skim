@@ -778,6 +778,8 @@
 					<string>http://citeseer.ist.psu.edu/</string>
 					<key>BDSKCurrentGroupFieldKey</key>
 					<string>Keywords</string>
+					<key>BDSKDefaultBibFileAliasKey</key>
+					<data></data>
 					<key>BDSKDefaultGroupFieldSeparatorKey</key>
 					<string>; </string>
 					<key>BDSKEmailTemplateKey</key>
