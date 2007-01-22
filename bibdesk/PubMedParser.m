@@ -97,9 +97,9 @@
             [value insertString:@"," atIndex:lastSpace];
     }
     
-    // the AID tag contains links like DOI, and looks like "10.1038/ng1726 [doi]"
+    // the AID tag contains links like DOI, and looks like "10.1038/ng1726 [doi]", note we have ecaped "[" to "{$[$}"
     if([key isEqualToString:@"Aid"]){
-        AGRegex *aidRegex = [AGRegex regexWithPattern:@"(.+) \\[(\\w+)\\]$"];
+        AGRegex *aidRegex = [AGRegex regexWithPattern:@"(.+) {\\$\\[\\$}(\\w+){\\$\\]\\$}$"];
         AGRegexMatch *match = [aidRegex findInString:value];
         if(match){
             key = [[match groupAtIndex:2] fieldName];
@@ -168,7 +168,7 @@
     if(pages){
         AGRegex *pagesRegex = [AGRegex regexWithPattern:@"^([0-9]*)-([0-9]*)?"];
         AGRegexMatch *match = [pagesRegex findInString:pages];
-        if([match count] == 2){
+        if([match count] == 3){
             NSMutableString *page = [[match groupAtIndex:1] mutableCopy];
             NSString *endPage = [match groupAtIndex:2];
             [page appendString:@"--"];
@@ -176,6 +176,7 @@
                 [page appendString:[page substringToIndex:[page length] - [endPage length] - 2]];
             [page appendString:endPage];
             [pubDict setObject:page forKey:BDSKPagesString];
+            [page release];
         }
     }
 }
