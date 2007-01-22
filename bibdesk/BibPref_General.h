@@ -50,6 +50,7 @@
     IBOutlet NSButton *warnOnRenameGroupButton;
     IBOutlet NSButton *warnOnGenerateCiteKeysButton;
     IBOutlet NSTextField *defaultBibFileTextField;
+    IBOutlet NSButton *defaultBibFileButton;
 
 }
 

@@ -52,11 +52,14 @@
 
 - (void)updateUI{
     [startupBehaviorRadio selectCellWithTag:[[defaults objectForKey:BDSKStartupBehaviorKey] intValue]];
-    if([[defaults objectForKey:BDSKStartupBehaviorKey] intValue] != 3)
+    if([[defaults objectForKey:BDSKStartupBehaviorKey] intValue] != 3){
         [defaultBibFileTextField setEnabled:NO];
-    else
+        [defaultBibFileButton setEnabled:NO];
+    }else{
         [defaultBibFileTextField setEnabled:YES];
-	
+        [defaultBibFileButton setEnabled:YES];
+	}
+    
     NSData *aliasData = [defaults objectForKey:BDSKDefaultBibFileAliasKey];
     BDAlias *alias;
     if([aliasData length] && (alias = [BDAlias aliasWithData:aliasData]))
