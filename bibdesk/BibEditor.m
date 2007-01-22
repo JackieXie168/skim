@@ -3169,12 +3169,14 @@ static NSString *queryStringWithCiteKey(NSString *citekey)
 	// we shouldn't check external items
     if (isEditable == NO)
         return YES;
-    
-    // User may have started editing some field, e.g. deleted the citekey and not tabbed out; if the user then chooses to discard, the finalizeChangesPreservingSelection: in windowWillClose: ultimately results in a crash due to OAApplication's sheet queue interaction with modal BDSKAlerts.  Hence, we need to call it earlier.
+        
+    // User may have started editing some field, e.g. deleted the citekey and not tabbed out; if the user then chooses to discard, the finalizeChangesPreservingSelection: in windowWillClose: ultimately results in a crash due to OAApplication's sheet queue interaction with modal BDSKAlerts.  Hence, we need to call it earlier.  
     [self finalizeChangesPreservingSelection:NO];
     
+    // @@ Some of this might be handled automatically for us if we didn't use endEditingFor: to basically override formatter return values.  Forcing the field editor to end editing has always been problematic (see the comments in some of the sheet callbacks).  Perhaps we should just return NO here if [[self window] makeFirstResponder:[self window]] fails, rather than using finalizeChangesPreservingSelection:'s brute force behavior.
+
     // finalizeChangesPreservingSelection: may end up triggering other sheets, as well (move file, for example; bug #1565645), and we don't want to close the window when it has a sheet attached, since it's waiting for user input at that point.  This is sort of a hack, but there's too much state for us to keep track of and decide if the window should really close.
-    if ([sender attachedSheet])
+    if ([[self window] attachedSheet] != nil)
         return NO;
     
     NSString *errMsg = nil;
