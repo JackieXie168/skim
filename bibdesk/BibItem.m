@@ -1184,9 +1184,13 @@ static Boolean stringIsEqualToString(const void *value1, const void *value2) { r
 														withModDate:[self dateModified]];
 	}
 	
-	NSString *msg = [NSString stringWithFormat:@"%@ %@",
-		NSLocalizedString(@"Add data for field:", @"Default value for new field"), key];
-	[self setField:key toValue:msg];
+	NSString *defaultValue = nil;
+	if ([key isBooleanField] || [key isTriStateField] || [key isRatingField]) {
+        defaultValue = @"";
+    } else {
+        defaultValue = [NSString stringWithFormat:@"%@ %@",NSLocalizedString(@"Add data for field:", @"Default value for new field"), key];
+    }
+    [self setField:key toValue:defaultValue];
 	
 	if (date != nil) {
 		[pubFields setObject:[date description] forKey:BDSKDateModifiedString];
