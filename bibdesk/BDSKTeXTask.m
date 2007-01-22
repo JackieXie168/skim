@@ -240,44 +240,55 @@
     OSAtomicCompareAndSwap32Barrier(1, 0, (int32_t *)&flags.hasPDFData);
     OSAtomicCompareAndSwap32Barrier(1, 0, (int32_t *)&flags.hasRTFData);
     
-	// make sure the PATH environment variable is set correctly
-    NSString *pdfTeXBinPathDir = [[[OFPreferenceWrapper sharedPreferenceWrapper] objectForKey:BDSKTeXBinPathKey] stringByDeletingLastPathComponent];
+    @try{
+        // make sure the PATH environment variable is set correctly
+        NSString *pdfTeXBinPathDir = [[[OFPreferenceWrapper sharedPreferenceWrapper] objectForKey:BDSKTeXBinPathKey] stringByDeletingLastPathComponent];
 
-    if(![pdfTeXBinPathDir isEqualToString:binDirPath]){
-        [binDirPath release];
-        binDirPath = [pdfTeXBinPathDir retain];
-        NSString *original_path = [NSString stringWithCString: getenv("PATH")];
-        NSString *new_path = [NSString stringWithFormat: @"%@:%@", original_path, binDirPath];
-        setenv("PATH", [new_path cString], 1);
-    }
+        if(![pdfTeXBinPathDir isEqualToString:binDirPath]){
+            [binDirPath release];
+            binDirPath = [pdfTeXBinPathDir retain];
+            NSString *original_path = [NSString stringWithCString: getenv("PATH")];
+            NSString *new_path = [NSString stringWithFormat: @"%@:%@", original_path, binDirPath];
+            setenv("PATH", [new_path cString], 1);
+        }
+            
+        rv = ([self writeTeXFile:(flag == BDSKGenerateLTB)] &&
+              [self writeBibTeXFile:bibStr] &&
+              [self runTeXTasksForLaTeX]);
         
-    rv = ([self writeTeXFile:(flag == BDSKGenerateLTB)] &&
-          [self writeBibTeXFile:bibStr] &&
-          [self runTeXTasksForLaTeX]);
-    
-    if(rv){
-		if (flag == BDSKGenerateLTB)
-            OSAtomicCompareAndSwap32Barrier(0, 1, (int32_t *)&flags.hasLTB);
-		else
-            OSAtomicCompareAndSwap32Barrier(0, 1, (int32_t *)&flags.hasLaTeX);
-		
-		if(flag > BDSKGenerateLaTeX){
-            rv = [self runTeXTasksForPDF];
-			
-			if(rv){
+        if(rv){
+            if (flag == BDSKGenerateLTB)
+                OSAtomicCompareAndSwap32Barrier(0, 1, (int32_t *)&flags.hasLTB);
+            else
+                OSAtomicCompareAndSwap32Barrier(0, 1, (int32_t *)&flags.hasLaTeX);
+            
+            if(flag > BDSKGenerateLaTeX){
+                rv = [self runTeXTasksForPDF];
+                
+                if(rv){
 
-                OSAtomicCompareAndSwap32Barrier(0, 1, (int32_t *)&flags.hasPDFData);
-				
-				if(flag > BDSKGeneratePDF){
-						rv = [self runTeXTaskForRTF];
-					
-					if(rv){
-                        OSAtomicCompareAndSwap32Barrier(0, 1, (int32_t *)&flags.hasRTFData);
-					}
-				}
-			}
-		}
-	}
+                    OSAtomicCompareAndSwap32Barrier(0, 1, (int32_t *)&flags.hasPDFData);
+                    
+                    if(flag > BDSKGeneratePDF){
+                            rv = [self runTeXTaskForRTF];
+                        
+                        if(rv){
+                            OSAtomicCompareAndSwap32Barrier(0, 1, (int32_t *)&flags.hasRTFData);
+                        }
+                    }
+                }
+            }
+        }
+    }
+    @catch(id exception){
+        NSLog(@"discarding exception %@ in task %@", exception, self);
+        
+        // reset all flags
+        OSAtomicCompareAndSwap32Barrier(1, 0, (int32_t *)&flags.hasLTB);
+        OSAtomicCompareAndSwap32Barrier(1, 0, (int32_t *)&flags.hasLaTeX);
+        OSAtomicCompareAndSwap32Barrier(1, 0, (int32_t *)&flags.hasPDFData);
+        OSAtomicCompareAndSwap32Barrier(1, 0, (int32_t *)&flags.hasRTFData);
+    }        
 	
 	if (nil != taskFinishedInvocation) {
         [taskFinishedInvocation setArgument:&rv atIndex:3];
@@ -651,24 +662,24 @@
         success = NO;
     }
     
-    NSDate *hardLimit = [[NSDate alloc] initWithTimeIntervalSinceNow:10];
-    BOOL isRunning = [currentTask isRunning];
+    CFAbsoluteTime timeToKill = CFAbsoluteTimeGetCurrent() + 30.0f;
+    NSDate *distantFuture = [NSDate distantFuture];
     
-    while (isRunning){
-        NSDate *limit = [[NSDate alloc] initWithTimeIntervalSinceNow:1]; // runs about 2x per second
-        [[NSRunLoop currentRunLoop] runMode:NSDefaultRunLoopMode
-                                 beforeDate:limit];
-        [limit release];
-        if([(NSDate *)[NSDate date] compare:hardLimit] == NSOrderedDescending){
-            // no single task should take this long, so we'll bail out
-            // this appears to happen occasionally if you're changing selection continuously
+    // we're basically doing what -[NSTask waitUntilExit] does, with the additional twist of a hard limit on the time a process can run (30 seconds for a LaTeX run is a long time, even on a slow machine)
+    BOOL run;    
+    do {
+        run = [[NSRunLoop currentRunLoop] runMode:NSDefaultRunLoopMode beforeDate:distantFuture] && [currentTask isRunning];
+
+        if(CFAbsoluteTimeGetCurrent() > timeToKill){
+            NSLog(@"killing task %@ at path %@", currentTask, binPath);
             [currentTask terminate];
             success = NO;
             break;
         }
-        isRunning = [currentTask isRunning];
-    }
-    [hardLimit release];
+    } while (run);
+    
+    // isRunning may return NO before the task has terminated, so we need to make sure it's done, or else NSTask raises an exception and our status flags are hosed
+    [currentTask terminate];
     
     if (0 != [currentTask terminationStatus])
         success = NO;
