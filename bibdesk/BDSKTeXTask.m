@@ -662,27 +662,21 @@
         success = NO;
     }
     
-    CFAbsoluteTime timeToKill = CFAbsoluteTimeGetCurrent() + 30.0f;
-    NSDate *distantFuture = [NSDate distantFuture];
-    
-    // we're basically doing what -[NSTask waitUntilExit] does, with the additional twist of a hard limit on the time a process can run (30 seconds for a LaTeX run is a long time, even on a slow machine)
-    BOOL run;    
-    do {
-        run = [[NSRunLoop currentRunLoop] runMode:NSDefaultRunLoopMode beforeDate:distantFuture] && [currentTask isRunning];
-
-        if(CFAbsoluteTimeGetCurrent() > timeToKill){
-            NSLog(@"killing task %@ at path %@", currentTask, binPath);
-            [currentTask terminate];
+    if (success) {
+        NSDate *limitDate = [NSDate dateWithTimeIntervalSinceNow:30.0f];
+        
+        // we're basically doing what -[NSTask waitUntilExit] does, with the additional twist of a hard limit on the time a process can run (30 seconds for a LaTeX run is a long time, even on a slow machine)
+        BOOL run;    
+        do {
+            run = [[NSRunLoop currentRunLoop] runMode:NSDefaultRunLoopMode beforeDate:limitDate] && [currentTask isRunning];
+        } while (run);
+        
+        // isRunning may return NO before the task has terminated, so we need to make sure it's done, or else NSTask raises an exception and our status flags are hosed
+        [currentTask terminate];
+        
+        if (0 != [currentTask terminationStatus])
             success = NO;
-            break;
-        }
-    } while (run);
-    
-    // isRunning may return NO before the task has terminated, so we need to make sure it's done, or else NSTask raises an exception and our status flags are hosed
-    [currentTask terminate];
-    
-    if (0 != [currentTask terminationStatus])
-        success = NO;
+    }
     
     [currentTask release];
     currentTask = nil;
