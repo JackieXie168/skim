@@ -17,6 +17,7 @@
             LANGUAGE = ObjC; 
             OUTLETS = {
                 checkForUpdatesButton = NSPopUpButton; 
+                defaultBibFileButton = NSButton; 
                 defaultBibFileTextField = NSTextField; 
                 editOnPasteButton = NSButton; 
                 emailTemplatePopup = NSPopUpButton; 
