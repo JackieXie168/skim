@@ -102,7 +102,8 @@ static BOOL addValuesFromEntryToDictionary(AST *entry, NSMutableDictionary *dict
      
      */
 
-    AGRegex *btRegex = [[AGRegex alloc] initWithPattern:/* type of item */ @"^[ \\t]*@[[:alpha:]]+[ \\t]*[{(]" 
+    AGRegex *btRegex = [[AGRegex alloc] initWithPattern:/* spaces       */ @"^[ \\t]*"
+                                                        /* type of item */ @"@[[:alpha:]]+[ \\t]*[{(]" 
                                                         /* spaces       */ @"[ \\n\\t]*" 
                                                         /* cite key     */ @"[a-zA-Z0-9\\.,:/*!^_-]+?" 
                                                         /* spaces       */ @"[ \\n\\t]*," 
@@ -117,7 +118,8 @@ static BOOL addValuesFromEntryToDictionary(AST *entry, NSMutableDictionary *dict
 
 + (BOOL)canParseStringAfterFixingKeys:(NSString *)string{
 	// ^(@[[:alpha:]]+{),?$ will grab either "@type{,eol" or "@type{eol", which is what we get from Bookends and EndNote, respectively.
-	AGRegex *theRegex = [[AGRegex alloc]  initWithPattern:@"^[ \\t]*@[[:alpha:]]+{,?$" options:AGRegexMultiline];
+    // same regex used in -[NSString stringWithPhoneyCiteKeys:]
+	AGRegex *theRegex = [[AGRegex alloc]  initWithPattern:@"^[ \\t]*@[[:alpha:]]+[ \\t]*{[ \\t]*,?$" options:AGRegexMultiline];
     
     // AGRegex doesn't recognize \r as a $, so we normalize it first (bug #1420791)
     NSString *normalizedString = [string stringByNormalizingSpacesAndLineBreaks];
