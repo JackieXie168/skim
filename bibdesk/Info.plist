@@ -854,9 +854,9 @@
 						<real>23</real>
 					</dict>
 					<key>Current Publication Type String</key>
-					<string>Inproceedings</string>
+					<string>article</string>
 					<key>Current Quick Search Key</key>
-					<string>Keywords</string>
+					<string>Any Field</string>
 					<key>Current Quick Search Text Dictionary</key>
 					<dict/>
 					<key>Default Bib File</key>
