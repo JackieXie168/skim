@@ -90,13 +90,14 @@ enum {
         searchType = FCTextualSearch;
         searchScope = FCContainsSearch;
         ignoreCase = YES;
+        wrapAround = YES;
         searchSelection = YES;
         findAsMacro = NO;
         replaceAsMacro = NO;
 		overwrite = NO;
 		
 		NSString *field = [[OFPreferenceWrapper sharedPreferenceWrapper] objectForKey:BDSKFindControllerLastFindAndReplaceFieldKey];
-		if([[[OFPreferenceWrapper sharedPreferenceWrapper] stringArrayForKey:BDSKLocalFileFieldsKey] containsObject:field])
+		if([field isLocalFileField])
 			shouldMove = NSMixedState;
 		else
 			shouldMove = NSOffState;
@@ -161,11 +162,11 @@ enum {
 }
 
 - (void)updateUI{
-	if(![self findAsMacro] && [self replaceAsMacro]){
+	if(NO == [self findAsMacro] && [self replaceAsMacro] && NO == [self overwrite]){
         [searchScopePopUpButton setEnabled:NO];
 		[statusBar setStringValue:NSLocalizedString(@"With these settings, only full strings will be replaced", @"Status message")];
 	}else{
-        [searchScopePopUpButton setEnabled:YES];
+        [searchScopePopUpButton setEnabled:NO == [self overwrite]];
 		[statusBar setStringValue:@""];
     }
     
@@ -194,7 +195,7 @@ enum {
 
 - (void)setField:(NSString *)newField {
     [[OFPreferenceWrapper sharedPreferenceWrapper] setObject:newField forKey:BDSKFindControllerLastFindAndReplaceFieldKey];
-	if([[[OFPreferenceWrapper sharedPreferenceWrapper] stringArrayForKey:BDSKLocalFileFieldsKey] containsObject:newField])
+	if([newField isLocalFileField])
 		shouldMove = NSMixedState;
 	else
 		shouldMove = NSOffState;
@@ -259,6 +260,16 @@ enum {
 - (void)setIgnoreCase:(BOOL)newIgnoreCase {
     if (ignoreCase != newIgnoreCase) {
         ignoreCase = newIgnoreCase;
+    }
+}
+
+- (BOOL)wrapAround {
+    return wrapAround;
+}
+
+- (void)setWrapAround:(BOOL)newWrapAround {
+    if (wrapAround != newWrapAround) {
+        wrapAround = newWrapAround;
     }
 }
 
@@ -678,7 +689,7 @@ enum {
 
     NSEnumerator *selPubE = [[theDocument selectedPublications] objectEnumerator];
     BibItem *selItem = [selPubE nextObject];
-    int indexOfSelectedItem;
+    unsigned indexOfSelectedItem;
     if(selItem == nil){ // no selection, so select the first one
         indexOfSelectedItem = 0;
     } else {        
@@ -694,11 +705,11 @@ enum {
         indexOfSelectedItem = [currItems indexOfObjectIdenticalTo:selItem];
         if(indexOfSelectedItem != NSNotFound){ // we've already selected an item from the search results...so select the next one
             if(next){
-				if(++indexOfSelectedItem >= (int)[currItems count])
-					indexOfSelectedItem = 0; // wrap around
+				if(++indexOfSelectedItem == [currItems count])
+					indexOfSelectedItem = wrapAround ? 0 : NSNotFound; // wrap around
 			}else{
-				if(--indexOfSelectedItem < 0)
-					indexOfSelectedItem = [currItems count] - 1; // wrap around
+				if(indexOfSelectedItem-- == 0)
+					indexOfSelectedItem = wrapAround ? [currItems count] - 1 : NSNotFound; // wrap around
 			}
         } else {
             // the selected pub was some item we don't care about, so select item 0
@@ -706,7 +717,12 @@ enum {
         }
     }
     
-    [theDocument selectPublication:[currItems objectAtIndex:indexOfSelectedItem]];
+    if(indexOfSelectedItem != NSNotFound) {
+        [theDocument selectPublication:[currItems objectAtIndex:indexOfSelectedItem]];
+    } else {
+        NSBeep();
+		[statusBar setStringValue:NSLocalizedString(@"Nothing found", @"Status message")];
+    }
 }
 
 - (void)replaceAllInSelection:(BOOL)selection{

@@ -49,7 +49,7 @@
     IBOutlet NSPopUpButton *searchTypePopUpButton;
     IBOutlet NSPopUpButton *searchScopePopUpButton;
     IBOutlet NSButton *ignoreCaseCheckbox;
-    IBOutlet NSButton *searchSelectionCheckbox;
+    IBOutlet NSMatrix *searchSelectionMatrix;
     IBOutlet NSComboBox *findComboBox;
     IBOutlet NSComboBox *replaceComboBox;
     IBOutlet NSButton *findAsMacroCheckbox;
@@ -67,6 +67,7 @@
 	int searchType;
 	int searchScope;
 	BOOL ignoreCase;
+	BOOL wrapAround;
 	BOOL searchSelection;
 	BOOL findAsMacro;
 	BOOL replaceAsMacro;
@@ -134,6 +135,9 @@
 
 - (BOOL)ignoreCase;
 - (void)setIgnoreCase:(BOOL)newIgnoreCase;
+
+- (BOOL)wrapAround;
+- (void)setWrapAround:(BOOL)newWrapAround;
 
 - (BOOL)searchSelection;
 - (void)setSearchSelection:(BOOL)newSearchSelection;
