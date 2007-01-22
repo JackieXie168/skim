@@ -1551,7 +1551,6 @@ originalContentsURL:(NSURL *)absoluteOriginalContentsURL
     NSMutableString *s = [NSMutableString string];
 	NSEnumerator *e = [items objectEnumerator];
 	BibItem *pub;
-    NSString *bibString = nil;
 	
     while(pub = [e nextObject])
             [s appendStrings:@"\n", [pub bibTeXStringDroppingInternal:drop], @"\n", nil];

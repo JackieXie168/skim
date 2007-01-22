@@ -129,7 +129,6 @@
         return;
     
     BDAlias *alias = [BDAlias aliasWithURL:[sheet URL]];
-    NSString *path = [[sheet filenames] objectAtIndex: 0];
     [defaultBibFileTextField setStringValue:[[[sheet URL] path] stringByAbbreviatingWithTildeInPath]];    
     
     [defaults setObject:[alias aliasData] forKey:BDSKDefaultBibFileAliasKey];
