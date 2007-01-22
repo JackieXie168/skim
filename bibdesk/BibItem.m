@@ -1689,7 +1689,7 @@ Boolean stringContainsLossySubstring(NSString *theString, NSString *stringToFind
            [data appendDataFromString:@"{" encoding:encoding error:&error] &&
            [data appendDataFromString:[self citeKey] encoding:encoding error:&error];
     if(isOK == NO)
-        [error setValue:[NSString stringWithFormat:NSLocalizedString(@"Unable to convert cite key of item with cite key \"%@\".", @"string encoding error context"), BDSKCiteKeyString, [self citeKey]] forKey:NSLocalizedRecoverySuggestionErrorKey];
+        [error setValue:[NSString stringWithFormat:NSLocalizedString(@"Unable to convert cite key of item with cite key \"%@\".", @"string encoding error context"), [self citeKey]] forKey:NSLocalizedRecoverySuggestionErrorKey];
     
     NSSet *personFields = [btm personFieldsSet];
     
