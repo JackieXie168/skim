@@ -1409,10 +1409,20 @@ static int numberOfOpenEditors = 0;
        [newField isEqualToString:oldField] || [[publication allFieldNames] containsObject:newField])
         return;
     
+    NSString *currentType = [publication pubType];
+    BibTypeManager *typeMan = [BibTypeManager sharedManager];
+    NSMutableSet *nonNilFields = [NSMutableSet setWithObjects:BDSKLocalUrlString, BDSKUrlString, BDSKAnnoteString, BDSKAbstractString, BDSKRssDescriptionString, nil];
+	[nonNilFields addObjectsFromArray:[typeMan requiredFieldsForType:currentType]];
+	[nonNilFields addObjectsFromArray:[typeMan optionalFieldsForType:currentType]];
+	[nonNilFields addObjectsFromArray:[typeMan userDefaultFieldsForType:currentType]];
+    
     [tabView selectFirstTabViewItem:nil];
     [publication addField:newField];
     [publication setField:newField toValue:[publication valueOfField:oldField]];
-    [publication removeField:oldField];
+    if([nonNilFields containsObject:oldField])
+        [publication setField:oldField toValue:@""];
+    else
+        [publication removeField:oldField];
     autoGenerateStatus = [self userChangedField:oldField from:oldValue to:@""];
     [self userChangedField:newField from:@"" to:oldValue didAutoGenerate:autoGenerateStatus];
     [[self undoManager] setActionName:NSLocalizedString(@"Change Field Name", @"Undo action name")];
@@ -1421,15 +1431,11 @@ static int numberOfOpenEditors = 0;
 }
 
 - (IBAction)raiseChangeFieldName:(id)sender{
-    NSString *currentType = [publication pubType];
     BibTypeManager *typeMan = [BibTypeManager sharedManager];
     NSArray *currentFields = [publication allFieldNames];
     NSArray *fieldNames = [typeMan allFieldNamesIncluding:[NSArray arrayWithObject:BDSKCrossrefString] excluding:currentFields];
 	NSMutableArray *removableFields = [[publication allFieldNames] mutableCopy];
-	[removableFields removeObjectsInArray:[NSArray arrayWithObjects:BDSKLocalUrlString, BDSKUrlString, BDSKAnnoteString, BDSKAbstractString, BDSKRssDescriptionString, nil]];
-	[removableFields removeObjectsInArray:[typeMan requiredFieldsForType:currentType]];
-	[removableFields removeObjectsInArray:[typeMan optionalFieldsForType:currentType]];
-	[removableFields removeObjectsInArray:[typeMan userDefaultFieldsForType:currentType]];
+    [removableFields removeObjectsInArray:[[typeMan noteFieldsSet] allObjects]];
     
     if([removableFields count] == 0){
         NSBeep();
@@ -1457,6 +1463,7 @@ static int numberOfOpenEditors = 0;
     }else if(sender == self){
         // double clicked title of a field we cannot change
         [changeFieldController release];
+        [removableFields release];
         return;
     }
     
