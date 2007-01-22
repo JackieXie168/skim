@@ -96,6 +96,18 @@
         if([value rangeOfString:@","].location == NSNotFound && lastSpace != NSNotFound)
             [value insertString:@"," atIndex:lastSpace];
     }
+    
+    // the AID tag contains links like DOI, and looks like "10.1038/ng1726 [doi]"
+    if([key isEqualToString:@"Aid"]){
+        AGRegex *aidRegex = [AGRegex regexWithPattern:@"(.+) \\[(\\w+)\\]$"];
+        AGRegexMatch *match = [aidRegex findInString:value];
+        if(match){
+            key = [[match groupAtIndex:2] fieldName];
+            [value setString:[match groupAtIndex:1]];
+            oldString = [pubDict objectForKey:key];
+        }
+    }
+    
 	// concatenate authors and keywords, as they can appear multiple times
 	// other duplicates keys should have at least different tags, so we use the tag instead
 	if(![NSString isEmptyString:oldString]){
@@ -151,6 +163,21 @@
         [pubDict setObject:authors forKey:BDSKAuthorString];
 		[pubDict removeObjectForKey:@"Au"];
 	}
+    
+    NSString *pages = [pubDict objectForKey:BDSKPagesString];
+    if(pages){
+        AGRegex *pagesRegex = [AGRegex regexWithPattern:@"^([0-9]*)-([0-9]*)?"];
+        AGRegexMatch *match = [pagesRegex findInString:pages];
+        if([match count] == 2){
+            NSMutableString *page = [[match groupAtIndex:1] mutableCopy];
+            NSString *endPage = [match groupAtIndex:2];
+            [page appendString:@"--"];
+            if([page length] - 2 > [endPage length])
+                [page appendString:[page substringToIndex:[page length] - [endPage length] - 2]];
+            [page appendString:endPage];
+            [pubDict setObject:page forKey:BDSKPagesString];
+        }
+    }
 }
 
 // Adds ER tags to a stream of PubMed records, so it's (more) valid RIS
