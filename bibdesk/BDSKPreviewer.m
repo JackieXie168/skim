@@ -55,17 +55,21 @@
 static NSString *BDSKPreviewPanelFrameAutosaveName = @"BDSKPreviewPanel";
 
 @protocol BDSKPreviewerServerThread <BDSKAsyncDOServerThread>
-- (oneway void)runTeXTaskWithString:(NSString *)string;
+- (oneway void)processQueueUntilEmpty;
 @end
 
 @protocol BDSKPreviewerServerMainThread <BDSKAsyncDOServerMainThread>
-- (oneway void)serverFinishedWithResult:(BOOL)success;
+- (void)serverFinishedWithResult:(BOOL)success;
 @end
 
-@interface BDSKPreviewerServer : BDSKAsynchronousDOServer <BDSKPreviewerServerThread, BDSKPreviewerServerMainThread> {
+@interface BDSKPreviewerServer : BDSKAsynchronousDOServer {
     BDSKTeXTask *texTask;
     id delegate;
     NSString *bibString;
+    NSRecursiveLock *queueLock;
+    NSMutableArray *queue;
+    volatile int32_t isProcessing __attribute__ ((aligned (4)));
+    volatile int32_t notifyWhenDone __attribute__ ((aligned (4)));
 }
 
 - (id)delegate;
@@ -291,7 +295,7 @@ static NSString *BDSKPreviewPanelFrameAutosaveName = @"BDSKPreviewPanel";
 }
 
 - (void)displayPreviewsForState:(BDSKPreviewState)state{
-    
+
     NSAssert2([NSThread inMainThread], @"-[%@ %@] must be called from the main thread!", [self class], NSStringFromSelector(_cmd));
     
     // From Shark: if we were waiting before, and we're still waiting, there's nothing to do.  This is a big performance win when scrolling the main tableview selection, primarily because changing the text storage of rtfPreviewView ends up calling fixFontAttributes.  This in turn causes a disk hit at the ATS cache due to +[NSFont coveredCharacterCache], and parsing the binary plist uses lots of memory.
@@ -482,6 +486,10 @@ static NSString *BDSKPreviewPanelFrameAutosaveName = @"BDSKPreviewPanel";
         texTask = [[BDSKTeXTask alloc] initWithFileName:@"bibpreview"];
         delegate = nil;
         bibString = nil;
+        queueLock = [NSRecursiveLock new];
+        queue = [NSMutableArray new];
+        isProcessing = 0;
+        notifyWhenDone = 0;
     }
     return self;
 }
@@ -489,6 +497,8 @@ static NSString *BDSKPreviewPanelFrameAutosaveName = @"BDSKPreviewPanel";
 - (void)dealloc;
 {
     [texTask release];
+    [queueLock release];
+    [queue release];
     [super dealloc];
 }
 
@@ -518,37 +528,87 @@ static NSString *BDSKPreviewPanelFrameAutosaveName = @"BDSKPreviewPanel";
 - (void)runTeXTaskInBackgroundWithString:(NSString *)string{
     // the delayed perform is because [self serverOnServerThread] returns nil the first time this is received, since the server thread hasn't had time to set up completely
     id server = [self serverOnServerThread];
-    if (server)
-        [server runTeXTaskWithString:string];
-    else
+    if (server){
+        if(string){
+            [queueLock lock];
+            [queue addObject:string];
+            [queueLock unlock];
+            // If it's still working, we don't have to do anything; sending too many of these messages just piles them up in the DO queue until the port starts dropping them.
+            if(isProcessing == 0)
+                [server processQueueUntilEmpty];
+            // start sending task finished messages to the previewer
+            OSAtomicCompareAndSwap32Barrier(0, 1, (int32_t *)&notifyWhenDone);
+        }else{
+            // don't notify the previewer of any pending task results; it might be better if the previewer learned to ignore the messages?
+            OSAtomicCompareAndSwap32Barrier(1, 0, (int32_t *)&notifyWhenDone);
+        }
+    }else{
         [self performSelector:_cmd withObject:string afterDelay:0.1];
+    }
 }
 
 // Server thread protocol
 
-- (oneway void)runTeXTaskWithString:(NSString *)aString{
-    [bibString release];
-    bibString = [aString retain];
+- (oneway void)processQueueUntilEmpty{
+    OSAtomicCompareAndSwap32Barrier(0, 1, (int32_t *)&isProcessing);
     
-    if([texTask isProcessing] || bibString == nil)
-        return;
+    NSString *btString = nil;
+    [queueLock lock];
+    NSDate *distantFuture = [NSDate distantFuture];
+    NSRunLoop *rl = [NSRunLoop currentRunLoop];
     
-    NSString *string;
-    BOOL success;
-    
-    do{
-        string = bibString;
-        bibString = nil;
-        success = [texTask runWithBibTeXString:string];
-        [string release];
-    }while(bibString != nil);
-    
-    [[self serverOnMainThread] serverFinishedWithResult:success];
+    do { 
+        // we're only interested in the latest addition to the queue
+        btString = [[queue lastObject] retain];
+        
+        // get rid of everything in the queue, then allow the main thread to keep putting strings in it
+        [queue removeAllObjects];
+        [queueLock unlock];
+        
+        BOOL success = YES;
+        if (btString) {
+            BOOL didRun = YES;
+            if ([texTask isProcessing]) {
+                // poll the runloop while the task is still running
+                do {
+                    didRun = [rl runMode:NSDefaultRunLoopMode beforeDate:distantFuture];
+                } while (didRun && [texTask isProcessing]);
+                
+                // get the latest string; the queue may have changed while we waited for this task to finish (doesn't seem to be the case in practice)
+                [queueLock lock];
+                if ([queue count]) {
+                    [btString release];
+                    btString = [[queue lastObject] retain];
+                }
+                [queueLock unlock];
+            }
+            // previous task is done, so we can start a new one
+            success = [texTask runWithBibTeXString:btString];
+            [btString release];
+        }
+        
+        // always lock going into the top of the loop for checking count
+        [queueLock lock];
+        
+        // Don't notify the main thread until we've processed all of the entries in the queue
+        if ([queue count] == 0 && 1 == notifyWhenDone) {
+            // If the main thread is blocked on the queueLock, we're hosed because it can't service the DO port!
+            [queueLock unlock];
+            [[self serverOnMainThread] serverFinishedWithResult:success];
+            [queueLock lock];
+        }
+        
+    } while ([queue count] && 1 == notifyWhenDone);
+
+    // swap, then unlock, so if a potential caller is blocking on the lock, they know to call processQueueUntilEmpty
+    OSAtomicCompareAndSwap32Barrier(1, 0, (int32_t *)&isProcessing);
+    [queueLock unlock];
 }
 
 // Main thread protocol
 
-- (oneway void)serverFinishedWithResult:(BOOL)success{
+// If this message is sent oneway, there's no guarantee that any results exist when it's delivered, since some other task could have stomped on the files by that time, and the success variable would be stale.
+- (void)serverFinishedWithResult:(BOOL)success{
     if([delegate respondsToSelector:@selector(serverFinishedWithResult:)])
         [delegate serverFinishedWithResult:success];
 }
