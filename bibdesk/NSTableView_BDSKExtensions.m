@@ -269,6 +269,18 @@ static IMP originalDragImageForRowsWithIndexesTableColumnsEventOffset;
 
 - (NSArray *)tableColumnIdentifiers { return [[self tableColumns] valueForKey:@"identifier"]; }
 
+- (IBAction)invertSelection:(id)sender;
+{
+    NSIndexSet *selRows = [self selectedRowIndexes];
+    if ([selRows count]) {
+        NSMutableIndexSet *indexesToSelect = [NSMutableIndexSet indexSetWithIndexesInRange:NSMakeRange(0, [self numberOfRows])];
+        [indexesToSelect removeIndexes:selRows];
+        [self selectRowIndexes:indexesToSelect byExtendingSelection:NO];
+    } else {
+        NSBeep();
+    }
+}
+
 @end
 
 #pragma mark -

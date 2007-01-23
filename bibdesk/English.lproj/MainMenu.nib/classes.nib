@@ -125,6 +125,7 @@
                 importFromFileAction = id; 
                 importFromPasteboardAction = id; 
                 importFromWebAction = id; 
+                invertSelection = id; 
                 makeNewEmptyCollection = id; 
                 makeNewExternalSource = id; 
                 makeNewNotepad = id; 
