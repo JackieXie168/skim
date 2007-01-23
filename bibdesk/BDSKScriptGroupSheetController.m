@@ -214,7 +214,7 @@ static BOOL isExecutableFileAtPath(NSString *path)
 
 #pragma mark NSEditorRegistration
 
-- (void)objectDidBeginEditing:(id)editor {log_method();
+- (void)objectDidBeginEditing:(id)editor {
     if (CFArrayGetFirstIndexOfValue(editors, CFRangeMake(0, CFArrayGetCount(editors)), editor) == -1)
 		CFArrayAppendValue((CFMutableArrayRef)editors, editor);		
 }
