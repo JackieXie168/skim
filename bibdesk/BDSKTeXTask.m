@@ -194,15 +194,16 @@
 }
 
 - (void)terminate{
-    
-    NSDate *referenceDate = [NSDate date];
+    // this method is mainly to ensure that we don't leave child processes around when exiting; it bypasses the processingLock, so this object is useless after it gets a -terminate message
+    CFAbsoluteTime killTime = CFAbsoluteTimeGetCurrent() + 2.0f;
     
     while ([self isProcessing] && currentTask){
-        // if the task is still running after 2 seconds, kill it; we can't sleep here, because the main thread (usually this one) may be updating the UI for a task
-        if([referenceDate timeIntervalSinceNow] > -2.0){
+        // if the task is still running after 2 seconds, kill it; we can't sleep here, because this might be the main thread
+        if(CFAbsoluteTimeGetCurrent() > killTime){
             NSLog(@"Terminating task %@", self);
             [currentTask terminate];
-            break;
+            [currentTask release];
+            currentTask = nil;
         }
     }    
 }
