@@ -119,6 +119,9 @@ static IMP originalDragImageForRowsWithIndexesTableColumnsEventOffset;
 	else if (action == @selector(duplicate:)) {
 		return [self validateDelegatedMenuItem:menuItem defaultDataSourceSelector:@selector(tableView:writeRows:toPasteboard:)];
 	}
+	else if (action == @selector(invertSelection:)) {
+		return [self allowsMultipleSelection] && [[self selectedRowIndexes] count];
+	}
     return YES; // we assume that any other implemented action is always valid
 }
 
