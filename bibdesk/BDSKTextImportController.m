@@ -639,21 +639,22 @@
 		NSRange selection = [textView selectedRange];
         int editedRow = -1;
 		id textDelegate = [textView delegate];
-        if(textDelegate == itemTableView || textDelegate == citeKeyField)
+        if(textDelegate == itemTableView || textDelegate == citeKeyField){
             firstResponder = textDelegate;
-        if(textDelegate == itemTableView)
-            editedRow = [itemTableView editedRow];
-        
-		// now make sure we submit the edit
-		if (NO == [[self window] makeFirstResponder:[self window]])
-			[[self window] endEditingFor:nil];
-        
-        if(shouldPreserveSelection && [[self window] makeFirstResponder:firstResponder]){
-            if(editedRow != -1)
-                [itemTableView editColumn:2 row:editedRow withEvent:nil select:YES];
-            if([[textView string] length] < NSMaxRange(selection)) // check range for safety
-                selection = NSMakeRange([[textView string] length], 0);
-            [textView setSelectedRange:selection];
+            if(textDelegate == itemTableView)
+                editedRow = [itemTableView editedRow];
+            
+            // now make sure we submit the edit
+            if (NO == [[self window] makeFirstResponder:[self window]])
+                [[self window] endEditingFor:nil];
+            
+            if(shouldPreserveSelection && [[self window] makeFirstResponder:firstResponder]){
+                if(editedRow != -1)
+                    [itemTableView editColumn:2 row:editedRow withEvent:nil select:YES];
+                if([[textView string] length] < NSMaxRange(selection)) // check range for safety
+                    selection = NSMakeRange([[textView string] length], 0);
+                [textView setSelectedRange:selection];
+            }
         }
 	}
 }
