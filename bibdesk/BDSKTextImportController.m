@@ -70,6 +70,8 @@
 - (void)handleFlagsChangedNotification:(NSNotification *)notification;
 - (void)handleBibItemChangedNotification:(NSNotification *)notification;
 
+- (void)finalizeChangesPreservingSelection:(BOOL)shouldPreserveSelection;
+
 - (void)loadPasteboardData;
 - (void)showWebViewWithURLString:(NSString *)urlString;
 - (void)setShowingWebView:(BOOL)showWebView;
@@ -269,8 +271,7 @@
     BibItem *newItem = (optionKey) ? [item copy] : [[BibItem alloc] init];
     
     // make the tableview stop editing:
-    if([[self window] makeFirstResponder:[self window]] == NO)
-        [[self window] endEditingFor:nil];
+    [self finalizeChangesPreservingSelection:NO];
     
 	[itemsAdded addObject:item];
     [document addPublication:item];
@@ -300,8 +301,7 @@
 
 - (IBAction)closeAction:(id)sender{
     // make the tableview stop editing:
-    if([[self window] makeFirstResponder:[self window]] == NO)
-        [[self window] endEditingFor:nil];
+    [self finalizeChangesPreservingSelection:NO];
     [super dismiss:sender];
 }
 
@@ -448,8 +448,7 @@
 
 - (IBAction)generateCiteKey:(id)sender{
     // make the tableview stop editing:
-    if([[self window] makeFirstResponder:[self window]] == NO)
-        [[self window] endEditingFor:nil];
+    [self finalizeChangesPreservingSelection:YES];
 	
     [item setCiteKey:[item suggestedCiteKey]];
     [[item undoManager] setActionName:NSLocalizedString(@"Generate Cite Key", @"Undo action name")];
@@ -474,8 +473,7 @@
 
 - (IBAction)consolidateLinkedFiles:(id)sender{
     // make the tableview stop editing:
-    if([[self window] makeFirstResponder:[self window]] == NO)
-        [[self window] endEditingFor:nil];
+    [self finalizeChangesPreservingSelection:YES];
 	
 	if ([item canSetLocalUrl] == NO){
 		NSString *message = NSLocalizedString(@"Not all fields needed for generating the file location are set.  Do you want me to file the paper now using the available fields, or cancel autofile for this paper?", @"Informative text in alert");
@@ -631,6 +629,33 @@
     } else {
         [itemTableView reloadData];
     }
+}
+
+- (void)finalizeChangesPreservingSelection:(BOOL)shouldPreserveSelection{
+    NSResponder *firstResponder = [[self window] firstResponder];
+    
+	if([firstResponder isKindOfClass:[NSText class]]){
+		NSText *textView = (NSText *)firstResponder;
+		NSRange selection = [textView selectedRange];
+        int editedRow = -1;
+		id textDelegate = [textView delegate];
+        if(textDelegate == itemTableView || textDelegate == citeKeyField)
+            firstResponder = textDelegate;
+        if(textDelegate == itemTableView)
+            editedRow = [itemTableView editedRow];
+        
+		// now make sure we submit the edit
+		if (NO == [[self window] makeFirstResponder:[self window]])
+			[[self window] endEditingFor:nil];
+        
+        if(shouldPreserveSelection && [[self window] makeFirstResponder:firstResponder]){
+            if(editedRow != -1)
+                [itemTableView editColumn:2 row:editedRow withEvent:nil select:YES];
+            if([[textView string] length] < NSMaxRange(selection)) // check range for safety
+                selection = NSMakeRange([[textView string] length], 0);
+            [textView setSelectedRange:selection];
+        }
+	}
 }
 
 #pragma mark Setup
