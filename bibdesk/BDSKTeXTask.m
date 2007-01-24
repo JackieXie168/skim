@@ -194,17 +194,11 @@
 }
 
 - (void)terminate{
-    // this method is mainly to ensure that we don't leave child processes around when exiting; it bypasses the processingLock, so this object is useless after it gets a -terminate message
-    CFAbsoluteTime killTime = CFAbsoluteTimeGetCurrent() + 2.0f;
-    
-    while ([self isProcessing] && currentTask){
-        // if the task is still running after 2 seconds, kill it; we can't sleep here, because this might be the main thread
-        if(CFAbsoluteTimeGetCurrent() > killTime){
-            NSLog(@"Terminating task %@", self);
-            [currentTask terminate];
-            [currentTask release];
-            currentTask = nil;
-        }
+    // This method is mainly to ensure that we don't leave child processes around when exiting; it bypasses the processingLock, so this object is useless after it gets a -terminate message.  We used to wait here for a few seconds, but the application would quit before time was up, and currentTask could be left running.
+    if ([self isProcessing] && currentTask){
+        [currentTask terminate];
+        [currentTask release];
+        currentTask = nil;
     }    
 }
 
@@ -512,10 +506,10 @@
 }
 
 // caller must have acquired wrlock on dataFileLock
-- (void)removeOutputFilesFromPreviousRun{
+- (void)removeLogFilesFromPreviousRun{
     // use FSDeleteObject for thread safety
     const FSRef fileRef;
-    NSArray *filesToRemove = [NSArray arrayWithObjects:pdfFilePath, rtfFilePath, bblFilePath, logFilePath, nil];
+    NSArray *filesToRemove = [NSArray arrayWithObjects:blgFilePath, logFilePath, nil];
     NSEnumerator *e = [filesToRemove objectEnumerator];
     NSString *path;
     CFAllocatorRef alloc = CFRetain(CFAllocatorGetDefault());
@@ -543,8 +537,8 @@
         return NO;
     }
 
-    // nuke the data files, otherwise we always return yes for hasData calls, even if the TeX run failed
-    [self removeOutputFilesFromPreviousRun];
+    // nuke the log files in case the run fails without generating new ones (not very likely)
+    [self removeLogFilesFromPreviousRun];
         
     if(![self runPDFTeXTask] ||
        ![self runBibTeXTask]){
