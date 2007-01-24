@@ -3133,18 +3133,16 @@ static NSString *queryStringWithCiteKey(NSString *citekey)
 	if([[OFPreferenceWrapper sharedPreferenceWrapper] objectForKey:BDSKSnoopDrawerSavedSizeKey] != nil)
         [documentSnoopDrawer setContentSize:NSSizeFromString([[OFPreferenceWrapper sharedPreferenceWrapper] objectForKey:BDSKSnoopDrawerSavedSizeKey])];
     [[[[documentSnoopDrawer contentView] subviews] firstObject] scrollToTop];
-}
-
-- (void)drawerDidOpen:(NSNotification *)notification{
-	[self updateDocumentSnoopButton];
+    
+    [self updateDocumentSnoopButton];
 }
 
 - (void)drawerWillClose:(NSNotification *)notification{
-	[[self window] makeFirstResponder:nil]; // this is necessary to avoid a crash after browsing
-}
-
-- (void)drawerDidClose:(NSNotification *)notification{
-	[self updateDocumentSnoopButton];
+    id firstResponder = [[self window] firstResponder];
+    if([firstResponder respondsToSelector:@selector(window)] == NO || [firstResponder window] != [self window])
+        [[self window] makeFirstResponder:nil]; // this is necessary to avoid a crash after browsing
+	
+    [self updateDocumentSnoopButton];
 }
 
 - (NSSize)drawerWillResizeContents:(NSDrawer *)sender toSize:(NSSize)contentSize{
