@@ -120,7 +120,7 @@ static IMP originalDragImageForRowsWithIndexesTableColumnsEventOffset;
 		return [self validateDelegatedMenuItem:menuItem defaultDataSourceSelector:@selector(tableView:writeRows:toPasteboard:)];
 	}
 	else if (action == @selector(invertSelection:)) {
-		return [self allowsMultipleSelection] && [[self selectedRowIndexes] count];
+		return [self allowsMultipleSelection];
 	}
     return YES; // we assume that any other implemented action is always valid
 }
@@ -275,7 +275,7 @@ static IMP originalDragImageForRowsWithIndexesTableColumnsEventOffset;
 - (IBAction)invertSelection:(id)sender;
 {
     NSIndexSet *selRows = [self selectedRowIndexes];
-    if ([selRows count] && [self allowsMultipleSelection]) {
+    if ([self allowsMultipleSelection]) {
         NSMutableIndexSet *indexesToSelect = [NSMutableIndexSet indexSetWithIndexesInRange:NSMakeRange(0, [self numberOfRows])];
         [indexesToSelect removeIndexes:selRows];
         [self selectRowIndexes:indexesToSelect byExtendingSelection:NO];
