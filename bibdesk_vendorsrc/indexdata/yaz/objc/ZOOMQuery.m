@@ -82,8 +82,8 @@
         _query = ZOOM_query_create();
         _queryString = [queryString copy];
         
-        int status, error, errorPosition;
-        const char *errstring;
+        int status, error, errorPosition = 0;
+        const char *errstring = "";
         
         // Accented chars don't seem to be handled properly by some servers, but they appear to work if the accents are removed first, so the sender may wish to do that transformation.  I tried passing a MARC-8 string, but it either returns 0 results or wrong results.
         status = ZOOM_query_ccl2rpn(_query, [_queryString UTF8String], conf, &error, &errstring, &errorPosition);
@@ -159,8 +159,10 @@
 {
     BOOL success;
     if (string && [@"" isEqualToString:string] == NO) {
-        int status, err, errorPosition;
-        const char *errstring;
+        int status, err, errorPosition = 0;
+        
+        // A user reported a crash under +[NSString stringWithFormat:...] because errstring and errorPosition apparently aren't initialized under all circumstances, and we were using garbage.
+        const char *errstring = "Unknown error";
         ZOOM_query query = ZOOM_query_create();
         status = ZOOM_query_ccl2rpn(query, [string UTF8String], _config, &err, &errstring, &errorPosition);
         if (status) {
