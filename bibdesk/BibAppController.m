@@ -76,7 +76,6 @@
 #import "BDSKDocumentController.h"
 #import "NSError_BDSKExtensions.h"
 #import "BDSKSpotlightIconController.h"
-#import <OmniAppKit/IconFamily.h>
 
 @implementation BibAppController
 
@@ -1286,13 +1285,7 @@ OFWeakRetainConcreteImplementation_NULL_IMPLEMENTATION
                     if(NO == [data writeToFile:path options:0 error:&error])
                         @throw [NSException exceptionWithName:NSInternalInconsistencyException reason:[NSString stringWithFormat:@"Unable to create cache file for %@", [anItem description]] userInfo:nil];
                     else {
-                        NSBitmapImageRep *iconRep = [BDSKSpotlightIconController imageRepWithMetadataItem:anItem];
-                        NSImage *icon = [[NSImage alloc] init];
-                        [icon addRepresentation:iconRep];
-                        IconFamily *iconFamily = [[IconFamily alloc] initWithThumbnailsOfImage:icon usingImageInterpolation:NSImageInterpolationHigh];
-                        [icon release];
-                        [iconFamily setAsCustomIconForFile:path];
-                        [iconFamily release];
+                        [[BDSKSpotlightIconController iconFamilyWithMetadataItem:metadata] setAsCustomIconForFile:path];
                     }
                 }
             }
