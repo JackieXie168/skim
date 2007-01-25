@@ -1572,7 +1572,7 @@ Boolean stringContainsLossySubstring(NSString *theString, NSString *stringToFind
 #pragma mark -
 #pragma mark BibTeX strings
 
-- (NSString *)bibTeXStringByExpandingMacros:(BOOL)expand dropInternal:(BOOL)drop texify:(BOOL)shouldTeXify{
+- (NSString *)bibTeXStringDroppingInternal:(BOOL)drop texify:(BOOL)shouldTeXify{
 	OFPreferenceWrapper *pw = [OFPreferenceWrapper sharedPreferenceWrapper];
 	NSMutableSet *knownKeys = nil;
 	NSSet *urlKeys = nil;
@@ -1619,7 +1619,6 @@ Boolean stringContainsLossySubstring(NSString *theString, NSString *stringToFind
             continue;
         
         value = [pubFields objectForKey:field];
-        NSString *valString;
         
         if([personFields containsObject:field] && [pw boolForKey:BDSKShouldSaveNormalizedAuthorNamesKey] && ![value isComplex]){ // only if it's not complex, use the normalized author name
             value = [self bibTeXNameStringForField:field normalized:YES inherit:NO];
@@ -1629,16 +1628,11 @@ Boolean stringContainsLossySubstring(NSString *theString, NSString *stringToFind
             value = [value stringByTeXifyingString];
         }                
         
-        if(expand == YES)
-            valString = [value stringAsExpandedBibTeXString];
-        else
-            valString = [value stringAsBibTeXString];
-        
         if(![value isEqualToString:@""]){
             [s appendString:@",\n\t"];
             [s appendString:field];
             [s appendString:@" = "];
-            [s appendString:valString];
+            [s appendString:[value stringAsBibTeXString]];
         }
     }
     [knownKeys release];
@@ -1731,7 +1725,7 @@ Boolean stringContainsLossySubstring(NSString *theString, NSString *stringToFind
 
 - (NSString *)bibTeXStringDroppingInternal:(BOOL)drop{
     BOOL shouldTeXify = [[OFPreferenceWrapper sharedPreferenceWrapper] boolForKey:BDSKShouldTeXifyWhenSavingAndCopyingKey];
-    return [self bibTeXStringByExpandingMacros:NO dropInternal:drop texify:shouldTeXify];
+    return [self bibTeXStringDroppingInternal:drop texify:shouldTeXify];
 }
 
 - (NSString *)bibTeXString{
