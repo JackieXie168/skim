@@ -195,25 +195,13 @@
     [self lockFocus];
     [NSGraphicsContext saveGraphicsState];
     
-    // use a dark stroke with a light center fill
-    [[highlightColor colorWithAlphaComponent:0.2] setFill];
-    [[highlightColor colorWithAlphaComponent:0.8] setStroke];
-    
     unsigned rowIndex = [rows firstIndex];
     NSRect drawRect;
-    NSBezierPath *path;
-    
-    float dX = 0.5 * lineWidth;
-    float dY = heightOffset + 0.5 * lineWidth;
     
     while(rowIndex != NSNotFound){
         
-        drawRect = NSInsetRect([self rectOfRow:rowIndex], dX, dY);
-        
-        path = [NSBezierPath bezierPathWithRoundRectInRect:drawRect radius:4.0f];
-        [path setLineWidth:lineWidth];
-        [path fill];
-        [path stroke];
+        drawRect = NSInsetRect([self rectOfRow:rowIndex], 0.0, heightOffset);
+        [NSBezierPath drawHighlightInRect:drawRect radius:4.0 lineWidth:lineWidth color:highlightColor];
         
         rowIndex = [rows indexGreaterThanIndex:rowIndex];
     }
@@ -228,7 +216,6 @@
 
 -(void)_drawDropHighlightOnRow:(int)rowIndex
 {
-    NSColor *highlightColor = [NSColor alternateSelectedControlColor];
     float lineWidth = 2.0;
     float heightOffset = rowIndex == -1 ? 0.0f : MAX(0.0f, roundf(0.25 * [self intercellSpacing].height) - lineWidth);
     
@@ -236,18 +223,8 @@
     [NSGraphicsContext saveGraphicsState];
     
     NSRect drawRect = (rowIndex == -1) ? [self visibleRect] : [self rectOfRow:rowIndex];
-    
-    drawRect = NSInsetRect(drawRect, 0.5 * lineWidth, 0.5 * lineWidth + heightOffset);
-    
-    NSBezierPath *path = [NSBezierPath bezierPathWithRoundRectInRect:drawRect radius:4.0f];
-    
-    [path setLineWidth:lineWidth];
-    
-    [[highlightColor colorWithAlphaComponent:0.2] setFill];
-    [path fill];
-    
-    [[highlightColor colorWithAlphaComponent:0.8] setStroke];
-    [path stroke];
+    drawRect = NSInsetRect(drawRect, 0.0, heightOffset);
+    [NSBezierPath drawHighlightInRect:drawRect radius:4.0 lineWidth:lineWidth color:[NSColor alternateSelectedControlColor]];
     
     [NSGraphicsContext restoreGraphicsState];
     [self unlockFocus];

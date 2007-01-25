@@ -92,6 +92,16 @@
     return path;
 }
 
++ (void)drawHighlightInRect:(NSRect)rect radius:(float)radius lineWidth:(float)lineWidth color:(NSColor *)color
+{
+    NSBezierPath *path = [NSBezierPath bezierPathWithRoundRectInRect:NSInsetRect(rect, 0.5 * lineWidth, 0.5 * lineWidth) radius:radius];
+    [path setLineWidth:lineWidth];
+    [[color colorWithAlphaComponent:0.2] setFill];
+    [[color colorWithAlphaComponent:0.8] setStroke];
+    [path fill];
+    [path stroke];
+}
+
 + (void)fillHorizontalOvalAroundRect:(NSRect)rect
 {
     NSBezierPath *p = [self bezierPathWithHorizontalOvalAroundRect:rect];
