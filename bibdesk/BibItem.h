@@ -680,15 +680,14 @@ enum {
 - (NSString *)bibTeXStringDroppingInternal:(BOOL)drop;
 
 /*!
-    @method     bibTeXStringByExpandingMacros:dropInternal:texify:
-    @abstract   Returns a BibTeX value with optionally macros expanded, optionally without internal fields, optionally teXified (converted to TeX)
+    @method     bibTeXStringDroppingInternal:texify:
+    @abstract   Returns a BibTeX value optionally without internal fields, optionally teXified (converted to TeX)
     @discussion (comprehensive description)
-    @param      expand Boolean determines whether macros are expanded.
     @param      drop Boolean determines whether internal fields are dropped. 
     @param      shouldTeXify Boolean determines whether accented characters are converted to TeX.
     @result     (description)
 */
-- (NSString *)bibTeXStringByExpandingMacros:(BOOL)expand dropInternal:(BOOL)drop texify:(BOOL)shouldTeXify;
+- (NSString *)bibTeXStringDroppingInternal:(BOOL)drop texify:(BOOL)shouldTeXify;
 
 - (NSData *)bibTeXDataDroppingInternal:(BOOL)drop encoding:(NSStringEncoding)encoding error:(NSError **)outError;
 
