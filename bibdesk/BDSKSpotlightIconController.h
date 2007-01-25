@@ -36,6 +36,7 @@
  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 #import <Cocoa/Cocoa.h>
+#import <OmniAppKit/IconFamily.h>
 
 @class BDSKClearView, BDSKSpotlightIconTableView;
 
@@ -45,7 +46,9 @@
     NSMutableArray *values;    
     NSDateFormatter *dateFormatter;
 }
+
 + (NSBitmapImageRep *)imageRepWithMetadataItem:(id)anItem;
++ (IconFamily *)iconFamilyWithMetadataItem:(id)anItem;
 
 @end
 

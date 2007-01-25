@@ -38,7 +38,6 @@
 
 #import "BDSKSpotlightIconController.h"
 
-
 @implementation BDSKSpotlightIconController
 
 // at present, we only have a single thread creating metadata items in order to avoid race conditions due to file naming; hence, it should be safe to use a singleton
@@ -48,6 +47,15 @@
     if (nil == controller)
         controller = [[self alloc] init];
     return [controller imageRepWithMetadataItem:anItem];
+}
+
++ (IconFamily *)iconFamilyWithMetadataItem:(id)anItem;
+{
+    NSImage *icon = [[NSImage alloc] init];
+    [icon addRepresentation:[self imageRepWithMetadataItem:anItem]];
+    IconFamily *iconFamily = [IconFamily iconFamilyWithThumbnailsOfImage:icon usingImageInterpolation:NSImageInterpolationHigh];
+    [icon release];
+    return iconFamily;
 }
 
 - (id)init
@@ -170,10 +178,8 @@ static NSImage *applicationIcon = nil;
 + (void)initialize
 {
     if (nil == applicationIcon) {
-        NSString *path = [[NSWorkspace sharedWorkspace] absolutePathForAppBundleWithIdentifier:OMNI_BUNDLE_IDENTIFIER];
-        NSImage *icon = [[NSWorkspace sharedWorkspace] iconForFile:path];
-        [icon setSize:NSMakeSize(128, 128)];
-        applicationIcon = [icon copy];
+        applicationIcon = [[NSImage imageNamed:@"FolderPenIcon"] copy];
+        [applicationIcon setSize:NSMakeSize(128, 128)];
     }
 }
 
