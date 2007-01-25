@@ -1802,13 +1802,28 @@ originalContentsURL:(NSURL *)absoluteOriginalContentsURL
     }
     
 	if(nil == newPubs || isPartialData) {
-
+        
+        NSString *message = nil;
+        NSString *alternateButton = nil;
+        NSString *otherButton = nil;
+        
+        if(type == BDSKBibTeXStringType || type == BDSKNoKeyBibTeXStringType){
+            message = NSLocalizedString(@"There was a problem inserting the data. Do you want to ignore this data, open a window containing the data to edit it and remove the errors, or keep going and use everything that BibDesk could parse?\n(It's likely that choosing \"Keep Going\" will lose some data.)", @"Informative text in alert dialog");
+            alternateButton = NSLocalizedString(@"Edit data", @"Button title");
+            otherButton = NSLocalizedString(@"Keep going", @"Button title");
+        }else if (type == BDSKUnknownStringType){
+            message = NSLocalizedString(@"There was a problem inserting the data. BibDesk could not recognize the format.", @"Informative text in alert dialog");
+            otherButton = NSLocalizedString(@"Keep going", @"Button title");
+        }else if (type == BDSKUnknownStringType){
+            message = NSLocalizedString(@"There was a problem inserting the data. Do you want to ignore this data, or keep going and use everything that BibDesk could parse?\n(It's likely that choosing \"Keep Going\" will lose some data.)", @"Informative text in alert dialog");
+        }
+        
 		// run a modal dialog asking if we want to use partial data or give up
         NSAlert *alert = [NSAlert alertWithMessageText:NSLocalizedString(@"Error Reading String", @"Message in alert dialog when failing to parse dropped or copied string")
                                          defaultButton:NSLocalizedString(@"Cancel", @"Button title")
-                                       alternateButton:NSLocalizedString(@"Edit data", @"Button title")
-                                           otherButton:NSLocalizedString(@"Keep going", @"Button title")
-                             informativeTextWithFormat:NSLocalizedString(@"There was a problem inserting the data. Do you want to ignore this data, open a window containing the data to edit it and remove the errors, or keep going and use everything that BibDesk could parse?\n(It's likely that choosing \"Keep Going\" will lose some data.)", @"Informative text in alert dialog")];
+                                       alternateButton:alternateButton
+                                           otherButton:otherButton
+                             informativeTextWithFormat:message];
 		int rv = [alert runModal];
         
 		if(rv == NSAlertDefaultReturn){
