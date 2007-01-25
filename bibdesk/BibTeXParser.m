@@ -105,7 +105,7 @@ static BOOL addValuesFromEntryToDictionary(AST *entry, NSMutableDictionary *dict
     AGRegex *btRegex = [[AGRegex alloc] initWithPattern:/* spaces       */ @"^[ \\t]*"
                                                         /* type of item */ @"@[[:alpha:]]+[ \\t]*[{(]" 
                                                         /* spaces       */ @"[ \\n\\t]*" 
-                                                        /* cite key     */ @"[a-zA-Z0-9\\.,:/*!^_-]+?" 
+                                                        /* cite key     */ @"[a-zA-Z0-9\\.,:/*!&$^_-]+?" 
                                                         /* spaces       */ @"[ \\n\\t]*," 
                                                 options:AGRegexMultiline];
     
