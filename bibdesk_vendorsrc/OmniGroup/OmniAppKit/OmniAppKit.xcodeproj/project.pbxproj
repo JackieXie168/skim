@@ -90,7 +90,7 @@
 		4AA1E6CA08AA764600E2FF6B /* OAPreferencesIconView.h in Headers */ = {isa = PBXBuildFile; fileRef = 01563696FFE9F5FAC697A14E /* OAPreferencesIconView.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		4AA1E6CB08AA764600E2FF6B /* OAPreferencesToolbar.h in Headers */ = {isa = PBXBuildFile; fileRef = 6620D67A01335CA00097A13E /* OAPreferencesToolbar.h */; };
 		4AA1E6CC08AA764600E2FF6B /* OAPreferencesWindow.h in Headers */ = {isa = PBXBuildFile; fileRef = 6620D673013359840097A13E /* OAPreferencesWindow.h */; };
-		4AA1E6CD08AA764600E2FF6B /* IconFamily.h in Headers */ = {isa = PBXBuildFile; fileRef = 4AD0430803FAB2D400278BF4 /* IconFamily.h */; settings = {ATTRIBUTES = (); }; };
+		4AA1E6CD08AA764600E2FF6B /* IconFamily.h in Headers */ = {isa = PBXBuildFile; fileRef = 4AD0430803FAB2D400278BF4 /* IconFamily.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		4AA1E6CE08AA764600E2FF6B /* NSString+CarbonFSSpecCreation.h in Headers */ = {isa = PBXBuildFile; fileRef = 4AD0431103FAB2D400278BF4 /* NSString+CarbonFSSpecCreation.h */; settings = {ATTRIBUTES = (); }; };
 		4AA1E6CF08AA764600E2FF6B /* OAAquaButton.h in Headers */ = {isa = PBXBuildFile; fileRef = 00E51F9AFE8AB2E911C9CC38 /* OAAquaButton.h */; settings = {ATTRIBUTES = (Public, Project, Private, ); }; };
 		4AA1E6D008AA764600E2FF6B /* OABackgroundImageControl.h in Headers */ = {isa = PBXBuildFile; fileRef = B5FEDACF055862C20097A10E /* OABackgroundImageControl.h */; settings = {ATTRIBUTES = (Public, ); }; };
