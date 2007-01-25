@@ -407,6 +407,9 @@
 		CEFDBDDE0AEA87F8009EE99D /* BDSKCategoryGroup.m in Sources */ = {isa = PBXBuildFile; fileRef = CEFDBDDC0AEA87F8009EE99D /* BDSKCategoryGroup.m */; };
 		F900CD090A8EA97D005C3A0F /* UKDirectoryEnumerator.h in Headers */ = {isa = PBXBuildFile; fileRef = F900CD070A8EA97D005C3A0F /* UKDirectoryEnumerator.h */; };
 		F900CD0A0A8EA97D005C3A0F /* UKDirectoryEnumerator.m in Sources */ = {isa = PBXBuildFile; fileRef = F900CD080A8EA97D005C3A0F /* UKDirectoryEnumerator.m */; };
+		F900F2B50B6958F400DB7962 /* SpotlightFileIconController.nib in Resources */ = {isa = PBXBuildFile; fileRef = F900F2AF0B6958F300DB7962 /* SpotlightFileIconController.nib */; };
+		F900F2BA0B69593100DB7962 /* BDSKSpotlightIconController.h in Headers */ = {isa = PBXBuildFile; fileRef = F900F2B80B69593100DB7962 /* BDSKSpotlightIconController.h */; };
+		F900F2BB0B69593100DB7962 /* BDSKSpotlightIconController.m in Sources */ = {isa = PBXBuildFile; fileRef = F900F2B90B69593100DB7962 /* BDSKSpotlightIconController.m */; };
 		F9022C1D0758013E00C3F701 /* BDAlias.m in Sources */ = {isa = PBXBuildFile; fileRef = F9022C1C0758013E00C3F701 /* BDAlias.m */; };
 		F9022C4A0758027800C3F701 /* BDSKCiteKeyFormatter.m in Sources */ = {isa = PBXBuildFile; fileRef = F9022C390758027800C3F701 /* BDSKCiteKeyFormatter.m */; };
 		F9022C4B0758027800C3F701 /* BDSKConverter.m in Sources */ = {isa = PBXBuildFile; fileRef = F9022C3B0758027800C3F701 /* BDSKConverter.m */; };
@@ -1073,7 +1076,7 @@
 		3DFF35600816B55B0052F37C /* forward_small.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; name = forward_small.tiff; path = Images/forward_small.tiff; sourceTree = "<group>"; };
 		3DFF35620816B5780052F37C /* reload_small.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; name = reload_small.tiff; path = Images/reload_small.tiff; sourceTree = "<group>"; };
 		8D1107310486CEB800E47090 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
-		8D1107320486CEB800E47090 /* BibDesk.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = BibDesk.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		8D1107320486CEB800E47090 /* BibDesk.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = BibDesk.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		CE11A6340AE6BB77008C47AC /* urlFolderIcon.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; name = urlFolderIcon.tiff; path = Images/urlFolderIcon.tiff; sourceTree = "<group>"; };
 		CE11AC080AE7E0DC008C47AC /* BDSKScriptGroup.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BDSKScriptGroup.h; sourceTree = "<group>"; };
 		CE11AC090AE7E0DC008C47AC /* BDSKScriptGroup.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BDSKScriptGroup.m; sourceTree = "<group>"; };
@@ -1301,6 +1304,9 @@
 		CEFDBDDC0AEA87F8009EE99D /* BDSKCategoryGroup.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BDSKCategoryGroup.m; sourceTree = "<group>"; };
 		F900CD070A8EA97D005C3A0F /* UKDirectoryEnumerator.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = UKDirectoryEnumerator.h; path = ../bibdesk_vendorsrc/ukdirectoryenumerator/UKDirectoryEnumerator.h; sourceTree = "<group>"; };
 		F900CD080A8EA97D005C3A0F /* UKDirectoryEnumerator.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = UKDirectoryEnumerator.m; path = ../bibdesk_vendorsrc/ukdirectoryenumerator/UKDirectoryEnumerator.m; sourceTree = "<group>"; };
+		F900F2B00B6958F300DB7962 /* English */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = English; path = English.lproj/SpotlightFileIconController.nib; sourceTree = "<group>"; };
+		F900F2B80B69593100DB7962 /* BDSKSpotlightIconController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BDSKSpotlightIconController.h; sourceTree = "<group>"; };
+		F900F2B90B69593100DB7962 /* BDSKSpotlightIconController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BDSKSpotlightIconController.m; sourceTree = "<group>"; };
 		F9022C1B0758013E00C3F701 /* BDAlias.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = BDAlias.h; path = ../bibdesk_vendorsrc/BDistributed/BDAlias/BDAlias.h; sourceTree = "<group>"; };
 		F9022C1C0758013E00C3F701 /* BDAlias.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; name = BDAlias.m; path = ../bibdesk_vendorsrc/BDistributed/BDAlias/BDAlias.m; sourceTree = "<group>"; };
 		F9022C380758027800C3F701 /* BDSKCiteKeyFormatter.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = BDSKCiteKeyFormatter.h; sourceTree = "<group>"; };
@@ -1799,6 +1805,7 @@
 		29B97317FDCFA39411CA2CEA /* Resources */ = {
 			isa = PBXGroup;
 			children = (
+				F900F2AF0B6958F300DB7962 /* SpotlightFileIconController.nib */,
 				CE97A3B90A28F19A00CF2DF3 /* Templates */,
 				F9022DDA0758089500C3F701 /* Images */,
 				3D8A54F6082D1F86008E818C /* BibDesk Help */,
@@ -2039,6 +2046,8 @@
 				F9022C72075802E300C3F701 /* BibPersonController.m */,
 				2730077A07CF20B500F2E485 /* MacroTextFieldWindowController.m */,
 				2730077C07CF20B500F2E485 /* MacroWindowController.m */,
+				F900F2B80B69593100DB7962 /* BDSKSpotlightIconController.h */,
+				F900F2B90B69593100DB7962 /* BDSKSpotlightIconController.m */,
 			);
 			name = Controllers;
 			sourceTree = "<group>";
@@ -2862,6 +2871,7 @@
 				F940D1090B5568E400B5917A /* BDSKReferParser.h in Headers */,
 				CEEA4C6B0B57B0D400434059 /* BDSKBooleanValueTransformer.h in Headers */,
 				CE26481C0B5AB4B800D4B5B8 /* BDSKDragTextField.h in Headers */,
+				F900F2BA0B69593100DB7962 /* BDSKSpotlightIconController.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -3288,6 +3298,7 @@
 				CE12A1700B44AED200416D19 /* SearchGroupServers.plist in Resources */,
 				F945240C0B4B15A6000A5E12 /* searchDocIcon.icns in Resources */,
 				CEEA5EA40B595EE200434059 /* ChangeFieldSheet.nib in Resources */,
+				F900F2B50B6958F400DB7962 /* SpotlightFileIconController.nib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -3689,6 +3700,7 @@
 				F940D10A0B5568E400B5917A /* BDSKReferParser.m in Sources */,
 				CEEA4C6A0B57B0D400434059 /* BDSKBooleanValueTransformer.m in Sources */,
 				CE26481D0B5AB4B800D4B5B8 /* BDSKDragTextField.m in Sources */,
+				F900F2BB0B69593100DB7962 /* BDSKSpotlightIconController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -4028,6 +4040,14 @@
 				CEF7295C09CC890400802D48 /* English */,
 			);
 			name = RemoveFieldSheet.nib;
+			sourceTree = "<group>";
+		};
+		F900F2AF0B6958F300DB7962 /* SpotlightFileIconController.nib */ = {
+			isa = PBXVariantGroup;
+			children = (
+				F900F2B00B6958F300DB7962 /* English */,
+			);
+			name = SpotlightFileIconController.nib;
 			sourceTree = "<group>";
 		};
 		F9022CBD0758049200C3F701 /* ReadMe.nib */ = {
