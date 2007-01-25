@@ -156,22 +156,25 @@ static NSSet *standardStyles = nil;
 
 - (IBAction)changeStyle:(id)sender{
     NSString *newStyle = [sender stringValue];
-    if ([standardStyles containsObject:newStyle]){
-        [defaults setObject:[sender stringValue] forKey:BDSKBTStyleKey];
-        [defaults autoSynchronize];
-    } else {
-        NSAlert *alert = [[[NSAlert alloc] init] autorelease];
-        [alert setMessageText:NSLocalizedString(@"This is a not a standard BibTeX style", @"")];
-        [alert addButtonWithTitle:NSLocalizedString(@"Use Anyway", @"")];
-        [alert addButtonWithTitle:NSLocalizedString(@"Use Previous", @"")];
-        [alert setInformativeText:NSLocalizedString(@"This style is not one of the standard 8 BibTeX styles.  As such, it may require editing the TeX template manually to add necessary \\usepackage commands.", @"")];
-        
-        // for the help delegate method
-        [alert setShowsHelp:YES];
-        [alert setDelegate:self];
-        
-        [alert setAlertStyle:NSInformationalAlertStyle];
-        [alert beginSheetModalForWindow:[[self controlBox] window] modalDelegate:self didEndSelector:@selector(styleAlertDidEnd:returnCode:contextInfo:) contextInfo:[newStyle copy]];
+    NSString *oldStyle = [defaults stringForKey:BDSKBTStyleKey];
+    if ([newStyle isEqualToString:oldStyle] == NO) {
+        if ([standardStyles containsObject:newStyle]){
+            [defaults setObject:[sender stringValue] forKey:BDSKBTStyleKey];
+            [defaults autoSynchronize];
+        } else {
+            NSAlert *alert = [[[NSAlert alloc] init] autorelease];
+            [alert setMessageText:NSLocalizedString(@"This is a not a standard BibTeX style", @"")];
+            [alert addButtonWithTitle:NSLocalizedString(@"Use Anyway", @"")];
+            [alert addButtonWithTitle:NSLocalizedString(@"Use Previous", @"")];
+            [alert setInformativeText:NSLocalizedString(@"This style is not one of the standard 8 BibTeX styles.  As such, it may require editing the TeX template manually to add necessary \\usepackage commands.", @"")];
+            
+            // for the help delegate method
+            [alert setShowsHelp:YES];
+            [alert setDelegate:self];
+            
+            [alert setAlertStyle:NSInformationalAlertStyle];
+            [alert beginSheetModalForWindow:[[self controlBox] window] modalDelegate:self didEndSelector:@selector(styleAlertDidEnd:returnCode:contextInfo:) contextInfo:[newStyle copy]];
+        }
     }
 }
 
