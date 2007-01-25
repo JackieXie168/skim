@@ -83,23 +83,8 @@
 	[super drawRect:rect];
     
 	if (highlight && dragRow != -1) {
-        NSColor *highlightColor = [NSColor alternateSelectedControlColor];
-        float lineWidth = 2.0;
-        
-        NSRect highlightRect = NSInsetRect([self cellFrameAtRow:dragRow column:0], 0.5f * lineWidth, 0.5f * lineWidth);
-        
-        NSBezierPath *path = [NSBezierPath bezierPathWithRoundRectInRect:highlightRect radius:4.0];
-        
-        [path setLineWidth:lineWidth];
-        
         [NSGraphicsContext saveGraphicsState];
-        
-        [[highlightColor colorWithAlphaComponent:0.2] set];
-        [path fill];
-        
-        [[highlightColor colorWithAlphaComponent:0.8] set];
-        [path stroke];
-        
+        [NSBezierPath drawHighlightInRect:[self cellFrameAtRow:dragRow column:0] radius:4.0 lineWidth:2.0 color:[NSColor alternateSelectedControlColor]];
         [NSGraphicsContext restoreGraphicsState];
 	}
 }

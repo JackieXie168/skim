@@ -337,26 +337,11 @@ static IMP originalDragImageForRowsWithIndexesTableColumnsEventOffset;
 // modified to use -intercellSpacing and save/restore graphics state
 
 -(void)_drawDropHighlightOnRow:(int)rowIndex{
-    NSColor *highlightColor = [NSColor alternateSelectedControlColor];
-    float lineWidth = 2.0;
+    NSRect drawRect = (rowIndex == -1) ? [self visibleRect] : [self rectOfRow:rowIndex];
     
     [self lockFocus];
     [NSGraphicsContext saveGraphicsState];
-    
-    NSRect drawRect = (rowIndex == -1) ? [self visibleRect] : [self rectOfRow:rowIndex];
-    
-    drawRect = NSInsetRect(drawRect, 0.5f * lineWidth, 0.5f * lineWidth);
-    
-    NSBezierPath *path = [NSBezierPath bezierPathWithRoundRectInRect:drawRect radius:4.0];
-    
-    [path setLineWidth:lineWidth];
-    
-    [[highlightColor colorWithAlphaComponent:0.2] set];
-    [path fill];
-    
-    [[highlightColor colorWithAlphaComponent:0.8] set];
-    [path stroke];
-    
+    [NSBezierPath drawHighlightInRect:drawRect radius:4.0 lineWidth:2.0 color:[NSColor alternateSelectedControlColor]];
     [NSGraphicsContext restoreGraphicsState];
     [self unlockFocus];
 }

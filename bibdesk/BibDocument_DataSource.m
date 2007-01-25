@@ -700,20 +700,15 @@
 		size.width += 2 * point.x;
 		size.height += 2 * point.y;
 		rect.size = size;
-		rect = NSInsetRect(rect, 1.0, 1.0); // inset by half of the linewidth
 		
 		image = [[[NSImage alloc] initWithSize:size] autorelease];
         
         [image lockFocus];
         
 		[NSGraphicsContext saveGraphicsState];
-		[[color colorWithAlphaComponent:0.2] setFill];
-		[NSBezierPath fillRoundRectInRect:rect radius:4.0];
-		[[color colorWithAlphaComponent:0.8] setStroke];
-		[NSBezierPath setDefaultLineWidth:2.0];
-		[NSBezierPath strokeRoundRectInRect:rect radius:4.0];
+        [NSBezierPath drawHighlightInRect:rect radius:4.0 lineWidth:2.0 color:color];
 		
-		NSRectClip(NSInsetRect(rect, 2.0, 2.0));
+		NSRectClip(NSInsetRect(rect, 3.0, 3.0));
         [attrString drawAtPoint:point];
 		[NSGraphicsContext restoreGraphicsState];
         
