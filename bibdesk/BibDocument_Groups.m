@@ -136,7 +136,7 @@ The groupedPublications array is a subset of the publications array, developed b
 	return nil == indexSet ? nil : [groups objectsAtIndexes:indexSet];
 }
 
-#pragma mark PubMed ** TEMPORARY **
+#pragma mark Search group view
 
 - (void)showSearchGroupView {
     if (nil == searchGroupViewController)
