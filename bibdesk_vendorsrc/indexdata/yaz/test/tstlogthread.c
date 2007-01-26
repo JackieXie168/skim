@@ -1,8 +1,8 @@
 /*
- * Copyright (c) 1998-2005, Index Data.
+ * Copyright (c) 1998-2007, Index Data.
  * See the file LICENSE for details.
  * 
- * $Id: tstlogthread.c,v 1.4 2006/10/09 14:22:44 heikki Exp $
+ * $Id: tstlogthread.c,v 1.5 2007/01/03 08:42:16 adam Exp $
  */
 
 #if HAVE_CONFIG_H

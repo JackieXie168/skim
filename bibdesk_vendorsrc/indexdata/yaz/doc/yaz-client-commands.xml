@@ -1,5 +1,5 @@
 <!-- 
-   $Id: yaz-client-commands.xml,v 1.16 2006/06/13 16:01:51 adam Exp $
+   $Id: yaz-client-commands.xml,v 1.17 2007/01/24 09:54:04 adam Exp $
    Commands for YAZ client.
    Included in both manual and man page for yaz-client.
 -->
@@ -369,13 +369,14 @@
  </varlistentry>
 
  <varlistentry><term>
-   <literal>.</literal>
+   <literal>source</literal>
    <replaceable>filename</replaceable>
   </term>
   <listitem>
    <para>Executes list of commands from
     file <replaceable>filename</replaceable>, just like source on
-    most UNIX shells.
+    most UNIX shells. A single dot (<literal>.</literal>) can be used
+    as an alternative.
    </para>
   </listitem>
  </varlistentry>

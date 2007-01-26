@@ -1,8 +1,8 @@
 /*
- * Copyright (C) 2005-2006, Index Data ApS
+ * Copyright (C) 2005-2007, Index Data ApS
  * See the file LICENSE for details.
  *
- * $Id: tst_tpath.c,v 1.2 2006/10/11 08:43:22 adam Exp $
+ * $Id: tst_tpath.c,v 1.3 2007/01/03 08:42:16 adam Exp $
  *
  */
 #include <yaz/tpath.h>

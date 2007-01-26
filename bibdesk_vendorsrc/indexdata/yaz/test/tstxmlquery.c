@@ -1,8 +1,8 @@
 /*
- * Copyright (C) 1995-2005, Index Data ApS
+ * Copyright (C) 1995-2007, Index Data ApS
  * See the file LICENSE for details.
  *
- * $Id: tstxmlquery.c,v 1.13 2006/10/04 16:59:34 mike Exp $
+ * $Id: tstxmlquery.c,v 1.14 2007/01/03 08:42:16 adam Exp $
  */
 
 #include <stdlib.h>

@@ -1,6 +1,6 @@
-<html><head><meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"><title>2. Object Identifiers</title><meta name="generator" content="DocBook XSL Stylesheets V1.71.0"><link rel="start" href="index.html" title="YAZ User's Guide and Reference"><link rel="up" href="tools.html" title="Chapter 9. Supporting Tools"><link rel="prev" href="tools.html" title="Chapter 9. Supporting Tools"><link rel="next" href="tools.nmem.html" title="3. Nibble Memory"></head><body><link rel="stylesheet" type="text/css" href="common/style1.css"><div class="navheader"><table width="100%" summary="Navigation header"><tr><th colspan="3" align="center">2. Object Identifiers</th></tr><tr><td width="20%" align="left"><a accesskey="p" href="tools.html">Prev</a> </td><th width="60%" align="center">Chapter 9. Supporting Tools</th><td width="20%" align="right"> <a accesskey="n" href="tools.nmem.html">Next</a></td></tr></table><hr></div><div class="sect1" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="tools.oid"></a>2. Object Identifiers</h2></div></div></div><p>
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"><title>2. Object Identifiers</title><meta name="generator" content="DocBook XSL Stylesheets V1.68.1"><link rel="start" href="index.html" title="YAZ User's Guide and Reference"><link rel="up" href="tools.html" title="Chapter 9. Supporting Tools"><link rel="prev" href="tools.html" title="Chapter 9. Supporting Tools"><link rel="next" href="tools.nmem.html" title="3. Nibble Memory"></head><body><link rel="stylesheet" type="text/css" href="common/style1.css"><div class="navheader"><table width="100%" summary="Navigation header"><tr><th colspan="3" align="center">2. Object Identifiers</th></tr><tr><td width="20%" align="left"><a accesskey="p" href="tools.html">Prev</a> </td><th width="60%" align="center">Chapter 9. Supporting Tools</th><td width="20%" align="right"> <a accesskey="n" href="tools.nmem.html">Next</a></td></tr></table><hr></div><div class="sect1" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="tools.oid"></a>2. Object Identifiers</h2></div></div></div><p>
     The basic YAZ representation of an OID is an array of integers,
-    terminated with the value -1. The <acronym class="acronym">ODR</acronym> module provides two
+    terminated with the value -1. The <span class="acronym">ODR</span> module provides two
     utility-functions to create and copy this type of data elements:
    </p><pre class="screen">
     Odr_oid *odr_getoidbystr(ODR o, char *str);
@@ -12,7 +12,7 @@
    </pre><p>
     Creates a copy of the OID referenced by the <span class="emphasis"><em>o</em></span>
     parameter.
-    Both functions take an <acronym class="acronym">ODR</acronym> stream as parameter. This stream is used to
+    Both functions take an <span class="acronym">ODR</span> stream as parameter. This stream is used to
     allocate memory for the data elements, which is released on a
     subsequent call to <code class="function">odr_reset()</code> on that stream.
    </p><p>

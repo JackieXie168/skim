@@ -1,8 +1,8 @@
 /*
- * Copyright (C) 1995-2005, Index Data ApS
+ * Copyright (C) 1995-2007, Index Data ApS
  * See the file LICENSE for details.
  *
- * $Id: tstsoap2.c,v 1.5 2006/07/06 10:17:55 adam Exp $
+ * $Id: tstsoap2.c,v 1.6 2007/01/03 08:42:16 adam Exp $
  */
 
 #include <stdlib.h>

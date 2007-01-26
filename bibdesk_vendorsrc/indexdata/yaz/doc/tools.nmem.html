@@ -1,14 +1,14 @@
-<html><head><meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"><title>3. Nibble Memory</title><meta name="generator" content="DocBook XSL Stylesheets V1.71.0"><link rel="start" href="index.html" title="YAZ User's Guide and Reference"><link rel="up" href="tools.html" title="Chapter 9. Supporting Tools"><link rel="prev" href="tools.oid.html" title="2. Object Identifiers"><link rel="next" href="tools.log.html" title="4. Log"></head><body><link rel="stylesheet" type="text/css" href="common/style1.css"><div class="navheader"><table width="100%" summary="Navigation header"><tr><th colspan="3" align="center">3. Nibble Memory</th></tr><tr><td width="20%" align="left"><a accesskey="p" href="tools.oid.html">Prev</a> </td><th width="60%" align="center">Chapter 9. Supporting Tools</th><td width="20%" align="right"> <a accesskey="n" href="tools.log.html">Next</a></td></tr></table><hr></div><div class="sect1" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="tools.nmem"></a>3. Nibble Memory</h2></div></div></div><p>
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"><title>3. Nibble Memory</title><meta name="generator" content="DocBook XSL Stylesheets V1.68.1"><link rel="start" href="index.html" title="YAZ User's Guide and Reference"><link rel="up" href="tools.html" title="Chapter 9. Supporting Tools"><link rel="prev" href="tools.oid.html" title="2. Object Identifiers"><link rel="next" href="tools.log.html" title="4. Log"></head><body><link rel="stylesheet" type="text/css" href="common/style1.css"><div class="navheader"><table width="100%" summary="Navigation header"><tr><th colspan="3" align="center">3. Nibble Memory</th></tr><tr><td width="20%" align="left"><a accesskey="p" href="tools.oid.html">Prev</a> </td><th width="60%" align="center">Chapter 9. Supporting Tools</th><td width="20%" align="right"> <a accesskey="n" href="tools.log.html">Next</a></td></tr></table><hr></div><div class="sect1" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="tools.nmem"></a>3. Nibble Memory</h2></div></div></div><p>
     Sometimes when you need to allocate and construct a large,
     interconnected complex of structures, it can be a bit of a pain to
     release the associated memory again. For the structures describing the
     Z39.50 PDUs and related structures, it is convenient to use the
-    memory-management system of the <acronym class="acronym">ODR</acronym> subsystem (see
+    memory-management system of the <span class="acronym">ODR</span> subsystem (see
     <a href="odr.use.html" title="2. Using ODR">Section 2, &#8220;Using ODR&#8221;</a>). However, in some circumstances
     where you might otherwise benefit from using a simple nibble memory
     management system, it may be impractical to use
     <code class="function">odr_malloc()</code> and <code class="function">odr_reset()</code>.
-    For this purpose, the memory manager which also supports the <acronym class="acronym">ODR</acronym>
+    For this purpose, the memory manager which also supports the <span class="acronym">ODR</span>
     streams is made available in the NMEM module. The external interface
     to this module is given in the <code class="filename">nmem.h</code> file.
    </p><p>

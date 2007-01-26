@@ -1,5 +1,5 @@
 #!/bin/sh
-# $Id: buildconf.sh,v 1.44 2006/10/09 14:22:43 heikki Exp $
+# $Id: buildconf.sh,v 1.45 2007/01/03 13:55:49 mike Exp $
 
 automake=automake
 aclocal=aclocal
@@ -91,7 +91,8 @@ Or just build the Debian packages without configuring
 When building from a CVS checkout, you need these Debian packages:
   autoconf, automake, libtool, gcc, bison, any tcl,
   xsltproc, docbook, docbook-xml, docbook-xsl,
-  libxslt1-dev, libssl-dev, libreadline5-dev, libwrap0-dev
+  libxslt1-dev, libssl-dev, libreadline5-dev, libwrap0-dev,
+  libpcap0.8-dev
 EOF
     fi
     if [ "`uname -s`" = FreeBSD ]; then

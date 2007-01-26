@@ -1,4 +1,4 @@
-<html><head><meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"><title>2. Preparing PDUs</title><meta name="generator" content="DocBook XSL Stylesheets V1.71.0"><link rel="start" href="index.html" title="YAZ User's Guide and Reference"><link rel="up" href="asn.html" title="Chapter 7. The Z39.50 ASN.1 Module"><link rel="prev" href="asn.html" title="Chapter 7. The Z39.50 ASN.1 Module"><link rel="next" href="asn.oid.html" title="3. Object Identifiers"></head><body><link rel="stylesheet" type="text/css" href="common/style1.css"><div class="navheader"><table width="100%" summary="Navigation header"><tr><th colspan="3" align="center">2. Preparing PDUs</th></tr><tr><td width="20%" align="left"><a accesskey="p" href="asn.html">Prev</a> </td><th width="60%" align="center">Chapter 7. The Z39.50 ASN.1 Module</th><td width="20%" align="right"> <a accesskey="n" href="asn.oid.html">Next</a></td></tr></table><hr></div><div class="sect1" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="asn.preparing"></a>2. Preparing PDUs</h2></div></div></div><p>
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"><title>2. Preparing PDUs</title><meta name="generator" content="DocBook XSL Stylesheets V1.68.1"><link rel="start" href="index.html" title="YAZ User's Guide and Reference"><link rel="up" href="asn.html" title="Chapter 7. The Z39.50 ASN.1 Module"><link rel="prev" href="asn.html" title="Chapter 7. The Z39.50 ASN.1 Module"><link rel="next" href="asn.oid.html" title="3. Object Identifiers"></head><body><link rel="stylesheet" type="text/css" href="common/style1.css"><div class="navheader"><table width="100%" summary="Navigation header"><tr><th colspan="3" align="center">2. Preparing PDUs</th></tr><tr><td width="20%" align="left"><a accesskey="p" href="asn.html">Prev</a> </td><th width="60%" align="center">Chapter 7. The Z39.50 ASN.1 Module</th><td width="20%" align="right"> <a accesskey="n" href="asn.oid.html">Next</a></td></tr></table><hr></div><div class="sect1" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="asn.preparing"></a>2. Preparing PDUs</h2></div></div></div><p>
     A structure representing a complex ASN.1 type doesn't in itself contain the
     members of that type. Instead, the structure contains
     <span class="emphasis"><em>pointers</em></span> to the members of the type.
@@ -72,7 +72,7 @@
    </p><pre class="synopsis">
     Z_InitRequest *zget_InitRequest(ODR o);
    </pre><p>
-   The <acronym class="acronym">ODR</acronym> handle should generally be your encoding stream, but it
+   The <span class="acronym">ODR</span> handle should generally be your encoding stream, but it
     needn't be.
    </p><p>
    As well as the individual PDU functions, a function

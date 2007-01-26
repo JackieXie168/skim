@@ -1,8 +1,8 @@
 /*
- * Copyright (C) 1995-2005, Index Data ApS
+ * Copyright (C) 1995-2007, Index Data ApS
  * See the file LICENSE for details.
  *
- * $Id: read-marc.c,v 1.7 2005/06/25 15:46:09 adam Exp $
+ * $Id: read-marc.c,v 1.8 2007/01/03 08:42:18 adam Exp $
  */
 
 /*

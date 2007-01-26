@@ -1,5 +1,5 @@
-<html><head><meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"><title>3. Programming with ODR</title><meta name="generator" content="DocBook XSL Stylesheets V1.71.0"><link rel="start" href="index.html" title="YAZ User's Guide and Reference"><link rel="up" href="odr.html" title="Chapter 10. The ODR Module"><link rel="prev" href="odr.use.html" title="2. Using ODR"><link rel="next" href="odr.debugging.html" title="4. Debugging"></head><body><link rel="stylesheet" type="text/css" href="common/style1.css"><div class="navheader"><table width="100%" summary="Navigation header"><tr><th colspan="3" align="center">3. Programming with ODR</th></tr><tr><td width="20%" align="left"><a accesskey="p" href="odr.use.html">Prev</a> </td><th width="60%" align="center">Chapter 10. The ODR Module</th><td width="20%" align="right"> <a accesskey="n" href="odr.debugging.html">Next</a></td></tr></table><hr></div><div class="sect1" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="odr.programming"></a>3. Programming with ODR</h2></div></div></div><p>
-    The API of <acronym class="acronym">ODR</acronym> is designed to reflect the structure of ASN.1, rather
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"><title>3. Programming with ODR</title><meta name="generator" content="DocBook XSL Stylesheets V1.68.1"><link rel="start" href="index.html" title="YAZ User's Guide and Reference"><link rel="up" href="odr.html" title="Chapter 10. The ODR Module"><link rel="prev" href="odr.use.html" title="2. Using ODR"><link rel="next" href="odr.debugging.html" title="4. Debugging"></head><body><link rel="stylesheet" type="text/css" href="common/style1.css"><div class="navheader"><table width="100%" summary="Navigation header"><tr><th colspan="3" align="center">3. Programming with ODR</th></tr><tr><td width="20%" align="left"><a accesskey="p" href="odr.use.html">Prev</a> </td><th width="60%" align="center">Chapter 10. The ODR Module</th><td width="20%" align="right"> <a accesskey="n" href="odr.debugging.html">Next</a></td></tr></table><hr></div><div class="sect1" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="odr.programming"></a>3. Programming with ODR</h2></div></div></div><p>
+    The API of <span class="acronym">ODR</span> is designed to reflect the structure of ASN.1, rather
     than BER itself. Future releases may be able to represent data in
     other external forms.
    </p><div class="tip" style="margin-left: 0.5in; margin-right: 0.5in;"><h3 class="title">Tip</h3><p>
@@ -29,15 +29,15 @@
      ASN.1 defines a number of primitive types (many of which correspond
      roughly to primitive types in structured programming languages, such as C).
     </p><div class="sect3" lang="en"><div class="titlepage"><div><div><h4 class="title"><a name="odr.integer"></a>3.1.1. INTEGER</h4></div></div></div><p>
-      The <acronym class="acronym">ODR</acronym> function for encoding or decoding (or printing) the ASN.1
+      The <span class="acronym">ODR</span> function for encoding or decoding (or printing) the ASN.1
       INTEGER type looks like this:
      </p><pre class="synopsis">
       int odr_integer(ODR o, int **p, int optional, const char *name);
      </pre><p>
       (we don't allow values that can't be contained in a C integer.)
      </p><p>
-      This form is typical of the primitive <acronym class="acronym">ODR</acronym> functions. They are named
-      after the type of data that they encode or decode. They take an <acronym class="acronym">ODR</acronym>
+      This form is typical of the primitive <span class="acronym">ODR</span> functions. They are named
+      after the type of data that they encode or decode. They take an <span class="acronym">ODR</span>
       stream, an indirect reference to the type in question, and an
       <code class="literal">optional</code> flag (corresponding to the OPTIONAL keyword
       of ASN.1) as parameters. They all return an integer value of either one
@@ -48,7 +48,7 @@
       complex types.
      </p><p>
       The <code class="literal">o</code> parameter should obviously refer to a properly
-      initialized <acronym class="acronym">ODR</acronym> stream of the right type (encoding/decoding/printing)
+      initialized <span class="acronym">ODR</span> stream of the right type (encoding/decoding/printing)
       for the operation that you wish to perform.
      </p><p>
       When encoding or printing, the function first looks at
@@ -57,14 +57,14 @@
       the data element is absent. If the <code class="literal">optional</code> parameter
       is nonzero, the function will return one (signifying success) without
       any further processing. If the <code class="literal">optional</code> is zero, an
-      internal error flag is set in the <acronym class="acronym">ODR</acronym> stream, and the function will
+      internal error flag is set in the <span class="acronym">ODR</span> stream, and the function will
       return 0. No further operations can be carried out on the stream without
       a call to the function <code class="function">odr_reset()</code>.
      </p><p>
       If <code class="literal">*p</code> is not a null pointer, it is expected to
       point to an instance of the data type. The data will be subjected to
       the encoding rules, and the result will be placed in the buffer held
-      by the <acronym class="acronym">ODR</acronym> stream.
+      by the <span class="acronym">ODR</span> stream.
      </p><p>
       The other ASN.1 primitives have similar functions that operate in
       similar manners:
@@ -158,7 +158,7 @@ int odr_explicit_tag(ODR o, Odr_fun fun, int class, int tag,
     </p><pre class="screen">
      MyInt ::= [210] IMPLICIT INTEGER
     </pre><p>
-     In the <acronym class="acronym">ODR</acronym> system, this would be written like:
+     In the <span class="acronym">ODR</span> system, this would be written like:
     </p><pre class="screen">
 int myInt(ODR o, int **p, int optional, const char *name)
 {
@@ -167,7 +167,7 @@ int myInt(ODR o, int **p, int optional, const char *name)
 }
     </pre><p>
      The function <code class="function">myInt()</code> can then be used like any of
-     the primitive functions provided by <acronym class="acronym">ODR</acronym>. Note that the behavior of
+     the primitive functions provided by <span class="acronym">ODR</span>. Note that the behavior of
      <code class="function">odr_explicit_tag()</code>
      and <code class="function">odr_implicit_tag()</code> macros
      act exactly the same as the functions they are applied to - they
@@ -178,7 +178,7 @@ int myInt(ODR o, int **p, int optional, const char *name)
      <code class="literal">/ODR_APPLICATION</code>.
     </p></div><div class="sect2" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="odr.constructed.types"></a>3.3. Constructed Types</h3></div></div></div><p>
      Constructed types are created by combining primitive types. The
-      <acronym class="acronym">ODR</acronym> system only implements the SEQUENCE and SEQUENCE OF constructions
+      <span class="acronym">ODR</span> system only implements the SEQUENCE and SEQUENCE OF constructions
      (although adding the rest of the container types should be simple
      enough, if the need arises).
     </p><p>
@@ -191,7 +191,7 @@ int odr_sequence_end(ODR o);
     </p><p>
      The <code class="function">odr_sequence_begin()</code> function should be
      called in the beginning of a function that implements a SEQUENCE type.
-     Its parameters are the <acronym class="acronym">ODR</acronym> stream, a pointer (to a pointer to the type
+     Its parameters are the <span class="acronym">ODR</span> stream, a pointer (to a pointer to the type
      you're implementing), and the <code class="literal">size</code> of the type
      (typically a C structure). On encoding, it returns 1 if
      <code class="literal">* p</code> is a null pointer. The <code class="literal">size</code>
@@ -206,7 +206,7 @@ MySequence ::= SEQUENCE {
      boolval BOOLEAN OPTIONAL
 }
     </pre><p>
-     The corresponding <acronym class="acronym">ODR</acronym> encoder/decoder function and the associated data
+     The corresponding <span class="acronym">ODR</span> encoder/decoder function and the associated data
      structures could be written like this:
     </p><pre class="screen">
 typedef struct MySequence
@@ -233,7 +233,7 @@ int mySequence(ODR o, MySequence **p, int optional, const char *name)
      <code class="function">odr_explicit_tag()</code>
      could have been used.
      The new function can be used exactly like the standard functions provided
-     with <acronym class="acronym">ODR</acronym>. It will encode, decode or pretty-print a data value of the
+     with <span class="acronym">ODR</span>. It will encode, decode or pretty-print a data value of the
      <code class="literal">MySequence</code> type. We like to name types with an
      initial capital, as done in ASN.1 definitions, and to name the
      corresponding function with the first character of the name in lower case.
@@ -253,7 +253,7 @@ MySequence ::= [10] IMPLICIT SEQUENCE {
       boolval BOOLEAN OPTIONAL
 }
      </pre><p>
-      You would implement this in <acronym class="acronym">ODR</acronym> by calling the function
+      You would implement this in <span class="acronym">ODR</span> by calling the function
      </p><pre class="synopsis">
 int odr_implicit_settag(ODR o, int class, int tag);
      </pre><p>
@@ -403,7 +403,7 @@ typedef struct odr_arm
 	to mark	no tagging.</p></dd><dt><span class="term">which</span></dt><dd><p>The value of the discriminator that corresponds to
 	this CHOICE element. Typically, it will be a #defined constant, or
 	an enum member.</p></dd><dt><span class="term">fun</span></dt><dd><p>A pointer to a function that implements the type of
-	the CHOICE member. It may be either a standard <acronym class="acronym">ODR</acronym> type or a type
+	the CHOICE member. It may be either a standard <span class="acronym">ODR</span> type or a type
 	defined by yourself.</p></dd><dt><span class="term">name</span></dt><dd><p>Name of tag.</p></dd></dl></div><p>
      A handy way to prepare the array for use by the
      <code class="function">odr_choice()</code> function is to

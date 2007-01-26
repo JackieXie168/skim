@@ -1,8 +1,8 @@
 /*
- * Copyright (C) 1995-2005, Index Data ApS
+ * Copyright (C) 1995-2007, Index Data ApS
  * See the file LICENSE for details.
  *
- * $Id: zoomsh.c,v 1.42 2006/10/31 14:08:03 adam Exp $
+ * $Id: zoomsh.c,v 1.43 2007/01/03 08:42:17 adam Exp $
  */
 
 /** \file zoomsh.c

@@ -1,0 +1,139 @@
+<record xmlns="http://www.loc.gov/MARC21/slim">
+  <leader>02647nam^a2200469^^^4500</leader>
+  <controlfield tag="001">UCD-002592301</controlfield>
+  <controlfield tag="005">20061209034435.0</controlfield>
+  <controlfield tag="006">m        d        </controlfield>
+  <controlfield tag="007">cr bn |||a|bb|</controlfield>
+  <controlfield tag="008">920330s1583    enk     s     000 0 eng d</controlfield>
+  <datafield tag="035" ind1=" " ind2=" ">
+    <subfield code="a">99851339eo</subfield>
+  </datafield>
+  <datafield tag="037" ind1=" " ind2=" ">
+    <subfield code="a">CL0036000039</subfield>
+    <subfield code="b">ProQuest Information and Learning. 300 N. Zeeb Rd., Ann Arbor, MI 48106</subfield>
+  </datafield>
+  <datafield tag="040" ind1=" " ind2=" ">
+    <subfield code="a">Cu-RivES</subfield>
+    <subfield code="c">Cu-RivES</subfield>
+    <subfield code="d">CStRLIN</subfield>
+    <subfield code="e">dcrb</subfield>
+    <subfield code="d">WaOLN</subfield>
+  </datafield>
+  <datafield tag="100" ind1="1" ind2=" ">
+    <subfield code="a">Clinton, Atkinson.</subfield>
+  </datafield>
+  <datafield tag="245" ind1="0" ind2="0">
+    <subfield code="a">Clinton, Purser &amp; Arnold, to their countreymen wheresoeuer</subfield>
+    <subfield code="h">[electronic resource] :</subfield>
+    <subfield code="b">Wherein is described by their own hands their vnfeigned penitence for their offences past: their patience in welcoming their death, &amp; their duetiful minds towardes her most excellent Maiestie</subfield>
+  </datafield>
+  <datafield tag="246" ind1="2" ind2=" ">
+    <subfield code="a">Clinton, Purser &amp; Arnold, to their countreymen wheresoever</subfield>
+  </datafield>
+  <datafield tag="246" ind1="2" ind2=" ">
+    <subfield code="a">Clinton, Purser &amp; Arnold, to their countreymen wheresoever</subfield>
+  </datafield>
+  <datafield tag="260" ind1=" " ind2=" ">
+    <subfield code="a">London :</subfield>
+    <subfield code="b">Imprinted by Iohn Wolfe and are to be sold [by W. Wright] at the middle shop in the Poultry, ioyning S. Mildreds Church,</subfield>
+    <subfield code="c">[1583?]</subfield>
+  </datafield>
+  <datafield tag="300" ind1=" " ind2=" ">
+    <subfield code="a">[12] p</subfield>
+  </datafield>
+  <datafield tag="500" ind1=" " ind2=" ">
+    <subfield code="a">In verse</subfield>
+  </datafield>
+  <datafield tag="500" ind1=" " ind2=" ">
+    <subfield code="a">The first poem is signed: Thomas Walton alias Purser</subfield>
+  </datafield>
+  <datafield tag="500" ind1=" " ind2=" ">
+    <subfield code="a">Clinton&apos;s full name and bookseller&apos;s name from, and publication date conjectured by, STC</subfield>
+  </datafield>
+  <datafield tag="500" ind1=" " ind2=" ">
+    <subfield code="a">Signatures: A⁴ B²</subfield>
+  </datafield>
+  <datafield tag="500" ind1=" " ind2=" ">
+    <subfield code="a">Reproduction of the original in the Bodleian Library</subfield>
+  </datafield>
+  <datafield tag="510" ind1="4" ind2=" ">
+    <subfield code="a">STC (2nd ed.)</subfield>
+    <subfield code="c">5431</subfield>
+  </datafield>
+  <datafield tag="530" ind1=" " ind2=" ">
+    <subfield code="a">Also issued in print and on microform</subfield>
+  </datafield>
+  <datafield tag="533" ind1=" " ind2=" ">
+    <subfield code="a">Electronic reproduction.</subfield>
+    <subfield code="n">Mode of access: World Wide Web.</subfield>
+    <subfield code="n">Restricted to UC campuses</subfield>
+  </datafield>
+  <datafield tag="655" ind1=" " ind2="7">
+    <subfield code="a">Electronic texts.</subfield>
+    <subfield code="2">local</subfield>
+  </datafield>
+  <datafield tag="650" ind1=" " ind2="0">
+    <subfield code="a">Pirates</subfield>
+    <subfield code="z">England</subfield>
+    <subfield code="v">Early works to 1800.</subfield>
+  </datafield>
+  <datafield tag="700" ind1="1" ind2=" ">
+    <subfield code="a">Walton, Thomas,</subfield>
+    <subfield code="d">fl. 1583.</subfield>
+    <subfield code="4">aut</subfield>
+  </datafield>
+  <datafield tag="700" ind1="1" ind2=" ">
+    <subfield code="a">Arnold,</subfield>
+    <subfield code="d">fl. 1583.</subfield>
+    <subfield code="4">aut</subfield>
+  </datafield>
+  <datafield tag="793" ind1="0" ind2=" ">
+    <subfield code="a">Early English books online</subfield>
+  </datafield>
+  <datafield tag="852" ind1=" " ind2=" ">
+    <subfield code="a">MER</subfield>
+    <subfield code="b">kmain</subfield>
+  </datafield>
+  <datafield tag="852" ind1=" " ind2=" ">
+    <subfield code="a">SCB</subfield>
+    <subfield code="b">nnet</subfield>
+  </datafield>
+  <datafield tag="856" ind1="4" ind2="0">
+    <subfield code="z">Restricted to UC campuses</subfield>
+    <subfield code="x">SCP UCSD</subfield>
+    <subfield code="u">http://gateway.proquest.com/openurl?ctx_ver=Z39.88-2003&amp;res_id=xri:eebo&amp;rft_val_fmt=&amp;rft_id=xri:eebo:image:16610</subfield>
+  </datafield>
+  <datafield tag="856" ind1="4" ind2="0">
+    <subfield code="z">Restricted to UC campuses</subfield>
+    <subfield code="x">SCP UCSD</subfield>
+    <subfield code="u">http://gateway.proquest.com/openurl?ctx_ver=Z39.88-2003&amp;res_id=xri:eebo&amp;rft_val_fmt=&amp;rft_id=xri:eebo:image:16610</subfield>
+  </datafield>
+  <datafield tag="852" ind1=" " ind2=" ">
+    <subfield code="a">DVXL</subfield>
+    <subfield code="b">ELECT-GEN</subfield>
+    <subfield code="h">Internet</subfield>
+  </datafield>
+  <datafield tag="852" ind1=" " ind2=" ">
+    <subfield code="a">LAGE</subfield>
+    <subfield code="b">in</subfield>
+    <subfield code="3">Online access</subfield>
+  </datafield>
+  <datafield tag="856" ind1="4" ind2="0">
+    <subfield code="z">Restricted to UC campuses</subfield>
+    <subfield code="x">SCP UCSD</subfield>
+    <subfield code="u">http://gateway.proquest.com/openurl?ctx_ver=Z39.88-2003&amp;res_id=xri:eebo&amp;rft_val_fmt=&amp;rft_id=xri:eebo:image:16610</subfield>
+  </datafield>
+  <datafield tag="856" ind1="4" ind2="0">
+    <subfield code="z">Restricted to UC campuses</subfield>
+    <subfield code="u">http://gateway.proquest.com/openurl?ctx_ver=Z39.88-2003&amp;res_id=xri:eebo&amp;rft_val_fmt=&amp;rft_id=xri:eebo:image:16610</subfield>
+    <subfield code="x">CDL</subfield>
+  </datafield>
+  <datafield tag="830" ind1=" " ind2="0">
+    <subfield code="a">Early English books, 1475-1640 ;</subfield>
+    <subfield code="v">1406:13.</subfield>
+  </datafield>
+  <datafield tag="901" ind1=" " ind2=" ">
+    <subfield code="a">DVXL</subfield>
+    <subfield code="b">002592301</subfield>
+  </datafield>
+</record>

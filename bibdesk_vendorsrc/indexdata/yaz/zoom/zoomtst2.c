@@ -1,4 +1,4 @@
-/* $Id: zoomtst2.c,v 1.8 2006/04/21 10:28:08 adam Exp $  */
+/* $Id: zoomtst2.c,v 1.9 2007/01/03 08:42:17 adam Exp $  */
 
 /** \file zoomtst2.c
     \brief Asynchronous single-target client performing search (no retrieval)

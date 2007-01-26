@@ -1,4 +1,4 @@
-/* $Id: zoomtst3.c,v 1.11 2006/04/21 10:28:08 adam Exp $  */
+/* $Id: zoomtst3.c,v 1.13 2007/01/10 13:25:46 adam Exp $  */
 
 /** \file zoomtst3.c
     \brief Asynchronous multi-target client
@@ -68,7 +68,9 @@ int main(int argc, char **argv)
     /* network I/O. pass number of connections and array of connections */
     while ((i = ZOOM_event (no, z)))
     {
-        printf ("no = %d event = %d\n", i-1,
+        int peek = ZOOM_connection_peek_event(z[i-1]);
+        printf ("no = %d peek = %d event = %d\n", i-1,
+                peek,
                 ZOOM_connection_last_event(z[i-1]));
     }
     

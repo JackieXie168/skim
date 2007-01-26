@@ -1,6 +1,6 @@
-## Copyright (C) 1994-2006, Index Data
+## Copyright (C) 1995-2007, Index Data
 ## All rights reserved.
-## $Id: Makefile.am,v 1.29 2006/02/23 10:40:59 adam Exp $
+## $Id: Makefile.am,v 1.30 2007/01/03 08:42:16 adam Exp $
 
 bin_SCRIPTS = yaz-asncomp yaz-config
 

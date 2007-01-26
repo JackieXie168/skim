@@ -1,8 +1,8 @@
 /* 
- * Copyright (C) 1995-2006, Index Data ApS
+ * Copyright (C) 1995-2007, Index Data ApS
  * See the file LICENSE for details.
  *
- * $Id: client.c,v 1.321 2006/12/13 11:23:48 adam Exp $
+ * $Id: client.c,v 1.327 2007/01/24 23:10:01 adam Exp $
  */
 /** \file client.c
  *  \brief yaz-client program
@@ -13,6 +13,9 @@
 #include <assert.h>
 #include <time.h>
 #include <ctype.h>
+#ifndef WIN32
+#include <signal.h>
+#endif
 #if HAVE_SYS_TYPES_H
 #include <sys/types.h>
 #endif
@@ -78,8 +81,11 @@
 
 #include "admin.h"
 #include "tabcomplete.h"
+#include "fhistory.h"
 
 #define C_PROMPT "Z> "
+
+static file_history_t file_history = 0;
 
 static char *sru_method = "soap";
 static char *codeset = 0;               /* character set for output */
@@ -936,61 +942,40 @@ static void display_record(Z_External *r)
                 int rlen;
                 yaz_iconv_t cd = 0;
                 yaz_marc_t mt = yaz_marc_create();
+                const char *from = 0;
+
+                if (marcCharset && !strcmp(marcCharset, "auto"))
+                {
+                    if (ent->value == VAL_USMARC)
+                    {
+                        if (octet_buf[9] == 'a')
+                            from = "UTF-8";
+                        else
+                            from = "MARC-8";
+                    }
+                    else
+                        from = "ISO-8859-1";
+                }
+                else if (marcCharset)
+                    from = marcCharset;
+                if (outputCharset && from)
+                {   
+                    cd = yaz_iconv_open(outputCharset, from);
+                    printf ("convert from %s to %s", from, 
+                            outputCharset);
+                    if (!cd)
+                        printf (" unsupported\n");
+                    else
+                    {
+                        yaz_marc_iconv(mt, cd);
+                        printf ("\n");
+                    }
+                }
                     
                 if (yaz_marc_decode_buf(mt, octet_buf,r->u.octet_aligned->len,
                                         &result, &rlen)> 0)
                 {
-                    char *from = 0;
-                    if (marcCharset && !strcmp(marcCharset, "auto"))
-                    {
-                        if (ent->value == VAL_USMARC)
-                        {
-                            if (octet_buf[9] == 'a')
-                                from = "UTF-8";
-                            else
-                                from = "MARC-8";
-                        }
-                        else
-                            from = "ISO-8859-1";
-                    }
-                    else if (marcCharset)
-                        from = marcCharset;
-                    if (outputCharset && from)
-                    {   
-                        cd = yaz_iconv_open(outputCharset, from);
-                        printf ("convert from %s to %s", from, 
-                                outputCharset);
-                        if (!cd)
-                            printf (" unsupported\n");
-                        else
-                            printf ("\n");
-                    }
-                    if (!cd)
-                        fwrite (result, 1, rlen, stdout);
-                    else
-                    {
-                        char outbuf[6];
-                        size_t inbytesleft = rlen;
-                        const char *inp = result;
-                        
-                        while (inbytesleft)
-                        {
-                            size_t outbytesleft = sizeof(outbuf);
-                            char *outp = outbuf;
-                            size_t r;
-
-                            r = yaz_iconv (cd, (char**) &inp,
-                                           &inbytesleft, 
-                                           &outp, &outbytesleft);
-                            if (r == (size_t) (-1))
-                            {
-                                int e = yaz_iconv_error(cd);
-                                if (e != YAZ_ICONV_E2BIG)
-                                    break;
-                            }
-                            fwrite (outbuf, outp - outbuf, 1, stdout);
-                        }
-                    }
+                    fwrite (result, rlen, 1, stdout);
                 }
                 else
                 {
@@ -1633,7 +1618,25 @@ static int process_searchResponse(Z_SearchResponse *res)
     last_hit_count = *res->resultCount;
     if (setnumber >= 0)
         printf (", setno %d", setnumber);
-    printf ("\n");
+    putchar('\n');
+    if (res->resultSetStatus)
+    {
+        printf("Result Set Status: ");
+        switch(*res->resultSetStatus)
+        {
+        case Z_SearchResponse_subset:
+            printf("subset"); break;
+        case Z_SearchResponse_interim:
+            printf("interim"); break;
+        case Z_SearchResponse_none:
+            printf("none"); break;
+        case Z_SearchResponse_estimate:
+            printf("estimate"); break;
+        default:
+            printf("%d", *res->resultSetStatus);
+        }            
+        putchar('\n');
+    }
     display_searchResult (res->additionalSearchInfo);
     printf("records returned: %d\n",
            *res->numberOfRecordsReturned);
@@ -2806,11 +2809,18 @@ static int cmd_show(const char *arg)
     return 2;
 }
 
+void exit_client(int code)
+{
+    file_history_save(file_history);
+    file_history_destroy(&file_history);
+    exit(code);
+}
+
 int cmd_quit(const char *arg)
 {
     printf("See you later, alligator.\n");
     xmalloc_trav ("");
-    exit(0);
+    exit_client(0);
     return 0;
 }
 
@@ -3694,24 +3704,24 @@ void source_rcfile(void)
 {
     /*  Look for a $HOME/.yazclientrc and source it if it exists */
     struct stat statbuf;
-    char buffer[1000];
-    char* homedir=getenv("HOME");
+    char fname[1000];
+    char* homedir = getenv("HOME");
 
-    if( homedir ) {
-        
-        sprintf(buffer,"%s/.yazclientrc",homedir);
+    sprintf(fname, "%.500s%s%s", homedir ? homedir : "",
+            homedir ? "/" : "",
+            ".yazclientrc");
 
-        if(stat(buffer,&statbuf)==0) {
-            cmd_source(buffer, 0 );
-        }
-        
-    };
-    
-    if(stat(".yazclientrc",&statbuf)==0) {
-        cmd_source(".yazclientrc", 0 );
-    }
+    if (stat(fname,&statbuf)==0)
+        cmd_source(fname, 0 );
 }
 
+void add_to_readline_history(void *client_data, const char *line)
+{
+#if HAVE_READLINE_HISTORY_H
+    if (strlen(line))
+        add_history(line);
+#endif
+}
 
 static void initialize(void)
 {
@@ -3750,6 +3760,10 @@ static void initialize(void)
     }
     
     source_rcfile();
+
+    file_history = file_history_new();
+    file_history_load(file_history);
+    file_history_trav(file_history, 0, add_to_readline_history);
 }
 
 
@@ -4380,6 +4394,7 @@ static struct {
     {"displaycharset", cmd_displaycharset, "<output_charset>",NULL,0,NULL},
     {"marccharset", cmd_marccharset, "<charset_name>",NULL,0,NULL},
     {"lang", cmd_lang, "<language_code>",NULL,0,NULL},
+    {"source", cmd_source_echo, "<filename>",NULL,1,NULL},
     {".", cmd_source_echo, "<filename>",NULL,1,NULL},
     {"!", cmd_subshell, "Subshell command",NULL,1,NULL},
     {"set_apdufile", cmd_set_apdufile, "<filename>",NULL,1,NULL},
@@ -4667,11 +4682,22 @@ char **readline_completer(char *text, int start, int end)
 }
 #endif
 
+#ifndef WIN32
+void ctrl_c_handler(int x)
+{
+    exit_client(0);
+}
+#endif
+
 static void client(void)
 {
     char line[10240];
 
     line[10239] = '\0';
+
+#ifndef WIN32
+    signal(SIGINT, ctrl_c_handler);
+#endif
 
 #if HAVE_GETTIMEOFDAY
     gettimeofday (&tv_start, 0);
@@ -4690,7 +4716,7 @@ static void client(void)
             if (*line_in)
                 add_history(line_in);
 #endif
-            strncpy(line, line_in, 10239);
+            strncpy(line, line_in, sizeof(line)-1);
             free(line_in);
         }
 #endif 
@@ -4699,11 +4725,13 @@ static void client(void)
             char *end_p;
             printf (C_PROMPT);
             fflush(stdout);
-            if (!fgets(line, 10239, stdin))
+            if (!fgets(line, sizeof(line)-1, stdin))
                 break;
             if ((end_p = strchr (line, '\n')))
                 *end_p = '\0';
         }
+        if (isatty(0))
+            file_history_add_line(file_history, line);
         process_cmd_line(line);
     }
 }
@@ -4862,8 +4890,9 @@ int main(int argc, char **argv)
 #endif
         xfree(open_command);
     }
-    client ();
-    exit (0);
+    client();
+    exit_client(0);
+    return 0;
 }
 /*
  * Local variables:

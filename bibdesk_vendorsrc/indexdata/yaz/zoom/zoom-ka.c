@@ -1,4 +1,4 @@
-/* $Id: zoom-ka.c,v 1.1 2006/09/19 19:41:32 adam Exp $  */
+/* $Id: zoom-ka.c,v 1.2 2007/01/03 08:42:17 adam Exp $  */
 
 /** \file zoom-ka.c
     \brief Test ZOOM Keepalive / reconnect

@@ -1,6 +1,6 @@
 ## This file is part of the YAZ toolkit.
-## Copyright (C) 1994-2006, Index Data, All rights reserved.
-## $Id: Makefile.am,v 1.46 2006/12/15 12:37:18 adam Exp $
+## Copyright (C) 1995-2007, Index Data, All rights reserved.
+## $Id: Makefile.am,v 1.51 2007/01/11 10:55:57 adam Exp $
 
 YAZ_VERSION_INFO=2:1:0
 
@@ -71,14 +71,15 @@ libyaz_la_SOURCES=version.c options.c log.c \
   zget.c yaz-ccl.c diag-entry.c diag-entry.h diagbib1.c diagsrw.c \
   diagsru_update.c logrpn.c \
   otherinfo.c pquery.c sortspec.c z3950oid.c charneg.c initopt.c \
-  zoom-c.c zoom-opt.c zoom-p.h grs1disp.c zgdu.c soap.c srw.c srwutil.c \
+  zoom-c.c zoom-socket.c zoom-opt.c zoom-p.h \
+  grs1disp.c zgdu.c soap.c srw.c srwutil.c \
   opacdisp.c cclfind.c ccltoken.c cclerrms.c cclqual.c cclptree.c \
-  cclqfile.c cclstr.c \
+  cclqfile.c cclstr.c cclxmlconfig.c \
   cql.y cqlstdio.c cqltransform.c cqlutil.c xcqlutil.c cqlstring.c \
   cqlstrer.c querytowrbuf.c \
   eventl.c seshigh.c statserv.c requestq.c tcpdchk.c \
-  eventl.h service.c service.h session.h test.c \
-  xmlquery.c \
+  eventl.h service.c service.h session.h test.c timing.c \
+  xmlquery.c http.c \
   mime.c mime.h \
   record_conv.c retrieval.c elementset.c
 

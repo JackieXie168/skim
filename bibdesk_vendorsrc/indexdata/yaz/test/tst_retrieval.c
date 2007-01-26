@@ -1,8 +1,8 @@
 /*
- * Copyright (C) 2005-2006, Index Data ApS
+ * Copyright (C) 2005-2007, Index Data ApS
  * See the file LICENSE for details.
  *
- * $Id: tst_retrieval.c,v 1.8 2006/12/12 10:41:39 marc Exp $
+ * $Id: tst_retrieval.c,v 1.9 2007/01/03 08:42:16 adam Exp $
  *
  */
 #include <yaz/retrieval.h>

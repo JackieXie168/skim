@@ -1,8 +1,8 @@
 /*
- * Copyright (C) 1995-2005, Index Data ApS
+ * Copyright (C) 1995-2007, Index Data ApS
  * See the file LICENSE for details.
  *
- * $Id: ztest.c,v 1.83 2006/12/06 21:35:59 adam Exp $
+ * $Id: ztest.c,v 1.85 2007/01/16 14:12:38 adam Exp $
  */
 
 /*
@@ -66,7 +66,7 @@ int ztest_search(void *handle, bend_search_rr *rr)
             sleep(1);
         }
 #endif
-        ;
+        rr->estimated_hit_count = 1;
     }
     else
     {

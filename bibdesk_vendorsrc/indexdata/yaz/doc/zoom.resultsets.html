@@ -1,4 +1,4 @@
-<html><head><meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"><title>3. Result sets</title><meta name="generator" content="DocBook XSL Stylesheets V1.71.0"><link rel="start" href="index.html" title="YAZ User's Guide and Reference"><link rel="up" href="zoom.html" title="Chapter 3. ZOOM"><link rel="prev" href="zoom.query.html" title="2. Queries"><link rel="next" href="zoom.records.html" title="4. Records"></head><body><link rel="stylesheet" type="text/css" href="common/style1.css"><div class="navheader"><table width="100%" summary="Navigation header"><tr><th colspan="3" align="center">3. Result sets</th></tr><tr><td width="20%" align="left"><a accesskey="p" href="zoom.query.html">Prev</a> </td><th width="60%" align="center">Chapter 3. ZOOM</th><td width="20%" align="right"> <a accesskey="n" href="zoom.records.html">Next</a></td></tr></table><hr></div><div class="sect1" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="zoom.resultsets"></a>3. Result sets</h2></div></div></div><p>
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"><title>3. Result sets</title><meta name="generator" content="DocBook XSL Stylesheets V1.68.1"><link rel="start" href="index.html" title="YAZ User's Guide and Reference"><link rel="up" href="zoom.html" title="Chapter 3. ZOOM"><link rel="prev" href="zoom.query.html" title="2. Queries"><link rel="next" href="zoom.records.html" title="4. Records"></head><body><link rel="stylesheet" type="text/css" href="common/style1.css"><div class="navheader"><table width="100%" summary="Navigation header"><tr><th colspan="3" align="center">3. Result sets</th></tr><tr><td width="20%" align="left"><a accesskey="p" href="zoom.query.html">Prev</a> </td><th width="60%" align="center">Chapter 3. ZOOM</th><td width="20%" align="right"> <a accesskey="n" href="zoom.records.html">Next</a></td></tr></table><hr></div><div class="sect1" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="zoom.resultsets"></a>3. Result sets</h2></div></div></div><p>
     The result set object is a container for records returned from
     a target.
    </p><pre class="synopsis">
@@ -34,7 +34,7 @@
    </p><p>
     The number of hits also called result-count is returned by
     function <code class="function">ZOOM_resultset_size</code>.
-   </p><div class="table"><a name="zoom.resultset.options"></a><p class="title"><b>Table 3.2. ZOOM Result set Options</b></p><div class="table-contents"><table summary="ZOOM Result set Options" border="1"><colgroup><col><col><col></colgroup><thead><tr><th>Option</th><th>Description</th><th>Default</th></tr></thead><tbody><tr><td>
+   </p><div class="table"><a name="zoom.resultset.options"></a><p class="title"><b>Table 3.2. ZOOM Result set Options</b></p><table summary="ZOOM Result set Options" border="1"><colgroup><col><col><col></colgroup><thead><tr><th>Option</th><th>Description</th><th>Default</th></tr></thead><tbody><tr><td>
         start</td><td>Offset of first record to be 
         retrieved from target. First record has offset 0 unlike the
         protocol specifications where first record has position 1.
@@ -60,7 +60,7 @@
         setname</td><td>Name of Result Set (Result Set ID).
         If this option isn't set, the ZOOM module will automatically
         allocate a result set name.
-       </td><td>default</td></tr></tbody></table></div></div><br class="table-break"><p>
+       </td><td>default</td></tr></tbody></table></div><p>
     For servers that support Search Info report, the following
     options may be read using <code class="function">ZOOM_resultset_get</code>.
     This detailed information is read after a successful search has
@@ -73,14 +73,14 @@
     where no presents the item number (0=first, 1=second). 
     Read <code class="literal">searchresult.size</code> to determine the
     number of items.
-   </p><div class="table"><a name="zoom.search.info.report.options"></a><p class="title"><b>Table 3.3. Search Info Report Options</b></p><div class="table-contents"><table summary="Search Info Report Options" border="1"><colgroup><col><col></colgroup><thead><tr><th>Option</th><th>Description</th></tr></thead><tbody><tr><td>searchresult.size</td><td>
+   </p><div class="table"><a name="zoom.search.info.report.options"></a><p class="title"><b>Table 3.3. Search Info Report Options</b></p><table summary="Search Info Report Options" border="1"><colgroup><col><col></colgroup><thead><tr><th>Option</th><th>Description</th></tr></thead><tbody><tr><td>searchresult.size</td><td>
 	number of search result entries. This option is-nonexistant
 	if no entries are returned by the server.
        </td></tr><tr><td>searchresult.<em class="replaceable"><code>no</code></em>.id</td><td>sub query ID</td></tr><tr><td>searchresult.<em class="replaceable"><code>no</code></em>.count</td><td>result count for item (number of hits)</td></tr><tr><td>searchresult.<em class="replaceable"><code>no</code></em>.subquery.term</td><td>subquery term</td></tr><tr><td>
 	searchresult.<em class="replaceable"><code>no</code></em>.interpretation.term
        </td><td>interpretation term</td></tr><tr><td>
 	searchresult.<em class="replaceable"><code>no</code></em>.recommendation.term
-       </td><td>recommendation term</td></tr></tbody></table></div></div><br class="table-break"><div class="sect2" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="zoom.z3950.resultset.behavior"></a>3.1. Z39.50 Protocol behavior</h3></div></div></div><p>
+       </td><td>recommendation term</td></tr></tbody></table></div><div class="sect2" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="zoom.z3950.resultset.behavior"></a>3.1. Z39.50 Protocol behavior</h3></div></div></div><p>
      The creation of a result set involves at least a SearchRequest
      - SearchResponse protocol handshake. Following that, if a sort
      criteria was specified as part of the query, a SortRequest -

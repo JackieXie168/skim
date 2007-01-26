@@ -1,8 +1,8 @@
 /*
- * Copyright (C) 1995-2006, Index Data ApS
+ * Copyright (C) 1995-2007, Index Data ApS
  * See the file LICENSE for details.
  *
- * $Id: yaz-xmlquery.c,v 1.5 2006/10/27 11:02:50 adam Exp $
+ * $Id: yaz-xmlquery.c,v 1.6 2007/01/03 08:42:16 adam Exp $
  */
 
 #include <stdlib.h>

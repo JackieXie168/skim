@@ -1,8 +1,8 @@
 /*
- * Copyright (C) 1995-2005, Index Data ApS
+ * Copyright (C) 1995-2007, Index Data ApS
  * See the file LICENSE for details.
  *
- * $Id: admin.h,v 1.9 2005/06/25 15:46:01 adam Exp $
+ * $Id: admin.h,v 1.10 2007/01/24 11:50:18 adam Exp $
  */
 
 int cmd_adm_reindex(const char* arg);

@@ -1,5 +1,5 @@
 #!/bin/sh
-# $Id: tstmarciso.sh,v 1.4 2006/12/15 19:28:47 adam Exp $
+# $Id: tstmarciso.sh,v 1.5 2007/01/18 11:44:50 adam Exp $
 # Tests reading of ISO2709 and checks that we get identical MARCXML
 # 
 # Reads marc?.marc files , Generates marc?.xml files
@@ -25,7 +25,7 @@ for f in ${srcdir}/marc?.marc; do
 	fi
     else
 	echo "$f: Making test result $OLD for the first time"
-	if test -i marcxml /usr/bin/xmllint; then
+	if test -x /usr/bin/xmllint; then
 	    if xmllint --noout $NEW >out 2>stderr; then
 		echo "$f: $NEW is well-formed"
 	        mv $NEW $OLD

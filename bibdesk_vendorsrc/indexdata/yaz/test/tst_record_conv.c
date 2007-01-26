@@ -1,8 +1,8 @@
 /*
- * Copyright (C) 2005-2006, Index Data ApS
+ * Copyright (C) 2005-2007, Index Data ApS
  * See the file LICENSE for details.
  *
- * $Id: tst_record_conv.c,v 1.12 2006/12/12 10:41:39 marc Exp $
+ * $Id: tst_record_conv.c,v 1.13 2007/01/03 08:42:16 adam Exp $
  *
  */
 #include <yaz/record_conv.h>

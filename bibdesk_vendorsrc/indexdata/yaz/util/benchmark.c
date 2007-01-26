@@ -1,5 +1,5 @@
-/* $Id: benchmark.c,v 1.9 2005/10/22 13:13:56 adam Exp $
- * Copyright (C) 1995-2005, Index Data ApS
+/* $Id: benchmark.c,v 1.10 2007/01/03 08:42:16 adam Exp $
+ * Copyright (C) 1995-2007, Index Data ApS
  *
  * This file is part of the YAZ toolkit.
  *
