@@ -62,7 +62,7 @@
 	IBOutlet NSMenu *copyAsTemplateMenu;
 
     NSLock *metadataCacheLock;
-    volatile BOOL canWriteMetadata;
+    int32_t canWriteMetadata __attribute__ ((aligned (4)));
     OFMessageQueue *metadataMessageQueue;
     NSConnection *completionConnection;
 }
