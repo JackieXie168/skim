@@ -76,6 +76,7 @@
 #import "BDSKDocumentController.h"
 #import "NSError_BDSKExtensions.h"
 #import "BDSKSpotlightIconController.h"
+#import <libkern/OSAtomic.h>
 
 @implementation BibAppController
 
@@ -175,7 +176,7 @@ static void createTemporaryDirectory()
         metadataCacheLock = [[NSLock alloc] init];
         metadataMessageQueue = [[OFMessageQueue alloc] init];
         [metadataMessageQueue startBackgroundProcessors:1];
-        canWriteMetadata = YES;
+        canWriteMetadata = 1;
 				
 		NSString *formatString = [[OFPreferenceWrapper sharedPreferenceWrapper] objectForKey:BDSKCiteKeyFormatKey];
 		NSString *error = nil;
@@ -348,9 +349,7 @@ static void createTemporaryDirectory()
 }
 
 - (void)applicationWillTerminate:(NSNotification *)aNotification{
-    [metadataCacheLock lock];
-    canWriteMetadata = NO;
-    [metadataCacheLock unlock];
+    OSAtomicCompareAndSwap32Barrier(1, 0, (int32_t *)&canWriteMetadata);
     
     NSArray *fileNames = [[[NSDocumentController sharedDocumentController] documents] valueForKeyPath:@"@distinctUnionOfObjects.fileName"];
     NSMutableArray *array = [NSMutableArray arrayWithCapacity:[fileNames count]];
@@ -1207,7 +1206,7 @@ OFWeakRetainConcreteImplementation_NULL_IMPLEMENTATION
     
     // we could unlock after checking the flag, but we don't want multiple threads writing to the cache directory at the same time, in case files have identical items
     [metadataCacheLock lock];
-    if(canWriteMetadata == NO){
+    if(canWriteMetadata == 0){
         NSLog(@"Application will quit without writing metadata cache.");
         [metadataCacheLock unlock];
         return;
@@ -1263,6 +1262,11 @@ OFWeakRetainConcreteImplementation_NULL_IMPLEMENTATION
         BOOL useIconFamily = [[NSUserDefaults standardUserDefaults] boolForKey:@"BDSKShouldUseIconFamilyForMetadataKey"];
         
         while(anItem = [entryEnum nextObject]){
+            
+            if(canWriteMetadata == 0){
+                NSLog(@"Application will quit without finishing writing metadata cache.");
+                break;
+            }
             
             [innerPool release];
             innerPool = [NSAutoreleasePool new];
