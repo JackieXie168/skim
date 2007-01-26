@@ -1289,7 +1289,7 @@ OFWeakRetainConcreteImplementation_NULL_IMPLEMENTATION
                     [errString release];
                     @throw [NSException exceptionWithName:NSInternalInconsistencyException reason:[NSString stringWithFormat:@"Unable to create cache file for %@", [anItem description]] userInfo:nil];
                 } else {
-                    if(NO == [data writeToFile:path options:0 error:&error])
+                    if(NO == [data writeToFile:path options:NSAtomicWrite error:&error])
                         @throw [NSException exceptionWithName:NSInternalInconsistencyException reason:[NSString stringWithFormat:@"Unable to create cache file for %@", [anItem description]] userInfo:nil];
                     else if (useIconFamily) {
                         [[BDSKSpotlightIconController iconFamilyWithMetadataItem:metadata] setAsCustomIconForFile:path];
