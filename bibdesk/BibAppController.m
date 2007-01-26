@@ -1260,6 +1260,8 @@ OFWeakRetainConcreteImplementation_NULL_IMPLEMENTATION
         NSEnumerator *entryEnum = [publications objectEnumerator];
         NSAutoreleasePool *innerPool = [NSAutoreleasePool new];
         
+        BOOL useIconFamily = [[NSUserDefaults standardUserDefaults] boolForKey:@"BDSKShouldUseIconFamilyForMetadataKey"];
+        
         while(anItem = [entryEnum nextObject]){
             
             [innerPool release];
@@ -1289,7 +1291,7 @@ OFWeakRetainConcreteImplementation_NULL_IMPLEMENTATION
                 } else {
                     if(NO == [data writeToFile:path options:0 error:&error])
                         @throw [NSException exceptionWithName:NSInternalInconsistencyException reason:[NSString stringWithFormat:@"Unable to create cache file for %@", [anItem description]] userInfo:nil];
-                    else {
+                    else if (useIconFamily) {
                         [[BDSKSpotlightIconController iconFamilyWithMetadataItem:metadata] setAsCustomIconForFile:path];
                     }
                 }
