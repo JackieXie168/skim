@@ -3969,6 +3969,8 @@ Here are lists of value keys that could be used in BibDesk export templates.
 @tab 
 @item dateModified
 @tab 
+@item currentDate
+@tab 
 @item itemIndex
 @tab 
 @item fileOrder

@@ -2313,6 +2313,8 @@ Boolean stringContainsLossySubstring(NSString *theString, NSString *stringToFind
 
 - (int)itemIndex{ return currentIndex; }
 
+- (NSCalendarDate *)currentDate{ return [NSCalendarDate date]; }
+
 #pragma mark -
 #pragma mark URL handling
 
