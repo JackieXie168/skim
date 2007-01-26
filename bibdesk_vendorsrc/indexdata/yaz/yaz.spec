@@ -1,6 +1,6 @@
 Summary: Z39.50 Programs
 Name: yaz
-Version: 2.1.42
+Version: 2.1.49
 Release: 1
 Requires: libxslt openssl readline libyaz = %{version}
 License: BSD
@@ -82,6 +82,7 @@ rm -fr ${RPM_BUILD_ROOT}
 /usr/bin/yaz-config
 /usr/bin/yaz-asncomp
 /usr/include/yaz
+/usr/lib/pkgconfig/yaz.pc
 /usr/lib/*.so
 /usr/lib/*.a
 /usr/lib/*.la

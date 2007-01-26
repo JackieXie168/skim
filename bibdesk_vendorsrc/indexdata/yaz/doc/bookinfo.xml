@@ -1,10 +1,13 @@
-<!-- $Id: bookinfo.xml,v 1.4 2006/04/25 11:25:08 marc Exp $ -->
+<!-- $Id: bookinfo.xml,v 1.5 2007/01/19 15:59:49 adam Exp $ -->
  <bookinfo>
   <title>YAZ User&apos;s Guide and Reference</title>
-  <author><firstname>Sebastian</firstname><surname>Hammer</surname></author>
-  <author><firstname>Adam</firstname><surname>Dickmeiss</surname></author>
-  <author><firstname>Mike</firstname><surname>Taylor</surname></author>
-  <author><firstname>Heikki</firstname><surname>Levanto</surname></author>
+  <authorgroup>
+   <author><firstname>Sebastian</firstname><surname>Hammer</surname></author>
+   <author><firstname>Adam</firstname><surname>Dickmeiss</surname></author>
+   <author><firstname>Mike</firstname><surname>Taylor</surname></author>
+   <author><firstname>Heikki</firstname><surname>Levanto</surname></author>
+  </authorgroup>
+  <releaseinfo>&version;</releaseinfo>
   <copyright>
    <year>&copyright-year;</year>
    <holder>Index Data</holder>

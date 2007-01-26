@@ -3,10 +3,10 @@
 if [ -f /usr/local/bin/tclsh8.4 ]; then exec tclsh8.4 "$0" "$@"; else exec tclsh "$0" "$@"; fi
 #
 # yaz-comp: ASN.1 Compiler for YAZ
-# (c) Index Data 1996-2004
+# (c) Index Data 1996-2007
 # See the file LICENSE for details.
 #
-# $Id: yaz-asncomp,v 1.7 2006/05/22 19:08:38 adam Exp $
+# $Id: yaz-asncomp,v 1.8 2007/01/03 08:42:16 adam Exp $
 #
 
 set yc_version 0.4

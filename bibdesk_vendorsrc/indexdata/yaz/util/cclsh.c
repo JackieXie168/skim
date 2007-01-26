@@ -44,7 +44,7 @@
 /* CCL shell.
  * Europagate 1995
  *
- * $Id: cclsh.c,v 1.3 2006/09/11 12:12:42 adam Exp $
+ * $Id: cclsh.c,v 1.5 2007/01/08 10:48:08 adam Exp $
  *
  * Old Europagate Log:
  *
@@ -88,8 +88,8 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include <yaz/ccl.h>
-
+#include <yaz/ccl_xml.h>
+#include <yaz/options.h>
 
 #if HAVE_READLINE_READLINE_H
 #include <readline/readline.h> 
@@ -104,7 +104,7 @@ static char *prog;
 
 void usage(const char *prog)
 {
-    fprintf (stderr, "%s: [-d] [-b configfile]\n", prog);
+    fprintf (stderr, "%s: [-d] [-b configfile] [-x xmlconfig]\n", prog);
     exit (1);
 }
 
@@ -113,50 +113,101 @@ int main (int argc, char **argv)
     CCL_bibset bibset;
     FILE *bib_inf;
     char *bib_fname;
+    int ret;
+    char *arg;
+#if YAZ_HAVE_XML2
+    xmlDocPtr doc;
+    const char *addinfo;
+#endif
+    WRBUF q_wrbuf = 0;
 
     prog = *argv;
     bibset = ccl_qual_mk ();    
-    while (--argc > 0)
+    
+    while ((ret = options("db:x:", argv, argc, &arg)) != -2)
     {
-        if (**++argv == '-')
+        switch(ret)
         {
-            switch (argv[0][1])
+        case 'd':
+            debug = 1;
+            break;
+        case 'b':
+            bib_fname = arg;
+            bib_inf = fopen (bib_fname, "r");
+            if (!bib_inf)
             {
-            case 'd':
-                debug = 1;
-                break;
-            case 'b':
-                if (argv[0][2])
-                    bib_fname = argv[0]+2;
-                else if (argc > 0)
-                {
-                    --argc;
-                    bib_fname = *++argv;
-                }
-                else
-                {
-                    fprintf (stderr, "%s: missing bib filename\n", prog);
-                    exit (1);
-                }
-                bib_inf = fopen (bib_fname, "r");
-                if (!bib_inf)
-                {
-                    fprintf (stderr, "%s: cannot open %s\n", prog,
-                             bib_fname);
-                    exit (1);
-                }
-                ccl_qual_file (bibset, bib_inf);
-                fclose (bib_inf);
-                break;
-            default:
-                usage(prog);
+                fprintf (stderr, "%s: cannot open %s\n", prog,
+                         bib_fname);
+                exit (1);
             }
+            ccl_qual_file (bibset, bib_inf);
+            fclose (bib_inf);
+            break;
+#if YAZ_HAVE_XML2
+        case 'x':
+            doc = xmlParseFile(arg);
+            if (!doc)
+            {
+                fprintf(stderr, "%s: could not read %s\n", prog, arg);
+                exit(1);
+            }
+            if (ccl_xml_config(bibset, xmlDocGetRootElement(doc), &addinfo))
+            {
+                fprintf(stderr, "%s: error in %s: %s\n", prog, arg, addinfo);
+                exit(1);
+            }
+            xmlFreeDoc(doc);
+            break;
+#endif
+        case 0:
+            if (q_wrbuf)
+                wrbuf_puts(q_wrbuf, " ");
+            else
+                q_wrbuf = wrbuf_alloc();
+            wrbuf_puts(q_wrbuf, arg);
+            break;
+        default:
+            usage(prog);
+        }
+    }
+    if (q_wrbuf)
+    {
+        CCL_parser cclp = ccl_parser_create ();
+        struct ccl_token *list;
+        int error;
+        struct ccl_rpn_node *rpn;
+        
+        cclp->bibset = bibset;
+        
+        list = ccl_parser_tokenize (cclp, wrbuf_cstr(q_wrbuf));
+        rpn = ccl_parser_find (cclp, list);
+        
+        error = cclp->error_code;
+        
+        if (error)
+        {
+            printf ("%s\n", ccl_err_msg (error));
         }
         else
         {
-            fprintf (stderr, "%s: no filenames, please\n", prog);
-            exit (1);
+            if (rpn)
+            {
+                ccl_pr_tree (rpn, stdout);
+                printf ("\n");
+            }
         }
+        if (debug)
+        {
+            struct ccl_token *lp;
+            for (lp = list; lp; lp = lp->next)
+                printf ("%d %.*s\n", lp->kind, (int) (lp->len), lp->name);
+        }
+        ccl_token_del (list);
+        ccl_parser_destroy (cclp);
+        if (rpn)
+            ccl_rpn_delete(rpn);
+        wrbuf_destroy(q_wrbuf);
+        exit(0);
     }
     while (1)
     {

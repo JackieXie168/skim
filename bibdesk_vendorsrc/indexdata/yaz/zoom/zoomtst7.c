@@ -1,4 +1,4 @@
-/* $Id: zoomtst7.c,v 1.15 2006/04/21 10:28:08 adam Exp $  */
+/* $Id: zoomtst7.c,v 1.16 2007/01/03 08:42:17 adam Exp $  */
 
 /** \file zoomtst7.c
     \brief Mix of operations

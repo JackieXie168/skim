@@ -82,6 +82,7 @@ rm -fr ${RPM_BUILD_ROOT}
 /usr/bin/yaz-config
 /usr/bin/yaz-asncomp
 /usr/include/yaz
+/usr/lib/pkgconfig/yaz.pc
 /usr/lib/*.so
 /usr/lib/*.a
 /usr/lib/*.la

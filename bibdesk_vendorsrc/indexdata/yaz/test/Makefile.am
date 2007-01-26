@@ -1,10 +1,11 @@
-## Copyright (C) 1994-2006, Index Data ApS
+## Copyright (C) 1995-2007, Index Data ApS
 ## All rights reserved.
-## $Id: Makefile.am,v 1.28 2006/12/17 15:34:11 adam Exp $
+## $Id: Makefile.am,v 1.32 2007/01/18 14:46:58 adam Exp $
 
 check_PROGRAMS = tsticonv tstnmem tstmatchstr tstwrbuf tstodr tstccl tstlog \
  tstsoap1 tstsoap2 tstodrstack tstlogthread tstxmlquery tstpquery \
- tst_filepath tst_record_conv tst_retrieval tst_tpath
+ tst_comstack tst_filepath tst_record_conv tst_retrieval tst_tpath \
+ tst_timing
 check_SCRIPTS = tstcql.sh tstmarciso.sh tstmarcxml.sh tstmarccol.sh
 
 TESTS = $(check_PROGRAMS) $(check_SCRIPTS)
@@ -19,6 +20,7 @@ EXTRA_DIST = tstodr.asn tstodrcodec.c tstodrcodec.h cqlsample \
  marc5.marc marc5.xml marc5.chr marc5.xml.marc \
  marc6.marc marc6.xml marc6.chr marc6.xml.marc \
  marc7.marc marc7.xml marc7.chr marc7.xml.marc \
+ marc8.marc marc8.xml marc8.chr marc8.xml.marc \
  marccol1.u8.marc marccol1.u8.1.lst marccol1.u8.2.lst \
  marccol2.u8.marc marccol2.u8.1.lst marccol2.u8.2.lst \
  tst_record_conv.xsl 
@@ -56,7 +58,9 @@ tstsoap2_SOURCES = tstsoap2.c
 tstlogthread_SOURCES = tstlogthread.c
 tstxmlquery_SOURCES = tstxmlquery.c
 tstpquery_SOURCES = tstpquery.c
+tst_comstack_SOURCES = tst_comstack.c
 tst_filepath_SOURCES = tst_filepath.c
 tst_record_conv_SOURCES = tst_record_conv.c
 tst_retrieval_SOURCES = tst_retrieval.c
 tst_tpath_SOURCES = tst_tpath.c
+tst_timing_SOURCES = tst_timing.c

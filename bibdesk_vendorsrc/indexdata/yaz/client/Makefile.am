@@ -1,6 +1,6 @@
-## Copyright (C) 1995-2004, Index Data
+## Copyright (C) 1995-2007, Index Data
 ## All rights reserved.
-## $Id: Makefile.am,v 1.27 2006/08/11 12:57:30 adam Exp $
+## $Id: Makefile.am,v 1.29 2007/01/24 11:50:18 adam Exp $
 
 
 bin_PROGRAMS=yaz-client 
@@ -8,7 +8,7 @@ EXTRA_PROGRAMS=bertorture
 
 EXTRA_DIST = default.bib
 
-COMMON=admin.c admin.h tabcomplete.c tabcomplete.h
+COMMON=admin.c admin.h tabcomplete.c tabcomplete.h fhistory.c fhistory.h
 yaz_client_SOURCES=client.c $(COMMON)
 
 AM_CFLAGS=$(THREAD_CFLAGS)

@@ -1,3 +1,67 @@
+Fixed bug #832: Problem with MARC/charset in yaz-client.
+
+Fixed bug #668: save command line history for yaz-client.
+
+Fixed bug #830: pkg-config support.
+
+--- 2.1.48 2007/01/23
+
+Extended ZOOM result set options with two options that may be read by
+a client: resultSetStatus and presentStatus with values as specified for
+the ASN.1. See:
+http://www.loc.gov/z3950/agency/markup/04.html#Search-status
+
+Fixed bug #827: Using SSL fails on Debian etch.
+
+Fixed bug #826: Weird looking chars for set of MARC records.
+
+Implemented alternative Item Order package for ZOOM. If option "doc" is set,
+that is treated as an ItemOrder with itemRequest being an XML document
+external. The value of "doc" is the content.
+
+Extended the GFS search facility. New member of bend_search_rr 
+'estimated_hit_count' signals that hits is known to be an estmate
+(higher or lower than real hit count). New member 'partial_resultset'
+signals that the search was partial (hit count is lower or equal than
+real hit count). For Z39.50, the information is stored in resultSetStatus
+member of SearchResponse APDU. For SRU, the information is signalled
+via SRU diagnostic 59: "Result set created with valid partial results
+available".
+
+Switched from jade/pdfjdaetex to dblatex for Docbook documentation in PDF.
+
+--- 2.1.46 2007/01/13
+
+Implemented bug #806: Deal with HTTP clients sending LF in HTTP headers.
+
+Added ZOOM_connection_peek_event.
+
+Implemented Generic select hook for ZOOM (bug #803). This is achieved with 
+the following new functions:
+ ZOOM_event_nonblock, ZOOM_connection_process,
+ ZOOM_connection_get_{socket,mask,timeout}, 
+ ZOOM_connection_fire_event_{timeout,socket}.
+The existing blocking event handler, ZOOM_event, is a wrapper for the
++ blocking ZOOM_event_sys_{poll,select}.
+
+Implemented function ccl_xml_config which parses XML version of CCL
+configuration (bug #798).
+
+Fixed bug #797: yaz_marc_write_xml does not honor character conversion.
+
+Added timings utility (yaz/timing.h)
+
+--- 2.1.44 2007/01/03
+
+Added yaz_marc_write_xml which creates MARCXML/MarcXchange record as
+Libxml2 tree.
+
+Fixed bug #779: Rotation of apdu.log fails.
+
+Fixed for character set conversions:
+  Unicode to MARC-8 conversion for certain less preferred UTF-8 sequences.
+  Honor G1 set in MARC-8 decoding.
+
 --- 2.1.42 2006/12/17
 
 Fixed bug #775: char conversion does not handle Alternative UTF-8

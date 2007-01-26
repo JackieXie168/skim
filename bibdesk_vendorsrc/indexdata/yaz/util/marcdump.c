@@ -1,8 +1,8 @@
 /*
- * Copyright (C) 1995-2006, Index Data ApS
+ * Copyright (C) 1995-2007, Index Data ApS
  * See the file LICENSE for details.
  *
- * $Id: marcdump.c,v 1.45 2006/12/15 19:28:48 adam Exp $
+ * $Id: marcdump.c,v 1.47 2007/01/03 08:42:16 adam Exp $
  */
 
 #define _FILE_OFFSET_BITS 64
@@ -126,6 +126,7 @@ static void marcdump_read_xml(yaz_marc_t mt, const char *fname)
 
 static void dump(const char *fname, const char *from, const char *to,
                  int input_format, int output_format,
+                 int write_using_libxml2,
                  int print_offset, const char *split_fname, int split_chunk,
                  int verbose, FILE *cfile, const char *leader_spec)
 {
@@ -151,6 +152,7 @@ static void dump(const char *fname, const char *from, const char *to,
         yaz_marc_iconv(mt, cd);
     }
     yaz_marc_xml(mt, output_format);
+    yaz_marc_write_using_libxml2(mt, write_using_libxml2);
     yaz_marc_debug(mt, verbose);
 
     if (input_format == YAZ_MARC_MARCXML || input_format == YAZ_MARC_XCHANGE)
@@ -315,6 +317,7 @@ int main (int argc, char **argv)
     int split_chunk = 1;
     const char *split_fname = 0;
     const char *leader_spec = 0;
+    int write_using_libxml2 = 0;
     
 #if HAVE_LOCALE_H
     setlocale(LC_CTYPE, "");
@@ -340,6 +343,13 @@ int main (int argc, char **argv)
             }
             break;
         case 'o':
+            /* dirty hack so we can make Libxml2 do the writing ..
+               rather than WRBUF */
+            if (strlen(arg) > 4 && strncmp(arg, "xml,", 4) == 0)
+            {
+                arg = arg + 4;
+                write_using_libxml2 = 1;
+            }
             output_format = yaz_marc_decode_formatstr(arg);
             if (output_format == -1)
             {
@@ -400,6 +410,7 @@ int main (int argc, char **argv)
             break;
         case 0:
             dump(arg, from, to, input_format, output_format,
+                 write_using_libxml2,
                  print_offset, split_fname, split_chunk,
                  verbose, cfile, leader_spec);
             break;

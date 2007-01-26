@@ -8,7 +8,7 @@
      <!ENTITY % common SYSTEM "common/common.ent">
      %common;
 ]>
-<!-- $Id: yaz-client-man.xml,v 1.12 2006/08/28 19:18:02 adam Exp $ -->
+<!-- $Id: yaz-client-man.xml,v 1.13 2007/01/24 11:50:18 adam Exp $ -->
 <refentry id="yaz-client">
  <refentryinfo>
   <productname>YAZ</productname>
@@ -160,10 +160,10 @@
     <filename>yaz-&lt;version&gt;/client/client.c</filename>
    </para>
    <para>
-    <filename>.yazclientrc</filename>
+    <filename>$HOME/.yazclientrc</filename>
    </para>
    <para>
-    <filename>$HOME/.yazclientrc</filename>
+    <filename>$HOME/.yazclient.history</filename>
    </para>
   </refsect1>
   <refsect1><title>SEE ALSO</title>

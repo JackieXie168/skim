@@ -1,4 +1,4 @@
-/* $Id: zoomtst4.c,v 1.9 2006/04/21 10:28:08 adam Exp $  */
+/* $Id: zoomtst4.c,v 1.10 2007/01/03 08:42:17 adam Exp $  */
 
 /** \file zoomtst4.c
     \brief Asynchronous multi-target client with separate present

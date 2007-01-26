@@ -1,8 +1,8 @@
 /*
- * Copyright (C) 1995-2005, Index Data ApS
+ * Copyright (C) 1995-2007, Index Data ApS
  * See the file LICENSE for details.
  *
- * $Id: admin.c,v 1.22 2006/10/04 16:59:33 mike Exp $
+ * $Id: admin.c,v 1.23 2007/01/03 08:42:13 adam Exp $
  */
 
 #include <stdio.h>

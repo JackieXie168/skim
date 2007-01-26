@@ -1,4 +1,4 @@
-## $Id: Makefile.am,v 1.76 2006/12/13 09:40:32 adam Exp $
+## $Id: Makefile.am,v 1.78 2007/01/22 12:14:09 adam Exp $
 
 docdir=$(datadir)/doc/@PACKAGE@
 
@@ -63,12 +63,16 @@ index.tkl: $(XMLFILES)
 	$(TKL_COMPILE) $(srcdir)/yaz.xml
 
 yaz.pdf: $(XMLFILES)
-	if test ! -f common/id.png ; then cp $(srcdir)/common/id.png common; fi
-	if test ! -f apilayer.png ; then cp $(srcdir)/apilayer.png .; fi
+	dblatex $(srcdir)/yaz.xml
+
+
+yazj.pdf:
 	jade -E14 -D $(srcdir) -d common/print.dsl -t tex $(srcdir)/common/xml.dcl $(srcdir)/yaz.xml
-	pdfjadetex yaz.tex 
-	pdfjadetex yaz.tex >/dev/null
-	pdfjadetex yaz.tex >/dev/null
+	rm -f yazj.pdf
+	cp yaz.tex yazj.tex
+	pdfjadetex yazj.tex
+	pdfjadetex yazj.tex >/dev/null
+	pdfjadetex yazj.tex >/dev/null
 
 apilayer.png: 
 	tgif -print -xbm apilayer.obj

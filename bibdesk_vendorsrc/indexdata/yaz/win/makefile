@@ -1,6 +1,6 @@
-# Copyright (C) 1994-2006, Index Data ApS
+# Copyright (C) 1995-2007, Index Data ApS
 # All rights reserved.
-# $Id: makefile,v 1.122 2006/12/15 12:37:18 adam Exp $
+# $Id: makefile,v 1.128 2007/01/24 11:50:19 adam Exp $
 #
 # Programmed by
 #  Heikki Levanto & Adam Dickmeiss
@@ -115,6 +115,7 @@ CQL2XCQL=$(BINDIR)\cql2xcql.exe
 YAZ_MARCDUMP=$(BINDIR)\yaz-marcdump.exe
 
 TSTLOG=$(BINDIR)\tstlog.exe
+TST_TIMING=$(BINDIR)\tst_timing.exe
 
 # shortcut names defined here
 dll: dirs generate $(DLL) 
@@ -127,7 +128,7 @@ zoomsh: $(ZOOMSH) $(ZOOMTST1) $(ZOOMTST2) $(ZOOMTST3) \
 
 utilprog: $(CQL2PQF) $(CQL2XCQL) $(YAZ_MARCDUMP)
 
-testprog: $(TSTLOG)
+testprog: $(TSTLOG) $(TST_TIMING)
 
 htmlhelp: $(DOCDIR)\htmlhelp.chm
 
@@ -280,7 +281,8 @@ LINK_DLL = $(LINK) $(LNKOPT) \
 YAZ_CLIENT_OBJS= \
    $(OBJDIR)\client.obj \
    $(OBJDIR)\tabcomplete.obj \
-   $(OBJDIR)\admin.obj
+   $(OBJDIR)\admin.obj \
+   $(OBJDIR)\fhistory.obj
 
 ZTEST_OBJS= \
     $(OBJDIR)\read-marc.obj \
@@ -320,6 +322,9 @@ YAZ_MARCDUMP_OBJS = \
 
 TSTLOG_OBJS = \
    $(OBJDIR)\tstlog.obj
+
+TST_TIMING_OBJS = \
+   $(OBJDIR)\tst_timing.obj
 
 MISC_OBJS= \
    $(OBJDIR)\version.obj \
@@ -408,6 +413,7 @@ MISC_OBJS= \
    $(OBJDIR)\srwutil.obj \
    $(OBJDIR)\zoom-c.obj \
    $(OBJDIR)\zoom-opt.obj \
+   $(OBJDIR)\zoom-socket.obj \
    $(OBJDIR)\initopt.obj \
    $(OBJDIR)\xmlquery.obj \
    $(OBJDIR)\mime.obj \
@@ -418,7 +424,9 @@ MISC_OBJS= \
    $(OBJDIR)\cqlutil.obj \
    $(OBJDIR)\cqlstrer.obj \
    $(OBJDIR)\xcqlutil.obj \
-   $(OBJDIR)\elementset.obj
+   $(OBJDIR)\elementset.obj \
+   $(OBJDIR)\timing.obj \
+   $(OBJDIR)\http.obj
 
 Z3950_OBJS= \
    $(OBJDIR)\z-date.obj\
@@ -724,90 +732,58 @@ $(DLL) $(YAZ_IMPLIB): "$(BINDIR)" $(DLL_OBJS) $(YAZ_RES)
 		/implib:"$(YAZ_IMPLIB)" 
 
 $(CLIENT) : "$(BINDIR)" $(YAZ_CLIENT_OBJS) $(DLL)
-	$(LINK_PROGRAM) \
-		$(YAZ_CLIENT_OBJS) \
-		/out:$(CLIENT)
+	$(LINK_PROGRAM) $(YAZ_CLIENT_OBJS) /out:$(CLIENT)
 
 $(ZOOMSH) : "$(BINDIR)" $(YAZ_ZOOMSH_OBJS) $(DLL)
-	$(LINK_PROGRAM) \
-		$(YAZ_ZOOMSH_OBJS) \
-		/out:$(ZOOMSH)
+	$(LINK_PROGRAM) $(YAZ_ZOOMSH_OBJS) /out:$(ZOOMSH)
 
 $(ZOOMTST1) : "$(BINDIR)" $(YAZ_ZOOMTST1_OBJS) $(DLL)
-	$(LINK_PROGRAM) \
-		$(YAZ_ZOOMTST1_OBJS) \
-		/out:$(ZOOMTST1)
+	$(LINK_PROGRAM) $(YAZ_ZOOMTST1_OBJS) /out:$(ZOOMTST1)
 
 $(ZOOMTST2) : "$(BINDIR)" $(YAZ_ZOOMTST2_OBJS) $(DLL)
-	$(LINK_PROGRAM) \
-		$(YAZ_ZOOMTST2_OBJS) \
-		/out:$(ZOOMTST2)
+	$(LINK_PROGRAM) $(YAZ_ZOOMTST2_OBJS) /out:$(ZOOMTST2)
 
 $(ZOOMTST3) : "$(BINDIR)" $(YAZ_ZOOMTST3_OBJS) $(DLL)
-	$(LINK_PROGRAM) \
-		$(YAZ_ZOOMTST3_OBJS) \
-		/out:$(ZOOMTST3)
+	$(LINK_PROGRAM) $(YAZ_ZOOMTST3_OBJS) /out:$(ZOOMTST3)
 
 $(ZOOMTST4) : "$(BINDIR)" $(YAZ_ZOOMTST4_OBJS) $(DLL)
-	$(LINK_PROGRAM) \
-		$(YAZ_ZOOMTST4_OBJS) \
-		/out:$(ZOOMTST4)
+	$(LINK_PROGRAM) $(YAZ_ZOOMTST4_OBJS) /out:$(ZOOMTST4)
 
 $(ZOOMTST5) : "$(BINDIR)" $(YAZ_ZOOMTST5_OBJS) $(DLL)
-	$(LINK_PROGRAM) \
-		$(YAZ_ZOOMTST5_OBJS) \
-		/out:$(ZOOMTST5)
+	$(LINK_PROGRAM) $(YAZ_ZOOMTST5_OBJS) /out:$(ZOOMTST5)
 
 $(ZOOMTST6) : "$(BINDIR)" $(YAZ_ZOOMTST6_OBJS) $(DLL)
-	$(LINK_PROGRAM) \
-		$(YAZ_ZOOMTST6_OBJS) \
-		/out:$(ZOOMTST6)
+	$(LINK_PROGRAM) $(YAZ_ZOOMTST6_OBJS) /out:$(ZOOMTST6)
 
 $(ZOOMTST7) : "$(BINDIR)" $(YAZ_ZOOMTST7_OBJS) $(DLL)
-	$(LINK_PROGRAM) \
-		$(YAZ_ZOOMTST7_OBJS) \
-		/out:$(ZOOMTST7)
+	$(LINK_PROGRAM) $(YAZ_ZOOMTST7_OBJS) /out:$(ZOOMTST7)
 
 $(ZOOMTST8) : "$(BINDIR)" $(YAZ_ZOOMTST8_OBJS) $(DLL)
-	$(LINK_PROGRAM) \
-		$(YAZ_ZOOMTST8_OBJS) \
-		/out:$(ZOOMTST8)
+	$(LINK_PROGRAM) $(YAZ_ZOOMTST8_OBJS) /out:$(ZOOMTST8)
 
 $(ZOOMTST9) : "$(BINDIR)" $(YAZ_ZOOMTST9_OBJS) $(DLL)
-	$(LINK_PROGRAM) \
-		$(YAZ_ZOOMTST9_OBJS) \
-		/out:$(ZOOMTST9)
+	$(LINK_PROGRAM) $(YAZ_ZOOMTST9_OBJS) /out:$(ZOOMTST9)
 
 $(ZOOMTST10) : "$(BINDIR)" $(YAZ_ZOOMTST10_OBJS) $(DLL)
-	$(LINK_PROGRAM) \
-		$(YAZ_ZOOMTST10_OBJS) \
-		/out:$(ZOOMTST10)
+	$(LINK_PROGRAM) $(YAZ_ZOOMTST10_OBJS) /out:$(ZOOMTST10)
 
 $(CQL2PQF) : "$(BINDIR)" $(YAZ_CQL2PQF_OBJS) $(DLL)
-	$(LINK_PROGRAM) \
-		$(YAZ_CQL2PQF_OBJS) \
-		/out:$(CQL2PQF)
+	$(LINK_PROGRAM) $(YAZ_CQL2PQF_OBJS) /out:$(CQL2PQF)
 
 $(CQL2XCQL) : "$(BINDIR)" $(YAZ_CQL2XCQL_OBJS) $(DLL)
-	$(LINK_PROGRAM) \
-		$(YAZ_CQL2XCQL_OBJS) \
-		/out:$(CQL2XCQL)
+	$(LINK_PROGRAM) $(YAZ_CQL2XCQL_OBJS) /out:$(CQL2XCQL)
 
 $(ZTEST) : "$(BINDIR)" $(ZTEST_OBJS) $(DLL)
-	$(LINK_PROGRAM) \
-		$(ZTEST_OBJS) \
-		/implib:"$(LIBDIR)\yaz-ztest.lib" \
-		/out:$(ZTEST) 
+	$(LINK_PROGRAM)	$(ZTEST_OBJS) /out:$(ZTEST) 
 
 $(YAZ_MARCDUMP) : "$(BINDIR)" $(YAZ_MARCDUMP_OBJS) $(DLL)
-	$(LINK_PROGRAM) \
-		$(YAZ_MARCDUMP_OBJS) \
-		/out:$(YAZ_MARCDUMP) 
+	$(LINK_PROGRAM) $(YAZ_MARCDUMP_OBJS) /out:$(YAZ_MARCDUMP) 
 
 $(TSTLOG) : "$(BINDIR)" $(TSTLOG_OBJS) $(DLL)
-	$(LINK_PROGRAM) \
-		$(TSTLOG_OBJS) \
-		/out:$(TSTLOG)
+	$(LINK_PROGRAM) $(TSTLOG_OBJS) /out:$(TSTLOG)
+
+$(TST_TIMING) : "$(BINDIR)" $(TST_TIMING_OBJS) $(DLL)
+	$(LINK_PROGRAM) $(TST_TIMING_OBJS) /out:$(TST_TIMING)
 
 # Other rules
 

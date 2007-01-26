@@ -1,4 +1,4 @@
-/* $Id: zoomtst10.c,v 1.3 2006/10/24 09:53:42 adam Exp $  */
+/* $Id: zoomtst10.c,v 1.4 2007/01/03 08:42:17 adam Exp $  */
 
 /** \file zoomtst10.c
     \brief Synchronous single-target search using CCL conversion

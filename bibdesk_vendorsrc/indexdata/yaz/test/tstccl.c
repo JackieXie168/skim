@@ -1,14 +1,14 @@
 /*
- * Copyright (C) 1995-2006, Index Data ApS
+ * Copyright (C) 1995-2007, Index Data ApS
  * See the file LICENSE for details.
  *
- * $Id: tstccl.c,v 1.11 2006/07/31 11:42:32 adam Exp $
+ * $Id: tstccl.c,v 1.13 2007/01/08 10:48:07 adam Exp $
  */
 
 /* CCL test */
 
 #include <string.h>
-#include <yaz/ccl.h>
+#include <yaz/ccl_xml.h>
 #include <yaz/test.h>
 
 
@@ -98,6 +98,45 @@ void tst1(int pass)
                      "x r=o\n"
             );
         break;
+    case 3:
+#if YAZ_HAVE_XML2
+        if (1)
+        {
+            xmlDocPtr doc;
+            int r;
+            const char *addinfo = 0;
+            const char *xml_str = 
+                "<cclmap>\n"
+                " <qual name=\"ti\">\n"
+                "   <attr type=\"u\" value=\"4\"/>\n"
+                "   <attr type=\"s\" value=\"pw\"/>\n"
+                "   <attr type=\"t\" value=\"l,r\"/>\n"
+                " </qual>\n"
+                " <qual name=\"term\">\n"
+                "   <attr type=\"1\" value=\"1016\"/>\n"
+                "   <attr type=\"s\" value=\"al,pw\"/>\n"
+                " </qual>\n"
+                " <qual name=\"dc.title\">\n"
+                "   <attr type=\"1\" value=\"/my/title\"/>\n"
+                " </qual>\n"
+                " <qual name=\"date\">\n"
+                "   <attr type=\"r\" value=\"r\"/>\n"
+                " </qual>\n"
+                " <qual name=\"x\">\n"
+                "   <attr type=\"r\" value=\"o\"/>\n"
+                " </qual>\n"
+                "</cclmap>\n";
+            
+            doc = xmlParseMemory(xml_str, strlen(xml_str));
+            YAZ_CHECK(doc);
+
+            r = ccl_xml_config(bibset, xmlDocGetRootElement(doc), &addinfo);
+            YAZ_CHECK_EQ(r, 0);
+        }
+        break;
+#else
+        return;
+#endif
     default:
         YAZ_CHECK(0);
         return;
@@ -169,9 +208,11 @@ void tst1(int pass)
 int main(int argc, char **argv)
 {
     YAZ_CHECK_INIT(argc, argv);
+    YAZ_CHECK_LOG();
     tst1(0);
     tst1(1);
     tst1(2);
+    tst1(3);
     YAZ_CHECK_TERM;
 }
 /*

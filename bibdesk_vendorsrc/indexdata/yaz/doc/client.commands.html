@@ -1,4 +1,4 @@
-<html><head><meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"><title>3. Commands</title><meta name="generator" content="DocBook XSL Stylesheets V1.71.0"><link rel="start" href="index.html" title="YAZ User's Guide and Reference"><link rel="up" href="client.html" title="Chapter 5. The YAZ client"><link rel="prev" href="client.invoking.html" title="2. Invoking the YAZ client"><link rel="next" href="client.searching.html" title="4. Searching"></head><body><link rel="stylesheet" type="text/css" href="common/style1.css"><div class="navheader"><table width="100%" summary="Navigation header"><tr><th colspan="3" align="center">3. Commands</th></tr><tr><td width="20%" align="left"><a accesskey="p" href="client.invoking.html">Prev</a> </td><th width="60%" align="center">Chapter 5. The YAZ client</th><td width="20%" align="right"> <a accesskey="n" href="client.searching.html">Next</a></td></tr></table><hr></div><div class="sect1" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="client.commands"></a>3. Commands</h2></div></div></div><p>
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"><title>3. Commands</title><meta name="generator" content="DocBook XSL Stylesheets V1.68.1"><link rel="start" href="index.html" title="YAZ User's Guide and Reference"><link rel="up" href="client.html" title="Chapter 5. The YAZ client"><link rel="prev" href="client.invoking.html" title="2. Invoking the YAZ client"><link rel="next" href="client.searching.html" title="4. Searching"></head><body><link rel="stylesheet" type="text/css" href="common/style1.css"><div class="navheader"><table width="100%" summary="Navigation header"><tr><th colspan="3" align="center">3. Commands</th></tr><tr><td width="20%" align="left"><a accesskey="p" href="client.invoking.html">Prev</a> </td><th width="60%" align="center">Chapter 5. The YAZ client</th><td width="20%" align="right"> <a accesskey="n" href="client.searching.html">Next</a></td></tr></table><hr></div><div class="sect1" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="client.commands"></a>3. Commands</h2></div></div></div><p>
     When the YAZ client has read options and connected to a target, if given,
     it will display <code class="literal">Z&gt;</code> and await your command.
     Commands are executed by hitting the return key.
@@ -212,11 +212,12 @@
     record (as parf of present response or piggybacked search response) 
     is used for the update.
    </p></dd><dt><span class="term">
-   <code class="literal">.</code>
+   <code class="literal">source</code>
    <em class="replaceable"><code>filename</code></em>
   </span></dt><dd><p>Executes list of commands from
     file <em class="replaceable"><code>filename</code></em>, just like source on
-    most UNIX shells.
+    most UNIX shells. A single dot (<code class="literal">.</code>) can be used
+    as an alternative.
    </p></dd><dt><span class="term">
    <code class="literal">!</code>
    <em class="replaceable"><code>args</code></em>

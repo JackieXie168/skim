@@ -1,4 +1,4 @@
-/* $Id: zoom-bug-641.c,v 1.1 2006/09/19 21:15:01 adam Exp $  */
+/* $Id: zoom-bug-641.c,v 1.2 2007/01/03 08:42:17 adam Exp $  */
 
 /** \file zoom-bug641.c
     \brief Program to illustrate bug 641

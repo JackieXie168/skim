@@ -1,8 +1,8 @@
 /*
- * Copyright (C) 1995-2005, Index Data ApS
+ * Copyright (C) 1995-2007, Index Data ApS
  * See the file LICENSE for details.
  *
- * $Id: tstodr.c,v 1.8 2006/01/29 21:59:13 adam Exp $
+ * $Id: tstodr.c,v 1.9 2007/01/03 08:42:16 adam Exp $
  *
  */
 #include <stdlib.h>

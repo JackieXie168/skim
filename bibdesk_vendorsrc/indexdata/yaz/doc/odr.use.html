@@ -1,4 +1,4 @@
-<html><head><meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"><title>2. Using ODR</title><meta name="generator" content="DocBook XSL Stylesheets V1.71.0"><link rel="start" href="index.html" title="YAZ User's Guide and Reference"><link rel="up" href="odr.html" title="Chapter 10. The ODR Module"><link rel="prev" href="odr.html" title="Chapter 10. The ODR Module"><link rel="next" href="odr.programming.html" title="3. Programming with ODR"></head><body><link rel="stylesheet" type="text/css" href="common/style1.css"><div class="navheader"><table width="100%" summary="Navigation header"><tr><th colspan="3" align="center">2. Using ODR</th></tr><tr><td width="20%" align="left"><a accesskey="p" href="odr.html">Prev</a> </td><th width="60%" align="center">Chapter 10. The ODR Module</th><td width="20%" align="right"> <a accesskey="n" href="odr.programming.html">Next</a></td></tr></table><hr></div><div class="sect1" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="odr.use"></a>2. Using ODR</h2></div></div></div><div class="sect2" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="odr.streams"></a>2.1. ODR Streams</h3></div></div></div><p>
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"><title>2. Using ODR</title><meta name="generator" content="DocBook XSL Stylesheets V1.68.1"><link rel="start" href="index.html" title="YAZ User's Guide and Reference"><link rel="up" href="odr.html" title="Chapter 10. The ODR Module"><link rel="prev" href="odr.html" title="Chapter 10. The ODR Module"><link rel="next" href="odr.programming.html" title="3. Programming with ODR"></head><body><link rel="stylesheet" type="text/css" href="common/style1.css"><div class="navheader"><table width="100%" summary="Navigation header"><tr><th colspan="3" align="center">2. Using ODR</th></tr><tr><td width="20%" align="left"><a accesskey="p" href="odr.html">Prev</a> </td><th width="60%" align="center">Chapter 10. The ODR Module</th><td width="20%" align="right"> <a accesskey="n" href="odr.programming.html">Next</a></td></tr></table><hr></div><div class="sect1" lang="en"><div class="titlepage"><div><div><h2 class="title" style="clear: both"><a name="odr.use"></a>2. Using ODR</h2></div></div></div><div class="sect2" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="odr.streams"></a>2.1. ODR Streams</h3></div></div></div><p>
      Conceptually, the ODR stream is the source of encoded data in the
      decoding mode; when encoding, it is the receptacle for the encoded
      data. Before you can use an ODR stream it must be allocated. This is
@@ -9,7 +9,7 @@
      The <code class="function">odr_createmem()</code> function takes as argument one
      of three manifest constants: <code class="literal">ODR_ENCODE</code>,
      <code class="literal">ODR_DECODE</code>, or <code class="literal">ODR_PRINT</code>.
-     An <acronym class="acronym">ODR</acronym> stream can be in only one mode - it is not possible to change
+     An <span class="acronym">ODR</span> stream can be in only one mode - it is not possible to change
      its mode once it's selected. Typically, your program will allocate
      at least two ODR streams - one for decoding, and one for encoding.
     </p><p>
@@ -19,7 +19,7 @@
     </pre><p>
      to release the resources allocated for the stream.
     </p></div><div class="sect2" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="odr.memory.management"></a>2.2. Memory Management</h3></div></div></div><p>
-     Two forms of memory management take place in the <acronym class="acronym">ODR</acronym> system. The first
+     Two forms of memory management take place in the <span class="acronym">ODR</span> system. The first
      one, which has to do with allocating little bits of memory (sometimes
      quite large bits of memory, actually) when a protocol package is
      decoded, and turned into a complex of interlinked structures. This
@@ -28,7 +28,7 @@
      required when encoding data - to make sure that a large enough buffer is
      available to hold the fully encoded PDU.
     </p><p>
-     The <acronym class="acronym">ODR</acronym> module has its own memory management system, which is
+     The <span class="acronym">ODR</span> module has its own memory management system, which is
      used whenever memory is required. Specifically, it is used to allocate
      space for data when decoding incoming PDUs. You can use the memory
      system for your own purposes, by using the function
@@ -36,7 +36,7 @@
      void *odr_malloc(ODR o, int size);
     </pre><p>
      You can't use the normal <code class="function">free(2)</code> routine to free
-     memory allocated by this function, and <acronym class="acronym">ODR</acronym> doesn't provide a parallel
+     memory allocated by this function, and <span class="acronym">ODR</span> doesn't provide a parallel
      function. Instead, you can call
     </p><pre class="synopsis">
      void odr_reset(ODR o, int size);
@@ -54,7 +54,7 @@
      returns the number of bytes allocated on the stream since the last call to
      <code class="function">odr_reset()</code>.
     </p><p>
-     The memory subsystem of <acronym class="acronym">ODR</acronym> is fairly efficient at allocating and
+     The memory subsystem of <span class="acronym">ODR</span> is fairly efficient at allocating and
      releasing little bits of memory. Rather than managing the individual,
      small bits of space, the system maintains a free-list of larger chunks
      of memory, which are handed out in small bits. This scheme is
@@ -88,7 +88,7 @@
      data, and a pointer to that data is returned. <code class="literal">*size</code>
      is set to the size of the buffer (unless <code class="literal">size</code> is null,
      signaling that you are not interested in the size). The next call to
-     a primitive function using the same <acronym class="acronym">ODR</acronym> stream will overwrite the
+     a primitive function using the same <span class="acronym">ODR</span> stream will overwrite the
      data, unless a different buffer has been supplied using the call
     </p><pre class="synopsis">
      void odr_setbuf(ODR o, char *buf, int len, int can_grow);
@@ -99,7 +99,7 @@
      Before a call to an encoding function, you can use
      <code class="function">odr_setbuf()</code> to provide the stream with an encoding
      buffer of sufficient size (length). The <code class="literal">can_grow</code>
-     parameter tells the encoding <acronym class="acronym">ODR</acronym> stream whether it is allowed to use
+     parameter tells the encoding <span class="acronym">ODR</span> stream whether it is allowed to use
      <code class="function">realloc(2)</code> to increase the size of the buffer when
      necessary. The default condition of a new encoding stream is equivalent
      to the results of calling
@@ -147,11 +147,11 @@
      stream). After this, you can call the function corresponding to the
      data you wish to decode (eg, <code class="function">odr_integer()</code> odr
      <code class="function">z_APDU()</code>).
-    </p><div class="example"><a name="example.odr.encoding.and.decoding.functions"></a><p class="title"><b>Example 10.1. Encoding and decoding functions</b></p><div class="example-contents"><pre class="synopsis">
+    </p><div class="example"><a name="example.odr.encoding.and.decoding.functions"></a><p class="title"><b>Example 10.1. Encoding and decoding functions</b></p><pre class="synopsis">
       int odr_integer(ODR o, int **p, int optional, const char *name);
       
       int z_APDU(ODR o, Z_APDU **p, int optional, const char *name);
-     </pre></div></div><br class="example-break"><p>
+     </pre></div><p>
      If the data is absent (or doesn't match the tag corresponding to
      the type), the return value will be either 0 or 1 depending on the
      <code class="literal">optional</code> flag. If <code class="literal">optional</code>
@@ -168,7 +168,7 @@
      If the data value is found where it's expected, the pointer
      <span class="emphasis"><em>pointed to</em></span> by the <code class="literal">p</code> argument
      will be set to point to the decoded type.
-     The space for the type will be allocated and owned by the <acronym class="acronym">ODR</acronym>
+     The space for the type will be allocated and owned by the <span class="acronym">ODR</span>
      stream, and it will live until you call
      <code class="function">odr_reset()</code> on the stream. You cannot use
      <code class="function">free(2)</code> to release the memory.
@@ -177,7 +177,7 @@
      new memory will be allocated each time. When you do call 
      <code class="function">odr_reset()</code>, everything decoded since the
      last call to <code class="function">odr_reset()</code> will be released.
-    </p><div class="example"><a name="example.odr.encoding.of.integer"></a><p class="title"><b>Example 10.2. Encoding and decoding of an integer</b></p><div class="example-contents"><p>
+    </p><div class="example"><a name="example.odr.encoding.of.integer"></a><p class="title"><b>Example 10.2. Encoding and decoding of an integer</b></p><p>
       The use of the double indirection can be a little confusing at first
       (its purpose will become clear later on, hopefully),
       so an example is in order. We'll encode an integer value, and
@@ -221,12 +221,12 @@ void do_nothing_useful(int value)
 }
 
      </pre><p>
-      This looks like a lot of work, offhand. In practice, the <acronym class="acronym">ODR</acronym> streams
+      This looks like a lot of work, offhand. In practice, the <span class="acronym">ODR</span> streams
       will typically be allocated once, in the beginning of your program
       (or at the beginning of a new network session), and the encoding
       and decoding will only take place in a few, isolated places in your
       program, so the overhead is quite manageable.
-     </p></div></div><br class="example-break"></div><div class="sect2" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="odr.printing"></a>2.4. Printing</h3></div></div></div><p>
+     </p></div></div><div class="sect2" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="odr.printing"></a>2.4. Printing</h3></div></div></div><p>
      When an ODR stream is created of type <code class="literal">ODR_PRINT</code>
      the ODR module will print the contents of a PDU in a readable format.
      By default output is written to the <code class="literal">stderr</code> stream.
@@ -264,12 +264,12 @@ void do_nothing_useful(int value)
      <code class="literal">ar[0]</code> is the top level element,
      <code class="literal">ar[n]</code> is the last. The last element has the
      property that <code class="literal">ar[n+1] == NULL</code>.
-    </p><div class="example"><a name="example.odr.element.path.record"></a><p class="title"><b>Example 10.3. Element Path for record</b></p><div class="example-contents"><p>
+    </p><div class="example"><a name="example.odr.element.path.record"></a><p class="title"><b>Example 10.3. Element Path for record</b></p><p>
       For a database record part of a PresentResponse the
       array returned by <code class="function">odr_get_element</code>
       is <code class="literal">presentResponse</code>, <code class="literal">databaseOrSurDiagnostics</code>, <code class="literal">?</code>, <code class="literal">record</code>, <code class="literal">?</code>, <code class="literal">databaseRecord</code> . The question mark appears due to 
       unnamed constructions.
-     </p></div></div><br class="example-break"></div><div class="sect2" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="odr.diagnostics"></a>2.5. Diagnostics</h3></div></div></div><p>
+     </p></div></div><div class="sect2" lang="en"><div class="titlepage"><div><div><h3 class="title"><a name="odr.diagnostics"></a>2.5. Diagnostics</h3></div></div></div><p>
      The encoding/decoding functions all return 0 when an error occurs.
      Until you call <code class="function">odr_reset()</code>, you cannot use the
      stream again, and any function called will immediately return 0.
@@ -287,7 +287,7 @@ void do_nothing_useful(int value)
     </pre><p>
      to get the current error number from the screen. The number will be
      one of these constants:
-    </p><div class="table"><a name="odr.error.codes"></a><p class="title"><b>Table 10.1. ODR Error codes</b></p><div class="table-contents"><table summary="ODR Error codes" border="1"><colgroup><col><col></colgroup><thead><tr><th>code</th><th>Description</th></tr></thead><tbody><tr><td>OMEMORY</td><td>Memory allocation failed.</td></tr><tr><td>OSYSERR</td><td>A system- or library call has failed.
+    </p><div class="table"><a name="odr.error.codes"></a><p class="title"><b>Table 10.1. ODR Error codes</b></p><table summary="ODR Error codes" border="1"><colgroup><col><col></colgroup><thead><tr><th>code</th><th>Description</th></tr></thead><tbody><tr><td>OMEMORY</td><td>Memory allocation failed.</td></tr><tr><td>OSYSERR</td><td>A system- or library call has failed.
 	 The standard diagnostic variable <code class="literal">errno</code> should be
 	 examined to determine the actual error.</td></tr><tr><td>OSPACE</td><td>No more space for encoding.
 	 This will only occur when the user has explicitly provided a
@@ -295,8 +295,8 @@ void do_nothing_useful(int value)
 	 allocate more space.</td></tr><tr><td>OREQUIRED</td><td>This is a common protocol error; A
 	 required data element was missing during encoding or decoding.</td></tr><tr><td>OUNEXPECTED</td><td>An unexpected data element was
 	 found during decoding.</td></tr><tr><td>OOTHER</td><td>Other error. This is typically an
-	 indication of misuse of the <acronym class="acronym">ODR</acronym> system by the programmer, and also
-	 that the diagnostic system isn't as good as it should be, yet.</td></tr></tbody></table></div></div><br class="table-break"><p>
+	 indication of misuse of the <span class="acronym">ODR</span> system by the programmer, and also
+	 that the diagnostic system isn't as good as it should be, yet.</td></tr></tbody></table></div><p>
      The character string array
     </p><pre class="synopsis">
      char *odr_errlist[]

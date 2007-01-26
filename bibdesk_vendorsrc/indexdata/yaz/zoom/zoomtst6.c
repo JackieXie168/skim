@@ -1,4 +1,4 @@
-/* $Id: zoomtst6.c,v 1.12 2006/04/21 10:28:08 adam Exp $  */
+/* $Id: zoomtst6.c,v 1.13 2007/01/03 08:42:17 adam Exp $  */
 
 /** \file zoomtst6.c
     \brief Asynchronous multi-target client with two searches
