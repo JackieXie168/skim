@@ -1258,8 +1258,13 @@ OFWeakRetainConcreteImplementation_NULL_IMPLEMENTATION
         [alias autorelease];
     
         NSEnumerator *entryEnum = [publications objectEnumerator];
+        NSAutoreleasePool *innerPool = [NSAutoreleasePool new];
         
         while(anItem = [entryEnum nextObject]){
+            
+            [innerPool release];
+            innerPool = [NSAutoreleasePool new];
+            
             citeKey = [anItem objectForKey:@"net_sourceforge_bibdesk_citekey"];
             if(citeKey == nil)
                 continue;
@@ -1291,6 +1296,7 @@ OFWeakRetainConcreteImplementation_NULL_IMPLEMENTATION
             }
             [metadata removeAllObjects];
         }
+        [innerPool release];
     }    
     @catch (id localException){
         NSLog(@"-[%@ %@] discarding exception %@", [self class], NSStringFromSelector(_cmd), [localException description]);
