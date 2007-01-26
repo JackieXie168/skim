@@ -54,6 +54,8 @@
 #import "BibDocument_Groups.h"
 #import "BDSKMainTableView.h"
 #import "BDSKFindController.h"
+#import <OmniAppKit/OAFindControllerTargetProtocol.h>
+#import <OmniAppKit/NSText-OAExtensions.h>
 
 NSString *BDSKDocumentFormatForSearchingDates = nil;
 
@@ -311,7 +313,9 @@ NSString *BDSKDocumentFormatForSearchingDates = nil;
 
 #pragma mark Find panel
 
-- (NSString *)selectedStringForFind {
+// OAOptionalSelectedStringForFinding informal protocol
+- (NSString *)selectedStringForFind;
+{
     if([currentPreviewView isKindOfClass:[NSScrollView class]]){
         NSTextView *textView = (NSTextView *)[(NSScrollView *)currentPreviewView documentView];
         NSRange selRange = [textView selectedRange];
@@ -324,10 +328,45 @@ NSString *BDSKDocumentFormatForSearchingDates = nil;
     return nil;
 }
 
+// OAFindControllerAware informal protocol
+- (id <OAFindControllerTarget>)omniFindControllerTarget;
+{
+    if([currentPreviewView isKindOfClass:[NSScrollView class]])
+        return [(NSScrollView *)currentPreviewView documentView];
+    else
+        return nil;
+}
+
+// OAFindControllerTarget protocol
+- (BOOL)findPattern:(id <OAFindPattern>)pattern backwards:(BOOL)backwards wrap:(BOOL)wrap;
+{
+    if([currentPreviewView isKindOfClass:[NSScrollView class]])
+        return [(NSTextView *)[(NSScrollView *)currentPreviewView documentView] findPattern:pattern backwards:backwards wrap:wrap];
+    else
+        return NO;
+}
+
+// OASearchableContent protocol
+- (BOOL)findPattern:(id <OAFindPattern>)pattern backwards:(BOOL)backwards ignoreSelection:(BOOL)ignoreSelection;
+{
+    if([currentPreviewView isKindOfClass:[NSScrollView class]])
+        return [(NSTextView *)[(NSScrollView *)currentPreviewView documentView] findPattern:pattern backwards:backwards ignoreSelection:ignoreSelection];
+    else
+        return NO;
+}
+
 - (IBAction)performFindPanelAction:(id)sender{
     NSString *selString = nil;
 
 	switch ([sender tag]) {
+        case NSFindPanelActionShowFindPanel:
+        case NSFindPanelActionNext:
+        case NSFindPanelActionPrevious:
+            if([currentPreviewView isKindOfClass:[NSScrollView class]])
+                [(NSTextView *)[(NSScrollView *)currentPreviewView documentView] performFindPanelAction:sender];
+            else
+                NSBeep();
+            break;
 		case NSFindPanelActionSetFindString:
             selString = [self selectedStringForFind];
             if ([NSString isEmptyString:selString])
@@ -338,6 +377,8 @@ NSString *BDSKDocumentFormatForSearchingDates = nil;
                 [searchField selectText:nil];
             } else {
                 [[BDSKFindController sharedFindController] setFindString:selString];
+                if([currentPreviewView isKindOfClass:[NSScrollView class]])
+                    [(NSTextView *)[(NSScrollView *)currentPreviewView documentView] performFindPanelAction:sender];
             }
             break;
         default:

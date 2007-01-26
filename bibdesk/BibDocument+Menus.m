@@ -752,7 +752,10 @@
 
 - (BOOL)validateFindPanelActionMenuItem:(NSMenuItem *)menuItem {
 	switch ([menuItem tag]) {
-		case NSFindPanelActionSetFindString:
+        case NSFindPanelActionShowFindPanel:
+        case NSFindPanelActionNext:
+        case NSFindPanelActionPrevious:
+        case NSFindPanelActionSetFindString:
 			return YES;
 		default:
 			return NO;
