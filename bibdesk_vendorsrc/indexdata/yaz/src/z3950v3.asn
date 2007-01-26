@@ -249,7 +249,9 @@ SearchResponse ::= SEQUENCE{
   resultSetStatus    [26]  IMPLICIT INTEGER{
               subset    (1),
                  interim  (2), 
-               none    (3)} OPTIONAL,
+               none    (3),
+	       estimate(4)
+	       } OPTIONAL,
   presentStatus        PresentStatus  OPTIONAL,
     records        Records OPTIONAL,
     -- Following two parameters may be used only if version 3 is in force.

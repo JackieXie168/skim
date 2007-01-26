@@ -1,8 +1,8 @@
 /*
- * Copyright (C) 1995-2006, Index Data ApS
+ * Copyright (C) 1995-2007, Index Data ApS
  * See the file LICENSE for details.
  *
- * $Id: mime.h,v 1.3 2006/09/27 11:39:02 adam Exp $
+ * $Id: mime.h,v 1.4 2007/01/03 08:42:15 adam Exp $
  */
 
 /** \file mime.h

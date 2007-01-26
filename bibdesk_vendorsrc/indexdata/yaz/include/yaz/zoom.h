@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 1995-2006, Index Data
+ * Copyright (c) 1995-2007, Index Data
  * All rights reserved.
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
@@ -24,7 +24,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-/* $Id: zoom.h,v 1.40 2006/10/31 14:08:02 adam Exp $ */
+/* $Id: zoom.h,v 1.44 2007/01/12 21:03:30 adam Exp $ */
 
 /**
  * \file zoom.h
@@ -339,17 +339,143 @@ ZOOM_options_get_int (ZOOM_options opt, const char *name, int defa);
 ZOOM_API(void)
 ZOOM_options_set_int(ZOOM_options opt, const char *name, int value);
 
-/* ----------------------------------------------------------- */
-/* events */
-/* poll for events on a number of connections. Returns positive
-   integer if event occurred ; zero if none occurred and no more
-   events are pending. The positive integer specifies the
-   connection for which the event occurred. */
+/** \brief select/poll socket mask: read */
+#define ZOOM_SELECT_READ 1
+/** \brief select/poll socket mask: write */
+#define ZOOM_SELECT_WRITE 2
+/** \brief select/poll socket mask: except */
+#define ZOOM_SELECT_EXCEPT 4
+
+/** \brief wait for events on connection(s) (BLOCKING)
+    \param no number of connections (size of cs)
+    \param cs connection array
+    \retval 0 no event was fired
+    \retval >0 event was fired for connection at (retval-1)
+    
+    blocking poll for events on a number of connections. Returns positive
+    integer if event occurred ; zero if none occurred and no more
+    events are pending. The positive integer specifies the
+    connection for which the event occurred.
+*/
 ZOOM_API(int)
 ZOOM_event (int no, ZOOM_connection *cs);
 
+
+/** \brief determines if connection is idle (no active or pending work)
+    \param c connection
+    \retval 1 is idle
+    \retval 0 is non-idle (active)
+*/
 ZOOM_API(int)
-ZOOM_connection_is_idle(ZOOM_connection cs);
+ZOOM_connection_is_idle(ZOOM_connection c);
+
+
+/** \brief process one event for one of connections given
+    \param no number of connections (size of cs)
+    \param cs connection array
+    \retval 0 no event was processed
+    \retval >0 event was processed for connection at (retval-1)
+
+    This function attemps to deal with outstandings events in a non-blocking
+    mode. If no events was processed (return value of 0),  then the system
+    should attempt to deal with sockets in blocking mode using socket
+    select/poll which means calling the following functions:
+    ZOOM_connection_get_socket, ZOOM_connection_get_mask,
+    ZOOM_connection_get_timeout.
+*/
+ZOOM_API(int)
+    ZOOM_event_nonblock(int no, ZOOM_connection *cs);
+
+
+/** \brief process one event for connection
+    \param c connection
+    \retval 0 no event was processed
+    \retval 1 event was processed for connection
+
+    This function attemps to deal with outstandings events in 
+    a non-blocking fashion. If no event was processed (return value of 0),
+    then the system should attempt to deal with sockets in blocking mode
+    using socket select/poll which means calling the following functions:
+    ZOOM_connection_get_socket, ZOOM_connection_get_mask,
+    ZOOM_connection_get_timeout. If an event was processed call this
+    function again.
+*/
+ZOOM_API(int)
+    ZOOM_connection_process(ZOOM_connection c);
+
+
+/** \brief get socket fd for ZOOM connection
+    \param c connection
+    \retval -1 no socket assigned for connection
+    \retval >=0 socket for connection
+
+    Use this function when preparing for socket/poll and
+    in conjunction with ZOOM_connection_get_mask.
+*/
+ZOOM_API(int)
+    ZOOM_connection_get_socket(ZOOM_connection c);
+
+
+/** \brief get socket mask for connection 
+    \param c connection
+    \returns mask for connection (possibly 0)
+
+    Use this function when preparing for socket select/poll and
+    in conjunction with ZOOM_connection_get_socket.
+*/
+ZOOM_API(int)
+    ZOOM_connection_get_mask(ZOOM_connection c);
+
+
+/** \brief set socket mask for connection (DO NOT call outside zoom) */
+ZOOM_API(int)
+    ZOOM_connection_set_mask(ZOOM_connection c, int mask);
+
+
+/** \brief get timeout in seconds for ZOOM connection
+    \param c connection
+    \returns timeout value in seconds
+
+    Use this function when preparing for socket/poll and
+    in conjunction with ZOOM_connection_get_socket.
+*/
+ZOOM_API(int)
+    ZOOM_connection_get_timeout(ZOOM_connection c);
+
+
+/** \brief fire socket event timeout
+    \param c connection
+    \retval 0 event was fired OK
+    \retval -1 event was not fired
+
+    Call this function when a timeout occurs - for example in the
+    case of select(2) returning 0.
+*/
+ZOOM_API(int)
+    ZOOM_connection_fire_event_timeout(ZOOM_connection c);
+
+
+/** \brief fire socket event activity (read,write,except)
+    \param c connection
+    \param mask or'ed mask of ZOOM_SELECT_.. values
+    \retval 0 event was fired OK
+    \retval -1 event was not fired
+*/
+ZOOM_API(int)
+    ZOOM_connection_fire_event_socket(ZOOM_connection c, int mask);
+
+
+
+/** \brief peek at next event
+    \param c connection
+    \returns ZOOM_EVENT_NONE (for no events in queue), ZOOM_EVENT_CONNECT, ..
+
+    Does not actually remove the event from the event queue. ZOOM_event and
+    ZOOM_process_event removes one event.
+*/
+
+ZOOM_API(int)
+    ZOOM_connection_peek_event(ZOOM_connection c);
 
 ZOOM_END_CDECL
 /*

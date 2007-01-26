@@ -1,8 +1,8 @@
 /*
- * Copyright (C) 1995-2006, Index Data ApS
+ * Copyright (C) 1995-2007, Index Data ApS
  * See the file LICENSE for details.
  *
- * $Id: log.c,v 1.43 2006/11/27 14:09:32 adam Exp $
+ * $Id: log.c,v 1.45 2007/01/03 08:42:15 adam Exp $
  */
 
 /**
@@ -57,7 +57,7 @@ char *strerror(int n)
 
 static int l_level = YLOG_DEFAULT_LEVEL;
 
-enum l_file_type {  use_stderr, use_none, use_file };
+enum l_file_type { use_stderr, use_none, use_file };
 static enum l_file_type yaz_file_type = use_stderr;
 static FILE *yaz_global_log_file = NULL;
 
@@ -176,10 +176,10 @@ void yaz_log_init_file(const char *fname)
 static void rotate_log(const char *cur_fname)
 {
     int i;
+
 #ifdef WIN32
     /* windows can't rename a file if it is open */
-    fclose(yaz_global_log_file);
-    yaz_global_log_file = 0;
+    yaz_log_close();
 #endif
     for (i = 0; i<9; i++)
     {
@@ -301,6 +301,9 @@ static void yaz_log_open_check(struct tm *tm, int force, const char *filemode)
     char new_filename[512];
     static char cur_filename[512] = "";
 
+    if (yaz_file_type != use_file)
+        return;
+
     if (l_fname && *l_fname)
     {
         strftime(new_filename, sizeof(new_filename)-1, l_fname, tm);
@@ -311,7 +314,7 @@ static void yaz_log_open_check(struct tm *tm, int force, const char *filemode)
         }
     }
 
-    if (l_max_size > 0 && yaz_global_log_file && yaz_file_type == use_file)
+    if (l_max_size > 0 && yaz_global_log_file)
     {
         long flen = ftell(yaz_global_log_file);
         if (flen > l_max_size)
@@ -320,12 +323,25 @@ static void yaz_log_open_check(struct tm *tm, int force, const char *filemode)
             force = 1;
         }
     }
-    if (force && yaz_file_type == use_file && *cur_filename)
+    if (force && *cur_filename)
     {
+        FILE *new_file;
+#ifdef WIN32
         yaz_log_close();
-        yaz_global_log_file = fopen(cur_filename, filemode);
-        if (l_level & YLOG_FLUSH)
-            setvbuf(yaz_global_log_file, 0, _IONBF, 0);
+#endif
+        new_file = fopen(cur_filename, filemode);
+        if (new_file)
+        {
+            yaz_log_close();
+            yaz_global_log_file = new_file;
+            if (l_level & YLOG_FLUSH)
+                setvbuf(yaz_global_log_file, 0, _IONBF, 0);
+        }
+        else
+        {
+            /* disable log rotate */
+            l_max_size = 0;
+        }
     }
 }
 

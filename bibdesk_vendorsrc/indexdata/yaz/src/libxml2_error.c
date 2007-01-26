@@ -1,8 +1,8 @@
 /*
- * Copyright (C) 2006, Index Data ApS
+ * Copyright (C) 2007, Index Data ApS
  * See the file LICENSE for details.
  *
- * $Id: libxml2_error.c,v 1.2 2006/07/06 10:17:53 adam Exp $
+ * $Id: libxml2_error.c,v 1.3 2007/01/03 08:42:15 adam Exp $
  */
 /**
  * \file libxml2_error.c

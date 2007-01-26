@@ -1,8 +1,8 @@
 /*
- * Copyright (C) 1995-2005, Index Data ApS
+ * Copyright (C) 1995-2007, Index Data ApS
  * All rights reserved.
  *
- * $Id: xmalloc.c,v 1.8 2006/12/13 15:28:28 adam Exp $
+ * $Id: xmalloc.c,v 1.9 2007/01/03 08:42:15 adam Exp $
  */
 /**
  * \file xmalloc.c

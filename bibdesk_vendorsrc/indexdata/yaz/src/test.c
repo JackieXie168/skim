@@ -1,8 +1,8 @@
 /*
- * Copyright (C) 1995-2005, Index Data ApS
+ * Copyright (C) 1995-2007, Index Data ApS
  * See the file LICENSE for details.
  *
- * $Id: test.c,v 1.11 2006/10/04 16:59:33 mike Exp $
+ * $Id: test.c,v 1.12 2007/01/03 08:42:15 adam Exp $
  */
 
 /** \file test.c

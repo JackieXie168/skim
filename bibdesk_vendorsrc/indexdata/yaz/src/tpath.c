@@ -1,8 +1,8 @@
 /*
- * Copyright (C) 1995-2006, Index Data ApS
+ * Copyright (C) 1995-2007, Index Data ApS
  * See the file LICENSE for details.
  *
- * $Id: tpath.c,v 1.12 2006/10/11 08:43:22 adam Exp $
+ * $Id: tpath.c,v 1.13 2007/01/03 08:42:15 adam Exp $
  */
 /**
  * \file tpath.c

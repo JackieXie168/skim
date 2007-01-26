@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 1995-2006, Index Data
+ * Copyright (c) 1995-2007, Index Data
  * All rights reserved.
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
@@ -24,7 +24,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-/* $Id: wrbuf.h,v 1.20 2006/10/09 21:02:41 adam Exp $ */
+/* $Id: wrbuf.h,v 1.23 2007/01/06 16:05:24 adam Exp $ */
 
 /**
  * \file wrbuf.h
@@ -48,6 +48,7 @@ typedef struct wrbuf
 
 YAZ_EXPORT WRBUF wrbuf_alloc(void);
 YAZ_EXPORT void wrbuf_free(WRBUF b, int free_buf);
+YAZ_EXPORT void wrbuf_destroy(WRBUF b);
 YAZ_EXPORT void wrbuf_rewind(WRBUF b);
 YAZ_EXPORT int wrbuf_grow(WRBUF b, int minsize);
 YAZ_EXPORT int wrbuf_write(WRBUF b, const char *buf, int size);
@@ -74,6 +75,8 @@ YAZ_EXPORT void wrbuf_chop_right(WRBUF b);
 
 #define wrbuf_len(b) ((b)->pos)
 #define wrbuf_buf(b) ((b)->buf)
+
+YAZ_EXPORT const char *wrbuf_cstr(WRBUF b);
 
 #define wrbuf_putc(b, c) \
     (((b)->pos >= (b)->size ? wrbuf_grow(b, 1) : 0),  \

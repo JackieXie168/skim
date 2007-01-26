@@ -24,31 +24,40 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-/* $Id: xmlquery.h,v 1.9 2007/01/03 08:42:14 adam Exp $ */
+/* $Id: timing.h,v 1.1 2007/01/03 13:46:17 adam Exp $ */
 
-/** \file xmlquery.h
-    \brief Query / XML conversions
-*/
+/**
+ * \file timing.h
+ * \brief Timing Utilities
+ */
 
-#ifndef YAZ_XMLQUERY_H
-#define YAZ_XMLQUERY_H
+#ifndef YAZ_TIMING_H
+#define YAZ_TIMING_H
 
 #include <yaz/yconfig.h>
-#include <yaz/proto.h>
-#include <yaz/xmltypes.h>
 
 YAZ_BEGIN_CDECL
 
-YAZ_EXPORT void yaz_query2xml(const Z_Query *q, xmlDocPtr *docp);
-YAZ_EXPORT void yaz_rpnquery2xml(const Z_RPNQuery *rpn, xmlDocPtr *docp);
+typedef struct yaz_timing *yaz_timing_t;
 
-YAZ_EXPORT void yaz_xml2query(const void *xmlnodep, Z_Query **query, ODR odr,
-                              int *error_code, const char **addinfo);
+YAZ_EXPORT
+yaz_timing_t yaz_timing_create(void);
+YAZ_EXPORT
+void yaz_timing_start(yaz_timing_t t);
+YAZ_EXPORT
+void yaz_timing_stop(yaz_timing_t t);
+YAZ_EXPORT
+double yaz_timing_get_real(yaz_timing_t t);
+YAZ_EXPORT
+double yaz_timing_get_user(yaz_timing_t t);
+YAZ_EXPORT
+double yaz_timing_get_sys(yaz_timing_t t);
+YAZ_EXPORT
+void yaz_timing_destroy(yaz_timing_t *tp);
 
 YAZ_END_CDECL
 
 #endif
-
 /*
  * Local variables:
  * c-basic-offset: 4

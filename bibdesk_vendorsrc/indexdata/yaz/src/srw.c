@@ -1,8 +1,8 @@
 /*
- * Copyright (C) 1995-2006, Index Data ApS
+ * Copyright (C) 1995-2007, Index Data ApS
  * See the file LICENSE for details.
  *
- * $Id: srw.c,v 1.53 2006/12/07 19:06:11 adam Exp $
+ * $Id: srw.c,v 1.54 2007/01/03 08:42:15 adam Exp $
  */
 /**
  * \file srw.c

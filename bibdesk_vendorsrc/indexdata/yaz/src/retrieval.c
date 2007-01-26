@@ -1,8 +1,8 @@
 /*
- * Copyright (C) 2005-2006, Index Data ApS
+ * Copyright (C) 2005-2007, Index Data ApS
  * See the file LICENSE for details.
  *
- * $Id: retrieval.c,v 1.14 2006/12/13 11:25:17 adam Exp $
+ * $Id: retrieval.c,v 1.15 2007/01/03 08:42:15 adam Exp $
  */
 /**
  * \file retrieval.c

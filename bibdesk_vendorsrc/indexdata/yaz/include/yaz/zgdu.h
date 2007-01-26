@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 1995-2006, Index Data
+ * Copyright (c) 1995-2007, Index Data
  * All rights reserved.
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
@@ -24,7 +24,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-/* $Id: zgdu.h,v 1.10 2006/10/13 11:30:37 adam Exp $ */
+/* $Id: zgdu.h,v 1.12 2007/01/11 10:55:56 adam Exp $ */
 
 /**
  * \file zgdu.h
@@ -90,6 +90,11 @@ YAZ_EXPORT Z_GDU *z_get_HTTP_Request(ODR o);
 YAZ_EXPORT Z_GDU *z_get_HTTP_Request_host_path(ODR odr,
                                                const char *host,
                                                const char *path);
+
+YAZ_EXPORT int yaz_decode_http_request(ODR o, Z_HTTP_Request **hr_p);
+YAZ_EXPORT int yaz_decode_http_response(ODR o, Z_HTTP_Response **hr_p);
+YAZ_EXPORT int yaz_encode_http_response(ODR o, Z_HTTP_Response *hr);
+YAZ_EXPORT int yaz_encode_http_request(ODR o, Z_HTTP_Request *hr);
 
 YAZ_END_CDECL
 

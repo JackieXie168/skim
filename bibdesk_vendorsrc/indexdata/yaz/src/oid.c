@@ -1,8 +1,8 @@
 /*
- * Copyright (C) 1995-2005, Index Data ApS
+ * Copyright (C) 1995-2007, Index Data ApS
  * See the file LICENSE for details.
  *
- * $Id: oid.c,v 1.12 2006/05/08 19:45:29 adam Exp $
+ * $Id: oid.c,v 1.13 2007/01/03 08:42:15 adam Exp $
  */
 
 /**

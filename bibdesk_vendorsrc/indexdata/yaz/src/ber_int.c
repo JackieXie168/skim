@@ -1,8 +1,8 @@
 /*
- * Copyright (C) 1995-2005, Index Data ApS
+ * Copyright (C) 1995-2007, Index Data ApS
  * See the file LICENSE for details.
  *
- * $Id: ber_int.c,v 1.6 2005/08/11 14:21:55 adam Exp $
+ * $Id: ber_int.c,v 1.7 2007/01/03 08:42:15 adam Exp $
  */
 
 /** 

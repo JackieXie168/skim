@@ -1,8 +1,8 @@
 /*
- * Copyright (C) 1995-2005, Index Data ApS
+ * Copyright (C) 1995-2007, Index Data ApS
  * See the file LICENSE for details.
  *
- * $Id: odr_mem.c,v 1.7 2006/02/19 18:33:09 adam Exp $
+ * $Id: odr_mem.c,v 1.8 2007/01/03 08:42:15 adam Exp $
  */
 /**
  * \file odr_mem.c

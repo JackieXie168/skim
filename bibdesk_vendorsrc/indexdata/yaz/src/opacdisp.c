@@ -1,8 +1,8 @@
 /*
- * Copyright (C) 1995-2005, Index Data ApS
+ * Copyright (C) 1995-2007, Index Data ApS
  * See the file LICENSE for details.
  *
- * $Id: opacdisp.c,v 1.8 2005/08/22 20:34:21 adam Exp $
+ * $Id: opacdisp.c,v 1.9 2007/01/03 08:42:15 adam Exp $
  */
 /**
  * \file opacdisp.c

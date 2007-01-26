@@ -2,7 +2,7 @@
  * Copyright (C) 1995-2005, Index Data ApS
  * See the file LICENSE for details.
  *
- * $Id: zoom-p.h,v 1.15 2006/11/01 15:39:05 adam Exp $
+ * $Id: zoom-p.h,v 1.17 2007/01/09 13:56:48 adam Exp $
  */
 /**
  * \file zoom-p.h
@@ -37,10 +37,6 @@ typedef struct ZOOM_task_p *ZOOM_task;
 #define STATE_IDLE 0
 #define STATE_CONNECTING 1
 #define STATE_ESTABLISHED 2
-
-#define ZOOM_SELECT_READ 1
-#define ZOOM_SELECT_WRITE 2
-#define ZOOM_SELECT_EXCEPT 4
 
 struct ZOOM_connection_p {
     enum oid_proto proto;
@@ -196,6 +192,7 @@ struct ZOOM_Event_p {
 };
 
 void ZOOM_options_addref (ZOOM_options opt);
+
 /*
  * Local variables:
  * c-basic-offset: 4

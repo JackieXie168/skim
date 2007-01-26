@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 1995-2006, Index Data
+ * Copyright (c) 1995-2007, Index Data
  * All rights reserved.
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
@@ -24,7 +24,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-/* $Id: comstack.h,v 1.24 2006/10/09 21:02:41 adam Exp $ */
+/* $Id: comstack.h,v 1.26 2007/01/11 10:30:40 adam Exp $ */
 
 /** 
  * \file comstack.h
@@ -132,6 +132,7 @@ YAZ_EXPORT int cs_set_ssl_ctx(COMSTACK cs, void *ctx);
 YAZ_EXPORT int cs_set_ssl_certificate_file(COMSTACK cs, const char *fname);
 YAZ_EXPORT int cs_get_peer_certificate_x509(COMSTACK cs, char **buf, int *len);
 YAZ_EXPORT void cs_set_max_recv_bytes(COMSTACK cs, int max_recv_bytes);
+YAZ_EXPORT int cs_complete_http(const char *buf, int len);
                                           
 /*
  * error management.

@@ -1,8 +1,8 @@
 /*
- * Copyright (C) 1995-2005, Index Data ApS
+ * Copyright (C) 1995-2007, Index Data ApS
  * See the file LICENSE for details.
  *
- * $Id: otherinfo.c,v 1.5 2006/01/16 15:53:28 adam Exp $
+ * $Id: otherinfo.c,v 1.6 2007/01/03 08:42:15 adam Exp $
  */
 /**
  * \file otherinfo.c

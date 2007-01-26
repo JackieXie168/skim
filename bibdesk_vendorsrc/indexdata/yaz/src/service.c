@@ -2,7 +2,7 @@
  * NT Service interface Utility.
  *  Based on code written by
  *     Chas Woodfield, Fretwell Downing Informatics.
- * $Id: service.c,v 1.4 2006/05/07 20:32:56 adam Exp $
+ * $Id: service.c,v 1.5 2007/01/03 08:42:15 adam Exp $
  */
 
 /**

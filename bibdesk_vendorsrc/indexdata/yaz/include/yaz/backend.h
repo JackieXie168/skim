@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 1995-2006, Index Data
+ * Copyright (c) 1995-2007, Index Data
  * All rights reserved.
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
@@ -24,7 +24,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-/* $Id: backend.h,v 1.40 2006/12/06 21:35:58 adam Exp $ */
+/* $Id: backend.h,v 1.42 2007/01/16 14:12:37 adam Exp $ */
 
 /** 
  * \file backend.h
@@ -68,6 +68,8 @@ typedef struct {
     char *srw_sortKeys;        /* holds SRU/SRW sortKeys info */
     char *srw_setname;         /* holds SRU/SRW generated resultsetID */
     int *srw_setnameIdleTime;  /* holds SRU/SRW life-time */
+    int estimated_hit_count;   /* if hit count is estimated */
+    int partial_resultset;     /* if result set is partial */
 } bend_search_rr;
 
 /* extended present handler. Does not replace bend_fetch. */

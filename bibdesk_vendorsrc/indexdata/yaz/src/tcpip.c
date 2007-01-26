@@ -1,8 +1,8 @@
 /*
- * Copyright (C) 1995-2006, Index Data ApS
+ * Copyright (C) 1995-2007, Index Data ApS
  * See the file LICENSE for details.
  *
- * $Id: tcpip.c,v 1.32 2006/10/13 11:22:26 adam Exp $
+ * $Id: tcpip.c,v 1.34 2007/01/19 10:28:42 adam Exp $
  */
 /**
  * \file tcpip.c
@@ -494,8 +494,8 @@ int tcpip_rcvconnect(COMSTACK h)
 #if HAVE_OPENSSL_SSL_H
     if (h->type == ssl_type && !sp->ctx)
     {
+        SSL_library_init();
         SSL_load_error_strings();
-        SSLeay_add_all_algorithms();
 
         sp->ctx = sp->ctx_alloc = SSL_CTX_new (SSLv23_method());
         if (!sp->ctx)
@@ -586,8 +586,8 @@ static int tcpip_bind(COMSTACK h, void *address, int mode)
 #if HAVE_OPENSSL_SSL_H
     if (h->type == ssl_type && !sp->ctx)
     {
+        SSL_library_init();
         SSL_load_error_strings();
-        SSLeay_add_all_algorithms();
 
         sp->ctx = sp->ctx_alloc = SSL_CTX_new (SSLv23_method());
         if (!sp->ctx)
