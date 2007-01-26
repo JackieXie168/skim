@@ -328,9 +328,6 @@ NSString *BDSKDocumentFormatForSearchingDates = nil;
     NSString *selString = nil;
 
 	switch ([sender tag]) {
-		case NSFindPanelActionShowFindPanel:
-            [[BDSKFindController sharedFindController] showWindow:self];
-            break;
 		case NSFindPanelActionSetFindString:
             selString = [self selectedStringForFind];
             if ([NSString isEmptyString:selString])
