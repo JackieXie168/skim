@@ -40,7 +40,7 @@
 
 extern NSString *BDSKDocumentFormatForSearchingDates;
 
-@protocol OAFindControllerTarget, OAFindPattern;
+@protocol OAFindControllerTarget;
 
 @interface BibDocument (Search)
 
@@ -86,8 +86,6 @@ extern NSString *BDSKDocumentFormatForSearchingDates;
 
 - (NSString *)selectedStringForFind;
 - (id <OAFindControllerTarget>)omniFindControllerTarget;
-- (BOOL)findPattern:(id <OAFindPattern>)pattern backwards:(BOOL)backwards wrap:(BOOL)wrap;
-- (BOOL)findPattern:(id <OAFindPattern>)pattern backwards:(BOOL)backwards ignoreSelection:(BOOL)ignoreSelection;
 - (IBAction)performFindPanelAction:(id)sender;
 
 @end

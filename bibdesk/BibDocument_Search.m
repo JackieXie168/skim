@@ -313,7 +313,6 @@ NSString *BDSKDocumentFormatForSearchingDates = nil;
 
 #pragma mark Find panel
 
-// OAOptionalSelectedStringForFinding informal protocol
 - (NSString *)selectedStringForFind;
 {
     if([currentPreviewView isKindOfClass:[NSScrollView class]]){
@@ -335,24 +334,6 @@ NSString *BDSKDocumentFormatForSearchingDates = nil;
         return [(NSScrollView *)currentPreviewView documentView];
     else
         return nil;
-}
-
-// OAFindControllerTarget protocol
-- (BOOL)findPattern:(id <OAFindPattern>)pattern backwards:(BOOL)backwards wrap:(BOOL)wrap;
-{
-    if([currentPreviewView isKindOfClass:[NSScrollView class]])
-        return [(NSTextView *)[(NSScrollView *)currentPreviewView documentView] findPattern:pattern backwards:backwards wrap:wrap];
-    else
-        return NO;
-}
-
-// OASearchableContent protocol
-- (BOOL)findPattern:(id <OAFindPattern>)pattern backwards:(BOOL)backwards ignoreSelection:(BOOL)ignoreSelection;
-{
-    if([currentPreviewView isKindOfClass:[NSScrollView class]])
-        return [(NSTextView *)[(NSScrollView *)currentPreviewView documentView] findPattern:pattern backwards:backwards ignoreSelection:ignoreSelection];
-    else
-        return NO;
 }
 
 - (IBAction)performFindPanelAction:(id)sender{
