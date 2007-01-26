@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 1995-2006, Index Data
+ * Copyright (c) 1995-2007, Index Data
  * All rights reserved.
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
@@ -24,7 +24,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-/* $Id: yaz-iconv.h,v 1.13 2006/10/25 09:54:35 adam Exp $ */
+/* $Id: yaz-iconv.h,v 1.14 2007/01/03 08:42:14 adam Exp $ */
 
 /**
  * \file yaz-iconv.h

@@ -1,8 +1,8 @@
 /*
- * Copyright (C) 1995-2006, Index Data ApS
+ * Copyright (C) 1995-2007, Index Data ApS
  * See the file LICENSE for details.
  *
- * $Id: sortspec.c,v 1.7 2006/05/30 22:00:09 adam Exp $
+ * $Id: sortspec.c,v 1.8 2007/01/03 08:42:15 adam Exp $
  */
 /**
  * \file sortspec.c

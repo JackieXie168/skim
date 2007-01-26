@@ -1,8 +1,8 @@
 /*
- * Copyright (C) 1995-2006, Index Data ApS
+ * Copyright (C) 1995-2007, Index Data ApS
  * See the file LICENSE for details.
  *
- * $Id: nmem.c,v 1.27 2006/12/13 15:29:01 adam Exp $
+ * $Id: nmem.c,v 1.28 2007/01/03 08:42:15 adam Exp $
  */
 
 /**

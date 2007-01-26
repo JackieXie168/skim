@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 1995-2006, Index Data
+ * Copyright (c) 1995-2007, Index Data
  * All rights reserved.
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
@@ -24,7 +24,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-/* $Id: yaz-util.h,v 1.17 2006/10/09 21:02:41 adam Exp $ */
+/* $Id: yaz-util.h,v 1.19 2007/01/12 21:41:53 adam Exp $ */
 
 /**
  * \file yaz-util.h
@@ -48,7 +48,103 @@
 #include <yaz/marcdisp.h>
 #include <yaz/yaz-iconv.h>
 
+/** \mainpage YAZ
+    \section intro_sec Introduction
+
+    For a general introduction to YAZ, read the
+    YAZ User's Guide and Reference at
+    http://www.indexdata.com/yaz/doc/
+    This is also located in the doc directory of the YAZ distribution.
+
+    The following sections is just a summary of the most important
+    header files and where they belong.
+    
+    \section utilities Utilies
+    Logging (syslog-like) utility \ref log.h .
+
+    Memory management for small blocks \ref nmem.h .
+
+    Write string buffer \ref wrbuf.h .
+
+    Options handling \ref options.h .
+
+    Character conversion \ref yaz-iconv.h .
+
+    MARC / MARCXML \ref marcdisp.h .
+
+    Testing framework: \ref test.h .
+
+    Record conversion: \ref record_conv.h .
+
+    Record retrieval: \ref retrieval.h .
+
+    \section queryparsers Query parsers
+
+    PQF parsing: \ref pquery.h .
+
+    CCL parsing: \ref ccl.h .
+
+    CQL parsing and conversion: \ref cql.h .
+
+    Z39.50 sort: \ref sortspec.h .
+
+    \section ber BER handling
+    
+    BER utilities (ODR): \ref odr.h .
+
+    \section z3950 Z39.50
+
+    Z39.50 common header: \ref proto.h .
+    
+    Z39.50 core codecs: \ref z-core.h.
+
+    Z39.50 related formats:
+    \ref z-accdes1.h ,  \ref z-core.h ,   
+    \ref z-estask.h , \ref z-oclcui.h , \ref z-sum.h
+    \ref z-accform1.h , \ref z-date.h , 
+    \ref z-exp.h ,    \ref z-opac.h ,   \ref z-sutrs.h
+    \ref z-acckrb1.h ,  \ref z-diag1.h , 
+    \ref z-grs.h ,    \ref z-rrf1.h ,   \ref z-uifr1.h
+    \ref z-charneg.h ,  \ref z-espec1.h
+    \ref z-mterm2.h , \ref z-rrf2.h ,   \ref z-univ.h .
+
+    Z39.50 extended services:
+    \ref zes-admin.h , \ref zes-exps.h , \ref zes-pquery.h , 
+    \ref zes-pset.h , \ref zes-update.h ,
+    \ref zes-expi.h , \ref zes-order.h ,  \ref zes-psched.h , 
+    \ref zes-update0.h .
+
+    Z39.50 diagnostics: \ref diagbib1.h .
+
+    Z39.50 externals: \ref prt-ext.h .
+
+    \section GDU Generic Data Unit (HTTP and BER)
+    
+    Definitions for GDU and HTTP: \ref zgdu.h .
+
+    \section SRU SRU
+
+    SRU/SRW definitions: \ref srw.h .
+
+    SRW diagnostics: \ref diagsrw.h .
+    
+    \section ILL ILL
+
+    Common header: \ref ill.h .
+
+    Codecs: \ref ill-core.h
+
+    \section ZOOM ZOOM
+    
+    Common header: \ref zoom.h .
+
+    \section GFS Generic Frontend Server (GFS)
+    
+    Header: \ref backend.h .
+
+*/
 #endif
+    
 /*
  * Local variables:
  * c-basic-offset: 4

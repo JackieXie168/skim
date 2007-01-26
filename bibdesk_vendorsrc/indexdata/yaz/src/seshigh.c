@@ -1,8 +1,8 @@
 /*
- * Copyright (C) 1995-2006, Index Data ApS
+ * Copyright (C) 1995-2007, Index Data ApS
  * See the file LICENSE for details.
  *
- * $Id: seshigh.c,v 1.107 2006/12/08 13:53:26 adam Exp $
+ * $Id: seshigh.c,v 1.109 2007/01/16 14:12:38 adam Exp $
  */
 /**
  * \file seshigh.c
@@ -884,6 +884,8 @@ static void srw_bend_search(association *assoc, request *req,
         rr.srw_sortKeys = 0;
         rr.srw_setname = 0;
         rr.srw_setnameIdleTime = 0;
+        rr.estimated_hit_count = 0;
+        rr.partial_resultset = 0;
         rr.query = (Z_Query *) odr_malloc (assoc->decode, sizeof(*rr.query));
         rr.query->u.type_1 = 0;
         
@@ -1104,6 +1106,15 @@ static void srw_bend_search(association *assoc, request *req,
                         if (!j)
                             srw_res->records = 0;
                     }
+                }
+                if (rr.estimated_hit_count || rr.partial_resultset)
+                {
+                    yaz_add_srw_diagnostic(
+                        assoc->encode,
+                        &srw_res->diagnostics,
+                        &srw_res->num_diagnostics,
+                        YAZ_SRW_RESULT_SET_CREATED_WITH_VALID_PARTIAL_RESULTS_AVAILABLE,
+                        0);
                 }
             }
         }
@@ -2351,7 +2362,7 @@ static Z_APDU *process_initRequest(association *assoc, request *reqb)
                 assoc->init->implementation_name,
                 odr_prepend(assoc->encode, "GFS", resp->implementationName));
 
-    version = odr_strdup(assoc->encode, "$Revision: 1.107 $");
+    version = odr_strdup(assoc->encode, "$Revision: 1.109 $");
     if (strlen(version) > 10)   /* check for unexpanded CVS strings */
         version[strlen(version)-2] = '\0';
     resp->implementationVersion = odr_prepend(assoc->encode,
@@ -2634,13 +2645,15 @@ static Z_APDU *process_searchRequest(association *assoc, request *reqb,
     bsrr->srw_sortKeys = 0;
     bsrr->srw_setname = 0;
     bsrr->srw_setnameIdleTime = 0;
+    bsrr->estimated_hit_count = 0;
+    bsrr->partial_resultset = 0;
 
     yaz_log (log_requestdetail, "ResultSet '%s'", req->resultSetName);
     if (req->databaseNames)
     {
         int i;
         for (i = 0; i < req->num_databaseNames; i++)
-            yaz_log (log_requestdetail, "Database '%s'", req->databaseNames[i]);
+            yaz_log(log_requestdetail, "Database '%s'", req->databaseNames[i]);
     }
 
     yaz_log_zquery_level(log_requestdetail,req->query);
@@ -2702,10 +2715,9 @@ static Z_APDU *response_searchRequest(association *assoc, request *reqb,
     Z_SearchResponse *resp = (Z_SearchResponse *)
         odr_malloc (assoc->encode, sizeof(*resp));
     int *nulint = odr_intdup (assoc->encode, 0);
-    bool_t *sr = odr_intdup(assoc->encode, 1);
     int *next = odr_intdup(assoc->encode, 0);
     int *none = odr_intdup(assoc->encode, Z_SearchResponse_none);
-    int returnedrecs=0;
+    int returnedrecs = 0;
 
     apdu->which = Z_APDU_searchResponse;
     apdu->u.searchResponse = resp;
@@ -2730,8 +2742,8 @@ static Z_APDU *response_searchRequest(association *assoc, request *reqb,
     }
     else
     {
+        bool_t *sr = odr_intdup(assoc->encode, 1);
         int *toget = odr_intdup(assoc->encode, 0);
-        int *presst = odr_intdup(assoc->encode, 0);
         Z_RecordComposition comp, *compp = 0;
 
         yaz_log (log_requestdetail, "resultCount: %d", bsrt->hits);
@@ -2762,6 +2774,7 @@ static Z_APDU *response_searchRequest(association *assoc, request *reqb,
         {
             oident *prefformat;
             oid_value form;
+            int *presst = odr_intdup(assoc->encode, 0);
 
             if (!(prefformat = oid_getentbyoid(req->preferredRecordSyntax)))
                 form = VAL_NONE;
@@ -2804,9 +2817,6 @@ static Z_APDU *response_searchRequest(association *assoc, request *reqb,
                 return 0;
             resp->numberOfRecordsReturned = toget;
             returnedrecs = *toget;
-            resp->nextResultSetPosition = next;
-            resp->searchStatus = sr;
-            resp->resultSetStatus = 0;
             resp->presentStatus = presst;
         }
         else
@@ -2814,10 +2824,20 @@ static Z_APDU *response_searchRequest(association *assoc, request *reqb,
             if (*resp->resultCount)
                 *next = 1;
             resp->numberOfRecordsReturned = nulint;
-            resp->nextResultSetPosition = next;
-            resp->searchStatus = sr;
-            resp->resultSetStatus = 0;
             resp->presentStatus = 0;
+        }
+        resp->nextResultSetPosition = next;
+        resp->searchStatus = sr;
+        resp->resultSetStatus = 0;
+        if (bsrt->estimated_hit_count)
+        {
+            resp->resultSetStatus = odr_intdup(assoc->encode, 
+                                               Z_SearchResponse_estimate);
+        }
+        else if (bsrt->partial_resultset)
+        {
+            resp->resultSetStatus = odr_intdup(assoc->encode, 
+                                               Z_SearchResponse_subset);
         }
     }
     resp->additionalSearchInfo = bsrt->search_info;

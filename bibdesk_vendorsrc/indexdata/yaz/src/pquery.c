@@ -1,8 +1,8 @@
 /*
- * Copyright (C) 1995-2005, Index Data ApS
+ * Copyright (C) 1995-2007, Index Data ApS
  * See the file LICENSE for details.
  *
- * $Id: pquery.c,v 1.8 2006/04/01 11:45:23 adam Exp $
+ * $Id: pquery.c,v 1.9 2007/01/03 08:42:15 adam Exp $
  */
 /**
  * \file pquery.c

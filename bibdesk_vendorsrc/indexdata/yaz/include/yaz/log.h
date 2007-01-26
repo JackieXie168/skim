@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 1995-2006, Index Data
+ * Copyright (c) 1995-2007, Index Data
  * All rights reserved.
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
@@ -24,7 +24,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-/* $Id: log.h,v 1.40 2006/12/06 21:35:58 adam Exp $ */
+/* $Id: log.h,v 1.42 2007/01/03 08:42:14 adam Exp $ */
 
 /**
  * \file log.h
@@ -196,7 +196,15 @@ YAZ_EXPORT void log_event_start(void (*func)(int level, const char *msg,
 YAZ_EXPORT void log_event_end(void (*func)(int level, const char *msg,
                                            void *info), void *info);
 
-#if YAZ_USE_OLD_LOG
+/* if syslog.h is already included, do not define the old LOG_'s */
+#ifdef LOG_DEBUG
+#undef YAZ_USE_NEW_LOG
+#define YAZ_USE_NEW_LOG 1
+#endif
+
+#if YAZ_USE_NEW_LOG
+
+#else
 
 #include <yaz/xmalloc.h>
 
@@ -237,7 +245,7 @@ YAZ_EXPORT void log_event_end(void (*func)(int level, const char *msg,
 /** \brief logf is deprecated, as it conflicts with a math function */
 #define logf yaz_log
 
-#endif /* if YAZ_USE_OLD_LOG */
+#endif /* if !YAZ_USE_NEW_LOG  */
 
 YAZ_END_CDECL
 

@@ -1,8 +1,8 @@
 /*
- * Copyright (C) 1995-2006, Index Data ApS
+ * Copyright (C) 1995-2007, Index Data ApS
  * See the file LICENSE for details.
  *
- * $Id: marc_read_xml.c,v 1.1 2006/12/15 12:37:18 adam Exp $
+ * $Id: marc_read_xml.c,v 1.2 2007/01/03 08:42:15 adam Exp $
  */
 
 /**

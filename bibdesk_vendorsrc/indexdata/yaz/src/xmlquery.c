@@ -1,8 +1,8 @@
 /*
- * Copyright (C) 1995-2006, Index Data ApS
+ * Copyright (C) 1995-2007, Index Data ApS
  * All rights reserved.
  *
- * $Id: xmlquery.c,v 1.11 2006/10/27 12:19:15 adam Exp $
+ * $Id: xmlquery.c,v 1.12 2007/01/03 08:42:15 adam Exp $
  */
 
 /** \file xmlquery.c

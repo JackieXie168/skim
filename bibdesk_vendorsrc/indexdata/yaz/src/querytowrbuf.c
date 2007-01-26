@@ -1,8 +1,8 @@
 /*
- * Copyright (C) 1995-2005, Index Data ApS
+ * Copyright (C) 1995-2007, Index Data ApS
  * All rights reserved.
  *
- * $Id: querytowrbuf.c,v 1.5 2006/07/07 12:09:05 marc Exp $
+ * $Id: querytowrbuf.c,v 1.6 2007/01/03 08:42:15 adam Exp $
  */
 
 /** \file querytowrbuf.c

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 1995-2006, Index Data
+ * Copyright (c) 1995-2007, Index Data
  * All rights reserved.
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
@@ -24,7 +24,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-/* $Id: marcdisp.h,v 1.23 2006/12/15 19:28:46 adam Exp $ */
+/* $Id: marcdisp.h,v 1.27 2007/01/24 15:13:20 adam Exp $ */
 
 /**
  * \file marcdisp.h
@@ -83,8 +83,8 @@ YAZ_EXPORT void yaz_marc_debug(yaz_marc_t mt, int level);
     \param mt marc handle
     \param buf input buffer
     \param bsize size of buffer or (-1 if "any size")
-    \param result result to be stored here (allocate before use!)
-    \param rsize size of result (set before calling)
+    \param result result to be stored here
+    \param rsize size of result (memory "owned" by yaz_marc_mt handle)
 
     Decodes MARC in buf of size bsize.
     On success, result in *result with size *rsize. 
@@ -225,6 +225,21 @@ YAZ_EXPORT int yaz_marc_write_iso2709(yaz_marc_t mt, WRBUF wrbuf);
 */  
 YAZ_EXPORT int yaz_marc_write_mode(yaz_marc_t mt, WRBUF wrbuf);
 
+/** \brief writes MARC record as libxml2 tree
+    \param mt handle
+    \param root_ptr pointer to record node
+    \param ns namespace of record (such as "http://www.loc.gov/MARC21/slim")
+    \param format MarcXchange format (NULL for none)
+    \param type MarcXchange format (NULL for none)
+    \retval 0 Creation successful and *root_ptr is "record" node
+    \retval -1 ERROR
+*/  
+YAZ_EXPORT
+int yaz_marc_write_xml(yaz_marc_t mt, xmlNode **root_ptr,
+                       const char *ns, 
+                       const char *format,
+                       const char *type);
+
 /** \brief sets leader spec (for modifying bytes in 24 byte leader)
     \param mt handle
     \param leader_spec
@@ -250,7 +265,7 @@ YAZ_EXPORT int yaz_marc_leader_spec(yaz_marc_t mt, const char *leader_spec);
     \param length_implementation length of implementation defined data
 */
 YAZ_EXPORT
-void yaz_marc_set_leader(yaz_marc_t mt, const char *leader_c,
+void yaz_marc_set_leader(yaz_marc_t mt, const char *leader,
                          int *indicator_length,
                          int *identifier_length,
                          int *base_address,
@@ -350,6 +365,13 @@ int yaz_marc_get_debug(yaz_marc_t mt);
 */  
 YAZ_EXPORT
 int yaz_marc_decode_formatstr(const char *arg);
+
+/** \brief enable writing of MARC XML records using Libxml2 
+    \param mt handle
+    \param enable 0=disable, 1=enable
+*/  
+YAZ_EXPORT
+void yaz_marc_write_using_libxml2(yaz_marc_t mt, int enable);
 
 YAZ_END_CDECL
 

@@ -629,6 +629,7 @@ struct Z_SearchResponse {
 #define Z_SearchResponse_subset 1
 #define Z_SearchResponse_interim 2
 #define Z_SearchResponse_none 3
+#define Z_SearchResponse_estimate 4
 	int *resultSetStatus; /* OPT */
 	Z_PresentStatus *presentStatus; /* OPT */
 	Z_Records *records; /* OPT */

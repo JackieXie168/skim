@@ -24,31 +24,51 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-/* $Id: xmlquery.h,v 1.9 2007/01/03 08:42:14 adam Exp $ */
+/* $Id: ccl_xml.h,v 1.1 2007/01/08 10:48:07 adam Exp $ */
 
-/** \file xmlquery.h
-    \brief Query / XML conversions
-*/
+/**
+ * \file ccl_xml.h
+ * \brief Header for CCL + XML stuff
+ */
+#ifndef YAZ_CCL_XML_H
+#define YAZ_CCL_XML_H
 
-#ifndef YAZ_XMLQUERY_H
-#define YAZ_XMLQUERY_H
-
-#include <yaz/yconfig.h>
-#include <yaz/proto.h>
+#include <yaz/ccl.h>
 #include <yaz/xmltypes.h>
 
 YAZ_BEGIN_CDECL
 
-YAZ_EXPORT void yaz_query2xml(const Z_Query *q, xmlDocPtr *docp);
-YAZ_EXPORT void yaz_rpnquery2xml(const Z_RPNQuery *rpn, xmlDocPtr *docp);
-
-YAZ_EXPORT void yaz_xml2query(const void *xmlnodep, Z_Query **query, ODR odr,
-                              int *error_code, const char **addinfo);
+/** \brief configures CCL bibset using XML configuration
+    \param bibset CCL bibliographic profile
+    \param ptr xml node pointer pointing to "cclmap" element
+    \param addinfo has error message if configuration could not be parsed
+    \retval 0 OK
+    \retval -1 errors. Inspect addinfo for error message
+    
+    Configuration example:
+    \verbatim
+<cclmap defaultattrset="bib-1">
+   <qual name="term">
+       <attr type="u" value="1016"/>
+       <attr type="s" value="pw"/>
+   </qual>
+   <qual name="title">
+       <attr type="u" value="4"/>
+   </qual>
+   <qual name="distributor">
+       <attr attrset="gils" type="u" value="2000"/>
+   </qual>
+  <directive name="and" value="+"/>
+</cclmap>
+    \endverbatim
+*/
+YAZ_EXPORT
+int ccl_xml_config(CCL_bibset bibset, const xmlNode *ptr,
+                   const char **addinfo);
 
 YAZ_END_CDECL
 
 #endif
-
 /*
  * Local variables:
  * c-basic-offset: 4

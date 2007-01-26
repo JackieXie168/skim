@@ -1,8 +1,8 @@
 /*
- * Copyright (C) 1995-2006, Index Data ApS
+ * Copyright (C) 1995-2007, Index Data ApS
  * See the file LICENSE for details.
  *
- * $Id: z3950oid.c,v 1.5 2006/04/20 20:50:51 adam Exp $
+ * $Id: z3950oid.c,v 1.6 2007/01/03 08:42:15 adam Exp $
  */
 
 /** \file z3950oid.c

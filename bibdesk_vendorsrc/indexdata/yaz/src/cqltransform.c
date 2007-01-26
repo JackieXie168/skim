@@ -1,5 +1,5 @@
-/* $Id: cqltransform.c,v 1.25 2006/10/25 09:58:19 adam Exp $
-   Copyright (C) 1995-2005, Index Data ApS
+/* $Id: cqltransform.c,v 1.26 2007/01/03 08:42:15 adam Exp $
+   Copyright (C) 1995-2007, Index Data ApS
    Index Data Aps
 
 This file is part of the YAZ toolkit.

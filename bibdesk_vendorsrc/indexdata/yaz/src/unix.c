@@ -1,8 +1,8 @@
 /*
- * Copyright (C) 1995-2005, Index Data ApS
+ * Copyright (C) 1995-2007, Index Data ApS
  * See the file LICENSE for details.
  *
- * $Id: unix.c,v 1.17 2006/09/06 15:01:53 adam Exp $
+ * $Id: unix.c,v 1.18 2007/01/03 08:42:15 adam Exp $
  * UNIX socket COMSTACK. By Morten Bøgeskov.
  */
 /**

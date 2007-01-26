@@ -2,7 +2,7 @@
  * Copyright (C) 1995-2005, Index Data ApS
  * See the file LICENSE for details.
  *
- * $Id: eventl.h,v 1.7 2006/12/04 14:56:55 adam Exp $
+ * $Id: eventl.h,v 1.8 2007/01/03 08:42:15 adam Exp $
  */
 
 /**

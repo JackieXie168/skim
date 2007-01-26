@@ -1,5 +1,5 @@
-/* $Id: xcqlutil.c,v 1.6 2005/06/25 15:46:06 adam Exp $
-   Copyright (C) 1995-2005, Index Data ApS
+/* $Id: xcqlutil.c,v 1.7 2007/01/03 08:42:15 adam Exp $
+   Copyright (C) 1995-2007, Index Data ApS
    Index Data Aps
 
 This file is part of the YAZ toolkit.
