@@ -1028,7 +1028,7 @@
 		27CD031B07D82C4E00806B7E /* TestComplexString.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = TestComplexString.m; sourceTree = SOURCE_ROOT; };
 		27CD032407D82C7400806B7E /* TestComplexString.bundle */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = TestComplexString.bundle; sourceTree = BUILT_PRODUCTS_DIR; };
 		27CD032507D82C7400806B7E /* TestComplexString-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = "TestComplexString-Info.plist"; sourceTree = "<group>"; };
-		27D4FB5407DE7A83001CAB00 /* Notes */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text; path = Notes; sourceTree = SOURCE_ROOT; };
+		27D4FB5407DE7A83001CAB00 /* HelpNotes.txt */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text; path = HelpNotes.txt; sourceTree = "<group>"; };
 		27D4FB5707DE7A97001CAB00 /* build_instructions.tex */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text; path = build_instructions.tex; sourceTree = "<group>"; };
 		27D4FB5807DE7A97001CAB00 /* HackingBibDesk.rtf */ = {isa = PBXFileReference; lastKnownFileType = text.rtf; path = HackingBibDesk.rtf; sourceTree = "<group>"; };
 		27E89E220805E9F500E4DA08 /* applehelp.init */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text; name = applehelp.init; path = "BibDesk Help/applehelp.init"; sourceTree = "<group>"; };
@@ -1076,7 +1076,7 @@
 		3DFF35600816B55B0052F37C /* forward_small.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; name = forward_small.tiff; path = Images/forward_small.tiff; sourceTree = "<group>"; };
 		3DFF35620816B5780052F37C /* reload_small.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; name = reload_small.tiff; path = Images/reload_small.tiff; sourceTree = "<group>"; };
 		8D1107310486CEB800E47090 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
-		8D1107320486CEB800E47090 /* BibDesk.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = BibDesk.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		8D1107320486CEB800E47090 /* BibDesk.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = BibDesk.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		CE11A6340AE6BB77008C47AC /* urlFolderIcon.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; name = urlFolderIcon.tiff; path = Images/urlFolderIcon.tiff; sourceTree = "<group>"; };
 		CE11AC080AE7E0DC008C47AC /* BDSKScriptGroup.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BDSKScriptGroup.h; sourceTree = "<group>"; };
 		CE11AC090AE7E0DC008C47AC /* BDSKScriptGroup.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BDSKScriptGroup.m; sourceTree = "<group>"; };
@@ -1768,7 +1768,7 @@
 			children = (
 				27D4FB5707DE7A97001CAB00 /* build_instructions.tex */,
 				27D4FB5807DE7A97001CAB00 /* HackingBibDesk.rtf */,
-				27D4FB5407DE7A83001CAB00 /* Notes */,
+				27D4FB5407DE7A83001CAB00 /* HelpNotes.txt */,
 			);
 			path = DeveloperDocumentation;
 			sourceTree = "<group>";
@@ -2039,6 +2039,7 @@
 				3D86633E0802C25800FF1724 /* BDSKTypeInfoEditor.m */,
 				CEEFDDFF0B03ED0200668BB0 /* BDSKURLGroupSheetController.m */,
 				F9B800930B41DFAF00A5A615 /* BDSKSearchGroupSheetController.m */,
+				F900F2B80B69593100DB7962 /* BDSKSpotlightIconController.h */,
 				F9022C5E075802E300C3F701 /* BibAppController.m */,
 				F9022C68075802E300C3F701 /* BibEditor.m */,
 				3DE3916607FEF5E600BE3AE7 /* BibEditor_Toolbar.m */,
@@ -2046,8 +2047,6 @@
 				F9022C72075802E300C3F701 /* BibPersonController.m */,
 				2730077A07CF20B500F2E485 /* MacroTextFieldWindowController.m */,
 				2730077C07CF20B500F2E485 /* MacroWindowController.m */,
-				F900F2B80B69593100DB7962 /* BDSKSpotlightIconController.h */,
-				F900F2B90B69593100DB7962 /* BDSKSpotlightIconController.m */,
 			);
 			name = Controllers;
 			sourceTree = "<group>";
@@ -2418,6 +2417,7 @@
 				F9022C59075802E300C3F701 /* BDSKShellTask.h */,
 				CEFDBDBB0AEA86BA009EE99D /* BDSKSmartGroup.h */,
 				CEF7AC040915929E00BE9E02 /* BDSKSplitView.h */,
+				F900F2B90B69593100DB7962 /* BDSKSpotlightIconController.m */,
 				F9A411EF0A0B1FEF008493C0 /* BDSKSpotlightView.h */,
 				CEFDBDC30AEA86F0009EE99D /* BDSKStaticGroup.h */,
 				CE30FAD50919713100CB1A19 /* BDSKStatusBar.h */,
