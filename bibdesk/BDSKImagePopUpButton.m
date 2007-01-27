@@ -122,11 +122,18 @@
 }
 
 - (void)animationDidStop:(BDSKImageFadeAnimation *)anAnimation {
-    [self setIconImage:[anAnimation finalImage]];
+    OBASSERT(anAnimation == animation);
+    [animation setDelegate:nil];
+    [animation autorelease];
+    animation = nil;
 }
 
 - (void)animationDidEnd:(BDSKImageFadeAnimation *)anAnimation {
+    OBASSERT(anAnimation == animation);
     [self setIconImage:[anAnimation finalImage]];
+    [animation setDelegate:nil];
+    [animation autorelease];
+    animation = nil;
 }
 
 - (void)imageAnimationDidUpdate:(BDSKImageFadeAnimation *)anAnimation {
@@ -135,13 +142,12 @@
 
 - (void)fadeIconImageToImage:(NSImage *)newImage {
     
-    if (nil == animation) {
-        animation = [[BDSKImageFadeAnimation alloc] initWithDuration:1.0f animationCurve:NSAnimationEaseInOut];
-        [animation setDelegate:self];
-        [animation setAnimationBlockingMode:NSAnimationNonblocking];
-    } else if ([animation isAnimating]) {
+    if ([animation isAnimating])
         [animation stopAnimation];
-    }
+    
+    animation = [[BDSKImageFadeAnimation alloc] initWithDuration:1.0f animationCurve:NSAnimationEaseInOut];
+    [animation setDelegate:self];
+    [animation setAnimationBlockingMode:NSAnimationNonblocking];
     
     NSImage *iconImage = [self iconImage];
     
