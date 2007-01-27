@@ -223,12 +223,9 @@
 		089C1669FE841209C02AAC07 /* Project object */ = {
 			isa = PBXProject;
 			buildConfigurationList = CE67E7C2092C9C3700410758 /* Build configuration list for PBXProject "BibDeskInputManager" */;
-			compatibilityVersion = "Xcode 2.4";
 			hasScannedForEncodings = 1;
 			mainGroup = 089C166AFE841209C02AAC07 /* BibDeskInputManager */;
 			projectDirPath = "";
-			projectRoot = "";
-			shouldCheckCompatibility = 1;
 			targets = (
 				8D5B49AC048680CD000E48DA /* BibDeskInputManager */,
 				F90014830709EABB002EC8DF /* Install */,
@@ -335,7 +332,7 @@
 				FRAMEWORK_SEARCH_PATHS = "";
 				GCC_ENABLE_FIX_AND_CONTINUE = NO;
 				GCC_ENABLE_TRIGRAPHS = NO;
-				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
+				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
 				GCC_PRECOMPILE_PREFIX_HEADER = NO;
 				GCC_PREFIX_HEADER = Bibdesk_Prefix.pch;
 				GCC_WARN_FOUR_CHARACTER_CONSTANTS = NO;
