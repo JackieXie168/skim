@@ -290,6 +290,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 4AAFAE1A08A0216200E04045 /* Omni-Framework-Release.xcconfig */;
 			buildSettings = {
+				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
 				INFOPLIST_FILE = Info.plist;
 				PRODUCT_NAME = OmniBase;
 				SECTORDER_FLAGS = (

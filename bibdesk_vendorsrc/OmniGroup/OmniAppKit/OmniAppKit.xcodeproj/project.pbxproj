@@ -2536,6 +2536,8 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 4AA1EBD208AA772700E2FF6B /* Omni-Framework-Release.xcconfig */;
 			buildSettings = {
+				COPY_PHASE_STRIP = YES;
+				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
 				INFOPLIST_FILE = Info.plist;
 				OMNI_BUNDLE_IDENTIFIER = com.omnigroup.OmniAppKit;
 				PRODUCT_NAME = OmniAppKit;
