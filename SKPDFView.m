@@ -437,7 +437,7 @@ static PDFView *PDFHoverPDFView = nil;
                                    magScale * NSWidth(originalBounds), magScale * NSHeight(originalBounds));
             
             [documentView setBounds:magBounds];
-            [self displayRect:[self convertRect:magRect fromView:nil]]; // this flushes the buffer
+            [self displayRect:[self convertRect:NSInsetRect(magRect, 1.0, 1.0) fromView:nil]]; // this flushes the buffer
             [documentView setBounds:originalBounds];
             
             [clipView lockFocus];
