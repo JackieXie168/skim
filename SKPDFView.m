@@ -376,16 +376,20 @@ static PDFView *PDFHoverPDFView = nil;
 
 - (void)magnifyWithEvent:(NSEvent *)theEvent {
 	NSPoint mouseLoc = [theEvent locationInWindow];
-	NSRect originalBounds = [[self documentView] bounds];
+    NSScrollView *scrollView = [[self documentView] enclosingScrollView];
+    NSView *documentView = [scrollView documentView];
+    NSView *clipView = [scrollView contentView];
+	NSRect originalBounds = [documentView bounds];
     NSRect visibleRect = [self convertRect:[self visibleRect] toView: nil];
-    NSRect magBounds, magRect;
+    NSRect magBounds, magRect, outlineRect;
 	float magScale = 1.0;
     BOOL mouseInside = NO;
 	int currentLevel = 0;
     int originalLevel = [theEvent clickCount]; // this should be at least 1
-	BOOL postNotification = [[self documentView] postsBoundsChangedNotifications];
+	BOOL postNotification = [documentView postsBoundsChangedNotifications];
+    NSBezierPath *path;
     
-	[[self documentView] setPostsBoundsChangedNotifications: NO];
+	[documentView setPostsBoundsChangedNotifications: NO];
 	
 	[[self window] discardCachedImage]; // make sure not to use the cached image
 	
@@ -427,14 +431,25 @@ static PDFView *PDFHoverPDFView = nil;
             }
             
             // resize bounds around mouseLoc
-            magBounds.origin = [[self documentView] convertPoint:mouseLoc fromView:nil];
+            magBounds.origin = [documentView convertPoint:mouseLoc fromView:nil];
             magBounds = NSMakeRect(magBounds.origin.x + magScale * (originalBounds.origin.x - magBounds.origin.x), 
                                    magBounds.origin.y + magScale * (originalBounds.origin.y - magBounds.origin.y), 
                                    magScale * NSWidth(originalBounds), magScale * NSHeight(originalBounds));
             
-            [[self documentView] setBounds:magBounds];
+            [documentView setBounds:magBounds];
             [self displayRect:[self convertRect:magRect fromView:nil]]; // this flushes the buffer
-            [[self documentView] setBounds:originalBounds];
+            [documentView setBounds:originalBounds];
+            
+            [clipView lockFocus];
+            [[NSGraphicsContext currentContext] saveGraphicsState];
+            outlineRect = NSInsetRect([clipView convertRect:magRect fromView:nil], 0.5, 0.5);
+            path = [NSBezierPath bezierPathWithRect:outlineRect];
+            [path setLineWidth:1.0];
+            [[NSColor blackColor] set];
+            [path stroke];
+            [[NSGraphicsContext currentContext] restoreGraphicsState];
+            [clipView unlockFocus];
+			[[self window] flushWindow];
             
         } else { // mouse is not in the rect
             // show cursor 
@@ -446,7 +461,7 @@ static PDFView *PDFHoverPDFView = nil;
                 [[self window] flushWindowIfNeeded];
             }
             if ([theEvent type] == NSLeftMouseDragged)
-                [[self documentView] autoscroll:theEvent];
+                [documentView autoscroll:theEvent];
             if (currentLevel > 2)
                 [[self window] cacheImageInRect:visibleRect];
             else
@@ -458,7 +473,7 @@ static PDFView *PDFHoverPDFView = nil;
 	[[self window] restoreCachedImage];
 	[[self window] flushWindow];
 	[NSCursor unhide];
-	[[self documentView] setPostsBoundsChangedNotifications:postNotification];
+	[documentView setPostsBoundsChangedNotifications:postNotification];
 	[self flagsChanged:theEvent]; // update cursor
 }
 
