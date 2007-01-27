@@ -380,7 +380,7 @@ static PDFView *PDFHoverPDFView = nil;
     NSView *documentView = [scrollView documentView];
     NSView *clipView = [scrollView contentView];
 	NSRect originalBounds = [documentView bounds];
-    NSRect visibleRect = [self convertRect:[self visibleRect] toView: nil];
+    NSRect visibleRect = [clipView convertRect:[clipView visibleRect] toView: nil];
     NSRect magBounds, magRect, outlineRect;
 	float magScale = 1.0;
     BOOL mouseInside = NO;
