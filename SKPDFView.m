@@ -380,10 +380,10 @@ static PDFView *PDFHoverPDFView = nil;
     NSRect visibleRect = [self convertRect:[self visibleRect] toView: nil];
     NSRect magBounds, magRect;
 	float magScale = 1.0;
-    BOOL cursorVisible = YES;
+    BOOL mouseInside = NO;
 	int currentLevel = 0;
     int originalLevel = [theEvent clickCount]; // this should be at least 1
-	BOOL postNote = [[self documentView] postsBoundsChangedNotifications];
+	BOOL postNotification = [[self documentView] postsBoundsChangedNotifications];
     
 	[[self documentView] setPostsBoundsChangedNotifications: NO];
 	
@@ -399,13 +399,7 @@ static PDFView *PDFHoverPDFView = nil;
                 [[self window] restoreCachedImage];
                 [[self window] cacheImageInRect:visibleRect];
             }
-            if (modifierFlags & NSCommandKeyMask)
-                magScale = 4.0;
-            else if (modifierFlags & NSControlKeyMask)
-                magScale = 1.5;
-            else
-                magScale = 2.5; 
-            // shrink the image with shift key -- can be very slow
+            magScale = (modifierFlags & NSCommandKeyMask) ? 4.0 : (modifierFlags & NSControlKeyMask) ? 1.5 : 2.5;
             if ((modifierFlags & NSShiftKeyMask) == 0)
                 magScale = 1.0 / magScale;
             [self flagsChanged:theEvent]; // update the cursor
@@ -416,9 +410,9 @@ static PDFView *PDFHoverPDFView = nil;
             mouseLoc = [theEvent locationInWindow];
         
         if ([self mouse:mouseLoc inRect:visibleRect]) {
-            if (cursorVisible) {
+            if (mouseInside == NO) {
+                mouseInside = YES;
                 [NSCursor hide];
-                cursorVisible = NO;
             }
             // define rect for magnification in window coordinate
             if (currentLevel > 2) { 
@@ -429,8 +423,7 @@ static PDFView *PDFHoverPDFView = nil;
                 magRect.origin.y += mouseLoc.y;
                 // restore the cached image in order to clear the rect
                 [[self window] restoreCachedImage];
-                [[self window] cacheImageInRect:  
-                    NSIntersectionRect(NSInsetRect(magRect, -2.0, -2.0), [[self superview] convertRect:[[self superview] bounds] toView:nil])];
+                [[self window] cacheImageInRect:NSIntersectionRect(NSInsetRect(magRect, -2.0, -2.0), visibleRect)];
             }
             
             // resize bounds around mouseLoc
@@ -439,23 +432,23 @@ static PDFView *PDFHoverPDFView = nil;
                                    magBounds.origin.y + magScale * (originalBounds.origin.y - magBounds.origin.y), 
                                    magScale * NSWidth(originalBounds), magScale * NSHeight(originalBounds));
             
-            [[self documentView] setBounds: magBounds];
-            [self displayRect: NSInsetRect([self convertRect:magRect fromView:nil], 1.0, 1.0)]; // this flushes the buffer
-            [[self documentView] setBounds: originalBounds];
+            [[self documentView] setBounds:magBounds];
+            [self displayRect:[self convertRect:magRect fromView:nil]]; // this flushes the buffer
+            [[self documentView] setBounds:originalBounds];
             
         } else { // mouse is not in the rect
             // show cursor 
-            if (cursorVisible == NO) {
+            if (mouseInside == YES) {
+                mouseInside = NO;
                 [NSCursor unhide];
-                cursorVisible = YES;
+                // restore the cached image in order to clear the rect
+                [[self window] restoreCachedImage];
+                [[self window] flushWindowIfNeeded];
             }
-            // restore the cached image in order to clear the rect
-            [[self window] restoreCachedImage];
-            // autoscroll
             if ([theEvent type] == NSLeftMouseDragged)
-                [[self documentView] autoscroll: theEvent];
-            if (currentLevel >= 3)
-                [[self window] cacheImageInRect:magRect];
+                [[self documentView] autoscroll:theEvent];
+            if (currentLevel > 2)
+                [[self window] cacheImageInRect:visibleRect];
             else
                 [[self window] discardCachedImage];
         }
@@ -465,7 +458,7 @@ static PDFView *PDFHoverPDFView = nil;
 	[[self window] restoreCachedImage];
 	[[self window] flushWindow];
 	[NSCursor unhide];
-	[[self documentView] setPostsBoundsChangedNotifications:postNote];
+	[[self documentView] setPostsBoundsChangedNotifications:postNotification];
 	[self flagsChanged:theEvent]; // update cursor
 }
 
