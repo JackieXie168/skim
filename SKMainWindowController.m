@@ -18,6 +18,7 @@
 #import "SKNote.h"
 #import "SKPDFView.h"
 #import "SKCollapsibleView.h"
+#import <Carbon/Carbon.h>
 
 
 static NSString *SKDocumentToolbarIdentifier = @"SKDocumentToolbarIdentifier";
@@ -436,13 +437,10 @@ static NSString *SKDocumentToolbarSearchItemIdentifier = @"SKDocumentToolbarSear
     if ([self isFullScreen])
         return;
     
-    // Get the screen information.
-    NSScreen *screen = [NSScreen mainScreen]; // @@ or should we use the window's screen?
-    NSNumber *screenID = [[screen deviceDescription] objectForKey:@"NSScreenNumber"];
-    // Capture the screen.
-    if (CGDisplayNoErr != CGDisplayCapture((CGDirectDisplayID)[screenID longValue]))
-        return;
+    SetSystemUIMode(kUIModeAllHidden, kUIOptionAutoShowMenuBar);
     
+    NSScreen *screen = [NSScreen mainScreen]; // @@ or should we use the window's screen?
+
     // Create the full-screen window if it doesn‚Äôt already  exist.
     if (fullScreenWindow == nil) {
         fullScreenWindow = [[SKFullScreenWindow alloc] initWithScreen:screen];
@@ -467,13 +465,8 @@ static NSString *SKDocumentToolbarSearchItemIdentifier = @"SKDocumentToolbarSear
     if ([self isFullScreen] == NO)
         return;
     
-    // Get the screen information.
-    NSScreen *screen = [fullScreenWindow screen];
-    NSNumber *screenID = [[screen deviceDescription] objectForKey:@"NSScreenNumber"];
-    // Release the screen.
-    if (CGDisplayNoErr != CGDisplayRelease((CGDirectDisplayID)[screenID longValue]))
-        return;
-    
+    SetSystemUIMode(kUIModeNormal, 0);
+
     [pdfView setHasNavigation:NO autohidesCursor:NO];
     [pdfContentBox setContentView:pdfView];
     [pdfView setBackgroundColor:[NSColor colorWithCalibratedWhite:0.5 alpha:1.0]];
@@ -491,6 +484,13 @@ static NSString *SKDocumentToolbarSearchItemIdentifier = @"SKDocumentToolbarSear
         [scrollView setHasHorizontalScroller:savedState.hasHorizontalScroller];		
         [scrollView setHasVerticalScroller:savedState.hasVerticalScroller];
         [scrollView setAutohidesScrollers:savedState.autoHidesScrollers];		
+        
+        // Get the screen information.
+        NSScreen *screen = [fullScreenWindow screen];
+        NSNumber *screenID = [[screen deviceDescription] objectForKey:@"NSScreenNumber"];
+        CGDisplayRelease((CGDirectDisplayID)[screenID longValue]);
+        
+        [fullScreenWindow setLevel:NSNormalWindowLevel];
         
         isPresentation = NO;
     }
@@ -537,8 +537,17 @@ static NSString *SKDocumentToolbarSearchItemIdentifier = @"SKDocumentToolbarSear
 	[scrollView setHasVerticalScroller:NO];
 	savedState.autoHidesScrollers = [scrollView autohidesScrollers];
 	[scrollView setAutohidesScrollers:YES];
-	
+    
+    // Get the screen information.
+    NSScreen *screen = [NSScreen mainScreen]; // @@ or should we use the window's screen?
+    NSNumber *screenID = [[screen deviceDescription] objectForKey:@"NSScreenNumber"];
+    
+    // Capture the screen.
+    CGDisplayCapture((CGDirectDisplayID)[screenID longValue]);
+    
     [self enterFullScreen:sender];
+    [fullScreenWindow setLevel:CGShieldingWindowLevel()];
+    
     [pdfView setHasNavigation:YES autohidesCursor:YES];
     isPresentation = YES;
 }
