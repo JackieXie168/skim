@@ -239,4 +239,8 @@
 */
 - (NSString *)stringByReplacingOccurrencesOfString:(NSString *)target withString:(NSString *)replacement options:(unsigned)opts replacements:(unsigned int *)number;
 
+- (NSString *)stringByPrependingString:(NSString *)string;
+
+- (NSString *)replacementStringByAppendingString:(NSString *)string;
+
 @end
