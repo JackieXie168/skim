@@ -509,7 +509,7 @@
 - (void)removeLogFilesFromPreviousRun{
     // use FSDeleteObject for thread safety
     const FSRef fileRef;
-    NSArray *filesToRemove = [NSArray arrayWithObjects:blgFilePath, logFilePath, nil];
+    NSArray *filesToRemove = [NSArray arrayWithObjects:blgFilePath, logFilePath, bblFilePath, nil];
     NSEnumerator *e = [filesToRemove objectEnumerator];
     NSString *path;
     CFAllocatorRef alloc = CFRetain(CFAllocatorGetDefault());
