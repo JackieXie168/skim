@@ -846,6 +846,8 @@
 						<real>50</real>
 						<key>Local-Url</key>
 						<real>18</real>
+						<key>Publication Date</key>
+						<real>50</real>
 						<key>Rating</key>
 						<real>70</real>
 						<key>Read</key>
@@ -901,7 +903,7 @@
 						<string>BibTeX Type</string>
 						<string>Cite Key</string>
 						<string>Title</string>
-						<string>Date</string>
+						<string>Publication Date</string>
 						<string>1st Author</string>
 						<string>2nd Author</string>
 						<string>3rd Author</string>
