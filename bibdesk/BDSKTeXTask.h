@@ -54,20 +54,12 @@ typedef struct _BDSKTeXTaskFlags {
     volatile int32_t hasRTFData __attribute__ ((aligned (4)));
 } BDSKTeXTaskFlags;
 
-@interface BDSKTeXTask : NSObject {
-	NSString *workingDirPath;
-    NSString *applicationSupportPath;
-	
+@class BDSKTeXPath;
+
+@interface BDSKTeXTask : NSObject {	
     NSString *texTemplatePath;
-	NSString *fileName;
-    NSString *texFilePath;
-    NSString *bibFilePath;
-    NSString *bblFilePath;
-    NSString *pdfFilePath;
-    NSString *rtfFilePath;
-    NSString *logFilePath;
+    BDSKTeXPath *texPath;
     NSString *binDirPath;
-    NSString *blgFilePath;
 	
 	id delegate;
     NSInvocation *taskShouldStartInvocation;
