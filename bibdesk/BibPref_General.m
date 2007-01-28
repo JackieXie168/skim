@@ -35,6 +35,7 @@
  */
 
 #import "BibPref_General.h"
+#import "BDSKUpdateChecker.h"
 
 
 @implementation BibPref_General
@@ -52,7 +53,7 @@
     
     [editOnPasteButton setState:[defaults boolForKey:BDSKEditOnPasteKey] ? NSOnState : NSOffState];
     
-    [checkForUpdatesButton setState:([defaults boolForKey:BDSKAutoCheckForUpdatesKey] == YES) ? NSOnState : NSOffState];
+    [checkForUpdatesButton selectItemWithTag:[defaults integerForKey:BDSKUpdateCheckIntervalKey]];
 
     [warnOnDeleteButton setState:([defaults boolForKey:BDSKWarnOnDeleteKey] == YES) ? NSOnState : NSOffState];
 
@@ -66,6 +67,21 @@
 
 - (IBAction)toggleAutoCheckForUpdates:(id)sender{
     [defaults setBool:([sender state] == NSOnState) ? YES : NO forKey:BDSKAutoCheckForUpdatesKey];
+}
+
+// tags correspond to BDSKUpdateCheckInterval enum
+- (IBAction)changeUpdateInterval:(id)sender{
+    BDSKUpdateCheckInterval interval = [[sender selectedItem] tag];
+    [defaults setInteger:interval forKey:BDSKUpdateCheckIntervalKey];
+    [defaults autoSynchronize];
+    
+    // an annoying dialog to be seen by annoying users...
+    if (BDSKCheckForUpdatesNever == interval || BDSKCheckForUpdatesMonthly == interval) {
+        NSAlert *alert = [NSAlert alertWithMessageText:NSLocalizedString(@"Are you sure this is wise?", @"Message in alert dialog when setting long auto-update interval") 
+                                         defaultButton:nil alternateButton:nil otherButton:nil 
+                             informativeTextWithFormat:NSLocalizedString(@"Some BibDesk users complain of too-frequent updates.  However, updates generally fix bugs that affect the integrity of your data.  If you value your data, a daily or weekly interval is a better choice.", @"Informative text in alert dialog")];
+        [alert beginSheetModalForWindow:[controlBox window] modalDelegate:nil didEndSelector:NULL contextInfo:NULL];
+    }
 }
 
 - (IBAction)setAutoOpenFilePath:(id)sender{

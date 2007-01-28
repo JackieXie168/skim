@@ -43,7 +43,7 @@
     int prevStartupBehaviorTag;
 	
 	IBOutlet NSButton* editOnPasteButton;
-    IBOutlet NSButton *checkForUpdatesButton;
+    IBOutlet NSPopUpButton *checkForUpdatesButton;
     IBOutlet NSButton *warnOnDeleteButton;
     IBOutlet NSButton *warnOnRemovalFromGroupButton;
     IBOutlet NSButton *warnOnRenameGroupButton;
@@ -54,8 +54,8 @@
 
 - (IBAction)setAutoOpenFilePath:(id)sender;
 - (IBAction)changeStartupBehavior:(id)sender;
-- (IBAction) chooseAutoOpenFile:(id) sender;
-- (IBAction)toggleAutoCheckForUpdates:(id)sender;
+- (IBAction)chooseAutoOpenFile:(id) sender;
+- (IBAction)changeUpdateInterval:(id)sender;
 - (IBAction)changeEditOnPaste:(id)sender;
 - (IBAction)changeWarnOnDelete:(id)sender;
 - (IBAction)changeWarnOnRemovalFromGroup:(id)sender;
