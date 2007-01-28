@@ -437,9 +437,9 @@
 
 - (void)columnsMenuSelectTableColumn:(id)sender{
     if ([sender state] == NSOnState)
-        [self removeTableColumnWithIdentifier:[sender title]];
+        [self removeTableColumnWithIdentifier:[sender representedObject]];
     else
-        [self insertTableColumnWithIdentifier:[sender title] atIndex:[self numberOfColumns]];
+        [self insertTableColumnWithIdentifier:[sender representedObject] atIndex:[self numberOfColumns]];
 }
 
 - (void)addColumnSheetDidEnd:(BDSKAddFieldSheetController *)addFieldController returnCode:(int)returnCode contextInfo:(void *)contextInfo{
@@ -500,6 +500,7 @@
                                   action:@selector(columnsMenuSelectTableColumn:)
                            keyEquivalent:@""
                                  atIndex:0];
+		[item setRepresentedObject:colName];
 		[item setTarget:self];
 		[item setState:NSOnState];
 	}
@@ -511,7 +512,7 @@
 - (BOOL)validateMenuItem:(NSMenuItem *)menuItem{
 	SEL action = [menuItem action];
 	if (action == @selector(columnsMenuSelectTableColumn:))
-		return ([[menuItem title] isEqualToString:BDSKImportOrderString] == NO && [self numberOfColumns] > 1);
+		return ([[menuItem representedObject] isEqualToString:BDSKImportOrderString] == NO && [self numberOfColumns] > 1);
 	else if (action == @selector(columnsMenuAddTableColumn:))
         return YES;
 	else

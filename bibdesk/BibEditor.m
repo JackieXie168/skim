@@ -972,7 +972,7 @@ static int numberOfOpenEditors = 0;
             return NO;
         id cell = [bibFields selectedCell];
 		return (cell != nil && [bibFields currentEditor] != nil && [macroTextFieldWC isEditing] == NO && 
-                [[cell title] isEqualToString:BDSKCrossrefString] == NO && [[cell title] isCitationField] == NO);
+                [[cell representedObject] isEqualToString:BDSKCrossrefString] == NO && [[cell representedObject] isCitationField] == NO);
     }
     else if (theAction == @selector(toggleStatusBar:)) {
 		if ([statusBar isVisible]) {
@@ -1157,7 +1157,7 @@ static int numberOfOpenEditors = 0;
 
 - (IBAction)changeRating:(id)sender{
 	BDSKRatingButtonCell *cell = [sender selectedCell];
-	NSString *field = [cell title];
+	NSString *field = [cell representedObject];
 	int oldRating = [publication ratingValueOfField:field];
 	int newRating = [cell rating];
 		
@@ -1170,7 +1170,7 @@ static int numberOfOpenEditors = 0;
 
 - (IBAction)changeFlag:(id)sender{
 	NSButtonCell *cell = [sender selectedCell];
-	NSString *field = [cell title];
+	NSString *field = [cell representedObject];
     BOOL isTriState = [[[OFPreferenceWrapper sharedPreferenceWrapper] stringArrayForKey:BDSKTriStateFieldsKey] containsObject:field];
     
     if(isTriState){
@@ -1294,9 +1294,9 @@ static int numberOfOpenEditors = 0;
         if ([firstResponder isKindOfClass:[NSText class]] && [firstResponder isFieldEditor])
             firstResponder = [firstResponder delegate];
         if(firstResponder == bibFields)
-            keyField = [[bibFields selectedCell] title];
+            keyField = [[bibFields selectedCell] representedObject];
         else if(firstResponder == extraBibFields)
-            keyField = [[extraBibFields keyCell] title];
+            keyField = [[extraBibFields keyCell] representedObject];
         else if(firstResponder == citeKeyField)
             keyField = BDSKCiteKeyString;
         else if(firstResponder == bibTypeButton)
@@ -1323,7 +1323,7 @@ static int numberOfOpenEditors = 0;
         for (i = 0; i < numRows; i++) {
             for (j = 0; j < numCols; j++) {
                 cell = [extraBibFields cellAtRow:i column:j];
-                if ([[cell title] isEqualToString:fieldName]) {
+                if ([[cell representedObject] isEqualToString:fieldName]) {
                     [[self window] makeFirstResponder:extraBibFields];
                     [extraBibFields setKeyCell:cell];
                     return;
@@ -1334,7 +1334,7 @@ static int numberOfOpenEditors = 0;
         int i, numRows = [bibFields numberOfRows];
 
         for (i = 0; i < numRows; i++) {
-            if ([[[bibFields cellAtIndex:i] title] isEqualToString:fieldName]) {
+            if ([[[bibFields cellAtIndex:i] representedObject] isEqualToString:fieldName]) {
                 [bibFields selectTextAtIndex:i];
                 return;
             }
@@ -1381,7 +1381,7 @@ static int numberOfOpenEditors = 0;
     BDSKRemoveFieldSheetController *removeFieldController = [[BDSKRemoveFieldSheetController alloc] initWithPrompt:prompt
                                                                                                        fieldsArray:removableFields];
     
-    NSString *selectedCellTitle = [[bibFields selectedCell] title];
+    NSString *selectedCellTitle = [[bibFields selectedCell] representedObject];
     if([removableFields containsObject:selectedCellTitle]){
         [removeFieldController setField:selectedCellTitle];
         // if we don't deselect this cell, we can't remove it from the form
@@ -1448,7 +1448,7 @@ static int numberOfOpenEditors = 0;
                                                                                                          newPrompt:NSLocalizedString(@"New field name:", @"Label for changing field name")
                                                                                                     newFieldsArray:fieldNames];
     
-    NSString *selectedCellTitle = [[bibFields selectedCell] title];
+    NSString *selectedCellTitle = [[bibFields selectedCell] representedObject];
     if([removableFields containsObject:selectedCellTitle]){
         [changeFieldController setField:selectedCellTitle];
         // if we don't deselect this cell, we can't remove it from the form
@@ -1478,9 +1478,9 @@ static int numberOfOpenEditors = 0;
 
 - (BOOL)editSelectedFormCellAsMacro{
 	NSCell *cell = [bibFields selectedCell];
-	if ([macroTextFieldWC isEditing] || cell == nil || [[cell title] isEqualToString:BDSKCrossrefString] || [[cell title] isCitationField]) 
+	if ([macroTextFieldWC isEditing] || cell == nil || [[cell representedObject] isEqualToString:BDSKCrossrefString] || [[cell representedObject] isCitationField]) 
 		return NO;
-	NSString *value = [publication valueOfField:[cell title]];
+	NSString *value = [publication valueOfField:[cell representedObject]];
 	
 	[formCellFormatter setEditAsComplexString:YES];
 	[cell setObjectValue:value];
@@ -1500,7 +1500,7 @@ static int numberOfOpenEditors = 0;
 - (BOOL)control:(NSControl *)control textShouldBeginEditing:(NSText *)fieldEditor{
     if (control != bibFields) return YES;
     
-    NSString *field = [[bibFields selectedCell] title];
+    NSString *field = [[bibFields selectedCell] representedObject];
 	NSString *value = [publication valueOfField:field];
     
 	if([value isInherited] &&
@@ -1550,7 +1550,7 @@ static int numberOfOpenEditors = 0;
 - (BOOL)control:(NSControl *)control didFailToFormatString:(NSString *)aString errorDescription:(NSString *)error{
 	if (control == bibFields) {
         NSCell *cell = [bibFields cellAtIndex:[bibFields indexOfSelectedItem]];
-        NSString *fieldName = [cell title];
+        NSString *fieldName = [cell representedObject];
 		if ([fieldName isEqualToString:BDSKCrossrefString]) {
             // this may occur if the cite key formatter fails to format
             if(error != nil){
@@ -1649,7 +1649,7 @@ static int numberOfOpenEditors = 0;
 		NSCell *cell = [bibFields cellAtIndex:[bibFields indexOfSelectedItem]];
 		NSString *message = nil;
 		
-		if ([[cell title] isEqualToString:BDSKCrossrefString] && [NSString isEmptyString:[cell stringValue]] == NO) {
+		if ([[cell representedObject] isEqualToString:BDSKCrossrefString] && [NSString isEmptyString:[cell stringValue]] == NO) {
 			
             // check whether we won't get a crossref chain
             int errorCode = [publication canSetCrossref:[cell stringValue] andCiteKey:[publication citeKey]];
@@ -1729,7 +1729,7 @@ static int numberOfOpenEditors = 0;
             return;
         
         NSCell *cell = [control cellAtIndex:index];
-        NSString *title = [cell title];
+        NSString *title = [cell representedObject];
         NSString *value = [cell stringValue];
         NSString *prevValue = [publication valueOfField:title];
 
@@ -1939,7 +1939,7 @@ static int numberOfOpenEditors = 0;
 	if([changeKey isEqualToString:BDSKCrossrefString] || 
 	   (parentDidChange && [changeKey isEqualToString:BDSKCiteKeyString])){
         // if we are editing a crossref field, we should first set the new value, because setupForm will set the edited value. This happens when it is set through drag/drop
-        if ([[[bibFields selectedCell] title] isEqualToString:changeKey])
+        if ([[[bibFields selectedCell] representedObject] isEqualToString:changeKey])
             [[bibFields selectedCell] setObjectValue:[publication valueOfField:changeKey]];
 		[self setupForm];
 		[[self window] setTitle:[publication displayTitle]];
@@ -1963,7 +1963,7 @@ static int numberOfOpenEditors = 0;
 		NSEnumerator *cellE = [[extraBibFields cells] objectEnumerator];
 		NSButtonCell *entry = nil;
 		while(entry = [cellE nextObject]){
-			if([[entry title] isEqualToString:changeKey]){
+			if([[entry representedObject] isEqualToString:changeKey]){
 				[entry setIntValue:[publication intValueOfField:changeKey]];
 				[extraBibFields setNeedsDisplay:YES];
 				break;
@@ -1986,7 +1986,7 @@ static int numberOfOpenEditors = 0;
 		NSEnumerator *cellE = [[bibFields cells] objectEnumerator];
 		NSFormCell *entry = nil;
 		while(entry = [cellE nextObject]){
-			if([[entry title] isEqualToString:changeKey]){
+			if([[entry representedObject] isEqualToString:changeKey]){
 				[entry setObjectValue:[publication valueOfField:changeKey]];
 				[bibFields setNeedsDisplay:YES];
 				break;
@@ -2076,7 +2076,7 @@ static int numberOfOpenEditors = 0;
 	NSString *value;
 	
 	while(entry = [cellE nextObject]){
-		value = [publication valueOfField:[entry title]];
+		value = [publication valueOfField:[entry representedObject]];
 		if([value isComplex]){
             // ARM: the cell must check pointer equality in the setter, or something; since it's the same object, setting the value again is a noop unless we set to nil first.  Fixes bug #1284205.
             [entry setObjectValue:nil];
@@ -2244,21 +2244,21 @@ static int numberOfOpenEditors = 0;
 }
 
 - (void)arrowClickedInFormCell:(id)cell{
-    NSString *field = [cell title];
+    NSString *field = [cell representedObject];
 	[self openParentItemForField:[field isEqualToString:BDSKCrossrefString] ? nil : field];
 }
 
 - (void)iconClickedInFormCell:(id)cell{
-    [[NSWorkspace sharedWorkspace] openURL:[publication URLForField:[cell title]]];
+    [[NSWorkspace sharedWorkspace] openURL:[publication URLForField:[cell representedObject]]];
 }
 
 - (BOOL)formCellHasArrowButton:(id)cell{
-	return ([[publication valueOfField:[cell title]] isInherited] || 
-			([[cell title] isEqualToString:BDSKCrossrefString] && [publication crossrefParent]));
+	return ([[publication valueOfField:[cell representedObject]] isInherited] || 
+			([[cell representedObject] isEqualToString:BDSKCrossrefString] && [publication crossrefParent]));
 }
 
 - (BOOL)formCellHasFileIcon:(id)cell{
-    NSString *title = [cell title];
+    NSString *title = [cell representedObject];
     if ([title isURLField]) {
 		// if we inherit a field, we don't show the file icon but the arrow button
 		NSString *url = [publication valueOfField:title inherit:NO];
@@ -2271,12 +2271,12 @@ static int numberOfOpenEditors = 0;
 
 - (NSImage *)fileIconForFormCell:(id)cell{
     // we can assume that this cell should have a file icon
-    return [publication smallImageForURLField:[cell title]];
+    return [publication smallImageForURLField:[cell representedObject]];
 }
 
 - (NSImage *)dragIconForFormCell:(id)cell{
     // we can assume that this cell should have a file icon
-    return [publication imageForURLField:[cell title]];
+    return [publication imageForURLField:[cell representedObject]];
 }
 
 - (NSRange)control:(NSControl *)control textView:(NSTextView *)textView rangeForUserCompletion:(NSRange)charRange {
@@ -2286,7 +2286,7 @@ static int numberOfOpenEditors = 0;
 		return [[NSApp delegate] rangeForUserCompletion:charRange 
 								  forBibTeXString:[textView string]];
 	} else {
-		return [[NSApp delegate] entry:[[bibFields selectedCell] title] 
+		return [[NSApp delegate] entry:[[bibFields selectedCell] representedObject] 
 				rangeForUserCompletion:charRange 
 							  ofString:[textView string]];
 
@@ -2308,7 +2308,7 @@ static int numberOfOpenEditors = 0;
 								partialWordRange:charRange 
 								indexOfBestMatch:index];
 	} else {
-		return [[NSApp delegate] entry:[[bibFields selectedCell] title] 
+		return [[NSApp delegate] entry:[[bibFields selectedCell] representedObject] 
 						   completions:words 
 				   forPartialWordRange:charRange 
 							  ofString:[textView string] 
@@ -2318,7 +2318,7 @@ static int numberOfOpenEditors = 0;
 }
 
 - (BOOL)textViewShouldLinkKeys:(NSTextView *)textView forFormCell:(id)aCell {
-    return [[aCell title] isCitationField];
+    return [[aCell representedObject] isCitationField];
 }
 
 static NSString *queryStringWithCiteKey(NSString *citekey)
@@ -2377,7 +2377,7 @@ static NSString *queryStringWithCiteKey(NSString *citekey)
     else if(dragSource == viewRemoteButton)
         dragSourceField = BDSKUrlString;
     else if(dragSource == bibFields)
-        dragSourceField = [[bibFields dragSourceCell] title];
+        dragSourceField = [[bibFields dragSourceCell] representedObject];
     
     if ([field isEqualToString:dragSourceField])
         return NSDragOperationNone;
@@ -2599,12 +2599,12 @@ static NSString *queryStringWithCiteKey(NSString *citekey)
 }
 
 - (NSDragOperation)canReceiveDrag:(id <NSDraggingInfo>)sender forFormCell:(id)cell{
-	NSString *field = [cell title];
+	NSString *field = [cell representedObject];
 	return [self canReceiveDrag:sender forField:field];
 }
 
 - (BOOL)receiveDrag:(id <NSDraggingInfo>)sender forFormCell:(id)cell{
-	NSString *field = [cell title];
+	NSString *field = [cell representedObject];
 	return [self receiveDrag:sender forField:field];
 }
 
@@ -2822,17 +2822,17 @@ static NSString *queryStringWithCiteKey(NSString *citekey)
 }
 
 - (BOOL)writeDataToPasteboard:(NSPasteboard *)pasteboard forFormCell:(id)cell {
-	NSString *field = [cell title];
+	NSString *field = [cell representedObject];
 	return [self writeDataToPasteboard:pasteboard forField:field];
 }
 
 - (NSArray *)namesOfPromisedFilesDroppedAtDestination:(NSURL *)dropDestination forFormCell:(id)cell {
-	NSString *field = [cell title];
+	NSString *field = [cell representedObject];
 	return [self namesOfPromisedFilesDroppedAtDestination:dropDestination forField:field];
 }
 
 - (void)cleanUpAfterDragOperation:(NSDragOperation)operation forFormCell:(id)cell {
-	NSString *field = [cell title];
+	NSString *field = [cell representedObject];
 	[self cleanUpAfterDragOperation:operation forField:field];
 }
 
@@ -3523,7 +3523,8 @@ static NSString *queryStringWithCiteKey(NSString *citekey)
         if ([ignoredKeys containsObject:tmp]) continue; \
 		[ignoredKeys addObject:tmp]; \
 		entry = [bibFields insertEntry:tmp usingTitleFont:requiredFont attributesForTitle:attrs indexAndTag:i objectValue:[publication valueOfField:tmp]]; \
-		if ([tmp isEqualToString:BDSKCrossrefString]) \
+		[entry setRepresentedObject:tmp]; \
+        if ([tmp isEqualToString:BDSKCrossrefString]) \
 			[entry setFormatter:crossrefFormatter]; \
         else if ([tmp isCitationField]) \
 			[entry setFormatter:citationFormatter]; \
@@ -3550,7 +3551,7 @@ static NSString *queryStringWithCiteKey(NSString *citekey)
 	if([firstResponder isKindOfClass:[NSText class]] && [[(NSText *)firstResponder delegate] isEqual:bibFields]){
 		fieldEditor = (NSText *)firstResponder;
 		selection = [fieldEditor selectedRange];
-		editedTitle = [(NSFormCell *)[bibFields selectedCell] title];
+		editedTitle = [(NSFormCell *)[bibFields selectedCell] representedObject];
 		forceEndEditing = YES;
 		if (![[self window] makeFirstResponder:[self window]])
 			[[self window] endEditingFor:nil];
@@ -3630,6 +3631,7 @@ static NSString *queryStringWithCiteKey(NSString *citekey)
     while(tmp = [e nextObject]){ \
 		NSButtonCell *buttonCell = [cell copy]; \
 		[buttonCell setTitle:tmp]; \
+		[buttonCell setRepresentedObject:tmp]; \
 		[buttonCell setIntValue:[publication intValueOfField:tmp]]; \
         cellWidth = MAX(cellWidth, [buttonCell cellSize].width); \
         [cells addObject:buttonCell]; \
@@ -3648,7 +3650,7 @@ static NSString *queryStringWithCiteKey(NSString *citekey)
 	NSString *editedTitle = nil;
 	int editedIndex = -1;
     if([[self window] firstResponder] == extraBibFields)
-        editedTitle = [(NSFormCell *)[extraBibFields selectedCell] title];
+        editedTitle = [(NSFormCell *)[extraBibFields selectedCell] representedObject];
 	
 	NSEnumerator *e;
     NSString *tmp;
