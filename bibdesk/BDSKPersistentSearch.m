@@ -39,16 +39,9 @@
 #import "BDSKPersistentSearch.h"
 
 static id sharedSearch = nil;
-static MDQueryRef nullQuery = NULL;
+static void *nullQueryMarker = @"Null MDQuery Marker"; /* any CFTypeRef would work here */
 
 @implementation BDSKPersistentSearch
-
-+ (void)initialize
-{
-    if (NULL == nullQuery)
-        nullQuery = MDQueryCreate(kCFAllocatorDefault, CFSTR(""), NULL, NULL);
-    NSAssert(nullQuery, @"failed to create null query");
-}
 
 + (id)sharedSearch;
 {
@@ -86,7 +79,8 @@ static MDQueryRef nullQuery = NULL;
     if (CFDictionaryGetValueIfPresent(queries, (CFStringRef)queryString, (const void **)&mdQuery)) {
         
         // already present in the dictionary, so just modify the scope
-        MDQuerySetSearchScope(mdQuery, (CFArrayRef)searchScopes, 0);
+        if (CFEqual(nullQueryMarker, mdQuery) == FALSE)
+            MDQuerySetSearchScope(mdQuery, (CFArrayRef)searchScopes, 0);
 
     } else {
     
@@ -107,7 +101,7 @@ static MDQueryRef nullQuery = NULL;
         } else {
             success = NO;
             // add the bogus query, so we don't keep trying; a user reported beachballs when creating the query with a bad spotlight cache, so we'll just log a message and leave out this functionality
-            CFDictionaryAddValue(queries, (const void *)queryString, nullQuery);
+            CFDictionaryAddValue(queries, (const void *)queryString, nullQueryMarker);
 #if OMNI_FORCE_ASSERTIONS
             // warning for developers, in case of using an incorrect query string
             NSRunAlertPanel([NSString stringWithFormat:@"Sorry, %@, I'm afraid I can't do that", NSUserName()], @"Either the query \"%@\" was not valid, or your Spotlight cache requires repair.", @"Doh!", nil, nil, [queryString safeFormatString]);
@@ -126,7 +120,7 @@ static MDQueryRef nullQuery = NULL;
     MDQueryRef mdQuery = (MDQueryRef)CFDictionaryGetValue(queries, (CFStringRef)queryString);
     NSMutableArray *results = nil;
     
-    if(mdQuery != NULL && mdQuery != nullQuery){
+    if(mdQuery != NULL && CFEqual(nullQueryMarker, mdQuery) == FALSE){
         
         // supposed to disable updates before iterating results
         MDQueryDisableUpdates(mdQuery);
