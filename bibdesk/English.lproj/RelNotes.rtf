@@ -10,7 +10,57 @@
 \pard\tx1440\tx2880\tx4320\tx5760\tx7200\ql\qnatural
 
 \f1\fs22 \cf0 \
-Last update: 6 October 2006 (rev 7802)\
+Last update: 28 January 2007 (rev 9416)\
+\pard\tx1440\tx2880\tx4320\tx5760\tx7200\ql\qnatural
+
+\f2\b\fs28 \cf0 \
+Changes since 1.2.10\
+\pard\tx1440\tx2880\tx4320\tx5760\tx7200\ql\qnatural
+
+\f3\i\fs26 \cf0 \
+New Features\
+\pard\tx1440\tx2880\tx4320\tx5760\tx7200\ql\qnatural
+
+\f1\i0\b0\fs22 \cf0   \'a5  New update checker and options (can set time interval, has improved error handling and flexibility for branches)\
+  \'a5  Can now display release notes before downloading a new version\
+\pard\tx1440\tx2880\tx4320\tx5760\tx7200\ql\qnatural
+
+\f3\i\b\fs26 \cf0 \
+Bugs Fixed\
+\pard\tx1440\tx2880\tx4320\tx5760\tx7200\ql\qnatural
+
+\f1\i0\b0\fs22 \cf0   \'a5  Fix bug in autoscaling of preview PDF view\
+  \'a5  Fixed endless loop at low zoom levels in preview PDF view\
+  \'a5  Fix potential crash when a UTI was NULL\
+  \'a5  Removed ILCrashReporter, since SourceForge changed their e-mail service and broke delivery\
+  \'a5  Fixed tracking rects to use the displayed publications, so hovering over a URL/file displayes the correct status message\
+  \'a5  Worked around Apple bug in -[NSDictionary valueForKey:] that causes an exception with an empty string as key\
+  \'a5  Fixed typo in RSS export template (bug #1578088)\
+  \'a5  Adding a new publication while a static group is selected will now add the pub to the group or warn as appropriate\
+  \'a5  Fixed assertion failure when creating a new pub with multiple groups selected\
+  \'a5  Fixed another encoding error that wasn't caught when parsing a file (exception was raised instead of an error message)\
+  \'a5  File content index is updated after setting all fields of an item\
+  \'a5  Added workaround for bug #1584054, PubMed no longer inserts a comma between last name and first name (so reliable name parsing is impossible)\
+  \'a5  Use standard icon when multiple files are being dragged\
+  \'a5  Escaped braces and double-quotes are now  handled correctly when parsing annote/asbstract fields (bug #1589250)\
+  \'a5  Ensure that the Internet Config download location exists before trying to use it (bug #1588716)\
+  \'a5  Orphaned file finder now displays correct tooltips, shows the correct file, and copies the correct paths (bug #1591733)\
+  \'a5  Original file extension is used in preset formats instead of ".pdf" (bug #1591765)\
+  \'a5  Fixed some issues with reverting a document to previously saved state\
+  \'a5  Groups are now resorted when smart groups update and are sorted by count\
+  \'a5  Fixed crasher while editing custom types (bug #1596532)\
+  \'a5  Fixed AppleScript selection (bug #1596567)\
+  \'a5  Fixed group subsorting\
+  \'a5  Fixed EndNote XML export (bug #1594134)\
+  \'a5  TeX character conversion is now less strict, and tries only known conversions and latin characters with accents (bug #1596267)\
+  \'a5  Fixed a race condition in temporary file creation\
+  \'a5  Chewable items folder is now used for temp files instead of NSTemporaryDirectory(), so cleanup is done by the OS\
+  \'a5  Use CFUUID instead of NSProcessInfo for unique strings when creating temp files, since NSProcessInfo is not thread-safe\
+  \'a5  Remove the public.plain-text UTI declaration for text documents, as it prevents many documents from being dropped on the dock icon (bug #1576949)\
+  \'a5  Fixed memory leaks in PS to PDF conversion (used in the editor drawer)\
+  \'a5  An alert is now displayed when annote/abstract/rss-description has unbalanced braces\
+  \'a5  Commas inside quoted macro values and macro values quoted by double-quotes are now handled correctly (bug #1632553)\
+  \'a5  Fixed test for crossref equality when comparing items\
 \pard\tx1440\tx2880\tx4320\tx5760\tx7200\ql\qnatural
 
 \f2\b\fs28 \cf0 \
