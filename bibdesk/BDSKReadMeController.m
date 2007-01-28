@@ -92,6 +92,7 @@ static BDSKRelNotesController *sharedRelNotesController = nil;
 }
 
 - (void)displayAttributedString:(NSAttributedString *)attrString {
+    [self window];
     [[textView textStorage] setAttributedString:attrString];
 }
 
