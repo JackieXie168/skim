@@ -814,8 +814,8 @@ static NSPopUpButton *popUpButtonSubview(NSView *view)
     [saveTextEncodingPopupButton setEncoding:[self documentStringEncoding]];
     [saveTextEncodingPopupButton setEnabled:YES];
     
+    [exportSelectionCheckButton setState:NSOffState];
     if(NSSaveToOperation == docState.currentSaveOperationType){
-        [exportSelectionCheckButton setState:NSOffState];
         [exportSelectionCheckButton setEnabled:[self numberOfSelectedPubs] > 0 || [self hasLibraryGroupSelected] == NO];
     }
     [accessoryView setNeedsDisplay:YES];
@@ -849,6 +849,7 @@ static NSPopUpButton *popUpButtonSubview(NSView *view)
     
     // reset the encoding popup so we know when it wasn't shown to the user next time
     [saveTextEncodingPopupButton setEncoding:0];
+    [exportSelectionCheckButton setState:NSOffState];
     
     if(success == NO)
         return NO;
