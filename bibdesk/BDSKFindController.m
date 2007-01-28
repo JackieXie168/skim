@@ -67,6 +67,13 @@ enum {
     FCEndsWithSearch = 3,
 };
 
+enum {
+    FCOperationFindAndReplace = 0,
+    FCOperationOverwrite = 1,
+    FCOperationPrepend = 2,
+    FCOperationAppend = 3,
+};
+
 @implementation BDSKFindController
 
 + (BDSKFindController *)sharedFindController{
@@ -95,6 +102,7 @@ enum {
         findAsMacro = NO;
         replaceAsMacro = NO;
 		overwrite = NO;
+        operation = FCOperationFindAndReplace;
 		
 		NSString *field = [[OFPreferenceWrapper sharedPreferenceWrapper] objectForKey:BDSKFindControllerLastFindAndReplaceFieldKey];
 		if([field isLocalFileField])
@@ -162,20 +170,34 @@ enum {
 }
 
 - (void)updateUI{
-	if(NO == [self findAsMacro] && [self replaceAsMacro] && NO == [self overwrite]){
+	if(NO == [self findAsMacro] && [self replaceAsMacro] && FCOperationFindAndReplace == [self operation]){
         [searchScopePopUpButton setEnabled:NO];
 		[statusBar setStringValue:NSLocalizedString(@"With these settings, only full strings will be replaced", @"Status message")];
 	}else{
-        [searchScopePopUpButton setEnabled:NO == [self overwrite]];
+        [searchScopePopUpButton setEnabled:FCOperationFindAndReplace == [self operation]];
 		[statusBar setStringValue:@""];
     }
     
-	if ([self overwrite]) {
-		if ([self searchSelection])
+	if (FCOperationOverwrite == [self operation]) {
+		[self setReplaceLabel:NSLocalizedString(@"Value to set:", @"Label message")];
+        if ([self searchSelection])
 			[self setReplaceAllTooltip:NSLocalizedString(@"Overwrite or add the field in all selected publications.", @"Tool tip message")];
 		else
 			[self setReplaceAllTooltip:NSLocalizedString(@"Overwrite or add the field in all publications.", @"Tool tip message")];
+	} else if (FCOperationPrepend == [self operation]) {
+		[self setReplaceLabel:NSLocalizedString(@"Prefix to add:", @"Label message")];
+		if ([self searchSelection])
+			[self setReplaceAllTooltip:NSLocalizedString(@"Add a suffix to the field in all selected publications.", @"Tool tip message")];
+		else
+			[self setReplaceAllTooltip:NSLocalizedString(@"Add a suffix to the field in all publications.", @"Tool tip message")];
+	} else if (FCOperationAppend == [self operation]) {
+		[self setReplaceLabel:NSLocalizedString(@"Suffix to add:", @"Label message")];
+		if ([self searchSelection])
+			[self setReplaceAllTooltip:NSLocalizedString(@"Add a prefix to the field in all selected publications.", @"Tool tip message")];
+		else
+			[self setReplaceAllTooltip:NSLocalizedString(@"Add a prefix to the field in all publications.", @"Tool tip message")];
 	} else {
+		[self setReplaceLabel:NSLocalizedString(@"Replace with:", @"Label message")];
 		if ([self searchSelection])
 			[self setReplaceAllTooltip:NSLocalizedString(@"Replace all matches in all selected publications.", @"Tool tip message")];
 		else
@@ -188,6 +210,21 @@ enum {
 }
 
 #pragma mark Accessors
+
+- (int)operation {
+    return operation;
+}
+
+- (void)setOperation:(int)newOperation {
+    if (operation != newOperation) {
+        operation = newOperation;
+		if (FCOperationFindAndReplace != operation) {
+			[self setSearchSelection:YES];
+			[self setFindString:@""];
+		}
+		[self updateUI];
+    }
+}
 
 - (NSString *)field {
     return [[OFPreferenceWrapper sharedPreferenceWrapper] objectForKey:BDSKFindControllerLastFindAndReplaceFieldKey];
@@ -329,6 +366,17 @@ enum {
     if (replaceAllTooltip != newReplaceAllTooltip) {
         [replaceAllTooltip release];
         replaceAllTooltip = [newReplaceAllTooltip copy];
+    }
+}
+
+- (NSString *)replaceLabel {
+    return [[replaceLabel retain] autorelease];
+}
+
+- (void)setReplaceLabel:(NSString *)newReplaceLabel {
+    if (replaceLabel != newReplaceLabel) {
+        [replaceLabel release];
+        replaceLabel = [newReplaceLabel copy];
     }
 }
 
@@ -487,7 +535,7 @@ enum {
     return YES;
 }
 
-- (BOOL)validateOverwrite:(id *)value error:(NSError **)error {
+- (BOOL)validateOperation:(id *)value error:(NSError **)error {
 	return YES;
 }
 
@@ -1054,6 +1102,90 @@ enum {
 	return number;
 }
 
+- (unsigned int)prependInItems:(NSArray *)arrayOfPubs ofDocument:(BibDocument *)theDocument{
+	// prepend using BDSKComplexString methods
+    // first we setup all the search settings
+    NSString *replStr = [self replaceString];
+	// get the current search option settings
+    NSString *field = [self field];
+	
+    if(replStr == nil || [replStr isEqualAsComplexString:@""])
+        return 0;
+    
+	if(replaceAsMacro)
+		replStr = [NSString stringWithBibTeXString:replStr macroResolver:[theDocument macroResolver]];
+		
+	// loop through the pubs to replace
+    NSEnumerator *pubE = [arrayOfPubs objectEnumerator]; // an enumerator of BibItems
+    BibItem *bibItem;
+    NSString *origStr;
+	unsigned number = 0;
+	NSMutableArray *paperInfos = nil;
+	
+	if(shouldMove)
+		paperInfos = [NSMutableArray arrayWithCapacity:[arrayOfPubs count]];
+
+    while(bibItem = [pubE nextObject]){
+        // don't touch external items
+        if ([bibItem owner] != theDocument) 
+            continue;
+        
+        origStr = [bibItem valueOfField:field inherit:NO];
+        if(origStr == nil || [origStr isEqualAsComplexString:@""])
+            continue;
+        
+        [self setField:field ofItem:bibItem toValue:[replStr stringByAppendingString:origStr] withInfos:paperInfos];
+        number++;
+    }
+	
+	if([paperInfos count])
+		[[BibFiler sharedFiler] movePapers:paperInfos forField:field fromDocument:theDocument options:0];
+	    
+	return number;
+}
+
+- (unsigned int)appendInItems:(NSArray *)arrayOfPubs ofDocument:(BibDocument *)theDocument{
+	// prepend using BDSKComplexString methods
+    // first we setup all the search settings
+    NSString *replStr = [self replaceString];
+	// get the current search option settings
+    NSString *field = [self field];
+	
+    if(replStr == nil || [replStr isEqualAsComplexString:@""])
+        return 0;
+    
+	if(replaceAsMacro)
+		replStr = [NSString stringWithBibTeXString:replStr macroResolver:[theDocument macroResolver]];
+		
+	// loop through the pubs to replace
+    NSEnumerator *pubE = [arrayOfPubs objectEnumerator]; // an enumerator of BibItems
+    BibItem *bibItem;
+    NSString *origStr;
+	unsigned number = 0;
+	NSMutableArray *paperInfos = nil;
+	
+	if(shouldMove)
+		paperInfos = [NSMutableArray arrayWithCapacity:[arrayOfPubs count]];
+
+    while(bibItem = [pubE nextObject]){
+        // don't touch external items
+        if ([bibItem owner] != theDocument) 
+            continue;
+        
+        origStr = [bibItem valueOfField:field inherit:NO];
+        if(origStr == nil || [origStr isEqualAsComplexString:@""])
+            continue;
+        
+        [self setField:field ofItem:bibItem toValue:[origStr stringByAppendingString:replStr] withInfos:paperInfos];
+        number++;
+    }
+	
+	if([paperInfos count])
+		[[BibFiler sharedFiler] movePapers:paperInfos forField:field fromDocument:theDocument options:0];
+	    
+	return number;
+}
+
 - (unsigned int)findAndReplaceInItems:(NSArray *)arrayOfPubs ofDocument:(BibDocument *)theDocument{
     unsigned number;
 	
@@ -1069,8 +1201,12 @@ enum {
 		shouldMove = (rv == NSAlertDefaultReturn) ? NSOnState : NSOffState;
 	}
 	
-	if([self overwrite])
+	if(FCOperationOverwrite == [self operation])
 		number = [self overwriteInItems:arrayOfPubs ofDocument:theDocument];
+	else if(FCOperationPrepend == [self operation])
+		number = [self prependInItems:arrayOfPubs ofDocument:theDocument];
+	else if(FCOperationAppend == [self operation])
+		number = [self appendInItems:arrayOfPubs ofDocument:theDocument];
 	else if([self searchType] == FCTextualSearch)
 		number = [self stringFindAndReplaceInItems:arrayOfPubs ofDocument:theDocument];
 	else if([self regexIsValid:[self findString]])

@@ -450,6 +450,30 @@ Rather than relying on the same call sequence to be used, I think we should igno
 	return newString;
 }
 
+- (NSString *)stringByAppendingString:(NSString *)string{
+	NSString *newString = nil;
+    if ([self isComplex] == NO) {
+        newString = [[nodes objectAtIndex:0] stringByAppendingString:string];
+    } else if ([string isEqualAsComplexString:@""]) {
+        newString = self;
+    } else {
+        NSMutableArray *mutableNodes = [nodes mutableCopy];
+        NSArray *newNodes = nil;
+        if ([string isComplex]) {
+            newNodes = [[string nodes] mutableCopy];
+        } else {
+            BDSKStringNode *node = [[BDSKStringNode alloc] initWithQuotedString:string];
+            newNodes = [[NSMutableArray alloc] initWithObjects:node, nil];
+            [node release];
+        }
+        [mutableNodes addObjectsFromArray:newNodes];
+        [newNodes release];
+        newString = [BDSKComplexString stringWithNodes:mutableNodes macroResolver:macroResolver];
+        [mutableNodes release];
+    }
+    return newString;
+}
+
 #pragma mark complex string methods
 
 - (BDSKMacroResolver *)macroResolver{
@@ -459,6 +483,12 @@ Rather than relying on the same call sequence to be used, I think we should igno
 @end
 
 @implementation NSString (ComplexStringExtensions)
+
+static IMP originalStringByAppendingString;
+
++ (void)didLoad{
+    originalStringByAppendingString = OBReplaceMethodImplementationWithSelector(self, @selector(stringByAppendingString:), @selector(replacementStringByAppendingString:));
+}
 
 - (id)initWithNodes:(NSArray *)nodesArray macroResolver:(BDSKMacroResolver *)theMacroResolver{
     [[self init] release];
@@ -729,6 +759,23 @@ Rather than relying on the same call sequence to be used, I think we should igno
 		[newString release];
 		return self;
 	}
+}
+
+- (NSString *)replacementStringByAppendingString:(NSString *)string{
+    NSString *newString = nil;
+    if ([self isEqualToString:@""]) {
+        newString = string;
+    } else if ([string isComplex]) {
+        BDSKStringNode *node = [[BDSKStringNode alloc] initWithQuotedString:self];
+        NSMutableArray *nodes = [[NSMutableArray alloc] initWithObjects:node, nil];
+        [nodes addObjectsFromArray:[string nodes]];
+        newString = [BDSKComplexString stringWithNodes:nodes macroResolver:[(BDSKComplexString *)string macroResolver]];
+        [node release];
+        [nodes release];
+	} else {
+        newString = originalStringByAppendingString(self, _cmd, string);
+    }
+    return newString;
 }
 
 @end
