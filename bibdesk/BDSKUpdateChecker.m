@@ -174,6 +174,7 @@
     OFVersionNumber *remoteVersionForCurrentMajor = [self latestReleasedVersionNumberForCurrentMajor];
     OFVersionNumber *localVersion = [self localVersionNumber];
     OFVersionNumber *notifiedVersion = [self latestNotifiedVersionNumber];
+        [self displayUpdateAvailableWindow:[[[[OFVersionNumber alloc] initWithVersionString:@"1.2.11"] autorelease] cleanVersionString] alternativeVersion:[[[[OFVersionNumber alloc] initWithVersionString:@"1.3.1"] autorelease] cleanVersionString]];
     
     // simplification if we already have the latest major
     if(remoteVersionForCurrentMajor && [remoteVersionForCurrentMajor compareToVersionNumber:remoteVersion] != NSOrderedAscending){
@@ -512,16 +513,17 @@
 - (void)downloadAndDisplayReleaseNotesForVersion:(NSString *)versionString;
 {
     NSURL *theURL = [self releaseNotesURLForVersion:versionString];
-    NSURLRequest *request = [NSURLRequest requestWithURL:theURL cachePolicy:NSURLRequestReloadIgnoringCacheData timeoutInterval:60.0];
-    NSURLResponse *response;
+    NSData *theData = nil;
     
-    NSError *downloadError;
-    
-    // load it synchronously; user requested this on the main thread
-    NSData *theData = [NSURLConnection sendSynchronousRequest:request returningResponse:&response error:&downloadError];
+    if(theURL){
+        // load it synchronously; user requested this on the main thread
+        NSURLRequest *request = [NSURLRequest requestWithURL:theURL cachePolicy:NSURLRequestReloadIgnoringCacheData timeoutInterval:60.0];
+        NSURLResponse *response = nil;
+        NSError *downloadError = nil;
+        theData = [NSURLConnection sendSynchronousRequest:request returningResponse:&response error:&downloadError];
+    }
     
     // @@ use error description for message or display alert?
-    // @@ option for user to d/l latest version when displaying this window?
     NSAttributedString *attrString;
     if (theData)
         attrString = [[[NSAttributedString alloc] initWithRTF:theData documentAttributes:NULL] autorelease];
@@ -533,38 +535,44 @@
     
     [releaseNotesWindowController displayAttributedString:attrString];
     [releaseNotesWindowController showWindow:nil];
-    [[NSNotificationCenter defaultCenter] addObserver:self
-                                             selector:@selector(handleRelNotesWindowWillClose:)
-                                                 name:NSWindowWillCloseNotification
-                                               object:self];
-}
-
-- (void)handleRelNotesWindowWillClose:(NSNotification *)notification{
-    [[[notification object] windowController] autorelease];
 }
 
 - (void)displayUpdateAvailableWindow:(NSString *)latestVersion alternativeVersion:(NSString *)altLatestVersion;
 {
     int button;
     NSString *message = nil;
+    NSString *alternateButton = nil;
+    NSString *altAlternateButton = nil;
     
-    if(altLatestVersion != nil)
+    const int BDSKAlertAltAlternateReturn = 1003;
+    
+    if(altLatestVersion != nil){
         message = NSLocalizedString(@"A new version of BibDesk is available (versions %@ and %@). Would you like to download the new version now?", @"Informative text in alert dialog");
-    else
+        alternateButton = [NSString stringWithFormat:NSLocalizedString(@"Release Notes for %@", @"Buttton title"), altLatestVersion];
+        altAlternateButton = [NSString stringWithFormat:NSLocalizedString(@"Release Notes for %@", @"Buttton title"), latestVersion];
+    }else{
         message = NSLocalizedString(@"A new version of BibDesk is available (version %@). Would you like to download the new version now?", @"Informative text in alert dialog");
+        alternateButton = NSLocalizedString(@"View Release Notes", @"Button title");
+    }
     
     NSAlert *alert = [NSAlert alertWithMessageText:NSLocalizedString(@"A New Version is Available", @"Message in alert dialog when new version is available")
                                      defaultButton:NSLocalizedString(@"Download", @"Button title")
-                                   alternateButton:NSLocalizedString(@"View Release Notes", @"Button title")
+                                   alternateButton:alternateButton
                                        otherButton:NSLocalizedString(@"Ignore",@"Button title")
                          informativeTextWithFormat:message, latestVersion, altLatestVersion];
-                                        
+    
+    if(altAlternateButton){
+        [alert addButtonWithTitle:altAlternateButton];
+    }
+    
     button = [alert runModal];
     
     if (button == NSAlertDefaultReturn) {
         [[NSWorkspace sharedWorkspace] openURL:[NSURL URLWithString:DOWNLOAD_URL]];
     } else if (button == NSAlertAlternateReturn) {
         [self downloadAndDisplayReleaseNotesForVersion:altLatestVersion ? altLatestVersion : latestVersion];
+    } else if (button == BDSKAlertAltAlternateReturn) {
+        [self downloadAndDisplayReleaseNotesForVersion:latestVersion];
     }
 }
 
