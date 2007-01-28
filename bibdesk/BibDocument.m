@@ -2277,8 +2277,8 @@ originalContentsURL:(NSURL *)absoluteOriginalContentsURL
         return [key isEqualToString:BDSKTitleString] || [key isEqualToString:BDSKChapterString] || [key isEqualToString:BDSKPagesString] || [key isEqualToString:BDSKPubTypeString];
     else if([sortKey isEqualToString:BDSKContainerString])
         return [key isEqualToString:BDSKContainerString] || [key isEqualToString:BDSKJournalString] || [key isEqualToString:BDSKBooktitleString] || [key isEqualToString:BDSKVolumeString] || [key isEqualToString:BDSKSeriesString] || [key isEqualToString:BDSKPubTypeString];
-    else if([sortKey isEqualToString:BDSKDateString])
-        return [key isEqualToString:BDSKDateString] || [key isEqualToString:BDSKYearString] || [key isEqualToString:BDSKMonthString];
+    else if([sortKey isEqualToString:BDSKPubDateString])
+        return [key isEqualToString:BDSKYearString] || [key isEqualToString:BDSKMonthString];
     else if([sortKey isEqualToString:BDSKFirstAuthorString] || [sortKey isEqualToString:BDSKSecondAuthorString] || [sortKey isEqualToString:BDSKThirdAuthorString] || [sortKey isEqualToString:BDSKLastAuthorString])
         return [key isEqualToString:BDSKAuthorString];
     else if([sortKey isEqualToString:BDSKFirstAuthorEditorString] || [sortKey isEqualToString:BDSKSecondAuthorEditorString] || [sortKey isEqualToString:BDSKThirdAuthorEditorString] || [sortKey isEqualToString:BDSKLastAuthorEditorString])

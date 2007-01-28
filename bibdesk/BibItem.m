@@ -166,7 +166,7 @@ static CFDictionaryRef selectorTable = NULL;
     
     CFDictionaryAddValue(table, (CFStringRef)BDSKTitleString, NSSelectorFromString(@"title"));
     CFDictionaryAddValue(table, (CFStringRef)BDSKAuthorString, NSSelectorFromString(@"bibTeXAuthorString"));
-    CFDictionaryAddValue(table, (CFStringRef)BDSKDateString, NSSelectorFromString(@"calendarDateDescription"));
+    CFDictionaryAddValue(table, (CFStringRef)BDSKPubDateString, NSSelectorFromString(@"calendarDateDescription"));
     CFDictionaryAddValue(table, (CFStringRef)BDSKDateModifiedString, NSSelectorFromString(@"calendarDateModifiedDescription"));
     CFDictionaryAddValue(table, (CFStringRef)BDSKDateAddedString, NSSelectorFromString(@"calendarDateAddedDescription"));
     CFDictionaryAddValue(table, (CFStringRef)BDSKAllFieldsString, NSSelectorFromString(@"allFieldsString"));
@@ -1350,10 +1350,7 @@ static Boolean stringIsEqualToString(const void *value1, const void *value2) { r
         return [shortDateFormatter stringFromDate:[self dateAdded]];
     }else if([field isEqualToString: BDSKDateModifiedString]){
         return [shortDateFormatter stringFromDate:[self dateModified]];
-    }else if([field isEqualToString: BDSKDateString] ){
-        NSString *value = [self valueOfField:BDSKDateString];
-        if([NSString isEmptyString:value] == NO)
-            return value;
+    }else if([field isEqualToString: BDSKPubDateString] ){
         NSCalendarDate *date = [self date];
         if(nil == date) 
             return nil;

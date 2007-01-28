@@ -96,7 +96,7 @@
 		
         sortDescriptor = [[BDSKTableSortDescriptor alloc] initWithKey:@"container.stringByRemovingTeXAndStopWords" ascending:ascend selector:@selector(localizedCaseInsensitiveCompare:)];
         
-	}else if([tcID isEqualToString:BDSKDateString]){
+	}else if([tcID isEqualToString:BDSKPubDateString]){
 		
 		sortDescriptor = [[BDSKTableSortDescriptor alloc] initWithKey:@"date" ascending:ascend selector:@selector(compare:)];		
         
