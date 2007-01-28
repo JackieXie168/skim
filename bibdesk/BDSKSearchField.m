@@ -159,7 +159,7 @@ NSString *BDSKFileContentLocalizedString = nil;
 	[anItem setTarget:self];
     [cellMenu addItem:[NSMenuItem separatorItem]];
         
-	NSMutableArray *searchKeys = [[NSMutableArray alloc] initWithObjects:BDSKAuthorString, BDSKDateString, BDSKTitleString, nil];
+	NSMutableArray *searchKeys = [[NSMutableArray alloc] initWithObjects:BDSKAuthorString, BDSKPubDateString, BDSKTitleString, nil];
     [searchKeys addObjectsFromArray:[[OFPreferenceWrapper sharedPreferenceWrapper] stringArrayForKey:BDSKQuickSearchKeys]];
     [searchKeys sortUsingSelector:@selector(compare:)];
     
@@ -207,7 +207,7 @@ NSString *BDSKFileContentLocalizedString = nil;
 
 - (void)quickSearchAddField:(id)sender{
     // first we fill the popup
-    NSArray *searchKeys = [[BibTypeManager sharedManager] allFieldNamesIncluding:[NSArray arrayWithObjects:BDSKPubTypeString, BDSKCiteKeyString, BDSKDateString, BDSKDateAddedString, BDSKDateModifiedString, nil]
+    NSArray *searchKeys = [[BibTypeManager sharedManager] allFieldNamesIncluding:[NSArray arrayWithObjects:BDSKPubTypeString, BDSKCiteKeyString, BDSKPubDateString, BDSKDateAddedString, BDSKDateModifiedString, nil]
                                                                        excluding:[[OFPreferenceWrapper sharedPreferenceWrapper] arrayForKey:BDSKQuickSearchKeys]];
     
     BDSKAddFieldSheetController *addFieldController = [[BDSKAddFieldSheetController alloc] initWithPrompt:NSLocalizedString(@"Field to search:", @"Label for adding field")

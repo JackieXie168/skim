@@ -220,6 +220,7 @@ extern NSString *BDSKPublisherString;
 extern NSString *BDSKDateAddedString;
 extern NSString *BDSKDateModifiedString;
 extern NSString *BDSKDateString;
+extern NSString *BDSKPubDateString;
 extern NSString *BDSKCrossrefString;
 extern NSString *BDSKRatingString;
 extern NSString *BDSKReadString;

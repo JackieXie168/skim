@@ -242,6 +242,7 @@ NSString *BDSKPublisherString = @"Publisher";
 NSString *BDSKDateAddedString = @"Date-Added";
 NSString *BDSKDateModifiedString = @"Date-Modified";
 NSString *BDSKDateString = @"Date";
+NSString *BDSKPubDateString = @"Publication Date";
 NSString *BDSKCrossrefString = @"Crossref";
 NSString *BDSKRatingString = @"Rating";
 NSString *BDSKReadString = @"Read";

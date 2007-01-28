@@ -127,7 +127,7 @@ NSString *BDSKDocumentFormatForSearchingDates = nil;
         
     static NSSet *dateFields = nil;
     if(nil == dateFields)
-        dateFields = [[NSSet alloc] initWithObjects:BDSKDateString, BDSKDateAddedString, BDSKDateModifiedString, nil];
+        dateFields = [[NSSet alloc] initWithObjects:BDSKPubDateString, BDSKDateAddedString, BDSKDateModifiedString, nil];
     
     // if it's a date field, figure out a format string to use based on the given date component(s)
     // this date format string is then made available to the BibItem as a global variable
