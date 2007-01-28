@@ -174,7 +174,6 @@
     OFVersionNumber *remoteVersionForCurrentMajor = [self latestReleasedVersionNumberForCurrentMajor];
     OFVersionNumber *localVersion = [self localVersionNumber];
     OFVersionNumber *notifiedVersion = [self latestNotifiedVersionNumber];
-        [self displayUpdateAvailableWindow:[[[[OFVersionNumber alloc] initWithVersionString:@"1.2.11"] autorelease] cleanVersionString] alternativeVersion:[[[[OFVersionNumber alloc] initWithVersionString:@"1.3.1"] autorelease] cleanVersionString]];
     
     // simplification if we already have the latest major
     if(remoteVersionForCurrentMajor && [remoteVersionForCurrentMajor compareToVersionNumber:remoteVersion] != NSOrderedAscending){
