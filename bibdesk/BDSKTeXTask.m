@@ -45,6 +45,7 @@
 #import "UKDirectoryEnumerator.h"
 #import "BDSKShellCommandFormatter.h"
 #import <libkern/OSAtomic.h>
+#import "NSSet_BDSKExtensions.h"
 
 @interface BDSKTeXPath : NSObject
 {
@@ -64,6 +65,8 @@
 @end
 
 @interface BDSKTeXTask (Private) 
+
+- (NSArray *)helperFilePaths;
 
 - (void)writeHelperFiles;
 
@@ -152,7 +155,7 @@
 
 - (NSString *)description{
     NSMutableString *temporaryDescription = [[NSMutableString alloc] initWithString:[super description]];
-    [temporaryDescription appendFormat:@" {\nivars:\n\tdelegate = \"%@\"\n\tfile name = \"%@\"\n\ttemplate = \"%@\"\n\tTeX file = \"%@\"\n\tBibTeX file = \"%@\"\n\tTeX binary path = \"%@\"\n\tEncoding = \"%@\"\n\tBibTeX style = \"%@\"\n\nenvironment:\n\tSHELL = \"%s\"\n\tBIBINPUTS = \"%s\"\n\tBSTINPUTS = \"%s\"\n\tPATH = \"%s\" }", delegate, [texPath baseNameWithoutExtension], texTemplatePath, [texPath texFilePath], [texPath bibFilePath], binDirPath, [NSString localizedNameOfStringEncoding:[[OFPreferenceWrapper sharedPreferenceWrapper] integerForKey:BDSKTeXPreviewFileEncodingKey]], [[OFPreferenceWrapper sharedPreferenceWrapper] objectForKey:BDSKBTStyleKey], getenv("SHELL"), getenv("BIBINPUTS"), getenv("BSTINPUTS"), getenv("PATH")];
+    [temporaryDescription appendFormat:@" {\nivars:\n\tdelegate = \"%@\"\n\tfile name = \"%@\"\n\ttemplate = \"%@\"\n\tTeX file = \"%@\"\n\tBibTeX file = \"%@\"\n\tTeX binary path = \"%@\"\n\tEncoding = \"%@\"\n\tBibTeX style = \"%@\"\n\tHelper files = %@\n\nenvironment:\n\tSHELL = \"%s\"\n\tBIBINPUTS = \"%s\"\n\tBSTINPUTS = \"%s\"\n\tPATH = \"%s\" }", delegate, [texPath baseNameWithoutExtension], texTemplatePath, [texPath texFilePath], [texPath bibFilePath], binDirPath, [NSString localizedNameOfStringEncoding:[[OFPreferenceWrapper sharedPreferenceWrapper] integerForKey:BDSKTeXPreviewFileEncodingKey]], [[OFPreferenceWrapper sharedPreferenceWrapper] objectForKey:BDSKBTStyleKey], [[self helperFilePaths] description], getenv("SHELL"), getenv("BIBINPUTS"), getenv("BSTINPUTS"), getenv("PATH")];
     NSString *description = [temporaryDescription copy];
     [temporaryDescription release];
     return [description autorelease];
@@ -417,27 +420,35 @@
 
 @implementation BDSKTeXTask (Private)
 
-- (void)writeHelperFiles{
+- (NSArray *)helperFilePaths{
     UKDirectoryEnumerator *enumerator = [UKDirectoryEnumerator enumeratorWithPath:[[NSFileManager defaultManager] currentApplicationSupportPathForCurrentUser]];
     [enumerator setDesiredInfo:kFSCatInfoNodeFlags];
     
 	NSString *path = nil;
-    NSString *pathExt = nil;
+    NSSet *helperTypes = [NSSet caseInsensitiveStringSetWithObjects:@"cfg", @"sty", nil];
+    NSMutableArray *helperFiles = [NSMutableArray array];
+    
+	// copy all user .cfg and .sty files from application support
+	while(path = [enumerator nextObjectFullPath]){
+		if([enumerator isDirectory] == NO && [helperTypes containsObject:[path pathExtension]]){
+            [helperFiles addObject:path];
+        }
+    }
+    return helperFiles;
+}
+
+- (void)writeHelperFiles{
+    
+    NSEnumerator *pathEnumerator = [[self helperFilePaths] objectEnumerator];
+    NSString *srcPath;
     
     NSURL *dstURL = [NSURL fileURLWithPath:[texPath workingDirectory]];
     NSError *error;
-		
-	// copy all user .cfg and .sty files from application support
-	while(path = [enumerator nextObjectFullPath]){
-        pathExt = [path pathExtension];
-		if([enumerator isDirectory] == NO &&
-		   ([pathExt isEqual:@"cfg"] ||
-		    [pathExt isEqual:@"sty"])){
-			
-			if(![[NSFileManager defaultManager] copyObjectAtURL:[NSURL fileURLWithPath:path] toDirectoryAtURL:dstURL error:&error])
-                NSLog(@"unable to copy helper file %@ to %@; error %@", path, [texPath workingDirectory], [error localizedDescription]);
-		}
-	}
+
+    while(srcPath = [pathEnumerator nextObject]){
+        if(![[NSFileManager defaultManager] copyObjectAtURL:[NSURL fileURLWithPath:srcPath] toDirectoryAtURL:dstURL error:&error])
+            NSLog(@"unable to copy helper file %@ to %@; error %@", srcPath, [dstURL path], [error localizedDescription]);
+    }
 }
 
 - (BOOL)writeTeXFile:(BOOL)ltb{
