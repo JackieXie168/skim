@@ -168,6 +168,7 @@ static int numberOfOpenEditors = 0;
 	
 	ratingButtonCell = [[BDSKRatingButtonCell alloc] initWithMaxRating:5];
 	[ratingButtonCell setImagePosition:NSImageLeft];
+	[ratingButtonCell setAlignment:NSLeftTextAlignment];
 	[ratingButtonCell setTarget:self];
 	[ratingButtonCell setAction:@selector(changeRating:)];
     [ratingButtonCell setEnabled:isEditable];
@@ -3665,11 +3666,12 @@ static NSString *queryStringWithCiteKey(NSString *citekey)
     float width = NSWidth([[extraBibFields enclosingScrollView] frame]) - [NSScroller scrollerWidth];
     float spacing = [extraBibFields intercellSpacing].width;
     int numCols = MAX(MIN(floor((width + spacing) / (cellWidth + spacing)), numEntries), 1);
+    int numRows = (numEntries / numCols) + (numEntries % numCols == 0 ? 0 : 1);
     
     while ([extraBibFields numberOfRows])
 		[extraBibFields removeRow:0];
 	
-    [extraBibFields renewRows:ceil(((float)numEntries) / numCols) columns:numCols];
+    [extraBibFields renewRows:numRows columns:numCols];
     
     e = [cells objectEnumerator];
     NSCell *cell;
