@@ -303,15 +303,8 @@ static BDSKGlobalMacroResolver *defaultMacroResolver;
         BDSKStringNode *node;
         
         while(node = [nodeE nextObject]){
-            if([node type] != BSN_MACRODEF)
-                continue;
-            
-            NSString *key = [node value];
-            
-            if([array containsObject:key])
-                continue;
-            
-            [self addMacro:key toArray:array];
+            if([node type] == BSN_MACRODEF)
+                [self addMacro:[node value] toArray:array];
         }
     }
     [array addObject:macroKey];
