@@ -118,6 +118,15 @@
     IBOutlet NSView* webSnoopContainerView;
 	BOOL webSnoopViewLoaded;
 // ----------------------------------------------------------------------------------------
+// URL downlaod stuff
+// ----------------------------------------------------------------------------------------
+	WebDownload *download;
+	BOOL isDownloading;
+	NSString *downloadFieldName;
+	NSString *downloadFileName;
+    int receivedContentLength;
+    int expectedContentLength;
+// ----------------------------------------------------------------------------------------
 // status bar stuff
 // ----------------------------------------------------------------------------------------
     IBOutlet BDSKStatusBar *statusBar;
@@ -374,6 +383,12 @@
     @discussion (comprehensive description)
 */
 - (void)downloadLinkedFileAsLocalUrl:(id)sender;
+
+- (void)downloadURL:(NSURL *)linkURL forField:(NSString *)fieldName;
+
+- (void)setDownloading:(BOOL)downloading;
+
+- (void)cancelDownload;
 
 /*!
     @method     generateCiteKey:
