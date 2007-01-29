@@ -866,7 +866,7 @@ static int numberOfOpenEditors = 0;
         return;
     for (i = 0; i < count; i++) {
         person = [thePeople objectAtIndex:i];
-        item = [menu addItemWithTitle:[person normalizedName] action:selector keyEquivalent:@""];
+        item = [menu addItemWithTitle:[person displayName] action:selector keyEquivalent:@""];
         [item setTag:i];
     }
     item = [menu addItemWithTitle:NSLocalizedString(@"Show All", @"Menu item title") action:selector keyEquivalent:@""];
@@ -3359,9 +3359,8 @@ static NSString *queryStringWithCiteKey(NSString *citekey)
 	return [publication numberOfPeople];
 }
 
-- (id)tableView:(NSTableView *)tableView objectValueForTableColumn:(NSTableColumn *)tableColumn 
-			row:(int)row{
-    return [[publication sortedPeople] objectAtIndex:row];
+- (id)tableView:(NSTableView *)tableView objectValueForTableColumn:(NSTableColumn *)tableColumn row:(int)row{
+    return [[[publication sortedPeople] objectAtIndex:row] displayName];
 }
 
 - (IBAction)showPersonDetailCmd:(id)sender{
