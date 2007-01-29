@@ -327,6 +327,8 @@ static int numberOfOpenEditors = 0;
     [formCellFormatter release];
     [crossrefFormatter release];
     [citationFormatter release];
+    [downloadFileName release];
+    [downloadFieldName release];
     [super dealloc];
 }
 
@@ -966,7 +968,7 @@ static int numberOfOpenEditors = 0;
 		return (isEditable && [[[remoteSnoopWebView mainFrame] dataSource] isLoading] == NO);
 	}
 	else if (theAction == @selector(downloadLinkedFileAsLocalUrl:)) {
-		return NO;
+		return (isEditable && isDownloading == NO);
 	}
     else if (theAction == @selector(editSelectedFieldAsRawBibTeX:)) {
         if (isEditable == NO)
@@ -2387,14 +2389,8 @@ static NSString *queryStringWithCiteKey(NSString *citekey)
 	dragType = [pboard availableTypeFromArray:[NSArray arrayWithObjects:BDSKWeblocFilePboardType, NSFilenamesPboardType, NSURLPboardType, BDSKBibItemPboardType, nil]];
 	
 	if ([field isLocalFileField]) {
-		if ([dragType isEqualToString:NSFilenamesPboardType]) {
+		if ([dragType isEqualToString:NSFilenamesPboardType] || [dragType isEqualToString:NSURLPboardType] || [dragType isEqualToString:BDSKWeblocFilePboardType]) {
 			return NSDragOperationEvery;
-		} else if ([dragType isEqualToString:NSURLPboardType]) {
-			// a file can put NSURLPboardType on the pasteboard
-			// we really only want to receive local files for file URLs
-			NSURL *fileURL = [NSURL URLFromPasteboard:pboard];
-			if(fileURL && [fileURL isFileURL])
-				return NSDragOperationEvery;
 		}
 		return NSDragOperationNone;
 	} else if ([field isRemoteURLField]){
@@ -2433,30 +2429,31 @@ static NSString *queryStringWithCiteKey(NSString *citekey)
     
 	if ([field isLocalFileField]) {
 		// a file, we link the local file field
-		NSURL *fileURL = nil;
+		NSURL *theURL = nil;
 		
 		if ([dragType isEqualToString:NSFilenamesPboardType]) {
 			NSArray *fileNames = [pboard propertyListForType:NSFilenamesPboardType];
-			if ([fileNames count] == 0)
-				return NO;
-			fileURL = [NSURL fileURLWithPath:[[fileNames objectAtIndex:0] stringByExpandingTildeInPath]];
+			if ([fileNames count])
+				theURL = [NSURL fileURLWithPath:[[fileNames objectAtIndex:0] stringByExpandingTildeInPath]];
+		} else if ([dragType isEqualToString:BDSKWeblocFilePboardType]) {
+			NSString *theURLString = [pboard stringForType:BDSKWeblocFilePboardType];
+            theURL = [NSURL URLWithString:theURLString];
 		} else if ([dragType isEqualToString:NSURLPboardType]) {
-			fileURL = [NSURL URLFromPasteboard:pboard];
-			if (![fileURL isFileURL])
-				return NO;
-		} else {
-			return NO;
+			theURL = [NSURL URLFromPasteboard:pboard];
 		}
-		
-		if (fileURL == nil || 
-            [fileURL isEqual:[publication URLForField:field]])
+        
+        if (theURL == nil || [theURL isEqual:[publication URLForField:field]]) {
 			return NO;
+        } else if (NO == [theURL isFileURL]) {
+            [self downloadURL:theURL forField:field];
+            return YES;
+        }
         
         NSString *oldValue = [[[publication valueOfField:field] retain] autorelease];
-        NSString *newValue = [fileURL absoluteString];
+        NSString *newValue = [theURL absoluteString];
         BOOL didFile = NO;
         
-		[publication setField:field toValue:[fileURL absoluteString]];
+		[publication setField:field toValue:[theURL absoluteString]];
 		
         if ([field isEqualToString:BDSKLocalUrlString])
             didFile = [self autoFilePaper];
@@ -2754,7 +2751,8 @@ static NSString *queryStringWithCiteKey(NSString *citekey)
 		return nil;
 	if (dragFieldEditor == nil) {
 		dragFieldEditor = [[BDSKFieldEditor alloc] init];
-		[(BDSKFieldEditor *)dragFieldEditor registerForDelegatedDraggedTypes:[NSArray arrayWithObjects:NSFilenamesPboardType, NSURLPboardType, BDSKWeblocFilePboardType, BDSKBibItemPboardType, nil]];
+        if (isEditable)
+            [(BDSKFieldEditor *)dragFieldEditor registerForDelegatedDraggedTypes:[NSArray arrayWithObjects:NSFilenamesPboardType, NSURLPboardType, BDSKWeblocFilePboardType, BDSKBibItemPboardType, nil]];
 	}
 	return dragFieldEditor;
 }
@@ -3215,7 +3213,9 @@ static NSString *queryStringWithCiteKey(NSString *citekey)
 }
 
 - (void)windowWillClose:(NSNotification *)notification{
-        
+    // cancel download for local file
+    [self cancelDownload];
+    
     // @@ this finalizeChanges seems redundant now that it's in windowShouldClose:
 	[self finalizeChangesPreservingSelection:NO];
     
@@ -3242,11 +3242,21 @@ static NSString *queryStringWithCiteKey(NSString *citekey)
 	NSEnumerator *iEnum = [defaultMenuItems objectEnumerator];
 	while (item = [iEnum nextObject]) { 
 		if ([item tag] == WebMenuItemTagCopy ||
-			[item tag] == WebMenuItemTagCopyLinkToClipboard ||
 			[item tag] == WebMenuItemTagCopyImageToClipboard) {
 			
 			[menuItems addObject:item];
-		}
+		} else if ([item tag] == WebMenuItemTagCopyLinkToClipboard) {
+			NSURL *linkURL = [element objectForKey:WebElementLinkURLKey];
+			
+            [menuItems addObject:item];
+        
+			item = [[NSMenuItem allocWithZone:[NSMenu menuZone]] initWithTitle:[NSLocalizedString(@"Save Link As Local File",@"Save link as local file") stringByAppendingEllipsis]
+                                            action:@selector(downloadLinkedFileAsLocalUrl:)
+                                     keyEquivalent:@""];
+			[item setTarget:self];
+			[item setRepresentedObject:linkURL];
+			[menuItems addObject:[item autorelease]];
+        }
 	}
 	if ([menuItems count] > 0) 
 		[menuItems addObject:[NSMenuItem separatorItem]];
@@ -3292,36 +3302,186 @@ static NSString *queryStringWithCiteKey(NSString *citekey)
 	return menuItems;
 }
 
-- (void)saveFileAsLocalUrl:(id)sender{
-	WebDataSource *dataSource = [[remoteSnoopWebView mainFrame] dataSource];
-	if (!dataSource || [dataSource isLoading]) 
-		return;
-	
-	NSString *fileName = [[[[dataSource request] URL] relativePath] lastPathComponent];
-	NSString *extension = [fileName pathExtension];
-   
-	NSSavePanel *sPanel = [NSSavePanel savePanel];
-    if (![extension isEqualToString:@""]) 
-		[sPanel setRequiredFileType:extension];
-    int result = [sPanel runModalForDirectory:nil file:fileName];
-    if (result == NSOKButton) {
-		if ([[dataSource data] writeToFile:[sPanel filename] atomically:YES]) {
-			NSString *fileURLString = [[NSURL fileURLWithPath:[sPanel filename]] absoluteString];
+- (void)savePanelDidEnd:(NSSavePanel *)savePanel returnCode:(int)returnCode contextInfo:(void *)contextInfo{
+    if (returnCode == NSOKButton) {
+        WebDataSource *dataSource = [[remoteSnoopWebView mainFrame] dataSource];
+        if (nil == dataSource || [dataSource isLoading]) 
+            return;
+		
+        if ([[dataSource data] writeToFile:[savePanel filename] atomically:YES]) {
+			NSString *fileURLString = [[savePanel URL] absoluteString];
+            NSString *oldValue = [[[publication valueOfField:BDSKLocalUrlString inherit:NO] retain] autorelease];
 			
 			[publication setField:BDSKLocalUrlString toValue:fileURLString];
 			[self autoFilePaper];
 			
+            [self userChangedField:BDSKLocalUrlString from:oldValue to:fileURLString didAutoGenerate:0];
 			[[self undoManager] setActionName:NSLocalizedString(@"Edit Publication", @"Undo action name")];
 		} else {
-			NSLog(@"Could not write downloaded file.");
+			NSLog(@"Could not write file from web.");
 		}
     }
 }
 
+- (void)saveFileAsLocalUrl:(id)sender{
+	WebDataSource *dataSource = [[remoteSnoopWebView mainFrame] dataSource];
+	if (nil == dataSource || [dataSource isLoading]) 
+		return;
+	
+	NSString *filename = [[[[dataSource request] URL] relativePath] lastPathComponent];
+	NSString *extension = [filename pathExtension];
+   
+	NSSavePanel *sPanel = [NSSavePanel savePanel];
+    if (nil != [extension isEqualToString:@""]) 
+		[sPanel setRequiredFileType:extension];
+	
+    [sPanel beginSheetForDirectory:nil
+                              file:filename
+                    modalForWindow:[self window]
+                     modalDelegate:self
+                    didEndSelector:@selector(savePanelDidEnd:returnCode:contextInfo:)
+                       contextInfo:nil];
+}
+
 - (void)downloadLinkedFileAsLocalUrl:(id)sender{
-    OBASSERT_NOT_REACHED("not yet implemented");
-	// NSURL *linkURL = (NSURL *)[sender representedObject];
-	// not yet implemented 
+	NSURL *linkURL = (NSURL *)[sender representedObject];
+    [self downloadURL:linkURL forField:BDSKLocalUrlString];
+}
+
+#pragma URL downloading
+
+- (void)downloadURL:(NSURL *)linkURL forField:(NSString *)fieldName{
+    if (isDownloading)
+        return;
+	[downloadFieldName release];
+    downloadFieldName = [fieldName copy];
+    if (linkURL) {
+		download = [[WebDownload alloc] initWithRequest:[NSURLRequest requestWithURL:linkURL] delegate:self];
+	}
+	if (nil == download) {
+        NSAlert *alert = [NSAlert alertWithMessageText:NSLocalizedString(@"Invalid or Unsupported URL", @"Message in alert dialog when unable to download file for Local-Url")
+                                         defaultButton:nil
+                                       alternateButton:nil
+                                           otherButton:nil
+                             informativeTextWithFormat:NSLocalizedString(@"The URL to download is either invalid or unsupported.", @"Informative text in alert dialog")];
+        [alert beginSheetModalForWindow:[self window]
+                          modalDelegate:nil
+                         didEndSelector:NULL
+                            contextInfo:NULL];
+	}
+}
+
+- (void)setDownloading:(BOOL)downloading{
+    if (isDownloading != downloading) {
+        isDownloading = downloading;
+        if (isDownloading) {
+			NSString *message = [[NSString stringWithFormat:NSLocalizedString(@"Downloading file. Received %i%%", @"Status message"), 0] stringByAppendingEllipsis];
+            [statusBar startAnimation:self];
+			[self setStatus:message];
+            [downloadFileName release];
+			downloadFileName = nil;
+        } else {
+            [statusBar stopAnimation:self];
+			[self setStatus:@""];
+            [download release];
+            download = nil;
+            receivedContentLength = 0;
+        }
+    }
+}
+
+- (void)cancelDownload{
+	[download cancel];
+	[self setDownloading:NO];
+}
+
+- (void)saveDownloadPanelDidEnd:(NSSavePanel *)sheet returnCode:(int)returnCode contextInfo:(void *)contextInfo{
+    if (returnCode == NSOKButton) {
+        [download setDestination:[sheet filename] allowOverwrite:YES];
+    } else {
+        [self cancelDownload];
+    }
+}
+
+#pragma mark NSURLDownloadDelegate methods
+
+- (void)downloadDidBegin:(NSURLDownload *)download{
+    [self setDownloading:YES];
+}
+
+- (NSWindow *)downloadWindowForAuthenticationSheet:(WebDownload *)download{
+    return [self window];
+}
+
+- (void)download:(NSURLDownload *)theDownload didReceiveResponse:(NSURLResponse *)response{
+    expectedContentLength = [response expectedContentLength];
+}
+
+- (void)download:(NSURLDownload *)theDownload decideDestinationWithSuggestedFilename:(NSString *)filename{
+	NSString *extension = [filename pathExtension];
+   
+	NSSavePanel *sPanel = [NSSavePanel savePanel];
+    if (nil != [extension isEqualToString:@""]) 
+		[sPanel setRequiredFileType:extension];
+	
+    [sPanel beginSheetForDirectory:nil
+                              file:filename
+                    modalForWindow:[self window]
+                     modalDelegate:self
+                    didEndSelector:@selector(saveDownloadPanelDidEnd:returnCode:contextInfo:)
+                       contextInfo:nil];
+}
+
+- (void)download:(NSURLDownload *)theDownload didReceiveDataOfLength:(unsigned)length{
+    if (expectedContentLength > 0) {
+        receivedContentLength += length;
+        int percent = round(100.0 * (double)receivedContentLength / (double)expectedContentLength);
+		NSString *message = [[NSString stringWithFormat:NSLocalizedString(@"Downloading file. Received %i%%", @"Tool tip message"), percent] stringByAppendingEllipsis];
+		[self setStatus:message];
+    }
+}
+
+- (BOOL)download:(NSURLDownload *)download shouldDecodeSourceDataOfMIMEType:(NSString *)encodingType;{
+    return YES;
+}
+
+- (void)download:(NSURLDownload *)download didCreateDestination:(NSString *)path{
+    [downloadFileName release];
+	downloadFileName = [path copy];
+}
+
+- (void)downloadDidFinish:(NSURLDownload *)theDownload{
+    [self setDownloading:NO];
+	
+	NSString *fileURLString = [[NSURL fileURLWithPath:downloadFileName] absoluteString];
+    NSString *oldValue = [[[publication valueOfField:downloadFieldName inherit:NO] retain] autorelease];
+    
+    [publication setField:downloadFieldName toValue:fileURLString];
+    if ([downloadFieldName isEqualToString:BDSKLocalUrlString])
+        [self autoFilePaper];
+    
+    [self userChangedField:downloadFieldName from:oldValue to:fileURLString didAutoGenerate:0];
+	[[self undoManager] setActionName:NSLocalizedString(@"Edit Publication", @"Undo action name")];
+}
+
+- (void)download:(NSURLDownload *)theDownload didFailWithError:(NSError *)error
+{
+    [self setDownloading:NO];
+        
+    NSString *errorDescription = [error localizedDescription];
+    if (nil == errorDescription) {
+        errorDescription = NSLocalizedString(@"An error occured during download.", @"Informative text in alert dialog");
+    }
+    
+    NSAlert *alert = [NSAlert alertWithMessageText:NSLocalizedString(@"Download Failed", @"Message in alert dialog when download failed")
+                                     defaultButton:nil
+                                   alternateButton:nil
+                                       otherButton:nil
+                         informativeTextWithFormat:errorDescription];
+    [alert beginSheetModalForWindow:[self window]
+                      modalDelegate:nil
+                     didEndSelector:NULL
+                        contextInfo:NULL];
 }
 
 #pragma mark undo manager
@@ -3471,7 +3631,7 @@ static NSString *queryStringWithCiteKey(NSString *citekey)
 	[viewLocalButton setRefreshesMenu:YES];
 	[viewLocalButton setDelegate:self];
     if (isEditable)
-        [viewLocalButton registerForDraggedTypes:[NSArray arrayWithObjects:NSFilenamesPboardType, NSURLPboardType, nil]];
+        [viewLocalButton registerForDraggedTypes:[NSArray arrayWithObjects:NSFilenamesPboardType, NSURLPboardType, BDSKWeblocFilePboardType, nil]];
     
 	[viewLocalButton setMenu:[self menuForImagePopUpButton:viewLocalButton]];
     
