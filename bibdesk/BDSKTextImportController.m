@@ -170,6 +170,7 @@
 	[macroTextFieldWC release];
 	[webSelection release];
     [tableFieldEditor release];
+    [downloadFileName release];
     [undoManager release];
     [super dealloc];
 }
