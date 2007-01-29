@@ -2039,7 +2039,7 @@
 				3D86633E0802C25800FF1724 /* BDSKTypeInfoEditor.m */,
 				CEEFDDFF0B03ED0200668BB0 /* BDSKURLGroupSheetController.m */,
 				F9B800930B41DFAF00A5A615 /* BDSKSearchGroupSheetController.m */,
-				F900F2B80B69593100DB7962 /* BDSKSpotlightIconController.h */,
+				F900F2B90B69593100DB7962 /* BDSKSpotlightIconController.m */,
 				F9022C5E075802E300C3F701 /* BibAppController.m */,
 				F9022C68075802E300C3F701 /* BibEditor.m */,
 				3DE3916607FEF5E600BE3AE7 /* BibEditor_Toolbar.m */,
@@ -2417,7 +2417,7 @@
 				F9022C59075802E300C3F701 /* BDSKShellTask.h */,
 				CEFDBDBB0AEA86BA009EE99D /* BDSKSmartGroup.h */,
 				CEF7AC040915929E00BE9E02 /* BDSKSplitView.h */,
-				F900F2B90B69593100DB7962 /* BDSKSpotlightIconController.m */,
+				F900F2B80B69593100DB7962 /* BDSKSpotlightIconController.h */,
 				F9A411EF0A0B1FEF008493C0 /* BDSKSpotlightView.h */,
 				CEFDBDC30AEA86F0009EE99D /* BDSKStaticGroup.h */,
 				CE30FAD50919713100CB1A19 /* BDSKStatusBar.h */,
@@ -2957,7 +2957,6 @@
 		29B97313FDCFA39411CA2CEA /* Project object */ = {
 			isa = PBXProject;
 			buildConfigurationList = F993F20208553A61007A7657 /* Build configuration list for PBXProject "Bibdesk" */;
-			compatibilityVersion = "Xcode 2.4";
 			hasScannedForEncodings = 1;
 			mainGroup = 29B97314FDCFA39411CA2CEA /* BibDesk */;
 			projectDirPath = "";
@@ -2996,7 +2995,6 @@
 				},
 			);
 			projectRoot = "";
-			shouldCheckCompatibility = 1;
 			targets = (
 				8D1107260486CEB800E47090 /* BibDesk */,
 				3D8A5779082D3077008E818C /* BibDesk Help */,
@@ -3420,7 +3418,6 @@
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
 			shellScript = "rm -f /tmp/BibDesk.dmg\n/bin/cp ${SOURCE_ROOT}/BibDesk.dmg /tmp\n/usr/bin/hdiutil attach /tmp/BibDesk.dmg\n${SYSTEM_DEVELOPER_TOOLS}/CpMac -r ${BUILT_PRODUCTS_DIR}/BibDesk.app /Volumes/BibDesk\nosascript -e \"tell application \\\"Finder\\\"\" -e \"set the position of item 1 of the disk named \\\"Bibdesk\\\" to {204, 148}\" -e \"end tell\" && \\\nsleep 7; \\\n/usr/sbin/diskutil eject /Volumes/BibDesk\n/usr/bin/hdiutil convert /tmp/BibDesk.dmg -format UDZO -imagekey zlib-level=9 -o $HOME/Desktop/BibDesk.dmg\n/usr/bin/hdiutil internet-enable -YES $HOME/Desktop/BibDesk.dmg\nexit 0";
-			showEnvVarsInLog = 1;
 		};
 		F9E0B071083E450C000109C6 /* ShellScript */ = {
 			isa = PBXShellScriptBuildPhase;
