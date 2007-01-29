@@ -113,7 +113,7 @@
 		}
 		
 		// Handle number keys to set the rating
-		if (character >= '0' && character <= '9') {
+		if (character >= '0' && character <= '9' && character <= '0' + [self maxRating]) {
 			[self setRating:(int)(character - '0')];
             [self sendAction:[self action] to:[self target]];
 			return;
@@ -124,11 +124,17 @@
 }
 
 - (void)moveLeft:(id)sender {
-	[self setRating:[self rating] - 1];
+    if ([self rating] > 0) {
+        [self setRating:[self rating] - 1];
+        [self sendAction:[self action] to:[self target]];
+    } else NSBeep();
 }
 
 - (void)moveRight:(id)sender {
-	[self setRating:[self rating] + 1];
+    if ([self rating] <= [self maxRating]) {
+        [self setRating:[self rating] + 1];
+        [self sendAction:[self action] to:[self target]];
+    } else NSBeep();
 }
 
 @end
