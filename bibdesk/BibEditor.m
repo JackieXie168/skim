@@ -3328,11 +3328,11 @@ static NSString *queryStringWithCiteKey(NSString *citekey)
 	if (nil == dataSource || [dataSource isLoading]) 
 		return;
 	
-	NSString *filename = [[[[dataSource request] URL] relativePath] lastPathComponent];
+	NSString *filename = [[[dataSource request] URL] lastPathComponent];
 	NSString *extension = [filename pathExtension];
    
 	NSSavePanel *sPanel = [NSSavePanel savePanel];
-    if (nil != [extension isEqualToString:@""]) 
+    if (NO != [extension isEqualToString:@""]) 
 		[sPanel setRequiredFileType:extension];
 	
     [sPanel beginSheetForDirectory:nil
