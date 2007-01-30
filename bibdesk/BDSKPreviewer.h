@@ -57,9 +57,11 @@ typedef enum {
 @interface BDSKPreviewer : NSWindowController {
     IBOutlet BDSKZoomablePDFView *pdfView;
     IBOutlet NSTextView *rtfPreviewView;
+    IBOutlet NSTextView *logView;
     IBOutlet NSTabView *tabView;
     IBOutlet NSProgressIndicator *progressIndicator;
     IBOutlet BDSKOverlay *progressOverlay;
+    IBOutlet NSImageView *warningIcon;
     
     BDSKPreviewerServer *server;
     BDSKPreviewState previewState;
@@ -101,7 +103,7 @@ typedef enum {
     @discussion This method sets the state flag and puts -performDrawingForState: on the main queue for drawing.
 	@param		state An integer indicating the preview state for which to draw.
 */
-- (void)displayPreviewsForState:(BDSKPreviewState)state;
+- (void)displayPreviewsForState:(BDSKPreviewState)state success:(BOOL)success;
 
 /*!
     @method     PDFDataWithString:color:

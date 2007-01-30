@@ -154,12 +154,16 @@
             int dragCopyType = [self promisedDragCopyTypeForPasteboard:pboard];
             if([type isEqualToString:NSPDFPboardType]){
                 OBASSERT(dragCopyType == BDSKPDFDragCopyType);
-                [texTask runWithBibTeXString:bibString generatedTypes:BDSKGeneratePDF];
-                [pboard setData:[texTask PDFData] forType:NSPDFPboardType];
+                NSData *data = nil;
+                if([texTask runWithBibTeXString:bibString generatedTypes:BDSKGeneratePDF])
+                    data = [texTask PDFData];
+                [pboard setData:data forType:NSPDFPboardType];
             }else if([type isEqualToString:NSRTFPboardType]){
                 OBASSERT(dragCopyType == BDSKRTFDragCopyType);
-                [texTask runWithBibTeXString:bibString generatedTypes:BDSKGenerateRTF];
-                [pboard setData:[texTask RTFData] forType:NSRTFPboardType];
+                NSData *data = nil;
+                if([texTask runWithBibTeXString:bibString generatedTypes:BDSKGenerateRTF])
+                    data = [texTask RTFData];
+                [pboard setData:data forType:NSRTFPboardType];
             }else if([type isEqualToString:NSStringPboardType]){
                 OBASSERT(dragCopyType == BDSKLTBDragCopyType || dragCopyType == BDSKLaTeXDragCopyType);
                 NSString *string = nil;
