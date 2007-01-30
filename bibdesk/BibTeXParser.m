@@ -195,19 +195,21 @@ error:(NSError **)outError{
         if (ok) {
             
             bt_metatype metatype = bt_entry_metatype (entry);
-            if (metatype != BTE_REGULAR && nil != frontMatter) {
-                
-                // without frontMatter, e.g. with paste or drag, we just ignore these entries
-                // put @preamble etc. into the frontmatter string so we carry them along.
-                if (BTE_PREAMBLE == metatype){
-                    if(NO == appendPreambleToFrontmatter(entry, frontMatter, filePath, parserEncoding))
-                        hadProblems = YES;
-                }else if(BTE_MACRODEF == metatype){
-                    if(NO == addMacroToResolver(entry, macroResolver, filePath, parserEncoding, &error))
-                        hadProblems = YES;
-                }else if(BTE_COMMENT == metatype && document){
-                    if(NO == appendCommentToFrontmatterOrAddGroups(entry, frontMatter, filePath, document, parserEncoding))
-                        hadProblems = YES;
+            if (metatype != BTE_REGULAR) {
+                // don't AND these "if"s, or the next "else" will go wrong
+                if (nil != frontMatter) {
+                    // without frontMatter, e.g. with paste or drag, we just ignore these entries
+                    // put @preamble etc. into the frontmatter string so we carry them along.
+                    if (BTE_PREAMBLE == metatype){
+                        if(NO == appendPreambleToFrontmatter(entry, frontMatter, filePath, parserEncoding))
+                            hadProblems = YES;
+                    }else if(BTE_MACRODEF == metatype){
+                        if(NO == addMacroToResolver(entry, macroResolver, filePath, parserEncoding, &error))
+                            hadProblems = YES;
+                    }else if(BTE_COMMENT == metatype && document){
+                        if(NO == appendCommentToFrontmatterOrAddGroups(entry, frontMatter, filePath, document, parserEncoding))
+                            hadProblems = YES;
+                    }
                 }
                 
             } else {
