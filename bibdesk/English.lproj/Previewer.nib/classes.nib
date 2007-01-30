@@ -23,6 +23,7 @@
                 rtfPreviewView = NSTextView; 
                 tabView = NSTabView; 
                 warningIcon = NSImageView; 
+                warningView = NSView; 
             }; 
             SUPERCLASS = NSWindowController; 
         }, 

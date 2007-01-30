@@ -122,6 +122,17 @@ static NSString *BDSKPreviewPanelFrameAutosaveName = @"BDSKPreviewPanel";
     BDSKCollapsibleView *collapsibleView = (BDSKCollapsibleView *)[[[progressOverlay contentView] subviews] firstObject];
     NSSize minSize = [progressIndicator frame].size;
     NSRect rect = [warningIcon frame];
+    NSImage *image = [[NSImage alloc] initWithSize:rect.size];
+    
+    [image lockFocus];
+    [[NSImage cautionIconImage] drawAtPoint:NSZeroPoint fromRect:NSMakeRect(0.0, 0.0, 16.0, 16.0) operation:NSCompositeSourceOver fraction:0.7];
+    [image unlockFocus];
+    [warningIcon setImage:image];
+    [image release];
+	
+    rect = [warningView frame];
+    if([self isSharedPreviewer])    
+        rect.origin.x += 22.0;
     
     // we use threads, so better let the progressIndicator also use them
     [progressIndicator setUsesThreadedAnimation:YES];
@@ -129,19 +140,12 @@ static NSString *BDSKPreviewPanelFrameAutosaveName = @"BDSKPreviewPanel";
     [collapsibleView setMinSize:minSize];
     [collapsibleView setCollapseEdges:BDSKMaxXEdgeMask | BDSKMaxYEdgeMask];
     
-    NSImage *image = [[NSImage alloc] initWithSize:rect.size];
-    
-    [image lockFocus];
-    [[NSImage cautionIconImage] drawAtPoint:NSZeroPoint fromRect:NSMakeRect(0.0, 0.0, NSWidth(rect), NSHeight(rect)) operation:NSCompositeSourceOver fraction:0.7];
-    [image unlockFocus];
-    [warningIcon setImage:image];
-    [image release];
-	
     if([self isSharedPreviewer]){
         [self setWindowFrameAutosaveName:BDSKPreviewPanelFrameAutosaveName];
         
+        rect = [warningView frame];
         rect.origin.x += 22.0;
-        [warningIcon setFrame:rect];
+        [warningView setFrame:rect];
         
         // overlay the progressIndicator over the contentView
         [progressOverlay overlayView:[[self window] contentView]];
@@ -332,7 +336,7 @@ static NSString *BDSKPreviewPanelFrameAutosaveName = @"BDSKPreviewPanel";
         return;
     }
 	
-    [warningIcon setHidden:success];
+    [warningView setHidden:success];
     
     NSString *message = nil;
     NSString *logString;
