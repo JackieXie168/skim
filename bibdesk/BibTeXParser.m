@@ -189,6 +189,7 @@ error:(NSError **)outError{
     
     NSString *tmpStr = nil;
     BOOL hadProblems = NO;
+    NSMutableString *parsedFrontMatter = [NSMutableString string];
 
     while(entry =  bt_parse_entry(infile, (char *)fs_path, 0, &ok)){
 
@@ -196,20 +197,18 @@ error:(NSError **)outError{
             
             bt_metatype metatype = bt_entry_metatype (entry);
             if (metatype != BTE_REGULAR) {
-                // don't AND these "if"s, or the next "else" will go wrong
-                if (nil != frontMatter) {
-                    // without frontMatter, e.g. with paste or drag, we just ignore these entries
-                    // put @preamble etc. into the frontmatter string so we carry them along.
-                    if (BTE_PREAMBLE == metatype){
-                        if(NO == appendPreambleToFrontmatter(entry, frontMatter, filePath, parserEncoding))
-                            hadProblems = YES;
-                    }else if(BTE_MACRODEF == metatype){
-                        if(NO == addMacroToResolver(entry, macroResolver, filePath, parserEncoding, &error))
-                            hadProblems = YES;
-                    }else if(BTE_COMMENT == metatype && document){
-                        if(NO == appendCommentToFrontmatterOrAddGroups(entry, frontMatter, filePath, document, parserEncoding))
-                            hadProblems = YES;
-                    }
+                
+                // put @preamble etc. into the frontmatter string so we carry them along.
+                // without frontMatter, e.g. with paste or drag, we eventually ignore these entries (except macros)
+                if (BTE_PREAMBLE == metatype){
+                    if(NO == appendPreambleToFrontmatter(entry, parsedFrontMatter, filePath, parserEncoding))
+                        hadProblems = YES;
+                }else if(BTE_MACRODEF == metatype){
+                    if(NO == addMacroToResolver(entry, macroResolver, filePath, parserEncoding, &error))
+                        hadProblems = YES;
+                }else if(BTE_COMMENT == metatype && document){
+                    if(NO == appendCommentToFrontmatterOrAddGroups(entry, parsedFrontMatter, filePath, document, parserEncoding))
+                        hadProblems = YES;
                 }
                 
             } else {
@@ -295,6 +294,7 @@ error:(NSError **)outError{
     if (isPartialData)
         *isPartialData = hadProblems;
 	
+    [frontMatter appendString:parsedFrontMatter];
     [[BDSKErrorObjectController sharedErrorObjectController] endObservingErrorsForDocument:document pasteDragData:isPasteOrDrag ? inData : nil];
     
     return returnArray;
