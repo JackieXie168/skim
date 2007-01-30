@@ -245,11 +245,27 @@ error:(NSError **)outError{
                     } else {
                         // no citekey
                         hadProblems = YES;
+                        BDSKErrorObject *errorObject = [[BDSKErrorObject alloc] init];
+                        [errorObject setFileName:filePath];
+                        [errorObject setLineNumber:entry->line];
+                        [errorObject setErrorClassName:NSLocalizedString(@"error", @"")];
+                        [errorObject setErrorMessage:NSLocalizedString(@"Missing citekey for entry (skipped entry)", @"Error description")];
+                        
+                        [errorObject report];
+                        [errorObject release];  
                     }
                     
                 } else {
                     // no entry type
                     hadProblems = YES;
+                    BDSKErrorObject *errorObject = [[BDSKErrorObject alloc] init];
+                    [errorObject setFileName:filePath];
+                    [errorObject setLineNumber:entry->line];
+                    [errorObject setErrorClassName:NSLocalizedString(@"error", @"")];
+                    [errorObject setErrorMessage:NSLocalizedString(@"Missing entry type (skipped entry)", @"Error description")];
+                    
+                    [errorObject report];
+                    [errorObject release];  
                 }
                 
                 [dictionary removeAllObjects];
@@ -612,7 +628,7 @@ static inline BOOL checkStringForEncoding(NSString *s, int line, NSString *fileP
 }
 
 static inline NSString *copyCheckedString(const char *cString, int line, NSString *filePath, NSStringEncoding parserEncoding){
-    NSString *nsString = [[NSString alloc] initWithCString:cString encoding:parserEncoding];
+    NSString *nsString = cString ? [[NSString alloc] initWithCString:cString encoding:parserEncoding] : nil;
     if (checkStringForEncoding(nsString, line, filePath, parserEncoding) == NO) {
         [nsString release];
         nsString = nil;
