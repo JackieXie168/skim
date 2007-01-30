@@ -359,7 +359,7 @@ static NSString *BDSKPreviewPanelFrameAutosaveName = @"BDSKPreviewPanel";
             logString = NSLocalizedString(@"Unable to read log file from TeX run.", @"Preview message");
         
 		pdfData = [self PDFData];
-        if(pdfData == nil){
+        if(success == NO || pdfData == nil){
 			// show the TeX log file in the view
 			NSMutableString *errorString = [[NSMutableString alloc] initWithCapacity:200];
 			[errorString appendString:NSLocalizedString(@"TeX preview generation failed.  Please review the log below to determine the cause.", @"Preview message")];
@@ -374,7 +374,8 @@ static NSString *BDSKPreviewPanelFrameAutosaveName = @"BDSKPreviewPanel";
 			[errorString appendString:logString];
             logString = [errorString autorelease];
             
-			pdfData = [self PDFDataWithString:NSLocalizedString(@"***** ERROR:  unable to create preview *****", @"Preview message") color:[NSColor redColor]];
+            if(pdfData == nil)
+                pdfData = [self PDFDataWithString:NSLocalizedString(@"***** ERROR:  unable to create preview *****", @"Preview message") color:[NSColor redColor]];
 		}
         
 	}else if(state == BDSKEmptyPreviewState){
