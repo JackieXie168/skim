@@ -62,6 +62,7 @@ typedef enum {
     IBOutlet NSProgressIndicator *progressIndicator;
     IBOutlet BDSKOverlay *progressOverlay;
     IBOutlet NSImageView *warningIcon;
+    IBOutlet NSView *warningView;
     
     BDSKPreviewerServer *server;
     BDSKPreviewState previewState;
