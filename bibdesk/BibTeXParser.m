@@ -629,7 +629,7 @@ static inline BOOL checkStringForEncoding(NSString *s, int line, NSString *fileP
 
 static inline NSString *copyCheckedString(const char *cString, int line, NSString *filePath, NSStringEncoding parserEncoding){
     NSString *nsString = cString ? [[NSString alloc] initWithCString:cString encoding:parserEncoding] : nil;
-    if (checkStringForEncoding(nsString, line, filePath, parserEncoding) == NO) {
+    if (nsString && checkStringForEncoding(nsString, line, filePath, parserEncoding) == NO) {
         [nsString release];
         nsString = nil;
     }
