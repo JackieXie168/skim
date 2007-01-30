@@ -102,7 +102,9 @@ static NSString *OFControllerAssertionHandlerException = @"OFControllerAssertion
 {
     // copied from Apple's exception handling docs
     NSString *stack = [[self userInfo] objectForKey:NSStackTraceKey];
-    if (stack) {
+    
+    // unfortunately, atos is part of the Developer tools, so we get a crash when executing it if it's not present; how does CrashReporter get symbolic traces, then?
+    if (stack && [[NSFileManager defaultManager] isExecutableFileAtPath:@"/usr/bin/atos"]) {
         NSString *pid = [[NSNumber numberWithInt:getpid()] stringValue];
         NSMutableArray *args = [NSMutableArray arrayWithCapacity:20];
         
