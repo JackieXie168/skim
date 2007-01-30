@@ -51,6 +51,7 @@
 #import "BDSKCollapsibleView.h"
 #import "BDSKAsynchronousDOServer.h"
 #import "BDSKDocumentController.h"
+#import "NSImage+Toolbox.h"
 
 static NSString *BDSKPreviewPanelFrameAutosaveName = @"BDSKPreviewPanel";
 
@@ -120,15 +121,27 @@ static NSString *BDSKPreviewPanelFrameAutosaveName = @"BDSKPreviewPanel";
     float rtfScaleFactor = 1.0;
     BDSKCollapsibleView *collapsibleView = (BDSKCollapsibleView *)[[[progressOverlay contentView] subviews] firstObject];
     NSSize minSize = [progressIndicator frame].size;
+    NSRect rect = [warningIcon frame];
     
     // we use threads, so better let the progressIndicator also use them
     [progressIndicator setUsesThreadedAnimation:YES];
     minSize.height += NSMinY([[progressIndicator superview] frame]);
     [collapsibleView setMinSize:minSize];
     [collapsibleView setCollapseEdges:BDSKMaxXEdgeMask | BDSKMaxYEdgeMask];
+    
+    NSImage *image = [[NSImage alloc] initWithSize:rect.size];
+    
+    [image lockFocus];
+    [[NSImage cautionIconImage] drawAtPoint:NSZeroPoint fromRect:NSMakeRect(0.0, 0.0, NSWidth(rect), NSHeight(rect)) operation:NSCompositeSourceOver fraction:0.7];
+    [image unlockFocus];
+    [warningIcon setImage:image];
+    [image release];
 	
     if([self isSharedPreviewer]){
         [self setWindowFrameAutosaveName:BDSKPreviewPanelFrameAutosaveName];
+        
+        rect.origin.x += 22.0;
+        [warningIcon setFrame:rect];
         
         // overlay the progressIndicator over the contentView
         [progressOverlay overlayView:[[self window] contentView]];
@@ -155,7 +168,7 @@ static NSString *BDSKPreviewPanelFrameAutosaveName = @"BDSKPreviewPanel";
     [pdfView setScaleFactor:pdfScaleFactor];
 	[(BDSKZoomableScrollView *)[rtfPreviewView enclosingScrollView] setScaleFactor:rtfScaleFactor];
     
-    [self displayPreviewsForState:BDSKEmptyPreviewState];
+    [self displayPreviewsForState:BDSKEmptyPreviewState success:YES];
     
     [pdfView retain];
     [[rtfPreviewView enclosingScrollView] retain];
@@ -177,8 +190,12 @@ static NSString *BDSKPreviewPanelFrameAutosaveName = @"BDSKPreviewPanel";
 {
     NSString *path = nil;
 	if(previewState == BDSKShowingPreviewState){
-        path = ([tabView indexOfTabViewItem:[tabView selectedTabViewItem]] == 0) ? [[server texTask] PDFFilePath] : [[server texTask] RTFFilePath];
-        if(path == nil)
+        int tabIndex = [tabView indexOfTabViewItem:[tabView selectedTabViewItem]];
+        if(tabIndex == 0)
+            path = [[server texTask] PDFFilePath];
+        else if(tabIndex == 1)
+            path = [[server texTask] RTFFilePath];
+        else
             path = [[server texTask] logFilePath];
     }
     [[self window] setRepresentedFilename:path ? path : @""];
@@ -294,7 +311,7 @@ static NSString *BDSKPreviewPanelFrameAutosaveName = @"BDSKPreviewPanel";
 	return data;
 }
 
-- (void)displayPreviewsForState:(BDSKPreviewState)state{
+- (void)displayPreviewsForState:(BDSKPreviewState)state success:(BOOL)success{
 
     NSAssert2([NSThread inMainThread], @"-[%@ %@] must be called from the main thread!", [self class], NSStringFromSelector(_cmd));
     
@@ -315,7 +332,10 @@ static NSString *BDSKPreviewPanelFrameAutosaveName = @"BDSKPreviewPanel";
         return;
     }
 	
+    [warningIcon setHidden:success];
+    
     NSString *message = nil;
+    NSString *logString;
     NSData *pdfData = nil;
 	NSAttributedString *attrString = nil;
 	static NSData *emptyMessagePDFData = nil;
@@ -330,6 +350,10 @@ static NSString *BDSKPreviewPanelFrameAutosaveName = @"BDSKPreviewPanel";
 		else
 			message = NSLocalizedString(@"***** ERROR:  unable to create preview *****", @"Preview message");
 		
+        logString = [[server texTask] logFileString];
+        if (nil == logString)
+            logString = NSLocalizedString(@"Unable to read log file from TeX run.", @"Preview message");
+        
 		pdfData = [self PDFData];
         if(pdfData == nil){
 			// show the TeX log file in the view
@@ -343,18 +367,18 @@ static NSString *BDSKPreviewPanelFrameAutosaveName = @"BDSKPreviewPanel";
             if([standardStyles containsObject:btStyle] == NO)
                 [errorString appendFormat:NSLocalizedString(@"***** WARNING: You are using a non-standard BibTeX style *****\nThe style \"%@\" may require additional \\usepackage commands to function correctly.\n\n", @"possible cause of TeX failure"), btStyle];
             
-            NSString *logString = [[server texTask] logFileString];
-            if (nil == logString)
-                logString = NSLocalizedString(@"Unable to read log file from TeX run.", @"Preview message");
 			[errorString appendString:logString];
-			pdfData = [self PDFDataWithString:errorString color:[NSColor redColor]];
-			[errorString release];
+            logString = [errorString autorelease];
+            
+			pdfData = [self PDFDataWithString:NSLocalizedString(@"***** ERROR:  unable to create preview *****", @"Preview message") color:[NSColor redColor]];
 		}
         
 	}else if(state == BDSKEmptyPreviewState){
 		
 		message = NSLocalizedString(@"No items are selected.", @"Preview message");
 		
+        logString = @"";
+        
 		if (emptyMessagePDFData == nil)
 			emptyMessagePDFData = [[self PDFDataWithString:message color:[NSColor grayColor]] retain];
 		pdfData = emptyMessagePDFData;
@@ -363,6 +387,8 @@ static NSString *BDSKPreviewPanelFrameAutosaveName = @"BDSKPreviewPanel";
 		
 		message = [NSLocalizedString(@"Generating preview", @"Preview message") stringByAppendingEllipsis];
 		
+        logString = @"";
+        
 		if (generatingMessagePDFData == nil)
 			generatingMessagePDFData = [[self PDFDataWithString:message color:[NSColor grayColor]] retain];
 		pdfData = generatingMessagePDFData;
@@ -388,6 +414,10 @@ static NSString *BDSKPreviewPanelFrameAutosaveName = @"BDSKPreviewPanel";
         [ts addAttribute:NSForegroundColorAttributeName value:[NSColor grayColor] range:NSMakeRange(0, [ts length])];
 	}
     
+	[logView setString:@""];
+	[logView setTextContainerInset:NSMakeSize(20,20)];  // pad the edges of the text
+    [[[logView textStorage] mutableString] setString:logString];
+    
     if([self isSharedPreviewer])
         [self updateRepresentedFilename];
 }
@@ -398,12 +428,12 @@ static NSString *BDSKPreviewPanelFrameAutosaveName = @"BDSKPreviewPanel";
     
 	if([NSString isEmptyString:bibStr]){
 		// reset, also removes any waiting tasks from the queue
-        [self displayPreviewsForState:BDSKEmptyPreviewState];
+        [self displayPreviewsForState:BDSKEmptyPreviewState success:YES];
         // clean the server
         [server runTeXTaskInBackgroundWithString:nil];
     } else {
 		// this will start the spinning wheel
-        [self displayPreviewsForState:BDSKWaitingPreviewState];
+        [self displayPreviewsForState:BDSKWaitingPreviewState success:YES];
         // run the tex task in the background
         [server runTeXTaskInBackgroundWithString:bibStr];
 	}	
@@ -413,7 +443,7 @@ static NSString *BDSKPreviewPanelFrameAutosaveName = @"BDSKPreviewPanel";
     // ignore this task if we finished a task that was running when the previews were reset
 	if(previewState != BDSKEmptyPreviewState) {
         // if we didn't have success, the drawing method will show the log file
-        [self displayPreviewsForState:BDSKShowingPreviewState];
+        [self displayPreviewsForState:BDSKShowingPreviewState success:success];
     }
 }
 
@@ -440,7 +470,7 @@ static NSString *BDSKPreviewPanelFrameAutosaveName = @"BDSKPreviewPanel";
 #pragma mark Cleanup
 
 - (void)windowWillClose:(NSNotification *)notification{
-	[self displayPreviewsForState:BDSKEmptyPreviewState];
+	[self displayPreviewsForState:BDSKEmptyPreviewState success:YES];
 }
 
 - (void)handleApplicationWillTerminate:(NSNotification *)notification{

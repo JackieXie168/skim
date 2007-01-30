@@ -74,19 +74,19 @@
 
 - (BOOL)writeBibTeXFile:(NSString *)bibStr;
 
-- (BOOL)runTeXTasksForLaTeX;
+- (int)runTeXTasksForLaTeX;
 
-- (BOOL)runTeXTasksForPDF;
+- (int)runTeXTasksForPDF;
 
-- (BOOL)runTeXTaskForRTF;
+- (int)runTeXTaskForRTF;
 
-- (BOOL)runPDFTeXTask;
+- (int)runPDFTeXTask;
 
-- (BOOL)runBibTeXTask;
+- (int)runBibTeXTask;
 
-- (BOOL)runLaTeX2RTFTask;
+- (int)runLaTeX2RTFTask;
 
-- (BOOL)runTask:(NSString *)binPath withArguments:(NSArray *)arguments;
+- (int)runTask:(NSString *)binPath withArguments:(NSArray *)arguments;
 
 @end
 
@@ -211,7 +211,7 @@
 
 - (BOOL)runWithBibTeXString:(NSString *)bibStr generatedTypes:(int)flag{
     NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
-    BOOL rv = YES;
+    int rv = 0;
 
     if(!OFSimpleLockTry(&processingLock)){
         NSLog(@"%@ couldn't get processing lock", self);
@@ -247,28 +247,34 @@
             NSString *new_path = [NSString stringWithFormat: @"%@:%@", original_path, binDirPath];
             setenv("PATH", [new_path cString], 1);
         }
-            
-        rv = ([self writeTeXFile:(flag == BDSKGenerateLTB)] &&
-              [self writeBibTeXFile:bibStr] &&
-              [self runTeXTasksForLaTeX]);
         
-        if(rv){
+        if([self writeTeXFile:(flag == BDSKGenerateLTB)]){
+            if([self writeBibTeXFile:bibStr]){
+                rv = [self runTeXTasksForLaTeX];
+            }else{
+                rv = 2;
+            }
+        }else{
+            rv = 2;
+        }
+        
+        if((rv & 2) == 0){
             if (flag == BDSKGenerateLTB)
                 OSAtomicCompareAndSwap32Barrier(0, 1, (int32_t *)&flags.hasLTB);
             else
                 OSAtomicCompareAndSwap32Barrier(0, 1, (int32_t *)&flags.hasLaTeX);
             
             if(flag > BDSKGenerateLaTeX){
-                rv = [self runTeXTasksForPDF];
+                rv |= [self runTeXTasksForPDF];
                 
-                if(rv){
+                if((rv & 2) == 0){
 
                     OSAtomicCompareAndSwap32Barrier(0, 1, (int32_t *)&flags.hasPDFData);
                     
                     if(flag > BDSKGeneratePDF){
-                            rv = [self runTeXTaskForRTF];
+                            rv |= [self runTeXTaskForRTF];
                         
-                        if(rv){
+                        if((rv & 2) == 0){
                             OSAtomicCompareAndSwap32Barrier(0, 1, (int32_t *)&flags.hasRTFData);
                         }
                     }
@@ -294,7 +300,7 @@
 	OFSimpleUnlock(&processingLock);
     
 	[pool release];
-    return rv;
+    return rv == 0;
 }
 
 #pragma mark Data accessors
@@ -535,84 +541,82 @@
     CFRelease(alloc);
 }
 
-- (BOOL)runTeXTasksForLaTeX{
+- (int)runTeXTasksForLaTeX{
     volatile int lockStatus;
-    volatile BOOL rv;
-    rv = YES;
+    volatile int rv;
+    rv = 0;
     
     lockStatus = pthread_rwlock_wrlock(&dataFileLock);
     if(lockStatus){
         NSLog(@"error %d occurred locking in %@", lockStatus, self);
-        return NO;
+        return 2;
     }
 
     // nuke the log files in case the run fails without generating new ones (not very likely)
     [self removeFilesFromPreviousRun];
         
-    if(![self runPDFTeXTask] ||
-       ![self runBibTeXTask]){
-        rv = NO;
+    rv = [self runPDFTeXTask];
+    if((rv & 2) == 0){
+       rv |= [self runBibTeXTask];
 	}
     
     lockStatus = pthread_rwlock_unlock(&dataFileLock);
     if(lockStatus){
         NSLog(@"error %d occurred locking in %@", lockStatus, self);  
-        rv = NO;
+        rv = 2;
     }
     
 	return rv;
 }
 
-- (BOOL)runTeXTasksForPDF{
+- (int)runTeXTasksForPDF{
     volatile int lockStatus;
-    volatile BOOL rv;
-    rv = YES;
+    volatile int rv;
+    rv = 0;
     
     lockStatus = pthread_rwlock_wrlock(&dataFileLock);
     if(lockStatus){
         NSLog(@"error %d occurred locking in %@", lockStatus, self);
-        return NO;
-    }
-        
-    if(![self runPDFTeXTask] ||
-       ![self runPDFTeXTask]){
-        rv = NO;
-	}
-    
-    lockStatus = pthread_rwlock_unlock(&dataFileLock);
-    if(lockStatus){
-        NSLog(@"error %d occurred locking in %@", lockStatus, self);  
-        rv = NO;
+        return 2;
     }
     
-	return rv;
-}
-
-- (BOOL)runTeXTaskForRTF{
-    volatile int lockStatus;
-    volatile BOOL rv;
-    rv = YES;
-    
-    lockStatus = pthread_rwlock_wrlock(&dataFileLock);
-    if(lockStatus){
-        NSLog(@"error %d occurred locking in %@", lockStatus, self);
-        return NO;
-    }
-        
-    if(![self runLaTeX2RTFTask]){
-        rv = NO;
+    rv = [self runPDFTeXTask];
+    if((rv & 2) == 0){
+        rv |= [self runPDFTeXTask];
     }
     
     lockStatus = pthread_rwlock_unlock(&dataFileLock);
     if(lockStatus){
         NSLog(@"error %d occurred locking in %@", lockStatus, self);  
-        rv = NO;
+        rv = 2;
     }
     
 	return rv;
 }
 
-- (BOOL)runPDFTeXTask{
+- (int)runTeXTaskForRTF{
+    volatile int lockStatus;
+    volatile int rv;
+    rv = 0;
+    
+    lockStatus = pthread_rwlock_wrlock(&dataFileLock);
+    if(lockStatus){
+        NSLog(@"error %d occurred locking in %@", lockStatus, self);
+        return 2;
+    }
+    
+    rv = [self runLaTeX2RTFTask];
+    
+    lockStatus = pthread_rwlock_unlock(&dataFileLock);
+    if(lockStatus){
+        NSLog(@"error %d occurred locking in %@", lockStatus, self);  
+        rv = 2;
+    }
+    
+	return rv;
+}
+
+- (int)runPDFTeXTask{
     NSString *command = [[OFPreferenceWrapper sharedPreferenceWrapper] objectForKey:BDSKTeXBinPathKey];
 
     NSArray *argArray = [BDSKShellCommandFormatter argumentsFromCommand:command];
@@ -625,7 +629,7 @@
     return [self runTask:pdftexbinpath withArguments:args];
 }
 
-- (BOOL)runBibTeXTask{
+- (int)runBibTeXTask{
     NSString *command = [[OFPreferenceWrapper sharedPreferenceWrapper] objectForKey:BDSKBibTeXBinPathKey];
 	
     NSArray *argArray = [BDSKShellCommandFormatter argumentsFromCommand:command];
@@ -638,7 +642,7 @@
     return [self runTask:bibtexbinpath withArguments:args];
 }
 
-- (BOOL)runLaTeX2RTFTask{
+- (int)runLaTeX2RTFTask{
     NSString *latex2rtfpath = [[NSBundle mainBundle] pathForResource:@"latex2rtf" ofType:nil];
     
     // This task runs latex2rtf on our tex file to generate tmpbib.rtf
@@ -646,7 +650,7 @@
     return [self runTask:latex2rtfpath withArguments:[NSArray arrayWithObjects:@"-P", [[NSBundle mainBundle] resourcePath], [texPath baseNameWithoutExtension], nil]];
 }
 
-- (BOOL)runTask:(NSString *)binPath withArguments:(NSArray *)arguments{
+- (int)runTask:(NSString *)binPath withArguments:(NSArray *)arguments{
     currentTask = [[NSTask alloc] init];
     [currentTask setCurrentDirectoryPath:[texPath workingDirectory]];
     [currentTask setLaunchPath:binPath];
@@ -654,7 +658,7 @@
     [currentTask setStandardOutput:[NSFileHandle fileHandleWithNullDevice]];
     [currentTask setStandardError:[NSFileHandle fileHandleWithNullDevice]];
         
-    BOOL success = YES;
+    int rv = 0;
     
     @try {
         [currentTask launch];
@@ -663,10 +667,10 @@
         if([currentTask isRunning])
             [currentTask terminate];
         NSLog(@"%@ %@ failed", [currentTask description], [currentTask launchPath]);
-        success = NO;
+        rv = 2;
     }
     
-    if (success) {
+    if (rv == 0) {
         NSDate *limitDate = [NSDate dateWithTimeIntervalSinceNow:30.0f];
         
         // we're basically doing what -[NSTask waitUntilExit] does, with the additional twist of a hard limit on the time a process can run (30 seconds for a LaTeX run is a long time, even on a slow machine)
@@ -679,13 +683,13 @@
         [currentTask terminate];
         
         if (0 != [currentTask terminationStatus])
-            success = NO;
+            rv = 1;
     }
     
     [currentTask release];
     currentTask = nil;
 
-    return success;
+    return rv;
 }
 
 @end

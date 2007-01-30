@@ -16,11 +16,13 @@
             CLASS = BDSKPreviewer; 
             LANGUAGE = ObjC; 
             OUTLETS = {
+                logView = NSTextView; 
                 pdfView = BDSKZoomablePDFView; 
                 progressIndicator = NSProgressIndicator; 
                 progressOverlay = BDSKOverlay; 
                 rtfPreviewView = NSTextView; 
                 tabView = NSTabView; 
+                warningIcon = NSImageView; 
             }; 
             SUPERCLASS = NSWindowController; 
         }, 
@@ -34,7 +36,12 @@
             LANGUAGE = ObjC; 
             SUPERCLASS = NSObject; 
         }, 
-        {CLASS = FirstResponder; LANGUAGE = ObjC; SUPERCLASS = NSObject; }, 
+        {
+            ACTIONS = {"" = id; }; 
+            CLASS = FirstResponder; 
+            LANGUAGE = ObjC; 
+            SUPERCLASS = NSObject; 
+        }, 
         {CLASS = PDFImageView; LANGUAGE = ObjC; SUPERCLASS = NSImageView; }
     ); 
     IBVersion = 1; 
