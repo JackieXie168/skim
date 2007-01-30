@@ -43,6 +43,7 @@
 /* Almost all of this code is copy-and-paste from OATextWithIconCell, except for the text layout (which seems wrong in OATextWithIconCell). */
 
 static NSMutableParagraphStyle *BDSKTextWithIconCellParagraphStyle = nil;
+static NSMutableParagraphStyle *BDSKFilePathCellParagraphStyle = nil;
 static NSLayoutManager *layoutManager = nil;
 
 @implementation BDSKTextWithIconCell
@@ -54,9 +55,17 @@ static NSLayoutManager *layoutManager = nil;
     BDSKTextWithIconCellParagraphStyle = [[NSMutableParagraphStyle alloc] init];
     [BDSKTextWithIconCellParagraphStyle setLineBreakMode:NSLineBreakByTruncatingTail];
     
+    BDSKFilePathCellParagraphStyle = [[NSMutableParagraphStyle alloc] init];
+    [BDSKFilePathCellParagraphStyle setLineBreakMode:NSLineBreakByTruncatingMiddle];
+    
     // string drawing uses this behavior currently
     layoutManager = [[NSLayoutManager alloc] init];
     [layoutManager setTypesetterBehavior:NSTypesetterBehavior_10_2_WithCompatibility];
+}
+
++ (NSParagraphStyle *)paragraphStyle;
+{
+    return BDSKTextWithIconCellParagraphStyle;
 }
 
 // Init and dealloc
@@ -188,7 +197,7 @@ textRect.origin.y += vOffset; \
         [label addAttribute:NSForegroundColorAttributeName value:[self textColor] range:labelRange];
     }
     
-    [label addAttribute:NSParagraphStyleAttributeName value:BDSKTextWithIconCellParagraphStyle range:labelRange];
+    [label addAttribute:NSParagraphStyleAttributeName value:[[self class] paragraphStyle] range:labelRange];
     [label drawInRect:textRect];
     [label release];
     
@@ -273,6 +282,11 @@ textRect.origin.y += vOffset; \
 
 
 @implementation BDSKFilePathCell
+
++ (NSParagraphStyle *)paragraphStyle;
+{
+    return BDSKFilePathCellParagraphStyle;
+}
 
 - (id)init;
 {
