@@ -524,7 +524,10 @@
 - (void)removeFilesFromPreviousRun{
     // use FSDeleteObject for thread safety
     const FSRef fileRef;
-    NSArray *filesToRemove = [NSArray arrayWithObjects:[texPath blgFilePath], [texPath logFilePath], [texPath bblFilePath], [texPath auxFilePath], nil];
+    static NSSet *filesToRemove = nil;
+    if (nil == filesToRemove)
+        filesToRemove = [[NSSet alloc] initWithObjects:[texPath blgFilePath], [texPath logFilePath], [texPath bblFilePath], [texPath auxFilePath], [texPath pdfFilePath], [texPath rtfFilePath], nil];
+    
     NSEnumerator *e = [filesToRemove objectEnumerator];
     NSString *path;
     CFAllocatorRef alloc = CFRetain(CFAllocatorGetDefault());
