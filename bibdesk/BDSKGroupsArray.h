@@ -48,10 +48,11 @@ enum {
 	BDSKCategoryGroupType
 };
 
-@class BDSKGroup, BDSKSmartGroup, BDSKStaticGroup, BDSKURLGroup, BDSKScriptGroup, BDSKSearchGroup, BibDocument;
+@class BDSKGroup, BDSKSmartGroup, BDSKStaticGroup, BDSKURLGroup, BDSKScriptGroup, BDSKSearchGroup, BDSKWebGroup, BibDocument;
 
 @interface BDSKGroupsArray : NSArray {
     BDSKGroup *libraryGroup;
+    BDSKWebGroup *webGroup;
     BDSKStaticGroup *lastImportGroup;
     NSMutableArray *sharedGroups;
     NSMutableArray *urlGroups;
@@ -81,6 +82,7 @@ enum {
 - (unsigned int)numberOfStaticGroupsAtIndexes:(NSIndexSet *)indexes;
 - (unsigned int)numberOfCategoryGroupsAtIndexes:(NSIndexSet *)indexes;
 
+- (BOOL)hasWebGroupAtIndexes:(NSIndexSet *)indexes;
 - (BOOL)hasSharedGroupsAtIndexes:(NSIndexSet *)indexes;
 - (BOOL)hasURLGroupsAtIndexes:(NSIndexSet *)indexes;
 - (BOOL)hasScriptGroupsAtIndexes:(NSIndexSet *)indexes;
@@ -91,6 +93,7 @@ enum {
 - (BOOL)hasExternalGroupsAtIndexes:(NSIndexSet *)indexes;
 
 - (BDSKGroup *)libraryGroup;
+- (BDSKWebGroup *)webGroup;
 - (BDSKStaticGroup *)lastImportGroup;
 - (NSArray *)sharedGroups;
 - (NSArray *)URLGroups;
