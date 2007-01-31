@@ -56,8 +56,9 @@
 }
 
 - (void)awakeFromNib {
-//    [view setMinSize:[view frame].size];
+    [view setMinSize:[view frame].size];
     [edgeView setEdges:BDSKMinXEdgeMask | BDSKMaxXEdgeMask];
+    [webEdgeView setEdges:BDSKEveryEdgeMask];
 }
 
 - (void)updateWebGroupView {
@@ -73,6 +74,11 @@
 - (NSView *)view {
     [self window];
     return view;
+}
+
+- (NSView *)webView {
+    [self window];
+    return webEdgeView;
 }
 
 - (BDSKWebGroup *)group {

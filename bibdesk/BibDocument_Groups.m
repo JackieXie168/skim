@@ -190,10 +190,12 @@ The groupedPublications array is a subset of the publications array, developed b
     if (nil == webGroupViewController)
         webGroupViewController = [[BDSKWebGroupViewController alloc] init];
     NSView *webGroupView = [webGroupViewController view];
+    NSView *webView = [webGroupViewController webView];
     
     if (documentWindow != [webGroupView window]) {
         NSRect webGroupViewFrame = [webGroupView frame];
         NSRect svFrame = [splitView frame];
+        NSRect tmpFrame;
         webGroupViewFrame.size.width = NSWidth(svFrame);
         webGroupViewFrame.origin.x = svFrame.origin.x;
         svFrame.size.height -= NSHeight(webGroupViewFrame);
@@ -204,7 +206,14 @@ The groupedPublications array is a subset of the publications array, developed b
             webGroupViewFrame.origin.y = NSMaxY(svFrame);
         }
         
+        tmpFrame = svFrame;
+        tmpFrame.size.height *= 0.6;
+        [splitView setFrame:tmpFrame];
         [webGroupView setFrame:webGroupViewFrame];
+        tmpFrame = svFrame;
+        tmpFrame.size.height *= 0.4;
+        [webView setFrame:tmpFrame];
+        [splitView addSubview:webView positioned:NSWindowBelow relativeTo:[tableView enclosingScrollView]];
         [splitView setFrame:svFrame];
         [mainBox addSubview:webGroupView];
         [mainBox setNeedsDisplay:YES];
@@ -216,8 +225,11 @@ The groupedPublications array is a subset of the publications array, developed b
 
 - (void)hideWebGroupView{
     NSView *webGroupView = [webGroupViewController view];
+    NSView *webView = [webGroupViewController webView];
+    
     if (documentWindow == [webGroupView window]) {
         [webGroupView removeFromSuperview];
+        [webView removeFromSuperview];
         [splitView setFrame:[mainBox bounds]];
         [mainBox setNeedsDisplay:YES];
     }

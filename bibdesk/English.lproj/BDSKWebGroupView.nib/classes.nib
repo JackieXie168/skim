@@ -32,7 +32,8 @@
             OUTLETS = {
                 edgeView = BDSKEdgeView; 
                 urlTextField = NSTextField; 
-                view = NSView; 
+                view = BDSKCollapsibleView; 
+                webEdgeView = BDSKEdgeView; 
                 webView = WebView; 
             }; 
             SUPERCLASS = NSWindowController; 
