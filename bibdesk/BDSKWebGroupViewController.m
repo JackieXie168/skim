@@ -100,9 +100,6 @@
 
 - (IBAction)changeURL:(id)sender {
     [webView takeStringURLFrom:sender];
-    // listen for did 
-   // [group setSearchTerm:[sender stringValue]];
-
 }
 
 - (void)webView:(WebView *)sender didStartProvisionalLoadForFrame:(WebFrame *)frame{
@@ -125,23 +122,24 @@
 
 - (void)webView:(WebView *)sender didFinishLoadForFrame:(WebFrame *)frame{
 
+    NSString *htmlString = [(id)[[frame DOMDocument] documentElement] outerHTML];
+    
+    NSError *err = nil;
+    NSArray *newPubs = [BDSKHCiteParser itemsFromXHTMLString:htmlString error:&err];
+        
     if (frame == loadingWebFrame) {
-        
-        NSString *s = [[[frame DOMDocument] documentElement] outerHTML];
-        
-        NSError *err = nil;
-        NSArray *d = [BDSKHCiteParser itemsFromXHTMLString:s error:&err];
-        
         [group setRetrieving:NO];
-        [group addPublications:d];
+        [group addPublications:newPubs];
         loadingWebFrame = nil;
-        
+    } else {
+        [group addPublications:newPubs];
     }
 }
 
 - (void)webView:(WebView *)sender didFailProvisionalLoadWithError:(NSError *)error forFrame:(WebFrame *)frame{
     if (frame == loadingWebFrame) {
         [group setRetrieving:NO];
+        [group addPublications:nil];
         loadingWebFrame = nil;
     }
 }
@@ -149,6 +147,7 @@
 - (void)webView:(WebView *)sender didFailLoadWithError:(NSError *)error forFrame:(WebFrame *)frame{
     if (frame == loadingWebFrame) {
         [group setRetrieving:NO];
+        [group addPublications:nil];
         loadingWebFrame = nil;
     }
 }
