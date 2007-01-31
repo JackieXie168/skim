@@ -84,8 +84,7 @@
 }
 
 - (BOOL)hasWebGroupSelected{
-    return [[OFPreferenceWrapper sharedPreferenceWrapper] boolForKey:BDSKUsesTeXKey]
-    && [groupTableView selectedRow] == 1;
+    return [groups webGroup] && [groupTableView selectedRow] == 1;
 }
 
 - (BOOL)hasSharedGroupsSelected{
