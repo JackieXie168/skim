@@ -38,6 +38,8 @@
  */
 
 #import "BDSKWebGroupViewController.h"
+#import <WebKit/WebKit.h>
+#import "BDSKHCiteParser.h"
 #import "BDSKWebGroup.h"
 #import "BDSKCollapsibleView.h"
 #import "BDSKEdgeView.h"

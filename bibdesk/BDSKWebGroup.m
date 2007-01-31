@@ -7,6 +7,10 @@
 //
 
 #import "BDSKWebGroup.h"
+#import "BibPrefController.h"
+#import "BDSKPublicationsArray.h"
+#import "BDSKMacroResolver.h"
+#import "NSImage+Toolbox.h"
 
 @implementation BDSKWebGroup
 - (id)initWithName:(NSString *)aName{
