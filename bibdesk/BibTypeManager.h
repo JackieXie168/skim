@@ -60,6 +60,7 @@
 #define BIBTEX_FIELDS_FOR_DC_TERMS_KEY        @"BibTeXFieldNamesForDublinCoreTerms"
 #define BIBTEX_FIELDS_FOR_REFER_TAGS_KEY     @"BibTeXFieldNamesForReferTags"
 #define BIBTEX_TYPES_FOR_REFER_TYPES_KEY     @"BibTeXTypesForReferTypes"
+#define BIBTEX_TYPES_FOR_HCITE_TYPES_KEY     @"BibTeXTypesForHCiteTypes"
 
 @class OFCharacterSet;
 
@@ -79,6 +80,7 @@
     NSDictionary *fieldNameForDublinCoreTermDict;
     NSDictionary *fieldNameForReferTagDict;
     NSDictionary *bibtexTypeForReferTypeDict;
+    NSDictionary *bibtexTypeForHCiteTypeDict;
 	NSDictionary *MODSGenresForBibTeXTypeDict;
 	NSSet *allFieldNames;
 	NSCharacterSet *invalidCiteKeyCharSet;
@@ -131,6 +133,8 @@
 - (void)setFieldNameForDublinCoreTermDict:(NSDictionary *)dict;
 - (void)setBibtexTypeForReferTypeDict:(NSDictionary *)newNames;
 - (void)setFieldNameForReferTagDict:(NSDictionary *)newNames;
+- (void)setBibtexTypeForHCiteTypeDict:(NSDictionary *)newBibtexTypeForHCiteTypeDict;
+
 
 - (NSString *)defaultTypeForFileFormat:(NSString *)fileFormat;
 - (NSSet *)allFieldNames;
@@ -145,6 +149,15 @@
 - (NSString *)bibtexTypeForPubMedType:(NSString *)type;
 - (NSString *)bibtexTypeForWebOfScienceType:(NSString *)type;
 - (NSString *)bibtexTypeForReferType:(NSString *)type;
+
+/*!
+    @method     bibtexTypeForHCiteType:
+    @abstract   translates between common types used in hCite and bibtex types
+    @discussion 
+    @param      type -- a string representing a type
+    @result     a bibtex type
+*/
+- (NSString *)bibtexTypeForHCiteType:(NSString *)type;
 
 
 /*!

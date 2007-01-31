@@ -153,6 +153,7 @@ static BibTypeManager *sharedInstance = nil;
     [bibtexTypeForWebOfScienceTypeDict release];
     [fieldNameForReferTagDict release];
     [bibtexTypeForReferTypeDict release];
+    [bibtexTypeForHCiteTypeDict release];
     [bibtexTypeForDublinCoreTypeDict release];
     [fieldNameForDublinCoreTermDict release];
 	[MODSGenresForBibTeXTypeDict release];
@@ -213,6 +214,7 @@ static BibTypeManager *sharedInstance = nil;
         [self setFieldNameForDublinCoreTermDict:[typeInfoDict objectForKey:BIBTEX_FIELDS_FOR_DC_TERMS_KEY]];
         [self setFieldNameForReferTagDict:[typeInfoDict objectForKey:BIBTEX_FIELDS_FOR_REFER_TAGS_KEY]];
         [self setBibtexTypeForReferTypeDict:[typeInfoDict objectForKey:BIBTEX_TYPES_FOR_REFER_TYPES_KEY]];
+        [self setBibtexTypeForHCiteTypeDict:[typeInfoDict objectForKey:BIBTEX_TYPES_FOR_HCITE_TYPES_KEY]];
     }
 	
 	[self reloadAllFieldNames];
@@ -425,6 +427,14 @@ static BibTypeManager *sharedInstance = nil;
     }
 }
 
+- (void)setBibtexTypeForHCiteTypeDict:(NSDictionary *)newBibtexTypeForHCiteTypeDict {
+    if (bibtexTypeForHCiteTypeDict != newBibtexTypeForHCiteTypeDict) {
+        [bibtexTypeForHCiteTypeDict release];
+        bibtexTypeForHCiteTypeDict = [newBibtexTypeForHCiteTypeDict copy];
+    }
+}
+
+
 #pragma mark Getters
 
 - (NSString *)defaultTypeForFileFormat:(NSString *)fileFormat{
@@ -577,6 +587,14 @@ static BibTypeManager *sharedInstance = nil;
         btType = BDSKMiscString;
     return btType;
 }
+
+- (NSString *)bibtexTypeForHCiteType:(NSString *)type {
+    NSString *btType = [bibtexTypeForHCiteTypeDict objectForKey:type];
+    if (nil == btType)
+        btType = BDSKMiscString;
+    return btType;
+}
+
 
 - (NSSet *)booleanFieldsSet{
     return booleanFieldsSet;
