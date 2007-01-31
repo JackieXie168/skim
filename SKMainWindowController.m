@@ -538,9 +538,11 @@ static NSString *SKDocumentToolbarSearchItemIdentifier = @"SKDocumentToolbarSear
     if ([self isPresentation])
         return;
     
+    BOOL isFullScreen = [self isFullScreen];
+    
     [self enterPresentationMode];
     
-    if ([self isFullScreen])
+    if (isFullScreen)
         SetSystemUIMode(kUIModeNormal, 0);
     else
         [self goFullScreen];
