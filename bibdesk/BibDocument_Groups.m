@@ -1253,6 +1253,18 @@ The groupedPublications array is a subset of the publications array, developed b
 	[self addPublications:newPubs];
 	[self selectPublications:newPubs];
     
+    BOOL autoGenerate = [[OFPreferenceWrapper sharedPreferenceWrapper] boolForKey:BDSKCiteKeyAutogenerateKey];
+    NSMutableArray *generatePubs = [NSMutableArray arrayWithCapacity:[newPubs count]];
+    
+    pubEnum = [newPubs objectEnumerator];
+    
+    while (pub = [pubEnum nextObject]) {
+        if ((autoGenerate == NO && [pub hasEmptyOrDefaultCiteKey]) ||
+            (autoGenerate && [pub canGenerateAndSetCiteKey])) // @@ or should we check for hasEmptyOrDefaultCiteKey ?
+            [generatePubs addObject:pub];
+    }
+    [self generateCiteKeysForPublications:generatePubs];
+    
     [groups setLastImportedPublications:newPubs];
 	
 	[[self undoManager] setActionName:NSLocalizedString(@"Merge External Publications", @"Undo action name")];
@@ -1583,6 +1595,17 @@ The groupedPublications array is a subset of the publications array, developed b
     newPubs = [self newPublicationsFromArchivedData:data];
     
 	[self addPublications:newPubs];
+    
+    BOOL autoGenerate = [[OFPreferenceWrapper sharedPreferenceWrapper] boolForKey:BDSKCiteKeyAutogenerateKey];
+    NSMutableArray *generatePubs = [NSMutableArray arrayWithCapacity:[newPubs count]];
+    NSEnumerator *pubEnum = [newPubs objectEnumerator];
+    
+    while (pub = [pubEnum nextObject]) {
+        if ((autoGenerate == NO && [pub hasEmptyOrDefaultCiteKey]) ||
+            (autoGenerate && [pub canGenerateAndSetCiteKey])) // @@ or should we check for hasEmptyOrDefaultCiteKey ?
+            [generatePubs addObject:pub];
+    }
+    [self generateCiteKeysForPublications:generatePubs];
     
     [groups setLastImportedPublications:newPubs];
     
