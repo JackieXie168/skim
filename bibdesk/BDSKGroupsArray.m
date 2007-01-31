@@ -115,12 +115,12 @@
     
     if (index == 0)
 		return libraryGroup;
+    index -= 1;
     
     if (webGroup != nil){
         // if we are showing the web group, insert it after the library:
-        if(index == 1) return webGroup;
-        else index -= 2;
-    }else{
+        if(index == 0)
+            return webGroup;
         index -= 1;
     }
         
