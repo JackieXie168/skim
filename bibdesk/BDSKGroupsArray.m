@@ -64,6 +64,11 @@
 - (id)init {
     if(self = [super init]) {
         libraryGroup = [[BDSKGroup alloc] initLibraryGroup];
+        if([[OFPreferenceWrapper sharedPreferenceWrapper] boolForKey:BDSKShouldShowWebGroupPrefKey]){
+            webGroup = [[BDSKWebGroup alloc] initWithName:NSLocalizedString(@"Web", @"Web")];
+        }else{
+            webGroup = nil;
+        }
         lastImportGroup = nil;
         sharedGroups = [[NSMutableArray alloc] init];
         urlGroups = [[NSMutableArray alloc] init];
@@ -80,6 +85,7 @@
 
 - (void)dealloc {
     [libraryGroup release];
+    [webGroup release];
     [lastImportGroup release];
     [sharedGroups release];
     [urlGroups release];
@@ -97,7 +103,9 @@
 
 - (unsigned int)count {
     [self updateStaticGroupsIfNeeded];
-    return [sharedGroups count] + [urlGroups count] + [scriptGroups count] + [searchGroups count] + [smartGroups count] + [staticGroups count] + [categoryGroups count] + ([lastImportGroup count] ? 2 : 1) /* add 1 for all publications group */ ;
+    return [sharedGroups count] + [urlGroups count] + [scriptGroups count] + [searchGroups count]
+        + [smartGroups count] + [staticGroups count] + [categoryGroups count] + 
+        ([lastImportGroup count] ? 1 : 0) + (webGroup == nil ? 0 : 1) + 1 /* add 1 for all publications group */ ;
 }
 
 - (id)objectAtIndex:(unsigned int)index {
@@ -107,8 +115,15 @@
     
     if (index == 0)
 		return libraryGroup;
-    index -= 1;
     
+    if (webGroup != nil){
+        // if we are showing the web group, insert it after the library:
+        if(index == 1) return webGroup;
+        else index -= 2;
+    }else{
+        index -= 1;
+    }
+        
     count = [sharedGroups count];
     if (index < count)
         return [sharedGroups objectAtIndex:index];
@@ -154,6 +169,10 @@
     return libraryGroup;
 }
 
+- (BDSKWebGroup *)webGroup{
+    return webGroup;
+}
+
 - (BDSKStaticGroup *)lastImportGroup{
     return lastImportGroup;
 }
@@ -190,7 +209,10 @@
 #pragma mark Index ranges of groups
 
 - (NSRange)rangeOfSharedGroups{
-    return NSMakeRange(1, [sharedGroups count]);
+    if(webGroup != nil)
+        return NSMakeRange(2, [sharedGroups count]); // library and web
+    else
+        return NSMakeRange(1, [sharedGroups count]); // library only
 }
 
 - (NSRange)rangeOfURLGroups{
@@ -269,6 +291,12 @@
     return [indexes getIndexes:buffer maxCount:maxCount inIndexRange:&categoryRange];
 }
 
+- (BOOL)hasWebGroupAtIndexes:(NSIndexSet *)indexes{
+    if (webGroup == nil) return NO;
+    NSRange webRange = NSMakeRange(1,1);
+    return [indexes intersectsIndexesInRange:webRange];
+}
+
 - (BOOL)hasSharedGroupsAtIndexes:(NSIndexSet *)indexes{
     NSRange sharedRange = [self rangeOfSharedGroups];
     return [indexes intersectsIndexesInRange:sharedRange];
@@ -305,7 +333,7 @@
 }
 
 - (BOOL)hasExternalGroupsAtIndexes:(NSIndexSet *)indexes{
-    return [self hasSharedGroupsAtIndexes:indexes] || [self hasURLGroupsAtIndexes:indexes] || [self hasScriptGroupsAtIndexes:indexes] || [self hasSearchGroupsAtIndexes:indexes];
+    return [self hasSharedGroupsAtIndexes:indexes] || [self hasURLGroupsAtIndexes:indexes] || [self hasScriptGroupsAtIndexes:indexes] || [self hasSearchGroupsAtIndexes:indexes] || [self hasWebGroupAtIndexes:indexes];
 }
 
 #pragma mark Mutable accessors
