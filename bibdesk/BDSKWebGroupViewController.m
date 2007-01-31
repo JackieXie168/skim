@@ -106,28 +106,51 @@
 }
 
 - (void)webView:(WebView *)sender didStartProvisionalLoadForFrame:(WebFrame *)frame{
-    [group setRetrieving:YES];
-    [group setPublications:nil];
+    
+    if (frame == [sender mainFrame]) {
+        
+        OBASSERT(loadingWebFrame == nil);
+        
+        [group setRetrieving:YES];
+        [group setPublications:nil];
+        loadingWebFrame = frame;
+        
+    } else if (loadingWebFrame == nil) {
+        
+        [group setRetrieving:YES];
+        loadingWebFrame = frame;
+        
+    }
 }
 
 - (void)webView:(WebView *)sender didFinishLoadForFrame:(WebFrame *)frame{
 
-    NSString *s = [[[frame DOMDocument] documentElement] outerHTML];
-    
-    NSError *err = nil;
-    NSArray *d = [BDSKHCiteParser itemsFromXHTMLString:s error:&err];
-    
-    [group setRetrieving:NO];
-    [group setPublications:d];
-    
+    if (frame == loadingWebFrame) {
+        
+        NSString *s = [[[frame DOMDocument] documentElement] outerHTML];
+        
+        NSError *err = nil;
+        NSArray *d = [BDSKHCiteParser itemsFromXHTMLString:s error:&err];
+        
+        [group setRetrieving:NO];
+        [group addPublications:d];
+        loadingWebFrame = nil;
+        
+    }
 }
 
 - (void)webView:(WebView *)sender didFailProvisionalLoadWithError:(NSError *)error forFrame:(WebFrame *)frame{
-    [group setRetrieving:NO];
+    if (frame == loadingWebFrame) {
+        [group setRetrieving:NO];
+        loadingWebFrame = nil;
+    }
 }
 
 - (void)webView:(WebView *)sender didFailLoadWithError:(NSError *)error forFrame:(WebFrame *)frame{
-    [group setRetrieving:NO];
+    if (frame == loadingWebFrame) {
+        [group setRetrieving:NO];
+        loadingWebFrame = nil;
+    }
 }
 
 - (void)handleWebGroupUpdatedNotification:(NSNotification *)notification{
