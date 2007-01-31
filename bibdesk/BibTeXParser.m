@@ -256,27 +256,13 @@ error:(NSError **)outError{
                     } else {
                         // no citekey
                         hadProblems = YES;
-                        BDSKErrorObject *errorObject = [[BDSKErrorObject alloc] init];
-                        [errorObject setFileName:filePath];
-                        [errorObject setLineNumber:entry->line];
-                        [errorObject setErrorClassName:NSLocalizedString(@"error", @"")];
-                        [errorObject setErrorMessage:NSLocalizedString(@"Missing citekey for entry (skipped entry)", @"Error description")];
-                        
-                        [errorObject report];
-                        [errorObject release];  
+                        [BDSKErrorObject reportError:NSLocalizedString(@"Missing citekey for entry (skipped entry)", @"Error description") forFile:filePath line:entry->line];
                     }
                     
                 } else {
                     // no entry type
                     hadProblems = YES;
-                    BDSKErrorObject *errorObject = [[BDSKErrorObject alloc] init];
-                    [errorObject setFileName:filePath];
-                    [errorObject setLineNumber:entry->line];
-                    [errorObject setErrorClassName:NSLocalizedString(@"error", @"")];
-                    [errorObject setErrorMessage:NSLocalizedString(@"Missing entry type (skipped entry)", @"Error description")];
-                    
-                    [errorObject report];
-                    [errorObject release];  
+                    [BDSKErrorObject reportError:NSLocalizedString(@"Missing entry type (skipped entry)", @"Error description") forFile:filePath line:entry->line];
                 }
                 
                 [dictionary removeAllObjects];
@@ -588,18 +574,11 @@ __BDCreateArrayOfNamesByCheckingBraceDepth(CFArrayRef names)
     
     // shouldn't ever see this case as far as I know, as long as we're using btparse
     if(names == NULL){
-        BDSKErrorObject *errorObject = [[BDSKErrorObject alloc] init];
-        [errorObject setFileName:nil];
-        [errorObject setLineNumber:-1];
-        [errorObject setErrorClassName:NSLocalizedString(@"error", @"")];
-        [errorObject setErrorMessage:[NSString stringWithFormat:@"%@ \"%@\"", NSLocalizedString(@"Unbalanced braces in author names:", @"Error description"), [(id)array description]]];
-        CFRelease(array);
-        
         [[BDSKErrorObjectController sharedErrorObjectController] startObservingErrors];
-        [errorObject report];
+        [BDSKErrorObject reportError:[NSString stringWithFormat:@"%@ \"%@\"", NSLocalizedString(@"Unbalanced braces in author names:", @"Error description"), [(id)array description]] forFile:nil line:-1];
         [[BDSKErrorObjectController sharedErrorObjectController] endObservingErrorsForPublication:pub];
-        [errorObject release];
-        
+        CFRelease(array);
+
         // @@ return the empty array or nil?
         return authors;
     }
@@ -637,15 +616,7 @@ static inline BOOL checkStringForEncoding(NSString *s, int line, NSString *fileP
     if(![s canBeConvertedToEncoding:parserEncoding]){
         NSString *type = NSLocalizedString(@"error", @"");
         NSString *message = [NSString stringWithFormat:NSLocalizedString(@"Unable to convert characters to encoding %@", @"Error description"), [NSString localizedNameOfStringEncoding:parserEncoding]];
-
-        BDSKErrorObject *errorObject = [[BDSKErrorObject alloc] init];
-        [errorObject setFileName:filePath];
-        [errorObject setLineNumber:line];
-        [errorObject setErrorClassName:type];
-        [errorObject setErrorMessage:message];
-        
-        [errorObject report];
-        [errorObject release];        
+        [BDSKErrorObject reportError:message forFile:filePath line:line];      
         return NO;
     } 
     
@@ -790,17 +761,8 @@ static BOOL addMacroToResolver(AST *entry, BDSKMacroResolver *macroResolver, NSS
         NSCAssert(macroKey != nil, @"Macro keys must be ASCII");
         NSString *macroString = copyStringFromBTField(field, filePath, macroResolver, encoding); // handles TeXification
         if([macroResolver macroDefinition:macroString dependsOnMacro:macroKey]){
-            NSString *type = NSLocalizedString(@"error", @"");
-            NSString *message = NSLocalizedString(@"Macro leads to circular definition, ignored.", @"Error description");
-            
-            BDSKErrorObject *errorObject = [[BDSKErrorObject alloc] init];
-            [errorObject setFileName:filePath];
-            [errorObject setLineNumber:field->line];
-            [errorObject setErrorClassName:type];
-            [errorObject setErrorMessage:message];
-            
-            [errorObject report];
-            [errorObject release];
+            NSString *message = NSLocalizedString(@"Macro leads to circular definition, ignored.", @"Error description");            
+            [BDSKErrorObject reportError:message forFile:filePath line:field->line];
             
             OFErrorWithInfo(error, BDSKParserError, NSLocalizedDescriptionKey, NSLocalizedString(@"Circular macro ignored.", @"Error description"), nil);
         }else if(nil != macroString){
@@ -955,16 +917,8 @@ static BOOL addValuesFromEntryToDictionary(AST *entry, NSMutableDictionary *dict
             // this can happen with badly formed annote/abstract fields, and leads to data loss
             if(nil == tmpStr){
                 hadProblems = YES;
-                NSString *type = NSLocalizedString(@"error", @"");
                 NSString *message = [NSString stringWithFormat:NSLocalizedString(@"Syntax error in \"%@\"", @"Error description"), tmpStr];
-                BDSKErrorObject *errorObject = [[BDSKErrorObject alloc] init];
-                [errorObject setFileName:filePath];
-                [errorObject setLineNumber:field->line];
-                [errorObject setErrorClassName:type];
-                [errorObject setErrorMessage:message];
-                
-                [errorObject report];
-                [errorObject release];    
+                [BDSKErrorObject reportError:message forFile:filePath line:field->line];
             } else {
                 
                 // this returns nil in case of a syntax error; it isn't an encoding failure
@@ -972,16 +926,8 @@ static BOOL addValuesFromEntryToDictionary(AST *entry, NSMutableDictionary *dict
                 
                 if (nil == fieldValue) {
                     hadProblems = YES;
-                    NSString *type = NSLocalizedString(@"error", @"");
                     NSString *message = [NSString stringWithFormat:NSLocalizedString(@"Unable to convert TeX string \"%@\"", @"Error description"), tmpStr];
-                    BDSKErrorObject *errorObject = [[BDSKErrorObject alloc] init];
-                    [errorObject setFileName:filePath];
-                    [errorObject setLineNumber:field->line];
-                    [errorObject setErrorClassName:type];
-                    [errorObject setErrorMessage:message];
-                    
-                    [errorObject report];
-                    [errorObject release];    
+                    [BDSKErrorObject reportError:message forFile:filePath line:field->line];  
                 }
             }
             [tmpStr release];
