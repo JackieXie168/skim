@@ -311,6 +311,7 @@ static PDFView *PDFHoverPDFView = nil;
         } else if ([[self window] screen] != [navWindow screen]) {
             [navWindow moveToScreen:[[self window] screen]];
         }
+        [navWindow setLevel:[[self window] level]];
     } else if ([navWindow isVisible]) {
         [navWindow orderOut:self];
     }
