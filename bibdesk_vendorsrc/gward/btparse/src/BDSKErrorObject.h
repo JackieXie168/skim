@@ -55,6 +55,9 @@ extern NSString *BDSKParserErrorNotification;
     BOOL isIgnorableWarning;
 }
 
++ (void)reportError:(NSString *)msg forFile:(NSString *)filePath line:(int)line;
++ (void)reportWarning:(NSString *)msg forFile:(NSString *)filePath line:(int)line;
+
 - (NSString *)fileName;
 - (void)setFileName:(NSString *)newFileName;
 
