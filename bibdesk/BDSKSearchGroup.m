@@ -119,6 +119,7 @@ NSString *BDSKSearchGroupOAI = @"oai";
 {
     [[NSNotificationCenter defaultCenter] removeObserver:self];
     [publications makeObjectsPerformSelector:@selector(setOwner:) withObject:nil];
+    [publications release]; 
     [server terminate];
     [server release];
     [type release];
