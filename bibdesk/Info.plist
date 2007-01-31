@@ -914,6 +914,8 @@
 					<integer>0</integer>
 					<key>View-by Field</key>
 					<string>Author</string>
+                    <key>BDSKShouldShowWebGroup</key>
+                    <false/>
 				</dict>
 				<key>helpURL</key>
 				<string>General-Preferences</string>
@@ -1097,6 +1099,7 @@
 				<key>public.mime-type</key>
 				<array>
 					<string>application/x-Research-Info-Systems</string>
+                    <string>application/x-endnote-refer</string>
 				</array>
 			</dict>
 		</dict>
