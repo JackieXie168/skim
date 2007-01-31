@@ -52,6 +52,7 @@ enum {
     kBDSKNetworkConnectionFailed,                /* Unable to connect to a network          */
     kBDSKFileNotFound,                           /* File not found (should have URL/path)   */
     kBDSKAppleScriptError,                       /* AppleScript failed                      */
+    kBDSKParserIgnoredFrontMatter,               /* BibTeXParser ignored front matter       */
 };
 
 extern NSString *BDSKUnderlyingItemErrorKey;
