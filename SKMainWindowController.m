@@ -157,7 +157,7 @@ static NSString *SKDocumentToolbarSearchItemIdentifier = @"SKDocumentToolbarSear
 }
 
 - (BOOL)isFullScreen {
-    return [self window] == fullScreenWindow;
+    return [self window] == fullScreenWindow && isPresentation == NO;
 }
 
 - (BOOL)isPresentation {
@@ -433,15 +433,10 @@ static NSString *SKDocumentToolbarSearchItemIdentifier = @"SKDocumentToolbarSear
     [pdfView setToolMode:toolMode];
 }
 
-- (IBAction)enterFullScreen:(id)sender {
-    if ([self isFullScreen])
-        return;
-    
-    SetSystemUIMode(kUIModeAllHidden, kUIOptionAutoShowMenuBar);
-    
+- (void)goFullScreen {
     NSScreen *screen = [NSScreen mainScreen]; // @@ or should we use the window's screen?
 
-    // Create the full-screen window if it doesn‚Äôt already  exist.
+    // Create the full-screen window if it does not already  exist.
     if (fullScreenWindow == nil) {
         fullScreenWindow = [[SKFullScreenWindow alloc] initWithScreen:screen];
         [fullScreenWindow setDelegate:self];
@@ -456,45 +451,10 @@ static NSString *SKDocumentToolbarSearchItemIdentifier = @"SKDocumentToolbarSear
     
     [self setWindow:fullScreenWindow];
     [fullScreenWindow makeKeyAndOrderFront:self];
-    
-    [pdfView setHasNavigation:YES autohidesCursor:NO];
-    isPresentation = NO;
 }
 
-- (IBAction)exitFullScreen:(id)sender {
-    if ([self isFullScreen] == NO)
-        return;
-    
-    SetSystemUIMode(kUIModeNormal, 0);
-
-    [pdfView setHasNavigation:NO autohidesCursor:NO];
-    [pdfContentBox setContentView:pdfView];
+- (void)removeFullScreen {
     [pdfView setBackgroundColor:[NSColor colorWithCalibratedWhite:0.5 alpha:1.0]];
-    
-    // Exit from presentation mode
-    if (isPresentation) {
-        NSScrollView *scrollView = [[pdfView documentView] enclosingScrollView];
-        [pdfView setDisplayMode:savedState.displayMode];
-        if (savedState.autoScales) {
-            [pdfView setAutoScales:YES];
-        } else {
-            [pdfView setAutoScales:NO];
-            [pdfView setScaleFactor:savedState.scaleFactor];
-        }		
-        [scrollView setHasHorizontalScroller:savedState.hasHorizontalScroller];		
-        [scrollView setHasVerticalScroller:savedState.hasVerticalScroller];
-        [scrollView setAutohidesScrollers:savedState.autoHidesScrollers];		
-        
-        // Get the screen information.
-        NSScreen *screen = [fullScreenWindow screen];
-        NSNumber *screenID = [[screen deviceDescription] objectForKey:@"NSScreenNumber"];
-        CGDisplayRelease((CGDirectDisplayID)[screenID longValue]);
-        
-        [fullScreenWindow setLevel:NSNormalWindowLevel];
-        
-        isPresentation = NO;
-    }
-    
     [pdfView layoutDocumentView];
     
     [self setWindow:mainWindow];
@@ -513,17 +473,7 @@ static NSString *SKDocumentToolbarSearchItemIdentifier = @"SKDocumentToolbarSear
     [fullScreenWindow setAlphaValue:1.0];
 }
 
-- (IBAction)toggleFullScreen:(id)sender {
-    if ([self isFullScreen])
-        [self exitFullScreen:sender];
-    else
-        [self enterFullScreen:sender];
-}
-
-- (IBAction)enterPresentation:(id)sender {
-    if (isPresentation)
-        return;
-    
+- (void)enterPresentationMode {
     NSScrollView *scrollView = [[pdfView documentView] enclosingScrollView];
 	// Set up presentation mode
 	savedState.displayMode = [pdfView displayMode];
@@ -545,15 +495,84 @@ static NSString *SKDocumentToolbarSearchItemIdentifier = @"SKDocumentToolbarSear
     // Capture the screen.
     CGDisplayCapture((CGDirectDisplayID)[screenID longValue]);
     
-    [self enterFullScreen:sender];
-    [fullScreenWindow setLevel:CGShieldingWindowLevel()];
-    
-    [pdfView setHasNavigation:YES autohidesCursor:YES];
     isPresentation = YES;
 }
 
-- (IBAction)togglePresentation:(id)sender {
+- (void)exitPresentationMode {
+    NSScrollView *scrollView = [[pdfView documentView] enclosingScrollView];
+    [pdfView setDisplayMode:savedState.displayMode];
+    if (savedState.autoScales) {
+        [pdfView setAutoScales:YES];
+    } else {
+        [pdfView setAutoScales:NO];
+        [pdfView setScaleFactor:savedState.scaleFactor];
+    }		
+    [scrollView setHasHorizontalScroller:savedState.hasHorizontalScroller];		
+    [scrollView setHasVerticalScroller:savedState.hasVerticalScroller];
+    [scrollView setAutohidesScrollers:savedState.autoHidesScrollers];		
+    
+    // Get the screen information.
+    NSScreen *screen = [fullScreenWindow screen];
+    NSNumber *screenID = [[screen deviceDescription] objectForKey:@"NSScreenNumber"];
+    CGDisplayRelease((CGDirectDisplayID)[screenID longValue]);
+    
+    isPresentation = NO;
+}
+
+- (IBAction)enterFullScreen:(id)sender {
     if ([self isFullScreen])
+        return;
+    
+    SetSystemUIMode(kUIModeAllHidden, kUIOptionAutoShowMenuBar);
+    
+    if ([self isPresentation])
+        [self exitPresentationMode];
+    else
+        [self goFullScreen];
+    
+    [fullScreenWindow setLevel:NSFloatingWindowLevel];
+    [pdfView setHasNavigation:YES autohidesCursor:NO];
+}
+
+- (IBAction)enterPresentation:(id)sender {
+    if ([self isPresentation])
+        return;
+    
+    [self enterPresentationMode];
+    
+    if ([self isFullScreen])
+        SetSystemUIMode(kUIModeNormal, 0);
+    else
+        [self goFullScreen];
+    
+    [fullScreenWindow setLevel:CGShieldingWindowLevel()];
+    [pdfView setHasNavigation:YES autohidesCursor:YES];
+}
+
+- (IBAction)exitFullScreen:(id)sender {
+    if ([self isFullScreen] == NO && [self isPresentation] == NO)
+        return;
+
+    [pdfView setHasNavigation:NO autohidesCursor:NO];
+    [pdfContentBox setContentView:pdfView]; // this should be done before exitPresentationMode to get a smooth transition
+    
+    if ([self isPresentation])
+        [self exitPresentationMode];
+    else
+        SetSystemUIMode(kUIModeNormal, 0);
+    
+    [self removeFullScreen];
+}
+
+- (IBAction)toggleFullScreen:(id)sender {
+    if ([self isFullScreen])
+        [self exitFullScreen:sender];
+    else
+        [self enterFullScreen:sender];
+}
+
+- (IBAction)togglePresentation:(id)sender {
+    if ([self isPresentation])
         [self exitFullScreen:sender];
     else
         [self enterPresentation:sender];
@@ -1260,7 +1279,6 @@ static NSString *SKDocumentToolbarSearchItemIdentifier = @"SKDocumentToolbarSear
     if (self = [[SKFullScreenWindow alloc] initWithContentRect:[screen frame] styleMask:NSBorderlessWindowMask backing:NSBackingStoreBuffered defer:NO screen:screen]) {
         [self setReleasedWhenClosed:NO];
         [self setDisplaysWhenScreenProfileChanges:YES];
-        [self setLevel:CGShieldingWindowLevel()];
         [self setAcceptsMouseMovedEvents:YES];
     }
     return self;
