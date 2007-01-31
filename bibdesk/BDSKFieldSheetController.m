@@ -186,7 +186,7 @@
 }
 
 - (void)awakeFromNib{
-	[(NSTextField *)fieldsControl setFormatter:[[[BDSKFieldNameFormatter alloc] init] autorelease]];
+	[newFieldsComboBox setFormatter:[[[BDSKFieldNameFormatter alloc] init] autorelease]];
 }
 
 - (NSString *)windowNibName{
