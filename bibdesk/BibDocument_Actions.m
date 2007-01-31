@@ -565,6 +565,23 @@
     [self openLinkedFileForField:field];
 }
 
+- (BOOL)textView:(NSTextView *)aTextView clickedOnLink:(id)link atIndex:(unsigned)charIndex
+{
+    if ([link respondsToSelector:@selector(isFileURL)]) {
+        if ([link isFileURL]) {
+            NSString *searchString;
+            if([[searchField searchKey] isEqualToString:BDSKKeywordsString] || [[searchField searchKey] isEqualToString:BDSKAllFieldsString])
+                searchString = [searchField stringValue];
+            else
+                searchString = @"";
+            [[NSWorkspace sharedWorkspace] openURL:link withSearchString:searchString];
+        }
+        return YES;
+    }
+    // let the next responder handle it if it was a string or non-file URL
+    return NO;
+}
+
 - (void)openLinkedFileAlertDidEnd:(NSAlert *)alert returnCode:(int)returnCode contextInfo:(void *)contextInfo {
     NSString *field = (NSString *)contextInfo;
     if (returnCode == NSAlertAlternateReturn) {
