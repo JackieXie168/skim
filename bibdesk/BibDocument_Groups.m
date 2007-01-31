@@ -83,6 +83,11 @@
     return [groupTableView selectedRow] == 0;
 }
 
+- (BOOL)hasWebGroupSelected{
+    return [[OFPreferenceWrapper sharedPreferenceWrapper] boolForKey:BDSKUsesTeXKey]
+    && [groupTableView selectedRow] == 1;
+}
+
 - (BOOL)hasSharedGroupsSelected{
     return [groups hasSharedGroupsAtIndexes:[groupTableView selectedRowIndexes]];
 }
@@ -178,6 +183,50 @@ The groupedPublications array is a subset of the publications array, developed b
     [searchGroupViewController setGroup:nil];
 }
 
+
+#pragma mark Web Group 
+
+- (void)showWebGroupView {
+    NSAssert([[OFPreferenceWrapper sharedPreferenceWrapper] boolForKey:BDSKShouldShowWebGroupPrefKey], 
+             @"tried to show WebGroupView when web group pref was false");
+    if (nil == webGroupViewController)
+        webGroupViewController = [[BDSKWebGroupViewController alloc] init];
+    NSView *webGroupView = [webGroupViewController view];
+    
+    if (documentWindow != [webGroupView window]) {
+        NSRect webGroupViewFrame = [webGroupView frame];
+        NSRect svFrame = [splitView frame];
+        webGroupViewFrame.size.width = NSWidth(svFrame);
+        webGroupViewFrame.origin.x = svFrame.origin.x;
+        svFrame.size.height -= NSHeight(webGroupViewFrame);
+        if ([[splitView superview] isFlipped]) {
+            webGroupViewFrame.origin.y = svFrame.origin.y;
+            svFrame.origin.y += NSHeight(webGroupViewFrame);
+        } else {
+            webGroupViewFrame.origin.y = NSMaxY(svFrame);
+        }
+        
+        [webGroupView setFrame:webGroupViewFrame];
+        [splitView setFrame:svFrame];
+        [mainBox addSubview:webGroupView];
+        [mainBox setNeedsDisplay:YES];
+    }
+    
+    BDSKSearchGroup *group = [[self selectedGroups] firstObject];
+    [webGroupViewController setGroup:group]; // necessary? will it always be the same web group?
+}
+
+- (void)hideWebGroupView{
+    NSView *webGroupView = [webGroupViewController view];
+    if (documentWindow == [webGroupView window]) {
+        [webGroupView removeFromSuperview];
+        [splitView setFrame:[mainBox bounds]];
+        [mainBox setNeedsDisplay:YES];
+    }
+    [webGroupViewController setGroup:nil]; // see above re: "necessary"?
+}
+
+
 #pragma mark Notification handlers
 
 - (void)handleGroupFieldChangedNotification:(NSNotification *)notification{
@@ -202,11 +251,19 @@ The groupedPublications array is a subset of the publications array, developed b
                 docState.sortDescending = NO;
             }
             [self showSearchGroupView];
-        } else {
-            [self hideSearchGroupView];
+        } else {          
+            [self hideSearchGroupView];            
         }
+        
+        if ([self hasWebGroupSelected]){
+            [self showWebGroupView];
+        }else{
+            [self hideWebGroupView];
+        }
+    
         [tableView setAlternatingRowBackgroundColors:[NSColor alternateControlAlternatingRowBackgroundColors]];
         [tableView insertTableColumnWithIdentifier:BDSKImportOrderString atIndex:0];
+
     } else {
         [tableView setAlternatingRowBackgroundColors:[NSColor controlAlternatingRowBackgroundColors]];
         [tableView removeTableColumnWithIdentifier:BDSKImportOrderString];
@@ -219,6 +276,7 @@ The groupedPublications array is a subset of the publications array, developed b
             docState.sortDescending = NO;
         }
         [self hideSearchGroupView];
+        [self hideWebGroupView];
     }
     // Mail and iTunes clear search when changing groups; users don't like this, though.  Xcode doesn't clear its search field, so at least there's some precedent for the opposite side.
     if (notification)
@@ -236,6 +294,15 @@ The groupedPublications array is a subset of the publications array, developed b
     else
         [groupTableView setNeedsDisplay:YES];
 }
+
+
+- (void)handleWebGroupUpdatedNotification:(NSNotification *)notification{
+    BDSKGroup *group = [notification object];
+    [groupTableView setNeedsDisplay:YES];
+    if ([[self selectedGroups] containsObject:group])
+        [self displaySelectedGroups];
+}
+
 
 - (void)handleStaticGroupChangedNotification:(NSNotification *)notification{
     BDSKGroup *group = [notification object];
@@ -342,6 +409,7 @@ The groupedPublications array is a subset of the publications array, developed b
     if (succeeded)
         [self setImported:YES forPublications:publications inGroup:group];
 }
+
 
 - (void)handleWillAddRemoveGroupNotification:(NSNotification *)notification{
     if([groupTableView editedRow] != -1 && [documentWindow makeFirstResponder:nil] == NO)
