@@ -1747,13 +1747,11 @@ originalContentsURL:(NSURL *)absoluteOriginalContentsURL
         // errors are key, value
         OFErrorWithInfo(&error, BDSKParserError, NSLocalizedDescriptionKey, NSLocalizedString(@"Did not find anything appropriate on the pasteboard", @"Error description"), nil);
 	}
-#warning checking NSError is incorrect
-    if (newPubs == nil || error != nil){
+    
+    if (newPubs == nil){
         if(outError) *outError = error;
 		return NO;
-    }
-    
-	if ([newPubs count] > 0) 
+    }else if ([newPubs count] > 0) 
 		[self addPublications:newPubs publicationsToAutoFile:newFilePubs temporaryCiteKey:temporaryCiteKey selectLibrary:select];
     
     return YES;
@@ -1850,18 +1848,24 @@ originalContentsURL:(NSURL *)absoluteOriginalContentsURL
 			newPubs = nil;	
 		}else if(rv == NSAlertOtherReturn){
 			// the user said to keep going, so if they save, they might clobber data...
+            // @@ should we ignore the error as well?
 		}		
-	}else if(type == BDSKNoKeyBibTeXStringType && parseError == nil){
-
+	}else if(type == BDSKNoKeyBibTeXStringType){
+        
+        OBASSERT(parseError == nil);
+        
         // return an error when we inserted temporary keys, let the caller decide what to do with it
         // don't override a parseError though, as that is probably more relevant
         OFErrorWithInfo(&parseError, BDSKParserError, NSLocalizedDescriptionKey, NSLocalizedString(@"Temporary Cite Keys", @"Error description"), @"temporaryCiteKey", @"FixMe", nil);
     }
 
     // we reach this for unsupported data types (BDSKUnknownStringType)
-	if ([newPubs count] == 0 && parseError == nil)
-        OFErrorWithInfo(&parseError, BDSKParserError, NSLocalizedDescriptionKey, NSLocalizedString(@"BibDesk couldn't find bibliography data in this text.", @"Error description"), nil);
-
+	if([newPubs count] == 0){
+        newPubs = nil;
+        if(parseError == nil)
+            OFErrorWithInfo(&parseError, BDSKParserError, NSLocalizedDescriptionKey, NSLocalizedString(@"BibDesk couldn't find bibliography data in this text.", @"Error description"), nil);
+    }
+    
 	if(outError) *outError = parseError;
     return newPubs;
 }
@@ -1872,6 +1876,7 @@ originalContentsURL:(NSURL *)absoluteOriginalContentsURL
     NSString *fileName;
     NSString *contentString;
     NSMutableArray *array = [NSMutableArray array];
+    NSArray *contentArray;
     int type = BDSKUnknownStringType;
     
     // some common types that people might use as attachments; we don't need to sniff these
@@ -1904,12 +1909,16 @@ originalContentsURL:(NSURL *)absoluteOriginalContentsURL
                 else
                     type = [contentString contentStringType];
                 
-                if(type != BDSKUnknownStringType){
-                    NSError *parseError = nil;
-                    [array addObjectsFromArray:[self newPublicationsForString:contentString type:type error:&parseError]];
-                    if(parseError && outError) *outError = parseError;
-                } else {
+                NSError *parseError = nil;
+                NSArray *contentArray = (type == BDSKUnknownStringType) ? nil : [self newPublicationsForString:contentString type:type error:&parseError];
+                
+                if(contentArray == nil){
+                    // unable to parse, we link the file and can ignore the error
                     [unparseableFiles addObject:fileName];
+                } else {
+                    // forward any temporaryCiteKey warning
+                    if(parseError && outError) *outError = parseError;
+                    [array addObjectsFromArray:contentArray];
                 }
                 
                 [contentString release];
