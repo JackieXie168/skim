@@ -560,6 +560,7 @@ static NSString *BDSKRecentSearchesKey = @"BDSKRecentSearchesKey";
         [dictionary setBoolValue:docState.sortGroupsDescending forKey:BDSKSortGroupsDescendingKey];
         [dictionary setRectValue:[documentWindow frame] forKey:BDSKDocumentWindowFrameKey];
         [dictionary setFloatValue:[groupSplitView fraction] forKey:BDSKGroupSplitViewFractionKey];
+#warning This is wrong when the webroup is shown
         [dictionary setFloatValue:[splitView fraction] forKey:BDSKMainTableSplitViewFractionKey];
         [dictionary setObject:currentGroupField forKey:BDSKCurrentGroupFieldKey];
         [dictionary setObject:[searchField searchKey] forKey:BDSKCurrentQuickSearchKey];
