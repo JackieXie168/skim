@@ -2645,7 +2645,9 @@ originalContentsURL:(NSURL *)absoluteOriginalContentsURL
 	}
 	[statusStr appendFormat:@"%i %@", groupPubsCount, (groupPubsCount == 1) ? NSLocalizedString(@"publication", @"publication, in status message") : NSLocalizedString(@"publications", @"publications, in status message")];
 	// we can have only a single external group selected at a time
-    if ([self hasSharedGroupsSelected] == YES) {
+	if ([self hasWebGroupSelected] == YES) {
+        [statusStr appendFormat:@" %@", NSLocalizedString(@"in web group", @"Partial status message")];
+    } else if ([self hasSharedGroupsSelected] == YES) {
         [statusStr appendFormat:@" %@ \"%@\"", NSLocalizedString(@"in shared group", @"Partial status message"), [[[self selectedGroups] lastObject] stringValue]];
 	} else if ([self hasURLGroupsSelected] == YES) {
         [statusStr appendFormat:@" %@ \"%@\"", NSLocalizedString(@"in external file group", @"Partial status message"), [[[self selectedGroups] lastObject] stringValue]];
