@@ -614,7 +614,6 @@ static inline int numberOfValuesInField(AST *field)
 
 static inline BOOL checkStringForEncoding(NSString *s, int line, NSString *filePath, NSStringEncoding parserEncoding){
     if(![s canBeConvertedToEncoding:parserEncoding]){
-        NSString *type = NSLocalizedString(@"error", @"");
         NSString *message = [NSString stringWithFormat:NSLocalizedString(@"Unable to convert characters to encoding %@", @"Error description"), [NSString localizedNameOfStringEncoding:parserEncoding]];
         [BDSKErrorObject reportError:message forFile:filePath line:line];      
         return NO;
