@@ -193,6 +193,9 @@ extern NSString *BDSKUpdateCheckLastDateKey;
 extern NSString *BDSKUpdateLatestNotifiedVersionKey;
 extern NSString *BDSKSpotlightVersionInfo;
 
+extern NSString *BDSKShouldShowWebGroupPrefKey;
+
+
 #pragma mark Field name strings
 
 extern NSString *BDSKCiteKeyString;
@@ -280,6 +283,7 @@ extern NSString *BDSKSharedGroupUpdatedNotification;
 extern NSString *BDSKURLGroupUpdatedNotification;
 extern NSString *BDSKScriptGroupUpdatedNotification;
 extern NSString *BDSKSearchGroupUpdatedNotification;
+extern NSString *BDSKWebGroupUpdatedNotification;
 extern NSString *BDSKDidAddRemoveGroupNotification;
 extern NSString *BDSKWillAddRemoveGroupNotification;
 extern NSString *BDSKClientConnectionsChangedNotification;
