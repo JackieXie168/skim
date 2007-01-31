@@ -1745,7 +1745,7 @@ originalContentsURL:(NSURL *)absoluteOriginalContentsURL
         // errors are key, value
         OFErrorWithInfo(&error, BDSKParserError, NSLocalizedDescriptionKey, NSLocalizedString(@"Did not find anything appropriate on the pasteboard", @"Error description"), nil);
 	}
-	
+#warning checking NSError is incorrect
     if (newPubs == nil || error != nil){
         if(outError) *outError = error;
 		return NO;
@@ -1804,14 +1804,26 @@ originalContentsURL:(NSURL *)absoluteOriginalContentsURL
     
 	if(nil == newPubs || isPartialData) {
         
+        // @@ should just be able to create an alert from the NSError, unless it's unknown type
         NSString *message = nil;
+        NSString *defaultButton = NSLocalizedString(@"Cancel", @"");
         NSString *alternateButton = nil;
         NSString *otherButton = nil;
+        NSString *alertTitle = NSLocalizedString(@"Error Reading String", @"Message in alert dialog when failing to parse dropped or copied string");
+        int errorCode = [parseError code];
         
         if(type == BDSKBibTeXStringType || type == BDSKNoKeyBibTeXStringType){
-            message = NSLocalizedString(@"There was a problem inserting the data. Do you want to ignore this data, open a window containing the data to edit it and remove the errors, or keep going and use everything that BibDesk could parse?\n(It's likely that choosing \"Keep Going\" will lose some data.)", @"Informative text in alert dialog");
-            alternateButton = NSLocalizedString(@"Edit data", @"Button title");
-            otherButton = NSLocalizedString(@"Keep going", @"Button title");
+            if (errorCode == kBDSKParserIgnoredFrontMatter) {
+                message = [parseError localizedRecoverySuggestion];
+                alertTitle = [parseError localizedDescription];
+                defaultButton = nil;
+                // @@ fixme: NSError
+                parseError = nil;
+            } else {
+                message = NSLocalizedString(@"There was a problem inserting the data. Do you want to ignore this data, open a window containing the data to edit it and remove the errors, or keep going and use everything that BibDesk could parse?\n(It's likely that choosing \"Keep Going\" will lose some data.)", @"Informative text in alert dialog");
+                alternateButton = NSLocalizedString(@"Edit data", @"Button title");
+                otherButton = NSLocalizedString(@"Keep going", @"Button title");
+            }
         }else if (type == BDSKUnknownStringType){
             message = NSLocalizedString(@"There was a problem inserting the data. BibDesk could not recognize the format.", @"Informative text in alert dialog");
             otherButton = NSLocalizedString(@"Keep going", @"Button title");
@@ -1820,14 +1832,14 @@ originalContentsURL:(NSURL *)absoluteOriginalContentsURL
         }
         
 		// run a modal dialog asking if we want to use partial data or give up
-        NSAlert *alert = [NSAlert alertWithMessageText:NSLocalizedString(@"Error Reading String", @"Message in alert dialog when failing to parse dropped or copied string")
-                                         defaultButton:NSLocalizedString(@"Cancel", @"Button title")
+        NSAlert *alert = [NSAlert alertWithMessageText:alertTitle
+                                         defaultButton:defaultButton
                                        alternateButton:alternateButton
                                            otherButton:otherButton
                              informativeTextWithFormat:message];
 		int rv = [alert runModal];
         
-		if(rv == NSAlertDefaultReturn){
+		if(rv == NSAlertDefaultReturn && errorCode != kBDSKParserIgnoredFrontMatter){
 			// the user said to give up
 			newPubs = nil;
 		}else if (rv == NSAlertAlternateReturn){
