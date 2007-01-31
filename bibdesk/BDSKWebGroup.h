@@ -15,13 +15,15 @@
 @interface BDSKWebGroup : BDSKMutableGroup <BDSKOwner> {
     BDSKPublicationsArray *publications;
     BDSKMacroResolver *macroResolver;
-
+    BOOL isRetrieving;
 }
+
 - (id)initWithName:(NSString *)aName;
 
 - (BDSKPublicationsArray *)publications;
 - (void)setPublications:(NSArray *)newPublications;
 - (void)addPublications:(NSArray *)newPublications;
 
+- (void)setRetrieving:(BOOL)flag;
 
 @end

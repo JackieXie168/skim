@@ -105,6 +105,11 @@
 
 }
 
+- (void)webView:(WebView *)sender didStartProvisionalLoadForFrame:(WebFrame *)frame{
+    [group setRetrieving:YES];
+    [group setPublications:nil];
+}
+
 - (void)webView:(WebView *)sender didFinishLoadForFrame:(WebFrame *)frame{
 
     NSString *s = [[[frame DOMDocument] documentElement] outerHTML];
@@ -112,8 +117,17 @@
     NSError *err = nil;
     NSArray *d = [BDSKHCiteParser itemsFromXHTMLString:s error:&err];
     
+    [group setRetrieving:NO];
     [group setPublications:d];
     
+}
+
+- (void)webView:(WebView *)sender didFailProvisionalLoadWithError:(NSError *)error forFrame:(WebFrame *)frame{
+    [group setRetrieving:NO];
+}
+
+- (void)webView:(WebView *)sender didFailLoadWithError:(NSError *)error forFrame:(WebFrame *)frame{
+    [group setRetrieving:NO];
 }
 
 - (void)handleWebGroupUpdatedNotification:(NSNotification *)notification{
