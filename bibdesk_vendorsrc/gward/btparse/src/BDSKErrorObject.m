@@ -62,6 +62,30 @@ NSString *BDSKParserErrorNotification = @"BDSKParserErrorNotification";
     [super dealloc];
 }
 
++ (void)reportError:(NSString *)msg forFile:(NSString *)filePath line:(int)line;
+{
+    id error = [[self alloc] init];
+    // @@ localizing this is probably dangerous
+    [error setErrorClassName:NSLocalizedString(@"error", @"")];
+    [error setFileName:filePath];
+    [error setLineNumber:line];
+    [error setErrorMessage:msg];
+    [error report];
+    [error release];
+}
+
++ (void)reportWarning:(NSString *)msg forFile:(NSString *)filePath line:(int)line;
+{
+    id error = [[self alloc] init];
+    // @@ localizing this is probably dangerous
+    [error setErrorClassName:NSLocalizedString(@"warning", @"")];
+    [error setFileName:filePath];
+    [error setLineNumber:line];
+    [error setErrorMessage:msg];
+    [error report];
+    [error release];
+}
+
 - (NSString *)description{
     return [NSString stringWithFormat:@"File name: %@, Editor: %@, line number: %d \n\t item: %@, error class: %@, error message: %@", fileName, editor, lineNumber, itemDescription, errorClassName, errorMessage];
 }
