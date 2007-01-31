@@ -83,8 +83,8 @@
 		4530D8C80B27B04D007C59F4 /* SKApplicationController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SKApplicationController.m; sourceTree = "<group>"; };
 		4530DCF50B27CACE007C59F4 /* SKPDFView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SKPDFView.h; sourceTree = "<group>"; };
 		4530DCF60B27CACE007C59F4 /* SKPDFView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SKPDFView.m; sourceTree = "<group>"; };
-		453DC2750B4F242200A72509 /* BDAlias.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; name = BDAlias.m; path = ../bibdesk_vendorsrc/BDistributed/BDAlias/BDAlias.m; sourceTree = SOURCE_ROOT; };
-		453DC2760B4F242200A72509 /* BDAlias.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = BDAlias.h; path = ../bibdesk_vendorsrc/BDistributed/BDAlias/BDAlias.h; sourceTree = SOURCE_ROOT; };
+		453DC2750B4F242200A72509 /* BDAlias.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; name = BDAlias.m; path = vendorsrc/BDistributed/BDAlias/BDAlias.m; sourceTree = "<group>"; };
+		453DC2760B4F242200A72509 /* BDAlias.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = BDAlias.h; path = vendorsrc/BDistributed/BDAlias/BDAlias.h; sourceTree = "<group>"; };
 		455989F70B2662FF00E5419B /* Quartz.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Quartz.framework; path = /System/Library/Frameworks/Quartz.framework; sourceTree = "<absolute>"; };
 		45A3BD060B4F0770002B297F /* SKStringConstants.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SKStringConstants.h; sourceTree = "<group>"; };
 		45A3BD070B4F0770002B297F /* SKStringConstants.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SKStringConstants.m; sourceTree = "<group>"; };
@@ -336,12 +336,10 @@
 		2A37F4A9FDCFA73011CA2CEA /* Project object */ = {
 			isa = PBXProject;
 			buildConfigurationList = C05733CB08A9546B00998B17 /* Build configuration list for PBXProject "Skim" */;
-			compatibilityVersion = "Xcode 2.4";
 			hasScannedForEncodings = 1;
 			mainGroup = 2A37F4AAFDCFA73011CA2CEA /* Skim */;
 			projectDirPath = "";
 			projectRoot = "";
-			shouldCheckCompatibility = 1;
 			targets = (
 				8D15AC270486D014006FF6A4 /* Skim */,
 			);
