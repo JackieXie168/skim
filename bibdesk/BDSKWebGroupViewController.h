@@ -39,7 +39,7 @@ DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
 
 #import <Cocoa/Cocoa.h>
 
-@class BDSKCollapsibleView, BDSKEdgeView, BDSKWebGroup, WebView;
+@class BDSKCollapsibleView, BDSKEdgeView, BDSKWebGroup, WebView, WebFrame;
 
 @interface BDSKWebGroupViewController : NSWindowController {
     IBOutlet BDSKCollapsibleView *view;
@@ -49,6 +49,7 @@ DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
     IBOutlet WebView *webView;
     
     BDSKWebGroup *group;
+    WebFrame *loadingWebFrame;
 }
 
 - (NSView *)view;
