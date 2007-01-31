@@ -48,6 +48,7 @@
 @class AGRegex, BDSKTeXTask, BDSKMacroResolver, BDSKItemPasteboardHelper;
 @class BibEditor, MacroWindowController, BDSKDocumentInfoWindowController, BDSKPreviewer, BDSKFileContentSearchController, BDSKCustomCiteDrawerController, BDSKSearchGroupViewController;
 @class BDSKAlert, BDSKStatusBar, BDSKMainTableView, BDSKGroupTableView, BDSKGradientView, BDSKSplitView, BDSKCollapsibleView, BDSKImagePopUpButton, BDSKColoredBox, BDSKSearchField, BDSKEncodingPopUpButton;
+@class BDSKWebGroupViewController;
 
 enum {
 	BDSKOperationIgnore = NSAlertDefaultReturn, // 1
@@ -112,6 +113,8 @@ extern NSString* BDSKWeblocFilePboardType; // core pasteboard type for webloc fi
     BDSKFileContentSearchController *fileSearchController;
     
     BDSKSearchGroupViewController *searchGroupViewController;
+    
+    BDSKWebGroupViewController *webGroupViewController;
     
 #pragma mark Group pane variables
 
