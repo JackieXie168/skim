@@ -9,7 +9,8 @@
 #import <Cocoa/Cocoa.h>
 #import "BDSKGroup.h"
 #import "BDSKOwnerProtocol.h"
-#import "BibPrefController.h"
+
+@class BDSKPublicationsArray, BDSKMacroResolver;
 
 @interface BDSKWebGroup : BDSKMutableGroup <BDSKOwner> {
     BDSKPublicationsArray *publications;

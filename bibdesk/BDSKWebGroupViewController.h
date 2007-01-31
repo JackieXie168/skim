@@ -38,10 +38,8 @@ DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
  */
 
 #import <Cocoa/Cocoa.h>
-#import <WebKit/WebKit.h>
-#import "BDSKHCiteParser.h"
 
-@class BDSKCollapsibleView, BDSKEdgeView, BDSKWebGroup;
+@class BDSKCollapsibleView, BDSKEdgeView, BDSKWebGroup, WebView;
 
 @interface BDSKWebGroupViewController : NSWindowController {
     IBOutlet NSView *view;
