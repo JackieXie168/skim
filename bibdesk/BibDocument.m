@@ -230,6 +230,7 @@ static NSString *BDSKRecentSearchesKey = @"BDSKRecentSearchesKey";
     [sortKey release];
     [sortGroupsKey release];
     [searchGroupViewController release];
+    [webGroupViewController release];
     [super dealloc];
 }
 
