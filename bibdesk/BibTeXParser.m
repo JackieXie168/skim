@@ -56,6 +56,7 @@
 #import "BDSKGroupsArray.h"
 #import "BDSKStringEncodingManager.h"
 #import "NSScanner_BDSKExtensions.h"
+#import "NSError_BDSKExtensions.h"
 
 static NSLock *parserLock = nil;
 
@@ -189,6 +190,8 @@ error:(NSError **)outError{
     
     NSString *tmpStr = nil;
     BOOL hadProblems = NO;
+    BOOL ignoredMacros = NO;
+    BOOL ignoredFrontmatter = NO;
 
     while(entry =  bt_parse_entry(infile, (char *)fs_path, 0, &ok)){
 
@@ -197,8 +200,10 @@ error:(NSError **)outError{
             bt_metatype metatype = bt_entry_metatype (entry);
             if (metatype != BTE_REGULAR) {
                 
-                if(frontMatter != nil){
+                if (nil != frontMatter) {
+                
                     // put @preamble etc. into the frontmatter string so we carry them along.
+                    // without frontMatter, e.g. with paste or drag, we eventually ignore these entries (except macros)
                     if (BTE_PREAMBLE == metatype){
                         if(NO == appendPreambleToFrontmatter(entry, frontMatter, filePath, parserEncoding))
                             hadProblems = YES;
@@ -209,7 +214,12 @@ error:(NSError **)outError{
                         if(NO == appendCommentToFrontmatterOrAddGroups(entry, frontMatter, filePath, document, parserEncoding))
                             hadProblems = YES;
                     }
+                } else if (BTE_MACRODEF == metatype) {
+                    ignoredMacros = YES;
+                } else {
+                    ignoredFrontmatter = YES;
                 }
+                    
                 
             } else {
                 
@@ -282,6 +292,20 @@ error:(NSError **)outError{
     // generic error message; the error tableview will have specific errors and context
     if(ok == 0 || hadProblems){
         OFErrorWithInfo(&error, BDSKParserError, NSLocalizedDescriptionKey, NSLocalizedString(@"Unable to parse string as BibTeX", @"Error description"), nil);
+        
+    // If no critical errors, warn about ignoring macros or frontmatter; callers can ignore this by passing a valid NSMutableString for frontmatter (or ignoring the partial data flag).  Mainly relevant for paste/drag on the document.
+    } else if (ignoredMacros && ignoredFrontmatter && outError) {
+        error = [NSError mutableLocalErrorWithCode:kBDSKParserIgnoredFrontMatter localizedDescription:NSLocalizedString(@"Macros and front matter ignored while parsing BibTeX", @"")];
+        [error setValue:NSLocalizedString(@"Frontmatter (preamble and comments) from pasted data should be added via a text editor, and macros should be added via the macro editor (cmd-shift-M)", @"") forKey:NSLocalizedRecoverySuggestionErrorKey];
+        hadProblems = YES;
+    } else if (ignoredMacros && outError) {
+        error = [NSError mutableLocalErrorWithCode:kBDSKParserIgnoredFrontMatter localizedDescription:NSLocalizedString(@"Macros ignored while parsing BibTeX", @"")];
+        [error setValue:NSLocalizedString(@"Macros must be added via the macro editor (cmd-shift-M)", @"") forKey:NSLocalizedRecoverySuggestionErrorKey];
+        hadProblems = YES;
+    } else if (ignoredFrontmatter && outError) {
+         error = [NSError mutableLocalErrorWithCode:kBDSKParserIgnoredFrontMatter localizedDescription:NSLocalizedString(@"Macros ignored while parsing BibTeX", @"")];
+        [error setValue:NSLocalizedString(@"Frontmatter from pasted data should be added via a text editor", @"") forKey:NSLocalizedRecoverySuggestionErrorKey];
+        hadProblems = YES;
     }
 
     // execute this regardless, so the parser isn't left in an inconsistent state
