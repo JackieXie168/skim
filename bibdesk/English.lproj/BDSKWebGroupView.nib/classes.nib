@@ -1,0 +1,43 @@
+{
+    IBClasses = (
+        {
+            CLASS = BDSKCollapsibleView; 
+            LANGUAGE = ObjC; 
+            SUPERCLASS = BDSKContainerView; 
+        }, 
+        {
+            CLASS = BDSKContainerView; 
+            LANGUAGE = ObjC; 
+            OUTLETS = {contentView = id; }; 
+            SUPERCLASS = NSView; 
+        }, 
+        {CLASS = BDSKEdgeView; LANGUAGE = ObjC; SUPERCLASS = BDSKContainerView; }, 
+        {CLASS = BDSKGradientView; LANGUAGE = ObjC; SUPERCLASS = NSView; }, 
+        {
+            ACTIONS = {changeSearchTerm = id; nextSearch = id; }; 
+            CLASS = BDSKSearchGroupViewController; 
+            LANGUAGE = ObjC; 
+            OUTLETS = {
+                edgeView = BDSKEdgeView; 
+                searchButton = NSButton; 
+                searchField = NSSearchField; 
+                view = BDSKCollapsibleView; 
+            }; 
+            SUPERCLASS = NSWindowController; 
+        }, 
+        {
+            ACTIONS = {changeURL = id; }; 
+            CLASS = BDSKWebGroupViewController; 
+            LANGUAGE = ObjC; 
+            OUTLETS = {
+                edgeView = BDSKEdgeView; 
+                urlTextField = NSTextField; 
+                view = NSView; 
+                webView = WebView; 
+            }; 
+            SUPERCLASS = NSWindowController; 
+        }, 
+        {CLASS = FirstResponder; LANGUAGE = ObjC; SUPERCLASS = NSObject; }
+    ); 
+    IBVersion = 1; 
+}
