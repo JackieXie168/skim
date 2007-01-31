@@ -215,6 +215,9 @@ NSString *BDSKUpdateCheckLastDateKey = @"BDSKUpdateCheckLastDateKey";
 NSString *BDSKUpdateLatestNotifiedVersionKey = @"BDSKUpdateLatestNotifiedVersionKey";
 NSString *BDSKSpotlightVersionInfo = @"BDSKSpotlightVersionInfo";
 
+NSString *BDSKShouldShowWebGroupPrefKey = @"BDSKShouldShowWebGroup";
+
+
 #pragma mark Field name strings
 
 NSString *BDSKCiteKeyString = @"Cite Key";
@@ -303,6 +306,7 @@ NSString *BDSKSharingNameChangedNotification = @"BDSKSharingNameChangedNotificat
 NSString *BDSKURLGroupUpdatedNotification = @"BDSKURLGroupUpdatedNotification";
 NSString *BDSKScriptGroupUpdatedNotification = @"BDSKScriptGroupUpdatedNotification";
 NSString *BDSKSearchGroupUpdatedNotification = @"BDSKSearchGroupUpdatedNotification";
+NSString *BDSKWebGroupUpdatedNotification = @"BDSKWebGroupUpdatedNotification";
 NSString *BDSKDidAddRemoveGroupNotification = @"BDSKDidAddRemoveGroupNotification";
 NSString *BDSKWillAddRemoveGroupNotification = @"BDSKWillAddRemoveGroupNotification";
 NSString *BDSKClientConnectionsChangedNotification = @"BDSKClientConnectionsChangedNotification";
