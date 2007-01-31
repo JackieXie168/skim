@@ -1668,15 +1668,17 @@ originalContentsURL:(NSURL *)absoluteOriginalContentsURL
         [pubsToAutoFile makeObjectsPerformSelector:@selector(autoFilePaper)];
     }
     
-    if ([[OFPreferenceWrapper sharedPreferenceWrapper] boolForKey:BDSKCiteKeyAutogenerateKey]) {
-        NSMutableArray *pubs = [NSMutableArray arrayWithCapacity:[newPubs count]];
-        NSEnumerator *pubEnum = [newPubs objectEnumerator];
-        BibItem *pub;
-        while (pub = [pubEnum nextObject])
-            if ([pub canGenerateAndSetCiteKey]) // @@ or should we check for defaultAndEmptyCiteKey ?
-                [pubs addObject:pub];
-        [self generateCiteKeysForPublications:pubs];
+    BOOL autoGenerate = [[OFPreferenceWrapper sharedPreferenceWrapper] boolForKey:BDSKCiteKeyAutogenerateKey];
+    NSMutableArray *pubs = [NSMutableArray arrayWithCapacity:[newPubs count]];
+    NSEnumerator *pubEnum = [newPubs objectEnumerator];
+    BibItem *pub;
+    
+    while (pub = [pubEnum nextObject]) {
+        if ((autoGenerate == NO && [pub hasEmptyOrDefaultCiteKey]) ||
+            (autoGenerate && [pub canGenerateAndSetCiteKey])) // @@ or should we check for hasEmptyOrDefaultCiteKey ?
+            [pubs addObject:pub];
     }
+    [self generateCiteKeysForPublications:pubs];
     
     // set Date-Added to the current date, since unarchived items will have their own (incorrect) date
     NSCalendarDate *importDate = [NSCalendarDate date];

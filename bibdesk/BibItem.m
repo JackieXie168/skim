@@ -233,10 +233,7 @@ static CFDictionaryRef selectorTable = NULL;
         [self updateMetadataForKey:nil];
         
         if (key == nil) {
-            if ([[OFPreferenceWrapper sharedPreferenceWrapper] boolForKey:BDSKCiteKeyAutogenerateKey])
-                [self setCiteKeyString: BDSKDefaultCiteKey];
-            else 
-                [self setCiteKeyString: [self suggestedCiteKey]];
+            [self setCiteKeyString: BDSKDefaultCiteKey];
         } else {
             [self setCiteKeyString: key];
         }
