@@ -20,7 +20,7 @@
     if (self = [super initWithName:aName count:0]) {
         publications = nil;
         macroResolver = [[BDSKMacroResolver alloc] initWithOwner:self];
-
+        isRetrieving = NO;
     }
     return self;
 }
@@ -66,7 +66,9 @@
 
 - (BOOL)hasEditableName { return NO; }
 
-- (BOOL)isRetrieving { return NO;}
+- (BOOL)isRetrieving { return isRetrieving; }
+
+- (void)setRetrieving:(BOOL)flag { isRetrieving = flag; }
 
 - (BOOL)failedDownload { return NO;}
 
