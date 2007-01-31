@@ -47,6 +47,7 @@
 
 // note that pointer equality is used for these groups, so names can overlap, and users can have duplicate searches
 
+//TODO: need better image
 - (NSImage *)icon { return [NSImage smallImageNamed:@"urlFolderIcon"]; }
 
 - (NSString *)toolTip {
@@ -57,7 +58,7 @@
 
 - (BOOL)isExternal { return YES; }
 
-- (BOOL)isEditable { return NO; } // not sure what this means: MMC
+- (BOOL)isEditable { return NO; } 
 
 - (BOOL)hasEditableName { return NO; }
 
