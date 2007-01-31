@@ -1,4 +1,14 @@
 {
+    BibTeXTypesForHCiteTypes = {
+        "Journal Article" = article;
+        "Journal Paper" = article;
+        "Book" = book;
+        "Chapter" = inbook;
+        "Book Section" = inbook;
+        "Technical Report" = techreport;
+        Thesis = phdthesis;
+    };
+
     BibTeXFieldNamesForJSTORTags = {
         AB = Abstract; 
         AU = Author; 
