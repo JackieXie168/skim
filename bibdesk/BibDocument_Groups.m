@@ -186,8 +186,7 @@ The groupedPublications array is a subset of the publications array, developed b
 #pragma mark Web Group 
 
 - (void)showWebGroupView {
-    NSAssert([[OFPreferenceWrapper sharedPreferenceWrapper] boolForKey:BDSKShouldShowWebGroupPrefKey], 
-             @"tried to show WebGroupView when web group pref was false");
+    NSAssert([groups webGroup], @"tried to show WebGroupView when web group pref was false");
     if (nil == webGroupViewController)
         webGroupViewController = [[BDSKWebGroupViewController alloc] init];
     NSView *webGroupView = [webGroupViewController view];
@@ -244,21 +243,21 @@ The groupedPublications array is a subset of the publications array, developed b
     NSString *newSortKey = nil;
     
     if ([self hasExternalGroupsSelected]) {
+        if ([self hasSearchGroupsSelected] == NO)
+            [self hideSearchGroupView];            
+            
+        if ([self hasWebGroupSelected] == NO)
+            [self hideWebGroupView];
+        else
+            [self showWebGroupView];
+        
         if ([self hasSearchGroupsSelected]) {
             if ([sortKey isEqualToString:BDSKImportOrderString] == NO) {
                 newSortKey = BDSKImportOrderString;
                 docState.sortDescending = NO;
             }
             [self showSearchGroupView];
-        } else {          
-            [self hideSearchGroupView];            
-        }
-        
-        if ([self hasWebGroupSelected]){
-            [self showWebGroupView];
-        }else{
-            [self hideWebGroupView];
-        }
+        } 
     
         [tableView setAlternatingRowBackgroundColors:[NSColor alternateControlAlternatingRowBackgroundColors]];
         [tableView insertTableColumnWithIdentifier:BDSKImportOrderString atIndex:0];
