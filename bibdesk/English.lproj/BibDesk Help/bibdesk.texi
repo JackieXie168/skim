@@ -2734,12 +2734,6 @@ When you are done editing, you should choose the @buttontitle{OK} button
 to save your edits. If you choose the @buttontitle{Cancel} button, 
 your changes will be lost. 
 
-@subheading Note
-
-If you simply close the editor window, without choosing the @buttontitle{OK} or 
-@buttontitle{Cancel} button, your changes will @emph{not} be saved, even though 
-they will show up on a subsequent edit.
-
 
 @node Editing Global Macro Definitions
 @subsection Editing Global Macro Definitions
