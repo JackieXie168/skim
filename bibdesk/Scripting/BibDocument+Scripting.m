@@ -38,12 +38,14 @@
 #import "BibDocument+Scripting.h"
 #import "BibAuthor.h"
 #import "BibItem.h"
+#import "BDSKMacro.h"
 #import "BDSKTeXTask.h"
 #import "BDSKItemPasteboardHelper.h"
 #import "BDSKOwnerProtocol.h"
 #import "BDSKPublicationsArray.h"
 #import "NSObject_BDSKExtensions.h"
 #import "NSArray_BDSKExtensions.h"
+#import "BDSKMacroResolver.h"
 
 @implementation BibDocument (Scripting)
 
@@ -64,6 +66,26 @@
 - (void)removeFromPublicationsAtIndex:(unsigned int)index {
 	[self removePublicationsAtIndexes:[NSIndexSet indexSetWithIndex:index]];
 	[[self undoManager] setActionName:NSLocalizedString(@"AppleScript",@"Undo action name for AppleScript")];
+}
+
+- (BDSKMacro *)valueInMacrosWithName:(NSString *)name
+{
+	return [[[BDSKMacro alloc] initWithName:name document:self] autorelease];
+}
+
+- (NSArray *)macros
+{
+    NSEnumerator *mEnum = [[[self macroResolver] macroDefinitions] keyEnumerator];
+	NSString *name = nil;
+	BDSKMacro *macro = nil;
+	NSMutableArray *macros = [NSMutableArray arrayWithCapacity:5];
+	
+	while (name = [mEnum nextObject]) {
+		macro = [[BDSKMacro alloc] initWithName:name document:self];
+		[macros addObject:macro];
+		[macro release];
+	}
+	return macros;
 }
 
 - (BibAuthor*) valueInAuthorsWithName:(NSString*) name {

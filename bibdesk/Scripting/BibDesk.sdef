@@ -530,6 +530,10 @@ Having all three of these seems to work best for Panther. For Tiger include this
 				description="Authors of publications in the bibliography">
 				<cocoa key="authors"/>
 			</element>
+			<element type="macro" access="r"
+				description="Macros defined in the bibliography">
+				<cocoa key="macros"/>
+			</element>
 			<property name="name" code="pnam" type="text" access="r"
 				description="The document's name.">
 				<cocoa key="displayName"/>
@@ -726,6 +730,23 @@ Having all three of these seems to work best for Panther. For Tiger include this
             <responds-to name="show">
                 <cocoa method=""/>
             </responds-to>
+        </class>
+        
+        <class name="macro" plural="macros" code="macr" inherits="item"
+			description="Macro of a document.">
+            <cocoa class="BDSKMacro"/>
+            <property name="value" code="fldv" type="text"
+                description="The value of the macro">
+                <cocoa key="value"/>
+            </property>  
+            <property name="name" code="pnam" type="text"
+                description="The name of the macro">
+                <cocoa key="name"/>
+            </property>  
+            <property name="BibTeX string" code="BTeX" type="text"
+                description="The value of the macro as raw BibTeX">
+                <cocoa key="bibTeXString"/>
+            </property>  
         </class>
         
         <class name="field" plural="fields" code="bfld" inherits="item"
