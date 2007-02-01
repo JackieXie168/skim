@@ -571,6 +571,8 @@
 		F91B5CE507657A200011ED22 /* template.txt in Resources */ = {isa = PBXBuildFile; fileRef = F91B5CE407657A200011ED22 /* template.txt */; };
 		F91B7F28092BEB5A00976F6F /* AddressBook.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F91B7F27092BEB5A00976F6F /* AddressBook.framework */; };
 		F91F286A09A6684900419960 /* PDFMetadata.m in Sources */ = {isa = PBXBuildFile; fileRef = F91F284709A661A700419960 /* PDFMetadata.m */; };
+		F9201E010B72504C007E45BB /* BDSKMacro.h in Headers */ = {isa = PBXBuildFile; fileRef = F9201DFF0B72504C007E45BB /* BDSKMacro.h */; };
+		F9201E020B72504C007E45BB /* BDSKMacro.m in Sources */ = {isa = PBXBuildFile; fileRef = F9201E000B72504C007E45BB /* BDSKMacro.m */; };
 		F920DAFF075C2B69000C5FCA /* BibAppController+Scripting.h in Headers */ = {isa = PBXBuildFile; fileRef = F920DAFA075C2B69000C5FCA /* BibAppController+Scripting.h */; };
 		F920DB00075C2B69000C5FCA /* BibAuthor+Scripting.h in Headers */ = {isa = PBXBuildFile; fileRef = F920DAFB075C2B69000C5FCA /* BibAuthor+Scripting.h */; };
 		F920DB01075C2B69000C5FCA /* BibDeskSearchForCommand.h in Headers */ = {isa = PBXBuildFile; fileRef = F920DAFC075C2B69000C5FCA /* BibDeskSearchForCommand.h */; };
@@ -1477,6 +1479,8 @@
 		F91B7F27092BEB5A00976F6F /* AddressBook.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AddressBook.framework; path = /System/Library/Frameworks/AddressBook.framework; sourceTree = "<absolute>"; };
 		F91F284609A661A700419960 /* PDFMetadata.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PDFMetadata.h; sourceTree = "<group>"; };
 		F91F284709A661A700419960 /* PDFMetadata.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PDFMetadata.m; sourceTree = "<group>"; };
+		F9201DFF0B72504C007E45BB /* BDSKMacro.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = BDSKMacro.h; path = Scripting/BDSKMacro.h; sourceTree = "<group>"; };
+		F9201E000B72504C007E45BB /* BDSKMacro.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BDSKMacro.m; sourceTree = "<group>"; };
 		F920DAFA075C2B69000C5FCA /* BibAppController+Scripting.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = "BibAppController+Scripting.h"; path = "Scripting/BibAppController+Scripting.h"; sourceTree = "<group>"; };
 		F920DAFB075C2B69000C5FCA /* BibAuthor+Scripting.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = "BibAuthor+Scripting.h"; path = "Scripting/BibAuthor+Scripting.h"; sourceTree = "<group>"; };
 		F920DAFC075C2B69000C5FCA /* BibDeskSearchForCommand.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = BibDeskSearchForCommand.h; path = Scripting/BibDeskSearchForCommand.h; sourceTree = "<group>"; };
@@ -2295,6 +2299,7 @@
 		F9022FB707580B9400C3F701 /* Scripting */ = {
 			isa = PBXGroup;
 			children = (
+				F9201E000B72504C007E45BB /* BDSKMacro.m */,
 				F9022FBF07580B9400C3F701 /* BibDesk.sdef */,
 				CE9DBEDE093CF2640008648B /* BibDeskBibliographyCommand.m */,
 				CEAC51550A97730800B8DF43 /* BibDeskExportUsingTemplateCommand.m */,
@@ -2390,6 +2395,7 @@
 				CE3B682809D1B0190017D339 /* BDSKImagePopUpButtonCell.h */,
 				CE7A313F0B08EA1F00D1B333 /* BDSKItemPasteboardHelper.h */,
 				CEAE613C097FF60A000B618C /* BDSKJSTORParser.h */,
+				F9201DFF0B72504C007E45BB /* BDSKMacro.h */,
 				CE3B5E7A09CEDE470017D339 /* BDSKMacroResolver.h */,
 				CE34A5710B249E0B00755730 /* BDSKMARCParser.h */,
 				CEBC70200B4ABDF500CE0B2D /* BDSKOAIGroupServer.h */,
@@ -2896,6 +2902,7 @@
 				4575382E0B70170D00C0E49B /* BDSKHCiteParser.h in Headers */,
 				457538300B70170D00C0E49B /* BDSKWebGroup.h in Headers */,
 				457538320B70170D00C0E49B /* BDSKWebGroupViewController.h in Headers */,
+				F9201E010B72504C007E45BB /* BDSKMacro.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -3729,6 +3736,7 @@
 				4575382F0B70170D00C0E49B /* BDSKHCiteParser.m in Sources */,
 				457538310B70170D00C0E49B /* BDSKWebGroup.m in Sources */,
 				457538330B70170D00C0E49B /* BDSKWebGroupViewController.m in Sources */,
+				F9201E020B72504C007E45BB /* BDSKMacro.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
