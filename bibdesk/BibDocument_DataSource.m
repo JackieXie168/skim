@@ -183,7 +183,7 @@
 												 defaultButton:NSLocalizedString(@"OK", @"Button title")
 											   alternateButton:NSLocalizedString(@"Cancel", @"Button title")
 												   otherButton:nil
-									 informativeTextWithFormat:NSLocalizedString(@"This action will change the %@ field in %i items. Do you want to proceed?", @"Informative text in alert dialog"), currentGroupField, [groupedPublications count]];
+									 informativeTextWithFormat:NSLocalizedString(@"This action will change the %@ field in %i items. Do you want to proceed?", @"Informative text in alert dialog"), [currentGroupField localizedFieldName], [groupedPublications count]];
 			[alert setHasCheckButton:YES];
 			[alert setCheckValue:NO];
 			int rv = [alert runSheetModalForWindow:documentWindow
@@ -1083,7 +1083,7 @@
     if(searchString == nil || sortKey == nil)
         [self updateStatus]; // resets the status line to its default value
     else
-        [self setStatus:[NSString stringWithFormat:NSLocalizedString(@"Finding item with %@: \"%@\"", @"Status message:Finding item with [sorting field]: \"[search string]\""), sortKey, searchString]];
+        [self setStatus:[NSString stringWithFormat:NSLocalizedString(@"Finding item with %@: \"%@\"", @"Status message:Finding item with [sorting field]: \"[search string]\""), [sortKey localizedFieldName], searchString]];
 }
 
 // This is where we build the list of possible items which the user can select by typing the first few letters. You should return an array of NSStrings.

@@ -452,9 +452,9 @@ static NSString *BDSKRecentSearchesKey = @"BDSKRecentSearchesKey";
 	[headerCell setMenu:[self groupFieldsMenu]];
 	[headerCell setIndicatorImage:[NSImage imageNamed:docState.sortGroupsDescending ? @"NSDescendingSortIndicator" : @"NSAscendingSortIndicator"]];
     [headerCell setUsesItemFromMenu:NO];
-	[headerCell setTitle:currentGroupField];
-    if([headerCell itemWithTitle:currentGroupField])
-        [headerCell selectItemWithTitle:currentGroupField];
+	[headerCell setTitle:[currentGroupField localizedFieldName]];
+    if([headerCell indexOfItemWithRepresentedObject:currentGroupField] != -1)
+        [headerCell selectItemAtIndex:[headerCell indexOfItemWithRepresentedObject:currentGroupField]];
     else
         [headerCell selectItemAtIndex:0];
     

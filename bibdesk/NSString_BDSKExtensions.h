@@ -169,7 +169,7 @@
     @result     (description)
 */
 - (NSString *)entryType;
-    
+
 /*!
     @method     fieldName
     @abstract   Wrapper around capitalizedString that caches them for use as BibTeX fields.  Note that capitalizing is an implementation detail, and this allows us to change at any time.
@@ -177,6 +177,14 @@
     @result     (description)
 */
 - (NSString *)fieldName;
+    
+/*!
+    @method     localizedFieldName
+    @abstract   Returns the localized field name used for display.
+    @discussion (comprehensive description)
+    @result     (description)
+*/
+- (NSString *)localizedFieldName;
 
 /*!
 @method     indexOfRightBraceMatchingLeftBraceAtIndex:

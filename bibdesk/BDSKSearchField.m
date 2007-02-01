@@ -96,7 +96,7 @@ NSString *BDSKFileContentLocalizedString = nil;
                                                       forKey:BDSKCurrentQuickSearchKey];
 	
 	NSSearchFieldCell *searchCell = [self cell];
-	[searchCell setPlaceholderString:[NSString stringWithFormat:NSLocalizedString(@"Search by %@", @"Search placeholder string"), newKey]];
+	[searchCell setPlaceholderString:[NSString stringWithFormat:NSLocalizedString(@"Search by %@", @"Search placeholder string"), [newKey localizedFieldName]]];
 
 	NSMenu *templateMenu = [searchCell searchMenuTemplate];
 	if([searchKey isEqualToString:newKey] == NO){
