@@ -745,7 +745,7 @@ The groupedPublications array is a subset of the publications array, developed b
     [menu addItemWithTitle:NSLocalizedString(@"No Field", @"Menu item title") action:NULL keyEquivalent:@""];
 	
 	while (field = [fieldEnum nextObject]) {
-		[menu addItemWithTitle:field action:NULL keyEquivalent:@""];
+		menuItem = [menu addItemWithTitle:field action:NULL keyEquivalent:@""];
         [menuItem setRepresentedObject:field];
 	}
     
