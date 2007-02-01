@@ -2705,7 +2705,7 @@ after clicking the @buttontitle{Files@dots{}} button.
 @cindex type info
 
 The TypeInfo Editor allows you to add and manage custom types and fields to BibDesk. 
-You can add new types, add new fields to existing types, or chnage the order in which 
+You can add new types, add new fields to existing types, or change the order in which 
 BibDesk presents the types and fields. 
 
 You can open the TypeInfo Editor by choosing the @buttontitle{Edit...} button 
