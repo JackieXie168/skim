@@ -1484,6 +1484,8 @@ Boolean stringContainsLossySubstring(NSString *theString, NSString *stringToFind
     
     if(value = [self citeKey])
         [info setObject:value forKey:@"net_sourceforge_bibdesk_citekey"];
+    
+    [info setObject:@"BibDesk" forKey:(NSString *)kMDItemCreator];
 
     // A given item is not guaranteed to have all of these, so make sure they are non-nil
     if(value = [self displayTitle])
