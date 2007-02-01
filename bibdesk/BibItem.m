@@ -1706,7 +1706,7 @@ Boolean stringContainsLossySubstring(NSString *theString, NSString *stringToFind
                    [data appendDataFromString:@" = " encoding:encoding error:&error] &&
                    [data appendDataFromString:valString encoding:encoding error:&error];
             if(isOK == NO)
-                [error setValue:[NSString stringWithFormat:NSLocalizedString(@"Unable to convert field \"%@\" of item with cite key \"%@\".", @"string encoding error context"), field, [self citeKey]] forKey:NSLocalizedRecoverySuggestionErrorKey];
+                [error setValue:[NSString stringWithFormat:NSLocalizedString(@"Unable to convert field \"%@\" of item with cite key \"%@\".", @"string encoding error context"), [field localizedFieldName], [self citeKey]] forKey:NSLocalizedRecoverySuggestionErrorKey];
         }
     }
     [knownKeys release];
