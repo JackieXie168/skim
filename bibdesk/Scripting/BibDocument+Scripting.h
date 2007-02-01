@@ -38,12 +38,20 @@
 
 #import "BibDocument.h"
 
+@class BDSKMacro;
+
 @interface BibDocument (Scripting) 
 
 - (BibItem *)valueInPublicationsAtIndex:(unsigned int)index;
 - (void)insertInPublications:(BibItem *)pub  atIndex:(unsigned int)index;
 - (void)insertInPublications:(BibItem *)pub;
 - (void)removeFromPublicationsAtIndex:(unsigned int)index;
+
+- (BDSKMacro *)valueInMacrosWithName:(NSString *)name;
+- (NSArray *)macros;
+
+- (BibAuthor *)valueInAuthorsWithName:(NSString *)name;
+- (BibAuthor *)valueInAuthorsAtIndex:(unsigned int)index;
 
 - (NSArray*) displayedPublications;
 

@@ -38,8 +38,8 @@
 
 #import <Foundation/Foundation.h>
 #import "BibAppController.h"
-#import <OmniFoundation/OFPreference.h>
-#import "BDSKScriptHookManager.h"
+
+@class BDSKScriptHook, BDSKMacro;
 
 @interface BibAppController (Scripting) 
 
@@ -50,6 +50,9 @@
 - (NSArray *)allFieldNames;
 
 - (BDSKScriptHook *)valueInScriptHooksWithUniqueID:(NSNumber *)uniqueID;
+
+- (BDSKMacro *)valueInMacrosWithName:(NSString *)name;
+- (NSArray *)macros;
 
 - (BOOL)application:(NSApplication *)sender delegateHandlesKey:(NSString *)key;
 

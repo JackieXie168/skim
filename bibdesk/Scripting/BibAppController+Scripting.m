@@ -37,7 +37,11 @@
  */
 
 #import "BibAppController+Scripting.h"
+#import <OmniFoundation/OFPreference.h>
+#import "BDSKScriptHookManager.h"
 #import "BibTypeManager.h"
+#import "BDSKMacroResolver.h"
+#import "BDSKMacro.h"
 
 /* ssp
 Category on BibAppController making the papers folder readable for scripting
@@ -66,10 +70,29 @@ Category on BibAppController making the papers folder readable for scripting
 	return [[BDSKScriptHookManager sharedManager] scriptHookWithUniqueID:uniqueID];
 }
 
+- (BDSKMacro *)valueInMacrosWithName:(NSString *)name {
+	return [[[BDSKMacro alloc] initWithName:name macroResolver:[BDSKMacroResolver defaultMacroResolver]] autorelease];
+}
+
+- (NSArray *)macros {
+    NSEnumerator *mEnum = [[[BDSKMacroResolver defaultMacroResolver] macroDefinitions] keyEnumerator];
+	NSString *name = nil;
+	BDSKMacro *macro = nil;
+	NSMutableArray *macros = [NSMutableArray arrayWithCapacity:5];
+	
+	while (name = [mEnum nextObject]) {
+		macro = [[BDSKMacro alloc] initWithName:name macroResolver:[BDSKMacroResolver defaultMacroResolver]];
+		[macros addObject:macro];
+		[macro release];
+	}
+	return macros;
+}
+
 - (BOOL)application:(NSApplication *)sender delegateHandlesKey:(NSString *)key {
 	if ([key isEqualToString:@"papersFolder"] ||
 		[key isEqualToString:@"allTypes"] ||
 		[key isEqualToString:@"allFieldNames"] ||
+		[key isEqualToString:@"macros"] ||
 		[key isEqualToString:@"scriptHooks"]) 
 		return YES;
 	return NO;

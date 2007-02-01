@@ -70,7 +70,7 @@
 
 - (BDSKMacro *)valueInMacrosWithName:(NSString *)name
 {
-	return [[[BDSKMacro alloc] initWithName:name document:self] autorelease];
+	return [[[BDSKMacro alloc] initWithName:name macroResolver:[self macroResolver]] autorelease];
 }
 
 - (NSArray *)macros
@@ -81,7 +81,7 @@
 	NSMutableArray *macros = [NSMutableArray arrayWithCapacity:5];
 	
 	while (name = [mEnum nextObject]) {
-		macro = [[BDSKMacro alloc] initWithName:name document:self];
+		macro = [[BDSKMacro alloc] initWithName:name macroResolver:[self macroResolver]];
 		[macros addObject:macro];
 		[macro release];
 	}
