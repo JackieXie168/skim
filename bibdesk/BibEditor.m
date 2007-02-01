@@ -541,16 +541,16 @@ static int numberOfOpenEditors = 0;
             
             theURL = [publication URLForField:field];
             if(nil != theURL){
-                [menu addItemWithTitle:[NSString stringWithFormat:NSLocalizedString(@"Open %@ With",@"Menu item title"), field]
+                [menu addItemWithTitle:[NSString stringWithFormat:NSLocalizedString(@"Open %@ With",@"Menu item title"),[ field localizedFieldName]]
                         andSubmenuOfApplicationsForURL:theURL];
             }
             
-			item = [menu addItemWithTitle:[NSString stringWithFormat:NSLocalizedString(@"Reveal %@ in Finder",@"Menu item title"), field]
+			item = [menu addItemWithTitle:[NSString stringWithFormat:NSLocalizedString(@"Reveal %@ in Finder",@"Menu item title"), [field localizedFieldName]]
                                    action:@selector(revealLinkedFile:)
                             keyEquivalent:@""];
 			[item setRepresentedObject:field];
             
-			item = [menu addItemWithTitle:[[NSString stringWithFormat:NSLocalizedString(@"Move %@",@"Menu item title: Move Local-Url..."), field] stringByAppendingEllipsis]
+			item = [menu addItemWithTitle:[[NSString stringWithFormat:NSLocalizedString(@"Move %@",@"Menu item title: Move Local-Url..."), [field localizedFieldName]] stringByAppendingEllipsis]
                                    action:@selector(moveLinkedFile:)
                             keyEquivalent:@""];
 			[item setRepresentedObject:field];
@@ -585,14 +585,14 @@ static int numberOfOpenEditors = 0;
 		
 		// the first one has to be view Url in web brower, since it's also the button's action when you're clicking on the icon.
 		while (field = [e nextObject]) {
-			item = [menu addItemWithTitle:[NSString stringWithFormat:NSLocalizedString(@"View %@ in Web Browser", @"Menu item title"), field]
+			item = [menu addItemWithTitle:[NSString stringWithFormat:NSLocalizedString(@"View %@ in Web Browser", @"Menu item title"), [field localizedFieldName]]
                                    action:@selector(openRemoteURL:)
                             keyEquivalent:@""];
 			[item setRepresentedObject:field];
             
             theURL = [publication URLForField:field];
             if(nil != theURL){
-                [menu addItemWithTitle:[NSString stringWithFormat:NSLocalizedString(@"View %@ With", @"Menu item title"), field]
+                [menu addItemWithTitle:[NSString stringWithFormat:NSLocalizedString(@"View %@ With", @"Menu item title"), [field localizedFieldName]]
                         andSubmenuOfApplicationsForURL:theURL];
             }
 		}
@@ -3682,7 +3682,7 @@ static NSString *queryStringWithCiteKey(NSString *citekey)
     while(tmp = [e nextObject]){ \
         if ([ignoredKeys containsObject:tmp]) continue; \
 		[ignoredKeys addObject:tmp]; \
-		entry = [bibFields insertEntry:tmp usingTitleFont:requiredFont attributesForTitle:attrs indexAndTag:i objectValue:[publication valueOfField:tmp]]; \
+		entry = [bibFields insertEntry:[tmp localizedFieldName] usingTitleFont:requiredFont attributesForTitle:attrs indexAndTag:i objectValue:[publication valueOfField:tmp]]; \
 		[entry setRepresentedObject:tmp]; \
         if ([tmp isEqualToString:BDSKCrossrefString]) \
 			[entry setFormatter:crossrefFormatter]; \
@@ -3790,7 +3790,7 @@ static NSString *queryStringWithCiteKey(NSString *citekey)
     e = [fields objectEnumerator]; \
     while(tmp = [e nextObject]){ \
 		NSButtonCell *buttonCell = [cell copy]; \
-		[buttonCell setTitle:tmp]; \
+		[buttonCell setTitle:[tmp localizedFieldName]]; \
 		[buttonCell setRepresentedObject:tmp]; \
 		[buttonCell setIntValue:[publication intValueOfField:tmp]]; \
         cellWidth = MAX(cellWidth, [buttonCell cellSize].width); \

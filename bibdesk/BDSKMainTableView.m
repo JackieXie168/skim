@@ -496,7 +496,7 @@
     
 	// next add all the shown columns in the order they are shown
 	while(colName = [shownColNamesE nextObject]){
-        item = [menu insertItemWithTitle:colName 
+        item = [menu insertItemWithTitle:[colName localizedFieldName]
                                   action:@selector(columnsMenuSelectTableColumn:)
                            keyEquivalent:@""
                                  atIndex:0];

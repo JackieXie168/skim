@@ -258,6 +258,12 @@ static inline BOOL dataHasUnicodeByteOrderMark(NSData *data)
     return fieldName;
 }
 
+- (NSString *)localizedFieldName;
+{
+    // this is used for display, for now we don't do anything
+    return self;
+}
+
 - (unsigned)indexOfRightBraceMatchingLeftBraceAtIndex:(unsigned)startLoc
 {
     

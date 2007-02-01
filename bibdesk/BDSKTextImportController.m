@@ -1495,7 +1495,7 @@
     NSString *tcID = [tableColumn identifier];
     
     if([tcID isEqualToString:@"FieldName"]){
-        return key;
+        return [key localizedFieldName];
     }else if([tcID isEqualToString:@"Num"]){
         if(row < 10)
             return [NSString stringWithFormat:@"%@%d", [NSString commandKeyIndicatorString], row];
