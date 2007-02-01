@@ -756,32 +756,7 @@ static NSString *SKDocumentToolbarSearchItemIdentifier = @"SKDocumentToolbarSear
     [pageNumberStepper setIntValue:pageIndex + 1];
     [pageNumberField setIntValue:pageIndex + 1];
     
-	// Skip out if there is no outline or if the selected outline item is already on the current page
-	if ([pdfDoc outlineRoot] == nil ||
-        [[pdfView currentPage] isEqual:[[[outlineView itemAtRow:[outlineView selectedRow]] destination] page]])
-		return;
-	
-	// Walk outline view looking for best firstpage number match.
-	int newlySelectedRow = -1;
-	int i, numRows = [outlineView numberOfRows];
-    
-	for (i = 0; i < numRows; i++) {
-        PDFOutline *outlineItem = (PDFOutline *)[outlineView itemAtRow:i];
-		unsigned int itemPageIndex = [pdfDoc indexForPage:[[outlineItem destination] page]];
-		
-		if (itemPageIndex == pageIndex) {
-			newlySelectedRow = i;
-			break;
-		} else if (itemPageIndex > pageIndex) {
-			newlySelectedRow = i - 1;
-			break;
-		}
-	}
-	
-	if (newlySelectedRow != -1) {
-        [outlineView selectRow:newlySelectedRow byExtendingSelection:NO];
-		[outlineView scrollRowToVisible:newlySelectedRow];
-    }
+    [self updateOutlineSelection];
 }
 
 - (void)handleScaleChangedNotification:(NSNotification *)notification {
