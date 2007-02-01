@@ -339,7 +339,7 @@ static NSString *BDSKPreviewPanelFrameAutosaveName = @"BDSKPreviewPanel";
     [warningView setHidden:success];
     
     NSString *message = nil;
-    NSString *logString;
+    NSString *logString = @"";
     NSData *pdfData = nil;
 	NSAttributedString *attrString = nil;
 	static NSData *emptyMessagePDFData = nil;
@@ -421,7 +421,7 @@ static NSString *BDSKPreviewPanelFrameAutosaveName = @"BDSKPreviewPanel";
     
 	[logView setString:@""];
 	[logView setTextContainerInset:NSMakeSize(20,20)];  // pad the edges of the text
-    [[[logView textStorage] mutableString] setString:logString];
+    [logView setString:logString];
     
     if([self isSharedPreviewer])
         [self updateRepresentedFilename];

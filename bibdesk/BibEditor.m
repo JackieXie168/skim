@@ -3348,7 +3348,7 @@ static NSString *queryStringWithCiteKey(NSString *citekey)
     [self downloadURL:linkURL forField:BDSKLocalUrlString];
 }
 
-#pragma URL downloading
+#pragma mark URL downloading
 
 - (void)downloadURL:(NSURL *)linkURL forField:(NSString *)fieldName{
     if (isDownloading)
