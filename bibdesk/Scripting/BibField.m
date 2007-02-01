@@ -76,7 +76,7 @@ A wrapper object around the fields to access them in AppleScript.
 }
 
 - (NSString *)description {
-    return [NSString stringWithFormat:@"{%@ = %@}",[self name], [self value]];
+    return [NSString stringWithFormat:@"%@: {%@ = %@}",[self class], [self name], [self value]];
 }
 
 - (NSString *)name {
@@ -108,6 +108,7 @@ A wrapper object around the fields to access them in AppleScript.
     NS_DURING
 		NSString *value = [NSString stringWithBibTeXString:newValue macroResolver:[[bibItem owner] macroResolver]];
 		[bibItem setField:name toValue:value];
+        [[bibItem undoManager] setActionName:NSLocalizedString(@"AppleScript",@"Undo action name for AppleScript")];
     NS_HANDLER
 		NSBeep();
     NS_ENDHANDLER
