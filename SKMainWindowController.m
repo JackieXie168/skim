@@ -458,7 +458,7 @@ static NSString *SKDocumentToolbarSearchItemIdentifier = @"SKDocumentToolbarSear
     [pdfView layoutDocumentView];
     
     [self setWindow:mainWindow];
-    [mainWindow makeKeyAndOrderFront:self];
+    [mainWindow makeKeyWindow];
     [mainWindow display];
     
     NSDictionary *fadeOutDict = [[NSDictionary alloc] initWithObjectsAndKeys:fullScreenWindow, NSViewAnimationTargetKey, NSViewAnimationFadeOutEffect, NSViewAnimationEffectKey, nil];
@@ -471,6 +471,7 @@ static NSString *SKDocumentToolbarSearchItemIdentifier = @"SKDocumentToolbarSear
     [animation release];
     [fullScreenWindow orderOut:self];
     [fullScreenWindow setAlphaValue:1.0];
+    [mainWindow makeKeyAndOrderFront:self];
 }
 
 - (void)enterPresentationMode {
@@ -530,7 +531,7 @@ static NSString *SKDocumentToolbarSearchItemIdentifier = @"SKDocumentToolbarSear
     else
         [self goFullScreen];
     
-    [fullScreenWindow setLevel:NSFloatingWindowLevel];
+    [fullScreenWindow setLevel:NSNormalWindowLevel];
     [pdfView setHasNavigation:YES autohidesCursor:NO];
 }
 
