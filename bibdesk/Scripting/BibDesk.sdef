@@ -476,6 +476,10 @@ Having all three of these seems to work best for Panther. For Tiger include this
 			<element type="window" access="r">
 				<cocoa key="orderedWindows"/>
 			</element>
+			<element type="macro" access="r"
+				description="The global macros.">
+				<cocoa key="macros"/>
+			</element>
 			<element type="script hook" access="r"
 				description="The script hook rules known by Bibdesk.">
 				<cocoa key="scriptHooks"/>
@@ -732,8 +736,8 @@ Having all three of these seems to work best for Panther. For Tiger include this
             </responds-to>
         </class>
         
-        <class name="macro" plural="macros" code="macr" inherits="item"
-			description="Macro of a document.">
+        <class name="macro" plural="macros" code="bmcr" inherits="item"
+			description="A macro of a document or a global macro.">
             <cocoa class="BDSKMacro"/>
             <property name="value" code="fldv" type="text"
                 description="The value of the macro">
