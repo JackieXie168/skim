@@ -4009,6 +4009,18 @@ Here are lists of value keys that could be used in BibDesk export templates.
 @tab 
 @end multitable
 
+@subheading Macro
+
+@multitable {value} {}
+@headitem Key @tab Description
+@item name
+@tab 
+@item value
+@tab 
+@item bibTeXString
+@tab 
+@end multitable
+
 
 @heading Collection keys
 
@@ -4019,6 +4031,8 @@ Below are lists of collection keys that could be used in BibDesk export template
 @multitable {publications} {}
 @headitem Key @tab Description
 @item publications
+@tab 
+@item macros
 @tab 
 @end multitable
 
