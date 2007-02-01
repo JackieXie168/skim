@@ -52,6 +52,7 @@
 	IBOutlet NSButton *removeOptionalButton;
 	IBOutlet NSButton *revertCurrentToDefaultButton;
 	IBOutlet NSButton *revertAllToDefaultButton;
+	IBOutlet NSButton *canEditDefaultTypesButton;
 	NSMutableDictionary *fieldsForTypesDict;
 	NSMutableArray *types;
 	NSDictionary *defaultFieldsForTypesDict;
@@ -61,6 +62,7 @@
 	NSArray *currentDefaultRequiredFields;
 	NSArray *currentDefaultOptionalFields;
 	NSString *currentType;
+    BOOL canEditDefaultTypes;
 }
 
 + (BDSKTypeInfoEditor *)sharedTypeInfoEditor;
@@ -79,6 +81,7 @@
 - (IBAction)removeOptional:(id)sender;
 - (IBAction)revertCurrentToDefault:(id)sender;
 - (IBAction)revertAllToDefault:(id)sender;
+- (IBAction)changeCanEditDefaultTypes:(id)sender;
 
 - (BOOL)canEditType:(NSString *)type;
 - (BOOL)canEditField:(NSString *)field;

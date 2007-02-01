@@ -67,6 +67,8 @@ static BDSKTypeInfoEditor *sharedTypeInfoEditor;
 		defaultFieldsForTypesDict = [[tmpDict objectForKey:FIELDS_FOR_TYPES_KEY] retain];
 		defaultTypes = [[[tmpDict objectForKey:REQUIRED_TYPES_FOR_FILE_TYPE_KEY] objectForKey:BDSKBibtexString] retain];
 		
+        canEditDefaultTypes = NO;
+        
 		fieldsForTypesDict = [[NSMutableDictionary alloc] initWithCapacity:[defaultFieldsForTypesDict count]];
 		types = [[NSMutableArray alloc] initWithCapacity:[defaultFieldsForTypesDict count]];
 		[self revertTypes]; // this loads the current typeInfo from BibTypeManager
@@ -100,6 +102,8 @@ static BDSKTypeInfoEditor *sharedTypeInfoEditor;
 	tc = [optionalTableView tableColumnWithIdentifier:@"optional"];
     [[tc dataCell] setFormatter:fieldNameFormatter];
 	
+    [canEditDefaultTypesButton setState:canEditDefaultTypes ? NSOnState : NSOffState];
+    
 	[typeTableView reloadData];
 	[requiredTableView reloadData];
 	[optionalTableView reloadData];
@@ -345,13 +349,41 @@ static BDSKTypeInfoEditor *sharedTypeInfoEditor;
 	[self setDocumentEdited:YES];
 }
 
+- (void)warningSheetDidEnd:(NSWindow *)sheet returnCode:(int)returnCode contextInfo:(void *)contextInfo{
+    canEditDefaultTypes = returnCode == NSOKButton;
+    [canEditDefaultTypesButton setState:canEditDefaultTypes ? NSOnState : NSOffState];
+    
+    [typeTableView reloadData];
+	[requiredTableView reloadData];
+	[optionalTableView reloadData];
+	[self updateButtons];
+}
+
+- (IBAction)changeCanEditDefaultTypes:(id)sender {
+    if ([sender state] == NSOnState) {
+        NSAlert *alert = [NSAlert alertWithMessageText:NSLocalizedString(@"Are you sure you want to edit default types?", @"Message in alert dialog")
+                                         defaultButton:NSLocalizedString(@"OK", @"Button title")
+                                       alternateButton:NSLocalizedString(@"Cancel", @"Button title")
+                                           otherButton:nil
+                             informativeTextWithFormat:NSLocalizedString(@"Changing the default bibtex types and fields can give misleading information.", @"Informative text in alert dialog")];
+        [alert beginSheetModalForWindow:[self window]
+                          modalDelegate:self
+                         didEndSelector:@selector(warningSheetDidEnd:returnCode:contextInfo:)
+                            contextInfo:NULL];
+	} else {
+        [self warningSheetDidEnd:nil returnCode:NSCancelButton contextInfo:NULL];
+    }
+}
+
 #pragma mark validation methods
 
 - (BOOL)canEditType:(NSString *)type {
-	return (![defaultTypes containsObject:type]);
+	return (canEditDefaultTypes || NO == [defaultTypes containsObject:type]);
 }
 
 - (BOOL)canEditField:(NSString *)field{
+    if (canEditDefaultTypes)
+        return YES;
 	if (currentType == nil) // there is nothing to edit
 		return NO;
 	if (![defaultTypes containsObject:currentType]) // we allow any edits for non-default types
