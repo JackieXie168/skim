@@ -746,6 +746,7 @@ The groupedPublications array is a subset of the publications array, developed b
 	
 	while (field = [fieldEnum nextObject]) {
 		[menu addItemWithTitle:field action:NULL keyEquivalent:@""];
+        [menuItem setRepresentedObject:field];
 	}
     
     [menu addItem:[NSMenuItem separatorItem]];
@@ -788,11 +789,11 @@ The groupedPublications array is a subset of the publications array, developed b
 
 - (IBAction)changeGroupFieldAction:(id)sender{
 	NSPopUpButtonCell *headerCell = [groupTableView popUpHeaderCell];
-	NSString *field = ([headerCell indexOfSelectedItem] == 0) ? @"" : [headerCell titleOfSelectedItem];
+	NSString *field = ([headerCell indexOfSelectedItem] == 0) ? @"" : [[headerCell selectedItem] representedObject];
     
 	if(![field isEqualToString:currentGroupField]){
 		[self setCurrentGroupField:field];
-        [headerCell setTitle:field];
+        [headerCell setTitle:[headerCell titleOfSelectedItem]];
 		
 		[[NSNotificationCenter defaultCenter] postNotificationName:BDSKGroupFieldChangedNotification
 															object:self
@@ -828,9 +829,10 @@ The groupedPublications array is a subset of the publications array, developed b
 	NSPopUpButtonCell *headerCell = [groupTableView popUpHeaderCell];
 	
 	[headerCell insertItemWithTitle:newGroupField atIndex:[array count]];
+	[[headerCell itemAtIndex:[array count]] setRepresentedObject:newGroupField];
 	[self setCurrentGroupField:newGroupField];
-	[headerCell selectItemWithTitle:currentGroupField];
-	[headerCell setTitle:currentGroupField];
+	[headerCell selectItemAtIndex:[headerCell indexOfItemWithRepresentedObject:currentGroupField]];
+	[headerCell setTitle:[headerCell titleOfSelectedItem]];
 	
 	[[NSNotificationCenter defaultCenter] postNotificationName:BDSKGroupFieldChangedNotification
 														object:self
@@ -841,11 +843,11 @@ The groupedPublications array is a subset of the publications array, developed b
 - (IBAction)addGroupFieldAction:(id)sender{
 	NSPopUpButtonCell *headerCell = [groupTableView popUpHeaderCell];
 	
-	[headerCell setTitle:currentGroupField];
     if ([currentGroupField isEqualToString:@""])
         [headerCell selectItemAtIndex:0];
     else 
-        [headerCell selectItemWithTitle:currentGroupField];
+        [headerCell selectItemAtIndex:[headerCell indexOfItemWithRepresentedObject:currentGroupField]];
+	[headerCell setTitle:[headerCell titleOfSelectedItem]];
     
 	BibTypeManager *typeMan = [BibTypeManager sharedManager];
 	NSArray *groupFields = [[OFPreferenceWrapper sharedPreferenceWrapper] stringArrayForKey:BDSKGroupFieldsKey];
@@ -893,11 +895,11 @@ The groupedPublications array is a subset of the publications array, developed b
 - (IBAction)removeGroupFieldAction:(id)sender{
 	NSPopUpButtonCell *headerCell = [groupTableView popUpHeaderCell];
 	
-	[headerCell setTitle:currentGroupField];
     if ([currentGroupField isEqualToString:@""])
         [headerCell selectItemAtIndex:0];
     else 
-        [headerCell selectItemWithTitle:currentGroupField];
+        [headerCell selectItemAtIndex:[headerCell indexOfItemWithRepresentedObject:currentGroupField]];
+	[headerCell setTitle:[headerCell titleOfSelectedItem]];
     
     BDSKRemoveFieldSheetController *removeFieldController = [[BDSKRemoveFieldSheetController alloc] initWithPrompt:NSLocalizedString(@"Group field to remove:", @"Label for removing group field")
                                                                                                        fieldsArray:[[OFPreferenceWrapper sharedPreferenceWrapper] stringArrayForKey:BDSKGroupFieldsKey]];
@@ -920,14 +922,15 @@ The groupedPublications array is a subset of the publications array, developed b
         NSParameterAssert(field);
         
         // Ignore this change if we already have that field (shouldn't happen), or are removing the current group field; in the latter case, it's already removed in prefs, so it'll be gone next time the document is opened.  Removing all fields means we have to deal with the add/remove menu items and separator, so avoid that.
-        if([[headerCell titleOfSelectedItem] isEqualToString:field] == NO){
+        if([[[headerCell selectedItem] representedObject] isEqualToString:field] == NO){
             int changeType = [[userInfo valueForKey:NSKeyValueChangeKindKey] intValue];
             
-            if(changeType == NSKeyValueChangeInsertion)
+            if(changeType == NSKeyValueChangeInsertion) {
                 [headerCell insertItemWithTitle:field atIndex:0];
-            else if(changeType == NSKeyValueChangeRemoval)
-                [headerCell removeItemWithTitle:field];
-            else [NSException raise:NSInvalidArgumentException format:@"Unrecognized change type %d", changeType];
+                [[headerCell itemAtIndex:0] setRepresentedObject:field];
+            } else if(changeType == NSKeyValueChangeRemoval) {
+                [headerCell removeItemAtIndex:[headerCell indexOfItemWithRepresentedObject:field]];
+            } else [NSException raise:NSInvalidArgumentException format:@"Unrecognized change type %d", changeType];
         }
     }
 }
