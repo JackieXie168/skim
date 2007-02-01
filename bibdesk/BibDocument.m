@@ -1878,7 +1878,6 @@ originalContentsURL:(NSURL *)absoluteOriginalContentsURL
     NSString *fileName;
     NSString *contentString;
     NSMutableArray *array = [NSMutableArray array];
-    NSArray *contentArray;
     int type = BDSKUnknownStringType;
     
     // some common types that people might use as attachments; we don't need to sniff these
