@@ -45,6 +45,7 @@
 #import "BDSKSmartGroup.h"
 #import "BDSKStaticGroup.h"
 #import "BDSKCategoryGroup.h"
+#import "BDSKWebGroup.h"
 #import "BDSKPublicationsArray.h"
 #import "BibAuthor.h"
 #import "NSObject_BDSKExtensions.h"

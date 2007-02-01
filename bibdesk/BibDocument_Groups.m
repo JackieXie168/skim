@@ -72,6 +72,7 @@
 #import "BDSKMainTableView.h"
 #import "BDSKSearchGroupSheetController.h"
 #import "BDSKSearchGroupViewController.h"
+#import "BDSKWebGroupViewController.h"
 #import "BDSKServerInfo.h"
 #import "NSObject_BDSKExtensions.h"
 
@@ -219,7 +220,7 @@ The groupedPublications array is a subset of the publications array, developed b
         [mainBox setNeedsDisplay:YES];
     }
     
-    BDSKSearchGroup *group = [[self selectedGroups] firstObject];
+    BDSKWebGroup *group = [[self selectedGroups] firstObject];
     [webGroupViewController setGroup:group]; // necessary? will it always be the same web group?
 }
 
