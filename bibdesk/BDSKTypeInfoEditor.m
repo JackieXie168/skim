@@ -627,9 +627,11 @@ static BDSKTypeInfoEditor *sharedTypeInfoEditor;
 }
 
 - (NSDragOperation)tableView:(NSTableView*)tv validateDrop:(id <NSDraggingInfo>)info proposedRow:(int)row proposedDropOperation:(NSTableViewDropOperation)op {
-	if ([info draggingSource] != tv) // we don't allow dragging between tables, as we want to keep default types in the same place
-		return NSDragOperationNone;
-	
+	if ([info draggingSource] != tv) {// we don't allow dragging between tables, as we want to keep default types in the same place
+		if ([info draggingSource] == typeTableView || tv == typeTableView || [self canEditType:currentType] == NO)
+            return NSDragOperationNone;
+	}
+    
 	if (row == -1) // redirect drops on the table to the first item
 		[tv setDropRow:0 dropOperation:NSTableViewDropAbove];
 	if (op == NSTableViewDropOn) // redirect drops on an item
@@ -645,6 +647,7 @@ static BDSKTypeInfoEditor *sharedTypeInfoEditor;
 	NSPasteboard *pboard = [info draggingPasteboard];
 	NSArray *rows = [pboard propertyListForType:BDSKTypeInfoRowsPboardType];
     NSIndexSet *insertIndexes;
+    NSTableView *sourceTv = [info draggingSource];
 	
     if (tv == typeTableView && [info draggingSourceOperationMask] == NSDragOperationCopy) {
         
@@ -670,31 +673,39 @@ static BDSKTypeInfoEditor *sharedTypeInfoEditor;
         NSNumber *rowNum;
         int i;
         int insertRow = row;
-        NSMutableArray *fields = nil;
+        NSMutableArray *sourceFields = nil;
+        NSMutableArray *targetFields = nil;
         NSArray *draggedFields;
         NSMutableIndexSet *removeIndexes = [NSMutableIndexSet indexSet];
         
         // find the array of fields
+        if (sourceTv == typeTableView) {
+            sourceFields = types;
+        } else if (sourceTv == requiredTableView) {
+            sourceFields = currentRequiredFields;
+        } else if (sourceTv == optionalTableView) {
+            sourceFields = currentOptionalFields;
+        }
         if (tv == typeTableView) {
-            fields = types;
+            targetFields = types;
         } else if (tv == requiredTableView) {
-            fields = currentRequiredFields;
+            targetFields = currentRequiredFields;
         } else if (tv == optionalTableView) {
-            fields = currentOptionalFields;
+            targetFields = currentOptionalFields;
         }
         
-        NSAssert(fields != nil, @"An error occurred:  fields must not be nil when dragging");
+        NSAssert(sourceFields != nil && targetFields != nil, @"An error occurred:  fields must not be nil when dragging");
         
         while (rowNum = [rowEnum nextObject]) {
             i = [rowNum intValue];
-            if (i < row) insertRow--;
+            if (sourceTv == tv && i < row) insertRow--;
             [removeIndexes addIndex:i];
         }
         
-        draggedFields = [fields objectsAtIndexes:removeIndexes];
+        draggedFields = [sourceFields objectsAtIndexes:removeIndexes];
         insertIndexes = [NSIndexSet indexSetWithIndexesInRange:NSMakeRange(insertRow, [rows count])];
-        [fields removeObjectsAtIndexes:removeIndexes];
-        [fields insertObjects:draggedFields atIndexes:insertIndexes];
+        [sourceFields removeObjectsAtIndexes:removeIndexes];
+        [targetFields insertObjects:draggedFields atIndexes:insertIndexes];
         
     }
     
@@ -703,6 +714,8 @@ static BDSKTypeInfoEditor *sharedTypeInfoEditor;
         insertIndexes = [NSIndexSet indexSetWithIndex:[insertIndexes firstIndex]];
     [tv selectRowIndexes:insertIndexes byExtendingSelection:NO];
     [tv reloadData];
+    if (sourceTv != tv)
+        [sourceTv reloadData];
     
     [self setDocumentEdited:YES];
     
