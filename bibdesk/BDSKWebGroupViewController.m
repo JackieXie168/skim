@@ -61,10 +61,13 @@
     [webEdgeView setEdges:BDSKEveryEdgeMask];
 }
 
+- (void)handleWebGroupUpdatedNotification:(NSNotification *)notification{
+    // ?
+}
+
 - (void)updateWebGroupView {
     OBASSERT(group);
     [self window];
-    NSString *name = [group name];
 
     [[urlTextField cell] setPlaceholderString:NSLocalizedString(@"URL ", @"Web group URL field placeholder")];
 
@@ -150,10 +153,6 @@
         [group addPublications:nil];
         loadingWebFrame = nil;
     }
-}
-
-- (void)handleWebGroupUpdatedNotification:(NSNotification *)notification{
-// ?
 }
 
 @end
