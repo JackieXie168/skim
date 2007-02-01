@@ -326,7 +326,7 @@ such as @samp{van} or @samp{van den} and suffixes such as @samp{Jr.} or @samp{II
 OK:
 
 @example
-"van den Huevel, Johan A, Jr."
+"van den Huevel, Jr., Johan A"
 @end example
 
 @heading BibTeX Macros
