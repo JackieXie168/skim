@@ -236,37 +236,39 @@
              NSString *containerTitle = [containerDict objectForKey:@"Title"];
              NSString *containerType = [containerDict objectForKey:@"Type"];
              
-             // refine type based on container type
-             if([citationType isEqualToString:@"misc"] && containerType != nil){
-                 if([containerType isEqualToString:@"journal"]){
-                     [rd setObject:BDSKArticleString
-                            forKey:@"Type"];
-                 }else if([containerType isEqualToString:@"proceedings"]){
-                     [rd setObject:BDSKInproceedingsString
-                            forKey:@"Type"];
+             if(containerType != nil){
+                 // refine type based on container type
+                 if([citationType isEqualToString:@"misc"]){
+                     if([containerType isEqualToString:@"journal"]){
+                         [rd setObject:BDSKArticleString
+                                forKey:@"Type"];
+                     }else if([containerType isEqualToString:@"proceedings"]){
+                         [rd setObject:BDSKInproceedingsString
+                                forKey:@"Type"];
+                     }
+            
                  }
-        
-             }
 
-             // refresh:
-             citationType = [rd objectForKey:@"Type"];
-             
-             if([citationType isEqualToString:@"article"]){
-                 [rd setObject:containerTitle
-                        forKey:@"Journal"];
-             }else if([citationType isEqualToString:@"incollection"] ||
-                      [citationType isEqualToString:@"inproceedings"]){
-                 [rd setObject:containerTitle
-                        forKey:@"Booktitle"];
-             }else if([citationType isEqualToString:@"inbook"]){
-                 // TODO: this case may need some tweaking
-                 [rd setObject:[rd objectForKey:@"Title"]
-                        forKey:@"Chapter"];
-                 [rd setObject:containerTitle
-                        forKey:@"Title"];
-             }else{
-                 [rd setObject:containerTitle
-                        forKey:@"ContainerTitle"];
+                 // refresh:
+                 citationType = [rd objectForKey:@"Type"];
+                 
+                 if([citationType isEqualToString:@"article"]){
+                     [rd setObject:containerTitle
+                            forKey:@"Journal"];
+                 }else if([citationType isEqualToString:@"incollection"] ||
+                          [citationType isEqualToString:@"inproceedings"]){
+                     [rd setObject:containerTitle
+                            forKey:@"Booktitle"];
+                 }else if([citationType isEqualToString:@"inbook"]){
+                     // TODO: this case may need some tweaking
+                     [rd setObject:[rd objectForKey:@"Title"]
+                            forKey:@"Chapter"];
+                     [rd setObject:containerTitle
+                            forKey:@"Title"];
+                 }else{
+                     [rd setObject:containerTitle
+                            forKey:@"ContainerTitle"];
+                 }
              }
              // Containers have more info than just title and type:
              // TODO: do we only dump it in or do we need to do more?
