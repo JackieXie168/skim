@@ -105,19 +105,42 @@
     [webView takeStringURLFrom:sender];
 }
 
+- (IBAction)stopOrReloadAction:(id)sender {
+	if ([group isRetrieving]) {
+		[webView stopLoading:sender];
+	} else {
+		[webView reload:sender];
+	}
+}
+
+- (void)setRetrieving:(BOOL)retrieving {
+    [group setRetrieving:retrieving];
+    [backButton setEnabled:[webView canGoBack]];
+    [forwardButton setEnabled:[webView canGoForward]];
+    if (retrieving) {
+        [stopOrReloadButton setImage:[NSImage imageNamed:@"stop_small"]];
+        [stopOrReloadButton setToolTip:NSLocalizedString(@"Cancel download", @"Tool tip message")];
+        [stopOrReloadButton setKeyEquivalent:@""];
+    } else {
+        [stopOrReloadButton setImage:[NSImage imageNamed:@"reload_small"]];
+        [stopOrReloadButton setToolTip:NSLocalizedString(@"Reload page", @"Tool tip message")];
+        [stopOrReloadButton setKeyEquivalent:@"r"];
+    }
+}
+
 - (void)webView:(WebView *)sender didStartProvisionalLoadForFrame:(WebFrame *)frame{
     
     if (frame == [sender mainFrame]) {
         
         OBASSERT(loadingWebFrame == nil);
         
-        [group setRetrieving:YES];
+        [self setRetrieving:YES];
         [group setPublications:nil];
         loadingWebFrame = frame;
         
     } else if (loadingWebFrame == nil) {
         
-        [group setRetrieving:YES];
+        [self setRetrieving:YES];
         loadingWebFrame = frame;
         
     }
@@ -128,10 +151,10 @@
     NSString *htmlString = [(id)[[frame DOMDocument] documentElement] outerHTML];
     
     NSError *err = nil;
-    NSArray *newPubs = [BDSKHCiteParser itemsFromXHTMLString:htmlString error:&err];
+    NSArray *newPubs = htmlString ? [BDSKHCiteParser itemsFromXHTMLString:htmlString error:&err] : nil;
         
     if (frame == loadingWebFrame) {
-        [group setRetrieving:NO];
+        [self setRetrieving:NO];
         [group addPublications:newPubs];
         loadingWebFrame = nil;
     } else {
@@ -141,7 +164,7 @@
 
 - (void)webView:(WebView *)sender didFailProvisionalLoadWithError:(NSError *)error forFrame:(WebFrame *)frame{
     if (frame == loadingWebFrame) {
-        [group setRetrieving:NO];
+        [self setRetrieving:NO];
         [group addPublications:nil];
         loadingWebFrame = nil;
     }
@@ -149,7 +172,7 @@
 
 - (void)webView:(WebView *)sender didFailLoadWithError:(NSError *)error forFrame:(WebFrame *)frame{
     if (frame == loadingWebFrame) {
-        [group setRetrieving:NO];
+        [self setRetrieving:NO];
         [group addPublications:nil];
         loadingWebFrame = nil;
     }
