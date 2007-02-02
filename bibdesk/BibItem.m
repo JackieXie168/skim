@@ -1511,6 +1511,9 @@ Boolean stringContainsLossySubstring(NSString *theString, NSString *stringToFind
     if(date = [self dateModified])
         [info setObject:date forKey:(NSString *)kMDItemContentModificationDate];
 
+    if(date = [self dateAdded])
+        [info setObject:date forKey:(NSString *)kMDItemContentCreationDate];
+
     // keywords is supposed to be a CFArray type, so we'll use the group splitting code
     if(array = [[self groupsForField:BDSKKeywordsString] allObjects])
         [info setObject:array forKey:(NSString *)kMDItemKeywords];
