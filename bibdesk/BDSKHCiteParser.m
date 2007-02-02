@@ -236,7 +236,7 @@
              NSString *containerTitle = [containerDict objectForKey:@"Title"];
              NSString *containerType = [containerDict objectForKey:@"Type"];
              
-             if(containerType != nil){
+             if(containerType != nil && containerTitle != nil){
                  // refine type based on container type
                  if([citationType isEqualToString:@"misc"]){
                      if([containerType isEqualToString:@"journal"]){
