@@ -78,11 +78,18 @@
     NSError *err = nil;
     unsigned int i = 0;
     
-    // find type 
+    // find type but not type that's a descendant of 'container'.
     NSArray *typeNodes = [citationNode descendantOrSelfNodesWithClassName:@"type" error:&err];
     
-    if([typeNodes count] > 0){
-        NSString *typeString = [[typeNodes objectAtIndex:0] fullStringValueIfABBR];
+    NSString *typeString = nil;
+    for (i = 0; i < [typeNodes count]; i++) {
+        NSXMLNode *node = [typeNodes objectAtIndex:i];
+        if(![[citationNode classNames] containsObject:@"container"] &&
+           [node hasParentWithClassName:@"container"] ) continue;
+        typeString = [node fullStringValueIfABBR];
+    }
+    
+    if(typeString != nil){
         [rd setObject:[typeMan bibtexTypeForHCiteType:typeString]
                forKey:@"Type"];
     }else{
@@ -92,31 +99,28 @@
     
     // find title node
     
-    // TODO temporary: will title be represented as fn or title in final hcite?
-    // for now we read both.
-    NSMutableArray *titleNodes = [NSMutableArray arrayWithCapacity:0];
-    [titleNodes addObjectsFromArray:[citationNode descendantOrSelfNodesWithClassName:@"fn" error:&err]];
-    [titleNodes addObjectsFromArray:[citationNode descendantOrSelfNodesWithClassName:@"title" error:&err]];
+    NSArray *titleNodes = [citationNode descendantOrSelfNodesWithClassName:@"title" error:&err];
     
     for(i = 0; i < [titleNodes count]; i++){
         NSXMLNode *node = [titleNodes objectAtIndex:i];
-        if([node hasParentWithClassName:@"vcard"] ||
+        if(![[citationNode classNames] containsObject:@"container"] &&
            [node hasParentWithClassName:@"container"]){
-            // note: todo - avoid second hasParentWithClassName by finding container nodes first and caching those then checking against them here. (if necessary)
-            continue;
+            // note: todo - avoid second hasParentWithClassName by finding container 
+            // nodes first and caching those then checking against them here. (if necessary)
+            continue; // deal with this citation's container later
         }
         
         [rd setObject:[node stringValue] forKey:@"Title"];
     }
     
     // find authors
-    // note, should only find ones that contain 'vcard' as well but for now we ignore it
-    
+
     NSArray *authorNodes = [citationNode descendantOrSelfNodesWithClassName:@"creator" error:&err];
     NSMutableString *BTAuthString = [NSMutableString stringWithCapacity:0];
     
     for(i = 0; i < [authorNodes count]; i++){
         NSXMLNode *node = [authorNodes objectAtIndex:i];
+        if (! [[node classNames] containsObject:@"vcard"]) continue;
         
         if(i > 0)[BTAuthString appendFormat:@" and "];
         
@@ -166,9 +170,9 @@
      if([datePublishedNodes count] > 0) {
          NSXMLNode *datePublishedNode = [datePublishedNodes objectAtIndex:0]; // Only use the first such node.
          NSCalendarDate *datePublished = [self dateFromNode:datePublishedNode];
-         [rd setObject:[NSString stringWithFormat:@"%d", [datePublished yearOfCommonEra]] // how is this done in BD?
+         [rd setObject:[datePublished descriptionWithCalendarFormat:@"%Y"]
                 forKey:@"Year"];
-         [rd setObject:[NSString stringWithFormat:@"%d", [datePublished monthOfYear]]
+         [rd setObject:[datePublished descriptionWithCalendarFormat:@"%B"]
                 forKey:@"Month"];
      }
      
@@ -215,6 +219,62 @@
              [rd setObject:URIString forKey:@"Url"];
          }
      }  
+     
+     // get container info: 
+     // *** NOTE: should do this last, to avoid overwriting data
+     
+     NSArray *containerNodes = [citationNode descendantOrSelfNodesWithClassName:@"container"
+                                                                          error:&err];
+     
+     if([containerNodes count] > 0) {
+         NSXMLNode *containerNode = [containerNodes objectAtIndex:0];
+         
+         if([[containerNode classNames] containsObject:@"hcite"]){
+             NSString *citationType = [rd objectForKey:@"Type"];
+             
+             NSMutableDictionary *containerDict = [NSMutableDictionary dictionaryWithDictionary:[BDSKHCiteParser dictionaryFromCitationNode:containerNode]];
+             NSString *containerTitle = [containerDict objectForKey:@"Title"];
+             NSString *containerType = [containerDict objectForKey:@"Type"];
+             
+             // refine type based on container type
+             if([citationType isEqualToString:@"misc"] && containerType != nil){
+                 if([containerType isEqualToString:@"journal"]){
+                     [rd setObject:BDSKArticleString
+                            forKey:@"Type"];
+                 }else if([containerType isEqualToString:@"proceedings"]){
+                     [rd setObject:BDSKInproceedingsString
+                            forKey:@"Type"];
+                 }
+        
+             }
+
+             // refresh:
+             citationType = [rd objectForKey:@"Type"];
+             
+             if([citationType isEqualToString:@"article"]){
+                 [rd setObject:containerTitle
+                        forKey:@"Journal"];
+             }else if([citationType isEqualToString:@"incollection"] ||
+                      [citationType isEqualToString:@"inproceedings"]){
+                 [rd setObject:containerTitle
+                        forKey:@"Booktitle"];
+             }else if([citationType isEqualToString:@"inbook"]){
+                 // TODO: this case may need some tweaking
+                 [rd setObject:[rd objectForKey:@"Title"]
+                        forKey:@"Chapter"];
+                 [rd setObject:containerTitle
+                        forKey:@"Title"];
+             }else{
+                 [rd setObject:containerTitle
+                        forKey:@"ContainerTitle"];
+             }
+             // Containers have more info than just title and type:
+             // TODO: do we only dump it in or do we need to do more?
+             [containerDict removeObjectsForKeys:[rd allKeys]];
+             [rd addEntriesFromDictionary:containerDict];
+         }
+         
+     }
      
      return rd;
 }

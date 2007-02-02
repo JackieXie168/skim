@@ -2,11 +2,13 @@
     BibTeXTypesForHCiteTypes = {
         "Journal Article" = article;
         "Journal Paper" = article;
+        "Journal" = journal; /* mostly to allow for journal container hcites */
         "Book" = book;
         "Chapter" = inbook;
         "Book Section" = inbook;
         "Technical Report" = techreport;
         Thesis = phdthesis;
+        "Proceedings" = proceedings;
     };
 
     BibTeXFieldNamesForJSTORTags = {
