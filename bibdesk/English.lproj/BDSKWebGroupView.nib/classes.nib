@@ -26,11 +26,14 @@
             SUPERCLASS = NSWindowController; 
         }, 
         {
-            ACTIONS = {changeURL = id; }; 
+            ACTIONS = {changeURL = id; stopOrReloadAction = id; }; 
             CLASS = BDSKWebGroupViewController; 
             LANGUAGE = ObjC; 
             OUTLETS = {
+                backButton = NSButton; 
                 edgeView = BDSKEdgeView; 
+                forwardButton = NSButton; 
+                stopOrReloadButton = NSButton; 
                 urlTextField = NSTextField; 
                 view = BDSKCollapsibleView; 
                 webEdgeView = BDSKEdgeView; 
@@ -38,7 +41,12 @@
             }; 
             SUPERCLASS = NSWindowController; 
         }, 
-        {CLASS = FirstResponder; LANGUAGE = ObjC; SUPERCLASS = NSObject; }
+        {
+            ACTIONS = {"" = id; }; 
+            CLASS = FirstResponder; 
+            LANGUAGE = ObjC; 
+            SUPERCLASS = NSObject; 
+        }
     ); 
     IBVersion = 1; 
 }

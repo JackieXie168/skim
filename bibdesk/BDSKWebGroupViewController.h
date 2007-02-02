@@ -47,6 +47,9 @@ DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
     IBOutlet NSTextField *urlTextField;
     IBOutlet BDSKEdgeView *webEdgeView;
     IBOutlet WebView *webView;
+    IBOutlet NSButton *backButton;
+    IBOutlet NSButton *forwardButton;
+    IBOutlet NSButton *stopOrReloadButton;
     
     BDSKWebGroup *group;
     WebFrame *loadingWebFrame;
@@ -59,6 +62,7 @@ DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
 - (void)setGroup:(BDSKWebGroup *)newGroup;
 
 - (IBAction)changeURL:(id)sender;
+- (IBAction)stopOrReloadAction:(id)sender;
 
 
 @end
