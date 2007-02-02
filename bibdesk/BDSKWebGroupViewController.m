@@ -59,6 +59,12 @@
     [view setMinSize:[view frame].size];
     [edgeView setEdges:BDSKMinXEdgeMask | BDSKMaxXEdgeMask];
     [webEdgeView setEdges:BDSKEveryEdgeMask];
+    [backButton setImagePosition:NSImageOnly];
+    [backButton setImage:[NSImage imageNamed:@"back_small"]];
+    [forwardButton setImagePosition:NSImageOnly];
+    [forwardButton setImage:[NSImage imageNamed:@"forward_small"]];
+    [stopOrReloadButton setImagePosition:NSImageOnly];
+    [stopOrReloadButton setImage:[NSImage imageNamed:@"reload_small"]];
 }
 
 - (void)handleWebGroupUpdatedNotification:(NSNotification *)notification{
@@ -117,6 +123,7 @@
     [group setRetrieving:retrieving];
     [backButton setEnabled:[webView canGoBack]];
     [forwardButton setEnabled:[webView canGoForward]];
+    [stopOrReloadButton setEnabled:YES];
     if (retrieving) {
         [stopOrReloadButton setImage:[NSImage imageNamed:@"stop_small"]];
         [stopOrReloadButton setToolTip:NSLocalizedString(@"Cancel download", @"Tool tip message")];
