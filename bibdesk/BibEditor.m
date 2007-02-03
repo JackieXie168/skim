@@ -271,7 +271,7 @@ static int numberOfOpenEditors = 0;
     if (isEditable)
         [[self window] registerForDraggedTypes:[NSArray arrayWithObjects:BDSKBibItemPboardType, NSStringPboardType, nil]];					
 	
-    [self setCiteKeyDuplicateWarning:![publication isValidCiteKey:[publication citeKey]]];
+    [self updateCiteKeyDuplicateWarning];
     
     [documentSnoopButton setIconImage:nil];
     
@@ -1000,13 +1000,23 @@ static int numberOfOpenEditors = 0;
 #pragma mark Cite Key handling methods
 
 - (IBAction)showCiteKeyWarning:(id)sender{
-    NSBeginAlertSheet(NSLocalizedString(@"Duplicate Cite Key", @"Message in alert dialog when duplicate citye key was found"),nil,nil,nil,[self window],nil,NULL,NULL,NULL,NSLocalizedString(@"The citation key you entered is either already used in this document or is empty. Please provide a unique one.", @"Informative text in alert dialog"));
+    if ([publication hasEmptyOrDefaultCiteKey])
+        NSBeginAlertSheet(NSLocalizedString(@"Cite Key Not Set", @"Message in alert dialog when duplicate citye key was found"),nil,nil,nil,[self window],nil,NULL,NULL,NULL,NSLocalizedString(@"The cite key has not been set. Please provide one.", @"Informative text in alert dialog"));
+    else if ([publication isValidCiteKey:[publication citeKey]] == NO)
+        NSBeginAlertSheet(NSLocalizedString(@"Duplicate Cite Key", @"Message in alert dialog when duplicate citye key was found"),nil,nil,nil,[self window],nil,NULL,NULL,NULL,NSLocalizedString(@"The cite key you entered is either already used in this document. Please provide a unique one.", @"Informative text in alert dialog"));
 }
 
-- (void)setCiteKeyDuplicateWarning:(BOOL)set{
-    [citeKeyWarningButton setToolTip:set ? NSLocalizedString(@"This cite-key is a duplicate", @"Tool tip message") : nil];
-	[citeKeyWarningButton setHidden:set == NO];
-	[citeKeyField setTextColor:(set ? [NSColor redColor] : [NSColor blackColor])];
+- (void)updateCiteKeyDuplicateWarning{
+    if (isEditable == NO)
+        return;
+    NSString *message = nil;
+    if ([publication hasEmptyOrDefaultCiteKey])
+        message = NSLocalizedString(@"The cite-key has not been set", @"Tool tip message");
+    else if ([publication isValidCiteKey:[publication citeKey]] == NO)
+        message = NSLocalizedString(@"This cite-key is a duplicate", @"Tool tip message");
+	[citeKeyWarningButton setHidden:message == nil];
+    [citeKeyWarningButton setToolTip:message];
+	[citeKeyField setTextColor:(message ? [NSColor redColor] : [NSColor blackColor])];
 }
 
 - (void)generateCiteKeyAlertDidEnd:(BDSKAlert *)alert returnCode:(int)returnCode contextInfo:(void *)contextInfo{
@@ -1753,12 +1763,7 @@ static int numberOfOpenEditors = 0;
             
             [[self undoManager] setActionName:NSLocalizedString(@"Change Cite Key", @"Undo action name")];
             
-            // still need to check duplicates ourselves:
-            if([publication isValidCiteKey:newKey] == NO){
-                [self setCiteKeyDuplicateWarning:YES];
-            }else{
-                [self setCiteKeyDuplicateWarning:NO];
-            }
+            [self updateCiteKeyDuplicateWarning];
             
         }
     }
@@ -1972,12 +1977,7 @@ static int numberOfOpenEditors = 0;
 	if([changeKey isEqualToString:BDSKCiteKeyString]){
 		[citeKeyField setStringValue:newValue];
 		[self updateCiteKeyAutoGenerateStatus];
-		// still need to check duplicates ourselves:
-		if(![publication isValidCiteKey:newValue]){
-			[self setCiteKeyDuplicateWarning:YES];
-		}else{
-			[self setCiteKeyDuplicateWarning:NO];
-		}
+        [self updateCiteKeyDuplicateWarning];
 	}else{
 		// essentially a cellWithTitle: for NSForm
 		NSEnumerator *cellE = [[bibFields cells] objectEnumerator];

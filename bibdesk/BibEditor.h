@@ -326,11 +326,11 @@
 - (IBAction)showCiteKeyWarning:(id)sender;
 
 /*!
-    @method     setCiteKeyDuplicateWarning
+    @method     updateCiteKeyDuplicateWarning
     @abstract   Method to (un)set a warning to the user that the cite-key is a duplicate in te document. 
     @discussion (comprehensive description)
 */
-- (void)setCiteKeyDuplicateWarning:(BOOL)set;
+- (void)updateCiteKeyDuplicateWarning;
 
 /*!
     @method     bibTypeDidChange:
