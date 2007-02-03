@@ -123,7 +123,7 @@
 }
 
 - (IBAction)changeURL:(id)sender {
-    //if ([NSString isEmptyString:[sender stringValue]] == NO)
+    if ([NSString isEmptyString:[sender stringValue]] == NO)
         [webView takeStringURLFrom:sender];
 }
 
