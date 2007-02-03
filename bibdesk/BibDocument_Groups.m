@@ -1227,7 +1227,7 @@ The groupedPublications array is a subset of the publications array, developed b
     CFIndex countOfItems = [publications count];
     BibItem **pubs = (BibItem **)NSZoneMalloc([self zone], sizeof(BibItem *) * countOfItems);
     [publications getObjects:pubs];
-    NSSet *currentPubs = (NSSet *)CFSetCreate(CFAllocatorGetDefault(), (const void **)pubs, countOfItems, &BDSKBibItemEqualityCallBacks);
+    NSSet *currentPubs = (NSSet *)CFSetCreate(CFAllocatorGetDefault(), (const void **)pubs, countOfItems, &BDSKBibItemEquivalenceCallBacks);
     NSZoneFree([self zone], pubs);
     
     NSMutableArray *array = [NSMutableArray arrayWithCapacity:[items count]];
@@ -1551,7 +1551,7 @@ The groupedPublications array is a subset of the publications array, developed b
     CFIndex countOfItems = [pubs count];
     BibItem **items = (BibItem **)NSZoneMalloc([self zone], sizeof(BibItem *) * countOfItems);
     [pubs getObjects:items];
-    NSSet *pubSet = (NSSet *)CFSetCreate(CFAllocatorGetDefault(), (const void **)items, countOfItems, &BDSKBibItemEqualityCallBacks);
+    NSSet *pubSet = (NSSet *)CFSetCreate(CFAllocatorGetDefault(), (const void **)items, countOfItems, &BDSKBibItemEquivalenceCallBacks);
     NSZoneFree([self zone], items);
     
     NSMutableIndexSet *indexes = [NSMutableIndexSet indexSet];

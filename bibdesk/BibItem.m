@@ -124,9 +124,39 @@ CFHashCode BibItemCaseInsensitiveCiteKeyHash(const void *item)
     return OFCaseInsensitiveStringHash([(BibItem *)item citeKey]);
 }
 
+CFHashCode BibItemEquivalenceHash(const void *item)
+{
+    OBASSERT([(id)item isKindOfClass:[BibItem class]]);
+    
+    NSString *type = [(BibItem *)item pubType];
+    CFHashCode hash = OFCaseInsensitiveStringHash(type);
+	
+	// hash only the standard fields; are these all we should compare?
+	BibTypeManager *btm = [BibTypeManager sharedManager];
+	NSMutableSet *keys = [[NSMutableSet alloc] initWithCapacity:20];
+	[keys addObjectsFromArray:[btm requiredFieldsForType:type]];
+	[keys addObjectsFromArray:[btm optionalFieldsForType:type]];
+	[keys addObjectsFromArray:[btm userDefaultFieldsForType:type]];
+    [keys removeObject:BDSKLocalUrlString];
+	NSEnumerator *keyEnum = [keys objectEnumerator];
+    [keys release];
+    
+	NSString *key;
+	
+	while (key = [keyEnum nextObject])
+        hash ^= [[(BibItem *)item stringValueOfField:key inherit:NO] hash];
+    
+    return hash;
+}
+
 Boolean BibItemEqualityTest(const void *value1, const void *value2)
 {
     return ([(BibItem *)value1 isEqualToItem:(BibItem *)value2]);
+}
+
+Boolean BibItemEquivalenceTest(const void *value1, const void *value2)
+{
+    return ([(BibItem *)value1 isEquivalentToItem:(BibItem *)value2]);
 }
 
 // Values are BibItems; used to determine if pubs are duplicates.  Items must not be edited while contained in a set using these callbacks, so dispose of the set before any editing operations.
@@ -137,6 +167,16 @@ const CFSetCallBacks BDSKBibItemEqualityCallBacks = {
     OFNSObjectCopyDescription,
     BibItemEqualityTest,
     BibItemCaseInsensitiveCiteKeyHash,
+};
+
+// Values are BibItems; used to determine if pubs are duplicates.  Items must not be edited while contained in a set using these callbacks, so dispose of the set before any editing operations.
+const CFSetCallBacks BDSKBibItemEquivalenceCallBacks = {
+    0,    // version
+    OFNSObjectRetain,  // retain
+    OFNSObjectRelease, // release
+    OFNSObjectCopyDescription,
+    BibItemEquivalenceTest,
+    BibItemEquivalenceHash,
 };
 
 /* Paragraph styles cached for efficiency. */
@@ -344,6 +384,41 @@ static CFDictionaryRef selectorTable = NULL;
 	[keys addObjectsFromArray:[btm requiredFieldsForType:[self pubType]]];
 	[keys addObjectsFromArray:[btm optionalFieldsForType:[self pubType]]];
 	[keys addObjectsFromArray:[btm userDefaultFieldsForType:[self pubType]]];
+	NSEnumerator *keyEnum = [keys objectEnumerator];
+    [keys release];
+    
+	NSString *key;
+	
+    // @@ remove TeX?  case-sensitive?
+	while (key = [keyEnum nextObject]) {
+		if ([[self stringValueOfField:key inherit:NO] isEqualToString:[aBI stringValueOfField:key inherit:NO]] == NO)
+			return NO;
+	}
+	
+	NSString *crossref1 = [self valueOfField:BDSKCrossrefString inherit:NO];
+	NSString *crossref2 = [aBI valueOfField:BDSKCrossrefString inherit:NO];
+	if ([NSString isEmptyString:crossref1] == YES)
+		return [NSString isEmptyString:crossref2];
+	else if ([NSString isEmptyString:crossref2] == YES)
+		return NO;
+	return ([crossref1 caseInsensitiveCompare:crossref2] == NSOrderedSame);
+}
+
+- (BOOL)isEquivalentToItem:(BibItem *)aBI{ 
+    if (aBI == self)
+		return YES;
+    
+    // type should be compared case-insensitively from BibTeX's perspective
+	if ([[self pubType] caseInsensitiveCompare:[aBI pubType]] != NSOrderedSame)
+		return NO;
+	
+	// compare only the standard fields; are these all we should compare?
+	BibTypeManager *btm = [BibTypeManager sharedManager];
+	NSMutableSet *keys = [[NSMutableSet alloc] initWithCapacity:20];
+	[keys addObjectsFromArray:[btm requiredFieldsForType:[self pubType]]];
+	[keys addObjectsFromArray:[btm optionalFieldsForType:[self pubType]]];
+	[keys addObjectsFromArray:[btm userDefaultFieldsForType:[self pubType]]];
+    [keys removeObject:BDSKLocalUrlString];
 	NSEnumerator *keyEnum = [keys objectEnumerator];
     [keys release];
     
