@@ -40,8 +40,6 @@
 #import <OmniFoundation/NSString-OFExtensions.h>
 #import "NSBezierPath_BDSKExtensions.h"
 
-static NSImage *cautionIconImage = nil;
-
 @implementation NSImage (Toolbox)
 
 + (NSImage *)iconWithSize:(NSSize)iconSize forToolboxCode:(OSType) code {
@@ -108,13 +106,6 @@ static NSImage *cautionIconImage = nil;
         [image unlockFocus];
     }
     return image;
-}
-
-+ (NSImage *)cautionIconImage {
-	if (!cautionIconImage) {
-		cautionIconImage = [[self iconWithSize:NSMakeSize(16,16) forToolboxCode:kAlertCautionIcon] retain];
-	}
-	return cautionIconImage;
 }
 
 + (NSImage *)smallGenericInternetLocationImage{

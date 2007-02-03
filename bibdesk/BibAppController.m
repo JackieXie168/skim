@@ -76,6 +76,7 @@
 #import "BDSKDocumentController.h"
 #import "NSError_BDSKExtensions.h"
 #import "BDSKSpotlightIconController.h"
+#import "NSImage+Toolbox.h"
 #import <libkern/OSAtomic.h>
 
 @implementation BibAppController
@@ -164,6 +165,11 @@ static void createTemporaryDirectory()
             [[OFPreferenceWrapper sharedPreferenceWrapper] setObject:[alias aliasData] forKey:BDSKDefaultBibFileAliasKey];
         [[OFPreferenceWrapper sharedPreferenceWrapper] removeObjectForKey:@"Default Bib File"];
     }
+    
+    // name image to make it available app wide, also in IB
+    static NSImage *cautionIcon = nil;
+    cautionIcon = [[NSImage iconWithSize:NSMakeSize(16.0, 16.0) forToolboxCode:kAlertCautionIcon] retain];
+    [cautionIcon setName:@"BDSKSmallCautionIcon"];
 }
 
 - (id)init

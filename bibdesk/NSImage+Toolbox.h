@@ -44,7 +44,6 @@
 
 + (NSImage *)iconWithSize:(NSSize)iconSize forToolboxCode:(OSType) code;
 + (NSImage *)imageWithLargeIconForToolboxCode:(OSType) code;
-+ (NSImage *)cautionIconImage;
 + (NSImage *)missingFileImage;
 + (NSImage *)smallMissingFileImage;
 

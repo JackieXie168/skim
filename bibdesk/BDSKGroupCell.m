@@ -272,13 +272,13 @@ textRect.origin.y += floorf(vOffset); \
     
     if (isRetrieving == NO) {
         if (failedDownload) {
-            NSImage *cautionImage = [NSImage cautionIconImage];
+            NSImage *cautionImage = [NSImage imageNamed:@"BDSKSmallCautionIcon"];
             NSSize cautionImageSize = [cautionImage size];
             NSRect cautionIconRect = NSMakeRect(0, 0, cautionImageSize.width, cautionImageSize.height);
             if(controlViewIsFlipped)
-                [[NSImage cautionIconImage] drawFlippedInRect:countRect fromRect:cautionIconRect operation:NSCompositeSourceOver fraction:1.0];
+                [cautionImage drawFlippedInRect:countRect fromRect:cautionIconRect operation:NSCompositeSourceOver fraction:1.0];
             else
-                [[NSImage cautionIconImage] drawInRect:countRect fromRect:cautionIconRect operation:NSCompositeSourceOver fraction:1.0];
+                [cautionImage drawInRect:countRect fromRect:cautionIconRect operation:NSCompositeSourceOver fraction:1.0];
         } else if (countSize.width > 0) {
             [NSGraphicsContext saveGraphicsState];
             [bgColor setFill];

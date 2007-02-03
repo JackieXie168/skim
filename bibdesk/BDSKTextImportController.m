@@ -1473,14 +1473,8 @@
 #pragma mark Cite key duplicate warning
 
 - (void)setCiteKeyDuplicateWarning:(BOOL)set{
-	if(set){
-		[citeKeyWarningButton setImage:[NSImage cautionIconImage]];
-		[citeKeyWarningButton setToolTip:NSLocalizedString(@"This cite-key is a duplicate", @"Tool tip message")];
-	}else{
-		[citeKeyWarningButton setImage:nil];
-		[citeKeyWarningButton setToolTip:nil];
-	}
-	[citeKeyWarningButton setEnabled:set];
+    [citeKeyWarningButton setToolTip:set ? NSLocalizedString(@"This cite-key is a duplicate", @"Tool tip message") : nil];
+	[citeKeyWarningButton setHidden:set == NO];
 	[citeKeyField setTextColor:(set ? [NSColor redColor] : [NSColor blackColor])];
 }
 

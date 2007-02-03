@@ -17,10 +17,10 @@
 	</array>
 	<key>IBOpenObjects</key>
 	<array>
-		<integer>80</integer>
-		<integer>114</integer>
-		<integer>15</integer>
 		<integer>95</integer>
+		<integer>114</integer>
+		<integer>80</integer>
+		<integer>15</integer>
 	</array>
 	<key>IBSystem Version</key>
 	<string>8L127</string>

@@ -287,14 +287,8 @@ static NSString *repositorySpecifierStrings[] = {@"", @"%a00", @"%A0", @"%p00", 
 }
 
 - (void)setCiteKeyFormatInvalidWarning:(BOOL)set message:(NSString *)message{
-	if(set){
-		[formatWarningButton setImage:[NSImage cautionIconImage]];
-		[formatWarningButton setToolTip:message];
-	}else{
-		[formatWarningButton setImage:nil];
-		[formatWarningButton setToolTip:nil];
-	}
-	[formatWarningButton setEnabled:set];
+    [formatWarningButton setToolTip:set ? message : nil];
+	[formatWarningButton setHidden:set == NO];
 	[formatSheetField setTextColor:(set ? [NSColor redColor] : [NSColor blackColor])]; // overdone?
 }
 
