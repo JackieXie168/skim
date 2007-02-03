@@ -49,14 +49,9 @@
 
 #pragma mark BDSKGroup overrides
 
-// note that pointer equality is used for these groups, so names can overlap, and users can have duplicate searches
+// note that pointer equality is used for these groups, so names can overlap
 
-//TODO: need better image
-- (NSImage *)icon { return [NSImage smallImageNamed:@"urlFolderIcon"]; }
-
-- (NSString *)toolTip {
-    return NSLocalizedString(@"Web", @"Web");
-}
+- (NSImage *)icon { return [NSImage smallImageNamed:@"webFolderIcon"]; }
 
 - (BOOL)isSearch { return NO; }
 

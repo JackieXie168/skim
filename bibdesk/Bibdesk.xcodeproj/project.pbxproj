@@ -256,6 +256,7 @@
 		CE392F5E08D04083001CEAC8 /* BDSKRatingButton.m in Sources */ = {isa = PBXBuildFile; fileRef = CE392F5C08D04083001CEAC8 /* BDSKRatingButton.m */; };
 		CE3A0BD60B1634D500233208 /* BDSKCompletionServerProtocol.h in Headers */ = {isa = PBXBuildFile; fileRef = CE3A0BD50B1634D500233208 /* BDSKCompletionServerProtocol.h */; };
 		CE3A1A570B19C2F700233208 /* SelectEncodingsPanel.nib in Resources */ = {isa = PBXBuildFile; fileRef = CE3A1A560B19C2F700233208 /* SelectEncodingsPanel.nib */; };
+		CE3A241A0B750424006B64D3 /* webFolderIcon.tiff in Resources */ = {isa = PBXBuildFile; fileRef = CE3A24190B750424006B64D3 /* webFolderIcon.tiff */; };
 		CE3A32D60A345C2400984DC2 /* NSAttributedString_BDSKExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = CEB772E90A34529D00B8A299 /* NSAttributedString_BDSKExtensions.m */; };
 		CE3A32D70A345C2600984DC2 /* NSAttributedString_BDSKExtensions.h in Headers */ = {isa = PBXBuildFile; fileRef = CEB772E80A34529D00B8A299 /* NSAttributedString_BDSKExtensions.h */; };
 		CE3B5E7C09CEDE470017D339 /* BDSKMacroResolver.h in Headers */ = {isa = PBXBuildFile; fileRef = CE3B5E7A09CEDE470017D339 /* BDSKMacroResolver.h */; };
@@ -1092,7 +1093,7 @@
 		4575382D0B70170D00C0E49B /* BDSKWebGroupViewController.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = BDSKWebGroupViewController.m; sourceTree = "<group>"; };
 		457538410B701ECD00C0E49B /* English */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = English; path = English.lproj/BDSKWebGroupView.nib; sourceTree = "<group>"; };
 		8D1107310486CEB800E47090 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
-		8D1107320486CEB800E47090 /* BibDesk.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = BibDesk.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		8D1107320486CEB800E47090 /* BibDesk.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = BibDesk.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		CE11A6340AE6BB77008C47AC /* urlFolderIcon.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; name = urlFolderIcon.tiff; path = Images/urlFolderIcon.tiff; sourceTree = "<group>"; };
 		CE11AC080AE7E0DC008C47AC /* BDSKScriptGroup.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BDSKScriptGroup.h; sourceTree = "<group>"; };
 		CE11AC090AE7E0DC008C47AC /* BDSKScriptGroup.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BDSKScriptGroup.m; sourceTree = "<group>"; };
@@ -1161,6 +1162,7 @@
 		CE392F5C08D04083001CEAC8 /* BDSKRatingButton.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BDSKRatingButton.m; sourceTree = "<group>"; };
 		CE3A0BD50B1634D500233208 /* BDSKCompletionServerProtocol.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BDSKCompletionServerProtocol.h; sourceTree = "<group>"; };
 		CE3A1A4B0B19C2C800233208 /* English */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = English; path = English.lproj/SelectEncodingsPanel.nib; sourceTree = "<group>"; };
+		CE3A24190B750424006B64D3 /* webFolderIcon.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; name = webFolderIcon.tiff; path = Images/webFolderIcon.tiff; sourceTree = "<group>"; };
 		CE3B5E7A09CEDE470017D339 /* BDSKMacroResolver.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BDSKMacroResolver.h; sourceTree = "<group>"; };
 		CE3B5E7B09CEDE470017D339 /* BDSKMacroResolver.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BDSKMacroResolver.m; sourceTree = "<group>"; };
 		CE3B682609D1B0190017D339 /* BDSKImagePopUpButton.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = BDSKImagePopUpButton.h; sourceTree = "<group>"; };
@@ -2291,6 +2293,7 @@
 				F91B5CE407657A200011ED22 /* template.txt */,
 				F9022DBB0758088000C3F701 /* TinyFile.gif */,
 				CE11A6340AE6BB77008C47AC /* urlFolderIcon.tiff */,
+				CE3A24190B750424006B64D3 /* webFolderIcon.tiff */,
 				3D3EA58907C170A500DEEAA3 /* WeblocFile_Disabled.tiff */,
 			);
 			name = Images;
@@ -3331,6 +3334,7 @@
 				CEEA5EA40B595EE200434059 /* ChangeFieldSheet.nib in Resources */,
 				F900F2B50B6958F400DB7962 /* SpotlightFileIconController.nib in Resources */,
 				457538460B701ECD00C0E49B /* BDSKWebGroupView.nib in Resources */,
+				CE3A241A0B750424006B64D3 /* webFolderIcon.tiff in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
