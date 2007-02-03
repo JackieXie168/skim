@@ -43,15 +43,33 @@
 #import "BDSKWebGroup.h"
 #import "BDSKCollapsibleView.h"
 #import "BDSKEdgeView.h"
+#import "NSFileManager_BDSKExtensions.h"
 
 
 @implementation BDSKWebGroupViewController
+
+- (id)init {
+    if (self = [super init]) {
+		bookmarks = [[NSMutableArray alloc] init];
+		
+        NSString *applicationSupportPath = [[NSFileManager defaultManager] currentApplicationSupportPathForCurrentUser]; 
+		NSString *bookmarksPath = [applicationSupportPath stringByAppendingPathComponent:@"Bookmarks.plist"];
+		if ([[NSFileManager defaultManager] fileExistsAtPath:bookmarksPath]) {
+			NSEnumerator *bEnum = [[NSArray arrayWithContentsOfFile:bookmarksPath] objectEnumerator];
+			NSDictionary *bm;
+			while(bm = [bEnum nextObject])
+				[bookmarks addObject:[[bm mutableCopy] autorelease]];
+		}
+    }
+    return self;
+}
 
 - (NSString *)windowNibName { return @"BDSKWebGroupView"; }
 
 - (void)dealloc {
     [[NSNotificationCenter defaultCenter] removeObserver:self];
     [group release];
+    [bookmarks release];
     [super dealloc];
 }
 
@@ -65,6 +83,8 @@
     [forwardButton setImage:[NSImage imageNamed:@"forward_small"]];
     [stopOrReloadButton setImagePosition:NSImageOnly];
     [stopOrReloadButton setImage:[NSImage imageNamed:@"reload_small"]];
+	[urlComboBox removeAllItems];
+    [urlComboBox addItemsWithObjectValues:[bookmarks valueForKey:@"URLString"]];
 }
 
 - (void)handleWebGroupUpdatedNotification:(NSNotification *)notification{
@@ -75,7 +95,7 @@
     OBASSERT(group);
     [self window];
 
-    [[urlTextField cell] setPlaceholderString:NSLocalizedString(@"URL ", @"Web group URL field placeholder")];
+    [[urlComboBox cell] setPlaceholderString:NSLocalizedString(@"URL ", @"Web group URL field placeholder")];
 
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleWebGroupUpdatedNotification:) name:BDSKWebGroupUpdatedNotification object:group];
 }

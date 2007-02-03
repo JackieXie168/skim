@@ -44,7 +44,7 @@ DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
 @interface BDSKWebGroupViewController : NSWindowController {
     IBOutlet BDSKCollapsibleView *view;
     IBOutlet BDSKEdgeView *edgeView;
-    IBOutlet NSTextField *urlTextField;
+    IBOutlet NSComboBox *urlComboBox;
     IBOutlet BDSKEdgeView *webEdgeView;
     IBOutlet WebView *webView;
     IBOutlet NSButton *backButton;
@@ -53,6 +53,7 @@ DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
     
     BDSKWebGroup *group;
     WebFrame *loadingWebFrame;
+    NSMutableArray *bookmarks;
 }
 
 - (NSView *)view;
