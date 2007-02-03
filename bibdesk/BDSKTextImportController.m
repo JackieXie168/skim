@@ -1155,6 +1155,15 @@
 	return menuItems;
 }
 
+- (void)webView:(WebView *)sender setStatusText:(NSString *)text {
+    [statusLine setStringValue:text];
+}
+
+- (void)webView:(WebView *)sender mouseDidMoveOverElement:(NSDictionary *)elementInformation modifierFlags:(unsigned int)modifierFlags {
+    NSURL *link = [elementInformation objectForKey:WebElementLinkURLKey];
+    [statusLine setStringValue:[link absoluteString]];
+}
+
 #pragma mark WebEditingDelegate methods
 
 // workaround for webview bug, which looses its selection when the focus changes to another view

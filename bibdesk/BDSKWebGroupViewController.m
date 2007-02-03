@@ -44,12 +44,15 @@
 #import "BDSKCollapsibleView.h"
 #import "BDSKEdgeView.h"
 #import "NSFileManager_BDSKExtensions.h"
+#import "BibDocument.h"
 
 
 @implementation BDSKWebGroupViewController
 
-- (id)init {
+- (id)initWithGroup:(BDSKWebGroup *)aGroup document:(BibDocument *)aDocument {
     if (self = [super init]) {
+        [self setGroup:aGroup];
+        document = aDocument;
 		bookmarks = [[NSMutableArray alloc] init];
 		
         NSString *applicationSupportPath = [[NSFileManager defaultManager] currentApplicationSupportPathForCurrentUser]; 
@@ -85,19 +88,11 @@
     [stopOrReloadButton setImage:[NSImage imageNamed:@"reload_small"]];
 	[urlComboBox removeAllItems];
     [urlComboBox addItemsWithObjectValues:[bookmarks valueForKey:@"URLString"]];
+    [[urlComboBox cell] setPlaceholderString:NSLocalizedString(@"URL", @"Web group URL field placeholder")];
 }
 
 - (void)handleWebGroupUpdatedNotification:(NSNotification *)notification{
     // ?
-}
-
-- (void)updateWebGroupView {
-    OBASSERT(group);
-    [self window];
-
-    [[urlComboBox cell] setPlaceholderString:NSLocalizedString(@"URL ", @"Web group URL field placeholder")];
-
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleWebGroupUpdatedNotification:) name:BDSKWebGroupUpdatedNotification object:group];
 }
 
 - (NSView *)view {
@@ -123,7 +118,7 @@
         group = [newGroup retain];
         
         if (group)
-            [self updateWebGroupView];
+            [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleWebGroupUpdatedNotification:) name:BDSKWebGroupUpdatedNotification object:group];
     }
 }
 
@@ -154,6 +149,8 @@
         [stopOrReloadButton setKeyEquivalent:@"r"];
     }
 }
+
+#pragma mark WebFrameLoadDelegate protocol
 
 - (void)webView:(WebView *)sender didStartProvisionalLoadForFrame:(WebFrame *)frame{
     
@@ -203,6 +200,24 @@
         [group addPublications:nil];
         loadingWebFrame = nil;
     }
+}
+
+#pragma mark WebUIDelegate protocol
+
+- (void)setStatus:(NSString *)text {
+    if ([NSString isEmptyString:text])
+        [document updateStatus];
+    else 
+        [document setStatus:text];
+}
+
+- (void)webView:(WebView *)sender setStatusText:(NSString *)text {
+    [self setStatus:text];
+}
+
+- (void)webView:(WebView *)sender mouseDidMoveOverElement:(NSDictionary *)elementInformation modifierFlags:(unsigned int)modifierFlags {
+    NSURL *link = [elementInformation objectForKey:WebElementLinkURLKey];
+    [self setStatus:[link absoluteString]];
 }
 
 @end
