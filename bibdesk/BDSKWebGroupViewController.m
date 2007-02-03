@@ -123,7 +123,8 @@
 }
 
 - (IBAction)changeURL:(id)sender {
-    [webView takeStringURLFrom:sender];
+    //if ([NSString isEmptyString:[sender stringValue]] == NO)
+        [webView takeStringURLFrom:sender];
 }
 
 - (IBAction)stopOrReloadAction:(id)sender {
@@ -152,7 +153,7 @@
 
 #pragma mark WebFrameLoadDelegate protocol
 
-- (void)webView:(WebView *)sender didStartProvisionalLoadForFrame:(WebFrame *)frame{
+- (void)webView:(WebView *)sender didStartProvisionalLoadForFrame:(WebFrame *)frame{log_method();
     
     if (frame == [sender mainFrame]) {
         
@@ -170,7 +171,7 @@
     }
 }
 
-- (void)webView:(WebView *)sender didFinishLoadForFrame:(WebFrame *)frame{
+- (void)webView:(WebView *)sender didFinishLoadForFrame:(WebFrame *)frame{log_method();
 
     NSString *htmlString = [(id)[[frame DOMDocument] documentElement] outerHTML];
     
@@ -186,7 +187,7 @@
     }
 }
 
-- (void)webView:(WebView *)sender didFailProvisionalLoadWithError:(NSError *)error forFrame:(WebFrame *)frame{
+- (void)webView:(WebView *)sender didFailProvisionalLoadWithError:(NSError *)error forFrame:(WebFrame *)frame{log_method();
     if (frame == loadingWebFrame) {
         [self setRetrieving:NO];
         [group addPublications:nil];
@@ -194,7 +195,7 @@
     }
 }
 
-- (void)webView:(WebView *)sender didFailLoadWithError:(NSError *)error forFrame:(WebFrame *)frame{
+- (void)webView:(WebView *)sender didFailLoadWithError:(NSError *)error forFrame:(WebFrame *)frame{log_method();
     if (frame == loadingWebFrame) {
         [self setRetrieving:NO];
         [group addPublications:nil];

@@ -226,6 +226,9 @@ The groupedPublications array is a subset of the publications array, developed b
     NSView *webView = [webGroupViewController webView];
     
     if (documentWindow == [webGroupView window]) {
+        id firstResponder = [documentWindow firstResponder];
+        if ([firstResponder respondsToSelector:@selector(isDescendantOf:)] && [firstResponder isDescendantOf:webGroupView])
+            [documentWindow makeFirstResponder:tableView];
         [webGroupView removeFromSuperview];
         [webView removeFromSuperview];
         [splitView setFrame:[mainBox bounds]];
