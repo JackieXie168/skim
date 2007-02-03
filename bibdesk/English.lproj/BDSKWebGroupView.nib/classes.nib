@@ -34,7 +34,7 @@
                 edgeView = BDSKEdgeView; 
                 forwardButton = NSButton; 
                 stopOrReloadButton = NSButton; 
-                urlTextField = NSTextField; 
+                urlComboBox = NSComboBox; 
                 view = BDSKCollapsibleView; 
                 webEdgeView = BDSKEdgeView; 
                 webView = WebView; 
