@@ -189,7 +189,7 @@ The groupedPublications array is a subset of the publications array, developed b
 - (void)showWebGroupView {
     NSAssert([groups webGroup], @"tried to show WebGroupView when web group pref was false");
     if (nil == webGroupViewController)
-        webGroupViewController = [[BDSKWebGroupViewController alloc] init];
+        webGroupViewController = [[BDSKWebGroupViewController alloc] initWithGroup:[groups webGroup] document:self];
     NSView *webGroupView = [webGroupViewController view];
     NSView *webView = [webGroupViewController webView];
     
@@ -219,9 +219,6 @@ The groupedPublications array is a subset of the publications array, developed b
         [mainBox addSubview:webGroupView];
         [mainBox setNeedsDisplay:YES];
     }
-    
-    BDSKWebGroup *group = [[self selectedGroups] firstObject];
-    [webGroupViewController setGroup:group]; // necessary? will it always be the same web group?
 }
 
 - (void)hideWebGroupView{
