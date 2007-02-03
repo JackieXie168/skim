@@ -1217,12 +1217,14 @@
     NSZone *zone = [self zone];
     CFIndex countOfItems = 0;
     BibItem **pubs;
+    CFSetCallBacks callBacks = BDSKBibItemEqualityCallBacks;
     
     if ([self hasExternalGroupsSelected]) {
         countOfItems = [publications count];
         pubs = (BibItem **)NSZoneMalloc(zone, sizeof(BibItem *) * countOfItems);
         [publications getObjects:pubs];
         pubsToRemove = [[NSMutableArray alloc] initWithArray:groupedPublications];
+        callBacks = BDSKBibItemEquivalenceCallBacks;
     } else {
         pubsToRemove = [[NSMutableArray alloc] initWithArray:publications];
         countOfItems = [publications count];
@@ -1231,7 +1233,7 @@
         
         // Tests equality based on standard fields (high probability that these will be duplicates)
         countOfItems = [pubsToRemove count];
-        NSSet *uniquePubs = (NSSet *)CFSetCreate(CFAllocatorGetDefault(), (const void **)pubs, countOfItems, &BDSKBibItemEqualityCallBacks);
+        NSSet *uniquePubs = (NSSet *)CFSetCreate(CFAllocatorGetDefault(), (const void **)pubs, countOfItems, &callBacks);
         [pubsToRemove removeIdenticalObjectsFromArray:[uniquePubs allObjects]]; // remove all unique ones based on pointer equality
         [uniquePubs release];
         
@@ -1241,7 +1243,7 @@
         [pubsToRemove setArray:publications];
     }
     
-    NSSet *removeSet = (NSSet *)CFSetCreate(CFAllocatorGetDefault(), (const void **)pubs, countOfItems, &BDSKBibItemEqualityCallBacks);
+    NSSet *removeSet = (NSSet *)CFSetCreate(CFAllocatorGetDefault(), (const void **)pubs, countOfItems, &callBacks);
     NSZoneFree(zone, pubs);
     
     CFIndex idx = [pubsToRemove count];

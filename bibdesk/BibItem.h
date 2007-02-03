@@ -126,6 +126,7 @@ enum {
 
 - (BOOL)isEqual:(BibItem *)aBI;
 - (BOOL)isEqualToItem:(BibItem *)aBI;
+- (BOOL)isEquivalentToItem:(BibItem *)aBI;
 - (BOOL)isIdenticalToItem:(BibItem *)aBI;
 
 // accessors for fileorder
@@ -913,3 +914,4 @@ enum {
 @end
 
 extern const CFSetCallBacks BDSKBibItemEqualityCallBacks;
+extern const CFSetCallBacks BDSKBibItemEquivalenceCallBacks;
