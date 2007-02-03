@@ -132,7 +132,7 @@
 		NSString *applicationSupportPath = [[NSFileManager defaultManager] currentApplicationSupportPathForCurrentUser]; 
 		NSString *bookmarksPath = [applicationSupportPath stringByAppendingPathComponent:@"Bookmarks.plist"];
 		if ([[NSFileManager defaultManager] fileExistsAtPath:bookmarksPath]) {
-			NSEnumerator *bEnum = [[[NSMutableArray alloc] initWithContentsOfFile:bookmarksPath] objectEnumerator];
+			NSEnumerator *bEnum = [[NSArray arrayWithContentsOfFile:bookmarksPath] objectEnumerator];
 			NSDictionary *bm;
 			
 			while(bm = [bEnum nextObject]){
