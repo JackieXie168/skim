@@ -36,6 +36,9 @@
  */
 
 #import "BDSKHCiteParser.h"
+#import <WebKit/WebKit.h>
+#import "BibItem.h"
+#import "BibTypeManager.h"
 
 @interface NSXMLNode (BDSKExtensions)
 - (NSString *)stringValueOfAttribute:(NSString *)attrName;
@@ -46,7 +49,7 @@
 
 @end
 
-@interface BDSKHCiteParser (internal)
+@interface BDSKHCiteParser (Private)
 + (NSCalendarDate *)dateFromNode:(NSXMLNode *)node;
 + (NSString *)BTAuthorStringFromVCardNode:(NSXMLNode *)node;
 + (NSMutableDictionary *)dictionaryFromCitationNode:(NSXMLNode *)citationNode;
@@ -56,26 +59,47 @@
 
 @implementation BDSKHCiteParser
 
++ (BOOL)canParseDocument:(DOMDocument *)domDocument fromURL:(NSURL *)url{
+    NSString *htmlString = [(id)[domDocument documentElement] outerHTML];
+    NSError *error = nil;
+    NSXMLDocument *doc = [[NSXMLDocument alloc] initWithXMLString:htmlString
+                                                          options:NSXMLDocumentTidyHTML error:&error];
+    if(doc == nil)
+        return NO;
+    
+    NSString *containsCitationPath = @".//*[contains(concat(' ', normalize-space(@class), ' '),' hcite ')]";
+    
+    return [[[doc rootElement] nodesForXPath:containsCitationPath error:&error] count] > 0;
+}
 
-+ (NSArray *)itemsFromXHTMLString:(NSString *)XHTMLString error:(NSError **)error{
++ (NSArray *)itemsFromDocument:(DOMDocument *)domDocument fromURL:(NSURL *)url error:(NSError **)outError{
 
     NSMutableArray *items = [NSMutableArray arrayWithCapacity:0];
     
-    NSError *err = nil;
+    NSString *htmlString = [(id)[domDocument documentElement] outerHTML];
+    NSError *error = nil;
+    NSXMLDocument *doc = [[NSXMLDocument alloc] initWithXMLString:htmlString
+                                                          options:NSXMLDocumentTidyHTML error:&error];
     
-    NSXMLDocument *doc = [[NSXMLDocument alloc] initWithXMLString:XHTMLString
-                                                          options:NSXMLDocumentTidyHTML error:&err];
-    if(doc == nil && err){
-        error = &err;
-        return items;
+    if(doc == nil){
+        if (outError) *outError = error;
+        return nil;
     }
     
     NSString *containsCitationPath = @".//*[contains(concat(' ', normalize-space(@class), ' '),' hcite ')]";
     
     NSArray *mainNodes = [[doc rootElement] nodesForXPath:containsCitationPath
-                                                    error:&err];
+                                                    error:&error];
     
     unsigned int i, count = [mainNodes count];
+    
+    if(mainNodes == nil){
+        if(outError) *outError = error;
+        return nil;
+    }else if(count == 0){
+        return items;
+    }
+    
     for (i = 0; i < count; i++) {
         NSMutableDictionary *rd = nil;
         NSXMLNode* obj = [mainNodes objectAtIndex:i];
@@ -100,7 +124,7 @@
 @end 
 
 
-@implementation BDSKHCiteParser (internal)
+@implementation BDSKHCiteParser (Private)
 
 + (NSMutableDictionary *)dictionaryFromCitationNode:(NSXMLNode *)citationNode{
     BibTypeManager *typeMan = [BibTypeManager sharedManager];
