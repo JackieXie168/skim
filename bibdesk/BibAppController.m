@@ -1223,7 +1223,8 @@ OFWeakRetainConcreteImplementation_NULL_IMPLEMENTATION
     [userInfo retain];
     
     NSArray *publications = [userInfo valueForKey:@"publications"];
-    NSMutableDictionary *metadata = [[NSMutableDictionary alloc] initWithCapacity:10];
+    NSMutableDictionary *metadata = nil;
+    NSMutableArray *entries = nil;
     NSError *error = nil;
     NSFileManager *fileManager = [NSFileManager defaultManager];
     
@@ -1266,6 +1267,10 @@ OFWeakRetainConcreteImplementation_NULL_IMPLEMENTATION
         NSAutoreleasePool *innerPool = [NSAutoreleasePool new];
         
         BOOL useIconFamily = [[NSUserDefaults standardUserDefaults] boolForKey:@"BDSKShouldUseIconFamilyForMetadataKey"];
+        NSDictionary *dict;
+        
+        if (useIconFamily)
+            entries = [[NSMutableArray alloc] initWithCapacity:[publications count]];
         
         while(anItem = [entryEnum nextObject]){
             
@@ -1280,6 +1285,8 @@ OFWeakRetainConcreteImplementation_NULL_IMPLEMENTATION
             citeKey = [anItem objectForKey:@"net_sourceforge_bibdesk_citekey"];
             if(citeKey == nil)
                 continue;
+            
+            metadata = [[NSMutableDictionary alloc] initWithCapacity:10];
             
             // we won't index this, but it's needed to reopen the parent file
             [metadata setObject:aliasData forKey:@"FileAlias"];
@@ -1302,12 +1309,38 @@ OFWeakRetainConcreteImplementation_NULL_IMPLEMENTATION
                     if(NO == [data writeToFile:path options:NSAtomicWrite error:&error])
                         @throw [NSException exceptionWithName:NSInternalInconsistencyException reason:[NSString stringWithFormat:@"Unable to create cache file for %@", [anItem description]] userInfo:nil];
                     else if (useIconFamily) {
-                        [[BDSKSpotlightIconController iconFamilyWithMetadataItem:metadata] setAsCustomIconForFile:path];
+                        dict =[[NSDictionary alloc] initWithObjectsAndKeys:metadata, @"metadata", path, @"path", nil];
+                        [entries addObject:dict];
+                        [dict release];
                     }
                 }
             }
-            [metadata removeAllObjects];
+            
+            [metadata release];
+            metadata = nil;
         }
+        
+        if (useIconFamily) {
+            entryEnum = [entries objectEnumerator];
+        
+            while(anItem = [entryEnum nextObject]){
+                
+                if(canWriteMetadata == 0){
+                    NSLog(@"Application will quit without finishing metadata cache icons.");
+                    break;
+                }
+                
+                [innerPool release];
+                innerPool = [NSAutoreleasePool new];
+                
+                if ((metadata = [anItem objectForKey:@"metadata"]) && (path = [anItem objectForKey:@"path"]))
+                    [[BDSKSpotlightIconController iconFamilyWithMetadataItem:metadata] setAsCustomIconForFile:path];
+            }
+        }
+        
+        [entries release];
+        entries = nil;
+        
         [innerPool release];
     }    
     @catch (id localException){
@@ -1319,6 +1352,7 @@ OFWeakRetainConcreteImplementation_NULL_IMPLEMENTATION
     @finally{
         [userInfo release];
         [metadata release];
+        [entries release];
         [metadataCacheLock unlock];
         [pool release];
     }
