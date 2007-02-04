@@ -153,7 +153,7 @@
 
 #pragma mark WebFrameLoadDelegate protocol
 
-- (void)webView:(WebView *)sender didStartProvisionalLoadForFrame:(WebFrame *)frame{log_method();
+- (void)webView:(WebView *)sender didStartProvisionalLoadForFrame:(WebFrame *)frame{
     
     if (frame == [sender mainFrame]) {
         
@@ -181,16 +181,14 @@
         
     if (frame == loadingWebFrame) {
         [self setRetrieving:NO];
-        if(newPubs)
-            [group addPublications:newPubs];
+        [group addPublications:newPubs ? newPubs : [NSArray array]];
         loadingWebFrame = nil;
     } else {
-        if(newPubs)
-            [group addPublications:newPubs];
+        [group addPublications:newPubs ? newPubs : [NSArray array]];
     }
 }
 
-- (void)webView:(WebView *)sender didFailProvisionalLoadWithError:(NSError *)error forFrame:(WebFrame *)frame{log_method();
+- (void)webView:(WebView *)sender didFailProvisionalLoadWithError:(NSError *)error forFrame:(WebFrame *)frame{
     if (frame == loadingWebFrame) {
         [self setRetrieving:NO];
         [group addPublications:nil];
@@ -198,7 +196,7 @@
     }
 }
 
-- (void)webView:(WebView *)sender didFailLoadWithError:(NSError *)error forFrame:(WebFrame *)frame{log_method();
+- (void)webView:(WebView *)sender didFailLoadWithError:(NSError *)error forFrame:(WebFrame *)frame{
     if (frame == loadingWebFrame) {
         [self setRetrieving:NO];
         [group addPublications:nil];
