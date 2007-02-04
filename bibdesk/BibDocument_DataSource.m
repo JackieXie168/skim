@@ -841,18 +841,34 @@
                         
                         NSScanner *scanner = [NSScanner scannerWithString:auxString];
                         NSString *key = nil;
+                        NSString *command = nil;
                         NSArray *items = nil;
                         NSMutableArray *selItems = [NSMutableArray array];
                         
-                        while ([scanner isAtEnd] == NO && 
-                               [scanner scanUpToString:@"\\bibcite{" intoString:NULL] && 
-                               [scanner scanString:@"\\bibcite{" intoString:NULL]) {
-                            if([scanner scanUpToString:@"}" intoString:&key]) {
-                                if (items = [publications allItemsForCiteKey:key])
-                                    [selItems addObjectsFromArray:items];
-                            }
-                        }
-                        [self selectPublications:selItems];
+                        [scanner setCharactersToBeSkipped:nil];
+                        
+                        if ([scanner scanUpToString:@"\\bibdata{" intoString:NULL] == NO ||
+                            [scanner scanUpToCharactersFromSet:[NSCharacterSet newlineCharacterSet] intoString:NULL] == NO ||
+                            [scanner scanCharactersFromSet:[NSCharacterSet newlineCharacterSet] intoString:NULL] == NO ||
+                            [scanner scanUpToString:@"{" intoString:&command] == NO ||
+                            [scanner scanString:@"{" intoString:NULL] == NO)
+                            return NO;
+                        
+                        command = [command stringByAppendingString:@"{"];
+                        
+                        do {
+                            if ([scanner scanUpToString:@"}" intoString:&key] == NO)
+                                break;
+                            if (items = [publications allItemsForCiteKey:key])
+                                [selItems addObjectsFromArray:items];
+                            if ([scanner scanUpToCharactersFromSet:[NSCharacterSet newlineCharacterSet] intoString:NULL] == NO ||
+                                [scanner scanCharactersFromSet:[NSCharacterSet newlineCharacterSet] intoString:NULL] == NO ||
+                                [scanner scanString:command intoString:NULL] == NO)
+                                break;
+                        } while ([scanner isAtEnd] == NO);
+                        
+                        if ([selItems count])
+                            [self selectPublications:selItems];
                         
                         return YES;
                     }
