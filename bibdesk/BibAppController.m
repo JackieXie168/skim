@@ -1225,6 +1225,7 @@ OFWeakRetainConcreteImplementation_NULL_IMPLEMENTATION
     NSArray *publications = [userInfo valueForKey:@"publications"];
     NSMutableDictionary *metadata = nil;
     NSMutableArray *entries = nil;
+    NSAutoreleasePool *innerPool = nil;
     NSError *error = nil;
     NSFileManager *fileManager = [NSFileManager defaultManager];
     
@@ -1264,7 +1265,8 @@ OFWeakRetainConcreteImplementation_NULL_IMPLEMENTATION
         [alias autorelease];
     
         NSEnumerator *entryEnum = [publications objectEnumerator];
-        NSAutoreleasePool *innerPool = [NSAutoreleasePool new];
+        
+        innerPool = [NSAutoreleasePool new];
         
         BOOL useIconFamily = [[NSUserDefaults standardUserDefaults] boolForKey:@"BDSKShouldUseIconFamilyForMetadataKey"];
         NSDictionary *dict;
@@ -1320,9 +1322,14 @@ OFWeakRetainConcreteImplementation_NULL_IMPLEMENTATION
             metadata = nil;
         }
         
+        [innerPool release];
+        innerPool = nil;
+        
         if (useIconFamily) {
             entryEnum = [entries objectEnumerator];
-        
+            
+            innerPool = [NSAutoreleasePool new];
+            
             while(anItem = [entryEnum nextObject]){
                 
                 if(canWriteMetadata == 0){
@@ -1336,23 +1343,26 @@ OFWeakRetainConcreteImplementation_NULL_IMPLEMENTATION
                 if ((metadata = [anItem objectForKey:@"metadata"]) && (path = [anItem objectForKey:@"path"]))
                     [[BDSKSpotlightIconController iconFamilyWithMetadataItem:metadata] setAsCustomIconForFile:path];
             }
+            
+            [innerPool release];
+            innerPool = nil;
         }
         
         [entries release];
         entries = nil;
-        
-        [innerPool release];
     }    
     @catch (id localException){
         NSLog(@"-[%@ %@] discarding exception %@", [self class], NSStringFromSelector(_cmd), [localException description]);
         // log the error since presentError: only gives minimum info
         NSLog(@"%@", [error description]);
         [NSApp performSelectorOnMainThread:@selector(presentError:) withObject:error waitUntilDone:NO];
+        // if these are non-nil, they should be released
+        [metadata release];
+        [entries release];
+        [innerPool release];
     }
     @finally{
         [userInfo release];
-        [metadata release];
-        [entries release];
         [metadataCacheLock unlock];
         [pool release];
     }
