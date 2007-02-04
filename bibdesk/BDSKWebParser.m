@@ -33,10 +33,7 @@ static Class webParserClassForType(int stringType)
 }
 
 + (BOOL)canParseDocument:(DOMDocument *)domDocument fromURL:(NSURL *)url ofType:(int)webType{
-    Class parserClass = Nil;
-    if (webType == BDSKUnknownWebType)
-        webType = [self webTypeOfDocument:domDocument fromURL:url];
-    parserClass = webParserClassForType(webType);
+    Class parserClass = webParserClassForType(webType);
     return parserClass != Nil ? [parserClass canParseDocument:domDocument fromURL:url] : NO;
 }
 
@@ -46,6 +43,8 @@ static Class webParserClassForType(int stringType)
 
 + (NSArray *)itemsFromDocument:(DOMDocument *)domDocument fromURL:(NSURL *)url ofType:(int)webType error:(NSError **)outError{
     Class parserClass = Nil;
+    if (webType == BDSKUnknownWebType)
+        webType = [self webTypeOfDocument:domDocument fromURL:url];
     parserClass = webParserClassForType(webType);
     return [parserClass itemsFromDocument:domDocument fromURL:url error:outError];
 }
