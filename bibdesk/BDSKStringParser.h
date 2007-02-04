@@ -36,7 +36,7 @@
  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-#import <Foundation/NSObject.h>
+#import <Foundation/Foundation.h>
 
 enum {
 	BDSKUnknownStringType = -1, 

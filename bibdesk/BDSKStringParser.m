@@ -37,7 +37,6 @@
  */
 
 #import "BDSKStringParser.h"
-#import <Foundation/NSObject.h>
 #import <OmniBase/OBUtilities.h>
 #import "BibTeXParser.h"
 #import "PubMedParser.h"
