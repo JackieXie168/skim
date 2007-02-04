@@ -36,15 +36,9 @@
  */
 
 #import <Cocoa/Cocoa.h>
-#import "BibItem.h"
-#import "BibTypeManager.h"
+#import "BDSKWebParser.h"
 
-@interface BDSKHCiteParser : NSObject {
-
-}
-
-+ (NSArray *)itemsFromXHTMLString:(NSString *)XHTMLString error:(NSError **)error;
-
+@interface BDSKHCiteParser : BDSKWebParser
 @end
 
 

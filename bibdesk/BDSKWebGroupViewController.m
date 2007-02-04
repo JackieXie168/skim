@@ -39,7 +39,7 @@
 
 #import "BDSKWebGroupViewController.h"
 #import <WebKit/WebKit.h>
-#import "BDSKHCiteParser.h"
+#import "BDSKWebParser.h"
 #import "BDSKWebGroup.h"
 #import "BDSKCollapsibleView.h"
 #import "BDSKEdgeView.h"
@@ -171,19 +171,22 @@
     }
 }
 
-- (void)webView:(WebView *)sender didFinishLoadForFrame:(WebFrame *)frame{log_method();
+- (void)webView:(WebView *)sender didFinishLoadForFrame:(WebFrame *)frame{
 
-    NSString *htmlString = [(id)[[frame DOMDocument] documentElement] outerHTML];
+	NSURL *url = [[[frame dataSource] request] URL];
+    DOMDocument *domDocument = [frame DOMDocument];
     
-    NSError *err = nil;
-    NSArray *newPubs = htmlString ? [BDSKHCiteParser itemsFromXHTMLString:htmlString error:&err] : nil;
+    NSError *error = nil;
+    NSArray *newPubs = [BDSKWebParser itemsFromDocument:domDocument fromURL:url error:&error];
         
     if (frame == loadingWebFrame) {
         [self setRetrieving:NO];
-        [group addPublications:newPubs];
+        if(newPubs)
+            [group addPublications:newPubs];
         loadingWebFrame = nil;
     } else {
-        [group addPublications:newPubs];
+        if(newPubs)
+            [group addPublications:newPubs];
     }
 }
 
