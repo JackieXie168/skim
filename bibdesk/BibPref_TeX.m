@@ -127,10 +127,12 @@ static NSSet *standardStyles = nil;
 
 - (void)styleAlertDidEnd:(NSAlert *)alert returnCode:(int)returnCode contextInfo:(void *)contextInfo{
     NSString *newStyle = [(id)contextInfo autorelease];
-    if (NSAlertFirstButtonReturn == returnCode) {
+    if (NSAlertDefaultReturn == returnCode) {
         [defaults setObject:newStyle forKey:BDSKBTStyleKey];
-    } else {
+    } else if (NSAlertAlternateReturn == returnCode) {
         [bibTeXStyleField setStringValue:[defaults objectForKey:BDSKBTStyleKey]];
+    } else {
+        [self openTeXPreviewFile:self];
     }
     [defaults autoSynchronize];
 }
@@ -162,18 +164,18 @@ static NSSet *standardStyles = nil;
             [defaults setObject:[sender stringValue] forKey:BDSKBTStyleKey];
             [defaults autoSynchronize];
         } else {
-            NSAlert *alert = [[[NSAlert alloc] init] autorelease];
-            [alert setMessageText:NSLocalizedString(@"This is a not a standard BibTeX style", @"")];
-            [alert addButtonWithTitle:NSLocalizedString(@"Use Anyway", @"")];
-            [alert addButtonWithTitle:NSLocalizedString(@"Use Previous", @"")];
-            [alert setInformativeText:NSLocalizedString(@"This style is not one of the standard 8 BibTeX styles.  As such, it may require editing the TeX template manually to add necessary \\usepackage commands.", @"")];
-            
+            NSAlert *alert = [NSAlert alertWithMessageText:NSLocalizedString(@"This is a not a standard BibTeX style", @"Message in alert dialog")
+                                             defaultButton:NSLocalizedString(@"Use Anyway", @"Button title")
+                                           alternateButton:NSLocalizedString(@"Use Previous", @"Button title")
+                                               otherButton:NSLocalizedString(@"Edit TeX template", @"Button title")
+                                 informativeTextWithFormat:NSLocalizedString(@"This style is not one of the standard 8 BibTeX styles.  As such, it may require editing the TeX template manually to add necessary \\usepackage commands.", @"Informative text in alert dialog")];
             // for the help delegate method
             [alert setShowsHelp:YES];
             [alert setDelegate:self];
-            
-            [alert setAlertStyle:NSInformationalAlertStyle];
-            [alert beginSheetModalForWindow:[[self controlBox] window] modalDelegate:self didEndSelector:@selector(styleAlertDidEnd:returnCode:contextInfo:) contextInfo:[newStyle copy]];
+            [alert beginSheetModalForWindow:[[self controlBox] window]
+                              modalDelegate:self
+                             didEndSelector:@selector(styleAlertDidEnd:returnCode:contextInfo:)
+                                contextInfo:[newStyle copy]];
         }
     }
 }
