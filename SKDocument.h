@@ -19,6 +19,7 @@ extern NSString *SKDocumentErrorDomain;
 @interface SKDocument : NSDocument
 {
     PDFDocument *pdfDoc;
+    PDFDocument *originalPDFDocument;
     
     // variables to be saved:
     NSMutableArray *notes;

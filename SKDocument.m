@@ -44,6 +44,12 @@ static NSString *SKPostScriptDocumentType = @"PostScript document";
     return self;
 }
 
+- (void)dealloc {
+    [originalPDFDocument release];
+    [pdfDoc release];
+    [notes release];
+    [super dealloc];
+}
 
 - (void)makeWindowControllers{
     SKMainWindowController *mainWindowController = [[[SKMainWindowController alloc] initWithWindowNibName:@"MainWindow"] autorelease];
@@ -71,9 +77,9 @@ static NSString *SKPostScriptDocumentType = @"PostScript document";
 - (NSData *)dataOfType:(NSString *)typeName error:(NSError **)outError{
     NSData *data = nil;
     if ([typeName isEqualToString:SKPDFDocumentType]) {
-        [[NSNotificationCenter defaultCenter] postNotificationName:SKDocumentWillSaveNotification object:self];
-        data = [pdfDoc dataRepresentation];
-        [[NSNotificationCenter defaultCenter] postNotificationName:SKDocumentDidSaveNotification object:self];
+        //[[NSNotificationCenter defaultCenter] postNotificationName:SKDocumentWillSaveNotification object:self];
+        data = [originalPDFDocument dataRepresentation];
+        //[[NSNotificationCenter defaultCenter] postNotificationName:SKDocumentDidSaveNotification object:self];
     } else if ([typeName isEqualToString:SKNotesDocumentType]) {
         data = [NSKeyedArchiver archivedDataWithRootObject:notes];
     }
@@ -83,7 +89,8 @@ static NSString *SKPostScriptDocumentType = @"PostScript document";
 - (BOOL)readFromURL:(NSURL *)absoluteURL ofType:(NSString *)docType error:(NSError **)outError{
     BOOL didRead = NO;
     if ([docType isEqualToString:SKPDFDocumentType]) {
-        pdfDoc = [[PDFDocument alloc] initWithURL:absoluteURL];    
+        originalPDFDocument = [[PDFDocument alloc] initWithURL:absoluteURL];    
+        pdfDoc = [[PDFDocument alloc] initWithData:[originalPDFDocument dataRepresentation]];    
         didRead = pdfDoc != nil;
        [self readNotesFromExtendedAttributesAtURL:absoluteURL];
     } else if ([docType isEqualToString:SKNotesDocumentType]) {
@@ -91,7 +98,8 @@ static NSString *SKPostScriptDocumentType = @"PostScript document";
         [self setNotes:[NSKeyedUnarchiver unarchiveObjectWithFile:[absoluteURL path]]];
         didRead = YES;
     } else if ([docType isEqualToString:SKPostScriptDocumentType]) {
-        pdfDoc = [[PDFDocument alloc] initWithPostScriptURL:absoluteURL];
+        originalPDFDocument = [[PDFDocument alloc] initWithURL:absoluteURL];    
+        pdfDoc = [[PDFDocument alloc] initWithData:[originalPDFDocument dataRepresentation]];    
         didRead = pdfDoc != nil;
     }
     if (NO == didRead && outError)
