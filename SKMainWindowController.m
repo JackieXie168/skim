@@ -786,8 +786,8 @@ static NSString *SKDocumentToolbarSearchItemIdentifier = @"SKDocumentToolbarSear
 
 #pragma mark NSOutlineView methods
 
-- (int) outlineView: (NSOutlineView *) outlineView numberOfChildrenOfItem: (id) item{
-	if (item == NULL){
+- (int)outlineView:(NSOutlineView *)outlineView numberOfChildrenOfItem:(id)item{
+	if (item == nil){
 		if ((pdfOutline) && ([[pdfView document] isLocked] == NO)){
 			return [pdfOutline numberOfChildren];
 		}else{
@@ -798,14 +798,14 @@ static NSString *SKDocumentToolbarSearchItemIdentifier = @"SKDocumentToolbarSear
     }
 }
 
-- (id) outlineView: (NSOutlineView *) outlineView child: (int) index ofItem: (id) item{
-	if (item == NULL){
+- (id)outlineView:(NSOutlineView *)outlineView child:(int)index ofItem:(id)item{
+	if (item == nil){
 		if ((pdfOutline) && ([[pdfView document] isLocked] == NO)){
             
 			return [[pdfOutline childAtIndex: index] retain];
             
         }else{
-			return NULL;
+			return nil;
         }
 	}else{
 		return [[(PDFOutline *)item childAtIndex: index] retain];
@@ -813,8 +813,8 @@ static NSString *SKDocumentToolbarSearchItemIdentifier = @"SKDocumentToolbarSear
 }
 
 
-- (BOOL) outlineView: (NSOutlineView *) outlineView isItemExpandable: (id) item{
-	if (item == NULL){
+- (BOOL)outlineView:(NSOutlineView *)outlineView isItemExpandable:(id)item{
+	if (item == nil){
 		if ((pdfOutline) && ([[pdfView document] isLocked] == NO)){
 			return ([pdfOutline numberOfChildren] > 0);
 		}else{
@@ -826,25 +826,20 @@ static NSString *SKDocumentToolbarSearchItemIdentifier = @"SKDocumentToolbarSear
 }
 
 
-- (id) outlineView: (NSOutlineView *) outlineView objectValueForTableColumn: (NSTableColumn *) tableColumn 
-            byItem: (id) item{
-    
+- (id)outlineView:(NSOutlineView *)outlineView objectValueForTableColumn:(NSTableColumn *)tableColumn byItem:(id)item{
     NSString *tcID = [tableColumn identifier];
     if([tcID isEqualToString:@"label"]){
-        
         return [(PDFOutline *)item label];
     }else if([tcID isEqualToString:@"icon"]){
-        // check if item is in history list and return its position.
-        return @"1";
+        return [[[(PDFOutline *)item destination] page] label];
     }else{
-        [NSException raise:@"Unexpected tablecolumn identifier"
-                    format:@" - %@ ", tcID];
+        [NSException raise:@"Unexpected tablecolumn identifier" format:@" - %@ ", tcID];
+        return nil;
     }
-    return @"Shouldn't get here.";
 }
 
 
-- (void) outlineViewSelectionDidChange: (NSNotification *) notification{
+- (void)outlineViewSelectionDidChange:(NSNotification *)notification{
 	// Get the destination associated with the search result list. Tell the PDFView to go there.
 	if (([notification object] == outlineView) && (updatingOutlineSelection == NO)){
 		[pdfView goToDestination: [[outlineView itemAtRow: [outlineView selectedRow]] destination]];
@@ -852,12 +847,12 @@ static NSString *SKDocumentToolbarSearchItemIdentifier = @"SKDocumentToolbarSear
 }
 
 
-- (void) outlineViewItemDidExpand: (NSNotification *) notification{
+- (void)outlineViewItemDidExpand:(NSNotification *)notification{
 	[self updateOutlineSelection];
 }
 
 
-- (void) outlineViewItemDidCollapse: (NSNotification *) notification{
+- (void)outlineViewItemDidCollapse:(NSNotification *)notification{
 	[self updateOutlineSelection];
 }
 
@@ -870,7 +865,7 @@ static NSString *SKDocumentToolbarSearchItemIdentifier = @"SKDocumentToolbarSear
 	int			 i;
 	
 	// Skip out if this PDF has no outline.
-	if (pdfOutline == NULL)
+	if (pdfOutline == nil)
 		return;
 	
 	// Get index of current page.
