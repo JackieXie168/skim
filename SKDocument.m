@@ -98,8 +98,9 @@ static NSString *SKPostScriptDocumentType = @"PostScript document";
         [self setNotes:[NSKeyedUnarchiver unarchiveObjectWithFile:[absoluteURL path]]];
         didRead = YES;
     } else if ([docType isEqualToString:SKPostScriptDocumentType]) {
-        originalPDFDocument = [[PDFDocument alloc] initWithURL:absoluteURL];    
-        pdfDoc = [[PDFDocument alloc] initWithURL:absoluteURL];    
+        // @@ what does originalPDFDocument mean for PS?
+        originalPDFDocument = [[PDFDocument alloc] initWithPostScriptURL:absoluteURL];    
+        pdfDoc = [[PDFDocument alloc] initWithPostScriptURL:absoluteURL];    
         didRead = pdfDoc != nil;
     }
     if (NO == didRead && outError)
