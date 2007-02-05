@@ -57,3 +57,10 @@
 
 @interface BDSKClearView : NSView
 @end
+
+@interface IconFamily (BDSKExtensions)
+
++ (IconFamily *)iconFamilyWithThumbnailsOfLargeImage:(NSImage *)largeImage smallImage:(NSImage *)smallImage usingImageInterpolation:(NSImageInterpolation)imageInterpolation;
+- (id)initWithThumbnailsOfLargeImage:(NSImage *)largeImage smallImage:(NSImage *)smallImage usingImageInterpolation:(NSImageInterpolation)imageInterpolation;
+
+@end
