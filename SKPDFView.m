@@ -297,10 +297,15 @@ static PDFView *PDFHoverPDFView = nil;
         case SKAnnotateToolMode:
             //[self annotateWithEvent:theEvent];
             dragging = NO;
-            if (mouseDownInAnnotation)
+            if (mouseDownInAnnotation) {
                 mouseDownInAnnotation = NO;
-            else
+                if ([[activeAnnotation type] isEqualToString:@"Circle"]) {
+                    NSString *selString = [[[activeAnnotation page] selectionForRect:[activeAnnotation bounds]] string];
+                    [activeAnnotation setContents:selString];
+                }
+            } else {
                 [super mouseUp:theEvent];
+            }
             break;
     }
 }
