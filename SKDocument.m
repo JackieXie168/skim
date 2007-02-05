@@ -90,7 +90,7 @@ static NSString *SKPostScriptDocumentType = @"PostScript document";
     BOOL didRead = NO;
     if ([docType isEqualToString:SKPDFDocumentType]) {
         originalPDFDocument = [[PDFDocument alloc] initWithURL:absoluteURL];    
-        pdfDoc = [[PDFDocument alloc] initWithData:[originalPDFDocument dataRepresentation]];    
+        pdfDoc = [[PDFDocument alloc] initWithURL:absoluteURL];    
         didRead = pdfDoc != nil;
        [self readNotesFromExtendedAttributesAtURL:absoluteURL];
     } else if ([docType isEqualToString:SKNotesDocumentType]) {
@@ -99,7 +99,7 @@ static NSString *SKPostScriptDocumentType = @"PostScript document";
         didRead = YES;
     } else if ([docType isEqualToString:SKPostScriptDocumentType]) {
         originalPDFDocument = [[PDFDocument alloc] initWithURL:absoluteURL];    
-        pdfDoc = [[PDFDocument alloc] initWithData:[originalPDFDocument dataRepresentation]];    
+        pdfDoc = [[PDFDocument alloc] initWithURL:absoluteURL];    
         didRead = pdfDoc != nil;
     }
     if (NO == didRead && outError)
