@@ -28,6 +28,16 @@ typedef enum _SKToolMode {
     BOOL hasNavigation;
     NSTimer *autohideTimer;
     SKNavigationWindow *navWindow;
+    
+	PDFAnnotation *activeAnnotation;
+	PDFAnnotationTextWidget *editAnnotation;
+	PDFPage *activePage;
+	NSRect wasBounds;
+	NSPoint mouseDownLoc;
+	NSPoint clickDelta;
+	BOOL dragging;
+	BOOL resizing;
+	BOOL mouseDownInAnnotation;
 }
 
 - (SKToolMode)toolMode;
@@ -42,7 +52,17 @@ typedef enum _SKToolMode {
 - (void)showHoverViewWithEvent:(NSEvent *)event;
 - (void)popUpWithEvent:(NSEvent *)theEvent;
 - (void)annotateWithEvent:(NSEvent *)theEvent;
+- (void)selectAnnotationWithEvent:(NSEvent *)theEvent;
+- (void)dragAnnotationWithEvent:(NSEvent *)theEvent;
 - (void)magnifyWithEvent:(NSEvent *)theEvent;
 - (void)dragWithEvent:(NSEvent *)theEvent;
+
+- (IBAction)delete:(id)sender;
+
+- (void) transformContextForPage:(PDFPage *)page;
+
+- (PDFAnnotation *)activeAnnotation;
+- (void)setActiveAnnotation:(PDFAnnotation *)newAnnotation;
+- (NSRect)resizeThumbForRect:(NSRect)rect rotation:(int)rotation;
 
 @end

@@ -2,6 +2,7 @@
     IBClasses = (
         {
             ACTIONS = {
+                changeAnnotationMode = id; 
                 changeToolMode = id; 
                 createNewNote = id; 
                 displayCropBox = id; 
@@ -13,6 +14,7 @@
                 doGoToNextPage = id; 
                 doGoToPage = id; 
                 doGoToPreviousPage = id; 
+                doNewNote = id; 
                 doZoomIn = id; 
                 doZoomOut = id; 
                 doZoomToActualSize = id; 
