@@ -9,6 +9,12 @@
 #import <Cocoa/Cocoa.h>
 #import "SKStringConstants.h"
 
+typedef enum _SKAnnotationMode {
+    SKFreeTextAnnotationMode,
+    SKTextAnnotationMode,
+    SKCircleAnnotationMode
+} SKAnnotationMode;
+
 typedef struct _SKPDFViewState {
 	int displayMode;
 	BOOL autoScales;
@@ -35,6 +41,7 @@ typedef struct _SKPDFViewState {
     IBOutlet NSStepper          *pageNumberStepper;
     IBOutlet NSTextField        *pageNumberField;
     IBOutlet NSSegmentedControl *toolModeButton;
+    IBOutlet NSSegmentedControl *annotationModeButton;
     IBOutlet NSTextField        *scaleField;
     IBOutlet NSPopUpButton      *displayBoxPopUpButton;
     IBOutlet NSSearchField      *searchField;
@@ -47,6 +54,7 @@ typedef struct _SKPDFViewState {
     NSWindow *mainWindow;
     NSWindow *fullScreenWindow;
     
+    SKAnnotationMode annotationMode;
     BOOL isPresentation;
     SKPDFViewState savedState;
     
@@ -55,8 +63,11 @@ typedef struct _SKPDFViewState {
     NSMutableArray *searchResults;
     IBOutlet NSArrayController *findArrayController;
     IBOutlet NSProgressIndicator *spinner;
+    
+    BOOL edited;
 }
 
+- (IBAction)doNewNote:(id)sender;
 - (IBAction)createNewNote:(id)sender;
 - (IBAction)displaySinglePages:(id)sender;
 - (IBAction)displayFacingPages:(id)sender;
@@ -87,6 +98,7 @@ typedef struct _SKPDFViewState {
 - (IBAction)changePageNumber:(id)sender;
 - (IBAction)changeScaleFactor:(id)sender;
 - (IBAction)changeToolMode:(id)sender;
+- (IBAction)changeAnnotationMode:(id)sender;
 - (IBAction)enterFullScreen:(id)sender;
 - (IBAction)exitFullScreen:(id)sender;
 - (IBAction)toggleFullScreen:(id)sender;
@@ -101,6 +113,9 @@ typedef struct _SKPDFViewState {
 - (BOOL)isPresentation;
 
 - (BOOL)autoScales;
+
+- (SKAnnotationMode)annotationMode;
+- (void)setAnnotationMode:(SKAnnotationMode)newAnnotationMode;
 
 - (void)updateOutlineSelection;
 

@@ -49,12 +49,29 @@ NSString *SKPDFViewToolModeChangedNotification = @"SKPDFViewToolModeChangedNotif
 
 @end
 
+static NSRect RectPlusScale (NSRect aRect, float scale)
+{
+	float maxX;
+	float maxY;
+	NSPoint origin;
+	
+	// Determine edges.
+	maxX = ceilf(aRect.origin.x + aRect.size.width) + scale;
+	maxY = ceilf(aRect.origin.y + aRect.size.height) + scale;
+	origin.x = floorf(aRect.origin.x) - scale;
+	origin.y = floorf(aRect.origin.y) - scale;
+	
+	return NSMakeRect(origin.x, origin.y, maxX - origin.x, maxY - origin.y);
+}
+
 static NSPanel *PDFHoverPanel = nil;
 static PDFView *PDFHoverPDFView = nil;
 
-@interface SKPDFView (private)
+@interface SKPDFView (Private)
 
 - (NSRect)_hoverWindowRectFittingScreenFromRect:(NSRect)rect;
+- (void)endAnnotationEdit;
+
 @end
 
 @implementation SKPDFView
@@ -81,6 +98,89 @@ static PDFView *PDFHoverPDFView = nil;
     [super dealloc];
 }
 
+#pragma mark Drawing
+
+- (void)drawPage:(PDFPage *)pdfPage {
+	// Let PDFView do most of the hard work.
+	[super drawPage: pdfPage];
+	
+    NSArray *allAnnotations = [pdfPage annotations];
+    
+    if (allAnnotations) {
+        unsigned int i, count = [allAnnotations count];
+        BOOL foundActive = NO;
+        
+        [self transformContextForPage:pdfPage];
+        
+        for (i = 0; i < count; i++)
+        {
+            PDFAnnotation *annotation;
+            
+            annotation = [allAnnotations objectAtIndex: i];
+            if ([[annotation type] isEqualToString:@"FreeText"] || [[annotation type] isEqualToString:@"Text"] || [[annotation type] isEqualToString:@"Circle"]) {
+                if (annotation == activeAnnotation) {
+                    foundActive = YES;
+                } else if ([[annotation type] isEqualToString:@"FreeText"]) {
+                    NSRect bounds = [annotation bounds];
+                    NSBezierPath *path = [NSBezierPath bezierPathWithRect:NSInsetRect(NSIntegralRect(bounds), 0.5, 0.5)];
+                    [path setLineWidth:1.0];
+                    [[NSColor grayColor] set];
+                    [path stroke];
+                }
+            }
+        }
+        
+        // Draw active annotation last so it is not "painted" over.
+        if (foundActive) {
+            NSRect bounds = [activeAnnotation bounds];
+            NSBezierPath *path = [NSBezierPath bezierPathWithRect:NSInsetRect(NSIntegralRect(bounds), 0.5, 0.5)];
+            [path setLineWidth:1.0];
+            [[NSColor redColor] set];
+            [path stroke];
+            
+            // Draw resize handle.
+            if ([[activeAnnotation type] isEqualToString:@"Text"] == NO)
+                NSRectFill(NSIntegralRect([self resizeThumbForRect:bounds rotation:[pdfPage rotation]]));
+        }
+    }
+}
+
+- (void)transformContextForPage:(PDFPage *)page
+{
+	NSAffineTransform *transform = [NSAffineTransform transform];
+	NSRect boxRect = [page boundsForBox: [self displayBox]];
+	
+	[transform translateXBy:-boxRect.origin.x yBy:-boxRect.origin.y];
+	[transform concat];
+}
+
+- (NSRect)resizeThumbForRect:(NSRect) rect rotation:(int)rotation
+{
+	NSRect thumb = rect;
+    float size = 8.0;
+    
+    thumb.size = NSMakeSize(size, size);
+	
+	// Use rotation to determine thumb origin.
+	switch (rotation) {
+		case 0:
+            thumb.origin.x += NSWidth(rect) - NSWidth(thumb);
+            break;
+		case 90:
+            thumb.origin.x += NSWidth(rect) - NSWidth(thumb);
+            thumb.origin.y += NSHeight(rect) - NSHeight(thumb);
+            break;
+		case 180:
+            thumb.origin.y += NSHeight(rect) - NSHeight(thumb);
+            break;
+	}
+	
+	return thumb;
+}
+
+- (void)setNeedsDisplayForAnnotion:(PDFAnnotation *)annotation page:(PDFPage *)page {
+    [self setNeedsDisplayInRect:RectPlusScale([self convertRect:[annotation bounds] fromPage:page], [self scaleFactor])];
+}
 
 #pragma mark Accessors
 
@@ -89,14 +189,72 @@ static PDFView *PDFHoverPDFView = nil;
 }
 
 - (void)setToolMode:(SKToolMode)newToolMode {
-    toolMode = newToolMode;
-	[[NSNotificationCenter defaultCenter] postNotificationName:SKPDFViewToolModeChangedNotification object:self];
-    // hack to make sure we update the cursor
-    [[self window] makeFirstResponder:self];
+    if (toolMode != newToolMode) {
+        if (toolMode == SKAnnotateToolMode && activeAnnotation) {
+            if (editAnnotation)
+                [self endAnnotationEdit];
+            [self setActiveAnnotation:nil];
+        }
+    
+        toolMode = newToolMode;
+        [[NSNotificationCenter defaultCenter] postNotificationName:SKPDFViewToolModeChangedNotification object:self];
+        // hack to make sure we update the cursor
+        [[self window] makeFirstResponder:self];
+    }
+}
+
+- (PDFAnnotation *)activeAnnotation {
+	return activeAnnotation;
+}
+
+- (void)setActiveAnnotation:(PDFAnnotation *)newAnnotation {
+	BOOL changed = newAnnotation != activeAnnotation;
+	
+	// Will need to redraw old active anotation.
+	if (activeAnnotation != nil)
+		[self setNeedsDisplayForAnnotion:activeAnnotation page:[activeAnnotation page]];
+	
+	// Assign.
+	if (newAnnotation) {
+		activeAnnotation = newAnnotation;
+		activePage = [newAnnotation page];
+		
+		// Force redisplay.
+		[self setNeedsDisplayForAnnotion:activeAnnotation page:activePage];
+	} else {
+		activeAnnotation = nil;
+		activePage = nil;
+	}
+	
+	if (changed)
+		[[NSNotificationCenter defaultCenter] postNotificationName:@"SKPDFViewActiveAnnotationDidChange" object:self userInfo:nil];
+}
+
+#pragma mark Actions
+
+- (void)delete:(id)sender
+{
+	if (activeAnnotation != nil) {
+		PDFAnnotation *wasAnnotation = activeAnnotation;
+        
+        if (editAnnotation)
+            [self endAnnotationEdit];
+		[self setActiveAnnotation:nil];
+		[[wasAnnotation page] removeAnnotation:wasAnnotation];
+	}
 }
 
 #pragma mark Event Handling
 
+- (void)keyDown:(NSEvent *)theEvent
+{
+	unichar character = [[theEvent charactersIgnoringModifiers] characterAtIndex: 0];
+	
+	if ((character == NSDeleteCharacter) || (character == NSDeleteFunctionKey))
+		[self delete:self];
+	else
+		[super keyDown:theEvent];
+}
 
 - (void)mouseDown:(NSEvent *)theEvent{
     [self cleanupPDFHoverView];
@@ -118,28 +276,54 @@ static PDFView *PDFHoverPDFView = nil;
             [self popUpWithEvent:theEvent];
             break;
         case SKAnnotateToolMode:
-            [super mouseDown:theEvent];
+            if ([[self document] isLocked])
+                [super mouseDown:theEvent];
+            else 
+                [self selectAnnotationWithEvent:theEvent];
             break;
     }
 }
 
 - (void)mouseUp:(NSEvent *)theEvent{
-    if (toolMode == SKMoveToolMode) {
-        [NSCursor pop];
-    } else if (toolMode == SKAnnotateToolMode) {
-        [self annotateWithEvent:theEvent];
+    switch (toolMode) {
+        case SKMoveToolMode:
+            [NSCursor pop];
+            break;
+        case SKTextToolMode:
+        case SKMagnifyToolMode:
+        case SKPopUpToolMode:
+            [super mouseUp:theEvent];
+            break;
+        case SKAnnotateToolMode:
+            //[self annotateWithEvent:theEvent];
+            dragging = NO;
+            if (mouseDownInAnnotation)
+                mouseDownInAnnotation = NO;
+            else
+                [super mouseUp:theEvent];
+            break;
     }
-    [super mouseUp:theEvent];
 }
 
-- (void)mouseDragged:(NSEvent *)event {
-	if (toolMode == SKMoveToolMode) {
-		[self dragWithEvent:event];	
-        // ??? PDFView's delayed layout seems to reset the cursor to an arrow
-        [self performSelector:@selector(mouseMoved:) withObject:event afterDelay:0];
-	} else {
-		[super mouseDragged:event];
-	}
+- (void)mouseDragged:(NSEvent *)theEvent {
+    switch (toolMode) {
+        case SKMoveToolMode:
+            [self dragWithEvent:theEvent];	
+            // ??? PDFView's delayed layout seems to reset the cursor to an arrow
+            [self performSelector:@selector(mouseMoved:) withObject:theEvent afterDelay:0];
+            break;
+        case SKTextToolMode:
+        case SKMagnifyToolMode:
+        case SKPopUpToolMode:
+            [super mouseDragged:theEvent];
+            break;
+        case SKAnnotateToolMode:
+            if (mouseDownInAnnotation)
+                [self dragAnnotationWithEvent:theEvent];
+            else
+                [super mouseDragged:theEvent];
+            break;
+    }
 }
 
 - (NSCursor *)cursorForMouseMovedEvent:(NSEvent *)event {
@@ -336,6 +520,169 @@ static PDFView *PDFHoverPDFView = nil;
     [controller createNewNoteAtPageNumber:[[self document] indexForPage:[dest page]] location:[dest point]];        
 }
 
+- (void)selectAnnotationWithEvent:(NSEvent *)theEvent {
+    PDFAnnotation *newActiveAnnotation = NULL;
+    PDFAnnotation *wasActiveAnnotation;
+    NSArray *annotations;
+    int numAnnotations, i;
+    NSPoint pagePoint;
+    BOOL changed;
+    
+    // Mouse in display view coordinates.
+    mouseDownLoc = [self convertPoint:[theEvent locationInWindow] fromView:nil];
+    
+    // Page we're on.
+    activePage = [self pageForPoint:mouseDownLoc nearest:YES];
+    
+    // Get mouse in "page space".
+    pagePoint = [self convertPoint:mouseDownLoc toPage:activePage];
+    
+    // Hit test for annotation.
+    annotations = [activePage annotations];
+    numAnnotations = [annotations count];
+    
+    for (i = 0; i < numAnnotations; i++) {
+        NSRect annotationBounds;
+        
+        // Hit test annotation.
+        annotationBounds = [[annotations objectAtIndex:i] bounds];
+        if (NSPointInRect(pagePoint, annotationBounds)) {
+            PDFAnnotation *annotationHit = [annotations objectAtIndex:i];
+            if ([[annotationHit type] isEqualToString:@"FreeText"] || [[annotationHit type] isEqualToString:@"Text"] || [[annotationHit type] isEqualToString:@"Circle"]) {
+                // We count this one.
+                newActiveAnnotation = annotationHit;
+                
+                // Remember click point relative to annotation origin.
+                clickDelta.x = pagePoint.x - annotationBounds.origin.x;
+                clickDelta.y = pagePoint.y - annotationBounds.origin.y;
+                break;
+            }
+        }
+    }
+    
+    // Flag indicating if activeAnnotation will change. 
+    changed = (activeAnnotation != newActiveAnnotation);
+    
+    // Deselect old annotation when appropriate.
+    if (activeAnnotation && changed)
+		[self setNeedsDisplayForAnnotion:activeAnnotation page:[activeAnnotation page]];
+    
+    if (changed) {
+        if (editAnnotation)
+            [self endAnnotationEdit];
+        
+        // Assign.
+        wasActiveAnnotation = activeAnnotation;
+        activeAnnotation = (PDFAnnotationFreeText *)newActiveAnnotation;
+        
+        NSMutableDictionary *userInfo = [NSMutableDictionary dictionaryWithCapacity:2];
+        if (wasActiveAnnotation)
+            [userInfo setObject:wasActiveAnnotation forKey:@"wasActiveAnnotation"];
+        if (activeAnnotation)
+            [userInfo setObject:activeAnnotation forKey:@"activeAnnotation"];
+        [[NSNotificationCenter defaultCenter] postNotificationName:@"SKPDFViewActiveAnnotationDidChange" object:self userInfo:userInfo];
+    }
+    
+    if (activeAnnotation == nil) {
+        [super mouseDown:theEvent];
+    } else if ([theEvent clickCount] == 2 && ([[activeAnnotation type] isEqualToString:@"FreeText"] || [[activeAnnotation type] isEqualToString:@"Text"])) {
+        // probably we should use the note window for Text annotations
+        NSRect editBounds = [activeAnnotation bounds];
+        if ([[activeAnnotation type] isEqualToString:@"Text"]) {
+            NSRect pageBounds = [[activeAnnotation page] boundsForBox:[self displayBox]];
+            editBounds = NSInsetRect(editBounds, -120.0, -120.0);
+            if (NSMaxX(editBounds) > NSMaxX(pageBounds))
+                editBounds.origin.x = NSMaxX(pageBounds) - NSWidth(editBounds);
+            if (NSMinX(editBounds) < NSMinX(pageBounds))
+                editBounds.origin.x = NSMinX(pageBounds);
+            if (NSMaxY(editBounds) > NSMaxY(pageBounds))
+                editBounds.origin.y = NSMaxY(pageBounds) - NSHeight(editBounds);
+            if (NSMinY(editBounds) < NSMinY(pageBounds))
+                editBounds.origin.y = NSMinY(pageBounds);
+        }
+        editAnnotation = [[[PDFAnnotationTextWidget alloc] initWithBounds:editBounds] autorelease];
+        [editAnnotation setStringValue:[activeAnnotation contents]];
+        if ([activeAnnotation respondsToSelector:@selector(font)])
+            [editAnnotation setFont:[(PDFAnnotationFreeText *)activeAnnotation font]];
+        [editAnnotation setColor:[activeAnnotation color]];
+        [[activeAnnotation page] addAnnotation:editAnnotation];
+        
+        // Start editing
+        [super mouseDown:theEvent];
+        
+    } else { 
+        // Old (current) annotation location.
+        wasBounds = [activeAnnotation bounds];
+        
+        // Force redisplay.
+		[self setNeedsDisplayForAnnotion:activeAnnotation page:activePage];
+        mouseDownInAnnotation = YES;
+        
+        // Hit-test for resize box.
+        resizing = [[activeAnnotation type] isEqualToString:@"Text"] == NO && NSPointInRect(pagePoint, [self resizeThumbForRect:wasBounds rotation:[activePage rotation]]);
+    }
+}
+
+- (void)dragAnnotationWithEvent:(NSEvent *)theEvent {
+    NSRect newBounds;
+    NSRect currentBounds = [activeAnnotation bounds];
+    NSRect dirtyRect;
+    NSPoint mouseLoc = [self convertPoint:[theEvent locationInWindow] fromView:nil];
+    NSPoint endPt = [self convertPoint:mouseLoc toPage:activePage];
+    
+    if (resizing) {
+        NSPoint startPoint = [self convertPoint:mouseDownLoc toPage:activePage];
+        NSPoint relPoint = NSMakePoint(endPt.x - startPoint.x, endPt.y - startPoint.y);
+        newBounds = wasBounds;
+        
+        // Resize the annotation.
+        switch ([activePage rotation]) {
+            case 0:
+                newBounds.origin.y += relPoint.y;
+                newBounds.size.width += relPoint.x;
+                newBounds.size.height -= relPoint.y;
+                break;
+            case 90:
+                newBounds.size.width += relPoint.x;
+                newBounds.size.height += relPoint.y;
+                break;
+            case 180:
+                newBounds.origin.x += relPoint.x;
+                newBounds.size.width -= relPoint.x;
+                newBounds.size.height += relPoint.y;
+                break;
+            case 270:
+                newBounds.origin.x += relPoint.x;
+                newBounds.origin.y += relPoint.y;
+                newBounds.size.width -= relPoint.x;
+                newBounds.size.height -= relPoint.y;
+                break;
+        }
+        
+        // Keep integer.
+        newBounds = NSIntegralRect(newBounds);
+    } else {
+        // Move annotation.
+        // Hit test, is mouse still within page bounds?
+        if (NSPointInRect([self convertPoint:mouseLoc toPage:activePage], [activePage boundsForBox:[self displayBox]])) {
+            // Calculate new bounds for annotation.
+            newBounds = currentBounds;
+            newBounds.origin.x = roundf(endPt.x - clickDelta.x);
+            newBounds.origin.y = roundf(endPt.y - clickDelta.y);
+        } else {
+            // Snap back to initial location.
+            newBounds = wasBounds;
+        }
+    }
+    
+    // Change annotation's location.
+    [activeAnnotation setBounds:newBounds];
+    
+    // Force redraw.
+    dirtyRect = NSUnionRect(currentBounds, newBounds);
+    [self setNeedsDisplayInRect:RectPlusScale([self convertRect:dirtyRect fromPage:activePage], [self scaleFactor])];
+}
+
 - (void)dragWithEvent:(NSEvent *)theEvent {
 	NSPoint initialLocation = [theEvent locationInWindow];
 	NSRect visibleRect = [[self documentView] visibleRect];
@@ -480,7 +827,7 @@ static PDFView *PDFHoverPDFView = nil;
 
 @end
 
-@implementation SKPDFView (private)
+@implementation SKPDFView (Private)
 
 - (NSRect)_hoverWindowRectFittingScreenFromRect:(NSRect)rect{
     
@@ -505,6 +852,14 @@ static PDFView *PDFHoverPDFView = nil;
     
     return NSMakeRect(hoverWindowOrigin.x, hoverWindowOrigin.y,
                       rect.size.width, rect.size.height);
+}
+
+- (void)endAnnotationEdit {
+    if (editAnnotation) {
+        [activeAnnotation setContents:[editAnnotation stringValue]];
+        [[editAnnotation page] removeAnnotation:editAnnotation];
+        editAnnotation = nil;
+    }
 }
 
 @end
