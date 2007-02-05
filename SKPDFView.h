@@ -64,5 +64,6 @@ typedef enum _SKToolMode {
 - (PDFAnnotation *)activeAnnotation;
 - (void)setActiveAnnotation:(PDFAnnotation *)newAnnotation;
 - (NSRect)resizeThumbForRect:(NSRect)rect rotation:(int)rotation;
+- (void)setNeedsDisplayForAnnotion:(PDFAnnotation *)annotation;
 
 @end

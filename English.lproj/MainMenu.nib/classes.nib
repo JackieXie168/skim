@@ -20,6 +20,7 @@
                 doZoomToActualSize = id; 
                 doZoomToFit = id; 
                 getInfo = id; 
+                pickColor = id; 
                 rotateAllLeft = id; 
                 rotateAllRight = id; 
                 rotateLeft = id; 

@@ -178,8 +178,8 @@ static PDFView *PDFHoverPDFView = nil;
 	return thumb;
 }
 
-- (void)setNeedsDisplayForAnnotion:(PDFAnnotation *)annotation page:(PDFPage *)page {
-    [self setNeedsDisplayInRect:RectPlusScale([self convertRect:[annotation bounds] fromPage:page], [self scaleFactor])];
+- (void)setNeedsDisplayForAnnotion:(PDFAnnotation *)annotation {
+    [self setNeedsDisplayInRect:RectPlusScale([self convertRect:[annotation bounds] fromPage:[annotation page]], [self scaleFactor])];
 }
 
 #pragma mark Accessors
@@ -212,7 +212,7 @@ static PDFView *PDFHoverPDFView = nil;
 	
 	// Will need to redraw old active anotation.
 	if (activeAnnotation != nil)
-		[self setNeedsDisplayForAnnotion:activeAnnotation page:[activeAnnotation page]];
+		[self setNeedsDisplayForAnnotion:activeAnnotation];
 	
 	// Assign.
 	if (newAnnotation) {
@@ -220,7 +220,7 @@ static PDFView *PDFHoverPDFView = nil;
 		activePage = [newAnnotation page];
 		
 		// Force redisplay.
-		[self setNeedsDisplayForAnnotion:activeAnnotation page:activePage];
+		[self setNeedsDisplayForAnnotion:activeAnnotation];
 	} else {
 		activeAnnotation = nil;
 		activePage = nil;
@@ -570,7 +570,7 @@ static PDFView *PDFHoverPDFView = nil;
     
     // Deselect old annotation when appropriate.
     if (activeAnnotation && changed)
-		[self setNeedsDisplayForAnnotion:activeAnnotation page:[activeAnnotation page]];
+		[self setNeedsDisplayForAnnotion:activeAnnotation];
     
     if (changed) {
         if (editAnnotation)
@@ -620,7 +620,7 @@ static PDFView *PDFHoverPDFView = nil;
         wasBounds = [activeAnnotation bounds];
         
         // Force redisplay.
-		[self setNeedsDisplayForAnnotion:activeAnnotation page:activePage];
+		[self setNeedsDisplayForAnnotion:activeAnnotation];
         mouseDownInAnnotation = YES;
         
         // Hit-test for resize box.

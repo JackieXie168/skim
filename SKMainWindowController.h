@@ -67,6 +67,8 @@ typedef struct _SKPDFViewState {
     BOOL edited;
 }
 
+- (IBAction)pickColor:(id)sender;
+- (IBAction)changeColor:(id)sender;
 - (IBAction)doNewNote:(id)sender;
 - (IBAction)createNewNote:(id)sender;
 - (IBAction)displaySinglePages:(id)sender;
