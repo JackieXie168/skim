@@ -153,6 +153,9 @@ static NSString *SKDocumentToolbarSearchItemIdentifier = @"SKDocumentToolbarSear
     [self handleScaleChangedNotification:nil];
     [pageNumberStepper setMaxValue:[[pdfView document] pageCount]];
     
+	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleDidChangeActiveAnnotationNotification:) 
+			name:@"SKPDFViewActiveAnnotationDidChange" object:pdfView];
+    
     [self setupDocumentNotifications];
 }
 
@@ -200,8 +203,22 @@ static NSString *SKDocumentToolbarSearchItemIdentifier = @"SKDocumentToolbarSear
 
 #pragma mark Actions
 
-- (IBAction)doNewNote:(id)sender
-{
+- (IBAction)pickColor:(id)sender{
+    PDFAnnotation *annotation = [pdfView activeAnnotation];
+    if (annotation)
+        [[NSColorPanel sharedColorPanel] setColor:[annotation color]];
+    [[NSColorPanel sharedColorPanel] makeKeyAndOrderFront:self];
+}
+
+- (IBAction)changeColor:(id)sender{
+    PDFAnnotation *annotation = [pdfView activeAnnotation];
+    if (annotation) {
+        [annotation setColor:[sender color]];
+        [pdfView setNeedsDisplayForAnnotion:annotation];
+    }
+}
+
+- (IBAction)doNewNote:(id)sender{
 	PDFAnnotation *newAnnotation;
 	PDFPage *page;
 	PDFSelection *selection = [pdfView currentSelection];
@@ -837,6 +854,12 @@ static NSString *SKDocumentToolbarSearchItemIdentifier = @"SKDocumentToolbarSear
 - (void)handleAppWillTerminateNotification:(NSNotification *)notification {
     if ([self isFullScreen])
         [self exitFullScreen:self];
+}
+
+- (void)handleDidChangeActiveAnnotationNotification:(NSNotification *)notification {
+    PDFAnnotation *annotation = [pdfView activeAnnotation];
+    if (annotation)
+        [[NSColorPanel sharedColorPanel] setColor:[annotation color]];
 }
 
 #pragma mark NSOutlineView methods
