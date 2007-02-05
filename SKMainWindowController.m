@@ -228,16 +228,15 @@ static NSString *SKDocumentToolbarSearchItemIdentifier = @"SKDocumentToolbarSear
 	// Create annotation and add to page.
     if ([self annotationMode] == SKFreeTextAnnotationMode) {
         newAnnotation = [[PDFAnnotationFreeText alloc] initWithBounds:bounds];
-        [newAnnotation setContents:text ? text : @"New note"];
         [newAnnotation setColor:[NSColor colorWithDeviceRed:1.0 green:1.0 blue:0.7 alpha:1.0]];
     } else if ([self annotationMode] == SKTextAnnotationMode) {
         newAnnotation = [[PDFAnnotationText alloc] initWithBounds:bounds];
-        [newAnnotation setContents:text ? text : @"New note"];
         [newAnnotation setColor:[NSColor colorWithDeviceRed:1.0 green:1.0 blue:0.7 alpha:1.0]];
     } else if ([self annotationMode] == SKCircleAnnotationMode) {
         newAnnotation = [[PDFAnnotationCircle alloc] initWithBounds:NSInsetRect(bounds, -5.0, -5.0)];
         [newAnnotation setColor:[NSColor redColor]];
 	}
+    [newAnnotation setContents:text ? text : @"New note"];
     
     [page addAnnotation:newAnnotation];
 	[pdfView setActiveAnnotation:newAnnotation];
