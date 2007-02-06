@@ -11,8 +11,10 @@
 
 typedef enum _SKAnnotationMode {
     SKFreeTextAnnotationMode,
+    SKNoteAnnotationMode,
+    SKCircleAnnotationMode,
     SKTextAnnotationMode,
-    SKCircleAnnotationMode
+    SKSquareAnnotationMode
 } SKAnnotationMode;
 
 typedef struct _SKPDFViewState {
@@ -35,13 +37,13 @@ typedef struct _SKPDFViewState {
     BOOL                        updatingOutlineSelection;
     
     IBOutlet NSDrawer           *notesDrawer;
+    IBOutlet NSArrayController  *notesArrayController;
     
     IBOutlet NSSegmentedControl *backForwardButton;
     IBOutlet NSView             *pageNumberView;
     IBOutlet NSStepper          *pageNumberStepper;
     IBOutlet NSTextField        *pageNumberField;
     IBOutlet NSSegmentedControl *toolModeButton;
-    IBOutlet NSSegmentedControl *annotationModeButton;
     IBOutlet NSTextField        *scaleField;
     IBOutlet NSPopUpButton      *displayBoxPopUpButton;
     IBOutlet NSSearchField      *searchField;
@@ -69,7 +71,6 @@ typedef struct _SKPDFViewState {
 
 - (IBAction)pickColor:(id)sender;
 - (IBAction)changeColor:(id)sender;
-- (IBAction)doNewNote:(id)sender;
 - (IBAction)createNewNote:(id)sender;
 - (IBAction)displaySinglePages:(id)sender;
 - (IBAction)displayFacingPages:(id)sender;
@@ -110,6 +111,7 @@ typedef struct _SKPDFViewState {
 
 - (void)showSubWindowAtPageNumber:(int)pageNum location:(NSPoint)locationInPageSpace;
 - (void)createNewNoteAtPageNumber:(int)pageNum location:(NSPoint)locationInPageSpace;
+- (void)showNote:(PDFAnnotation *)annotation;
 
 - (BOOL)isFullScreen;
 - (BOOL)isPresentation;
@@ -127,6 +129,8 @@ typedef struct _SKPDFViewState {
 - (void)handlePageChangedNotification:(NSNotification *)notification;
 - (void)handleScaleChangedNotification:(NSNotification *)notification;
 - (void)handleToolModeChangedNotification:(NSNotification *)notification;
+
+- (void)setAnnotationsFromDictionaries:(NSArray *)noteDicts;
 
 - (void)setupToolbar;
 

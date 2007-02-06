@@ -1,10 +1,18 @@
 {
     IBClasses = (
+        {
+            CLASS = BDSKDragImageView; 
+            LANGUAGE = ObjC; 
+            OUTLETS = {delegate = id; }; 
+            SUPERCLASS = NSImageView; 
+        }, 
         {CLASS = FirstResponder; LANGUAGE = ObjC; SUPERCLASS = NSObject; }, 
+        {CLASS = NSObject; LANGUAGE = ObjC; }, 
         {
             ACTIONS = {dismissSheet = id; }; 
             CLASS = SKNoteWindowController; 
             LANGUAGE = ObjC; 
+            OUTLETS = {imageView = BDSKDragImageView; }; 
             SUPERCLASS = NSWindowController; 
         }
     ); 

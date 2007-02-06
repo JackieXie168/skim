@@ -17,9 +17,7 @@ extern NSString *SKPDFViewToolModeChangedNotification;
 typedef enum _SKToolMode {
     SKMoveToolMode,
     SKTextToolMode,
-    SKMagnifyToolMode,
-    SKPopUpToolMode,
-    SKAnnotateToolMode
+    SKMagnifyToolMode
 } SKToolMode;
 
 @interface SKPDFView : PDFView {
@@ -59,11 +57,9 @@ typedef enum _SKToolMode {
 
 - (IBAction)delete:(id)sender;
 
-- (void) transformContextForPage:(PDFPage *)page;
-
 - (PDFAnnotation *)activeAnnotation;
 - (void)setActiveAnnotation:(PDFAnnotation *)newAnnotation;
-- (NSRect)resizeThumbForRect:(NSRect)rect rotation:(int)rotation;
-- (void)setNeedsDisplayForAnnotion:(PDFAnnotation *)annotation;
+- (void)setNeedsDisplayForAnnotation:(PDFAnnotation *)annotation;
+- (void)endAnnotationEdit;
 
 @end

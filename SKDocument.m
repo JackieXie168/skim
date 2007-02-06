@@ -13,6 +13,7 @@
 #import <Quartz/Quartz.h>
 #import "SKMainWindowController.h"
 #import "NSFileManager_ExtendedAttributes.h"
+#import "SKPDFAnnotationNote.h"
 #import "SKNote.h"
 #import "PDFDocument_BDSKExtensions.h"
 
@@ -56,10 +57,13 @@ static NSString *SKPostScriptDocumentType = @"PostScript document";
     [self addWindowController:mainWindowController];
 }
 
-- (void)windowControllerDidLoadNib:(NSWindowController *) aController{
+- (void)windowControllerDidLoadNib:(NSWindowController *)aController{
     
     [super windowControllerDidLoadNib:aController];
     // Add any code here that needs to be executed once the windowController has loaded the document's window.
+    SKMainWindowController *mainController =  (SKMainWindowController *)aController;
+    
+    [mainController setAnnotationsFromDictionaries:noteDicts];
 }
 
 
@@ -84,6 +88,13 @@ static NSString *SKPostScriptDocumentType = @"PostScript document";
         data = [NSKeyedArchiver archivedDataWithRootObject:notes];
     }
     return data;
+}
+
+- (BOOL)revertToContentsOfURL:(NSURL *)absoluteURL ofType:(NSString *)typeName error:(NSError **)outError{
+    if ([super revertToContentsOfURL:absoluteURL ofType:typeName error:outError]) {
+        [[[self windowControllers] objectAtIndex:0] setAnnotationsFromDictionaries:noteDicts];
+        return YES;
+    } else return NO;
 }
 
 - (BOOL)readFromURL:(NSURL *)absoluteURL ofType:(NSString *)docType error:(NSError **)outError{
@@ -143,7 +154,7 @@ static NSString *SKPostScriptDocumentType = @"PostScript document";
         
         for (i = 0; i < numberOfNotes; i++) {
             name = [NSString stringWithFormat:@"SKNote-%i", i];
-            data = [NSKeyedArchiver archivedDataWithRootObject:[notes objectAtIndex:i]];
+            data = [NSKeyedArchiver archivedDataWithRootObject:[[notes objectAtIndex:i] dictionaryValue]];
             if ([fm setExtendedAttributeNamed:name toValue:data atPath:path options:nil error:&error] == NO) {
                 success = NO;
                 NSLog(@"%@: %@", self, error);
@@ -171,15 +182,18 @@ static NSString *SKPostScriptDocumentType = @"PostScript document";
         int i, numberOfNotes = [[dict objectForKey:@"numberOfNotes"] intValue];
         NSString *name = nil;
         NSData *data = nil;
-        SKNote *note = nil;
         
-        [notes removeAllObjects];
+        if (noteDicts)
+            [noteDicts release];
+        noteDicts = [[NSMutableDictionary alloc] initWithCapacity:numberOfNotes];
+        
+        [noteDicts removeAllObjects];
         
         for (i = 0; i < numberOfNotes; i++) {
             name = [NSString stringWithFormat:@"SKNote-%i", i];
             if ((data = [fm extendedAttributeNamed:name atPath:[aURL path] traverseLink:YES error:&error]) &&
-                (note = [NSKeyedUnarchiver unarchiveObjectWithData:data])) {
-                [notes addObject:note];
+                (dict = [NSKeyedUnarchiver unarchiveObjectWithData:data])) {
+                [noteDicts addObject:dict];
             } else {
                 success = NO;
                 NSLog(@"%@: %@", self, error);
