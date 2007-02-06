@@ -14,7 +14,6 @@
                 doGoToNextPage = id; 
                 doGoToPage = id; 
                 doGoToPreviousPage = id; 
-                doNewNote = id; 
                 doZoomIn = id; 
                 doZoomOut = id; 
                 doZoomToActualSize = id; 

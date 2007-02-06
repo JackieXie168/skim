@@ -11,6 +11,8 @@
         {CLASS = SKFullScreenWindow; LANGUAGE = ObjC; SUPERCLASS = NSWindow; }, 
         {
             ACTIONS = {
+                changeAnnotationMode = id; 
+                changeColor = id; 
                 changeDisplayBox = id; 
                 changePageNumber = id; 
                 changeScaleFactor = id; 
@@ -35,6 +37,7 @@
                 exitFullScreen = id; 
                 getInfo = id; 
                 goBackOrForward = id; 
+                pickColor = id; 
                 rotateAllLeft = id; 
                 rotateAllRight = id; 
                 rotateLeft = id; 
@@ -56,6 +59,7 @@
                 displayBoxPopUpButton = NSPopUpButton; 
                 findArrayController = NSArrayController; 
                 findCustomView = NSView; 
+                notesArrayController = NSArrayController; 
                 notesDrawer = NSDrawer; 
                 outlineView = NSOutlineView; 
                 pageNumberField = NSTextField; 

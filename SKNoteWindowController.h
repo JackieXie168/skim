@@ -9,10 +9,12 @@
 #import <Cocoa/Cocoa.h>
 
 
-@class SKNote;
+@class PDFAnnotation, BDSKDragImageView;
 
 @interface SKNoteWindowController : NSWindowController {
-    SKNote *note;
+    IBOutlet BDSKDragImageView *imageView;
+    
+    PDFAnnotation *note;
     
     id theModalDelegate;
     SEL theDidEndSelector;
@@ -20,15 +22,16 @@
     CFArrayRef editors;
 }
 
-- (id)initWithNote:(SKNote *)aNote;
+- (id)initWithNote:(PDFAnnotation *)aNote;
 
-- (SKNote *)note;
-- (void)setNote:(SKNote *)newNote;
+- (PDFAnnotation *)note;
+- (void)setNote:(PDFAnnotation *)newNote;
 
-- (IBAction)dismissSheet:(id)sender;
-
-- (void)beginSheetModalForWindow:(NSWindow *)window modalDelegate:(id)modalDelegate didEndSelector:(SEL)didEndSelector contextInfo:(void *)contextInfo;
+- (BOOL)isNoteType;
 
 - (BOOL)commitEditing;
 
+@end
+
+@interface SKRectStringTransformer : NSValueTransformer
 @end

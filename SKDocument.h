@@ -23,6 +23,7 @@ extern NSString *SKDocumentErrorDomain;
     
     // variables to be saved:
     NSMutableArray *notes;
+    NSMutableArray *noteDicts;
 }
 
 - (NSArray *)notes;

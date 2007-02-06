@@ -25,6 +25,8 @@
 		8D15AC310486D014006FF6A4 /* SKDocument.m in Sources */ = {isa = PBXBuildFile; fileRef = 2A37F4ACFDCFA73011CA2CEA /* SKDocument.m */; settings = {ATTRIBUTES = (); }; };
 		8D15AC320486D014006FF6A4 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 2A37F4B0FDCFA73011CA2CEA /* main.m */; settings = {ATTRIBUTES = (); }; };
 		8D15AC340486D014006FF6A4 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1058C7A7FEA54F5311CA2CBB /* Cocoa.framework */; };
+		CE3A3D2C0B78C0A0006B64D3 /* SKPDFAnnotationNote.m in Sources */ = {isa = PBXBuildFile; fileRef = CE3A3D2B0B78C0A0006B64D3 /* SKPDFAnnotationNote.m */; };
+		CE3A41580B790C56006B64D3 /* BDSKDragImageView.m in Sources */ = {isa = PBXBuildFile; fileRef = CE3A41570B790C56006B64D3 /* BDSKDragImageView.m */; };
 		CE546FC40B32D5DB00F8AFB6 /* SKNoteWindowController.m in Sources */ = {isa = PBXBuildFile; fileRef = CE546FC30B32D5DB00F8AFB6 /* SKNoteWindowController.m */; };
 		CE5470030B32D96500F8AFB6 /* NoteWindow.nib in Resources */ = {isa = PBXBuildFile; fileRef = CE5470010B32D96500F8AFB6 /* NoteWindow.nib */; };
 		CE5478C80B33456300F8AFB6 /* annotateTool.tif in Resources */ = {isa = PBXBuildFile; fileRef = CE5478B70B33456300F8AFB6 /* annotateTool.tif */; };
@@ -94,6 +96,10 @@
 		45B113BF0B329A7E00DE0660 /* LICENSE */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = LICENSE; sourceTree = "<group>"; };
 		8D15AC360486D014006FF6A4 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = Info.plist; sourceTree = "<group>"; };
 		8D15AC370486D014006FF6A4 /* Skim.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Skim.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		CE3A3D2A0B78C0A0006B64D3 /* SKPDFAnnotationNote.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SKPDFAnnotationNote.h; sourceTree = "<group>"; };
+		CE3A3D2B0B78C0A0006B64D3 /* SKPDFAnnotationNote.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SKPDFAnnotationNote.m; sourceTree = "<group>"; };
+		CE3A41560B790C56006B64D3 /* BDSKDragImageView.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = BDSKDragImageView.h; sourceTree = "<group>"; };
+		CE3A41570B790C56006B64D3 /* BDSKDragImageView.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = BDSKDragImageView.m; sourceTree = "<group>"; };
 		CE546FC20B32D5DB00F8AFB6 /* SKNoteWindowController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SKNoteWindowController.h; sourceTree = "<group>"; };
 		CE546FC30B32D5DB00F8AFB6 /* SKNoteWindowController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SKNoteWindowController.m; sourceTree = "<group>"; };
 		CE5470020B32D96500F8AFB6 /* English */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = English; path = English.lproj/NoteWindow.nib; sourceTree = "<group>"; };
@@ -196,14 +202,6 @@
 		2A37F4ABFDCFA73011CA2CEA /* Classes */ = {
 			isa = PBXGroup;
 			children = (
-				F92DB6600B371481002A26E9 /* PDFDocument_BDSKExtensions.h */,
-				F92DB6610B371481002A26E9 /* PDFDocument_BDSKExtensions.m */,
-				F92DB5A80B36FE1F002A26E9 /* BDSKHeaderPopUpButtonCell.h */,
-				F92DB5A90B36FE1F002A26E9 /* BDSKHeaderPopUpButtonCell.m */,
-				F92DB5AA0B36FE1F002A26E9 /* BDSKZoomablePDFView.h */,
-				F92DB5AB0B36FE1F002A26E9 /* BDSKZoomablePDFView.m */,
-				F92DB5B10B36FE5E002A26E9 /* BDSKHeaderPopUpButton.h */,
-				F92DB5B20B36FE5E002A26E9 /* BDSKHeaderPopUpButton.m */,
 				45B113BF0B329A7E00DE0660 /* LICENSE */,
 				45B1115E0B3096B900DE0660 /* SKNote.h */,
 				45B1115F0B3096B900DE0660 /* SKNote.m */,
@@ -219,18 +217,30 @@
 				4530D7E70B27AAB9007C59F4 /* SKSubWindowController.m */,
 				CE546FC20B32D5DB00F8AFB6 /* SKNoteWindowController.h */,
 				CE546FC30B32D5DB00F8AFB6 /* SKNoteWindowController.m */,
-				CE5487BA0B35A20A00F8AFB6 /* NSFileManager_ExtendedAttributes.h */,
-				CE5487BB0B35A20A00F8AFB6 /* NSFileManager_ExtendedAttributes.m */,
 				CE54898D0B35D50E00F8AFB6 /* SKInfoWindowController.h */,
 				CE54898E0B35D50E00F8AFB6 /* SKInfoWindowController.m */,
+				CEFDF8BC0B3848C40091C61A /* SKNavigationWindow.h */,
+				CEFDF8BD0B3848C40091C61A /* SKNavigationWindow.m */,
+				CE3A3D2A0B78C0A0006B64D3 /* SKPDFAnnotationNote.h */,
+				CE3A3D2B0B78C0A0006B64D3 /* SKPDFAnnotationNote.m */,
+				45A3BD060B4F0770002B297F /* SKStringConstants.h */,
+				45A3BD070B4F0770002B297F /* SKStringConstants.m */,
 				CE548DAA0B371ED000F8AFB6 /* SKCollapsibleView.h */,
 				CE548DAB0B371ED000F8AFB6 /* SKCollapsibleView.m */,
 				F97751610B37461000DF673B /* SKPSProgressController.h */,
 				F97751620B37461000DF673B /* SKPSProgressController.m */,
-				CEFDF8BC0B3848C40091C61A /* SKNavigationWindow.h */,
-				CEFDF8BD0B3848C40091C61A /* SKNavigationWindow.m */,
-				45A3BD060B4F0770002B297F /* SKStringConstants.h */,
-				45A3BD070B4F0770002B297F /* SKStringConstants.m */,
+				CE3A41560B790C56006B64D3 /* BDSKDragImageView.h */,
+				CE3A41570B790C56006B64D3 /* BDSKDragImageView.m */,
+				F92DB6600B371481002A26E9 /* PDFDocument_BDSKExtensions.h */,
+				F92DB6610B371481002A26E9 /* PDFDocument_BDSKExtensions.m */,
+				F92DB5A80B36FE1F002A26E9 /* BDSKHeaderPopUpButtonCell.h */,
+				F92DB5A90B36FE1F002A26E9 /* BDSKHeaderPopUpButtonCell.m */,
+				F92DB5AA0B36FE1F002A26E9 /* BDSKZoomablePDFView.h */,
+				F92DB5AB0B36FE1F002A26E9 /* BDSKZoomablePDFView.m */,
+				F92DB5B10B36FE5E002A26E9 /* BDSKHeaderPopUpButton.h */,
+				F92DB5B20B36FE5E002A26E9 /* BDSKHeaderPopUpButton.m */,
+				CE5487BA0B35A20A00F8AFB6 /* NSFileManager_ExtendedAttributes.h */,
+				CE5487BB0B35A20A00F8AFB6 /* NSFileManager_ExtendedAttributes.m */,
 			);
 			name = Classes;
 			sourceTree = "<group>";
@@ -410,6 +420,8 @@
 				CEFDF8BE0B3848C40091C61A /* SKNavigationWindow.m in Sources */,
 				45A3BD080B4F0770002B297F /* SKStringConstants.m in Sources */,
 				453DC2770B4F242200A72509 /* BDAlias.m in Sources */,
+				CE3A3D2C0B78C0A0006B64D3 /* SKPDFAnnotationNote.m in Sources */,
+				CE3A41580B790C56006B64D3 /* BDSKDragImageView.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

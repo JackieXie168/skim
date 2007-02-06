@@ -56,3 +56,11 @@
 - (NSArray *)dragImageView:(BDSKDragImageView *)view namesOfPromisedFilesDroppedAtDestination:(NSURL *)dropDestination;
 - (NSImage *)dragImageForDragImageView:(BDSKDragImageView *)view;
 @end
+
+@interface NSBezierPath (BDSKExtensions)
+
++ (void)fillRoundRectInRect:(NSRect)rect radius:(float)radius;
++ (void)strokeRoundRectInRect:(NSRect)rect radius:(float)radius;
++ (NSBezierPath*)bezierPathWithRoundRectInRect:(NSRect)rect radius:(float)radius;
+
+@end

@@ -7,20 +7,26 @@
 //
 
 #import "SKNoteWindowController.h"
-#import "SKNote.h"
+#import <Quartz/Quartz.h>
+#import "BDSKDragImageView.h"
+#import "SKPDFAnnotationNote.h"
 
 
 @implementation SKNoteWindowController
+
++ (void)initialize {
+    SKRectStringTransformer *transformer = [[SKRectStringTransformer alloc] init];
+    [NSValueTransformer setValueTransformer:transformer forName:@"SKRectStringTransformer"];
+    [transformer release];
+}
 
 - (id)init {
     return self = [self initWithNote:nil];
 }
 
-- (id)initWithNote:(SKNote *)aNote {
+- (id)initWithNote:(PDFAnnotation *)aNote {
     if (self = [super init]) {
-        note = [aNote copy];
-        theModalDelegate = nil;
-        theDidEndSelector = NULL;
+        note = [aNote retain];
         editors = CFArrayCreateMutable(kCFAllocatorMallocZone, 0, NULL);
     }
     return self;
@@ -36,52 +42,24 @@
     return @"NoteWindow";
 }
 
-- (SKNote *)note {
+- (void)windowWillClose:(NSNotification *)aNotification {
+    [self commitEditing];
+
+}
+
+- (PDFAnnotation *)note {
     return note;
 }
 
-- (void)setNote:(SKNote *)newNote {
+- (void)setNote:(PDFAnnotation *)newNote {
     if (note != newNote) {
         [note release];
-        note = [newNote copy];
+        note = [newNote retain];
     }
 }
 
-- (void)beginSheetModalForWindow:(NSWindow *)window modalDelegate:(id)modalDelegate didEndSelector:(SEL)didEndSelector contextInfo:(void *)contextInfo{
-    [self retain];
-    
-    theModalDelegate = modalDelegate;
-    theDidEndSelector = didEndSelector;
-    
-    [NSApp beginSheet: [self window]
-       modalForWindow: window
-        modalDelegate: self
-       didEndSelector: @selector(sheetDidEnd:returnCode:contextInfo:)
-          contextInfo: contextInfo];
-}
-
-- (IBAction)dismissSheet:(id)sender {
-    [NSApp endSheet:[self window] returnCode:[sender tag]];
-    [[self window] orderOut:self];
-    [self release];
-}
-
-- (void)sheetDidEnd:(NSWindow *)sheet returnCode:(int)returnCode contextInfo:(void *)contextInfo{
-	if(returnCode == NSOKButton)
-        [self commitEditing];
-    if(theModalDelegate != nil && theDidEndSelector != NULL){
-		NSMethodSignature *signature = [theModalDelegate methodSignatureForSelector:theDidEndSelector];
-        NSAssert2(nil != signature, @"%@ does not implement %@", theModalDelegate, NSStringFromSelector(theDidEndSelector));
-		NSInvocation *invocation = [NSInvocation invocationWithMethodSignature:signature];
-		[invocation setSelector:theDidEndSelector];
-		[invocation setArgument:&self atIndex:2];
-		[invocation setArgument:&returnCode atIndex:3];
-		[invocation setArgument:&contextInfo atIndex:4];
-		[invocation invokeWithTarget:theModalDelegate];
-	}
-    
-    theModalDelegate = nil;
-    theDidEndSelector = NULL;
+- (BOOL)isNoteType {
+    return [[note type] isEqualToString:@"Note"];
 }
 
 - (void)objectDidBeginEditing:(id)editor {
@@ -105,4 +83,46 @@
     return YES;
 }
 
+#pragma mark BDSKDragImageView delegate protocol
+
+- (NSDragOperation)dragImageView:(BDSKDragImageView *)view validateDrop:(id <NSDraggingInfo>)sender;
+{
+    if ([[sender draggingSource] isEqual:view] == NO &&
+        [NSImage canInitWithPasteboard:[sender draggingPasteboard]] &&
+        [self isNoteType])
+        return NSDragOperationCopy;
+    else
+        return NSDragOperationNone;
+}
+
+- (BOOL)dragImageView:(BDSKDragImageView *)view acceptDrop:(id <NSDraggingInfo>)sender;
+{
+    NSImage *image = [[NSImage alloc] initWithPasteboard:[sender draggingPasteboard]];
+    
+    if (image) {
+        [(SKPDFAnnotationNote *)note setImage:image];
+        [image release];
+        return YES;
+    } else return NO;
+}
+
 @end
+
+
+@implementation SKRectStringTransformer
+
++ (Class)transformedValueClass {
+    return [NSString class];
+}
+
++ (BOOL)allowsReverseTransformation {
+    return NO;
+}
+
+- (id)transformedValue:(id)value {
+    NSRect rect = [value rectValue];
+	return [NSString stringWithFormat:@"(%i, %i)", (int)NSMidX(rect), (int)NSMidY(rect)];
+}
+
+@end
+
