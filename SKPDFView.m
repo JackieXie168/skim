@@ -211,12 +211,39 @@ static PDFView *PDFHoverPDFView = nil;
 
 - (void)keyDown:(NSEvent *)theEvent
 {
-	unichar character = [[theEvent charactersIgnoringModifiers] characterAtIndex: 0];
-	
-	if ((character == NSDeleteCharacter) || (character == NSDeleteFunctionKey))
+    NSString *characters = [theEvent charactersIgnoringModifiers];
+    unichar eventChar = [characters length] > 0 ? [characters characterAtIndex:0] : 0;
+	unsigned int modifiers = [theEvent modifierFlags] & NSDeviceIndependentModifierFlagsMask;
+    
+	if ((eventChar == NSDeleteCharacter) || (eventChar == NSDeleteFunctionKey)) {
 		[self delete:self];
-	else
+	} else if (activeAnnotation && ((eventChar == NSRightArrowFunctionKey) || (eventChar == NSLeftArrowFunctionKey) || (eventChar == NSUpArrowFunctionKey) || (eventChar == NSDownArrowFunctionKey))) {
+        NSRect bounds = [activeAnnotation bounds];
+        NSRect newBounds = bounds;
+        PDFPage *page = [activeAnnotation page];
+        NSRect pageBounds = [page boundsForBox:[self displayBox]];
+        float delta = (modifiers & NSShiftKeyMask) ? 10.0 : 1.0;
+        
+        if (eventChar == NSRightArrowFunctionKey) {
+            if (NSMaxX(bounds) + delta <= NSMaxX(pageBounds))
+                newBounds.origin.x += delta;
+        } else if (eventChar == NSLeftArrowFunctionKey) {
+            if (NSMinX(bounds) - delta >= NSMinX(pageBounds))
+                newBounds.origin.x -= delta;
+        } else if (eventChar == NSUpArrowFunctionKey) {
+            if (NSMaxY(bounds) + delta <= NSMaxY(pageBounds))
+                newBounds.origin.y += delta;
+        } else if (eventChar == NSDownArrowFunctionKey) {
+            if (NSMinY(bounds) - delta >= NSMinY(pageBounds))
+                newBounds.origin.y -= delta;
+        }
+        if (NSEqualRects(bounds, newBounds) == NO) {
+            [activeAnnotation setBounds:newBounds];
+            [self setNeedsDisplayInRect:RectPlusScale([self convertRect:NSUnionRect(bounds, newBounds) fromPage:page], [self scaleFactor])];
+        }
+    } else {
 		[super keyDown:theEvent];
+    }
 }
 
 - (void)mouseDown:(NSEvent *)theEvent{
