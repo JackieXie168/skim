@@ -15,8 +15,8 @@
 extern NSString *SKPDFViewToolModeChangedNotification;
 
 typedef enum _SKToolMode {
-    SKMoveToolMode,
     SKTextToolMode,
+    SKMoveToolMode,
     SKMagnifyToolMode
 } SKToolMode;
 

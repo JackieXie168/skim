@@ -9,7 +9,7 @@
 		<key>104</key>
 		<string>610 420 220 442 0 0 1440 938 </string>
 		<key>168</key>
-		<string>529 575 327 132 0 0 1440 938 </string>
+		<string>511 575 417 132 0 0 1440 938 </string>
 		<key>224</key>
 		<string>568 376 304 529 0 0 1440 938 </string>
 	</dict>
@@ -21,10 +21,10 @@
 	</array>
 	<key>IBOpenObjects</key>
 	<array>
-		<integer>5</integer>
 		<integer>168</integer>
-		<integer>208</integer>
 		<integer>224</integer>
+		<integer>5</integer>
+		<integer>208</integer>
 		<integer>104</integer>
 	</array>
 	<key>IBSystem Version</key>

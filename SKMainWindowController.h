@@ -44,6 +44,7 @@ typedef struct _SKPDFViewState {
     IBOutlet NSStepper          *pageNumberStepper;
     IBOutlet NSTextField        *pageNumberField;
     IBOutlet NSSegmentedControl *toolModeButton;
+    IBOutlet NSSegmentedControl *annotationModeButton;
     IBOutlet NSTextField        *scaleField;
     IBOutlet NSPopUpButton      *displayBoxPopUpButton;
     IBOutlet NSSearchField      *searchField;
