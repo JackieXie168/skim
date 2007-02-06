@@ -40,6 +40,7 @@ static NSString *SKDocumentToolbarPresentationItemIdentifier = @"SKDocumentToolb
 static NSString *SKDocumentToolbarToggleDrawerItemIdentifier = @"SKDocumentToolbarToggleDrawerItemIdentifier";
 static NSString *SKDocumentToolbarInfoItemIdentifier = @"SKDocumentToolbarInfoItemIdentifier";
 static NSString *SKDocumentToolbarToolModeItemIdentifier = @"SKDocumentToolbarToolModeItemIdentifier";
+static NSString *SKDocumentToolbarAnnotationModeItemIdentifier = @"SKDocumentToolbarAnnotationModeItemIdentifier";
 static NSString *SKDocumentToolbarDisplayBoxItemIdentifier = @"SKDocumentToolbarDisplayBoxItemIdentifier";
 static NSString *SKDocumentToolbarSearchItemIdentifier = @"SKDocumentToolbarSearchItemIdentifier";
 
@@ -137,6 +138,7 @@ static NSString *SKDocumentToolbarSearchItemIdentifier = @"SKDocumentToolbarSear
     [self handlePageChangedNotification:nil];
     [self handleScaleChangedNotification:nil];
     [pageNumberStepper setMaxValue:[[pdfView document] pageCount]];
+    [annotationModeButton setSelectedSegment:annotationMode];
     
 	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleDidChangeActiveAnnotationNotification:) 
 			name:@"SKPDFViewActiveAnnotationDidChangeNotification" object:pdfView];
@@ -194,6 +196,7 @@ static NSString *SKDocumentToolbarSearchItemIdentifier = @"SKDocumentToolbarSear
 
 - (void)setAnnotationMode:(SKAnnotationMode)newAnnotationMode {
     annotationMode = newAnnotationMode;
+    [annotationModeButton setSelectedSegment:annotationMode];
 }
 
 #pragma mark key handling
@@ -244,7 +247,7 @@ static NSString *SKDocumentToolbarSearchItemIdentifier = @"SKDocumentToolbarSear
 		// Get center of the PDFView.
 		NSRect viewFrame = [pdfView frame];
 		NSPoint center = NSMakePoint(NSMidX(viewFrame), NSMidY(viewFrame));
-		NSSize defaultSize = ([self annotationMode] == SKTextAnnotationMode || [self annotationMode] == SKNoteAnnotationMode) ? NSMakeSize(16.0, 16.0) : NSMakeSize(128.0, 64.0);
+		NSSize defaultSize = ([self annotationMode] == SKTextAnnotationMode || [self annotationMode] == SKNoteAnnotationMode) ? NSMakeSize(11, 11) : NSMakeSize(128.0, 64.0);
 		
 		// Convert to "page space".
 		page = [pdfView pageForPoint: center nearest: YES];
@@ -1165,6 +1168,16 @@ static NSString *SKDocumentToolbarSearchItemIdentifier = @"SKDocumentToolbarSear
     [toolbarItems setObject:item forKey:SKDocumentToolbarToolModeItemIdentifier];
     [item release];
     
+    item = [[NSToolbarItem alloc] initWithItemIdentifier:SKDocumentToolbarAnnotationModeItemIdentifier];
+    [item setLabel:NSLocalizedString(@"Annotation", @"Toolbar item label")];
+    [item setPaletteLabel:NSLocalizedString(@"Annotation Mode", @"Toolbar item label")];
+    [item setToolTip:NSLocalizedString(@"Annotation Mode", @"Tool tip message")];
+    [item setView:annotationModeButton];
+    [item setMinSize:[annotationModeButton bounds].size];
+    [item setMaxSize:[annotationModeButton bounds].size];
+    [toolbarItems setObject:item forKey:SKDocumentToolbarAnnotationModeItemIdentifier];
+    [item release];
+    
     item = [[NSToolbarItem alloc] initWithItemIdentifier:SKDocumentToolbarDisplayBoxItemIdentifier];
     [item setLabel:NSLocalizedString(@"Display Box", @"Toolbar item label")];
     [item setPaletteLabel:NSLocalizedString(@"Display Box", @"Toolbar item label")];
@@ -1239,6 +1252,7 @@ static NSString *SKDocumentToolbarSearchItemIdentifier = @"SKDocumentToolbarSear
         SKDocumentToolbarToggleDrawerItemIdentifier, 
         SKDocumentToolbarInfoItemIdentifier, 
         SKDocumentToolbarToolModeItemIdentifier, 
+        SKDocumentToolbarAnnotationModeItemIdentifier, 
         SKDocumentToolbarDisplayBoxItemIdentifier, 
         SKDocumentToolbarSearchItemIdentifier, 
 		NSToolbarPrintItemIdentifier,
