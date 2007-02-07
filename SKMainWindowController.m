@@ -136,14 +136,14 @@ static NSString *SKDocumentToolbarSearchItemIdentifier = @"SKDocumentToolbarSear
         
         [pdfOutline release];
         pdfOutline = [[[pdfView document] outlineRoot] retain];
-        [outlineView reloadData];
-        [outlineView setAutoresizesOutlineColumn: NO];
-        
-        if ([outlineView numberOfRows] == 1){
-            [outlineView expandItem: [outlineView itemAtRow: 0] expandChildren: NO];
+        if (outline && [[pdfView document] isLocked] == NO) {
+            [outlineView reloadData];
+            [outlineView setAutoresizesOutlineColumn: NO];
+            
+            if ([outlineView numberOfRows] == 1)
+                [outlineView expandItem: [outlineView itemAtRow: 0] expandChildren: NO];
+            [self updateOutlineSelection];
         }
-
-        [self updateOutlineSelection];
     }
 }
 
