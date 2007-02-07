@@ -817,6 +817,52 @@ static PDFView *PDFHoverPDFView = nil;
     }
 }
 
+- (NSMenu *)menuForEvent:(NSEvent *)theEvent {
+    NSMenu *menu = [super menuForEvent:theEvent];
+    NSMenu *submenu;
+    NSMenuItem *item;
+
+    [menu addItem:[NSMenuItem separatorItem]];
+    
+    submenu = [[NSMenu allocWithZone:[menu zone]] init];
+    
+    item = [submenu addItemWithTitle:NSLocalizedString(@"Text", @"Menu item title") action:@selector(changeToolMode:) keyEquivalent:@""];
+    [item setTag:SKTextToolMode];
+    [item setTarget:[[self window] windowController]];
+
+    item = [submenu addItemWithTitle:NSLocalizedString(@"Scroll", @"Menu item title") action:@selector(changeToolMode:) keyEquivalent:@""];
+    [item setTag:SKMoveToolMode];
+    [item setTarget:[[self window] windowController]];
+
+    item = [submenu addItemWithTitle:NSLocalizedString(@"Magnify", @"Menu item title") action:@selector(changeToolMode:) keyEquivalent:@""];
+    [item setTag:SKMagnifyToolMode];
+    [item setTarget:[[self window] windowController]];
+    
+    item = [menu addItemWithTitle:NSLocalizedString(@"Tools", @"Menu item title") action:NULL keyEquivalent:@""];
+    [item setSubmenu:submenu];
+    [submenu release];
+
+    submenu = [[NSMenu allocWithZone:[menu zone]] init];
+    
+    item = [submenu addItemWithTitle:NSLocalizedString(@"Text", @"Menu item title") action:@selector(changeAnnotationMode:) keyEquivalent:@""];
+    [item setTag:SKFreeTextAnnotationMode];
+    [item setTarget:[[self window] windowController]];
+
+    item = [submenu addItemWithTitle:NSLocalizedString(@"Note", @"Menu item title") action:@selector(changeAnnotationMode:) keyEquivalent:@""];
+    [item setTag:SKNoteAnnotationMode];
+    [item setTarget:[[self window] windowController]];
+
+    item = [submenu addItemWithTitle:NSLocalizedString(@"Oval", @"Menu item title") action:@selector(changeAnnotationMode:) keyEquivalent:@""];
+    [item setTag:SKCircleAnnotationMode];
+    [item setTarget:[[self window] windowController]];
+    
+    item = [menu addItemWithTitle:NSLocalizedString(@"Annotations", @"Menu item title") action:NULL keyEquivalent:@""];
+    [item setSubmenu:submenu];
+    [submenu release];
+    
+    return menu;
+}
+
 @end
 
 @implementation SKPDFView (Private)
