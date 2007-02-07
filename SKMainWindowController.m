@@ -82,6 +82,9 @@ static NSString *SKDocumentToolbarSearchItemIdentifier = @"SKDocumentToolbarSear
 }
 
 - (void)windowDidLoad{
+    // this is not called automatically, because the document overrides makeWindowControllers
+    [[self document] windowControllerDidLoadNib:self];
+    
     // we retain as we might replace it with the full screen window
     mainWindow = [[self window] retain];
     [mainWindow setFrameAutosaveName:SKMainWindowFrameAutosaveName];
