@@ -57,7 +57,8 @@ static NSRect RectPlusScale (NSRect aRect, float scale)
 }
 
 static NSPanel *PDFHoverPanel = nil;
-static PDFView *PDFHoverPDFView = nil;
+static NSImageView *PDFHoverImageView = nil;
+static PDFDestination *PDFHoverDestination;
 
 @interface SKPDFView (Private)
 
@@ -349,19 +350,25 @@ static PDFView *PDFHoverPDFView = nil;
     return dest;
 }
 
-- (void)mouseMoved:(NSEvent *)event {
+- (void)mouseMoved:(NSEvent *)theEvent {
     
     // we receive this message whenever we are first responder, so check the location
     if (toolMode == SKTextToolMode) {
-        [super mouseMoved:event];
+        [super mouseMoved:theEvent];
     } else {
-        [[self cursorForMouseMovedEvent:event] set];
+        [[self cursorForMouseMovedEvent:theEvent] set];
     }
     
-    [self showHoverViewWithEvent:event];
+    BOOL isLink = NO;
+    PDFDestination *dest = [self destinationForEvent:theEvent isLink:&isLink];
+    
+    if (isLink)
+        [self showPDFHoverWindowWithDestination:dest atPoint:[theEvent locationInWindow]];
+    else
+        [self cleanupPDFHoverView];
     
     // in presentation mode only show the navigation window only by moving the mouse to the bottom edge
-    BOOL shouldShowNavWindow = hasNavigation && (autohidesCursor == NO || [event locationInWindow].y < 5.0);
+    BOOL shouldShowNavWindow = hasNavigation && (autohidesCursor == NO || [theEvent locationInWindow].y < 5.0);
     if (autohidesCursor || shouldShowNavWindow) {
         if (shouldShowNavWindow && [navWindow isVisible] == NO) {
             [[self window] addChildWindow:navWindow ordered:NSWindowAbove];
@@ -369,59 +376,74 @@ static PDFView *PDFHoverPDFView = nil;
         }
         [self doAutohide:YES];
     }
-}
-
-
-- (void)showHoverViewWithEvent:(NSEvent *)theEvent{
-    BOOL isLink = NO;
-    PDFDestination *dest = [self destinationForEvent:theEvent isLink:&isLink];
     
-    if (isLink) {
-        [self showPDFHoverWindowWithDestination:dest atPoint:[theEvent locationInWindow]];
-    }else{
-        [self cleanupPDFHoverView];
-    }
+    [super mouseMoved:theEvent];
 }
-
 
 - (void)showPDFHoverWindowWithDestination:(PDFDestination *)dest atPoint:(NSPoint)point{
-
+    
+    if ([PDFHoverDestination isEqual:dest])
+        return;
+    
+    [PDFHoverDestination release];
+    PDFHoverDestination = [dest retain];
+    
     NSPoint locationInScreenCoordinates = [[self window] convertBaseToScreen:point];
     NSRect contentRect = NSMakeRect(locationInScreenCoordinates.x,
-                                    locationInScreenCoordinates.y + 15,
+                                    locationInScreenCoordinates.y + 15.0,
                                     // FIXME: magic number 15 ought to be calculated from the line height of the current line?
-                                    400, 50);
+                                    400.0, 50.0);
+    NSRect bounds;
     
     contentRect = [self hoverWindowRectFittingScreenFromRect:contentRect];
     
-    if(!PDFHoverPanel){
+    if(PDFHoverPanel == nil){
         PDFHoverPanel = [[NSPanel alloc] initWithContentRect:contentRect
                                                    styleMask:NSBorderlessWindowMask
                                                      backing:NSBackingStoreBuffered
                                                        defer:NO];
-        	                [PDFHoverPanel setHidesOnDeactivate:NO];
-        	                //[PDFHoverPanel setIgnoresMouseEvents:YES];
-        	                [PDFHoverPanel setBackgroundColor:[NSColor whiteColor]];
-        	                [PDFHoverPanel setHasShadow:YES];
-                            [PDFHoverPanel setLevel:NSStatusWindowLevel];
-                            [PDFHoverPanel orderFrontRegardless];
+        [PDFHoverPanel setHidesOnDeactivate:NO];
+        [PDFHoverPanel setBackgroundColor:[NSColor whiteColor]];
+        [PDFHoverPanel setHasShadow:YES];
+        [PDFHoverPanel setLevel:NSStatusWindowLevel];
+        
+        bounds = [[PDFHoverPanel contentView] bounds];
+        NSScrollView *scrollView = [[NSScrollView alloc] initWithFrame:bounds];
+        PDFHoverImageView = [[NSImageView alloc] initWithFrame:bounds];
+        [PDFHoverImageView setImageFrameStyle:NSImageFrameNone];
+        [scrollView setDocumentView:PDFHoverImageView];
+        [[PDFHoverPanel contentView] addSubview:scrollView];
+        [scrollView release];
     }
     
-    if(!PDFHoverPDFView){
-        PDFHoverPDFView = [[PDFView alloc] initWithFrame:NSMakeRect(0,0, 400, 50)];
-        [[PDFHoverPanel contentView] addSubview:PDFHoverPDFView];
-    }
+    PDFPage *page = [dest page];
     
-    [PDFHoverPDFView setDocument:[self document]];
+    bounds = [page boundsForBox:[self displayBox]];
     
-    NSScrollView *scrollView = [[PDFHoverPDFView documentView] enclosingScrollView];
-    [scrollView setHasVerticalScroller:NO];
-    [scrollView setHasHorizontalScroller:NO];
+    NSImage *image = [[NSImage alloc] initWithSize:bounds.size];
     
-    [PDFHoverPDFView performSelector:@selector(goToDestination:)
-                          withObject:dest
-                          afterDelay:0.01];
-
+    NSRect rect = [[PDFHoverPanel contentView] bounds];
+    rect.origin = [dest point];
+    rect.origin.x -= NSMinX(bounds);
+    rect.origin.y -= NSMinY(bounds) + NSHeight(rect);
+    
+    [image lockFocus];
+    [NSGraphicsContext saveGraphicsState];
+    [[NSColor whiteColor] set];
+    NSRectFill(bounds);
+    [page drawWithBox:[self displayBox]]; 
+    [[NSColor blackColor] set];
+    [NSGraphicsContext restoreGraphicsState];
+    [image unlockFocus];
+    
+    [PDFHoverImageView setFrameSize:[image size]];
+    [PDFHoverImageView setImage:image];
+    [image release];
+    
+    [PDFHoverPanel setFrame:[PDFHoverPanel frameRectForContentRect:contentRect] display:YES];
+    [PDFHoverImageView scrollRectToVisible:rect];
+    
+    [PDFHoverPanel orderFrontRegardless];
 }
 
 
@@ -431,7 +453,9 @@ static PDFView *PDFHoverPDFView = nil;
         [PDFHoverPanel release]; 
     }
     PDFHoverPanel = nil;
-    if(PDFHoverPDFView) [PDFHoverPDFView release]; PDFHoverPDFView = nil;
+    PDFHoverImageView = nil;
+    if(PDFHoverDestination) [PDFHoverDestination release];
+    PDFHoverDestination = nil;
 }
 
 - (void)flagsChanged:(NSEvent *)event {

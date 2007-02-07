@@ -47,7 +47,6 @@ typedef enum _SKToolMode {
 - (void)cleanupPDFHoverView;
 
 - (void)doAutohide:(BOOL)flag;
-- (void)showHoverViewWithEvent:(NSEvent *)event;
 - (void)popUpWithEvent:(NSEvent *)theEvent;
 - (void)annotateWithEvent:(NSEvent *)theEvent;
 - (void)selectAnnotationWithEvent:(NSEvent *)theEvent;
