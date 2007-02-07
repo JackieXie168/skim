@@ -18,6 +18,9 @@ extern NSString *SKDocumentErrorDomain;
 
 @interface SKDocument : NSDocument
 {
+    IBOutlet NSPanel *saveProgressSheet;
+    IBOutlet NSProgressIndicator *saveProgressBar;
+    
     PDFDocument *pdfDoc;
     PDFDocument *originalPDFDocument;
     
@@ -39,5 +42,11 @@ extern NSString *SKDocumentErrorDomain;
 - (BOOL)readNotesFromExtendedAttributesAtURL:(NSURL *)aURL;
 
 - (PDFDocument *)pdfDocument;
+- (PDFDocument *)originalPDFDocument;
+
+- (void)setupDocumentNotifications;
+- (void)handleDidBeginWriteDocument:(NSNotification *)notification;
+- (void)handleDidEndWriteDocument:(NSNotification *)notification;
+- (void)handleDidEndPageWrite:(NSNotification *)notification;
 
 @end
