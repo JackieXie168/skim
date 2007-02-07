@@ -8,6 +8,7 @@
 
 #import "SKNavigationWindow.h"
 #import <Quartz/Quartz.h>
+#import "NSBezierPath_BDSKExtensions.h"
 
 #define BUTTON_WIDTH 50.0
 #define SEP_WIDTH 21.0
@@ -28,7 +29,7 @@
 		[self setBackgroundColor:[NSColor clearColor]];
 		[self setOpaque:NO];
         [self setDisplaysWhenScreenProfileChanges:YES];
-        [self setLevel:CGShieldingWindowLevel()];
+        [self setLevel:[[pdfView window] level]];
         
         [self setContentView:[[[SKNavigationContentView alloc] init] autorelease]];
         
@@ -171,16 +172,11 @@ static SKNavigationToolTipWindow *sharedToolTipWindow = nil;
 		[self setBackgroundColor:[NSColor clearColor]];
 		[self setOpaque:NO];
         [self setDisplaysWhenScreenProfileChanges:YES];
-        [self setLevel:CGShieldingWindowLevel()];
         
         toolTipView = [[[SKNavigationToolTipView alloc] init] autorelease];
         [[self contentView] addSubview:toolTipView];
     }
     return self;
-}
-
-- (void)dealloc {
-    [super dealloc];
 }
 
 - (BOOL)canBecomeKeyWindow { return NO; }
@@ -195,7 +191,17 @@ static SKNavigationToolTipWindow *sharedToolTipWindow = nil;
     viewRect.origin = [[view window] convertBaseToScreen:viewRect.origin];
     newFrame.origin = NSMakePoint(NSMidX(viewRect) - 0.5 * NSWidth(newFrame), NSMaxY(viewRect) + LABEL_OFFSET);
     [self setFrame:newFrame display:YES];
+    [self setLevel:[[view window] level]];
+    if ([self parentWindow] != [view window])
+        [[self parentWindow] removeChildWindow:self];
+    if ([self parentWindow]  == nil)
+        [[view window] addChildWindow:self ordered:NSWindowAbove];
     [self orderFront:self];
+}
+
+- (void)orderOut:(id)sender {
+    [[self parentWindow] removeChildWindow:self];
+    [super orderOut:sender];
 }
 
 @end
@@ -228,9 +234,9 @@ static SKNavigationToolTipWindow *sharedToolTipWindow = nil;
 - (NSAttributedString *)attributedStringValue {
     if (stringValue == nil)
         return nil;
-    NSMutableParagraphStyle *parStyle = [[[NSMutableParagraphStyle alloc] init] autorelease];
+    NSMutableParagraphStyle *parStyle = [[NSMutableParagraphStyle alloc] init];
     [parStyle setLineBreakMode:NSLineBreakByClipping];
-    NSShadow *shadow = [[[NSShadow alloc] init] autorelease];
+    NSShadow *shadow = [[NSShadow alloc] init];
     [shadow setShadowColor:[NSColor blackColor]];
     [shadow setShadowBlurRadius:3.0];
     [shadow setShadowOffset:NSMakeSize(0.0, -1.5)];
@@ -239,6 +245,8 @@ static SKNavigationToolTipWindow *sharedToolTipWindow = nil;
         [NSColor whiteColor], NSForegroundColorAttributeName, 
         parStyle, NSParagraphStyleAttributeName, 
         shadow, NSShadowAttributeName, nil];
+    [shadow release];
+    [parStyle release];
     return [[[NSAttributedString alloc] initWithString:stringValue attributes:attrs] autorelease];
 }
 
@@ -481,56 +489,6 @@ static SKNavigationToolTipWindow *sharedToolTipWindow = nil;
 
 - (NSBezierPath *)pathWithFrame:(NSRect)cellFrame {
     NSBezierPath *path = [NSBezierPath bezierPathWithRect:NSMakeRect(NSMidX(cellFrame) - 0.5, NSMinY(cellFrame), 1.0, NSHeight(cellFrame))];
-    return path;
-}
-
-@end
-
-
-@implementation NSBezierPath (SKExtensions)
-
-+ (void)fillRoundRectInRect:(NSRect)rect radius:(float)radius
-{
-    NSBezierPath *p = [self bezierPathWithRoundRectInRect:rect radius:radius];
-    [p fill];
-}
-
-+ (void)strokeRoundRectInRect:(NSRect)rect radius:(float)radius
-{
-    NSBezierPath *p = [self bezierPathWithRoundRectInRect:rect radius:radius];
-    [p stroke];
-}
-
-+ (NSBezierPath*)bezierPathWithRoundRectInRect:(NSRect)rect radius:(float)radius
-{
-    // Make sure radius doesn't exceed a maximum size to avoid artifacts:
-    radius = MIN(radius, 0.5f * MIN(NSHeight(rect), NSWidth(rect)));
-    
-    // Make sure silly values simply lead to un-rounded corners:
-    if( radius <= 0 )
-        return [self bezierPathWithRect:rect];
-    
-    NSRect innerRect = NSInsetRect(rect, radius, radius); // Make rect with corners being centers of the corner circles.
-	static NSBezierPath *path = nil;
-    if(path == nil)
-        path = [[self bezierPath] retain];
-    
-    [path removeAllPoints];    
-    
-    // Now draw our rectangle:
-    [path moveToPoint: NSMakePoint(NSMinX(innerRect) - radius, NSMinY(innerRect))];
-    
-    // Bottom left (origin):
-    [path appendBezierPathWithArcWithCenter:NSMakePoint(NSMinX(innerRect), NSMinY(innerRect)) radius:radius startAngle:180.0 endAngle:270.0];
-    // Bottom edge and bottom right:
-    [path appendBezierPathWithArcWithCenter:NSMakePoint(NSMaxX(innerRect), NSMinY(innerRect)) radius:radius startAngle:270.0 endAngle:360.0];
-    // Left edge and top right:
-    [path appendBezierPathWithArcWithCenter:NSMakePoint(NSMaxX(innerRect), NSMaxY(innerRect)) radius:radius startAngle:0.0  endAngle:90.0 ];
-    // Top edge and top left:
-    [path appendBezierPathWithArcWithCenter:NSMakePoint(NSMinX(innerRect), NSMaxY(innerRect)) radius:radius startAngle:90.0  endAngle:180.0];
-    // Left edge:
-    [path closePath];
-    
     return path;
 }
 
