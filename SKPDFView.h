@@ -13,6 +13,10 @@
 #import "SKMainWindowController.h"
 
 extern NSString *SKPDFViewToolModeChangedNotification;
+extern NSString *SKPDFViewActiveAnnotationDidChangeNotification;
+extern NSString *SKPDFViewDidRemoveAnnotationNotification;
+extern NSString *SKPDFViewDidChangeAnnotationNotification;
+extern NSString *SKPDFViewAnnotationDoubleClickedNotification;
 
 typedef enum _SKToolMode {
     SKTextToolMode,

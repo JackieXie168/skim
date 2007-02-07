@@ -77,6 +77,7 @@ static NSString *SKPostScriptDocumentType = @"PostScript document";
     // we check for notes and save a .skim as well:
     if (success && [typeName isEqualToString:SKPDFDocumentType] && saveOperation != NSAutosaveOperation) {
        [self saveNotesToExtendedAttributesAtURL:absoluteURL];
+       [[[[self windowControllers] objectAtIndex:0] window] setDocumentEdited:NO];
     }
     
     return success;
@@ -101,6 +102,8 @@ static NSString *SKPostScriptDocumentType = @"PostScript document";
             [pdfDocument autorelease];
             pdfDocument = [[PDFDocument alloc] initWithData:[pdfDocument dataRepresentation]];
             [self setupDocumentNotifications];
+        } else {
+            [[[[self windowControllers] objectAtIndex:0] window] setDocumentEdited:NO];
         }
         if (noteDicts)
             [[[self windowControllers] objectAtIndex:0] setAnnotationsFromDictionaries:noteDicts];

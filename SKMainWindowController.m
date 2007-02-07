@@ -118,11 +118,13 @@ static NSString *SKDocumentToolbarSearchItemIdentifier = @"SKDocumentToolbarSear
                                                  name: SKPDFViewToolModeChangedNotification object: pdfView];
     
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleDidChangeActiveAnnotationNotification:) 
-			name:@"SKPDFViewActiveAnnotationDidChangeNotification" object:pdfView];
+			name:SKPDFViewActiveAnnotationDidChangeNotification object:pdfView];
 	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleDidRemoveAnnotationNotification:) 
-			name:@"SKPDFViewDidRemoveAnnotationNotification" object:pdfView];
+			name:SKPDFViewDidRemoveAnnotationNotification object:pdfView];
+	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleDidChangeAnnotationNotification:) 
+			name:SKPDFViewDidChangeAnnotationNotification object:pdfView];
 	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleDoubleClickedAnnotationNotification:) 
-			name:@"SKPDFViewAnnotationDoubleClickedNotification" object:pdfView];
+			name:SKPDFViewAnnotationDoubleClickedNotification object:pdfView];
 }
 
 - (PDFDocument *)pdfDocument{
@@ -283,6 +285,8 @@ static NSString *SKDocumentToolbarSearchItemIdentifier = @"SKDocumentToolbarSear
 	[pdfView setActiveAnnotation:newAnnotation];
     
     [[(SKDocument *)[self document] mutableArrayValueForKey:@"notes"] addObject:newAnnotation];
+    
+    [[self window] setDocumentEdited:YES];
 }
 
 - (void)showNotes:(NSArray *)notesToShow{
@@ -870,6 +874,11 @@ static NSString *SKDocumentToolbarSearchItemIdentifier = @"SKDocumentToolbarSear
         }
         [[[self document] mutableArrayValueForKey:@"notes"] removeObject:annotation];
     }
+    [[self window] setDocumentEdited:YES];
+}
+
+- (void)handleDidChangeAnnotationNotification:(NSNotification *)notification {
+    [[self window] setDocumentEdited:YES];
 }
 
 - (void)handleDoubleClickedAnnotationNotification:(NSNotification *)notification {
