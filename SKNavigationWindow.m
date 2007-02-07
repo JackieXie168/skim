@@ -409,7 +409,7 @@ static SKNavigationToolTipWindow *sharedToolTipWindow = nil;
     NSBezierPath *path = [NSBezierPath bezierPathWithRoundRectInRect:NSInsetRect(cellFrame, 15.0, 15.0) radius:3.0];
     float centerX = NSMidX(cellFrame), centerY = NSMidY(cellFrame);
     
-    [path appendBezierPath:[NSBezierPath bezierPathWithRect:NSInsetRect(cellFrame, 16.0, 20.0)]];
+    [path appendBezierPath:[NSBezierPath bezierPathWithRect:NSInsetRect(cellFrame, 19.0, 19.0)]];
     
     float dy = [self state] == NSOnState ? -5.0 : 5.0;
     NSBezierPath *arrow = [NSBezierPath bezierPath];
