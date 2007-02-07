@@ -23,10 +23,9 @@ extern NSString *SKDocumentErrorDomain;
     
     // variables to be saved:
     NSMutableArray *notes;
-    PDFDocument *originalPDFDocument;
+    PDFDocument *pdfDocument;
     
     // temporary variables:
-    PDFDocument *pdfDoc;
     NSMutableArray *noteDicts;
 }
 
