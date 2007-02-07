@@ -46,6 +46,7 @@
 #import "BibAppController.h"
 #import "NSURL_BDSKExtensions.h"
 #import "NSWorkspace_BDSKExtensions.h"
+#import "NSFileManager_BDSKExtensions.h"
 
 CFStringRef BDSKInputManagerID = CFSTR("net.sourceforge.bibdesk.inputmanager");
 CFStringRef BDSKInputManagerLoadableApplications = CFSTR("Application bundles that we recognize");
@@ -207,7 +208,7 @@ static int tableIconSize = 24;
     [op setCanChooseDirectories:NO];
     [op setAllowsMultipleSelection:NO];
     [op setPrompt:NSLocalizedString(@"Add", @"Prompt for dialog to add an app for plugin")];
-    [op beginSheetForDirectory:nil
+    [op beginSheetForDirectory:[[NSFileManager defaultManager] applicationsDirectory]
 			  file:nil
 			 types:[NSArray arrayWithObject:@"app"]
 		modalForWindow:[[BDSKPreferenceController sharedPreferenceController] window]
