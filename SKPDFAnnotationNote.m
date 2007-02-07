@@ -58,7 +58,9 @@
 }
 
 - (PDFDestination *)destination{
-    return [[[PDFDestination alloc] initWithPage:[self page] atPoint:[self bounds].origin] autorelease];
+    NSRect bounds = [self bounds];
+    NSPoint point = NSMakePoint(NSMinX(bounds), NSMaxY(bounds));
+    return [[[PDFDestination alloc] initWithPage:[self page] atPoint:point] autorelease];
 }
 
 - (unsigned int)pageIndex {

@@ -293,6 +293,7 @@ static NSString *SKDocumentToolbarSearchItemIdentifier = @"SKDocumentToolbarSear
     PDFAnnotation *annotation = [notesToShow lastObject];
     
     [pdfView goToDestination:[annotation destination]];
+	[pdfView setActiveAnnotation:annotation];
 }
 
 - (IBAction)displaySinglePages:(id)sender {
