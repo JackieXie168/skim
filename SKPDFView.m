@@ -13,6 +13,10 @@
 #import "SKPDFAnnotationNote.h"
 
 NSString *SKPDFViewToolModeChangedNotification = @"SKPDFViewToolModeChangedNotification";
+NSString *SKPDFViewActiveAnnotationDidChangeNotification = @"SKPDFViewActiveAnnotationDidChangeNotification";
+NSString *SKPDFViewDidRemoveAnnotationNotification = @"SKPDFViewDidRemoveAnnotationNotification";
+NSString *SKPDFViewDidChangeAnnotationNotification = @"SKPDFViewDidChangeAnnotationNotification";
+NSString *SKPDFViewAnnotationDoubleClickedNotification = @"SKPDFViewAnnotationDoubleClickedNotification";
 
 @interface NSCursor (SKPDFViewExtensions)
 + (NSCursor *)zoomInCursor;
@@ -199,7 +203,7 @@ static NSRect RectPlusScale (NSRect aRect, float scale)
 	}
 	
 	if (changed)
-		[[NSNotificationCenter defaultCenter] postNotificationName:@"SKPDFViewActiveAnnotationDidChangeNotification" object:self userInfo:nil];
+		[[NSNotificationCenter defaultCenter] postNotificationName:SKPDFViewActiveAnnotationDidChangeNotification object:self userInfo:nil];
 }
 
 #pragma mark Actions
@@ -213,7 +217,7 @@ static NSRect RectPlusScale (NSRect aRect, float scale)
             [self endAnnotationEdit];
 		[self setActiveAnnotation:nil];
 		[[wasAnnotation page] removeAnnotation:wasAnnotation];
-		[[NSNotificationCenter defaultCenter] postNotificationName:@"SKPDFViewDidRemoveAnnotationNotification" object:self 
+		[[NSNotificationCenter defaultCenter] postNotificationName:SKPDFViewDidRemoveAnnotationNotification object:self 
             userInfo:[NSDictionary dictionaryWithObjectsAndKeys:wasAnnotation, @"annotation", nil]];
         [wasAnnotation release];
 	}
@@ -252,6 +256,8 @@ static NSRect RectPlusScale (NSRect aRect, float scale)
         if (NSEqualRects(bounds, newBounds) == NO) {
             [activeAnnotation setBounds:newBounds];
             [self setNeedsDisplayInRect:RectPlusScale([self convertRect:NSUnionRect(bounds, newBounds) fromPage:page], [self scaleFactor])];
+            [[NSNotificationCenter defaultCenter] postNotificationName:SKPDFViewDidChangeAnnotationNotification object:self 
+                userInfo:[NSDictionary dictionaryWithObjectsAndKeys:activeAnnotation, @"annotation", nil]];
         }
     } else {
 		[super keyDown:theEvent];
@@ -291,6 +297,8 @@ static NSRect RectPlusScale (NSRect aRect, float scale)
                 if ([[activeAnnotation type] isEqualToString:@"Circle"] || [[activeAnnotation type] isEqualToString:@"Square"]) {
                     NSString *selString = [[[activeAnnotation page] selectionForRect:[activeAnnotation bounds]] string];
                     [activeAnnotation setContents:selString];
+                    [[NSNotificationCenter defaultCenter] postNotificationName:SKPDFViewDidChangeAnnotationNotification object:self 
+                        userInfo:[NSDictionary dictionaryWithObjectsAndKeys:activeAnnotation, @"annotation", nil]];
                 }
             } else
                 [super mouseUp:theEvent];
@@ -472,7 +480,7 @@ static NSRect RectPlusScale (NSRect aRect, float scale)
             [userInfo setObject:wasActiveAnnotation forKey:@"wasActiveAnnotation"];
         if (activeAnnotation)
             [userInfo setObject:activeAnnotation forKey:@"activeAnnotation"];
-        [[NSNotificationCenter defaultCenter] postNotificationName:@"SKPDFViewActiveAnnotationDidChangeNotification" object:self userInfo:userInfo];
+        [[NSNotificationCenter defaultCenter] postNotificationName:SKPDFViewActiveAnnotationDidChangeNotification object:self userInfo:userInfo];
     }
     
     if (activeAnnotation == nil) {
@@ -504,7 +512,7 @@ static NSRect RectPlusScale (NSRect aRect, float scale)
         
     } else if ([theEvent clickCount] == 2 && [[activeAnnotation type] isEqualToString:@"Note"]) {
         
-		[[NSNotificationCenter defaultCenter] postNotificationName:@"SKPDFViewAnnotationDoubleClickedNotification" object:self 
+		[[NSNotificationCenter defaultCenter] postNotificationName:SKPDFViewAnnotationDoubleClickedNotification object:self 
             userInfo:[NSDictionary dictionaryWithObjectsAndKeys:activeAnnotation, @"annotation", nil]];
         
     } else { 
@@ -578,6 +586,9 @@ static NSRect RectPlusScale (NSRect aRect, float scale)
     // Force redraw.
     dirtyRect = NSUnionRect(currentBounds, newBounds);
     [self setNeedsDisplayInRect:RectPlusScale([self convertRect:dirtyRect fromPage:activePage], [self scaleFactor])];
+    
+    [[NSNotificationCenter defaultCenter] postNotificationName:SKPDFViewDidChangeAnnotationNotification object:self 
+        userInfo:[NSDictionary dictionaryWithObjectsAndKeys:activeAnnotation, @"annotation", nil]];
 }
 
 - (void)dragWithEvent:(NSEvent *)theEvent {
@@ -724,7 +735,11 @@ static NSRect RectPlusScale (NSRect aRect, float scale)
 
 - (void)endAnnotationEdit {
     if (editAnnotation) {
-        [activeAnnotation setContents:[editAnnotation stringValue]];
+        if ([[editAnnotation stringValue] isEqualToString:[activeAnnotation contents]] == NO) {
+            [activeAnnotation setContents:[editAnnotation stringValue]];
+            [[NSNotificationCenter defaultCenter] postNotificationName:SKPDFViewDidChangeAnnotationNotification object:self 
+                userInfo:[NSDictionary dictionaryWithObjectsAndKeys:activeAnnotation, @"annotation", nil]];
+        }
         [[editAnnotation page] removeAnnotation:editAnnotation];
         editAnnotation = nil;
     }
