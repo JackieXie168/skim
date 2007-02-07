@@ -844,16 +844,6 @@ static NSString *SKDocumentToolbarSearchItemIdentifier = @"SKDocumentToolbarSear
     [toolModeButton setSelectedSegment:toolMode];
 }
 
-- (void)handleDocumentWillSaveNotification:(NSNotification *)notification {
-    [self removeTemporaryAnnotations];
-}
-
-- (void)handleDocumentDidSaveNotification:(NSNotification *)notification {
-    if ([tableView window] == [self window]) {
-        [self tableViewSelectionDidChange:nil];
-    }
-}
-
 - (void)handleAppWillTerminateNotification:(NSNotification *)notification {
     if ([self isFullScreen] || [self isPresentation])
         [self exitFullScreen:self];
