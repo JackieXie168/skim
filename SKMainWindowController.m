@@ -858,7 +858,7 @@ static NSString *SKDocumentToolbarSearchItemIdentifier = @"SKDocumentToolbarSear
 }
 
 - (void)handleAppWillTerminateNotification:(NSNotification *)notification {
-    if ([self isFullScreen])
+    if ([self isFullScreen] || [self isPresentation])
         [self exitFullScreen:self];
 }
 
