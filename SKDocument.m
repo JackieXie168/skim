@@ -46,6 +46,7 @@ static NSString *SKPostScriptDocumentType = @"PostScript document";
 }
 
 - (void)dealloc {
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
     [originalPDFDocument release];
     [pdfDoc release];
     [notes release];
@@ -64,6 +65,8 @@ static NSString *SKPostScriptDocumentType = @"PostScript document";
     SKMainWindowController *mainController =  (SKMainWindowController *)aController;
     
     [mainController setAnnotationsFromDictionaries:noteDicts];
+	
+    [self setupDocumentNotifications];
 }
 
 
@@ -205,6 +208,15 @@ static NSString *SKPostScriptDocumentType = @"PostScript document";
     return success;
 }
 
+- (void)setupDocumentNotifications{
+	[[NSNotificationCenter defaultCenter] addObserver: self selector: @selector(handleDidBeginWriteDocument:) 
+                                                 name: @"PDFDidBeginDocumentWrite" object: originalPDFDocument];
+	[[NSNotificationCenter defaultCenter] addObserver: self selector: @selector(handleDidEndWriteDocument:) 
+                                                 name: @"PDFDidEndDocumentWrite" object: originalPDFDocument];
+	[[NSNotificationCenter defaultCenter] addObserver: self selector: @selector(handleDidEndPageWrite:) 
+                                                 name: @"PDFDidEndPageWrite" object: originalPDFDocument];
+}
+
 #pragma mark Accessors
 
 - (NSArray *)notes {
@@ -233,6 +245,45 @@ static NSString *SKPostScriptDocumentType = @"PostScript document";
 
 - (PDFDocument *)pdfDocument{
     return pdfDoc;
+}
+
+- (PDFDocument *)originalPDFDocument{
+    return originalPDFDocument;
+}
+
+#pragma mark Notification handlers
+
+- (void)saveProgressSheetDidEnd:(NSWindow *)sheet returnCode:(int)returnCode contextInfo:(void *)contextInfo {
+	[sheet close];
+}
+
+- (void)handleDidBeginWriteDocument:(NSNotification *)notification {
+    if (saveProgressSheet == nil) {
+        if (NO == [NSBundle loadNibNamed:@"SaveProgressSheet" owner:self])  {
+            NSLog(@"Failed to load SaveProgressSheet.nib");
+            return;
+        }
+    }
+    
+	// Establish maximum and current value for progress bar.
+	[saveProgressBar setMaxValue:(double)[[notification object] pageCount]];
+	[saveProgressBar setDoubleValue: 0.0];
+	
+	// Bring up the save panel as a sheet.
+	[NSApp beginSheet:saveProgressSheet
+       modalForWindow:[self windowForSheet]
+        modalDelegate:self
+       didEndSelector:@selector(saveProgressSheetDidEnd:returnCode:contextInfo:)
+          contextInfo:NULL];
+}
+
+- (void)handleDidEndWriteDocument:(NSNotification *)notification {
+	[NSApp endSheet:saveProgressSheet];
+}
+
+- (void)handleDidEndPageWrite:(NSNotification *)notification {
+	[saveProgressBar setDoubleValue:[[[notification userInfo] objectForKey:@"PDFDocumentPageIndex"] floatValue]];
+	[saveProgressBar displayIfNeeded];
 }
 
 @end
