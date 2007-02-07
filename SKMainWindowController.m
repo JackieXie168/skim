@@ -37,6 +37,7 @@ static NSString *SKDocumentToolbarRotateRightItemIdentifier = @"SKDocumentRotate
 static NSString *SKDocumentToolbarRotateLeftItemIdentifier = @"SKDocumentRotateLeftToolbarItemIdentifier";
 static NSString *SKDocumentToolbarFullScreenItemIdentifier = @"SKDocumentFullScreenToolbarItemIdentifier";
 static NSString *SKDocumentToolbarPresentationItemIdentifier = @"SKDocumentToolbarPresentationItemIdentifier";
+static NSString *SKDocumentToolbarNewNoteItemIdentifier = @"SKDocumentToolbarNewNoteItemIdentifier";
 static NSString *SKDocumentToolbarToggleDrawerItemIdentifier = @"SKDocumentToolbarToggleDrawerItemIdentifier";
 static NSString *SKDocumentToolbarInfoItemIdentifier = @"SKDocumentToolbarInfoItemIdentifier";
 static NSString *SKDocumentToolbarToolModeItemIdentifier = @"SKDocumentToolbarToolModeItemIdentifier";
@@ -871,8 +872,18 @@ static NSString *SKDocumentToolbarSearchItemIdentifier = @"SKDocumentToolbarSear
 
 - (void)handleDidRemoveAnnotationNotification:(NSNotification *)notification {
     PDFAnnotation *annotation = [[notification userInfo] objectForKey:@"annotation"];
-    if (annotation)
+    if (annotation) {
+        NSWindowController *wc = nil;
+        NSEnumerator *wcEnum = [[[self document] windowControllers] objectEnumerator];
+        
+        while (wc = [wcEnum nextObject]) {
+            if ([wc isKindOfClass:[SKNoteWindowController class]] && [(SKNoteWindowController *)wc note] == annotation) {
+                [wc close];
+                break;
+            }
+        }
         [[[self document] mutableArrayValueForKey:@"notes"] removeObject:annotation];
+    }
 }
 
 - (void)handleDoubleClickedAnnotationNotification:(NSNotification *)notification {
@@ -1149,6 +1160,16 @@ static NSString *SKDocumentToolbarSearchItemIdentifier = @"SKDocumentToolbarSear
     [toolbarItems setObject:item forKey:SKDocumentToolbarPresentationItemIdentifier];
     [item release];
     
+    item = [[NSToolbarItem alloc] initWithItemIdentifier:SKDocumentToolbarNewNoteItemIdentifier];
+    [item setLabel:NSLocalizedString(@"New Note", @"Toolbar item label")];
+    [item setPaletteLabel:NSLocalizedString(@"New Note", @"Toolbar item label")];
+    [item setToolTip:NSLocalizedString(@"Add New Note", @"Tool tip message")];
+    [item setImage:[NSImage imageNamed:@"note"]];
+    [item setTarget:self];
+    [item setAction:@selector(createNewNote:)];
+    [toolbarItems setObject:item forKey:SKDocumentToolbarNewNoteItemIdentifier];
+    [item release];
+    
     item = [[NSToolbarItem alloc] initWithItemIdentifier:SKDocumentToolbarToggleDrawerItemIdentifier];
     [item setLabel:NSLocalizedString(@"Drawer", @"Toolbar item label")];
     [item setPaletteLabel:NSLocalizedString(@"Drawer", @"Toolbar item label")];
@@ -1250,6 +1271,7 @@ static NSString *SKDocumentToolbarSearchItemIdentifier = @"SKDocumentToolbarSear
         SKDocumentToolbarRotateLeftItemIdentifier, 
         SKDocumentToolbarFullScreenItemIdentifier, 
         SKDocumentToolbarPresentationItemIdentifier, 
+        SKDocumentToolbarNewNoteItemIdentifier, 
         SKDocumentToolbarToggleDrawerItemIdentifier, 
         SKDocumentToolbarInfoItemIdentifier, 
         SKDocumentToolbarToolModeItemIdentifier, 
