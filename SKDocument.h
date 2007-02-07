@@ -21,11 +21,12 @@ extern NSString *SKDocumentErrorDomain;
     IBOutlet NSPanel *saveProgressSheet;
     IBOutlet NSProgressIndicator *saveProgressBar;
     
-    PDFDocument *pdfDoc;
-    PDFDocument *originalPDFDocument;
-    
     // variables to be saved:
     NSMutableArray *notes;
+    PDFDocument *originalPDFDocument;
+    
+    // temporary variables:
+    PDFDocument *pdfDoc;
     NSMutableArray *noteDicts;
 }
 
@@ -40,11 +41,14 @@ extern NSString *SKDocumentErrorDomain;
 
 - (BOOL)saveNotesToExtendedAttributesAtURL:(NSURL *)aURL;
 - (BOOL)readNotesFromExtendedAttributesAtURL:(NSURL *)aURL;
+- (NSData *)notesData;
+- (BOOL)readNotesFromData:(NSData *)data;
 
 - (PDFDocument *)pdfDocument;
-- (PDFDocument *)originalPDFDocument;
 
 - (void)setupDocumentNotifications;
+- (void)disableDocumentNotifications;
+
 - (void)handleDidBeginWriteDocument:(NSNotification *)notification;
 - (void)handleDidEndWriteDocument:(NSNotification *)notification;
 - (void)handleDidEndPageWrite:(NSNotification *)notification;

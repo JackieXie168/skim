@@ -114,6 +114,9 @@ typedef struct _SKPDFViewState {
 - (void)createNewNoteAtPageNumber:(int)pageNum location:(NSPoint)locationInPageSpace;
 - (void)showNote:(PDFAnnotation *)annotation;
 
+- (PDFDocument *)pdfDocument;
+- (void)setPdfDocument:(PDFDocument *)document;
+
 - (BOOL)isFullScreen;
 - (BOOL)isPresentation;
 
@@ -123,8 +126,6 @@ typedef struct _SKPDFViewState {
 - (void)setAnnotationMode:(SKAnnotationMode)newAnnotationMode;
 
 - (void)updateOutlineSelection;
-
-- (void)setupDocumentNotifications;
 
 - (void)handleChangedHistoryNotification:(NSNotification *)notification;
 - (void)handlePageChangedNotification:(NSNotification *)notification;
