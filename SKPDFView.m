@@ -41,6 +41,18 @@ NSString *SKPDFViewToolModeChangedNotification = @"SKPDFViewToolModeChangedNotif
 
 @end
 
+
+@interface SKPDFHoverWindow : NSPanel {
+    NSImageView *imageView;
+    PDFDestination *destination;
+    NSViewAnimation *animation;
+}
++ (id)sharedHoverWindow;
+- (void)showWithDestination:(PDFDestination *)dest atPoint:(NSPoint)point;
+- (void)hide;
+@end
+
+
 static NSRect RectPlusScale (NSRect aRect, float scale)
 {
 	float maxX;
@@ -56,15 +68,13 @@ static NSRect RectPlusScale (NSRect aRect, float scale)
 	return NSMakeRect(origin.x, origin.y, maxX - origin.x, maxY - origin.y);
 }
 
-static NSPanel *PDFHoverPanel = nil;
-static NSImageView *PDFHoverImageView = nil;
-static PDFDestination *PDFHoverDestination;
 
 @interface SKPDFView (Private)
 
-- (NSRect)hoverWindowRectFittingScreenFromRect:(NSRect)rect;
 - (NSRect)resizeThumbForRect:(NSRect) rect rotation:(int)rotation;
 - (void)transformContextForPage:(PDFPage *)page;
+- (NSCursor *)cursorForMouseMovedEvent:(NSEvent *)event;
+- (PDFDestination *)destinationForEvent:(NSEvent *)theEvent isLink:(BOOL *)isLink;
 
 @end
 
@@ -88,6 +98,7 @@ static PDFDestination *PDFHoverDestination;
 - (void)dealloc {
     [[NSNotificationCenter defaultCenter] removeObserver:self];
     [self doAutohide:NO]; // invalidates and releases the timer
+    [[SKPDFHoverWindow sharedHoverWindow] orderOut:self];
     [navWindow release];
     [super dealloc];
 }
@@ -248,7 +259,7 @@ static PDFDestination *PDFHoverDestination;
 }
 
 - (void)mouseDown:(NSEvent *)theEvent{
-    [self cleanupPDFHoverView];
+    [[SKPDFHoverWindow sharedHoverWindow] orderOut:self];
     
     switch (toolMode) {
         case SKMoveToolMode:
@@ -308,48 +319,6 @@ static PDFDestination *PDFHoverDestination;
     }
 }
 
-- (NSCursor *)cursorForMouseMovedEvent:(NSEvent *)event {
-    NSCursor *cursor = nil;
-    NSPoint p = [[self documentView] convertPoint:[event locationInWindow] fromView:nil];
-    if (NSPointInRect(p, [[self documentView] visibleRect])) {
-        switch (toolMode) {
-            case SKMoveToolMode:
-                cursor = [NSCursor openHandCursor];
-                break;
-            case SKMagnifyToolMode:
-                cursor = ([event modifierFlags] & NSShiftKeyMask) ? [NSCursor zoomOutCursor] : [NSCursor zoomInCursor];
-                break;
-            default:
-                cursor = [NSCursor arrowCursor];
-        }
-    } else {
-        // we want this cursor for toolbar and other views, generally
-        cursor = [NSCursor arrowCursor];
-    }
-    return cursor;
-}
-
-- (PDFDestination *)destinationForEvent:(NSEvent *)theEvent isLink:(BOOL *)isLink {
-    NSPoint windowMouseLoc = [theEvent locationInWindow];
-    
-    NSPoint viewMouseLoc = [self convertPoint:windowMouseLoc fromView:nil];
-    PDFPage *page = [self pageForPoint:viewMouseLoc nearest:YES];
-    NSPoint pageSpaceMouseLoc = [self convertPoint:viewMouseLoc toPage:page];  
-    PDFDestination *dest = [[[PDFDestination alloc] initWithPage:page atPoint:pageSpaceMouseLoc] autorelease];
-    BOOL link = NO;
-    
-    if (([self areaOfInterestForMouse: theEvent] &  kPDFLinkArea) != 0) {
-        link = YES;
-        PDFAnnotation *ann = [page annotationAtPoint:pageSpaceMouseLoc];
-        if (ann != NULL && [[ann destination] page]){
-            dest = [ann destination];
-        }
-    }
-    
-    if (isLink) *isLink = link;
-    return dest;
-}
-
 - (void)mouseMoved:(NSEvent *)theEvent {
     
     // we receive this message whenever we are first responder, so check the location
@@ -363,9 +332,9 @@ static PDFDestination *PDFHoverDestination;
     PDFDestination *dest = [self destinationForEvent:theEvent isLink:&isLink];
     
     if (isLink)
-        [self showPDFHoverWindowWithDestination:dest atPoint:[theEvent locationInWindow]];
+        [[SKPDFHoverWindow sharedHoverWindow] showWithDestination:dest atPoint:[[self window] convertBaseToScreen:[theEvent locationInWindow]]];
     else
-        [self cleanupPDFHoverView];
+        [[SKPDFHoverWindow sharedHoverWindow] hide];
     
     // in presentation mode only show the navigation window only by moving the mouse to the bottom edge
     BOOL shouldShowNavWindow = hasNavigation && (autohidesCursor == NO || [theEvent locationInWindow].y < 5.0);
@@ -376,92 +345,12 @@ static PDFDestination *PDFHoverDestination;
         }
         [self doAutohide:YES];
     }
-    
-    [super mouseMoved:theEvent];
 }
 
-- (void)showPDFHoverWindowWithDestination:(PDFDestination *)dest atPoint:(NSPoint)point{
-    
-    if ([PDFHoverDestination isEqual:dest])
-        return;
-    
-    [PDFHoverDestination release];
-    PDFHoverDestination = [dest retain];
-    
-    NSPoint locationInScreenCoordinates = [[self window] convertBaseToScreen:point];
-    NSRect contentRect = NSMakeRect(locationInScreenCoordinates.x,
-                                    locationInScreenCoordinates.y + 15.0,
-                                    // FIXME: magic number 15 ought to be calculated from the line height of the current line?
-                                    400.0, 50.0);
-    NSRect bounds;
-    
-    contentRect = [self hoverWindowRectFittingScreenFromRect:contentRect];
-    
-    if(PDFHoverPanel == nil){
-        PDFHoverPanel = [[NSPanel alloc] initWithContentRect:contentRect
-                                                   styleMask:NSBorderlessWindowMask
-                                                     backing:NSBackingStoreBuffered
-                                                       defer:NO];
-        [PDFHoverPanel setHidesOnDeactivate:NO];
-        [PDFHoverPanel setBackgroundColor:[NSColor whiteColor]];
-        [PDFHoverPanel setHasShadow:YES];
-        [PDFHoverPanel setLevel:NSStatusWindowLevel];
-        
-        bounds = [[PDFHoverPanel contentView] bounds];
-        NSScrollView *scrollView = [[NSScrollView alloc] initWithFrame:bounds];
-        PDFHoverImageView = [[NSImageView alloc] initWithFrame:bounds];
-        [PDFHoverImageView setImageFrameStyle:NSImageFrameNone];
-        [scrollView setDocumentView:PDFHoverImageView];
-        [[PDFHoverPanel contentView] addSubview:scrollView];
-        [scrollView release];
-    }
-    
-    PDFPage *page = [dest page];
-    
-    bounds = [page boundsForBox:[self displayBox]];
-    
-    NSImage *image = [[NSImage alloc] initWithSize:bounds.size];
-    
-    NSRect rect = [[PDFHoverPanel contentView] bounds];
-    rect.origin = [dest point];
-    rect.origin.x -= NSMinX(bounds);
-    rect.origin.y -= NSMinY(bounds) + NSHeight(rect);
-    
-    [image lockFocus];
-    [NSGraphicsContext saveGraphicsState];
-    [[NSColor whiteColor] set];
-    NSRectFill(bounds);
-    [page drawWithBox:[self displayBox]]; 
-    [[NSColor blackColor] set];
-    [NSGraphicsContext restoreGraphicsState];
-    [image unlockFocus];
-    
-    [PDFHoverImageView setFrameSize:[image size]];
-    [PDFHoverImageView setImage:image];
-    [image release];
-    
-    [PDFHoverPanel setFrame:[PDFHoverPanel frameRectForContentRect:contentRect] display:YES];
-    [PDFHoverImageView scrollRectToVisible:rect];
-    
-    [PDFHoverPanel orderFrontRegardless];
-}
-
-
-- (void)cleanupPDFHoverView{
-    if(PDFHoverPanel){
-        [PDFHoverPanel orderOut:self];
-        [PDFHoverPanel release]; 
-    }
-    PDFHoverPanel = nil;
-    PDFHoverImageView = nil;
-    if(PDFHoverDestination) [PDFHoverDestination release];
-    PDFHoverDestination = nil;
-}
-
-- (void)flagsChanged:(NSEvent *)event {
-    [super flagsChanged:event];
+- (void)flagsChanged:(NSEvent *)theEvent {
+    [super flagsChanged:theEvent];
     if (toolMode == SKMagnifyToolMode) {
-        NSCursor *cursor = ([event modifierFlags] & NSShiftKeyMask) ? [NSCursor zoomOutCursor] : [NSCursor zoomInCursor];
+        NSCursor *cursor = ([theEvent modifierFlags] & NSShiftKeyMask) ? [NSCursor zoomOutCursor] : [NSCursor zoomInCursor];
         [cursor set];
     }
 }
@@ -891,31 +780,6 @@ static PDFDestination *PDFHoverDestination;
 
 @implementation SKPDFView (Private)
 
-- (NSRect)hoverWindowRectFittingScreenFromRect:(NSRect)rect{
-    
-    NSRect screenRect;
-    screenRect = [[NSScreen mainScreen] visibleFrame];
-    NSPoint hoverWindowOrigin = rect.origin;
-    
-    if (rect.origin.x > 
-        (screenRect.origin.x + screenRect.size.width - rect.size.width)) {
-        hoverWindowOrigin.x = rect.origin.x - 2 - rect.size.width;
-    } else {
-        hoverWindowOrigin.x = rect.origin.x;
-    }
-    
-    if (rect.origin.y > (screenRect.origin.y + screenRect.size.height - rect.size.height)) {
-        hoverWindowOrigin.y = screenRect.origin.y + screenRect.size.height - rect.size.height;
-    } else {
-        hoverWindowOrigin.y = rect.origin.y + 2;
-    }
-    
-    if (hoverWindowOrigin.y < 0) hoverWindowOrigin.y = 0;
-    
-    return NSMakeRect(hoverWindowOrigin.x, hoverWindowOrigin.y,
-                      rect.size.width, rect.size.height);
-}
-
 - (NSRect)resizeThumbForRect:(NSRect) rect rotation:(int)rotation
 {
 	NSRect thumb = rect;
@@ -949,6 +813,201 @@ static PDFDestination *PDFHoverDestination;
 	transform = [NSAffineTransform transform];
 	[transform translateXBy:-boxRect.origin.x yBy:-boxRect.origin.y];
 	[transform concat];
+}
+
+- (NSCursor *)cursorForMouseMovedEvent:(NSEvent *)event {
+    NSCursor *cursor = nil;
+    NSPoint p = [[self documentView] convertPoint:[event locationInWindow] fromView:nil];
+    if (NSPointInRect(p, [[self documentView] visibleRect])) {
+        switch (toolMode) {
+            case SKMoveToolMode:
+                cursor = [NSCursor openHandCursor];
+                break;
+            case SKMagnifyToolMode:
+                cursor = ([event modifierFlags] & NSShiftKeyMask) ? [NSCursor zoomOutCursor] : [NSCursor zoomInCursor];
+                break;
+            default:
+                cursor = [NSCursor arrowCursor];
+        }
+    } else {
+        // we want this cursor for toolbar and other views, generally
+        cursor = [NSCursor arrowCursor];
+    }
+    return cursor;
+}
+
+- (PDFDestination *)destinationForEvent:(NSEvent *)theEvent isLink:(BOOL *)isLink {
+    NSPoint windowMouseLoc = [theEvent locationInWindow];
+    
+    NSPoint viewMouseLoc = [self convertPoint:windowMouseLoc fromView:nil];
+    PDFPage *page = [self pageForPoint:viewMouseLoc nearest:YES];
+    NSPoint pageSpaceMouseLoc = [self convertPoint:viewMouseLoc toPage:page];  
+    PDFDestination *dest = [[[PDFDestination alloc] initWithPage:page atPoint:pageSpaceMouseLoc] autorelease];
+    BOOL link = NO;
+    
+    if (([self areaOfInterestForMouse: theEvent] &  kPDFLinkArea) != 0) {
+        link = YES;
+        PDFAnnotation *ann = [page annotationAtPoint:pageSpaceMouseLoc];
+        if (ann != NULL && [[ann destination] page]){
+            dest = [ann destination];
+        }
+    }
+    
+    if (isLink) *isLink = link;
+    return dest;
+}
+
+@end
+
+
+@implementation SKPDFHoverWindow
+
++ (id)sharedHoverWindow {
+    static SKPDFHoverWindow *sharedHoverWindow = nil;
+    if (sharedHoverWindow == nil)
+        sharedHoverWindow = [[self alloc] init];
+    return sharedHoverWindow;
+}
+
+- (id)init {
+    if (self = [super initWithContentRect:NSZeroRect styleMask:NSBorderlessWindowMask backing:NSBackingStoreBuffered defer:NO]) {
+        [self setHidesOnDeactivate:NO];
+        [self setIgnoresMouseEvents:YES];
+        [self setBackgroundColor:[NSColor whiteColor]];
+        [self setHasShadow:YES];
+        [self setLevel:NSStatusWindowLevel];
+        
+        NSScrollView *scrollView = [[NSScrollView alloc] init];
+        imageView = [[NSImageView alloc] init];
+        [imageView setImageFrameStyle:NSImageFrameNone];
+        [scrollView setDocumentView:imageView];
+        [self setContentView:scrollView];
+        [scrollView release];
+        [imageView release];
+    }
+    return self;
+}
+
+- (BOOL)canBecomeKeyWindow { return NO; }
+
+- (BOOL)canBecomeMainWindow { return NO; }
+
+- (void)orderFront:(id)sender {
+    [animation stopAnimation];
+    [self setAlphaValue:1.0];
+    [super orderFront:sender];
+}
+
+- (void)orderOut:(id)sender {
+    [animation stopAnimation];
+    [self setAlphaValue:1.0];
+    [destination release];
+    destination = nil;
+    [super orderOut:sender];
+}
+
+- (NSRect)hoverWindowRectFittingScreenFromRect:(NSRect)rect{
+    NSRect screenRect = [[NSScreen mainScreen] visibleFrame];
+    
+    if (NSMaxX(rect) > NSMaxX(screenRect) - 2.0)
+        rect.origin.x = NSMaxX(screenRect) - NSWidth(rect) - 2.0;
+    if (NSMinX(rect) < NSMinX(screenRect) + 2.0)
+        rect.origin.x = NSMinX(screenRect) + 2.0;
+    if (NSMaxY(rect) > NSMaxY(screenRect) - 2.0)
+        rect.origin.y = NSMaxY(screenRect) - NSHeight(rect) - 2.0;
+    if (NSMinY(rect) < NSMinY(screenRect) + 2.0)
+        rect.origin.y = NSMinY(screenRect) + 2.0;
+    
+    return rect;
+}
+
+- (void)showWithDestination:(PDFDestination *)dest atPoint:(NSPoint)point{
+    
+    if ([destination isEqual:dest])
+        return;
+    
+    BOOL wasHidden = destination == nil;
+    
+    [destination release];
+    destination = [dest retain];
+    
+    // FIXME: magic number 15 ought to be calculated from the line height of the current line?
+    NSRect contentRect = [self hoverWindowRectFittingScreenFromRect:NSMakeRect(point.x, point.y + 15.0, 400.0, 50.0)];
+    PDFPage *page = [destination page];
+    NSRect bounds = [page boundsForBox:kPDFDisplayBoxCropBox];
+    NSImage *image = [[NSImage alloc] initWithSize:bounds.size];
+    NSRect rect = [[imageView superview] bounds];
+    
+    rect.origin = [dest point];
+    rect.origin.x -= NSMinX(bounds);
+    rect.origin.y -= NSMinY(bounds) + NSHeight(rect);
+    
+    [image lockFocus];
+    [NSGraphicsContext saveGraphicsState];
+    [[NSColor whiteColor] set];
+    NSRectFill(bounds);
+    [page drawWithBox:kPDFDisplayBoxCropBox]; 
+    [[NSColor blackColor] set];
+    [NSGraphicsContext restoreGraphicsState];
+    [image unlockFocus];
+    
+    [imageView setFrameSize:[image size]];
+    [imageView setImage:image];
+    [image release];
+    
+    [self setFrame:[self frameRectForContentRect:contentRect] display:NO];
+    [imageView scrollRectToVisible:rect];
+    
+    if ([self isVisible] == NO)
+        [self setAlphaValue:0.0];
+    [animation stopAnimation];
+    [super orderFront:self];
+    
+    if (wasHidden) {
+        NSDictionary *fadeInDict = [[NSDictionary alloc] initWithObjectsAndKeys:self, NSViewAnimationTargetKey, NSViewAnimationFadeInEffect, NSViewAnimationEffectKey, nil];
+        
+        animation = [[NSViewAnimation alloc] initWithViewAnimations:[NSArray arrayWithObjects:fadeInDict, nil]];
+        [fadeInDict release];
+        
+        [animation setAnimationBlockingMode:NSAnimationNonblocking];
+        [animation setDuration:0.5];
+        [animation setDelegate:self];
+        [animation startAnimation];
+    }
+}
+
+- (void)hide {
+    if (destination == nil)
+        return;
+    
+    [animation stopAnimation];
+    
+    [destination release];
+    destination = nil;
+    
+    NSDictionary *fadeOutDict = [[NSDictionary alloc] initWithObjectsAndKeys:self, NSViewAnimationTargetKey, NSViewAnimationFadeOutEffect, NSViewAnimationEffectKey, nil];
+    
+    animation = [[NSViewAnimation alloc] initWithViewAnimations:[NSArray arrayWithObjects:fadeOutDict, nil]];
+    [fadeOutDict release];
+    
+    [animation setAnimationBlockingMode:NSAnimationNonblocking];
+    [animation setDuration:1.0];
+    [animation setDelegate:self];
+    [animation startAnimation];
+}
+
+- (void)animationDidEnd:(NSAnimation*)anAnimation {
+    BOOL isFadeOut = [[[[animation viewAnimations] lastObject] objectForKey:NSViewAnimationEffectKey] isEqual:NSViewAnimationFadeOutEffect];
+    [animation release];
+    animation = nil;
+    if (isFadeOut)
+        [self orderOut:self];
+    [self setAlphaValue:1.0];
+}
+
+- (void)animationDidStop:(NSAnimation*)anAnimation {
+    [animation release];
+    animation = nil;
 }
 
 @end
