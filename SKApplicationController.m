@@ -74,7 +74,8 @@
         fileURL = [[BDAlias aliasWithData:[dict objectForKey:@"_BDAlias"]] fileURL];
         if(fileURL == nil)
             fileURL = [NSURL fileURLWithPath:[dict objectForKey:@"fileName"]];
-        [[NSDocumentController sharedDocumentController] openDocumentWithContentsOfURL:fileURL display:YES error:NULL];
+        if(fileURL)
+            [[NSDocumentController sharedDocumentController] openDocumentWithContentsOfURL:fileURL display:YES error:NULL];
     }
 }    
 
