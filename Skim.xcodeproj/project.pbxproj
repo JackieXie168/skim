@@ -32,6 +32,7 @@
 		CE3A45530B7A04A4006B64D3 /* NSBezierPath_BDSKExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = CE3A45520B7A04A4006B64D3 /* NSBezierPath_BDSKExtensions.m */; };
 		CE3A4BA50B7A4D0D006B64D3 /* note.tiff in Resources */ = {isa = PBXBuildFile; fileRef = CE3A4BA40B7A4D0C006B64D3 /* note.tiff */; };
 		CE3A4C510B7A5E68006B64D3 /* SaveProgressSheet.nib in Resources */ = {isa = PBXBuildFile; fileRef = CE3A4C4F0B7A5E68006B64D3 /* SaveProgressSheet.nib */; };
+		CE3A4DE30B7A7FC7006B64D3 /* presentation.tiff in Resources */ = {isa = PBXBuildFile; fileRef = CE3A4DE20B7A7FC7006B64D3 /* presentation.tiff */; };
 		CE546FC40B32D5DB00F8AFB6 /* SKNoteWindowController.m in Sources */ = {isa = PBXBuildFile; fileRef = CE546FC30B32D5DB00F8AFB6 /* SKNoteWindowController.m */; };
 		CE5470030B32D96500F8AFB6 /* NoteWindow.nib in Resources */ = {isa = PBXBuildFile; fileRef = CE5470010B32D96500F8AFB6 /* NoteWindow.nib */; };
 		CE5478C80B33456300F8AFB6 /* annotateTool.tif in Resources */ = {isa = PBXBuildFile; fileRef = CE5478B70B33456300F8AFB6 /* annotateTool.tif */; };
@@ -111,6 +112,7 @@
 		CE3A45520B7A04A4006B64D3 /* NSBezierPath_BDSKExtensions.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = NSBezierPath_BDSKExtensions.m; sourceTree = "<group>"; };
 		CE3A4BA40B7A4D0C006B64D3 /* note.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; name = note.tiff; path = Images/note.tiff; sourceTree = "<group>"; };
 		CE3A4C500B7A5E68006B64D3 /* English */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = English; path = English.lproj/SaveProgressSheet.nib; sourceTree = "<group>"; };
+		CE3A4DE20B7A7FC7006B64D3 /* presentation.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; name = presentation.tiff; path = Images/presentation.tiff; sourceTree = "<group>"; };
 		CE546FC20B32D5DB00F8AFB6 /* SKNoteWindowController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SKNoteWindowController.h; sourceTree = "<group>"; };
 		CE546FC30B32D5DB00F8AFB6 /* SKNoteWindowController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SKNoteWindowController.m; sourceTree = "<group>"; };
 		CE5470020B32D96500F8AFB6 /* English */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = English; path = English.lproj/NoteWindow.nib; sourceTree = "<group>"; };
@@ -322,6 +324,7 @@
 				CE5478BE0B33456300F8AFB6 /* notesDrawer.tiff */,
 				CE3A42340B7927D3006B64D3 /* noteTool.tiff */,
 				CE5478BF0B33456300F8AFB6 /* popUpTool.tif */,
+				CE3A4DE20B7A7FC7006B64D3 /* presentation.tiff */,
 				CE5478C00B33456300F8AFB6 /* previous.tiff */,
 				CE5478C10B33456300F8AFB6 /* rotateLeft.tiff */,
 				CE5478C20B33456300F8AFB6 /* rotateRight.tiff */,
@@ -412,6 +415,7 @@
 				CE3A42360B7927D3006B64D3 /* noteTool.tiff in Resources */,
 				CE3A4BA50B7A4D0D006B64D3 /* note.tiff in Resources */,
 				CE3A4C510B7A5E68006B64D3 /* SaveProgressSheet.nib in Resources */,
+				CE3A4DE30B7A7FC7006B64D3 /* presentation.tiff in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

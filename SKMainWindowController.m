@@ -1150,7 +1150,7 @@ static NSString *SKDocumentToolbarSearchItemIdentifier = @"SKDocumentToolbarSear
     [item setLabel:NSLocalizedString(@"Presentation", @"Toolbar item label")];
     [item setPaletteLabel:NSLocalizedString(@"Presentation", @"Toolbar item label")];
     [item setToolTip:NSLocalizedString(@"Presentation", @"Tool tip message")];
-    [item setImage:[NSImage imageNamed:@"fullScreen"]];
+    [item setImage:[NSImage imageNamed:@"presentation"]];
     [item setTarget:self];
     [item setAction:@selector(enterPresentation:)];
     [toolbarItems setObject:item forKey:SKDocumentToolbarPresentationItemIdentifier];
