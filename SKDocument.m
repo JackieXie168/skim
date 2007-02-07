@@ -64,6 +64,10 @@ static NSString *SKPostScriptDocumentType = @"PostScript document";
     // Add any code here that needs to be executed once the windowController has loaded the document's window.
     SKMainWindowController *mainController =  (SKMainWindowController *)aController;
     
+    [mainController setPdfDocument:pdfDoc];
+    [pdfDoc release];
+    pdfDoc = nil;
+    
     [mainController setAnnotationsFromDictionaries:noteDicts];
 	
     [self setupDocumentNotifications];
@@ -81,40 +85,55 @@ static NSString *SKPostScriptDocumentType = @"PostScript document";
     return success;
 }
 
-- (NSData *)dataOfType:(NSString *)typeName error:(NSError **)outError{
-    NSData *data = nil;
+- (BOOL)writeToURL:(NSURL *)absoluteURL ofType:(NSString *)typeName error:(NSError **)outError{
+    BOOL didWrite = NO;
     if ([typeName isEqualToString:SKPDFDocumentType]) {
-        //[[NSNotificationCenter defaultCenter] postNotificationName:SKDocumentWillSaveNotification object:self];
-        data = [originalPDFDocument dataRepresentation];
-        //[[NSNotificationCenter defaultCenter] postNotificationName:SKDocumentDidSaveNotification object:self];
+        didWrite = [originalPDFDocument writeToURL:absoluteURL];
     } else if ([typeName isEqualToString:SKNotesDocumentType]) {
-        data = [NSKeyedArchiver archivedDataWithRootObject:notes];
+        NSData *data = [self notesData];
+        if (data != nil)
+            didWrite = [data writeToURL:absoluteURL options:NSAtomicWrite error:outError];
     }
-    return data;
+    return didWrite;
 }
 
 - (BOOL)revertToContentsOfURL:(NSURL *)absoluteURL ofType:(NSString *)typeName error:(NSError **)outError{
     if ([super revertToContentsOfURL:absoluteURL ofType:typeName error:outError]) {
-        [[[self windowControllers] objectAtIndex:0] setAnnotationsFromDictionaries:noteDicts];
+        if ([typeName isEqualToString:SKNotesDocumentType] == NO && pdfDoc) {
+            [(SKMainWindowController *)[[self windowControllers] objectAtIndex:0] setPdfDocument:pdfDoc];
+            [pdfDoc release];
+            pdfDoc = nil;
+        }
+        if (noteDicts)
+            [[[self windowControllers] objectAtIndex:0] setAnnotationsFromDictionaries:noteDicts];
         return YES;
     } else return NO;
 }
 
 - (BOOL)readFromURL:(NSURL *)absoluteURL ofType:(NSString *)docType error:(NSError **)outError{
     BOOL didRead = NO;
+    // we keep a copy of the original PDF document, as we may dirty the pdfDoc with annotations
     if ([docType isEqualToString:SKPDFDocumentType]) {
-        originalPDFDocument = [[PDFDocument alloc] initWithURL:absoluteURL];    
+        [pdfDoc release];
         pdfDoc = [[PDFDocument alloc] initWithURL:absoluteURL];    
+        if (originalPDFDocument)
+            [self disableDocumentNotifications];
+        [originalPDFDocument release];
+        originalPDFDocument = [[PDFDocument alloc] initWithData:[pdfDoc dataRepresentation]];    
+        [self setupDocumentNotifications];
         didRead = pdfDoc != nil;
-       [self readNotesFromExtendedAttributesAtURL:absoluteURL];
+        [self readNotesFromExtendedAttributesAtURL:absoluteURL];
     } else if ([docType isEqualToString:SKNotesDocumentType]) {
         // should we be able to load just notes?
-        [self setNotes:[NSKeyedUnarchiver unarchiveObjectWithFile:[absoluteURL path]]];
-        didRead = YES;
+        didRead = [self readNotesFromData:[NSKeyedUnarchiver unarchiveObjectWithFile:[absoluteURL path]]];
     } else if ([docType isEqualToString:SKPostScriptDocumentType]) {
-        // @@ what does originalPDFDocument mean for PS?
-        originalPDFDocument = [[PDFDocument alloc] initWithPostScriptURL:absoluteURL];    
+        [pdfDoc release];
         pdfDoc = [[PDFDocument alloc] initWithPostScriptURL:absoluteURL];    
+        if (originalPDFDocument)
+            [self disableDocumentNotifications];
+        [originalPDFDocument release];
+        originalPDFDocument = [[PDFDocument alloc] initWithData:[pdfDoc dataRepresentation]];    
+        [self setupDocumentNotifications];
         didRead = pdfDoc != nil;
     }
     if (NO == didRead && outError)
@@ -190,8 +209,6 @@ static NSString *SKPostScriptDocumentType = @"PostScript document";
             [noteDicts release];
         noteDicts = [[NSMutableDictionary alloc] initWithCapacity:numberOfNotes];
         
-        [noteDicts removeAllObjects];
-        
         for (i = 0; i < numberOfNotes; i++) {
             name = [NSString stringWithFormat:@"SKNote-%i", i];
             if ((data = [fm extendedAttributeNamed:name atPath:[aURL path] traverseLink:YES error:&error]) &&
@@ -208,13 +225,53 @@ static NSString *SKPostScriptDocumentType = @"PostScript document";
     return success;
 }
 
+- (NSData *)notesData {
+    int i, numberOfNotes = [notes count];
+    NSMutableArray *array = [[NSMutableArray alloc] initWithCapacity:numberOfNotes];
+    NSData *data;
+    
+    for (i = 0; i < numberOfNotes; i++)
+        [array addObject:[[notes objectAtIndex:i] dictionaryValue]];
+    data = [NSKeyedArchiver archivedDataWithRootObject:array];
+    
+    return data;
+}
+
+- (BOOL)readNotesFromData:(NSData *)data {
+    NSDictionary *dict = nil;
+    BOOL success = YES;
+    NSArray *array = [NSKeyedUnarchiver unarchiveObjectWithData:data];
+    
+    if (array != nil) {
+        int i, numberOfNotes = [array count];
+        
+        if (noteDicts)
+            [noteDicts release];
+        noteDicts = [[NSMutableDictionary alloc] initWithCapacity:numberOfNotes];
+        
+        for (i = 0; i < numberOfNotes; i++) {
+            dict = [array objectAtIndex:i];
+            [noteDicts addObject:dict];
+        }
+    } else {
+        success = NO;
+    }
+    return success;
+}
+
 - (void)setupDocumentNotifications{
-	[[NSNotificationCenter defaultCenter] addObserver: self selector: @selector(handleDidBeginWriteDocument:) 
-                                                 name: @"PDFDidBeginDocumentWrite" object: originalPDFDocument];
-	[[NSNotificationCenter defaultCenter] addObserver: self selector: @selector(handleDidEndWriteDocument:) 
-                                                 name: @"PDFDidEndDocumentWrite" object: originalPDFDocument];
-	[[NSNotificationCenter defaultCenter] addObserver: self selector: @selector(handleDidEndPageWrite:) 
-                                                 name: @"PDFDidEndPageWrite" object: originalPDFDocument];
+	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleDidBeginWriteDocument:) 
+                                                 name:@"PDFDidBeginDocumentWrite" object:originalPDFDocument];
+	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleDidEndWriteDocument:) 
+                                                 name:@"PDFDidEndDocumentWrite" object:originalPDFDocument];
+	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleDidEndPageWrite:) 
+                                                 name:@"PDFDidEndPageWrite" object:originalPDFDocument];
+}
+
+- (void)disableDocumentNotifications{
+	[[NSNotificationCenter defaultCenter] removeObserver:self name:@"PDFDidBeginDocumentWrite" object:originalPDFDocument];
+	[[NSNotificationCenter defaultCenter] removeObserver:self name:@"PDFDidEndDocumentWrite" object:originalPDFDocument];
+	[[NSNotificationCenter defaultCenter] removeObserver:self name:@"PDFDidEndPageWrite" object:originalPDFDocument];
 }
 
 #pragma mark Accessors
@@ -244,10 +301,6 @@ static NSString *SKPostScriptDocumentType = @"PostScript document";
 }
 
 - (PDFDocument *)pdfDocument{
-    return pdfDoc;
-}
-
-- (PDFDocument *)originalPDFDocument{
     return originalPDFDocument;
 }
 

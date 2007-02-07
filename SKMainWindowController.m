@@ -67,26 +67,6 @@ static NSString *SKDocumentToolbarSearchItemIdentifier = @"SKDocumentToolbarSear
     return self;
 }
 
-- (void)setupDocumentNotifications{
-	[[NSNotificationCenter defaultCenter] addObserver: self selector: @selector(handlePageChangedNotification:) 
-                                                 name: PDFViewPageChangedNotification object: pdfView];
-	[[NSNotificationCenter defaultCenter] addObserver: self selector: @selector(handleScaleChangedNotification:) 
-                                                 name: PDFViewScaleChangedNotification object: pdfView];
-	[[NSNotificationCenter defaultCenter] addObserver: self selector: @selector(handleChangedHistoryNotification:) 
-                                                 name: PDFViewChangedHistoryNotification object: pdfView];
-	[[NSNotificationCenter defaultCenter] addObserver: self selector: @selector(handleToolModeChangedNotification:) 
-                                                 name: SKPDFViewToolModeChangedNotification object: pdfView];
-	[[NSNotificationCenter defaultCenter] addObserver: self selector: @selector(handleDocumentWillSaveNotification:) 
-                                                 name: SKDocumentWillSaveNotification object: [self document]];
-	[[NSNotificationCenter defaultCenter] addObserver: self selector: @selector(handleDocumentDidSaveNotification:) 
-                                                 name: SKDocumentDidSaveNotification object: [self document]];
-	[[NSNotificationCenter defaultCenter] addObserver: self selector: @selector(handleAppWillTerminateNotification:) 
-                                                 name: NSApplicationWillTerminateNotification object: NSApp];
-
-	// Delegate.
-	[[pdfView document] setDelegate: self];
-}
-
 - (void)dealloc {
 
 	[[NSNotificationCenter defaultCenter] removeObserver: self];
@@ -102,24 +82,6 @@ static NSString *SKDocumentToolbarSearchItemIdentifier = @"SKDocumentToolbarSear
 }
 
 - (void)windowDidLoad{
-    PDFDocument *pdfDoc = [(SKDocument *)[self document] pdfDocument];
-    
-    pdfOutline = [[pdfDoc outlineRoot] retain];
-    if (pdfOutline){
-
-		if ([[pdfView document] isLocked] == NO){
-
-			[outlineView reloadData];
-			[outlineView setAutoresizesOutlineColumn: NO];
-			
-			if ([outlineView numberOfRows] == 1){
-				[outlineView expandItem: [outlineView itemAtRow: 0] expandChildren: NO];
-            }
-
-			[self updateOutlineSelection];
-		}
-	}
-    
     // we retain as we might replace it with the full screen window
     mainWindow = [[self window] retain];
     [mainWindow setFrameAutosaveName:SKMainWindowFrameAutosaveName];
@@ -132,7 +94,6 @@ static NSString *SKDocumentToolbarSearchItemIdentifier = @"SKDocumentToolbarSear
     [notesArrayController setSortDescriptors:[NSArray arrayWithObjects:indexSortDescriptor, contentsSortDescriptor, nil]];
     
     [self setupToolbar];
-    [pdfView setDocument:pdfDoc];
     
     [self handleChangedHistoryNotification:nil];
     [self handleToolModeChangedNotification:nil];
@@ -141,14 +102,46 @@ static NSString *SKDocumentToolbarSearchItemIdentifier = @"SKDocumentToolbarSear
     [pageNumberStepper setMaxValue:[[pdfView document] pageCount]];
     [annotationModeButton setSelectedSegment:annotationMode];
     
-	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleDidChangeActiveAnnotationNotification:) 
+	[[NSNotificationCenter defaultCenter] addObserver: self selector: @selector(handleAppWillTerminateNotification:) 
+                                                 name: NSApplicationWillTerminateNotification object: NSApp];
+	
+	[[NSNotificationCenter defaultCenter] addObserver: self selector: @selector(handlePageChangedNotification:) 
+                                                 name: PDFViewPageChangedNotification object: pdfView];
+	[[NSNotificationCenter defaultCenter] addObserver: self selector: @selector(handleScaleChangedNotification:) 
+                                                 name: PDFViewScaleChangedNotification object: pdfView];
+	[[NSNotificationCenter defaultCenter] addObserver: self selector: @selector(handleChangedHistoryNotification:) 
+                                                 name: PDFViewChangedHistoryNotification object: pdfView];
+	[[NSNotificationCenter defaultCenter] addObserver: self selector: @selector(handleToolModeChangedNotification:) 
+                                                 name: SKPDFViewToolModeChangedNotification object: pdfView];
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleDidChangeActiveAnnotationNotification:) 
 			name:@"SKPDFViewActiveAnnotationDidChangeNotification" object:pdfView];
 	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleDidRemoveAnnotationNotification:) 
 			name:@"SKPDFViewDidRemoveAnnotationNotification" object:pdfView];
 	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleDoubleClickedAnnotationNotification:) 
 			name:@"SKPDFViewAnnotationDoubleClickedNotification" object:pdfView];
-    
-    [self setupDocumentNotifications];
+}
+
+- (PDFDocument *)pdfDocument{
+    return [pdfView document];
+}
+
+- (void)setPdfDocument:(PDFDocument *)document{
+    if ([pdfView document] != document) {
+        
+        [pdfView setDocument:document];
+        
+        [pdfOutline release];
+        pdfOutline = [[[pdfView document] outlineRoot] retain];
+        [outlineView reloadData];
+        [outlineView setAutoresizesOutlineColumn: NO];
+        
+        if ([outlineView numberOfRows] == 1){
+            [outlineView expandItem: [outlineView itemAtRow: 0] expandChildren: NO];
+        }
+
+        [self updateOutlineSelection];
+    }
 }
 
 - (void)setAnnotationsFromDictionaries:(NSArray *)noteDicts{
@@ -156,7 +149,7 @@ static NSString *SKDocumentToolbarSearchItemIdentifier = @"SKDocumentToolbarSear
     NSEnumerator *e = [notes objectEnumerator];
     PDFAnnotation *annotation;
     NSDictionary *dict;
-    PDFDocument *pdfDoc = [[self document] pdfDocument];
+    PDFDocument *pdfDoc = [pdfView document];
     
     // remove the current anotations
     [pdfView endAnnotationEdit];
@@ -777,7 +770,7 @@ static NSString *SKDocumentToolbarSearchItemIdentifier = @"SKDocumentToolbarSear
     
     SKSubWindowController *swc = [[SKSubWindowController alloc] init];
     
-    PDFDocument *doc = [(SKDocument *)[self document] pdfDocument];
+    PDFDocument *doc = [pdfView document];
     [swc setPdfDocument:doc
             scaleFactor:[pdfView scaleFactor]
              autoScales:[pdfView autoScales]
