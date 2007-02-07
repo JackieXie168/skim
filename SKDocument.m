@@ -17,8 +17,6 @@
 #import "SKNote.h"
 #import "PDFDocument_BDSKExtensions.h"
 
-NSString *SKDocumentWillSaveNotification = @"SKDocumentWillSaveNotification";
-NSString *SKDocumentDidSaveNotification = @"SKDocumentDidSaveNotification";
 NSString *SKDocumentErrorDomain = @"SKDocumentErrorDomain";
 
 // See CFBundleTypeName in Info.plist

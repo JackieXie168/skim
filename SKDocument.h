@@ -10,8 +10,6 @@
 
 #import <Cocoa/Cocoa.h>
 
-extern NSString *SKDocumentWillSaveNotification;
-extern NSString *SKDocumentDidSaveNotification;
 extern NSString *SKDocumentErrorDomain;
 
 @class PDFDocument;
