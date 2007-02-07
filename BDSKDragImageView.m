@@ -37,6 +37,7 @@
  */
 
 #import "BDSKDragImageView.h"
+#import "NSBezierPath_BDSKExtensions.h"
 
 @implementation BDSKDragImageView
 
@@ -153,59 +154,6 @@
 	[[NSColor alternateSelectedControlColor] set];
 	[NSBezierPath setDefaultLineWidth:2.0];
 	[NSBezierPath strokeRoundRectInRect:NSInsetRect(aRect, 2.0, 2.0) radius:5.0];
-}
-
-@end
-
-@implementation NSBezierPath (BDSKExtensions)
-
-// code from http://www.cocoadev.com/index.pl?NSBezierPathCategory
-// removed UK rect function calls, changed spacing/alignment
-
-+ (void)fillRoundRectInRect:(NSRect)rect radius:(float)radius
-{
-    NSBezierPath *p = [self bezierPathWithRoundRectInRect:rect radius:radius];
-    [p fill];
-}
-
-
-+ (void)strokeRoundRectInRect:(NSRect)rect radius:(float)radius
-{
-    NSBezierPath *p = [self bezierPathWithRoundRectInRect:rect radius:radius];
-    [p stroke];
-}
-
-+ (NSBezierPath*)bezierPathWithRoundRectInRect:(NSRect)rect radius:(float)radius
-{
-    // Make sure radius doesn't exceed a maximum size to avoid artifacts:
-    radius = MIN(radius, 0.5f * MIN(NSHeight(rect), NSWidth(rect)));
-    
-    // Make sure silly values simply lead to un-rounded corners:
-    if( radius <= 0 )
-        return [self bezierPathWithRect:rect];
-    
-    NSRect innerRect = NSInsetRect(rect, radius, radius); // Make rect with corners being centers of the corner circles.
-	static NSBezierPath *path = nil;
-    if(path == nil)
-        path = [[self bezierPath] retain];
-    
-    [path removeAllPoints];    
-    
-    // Now draw our rectangle:
-    [path moveToPoint: NSMakePoint(NSMinX(innerRect) - radius, NSMinY(innerRect))];
-    
-    // Bottom left (origin):
-    [path appendBezierPathWithArcWithCenter:NSMakePoint(NSMinX(innerRect), NSMinY(innerRect)) radius:radius startAngle:180.0 endAngle:270.0];
-    // Bottom edge and bottom right:
-    [path appendBezierPathWithArcWithCenter:NSMakePoint(NSMaxX(innerRect), NSMinY(innerRect)) radius:radius startAngle:270.0 endAngle:360.0];
-    // Left edge and top right:
-    [path appendBezierPathWithArcWithCenter:NSMakePoint(NSMaxX(innerRect), NSMaxY(innerRect)) radius:radius startAngle:0.0  endAngle:90.0 ];
-    // Top edge and top left:
-    [path appendBezierPathWithArcWithCenter:NSMakePoint(NSMinX(innerRect), NSMaxY(innerRect)) radius:radius startAngle:90.0  endAngle:180.0];
-    // Left edge:
-    [path closePath];
-    
-    return path;
 }
 
 @end

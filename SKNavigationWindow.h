@@ -89,12 +89,3 @@
 
 @interface SKNavigationSeparatorButtonCell : SKNavigationButtonCell
 @end
-
-
-@interface NSBezierPath (SKExtensions)
-
-+ (void)fillRoundRectInRect:(NSRect)rect radius:(float)radius;
-+ (void)strokeRoundRectInRect:(NSRect)rect radius:(float)radius;
-+ (NSBezierPath*)bezierPathWithRoundRectInRect:(NSRect)rect radius:(float)radius;
-
-@end
