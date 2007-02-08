@@ -67,6 +67,14 @@ typedef struct _SKPDFViewState {
     IBOutlet NSArrayController *findArrayController;
     IBOutlet NSProgressIndicator *spinner;
     
+    IBOutlet NSView *thumbnailView;
+    IBOutlet NSArrayController *thumbnailArrayController;
+    IBOutlet NSTableView *thumbnailTableView;
+    NSMutableArray *thumbnails;
+    BOOL updatingThumbnailSelection;
+    NSMutableIndexSet *dirtyThumbnailIndexes;
+    NSTimer *thumbnailTimer;
+    
     BOOL edited;
 }
 
@@ -126,6 +134,13 @@ typedef struct _SKPDFViewState {
 - (void)setAnnotationMode:(SKAnnotationMode)newAnnotationMode;
 
 - (void)updateOutlineSelection;
+
+- (void)updateThumbnailSelection;
+- (void)resetThumbnails;
+- (void)thumbnailAtIndexNeedsUpdate:(unsigned)index;
+- (void)thumbnailsAtIndexesNeedUpdate:(NSIndexSet *)indexes;
+- (void)updateThumbnailsIfNeeded;
+- (void)updateThumbnail:(NSTimer *)timer;
 
 - (void)registerForNotifications;
 

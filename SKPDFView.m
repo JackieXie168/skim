@@ -949,7 +949,7 @@ static NSRect RectPlusScale (NSRect aRect, float scale)
     // FIXME: magic number 15 ought to be calculated from the line height of the current line?
     NSRect contentRect = [self hoverWindowRectFittingScreenFromRect:NSMakeRect(point.x, point.y + 15.0, 400.0, 50.0)];
     PDFPage *page = [destination page];
-    NSImage *image = [page thumbnailWithSize:0.0 hasShadow:NO];
+    NSImage *image = [page image];
     NSRect bounds = [page boundsForBox:kPDFDisplayBoxCropBox];
     NSRect rect = [[imageView superview] bounds];
     
@@ -1020,15 +1020,15 @@ static NSRect RectPlusScale (NSRect aRect, float scale)
 
 @implementation PDFPage (SKExtensions) 
 
-#define THUMBNAIL_SHADOW_OFFSET         NSMakeSize(0.0, -8.0)
-#define THUMBNAIL_SHADOW_BLUR_RADIUS    10.0
+- (NSImage *)image {
+    return [self thumbnailWithSize:0.0 shadowBlurRadius:0.0 shadowOffset:NSZeroSize];
+}
 
-- (NSImage *)thumbnailWithSize:(float)size hasShadow:(BOOL)hasShadow {
+- (NSImage *)thumbnailWithSize:(float)size shadowBlurRadius:(float)shadowBlurRadius shadowOffset:(NSSize)shadowOffset {
     NSRect bounds = [self boundsForBox:kPDFDisplayBoxCropBox];
     BOOL isScaled = size > 0.0;
+    BOOL hasShadow = shadowBlurRadius > 0.0 &&  NSEqualSizes(shadowOffset, NSZeroSize) == NO;
     NSSize thumbnailSize = NSMakeSize(size, size);
-    NSSize shadowOffset = hasShadow ? THUMBNAIL_SHADOW_OFFSET : NSZeroSize;
-    float shadowBlurRadius = hasShadow ? THUMBNAIL_SHADOW_BLUR_RADIUS : 0.0;
     float scale = 1.0;
     NSPoint offset = NSMakePoint(shadowBlurRadius - shadowOffset.width, shadowBlurRadius - shadowOffset.height);
     
@@ -1037,11 +1037,13 @@ static NSRect RectPlusScale (NSRect aRect, float scale)
         thumbnailSize = NSMakeSize(NSWidth(bounds) + 2.0 * shadowBlurRadius, NSHeight(bounds) + 2.0 * shadowBlurRadius);
     } else {
         if (NSHeight(bounds) > NSWidth(bounds)) {
-            scale = size / (NSHeight(bounds) + 2.0 * shadowBlurRadius);
-            offset.x += 0.5 * (NSHeight(bounds) - NSWidth(bounds));
+            scale = (size - 2.0 * shadowBlurRadius) / NSHeight(bounds);
+            offset.x = offset.x / scale + 0.5 * (NSHeight(bounds) - NSWidth(bounds));
+            offset.y = offset.y / scale;
         } else {
-            scale = size / (NSWidth(bounds) + 2.0 * shadowBlurRadius);
-            offset.y += 0.5 * (NSWidth(bounds) - NSHeight(bounds));
+            scale = (size - 2.0 * shadowBlurRadius) / NSWidth(bounds);
+            offset.x = offset.x / scale;
+            offset.y = offset.y / scale + 0.5 * (NSWidth(bounds) - NSHeight(bounds));
         }
     }
     
@@ -1061,6 +1063,7 @@ static NSRect RectPlusScale (NSRect aRect, float scale)
     [[NSColor whiteColor] set];
     if (hasShadow) {
         NSShadow *shadow = [[NSShadow alloc] init];
+        [shadow setShadowColor:[NSColor colorWithDeviceWhite:0.0 alpha:0.5]];
         [shadow setShadowBlurRadius:shadowBlurRadius];
         [shadow setShadowOffset:shadowOffset];
         [shadow set];

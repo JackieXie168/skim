@@ -73,6 +73,9 @@
                 searchField = NSSearchField; 
                 spinner = NSProgressIndicator; 
                 tableView = NSTableView; 
+                thumbnailArrayController = NSArrayController; 
+                thumbnailTableView = NSTableView; 
+                thumbnailView = NSView; 
                 toolModeButton = NSSegmentedControl; 
             }; 
             SUPERCLASS = NSWindowController; 

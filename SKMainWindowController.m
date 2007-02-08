@@ -53,6 +53,17 @@ static NSString *SKDocumentToolbarSearchItemIdentifier = @"SKDocumentToolbarSear
 - (id)initWithScreen:(NSScreen *)screen;
 @end
 
+@interface SKThumbnail : NSObject {
+    NSString *label;
+    NSImage *image;
+}
+- (id)initWithLabel:(NSString *)aLabel;
+- (NSString *)label;
+- (void)setLabel:(NSString *)newLabel;
+- (NSImage *)image;
+- (void)setImage:(NSImage *)newImage;
+@end
+
 @implementation SKMainWindowController
 
 - (id)initWithWindowNibName:(NSString *)windowNibName owner:(id)owner{
@@ -62,6 +73,8 @@ static NSString *SKDocumentToolbarSearchItemIdentifier = @"SKDocumentToolbarSear
         [self setShouldCloseDocument:YES];
         isPresentation = NO;
         searchResults = [[NSMutableArray alloc] init];
+        thumbnails = [[NSMutableArray alloc] init];
+        dirtyThumbnailIndexes = [[NSMutableIndexSet alloc] init];
     }
     
     return self;
@@ -71,12 +84,17 @@ static NSString *SKDocumentToolbarSearchItemIdentifier = @"SKDocumentToolbarSear
 
 	[[NSNotificationCenter defaultCenter] removeObserver: self];
 	
-	// Search clean-up.
+    if (thumbnailTimer) {
+        [thumbnailTimer invalidate];
+        [thumbnailTimer release];
+        thumbnailTimer = nil;
+    }
+    [dirtyThumbnailIndexes release];
 	[searchResults release];
-
-	if (pdfOutline)	[pdfOutline release];
-	if (fullScreenWindow)	[fullScreenWindow release];
-    if (mainWindow) [mainWindow release];
+    [pdfOutline release];
+	[thumbnails release];
+	[fullScreenWindow release];
+    [mainWindow release];
     
     [super dealloc];
 }
@@ -152,6 +170,9 @@ static NSString *SKDocumentToolbarSearchItemIdentifier = @"SKDocumentToolbarSear
                 [outlineView expandItem: [outlineView itemAtRow: 0] expandChildren: NO];
             [self updateOutlineSelection];
         }
+        
+        [self resetThumbnails];
+        [self updateThumbnailSelection];
     }
 }
 
@@ -181,6 +202,7 @@ static NSString *SKDocumentToolbarSearchItemIdentifier = @"SKDocumentToolbarSear
             [annotation release];
         }
     }
+    [self thumbnailsAtIndexesNeedUpdate:[NSIndexSet indexSetWithIndexesInRange:NSMakeRange(0, [pdfDoc pageCount])]];
 }
 
 - (BOOL)isFullScreen {
@@ -202,6 +224,31 @@ static NSString *SKDocumentToolbarSearchItemIdentifier = @"SKDocumentToolbarSear
 - (void)setAnnotationMode:(SKAnnotationMode)newAnnotationMode {
     annotationMode = newAnnotationMode;
     [annotationModeButton setSelectedSegment:annotationMode];
+}
+
+
+- (NSArray *)thumbnails {
+    return thumbnails;
+}
+
+- (void)setThumbnails:(NSArray *)newThumbnails {
+    [thumbnails setArray:thumbnails];
+}
+
+- (unsigned)countOfThumbnails {
+    return [thumbnails count];
+}
+
+- (id)objectInThumbnailsAtIndex:(unsigned)theIndex {
+    return [thumbnails objectAtIndex:theIndex];
+}
+
+- (void)insertObject:(id)obj inThumbnailsAtIndex:(unsigned)theIndex {
+    [thumbnails insertObject:obj atIndex:theIndex];
+}
+
+- (void)removeObjectFromThumbnailsAtIndex:(unsigned)theIndex {
+    [thumbnails removeObjectAtIndex:theIndex];
 }
 
 #pragma mark key handling
@@ -293,6 +340,7 @@ static NSString *SKDocumentToolbarSearchItemIdentifier = @"SKDocumentToolbarSear
     [[(SKDocument *)[self document] mutableArrayValueForKey:@"notes"] addObject:newAnnotation];
     
     [[self window] setDocumentEdited:YES];
+    [self thumbnailAtIndexNeedsUpdate:[newAnnotation pageIndex]];
 }
 
 - (void)showNotes:(NSArray *)notesToShow{
@@ -740,7 +788,7 @@ static NSString *SKDocumentToolbarSearchItemIdentifier = @"SKDocumentToolbarSear
 }
 
 - (void)tableViewSelectionDidChange:(NSNotification *)aNotification {
-    if ([[aNotification object] isEqual:tableView] || aNotification == nil) {
+    if ([[aNotification object] isEqual:tableView]) {
         
         // clear the selection
         [pdfView setCurrentSelection:nil];
@@ -763,6 +811,12 @@ static NSString *SKDocumentToolbarSearchItemIdentifier = @"SKDocumentToolbarSear
         
         [pdfView setCurrentSelection:currentSel];
         [pdfView scrollSelectionToVisible:self];
+    } else if ([[aNotification object] isEqual:thumbnailTableView]) {
+        if (updatingThumbnailSelection == NO) {
+            int row = [thumbnailTableView selectedRow];
+            if (row != -1)
+                [pdfView goToPage:[[pdfView document] pageAtIndex:row]];
+        }
     }
 }
 
@@ -842,6 +896,7 @@ static NSString *SKDocumentToolbarSearchItemIdentifier = @"SKDocumentToolbarSear
     [pageNumberField setIntValue:pageIndex + 1];
     
     [self updateOutlineSelection];
+    [self updateThumbnailSelection];
 }
 
 - (void)handleScaleChangedNotification:(NSNotification *)notification {
@@ -881,10 +936,13 @@ static NSString *SKDocumentToolbarSearchItemIdentifier = @"SKDocumentToolbarSear
         [[[self document] mutableArrayValueForKey:@"notes"] removeObject:annotation];
     }
     [[self window] setDocumentEdited:YES];
+    [self thumbnailAtIndexNeedsUpdate:[annotation pageIndex]];
 }
 
 - (void)handleDidChangeAnnotationNotification:(NSNotification *)notification {
+    PDFAnnotation *annotation = [[notification userInfo] objectForKey:@"annotation"];
     [[self window] setDocumentEdited:YES];
+    [self thumbnailAtIndexNeedsUpdate:[annotation pageIndex]];
 }
 
 - (void)handleDoubleClickedAnnotationNotification:(NSNotification *)notification {
@@ -1010,6 +1068,65 @@ static NSString *SKDocumentToolbarSearchItemIdentifier = @"SKDocumentToolbarSear
 			break;
 		}
 	}
+}
+
+#pragma mark Thumbnails
+
+- (void)updateThumbnailSelection {
+	// Get index of current page.
+	unsigned pageIndex = [[pdfView document] indexForPage: [pdfView currentPage]];
+    
+    updatingThumbnailSelection = YES;
+    [thumbnailTableView selectRowIndexes:[NSIndexSet indexSetWithIndex:pageIndex] byExtendingSelection:NO];
+    updatingThumbnailSelection = NO;
+}
+
+- (void)resetThumbnails {
+    PDFDocument *pdfDoc = [pdfView document];
+    unsigned i, count = [pdfDoc pageCount];
+    NSMutableArray *array = [NSMutableArray arrayWithCapacity:count];
+    
+    for (i = 0; i < count; i++) {
+        SKThumbnail *thumbnail = [[SKThumbnail alloc] initWithLabel:[[pdfDoc pageAtIndex:i] label]];
+        [array insertObject:thumbnail atIndex:i];
+    }
+    
+    [[self mutableArrayValueForKey:@"thumbnails"] setArray:array];
+    [dirtyThumbnailIndexes removeAllIndexes];
+    [dirtyThumbnailIndexes addIndexesInRange:NSMakeRange(0, count)];
+    [self updateThumbnailsIfNeeded];
+}
+
+- (void)thumbnailAtIndexNeedsUpdate:(unsigned)index {
+    [self thumbnailsAtIndexesNeedUpdate:[NSIndexSet indexSetWithIndex:index]];
+}
+
+- (void)thumbnailsAtIndexesNeedUpdate:(NSIndexSet *)indexes {
+    [dirtyThumbnailIndexes addIndexes:indexes];
+    [self updateThumbnailsIfNeeded];
+}
+
+- (void)updateThumbnailsIfNeeded {
+    // @@ TODO check if view is visible
+    if ([dirtyThumbnailIndexes count] && thumbnailTimer == nil)
+        thumbnailTimer = [[NSTimer scheduledTimerWithTimeInterval:0.1 target:self selector:@selector(updateThumbnail:) userInfo:NULL repeats:YES] retain];
+}
+
+- (void)updateThumbnail:(NSTimer *)timer {
+    unsigned index = [dirtyThumbnailIndexes firstIndex];
+    
+    if (index != NSNotFound) {
+        PDFDocument *pdfDoc = [pdfView document];
+        PDFPage *page = [pdfDoc pageAtIndex:index];
+        NSImage *image = [page thumbnailWithSize:128.0 shadowBlurRadius:8.0 shadowOffset:NSMakeSize(0.0, -6.0)];
+        [[thumbnails objectAtIndex:index] setImage:image];
+        [dirtyThumbnailIndexes removeIndex:index];
+    }
+    if ([dirtyThumbnailIndexes count] == 0) {
+        [thumbnailTimer invalidate];
+        [thumbnailTimer release];
+        thumbnailTimer = nil;
+    }
 }
 
 #pragma mark Toolbar
@@ -1424,6 +1541,47 @@ static NSString *SKDocumentToolbarSearchItemIdentifier = @"SKDocumentToolbarSear
         }
     } else {
         [super keyDown:theEvent];
+    }
+}
+
+@end
+
+@implementation SKThumbnail
+
+- (id)initWithLabel:(NSString *)aLabel {
+    if (self = [super init]) {
+        label = [aLabel retain];
+        image = nil;
+    }
+    return self;
+}
+
+- (void)dealloc {
+    [label release];
+    [image release];
+    [super dealloc];
+}
+
+- (NSString *)label {
+    return label;
+}
+
+- (void)setLabel:(NSString *)newLabel {
+    if (label != newLabel) {
+        [label release];
+        label = [newLabel retain];
+    }
+}
+
+- (NSImage *)image {
+    // @@ TODO: placeholder image
+    return image;
+}
+
+- (void)setImage:(NSImage *)newImage {
+    if (image != newImage) {
+        [image release];
+        image = [newImage retain];
     }
 }
 
