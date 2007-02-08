@@ -45,8 +45,9 @@ static NSString *SKPostScriptDocumentType = @"PostScript document";
 
 - (void)dealloc {
     [[NSNotificationCenter defaultCenter] removeObserver:self];
-    [pdfDocument release];
+    [pdfData release];
     [notes release];
+    [noteDicts release];
     [super dealloc];
 }
 
@@ -65,9 +66,7 @@ static NSString *SKPostScriptDocumentType = @"PostScript document";
     
     // we keep a pristine copy for save, as we shouldn't save the annotations
     [pdfDocument autorelease];
-    pdfDocument = [[PDFDocument alloc] initWithData:[pdfDocument dataRepresentation]];
-    
-    [self setupDocumentNotifications];
+    pdfDocument = nil;
     
     [mainController setAnnotationsFromDictionaries:noteDicts];
 }
@@ -88,7 +87,7 @@ static NSString *SKPostScriptDocumentType = @"PostScript document";
 - (BOOL)writeToURL:(NSURL *)absoluteURL ofType:(NSString *)typeName error:(NSError **)outError{
     BOOL didWrite = NO;
     if ([typeName isEqualToString:SKPDFDocumentType]) {
-        didWrite = [pdfDocument writeToURL:absoluteURL];
+        didWrite = [pdfData writeToURL:absoluteURL options:NSAtomicWrite error:outError];
     } else if ([typeName isEqualToString:SKNotesDocumentType]) {
         NSData *data = [self notesData];
         if (data != nil)
@@ -102,8 +101,7 @@ static NSString *SKPostScriptDocumentType = @"PostScript document";
         if ([typeName isEqualToString:SKNotesDocumentType] == NO) {
             [(SKMainWindowController *)[[self windowControllers] objectAtIndex:0] setPdfDocument:pdfDocument];
             [pdfDocument autorelease];
-            pdfDocument = [[PDFDocument alloc] initWithData:[pdfDocument dataRepresentation]];
-            [self setupDocumentNotifications];
+            pdfDocument = nil;
         } else {
             [[[[self windowControllers] objectAtIndex:0] window] setDocumentEdited:NO];
         }
@@ -116,9 +114,9 @@ static NSString *SKPostScriptDocumentType = @"PostScript document";
 - (BOOL)readFromURL:(NSURL *)absoluteURL ofType:(NSString *)docType error:(NSError **)outError{
     BOOL didRead = NO;
     if ([docType isEqualToString:SKPDFDocumentType]) {
-        if (pdfDocument)
-            [self disableDocumentNotifications];
+        [pdfData release];
         [pdfDocument release];
+        pdfData = [[NSData alloc] initWithContentsOfURL:absoluteURL];    
         pdfDocument = [[PDFDocument alloc] initWithURL:absoluteURL];    
         didRead = pdfDocument != nil;
         [self readNotesFromExtendedAttributesAtURL:absoluteURL];
@@ -126,9 +124,9 @@ static NSString *SKPostScriptDocumentType = @"PostScript document";
         // should we be able to load just notes?
         didRead = [self readNotesFromData:[NSKeyedUnarchiver unarchiveObjectWithFile:[absoluteURL path]]];
     } else if ([docType isEqualToString:SKPostScriptDocumentType]) {
-        if (pdfDocument)
-            [self disableDocumentNotifications];
+        [pdfData release];
         [pdfDocument release];
+        pdfData = [[NSData alloc] initWithContentsOfURL:absoluteURL];    
         pdfDocument = [[PDFDocument alloc] initWithPostScriptURL:absoluteURL];    
         didRead = pdfDocument != nil;
     }
@@ -255,21 +253,6 @@ static NSString *SKPostScriptDocumentType = @"PostScript document";
     return success;
 }
 
-- (void)setupDocumentNotifications{
-	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleDidBeginWriteDocument:) 
-                                                 name:@"PDFDidBeginDocumentWrite" object:pdfDocument];
-	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleDidEndWriteDocument:) 
-                                                 name:@"PDFDidEndDocumentWrite" object:pdfDocument];
-	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleDidEndPageWrite:) 
-                                                 name:@"PDFDidEndPageWrite" object:pdfDocument];
-}
-
-- (void)disableDocumentNotifications{
-	[[NSNotificationCenter defaultCenter] removeObserver:self name:@"PDFDidBeginDocumentWrite" object:pdfDocument];
-	[[NSNotificationCenter defaultCenter] removeObserver:self name:@"PDFDidEndDocumentWrite" object:pdfDocument];
-	[[NSNotificationCenter defaultCenter] removeObserver:self name:@"PDFDidEndPageWrite" object:pdfDocument];
-}
-
 #pragma mark Accessors
 
 - (NSArray *)notes {
@@ -296,43 +279,13 @@ static NSString *SKPostScriptDocumentType = @"PostScript document";
     [notes removeObjectAtIndex:theIndex];
 }
 
+- (SKMainWindowController *)mainWindowController {
+    NSArray *windowControllers = [self windowControllers];
+    return [windowControllers count] ? [windowControllers objectAtIndex:0] : nil;
+}
+
 - (PDFDocument *)pdfDocument{
-    return pdfDocument;
-}
-
-#pragma mark Notification handlers
-
-- (void)saveProgressSheetDidEnd:(NSWindow *)sheet returnCode:(int)returnCode contextInfo:(void *)contextInfo {
-	[sheet close];
-}
-
-- (void)handleDidBeginWriteDocument:(NSNotification *)notification {
-    if (saveProgressSheet == nil) {
-        if (NO == [NSBundle loadNibNamed:@"SaveProgressSheet" owner:self])  {
-            NSLog(@"Failed to load SaveProgressSheet.nib");
-            return;
-        }
-    }
-    
-	// Establish maximum and current value for progress bar.
-	[saveProgressBar setMaxValue:(double)[[notification object] pageCount]];
-	[saveProgressBar setDoubleValue: 0.0];
-	
-	// Bring up the save panel as a sheet.
-	[NSApp beginSheet:saveProgressSheet
-       modalForWindow:[self windowForSheet]
-        modalDelegate:self
-       didEndSelector:@selector(saveProgressSheetDidEnd:returnCode:contextInfo:)
-          contextInfo:NULL];
-}
-
-- (void)handleDidEndWriteDocument:(NSNotification *)notification {
-	[NSApp endSheet:saveProgressSheet];
-}
-
-- (void)handleDidEndPageWrite:(NSNotification *)notification {
-	[saveProgressBar setDoubleValue:[[[notification userInfo] objectForKey:@"PDFDocumentPageIndex"] floatValue]];
-	[saveProgressBar displayIfNeeded];
+    return [[self mainWindowController] pdfDocument];
 }
 
 @end
