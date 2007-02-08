@@ -105,27 +105,33 @@ static NSString *SKDocumentToolbarSearchItemIdentifier = @"SKDocumentToolbarSear
     [pageNumberStepper setMaxValue:[[pdfView document] pageCount]];
     [annotationModeButton setSelectedSegment:annotationMode];
     
-	[[NSNotificationCenter defaultCenter] addObserver: self selector: @selector(handleAppWillTerminateNotification:) 
-                                                 name: NSApplicationWillTerminateNotification object: NSApp];
-	
-	[[NSNotificationCenter defaultCenter] addObserver: self selector: @selector(handlePageChangedNotification:) 
-                                                 name: PDFViewPageChangedNotification object: pdfView];
-	[[NSNotificationCenter defaultCenter] addObserver: self selector: @selector(handleScaleChangedNotification:) 
-                                                 name: PDFViewScaleChangedNotification object: pdfView];
-	[[NSNotificationCenter defaultCenter] addObserver: self selector: @selector(handleChangedHistoryNotification:) 
-                                                 name: PDFViewChangedHistoryNotification object: pdfView];
-	[[NSNotificationCenter defaultCenter] addObserver: self selector: @selector(handleToolModeChangedNotification:) 
-                                                 name: SKPDFViewToolModeChangedNotification object: pdfView];
-    
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleDidChangeActiveAnnotationNotification:) 
-			name:SKPDFViewActiveAnnotationDidChangeNotification object:pdfView];
-	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleDidRemoveAnnotationNotification:) 
-			name:SKPDFViewDidRemoveAnnotationNotification object:pdfView];
-	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleDidChangeAnnotationNotification:) 
-			name:SKPDFViewDidChangeAnnotationNotification object:pdfView];
-	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleDoubleClickedAnnotationNotification:) 
-			name:SKPDFViewAnnotationDoubleClickedNotification object:pdfView];
+    [self registerForNotifications];
 }
+
+- (void)registerForNotifications {
+    // Application
+	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleAppWillTerminateNotification:) 
+                                                 name:NSApplicationWillTerminateNotification object:NSApp];
+	// PDFView
+	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handlePageChangedNotification:) 
+                                                 name:PDFViewPageChangedNotification object:pdfView];
+	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleScaleChangedNotification:) 
+                                                 name:PDFViewScaleChangedNotification object:pdfView];
+	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleChangedHistoryNotification:) 
+                                                 name:PDFViewChangedHistoryNotification object:pdfView];
+	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleToolModeChangedNotification:) 
+                                                 name:SKPDFViewToolModeChangedNotification object:pdfView];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleDidChangeActiveAnnotationNotification:) 
+                                                 name:SKPDFViewActiveAnnotationDidChangeNotification object:pdfView];
+	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleDidRemoveAnnotationNotification:) 
+                                                 name:SKPDFViewDidRemoveAnnotationNotification object:pdfView];
+	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleDidChangeAnnotationNotification:) 
+                                                 name:SKPDFViewDidChangeAnnotationNotification object:pdfView];
+	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleDoubleClickedAnnotationNotification:) 
+                                                 name:SKPDFViewAnnotationDoubleClickedNotification object:pdfView];
+}
+
+#pragma mark Accessors
 
 - (PDFDocument *)pdfDocument{
     return [pdfView document];
@@ -1028,7 +1034,7 @@ static NSString *SKDocumentToolbarSearchItemIdentifier = @"SKDocumentToolbarSear
     item = [[NSToolbarItem alloc] initWithItemIdentifier:SKDocumentToolbarPreviousItemIdentifier];
     [item setLabel:NSLocalizedString(@"Previous", @"Toolbar item label")];
     [item setPaletteLabel:NSLocalizedString(@"Previous", @"Toolbar item label")];
-    [item setToolTip:NSLocalizedString(@"Previous page", @"Tool tip message")];
+    [item setToolTip:NSLocalizedString(@"Go To Previous Page", @"Tool tip message")];
     [item setImage:[NSImage imageNamed:@"previous"]];
     [item setTarget:self];
     [item setAction:@selector(doGoToPreviousPage:)];
@@ -1038,7 +1044,7 @@ static NSString *SKDocumentToolbarSearchItemIdentifier = @"SKDocumentToolbarSear
     item = [[NSToolbarItem alloc] initWithItemIdentifier:SKDocumentToolbarNextItemIdentifier];
     [item setLabel:NSLocalizedString(@"Next", @"Toolbar item label")];
     [item setPaletteLabel:NSLocalizedString(@"Next", @"Toolbar item label")];
-    [item setToolTip:NSLocalizedString(@"Next page", @"Tool tip message")];
+    [item setToolTip:NSLocalizedString(@"Go To Next Page", @"Tool tip message")];
     [item setImage:[NSImage imageNamed:@"next"]];
     [item setTarget:self];
     [item setAction:@selector(doGoToNextPage:)];
@@ -1049,6 +1055,8 @@ static NSString *SKDocumentToolbarSearchItemIdentifier = @"SKDocumentToolbarSear
     [item setLabel:NSLocalizedString(@"Back/Forward", @"Toolbar item label")];
     [item setPaletteLabel:NSLocalizedString(@"Back/Forward", @"Toolbar item label")];
     [item setToolTip:NSLocalizedString(@"Back/Forward", @"Tool tip message")];
+    [[backForwardButton cell] setToolTip:NSLocalizedString(@"Go Back", @"Tool tip message") forSegment:0];
+    [[backForwardButton cell] setToolTip:NSLocalizedString(@"Go Forward", @"Tool tip message") forSegment:1];
     [item setView:backForwardButton];
     [item setMinSize:[backForwardButton bounds].size];
     [item setMaxSize:[backForwardButton bounds].size];
@@ -1179,6 +1187,9 @@ static NSString *SKDocumentToolbarSearchItemIdentifier = @"SKDocumentToolbarSear
     [item setLabel:NSLocalizedString(@"Tool Mode", @"Toolbar item label")];
     [item setPaletteLabel:NSLocalizedString(@"Tool Mode", @"Toolbar item label")];
     [item setToolTip:NSLocalizedString(@"Tool Mode", @"Tool tip message")];
+    [[toolModeButton cell] setToolTip:NSLocalizedString(@"Text Tool", @"Tool tip message") forSegment:0];
+    [[toolModeButton cell] setToolTip:NSLocalizedString(@"Scroll Tool", @"Tool tip message") forSegment:1];
+    [[toolModeButton cell] setToolTip:NSLocalizedString(@"Magnify Tool", @"Tool tip message") forSegment:2];
     [item setView:toolModeButton];
     [item setMinSize:[toolModeButton bounds].size];
     [item setMaxSize:[toolModeButton bounds].size];
@@ -1189,6 +1200,9 @@ static NSString *SKDocumentToolbarSearchItemIdentifier = @"SKDocumentToolbarSear
     [item setLabel:NSLocalizedString(@"Annotation", @"Toolbar item label")];
     [item setPaletteLabel:NSLocalizedString(@"Annotation Mode", @"Toolbar item label")];
     [item setToolTip:NSLocalizedString(@"Annotation Mode", @"Tool tip message")];
+    [[annotationModeButton cell] setToolTip:NSLocalizedString(@"Text Annotation", @"Tool tip message") forSegment:0];
+    [[annotationModeButton cell] setToolTip:NSLocalizedString(@"Note Annotation", @"Tool tip message") forSegment:1];
+    [[annotationModeButton cell] setToolTip:NSLocalizedString(@"Oval Annotation", @"Tool tip message") forSegment:2];
     [item setView:annotationModeButton];
     [item setMinSize:[annotationModeButton bounds].size];
     [item setMaxSize:[annotationModeButton bounds].size];
@@ -1219,7 +1233,7 @@ static NSString *SKDocumentToolbarSearchItemIdentifier = @"SKDocumentToolbarSear
     item = [[NSToolbarItem alloc] initWithItemIdentifier:SKDocumentToolbarInfoItemIdentifier];
     [item setLabel:NSLocalizedString(@"Info", @"Toolbar item label")];
     [item setPaletteLabel:NSLocalizedString(@"Info", @"Toolbar item label")];
-    [item setToolTip:NSLocalizedString(@"Info", @"Tool tip message")];
+    [item setToolTip:NSLocalizedString(@"Get Document Info", @"Tool tip message")];
     [item setImage:[NSImage imageNamed:@"info"]];
     [item setTarget:self];
     [item setAction:@selector(getInfo:)];
