@@ -127,10 +127,17 @@ typedef struct _SKPDFViewState {
 
 - (void)updateOutlineSelection;
 
-- (void)handleChangedHistoryNotification:(NSNotification *)notification;
+- (void)registerForNotifications;
+
+- (void)handleAppWillTerminateNotification:(NSNotification *)notification;
 - (void)handlePageChangedNotification:(NSNotification *)notification;
 - (void)handleScaleChangedNotification:(NSNotification *)notification;
+- (void)handleChangedHistoryNotification:(NSNotification *)notification;
 - (void)handleToolModeChangedNotification:(NSNotification *)notification;
+- (void)handleDidChangeActiveAnnotationNotification:(NSNotification *)notification;
+- (void)handleDidRemoveAnnotationNotification:(NSNotification *)notification;
+- (void)handleDidChangeAnnotationNotification:(NSNotification *)notification;
+- (void)handleDoubleClickedAnnotationNotification:(NSNotification *)notification;
 
 - (void)setAnnotationsFromDictionaries:(NSArray *)noteDicts;
 
