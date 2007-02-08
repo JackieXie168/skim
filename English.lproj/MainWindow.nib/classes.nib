@@ -85,6 +85,7 @@
             SUPERCLASS = NSWindowController; 
         }, 
         {CLASS = SKPDFView; LANGUAGE = ObjC; SUPERCLASS = PDFView; }, 
+        {CLASS = SKSplitView; LANGUAGE = ObjC; SUPERCLASS = NSSplitView; }, 
         {CLASS = SkimDocument; LANGUAGE = ObjC; SUPERCLASS = NSDocument; }
     ); 
     IBVersion = 1; 
