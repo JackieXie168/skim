@@ -31,6 +31,8 @@ typedef struct _SKPDFViewState {
 	BOOL autoHidesScrollers;
 } SKPDFViewState;
 
+extern NSString *SKThumbnailSizeKey;
+
 @class SKPDFView, PDFOutline, SKCollapsibleView, SKNavigationWindow;
 
 @interface SKMainWindowController : NSWindowController {

@@ -1,2 +1,6 @@
 
-resettableKeys = ();
+{
+    SKResettableKeys = (SKLastOpenFileNames, SKThumbnailSize);
+    SKLastOpenFileNames = ();
+    SKThumbnailSize = 64.0;
+}

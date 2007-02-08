@@ -22,6 +22,8 @@
 #import <Carbon/Carbon.h>
 
 
+NSString *SKThumbnailSizeKey = @"SKThumbnailSize";
+
 static NSString *SKDocumentToolbarIdentifier = @"SKDocumentToolbarIdentifier";
 
 static NSString *SKDocumentToolbarPreviousItemIdentifier = @"SKDocumentPreviousToolbarItemIdentifier";
@@ -120,6 +122,8 @@ static NSString *SKDocumentToolbarSearchItemIdentifier = @"SKDocumentToolbarSear
     
     [searchBox setCollapseEdges:SKMaxXEdgeMask | SKMinYEdgeMask];
     [searchBox setMinSize:NSMakeSize(150.0, 42.0)];
+    
+    [thumbnailTableView setRowHeight:[[NSUserDefaults standardUserDefaults] floatForKey:SKThumbnailSizeKey]];
     
     NSSortDescriptor *indexSortDescriptor = [[[NSSortDescriptor alloc] initWithKey:@"pageIndex" ascending:YES] autorelease];
     NSSortDescriptor *contentsSortDescriptor = [[[NSSortDescriptor alloc] initWithKey:@"contents" ascending:YES] autorelease];
@@ -1176,7 +1180,7 @@ static NSString *SKDocumentToolbarSearchItemIdentifier = @"SKDocumentToolbarSear
     if (index != NSNotFound) {
         PDFDocument *pdfDoc = [pdfView document];
         PDFPage *page = [pdfDoc pageAtIndex:index];
-        NSImage *image = [page thumbnailWithSize:128.0 shadowBlurRadius:8.0 shadowOffset:NSMakeSize(0.0, -6.0)];
+        NSImage *image = [page thumbnailWithSize:256.0 shadowBlurRadius:8.0 shadowOffset:NSMakeSize(0.0, -6.0)];
         [[thumbnails objectAtIndex:index] setImage:image];
         [dirtyThumbnailIndexes removeIndex:index];
     }
