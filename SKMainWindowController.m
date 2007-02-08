@@ -75,6 +75,7 @@ static NSString *SKDocumentToolbarSearchItemIdentifier = @"SKDocumentToolbarSear
         searchResults = [[NSMutableArray alloc] init];
         thumbnails = [[NSMutableArray alloc] init];
         dirtyThumbnailIndexes = [[NSMutableIndexSet alloc] init];
+        sidePaneState = SKOutlineSidePaneState;
     }
     
     return self;
@@ -93,6 +94,9 @@ static NSString *SKDocumentToolbarSearchItemIdentifier = @"SKDocumentToolbarSear
 	[searchResults release];
     [pdfOutline release];
 	[thumbnails release];
+    [[outlineView enclosingScrollView] release];
+    [[findTableView enclosingScrollView] release];
+    [[thumbnailTableView enclosingScrollView] release];
 	[fullScreenWindow release];
     [mainWindow release];
     
@@ -107,8 +111,15 @@ static NSString *SKDocumentToolbarSearchItemIdentifier = @"SKDocumentToolbarSear
     mainWindow = [[self window] retain];
     [mainWindow setFrameAutosaveName:SKMainWindowFrameAutosaveName];
     
+    [[self window] makeFirstResponder:[pdfView documentView]];
+    [[pdfView documentView] setNextKeyView:sidePaneViewButton];
+    
+    [[outlineView enclosingScrollView] retain];
+    [[findTableView enclosingScrollView] retain];
+    [[thumbnailTableView enclosingScrollView] retain];
+    
     [searchBox setCollapseEdges:SKMaxXEdgeMask | SKMinYEdgeMask];
-    [searchBox setMinSize:NSMakeSize(100.0, 46.0)];
+    [searchBox setMinSize:NSMakeSize(150.0, 42.0)];
     
     NSSortDescriptor *indexSortDescriptor = [[[NSSortDescriptor alloc] initWithKey:@"pageIndex" ascending:YES] autorelease];
     NSSortDescriptor *contentsSortDescriptor = [[[NSSortDescriptor alloc] initWithKey:@"contents" ascending:YES] autorelease];
@@ -122,6 +133,7 @@ static NSString *SKDocumentToolbarSearchItemIdentifier = @"SKDocumentToolbarSear
     [self handleScaleChangedNotification:nil];
     [pageNumberStepper setMaxValue:[[pdfView document] pageCount]];
     [annotationModeButton setSelectedSegment:annotationMode];
+    [sidePaneViewButton setSelectedSegment:sidePaneState];
     
     [self registerForNotifications];
 }
@@ -157,8 +169,10 @@ static NSString *SKDocumentToolbarSearchItemIdentifier = @"SKDocumentToolbarSear
 
 - (void)setPdfDocument:(PDFDocument *)document{
     if ([pdfView document] != document) {
-        
+    
+        [[pdfView document] setDelegate:nil];
         [pdfView setDocument:document];
+        [[pdfView document] setDelegate:self];
         
         [pdfOutline release];
         pdfOutline = [[[pdfView document] outlineRoot] retain];
@@ -547,6 +561,20 @@ static NSString *SKDocumentToolbarSearchItemIdentifier = @"SKDocumentToolbarSear
     [self setAnnotationMode:newAnnotationMode];
 }
 
+- (IBAction)changeSidePaneView:(id)sender {
+    sidePaneState = [sender selectedSegment];
+    
+    if ([findField stringValue] && [[findField stringValue] isEqualToString:@""] == NO) {
+        [findField setStringValue:@""];
+        [self removeTemporaryAnnotations];
+    }
+    
+    if (sidePaneState == SKThumbnailSidePaneState)
+        [self displayThumbnailView];
+    else if (sidePaneState == SKOutlineSidePaneState)
+        [self displayOutlineView];
+}
+
 - (void)goFullScreen {
     NSScreen *screen = [NSScreen mainScreen]; // @@ or should we use the window's screen?
 
@@ -719,40 +747,66 @@ static NSString *SKDocumentToolbarSearchItemIdentifier = @"SKDocumentToolbarSear
     [findArrayController addObject:instance];
 }
 
-- (void)replaceTable:(NSTableView *)oldTableView withTable:(NSTableView *)newTableView {
+- (void)replaceTable:(NSTableView *)oldTableView withTable:(NSTableView *)newTableView animate:(BOOL)animate {
     if ([newTableView window] != [self window]) {
         NSView *newTable = [newTableView enclosingScrollView];
         NSView *oldTable = [oldTableView enclosingScrollView];
         NSRect frame = [oldTable frame];
-        [oldTable retain];
         
-        [[oldTable superview] replaceSubview:oldTable with:newTable];
         [newTable setFrame:frame];
+        [newTable setHidden:animate];
+        [[oldTable superview] addSubview:newTable];
         
-        [findCustomView addSubview:oldTable];
-        [oldTable release];
+        if (animate) {
+            NSViewAnimation *animation;
+            NSDictionary *fadeOutDict = [[NSDictionary alloc] initWithObjectsAndKeys:oldTable, NSViewAnimationTargetKey, NSViewAnimationFadeOutEffect, NSViewAnimationEffectKey, nil];
+            NSDictionary *fadeInDict = [[NSDictionary alloc] initWithObjectsAndKeys:newTable, NSViewAnimationTargetKey, NSViewAnimationFadeInEffect, NSViewAnimationEffectKey, nil];
+            
+            animation = [[[NSViewAnimation alloc] initWithViewAnimations:[NSArray arrayWithObjects:fadeOutDict, fadeInDict, nil]] autorelease];
+            [fadeOutDict release];
+            [fadeInDict release];
+            
+            [animation setAnimationBlockingMode:NSAnimationBlocking];
+            [animation setDuration:0.75];
+            [animation setAnimationCurve:NSAnimationEaseIn];
+            [animation startAnimation];
+        }
         
-        NSViewAnimation *animation;
-        NSDictionary *fadeOutDict = [[NSDictionary alloc] initWithObjectsAndKeys:oldTable, NSViewAnimationTargetKey, NSViewAnimationFadeOutEffect, NSViewAnimationEffectKey, nil];
-        NSDictionary *fadeInDict = [[NSDictionary alloc] initWithObjectsAndKeys:newTable, NSViewAnimationTargetKey, NSViewAnimationFadeInEffect, NSViewAnimationEffectKey, nil];
+        [oldTable removeFromSuperview];
+        [oldTable setHidden:NO];
         
-        animation = [[[NSViewAnimation alloc] initWithViewAnimations:[NSArray arrayWithObjects:fadeOutDict, fadeInDict, nil]] autorelease];
-        [fadeOutDict release];
-        [fadeInDict release];
-        
-        [animation setAnimationBlockingMode:NSAnimationBlocking];
-        [animation setDuration:0.75];
-        [animation setAnimationCurve:NSAnimationEaseIn];
-        [animation startAnimation];
+        currentTableView = newTableView;
     }
 }
 
 - (void)displayOutlineView {
-    [self replaceTable:tableView withTable:outlineView];
+    [self replaceTable:currentTableView withTable:outlineView animate:NO];
+    [self updateOutlineSelection];
+}
+
+- (void)fadeInOutlineView {
+    [self replaceTable:currentTableView withTable:outlineView animate:YES];
+    [self updateOutlineSelection];
+}
+
+- (void)displayThumbnailView {
+    [self replaceTable:currentTableView withTable:thumbnailTableView animate:NO];
+    [self updateThumbnailSelection];
+    [self updateThumbnailsIfNeeded];
+}
+
+- (void)fadeInThumbnailView {
+    [self replaceTable:currentTableView withTable:thumbnailTableView animate:YES];
+    [self updateThumbnailSelection];
+    [self updateThumbnailsIfNeeded];
 }
 
 - (void)displaySearchView {
-    [self replaceTable:outlineView withTable:tableView];
+    [self replaceTable:currentTableView withTable:findTableView animate:NO];
+}
+
+- (void)fadeInSearchView {
+    [self replaceTable:currentTableView withTable:findTableView animate:YES];
 }
 
 - (void)addAnnotationsForSelection:(PDFSelection *)sel {
@@ -788,7 +842,7 @@ static NSString *SKDocumentToolbarSearchItemIdentifier = @"SKDocumentToolbarSear
 }
 
 - (void)tableViewSelectionDidChange:(NSNotification *)aNotification {
-    if ([[aNotification object] isEqual:tableView]) {
+    if ([[aNotification object] isEqual:findTableView]) {
         
         // clear the selection
         [pdfView setCurrentSelection:nil];
@@ -824,9 +878,15 @@ static NSString *SKDocumentToolbarSearchItemIdentifier = @"SKDocumentToolbarSear
     if ([[sender stringValue] isEqualToString:@""]) {
         // get rid of temporary annotations
         [self removeTemporaryAnnotations];
-        [self displayOutlineView];
+        if (sidePaneState == SKThumbnailSidePaneState)
+            [self fadeInThumbnailView];
+        else 
+            [self fadeInOutlineView];
+        [sidePaneViewButton setSelectedSegment:sidePaneState];
     } else {
-        [self displaySearchView];
+        [self fadeInSearchView];
+        [sidePaneViewButton setSelected:NO forSegment:0];
+        [sidePaneViewButton setSelected:NO forSegment:1];
     }
     [[pdfView document] findString:[sender stringValue] withOptions:NSCaseInsensitiveSearch];
 }
@@ -1075,7 +1135,6 @@ static NSString *SKDocumentToolbarSearchItemIdentifier = @"SKDocumentToolbarSear
 - (void)updateThumbnailSelection {
 	// Get index of current page.
 	unsigned pageIndex = [[pdfView document] indexForPage: [pdfView currentPage]];
-    
     updatingThumbnailSelection = YES;
     [thumbnailTableView selectRowIndexes:[NSIndexSet indexSetWithIndex:pageIndex] byExtendingSelection:NO];
     updatingThumbnailSelection = NO;
@@ -1107,8 +1166,7 @@ static NSString *SKDocumentToolbarSearchItemIdentifier = @"SKDocumentToolbarSear
 }
 
 - (void)updateThumbnailsIfNeeded {
-    // @@ TODO check if view is visible
-    if ([dirtyThumbnailIndexes count] && thumbnailTimer == nil)
+    if ([thumbnailTableView window] != nil && [dirtyThumbnailIndexes count] > 0 && thumbnailTimer == nil)
         thumbnailTimer = [[NSTimer scheduledTimerWithTimeInterval:0.1 target:self selector:@selector(updateThumbnail:) userInfo:NULL repeats:YES] retain];
 }
 
@@ -1403,7 +1461,6 @@ static NSString *SKDocumentToolbarSearchItemIdentifier = @"SKDocumentToolbarSear
         SKDocumentToolbarToolModeItemIdentifier, 
         SKDocumentToolbarAnnotationModeItemIdentifier, 
         SKDocumentToolbarDisplayBoxItemIdentifier, 
-        SKDocumentToolbarSearchItemIdentifier, 
 		NSToolbarPrintItemIdentifier,
 		NSToolbarFlexibleSpaceItemIdentifier, 
 		NSToolbarSpaceItemIdentifier, 
