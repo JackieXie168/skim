@@ -12,18 +12,16 @@
 
 extern NSString *SKDocumentErrorDomain;
 
-@class PDFDocument;
+@class PDFDocument, SKMainWindowController;
 
 @interface SKDocument : NSDocument
 {
-    IBOutlet NSPanel *saveProgressSheet;
-    IBOutlet NSProgressIndicator *saveProgressBar;
-    
     // variables to be saved:
     NSMutableArray *notes;
-    PDFDocument *pdfDocument;
+    NSData *pdfData;
     
     // temporary variables:
+    PDFDocument *pdfDocument;
     NSMutableArray *noteDicts;
 }
 
@@ -41,13 +39,7 @@ extern NSString *SKDocumentErrorDomain;
 - (NSData *)notesData;
 - (BOOL)readNotesFromData:(NSData *)data;
 
+- (SKMainWindowController *)mainWindowController;
 - (PDFDocument *)pdfDocument;
-
-- (void)setupDocumentNotifications;
-- (void)disableDocumentNotifications;
-
-- (void)handleDidBeginWriteDocument:(NSNotification *)notification;
-- (void)handleDidEndWriteDocument:(NSNotification *)notification;
-- (void)handleDidEndPageWrite:(NSNotification *)notification;
 
 @end
