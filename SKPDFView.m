@@ -949,27 +949,16 @@ static NSRect RectPlusScale (NSRect aRect, float scale)
     // FIXME: magic number 15 ought to be calculated from the line height of the current line?
     NSRect contentRect = [self hoverWindowRectFittingScreenFromRect:NSMakeRect(point.x, point.y + 15.0, 400.0, 50.0)];
     PDFPage *page = [destination page];
+    NSImage *image = [page thumbnailWithSize:0.0 hasShadow:NO];
     NSRect bounds = [page boundsForBox:kPDFDisplayBoxCropBox];
-    NSImage *image = [[NSImage alloc] initWithSize:bounds.size];
     NSRect rect = [[imageView superview] bounds];
     
     rect.origin = [dest point];
     rect.origin.x -= NSMinX(bounds);
     rect.origin.y -= NSMinY(bounds) + NSHeight(rect);
     
-    bounds.origin = NSZeroPoint;
-    
-    [image lockFocus];
-    [NSGraphicsContext saveGraphicsState];
-    [[NSColor whiteColor] set];
-    NSRectFill(bounds);
-    [page drawWithBox:kPDFDisplayBoxCropBox]; 
-    [NSGraphicsContext restoreGraphicsState];
-    [image unlockFocus];
-    
     [imageView setFrameSize:[image size]];
     [imageView setImage:image];
-    [image release];
     
     [self setFrame:[self frameRectForContentRect:contentRect] display:NO];
     [imageView scrollRectToVisible:rect];
@@ -1024,6 +1013,66 @@ static NSRect RectPlusScale (NSRect aRect, float scale)
 - (void)animationDidStop:(NSAnimation*)anAnimation {
     [animation release];
     animation = nil;
+}
+
+@end
+
+
+@implementation PDFPage (SKExtensions) 
+
+#define THUMBNAIL_SHADOW_OFFSET         NSMakeSize(0.0, -8.0)
+#define THUMBNAIL_SHADOW_BLUR_RADIUS    10.0
+
+- (NSImage *)thumbnailWithSize:(float)size hasShadow:(BOOL)hasShadow {
+    NSRect bounds = [self boundsForBox:kPDFDisplayBoxCropBox];
+    BOOL isScaled = size > 0.0;
+    NSSize thumbnailSize = NSMakeSize(size, size);
+    NSSize shadowOffset = hasShadow ? THUMBNAIL_SHADOW_OFFSET : NSZeroSize;
+    float shadowBlurRadius = hasShadow ? THUMBNAIL_SHADOW_BLUR_RADIUS : 0.0;
+    float scale = 1.0;
+    NSPoint offset = NSMakePoint(shadowBlurRadius - shadowOffset.width, shadowBlurRadius - shadowOffset.height);
+    
+    bounds.origin = NSZeroPoint;
+    if (isScaled == NO) {
+        thumbnailSize = NSMakeSize(NSWidth(bounds) + 2.0 * shadowBlurRadius, NSHeight(bounds) + 2.0 * shadowBlurRadius);
+    } else {
+        if (NSHeight(bounds) > NSWidth(bounds)) {
+            scale = size / (NSHeight(bounds) + 2.0 * shadowBlurRadius);
+            offset.x += 0.5 * (NSHeight(bounds) - NSWidth(bounds));
+        } else {
+            scale = size / (NSWidth(bounds) + 2.0 * shadowBlurRadius);
+            offset.y += 0.5 * (NSWidth(bounds) - NSHeight(bounds));
+        }
+    }
+    
+    NSImage *image = [[NSImage alloc] initWithSize:thumbnailSize];
+    
+    [image lockFocus];
+    [NSGraphicsContext saveGraphicsState];
+    [[NSGraphicsContext currentContext] setImageInterpolation:NSImageInterpolationHigh];
+    if (isScaled || hasShadow) {
+        NSAffineTransform *transform = [NSAffineTransform transform];
+        if (isScaled)
+            [transform scaleBy:scale];
+        [transform translateXBy:offset.x yBy:offset.y];
+        [transform concat];
+    }
+    [NSGraphicsContext saveGraphicsState];
+    [[NSColor whiteColor] set];
+    if (hasShadow) {
+        NSShadow *shadow = [[NSShadow alloc] init];
+        [shadow setShadowBlurRadius:shadowBlurRadius];
+        [shadow setShadowOffset:shadowOffset];
+        [shadow set];
+        [shadow release];
+    }
+    NSRectFill(bounds);
+    [NSGraphicsContext restoreGraphicsState];
+    [self drawWithBox:kPDFDisplayBoxCropBox]; 
+    [NSGraphicsContext restoreGraphicsState];
+    [image unlockFocus];
+    
+    return [image autorelease];
 }
 
 @end
