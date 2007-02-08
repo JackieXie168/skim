@@ -63,3 +63,8 @@ typedef enum _SKToolMode {
 - (void)endAnnotationEdit;
 
 @end
+
+
+@interface PDFPage (SKExtensions) 
+- (NSImage *)thumbnailWithSize:(float)size hasShadow:(BOOL)hasShadow;
+@end
