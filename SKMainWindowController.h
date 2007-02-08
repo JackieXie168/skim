@@ -17,6 +17,11 @@ typedef enum _SKAnnotationMode {
     SKSquareAnnotationMode
 } SKAnnotationMode;
 
+typedef enum _SKSidePaneState {
+    SKThumbnailSidePaneState,
+    SKOutlineSidePaneState
+} SKSidePaneState;
+
 typedef struct _SKPDFViewState {
 	int displayMode;
 	BOOL autoScales;
@@ -36,6 +41,8 @@ typedef struct _SKPDFViewState {
     PDFOutline                  *pdfOutline;
     BOOL                        updatingOutlineSelection;
     
+    IBOutlet NSSearchField      *findField;
+    
     IBOutlet NSDrawer           *notesDrawer;
     IBOutlet NSArrayController  *notesArrayController;
     
@@ -51,6 +58,8 @@ typedef struct _SKPDFViewState {
     IBOutlet SKCollapsibleView  *searchBox;
     NSMutableDictionary         *toolbarItems;
     
+    IBOutlet NSSegmentedControl *sidePaneViewButton;
+    
     IBOutlet NSWindow          *choosePageSheet;
     IBOutlet NSTextField       *choosePageField;
     
@@ -61,8 +70,11 @@ typedef struct _SKPDFViewState {
     BOOL isPresentation;
     SKPDFViewState savedState;
     
+    IBOutlet NSTableView *currentTableView;
+    SKSidePaneState sidePaneState;
+    
     IBOutlet NSView *findCustomView;
-    IBOutlet NSTableView *tableView;
+    IBOutlet NSTableView *findTableView;
     NSMutableArray *searchResults;
     IBOutlet NSArrayController *findArrayController;
     IBOutlet NSProgressIndicator *spinner;
@@ -111,6 +123,7 @@ typedef struct _SKPDFViewState {
 - (IBAction)changeScaleFactor:(id)sender;
 - (IBAction)changeToolMode:(id)sender;
 - (IBAction)changeAnnotationMode:(id)sender;
+- (IBAction)changeSidePaneView:(id)sender;
 - (IBAction)enterFullScreen:(id)sender;
 - (IBAction)exitFullScreen:(id)sender;
 - (IBAction)toggleFullScreen:(id)sender;
@@ -132,6 +145,15 @@ typedef struct _SKPDFViewState {
 
 - (SKAnnotationMode)annotationMode;
 - (void)setAnnotationMode:(SKAnnotationMode)newAnnotationMode;
+
+- (void)displayOutlineView;
+- (void)fadeInOutlineView;
+- (void)displayThumbnailView;
+- (void)fadeInThumbnailView;
+- (void)displaySearchView;
+- (void)fadeInSearchView;
+
+- (void)removeTemporaryAnnotations;
 
 - (void)updateOutlineSelection;
 

@@ -16,6 +16,7 @@
                 changeDisplayBox = id; 
                 changePageNumber = id; 
                 changeScaleFactor = id; 
+                changeSidePaneView = id; 
                 changeToolMode = id; 
                 createNewNote = id; 
                 dismissChoosePageSheet = id; 
@@ -57,9 +58,12 @@
                 backForwardButton = NSSegmentedControl; 
                 choosePageField = NSTextField; 
                 choosePageSheet = NSWindow; 
+                currentTableView = NSTableView; 
                 displayBoxPopUpButton = NSPopUpButton; 
                 findArrayController = NSArrayController; 
                 findCustomView = NSView; 
+                findField = NSSearchField; 
+                findTableView = NSTableView; 
                 notesArrayController = NSArrayController; 
                 notesDrawer = NSDrawer; 
                 outlineView = NSOutlineView; 
@@ -71,8 +75,8 @@
                 scaleField = NSTextField; 
                 searchBox = SKCollapsibleView; 
                 searchField = NSSearchField; 
+                sidePaneViewButton = NSSegmentedControl; 
                 spinner = NSProgressIndicator; 
-                tableView = NSTableView; 
                 thumbnailArrayController = NSArrayController; 
                 thumbnailTableView = NSTableView; 
                 thumbnailView = NSView; 
