@@ -1566,6 +1566,29 @@ static NSString *SKDocumentToolbarSearchItemIdentifier = @"SKDocumentToolbarSear
     return YES;
 }
 
+#pragma mark SKSplitView delegate protocol
+
+- (void)splitViewDoubleClick:(SKSplitView *)sender {
+    NSView *leftView = [[sender subviews] objectAtIndex:0]; // table
+    NSView *rightView = [[sender subviews] objectAtIndex:1]; // pdfView
+    NSRect leftFrame = [leftView frame];
+    NSRect rightFrame = [rightView frame];
+    
+    if(NSWidth(leftFrame) > 0.0){ // not sure what the criteria for isSubviewCollapsed, but it doesn't work
+        lastSidePaneWidth = NSWidth(leftFrame); // cache this
+        rightFrame.size.width += lastSidePaneWidth;
+        leftFrame.size.width = 0.0;
+    } else {
+        if(lastSidePaneWidth <= 0)
+            lastSidePaneWidth = 250.0; // a reasonable value to start
+		leftFrame.size.width = lastSidePaneWidth;
+        rightFrame.size.width = NSWidth([sender frame]) - lastSidePaneWidth - [sender dividerThickness];
+    }
+    [leftView setFrame:leftFrame];
+    [rightView setFrame:rightFrame];
+    [sender adjustSubviews];
+}
+
 @end
 
 
@@ -1712,3 +1735,25 @@ static NSString *SKDocumentToolbarSearchItemIdentifier = @"SKDocumentToolbarSear
 @end
 
 
+@implementation SKSplitView
+
+- (void)mouseDown:(NSEvent *)theEvent {
+    if ([theEvent clickCount] > 1) {
+        NSPoint mouseLoc = [self convertPoint:[theEvent locationInWindow] fromView:nil];
+        NSEnumerator *viewEnum = [[self subviews] objectEnumerator];
+        NSView *view = nil;
+        
+        while (view = [viewEnum nextObject]) {
+            if (NSPointInRect(mouseLoc, [view frame]))
+                break;
+        }
+        if (view == nil && [[self delegate] respondsToSelector:@selector(splitViewDoubleClick:)])
+            [[self delegate] splitViewDoubleClick:self];
+        else
+            [super mouseDown:theEvent];
+    } else {
+        [super mouseDown:theEvent];
+    }
+}
+
+@end

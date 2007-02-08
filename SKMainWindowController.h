@@ -89,6 +89,8 @@ extern NSString *SKThumbnailSizeKey;
     NSMutableIndexSet *dirtyThumbnailIndexes;
     NSTimer *thumbnailTimer;
     
+    float lastSidePaneWidth;
+    
     BOOL edited;
 }
 
@@ -182,4 +184,12 @@ extern NSString *SKThumbnailSizeKey;
 
 - (void)setupToolbar;
 
+@end
+
+
+@interface SKSplitView : NSSplitView
+@end
+
+@interface NSObject (SKSplitViewExtendedDelegate)
+- (void)splitViewDoubleClick:(SKSplitView *)sender;
 @end
