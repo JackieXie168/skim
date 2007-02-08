@@ -957,12 +957,13 @@ static NSRect RectPlusScale (NSRect aRect, float scale)
     rect.origin.x -= NSMinX(bounds);
     rect.origin.y -= NSMinY(bounds) + NSHeight(rect);
     
+    bounds.origin = NSZeroPoint;
+    
     [image lockFocus];
     [NSGraphicsContext saveGraphicsState];
     [[NSColor whiteColor] set];
     NSRectFill(bounds);
     [page drawWithBox:kPDFDisplayBoxCropBox]; 
-    [[NSColor blackColor] set];
     [NSGraphicsContext restoreGraphicsState];
     [image unlockFocus];
     
