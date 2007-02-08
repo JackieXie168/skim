@@ -1027,26 +1027,9 @@ static NSRect RectPlusScale (NSRect aRect, float scale)
 - (NSImage *)thumbnailWithSize:(float)size shadowBlurRadius:(float)shadowBlurRadius shadowOffset:(NSSize)shadowOffset {
     NSRect bounds = [self boundsForBox:kPDFDisplayBoxCropBox];
     BOOL isScaled = size > 0.0;
-    BOOL hasShadow = shadowBlurRadius > 0.0 &&  NSEqualSizes(shadowOffset, NSZeroSize) == NO;
-    NSSize thumbnailSize = NSMakeSize(size, size);
-    float scale = 1.0;
-    NSPoint offset = NSMakePoint(shadowBlurRadius - shadowOffset.width, shadowBlurRadius - shadowOffset.height);
-    
-    bounds.origin = NSZeroPoint;
-    if (isScaled == NO) {
-        thumbnailSize = NSMakeSize(NSWidth(bounds) + 2.0 * shadowBlurRadius, NSHeight(bounds) + 2.0 * shadowBlurRadius);
-    } else {
-        if (NSHeight(bounds) > NSWidth(bounds)) {
-            scale = (size - 2.0 * shadowBlurRadius) / NSHeight(bounds);
-            offset.x = offset.x / scale + 0.5 * (NSHeight(bounds) - NSWidth(bounds));
-            offset.y = offset.y / scale;
-        } else {
-            scale = (size - 2.0 * shadowBlurRadius) / NSWidth(bounds);
-            offset.x = offset.x / scale;
-            offset.y = offset.y / scale + 0.5 * (NSWidth(bounds) - NSHeight(bounds));
-        }
-    }
-    
+    BOOL hasShadow = shadowBlurRadius > 0.0;
+    float scale = isScaled ? (size - 2.0 * shadowBlurRadius) / MAX(NSWidth(bounds), NSHeight(bounds)) : 1.0;
+    NSSize thumbnailSize = NSMakeSize(scale * NSWidth(bounds) + 2.0 * shadowBlurRadius, scale * NSHeight(bounds) + 2.0 * shadowBlurRadius);
     NSImage *image = [[NSImage alloc] initWithSize:thumbnailSize];
     
     [image lockFocus];
@@ -1056,7 +1039,7 @@ static NSRect RectPlusScale (NSRect aRect, float scale)
         NSAffineTransform *transform = [NSAffineTransform transform];
         if (isScaled)
             [transform scaleBy:scale];
-        [transform translateXBy:offset.x yBy:offset.y];
+        [transform translateXBy:(shadowBlurRadius - shadowOffset.width) / scale yBy:(shadowBlurRadius - shadowOffset.height) / scale];
         [transform concat];
     }
     [NSGraphicsContext saveGraphicsState];
@@ -1069,6 +1052,7 @@ static NSRect RectPlusScale (NSRect aRect, float scale)
         [shadow set];
         [shadow release];
     }
+    bounds.origin = NSZeroPoint;
     NSRectFill(bounds);
     [NSGraphicsContext restoreGraphicsState];
     [self drawWithBox:kPDFDisplayBoxCropBox]; 
