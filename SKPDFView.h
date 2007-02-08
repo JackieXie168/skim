@@ -66,5 +66,6 @@ typedef enum _SKToolMode {
 
 
 @interface PDFPage (SKExtensions) 
-- (NSImage *)thumbnailWithSize:(float)size hasShadow:(BOOL)hasShadow;
+- (NSImage *)image;
+- (NSImage *)thumbnailWithSize:(float)size shadowBlurRadius:(float)shadowBlurRadius shadowOffset:(NSSize)shadowOffset;
 @end
