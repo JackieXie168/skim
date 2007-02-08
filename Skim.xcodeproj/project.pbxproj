@@ -35,7 +35,7 @@
 		CE3A4DE30B7A7FC7006B64D3 /* presentation.tiff in Resources */ = {isa = PBXBuildFile; fileRef = CE3A4DE20B7A7FC7006B64D3 /* presentation.tiff */; };
 		CE546FC40B32D5DB00F8AFB6 /* SKNoteWindowController.m in Sources */ = {isa = PBXBuildFile; fileRef = CE546FC30B32D5DB00F8AFB6 /* SKNoteWindowController.m */; };
 		CE5470030B32D96500F8AFB6 /* NoteWindow.nib in Resources */ = {isa = PBXBuildFile; fileRef = CE5470010B32D96500F8AFB6 /* NoteWindow.nib */; };
-		CE5478C80B33456300F8AFB6 /* annotateTool.tif in Resources */ = {isa = PBXBuildFile; fileRef = CE5478B70B33456300F8AFB6 /* annotateTool.tif */; };
+		CE5478C80B33456300F8AFB6 /* annotateTool.tiff in Resources */ = {isa = PBXBuildFile; fileRef = CE5478B70B33456300F8AFB6 /* annotateTool.tiff */; };
 		CE5478C90B33456300F8AFB6 /* back.tiff in Resources */ = {isa = PBXBuildFile; fileRef = CE5478B80B33456300F8AFB6 /* back.tiff */; };
 		CE5478CA0B33456300F8AFB6 /* forward.tiff in Resources */ = {isa = PBXBuildFile; fileRef = CE5478B90B33456300F8AFB6 /* forward.tiff */; };
 		CE5478CB0B33456300F8AFB6 /* fullScreen.tiff in Resources */ = {isa = PBXBuildFile; fileRef = CE5478BA0B33456300F8AFB6 /* fullScreen.tiff */; };
@@ -116,7 +116,7 @@
 		CE546FC20B32D5DB00F8AFB6 /* SKNoteWindowController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SKNoteWindowController.h; sourceTree = "<group>"; };
 		CE546FC30B32D5DB00F8AFB6 /* SKNoteWindowController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SKNoteWindowController.m; sourceTree = "<group>"; };
 		CE5470020B32D96500F8AFB6 /* English */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = English; path = English.lproj/NoteWindow.nib; sourceTree = "<group>"; };
-		CE5478B70B33456300F8AFB6 /* annotateTool.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; name = annotateTool.tif; path = Images/annotateTool.tif; sourceTree = "<group>"; };
+		CE5478B70B33456300F8AFB6 /* annotateTool.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; name = annotateTool.tiff; path = Images/annotateTool.tiff; sourceTree = "<group>"; };
 		CE5478B80B33456300F8AFB6 /* back.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; name = back.tiff; path = Images/back.tiff; sourceTree = "<group>"; };
 		CE5478B90B33456300F8AFB6 /* forward.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; name = forward.tiff; path = Images/forward.tiff; sourceTree = "<group>"; };
 		CE5478BA0B33456300F8AFB6 /* fullScreen.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; name = fullScreen.tiff; path = Images/fullScreen.tiff; sourceTree = "<group>"; };
@@ -311,7 +311,7 @@
 		CE5475A00B33058B00F8AFB6 /* Images */ = {
 			isa = PBXGroup;
 			children = (
-				CE5478B70B33456300F8AFB6 /* annotateTool.tif */,
+				CE5478B70B33456300F8AFB6 /* annotateTool.tiff */,
 				CE5478B80B33456300F8AFB6 /* back.tiff */,
 				CE3A42330B7927D3006B64D3 /* circleTool.tiff */,
 				CE5478B90B33456300F8AFB6 /* forward.tiff */,
@@ -388,7 +388,7 @@
 				4530D8200B27ACD0007C59F4 /* SubWindow.nib in Resources */,
 				45B113C00B329A7E00DE0660 /* LICENSE in Resources */,
 				CE5470030B32D96500F8AFB6 /* NoteWindow.nib in Resources */,
-				CE5478C80B33456300F8AFB6 /* annotateTool.tif in Resources */,
+				CE5478C80B33456300F8AFB6 /* annotateTool.tiff in Resources */,
 				CE5478C90B33456300F8AFB6 /* back.tiff in Resources */,
 				CE5478CA0B33456300F8AFB6 /* forward.tiff in Resources */,
 				CE5478CB0B33456300F8AFB6 /* fullScreen.tiff in Resources */,
