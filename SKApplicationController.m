@@ -35,7 +35,7 @@
     // if your application supports resetting a subset of the defaults to 
     // factory values, you should set those values 
     // in the shared user defaults controller
-    resettableUserDefaultsKeys = [userDefaultsValuesDict objectForKey:@"resettableKeys"];
+    resettableUserDefaultsKeys = [userDefaultsValuesDict objectForKey:@"SKResettableKeys"];
     
     initialValuesDict = [userDefaultsValuesDict dictionaryWithValuesForKeys:resettableUserDefaultsKeys];
     
