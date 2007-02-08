@@ -59,6 +59,8 @@ static NSString *SKPostScriptDocumentType = @"PostScript document";
     
     SKMainWindowController *mainController =  (SKMainWindowController *)aController;
     
+    [mainController setShouldCloseDocument:YES];
+    
     [mainController setPdfDocument:pdfDocument];
     
     // we keep a pristine copy for save, as we shouldn't save the annotations
