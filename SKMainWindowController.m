@@ -628,8 +628,7 @@ static NSString *SKDocumentToolbarSearchItemIdentifier = @"SKDocumentToolbarSear
     } else if ([[self window] screen] != [sideWindow screen]) {
         [(SKSideWindow *)sideWindow moveToScreen:[[self window] screen]];
     }
-    if (lastSidePaneWidth <= 0.0)
-        lastSidePaneWidth = NSWidth([sideContentBox frame]);
+    savedSidePaneWidth = NSWidth([sideContentBox frame]);
     [(SKSideWindow *)sideWindow setMainView:sideContentBox];
     [sideWindow setLevel:[[self window] level]];
     [[self window] addChildWindow:sideWindow ordered:NSWindowAbove];
@@ -640,7 +639,7 @@ static NSString *SKDocumentToolbarSearchItemIdentifier = @"SKDocumentToolbarSear
     [sideWindow orderOut:self];
     
     NSRect leftFrame, rightFrame, ignored;
-    NSDivideRect([splitView bounds], &leftFrame, &rightFrame, lastSidePaneWidth, NSMinXEdge);
+    NSDivideRect([splitView bounds], &leftFrame, &rightFrame, savedSidePaneWidth, NSMinXEdge);
     NSDivideRect(rightFrame, &ignored, &rightFrame, [splitView dividerThickness], NSMinXEdge);
     [sideContentBox setFrame:leftFrame];
     [pdfContentBox setFrame:rightFrame];
