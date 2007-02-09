@@ -94,6 +94,7 @@ extern NSString *SKThumbnailSizeKey;
     NSTimer *thumbnailTimer;
     
     float lastSidePaneWidth;
+    float savedSidePaneWidth;
     
     BOOL edited;
 }
