@@ -29,6 +29,7 @@
 		[self setBackgroundColor:[NSColor clearColor]];
 		[self setOpaque:NO];
         [self setDisplaysWhenScreenProfileChanges:YES];
+        [self setReleasedWhenClosed:NO];
         [self setLevel:[[pdfView window] level]];
         
         [self setContentView:[[[SKNavigationContentView alloc] init] autorelease]];
@@ -172,6 +173,7 @@ static SKNavigationToolTipWindow *sharedToolTipWindow = nil;
 		[self setBackgroundColor:[NSColor clearColor]];
 		[self setOpaque:NO];
         [self setDisplaysWhenScreenProfileChanges:YES];
+        [self setReleasedWhenClosed:NO];
         
         toolTipView = [[[SKNavigationToolTipView alloc] init] autorelease];
         [[self contentView] addSubview:toolTipView];
