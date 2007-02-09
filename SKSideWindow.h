@@ -17,10 +17,15 @@
 }
 - (id)initWithMainController:(SKMainWindowController *)aController;
 - (void)moveToScreen:(NSScreen *)screen;
+- (void)slideIn;
+- (void)slideOut;
 - (NSView *)mainView;
 - (void)setMainView:(NSView *)newContentView;
 @end
 
 
-@interface SKSideWindowContentView : NSView
+@interface SKSideWindowContentView : NSView {
+    NSTrackingRectTag trackingRect;
+}
+- (void)trackMouseOvers;
 @end
