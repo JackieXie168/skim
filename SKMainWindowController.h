@@ -39,6 +39,9 @@ extern NSString *SKThumbnailSizeKey;
     IBOutlet SKPDFView          *pdfView;
     IBOutlet NSBox              *pdfContentBox;
     
+    IBOutlet NSSplitView        *splitView;
+    IBOutlet NSBox              *sideContentBox;
+    
     IBOutlet NSOutlineView      *outlineView;
     PDFOutline                  *pdfOutline;
     BOOL                        updatingOutlineSelection;
@@ -67,6 +70,7 @@ extern NSString *SKThumbnailSizeKey;
     
     NSWindow *mainWindow;
     NSWindow *fullScreenWindow;
+    NSWindow *sideWindow;
     
     SKAnnotationMode annotationMode;
     BOOL isPresentation;

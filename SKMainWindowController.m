@@ -13,6 +13,7 @@
 #import "SKNoteWindowController.h"
 #import "SKInfoWindowController.h"
 #import "SKNavigationWindow.h"
+#import "SKSideWindow.h"
 #import <Quartz/Quartz.h>
 #import "SKDocument.h"
 #import "SKNote.h"
@@ -99,6 +100,7 @@ static NSString *SKDocumentToolbarSearchItemIdentifier = @"SKDocumentToolbarSear
     [[outlineView enclosingScrollView] release];
     [[findTableView enclosingScrollView] release];
     [[thumbnailTableView enclosingScrollView] release];
+	[sideWindow release];
 	[fullScreenWindow release];
     [mainWindow release];
     
@@ -620,6 +622,32 @@ static NSString *SKDocumentToolbarSearchItemIdentifier = @"SKDocumentToolbarSear
     [mainWindow makeKeyAndOrderFront:self];
 }
 
+- (void)showSideWindow {
+    if (sideWindow == nil) {
+        sideWindow = [[SKSideWindow alloc] initWithMainController:self];
+    } else if ([[self window] screen] != [sideWindow screen]) {
+        [(SKSideWindow *)sideWindow moveToScreen:[[self window] screen]];
+    }
+    if (lastSidePaneWidth <= 0.0)
+        lastSidePaneWidth = NSWidth([sideContentBox frame]);
+    [(SKSideWindow *)sideWindow setMainView:sideContentBox];
+    [sideWindow setLevel:[[self window] level]];
+    [[self window] addChildWindow:sideWindow ordered:NSWindowAbove];
+    [sideWindow orderFront:self];
+}
+
+- (void)hideSideWindow {
+    [sideWindow orderOut:self];
+    
+    NSRect leftFrame, rightFrame, ignored;
+    NSDivideRect([splitView bounds], &leftFrame, &rightFrame, lastSidePaneWidth, NSMinXEdge);
+    NSDivideRect(rightFrame, &ignored, &rightFrame, [splitView dividerThickness], NSMinXEdge);
+    [sideContentBox setFrame:leftFrame];
+    [pdfContentBox setFrame:rightFrame];
+    [splitView addSubview:sideContentBox positioned:NSWindowBelow relativeTo:pdfContentBox];
+    [splitView adjustSubviews];
+}
+
 - (void)enterPresentationMode {
     NSScrollView *scrollView = [[pdfView documentView] enclosingScrollView];
 	// Set up presentation mode
@@ -679,6 +707,7 @@ static NSString *SKDocumentToolbarSearchItemIdentifier = @"SKDocumentToolbarSear
     
     [fullScreenWindow setLevel:NSNormalWindowLevel];
     [pdfView setHasNavigation:YES autohidesCursor:NO];
+    [self showSideWindow];
 }
 
 - (IBAction)enterPresentation:(id)sender {
@@ -689,9 +718,10 @@ static NSString *SKDocumentToolbarSearchItemIdentifier = @"SKDocumentToolbarSear
     
     [self enterPresentationMode];
     
-    if (isFullScreen)
+    if (isFullScreen) {
+        [self hideSideWindow];
         SetSystemUIMode(kUIModeNormal, 0);
-    else
+    } else
         [self goFullScreen];
     
     [fullScreenWindow setLevel:CGShieldingWindowLevel()];
@@ -702,6 +732,8 @@ static NSString *SKDocumentToolbarSearchItemIdentifier = @"SKDocumentToolbarSear
     if ([self isFullScreen] == NO && [self isPresentation] == NO)
         return;
 
+    [self hideSideWindow];
+    
     [pdfView setHasNavigation:NO autohidesCursor:NO];
     [pdfContentBox setContentView:pdfView]; // this should be done before exitPresentationMode to get a smooth transition
     
@@ -752,7 +784,7 @@ static NSString *SKDocumentToolbarSearchItemIdentifier = @"SKDocumentToolbarSear
 }
 
 - (void)replaceTable:(NSTableView *)oldTableView withTable:(NSTableView *)newTableView animate:(BOOL)animate {
-    if ([newTableView window] != [self window]) {
+    if ([newTableView window] == nil) {
         NSView *newTable = [newTableView enclosingScrollView];
         NSView *oldTable = [oldTableView enclosingScrollView];
         NSRect frame = [oldTable frame];

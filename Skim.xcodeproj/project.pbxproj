@@ -31,10 +31,10 @@
 		CE3A42360B7927D3006B64D3 /* noteTool.tiff in Resources */ = {isa = PBXBuildFile; fileRef = CE3A42340B7927D3006B64D3 /* noteTool.tiff */; };
 		CE3A45530B7A04A4006B64D3 /* NSBezierPath_BDSKExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = CE3A45520B7A04A4006B64D3 /* NSBezierPath_BDSKExtensions.m */; };
 		CE3A4BA50B7A4D0D006B64D3 /* note.tiff in Resources */ = {isa = PBXBuildFile; fileRef = CE3A4BA40B7A4D0C006B64D3 /* note.tiff */; };
-		CE3A4C510B7A5E68006B64D3 /* SaveProgressSheet.nib in Resources */ = {isa = PBXBuildFile; fileRef = CE3A4C4F0B7A5E68006B64D3 /* SaveProgressSheet.nib */; };
 		CE3A4DE30B7A7FC7006B64D3 /* presentation.tiff in Resources */ = {isa = PBXBuildFile; fileRef = CE3A4DE20B7A7FC7006B64D3 /* presentation.tiff */; };
 		CE4EB8240B7B96D00091F228 /* outlineView.tiff in Resources */ = {isa = PBXBuildFile; fileRef = CE4EB8220B7B96D00091F228 /* outlineView.tiff */; };
 		CE4EB8250B7B96D00091F228 /* thumbnailView.tiff in Resources */ = {isa = PBXBuildFile; fileRef = CE4EB8230B7B96D00091F228 /* thumbnailView.tiff */; };
+		CE4EBDDA0B7BF3B30091F228 /* SKSideWindow.m in Sources */ = {isa = PBXBuildFile; fileRef = CE4EBDD90B7BF3B30091F228 /* SKSideWindow.m */; };
 		CE546FC40B32D5DB00F8AFB6 /* SKNoteWindowController.m in Sources */ = {isa = PBXBuildFile; fileRef = CE546FC30B32D5DB00F8AFB6 /* SKNoteWindowController.m */; };
 		CE5470030B32D96500F8AFB6 /* NoteWindow.nib in Resources */ = {isa = PBXBuildFile; fileRef = CE5470010B32D96500F8AFB6 /* NoteWindow.nib */; };
 		CE5478C80B33456300F8AFB6 /* annotateTool.tiff in Resources */ = {isa = PBXBuildFile; fileRef = CE5478B70B33456300F8AFB6 /* annotateTool.tiff */; };
@@ -113,10 +113,11 @@
 		CE3A45510B7A04A4006B64D3 /* NSBezierPath_BDSKExtensions.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = NSBezierPath_BDSKExtensions.h; sourceTree = "<group>"; };
 		CE3A45520B7A04A4006B64D3 /* NSBezierPath_BDSKExtensions.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = NSBezierPath_BDSKExtensions.m; sourceTree = "<group>"; };
 		CE3A4BA40B7A4D0C006B64D3 /* note.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; name = note.tiff; path = Images/note.tiff; sourceTree = "<group>"; };
-		CE3A4C500B7A5E68006B64D3 /* English */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = English; path = English.lproj/SaveProgressSheet.nib; sourceTree = "<group>"; };
 		CE3A4DE20B7A7FC7006B64D3 /* presentation.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; name = presentation.tiff; path = Images/presentation.tiff; sourceTree = "<group>"; };
 		CE4EB8220B7B96D00091F228 /* outlineView.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; name = outlineView.tiff; path = Images/outlineView.tiff; sourceTree = "<group>"; };
 		CE4EB8230B7B96D00091F228 /* thumbnailView.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; name = thumbnailView.tiff; path = Images/thumbnailView.tiff; sourceTree = "<group>"; };
+		CE4EBDD80B7BF3B30091F228 /* SKSideWindow.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = SKSideWindow.h; sourceTree = "<group>"; };
+		CE4EBDD90B7BF3B30091F228 /* SKSideWindow.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = SKSideWindow.m; sourceTree = "<group>"; };
 		CE546FC20B32D5DB00F8AFB6 /* SKNoteWindowController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SKNoteWindowController.h; sourceTree = "<group>"; };
 		CE546FC30B32D5DB00F8AFB6 /* SKNoteWindowController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SKNoteWindowController.m; sourceTree = "<group>"; };
 		CE5470020B32D96500F8AFB6 /* English */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = English; path = English.lproj/NoteWindow.nib; sourceTree = "<group>"; };
@@ -219,6 +220,8 @@
 		2A37F4ABFDCFA73011CA2CEA /* Classes */ = {
 			isa = PBXGroup;
 			children = (
+				CE4EBDD80B7BF3B30091F228 /* SKSideWindow.h */,
+				CE4EBDD90B7BF3B30091F228 /* SKSideWindow.m */,
 				45B113BF0B329A7E00DE0660 /* LICENSE */,
 				45B1115E0B3096B900DE0660 /* SKNote.h */,
 				45B1115F0B3096B900DE0660 /* SKNote.m */,
@@ -287,7 +290,6 @@
 				CE54898A0B35D4EF00F8AFB6 /* InfoWindow.nib */,
 				F977515E0B37460100DF673B /* ConversionProgressWindow.nib */,
 				45A3BD380B4F097D002B297F /* InitialUserDefaults.plist */,
-				CE3A4C4F0B7A5E68006B64D3 /* SaveProgressSheet.nib */,
 			);
 			name = Resources;
 			sourceTree = "<group>";
@@ -420,7 +422,6 @@
 				CE3A42350B7927D3006B64D3 /* circleTool.tiff in Resources */,
 				CE3A42360B7927D3006B64D3 /* noteTool.tiff in Resources */,
 				CE3A4BA50B7A4D0D006B64D3 /* note.tiff in Resources */,
-				CE3A4C510B7A5E68006B64D3 /* SaveProgressSheet.nib in Resources */,
 				CE3A4DE30B7A7FC7006B64D3 /* presentation.tiff in Resources */,
 				CE4EB8240B7B96D00091F228 /* outlineView.tiff in Resources */,
 				CE4EB8250B7B96D00091F228 /* thumbnailView.tiff in Resources */,
@@ -456,6 +457,7 @@
 				CE3A3D2C0B78C0A0006B64D3 /* SKPDFAnnotationNote.m in Sources */,
 				CE3A41580B790C56006B64D3 /* BDSKDragImageView.m in Sources */,
 				CE3A45530B7A04A4006B64D3 /* NSBezierPath_BDSKExtensions.m in Sources */,
+				CE4EBDDA0B7BF3B30091F228 /* SKSideWindow.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -500,14 +502,6 @@
 				4530D81F0B27ACD0007C59F4 /* English */,
 			);
 			name = SubWindow.nib;
-			sourceTree = "<group>";
-		};
-		CE3A4C4F0B7A5E68006B64D3 /* SaveProgressSheet.nib */ = {
-			isa = PBXVariantGroup;
-			children = (
-				CE3A4C500B7A5E68006B64D3 /* English */,
-			);
-			name = SaveProgressSheet.nib;
 			sourceTree = "<group>";
 		};
 		CE5470010B32D96500F8AFB6 /* NoteWindow.nib */ = {
