@@ -11,7 +11,7 @@
 #import "NSBezierPath_BDSKExtensions.h"
 
 #define WINDOW_WIDTH 300.0
-#define WINDOW_OFFSET 292.0
+#define WINDOW_OFFSET 298.0
 #define CORNER_RADIUS 10.0
 #define CONTENT_INSET 10.0
 
@@ -28,6 +28,7 @@
         [[self contentView] addTrackingRect:[[self contentView] bounds] owner:self userData:nil assumeInside:NO];
 		[self setBackgroundColor:[NSColor clearColor]];
 		[self setOpaque:NO];
+		[self setHasShadow:YES];
         [self setDisplaysWhenScreenProfileChanges:YES];
         [self setReleasedWhenClosed:NO];
         [self setLevel:[[aController window] level]];
@@ -54,6 +55,7 @@
 - (void)mouseEntered:(NSEvent *)theEvent {
     NSRect frame = [[self screen] frame];
     frame.size.width = WINDOW_WIDTH;
+    frame.origin.x -= CONTENT_INSET;
     [self setFrame:frame display:YES animate:YES];
 }
 
@@ -72,8 +74,7 @@
 
 - (void)setMainView:(NSView *)newContentView {
     NSArray *subviews = [[super contentView] subviews];
-    NSRect contentRect = NSInsetRect([[self contentView] bounds], 0.0, CONTENT_INSET);
-    contentRect.size.width -= CONTENT_INSET;
+    NSRect contentRect = NSInsetRect([[self contentView] bounds], CONTENT_INSET, CONTENT_INSET);
     [newContentView setFrame:contentRect];
     if ([subviews count])
         [[self contentView] replaceSubview:[subviews objectAtIndex:0] with:newContentView];
@@ -88,11 +89,9 @@
 
 // @@ FIXME: we might do some nicer drawing
 - (void)drawRect:(NSRect)aRect {
-    NSRect ignored, rect = [self bounds];
-    [[NSColor grayColor] set];
+    NSRect rect = [self bounds];
+    [[NSColor windowBackgroundColor] set];
     [NSBezierPath fillRoundRectInRect:rect radius:CORNER_RADIUS];
-    NSDivideRect(rect, &rect, &ignored, CORNER_RADIUS, NSMinXEdge);
-    NSRectFill(rect);
 }
 
 @end
