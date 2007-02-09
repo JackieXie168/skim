@@ -1,6 +1,7 @@
 {
     IBClasses = (
         {CLASS = FirstResponder; LANGUAGE = ObjC; SUPERCLASS = NSObject; }, 
+        {ACTIONS = {splitViewDoubleClick = id; }; CLASS = NSObject; LANGUAGE = ObjC; }, 
         {CLASS = NSSegmentedControl; LANGUAGE = ObjC; SUPERCLASS = NSControl; }, 
         {
             CLASS = SKCollapsibleView; 
@@ -75,8 +76,10 @@
                 scaleField = NSTextField; 
                 searchBox = SKCollapsibleView; 
                 searchField = NSSearchField; 
+                sideContentBox = NSBox; 
                 sidePaneViewButton = NSSegmentedControl; 
                 spinner = NSProgressIndicator; 
+                splitView = NSSplitView; 
                 thumbnailArrayController = NSArrayController; 
                 thumbnailTableView = NSTableView; 
                 thumbnailView = NSView; 
