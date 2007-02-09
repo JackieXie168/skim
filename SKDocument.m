@@ -15,7 +15,7 @@
 #import "NSFileManager_ExtendedAttributes.h"
 #import "SKPDFAnnotationNote.h"
 #import "SKNote.h"
-#import "PDFDocument_BDSKExtensions.h"
+#import "SKPSProgressController.h"
 
 NSString *SKDocumentErrorDomain = @"SKDocumentErrorDomain";
 
@@ -126,8 +126,16 @@ static NSString *SKPostScriptDocumentType = @"PostScript document";
     } else if ([docType isEqualToString:SKPostScriptDocumentType]) {
         [pdfData release];
         [pdfDocument release];
-        pdfData = [[NSData alloc] initWithContentsOfURL:absoluteURL];    
-        pdfDocument = [[PDFDocument alloc] initWithPostScriptURL:absoluteURL];    
+        NSData *data = [[NSData alloc] initWithContentsOfURL:absoluteURL];
+        if (data) {
+            SKPSProgressController *progressController = [[SKPSProgressController alloc] init];
+            pdfData = [progressController PDFDataWithPostScriptData:data];
+            [progressController autorelease];
+            pdfDocument = [[PDFDocument alloc] initWithData:pdfData];    
+        } else {
+            pdfData = nil;
+            pdfDocument = nil;
+        }
         didRead = pdfDocument != nil;
     }
     if (NO == didRead && outError)
