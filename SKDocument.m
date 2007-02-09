@@ -129,7 +129,7 @@ static NSString *SKPostScriptDocumentType = @"PostScript document";
         NSData *data = [[NSData alloc] initWithContentsOfURL:absoluteURL];
         if (data) {
             SKPSProgressController *progressController = [[SKPSProgressController alloc] init];
-            pdfData = [progressController PDFDataWithPostScriptData:data];
+            pdfData = [[progressController PDFDataWithPostScriptData:data] retain];
             [progressController autorelease];
             pdfDocument = [[PDFDocument alloc] initWithData:pdfData];    
         } else {
