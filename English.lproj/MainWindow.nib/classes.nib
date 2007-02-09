@@ -76,6 +76,7 @@
                 scaleField = NSTextField; 
                 searchBox = SKCollapsibleView; 
                 searchField = NSSearchField; 
+                sideBox = NSBox; 
                 sideContentBox = NSBox; 
                 sidePaneViewButton = NSSegmentedControl; 
                 spinner = NSProgressIndicator; 

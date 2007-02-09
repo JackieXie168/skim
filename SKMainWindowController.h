@@ -33,7 +33,7 @@ typedef struct _SKPDFViewState {
 
 extern NSString *SKThumbnailSizeKey;
 
-@class SKPDFView, PDFOutline, SKCollapsibleView, SKNavigationWindow;
+@class SKPDFView, PDFOutline, SKCollapsibleView, SKNavigationWindow, SKSideWindow;
 
 @interface SKMainWindowController : NSWindowController {
     IBOutlet SKPDFView          *pdfView;
@@ -41,6 +41,7 @@ extern NSString *SKThumbnailSizeKey;
     
     IBOutlet NSSplitView        *splitView;
     IBOutlet NSBox              *sideContentBox;
+    IBOutlet NSBox              *sideBox;
     
     IBOutlet NSOutlineView      *outlineView;
     PDFOutline                  *pdfOutline;
@@ -70,7 +71,7 @@ extern NSString *SKThumbnailSizeKey;
     
     NSWindow *mainWindow;
     NSWindow *fullScreenWindow;
-    NSWindow *sideWindow;
+    SKSideWindow *sideWindow;
     
     SKAnnotationMode annotationMode;
     BOOL isPresentation;
@@ -94,7 +95,6 @@ extern NSString *SKThumbnailSizeKey;
     NSTimer *thumbnailTimer;
     
     float lastSidePaneWidth;
-    float savedSidePaneWidth;
     
     BOOL edited;
 }
