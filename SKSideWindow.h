@@ -14,6 +14,7 @@
 @interface SKSideWindow : NSWindow {
     SKMainWindowController *controller;
     NSAnimation *animation;
+    NSDrawerState state;
 }
 - (id)initWithMainController:(SKMainWindowController *)aController;
 - (void)moveToScreen:(NSScreen *)screen;
@@ -21,6 +22,7 @@
 - (void)slideOut;
 - (NSView *)mainView;
 - (void)setMainView:(NSView *)newContentView;
+- (int)state;
 @end
 
 
