@@ -9,10 +9,9 @@
 //
 
 #import <Cocoa/Cocoa.h>
-#import "SKStringConstants.h"
-#import "BDAlias.h"
 
 @interface SKApplicationController : NSObject {
 }
 + (void)setupDefaults;
+- (IBAction)showPreferencePanel:(id)sender;
 @end

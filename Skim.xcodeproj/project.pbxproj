@@ -35,6 +35,8 @@
 		CE4EB8240B7B96D00091F228 /* outlineView.tiff in Resources */ = {isa = PBXBuildFile; fileRef = CE4EB8220B7B96D00091F228 /* outlineView.tiff */; };
 		CE4EB8250B7B96D00091F228 /* thumbnailView.tiff in Resources */ = {isa = PBXBuildFile; fileRef = CE4EB8230B7B96D00091F228 /* thumbnailView.tiff */; };
 		CE4EBDDA0B7BF3B30091F228 /* SKSideWindow.m in Sources */ = {isa = PBXBuildFile; fileRef = CE4EBDD90B7BF3B30091F228 /* SKSideWindow.m */; };
+		CE4EC4F50B7E24490091F228 /* SKPreferenceController.m in Sources */ = {isa = PBXBuildFile; fileRef = CE4EC4F40B7E24490091F228 /* SKPreferenceController.m */; };
+		CE4EC4FF0B7E255C0091F228 /* PreferencePanel.nib in Resources */ = {isa = PBXBuildFile; fileRef = CE4EC4FD0B7E255C0091F228 /* PreferencePanel.nib */; };
 		CE546FC40B32D5DB00F8AFB6 /* SKNoteWindowController.m in Sources */ = {isa = PBXBuildFile; fileRef = CE546FC30B32D5DB00F8AFB6 /* SKNoteWindowController.m */; };
 		CE5470030B32D96500F8AFB6 /* NoteWindow.nib in Resources */ = {isa = PBXBuildFile; fileRef = CE5470010B32D96500F8AFB6 /* NoteWindow.nib */; };
 		CE5478C80B33456300F8AFB6 /* annotateTool.tiff in Resources */ = {isa = PBXBuildFile; fileRef = CE5478B70B33456300F8AFB6 /* annotateTool.tiff */; };
@@ -98,7 +100,7 @@
 		455989F70B2662FF00E5419B /* Quartz.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Quartz.framework; path = /System/Library/Frameworks/Quartz.framework; sourceTree = "<absolute>"; };
 		45A3BD060B4F0770002B297F /* SKStringConstants.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SKStringConstants.h; sourceTree = "<group>"; };
 		45A3BD070B4F0770002B297F /* SKStringConstants.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SKStringConstants.m; sourceTree = "<group>"; };
-		45A3BD380B4F097D002B297F /* InitialUserDefaults.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.sh; path = InitialUserDefaults.plist; sourceTree = "<group>"; };
+		45A3BD380B4F097D002B297F /* InitialUserDefaults.plist */ = {isa = PBXFileReference; explicitFileType = text.xml; fileEncoding = 4; path = InitialUserDefaults.plist; sourceTree = "<group>"; };
 		45B1115E0B3096B900DE0660 /* SKNote.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SKNote.h; sourceTree = "<group>"; };
 		45B1115F0B3096B900DE0660 /* SKNote.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SKNote.m; sourceTree = "<group>"; };
 		45B113BF0B329A7E00DE0660 /* LICENSE */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = LICENSE; sourceTree = "<group>"; };
@@ -118,6 +120,9 @@
 		CE4EB8230B7B96D00091F228 /* thumbnailView.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; name = thumbnailView.tiff; path = Images/thumbnailView.tiff; sourceTree = "<group>"; };
 		CE4EBDD80B7BF3B30091F228 /* SKSideWindow.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = SKSideWindow.h; sourceTree = "<group>"; };
 		CE4EBDD90B7BF3B30091F228 /* SKSideWindow.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = SKSideWindow.m; sourceTree = "<group>"; };
+		CE4EC4F30B7E24490091F228 /* SKPreferenceController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SKPreferenceController.h; sourceTree = "<group>"; };
+		CE4EC4F40B7E24490091F228 /* SKPreferenceController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SKPreferenceController.m; sourceTree = "<group>"; };
+		CE4EC4FE0B7E255C0091F228 /* English */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = English; path = English.lproj/PreferencePanel.nib; sourceTree = "<group>"; };
 		CE546FC20B32D5DB00F8AFB6 /* SKNoteWindowController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SKNoteWindowController.h; sourceTree = "<group>"; };
 		CE546FC30B32D5DB00F8AFB6 /* SKNoteWindowController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SKNoteWindowController.m; sourceTree = "<group>"; };
 		CE5470020B32D96500F8AFB6 /* English */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = English; path = English.lproj/NoteWindow.nib; sourceTree = "<group>"; };
@@ -263,6 +268,8 @@
 				CE3A45520B7A04A4006B64D3 /* NSBezierPath_BDSKExtensions.m */,
 				CE5487BA0B35A20A00F8AFB6 /* NSFileManager_ExtendedAttributes.h */,
 				CE5487BB0B35A20A00F8AFB6 /* NSFileManager_ExtendedAttributes.m */,
+				CE4EC4F30B7E24490091F228 /* SKPreferenceController.h */,
+				CE4EC4F40B7E24490091F228 /* SKPreferenceController.m */,
 			);
 			name = Classes;
 			sourceTree = "<group>";
@@ -290,6 +297,7 @@
 				CE54898A0B35D4EF00F8AFB6 /* InfoWindow.nib */,
 				F977515E0B37460100DF673B /* ConversionProgressWindow.nib */,
 				45A3BD380B4F097D002B297F /* InitialUserDefaults.plist */,
+				CE4EC4FD0B7E255C0091F228 /* PreferencePanel.nib */,
 			);
 			name = Resources;
 			sourceTree = "<group>";
@@ -425,6 +433,7 @@
 				CE3A4DE30B7A7FC7006B64D3 /* presentation.tiff in Resources */,
 				CE4EB8240B7B96D00091F228 /* outlineView.tiff in Resources */,
 				CE4EB8250B7B96D00091F228 /* thumbnailView.tiff in Resources */,
+				CE4EC4FF0B7E255C0091F228 /* PreferencePanel.nib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -458,6 +467,7 @@
 				CE3A41580B790C56006B64D3 /* BDSKDragImageView.m in Sources */,
 				CE3A45530B7A04A4006B64D3 /* NSBezierPath_BDSKExtensions.m in Sources */,
 				CE4EBDDA0B7BF3B30091F228 /* SKSideWindow.m in Sources */,
+				CE4EC4F50B7E24490091F228 /* SKPreferenceController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -502,6 +512,14 @@
 				4530D81F0B27ACD0007C59F4 /* English */,
 			);
 			name = SubWindow.nib;
+			sourceTree = "<group>";
+		};
+		CE4EC4FD0B7E255C0091F228 /* PreferencePanel.nib */ = {
+			isa = PBXVariantGroup;
+			children = (
+				CE4EC4FE0B7E255C0091F228 /* English */,
+			);
+			name = PreferencePanel.nib;
 			sourceTree = "<group>";
 		};
 		CE5470010B32D96500F8AFB6 /* NoteWindow.nib */ = {

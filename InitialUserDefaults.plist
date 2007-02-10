@@ -1,8 +1,36 @@
-
-{
-    SKResettableKeys = (SKLastOpenFileNames, SKRememberLastOpenFile, SKShouldHighlightSearch, SKThumbnailSize);
-    SKLastOpenFileNames = ();
-    SKRememberLastOpenFile = 1;
-    SKShouldHighlightSearch = 1;
-    SKThumbnailSize = 64.0;
-}
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple Computer//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>SKResettableKeys</key>
+	<array>
+        <string>SKDefaultDocumentScale</string>
+        <string>SKDefaultDocumentScaleOption</string>
+        <string>SKLastOpenFileNames</string>
+        <string>SKOpenFilesMaximized</string>
+        <string>SKReopenLastOpenFiles</string>
+        <string>SKSearchHighlightColor</string>
+        <string>SKShouldHighlightSearchResults</string>
+        <string>SKThumbnailSize</string>
+    </array>
+	<key>SKDefaultDocumentScale</key>
+	<real>100</real>
+	<key>SKDefaultDocumentAutoScale</key>
+	<false/>
+	<key>SKLastOpenFileNames</key>
+	<array/>
+	<key>SKOpenFilesMaximized</key>
+	<false/>
+	<key>SKReopenLastOpenFiles</key>
+	<true/>
+	<key>SKSearchHighlightColor</key>
+	<data>
+	BAt0eXBlZHN0cmVhbYED6IQBQISEhAdOU0NvbG9yAISECE5TT2JqZWN0AIWEAWMBhARm
+	ZmZmAQAAAYY=
+	</data>
+	<key>SKShouldHighlightSearchResults</key>
+	<true/>
+	<key>SKThumbnailSize</key>
+	<real>64</real>
+</dict>
+</plist>

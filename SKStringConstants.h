@@ -7,8 +7,13 @@
 
 
 extern NSString *SKMainWindowFrameAutosaveName;
+
+extern NSString *SKDefaultDocumentScaleKey;
+extern NSString *SKDefaultDocumentAutoScaleKey;
 extern NSString *SKLastOpenFileNamesKey;
-extern NSString *SKRememberLastOpenFileKey;
-extern NSString *SKShouldHighlightFindResultsKey;
+extern NSString *SKOpenFilesMaximizedKey;
+extern NSString *SKReopenLastOpenFilesKey;
+extern NSString *SKSearchHighlightColorKey;
+extern NSString *SKShouldHighlightSearchResultsKey;
 extern NSString *SKThumbnailSizeKey;
 

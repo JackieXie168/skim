@@ -9,6 +9,9 @@
 //
 
 #import "SKApplicationController.h"
+#import "SKPreferenceController.h"
+#import "SKStringConstants.h"
+#import "BDAlias.h"
 
 
 @implementation SKApplicationController
@@ -25,9 +28,9 @@
     NSArray *resettableUserDefaultsKeys;
     
     // load the default values for the user defaults
-    userDefaultsValuesPath=[[NSBundle mainBundle] pathForResource:@"InitialUserDefaults" 
+    userDefaultsValuesPath = [[NSBundle mainBundle] pathForResource:@"InitialUserDefaults" 
                                                            ofType:@"plist"];
-    userDefaultsValuesDict=[NSDictionary dictionaryWithContentsOfFile:userDefaultsValuesPath];
+    userDefaultsValuesDict = [NSDictionary dictionaryWithContentsOfFile:userDefaultsValuesPath];
     
     // set them in the standard user defaults
     [[NSUserDefaults standardUserDefaults] registerDefaults:userDefaultsValuesDict];
@@ -66,7 +69,7 @@
 
 - (void)applicationDidFinishLaunching:(NSNotification *)aNotification{
     
-    if ([[NSUserDefaults standardUserDefaults] objectForKey:SKRememberLastOpenFileKey]) {
+    if ([[NSUserDefaults standardUserDefaults] objectForKey:SKReopenLastOpenFilesKey]) {
         NSArray *files = [[NSUserDefaults standardUserDefaults] objectForKey:SKLastOpenFileNamesKey];
         NSEnumerator *fileEnum = [files objectEnumerator];
         NSDictionary *dict;
@@ -80,5 +83,9 @@
         }
     }
 }    
+
+- (IBAction)showPreferencePanel:(id)sender{
+    [[SKPreferenceController sharedPrefenceController] showWindow:self];
+}
 
 @end
