@@ -3,14 +3,14 @@
         {
             CLASS = BDSKFileMatcher; 
             LANGUAGE = ObjC; 
-            OUTLETS = {outlineView = NSOutlineView; }; 
+            OUTLETS = {
+                outlineView = NSOutlineView; 
+                progressIndicator = NSProgressIndicator; 
+                statusField = NSTextField; 
+            }; 
             SUPERCLASS = NSWindowController; 
         }, 
-        {
-            CLASS = BDSKFilePathCell; 
-            LANGUAGE = ObjC; 
-            SUPERCLASS = BDSKTextWithIconCell; 
-        }, 
+        {CLASS = BDSKGradientView; LANGUAGE = ObjC; SUPERCLASS = NSView; }, 
         {
             ACTIONS = {hideMatches = id; showMatches = id; }; 
             CLASS = BDSKOrphanedFilesArrayController; 
@@ -20,15 +20,12 @@
         }, 
         {
             ACTIONS = {
-                hideOrphanedFilesPanel = id; 
                 matchFilesWithPubs = id; 
                 refreshOrphanedFiles = id; 
                 search = id; 
                 showFile = id; 
                 showOrphanedFiles = id; 
-                showOrphanedFilesPanel = id; 
                 stopRefreshing = id; 
-                toggleShowingOrphanedFilesPanel = id; 
             }; 
             CLASS = BDSKOrphanedFilesFinder; 
             LANGUAGE = ObjC; 
@@ -43,14 +40,7 @@
             }; 
             SUPERCLASS = NSWindowController; 
         }, 
-        {CLASS = BDSKTextWithIconCell; LANGUAGE = ObjC; SUPERCLASS = NSTextFieldCell; }, 
-        {
-            ACTIONS = {"" = id; }; 
-            CLASS = FirstResponder; 
-            LANGUAGE = ObjC; 
-            SUPERCLASS = NSObject; 
-        }, 
-        {CLASS = NSObject; LANGUAGE = ObjC; }
+        {CLASS = FirstResponder; LANGUAGE = ObjC; SUPERCLASS = NSObject; }
     ); 
     IBVersion = 1; 
 }
