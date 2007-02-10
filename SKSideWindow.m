@@ -10,12 +10,12 @@
 #import "SKMainWindowController.h"
 #import "NSBezierPath_BDSKExtensions.h"
 
-#define WINDOW_WIDTH            300.0
+#define DEFAULT_WINDOW_WIDTH    300.0
 #define WINDOW_OFFSET           2.0
-#define CORNER_RADIUS           10.0
-#define CONTENT_INSET           10.0
-#define WINDOW_MIN_WIDTH        20.0
-#define RESIZE_HANDLE_WIDTH     8.0
+#define CORNER_RADIUS           7.0
+#define CONTENT_INSET           7.0
+#define WINDOW_MIN_WIDTH        14.0
+#define RESIZE_HANDLE_WIDTH     7.0
 #define RESIZE_HANDLE_HEIGHT    20.0
 
 
@@ -24,8 +24,8 @@
 - (id)initWithMainController:(SKMainWindowController *)aController {
     NSScreen *screen = [[aController window] screen];
     NSRect contentRect = [screen frame];
-    contentRect.size.width = WINDOW_WIDTH;
-    contentRect.origin.x -= WINDOW_WIDTH - WINDOW_OFFSET;
+    contentRect.size.width = DEFAULT_WINDOW_WIDTH;
+    contentRect.origin.x -= DEFAULT_WINDOW_WIDTH - WINDOW_OFFSET;
     if (self = [super initWithContentRect:contentRect styleMask:NSBorderlessWindowMask backing:NSBackingStoreBuffered defer:NO screen:screen]) {
         controller = aController;
         SKSideWindowContentView *contentView = [[[SKSideWindowContentView alloc] init] autorelease];
@@ -59,18 +59,22 @@
 }
 
 - (void)slideOut {
+    state = NSDrawerClosingState;
     NSRect screenFrame = [[self screen] frame];
     NSRect frame = [self frame];
     frame.origin.x = NSMinX(screenFrame) - NSWidth(frame) + WINDOW_OFFSET;
     [self setFrame:frame display:YES animate:YES];
     [[self parentWindow] makeKeyAndOrderFront:self];
+    state = NSDrawerClosedState;
 }
 
 - (void)slideIn {
+    state = NSDrawerOpeningState;
     NSRect screenFrame = [[self screen] frame];
     NSRect frame = [self frame];
     frame.origin.x = NSMinX(screenFrame) - CONTENT_INSET;
     [self setFrame:frame display:YES animate:YES];
+    state = NSDrawerOpenState;
 }
 
 - (NSView *)mainView {
@@ -88,6 +92,10 @@
         [[self contentView] addSubview:newContentView];
 }
 
+- (int)state {
+    return state;
+}
+
 @end
 
 
@@ -101,15 +109,24 @@
 // @@ FIXME: we might do some nicer drawing
 - (void)drawRect:(NSRect)aRect {
     NSRect rect = [self bounds];
-    [[NSColor windowBackgroundColor] set];
+    NSPoint startPoint, endPoint;
+    
+    [NSGraphicsContext saveGraphicsState];
+    
+    [[NSColor colorWithDeviceWhite:0.12549 alpha:1.0] set];
     [NSBezierPath fillRoundRectInRect:rect radius:CORNER_RADIUS];
     
-    [[NSColor grayColor] set];
-    rect = NSInsetRect([self resizeHandleRect], 0.5 * RESIZE_HANDLE_WIDTH - 1.0 , 0.0);
-    rect.origin.x -= 2.0;
-    NSRectFill(rect);
-    rect.origin.x += 4.0;
-    NSRectFill(rect);
+    rect = [self resizeHandleRect];
+    startPoint = NSMakePoint(floorf(NSMidX(rect)) - 0.5, NSMinY(rect));
+    endPoint = NSMakePoint(startPoint.x, NSMaxY(rect));
+    [NSBezierPath setDefaultLineWidth:1.0];
+    [[NSColor colorWithDeviceWhite:0.3 alpha:1.0] set];
+    [NSBezierPath strokeLineFromPoint:startPoint toPoint:endPoint];
+    startPoint.x += 2.0;
+    endPoint.x += 2.0;
+    [NSBezierPath strokeLineFromPoint:startPoint toPoint:endPoint];
+    
+    [NSGraphicsContext restoreGraphicsState];
 }
 
 - (void)resizeWithEvent:(NSEvent *)theEvent {
@@ -151,11 +168,13 @@
 - (void)mouseDown:(NSEvent *)theEvent {
 	NSPoint mouseLoc = [self convertPoint:[theEvent locationInWindow] fromView:nil];
     NSRect resizeHandleRect = [self resizeHandleRect];
-    if (NSPointInRect(mouseLoc, resizeHandleRect))
+    if (NSPointInRect(mouseLoc, resizeHandleRect) && [(SKSideWindow *)[self window] state] == NSDrawerOpenState)
         [self resizeWithEvent:theEvent];
     else
         [super mouseDown:theEvent];
 }
+
+- (BOOL)acceptsFirstMouse:(NSEvent *)theEvent { return YES; }
 
 -(void)resetCursorRects{
     [self discardCursorRects];
