@@ -50,6 +50,8 @@
     NSMutableArray *orphanedFiles;
     BOOL wasLaunched;
     BDSKOrphanedFileServer *server;
+    
+    IBOutlet NSButton *matchButton;
 }
 
 + (id)sharedFinder;
@@ -58,6 +60,8 @@
 - (IBAction)showOrphanedFiles:(id)sender;
 - (IBAction)refreshOrphanedFiles:(id)sender;
 - (IBAction)stopRefreshing:(id)sender;
+
+- (IBAction)matchFilesWithPubs:(id)sender;
 
 - (IBAction)showFile:(id)sender;
 - (IBAction)search:(id)sender;

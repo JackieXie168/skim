@@ -116,7 +116,17 @@
     return node;
 }
 
-- (id)valueForUndefinedKey:(NSString *)key { return [columnValues valueForKey:key]; }
+- (id)valueForKey:(NSString *)aKey
+{
+#warning wth?
+    // when using these as values to be displayed in BDSKTextWithIconCell, valueForUndefinedKey: isn't called
+    id obj = [super valueForKey:aKey];
+    return obj ? obj : [self valueForUndefinedKey:aKey];
+}
+
+- (id)valueForUndefinedKey:(NSString *)key { 
+    return [columnValues valueForKey:key]; 
+}
 
 - (void)setValue:(id)value forUndefinedKey:(NSString *)key;
 {

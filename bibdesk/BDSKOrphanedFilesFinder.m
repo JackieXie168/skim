@@ -51,6 +51,7 @@
 #import "BDSKFile.h"
 #import "NSWindowController_BDSKExtensions.h"
 #import "NSIndexSet_BDSKExtensions.h"
+#import "BDSKFileMatcher.h"
 
 @interface BDSKOrphanedFilesFinder (Private)
 - (void)refreshOrphanedFiles;
@@ -110,6 +111,11 @@ static BDSKOrphanedFilesFinder *sharedFinder = nil;
     [super showWindow:sender];
     [self refreshOrphanedFiles:nil];
     wasLaunched = YES;
+}
+
+- (IBAction)matchFilesWithPubs:(id)sender;
+{
+    [(BDSKFileMatcher *)[BDSKFileMatcher sharedInstance] matchFiles:[self orphanedFiles]];
 }
 
 - (NSURL *)baseURL
