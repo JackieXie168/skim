@@ -8,4 +8,7 @@
 
 extern NSString *SKMainWindowFrameAutosaveName;
 extern NSString *SKLastOpenFileNamesKey;
+extern NSString *SKRememberLastOpenFileKey;
+extern NSString *SKShouldHighlightFindResultsKey;
+extern NSString *SKThumbnailSizeKey;
 

@@ -65,17 +65,19 @@
 
 
 - (void)applicationDidFinishLaunching:(NSNotification *)aNotification{
- 
-    NSArray *files = [[NSUserDefaults standardUserDefaults] objectForKey:SKLastOpenFileNamesKey];
-    NSEnumerator *fileEnum = [files objectEnumerator];
-    NSDictionary *dict;
-    NSURL *fileURL;
-    while (dict = [fileEnum nextObject]){ 
-        fileURL = [[BDAlias aliasWithData:[dict objectForKey:@"_BDAlias"]] fileURL];
-        if(fileURL == nil)
-            fileURL = [NSURL fileURLWithPath:[dict objectForKey:@"fileName"]];
-        if(fileURL)
-            [[NSDocumentController sharedDocumentController] openDocumentWithContentsOfURL:fileURL display:YES error:NULL];
+    
+    if ([[NSUserDefaults standardUserDefaults] objectForKey:SKRememberLastOpenFileKey]) {
+        NSArray *files = [[NSUserDefaults standardUserDefaults] objectForKey:SKLastOpenFileNamesKey];
+        NSEnumerator *fileEnum = [files objectEnumerator];
+        NSDictionary *dict;
+        NSURL *fileURL;
+        while (dict = [fileEnum nextObject]){ 
+            fileURL = [[BDAlias aliasWithData:[dict objectForKey:@"_BDAlias"]] fileURL];
+            if(fileURL == nil)
+                fileURL = [NSURL fileURLWithPath:[dict objectForKey:@"fileName"]];
+            if(fileURL)
+                [[NSDocumentController sharedDocumentController] openDocumentWithContentsOfURL:fileURL display:YES error:NULL];
+        }
     }
 }    
 
