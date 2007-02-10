@@ -24,6 +24,9 @@
 #import <Carbon/Carbon.h>
 
 
+#define WINDOW_X_DELTA 0.0
+#define WINDOW_Y_DELTA 70.0
+
 static NSString *SKDocumentToolbarIdentifier = @"SKDocumentToolbarIdentifier";
 
 static NSString *SKDocumentToolbarPreviousItemIdentifier = @"SKDocumentPreviousToolbarItemIdentifier";
@@ -102,6 +105,14 @@ static NSString *SKDocumentToolbarSearchItemIdentifier = @"SKDocumentToolbarSear
     // we retain as we might replace it with the full screen window
     mainWindow = [[self window] retain];
     [mainWindow setFrameAutosaveName:SKMainWindowFrameAutosaveName];
+    
+    if ([[NSUserDefaults standardUserDefaults] boolForKey:SKOpenFilesMaximizedKey])
+        [[self window] setFrame:[[NSScreen mainScreen] visibleFrame] display:NO];
+    
+    if ([[NSUserDefaults standardUserDefaults] boolForKey:SKDefaultDocumentAutoScaleKey])
+        [pdfView setAutoScales:YES];
+    else
+        [pdfView setScaleFactor:0.01 * [[NSUserDefaults standardUserDefaults] floatForKey:SKDefaultDocumentScaleKey]];
     
     [[self window] makeFirstResponder:[pdfView documentView]];
     [[pdfView documentView] setNextKeyView:sidePaneViewButton];
@@ -560,8 +571,7 @@ static NSString *SKDocumentToolbarSearchItemIdentifier = @"SKDocumentToolbarSear
     
     if ([findField stringValue] && [[findField stringValue] isEqualToString:@""] == NO) {
         [findField setStringValue:@""];
-        if ([[NSUserDefaults standardUserDefaults] boolForKey:SKShouldHighlightFindResultsKey])
-            [self removeTemporaryAnnotations];
+        [self removeTemporaryAnnotations];
     }
     
     if (sidePaneState == SKThumbnailSidePaneState)
@@ -830,15 +840,25 @@ static NSString *SKDocumentToolbarSearchItemIdentifier = @"SKDocumentToolbarSear
     NSArray *pages = [sel pages];
     NSMutableIndexSet *indexes = [NSMutableIndexSet indexSet];
     int i, iMax = [pages count];
+    NSColor *color = nil;
+    NSData *colorData = [[NSUserDefaults standardUserDefaults] dataForKey:SKSearchHighlightColorKey];
+    
+    if (colorData != nil)
+        color = [NSUnarchiver unarchiveObjectWithData:colorData];
+    if (color == nil)
+        color = [NSColor redColor];
+    
     for (i = 0; i < iMax; i++) {
         PDFPage *page = [pages objectAtIndex:i];
-        NSRect bounds = [sel boundsForPage:page];
+        NSRect bounds = NSInsetRect([sel boundsForPage:page], -3.0, -3.0);
         SKPDFAnnotationTemporary *circle = [[SKPDFAnnotationTemporary alloc] initWithBounds:bounds];
+        [circle setColor:color];
         [page addAnnotation:circle];
         [pdfView setNeedsDisplayForAnnotation:circle];
         [indexes addIndex:[doc indexForPage:page]];
         [circle release];
     }
+    
     [self thumbnailsAtIndexesNeedUpdate:indexes];
 }
 
@@ -867,12 +887,11 @@ static NSString *SKDocumentToolbarSearchItemIdentifier = @"SKDocumentToolbarSear
 - (void)tableViewSelectionDidChange:(NSNotification *)aNotification {
     if ([[aNotification object] isEqual:findTableView]) {
         
-        BOOL highlight = [[NSUserDefaults standardUserDefaults] boolForKey:SKShouldHighlightFindResultsKey];
+        BOOL highlight = [[NSUserDefaults standardUserDefaults] boolForKey:SKShouldHighlightSearchResultsKey];
         
         // clear the selection
         [pdfView setCurrentSelection:nil];
-        if (highlight)
-            [self removeTemporaryAnnotations];
+        [self removeTemporaryAnnotations];
         
         // union all selected objects
         NSEnumerator *selE = [[findArrayController selectedObjects] objectEnumerator];
@@ -881,12 +900,15 @@ static NSString *SKDocumentToolbarSearchItemIdentifier = @"SKDocumentToolbarSear
         // arm:  PDFSelection is mutable, and using -addSelection on an object from selectedObjects will actually mutate the object in searchResults, which does bad things.  MagicHat indicates that PDFSelection implements copyWithZone: even though it doesn't conform to <NSCopying>, so we'll use that since -init doesn't work (-initWithDocument: does, but it's not listed in the header either).  I filed rdar://problem/4888251 and also noticed that PDFKitViewer sample code uses -[PDFSelection copy].
         PDFSelection *currentSel = [[[selE nextObject] copy] autorelease];
         
-        while (sel = [selE nextObject])
-            [currentSel addSelection:sel];
-        
         // add an annotation so it's easier to see the search result
         if (highlight)
             [self addAnnotationsForSelection:currentSel];
+        
+        while (sel = [selE nextObject]) {
+            [currentSel addSelection:sel];
+            if (highlight)
+                [self addAnnotationsForSelection:sel];
+        }
         
         [pdfView setCurrentSelection:currentSel];
         [pdfView scrollSelectionToVisible:self];
@@ -902,8 +924,7 @@ static NSString *SKDocumentToolbarSearchItemIdentifier = @"SKDocumentToolbarSear
 - (IBAction)search:(id)sender {
     if ([[sender stringValue] isEqualToString:@""]) {
         // get rid of temporary annotations
-        if ([[NSUserDefaults standardUserDefaults] boolForKey:SKShouldHighlightFindResultsKey])
-            [self removeTemporaryAnnotations];
+        [self removeTemporaryAnnotations];
         if (sidePaneState == SKThumbnailSidePaneState)
             [self fadeInThumbnailView];
         else 

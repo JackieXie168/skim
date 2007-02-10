@@ -8,7 +8,12 @@
 #import "SKStringConstants.h"
 
 NSString *SKMainWindowFrameAutosaveName = @"SKMainWindowFrameAutosaveName";
+
+NSString *SKDefaultDocumentScaleKey = @"SKDefaultDocumentScale";
+NSString *SKDefaultDocumentAutoScaleKey = @"SKDefaultDocumentAutoScale";
 NSString *SKLastOpenFileNamesKey = @"SKLastOpenFileNames";
-NSString *SKRememberLastOpenFileKey = @"SKRememberLastOpenFile";
-NSString *SKShouldHighlightFindResultsKey = @"SKShouldHighlightFindResults";
+NSString *SKOpenFilesMaximizedKey = @"SKOpenFilesMaximized";
+NSString *SKReopenLastOpenFilesKey = @"SKReopenLastOpenFiles";
+NSString *SKSearchHighlightColorKey = @"SKSearchHighlightColor";
+NSString *SKShouldHighlightSearchResultsKey = @"SKShouldHighlightSearchResults";
 NSString *SKThumbnailSizeKey = @"SKThumbnailSize";

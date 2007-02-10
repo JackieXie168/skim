@@ -7,6 +7,7 @@
 //
 
 #import "SKPDFAnnotationNote.h"
+#import "SKStringConstants.h"
 
 
 @implementation PDFAnnotation (SKExtensions)
@@ -86,12 +87,6 @@
 - (BOOL)isTemporaryAnnotation { return YES; }
 
 - (BOOL)shouldPrint { return NO; }
-
-- (NSColor *)color { return [NSColor redColor]; }
-
-- (NSRect)bounds {
-    return NSInsetRect([super bounds], -5.0f, -5.0f);
-}
 
 @end
 
