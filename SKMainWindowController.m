@@ -56,17 +56,6 @@ static NSString *SKDocumentToolbarSearchItemIdentifier = @"SKDocumentToolbarSear
 - (id)initWithScreen:(NSScreen *)screen;
 @end
 
-@interface SKThumbnail : NSObject {
-    NSString *label;
-    NSImage *image;
-}
-- (id)initWithLabel:(NSString *)aLabel;
-- (NSString *)label;
-- (void)setLabel:(NSString *)newLabel;
-- (NSImage *)image;
-- (void)setImage:(NSImage *)newImage;
-@end
-
 @implementation SKMainWindowController
 
 - (id)initWithWindowNibName:(NSString *)windowNibName owner:(id)owner{
@@ -1171,12 +1160,16 @@ static NSString *SKDocumentToolbarSearchItemIdentifier = @"SKDocumentToolbarSear
     PDFDocument *pdfDoc = [pdfView document];
     unsigned i, count = [pdfDoc pageCount];
     NSMutableArray *array = [NSMutableArray arrayWithCapacity:count];
-    
-    for (i = 0; i < count; i++) {
-        SKThumbnail *thumbnail = [[SKThumbnail alloc] initWithLabel:[[pdfDoc pageAtIndex:i] label]];
-        [array insertObject:thumbnail atIndex:i];
+    if (count) {
+        PDFPage *emptyPage = [[[PDFPage alloc] init] autorelease];
+        [emptyPage setBounds:[[[pdfView document] pageAtIndex:0] boundsForBox:kPDFDisplayBoxCropBox] forBox:kPDFDisplayBoxCropBox];
+        NSImage *image = [emptyPage thumbnailWithSize:256.0 shadowBlurRadius:8.0 shadowOffset:NSMakeSize(0.0, -6.0)];
+        for (i = 0; i < count; i++) {
+            SKThumbnail *thumbnail = [[SKThumbnail alloc] initWithImage:image label:[[pdfDoc pageAtIndex:i] label]];
+            [array insertObject:thumbnail atIndex:i];
+            [thumbnail release];
+        }
     }
-    
     [[self mutableArrayValueForKey:@"thumbnails"] setArray:array];
     [dirtyThumbnailIndexes removeAllIndexes];
     [dirtyThumbnailIndexes addIndexesInRange:NSMakeRange(0, count)];
@@ -1194,7 +1187,7 @@ static NSString *SKDocumentToolbarSearchItemIdentifier = @"SKDocumentToolbarSear
 
 - (void)updateThumbnailsIfNeeded {
     if ([thumbnailTableView window] != nil && [dirtyThumbnailIndexes count] > 0 && thumbnailTimer == nil)
-        thumbnailTimer = [[NSTimer scheduledTimerWithTimeInterval:0.1 target:self selector:@selector(updateThumbnail:) userInfo:NULL repeats:YES] retain];
+        thumbnailTimer = [[NSTimer scheduledTimerWithTimeInterval:0.03 target:self selector:@selector(updateThumbnail:) userInfo:NULL repeats:YES] retain];
 }
 
 - (void)updateThumbnail:(NSTimer *)timer {
@@ -1655,10 +1648,10 @@ static NSString *SKDocumentToolbarSearchItemIdentifier = @"SKDocumentToolbarSear
 
 @implementation SKThumbnail
 
-- (id)initWithLabel:(NSString *)aLabel {
+- (id)initWithImage:(NSImage *)anImage label:(NSString *)aLabel {
     if (self = [super init]) {
         label = [aLabel retain];
-        image = nil;
+        image = [anImage retain];
     }
     return self;
 }
