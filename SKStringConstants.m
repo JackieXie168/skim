@@ -7,5 +7,8 @@
 
 #import "SKStringConstants.h"
 
-NSString *SKMainWindowFrameAutosaveName = @"SKIM: main window frame autosave";
-NSString *SKLastOpenFileNamesKey = @"Aliases of last opened files";
+NSString *SKMainWindowFrameAutosaveName = @"SKMainWindowFrameAutosaveName";
+NSString *SKLastOpenFileNamesKey = @"SKLastOpenFileNames";
+NSString *SKRememberLastOpenFileKey = @"SKRememberLastOpenFile";
+NSString *SKShouldHighlightFindResultsKey = @"SKShouldHighlightFindResults";
+NSString *SKThumbnailSizeKey = @"SKThumbnailSize";

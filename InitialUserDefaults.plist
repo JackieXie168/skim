@@ -1,6 +1,8 @@
 
 {
-    SKResettableKeys = (SKLastOpenFileNames, SKThumbnailSize);
+    SKResettableKeys = (SKLastOpenFileNames, SKRememberLastOpenFile, SKShouldHighlightSearch, SKThumbnailSize);
     SKLastOpenFileNames = ();
+    SKRememberLastOpenFile = 1;
+    SKShouldHighlightSearch = 1;
     SKThumbnailSize = 64.0;
 }

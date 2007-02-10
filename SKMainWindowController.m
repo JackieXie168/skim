@@ -9,6 +9,7 @@
 //
 
 #import "SKMainWindowController.h"
+#import "SKStringConstants.h"
 #import "SKSubWindowController.h"
 #import "SKNoteWindowController.h"
 #import "SKInfoWindowController.h"
@@ -22,8 +23,6 @@
 #import "SKPDFAnnotationNote.h"
 #import <Carbon/Carbon.h>
 
-
-NSString *SKThumbnailSizeKey = @"SKThumbnailSize";
 
 static NSString *SKDocumentToolbarIdentifier = @"SKDocumentToolbarIdentifier";
 
@@ -561,7 +560,8 @@ static NSString *SKDocumentToolbarSearchItemIdentifier = @"SKDocumentToolbarSear
     
     if ([findField stringValue] && [[findField stringValue] isEqualToString:@""] == NO) {
         [findField setStringValue:@""];
-        [self removeTemporaryAnnotations];
+        if ([[NSUserDefaults standardUserDefaults] boolForKey:SKShouldHighlightFindResultsKey])
+            [self removeTemporaryAnnotations];
     }
     
     if (sidePaneState == SKThumbnailSidePaneState)
@@ -867,9 +867,12 @@ static NSString *SKDocumentToolbarSearchItemIdentifier = @"SKDocumentToolbarSear
 - (void)tableViewSelectionDidChange:(NSNotification *)aNotification {
     if ([[aNotification object] isEqual:findTableView]) {
         
+        BOOL highlight = [[NSUserDefaults standardUserDefaults] boolForKey:SKShouldHighlightFindResultsKey];
+        
         // clear the selection
         [pdfView setCurrentSelection:nil];
-        [self removeTemporaryAnnotations];
+        if (highlight)
+            [self removeTemporaryAnnotations];
         
         // union all selected objects
         NSEnumerator *selE = [[findArrayController selectedObjects] objectEnumerator];
@@ -878,13 +881,12 @@ static NSString *SKDocumentToolbarSearchItemIdentifier = @"SKDocumentToolbarSear
         // arm:  PDFSelection is mutable, and using -addSelection on an object from selectedObjects will actually mutate the object in searchResults, which does bad things.  MagicHat indicates that PDFSelection implements copyWithZone: even though it doesn't conform to <NSCopying>, so we'll use that since -init doesn't work (-initWithDocument: does, but it's not listed in the header either).  I filed rdar://problem/4888251 and also noticed that PDFKitViewer sample code uses -[PDFSelection copy].
         PDFSelection *currentSel = [[[selE nextObject] copy] autorelease];
         
-        // add an annotation so it's easier to see the search result
-        [self addAnnotationsForSelection:currentSel];
-        
-        while (sel = [selE nextObject]) {
-            [self addAnnotationsForSelection:sel];
+        while (sel = [selE nextObject])
             [currentSel addSelection:sel];
-        }
+        
+        // add an annotation so it's easier to see the search result
+        if (highlight)
+            [self addAnnotationsForSelection:currentSel];
         
         [pdfView setCurrentSelection:currentSel];
         [pdfView scrollSelectionToVisible:self];
@@ -900,7 +902,8 @@ static NSString *SKDocumentToolbarSearchItemIdentifier = @"SKDocumentToolbarSear
 - (IBAction)search:(id)sender {
     if ([[sender stringValue] isEqualToString:@""]) {
         // get rid of temporary annotations
-        [self removeTemporaryAnnotations];
+        if ([[NSUserDefaults standardUserDefaults] boolForKey:SKShouldHighlightFindResultsKey])
+            [self removeTemporaryAnnotations];
         if (sidePaneState == SKThumbnailSidePaneState)
             [self fadeInThumbnailView];
         else 
