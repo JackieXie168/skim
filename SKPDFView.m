@@ -126,7 +126,7 @@ static NSRect RectPlusScale (NSRect aRect, float scale)
             PDFAnnotation *annotation;
             
             annotation = [allAnnotations objectAtIndex: i];
-            if ([noteTypes containsObject:[annotation type]]) {
+            if ([noteTypes containsObject:[annotation type]] && [annotation isTemporaryAnnotation] == NO) {
                 if (annotation == activeAnnotation) {
                     foundActive = YES;
                 } else if ([[annotation type] isEqualToString:@"FreeText"]) {
@@ -448,7 +448,7 @@ static NSRect RectPlusScale (NSRect aRect, float scale)
         annotationBounds = [[annotations objectAtIndex:i] bounds];
         if (NSPointInRect(pagePoint, annotationBounds)) {
             PDFAnnotation *annotationHit = [annotations objectAtIndex:i];
-            if ([noteTypes containsObject:[annotationHit type]]) {
+            if ([noteTypes containsObject:[annotationHit type]] && [annotationHit isTemporaryAnnotation] == NO) {
                 // We count this one.
                 newActiveAnnotation = annotationHit;
                 
