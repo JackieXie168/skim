@@ -127,6 +127,8 @@ static NSString *SKDocumentToolbarSearchItemIdentifier = @"SKDocumentToolbarSear
     NSRect frame = [sidePaneViewButton frame];
     frame.size.height = SEGMENTED_CONTROL_HEIGHT;
     [sidePaneViewButton setFrame:frame];
+    [[sidePaneViewButton cell] setToolTip:NSLocalizedString(@"View Thumbnails", @"Tool tip message") forSegment:SKThumbnailSidePaneState];
+    [[sidePaneViewButton cell] setToolTip:NSLocalizedString(@"View Table of Contents", @"Tool tip message") forSegment:SKOutlineSidePaneState];
     
     [searchBox setCollapseEdges:SKMaxXEdgeMask | SKMinYEdgeMask];
     [searchBox setMinSize:NSMakeSize(150.0, 42.0)];
@@ -1424,9 +1426,9 @@ static NSString *SKDocumentToolbarSearchItemIdentifier = @"SKDocumentToolbarSear
     [item setLabel:NSLocalizedString(@"Tool Mode", @"Toolbar item label")];
     [item setPaletteLabel:NSLocalizedString(@"Tool Mode", @"Toolbar item label")];
     [item setToolTip:NSLocalizedString(@"Tool Mode", @"Tool tip message")];
-    [[toolModeButton cell] setToolTip:NSLocalizedString(@"Text Tool", @"Tool tip message") forSegment:0];
-    [[toolModeButton cell] setToolTip:NSLocalizedString(@"Scroll Tool", @"Tool tip message") forSegment:1];
-    [[toolModeButton cell] setToolTip:NSLocalizedString(@"Magnify Tool", @"Tool tip message") forSegment:2];
+    [[toolModeButton cell] setToolTip:NSLocalizedString(@"Text Tool", @"Tool tip message") forSegment:SKTextToolMode];
+    [[toolModeButton cell] setToolTip:NSLocalizedString(@"Scroll Tool", @"Tool tip message") forSegment:SKMoveToolMode];
+    [[toolModeButton cell] setToolTip:NSLocalizedString(@"Magnify Tool", @"Tool tip message") forSegment:SKMagnifyToolMode];
     frame = [toolModeButton frame];
     frame.size.height = SEGMENTED_CONTROL_HEIGHT;
     [toolModeButton setFrame:frame];
@@ -1440,9 +1442,9 @@ static NSString *SKDocumentToolbarSearchItemIdentifier = @"SKDocumentToolbarSear
     [item setLabel:NSLocalizedString(@"Annotation", @"Toolbar item label")];
     [item setPaletteLabel:NSLocalizedString(@"Annotation Mode", @"Toolbar item label")];
     [item setToolTip:NSLocalizedString(@"Annotation Mode", @"Tool tip message")];
-    [[annotationModeButton cell] setToolTip:NSLocalizedString(@"Text Annotation", @"Tool tip message") forSegment:0];
-    [[annotationModeButton cell] setToolTip:NSLocalizedString(@"Note Annotation", @"Tool tip message") forSegment:1];
-    [[annotationModeButton cell] setToolTip:NSLocalizedString(@"Oval Annotation", @"Tool tip message") forSegment:2];
+    [[annotationModeButton cell] setToolTip:NSLocalizedString(@"Text Annotation", @"Tool tip message") forSegment:SKFreeTextAnnotationMode];
+    [[annotationModeButton cell] setToolTip:NSLocalizedString(@"Note Annotation", @"Tool tip message") forSegment:SKNoteAnnotationMode];
+    [[annotationModeButton cell] setToolTip:NSLocalizedString(@"Oval Annotation", @"Tool tip message") forSegment:SKCircleAnnotationMode];
     frame = [annotationModeButton frame];
     frame.size.height = SEGMENTED_CONTROL_HEIGHT;
     [annotationModeButton setFrame:frame];
