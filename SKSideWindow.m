@@ -12,10 +12,10 @@
 
 #define DEFAULT_WINDOW_WIDTH    300.0
 #define WINDOW_OFFSET           2.0
-#define CORNER_RADIUS           7.0
-#define CONTENT_INSET           7.0
+#define CORNER_RADIUS           8.0
+#define CONTENT_INSET           8.0
 #define WINDOW_MIN_WIDTH        14.0
-#define RESIZE_HANDLE_WIDTH     7.0
+#define RESIZE_HANDLE_WIDTH     8.0
 #define RESIZE_HANDLE_HEIGHT    20.0
 
 
@@ -113,14 +113,21 @@
     
     [NSGraphicsContext saveGraphicsState];
     
-    [[NSColor colorWithDeviceWhite:0.12549 alpha:1.0] set];
+    [[NSColor colorWithDeviceWhite:0.8 alpha:1.0] set];
     [NSBezierPath fillRoundRectInRect:rect radius:CORNER_RADIUS];
     
     rect = [self resizeHandleRect];
-    startPoint = NSMakePoint(floorf(NSMidX(rect)) - 0.5, NSMinY(rect));
+    startPoint = NSMakePoint(NSMidX(rect) - 1.5, NSMinY(rect));
     endPoint = NSMakePoint(startPoint.x, NSMaxY(rect));
     [NSBezierPath setDefaultLineWidth:1.0];
-    [[NSColor colorWithDeviceWhite:0.3 alpha:1.0] set];
+    [[NSColor colorWithDeviceWhite:0.4 alpha:1.0] set];
+    [NSBezierPath strokeLineFromPoint:startPoint toPoint:endPoint];
+    startPoint.x += 2.0;
+    endPoint.x += 2.0;
+    [NSBezierPath strokeLineFromPoint:startPoint toPoint:endPoint];
+    [[NSColor colorWithDeviceWhite:0.9 alpha:1.0] set];
+    startPoint.x -= 1.0;
+    endPoint.x -= 1.0;
     [NSBezierPath strokeLineFromPoint:startPoint toPoint:endPoint];
     startPoint.x += 2.0;
     endPoint.x += 2.0;
