@@ -192,6 +192,18 @@ extern NSString *SKThumbnailSizeKey;
 @end
 
 
+@interface SKThumbnail : NSObject {
+    NSString *label;
+    NSImage *image;
+}
+- (id)initWithImage:(NSImage *)anImage label:(NSString *)aLabel;
+- (NSString *)label;
+- (void)setLabel:(NSString *)newLabel;
+- (NSImage *)image;
+- (void)setImage:(NSImage *)newImage;
+@end
+
+
 @interface SKSplitView : NSSplitView
 @end
 
