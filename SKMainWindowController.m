@@ -826,19 +826,25 @@ static NSString *SKDocumentToolbarSearchItemIdentifier = @"SKDocumentToolbarSear
 }
 
 - (void)addAnnotationsForSelection:(PDFSelection *)sel {
+    PDFDocument *doc = [pdfView document];
     NSArray *pages = [sel pages];
+    NSMutableIndexSet *indexes = [NSMutableIndexSet indexSet];
     int i, iMax = [pages count];
     for (i = 0; i < iMax; i++) {
         PDFPage *page = [pages objectAtIndex:i];
         NSRect bounds = [sel boundsForPage:page];
         SKPDFAnnotationTemporary *circle = [[SKPDFAnnotationTemporary alloc] initWithBounds:bounds];
         [page addAnnotation:circle];
+        [pdfView setNeedsDisplayForAnnotation:circle];
+        [indexes addIndex:[doc indexForPage:page]];
         [circle release];
     }
+    [self thumbnailsAtIndexesNeedUpdate:indexes];
 }
 
 - (void)removeTemporaryAnnotations {
     PDFDocument *doc = [pdfView document];
+    NSMutableIndexSet *indexes = [NSMutableIndexSet indexSet];
     unsigned i, iMax = [doc pageCount];
     for (i = 0; i < iMax; i++) {
         PDFPage *page = [doc pageAtIndex:i];
@@ -847,14 +853,15 @@ static NSString *SKDocumentToolbarSearchItemIdentifier = @"SKDocumentToolbarSear
         PDFAnnotation *annote;
         for (j = 0; j < jMax; j++) {
             annote = [annotations objectAtIndex:j];
-            if ([annote isTemporaryAnnotation])
+            if ([annote isTemporaryAnnotation]) {
                 [page removeAnnotation:annote];
+                [pdfView setNeedsDisplayForAnnotation:annote];
+                [indexes addIndex:[doc indexForPage:page]];
+            }
         }
         [annotations release];
     }
-    
-    // removing an annotation doesn't mark the page for redisplay; seems like a PDFPage bug
-    [pdfView setNeedsDisplay:YES];
+    [self thumbnailsAtIndexesNeedUpdate:indexes];
 }
 
 - (void)tableViewSelectionDidChange:(NSNotification *)aNotification {
