@@ -200,11 +200,3 @@ typedef struct _SKPDFViewState {
 - (NSImage *)image;
 - (void)setImage:(NSImage *)newImage;
 @end
-
-
-@interface SKSplitView : NSSplitView
-@end
-
-@interface NSObject (SKSplitViewExtendedDelegate)
-- (void)splitViewDoubleClick:(SKSplitView *)sender;
-@end

@@ -42,6 +42,10 @@
     return @"NoteWindow";
 }
 
+- (void)awakeFromNib {
+    [[self window] setBackgroundColor:[NSColor colorWithDeviceWhite:0.9 alpha:1.0]];
+}
+
 - (void)windowWillClose:(NSNotification *)aNotification {
     [self commitEditing];
 

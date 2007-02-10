@@ -26,7 +26,7 @@
     NSRect contentRect = [screen frame];
     contentRect.size.width = DEFAULT_WINDOW_WIDTH;
     contentRect.origin.x -= DEFAULT_WINDOW_WIDTH - WINDOW_OFFSET;
-    if (self = [super initWithContentRect:contentRect styleMask:NSBorderlessWindowMask backing:NSBackingStoreBuffered defer:NO screen:screen]) {
+    if (self = [super initWithContentRect:contentRect styleMask:NSBorderlessWindowMask | NSUnifiedTitleAndToolbarWindowMask backing:NSBackingStoreBuffered defer:NO screen:screen]) {
         controller = aController;
         SKSideWindowContentView *contentView = [[[SKSideWindowContentView alloc] init] autorelease];
         [self setContentView:contentView];

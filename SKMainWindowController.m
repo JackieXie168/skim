@@ -21,11 +21,12 @@
 #import "SKPDFView.h"
 #import "SKCollapsibleView.h"
 #import "SKPDFAnnotationNote.h"
+#import "SKSplitView.h"
 #import <Carbon/Carbon.h>
 
-
-#define WINDOW_X_DELTA 0.0
-#define WINDOW_Y_DELTA 70.0
+#define SEGMENTED_CONTROL_HEIGHT    25.0
+#define WINDOW_X_DELTA              0.0
+#define WINDOW_Y_DELTA              70.0
 
 static NSString *SKDocumentToolbarIdentifier = @"SKDocumentToolbarIdentifier";
 
@@ -106,6 +107,8 @@ static NSString *SKDocumentToolbarSearchItemIdentifier = @"SKDocumentToolbarSear
     mainWindow = [[self window] retain];
     [mainWindow setFrameAutosaveName:SKMainWindowFrameAutosaveName];
     
+    [[self window] setBackgroundColor:[NSColor colorWithDeviceWhite:0.9 alpha:1.0]];
+    
     if ([[NSUserDefaults standardUserDefaults] boolForKey:SKOpenFilesMaximizedKey])
         [[self window] setFrame:[[NSScreen mainScreen] visibleFrame] display:NO];
     
@@ -120,6 +123,10 @@ static NSString *SKDocumentToolbarSearchItemIdentifier = @"SKDocumentToolbarSear
     [[outlineView enclosingScrollView] retain];
     [[findTableView enclosingScrollView] retain];
     [[thumbnailTableView enclosingScrollView] retain];
+    
+    NSRect frame = [sidePaneViewButton frame];
+    frame.size.height = SEGMENTED_CONTROL_HEIGHT;
+    [sidePaneViewButton setFrame:frame];
     
     [searchBox setCollapseEdges:SKMaxXEdgeMask | SKMinYEdgeMask];
     [searchBox setMinSize:NSMakeSize(150.0, 42.0)];
@@ -1244,6 +1251,7 @@ static NSString *SKDocumentToolbarSearchItemIdentifier = @"SKDocumentToolbarSear
     // Create a new toolbar instance, and attach it to our document window
     NSToolbar *toolbar = [[[NSToolbar alloc] initWithIdentifier:SKDocumentToolbarIdentifier] autorelease];
     NSToolbarItem *item;
+    NSRect frame;
     
     toolbarItems = [[NSMutableDictionary alloc] initWithCapacity:9];
     
@@ -1283,6 +1291,9 @@ static NSString *SKDocumentToolbarSearchItemIdentifier = @"SKDocumentToolbarSear
     [item setToolTip:NSLocalizedString(@"Back/Forward", @"Tool tip message")];
     [[backForwardButton cell] setToolTip:NSLocalizedString(@"Go Back", @"Tool tip message") forSegment:0];
     [[backForwardButton cell] setToolTip:NSLocalizedString(@"Go Forward", @"Tool tip message") forSegment:1];
+    frame = [backForwardButton frame];
+    frame.size.height = SEGMENTED_CONTROL_HEIGHT;
+    [backForwardButton setFrame:frame];
     [item setView:backForwardButton];
     [item setMinSize:[backForwardButton bounds].size];
     [item setMaxSize:[backForwardButton bounds].size];
@@ -1416,6 +1427,9 @@ static NSString *SKDocumentToolbarSearchItemIdentifier = @"SKDocumentToolbarSear
     [[toolModeButton cell] setToolTip:NSLocalizedString(@"Text Tool", @"Tool tip message") forSegment:0];
     [[toolModeButton cell] setToolTip:NSLocalizedString(@"Scroll Tool", @"Tool tip message") forSegment:1];
     [[toolModeButton cell] setToolTip:NSLocalizedString(@"Magnify Tool", @"Tool tip message") forSegment:2];
+    frame = [toolModeButton frame];
+    frame.size.height = SEGMENTED_CONTROL_HEIGHT;
+    [toolModeButton setFrame:frame];
     [item setView:toolModeButton];
     [item setMinSize:[toolModeButton bounds].size];
     [item setMaxSize:[toolModeButton bounds].size];
@@ -1429,6 +1443,9 @@ static NSString *SKDocumentToolbarSearchItemIdentifier = @"SKDocumentToolbarSear
     [[annotationModeButton cell] setToolTip:NSLocalizedString(@"Text Annotation", @"Tool tip message") forSegment:0];
     [[annotationModeButton cell] setToolTip:NSLocalizedString(@"Note Annotation", @"Tool tip message") forSegment:1];
     [[annotationModeButton cell] setToolTip:NSLocalizedString(@"Oval Annotation", @"Tool tip message") forSegment:2];
+    frame = [annotationModeButton frame];
+    frame.size.height = SEGMENTED_CONTROL_HEIGHT;
+    [annotationModeButton setFrame:frame];
     [item setView:annotationModeButton];
     [item setMinSize:[annotationModeButton bounds].size];
     [item setMaxSize:[annotationModeButton bounds].size];
@@ -1777,30 +1794,6 @@ static NSString *SKDocumentToolbarSearchItemIdentifier = @"SKDocumentToolbarSear
     CFStringTrimWhitespace((CFMutableStringRef)string);
     
     return string;
-}
-
-@end
-
-
-@implementation SKSplitView
-
-- (void)mouseDown:(NSEvent *)theEvent {
-    if ([theEvent clickCount] > 1) {
-        NSPoint mouseLoc = [self convertPoint:[theEvent locationInWindow] fromView:nil];
-        NSEnumerator *viewEnum = [[self subviews] objectEnumerator];
-        NSView *view = nil;
-        
-        while (view = [viewEnum nextObject]) {
-            if (NSPointInRect(mouseLoc, [view frame]))
-                break;
-        }
-        if (view == nil && [[self delegate] respondsToSelector:@selector(splitViewDoubleClick:)])
-            [[self delegate] splitViewDoubleClick:self];
-        else
-            [super mouseDown:theEvent];
-    } else {
-        [super mouseDown:theEvent];
-    }
 }
 
 @end
