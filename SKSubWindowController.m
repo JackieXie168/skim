@@ -37,4 +37,8 @@
     [pdfView performSelector:@selector(goToDestination:) withObject:dest afterDelay:0.1];
 }
 
+- (void)windowWillClose:(NSNotification *)aNotification {
+    [[[self window] parentWindow] removeChildWindow:[self window]];
+}
+
 @end
