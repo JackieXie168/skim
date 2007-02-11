@@ -49,6 +49,8 @@ typedef struct _SKPDFViewState {
     
     IBOutlet NSDrawer           *notesDrawer;
     IBOutlet NSArrayController  *notesArrayController;
+    IBOutlet NSTableView        *notesTableView;
+    BOOL                        updatingNoteSelection;
     
     IBOutlet NSSegmentedControl *backForwardButton;
     IBOutlet NSView             *pageNumberView;
@@ -139,7 +141,6 @@ typedef struct _SKPDFViewState {
 - (IBAction)togglePresentation:(id)sender;
 
 - (void)showSubWindowAtPageNumber:(int)pageNum location:(NSPoint)locationInPageSpace;
-- (void)createNewNoteAtPageNumber:(int)pageNum location:(NSPoint)locationInPageSpace;
 - (void)showNote:(PDFAnnotation *)annotation;
 
 - (PDFDocument *)pdfDocument;
@@ -163,6 +164,7 @@ typedef struct _SKPDFViewState {
 - (void)removeTemporaryAnnotations;
 
 - (void)updateOutlineSelection;
+- (void)updateNoteSelection;
 
 - (void)updateThumbnailSelection;
 - (void)resetThumbnails;
