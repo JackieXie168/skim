@@ -646,8 +646,10 @@ static NSString *SKDocumentToolbarSearchItemIdentifier = @"SKDocumentToolbarSear
 
 - (void)hideSideWindow {
     [sideWindow orderOut:self];
+    
     [sideBox retain]; // sideBox is removed from its old superview in the process
-    [sideContentBox setContentView:sideBox];
+    [sideBox setFrame:[sideContentBox bounds]];
+    [sideContentBox addSubview:sideBox];
     [sideBox release];
 }
 
