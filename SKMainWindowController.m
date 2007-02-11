@@ -636,7 +636,9 @@ static NSString *SKDocumentToolbarSearchItemIdentifier = @"SKDocumentToolbarSear
     } else if ([[self window] screen] != [sideWindow screen]) {
         [sideWindow moveToScreen:[[self window] screen]];
     }
+    [sideBox retain]; // sideBox is removed from its old superview in the process
     [sideWindow setMainView:sideBox];
+    [sideBox release];
     [sideWindow setLevel:[[self window] level]];
     [[self window] addChildWindow:sideWindow ordered:NSWindowAbove];
     [sideWindow orderFront:self];
@@ -644,7 +646,9 @@ static NSString *SKDocumentToolbarSearchItemIdentifier = @"SKDocumentToolbarSear
 
 - (void)hideSideWindow {
     [sideWindow orderOut:self];
+    [sideBox retain]; // sideBox is removed from its old superview in the process
     [sideContentBox setContentView:sideBox];
+    [sideBox release];
 }
 
 - (void)enterPresentationMode {
