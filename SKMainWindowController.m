@@ -886,7 +886,11 @@ static NSString *SKDocumentToolbarSearchItemIdentifier = @"SKDocumentToolbarSear
     }
 }
 
-// @@ FIXME: why does this not work?
+// AppKit bug: need a dummy NSTableDataSource implementation, otherwise some NSTableView delegate methods are ignored
+- (int)numberOfRowsInTableView:(NSTableView *)tv { return 0; }
+
+- (id)tableView:(NSTableView *)tv objectValueForTableColumn:(NSTableColumn *)tableColumn row:(int)row { return nil; }
+
 - (NSString *)tableView:(NSTableView *)tv toolTipForCell:(NSCell *)aCell rect:(NSRectPointer)rect tableColumn:(NSTableColumn *)tableColumn row:(int)row mouseLocation:(NSPoint)mouseLocation{
     if ([tv isEqual:notesTableView])
         return [[[notesArrayController arrangedObjects] objectAtIndex:row] contents];
