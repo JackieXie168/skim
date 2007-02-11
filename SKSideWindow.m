@@ -11,6 +11,7 @@
 #import "NSBezierPath_BDSKExtensions.h"
 
 #define DEFAULT_WINDOW_WIDTH    300.0
+#define WINDOW_INSET            1.0
 #define WINDOW_OFFSET           2.0
 #define CORNER_RADIUS           8.0
 #define CONTENT_INSET           8.0
@@ -24,8 +25,10 @@
 - (id)initWithMainController:(SKMainWindowController *)aController {
     NSScreen *screen = [[aController window] screen];
     NSRect contentRect = [screen frame];
+    contentRect.size.height -= 5.0;
     contentRect.size.width = DEFAULT_WINDOW_WIDTH;
     contentRect.origin.x -= DEFAULT_WINDOW_WIDTH - WINDOW_OFFSET;
+    contentRect = NSInsetRect(contentRect, 0.0, WINDOW_INSET);
     if (self = [super initWithContentRect:contentRect styleMask:NSBorderlessWindowMask | NSUnifiedTitleAndToolbarWindowMask backing:NSBackingStoreBuffered defer:NO screen:screen]) {
         controller = aController;
         SKSideWindowContentView *contentView = [[[SKSideWindowContentView alloc] init] autorelease];
@@ -50,6 +53,7 @@
     NSRect frame = [self frame];
     frame.size.height = NSHeight(screenFrame);
     frame.origin.x = NSMinX(screenFrame) - NSWidth(frame) + WINDOW_OFFSET;
+    frame = NSInsetRect(frame, 0.0, WINDOW_INSET);
     [self setFrame:frame display:NO];
 }
 
@@ -115,14 +119,12 @@
     [NSGraphicsContext saveGraphicsState];
     
     [[NSColor colorWithDeviceWhite:0.3 alpha:1.0] set];
-    [NSBezierPath fillRoundRectInRect:rect radius:CORNER_RADIUS];
-    rect = NSInsetRect(rect, -0.0, 0.3);
+    [NSBezierPath fillRoundRectInRect:NSInsetRect(rect, 0.5, 0.0) radius:CORNER_RADIUS];
     [[NSColor colorWithDeviceWhite:0.9 alpha:1.0] set];
     [NSBezierPath fillRoundRectInRect:rect radius:CORNER_RADIUS];
-    rect = NSInsetRect(rect, 0.0, 1.0);
-    rect.origin.y -= 1.0;
     [[NSColor colorWithDeviceWhite:0.8 alpha:1.0] set];
-    [NSBezierPath fillRoundRectInRect:rect radius:CORNER_RADIUS];
+    rect.origin.y -= 0.7;
+    [NSBezierPath fillRoundRectInRect:NSInsetRect(rect, 0.0, 0.7) radius:CORNER_RADIUS];
     
     rect = [self resizeHandleRect];
     startPoint = NSMakePoint(NSMidX(rect) - 1.5, NSMidY(rect) - 10.0);
@@ -152,7 +154,7 @@
     [self removeTrackingRect:trackingRect];
     
 	while (keepGoing) {
-		theEvent = [[self window] nextEventMatchingMask: NSLeftMouseUpMask | NSLeftMouseDraggedMask | NSMouseEnteredMask | NSMouseExitedMask];
+		theEvent = [[self window] nextEventMatchingMask: NSLeftMouseUpMask | NSLeftMouseDraggedMask];
 		switch ([theEvent type]) {
 			case NSLeftMouseDragged:
             {
