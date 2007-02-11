@@ -9,14 +9,6 @@
 #import <Cocoa/Cocoa.h>
 #import "SKStringConstants.h"
 
-typedef enum _SKAnnotationMode {
-    SKFreeTextAnnotationMode,
-    SKNoteAnnotationMode,
-    SKCircleAnnotationMode,
-    SKTextAnnotationMode,
-    SKSquareAnnotationMode
-} SKAnnotationMode;
-
 typedef enum _SKSidePaneState {
     SKThumbnailSidePaneState,
     SKOutlineSidePaneState
@@ -73,7 +65,6 @@ typedef struct _SKPDFViewState {
     NSWindow *fullScreenWindow;
     SKSideWindow *sideWindow;
     
-    SKAnnotationMode annotationMode;
     BOOL isPresentation;
     SKPDFViewState savedState;
     
@@ -151,9 +142,6 @@ typedef struct _SKPDFViewState {
 
 - (BOOL)autoScales;
 
-- (SKAnnotationMode)annotationMode;
-- (void)setAnnotationMode:(SKAnnotationMode)newAnnotationMode;
-
 - (void)displayOutlineView;
 - (void)fadeInOutlineView;
 - (void)displayThumbnailView;
@@ -180,7 +168,9 @@ typedef struct _SKPDFViewState {
 - (void)handleScaleChangedNotification:(NSNotification *)notification;
 - (void)handleChangedHistoryNotification:(NSNotification *)notification;
 - (void)handleToolModeChangedNotification:(NSNotification *)notification;
+- (void)handleAnnotationModeChangedNotification:(NSNotification *)notification;
 - (void)handleDidChangeActiveAnnotationNotification:(NSNotification *)notification;
+- (void)handleDidAddAnnotationNotification:(NSNotification *)notification;
 - (void)handleDidRemoveAnnotationNotification:(NSNotification *)notification;
 - (void)handleDidChangeAnnotationNotification:(NSNotification *)notification;
 - (void)handleDoubleClickedAnnotationNotification:(NSNotification *)notification;
