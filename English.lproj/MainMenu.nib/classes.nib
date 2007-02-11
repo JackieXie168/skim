@@ -41,6 +41,11 @@
             CLASS = SKApplicationController; 
             LANGUAGE = ObjC; 
             SUPERCLASS = NSObject; 
+        }, 
+        {
+            CLASS = SKDocumentController; 
+            LANGUAGE = ObjC; 
+            SUPERCLASS = NSDocumentController; 
         }
     ); 
     IBVersion = 1; 

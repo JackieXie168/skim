@@ -9,22 +9,6 @@
 		<dict>
 			<key>CFBundleTypeExtensions</key>
 			<array>
-				<string>skim</string>
-			</array>
-			<key>CFBundleTypeName</key>
-			<string>Skim Notes</string>
-			<key>CFBundleTypeRole</key>
-			<string>None</string>
-			<key>LSTypeIsPackage</key>
-			<false/>
-			<key>NSDocumentClass</key>
-			<string>SKDocument</string>
-			<key>NSPersistentStoreTypeKey</key>
-			<string>InMemory</string>
-		</dict>
-		<dict>
-			<key>CFBundleTypeExtensions</key>
-			<array>
 				<string>pdf</string>
 				<string>PDF</string>
 			</array>
@@ -44,12 +28,38 @@
 			<array>
 				<string>com.adobe.pdf</string>
 			</array>
+			<key>LSTypeIsPackage</key>
+			<false/>
 			<key>NSDocumentClass</key>
 			<string>SKDocument</string>
 			<key>NSExportableAs</key>
 			<array>
 				<string>NSPDFPboardType</string>
+				<string>PDF With Embedded Notes</string>
 				<string>Skim Notes</string>
+			</array>
+		</dict>
+		<dict>
+			<key>CFBundleTypeExtensions</key>
+			<array>
+				<string>ai</string>
+				<string>AI</string>
+			</array>
+			<key>CFBundleTypeMIMETypes</key>
+			<array>
+				<string>application/pdf</string>
+			</array>
+			<key>CFBundleTypeName</key>
+			<string>NSPDFPboardType</string>
+			<key>CFBundleTypeRole</key>
+			<string>Viewer</string>
+			<key>LSTypeIsPackage</key>
+			<false/>
+			<key>NSDocumentClass</key>
+			<string>SKDocument</string>
+			<key>NSExportableAs</key>
+			<array>
+				<string>NSPDFPboardType</string>
 			</array>
 		</dict>
 		<dict>
@@ -82,27 +92,6 @@
 		<dict>
 			<key>CFBundleTypeExtensions</key>
 			<array>
-				<string>ai</string>
-				<string>AI</string>
-			</array>
-			<key>CFBundleTypeMIMETypes</key>
-			<array>
-				<string>application/pdf</string>
-			</array>
-			<key>CFBundleTypeName</key>
-			<string>NSPDFPboardType</string>
-			<key>CFBundleTypeRole</key>
-			<string>Viewer</string>
-			<key>NSDocumentClass</key>
-			<string>SKDocument</string>
-			<key>NSExportableAs</key>
-			<array>
-				<string>NSPDFPboardType</string>
-			</array>
-		</dict>
-		<dict>
-			<key>CFBundleTypeExtensions</key>
-			<array>
 				<string>epi</string>
 				<string>EPI</string>
 				<string>eps</string>
@@ -120,12 +109,55 @@
 			<string>PostScript document</string>
 			<key>CFBundleTypeRole</key>
 			<string>Viewer</string>
+			<key>LSTypeIsPackage</key>
+			<false/>
 			<key>NSDocumentClass</key>
 			<string>SKDocument</string>
 			<key>NSExportableAs</key>
 			<array>
 				<string>NSPDFPboardType</string>
 			</array>
+		</dict>
+		<dict>
+			<key>CFBundleTypeExtensions</key>
+			<array>
+				<string>pdf</string>
+				<string>PDF</string>
+			</array>
+			<key>CFBundleTypeMIMETypes</key>
+			<array>
+				<string>application/pdf</string>
+			</array>
+			<key>CFBundleTypeName</key>
+			<string>PDF With Embedded Notes</string>
+			<key>CFBundleTypeOSTypes</key>
+			<array>
+				<string>PDF</string>
+			</array>
+			<key>CFBundleTypeRole</key>
+			<string>None</string>
+			<key>LSTypeIsPackage</key>
+			<false/>
+			<key>NSDocumentClass</key>
+			<string>SKDocument</string>
+			<key>NSPersistentStoreTypeKey</key>
+			<string>Binary</string>
+		</dict>
+		<dict>
+			<key>CFBundleTypeExtensions</key>
+			<array>
+				<string>skim</string>
+			</array>
+			<key>CFBundleTypeName</key>
+			<string>Skim Notes</string>
+			<key>CFBundleTypeRole</key>
+			<string>None</string>
+			<key>LSTypeIsPackage</key>
+			<false/>
+			<key>NSDocumentClass</key>
+			<string>SKDocument</string>
+			<key>NSPersistentStoreTypeKey</key>
+			<string>Binary</string>
 		</dict>
 	</array>
 	<key>CFBundleExecutable</key>

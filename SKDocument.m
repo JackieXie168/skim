@@ -21,6 +21,7 @@ NSString *SKDocumentErrorDomain = @"SKDocumentErrorDomain";
 
 // See CFBundleTypeName in Info.plist
 static NSString *SKPDFDocumentType = nil; /* set to NSPDFPboardType, not @"NSPDFPboardType" */
+static NSString *SKEmbeddedPDFDocumentType = @"PDF With Embedded Notes";
 static NSString *SKNotesDocumentType = @"Skim Notes";
 static NSString *SKPostScriptDocumentType = @"PostScript document";
 
@@ -76,7 +77,7 @@ static NSString *SKPostScriptDocumentType = @"PostScript document";
 
 - (BOOL)saveToURL:(NSURL *)absoluteURL ofType:(NSString *)typeName forSaveOperation:(NSSaveOperationType)saveOperation error:(NSError **)outError{
     BOOL success = [super saveToURL:absoluteURL ofType:typeName forSaveOperation:saveOperation error:outError];
-    
+    NSLog(@"%@",typeName);
     // we check for notes and save a .skim as well:
     if (success && [typeName isEqualToString:SKPDFDocumentType]) {
        [self saveNotesToExtendedAttributesAtURL:absoluteURL];
@@ -91,6 +92,9 @@ static NSString *SKPostScriptDocumentType = @"PostScript document";
     BOOL didWrite = NO;
     if ([typeName isEqualToString:SKPDFDocumentType]) {
         didWrite = [pdfData writeToURL:absoluteURL options:NSAtomicWrite error:outError];
+    } else if ([typeName isEqualToString:SKEmbeddedPDFDocumentType]) {
+        [[self mainWindowController] removeTemporaryAnnotations];
+        didWrite = [[[self mainWindowController] pdfDocument] writeToURL:absoluteURL];
     } else if ([typeName isEqualToString:SKNotesDocumentType]) {
         NSData *data = [self notesData];
         if (data != nil)
@@ -126,9 +130,6 @@ static NSString *SKPostScriptDocumentType = @"PostScript document";
         pdfDocument = [[PDFDocument alloc] initWithURL:absoluteURL];    
         didRead = pdfDocument != nil;
         [self readNotesFromExtendedAttributesAtURL:absoluteURL];
-    } else if ([docType isEqualToString:SKNotesDocumentType]) {
-        // should we be able to load just notes?
-        didRead = [self readNotesFromData:[NSKeyedUnarchiver unarchiveObjectWithFile:[absoluteURL path]]];
     } else if ([docType isEqualToString:SKPostScriptDocumentType]) {
         [pdfData release];
         [pdfDocument release];
@@ -329,3 +330,19 @@ static NSString *SKPostScriptDocumentType = @"PostScript document";
 }
 
 @end
+
+
+@implementation SKDocumentController
+
+- (NSString *)typeFromFileExtension:(NSString *)fileExtensionOrHFSFileType {
+	NSString *type = [super typeFromFileExtension:fileExtensionOrHFSFileType];
+    if ([type isEqualToString:SKEmbeddedPDFDocumentType]) {
+        // fix of bug when reading a PDF file
+        // this is interpreted as SKEmbeddedPDFDocumentType, even though we don't declare that as a readable type
+        type = NSPDFPboardType;
+    }
+	return type;
+}
+
+@end
+
