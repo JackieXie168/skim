@@ -25,7 +25,6 @@
 - (id)initWithMainController:(SKMainWindowController *)aController {
     NSScreen *screen = [[aController window] screen];
     NSRect contentRect = [screen frame];
-    contentRect.size.height -= 5.0;
     contentRect.size.width = DEFAULT_WINDOW_WIDTH;
     contentRect.origin.x -= DEFAULT_WINDOW_WIDTH - WINDOW_OFFSET;
     contentRect = NSInsetRect(contentRect, 0.0, WINDOW_INSET);
@@ -111,20 +110,21 @@
     return rect;
 }
 
-// @@ FIXME: we might do some nicer drawing, need more 3d effect
 - (void)drawRect:(NSRect)aRect {
-    NSRect rect = [self bounds];
+    NSRect ignored, topRect, bottomRect, rect = [self bounds];
     NSPoint startPoint, endPoint;
+    
+    NSDivideRect(rect, &topRect, &ignored, 2.0 * CORNER_RADIUS, NSMaxYEdge);
+    NSDivideRect(rect, &bottomRect, &ignored, 2.0 * CORNER_RADIUS, NSMinYEdge);
     
     [NSGraphicsContext saveGraphicsState];
     
-    [[NSColor colorWithDeviceWhite:0.3 alpha:1.0] set];
-    [NSBezierPath fillRoundRectInRect:NSInsetRect(rect, 0.5, 0.0) radius:CORNER_RADIUS];
     [[NSColor colorWithDeviceWhite:0.9 alpha:1.0] set];
-    [NSBezierPath fillRoundRectInRect:rect radius:CORNER_RADIUS];
+    [NSBezierPath fillRoundRectInRect:topRect radius:CORNER_RADIUS];
+    [[NSColor colorWithDeviceWhite:0.4 alpha:1.0] set];
+    [NSBezierPath fillRoundRectInRect:bottomRect radius:CORNER_RADIUS];
     [[NSColor colorWithDeviceWhite:0.8 alpha:1.0] set];
-    rect.origin.y -= 0.7;
-    [NSBezierPath fillRoundRectInRect:NSInsetRect(rect, 0.0, 0.7) radius:CORNER_RADIUS];
+    [NSBezierPath fillRoundRectInRect:NSInsetRect(rect, 0.0, 1.5) radius:CORNER_RADIUS];
     
     rect = [self resizeHandleRect];
     startPoint = NSMakePoint(NSMidX(rect) - 1.5, NSMidY(rect) - 10.0);
