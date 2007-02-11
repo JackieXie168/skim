@@ -102,11 +102,12 @@
 @implementation SKSideWindowContentView
 
 - (NSRect)resizeHandleRect {
-    NSRect rect = [self bounds];
-    return NSMakeRect(NSMaxX(rect) - 0.5 * (CONTENT_INSET + RESIZE_HANDLE_WIDTH), NSMidY(rect) - 0.5 * RESIZE_HANDLE_HEIGHT, RESIZE_HANDLE_WIDTH, RESIZE_HANDLE_HEIGHT);
+    NSRect rect, ignored;
+    NSDivideRect([self bounds], &rect, &ignored, CONTENT_INSET, NSMaxXEdge);
+    return rect;
 }
 
-// @@ FIXME: we might do some nicer drawing
+// @@ FIXME: we might do some nicer drawing, need more 3d effect
 - (void)drawRect:(NSRect)aRect {
     NSRect rect = [self bounds];
     NSPoint startPoint, endPoint;
@@ -117,8 +118,8 @@
     [NSBezierPath fillRoundRectInRect:rect radius:CORNER_RADIUS];
     
     rect = [self resizeHandleRect];
-    startPoint = NSMakePoint(NSMidX(rect) - 1.5, NSMinY(rect));
-    endPoint = NSMakePoint(startPoint.x, NSMaxY(rect));
+    startPoint = NSMakePoint(NSMidX(rect) - 1.5, NSMidY(rect) - 10.0);
+    endPoint = NSMakePoint(startPoint.x, startPoint.y + 20.0);
     [NSBezierPath setDefaultLineWidth:1.0];
     [[NSColor colorWithDeviceWhite:0.4 alpha:1.0] set];
     [NSBezierPath strokeLineFromPoint:startPoint toPoint:endPoint];
