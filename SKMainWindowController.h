@@ -25,6 +25,10 @@ typedef struct _SKPDFViewState {
 
 @class SKPDFView, PDFOutline, SKCollapsibleView, SKNavigationWindow, SKSideWindow;
 
+@interface SKNotesTableView : NSTableView
+- (void)delete:(id)sender;
+@end
+
 @interface SKMainWindowController : NSWindowController {
     IBOutlet SKPDFView          *pdfView;
     IBOutlet NSBox              *pdfContentBox;
@@ -41,7 +45,7 @@ typedef struct _SKPDFViewState {
     
     IBOutlet NSDrawer           *notesDrawer;
     IBOutlet NSArrayController  *notesArrayController;
-    IBOutlet NSTableView        *notesTableView;
+    IBOutlet SKNotesTableView   *notesTableView;
     BOOL                        updatingNoteSelection;
     
     IBOutlet NSSegmentedControl *backForwardButton;
@@ -192,3 +196,9 @@ typedef struct _SKPDFViewState {
 - (NSImage *)image;
 - (void)setImage:(NSImage *)newImage;
 @end
+
+
+@interface NSObject (SKNotesTableViewDelegate)
+- (void)tableView:(NSTableView *)aTableView deleteRowsWithIndexes:(NSIndexSet *)rowIndexes;
+@end
+

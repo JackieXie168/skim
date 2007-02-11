@@ -89,6 +89,7 @@
             }; 
             SUPERCLASS = NSWindowController; 
         }, 
+        {CLASS = SKNotesTableView; LANGUAGE = ObjC; SUPERCLASS = NSTableView; }, 
         {CLASS = SKPDFView; LANGUAGE = ObjC; SUPERCLASS = PDFView; }, 
         {CLASS = SKSplitView; LANGUAGE = ObjC; SUPERCLASS = NSSplitView; }, 
         {CLASS = SKThumbnail; LANGUAGE = ObjC; SUPERCLASS = NSObject; }, 

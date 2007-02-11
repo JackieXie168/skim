@@ -75,6 +75,7 @@ typedef enum _SKAnnotationMode {
 - (void)setActiveAnnotation:(PDFAnnotation *)newAnnotation;
 - (void)setNeedsDisplayForAnnotation:(PDFAnnotation *)annotation;
 - (PDFAnnotation *)addAnnotationFromSelection:(PDFSelection *)selection;
+- (void)removeAnnotation:(PDFAnnotation *)annotation;
 - (void)endAnnotationEdit;
 
 @end
