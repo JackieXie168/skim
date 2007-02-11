@@ -45,3 +45,7 @@ extern NSString *SKDocumentErrorDomain;
 - (PDFDocument *)pdfDocument;
 
 @end
+
+
+@interface SKDocumentController : NSDocumentController
+@end
