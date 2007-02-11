@@ -553,21 +553,49 @@ static NSRect RectPlusScale (NSRect aRect, float scale)
                 newBounds.origin.y += relPoint.y;
                 newBounds.size.width += relPoint.x;
                 newBounds.size.height -= relPoint.y;
+                if (NSWidth(newBounds) < 8.0) {
+                    newBounds.size.width = 8.0;
+                }
+                if (NSHeight(newBounds) < 8.0) {
+                    newBounds.origin.y += NSHeight(newBounds) - 8.0;
+                    newBounds.size.height = 8.0;
+                }
                 break;
             case 90:
                 newBounds.size.width += relPoint.x;
                 newBounds.size.height += relPoint.y;
+                if (NSWidth(newBounds) < 8.0) {
+                    newBounds.size.width = 8.0;
+                }
+                if (NSHeight(newBounds) < 8.0) {
+                    newBounds.size.height = 8.0;
+                }
                 break;
             case 180:
                 newBounds.origin.x += relPoint.x;
                 newBounds.size.width -= relPoint.x;
                 newBounds.size.height += relPoint.y;
+                if (NSWidth(newBounds) < 8.0) {
+                    newBounds.origin.x += NSWidth(newBounds) - 8.0;
+                    newBounds.size.width = 8.0;
+                }
+                if (NSHeight(newBounds) < 8.0) {
+                    newBounds.size.height = 8.0;
+                }
                 break;
             case 270:
                 newBounds.origin.x += relPoint.x;
                 newBounds.origin.y += relPoint.y;
                 newBounds.size.width -= relPoint.x;
                 newBounds.size.height -= relPoint.y;
+                if (NSWidth(newBounds) < 8.0) {
+                    newBounds.origin.x += NSWidth(newBounds) - 8.0;
+                    newBounds.size.width = 8.0;
+                }
+                if (NSHeight(newBounds) < 8.0) {
+                    newBounds.origin.y += NSHeight(newBounds) - 8.0;
+                    newBounds.size.height = 8.0;
+                }
                 break;
         }
         
