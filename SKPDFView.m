@@ -224,17 +224,10 @@ static NSRect RectPlusScale (NSRect aRect, float scale)
 
 - (void)delete:(id)sender
 {
-	if (activeAnnotation != nil) {
-		PDFAnnotation *wasAnnotation = [activeAnnotation retain];
-        
-        if (editAnnotation)
-            [self endAnnotationEdit];
-		[self setActiveAnnotation:nil];
-		[[wasAnnotation page] removeAnnotation:wasAnnotation];
-		[[NSNotificationCenter defaultCenter] postNotificationName:SKPDFViewDidRemoveAnnotationNotification object:self 
-            userInfo:[NSDictionary dictionaryWithObjectsAndKeys:wasAnnotation, @"annotation", nil]];
-        [wasAnnotation release];
-	}
+	if (activeAnnotation != nil)
+        [self removeAnnotation:activeAnnotation];
+    else
+        NSBeep();
 }
 
 #pragma mark Event Handling
@@ -805,6 +798,20 @@ static NSRect RectPlusScale (NSRect aRect, float scale)
     [self setActiveAnnotation:newAnnotation];
     
     return newAnnotation;
+}
+
+- (void)removeAnnotation:(PDFAnnotation *)annotation{
+    PDFAnnotation *wasAnnotation = [activeAnnotation retain];
+    
+    if (editAnnotation)
+        [self endAnnotationEdit];
+	if (activeAnnotation != annotation)
+		[self setActiveAnnotation:nil];
+    [self setNeedsDisplayForAnnotation:wasAnnotation];
+    [[wasAnnotation page] removeAnnotation:wasAnnotation];
+    [[NSNotificationCenter defaultCenter] postNotificationName:SKPDFViewDidRemoveAnnotationNotification object:self 
+        userInfo:[NSDictionary dictionaryWithObjectsAndKeys:wasAnnotation, @"annotation", nil]];
+    [wasAnnotation release];
 }
 
 - (void)endAnnotationEdit {

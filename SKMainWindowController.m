@@ -893,6 +893,17 @@ static NSString *SKDocumentToolbarSearchItemIdentifier = @"SKDocumentToolbarSear
     return nil;
 }
 
+- (void)tableView:(NSTableView *)tv deleteRowsWithIndexes:(NSIndexSet *)rowIndexes {
+    if ([tv isEqual:notesTableView]) {
+        NSArray *notesToRemove = [[notesArrayController arrangedObjects] objectsAtIndexes:rowIndexes];
+        NSEnumerator *noteEnum = [notesToRemove objectEnumerator];
+        PDFAnnotation *annotation;
+        
+        while (annotation == [noteEnum nextObject])NSLog(@"%@",annotation);
+            [pdfView removeAnnotation:annotation];
+    }
+}
+
 #pragma mark Sub- and note- windows
 
 - (void)showSubWindowAtPageNumber:(int)pageNum location:(NSPoint)locationInPageSpace{
@@ -1777,6 +1788,31 @@ static NSString *SKDocumentToolbarSearchItemIdentifier = @"SKDocumentToolbarSear
     CFStringTrimWhitespace((CFMutableStringRef)string);
     
     return string;
+}
+
+@end
+
+
+@implementation SKNotesTableView
+
+- (void)delete:(id)sender {
+    if ([[self delegate] respondsToSelector:@selector(tableView:deleteRowsWithIndexes:)]) {
+		if ([self selectedRow] == -1)
+			NSBeep();
+		else
+			[[self delegate] tableView:self deleteRowsWithIndexes:[self selectedRowIndexes]];
+    }
+}
+
+- (void)keyDown:(NSEvent *)theEvent {
+    NSString *characters = [theEvent charactersIgnoringModifiers];
+    unichar eventChar = [characters length] > 0 ? [characters characterAtIndex:0] : 0;
+	unsigned int modifiers = [theEvent modifierFlags] & NSDeviceIndependentModifierFlagsMask;
+    
+	if ((eventChar == NSDeleteCharacter || eventChar == NSDeleteFunctionKey) && modifiers == 0)
+        [self delete:self];
+	else
+		[super keyDown:theEvent];
 }
 
 @end
