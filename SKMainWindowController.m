@@ -899,7 +899,7 @@ static NSString *SKDocumentToolbarSearchItemIdentifier = @"SKDocumentToolbarSear
         NSEnumerator *noteEnum = [notesToRemove objectEnumerator];
         PDFAnnotation *annotation;
         
-        while (annotation == [noteEnum nextObject])NSLog(@"%@",annotation);
+        while (annotation = [noteEnum nextObject])
             [pdfView removeAnnotation:annotation];
     }
 }
