@@ -841,6 +841,8 @@ static NSString *SKDocumentToolbarSearchItemIdentifier = @"SKDocumentToolbarSear
     [[pdfView document] findString:[sender stringValue] withOptions:NSCaseInsensitiveSearch];
 }
 
+#pragma mark NSTableView delegate protocol
+
 - (void)tableViewSelectionDidChange:(NSNotification *)aNotification {
     if ([[aNotification object] isEqual:findTableView]) {
         
@@ -882,6 +884,13 @@ static NSString *SKDocumentToolbarSearchItemIdentifier = @"SKDocumentToolbarSear
                 [pdfView goToDestination:[[selectedNotes objectAtIndex:0] destination]];
         }
     }
+}
+
+// @@ FIXME: why does this not work?
+- (NSString *)tableView:(NSTableView *)tv toolTipForCell:(NSCell *)aCell rect:(NSRectPointer)rect tableColumn:(NSTableColumn *)tableColumn row:(int)row mouseLocation:(NSPoint)mouseLocation{
+    if ([tv isEqual:notesTableView])
+        return [[[notesArrayController arrangedObjects] objectAtIndex:row] contents];
+    return nil;
 }
 
 #pragma mark Sub- and note- windows

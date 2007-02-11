@@ -73,11 +73,34 @@
     return [[self page] label];
 }
 
+- (NSImage *)typeIcon { return nil; }
+
 - (NSImage *)image { return nil; }
 
 - (NSAttributedString *)text { return nil; }
 
 - (BOOL)isTemporaryAnnotation { return NO; }
+
+@end
+
+
+@implementation PDFAnnotationFreeText (SKExtensions)
+
+- (NSImage *)typeIcon { return [NSImage imageNamed:@"AnnotateToolAdorn"]; }
+
+@end
+
+
+@implementation PDFAnnotationCircle (SKExtensions)
+
+- (NSImage *)typeIcon { return [NSImage imageNamed:@"CircleToolAdorn"]; }
+
+@end
+
+
+@implementation PDFAnnotationText (SKExtensions)
+
+- (NSImage *)typeIcon { return [NSImage imageNamed:@"NoteToolAdorn"]; }
 
 @end
 
