@@ -412,13 +412,6 @@ static NSRect RectPlusScale (NSRect aRect, float scale)
     [controller showSubWindowAtPageNumber:[[self document] indexForPage:[dest page]] location:[dest point]];        
 }
 
-- (void)annotateWithEvent:(NSEvent *)theEvent {
-    SKMainWindowController* controller = [[self window] windowController];
-    PDFDestination *dest = [self destinationForEvent:theEvent isLink:NULL];
-
-    [controller createNewNoteAtPageNumber:[[self document] indexForPage:[dest page]] location:[dest point]];        
-}
-
 - (void)selectAnnotationWithEvent:(NSEvent *)theEvent {
     NSSet *noteTypes = [NSSet setWithObjects:@"FreeText", @"Text", @"Note", @"Circle", @"Square", nil];
     PDFAnnotation *newActiveAnnotation = NULL;

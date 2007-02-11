@@ -49,7 +49,6 @@ typedef enum _SKToolMode {
 
 - (void)doAutohide:(BOOL)flag;
 - (void)popUpWithEvent:(NSEvent *)theEvent;
-- (void)annotateWithEvent:(NSEvent *)theEvent;
 - (void)selectAnnotationWithEvent:(NSEvent *)theEvent;
 - (void)dragAnnotationWithEvent:(NSEvent *)theEvent;
 - (void)magnifyWithEvent:(NSEvent *)theEvent;

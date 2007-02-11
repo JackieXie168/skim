@@ -199,6 +199,8 @@ static NSString *SKDocumentToolbarSearchItemIdentifier = @"SKDocumentToolbarSear
             [self updateOutlineSelection];
         }
         
+        [self updateNoteSelection];
+        
         [self resetThumbnails];
         [self updateThumbnailSelection];
     }
@@ -363,20 +365,20 @@ static NSString *SKDocumentToolbarSearchItemIdentifier = @"SKDocumentToolbarSear
     [newAnnotation setContents:text ? text : @"New note"];
     
     [page addAnnotation:newAnnotation];
-	[pdfView setActiveAnnotation:newAnnotation];
     
+    updatingNoteSelection = YES;
     [[(SKDocument *)[self document] mutableArrayValueForKey:@"notes"] addObject:newAnnotation];
+    updatingNoteSelection = NO;
+	
+    [pdfView setActiveAnnotation:newAnnotation];
     
     [[self window] setDocumentEdited:YES];
     [self thumbnailAtIndexNeedsUpdate:[newAnnotation pageIndex]];
 }
 
-- (void)showNotes:(NSArray *)notesToShow{
+- (void)selectNotes:(NSArray *)notesToShow{
     // there should only be a single note
-    PDFAnnotation *annotation = [notesToShow lastObject];
-    
-    [pdfView goToDestination:[annotation destination]];
-	[pdfView setActiveAnnotation:annotation];
+	[pdfView setActiveAnnotation:[notesToShow lastObject]];
 }
 
 - (IBAction)displaySinglePages:(id)sender {
@@ -899,6 +901,23 @@ static NSString *SKDocumentToolbarSearchItemIdentifier = @"SKDocumentToolbarSear
     [self thumbnailsAtIndexesNeedUpdate:indexes];
 }
 
+- (IBAction)search:(id)sender {
+    if ([[sender stringValue] isEqualToString:@""]) {
+        // get rid of temporary annotations
+        [self removeTemporaryAnnotations];
+        if (sidePaneState == SKThumbnailSidePaneState)
+            [self fadeInThumbnailView];
+        else 
+            [self fadeInOutlineView];
+        [sidePaneViewButton setSelectedSegment:sidePaneState];
+    } else {
+        [self fadeInSearchView];
+        [sidePaneViewButton setSelected:NO forSegment:0];
+        [sidePaneViewButton setSelected:NO forSegment:1];
+    }
+    [[pdfView document] findString:[sender stringValue] withOptions:NSCaseInsensitiveSearch];
+}
+
 - (void)tableViewSelectionDidChange:(NSNotification *)aNotification {
     if ([[aNotification object] isEqual:findTableView]) {
         
@@ -933,24 +952,13 @@ static NSString *SKDocumentToolbarSearchItemIdentifier = @"SKDocumentToolbarSear
             if (row != -1)
                 [pdfView goToPage:[[pdfView document] pageAtIndex:row]];
         }
+    } else if ([[aNotification object] isEqual:notesTableView]) {
+        if (updatingNoteSelection == NO) {
+            NSArray *selectedNotes = [notesArrayController selectedObjects];
+            if ([selectedNotes count])
+                [pdfView goToDestination:[[selectedNotes objectAtIndex:0] destination]];
+        }
     }
-}
-
-- (IBAction)search:(id)sender {
-    if ([[sender stringValue] isEqualToString:@""]) {
-        // get rid of temporary annotations
-        [self removeTemporaryAnnotations];
-        if (sidePaneState == SKThumbnailSidePaneState)
-            [self fadeInThumbnailView];
-        else 
-            [self fadeInOutlineView];
-        [sidePaneViewButton setSelectedSegment:sidePaneState];
-    } else {
-        [self fadeInSearchView];
-        [sidePaneViewButton setSelected:NO forSegment:0];
-        [sidePaneViewButton setSelected:NO forSegment:1];
-    }
-    [[pdfView document] findString:[sender stringValue] withOptions:NSCaseInsensitiveSearch];
 }
 
 #pragma mark Sub- and note- windows
@@ -969,22 +977,6 @@ static NSString *SKDocumentToolbarSearchItemIdentifier = @"SKDocumentToolbarSear
     [[self document] addWindowController:swc];
     [swc release];
     [swc showWindow:self];
-}
-
-- (void)createNewNoteAtPageNumber:(int)pageNum location:(NSPoint)locationInPageSpace{
-    NSBeep();
-    /*
-    NSString *selString = [[pdfView currentSelection] string];
-
-    // open new note popup
-    SKNote *newNote = [[SKNote alloc] initWithPageIndex:pageNum
-                                              pageLabel:[[[pdfView document] pageAtIndex:pageNum] label]
-                                    locationInPageSpace:locationInPageSpace
-                                              quotation:selString ? selString : @""];
-    SKNoteWindowController *noteController = [[[SKNoteWindowController alloc] initWithNote:newNote] autorelease];
-    
-    [noteController beginSheetModalForWindow:[self window] modalDelegate:self didEndSelector:@selector(newNoteSheetDidEnd:returnCode:contextInfo:) contextInfo:NULL];
-    */
 }
 
 - (void)showNote:(PDFAnnotation *)annotation {
@@ -1018,6 +1010,7 @@ static NSString *SKDocumentToolbarSearchItemIdentifier = @"SKDocumentToolbarSear
     [pageNumberField setIntValue:pageIndex + 1];
     
     [self updateOutlineSelection];
+    [self updateNoteSelection];
     [self updateThumbnailSelection];
 }
 
@@ -1038,7 +1031,9 @@ static NSString *SKDocumentToolbarSearchItemIdentifier = @"SKDocumentToolbarSear
 
 - (void)handleDidChangeActiveAnnotationNotification:(NSNotification *)notification {
     PDFAnnotation *annotation = [pdfView activeAnnotation];
+    updatingNoteSelection = YES;
     [notesArrayController setSelectedObjects:[NSArray arrayWithObjects:annotation, nil]];
+    updatingNoteSelection = NO;
     if (annotation)
         [[NSColorPanel sharedColorPanel] setColor:[annotation color]];
 }
@@ -1251,6 +1246,39 @@ static NSString *SKDocumentToolbarSearchItemIdentifier = @"SKDocumentToolbarSear
         [thumbnailTimer release];
         thumbnailTimer = nil;
     }
+}
+
+- (void)updateNoteSelection {
+
+	NSArray *notes = [notesArrayController arrangedObjects];
+    PDFAnnotation *annotation;
+    unsigned int pageIndex = [[pdfView document] indexForPage: [pdfView currentPage]];
+	int i, numRows = [notes count];
+    unsigned int selPageIndex = [notesTableView numberOfSelectedRows] ? [[notes objectAtIndex:[notesTableView selectedRow]] pageIndex] : NSNotFound;
+	
+    if (numRows == 0 || selPageIndex == pageIndex)
+		return;
+	
+	// Walk outline view looking for best firstpage number match.
+	for (i = 0; i < numRows; i++) {
+		// Get the destination of the given row....
+		annotation = [notes objectAtIndex:i];
+		
+		if ([annotation pageIndex] == pageIndex) {
+			updatingNoteSelection = YES;
+			[notesTableView selectRow:i byExtendingSelection:NO];
+			updatingNoteSelection = NO;
+			break;
+		} else if ([annotation pageIndex] > pageIndex) {
+			updatingNoteSelection = YES;
+			if (i < 1)				
+				[notesTableView selectRow:0 byExtendingSelection:NO];
+			else if ([[notes objectAtIndex:i - 1] pageIndex] != selPageIndex)
+				[notesTableView selectRow:i - 1 byExtendingSelection:NO];
+			updatingNoteSelection = NO;
+			break;
+		}
+	}
 }
 
 #pragma mark Toolbar

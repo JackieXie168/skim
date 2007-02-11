@@ -12,6 +12,7 @@
 #import "SKPreferenceController.h"
 #import "SKStringConstants.h"
 #import "BDAlias.h"
+#import <Quartz/Quartz.h>
 
 
 @implementation SKApplicationController

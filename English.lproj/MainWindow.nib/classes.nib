@@ -67,6 +67,7 @@
                 findTableView = NSTableView; 
                 notesArrayController = NSArrayController; 
                 notesDrawer = NSDrawer; 
+                notesTableView = NSTableView; 
                 outlineView = NSOutlineView; 
                 pageNumberField = NSTextField; 
                 pageNumberStepper = NSStepper; 
@@ -90,6 +91,7 @@
         }, 
         {CLASS = SKPDFView; LANGUAGE = ObjC; SUPERCLASS = PDFView; }, 
         {CLASS = SKSplitView; LANGUAGE = ObjC; SUPERCLASS = NSSplitView; }, 
+        {CLASS = SKThumbnail; LANGUAGE = ObjC; SUPERCLASS = NSObject; }, 
         {CLASS = SkimDocument; LANGUAGE = ObjC; SUPERCLASS = NSDocument; }
     ); 
     IBVersion = 1; 
