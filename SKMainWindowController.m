@@ -143,10 +143,10 @@ static NSString *SKDocumentToolbarSearchItemIdentifier = @"SKDocumentToolbarSear
     
     [self handleChangedHistoryNotification:nil];
     [self handleToolModeChangedNotification:nil];
+    [self handleAnnotationModeChangedNotification:nil];
     [self handlePageChangedNotification:nil];
     [self handleScaleChangedNotification:nil];
     [pageNumberStepper setMaxValue:[[pdfView document] pageCount]];
-    [annotationModeButton setSelectedSegment:annotationMode];
     [sidePaneViewButton setSelectedSegment:sidePaneState];
     
     [self registerForNotifications];
@@ -164,9 +164,13 @@ static NSString *SKDocumentToolbarSearchItemIdentifier = @"SKDocumentToolbarSear
 	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleChangedHistoryNotification:) 
                                                  name:PDFViewChangedHistoryNotification object:pdfView];
 	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleToolModeChangedNotification:) 
+                                                 name:SKPDFViewAnnotationModeChangedNotification object:pdfView];
+	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleAnnotationModeChangedNotification:) 
                                                  name:SKPDFViewToolModeChangedNotification object:pdfView];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleDidChangeActiveAnnotationNotification:) 
                                                  name:SKPDFViewActiveAnnotationDidChangeNotification object:pdfView];
+	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleDidAddAnnotationNotification:) 
+                                                 name:SKPDFViewDidAddAnnotationNotification object:pdfView];
 	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleDidRemoveAnnotationNotification:) 
                                                  name:SKPDFViewDidRemoveAnnotationNotification object:pdfView];
 	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleDidChangeAnnotationNotification:) 
@@ -247,16 +251,6 @@ static NSString *SKDocumentToolbarSearchItemIdentifier = @"SKDocumentToolbarSear
     return [pdfView autoScales];
 }
 
-- (SKAnnotationMode)annotationMode {
-    return annotationMode;
-}
-
-- (void)setAnnotationMode:(SKAnnotationMode)newAnnotationMode {
-    annotationMode = newAnnotationMode;
-    [annotationModeButton setSelectedSegment:annotationMode];
-}
-
-
 - (NSArray *)thumbnails {
     return thumbnails;
 }
@@ -281,21 +275,6 @@ static NSString *SKDocumentToolbarSearchItemIdentifier = @"SKDocumentToolbarSear
     [thumbnails removeObjectAtIndex:theIndex];
 }
 
-#pragma mark key handling
-
-- (void)keyDown:(NSEvent *)theEvent{
-    NSString *characters = [theEvent charactersIgnoringModifiers];
-    unichar eventChar = [characters length] > 0 ? [characters characterAtIndex:0] : 0;
-    
-    if ([pdfView toolMode] == SKTextToolMode && 
-        (eventChar == NSEnterCharacter ||
-         eventChar == NSFormFeedCharacter ||
-         eventChar == NSNewlineCharacter ||
-         eventChar == NSCarriageReturnCharacter)){
-        [self createNewNote:nil];
-    }
-}
-
 #pragma mark Actions
 
 - (IBAction)pickColor:(id)sender{
@@ -314,66 +293,7 @@ static NSString *SKDocumentToolbarSearchItemIdentifier = @"SKDocumentToolbarSear
 }
 
 - (IBAction)createNewNote:(id)sender{
-	PDFAnnotation *newAnnotation;
-	PDFPage *page;
-	PDFSelection *selection = [pdfView currentSelection];
-	NSRect bounds;
-    NSString *text = [selection string];
-	
-	// Determine bounds to use for new text annotation.
-	if (selection != nil) {
-		// Get bounds (page space) for selection (first page in case selection spans multiple pages).
-		page = [[selection pages] objectAtIndex: 0];
-		bounds = [selection boundsForPage: page];
-	} else {
-		// Get center of the PDFView.
-		NSRect viewFrame = [pdfView frame];
-		NSPoint center = NSMakePoint(NSMidX(viewFrame), NSMidY(viewFrame));
-		NSSize defaultSize = ([self annotationMode] == SKTextAnnotationMode || [self annotationMode] == SKNoteAnnotationMode) ? NSMakeSize(16.0, 16.0) : NSMakeSize(128.0, 64.0);
-		
-		// Convert to "page space".
-		page = [pdfView pageForPoint: center nearest: YES];
-		center = [pdfView convertPoint: center toPage: page];
-        bounds = NSMakeRect(center.x - 0.5 * defaultSize.width, center.y - 0.5 * defaultSize.height, defaultSize.width, defaultSize.height);
-	}
-	
-	// Create annotation and add to page.
-    switch ([self annotationMode]) {
-        case SKFreeTextAnnotationMode:
-            newAnnotation = [[PDFAnnotationFreeText alloc] initWithBounds:bounds];
-            [newAnnotation setColor:[NSColor colorWithDeviceRed:1.0 green:1.0 blue:0.5 alpha:1.0]];
-            break;
-        case SKTextAnnotationMode:
-            newAnnotation = [[PDFAnnotationText alloc] initWithBounds:bounds];
-            [newAnnotation setColor:[NSColor colorWithDeviceRed:1.0 green:1.0 blue:0.5 alpha:1.0]];
-            break;
-        case SKNoteAnnotationMode:
-            newAnnotation = [[SKPDFAnnotationNote alloc] initWithBounds:bounds];
-            [newAnnotation setColor:[NSColor colorWithDeviceRed:1.0 green:1.0 blue:0.5 alpha:1.0]];
-            break;
-        case SKCircleAnnotationMode:
-            newAnnotation = [[PDFAnnotationCircle alloc] initWithBounds:NSInsetRect(bounds, -5.0, -5.0)];
-            [newAnnotation setColor:[NSColor redColor]];
-            [[newAnnotation border] setLineWidth:2.0];
-            break;
-        case SKSquareAnnotationMode:
-            newAnnotation = [[PDFAnnotationSquare alloc] initWithBounds:bounds];
-            [newAnnotation setColor:[NSColor greenColor]];
-            [[newAnnotation border] setLineWidth:2.0];
-            break;
-	}
-    [newAnnotation setContents:text ? text : @"New note"];
-    
-    [page addAnnotation:newAnnotation];
-    
-    updatingNoteSelection = YES;
-    [[(SKDocument *)[self document] mutableArrayValueForKey:@"notes"] addObject:newAnnotation];
-    updatingNoteSelection = NO;
-	
-    [pdfView setActiveAnnotation:newAnnotation];
-    
-    [[self window] setDocumentEdited:YES];
-    [self thumbnailAtIndexNeedsUpdate:[newAnnotation pageIndex]];
+    [pdfView addAnnotationFromSelection:[pdfView currentSelection]];
 }
 
 - (void)selectNotes:(NSArray *)notesToShow{
@@ -568,13 +488,12 @@ static NSString *SKDocumentToolbarSearchItemIdentifier = @"SKDocumentToolbarSear
 
 - (IBAction)changeToolMode:(id)sender {
     SKToolMode toolMode = [sender isKindOfClass:[NSSegmentedControl class]] ? [sender selectedSegment] : [sender tag];
-    
     [pdfView setToolMode:toolMode];
 }
 
 - (IBAction)changeAnnotationMode:(id)sender {
     SKAnnotationMode newAnnotationMode = [sender isKindOfClass:[NSSegmentedControl class]] ? [sender selectedSegment] : [sender tag];
-    [self setAnnotationMode:newAnnotationMode];
+    [pdfView setAnnotationMode:newAnnotationMode];
 }
 
 - (IBAction)changeSidePaneView:(id)sender {
@@ -1020,8 +939,12 @@ static NSString *SKDocumentToolbarSearchItemIdentifier = @"SKDocumentToolbarSear
 
 - (void)handleToolModeChangedNotification:(NSNotification *)notification {
 	unsigned toolMode = [pdfView toolMode];
-    
     [toolModeButton setSelectedSegment:toolMode];
+}
+
+- (void)handleAnnotationModeChangedNotification:(NSNotification *)notification {
+	unsigned annotationMode = [pdfView annotationMode];
+    [annotationModeButton setSelectedSegment:annotationMode];
 }
 
 - (void)handleAppWillTerminateNotification:(NSNotification *)notification {
@@ -1038,6 +961,17 @@ static NSString *SKDocumentToolbarSearchItemIdentifier = @"SKDocumentToolbarSear
         [[NSColorPanel sharedColorPanel] setColor:[annotation color]];
 }
 
+- (void)handleDidAddAnnotationNotification:(NSNotification *)notification {
+    PDFAnnotation *annotation = [[notification userInfo] objectForKey:@"annotation"];
+    if (annotation) {
+        updatingNoteSelection = YES;
+        [[(SKDocument *)[self document] mutableArrayValueForKey:@"notes"] addObject:annotation];
+        updatingNoteSelection = NO;
+        [self thumbnailAtIndexNeedsUpdate:[annotation pageIndex]];
+    }
+    [[self window] setDocumentEdited:YES];
+}
+
 - (void)handleDidRemoveAnnotationNotification:(NSNotification *)notification {
     PDFAnnotation *annotation = [[notification userInfo] objectForKey:@"annotation"];
     if (annotation) {
@@ -1051,9 +985,9 @@ static NSString *SKDocumentToolbarSearchItemIdentifier = @"SKDocumentToolbarSear
             }
         }
         [[[self document] mutableArrayValueForKey:@"notes"] removeObject:annotation];
+        [self thumbnailAtIndexNeedsUpdate:[annotation pageIndex]];
     }
     [[self window] setDocumentEdited:YES];
-    [self thumbnailAtIndexNeedsUpdate:[annotation pageIndex]];
 }
 
 - (void)handleDidChangeAnnotationNotification:(NSNotification *)notification {
@@ -1631,7 +1565,7 @@ static NSString *SKDocumentToolbarSearchItemIdentifier = @"SKDocumentToolbarSear
         [menuItem setState:[pdfView toolMode] == (unsigned)[menuItem tag] ? NSOnState : NSOffState];
         return YES;
     } else if (action == @selector(changeAnnotationMode:)) {
-        [menuItem setState:[self annotationMode] == (unsigned)[menuItem tag] ? NSOnState : NSOffState];
+        [menuItem setState:[pdfView annotationMode] == (unsigned)[menuItem tag] ? NSOnState : NSOffState];
         return YES;
     } else if (action == @selector(doGoToNextPage:)) {
         return [pdfView canGoToNextPage];

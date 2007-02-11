@@ -13,7 +13,9 @@
 #import "SKPDFAnnotationNote.h"
 
 NSString *SKPDFViewToolModeChangedNotification = @"SKPDFViewToolModeChangedNotification";
+NSString *SKPDFViewAnnotationModeChangedNotification = @"SKPDFViewAnnotationModeChangedNotification";
 NSString *SKPDFViewActiveAnnotationDidChangeNotification = @"SKPDFViewActiveAnnotationDidChangeNotification";
+NSString *SKPDFViewDidAddAnnotationNotification = @"SKPDFViewDidAddAnnotationNotification";
 NSString *SKPDFViewDidRemoveAnnotationNotification = @"SKPDFViewDidRemoveAnnotationNotification";
 NSString *SKPDFViewDidChangeAnnotationNotification = @"SKPDFViewDidChangeAnnotationNotification";
 NSString *SKPDFViewAnnotationDoubleClickedNotification = @"SKPDFViewAnnotationDoubleClickedNotification";
@@ -179,6 +181,18 @@ static NSRect RectPlusScale (NSRect aRect, float scale)
     }
 }
 
+- (SKAnnotationMode)annotationMode {
+    return annotationMode;
+}
+
+- (void)setAnnotationMode:(SKAnnotationMode)newAnnotationMode {
+    if (annotationMode != newAnnotationMode) {
+        annotationMode = newAnnotationMode;
+        
+        [[NSNotificationCenter defaultCenter] postNotificationName:SKPDFViewAnnotationModeChangedNotification object:self];
+    }
+}
+
 - (PDFAnnotation *)activeAnnotation {
 	return activeAnnotation;
 }
@@ -230,10 +244,17 @@ static NSRect RectPlusScale (NSRect aRect, float scale)
     NSString *characters = [theEvent charactersIgnoringModifiers];
     unichar eventChar = [characters length] > 0 ? [characters characterAtIndex:0] : 0;
 	unsigned int modifiers = [theEvent modifierFlags] & NSDeviceIndependentModifierFlagsMask;
+    BOOL isPresentation = hasNavigation && autohidesCursor;
     
-	if ((eventChar == NSDeleteCharacter) || (eventChar == NSDeleteFunctionKey)) {
+	if (isPresentation && (eventChar == NSRightArrowFunctionKey)) {
+        [self goToNextPage:self];
+    } else if (isPresentation && (eventChar == NSLeftArrowFunctionKey)) {
+		[self goToPreviousPage:self];
+	} else if ((eventChar == NSDeleteCharacter) || (eventChar == NSDeleteFunctionKey)) {
 		[self delete:self];
-	} else if (activeAnnotation && ((eventChar == NSRightArrowFunctionKey) || (eventChar == NSLeftArrowFunctionKey) || (eventChar == NSUpArrowFunctionKey) || (eventChar == NSDownArrowFunctionKey))) {
+    } else if (isPresentation == NO && [self toolMode] == SKTextToolMode && (eventChar == NSEnterCharacter || (eventChar == NSFormFeedCharacter) || (eventChar == NSNewlineCharacter) || (eventChar == NSCarriageReturnCharacter))){
+        [self addAnnotationFromSelection:[self currentSelection]];
+	} else if (isPresentation == NO && activeAnnotation && ((eventChar == NSRightArrowFunctionKey) || (eventChar == NSLeftArrowFunctionKey) || (eventChar == NSUpArrowFunctionKey) || (eventChar == NSDownArrowFunctionKey))) {
         NSRect bounds = [activeAnnotation bounds];
         NSRect newBounds = bounds;
         PDFPage *page = [activeAnnotation page];
@@ -724,6 +745,66 @@ static NSRect RectPlusScale (NSRect aRect, float scale)
 	[NSCursor unhide];
 	[documentView setPostsBoundsChangedNotifications:postNotification];
 	[self flagsChanged:theEvent]; // update cursor
+}
+
+- (PDFAnnotation *)addAnnotationFromSelection:(PDFSelection *)selection{
+	PDFAnnotation *newAnnotation;
+	PDFPage *page;
+	NSRect bounds;
+    NSString *text = [selection string];
+    
+	// Determine bounds to use for new text annotation.
+	if (selection != nil) {
+		// Get bounds (page space) for selection (first page in case selection spans multiple pages).
+		page = [[selection pages] objectAtIndex: 0];
+		bounds = [selection boundsForPage: page];
+	} else {
+		// Get center of the PDFView.
+		NSRect viewFrame = [self frame];
+		NSPoint center = NSMakePoint(NSMidX(viewFrame), NSMidY(viewFrame));
+		NSSize defaultSize = ([self annotationMode] == SKTextAnnotationMode || [self annotationMode] == SKNoteAnnotationMode) ? NSMakeSize(16.0, 16.0) : NSMakeSize(128.0, 64.0);
+		
+		// Convert to "page space".
+		page = [self pageForPoint: center nearest: YES];
+		center = [self convertPoint: center toPage: page];
+        bounds = NSMakeRect(center.x - 0.5 * defaultSize.width, center.y - 0.5 * defaultSize.height, defaultSize.width, defaultSize.height);
+	}
+	
+	// Create annotation and add to page.
+    switch ([self annotationMode]) {
+        case SKFreeTextAnnotationMode:
+            newAnnotation = [[PDFAnnotationFreeText alloc] initWithBounds:bounds];
+            [newAnnotation setColor:[NSColor colorWithDeviceRed:1.0 green:1.0 blue:0.5 alpha:1.0]];
+            break;
+        case SKTextAnnotationMode:
+            newAnnotation = [[PDFAnnotationText alloc] initWithBounds:bounds];
+            [newAnnotation setColor:[NSColor colorWithDeviceRed:1.0 green:1.0 blue:0.5 alpha:1.0]];
+            break;
+        case SKNoteAnnotationMode:
+            newAnnotation = [[SKPDFAnnotationNote alloc] initWithBounds:bounds];
+            [newAnnotation setColor:[NSColor colorWithDeviceRed:1.0 green:1.0 blue:0.5 alpha:1.0]];
+            break;
+        case SKCircleAnnotationMode:
+            newAnnotation = [[PDFAnnotationCircle alloc] initWithBounds:NSInsetRect(bounds, -5.0, -5.0)];
+            [newAnnotation setColor:[NSColor redColor]];
+            [[newAnnotation border] setLineWidth:2.0];
+            break;
+        case SKSquareAnnotationMode:
+            newAnnotation = [[PDFAnnotationSquare alloc] initWithBounds:bounds];
+            [newAnnotation setColor:[NSColor greenColor]];
+            [[newAnnotation border] setLineWidth:2.0];
+            break;
+	}
+    [newAnnotation setContents:text ? text : NSLocalizedString(@"New note", @"Default text for new note")];
+    
+    [page addAnnotation:newAnnotation];
+    
+    [[NSNotificationCenter defaultCenter] postNotificationName:SKPDFViewDidAddAnnotationNotification object:self 
+        userInfo:[NSDictionary dictionaryWithObjectsAndKeys:newAnnotation, @"annotation", nil]];
+
+    [self setActiveAnnotation:newAnnotation];
+    
+    return newAnnotation;
 }
 
 - (void)endAnnotationEdit {
