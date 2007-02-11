@@ -66,6 +66,7 @@
 		CE74686F0B7F3B1C00CBF969 /* ToolbarInfo.tiff in Resources */ = {isa = PBXBuildFile; fileRef = CE7467330B7F2ED700CBF969 /* ToolbarInfo.tiff */; };
 		CE7468810B7F3C0000CBF969 /* zoomInCursor.tiff in Resources */ = {isa = PBXBuildFile; fileRef = CE7467540B7F321100CBF969 /* zoomInCursor.tiff */; };
 		CE7468820B7F3C0000CBF969 /* zoomOutCursor.tiff in Resources */ = {isa = PBXBuildFile; fileRef = CE7467550B7F321A00CBF969 /* zoomOutCursor.tiff */; };
+		CE7469180B7F40B700CBF969 /* Skim.icns in Resources */ = {isa = PBXBuildFile; fileRef = CE7469170B7F40B600CBF969 /* Skim.icns */; };
 		CEFDF8BE0B3848C40091C61A /* SKNavigationWindow.m in Sources */ = {isa = PBXBuildFile; fileRef = CEFDF8BD0B3848C40091C61A /* SKNavigationWindow.m */; };
 		F92DB5AC0B36FE1F002A26E9 /* BDSKHeaderPopUpButtonCell.m in Sources */ = {isa = PBXBuildFile; fileRef = F92DB5A90B36FE1F002A26E9 /* BDSKHeaderPopUpButtonCell.m */; };
 		F92DB5AD0B36FE1F002A26E9 /* BDSKZoomablePDFView.m in Sources */ = {isa = PBXBuildFile; fileRef = F92DB5AB0B36FE1F002A26E9 /* BDSKZoomablePDFView.m */; };
@@ -162,6 +163,7 @@
 		CE7467330B7F2ED700CBF969 /* ToolbarInfo.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; name = ToolbarInfo.tiff; path = Images/ToolbarInfo.tiff; sourceTree = "<group>"; };
 		CE7467540B7F321100CBF969 /* zoomInCursor.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; name = zoomInCursor.tiff; path = Images/zoomInCursor.tiff; sourceTree = "<group>"; };
 		CE7467550B7F321A00CBF969 /* zoomOutCursor.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; name = zoomOutCursor.tiff; path = Images/zoomOutCursor.tiff; sourceTree = "<group>"; };
+		CE7469170B7F40B600CBF969 /* Skim.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; name = Skim.icns; path = Images/Skim.icns; sourceTree = "<group>"; };
 		CEFDF8BC0B3848C40091C61A /* SKNavigationWindow.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SKNavigationWindow.h; sourceTree = "<group>"; };
 		CEFDF8BD0B3848C40091C61A /* SKNavigationWindow.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SKNavigationWindow.m; sourceTree = "<group>"; };
 		F92DB5A80B36FE1F002A26E9 /* BDSKHeaderPopUpButtonCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BDSKHeaderPopUpButtonCell.h; sourceTree = "<group>"; };
@@ -349,6 +351,7 @@
 				CE3A42340B7927D3006B64D3 /* NoteToolAdorn.tiff */,
 				CE4EB8220B7B96D00091F228 /* OutlineViewAdorn.tiff */,
 				CE5478BF0B33456300F8AFB6 /* PopUpToolAdorn.tiff */,
+				CE7469170B7F40B600CBF969 /* Skim.icns */,
 				CE5478C30B33456300F8AFB6 /* TextToolAdorn.tiff */,
 				CE4EB8230B7B96D00091F228 /* ThumbnailViewAdorn.tiff */,
 				CE5478BA0B33456300F8AFB6 /* ToolbarFullScreen.tiff */,
@@ -449,6 +452,7 @@
 				CE5478D80B33456300F8AFB6 /* ToolbarZoomToFit.tiff in Resources */,
 				CE7468810B7F3C0000CBF969 /* zoomInCursor.tiff in Resources */,
 				CE7468820B7F3C0000CBF969 /* zoomOutCursor.tiff in Resources */,
+				CE7469180B7F40B700CBF969 /* Skim.icns in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
