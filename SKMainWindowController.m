@@ -1277,7 +1277,7 @@ static NSString *SKDocumentToolbarSearchItemIdentifier = @"SKDocumentToolbarSear
     [item setLabel:NSLocalizedString(@"Previous", @"Toolbar item label")];
     [item setPaletteLabel:NSLocalizedString(@"Previous", @"Toolbar item label")];
     [item setToolTip:NSLocalizedString(@"Go To Previous Page", @"Tool tip message")];
-    [item setImage:[NSImage imageNamed:@"previous"]];
+    [item setImage:[NSImage imageNamed:@"ToolbarPrevious"]];
     [item setTarget:self];
     [item setAction:@selector(doGoToPreviousPage:)];
     [toolbarItems setObject:item forKey:SKDocumentToolbarPreviousItemIdentifier];
@@ -1287,7 +1287,7 @@ static NSString *SKDocumentToolbarSearchItemIdentifier = @"SKDocumentToolbarSear
     [item setLabel:NSLocalizedString(@"Next", @"Toolbar item label")];
     [item setPaletteLabel:NSLocalizedString(@"Next", @"Toolbar item label")];
     [item setToolTip:NSLocalizedString(@"Go To Next Page", @"Tool tip message")];
-    [item setImage:[NSImage imageNamed:@"next"]];
+    [item setImage:[NSImage imageNamed:@"ToolbarNext"]];
     [item setTarget:self];
     [item setAction:@selector(doGoToNextPage:)];
     [toolbarItems setObject:item forKey:SKDocumentToolbarNextItemIdentifier];
@@ -1332,7 +1332,7 @@ static NSString *SKDocumentToolbarSearchItemIdentifier = @"SKDocumentToolbarSear
     [item setLabel:NSLocalizedString(@"Zoom In", @"Toolbar item label")];
     [item setPaletteLabel:NSLocalizedString(@"Zoom In", @"Toolbar item label")];
     [item setToolTip:NSLocalizedString(@"Zoom In", @"Tool tip message")];
-    [item setImage:[NSImage imageNamed:@"zoomIn"]];
+    [item setImage:[NSImage imageNamed:@"ToolbarZoomIn"]];
     [item setTarget:self];
     [item setAction:@selector(doZoomIn:)];
     [toolbarItems setObject:item forKey:SKDocumentToolbarZoomInItemIdentifier];
@@ -1342,7 +1342,7 @@ static NSString *SKDocumentToolbarSearchItemIdentifier = @"SKDocumentToolbarSear
     [item setLabel:NSLocalizedString(@"Zoom Out", @"Toolbar item label")];
     [item setPaletteLabel:NSLocalizedString(@"Zoom Out", @"Toolbar item label")];
     [item setToolTip:NSLocalizedString(@"Zoom Out", @"Tool tip message")];
-    [item setImage:[NSImage imageNamed:@"zoomOut"]];
+    [item setImage:[NSImage imageNamed:@"ToolbarZoomOut"]];
     [item setTarget:self];
     [item setAction:@selector(doZoomOut:)];
     [toolbarItems setObject:item forKey:SKDocumentToolbarZoomOutItemIdentifier];
@@ -1352,7 +1352,7 @@ static NSString *SKDocumentToolbarSearchItemIdentifier = @"SKDocumentToolbarSear
     [item setLabel:NSLocalizedString(@"Actual Size", @"Toolbar item label")];
     [item setPaletteLabel:NSLocalizedString(@"Actual Size", @"Toolbar item label")];
     [item setToolTip:NSLocalizedString(@"Zoom To Actual Size", @"Tool tip message")];
-    [item setImage:[NSImage imageNamed:@"zoomActual"]];
+    [item setImage:[NSImage imageNamed:@"ToolbarZoomActual"]];
     [item setTarget:self];
     [item setAction:@selector(doZoomToActualSize:)];
     [toolbarItems setObject:item forKey:SKDocumentToolbarZoomActualItemIdentifier];
@@ -1362,7 +1362,7 @@ static NSString *SKDocumentToolbarSearchItemIdentifier = @"SKDocumentToolbarSear
     [item setLabel:NSLocalizedString(@"Auto Zoom", @"Toolbar item label")];
     [item setPaletteLabel:NSLocalizedString(@"Zoom To Fit", @"Toolbar item label")];
     [item setToolTip:NSLocalizedString(@"Zoom To Fit", @"Tool tip message")];
-    [item setImage:[NSImage imageNamed:@"zoomToFit"]];
+    [item setImage:[NSImage imageNamed:@"ToolbarZoomToFit"]];
     [item setTarget:self];
     [item setAction:@selector(doZoomToFit:)];
     [toolbarItems setObject:item forKey:SKDocumentToolbarZoomAutoItemIdentifier];
@@ -1372,7 +1372,7 @@ static NSString *SKDocumentToolbarSearchItemIdentifier = @"SKDocumentToolbarSear
     [item setLabel:NSLocalizedString(@"Rotate Right", @"Toolbar item label")];
     [item setPaletteLabel:NSLocalizedString(@"Rotate Right", @"Toolbar item label")];
     [item setToolTip:NSLocalizedString(@"Rotate Right", @"Tool tip message")];
-    [item setImage:[NSImage imageNamed:@"rotateRight"]];
+    [item setImage:[NSImage imageNamed:@"ToolbarRotateRight"]];
     [item setTarget:self];
     [item setAction:@selector(rotateAllRight:)];
     [toolbarItems setObject:item forKey:SKDocumentToolbarRotateRightItemIdentifier];
@@ -1382,7 +1382,7 @@ static NSString *SKDocumentToolbarSearchItemIdentifier = @"SKDocumentToolbarSear
     [item setLabel:NSLocalizedString(@"Rotate Left", @"Toolbar item label")];
     [item setPaletteLabel:NSLocalizedString(@"Rotate Left", @"Toolbar item label")];
     [item setToolTip:NSLocalizedString(@"Rotate Left", @"Tool tip message")];
-    [item setImage:[NSImage imageNamed:@"rotateLeft"]];
+    [item setImage:[NSImage imageNamed:@"ToolbarRotateLeft"]];
     [item setTarget:self];
     [item setAction:@selector(rotateAllLeft:)];
     [toolbarItems setObject:item forKey:SKDocumentToolbarRotateLeftItemIdentifier];
@@ -1392,7 +1392,7 @@ static NSString *SKDocumentToolbarSearchItemIdentifier = @"SKDocumentToolbarSear
     [item setLabel:NSLocalizedString(@"Full Screen", @"Toolbar item label")];
     [item setPaletteLabel:NSLocalizedString(@"Full Screen", @"Toolbar item label")];
     [item setToolTip:NSLocalizedString(@"Full Screen", @"Tool tip message")];
-    [item setImage:[NSImage imageNamed:@"fullScreen"]];
+    [item setImage:[NSImage imageNamed:@"ToolbarFullScreen"]];
     [item setTarget:self];
     [item setAction:@selector(enterFullScreen:)];
     [toolbarItems setObject:item forKey:SKDocumentToolbarFullScreenItemIdentifier];
@@ -1402,7 +1402,7 @@ static NSString *SKDocumentToolbarSearchItemIdentifier = @"SKDocumentToolbarSear
     [item setLabel:NSLocalizedString(@"Presentation", @"Toolbar item label")];
     [item setPaletteLabel:NSLocalizedString(@"Presentation", @"Toolbar item label")];
     [item setToolTip:NSLocalizedString(@"Presentation", @"Tool tip message")];
-    [item setImage:[NSImage imageNamed:@"presentation"]];
+    [item setImage:[NSImage imageNamed:@"ToolbarPresentation"]];
     [item setTarget:self];
     [item setAction:@selector(enterPresentation:)];
     [toolbarItems setObject:item forKey:SKDocumentToolbarPresentationItemIdentifier];
@@ -1412,7 +1412,7 @@ static NSString *SKDocumentToolbarSearchItemIdentifier = @"SKDocumentToolbarSear
     [item setLabel:NSLocalizedString(@"New Note", @"Toolbar item label")];
     [item setPaletteLabel:NSLocalizedString(@"New Note", @"Toolbar item label")];
     [item setToolTip:NSLocalizedString(@"Add New Note", @"Tool tip message")];
-    [item setImage:[NSImage imageNamed:@"note"]];
+    [item setImage:[NSImage imageNamed:@"ToolbarNote"]];
     [item setTarget:self];
     [item setAction:@selector(createNewNote:)];
     [toolbarItems setObject:item forKey:SKDocumentToolbarNewNoteItemIdentifier];
@@ -1422,7 +1422,7 @@ static NSString *SKDocumentToolbarSearchItemIdentifier = @"SKDocumentToolbarSear
     [item setLabel:NSLocalizedString(@"Drawer", @"Toolbar item label")];
     [item setPaletteLabel:NSLocalizedString(@"Drawer", @"Toolbar item label")];
     [item setToolTip:NSLocalizedString(@"Toggle Drawer", @"Tool tip message")];
-    [item setImage:[NSImage imageNamed:@"notesDrawer"]];
+    [item setImage:[NSImage imageNamed:@"ToolbarNotesDrawer"]];
     [item setTarget:self];
     [item setAction:@selector(toggleNotesDrawer:)];
     [toolbarItems setObject:item forKey:SKDocumentToolbarToggleDrawerItemIdentifier];
@@ -1485,7 +1485,7 @@ static NSString *SKDocumentToolbarSearchItemIdentifier = @"SKDocumentToolbarSear
     [item setLabel:NSLocalizedString(@"Info", @"Toolbar item label")];
     [item setPaletteLabel:NSLocalizedString(@"Info", @"Toolbar item label")];
     [item setToolTip:NSLocalizedString(@"Get Document Info", @"Tool tip message")];
-    [item setImage:[NSImage imageNamed:@"info"]];
+    [item setImage:[NSImage imageNamed:@"ToolbarInfo"]];
     [item setTarget:self];
     [item setAction:@selector(getInfo:)];
     [toolbarItems setObject:item forKey:SKDocumentToolbarInfoItemIdentifier];
