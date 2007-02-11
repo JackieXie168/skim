@@ -14,7 +14,7 @@
 			<key>CFBundleTypeName</key>
 			<string>Skim Notes</string>
 			<key>CFBundleTypeRole</key>
-			<string>Editor</string>
+			<string>None</string>
 			<key>LSTypeIsPackage</key>
 			<false/>
 			<key>NSDocumentClass</key>
@@ -46,6 +46,11 @@
 			</array>
 			<key>NSDocumentClass</key>
 			<string>SKDocument</string>
+			<key>NSExportableAs</key>
+			<array>
+				<string>NSPDFPboardType</string>
+				<string>Skim Notes</string>
+			</array>
 		</dict>
 		<dict>
 			<key>CFBundleTypeExtensions</key>

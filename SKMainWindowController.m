@@ -230,7 +230,11 @@ static NSString *SKDocumentToolbarSearchItemIdentifier = @"SKDocumentToolbarSear
     while (dict = [e nextObject]) {
         unsigned pageIndex = [[dict objectForKey:@"pageIndex"] unsignedIntValue];
         if (annotation = [[PDFAnnotation alloc] initWithDictionary:dict]) {
-            PDFPage *page = [pdfDoc pageAtIndex:pageIndex == NSNotFound ? 0 : pageIndex];
+            if (pageIndex == NSNotFound)
+                pageIndex = 0;
+            else if ([pdfDoc pageCount] > pageIndex)
+                pageIndex = [pdfDoc pageCount] - 1;
+            PDFPage *page = [pdfDoc pageAtIndex:pageIndex];
             [page addAnnotation:annotation];
             [notes addObject:annotation];
             [annotation release];

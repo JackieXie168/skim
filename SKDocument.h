@@ -25,6 +25,8 @@ extern NSString *SKDocumentErrorDomain;
     NSMutableArray *noteDicts;
 }
 
+- (IBAction)readNotes:(id)sender;
+
 - (NSArray *)notes;
 - (void)setNotes:(NSArray *)newNotes;
 - (NSArray *)notes;
