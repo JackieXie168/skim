@@ -69,6 +69,8 @@ static NSString *SKPostScriptDocumentType = @"PostScript document";
     pdfDocument = nil;
     
     [mainController setAnnotationsFromDictionaries:noteDicts];
+    [noteDicts release];
+    noteDicts = nil;
 }
 
 
@@ -76,9 +78,10 @@ static NSString *SKPostScriptDocumentType = @"PostScript document";
     BOOL success = [super saveToURL:absoluteURL ofType:typeName forSaveOperation:saveOperation error:outError];
     
     // we check for notes and save a .skim as well:
-    if (success && [typeName isEqualToString:SKPDFDocumentType] && saveOperation != NSAutosaveOperation) {
+    if (success && [typeName isEqualToString:SKPDFDocumentType]) {
        [self saveNotesToExtendedAttributesAtURL:absoluteURL];
-       [[[[self windowControllers] objectAtIndex:0] window] setDocumentEdited:NO];
+       if (saveOperation == NSSaveOperation || saveOperation == NSSaveAsOperation)
+            [[[self mainWindowController] window] setDocumentEdited:NO];
     }
     
     return success;
@@ -99,14 +102,17 @@ static NSString *SKPostScriptDocumentType = @"PostScript document";
 - (BOOL)revertToContentsOfURL:(NSURL *)absoluteURL ofType:(NSString *)typeName error:(NSError **)outError{
     if ([super revertToContentsOfURL:absoluteURL ofType:typeName error:outError]) {
         if ([typeName isEqualToString:SKNotesDocumentType] == NO) {
-            [(SKMainWindowController *)[[self windowControllers] objectAtIndex:0] setPdfDocument:pdfDocument];
+            [[self mainWindowController] setPdfDocument:pdfDocument];
             [pdfDocument autorelease];
             pdfDocument = nil;
         } else {
-            [[[[self windowControllers] objectAtIndex:0] window] setDocumentEdited:NO];
+            [[[self mainWindowController] window] setDocumentEdited:NO];
         }
-        if (noteDicts)
-            [[[self windowControllers] objectAtIndex:0] setAnnotationsFromDictionaries:noteDicts];
+        if (noteDicts) {
+            [[self mainWindowController] setAnnotationsFromDictionaries:noteDicts];
+            [noteDicts release];
+            noteDicts = nil;
+        }
         return YES;
     } else return NO;
 }
@@ -141,6 +147,32 @@ static NSString *SKPostScriptDocumentType = @"PostScript document";
     if (NO == didRead && outError)
         *outError = [NSError errorWithDomain:SKDocumentErrorDomain code:0 userInfo:[NSDictionary dictionaryWithObjectsAndKeys:NSLocalizedString(@"Unable to load file", @""), NSLocalizedDescriptionKey, nil]];
     return didRead;
+}
+
+- (void)openPanelDidEnd:(NSOpenPanel *)oPanel returnCode:(int)returnCode  contextInfo:(void  *)contextInfo{
+    if (returnCode == NSOKButton) {
+        NSURL *notesURL = [[oPanel URLs] objectAtIndex:0];
+        
+        if ([self readNotesFromData:[NSKeyedUnarchiver unarchiveObjectWithFile:[notesURL path]]] && noteDicts) {
+            [[self mainWindowController] setAnnotationsFromDictionaries:noteDicts];
+            [noteDicts release];
+            noteDicts = nil;
+        }
+        
+        [[[self mainWindowController] window] setDocumentEdited:YES];
+    }
+}
+
+- (IBAction)readNotes:(id)sender{
+    NSOpenPanel *oPanel = [NSOpenPanel openPanel];
+    NSString *path = [[self fileURL] path];
+    [oPanel beginSheetForDirectory:[path stringByDeletingLastPathComponent]
+                              file:[[[path lastPathComponent] stringByDeletingPathExtension] stringByAppendingPathExtension:@"skim"]
+                             types:[NSArray arrayWithObject:@"skim"]
+                    modalForWindow:[[self mainWindowController] window]
+                     modalDelegate:self
+                    didEndSelector:@selector(openPanelDidEnd:returnCode:contextInfo:)
+                       contextInfo:NULL];		
 }
 
 - (BOOL)saveNotesToExtendedAttributesAtURL:(NSURL *)aURL {

@@ -20,6 +20,7 @@
                 doZoomToFit = id; 
                 getInfo = id; 
                 pickColor = id; 
+                readNotes = id; 
                 rotateAllLeft = id; 
                 rotateAllRight = id; 
                 rotateLeft = id; 
