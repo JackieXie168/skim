@@ -30,8 +30,8 @@
 		CE3A42350B7927D3006B64D3 /* CircleToolAdorn.tiff in Resources */ = {isa = PBXBuildFile; fileRef = CE3A42330B7927D3006B64D3 /* CircleToolAdorn.tiff */; };
 		CE3A42360B7927D3006B64D3 /* NoteToolAdorn.tiff in Resources */ = {isa = PBXBuildFile; fileRef = CE3A42340B7927D3006B64D3 /* NoteToolAdorn.tiff */; };
 		CE3A45530B7A04A4006B64D3 /* NSBezierPath_BDSKExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = CE3A45520B7A04A4006B64D3 /* NSBezierPath_BDSKExtensions.m */; };
-		CE3A4BA50B7A4D0D006B64D3 /* note.tiff in Resources */ = {isa = PBXBuildFile; fileRef = CE3A4BA40B7A4D0C006B64D3 /* note.tiff */; };
-		CE3A4DE30B7A7FC7006B64D3 /* presentation.tiff in Resources */ = {isa = PBXBuildFile; fileRef = CE3A4DE20B7A7FC7006B64D3 /* presentation.tiff */; };
+		CE3A4BA50B7A4D0D006B64D3 /* ToolbarNote.tiff in Resources */ = {isa = PBXBuildFile; fileRef = CE3A4BA40B7A4D0C006B64D3 /* ToolbarNote.tiff */; };
+		CE3A4DE30B7A7FC7006B64D3 /* ToolbarPresentation.tiff in Resources */ = {isa = PBXBuildFile; fileRef = CE3A4DE20B7A7FC7006B64D3 /* ToolbarPresentation.tiff */; };
 		CE4EB8240B7B96D00091F228 /* OutlineViewAdorn.tiff in Resources */ = {isa = PBXBuildFile; fileRef = CE4EB8220B7B96D00091F228 /* OutlineViewAdorn.tiff */; };
 		CE4EB8250B7B96D00091F228 /* ThumbnailViewAdorn.tiff in Resources */ = {isa = PBXBuildFile; fileRef = CE4EB8230B7B96D00091F228 /* ThumbnailViewAdorn.tiff */; };
 		CE4EBDDA0B7BF3B30091F228 /* SKSideWindow.m in Sources */ = {isa = PBXBuildFile; fileRef = CE4EBDD90B7BF3B30091F228 /* SKSideWindow.m */; };
@@ -45,26 +45,27 @@
 		CE5478C80B33456300F8AFB6 /* AnnotateToolAdorn.tiff in Resources */ = {isa = PBXBuildFile; fileRef = CE5478B70B33456300F8AFB6 /* AnnotateToolAdorn.tiff */; };
 		CE5478C90B33456300F8AFB6 /* BackAdorn.tiff in Resources */ = {isa = PBXBuildFile; fileRef = CE5478B80B33456300F8AFB6 /* BackAdorn.tiff */; };
 		CE5478CA0B33456300F8AFB6 /* ForwardAdorn.tiff in Resources */ = {isa = PBXBuildFile; fileRef = CE5478B90B33456300F8AFB6 /* ForwardAdorn.tiff */; };
-		CE5478CB0B33456300F8AFB6 /* fullScreen.tiff in Resources */ = {isa = PBXBuildFile; fileRef = CE5478BA0B33456300F8AFB6 /* fullScreen.tiff */; };
+		CE5478CB0B33456300F8AFB6 /* ToolbarFullScreen.tiff in Resources */ = {isa = PBXBuildFile; fileRef = CE5478BA0B33456300F8AFB6 /* ToolbarFullScreen.tiff */; };
 		CE5478CD0B33456300F8AFB6 /* MoveToolAdorn.tif in Resources */ = {isa = PBXBuildFile; fileRef = CE5478BC0B33456300F8AFB6 /* MoveToolAdorn.tif */; };
-		CE5478CE0B33456300F8AFB6 /* next.tiff in Resources */ = {isa = PBXBuildFile; fileRef = CE5478BD0B33456300F8AFB6 /* next.tiff */; };
-		CE5478CF0B33456300F8AFB6 /* notesDrawer.tiff in Resources */ = {isa = PBXBuildFile; fileRef = CE5478BE0B33456300F8AFB6 /* notesDrawer.tiff */; };
+		CE5478CE0B33456300F8AFB6 /* ToolbarNext.tiff in Resources */ = {isa = PBXBuildFile; fileRef = CE5478BD0B33456300F8AFB6 /* ToolbarNext.tiff */; };
+		CE5478CF0B33456300F8AFB6 /* ToolbarNotesDrawer.tiff in Resources */ = {isa = PBXBuildFile; fileRef = CE5478BE0B33456300F8AFB6 /* ToolbarNotesDrawer.tiff */; };
 		CE5478D00B33456300F8AFB6 /* PopUpToolAdorn.tiff in Resources */ = {isa = PBXBuildFile; fileRef = CE5478BF0B33456300F8AFB6 /* PopUpToolAdorn.tiff */; };
-		CE5478D10B33456300F8AFB6 /* previous.tiff in Resources */ = {isa = PBXBuildFile; fileRef = CE5478C00B33456300F8AFB6 /* previous.tiff */; };
-		CE5478D20B33456300F8AFB6 /* rotateLeft.tiff in Resources */ = {isa = PBXBuildFile; fileRef = CE5478C10B33456300F8AFB6 /* rotateLeft.tiff */; };
-		CE5478D30B33456300F8AFB6 /* rotateRight.tiff in Resources */ = {isa = PBXBuildFile; fileRef = CE5478C20B33456300F8AFB6 /* rotateRight.tiff */; };
+		CE5478D10B33456300F8AFB6 /* ToolbarPrevious.tiff in Resources */ = {isa = PBXBuildFile; fileRef = CE5478C00B33456300F8AFB6 /* ToolbarPrevious.tiff */; };
+		CE5478D20B33456300F8AFB6 /* ToolbarRotateLeft.tiff in Resources */ = {isa = PBXBuildFile; fileRef = CE5478C10B33456300F8AFB6 /* ToolbarRotateLeft.tiff */; };
+		CE5478D30B33456300F8AFB6 /* ToolbarRotateRight.tiff in Resources */ = {isa = PBXBuildFile; fileRef = CE5478C20B33456300F8AFB6 /* ToolbarRotateRight.tiff */; };
 		CE5478D40B33456300F8AFB6 /* TextToolAdorn.tiff in Resources */ = {isa = PBXBuildFile; fileRef = CE5478C30B33456300F8AFB6 /* TextToolAdorn.tiff */; };
-		CE5478D50B33456300F8AFB6 /* zoomActual.tiff in Resources */ = {isa = PBXBuildFile; fileRef = CE5478C40B33456300F8AFB6 /* zoomActual.tiff */; };
-		CE5478D60B33456300F8AFB6 /* zoomIn.tiff in Resources */ = {isa = PBXBuildFile; fileRef = CE5478C50B33456300F8AFB6 /* zoomIn.tiff */; };
-		CE5478D70B33456300F8AFB6 /* zoomOut.tiff in Resources */ = {isa = PBXBuildFile; fileRef = CE5478C60B33456300F8AFB6 /* zoomOut.tiff */; };
-		CE5478D80B33456300F8AFB6 /* zoomToFit.tiff in Resources */ = {isa = PBXBuildFile; fileRef = CE5478C70B33456300F8AFB6 /* zoomToFit.tiff */; };
+		CE5478D50B33456300F8AFB6 /* ToolbarZoomActual.tiff in Resources */ = {isa = PBXBuildFile; fileRef = CE5478C40B33456300F8AFB6 /* ToolbarZoomActual.tiff */; };
+		CE5478D60B33456300F8AFB6 /* ToolbarZoomIn.tiff in Resources */ = {isa = PBXBuildFile; fileRef = CE5478C50B33456300F8AFB6 /* ToolbarZoomIn.tiff */; };
+		CE5478D70B33456300F8AFB6 /* ToolbarZoomOut.tiff in Resources */ = {isa = PBXBuildFile; fileRef = CE5478C60B33456300F8AFB6 /* ToolbarZoomOut.tiff */; };
+		CE5478D80B33456300F8AFB6 /* ToolbarZoomToFit.tiff in Resources */ = {isa = PBXBuildFile; fileRef = CE5478C70B33456300F8AFB6 /* ToolbarZoomToFit.tiff */; };
 		CE5478E50B334CAC00F8AFB6 /* MagnifyToolAdorn.tiff in Resources */ = {isa = PBXBuildFile; fileRef = CE5478E40B334CAC00F8AFB6 /* MagnifyToolAdorn.tiff */; };
 		CE5487BC0B35A20A00F8AFB6 /* NSFileManager_ExtendedAttributes.m in Sources */ = {isa = PBXBuildFile; fileRef = CE5487BB0B35A20A00F8AFB6 /* NSFileManager_ExtendedAttributes.m */; };
 		CE54898C0B35D4EF00F8AFB6 /* InfoWindow.nib in Resources */ = {isa = PBXBuildFile; fileRef = CE54898A0B35D4EF00F8AFB6 /* InfoWindow.nib */; };
 		CE54898F0B35D50E00F8AFB6 /* SKInfoWindowController.m in Sources */ = {isa = PBXBuildFile; fileRef = CE54898E0B35D50E00F8AFB6 /* SKInfoWindowController.m */; };
 		CE548DAC0B371ED000F8AFB6 /* SKCollapsibleView.m in Sources */ = {isa = PBXBuildFile; fileRef = CE548DAB0B371ED000F8AFB6 /* SKCollapsibleView.m */; };
-		CE548E550B37F67A00F8AFB6 /* zoomInCursor.tiff in Resources */ = {isa = PBXBuildFile; fileRef = CE548E530B37F67A00F8AFB6 /* zoomInCursor.tiff */; };
-		CE548E560B37F67A00F8AFB6 /* zoomOutCursor.tiff in Resources */ = {isa = PBXBuildFile; fileRef = CE548E540B37F67A00F8AFB6 /* zoomOutCursor.tiff */; };
+		CE74686F0B7F3B1C00CBF969 /* ToolbarInfo.tiff in Resources */ = {isa = PBXBuildFile; fileRef = CE7467330B7F2ED700CBF969 /* ToolbarInfo.tiff */; };
+		CE7468810B7F3C0000CBF969 /* zoomInCursor.tiff in Resources */ = {isa = PBXBuildFile; fileRef = CE7467540B7F321100CBF969 /* zoomInCursor.tiff */; };
+		CE7468820B7F3C0000CBF969 /* zoomOutCursor.tiff in Resources */ = {isa = PBXBuildFile; fileRef = CE7467550B7F321A00CBF969 /* zoomOutCursor.tiff */; };
 		CEFDF8BE0B3848C40091C61A /* SKNavigationWindow.m in Sources */ = {isa = PBXBuildFile; fileRef = CEFDF8BD0B3848C40091C61A /* SKNavigationWindow.m */; };
 		F92DB5AC0B36FE1F002A26E9 /* BDSKHeaderPopUpButtonCell.m in Sources */ = {isa = PBXBuildFile; fileRef = F92DB5A90B36FE1F002A26E9 /* BDSKHeaderPopUpButtonCell.m */; };
 		F92DB5AD0B36FE1F002A26E9 /* BDSKZoomablePDFView.m in Sources */ = {isa = PBXBuildFile; fileRef = F92DB5AB0B36FE1F002A26E9 /* BDSKZoomablePDFView.m */; };
@@ -116,8 +117,8 @@
 		CE3A42340B7927D3006B64D3 /* NoteToolAdorn.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; name = NoteToolAdorn.tiff; path = Images/NoteToolAdorn.tiff; sourceTree = "<group>"; };
 		CE3A45510B7A04A4006B64D3 /* NSBezierPath_BDSKExtensions.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = NSBezierPath_BDSKExtensions.h; sourceTree = "<group>"; };
 		CE3A45520B7A04A4006B64D3 /* NSBezierPath_BDSKExtensions.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = NSBezierPath_BDSKExtensions.m; sourceTree = "<group>"; };
-		CE3A4BA40B7A4D0C006B64D3 /* note.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; name = note.tiff; path = Images/note.tiff; sourceTree = "<group>"; };
-		CE3A4DE20B7A7FC7006B64D3 /* presentation.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; name = presentation.tiff; path = Images/presentation.tiff; sourceTree = "<group>"; };
+		CE3A4BA40B7A4D0C006B64D3 /* ToolbarNote.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; name = ToolbarNote.tiff; path = Images/ToolbarNote.tiff; sourceTree = "<group>"; };
+		CE3A4DE20B7A7FC7006B64D3 /* ToolbarPresentation.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; name = ToolbarPresentation.tiff; path = Images/ToolbarPresentation.tiff; sourceTree = "<group>"; };
 		CE4EB8220B7B96D00091F228 /* OutlineViewAdorn.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; name = OutlineViewAdorn.tiff; path = Images/OutlineViewAdorn.tiff; sourceTree = "<group>"; };
 		CE4EB8230B7B96D00091F228 /* ThumbnailViewAdorn.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; name = ThumbnailViewAdorn.tiff; path = Images/ThumbnailViewAdorn.tiff; sourceTree = "<group>"; };
 		CE4EBDD80B7BF3B30091F228 /* SKSideWindow.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = SKSideWindow.h; sourceTree = "<group>"; };
@@ -137,19 +138,19 @@
 		CE5478B70B33456300F8AFB6 /* AnnotateToolAdorn.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; name = AnnotateToolAdorn.tiff; path = Images/AnnotateToolAdorn.tiff; sourceTree = "<group>"; };
 		CE5478B80B33456300F8AFB6 /* BackAdorn.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; name = BackAdorn.tiff; path = Images/BackAdorn.tiff; sourceTree = "<group>"; };
 		CE5478B90B33456300F8AFB6 /* ForwardAdorn.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; name = ForwardAdorn.tiff; path = Images/ForwardAdorn.tiff; sourceTree = "<group>"; };
-		CE5478BA0B33456300F8AFB6 /* fullScreen.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; name = fullScreen.tiff; path = Images/fullScreen.tiff; sourceTree = "<group>"; };
+		CE5478BA0B33456300F8AFB6 /* ToolbarFullScreen.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; name = ToolbarFullScreen.tiff; path = Images/ToolbarFullScreen.tiff; sourceTree = "<group>"; };
 		CE5478BC0B33456300F8AFB6 /* MoveToolAdorn.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; name = MoveToolAdorn.tif; path = Images/MoveToolAdorn.tif; sourceTree = "<group>"; };
-		CE5478BD0B33456300F8AFB6 /* next.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; name = next.tiff; path = Images/next.tiff; sourceTree = "<group>"; };
-		CE5478BE0B33456300F8AFB6 /* notesDrawer.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; name = notesDrawer.tiff; path = Images/notesDrawer.tiff; sourceTree = "<group>"; };
+		CE5478BD0B33456300F8AFB6 /* ToolbarNext.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; name = ToolbarNext.tiff; path = Images/ToolbarNext.tiff; sourceTree = "<group>"; };
+		CE5478BE0B33456300F8AFB6 /* ToolbarNotesDrawer.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; name = ToolbarNotesDrawer.tiff; path = Images/ToolbarNotesDrawer.tiff; sourceTree = "<group>"; };
 		CE5478BF0B33456300F8AFB6 /* PopUpToolAdorn.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; name = PopUpToolAdorn.tiff; path = Images/PopUpToolAdorn.tiff; sourceTree = "<group>"; };
-		CE5478C00B33456300F8AFB6 /* previous.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; name = previous.tiff; path = Images/previous.tiff; sourceTree = "<group>"; };
-		CE5478C10B33456300F8AFB6 /* rotateLeft.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; name = rotateLeft.tiff; path = Images/rotateLeft.tiff; sourceTree = "<group>"; };
-		CE5478C20B33456300F8AFB6 /* rotateRight.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; name = rotateRight.tiff; path = Images/rotateRight.tiff; sourceTree = "<group>"; };
+		CE5478C00B33456300F8AFB6 /* ToolbarPrevious.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; name = ToolbarPrevious.tiff; path = Images/ToolbarPrevious.tiff; sourceTree = "<group>"; };
+		CE5478C10B33456300F8AFB6 /* ToolbarRotateLeft.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; name = ToolbarRotateLeft.tiff; path = Images/ToolbarRotateLeft.tiff; sourceTree = "<group>"; };
+		CE5478C20B33456300F8AFB6 /* ToolbarRotateRight.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; name = ToolbarRotateRight.tiff; path = Images/ToolbarRotateRight.tiff; sourceTree = "<group>"; };
 		CE5478C30B33456300F8AFB6 /* TextToolAdorn.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; name = TextToolAdorn.tiff; path = Images/TextToolAdorn.tiff; sourceTree = "<group>"; };
-		CE5478C40B33456300F8AFB6 /* zoomActual.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; name = zoomActual.tiff; path = Images/zoomActual.tiff; sourceTree = "<group>"; };
-		CE5478C50B33456300F8AFB6 /* zoomIn.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; name = zoomIn.tiff; path = Images/zoomIn.tiff; sourceTree = "<group>"; };
-		CE5478C60B33456300F8AFB6 /* zoomOut.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; name = zoomOut.tiff; path = Images/zoomOut.tiff; sourceTree = "<group>"; };
-		CE5478C70B33456300F8AFB6 /* zoomToFit.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; name = zoomToFit.tiff; path = Images/zoomToFit.tiff; sourceTree = "<group>"; };
+		CE5478C40B33456300F8AFB6 /* ToolbarZoomActual.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; name = ToolbarZoomActual.tiff; path = Images/ToolbarZoomActual.tiff; sourceTree = "<group>"; };
+		CE5478C50B33456300F8AFB6 /* ToolbarZoomIn.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; name = ToolbarZoomIn.tiff; path = Images/ToolbarZoomIn.tiff; sourceTree = "<group>"; };
+		CE5478C60B33456300F8AFB6 /* ToolbarZoomOut.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; name = ToolbarZoomOut.tiff; path = Images/ToolbarZoomOut.tiff; sourceTree = "<group>"; };
+		CE5478C70B33456300F8AFB6 /* ToolbarZoomToFit.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; name = ToolbarZoomToFit.tiff; path = Images/ToolbarZoomToFit.tiff; sourceTree = "<group>"; };
 		CE5478E40B334CAC00F8AFB6 /* MagnifyToolAdorn.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; name = MagnifyToolAdorn.tiff; path = Images/MagnifyToolAdorn.tiff; sourceTree = "<group>"; };
 		CE5487BA0B35A20A00F8AFB6 /* NSFileManager_ExtendedAttributes.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = NSFileManager_ExtendedAttributes.h; sourceTree = "<group>"; };
 		CE5487BB0B35A20A00F8AFB6 /* NSFileManager_ExtendedAttributes.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = NSFileManager_ExtendedAttributes.m; sourceTree = "<group>"; };
@@ -158,9 +159,9 @@
 		CE54898E0B35D50E00F8AFB6 /* SKInfoWindowController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SKInfoWindowController.m; sourceTree = "<group>"; };
 		CE548DAA0B371ED000F8AFB6 /* SKCollapsibleView.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = SKCollapsibleView.h; sourceTree = "<group>"; };
 		CE548DAB0B371ED000F8AFB6 /* SKCollapsibleView.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = SKCollapsibleView.m; sourceTree = "<group>"; };
-		CE548E530B37F67A00F8AFB6 /* zoomInCursor.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; name = zoomInCursor.tiff; path = Images/zoomInCursor.tiff; sourceTree = "<group>"; };
-		CE548E540B37F67A00F8AFB6 /* zoomOutCursor.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; name = zoomOutCursor.tiff; path = Images/zoomOutCursor.tiff; sourceTree = "<group>"; };
-		CE7467330B7F2ED700CBF969 /* info.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; name = info.tiff; path = Images/info.tiff; sourceTree = "<group>"; };
+		CE7467330B7F2ED700CBF969 /* ToolbarInfo.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; name = ToolbarInfo.tiff; path = Images/ToolbarInfo.tiff; sourceTree = "<group>"; };
+		CE7467540B7F321100CBF969 /* zoomInCursor.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; name = zoomInCursor.tiff; path = Images/zoomInCursor.tiff; sourceTree = "<group>"; };
+		CE7467550B7F321A00CBF969 /* zoomOutCursor.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; name = zoomOutCursor.tiff; path = Images/zoomOutCursor.tiff; sourceTree = "<group>"; };
 		CEFDF8BC0B3848C40091C61A /* SKNavigationWindow.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SKNavigationWindow.h; sourceTree = "<group>"; };
 		CEFDF8BD0B3848C40091C61A /* SKNavigationWindow.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SKNavigationWindow.m; sourceTree = "<group>"; };
 		F92DB5A80B36FE1F002A26E9 /* BDSKHeaderPopUpButtonCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BDSKHeaderPopUpButtonCell.h; sourceTree = "<group>"; };
@@ -220,6 +221,7 @@
 		2A37F4AAFDCFA73011CA2CEA /* Skim */ = {
 			isa = PBXGroup;
 			children = (
+				45B113BF0B329A7E00DE0660 /* LICENSE */,
 				453DC2740B4F23E500A72509 /* 3rd-party Sources */,
 				2A37F4ABFDCFA73011CA2CEA /* Classes */,
 				2A37F4AFFDCFA73011CA2CEA /* Other Sources */,
@@ -235,7 +237,6 @@
 			children = (
 				CE4EBDD80B7BF3B30091F228 /* SKSideWindow.h */,
 				CE4EBDD90B7BF3B30091F228 /* SKSideWindow.m */,
-				45B113BF0B329A7E00DE0660 /* LICENSE */,
 				45B1115E0B3096B900DE0660 /* SKNote.h */,
 				45B1115F0B3096B900DE0660 /* SKNote.m */,
 				4530D8C70B27B04D007C59F4 /* SKApplicationController.h */,
@@ -301,17 +302,17 @@
 			isa = PBXGroup;
 			children = (
 				CE5475A00B33058B00F8AFB6 /* Images */,
-				2A37F4B9FDCFA73011CA2CEA /* Credits.rtf */,
+				F977515E0B37460100DF673B /* ConversionProgressWindow.nib */,
+				CE54898A0B35D4EF00F8AFB6 /* InfoWindow.nib */,
 				2A37F4B6FDCFA73011CA2CEA /* MainMenu.nib */,
 				4530D81B0B27ACAC007C59F4 /* MainWindow.nib */,
+				CE5470010B32D96500F8AFB6 /* NoteWindow.nib */,
+				4530D81E0B27ACD0007C59F4 /* SubWindow.nib */,
+				CE4EC4FD0B7E255C0091F228 /* PreferencePanel.nib */,
+				45A3BD380B4F097D002B297F /* InitialUserDefaults.plist */,
+				2A37F4B9FDCFA73011CA2CEA /* Credits.rtf */,
 				8D15AC360486D014006FF6A4 /* Info.plist */,
 				089C165FFE840EACC02AAC07 /* InfoPlist.strings */,
-				4530D81E0B27ACD0007C59F4 /* SubWindow.nib */,
-				CE5470010B32D96500F8AFB6 /* NoteWindow.nib */,
-				CE54898A0B35D4EF00F8AFB6 /* InfoWindow.nib */,
-				F977515E0B37460100DF673B /* ConversionProgressWindow.nib */,
-				45A3BD380B4F097D002B297F /* InitialUserDefaults.plist */,
-				CE4EC4FD0B7E255C0091F228 /* PreferencePanel.nib */,
 			);
 			name = Resources;
 			sourceTree = "<group>";
@@ -339,32 +340,32 @@
 		CE5475A00B33058B00F8AFB6 /* Images */ = {
 			isa = PBXGroup;
 			children = (
-				CE4EB8220B7B96D00091F228 /* OutlineViewAdorn.tiff */,
-				CE4EB8230B7B96D00091F228 /* ThumbnailViewAdorn.tiff */,
 				CE5478B70B33456300F8AFB6 /* AnnotateToolAdorn.tiff */,
 				CE5478B80B33456300F8AFB6 /* BackAdorn.tiff */,
 				CE3A42330B7927D3006B64D3 /* CircleToolAdorn.tiff */,
 				CE5478B90B33456300F8AFB6 /* ForwardAdorn.tiff */,
-				CE5478BA0B33456300F8AFB6 /* fullScreen.tiff */,
-				CE7467330B7F2ED700CBF969 /* info.tiff */,
 				CE5478E40B334CAC00F8AFB6 /* MagnifyToolAdorn.tiff */,
 				CE5478BC0B33456300F8AFB6 /* MoveToolAdorn.tif */,
-				CE5478BD0B33456300F8AFB6 /* next.tiff */,
-				CE3A4BA40B7A4D0C006B64D3 /* note.tiff */,
-				CE5478BE0B33456300F8AFB6 /* notesDrawer.tiff */,
 				CE3A42340B7927D3006B64D3 /* NoteToolAdorn.tiff */,
+				CE4EB8220B7B96D00091F228 /* OutlineViewAdorn.tiff */,
 				CE5478BF0B33456300F8AFB6 /* PopUpToolAdorn.tiff */,
-				CE3A4DE20B7A7FC7006B64D3 /* presentation.tiff */,
-				CE5478C00B33456300F8AFB6 /* previous.tiff */,
-				CE5478C10B33456300F8AFB6 /* rotateLeft.tiff */,
-				CE5478C20B33456300F8AFB6 /* rotateRight.tiff */,
 				CE5478C30B33456300F8AFB6 /* TextToolAdorn.tiff */,
-				CE5478C40B33456300F8AFB6 /* zoomActual.tiff */,
-				CE5478C50B33456300F8AFB6 /* zoomIn.tiff */,
-				CE548E530B37F67A00F8AFB6 /* zoomInCursor.tiff */,
-				CE548E540B37F67A00F8AFB6 /* zoomOutCursor.tiff */,
-				CE5478C60B33456300F8AFB6 /* zoomOut.tiff */,
-				CE5478C70B33456300F8AFB6 /* zoomToFit.tiff */,
+				CE4EB8230B7B96D00091F228 /* ThumbnailViewAdorn.tiff */,
+				CE5478BA0B33456300F8AFB6 /* ToolbarFullScreen.tiff */,
+				CE7467330B7F2ED700CBF969 /* ToolbarInfo.tiff */,
+				CE5478BD0B33456300F8AFB6 /* ToolbarNext.tiff */,
+				CE3A4BA40B7A4D0C006B64D3 /* ToolbarNote.tiff */,
+				CE5478BE0B33456300F8AFB6 /* ToolbarNotesDrawer.tiff */,
+				CE3A4DE20B7A7FC7006B64D3 /* ToolbarPresentation.tiff */,
+				CE5478C00B33456300F8AFB6 /* ToolbarPrevious.tiff */,
+				CE5478C10B33456300F8AFB6 /* ToolbarRotateLeft.tiff */,
+				CE5478C20B33456300F8AFB6 /* ToolbarRotateRight.tiff */,
+				CE5478C40B33456300F8AFB6 /* ToolbarZoomActual.tiff */,
+				CE5478C50B33456300F8AFB6 /* ToolbarZoomIn.tiff */,
+				CE5478C60B33456300F8AFB6 /* ToolbarZoomOut.tiff */,
+				CE5478C70B33456300F8AFB6 /* ToolbarZoomToFit.tiff */,
+				CE7467540B7F321100CBF969 /* zoomInCursor.tiff */,
+				CE7467550B7F321A00CBF969 /* zoomOutCursor.tiff */,
 			);
 			name = Images;
 			sourceTree = "<group>";
@@ -411,42 +412,43 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				8D15AC2C0486D014006FF6A4 /* Credits.rtf in Resources */,
-				8D15AC2D0486D014006FF6A4 /* MainMenu.nib in Resources */,
-				8D15AC2F0486D014006FF6A4 /* InfoPlist.strings in Resources */,
-				4530D81D0B27ACAC007C59F4 /* MainWindow.nib in Resources */,
-				4530D8200B27ACD0007C59F4 /* SubWindow.nib in Resources */,
 				45B113C00B329A7E00DE0660 /* LICENSE in Resources */,
+				45A3BD390B4F097D002B297F /* InitialUserDefaults.plist in Resources */,
+				8D15AC2C0486D014006FF6A4 /* Credits.rtf in Resources */,
+				8D15AC2F0486D014006FF6A4 /* InfoPlist.strings in Resources */,
+				F97751600B37460100DF673B /* ConversionProgressWindow.nib in Resources */,
+				CE54898C0B35D4EF00F8AFB6 /* InfoWindow.nib in Resources */,
+				8D15AC2D0486D014006FF6A4 /* MainMenu.nib in Resources */,
+				4530D81D0B27ACAC007C59F4 /* MainWindow.nib in Resources */,
 				CE5470030B32D96500F8AFB6 /* NoteWindow.nib in Resources */,
+				CE4EC4FF0B7E255C0091F228 /* PreferencePanel.nib in Resources */,
+				4530D8200B27ACD0007C59F4 /* SubWindow.nib in Resources */,
 				CE5478C80B33456300F8AFB6 /* AnnotateToolAdorn.tiff in Resources */,
 				CE5478C90B33456300F8AFB6 /* BackAdorn.tiff in Resources */,
-				CE5478CA0B33456300F8AFB6 /* ForwardAdorn.tiff in Resources */,
-				CE5478CB0B33456300F8AFB6 /* fullScreen.tiff in Resources */,
-				CE5478CD0B33456300F8AFB6 /* MoveToolAdorn.tif in Resources */,
-				CE5478CE0B33456300F8AFB6 /* next.tiff in Resources */,
-				CE5478CF0B33456300F8AFB6 /* notesDrawer.tiff in Resources */,
-				CE5478D00B33456300F8AFB6 /* PopUpToolAdorn.tiff in Resources */,
-				CE5478D10B33456300F8AFB6 /* previous.tiff in Resources */,
-				CE5478D20B33456300F8AFB6 /* rotateLeft.tiff in Resources */,
-				CE5478D30B33456300F8AFB6 /* rotateRight.tiff in Resources */,
-				CE5478D40B33456300F8AFB6 /* TextToolAdorn.tiff in Resources */,
-				CE5478D50B33456300F8AFB6 /* zoomActual.tiff in Resources */,
-				CE5478D60B33456300F8AFB6 /* zoomIn.tiff in Resources */,
-				CE5478D70B33456300F8AFB6 /* zoomOut.tiff in Resources */,
-				CE5478D80B33456300F8AFB6 /* zoomToFit.tiff in Resources */,
-				CE5478E50B334CAC00F8AFB6 /* MagnifyToolAdorn.tiff in Resources */,
-				CE54898C0B35D4EF00F8AFB6 /* InfoWindow.nib in Resources */,
-				F97751600B37460100DF673B /* ConversionProgressWindow.nib in Resources */,
-				CE548E550B37F67A00F8AFB6 /* zoomInCursor.tiff in Resources */,
-				CE548E560B37F67A00F8AFB6 /* zoomOutCursor.tiff in Resources */,
-				45A3BD390B4F097D002B297F /* InitialUserDefaults.plist in Resources */,
 				CE3A42350B7927D3006B64D3 /* CircleToolAdorn.tiff in Resources */,
+				CE5478CA0B33456300F8AFB6 /* ForwardAdorn.tiff in Resources */,
+				CE5478E50B334CAC00F8AFB6 /* MagnifyToolAdorn.tiff in Resources */,
+				CE5478CD0B33456300F8AFB6 /* MoveToolAdorn.tif in Resources */,
 				CE3A42360B7927D3006B64D3 /* NoteToolAdorn.tiff in Resources */,
-				CE3A4BA50B7A4D0D006B64D3 /* note.tiff in Resources */,
-				CE3A4DE30B7A7FC7006B64D3 /* presentation.tiff in Resources */,
 				CE4EB8240B7B96D00091F228 /* OutlineViewAdorn.tiff in Resources */,
+				CE5478D00B33456300F8AFB6 /* PopUpToolAdorn.tiff in Resources */,
+				CE5478D40B33456300F8AFB6 /* TextToolAdorn.tiff in Resources */,
 				CE4EB8250B7B96D00091F228 /* ThumbnailViewAdorn.tiff in Resources */,
-				CE4EC4FF0B7E255C0091F228 /* PreferencePanel.nib in Resources */,
+				CE74686F0B7F3B1C00CBF969 /* ToolbarInfo.tiff in Resources */,
+				CE5478CB0B33456300F8AFB6 /* ToolbarFullScreen.tiff in Resources */,
+				CE5478CE0B33456300F8AFB6 /* ToolbarNext.tiff in Resources */,
+				CE3A4BA50B7A4D0D006B64D3 /* ToolbarNote.tiff in Resources */,
+				CE5478CF0B33456300F8AFB6 /* ToolbarNotesDrawer.tiff in Resources */,
+				CE3A4DE30B7A7FC7006B64D3 /* ToolbarPresentation.tiff in Resources */,
+				CE5478D10B33456300F8AFB6 /* ToolbarPrevious.tiff in Resources */,
+				CE5478D20B33456300F8AFB6 /* ToolbarRotateLeft.tiff in Resources */,
+				CE5478D30B33456300F8AFB6 /* ToolbarRotateRight.tiff in Resources */,
+				CE5478D50B33456300F8AFB6 /* ToolbarZoomActual.tiff in Resources */,
+				CE5478D60B33456300F8AFB6 /* ToolbarZoomIn.tiff in Resources */,
+				CE5478D70B33456300F8AFB6 /* ToolbarZoomOut.tiff in Resources */,
+				CE5478D80B33456300F8AFB6 /* ToolbarZoomToFit.tiff in Resources */,
+				CE7468810B7F3C0000CBF969 /* zoomInCursor.tiff in Resources */,
+				CE7468820B7F3C0000CBF969 /* zoomOutCursor.tiff in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
