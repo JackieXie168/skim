@@ -47,8 +47,23 @@
 }
 
 - (BOOL)applicationShouldOpenUntitledFile:(NSApplication *)sender{
+    
+    if ([[NSUserDefaults standardUserDefaults] objectForKey:SKReopenLastOpenFilesKey]) {
+        NSArray *files = [[NSUserDefaults standardUserDefaults] objectForKey:SKLastOpenFileNamesKey];
+        NSEnumerator *fileEnum = [files objectEnumerator];
+        NSDictionary *dict;
+        NSURL *fileURL;
+        while (dict = [fileEnum nextObject]){ 
+            fileURL = [[BDAlias aliasWithData:[dict objectForKey:@"_BDAlias"]] fileURL];
+            if(fileURL == nil)
+                fileURL = [NSURL fileURLWithPath:[dict objectForKey:@"fileName"]];
+            if(fileURL)
+                [[NSDocumentController sharedDocumentController] openDocumentWithContentsOfURL:fileURL display:YES error:NULL];
+        }
+    }
+    
     return NO;
-}
+}    
 
 - (void)applicationWillTerminate:(NSNotification *)aNotification{
 
@@ -65,24 +80,6 @@
     }
     [[NSUserDefaults standardUserDefaults] setObject:array forKey:SKLastOpenFileNamesKey];
 }
-
-
-- (void)applicationDidFinishLaunching:(NSNotification *)aNotification{
-    
-    if ([[NSUserDefaults standardUserDefaults] objectForKey:SKReopenLastOpenFilesKey]) {
-        NSArray *files = [[NSUserDefaults standardUserDefaults] objectForKey:SKLastOpenFileNamesKey];
-        NSEnumerator *fileEnum = [files objectEnumerator];
-        NSDictionary *dict;
-        NSURL *fileURL;
-        while (dict = [fileEnum nextObject]){ 
-            fileURL = [[BDAlias aliasWithData:[dict objectForKey:@"_BDAlias"]] fileURL];
-            if(fileURL == nil)
-                fileURL = [NSURL fileURLWithPath:[dict objectForKey:@"fileName"]];
-            if(fileURL)
-                [[NSDocumentController sharedDocumentController] openDocumentWithContentsOfURL:fileURL display:YES error:NULL];
-        }
-    }
-}    
 
 - (IBAction)showPreferencePanel:(id)sender{
     [[SKPreferenceController sharedPrefenceController] showWindow:self];
