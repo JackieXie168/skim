@@ -23,7 +23,7 @@
     [dict setValue:@"Note" forKey:@"type"];
     [dict setValue:[coder decodeObjectForKey:@"SKNoteQuotation"] forKey:@"contents"];
     [dict setValue:[NSColor colorWithDeviceRed:1.0 green:1.0 blue:0.7 alpha:1.0] forKey:@"color"];
-    [dict setValue:[NSValue valueWithRect:bounds] forKey:@"bounds"];
+    [dict setValue:NSStringFromRect(bounds) forKey:@"bounds"];
     [dict setValue:[NSNumber numberWithUnsignedInt:[coder decodeIntForKey:@"SKNotePageIndex"]] forKey:@"pageIndex"];
     [dict setValue:[coder decodeObjectForKey:@"SKNoteAttributedString"] forKey:@"text"];
     [dict setValue:[coder decodeObjectForKey:@"SKNoteImage"] forKey:@"image"];

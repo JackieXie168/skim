@@ -16,7 +16,7 @@
     [[self init] release];
     
     NSString *type = [dict objectForKey:@"type"];
-    NSRect bounds = [[dict objectForKey:@"bounds"] rectValue];
+    NSRect bounds = NSRectFromString([dict objectForKey:@"bounds"]);
     NSString *contents = [dict objectForKey:@"contents"];
     NSColor *color = [dict objectForKey:@"color"];
     
@@ -53,7 +53,7 @@
     [dict setValue:[self type] forKey:@"type"];
     [dict setValue:[self contents] forKey:@"contents"];
     [dict setValue:[self color] forKey:@"color"];
-    [dict setValue:[NSValue valueWithRect:[self bounds]] forKey:@"bounds"];
+    [dict setValue:NSStringFromRect([self bounds]) forKey:@"bounds"];
     [dict setValue:[NSNumber numberWithUnsignedInt:[self pageIndex]] forKey:@"pageIndex"];
     return dict;
 }
