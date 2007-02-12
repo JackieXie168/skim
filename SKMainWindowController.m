@@ -61,6 +61,10 @@ static NSString *SKDocumentToolbarSearchItemIdentifier = @"SKDocumentToolbarSear
 
 @implementation SKMainWindowController
 
++ (void)initialize {
+    [NSValueTransformer setValueTransformer:[[[BDSKAnnotationTypeIconTransformer alloc] init] autorelease] forName:@"BDSKAnnotationTypeIconTransformer"];
+}
+
 - (id)initWithWindowNibName:(NSString *)windowNibName owner:(id)owner{
     self = [super initWithWindowNibName:windowNibName owner:owner];
     
@@ -1817,6 +1821,29 @@ static NSString *SKDocumentToolbarSearchItemIdentifier = @"SKDocumentToolbarSear
         [self delete:self];
 	else
 		[super keyDown:theEvent];
+}
+
+@end
+
+
+@implementation BDSKAnnotationTypeIconTransformer
+
++ (Class)transformedValueClass {
+    return [NSImage class];
+}
+
++ (BOOL)allowsReverseTransformation {
+    return NO;
+}
+
+- (NSImage *)transformedValue:(NSString *)type {
+    if ([type isEqualToString:@"FreeText"])
+        return [NSImage imageNamed:@"AnnotateToolAdorn"];
+    if ([type isEqualToString:@"Note"])
+        return [NSImage imageNamed:@"NoteToolAdorn"];
+    if ([type isEqualToString:@"Circle"])
+        return [NSImage imageNamed:@"CircleToolAdorn"];
+    return nil;
 }
 
 @end

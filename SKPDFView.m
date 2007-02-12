@@ -812,11 +812,15 @@ static NSRect RectPlusScale (NSRect aRect, float scale)
             newAnnotation = [[PDFAnnotationCircle alloc] initWithBounds:NSInsetRect(bounds, -5.0, -5.0)];
             [newAnnotation setColor:[NSColor redColor]];
             [[newAnnotation border] setLineWidth:2.0];
+            if (text == nil)
+                text = [[[page selectionForRect:bounds] string] stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
             break;
         case SKSquareAnnotationMode:
             newAnnotation = [[PDFAnnotationSquare alloc] initWithBounds:bounds];
             [newAnnotation setColor:[NSColor greenColor]];
             [[newAnnotation border] setLineWidth:2.0];
+            if (text == nil)
+                text = [[[page selectionForRect:bounds] string] stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
             break;
 	}
     [newAnnotation setContents:text ? text : NSLocalizedString(@"New note", @"Default text for new note")];

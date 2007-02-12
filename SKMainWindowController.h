@@ -202,3 +202,6 @@ typedef struct _SKPDFViewState {
 - (void)tableView:(NSTableView *)aTableView deleteRowsWithIndexes:(NSIndexSet *)rowIndexes;
 @end
 
+
+@interface BDSKAnnotationTypeIconTransformer : NSValueTransformer
+@end
