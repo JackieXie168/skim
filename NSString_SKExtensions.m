@@ -17,31 +17,7 @@
 static inline
 BOOL __SKCharacterIsWhitespaceOrNewline(UniChar c)
 {
-    static CFCharacterSetRef csref = NULL;
-    if(csref == NULL)
-        csref = CFCharacterSetGetPredefined(kCFCharacterSetWhitespaceAndNewline);
-    // minor optimization: check for an ASCII character, since those are most common in TeX
-    return ( (c <= 0x007E && c >= 0x0021) ? NO : CFCharacterSetIsCharacterMember(csref, c) );
-}
-
-static inline
-Boolean __SKStringContainsWhitespaceOrNewline(CFStringRef string, CFIndex length)
-{
-    const UniChar *ptr = CFStringGetCharactersPtr(string);
-    if(ptr != NULL){
-        while(length--)
-            if(__SKCharacterIsWhitespaceOrNewline(ptr[length]))
-                return TRUE;
-    } else {
-        CFStringInlineBuffer inlineBuffer;
-        CFStringInitInlineBuffer(string, &inlineBuffer, CFRangeMake(0, length));
-        
-        while(length--)
-            if(__SKCharacterIsWhitespaceOrNewline(CFStringGetCharacterFromInlineBuffer(&inlineBuffer, length)))
-                return TRUE;
-    }
-
-    return FALSE;
+   return CFCharacterSetIsCharacterMember(CFCharacterSetGetPredefined(kCFCharacterSetWhitespaceAndNewline), c);
 }
 
 static inline
@@ -52,10 +28,6 @@ CFStringRef __SKStringCreateByCollapsingAndTrimmingWhitespaceAndNewlines(CFAlloc
     
     if(length == 0)
         return CFRetain(CFSTR(""));
-    
-    // improves efficiency somewhat when adding autocomplete strings, since we can completely avoid allocation
-    if(__SKStringContainsWhitespaceOrNewline(aString, length) == FALSE)
-        return CFRetain(aString);
     
     // set up the buffer to fetch the characters
     CFIndex cnt = 0;
@@ -104,7 +76,7 @@ CFStringRef SKStringCreateByCollapsingAndTrimmingWhitespaceAndNewlines(CFAllocat
 
 @implementation NSString (SKExtensions)
 
-- (NSString *)fastStringByCollapsingWhitespaceAndNewlinesAndRemovingSurroundingWhitespaceAndNewlines;
+- (NSString *)stringByCollapsingWhitespaceAndNewlinesAndRemovingSurroundingWhitespaceAndNewlines;
 {
     return [(id)SKStringCreateByCollapsingAndTrimmingWhitespaceAndNewlines(CFAllocatorGetDefault(), (CFStringRef)self) autorelease];
 }
