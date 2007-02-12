@@ -59,6 +59,10 @@ static NSString *SKDocumentToolbarSearchItemIdentifier = @"SKDocumentToolbarSear
 - (id)initWithScreen:(NSScreen *)screen;
 @end
 
+@interface SKMiniaturizeWindow : NSWindow
+- (id)initWithContentRect:(NSRect)contentRect image:(NSImage *)image;
+@end
+
 @implementation SKMainWindowController
 
 + (void)initialize {
@@ -1004,19 +1008,28 @@ static NSString *SKDocumentToolbarSearchItemIdentifier = @"SKDocumentToolbarSear
     [thumbnail release];
     
     if ([self isFullScreen] == NO) {
-        NSRect oldRect = [[controller window] frame];
-        float ratio = NSHeight(oldRect) / NSWidth(oldRect);
-        NSRect rect = [subwindowsTableView frameOfCellAtColumn:0 row:[[subwindowsArrayController arrangedObjects] indexOfObject:thumbnail]];
-        rect = [subwindowsTableView convertRect:rect toView:nil];
-        rect.origin = [[subwindowsTableView window] convertBaseToScreen:rect.origin];
+        NSView *clipView = [[[[controller pdfView] documentView] enclosingScrollView] contentView];
+        NSRect startRect = [clipView convertRect:[clipView bounds] toView:nil];
+        float ratio = NSHeight(startRect) / NSWidth(startRect);
+        NSRect endRect = [subwindowsTableView frameOfCellAtColumn:0 row:[[subwindowsArrayController arrangedObjects] indexOfObject:thumbnail]];
+        
+        startRect.origin = [[controller window] convertBaseToScreen:startRect.origin];
+        endRect = [subwindowsTableView convertRect:endRect toView:nil];
+        endRect.origin = [[subwindowsTableView window] convertBaseToScreen:endRect.origin];
         if (ratio > 1.0)
-            rect = NSInsetRect(rect, 0.5 * NSWidth(rect) * (1.0 - 1.0 / ratio), 0.0);
+            endRect = NSInsetRect(endRect, 0.5 * NSWidth(endRect) * (1.0 - 1.0 / ratio), 0.0);
         else
-            rect = NSInsetRect(rect, 0.0, 0.5 * NSHeight(rect) * (1.0 - ratio));
-        // we probably want to resize a custom window with a screenshot
-        [[controller window] setFrame:rect display:YES animate:YES];
+            endRect = NSInsetRect(endRect, 0.0, 0.5 * NSHeight(endRect) * (1.0 - ratio));
+        
+        image = [controller thumbnailWithSize:0.0 shadowBlurRadius:0.0 shadowOffset:NSZeroSize];
+        
+        SKMiniaturizeWindow *miniaturizeWindow = [[SKMiniaturizeWindow alloc] initWithContentRect:startRect image:image];
+        [miniaturizeWindow orderFront:self];
         [[controller window] orderOut:self];
-        [[controller window] setFrame:oldRect display:NO];
+        [miniaturizeWindow setFrame:endRect display:YES animate:YES];
+        [miniaturizeWindow orderOut:self];
+        [miniaturizeWindow release];
+        
     } else {
         [[controller window] orderOut:self];
     }
@@ -1030,21 +1043,28 @@ static NSString *SKDocumentToolbarSearchItemIdentifier = @"SKDocumentToolbarSear
     [[self document] addWindowController:controller];
     
     if ([self isFullScreen] == NO) {
-        NSRect newRect = [[controller window] frame];
-        float ratio = NSHeight(newRect) / NSWidth(newRect);
-        NSRect rect = [subwindowsTableView frameOfCellAtColumn:0 row:[[subwindowsArrayController arrangedObjects] indexOfObject:thumbnail]];
-        rect = [subwindowsTableView convertRect:rect toView:nil];
-        rect.origin = [[subwindowsTableView window] convertBaseToScreen:rect.origin];
+        NSView *clipView = [[[[controller pdfView] documentView] enclosingScrollView] contentView];
+        NSRect endRect = [clipView convertRect:[clipView bounds] toView:nil];
+        float ratio = NSHeight(endRect) / NSWidth(endRect);
+        NSRect cellRect = [subwindowsTableView frameOfCellAtColumn:0 row:[[subwindowsArrayController arrangedObjects] indexOfObject:thumbnail]];
+        NSRect startRect = [subwindowsTableView convertRect:cellRect toView:nil];
+        
+        endRect.origin = [[controller window] convertBaseToScreen:endRect.origin];
+        startRect.origin = [[subwindowsTableView window] convertBaseToScreen:startRect.origin];
         if (ratio > 1.0)
-            rect = NSInsetRect(rect, 0.5 * NSWidth(rect) * (1.0 - 1.0 / ratio), 0.0);
+            startRect = NSInsetRect(startRect, 0.5 * NSWidth(startRect) * (1.0 - 1.0 / ratio), 0.0);
         else
-            rect = NSInsetRect(rect, 0.0, 0.5 * NSHeight(rect) * (1.0 - ratio));
-        [[controller window] setFrame:rect display:NO];
-        [controller showWindow:self];
+            startRect = NSInsetRect(startRect, 0.0, 0.5 * NSHeight(startRect) * (1.0 - ratio));
+        
+        NSImage *image = [controller thumbnailWithSize:0.0 shadowBlurRadius:0.0 shadowOffset:NSZeroSize];
+        SKMiniaturizeWindow *miniaturizeWindow = [[SKMiniaturizeWindow alloc] initWithContentRect:startRect image:image];
+        [miniaturizeWindow orderFront:self];
         [thumbnail setImage:nil];
-        [subwindowsTableView display];
-        // we probably want to resize a custom window with a screenshot
-        [[controller window] setFrame:newRect display:YES animate:YES];
+        [subwindowsTableView displayRect:cellRect];
+        [miniaturizeWindow setFrame:endRect display:YES animate:YES];
+        [[controller window] orderFront:self];
+        [miniaturizeWindow orderOut:self];
+        [miniaturizeWindow release];
     } else {
         [controller showWindow:self];
     }
@@ -1786,7 +1806,7 @@ static NSString *SKDocumentToolbarSearchItemIdentifier = @"SKDocumentToolbarSear
 @implementation SKFullScreenWindow
 
 - (id)initWithScreen:(NSScreen *)screen {
-    if (self = [[SKFullScreenWindow alloc] initWithContentRect:[screen frame] styleMask:NSBorderlessWindowMask backing:NSBackingStoreBuffered defer:NO screen:screen]) {
+    if (self = [self initWithContentRect:[screen frame] styleMask:NSBorderlessWindowMask backing:NSBackingStoreBuffered defer:NO screen:screen]) {
         [self setReleasedWhenClosed:NO];
         [self setDisplaysWhenScreenProfileChanges:YES];
         [self setAcceptsMouseMovedEvents:YES];
@@ -1992,6 +2012,32 @@ static NSString *SKDocumentToolbarSearchItemIdentifier = @"SKDocumentToolbarSear
     if ([type isEqualToString:@"Circle"])
         return [NSImage imageNamed:@"CircleToolAdorn"];
     return nil;
+}
+
+@end
+
+
+@implementation SKMiniaturizeWindow
+
+- (id)initWithContentRect:(NSRect)contentRect image:(NSImage *)image {
+    if (self = [self initWithContentRect:contentRect styleMask:NSBorderlessWindowMask backing:NSBackingStoreBuffered defer:NO]) {
+        [self setReleasedWhenClosed:NO];
+        
+        NSImageView *imageView = [[NSImageView alloc] init];
+        [imageView setImage:image];
+        [imageView setImageFrameStyle:NSImageFrameNone];
+        [self setContentView:imageView];
+        [imageView release];
+    }
+    return self;
+}
+
+- (BOOL)canBecomeMainWindow { return NO; }
+
+- (BOOL)canBecomeKeyWindow { return NO; }
+
+- (NSTimeInterval)animationResizeTime:(NSRect)newWindowFrame {
+    return 0.6 * [super animationResizeTime:newWindowFrame];
 }
 
 @end

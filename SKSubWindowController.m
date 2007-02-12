@@ -98,8 +98,4 @@
     [[[[self windowController] document] mainWindowController] miniaturizeSubWindowController:[self windowController]];
 }
 
-- (NSTimeInterval)animationResizeTime:(NSRect)newWindowFrame {
-    return 0.3;
-}
-
 @end
