@@ -23,13 +23,21 @@
 @implementation SKSideWindow
 
 - (id)initWithMainController:(SKMainWindowController *)aController {
+    return [self initWithMainController:aController edge:NSMinXEdge];
+}
+
+- (id)initWithMainController:(SKMainWindowController *)aController edge:(NSRectEdge)anEdge {
     NSScreen *screen = [[aController window] screen];
     NSRect contentRect = [screen frame];
+    if (anEdge == NSMaxXEdge)
+        contentRect.origin.x = NSMaxX(contentRect) - WINDOW_OFFSET;
+    else
+        contentRect.origin.x -= DEFAULT_WINDOW_WIDTH - WINDOW_OFFSET;
     contentRect.size.width = DEFAULT_WINDOW_WIDTH;
-    contentRect.origin.x -= DEFAULT_WINDOW_WIDTH - WINDOW_OFFSET;
     contentRect = NSInsetRect(contentRect, 0.0, WINDOW_INSET);
     if (self = [super initWithContentRect:contentRect styleMask:NSBorderlessWindowMask | NSUnifiedTitleAndToolbarWindowMask backing:NSBackingStoreBuffered defer:NO screen:screen]) {
         controller = aController;
+        edge = anEdge;
         SKSideWindowContentView *contentView = [[[SKSideWindowContentView alloc] init] autorelease];
         [self setContentView:contentView];
         [contentView trackMouseOvers];
@@ -51,7 +59,7 @@
     NSRect screenFrame = [screen frame];
     NSRect frame = [self frame];
     frame.size.height = NSHeight(screenFrame);
-    frame.origin.x = NSMinX(screenFrame) - NSWidth(frame) + WINDOW_OFFSET;
+    frame.origin.x = edge == NSMaxXEdge ? NSMaxX(screenFrame) - WINDOW_OFFSET : NSMinX(screenFrame) - NSWidth(frame) + WINDOW_OFFSET;
     frame = NSInsetRect(frame, 0.0, WINDOW_INSET);
     [self setFrame:frame display:NO];
 }
@@ -65,7 +73,7 @@
     state = NSDrawerClosingState;
     NSRect screenFrame = [[self screen] frame];
     NSRect frame = [self frame];
-    frame.origin.x = NSMinX(screenFrame) - NSWidth(frame) + WINDOW_OFFSET;
+    frame.origin.x = edge == NSMaxXEdge ? NSMaxX(screenFrame) - WINDOW_OFFSET : NSMinX(screenFrame) - NSWidth(frame) + WINDOW_OFFSET;
     [self setFrame:frame display:YES animate:YES];
     [[self parentWindow] makeKeyAndOrderFront:self];
     state = NSDrawerClosedState;
@@ -75,7 +83,7 @@
     state = NSDrawerOpeningState;
     NSRect screenFrame = [[self screen] frame];
     NSRect frame = [self frame];
-    frame.origin.x = NSMinX(screenFrame) - CONTENT_INSET;
+    frame.origin.x = edge == NSMaxXEdge ? NSMaxX(screenFrame) - NSWidth(frame) + CONTENT_INSET : NSMinX(screenFrame) - CONTENT_INSET;
     [self setFrame:frame display:YES animate:YES];
     state = NSDrawerOpenState;
 }
@@ -95,6 +103,10 @@
         [[self contentView] addSubview:newContentView];
 }
 
+- (NSRectEdge)edge {
+    return edge;
+}
+
 - (int)state {
     return state;
 }
@@ -106,7 +118,7 @@
 
 - (NSRect)resizeHandleRect {
     NSRect rect, ignored;
-    NSDivideRect([self bounds], &rect, &ignored, CONTENT_INSET, NSMaxXEdge);
+    NSDivideRect([self bounds], &rect, &ignored, CONTENT_INSET, [(SKSideWindow *)[self window] edge] == NSMaxXEdge ? NSMinXEdge : NSMaxXEdge);
     return rect;
 }
 

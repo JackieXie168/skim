@@ -15,13 +15,16 @@
     SKMainWindowController *controller;
     NSAnimation *animation;
     NSDrawerState state;
+    NSRectEdge edge;
 }
 - (id)initWithMainController:(SKMainWindowController *)aController;
+- (id)initWithMainController:(SKMainWindowController *)aController edge:(NSRectEdge)anEdge;
 - (void)moveToScreen:(NSScreen *)screen;
 - (void)slideIn;
 - (void)slideOut;
 - (NSView *)mainView;
 - (void)setMainView:(NSView *)newContentView;
+- (NSRectEdge)edge;
 - (int)state;
 @end
 

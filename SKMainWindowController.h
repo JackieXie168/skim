@@ -68,7 +68,8 @@ typedef struct _SKPDFViewState {
     
     NSWindow *mainWindow;
     NSWindow *fullScreenWindow;
-    SKSideWindow *sideWindow;
+    SKSideWindow *leftSideWindow;
+    SKSideWindow *rightSideWindow;
     
     BOOL isPresentation;
     SKPDFViewState savedState;
