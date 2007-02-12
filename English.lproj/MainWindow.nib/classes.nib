@@ -15,6 +15,7 @@
                 changeAnnotationMode = id; 
                 changeColor = id; 
                 changeDisplayBox = id; 
+                changeDrawerView = id; 
                 changePageNumber = id; 
                 changeScaleFactor = id; 
                 changeSidePaneView = id; 
@@ -51,6 +52,7 @@
                 toggleFullScreen = id; 
                 toggleNotesDrawer = id; 
                 togglePresentation = id; 
+                toggleZoomToFit = id; 
             }; 
             CLASS = SKMainWindowController; 
             LANGUAGE = ObjC; 
@@ -61,13 +63,14 @@
                 choosePageSheet = NSWindow; 
                 currentTableView = NSTableView; 
                 displayBoxPopUpButton = NSPopUpButton; 
+                drawerViewButton = NSSegmentedControl; 
                 findArrayController = NSArrayController; 
                 findCustomView = NSView; 
                 findField = NSSearchField; 
                 findTableView = NSTableView; 
                 notesArrayController = NSArrayController; 
                 notesDrawer = NSDrawer; 
-                notesTableView = NSTableView; 
+                notesTableView = SKNotesTableView; 
                 outlineView = NSOutlineView; 
                 pageNumberField = NSTextField; 
                 pageNumberStepper = NSStepper; 
@@ -82,6 +85,9 @@
                 sidePaneViewButton = NSSegmentedControl; 
                 spinner = NSProgressIndicator; 
                 splitView = NSSplitView; 
+                subwindowsArrayController = NSArrayController; 
+                subwindowsTableView = NSTableView; 
+                subwindowsView = NSView; 
                 thumbnailArrayController = NSArrayController; 
                 thumbnailTableView = NSTableView; 
                 thumbnailView = NSView; 
@@ -89,7 +95,12 @@
             }; 
             SUPERCLASS = NSWindowController; 
         }, 
-        {CLASS = SKNotesTableView; LANGUAGE = ObjC; SUPERCLASS = NSTableView; }, 
+        {
+            ACTIONS = {delete = id; }; 
+            CLASS = SKNotesTableView; 
+            LANGUAGE = ObjC; 
+            SUPERCLASS = NSTableView; 
+        }, 
         {CLASS = SKPDFView; LANGUAGE = ObjC; SUPERCLASS = PDFView; }, 
         {CLASS = SKSplitView; LANGUAGE = ObjC; SUPERCLASS = NSSplitView; }, 
         {CLASS = SKThumbnail; LANGUAGE = ObjC; SUPERCLASS = NSObject; }, 
