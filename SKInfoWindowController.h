@@ -21,4 +21,7 @@
 
 - (void)fillInfoForDocument:(SKDocument *)doc;
 
+- (void)handleWindowDidBecomeKeyNotification:(NSNotification *)notification;
+- (void)handleWindowDidResignKeyNotification:(NSNotification *)notification;
+
 @end

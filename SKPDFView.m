@@ -398,7 +398,11 @@ static NSRect RectPlusScale (NSRect aRect, float scale)
     if (flag)
         autohideTimer  = [[NSTimer scheduledTimerWithTimeInterval:3.0 target:self selector:@selector(autohideTimerFired:) userInfo:nil repeats:NO] retain];
 }
-   
+
+- (void)handleWindowWillCloseNotification:(NSNotification *)notification {
+    [navWindow orderOut:self];
+}
+
 - (void)setHasNavigation:(BOOL)hasNav autohidesCursor:(BOOL)hideCursor {
     hasNavigation = hasNav;
     autohidesCursor = hideCursor;
@@ -416,10 +420,6 @@ static NSRect RectPlusScale (NSRect aRect, float scale)
         [navWindow orderOut:self];
     }
     [self doAutohide:autohidesCursor || hasNavigation];
-}
-
-- (void)handleWindowWillCloseNotification:(NSNotification *)notification {
-    [navWindow orderOut:self];
 }
 
 - (void)popUpWithEvent:(NSEvent *)theEvent{
@@ -772,7 +772,7 @@ static NSRect RectPlusScale (NSRect aRect, float scale)
 }
 
 - (PDFAnnotation *)addAnnotationFromSelection:(PDFSelection *)selection{
-	PDFAnnotation *newAnnotation;
+	PDFAnnotation *newAnnotation = nil;
 	PDFPage *page;
 	NSRect bounds;
     NSString *text = [selection string];
