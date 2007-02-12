@@ -47,9 +47,14 @@
     return pdfView;
 }
 
-- (NSImage *)thumbnailWithSize:(float)size shadowBlurRadius:(float)shadowBlurRadius shadowOffset:(NSSize)shadowOffset {
+- (NSRect)rectForThumbnail {
     NSView *clipView = [[[pdfView documentView] enclosingScrollView] contentView];
-    NSRect bounds = [pdfView convertRect:[clipView bounds] fromView:clipView];
+    NSRect rect = [pdfView convertRect:[clipView bounds] fromView:clipView];
+    return [pdfView convertRect:rect toView:nil];
+}
+
+- (NSImage *)thumbnailWithSize:(float)size shadowBlurRadius:(float)shadowBlurRadius shadowOffset:(NSSize)shadowOffset {
+    NSRect bounds = [pdfView convertRect:[self rectForThumbnail] fromView:nil];
     NSBitmapImageRep *imageRep = [pdfView bitmapImageRepForCachingDisplayInRect:bounds];
     BOOL isScaled = size > 0.0;
     BOOL hasShadow = shadowBlurRadius > 0.0;

@@ -1008,8 +1008,7 @@ static NSString *SKDocumentToolbarSearchItemIdentifier = @"SKDocumentToolbarSear
     [thumbnail release];
     
     if ([self isFullScreen] == NO) {
-        NSView *clipView = [[[[controller pdfView] documentView] enclosingScrollView] contentView];
-        NSRect startRect = [clipView convertRect:[clipView bounds] toView:nil];
+        NSRect startRect = [controller rectForThumbnail];
         float ratio = NSHeight(startRect) / NSWidth(startRect);
         NSRect endRect = [subwindowsTableView frameOfCellAtColumn:0 row:[[subwindowsArrayController arrangedObjects] indexOfObject:thumbnail]];
         
@@ -1043,8 +1042,7 @@ static NSString *SKDocumentToolbarSearchItemIdentifier = @"SKDocumentToolbarSear
     [[self document] addWindowController:controller];
     
     if ([self isFullScreen] == NO) {
-        NSView *clipView = [[[[controller pdfView] documentView] enclosingScrollView] contentView];
-        NSRect endRect = [clipView convertRect:[clipView bounds] toView:nil];
+        NSRect endRect = [controller rectForThumbnail];
         float ratio = NSHeight(endRect) / NSWidth(endRect);
         NSRect cellRect = [subwindowsTableView frameOfCellAtColumn:0 row:[[subwindowsArrayController arrangedObjects] indexOfObject:thumbnail]];
         NSRect startRect = [subwindowsTableView convertRect:cellRect toView:nil];
