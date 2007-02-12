@@ -15,12 +15,6 @@
 #define STACK_BUFFER_SIZE 256
 
 static inline
-BOOL __SKCharacterIsWhitespaceOrNewline(UniChar c)
-{
-   return CFCharacterSetIsCharacterMember(CFCharacterSetGetPredefined(kCFCharacterSetWhitespaceAndNewline), c);
-}
-
-static inline
 CFStringRef __SKStringCreateByCollapsingAndTrimmingWhitespaceAndNewlines(CFAllocatorRef allocator, CFStringRef aString)
 {
     
@@ -51,7 +45,7 @@ CFStringRef __SKStringCreateByCollapsingAndTrimmingWhitespaceAndNewlines(CFAlloc
     int bufCnt = 0;
     for(cnt = 0; cnt < length; cnt++){
         ch = CFStringGetCharacterFromInlineBuffer(&inlineBuffer, cnt);
-        if(!__SKCharacterIsWhitespaceOrNewline(ch)){
+        if(NO == CFCharacterSetIsCharacterMember(CFCharacterSetGetPredefined(kCFCharacterSetWhitespaceAndNewline), ch)){
             isFirst = YES;
             buffer[bufCnt++] = ch; // not whitespace, so we want to keep it
         } else {
