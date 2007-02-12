@@ -62,7 +62,7 @@ static NSString *SKDocumentToolbarSearchItemIdentifier = @"SKDocumentToolbarSear
 @implementation SKMainWindowController
 
 + (void)initialize {
-    [NSValueTransformer setValueTransformer:[[[BDSKAnnotationTypeIconTransformer alloc] init] autorelease] forName:@"BDSKAnnotationTypeIconTransformer"];
+    [NSValueTransformer setValueTransformer:[[[SKAnnotationTypeIconTransformer alloc] init] autorelease] forName:@"SKAnnotationTypeIconTransformer"];
 }
 
 - (id)initWithWindowNibName:(NSString *)windowNibName owner:(id)owner{
@@ -1830,7 +1830,7 @@ static NSString *SKDocumentToolbarSearchItemIdentifier = @"SKDocumentToolbarSear
 @end
 
 
-@implementation BDSKAnnotationTypeIconTransformer
+@implementation SKAnnotationTypeIconTransformer
 
 + (Class)transformedValueClass {
     return [NSImage class];
