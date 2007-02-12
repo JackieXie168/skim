@@ -204,5 +204,5 @@ typedef struct _SKPDFViewState {
 @end
 
 
-@interface BDSKAnnotationTypeIconTransformer : NSValueTransformer
+@interface SKAnnotationTypeIconTransformer : NSValueTransformer
 @end
