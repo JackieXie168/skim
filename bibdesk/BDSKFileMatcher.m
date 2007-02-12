@@ -287,8 +287,8 @@ static CFIndex MAX_SEARCHKIT_RESULTS = 10;
 
 static NSString *searchStringWithPub(BibItem *pub)
 {
-    // may be better ways to do this, but we'll try a phrase search and then append the first author's last name (if available)
-    NSMutableString *searchString = [NSMutableString stringWithFormat:@"\"%@\"", [pub title]];
+    // may be better ways to do this, but we'll try search for title and then append the first author's last name (if available) (note that we're not using phrase search at the moment, since it causes an occasional crash; that would require enclosing title in double quotes
+    NSMutableString *searchString = [NSMutableString stringWithString:[[pub title] stringByRemovingTeX]];
     NSString *name = [[pub firstAuthor] lastName];
     if (name)
         [searchString appendFormat:@" AND %@", [[pub firstAuthor] lastName]];
@@ -363,7 +363,7 @@ static NSString *titleStringWithPub(BibItem *pub)
         CFIndex numFound;
         
         // could loop here if we need to, or increase search time
-        SKSearchFindMatches(search, MAX_SEARCHKIT_RESULTS, docID, NULL, 1, &numFound);
+        SKSearchFindMatches(search, MAX_SEARCHKIT_RESULTS, docID, NULL, (CFTimeInterval)(MAX_SEARCHKIT_RESULTS/2.0), &numFound);
         
         if (numFound) {
             
@@ -414,7 +414,7 @@ static NSString *titleStringWithPub(BibItem *pub)
     
     // kSKProximityIndexing is unused for now, since it slows things down and caused a crash on one of my files rdar://problem/4988691
     // CFDictionaryAddValue(opts, kSKProximityIndexing, kCFBooleanTrue);
-    searchIndex = SKIndexCreateWithMutableData(indexData, NULL, kSKIndexInverted, opts);
+    searchIndex = SKIndexCreateWithMutableData(indexData, NULL, kSKIndexInverted, NULL);
     CFRelease(opts);
     CFRelease(indexData);
 }   
