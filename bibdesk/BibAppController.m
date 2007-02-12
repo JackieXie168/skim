@@ -78,6 +78,7 @@
 #import "BDSKSpotlightIconController.h"
 #import "NSImage+Toolbox.h"
 #import <libkern/OSAtomic.h>
+#import "BDSKFileMatcher.h"
 
 @implementation BibAppController
 
@@ -900,6 +901,10 @@ static void createTemporaryDirectory()
 
 - (IBAction)toggleShowingOrphanedFilesPanel:(id)sender{
     [[BDSKOrphanedFilesFinder sharedFinder] toggleShowingWindow:sender];
+}
+
+- (IBAction)matchFiles:(id)sender{
+    [[BDSKFileMatcher sharedInstance] showWindow:sender];
 }
 
 #pragma mark Service code

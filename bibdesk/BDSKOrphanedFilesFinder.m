@@ -115,7 +115,7 @@ static BDSKOrphanedFilesFinder *sharedFinder = nil;
 
 - (IBAction)matchFilesWithPubs:(id)sender;
 {
-    [(BDSKFileMatcher *)[BDSKFileMatcher sharedInstance] matchFiles:[self orphanedFiles]];
+    [(BDSKFileMatcher *)[BDSKFileMatcher sharedInstance] matchFiles:[self orphanedFiles] withPublications:nil];
 }
 
 - (NSURL *)baseURL

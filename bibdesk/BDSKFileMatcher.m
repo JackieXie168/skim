@@ -46,6 +46,7 @@
 #import "NSImage+Toolbox.h"
 #import "BibAuthor.h"
 #import <libkern/OSAtomic.h>
+#import "BDSKFileMatchConfigController.h"
 
 static CFIndex MAX_SEARCHKIT_RESULTS = 10;
 
@@ -113,34 +114,42 @@ static CFIndex MAX_SEARCHKIT_RESULTS = 10;
     [outlineView registerForDraggedTypes:[NSArray arrayWithObject:NSURLPboardType]];
     [progressIndicator setUsesThreadedAnimation:YES];
     [abortButton setEnabled:NO];
+    [statusField setStringValue:@""];
 }
 
-// API: try to match these files with the front document
-- (void)matchFiles:(NSArray *)absoluteURLs;
+// API: try to match these files (pass nil for pubs to use the front document)
+- (void)matchFiles:(NSArray *)absoluteURLs withPublications:(NSArray *)pubs;
 {
-    [matches removeAllObjects];
-    BibDocument *doc = [[NSDocumentController sharedDocumentController] mainDocument];
-    if (nil == doc) {
-        NSAlert *alert = [NSAlert alertWithMessageText:NSLocalizedString(@"No front document", @"") defaultButton:nil alternateButton:nil otherButton:nil informativeTextWithFormat:NSLocalizedString(@"You need to open a document in order to match publications.", @"")];
-        [alert runModal];
-    } else {        
-        // for the progress indicator
-        [[self window] makeKeyAndOrderFront:self];
-        [abortButton setEnabled:YES];
-
-        OSAtomicCompareAndSwap32Barrier(0, 1, (int32_t *)&_matchFlags.shouldAbortThread);
-        
-        // block if necessary until the thread aborts
-        [indexingLock lock];
-        
-        // okay to set pubs here, since we have the lock
-        [self setCurrentPublications:(id)[doc publications]];
-        OSAtomicCompareAndSwap32Barrier(1, 0, (int32_t *)&_matchFlags.shouldAbortThread);
-        [NSThread detachNewThreadSelector:@selector(indexFiles:) toTarget:self withObject:absoluteURLs];
-        
-        // the first thing the thread will do is block until it acquires the lock, so let it go
-        [indexingLock unlock];
+    
+    if (nil == pubs) {
+        BibDocument *doc = [[NSDocumentController sharedDocumentController] mainDocument];
+        if (nil == doc) {
+            NSAlert *alert = [NSAlert alertWithMessageText:NSLocalizedString(@"No front document", @"") defaultButton:nil alternateButton:nil otherButton:nil informativeTextWithFormat:NSLocalizedString(@"You need to open a document in order to match publications.", @"")];
+            [alert runModal];
+            return;
+        }
+        pubs = (id)[doc publications];
     }
+    
+    // for the progress indicator
+    [[self window] makeKeyAndOrderFront:self];
+    [abortButton setEnabled:YES];
+
+    OSAtomicCompareAndSwap32Barrier(0, 1, (int32_t *)&_matchFlags.shouldAbortThread);
+    
+    // block if necessary until the thread aborts
+    [indexingLock lock];
+    
+    [matches removeAllObjects];
+    [outlineView reloadData];
+
+    // okay to set pubs here, since we have the lock
+    [self setCurrentPublications:pubs];
+    OSAtomicCompareAndSwap32Barrier(1, 0, (int32_t *)&_matchFlags.shouldAbortThread);
+    [NSThread detachNewThreadSelector:@selector(indexFiles:) toTarget:self withObject:absoluteURLs];
+    
+    // the first thing the thread will do is block until it acquires the lock, so let it go
+    [indexingLock unlock];
 }
 
 - (IBAction)openAction:(id)sender;
@@ -159,6 +168,19 @@ static CFIndex MAX_SEARCHKIT_RESULTS = 10;
     if (false == OSAtomicCompareAndSwap32Barrier(0, 1, (int32_t *)&_matchFlags.shouldAbortThread))
         NSBeep();
     [abortButton setEnabled:NO];
+}
+
+- (void)configSheetDidEnd:(NSWindow *)sheet returnCode:(int)code contextInfo:(void *)context;
+{
+    BDSKFileMatchConfigController *config = (id)context;
+    [config autorelease];
+    [self matchFiles:[config files] withPublications:[config publications]];
+}
+
+- (IBAction)configure:(id)sender;
+{
+    BDSKFileMatchConfigController *config = [[BDSKFileMatchConfigController alloc] init];
+    [config beginSheetModalForWindow:[self window] modalDelegate:self didEndSelector:@selector(configSheetDidEnd:returnCode:contextInfo:) contextInfo:config];
 }
 
 #pragma mark Outline view drag-and-drop
@@ -185,7 +207,8 @@ static CFIndex MAX_SEARCHKIT_RESULTS = 10;
 
 - (BOOL)outlineView:(NSOutlineView*)olv acceptDrop:(id <NSDraggingInfo>)info item:(id)item childIndex:(int)index;
 {
-    NSURL *fileURL = [NSURL URLFromPasteboard:[NSPasteboard pasteboardWithName:NSDragPboard]];
+    NSArray *types = [[info draggingPasteboard] types];
+    NSURL *fileURL = ([types containsObject:NSURLPboardType] ? [NSURL URLFromPasteboard:[info draggingPasteboard]] : nil);
     if (nil == fileURL)
         return NO;
     
@@ -444,6 +467,14 @@ static NSString *titleStringWithPub(BibItem *pub)
         [statusField performSelectorOnMainThread:@selector(setStringValue:) withObject:NSLocalizedString(@"Indexing aborted.", @"") waitUntilDone:NO];
     }
 
+    // disable the stop button
+    NSInvocation *invocation = [NSInvocation invocationWithMethodSignature:[abortButton methodSignatureForSelector:@selector(setEnabled:)]];
+    [invocation setTarget:abortButton];
+    [invocation setSelector:@selector(setEnabled:)];
+    BOOL state = NO;
+    [invocation setArgument:&state atIndex:2];
+    [invocation performSelectorOnMainThread:@selector(invoke) withObject:nil waitUntilDone:YES];
+    
     [indexingLock unlock];
     [threadPool release];
 }

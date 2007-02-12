@@ -45,6 +45,8 @@
     IBOutlet NSProgressIndicator *progressIndicator;
     IBOutlet NSTextField *statusField;
     IBOutlet NSButton *abortButton;
+    IBOutlet NSButton *configureButton;
+    
     NSMutableArray *matches;
     SKIndexRef searchIndex;
     NSLock *indexingLock;
@@ -56,8 +58,9 @@
 }
 
 + (id)sharedInstance;
-- (void)matchFiles:(NSArray *)absoluteURLs;
+- (void)matchFiles:(NSArray *)absoluteURLs withPublications:(NSArray *)pubs;
 - (IBAction)openAction:(id)sender;
 - (IBAction)abort:(id)sender;
+- (IBAction)configure:(id)sender;
 
 @end
