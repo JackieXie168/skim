@@ -18,6 +18,7 @@
 }
 - (void)setPdfDocument:(PDFDocument *)pdfDocument scaleFactor:(int)factor autoScales:(BOOL)autoScales goToPageNumber:(int)pageNum point:(NSPoint)locationInPageSpace;
 - (PDFView *)pdfView;
+- (NSRect)rectForThumbnail;
 - (NSImage *)thumbnailWithSize:(float)size shadowBlurRadius:(float)shadowBlurRadius shadowOffset:(NSSize)shadowOffset;
 @end
 
