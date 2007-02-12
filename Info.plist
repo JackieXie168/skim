@@ -12,6 +12,8 @@
 				<string>pdf</string>
 				<string>PDF</string>
 			</array>
+			<key>CFBundleTypeIconFile</key>
+			<string>Skim</string>
 			<key>CFBundleTypeMIMETypes</key>
 			<array>
 				<string>application/pdf</string>
@@ -46,6 +48,8 @@
 				<string>ai</string>
 				<string>AI</string>
 			</array>
+			<key>CFBundleTypeIconFile</key>
+			<string>Skim</string>
 			<key>CFBundleTypeMIMETypes</key>
 			<array>
 				<string>application/pdf</string>
@@ -54,6 +58,10 @@
 			<string>NSPDFPboardType</string>
 			<key>CFBundleTypeRole</key>
 			<string>Viewer</string>
+			<key>LSItemContentTypes</key>
+			<array>
+				<string>com.adobe.pdf</string>
+			</array>
 			<key>LSTypeIsPackage</key>
 			<false/>
 			<key>NSDocumentClass</key>
@@ -69,6 +77,8 @@
 				<string>ps</string>
 				<string>PS</string>
 			</array>
+			<key>CFBundleTypeIconFile</key>
+			<string>Skim</string>
 			<key>CFBundleTypeMIMETypes</key>
 			<array>
 				<string>application/postscript</string>
@@ -102,6 +112,8 @@
 				<string>epsi</string>
 				<string>EPSI</string>
 			</array>
+			<key>CFBundleTypeIconFile</key>
+			<string>Skim</string>
 			<key>CFBundleTypeMIMETypes</key>
 			<array>
 				<string>application/postscript</string>
@@ -110,6 +122,10 @@
 			<string>PostScript document</string>
 			<key>CFBundleTypeRole</key>
 			<string>Viewer</string>
+			<key>LSItemContentTypes</key>
+			<array>
+				<string>com.adobe.postscript</string>
+			</array>
 			<key>LSTypeIsPackage</key>
 			<false/>
 			<key>NSDocumentClass</key>
@@ -124,6 +140,8 @@
 			<array>
 				<string>pdf</string>
 			</array>
+			<key>CFBundleTypeIconFile</key>
+			<string>Skim</string>
 			<key>CFBundleTypeMIMETypes</key>
 			<array>
 				<string>application/pdf</string>
@@ -136,6 +154,10 @@
 			</array>
 			<key>CFBundleTypeRole</key>
 			<string>None</string>
+			<key>LSItemContentTypes</key>
+			<array>
+				<string>com.adobe.pdf</string>
+			</array>
 			<key>LSTypeIsPackage</key>
 			<false/>
 			<key>NSDocumentClass</key>
@@ -148,6 +170,8 @@
 			<array>
 				<string>pdf</string>
 			</array>
+			<key>CFBundleTypeIconFile</key>
+			<string>Skim</string>
 			<key>CFBundleTypeMIMETypes</key>
 			<array>
 				<string>application/pdf</string>
@@ -160,6 +184,10 @@
 			</array>
 			<key>CFBundleTypeRole</key>
 			<string>None</string>
+			<key>LSItemContentTypes</key>
+			<array>
+				<string>com.adobe.pdf</string>
+			</array>
 			<key>LSTypeIsPackage</key>
 			<false/>
 			<key>NSDocumentClass</key>
@@ -172,6 +200,8 @@
 			<array>
 				<string>skim</string>
 			</array>
+			<key>CFBundleTypeIconFile</key>
+			<string>Skim</string>
 			<key>CFBundleTypeName</key>
 			<string>Skim Notes</string>
 			<key>CFBundleTypeRole</key>
