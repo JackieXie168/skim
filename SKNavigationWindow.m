@@ -9,6 +9,7 @@
 #import "SKNavigationWindow.h"
 #import <Quartz/Quartz.h>
 #import "NSBezierPath_BDSKExtensions.h"
+#import "SKMainWindowController.h"
 
 #define BUTTON_WIDTH 50.0
 #define SEP_WIDTH 21.0
