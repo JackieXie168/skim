@@ -3,8 +3,38 @@
 //  Bibdesk
 //
 //  Created by Adam Maxwell on 02/09/07.
-//  Copyright 2007 __MyCompanyName__. All rights reserved.
-//
+/*
+ This software is Copyright (c) 2007
+ Adam Maxwell. All rights reserved.
+ 
+ Redistribution and use in source and binary forms, with or without
+ modification, are permitted provided that the following conditions
+ are met:
+ 
+ - Redistributions of source code must retain the above copyright
+ notice, this list of conditions and the following disclaimer.
+ 
+ - Redistributions in binary form must reproduce the above copyright
+ notice, this list of conditions and the following disclaimer in
+ the documentation and/or other materials provided with the
+ distribution.
+ 
+ - Neither the name of Adam Maxwell nor the names of any
+ contributors may be used to endorse or promote products derived
+ from this software without specific prior written permission.
+ 
+ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+ "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+ LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+ A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+ OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+ SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+ LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+ DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+ THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+ (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ */
 
 #import "BDSKFileMatcher.h"
 #import "BibItem.h"
@@ -15,13 +45,22 @@
 #import "BibDocument_Actions.h"
 #import "NSImage+Toolbox.h"
 #import "BibAuthor.h"
+#import <libkern/OSAtomic.h>
 
 static CFIndex MAX_SEARCHKIT_RESULTS = 10;
 
 @interface BDSKFileMatcher (Private)
 
+- (NSArray *)currentPublications;
+- (void)setCurrentPublications:(NSArray *)pubs;
+- (NSArray *)treeNodesWithCurrentPublications;
 - (void)doSearch;
 - (void)makeNewIndex;
+
+// only use from main thread
+- (void)updateProgressIndicatorWithNumber:(NSNumber *)val;
+
+// entry point to the searching/matching; acquire indexingLock first
 - (void)indexFiles:(NSArray *)absoluteURLs;
 
 @end
@@ -42,6 +81,9 @@ static CFIndex MAX_SEARCHKIT_RESULTS = 10;
     if (self) {
         matches = [[NSMutableArray alloc] init];
         searchIndex = NULL;
+        indexingLock = [[NSLock alloc] init];
+        currentPublications = nil;
+        _matchFlags.shouldAbortThread = 0;
     }
     return self;
 }
@@ -51,6 +93,7 @@ static CFIndex MAX_SEARCHKIT_RESULTS = 10;
 - (void)dealloc
 {
     [matches release];
+    [indexingLock release];
     if (searchIndex)
         SKIndexClose(searchIndex);
     [super dealloc];
@@ -69,22 +112,34 @@ static CFIndex MAX_SEARCHKIT_RESULTS = 10;
     [outlineView setTarget:self];
     [outlineView registerForDraggedTypes:[NSArray arrayWithObject:NSURLPboardType]];
     [progressIndicator setUsesThreadedAnimation:YES];
+    [abortButton setEnabled:NO];
 }
 
 // API: try to match these files with the front document
 - (void)matchFiles:(NSArray *)absoluteURLs;
 {
     [matches removeAllObjects];
-    if (nil == [[NSDocumentController sharedDocumentController] mainDocument]) {
+    BibDocument *doc = [[NSDocumentController sharedDocumentController] mainDocument];
+    if (nil == doc) {
         NSAlert *alert = [NSAlert alertWithMessageText:NSLocalizedString(@"No front document", @"") defaultButton:nil alternateButton:nil otherButton:nil informativeTextWithFormat:NSLocalizedString(@"You need to open a document in order to match publications.", @"")];
         [alert runModal];
     } else {        
         // for the progress indicator
         [[self window] makeKeyAndOrderFront:self];
+        [abortButton setEnabled:YES];
+
+        OSAtomicCompareAndSwap32Barrier(0, 1, (int32_t *)&_matchFlags.shouldAbortThread);
         
-        [self makeNewIndex];
-        [self indexFiles:absoluteURLs];
-        [self doSearch];
+        // block if necessary until the thread aborts
+        [indexingLock lock];
+        
+        // okay to set pubs here, since we have the lock
+        [self setCurrentPublications:(id)[doc publications]];
+        OSAtomicCompareAndSwap32Barrier(1, 0, (int32_t *)&_matchFlags.shouldAbortThread);
+        [NSThread detachNewThreadSelector:@selector(indexFiles:) toTarget:self withObject:absoluteURLs];
+        
+        // the first thing the thread will do is block until it acquires the lock, so let it go
+        [indexingLock unlock];
     }
 }
 
@@ -92,11 +147,18 @@ static CFIndex MAX_SEARCHKIT_RESULTS = 10;
 {
     id clickedItem = [outlineView itemAtRow:[outlineView clickedRow]];
     id obj = [clickedItem valueForKey:@"pub"];
-    if (obj && [[NSDocumentController sharedDocumentController] mainDocument])
-        [[[NSDocumentController sharedDocumentController] mainDocument] editPub:obj];
+    if (obj && [[obj owner] respondsToSelector:@selector(editPub:)])
+        [[obj owner] editPub:obj];
     else if ((obj = [clickedItem valueForKey:@"fileURL"]))
         [[NSWorkspace sharedWorkspace] openURL:obj withSearchString:[clickedItem valueForKey:@"searchString"]];
     else NSBeep();
+}
+
+- (IBAction)abort:(id)sender;
+{
+    if (false == OSAtomicCompareAndSwap32Barrier(0, 1, (int32_t *)&_matchFlags.shouldAbortThread))
+        NSBeep();
+    [abortButton setEnabled:NO];
 }
 
 #pragma mark Outline view drag-and-drop
@@ -191,6 +253,15 @@ static CFIndex MAX_SEARCHKIT_RESULTS = 10;
 
 @implementation BDSKFileMatcher (Private)
 
+- (NSArray *)currentPublications { return currentPublications; }
+- (void)setCurrentPublications:(NSArray *)pubs;
+{
+    if (pubs != currentPublications) {
+        [currentPublications release];
+        currentPublications = [pubs copy];
+    }
+}
+
 static NSString *searchStringWithPub(BibItem *pub)
 {
     // may be better ways to do this, but we'll try a phrase search and then append the first author's last name (if available)
@@ -201,27 +272,67 @@ static NSString *searchStringWithPub(BibItem *pub)
     return searchString;
 }
 
+static NSString *titleStringWithPub(BibItem *pub)
+{
+    return [NSString stringWithFormat:@"%@ (%@)", [pub displayTitle], [pub pubAuthorsForDisplay]];
+}
+
+- (NSArray *)treeNodesWithCurrentPublications;
+{
+    NSAssert([NSThread inMainThread], @"method must be called from the main thread");
+    NSEnumerator *pubE = [[self currentPublications] objectEnumerator];
+    BibItem *pub;
+    NSMutableArray *nodes = [NSMutableArray arrayWithCapacity:[[self currentPublications] count]];
+    while (pub = [pubE nextObject]) {
+        BDSKTreeNode *theNode = [[BDSKTreeNode alloc] init];
+
+        // we add the pub to the tree so it's retained, but don't touch it in the thread!
+        [theNode setValue:pub forKey:@"pub"];
+        
+        // grab these strings on the main thread, since we need them in the worker thread
+        [theNode setValue:titleStringWithPub(pub)  forKey:OATextWithIconCellStringKey];
+        [theNode setValue:searchStringWithPub(pub) forKey:@"searchString"];
+
+        [theNode setValue:[NSImage imageNamed:@"cacheDoc"] forKey:OATextWithIconCellImageKey];
+
+        [nodes addObject:theNode];
+        [theNode release];
+    }
+    return nodes;
+}
+
 // this method iterates available publications, trying to match them up with a file
 - (void)doSearch;
 {
-    BibDocument *doc = [[NSDocumentController sharedDocumentController] mainDocument];
-    NSEnumerator *pubE = [[doc publications] objectEnumerator];
-    BibItem *pub;
-    NSString *searchString;
+    // get the root nodes array on the main thread, since it uses BibItem methods
+    NSArray *treeNodes = nil;
+    NSInvocation *invocation = [NSInvocation invocationWithMethodSignature:[self methodSignatureForSelector:@selector(treeNodesWithCurrentPublications)]];
+    [invocation setTarget:self];
+    [invocation setSelector:@selector(treeNodesWithCurrentPublications)];
+    [invocation performSelectorOnMainThread:@selector(invoke) withObject:nil waitUntilDone:YES];
+    [invocation getReturnValue:&treeNodes];
     
+    OBPOSTCONDITION([treeNodes count]);
+        
     NSParameterAssert(NULL != searchIndex);
     SKIndexFlush(searchIndex);
-    
-    [progressIndicator setDoubleValue:0.0];
-    [statusField setStringValue:[NSLocalizedString(@"Searching document", @"") stringByAppendingEllipsis]];
+
+    [self performSelectorOnMainThread:@selector(updateProgressIndicatorWithNumber:) withObject:[NSNumber numberWithDouble:(1.0)] waitUntilDone:NO];
+    [statusField performSelectorOnMainThread:@selector(setStringValue:) withObject:[NSLocalizedString(@"Searching document", @"") stringByAppendingEllipsis] waitUntilDone:NO];
+
     double val = 0;
-    double max = [[doc publications] count];
+    double max = [treeNodes count];
     
-    while (pub = [pubE nextObject]) {
+    NSEnumerator *e = [treeNodes objectEnumerator];
+    BDSKTreeNode *node;
+    
+    while (0 == _matchFlags.shouldAbortThread && (node = [e nextObject])) {
         
         NSAutoreleasePool *pool = [NSAutoreleasePool new];
         
-        searchString = searchStringWithPub(pub);
+        NSString *searchString = [node valueForKey:@"searchString"];
+        
+        // we're not using rankings, so don't bother computing them
         SKSearchRef search = SKSearchCreate(searchIndex, (CFStringRef)searchString, kSKSearchOptionNoRelevanceScores);
         
         // if we get more than 10 matches back per pub, the results will be pretty useless anyway
@@ -237,35 +348,34 @@ static NSString *searchStringWithPub(BibItem *pub)
             SKIndexCopyDocumentURLsForDocumentIDs(searchIndex, numFound, docID, urls);
             
             int i, iMax = numFound;
-            BDSKTreeNode *node = [[BDSKTreeNode alloc] init];
-            [node setValue:[NSString stringWithFormat:@"%@ (%@)", [pub displayTitle], [pub pubAuthorsForDisplay]]  forKey:OATextWithIconCellStringKey];
-            [node setValue:[NSImage imageNamed:@"cacheDoc"] forKey:OATextWithIconCellImageKey];
-            [node setValue:pub forKey:@"pub"];
             
             // now we have a matching file; we could remove it from the index, but multiple matches are reasonable
             for (i =  0; i < iMax; i++) {
                 BDSKTreeNode *child = [[BDSKTreeNode alloc] init];
                 [child setValue:(id)urls[i] forKey:@"fileURL"];
                 [child setValue:[[(id)urls[i] path] stringByAbbreviatingWithTildeInPath] forKey:OATextWithIconCellStringKey];
-                [child setValue:[NSImage imageForURL:(NSURL *)urls[i]] forKey:OATextWithIconCellImageKey];
+                [child setValue:[[NSWorkspace sharedWorkspace] iconForFileURL:(NSURL *)urls[i]] forKey:OATextWithIconCellImageKey];
                 [child setValue:searchString forKey:@"searchString"];
                 [node addChild:child];
                 [child release];
             }
             [matches addObject:node];
-            [node release];
         }
         SKSearchCancel(search);
         CFRelease(search);
         
         val++;
-        [outlineView reloadData];
-        [progressIndicator setDoubleValue:(val/max)];
-        [[self window] display];
+        [outlineView performSelectorOnMainThread:@selector(reloadData) withObject:nil waitUntilDone:NO];
+        [self performSelectorOnMainThread:@selector(updateProgressIndicatorWithNumber:) withObject:[NSNumber numberWithDouble:(val/max)] waitUntilDone:NO];
         [pool release];
     }
-    [progressIndicator setDoubleValue:1.0];
-    [statusField setStringValue:NSLocalizedString(@"Search complete!", @"")];
+    
+    if (0 == _matchFlags.shouldAbortThread) {
+        [self performSelectorOnMainThread:@selector(updateProgressIndicatorWithNumber:) withObject:[NSNumber numberWithDouble:(1.0)] waitUntilDone:NO];
+        [statusField performSelectorOnMainThread:@selector(setStringValue:) withObject:NSLocalizedString(@"Search complete!", @"") waitUntilDone:NO];
+    } else {
+        [statusField performSelectorOnMainThread:@selector(setStringValue:) withObject:NSLocalizedString(@"Search aborted.", @"") waitUntilDone:NO];
+    }
 }
 
 - (void)makeNewIndex;
@@ -275,29 +385,43 @@ static NSString *searchStringWithPub(BibItem *pub)
     CFMutableDataRef indexData = CFDataCreateMutable(CFAllocatorGetDefault(), 0);
     
     CFMutableDictionaryRef opts = CFDictionaryCreateMutable(NULL, 0, &kCFTypeDictionaryKeyCallBacks, &kCFTypeDictionaryValueCallBacks);
-    CFDictionaryAddValue(opts, kSKMaximumTerms, (CFNumberRef)[NSNumber numberWithInt:200]);
-    CFDictionaryAddValue(opts, kSKProximityIndexing, kCFBooleanTrue);
     
-    // options are unused for now, since they seem to slow things down and caused a crash on one of my files rdar://problem/4988691
-    searchIndex = SKIndexCreateWithMutableData(indexData, NULL, kSKIndexInverted, NULL);
+    // we generally shouldn't need to index the (default) first 2000 terms just to get title and author
+    CFDictionaryAddValue(opts, kSKMaximumTerms, (CFNumberRef)[NSNumber numberWithInt:200]);
+    
+    // kSKProximityIndexing is unused for now, since it slows things down and caused a crash on one of my files rdar://problem/4988691
+    // CFDictionaryAddValue(opts, kSKProximityIndexing, kCFBooleanTrue);
+    searchIndex = SKIndexCreateWithMutableData(indexData, NULL, kSKIndexInverted, opts);
     CFRelease(opts);
     CFRelease(indexData);
-}    
+}   
+
+- (void)updateProgressIndicatorWithNumber:(NSNumber *)val;
+{
+    [progressIndicator setDoubleValue:[val doubleValue]];
+}
 
 - (void)indexFiles:(NSArray *)absoluteURLs;
 {    
+    NSAutoreleasePool *threadPool = [NSAutoreleasePool new];
+    
+    [indexingLock lock];
+    
+    // empty out a previous index (if any)
+    [self makeNewIndex];
+    
     double val = 0;
     double max = [absoluteURLs count];
     NSEnumerator *e = [absoluteURLs objectEnumerator];
     NSURL *url;
-    [statusField setStringValue:[NSLocalizedString(@"Indexing files", @"") stringByAppendingEllipsis]];
-    [progressIndicator setDoubleValue:0.0];
-    [[self window] display];
+    
+    [self performSelectorOnMainThread:@selector(updateProgressIndicatorWithNumber:) withObject:[NSNumber numberWithDouble:(0.0)] waitUntilDone:NO];
+    [statusField performSelectorOnMainThread:@selector(setStringValue:) withObject:[NSLocalizedString(@"Indexing files", @"") stringByAppendingEllipsis] waitUntilDone:NO];
     
     // some HTML files cause a deadlock or crash in -[NSHTMLReader _loadUsingLibXML2] rdar://problem/4988303
     BOOL shouldLog = [[NSUserDefaults standardUserDefaults] boolForKey:@"BDSKShouldLogFilesAddedToMatchingSearchIndex"];
     
-    while (url = [e nextObject]) {
+    while (0 == _matchFlags.shouldAbortThread && (url = [e nextObject])) {
         SKDocumentRef doc = SKDocumentCreateWithURL((CFURLRef)url);
         
         if (shouldLog)
@@ -308,13 +432,20 @@ static NSString *searchStringWithPub(BibItem *pub)
             CFRelease(doc);
         }
         // forcing a redisplay at every step is ok since adding documents to the index is pretty slow
-        val++;        
-        [progressIndicator setDoubleValue:(val/max)];
-        [[self window] display];
+        val++;      
+        [self performSelectorOnMainThread:@selector(updateProgressIndicatorWithNumber:) withObject:[NSNumber numberWithDouble:(val/max)] waitUntilDone:NO];
     }
-    [progressIndicator setDoubleValue:1.0];
-    [statusField setStringValue:NSLocalizedString(@"Indexing complete!", @"")];
-    [[self window] display];    
+    
+    if (0 == _matchFlags.shouldAbortThread) {
+        [self performSelectorOnMainThread:@selector(updateProgressIndicatorWithNumber:) withObject:[NSNumber numberWithDouble:(1.0)] waitUntilDone:NO];
+        [statusField performSelectorOnMainThread:@selector(setStringValue:) withObject:NSLocalizedString(@"Indexing complete!", @"") waitUntilDone:NO];
+        [self doSearch];
+    } else {
+        [statusField performSelectorOnMainThread:@selector(setStringValue:) withObject:NSLocalizedString(@"Indexing aborted.", @"") waitUntilDone:NO];
+    }
+
+    [indexingLock unlock];
+    [threadPool release];
 }
 
 @end

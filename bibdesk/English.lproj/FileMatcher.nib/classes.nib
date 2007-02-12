@@ -1,9 +1,11 @@
 {
     IBClasses = (
         {
+            ACTIONS = {abort = id; openAction = id; }; 
             CLASS = BDSKFileMatcher; 
             LANGUAGE = ObjC; 
             OUTLETS = {
+                abortButton = NSButton; 
                 outlineView = NSOutlineView; 
                 progressIndicator = NSProgressIndicator; 
                 statusField = NSTextField; 
