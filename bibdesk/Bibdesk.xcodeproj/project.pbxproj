@@ -696,6 +696,9 @@
 		F9B88C080B7CF61000D5D42C /* FileMatcher.nib in Resources */ = {isa = PBXBuildFile; fileRef = F9B88C060B7CF60F00D5D42C /* FileMatcher.nib */; };
 		F9B88D980B7D14B700D5D42C /* BDSKFileMatcher.h in Headers */ = {isa = PBXBuildFile; fileRef = F9B88D960B7D14B700D5D42C /* BDSKFileMatcher.h */; };
 		F9B88D990B7D14B700D5D42C /* BDSKFileMatcher.m in Sources */ = {isa = PBXBuildFile; fileRef = F9B88D970B7D14B700D5D42C /* BDSKFileMatcher.m */; };
+		F9BE68350B80F92900B2597C /* FileMatcherConfigSheet.nib in Resources */ = {isa = PBXBuildFile; fileRef = F9BE68330B80F92800B2597C /* FileMatcherConfigSheet.nib */; };
+		F9BE68380B80F94000B2597C /* BDSKFileMatchConfigController.m in Sources */ = {isa = PBXBuildFile; fileRef = F9BE68360B80F94000B2597C /* BDSKFileMatchConfigController.m */; };
+		F9BE68390B80F94000B2597C /* BDSKFileMatchConfigController.h in Headers */ = {isa = PBXBuildFile; fileRef = F9BE68370B80F94000B2597C /* BDSKFileMatchConfigController.h */; };
 		F9CE58EC0842411D0072DF55 /* ArrowImage.tiff in Resources */ = {isa = PBXBuildFile; fileRef = F9CE58EB0842411D0072DF55 /* ArrowImage.tiff */; };
 		F9CEFCBB0A90090B00A0E54E /* BDSKOrphanedFileServer.h in Headers */ = {isa = PBXBuildFile; fileRef = F9CEFCB90A90090B00A0E54E /* BDSKOrphanedFileServer.h */; };
 		F9CEFCBC0A90090B00A0E54E /* BDSKOrphanedFileServer.m in Sources */ = {isa = PBXBuildFile; fileRef = F9CEFCBA0A90090B00A0E54E /* BDSKOrphanedFileServer.m */; };
@@ -1611,6 +1614,9 @@
 		F9B88D960B7D14B700D5D42C /* BDSKFileMatcher.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BDSKFileMatcher.h; sourceTree = "<group>"; };
 		F9B88D970B7D14B700D5D42C /* BDSKFileMatcher.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BDSKFileMatcher.m; sourceTree = "<group>"; };
 		F9B9E17E089479FC00C21B17 /* Quartz.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Quartz.framework; path = /System/Library/Frameworks/Quartz.framework; sourceTree = "<absolute>"; };
+		F9BE68340B80F92800B2597C /* English */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = English; path = English.lproj/FileMatcherConfigSheet.nib; sourceTree = "<group>"; };
+		F9BE68360B80F94000B2597C /* BDSKFileMatchConfigController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BDSKFileMatchConfigController.m; sourceTree = "<group>"; };
+		F9BE68370B80F94000B2597C /* BDSKFileMatchConfigController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BDSKFileMatchConfigController.h; sourceTree = "<group>"; };
 		F9CE58EB0842411D0072DF55 /* ArrowImage.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; name = ArrowImage.tiff; path = Images/ArrowImage.tiff; sourceTree = "<group>"; };
 		F9CEFCB90A90090B00A0E54E /* BDSKOrphanedFileServer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BDSKOrphanedFileServer.h; sourceTree = "<group>"; };
 		F9CEFCBA0A90090B00A0E54E /* BDSKOrphanedFileServer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BDSKOrphanedFileServer.m; sourceTree = "<group>"; };
@@ -1904,6 +1910,7 @@
 				CE42A2680A99BE2400C62D85 /* BDSKErrorEditWindow.nib */,
 				CE7F64C20B41694A00A919D0 /* BDSKSearchGroupView.nib */,
 				F9B88C060B7CF60F00D5D42C /* FileMatcher.nib */,
+				F9BE68330B80F92800B2597C /* FileMatcherConfigSheet.nib */,
 			);
 			includeInIndex = 1;
 			name = Resources;
@@ -2082,6 +2089,8 @@
 				2730077C07CF20B500F2E485 /* MacroWindowController.m */,
 				F9B88D960B7D14B700D5D42C /* BDSKFileMatcher.h */,
 				F9B88D970B7D14B700D5D42C /* BDSKFileMatcher.m */,
+				F9BE68360B80F94000B2597C /* BDSKFileMatchConfigController.m */,
+				F9BE68370B80F94000B2597C /* BDSKFileMatchConfigController.h */,
 			);
 			name = Controllers;
 			sourceTree = "<group>";
@@ -2923,6 +2932,7 @@
 				F9201E010B72504C007E45BB /* BDSKMacro.h in Headers */,
 				CE3A254F0B75FF09006B64D3 /* BDSKWebParser.h in Headers */,
 				F9B88D980B7D14B700D5D42C /* BDSKFileMatcher.h in Headers */,
+				F9BE68390B80F94000B2597C /* BDSKFileMatchConfigController.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -3353,6 +3363,7 @@
 				457538460B701ECD00C0E49B /* BDSKWebGroupView.nib in Resources */,
 				CE3A241A0B750424006B64D3 /* webFolderIcon.tiff in Resources */,
 				F9B88C080B7CF61000D5D42C /* FileMatcher.nib in Resources */,
+				F9BE68350B80F92900B2597C /* FileMatcherConfigSheet.nib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -3761,6 +3772,7 @@
 				F9201E020B72504C007E45BB /* BDSKMacro.m in Sources */,
 				CE3A25500B75FF09006B64D3 /* BDSKWebParser.m in Sources */,
 				F9B88D990B7D14B700D5D42C /* BDSKFileMatcher.m in Sources */,
+				F9BE68380B80F94000B2597C /* BDSKFileMatchConfigController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -4292,6 +4304,14 @@
 				F9B88C070B7CF60F00D5D42C /* English */,
 			);
 			name = FileMatcher.nib;
+			sourceTree = "<group>";
+		};
+		F9BE68330B80F92800B2597C /* FileMatcherConfigSheet.nib */ = {
+			isa = PBXVariantGroup;
+			children = (
+				F9BE68340B80F92800B2597C /* English */,
+			);
+			name = FileMatcherConfigSheet.nib;
 			sourceTree = "<group>";
 		};
 		F9E0BCCB0895ADFB005E5FAA /* BibPref_Display.nib */ = {
