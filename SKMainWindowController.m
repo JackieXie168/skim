@@ -998,6 +998,8 @@ static NSString *SKDocumentToolbarSearchItemIdentifier = @"SKDocumentToolbarSear
         
         while (annotation = [noteEnum nextObject])
             [pdfView removeAnnotation:annotation];
+    } else if ([tv isEqual:subwindowsTableView]) {
+        [subwindowsArrayController removeObjectsAtArrangedObjectIndexes:rowIndexes];
     }
 }
 
