@@ -269,6 +269,8 @@ static NSRect RectPlusScale (NSRect aRect, float scale)
         }
         if (NSEqualRects(bounds, newBounds) == NO) {
             [activeAnnotation setBounds:newBounds];
+            NSString *selString = [[[[activeAnnotation page] selectionForRect:newBounds] string] stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
+            [activeAnnotation setContents:selString];
             [self setNeedsDisplayInRect:RectPlusScale([self convertRect:NSUnionRect(bounds, newBounds) fromPage:page], [self scaleFactor])];
             [[NSNotificationCenter defaultCenter] postNotificationName:SKPDFViewDidChangeAnnotationNotification object:self 
                 userInfo:[NSDictionary dictionaryWithObjectsAndKeys:activeAnnotation, @"annotation", nil]];
@@ -309,8 +311,9 @@ static NSRect RectPlusScale (NSRect aRect, float scale)
             if (mouseDownInAnnotation) {
                 mouseDownInAnnotation = NO;
                 if ([[activeAnnotation type] isEqualToString:@"Circle"] || [[activeAnnotation type] isEqualToString:@"Square"]) {
-                    NSString *selString = [[[activeAnnotation page] selectionForRect:[activeAnnotation bounds]] string];
+                    NSString *selString = [[[[activeAnnotation page] selectionForRect:[activeAnnotation bounds]] string] stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
                     [activeAnnotation setContents:selString];
+                    [self setNeedsDisplayForAnnotation:activeAnnotation];
                     [[NSNotificationCenter defaultCenter] postNotificationName:SKPDFViewDidChangeAnnotationNotification object:self 
                         userInfo:[NSDictionary dictionaryWithObjectsAndKeys:activeAnnotation, @"annotation", nil]];
                 }
