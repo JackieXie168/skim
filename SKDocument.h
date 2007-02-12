@@ -29,8 +29,6 @@ extern NSString *SKDocumentErrorDomain;
 
 - (NSArray *)notes;
 - (void)setNotes:(NSArray *)newNotes;
-- (NSArray *)notes;
-- (void)setNotes:(NSArray *)newNotes;
 - (unsigned)countOfNotes;
 - (id)objectInNotesAtIndex:(unsigned)index;
 - (void)insertObject:(id)obj inNotesAtIndex:(unsigned)index;
