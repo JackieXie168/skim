@@ -36,6 +36,7 @@
 			<array>
 				<string>NSPDFPboardType</string>
 				<string>PDF With Embedded Notes</string>
+				<string>PDF Without Notes</string>
 				<string>Skim Notes</string>
 			</array>
 		</dict>
@@ -122,7 +123,6 @@
 			<key>CFBundleTypeExtensions</key>
 			<array>
 				<string>pdf</string>
-				<string>PDF</string>
 			</array>
 			<key>CFBundleTypeMIMETypes</key>
 			<array>
@@ -132,7 +132,31 @@
 			<string>PDF With Embedded Notes</string>
 			<key>CFBundleTypeOSTypes</key>
 			<array>
-				<string>PDF</string>
+				<string>PDF </string>
+			</array>
+			<key>CFBundleTypeRole</key>
+			<string>None</string>
+			<key>LSTypeIsPackage</key>
+			<false/>
+			<key>NSDocumentClass</key>
+			<string>SKDocument</string>
+			<key>NSPersistentStoreTypeKey</key>
+			<string>Binary</string>
+		</dict>
+		<dict>
+			<key>CFBundleTypeExtensions</key>
+			<array>
+				<string>pdf</string>
+			</array>
+			<key>CFBundleTypeMIMETypes</key>
+			<array>
+				<string>application/pdf</string>
+			</array>
+			<key>CFBundleTypeName</key>
+			<string>PDF Without Notes</string>
+			<key>CFBundleTypeOSTypes</key>
+			<array>
+				<string>PDF </string>
 			</array>
 			<key>CFBundleTypeRole</key>
 			<string>None</string>
