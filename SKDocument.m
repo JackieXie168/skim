@@ -198,7 +198,7 @@ static NSString *SKPostScriptDocumentType = @"PostScript document";
         
         // first remove all old notes
         for (i = 0; YES; i++) {
-            name = [NSString stringWithFormat:@"SKNote-%i", i];
+            name = [NSString stringWithFormat:@"net_sourceforge_bibdesk_skim_note-%i", i];
             if ([oldNotes containsObject:name] == NO)
                 break;
             if ([fm removeExtendedAttribute:name atPath:path traverseLink:YES error:&error] == NO) {
@@ -207,13 +207,13 @@ static NSString *SKPostScriptDocumentType = @"PostScript document";
         }
         
         for (i = 0; i < numberOfNotes; i++) {
-            name = [NSString stringWithFormat:@"SKNote-%i", i];
+            name = [NSString stringWithFormat:@"net_sourceforge_bibdesk_skim_note-%i", i];
             data = [NSKeyedArchiver archivedDataWithRootObject:[[notes objectAtIndex:i] dictionaryValue]];
             if ([data length] > MAX_XATTR_LENGTH) {
                 int j, n = ceil([data length] / MAX_XATTR_LENGTH);
                 NSData *subdata;
                 for (j = 0; j < n; j++) {
-                    name = [NSString stringWithFormat:@"SKNote-%i-%i", i, j];
+                    name = [NSString stringWithFormat:@"net_sourceforge_bibdesk_skim_note-%i-%i", i, j];
                     subdata = [data subdataWithRange:NSMakeRange(j * MAX_XATTR_LENGTH, j == n - 1 ? [data length] - j * MAX_XATTR_LENGTH : MAX_XATTR_LENGTH)];
                     if ([fm setExtendedAttributeNamed:name toValue:subdata atPath:path options:nil error:&error] == NO) {
                         success = NO;
@@ -228,13 +228,13 @@ static NSString *SKPostScriptDocumentType = @"PostScript document";
         }
         
         if ([notes count] == 0) {
-            if ([fm removeExtendedAttribute:@"SKNotesInfo" atPath:path traverseLink:YES error:&error] == NO) {
+            if ([fm removeExtendedAttribute:@"net_sourceforge_bibdesk_skim_notesInfo" atPath:path traverseLink:YES error:&error] == NO) {
                 success = NO;
                 NSLog(@"%@: %@", self, error);
             }
         } else {
             dictionary = [NSDictionary dictionaryWithObjectsAndKeys:[NSNumber numberWithInt:numberOfNotes], @"numberOfNotes", [longNotes count] ? longNotes : nil, @"longNotes", nil];
-            if ([fm setExtendedAttributeNamed:@"SKNotesInfo" toPropertyListValue:dictionary atPath:path options:nil error:&error] == NO) {
+            if ([fm setExtendedAttributeNamed:@"net_sourceforge_bibdesk_skim_notesInfo" toPropertyListValue:dictionary atPath:path options:nil error:&error] == NO) {
                 success = NO;
                 NSLog(@"%@: %@", self, error);
             }
@@ -250,7 +250,7 @@ static NSString *SKPostScriptDocumentType = @"PostScript document";
     NSError *error = nil;
     
     if ([aURL isFileURL]) {
-        dict = [fm propertyListFromExtendedAttributeNamed:@"SKNotesInfo" atPath:[aURL path] traverseLink:YES error:&error];
+        dict = [fm propertyListFromExtendedAttributeNamed:@"net_sourceforge_bibdesk_skim_notesInfo" atPath:[aURL path] traverseLink:YES error:&error];
         if (dict == nil) {
             success = NO;
             if ([[[error userInfo] objectForKey:NSUnderlyingErrorKey] code] != ENOATTR)
@@ -271,7 +271,7 @@ static NSString *SKPostScriptDocumentType = @"PostScript document";
         for (i = 0; i < numberOfNotes; i++) {
             n = [[longNotes objectForKey:[NSNumber numberWithInt:i]] intValue];
             if (n == 0) {
-                name = [NSString stringWithFormat:@"SKNote-%i", i];
+                name = [NSString stringWithFormat:@"net_sourceforge_bibdesk_skim_note-%i", i];
                 if ((data = [fm extendedAttributeNamed:name atPath:[aURL path] traverseLink:YES error:&error]) &&
                     (dict = [NSKeyedUnarchiver unarchiveObjectWithData:data])) {
                     [noteDicts addObject:dict];
@@ -283,7 +283,7 @@ static NSString *SKPostScriptDocumentType = @"PostScript document";
                 NSMutableData *mutableData = [NSMutableData dataWithCapacity:n * MAX_XATTR_LENGTH];
                 int j;
                 for (j = 0; j < n; j++) {
-                    name = [NSString stringWithFormat:@"SKNote-%i-%i", i, j];
+                    name = [NSString stringWithFormat:@"net_sourceforge_bibdesk_skim_note-%i-%i", i, j];
                     if (data = [fm extendedAttributeNamed:name atPath:[aURL path] traverseLink:YES error:&error]) {
                         [mutableData appendData:data];
                     } else {
