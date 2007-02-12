@@ -828,7 +828,7 @@ static NSRect RectPlusScale (NSRect aRect, float scale)
     [page addAnnotation:newAnnotation];
     
     [[NSNotificationCenter defaultCenter] postNotificationName:SKPDFViewDidAddAnnotationNotification object:self 
-        userInfo:[NSDictionary dictionaryWithObjectsAndKeys:newAnnotation, @"annotation", nil]];
+        userInfo:[NSDictionary dictionaryWithObjectsAndKeys:newAnnotation, @"annotation", page, @"page", nil]];
 
     [self setActiveAnnotation:newAnnotation];
     
@@ -837,15 +837,16 @@ static NSRect RectPlusScale (NSRect aRect, float scale)
 
 - (void)removeAnnotation:(PDFAnnotation *)annotation{
     PDFAnnotation *wasAnnotation = [activeAnnotation retain];
+    PDFPage *page = [wasAnnotation page];
     
     if (editAnnotation)
         [self endAnnotationEdit];
 	if (activeAnnotation != annotation)
 		[self setActiveAnnotation:nil];
     [self setNeedsDisplayForAnnotation:wasAnnotation];
-    [[wasAnnotation page] removeAnnotation:wasAnnotation];
+    [page removeAnnotation:wasAnnotation];
     [[NSNotificationCenter defaultCenter] postNotificationName:SKPDFViewDidRemoveAnnotationNotification object:self 
-        userInfo:[NSDictionary dictionaryWithObjectsAndKeys:wasAnnotation, @"annotation", nil]];
+        userInfo:[NSDictionary dictionaryWithObjectsAndKeys:wasAnnotation, @"annotation", page, @"page", nil]];
     [wasAnnotation release];
 }
 

@@ -995,17 +995,20 @@ static NSString *SKDocumentToolbarSearchItemIdentifier = @"SKDocumentToolbarSear
 
 - (void)handleDidAddAnnotationNotification:(NSNotification *)notification {
     PDFAnnotation *annotation = [[notification userInfo] objectForKey:@"annotation"];
+    PDFPage *page = [[notification userInfo] objectForKey:@"page"];;
     if (annotation) {
         updatingNoteSelection = YES;
         [[(SKDocument *)[self document] mutableArrayValueForKey:@"notes"] addObject:annotation];
         updatingNoteSelection = NO;
-        [self thumbnailAtIndexNeedsUpdate:[annotation pageIndex]];
+        if (page)
+            [self thumbnailAtIndexNeedsUpdate:[[pdfView document] indexForPage:page]];
     }
     [[self window] setDocumentEdited:YES];
 }
 
 - (void)handleDidRemoveAnnotationNotification:(NSNotification *)notification {
     PDFAnnotation *annotation = [[notification userInfo] objectForKey:@"annotation"];
+    PDFPage *page = [[notification userInfo] objectForKey:@"page"];;
     if (annotation) {
         NSWindowController *wc = nil;
         NSEnumerator *wcEnum = [[[self document] windowControllers] objectEnumerator];
@@ -1017,7 +1020,8 @@ static NSString *SKDocumentToolbarSearchItemIdentifier = @"SKDocumentToolbarSear
             }
         }
         [[[self document] mutableArrayValueForKey:@"notes"] removeObject:annotation];
-        [self thumbnailAtIndexNeedsUpdate:[annotation pageIndex]];
+        if (page)
+            [self thumbnailAtIndexNeedsUpdate:[[pdfView document] indexForPage:page]];
     }
     [[self window] setDocumentEdited:YES];
 }
