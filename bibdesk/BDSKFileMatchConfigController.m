@@ -37,7 +37,8 @@
     NSOpenPanel *openPanel = [NSOpenPanel openPanel];
     [openPanel setAllowsMultipleSelection:YES];
     [openPanel setCanChooseDirectories:NO];
-    [openPanel beginSheetForDirectory:nil file:nil types:nil modalForWindow:[self window] modalDelegate:self didEndSelector:@selector(openPanelDidEnd:returnValue:contextInfo:) contextInfo:NULL];
+    [openPanel setPrompt:NSLocalizedString(@"Choose", @"")];
+    [openPanel beginSheetForDirectory:nil file:nil types:nil modalForWindow:[self window] modalDelegate:self didEndSelector:@selector(openPanelDidEnd:returnCode:contextInfo:) contextInfo:NULL];
 }
 
 - (IBAction)remove:(id)sender;
