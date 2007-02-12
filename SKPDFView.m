@@ -55,7 +55,7 @@ NSString *SKPDFViewAnnotationDoubleClickedNotification = @"SKPDFViewAnnotationDo
     NSViewAnimation *animation;
 }
 + (id)sharedHoverWindow;
-- (void)showWithDestination:(PDFDestination *)dest atPoint:(NSPoint)point;
+- (void)showWithDestination:(PDFDestination *)dest atPoint:(NSPoint)point fromView:(PDFView *)srcView;
 - (void)hide;
 @end
 
@@ -270,7 +270,7 @@ static NSRect RectPlusScale (NSRect aRect, float scale)
         }
         if (NSEqualRects(bounds, newBounds) == NO) {
             [activeAnnotation setBounds:newBounds];
-            NSString *selString = [[[[activeAnnotation page] selectionForRect:newBounds] string] fastStringByCollapsingWhitespaceAndNewlinesAndRemovingSurroundingWhitespaceAndNewlines];
+            NSString *selString = [[[[activeAnnotation page] selectionForRect:newBounds] string] stringByCollapsingWhitespaceAndNewlinesAndRemovingSurroundingWhitespaceAndNewlines];
             [activeAnnotation setContents:selString];
             [self setNeedsDisplayInRect:RectPlusScale([self convertRect:NSUnionRect(bounds, newBounds) fromPage:page], [self scaleFactor])];
             [[NSNotificationCenter defaultCenter] postNotificationName:SKPDFViewDidChangeAnnotationNotification object:self 
@@ -312,7 +312,7 @@ static NSRect RectPlusScale (NSRect aRect, float scale)
             if (mouseDownInAnnotation) {
                 mouseDownInAnnotation = NO;
                 if ([[activeAnnotation type] isEqualToString:@"Circle"] || [[activeAnnotation type] isEqualToString:@"Square"]) {
-                    NSString *selString = [[[[activeAnnotation page] selectionForRect:[activeAnnotation bounds]] string] fastStringByCollapsingWhitespaceAndNewlinesAndRemovingSurroundingWhitespaceAndNewlines];
+                    NSString *selString = [[[[activeAnnotation page] selectionForRect:[activeAnnotation bounds]] string] stringByCollapsingWhitespaceAndNewlinesAndRemovingSurroundingWhitespaceAndNewlines];
                     [activeAnnotation setContents:selString];
                     [self setNeedsDisplayForAnnotation:activeAnnotation];
                     [[NSNotificationCenter defaultCenter] postNotificationName:SKPDFViewDidChangeAnnotationNotification object:self 
@@ -356,9 +356,9 @@ static NSRect RectPlusScale (NSRect aRect, float scale)
     
     BOOL isLink = NO;
     PDFDestination *dest = [self destinationForEvent:theEvent isLink:&isLink];
-    
+
     if (isLink)
-        [[SKPDFHoverWindow sharedHoverWindow] showWithDestination:dest atPoint:[[self window] convertBaseToScreen:[theEvent locationInWindow]]];
+        [[SKPDFHoverWindow sharedHoverWindow] showWithDestination:dest atPoint:[[self window] convertBaseToScreen:[theEvent locationInWindow]] fromView:self];
     else
         [[SKPDFHoverWindow sharedHoverWindow] hide];
     
@@ -776,7 +776,7 @@ static NSRect RectPlusScale (NSRect aRect, float scale)
 	PDFAnnotation *newAnnotation = nil;
 	PDFPage *page;
 	NSRect bounds;
-    NSString *text = [[selection string] fastStringByCollapsingWhitespaceAndNewlinesAndRemovingSurroundingWhitespaceAndNewlines];
+    NSString *text = [[selection string] stringByCollapsingWhitespaceAndNewlinesAndRemovingSurroundingWhitespaceAndNewlines];
     
 	// Determine bounds to use for new text annotation.
 	if (selection != nil) {
@@ -814,14 +814,14 @@ static NSRect RectPlusScale (NSRect aRect, float scale)
             [newAnnotation setColor:[NSColor redColor]];
             [[newAnnotation border] setLineWidth:2.0];
             if (text == nil)
-                text = [[[page selectionForRect:bounds] string] fastStringByCollapsingWhitespaceAndNewlinesAndRemovingSurroundingWhitespaceAndNewlines];
+                text = [[[page selectionForRect:bounds] string] stringByCollapsingWhitespaceAndNewlinesAndRemovingSurroundingWhitespaceAndNewlines];
             break;
         case SKSquareAnnotationMode:
             newAnnotation = [[PDFAnnotationSquare alloc] initWithBounds:bounds];
             [newAnnotation setColor:[NSColor greenColor]];
             [[newAnnotation border] setLineWidth:2.0];
             if (text == nil)
-                text = [[[page selectionForRect:bounds] string] fastStringByCollapsingWhitespaceAndNewlinesAndRemovingSurroundingWhitespaceAndNewlines];
+                text = [[[page selectionForRect:bounds] string] stringByCollapsingWhitespaceAndNewlinesAndRemovingSurroundingWhitespaceAndNewlines];
             break;
 	}
     [newAnnotation setContents:text ? text : NSLocalizedString(@"New note", @"Default text for new note")];
@@ -1054,7 +1054,7 @@ static NSRect RectPlusScale (NSRect aRect, float scale)
     return rect;
 }
 
-- (void)showWithDestination:(PDFDestination *)dest atPoint:(NSPoint)point{
+- (void)showWithDestination:(PDFDestination *)dest atPoint:(NSPoint)point fromView:(PDFView *)srcView{
     
     if ([destination isEqual:dest])
         return;
@@ -1071,7 +1071,31 @@ static NSRect RectPlusScale (NSRect aRect, float scale)
     NSRect bounds = [page boundsForBox:kPDFDisplayBoxCropBox];
     NSRect rect = [[imageView superview] bounds];
     
-    rect.origin = [dest point];
+    NSPoint hoverOrigin = [dest point];
+    
+    // this heuristic is only applied if there's no character at the destination
+    if ([page characterIndexAtPoint:[dest point]] == -1) {
+        // point is in screen coordinates; convert to originating window
+        NSPoint pgPt = [[srcView window] convertScreenToBase:point];
+        // convert to originating view
+        pgPt = [srcView convertPoint:pgPt fromView:nil];
+        // convert to page
+        pgPt = [srcView convertPoint:pgPt toPage:[srcView currentPage]];
+        NSString *srcString = [[[srcView currentPage] selectionForWordAtPoint:pgPt] string];
+        
+        // this is correct for author/year citations
+        if (srcString)
+            srcString = [srcString stringByTrimmingCharactersInSet:[NSCharacterSet punctuationCharacterSet]];
+
+        NSRange r = srcString ? [[page string] rangeOfString:srcString] : NSMakeRange(NSNotFound, 0);
+        if (r.length) {
+            NSRect charBounds = [page characterBoundsAtIndex:r.location];
+            hoverOrigin = charBounds.origin;
+            hoverOrigin.y += 0.5 * NSHeight(rect);
+        }
+    }
+    
+    rect.origin = hoverOrigin;
     rect.origin.x -= NSMinX(bounds);
     rect.origin.y -= NSMinY(bounds) + NSHeight(rect);
     
