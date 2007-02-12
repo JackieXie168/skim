@@ -73,8 +73,6 @@
     return [[self page] label];
 }
 
-- (NSImage *)typeIcon { return nil; }
-
 - (NSImage *)image { return nil; }
 
 - (NSAttributedString *)text { return nil; }
@@ -83,26 +81,6 @@
 
 @end
 
-
-@implementation PDFAnnotationFreeText (SKExtensions)
-
-- (NSImage *)typeIcon { return [NSImage imageNamed:@"AnnotateToolAdorn"]; }
-
-@end
-
-
-@implementation PDFAnnotationCircle (SKExtensions)
-
-- (NSImage *)typeIcon { return [NSImage imageNamed:@"CircleToolAdorn"]; }
-
-@end
-
-
-@implementation PDFAnnotationText (SKExtensions)
-
-- (NSImage *)typeIcon { return [NSImage imageNamed:@"NoteToolAdorn"]; }
-
-@end
 
 // useful for highlighting things; isTemporaryAnnotation is so we know to remove it
 @implementation SKPDFAnnotationTemporary
