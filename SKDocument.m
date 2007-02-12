@@ -17,6 +17,9 @@
 #import "SKNote.h"
 #import "SKPSProgressController.h"
 
+// maximum length of xattr value recommended by Apple
+#define MAX_XATTR_LENGTH 4096
+
 NSString *SKDocumentErrorDomain = @"SKDocumentErrorDomain";
 
 // See CFBundleTypeName in Info.plist
@@ -188,6 +191,7 @@ static NSString *SKPostScriptDocumentType = @"PostScript document";
         int i, numberOfNotes = [notes count];
         NSArray *oldNotes = [fm extendedAttributeNamesAtPath:path traverseLink:YES error:NULL];
         NSDictionary *dictionary = [NSDictionary dictionaryWithObjectsAndKeys:[NSNumber numberWithInt:numberOfNotes], @"numberOfNotes", nil];
+        NSMutableDictionary *longNotes = [NSMutableDictionary dictionary];
         NSString *name = nil;
         NSData *data = nil;
         NSError *error = nil;
@@ -202,20 +206,35 @@ static NSString *SKPostScriptDocumentType = @"PostScript document";
             }
         }
         
+        for (i = 0; i < numberOfNotes; i++) {
+            name = [NSString stringWithFormat:@"SKNote-%i", i];
+            data = [NSKeyedArchiver archivedDataWithRootObject:[[notes objectAtIndex:i] dictionaryValue]];
+            if ([data length] > MAX_XATTR_LENGTH) {
+                int j, n = ceil([data length] / MAX_XATTR_LENGTH);
+                NSData *subdata;
+                for (j = 0; j < n; j++) {
+                    name = [NSString stringWithFormat:@"SKNote-%i-%i", i, j];
+                    subdata = [data subdataWithRange:NSMakeRange(j * MAX_XATTR_LENGTH, j == n - 1 ? [data length] - j * MAX_XATTR_LENGTH : MAX_XATTR_LENGTH)];
+                    if ([fm setExtendedAttributeNamed:name toValue:subdata atPath:path options:nil error:&error] == NO) {
+                        success = NO;
+                        NSLog(@"%@: %@", self, error);
+                    }                    
+                }
+                [longNotes setObject:[NSNumber numberWithInt:j] forKey:[NSNumber numberWithInt:i]];
+            } else if ([fm setExtendedAttributeNamed:name toValue:data atPath:path options:nil error:&error] == NO) {
+                success = NO;
+                NSLog(@"%@: %@", self, error);
+            }
+        }
+        
         if ([notes count] == 0) {
             if ([fm removeExtendedAttribute:@"SKNotesInfo" atPath:path traverseLink:YES error:&error] == NO) {
                 success = NO;
                 NSLog(@"%@: %@", self, error);
             }
-        } else if ([fm setExtendedAttributeNamed:@"SKNotesInfo" toPropertyListValue:dictionary atPath:path options:nil error:&error] == NO) {
-            success = NO;
-            NSLog(@"%@: %@", self, error);
-        }
-        
-        for (i = 0; i < numberOfNotes; i++) {
-            name = [NSString stringWithFormat:@"SKNote-%i", i];
-            data = [NSKeyedArchiver archivedDataWithRootObject:[[notes objectAtIndex:i] dictionaryValue]];
-            if ([fm setExtendedAttributeNamed:name toValue:data atPath:path options:nil error:&error] == NO) {
+        } else {
+            dictionary = [NSDictionary dictionaryWithObjectsAndKeys:[NSNumber numberWithInt:numberOfNotes], @"numberOfNotes", [longNotes count] ? longNotes : nil, @"longNotes", nil];
+            if ([fm setExtendedAttributeNamed:@"SKNotesInfo" toPropertyListValue:dictionary atPath:path options:nil error:&error] == NO) {
                 success = NO;
                 NSLog(@"%@: %@", self, error);
             }
@@ -240,7 +259,9 @@ static NSString *SKPostScriptDocumentType = @"PostScript document";
     }
     if (dict != nil) {
         int i, numberOfNotes = [[dict objectForKey:@"numberOfNotes"] intValue];
+        NSDictionary *longNotes = [dict objectForKey:@"longNotes"];
         NSString *name = nil;
+        int n;
         NSData *data = nil;
         
         if (noteDicts)
@@ -248,13 +269,34 @@ static NSString *SKPostScriptDocumentType = @"PostScript document";
         noteDicts = [[NSMutableDictionary alloc] initWithCapacity:numberOfNotes];
         
         for (i = 0; i < numberOfNotes; i++) {
-            name = [NSString stringWithFormat:@"SKNote-%i", i];
-            if ((data = [fm extendedAttributeNamed:name atPath:[aURL path] traverseLink:YES error:&error]) &&
-                (dict = [NSKeyedUnarchiver unarchiveObjectWithData:data])) {
-                [noteDicts addObject:dict];
+            n = [[longNotes objectForKey:[NSNumber numberWithInt:i]] intValue];
+            if (n == 0) {
+                name = [NSString stringWithFormat:@"SKNote-%i", i];
+                if ((data = [fm extendedAttributeNamed:name atPath:[aURL path] traverseLink:YES error:&error]) &&
+                    (dict = [NSKeyedUnarchiver unarchiveObjectWithData:data])) {
+                    [noteDicts addObject:dict];
+                } else {
+                    success = NO;
+                    NSLog(@"%@: %@", self, error);
+                }
             } else {
-                success = NO;
-                NSLog(@"%@: %@", self, error);
+                NSMutableData *mutableData = [NSMutableData dataWithCapacity:n * MAX_XATTR_LENGTH];
+                int j;
+                for (j = 0; j < n; j++) {
+                    name = [NSString stringWithFormat:@"SKNote-%i-%i", i, j];
+                    if (data = [fm extendedAttributeNamed:name atPath:[aURL path] traverseLink:YES error:&error]) {
+                        [mutableData appendData:data];
+                    } else {
+                        success = NO;
+                        NSLog(@"%@: %@", self, error);
+                    }
+                }
+                if (dict = [NSKeyedUnarchiver unarchiveObjectWithData:mutableData]) {
+                    [noteDicts addObject:dict];
+                } else {
+                    success = NO;
+                    NSLog(@"%@: %@", self, error);
+                }
             }
         }
     } else {
