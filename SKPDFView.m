@@ -11,6 +11,7 @@
 #import "SKPDFView.h"
 #import "SKNavigationWindow.h"
 #import "SKPDFAnnotationNote.h"
+#import "NSString_SKExtensions.h"
 
 NSString *SKPDFViewToolModeChangedNotification = @"SKPDFViewToolModeChangedNotification";
 NSString *SKPDFViewAnnotationModeChangedNotification = @"SKPDFViewAnnotationModeChangedNotification";
@@ -269,7 +270,7 @@ static NSRect RectPlusScale (NSRect aRect, float scale)
         }
         if (NSEqualRects(bounds, newBounds) == NO) {
             [activeAnnotation setBounds:newBounds];
-            NSString *selString = [[[[activeAnnotation page] selectionForRect:newBounds] string] stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
+            NSString *selString = [[[[activeAnnotation page] selectionForRect:newBounds] string] fastStringByCollapsingWhitespaceAndNewlinesAndRemovingSurroundingWhitespaceAndNewlines];
             [activeAnnotation setContents:selString];
             [self setNeedsDisplayInRect:RectPlusScale([self convertRect:NSUnionRect(bounds, newBounds) fromPage:page], [self scaleFactor])];
             [[NSNotificationCenter defaultCenter] postNotificationName:SKPDFViewDidChangeAnnotationNotification object:self 
@@ -311,7 +312,7 @@ static NSRect RectPlusScale (NSRect aRect, float scale)
             if (mouseDownInAnnotation) {
                 mouseDownInAnnotation = NO;
                 if ([[activeAnnotation type] isEqualToString:@"Circle"] || [[activeAnnotation type] isEqualToString:@"Square"]) {
-                    NSString *selString = [[[[activeAnnotation page] selectionForRect:[activeAnnotation bounds]] string] stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
+                    NSString *selString = [[[[activeAnnotation page] selectionForRect:[activeAnnotation bounds]] string] fastStringByCollapsingWhitespaceAndNewlinesAndRemovingSurroundingWhitespaceAndNewlines];
                     [activeAnnotation setContents:selString];
                     [self setNeedsDisplayForAnnotation:activeAnnotation];
                     [[NSNotificationCenter defaultCenter] postNotificationName:SKPDFViewDidChangeAnnotationNotification object:self 
@@ -775,7 +776,7 @@ static NSRect RectPlusScale (NSRect aRect, float scale)
 	PDFAnnotation *newAnnotation = nil;
 	PDFPage *page;
 	NSRect bounds;
-    NSString *text = [selection string];
+    NSString *text = [[selection string] fastStringByCollapsingWhitespaceAndNewlinesAndRemovingSurroundingWhitespaceAndNewlines];
     
 	// Determine bounds to use for new text annotation.
 	if (selection != nil) {
@@ -813,14 +814,14 @@ static NSRect RectPlusScale (NSRect aRect, float scale)
             [newAnnotation setColor:[NSColor redColor]];
             [[newAnnotation border] setLineWidth:2.0];
             if (text == nil)
-                text = [[[page selectionForRect:bounds] string] stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
+                text = [[[page selectionForRect:bounds] string] fastStringByCollapsingWhitespaceAndNewlinesAndRemovingSurroundingWhitespaceAndNewlines];
             break;
         case SKSquareAnnotationMode:
             newAnnotation = [[PDFAnnotationSquare alloc] initWithBounds:bounds];
             [newAnnotation setColor:[NSColor greenColor]];
             [[newAnnotation border] setLineWidth:2.0];
             if (text == nil)
-                text = [[[page selectionForRect:bounds] string] stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
+                text = [[[page selectionForRect:bounds] string] fastStringByCollapsingWhitespaceAndNewlinesAndRemovingSurroundingWhitespaceAndNewlines];
             break;
 	}
     [newAnnotation setContents:text ? text : NSLocalizedString(@"New note", @"Default text for new note")];
