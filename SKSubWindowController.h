@@ -17,5 +17,10 @@
     IBOutlet PDFView* pdfView;
 }
 - (void)setPdfDocument:(PDFDocument *)pdfDocument scaleFactor:(int)factor autoScales:(BOOL)autoScales goToPageNumber:(int)pageNum point:(NSPoint)locationInPageSpace;
+- (PDFView *)pdfView;
+- (NSImage *)thumbnailWithSize:(float)size shadowBlurRadius:(float)shadowBlurRadius shadowOffset:(NSSize)shadowOffset;
+@end
 
+
+@interface SKSubWindow : NSPanel
 @end

@@ -74,6 +74,7 @@ static NSString *SKDocumentToolbarSearchItemIdentifier = @"SKDocumentToolbarSear
         searchResults = [[NSMutableArray alloc] init];
         thumbnails = [[NSMutableArray alloc] init];
         dirtyThumbnailIndexes = [[NSMutableIndexSet alloc] init];
+        subwindows = [[NSMutableArray alloc] init];
         sidePaneState = SKOutlineSidePaneState;
     }
     
@@ -93,9 +94,12 @@ static NSString *SKDocumentToolbarSearchItemIdentifier = @"SKDocumentToolbarSear
 	[searchResults release];
     [pdfOutline release];
 	[thumbnails release];
+	[subwindows release];
     [[outlineView enclosingScrollView] release];
     [[findTableView enclosingScrollView] release];
     [[thumbnailTableView enclosingScrollView] release];
+    [[notesTableView enclosingScrollView] release];
+    [[subwindowsTableView enclosingScrollView] release];
 	[sideWindow release];
 	[fullScreenWindow release];
     [mainWindow release];
@@ -127,6 +131,8 @@ static NSString *SKDocumentToolbarSearchItemIdentifier = @"SKDocumentToolbarSear
     [[outlineView enclosingScrollView] retain];
     [[findTableView enclosingScrollView] retain];
     [[thumbnailTableView enclosingScrollView] retain];
+    [[notesTableView enclosingScrollView] retain];
+    [[subwindowsTableView enclosingScrollView] retain];
     
     NSRect frame = [sidePaneViewButton frame];
     frame.size.height = SEGMENTED_CONTROL_HEIGHT;
@@ -142,6 +148,7 @@ static NSString *SKDocumentToolbarSearchItemIdentifier = @"SKDocumentToolbarSear
     NSSortDescriptor *indexSortDescriptor = [[[NSSortDescriptor alloc] initWithKey:@"pageIndex" ascending:YES] autorelease];
     NSSortDescriptor *contentsSortDescriptor = [[[NSSortDescriptor alloc] initWithKey:@"contents" ascending:YES] autorelease];
     [notesArrayController setSortDescriptors:[NSArray arrayWithObjects:indexSortDescriptor, contentsSortDescriptor, nil]];
+    [subwindowsArrayController setSortDescriptors:[NSArray arrayWithObjects:indexSortDescriptor, nil]];
     
     [self setupToolbar];
     
@@ -152,6 +159,7 @@ static NSString *SKDocumentToolbarSearchItemIdentifier = @"SKDocumentToolbarSear
     [self handleScaleChangedNotification:nil];
     [pageNumberStepper setMaxValue:[[pdfView document] pageCount]];
     [sidePaneViewButton setSelectedSegment:sidePaneState];
+    [drawerViewButton setSelectedSegment:0];
     
     [self registerForNotifications];
 }
@@ -281,6 +289,30 @@ static NSString *SKDocumentToolbarSearchItemIdentifier = @"SKDocumentToolbarSear
 
 - (void)removeObjectFromThumbnailsAtIndex:(unsigned)theIndex {
     [thumbnails removeObjectAtIndex:theIndex];
+}
+
+- (NSArray *)subwindows {
+    return subwindows;
+}
+
+- (void)setSubwindows:(NSArray *)newSubwindows {
+    [subwindows setArray:subwindows];
+}
+
+- (unsigned)countOfSubwindows {
+    return [subwindows count];
+}
+
+- (id)objectInSubwindowsAtIndex:(unsigned)theIndex {
+    return [subwindows objectAtIndex:theIndex];
+}
+
+- (void)insertObject:(id)obj inSubwindowsAtIndex:(unsigned)theIndex {
+    [subwindows insertObject:obj atIndex:theIndex];
+}
+
+- (void)removeObjectFromSubwindowsAtIndex:(unsigned)theIndex {
+    [subwindows removeObjectAtIndex:theIndex];
 }
 
 #pragma mark Actions
@@ -516,6 +548,15 @@ static NSString *SKDocumentToolbarSearchItemIdentifier = @"SKDocumentToolbarSear
         [self displayThumbnailView];
     else if (sidePaneState == SKOutlineSidePaneState)
         [self displayOutlineView];
+}
+
+- (IBAction)changeDrawerView:(id)sender {
+    int drawerState = [sender selectedSegment];
+    
+    if (drawerState == 0)
+        [self displayNotesView];
+    else if (drawerState == 1)
+        [self displaySubwindowsView];
 }
 
 - (void)goFullScreen {
@@ -779,6 +820,22 @@ static NSString *SKDocumentToolbarSearchItemIdentifier = @"SKDocumentToolbarSear
     [self replaceTable:currentTableView withTable:findTableView animate:YES];
 }
 
+- (void)displayNotesView {
+    [self replaceTable:subwindowsTableView withTable:notesTableView animate:NO];
+}
+
+- (void)fadeInNotesView {
+    [self replaceTable:subwindowsTableView withTable:notesTableView animate:YES];
+}
+
+- (void)displaySubwindowsView {
+    [self replaceTable:notesTableView withTable:subwindowsTableView animate:NO];
+}
+
+- (void)fadeInSubwindowsView {
+    [self replaceTable:notesTableView withTable:subwindowsTableView animate:YES];
+}
+
 - (void)addAnnotationsForSelection:(PDFSelection *)sel {
     PDFDocument *doc = [pdfView document];
     NSArray *pages = [sel pages];
@@ -928,6 +985,70 @@ static NSString *SKDocumentToolbarSearchItemIdentifier = @"SKDocumentToolbarSear
     [[self document] addWindowController:swc];
     [swc release];
     [swc showWindow:self];
+}
+
+- (void)miniaturizeSubWindowController:(SKSubWindowController *)controller {
+    if ([self isFullScreen] == NO && [subwindowsTableView window] == nil) {
+        [notesDrawer open];
+        [self displaySubwindowsView];
+        [drawerViewButton setSelectedSegment:1];
+    }
+    
+    NSImage *image = [controller thumbnailWithSize:256.0 shadowBlurRadius:8.0 shadowOffset:NSMakeSize(0.0, -6.0)];
+    PDFPage *page = [[controller pdfView] currentPage];
+    SKThumbnail *thumbnail = [[SKThumbnail alloc] initWithImage:image label:[page label]];
+    
+    [thumbnail setController:controller];
+    [thumbnail setPageIndex:[[page document] indexForPage:page]];
+    [subwindowsArrayController addObject:thumbnail];
+    [thumbnail release];
+    
+    if ([self isFullScreen] == NO) {
+        NSRect oldRect = [[controller window] frame];
+        float ratio = NSHeight(oldRect) / NSWidth(oldRect);
+        NSRect rect = [subwindowsTableView frameOfCellAtColumn:0 row:[[subwindowsArrayController arrangedObjects] indexOfObject:thumbnail]];
+        rect = [subwindowsTableView convertRect:rect toView:nil];
+        rect.origin = [[subwindowsTableView window] convertBaseToScreen:rect.origin];
+        if (ratio > 1.0)
+            rect = NSInsetRect(rect, 0.5 * NSWidth(rect) * (1.0 - 1.0 / ratio), 0.0);
+        else
+            rect = NSInsetRect(rect, 0.0, 0.5 * NSHeight(rect) * (1.0 - ratio));
+        // we probably want to resize a custom window with a screenshot
+        [[controller window] setFrame:rect display:YES animate:YES];
+        [[controller window] orderOut:self];
+        [[controller window] setFrame:oldRect display:NO];
+    } else {
+        [[controller window] orderOut:self];
+    }
+}
+
+- (void)deminiaturizeSubWindows:(NSArray *)subwindowsToShow {
+    // there should only be a single note
+	SKThumbnail *thumbnail = [subwindowsToShow lastObject];
+    SKSubWindowController *controller = [thumbnail controller];
+    
+    [[self document] addWindowController:controller];
+    
+    if ([self isFullScreen] == NO) {
+        NSRect newRect = [[controller window] frame];
+        float ratio = NSHeight(newRect) / NSWidth(newRect);
+        NSRect rect = [subwindowsTableView frameOfCellAtColumn:0 row:[[subwindowsArrayController arrangedObjects] indexOfObject:thumbnail]];
+        rect = [subwindowsTableView convertRect:rect toView:nil];
+        rect.origin = [[subwindowsTableView window] convertBaseToScreen:rect.origin];
+        if (ratio > 1.0)
+            rect = NSInsetRect(rect, 0.5 * NSWidth(rect) * (1.0 - 1.0 / ratio), 0.0);
+        else
+            rect = NSInsetRect(rect, 0.0, 0.5 * NSHeight(rect) * (1.0 - ratio));
+        [[controller window] setFrame:rect display:NO];
+        [controller showWindow:self];
+        [thumbnail setImage:nil];
+        [subwindowsTableView display];
+        // we probably want to resize a custom window with a screenshot
+        [[controller window] setFrame:newRect display:YES animate:YES];
+    } else {
+        [controller showWindow:self];
+    }
+    [subwindowsArrayController removeObject:thumbnail];
 }
 
 - (void)showNote:(PDFAnnotation *)annotation {
@@ -1704,16 +1825,30 @@ static NSString *SKDocumentToolbarSearchItemIdentifier = @"SKDocumentToolbarSear
 
 - (id)initWithImage:(NSImage *)anImage label:(NSString *)aLabel {
     if (self = [super init]) {
-        label = [aLabel retain];
         image = [anImage retain];
+        label = [aLabel retain];
+        pageIndex = 0;
+        controller = nil;
     }
     return self;
 }
 
 - (void)dealloc {
-    [label release];
     [image release];
+    [label release];
+    [controller release];
     [super dealloc];
+}
+
+- (NSImage *)image {
+    return image;
+}
+
+- (void)setImage:(NSImage *)newImage {
+    if (image != newImage) {
+        [image release];
+        image = [newImage retain];
+    }
 }
 
 - (NSString *)label {
@@ -1727,15 +1862,24 @@ static NSString *SKDocumentToolbarSearchItemIdentifier = @"SKDocumentToolbarSear
     }
 }
 
-- (NSImage *)image {
-    // @@ TODO: placeholder image
-    return image;
+- (unsigned int)pageIndex {
+    return pageIndex;
 }
 
-- (void)setImage:(NSImage *)newImage {
-    if (image != newImage) {
-        [image release];
-        image = [newImage retain];
+- (void)setPageIndex:(unsigned int)newPageIndex {
+    if (pageIndex != newPageIndex) {
+        pageIndex = newPageIndex;
+    }
+}
+
+- (id)controller {
+    return controller;
+}
+
+- (void)setController:(id)newController {
+    if (controller != newController) {
+        [controller release];
+        controller = [newController retain];
     }
 }
 

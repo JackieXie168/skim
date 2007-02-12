@@ -23,7 +23,7 @@ typedef struct _SKPDFViewState {
 	BOOL autoHidesScrollers;
 } SKPDFViewState;
 
-@class SKPDFView, PDFOutline, SKCollapsibleView, SKNavigationWindow, SKSideWindow;
+@class SKPDFView, PDFOutline, SKCollapsibleView, SKNavigationWindow, SKSideWindow, SKSubWindowController;
 
 @interface SKNotesTableView : NSTableView
 - (void)delete:(id)sender;
@@ -61,6 +61,7 @@ typedef struct _SKPDFViewState {
     NSMutableDictionary         *toolbarItems;
     
     IBOutlet NSSegmentedControl *sidePaneViewButton;
+    IBOutlet NSSegmentedControl *drawerViewButton;
     
     IBOutlet NSWindow          *choosePageSheet;
     IBOutlet NSTextField       *choosePageField;
@@ -88,6 +89,11 @@ typedef struct _SKPDFViewState {
     BOOL updatingThumbnailSelection;
     NSMutableIndexSet *dirtyThumbnailIndexes;
     NSTimer *thumbnailTimer;
+    
+    IBOutlet NSView *subwindowsView;
+    IBOutlet NSArrayController *subwindowsArrayController;
+    IBOutlet NSTableView *subwindowsTableView;
+    NSMutableArray *subwindows;
     
     float lastSidePaneWidth;
     
@@ -129,6 +135,7 @@ typedef struct _SKPDFViewState {
 - (IBAction)changeToolMode:(id)sender;
 - (IBAction)changeAnnotationMode:(id)sender;
 - (IBAction)changeSidePaneView:(id)sender;
+- (IBAction)changeDrawerView:(id)sender;
 - (IBAction)enterFullScreen:(id)sender;
 - (IBAction)exitFullScreen:(id)sender;
 - (IBAction)toggleFullScreen:(id)sender;
@@ -137,6 +144,8 @@ typedef struct _SKPDFViewState {
 - (IBAction)togglePresentation:(id)sender;
 
 - (void)showSubWindowAtPageNumber:(int)pageNum location:(NSPoint)locationInPageSpace;
+- (void)miniaturizeSubWindowController:(SKSubWindowController *)controller;
+- (void)deminiaturizeSubWindows:(NSArray *)subwindowsToShow;
 - (void)showNote:(PDFAnnotation *)annotation;
 
 - (PDFDocument *)pdfDocument;
@@ -153,6 +162,10 @@ typedef struct _SKPDFViewState {
 - (void)fadeInThumbnailView;
 - (void)displaySearchView;
 - (void)fadeInSearchView;
+- (void)displayNotesView;
+- (void)fadeInNotesView;
+- (void)displaySubwindowsView;
+- (void)fadeInSubwindowsView;
 
 - (void)removeTemporaryAnnotations;
 
@@ -188,14 +201,20 @@ typedef struct _SKPDFViewState {
 
 
 @interface SKThumbnail : NSObject {
-    NSString *label;
     NSImage *image;
+    NSString *label;
+    unsigned int pageIndex;
+    id controller;
 }
 - (id)initWithImage:(NSImage *)anImage label:(NSString *)aLabel;
-- (NSString *)label;
-- (void)setLabel:(NSString *)newLabel;
 - (NSImage *)image;
 - (void)setImage:(NSImage *)newImage;
+- (NSString *)label;
+- (void)setLabel:(NSString *)newLabel;
+- (unsigned int)pageIndex;
+- (void)setPageIndex:(unsigned int)newPageIndex;
+- (id)controller;
+- (void)setController:(id)newController;
 @end
 
 
