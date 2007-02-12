@@ -104,7 +104,8 @@ static NSString *SKDocumentToolbarSearchItemIdentifier = @"SKDocumentToolbarSear
     [[thumbnailTableView enclosingScrollView] release];
     [[notesTableView enclosingScrollView] release];
     [[subwindowsTableView enclosingScrollView] release];
-	[sideWindow release];
+	[leftSideWindow release];
+	[rightSideWindow release];
 	[fullScreenWindow release];
     [mainWindow release];
     
@@ -143,6 +144,12 @@ static NSString *SKDocumentToolbarSearchItemIdentifier = @"SKDocumentToolbarSear
     [sidePaneViewButton setFrame:frame];
     [[sidePaneViewButton cell] setToolTip:NSLocalizedString(@"View Thumbnails", @"Tool tip message") forSegment:SKThumbnailSidePaneState];
     [[sidePaneViewButton cell] setToolTip:NSLocalizedString(@"View Table of Contents", @"Tool tip message") forSegment:SKOutlineSidePaneState];
+    
+    frame = [drawerViewButton frame];
+    frame.size.height = SEGMENTED_CONTROL_HEIGHT;
+    [drawerViewButton setFrame:frame];
+    [[drawerViewButton cell] setToolTip:NSLocalizedString(@"View Notes", @"Tool tip message") forSegment:0];
+    [[drawerViewButton cell] setToolTip:NSLocalizedString(@"View Detail Windows", @"Tool tip message") forSegment:1];
     
     [searchBox setCollapseEdges:SKMaxXEdgeMask | SKMinYEdgeMask];
     [searchBox setMinSize:NSMakeSize(150.0, 42.0)];
@@ -605,26 +612,47 @@ static NSString *SKDocumentToolbarSearchItemIdentifier = @"SKDocumentToolbarSear
 }
 
 - (void)showSideWindow {
-    if (sideWindow == nil) {
-        sideWindow = [[SKSideWindow alloc] initWithMainController:self];
-    } else if ([[self window] screen] != [sideWindow screen]) {
-        [sideWindow moveToScreen:[[self window] screen]];
+    if (leftSideWindow == nil) {
+        leftSideWindow = [[SKSideWindow alloc] initWithMainController:self edge:NSMinXEdge];
+    } else if ([[self window] screen] != [leftSideWindow screen]) {
+        [leftSideWindow moveToScreen:[[self window] screen]];
     }
+    if (rightSideWindow == nil) {
+        rightSideWindow = [[SKSideWindow alloc] initWithMainController:self edge:NSMaxXEdge];
+    } else if ([[self window] screen] != [rightSideWindow screen]) {
+        [rightSideWindow moveToScreen:[[self window] screen]];
+    }
+    
     [sideBox retain]; // sideBox is removed from its old superview in the process
-    [sideWindow setMainView:sideBox];
+    [leftSideWindow setMainView:sideBox];
     [sideBox release];
-    [sideWindow setLevel:[[self window] level]];
-    [[self window] addChildWindow:sideWindow ordered:NSWindowAbove];
-    [sideWindow orderFront:self];
+    [leftSideWindow setLevel:[[self window] level]];
+    [[self window] addChildWindow:leftSideWindow ordered:NSWindowAbove];
+    
+    NSView *rightView = [notesDrawer contentView];
+    [rightView retain];
+    [rightSideWindow setMainView:rightView];
+    [rightView release];
+    [rightSideWindow setLevel:[[self window] level]];
+    [[self window] addChildWindow:rightSideWindow ordered:NSWindowAbove];
+    
+    [leftSideWindow orderFront:self];
+    [rightSideWindow orderFront:self];
 }
 
 - (void)hideSideWindow {
-    [sideWindow orderOut:self];
+    [leftSideWindow orderOut:self];
+    [rightSideWindow orderOut:self];
     
     [sideBox retain]; // sideBox is removed from its old superview in the process
     [sideBox setFrame:[sideContentBox bounds]];
     [sideContentBox addSubview:sideBox];
     [sideBox release];
+    
+    NSView *rightView = [rightSideWindow mainView];
+    [rightView retain];
+    [notesDrawer setContentView:rightView];
+    [rightView release];
 }
 
 - (void)enterPresentationMode {
@@ -992,7 +1020,7 @@ static NSString *SKDocumentToolbarSearchItemIdentifier = @"SKDocumentToolbarSear
 }
 
 - (void)miniaturizeSubWindowController:(SKSubWindowController *)controller {
-    if ([self isFullScreen] == NO && [subwindowsTableView window] == nil) {
+    if ([self isPresentation] == NO && [subwindowsTableView window] == nil) {
         [notesDrawer open];
         [self displaySubwindowsView];
         [drawerViewButton setSelectedSegment:1];
@@ -1007,7 +1035,7 @@ static NSString *SKDocumentToolbarSearchItemIdentifier = @"SKDocumentToolbarSear
     [subwindowsArrayController addObject:thumbnail];
     [thumbnail release];
     
-    if ([self isFullScreen] == NO) {
+    if ([self isPresentation] == NO) {
         NSRect startRect = [controller rectForThumbnail];
         float ratio = NSHeight(startRect) / NSWidth(startRect);
         NSRect endRect = [subwindowsTableView frameOfCellAtColumn:0 row:[[subwindowsArrayController arrangedObjects] indexOfObject:thumbnail]];
@@ -1041,7 +1069,7 @@ static NSString *SKDocumentToolbarSearchItemIdentifier = @"SKDocumentToolbarSear
     
     [[self document] addWindowController:controller];
     
-    if ([self isFullScreen] == NO) {
+    if ([self isPresentation] == NO) {
         NSRect endRect = [controller rectForThumbnail];
         float ratio = NSHeight(endRect) / NSWidth(endRect);
         NSRect cellRect = [subwindowsTableView frameOfCellAtColumn:0 row:[[subwindowsArrayController arrangedObjects] indexOfObject:thumbnail]];
