@@ -70,22 +70,26 @@
 }
 
 - (void)slideOut {
-    state = NSDrawerClosingState;
-    NSRect screenFrame = [[self screen] frame];
-    NSRect frame = [self frame];
-    frame.origin.x = edge == NSMaxXEdge ? NSMaxX(screenFrame) - WINDOW_OFFSET : NSMinX(screenFrame) - NSWidth(frame) + WINDOW_OFFSET;
-    [self setFrame:frame display:YES animate:YES];
-    [[self parentWindow] makeKeyAndOrderFront:self];
-    state = NSDrawerClosedState;
+    if (state == NSDrawerOpenState || state == NSDrawerOpeningState) {
+        state = NSDrawerClosingState;
+        NSRect screenFrame = [[self screen] frame];
+        NSRect frame = [self frame];
+        frame.origin.x = edge == NSMaxXEdge ? NSMaxX(screenFrame) - WINDOW_OFFSET : NSMinX(screenFrame) - NSWidth(frame) + WINDOW_OFFSET;
+        [self setFrame:frame display:YES animate:YES];
+        [[self parentWindow] makeKeyAndOrderFront:self];
+        state = NSDrawerClosedState;
+    }
 }
 
 - (void)slideIn {
-    state = NSDrawerOpeningState;
-    NSRect screenFrame = [[self screen] frame];
-    NSRect frame = [self frame];
-    frame.origin.x = edge == NSMaxXEdge ? NSMaxX(screenFrame) - NSWidth(frame) + CONTENT_INSET : NSMinX(screenFrame) - CONTENT_INSET;
-    [self setFrame:frame display:YES animate:YES];
-    state = NSDrawerOpenState;
+    if (state == NSDrawerClosedState || state == NSDrawerClosingState) {
+        state = NSDrawerOpeningState;
+        NSRect screenFrame = [[self screen] frame];
+        NSRect frame = [self frame];
+        frame.origin.x = edge == NSMaxXEdge ? NSMaxX(screenFrame) - NSWidth(frame) + CONTENT_INSET : NSMinX(screenFrame) - CONTENT_INSET;
+        [self setFrame:frame display:YES animate:YES];
+        state = NSDrawerOpenState;
+    }
 }
 
 - (NSView *)mainView {
@@ -215,11 +219,13 @@
 }
 
 - (void)mouseEntered:(NSEvent *)theEvent {
-    [(SKSideWindow *)[self window] slideIn];
+    if (NSPointInRect([NSEvent mouseLocation], [[self window] frame]))
+        [(SKSideWindow *)[self window] slideIn];
 }
 
 - (void)mouseExited:(NSEvent *)theEvent {
-    [(SKSideWindow *)[self window] slideOut];
+    //if (NSPointInRect([NSEvent mouseLocation], [[self window] frame]) == NO)
+        [(SKSideWindow *)[self window] slideOut];
 }
 
 @end

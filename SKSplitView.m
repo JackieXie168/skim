@@ -28,22 +28,31 @@
 }
 
 - (void)mouseDown:(NSEvent *)theEvent {
-    if ([theEvent clickCount] > 1) {
+    if ([theEvent clickCount] > 1 && [[self delegate] respondsToSelector:@selector(splitView:doubleClickedDividerAt:)]) {
         NSPoint mouseLoc = [self convertPoint:[theEvent locationInWindow] fromView:nil];
-        NSEnumerator *viewEnum = [[self subviews] objectEnumerator];
-        NSView *view = nil;
-        
-        while (view = [viewEnum nextObject]) {
-            if (NSPointInRect(mouseLoc, [view frame]))
-                break;
+        NSArray *subviews = [self subviews];
+        int i, count = [subviews count];
+        id view;
+        NSRect divRect;
+
+        for (i = 0; i < (count-1); i++) {
+            view = [subviews objectAtIndex:i];
+            divRect = [view frame];
+            if ([self isVertical] == NO) {
+                divRect.origin.y = NSMaxY (divRect);
+                divRect.size.height = [self dividerThickness];
+            } else {
+                divRect.origin.x = NSMaxX (divRect);
+                divRect.size.width = [self dividerThickness];
+            }
+            
+            if (NSPointInRect(mouseLoc, divRect)) {
+                [[self delegate] splitView:self doubleClickedDividerAt:i];
+                return;
+            }
         }
-        if (view == nil && [[self delegate] respondsToSelector:@selector(splitViewDoubleClick:)])
-            [[self delegate] splitViewDoubleClick:self];
-        else
-            [super mouseDown:theEvent];
-    } else {
-        [super mouseDown:theEvent];
     }
+    [super mouseDown:theEvent];
 }
 
 - (void)drawRect:(NSRect)rect {
