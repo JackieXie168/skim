@@ -50,6 +50,7 @@
 // uses isEqual:
 - (void)removeChild:(BDSKTreeNode *)anObject;
 - (void)insertChild:(BDSKTreeNode *)anObject atIndex:(unsigned int)index;
+- (id)childAtIndex:(unsigned int)index;
 - (void)addChild:(BDSKTreeNode *)anObject;
 - (void)setChildren:(NSArray *)theChildren;
 - (NSArray *)children;
@@ -57,6 +58,7 @@
 - (BDSKTreeNode *)parent;
 - (void)setParent:(BDSKTreeNode *)aParent;
 - (BOOL)isLeaf;
+- (void)sortChildrenUsingFunction:(int (*)(id, id, void *))compare context:(void *)context;
 
 - (void)setColumnValues:(NSDictionary *)values;
 
