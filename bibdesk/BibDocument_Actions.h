@@ -223,13 +223,6 @@
     @param      sender (description)
 */
 - (void)pageUpInPreview:(id)sender;
-/*!
-    @method splitViewDoubleClick:
-    @abstract A delegate method of the OASplitView. Handles doubleClicking.
-    @discussion \253discussion\273
-    
-*/
-- (void)splitViewDoubleClick:(OASplitView *)sender;
 
 /*!
     @method     consolidateLinkedFiles:

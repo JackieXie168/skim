@@ -343,13 +343,48 @@
 
 #pragma mark Splitview delegate methods
 
+- (void)splitView:(NSSplitView *)sender resizeSubviewsWithOldSize:(NSSize)oldSize {
+    NSView *pickerView = [[splitView subviews] objectAtIndex:0];
+    NSView *pubsView = [[splitView subviews] objectAtIndex:1];
+    NSRect pubsFrame = [pubsView frame];
+    NSRect pickerFrame = [pickerView frame];
+    float factor = (NSWidth([sender frame]) - [sender dividerThickness]) / (oldSize.width - [sender dividerThickness]);
+	
+	if (sender == splitView) {
+		// pubs = table, picker = preview
+        pickerFrame.size.width *= factor;
+        if (NSWidth(pickerFrame) < 1.0)
+            pickerFrame.size.width = 0.0;
+        pickerFrame = NSIntegralRect(pickerFrame);
+        pubsFrame.size.width = NSWidth([sender frame]) - NSWidth(pickerFrame) - [sender dividerThickness];
+        if (NSWidth(pubsFrame) < 0.0) {
+            pubsFrame.size.width = 0.0;
+            pickerFrame.size.width = NSWidth([sender frame]) - NSWidth(pubsFrame) - [sender dividerThickness];
+        }
+	} else {
+        pubsFrame.size.width *= factor;
+        if (NSWidth(pubsFrame) < 1.0)
+            pubsFrame.size.width = 0.0;
+        pubsFrame = NSIntegralRect(pubsFrame);
+        pickerFrame.size.width = NSWidth([sender frame]) - NSWidth(pubsFrame) - [sender dividerThickness];
+        if (NSWidth(pubsFrame) < 0.0) {
+            pickerFrame.size.width = 0.0;
+            pubsFrame.size.width = NSWidth([sender frame]) - NSWidth(pickerFrame) - [sender dividerThickness];
+        }
+    }
+	
+	[pubsView setFrame:pubsFrame];
+	[pickerView setFrame:pickerFrame];
+    [sender adjustSubviews];
+}
+
 - (void)splitViewDoubleClick:(OASplitView *)sender{
     NSView *pickerView = [[splitView subviews] objectAtIndex:0];
     NSView *pubsView = [[splitView subviews] objectAtIndex:1];
     NSRect pubsFrame = [pubsView frame];
     NSRect pickerFrame = [pickerView frame];
     
-    if(NSHeight(pickerFrame) > 0.0){ // not sure what the criteria for isSubviewCollapsed, but it doesn't work
+    if(NSHeight(pickerFrame) > 0.0){ // can't use isSubviewCollapsed, because implementing splitView:canCollapseSubview: prevents uncollapsing
         lastPickerHeight = NSHeight(pickerFrame); // cache this
         pubsFrame.size.height += lastPickerHeight;
         pickerFrame.size.height = 0;

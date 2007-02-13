@@ -2723,6 +2723,89 @@ originalContentsURL:(NSURL *)absoluteOriginalContentsURL
     return [NSPrintOperation printOperationWithView:[self printableView] printInfo:info];
 }
 
+#pragma mark SplitView delegate
+
+- (void)splitView:(NSSplitView *)sender resizeSubviewsWithOldSize:(NSSize)oldSize {
+    int i = [[sender subviews] count] - 2;
+    OBASSERT(i >= 0);
+	NSView *zerothView = i == 0 ? nil : [[sender subviews] objectAtIndex:0];
+	NSView *firstView = [[sender subviews] objectAtIndex:i];
+	NSView *secondView = [[sender subviews] objectAtIndex:++i];
+	NSRect zerothFrame = [zerothView frame];
+	NSRect firstFrame = [firstView frame];
+	NSRect secondFrame = [secondView frame];
+    float factor = (NSWidth([sender frame]) - [sender dividerThickness]) / (oldSize.width - [sender dividerThickness]);
+	
+	if (sender == splitView) {
+		// first = table, second = preview
+        secondFrame.size.width *= factor;
+        if (NSWidth(secondFrame) < 1.0)
+            secondFrame.size.width = 0.0;
+        secondFrame = NSIntegralRect(secondFrame);
+        zerothFrame.size.width *= factor;
+        zerothFrame = NSIntegralRect(zerothFrame);
+        firstFrame.size.width = NSWidth([sender frame]) - NSWidth(secondFrame) - NSWidth(zerothFrame) - i * [sender dividerThickness];
+        if (NSWidth(firstFrame) < 0.0) {
+            firstFrame.size.width = 0.0;
+            secondFrame.size.width = NSWidth([sender frame]) - NSWidth(firstFrame) - NSWidth(zerothFrame) - i * [sender dividerThickness];
+        }
+	} else {
+		// first = group, second = table+preview
+        firstFrame.size.width *= factor;
+        if (NSWidth(firstFrame) < 1.0)
+            firstFrame.size.width = 0.0;
+        firstFrame = NSIntegralRect(firstFrame);
+        secondFrame.size.width = NSWidth([sender frame]) - NSWidth(firstFrame) - [sender dividerThickness];
+        if (NSWidth(firstFrame) < 0.0) {
+            secondFrame.size.width = 0.0;
+            firstFrame.size.width = NSWidth([sender frame]) - NSWidth(secondFrame) - [sender dividerThickness];
+        }
+    }
+	
+	[firstView setFrame:firstFrame];
+	[secondView setFrame:secondFrame];
+    [sender adjustSubviews];
+}
+
+- (void)splitViewDoubleClick:(OASplitView *)sender{
+    int i = [[sender subviews] count] - 2;
+    OBASSERT(i >= 0);
+	NSView *firstView = [[sender subviews] objectAtIndex:i];
+	NSView *secondView = [[sender subviews] objectAtIndex:++i];
+	NSRect firstFrame = [firstView frame];
+	NSRect secondFrame = [secondView frame];
+	
+	if (sender == splitView) {
+		// first = table, second = preview
+		if(NSHeight([secondView frame]) > 0){ // can't use isSubviewCollapsed, because implementing splitView:canCollapseSubview: prevents uncollapsing
+			docState.lastPreviewHeight = NSHeight(secondFrame); // cache this
+			firstFrame.size.height += docState.lastPreviewHeight;
+			secondFrame.size.height = 0;
+		} else {
+			if(docState.lastPreviewHeight <= 0)
+				docState.lastPreviewHeight = NSHeight([sender frame]) / 3; // a reasonable value for uncollapsing the first time
+			firstFrame.size.height = NSHeight(firstFrame) + NSHeight(secondFrame) - docState.lastPreviewHeight;
+			secondFrame.size.height = docState.lastPreviewHeight;
+		}
+	} else {
+		// first = group, second = table+preview
+		if(NSWidth([firstView frame]) > 0){
+			docState.lastGroupViewWidth = NSWidth(firstFrame); // cache this
+			secondFrame.size.width += docState.lastGroupViewWidth;
+			firstFrame.size.width = 0;
+		} else {
+			if(docState.lastGroupViewWidth <= 0)
+				docState.lastGroupViewWidth = 120; // a reasonable value for uncollapsing the first time
+			secondFrame.size.width = NSWidth(firstFrame) + NSWidth(secondFrame) - docState.lastGroupViewWidth;
+			firstFrame.size.width = docState.lastGroupViewWidth;
+		}
+	}
+	
+	[firstView setFrame:firstFrame];
+	[secondView setFrame:secondFrame];
+    [sender adjustSubviews];
+}
+
 #pragma mark -
 
 - (int)userChangedField:(NSString *)fieldName ofPublications:(NSArray *)pubs from:(NSArray *)oldValues to:(NSArray *)newValues{
