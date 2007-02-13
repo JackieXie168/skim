@@ -792,45 +792,6 @@
     }
 }
 
-- (void)splitViewDoubleClick:(OASplitView *)sender{
-    int i = [[sender subviews] count] - 2;
-    OBASSERT(i >= 0);
-	NSView *firstView = [[sender subviews] objectAtIndex:i];
-	NSView *secondView = [[sender subviews] objectAtIndex:++i];
-	NSRect firstFrame = [firstView frame];
-	NSRect secondFrame = [secondView frame];
-	
-	if (sender == splitView) {
-		// first = table, second = preview
-		if(NSHeight([secondView frame]) > 0){ // not sure what the criteria for isSubviewCollapsed, but it doesn't work
-			docState.lastPreviewHeight = NSHeight(secondFrame); // cache this
-			firstFrame.size.height += docState.lastPreviewHeight;
-			secondFrame.size.height = 0;
-		} else {
-			if(docState.lastPreviewHeight <= 0)
-				docState.lastPreviewHeight = NSHeight([sender frame]) / 3; // a reasonable value for uncollapsing the first time
-			firstFrame.size.height = NSHeight(firstFrame) + NSHeight(secondFrame) - docState.lastPreviewHeight;
-			secondFrame.size.height = docState.lastPreviewHeight;
-		}
-	} else {
-		// first = group, second = table+preview
-		if(NSWidth([firstView frame]) > 0){
-			docState.lastGroupViewWidth = NSWidth(firstFrame); // cache this
-			secondFrame.size.width += docState.lastGroupViewWidth;
-			firstFrame.size.width = 0;
-		} else {
-			if(docState.lastGroupViewWidth <= 0)
-				docState.lastGroupViewWidth = 120; // a reasonable value for uncollapsing the first time
-			secondFrame.size.width = NSWidth(firstFrame) + NSWidth(secondFrame) - docState.lastGroupViewWidth;
-			firstFrame.size.width = docState.lastGroupViewWidth;
-		}
-	}
-	
-	[firstView setFrame:firstFrame];
-	[secondView setFrame:secondFrame];
-    [sender adjustSubviews];
-}
-
 #pragma mark Showing related info windows
 
 - (IBAction)toggleShowingCustomCiteDrawer:(id)sender{
