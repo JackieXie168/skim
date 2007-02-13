@@ -29,7 +29,6 @@
                 toggleDisplayContinuous = id; 
                 toggleDisplayPageBreaks = id; 
                 toggleFullScreen = id; 
-                toggleNotesDrawer = id; 
                 togglePresentation = id; 
             }; 
             CLASS = FirstResponder; 

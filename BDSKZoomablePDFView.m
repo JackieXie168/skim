@@ -409,6 +409,48 @@ static float BDSKScaleMenuFontSize = 11.0;
     while (cnt < numberOfDefaultItems && scaleFactor * .99 > BDSKDefaultScaleMenuFactors[cnt]) cnt++;
     return cnt > 0;
 }
+    
+#pragma mark Button
+
+- (void)makeButton {
+    
+    if (button == nil) {
+        
+        NSScrollView *scrollView = [self scrollView];
+        [scrollView setAlwaysHasHorizontalScroller:YES];
+
+        // create it        
+        button = [[NSButton allocWithZone:[self zone]] initWithFrame:NSMakeRect(0.0, 0.0, 15.0, 9.0)];
+        
+        [button setTitle:@"-"];
+        
+        [button setButtonType:NSMomentaryPushInButton];
+        [button setBezelStyle:NSShadowlessSquareBezelStyle];
+        
+        NSControlSize controlSize = [[scrollView horizontalScroller] controlSize];
+        [[button cell] setControlSize:controlSize];
+        
+        // hook it up
+        [button setTarget:self];
+        [button setAction:@selector(buttonAction:)];
+        
+        // set a suitable font, the control size is 0, 1 or 2
+        [button setFont:[NSFont toolTipsFontOfSize: BDSKScaleMenuFontSize - controlSize]];
+        
+        // Make sure the popup is big enough to fit the cells.
+        [scalePopUpButton sizeToFit];
+        
+		// don't let it become first responder
+		[button setRefusesFirstResponder:YES];
+        
+        // put it in the scrollview
+        [scrollView addSubview:button];
+        [button release];
+    }
+}
+
+- (void)buttonAction:(id)sender {
+}
 
 #pragma mark Scrollview
 
@@ -428,6 +470,10 @@ static float BDSKScaleMenuFontSize = 11.0;
 		[[scalePopUpButton cell] setControlSize:controlSize];
         [scalePopUpButton setFont:[NSFont toolTipsFontOfSize: BDSKScaleMenuFontSize - controlSize]];
 	}
+    if(button){
+		[[button cell] setControlSize:controlSize];
+        [button setFont:[NSFont toolTipsFontOfSize: BDSKScaleMenuFontSize - controlSize]];
+    }
 }
 
 - (void)adjustScrollbars:(id)obj;
@@ -454,9 +500,11 @@ static float BDSKScaleMenuFontSize = 11.0;
     float scrollerWidth = [NSScroller scrollerWidthForControlSize:controlSize];
     
     if (!scalePopUpButton) [self makeScalePopUpButton];
+    if (!button) [self makeButton];
     
-    NSRect horizScrollerFrame, buttonFrame;
-    buttonFrame = [scalePopUpButton frame];
+    NSRect horizScrollerFrame, popupFrame, buttonFrame;
+    popupFrame = [scalePopUpButton frame];
+    buttonFrame = [button frame];
     
     NSScroller *horizScroller = [scrollView horizontalScroller];
     
@@ -465,21 +513,27 @@ static float BDSKScaleMenuFontSize = 11.0;
         
         // Now we'll just adjust the horizontal scroller size and set the button size and location.
         // Set it based on our frame, not the scroller's frame, since this gets called repeatedly.
-        horizScrollerFrame.size.width = NSWidth([scrollView frame]) - NSWidth(buttonFrame) - scrollerWidth - 1.0;
+        horizScrollerFrame.size.width = NSWidth([scrollView frame]) - NSWidth(popupFrame) - NSWidth(buttonFrame) - scrollerWidth - 1.0;
         [horizScroller setFrameSize:horizScrollerFrame.size];
     }
-    buttonFrame.size.height = scrollerWidth - 1.0;
+    popupFrame.size.height = scrollerWidth - 1.0;
+    buttonFrame.size.height = scrollerWidth;
 
     // @@ resolution independence: 2.0 may not work
     if ([scrollView isFlipped]) {
-        buttonFrame.origin.x = NSMaxX([scrollView frame]) - scrollerWidth - NSWidth(buttonFrame);
+        popupFrame.origin.x = NSMaxX([scrollView frame]) - scrollerWidth - NSWidth(popupFrame);
+        popupFrame.origin.y = NSMaxY([scrollView frame]) - NSHeight(popupFrame);            
+        buttonFrame.origin.x = NSMinX(popupFrame) - NSWidth(buttonFrame) - 1.0;
         buttonFrame.origin.y = NSMaxY([scrollView frame]) - NSHeight(buttonFrame);            
     }
     else {
-        buttonFrame.origin.x = NSMaxX([scrollView frame]) - scrollerWidth - NSWidth(buttonFrame);
+        popupFrame.origin.x = NSMaxX([scrollView frame]) - scrollerWidth - NSWidth(popupFrame);
+        popupFrame.origin.y = NSMinY([scrollView frame]);
+        buttonFrame.origin.x = NSMinX(popupFrame) - NSWidth(buttonFrame) - 1.0;
         buttonFrame.origin.y = NSMinY([scrollView frame]);
     }
-    [scalePopUpButton setFrame:buttonFrame];
+    [scalePopUpButton setFrame:popupFrame];
+    [button setFrame:buttonFrame];
 }
 
 

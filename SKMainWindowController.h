@@ -9,10 +9,15 @@
 #import <Cocoa/Cocoa.h>
 #import "SKStringConstants.h"
 
-typedef enum _SKSidePaneState {
+typedef enum _SKLeftSidePaneState {
     SKThumbnailSidePaneState,
     SKOutlineSidePaneState
-} SKSidePaneState;
+} SKLeftSidePaneState;
+
+typedef enum _SKRightSidePaneState {
+    SKNotesSidePaneState,
+    SKSubwindowsSidePaneState
+} SKRightSidePaneState;
 
 typedef struct _SKPDFViewState {
 	int displayMode;
@@ -23,7 +28,7 @@ typedef struct _SKPDFViewState {
 	BOOL autoHidesScrollers;
 } SKPDFViewState;
 
-@class SKPDFView, PDFOutline, SKCollapsibleView, SKNavigationWindow, SKSideWindow, SKSubWindowController;
+@class SKPDFView, PDFOutline, SKCollapsibleView, SKNavigationWindow, SKSideWindow, SKSubWindowController, SKSplitView;
 
 @interface SKNotesTableView : NSTableView
 - (void)delete:(id)sender;
@@ -33,9 +38,11 @@ typedef struct _SKPDFViewState {
     IBOutlet SKPDFView          *pdfView;
     IBOutlet NSBox              *pdfContentBox;
     
-    IBOutlet NSSplitView        *splitView;
-    IBOutlet NSBox              *sideContentBox;
-    IBOutlet NSBox              *sideBox;
+    IBOutlet SKSplitView        *splitView;
+    IBOutlet NSBox              *leftSideContentBox;
+    IBOutlet NSBox              *leftSideBox;
+    IBOutlet NSBox              *rightSideContentBox;
+    IBOutlet NSBox              *rightSideBox;
     
     IBOutlet NSOutlineView      *outlineView;
     PDFOutline                  *pdfOutline;
@@ -43,7 +50,6 @@ typedef struct _SKPDFViewState {
     
     IBOutlet NSSearchField      *findField;
     
-    IBOutlet NSDrawer           *notesDrawer;
     IBOutlet NSArrayController  *notesArrayController;
     IBOutlet SKNotesTableView   *notesTableView;
     BOOL                        updatingNoteSelection;
@@ -60,45 +66,46 @@ typedef struct _SKPDFViewState {
     IBOutlet SKCollapsibleView  *searchBox;
     NSMutableDictionary         *toolbarItems;
     
-    IBOutlet NSSegmentedControl *sidePaneViewButton;
-    IBOutlet NSSegmentedControl *drawerViewButton;
+    IBOutlet NSSegmentedControl *leftSideButton;
+    IBOutlet NSSegmentedControl *rightSideButton;
     
-    IBOutlet NSWindow          *choosePageSheet;
-    IBOutlet NSTextField       *choosePageField;
+    IBOutlet NSWindow           *choosePageSheet;
+    IBOutlet NSTextField        *choosePageField;
     
-    NSWindow *mainWindow;
-    NSWindow *fullScreenWindow;
-    SKSideWindow *leftSideWindow;
-    SKSideWindow *rightSideWindow;
+    NSWindow                    *mainWindow;
+    NSWindow                    *fullScreenWindow;
+    SKSideWindow                *leftSideWindow;
+    SKSideWindow                *rightSideWindow;
     
-    BOOL isPresentation;
-    SKPDFViewState savedState;
+    BOOL                        isPresentation;
+    SKPDFViewState              savedState;
     
-    IBOutlet NSTableView *currentTableView;
-    SKSidePaneState sidePaneState;
+    IBOutlet NSTableView        *currentTableView;
+    SKLeftSidePaneState         leftSidePaneState;
+    SKRightSidePaneState        rightSidePaneState;
     
-    IBOutlet NSView *findCustomView;
-    IBOutlet NSTableView *findTableView;
-    NSMutableArray *searchResults;
-    IBOutlet NSArrayController *findArrayController;
+    IBOutlet NSView             *findCustomView;
+    IBOutlet NSTableView        *findTableView;
+    NSMutableArray              *searchResults;
+    IBOutlet NSArrayController  *findArrayController;
     IBOutlet NSProgressIndicator *spinner;
     
-    IBOutlet NSView *thumbnailView;
-    IBOutlet NSArrayController *thumbnailArrayController;
-    IBOutlet NSTableView *thumbnailTableView;
-    NSMutableArray *thumbnails;
-    BOOL updatingThumbnailSelection;
-    NSMutableIndexSet *dirtyThumbnailIndexes;
-    NSTimer *thumbnailTimer;
+    IBOutlet NSView             *thumbnailView;
+    IBOutlet NSArrayController  *thumbnailArrayController;
+    IBOutlet NSTableView        *thumbnailTableView;
+    NSMutableArray              *thumbnails;
+    BOOL                        updatingThumbnailSelection;
+    NSMutableIndexSet           *dirtyThumbnailIndexes;
+    NSTimer                     *thumbnailTimer;
     
-    IBOutlet NSView *subwindowsView;
-    IBOutlet NSArrayController *subwindowsArrayController;
-    IBOutlet NSTableView *subwindowsTableView;
-    NSMutableArray *subwindows;
+    IBOutlet NSView             *subwindowsView;
+    IBOutlet NSArrayController  *subwindowsArrayController;
+    IBOutlet NSTableView        *subwindowsTableView;
+    NSMutableArray              *subwindows;
     
-    float lastSidePaneWidth;
+    float                       lastSidePaneWidth[2];
     
-    BOOL edited;
+    BOOL                        edited;
 }
 
 - (IBAction)pickColor:(id)sender;
@@ -128,15 +135,14 @@ typedef struct _SKPDFViewState {
 - (IBAction)rotateLeft:(id)sender;
 - (IBAction)rotateAllRight:(id)sender;
 - (IBAction)rotateAllLeft:(id)sender;
-- (IBAction)toggleNotesDrawer:(id)sender;
 - (IBAction)getInfo:(id)sender;
 - (IBAction)search:(id)sender;
 - (IBAction)changePageNumber:(id)sender;
 - (IBAction)changeScaleFactor:(id)sender;
 - (IBAction)changeToolMode:(id)sender;
 - (IBAction)changeAnnotationMode:(id)sender;
-- (IBAction)changeSidePaneView:(id)sender;
-- (IBAction)changeDrawerView:(id)sender;
+- (IBAction)changeLeftSideView:(id)sender;
+- (IBAction)changeRightSideView:(id)sender;
 - (IBAction)enterFullScreen:(id)sender;
 - (IBAction)exitFullScreen:(id)sender;
 - (IBAction)toggleFullScreen:(id)sender;
