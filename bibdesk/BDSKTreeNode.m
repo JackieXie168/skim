@@ -151,11 +151,16 @@
     [anObject setParent:self];
 }
 
+- (id)childAtIndex:(unsigned int)index;
+{
+    return [children objectAtIndex:index];
+}
+
 - (void)removeChild:(BDSKTreeNode *)anObject;
 {
     [anObject setParent:nil];
     
-    // make sure to orphin this child
+    // make sure to orphan this child
     [children removeObject:anObject];
 }
 
@@ -168,6 +173,11 @@
         // make sure these children know their parent
         [children makeObjectsPerformSelector:@selector(setParent:) withObject:self];
     }
+}
+
+- (void)sortChildrenUsingFunction:(int (*)(id, id, void *))compare context:(void *)context;
+{
+    [children sortUsingFunction:compare context:context];
 }
 
 - (NSArray *)children { return children; }
