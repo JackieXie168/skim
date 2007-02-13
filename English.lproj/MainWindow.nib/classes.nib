@@ -15,9 +15,6 @@
                 changeAnnotationMode = id; 
                 changeColor = id; 
                 changeDisplayBox = id; 
-                changeLeftSideView = id; 
-                changePageNumber = id; 
-                changeRightSideView = id; 
                 changeScaleFactor = id; 
                 changeToolMode = id; 
                 createNewNote = id; 

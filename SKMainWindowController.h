@@ -137,12 +137,9 @@ typedef struct _SKPDFViewState {
 - (IBAction)rotateAllLeft:(id)sender;
 - (IBAction)getInfo:(id)sender;
 - (IBAction)search:(id)sender;
-- (IBAction)changePageNumber:(id)sender;
 - (IBAction)changeScaleFactor:(id)sender;
 - (IBAction)changeToolMode:(id)sender;
 - (IBAction)changeAnnotationMode:(id)sender;
-- (IBAction)changeLeftSideView:(id)sender;
-- (IBAction)changeRightSideView:(id)sender;
 - (IBAction)enterFullScreen:(id)sender;
 - (IBAction)exitFullScreen:(id)sender;
 - (IBAction)toggleFullScreen:(id)sender;
@@ -155,13 +152,23 @@ typedef struct _SKPDFViewState {
 - (void)deminiaturizeSubWindows:(NSArray *)subwindowsToShow;
 - (void)showNote:(PDFAnnotation *)annotation;
 
+- (PDFView *)pdfView;
+
 - (PDFDocument *)pdfDocument;
 - (void)setPdfDocument:(PDFDocument *)document;
+
+- (unsigned int)pageNumber;
+- (void)setPageNumber:(unsigned int)pageNumber;
 
 - (BOOL)isFullScreen;
 - (BOOL)isPresentation;
 
 - (BOOL)autoScales;
+
+- (SKLeftSidePaneState)leftSidePaneState;
+- (void)setLeftSidePaneState:(SKLeftSidePaneState)newLeftSidePaneState;
+- (SKRightSidePaneState)rightSidePaneState;
+- (void)setRightSidePaneState:(SKRightSidePaneState)newRightSidePaneState;
 
 - (void)displayOutlineView;
 - (void)fadeInOutlineView;
@@ -192,8 +199,6 @@ typedef struct _SKPDFViewState {
 - (void)handlePageChangedNotification:(NSNotification *)notification;
 - (void)handleScaleChangedNotification:(NSNotification *)notification;
 - (void)handleChangedHistoryNotification:(NSNotification *)notification;
-- (void)handleToolModeChangedNotification:(NSNotification *)notification;
-- (void)handleAnnotationModeChangedNotification:(NSNotification *)notification;
 - (void)handleDidChangeActiveAnnotationNotification:(NSNotification *)notification;
 - (void)handleDidAddAnnotationNotification:(NSNotification *)notification;
 - (void)handleDidRemoveAnnotationNotification:(NSNotification *)notification;

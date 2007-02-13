@@ -165,13 +165,9 @@ static NSString *SKDocumentToolbarSearchItemIdentifier = @"SKDocumentToolbarSear
     [self setupToolbar];
     
     [self handleChangedHistoryNotification:nil];
-    [self handleToolModeChangedNotification:nil];
-    [self handleAnnotationModeChangedNotification:nil];
     [self handlePageChangedNotification:nil];
     [self handleScaleChangedNotification:nil];
     [pageNumberStepper setMaxValue:[[pdfView document] pageCount]];
-    [leftSideButton setSelectedSegment:leftSidePaneState];
-    [rightSideButton setSelectedSegment:rightSidePaneState];
     
     [self splitView:splitView doubleClickedDividerAt:1];
     
@@ -189,10 +185,6 @@ static NSString *SKDocumentToolbarSearchItemIdentifier = @"SKDocumentToolbarSear
                                                  name:PDFViewScaleChangedNotification object:pdfView];
 	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleChangedHistoryNotification:) 
                                                  name:PDFViewChangedHistoryNotification object:pdfView];
-	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleToolModeChangedNotification:) 
-                                                 name:SKPDFViewAnnotationModeChangedNotification object:pdfView];
-	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleAnnotationModeChangedNotification:) 
-                                                 name:SKPDFViewToolModeChangedNotification object:pdfView];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleDidChangeActiveAnnotationNotification:) 
                                                  name:SKPDFViewActiveAnnotationDidChangeNotification object:pdfView];
 	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleDidAddAnnotationNotification:) 
@@ -269,6 +261,23 @@ static NSString *SKDocumentToolbarSearchItemIdentifier = @"SKDocumentToolbarSear
     [self thumbnailsAtIndexesNeedUpdate:[NSIndexSet indexSetWithIndexesInRange:NSMakeRange(0, [pdfDoc pageCount])]];
 }
 
+- (PDFView *)pdfView {
+    return pdfView;
+}
+
+- (unsigned int)pageNumber {
+    return [[pdfView document] indexForPage:[pdfView currentPage]] + 1;
+}
+
+- (void)setPageNumber:(unsigned int)pageNumber {
+    // Check that the page number exists
+    unsigned int pageCount = [[pdfView document] pageCount];
+    if (pageNumber > pageCount)
+        [pdfView goToPage:[[pdfView document] pageAtIndex:pageCount - 1]];
+    else if (pageNumber > 0)
+        [pdfView goToPage:[[pdfView document] pageAtIndex:pageNumber - 1]];
+}
+
 - (BOOL)isFullScreen {
     return [self window] == fullScreenWindow && isPresentation == NO;
 }
@@ -279,6 +288,41 @@ static NSString *SKDocumentToolbarSearchItemIdentifier = @"SKDocumentToolbarSear
 
 - (BOOL)autoScales {
     return [pdfView autoScales];
+}
+
+- (SKLeftSidePaneState)leftSidePaneState {
+    return leftSidePaneState;
+}
+
+- (void)setLeftSidePaneState:(SKLeftSidePaneState)newLeftSidePaneState {
+    if (leftSidePaneState != newLeftSidePaneState) {
+        leftSidePaneState = newLeftSidePaneState;
+        
+        if ([findField stringValue] && [[findField stringValue] isEqualToString:@""] == NO) {
+            [findField setStringValue:@""];
+            [self removeTemporaryAnnotations];
+        }
+        
+        if (leftSidePaneState == SKThumbnailSidePaneState)
+            [self displayThumbnailView];
+        else if (leftSidePaneState == SKOutlineSidePaneState)
+            [self displayOutlineView];
+    }
+}
+
+- (SKRightSidePaneState)rightSidePaneState {
+    return rightSidePaneState;
+}
+
+- (void)setRightSidePaneState:(SKRightSidePaneState)newRightSidePaneState {
+    if (rightSidePaneState != newRightSidePaneState) {
+        rightSidePaneState = newRightSidePaneState;
+        
+        if (rightSidePaneState == SKNotesSidePaneState)
+            [self displayNotesView];
+        else if (rightSidePaneState == SKSubwindowsSidePaneState)
+            [self displaySubwindowsView];
+    }
 }
 
 - (NSArray *)thumbnails {
@@ -416,17 +460,8 @@ static NSString *SKDocumentToolbarSearchItemIdentifier = @"SKDocumentToolbarSear
 }
 
 - (void)choosePageSheetDidEnd:(NSWindow *)sheet returnCode:(int)returnCode contextInfo:(void *)contextInfo {
-    if (returnCode == NSOKButton) {
-        int page = [choosePageField intValue];
-
-        // Check that the page number exists
-        int pageCount = [[pdfView document] pageCount];
-        if (page > pageCount) {
-            [pdfView goToPage:[[pdfView document] pageAtIndex:pageCount - 1]];
-        } else if (page > 0) {
-            [pdfView goToPage:[[pdfView document] pageAtIndex:page - 1]];
-        }
-    }
+    if (returnCode == NSOKButton)
+        [self setPageNumber:[choosePageField intValue]];
 }
 
 - (IBAction)doGoToPage:(id)sender {
@@ -514,19 +549,6 @@ static NSString *SKDocumentToolbarSearchItemIdentifier = @"SKDocumentToolbarSear
     [infoController showWindow:self];
 }
 
-- (IBAction)changePageNumber:(id)sender {
-    int page = [sender intValue];
-
-    // Check that the page number exists
-    int pageCount = [[pdfView document] pageCount];
-    if (page > pageCount) {
-        [pdfView goToPage:[[pdfView document] pageAtIndex:pageCount - 1]];
-        [pageNumberField setIntValue: page];
-    } else if (page > 0) {
-        [pdfView goToPage:[[pdfView document] pageAtIndex:page - 1]];
-    }
-}
-
 - (IBAction)changeScaleFactor:(id)sender {
     int scale = [sender intValue];
 
@@ -537,36 +559,11 @@ static NSString *SKDocumentToolbarSearchItemIdentifier = @"SKDocumentToolbarSear
 }
 
 - (IBAction)changeToolMode:(id)sender {
-    SKToolMode toolMode = [sender isKindOfClass:[NSSegmentedControl class]] ? [sender selectedSegment] : [sender tag];
-    [pdfView setToolMode:toolMode];
+    [pdfView setToolMode:[sender tag]];
 }
 
 - (IBAction)changeAnnotationMode:(id)sender {
-    SKAnnotationMode newAnnotationMode = [sender isKindOfClass:[NSSegmentedControl class]] ? [sender selectedSegment] : [sender tag];
-    [pdfView setAnnotationMode:newAnnotationMode];
-}
-
-- (IBAction)changeLeftSideView:(id)sender {
-    leftSidePaneState = [sender selectedSegment];
-    
-    if ([findField stringValue] && [[findField stringValue] isEqualToString:@""] == NO) {
-        [findField setStringValue:@""];
-        [self removeTemporaryAnnotations];
-    }
-    
-    if (leftSidePaneState == SKThumbnailSidePaneState)
-        [self displayThumbnailView];
-    else if (leftSidePaneState == SKOutlineSidePaneState)
-        [self displayOutlineView];
-}
-
-- (IBAction)changeRightSideView:(id)sender {
-    rightSidePaneState = [sender selectedSegment];
-    
-    if (rightSidePaneState == SKNotesSidePaneState)
-        [self displayNotesView];
-    else if (rightSidePaneState == SKSubwindowsSidePaneState)
-        [self displaySubwindowsView];
+    [pdfView setAnnotationMode:[sender tag]];
 }
 
 - (void)goFullScreen {
@@ -929,7 +926,6 @@ static NSString *SKDocumentToolbarSearchItemIdentifier = @"SKDocumentToolbarSear
             [self fadeInThumbnailView];
         else 
             [self fadeInOutlineView];
-        [leftSideButton setSelectedSegment:leftSidePaneState];
     } else {
         [self fadeInSearchView];
     }
@@ -1050,7 +1046,7 @@ static NSString *SKDocumentToolbarSearchItemIdentifier = @"SKDocumentToolbarSear
     if ([self isPresentation] == NO) {
         if ([subwindowsTableView window] == nil) {
             [self displaySubwindowsView];
-            [rightSideButton setSelectedSegment:SKSubwindowsSidePaneState];
+            [self setRightSidePaneState:SKSubwindowsSidePaneState];
         }
     }
     
@@ -1152,11 +1148,14 @@ static NSString *SKDocumentToolbarSearchItemIdentifier = @"SKDocumentToolbarSear
 }
 
 - (void)handlePageChangedNotification:(NSNotification *)notification {
-	PDFDocument *pdfDoc = [pdfView document];
-    unsigned pageIndex = [pdfDoc indexForPage:[pdfView currentPage]];
+	//PDFDocument *pdfDoc = [pdfView document];
+    //unsigned pageIndex = [pdfDoc indexForPage:[pdfView currentPage]];
     
-    [pageNumberStepper setIntValue:pageIndex + 1];
-    [pageNumberField setIntValue:pageIndex + 1];
+   // [pageNumberStepper setIntValue:pageIndex + 1];
+    //[pageNumberField setIntValue:pageIndex + 1];
+    
+    [self willChangeValueForKey:@"pageNumber"];
+    [self didChangeValueForKey:@"pageNumber"];
     
     [self updateOutlineSelection];
     [self updateNoteSelection];
@@ -1165,16 +1164,6 @@ static NSString *SKDocumentToolbarSearchItemIdentifier = @"SKDocumentToolbarSear
 
 - (void)handleScaleChangedNotification:(NSNotification *)notification {
     [scaleField setFloatValue:[pdfView scaleFactor] * 100.0];
-}
-
-- (void)handleToolModeChangedNotification:(NSNotification *)notification {
-	unsigned toolMode = [pdfView toolMode];
-    [toolModeButton setSelectedSegment:toolMode];
-}
-
-- (void)handleAnnotationModeChangedNotification:(NSNotification *)notification {
-	unsigned annotationMode = [pdfView annotationMode];
-    [annotationModeButton setSelectedSegment:annotationMode];
 }
 
 - (void)handleAppWillTerminateNotification:(NSNotification *)notification {
