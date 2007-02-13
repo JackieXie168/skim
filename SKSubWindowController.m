@@ -39,10 +39,6 @@
     [pdfView performSelector:@selector(goToDestination:) withObject:dest afterDelay:0.1];
 }
 
-- (void)windowWillClose:(NSNotification *)aNotification {
-    [[[self window] parentWindow] removeChildWindow:[self window]];
-}
-
 - (PDFView *)pdfView {
     return pdfView;
 }
@@ -98,18 +94,6 @@
 
 
 @implementation SKSubWindow
-
-- (id)initWithContentRect:(NSRect)contentRect styleMask:(unsigned int)styleMask backing:(NSBackingStoreType)bufferingType defer:(BOOL)deferCreation {
-    return [super initWithContentRect:contentRect styleMask:styleMask | NSMiniaturizableWindowMask backing:bufferingType defer:deferCreation];
-}
-
-- (unsigned int)styleMask {
-    return [super styleMask] | NSMiniaturizableWindowMask;
-}
-
-- (BOOL)isMiniaturizable {
-    return YES;
-}
 
 - (void)miniaturize:(id)sender {
     [[[[self windowController] document] mainWindowController] miniaturizeSubWindowController:[self windowController]];

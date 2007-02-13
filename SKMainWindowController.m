@@ -626,15 +626,11 @@ static NSString *SKDocumentToolbarSearchItemIdentifier = @"SKDocumentToolbarSear
     [sideBox retain]; // sideBox is removed from its old superview in the process
     [leftSideWindow setMainView:sideBox];
     [sideBox release];
-    [leftSideWindow setLevel:[[self window] level]];
-    [[self window] addChildWindow:leftSideWindow ordered:NSWindowAbove];
     
     NSView *rightView = [notesDrawer contentView];
     [rightView retain];
     [rightSideWindow setMainView:rightView];
     [rightView release];
-    [rightSideWindow setLevel:[[self window] level]];
-    [[self window] addChildWindow:rightSideWindow ordered:NSWindowAbove];
     
     [leftSideWindow orderFront:self];
     [rightSideWindow orderFront:self];
@@ -1807,7 +1803,7 @@ static NSString *SKDocumentToolbarSearchItemIdentifier = @"SKDocumentToolbarSear
 
 #pragma mark SKSplitView delegate protocol
 
-- (void)splitViewDoubleClick:(SKSplitView *)sender {
+- (void)splitView:(SKSplitView *)sender doubleClickedDividerAt:(int)offset{
     NSView *leftView = [[sender subviews] objectAtIndex:0]; // table
     NSView *rightView = [[sender subviews] objectAtIndex:1]; // pdfView
     NSRect leftFrame = [leftView frame];
