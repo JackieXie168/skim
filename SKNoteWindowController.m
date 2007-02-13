@@ -48,7 +48,6 @@
 
 - (void)windowWillClose:(NSNotification *)aNotification {
     [self commitEditing];
-    [[[self window] parentWindow] removeChildWindow:[self window]];
     if ([note respondsToSelector:@selector(setWindowIsOpen:)])
         [(PDFAnnotationText *)note setWindowIsOpen:NO];
 }

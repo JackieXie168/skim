@@ -46,7 +46,7 @@
 		[self setHasShadow:YES];
         [self setDisplaysWhenScreenProfileChanges:YES];
         [self setReleasedWhenClosed:NO];
-        [self setLevel:[[aController window] level]];
+        [self setLevel:NSFloatingWindowLevel];
     }
     return self;
 }
@@ -64,11 +64,6 @@
     [self setFrame:frame display:NO];
 }
 
-- (void)orderOut:(id)sender {
-    [[self parentWindow] removeChildWindow:self];
-    [super orderOut:sender];
-}
-
 - (void)slideOut {
     if (state == NSDrawerOpenState || state == NSDrawerOpeningState) {
         state = NSDrawerClosingState;
@@ -76,7 +71,7 @@
         NSRect frame = [self frame];
         frame.origin.x = edge == NSMaxXEdge ? NSMaxX(screenFrame) - WINDOW_OFFSET : NSMinX(screenFrame) - NSWidth(frame) + WINDOW_OFFSET;
         [self setFrame:frame display:YES animate:YES];
-        [[self parentWindow] makeKeyAndOrderFront:self];
+        [[controller window] makeKeyAndOrderFront:self];
         state = NSDrawerClosedState;
     }
 }
