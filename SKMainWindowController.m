@@ -1018,10 +1018,13 @@ static NSString *SKDocumentToolbarSearchItemIdentifier = @"SKDocumentToolbarSear
 }
 
 - (void)miniaturizeSubWindowController:(SKSubWindowController *)controller {
-    if ([self isPresentation] == NO && [subwindowsTableView window] == nil) {
-        [notesDrawer open];
-        [self displaySubwindowsView];
-        [drawerViewButton setSelectedSegment:1];
+    if ([self isPresentation] == NO) {
+        if ([self isFullScreen] == NO && ([notesDrawer state] == NSDrawerClosedState || [notesDrawer state] == NSDrawerClosingState))
+            [notesDrawer open];
+        if ([subwindowsTableView window] == nil) {
+            [self displaySubwindowsView];
+            [drawerViewButton setSelectedSegment:1];
+        }
     }
     
     NSImage *image = [controller thumbnailWithSize:256.0 shadowBlurRadius:8.0 shadowOffset:NSMakeSize(0.0, -6.0)];
