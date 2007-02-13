@@ -28,7 +28,7 @@ typedef struct _SKPDFViewState {
 	BOOL autoHidesScrollers;
 } SKPDFViewState;
 
-@class SKPDFView, PDFOutline, SKCollapsibleView, SKNavigationWindow, SKSideWindow, SKSubWindowController, SKSplitView;
+@class SKPDFView, PDFOutline, SKCollapsibleView, SKFullScreenWindow, SKNavigationWindow, SKSideWindow, SKSubWindowController, SKSplitView;
 
 @interface SKNotesTableView : NSTableView
 - (void)delete:(id)sender;
@@ -73,7 +73,7 @@ typedef struct _SKPDFViewState {
     IBOutlet NSTextField        *choosePageField;
     
     NSWindow                    *mainWindow;
-    NSWindow                    *fullScreenWindow;
+    SKFullScreenWindow          *fullScreenWindow;
     SKSideWindow                *leftSideWindow;
     SKSideWindow                *rightSideWindow;
     

@@ -57,6 +57,8 @@ static NSString *SKDocumentToolbarSearchItemIdentifier = @"SKDocumentToolbarSear
 
 @interface SKFullScreenWindow : NSWindow
 - (id)initWithScreen:(NSScreen *)screen;
+- (NSView *)mainView;
+- (void)setMainView:(NSView *)view;
 @end
 
 @interface SKMiniaturizeWindow : NSWindow
@@ -578,7 +580,7 @@ static NSString *SKDocumentToolbarSearchItemIdentifier = @"SKDocumentToolbarSear
         [fullScreenWindow setFrame:[screen frame] display:NO];
     }
     
-    [fullScreenWindow setContentView:pdfView];
+    [fullScreenWindow setMainView:pdfView];
     [pdfView setBackgroundColor:[NSColor blackColor]];
     [pdfView layoutDocumentView];
     [pdfView setNeedsDisplay:YES];
@@ -608,7 +610,7 @@ static NSString *SKDocumentToolbarSearchItemIdentifier = @"SKDocumentToolbarSear
     [mainWindow makeKeyAndOrderFront:self];
 }
 
-- (void)showSideWindow {
+- (void)showSideWindows {
     if (leftSideWindow == nil) {
         leftSideWindow = [[SKSideWindow alloc] initWithMainController:self edge:NSMinXEdge];
     } else if ([[self window] screen] != [leftSideWindow screen]) {
@@ -630,9 +632,12 @@ static NSString *SKDocumentToolbarSearchItemIdentifier = @"SKDocumentToolbarSear
     
     [leftSideWindow orderFront:self];
     [rightSideWindow orderFront:self];
+    
+    [pdfView setFrame:NSInsetRect([[pdfView superview] bounds], 3.0, 0.0)];
+    [[pdfView superview] setNeedsDisplay:YES];
 }
 
-- (void)hideSideWindow {
+- (void)hideSideWindows {
     [leftSideWindow orderOut:self];
     [rightSideWindow orderOut:self];
     
@@ -645,6 +650,8 @@ static NSString *SKDocumentToolbarSearchItemIdentifier = @"SKDocumentToolbarSear
     [rightSideBox setFrame:[leftSideContentBox bounds]];
     [rightSideContentBox addSubview:rightSideBox];
     [rightSideBox release];
+    
+    [pdfView setFrame:[[pdfView superview] bounds]];
 }
 
 - (void)enterPresentationMode {
@@ -706,19 +713,19 @@ static NSString *SKDocumentToolbarSearchItemIdentifier = @"SKDocumentToolbarSear
     
     [fullScreenWindow setLevel:NSNormalWindowLevel];
     [pdfView setHasNavigation:YES autohidesCursor:NO];
-    [self showSideWindow];
+    [self showSideWindows];
 }
 
 - (IBAction)enterPresentation:(id)sender {
     if ([self isPresentation])
         return;
     
-    BOOL isFullScreen = [self isFullScreen];
+    BOOL wasFullScreen = [self isFullScreen];
     
     [self enterPresentationMode];
     
-    if (isFullScreen) {
-        [self hideSideWindow];
+    if (wasFullScreen) {
+        [self hideSideWindows];
         SetSystemUIMode(kUIModeNormal, 0);
     } else
         [self goFullScreen];
@@ -731,7 +738,8 @@ static NSString *SKDocumentToolbarSearchItemIdentifier = @"SKDocumentToolbarSear
     if ([self isFullScreen] == NO && [self isPresentation] == NO)
         return;
 
-    [self hideSideWindow];
+    if ([self isFullScreen])
+        [self hideSideWindows];
     
     [pdfView setHasNavigation:NO autohidesCursor:NO];
     [pdfContentBox setContentView:pdfView]; // this should be done before exitPresentationMode to get a smooth transition
@@ -1788,10 +1796,6 @@ static NSString *SKDocumentToolbarSearchItemIdentifier = @"SKDocumentToolbarSear
 
 #pragma mark SKSplitView delegate protocol
 
-//- (BOOL)splitView:(NSSplitView *)sender canCollapseSubview:(NSView *)subview {
-//    return subview != pdfContentBox;
-//}
-
 - (void)splitView:(SKSplitView *)sender doubleClickedDividerAt:(int)offset{
     NSView *sideView = [[sender subviews] objectAtIndex:2 * offset]; // table
     NSView *mainView = [[sender subviews] objectAtIndex:1]; // pdfView
@@ -1853,6 +1857,7 @@ static NSString *SKDocumentToolbarSearchItemIdentifier = @"SKDocumentToolbarSear
         [self setReleasedWhenClosed:NO];
         [self setDisplaysWhenScreenProfileChanges:YES];
         [self setAcceptsMouseMovedEvents:YES];
+        [self setBackgroundColor:[NSColor blackColor]];
     }
     return self;
 }
@@ -1880,6 +1885,15 @@ static NSString *SKDocumentToolbarSearchItemIdentifier = @"SKDocumentToolbarSear
     } else {
         [super keyDown:theEvent];
     }
+}
+
+- (NSView *)mainView {
+    return [[self contentView] lastObject];
+}
+
+- (void)setMainView:(NSView *)view {
+    [view setFrame:[[self contentView] bounds]];
+    [[self contentView] addSubview:view];
 }
 
 @end
