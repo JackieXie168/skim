@@ -1273,11 +1273,9 @@ OFWeakRetainConcreteImplementation_NULL_IMPLEMENTATION
         
         innerPool = [NSAutoreleasePool new];
         
-        BOOL useIconFamily = [[NSUserDefaults standardUserDefaults] boolForKey:@"BDSKShouldUseIconFamilyForMetadataKey"];
         NSDictionary *dict;
         
-        if (useIconFamily)
-            entries = [[NSMutableArray alloc] initWithCapacity:[publications count]];
+        entries = [[NSMutableArray alloc] initWithCapacity:[publications count]];
         
         while(anItem = [entryEnum nextObject]){
             
@@ -1315,7 +1313,7 @@ OFWeakRetainConcreteImplementation_NULL_IMPLEMENTATION
                 } else {
                     if(NO == [data writeToFile:path options:NSAtomicWrite error:&error])
                         @throw [NSException exceptionWithName:NSInternalInconsistencyException reason:[NSString stringWithFormat:@"Unable to create cache file for %@", [anItem description]] userInfo:nil];
-                    else if (useIconFamily) {
+                    else {
                         dict =[[NSDictionary alloc] initWithObjectsAndKeys:metadata, @"metadata", path, @"path", nil];
                         [entries addObject:dict];
                         [dict release];
@@ -1330,28 +1328,26 @@ OFWeakRetainConcreteImplementation_NULL_IMPLEMENTATION
         [innerPool release];
         innerPool = nil;
         
-        if (useIconFamily) {
-            entryEnum = [entries objectEnumerator];
+        entryEnum = [entries objectEnumerator];
+        
+        innerPool = [NSAutoreleasePool new];
+        
+        while(anItem = [entryEnum nextObject]){
             
-            innerPool = [NSAutoreleasePool new];
-            
-            while(anItem = [entryEnum nextObject]){
-                
-                if(canWriteMetadata == 0){
-                    NSLog(@"Application will quit without finishing metadata cache icons.");
-                    break;
-                }
-                
-                [innerPool release];
-                innerPool = [NSAutoreleasePool new];
-                
-                if ((metadata = [anItem objectForKey:@"metadata"]) && (path = [anItem objectForKey:@"path"]))
-                    [[BDSKSpotlightIconController iconFamilyWithMetadataItem:metadata] setAsCustomIconForFile:path];
+            if(canWriteMetadata == 0){
+                NSLog(@"Application will quit without finishing metadata cache icons.");
+                break;
             }
             
             [innerPool release];
-            innerPool = nil;
+            innerPool = [NSAutoreleasePool new];
+            
+            if ((metadata = [anItem objectForKey:@"metadata"]) && (path = [anItem objectForKey:@"path"]))
+                [[BDSKSpotlightIconController iconFamilyWithMetadataItem:metadata] setAsCustomIconForFile:path];
         }
+        
+        [innerPool release];
+        innerPool = nil;
         
         [entries release];
         entries = nil;
