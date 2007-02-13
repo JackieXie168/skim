@@ -82,7 +82,7 @@ static NSString *SKDocumentToolbarSearchItemIdentifier = @"SKDocumentToolbarSear
         dirtyThumbnailIndexes = [[NSMutableIndexSet alloc] init];
         subwindows = [[NSMutableArray alloc] init];
         leftSidePaneState = SKOutlineSidePaneState;
-        rightSidePaneState = SKSubwindowsSidePaneState;
+        rightSidePaneState = SKNotesSidePaneState;
     }
     
     return self;
@@ -817,39 +817,43 @@ static NSString *SKDocumentToolbarSearchItemIdentifier = @"SKDocumentToolbarSear
         
         [oldTable removeFromSuperview];
         [oldTable setHidden:NO];
-        
-        currentTableView = newTableView;
     }
 }
 
 - (void)displayOutlineView {
     [self replaceTable:currentTableView withTable:outlineView animate:NO];
+    currentTableView = outlineView;
     [self updateOutlineSelection];
 }
 
 - (void)fadeInOutlineView {
     [self replaceTable:currentTableView withTable:outlineView animate:YES];
+    currentTableView = outlineView;
     [self updateOutlineSelection];
 }
 
 - (void)displayThumbnailView {
     [self replaceTable:currentTableView withTable:thumbnailTableView animate:NO];
+    currentTableView = thumbnailTableView;
     [self updateThumbnailSelection];
     [self updateThumbnailsIfNeeded];
 }
 
 - (void)fadeInThumbnailView {
     [self replaceTable:currentTableView withTable:thumbnailTableView animate:YES];
+    currentTableView = thumbnailTableView;
     [self updateThumbnailSelection];
     [self updateThumbnailsIfNeeded];
 }
 
 - (void)displaySearchView {
     [self replaceTable:currentTableView withTable:findTableView animate:NO];
+    currentTableView = findTableView;
 }
 
 - (void)fadeInSearchView {
     [self replaceTable:currentTableView withTable:findTableView animate:YES];
+    currentTableView = findTableView;
 }
 
 - (void)displayNotesView {
@@ -988,6 +992,29 @@ static NSString *SKDocumentToolbarSearchItemIdentifier = @"SKDocumentToolbarSear
     return nil;
 }
 
+- (float)tableView:(NSTableView *)tableView heightOfRow:(int)row {
+    if (tableView == thumbnailTableView) {
+        NSSize cellSize = NSMakeSize([[[tableView tableColumns] objectAtIndex:0] width], [[NSUserDefaults standardUserDefaults] floatForKey:SKThumbnailSizeKey]);
+        NSSize thumbSize = [[[[thumbnailArrayController arrangedObjects] objectAtIndex:row] image] size];
+        if (thumbSize.height < 1.0)
+            return 1.0;
+        else if (thumbSize.width / thumbSize.height < cellSize.width / cellSize.height)
+            return cellSize.height;
+        else
+            return MAX(1.0, MIN(cellSize.width, thumbSize.width) * thumbSize.height / thumbSize.width);
+    } else if (tableView == subwindowsTableView) {
+        NSSize cellSize = NSMakeSize([[[tableView tableColumns] objectAtIndex:0] width], [[NSUserDefaults standardUserDefaults] floatForKey:SKSubwindowThumbnailSizeKey]);
+        NSSize thumbSize = [[[[subwindowsArrayController arrangedObjects] objectAtIndex:row] image] size];
+        if (thumbSize.height < 1.0)
+            return 1.0;
+        else if (thumbSize.width / thumbSize.height < cellSize.width / cellSize.height)
+            return cellSize.height;
+        else
+            return MAX(1.0, MIN(cellSize.width, thumbSize.width) * thumbSize.height / thumbSize.width);
+    }
+    return 17.0;
+}
+
 - (void)tableView:(NSTableView *)tv deleteRowsWithIndexes:(NSIndexSet *)rowIndexes {
     if ([tv isEqual:notesTableView]) {
         NSArray *notesToRemove = [[notesArrayController arrangedObjects] objectsAtIndexes:rowIndexes];
@@ -1034,20 +1061,22 @@ static NSString *SKDocumentToolbarSearchItemIdentifier = @"SKDocumentToolbarSear
     [thumbnail setController:controller];
     [thumbnail setPageIndex:[[page document] indexForPage:page]];
     [subwindowsArrayController addObject:thumbnail];
+    [subwindowsArrayController rearrangeObjects];
     [thumbnail release];
     
     if ([self isPresentation] == NO) {
         NSRect startRect = [controller rectForThumbnail];
-        float ratio = NSHeight(startRect) / NSWidth(startRect);
         NSRect endRect = [subwindowsTableView frameOfCellAtColumn:0 row:[[subwindowsArrayController arrangedObjects] indexOfObject:thumbnail]];
+        float thumbRatio = NSHeight(startRect) / NSWidth(startRect);
+        float cellRatio = NSHeight(endRect) / NSWidth(endRect);
         
         startRect.origin = [[controller window] convertBaseToScreen:startRect.origin];
         endRect = [subwindowsTableView convertRect:endRect toView:nil];
         endRect.origin = [[subwindowsTableView window] convertBaseToScreen:endRect.origin];
-        if (ratio > 1.0)
-            endRect = NSInsetRect(endRect, 0.5 * NSWidth(endRect) * (1.0 - 1.0 / ratio), 0.0);
+        if (thumbRatio > cellRatio)
+            endRect = NSInsetRect(endRect, 0.5 * NSWidth(endRect) * (1.0 - cellRatio / thumbRatio), 0.0);
         else
-            endRect = NSInsetRect(endRect, 0.0, 0.5 * NSHeight(endRect) * (1.0 - ratio));
+            endRect = NSInsetRect(endRect, 0.0, 0.5 * NSHeight(endRect) * (1.0 - thumbRatio / cellRatio));
         
         image = [controller thumbnailWithSize:0.0 shadowBlurRadius:0.0 shadowOffset:NSZeroSize];
         
@@ -1067,27 +1096,28 @@ static NSString *SKDocumentToolbarSearchItemIdentifier = @"SKDocumentToolbarSear
     // there should only be a single note
 	SKThumbnail *thumbnail = [subwindowsToShow lastObject];
     SKSubWindowController *controller = [thumbnail controller];
-    
+    if (controller == nil) return;
     [[self document] addWindowController:controller];
     
     if ([self isPresentation] == NO) {
         NSRect endRect = [controller rectForThumbnail];
-        float ratio = NSHeight(endRect) / NSWidth(endRect);
         NSRect cellRect = [subwindowsTableView frameOfCellAtColumn:0 row:[[subwindowsArrayController arrangedObjects] indexOfObject:thumbnail]];
         NSRect startRect = [subwindowsTableView convertRect:cellRect toView:nil];
+        float thumbRatio = NSHeight(endRect) / NSWidth(endRect);
+        float cellRatio = NSHeight(cellRect) / NSWidth(cellRect);
         
         endRect.origin = [[controller window] convertBaseToScreen:endRect.origin];
         startRect.origin = [[subwindowsTableView window] convertBaseToScreen:startRect.origin];
-        if (ratio > 1.0)
-            startRect = NSInsetRect(startRect, 0.5 * NSWidth(startRect) * (1.0 - 1.0 / ratio), 0.0);
+        if (thumbRatio > cellRatio)
+            startRect = NSInsetRect(startRect, 0.5 * NSWidth(startRect) * (1.0 - cellRatio / thumbRatio), 0.0);
         else
-            startRect = NSInsetRect(startRect, 0.0, 0.5 * NSHeight(startRect) * (1.0 - ratio));
+            startRect = NSInsetRect(startRect, 0.0, 0.5 * NSHeight(startRect) * (1.0 - thumbRatio / cellRatio));
         
         NSImage *image = [controller thumbnailWithSize:0.0 shadowBlurRadius:0.0 shadowOffset:NSZeroSize];
         SKMiniaturizeWindow *miniaturizeWindow = [[SKMiniaturizeWindow alloc] initWithContentRect:startRect image:image];
         [miniaturizeWindow orderFront:self];
         [thumbnail setImage:nil];
-        [subwindowsTableView displayRect:cellRect];
+        [subwindowsTableView display];
         [miniaturizeWindow setFrame:endRect display:YES animate:YES];
         [[controller window] orderFront:self];
         [miniaturizeWindow orderOut:self];
@@ -2046,6 +2076,16 @@ static NSString *SKDocumentToolbarSearchItemIdentifier = @"SKDocumentToolbarSear
         [self delete:self];
 	else
 		[super keyDown:theEvent];
+}
+
+- (void)setFrame:(NSRect)frameRect {
+    [super setFrame:frameRect];
+    [self noteHeightOfRowsWithIndexesChanged:[NSIndexSet indexSetWithIndexesInRange:NSMakeRange(0, [self numberOfRows])]];
+}
+
+- (void)setFrameSize:(NSSize)frameSize {
+    [super setFrameSize:frameSize];
+    [self noteHeightOfRowsWithIndexesChanged:[NSIndexSet indexSetWithIndexesInRange:NSMakeRange(0, [self numberOfRows])]];
 }
 
 @end
