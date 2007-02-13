@@ -93,7 +93,25 @@
 @end
 
 
+@interface NSWindow (SKPrivate)
+- (id)_updateButtonsForModeChanged;
+@end
+
+
 @implementation SKSubWindow
+
+- (id)initWithContentRect:(NSRect)contentRect styleMask:(unsigned int)styleMask backing:(NSBackingStoreType)bufferingType defer:(BOOL)deferCreation {
+    if (self = [super initWithContentRect:contentRect styleMask:styleMask backing:bufferingType defer:deferCreation]) {
+        [[self standardWindowButton:NSWindowMiniaturizeButton] setEnabled:YES];
+    }
+    return self;
+}
+
+- (id)_updateButtonsForModeChanged {
+    id rv = [super _updateButtonsForModeChanged];
+    [[self standardWindowButton:NSWindowMiniaturizeButton] setEnabled:YES];
+    return rv;
+}
 
 - (void)miniaturize:(id)sender {
     [[[[self windowController] document] mainWindowController] miniaturizeSubWindowController:[self windowController]];
