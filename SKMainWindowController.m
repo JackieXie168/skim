@@ -1788,6 +1788,10 @@ static NSString *SKDocumentToolbarSearchItemIdentifier = @"SKDocumentToolbarSear
 
 #pragma mark SKSplitView delegate protocol
 
+//- (BOOL)splitView:(NSSplitView *)sender canCollapseSubview:(NSView *)subview {
+//    return subview != pdfContentBox;
+//}
+
 - (void)splitView:(SKSplitView *)sender doubleClickedDividerAt:(int)offset{
     NSView *sideView = [[sender subviews] objectAtIndex:2 * offset]; // table
     NSView *mainView = [[sender subviews] objectAtIndex:1]; // pdfView
@@ -1806,6 +1810,36 @@ static NSString *SKDocumentToolbarSearchItemIdentifier = @"SKDocumentToolbarSear
     }
     [sideView setFrame:sideFrame];
     [mainView setFrame:mainFrame];
+    [sender setNeedsDisplay:YES];
+    [sender adjustSubviews];
+}
+
+- (void)splitView:(NSSplitView *)sender resizeSubviewsWithOldSize:(NSSize)oldSize {
+    NSView *leftSideView = [[sender subviews] objectAtIndex:0];
+    NSView *mainView = [[sender subviews] objectAtIndex:1]; // pdfView
+    NSView *rightSideView = [[sender subviews] objectAtIndex:2];
+    NSRect leftSideFrame = [leftSideView frame];
+    NSRect mainFrame = [mainView frame];
+    NSRect rightSideFrame = [rightSideView frame];
+    
+    if (NSWidth(leftSideFrame) < 1.0)
+        leftSideFrame.size.width = 0.0;
+    if (NSWidth(rightSideFrame) < 1.0)
+        rightSideFrame.size.width = 0.0;
+    
+    mainFrame.size.width = NSWidth([sender frame]) - NSWidth(leftSideFrame) - NSWidth(rightSideFrame) - 2 * [sender dividerThickness];
+    
+    if (NSWidth(mainFrame) < 0.0) {
+        float resizeFactor = 1.0 + NSWidth(mainFrame) / (NSWidth(leftSideFrame) + NSWidth(rightSideFrame));
+        leftSideFrame.size.width = floorf(resizeFactor * NSWidth(leftSideFrame));
+        rightSideFrame.size.width = floorf(resizeFactor * NSWidth(rightSideFrame));
+        mainFrame.size.width = NSWidth([sender frame]) - NSWidth(leftSideFrame) - NSWidth(rightSideFrame) - 2 * [sender dividerThickness];
+    }
+    
+    [leftSideView setFrame:leftSideFrame];
+    [rightSideView setFrame:rightSideFrame];
+    [mainView setFrame:mainFrame];
+    
     [sender adjustSubviews];
 }
 
