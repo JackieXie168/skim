@@ -16,5 +16,5 @@
 @end
 
 @interface NSObject (SKSplitViewExtendedDelegate)
-- (void)splitViewDoubleClick:(SKSplitView *)sender;
+- (void)splitView:(SKSplitView *)sender doubleClickedDividerAt:(int)offset;
 @end
