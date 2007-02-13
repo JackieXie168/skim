@@ -15,10 +15,10 @@
                 changeAnnotationMode = id; 
                 changeColor = id; 
                 changeDisplayBox = id; 
-                changeDrawerView = id; 
+                changeLeftSideView = id; 
                 changePageNumber = id; 
+                changeRightSideView = id; 
                 changeScaleFactor = id; 
-                changeSidePaneView = id; 
                 changeToolMode = id; 
                 createNewNote = id; 
                 dismissChoosePageSheet = id; 
@@ -63,13 +63,14 @@
                 choosePageSheet = NSWindow; 
                 currentTableView = NSTableView; 
                 displayBoxPopUpButton = NSPopUpButton; 
-                drawerViewButton = NSSegmentedControl; 
                 findArrayController = NSArrayController; 
                 findCustomView = NSView; 
                 findField = NSSearchField; 
                 findTableView = NSTableView; 
+                leftSideBox = NSBox; 
+                leftSideButton = NSSegmentedControl; 
+                leftSideContentBox = NSBox; 
                 notesArrayController = NSArrayController; 
-                notesDrawer = NSDrawer; 
                 notesTableView = SKNotesTableView; 
                 outlineView = NSOutlineView; 
                 pageNumberField = NSTextField; 
@@ -77,12 +78,12 @@
                 pageNumberView = NSView; 
                 pdfContentBox = NSBox; 
                 pdfView = SKPDFView; 
+                rightSideBox = NSBox; 
+                rightSideButton = NSSegmentedControl; 
+                rightSideContentBox = NSBox; 
                 scaleField = NSTextField; 
                 searchBox = SKCollapsibleView; 
                 searchField = NSSearchField; 
-                sideBox = NSBox; 
-                sideContentBox = NSBox; 
-                sidePaneViewButton = NSSegmentedControl; 
                 spinner = NSProgressIndicator; 
                 splitView = NSSplitView; 
                 subwindowsArrayController = NSArrayController; 
@@ -103,7 +104,12 @@
         }, 
         {CLASS = SKPDFView; LANGUAGE = ObjC; SUPERCLASS = PDFView; }, 
         {CLASS = SKSplitView; LANGUAGE = ObjC; SUPERCLASS = NSSplitView; }, 
-        {CLASS = SKThumbnail; LANGUAGE = ObjC; SUPERCLASS = NSObject; }, 
+        {
+            CLASS = SKThumbnail; 
+            LANGUAGE = ObjC; 
+            OUTLETS = {controller = id; }; 
+            SUPERCLASS = NSObject; 
+        }, 
         {CLASS = SkimDocument; LANGUAGE = ObjC; SUPERCLASS = NSDocument; }
     ); 
     IBVersion = 1; 

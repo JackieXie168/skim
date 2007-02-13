@@ -79,7 +79,8 @@ static NSString *SKDocumentToolbarSearchItemIdentifier = @"SKDocumentToolbarSear
         thumbnails = [[NSMutableArray alloc] init];
         dirtyThumbnailIndexes = [[NSMutableIndexSet alloc] init];
         subwindows = [[NSMutableArray alloc] init];
-        sidePaneState = SKOutlineSidePaneState;
+        leftSidePaneState = SKOutlineSidePaneState;
+        rightSidePaneState = SKSubwindowsSidePaneState;
     }
     
     return self;
@@ -131,7 +132,7 @@ static NSString *SKDocumentToolbarSearchItemIdentifier = @"SKDocumentToolbarSear
         [pdfView setScaleFactor:0.01 * [[NSUserDefaults standardUserDefaults] floatForKey:SKDefaultDocumentScaleKey]];
     
     [[self window] makeFirstResponder:[pdfView documentView]];
-    [[pdfView documentView] setNextKeyView:sidePaneViewButton];
+    [[pdfView documentView] setNextKeyView:leftSideButton];
     
     [[outlineView enclosingScrollView] retain];
     [[findTableView enclosingScrollView] retain];
@@ -139,22 +140,20 @@ static NSString *SKDocumentToolbarSearchItemIdentifier = @"SKDocumentToolbarSear
     [[notesTableView enclosingScrollView] retain];
     [[subwindowsTableView enclosingScrollView] retain];
     
-    NSRect frame = [sidePaneViewButton frame];
+    NSRect frame = [leftSideButton frame];
     frame.size.height = SEGMENTED_CONTROL_HEIGHT;
-    [sidePaneViewButton setFrame:frame];
-    [[sidePaneViewButton cell] setToolTip:NSLocalizedString(@"View Thumbnails", @"Tool tip message") forSegment:SKThumbnailSidePaneState];
-    [[sidePaneViewButton cell] setToolTip:NSLocalizedString(@"View Table of Contents", @"Tool tip message") forSegment:SKOutlineSidePaneState];
+    [leftSideButton setFrame:frame];
+    [[leftSideButton cell] setToolTip:NSLocalizedString(@"View Thumbnails", @"Tool tip message") forSegment:SKThumbnailSidePaneState];
+    [[leftSideButton cell] setToolTip:NSLocalizedString(@"View Table of Contents", @"Tool tip message") forSegment:SKOutlineSidePaneState];
     
-    frame = [drawerViewButton frame];
+    frame = [rightSideButton frame];
     frame.size.height = SEGMENTED_CONTROL_HEIGHT;
-    [drawerViewButton setFrame:frame];
-    [[drawerViewButton cell] setToolTip:NSLocalizedString(@"View Notes", @"Tool tip message") forSegment:0];
-    [[drawerViewButton cell] setToolTip:NSLocalizedString(@"View Detail Windows", @"Tool tip message") forSegment:1];
+    [rightSideButton setFrame:frame];
+    [[rightSideButton cell] setToolTip:NSLocalizedString(@"View Notes", @"Tool tip message") forSegment:SKNotesSidePaneState];
+    [[rightSideButton cell] setToolTip:NSLocalizedString(@"View Detail Windows", @"Tool tip message") forSegment:SKSubwindowsSidePaneState];
     
     [searchBox setCollapseEdges:SKMaxXEdgeMask | SKMinYEdgeMask];
     [searchBox setMinSize:NSMakeSize(150.0, 42.0)];
-    
-    [thumbnailTableView setRowHeight:[[NSUserDefaults standardUserDefaults] floatForKey:SKThumbnailSizeKey]];
     
     NSSortDescriptor *indexSortDescriptor = [[[NSSortDescriptor alloc] initWithKey:@"pageIndex" ascending:YES] autorelease];
     NSSortDescriptor *contentsSortDescriptor = [[[NSSortDescriptor alloc] initWithKey:@"contents" ascending:YES] autorelease];
@@ -169,8 +168,10 @@ static NSString *SKDocumentToolbarSearchItemIdentifier = @"SKDocumentToolbarSear
     [self handlePageChangedNotification:nil];
     [self handleScaleChangedNotification:nil];
     [pageNumberStepper setMaxValue:[[pdfView document] pageCount]];
-    [sidePaneViewButton setSelectedSegment:sidePaneState];
-    [drawerViewButton setSelectedSegment:0];
+    [leftSideButton setSelectedSegment:leftSidePaneState];
+    [rightSideButton setSelectedSegment:rightSidePaneState];
+    
+    [self splitView:splitView doubleClickedDividerAt:1];
     
     [self registerForNotifications];
 }
@@ -505,10 +506,6 @@ static NSString *SKDocumentToolbarSearchItemIdentifier = @"SKDocumentToolbarSear
     [pdfView layoutDocumentView];
 }
 
-- (IBAction)toggleNotesDrawer:(id)sender {
-    [notesDrawer toggle:sender];
-}
-
 - (IBAction)getInfo:(id)sender {
     SKInfoWindowController *infoController = [SKInfoWindowController sharedInstance];
     [infoController fillInfoForDocument:[self document]];
@@ -547,26 +544,26 @@ static NSString *SKDocumentToolbarSearchItemIdentifier = @"SKDocumentToolbarSear
     [pdfView setAnnotationMode:newAnnotationMode];
 }
 
-- (IBAction)changeSidePaneView:(id)sender {
-    sidePaneState = [sender selectedSegment];
+- (IBAction)changeLeftSideView:(id)sender {
+    leftSidePaneState = [sender selectedSegment];
     
     if ([findField stringValue] && [[findField stringValue] isEqualToString:@""] == NO) {
         [findField setStringValue:@""];
         [self removeTemporaryAnnotations];
     }
     
-    if (sidePaneState == SKThumbnailSidePaneState)
+    if (leftSidePaneState == SKThumbnailSidePaneState)
         [self displayThumbnailView];
-    else if (sidePaneState == SKOutlineSidePaneState)
+    else if (leftSidePaneState == SKOutlineSidePaneState)
         [self displayOutlineView];
 }
 
-- (IBAction)changeDrawerView:(id)sender {
-    int drawerState = [sender selectedSegment];
+- (IBAction)changeRightSideView:(id)sender {
+    rightSidePaneState = [sender selectedSegment];
     
-    if (drawerState == 0)
+    if (rightSidePaneState == SKNotesSidePaneState)
         [self displayNotesView];
-    else if (drawerState == 1)
+    else if (rightSidePaneState == SKSubwindowsSidePaneState)
         [self displaySubwindowsView];
 }
 
@@ -623,14 +620,13 @@ static NSString *SKDocumentToolbarSearchItemIdentifier = @"SKDocumentToolbarSear
         [rightSideWindow moveToScreen:[[self window] screen]];
     }
     
-    [sideBox retain]; // sideBox is removed from its old superview in the process
-    [leftSideWindow setMainView:sideBox];
-    [sideBox release];
+    [leftSideBox retain]; // leftSideBox is removed from its old superview in the process
+    [leftSideWindow setMainView:leftSideBox];
+    [leftSideBox release];
     
-    NSView *rightView = [notesDrawer contentView];
-    [rightView retain];
-    [rightSideWindow setMainView:rightView];
-    [rightView release];
+    [rightSideBox retain];
+    [rightSideWindow setMainView:rightSideBox];
+    [rightSideBox release];
     
     [leftSideWindow orderFront:self];
     [rightSideWindow orderFront:self];
@@ -640,15 +636,15 @@ static NSString *SKDocumentToolbarSearchItemIdentifier = @"SKDocumentToolbarSear
     [leftSideWindow orderOut:self];
     [rightSideWindow orderOut:self];
     
-    [sideBox retain]; // sideBox is removed from its old superview in the process
-    [sideBox setFrame:[sideContentBox bounds]];
-    [sideContentBox addSubview:sideBox];
-    [sideBox release];
+    [leftSideBox retain]; // leftSideBox is removed from its old superview in the process
+    [leftSideBox setFrame:[leftSideContentBox bounds]];
+    [leftSideContentBox addSubview:leftSideBox];
+    [leftSideBox release];
     
-    NSView *rightView = [rightSideWindow mainView];
-    [rightView retain];
-    [notesDrawer setContentView:rightView];
-    [rightView release];
+    [rightSideBox retain]; // leftSideBox is removed from its old superview in the process
+    [rightSideBox setFrame:[leftSideContentBox bounds]];
+    [rightSideContentBox addSubview:rightSideBox];
+    [rightSideBox release];
 }
 
 - (void)enterPresentationMode {
@@ -917,15 +913,13 @@ static NSString *SKDocumentToolbarSearchItemIdentifier = @"SKDocumentToolbarSear
     if ([[sender stringValue] isEqualToString:@""]) {
         // get rid of temporary annotations
         [self removeTemporaryAnnotations];
-        if (sidePaneState == SKThumbnailSidePaneState)
+        if (leftSidePaneState == SKThumbnailSidePaneState)
             [self fadeInThumbnailView];
         else 
             [self fadeInOutlineView];
-        [sidePaneViewButton setSelectedSegment:sidePaneState];
+        [leftSideButton setSelectedSegment:leftSidePaneState];
     } else {
         [self fadeInSearchView];
-        [sidePaneViewButton setSelected:NO forSegment:0];
-        [sidePaneViewButton setSelected:NO forSegment:1];
     }
     [[pdfView document] findString:[sender stringValue] withOptions:NSCaseInsensitiveSearch];
 }
@@ -1019,11 +1013,9 @@ static NSString *SKDocumentToolbarSearchItemIdentifier = @"SKDocumentToolbarSear
 
 - (void)miniaturizeSubWindowController:(SKSubWindowController *)controller {
     if ([self isPresentation] == NO) {
-        if ([self isFullScreen] == NO && ([notesDrawer state] == NSDrawerClosedState || [notesDrawer state] == NSDrawerClosingState))
-            [notesDrawer open];
         if ([subwindowsTableView window] == nil) {
             [self displaySubwindowsView];
-            [drawerViewButton setSelectedSegment:1];
+            [rightSideButton setSelectedSegment:SKSubwindowsSidePaneState];
         }
     }
     
@@ -1589,8 +1581,6 @@ static NSString *SKDocumentToolbarSearchItemIdentifier = @"SKDocumentToolbarSear
     [item setPaletteLabel:NSLocalizedString(@"Drawer", @"Toolbar item label")];
     [item setToolTip:NSLocalizedString(@"Toggle Drawer", @"Tool tip message")];
     [item setImage:[NSImage imageNamed:@"ToolbarNotesDrawer"]];
-    [item setTarget:self];
-    [item setAction:@selector(toggleNotesDrawer:)];
     [toolbarItems setObject:item forKey:SKDocumentToolbarToggleDrawerItemIdentifier];
     [item release];
     
@@ -1698,7 +1688,6 @@ static NSString *SKDocumentToolbarSearchItemIdentifier = @"SKDocumentToolbarSear
         SKDocumentToolbarFullScreenItemIdentifier, 
         SKDocumentToolbarPresentationItemIdentifier, 
         SKDocumentToolbarNewNoteItemIdentifier, 
-        SKDocumentToolbarToggleDrawerItemIdentifier, 
         SKDocumentToolbarInfoItemIdentifier, 
         SKDocumentToolbarToolModeItemIdentifier, 
         SKDocumentToolbarAnnotationModeItemIdentifier, 
@@ -1791,13 +1780,6 @@ static NSString *SKDocumentToolbarSearchItemIdentifier = @"SKDocumentToolbarSear
         return YES;
     } else if (action == @selector(togglePresentation:)) {
         return YES;
-    } else if (action == @selector(toggleNotesDrawer:)) {
-        NSDrawerState state = [notesDrawer state];
-        if (state == NSDrawerClosedState || state == NSDrawerClosingState)
-            [menuItem setTitle:NSLocalizedString(@"Show Notes Drawer", @"")];
-        else 
-            [menuItem setTitle:NSLocalizedString(@"Hide Notes Drawer", @"")];
-        return YES;
     } else if (action == @selector(getInfo:)) {
         return YES;
     }
@@ -1807,23 +1789,23 @@ static NSString *SKDocumentToolbarSearchItemIdentifier = @"SKDocumentToolbarSear
 #pragma mark SKSplitView delegate protocol
 
 - (void)splitView:(SKSplitView *)sender doubleClickedDividerAt:(int)offset{
-    NSView *leftView = [[sender subviews] objectAtIndex:0]; // table
-    NSView *rightView = [[sender subviews] objectAtIndex:1]; // pdfView
-    NSRect leftFrame = [leftView frame];
-    NSRect rightFrame = [rightView frame];
+    NSView *sideView = [[sender subviews] objectAtIndex:2 * offset]; // table
+    NSView *mainView = [[sender subviews] objectAtIndex:1]; // pdfView
+    NSRect sideFrame = [sideView frame];
+    NSRect mainFrame = [mainView frame];
     
-    if(NSWidth(leftFrame) > 0.0){ // not sure what the criteria for isSubviewCollapsed, but it doesn't work
-        lastSidePaneWidth = NSWidth(leftFrame); // cache this
-        rightFrame.size.width += lastSidePaneWidth;
-        leftFrame.size.width = 0.0;
+    if(NSWidth(sideFrame) > 0.0){ // not sure what the criteria for isSubviewCollapsed, but it doesn't work
+        lastSidePaneWidth[offset] = NSWidth(sideFrame); // cache this
+        mainFrame.size.width += lastSidePaneWidth[offset];
+        sideFrame.size.width = 0.0;
     } else {
-        if(lastSidePaneWidth <= 0)
-            lastSidePaneWidth = 250.0; // a reasonable value to start
-		leftFrame.size.width = lastSidePaneWidth;
-        rightFrame.size.width = NSWidth([sender frame]) - lastSidePaneWidth - [sender dividerThickness];
+        if(lastSidePaneWidth[offset] <= 0)
+            lastSidePaneWidth[offset] = 250.0; // a reasonable value to start
+        mainFrame.size.width -= lastSidePaneWidth[offset];
+		sideFrame.size.width = lastSidePaneWidth[offset];
     }
-    [leftView setFrame:leftFrame];
-    [rightView setFrame:rightFrame];
+    [sideView setFrame:sideFrame];
+    [mainView setFrame:mainFrame];
     [sender adjustSubviews];
 }
 

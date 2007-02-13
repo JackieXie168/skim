@@ -16,4 +16,5 @@ NSString *SKOpenFilesMaximizedKey = @"SKOpenFilesMaximized";
 NSString *SKReopenLastOpenFilesKey = @"SKReopenLastOpenFiles";
 NSString *SKSearchHighlightColorKey = @"SKSearchHighlightColor";
 NSString *SKShouldHighlightSearchResultsKey = @"SKShouldHighlightSearchResults";
+NSString *SKSubwindowThumbnailSizeKey = @"SKSubwindowThumbnailSize";
 NSString *SKThumbnailSizeKey = @"SKThumbnailSize";

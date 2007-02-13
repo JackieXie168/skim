@@ -11,6 +11,7 @@
         <string>SKReopenLastOpenFiles</string>
         <string>SKSearchHighlightColor</string>
         <string>SKShouldHighlightSearchResults</string>
+        <string>SKSubwindowThumbnailSize</string>
         <string>SKThumbnailSize</string>
     </array>
 	<key>SKDefaultDocumentScale</key>
@@ -30,6 +31,8 @@
 	</data>
 	<key>SKShouldHighlightSearchResults</key>
 	<true/>
+	<key>SKSubwindowThumbnailSize</key>
+	<real>128</real>
 	<key>SKThumbnailSize</key>
 	<real>64</real>
 </dict>
