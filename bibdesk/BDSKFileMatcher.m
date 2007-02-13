@@ -47,8 +47,13 @@
 #import "BibAuthor.h"
 #import <libkern/OSAtomic.h>
 #import "BDSKFileMatchConfigController.h"
+#import "NSGeometry_BDSKExtensions.h"
+#import "NSBezierPath_BDSKExtensions.h"
 
 static CFIndex MAX_SEARCHKIT_RESULTS = 10;
+
+@interface BDSKCountOvalCell : NSTextFieldCell
+@end
 
 @interface BDSKFileMatcher (Private)
 
@@ -103,10 +108,12 @@ static CFIndex MAX_SEARCHKIT_RESULTS = 10;
 - (void)awakeFromNib
 {
     [outlineView setAutosaveExpandedItems:YES];
+    [outlineView setAutoresizesOutlineColumn:NO];
+
     BDSKTextWithIconCell *cell = [[BDSKTextWithIconCell alloc] initTextCell:@""];
     [cell setDrawsHighlight:NO];
     [cell setImagePosition:NSImageLeft];
-    [[[outlineView tableColumns] lastObject] setDataCell:cell];
+    [[outlineView tableColumnWithIdentifier:@"title"] setDataCell:cell];
     [cell release];
     
     [outlineView setDoubleAction:@selector(openAction:)];
@@ -239,11 +246,24 @@ static CFIndex MAX_SEARCHKIT_RESULTS = 10;
     return [item isLeaf];
 }
 
+- (NSCell *)tableView:(NSTableView *)tableView column:(OADataSourceTableColumn *)tableColumn dataCellForRow:(int)row;
+{
+    NSCell *defaultCell = [tableColumn dataCell];
+    static NSCell *prototype = nil;
+    if (nil == prototype) {
+        prototype = [[BDSKCountOvalCell alloc] initTextCell:@""];
+        [prototype setFont:[tableView font]];
+        [prototype setBordered:NO];
+        [prototype setControlSize:[defaultCell controlSize]];
+    }
+    return [[(NSOutlineView *)tableView itemAtRow:row] isLeaf] ? defaultCell : [[prototype copy] autorelease];
+}
+
 #pragma mark Outline view datasource
 
 - (id)outlineView:(NSOutlineView *)ov child:(int)index ofItem:(id)item;
 {
-    return nil == item ? [matches objectAtIndex:index] : [[item children] objectAtIndex:index];
+    return nil == item ? [matches objectAtIndex:index] : [item childAtIndex:index];
 }
 
 - (BOOL)outlineView:(NSOutlineView *)ov isItemExpandable:(id)item;
@@ -258,7 +278,7 @@ static CFIndex MAX_SEARCHKIT_RESULTS = 10;
 
 - (id)outlineView:(NSOutlineView *)ov objectValueForTableColumn:(NSTableColumn *)tableColumn byItem:(id)item;
 {
-    return item;
+    return [[tableColumn identifier] isEqualToString:@"title"] ? item : [item valueForKey:@"score"];
 }
 
 - (id)outlineView:(NSOutlineView *)ov itemForPersistentObject:(id)object
@@ -324,6 +344,26 @@ static NSString *titleStringWithPub(BibItem *pub)
     return nodes;
 }
 
+static void normalizeScoresForItem(BDSKTreeNode *parent, float maxScore)
+{
+    // nodes are shallow, so we only traverse 1 deep
+    unsigned i, iMax = [parent numberOfChildren];
+    for (i = 0; i < iMax; i++) {
+        BDSKTreeNode *child = [parent childAtIndex:i];
+        NSNumber *score = [child valueForKey:@"score"];
+        if (score) {
+            float oldValue = [score floatValue];
+            double newValue = oldValue/maxScore;
+            [child setValue:[NSNumber numberWithDouble:newValue] forKey:@"score"];
+        }
+    }
+}
+
+static NSComparisonResult scoreComparator(id obj1, id obj2, void *context)
+{
+    return [[obj2 valueForKey:@"score"] compare:[obj1 valueForKey:@"score"]];
+}
+
 // this method iterates available publications, trying to match them up with a file
 - (void)doSearch;
 {
@@ -355,37 +395,52 @@ static NSString *titleStringWithPub(BibItem *pub)
         
         NSString *searchString = [node valueForKey:@"searchString"];
         
-        // we're not using rankings, so don't bother computing them
-        SKSearchRef search = SKSearchCreate(searchIndex, (CFStringRef)searchString, kSKSearchOptionNoRelevanceScores);
+        SKSearchRef search = SKSearchCreate(searchIndex, (CFStringRef)searchString, kSKSearchOptionDefault);
         
         // if we get more than 10 matches back per pub, the results will be pretty useless anyway
         SKDocumentID docID[MAX_SEARCHKIT_RESULTS];
+        float scores[MAX_SEARCHKIT_RESULTS];
+        
         CFIndex numFound;
         
-        // could loop here if we need to, or increase search time
-        SKSearchFindMatches(search, MAX_SEARCHKIT_RESULTS, docID, NULL, (CFTimeInterval)(MAX_SEARCHKIT_RESULTS/2.0), &numFound);
+        Boolean foundAll;
+        float thisScore, maxScore = 0.0f;
         
-        if (numFound) {
+        do {
             
-            CFURLRef urls[MAX_SEARCHKIT_RESULTS];
-            SKIndexCopyDocumentURLsForDocumentIDs(searchIndex, numFound, docID, urls);
+            foundAll = SKSearchFindMatches(search, MAX_SEARCHKIT_RESULTS, docID, scores, (CFTimeInterval)(MAX_SEARCHKIT_RESULTS/2.0), &numFound);
             
-            int i, iMax = numFound;
-            
-            // now we have a matching file; we could remove it from the index, but multiple matches are reasonable
-            for (i =  0; i < iMax; i++) {
-                BDSKTreeNode *child = [[BDSKTreeNode alloc] init];
-                [child setValue:(id)urls[i] forKey:@"fileURL"];
-                [child setValue:[[(id)urls[i] path] stringByAbbreviatingWithTildeInPath] forKey:OATextWithIconCellStringKey];
-                [child setValue:[[NSWorkspace sharedWorkspace] iconForFileURL:(NSURL *)urls[i]] forKey:OATextWithIconCellImageKey];
-                [child setValue:searchString forKey:@"searchString"];
-                [node addChild:child];
-                [child release];
+            if (numFound) {
+                
+                CFURLRef urls[MAX_SEARCHKIT_RESULTS];
+                SKIndexCopyDocumentURLsForDocumentIDs(searchIndex, numFound, docID, urls);
+                
+                int i, iMax = numFound;
+                
+                // now we have a matching file; we could remove it from the index, but multiple matches are reasonable
+                for (i =  0; i < iMax; i++) {
+                    BDSKTreeNode *child = [[BDSKTreeNode alloc] init];
+                    [child setValue:(id)urls[i] forKey:@"fileURL"];
+                    [child setValue:[[(id)urls[i] path] stringByAbbreviatingWithTildeInPath] forKey:OATextWithIconCellStringKey];
+                    [child setValue:[[NSWorkspace sharedWorkspace] iconForFileURL:(NSURL *)urls[i]] forKey:OATextWithIconCellImageKey];
+                    [child setValue:searchString forKey:@"searchString"];
+                    thisScore = scores[i];
+                    maxScore = MAX(maxScore, thisScore);
+                    [child setValue:[NSNumber numberWithFloat:thisScore] forKey:@"score"];
+                    [node addChild:child];
+                    [child release];
+                }
+                [matches addObject:node];
             }
-            [matches addObject:node];
-        }
+            
+        } while (numFound && FALSE == foundAll);
+        
         SKSearchCancel(search);
         CFRelease(search);
+        
+        normalizeScoresForItem(node, maxScore);
+        [node setValue:[NSString stringWithFormat:@"%d", [node numberOfChildren]] forKey:@"score"];
+        [node sortChildrenUsingFunction:scoreComparator context:NULL];
         
         val++;
         [outlineView performSelectorOnMainThread:@selector(reloadData) withObject:nil waitUntilDone:NO];
@@ -481,3 +536,56 @@ static NSString *titleStringWithPub(BibItem *pub)
 
 @end
 
+@implementation BDSKCountOvalCell
+
+static NSColor *fillColor = nil;
+
++ (void)initialize
+{
+    if (nil == fillColor)
+        fillColor = [[[NSColor keyboardFocusIndicatorColor] colorWithAlphaComponent:0.7] copy];
+}
+
+- (id)initTextCell:(NSString *)string;
+{
+    self = [super initTextCell:string];
+    if (self) {
+        [self setAlignment:NSCenterTextAlignment];
+        [self setTextColor:[NSColor whiteColor]];
+    }
+    return self;
+}
+
+// borrowed from RSVerticallyCenteredTextFieldCell at http://www.red-sweater.com/blog/148/what-a-difference-a-cell-makes
+- (NSRect)drawingRectForBounds:(NSRect)theRect;
+{
+	// Get the parent's idea of where we should draw
+	NSRect newRect = [super drawingRectForBounds:theRect];
+    
+	// Further mods needed if the cell is editable
+    
+    // Get our ideal size for current text
+    NSSize textSize = [self cellSizeForBounds:theRect];
+    
+    // Center that in the proposed rect
+    float heightDelta = newRect.size.height - textSize.height;	
+    if (heightDelta > 0) {
+        newRect.size.height -= heightDelta;
+        newRect.origin.y += (heightDelta / 2);
+    }
+	
+	return newRect;
+}
+
+- (void)drawInteriorWithFrame:(NSRect)cellFrame inView:(NSView *)controlView;
+{
+    [NSGraphicsContext saveGraphicsState];
+    [fillColor setFill];
+    NSRect countRect = BDSKCenterRect(cellFrame, [self cellSizeForBounds:cellFrame], [controlView isFlipped]);
+    [NSBezierPath fillHorizontalOvalAroundRect:NSIntegralRect(countRect)];
+    [NSGraphicsContext restoreGraphicsState];
+    
+    [super drawInteriorWithFrame:cellFrame inView:controlView];
+}
+
+@end
