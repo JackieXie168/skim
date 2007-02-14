@@ -13,11 +13,23 @@
 #import "SKDocument.h"
 #import <Quartz/Quartz.h>
 
+static NSString *SKSubWindowFrameAutosaveName = @"SKSubWindowFrameAutosaveName";
 
 @implementation SKSubWindowController
 
 - (NSString *)windowNibName {
     return @"SubWindow";
+}
+
+- (void)windowDidLoad {
+    [[self window] setFrameUsingName:SKSubWindowFrameAutosaveName];
+    static NSPoint nextWindowLocation = {0.0, 0.0};
+    [self setShouldCascadeWindows:NO];
+    if ([[self window] setFrameAutosaveName:SKSubWindowFrameAutosaveName]) {
+        NSRect windowFrame = [[self window] frame];
+        nextWindowLocation = NSMakePoint(NSMinX(windowFrame), NSMaxY(windowFrame));
+    }
+    nextWindowLocation = [[self window] cascadeTopLeftFromPoint:nextWindowLocation];
 }
 
 - (void)setPdfDocument:(PDFDocument *)pdfDocument scaleFactor:(int)factor autoScales:(BOOL)autoScales goToPageNumber:(int)pageNum point:(NSPoint)locationInPageSpace{

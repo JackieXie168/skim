@@ -11,6 +11,7 @@
 #import "BDSKDragImageView.h"
 #import "SKPDFAnnotationNote.h"
 
+static NSString *SKNoteWindowFrameAutosaveName = @"SKNoteWindowFrameAutosaveName";
 
 @implementation SKNoteWindowController
 
@@ -42,8 +43,17 @@
     return @"NoteWindow";
 }
 
-- (void)awakeFromNib {
+- (void)windowDidLoad {
     [[self window] setBackgroundColor:[NSColor colorWithDeviceWhite:0.9 alpha:1.0]];
+    
+    [[self window] setFrameUsingName:SKNoteWindowFrameAutosaveName];
+    static NSPoint nextWindowLocation = {0.0, 0.0};
+    [self setShouldCascadeWindows:NO];
+    if ([[self window] setFrameAutosaveName:SKNoteWindowFrameAutosaveName]) {
+        NSRect windowFrame = [[self window] frame];
+        nextWindowLocation = NSMakePoint(NSMinX(windowFrame), NSMaxY(windowFrame));
+    }
+    nextWindowLocation = [[self window] cascadeTopLeftFromPoint:nextWindowLocation];
 }
 
 - (void)windowWillClose:(NSNotification *)aNotification {
