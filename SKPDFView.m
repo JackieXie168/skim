@@ -843,7 +843,7 @@ static NSRect RectPlusScale (NSRect aRect, float scale)
     
     if (editAnnotation)
         [self endAnnotationEdit];
-	if (activeAnnotation != annotation)
+	if (activeAnnotation == annotation)
 		[self setActiveAnnotation:nil];
     [self setNeedsDisplayForAnnotation:wasAnnotation];
     [page removeAnnotation:wasAnnotation];
