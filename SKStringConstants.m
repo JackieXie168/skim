@@ -7,8 +7,6 @@
 
 #import "SKStringConstants.h"
 
-NSString *SKMainWindowFrameAutosaveName = @"SKMainWindowFrameAutosaveName";
-
 NSString *SKDefaultDocumentScaleKey = @"SKDefaultDocumentScale";
 NSString *SKDefaultDocumentAutoScaleKey = @"SKDefaultDocumentAutoScale";
 NSString *SKLastOpenFileNamesKey = @"SKLastOpenFileNames";

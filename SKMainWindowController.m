@@ -28,6 +28,8 @@
 #define WINDOW_X_DELTA              0.0
 #define WINDOW_Y_DELTA              70.0
 
+static NSString *SKMainWindowFrameAutosaveName = @"SKMainWindowFrameAutosaveName";
+
 static NSString *SKDocumentToolbarIdentifier = @"SKDocumentToolbarIdentifier";
 
 static NSString *SKDocumentToolbarPreviousItemIdentifier = @"SKDocumentPreviousToolbarItemIdentifier";
@@ -121,7 +123,15 @@ static NSString *SKDocumentToolbarSearchItemIdentifier = @"SKDocumentToolbarSear
     
     // we retain as we might replace it with the full screen window
     mainWindow = [[self window] retain];
-    [mainWindow setFrameAutosaveName:SKMainWindowFrameAutosaveName];
+    
+    [[self window] setFrameUsingName:SKMainWindowFrameAutosaveName];
+    static NSPoint nextWindowLocation = {0.0, 0.0};
+    [self setShouldCascadeWindows:NO];
+    if ([[self window] setFrameAutosaveName:SKMainWindowFrameAutosaveName]) {
+        NSRect windowFrame = [[self window] frame];
+        nextWindowLocation = NSMakePoint(NSMinX(windowFrame), NSMaxY(windowFrame));
+    }
+    nextWindowLocation = [[self window] cascadeTopLeftFromPoint:nextWindowLocation];
     
     [[self window] setBackgroundColor:[NSColor colorWithDeviceWhite:0.9 alpha:1.0]];
     

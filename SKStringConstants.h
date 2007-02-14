@@ -6,8 +6,6 @@
 //  Created by Michael McCracken on 1/5/07.
 
 
-extern NSString *SKMainWindowFrameAutosaveName;
-
 extern NSString *SKDefaultDocumentScaleKey;
 extern NSString *SKDefaultDocumentAutoScaleKey;
 extern NSString *SKLastOpenFileNamesKey;
