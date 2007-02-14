@@ -40,32 +40,6 @@
 - (NSString *)windowNibName {
     return @"InfoWindow";
 }
-static OSStatus PathToFSRef(CFStringRef inPath, FSRef *outRef)
-{
-    if (inPath == NULL) {
-        return fnfErr;
-    }
-    
-    CFURLRef	tempURL = NULL;
-    Boolean	gotRef = false;
-    
-    tempURL = CFURLCreateWithFileSystemPath(kCFAllocatorDefault, inPath,
-                                            kCFURLPOSIXPathStyle, false);
-    
-    if (tempURL == NULL) {
-        return fnfErr;
-    }
-    
-    gotRef = CFURLGetFSRef(tempURL, outRef);
-    
-    CFRelease(tempURL);
-    
-    if (gotRef == false) {
-        return fnfErr;
-    }
-    
-    return noErr;
-}
 
 static inline 
 NSString *fileSizeOfFileAtPath(NSString *path) {
