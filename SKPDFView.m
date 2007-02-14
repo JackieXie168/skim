@@ -306,6 +306,7 @@ static NSRect RectPlusScale (NSRect aRect, float scale)
     switch (toolMode) {
         case SKMoveToolMode:
             [NSCursor pop];
+            [[NSCursor openHandCrusor] set];
             break;
         case SKTextToolMode:
             dragging = NO;
