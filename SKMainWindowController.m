@@ -1909,6 +1909,7 @@ static NSString *SKDocumentToolbarSearchItemIdentifier = @"SKDocumentToolbarSear
 
 @end
 
+#pragma mark -
 
 @implementation SKFullScreenWindow
 
@@ -1957,6 +1958,8 @@ static NSString *SKDocumentToolbarSearchItemIdentifier = @"SKDocumentToolbarSear
 }
 
 @end
+
+#pragma mark -
 
 @implementation SKThumbnail
 
@@ -2022,69 +2025,7 @@ static NSString *SKDocumentToolbarSearchItemIdentifier = @"SKDocumentToolbarSear
 
 @end
 
-// the search table columns use these methods for display
-@interface PDFSelection (SKExtensions)
-@end
-
-@implementation PDFSelection (SKExtensions)
-
-// returns the label of the first page (if the selection spans multiple pages)
-- (NSString *)firstPageLabel { 
-    NSArray *pages = [self pages];
-    return [pages count] ? [[pages objectAtIndex:0] label] : nil;
-}
-
-// displays the selection string with some surrounding context as well
-- (NSString *)contextString {
-    
-    NSArray *pages = [self pages];
-    int i, iMax = [pages count];
-    NSMutableString *string = [NSMutableString string];
-    
-    for (i = 0; i < iMax; i++) {
-        
-        PDFPage *page = [pages objectAtIndex:i];
-        NSString *pageString = [page string];
-        if (pageString) {
-            NSRect r = [self boundsForPage:page];
-            
-            int start, end;
-            start = [page characterIndexAtPoint:NSMakePoint(NSMinX(r), NSMinY(r))];
-            end = [page characterIndexAtPoint:NSMakePoint(NSMaxX(r), NSMinY(r))];
-            
-            if (start != -1 && end != -1) {
-                start = MAX(start - 10, 0);
-                end = MIN(end + 20, (int)[pageString length]);
-                [string appendString:[pageString substringWithRange:NSMakeRange(start, end - start)]];
-            } else {
-                // this shouldn't happen, but just in case...
-                [string appendString:[self string]];
-            }
-        }
-    }
-    
-    // we don't want newlines in the tableview
-    static NSCharacterSet *newlineCharacterSet = nil;
-    if (nil == newlineCharacterSet) {
-        NSMutableCharacterSet *cs = [[NSCharacterSet whitespaceCharacterSet] mutableCopy];
-        [cs invert];
-        [cs formIntersectionWithCharacterSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
-        newlineCharacterSet = [cs copy];
-        [cs release];
-    }
-    NSRange r = [string rangeOfCharacterFromSet:newlineCharacterSet];
-    while (r.location != NSNotFound) {
-        [string deleteCharactersInRange:r];
-        r = [string rangeOfCharacterFromSet:newlineCharacterSet];
-    }
-    // trim any leading or trailing whitespace
-    CFStringTrimWhitespace((CFMutableStringRef)string);
-    
-    return string;
-}
-
-@end
-
+#pragma mark -
 
 @implementation SKNoteTableView
 
@@ -2110,6 +2051,8 @@ static NSString *SKDocumentToolbarSearchItemIdentifier = @"SKDocumentToolbarSear
 
 @end
 
+#pragma mark -
+
 @implementation SKSnapshotTableView
 
 - (void)setFrame:(NSRect)frameRect {
@@ -2123,6 +2066,8 @@ static NSString *SKDocumentToolbarSearchItemIdentifier = @"SKDocumentToolbarSear
 }
 
 @end
+
+#pragma mark -
 
 @implementation SKThumbnailTableView
 
@@ -2138,6 +2083,7 @@ static NSString *SKDocumentToolbarSearchItemIdentifier = @"SKDocumentToolbarSear
 
 @end
 
+#pragma mark -
 
 @implementation SKAnnotationTypeIconTransformer
 
@@ -2161,6 +2107,7 @@ static NSString *SKDocumentToolbarSearchItemIdentifier = @"SKDocumentToolbarSear
 
 @end
 
+#pragma mark -
 
 @implementation SKMiniaturizeWindow
 
