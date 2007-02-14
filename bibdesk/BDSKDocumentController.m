@@ -414,6 +414,23 @@
     return document;
 }
 
+- (void)closeAllDocumentsWithDelegate:(id)delegate didCloseAllSelector:(SEL)didCloseAllSelector contextInfo:(void *)contextInfo{
+    NSArray *fileNames = [[self documents] valueForKeyPath:@"@distinctUnionOfObjects.fileName"];
+    NSMutableArray *array = [NSMutableArray arrayWithCapacity:[fileNames count]];
+    NSEnumerator *fEnum = [fileNames objectEnumerator];
+    NSString *fileName;
+    while(fileName = [fEnum nextObject]){
+        NSData *data = [[BDAlias aliasWithPath:fileName] aliasData];
+        if(data)
+            [array addObject:[NSDictionary dictionaryWithObjectsAndKeys:fileName, @"fileName", data, @"_BDAlias", nil]];
+        else
+            [array addObject:[NSDictionary dictionaryWithObjectsAndKeys:fileName, @"fileName", nil]];
+    }
+    [[OFPreferenceWrapper sharedPreferenceWrapper] setObject:array forKey:BDSKLastOpenFileNamesKey];
+    
+    [super closeAllDocumentsWithDelegate:delegate didCloseAllSelector:didCloseAllSelector contextInfo:contextInfo];
+}
+
 #pragma mark Document types
 
 - (NSArray *)fileExtensionsFromType:(NSString *)documentTypeName
