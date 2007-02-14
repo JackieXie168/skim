@@ -43,13 +43,15 @@ static NSString *SKSubWindowFrameAutosaveName = @"SKSubWindowFrameAutosaveName";
     [[self window] setFrame:frame display:NO animate:NO];
     
     [pdfView setAutoScales:autoScales];
+    [pdfView goToPage:page];
     
     NSRect rect = [[pdfView documentView] convertRect:[[pdfView documentView] visibleRect] toView:pdfView];
     rect = [pdfView convertRect:rect toPage:page];
-    locationInPageSpace.x -= 0.5 * NSWidth(rect);
-    locationInPageSpace.y += 0.5 * NSHeight(rect);
+    rect.origin.x = locationInPageSpace.x - 0.5 * NSWidth(rect);
+    rect.origin.y = locationInPageSpace.y - 0.5 * NSHeight(rect);
+    rect = NSIntersectionRect([page boundsForBox:[pdfView displayBox]], rect);
     
-    PDFDestination *dest = [[[PDFDestination alloc] initWithPage:page atPoint:locationInPageSpace] autorelease];
+    PDFDestination *dest = [[[PDFDestination alloc] initWithPage:page atPoint:NSMakePoint(NSMinX(rect), NSMaxY(rect))] autorelease];
     
     [pdfView becomeFirstResponder];
     // Delayed to allow PDFView to finish its bookkeeping 
