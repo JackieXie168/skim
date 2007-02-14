@@ -85,7 +85,7 @@ static NSString *SKPostScriptDocumentType = @"PostScript document";
     if (success && [typeName isEqualToString:SKPDFDocumentType]) {
        [self saveNotesToExtendedAttributesAtURL:absoluteURL];
        if (saveOperation == NSSaveOperation || saveOperation == NSSaveAsOperation)
-            [[[self mainWindowController] window] setDocumentEdited:NO];
+            [self updateChangeCount:NSChangeCleared];
     }
     
     return success;
@@ -116,7 +116,7 @@ static NSString *SKPostScriptDocumentType = @"PostScript document";
             [pdfDocument autorelease];
             pdfDocument = nil;
         } else {
-            [[[self mainWindowController] window] setDocumentEdited:NO];
+            [self updateChangeCount:NSChangeCleared];
         }
         if (noteDicts) {
             [[self mainWindowController] setAnnotationsFromDictionaries:noteDicts];
@@ -166,7 +166,7 @@ static NSString *SKPostScriptDocumentType = @"PostScript document";
             noteDicts = nil;
         }
         
-        [[[self mainWindowController] window] setDocumentEdited:YES];
+        [self updateChangeCount:NSChangeDone];
     }
 }
 

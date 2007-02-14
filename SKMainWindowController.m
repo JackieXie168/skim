@@ -1194,7 +1194,7 @@ static NSString *SKDocumentToolbarSearchItemIdentifier = @"SKDocumentToolbarSear
         if (page)
             [self thumbnailAtIndexNeedsUpdate:[[pdfView document] indexForPage:page]];
     }
-    [[self window] setDocumentEdited:YES];
+    [[self document] updateChangeCount:NSChangeDone];
 }
 
 - (void)handleDidRemoveAnnotationNotification:(NSNotification *)notification {
@@ -1214,12 +1214,12 @@ static NSString *SKDocumentToolbarSearchItemIdentifier = @"SKDocumentToolbarSear
         if (page)
             [self thumbnailAtIndexNeedsUpdate:[[pdfView document] indexForPage:page]];
     }
-    [[self window] setDocumentEdited:YES];
+    [[self document] updateChangeCount:NSChangeDone];
 }
 
 - (void)handleDidChangeAnnotationNotification:(NSNotification *)notification {
     PDFAnnotation *annotation = [[notification userInfo] objectForKey:@"annotation"];
-    [[self window] setDocumentEdited:YES];
+    [[self document] updateChangeCount:NSChangeDone];
     [self thumbnailAtIndexNeedsUpdate:[annotation pageIndex]];
 }
 
