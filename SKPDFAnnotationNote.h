@@ -13,6 +13,7 @@
 @interface PDFAnnotation (SKExtensions)
 
 - (id)initWithDictionary:(NSDictionary *)dict;
+
 - (NSDictionary *)dictionaryValue;
 
 - (PDFDestination *)destination;
