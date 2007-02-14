@@ -490,10 +490,15 @@ static float BDSKScaleMenuFontSize = 11.0;
 
 - (void)mouseUp:(NSEvent *)theEvent{
     [NSCursor pop];
+    [self mouseMoved:theEvent];
 }
 
 - (void)mouseMoved:(NSEvent *)theEvent {
-    [[NSCursor openHandCursor] set];
+	NSPoint mouseLoc = [[self documentView] convertPoint:[theEvent locationInWindow] fromView:nil];
+    if (NSPointInRect(mouseLoc, [[self documentView] visibleRect]))
+        [[NSCursor openHandCursor] set];
+    else
+        [[NSCursor arrowCursor] set];
 }
 
 - (void)mouseDragged:(NSEvent *)theEvent {
