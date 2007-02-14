@@ -16,7 +16,7 @@
 @interface SKSubWindowController : NSWindowController {
     IBOutlet PDFView* pdfView;
 }
-- (void)setPdfDocument:(PDFDocument *)pdfDocument scaleFactor:(int)factor autoScales:(BOOL)autoScales goToPageNumber:(int)pageNum point:(NSPoint)locationInPageSpace;
+- (void)setPdfDocument:(PDFDocument *)pdfDocument scaleFactor:(int)factor autoScales:(BOOL)autoScales goToPageNumber:(int)pageNum rect:(NSRect)rect;
 - (PDFView *)pdfView;
 - (NSRect)rectForThumbnail;
 - (NSImage *)thumbnailWithSize:(float)size shadowBlurRadius:(float)shadowBlurRadius shadowOffset:(NSSize)shadowOffset;

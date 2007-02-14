@@ -49,8 +49,7 @@ typedef enum _SKAnnotationMode {
 	NSRect wasBounds;
 	NSPoint mouseDownLoc;
 	NSPoint clickDelta;
-	BOOL mouseDown;
-	BOOL dragging;
+	BOOL selecting;
 	BOOL resizing;
 	BOOL mouseDownInAnnotation;
 }
@@ -67,6 +66,7 @@ typedef enum _SKAnnotationMode {
 - (void)popUpWithEvent:(NSEvent *)theEvent;
 - (void)selectAnnotationWithEvent:(NSEvent *)theEvent;
 - (void)dragAnnotationWithEvent:(NSEvent *)theEvent;
+- (void)selectSnapshotWithEvent:(NSEvent *)theEvent;
 - (void)magnifyWithEvent:(NSEvent *)theEvent;
 - (void)dragWithEvent:(NSEvent *)theEvent;
 

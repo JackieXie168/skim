@@ -30,30 +30,29 @@ static NSString *SKSubWindowFrameAutosaveName = @"SKSubWindowFrameAutosaveName";
         nextWindowLocation = NSMakePoint(NSMinX(windowFrame), NSMaxY(windowFrame));
     }
     nextWindowLocation = [[self window] cascadeTopLeftFromPoint:nextWindowLocation];
+    
+    [[self window] makeFirstResponder:pdfView];
 }
 
-- (void)setPdfDocument:(PDFDocument *)pdfDocument scaleFactor:(int)factor autoScales:(BOOL)autoScales goToPageNumber:(int)pageNum point:(NSPoint)locationInPageSpace{
+- (void)setPdfDocument:(PDFDocument *)pdfDocument scaleFactor:(int)factor autoScales:(BOOL)autoScales goToPageNumber:(int)pageNum rect:(NSRect)rect{
     [self window];
+    
     [pdfView setDocument:pdfDocument];
     [pdfView setScaleFactor:factor];
+    [pdfView setAutoScales:autoScales];
     
     PDFPage *page = [pdfDocument pageAtIndex:pageNum];
     NSRect frame = [[self window] frame];
-    frame.size.width = [pdfView rowSizeForPage:page].width;
-    [[self window] setFrame:frame display:NO animate:NO];
+    NSRect contentRect = [pdfView convertRect:rect fromPage:page];
+    contentRect.size.width += [NSScroller scrollerWidth];
+    contentRect.size.height += [NSScroller scrollerWidth];
+    frame.size = [[self window] frameRectForContentRect:contentRect].size;
+    [[self window] setFrame:NSIntegralRect(frame) display:NO animate:NO];
     
-    [pdfView setAutoScales:autoScales];
     [pdfView goToPage:page];
-    
-    NSRect rect = [[pdfView documentView] convertRect:[[pdfView documentView] visibleRect] toView:pdfView];
-    rect = [pdfView convertRect:rect toPage:page];
-    rect.origin.x = locationInPageSpace.x - 0.5 * NSWidth(rect);
-    rect.origin.y = locationInPageSpace.y - 0.5 * NSHeight(rect);
-    rect = NSIntersectionRect([page boundsForBox:[pdfView displayBox]], rect);
     
     PDFDestination *dest = [[[PDFDestination alloc] initWithPage:page atPoint:NSMakePoint(NSMinX(rect), NSMaxY(rect))] autorelease];
     
-    [pdfView becomeFirstResponder];
     // Delayed to allow PDFView to finish its bookkeeping 
     // fixes bug of apparently ignoring the point but getting the page right.
     [pdfView performSelector:@selector(goToDestination:) withObject:dest afterDelay:0.1];

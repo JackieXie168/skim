@@ -286,12 +286,11 @@ static NSRect RectPlusScale (NSRect aRect, float scale)
     
     switch (toolMode) {
         case SKMoveToolMode:
-        mouseDown = YES;
             [[NSCursor closedHandCursor] push];
             break;
         case SKTextToolMode:
             if ([theEvent modifierFlags] & NSCommandKeyMask)
-                [self popUpWithEvent:theEvent];
+                [self selectSnapshotWithEvent:theEvent];
             else if ([[self document] isLocked])
                 [super mouseDown:theEvent];
             else 
@@ -310,8 +309,6 @@ static NSRect RectPlusScale (NSRect aRect, float scale)
             [[NSCursor openHandCursor] set];
             break;
         case SKTextToolMode:
-            mouseDown = NO;
-            dragging = NO;
             if (mouseDownInAnnotation) {
                 mouseDownInAnnotation = NO;
                 if ([[activeAnnotation type] isEqualToString:@"Circle"] || [[activeAnnotation type] isEqualToString:@"Square"]) {
@@ -383,7 +380,7 @@ static NSRect RectPlusScale (NSRect aRect, float scale)
 - (void)flagsChanged:(NSEvent *)theEvent {
     [super flagsChanged:theEvent];
     if (toolMode == SKTextToolMode) {
-        if (mouseDown == NO) {
+        if (selecting == NO) {
             NSCursor *cursor = ([theEvent modifierFlags] & NSCommandKeyMask) ? [NSCursor cameraCursor] : [NSCursor arrowCursor];
             [cursor set];
         }
@@ -436,10 +433,12 @@ static NSRect RectPlusScale (NSRect aRect, float scale)
 }
 
 - (void)popUpWithEvent:(NSEvent *)theEvent{
+/*
     SKMainWindowController* controller = [[self window] windowController];
     PDFDestination *dest = [self destinationForEvent:theEvent isLink:NULL];
     
     [controller showSnapshotAtPageNumber:[[self document] indexForPage:[dest page]] location:[dest point]];        
+*/
 }
 
 - (void)selectAnnotationWithEvent:(NSEvent *)theEvent {
@@ -676,6 +675,95 @@ static NSRect RectPlusScale (NSRect aRect, float scale)
 				break;
 		} // end of switch (event type)
 	} // end of mouse-tracking loop
+}
+
+- (void)selectSnapshotWithEvent:(NSEvent *)theEvent {
+    NSPoint mouseLoc = [theEvent locationInWindow];
+	NSPoint startPoint = [[self documentView] convertPoint:mouseLoc fromView:nil];
+	NSPoint	currentPoint;
+    NSRect selectionRect = {startPoint, NSZeroSize};
+    NSRect bounds;
+    float minX, maxX, minY, maxY;
+    //NSRect visibleRect = [[self documentView] visibleRect];
+	BOOL keepGoing = YES;
+	
+	//[NSEvent startPeriodicEventsAfterDelay: 0 withPeriod: 0.2];
+    [[self window] discardCachedImage];
+    
+    selecting = YES;
+	
+	while (keepGoing) {
+		theEvent = [[self window] nextEventMatchingMask: NSLeftMouseUpMask | NSLeftMouseDraggedMask];
+		switch ([theEvent type]) {
+			case NSLeftMouseDragged:
+                [[self window] restoreCachedImage];
+                [[self window] flushWindow];
+				
+				[[self documentView] autoscroll:theEvent];
+                
+                mouseLoc = [theEvent locationInWindow];
+                
+                currentPoint = [[self documentView] convertPoint:mouseLoc fromView:nil];
+				
+                selectionRect.size.width = abs(currentPoint.x - startPoint.x);
+                selectionRect.size.height = abs(currentPoint.y - startPoint.y);
+                selectionRect.origin.x = startPoint.x;
+                selectionRect.origin.y = startPoint.y;
+                if (currentPoint.x < startPoint.x)
+                    selectionRect.origin.x -= NSWidth(selectionRect);
+                if (currentPoint.y < startPoint.y)
+                    selectionRect.origin.y -= NSHeight(selectionRect);
+                
+                bounds = [[self documentView] bounds];
+                minX = fmax(NSMinX(selectionRect), NSMinX(bounds));
+                maxX = fmin(NSMaxX(selectionRect), NSMaxX(bounds));
+                minY = fmax(NSMinY(selectionRect), NSMinY(bounds));
+                maxY = fmin(NSMaxY(selectionRect), NSMaxY(bounds));
+                selectionRect = NSMakeRect(minX, minY, maxX - minX, maxY - minY);
+                
+                [[self window] cacheImageInRect:NSInsetRect([[self documentView] convertRect:selectionRect toView:nil], -2.0, -2.0)];
+                
+                [self lockFocus];
+                [NSGraphicsContext saveGraphicsState];
+                [[NSColor blackColor] set];
+                [NSBezierPath strokeRect:NSInsetRect(NSIntegralRect([self convertRect:selectionRect fromView:[self documentView]]), 0.5, 0.5)];
+                [NSGraphicsContext restoreGraphicsState];
+                [self unlockFocus];
+                [[self window] flushWindow];
+                
+				break;
+				
+			case NSLeftMouseUp:
+				keepGoing = NO;
+				break;
+				
+			default:
+				/* Ignore any other kind of event. */
+				break;
+		} // end of switch (event type)
+	} // end of mouse-tracking loop
+    
+    selecting = NO;
+    
+    [[self window] restoreCachedImage];
+    [[self window] flushWindow];
+    [[self window] discardCachedImage];
+	[self flagsChanged:theEvent];
+    
+    NSPoint point = [self convertPoint:NSMakePoint(NSMidX(selectionRect), NSMidY(selectionRect)) fromView:[self documentView]];
+    PDFPage *page = [self pageForPoint:point nearest:YES];
+    NSRect rect = [self convertRect:selectionRect fromView:[self documentView]];
+    
+    if (NSWidth(rect) < 50.0 || NSHeight(rect) < 50.0) {
+        rect.origin.x = [self convertPoint:[page boundsForBox:[self displayBox]].origin fromPage:page].x;
+        rect.origin.y = point.y - 100.0;
+        rect.size.width = [self rowSizeForPage:page].width;
+        rect.size.height = 200.0;
+    }
+    
+    SKMainWindowController *controller = [[self window] windowController];
+    
+    [controller showSnapshotAtPageNumber:[[self document] indexForPage:page] forRect:[self convertRect:rect toPage:page]];        
 }
 
 #define MAG_RECT_1 NSMakeRect(-150.0, -100.0, 300.0, 200.0)

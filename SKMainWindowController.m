@@ -1041,7 +1041,7 @@ static NSString *SKDocumentToolbarSearchItemIdentifier = @"SKDocumentToolbarSear
 
 #pragma mark Sub- and note- windows
 
-- (void)showSnapshotAtPageNumber:(int)pageNum location:(NSPoint)locationInPageSpace{
+- (void)showSnapshotAtPageNumber:(int)pageNum forRect:(NSRect)rect{
     
     SKSubWindowController *swc = [[SKSubWindowController alloc] init];
     
@@ -1050,7 +1050,7 @@ static NSString *SKDocumentToolbarSearchItemIdentifier = @"SKDocumentToolbarSear
             scaleFactor:[pdfView scaleFactor]
              autoScales:[pdfView autoScales]
          goToPageNumber:pageNum
-                  point:locationInPageSpace];
+                  rect:rect];
     
     [[self document] addWindowController:swc];
     [swc release];
