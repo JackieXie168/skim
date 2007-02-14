@@ -50,5 +50,6 @@
 - (NSScrollView *)scrollView;
 - (void)layoutScrollView;
 - (void)setScrollerSize:(NSControlSize)controlSize;
+- (void)dragWithEvent:(NSEvent *)theEvent;
 
 @end

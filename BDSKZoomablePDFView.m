@@ -482,6 +482,61 @@ static float BDSKScaleMenuFontSize = 11.0;
     [scalePopUpButton setFrame:buttonFrame];
 }
 
+#pragma mark Dragging
+
+- (void)mouseDown:(NSEvent *)theEvent{
+    [[NSCursor closedHandCursor] push];
+}
+
+- (void)mouseUp:(NSEvent *)theEvent{
+    [NSCursor pop];
+}
+
+- (void)mouseMoved:(NSEvent *)theEvent {
+    [[NSCursor openHandCursor] set];
+}
+
+- (void)mouseDragged:(NSEvent *)theEvent {
+    [self dragWithEvent:theEvent];	
+    // ??? PDFView's delayed layout seems to reset the cursor to an arrow
+    [self performSelector:@selector(mouseMoved:) withObject:theEvent afterDelay:0];
+}
+
+- (void)dragWithEvent:(NSEvent *)theEvent {
+	NSPoint initialLocation = [theEvent locationInWindow];
+	NSRect visibleRect = [[self documentView] visibleRect];
+	BOOL keepGoing = YES;
+	
+	while (keepGoing) {
+		theEvent = [[self window] nextEventMatchingMask: NSLeftMouseUpMask | NSLeftMouseDraggedMask];
+		switch ([theEvent type]) {
+			case NSLeftMouseDragged:
+            {
+				NSPoint	newLocation;
+				NSRect	newVisibleRect;
+				float	xDelta, yDelta;
+				
+				newLocation = [theEvent locationInWindow];
+				xDelta = initialLocation.x - newLocation.x;
+				yDelta = initialLocation.y - newLocation.y;
+				if ([self isFlipped])
+					yDelta = -yDelta;
+				
+				newVisibleRect = NSOffsetRect (visibleRect, xDelta, yDelta);
+				[[self documentView] scrollRectToVisible: newVisibleRect];
+			}
+				break;
+				
+			case NSLeftMouseUp:
+				keepGoing = NO;
+				break;
+				
+			default:
+				/* Ignore any other kind of event. */
+				break;
+		} // end of switch (event type)
+	} // end of mouse-tracking loop
+}
 
 @end
 
