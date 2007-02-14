@@ -109,7 +109,8 @@ typedef struct _SKPDFViewState {
     IBOutlet SKSubwindowsTableView *subwindowsTableView;
     NSMutableArray              *subwindows;
     
-    float                       lastSidePaneWidth[2];
+    float                       lastLeftSidePaneWidth;
+    float                       lastRightSidePaneWidth;
     
     BOOL                        edited;
 }
@@ -198,6 +199,9 @@ typedef struct _SKPDFViewState {
 - (void)thumbnailsAtIndexesNeedUpdate:(NSIndexSet *)indexes;
 - (void)updateThumbnailsIfNeeded;
 - (void)updateThumbnail:(NSTimer *)timer;
+
+- (void)toggleLeftSidePane;
+- (void)toggleRightSidePane;
 
 - (void)registerForNotifications;
 
