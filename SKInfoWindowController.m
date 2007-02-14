@@ -40,25 +40,105 @@
 - (NSString *)windowNibName {
     return @"InfoWindow";
 }
+static OSStatus PathToFSRef(CFStringRef inPath, FSRef *outRef)
+{
+    if (inPath == NULL) {
+        return fnfErr;
+    }
+    
+    CFURLRef	tempURL = NULL;
+    Boolean	gotRef = false;
+    
+    tempURL = CFURLCreateWithFileSystemPath(kCFAllocatorDefault, inPath,
+                                            kCFURLPOSIXPathStyle, false);
+    
+    if (tempURL == NULL) {
+        return fnfErr;
+    }
+    
+    gotRef = CFURLGetFSRef(tempURL, outRef);
+    
+    CFRelease(tempURL);
+    
+    if (gotRef == false) {
+        return fnfErr;
+    }
+    
+    return noErr;
+}
+
+static inline 
+NSString *fileSizeOfFileAtPath(NSString *path) {
+    if (path == nil)
+        return @"";
+    
+    CFURLRef fileURL = CFURLCreateWithFileSystemPath(kCFAllocatorDefault, (CFStringRef)path, kCFURLPOSIXPathStyle, false);
+    FSRef fileRef;
+    FSCatalogInfo catalogInfo;
+    unsigned long long size, logicalSize;
+    BOOL gotSize = NO;
+    NSMutableString *string = [NSMutableString string];
+    
+    if (fileURL != NULL) {
+        Boolean gotRef = CFURLGetFSRef(fileURL, &fileRef);
+        CFRelease(fileURL);
+        if (gotRef && noErr == FSGetCatalogInfo(&fileRef, kFSCatInfoDataSizes | kFSCatInfoRsrcSizes, &catalogInfo, NULL, NULL, NULL)) {
+            size = catalogInfo.dataPhysicalSize + catalogInfo.rsrcPhysicalSize;
+            logicalSize = catalogInfo.dataLogicalSize + catalogInfo.rsrcLogicalSize;
+            gotSize = YES;
+        }
+    }
+    
+    if (gotSize == NO) {
+        // the docs say this gives the file size in bytes, but it seems in block units or something
+        NSDictionary *fileAttrs = [[NSFileManager defaultManager] fileAttributesAtPath:path traverseLink:NO];
+        logicalSize = size = [[fileAttrs objectForKey:NSFileSize] unsignedLongLongValue] / 2000;
+    }
+    
+    unsigned long bigSize = size >> 32;
+    if (bigSize == 0) {
+        if (size == 0) {
+            [string appendString:@"zero bytes"];
+        } else if (size < 1024) {
+            [string appendFormat:@"%qu bytes", size];
+        } else {
+            UInt32 adjSize = size >> 10;
+            if (adjSize < 1024) {
+                [string appendFormat:@"%.1f KB", size / 1024.0f];
+            } else {
+                adjSize >>= 10; size >>= 10;
+                if (adjSize < 1024) {
+                    [string appendFormat:@"%.1f MB", size / 1024.0f];
+                } else {
+                    adjSize >>= 10; size >>= 10;
+                    [string appendFormat:@"%.1f GB", size / 1024.0f];
+                }
+            }
+        }
+    } else if (bigSize < 256) {
+        [string appendFormat:@"%u GB", bigSize, logicalSize];
+    } else {
+        bigSize >>= 2;
+        [string appendFormat:@"%u TB", bigSize, logicalSize];
+    }
+    
+    NSNumberFormatter *formatter = [[[NSNumberFormatter alloc] init] autorelease];
+    
+    [formatter setFormatterBehavior:NSNumberFormatterBehavior10_4];
+    [formatter setNumberStyle:NSNumberFormatterDecimalStyle];
+    [string appendFormat:@" (%@ bytes)", [formatter stringFromNumber:[NSNumber numberWithUnsignedLongLong:logicalSize]]];
+    
+    return string;
+}
 
 - (void)fillInfoForDocument:(SKDocument *)doc {
     PDFDocument *pdfDoc = [doc pdfDocument];
     [self setInfo:[pdfDoc documentAttributes]];
     if (doc) {
-        NSString *fileName = [[doc fileName] lastPathComponent];
         [info setValue:[[doc fileName] lastPathComponent] forKey:@"FileName"];
         [info setValue:[NSString stringWithFormat: @"%d.%d", [pdfDoc majorVersion], [pdfDoc minorVersion]] forKey:@"Version"];
         [info setValue:[NSNumber numberWithInt:[pdfDoc pageCount]] forKey:@"PageCount"];
-        NSDictionary *fileAttrs = [[NSFileManager defaultManager] fileAttributesAtPath:fileName traverseLink:NO];
-        unsigned long long size = [[fileAttrs objectForKey:NSFileSize] unsignedLongLongValue];
-        NSString *fileSize = nil;
-        if (size < 1024.0)
-            fileSize = [NSString stringWithFormat:@"%.0f B", size * 1.0f];
-        else if (size < 1024.0 * 1024.0)
-            fileSize = [NSString stringWithFormat:@"%.0f KB", size / 1024.0f];
-        else
-            fileSize = [NSString stringWithFormat:@"%.1f MB", size / ( 1024.0 * 1024.0f)];
-        [info setValue:fileSize forKey:@"FileSize"];
+        [info setValue:fileSizeOfFileAtPath([doc fileName]) forKey:@"FileSize"];
         [info setValue:[[info valueForKey:@"KeyWords"] componentsJoinedByString:@" "] forKey:@"KeywordsString"];
     }
 }
