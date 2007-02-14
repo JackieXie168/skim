@@ -13,7 +13,7 @@
 @implementation PDFAnnotation (SKExtensions)
 
 - (id)initWithDictionary:(NSDictionary *)dict{
-    [[self init] release];
+    [[self initWithBounds:NSZeroRect] release];
     
     NSString *type = [dict objectForKey:@"type"];
     NSRect bounds = NSRectFromString([dict objectForKey:@"bounds"]);

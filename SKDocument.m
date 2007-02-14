@@ -266,7 +266,7 @@ static NSString *SKPostScriptDocumentType = @"PostScript document";
         
         if (noteDicts)
             [noteDicts release];
-        noteDicts = [[NSMutableDictionary alloc] initWithCapacity:numberOfNotes];
+        noteDicts = [[NSMutableArray alloc] initWithCapacity:numberOfNotes];
         
         for (i = 0; i < numberOfNotes; i++) {
             n = [[longNotes objectForKey:[NSNumber numberWithInt:i]] intValue];
