@@ -66,22 +66,6 @@
     return NO;
 }    
 
-- (void)applicationWillTerminate:(NSNotification *)aNotification{
-
-    NSArray *fileNames = [[[NSDocumentController sharedDocumentController] documents] valueForKeyPath:@"@distinctUnionOfObjects.fileName"];
-    NSMutableArray *array = [NSMutableArray arrayWithCapacity:[fileNames count]];
-    NSEnumerator *fEnum = [fileNames objectEnumerator];
-    NSString *fileName;
-    while(fileName = [fEnum nextObject]){
-        NSData *data = [[BDAlias aliasWithPath:fileName] aliasData];
-        if(data)
-            [array addObject:[NSDictionary dictionaryWithObjectsAndKeys:fileName, @"fileName", data, @"_BDAlias", nil]];
-        else
-            [array addObject:[NSDictionary dictionaryWithObjectsAndKeys:fileName, @"fileName", nil]];
-    }
-    [[NSUserDefaults standardUserDefaults] setObject:array forKey:SKLastOpenFileNamesKey];
-}
-
 - (IBAction)showPreferencePanel:(id)sender{
     [[SKPreferenceController sharedPrefenceController] showWindow:self];
 }

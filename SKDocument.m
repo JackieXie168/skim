@@ -16,6 +16,7 @@
 #import "SKPDFAnnotationNote.h"
 #import "SKNote.h"
 #import "SKPSProgressController.h"
+#import "BDAlias.h"
 
 // maximum length of xattr value recommended by Apple
 #define MAX_XATTR_LENGTH 4096
@@ -387,6 +388,23 @@ static NSString *SKPostScriptDocumentType = @"PostScript document";
         type = NSPDFPboardType;
     }
 	return type;
+}
+
+- (void)closeAllDocumentsWithDelegate:(id)delegate didCloseAllSelector:(SEL)didCloseAllSelector contextInfo:(void *)contextInfo{
+    NSArray *fileNames = [[[NSDocumentController sharedDocumentController] documents] valueForKeyPath:@"@distinctUnionOfObjects.fileName"];
+    NSMutableArray *array = [NSMutableArray arrayWithCapacity:[fileNames count]];
+    NSEnumerator *fEnum = [fileNames objectEnumerator];
+    NSString *fileName;
+    while(fileName = [fEnum nextObject]){
+        NSData *data = [[BDAlias aliasWithPath:fileName] aliasData];
+        if(data)
+            [array addObject:[NSDictionary dictionaryWithObjectsAndKeys:fileName, @"fileName", data, @"_BDAlias", nil]];
+        else
+            [array addObject:[NSDictionary dictionaryWithObjectsAndKeys:fileName, @"fileName", nil]];
+    }
+    [[NSUserDefaults standardUserDefaults] setObject:array forKey:SKLastOpenFileNamesKey];
+    
+    [super closeAllDocumentsWithDelegate:delegate didCloseAllSelector:didCloseAllSelector contextInfo:contextInfo];
 }
 
 @end
