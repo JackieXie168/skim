@@ -49,10 +49,22 @@
 #import "BDSKFileMatchConfigController.h"
 #import "NSGeometry_BDSKExtensions.h"
 #import "NSBezierPath_BDSKExtensions.h"
+#import "NSBezierPath_CoreImageExtensions.h"
+#import "CIImage_BDSKExtensions.h"
 
 static CFIndex MAX_SEARCHKIT_RESULTS = 10;
+static float LEAF_ROW_HEIGHT = 20.0;
+static float GROUP_ROW_HEIGHT = 48.0;
 
 @interface BDSKCountOvalCell : NSTextFieldCell
+@end
+@interface BDSKBoldShadowFormatter : NSFormatter
+@end
+@interface BDSKLevelIndicatorCell : NSLevelIndicatorCell
+{
+    float maxHeight;
+}
+- (void)setMaxHeight:(float)h;
 @end
 
 @interface BDSKFileMatcher (Private)
@@ -110,11 +122,18 @@ static CFIndex MAX_SEARCHKIT_RESULTS = 10;
     [outlineView setAutosaveExpandedItems:YES];
     [outlineView setAutoresizesOutlineColumn:NO];
 
-    BDSKTextWithIconCell *cell = [[BDSKTextWithIconCell alloc] initTextCell:@""];
-    [cell setDrawsHighlight:NO];
-    [cell setImagePosition:NSImageLeft];
-    [[outlineView tableColumnWithIdentifier:@"title"] setDataCell:cell];
-    [cell release];
+    BDSKTextWithIconCell *titleCell = [[BDSKTextWithIconCell alloc] initTextCell:@""];
+    [titleCell setDrawsHighlight:NO];
+    [titleCell setImagePosition:NSImageLeft];
+    [[outlineView tableColumnWithIdentifier:@"title"] setDataCell:titleCell];
+    [titleCell release];
+    
+    BDSKLevelIndicatorCell *levelCell = [[BDSKLevelIndicatorCell alloc] initWithLevelIndicatorStyle:NSRelevancyLevelIndicatorStyle];
+    [levelCell setMaxValue:(double)1.0];
+    [levelCell setEnabled:NO];
+    [levelCell setMaxHeight:(LEAF_ROW_HEIGHT * 0.7)];
+    [[outlineView tableColumnWithIdentifier:@"score"] setDataCell:levelCell];
+    [levelCell release];
     
     [outlineView setDoubleAction:@selector(openAction:)];
     [outlineView setTarget:self];
@@ -235,10 +254,12 @@ static CFIndex MAX_SEARCHKIT_RESULTS = 10;
     return YES;
 }
 
+#pragma mark Delegate display methods
+
 // return a larger row height for the items; tried using a spotlight controller image, but row size is too large to be practical
 - (float)outlineView:(NSOutlineView *)outlineView heightOfRowByItem:(id)item
 {
-    return [item isLeaf] ? 17.0f : 48.0f;
+    return [item isLeaf] ? LEAF_ROW_HEIGHT : GROUP_ROW_HEIGHT;
 }
 
 - (BOOL)outlineView:(NSOutlineView *)outlineView shouldSelectItem:(id)item;
@@ -246,6 +267,7 @@ static CFIndex MAX_SEARCHKIT_RESULTS = 10;
     return [item isLeaf];
 }
 
+// this allows us to return the count cell for top-level rows, since they have a count instead of a score
 - (NSCell *)tableView:(NSTableView *)tableView column:(OADataSourceTableColumn *)tableColumn dataCellForRow:(int)row;
 {
     NSCell *defaultCell = [tableColumn dataCell];
@@ -257,6 +279,21 @@ static CFIndex MAX_SEARCHKIT_RESULTS = 10;
         [prototype setControlSize:[defaultCell controlSize]];
     }
     return [[(NSOutlineView *)tableView itemAtRow:row] isLeaf] ? defaultCell : [[prototype copy] autorelease];
+}
+
+// change text appearance in top-level rows via a formatter, so we don't have to mess with custom text/icon cells
+- (void)outlineView:(NSOutlineView *)ov willDisplayCell:(id)cell forTableColumn:(NSTableColumn *)tableColumn item:(id)item;
+{
+    if (NO == [item isLeaf]) {
+        static BDSKBoldShadowFormatter *fm = nil;
+        if (nil == fm)
+            fm = [[BDSKBoldShadowFormatter alloc] init];
+        [cell setFormatter:fm];
+        [cell setTextColor:[NSColor whiteColor]];
+    } else if ([[tableColumn identifier] isEqualToString:@"title"]) {
+        [cell setFormatter:nil];
+        [cell setTextColor:[NSColor blackColor]];
+    }
 }
 
 #pragma mark Outline view datasource
@@ -344,6 +381,7 @@ static NSString *titleStringWithPub(BibItem *pub)
     return nodes;
 }
 
+// normalize scores on a per-parent basis
 static void normalizeScoresForItem(BDSKTreeNode *parent, float maxScore)
 {
     // nodes are shallow, so we only traverse 1 deep
@@ -536,6 +574,105 @@ static NSComparisonResult scoreComparator(id obj1, id obj2, void *context)
 
 @end
 
+/* Returning an attributed string on a per-cell basis is easier than drawing a custom cell for each row, since we'd then have to handle the string drawing.  This way NSTextFieldCell still does all the rendering for us.  Color doesn't seem to work correctly for some reason, though.
+*/
+
+@implementation BDSKBoldShadowFormatter
+
+static NSDictionary *attributes = nil;
+
++ (void)initialize
+{
+    if (nil == attributes) {
+        NSMutableDictionary *newAttrs = [[NSMutableDictionary alloc] initWithCapacity:10];
+        
+        [newAttrs setObject:[NSFont boldSystemFontOfSize:[NSFont smallSystemFontSize]] forKey:NSFontAttributeName];
+        [newAttrs setObject:[NSColor colorWithCalibratedWhite:1.0 alpha:1.0] forKey:NSForegroundColorAttributeName];
+        [newAttrs setObject:[NSNumber numberWithFloat:-4.0] forKey:NSStrokeWidthAttributeName];
+
+        /*
+        NSShadow *shadow = [[NSShadow alloc] init];
+        [shadow setShadowColor:[[NSColor shadowColor] colorWithAlphaComponent:0.7]];
+        [shadow setShadowBlurRadius:1.5];
+        [shadow setShadowOffset:NSMakeSize(1.0, -1.0)];
+        [newAttrs setObject:shadow forKey:NSShadowAttributeName];
+        [shadow release];
+        */
+        attributes = [newAttrs copy];
+        [newAttrs release];
+    }
+}
+
+- (NSAttributedString *)attributedStringForObjectValue:(id)obj withDefaultAttributes:(NSDictionary *)attrs;
+{
+    NSMutableAttributedString *attrString = [[[NSMutableAttributedString alloc] initWithString:obj] autorelease];
+    NSMutableDictionary *newAttrs = [attrs mutableCopy];
+    [newAttrs addEntriesFromDictionary:attributes];
+    [attrString addAttributes:newAttrs range:NSMakeRange(0, [attrString length])];
+    [newAttrs release];
+    return attrString;
+}
+    
+- (NSString *)stringForObjectValue:(id)obj { return obj; }
+- (BOOL)getObjectValue:(id *)obj forString:(NSString *)string errorDescription:(NSString **)error;
+{
+    *obj = string;
+    return YES;
+}
+
+@end
+
+/* Subclass of NSLevelIndicatorCell.  The default relevancy cell draws bars the entire vertical height of the table row, which looks bad.  Using setControlSize: seems to have no effect.
+*/
+@interface NSLevelIndicatorCell (BDSKPrivateOverrideBecauseApplesSubclassingIsBroken)
+- (void)_drawRelevancyWithFrame:(NSRect)cellFrame inView:(NSView *)controlView;
+@end
+
+@implementation BDSKLevelIndicatorCell
+
+- (id)initWithLevelIndicatorStyle:(NSLevelIndicatorStyle)levelIndicatorStyle;
+{
+    self = [super initWithLevelIndicatorStyle:levelIndicatorStyle];
+    maxHeight = 0.8 * [self cellSize].height;
+    return self;
+}
+
+- (id)copyWithZone:(NSZone *)aZone
+{
+    id obj = [super copyWithZone:aZone];
+    [obj setMaxHeight:maxHeight];
+    return obj;
+}
+
+- (void)setMaxHeight:(float)h;
+{
+    maxHeight = h;
+}
+
+- (float)indicatorHeight { return maxHeight; }
+
+/*
+ This method and -drawingRectForBounds: are never called as of 10.4.8 rdar://problem/4998206
+ 
+- (void)drawInteriorWithFrame:(NSRect)cellFrame inView:(NSView *)controlView;
+{
+    log_method();
+    NSRect r = BDSKCenterRectVertically(cellFrame, [self indicatorHeight], [controlView isFlipped]);
+    [super drawInteriorWithFrame:r inView:controlView];
+}
+*/
+
+- (void)_drawRelevancyWithFrame:(NSRect)cellFrame inView:(NSView *)controlView;
+{
+    NSRect r = BDSKCenterRectVertically(cellFrame, [self indicatorHeight], [controlView isFlipped]);
+    [super _drawRelevancyWithFrame:r inView:controlView];
+}
+
+@end
+
+/* This cell draws a centered (horizontally and vertically) string, and surrounds the string with a filled oval. 
+*/
+
 @implementation BDSKCountOvalCell
 
 static NSColor *fillColor = nil;
@@ -543,7 +680,7 @@ static NSColor *fillColor = nil;
 + (void)initialize
 {
     if (nil == fillColor)
-        fillColor = [[[NSColor keyboardFocusIndicatorColor] colorWithAlphaComponent:0.7] copy];
+        fillColor = [[[NSColor keyboardFocusIndicatorColor] colorWithAlphaComponent:0.8] copy];
 }
 
 - (id)initTextCell:(NSString *)string;
@@ -581,11 +718,87 @@ static NSColor *fillColor = nil;
 {
     [NSGraphicsContext saveGraphicsState];
     [fillColor setFill];
-    NSRect countRect = BDSKCenterRect(cellFrame, [self cellSizeForBounds:cellFrame], [controlView isFlipped]);
-    [NSBezierPath fillHorizontalOvalAroundRect:NSIntegralRect(countRect)];
+    NSRect countRect = NSIntegralRect(BDSKCenterRect(cellFrame, [self cellSizeForBounds:cellFrame], [controlView isFlipped]));
+    [NSBezierPath fillHorizontalOvalAroundRect:countRect];
+    
+    NSBezierPath *p = [NSBezierPath bezierPathWithHorizontalOvalAroundRect:countRect];
+    [p setLineWidth:1.0];
+    [[NSColor lightGrayColor] setStroke];
+    [p stroke];
     [NSGraphicsContext restoreGraphicsState];
     
     [super drawInteriorWithFrame:cellFrame inView:controlView];
+}
+
+@end
+
+/* Groups items under the top-level outline, and uses a gradient fill for the top level row background.  Grid lines are drawn when the outline has data.
+*/
+
+@interface BDSKGroupingOutlineView : NSOutlineView
+{
+    CIColor *topColor;
+    CIColor *bottomColor;
+}
+@end
+
+@implementation BDSKGroupingOutlineView
+
+- (void)dealloc
+{
+    [topColor release];
+    [bottomColor release];
+    [super dealloc];
+}
+
+- (void)awakeFromNib
+{
+    if ([[self superclass] instancesRespondToSelector:_cmd])
+        [super awakeFromNib];
+    
+    // colors similar to Spotlight's window: darker blue at bottom, lighter at top
+    topColor = [[CIColor colorWithRed:(74.0/255.0) green:(147.0/255.0) blue:(247.0/255.0) alpha:1.0] retain];
+    bottomColor = [[CIColor colorWithRed:(230.0/255.0) green:(231.0/255.0) blue:(243.0/255.0) alpha:1.0] retain];    
+}
+
+// these accessors are bound to the hidden color wells in the nib, which allow playing with the colors easily
+- (NSColor *)topColor
+{
+    return [NSColor colorWithDeviceRed:[topColor red] green:[topColor green] blue:[topColor blue] alpha:[topColor alpha]];
+}
+
+- (void)setTopColor:(NSColor *)tc
+{
+    [topColor release];
+    topColor = [[CIColor colorWithNSColor:tc] retain];
+}
+
+- (void)setBottomColor:(NSColor *)bc
+{
+    [bottomColor release];
+    bottomColor = [[CIColor colorWithNSColor:bc] retain];
+}
+
+- (NSColor *)bottomColor 
+{ 
+    return [NSColor colorWithDeviceRed:[bottomColor red] green:[bottomColor green] blue:[bottomColor blue] alpha:[bottomColor alpha]]; 
+}
+
+// grid looks silly when the table is empty
+- (void)drawGridInClipRect:(NSRect)rect;
+{
+    if ([self numberOfRows])
+        [super drawGridInClipRect:rect];
+}
+
+- (void)drawRow:(int)rowIndex clipRect:(NSRect)clipRect
+{
+    if ([self isExpandable:[self itemAtRow:rowIndex]]) {
+
+        NSBezierPath *p = [NSBezierPath bezierPathWithRect:[self rectOfRow:rowIndex]];
+        [p fillPathVerticallyWithStartColor:topColor endColor:bottomColor];
+    }
+    [super drawRow:rowIndex clipRect:clipRect];
 }
 
 @end

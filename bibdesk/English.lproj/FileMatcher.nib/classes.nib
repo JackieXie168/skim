@@ -15,6 +15,11 @@
         }, 
         {CLASS = BDSKGradientView; LANGUAGE = ObjC; SUPERCLASS = NSView; }, 
         {
+            CLASS = BDSKGroupingOutlineView; 
+            LANGUAGE = ObjC; 
+            SUPERCLASS = NSOutlineView; 
+        }, 
+        {
             ACTIONS = {hideMatches = id; showMatches = id; }; 
             CLASS = BDSKOrphanedFilesArrayController; 
             LANGUAGE = ObjC; 
