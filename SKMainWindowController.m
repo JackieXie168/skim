@@ -993,8 +993,9 @@ static NSString *SKDocumentToolbarSearchItemIdentifier = @"SKDocumentToolbarSear
 
 - (float)tableView:(NSTableView *)tableView heightOfRow:(int)row {
     if (tableView == thumbnailTableView) {
-        NSSize cellSize = NSMakeSize([[[tableView tableColumns] objectAtIndex:0] width], [[NSUserDefaults standardUserDefaults] floatForKey:SKThumbnailSizeKey]);
         NSSize thumbSize = [[[[thumbnailArrayController arrangedObjects] objectAtIndex:row] image] size];
+        NSSize cellSize = NSMakeSize([[[tableView tableColumns] objectAtIndex:0] width], 
+                                     MIN(thumbSize.height, [[NSUserDefaults standardUserDefaults] floatForKey:SKThumbnailSizeKey]));
         if (thumbSize.height < 1.0)
             return 1.0;
         else if (thumbSize.width / thumbSize.height < cellSize.width / cellSize.height)
@@ -1002,8 +1003,9 @@ static NSString *SKDocumentToolbarSearchItemIdentifier = @"SKDocumentToolbarSear
         else
             return MAX(1.0, MIN(cellSize.width, thumbSize.width) * thumbSize.height / thumbSize.width);
     } else if (tableView == subwindowsTableView) {
-        NSSize cellSize = NSMakeSize([[[tableView tableColumns] objectAtIndex:0] width], [[NSUserDefaults standardUserDefaults] floatForKey:SKSubwindowThumbnailSizeKey]);
-        NSSize thumbSize = [[[[subwindowsArrayController arrangedObjects] objectAtIndex:row] image] size];
+        NSSize thumbSize = [[[[thumbnailArrayController arrangedObjects] objectAtIndex:row] image] size];
+        NSSize cellSize = NSMakeSize([[[tableView tableColumns] objectAtIndex:0] width], 
+                                     MIN(thumbSize.height, [[NSUserDefaults standardUserDefaults] floatForKey:SKSubwindowThumbnailSizeKey]));
         if (thumbSize.height < 1.0)
             return 1.0;
         else if (thumbSize.width / thumbSize.height < cellSize.width / cellSize.height)
