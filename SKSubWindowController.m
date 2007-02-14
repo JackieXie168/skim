@@ -42,11 +42,29 @@ static NSString *SKSubWindowFrameAutosaveName = @"SKSubWindowFrameAutosaveName";
     [pdfView setAutoScales:autoScales];
     
     PDFPage *page = [pdfDocument pageAtIndex:pageNum];
-    NSRect frame = [[self window] frame];
     NSRect contentRect = [pdfView convertRect:rect fromPage:page];
+    NSRect frame = [[self window] frame];
+    NSRect screenFrame = [[[self window] screen] visibleFrame];
+    
     contentRect.size.width += [NSScroller scrollerWidth];
     contentRect.size.height += [NSScroller scrollerWidth];
     frame.size = [[self window] frameRectForContentRect:contentRect].size;
+    
+    if (NSMaxX(frame) > NSMaxX(screenFrame))
+        frame.origin.x = NSMaxX(screenFrame) - NSWidth(frame);
+    if (NSMinX(frame) < NSMinX(screenFrame)) {
+        frame.origin.x = NSMinX(screenFrame);
+        if (NSWidth(frame) > NSWidth(screenFrame))
+            frame.size.width = NSWidth(screenFrame);
+    }
+    if (NSMaxY(frame) > NSMaxY(screenFrame))
+        frame.origin.x = NSMaxY(screenFrame) - NSHeight(frame);
+    if (NSMinY(frame) < NSMinY(screenFrame)) {
+        frame.origin.x = NSMinY(screenFrame);
+        if (NSHeight(frame) > NSHeight(screenFrame))
+            frame.size.height = NSHeight(screenFrame);
+    }
+    
     [[self window] setFrame:NSIntegralRect(frame) display:NO animate:NO];
     
     [pdfView goToPage:page];
