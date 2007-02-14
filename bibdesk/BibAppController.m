@@ -358,18 +358,6 @@ static void createTemporaryDirectory()
 - (void)applicationWillTerminate:(NSNotification *)aNotification{
     OSAtomicCompareAndSwap32Barrier(1, 0, (int32_t *)&canWriteMetadata);
     
-    NSArray *fileNames = [[[NSDocumentController sharedDocumentController] documents] valueForKeyPath:@"@distinctUnionOfObjects.fileName"];
-    NSMutableArray *array = [NSMutableArray arrayWithCapacity:[fileNames count]];
-    NSEnumerator *fEnum = [fileNames objectEnumerator];
-    NSString *fileName;
-    while(fileName = [fEnum nextObject]){
-        NSData *data = [[BDAlias aliasWithPath:fileName] aliasData];
-        if(data)
-            [array addObject:[NSDictionary dictionaryWithObjectsAndKeys:fileName, @"fileName", data, @"_BDAlias", nil]];
-        else
-            [array addObject:[NSDictionary dictionaryWithObjectsAndKeys:fileName, @"fileName", nil]];
-    }
-    [[OFPreferenceWrapper sharedPreferenceWrapper] setObject:array forKey:BDSKLastOpenFileNamesKey];
     [[BDSKSharingServer defaultServer] disableSharing];
     
     [completionConnection registerName:nil];
