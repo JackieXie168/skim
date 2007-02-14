@@ -171,6 +171,9 @@ static NSString *SKDocumentToolbarSearchItemIdentifier = @"SKDocumentToolbarSear
     
     [self splitView:splitView doubleClickedDividerAt:1];
     
+    if (pdfOutline == nil)
+        [self setLeftSidePaneState:SKThumbnailSidePaneState];
+    
     [self registerForNotifications];
 }
 
@@ -1044,10 +1047,9 @@ static NSString *SKDocumentToolbarSearchItemIdentifier = @"SKDocumentToolbarSear
 
 - (void)miniaturizeSubWindowController:(SKSubWindowController *)controller {
     if ([self isPresentation] == NO) {
-        if ([subwindowsTableView window] == nil) {
-            [self displaySubwindowsView];
-            [self setRightSidePaneState:SKSubwindowsSidePaneState];
-        }
+        if ([self isFullScreen] == NO && NSWidth([rightSideContentBox frame]) <= 0.0)
+            [self toggleRightSidePane];
+        [self setRightSidePaneState:SKSubwindowsSidePaneState];
     }
     
     NSImage *image = [controller thumbnailWithSize:256.0 shadowBlurRadius:8.0 shadowOffset:NSMakeSize(0.0, -6.0)];
@@ -1815,26 +1817,53 @@ static NSString *SKDocumentToolbarSearchItemIdentifier = @"SKDocumentToolbarSear
 
 #pragma mark SKSplitView delegate protocol
 
-- (void)splitView:(SKSplitView *)sender doubleClickedDividerAt:(int)offset{
-    NSView *sideView = [[sender subviews] objectAtIndex:2 * offset]; // table
-    NSView *mainView = [[sender subviews] objectAtIndex:1]; // pdfView
-    NSRect sideFrame = [sideView frame];
-    NSRect mainFrame = [mainView frame];
+- (void)toggleLeftSidePane {
+    NSRect sideFrame = [leftSideContentBox frame];
+    NSRect pdfFrame = [pdfContentBox frame];
     
-    if(NSWidth(sideFrame) > 0.0){ // not sure what the criteria for isSubviewCollapsed, but it doesn't work
-        lastSidePaneWidth[offset] = NSWidth(sideFrame); // cache this
-        mainFrame.size.width += lastSidePaneWidth[offset];
+    if(NSWidth(sideFrame) > 0.0){
+        lastLeftSidePaneWidth = NSWidth(sideFrame); // cache this
+        pdfFrame.size.width += lastLeftSidePaneWidth;
         sideFrame.size.width = 0.0;
     } else {
-        if(lastSidePaneWidth[offset] <= 0)
-            lastSidePaneWidth[offset] = 250.0; // a reasonable value to start
-        mainFrame.size.width -= lastSidePaneWidth[offset];
-		sideFrame.size.width = lastSidePaneWidth[offset];
+        if(lastLeftSidePaneWidth <= 0)
+            lastLeftSidePaneWidth = 250.0; // a reasonable value to start
+        pdfFrame.size.width -= lastLeftSidePaneWidth;
+		sideFrame.size.width = lastLeftSidePaneWidth;
     }
-    [sideView setFrame:sideFrame];
-    [mainView setFrame:mainFrame];
-    [sender setNeedsDisplay:YES];
-    [sender adjustSubviews];
+    [leftSideContentBox setFrame:sideFrame];
+    [pdfContentBox setFrame:pdfFrame];
+    [splitView setNeedsDisplay:YES];
+    [splitView adjustSubviews];
+}
+
+- (void)toggleRightSidePane {
+    NSRect sideFrame = [rightSideContentBox frame];
+    NSRect pdfFrame = [pdfContentBox frame];
+    
+    if(NSWidth(sideFrame) > 0.0){
+        lastRightSidePaneWidth = NSWidth(sideFrame); // cache this
+        pdfFrame.size.width += lastRightSidePaneWidth;
+        sideFrame.size.width = 0.0;
+    } else {
+        if(lastRightSidePaneWidth <= 0)
+            lastRightSidePaneWidth = 250.0; // a reasonable value to start
+        pdfFrame.size.width -= lastRightSidePaneWidth;
+		sideFrame.size.width = lastRightSidePaneWidth;
+    }
+    [rightSideContentBox setFrame:sideFrame];
+    [pdfContentBox setFrame:pdfFrame];
+    [splitView setNeedsDisplay:YES];
+    [splitView adjustSubviews];
+}
+
+#pragma mark SKSplitView delegate protocol
+
+- (void)splitView:(SKSplitView *)sender doubleClickedDividerAt:(int)offset{
+    if (offset == 0)
+        [self toggleLeftSidePane];
+    else
+        [self toggleRightSidePane];
 }
 
 - (void)splitView:(NSSplitView *)sender resizeSubviewsWithOldSize:(NSSize)oldSize {
