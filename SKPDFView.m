@@ -352,7 +352,8 @@ static NSRect RectPlusScale (NSRect aRect, float scale)
     
     // we receive this message whenever we are first responder, so check the location
     if (toolMode == SKTextToolMode) {
-        if ([theEvent modifierFlags] & NSCommandKeyMask) 
+        NSPoint p = [[self documentView] convertPoint:[theEvent locationInWindow] fromView:nil];
+        if (NSPointInRect(p, [[self documentView] visibleRect]) && [theEvent modifierFlags] & NSCommandKeyMask) 
             [[NSCursor cameraCursor] set];
         else
             [super mouseMoved:theEvent];
