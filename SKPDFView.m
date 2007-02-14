@@ -286,6 +286,7 @@ static NSRect RectPlusScale (NSRect aRect, float scale)
     
     switch (toolMode) {
         case SKMoveToolMode:
+        mouseDown = YES;
             [[NSCursor closedHandCursor] push];
             break;
         case SKTextToolMode:
@@ -309,6 +310,7 @@ static NSRect RectPlusScale (NSRect aRect, float scale)
             [[NSCursor openHandCursor] set];
             break;
         case SKTextToolMode:
+            mouseDown = NO;
             dragging = NO;
             if (mouseDownInAnnotation) {
                 mouseDownInAnnotation = NO;
@@ -350,7 +352,10 @@ static NSRect RectPlusScale (NSRect aRect, float scale)
     
     // we receive this message whenever we are first responder, so check the location
     if (toolMode == SKTextToolMode) {
-        [super mouseMoved:theEvent];
+        if ([theEvent modifierFlags] & NSCommandKeyMask) 
+            [[NSCursor cameraCursor] set];
+        else
+            [super mouseMoved:theEvent];
     } else {
         [[self cursorForMouseMovedEvent:theEvent] set];
     }
@@ -376,7 +381,12 @@ static NSRect RectPlusScale (NSRect aRect, float scale)
 
 - (void)flagsChanged:(NSEvent *)theEvent {
     [super flagsChanged:theEvent];
-    if (toolMode == SKMagnifyToolMode) {
+    if (toolMode == SKTextToolMode) {
+        if (mouseDown == NO) {
+            NSCursor *cursor = ([theEvent modifierFlags] & NSCommandKeyMask) ? [NSCursor cameraCursor] : [NSCursor arrowCursor];
+            [cursor set];
+        }
+    } else if (toolMode == SKMagnifyToolMode) {
         NSCursor *cursor = ([theEvent modifierFlags] & NSShiftKeyMask) ? [NSCursor zoomOutCursor] : [NSCursor zoomInCursor];
         [cursor set];
     }
@@ -1203,6 +1213,20 @@ static NSRect RectPlusScale (NSRect aRect, float scale)
     [image unlockFocus];
     
     return [image autorelease];
+}
+
+@end
+
+
+@implementation NSCursor (SKExtensions)
+
++ (id)cameraCursor {
+    NSCursor *cameraCursor = nil;
+    
+    if (cameraCursor == nil)
+        cameraCursor = [[NSCursor alloc] initWithImage:[NSImage imageNamed:@"CameraCursor"] hotSpot:NSMakePoint(8.0, 8.0)];
+    
+    return cameraCursor;
 }
 
 @end

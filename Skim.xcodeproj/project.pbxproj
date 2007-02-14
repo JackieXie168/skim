@@ -25,6 +25,7 @@
 		8D15AC310486D014006FF6A4 /* SKDocument.m in Sources */ = {isa = PBXBuildFile; fileRef = 2A37F4ACFDCFA73011CA2CEA /* SKDocument.m */; settings = {ATTRIBUTES = (); }; };
 		8D15AC320486D014006FF6A4 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 2A37F4B0FDCFA73011CA2CEA /* main.m */; settings = {ATTRIBUTES = (); }; };
 		8D15AC340486D014006FF6A4 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1058C7A7FEA54F5311CA2CBB /* Cocoa.framework */; };
+		CE380A7B0B834E6200A1B779 /* CameraCursor.tiff in Resources */ = {isa = PBXBuildFile; fileRef = CE380A7A0B834E6100A1B779 /* CameraCursor.tiff */; };
 		CE38ECD30B8093B200A1B779 /* NSString_SKExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = CE38ECD20B8093B200A1B779 /* NSString_SKExtensions.m */; };
 		CE3A3D2C0B78C0A0006B64D3 /* SKPDFAnnotationNote.m in Sources */ = {isa = PBXBuildFile; fileRef = CE3A3D2B0B78C0A0006B64D3 /* SKPDFAnnotationNote.m */; };
 		CE3A41580B790C56006B64D3 /* BDSKDragImageView.m in Sources */ = {isa = PBXBuildFile; fileRef = CE3A41570B790C56006B64D3 /* BDSKDragImageView.m */; };
@@ -111,6 +112,7 @@
 		45B113BF0B329A7E00DE0660 /* LICENSE */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = LICENSE; sourceTree = "<group>"; };
 		8D15AC360486D014006FF6A4 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = Info.plist; sourceTree = "<group>"; };
 		8D15AC370486D014006FF6A4 /* Skim.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Skim.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		CE380A7A0B834E6100A1B779 /* CameraCursor.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; name = CameraCursor.tiff; path = Images/CameraCursor.tiff; sourceTree = "<group>"; };
 		CE38ECD10B8093B200A1B779 /* NSString_SKExtensions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NSString_SKExtensions.h; sourceTree = "<group>"; };
 		CE38ECD20B8093B200A1B779 /* NSString_SKExtensions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NSString_SKExtensions.m; sourceTree = "<group>"; };
 		CE3A3D2A0B78C0A0006B64D3 /* SKPDFAnnotationNote.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SKPDFAnnotationNote.h; sourceTree = "<group>"; };
@@ -349,6 +351,7 @@
 			children = (
 				CE5478B70B33456300F8AFB6 /* AnnotateToolAdorn.tiff */,
 				CE5478B80B33456300F8AFB6 /* BackAdorn.tiff */,
+				CE380A7A0B834E6100A1B779 /* CameraCursor.tiff */,
 				CE3A42330B7927D3006B64D3 /* CircleToolAdorn.tiff */,
 				CE5478B90B33456300F8AFB6 /* ForwardAdorn.tiff */,
 				CE5478E40B334CAC00F8AFB6 /* MagnifyToolAdorn.tiff */,
@@ -458,6 +461,7 @@
 				CE7468810B7F3C0000CBF969 /* zoomInCursor.tiff in Resources */,
 				CE7468820B7F3C0000CBF969 /* zoomOutCursor.tiff in Resources */,
 				CE7469180B7F40B700CBF969 /* Skim.icns in Resources */,
+				CE380A7B0B834E6200A1B779 /* CameraCursor.tiff in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
