@@ -684,25 +684,23 @@ static NSRect RectPlusScale (NSRect aRect, float scale)
     NSRect selectionRect = {startPoint, NSZeroSize};
     NSRect bounds;
     float minX, maxX, minY, maxY;
-    //NSRect visibleRect = [[self documentView] visibleRect];
-	BOOL keepGoing = YES;
 	
-	//[NSEvent startPeriodicEventsAfterDelay: 0 withPeriod: 0.2];
     [[self window] discardCachedImage];
     
     selecting = YES;
 	
-	while (keepGoing) {
-		theEvent = [[self window] nextEventMatchingMask: NSLeftMouseUpMask | NSLeftMouseDraggedMask];
-		switch ([theEvent type]) {
+	while (selecting) {
+		theEvent = [[self window] nextEventMatchingMask: NSLeftMouseUpMask | NSLeftMouseDraggedMask | NSFlagsChangedMask];
+        
+        [[self window] restoreCachedImage];
+        [[self window] flushWindow];
+		
+        switch ([theEvent type]) {
 			case NSLeftMouseDragged:
-                [[self window] restoreCachedImage];
-                [[self window] flushWindow];
-				
 				[[self documentView] autoscroll:theEvent];
-                
                 mouseLoc = [theEvent locationInWindow];
                 
+			case NSFlagsChanged:
                 currentPoint = [[self documentView] convertPoint:mouseLoc fromView:nil];
 				
                 selectionRect.size.width = abs(currentPoint.x - startPoint.x);
@@ -713,6 +711,15 @@ static NSRect RectPlusScale (NSRect aRect, float scale)
                     selectionRect.origin.x -= NSWidth(selectionRect);
                 if (currentPoint.y < startPoint.y)
                     selectionRect.origin.y -= NSHeight(selectionRect);
+                
+                if ([theEvent modifierFlags] & NSShiftKeyMask) {
+                    if (currentPoint.x > startPoint.x)
+                        selectionRect.origin.x -= NSWidth(selectionRect);
+                    if (currentPoint.y > startPoint.y)
+                        selectionRect.origin.y -= NSHeight(selectionRect);
+                    selectionRect.size.width *= 2.0;
+                    selectionRect.size.height *= 2.0;
+                }
                 
                 bounds = [[self documentView] bounds];
                 minX = fmax(NSMinX(selectionRect), NSMinX(bounds));
@@ -734,7 +741,7 @@ static NSRect RectPlusScale (NSRect aRect, float scale)
 				break;
 				
 			case NSLeftMouseUp:
-				keepGoing = NO;
+				selecting = NO;
 				break;
 				
 			default:
@@ -743,10 +750,6 @@ static NSRect RectPlusScale (NSRect aRect, float scale)
 		} // end of switch (event type)
 	} // end of mouse-tracking loop
     
-    selecting = NO;
-    
-    [[self window] restoreCachedImage];
-    [[self window] flushWindow];
     [[self window] discardCachedImage];
 	[self flagsChanged:theEvent];
     
