@@ -26,12 +26,18 @@
     [pdfView setScaleFactor:factor];
     
     PDFPage *page = [pdfDocument pageAtIndex:pageNum];
-    PDFDestination *dest = [[[PDFDestination alloc] initWithPage:page atPoint:locationInPageSpace] autorelease];
     NSRect frame = [[self window] frame];
-    frame.size.width = [pdfView rowSizeForPage:[dest page]].width;
+    frame.size.width = [pdfView rowSizeForPage:page].width;
     [[self window] setFrame:frame display:NO animate:NO];
     
     [pdfView setAutoScales:autoScales];
+    
+    NSRect rect = [[pdfView documentView] convertRect:[[pdfView documentView] visibleRect] toView:pdfView];
+    rect = [pdfView convertRect:rect toPage:page];
+    locationInPageSpace.x -= 0.5 * NSWidth(rect);
+    locationInPageSpace.y += 0.5 * NSHeight(rect);
+    
+    PDFDestination *dest = [[[PDFDestination alloc] initWithPage:page atPoint:locationInPageSpace] autorelease];
     
     [pdfView becomeFirstResponder];
     // Delayed to allow PDFView to finish its bookkeeping 
