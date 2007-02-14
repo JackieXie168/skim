@@ -49,6 +49,7 @@ typedef enum _SKAnnotationMode {
 	NSRect wasBounds;
 	NSPoint mouseDownLoc;
 	NSPoint clickDelta;
+	BOOL mouseDown;
 	BOOL dragging;
 	BOOL resizing;
 	BOOL mouseDownInAnnotation;
@@ -84,4 +85,9 @@ typedef enum _SKAnnotationMode {
 @interface PDFPage (SKExtensions) 
 - (NSImage *)image;
 - (NSImage *)thumbnailWithSize:(float)size shadowBlurRadius:(float)shadowBlurRadius shadowOffset:(NSSize)shadowOffset;
+@end
+
+
+@interface NSCursor (SKExtensions)
++ (id)cameraCursor;
 @end
