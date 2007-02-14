@@ -2067,6 +2067,24 @@ static NSString *SKDocumentToolbarSearchItemIdentifier = @"SKDocumentToolbarSear
 		[super keyDown:theEvent];
 }
 
+@end
+
+@implementation SKSubwindowsTableView
+
+- (void)setFrame:(NSRect)frameRect {
+    [super setFrame:frameRect];
+    [self noteHeightOfRowsWithIndexesChanged:[NSIndexSet indexSetWithIndexesInRange:NSMakeRange(0, [self numberOfRows])]];
+}
+
+- (void)setFrameSize:(NSSize)frameSize {
+    [super setFrameSize:frameSize];
+    [self noteHeightOfRowsWithIndexesChanged:[NSIndexSet indexSetWithIndexesInRange:NSMakeRange(0, [self numberOfRows])]];
+}
+
+@end
+
+@implementation SKThumbnailTableView
+
 - (void)setFrame:(NSRect)frameRect {
     [super setFrame:frameRect];
     [self noteHeightOfRowsWithIndexesChanged:[NSIndexSet indexSetWithIndexesInRange:NSMakeRange(0, [self numberOfRows])]];

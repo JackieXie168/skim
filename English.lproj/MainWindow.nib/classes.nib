@@ -47,7 +47,6 @@
                 toggleDisplayContinuous = id; 
                 toggleDisplayPageBreaks = id; 
                 toggleFullScreen = id; 
-                toggleNotesDrawer = id; 
                 togglePresentation = id; 
                 toggleZoomToFit = id; 
             }; 
@@ -82,12 +81,12 @@
                 searchBox = SKCollapsibleView; 
                 searchField = NSSearchField; 
                 spinner = NSProgressIndicator; 
-                splitView = NSSplitView; 
+                splitView = SKSplitView; 
                 subwindowsArrayController = NSArrayController; 
-                subwindowsTableView = NSTableView; 
+                subwindowsTableView = SKSubwindowsTableView; 
                 subwindowsView = NSView; 
                 thumbnailArrayController = NSArrayController; 
-                thumbnailTableView = NSTableView; 
+                thumbnailTableView = SKThumbnailTableView; 
                 thumbnailView = NSView; 
                 toolModeButton = NSSegmentedControl; 
             }; 
@@ -102,11 +101,17 @@
         {CLASS = SKPDFView; LANGUAGE = ObjC; SUPERCLASS = PDFView; }, 
         {CLASS = SKSplitView; LANGUAGE = ObjC; SUPERCLASS = NSSplitView; }, 
         {
+            CLASS = SKSubwindowsTableView; 
+            LANGUAGE = ObjC; 
+            SUPERCLASS = SKNotesTableView; 
+        }, 
+        {
             CLASS = SKThumbnail; 
             LANGUAGE = ObjC; 
             OUTLETS = {controller = id; }; 
             SUPERCLASS = NSObject; 
         }, 
+        {CLASS = SKThumbnailTableView; LANGUAGE = ObjC; SUPERCLASS = NSTableView; }, 
         {CLASS = SkimDocument; LANGUAGE = ObjC; SUPERCLASS = NSDocument; }
     ); 
     IBVersion = 1; 

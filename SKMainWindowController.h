@@ -34,6 +34,12 @@ typedef struct _SKPDFViewState {
 - (void)delete:(id)sender;
 @end
 
+@interface SKSubwindowsTableView : SKNotesTableView
+@end
+
+@interface SKThumbnailTableView : NSTableView
+@end
+
 @interface SKMainWindowController : NSWindowController {
     IBOutlet SKPDFView          *pdfView;
     IBOutlet NSBox              *pdfContentBox;
@@ -92,7 +98,7 @@ typedef struct _SKPDFViewState {
     
     IBOutlet NSView             *thumbnailView;
     IBOutlet NSArrayController  *thumbnailArrayController;
-    IBOutlet NSTableView        *thumbnailTableView;
+    IBOutlet SKThumbnailTableView *thumbnailTableView;
     NSMutableArray              *thumbnails;
     BOOL                        updatingThumbnailSelection;
     NSMutableIndexSet           *dirtyThumbnailIndexes;
@@ -100,7 +106,7 @@ typedef struct _SKPDFViewState {
     
     IBOutlet NSView             *subwindowsView;
     IBOutlet NSArrayController  *subwindowsArrayController;
-    IBOutlet NSTableView        *subwindowsTableView;
+    IBOutlet SKSubwindowsTableView *subwindowsTableView;
     NSMutableArray              *subwindows;
     
     float                       lastSidePaneWidth[2];
