@@ -82,9 +82,9 @@ static NSString *SKDocumentToolbarSearchItemIdentifier = @"SKDocumentToolbarSear
         searchResults = [[NSMutableArray alloc] init];
         thumbnails = [[NSMutableArray alloc] init];
         dirtyThumbnailIndexes = [[NSMutableIndexSet alloc] init];
-        subwindows = [[NSMutableArray alloc] init];
+        snapshots = [[NSMutableArray alloc] init];
         leftSidePaneState = SKOutlineSidePaneState;
-        rightSidePaneState = SKNotesSidePaneState;
+        rightSidePaneState = SKNoteSidePaneState;
     }
     
     return self;
@@ -103,12 +103,12 @@ static NSString *SKDocumentToolbarSearchItemIdentifier = @"SKDocumentToolbarSear
 	[searchResults release];
     [pdfOutline release];
 	[thumbnails release];
-	[subwindows release];
+	[snapshots release];
     [[outlineView enclosingScrollView] release];
     [[findTableView enclosingScrollView] release];
     [[thumbnailTableView enclosingScrollView] release];
-    [[notesTableView enclosingScrollView] release];
-    [[subwindowsTableView enclosingScrollView] release];
+    [[noteTableView enclosingScrollView] release];
+    [[snapshotTableView enclosingScrollView] release];
 	[leftSideWindow release];
 	[rightSideWindow release];
 	[fullScreenWindow release];
@@ -149,8 +149,8 @@ static NSString *SKDocumentToolbarSearchItemIdentifier = @"SKDocumentToolbarSear
     [[outlineView enclosingScrollView] retain];
     [[findTableView enclosingScrollView] retain];
     [[thumbnailTableView enclosingScrollView] retain];
-    [[notesTableView enclosingScrollView] retain];
-    [[subwindowsTableView enclosingScrollView] retain];
+    [[noteTableView enclosingScrollView] retain];
+    [[snapshotTableView enclosingScrollView] retain];
     
     NSRect frame = [leftSideButton frame];
     frame.size.height = SEGMENTED_CONTROL_HEIGHT;
@@ -161,16 +161,16 @@ static NSString *SKDocumentToolbarSearchItemIdentifier = @"SKDocumentToolbarSear
     frame = [rightSideButton frame];
     frame.size.height = SEGMENTED_CONTROL_HEIGHT;
     [rightSideButton setFrame:frame];
-    [[rightSideButton cell] setToolTip:NSLocalizedString(@"View Notes", @"Tool tip message") forSegment:SKNotesSidePaneState];
-    [[rightSideButton cell] setToolTip:NSLocalizedString(@"View Detail Windows", @"Tool tip message") forSegment:SKSubwindowsSidePaneState];
+    [[rightSideButton cell] setToolTip:NSLocalizedString(@"View Notes", @"Tool tip message") forSegment:SKNoteSidePaneState];
+    [[rightSideButton cell] setToolTip:NSLocalizedString(@"View Detail Windows", @"Tool tip message") forSegment:SKSnapshotSidePaneState];
     
     [searchBox setCollapseEdges:SKMaxXEdgeMask | SKMinYEdgeMask];
     [searchBox setMinSize:NSMakeSize(150.0, 42.0)];
     
     NSSortDescriptor *indexSortDescriptor = [[[NSSortDescriptor alloc] initWithKey:@"pageIndex" ascending:YES] autorelease];
     NSSortDescriptor *contentsSortDescriptor = [[[NSSortDescriptor alloc] initWithKey:@"contents" ascending:YES] autorelease];
-    [notesArrayController setSortDescriptors:[NSArray arrayWithObjects:indexSortDescriptor, contentsSortDescriptor, nil]];
-    [subwindowsArrayController setSortDescriptors:[NSArray arrayWithObjects:indexSortDescriptor, nil]];
+    [noteArrayController setSortDescriptors:[NSArray arrayWithObjects:indexSortDescriptor, contentsSortDescriptor, nil]];
+    [snapshotArrayController setSortDescriptors:[NSArray arrayWithObjects:indexSortDescriptor, nil]];
     
     [self setupToolbar];
     
@@ -331,10 +331,10 @@ static NSString *SKDocumentToolbarSearchItemIdentifier = @"SKDocumentToolbarSear
     if (rightSidePaneState != newRightSidePaneState) {
         rightSidePaneState = newRightSidePaneState;
         
-        if (rightSidePaneState == SKNotesSidePaneState)
-            [self displayNotesView];
-        else if (rightSidePaneState == SKSubwindowsSidePaneState)
-            [self displaySubwindowsView];
+        if (rightSidePaneState == SKNoteSidePaneState)
+            [self displayNoteView];
+        else if (rightSidePaneState == SKSnapshotSidePaneState)
+            [self displaySnapshotView];
     }
 }
 
@@ -362,28 +362,28 @@ static NSString *SKDocumentToolbarSearchItemIdentifier = @"SKDocumentToolbarSear
     [thumbnails removeObjectAtIndex:theIndex];
 }
 
-- (NSArray *)subwindows {
-    return subwindows;
+- (NSArray *)snapshots {
+    return snapshots;
 }
 
-- (void)setSubwindows:(NSArray *)newSubwindows {
-    [subwindows setArray:subwindows];
+- (void)setSnapshots:(NSArray *)newSnapshots {
+    [snapshots setArray:snapshots];
 }
 
-- (unsigned)countOfSubwindows {
-    return [subwindows count];
+- (unsigned)countOfSnapshots {
+    return [snapshots count];
 }
 
-- (id)objectInSubwindowsAtIndex:(unsigned)theIndex {
-    return [subwindows objectAtIndex:theIndex];
+- (id)objectInSnapshotsAtIndex:(unsigned)theIndex {
+    return [snapshots objectAtIndex:theIndex];
 }
 
-- (void)insertObject:(id)obj inSubwindowsAtIndex:(unsigned)theIndex {
-    [subwindows insertObject:obj atIndex:theIndex];
+- (void)insertObject:(id)obj inSnapshotsAtIndex:(unsigned)theIndex {
+    [snapshots insertObject:obj atIndex:theIndex];
 }
 
-- (void)removeObjectFromSubwindowsAtIndex:(unsigned)theIndex {
-    [subwindows removeObjectAtIndex:theIndex];
+- (void)removeObjectFromSnapshotsAtIndex:(unsigned)theIndex {
+    [snapshots removeObjectAtIndex:theIndex];
 }
 
 #pragma mark Actions
@@ -866,20 +866,20 @@ static NSString *SKDocumentToolbarSearchItemIdentifier = @"SKDocumentToolbarSear
     currentTableView = findTableView;
 }
 
-- (void)displayNotesView {
-    [self replaceTable:subwindowsTableView withTable:notesTableView animate:NO];
+- (void)displayNoteView {
+    [self replaceTable:snapshotTableView withTable:noteTableView animate:NO];
 }
 
-- (void)fadeInNotesView {
-    [self replaceTable:subwindowsTableView withTable:notesTableView animate:YES];
+- (void)fadeInNoteView {
+    [self replaceTable:snapshotTableView withTable:noteTableView animate:YES];
 }
 
-- (void)displaySubwindowsView {
-    [self replaceTable:notesTableView withTable:subwindowsTableView animate:NO];
+- (void)displaySnapshotView {
+    [self replaceTable:noteTableView withTable:snapshotTableView animate:NO];
 }
 
-- (void)fadeInSubwindowsView {
-    [self replaceTable:notesTableView withTable:subwindowsTableView animate:YES];
+- (void)fadeInSnapshotView {
+    [self replaceTable:noteTableView withTable:snapshotTableView animate:YES];
 }
 
 - (void)addAnnotationsForSelection:(PDFSelection *)sel {
@@ -981,9 +981,9 @@ static NSString *SKDocumentToolbarSearchItemIdentifier = @"SKDocumentToolbarSear
             if (row != -1)
                 [pdfView goToPage:[[pdfView document] pageAtIndex:row]];
         }
-    } else if ([[aNotification object] isEqual:notesTableView]) {
+    } else if ([[aNotification object] isEqual:noteTableView]) {
         if (updatingNoteSelection == NO) {
-            NSArray *selectedNotes = [notesArrayController selectedObjects];
+            NSArray *selectedNotes = [noteArrayController selectedObjects];
             if ([selectedNotes count])
                 [pdfView goToDestination:[[selectedNotes objectAtIndex:0] destination]];
         }
@@ -996,8 +996,8 @@ static NSString *SKDocumentToolbarSearchItemIdentifier = @"SKDocumentToolbarSear
 - (id)tableView:(NSTableView *)tv objectValueForTableColumn:(NSTableColumn *)tableColumn row:(int)row { return nil; }
 
 - (NSString *)tableView:(NSTableView *)tv toolTipForCell:(NSCell *)aCell rect:(NSRectPointer)rect tableColumn:(NSTableColumn *)tableColumn row:(int)row mouseLocation:(NSPoint)mouseLocation{
-    if ([tv isEqual:notesTableView])
-        return [[[notesArrayController arrangedObjects] objectAtIndex:row] contents];
+    if ([tv isEqual:noteTableView])
+        return [[[noteArrayController arrangedObjects] objectAtIndex:row] contents];
     return nil;
 }
 
@@ -1012,10 +1012,10 @@ static NSString *SKDocumentToolbarSearchItemIdentifier = @"SKDocumentToolbarSear
             return cellSize.height;
         else
             return MAX(1.0, MIN(cellSize.width, thumbSize.width) * thumbSize.height / thumbSize.width);
-    } else if (tableView == subwindowsTableView) {
+    } else if (tableView == snapshotTableView) {
         NSSize thumbSize = [[[[thumbnailArrayController arrangedObjects] objectAtIndex:row] image] size];
         NSSize cellSize = NSMakeSize([[[tableView tableColumns] objectAtIndex:0] width], 
-                                     MIN(thumbSize.height, [[NSUserDefaults standardUserDefaults] floatForKey:SKSubwindowThumbnailSizeKey]));
+                                     MIN(thumbSize.height, [[NSUserDefaults standardUserDefaults] floatForKey:SKSnapshotThumbnailSizeKey]));
         if (thumbSize.height < 1.0)
             return 1.0;
         else if (thumbSize.width / thumbSize.height < cellSize.width / cellSize.height)
@@ -1027,21 +1027,21 @@ static NSString *SKDocumentToolbarSearchItemIdentifier = @"SKDocumentToolbarSear
 }
 
 - (void)tableView:(NSTableView *)tv deleteRowsWithIndexes:(NSIndexSet *)rowIndexes {
-    if ([tv isEqual:notesTableView]) {
-        NSArray *notesToRemove = [[notesArrayController arrangedObjects] objectsAtIndexes:rowIndexes];
+    if ([tv isEqual:noteTableView]) {
+        NSArray *notesToRemove = [[noteArrayController arrangedObjects] objectsAtIndexes:rowIndexes];
         NSEnumerator *noteEnum = [notesToRemove objectEnumerator];
         PDFAnnotation *annotation;
         
         while (annotation = [noteEnum nextObject])
             [pdfView removeAnnotation:annotation];
-    } else if ([tv isEqual:subwindowsTableView]) {
-        [subwindowsArrayController removeObjectsAtArrangedObjectIndexes:rowIndexes];
+    } else if ([tv isEqual:snapshotTableView]) {
+        [snapshotArrayController removeObjectsAtArrangedObjectIndexes:rowIndexes];
     }
 }
 
 #pragma mark Sub- and note- windows
 
-- (void)showSubWindowAtPageNumber:(int)pageNum location:(NSPoint)locationInPageSpace{
+- (void)showSnapshotAtPageNumber:(int)pageNum location:(NSPoint)locationInPageSpace{
     
     SKSubWindowController *swc = [[SKSubWindowController alloc] init];
     
@@ -1057,11 +1057,11 @@ static NSString *SKDocumentToolbarSearchItemIdentifier = @"SKDocumentToolbarSear
     [swc showWindow:self];
 }
 
-- (void)miniaturizeSubWindowController:(SKSubWindowController *)controller {
+- (void)miniaturizeSnapshotController:(SKSubWindowController *)controller {
     if ([self isPresentation] == NO) {
         if ([self isFullScreen] == NO && NSWidth([rightSideContentBox frame]) <= 0.0)
             [self toggleRightSidePane];
-        [self setRightSidePaneState:SKSubwindowsSidePaneState];
+        [self setRightSidePaneState:SKSnapshotSidePaneState];
     }
     
     NSImage *image = [controller thumbnailWithSize:256.0 shadowBlurRadius:8.0 shadowOffset:NSMakeSize(0.0, -6.0)];
@@ -1070,19 +1070,19 @@ static NSString *SKDocumentToolbarSearchItemIdentifier = @"SKDocumentToolbarSear
     
     [thumbnail setController:controller];
     [thumbnail setPageIndex:[[page document] indexForPage:page]];
-    [subwindowsArrayController addObject:thumbnail];
-    [subwindowsArrayController rearrangeObjects];
+    [snapshotArrayController addObject:thumbnail];
+    [snapshotArrayController rearrangeObjects];
     [thumbnail release];
     
     if ([self isPresentation] == NO) {
         NSRect startRect = [controller rectForThumbnail];
-        NSRect endRect = [subwindowsTableView frameOfCellAtColumn:0 row:[[subwindowsArrayController arrangedObjects] indexOfObject:thumbnail]];
+        NSRect endRect = [snapshotTableView frameOfCellAtColumn:0 row:[[snapshotArrayController arrangedObjects] indexOfObject:thumbnail]];
         float thumbRatio = NSHeight(startRect) / NSWidth(startRect);
         float cellRatio = NSHeight(endRect) / NSWidth(endRect);
         
         startRect.origin = [[controller window] convertBaseToScreen:startRect.origin];
-        endRect = [subwindowsTableView convertRect:endRect toView:nil];
-        endRect.origin = [[subwindowsTableView window] convertBaseToScreen:endRect.origin];
+        endRect = [snapshotTableView convertRect:endRect toView:nil];
+        endRect.origin = [[snapshotTableView window] convertBaseToScreen:endRect.origin];
         if (thumbRatio > cellRatio)
             endRect = NSInsetRect(endRect, 0.5 * NSWidth(endRect) * (1.0 - cellRatio / thumbRatio), 0.0);
         else
@@ -1102,22 +1102,22 @@ static NSString *SKDocumentToolbarSearchItemIdentifier = @"SKDocumentToolbarSear
     }
 }
 
-- (void)deminiaturizeSubWindows:(NSArray *)subwindowsToShow {
+- (void)deminiaturizeSnapshots:(NSArray *)snapshotToShow {
     // there should only be a single note
-	SKThumbnail *thumbnail = [subwindowsToShow lastObject];
+	SKThumbnail *thumbnail = [snapshotToShow lastObject];
     SKSubWindowController *controller = [thumbnail controller];
     if (controller == nil) return;
     [[self document] addWindowController:controller];
     
     if ([self isPresentation] == NO) {
         NSRect endRect = [controller rectForThumbnail];
-        NSRect cellRect = [subwindowsTableView frameOfCellAtColumn:0 row:[[subwindowsArrayController arrangedObjects] indexOfObject:thumbnail]];
-        NSRect startRect = [subwindowsTableView convertRect:cellRect toView:nil];
+        NSRect cellRect = [snapshotTableView frameOfCellAtColumn:0 row:[[snapshotArrayController arrangedObjects] indexOfObject:thumbnail]];
+        NSRect startRect = [snapshotTableView convertRect:cellRect toView:nil];
         float thumbRatio = NSHeight(endRect) / NSWidth(endRect);
         float cellRatio = NSHeight(cellRect) / NSWidth(cellRect);
         
         endRect.origin = [[controller window] convertBaseToScreen:endRect.origin];
-        startRect.origin = [[subwindowsTableView window] convertBaseToScreen:startRect.origin];
+        startRect.origin = [[snapshotTableView window] convertBaseToScreen:startRect.origin];
         if (thumbRatio > cellRatio)
             startRect = NSInsetRect(startRect, 0.5 * NSWidth(startRect) * (1.0 - cellRatio / thumbRatio), 0.0);
         else
@@ -1127,7 +1127,7 @@ static NSString *SKDocumentToolbarSearchItemIdentifier = @"SKDocumentToolbarSear
         SKMiniaturizeWindow *miniaturizeWindow = [[SKMiniaturizeWindow alloc] initWithContentRect:startRect image:image];
         [miniaturizeWindow orderFront:self];
         [thumbnail setImage:nil];
-        [subwindowsTableView display];
+        [snapshotTableView display];
         [miniaturizeWindow setFrame:endRect display:YES animate:YES];
         [[controller window] orderFront:self];
         [miniaturizeWindow orderOut:self];
@@ -1135,7 +1135,7 @@ static NSString *SKDocumentToolbarSearchItemIdentifier = @"SKDocumentToolbarSear
     } else {
         [controller showWindow:self];
     }
-    [subwindowsArrayController removeObject:thumbnail];
+    [snapshotArrayController removeObject:thumbnail];
 }
 
 - (void)showNote:(PDFAnnotation *)annotation {
@@ -1188,7 +1188,7 @@ static NSString *SKDocumentToolbarSearchItemIdentifier = @"SKDocumentToolbarSear
 - (void)handleDidChangeActiveAnnotationNotification:(NSNotification *)notification {
     PDFAnnotation *annotation = [pdfView activeAnnotation];
     updatingNoteSelection = YES;
-    [notesArrayController setSelectedObjects:[NSArray arrayWithObjects:annotation, nil]];
+    [noteArrayController setSelectedObjects:[NSArray arrayWithObjects:annotation, nil]];
     updatingNoteSelection = NO;
     if (annotation)
         [[NSColorPanel sharedColorPanel] setColor:[annotation color]];
@@ -1421,11 +1421,11 @@ static NSString *SKDocumentToolbarSearchItemIdentifier = @"SKDocumentToolbarSear
 
 - (void)updateNoteSelection {
 
-	NSArray *notes = [notesArrayController arrangedObjects];
+	NSArray *notes = [noteArrayController arrangedObjects];
     PDFAnnotation *annotation;
     unsigned int pageIndex = [[pdfView document] indexForPage: [pdfView currentPage]];
 	int i, numRows = [notes count];
-    unsigned int selPageIndex = [notesTableView numberOfSelectedRows] ? [[notes objectAtIndex:[notesTableView selectedRow]] pageIndex] : NSNotFound;
+    unsigned int selPageIndex = [noteTableView numberOfSelectedRows] ? [[notes objectAtIndex:[noteTableView selectedRow]] pageIndex] : NSNotFound;
 	
     if (numRows == 0 || selPageIndex == pageIndex)
 		return;
@@ -1437,15 +1437,15 @@ static NSString *SKDocumentToolbarSearchItemIdentifier = @"SKDocumentToolbarSear
 		
 		if ([annotation pageIndex] == pageIndex) {
 			updatingNoteSelection = YES;
-			[notesTableView selectRow:i byExtendingSelection:NO];
+			[noteTableView selectRow:i byExtendingSelection:NO];
 			updatingNoteSelection = NO;
 			break;
 		} else if ([annotation pageIndex] > pageIndex) {
 			updatingNoteSelection = YES;
 			if (i < 1)				
-				[notesTableView selectRow:0 byExtendingSelection:NO];
+				[noteTableView selectRow:0 byExtendingSelection:NO];
 			else if ([[notes objectAtIndex:i - 1] pageIndex] != selPageIndex)
-				[notesTableView selectRow:i - 1 byExtendingSelection:NO];
+				[noteTableView selectRow:i - 1 byExtendingSelection:NO];
 			updatingNoteSelection = NO;
 			break;
 		}
@@ -2086,7 +2086,7 @@ static NSString *SKDocumentToolbarSearchItemIdentifier = @"SKDocumentToolbarSear
 @end
 
 
-@implementation SKNotesTableView
+@implementation SKNoteTableView
 
 - (void)delete:(id)sender {
     if ([[self delegate] respondsToSelector:@selector(tableView:deleteRowsWithIndexes:)]) {
@@ -2110,7 +2110,7 @@ static NSString *SKDocumentToolbarSearchItemIdentifier = @"SKDocumentToolbarSear
 
 @end
 
-@implementation SKSubwindowsTableView
+@implementation SKSnapshotTableView
 
 - (void)setFrame:(NSRect)frameRect {
     [super setFrame:frameRect];

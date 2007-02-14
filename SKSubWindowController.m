@@ -132,7 +132,7 @@ static NSString *SKSubWindowFrameAutosaveName = @"SKSubWindowFrameAutosaveName";
 }
 
 - (void)miniaturize:(id)sender {
-    [[[[self windowController] document] mainWindowController] miniaturizeSubWindowController:[self windowController]];
+    [[[[self windowController] document] mainWindowController] miniaturizeSnapshotController:[self windowController]];
 }
 
 @end

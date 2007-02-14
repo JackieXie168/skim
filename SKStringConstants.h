@@ -13,6 +13,6 @@ extern NSString *SKOpenFilesMaximizedKey;
 extern NSString *SKReopenLastOpenFilesKey;
 extern NSString *SKSearchHighlightColorKey;
 extern NSString *SKShouldHighlightSearchResultsKey;
-extern NSString *SKSubwindowThumbnailSizeKey;
+extern NSString *SKSnapshotThumbnailSizeKey;
 extern NSString *SKThumbnailSizeKey;
 

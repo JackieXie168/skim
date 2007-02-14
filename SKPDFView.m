@@ -439,7 +439,7 @@ static NSRect RectPlusScale (NSRect aRect, float scale)
     SKMainWindowController* controller = [[self window] windowController];
     PDFDestination *dest = [self destinationForEvent:theEvent isLink:NULL];
     
-    [controller showSubWindowAtPageNumber:[[self document] indexForPage:[dest page]] location:[dest point]];        
+    [controller showSnapshotAtPageNumber:[[self document] indexForPage:[dest page]] location:[dest point]];        
 }
 
 - (void)selectAnnotationWithEvent:(NSEvent *)theEvent {

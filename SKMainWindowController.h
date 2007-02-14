@@ -15,8 +15,8 @@ typedef enum _SKLeftSidePaneState {
 } SKLeftSidePaneState;
 
 typedef enum _SKRightSidePaneState {
-    SKNotesSidePaneState,
-    SKSubwindowsSidePaneState
+    SKNoteSidePaneState,
+    SKSnapshotSidePaneState
 } SKRightSidePaneState;
 
 typedef struct _SKPDFViewState {
@@ -30,11 +30,11 @@ typedef struct _SKPDFViewState {
 
 @class SKPDFView, PDFOutline, SKCollapsibleView, SKFullScreenWindow, SKNavigationWindow, SKSideWindow, SKSubWindowController, SKSplitView;
 
-@interface SKNotesTableView : NSTableView
+@interface SKNoteTableView : NSTableView
 - (void)delete:(id)sender;
 @end
 
-@interface SKSubwindowsTableView : SKNotesTableView
+@interface SKSnapshotTableView : SKNoteTableView
 @end
 
 @interface SKThumbnailTableView : NSTableView
@@ -56,8 +56,8 @@ typedef struct _SKPDFViewState {
     
     IBOutlet NSSearchField      *findField;
     
-    IBOutlet NSArrayController  *notesArrayController;
-    IBOutlet SKNotesTableView   *notesTableView;
+    IBOutlet NSArrayController  *noteArrayController;
+    IBOutlet SKNoteTableView   *noteTableView;
     BOOL                        updatingNoteSelection;
     
     IBOutlet NSSegmentedControl *backForwardButton;
@@ -90,13 +90,11 @@ typedef struct _SKPDFViewState {
     SKLeftSidePaneState         leftSidePaneState;
     SKRightSidePaneState        rightSidePaneState;
     
-    IBOutlet NSView             *findCustomView;
     IBOutlet NSTableView        *findTableView;
     NSMutableArray              *searchResults;
     IBOutlet NSArrayController  *findArrayController;
     IBOutlet NSProgressIndicator *spinner;
     
-    IBOutlet NSView             *thumbnailView;
     IBOutlet NSArrayController  *thumbnailArrayController;
     IBOutlet SKThumbnailTableView *thumbnailTableView;
     NSMutableArray              *thumbnails;
@@ -104,10 +102,9 @@ typedef struct _SKPDFViewState {
     NSMutableIndexSet           *dirtyThumbnailIndexes;
     NSTimer                     *thumbnailTimer;
     
-    IBOutlet NSView             *subwindowsView;
-    IBOutlet NSArrayController  *subwindowsArrayController;
-    IBOutlet SKSubwindowsTableView *subwindowsTableView;
-    NSMutableArray              *subwindows;
+    IBOutlet NSArrayController  *snapshotArrayController;
+    IBOutlet SKSnapshotTableView *snapshotTableView;
+    NSMutableArray              *snapshots;
     
     float                       lastLeftSidePaneWidth;
     float                       lastRightSidePaneWidth;
@@ -154,9 +151,9 @@ typedef struct _SKPDFViewState {
 - (IBAction)enterPresentation:(id)sender;
 - (IBAction)togglePresentation:(id)sender;
 
-- (void)showSubWindowAtPageNumber:(int)pageNum location:(NSPoint)locationInPageSpace;
-- (void)miniaturizeSubWindowController:(SKSubWindowController *)controller;
-- (void)deminiaturizeSubWindows:(NSArray *)subwindowsToShow;
+- (void)showSnapshotAtPageNumber:(int)pageNum location:(NSPoint)locationInPageSpace;
+- (void)miniaturizeSnapshotController:(SKSubWindowController *)controller;
+- (void)deminiaturizeSnapshots:(NSArray *)snapshotToShow;
 - (void)showNote:(PDFAnnotation *)annotation;
 
 - (PDFView *)pdfView;
@@ -183,10 +180,10 @@ typedef struct _SKPDFViewState {
 - (void)fadeInThumbnailView;
 - (void)displaySearchView;
 - (void)fadeInSearchView;
-- (void)displayNotesView;
-- (void)fadeInNotesView;
-- (void)displaySubwindowsView;
-- (void)fadeInSubwindowsView;
+- (void)displayNoteView;
+- (void)fadeInNoteView;
+- (void)displaySnapshotView;
+- (void)fadeInSnapshotView;
 
 - (void)removeTemporaryAnnotations;
 
@@ -240,7 +237,7 @@ typedef struct _SKPDFViewState {
 @end
 
 
-@interface NSObject (SKNotesTableViewDelegate)
+@interface NSObject (SKNoteTableViewDelegate)
 - (void)tableView:(NSTableView *)aTableView deleteRowsWithIndexes:(NSIndexSet *)rowIndexes;
 @end
 

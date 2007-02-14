@@ -60,14 +60,13 @@
                 currentTableView = NSTableView; 
                 displayBoxPopUpButton = NSPopUpButton; 
                 findArrayController = NSArrayController; 
-                findCustomView = NSView; 
                 findField = NSSearchField; 
                 findTableView = NSTableView; 
                 leftSideBox = NSBox; 
                 leftSideButton = NSSegmentedControl; 
                 leftSideContentBox = NSBox; 
-                notesArrayController = NSArrayController; 
-                notesTableView = SKNotesTableView; 
+                noteArrayController = NSArrayController; 
+                noteTableView = SKNoteTableView; 
                 outlineView = NSOutlineView; 
                 pageNumberField = NSTextField; 
                 pageNumberStepper = NSStepper; 
@@ -80,31 +79,25 @@
                 scaleField = NSTextField; 
                 searchBox = SKCollapsibleView; 
                 searchField = NSSearchField; 
+                snapshotArrayController = NSArrayController; 
+                snapshotTableView = SKSnapshotTableView; 
                 spinner = NSProgressIndicator; 
                 splitView = SKSplitView; 
-                subwindowsArrayController = NSArrayController; 
-                subwindowsTableView = SKSubwindowsTableView; 
-                subwindowsView = NSView; 
                 thumbnailArrayController = NSArrayController; 
                 thumbnailTableView = SKThumbnailTableView; 
-                thumbnailView = NSView; 
                 toolModeButton = NSSegmentedControl; 
             }; 
             SUPERCLASS = NSWindowController; 
         }, 
         {
             ACTIONS = {delete = id; }; 
-            CLASS = SKNotesTableView; 
+            CLASS = SKNoteTableView; 
             LANGUAGE = ObjC; 
             SUPERCLASS = NSTableView; 
         }, 
         {CLASS = SKPDFView; LANGUAGE = ObjC; SUPERCLASS = PDFView; }, 
+        {CLASS = SKSnapshotTableView; LANGUAGE = ObjC; SUPERCLASS = SKNoteTableView; }, 
         {CLASS = SKSplitView; LANGUAGE = ObjC; SUPERCLASS = NSSplitView; }, 
-        {
-            CLASS = SKSubwindowsTableView; 
-            LANGUAGE = ObjC; 
-            SUPERCLASS = SKNotesTableView; 
-        }, 
         {
             CLASS = SKThumbnail; 
             LANGUAGE = ObjC; 
