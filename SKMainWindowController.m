@@ -1013,7 +1013,7 @@ static NSString *SKDocumentToolbarSearchItemIdentifier = @"SKDocumentToolbarSear
         else
             return MAX(1.0, MIN(cellSize.width, thumbSize.width) * thumbSize.height / thumbSize.width);
     } else if (tableView == snapshotTableView) {
-        NSSize thumbSize = [[[[thumbnailArrayController arrangedObjects] objectAtIndex:row] image] size];
+        NSSize thumbSize = [[[[snapshotArrayController arrangedObjects] objectAtIndex:row] image] size];
         NSSize cellSize = NSMakeSize([[[tableView tableColumns] objectAtIndex:0] width], 
                                      MIN(thumbSize.height, [[NSUserDefaults standardUserDefaults] floatForKey:SKSnapshotThumbnailSizeKey]));
         if (thumbSize.height < 1.0)
