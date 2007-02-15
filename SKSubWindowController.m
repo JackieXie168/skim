@@ -34,12 +34,12 @@ static NSString *SKSubWindowFrameAutosaveName = @"SKSubWindowFrameAutosaveName";
     [[self window] makeFirstResponder:pdfView];
 }
 
-- (void)setPdfDocument:(PDFDocument *)pdfDocument scaleFactor:(int)factor autoScales:(BOOL)autoScales goToPageNumber:(int)pageNum rect:(NSRect)rect{
+- (void)setPdfDocument:(PDFDocument *)pdfDocument scaleFactor:(float)factor goToPageNumber:(int)pageNum rect:(NSRect)rect{
     [self window];
     
     [pdfView setDocument:pdfDocument];
     [pdfView setScaleFactor:factor];
-    [pdfView setAutoScales:autoScales];
+    [pdfView setAutoScales:NO];
     
     PDFPage *page = [pdfDocument pageAtIndex:pageNum];
     NSRect contentRect = [pdfView convertRect:rect fromPage:page];
