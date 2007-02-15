@@ -144,7 +144,6 @@ static NSString *SKDocumentToolbarSearchItemIdentifier = @"SKDocumentToolbarSear
         [pdfView setScaleFactor:0.01 * [[NSUserDefaults standardUserDefaults] floatForKey:SKDefaultDocumentScaleKey]];
     
     [[self window] makeFirstResponder:[pdfView documentView]];
-    [[pdfView documentView] setNextKeyView:leftSideButton];
     
     [[outlineView enclosingScrollView] retain];
     [[findTableView enclosingScrollView] retain];
