@@ -37,6 +37,7 @@
  */
 
 #import "BDSKApplication.h"
+#import "BDAlias.h"
 
 @interface NSWindow (BDSKApplication)
 // these are implemented in AppKit as private methods
@@ -45,6 +46,23 @@
 @end
 
 @implementation BDSKApplication
+
+- (IBAction)terminate:(id)sender {
+    NSArray *fileNames = [[[NSDocumentController sharedDocumentController] documents] valueForKeyPath:@"@distinctUnionOfObjects.fileName"];
+    NSMutableArray *array = [NSMutableArray arrayWithCapacity:[fileNames count]];
+    NSEnumerator *fEnum = [fileNames objectEnumerator];
+    NSString *fileName;
+    while(fileName = [fEnum nextObject]){
+        NSData *data = [[BDAlias aliasWithPath:fileName] aliasData];
+        if(data)
+            [array addObject:[NSDictionary dictionaryWithObjectsAndKeys:fileName, @"fileName", data, @"_BDAlias", nil]];
+        else
+            [array addObject:[NSDictionary dictionaryWithObjectsAndKeys:fileName, @"fileName", nil]];
+    }
+    [[OFPreferenceWrapper sharedPreferenceWrapper] setObject:array forKey:BDSKLastOpenFileNamesKey];
+    
+    [super terminate:sender];
+}
 
 // workaround for AppKit bug in target determination for undo in sheets, compare 
 // http://developer.apple.com/documentation/Cocoa/Conceptual/NSPersistentDocumentTutorial/08_CreationSheet/chapter_9_section_6.html 
