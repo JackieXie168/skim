@@ -299,16 +299,22 @@ static NSString *SKDocumentToolbarSearchItemIdentifier = @"SKDocumentToolbarSear
 - (NSDictionary *)currentSetup {
     NSMutableDictionary *setup = [NSMutableDictionary dictionary];
     
-    [setup setObject:NSStringFromRect([[self window] frame]) forKey:@"windowFrame"];
+    [setup setObject:NSStringFromRect([mainWindow frame]) forKey:@"windowFrame"];
     [setup setObject:[NSNumber numberWithFloat:NSWidth([leftSideContentBox frame])] forKey:@"leftSidePaneWidth"];
     [setup setObject:[NSNumber numberWithFloat:NSWidth([rightSideContentBox frame])] forKey:@"rightSidePaneWidth"];
     [setup setObject:[NSNumber numberWithUnsignedInt:[[pdfView document] indexForPage:[pdfView currentPage]]] forKey:@"pageIndex"];
-    [setup setObject:[NSNumber numberWithFloat:[pdfView scaleFactor]] forKey:@"scaleFactor"];
-    [setup setObject:[NSNumber numberWithBool:[pdfView autoScales]] forKey:@"autoScales"];
     [setup setObject:[NSNumber numberWithBool:[pdfView displaysPageBreaks]] forKey:@"displaysPageBreaks"];
     [setup setObject:[NSNumber numberWithBool:[pdfView displaysAsBook]] forKey:@"displaysAsBook"];
-    [setup setObject:[NSNumber numberWithInt:[pdfView displayMode]] forKey:@"displayMode"];
     [setup setObject:[NSNumber numberWithInt:[pdfView displayBox]] forKey:@"displayBox"];
+    if ([self isPresentation]) {
+        [setup setObject:[NSNumber numberWithFloat:savedState.scaleFactor] forKey:@"scaleFactor"];
+        [setup setObject:[NSNumber numberWithBool:savedState.autoScales] forKey:@"autoScales"];
+        [setup setObject:[NSNumber numberWithInt:savedState.displayMode] forKey:@"displayMode"];
+    } else {
+        [setup setObject:[NSNumber numberWithFloat:[pdfView scaleFactor]] forKey:@"scaleFactor"];
+        [setup setObject:[NSNumber numberWithBool:[pdfView autoScales]] forKey:@"autoScales"];
+        [setup setObject:[NSNumber numberWithInt:[pdfView displayMode]] forKey:@"displayMode"];
+    }
     
     return setup;
 }
