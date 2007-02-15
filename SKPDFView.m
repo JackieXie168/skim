@@ -936,32 +936,28 @@ static NSRect RectPlusScale (NSRect aRect, float scale)
     switch ([self annotationMode]) {
         case SKFreeTextAnnotationMode:
             newAnnotation = [[PDFAnnotationFreeText alloc] initWithBounds:bounds];
-            [newAnnotation setColor:[NSColor colorWithDeviceRed:1.0 green:1.0 blue:0.5 alpha:1.0]];
             break;
         case SKTextAnnotationMode:
             newAnnotation = [[PDFAnnotationText alloc] initWithBounds:bounds];
-            [newAnnotation setColor:[NSColor colorWithDeviceRed:1.0 green:1.0 blue:0.5 alpha:1.0]];
             break;
         case SKNoteAnnotationMode:
             newAnnotation = [[SKPDFAnnotationNote alloc] initWithBounds:bounds];
-            [newAnnotation setColor:[NSColor colorWithDeviceRed:1.0 green:1.0 blue:0.5 alpha:1.0]];
             break;
         case SKCircleAnnotationMode:
             newAnnotation = [[PDFAnnotationCircle alloc] initWithBounds:NSInsetRect(bounds, -5.0, -5.0)];
-            [newAnnotation setColor:[NSColor redColor]];
             [[newAnnotation border] setLineWidth:2.0];
             if (text == nil)
                 text = [[[page selectionForRect:bounds] string] stringByCollapsingWhitespaceAndNewlinesAndRemovingSurroundingWhitespaceAndNewlines];
             break;
         case SKSquareAnnotationMode:
             newAnnotation = [[PDFAnnotationSquare alloc] initWithBounds:bounds];
-            [newAnnotation setColor:[NSColor greenColor]];
             [[newAnnotation border] setLineWidth:2.0];
             if (text == nil)
                 text = [[[page selectionForRect:bounds] string] stringByCollapsingWhitespaceAndNewlinesAndRemovingSurroundingWhitespaceAndNewlines];
             break;
 	}
     [newAnnotation setContents:text ? text : NSLocalizedString(@"New note", @"Default text for new note")];
+    [newAnnotation setDefaultColor];
     
     [page addAnnotation:newAnnotation];
     

@@ -8,9 +8,29 @@
 
 #import "SKPDFAnnotationNote.h"
 #import "SKStringConstants.h"
+#import "OBUtilities.h"
 
 
 @implementation PDFAnnotation (SKExtensions)
+
+static IMP originalSetColor = NULL;
+
++ (void)load{
+    originalSetColor = OBReplaceMethodImplementationWithSelector(self, @selector(setColor:), @selector(replacementSetColor:));
+}
+
++ (NSColor *)color { return nil; }
+
++ (void)setColor:(NSColor *)newColor {}
+
+- (void)replacementSetColor:(NSColor *)newColor {
+    originalSetColor(self, _cmd, newColor);
+    [[self class] setColor:newColor];
+}
+
+- (void)setDefaultColor {
+    originalSetColor(self, _cmd, [[self class] color]);
+}
 
 - (id)initWithDictionary:(NSDictionary *)dict{
     [[self initWithBounds:NSZeroRect] release];
@@ -81,9 +101,110 @@
 
 @end
 
+#pragma mark -
+
+@interface PDFAnnotationCircle (SKExtensions)
+@end
+
+@implementation PDFAnnotationCircle (SKExtensions)
+
+static NSColor *circleColor = nil;
+
++ (NSColor *)color {
+    if (circleColor == nil)
+        circleColor = [[NSColor redColor] retain];
+    return circleColor;
+}
+
++ (void)setColor:(NSColor *)newColor {
+    if (circleColor != newColor) {
+        [circleColor release];
+        circleColor = [newColor retain];
+    }
+}
+
+@end
+
+#pragma mark -
+
+@interface PDFAnnotationSquare (SKExtensions)
+@end
+
+@implementation PDFAnnotationSquare (SKExtensions)
+
+static NSColor *squareColor = nil;
+
++ (NSColor *)color {
+    if (squareColor == nil)
+        squareColor = [[NSColor greenColor] retain];
+    return squareColor;
+}
+
++ (void)setColor:(NSColor *)newColor {
+    if (squareColor != newColor) {
+        [squareColor release];
+        squareColor = [newColor retain];
+    }
+}
+
+@end
+
+#pragma mark -
+
+@interface PDFAnnotationText (SKExtensions)
+@end
+
+@implementation PDFAnnotationText (SKExtensions)
+
+static NSColor *textColor = nil;
+
++ (NSColor *)color {
+    if (textColor == nil)
+        textColor = [[NSColor colorWithDeviceRed:1.0 green:1.0 blue:0.5 alpha:1.0] retain];
+    return textColor;
+}
+
++ (void)setColor:(NSColor *)newColor {
+    if (textColor != newColor) {
+        [textColor release];
+        textColor = [newColor retain];
+    }
+}
+
+@end
+
+#pragma mark -
+
+@interface PDFAnnotationFreeText (SKExtensions)
+@end
+
+@implementation PDFAnnotationFreeText (SKExtensions)
+
+static NSColor *freeTextColor = nil;
+
++ (NSColor *)color {
+    if (freeTextColor == nil)
+        freeTextColor = [[NSColor colorWithDeviceRed:1.0 green:1.0 blue:0.5 alpha:1.0] retain];
+    return freeTextColor;
+}
+
++ (void)setColor:(NSColor *)newColor {
+    if (freeTextColor != newColor) {
+        [freeTextColor release];
+        freeTextColor = [newColor retain];
+    }
+}
+
+@end
+
+#pragma mark -
 
 // useful for highlighting things; isTemporaryAnnotation is so we know to remove it
 @implementation SKPDFAnnotationTemporary
+
++ (NSColor *)color {
+    return [NSColor redColor];
+}
 
 - (BOOL)isTemporaryAnnotation { return YES; }
 
@@ -91,8 +212,24 @@
 
 @end
 
+#pragma mark -
 
 @implementation SKPDFAnnotationNote
+
+static NSColor *noteColor = nil;
+
++ (NSColor *)color {
+    if (noteColor == nil)
+        noteColor = [[NSColor colorWithDeviceRed:1.0 green:1.0 blue:0.5 alpha:1.0] retain];
+    return noteColor;
+}
+
++ (void)setColor:(NSColor *)newColor {
+    if (noteColor != newColor) {
+        [noteColor release];
+        noteColor = [newColor retain];
+    }
+}
 
 - (void)dealloc {
     [text release];

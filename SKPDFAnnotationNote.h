@@ -12,6 +12,11 @@
 
 @interface PDFAnnotation (SKExtensions)
 
++ (NSColor *)color;
++ (void)setColor:(NSColor *)newColor;
+
+- (void)setDefaultColor;
+
 - (id)initWithDictionary:(NSDictionary *)dict;
 
 - (NSDictionary *)dictionaryValue;
