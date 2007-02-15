@@ -27,6 +27,8 @@
 		8D15AC340486D014006FF6A4 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1058C7A7FEA54F5311CA2CBB /* Cocoa.framework */; };
 		CE0463CB0B84D24300C11E4A /* SKApplication.m in Sources */ = {isa = PBXBuildFile; fileRef = CE0463CA0B84D24300C11E4A /* SKApplication.m */; };
 		CE0464A20B84E3E400C11E4A /* OBUtilities.m in Sources */ = {isa = PBXBuildFile; fileRef = CE0464A10B84E3E400C11E4A /* OBUtilities.m */; };
+		CE0465070B850D7C00C11E4A /* ToolbarLeftPane.tiff in Resources */ = {isa = PBXBuildFile; fileRef = CE0465050B850D7C00C11E4A /* ToolbarLeftPane.tiff */; };
+		CE0465080B850D7C00C11E4A /* ToolbarRightPane.tiff in Resources */ = {isa = PBXBuildFile; fileRef = CE0465060B850D7C00C11E4A /* ToolbarRightPane.tiff */; };
 		CE380A7B0B834E6200A1B779 /* CameraCursor.tiff in Resources */ = {isa = PBXBuildFile; fileRef = CE380A7A0B834E6100A1B779 /* CameraCursor.tiff */; };
 		CE380C620B837B6100A1B779 /* NoteViewAdorn.tiff in Resources */ = {isa = PBXBuildFile; fileRef = CE380C600B837B6100A1B779 /* NoteViewAdorn.tiff */; };
 		CE380C630B837B6100A1B779 /* SnapshotViewAdorn.tiff in Resources */ = {isa = PBXBuildFile; fileRef = CE380C610B837B6100A1B779 /* SnapshotViewAdorn.tiff */; };
@@ -120,6 +122,8 @@
 		CE0463CA0B84D24300C11E4A /* SKApplication.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SKApplication.m; sourceTree = "<group>"; };
 		CE0464A00B84E3E400C11E4A /* OBUtilities.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OBUtilities.h; sourceTree = "<group>"; };
 		CE0464A10B84E3E400C11E4A /* OBUtilities.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OBUtilities.m; sourceTree = "<group>"; };
+		CE0465050B850D7C00C11E4A /* ToolbarLeftPane.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; name = ToolbarLeftPane.tiff; path = Images/ToolbarLeftPane.tiff; sourceTree = "<group>"; };
+		CE0465060B850D7C00C11E4A /* ToolbarRightPane.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; name = ToolbarRightPane.tiff; path = Images/ToolbarRightPane.tiff; sourceTree = "<group>"; };
 		CE380A7A0B834E6100A1B779 /* CameraCursor.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; name = CameraCursor.tiff; path = Images/CameraCursor.tiff; sourceTree = "<group>"; };
 		CE380C600B837B6100A1B779 /* NoteViewAdorn.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; name = NoteViewAdorn.tiff; path = Images/NoteViewAdorn.tiff; sourceTree = "<group>"; };
 		CE380C610B837B6100A1B779 /* SnapshotViewAdorn.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; name = SnapshotViewAdorn.tiff; path = Images/SnapshotViewAdorn.tiff; sourceTree = "<group>"; };
@@ -380,11 +384,13 @@
 				CE4EB8230B7B96D00091F228 /* ThumbnailViewAdorn.tiff */,
 				CE5478BA0B33456300F8AFB6 /* ToolbarFullScreen.tiff */,
 				CE7467330B7F2ED700CBF969 /* ToolbarInfo.tiff */,
+				CE0465050B850D7C00C11E4A /* ToolbarLeftPane.tiff */,
 				CE5478BD0B33456300F8AFB6 /* ToolbarNext.tiff */,
 				CE3A4BA40B7A4D0C006B64D3 /* ToolbarNote.tiff */,
 				CE5478BE0B33456300F8AFB6 /* ToolbarNotesDrawer.tiff */,
 				CE3A4DE20B7A7FC7006B64D3 /* ToolbarPresentation.tiff */,
 				CE5478C00B33456300F8AFB6 /* ToolbarPrevious.tiff */,
+				CE0465060B850D7C00C11E4A /* ToolbarRightPane.tiff */,
 				CE5478C10B33456300F8AFB6 /* ToolbarRotateLeft.tiff */,
 				CE5478C20B33456300F8AFB6 /* ToolbarRotateRight.tiff */,
 				CE5478C40B33456300F8AFB6 /* ToolbarZoomActual.tiff */,
@@ -480,6 +486,8 @@
 				CE380A7B0B834E6200A1B779 /* CameraCursor.tiff in Resources */,
 				CE380C620B837B6100A1B779 /* NoteViewAdorn.tiff in Resources */,
 				CE380C630B837B6100A1B779 /* SnapshotViewAdorn.tiff in Resources */,
+				CE0465070B850D7C00C11E4A /* ToolbarLeftPane.tiff in Resources */,
+				CE0465080B850D7C00C11E4A /* ToolbarRightPane.tiff in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -52,6 +52,8 @@ static NSString *SKDocumentToolbarInfoItemIdentifier = @"SKDocumentToolbarInfoIt
 static NSString *SKDocumentToolbarToolModeItemIdentifier = @"SKDocumentToolbarToolModeItemIdentifier";
 static NSString *SKDocumentToolbarAnnotationModeItemIdentifier = @"SKDocumentToolbarAnnotationModeItemIdentifier";
 static NSString *SKDocumentToolbarDisplayBoxItemIdentifier = @"SKDocumentToolbarDisplayBoxItemIdentifier";
+static NSString *SKDocumentToolbarContentsPaneItemIdentifier = @"SKDocumentToolbarContentsPaneItemIdentifier";
+static NSString *SKDocumentToolbarNotesPaneItemIdentifier = @"SKDocumentToolbarNotesPaneItemIdentifier";
 static NSString *SKDocumentToolbarSearchItemIdentifier = @"SKDocumentToolbarSearchItemIdentifier";
 
 #define TOOLBAR_SEARCHFIELD_MIN_SIZE NSMakeSize(110.0, 22.0)
@@ -1781,6 +1783,26 @@ static NSString *SKDocumentToolbarSearchItemIdentifier = @"SKDocumentToolbarSear
     [toolbarItems setObject:item forKey:SKDocumentToolbarInfoItemIdentifier];
     [item release];
     
+    item = [[NSToolbarItem alloc] initWithItemIdentifier:SKDocumentToolbarContentsPaneItemIdentifier];
+    [item setLabel:NSLocalizedString(@"Contenst Pane", @"Toolbar item label")];
+    [item setPaletteLabel:NSLocalizedString(@"Contents Pane", @"Toolbar item label")];
+    [item setToolTip:NSLocalizedString(@"Toogle Contents Pan", @"Tool tip message")];
+    [item setImage:[NSImage imageNamed:@"ToolbarLeftPane"]];
+    [item setTarget:self];
+    [item setAction:@selector(toggleLeftSidePane:)];
+    [toolbarItems setObject:item forKey:SKDocumentToolbarContentsPaneItemIdentifier];
+    [item release];
+    
+    item = [[NSToolbarItem alloc] initWithItemIdentifier:SKDocumentToolbarNotesPaneItemIdentifier];
+    [item setLabel:NSLocalizedString(@"Notes Pane", @"Toolbar item label")];
+    [item setPaletteLabel:NSLocalizedString(@"Notes Pane", @"Toolbar item label")];
+    [item setToolTip:NSLocalizedString(@"Toogle Notes Pan", @"Tool tip message")];
+    [item setImage:[NSImage imageNamed:@"ToolbarRightPane"]];
+    [item setTarget:self];
+    [item setAction:@selector(toggleRightSidePane:)];
+    [toolbarItems setObject:item forKey:SKDocumentToolbarNotesPaneItemIdentifier];
+    [item release];
+    
     // Attach the toolbar to the window
     [[self window] setToolbar:toolbar];
 }
@@ -1823,6 +1845,8 @@ static NSString *SKDocumentToolbarSearchItemIdentifier = @"SKDocumentToolbarSear
         SKDocumentToolbarPresentationItemIdentifier, 
         SKDocumentToolbarNewNoteItemIdentifier, 
         SKDocumentToolbarInfoItemIdentifier, 
+        SKDocumentToolbarContentsPaneItemIdentifier, 
+        SKDocumentToolbarNotesPaneItemIdentifier, 
         SKDocumentToolbarToolModeItemIdentifier, 
         SKDocumentToolbarAnnotationModeItemIdentifier, 
         SKDocumentToolbarDisplayBoxItemIdentifier, 
