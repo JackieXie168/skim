@@ -77,6 +77,11 @@ static NSRect RectPlusScale (NSRect aRect, float scale)
 }
 
 
+@interface PDFView (PDFViewPrivate)
+- (void)pdfViewControlHit:(id)sender;
+- (void)removeAnnotationControl;
+@end
+
 @interface SKPDFView (Private)
 
 - (NSRect)resizeThumbForRect:(NSRect) rect rotation:(int)rotation;
@@ -1057,6 +1062,16 @@ static NSRect RectPlusScale (NSRect aRect, float scale)
         }
         [[editAnnotation page] removeAnnotation:editAnnotation];
         editAnnotation = nil;
+    }
+}
+
+- (void)pdfViewControlHit:(id)sender{
+    if ([PDFView instancesRespondToSelector:@selector(pdfViewControlHit:)] && 
+        [PDFView instancesRespondToSelector:@selector(removeAnnotationControl)]) {
+        [super pdfViewControlHit:sender];
+        [self removeAnnotationControl];
+        if ([sender isKindOfClass:[NSTextField class]])
+            [self endAnnotationEdit:self];
     }
 }
 
