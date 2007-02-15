@@ -21,6 +21,8 @@
 // maximum length of xattr value recommended by Apple
 #define MAX_XATTR_LENGTH 4096
 
+NSString *SKDocumentControllerWillCloseDocumentsNotification = @"SKDocumentControllerWillCloseDocumentsNotification";
+
 NSString *SKDocumentErrorDomain = @"SKDocumentErrorDomain";
 
 // See CFBundleTypeName in Info.plist
@@ -403,6 +405,8 @@ static NSString *SKPostScriptDocumentType = @"PostScript document";
             [array addObject:[NSDictionary dictionaryWithObjectsAndKeys:fileName, @"fileName", nil]];
     }
     [[NSUserDefaults standardUserDefaults] setObject:array forKey:SKLastOpenFileNamesKey];
+    
+    [[NSNotificationCenter defaultCenter] postNotificationName:SKDocumentControllerWillCloseDocumentsNotification object:self];
     
     [super closeAllDocumentsWithDelegate:delegate didCloseAllSelector:didCloseAllSelector contextInfo:contextInfo];
 }

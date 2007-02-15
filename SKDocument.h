@@ -10,6 +10,8 @@
 
 #import <Cocoa/Cocoa.h>
 
+extern NSString *SKDocumentControllerWillCloseDocumentsNotification;
+
 extern NSString *SKDocumentErrorDomain;
 
 @class PDFDocument, SKMainWindowController;
