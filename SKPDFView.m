@@ -1065,13 +1065,14 @@ static NSRect RectPlusScale (NSRect aRect, float scale)
     }
 }
 
+// this is the action for the textfield for the text widget. Override to remove it after an edit. 
 - (void)pdfViewControlHit:(id)sender{
     if ([PDFView instancesRespondToSelector:@selector(pdfViewControlHit:)] && 
-        [PDFView instancesRespondToSelector:@selector(removeAnnotationControl)]) {
+        [PDFView instancesRespondToSelector:@selector(removeAnnotationControl)] &&
+        [sender isKindOfClass:[NSTextField class]]) {
         [super pdfViewControlHit:sender];
-        [self removeAnnotationControl];
-        if ([sender isKindOfClass:[NSTextField class]])
-            [self endAnnotationEdit:self];
+        [self removeAnnotationControl]; // this removes the textfield from the pdfview, need to do this before we remove the text widget
+        [self endAnnotationEdit:self];
     }
 }
 
