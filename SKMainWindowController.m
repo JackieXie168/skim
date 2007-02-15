@@ -249,7 +249,7 @@ static NSString *SKDocumentToolbarSearchItemIdentifier = @"SKDocumentToolbarSear
     PDFDocument *pdfDoc = [pdfView document];
     
     // remove the current anotations
-    [pdfView endAnnotationEdit];
+    [pdfView endAnnotationEdit:self];
     while (annotation = [e nextObject]) {
         [pdfView setNeedsDisplayForAnnotation:annotation];
         [[annotation page] removeAnnotation:annotation];
@@ -408,7 +408,7 @@ static NSString *SKDocumentToolbarSearchItemIdentifier = @"SKDocumentToolbarSear
 }
 
 - (IBAction)createNewNote:(id)sender{
-    [pdfView addAnnotationFromSelection:[pdfView currentSelection]];
+    [pdfView addAnnotation:sender];
 }
 
 - (void)selectNotes:(NSArray *)notesToShow{

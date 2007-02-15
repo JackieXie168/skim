@@ -172,7 +172,7 @@ static NSRect RectPlusScale (NSRect aRect, float scale)
     if (toolMode != newToolMode) {
         if (toolMode == SKTextToolMode && activeAnnotation) {
             if (editAnnotation)
-                [self endAnnotationEdit];
+                [self endAnnotationEdit:self];
             [self setActiveAnnotation:nil];
         }
     
@@ -227,7 +227,7 @@ static NSRect RectPlusScale (NSRect aRect, float scale)
 - (void)delete:(id)sender
 {
 	if (activeAnnotation != nil)
-        [self removeAnnotation:activeAnnotation];
+        [self removeActiveAnnotation:self];
     else
         NSBeep();
 }
@@ -248,14 +248,14 @@ static NSRect RectPlusScale (NSRect aRect, float scale)
 	} else if ((eventChar == NSDeleteCharacter) || (eventChar == NSDeleteFunctionKey)) {
 		[self delete:self];
     } else if (isPresentation == NO && [self toolMode] == SKTextToolMode && (eventChar == NSEnterCharacter || (eventChar == NSFormFeedCharacter) || (eventChar == NSNewlineCharacter) || (eventChar == NSCarriageReturnCharacter))){
-        [self addAnnotationFromSelection:[self currentSelection]];
+        [self addAnnotation:self];
     } else if (isPresentation == NO && [self toolMode] == SKTextToolMode && (eventChar == NSTabCharacter) && (modifiers & NSAlternateKeyMask)){
         NSArray *notes = [(SKMainWindowController *)[[self window] windowController] orderedNotes];
         if ([notes count] == 0)
             return;
         int index = 0;
         if (activeAnnotation) {
-            [self endAnnotationEdit];
+            [self endAnnotationEdit:self];
             index = [notes indexOfObject:activeAnnotation];
             if (modifiers & NSShiftKeyMask)
                 index--;
@@ -511,7 +511,7 @@ static NSRect RectPlusScale (NSRect aRect, float scale)
     
     if (changed) {
         if (editAnnotation)
-            [self endAnnotationEdit];
+            [self endAnnotationEdit:self];
         
         // Assign.
         wasActiveAnnotation = activeAnnotation;
@@ -895,14 +895,22 @@ static NSRect RectPlusScale (NSRect aRect, float scale)
 	[self flagsChanged:theEvent]; // update cursor
 }
 
-- (PDFAnnotation *)addAnnotationFromSelection:(PDFSelection *)selection{
+- (void)addAnnotation:(id)sender{
 	PDFAnnotation *newAnnotation = nil;
 	PDFPage *page;
 	NSRect bounds;
+    PDFSelection *selection = [self currentSelection];
     NSString *text = [[selection string] stringByCollapsingWhitespaceAndNewlinesAndRemovingSurroundingWhitespaceAndNewlines];
     
 	// Determine bounds to use for new text annotation.
-	if (selection != nil) {
+	if ([sender respondsToSelector:@selector(representedObject)] && [[sender representedObject] respondsToSelector:@selector(pointValue)]) {
+        NSPoint point = [self convertPoint:[[sender representedObject] pointValue] fromView:nil];
+		NSSize defaultSize = ([self annotationMode] == SKTextAnnotationMode || [self annotationMode] == SKNoteAnnotationMode) ? NSMakeSize(16.0, 16.0) : NSMakeSize(128.0, 64.0);
+        
+        page = [self pageForPoint:point nearest:YES];
+        point = [self convertPoint:point toPage:page];
+        bounds = NSMakeRect(point.x - 0.5 * defaultSize.width, point.y - 0.5 * defaultSize.height, defaultSize.width, defaultSize.height);
+	} else if (selection != nil) {
 		// Get bounds (page space) for selection (first page in case selection spans multiple pages).
 		page = [[selection pages] objectAtIndex: 0];
 		bounds = [selection boundsForPage: page];
@@ -955,8 +963,11 @@ static NSRect RectPlusScale (NSRect aRect, float scale)
         userInfo:[NSDictionary dictionaryWithObjectsAndKeys:newAnnotation, @"annotation", page, @"page", nil]];
 
     [self setActiveAnnotation:newAnnotation];
-    
-    return newAnnotation;
+}
+
+- (void)removeActiveAnnotation:(id)sender{
+    if (activeAnnotation)
+        [self removeAnnotation:activeAnnotation];
 }
 
 - (void)removeAnnotation:(PDFAnnotation *)annotation{
@@ -964,7 +975,7 @@ static NSRect RectPlusScale (NSRect aRect, float scale)
     PDFPage *page = [wasAnnotation page];
     
     if (editAnnotation)
-        [self endAnnotationEdit];
+        [self endAnnotationEdit:self];
 	if (activeAnnotation == annotation)
 		[self setActiveAnnotation:nil];
     [self setNeedsDisplayForAnnotation:wasAnnotation];
@@ -974,11 +985,11 @@ static NSRect RectPlusScale (NSRect aRect, float scale)
     [wasAnnotation release];
 }
 
-- (void)editActiveAnnotation {
+- (void)editActiveAnnotation:(id)sender {
     if (nil == activeAnnotation)
         return;
     
-    [self endAnnotationEdit];
+    [self endAnnotationEdit:self];
     
     if ([[activeAnnotation type] isEqualToString:@"Note"]) {
         
@@ -1016,7 +1027,7 @@ static NSRect RectPlusScale (NSRect aRect, float scale)
     
 }
 
-- (void)endAnnotationEdit {
+- (void)endAnnotationEdit:(id)sender {
     if (editAnnotation) {
         if ([[editAnnotation stringValue] isEqualToString:[activeAnnotation contents]] == NO) {
             [activeAnnotation setContents:[editAnnotation stringValue]];
@@ -1070,6 +1081,22 @@ static NSRect RectPlusScale (NSRect aRect, float scale)
     item = [menu addItemWithTitle:NSLocalizedString(@"Annotations", @"Menu item title") action:NULL keyEquivalent:@""];
     [item setSubmenu:submenu];
     [submenu release];
+
+    [menu addItem:[NSMenuItem separatorItem]];
+    
+    item = [menu addItemWithTitle:NSLocalizedString(@"New Note", @"Menu item title") action:@selector(addAnnotation:) keyEquivalent:@""];
+    [item setRepresentedObject:[NSValue valueWithPoint:[theEvent locationInWindow]]];
+    [item setTarget:self];
+    
+    if (activeAnnotation) {
+        item = [menu addItemWithTitle:NSLocalizedString(@"Remove Current Note", @"Menu item title") action:@selector(removeActiveAnnotation:) keyEquivalent:@""];
+        [item setTarget:self];
+        
+        if (editAnnotation == nil) {
+            item = [menu addItemWithTitle:NSLocalizedString(@"Edit Current Note", @"Menu item title") action:@selector(editActiveAnnotation:) keyEquivalent:@""];
+            [item setTarget:self];
+        }
+    }
     
     return menu;
 }
