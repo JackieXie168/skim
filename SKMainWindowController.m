@@ -1142,9 +1142,8 @@ static NSString *SKDocumentToolbarSearchItemIdentifier = @"SKDocumentToolbarSear
     PDFDocument *doc = [pdfView document];
     [swc setPdfDocument:doc
             scaleFactor:[pdfView scaleFactor]
-             autoScales:[pdfView autoScales]
          goToPageNumber:pageNum
-                  rect:rect];
+                   rect:rect];
     
     [[self document] addWindowController:swc];
     [swc release];
