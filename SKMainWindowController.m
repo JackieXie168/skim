@@ -386,6 +386,10 @@ static NSString *SKDocumentToolbarSearchItemIdentifier = @"SKDocumentToolbarSear
     [snapshots removeObjectAtIndex:theIndex];
 }
 
+- (NSArray *)orderedNotes {
+    return [noteArrayController arrangedObjects];
+}
+
 #pragma mark Actions
 
 - (IBAction)pickColor:(id)sender{
@@ -409,7 +413,9 @@ static NSString *SKDocumentToolbarSearchItemIdentifier = @"SKDocumentToolbarSear
 
 - (void)selectNotes:(NSArray *)notesToShow{
     // there should only be a single note
-	[pdfView setActiveAnnotation:[notesToShow lastObject]];
+    PDFAnnotation *annotation = [notesToShow lastObject];
+    [pdfView goToDestination:[annotation destination]];
+	[pdfView setActiveAnnotation:annotation];
 }
 
 - (IBAction)displaySinglePages:(id)sender {
@@ -982,6 +988,8 @@ static NSString *SKDocumentToolbarSearchItemIdentifier = @"SKDocumentToolbarSear
                 [pdfView goToPage:[[pdfView document] pageAtIndex:row]];
         }
     } else if ([[aNotification object] isEqual:noteTableView]) {
+        // Disabkle this for now. Selection change does not always come from a selection by the user, e.g. also after an annotation delete 
+        return;
         if (updatingNoteSelection == NO) {
             NSArray *selectedNotes = [noteArrayController selectedObjects];
             if ([selectedNotes count])
