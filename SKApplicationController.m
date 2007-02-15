@@ -11,6 +11,7 @@
 #import "SKApplicationController.h"
 #import "SKPreferenceController.h"
 #import "SKStringConstants.h"
+#import "SKDocument.h"
 #import "BDAlias.h"
 #import <Quartz/Quartz.h>
 
@@ -54,12 +55,17 @@
         NSEnumerator *fileEnum = [files objectEnumerator];
         NSDictionary *dict;
         NSURL *fileURL;
+        SKDocument *document;
+        
         while (dict = [fileEnum nextObject]){ 
             fileURL = [[BDAlias aliasWithData:[dict objectForKey:@"_BDAlias"]] fileURL];
             if(fileURL == nil)
                 fileURL = [NSURL fileURLWithPath:[dict objectForKey:@"fileName"]];
-            if(fileURL)
-                [[NSDocumentController sharedDocumentController] openDocumentWithContentsOfURL:fileURL display:YES error:NULL];
+            if(fileURL && (document = [[NSDocumentController sharedDocumentController] openDocumentWithContentsOfURL:fileURL display:NO error:NULL])) {
+                [document setInitialDocumentSetup:dict];
+                [document makeWindowControllers];
+                [document showWindows];
+            }
         }
     }
     

@@ -25,6 +25,7 @@
 		8D15AC310486D014006FF6A4 /* SKDocument.m in Sources */ = {isa = PBXBuildFile; fileRef = 2A37F4ACFDCFA73011CA2CEA /* SKDocument.m */; settings = {ATTRIBUTES = (); }; };
 		8D15AC320486D014006FF6A4 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 2A37F4B0FDCFA73011CA2CEA /* main.m */; settings = {ATTRIBUTES = (); }; };
 		8D15AC340486D014006FF6A4 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1058C7A7FEA54F5311CA2CBB /* Cocoa.framework */; };
+		CE0463CB0B84D24300C11E4A /* SKApplication.m in Sources */ = {isa = PBXBuildFile; fileRef = CE0463CA0B84D24300C11E4A /* SKApplication.m */; };
 		CE380A7B0B834E6200A1B779 /* CameraCursor.tiff in Resources */ = {isa = PBXBuildFile; fileRef = CE380A7A0B834E6100A1B779 /* CameraCursor.tiff */; };
 		CE380C620B837B6100A1B779 /* NoteViewAdorn.tiff in Resources */ = {isa = PBXBuildFile; fileRef = CE380C600B837B6100A1B779 /* NoteViewAdorn.tiff */; };
 		CE380C630B837B6100A1B779 /* SnapshotViewAdorn.tiff in Resources */ = {isa = PBXBuildFile; fileRef = CE380C610B837B6100A1B779 /* SnapshotViewAdorn.tiff */; };
@@ -114,6 +115,8 @@
 		45B113BF0B329A7E00DE0660 /* LICENSE */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = LICENSE; sourceTree = "<group>"; };
 		8D15AC360486D014006FF6A4 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = Info.plist; sourceTree = "<group>"; };
 		8D15AC370486D014006FF6A4 /* Skim.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Skim.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		CE0463C90B84D24300C11E4A /* SKApplication.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SKApplication.h; sourceTree = "<group>"; };
+		CE0463CA0B84D24300C11E4A /* SKApplication.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SKApplication.m; sourceTree = "<group>"; };
 		CE380A7A0B834E6100A1B779 /* CameraCursor.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; name = CameraCursor.tiff; path = Images/CameraCursor.tiff; sourceTree = "<group>"; };
 		CE380C600B837B6100A1B779 /* NoteViewAdorn.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; name = NoteViewAdorn.tiff; path = Images/NoteViewAdorn.tiff; sourceTree = "<group>"; };
 		CE380C610B837B6100A1B779 /* SnapshotViewAdorn.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; name = SnapshotViewAdorn.tiff; path = Images/SnapshotViewAdorn.tiff; sourceTree = "<group>"; };
@@ -250,6 +253,8 @@
 				CE4EBDD90B7BF3B30091F228 /* SKSideWindow.m */,
 				45B1115E0B3096B900DE0660 /* SKNote.h */,
 				45B1115F0B3096B900DE0660 /* SKNote.m */,
+				CE0463C90B84D24300C11E4A /* SKApplication.h */,
+				CE0463CA0B84D24300C11E4A /* SKApplication.m */,
 				4530D8C70B27B04D007C59F4 /* SKApplicationController.h */,
 				4530D8C80B27B04D007C59F4 /* SKApplicationController.m */,
 				4530DCF50B27CACE007C59F4 /* SKPDFView.h */,
@@ -508,6 +513,7 @@
 				CE4EC88C0B7E6EDB0091F228 /* SKSplitView.m in Sources */,
 				CE38ECD30B8093B200A1B779 /* NSString_SKExtensions.m in Sources */,
 				F9CDD67B0B837A7F006363C3 /* SKPreferenceController.m in Sources */,
+				CE0463CB0B84D24300C11E4A /* SKApplication.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

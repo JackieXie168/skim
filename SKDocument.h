@@ -10,8 +10,6 @@
 
 #import <Cocoa/Cocoa.h>
 
-extern NSString *SKDocumentControllerWillCloseDocumentsNotification;
-
 extern NSString *SKDocumentErrorDomain;
 
 @class PDFDocument, SKMainWindowController;
@@ -25,6 +23,7 @@ extern NSString *SKDocumentErrorDomain;
     // temporary variables:
     PDFDocument *pdfDocument;
     NSMutableArray *noteDicts;
+    NSDictionary *intialDocumentSetup;
 }
 
 - (IBAction)readNotes:(id)sender;
@@ -43,6 +42,10 @@ extern NSString *SKDocumentErrorDomain;
 
 - (SKMainWindowController *)mainWindowController;
 - (PDFDocument *)pdfDocument;
+
+- (NSDictionary *)initialDocumentSetup;
+- (void)setInitialDocumentSetup:(NSDictionary *)setup;
+- (NSDictionary *)currentDocumentSetup;
 
 @end
 

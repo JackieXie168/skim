@@ -21,8 +21,6 @@
 // maximum length of xattr value recommended by Apple
 #define MAX_XATTR_LENGTH 4096
 
-NSString *SKDocumentControllerWillCloseDocumentsNotification = @"SKDocumentControllerWillCloseDocumentsNotification";
-
 NSString *SKDocumentErrorDomain = @"SKDocumentErrorDomain";
 
 // See CFBundleTypeName in Info.plist
@@ -53,6 +51,7 @@ static NSString *SKPostScriptDocumentType = @"PostScript document";
 
 - (void)dealloc {
     [[NSNotificationCenter defaultCenter] removeObserver:self];
+    [intialDocumentSetup release];
     [pdfData release];
     [notes release];
     [noteDicts release];
@@ -377,6 +376,31 @@ static NSString *SKPostScriptDocumentType = @"PostScript document";
     return [[self mainWindowController] pdfDocument];
 }
 
+- (NSDictionary *)initialDocumentSetup {
+    return intialDocumentSetup;
+}
+
+- (void)setInitialDocumentSetup:(NSDictionary *)setup {
+    if (intialDocumentSetup != setup) {
+        [intialDocumentSetup release];
+        intialDocumentSetup = [setup retain];
+    }
+}
+
+- (NSDictionary *)currentDocumentSetup {
+    NSMutableDictionary *setup = [NSMutableDictionary dictionary];
+    NSString *fileName = [self fileName];
+    NSData *data = [[BDAlias aliasWithPath:fileName] aliasData];
+
+    [setup setObject:fileName forKey:@"fileName"];
+    if(data)
+         [setup setObject:data forKey:@"_BDAlias"];
+    
+    [setup addEntriesFromDictionary:[[self mainWindowController] currentSetup]];
+    
+    return setup;
+}
+
 @end
 
 
@@ -390,25 +414,6 @@ static NSString *SKPostScriptDocumentType = @"PostScript document";
         type = NSPDFPboardType;
     }
 	return type;
-}
-
-- (void)closeAllDocumentsWithDelegate:(id)delegate didCloseAllSelector:(SEL)didCloseAllSelector contextInfo:(void *)contextInfo{
-    NSArray *fileNames = [[[NSDocumentController sharedDocumentController] documents] valueForKeyPath:@"@distinctUnionOfObjects.fileName"];
-    NSMutableArray *array = [NSMutableArray arrayWithCapacity:[fileNames count]];
-    NSEnumerator *fEnum = [fileNames objectEnumerator];
-    NSString *fileName;
-    while(fileName = [fEnum nextObject]){
-        NSData *data = [[BDAlias aliasWithPath:fileName] aliasData];
-        if(data)
-            [array addObject:[NSDictionary dictionaryWithObjectsAndKeys:fileName, @"fileName", data, @"_BDAlias", nil]];
-        else
-            [array addObject:[NSDictionary dictionaryWithObjectsAndKeys:fileName, @"fileName", nil]];
-    }
-    [[NSUserDefaults standardUserDefaults] setObject:array forKey:SKLastOpenFileNamesKey];
-    
-    [[NSNotificationCenter defaultCenter] postNotificationName:SKDocumentControllerWillCloseDocumentsNotification object:self];
-    
-    [super closeAllDocumentsWithDelegate:delegate didCloseAllSelector:didCloseAllSelector contextInfo:contextInfo];
 }
 
 @end
