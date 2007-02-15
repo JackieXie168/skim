@@ -144,6 +144,8 @@ typedef struct _SKPDFViewState {
 - (IBAction)changeScaleFactor:(id)sender;
 - (IBAction)changeToolMode:(id)sender;
 - (IBAction)changeAnnotationMode:(id)sender;
+- (IBAction)toggleLeftSidePane:(id)sender;
+- (IBAction)toggleRightSidePane:(id)sender;
 - (IBAction)enterFullScreen:(id)sender;
 - (IBAction)exitFullScreen:(id)sender;
 - (IBAction)toggleFullScreen:(id)sender;
@@ -198,9 +200,6 @@ typedef struct _SKPDFViewState {
 - (void)thumbnailsAtIndexesNeedUpdate:(NSIndexSet *)indexes;
 - (void)updateThumbnailsIfNeeded;
 - (void)updateThumbnail:(NSTimer *)timer;
-
-- (void)toggleLeftSidePane;
-- (void)toggleRightSidePane;
 
 - (void)registerForNotifications;
 

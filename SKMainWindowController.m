@@ -584,6 +584,47 @@ static NSString *SKDocumentToolbarSearchItemIdentifier = @"SKDocumentToolbarSear
     [pdfView setAnnotationMode:[sender tag]];
 }
 
+
+- (IBAction)toggleLeftSidePane:(id)sender {
+    NSRect sideFrame = [leftSideContentBox frame];
+    NSRect pdfFrame = [pdfContentBox frame];
+    
+    if(NSWidth(sideFrame) > 0.0){
+        lastLeftSidePaneWidth = NSWidth(sideFrame); // cache this
+        pdfFrame.size.width += lastLeftSidePaneWidth;
+        sideFrame.size.width = 0.0;
+    } else {
+        if(lastLeftSidePaneWidth <= 0)
+            lastLeftSidePaneWidth = 250.0; // a reasonable value to start
+        pdfFrame.size.width -= lastLeftSidePaneWidth;
+		sideFrame.size.width = lastLeftSidePaneWidth;
+    }
+    [leftSideContentBox setFrame:sideFrame];
+    [pdfContentBox setFrame:pdfFrame];
+    [splitView setNeedsDisplay:YES];
+    [splitView adjustSubviews];
+}
+
+- (IBAction)toggleRightSidePane:(id)sender {
+    NSRect sideFrame = [rightSideContentBox frame];
+    NSRect pdfFrame = [pdfContentBox frame];
+    
+    if(NSWidth(sideFrame) > 0.0){
+        lastRightSidePaneWidth = NSWidth(sideFrame); // cache this
+        pdfFrame.size.width += lastRightSidePaneWidth;
+        sideFrame.size.width = 0.0;
+    } else {
+        if(lastRightSidePaneWidth <= 0)
+            lastRightSidePaneWidth = 250.0; // a reasonable value to start
+        pdfFrame.size.width -= lastRightSidePaneWidth;
+		sideFrame.size.width = lastRightSidePaneWidth;
+    }
+    [rightSideContentBox setFrame:sideFrame];
+    [pdfContentBox setFrame:pdfFrame];
+    [splitView setNeedsDisplay:YES];
+    [splitView adjustSubviews];
+}
+
 - (void)goFullScreen {
     NSScreen *screen = [NSScreen mainScreen]; // @@ or should we use the window's screen?
 
@@ -1067,7 +1108,7 @@ static NSString *SKDocumentToolbarSearchItemIdentifier = @"SKDocumentToolbarSear
 - (void)miniaturizeSnapshotController:(SKSubWindowController *)controller {
     if ([self isPresentation] == NO) {
         if ([self isFullScreen] == NO && NSWidth([rightSideContentBox frame]) <= 0.0)
-            [self toggleRightSidePane];
+            [self toggleRightSidePane:self];
         [self setRightSidePaneState:SKSnapshotSidePaneState];
     }
     
@@ -1824,6 +1865,18 @@ static NSString *SKDocumentToolbarSearchItemIdentifier = @"SKDocumentToolbarSear
         return fabs([pdfView scaleFactor] - 1.0 ) > 0.01;
     } else if (action == @selector(doZoomToFit:)) {
         return [pdfView autoScales] == NO;
+    } else if (action == @selector(toggleLeftSidePane:)) {
+        if (NSWidth([leftSideContentBox frame]) > 0.0)
+            [menuItem setTitle:NSLocalizedString(@"Hide Contents", @"Menu item title")];
+        else
+            [menuItem setTitle:NSLocalizedString(@"Show Contents", @"Menu item title")];
+        return [self isFullScreen] == NO && [self isPresentation] == NO;
+    } else if (action == @selector(toggleRightSidePane:)) {
+        if (NSWidth([rightSideContentBox frame]) > 0.0)
+            [menuItem setTitle:NSLocalizedString(@"Hide Notes", @"Menu item title")];
+        else
+            [menuItem setTitle:NSLocalizedString(@"Show Notes", @"Menu item title")];
+        return [self isFullScreen] == NO && [self isPresentation] == NO;
     } else if (action == @selector(toggleFullScreen:)) {
         return YES;
     } else if (action == @selector(togglePresentation:)) {
@@ -1836,53 +1889,13 @@ static NSString *SKDocumentToolbarSearchItemIdentifier = @"SKDocumentToolbarSear
 
 #pragma mark SKSplitView delegate protocol
 
-- (void)toggleLeftSidePane {
-    NSRect sideFrame = [leftSideContentBox frame];
-    NSRect pdfFrame = [pdfContentBox frame];
-    
-    if(NSWidth(sideFrame) > 0.0){
-        lastLeftSidePaneWidth = NSWidth(sideFrame); // cache this
-        pdfFrame.size.width += lastLeftSidePaneWidth;
-        sideFrame.size.width = 0.0;
-    } else {
-        if(lastLeftSidePaneWidth <= 0)
-            lastLeftSidePaneWidth = 250.0; // a reasonable value to start
-        pdfFrame.size.width -= lastLeftSidePaneWidth;
-		sideFrame.size.width = lastLeftSidePaneWidth;
-    }
-    [leftSideContentBox setFrame:sideFrame];
-    [pdfContentBox setFrame:pdfFrame];
-    [splitView setNeedsDisplay:YES];
-    [splitView adjustSubviews];
-}
-
-- (void)toggleRightSidePane {
-    NSRect sideFrame = [rightSideContentBox frame];
-    NSRect pdfFrame = [pdfContentBox frame];
-    
-    if(NSWidth(sideFrame) > 0.0){
-        lastRightSidePaneWidth = NSWidth(sideFrame); // cache this
-        pdfFrame.size.width += lastRightSidePaneWidth;
-        sideFrame.size.width = 0.0;
-    } else {
-        if(lastRightSidePaneWidth <= 0)
-            lastRightSidePaneWidth = 250.0; // a reasonable value to start
-        pdfFrame.size.width -= lastRightSidePaneWidth;
-		sideFrame.size.width = lastRightSidePaneWidth;
-    }
-    [rightSideContentBox setFrame:sideFrame];
-    [pdfContentBox setFrame:pdfFrame];
-    [splitView setNeedsDisplay:YES];
-    [splitView adjustSubviews];
-}
-
 #pragma mark SKSplitView delegate protocol
 
 - (void)splitView:(SKSplitView *)sender doubleClickedDividerAt:(int)offset{
     if (offset == 0)
-        [self toggleLeftSidePane];
+        [self toggleLeftSidePane:self];
     else
-        [self toggleRightSidePane];
+        [self toggleRightSidePane:self];
 }
 
 - (void)splitView:(NSSplitView *)sender resizeSubviewsWithOldSize:(NSSize)oldSize {

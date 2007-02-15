@@ -29,7 +29,9 @@
                 toggleDisplayContinuous = id; 
                 toggleDisplayPageBreaks = id; 
                 toggleFullScreen = id; 
+                toggleLeftSidePane = id; 
                 togglePresentation = id; 
+                toggleRightSidePane = id; 
             }; 
             CLASS = FirstResponder; 
             LANGUAGE = ObjC; 
