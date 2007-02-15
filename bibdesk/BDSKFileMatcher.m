@@ -143,6 +143,60 @@ static float GROUP_ROW_HEIGHT = 28.0;
     [statusField setStringValue:@""];
 }
 
+- (void)outlineView:(NSOutlineView *)ov willDisplayOutlineCell:(id)cell forTableColumn:(NSTableColumn *)tc item:(id)item;
+{
+    NSButtonCell *outlineCell = cell;
+    static NSImage *rightImage = nil;
+    static NSImage *downImage = nil;
+    
+    // -[NSButtonCell setImage:] and -setAlternateImage: are apparently the only public ways to modify the indentation marker, and we can't do this with -[[ov outlineTableColumn] dataCell], since that seems to operate on the BDSKTextWithIconCell 
+    if (nil == rightImage && [outlineCell image]) {
+        NSSize size = [[outlineCell image] size];
+        
+        NSImage *image = [[NSImage alloc] initWithSize:size];
+        [image lockFocus];
+        [NSGraphicsContext saveGraphicsState];
+        [[NSColor clearColor] setFill];
+        NSRect r = NSZeroRect;
+        r.size = [image size];
+        NSRectFill(r);
+        r = NSInsetRect(r, 2.0, 2.0);
+        NSBezierPath *bezierPath = [NSBezierPath bezierPath];
+        [bezierPath moveToPoint:NSMakePoint(NSMinX(r), NSMinY(r))];
+        [bezierPath lineToPoint:NSMakePoint(NSMinX(r), NSMaxY(r))];
+        [bezierPath lineToPoint:NSMakePoint(NSMaxX(r), NSMidY(r))];
+        [bezierPath closePath];
+        [[NSColor colorWithCalibratedWhite:1.0 alpha:1.0] setFill];
+        [bezierPath fill];
+        [NSGraphicsContext restoreGraphicsState];
+        [image unlockFocus];
+        
+        rightImage = [image copy];
+        
+        [image lockFocus];
+        [NSGraphicsContext saveGraphicsState];
+        [[NSColor clearColor] setFill];
+        r = NSZeroRect;
+        r.size = [image size];
+        NSRectFill(r);
+        r = NSInsetRect(r, 2.0, 2.0);
+        bezierPath = [NSBezierPath bezierPath];
+        [bezierPath moveToPoint:NSMakePoint(NSMinX(r), NSMaxY(r))];
+        [bezierPath lineToPoint:NSMakePoint(NSMaxX(r), NSMaxY(r))];
+        [bezierPath lineToPoint:NSMakePoint(NSMidX(r), NSMinY(r))];
+        [bezierPath closePath];
+        [[NSColor colorWithCalibratedWhite:1.0 alpha:1.0] setFill];
+        [bezierPath fill];
+        [NSGraphicsContext restoreGraphicsState];
+        [image unlockFocus];
+        
+        downImage = [image copy];
+        [image release];
+    }
+    [outlineCell setImage:rightImage];
+    [outlineCell setAlternateImage:downImage];
+}
+
 // API: try to match these files (pass nil for pubs to use the front document)
 - (void)matchFiles:(NSArray *)absoluteURLs withPublications:(NSArray *)pubs;
 {
