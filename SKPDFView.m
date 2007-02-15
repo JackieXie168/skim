@@ -247,8 +247,8 @@ static NSRect RectPlusScale (NSRect aRect, float scale)
 		[self goToPreviousPage:self];
 	} else if ((eventChar == NSDeleteCharacter) || (eventChar == NSDeleteFunctionKey)) {
 		[self delete:self];
-    } else if (isPresentation == NO && [self toolMode] == SKTextToolMode && (eventChar == NSEnterCharacter || (eventChar == NSFormFeedCharacter) || (eventChar == NSNewlineCharacter) || (eventChar == NSCarriageReturnCharacter))){
-        [self addAnnotation:self];
+    } else if (isPresentation == NO && [self toolMode] == SKTextToolMode && ((eventChar == NSEnterCharacter) || (eventChar == NSFormFeedCharacter) || (eventChar == NSNewlineCharacter) || (eventChar == NSCarriageReturnCharacter))){
+        [self editActiveAnnotation:self];
     } else if (isPresentation == NO && [self toolMode] == SKTextToolMode && (eventChar == NSTabCharacter) && (modifiers & NSAlternateKeyMask)){
         NSArray *notes = [(SKMainWindowController *)[[self window] windowController] orderedNotes];
         if ([notes count] == 0)
