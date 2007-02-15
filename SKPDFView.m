@@ -10,6 +10,7 @@
 
 #import "SKPDFView.h"
 #import "SKNavigationWindow.h"
+#import "SKMainWindowController.h"
 #import "SKPDFAnnotationNote.h"
 #import "NSString_SKExtensions.h"
 
@@ -248,6 +249,25 @@ static NSRect RectPlusScale (NSRect aRect, float scale)
 		[self delete:self];
     } else if (isPresentation == NO && [self toolMode] == SKTextToolMode && (eventChar == NSEnterCharacter || (eventChar == NSFormFeedCharacter) || (eventChar == NSNewlineCharacter) || (eventChar == NSCarriageReturnCharacter))){
         [self addAnnotationFromSelection:[self currentSelection]];
+    } else if (isPresentation == NO && [self toolMode] == SKTextToolMode && (eventChar == NSTabCharacter) && (modifiers & NSAlternateKeyMask)){
+        NSArray *notes = [(SKMainWindowController *)[[self window] windowController] orderedNotes];
+        if ([notes count] == 0)
+            return;
+        int index = 0;
+        if (activeAnnotation) {
+            [self endAnnotationEdit];
+            index = [notes indexOfObject:activeAnnotation];
+            if (modifiers & NSShiftKeyMask)
+                index--;
+            else
+                index++;
+            if (index >= (int)[notes count])
+                index = 0;
+            else if (index < 0)
+                index = [notes count] - 1;
+        }
+        [self setActiveAnnotation:[notes objectAtIndex:index]];
+        [[self documentView] scrollRectToVisible:[self convertRect:[self convertRect:[activeAnnotation bounds] fromPage:[activeAnnotation page]] toView:[self documentView]]];
 	} else if (isPresentation == NO && activeAnnotation && ((eventChar == NSRightArrowFunctionKey) || (eventChar == NSLeftArrowFunctionKey) || (eventChar == NSUpArrowFunctionKey) || (eventChar == NSDownArrowFunctionKey))) {
         NSRect bounds = [activeAnnotation bounds];
         NSRect newBounds = bounds;
@@ -952,6 +972,48 @@ static NSRect RectPlusScale (NSRect aRect, float scale)
     [[NSNotificationCenter defaultCenter] postNotificationName:SKPDFViewDidRemoveAnnotationNotification object:self 
         userInfo:[NSDictionary dictionaryWithObjectsAndKeys:wasAnnotation, @"annotation", page, @"page", nil]];
     [wasAnnotation release];
+}
+
+- (void)editActiveAnnotation {
+    if (nil == activeAnnotation)
+        return;
+    
+    [self endAnnotationEdit];
+    
+    if ([[activeAnnotation type] isEqualToString:@"Note"]) {
+        
+		[[NSNotificationCenter defaultCenter] postNotificationName:SKPDFViewAnnotationDoubleClickedNotification object:self 
+            userInfo:[NSDictionary dictionaryWithObjectsAndKeys:activeAnnotation, @"annotation", nil]];
+        
+    } else if ([[activeAnnotation type] isEqualToString:@"FreeText"] || [[activeAnnotation type] isEqualToString:@"Text"]) {
+        
+        NSRect editBounds = [activeAnnotation bounds];
+        if ([[activeAnnotation type] isEqualToString:@"Text"]) {
+            NSRect pageBounds = [[activeAnnotation page] boundsForBox:[self displayBox]];
+            editBounds = NSInsetRect(editBounds, -120.0, -120.0);
+            if (NSMaxX(editBounds) > NSMaxX(pageBounds))
+                editBounds.origin.x = NSMaxX(pageBounds) - NSWidth(editBounds);
+            if (NSMinX(editBounds) < NSMinX(pageBounds))
+                editBounds.origin.x = NSMinX(pageBounds);
+            if (NSMaxY(editBounds) > NSMaxY(pageBounds))
+                editBounds.origin.y = NSMaxY(pageBounds) - NSHeight(editBounds);
+            if (NSMinY(editBounds) < NSMinY(pageBounds))
+                editBounds.origin.y = NSMinY(pageBounds);
+        }
+        editAnnotation = [[[PDFAnnotationTextWidget alloc] initWithBounds:editBounds] autorelease];
+        [editAnnotation setStringValue:[activeAnnotation contents]];
+        if ([activeAnnotation respondsToSelector:@selector(font)])
+            [editAnnotation setFont:[(PDFAnnotationFreeText *)activeAnnotation font]];
+        [editAnnotation setColor:[activeAnnotation color]];
+        [[activeAnnotation page] addAnnotation:editAnnotation];
+        
+        // Start editing
+        NSPoint location = [self convertPoint:[self convertPoint:NSMakePoint(NSMidX(editBounds), NSMidY(editBounds)) fromPage:[activeAnnotation page]] toView:nil];
+        NSEvent *theEvent = [NSEvent mouseEventWithType:NSLeftMouseDown location:location modifierFlags:0 timestamp:0 windowNumber:[[self window] windowNumber] context:nil eventNumber:0 clickCount:1 pressure:1.0];
+        [super mouseDown:theEvent];
+        
+    }
+    
 }
 
 - (void)endAnnotationEdit {
