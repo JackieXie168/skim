@@ -188,8 +188,8 @@ static NSString *SKDocumentToolbarSearchItemIdentifier = @"SKDocumentToolbarSear
 
 - (void)registerForNotifications {
     // Application
-	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleAppWillTerminateNotification:) 
-                                                 name:NSApplicationWillTerminateNotification object:NSApp];
+	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleDocumentsWillBeClosed:) 
+                                                 name:SKDocumentControllerWillCloseDocumentsNotification object:[NSDocumentController sharedDocumentController]];
 	// PDFView
 	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handlePageChangedNotification:) 
                                                  name:PDFViewPageChangedNotification object:pdfView];
@@ -1228,7 +1228,7 @@ static NSString *SKDocumentToolbarSearchItemIdentifier = @"SKDocumentToolbarSear
     [scaleField setFloatValue:[pdfView scaleFactor] * 100.0];
 }
 
-- (void)handleAppWillTerminateNotification:(NSNotification *)notification {
+- (void)handleDocumentsWillBeClosed:(NSNotification *)notification {
     if ([self isFullScreen] || [self isPresentation])
         [self exitFullScreen:self];
 }
