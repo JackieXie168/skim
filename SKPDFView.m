@@ -904,7 +904,7 @@ static NSRect RectPlusScale (NSRect aRect, float scale)
     
 	// Determine bounds to use for new text annotation.
 	if ([sender respondsToSelector:@selector(representedObject)] && [[sender representedObject] respondsToSelector:@selector(pointValue)]) {
-        NSPoint point = [self convertPoint:[[sender representedObject] pointValue] fromView:nil];
+        NSPoint point = [[sender representedObject] pointValue];
 		NSSize defaultSize = ([self annotationMode] == SKTextAnnotationMode || [self annotationMode] == SKNoteAnnotationMode) ? NSMakeSize(16.0, 16.0) : NSMakeSize(128.0, 64.0);
         
         page = [self pageForPoint:point nearest:YES];
@@ -970,11 +970,18 @@ static NSRect RectPlusScale (NSRect aRect, float scale)
         [self removeAnnotation:activeAnnotation];
 }
 
+- (void)removeThisAnnotation:(id)sender{
+    PDFAnnotation *annotation = [sender representedObject];
+    
+    if (annotation)
+        [self removeAnnotation:annotation];
+}
+
 - (void)removeAnnotation:(PDFAnnotation *)annotation{
-    PDFAnnotation *wasAnnotation = [activeAnnotation retain];
+    PDFAnnotation *wasAnnotation = [annotation retain];
     PDFPage *page = [wasAnnotation page];
     
-    if (editAnnotation)
+    if (editAnnotation == annotation)
         [self endAnnotationEdit:self];
 	if (activeAnnotation == annotation)
 		[self setActiveAnnotation:nil];
@@ -983,6 +990,19 @@ static NSRect RectPlusScale (NSRect aRect, float scale)
     [[NSNotificationCenter defaultCenter] postNotificationName:SKPDFViewDidRemoveAnnotationNotification object:self 
         userInfo:[NSDictionary dictionaryWithObjectsAndKeys:wasAnnotation, @"annotation", page, @"page", nil]];
     [wasAnnotation release];
+}
+
+- (void)editThisAnnotation:(id)sender {
+    PDFAnnotation *annotation = [sender representedObject];
+    
+    if (annotation == nil || editAnnotation == annotation)
+        return;
+    
+    if (editAnnotation)
+        [self endAnnotationEdit:self];
+    if (activeAnnotation != annotation)
+        [self setActiveAnnotation:annotation];
+    [self editActiveAnnotation:sender];
 }
 
 - (void)editActiveAnnotation:(id)sender {
@@ -1069,11 +1089,11 @@ static NSRect RectPlusScale (NSRect aRect, float scale)
     item = [submenu addItemWithTitle:NSLocalizedString(@"Text", @"Menu item title") action:@selector(changeAnnotationMode:) keyEquivalent:@""];
     [item setTag:SKFreeTextAnnotationMode];
     [item setTarget:[[self window] windowController]];
-
+    
     item = [submenu addItemWithTitle:NSLocalizedString(@"Note", @"Menu item title") action:@selector(changeAnnotationMode:) keyEquivalent:@""];
     [item setTag:SKNoteAnnotationMode];
     [item setTarget:[[self window] windowController]];
-
+    
     item = [submenu addItemWithTitle:NSLocalizedString(@"Oval", @"Menu item title") action:@selector(changeAnnotationMode:) keyEquivalent:@""];
     [item setTag:SKCircleAnnotationMode];
     [item setTarget:[[self window] windowController]];
@@ -1081,21 +1101,45 @@ static NSRect RectPlusScale (NSRect aRect, float scale)
     item = [menu addItemWithTitle:NSLocalizedString(@"Annotations", @"Menu item title") action:NULL keyEquivalent:@""];
     [item setSubmenu:submenu];
     [submenu release];
-
-    [menu addItem:[NSMenuItem separatorItem]];
     
-    item = [menu addItemWithTitle:NSLocalizedString(@"New Note", @"Menu item title") action:@selector(addAnnotation:) keyEquivalent:@""];
-    [item setRepresentedObject:[NSValue valueWithPoint:[theEvent locationInWindow]]];
-    [item setTarget:self];
-    
-    if (activeAnnotation) {
-        item = [menu addItemWithTitle:NSLocalizedString(@"Remove Current Note", @"Menu item title") action:@selector(removeActiveAnnotation:) keyEquivalent:@""];
+    if ([self toolMode] == SKTextToolMode) {
+        
+        NSPoint point = [self convertPoint:[theEvent locationInWindow] fromView:nil];
+        PDFPage *page = [self pageForPoint:point nearest:YES];
+        PDFAnnotation *annotation = nil;
+        
+        if (page) {
+            annotation = [page annotationAtPoint:[self convertPoint:point toPage:page]];
+            if ([annotation isTemporaryAnnotation] || NO == [[NSSet setWithObjects:@"FreeText", @"Text", @"Note", @"Circle", @"Square", nil] containsObject:[annotation type]])
+                annotation == nil;
+        }
+        
+        [menu addItem:[NSMenuItem separatorItem]];
+        
+        item = [menu addItemWithTitle:NSLocalizedString(@"New Note", @"Menu item title") action:@selector(addAnnotation:) keyEquivalent:@""];
+        [item setRepresentedObject:[NSValue valueWithPoint:point]];
         [item setTarget:self];
         
-        if (editAnnotation == nil) {
-            item = [menu addItemWithTitle:NSLocalizedString(@"Edit Current Note", @"Menu item title") action:@selector(editActiveAnnotation:) keyEquivalent:@""];
+        if (annotation) {
+            item = [menu addItemWithTitle:NSLocalizedString(@"Remove Note", @"Menu item title") action:@selector(removeThisAnnotation:) keyEquivalent:@""];
+            [item setRepresentedObject:annotation];
             [item setTarget:self];
+            
+            if (annotation != activeAnnotation || editAnnotation == nil) {
+                item = [menu addItemWithTitle:NSLocalizedString(@"Edit Note", @"Menu item title") action:@selector(editThisAnnotation:) keyEquivalent:@""];
+                [item setRepresentedObject:annotation];
+                [item setTarget:self];
+            }
+        } else if (activeAnnotation) {
+            item = [menu addItemWithTitle:NSLocalizedString(@"Remove Current Note", @"Menu item title") action:@selector(removeActiveAnnotation:) keyEquivalent:@""];
+            [item setTarget:self];
+            
+            if (editAnnotation == nil) {
+                item = [menu addItemWithTitle:NSLocalizedString(@"Edit Current Note", @"Menu item title") action:@selector(editActiveAnnotation:) keyEquivalent:@""];
+                [item setTarget:self];
+            }
         }
+        
     }
     
     return menu;
