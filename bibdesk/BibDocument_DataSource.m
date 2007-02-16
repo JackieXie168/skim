@@ -612,8 +612,7 @@
     
     } else if ([dragType isEqualToString:NSURLPboardType]) {
         count = 1;
-        image = [[[NSImage imageForURL:[NSURL URLFromPasteboard:pb]] copy] autorelease];
-		[image setSize:NSMakeSize(32,32)];
+        image = [NSImage imageForURL:[NSURL URLFromPasteboard:pb]];
     
 	} else if ([dragType isEqualToString:NSFilesPromisePboardType]) {
 		NSArray *fileNames = [pb propertyListForType:NSFilesPromisePboardType];

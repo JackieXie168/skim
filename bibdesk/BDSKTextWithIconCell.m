@@ -323,19 +323,19 @@ textRect.origin.y += vOffset; \
     if ([obj isKindOfClass:[NSString class]]) {
         path = [(NSString *)obj stringByStandardizingPath];
         if(path && [[NSFileManager defaultManager] fileExistsAtPath:path])
-            image = [NSImage smallImageForFile:path];
+            image = [NSImage imageForFile:path];
     } else if ([obj isKindOfClass:[NSURL class]]) {
         NSURL *fileURL = (NSURL *)obj;
         path = [[fileURL path] stringByStandardizingPath];
         if(path && [[NSFileManager defaultManager] objectExistsAtFileURL:fileURL])
-            image = [NSImage smallImageForURL:fileURL];
+            image = [NSImage imageForURL:fileURL];
     } else if ([obj isKindOfClass:[NSDictionary class]]) {
         NSDictionary *dict = (NSDictionary *)obj;
         if ([[dict objectForKey:OATextWithIconCellStringKey] isKindOfClass:[NSString class]]) {
             path = [[dict objectForKey:OATextWithIconCellStringKey] stringByStandardizingPath];
             image = [dict objectForKey:OATextWithIconCellImageKey];
             if(image == nil && path && [[NSFileManager defaultManager] fileExistsAtPath:path])
-                image = [NSImage smallImageForFile:path];
+                image = [NSImage imageForFile:path];
         } else {
             [super setObjectValue:dict];
             return;

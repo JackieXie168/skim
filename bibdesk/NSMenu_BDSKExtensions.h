@@ -49,3 +49,7 @@
 - (id <NSMenuItem>)addItemWithTitle:(NSString *)itemTitle andSubmenuOfApplicationsForURL:(NSURL *)theURL;
 
 @end
+
+@interface NSMenuItem (BDSKImageExtensions)
+- (void)setImageAndSize:(NSImage *)image;
+@end

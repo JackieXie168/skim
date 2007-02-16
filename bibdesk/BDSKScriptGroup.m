@@ -378,7 +378,7 @@ static OFMessageQueue *messageQueue = nil;
 // BDSKGroup overrides
 
 - (NSImage *)icon {
-    return [NSImage smallImageNamed:@"scriptFolderIcon"];
+    return [NSImage imageNamed:@"scriptFolderIcon"];
 }
 
 - (BOOL)containsItem:(BibItem *)item {

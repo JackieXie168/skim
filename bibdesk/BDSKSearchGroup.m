@@ -150,7 +150,7 @@ NSString *BDSKSearchGroupOAI = @"oai";
 
 // note that pointer equality is used for these groups, so names can overlap, and users can have duplicate searches
 
-- (NSImage *)icon { return [NSImage smallImageNamed:@"searchFolderIcon"]; }
+- (NSImage *)icon { return [NSImage imageNamed:@"searchFolderIcon"]; }
 
 - (NSString *)name {
     return [NSString isEmptyString:[self searchTerm]] ? NSLocalizedString(@"Empty", @"Name for empty search group") : [self searchTerm];

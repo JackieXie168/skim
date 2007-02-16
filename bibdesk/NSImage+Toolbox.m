@@ -94,41 +94,6 @@
     return image;
 }
 
-+ (NSImage *)smallMissingFileImage {
-    static NSImage *image = nil;
-    if(image == nil){
-        image = [[NSImage alloc] initWithSize:NSMakeSize(16, 16)];
-        NSImage *genericDocImage = [self iconWithSize:NSMakeSize(16, 16) forToolboxCode:kGenericDocumentIcon];
-        NSImage *questionMark = [self iconWithSize:NSMakeSize(10, 10) forToolboxCode:kQuestionMarkIcon];
-        [image lockFocus];
-        [genericDocImage compositeToPoint:NSZeroPoint operation:NSCompositeCopy fraction:0.7];
-        [questionMark compositeToPoint:NSMakePoint(3, 3) operation:NSCompositeSourceOver];
-        [image unlockFocus];
-    }
-    return image;
-}
-
-+ (NSImage *)smallGenericInternetLocationImage{
-	static NSImage *image = nil;
-	if (image == nil)
-        image = [[NSImage iconWithSize:NSMakeSize(16,16) forToolboxCode:kInternetLocationGenericIcon] retain];
-	return image;
-}
-
-+ (NSImage *)smallFTPInternetLocationImage{
-	static NSImage *image = nil;
-	if (image == nil) 
-        image = [[NSImage iconWithSize:NSMakeSize(16,16) forToolboxCode:kInternetLocationFTPIcon] retain];
-	return image;
-}
-
-+ (NSImage *)smallHTTPInternetLocationImage{
-	static NSImage *image = nil;
-	if (image == nil)
-        image = [[NSImage iconWithSize:NSMakeSize(16,16) forToolboxCode:kInternetLocationHTTPIcon] retain];
-	return image;
-}
-
 + (NSImage *)imageForURL:(NSURL *)aURL{
     
     if(!aURL) return nil;
@@ -143,60 +108,6 @@
     else if([scheme isEqualToString:@"ftp"])
         return [self ftpInternetLocationImage];
     else return [self genericInternetLocationImage];
-}
-
-+ (NSImage *)smallImageForURL:(NSURL *)aURL{
-
-    if(!aURL) return nil;
-    
-    if([aURL isFileURL])
-        return [self smallImageForFile:[aURL path]];
-    
-    NSString *scheme = [aURL scheme];
-    
-    if([scheme isEqualToString:@"http"])
-        return [self smallHTTPInternetLocationImage];
-    else if([scheme isEqualToString:@"ftp"])
-        return [self smallFTPInternetLocationImage];
-    else return [self smallGenericInternetLocationImage];
-}
-
-+ (NSImage *)smallImageForFileType:(NSString *)fileType{
-    // It turns out that -[NSWorkspace iconForFileType:] doesn't cache previously returned values, so we cache them here.
-    // Mainly useful for tableview datasource methods.
-    
-    static NSMutableDictionary *imageDictionary = nil;
-    id image = nil;
-    
-    if (!fileType)
-        return nil;
-    
-    if (imageDictionary == nil)
-        imageDictionary = [[NSMutableDictionary alloc] init];
-    
-    image = [imageDictionary objectForKey:fileType];
-    if (image == nil) {
-        
-        NSImage *baseImage = [[NSWorkspace sharedWorkspace] iconForFileType:fileType];        
-        NSRect srcRect = {NSZeroPoint, [baseImage size]};
-        NSSize dstSize = NSMakeSize(16,16);
-        NSRect dstRect = {NSZeroPoint, dstSize};
-        
-        image = [[NSImage alloc] initWithSize:dstSize];
-        [image lockFocus];
-        [NSGraphicsContext saveGraphicsState];
-        [[NSGraphicsContext currentContext] setImageInterpolation:NSImageInterpolationHigh];
-        [baseImage drawInRect:dstRect fromRect:srcRect operation:NSCompositeCopy fraction:1.0];
-        [NSGraphicsContext restoreGraphicsState];
-        [image unlockFocus];
-        [image autorelease];
-        
-        if (image == nil)
-            image = [NSNull null];
-        
-        [imageDictionary setObject:image forKey:fileType];
-    }
-    return image != [NSNull null] ? image : nil;
 }
 
 + (NSImage *)imageForFile:(NSString *)path{
@@ -222,83 +133,6 @@
         image = [[NSWorkspace sharedWorkspace] iconForFile:path];
         if (image == nil)
             image = [NSNull null];
-        [imageDictionary setObject:image forKey:path];
-    }
-    return image != [NSNull null] ? image : nil;
-}
-
-+ (NSImage *)smallImageNamed:(NSString *)imageName{
-    
-    NSParameterAssert(imageName);
-    
-    static NSMutableDictionary *imageDictionary = nil;
-    if (imageDictionary == nil)
-        imageDictionary = [[NSMutableDictionary alloc] init];
-
-    id image = [imageDictionary objectForKey:imageName];
-    if (image == nil) {
-        
-        NSImage *baseImage = [self imageNamed:imageName];        
-        NSRect srcRect = {NSZeroPoint, [baseImage size]};
-        NSSize dstSize = NSMakeSize(16,16);
-        NSRect dstRect = {NSZeroPoint, dstSize};
-        
-        image = [[NSImage alloc] initWithSize:dstSize];
-        [image lockFocus];
-        [NSGraphicsContext saveGraphicsState];
-        [[NSGraphicsContext currentContext] setImageInterpolation:NSImageInterpolationHigh];
-        [baseImage drawInRect:dstRect fromRect:srcRect operation:NSCompositeCopy fraction:1.0];
-        [NSGraphicsContext restoreGraphicsState];
-        [image unlockFocus];
-        [image autorelease];
-        
-        if (image == nil)
-            image = [NSNull null];
-        
-        [imageDictionary setObject:image forKey:imageName];
-    }
-    return image != [NSNull null] ? image : nil;
- 
-}
-
-+ (NSImage *)smallImageForFile:(NSString *)path{
-    // It turns out that -[NSWorkspace iconForFileType:] doesn't cache previously returned values, so we cache them here.
-    // Mainly useful for tableview datasource methods.
-    
-    static NSMutableDictionary *imageDictionary = nil;
-    id image = nil;
-    
-    if (!path)
-        return nil;
-    
-    NSString *pathExtension = [path pathExtension];
-    if(![pathExtension isEqualToString:@""])
-        return [NSImage smallImageForFileType:pathExtension]; // prefer this (more common case)
-    
-    // if no file type, we'll just cache the path and waste some memory
-    if (imageDictionary == nil)
-        imageDictionary = [[NSMutableDictionary alloc] init];
-    
-    image = [imageDictionary objectForKey:path];
-    if (image == nil) {
-        
-        NSImage *baseImage = [[NSWorkspace sharedWorkspace] iconForFile:path];        
-        NSRect srcRect = {NSZeroPoint, [baseImage size]};
-        NSSize dstSize = NSMakeSize(16,16);
-        NSRect dstRect = {NSZeroPoint, dstSize};
-        
-        image = [[NSImage alloc] initWithSize:dstSize];
-        [image lockFocus];
-        [NSGraphicsContext saveGraphicsState];
-        [[NSGraphicsContext currentContext] setImageInterpolation:NSImageInterpolationHigh];
-        [baseImage drawInRect:dstRect fromRect:srcRect operation:NSCompositeCopy fraction:1.0];
-        [NSGraphicsContext restoreGraphicsState];
-        [image unlockFocus];
-        [image autorelease];
-        
-        if (image == nil)
-            image = [NSNull null];
-        
         [imageDictionary setObject:image forKey:path];
     }
     return image != [NSNull null] ? image : nil;

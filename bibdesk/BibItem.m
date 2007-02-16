@@ -1452,7 +1452,7 @@ static Boolean stringIsEqualToString(const void *value1, const void *value2) { r
     } else if([field isEqualToString:BDSKAuthorEditorString]){
         return [self pubAuthorsOrEditorsForDisplay];
     }else if([field isURLField]){
-        return [self smallImageForURLField:field];
+        return [self imageForURLField:field];
     }else if([field isRatingField]){
         return [NSNumber numberWithInt:[self ratingValueOfField:field]];
     }else if([field isBooleanField]){
@@ -2408,18 +2408,6 @@ Boolean stringContainsLossySubstring(NSString *theString, NSString *stringToFind
         return [NSImage missingFileImage];
     
     return [NSImage imageForURL:url];
-}
-
-- (NSImage *)smallImageForURLField:(NSString *)field{
-
-    NSURL *url = [self URLForField:field];
-    if(nil == url)
-        return nil;
-   
-    if([field isLocalFileField] && (url = [url fileURLByResolvingAliases]) == nil)
-        return [NSImage smallMissingFileImage];
-    
-    return [NSImage smallImageForURL:url];
 }
 
 - (NSURL *)URLForField:(NSString *)field{

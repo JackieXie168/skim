@@ -257,7 +257,8 @@ CFURLRef BDCopyFileURLResolvingAliases(CFURLRef fileURL)
 }
 
 - (NSAttributedString *)smallIcon {
-    NSImage *image = [NSImage smallImageForURL:self];
+    NSImage *image = [[[NSImage imageForURL:self] copy] autorelease];
+    [image setSize:NSMakeSize(16, 16)];
     NSString *name = ([self isFileURL]) ? [self path] : [self relativeString];
     name = [[[name lastPathComponent] stringByDeletingPathExtension] stringByAppendingPathExtension:@"tiff"];
     
@@ -292,7 +293,8 @@ CFURLRef BDCopyFileURLResolvingAliases(CFURLRef fileURL)
 }
 
 - (NSAttributedString *)linkedSmallIcon {
-    NSImage *image = [NSImage smallImageForURL:self];
+    NSImage *image = [[[NSImage imageForURL:self] copy] autorelease];
+    [image setSize:NSMakeSize(16, 16)];
     NSString *name = ([self isFileURL]) ? [self path] : [self relativeString];
     name = [[[name lastPathComponent] stringByDeletingPathExtension] stringByAppendingPathExtension:@"tiff"];
     

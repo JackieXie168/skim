@@ -108,7 +108,7 @@ static NSImage *lockedIcon = nil;
 static NSImage *unlockedIcon = nil;
 
 + (NSImage *)icon{
-    return [NSImage smallImageNamed:@"sharedFolderIcon"];
+    return [NSImage imageNamed:@"sharedFolderIcon"];
 }
 
 + (NSImage *)lockedIcon {
@@ -117,11 +117,12 @@ static NSImage *unlockedIcon = nil;
         NSRect badgeRect = NSMakeRect(7.0, 0.0, 11.0, 11.0);
         NSImage *image = [[NSImage alloc] initWithSize:iconRect.size];
         NSImage *badge = [NSImage imageNamed:@"SmallLock_Locked"];
+        NSSize srcSize = [[self icon] size];
         
         [image lockFocus];
         [NSGraphicsContext saveGraphicsState];
         [[NSGraphicsContext currentContext] setImageInterpolation:NSImageInterpolationHigh];
-        [[self icon] drawInRect:iconRect fromRect:iconRect operation:NSCompositeSourceOver  fraction:1.0];
+        [[self icon] drawInRect:iconRect fromRect:NSMakeRect(0, 0, srcSize.width, srcSize.height) operation:NSCompositeSourceOver  fraction:1.0];
         [badge drawInRect:badgeRect fromRect:iconRect operation:NSCompositeSourceOver  fraction:1.0];
         [NSGraphicsContext restoreGraphicsState];
         [image unlockFocus];
@@ -137,11 +138,12 @@ static NSImage *unlockedIcon = nil;
         NSRect badgeRect = NSMakeRect(6.0, 0.0, 11.0, 11.0);
         NSImage *image = [[NSImage alloc] initWithSize:iconRect.size];
         NSImage *badge = [NSImage imageNamed:@"SmallLock_Unlocked"];
+        NSSize srcSize = [[self icon] size];
         
         [image lockFocus];
         [NSGraphicsContext saveGraphicsState];
         [[NSGraphicsContext currentContext] setImageInterpolation:NSImageInterpolationHigh];
-        [[self icon] drawInRect:iconRect fromRect:iconRect operation:NSCompositeSourceOver  fraction:1.0];
+        [[self icon] drawInRect:iconRect fromRect:NSMakeRect(0, 0, srcSize.width, srcSize.height) operation:NSCompositeSourceOver  fraction:1.0];
         [badge drawInRect:badgeRect fromRect:iconRect operation:NSCompositeSourceOver  fraction:1.0];
         [NSGraphicsContext restoreGraphicsState];
         [image unlockFocus];

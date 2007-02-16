@@ -291,11 +291,13 @@ textRect.origin.y += floorf(vOffset); \
     
     // Draw the image
     imageRect = BDSKCenterRect(imageRect, imageSize, controlViewIsFlipped);
+    [NSGraphicsContext saveGraphicsState];
+    [[NSGraphicsContext currentContext] setImageInterpolation:NSImageInterpolationHigh];
 	if (controlViewIsFlipped)
 		[[[self objectValue] icon] drawFlippedInRect:imageRect operation:NSCompositeSourceOver];
 	else
 		[[[self objectValue] icon] drawInRect:imageRect fromRect:NSZeroRect operation:NSCompositeSourceOver fraction:1.0];
-    
+    [NSGraphicsContext restoreGraphicsState];
 }
 
 - (void)selectWithFrame:(NSRect)aRect inView:(NSView *)controlView editor:(NSText *)textObj delegate:(id)anObject start:(int)selStart length:(int)selLength;
