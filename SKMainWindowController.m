@@ -2067,36 +2067,51 @@ static NSString *SKDocumentToolbarSearchItemIdentifier = @"SKDocumentToolbarSear
     return [pages count] ? [[pages objectAtIndex:0] label] : nil;
 }
 
-// displays the selection string with some surrounding context as well
-- (NSString *)contextString {
+- (NSAttributedString *)contextString {
+    PDFSelection *extendedSelection = [self copy]; // see remark in -tableViewSelectionDidChange:
+	NSMutableAttributedString *attributedSample;
+	NSString *searchString = [[self string] stringByCollapsingWhitespaceAndNewlinesAndRemovingSurroundingWhitespaceAndNewlines];
+	NSString *sample;
+    NSMutableString *attributedString;
+	NSString *ellipse = [NSString stringWithFormat:@"%C", 0x2026];
+	NSRange foundRange;
+    NSDictionary *attributes;
+	NSMutableParagraphStyle *paragraphStyle = nil;
+	
+	// Extend selection.
+	[extendedSelection extendSelectionAtStart:10];
+	[extendedSelection extendSelectionAtEnd:20];
+	
+    // get the cleaned string
+    sample = [[extendedSelection string] stringByCollapsingWhitespaceAndNewlinesAndRemovingSurroundingWhitespaceAndNewlines];
     
-    NSArray *pages = [self pages];
-    int i, iMax = [pages count];
-    NSMutableString *string = [NSMutableString string];
-    
-    for (i = 0; i < iMax; i++) {
-        
-        PDFPage *page = [pages objectAtIndex:i];
-        NSString *pageString = [page string];
-        if (pageString) {
-            NSRect r = [self boundsForPage:page];
-            
-            int start, end;
-            start = [page characterIndexAtPoint:NSMakePoint(NSMinX(r), NSMinY(r))];
-            end = [page characterIndexAtPoint:NSMakePoint(NSMaxX(r), NSMinY(r))];
-            
-            if (start != -1 && end != -1) {
-                start = MAX(start - 10, 0);
-                end = MIN(end + 20, (int)[pageString length]);
-                [string appendString:[pageString substringWithRange:NSMakeRange(start, end - start)]];
-            } else {
-                // this shouldn't happen, but just in case...
-                [string appendString:[self string]];
-            }
-        }
+	// Finally, create attributed string.
+ 	attributedSample = [[NSMutableAttributedString alloc] initWithString:sample];
+    attributedString = [attributedSample mutableString];
+    [attributedString insertString:ellipse atIndex:0];
+    [attributedString appendString:ellipse];
+	
+	// Find instances of search string and "bold" them.
+	foundRange = [sample rangeOfString:searchString options:NSCaseInsensitiveSearch];
+    if (foundRange.location != NSNotFound) {
+        // Bold the text range where the search term was found.
+        attributes = [[NSDictionary alloc] initWithObjectsAndKeys:[NSFont boldSystemFontOfSize:[NSFont systemFontSize]], NSFontAttributeName, nil];
+        [attributedSample setAttributes:attributes range:NSMakeRange(foundRange.location + 1, foundRange.length)];
+        [attributes release];
     }
     
-    return [string stringByCollapsingWhitespaceAndNewlinesAndRemovingSurroundingWhitespaceAndNewlines];
+	// Create paragraph style that indicates truncation style.
+	paragraphStyle = [[NSParagraphStyle defaultParagraphStyle] mutableCopy];
+	[paragraphStyle setLineBreakMode:NSLineBreakByTruncatingTail];
+	attributes = [[NSDictionary alloc] initWithObjectsAndKeys:paragraphStyle, NSParagraphStyleAttributeName, nil];
+	// Add paragraph style.
+    [attributedSample addAttributes:attributes range:NSMakeRange(0, [attributedSample length])];
+	// Clean.
+	[attributes release];
+	[paragraphStyle release];
+	[extendedSelection release];
+	
+	return [attributedSample autorelease];
 }
 
 @end
