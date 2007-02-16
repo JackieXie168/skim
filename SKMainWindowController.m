@@ -1710,7 +1710,7 @@ static NSString *SKDocumentToolbarSearchItemIdentifier = @"SKDocumentToolbarSear
     [item release];
     
     item = [[NSToolbarItem alloc] initWithItemIdentifier:SKDocumentToolbarZoomAutoItemIdentifier];
-    [item setLabel:NSLocalizedString(@"Auto Zoom", @"Toolbar item label")];
+    [item setLabel:NSLocalizedString(@"Zoom To Fit", @"Toolbar item label")];
     [item setPaletteLabel:NSLocalizedString(@"Zoom To Fit", @"Toolbar item label")];
     [item setToolTip:NSLocalizedString(@"Zoom To Fit", @"Tool tip message")];
     [item setImage:[NSImage imageNamed:@"ToolbarZoomToFit"]];
