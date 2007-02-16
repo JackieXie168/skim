@@ -12,11 +12,6 @@
 
 @interface PDFAnnotation (SKExtensions)
 
-+ (NSColor *)color;
-+ (void)setColor:(NSColor *)newColor;
-
-- (void)setDefaultColor;
-
 - (id)initWithDictionary:(NSDictionary *)dict;
 
 - (NSDictionary *)dictionaryValue;
@@ -28,11 +23,22 @@
 - (NSImage *)image;
 - (NSAttributedString *)text;
 
+- (BOOL)isNoteAnnotation;
 - (BOOL)isTemporaryAnnotation;
+- (BOOL)isResizable;
 
 @end
 
-@interface SKPDFAnnotationTemporary : PDFAnnotationCircle
+@interface SKPDFAnnotationCircle : PDFAnnotationCircle
+@end
+
+@interface SKPDFAnnotationSquare : PDFAnnotationSquare
+@end
+
+@interface SKPDFAnnotationFreeText : PDFAnnotationFreeText
+@end
+
+@interface SKPDFAnnotationText : PDFAnnotationText
 @end
 
 @interface SKPDFAnnotationNote : PDFAnnotationText {
@@ -43,4 +49,7 @@
 - (void)setImage:(NSImage *)newImage;
 - (void)setText:(NSAttributedString *)newText;
 
+@end
+
+@interface SKPDFAnnotationTemporary : PDFAnnotationCircle
 @end

@@ -8,29 +8,9 @@
 
 #import "SKPDFAnnotationNote.h"
 #import "SKStringConstants.h"
-#import "OBUtilities.h"
 
 
 @implementation PDFAnnotation (SKExtensions)
-
-static IMP originalSetColor = NULL;
-
-+ (void)load{
-    originalSetColor = OBReplaceMethodImplementationWithSelector(self, @selector(setColor:), @selector(replacementSetColor:));
-}
-
-+ (NSColor *)color { return nil; }
-
-+ (void)setColor:(NSColor *)newColor {}
-
-- (void)replacementSetColor:(NSColor *)newColor {
-    originalSetColor(self, _cmd, newColor);
-    [[self class] setColor:newColor];
-}
-
-- (void)setDefaultColor {
-    originalSetColor(self, _cmd, [[self class] color]);
-}
 
 - (id)initWithDictionary:(NSDictionary *)dict{
     [[self initWithBounds:NSZeroRect] release];
@@ -97,118 +77,127 @@ static IMP originalSetColor = NULL;
 
 - (NSAttributedString *)text { return nil; }
 
+- (BOOL)isNoteAnnotation { return NO; }
+
 - (BOOL)isTemporaryAnnotation { return NO; }
+
+- (BOOL)isResizable { return NO; }
 
 @end
 
 #pragma mark -
 
-@interface PDFAnnotationCircle (SKExtensions)
-@end
-
-@implementation PDFAnnotationCircle (SKExtensions)
+@implementation SKPDFAnnotationCircle
 
 static NSColor *circleColor = nil;
 
-+ (NSColor *)color {
-    if (circleColor == nil)
-        circleColor = [[NSColor redColor] retain];
-    return circleColor;
+- (id)initWithBounds:(NSRect)bounds {
+    if (self = [super initWithBounds:bounds]) {
+        if (circleColor == nil)
+            circleColor = [[NSColor redColor] retain];
+        [super setColor:circleColor];
+        [[self border] setLineWidth:2.0];
+    }
+    return self;
 }
 
-+ (void)setColor:(NSColor *)newColor {
+- (void)setColor:(NSColor *)newColor {
+    [super setColor:newColor];
     if (circleColor != newColor) {
         [circleColor release];
         circleColor = [newColor retain];
     }
 }
 
+- (BOOL)isNoteAnnotation { return YES; }
+
+- (BOOL)isResizable { return YES; }
+
 @end
 
 #pragma mark -
 
-@interface PDFAnnotationSquare (SKExtensions)
-@end
-
-@implementation PDFAnnotationSquare (SKExtensions)
+@implementation SKPDFAnnotationSquare
 
 static NSColor *squareColor = nil;
 
-+ (NSColor *)color {
-    if (squareColor == nil)
-        squareColor = [[NSColor greenColor] retain];
-    return squareColor;
+- (id)initWithBounds:(NSRect)bounds {
+    if (self = [super initWithBounds:bounds]) {
+        if (squareColor == nil)
+            squareColor = [[NSColor greenColor] retain];
+        [super setColor:squareColor];
+        [[self border] setLineWidth:2.0];
+    }
+    return self;
 }
 
-+ (void)setColor:(NSColor *)newColor {
+- (void)setColor:(NSColor *)newColor {
+    [super setColor:newColor];
     if (squareColor != newColor) {
         [squareColor release];
         squareColor = [newColor retain];
     }
 }
 
-@end
+- (BOOL)isNoteAnnotation { return YES; }
 
-#pragma mark -
-
-@interface PDFAnnotationText (SKExtensions)
-@end
-
-@implementation PDFAnnotationText (SKExtensions)
-
-static NSColor *textColor = nil;
-
-+ (NSColor *)color {
-    if (textColor == nil)
-        textColor = [[NSColor colorWithDeviceRed:1.0 green:1.0 blue:0.5 alpha:1.0] retain];
-    return textColor;
-}
-
-+ (void)setColor:(NSColor *)newColor {
-    if (textColor != newColor) {
-        [textColor release];
-        textColor = [newColor retain];
-    }
-}
+- (BOOL)isResizable { return YES; }
 
 @end
 
 #pragma mark -
 
-@interface PDFAnnotationFreeText (SKExtensions)
-@end
-
-@implementation PDFAnnotationFreeText (SKExtensions)
+@implementation SKPDFAnnotationFreeText
 
 static NSColor *freeTextColor = nil;
 
-+ (NSColor *)color {
-    if (freeTextColor == nil)
-        freeTextColor = [[NSColor colorWithDeviceRed:1.0 green:1.0 blue:0.5 alpha:1.0] retain];
-    return freeTextColor;
+- (id)initWithBounds:(NSRect)bounds {
+    if (self = [super initWithBounds:bounds]) {
+        if (freeTextColor == nil)
+            freeTextColor = [[NSColor colorWithDeviceRed:1.0 green:1.0 blue:0.5 alpha:1.0] retain];
+        [super setColor:freeTextColor];
+    }
+    return self;
 }
 
-+ (void)setColor:(NSColor *)newColor {
+- (void)setColor:(NSColor *)newColor {
+    [super setColor:newColor];
     if (freeTextColor != newColor) {
         [freeTextColor release];
         freeTextColor = [newColor retain];
     }
 }
 
+- (BOOL)isNoteAnnotation { return YES; }
+
+- (BOOL)isResizable { return YES; }
+
 @end
 
 #pragma mark -
 
-// useful for highlighting things; isTemporaryAnnotation is so we know to remove it
-@implementation SKPDFAnnotationTemporary
+@implementation SKPDFAnnotationText
 
-+ (NSColor *)color {
-    return [NSColor redColor];
+static NSColor *textColor = nil;
+
+- (id)initWithBounds:(NSRect)bounds {
+    if (self = [super initWithBounds:bounds]) {
+        if (textColor == nil)
+            textColor = [[NSColor colorWithDeviceRed:1.0 green:1.0 blue:0.5 alpha:1.0] retain];
+        [super setColor:textColor];
+    }
+    return self;
 }
 
-- (BOOL)isTemporaryAnnotation { return YES; }
+- (void)setColor:(NSColor *)newColor {
+    [super setColor:newColor];
+    if (textColor != newColor) {
+        [textColor release];
+        textColor = [newColor retain];
+    }
+}
 
-- (BOOL)shouldPrint { return NO; }
+- (BOOL)isNoteAnnotation { return YES; }
 
 @end
 
@@ -218,13 +207,17 @@ static NSColor *freeTextColor = nil;
 
 static NSColor *noteColor = nil;
 
-+ (NSColor *)color {
-    if (noteColor == nil)
-        noteColor = [[NSColor colorWithDeviceRed:1.0 green:1.0 blue:0.5 alpha:1.0] retain];
-    return noteColor;
+- (id)initWithBounds:(NSRect)bounds {
+    if (self = [super initWithBounds:bounds]) {
+        if (noteColor == nil)
+            noteColor = [[NSColor colorWithDeviceRed:1.0 green:1.0 blue:0.5 alpha:1.0] retain];
+        [super setColor:noteColor];
+    }
+    return self;
 }
 
-+ (void)setColor:(NSColor *)newColor {
+- (void)setColor:(NSColor *)newColor {
+    [super setColor:newColor];
     if (noteColor != newColor) {
         [noteColor release];
         noteColor = [newColor retain];
@@ -243,6 +236,8 @@ static NSColor *noteColor = nil;
     [dict setValue:[self image] forKey:@"image"];
     return dict;
 }
+
+- (BOOL)isNoteAnnotation { return YES; }
 
 - (NSString *)type {
     return @"Note";
@@ -273,5 +268,16 @@ static NSColor *noteColor = nil;
         text = [newText retain];
     }
 }
+
+@end
+
+#pragma mark -
+
+// useful for highlighting things; isTemporaryAnnotation is so we know to remove it
+@implementation SKPDFAnnotationTemporary
+
+- (BOOL)isTemporaryAnnotation { return YES; }
+
+- (BOOL)shouldPrint { return NO; }
 
 @end

@@ -88,7 +88,6 @@ static NSRect RectPlusScale (NSRect aRect, float scale);
 	[super drawPage: pdfPage];
 	
     NSArray *allAnnotations = [pdfPage annotations];
-    NSSet *noteTypes = [NSSet setWithObjects:@"FreeText", @"Text", @"Note", @"Circle", @"Square", nil];
     
     if (allAnnotations) {
         unsigned int i, count = [allAnnotations count];
@@ -100,7 +99,7 @@ static NSRect RectPlusScale (NSRect aRect, float scale);
             PDFAnnotation *annotation;
             
             annotation = [allAnnotations objectAtIndex: i];
-            if ([noteTypes containsObject:[annotation type]] && [annotation isTemporaryAnnotation] == NO) {
+            if ([annotation isNoteAnnotation]) {
                 if (annotation == activeAnnotation) {
                     foundActive = YES;
                 } else if ([[annotation type] isEqualToString:@"FreeText"]) {
@@ -122,7 +121,7 @@ static NSRect RectPlusScale (NSRect aRect, float scale);
             [path stroke];
             
             // Draw resize handle.
-            if ([[activeAnnotation type] isEqualToString:@"FreeText"] || [[activeAnnotation type] isEqualToString:@"Circle"] || [[activeAnnotation type] isEqualToString:@"Square"])
+            if ([activeAnnotation isResizable])
                 NSRectFill(NSIntegralRect([self resizeThumbForRect:bounds rotation:[pdfPage rotation]]));
         }
     }
@@ -432,7 +431,7 @@ static NSRect RectPlusScale (NSRect aRect, float scale);
         
         if (page) {
             annotation = [page annotationAtPoint:[self convertPoint:point toPage:page]];
-            if ([annotation isTemporaryAnnotation] || NO == [[NSSet setWithObjects:@"FreeText", @"Text", @"Note", @"Circle", @"Square", nil] containsObject:[annotation type]])
+            if ([annotation isNoteAnnotation] == NO)
                 annotation == nil;
         }
         
@@ -503,29 +502,26 @@ static NSRect RectPlusScale (NSRect aRect, float scale);
 	// Create annotation and add to page.
     switch ([self annotationMode]) {
         case SKFreeTextAnnotationMode:
-            newAnnotation = [[PDFAnnotationFreeText alloc] initWithBounds:bounds];
+            newAnnotation = [[SKPDFAnnotationFreeText alloc] initWithBounds:bounds];
             break;
         case SKTextAnnotationMode:
-            newAnnotation = [[PDFAnnotationText alloc] initWithBounds:bounds];
+            newAnnotation = [[SKPDFAnnotationText alloc] initWithBounds:bounds];
             break;
         case SKNoteAnnotationMode:
             newAnnotation = [[SKPDFAnnotationNote alloc] initWithBounds:bounds];
             break;
         case SKCircleAnnotationMode:
-            newAnnotation = [[PDFAnnotationCircle alloc] initWithBounds:NSInsetRect(bounds, -5.0, -5.0)];
-            [[newAnnotation border] setLineWidth:2.0];
+            newAnnotation = [[SKPDFAnnotationCircle alloc] initWithBounds:NSInsetRect(bounds, -5.0, -5.0)];
             if (text == nil)
                 text = [[[page selectionForRect:bounds] string] stringByCollapsingWhitespaceAndNewlinesAndRemovingSurroundingWhitespaceAndNewlines];
             break;
         case SKSquareAnnotationMode:
             newAnnotation = [[PDFAnnotationSquare alloc] initWithBounds:bounds];
-            [[newAnnotation border] setLineWidth:2.0];
             if (text == nil)
                 text = [[[page selectionForRect:bounds] string] stringByCollapsingWhitespaceAndNewlinesAndRemovingSurroundingWhitespaceAndNewlines];
             break;
 	}
     [newAnnotation setContents:text ? text : NSLocalizedString(@"New note", @"Default text for new note")];
-    [newAnnotation setDefaultColor];
     
     [page addAnnotation:newAnnotation];
     
@@ -786,7 +782,6 @@ static NSRect RectPlusScale (NSRect aRect, float scale)
 }
 
 - (void)selectAnnotationWithEvent:(NSEvent *)theEvent {
-    NSSet *noteTypes = [NSSet setWithObjects:@"FreeText", @"Text", @"Note", @"Circle", @"Square", nil];
     PDFAnnotation *newActiveAnnotation = NULL;
     PDFAnnotation *wasActiveAnnotation;
     NSArray *annotations;
@@ -814,7 +809,7 @@ static NSRect RectPlusScale (NSRect aRect, float scale)
         annotationBounds = [[annotations objectAtIndex:i] bounds];
         if (NSPointInRect(pagePoint, annotationBounds)) {
             PDFAnnotation *annotationHit = [annotations objectAtIndex:i];
-            if ([noteTypes containsObject:[annotationHit type]] && [annotationHit isTemporaryAnnotation] == NO) {
+            if ([annotationHit isNoteAnnotation]) {
                 // We count this one.
                 newActiveAnnotation = annotationHit;
                 
