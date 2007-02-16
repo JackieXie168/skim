@@ -38,6 +38,7 @@
 		CE2DEAA30B860A7000D0DA12 /* SaveProgressSheet.nib in Resources */ = {isa = PBXBuildFile; fileRef = CE2DEA9D0B860A7000D0DA12 /* SaveProgressSheet.nib */; };
 		CE2DEB1C0B8618DE00D0DA12 /* SKFindController.m in Sources */ = {isa = PBXBuildFile; fileRef = CE2DEB1B0B8618DE00D0DA12 /* SKFindController.m */; };
 		CE2DEB920B86206400D0DA12 /* FindPanel.nib in Resources */ = {isa = PBXBuildFile; fileRef = CE2DEB900B86206400D0DA12 /* FindPanel.nib */; };
+		CE2DED6C0B86334900D0DA12 /* BDSKFindFieldEditor.m in Sources */ = {isa = PBXBuildFile; fileRef = CE2DED6B0B86334900D0DA12 /* BDSKFindFieldEditor.m */; };
 		CE380A7B0B834E6200A1B779 /* CameraCursor.tiff in Resources */ = {isa = PBXBuildFile; fileRef = CE380A7A0B834E6100A1B779 /* CameraCursor.tiff */; };
 		CE380C620B837B6100A1B779 /* NoteViewAdorn.tiff in Resources */ = {isa = PBXBuildFile; fileRef = CE380C600B837B6100A1B779 /* NoteViewAdorn.tiff */; };
 		CE380C630B837B6100A1B779 /* SnapshotViewAdorn.tiff in Resources */ = {isa = PBXBuildFile; fileRef = CE380C610B837B6100A1B779 /* SnapshotViewAdorn.tiff */; };
@@ -149,6 +150,8 @@
 		CE2DEB1A0B8618DE00D0DA12 /* SKFindController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SKFindController.h; sourceTree = "<group>"; };
 		CE2DEB1B0B8618DE00D0DA12 /* SKFindController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SKFindController.m; sourceTree = "<group>"; };
 		CE2DEB910B86206400D0DA12 /* English */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = English; path = English.lproj/FindPanel.nib; sourceTree = "<group>"; };
+		CE2DED6A0B86334900D0DA12 /* BDSKFindFieldEditor.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = BDSKFindFieldEditor.h; sourceTree = "<group>"; };
+		CE2DED6B0B86334900D0DA12 /* BDSKFindFieldEditor.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = BDSKFindFieldEditor.m; sourceTree = "<group>"; };
 		CE380A7A0B834E6100A1B779 /* CameraCursor.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; name = CameraCursor.tiff; path = Images/CameraCursor.tiff; sourceTree = "<group>"; };
 		CE380C600B837B6100A1B779 /* NoteViewAdorn.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; name = NoteViewAdorn.tiff; path = Images/NoteViewAdorn.tiff; sourceTree = "<group>"; };
 		CE380C610B837B6100A1B779 /* SnapshotViewAdorn.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; name = SnapshotViewAdorn.tiff; path = Images/SnapshotViewAdorn.tiff; sourceTree = "<group>"; };
@@ -310,13 +313,13 @@
 				CE5470010B32D96500F8AFB6 /* NoteWindow.nib */,
 				4530D81E0B27ACD0007C59F4 /* SubWindow.nib */,
 				CE4EC4FD0B7E255C0091F228 /* PreferencePanel.nib */,
+				CE2DEB900B86206400D0DA12 /* FindPanel.nib */,
 				F977515E0B37460100DF673B /* ConversionProgressWindow.nib */,
 				CE2DEA9D0B860A7000D0DA12 /* SaveProgressSheet.nib */,
 				45A3BD380B4F097D002B297F /* InitialUserDefaults.plist */,
 				2A37F4B9FDCFA73011CA2CEA /* Credits.rtf */,
 				8D15AC360486D014006FF6A4 /* Info.plist */,
 				089C165FFE840EACC02AAC07 /* InfoPlist.strings */,
-				CE2DEB900B86206400D0DA12 /* FindPanel.nib */,
 			);
 			name = Resources;
 			sourceTree = "<group>";
@@ -396,6 +399,8 @@
 				CE4EC88B0B7E6EDB0091F228 /* SKSplitView.m */,
 				CE3A41560B790C56006B64D3 /* BDSKDragImageView.h */,
 				CE3A41570B790C56006B64D3 /* BDSKDragImageView.m */,
+				CE2DED6A0B86334900D0DA12 /* BDSKFindFieldEditor.h */,
+				CE2DED6B0B86334900D0DA12 /* BDSKFindFieldEditor.m */,
 				F92DB5B10B36FE5E002A26E9 /* BDSKHeaderPopUpButton.h */,
 				F92DB5B20B36FE5E002A26E9 /* BDSKHeaderPopUpButton.m */,
 				F92DB5A80B36FE1F002A26E9 /* BDSKHeaderPopUpButtonCell.h */,
@@ -626,6 +631,7 @@
 				CE2DE4FD0B85DBD400D0DA12 /* SKPDFHoverWindow.m in Sources */,
 				CE2DE50D0B85DC4000D0DA12 /* PDFPage_SKExtensions.m in Sources */,
 				CE2DEB1C0B8618DE00D0DA12 /* SKFindController.m in Sources */,
+				CE2DED6C0B86334900D0DA12 /* BDSKFindFieldEditor.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
