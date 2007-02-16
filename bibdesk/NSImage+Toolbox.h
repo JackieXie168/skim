@@ -45,16 +45,9 @@
 + (NSImage *)iconWithSize:(NSSize)iconSize forToolboxCode:(OSType) code;
 + (NSImage *)imageWithLargeIconForToolboxCode:(OSType) code;
 + (NSImage *)missingFileImage;
-+ (NSImage *)smallMissingFileImage;
 
-// the small... image methods return a 16x16 scaled representation, cached for speed
-+ (NSImage *)smallGenericInternetLocationImage;
-+ (NSImage *)smallImageForFileType:(NSString *)fileType;
-+ (NSImage *)smallImageForURL:(NSURL *)aURL;
-+ (NSImage *)smallImageNamed:(NSString *)imageName;
 + (NSImage *)imageForURL:(NSURL *)aURL;
 + (NSImage *)imageForFile:(NSString *)path;
-+ (NSImage *)smallImageForFile:(NSString *)path;
 - (NSImage *)imageFlippedHorizontally;
 - (NSImage *)highlightedImage;
 - (NSImage *)dragImageWithCount:(int)count;

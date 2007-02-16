@@ -71,6 +71,13 @@
     return self;
 }
 
+- (void)dealloc
+{
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:NSWindowDidBecomeMainNotification object:nil];
+    mainDocument = nil;
+    [super dealloc];
+}
+
 - (void)awakeFromNib{
     [openUsingFilterAccessoryView retain];
 }

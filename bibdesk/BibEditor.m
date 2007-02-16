@@ -677,15 +677,11 @@ static int numberOfOpenEditors = 0;
         if([fileManager fileExistsAtPath:filePath] == NO)
             filePath = [[itemDict objectForKey:@"DownloadEntryPostPath"] stringByStandardizingPath];
 		if([fileManager fileExistsAtPath:filePath]){
-			NSString *fileName = [filePath lastPathComponent];
-			NSImage *image = [[NSWorkspace sharedWorkspace] iconForFile:filePath];
-			[image setSize: NSMakeSize(16, 16)];
-			
-			NSMenuItem *item = [menu addItemWithTitle:fileName
+			NSMenuItem *item = [menu addItemWithTitle:[filePath lastPathComponent]
                                                action:@selector(setLocalURLPathFromMenuItem:)
                                         keyEquivalent:@""];
 			[item setRepresentedObject:filePath];
-			[item setImage:image];
+			[item setImageAndSize:[NSImage imageForFile:filePath]];
 		}
 	}
     
@@ -706,14 +702,11 @@ static int numberOfOpenEditors = 0;
 		NSDictionary *itemDict = [historyArray objectAtIndex:i];
 		NSString *URLString = [itemDict objectForKey:@"DownloadEntryURL"];
 		if (![NSString isEmptyString:URLString] && [NSURL URLWithString:URLString]) {
-			NSImage *image = [NSImage smallGenericInternetLocationImage];
-			[image setSize: NSMakeSize(16, 16)];
-			
 			NSMenuItem *item = [menu addItemWithTitle:URLString
                                                action:@selector(setRemoteURLFromMenuItem:)
                                         keyEquivalent:@""];
 			[item setRepresentedObject:URLString];
-			[item setImage:image];
+			[item setImageAndSize:[NSImage genericInternetLocationImage]];
 		}
 	}
     
@@ -764,7 +757,6 @@ static int numberOfOpenEditors = 0;
 	if(historyArray) CFRelease(historyArray);
     
     NSString *fileName;
-    NSImage *image;
     NSMenuItem *item;
     
     [menu removeAllItems];
@@ -773,14 +765,12 @@ static int numberOfOpenEditors = 0;
     e = [previewRecentPaths objectEnumerator];
     while(filePath = [e nextObject]){
         if([[NSFileManager defaultManager] fileExistsAtPath:filePath]){
-            fileName = [filePath lastPathComponent];
-            image = [NSImage smallImageForFile:filePath];
-            
+            fileName = [filePath lastPathComponent];            
             item = [menu addItemWithTitle:fileName
                                    action:@selector(setLocalURLPathFromMenuItem:)
                             keyEquivalent:@""];
             [item setRepresentedObject:filePath];
-            [item setImage:image];
+            [item setImageAndSize:[NSImage imageForFile:filePath]];
         }
     }
     
@@ -793,14 +783,12 @@ static int numberOfOpenEditors = 0;
     while(filePath = [e nextObject]){
         
         if(![previewRecentPaths containsObject:filePath] && [[NSFileManager defaultManager] fileExistsAtPath:filePath]){
-            fileName = [filePath lastPathComponent];
-            image = [NSImage smallImageForFile:filePath];
-            
+            fileName = [filePath lastPathComponent];            
             item = [menu addItemWithTitle:fileName
                                    action:@selector(setLocalURLPathFromMenuItem:)
                             keyEquivalent:@""];
             [item setRepresentedObject:filePath];
-            [item setImage:image];
+            [item setImageAndSize:[NSImage imageForFile:filePath]];
         }
     }  
     
@@ -840,17 +828,14 @@ static int numberOfOpenEditors = 0;
         NSEnumerator *e = [paths objectEnumerator];
         
         NSString *filePath;
-        NSImage *image;
         NSMenuItem *item;
         
-        while(filePath = [e nextObject]){
-            image = [NSImage smallImageForFile:filePath];
-            
+        while(filePath = [e nextObject]){            
             item = [menu addItemWithTitle:[filePath lastPathComponent]
                                    action:@selector(setLocalURLPathFromMenuItem:)
                             keyEquivalent:@""];
             [item setRepresentedObject:filePath];
-            [item setImage:image];
+            [item setImageAndSize:[NSImage imageForFile:filePath]];
         }
     }
 }
@@ -1881,9 +1866,8 @@ static int numberOfOpenEditors = 0;
 	if ([publication needsToBeFiled] == YES) {
 		[self setStatus:NSLocalizedString(@"Linked file needs to be filed.",@"Linked file needs to be filed.")];
 		if ([[statusBar iconIdentifiers] containsObject:@"NeedsToBeFiled"] == NO) {
-			NSImage *icon = [NSImage smallImageNamed:@"genericFolderIcon"];
 			NSString *tooltip = NSLocalizedString(@"The linked file needs to be filed.", @"Tool tip message");
-			[statusBar addIcon:icon withIdentifier:@"NeedsToBeFiled" toolTip:tooltip];
+			[statusBar addIcon:[NSImage imageNamed:@"genericFolderIcon"] withIdentifier:@"NeedsToBeFiled" toolTip:tooltip];
 		}
 	} else {
 		[self setStatus:@""];
@@ -1894,9 +1878,8 @@ static int numberOfOpenEditors = 0;
 - (void)updateCiteKeyAutoGenerateStatus{
 	if ([publication hasEmptyOrDefaultCiteKey] && [[OFPreferenceWrapper sharedPreferenceWrapper] boolForKey:BDSKCiteKeyAutogenerateKey]) {
 		if ([[statusBar iconIdentifiers] containsObject:@"NeedsToGenerateCiteKey"] == NO) {
-			NSImage *icon = [NSImage smallImageNamed:@"key"];
 			NSString *tooltip = NSLocalizedString(@"The cite key needs to be generated.", @"Tool tip message");
-			[statusBar addIcon:icon withIdentifier:@"NeedsToGenerateCiteKey" toolTip:tooltip];
+			[statusBar addIcon:[NSImage imageNamed:@"key"] withIdentifier:@"NeedsToGenerateCiteKey" toolTip:tooltip];
 		}
 	} else {
 		[statusBar removeIconWithIdentifier:@"NeedsToGenerateCiteKey"];
@@ -2268,7 +2251,7 @@ static int numberOfOpenEditors = 0;
 
 - (NSImage *)fileIconForFormCell:(id)cell{
     // we can assume that this cell should have a file icon
-    return [publication smallImageForURLField:[cell representedObject]];
+    return [publication imageForURLField:[cell representedObject]];
 }
 
 - (NSImage *)dragIconForFormCell:(id)cell{
@@ -2929,11 +2912,11 @@ static NSString *queryStringWithCiteKey(NSString *citekey)
 		NSImage *badgeImage = nil;
 		
 		if (state & BDSKDrawerStateWebMask)
-			badgeImage = [NSImage smallGenericInternetLocationImage];
+			badgeImage = [NSImage genericInternetLocationImage];
 		else if (state & BDSKDrawerStateTextMask)
-			badgeImage = [NSImage smallImageForFileType:@"txt"];
+			badgeImage = [NSImage imageForFileType:@"txt"];
 		else
-			badgeImage = [publication smallImageForURLField:BDSKLocalUrlString];
+			badgeImage = [publication imageForURLField:BDSKLocalUrlString];
 		
 		NSRect iconRect = NSMakeRect(0, 0, 32, 32);
 		NSSize arrowSize = [arrowImage size];

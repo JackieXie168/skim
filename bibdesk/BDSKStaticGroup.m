@@ -95,7 +95,7 @@ static NSString *BDSKLastImportLocalizedString = nil;
 }
 
 - (NSImage *)icon {
-	return [NSImage smallImageNamed:@"staticFolderIcon"];
+	return [NSImage imageNamed:@"staticFolderIcon"];
 }
 
 - (BOOL)isStatic { return YES; }
@@ -166,7 +166,7 @@ static NSString *BDSKLastImportLocalizedString = nil;
 @implementation BDSKLastImportGroup
 
 - (NSImage *)icon {
-	return [NSImage smallImageNamed:@"importFolderIcon"];
+	return [NSImage imageNamed:@"importFolderIcon"];
 }
 
 - (BOOL)hasEditableName { return NO; }

@@ -217,7 +217,7 @@ static NSString *BDSKLibraryLocalizedString = nil;
 }
 
 - (NSImage *)icon {
-    // this icon looks better than the one we get from +[NSImage imageNamed:@"FolderPenIcon"] or smallImageNamed:
+    // this icon looks better than the one we get from +[NSImage imageNamed:@"FolderPenIcon"] or imageNamed:
     static NSImage *image = nil;
     if(nil == image)
         image = [[[NSWorkspace sharedWorkspace] iconForFile:[[NSBundle mainBundle] bundlePath]] copy];

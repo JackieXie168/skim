@@ -826,15 +826,6 @@ enum {
 - (NSString *)localFilePathForField:(NSString *)field inherit:(BOOL)inherit;
 
 /*!
-    @method     smallImageForURLField:
-    @abstract   Returns a 16x16 image for a URL field (local or remote)
-    @discussion (comprehensive description)
-    @param      field (description)
-    @result     (description)
-*/
-- (NSImage *)smallImageForURLField:(NSString *)field;
-
-/*!
     @method     imageForURLField:
     @abstract   Returns an icon representation of a URL field.
     @discussion (comprehensive description)

@@ -166,9 +166,7 @@ static NSString *BDSKMenuApplicationURL = @"BDSKMenuApplicationURL";
         [item setRepresentedObject:representedObject];
         
         // use NSWorkspace to get an image; using [NSImage imageForURL:] doesn't work for some reason
-        NSImage *image = [workspace iconForFileURL:applicationURL];
-        [image setSize:NSMakeSize(16,16)];
-        [item setImage:image];
+        [item setImageAndSize:[workspace iconForFileURL:applicationURL]];
         [representedObject release];
         if([defaultEditorURL isEqual:applicationURL]){
             [self insertItem:item atIndex:0];
@@ -265,3 +263,26 @@ static id sharedOpenWithController = nil;
 
 @end
 
+@implementation NSMenuItem (BDSKImageExtensions)
+
+- (void)setImageAndSize:(NSImage *)image;
+{
+    const NSSize dstSize = { 16.0, 16.0 };
+    NSSize srcSize = [image size];
+    if (NSEqualSizes(srcSize, dstSize)) {
+        [self setImage:image];
+    } else {
+        NSImage *newImage = [[NSImage alloc] initWithSize:dstSize];
+        NSGraphicsContext *ctxt = [NSGraphicsContext currentContext];
+        [newImage lockFocus];
+        [ctxt saveGraphicsState];
+        [ctxt setImageInterpolation:NSImageInterpolationHigh];
+        [image drawInRect:NSMakeRect(0, 0, 16.0, 16.0) fromRect:NSMakeRect(0, 0, srcSize.width, srcSize.height) operation:NSCompositeCopy fraction:1.0];
+        [ctxt restoreGraphicsState];
+        [newImage unlockFocus];
+        [self setImage:newImage];
+        [newImage release];
+    }
+}
+        
+@end

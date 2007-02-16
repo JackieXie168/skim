@@ -82,7 +82,8 @@ static NSString *BibDocumentToolbarCiteDrawerItemIdentifier = @"BibDocumentToolb
     // New
     NSImage *image = [[[NSImage alloc] initWithSize:NSMakeSize(32, 32)] autorelease];
     [image lockFocus];
-    [[NSImage imageNamed: @"newdoc"] compositeToPoint:NSZeroPoint operation:NSCompositeSourceOver]; 
+    NSImage *srcImage = [NSImage imageNamed:@"newdoc"];
+    [srcImage drawInRect:NSMakeRect(0, 0, 32, 32) fromRect:NSMakeRect(0, 0, [srcImage size].width, [srcImage size].height) operation:NSCompositeSourceOver fraction:1.0]; 
     [[NSImage imageWithLargeIconForToolboxCode:kAliasBadgeIcon] compositeToPoint:NSMakePoint(8,-10) operation:NSCompositeSourceOver];
     [image unlockFocus];
     item = [[OAToolbarItem alloc] initWithItemIdentifier:BibDocumentToolbarNewItemIdentifier];

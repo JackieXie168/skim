@@ -223,8 +223,9 @@
 	} else {
 		iconImage = [[self selectedItem] image];
 	}
+    NSSize srcSize = [iconImage size];
 	[dragImage lockFocus];
-	[iconImage compositeToPoint:NSZeroPoint operation:NSCompositeCopy fraction:0.6];
+    [iconImage drawInRect:NSMakeRect(0, 0, size.width, size.height) fromRect:NSMakeRect(0, 0, srcSize.width, srcSize.height) operation:NSCompositeCopy fraction:0.6];
 	[dragImage unlockFocus];
 
 	[self dragImage:dragImage at:mouseLoc offset:NSZeroSize event:theEvent pasteboard:pboard source:self slideBack:YES];

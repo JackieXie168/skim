@@ -128,7 +128,7 @@
 }
 
 - (NSImage *)icon {
-	return [NSImage smallImageNamed:@"genericFolderIcon"];
+	return [NSImage imageNamed:@"genericFolderIcon"];
 }
 
 - (BOOL)isCategory { return YES; }
@@ -151,11 +151,11 @@
     static NSImage *image = nil;
     if(image == nil){
         image = [[NSImage alloc] initWithSize:NSMakeSize(16, 16)];
-        NSImage *genericImage = [NSImage smallImageNamed:@"genericFolderIcon"];
+        NSImage *genericImage = [NSImage imageNamed:@"genericFolderIcon"];
         NSImage *questionMark = [NSImage iconWithSize:NSMakeSize(12, 12) forToolboxCode:kQuestionMarkIcon];
         unsigned i;
         [image lockFocus];
-        [genericImage compositeToPoint:NSZeroPoint operation:NSCompositeCopy fraction:1];
+        [genericImage drawInRect:NSMakeRect(0, 0, 16, 16) fromRect:NSMakeRect(0, 0, [genericImage size].width, [genericImage size].height) operation:NSCompositeCopy fraction:1.0];
         // hack to make the question mark dark enough to be visible
         for(i = 0; i < 3; i++)
             [questionMark compositeToPoint:NSMakePoint(3, 1) operation:NSCompositeSourceOver];

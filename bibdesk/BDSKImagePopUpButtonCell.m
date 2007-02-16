@@ -372,23 +372,15 @@
 	if ([buttonCell image] == nil || [self usesItemFromMenu]) {
 		// we need to redraw the image
 
-		NSImage *image;
-		
-		if ([self usesItemFromMenu] == NO) {
-			image = [self iconImage];
-		} else {
-			image = [[[[self selectedItem] image] copy] autorelease];
-		}
-		
-		[image setSize: [self iconSize]];
-		
+		NSImage *image = [self usesItemFromMenu] ? [[self selectedItem] image] : [self iconImage];
+				
 		NSSize drawSize = [self iconDrawSize];
 		NSRect iconRect = NSZeroRect;
 		NSRect iconDrawRect = NSZeroRect;
 		NSRect arrowRect = NSZeroRect;
 		NSRect arrowDrawRect = NSZeroRect;
  		
-		iconRect.size = [self iconSize];
+		iconRect.size = [image size];
 		iconDrawRect.size = drawSize;
 		if (arrowImage) {
 			arrowRect.size = arrowDrawRect.size = [arrowImage size];
