@@ -2,7 +2,7 @@
 //  SKCollapsibleView.m
 //  Skim
 //
-//  Created by Christiaan Hofman on 18/12/06.
+//  Created by Christiaan Hofman on 12/18/06.
 //  Copyright 2006 __MyCompanyName__. All rights reserved.
 //
 

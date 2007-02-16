@@ -2,7 +2,7 @@
 //  NSString_SKExtensions.m
 //  Skim
 //
-//  Created by Christiaan Hofman on 12/2/07.
+//  Created by Christiaan Hofman on 2/12/07.
 //  Copyright 2007 __MyCompanyName__. All rights reserved.
 //
 

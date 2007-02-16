@@ -2,7 +2,7 @@
 //  BDSKHeaderPopUpButtonCell.m
 //  Bibdesk
 //
-//  Created by Christiaan Hofman on 23/10/05.
+//  Created by Christiaan Hofman on 10/23/05.
 /*
  This software is Copyright (c) 2005,2006
  Christiaan Hofman. All rights reserved.
