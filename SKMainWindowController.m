@@ -90,9 +90,18 @@ static NSString *SKDocumentToolbarSearchItemIdentifier = @"SKDocumentToolbarSear
 }
 
 - (void)dealloc {
-
+    
 	[[NSNotificationCenter defaultCenter] removeObserver: self];
 	
+    [[NSUserDefaultsController sharedUserDefaultsController] removeObserver:self
+            forKeyPath:[NSString stringWithFormat:@"values.%@", SKBackgroundColorKey]];
+    [[NSUserDefaultsController sharedUserDefaultsController] removeObserver:self
+            forKeyPath:[NSString stringWithFormat:@"values.%@", SKFullScreenBackgroundColorKey]];
+    [[NSUserDefaultsController sharedUserDefaultsController] removeObserver:self
+            forKeyPath:[NSString stringWithFormat:@"values.%@", SKSearchHighlightColorKey]];
+    [[NSUserDefaultsController sharedUserDefaultsController] removeObserver:self
+            forKeyPath:[NSString stringWithFormat:@"values.%@", SKShouldHighlightSearchResultsKey]];
+    
     if (thumbnailTimer) {
         [thumbnailTimer invalidate];
         [thumbnailTimer release];
@@ -197,6 +206,25 @@ static NSString *SKDocumentToolbarSearchItemIdentifier = @"SKDocumentToolbarSear
         if (NSWidth([rightSideContentBox frame]) > 0.0)
             [self toggleRightSidePane:self];
     }
+    
+    [pdfView setBackgroundColor:[NSUnarchiver unarchiveObjectWithData:[[NSUserDefaults standardUserDefaults] dataForKey:SKBackgroundColorKey]]];
+    
+    [[NSUserDefaultsController sharedUserDefaultsController] addObserver:self
+            forKeyPath:[NSString stringWithFormat:@"values.%@", SKBackgroundColorKey]
+               options:0
+               context:NULL];
+    [[NSUserDefaultsController sharedUserDefaultsController] addObserver:self
+            forKeyPath:[NSString stringWithFormat:@"values.%@", SKFullScreenBackgroundColorKey]
+               options:0
+               context:NULL];
+    [[NSUserDefaultsController sharedUserDefaultsController] addObserver:self
+            forKeyPath:[NSString stringWithFormat:@"values.%@", SKSearchHighlightColorKey]
+               options:0
+               context:NULL];
+    [[NSUserDefaultsController sharedUserDefaultsController] addObserver:self
+            forKeyPath:[NSString stringWithFormat:@"values.%@", SKShouldHighlightSearchResultsKey]
+               options:0
+               context:NULL];
     
     [[self window] makeFirstResponder:[pdfView documentView]];
     
@@ -688,7 +716,7 @@ static NSString *SKDocumentToolbarSearchItemIdentifier = @"SKDocumentToolbarSear
     }
     
     [fullScreenWindow setMainView:pdfView];
-    [pdfView setBackgroundColor:[NSColor blackColor]];
+    [pdfView setBackgroundColor:[NSUnarchiver unarchiveObjectWithData:[[NSUserDefaults standardUserDefaults] dataForKey:SKFullScreenBackgroundColorKey]]];
     [pdfView layoutDocumentView];
     [pdfView setNeedsDisplay:YES];
     
@@ -697,7 +725,7 @@ static NSString *SKDocumentToolbarSearchItemIdentifier = @"SKDocumentToolbarSear
 }
 
 - (void)removeFullScreen {
-    [pdfView setBackgroundColor:[NSColor colorWithCalibratedWhite:0.5 alpha:1.0]];
+    [pdfView setBackgroundColor:[NSUnarchiver unarchiveObjectWithData:[[NSUserDefaults standardUserDefaults] dataForKey:SKBackgroundColorKey]]];
     [pdfView layoutDocumentView];
     
     [self setWindow:mainWindow];
@@ -2049,6 +2077,41 @@ static NSString *SKDocumentToolbarSearchItemIdentifier = @"SKDocumentToolbarSear
     [mainView setFrame:mainFrame];
     
     [sender adjustSubviews];
+}
+
+- (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context {
+    if ([keyPath isEqualToString:[NSString stringWithFormat:@"values.%@", SKBackgroundColorKey]]) {
+        if ([self isFullScreen] == NO && [self isPresentation] == NO)
+            [pdfView setBackgroundColor:[NSUnarchiver unarchiveObjectWithData:[[NSUserDefaults standardUserDefaults] dataForKey:SKBackgroundColorKey]]];
+    } else if ([keyPath isEqualToString:[NSString stringWithFormat:@"values.%@", SKFullScreenBackgroundColorKey]]) {
+        if ([self isFullScreen])
+            [pdfView setBackgroundColor:[NSUnarchiver unarchiveObjectWithData:[[NSUserDefaults standardUserDefaults] dataForKey:SKSearchHighlightColorKey]]];
+    } else if ([keyPath isEqualToString:[NSString stringWithFormat:@"values.%@", SKSearchHighlightColorKey]]) {
+        if ([[NSUserDefaults standardUserDefaults] boolForKey:SKShouldHighlightSearchResultsKey] && 
+            [[findField stringValue] length] && [findTableView numberOfSelectedRows]) {
+            // clear the selection
+            [self removeTemporaryAnnotations];
+            
+            NSEnumerator *selE = [[findArrayController selectedObjects] objectEnumerator];
+            PDFSelection *sel;
+            
+            while (sel = [selE nextObject])
+                [self addAnnotationsForSelection:sel];
+        }
+    } else if ([keyPath isEqualToString:[NSString stringWithFormat:@"values.%@", SKShouldHighlightSearchResultsKey]]) {
+        if ([[findField stringValue] length] && [findTableView numberOfSelectedRows]) {
+            // clear the selection
+            [self removeTemporaryAnnotations];
+            
+            if ([[NSUserDefaults standardUserDefaults] boolForKey:SKShouldHighlightSearchResultsKey]) {
+                NSEnumerator *selE = [[findArrayController selectedObjects] objectEnumerator];
+                PDFSelection *sel;
+                
+                while (sel = [selE nextObject])
+                    [self addAnnotationsForSelection:sel];
+            }
+        }
+    }
 }
 
 @end
