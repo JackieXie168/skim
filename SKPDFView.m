@@ -10,9 +10,12 @@
 
 #import "SKPDFView.h"
 #import "SKNavigationWindow.h"
+#import "SKPDFHoverWindow.h"
 #import "SKMainWindowController.h"
 #import "SKPDFAnnotationNote.h"
+#import "PDFPage_SKExtensions.h"
 #import "NSString_SKExtensions.h"
+#import "NSCursor_SKExtensions.h"
 
 NSString *SKPDFViewToolModeChangedNotification = @"SKPDFViewToolModeChangedNotification";
 NSString *SKPDFViewAnnotationModeChangedNotification = @"SKPDFViewAnnotationModeChangedNotification";
@@ -22,74 +25,36 @@ NSString *SKPDFViewDidRemoveAnnotationNotification = @"SKPDFViewDidRemoveAnnotat
 NSString *SKPDFViewDidChangeAnnotationNotification = @"SKPDFViewDidChangeAnnotationNotification";
 NSString *SKPDFViewAnnotationDoubleClickedNotification = @"SKPDFViewAnnotationDoubleClickedNotification";
 
-@interface NSCursor (SKPDFViewExtensions)
-+ (NSCursor *)zoomInCursor;
-+ (NSCursor *)zoomOutCursor;
-@end
 
-@implementation NSCursor (SKPDFViewExtensions)
-
-+ (NSCursor *)zoomInCursor {
-    static NSCursor *zoomInCursor = nil;
-    if (nil == zoomInCursor) {
-        NSImage *cursorImage = [[[NSImage imageNamed:@"zoomInCursor"] copy] autorelease];
-        zoomInCursor = [[NSCursor alloc] initWithImage:cursorImage hotSpot:NSMakePoint(6.0, 6.0)];
-    }
-    return zoomInCursor;
-}
-
-+ (NSCursor *)zoomOutCursor {
-    static NSCursor *zoomOutCursor = nil;
-    if (nil == zoomOutCursor) {
-        NSImage *cursorImage = [[[NSImage imageNamed:@"zoomOutCursor"] copy] autorelease];
-        zoomOutCursor = [[NSCursor alloc] initWithImage:cursorImage hotSpot:NSMakePoint(6.0, 6.0)];
-    }
-    return zoomOutCursor;
-}
-
-@end
-
-
-@interface SKPDFHoverWindow : NSPanel {
-    NSImageView *imageView;
-    PDFDestination *destination;
-    NSViewAnimation *animation;
-}
-+ (id)sharedHoverWindow;
-- (void)showWithDestination:(PDFDestination *)dest atPoint:(NSPoint)point fromView:(PDFView *)srcView;
-- (void)hide;
-@end
-
-
-static NSRect RectPlusScale (NSRect aRect, float scale)
-{
-	float maxX;
-	float maxY;
-	NSPoint origin;
-	
-	// Determine edges.
-	maxX = ceilf(aRect.origin.x + aRect.size.width) + scale;
-	maxY = ceilf(aRect.origin.y + aRect.size.height) + scale;
-	origin.x = floorf(aRect.origin.x) - scale;
-	origin.y = floorf(aRect.origin.y) - scale;
-	
-	return NSMakeRect(origin.x, origin.y, maxX - origin.x, maxY - origin.y);
-}
-
-
-@interface PDFView (PDFViewPrivate)
+@interface PDFView (PDFViewPrivateDeclarations)
 - (void)pdfViewControlHit:(id)sender;
 - (void)removeAnnotationControl;
 @end
+
+#pragma mark -
+
+static NSRect RectPlusScale (NSRect aRect, float scale);
 
 @interface SKPDFView (Private)
 
 - (NSRect)resizeThumbForRect:(NSRect) rect rotation:(int)rotation;
 - (void)transformContextForPage:(PDFPage *)page;
+
+- (void)autohideTimerFired:(NSTimer *)aTimer;
+- (void)doAutohide:(BOOL)flag;
+
 - (NSCursor *)cursorForMouseMovedEvent:(NSEvent *)event;
 - (PDFDestination *)destinationForEvent:(NSEvent *)theEvent isLink:(BOOL *)isLink;
 
+- (void)selectAnnotationWithEvent:(NSEvent *)theEvent;
+- (void)dragAnnotationWithEvent:(NSEvent *)theEvent;
+- (void)selectSnapshotWithEvent:(NSEvent *)theEvent;
+- (void)magnifyWithEvent:(NSEvent *)theEvent;
+- (void)dragWithEvent:(NSEvent *)theEvent;
+
 @end
+
+#pragma mark -
 
 @implementation SKPDFView
 
@@ -416,24 +381,265 @@ static NSRect RectPlusScale (NSRect aRect, float scale)
     }
 }
 
-- (void)autohideTimerFired:(NSTimer *)aTimer {
-    if (NSPointInRect([NSEvent mouseLocation], [navWindow frame]))
-        return;
-    if (autohidesCursor)
-        [NSCursor setHiddenUntilMouseMoves:YES];
-    if (hasNavigation)
-        [navWindow hide];
+- (NSMenu *)menuForEvent:(NSEvent *)theEvent {
+    NSMenu *menu = [super menuForEvent:theEvent];
+    NSMenu *submenu;
+    NSMenuItem *item;
+
+    [menu addItem:[NSMenuItem separatorItem]];
+    
+    submenu = [[NSMenu allocWithZone:[menu zone]] init];
+    
+    item = [submenu addItemWithTitle:NSLocalizedString(@"Text", @"Menu item title") action:@selector(changeToolMode:) keyEquivalent:@""];
+    [item setTag:SKTextToolMode];
+    [item setTarget:[[self window] windowController]];
+
+    item = [submenu addItemWithTitle:NSLocalizedString(@"Scroll", @"Menu item title") action:@selector(changeToolMode:) keyEquivalent:@""];
+    [item setTag:SKMoveToolMode];
+    [item setTarget:[[self window] windowController]];
+
+    item = [submenu addItemWithTitle:NSLocalizedString(@"Magnify", @"Menu item title") action:@selector(changeToolMode:) keyEquivalent:@""];
+    [item setTag:SKMagnifyToolMode];
+    [item setTarget:[[self window] windowController]];
+    
+    item = [menu addItemWithTitle:NSLocalizedString(@"Tools", @"Menu item title") action:NULL keyEquivalent:@""];
+    [item setSubmenu:submenu];
+    [submenu release];
+
+    submenu = [[NSMenu allocWithZone:[menu zone]] init];
+    
+    item = [submenu addItemWithTitle:NSLocalizedString(@"Text", @"Menu item title") action:@selector(changeAnnotationMode:) keyEquivalent:@""];
+    [item setTag:SKFreeTextAnnotationMode];
+    [item setTarget:[[self window] windowController]];
+    
+    item = [submenu addItemWithTitle:NSLocalizedString(@"Note", @"Menu item title") action:@selector(changeAnnotationMode:) keyEquivalent:@""];
+    [item setTag:SKNoteAnnotationMode];
+    [item setTarget:[[self window] windowController]];
+    
+    item = [submenu addItemWithTitle:NSLocalizedString(@"Oval", @"Menu item title") action:@selector(changeAnnotationMode:) keyEquivalent:@""];
+    [item setTag:SKCircleAnnotationMode];
+    [item setTarget:[[self window] windowController]];
+    
+    item = [menu addItemWithTitle:NSLocalizedString(@"Annotations", @"Menu item title") action:NULL keyEquivalent:@""];
+    [item setSubmenu:submenu];
+    [submenu release];
+    
+    if ([self toolMode] == SKTextToolMode) {
+        
+        NSPoint point = [self convertPoint:[theEvent locationInWindow] fromView:nil];
+        PDFPage *page = [self pageForPoint:point nearest:YES];
+        PDFAnnotation *annotation = nil;
+        
+        if (page) {
+            annotation = [page annotationAtPoint:[self convertPoint:point toPage:page]];
+            if ([annotation isTemporaryAnnotation] || NO == [[NSSet setWithObjects:@"FreeText", @"Text", @"Note", @"Circle", @"Square", nil] containsObject:[annotation type]])
+                annotation == nil;
+        }
+        
+        [menu addItem:[NSMenuItem separatorItem]];
+        
+        item = [menu addItemWithTitle:NSLocalizedString(@"New Note", @"Menu item title") action:@selector(addAnnotation:) keyEquivalent:@""];
+        [item setRepresentedObject:[NSValue valueWithPoint:point]];
+        [item setTarget:self];
+        
+        if (annotation) {
+            item = [menu addItemWithTitle:NSLocalizedString(@"Remove Note", @"Menu item title") action:@selector(removeThisAnnotation:) keyEquivalent:@""];
+            [item setRepresentedObject:annotation];
+            [item setTarget:self];
+            
+            if (annotation != activeAnnotation || editAnnotation == nil) {
+                item = [menu addItemWithTitle:NSLocalizedString(@"Edit Note", @"Menu item title") action:@selector(editThisAnnotation:) keyEquivalent:@""];
+                [item setRepresentedObject:annotation];
+                [item setTarget:self];
+            }
+        } else if (activeAnnotation) {
+            item = [menu addItemWithTitle:NSLocalizedString(@"Remove Current Note", @"Menu item title") action:@selector(removeActiveAnnotation:) keyEquivalent:@""];
+            [item setTarget:self];
+            
+            if (editAnnotation == nil) {
+                item = [menu addItemWithTitle:NSLocalizedString(@"Edit Current Note", @"Menu item title") action:@selector(editActiveAnnotation:) keyEquivalent:@""];
+                [item setTarget:self];
+            }
+        }
+        
+    }
+    
+    return menu;
 }
 
-- (void)doAutohide:(BOOL)flag {
-    if (autohideTimer) {
-        [autohideTimer invalidate];
-        [autohideTimer release];
-        autohideTimer = nil;
-    }
-    if (flag)
-        autohideTimer  = [[NSTimer scheduledTimerWithTimeInterval:3.0 target:self selector:@selector(autohideTimerFired:) userInfo:nil repeats:NO] retain];
+#pragma mark Annotation management
+
+- (void)addAnnotation:(id)sender{
+	PDFAnnotation *newAnnotation = nil;
+	PDFPage *page;
+	NSRect bounds;
+    PDFSelection *selection = [self currentSelection];
+    NSString *text = [[selection string] stringByCollapsingWhitespaceAndNewlinesAndRemovingSurroundingWhitespaceAndNewlines];
+    
+	// Determine bounds to use for new text annotation.
+	if ([sender respondsToSelector:@selector(representedObject)] && [[sender representedObject] respondsToSelector:@selector(pointValue)]) {
+        NSPoint point = [[sender representedObject] pointValue];
+		NSSize defaultSize = ([self annotationMode] == SKTextAnnotationMode || [self annotationMode] == SKNoteAnnotationMode) ? NSMakeSize(16.0, 16.0) : NSMakeSize(128.0, 64.0);
+        
+        page = [self pageForPoint:point nearest:YES];
+        point = [self convertPoint:point toPage:page];
+        bounds = NSMakeRect(point.x - 0.5 * defaultSize.width, point.y - 0.5 * defaultSize.height, defaultSize.width, defaultSize.height);
+	} else if (selection != nil) {
+		// Get bounds (page space) for selection (first page in case selection spans multiple pages).
+		page = [[selection pages] objectAtIndex: 0];
+		bounds = [selection boundsForPage: page];
+	} else {
+		// Get center of the PDFView.
+		NSRect viewFrame = [self frame];
+		NSPoint center = NSMakePoint(NSMidX(viewFrame), NSMidY(viewFrame));
+		NSSize defaultSize = ([self annotationMode] == SKTextAnnotationMode || [self annotationMode] == SKNoteAnnotationMode) ? NSMakeSize(16.0, 16.0) : NSMakeSize(128.0, 64.0);
+		
+		// Convert to "page space".
+		page = [self pageForPoint: center nearest: YES];
+		center = [self convertPoint: center toPage: page];
+        bounds = NSMakeRect(center.x - 0.5 * defaultSize.width, center.y - 0.5 * defaultSize.height, defaultSize.width, defaultSize.height);
+	}
+	
+	// Create annotation and add to page.
+    switch ([self annotationMode]) {
+        case SKFreeTextAnnotationMode:
+            newAnnotation = [[PDFAnnotationFreeText alloc] initWithBounds:bounds];
+            break;
+        case SKTextAnnotationMode:
+            newAnnotation = [[PDFAnnotationText alloc] initWithBounds:bounds];
+            break;
+        case SKNoteAnnotationMode:
+            newAnnotation = [[SKPDFAnnotationNote alloc] initWithBounds:bounds];
+            break;
+        case SKCircleAnnotationMode:
+            newAnnotation = [[PDFAnnotationCircle alloc] initWithBounds:NSInsetRect(bounds, -5.0, -5.0)];
+            [[newAnnotation border] setLineWidth:2.0];
+            if (text == nil)
+                text = [[[page selectionForRect:bounds] string] stringByCollapsingWhitespaceAndNewlinesAndRemovingSurroundingWhitespaceAndNewlines];
+            break;
+        case SKSquareAnnotationMode:
+            newAnnotation = [[PDFAnnotationSquare alloc] initWithBounds:bounds];
+            [[newAnnotation border] setLineWidth:2.0];
+            if (text == nil)
+                text = [[[page selectionForRect:bounds] string] stringByCollapsingWhitespaceAndNewlinesAndRemovingSurroundingWhitespaceAndNewlines];
+            break;
+	}
+    [newAnnotation setContents:text ? text : NSLocalizedString(@"New note", @"Default text for new note")];
+    [newAnnotation setDefaultColor];
+    
+    [page addAnnotation:newAnnotation];
+    
+    [[NSNotificationCenter defaultCenter] postNotificationName:SKPDFViewDidAddAnnotationNotification object:self 
+        userInfo:[NSDictionary dictionaryWithObjectsAndKeys:newAnnotation, @"annotation", page, @"page", nil]];
+
+    [self setActiveAnnotation:newAnnotation];
 }
+
+- (void)removeActiveAnnotation:(id)sender{
+    if (activeAnnotation)
+        [self removeAnnotation:activeAnnotation];
+}
+
+- (void)removeThisAnnotation:(id)sender{
+    PDFAnnotation *annotation = [sender representedObject];
+    
+    if (annotation)
+        [self removeAnnotation:annotation];
+}
+
+- (void)removeAnnotation:(PDFAnnotation *)annotation{
+    PDFAnnotation *wasAnnotation = [annotation retain];
+    PDFPage *page = [wasAnnotation page];
+    
+    if (editAnnotation == annotation)
+        [self endAnnotationEdit:self];
+	if (activeAnnotation == annotation)
+		[self setActiveAnnotation:nil];
+    [self setNeedsDisplayForAnnotation:wasAnnotation];
+    [page removeAnnotation:wasAnnotation];
+    [[NSNotificationCenter defaultCenter] postNotificationName:SKPDFViewDidRemoveAnnotationNotification object:self 
+        userInfo:[NSDictionary dictionaryWithObjectsAndKeys:wasAnnotation, @"annotation", page, @"page", nil]];
+    [wasAnnotation release];
+}
+
+- (void)editThisAnnotation:(id)sender {
+    PDFAnnotation *annotation = [sender representedObject];
+    
+    if (annotation == nil || editAnnotation == annotation)
+        return;
+    
+    if (editAnnotation)
+        [self endAnnotationEdit:self];
+    if (activeAnnotation != annotation)
+        [self setActiveAnnotation:annotation];
+    [self editActiveAnnotation:sender];
+}
+
+- (void)editActiveAnnotation:(id)sender {
+    if (nil == activeAnnotation)
+        return;
+    
+    [self endAnnotationEdit:self];
+    
+    if ([[activeAnnotation type] isEqualToString:@"Note"]) {
+        
+		[[NSNotificationCenter defaultCenter] postNotificationName:SKPDFViewAnnotationDoubleClickedNotification object:self 
+            userInfo:[NSDictionary dictionaryWithObjectsAndKeys:activeAnnotation, @"annotation", nil]];
+        
+    } else if ([[activeAnnotation type] isEqualToString:@"FreeText"] || [[activeAnnotation type] isEqualToString:@"Text"]) {
+        
+        NSRect editBounds = [activeAnnotation bounds];
+        if ([[activeAnnotation type] isEqualToString:@"Text"]) {
+            NSRect pageBounds = [[activeAnnotation page] boundsForBox:[self displayBox]];
+            editBounds = NSInsetRect(editBounds, -120.0, -120.0);
+            if (NSMaxX(editBounds) > NSMaxX(pageBounds))
+                editBounds.origin.x = NSMaxX(pageBounds) - NSWidth(editBounds);
+            if (NSMinX(editBounds) < NSMinX(pageBounds))
+                editBounds.origin.x = NSMinX(pageBounds);
+            if (NSMaxY(editBounds) > NSMaxY(pageBounds))
+                editBounds.origin.y = NSMaxY(pageBounds) - NSHeight(editBounds);
+            if (NSMinY(editBounds) < NSMinY(pageBounds))
+                editBounds.origin.y = NSMinY(pageBounds);
+        }
+        editAnnotation = [[[PDFAnnotationTextWidget alloc] initWithBounds:editBounds] autorelease];
+        [editAnnotation setStringValue:[activeAnnotation contents]];
+        if ([activeAnnotation respondsToSelector:@selector(font)])
+            [editAnnotation setFont:[(PDFAnnotationFreeText *)activeAnnotation font]];
+        [editAnnotation setColor:[activeAnnotation color]];
+        [[activeAnnotation page] addAnnotation:editAnnotation];
+        
+        // Start editing
+        NSPoint location = [self convertPoint:[self convertPoint:NSMakePoint(NSMidX(editBounds), NSMidY(editBounds)) fromPage:[activeAnnotation page]] toView:nil];
+        NSEvent *theEvent = [NSEvent mouseEventWithType:NSLeftMouseDown location:location modifierFlags:0 timestamp:0 windowNumber:[[self window] windowNumber] context:nil eventNumber:0 clickCount:1 pressure:1.0];
+        [super mouseDown:theEvent];
+        
+    }
+    
+}
+
+- (void)endAnnotationEdit:(id)sender {
+    if (editAnnotation) {
+        if ([self respondsToSelector:@selector(removeAnnotationControl)])
+            [self removeAnnotationControl]; // this removes the textfield from the pdfview, need to do this before we remove the text widget
+        if ([[editAnnotation stringValue] isEqualToString:[activeAnnotation contents]] == NO) {
+            [activeAnnotation setContents:[editAnnotation stringValue]];
+            [[NSNotificationCenter defaultCenter] postNotificationName:SKPDFViewDidChangeAnnotationNotification object:self 
+                userInfo:[NSDictionary dictionaryWithObjectsAndKeys:activeAnnotation, @"annotation", nil]];
+        }
+        [[editAnnotation page] removeAnnotation:editAnnotation];
+        editAnnotation = nil;
+    }
+}
+
+// this is the action for the textfield for the text widget. Override to remove it after an edit. 
+- (void)pdfViewControlHit:(id)sender{
+    if ([PDFView instancesRespondToSelector:@selector(pdfViewControlHit:)] && [sender isKindOfClass:[NSTextField class]]) {
+        [super pdfViewControlHit:sender];
+        [self endAnnotationEdit:self];
+    }
+}
+
+#pragma mark FullScreen navigation and autohide
 
 - (void)handleWindowWillCloseNotification:(NSNotification *)notification {
     [navWindow orderOut:self];
@@ -458,13 +664,125 @@ static NSRect RectPlusScale (NSRect aRect, float scale)
     [self doAutohide:autohidesCursor || hasNavigation];
 }
 
-- (void)popUpWithEvent:(NSEvent *)theEvent{
-/*
-    SKMainWindowController* controller = [[self window] windowController];
-    PDFDestination *dest = [self destinationForEvent:theEvent isLink:NULL];
+@end
+
+#pragma mark -
+
+static NSRect RectPlusScale (NSRect aRect, float scale)
+{
+	float maxX;
+	float maxY;
+	NSPoint origin;
+	
+	// Determine edges.
+	maxX = ceilf(aRect.origin.x + aRect.size.width) + scale;
+	maxY = ceilf(aRect.origin.y + aRect.size.height) + scale;
+	origin.x = floorf(aRect.origin.x) - scale;
+	origin.y = floorf(aRect.origin.y) - scale;
+	
+	return NSMakeRect(origin.x, origin.y, maxX - origin.x, maxY - origin.y);
+}
+
+@implementation SKPDFView (Private)
+
+- (NSRect)resizeThumbForRect:(NSRect) rect rotation:(int)rotation
+{
+	NSRect thumb = rect;
+    float size = 8.0;
     
-    [controller showSnapshotAtPageNumber:[[self document] indexForPage:[dest page]] location:[dest point]];        
-*/
+    thumb.size = NSMakeSize(size, size);
+	
+	// Use rotation to determine thumb origin.
+	switch (rotation) {
+		case 0:
+            thumb.origin.x += NSWidth(rect) - NSWidth(thumb);
+            break;
+		case 90:
+            thumb.origin.x += NSWidth(rect) - NSWidth(thumb);
+            thumb.origin.y += NSHeight(rect) - NSHeight(thumb);
+            break;
+		case 180:
+            thumb.origin.y += NSHeight(rect) - NSHeight(thumb);
+            break;
+	}
+	
+	return thumb;
+}
+
+- (void)transformContextForPage:(PDFPage *)page {
+	NSAffineTransform *transform;
+	NSRect boxRect;
+	
+	boxRect = [page boundsForBox:[self displayBox]];
+	
+	transform = [NSAffineTransform transform];
+	[transform translateXBy:-boxRect.origin.x yBy:-boxRect.origin.y];
+	[transform concat];
+}
+
+#pragma mark Autohide timer
+
+- (void)autohideTimerFired:(NSTimer *)aTimer {
+    if (NSPointInRect([NSEvent mouseLocation], [navWindow frame]))
+        return;
+    if (autohidesCursor)
+        [NSCursor setHiddenUntilMouseMoves:YES];
+    if (hasNavigation)
+        [navWindow hide];
+}
+
+- (void)doAutohide:(BOOL)flag {
+    if (autohideTimer) {
+        [autohideTimer invalidate];
+        [autohideTimer release];
+        autohideTimer = nil;
+    }
+    if (flag)
+        autohideTimer  = [[NSTimer scheduledTimerWithTimeInterval:3.0 target:self selector:@selector(autohideTimerFired:) userInfo:nil repeats:NO] retain];
+}
+
+#pragma mark Event handling
+
+- (NSCursor *)cursorForMouseMovedEvent:(NSEvent *)event {
+    NSCursor *cursor = nil;
+    NSPoint p = [[self documentView] convertPoint:[event locationInWindow] fromView:nil];
+    if (NSPointInRect(p, [[self documentView] visibleRect])) {
+        switch (toolMode) {
+            case SKMoveToolMode:
+                cursor = [NSCursor openHandCursor];
+                break;
+            case SKMagnifyToolMode:
+                cursor = ([event modifierFlags] & NSShiftKeyMask) ? [NSCursor zoomOutCursor] : [NSCursor zoomInCursor];
+                break;
+            default:
+                cursor = [NSCursor arrowCursor];
+        }
+    } else {
+        // we want this cursor for toolbar and other views, generally
+        cursor = [NSCursor arrowCursor];
+    }
+    return cursor;
+}
+
+- (PDFDestination *)destinationForEvent:(NSEvent *)theEvent isLink:(BOOL *)isLink {
+    NSPoint windowMouseLoc = [theEvent locationInWindow];
+    
+    NSPoint viewMouseLoc = [self convertPoint:windowMouseLoc fromView:nil];
+    PDFPage *page = [self pageForPoint:viewMouseLoc nearest:YES];
+    NSPoint pageSpaceMouseLoc = [self convertPoint:viewMouseLoc toPage:page];  
+    PDFDestination *dest = [[[PDFDestination alloc] initWithPage:page atPoint:pageSpaceMouseLoc] autorelease];
+    BOOL link = NO;
+    
+    if (([self areaOfInterestForMouse: theEvent] &  kPDFLinkArea) != 0) {
+        link = YES;
+        PDFAnnotation *ann = [page annotationAtPoint:pageSpaceMouseLoc];
+        if (ann != NULL && [[ann destination] page]){
+            dest = [ann destination];
+        }
+    }
+    
+    if (isLink) *isLink = link;
+    return dest;
 }
 
 - (void)selectAnnotationWithEvent:(NSEvent *)theEvent {
@@ -899,571 +1217,6 @@ static NSRect RectPlusScale (NSRect aRect, float scale)
 	[NSCursor unhide];
 	[documentView setPostsBoundsChangedNotifications:postNotification];
 	[self flagsChanged:theEvent]; // update cursor
-}
-
-- (void)addAnnotation:(id)sender{
-	PDFAnnotation *newAnnotation = nil;
-	PDFPage *page;
-	NSRect bounds;
-    PDFSelection *selection = [self currentSelection];
-    NSString *text = [[selection string] stringByCollapsingWhitespaceAndNewlinesAndRemovingSurroundingWhitespaceAndNewlines];
-    
-	// Determine bounds to use for new text annotation.
-	if ([sender respondsToSelector:@selector(representedObject)] && [[sender representedObject] respondsToSelector:@selector(pointValue)]) {
-        NSPoint point = [[sender representedObject] pointValue];
-		NSSize defaultSize = ([self annotationMode] == SKTextAnnotationMode || [self annotationMode] == SKNoteAnnotationMode) ? NSMakeSize(16.0, 16.0) : NSMakeSize(128.0, 64.0);
-        
-        page = [self pageForPoint:point nearest:YES];
-        point = [self convertPoint:point toPage:page];
-        bounds = NSMakeRect(point.x - 0.5 * defaultSize.width, point.y - 0.5 * defaultSize.height, defaultSize.width, defaultSize.height);
-	} else if (selection != nil) {
-		// Get bounds (page space) for selection (first page in case selection spans multiple pages).
-		page = [[selection pages] objectAtIndex: 0];
-		bounds = [selection boundsForPage: page];
-	} else {
-		// Get center of the PDFView.
-		NSRect viewFrame = [self frame];
-		NSPoint center = NSMakePoint(NSMidX(viewFrame), NSMidY(viewFrame));
-		NSSize defaultSize = ([self annotationMode] == SKTextAnnotationMode || [self annotationMode] == SKNoteAnnotationMode) ? NSMakeSize(16.0, 16.0) : NSMakeSize(128.0, 64.0);
-		
-		// Convert to "page space".
-		page = [self pageForPoint: center nearest: YES];
-		center = [self convertPoint: center toPage: page];
-        bounds = NSMakeRect(center.x - 0.5 * defaultSize.width, center.y - 0.5 * defaultSize.height, defaultSize.width, defaultSize.height);
-	}
-	
-	// Create annotation and add to page.
-    switch ([self annotationMode]) {
-        case SKFreeTextAnnotationMode:
-            newAnnotation = [[PDFAnnotationFreeText alloc] initWithBounds:bounds];
-            break;
-        case SKTextAnnotationMode:
-            newAnnotation = [[PDFAnnotationText alloc] initWithBounds:bounds];
-            break;
-        case SKNoteAnnotationMode:
-            newAnnotation = [[SKPDFAnnotationNote alloc] initWithBounds:bounds];
-            break;
-        case SKCircleAnnotationMode:
-            newAnnotation = [[PDFAnnotationCircle alloc] initWithBounds:NSInsetRect(bounds, -5.0, -5.0)];
-            [[newAnnotation border] setLineWidth:2.0];
-            if (text == nil)
-                text = [[[page selectionForRect:bounds] string] stringByCollapsingWhitespaceAndNewlinesAndRemovingSurroundingWhitespaceAndNewlines];
-            break;
-        case SKSquareAnnotationMode:
-            newAnnotation = [[PDFAnnotationSquare alloc] initWithBounds:bounds];
-            [[newAnnotation border] setLineWidth:2.0];
-            if (text == nil)
-                text = [[[page selectionForRect:bounds] string] stringByCollapsingWhitespaceAndNewlinesAndRemovingSurroundingWhitespaceAndNewlines];
-            break;
-	}
-    [newAnnotation setContents:text ? text : NSLocalizedString(@"New note", @"Default text for new note")];
-    [newAnnotation setDefaultColor];
-    
-    [page addAnnotation:newAnnotation];
-    
-    [[NSNotificationCenter defaultCenter] postNotificationName:SKPDFViewDidAddAnnotationNotification object:self 
-        userInfo:[NSDictionary dictionaryWithObjectsAndKeys:newAnnotation, @"annotation", page, @"page", nil]];
-
-    [self setActiveAnnotation:newAnnotation];
-}
-
-- (void)removeActiveAnnotation:(id)sender{
-    if (activeAnnotation)
-        [self removeAnnotation:activeAnnotation];
-}
-
-- (void)removeThisAnnotation:(id)sender{
-    PDFAnnotation *annotation = [sender representedObject];
-    
-    if (annotation)
-        [self removeAnnotation:annotation];
-}
-
-- (void)removeAnnotation:(PDFAnnotation *)annotation{
-    PDFAnnotation *wasAnnotation = [annotation retain];
-    PDFPage *page = [wasAnnotation page];
-    
-    if (editAnnotation == annotation)
-        [self endAnnotationEdit:self];
-	if (activeAnnotation == annotation)
-		[self setActiveAnnotation:nil];
-    [self setNeedsDisplayForAnnotation:wasAnnotation];
-    [page removeAnnotation:wasAnnotation];
-    [[NSNotificationCenter defaultCenter] postNotificationName:SKPDFViewDidRemoveAnnotationNotification object:self 
-        userInfo:[NSDictionary dictionaryWithObjectsAndKeys:wasAnnotation, @"annotation", page, @"page", nil]];
-    [wasAnnotation release];
-}
-
-- (void)editThisAnnotation:(id)sender {
-    PDFAnnotation *annotation = [sender representedObject];
-    
-    if (annotation == nil || editAnnotation == annotation)
-        return;
-    
-    if (editAnnotation)
-        [self endAnnotationEdit:self];
-    if (activeAnnotation != annotation)
-        [self setActiveAnnotation:annotation];
-    [self editActiveAnnotation:sender];
-}
-
-- (void)editActiveAnnotation:(id)sender {
-    if (nil == activeAnnotation)
-        return;
-    
-    [self endAnnotationEdit:self];
-    
-    if ([[activeAnnotation type] isEqualToString:@"Note"]) {
-        
-		[[NSNotificationCenter defaultCenter] postNotificationName:SKPDFViewAnnotationDoubleClickedNotification object:self 
-            userInfo:[NSDictionary dictionaryWithObjectsAndKeys:activeAnnotation, @"annotation", nil]];
-        
-    } else if ([[activeAnnotation type] isEqualToString:@"FreeText"] || [[activeAnnotation type] isEqualToString:@"Text"]) {
-        
-        NSRect editBounds = [activeAnnotation bounds];
-        if ([[activeAnnotation type] isEqualToString:@"Text"]) {
-            NSRect pageBounds = [[activeAnnotation page] boundsForBox:[self displayBox]];
-            editBounds = NSInsetRect(editBounds, -120.0, -120.0);
-            if (NSMaxX(editBounds) > NSMaxX(pageBounds))
-                editBounds.origin.x = NSMaxX(pageBounds) - NSWidth(editBounds);
-            if (NSMinX(editBounds) < NSMinX(pageBounds))
-                editBounds.origin.x = NSMinX(pageBounds);
-            if (NSMaxY(editBounds) > NSMaxY(pageBounds))
-                editBounds.origin.y = NSMaxY(pageBounds) - NSHeight(editBounds);
-            if (NSMinY(editBounds) < NSMinY(pageBounds))
-                editBounds.origin.y = NSMinY(pageBounds);
-        }
-        editAnnotation = [[[PDFAnnotationTextWidget alloc] initWithBounds:editBounds] autorelease];
-        [editAnnotation setStringValue:[activeAnnotation contents]];
-        if ([activeAnnotation respondsToSelector:@selector(font)])
-            [editAnnotation setFont:[(PDFAnnotationFreeText *)activeAnnotation font]];
-        [editAnnotation setColor:[activeAnnotation color]];
-        [[activeAnnotation page] addAnnotation:editAnnotation];
-        
-        // Start editing
-        NSPoint location = [self convertPoint:[self convertPoint:NSMakePoint(NSMidX(editBounds), NSMidY(editBounds)) fromPage:[activeAnnotation page]] toView:nil];
-        NSEvent *theEvent = [NSEvent mouseEventWithType:NSLeftMouseDown location:location modifierFlags:0 timestamp:0 windowNumber:[[self window] windowNumber] context:nil eventNumber:0 clickCount:1 pressure:1.0];
-        [super mouseDown:theEvent];
-        
-    }
-    
-}
-
-- (void)endAnnotationEdit:(id)sender {
-    if (editAnnotation) {
-        if ([self respondsToSelector:@selector(removeAnnotationControl)])
-            [self removeAnnotationControl]; // this removes the textfield from the pdfview, need to do this before we remove the text widget
-        if ([[editAnnotation stringValue] isEqualToString:[activeAnnotation contents]] == NO) {
-            [activeAnnotation setContents:[editAnnotation stringValue]];
-            [[NSNotificationCenter defaultCenter] postNotificationName:SKPDFViewDidChangeAnnotationNotification object:self 
-                userInfo:[NSDictionary dictionaryWithObjectsAndKeys:activeAnnotation, @"annotation", nil]];
-        }
-        [[editAnnotation page] removeAnnotation:editAnnotation];
-        editAnnotation = nil;
-    }
-}
-
-// this is the action for the textfield for the text widget. Override to remove it after an edit. 
-- (void)pdfViewControlHit:(id)sender{
-    if ([PDFView instancesRespondToSelector:@selector(pdfViewControlHit:)] && [sender isKindOfClass:[NSTextField class]]) {
-        [super pdfViewControlHit:sender];
-        [self endAnnotationEdit:self];
-    }
-}
-
-- (NSMenu *)menuForEvent:(NSEvent *)theEvent {
-    NSMenu *menu = [super menuForEvent:theEvent];
-    NSMenu *submenu;
-    NSMenuItem *item;
-
-    [menu addItem:[NSMenuItem separatorItem]];
-    
-    submenu = [[NSMenu allocWithZone:[menu zone]] init];
-    
-    item = [submenu addItemWithTitle:NSLocalizedString(@"Text", @"Menu item title") action:@selector(changeToolMode:) keyEquivalent:@""];
-    [item setTag:SKTextToolMode];
-    [item setTarget:[[self window] windowController]];
-
-    item = [submenu addItemWithTitle:NSLocalizedString(@"Scroll", @"Menu item title") action:@selector(changeToolMode:) keyEquivalent:@""];
-    [item setTag:SKMoveToolMode];
-    [item setTarget:[[self window] windowController]];
-
-    item = [submenu addItemWithTitle:NSLocalizedString(@"Magnify", @"Menu item title") action:@selector(changeToolMode:) keyEquivalent:@""];
-    [item setTag:SKMagnifyToolMode];
-    [item setTarget:[[self window] windowController]];
-    
-    item = [menu addItemWithTitle:NSLocalizedString(@"Tools", @"Menu item title") action:NULL keyEquivalent:@""];
-    [item setSubmenu:submenu];
-    [submenu release];
-
-    submenu = [[NSMenu allocWithZone:[menu zone]] init];
-    
-    item = [submenu addItemWithTitle:NSLocalizedString(@"Text", @"Menu item title") action:@selector(changeAnnotationMode:) keyEquivalent:@""];
-    [item setTag:SKFreeTextAnnotationMode];
-    [item setTarget:[[self window] windowController]];
-    
-    item = [submenu addItemWithTitle:NSLocalizedString(@"Note", @"Menu item title") action:@selector(changeAnnotationMode:) keyEquivalent:@""];
-    [item setTag:SKNoteAnnotationMode];
-    [item setTarget:[[self window] windowController]];
-    
-    item = [submenu addItemWithTitle:NSLocalizedString(@"Oval", @"Menu item title") action:@selector(changeAnnotationMode:) keyEquivalent:@""];
-    [item setTag:SKCircleAnnotationMode];
-    [item setTarget:[[self window] windowController]];
-    
-    item = [menu addItemWithTitle:NSLocalizedString(@"Annotations", @"Menu item title") action:NULL keyEquivalent:@""];
-    [item setSubmenu:submenu];
-    [submenu release];
-    
-    if ([self toolMode] == SKTextToolMode) {
-        
-        NSPoint point = [self convertPoint:[theEvent locationInWindow] fromView:nil];
-        PDFPage *page = [self pageForPoint:point nearest:YES];
-        PDFAnnotation *annotation = nil;
-        
-        if (page) {
-            annotation = [page annotationAtPoint:[self convertPoint:point toPage:page]];
-            if ([annotation isTemporaryAnnotation] || NO == [[NSSet setWithObjects:@"FreeText", @"Text", @"Note", @"Circle", @"Square", nil] containsObject:[annotation type]])
-                annotation == nil;
-        }
-        
-        [menu addItem:[NSMenuItem separatorItem]];
-        
-        item = [menu addItemWithTitle:NSLocalizedString(@"New Note", @"Menu item title") action:@selector(addAnnotation:) keyEquivalent:@""];
-        [item setRepresentedObject:[NSValue valueWithPoint:point]];
-        [item setTarget:self];
-        
-        if (annotation) {
-            item = [menu addItemWithTitle:NSLocalizedString(@"Remove Note", @"Menu item title") action:@selector(removeThisAnnotation:) keyEquivalent:@""];
-            [item setRepresentedObject:annotation];
-            [item setTarget:self];
-            
-            if (annotation != activeAnnotation || editAnnotation == nil) {
-                item = [menu addItemWithTitle:NSLocalizedString(@"Edit Note", @"Menu item title") action:@selector(editThisAnnotation:) keyEquivalent:@""];
-                [item setRepresentedObject:annotation];
-                [item setTarget:self];
-            }
-        } else if (activeAnnotation) {
-            item = [menu addItemWithTitle:NSLocalizedString(@"Remove Current Note", @"Menu item title") action:@selector(removeActiveAnnotation:) keyEquivalent:@""];
-            [item setTarget:self];
-            
-            if (editAnnotation == nil) {
-                item = [menu addItemWithTitle:NSLocalizedString(@"Edit Current Note", @"Menu item title") action:@selector(editActiveAnnotation:) keyEquivalent:@""];
-                [item setTarget:self];
-            }
-        }
-        
-    }
-    
-    return menu;
-}
-
-@end
-
-@implementation SKPDFView (Private)
-
-- (NSRect)resizeThumbForRect:(NSRect) rect rotation:(int)rotation
-{
-	NSRect thumb = rect;
-    float size = 8.0;
-    
-    thumb.size = NSMakeSize(size, size);
-	
-	// Use rotation to determine thumb origin.
-	switch (rotation) {
-		case 0:
-            thumb.origin.x += NSWidth(rect) - NSWidth(thumb);
-            break;
-		case 90:
-            thumb.origin.x += NSWidth(rect) - NSWidth(thumb);
-            thumb.origin.y += NSHeight(rect) - NSHeight(thumb);
-            break;
-		case 180:
-            thumb.origin.y += NSHeight(rect) - NSHeight(thumb);
-            break;
-	}
-	
-	return thumb;
-}
-
-- (void)transformContextForPage:(PDFPage *)page {
-	NSAffineTransform *transform;
-	NSRect boxRect;
-	
-	boxRect = [page boundsForBox:[self displayBox]];
-	
-	transform = [NSAffineTransform transform];
-	[transform translateXBy:-boxRect.origin.x yBy:-boxRect.origin.y];
-	[transform concat];
-}
-
-- (NSCursor *)cursorForMouseMovedEvent:(NSEvent *)event {
-    NSCursor *cursor = nil;
-    NSPoint p = [[self documentView] convertPoint:[event locationInWindow] fromView:nil];
-    if (NSPointInRect(p, [[self documentView] visibleRect])) {
-        switch (toolMode) {
-            case SKMoveToolMode:
-                cursor = [NSCursor openHandCursor];
-                break;
-            case SKMagnifyToolMode:
-                cursor = ([event modifierFlags] & NSShiftKeyMask) ? [NSCursor zoomOutCursor] : [NSCursor zoomInCursor];
-                break;
-            default:
-                cursor = [NSCursor arrowCursor];
-        }
-    } else {
-        // we want this cursor for toolbar and other views, generally
-        cursor = [NSCursor arrowCursor];
-    }
-    return cursor;
-}
-
-- (PDFDestination *)destinationForEvent:(NSEvent *)theEvent isLink:(BOOL *)isLink {
-    NSPoint windowMouseLoc = [theEvent locationInWindow];
-    
-    NSPoint viewMouseLoc = [self convertPoint:windowMouseLoc fromView:nil];
-    PDFPage *page = [self pageForPoint:viewMouseLoc nearest:YES];
-    NSPoint pageSpaceMouseLoc = [self convertPoint:viewMouseLoc toPage:page];  
-    PDFDestination *dest = [[[PDFDestination alloc] initWithPage:page atPoint:pageSpaceMouseLoc] autorelease];
-    BOOL link = NO;
-    
-    if (([self areaOfInterestForMouse: theEvent] &  kPDFLinkArea) != 0) {
-        link = YES;
-        PDFAnnotation *ann = [page annotationAtPoint:pageSpaceMouseLoc];
-        if (ann != NULL && [[ann destination] page]){
-            dest = [ann destination];
-        }
-    }
-    
-    if (isLink) *isLink = link;
-    return dest;
-}
-
-@end
-
-
-@implementation SKPDFHoverWindow
-
-+ (id)sharedHoverWindow {
-    static SKPDFHoverWindow *sharedHoverWindow = nil;
-    if (sharedHoverWindow == nil)
-        sharedHoverWindow = [[self alloc] init];
-    return sharedHoverWindow;
-}
-
-- (id)init {
-    if (self = [super initWithContentRect:NSZeroRect styleMask:NSBorderlessWindowMask backing:NSBackingStoreBuffered defer:NO]) {
-        [self setHidesOnDeactivate:NO];
-        [self setIgnoresMouseEvents:YES];
-        [self setBackgroundColor:[NSColor whiteColor]];
-        [self setHasShadow:YES];
-        [self setLevel:NSStatusWindowLevel];
-        
-        NSScrollView *scrollView = [[NSScrollView alloc] init];
-        imageView = [[NSImageView alloc] init];
-        [imageView setImageFrameStyle:NSImageFrameNone];
-        [scrollView setDocumentView:imageView];
-        [self setContentView:scrollView];
-        [scrollView release];
-        [imageView release];
-    }
-    return self;
-}
-
-- (BOOL)canBecomeKeyWindow { return NO; }
-
-- (BOOL)canBecomeMainWindow { return NO; }
-
-- (void)orderFront:(id)sender {
-    [animation stopAnimation];
-    [self setAlphaValue:1.0];
-    [super orderFront:sender];
-}
-
-- (void)orderOut:(id)sender {
-    [animation stopAnimation];
-    [self setAlphaValue:1.0];
-    [destination release];
-    destination = nil;
-    [super orderOut:sender];
-}
-
-- (NSRect)hoverWindowRectFittingScreenFromRect:(NSRect)rect{
-    NSRect screenRect = [[NSScreen mainScreen] visibleFrame];
-    
-    if (NSMaxX(rect) > NSMaxX(screenRect) - 2.0)
-        rect.origin.x = NSMaxX(screenRect) - NSWidth(rect) - 2.0;
-    if (NSMinX(rect) < NSMinX(screenRect) + 2.0)
-        rect.origin.x = NSMinX(screenRect) + 2.0;
-    if (NSMaxY(rect) > NSMaxY(screenRect) - 2.0)
-        rect.origin.y = NSMaxY(screenRect) - NSHeight(rect) - 2.0;
-    if (NSMinY(rect) < NSMinY(screenRect) + 2.0)
-        rect.origin.y = NSMinY(screenRect) + 2.0;
-    
-    return rect;
-}
-
-- (void)showWithDestination:(PDFDestination *)dest atPoint:(NSPoint)point fromView:(PDFView *)srcView{
-    
-    if ([destination isEqual:dest])
-        return;
-    
-    BOOL wasHidden = destination == nil;
-    
-    [destination release];
-    destination = [dest retain];
-    
-    // FIXME: magic number 15 ought to be calculated from the line height of the current line?
-    NSRect contentRect = [self hoverWindowRectFittingScreenFromRect:NSMakeRect(point.x, point.y + 15.0, 400.0, 50.0)];
-    PDFPage *page = [destination page];
-    NSImage *image = [page image];
-    NSRect bounds = [page boundsForBox:kPDFDisplayBoxCropBox];
-    NSRect rect = [[imageView superview] bounds];
-    
-    NSPoint hoverOrigin = [dest point];
-    
-    // this heuristic is only applied if there's no character at the destination
-    if ([page characterIndexAtPoint:[dest point]] == -1) {
-        // point is in screen coordinates; convert to originating window
-        NSPoint pgPt = [[srcView window] convertScreenToBase:point];
-        // convert to originating view
-        pgPt = [srcView convertPoint:pgPt fromView:nil];
-        // convert to page
-        pgPt = [srcView convertPoint:pgPt toPage:[srcView currentPage]];
-        NSString *srcString = [[[srcView currentPage] selectionForWordAtPoint:pgPt] string];
-        
-        // this is correct for author/year citations
-        if (srcString)
-            srcString = [srcString stringByTrimmingCharactersInSet:[NSCharacterSet punctuationCharacterSet]];
-
-        NSRange r = srcString ? [[page string] rangeOfString:srcString] : NSMakeRange(NSNotFound, 0);
-        if (r.length) {
-            NSRect charBounds = [page characterBoundsAtIndex:r.location];
-            hoverOrigin = charBounds.origin;
-            hoverOrigin.y += 0.5 * NSHeight(rect);
-        }
-    }
-    
-    rect.origin = hoverOrigin;
-    rect.origin.x -= NSMinX(bounds);
-    rect.origin.y -= NSMinY(bounds) + NSHeight(rect);
-    
-    [imageView setFrameSize:[image size]];
-    [imageView setImage:image];
-    
-    [self setFrame:[self frameRectForContentRect:contentRect] display:NO];
-    [imageView scrollRectToVisible:rect];
-    
-    if ([self isVisible] == NO)
-        [self setAlphaValue:0.0];
-    [animation stopAnimation];
-    [super orderFront:self];
-    
-    if (wasHidden) {
-        NSDictionary *fadeInDict = [[NSDictionary alloc] initWithObjectsAndKeys:self, NSViewAnimationTargetKey, NSViewAnimationFadeInEffect, NSViewAnimationEffectKey, nil];
-        
-        animation = [[NSViewAnimation alloc] initWithViewAnimations:[NSArray arrayWithObjects:fadeInDict, nil]];
-        [fadeInDict release];
-        
-        [animation setAnimationBlockingMode:NSAnimationNonblocking];
-        [animation setDuration:0.5];
-        [animation setDelegate:self];
-        [animation startAnimation];
-    }
-}
-
-- (void)hide {
-    if (destination == nil)
-        return;
-    
-    [animation stopAnimation];
-    
-    [destination release];
-    destination = nil;
-    
-    NSDictionary *fadeOutDict = [[NSDictionary alloc] initWithObjectsAndKeys:self, NSViewAnimationTargetKey, NSViewAnimationFadeOutEffect, NSViewAnimationEffectKey, nil];
-    
-    animation = [[NSViewAnimation alloc] initWithViewAnimations:[NSArray arrayWithObjects:fadeOutDict, nil]];
-    [fadeOutDict release];
-    
-    [animation setAnimationBlockingMode:NSAnimationNonblocking];
-    [animation setDuration:1.0];
-    [animation setDelegate:self];
-    [animation startAnimation];
-}
-
-- (void)animationDidEnd:(NSAnimation*)anAnimation {
-    BOOL isFadeOut = [[[[animation viewAnimations] lastObject] objectForKey:NSViewAnimationEffectKey] isEqual:NSViewAnimationFadeOutEffect];
-    [animation release];
-    animation = nil;
-    if (isFadeOut)
-        [self orderOut:self];
-    [self setAlphaValue:1.0];
-}
-
-- (void)animationDidStop:(NSAnimation*)anAnimation {
-    [animation release];
-    animation = nil;
-}
-
-@end
-
-
-@implementation PDFPage (SKExtensions) 
-
-- (NSImage *)image {
-    return [self thumbnailWithSize:0.0 shadowBlurRadius:0.0 shadowOffset:NSZeroSize];
-}
-
-- (NSImage *)thumbnailWithSize:(float)size shadowBlurRadius:(float)shadowBlurRadius shadowOffset:(NSSize)shadowOffset {
-    NSRect bounds = [self boundsForBox:kPDFDisplayBoxCropBox];
-    BOOL isScaled = size > 0.0;
-    BOOL hasShadow = shadowBlurRadius > 0.0;
-    float scale = isScaled ? (size - 2.0 * shadowBlurRadius) / MAX(NSWidth(bounds), NSHeight(bounds)) : 1.0;
-    NSSize thumbnailSize = NSMakeSize(scale * NSWidth(bounds) + 2.0 * shadowBlurRadius, scale * NSHeight(bounds) + 2.0 * shadowBlurRadius);
-    NSImage *image = [[NSImage alloc] initWithSize:thumbnailSize];
-    
-    [image lockFocus];
-    [NSGraphicsContext saveGraphicsState];
-    [[NSGraphicsContext currentContext] setImageInterpolation:NSImageInterpolationHigh];
-    if (isScaled || hasShadow) {
-        NSAffineTransform *transform = [NSAffineTransform transform];
-        if (isScaled)
-            [transform scaleBy:scale];
-        [transform translateXBy:(shadowBlurRadius - shadowOffset.width) / scale yBy:(shadowBlurRadius - shadowOffset.height) / scale];
-        [transform concat];
-    }
-    [NSGraphicsContext saveGraphicsState];
-    [[NSColor whiteColor] set];
-    if (hasShadow) {
-        NSShadow *shadow = [[NSShadow alloc] init];
-        [shadow setShadowColor:[NSColor colorWithDeviceWhite:0.0 alpha:0.5]];
-        [shadow setShadowBlurRadius:shadowBlurRadius];
-        [shadow setShadowOffset:shadowOffset];
-        [shadow set];
-        [shadow release];
-    }
-    bounds.origin = NSZeroPoint;
-    NSRectFill(bounds);
-    [NSGraphicsContext restoreGraphicsState];
-    [self drawWithBox:kPDFDisplayBoxCropBox]; 
-    [NSGraphicsContext restoreGraphicsState];
-    [image unlockFocus];
-    
-    return [image autorelease];
-}
-
-@end
-
-
-@implementation NSCursor (SKExtensions)
-
-+ (id)cameraCursor {
-    NSCursor *cameraCursor = nil;
-    
-    if (cameraCursor == nil)
-        cameraCursor = [[NSCursor alloc] initWithImage:[NSImage imageNamed:@"CameraCursor"] hotSpot:NSMakePoint(8.0, 8.0)];
-    
-    return cameraCursor;
 }
 
 @end

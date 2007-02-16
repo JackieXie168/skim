@@ -2,7 +2,7 @@
 //  SKSideWindow.h
 //  Skim
 //
-//  Created by Christiaan Hofman on 8/2/07.
+//  Created by Christiaan Hofman on 2/8/07.
 //  Copyright 2007 __MyCompanyName__. All rights reserved.
 //
 

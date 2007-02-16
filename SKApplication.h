@@ -2,7 +2,7 @@
 //  SKApplication.h
 //  Skim
 //
-//  Created by Christiaan Hofman on 15/2/07.
+//  Created by Christiaan Hofman on 2/15/07.
 //  Copyright 2007 __MyCompanyName__. All rights reserved.
 //
 

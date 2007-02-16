@@ -2,7 +2,7 @@
 //  SKPreferenceController.h
 //  Skim
 //
-//  Created by Christiaan Hofman on 10/2/07.
+//  Created by Christiaan Hofman on 2/10/07.
 //  Copyright 2007 __MyCompanyName__. All rights reserved.
 //
 

@@ -9,21 +9,26 @@
 //
 
 #import "SKMainWindowController.h"
+#import "SKStringConstants.h"
 #import "SKApplication.h"
 #import "SKStringConstants.h"
 #import "SKSubWindowController.h"
 #import "SKNoteWindowController.h"
 #import "SKInfoWindowController.h"
+#import "SKFullScreenWindow.h"
 #import "SKNavigationWindow.h"
 #import "SKSideWindow.h"
+#import "SKMiniaturizeWindow.h"
 #import <Quartz/Quartz.h>
+#import "PDFPage_SKExtensions.h"
 #import "SKDocument.h"
-#import "SKNote.h"
+#import "SKThumbnail.h"
 #import "SKPDFView.h"
 #import "SKCollapsibleView.h"
 #import "SKPDFAnnotationNote.h"
 #import "SKSplitView.h"
 #import "NSString_SKExtensions.h"
+#import "SKAnnotationTypeIconTransformer.h"
 #import <Carbon/Carbon.h>
 
 #define SEGMENTED_CONTROL_HEIGHT    25.0
@@ -60,16 +65,6 @@ static NSString *SKDocumentToolbarSearchItemIdentifier = @"SKDocumentToolbarSear
 #define TOOLBAR_SEARCHFIELD_MIN_SIZE NSMakeSize(110.0, 22.0)
 #define TOOLBAR_SEARCHFIELD_MAX_SIZE NSMakeSize(1000.0, 22.0)
 
-
-@interface SKFullScreenWindow : NSWindow
-- (id)initWithScreen:(NSScreen *)screen;
-- (NSView *)mainView;
-- (void)setMainView:(NSView *)view;
-@end
-
-@interface SKMiniaturizeWindow : NSWindow
-- (id)initWithContentRect:(NSRect)contentRect image:(NSImage *)image;
-@end
 
 @implementation SKMainWindowController
 
@@ -1999,122 +1994,6 @@ static NSString *SKDocumentToolbarSearchItemIdentifier = @"SKDocumentToolbarSear
 
 #pragma mark -
 
-@implementation SKFullScreenWindow
-
-- (id)initWithScreen:(NSScreen *)screen {
-    if (self = [self initWithContentRect:[screen frame] styleMask:NSBorderlessWindowMask backing:NSBackingStoreBuffered defer:NO screen:screen]) {
-        [self setReleasedWhenClosed:NO];
-        [self setDisplaysWhenScreenProfileChanges:YES];
-        [self setAcceptsMouseMovedEvents:YES];
-        [self setBackgroundColor:[NSColor blackColor]];
-    }
-    return self;
-}
-
-- (BOOL)canBecomeKeyWindow {
-    return YES;
-}
-
-- (void)keyDown:(NSEvent *)theEvent {
-    NSString *characters = [theEvent charactersIgnoringModifiers];
-    unichar ch = [characters length] > 0 ? [characters characterAtIndex:0] : 0;
-	unsigned modifierFlags = [theEvent modifierFlags] & NSDeviceIndependentModifierFlagsMask;
-    
-    if (modifierFlags == 0) {
-        SKMainWindowController *wc = (SKMainWindowController *)[self windowController];
-        if (ch == 0x1B) {
-            [wc exitFullScreen:self];
-        } else if (ch == '1' && [wc isPresentation]) {
-            [wc displaySinglePages:self];
-        } else if (ch == '2' && [wc isPresentation]) {
-            [wc displayFacingPages:self];
-        } else {
-            [super keyDown:theEvent];
-        }
-    } else {
-        [super keyDown:theEvent];
-    }
-}
-
-- (NSView *)mainView {
-    return [[self contentView] lastObject];
-}
-
-- (void)setMainView:(NSView *)view {
-    [view setFrame:[[self contentView] bounds]];
-    [[self contentView] addSubview:view];
-}
-
-@end
-
-#pragma mark -
-
-@implementation SKThumbnail
-
-- (id)initWithImage:(NSImage *)anImage label:(NSString *)aLabel {
-    if (self = [super init]) {
-        image = [anImage retain];
-        label = [aLabel retain];
-        pageIndex = 0;
-        controller = nil;
-    }
-    return self;
-}
-
-- (void)dealloc {
-    [image release];
-    [label release];
-    [controller release];
-    [super dealloc];
-}
-
-- (NSImage *)image {
-    return image;
-}
-
-- (void)setImage:(NSImage *)newImage {
-    if (image != newImage) {
-        [image release];
-        image = [newImage retain];
-    }
-}
-
-- (NSString *)label {
-    return label;
-}
-
-- (void)setLabel:(NSString *)newLabel {
-    if (label != newLabel) {
-        [label release];
-        label = [newLabel retain];
-    }
-}
-
-- (unsigned int)pageIndex {
-    return pageIndex;
-}
-
-- (void)setPageIndex:(unsigned int)newPageIndex {
-    if (pageIndex != newPageIndex) {
-        pageIndex = newPageIndex;
-    }
-}
-
-- (id)controller {
-    return controller;
-}
-
-- (void)setController:(id)newController {
-    if (controller != newController) {
-        [controller release];
-        controller = [newController retain];
-    }
-}
-
-@end
-
-#pragma mark -
-
 // the search table columns use these methods for display
 @interface PDFSelection (SKExtensions)
 @end
@@ -2215,57 +2094,6 @@ static NSString *SKDocumentToolbarSearchItemIdentifier = @"SKDocumentToolbarSear
 - (void)setFrameSize:(NSSize)frameSize {
     [super setFrameSize:frameSize];
     [self noteHeightOfRowsWithIndexesChanged:[NSIndexSet indexSetWithIndexesInRange:NSMakeRange(0, [self numberOfRows])]];
-}
-
-@end
-
-#pragma mark -
-
-@implementation SKAnnotationTypeIconTransformer
-
-+ (Class)transformedValueClass {
-    return [NSImage class];
-}
-
-+ (BOOL)allowsReverseTransformation {
-    return NO;
-}
-
-- (NSImage *)transformedValue:(NSString *)type {
-    if ([type isEqualToString:@"FreeText"])
-        return [NSImage imageNamed:@"AnnotateToolAdorn"];
-    if ([type isEqualToString:@"Note"])
-        return [NSImage imageNamed:@"NoteToolAdorn"];
-    if ([type isEqualToString:@"Circle"])
-        return [NSImage imageNamed:@"CircleToolAdorn"];
-    return nil;
-}
-
-@end
-
-#pragma mark -
-
-@implementation SKMiniaturizeWindow
-
-- (id)initWithContentRect:(NSRect)contentRect image:(NSImage *)image {
-    if (self = [self initWithContentRect:contentRect styleMask:NSBorderlessWindowMask backing:NSBackingStoreBuffered defer:NO]) {
-        [self setReleasedWhenClosed:NO];
-        
-        NSImageView *imageView = [[NSImageView alloc] init];
-        [imageView setImage:image];
-        [imageView setImageFrameStyle:NSImageFrameNone];
-        [self setContentView:imageView];
-        [imageView release];
-    }
-    return self;
-}
-
-- (BOOL)canBecomeMainWindow { return NO; }
-
-- (BOOL)canBecomeKeyWindow { return NO; }
-
-- (NSTimeInterval)animationResizeTime:(NSRect)newWindowFrame {
-    return 0.6 * [super animationResizeTime:newWindowFrame];
 }
 
 @end

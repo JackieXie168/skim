@@ -60,36 +60,21 @@ typedef enum _SKAnnotationMode {
 - (SKAnnotationMode)annotationMode;
 - (void)setAnnotationMode:(SKAnnotationMode)newAnnotationMode;
 
-- (void)setHasNavigation:(BOOL)hasNav autohidesCursor:(BOOL)hideCursor;
-
-- (void)doAutohide:(BOOL)flag;
-- (void)popUpWithEvent:(NSEvent *)theEvent;
-- (void)selectAnnotationWithEvent:(NSEvent *)theEvent;
-- (void)dragAnnotationWithEvent:(NSEvent *)theEvent;
-- (void)selectSnapshotWithEvent:(NSEvent *)theEvent;
-- (void)magnifyWithEvent:(NSEvent *)theEvent;
-- (void)dragWithEvent:(NSEvent *)theEvent;
+- (PDFAnnotation *)activeAnnotation;
+- (void)setActiveAnnotation:(PDFAnnotation *)newAnnotation;
 
 - (IBAction)delete:(id)sender;
 
-- (PDFAnnotation *)activeAnnotation;
-- (void)setActiveAnnotation:(PDFAnnotation *)newAnnotation;
-- (void)setNeedsDisplayForAnnotation:(PDFAnnotation *)annotation;
 - (void)addAnnotation:(id)sender;
 - (void)removeActiveAnnotation:(id)sender;
+- (void)removeThisAnnotation:(id)sender;
 - (void)removeAnnotation:(PDFAnnotation *)annotation;
 - (void)editActiveAnnotation:(id)sender;
+- (void)editThisAnnotation:(id)sender;
 - (void)endAnnotationEdit:(id)sender;
 
-@end
+- (void)setHasNavigation:(BOOL)hasNav autohidesCursor:(BOOL)hideCursor;
 
+- (void)setNeedsDisplayForAnnotation:(PDFAnnotation *)annotation;
 
-@interface PDFPage (SKExtensions) 
-- (NSImage *)image;
-- (NSImage *)thumbnailWithSize:(float)size shadowBlurRadius:(float)shadowBlurRadius shadowOffset:(NSSize)shadowOffset;
-@end
-
-
-@interface NSCursor (SKExtensions)
-+ (id)cameraCursor;
 @end

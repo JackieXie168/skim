@@ -2,7 +2,7 @@
 //  BDSKDragImageView.h
 //  Bibdesk
 //
-//  Created by Christiaan Hofman on 28/11/05.
+//  Created by Christiaan Hofman on 11/28/05.
 /*
  This software is Copyright (c) 2005,2006,2007
  Christiaan Hofman. All rights reserved.

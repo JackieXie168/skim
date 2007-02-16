@@ -7,7 +7,6 @@
 //
 
 #import <Cocoa/Cocoa.h>
-#import "SKStringConstants.h"
 
 typedef enum _SKLeftSidePaneState {
     SKThumbnailSidePaneState,
@@ -222,28 +221,6 @@ typedef struct _SKPDFViewState {
 @end
 
 
-@interface SKThumbnail : NSObject {
-    NSImage *image;
-    NSString *label;
-    unsigned int pageIndex;
-    id controller;
-}
-- (id)initWithImage:(NSImage *)anImage label:(NSString *)aLabel;
-- (NSImage *)image;
-- (void)setImage:(NSImage *)newImage;
-- (NSString *)label;
-- (void)setLabel:(NSString *)newLabel;
-- (unsigned int)pageIndex;
-- (void)setPageIndex:(unsigned int)newPageIndex;
-- (id)controller;
-- (void)setController:(id)newController;
-@end
-
-
 @interface NSObject (SKNoteTableViewDelegate)
 - (void)tableView:(NSTableView *)aTableView deleteRowsWithIndexes:(NSIndexSet *)rowIndexes;
-@end
-
-
-@interface SKAnnotationTypeIconTransformer : NSValueTransformer
 @end

@@ -14,7 +14,6 @@
 #import "SKMainWindowController.h"
 #import "NSFileManager_ExtendedAttributes.h"
 #import "SKPDFAnnotationNote.h"
-#import "SKNote.h"
 #import "SKPSProgressController.h"
 #import "BDAlias.h"
 
