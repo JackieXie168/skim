@@ -877,25 +877,7 @@ static NSString *SKDocumentToolbarSearchItemIdentifier = @"SKDocumentToolbarSear
     [pdfView printWithInfo:[[self document] printInfo] autoRotate:NO];
 }
 
-#pragma mark Searching
-
-- (void)documentDidBeginDocumentFind:(NSNotification *)note {
-    [findArrayController removeObjects:searchResults];
-    [spinner startAnimation:nil];
-}
-
-- (void)documentDidEndDocumentFind:(NSNotification *)note {
-    [spinner stopAnimation:nil];
-}
-
-- (void)documentDidEndPageFind:(NSNotification *)note {
-	double pageIndex = [[[note userInfo] objectForKey:@"PDFDocumentPageIndex"] doubleValue];
-	[spinner setDoubleValue: pageIndex / [[pdfView document] pageCount]];
-}
-
-- (void)didMatchString:(PDFSelection *)instance {
-    [findArrayController addObject:instance];
-}
+#pragma mark Swapping tables
 
 - (void)replaceTable:(NSTableView *)oldTableView withTable:(NSTableView *)newTableView animate:(BOOL)animate {
     if ([newTableView window] == nil) {
@@ -979,6 +961,32 @@ static NSString *SKDocumentToolbarSearchItemIdentifier = @"SKDocumentToolbarSear
     [self replaceTable:noteTableView withTable:snapshotTableView animate:YES];
 }
 
+#pragma mark Searching
+
+- (void)documentDidBeginDocumentFind:(NSNotification *)note {
+    if (findPanelFind == NO) {
+        [findArrayController removeObjects:searchResults];
+        [spinner startAnimation:nil];
+    }
+}
+
+- (void)documentDidEndDocumentFind:(NSNotification *)note {
+    if (findPanelFind == NO)
+        [spinner stopAnimation:nil];
+}
+
+- (void)documentDidEndPageFind:(NSNotification *)note {
+    if (findPanelFind == NO) {
+        double pageIndex = [[[note userInfo] objectForKey:@"PDFDocumentPageIndex"] doubleValue];
+        [spinner setDoubleValue: pageIndex / [[pdfView document] pageCount]];
+    }
+}
+
+- (void)didMatchString:(PDFSelection *)instance {
+    if (findPanelFind == NO)
+        [findArrayController addObject:instance];
+}
+
 - (void)addAnnotationsForSelection:(PDFSelection *)sel {
     PDFDocument *doc = [pdfView document];
     NSArray *pages = [sel pages];
@@ -1040,6 +1048,19 @@ static NSString *SKDocumentToolbarSearchItemIdentifier = @"SKDocumentToolbarSear
         [self fadeInSearchView];
     }
     [[pdfView document] findString:[sender stringValue] withOptions:NSCaseInsensitiveSearch];
+}
+
+- (void)findString:(NSString *)string options:(int)options{
+	findPanelFind = YES;
+    PDFSelection *selection = [[pdfView document] findString:string fromSelection:[pdfView currentSelection] withOptions:options];
+	findPanelFind = NO;
+    if (selection) {
+        [findTableView deselectAll:self];
+		[pdfView setCurrentSelection:selection];
+		[pdfView scrollSelectionToVisible:self];
+	} else {
+		NSBeep();
+	}
 }
 
 #pragma mark NSTableView delegate protocol

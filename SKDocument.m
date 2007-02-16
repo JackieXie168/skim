@@ -15,6 +15,7 @@
 #import "NSFileManager_ExtendedAttributes.h"
 #import "SKPDFAnnotationNote.h"
 #import "SKPSProgressController.h"
+#import "SKFindController.h"
 #import "BDAlias.h"
 
 // maximum length of xattr value recommended by Apple
@@ -399,6 +400,25 @@ static NSString *SKPostScriptDocumentType = @"PostScript document";
     [setup addEntriesFromDictionary:[[self mainWindowController] currentSetup]];
     
     return setup;
+}
+
+- (void)performFindPanelAction:(id)sender {
+    [[SKFindController sharedFindController] performFindPanelAction:sender];
+}
+
+- (BOOL)validateUserInterfaceItem:(id <NSValidatedUserInterfaceItem>)anItem {
+	if ([anItem action] == @selector(performFindPanelAction:))
+        return [[SKFindController sharedFindController] validateUserInterfaceItem:anItem];
+    else 
+        return [super validateUserInterfaceItem:anItem];
+}
+
+- (void)findString:(NSString *)string options:(int)options{
+    [[self mainWindowController] findString:string options:options];
+}
+
+- (PDFView *)pdfView {
+    return [[self mainWindowController] pdfView];
 }
 
 @end
