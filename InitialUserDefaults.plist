@@ -4,8 +4,10 @@
 <dict>
 	<key>SKResettableKeys</key>
 	<array>
+        <string>SKBackgroundColor</string>
         <string>SKDefaultDocumentScale</string>
         <string>SKDefaultDocumentScaleOption</string>
+        <string>SKFullScreenBackgroundColor</string>
         <string>SKLastOpenFileNames</string>
         <string>SKOpenFilesMaximized</string>
         <string>SKReopenLastOpenFiles</string>
@@ -14,10 +16,20 @@
         <string>SKSnapshotThumbnailSize</string>
         <string>SKThumbnailSize</string>
     </array>
+	<key>SKBackgroundColor</key>
+	<data>
+	BAt0eXBlZHN0cmVhbYED6IQBQISEhAdOU0NvbG9yAISECE5TT2JqZWN0AIWEAWMChARm
+	ZmZmgz8AAACDPwAAAIM/AAAAAYY=
+	</data>
 	<key>SKDefaultDocumentScale</key>
 	<real>100</real>
 	<key>SKDefaultDocumentAutoScale</key>
 	<false/>
+	<key>SKFullScreenBackgroundColor</key>
+	<data>
+	BAt0eXBlZHN0cmVhbYED6IQBQISEhAdOU0NvbG9yAISECE5TT2JqZWN0AIWEAWMChARm
+	ZmZmAAAAAYY=
+	</data>
 	<key>SKLastOpenFileNames</key>
 	<array/>
 	<key>SKOpenFilesMaximized</key>

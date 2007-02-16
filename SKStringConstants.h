@@ -6,8 +6,10 @@
 //  Created by Michael McCracken on 1/5/07.
 
 
+extern NSString *SKBackgroundColorKey;
 extern NSString *SKDefaultDocumentScaleKey;
 extern NSString *SKDefaultDocumentAutoScaleKey;
+extern NSString *SKFullScreenBackgroundColorKey;
 extern NSString *SKLastOpenFileNamesKey;
 extern NSString *SKOpenFilesMaximizedKey;
 extern NSString *SKReopenLastOpenFilesKey;

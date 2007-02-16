@@ -7,8 +7,10 @@
 
 #import "SKStringConstants.h"
 
+NSString *SKBackgroundColorKey = @"SKBackgroundColor";
 NSString *SKDefaultDocumentScaleKey = @"SKDefaultDocumentScale";
 NSString *SKDefaultDocumentAutoScaleKey = @"SKDefaultDocumentAutoScale";
+NSString *SKFullScreenBackgroundColorKey = @"SKFullScreenBackgroundColor";
 NSString *SKLastOpenFileNamesKey = @"SKLastOpenFileNames";
 NSString *SKOpenFilesMaximizedKey = @"SKOpenFilesMaximized";
 NSString *SKReopenLastOpenFilesKey = @"SKReopenLastOpenFiles";
