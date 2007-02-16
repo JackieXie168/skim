@@ -7,6 +7,7 @@
 //
 
 #import "SKFindController.h"
+#import "BDSKFindFieldEditor.h"
 #import <Quartz/Quartz.h>
 
 
@@ -25,6 +26,11 @@ static id sharedFindController = nil;
         ignoreCase = YES;
     }
     return self;
+}
+
+- (void)dealloc {
+    [fieldEditor release];
+    [super dealloc];
 }
 
 - (id)retain {
@@ -167,6 +173,12 @@ static id sharedFindController = nil;
 	}
 	
 	return YES;
+}
+
+- (id)windowWillReturnFieldEditor:(NSWindow *)sender toObject:(id)anObject {
+    if (fieldEditor == nil)
+        fieldEditor = [[BDSKFindFieldEditor alloc] init];
+    return fieldEditor;
 }
 
 @end

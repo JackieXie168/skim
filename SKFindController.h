@@ -8,11 +8,13 @@
 
 #import <Cocoa/Cocoa.h>
 
+@class BDSKFindFieldEditor;
 
 @interface SKFindController : NSWindowController {
     IBOutlet NSTextField *findField;
     IBOutlet NSButton *ignoreCaseCheckbox;
     BOOL ignoreCase;
+    BDSKFindFieldEditor *fieldEditor;
 }
 
 + (id)sharedFindController;
