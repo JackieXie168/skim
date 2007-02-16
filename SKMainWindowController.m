@@ -238,10 +238,17 @@ static NSString *SKDocumentToolbarSearchItemIdentifier = @"SKDocumentToolbarSear
 
 - (void)setPdfDocument:(PDFDocument *)document{
     if ([pdfView document] != document) {
-    
+        
         [[pdfView document] setDelegate:nil];
         [pdfView setDocument:document];
         [[pdfView document] setDelegate:self];
+        
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleDocumentBeginWrite:) 
+                                                     name:@"PDFDidBeginDocumentWrite" object:[pdfView document]];
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleDocumentEndWrite:) 
+                                                     name:@"PDFDidEndDocumentWrite" object:[pdfView document]];
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleDocumentEndPageWrite:) 
+                                                     name:@"PDFDidEndPageWrite" object:[pdfView document]];
         
         [pdfOutline release];
         pdfOutline = [[[pdfView document] outlineRoot] retain];
@@ -1328,6 +1335,39 @@ static NSString *SKDocumentToolbarSearchItemIdentifier = @"SKDocumentToolbarSear
     PDFAnnotation *annotation = [[notification userInfo] objectForKey:@"annotation"];
     
     [self showNote:annotation];
+}
+
+- (void)saveProgressSheetDidEnd:(NSWindow *)sheet returnCode:(int)returnCode contextInfo:(void *)contextInfo {
+	[saveProgressSheet close];
+}
+
+- (void)handleDocumentBeginWrite:(NSNotification *)notification {
+    if (saveProgressSheet == nil) {
+        if (NO == [NSBundle loadNibNamed:@"SaveProgressSheet" owner:self])  {
+            NSLog(@"Failed to load SaveProgressSheet.nib");
+            return;
+        }
+    }
+    
+	// Establish maximum and current value for progress bar.
+	[saveProgressBar setMaxValue: (double)[[pdfView document] pageCount]];
+	[saveProgressBar setDoubleValue: 0.0];
+	
+	// Bring up the save panel as a sheet.
+	[NSApp beginSheet:saveProgressSheet
+       modalForWindow:[self window]
+        modalDelegate:self 
+       didEndSelector:@selector(saveProgressSheetDidEnd:returnCode:contextInfo:)
+          contextInfo:NULL];
+}
+
+- (void)handleDocumentEndWrite:(NSNotification *)notification {
+	[NSApp endSheet:saveProgressSheet];
+}
+
+- (void)handleDocumentEndPageWrite:(NSNotification *)notification {
+	[saveProgressBar setDoubleValue: [[[notification userInfo] objectForKey:@"PDFDocumentPageIndex"] floatValue]];
+	[saveProgressBar displayIfNeeded];
 }
 
 #pragma mark NSOutlineView methods

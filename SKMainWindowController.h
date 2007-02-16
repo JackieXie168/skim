@@ -109,6 +109,9 @@ typedef struct _SKPDFViewState {
     float                       lastRightSidePaneWidth;
     
     BOOL                        edited;
+    
+    IBOutlet NSWindow           *saveProgressSheet;
+    IBOutlet NSProgressIndicator *saveProgressBar;
 }
 
 - (IBAction)pickColor:(id)sender;
@@ -211,6 +214,9 @@ typedef struct _SKPDFViewState {
 - (void)handleDidRemoveAnnotationNotification:(NSNotification *)notification;
 - (void)handleDidChangeAnnotationNotification:(NSNotification *)notification;
 - (void)handleDoubleClickedAnnotationNotification:(NSNotification *)notification;
+- (void)handleDocumentBeginWrite:(NSNotification *)notification;
+- (void)handleDocumentEndWrite:(NSNotification *)notification;
+- (void)handleDocumentEndPageWrite:(NSNotification *)notification;
 
 - (void)setAnnotationsFromDictionaries:(NSArray *)noteDicts;
 
