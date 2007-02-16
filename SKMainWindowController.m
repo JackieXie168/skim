@@ -23,6 +23,7 @@
 #import "SKCollapsibleView.h"
 #import "SKPDFAnnotationNote.h"
 #import "SKSplitView.h"
+#import "NSString_SKExtensions.h"
 #import <Carbon/Carbon.h>
 
 #define SEGMENTED_CONTROL_HEIGHT    25.0
@@ -2155,24 +2156,7 @@ static NSString *SKDocumentToolbarSearchItemIdentifier = @"SKDocumentToolbarSear
         }
     }
     
-    // we don't want newlines in the tableview
-    static NSCharacterSet *newlineCharacterSet = nil;
-    if (nil == newlineCharacterSet) {
-        NSMutableCharacterSet *cs = [[NSCharacterSet whitespaceCharacterSet] mutableCopy];
-        [cs invert];
-        [cs formIntersectionWithCharacterSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
-        newlineCharacterSet = [cs copy];
-        [cs release];
-    }
-    NSRange r = [string rangeOfCharacterFromSet:newlineCharacterSet];
-    while (r.location != NSNotFound) {
-        [string deleteCharactersInRange:r];
-        r = [string rangeOfCharacterFromSet:newlineCharacterSet];
-    }
-    // trim any leading or trailing whitespace
-    CFStringTrimWhitespace((CFMutableStringRef)string);
-    
-    return string;
+    return [string stringByCollapsingWhitespaceAndNewlinesAndRemovingSurroundingWhitespaceAndNewlines];
 }
 
 @end
