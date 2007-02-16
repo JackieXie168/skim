@@ -35,6 +35,7 @@
 		CE2DE4EE0B85DB6300D0DA12 /* NSCursor_SKExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = CE2DE4ED0B85DB6300D0DA12 /* NSCursor_SKExtensions.m */; };
 		CE2DE4FD0B85DBD400D0DA12 /* SKPDFHoverWindow.m in Sources */ = {isa = PBXBuildFile; fileRef = CE2DE4FC0B85DBD400D0DA12 /* SKPDFHoverWindow.m */; };
 		CE2DE50D0B85DC4000D0DA12 /* PDFPage_SKExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = CE2DE50C0B85DC4000D0DA12 /* PDFPage_SKExtensions.m */; };
+		CE2DEAA30B860A7000D0DA12 /* SaveProgressSheet.nib in Resources */ = {isa = PBXBuildFile; fileRef = CE2DEA9D0B860A7000D0DA12 /* SaveProgressSheet.nib */; };
 		CE380A7B0B834E6200A1B779 /* CameraCursor.tiff in Resources */ = {isa = PBXBuildFile; fileRef = CE380A7A0B834E6100A1B779 /* CameraCursor.tiff */; };
 		CE380C620B837B6100A1B779 /* NoteViewAdorn.tiff in Resources */ = {isa = PBXBuildFile; fileRef = CE380C600B837B6100A1B779 /* NoteViewAdorn.tiff */; };
 		CE380C630B837B6100A1B779 /* SnapshotViewAdorn.tiff in Resources */ = {isa = PBXBuildFile; fileRef = CE380C610B837B6100A1B779 /* SnapshotViewAdorn.tiff */; };
@@ -142,6 +143,7 @@
 		CE2DE4FC0B85DBD400D0DA12 /* SKPDFHoverWindow.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SKPDFHoverWindow.m; sourceTree = "<group>"; };
 		CE2DE50B0B85DC4000D0DA12 /* PDFPage_SKExtensions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PDFPage_SKExtensions.h; sourceTree = "<group>"; };
 		CE2DE50C0B85DC4000D0DA12 /* PDFPage_SKExtensions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PDFPage_SKExtensions.m; sourceTree = "<group>"; };
+		CE2DEA9E0B860A7000D0DA12 /* English */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = English; path = English.lproj/SaveProgressSheet.nib; sourceTree = "<group>"; };
 		CE380A7A0B834E6100A1B779 /* CameraCursor.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; name = CameraCursor.tiff; path = Images/CameraCursor.tiff; sourceTree = "<group>"; };
 		CE380C600B837B6100A1B779 /* NoteViewAdorn.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; name = NoteViewAdorn.tiff; path = Images/NoteViewAdorn.tiff; sourceTree = "<group>"; };
 		CE380C610B837B6100A1B779 /* SnapshotViewAdorn.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; name = SnapshotViewAdorn.tiff; path = Images/SnapshotViewAdorn.tiff; sourceTree = "<group>"; };
@@ -297,13 +299,14 @@
 			isa = PBXGroup;
 			children = (
 				CE5475A00B33058B00F8AFB6 /* Images */,
-				F977515E0B37460100DF673B /* ConversionProgressWindow.nib */,
 				CE54898A0B35D4EF00F8AFB6 /* InfoWindow.nib */,
 				2A37F4B6FDCFA73011CA2CEA /* MainMenu.nib */,
 				4530D81B0B27ACAC007C59F4 /* MainWindow.nib */,
 				CE5470010B32D96500F8AFB6 /* NoteWindow.nib */,
 				4530D81E0B27ACD0007C59F4 /* SubWindow.nib */,
 				CE4EC4FD0B7E255C0091F228 /* PreferencePanel.nib */,
+				F977515E0B37460100DF673B /* ConversionProgressWindow.nib */,
+				CE2DEA9D0B860A7000D0DA12 /* SaveProgressSheet.nib */,
 				45A3BD380B4F097D002B297F /* InitialUserDefaults.plist */,
 				2A37F4B9FDCFA73011CA2CEA /* Credits.rtf */,
 				8D15AC360486D014006FF6A4 /* Info.plist */,
@@ -566,6 +569,7 @@
 				CE380C630B837B6100A1B779 /* SnapshotViewAdorn.tiff in Resources */,
 				CE0465070B850D7C00C11E4A /* ToolbarLeftPane.tiff in Resources */,
 				CE0465080B850D7C00C11E4A /* ToolbarRightPane.tiff in Resources */,
+				CE2DEAA30B860A7000D0DA12 /* SaveProgressSheet.nib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -656,6 +660,14 @@
 				4530D81F0B27ACD0007C59F4 /* English */,
 			);
 			name = SubWindow.nib;
+			sourceTree = "<group>";
+		};
+		CE2DEA9D0B860A7000D0DA12 /* SaveProgressSheet.nib */ = {
+			isa = PBXVariantGroup;
+			children = (
+				CE2DEA9E0B860A7000D0DA12 /* English */,
+			);
+			name = SaveProgressSheet.nib;
 			sourceTree = "<group>";
 		};
 		CE4EC4FD0B7E255C0091F228 /* PreferencePanel.nib */ = {
