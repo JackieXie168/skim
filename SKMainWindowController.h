@@ -110,6 +110,8 @@ typedef struct _SKPDFViewState {
     
     BOOL                        edited;
     
+    BOOL                        findPanelFind;
+    
     IBOutlet NSWindow           *saveProgressSheet;
     IBOutlet NSProgressIndicator *saveProgressBar;
 }
