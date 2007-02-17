@@ -722,6 +722,7 @@ static NSString *SKDocumentToolbarSearchItemIdentifier = @"SKDocumentToolbarSear
     
     [self setWindow:fullScreenWindow];
     [fullScreenWindow makeKeyAndOrderFront:self];
+    [mainWindow orderOut:self];
 }
 
 - (void)removeFullScreen {
@@ -729,6 +730,7 @@ static NSString *SKDocumentToolbarSearchItemIdentifier = @"SKDocumentToolbarSear
     [pdfView layoutDocumentView];
     
     [self setWindow:mainWindow];
+    [mainWindow orderWindow:NSWindowBelow relativeTo:[fullScreenWindow windowNumber]];
     [mainWindow makeKeyWindow];
     [mainWindow display];
     
