@@ -50,7 +50,7 @@
 
 - (BOOL)applicationShouldOpenUntitledFile:(NSApplication *)sender{
     
-    if ([[NSUserDefaults standardUserDefaults] objectForKey:SKReopenLastOpenFilesKey]) {
+    if ([[NSUserDefaults standardUserDefaults] boolForKey:SKReopenLastOpenFilesKey]) {
         NSArray *files = [[NSUserDefaults standardUserDefaults] objectForKey:SKLastOpenFileNamesKey];
         NSEnumerator *fileEnum = [files objectEnumerator];
         NSDictionary *dict;
