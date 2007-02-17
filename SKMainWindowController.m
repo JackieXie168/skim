@@ -848,6 +848,7 @@ static NSString *SKDocumentToolbarSearchItemIdentifier = @"SKDocumentToolbarSear
     else
         [self goFullScreen];
     
+    [fullScreenWindow setBackgroundColor:[NSUnarchiver unarchiveObjectWithData:[[NSUserDefaults standardUserDefaults] dataForKey:SKFullScreenBackgroundColorKey]]];
     [fullScreenWindow setLevel:NSNormalWindowLevel];
     [pdfView setHasNavigation:YES autohidesCursor:NO];
     [self showSideWindows];
@@ -867,6 +868,7 @@ static NSString *SKDocumentToolbarSearchItemIdentifier = @"SKDocumentToolbarSear
     } else
         [self goFullScreen];
     
+    [fullScreenWindow setBackgroundColor:[NSColor blackColor]];
     [fullScreenWindow setLevel:CGShieldingWindowLevel()];
     [pdfView setHasNavigation:YES autohidesCursor:YES];
 }
@@ -2086,8 +2088,13 @@ static NSString *SKDocumentToolbarSearchItemIdentifier = @"SKDocumentToolbarSear
         if ([self isFullScreen] == NO && [self isPresentation] == NO)
             [pdfView setBackgroundColor:[NSUnarchiver unarchiveObjectWithData:[[NSUserDefaults standardUserDefaults] dataForKey:SKBackgroundColorKey]]];
     } else if ([keyPath isEqualToString:[NSString stringWithFormat:@"values.%@", SKFullScreenBackgroundColorKey]]) {
-        if ([self isFullScreen])
-            [pdfView setBackgroundColor:[NSUnarchiver unarchiveObjectWithData:[[NSUserDefaults standardUserDefaults] dataForKey:SKSearchHighlightColorKey]]];
+        if ([self isFullScreen]) {
+            NSColor *color = [NSUnarchiver unarchiveObjectWithData:[[NSUserDefaults standardUserDefaults] dataForKey:SKFullScreenBackgroundColorKey]];
+            if (color) {
+                [pdfView setBackgroundColor:color];
+                [fullScreenWindow setBackgroundColor:color];
+            }
+        }
     } else if ([keyPath isEqualToString:[NSString stringWithFormat:@"values.%@", SKSearchHighlightColorKey]]) {
         if ([[NSUserDefaults standardUserDefaults] boolForKey:SKShouldHighlightSearchResultsKey] && 
             [[findField stringValue] length] && [findTableView numberOfSelectedRows]) {
