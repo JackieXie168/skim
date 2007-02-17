@@ -1052,7 +1052,7 @@ NSString *SKPDFViewAnnotationDoubleClickedNotification = @"SKPDFViewAnnotationDo
                 minX = fmin(fmax(minX, NSMinX(bounds)), NSMaxX(bounds));
                 maxX = fmax(fmin(maxX, NSMaxX(bounds)), NSMinX(bounds));
                 minY = fmin(fmax(minY, NSMinY(bounds)), NSMaxY(bounds));
-                maxY = fmax(fmin(maxX, NSMaxY(bounds)), NSMinY(bounds));
+                maxY = fmax(fmin(maxY, NSMaxY(bounds)), NSMinY(bounds));
                 selectionRect = NSMakeRect(minX, minY, maxX - minX, maxY - minY);
                 
                 [[self window] cacheImageInRect:NSInsetRect([[self documentView] convertRect:selectionRect toView:nil], -2.0, -2.0)];
