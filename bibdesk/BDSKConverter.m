@@ -238,7 +238,7 @@ static BOOL convertComposedCharacterToTeX(NSMutableString *charString, NSCharact
     // handle i and j (others as well?)
     if (([character isEqualToString:@"i"] || [character isEqualToString:@"j"]) &&
 		![accent isEqualToString:@"c "] && ![accent isEqualToString:@"d "] && ![accent isEqualToString:@"b "]) {
-	    character = [@"\\" stringByAppendingString:character];
+	    character = [[@"\\" stringByAppendingString:character] copy];
     }
     
     // [accent length] == 2 in some cases, and the 'character' may or may not have \\ prepended, so we'll just replace the entire string rather than trying to catch all of those cases by recomputing lengths
