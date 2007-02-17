@@ -1613,29 +1613,8 @@ static NSString *SKDocumentToolbarSearchItemIdentifier = @"SKDocumentToolbarSear
             thumbnailTimer = nil;
         }
         
-        if ([self countOfThumbnails]) {
-            NSEnumerator *thumbEnum = [thumbnails objectEnumerator];
-            SKThumbnail *thumbnail;
-            
-            while (thumbnail = [thumbEnum nextObject]) {
-                NSImage *image = [thumbnail image];
-                NSSize size = [image size];
-                
-                if (size.height > size.width) {
-                    size.width = thumbnailSize * size.width / size.height;
-                    size.height = thumbnailSize;
-                } else {
-                    size.height = thumbnailSize * size.height / size.width;
-                    size.width = thumbnailSize;
-                }
-                
-                [image setScalesWhenResized:YES];
-                [image setSize:size];
-                [thumbnail setImage:image];
-            }
-            
+        if ([self countOfThumbnails])
             [self thumbnailsAtIndexesNeedUpdate:[NSIndexSet indexSetWithIndexesInRange:NSMakeRange(0, [self countOfThumbnails])]];
-        }
     }
 }
 
@@ -1659,12 +1638,17 @@ static NSString *SKDocumentToolbarSearchItemIdentifier = @"SKDocumentToolbarSear
     if (index != NSNotFound) {
         float shadowBlurRadius = roundf(thumbnailCacheSize / 32.0);
         float shadowOffset = - ceilf(shadowBlurRadius * 0.75);
+        NSSize newSize, oldSize = [[[thumbnails objectAtIndex:index] image] size];
         
         PDFDocument *pdfDoc = [pdfView document];
         PDFPage *page = [pdfDoc pageAtIndex:index];
         NSImage *image = [page thumbnailWithSize:thumbnailCacheSize shadowBlurRadius:shadowBlurRadius shadowOffset:NSMakeSize(0.0, shadowOffset)];
         [[thumbnails objectAtIndex:index] setImage:image];
         [dirtyThumbnailIndexes removeIndex:index];
+        
+        newSize = [image size];
+        if (fabs(newSize.width - oldSize.width) > 1.0 &&  fabs(newSize.height - oldSize.height) > 1.0)
+            [thumbnailTableView noteHeightOfRowsWithIndexesChanged:[NSIndexSet indexSetWithIndex:index]];
     }
     if ([dirtyThumbnailIndexes count] == 0) {
         [thumbnailTimer invalidate];
@@ -1722,26 +1706,6 @@ static NSString *SKDocumentToolbarSearchItemIdentifier = @"SKDocumentToolbarSear
         }
         
         if ([self countOfSnapshots]) {
-            NSEnumerator *thumbEnum = [snapshots objectEnumerator];
-            SKThumbnail *thumbnail;
-            
-            while (thumbnail = [thumbEnum nextObject]) {
-                NSImage *image = [thumbnail image];
-                NSSize size = [image size];
-                
-                if (size.height > size.width) {
-                    size.width = snapshotSize * size.width / size.height;
-                    size.height = snapshotSize;
-                } else {
-                    size.height = snapshotSize * size.height / size.width;
-                    size.width = snapshotSize;
-                }
-                
-                [image setScalesWhenResized:YES];
-                [image setSize:size];
-                [thumbnail setImage:image];
-            }
-            
             [dirtySnapshotIndexes addIndexesInRange:NSMakeRange(0, [self countOfSnapshots])];
             snapshotTimer = [[NSTimer scheduledTimerWithTimeInterval:0.03 target:self selector:@selector(updateSnapshot:) userInfo:NULL repeats:YES] retain];
         }
@@ -1754,11 +1718,16 @@ static NSString *SKDocumentToolbarSearchItemIdentifier = @"SKDocumentToolbarSear
     if (index != NSNotFound) {
         float shadowBlurRadius = roundf(snapshotCacheSize / 32.0);
         float shadowOffset = - ceilf(shadowBlurRadius * 0.75);
+        NSSize newSize, oldSize = [[[snapshots objectAtIndex:index] image] size];
         
         SKSubWindowController *controller = [[snapshots objectAtIndex:index] controller];
         NSImage *image = [controller thumbnailWithSize:snapshotCacheSize shadowBlurRadius:shadowBlurRadius shadowOffset:NSMakeSize(0.0, shadowOffset)];
         [[snapshots objectAtIndex:index] setImage:image];
         [dirtySnapshotIndexes removeIndex:index];
+        
+        newSize = [image size];
+        if (fabs(newSize.width - oldSize.width) > 1.0 &&  fabs(newSize.height - oldSize.height) > 1.0)
+            [snapshotTableView noteHeightOfRowsWithIndexesChanged:[NSIndexSet indexSetWithIndex:index]];
     }
     if ([dirtySnapshotIndexes count] == 0) {
         [snapshotTimer invalidate];
@@ -2253,10 +2222,8 @@ static NSString *SKDocumentToolbarSearchItemIdentifier = @"SKDocumentToolbarSear
         }
     } else if ([keyPath isEqualToString:[NSString stringWithFormat:@"values.%@", SKThumbnailSizeKey]]) {
         [self resetThumbnailSizeIfNeeded];
-        [thumbnailTableView noteHeightOfRowsWithIndexesChanged:[NSIndexSet indexSetWithIndexesInRange:NSMakeRange(0, [self countOfThumbnails])]];
     } else if ([keyPath isEqualToString:[NSString stringWithFormat:@"values.%@", SKSnapshotThumbnailSizeKey]]) {
         [self resetSnapshotSizeIfNeeded];
-        [snapshotTableView noteHeightOfRowsWithIndexesChanged:[NSIndexSet indexSetWithIndexesInRange:NSMakeRange(0, [self countOfSnapshots])]];
     }
 }
 
