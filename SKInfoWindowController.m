@@ -64,9 +64,9 @@ NSString *fileSizeOfFileAtPath(NSString *path) {
     }
     
     if (gotSize == NO) {
-        // the docs say this gives the file size in bytes, but it seems in block units or something
+        // this seems to give the logical size
         NSDictionary *fileAttrs = [[NSFileManager defaultManager] fileAttributesAtPath:path traverseLink:NO];
-        logicalSize = size = [[fileAttrs objectForKey:NSFileSize] unsignedLongLongValue] / 2000;
+        logicalSize = size = [[fileAttrs objectForKey:NSFileSize] unsignedLongLongValue];
     }
     
     unsigned long bigSize = size >> 32;
