@@ -22,10 +22,6 @@
 
 @implementation SKSideWindow
 
-- (id)initWithMainController:(SKMainWindowController *)aController {
-    return [self initWithMainController:aController edge:NSMinXEdge];
-}
-
 - (id)initWithMainController:(SKMainWindowController *)aController edge:(NSRectEdge)anEdge {
     NSScreen *screen = [[aController window] screen];
     NSRect contentRect = [screen frame];
