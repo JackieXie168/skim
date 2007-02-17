@@ -22,9 +22,9 @@
     return self;
 }
 
-- (BOOL)canBecomeKeyWindow {
-    return YES;
-}
+- (BOOL)canBecomeKeyWindow { return YES; }
+
+- (BOOL)canBecomeMainWindow { return YES; }
 
 - (void)keyDown:(NSEvent *)theEvent {
     NSString *characters = [theEvent charactersIgnoringModifiers];
