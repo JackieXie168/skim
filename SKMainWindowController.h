@@ -101,12 +101,18 @@ typedef struct _SKPDFViewState {
     NSMutableIndexSet           *dirtyThumbnailIndexes;
     NSTimer                     *thumbnailTimer;
     
+    NSMutableIndexSet           *dirtySnapshotIndexes;
+    NSTimer                     *snapshotTimer;
+    
     IBOutlet NSArrayController  *snapshotArrayController;
     IBOutlet SKSnapshotTableView *snapshotTableView;
     NSMutableArray              *snapshots;
     
     float                       lastLeftSidePaneWidth;
     float                       lastRightSidePaneWidth;
+    
+    float                       thumbnailCacheSize;
+    float                       snapshotCacheSize;
     
     BOOL                        edited;
     
@@ -200,10 +206,14 @@ typedef struct _SKPDFViewState {
 
 - (void)updateThumbnailSelection;
 - (void)resetThumbnails;
+- (void)resetThumbnailSizeIfNeeded;
 - (void)thumbnailAtIndexNeedsUpdate:(unsigned)index;
 - (void)thumbnailsAtIndexesNeedUpdate:(NSIndexSet *)indexes;
 - (void)updateThumbnailsIfNeeded;
 - (void)updateThumbnail:(NSTimer *)timer;
+
+- (void)resetSnapshotSizeIfNeeded;
+- (void)updateSnapshot:(NSTimer *)timer;
 
 - (void)registerForNotifications;
 
