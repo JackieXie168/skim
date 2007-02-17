@@ -1062,9 +1062,9 @@ static NSRect RectPlusScale (NSRect aRect, float scale)
                 
                 bounds = [[self documentView] bounds];
                 minX = fmax(NSMinX(selectionRect), NSMinX(bounds));
-                maxX = fmin(NSMaxX(selectionRect), NSMaxX(bounds));
+                maxX = fmax(fmin(NSMaxX(selectionRect), NSMaxX(bounds)), minX);
                 minY = fmax(NSMinY(selectionRect), NSMinY(bounds));
-                maxY = fmin(NSMaxY(selectionRect), NSMaxY(bounds));
+                maxY = fmax(fmin(NSMaxY(selectionRect), NSMaxY(bounds)), minY);
                 selectionRect = NSMakeRect(minX, minY, maxX - minX, maxY - minY);
                 
                 [[self window] cacheImageInRect:NSInsetRect([[self documentView] convertRect:selectionRect toView:nil], -2.0, -2.0)];
