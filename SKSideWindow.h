@@ -17,7 +17,7 @@
     NSDrawerState state;
     NSRectEdge edge;
 }
-- (id)initWithMainController:(SKMainWindowController *)aController;
+
 - (id)initWithMainController:(SKMainWindowController *)aController edge:(NSRectEdge)anEdge;
 - (void)moveToScreen:(NSScreen *)screen;
 - (void)slideIn;
@@ -26,6 +26,7 @@
 - (void)setMainView:(NSView *)newContentView;
 - (NSRectEdge)edge;
 - (int)state;
+
 @end
 
 
