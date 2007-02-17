@@ -33,8 +33,6 @@ NSString *SKPDFViewAnnotationDoubleClickedNotification = @"SKPDFViewAnnotationDo
 
 #pragma mark -
 
-static NSRect RectPlusScale (NSRect aRect, float scale);
-
 @interface SKPDFView (Private)
 
 - (NSRect)resizeThumbForRect:(NSRect) rect rotation:(int)rotation;
@@ -127,8 +125,17 @@ static NSRect RectPlusScale (NSRect aRect, float scale);
     }
 }
 
+- (void)setNeedsDisplayInRect:(NSRect)rect ofPage:(PDFPage *)page {
+    NSRect aRect = [self convertRect:aRect fromPage:page];
+    float scale = [self scaleFactor];
+	NSPoint max = NSMakePoint(ceilf(NSMaxX(aRect)) + scale, ceilf(NSMaxY(aRect)) + scale);
+	NSPoint origin = NSMakePoint(floorf(NSMinX(aRect)) - scale, floorf(NSMinY(aRect)) - scale);
+	
+    [self setNeedsDisplayInRect:NSMakeRect(origin.x, origin.y, max.x - origin.x, max.y - origin.y)];
+}
+
 - (void)setNeedsDisplayForAnnotation:(PDFAnnotation *)annotation {
-    [self setNeedsDisplayInRect:RectPlusScale([self convertRect:[annotation bounds] fromPage:[annotation page]], [self scaleFactor])];
+    [self setNeedsDisplayInRect:[annotation bounds] ofPage:[annotation page]];
 }
 
 #pragma mark Accessors
@@ -262,7 +269,7 @@ static NSRect RectPlusScale (NSRect aRect, float scale);
             [activeAnnotation setBounds:newBounds];
             NSString *selString = [[[[activeAnnotation page] selectionForRect:newBounds] string] stringByCollapsingWhitespaceAndNewlinesAndRemovingSurroundingWhitespaceAndNewlines];
             [activeAnnotation setContents:selString];
-            [self setNeedsDisplayInRect:RectPlusScale([self convertRect:NSUnionRect(bounds, newBounds) fromPage:page], [self scaleFactor])];
+            [self setNeedsDisplayInRect:NSUnionRect(bounds, newBounds) ofPage:page];
             [[NSNotificationCenter defaultCenter] postNotificationName:SKPDFViewDidChangeAnnotationNotification object:self 
                 userInfo:[NSDictionary dictionaryWithObjectsAndKeys:activeAnnotation, @"annotation", nil]];
         }
@@ -664,21 +671,6 @@ static NSRect RectPlusScale (NSRect aRect, float scale);
 
 #pragma mark -
 
-static NSRect RectPlusScale (NSRect aRect, float scale)
-{
-	float maxX;
-	float maxY;
-	NSPoint origin;
-	
-	// Determine edges.
-	maxX = ceilf(aRect.origin.x + aRect.size.width) + scale;
-	maxY = ceilf(aRect.origin.y + aRect.size.height) + scale;
-	origin.x = floorf(aRect.origin.x) - scale;
-	origin.y = floorf(aRect.origin.y) - scale;
-	
-	return NSMakeRect(origin.x, origin.y, maxX - origin.x, maxY - origin.y);
-}
-
 @implementation SKPDFView (Private)
 
 - (NSRect)resizeThumbForRect:(NSRect) rect rotation:(int)rotation
@@ -892,7 +884,6 @@ static NSRect RectPlusScale (NSRect aRect, float scale)
 - (void)dragAnnotationWithEvent:(NSEvent *)theEvent {
     NSRect newBounds;
     NSRect currentBounds = [activeAnnotation bounds];
-    NSRect dirtyRect;
     NSPoint mouseLoc = [self convertPoint:[theEvent locationInWindow] fromView:nil];
     NSPoint endPt = [self convertPoint:mouseLoc toPage:activePage];
     
@@ -973,8 +964,7 @@ static NSRect RectPlusScale (NSRect aRect, float scale)
     [activeAnnotation setBounds:newBounds];
     
     // Force redraw.
-    dirtyRect = NSUnionRect(currentBounds, newBounds);
-    [self setNeedsDisplayInRect:RectPlusScale([self convertRect:dirtyRect fromPage:activePage], [self scaleFactor])];
+    [self setNeedsDisplayInRect:NSUnionRect(currentBounds, newBounds) ofPage:activePage];
     
     [[NSNotificationCenter defaultCenter] postNotificationName:SKPDFViewDidChangeAnnotationNotification object:self 
         userInfo:[NSDictionary dictionaryWithObjectsAndKeys:activeAnnotation, @"annotation", nil]];
@@ -1042,29 +1032,27 @@ static NSRect RectPlusScale (NSRect aRect, float scale)
 			case NSFlagsChanged:
                 currentPoint = [[self documentView] convertPoint:mouseLoc fromView:nil];
 				
-                selectionRect.size.width = abs(currentPoint.x - startPoint.x);
-                selectionRect.size.height = abs(currentPoint.y - startPoint.y);
-                selectionRect.origin.x = startPoint.x;
-                selectionRect.origin.y = startPoint.y;
-                if (currentPoint.x < startPoint.x)
-                    selectionRect.origin.x -= NSWidth(selectionRect);
-                if (currentPoint.y < startPoint.y)
-                    selectionRect.origin.y -= NSHeight(selectionRect);
-                
+                minX = fmin(startPoint.x, currentPoint.x);
+                maxX = fmax(startPoint.x, currentPoint.x);
+                minY = fmin(startPoint.y, currentPoint.y);
+                maxY = fmax(startPoint.y, currentPoint.y);
+                // center around startPoint when holding down the Shift key
                 if ([theEvent modifierFlags] & NSShiftKeyMask) {
                     if (currentPoint.x > startPoint.x)
-                        selectionRect.origin.x -= NSWidth(selectionRect);
+                        minX -= maxX - minX;
+                    else
+                        maxX += maxX - minX;
                     if (currentPoint.y > startPoint.y)
-                        selectionRect.origin.y -= NSHeight(selectionRect);
-                    selectionRect.size.width *= 2.0;
-                    selectionRect.size.height *= 2.0;
+                        minY -= maxY - minY;
+                    else
+                        maxY += maxY - minY;
                 }
-                
+                // intersect with the bounds, project on the bounds if necessary and allow zero width or height
                 bounds = [[self documentView] bounds];
-                minX = fmin(fmax(NSMinX(selectionRect), NSMinX(bounds)), NSMaxX(bounds));
-                maxX = fmax(fmin(NSMaxX(selectionRect), NSMaxX(bounds)), NSMinX(bounds));
-                minY = fmin(fmax(NSMinY(selectionRect), NSMinY(bounds)), NSMaxY(bounds));
-                maxY = fmax(fmin(NSMaxY(selectionRect), NSMaxY(bounds)), NSMinY(bounds));
+                minX = fmin(fmax(minX, NSMinX(bounds)), NSMaxX(bounds));
+                maxX = fmax(fmin(maxX, NSMaxX(bounds)), NSMinX(bounds));
+                minY = fmin(fmax(minY, NSMinY(bounds)), NSMaxY(bounds));
+                maxY = fmax(fmin(maxX, NSMaxY(bounds)), NSMinY(bounds));
                 selectionRect = NSMakeRect(minX, minY, maxX - minX, maxY - minY);
                 
                 [[self window] cacheImageInRect:NSInsetRect([[self documentView] convertRect:selectionRect toView:nil], -2.0, -2.0)];
