@@ -82,6 +82,7 @@ static NSString *SKDocumentToolbarSearchItemIdentifier = @"SKDocumentToolbarSear
         thumbnails = [[NSMutableArray alloc] init];
         dirtyThumbnailIndexes = [[NSMutableIndexSet alloc] init];
         snapshots = [[NSMutableArray alloc] init];
+        dirtySnapshotIndexes = [[NSMutableIndexSet alloc] init];
         leftSidePaneState = SKOutlineSidePaneState;
         rightSidePaneState = SKNoteSidePaneState;
     }
@@ -101,13 +102,23 @@ static NSString *SKDocumentToolbarSearchItemIdentifier = @"SKDocumentToolbarSear
             forKeyPath:[NSString stringWithFormat:@"values.%@", SKSearchHighlightColorKey]];
     [[NSUserDefaultsController sharedUserDefaultsController] removeObserver:self
             forKeyPath:[NSString stringWithFormat:@"values.%@", SKShouldHighlightSearchResultsKey]];
+    [[NSUserDefaultsController sharedUserDefaultsController] removeObserver:self
+            forKeyPath:[NSString stringWithFormat:@"values.%@", SKThumbnailSizeKey]];
+    [[NSUserDefaultsController sharedUserDefaultsController] removeObserver:self
+            forKeyPath:[NSString stringWithFormat:@"values.%@", SKSnapshotThumbnailSizeKey]];
     
     if (thumbnailTimer) {
         [thumbnailTimer invalidate];
         [thumbnailTimer release];
         thumbnailTimer = nil;
     }
+    if (snapshotTimer) {
+        [snapshotTimer invalidate];
+        [snapshotTimer release];
+        snapshotTimer = nil;
+    }
     [dirtyThumbnailIndexes release];
+    [dirtySnapshotIndexes release];
 	[searchResults release];
     [pdfOutline release];
 	[thumbnails release];
@@ -126,6 +137,10 @@ static NSString *SKDocumentToolbarSearchItemIdentifier = @"SKDocumentToolbarSear
 }
 
 - (void)windowDidLoad{
+    // this needs to be done before loading the PDFDocument
+    [self resetThumbnailSizeIfNeeded];
+    [self resetSnapshotSizeIfNeeded];
+    
     // this is not called automatically, because the document overrides makeWindowControllers
     [[self document] windowControllerDidLoadNib:self];
     
@@ -223,6 +238,14 @@ static NSString *SKDocumentToolbarSearchItemIdentifier = @"SKDocumentToolbarSear
                context:NULL];
     [[NSUserDefaultsController sharedUserDefaultsController] addObserver:self
             forKeyPath:[NSString stringWithFormat:@"values.%@", SKShouldHighlightSearchResultsKey]
+               options:0
+               context:NULL];
+    [[NSUserDefaultsController sharedUserDefaultsController] addObserver:self
+            forKeyPath:[NSString stringWithFormat:@"values.%@", SKThumbnailSizeKey]
+               options:0
+               context:NULL];
+    [[NSUserDefaultsController sharedUserDefaultsController] addObserver:self
+            forKeyPath:[NSString stringWithFormat:@"values.%@", SKSnapshotThumbnailSizeKey]
                options:0
                context:NULL];
     
@@ -1215,7 +1238,9 @@ static NSString *SKDocumentToolbarSearchItemIdentifier = @"SKDocumentToolbarSear
         [self setRightSidePaneState:SKSnapshotSidePaneState];
     }
     
-    NSImage *image = [controller thumbnailWithSize:256.0 shadowBlurRadius:8.0 shadowOffset:NSMakeSize(0.0, -6.0)];
+    float shadowBlurRadius = roundf(snapshotCacheSize / 32.0);
+    float shadowOffset = - ceilf(shadowBlurRadius * 0.75);
+    NSImage *image = [controller thumbnailWithSize:snapshotCacheSize shadowBlurRadius:shadowBlurRadius shadowOffset:NSMakeSize(0.0, shadowOffset)];
     PDFPage *page = [[controller pdfView] currentPage];
     SKThumbnail *thumbnail = [[SKThumbnail alloc] initWithImage:image label:[page label]];
     
@@ -1313,12 +1338,6 @@ static NSString *SKDocumentToolbarSearchItemIdentifier = @"SKDocumentToolbarSear
 }
 
 - (void)handlePageChangedNotification:(NSNotification *)notification {
-	//PDFDocument *pdfDoc = [pdfView document];
-    //unsigned pageIndex = [pdfDoc indexForPage:[pdfView currentPage]];
-    
-   // [pageNumberStepper setIntValue:pageIndex + 1];
-    //[pageNumberField setIntValue:pageIndex + 1];
-    
     [self willChangeValueForKey:@"pageNumber"];
     [self didChangeValueForKey:@"pageNumber"];
     
@@ -1553,13 +1572,22 @@ static NSString *SKDocumentToolbarSearchItemIdentifier = @"SKDocumentToolbarSear
 }
 
 - (void)resetThumbnails {
+    if (thumbnailTimer) {
+        [thumbnailTimer invalidate];
+        [thumbnailTimer release];
+        thumbnailTimer = nil;
+    }
+    
     PDFDocument *pdfDoc = [pdfView document];
     unsigned i, count = [pdfDoc pageCount];
     NSMutableArray *array = [NSMutableArray arrayWithCapacity:count];
     if (count) {
+        float shadowBlurRadius = roundf(thumbnailCacheSize / 32.0);
+        float shadowOffset = - ceilf(shadowBlurRadius * 0.75);
+        
         PDFPage *emptyPage = [[[PDFPage alloc] init] autorelease];
         [emptyPage setBounds:[[[pdfView document] pageAtIndex:0] boundsForBox:kPDFDisplayBoxCropBox] forBox:kPDFDisplayBoxCropBox];
-        NSImage *image = [emptyPage thumbnailWithSize:256.0 shadowBlurRadius:8.0 shadowOffset:NSMakeSize(0.0, -6.0)];
+        NSImage *image = [emptyPage thumbnailWithSize:thumbnailCacheSize shadowBlurRadius:shadowBlurRadius shadowOffset:NSMakeSize(0.0, shadowOffset)];
         for (i = 0; i < count; i++) {
             SKThumbnail *thumbnail = [[SKThumbnail alloc] initWithImage:image label:[[pdfDoc pageAtIndex:i] label]];
             [array insertObject:thumbnail atIndex:i];
@@ -1570,6 +1598,45 @@ static NSString *SKDocumentToolbarSearchItemIdentifier = @"SKDocumentToolbarSear
     [dirtyThumbnailIndexes removeAllIndexes];
     [dirtyThumbnailIndexes addIndexesInRange:NSMakeRange(0, count)];
     [self updateThumbnailsIfNeeded];
+}
+
+- (void)resetThumbnailSizeIfNeeded {
+    float defaultSize = [[NSUserDefaults standardUserDefaults] floatForKey:SKThumbnailSizeKey];
+    float thumbnailSize = (defaultSize < 64.1) ? 64.0 : (defaultSize < 128.1) ? 128.0 : 256.0;
+    
+    if (fabs(thumbnailSize - thumbnailCacheSize) > 0.1) {
+        thumbnailCacheSize = thumbnailSize;
+        
+        if (thumbnailTimer) {
+            [thumbnailTimer invalidate];
+            [thumbnailTimer release];
+            thumbnailTimer = nil;
+        }
+        
+        if ([self countOfThumbnails]) {
+            NSEnumerator *thumbEnum = [thumbnails objectEnumerator];
+            SKThumbnail *thumbnail;
+            
+            while (thumbnail = [thumbEnum nextObject]) {
+                NSImage *image = [thumbnail image];
+                NSSize size = [image size];
+                
+                if (size.height > size.width) {
+                    size.width = thumbnailSize * size.width / size.height;
+                    size.height = thumbnailSize;
+                } else {
+                    size.height = thumbnailSize * size.height / size.width;
+                    size.width = thumbnailSize;
+                }
+                
+                [image setScalesWhenResized:YES];
+                [image setSize:size];
+                [thumbnail setImage:image];
+            }
+            
+            [self thumbnailsAtIndexesNeedUpdate:[NSIndexSet indexSetWithIndexesInRange:NSMakeRange(0, [self countOfThumbnails])]];
+        }
+    }
 }
 
 - (void)thumbnailAtIndexNeedsUpdate:(unsigned)index {
@@ -1590,9 +1657,12 @@ static NSString *SKDocumentToolbarSearchItemIdentifier = @"SKDocumentToolbarSear
     unsigned index = [dirtyThumbnailIndexes firstIndex];
     
     if (index != NSNotFound) {
+        float shadowBlurRadius = roundf(thumbnailCacheSize / 32.0);
+        float shadowOffset = - ceilf(shadowBlurRadius * 0.75);
+        
         PDFDocument *pdfDoc = [pdfView document];
         PDFPage *page = [pdfDoc pageAtIndex:index];
-        NSImage *image = [page thumbnailWithSize:256.0 shadowBlurRadius:8.0 shadowOffset:NSMakeSize(0.0, -6.0)];
+        NSImage *image = [page thumbnailWithSize:thumbnailCacheSize shadowBlurRadius:shadowBlurRadius shadowOffset:NSMakeSize(0.0, shadowOffset)];
         [[thumbnails objectAtIndex:index] setImage:image];
         [dirtyThumbnailIndexes removeIndex:index];
     }
@@ -1634,6 +1704,67 @@ static NSString *SKDocumentToolbarSearchItemIdentifier = @"SKDocumentToolbarSear
 			break;
 		}
 	}
+}
+
+#pragma mark Snapshots
+
+- (void)resetSnapshotSizeIfNeeded {
+    float defaultSize = [[NSUserDefaults standardUserDefaults] floatForKey:SKSnapshotThumbnailSizeKey];
+    float snapshotSize = (defaultSize < 64.1) ? 64.0 : (defaultSize < 128.1) ? 128.0 : 256.0;
+    
+    if (fabs(snapshotSize - snapshotCacheSize) > 0.1) {
+        snapshotCacheSize = snapshotSize;
+        
+        if (snapshotTimer) {
+            [snapshotTimer invalidate];
+            [snapshotTimer release];
+            snapshotTimer = nil;
+        }
+        
+        if ([self countOfSnapshots]) {
+            NSEnumerator *thumbEnum = [snapshots objectEnumerator];
+            SKThumbnail *thumbnail;
+            
+            while (thumbnail = [thumbEnum nextObject]) {
+                NSImage *image = [thumbnail image];
+                NSSize size = [image size];
+                
+                if (size.height > size.width) {
+                    size.width = snapshotSize * size.width / size.height;
+                    size.height = snapshotSize;
+                } else {
+                    size.height = snapshotSize * size.height / size.width;
+                    size.width = snapshotSize;
+                }
+                
+                [image setScalesWhenResized:YES];
+                [image setSize:size];
+                [thumbnail setImage:image];
+            }
+            
+            [dirtySnapshotIndexes addIndexesInRange:NSMakeRange(0, [self countOfSnapshots])];
+            snapshotTimer = [[NSTimer scheduledTimerWithTimeInterval:0.03 target:self selector:@selector(updateSnapshot:) userInfo:NULL repeats:YES] retain];
+        }
+    }
+}
+
+- (void)updateSnapshot:(NSTimer *)timer {
+    unsigned index = [dirtySnapshotIndexes firstIndex];
+    
+    if (index != NSNotFound) {
+        float shadowBlurRadius = roundf(snapshotCacheSize / 32.0);
+        float shadowOffset = - ceilf(shadowBlurRadius * 0.75);
+        
+        SKSubWindowController *controller = [[snapshots objectAtIndex:index] controller];
+        NSImage *image = [controller thumbnailWithSize:snapshotCacheSize shadowBlurRadius:shadowBlurRadius shadowOffset:NSMakeSize(0.0, shadowOffset)];
+        [[snapshots objectAtIndex:index] setImage:image];
+        [dirtySnapshotIndexes removeIndex:index];
+    }
+    if ([dirtySnapshotIndexes count] == 0) {
+        [snapshotTimer invalidate];
+        [snapshotTimer release];
+        snapshotTimer = nil;
+    }
 }
 
 #pragma mark Toolbar
@@ -2120,6 +2251,12 @@ static NSString *SKDocumentToolbarSearchItemIdentifier = @"SKDocumentToolbarSear
                     [self addAnnotationsForSelection:sel];
             }
         }
+    } else if ([keyPath isEqualToString:[NSString stringWithFormat:@"values.%@", SKThumbnailSizeKey]]) {
+        [self resetThumbnailSizeIfNeeded];
+        [thumbnailTableView noteHeightOfRowsWithIndexesChanged:[NSIndexSet indexSetWithIndexesInRange:NSMakeRange(0, [self countOfThumbnails])]];
+    } else if ([keyPath isEqualToString:[NSString stringWithFormat:@"values.%@", SKSnapshotThumbnailSizeKey]]) {
+        [self resetSnapshotSizeIfNeeded];
+        [snapshotTableView noteHeightOfRowsWithIndexesChanged:[NSIndexSet indexSetWithIndexesInRange:NSMakeRange(0, [self countOfSnapshots])]];
     }
 }
 
