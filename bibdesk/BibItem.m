@@ -1758,8 +1758,10 @@ Boolean stringContainsLossySubstring(NSString *theString, NSString *stringToFind
            [data appendDataFromString:type encoding:encoding error:&error] &&
            [data appendDataFromString:@"{" encoding:encoding error:&error] &&
            [data appendDataFromString:[self citeKey] encoding:encoding error:&error];
-    if(isOK == NO)
+    if(isOK == NO) {
+        error = [[error mutableCopy] autorelease];
         [error setValue:[NSString stringWithFormat:NSLocalizedString(@"Unable to convert cite key of item with cite key \"%@\".", @"string encoding error context"), [self citeKey]] forKey:NSLocalizedRecoverySuggestionErrorKey];
+    }
     
     NSSet *personFields = [btm personFieldsSet];
     
@@ -1785,8 +1787,10 @@ Boolean stringContainsLossySubstring(NSString *theString, NSString *stringToFind
                    [data appendDataFromString:field encoding:encoding error:&error] &&
                    [data appendDataFromString:@" = " encoding:encoding error:&error] &&
                    [data appendDataFromString:valString encoding:encoding error:&error];
-            if(isOK == NO)
+            if(isOK == NO) {
+                error = [[error mutableCopy] autorelease];
                 [error setValue:[NSString stringWithFormat:NSLocalizedString(@"Unable to convert field \"%@\" of item with cite key \"%@\".", @"string encoding error context"), [field localizedFieldName], [self citeKey]] forKey:NSLocalizedRecoverySuggestionErrorKey];
+            }
         }
     }
     [knownKeys release];
