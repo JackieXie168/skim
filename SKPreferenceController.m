@@ -26,11 +26,15 @@
     if ([sender state] == NSOnState) {
         [thumbnailSizeSlider setNumberOfTickMarks:8];
         [snapshotSizeSlider setNumberOfTickMarks:8];
+        [thumbnailSizeSlider setAllowsTickMarkValuesOnly:YES];
+        [snapshotSizeSlider setAllowsTickMarkValuesOnly:YES];
     } else {
         [[thumbnailSizeSlider superview] setNeedsDisplayInRect:[thumbnailSizeSlider frame]];
         [[snapshotSizeSlider superview] setNeedsDisplayInRect:[snapshotSizeSlider frame]];
         [thumbnailSizeSlider setNumberOfTickMarks:0];
         [snapshotSizeSlider setNumberOfTickMarks:0];
+        [thumbnailSizeSlider setAllowsTickMarkValuesOnly:NO];
+        [snapshotSizeSlider setAllowsTickMarkValuesOnly:NO];
     }
     [thumbnailSizeSlider sizeToFit];
     [snapshotSizeSlider sizeToFit];
