@@ -1602,7 +1602,7 @@ static NSString *SKDocumentToolbarSearchItemIdentifier = @"SKDocumentToolbarSear
 
 - (void)resetThumbnailSizeIfNeeded {
     float defaultSize = roundf([[NSUserDefaults standardUserDefaults] floatForKey:SKThumbnailSizeKey]);
-    float thumbnailSize = (defaultSize < 64.1) ? 64.0 : (defaultSize < 128.1) ? 128.0 : 256.0;
+    float thumbnailSize = (defaultSize < 32.1) ? 32.0 : (defaultSize < 64.1) ? 64.0 : (defaultSize < 128.1) ? 128.0 : 256.0;
     
     if (fabs(thumbnailSize - thumbnailCacheSize) > 0.1) {
         thumbnailCacheSize = thumbnailSize;
@@ -1694,7 +1694,7 @@ static NSString *SKDocumentToolbarSearchItemIdentifier = @"SKDocumentToolbarSear
 
 - (void)resetSnapshotSizeIfNeeded {
     float defaultSize = roundf([[NSUserDefaults standardUserDefaults] floatForKey:SKSnapshotThumbnailSizeKey]);
-    float snapshotSize = (defaultSize < 64.1) ? 64.0 : (defaultSize < 128.1) ? 128.0 : 256.0;
+    float snapshotSize = (defaultSize < 32.1) ? 32.0 : (defaultSize < 64.1) ? 64.0 : (defaultSize < 128.1) ? 128.0 : 256.0;
     
     if (fabs(snapshotSize - snapshotCacheSize) > 0.1) {
         snapshotCacheSize = snapshotSize;
