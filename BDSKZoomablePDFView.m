@@ -38,65 +38,8 @@
 
 #import "BDSKZoomablePDFView.h"
 #import "BDSKHeaderPopUpButton.h"
-#import "OBUtilities.h"
+#import "NSScrollView_SKExtensions.h"
 
-
-@interface NSScrollView (BDSKZoomablePDFViewExtensions) 
-- (void)replacementDealloc;
-- (BOOL)replacementHasHorizontalScroller;
-- (void)replacementSetHasHorizontalScroller:(BOOL)flag;
-
-// new API allows ignoring PDFView's attempts to remove the horizontal scroller
-- (void)setAlwaysHasHorizontalScroller:(BOOL)flag;
-
-@end
-
-@implementation NSScrollView (BDSKZoomablePDFViewExtensions)
-
-static IMP originalSetHasHorizontalScroller = NULL;
-static BOOL (*originalHasHorizontalScroller)(id, SEL) = NULL;
-static IMP originalDealloc = NULL;
-
-static CFMutableSetRef nonretainedScrollviews = NULL;
-
-+ (void)load{
-    originalSetHasHorizontalScroller = OBReplaceMethodImplementationWithSelector(self, @selector(setHasHorizontalScroller:), @selector(replacementSetHasHorizontalScroller:));
-    originalHasHorizontalScroller = (typeof(originalHasHorizontalScroller))OBReplaceMethodImplementationWithSelector(self, @selector(hasHorizontalScroller), @selector(replacementHasHorizontalScroller));
-    originalDealloc = OBReplaceMethodImplementationWithSelector(self, @selector(dealloc), @selector(replacementDealloc));
-    
-    // set doesn't retain, so no retain cycles; pointer equality used to compare views
-    nonretainedScrollviews = CFSetCreateMutable(CFAllocatorGetDefault(), 0, NULL);
-}
-
-- (void)replacementDealloc;
-{
-    CFSetRemoveValue(nonretainedScrollviews, self);
-    originalDealloc(self, _cmd);
-}
-
-- (void)setAlwaysHasHorizontalScroller:(BOOL)flag;
-{
-    if (flag) {
-        CFSetAddValue(nonretainedScrollviews, self);
-        [self setHasHorizontalScroller:YES];
-    } else {
-        CFSetRemoveValue(nonretainedScrollviews, self);
-    }
-}
-
-- (void)replacementSetHasHorizontalScroller:(BOOL)flag;
-{
-    if (CFSetContainsValue(nonretainedScrollviews, self))
-        flag = YES;
-    originalSetHasHorizontalScroller(self, _cmd, flag);
-}
-
-- (BOOL)replacementHasHorizontalScroller;
-{
-    return CFSetContainsValue(nonretainedScrollviews, self) ? YES : originalHasHorizontalScroller(self, _cmd);
-}
-
-@end
 
 @interface PDFView (BDSKApplePrivateOverride)
 - (void)adjustScrollbars:(id)obj;
