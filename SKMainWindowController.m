@@ -204,8 +204,12 @@ static NSString *SKDocumentToolbarSearchItemIdentifier = @"SKDocumentToolbarSear
         else
             [pdfView setScaleFactor:0.01 * [[NSUserDefaults standardUserDefaults] floatForKey:SKDefaultDocumentScaleKey]];
     
-        if (pdfOutline == nil)
-            [self setLeftSidePaneState:SKThumbnailSidePaneState];
+        if (pdfOutline == nil) {
+            if ([[NSUserDefaults standardUserDefaults] boolForKey:SKOpenContentsPaneOnlyForTOCKey])
+                [self toggleLeftSidePane:self];
+            else
+                [self setLeftSidePaneState:SKThumbnailSidePaneState];
+        }
         if (NSWidth([rightSideContentBox frame]) > 0.0)
             [self toggleRightSidePane:self];
     }
