@@ -1180,7 +1180,7 @@ static NSString *SKDocumentToolbarSearchItemIdentifier = @"SKDocumentToolbarSear
     if (tableView == thumbnailTableView) {
         NSSize thumbSize = [[[[thumbnailArrayController arrangedObjects] objectAtIndex:row] image] size];
         NSSize cellSize = NSMakeSize([[[tableView tableColumns] objectAtIndex:0] width], 
-                                     MIN(thumbSize.height, [[NSUserDefaults standardUserDefaults] floatForKey:SKThumbnailSizeKey]));
+                                     MIN(thumbSize.height, roundf([[NSUserDefaults standardUserDefaults] floatForKey:SKThumbnailSizeKey])));
         if (thumbSize.height < 1.0)
             return 1.0;
         else if (thumbSize.width / thumbSize.height < cellSize.width / cellSize.height)
@@ -1190,7 +1190,7 @@ static NSString *SKDocumentToolbarSearchItemIdentifier = @"SKDocumentToolbarSear
     } else if (tableView == snapshotTableView) {
         NSSize thumbSize = [[[[snapshotArrayController arrangedObjects] objectAtIndex:row] image] size];
         NSSize cellSize = NSMakeSize([[[tableView tableColumns] objectAtIndex:0] width], 
-                                     MIN(thumbSize.height, [[NSUserDefaults standardUserDefaults] floatForKey:SKSnapshotThumbnailSizeKey]));
+                                     MIN(thumbSize.height, roundf([[NSUserDefaults standardUserDefaults] floatForKey:SKSnapshotThumbnailSizeKey])));
         if (thumbSize.height < 1.0)
             return 1.0;
         else if (thumbSize.width / thumbSize.height < cellSize.width / cellSize.height)
@@ -1601,7 +1601,7 @@ static NSString *SKDocumentToolbarSearchItemIdentifier = @"SKDocumentToolbarSear
 }
 
 - (void)resetThumbnailSizeIfNeeded {
-    float defaultSize = [[NSUserDefaults standardUserDefaults] floatForKey:SKThumbnailSizeKey];
+    float defaultSize = roundf([[NSUserDefaults standardUserDefaults] floatForKey:SKThumbnailSizeKey]);
     float thumbnailSize = (defaultSize < 64.1) ? 64.0 : (defaultSize < 128.1) ? 128.0 : 256.0;
     
     if (fabs(thumbnailSize - thumbnailCacheSize) > 0.1) {
@@ -1693,7 +1693,7 @@ static NSString *SKDocumentToolbarSearchItemIdentifier = @"SKDocumentToolbarSear
 #pragma mark Snapshots
 
 - (void)resetSnapshotSizeIfNeeded {
-    float defaultSize = [[NSUserDefaults standardUserDefaults] floatForKey:SKSnapshotThumbnailSizeKey];
+    float defaultSize = roundf([[NSUserDefaults standardUserDefaults] floatForKey:SKSnapshotThumbnailSizeKey]);
     float snapshotSize = (defaultSize < 64.1) ? 64.0 : (defaultSize < 128.1) ? 128.0 : 256.0;
     
     if (fabs(snapshotSize - snapshotCacheSize) > 0.1) {
@@ -2222,8 +2222,10 @@ static NSString *SKDocumentToolbarSearchItemIdentifier = @"SKDocumentToolbarSear
         }
     } else if ([keyPath isEqualToString:[NSString stringWithFormat:@"values.%@", SKThumbnailSizeKey]]) {
         [self resetThumbnailSizeIfNeeded];
+        [thumbnailTableView noteHeightOfRowsWithIndexesChanged:[NSIndexSet indexSetWithIndexesInRange:NSMakeRange(0, [self countOfThumbnails])]];
     } else if ([keyPath isEqualToString:[NSString stringWithFormat:@"values.%@", SKSnapshotThumbnailSizeKey]]) {
         [self resetSnapshotSizeIfNeeded];
+        [snapshotTableView noteHeightOfRowsWithIndexesChanged:[NSIndexSet indexSetWithIndexesInRange:NSMakeRange(0, [self countOfSnapshots])]];
     }
 }
 
