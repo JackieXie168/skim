@@ -28,6 +28,7 @@
 		CE0464A20B84E3E400C11E4A /* OBUtilities.m in Sources */ = {isa = PBXBuildFile; fileRef = CE0464A10B84E3E400C11E4A /* OBUtilities.m */; };
 		CE0465070B850D7C00C11E4A /* ToolbarLeftPane.tiff in Resources */ = {isa = PBXBuildFile; fileRef = CE0465050B850D7C00C11E4A /* ToolbarLeftPane.tiff */; };
 		CE0465080B850D7C00C11E4A /* ToolbarRightPane.tiff in Resources */ = {isa = PBXBuildFile; fileRef = CE0465060B850D7C00C11E4A /* ToolbarRightPane.tiff */; };
+		CE070EA20B89039700733CC8 /* NSScrollView_SKExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = CE070EA10B89039700733CC8 /* NSScrollView_SKExtensions.m */; };
 		CE2DE4920B85D48F00D0DA12 /* SKThumbnail.m in Sources */ = {isa = PBXBuildFile; fileRef = CE2DE4910B85D48F00D0DA12 /* SKThumbnail.m */; };
 		CE2DE49D0B85D4F400D0DA12 /* SKFullScreenWindow.m in Sources */ = {isa = PBXBuildFile; fileRef = CE2DE49C0B85D4F400D0DA12 /* SKFullScreenWindow.m */; };
 		CE2DE4B30B85D5B300D0DA12 /* SKAnnotationTypeIconTransformer.m in Sources */ = {isa = PBXBuildFile; fileRef = CE2DE4B20B85D5B300D0DA12 /* SKAnnotationTypeIconTransformer.m */; };
@@ -132,6 +133,8 @@
 		CE0464A10B84E3E400C11E4A /* OBUtilities.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OBUtilities.m; sourceTree = "<group>"; };
 		CE0465050B850D7C00C11E4A /* ToolbarLeftPane.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; name = ToolbarLeftPane.tiff; path = Images/ToolbarLeftPane.tiff; sourceTree = "<group>"; };
 		CE0465060B850D7C00C11E4A /* ToolbarRightPane.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; name = ToolbarRightPane.tiff; path = Images/ToolbarRightPane.tiff; sourceTree = "<group>"; };
+		CE070EA00B89039700733CC8 /* NSScrollView_SKExtensions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NSScrollView_SKExtensions.h; sourceTree = "<group>"; };
+		CE070EA10B89039700733CC8 /* NSScrollView_SKExtensions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NSScrollView_SKExtensions.m; sourceTree = "<group>"; };
 		CE2DE4900B85D48F00D0DA12 /* SKThumbnail.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SKThumbnail.h; sourceTree = "<group>"; };
 		CE2DE4910B85D48F00D0DA12 /* SKThumbnail.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SKThumbnail.m; sourceTree = "<group>"; };
 		CE2DE49B0B85D4F400D0DA12 /* SKFullScreenWindow.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SKFullScreenWindow.h; sourceTree = "<group>"; };
@@ -288,7 +291,7 @@
 				CE2DE4CF0B85D89B00D0DA12 /* Controllers */,
 				CE2DE4D00B85D8C400D0DA12 /* Windows */,
 				CE2DE4D10B85D92F00D0DA12 /* Views */,
-				CE2DE4D30B85D9B000D0DA12 /* Categories */,
+				CE070EC10B89063400733CC8 /* Categories */,
 				CE2DE4D40B85DA1C00D0DA12 /* Miscellaneous */,
 			);
 			name = Classes;
@@ -342,6 +345,31 @@
 				453DC2760B4F242200A72509 /* BDAlias.h */,
 			);
 			name = "3rd-party Sources";
+			sourceTree = "<group>";
+		};
+		CE070EC10B89063400733CC8 /* Categories */ = {
+			isa = PBXGroup;
+			children = (
+				CE4EC8810B7E6E920091F228 /* CIImage_BDSKExtensions.h */,
+				CE4EC8820B7E6E920091F228 /* CIImage_BDSKExtensions.m */,
+				CE3A45510B7A04A4006B64D3 /* NSBezierPath_BDSKExtensions.h */,
+				CE3A45520B7A04A4006B64D3 /* NSBezierPath_BDSKExtensions.m */,
+				CE4EC87D0B7E6E110091F228 /* NSBezierPath_CoreImageExtensions.h */,
+				CE4EC87E0B7E6E110091F228 /* NSBezierPath_CoreImageExtensions.m */,
+				CE5487BA0B35A20A00F8AFB6 /* NSFileManager_ExtendedAttributes.h */,
+				CE5487BB0B35A20A00F8AFB6 /* NSFileManager_ExtendedAttributes.m */,
+				CE070EA00B89039700733CC8 /* NSScrollView_SKExtensions.h */,
+				CE070EA10B89039700733CC8 /* NSScrollView_SKExtensions.m */,
+				CE38ECD10B8093B200A1B779 /* NSString_SKExtensions.h */,
+				CE38ECD20B8093B200A1B779 /* NSString_SKExtensions.m */,
+				CE2DE4EC0B85DB6300D0DA12 /* NSCursor_SKExtensions.h */,
+				CE2DE4ED0B85DB6300D0DA12 /* NSCursor_SKExtensions.m */,
+				F92DB6600B371481002A26E9 /* PDFDocument_BDSKExtensions.h */,
+				F92DB6610B371481002A26E9 /* PDFDocument_BDSKExtensions.m */,
+				CE2DE50B0B85DC4000D0DA12 /* PDFPage_SKExtensions.h */,
+				CE2DE50C0B85DC4000D0DA12 /* PDFPage_SKExtensions.m */,
+			);
+			name = Categories;
 			sourceTree = "<group>";
 		};
 		CE2DE4CF0B85D89B00D0DA12 /* Controllers */ = {
@@ -420,29 +448,6 @@
 				CE2DE4910B85D48F00D0DA12 /* SKThumbnail.m */,
 			);
 			name = Data;
-			sourceTree = "<group>";
-		};
-		CE2DE4D30B85D9B000D0DA12 /* Categories */ = {
-			isa = PBXGroup;
-			children = (
-				CE4EC8810B7E6E920091F228 /* CIImage_BDSKExtensions.h */,
-				CE4EC8820B7E6E920091F228 /* CIImage_BDSKExtensions.m */,
-				CE3A45510B7A04A4006B64D3 /* NSBezierPath_BDSKExtensions.h */,
-				CE3A45520B7A04A4006B64D3 /* NSBezierPath_BDSKExtensions.m */,
-				CE4EC87D0B7E6E110091F228 /* NSBezierPath_CoreImageExtensions.h */,
-				CE4EC87E0B7E6E110091F228 /* NSBezierPath_CoreImageExtensions.m */,
-				CE5487BA0B35A20A00F8AFB6 /* NSFileManager_ExtendedAttributes.h */,
-				CE5487BB0B35A20A00F8AFB6 /* NSFileManager_ExtendedAttributes.m */,
-				CE38ECD10B8093B200A1B779 /* NSString_SKExtensions.h */,
-				CE38ECD20B8093B200A1B779 /* NSString_SKExtensions.m */,
-				CE2DE4EC0B85DB6300D0DA12 /* NSCursor_SKExtensions.h */,
-				CE2DE4ED0B85DB6300D0DA12 /* NSCursor_SKExtensions.m */,
-				F92DB6600B371481002A26E9 /* PDFDocument_BDSKExtensions.h */,
-				F92DB6610B371481002A26E9 /* PDFDocument_BDSKExtensions.m */,
-				CE2DE50B0B85DC4000D0DA12 /* PDFPage_SKExtensions.h */,
-				CE2DE50C0B85DC4000D0DA12 /* PDFPage_SKExtensions.m */,
-			);
-			name = Categories;
 			sourceTree = "<group>";
 		};
 		CE2DE4D40B85DA1C00D0DA12 /* Miscellaneous */ = {
@@ -632,6 +637,7 @@
 				CE2DE50D0B85DC4000D0DA12 /* PDFPage_SKExtensions.m in Sources */,
 				CE2DEB1C0B8618DE00D0DA12 /* SKFindController.m in Sources */,
 				CE2DED6C0B86334900D0DA12 /* BDSKFindFieldEditor.m in Sources */,
+				CE070EA20B89039700733CC8 /* NSScrollView_SKExtensions.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

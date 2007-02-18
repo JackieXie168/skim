@@ -29,6 +29,7 @@
 #import "SKSplitView.h"
 #import "NSString_SKExtensions.h"
 #import "SKAnnotationTypeIconTransformer.h"
+#import "NSScrollView_SKExtensions.h"
 #import <Carbon/Carbon.h>
 
 #define SEGMENTED_CONTROL_HEIGHT    25.0
@@ -820,9 +821,9 @@ static NSString *SKDocumentToolbarSearchItemIdentifier = @"SKDocumentToolbarSear
 	savedState.scaleFactor = [pdfView scaleFactor];
 	[pdfView setAutoScales:YES];
 	savedState.hasHorizontalScroller = [scrollView hasHorizontalScroller];
-	[scrollView setHasHorizontalScroller:NO];
+	[scrollView setNeverHasHorizontalScroller:YES];
 	savedState.hasVerticalScroller = [scrollView hasVerticalScroller];
-	[scrollView setHasVerticalScroller:NO];
+	[scrollView setNeverHasVerticalScroller:YES];
 	savedState.autoHidesScrollers = [scrollView autohidesScrollers];
 	[scrollView setAutohidesScrollers:YES];
     
@@ -845,7 +846,9 @@ static NSString *SKDocumentToolbarSearchItemIdentifier = @"SKDocumentToolbarSear
         [pdfView setAutoScales:NO];
         [pdfView setScaleFactor:savedState.scaleFactor];
     }		
+    [scrollView setNeverHasHorizontalScroller:NO];		
     [scrollView setHasHorizontalScroller:savedState.hasHorizontalScroller];		
+    [scrollView setNeverHasVerticalScroller:NO];		
     [scrollView setHasVerticalScroller:savedState.hasVerticalScroller];
     [scrollView setAutohidesScrollers:savedState.autoHidesScrollers];		
     
