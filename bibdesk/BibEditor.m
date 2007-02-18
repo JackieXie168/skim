@@ -109,16 +109,12 @@ enum{
 
 @implementation BibEditor
 
-static int numberOfOpenEditors = 0;
-
 - (NSString *)windowNibName{
     return @"BibEditor";
 }
 
 - (id)initWithPublication:(BibItem *)aBib{
     if (self = [super initWithWindowNibName:@"BibEditor"]) {
-        
-        numberOfOpenEditors++;
         
         publication = [aBib retain];
         isEditable = [[publication owner] isDocument];
@@ -301,7 +297,6 @@ static int numberOfOpenEditors = 0;
 }
 
 - (void)dealloc{
-    numberOfOpenEditors--;
     [publication release];
 	[authorTableView setDelegate:nil];
     [authorTableView setDataSource:nil];
