@@ -93,19 +93,7 @@ static NSString *SKDocumentToolbarSearchItemIdentifier = @"SKDocumentToolbarSear
 - (void)dealloc {
     
 	[[NSNotificationCenter defaultCenter] removeObserver: self];
-	
-    [[NSUserDefaultsController sharedUserDefaultsController] removeObserver:self
-            forKeyPath:[NSString stringWithFormat:@"values.%@", SKBackgroundColorKey]];
-    [[NSUserDefaultsController sharedUserDefaultsController] removeObserver:self
-            forKeyPath:[NSString stringWithFormat:@"values.%@", SKFullScreenBackgroundColorKey]];
-    [[NSUserDefaultsController sharedUserDefaultsController] removeObserver:self
-            forKeyPath:[NSString stringWithFormat:@"values.%@", SKSearchHighlightColorKey]];
-    [[NSUserDefaultsController sharedUserDefaultsController] removeObserver:self
-            forKeyPath:[NSString stringWithFormat:@"values.%@", SKShouldHighlightSearchResultsKey]];
-    [[NSUserDefaultsController sharedUserDefaultsController] removeObserver:self
-            forKeyPath:[NSString stringWithFormat:@"values.%@", SKThumbnailSizeKey]];
-    [[NSUserDefaultsController sharedUserDefaultsController] removeObserver:self
-            forKeyPath:[NSString stringWithFormat:@"values.%@", SKSnapshotThumbnailSizeKey]];
+    [self unregisterForChangeNotification];
     
     if (thumbnailTimer) {
         [thumbnailTimer invalidate];
@@ -174,7 +162,7 @@ static NSString *SKDocumentToolbarSearchItemIdentifier = @"SKDocumentToolbarSear
     frame.size.height = SEGMENTED_CONTROL_HEIGHT;
     [rightSideButton setFrame:frame];
     [[rightSideButton cell] setToolTip:NSLocalizedString(@"View Notes", @"Tool tip message") forSegment:SKNoteSidePaneState];
-    [[rightSideButton cell] setToolTip:NSLocalizedString(@"View Detail Windows", @"Tool tip message") forSegment:SKSnapshotSidePaneState];
+    [[rightSideButton cell] setToolTip:NSLocalizedString(@"View Snapshots", @"Tool tip message") forSegment:SKSnapshotSidePaneState];
     
     [searchBox setCollapseEdges:SKMaxXEdgeMask | SKMinYEdgeMask];
     [searchBox setMinSize:NSMakeSize(150.0, 42.0)];
@@ -224,31 +212,6 @@ static NSString *SKDocumentToolbarSearchItemIdentifier = @"SKDocumentToolbarSear
     
     [pdfView setBackgroundColor:[NSUnarchiver unarchiveObjectWithData:[[NSUserDefaults standardUserDefaults] dataForKey:SKBackgroundColorKey]]];
     
-    [[NSUserDefaultsController sharedUserDefaultsController] addObserver:self
-            forKeyPath:[NSString stringWithFormat:@"values.%@", SKBackgroundColorKey]
-               options:0
-               context:NULL];
-    [[NSUserDefaultsController sharedUserDefaultsController] addObserver:self
-            forKeyPath:[NSString stringWithFormat:@"values.%@", SKFullScreenBackgroundColorKey]
-               options:0
-               context:NULL];
-    [[NSUserDefaultsController sharedUserDefaultsController] addObserver:self
-            forKeyPath:[NSString stringWithFormat:@"values.%@", SKSearchHighlightColorKey]
-               options:0
-               context:NULL];
-    [[NSUserDefaultsController sharedUserDefaultsController] addObserver:self
-            forKeyPath:[NSString stringWithFormat:@"values.%@", SKShouldHighlightSearchResultsKey]
-               options:0
-               context:NULL];
-    [[NSUserDefaultsController sharedUserDefaultsController] addObserver:self
-            forKeyPath:[NSString stringWithFormat:@"values.%@", SKThumbnailSizeKey]
-               options:0
-               context:NULL];
-    [[NSUserDefaultsController sharedUserDefaultsController] addObserver:self
-            forKeyPath:[NSString stringWithFormat:@"values.%@", SKSnapshotThumbnailSizeKey]
-               options:0
-               context:NULL];
-    
     [[self window] makeFirstResponder:[pdfView documentView]];
     
     [self handleChangedHistoryNotification:nil];
@@ -281,6 +244,39 @@ static NSString *SKDocumentToolbarSearchItemIdentifier = @"SKDocumentToolbarSear
                                                  name:SKPDFViewAnnotationDoubleClickedNotification object:pdfView];
 }
 
+- (void)registerForDocumentNotifications {
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleDocumentBeginWrite:) 
+                                                 name:@"PDFDidBeginDocumentWrite" object:[pdfView document]];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleDocumentEndWrite:) 
+                                                 name:@"PDFDidEndDocumentWrite" object:[pdfView document]];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleDocumentEndPageWrite:) 
+                                                 name:@"PDFDidEndPageWrite" object:[pdfView document]];
+}
+
+- (void)unregisterForDocumentNotifications {
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:@"PDFDidBeginDocumentWrite" object:[pdfView document]];
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:@"PDFDidEndDocumentWrite" object:[pdfView document]];
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:@"PDFDidEndPageWrite" object:[pdfView document]];
+}
+
+- (void)registerAsObserver {
+    [[NSUserDefaultsController sharedUserDefaultsController] addObserver:self forKey:SKBackgroundColorKey];
+    [[NSUserDefaultsController sharedUserDefaultsController] addObserver:self forKey:SKFullScreenBackgroundColorKey];
+    [[NSUserDefaultsController sharedUserDefaultsController] addObserver:self forKey:SKSearchHighlightColorKey];
+    [[NSUserDefaultsController sharedUserDefaultsController] addObserver:self forKey:SKShouldHighlightSearchResultsKey];
+    [[NSUserDefaultsController sharedUserDefaultsController] addObserver:self forKey:SKThumbnailSizeKey];
+    [[NSUserDefaultsController sharedUserDefaultsController] addObserver:self forKey:SKSnapshotThumbnailSizeKey];
+}
+
+- (void)unregisterForChangeNotification {
+    [[NSUserDefaultsController sharedUserDefaultsController] removeObserver:self forKey:SKBackgroundColorKey];
+    [[NSUserDefaultsController sharedUserDefaultsController] removeObserver:self forKey:SKFullScreenBackgroundColorKey];
+    [[NSUserDefaultsController sharedUserDefaultsController] removeObserver:self forKey:SKSearchHighlightColorKey];
+    [[NSUserDefaultsController sharedUserDefaultsController] removeObserver:self forKey:SKShouldHighlightSearchResultsKey];
+    [[NSUserDefaultsController sharedUserDefaultsController] removeObserver:self forKey:SKThumbnailSizeKey];
+    [[NSUserDefaultsController sharedUserDefaultsController] removeObserver:self forKey:SKSnapshotThumbnailSizeKey];
+}
+
 #pragma mark Accessors
 
 - (PDFDocument *)pdfDocument{
@@ -290,16 +286,13 @@ static NSString *SKDocumentToolbarSearchItemIdentifier = @"SKDocumentToolbarSear
 - (void)setPdfDocument:(PDFDocument *)document{
     if ([pdfView document] != document) {
         
+        [self unregisterForDocumentNotifications];
+        
         [[pdfView document] setDelegate:nil];
         [pdfView setDocument:document];
         [[pdfView document] setDelegate:self];
         
-        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleDocumentBeginWrite:) 
-                                                     name:@"PDFDidBeginDocumentWrite" object:[pdfView document]];
-        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleDocumentEndWrite:) 
-                                                     name:@"PDFDidEndDocumentWrite" object:[pdfView document]];
-        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleDocumentEndPageWrite:) 
-                                                     name:@"PDFDidEndPageWrite" object:[pdfView document]];
+        [self registerForDocumentNotifications];
         
         [pdfOutline release];
         pdfOutline = [[[pdfView document] outlineRoot] retain];
@@ -1442,6 +1435,61 @@ static NSString *SKDocumentToolbarSearchItemIdentifier = @"SKDocumentToolbarSear
 	[saveProgressBar displayIfNeeded];
 }
 
+#pragma mark KVO
+
+- (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context {
+    if (object == [NSUserDefaultsController sharedUserDefaultsController]) {
+        if (NO == [keyPath hasPrefix:@"values."])
+            return;
+        NSString *key = [keyPath substringFromIndex:7];
+        if ([key isEqualToString:SKBackgroundColorKey]) {
+            if ([self isFullScreen] == NO && [self isPresentation] == NO)
+                [pdfView setBackgroundColor:[NSUnarchiver unarchiveObjectWithData:[[NSUserDefaults standardUserDefaults] dataForKey:SKBackgroundColorKey]]];
+        } else if ([key isEqualToString:SKFullScreenBackgroundColorKey]) {
+            if ([self isFullScreen]) {
+                NSColor *color = [NSUnarchiver unarchiveObjectWithData:[[NSUserDefaults standardUserDefaults] dataForKey:SKFullScreenBackgroundColorKey]];
+                if (color) {
+                    [pdfView setBackgroundColor:color];
+                    [fullScreenWindow setBackgroundColor:color];
+                }
+            }
+        } else if ([key isEqualToString:SKSearchHighlightColorKey]) {
+            if ([[NSUserDefaults standardUserDefaults] boolForKey:SKShouldHighlightSearchResultsKey] && 
+                [[findField stringValue] length] && [findTableView numberOfSelectedRows]) {
+                // clear the selection
+                [self removeTemporaryAnnotations];
+                
+                NSEnumerator *selE = [[findArrayController selectedObjects] objectEnumerator];
+                PDFSelection *sel;
+                
+                while (sel = [selE nextObject])
+                    [self addAnnotationsForSelection:sel];
+            }
+        } else if ([key isEqualToString:SKShouldHighlightSearchResultsKey]) {
+            if ([[findField stringValue] length] && [findTableView numberOfSelectedRows]) {
+                // clear the selection
+                [self removeTemporaryAnnotations];
+                
+                if ([[NSUserDefaults standardUserDefaults] boolForKey:SKShouldHighlightSearchResultsKey]) {
+                    NSEnumerator *selE = [[findArrayController selectedObjects] objectEnumerator];
+                    PDFSelection *sel;
+                    
+                    while (sel = [selE nextObject])
+                        [self addAnnotationsForSelection:sel];
+                }
+            }
+        } else if ([key isEqualToString:SKThumbnailSizeKey]) {
+            [self resetThumbnailSizeIfNeeded];
+            [thumbnailTableView noteHeightOfRowsWithIndexesChanged:[NSIndexSet indexSetWithIndexesInRange:NSMakeRange(0, [self countOfThumbnails])]];
+        } else if ([key isEqualToString:SKSnapshotThumbnailSizeKey]) {
+            [self resetSnapshotSizeIfNeeded];
+            [snapshotTableView noteHeightOfRowsWithIndexesChanged:[NSIndexSet indexSetWithIndexesInRange:NSMakeRange(0, [self countOfSnapshots])]];
+        }
+    } else {
+        [super observeValueForKeyPath:keyPath ofObject:object change:change context:context];
+    }
+}
+
 #pragma mark NSOutlineView methods
 
 - (int)outlineView:(NSOutlineView *)outlineView numberOfChildrenOfItem:(id)item{
@@ -2183,52 +2231,6 @@ static NSString *SKDocumentToolbarSearchItemIdentifier = @"SKDocumentToolbarSear
     [sender adjustSubviews];
 }
 
-- (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context {
-    if ([keyPath isEqualToString:[NSString stringWithFormat:@"values.%@", SKBackgroundColorKey]]) {
-        if ([self isFullScreen] == NO && [self isPresentation] == NO)
-            [pdfView setBackgroundColor:[NSUnarchiver unarchiveObjectWithData:[[NSUserDefaults standardUserDefaults] dataForKey:SKBackgroundColorKey]]];
-    } else if ([keyPath isEqualToString:[NSString stringWithFormat:@"values.%@", SKFullScreenBackgroundColorKey]]) {
-        if ([self isFullScreen]) {
-            NSColor *color = [NSUnarchiver unarchiveObjectWithData:[[NSUserDefaults standardUserDefaults] dataForKey:SKFullScreenBackgroundColorKey]];
-            if (color) {
-                [pdfView setBackgroundColor:color];
-                [fullScreenWindow setBackgroundColor:color];
-            }
-        }
-    } else if ([keyPath isEqualToString:[NSString stringWithFormat:@"values.%@", SKSearchHighlightColorKey]]) {
-        if ([[NSUserDefaults standardUserDefaults] boolForKey:SKShouldHighlightSearchResultsKey] && 
-            [[findField stringValue] length] && [findTableView numberOfSelectedRows]) {
-            // clear the selection
-            [self removeTemporaryAnnotations];
-            
-            NSEnumerator *selE = [[findArrayController selectedObjects] objectEnumerator];
-            PDFSelection *sel;
-            
-            while (sel = [selE nextObject])
-                [self addAnnotationsForSelection:sel];
-        }
-    } else if ([keyPath isEqualToString:[NSString stringWithFormat:@"values.%@", SKShouldHighlightSearchResultsKey]]) {
-        if ([[findField stringValue] length] && [findTableView numberOfSelectedRows]) {
-            // clear the selection
-            [self removeTemporaryAnnotations];
-            
-            if ([[NSUserDefaults standardUserDefaults] boolForKey:SKShouldHighlightSearchResultsKey]) {
-                NSEnumerator *selE = [[findArrayController selectedObjects] objectEnumerator];
-                PDFSelection *sel;
-                
-                while (sel = [selE nextObject])
-                    [self addAnnotationsForSelection:sel];
-            }
-        }
-    } else if ([keyPath isEqualToString:[NSString stringWithFormat:@"values.%@", SKThumbnailSizeKey]]) {
-        [self resetThumbnailSizeIfNeeded];
-        [thumbnailTableView noteHeightOfRowsWithIndexesChanged:[NSIndexSet indexSetWithIndexesInRange:NSMakeRange(0, [self countOfThumbnails])]];
-    } else if ([keyPath isEqualToString:[NSString stringWithFormat:@"values.%@", SKSnapshotThumbnailSizeKey]]) {
-        [self resetSnapshotSizeIfNeeded];
-        [snapshotTableView noteHeightOfRowsWithIndexesChanged:[NSIndexSet indexSetWithIndexesInRange:NSMakeRange(0, [self countOfSnapshots])]];
-    }
-}
-
 @end
 
 #pragma mark -
@@ -2348,6 +2350,20 @@ static NSString *SKDocumentToolbarSearchItemIdentifier = @"SKDocumentToolbarSear
 - (void)setFrameSize:(NSSize)frameSize {
     [super setFrameSize:frameSize];
     [self noteHeightOfRowsWithIndexesChanged:[NSIndexSet indexSetWithIndexesInRange:NSMakeRange(0, [self numberOfRows])]];
+}
+
+@end
+
+#pragma mark -
+
+@implementation NSUserDefaultsController (SKExtensions)
+
+- (void)addObserver:(NSObject *)anObserver forKey:(NSString *)key {
+    [self addObserver:anObserver forKeyPath:[NSString stringWithFormat:@"values.%@", key] options:0 context:NULL];
+}
+
+- (void)removeObserver:(NSObject *)anObserver forKey:(NSString *)key {
+    [self removeObserver:anObserver forKeyPath:[NSString stringWithFormat:@"values.%@", key]];
 }
 
 @end

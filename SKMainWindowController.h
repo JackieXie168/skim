@@ -216,6 +216,10 @@ typedef struct _SKPDFViewState {
 - (void)updateSnapshot:(NSTimer *)timer;
 
 - (void)registerForNotifications;
+- (void)registerForDocumentNotifications;
+- (void)unregisterForDocumentNotifications;
+- (void)registerAsObserver;
+- (void)unregisterForChangeNotification;
 
 - (void)handleApplicationWillTerminateNotification:(NSNotification *)notification;
 - (void)handlePageChangedNotification:(NSNotification *)notification;
@@ -241,4 +245,10 @@ typedef struct _SKPDFViewState {
 
 @interface NSObject (SKNoteTableViewDelegate)
 - (void)tableView:(NSTableView *)aTableView deleteRowsWithIndexes:(NSIndexSet *)rowIndexes;
+@end
+
+
+@interface NSUserDefaultsController (SKExtensions)
+- (void)addObserver:(NSObject *)anObserver forKey:(NSString *)key;
+- (void)removeObserver:(NSObject *)anObserver forKey:(NSString *)key;
 @end
