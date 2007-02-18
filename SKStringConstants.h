@@ -11,6 +11,7 @@ extern NSString *SKDefaultDocumentScaleKey;
 extern NSString *SKDefaultDocumentAutoScaleKey;
 extern NSString *SKFullScreenBackgroundColorKey;
 extern NSString *SKLastOpenFileNamesKey;
+extern NSString *SKOpenContentsPaneOnlyForTOCKey;
 extern NSString *SKOpenFilesMaximizedKey;
 extern NSString *SKReopenLastOpenFilesKey;
 extern NSString *SKSearchHighlightColorKey;

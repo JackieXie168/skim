@@ -9,6 +9,7 @@
         <string>SKDefaultDocumentScaleOption</string>
         <string>SKFullScreenBackgroundColor</string>
         <string>SKLastOpenFileNames</string>
+        <string>SKOpenContentsPaneOnlyForTOC</string>
         <string>SKOpenFilesMaximized</string>
         <string>SKReopenLastOpenFiles</string>
         <string>SKSearchHighlightColor</string>
@@ -32,6 +33,8 @@
 	</data>
 	<key>SKLastOpenFileNames</key>
 	<array/>
+	<key>SKOpenContentsPaneOnlyForTOC</key>
+	<false/>
 	<key>SKOpenFilesMaximized</key>
 	<false/>
 	<key>SKReopenLastOpenFiles</key>

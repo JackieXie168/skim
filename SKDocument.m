@@ -378,7 +378,10 @@ static NSString *SKPostScriptDocumentType = @"PostScript document";
 }
 
 - (NSDictionary *)initialDocumentSetup {
-    return intialDocumentSetup;
+    // we should only use this information once, and should not be used when the document is reopened later in the same session
+    NSDictionary *setup = [intialDocumentSetup autorelease];
+    intialDocumentSetup = nil;
+    return setup;
 }
 
 - (void)setInitialDocumentSetup:(NSDictionary *)setup {
