@@ -10,9 +10,12 @@
 
 
 @interface SKPreferenceController : NSWindowController {
-
+    IBOutlet NSSlider *thumbnailSizeSlider;
+    IBOutlet NSSlider *snapshotSizeSlider;
 }
 
 + (id)sharedPrefenceController;
+
+- (IBAction)changeDiscreteThumbnailSizes:(id)sender;
 
 @end
