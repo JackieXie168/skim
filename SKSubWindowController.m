@@ -91,20 +91,34 @@ static NSString *SKSubWindowFrameAutosaveName = @"SKSubWindowFrameAutosaveName";
     NSBitmapImageRep *imageRep = [pdfView bitmapImageRepForCachingDisplayInRect:bounds];
     BOOL isScaled = size > 0.0;
     BOOL hasShadow = shadowBlurRadius > 0.0;
-    float scale = isScaled ? (size - 2.0 * shadowBlurRadius) / MAX(NSWidth(bounds), NSHeight(bounds)) : 1.0;
-    NSSize thumbnailSize = NSMakeSize(scale * NSWidth(bounds) + 2.0 * shadowBlurRadius, scale * NSHeight(bounds) + 2.0 * shadowBlurRadius);
-    NSImage *image = [[NSImage alloc] initWithSize:thumbnailSize];
+    float scaleX, scaleY;
+    NSSize thumbnailSize;
+    NSImage *image;
     
     [pdfView cacheDisplayInRect:bounds toBitmapImageRep:imageRep];
     
+    
+    if (isScaled) {
+        if (NSHeight(bounds) > NSWidth(bounds))
+            thumbnailSize = NSMakeSize(roundf((size - 2.0 * shadowBlurRadius) * NSWidth(bounds) / NSHeight(bounds) + 2.0 * shadowBlurRadius), size);
+        else
+            thumbnailSize = NSMakeSize(size, roundf((size - 2.0 * shadowBlurRadius) * NSHeight(bounds) / NSWidth(bounds) + 2.0 * shadowBlurRadius));
+        scaleX = (thumbnailSize.width - 2.0 * shadowBlurRadius) / NSWidth(bounds);
+        scaleY = (thumbnailSize.height - 2.0 * shadowBlurRadius) / NSHeight(bounds);
+    } else {
+        thumbnailSize = NSMakeSize(NSWidth(bounds) + 2.0 * shadowBlurRadius, NSHeight(bounds) + 2.0 * shadowBlurRadius);
+        scaleX = scaleY = 1.0;
+    }
+    
+    image = [[NSImage alloc] initWithSize:thumbnailSize];
     [image lockFocus];
     [NSGraphicsContext saveGraphicsState];
     [[NSGraphicsContext currentContext] setImageInterpolation:NSImageInterpolationHigh];
     if (isScaled || hasShadow) {
         NSAffineTransform *transform = [NSAffineTransform transform];
         if (isScaled)
-            [transform scaleBy:scale];
-        [transform translateXBy:(shadowBlurRadius - shadowOffset.width) / scale yBy:(shadowBlurRadius - shadowOffset.height) / scale];
+            [transform scaleXBy:scaleX yBy:scaleY];
+        [transform translateXBy:(shadowBlurRadius - shadowOffset.width) / scaleX yBy:(shadowBlurRadius - shadowOffset.height) / scaleY];
         [transform concat];
     }
     [NSGraphicsContext saveGraphicsState];
