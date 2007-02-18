@@ -22,4 +22,18 @@
     return sharedPrefenceController;
 }
 
+- (IBAction)changeDiscreteThumbnailSizes:(id)sender {
+    if ([sender state] == NSOnState) {
+        [thumbnailSizeSlider setNumberOfTickMarks:8];
+        [snapshotSizeSlider setNumberOfTickMarks:8];
+    } else {
+        [[thumbnailSizeSlider superview] setNeedsDisplayInRect:[thumbnailSizeSlider frame]];
+        [[snapshotSizeSlider superview] setNeedsDisplayInRect:[snapshotSizeSlider frame]];
+        [thumbnailSizeSlider setNumberOfTickMarks:0];
+        [snapshotSizeSlider setNumberOfTickMarks:0];
+    }
+    [thumbnailSizeSlider sizeToFit];
+    [snapshotSizeSlider sizeToFit];
+}
+
 @end

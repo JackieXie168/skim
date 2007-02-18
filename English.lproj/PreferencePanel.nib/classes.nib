@@ -7,8 +7,10 @@
             SUPERCLASS = NSObject; 
         }, 
         {
+            ACTIONS = {changeDiscreteThumbnailSizes = id; }; 
             CLASS = SKPreferenceController; 
             LANGUAGE = ObjC; 
+            OUTLETS = {snapshotSizeSlider = NSSlider; thumbnailSizeSlider = NSSlider; }; 
             SUPERCLASS = NSWindowController; 
         }
     ); 
