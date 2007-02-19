@@ -1,13 +1,24 @@
 {
     IBClasses = (
+        {
+            CLASS = BDSKCollapsibleView; 
+            LANGUAGE = ObjC; 
+            SUPERCLASS = BDSKContainerView; 
+        }, 
+        {
+            CLASS = BDSKContainerView; 
+            LANGUAGE = ObjC; 
+            OUTLETS = {contentView = id; }; 
+            SUPERCLASS = NSView; 
+        }, 
+        {CLASS = BDSKEdgeView; LANGUAGE = ObjC; SUPERCLASS = BDSKContainerView; }, 
         {CLASS = FirstResponder; LANGUAGE = ObjC; SUPERCLASS = NSObject; }, 
         {ACTIONS = {splitViewDoubleClick = id; }; CLASS = NSObject; LANGUAGE = ObjC; }, 
         {CLASS = NSSegmentedControl; LANGUAGE = ObjC; SUPERCLASS = NSControl; }, 
         {
-            CLASS = SKCollapsibleView; 
+            CLASS = NSUserDefaultsController; 
             LANGUAGE = ObjC; 
-            OUTLETS = {contentView = id; }; 
-            SUPERCLASS = NSView; 
+            SUPERCLASS = NSController; 
         }, 
         {CLASS = SKFullScreenWindow; LANGUAGE = ObjC; SUPERCLASS = NSWindow; }, 
         {
@@ -47,7 +58,9 @@
                 toggleDisplayContinuous = id; 
                 toggleDisplayPageBreaks = id; 
                 toggleFullScreen = id; 
+                toggleLeftSidePane = id; 
                 togglePresentation = id; 
+                toggleRightSidePane = id; 
                 toggleZoomToFit = id; 
             }; 
             CLASS = SKMainWindowController; 
@@ -65,19 +78,23 @@
                 leftSideBox = NSBox; 
                 leftSideButton = NSSegmentedControl; 
                 leftSideContentBox = NSBox; 
+                leftSideEdgeView = BDSKEdgeView; 
                 noteArrayController = NSArrayController; 
                 noteTableView = SKNoteTableView; 
                 outlineView = NSOutlineView; 
                 pageNumberField = NSTextField; 
                 pageNumberStepper = NSStepper; 
                 pageNumberView = NSView; 
-                pdfContentBox = NSBox; 
+                pdfContentBox = BDSKEdgeView; 
                 pdfView = SKPDFView; 
                 rightSideBox = NSBox; 
                 rightSideButton = NSSegmentedControl; 
                 rightSideContentBox = NSBox; 
+                rightSideEdgeView = BDSKEdgeView; 
+                saveProgressBar = NSProgressIndicator; 
+                saveProgressSheet = NSWindow; 
                 scaleField = NSTextField; 
-                searchBox = SKCollapsibleView; 
+                searchBox = BDSKCollapsibleView; 
                 searchField = NSSearchField; 
                 snapshotArrayController = NSArrayController; 
                 snapshotTableView = SKSnapshotTableView; 

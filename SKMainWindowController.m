@@ -24,7 +24,8 @@
 #import "SKDocument.h"
 #import "SKThumbnail.h"
 #import "SKPDFView.h"
-#import "SKCollapsibleView.h"
+#import "BDSKCollapsibleView.h"
+#import "BDSKEdgeView.h"
 #import "SKPDFAnnotationNote.h"
 #import "SKSplitView.h"
 #import "NSString_SKExtensions.h"
@@ -165,8 +166,12 @@ static NSString *SKDocumentToolbarSearchItemIdentifier = @"SKDocumentToolbarSear
     [[rightSideButton cell] setToolTip:NSLocalizedString(@"View Notes", @"Tool tip message") forSegment:SKNoteSidePaneState];
     [[rightSideButton cell] setToolTip:NSLocalizedString(@"View Snapshots", @"Tool tip message") forSegment:SKSnapshotSidePaneState];
     
-    [searchBox setCollapseEdges:SKMaxXEdgeMask | SKMinYEdgeMask];
+    [searchBox setCollapseEdges:BDSKMaxXEdgeMask | BDSKMinYEdgeMask];
     [searchBox setMinSize:NSMakeSize(150.0, 42.0)];
+    
+    [pdfContentBox setEdges:BDSKMinXEdgeMask | BDSKMaxXEdgeMask];
+    [leftSideEdgeView setEdges:BDSKMaxXEdgeMask];
+    [rightSideEdgeView setEdges:BDSKMinXEdgeMask];
     
     NSSortDescriptor *indexSortDescriptor = [[[NSSortDescriptor alloc] initWithKey:@"pageIndex" ascending:YES] autorelease];
     NSSortDescriptor *contentsSortDescriptor = [[[NSSortDescriptor alloc] initWithKey:@"contents" ascending:YES] autorelease];
@@ -695,7 +700,7 @@ static NSString *SKDocumentToolbarSearchItemIdentifier = @"SKDocumentToolbarSear
         pdfFrame.size.width += lastLeftSidePaneWidth;
         sideFrame.size.width = 0.0;
     } else {
-        if(lastLeftSidePaneWidth <= 0)
+        if(lastLeftSidePaneWidth <= 0.0)
             lastLeftSidePaneWidth = 250.0; // a reasonable value to start
         pdfFrame.size.width -= lastLeftSidePaneWidth;
 		sideFrame.size.width = lastLeftSidePaneWidth;
@@ -710,12 +715,12 @@ static NSString *SKDocumentToolbarSearchItemIdentifier = @"SKDocumentToolbarSear
     NSRect sideFrame = [rightSideContentBox frame];
     NSRect pdfFrame = [pdfContentBox frame];
     
-    if(NSWidth(sideFrame) > 0.0){
+    if(NSWidth(sideFrame) > 1.0){
         lastRightSidePaneWidth = NSWidth(sideFrame); // cache this
         pdfFrame.size.width += lastRightSidePaneWidth;
         sideFrame.size.width = 0.0;
     } else {
-        if(lastRightSidePaneWidth <= 0)
+        if(lastRightSidePaneWidth <= 0.0)
             lastRightSidePaneWidth = 250.0; // a reasonable value to start
         pdfFrame.size.width -= lastRightSidePaneWidth;
 		sideFrame.size.width = lastRightSidePaneWidth;
@@ -789,6 +794,9 @@ static NSString *SKDocumentToolbarSearchItemIdentifier = @"SKDocumentToolbarSear
     [rightSideWindow setMainView:rightSideBox];
     [rightSideBox release];
     
+    [leftSideEdgeView setEdges:BDSKNoEdgeMask];
+    [rightSideEdgeView setEdges:BDSKNoEdgeMask];
+    
     [leftSideWindow orderFront:self];
     [rightSideWindow orderFront:self];
     
@@ -809,6 +817,9 @@ static NSString *SKDocumentToolbarSearchItemIdentifier = @"SKDocumentToolbarSear
     [rightSideBox setFrame:[leftSideContentBox bounds]];
     [rightSideContentBox addSubview:rightSideBox];
     [rightSideBox release];
+    
+    [leftSideEdgeView setEdges:BDSKMaxXEdgeMask];
+    [rightSideEdgeView setEdges:BDSKMinXEdgeMask];
     
     [pdfView setFrame:[[pdfView superview] bounds]];
 }
@@ -2219,9 +2230,9 @@ static NSString *SKDocumentToolbarSearchItemIdentifier = @"SKDocumentToolbarSear
     NSRect mainFrame = [mainView frame];
     NSRect rightSideFrame = [rightSideView frame];
     
-    if (NSWidth(leftSideFrame) < 1.0)
+    if (NSWidth(leftSideFrame) <= 1.0)
         leftSideFrame.size.width = 0.0;
-    if (NSWidth(rightSideFrame) < 1.0)
+    if (NSWidth(rightSideFrame) <= 1.0)
         rightSideFrame.size.width = 0.0;
     
     mainFrame.size.width = NSWidth([sender frame]) - NSWidth(leftSideFrame) - NSWidth(rightSideFrame) - 2 * [sender dividerThickness];
