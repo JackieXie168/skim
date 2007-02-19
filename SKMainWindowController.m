@@ -501,7 +501,7 @@ static NSString *SKDocumentToolbarSearchItemIdentifier = @"SKDocumentToolbarSear
 - (IBAction)changeColor:(id)sender{
     PDFAnnotation *annotation = [pdfView activeAnnotation];
     if (annotation) {
-        [annotation setColor:[sender color]];
+        [annotation setDefaultColor:[sender color]];
         [pdfView setNeedsDisplayForAnnotation:annotation];
     }
 }

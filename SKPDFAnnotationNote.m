@@ -77,6 +77,10 @@
 
 - (NSAttributedString *)text { return nil; }
 
+- (void)setDefaultColor:(NSColor *)newColor {
+    [self setColor:newColor];
+}
+
 - (BOOL)isNoteAnnotation { return NO; }
 
 - (BOOL)isTemporaryAnnotation { return NO; }
@@ -95,14 +99,14 @@ static NSColor *circleColor = nil;
     if (self = [super initWithBounds:bounds]) {
         if (circleColor == nil)
             circleColor = [[NSColor redColor] retain];
-        [super setColor:circleColor];
+        [self setColor:circleColor];
         [[self border] setLineWidth:2.0];
     }
     return self;
 }
 
-- (void)setColor:(NSColor *)newColor {
-    [super setColor:newColor];
+- (void)setDefaultColor:(NSColor *)newColor {
+    [self setColor:newColor];
     if (circleColor != newColor) {
         [circleColor release];
         circleColor = [newColor retain];
@@ -125,14 +129,14 @@ static NSColor *squareColor = nil;
     if (self = [super initWithBounds:bounds]) {
         if (squareColor == nil)
             squareColor = [[NSColor greenColor] retain];
-        [super setColor:squareColor];
+        [self setColor:squareColor];
         [[self border] setLineWidth:2.0];
     }
     return self;
 }
 
-- (void)setColor:(NSColor *)newColor {
-    [super setColor:newColor];
+- (void)setDefaultColor:(NSColor *)newColor {
+    [self setColor:newColor];
     if (squareColor != newColor) {
         [squareColor release];
         squareColor = [newColor retain];
@@ -155,13 +159,13 @@ static NSColor *freeTextColor = nil;
     if (self = [super initWithBounds:bounds]) {
         if (freeTextColor == nil)
             freeTextColor = [[NSColor colorWithDeviceRed:1.0 green:1.0 blue:0.5 alpha:1.0] retain];
-        [super setColor:freeTextColor];
+        [self setColor:freeTextColor];
     }
     return self;
 }
 
-- (void)setColor:(NSColor *)newColor {
-    [super setColor:newColor];
+- (void)setDefaultColor:(NSColor *)newColor {
+    [self setColor:newColor];
     if (freeTextColor != newColor) {
         [freeTextColor release];
         freeTextColor = [newColor retain];
@@ -184,13 +188,13 @@ static NSColor *textColor = nil;
     if (self = [super initWithBounds:bounds]) {
         if (textColor == nil)
             textColor = [[NSColor colorWithDeviceRed:1.0 green:1.0 blue:0.5 alpha:1.0] retain];
-        [super setColor:textColor];
+        [self setColor:textColor];
     }
     return self;
 }
 
-- (void)setColor:(NSColor *)newColor {
-    [super setColor:newColor];
+- (void)setDefaultColor:(NSColor *)newColor {
+    [self setColor:newColor];
     if (textColor != newColor) {
         [textColor release];
         textColor = [newColor retain];
@@ -211,13 +215,13 @@ static NSColor *noteColor = nil;
     if (self = [super initWithBounds:bounds]) {
         if (noteColor == nil)
             noteColor = [[NSColor colorWithDeviceRed:1.0 green:1.0 blue:0.5 alpha:1.0] retain];
-        [super setColor:noteColor];
+        [self setColor:noteColor];
     }
     return self;
 }
 
-- (void)setColor:(NSColor *)newColor {
-    [super setColor:newColor];
+- (void)setDefaultColor:(NSColor *)newColor {
+    [self setColor:newColor];
     if (noteColor != newColor) {
         [noteColor release];
         noteColor = [newColor retain];
