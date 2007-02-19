@@ -309,7 +309,7 @@ The groupedPublications array is a subset of the publications array, developed b
 
 - (void)handleWebGroupUpdatedNotification:(NSNotification *)notification{
     BDSKGroup *group = [notification object];
-    [groupTableView setNeedsDisplay:YES];
+    [groupTableView reloadData];
     if ([[self selectedGroups] containsObject:group])
         [self displaySelectedGroups];
 }
@@ -317,7 +317,7 @@ The groupedPublications array is a subset of the publications array, developed b
 
 - (void)handleStaticGroupChangedNotification:(NSNotification *)notification{
     BDSKGroup *group = [notification object];
-    [groupTableView setNeedsDisplay:YES];
+    [groupTableView reloadData];
     if ([[self selectedGroups] containsObject:group])
         [self displaySelectedGroups];
 }
@@ -329,7 +329,7 @@ The groupedPublications array is a subset of the publications array, developed b
     if([sortGroupsKey isEqualToString:BDSKGroupCellCountKey]){
         [self sortGroupsByKey:sortGroupsKey];
     }else{
-        [groupTableView setNeedsDisplay:YES];
+        [groupTableView reloadData];
         if ([[self selectedGroups] containsObject:group] && succeeded == YES)
             [self displaySelectedGroups];
     }
@@ -378,7 +378,7 @@ The groupedPublications array is a subset of the publications array, developed b
     if([sortGroupsKey isEqualToString:BDSKGroupCellCountKey]){
         [self sortGroupsByKey:sortGroupsKey];
     }else{
-        [groupTableView setNeedsDisplay:YES];
+        [groupTableView reloadData];
         if ([[self selectedGroups] containsObject:group] && succeeded == YES)
             [self displaySelectedGroups];
     }
@@ -397,7 +397,7 @@ The groupedPublications array is a subset of the publications array, developed b
     if([sortGroupsKey isEqualToString:BDSKGroupCellCountKey]){
         [self sortGroupsByKey:sortGroupsKey];
     }else{
-        [groupTableView setNeedsDisplay:YES];
+        [groupTableView reloadData];
         if ([[self selectedGroups] containsObject:group] && succeeded == YES)
             [self displaySelectedGroups];
     }
@@ -413,7 +413,7 @@ The groupedPublications array is a subset of the publications array, developed b
     if ([[groups searchGroups] containsObject:group] == NO)
         return; /// must be from another document
     
-    [groupTableView setNeedsDisplay:YES];
+    [groupTableView reloadData];
     if ([[self selectedGroups] containsObject:group] && succeeded == YES)
         [self displaySelectedGroups];
     
@@ -543,7 +543,7 @@ The groupedPublications array is a subset of the publications array, developed b
         [self sortGroupsByKey:sortGroupsKey];
         [[tableView enclosingScrollView] setScrollPositionAsPercentage:scrollPoint];
     }else{
-        [groupTableView setNeedsDisplay:YES];
+        [groupTableView reloadData];
         if(needsUpdate == YES){
             // fix for bug #1362191: after changing a checkbox that removed an item from a smart group, the table scrolled to the top
             NSPoint scrollPoint = [[tableView enclosingScrollView] scrollPositionAsPercentage];
