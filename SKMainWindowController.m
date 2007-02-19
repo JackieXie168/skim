@@ -702,6 +702,8 @@ static NSString *SKDocumentToolbarSearchItemIdentifier = @"SKDocumentToolbarSear
     } else {
         if(lastLeftSidePaneWidth <= 0.0)
             lastLeftSidePaneWidth = 250.0; // a reasonable value to start
+        if (lastLeftSidePaneWidth > 0.5 * NSWidth(pdfFrame))
+            lastLeftSidePaneWidth = floorf(0.5 * NSWidth(pdfFrame));
         pdfFrame.size.width -= lastLeftSidePaneWidth;
 		sideFrame.size.width = lastLeftSidePaneWidth;
     }
@@ -722,6 +724,8 @@ static NSString *SKDocumentToolbarSearchItemIdentifier = @"SKDocumentToolbarSear
     } else {
         if(lastRightSidePaneWidth <= 0.0)
             lastRightSidePaneWidth = 250.0; // a reasonable value to start
+        if (lastRightSidePaneWidth > 0.5 * NSWidth(pdfFrame))
+            lastRightSidePaneWidth = floorf(0.5 * NSWidth(pdfFrame));
         pdfFrame.size.width -= lastRightSidePaneWidth;
 		sideFrame.size.width = lastRightSidePaneWidth;
     }
