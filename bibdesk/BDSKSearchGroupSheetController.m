@@ -403,6 +403,9 @@ static BOOL isSearchFileAtPath(NSString *path)
     }
     
     if ([self isEditable]) {
+        if ([self commitEditing] == NO)
+            return;
+        
         unsigned index = [serverPopup indexOfSelectedItem];
         unsigned existingIndex = [[[[self class] serversForType:[self type]] valueForKey:@"name"] indexOfObject:[serverPopup titleOfSelectedItem]];
         if (existingIndex != NSNotFound && existingIndex != index) {
