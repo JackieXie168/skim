@@ -69,7 +69,11 @@ static NSString *SKSubWindowFrameAutosaveName = @"SKSubWindowFrameAutosaveName";
     
     [pdfView goToPage:page];
     
-    PDFDestination *dest = [[[PDFDestination alloc] initWithPage:page atPoint:NSMakePoint(NSMinX(rect), NSMaxY(rect))] autorelease];
+    NSPoint point;
+    point.x = ([page rotation] == 0 || [page rotation] == 90) ? NSMinX(rect) : NSMaxX(rect);
+    point.y = ([page rotation] == 90 || [page rotation] == 180) ? NSMinY(rect) : NSMaxY(rect);
+    
+    PDFDestination *dest = [[[PDFDestination alloc] initWithPage:page atPoint:point] autorelease];
     
     // Delayed to allow PDFView to finish its bookkeeping 
     // fixes bug of apparently ignoring the point but getting the page right.
