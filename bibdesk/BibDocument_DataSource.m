@@ -604,15 +604,18 @@
 	int dragCopyType = -1;
 	int count = 0;
     BOOL inside = NO;
+    BOOL isIcon = NO;
 	
     if ([dragType isEqualToString:NSFilenamesPboardType]) {
 		NSArray *fileNames = [pb propertyListForType:NSFilenamesPboardType];
 		count = [fileNames count];
 		image = [[NSWorkspace sharedWorkspace] iconForFiles:fileNames];
-    
+        isIcon = YES;
+        
     } else if ([dragType isEqualToString:NSURLPboardType]) {
         count = 1;
         image = [NSImage imageForURL:[NSURL URLFromPasteboard:pb]];
+        isIcon = YES;
     
 	} else if ([dragType isEqualToString:NSFilesPromisePboardType]) {
 		NSArray *fileNames = [pb propertyListForType:NSFilesPromisePboardType];
@@ -620,6 +623,7 @@
         NSString *pathExt = count ? [[fileNames objectAtIndex:0] pathExtension] : @"";
         // promise drags don't use full paths
         image = [[NSWorkspace sharedWorkspace] iconForFileType:pathExt];
+        isIcon = YES;
     
 	} else {
 		OFPreferenceWrapper *sud = [OFPreferenceWrapper sharedPreferenceWrapper];
@@ -714,7 +718,7 @@
         [image unlockFocus];
 	}
 	
-    return [image dragImageWithCount:count inside:inside];
+    return [image dragImageWithCount:count inside:inside isIcon:isIcon];
 }
 
 #pragma mark TableView dragging destination

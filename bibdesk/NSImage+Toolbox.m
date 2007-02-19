@@ -178,20 +178,20 @@
 
 - (NSImage *)dragImageWithCount:(int)count;
 {
-    return [self dragImageWithCount:count inside:NO];
+    return [self dragImageWithCount:count inside:NO isIcon:YES];
 }
 
-- (NSImage *)dragImageWithCount:(int)count inside:(BOOL)inside;
+- (NSImage *)dragImageWithCount:(int)count inside:(BOOL)inside isIcon:(BOOL)isIcon;
 {
     NSImage *labeledImage;
+    NSRect sourceRect = {NSZeroPoint, [self size]};
+    NSSize size = isIcon ? NSMakeSize(32.0, 32.0) : [self size];
+    NSRect targetRect = {NSZeroPoint, size};
     
     if (count > 1) {
         
         NSAttributedString *countString = [[[NSAttributedString alloc] initWithString:[NSString stringWithFormat:@"%i", count]
                                             attributeName:NSForegroundColorAttributeName attributeValue:[NSColor whiteColor]] autorelease];
-        NSSize size = [self size];
-        NSRect rect = {NSZeroPoint, size};
-        NSRect iconRect = rect;
         NSRect countRect = {NSZeroPoint, [countString size]};
         float countOffset;
         
@@ -200,20 +200,20 @@
         
         if (inside) {
             // large image, draw it inside the corner
-            countRect.origin = NSMakePoint(NSMaxX(rect) - NSWidth(countRect) - countOffset - 2.0, 3.0);
+            countRect.origin = NSMakePoint(NSMaxX(targetRect) - NSWidth(countRect) - countOffset - 2.0, 3.0);
         } else {
             // small image, draw it outside the corner
-            countRect.origin = NSMakePoint(NSMaxX(rect), 0.0);
+            countRect.origin = NSMakePoint(NSMaxX(targetRect), 0.0);
             size.width += NSWidth(countRect) + countOffset;
             size.height += countOffset;
-            rect.origin.y += countOffset;
+            targetRect.origin.y += countOffset;
         }
         
         labeledImage = [[[NSImage alloc] initWithSize:size] autorelease];
         
         [labeledImage lockFocus];
         
-        [self drawInRect:rect fromRect:iconRect operation:NSCompositeCopy fraction:1.0];
+        [self drawInRect:targetRect fromRect:sourceRect operation:NSCompositeCopy fraction:1.0];
         
         [NSGraphicsContext saveGraphicsState];
         // draw a count of the rows being dragged, similar to Mail.app
@@ -224,16 +224,19 @@
         
         [labeledImage unlockFocus];
         
+        sourceRect.size = size;
+        targetRect.size = size;
+        
     } else {
         
         labeledImage = self;
         
     }
 	
-    NSImage *dragImage = [[NSImage alloc] initWithSize:[labeledImage size]];
+    NSImage *dragImage = [[NSImage alloc] initWithSize:size];
 	
 	[dragImage lockFocus];
-	[labeledImage compositeToPoint:NSZeroPoint operation:NSCompositeCopy fraction:0.7];
+	[labeledImage drawInRect:targetRect fromRect:sourceRect operation:NSCompositeCopy fraction:0.7];
 	[dragImage unlockFocus];
 	
 	return [dragImage autorelease];
