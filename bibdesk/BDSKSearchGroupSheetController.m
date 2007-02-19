@@ -404,7 +404,7 @@ static BOOL isSearchFileAtPath(NSString *path)
     
     if ([self isEditable]) {
         unsigned index = [serverPopup indexOfSelectedItem];
-        unsigned existingIndex = [[[[self class] serversForType:[self type]] valueForKey:@"name"] indexOfObject:[[self serverInfo] name]];
+        unsigned existingIndex = [[[[self class] serversForType:[self type]] valueForKey:@"name"] indexOfObject:[serverPopup titleOfSelectedItem]];
         if (existingIndex != NSNotFound && existingIndex != index) {
             NSAlert *alert = [NSAlert alertWithMessageText:NSLocalizedString(@"Duplicate Server Name", @"Message in alert dialog when setting a search group server with a duplicate name")
                                              defaultButton:nil
