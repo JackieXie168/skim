@@ -1260,16 +1260,19 @@ static NSString *SKDocumentToolbarSearchItemIdentifier = @"SKDocumentToolbarSear
     NSImage *image = [controller thumbnailWithSize:snapshotCacheSize shadowBlurRadius:shadowBlurRadius shadowOffset:NSMakeSize(0.0, shadowOffset)];
     PDFPage *page = [[controller pdfView] currentPage];
     SKThumbnail *thumbnail = [[SKThumbnail alloc] initWithImage:image label:[page label]];
+    int row;
     
     [thumbnail setController:controller];
     [thumbnail setPageIndex:[[page document] indexForPage:page]];
     [snapshotArrayController addObject:thumbnail];
     [snapshotArrayController rearrangeObjects];
+    row = [[snapshotArrayController arrangedObjects] indexOfObject:thumbnail];
+    [snapshotTableView scrollRowToVisible:row];
     [thumbnail release];
     
     if ([self isPresentation] == NO) {
         NSRect startRect = [controller rectForThumbnail];
-        NSRect endRect = [snapshotTableView frameOfCellAtColumn:0 row:[[snapshotArrayController arrangedObjects] indexOfObject:thumbnail]];
+        NSRect endRect = [snapshotTableView frameOfCellAtColumn:0 row:row];
         float thumbRatio = NSHeight(startRect) / NSWidth(startRect);
         float cellRatio = NSHeight(endRect) / NSWidth(endRect);
         
