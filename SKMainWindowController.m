@@ -920,7 +920,8 @@ static NSString *SKDocumentToolbarSearchItemIdentifier = @"SKDocumentToolbarSear
         [self hideSideWindows];
     
     [pdfView setHasNavigation:NO autohidesCursor:NO];
-    [pdfContentBox setContentView:pdfView]; // this should be done before exitPresentationMode to get a smooth transition
+    [pdfView setFrame:[[pdfContentBox contentView] bounds]];
+    [pdfContentBox addSubview:pdfView]; // this should be done before exitPresentationMode to get a smooth transition
     
     if ([self isPresentation])
         [self exitPresentationMode];
