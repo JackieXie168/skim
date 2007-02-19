@@ -8,6 +8,7 @@
 
 #import "SKFindController.h"
 #import "BDSKFindFieldEditor.h"
+#import "SKDocument.h"
 #import <Quartz/Quartz.h>
 
 
