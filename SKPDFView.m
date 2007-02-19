@@ -442,7 +442,7 @@ NSString *SKPDFViewAnnotationDoubleClickedNotification = @"SKPDFViewAnnotationDo
         if (page) {
             annotation = [page annotationAtPoint:[self convertPoint:point toPage:page]];
             if ([annotation isNoteAnnotation] == NO)
-                annotation == nil;
+                annotation = nil;
         }
         
         [menu addItem:[NSMenuItem separatorItem]];
