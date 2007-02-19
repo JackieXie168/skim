@@ -32,6 +32,8 @@
 		CE0710170B89BDD600733CC8 /* BDSKCollapsibleView.m in Sources */ = {isa = PBXBuildFile; fileRef = CE0710120B89BDD600733CC8 /* BDSKCollapsibleView.m */; };
 		CE0710180B89BDD600733CC8 /* BDSKContainerView.m in Sources */ = {isa = PBXBuildFile; fileRef = CE0710140B89BDD600733CC8 /* BDSKContainerView.m */; };
 		CE0710190B89BDD600733CC8 /* BDSKEdgeView.m in Sources */ = {isa = PBXBuildFile; fileRef = CE0710160B89BDD600733CC8 /* BDSKEdgeView.m */; };
+		CE07158B0B8A3D6500733CC8 /* NoteDocument.icns in Resources */ = {isa = PBXBuildFile; fileRef = CE0715890B8A3D6300733CC8 /* NoteDocument.icns */; };
+		CE07158C0B8A3D6500733CC8 /* PDFDocument.icns in Resources */ = {isa = PBXBuildFile; fileRef = CE07158A0B8A3D6300733CC8 /* PDFDocument.icns */; };
 		CE2DE4920B85D48F00D0DA12 /* SKThumbnail.m in Sources */ = {isa = PBXBuildFile; fileRef = CE2DE4910B85D48F00D0DA12 /* SKThumbnail.m */; };
 		CE2DE49D0B85D4F400D0DA12 /* SKFullScreenWindow.m in Sources */ = {isa = PBXBuildFile; fileRef = CE2DE49C0B85D4F400D0DA12 /* SKFullScreenWindow.m */; };
 		CE2DE4B30B85D5B300D0DA12 /* SKAnnotationTypeIconTransformer.m in Sources */ = {isa = PBXBuildFile; fileRef = CE2DE4B20B85D5B300D0DA12 /* SKAnnotationTypeIconTransformer.m */; };
@@ -143,6 +145,8 @@
 		CE0710140B89BDD600733CC8 /* BDSKContainerView.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = BDSKContainerView.m; sourceTree = "<group>"; };
 		CE0710150B89BDD600733CC8 /* BDSKEdgeView.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = BDSKEdgeView.h; sourceTree = "<group>"; };
 		CE0710160B89BDD600733CC8 /* BDSKEdgeView.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = BDSKEdgeView.m; sourceTree = "<group>"; };
+		CE0715890B8A3D6300733CC8 /* NoteDocument.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; name = NoteDocument.icns; path = Images/NoteDocument.icns; sourceTree = "<group>"; };
+		CE07158A0B8A3D6300733CC8 /* PDFDocument.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; name = PDFDocument.icns; path = Images/PDFDocument.icns; sourceTree = "<group>"; };
 		CE2DE4900B85D48F00D0DA12 /* SKThumbnail.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SKThumbnail.h; sourceTree = "<group>"; };
 		CE2DE4910B85D48F00D0DA12 /* SKThumbnail.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SKThumbnail.m; sourceTree = "<group>"; };
 		CE2DE49B0B85D4F400D0DA12 /* SKFullScreenWindow.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SKFullScreenWindow.h; sourceTree = "<group>"; };
@@ -476,6 +480,9 @@
 		CE5475A00B33058B00F8AFB6 /* Images */ = {
 			isa = PBXGroup;
 			children = (
+				CE7469170B7F40B600CBF969 /* Skim.icns */,
+				CE07158A0B8A3D6300733CC8 /* PDFDocument.icns */,
+				CE0715890B8A3D6300733CC8 /* NoteDocument.icns */,
 				CE380C600B837B6100A1B779 /* NoteViewAdorn.tiff */,
 				CE380C610B837B6100A1B779 /* SnapshotViewAdorn.tiff */,
 				CE5478B70B33456300F8AFB6 /* AnnotateToolAdorn.tiff */,
@@ -488,7 +495,6 @@
 				CE3A42340B7927D3006B64D3 /* NoteToolAdorn.tiff */,
 				CE4EB8220B7B96D00091F228 /* OutlineViewAdorn.tiff */,
 				CE5478BF0B33456300F8AFB6 /* PopUpToolAdorn.tiff */,
-				CE7469170B7F40B600CBF969 /* Skim.icns */,
 				CE5478C30B33456300F8AFB6 /* TextToolAdorn.tiff */,
 				CE4EB8230B7B96D00091F228 /* ThumbnailViewAdorn.tiff */,
 				CE5478BA0B33456300F8AFB6 /* ToolbarFullScreen.tiff */,
@@ -599,6 +605,8 @@
 				CE0465080B850D7C00C11E4A /* ToolbarRightPane.tiff in Resources */,
 				CE2DEAA30B860A7000D0DA12 /* SaveProgressSheet.nib in Resources */,
 				CE2DEB920B86206400D0DA12 /* FindPanel.nib in Resources */,
+				CE07158B0B8A3D6500733CC8 /* NoteDocument.icns in Resources */,
+				CE07158C0B8A3D6500733CC8 /* PDFDocument.icns in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
