@@ -224,6 +224,7 @@ static NSString *SKDocumentToolbarSearchItemIdentifier = @"SKDocumentToolbarSear
     [self handleScaleChangedNotification:nil];
     
     [self registerForNotifications];
+    [self registerAsObserver];
 }
 
 - (void)registerForNotifications {
@@ -1458,6 +1459,7 @@ static NSString *SKDocumentToolbarSearchItemIdentifier = @"SKDocumentToolbarSear
                 if (color) {
                     [pdfView setBackgroundColor:color];
                     [fullScreenWindow setBackgroundColor:color];
+                    [[fullScreenWindow contentView] setNeedsDisplay:YES];
                 }
             }
         } else if ([key isEqualToString:SKSearchHighlightColorKey]) {
