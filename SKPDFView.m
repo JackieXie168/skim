@@ -391,7 +391,10 @@ NSString *SKPDFViewAnnotationDoubleClickedNotification = @"SKPDFViewAnnotationDo
     NSMenu *menu = [super menuForEvent:theEvent];
     NSMenu *submenu;
     NSMenuItem *item;
-
+    
+    if (hasNavigation && autohidesCursor)
+        return menu;
+    
     [menu addItem:[NSMenuItem separatorItem]];
     
     submenu = [[NSMenu allocWithZone:[menu zone]] init];
