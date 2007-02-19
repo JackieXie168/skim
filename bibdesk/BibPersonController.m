@@ -48,6 +48,7 @@
 #import "BDSKDragImageView.h"
 #import "BDSKPublicationsArray.h"
 #import "NSWindowController_BDSKExtensions.h"
+#import "NSImage+Toolbox.h"
 #import <AddressBook/AddressBook.h>
 
 @implementation BibPersonController
@@ -338,7 +339,7 @@
 }
  
 - (NSImage *)dragImageForDragImageView:(BDSKDragImageView *)view {
-	return [NSImage imageForFileType:@"vcf"];
+	return [[NSImage imageForFileType:@"vcf"] dragImageWithCount:1];
 }
 
 #pragma mark Splitview delegate methods

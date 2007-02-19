@@ -51,6 +51,6 @@
 - (NSImage *)imageFlippedHorizontally;
 - (NSImage *)highlightedImage;
 - (NSImage *)dragImageWithCount:(int)count;
-- (NSImage *)dragImageWithCount:(int)count inside:(BOOL)inside;
+- (NSImage *)dragImageWithCount:(int)count inside:(BOOL)inside isIcon:(BOOL)isIcon;
 
 @end
