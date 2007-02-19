@@ -23,6 +23,8 @@
 - (NSImage *)image;
 - (NSAttributedString *)text;
 
+- (void)setDefaultColor:(NSColor *)newColor;
+
 - (BOOL)isNoteAnnotation;
 - (BOOL)isTemporaryAnnotation;
 - (BOOL)isResizable;
