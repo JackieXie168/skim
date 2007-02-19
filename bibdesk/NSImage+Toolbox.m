@@ -226,6 +226,7 @@
         
         sourceRect.size = size;
         targetRect.size = size;
+        targetRect.origin = NSZeroPoint;
         
     } else {
         
