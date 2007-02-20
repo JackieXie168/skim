@@ -14,6 +14,7 @@
 - (id)initWithContentRect:(NSRect)contentRect image:(NSImage *)image {
     if (self = [self initWithContentRect:contentRect styleMask:NSBorderlessWindowMask backing:NSBackingStoreBuffered defer:NO]) {
         [self setReleasedWhenClosed:NO];
+        [self setLevel:NSFloatingWindowLevel];
         
         NSImageView *imageView = [[NSImageView alloc] init];
         [imageView setImage:image];

@@ -1309,7 +1309,6 @@ static NSString *SKDocumentToolbarSearchItemIdentifier = @"SKDocumentToolbarSear
         image = [controller thumbnailWithSize:0.0 shadowBlurRadius:0.0 shadowOffset:NSZeroSize];
         
         SKMiniaturizeWindow *miniaturizeWindow = [[SKMiniaturizeWindow alloc] initWithContentRect:startRect image:image];
-        [miniaturizeWindow setLevel:[[controller window] level]];
         [miniaturizeWindow orderFront:self];
         [[controller window] orderOut:self];
         [miniaturizeWindow setFrame:endRect display:YES animate:YES];
@@ -1346,7 +1345,6 @@ static NSString *SKDocumentToolbarSearchItemIdentifier = @"SKDocumentToolbarSear
         
         NSImage *image = [controller thumbnailWithSize:0.0 shadowBlurRadius:0.0 shadowOffset:NSZeroSize];
         SKMiniaturizeWindow *miniaturizeWindow = [[SKMiniaturizeWindow alloc] initWithContentRect:startRect image:image];
-        [miniaturizeWindow setLevel:[[controller window] level]];
         [miniaturizeWindow orderFront:self];
         [thumbnail setImage:nil];
         [snapshotTableView display];
