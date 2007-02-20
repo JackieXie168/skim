@@ -52,6 +52,6 @@
 	<key>SKSnapshotThumbnailSize</key>
 	<real>128</real>
 	<key>SKThumbnailSize</key>
-	<real>64</real>
+	<real>128</real>
 </dict>
 </plist>
