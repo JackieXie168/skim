@@ -17,6 +17,11 @@ static NSString *SKSubWindowFrameAutosaveName = @"SKSubWindowFrameAutosaveName";
 
 @implementation SKSubWindowController
 
+- (void)dealloc {
+	[[NSNotificationCenter defaultCenter] removeObserver: self];
+    [super dealloc];
+}
+
 - (NSString *)windowNibName {
     return @"SubWindow";
 }
@@ -32,6 +37,17 @@ static NSString *SKSubWindowFrameAutosaveName = @"SKSubWindowFrameAutosaveName";
     nextWindowLocation = [[self window] cascadeTopLeftFromPoint:nextWindowLocation];
     
     [[self window] makeFirstResponder:pdfView];
+	
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handlePageChangedNotification:) 
+                                                 name:PDFViewPageChangedNotification object:pdfView];
+}
+
+- (NSString *)windowTitleForDocumentDisplayName:(NSString *)displayName {
+    return [NSString stringWithFormat:@"%@ - Page %@", displayName, [[pdfView currentPage] label]];
+}
+
+- (void)handlePageChangedNotification {
+    [[self window] setTitle:[self windowTitleForDocumentDisplayName:[[self document] displayName]]];
 }
 
 - (void)setPdfDocument:(PDFDocument *)pdfDocument scaleFactor:(float)factor goToPageNumber:(int)pageNum rect:(NSRect)rect{
