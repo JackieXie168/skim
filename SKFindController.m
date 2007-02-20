@@ -144,10 +144,10 @@ static id sharedFindController = nil;
     id source = [[NSApp mainWindow] windowController];
     if (source == nil)
         return nil;
-    if ([source respondsToSelector:@selector(pdfView:)])
+    if ([source respondsToSelector:@selector(pdfView)])
         return source;
     source = [source document];
-    if ([source respondsToSelector:@selector(pdfView:)])
+    if ([source respondsToSelector:@selector(pdfView)])
         return source;
     return nil;
 }
