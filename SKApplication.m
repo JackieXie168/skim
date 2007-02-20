@@ -38,17 +38,24 @@ NSString *SKApplicationWillTerminateNotification = @"SKApplicationWillTerminateN
 }
 
 - (void)addWindowsItem:(NSWindow *)aWindow title:(NSString *)aString filename:(BOOL)isFilename {
+    NSMenu *windowsMenu = [self windowsMenu];
+    int itemIndex = [windowsMenu indexOfItemWithTarget:aWindow];
+    
     [super addWindowsItem:aWindow title:aString filename:isFilename];
+    
+    if (itemIndex >= 0)
+        return;
     
     NSWindowController *windowController = [aWindow windowController];
     SKMainWindowController *mainWindowController = [[windowController document] mainWindowController];
-    NSMenu *windowsMenu = [self windowsMenu];
     int numberOfItems = [windowsMenu numberOfItems];
-    int itemIndex = [windowsMenu indexOfItemWithTarget:aWindow];
+    
+    itemIndex = [windowsMenu indexOfItemWithTarget:aWindow];
     
     if ([windowController document] == nil) {
         int index = numberOfItems;
-        while (index-- && [[windowsMenu itemAtIndex:index] isSeparatorItem] == NO && [[[[windowsMenu itemAtIndex:index] target] windowController] document] == nil) {}
+        while (index-- && [[windowsMenu itemAtIndex:index] isSeparatorItem] == NO && 
+               [[[[windowsMenu itemAtIndex:index] target] windowController] document] == nil) {}
         if (index >= 0) {
             if (itemIndex < index) {
                 NSMenuItem *item = [[windowsMenu itemAtIndex:itemIndex] retain];
@@ -66,8 +73,7 @@ NSString *SKApplicationWillTerminateNotification = @"SKApplicationWillTerminateN
         if ([[windowsMenu itemAtIndex:itemIndex - 1] isSeparatorItem] == NO)
             [windowsMenu insertItem:[NSMenuItem separatorItem] atIndex:itemIndex - 1];
     } else {
-        NSWindow *mainWindow = [mainWindowController window];
-        int index = [windowsMenu indexOfItemWithTarget:mainWindow];
+        int index = [windowsMenu indexOfItemWithTarget:[mainWindowController window]];
         NSMenuItem *item = [windowsMenu itemAtIndex:itemIndex];
         
         [item setIndentationLevel:1];
@@ -85,7 +91,8 @@ NSString *SKApplicationWillTerminateNotification = @"SKApplicationWillTerminateN
 - (void)removeWindowsItem:(NSWindow *)aWindow {
     int index = [[self windowsMenu] indexOfItemWithTarget:aWindow];
     [super removeWindowsItem:aWindow];
-    if ((index > 0) && (index < [[self windowsMenu] numberOfItems]) && [[[self windowsMenu] itemAtIndex:index - 1] isSeparatorItem])
+    if ((index >= 0) && (index < [[self windowsMenu] numberOfItems]) && 
+        [[[self windowsMenu] itemAtIndex:index - 1] isSeparatorItem])
         [[self windowsMenu] removeItemAtIndex:index - 1];
 }
 
