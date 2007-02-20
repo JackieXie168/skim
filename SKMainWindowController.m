@@ -180,45 +180,22 @@ static NSString *SKDocumentToolbarSearchItemIdentifier = @"SKDocumentToolbarSear
     
     [self setupToolbar];
     
-    NSDictionary *setup = [[self document] initialDocumentSetup];
+    if ([[NSUserDefaults standardUserDefaults] boolForKey:SKOpenFilesMaximizedKey])
+        [[self window] setFrame:[[NSScreen mainScreen] visibleFrame] display:NO];
     
-    if ([setup count] > 2) {
-        [[self window] setFrame:NSRectFromString([setup objectForKey:@"windowFrame"]) display:NO];
-        NSRect frame = [leftSideContentBox frame];
-        frame.size.width = [[setup objectForKey:@"leftSidePaneWidth"] floatValue];
-        [leftSideContentBox setFrame:frame];
-        frame = [rightSideContentBox frame];
-        frame.size.width = [[setup objectForKey:@"rightSidePaneWidth"] floatValue];
-        [rightSideContentBox setFrame:frame];
-        frame = [pdfContentBox frame];
-        frame.size.width = NSWidth([splitView frame]) - NSWidth([leftSideContentBox frame]) - NSWidth([rightSideContentBox frame]) - 2 * [splitView dividerThickness];
-        [pdfContentBox setFrame:frame];
-        [pdfView setScaleFactor:[[setup objectForKey:@"scaleFactor"] floatValue]];
-        [pdfView setAutoScales:[[setup objectForKey:@"autoScales"] boolValue]];
-        [pdfView setDisplaysPageBreaks:[[setup objectForKey:@"displaysPageBreaks"] boolValue]];
-        [pdfView setDisplaysAsBook:[[setup objectForKey:@"displaysAsBook"] boolValue]];
-        [pdfView setDisplayMode:[[setup objectForKey:@"displayMode"] intValue]];
-        [pdfView setDisplayBox:[[setup objectForKey:@"displayBox"] intValue]];
-        [pdfView goToPage:[[pdfView document] pageAtIndex:[[setup objectForKey:@"pageIndex"] intValue]]];
-    } else {
-        // or should we also do this for initial files?
-        if ([[NSUserDefaults standardUserDefaults] boolForKey:SKOpenFilesMaximizedKey])
-            [[self window] setFrame:[[NSScreen mainScreen] visibleFrame] display:NO];
-        
-        if ([[NSUserDefaults standardUserDefaults] boolForKey:SKDefaultDocumentAutoScaleKey])
-            [pdfView setAutoScales:YES];
+    if ([[NSUserDefaults standardUserDefaults] boolForKey:SKDefaultDocumentAutoScaleKey])
+        [pdfView setAutoScales:YES];
+    else
+        [pdfView setScaleFactor:0.01 * [[NSUserDefaults standardUserDefaults] floatForKey:SKDefaultDocumentScaleKey]];
+
+    if (pdfOutline == nil) {
+        if ([[NSUserDefaults standardUserDefaults] boolForKey:SKOpenContentsPaneOnlyForTOCKey])
+            [self toggleLeftSidePane:self];
         else
-            [pdfView setScaleFactor:0.01 * [[NSUserDefaults standardUserDefaults] floatForKey:SKDefaultDocumentScaleKey]];
-    
-        if (pdfOutline == nil) {
-            if ([[NSUserDefaults standardUserDefaults] boolForKey:SKOpenContentsPaneOnlyForTOCKey])
-                [self toggleLeftSidePane:self];
-            else
-                [self setLeftSidePaneState:SKThumbnailSidePaneState];
-        }
-        if (NSWidth([rightSideContentBox frame]) > 0.0)
-            [self toggleRightSidePane:self];
+            [self setLeftSidePaneState:SKThumbnailSidePaneState];
     }
+    if (NSWidth([rightSideContentBox frame]) > 0.0)
+        [self toggleRightSidePane:self];
     
     [pdfView setBackgroundColor:[NSUnarchiver unarchiveObjectWithData:[[NSUserDefaults standardUserDefaults] dataForKey:SKBackgroundColorKey]]];
     
@@ -290,6 +267,49 @@ static NSString *SKDocumentToolbarSearchItemIdentifier = @"SKDocumentToolbarSear
     [[NSUserDefaultsController sharedUserDefaultsController] removeObserver:self forKey:SKSnapshotsOnTopKey];
 }
 
+- (void)setupWindow:(NSDictionary *)setup{
+    [[self window] setFrame:NSRectFromString([setup objectForKey:@"windowFrame"]) display:NO];
+    NSRect frame = [leftSideContentBox frame];
+    frame.size.width = [[setup objectForKey:@"leftSidePaneWidth"] floatValue];
+    [leftSideContentBox setFrame:frame];
+    frame = [rightSideContentBox frame];
+    frame.size.width = [[setup objectForKey:@"rightSidePaneWidth"] floatValue];
+    [rightSideContentBox setFrame:frame];
+    frame = [pdfContentBox frame];
+    frame.size.width = NSWidth([splitView frame]) - NSWidth([leftSideContentBox frame]) - NSWidth([rightSideContentBox frame]) - 2 * [splitView dividerThickness];
+    [pdfContentBox setFrame:frame];
+    [pdfView setScaleFactor:[[setup objectForKey:@"scaleFactor"] floatValue]];
+    [pdfView setAutoScales:[[setup objectForKey:@"autoScales"] boolValue]];
+    [pdfView setDisplaysPageBreaks:[[setup objectForKey:@"displaysPageBreaks"] boolValue]];
+    [pdfView setDisplaysAsBook:[[setup objectForKey:@"displaysAsBook"] boolValue]];
+    [pdfView setDisplayMode:[[setup objectForKey:@"displayMode"] intValue]];
+    [pdfView setDisplayBox:[[setup objectForKey:@"displayBox"] intValue]];
+    [pdfView goToPage:[[pdfView document] pageAtIndex:[[setup objectForKey:@"pageIndex"] intValue]]];
+}
+
+- (NSDictionary *)currentSetup {
+    NSMutableDictionary *setup = [NSMutableDictionary dictionary];
+    
+    [setup setObject:NSStringFromRect([mainWindow frame]) forKey:@"windowFrame"];
+    [setup setObject:[NSNumber numberWithFloat:NSWidth([leftSideContentBox frame])] forKey:@"leftSidePaneWidth"];
+    [setup setObject:[NSNumber numberWithFloat:NSWidth([rightSideContentBox frame])] forKey:@"rightSidePaneWidth"];
+    [setup setObject:[NSNumber numberWithUnsignedInt:[[pdfView document] indexForPage:[pdfView currentPage]]] forKey:@"pageIndex"];
+    [setup setObject:[NSNumber numberWithBool:[pdfView displaysPageBreaks]] forKey:@"displaysPageBreaks"];
+    [setup setObject:[NSNumber numberWithBool:[pdfView displaysAsBook]] forKey:@"displaysAsBook"];
+    [setup setObject:[NSNumber numberWithInt:[pdfView displayBox]] forKey:@"displayBox"];
+    if ([self isPresentation]) {
+        [setup setObject:[NSNumber numberWithFloat:savedState.scaleFactor] forKey:@"scaleFactor"];
+        [setup setObject:[NSNumber numberWithBool:savedState.autoScales] forKey:@"autoScales"];
+        [setup setObject:[NSNumber numberWithInt:savedState.displayMode] forKey:@"displayMode"];
+    } else {
+        [setup setObject:[NSNumber numberWithFloat:[pdfView scaleFactor]] forKey:@"scaleFactor"];
+        [setup setObject:[NSNumber numberWithBool:[pdfView autoScales]] forKey:@"autoScales"];
+        [setup setObject:[NSNumber numberWithInt:[pdfView displayMode]] forKey:@"displayMode"];
+    }
+    
+    return setup;
+}
+
 #pragma mark Accessors
 
 - (PDFDocument *)pdfDocument{
@@ -356,29 +376,6 @@ static NSString *SKDocumentToolbarSearchItemIdentifier = @"SKDocumentToolbarSear
         }
     }
     [self thumbnailsAtIndexesNeedUpdate:[NSIndexSet indexSetWithIndexesInRange:NSMakeRange(0, [pdfDoc pageCount])]];
-}
-
-- (NSDictionary *)currentSetup {
-    NSMutableDictionary *setup = [NSMutableDictionary dictionary];
-    
-    [setup setObject:NSStringFromRect([mainWindow frame]) forKey:@"windowFrame"];
-    [setup setObject:[NSNumber numberWithFloat:NSWidth([leftSideContentBox frame])] forKey:@"leftSidePaneWidth"];
-    [setup setObject:[NSNumber numberWithFloat:NSWidth([rightSideContentBox frame])] forKey:@"rightSidePaneWidth"];
-    [setup setObject:[NSNumber numberWithUnsignedInt:[[pdfView document] indexForPage:[pdfView currentPage]]] forKey:@"pageIndex"];
-    [setup setObject:[NSNumber numberWithBool:[pdfView displaysPageBreaks]] forKey:@"displaysPageBreaks"];
-    [setup setObject:[NSNumber numberWithBool:[pdfView displaysAsBook]] forKey:@"displaysAsBook"];
-    [setup setObject:[NSNumber numberWithInt:[pdfView displayBox]] forKey:@"displayBox"];
-    if ([self isPresentation]) {
-        [setup setObject:[NSNumber numberWithFloat:savedState.scaleFactor] forKey:@"scaleFactor"];
-        [setup setObject:[NSNumber numberWithBool:savedState.autoScales] forKey:@"autoScales"];
-        [setup setObject:[NSNumber numberWithInt:savedState.displayMode] forKey:@"displayMode"];
-    } else {
-        [setup setObject:[NSNumber numberWithFloat:[pdfView scaleFactor]] forKey:@"scaleFactor"];
-        [setup setObject:[NSNumber numberWithBool:[pdfView autoScales]] forKey:@"autoScales"];
-        [setup setObject:[NSNumber numberWithInt:[pdfView displayMode]] forKey:@"displayMode"];
-    }
-    
-    return setup;
 }
 
 - (PDFView *)pdfView {

@@ -51,7 +51,6 @@ static NSString *SKPostScriptDocumentType = @"PostScript document";
 
 - (void)dealloc {
     [[NSNotificationCenter defaultCenter] removeObserver:self];
-    [intialDocumentSetup release];
     [pdfData release];
     [notes release];
     [noteDicts release];
@@ -375,20 +374,6 @@ static NSString *SKPostScriptDocumentType = @"PostScript document";
 
 - (PDFDocument *)pdfDocument{
     return [[self mainWindowController] pdfDocument];
-}
-
-- (NSDictionary *)initialDocumentSetup {
-    // we should only use this information once, and should not be used when the document is reopened later in the same session
-    NSDictionary *setup = [intialDocumentSetup autorelease];
-    intialDocumentSetup = nil;
-    return setup;
-}
-
-- (void)setInitialDocumentSetup:(NSDictionary *)setup {
-    if (intialDocumentSetup != setup) {
-        [intialDocumentSetup release];
-        intialDocumentSetup = [setup retain];
-    }
 }
 
 - (NSDictionary *)currentDocumentSetup {
