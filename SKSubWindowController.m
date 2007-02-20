@@ -46,7 +46,7 @@ static NSString *SKSubWindowFrameAutosaveName = @"SKSubWindowFrameAutosaveName";
     return [NSString stringWithFormat:@"%@ - Page %@", displayName, [[pdfView currentPage] label]];
 }
 
-- (void)handlePageChangedNotification {
+- (void)handlePageChangedNotification:(NSNotification *)notification {
     [[self window] setTitle:[self windowTitleForDocumentDisplayName:[[self document] displayName]]];
 }
 
