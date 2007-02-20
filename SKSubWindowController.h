@@ -20,8 +20,9 @@
 - (PDFView *)pdfView;
 - (NSRect)rectForThumbnail;
 - (NSImage *)thumbnailWithSize:(float)size shadowBlurRadius:(float)shadowBlurRadius shadowOffset:(NSSize)shadowOffset;
+- (void)handlePageChangedNotification;
 @end
 
 
-@interface SKSubWindow : NSPanel
+@interface SKSubWindow : NSWindow
 @end

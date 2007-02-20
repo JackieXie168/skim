@@ -7,7 +7,7 @@
             SUPERCLASS = PDFView; 
         }, 
         {CLASS = FirstResponder; LANGUAGE = ObjC; SUPERCLASS = NSObject; }, 
-        {CLASS = SKSubWindow; LANGUAGE = ObjC; SUPERCLASS = NSPanel; }, 
+        {CLASS = SKSubWindow; LANGUAGE = ObjC; SUPERCLASS = NSWindow; }, 
         {
             CLASS = SKSubWindowController; 
             LANGUAGE = ObjC; 

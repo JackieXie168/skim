@@ -277,6 +277,7 @@ static NSString *SKDocumentToolbarSearchItemIdentifier = @"SKDocumentToolbarSear
     [[NSUserDefaultsController sharedUserDefaultsController] addObserver:self forKey:SKShouldHighlightSearchResultsKey];
     [[NSUserDefaultsController sharedUserDefaultsController] addObserver:self forKey:SKThumbnailSizeKey];
     [[NSUserDefaultsController sharedUserDefaultsController] addObserver:self forKey:SKSnapshotThumbnailSizeKey];
+    [[NSUserDefaultsController sharedUserDefaultsController] addObserver:self forKey:SKSnapshotsOnTopKey];
 }
 
 - (void)unregisterForChangeNotification {
@@ -286,6 +287,7 @@ static NSString *SKDocumentToolbarSearchItemIdentifier = @"SKDocumentToolbarSear
     [[NSUserDefaultsController sharedUserDefaultsController] removeObserver:self forKey:SKShouldHighlightSearchResultsKey];
     [[NSUserDefaultsController sharedUserDefaultsController] removeObserver:self forKey:SKThumbnailSizeKey];
     [[NSUserDefaultsController sharedUserDefaultsController] removeObserver:self forKey:SKSnapshotThumbnailSizeKey];
+    [[NSUserDefaultsController sharedUserDefaultsController] removeObserver:self forKey:SKSnapshotsOnTopKey];
 }
 
 #pragma mark Accessors
@@ -751,6 +753,14 @@ static NSString *SKDocumentToolbarSearchItemIdentifier = @"SKDocumentToolbarSear
     [pdfView layoutDocumentView];
     [pdfView setNeedsDisplay:YES];
     
+    NSEnumerator *wcEnum = [[[self document] windowControllers] objectEnumerator];
+    NSWindowController *wc = [wcEnum nextObject];
+    
+    while (wc = [wcEnum nextObject]) {
+        if ([wc isKindOfClass:[SKNoteWindowController class]] || [wc isKindOfClass:[SKSubWindowController class]])
+            [[wc window] setLevel:NSFloatingWindowLevel];
+    }
+    
     [self setWindow:fullScreenWindow];
     [fullScreenWindow makeKeyAndOrderFront:self];
     [mainWindow orderOut:self];
@@ -759,6 +769,15 @@ static NSString *SKDocumentToolbarSearchItemIdentifier = @"SKDocumentToolbarSear
 - (void)removeFullScreen {
     [pdfView setBackgroundColor:[NSUnarchiver unarchiveObjectWithData:[[NSUserDefaults standardUserDefaults] dataForKey:SKBackgroundColorKey]]];
     [pdfView layoutDocumentView];
+    
+    NSEnumerator *wcEnum = [[[self document] windowControllers] objectEnumerator];
+    NSWindowController *wc = [wcEnum nextObject];
+    BOOL snapshotsOnTop  = [[NSUserDefaults standardUserDefaults] boolForKey:SKSnapshotsOnTopKey];
+    
+    while (wc = [wcEnum nextObject]) {
+        if ([wc isKindOfClass:[SKNoteWindowController class]] || (snapshotsOnTop == NO && [wc isKindOfClass:[SKSubWindowController class]]))
+            [[wc window] setLevel:NSNormalWindowLevel];
+    }
     
     [self setWindow:mainWindow];
     [mainWindow orderWindow:NSWindowBelow relativeTo:[fullScreenWindow windowNumber]];
@@ -1243,6 +1262,9 @@ static NSString *SKDocumentToolbarSearchItemIdentifier = @"SKDocumentToolbarSear
          goToPageNumber:pageNum
                    rect:rect];
     
+    if ([self isFullScreen] || [[NSUserDefaults standardUserDefaults] boolForKey:SKSnapshotsOnTopKey])
+        [[swc window] setLevel:NSFloatingWindowLevel];
+    
     [[self document] addWindowController:swc];
     [swc release];
     [swc showWindow:self];
@@ -1287,6 +1309,7 @@ static NSString *SKDocumentToolbarSearchItemIdentifier = @"SKDocumentToolbarSear
         image = [controller thumbnailWithSize:0.0 shadowBlurRadius:0.0 shadowOffset:NSZeroSize];
         
         SKMiniaturizeWindow *miniaturizeWindow = [[SKMiniaturizeWindow alloc] initWithContentRect:startRect image:image];
+        [miniaturizeWindow setLevel:[[controller window] level]];
         [miniaturizeWindow orderFront:self];
         [[controller window] orderOut:self];
         [miniaturizeWindow setFrame:endRect display:YES animate:YES];
@@ -1304,6 +1327,8 @@ static NSString *SKDocumentToolbarSearchItemIdentifier = @"SKDocumentToolbarSear
     SKSubWindowController *controller = [thumbnail controller];
     if (controller == nil) return;
     [[self document] addWindowController:controller];
+    if ([self isFullScreen] || [[NSUserDefaults standardUserDefaults] boolForKey:SKSnapshotsOnTopKey])
+        [[controller window] setLevel:NSFloatingWindowLevel];
     
     if ([self isPresentation] == NO) {
         NSRect endRect = [controller rectForThumbnail];
@@ -1321,6 +1346,7 @@ static NSString *SKDocumentToolbarSearchItemIdentifier = @"SKDocumentToolbarSear
         
         NSImage *image = [controller thumbnailWithSize:0.0 shadowBlurRadius:0.0 shadowOffset:NSZeroSize];
         SKMiniaturizeWindow *miniaturizeWindow = [[SKMiniaturizeWindow alloc] initWithContentRect:startRect image:image];
+        [miniaturizeWindow setLevel:[[controller window] level]];
         [miniaturizeWindow orderFront:self];
         [thumbnail setImage:nil];
         [snapshotTableView display];
@@ -1512,6 +1538,16 @@ static NSString *SKDocumentToolbarSearchItemIdentifier = @"SKDocumentToolbarSear
         } else if ([key isEqualToString:SKSnapshotThumbnailSizeKey]) {
             [self resetSnapshotSizeIfNeeded];
             [snapshotTableView noteHeightOfRowsWithIndexesChanged:[NSIndexSet indexSetWithIndexesInRange:NSMakeRange(0, [self countOfSnapshots])]];
+        } else if ([key isEqualToString:SKSnapshotsOnTopKey]) {
+            NSEnumerator *wcEnum = [[[self document] windowControllers] objectEnumerator];
+            NSWindowController *wc = [wcEnum nextObject];
+            BOOL snapshotsOnTop  = [[NSUserDefaults standardUserDefaults] boolForKey:SKSnapshotsOnTopKey];
+            int level = snapshotsOnTop || [self isFullScreen] ? NSFloatingWindowLevel : NSNormalWindowLevel;
+            
+            while (wc = [wcEnum nextObject]) {
+                if ([wc isKindOfClass:[SKSubWindowController class]])
+                    [[wc window] setLevel:level];
+            }
         }
     } else {
         [super observeValueForKeyPath:keyPath ofObject:object change:change context:context];

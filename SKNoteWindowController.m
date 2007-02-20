@@ -68,6 +68,10 @@ static NSString *SKNoteWindowFrameAutosaveName = @"SKNoteWindowFrameAutosaveName
         [(PDFAnnotationText *)note setWindowIsOpen:YES];
 }
 
+- (NSString *)windowTitleForDocumentDisplayName:(NSString *)displayName {
+    return [[self note] contents];
+}
+
 - (PDFAnnotation *)note {
     return note;
 }
