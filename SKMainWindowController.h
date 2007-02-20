@@ -238,6 +238,7 @@ typedef struct _SKPDFViewState {
 
 - (void)setAnnotationsFromDictionaries:(NSArray *)noteDicts;
 
+- (void)setupWindow:(NSDictionary *)setup;
 - (NSDictionary *)currentSetup;
 
 - (void)setupToolbar;

@@ -12,6 +12,7 @@
 #import "SKPreferenceController.h"
 #import "SKStringConstants.h"
 #import "SKDocument.h"
+#import "SKMainWindowController.h"
 #import "BDAlias.h"
 #import <Quartz/Quartz.h>
 
@@ -62,8 +63,8 @@
             if(fileURL == nil)
                 fileURL = [NSURL fileURLWithPath:[dict objectForKey:@"fileName"]];
             if(fileURL && (document = [[NSDocumentController sharedDocumentController] openDocumentWithContentsOfURL:fileURL display:NO error:NULL])) {
-                [document setInitialDocumentSetup:dict];
                 [document makeWindowControllers];
+                [[document mainWindowController] setupWindow:dict];
                 [document showWindows];
             }
         }
