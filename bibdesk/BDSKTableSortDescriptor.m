@@ -42,6 +42,42 @@
 #import <OmniFoundation/NSString-OFExtensions.h>
 #import "BibTypeManager.h"
 
+@interface NSArray (BibAuthorMultipleCompare)
+@end
+
+@implementation NSArray (BibAuthorMultipleCompare)
+
+/* Added at request of a user who wants to sort in a journal-style order of author/year.  Since our table subsort is only 2 deep, this is the most reasonable place to do the comparison for an arbitrary number of authors.  
+
+There are some issues with BibAuthor's sortCompare:, though, which we may revisit at some point.  "K. Been and G. C. Sills" sorts before "Kenneth Been", although "K. Been" and "Kenneth Been" are the same person.  This is more obvious when you only display abbreviated author names, in which case it appears to be a bug.
+*/
+- (NSComparisonResult)sortCompareToAuthorArray:(NSArray *)other;
+{
+    unsigned myCount = [self count], otherCount = [other count];
+    
+    // hack for our non-standard sort order, which looks weirder than usual in this case...
+    if (myCount == 0)
+        return otherCount == 0 ? NSOrderedSame : NSOrderedDescending;
+    else if (otherCount == 0)
+        return NSOrderedAscending;
+
+    unsigned i, iMax = MIN(myCount, otherCount);    
+    NSComparisonResult order = NSOrderedSame;
+    
+    // compare up to the maximum number of elements, but break early if not ordered same
+    for (i = 0; i < iMax && NSOrderedSame == order; i++) {
+        order = [[self objectAtIndex:i] sortCompare:[other objectAtIndex:i]];
+    }
+    
+    // if weakly ordered same, item with fewer authors comes first (in ascending order)
+    if (NSOrderedSame == order && myCount != otherCount)
+        order = myCount > otherCount ? NSOrderedDescending : NSOrderedAscending;
+    
+    return order;
+}
+
+@end
+
 @interface NSObject (FastKVC)
 
 @end
@@ -108,8 +144,11 @@
 		
         sortDescriptor = [[BDSKTableSortDescriptor alloc] initWithKey:@"dateModified" ascending:ascend selector:@selector(compare:)];
         
-	}else if([tcID isEqualToString:BDSKFirstAuthorString] ||
-             [tcID isEqualToString:BDSKAuthorString]){
+	}else if([tcID isEqualToString:BDSKAuthorString]){
+        
+        sortDescriptor = [[BDSKTableSortDescriptor alloc] initWithKey:@"pubAuthors" ascending:ascend selector:@selector(sortCompareToAuthorArray:)];
+        
+	}else if([tcID isEqualToString:BDSKFirstAuthorString]){
         
         sortDescriptor = [[BDSKTableSortDescriptor alloc] initWithKey:@"firstAuthor" ascending:ascend selector:@selector(sortCompare:)];
         
