@@ -1,0 +1,19 @@
+
+<li class="hcite"><span class="title"><$fields.Title/></span>
+
+<$pubAuthors>
+    <em class="creator vcard"><span class="fn"><$name/></span></em>,
+</$pubAuthors>
+    <span class="journal"><$fields.Journal/></span>, 
+    <span class="volume"><$fields.Volume/></span>&nbsp;
+    <span class="pages"><$fields.Pages/></span>&nbsp;
+
+    (<abbr class="date-published" title="<$date.description/>"><$fields.month/> <$fields.year/></abbr>)
+
+    <span class="uri uid"><a href="<$fields.Url/>"><$fields.Url/></a></span>
+    <div class="description"><$fields.Abstract/></div>
+    <span class="type"><$pubType/></span> - 
+   <!-- <span class="id"><$citeKey/></span> 
+TODO: add rating
+-->
+</li>
