@@ -1252,6 +1252,7 @@ static NSString *SKDocumentToolbarSearchItemIdentifier = @"SKDocumentToolbarSear
 - (void)showSnapshotAtPageNumber:(int)pageNum forRect:(NSRect)rect{
     
     SKSubWindowController *swc = [[SKSubWindowController alloc] init];
+    BOOL snapshotsOnTop = [[NSUserDefaults standardUserDefaults] boolForKey:SKSnapshotsOnTopKey];
     
     PDFDocument *doc = [pdfView document];
     [swc setPdfDocument:doc
@@ -1259,8 +1260,9 @@ static NSString *SKDocumentToolbarSearchItemIdentifier = @"SKDocumentToolbarSear
          goToPageNumber:pageNum
                    rect:rect];
     
-    if ([self isFullScreen] || [[NSUserDefaults standardUserDefaults] boolForKey:SKSnapshotsOnTopKey])
+    if ([self isFullScreen] || snapshotsOnTop)
         [[swc window] setLevel:NSFloatingWindowLevel];
+    [[swc window] setHidesOnDeactivate:snapshotsOnTop];
     
     [[self document] addWindowController:swc];
     [swc release];
@@ -1321,10 +1323,13 @@ static NSString *SKDocumentToolbarSearchItemIdentifier = @"SKDocumentToolbarSear
     // there should only be a single note
 	SKThumbnail *thumbnail = [snapshotToShow lastObject];
     SKSubWindowController *controller = [thumbnail controller];
+    BOOL snapshotsOnTop = [[NSUserDefaults standardUserDefaults] boolForKey:SKSnapshotsOnTopKey];
+    
     if (controller == nil) return;
     [[self document] addWindowController:controller];
-    if ([self isFullScreen] || [[NSUserDefaults standardUserDefaults] boolForKey:SKSnapshotsOnTopKey])
+    if ([self isFullScreen] || snapshotsOnTop)
         [[controller window] setLevel:NSFloatingWindowLevel];
+    [[controller window] setHidesOnDeactivate:snapshotsOnTop];
     
     if ([self isPresentation] == NO) {
         NSRect endRect = [controller rectForThumbnail];
@@ -1540,8 +1545,10 @@ static NSString *SKDocumentToolbarSearchItemIdentifier = @"SKDocumentToolbarSear
             int level = snapshotsOnTop || [self isFullScreen] ? NSFloatingWindowLevel : NSNormalWindowLevel;
             
             while (wc = [wcEnum nextObject]) {
-                if ([wc isKindOfClass:[SKSubWindowController class]])
+                if ([wc isKindOfClass:[SKSubWindowController class]]) {
                     [[wc window] setLevel:level];
+                    [[wc window] setHidesOnDeactivate:snapshotsOnTop];
+                }
             }
         }
     } else {
