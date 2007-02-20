@@ -12,7 +12,7 @@
 @implementation SKPreferenceController
 
 - (NSString *)windowNibName {
-    return @"PreferencePanel";
+    return @"PreferenceWindow";
 }
 
 + (id)sharedPrefenceController {
