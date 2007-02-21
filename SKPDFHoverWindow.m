@@ -90,7 +90,9 @@
     
     NSPoint hoverOrigin = [dest point];
     
+#warning FIXME: I don't know what this is supposed to do, but it doesn't work
     // this heuristic is only applied if there's no character at the destination
+    /*
     if ([page characterIndexAtPoint:[dest point]] == -1) {
         // point is in screen coordinates; convert to originating window
         NSPoint pgPt = [[srcView window] convertScreenToBase:point];
@@ -111,6 +113,7 @@
             hoverOrigin.y += 0.5 * NSHeight(rect);
         }
     }
+    */
     
     rect.origin = hoverOrigin;
     rect.origin.x -= NSMinX(bounds);
