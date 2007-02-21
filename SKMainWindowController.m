@@ -1735,7 +1735,7 @@ static NSString *SKDocumentToolbarSearchItemIdentifier = @"SKDocumentToolbarSear
         [dirtyThumbnailIndexes removeIndex:index];
         
         newSize = [image size];
-        if (fabs(newSize.width - oldSize.width) > 1.0 &&  fabs(newSize.height - oldSize.height) > 1.0)
+        if (fabs(newSize.width - oldSize.width) > 1.0 || fabs(newSize.height - oldSize.height) > 1.0)
             [thumbnailTableView noteHeightOfRowsWithIndexesChanged:[NSIndexSet indexSetWithIndex:index]];
     }
     if ([dirtyThumbnailIndexes count] == 0) {
@@ -1820,13 +1820,13 @@ static NSString *SKDocumentToolbarSearchItemIdentifier = @"SKDocumentToolbarSear
         float shadowOffset = - ceilf(shadowBlurRadius * 0.75);
         NSSize newSize, oldSize = [[[snapshots objectAtIndex:index] thumbnail] size];
         
-        SKSnapshotWindowController *controller = [[snapshots objectAtIndex:index] controller];
+        SKSnapshotWindowController *controller = [snapshots objectAtIndex:index];
         NSImage *image = [controller thumbnailWithSize:snapshotCacheSize shadowBlurRadius:shadowBlurRadius shadowOffset:NSMakeSize(0.0, shadowOffset)];
         [[snapshots objectAtIndex:index] setThumbnail:image];
         [dirtySnapshotIndexes removeIndex:index];
         
         newSize = [image size];
-        if (fabs(newSize.width - oldSize.width) > 1.0 &&  fabs(newSize.height - oldSize.height) > 1.0)
+        if (fabs(newSize.width - oldSize.width) > 1.0 || fabs(newSize.height - oldSize.height) > 1.0)
             [snapshotTableView noteHeightOfRowsWithIndexesChanged:[NSIndexSet indexSetWithIndex:index]];
     }
     if ([dirtySnapshotIndexes count] == 0) {
