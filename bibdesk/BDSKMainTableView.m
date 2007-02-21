@@ -52,49 +52,7 @@
 #import <OmniAppKit/NSTableView-OAColumnConfigurationExtensions.h>
 #import "NSBezierPath_BDSKExtensions.h"
 #import "NSBezierPath_CoreImageExtensions.h"
-#import "NSGeometry_BDSKExtensions.h"
-
-@interface BDSKCenterScaledImageCell : NSImageCell
-@end
-
-@implementation BDSKCenterScaledImageCell
-
-- (void)drawInteriorWithFrame:(NSRect)cellFrame inView:(NSView *)controlView;
-{
-    NSImage *img = [self image];
-
-    if (nil != img) {
-        NSRect srcRect = NSZeroRect;
-        srcRect.size = [img size];
-        
-        NSRect drawFrame = [self drawingRectForBounds:cellFrame];
-        
-        // limitation: this assumes you always want a proportionally scaled, centered image (hence the class name)
-        float ratio = MIN(NSWidth(drawFrame) / srcRect.size.width, NSHeight(drawFrame) / srcRect.size.height);
-        drawFrame.size.width = ratio * srcRect.size.width;
-        drawFrame.size.height = ratio * srcRect.size.height;
-        
-        drawFrame = BDSKCenterRect(drawFrame, drawFrame.size, [controlView isFlipped]);
-
-        NSGraphicsContext *ctxt = [NSGraphicsContext currentContext];
-        [ctxt saveGraphicsState];
-            
-        // this is the critical part that NSImageCell doesn't do
-        [ctxt setImageInterpolation:NSImageInterpolationHigh];
-        
-        if ([controlView isFlipped])
-            [img drawFlippedInRect:drawFrame fromRect:srcRect operation:NSCompositeSourceOver fraction:1.0];
-        else
-            [img drawInRect:drawFrame fromRect:srcRect operation:NSCompositeSourceOver fraction:1.0];
-        
-        [ctxt restoreGraphicsState];
-    } else {
-        [super drawInteriorWithFrame:cellFrame inView:controlView];
-    }
-}
-
-@end
-
+#import "BDSKCenterScaledImageCell.h"
 
 @interface BDSKMainTableView (Private)
 

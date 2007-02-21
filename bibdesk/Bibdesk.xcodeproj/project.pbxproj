@@ -681,6 +681,8 @@
 		F9A2245C0AE02C8E0046CA3D /* BDSKSearch.h in Headers */ = {isa = PBXBuildFile; fileRef = F9A2245A0AE02C8E0046CA3D /* BDSKSearch.h */; };
 		F9A2245D0AE02C8E0046CA3D /* BDSKSearch.m in Sources */ = {isa = PBXBuildFile; fileRef = F9A2245B0AE02C8E0046CA3D /* BDSKSearch.m */; };
 		F9A411FC0A0B2066008493C0 /* BDSKPreferenceController.m in Sources */ = {isa = PBXBuildFile; fileRef = F9DAC7A10A0A95BC0099117E /* BDSKPreferenceController.m */; };
+		F9A5B10B0B8CEA9600C52257 /* BDSKCenterScaledImageCell.h in Headers */ = {isa = PBXBuildFile; fileRef = F9A5B1090B8CEA9600C52257 /* BDSKCenterScaledImageCell.h */; };
+		F9A5B10C0B8CEA9600C52257 /* BDSKCenterScaledImageCell.m in Sources */ = {isa = PBXBuildFile; fileRef = F9A5B10A0B8CEA9600C52257 /* BDSKCenterScaledImageCell.m */; };
 		F9A6742A07D04E8000782ACD /* BDSKFontManager.h in Headers */ = {isa = PBXBuildFile; fileRef = F9A6742807D04E8000782ACD /* BDSKFontManager.h */; };
 		F9A6742B07D04E8000782ACD /* BDSKFontManager.m in Sources */ = {isa = PBXBuildFile; fileRef = F9A6742907D04E8000782ACD /* BDSKFontManager.m */; };
 		F9A6772D07D2D57F00782ACD /* MultiplePageView.h in Headers */ = {isa = PBXBuildFile; fileRef = F9A6772B07D2D57F00782ACD /* MultiplePageView.h */; };
@@ -1596,6 +1598,8 @@
 		F9A2245B0AE02C8E0046CA3D /* BDSKSearch.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BDSKSearch.m; sourceTree = "<group>"; };
 		F9A411EF0A0B1FEF008493C0 /* BDSKSpotlightView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BDSKSpotlightView.h; sourceTree = "<group>"; };
 		F9A411F00A0B1FEF008493C0 /* BDSKSpotlightView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BDSKSpotlightView.m; sourceTree = "<group>"; };
+		F9A5B1090B8CEA9600C52257 /* BDSKCenterScaledImageCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BDSKCenterScaledImageCell.h; sourceTree = "<group>"; };
+		F9A5B10A0B8CEA9600C52257 /* BDSKCenterScaledImageCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BDSKCenterScaledImageCell.m; sourceTree = "<group>"; };
 		F9A6742807D04E8000782ACD /* BDSKFontManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BDSKFontManager.h; sourceTree = "<group>"; };
 		F9A6742907D04E8000782ACD /* BDSKFontManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BDSKFontManager.m; sourceTree = "<group>"; };
 		F9A6772B07D2D57F00782ACD /* MultiplePageView.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = MultiplePageView.h; sourceTree = "<group>"; };
@@ -1959,6 +1963,7 @@
 			children = (
 				3D824AA707D099C300FB2F67 /* BDSKBackgroundView.m */,
 				2730077707CF20B500F2E485 /* BDSKBorderlessKeyWindow.m */,
+				F9A5B10A0B8CEA9600C52257 /* BDSKCenterScaledImageCell.m */,
 				CEEC6C53093A411E00A64F54 /* BDSKCollapsibleView.m */,
 				CE6003270AF3E465000B5680 /* BDSKColoredBox.m */,
 				CE34E9780A03C16B00222942 /* BDSKConditionsView.m */,
@@ -2365,6 +2370,7 @@
 				CEEA4C690B57B0D400434059 /* BDSKBooleanValueTransformer.h */,
 				2730077607CF20B500F2E485 /* BDSKBorderlessKeyWindow.h */,
 				CEFDBDDB0AEA87F8009EE99D /* BDSKCategoryGroup.h */,
+				F9A5B1090B8CEA9600C52257 /* BDSKCenterScaledImageCell.h */,
 				3D866C2608031CEC00FF1724 /* BDSKCharacterConversion.h */,
 				CEAB9F570B4FF20800673AC2 /* BDSKCitationFormatter.h */,
 				F9022C380758027800C3F701 /* BDSKCiteKeyFormatter.h */,
@@ -2933,6 +2939,7 @@
 				CE3A254F0B75FF09006B64D3 /* BDSKWebParser.h in Headers */,
 				F9B88D980B7D14B700D5D42C /* BDSKFileMatcher.h in Headers */,
 				F9BE68390B80F94000B2597C /* BDSKFileMatchConfigController.h in Headers */,
+				F9A5B10B0B8CEA9600C52257 /* BDSKCenterScaledImageCell.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -3773,6 +3780,7 @@
 				CE3A25500B75FF09006B64D3 /* BDSKWebParser.m in Sources */,
 				F9B88D990B7D14B700D5D42C /* BDSKFileMatcher.m in Sources */,
 				F9BE68380B80F94000B2597C /* BDSKFileMatchConfigController.m in Sources */,
+				F9A5B10C0B8CEA9600C52257 /* BDSKCenterScaledImageCell.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
