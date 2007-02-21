@@ -44,6 +44,8 @@ NSString *SKPDFViewAnnotationDoubleClickedNotification = @"SKPDFViewAnnotationDo
 - (NSCursor *)cursorForMouseMovedEvent:(NSEvent *)event;
 - (PDFDestination *)destinationForEvent:(NSEvent *)theEvent isLink:(BOOL *)isLink;
 
+- (void)moveActiveAnnotationForKey:(unichar)eventChar byAmount:(float)delta;
+
 - (void)selectAnnotationWithEvent:(NSEvent *)theEvent;
 - (void)dragAnnotationWithEvent:(NSEvent *)theEvent;
 - (void)selectSnapshotWithEvent:(NSEvent *)theEvent;
@@ -97,7 +99,7 @@ NSString *SKPDFViewAnnotationDoubleClickedNotification = @"SKPDFViewAnnotationDo
             PDFAnnotation *annotation;
             
             annotation = [allAnnotations objectAtIndex: i];
-            if ([annotation isNoteAnnotation]) {
+            if ([annotation isNoteAnnotation] || [[annotation type] isEqualToString:@"Link"]) {
                 if (annotation == activeAnnotation) {
                     foundActive = YES;
                 } else if ([[annotation type] isEqualToString:@"FreeText"]) {
@@ -112,10 +114,19 @@ NSString *SKPDFViewAnnotationDoubleClickedNotification = @"SKPDFViewAnnotationDo
         
         // Draw active annotation last so it is not "painted" over.
         if (foundActive) {
+            BOOL isLink = [[activeAnnotation type] isEqualToString:@"Link"];
+            float lineWidth = isLink ? 2.0 : 1.0;
             NSRect bounds = [activeAnnotation bounds];
-            NSBezierPath *path = [NSBezierPath bezierPathWithRect:NSInsetRect(NSIntegralRect(bounds), 0.5, 0.5)];
-            [path setLineWidth:1.0];
-            [[NSColor blackColor] set];
+            NSBezierPath *path = [NSBezierPath bezierPathWithRect:NSInsetRect(NSIntegralRect(bounds), 0.5 * lineWidth, 0.5 * lineWidth)];
+            [path setLineWidth:lineWidth];
+            if (isLink) {
+                [[NSColor colorWithDeviceWhite:0.0 alpha:0.1] set];
+                [path fill];
+                [path setLineJoinStyle:NSRoundLineJoinStyle];
+                [[NSColor colorWithDeviceWhite:0.0 alpha:0.5] set];
+            } else {
+                [[NSColor blackColor] set];
+            }
             [path stroke];
             
             // Draw resize handle.
@@ -202,7 +213,7 @@ NSString *SKPDFViewAnnotationDoubleClickedNotification = @"SKPDFViewAnnotationDo
 
 - (void)delete:(id)sender
 {
-	if (activeAnnotation != nil)
+	if ([activeAnnotation isNoteAnnotation])
         [self removeActiveAnnotation:self];
     else
         NSBeep();
@@ -227,52 +238,11 @@ NSString *SKPDFViewAnnotationDoubleClickedNotification = @"SKPDFViewAnnotationDo
         if (activeAnnotation && activeAnnotation != editAnnotation)
             [self editActiveAnnotation:self];
     } else if (isPresentation == NO && [self toolMode] == SKTextToolMode && (eventChar == NSTabCharacter) && (modifiers & NSAlternateKeyMask)){
-        NSArray *notes = [(SKMainWindowController *)[[self window] windowController] orderedNotes];
-        if ([notes count] == 0)
-            return;
-        int index = 0;
-        if (activeAnnotation) {
-            [self endAnnotationEdit:self];
-            index = [notes indexOfObject:activeAnnotation];
-            if (modifiers & NSShiftKeyMask)
-                index--;
-            else
-                index++;
-            if (index >= (int)[notes count])
-                index = 0;
-            else if (index < 0)
-                index = [notes count] - 1;
-        }
-        [self setActiveAnnotation:[notes objectAtIndex:index]];
-        [[self documentView] scrollRectToVisible:[self convertRect:[self convertRect:[activeAnnotation bounds] fromPage:[activeAnnotation page]] toView:[self documentView]]];
-	} else if (isPresentation == NO && activeAnnotation && ((eventChar == NSRightArrowFunctionKey) || (eventChar == NSLeftArrowFunctionKey) || (eventChar == NSUpArrowFunctionKey) || (eventChar == NSDownArrowFunctionKey))) {
-        NSRect bounds = [activeAnnotation bounds];
-        NSRect newBounds = bounds;
-        PDFPage *page = [activeAnnotation page];
-        NSRect pageBounds = [page boundsForBox:[self displayBox]];
-        float delta = (modifiers & NSShiftKeyMask) ? 10.0 : 1.0;
-        
-        if (eventChar == NSRightArrowFunctionKey) {
-            if (NSMaxX(bounds) + delta <= NSMaxX(pageBounds))
-                newBounds.origin.x += delta;
-        } else if (eventChar == NSLeftArrowFunctionKey) {
-            if (NSMinX(bounds) - delta >= NSMinX(pageBounds))
-                newBounds.origin.x -= delta;
-        } else if (eventChar == NSUpArrowFunctionKey) {
-            if (NSMaxY(bounds) + delta <= NSMaxY(pageBounds))
-                newBounds.origin.y += delta;
-        } else if (eventChar == NSDownArrowFunctionKey) {
-            if (NSMinY(bounds) - delta >= NSMinY(pageBounds))
-                newBounds.origin.y -= delta;
-        }
-        if (NSEqualRects(bounds, newBounds) == NO) {
-            [activeAnnotation setBounds:newBounds];
-            NSString *selString = [[[[activeAnnotation page] selectionForRect:newBounds] string] stringByCollapsingWhitespaceAndNewlinesAndRemovingSurroundingWhitespaceAndNewlines];
-            [activeAnnotation setContents:selString];
-            [self setNeedsDisplayInRect:NSUnionRect(bounds, newBounds) ofPage:page];
-            [[NSNotificationCenter defaultCenter] postNotificationName:SKPDFViewDidChangeAnnotationNotification object:self 
-                userInfo:[NSDictionary dictionaryWithObjectsAndKeys:activeAnnotation, @"annotation", nil]];
-        }
+        [self selectNextActiveAnnotation:self];
+    } else if (isPresentation == NO && [self toolMode] == SKTextToolMode && (eventChar == NSBackTabCharacter) && (modifiers & NSAlternateKeyMask)){
+        [self selectPreviousActiveAnnotation:self];
+	} else if (isPresentation == NO && [activeAnnotation isNoteAnnotation] && ((eventChar == NSRightArrowFunctionKey) || (eventChar == NSLeftArrowFunctionKey) || (eventChar == NSUpArrowFunctionKey) || (eventChar == NSDownArrowFunctionKey))) {
+        [self moveActiveAnnotationForKey:eventChar byAmount:(modifiers & NSShiftKeyMask) ? 10.0 : 1.0];
     } else {
 		[super keyDown:theEvent];
     }
@@ -280,6 +250,8 @@ NSString *SKPDFViewAnnotationDoubleClickedNotification = @"SKPDFViewAnnotationDo
 
 - (void)mouseDown:(NSEvent *)theEvent{
     [[SKPDFHoverWindow sharedHoverWindow] orderOut:self];
+    if ([[activeAnnotation type] isEqualToString:@"Link"])
+        [self setActiveAnnotation:nil];
     
     switch (toolMode) {
         case SKMoveToolMode:
@@ -357,11 +329,14 @@ NSString *SKPDFViewAnnotationDoubleClickedNotification = @"SKPDFViewAnnotationDo
     
     BOOL isLink = NO;
     PDFDestination *dest = [self destinationForEvent:theEvent isLink:&isLink];
-
+    
     if (isLink)
         [[SKPDFHoverWindow sharedHoverWindow] showWithDestination:dest atPoint:[[self window] convertBaseToScreen:[theEvent locationInWindow]] fromView:self];
     else
         [[SKPDFHoverWindow sharedHoverWindow] hide];
+
+    if ([[activeAnnotation type] isEqualToString:@"Link"])
+        [self setActiveAnnotation:nil];
     
     // in presentation mode only show the navigation window only by moving the mouse to the bottom edge
     BOOL shouldShowNavWindow = hasNavigation && (autohidesCursor == NO || [theEvent locationInWindow].y < 5.0);
@@ -461,7 +436,7 @@ NSString *SKPDFViewAnnotationDoubleClickedNotification = @"SKPDFViewAnnotationDo
                 [item setRepresentedObject:annotation];
                 [item setTarget:self];
             }
-        } else if (activeAnnotation) {
+        } else if ([activeAnnotation isNoteAnnotation]) {
             item = [menu addItemWithTitle:NSLocalizedString(@"Remove Current Note", @"Menu item title") action:@selector(removeActiveAnnotation:) keyEquivalent:@""];
             [item setTarget:self];
             
@@ -542,7 +517,7 @@ NSString *SKPDFViewAnnotationDoubleClickedNotification = @"SKPDFViewAnnotationDo
 }
 
 - (void)removeActiveAnnotation:(id)sender{
-    if (activeAnnotation)
+    if ([activeAnnotation isNoteAnnotation])
         [self removeAnnotation:activeAnnotation];
 }
 
@@ -557,7 +532,7 @@ NSString *SKPDFViewAnnotationDoubleClickedNotification = @"SKPDFViewAnnotationDo
     PDFAnnotation *wasAnnotation = [annotation retain];
     PDFPage *page = [wasAnnotation page];
     
-    if (editAnnotation == annotation)
+    if (editAnnotation && activeAnnotation == annotation)
         [self endAnnotationEdit:self];
 	if (activeAnnotation == annotation)
 		[self setActiveAnnotation:nil];
@@ -587,15 +562,22 @@ NSString *SKPDFViewAnnotationDoubleClickedNotification = @"SKPDFViewAnnotationDo
     
     [self endAnnotationEdit:self];
     
-    if ([[activeAnnotation type] isEqualToString:@"Note"]) {
+    NSString *type = [activeAnnotation type];
+    
+    if ([type isEqualToString:@"Link"]) {
+        
+        [[SKPDFHoverWindow sharedHoverWindow] orderOut:self];
+        [self goToDestination:[activeAnnotation destination]];
+        
+    } else if ([type isEqualToString:@"Note"]) {
         
 		[[NSNotificationCenter defaultCenter] postNotificationName:SKPDFViewAnnotationDoubleClickedNotification object:self 
             userInfo:[NSDictionary dictionaryWithObjectsAndKeys:activeAnnotation, @"annotation", nil]];
         
-    } else if ([[activeAnnotation type] isEqualToString:@"FreeText"] || [[activeAnnotation type] isEqualToString:@"Text"]) {
+    } else if ([type isEqualToString:@"FreeText"] || [type isEqualToString:@"Text"]) {
         
         NSRect editBounds = [activeAnnotation bounds];
-        if ([[activeAnnotation type] isEqualToString:@"Text"]) {
+        if ([type isEqualToString:@"Text"]) {
             NSRect pageBounds = [[activeAnnotation page] boundsForBox:[self displayBox]];
             editBounds = NSInsetRect(editBounds, -120.0, -120.0);
             if (NSMaxX(editBounds) > NSMaxX(pageBounds))
@@ -642,6 +624,92 @@ NSString *SKPDFViewAnnotationDoubleClickedNotification = @"SKPDFViewAnnotationDo
     if ([PDFView instancesRespondToSelector:@selector(pdfViewControlHit:)] && [sender isKindOfClass:[NSTextField class]]) {
         [super pdfViewControlHit:sender];
         [self endAnnotationEdit:self];
+    }
+}
+
+- (void)selectNextActiveAnnotation:(id)sender {
+    PDFDocument *pdfDoc = [self document];
+    int numberOfPages = [pdfDoc pageCount];
+    int i = -1;
+    int pageIndex, startPageIndex = -1;
+    PDFAnnotation *annotation = nil;
+    
+    if (activeAnnotation) {
+        if (editAnnotation)
+            [self endAnnotationEdit:self];
+        pageIndex = [pdfDoc indexForPage:[activeAnnotation page]];
+        i = [[[activeAnnotation page] annotations] indexOfObject:activeAnnotation];
+    } else {
+        pageIndex = [pdfDoc indexForPage:[self currentPage]];
+    }
+    while (annotation == nil) {
+        NSArray *annotations = [[pdfDoc pageAtIndex:pageIndex] annotations];
+        while (++i < (int)[annotations count] && annotation == nil) {
+            annotation = [annotations objectAtIndex:i];
+            if ([annotation isNoteAnnotation] == NO && [[annotation type] isEqualToString:@"Link"] == NO)
+                annotation = nil;
+        }
+        if (startPageIndex == -1)
+            startPageIndex = pageIndex;
+        else if (pageIndex == startPageIndex)
+            break;
+        if (++pageIndex == numberOfPages)
+            pageIndex = 0;
+        i = -1;
+    }
+    if (annotation) {
+        [[self documentView] scrollRectToVisible:[self convertRect:[self convertRect:[annotation bounds] fromPage:[annotation page]] toView:[self documentView]]];
+        [self setActiveAnnotation:annotation];
+        if ([[annotation type] isEqualToString:@"Link"]) {
+            NSRect bounds = [annotation bounds]; 
+            NSPoint point = [self convertPoint:[self convertPoint:NSMakePoint(NSMidX(bounds), NSMidY(bounds)) fromPage:[annotation page]] toView:nil]; 
+            [[SKPDFHoverWindow sharedHoverWindow] showWithDestination:[annotation destination] atPoint:[[self window] convertBaseToScreen:point] fromView:self];
+        } else {
+            [[SKPDFHoverWindow sharedHoverWindow] orderOut:self];
+        }
+    }
+}
+
+- (void)selectPreviousActiveAnnotation:(id)sender {
+    PDFDocument *pdfDoc = [self document];
+    int numberOfPages = [pdfDoc pageCount];
+    int i = numberOfPages;
+    int pageIndex, startPageIndex = -1;
+    PDFAnnotation *annotation = nil;
+    
+    if (activeAnnotation) {
+        if (editAnnotation)
+            [self endAnnotationEdit:self];
+        pageIndex = [pdfDoc indexForPage:[activeAnnotation page]];
+        i = [[[activeAnnotation page] annotations] indexOfObject:activeAnnotation];
+    } else {
+        pageIndex = [pdfDoc indexForPage:[self currentPage]];
+    }
+    while (annotation == nil) {
+        NSArray *annotations = [[pdfDoc pageAtIndex:pageIndex] annotations];
+        while (--i >= 0 && annotation == nil) {
+            annotation = [annotations objectAtIndex:i];
+            if ([annotation isNoteAnnotation] == NO && [[annotation type] isEqualToString:@"Link"] == NO)
+                annotation = nil;
+        }
+        if (startPageIndex == -1)
+            startPageIndex = pageIndex;
+        else if (pageIndex == startPageIndex)
+            break;
+        if (++pageIndex == numberOfPages)
+            pageIndex = numberOfPages - 1;
+        i = [[[pdfDoc pageAtIndex:pageIndex] annotations] count];
+    }
+    if (annotation) {
+        [[self documentView] scrollRectToVisible:[self convertRect:[self convertRect:[annotation bounds] fromPage:[annotation page]] toView:[self documentView]]];
+        [self setActiveAnnotation:annotation];
+        if ([[annotation type] isEqualToString:@"Link"]) {
+            NSRect bounds = [annotation bounds]; 
+            NSPoint point = [self convertPoint:[self convertPoint:NSMakePoint(NSMidX(bounds), NSMidY(bounds)) fromPage:[annotation page]] toView:nil]; 
+            [[SKPDFHoverWindow sharedHoverWindow] showWithDestination:[annotation destination] atPoint:[[self window] convertBaseToScreen:point] fromView:self];
+        } else {
+            [[SKPDFHoverWindow sharedHoverWindow] orderOut:self];
+        }
     }
 }
 
@@ -776,6 +844,35 @@ NSString *SKPDFViewAnnotationDoubleClickedNotification = @"SKPDFViewAnnotationDo
     return dest;
 }
 
+- (void)moveActiveAnnotationForKey:(unichar)eventChar byAmount:(float)delta {
+    NSRect bounds = [activeAnnotation bounds];
+    NSRect newBounds = bounds;
+    PDFPage *page = [activeAnnotation page];
+    NSRect pageBounds = [page boundsForBox:[self displayBox]];
+    
+    if (eventChar == NSRightArrowFunctionKey) {
+        if (NSMaxX(bounds) + delta <= NSMaxX(pageBounds))
+            newBounds.origin.x += delta;
+    } else if (eventChar == NSLeftArrowFunctionKey) {
+        if (NSMinX(bounds) - delta >= NSMinX(pageBounds))
+            newBounds.origin.x -= delta;
+    } else if (eventChar == NSUpArrowFunctionKey) {
+        if (NSMaxY(bounds) + delta <= NSMaxY(pageBounds))
+            newBounds.origin.y += delta;
+    } else if (eventChar == NSDownArrowFunctionKey) {
+        if (NSMinY(bounds) - delta >= NSMinY(pageBounds))
+            newBounds.origin.y -= delta;
+    }
+    if (NSEqualRects(bounds, newBounds) == NO) {
+        [activeAnnotation setBounds:newBounds];
+        NSString *selString = [[[[activeAnnotation page] selectionForRect:newBounds] string] stringByCollapsingWhitespaceAndNewlinesAndRemovingSurroundingWhitespaceAndNewlines];
+        [activeAnnotation setContents:selString];
+        [self setNeedsDisplayInRect:NSUnionRect(bounds, newBounds) ofPage:page];
+        [[NSNotificationCenter defaultCenter] postNotificationName:SKPDFViewDidChangeAnnotationNotification object:self 
+            userInfo:[NSDictionary dictionaryWithObjectsAndKeys:activeAnnotation, @"annotation", nil]];
+    }
+}
+
 - (void)selectAnnotationWithEvent:(NSEvent *)theEvent {
     PDFAnnotation *newActiveAnnotation = NULL;
     PDFAnnotation *wasActiveAnnotation;
@@ -839,7 +936,7 @@ NSString *SKPDFViewAnnotationDoubleClickedNotification = @"SKPDFViewAnnotationDo
         [[NSNotificationCenter defaultCenter] postNotificationName:SKPDFViewActiveAnnotationDidChangeNotification object:self userInfo:userInfo];
     }
     
-    if (activeAnnotation == nil) {
+    if (newActiveAnnotation == nil) {
         [super mouseDown:theEvent];
     } else if ([theEvent clickCount] == 2 && ([[activeAnnotation type] isEqualToString:@"FreeText"] || [[activeAnnotation type] isEqualToString:@"Text"])) {
         // probably we should use the note window for Text annotations

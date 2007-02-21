@@ -183,8 +183,6 @@ typedef struct _SKPDFViewState {
 
 - (BOOL)autoScales;
 
-- (NSArray *)orderedNotes;
-
 - (SKLeftSidePaneState)leftSidePaneState;
 - (void)setLeftSidePaneState:(SKLeftSidePaneState)newLeftSidePaneState;
 - (SKRightSidePaneState)rightSidePaneState;
