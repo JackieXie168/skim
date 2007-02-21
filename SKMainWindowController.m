@@ -1247,7 +1247,9 @@ static NSString *SKDocumentToolbarSearchItemIdentifier = @"SKDocumentToolbarSear
         while (annotation = [noteEnum nextObject])
             [pdfView removeAnnotation:annotation];
     } else if ([tv isEqual:snapshotTableView]) {
-        [snapshotArrayController removeObjectsAtArrangedObjectIndexes:rowIndexes];
+        NSArray *controllers = [[snapshotArrayController arrangedObjects] objectsAtIndexes:rowIndexes];
+        [[controllers valueForKey:@"window"] makeObjectsPerformSelector:@selector(orderOut:) withObject:self];
+        [[self mutableArrayValueForKey:@"snapshots"] removeObjectsInArray:controllers];
     }
 }
 
