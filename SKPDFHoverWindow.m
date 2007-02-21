@@ -114,7 +114,7 @@
     
     rect.origin = hoverOrigin;
     rect.origin.x -= NSMinX(bounds);
-    rect.origin.y -= NSMaxY(bounds);
+    rect.origin.y -= NSMinY(bounds) + NSHeight(rect);
     
     [imageView setFrameSize:[image size]];
     [imageView setImage:image];

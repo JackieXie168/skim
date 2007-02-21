@@ -12,7 +12,36 @@
 @implementation PDFPage (SKExtensions) 
 
 - (NSImage *)image {
-    return [self thumbnailWithSize:0.0 shadowBlurRadius:0.0 shadowOffset:NSZeroSize];
+    NSRect bounds = [self boundsForBox:kPDFDisplayBoxCropBox];
+    NSImage *image = [[NSImage alloc] initWithSize:bounds.size];
+    
+    [image lockFocus];
+    [NSGraphicsContext saveGraphicsState];
+    [[NSGraphicsContext currentContext] setImageInterpolation:NSImageInterpolationHigh];
+    if ([self rotation]) {
+        NSAffineTransform *transform = [NSAffineTransform transform];
+        [transform rotateByDegrees:[self rotation]];
+        switch ([self rotation]) {
+            case 90:
+                [transform translateXBy:0.0 yBy:-NSWidth(bounds)];
+                break;
+            case 180:
+                [transform translateXBy:-NSWidth(bounds) yBy:-NSHeight(bounds)];
+                break;
+            case 270:
+                [transform translateXBy:-NSHeight(bounds) yBy:0.0];
+                break;
+        }
+        [transform concat];
+    }
+    [[NSColor whiteColor] set];
+    bounds.origin = NSZeroPoint;
+    NSRectFill(bounds);
+    [self drawWithBox:kPDFDisplayBoxCropBox]; 
+    [NSGraphicsContext restoreGraphicsState];
+    [image unlockFocus];
+    
+    return [image autorelease];
 }
 
 - (NSImage *)thumbnailWithSize:(float)size shadowBlurRadius:(float)shadowBlurRadius shadowOffset:(NSSize)shadowOffset {
