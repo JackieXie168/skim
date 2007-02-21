@@ -18,7 +18,6 @@
 #import "SKFullScreenWindow.h"
 #import "SKNavigationWindow.h"
 #import "SKSideWindow.h"
-#import "SKMiniaturizeWindow.h"
 #import <Quartz/Quartz.h>
 #import "PDFPage_SKExtensions.h"
 #import "SKDocument.h"
@@ -1191,6 +1190,15 @@ static NSString *SKDocumentToolbarSearchItemIdentifier = @"SKDocumentToolbarSear
             if ([selectedNotes count])
                 [pdfView goToDestination:[[selectedNotes objectAtIndex:0] destination]];
         }
+    } else if ([[aNotification object] isEqual:snapshotTableView]) {
+        if (updatingThumbnailSelection == NO) {
+            int row = [snapshotTableView selectedRow];
+            if (row != -1) {
+                SKSnapshotWindowController *controller = [[snapshotArrayController arrangedObjects] objectAtIndex:row];
+                if ([[controller window] isVisible])
+                    [[controller window] orderFront:self];
+            }
+        }
     }
 }
 
@@ -1217,7 +1225,7 @@ static NSString *SKDocumentToolbarSearchItemIdentifier = @"SKDocumentToolbarSear
         else
             return MAX(1.0, MIN(cellSize.width, thumbSize.width) * thumbSize.height / thumbSize.width);
     } else if (tableView == snapshotTableView) {
-        NSSize thumbSize = [[[[snapshotArrayController arrangedObjects] objectAtIndex:row] image] size];
+        NSSize thumbSize = [[[[snapshotArrayController arrangedObjects] objectAtIndex:row] thumbnail] size];
         NSSize cellSize = NSMakeSize([[[tableView tableColumns] objectAtIndex:0] width], 
                                      MIN(thumbSize.height, roundf([[NSUserDefaults standardUserDefaults] floatForKey:SKSnapshotThumbnailSizeKey])));
         if (thumbSize.height < 1.0)
@@ -1250,6 +1258,8 @@ static NSString *SKDocumentToolbarSearchItemIdentifier = @"SKDocumentToolbarSear
     SKSnapshotWindowController *swc = [[SKSnapshotWindowController alloc] init];
     BOOL snapshotsOnTop = [[NSUserDefaults standardUserDefaults] boolForKey:SKSnapshotsOnTopKey];
     
+    [swc setDelegate:self];
+    
     PDFDocument *doc = [pdfView document];
     [swc setPdfDocument:doc
             scaleFactor:[pdfView scaleFactor]
@@ -1265,95 +1275,63 @@ static NSString *SKDocumentToolbarSearchItemIdentifier = @"SKDocumentToolbarSear
     [swc showWindow:self];
 }
 
-- (void)miniaturizeSnapshotController:(SKSnapshotWindowController *)controller {
+- (void)showSnapshots:(NSArray *)snapshotToShow {
+    // there should only be a single note
+    SKSnapshotWindowController *controller = [snapshotToShow lastObject];
+    
+    if ([[controller window] isVisible])
+        [[controller window] orderFront:self];
+    else
+        [controller deminiaturize];
+}
+
+- (void)snapshotControllerDidFinishSetup:(SKSnapshotWindowController *)controller {
+    float shadowBlurRadius = roundf(snapshotCacheSize / 32.0);
+    float shadowOffset = - ceilf(shadowBlurRadius * 0.75);
+    NSImage *image = [controller thumbnailWithSize:snapshotCacheSize shadowBlurRadius:shadowBlurRadius shadowOffset:NSMakeSize(0.0, shadowOffset)];
+    
+    [controller setThumbnail:image];
+    [[self mutableArrayValueForKey:@"snapshots"] addObject:controller];
+}
+
+- (void)snapshotControllerWindowWillClose:(SKSnapshotWindowController *)controller {
+    [[self mutableArrayValueForKey:@"snapshots"] removeObject:controller];
+}
+
+- (void)snapshotControllerViewDidChange:(SKSnapshotWindowController *)controller {
+    int index = [snapshots indexOfObject:controller];
+    [self snapshotAtIndexNeedsUpdate:index];
+}
+
+- (NSRect)snapshotControllerTargetRectForMiniaturize:(SKSnapshotWindowController *)controller {
     if ([self isPresentation] == NO) {
         if ([self isFullScreen] == NO && NSWidth([rightSideContentBox frame]) <= 0.0)
             [self toggleRightSidePane:self];
         [self setRightSidePaneState:SKSnapshotSidePaneState];
     }
     
-    float shadowBlurRadius = roundf(snapshotCacheSize / 32.0);
-    float shadowOffset = - ceilf(shadowBlurRadius * 0.75);
-    NSImage *image = [controller thumbnailWithSize:snapshotCacheSize shadowBlurRadius:shadowBlurRadius shadowOffset:NSMakeSize(0.0, shadowOffset)];
-    PDFPage *page = [[controller pdfView] currentPage];
-    SKThumbnail *thumbnail = [[SKThumbnail alloc] initWithImage:image label:[page label]];
-    int row;
+    int row = [[snapshotArrayController arrangedObjects] indexOfObject:controller];
     
-    [thumbnail setController:controller];
-    [thumbnail setPageIndex:[[page document] indexForPage:page]];
-    [snapshotArrayController addObject:thumbnail];
-    [snapshotArrayController rearrangeObjects];
-    row = [[snapshotArrayController arrangedObjects] indexOfObject:thumbnail];
     [snapshotTableView scrollRowToVisible:row];
-    [thumbnail release];
     
-    if ([self isPresentation] == NO) {
-        NSRect startRect = [controller rectForThumbnail];
-        NSRect endRect = [snapshotTableView frameOfCellAtColumn:0 row:row];
-        float thumbRatio = NSHeight(startRect) / NSWidth(startRect);
-        float cellRatio = NSHeight(endRect) / NSWidth(endRect);
-        
-        startRect.origin = [[controller window] convertBaseToScreen:startRect.origin];
-        endRect = [snapshotTableView convertRect:endRect toView:nil];
-        endRect.origin = [[snapshotTableView window] convertBaseToScreen:endRect.origin];
-        if (thumbRatio > cellRatio)
-            endRect = NSInsetRect(endRect, 0.5 * NSWidth(endRect) * (1.0 - cellRatio / thumbRatio), 0.0);
-        else
-            endRect = NSInsetRect(endRect, 0.0, 0.5 * NSHeight(endRect) * (1.0 - thumbRatio / cellRatio));
-        
-        image = [controller thumbnailWithSize:0.0 shadowBlurRadius:0.0 shadowOffset:NSZeroSize];
-        
-        SKMiniaturizeWindow *miniaturizeWindow = [[SKMiniaturizeWindow alloc] initWithContentRect:startRect image:image];
-        [miniaturizeWindow orderFront:self];
-        [[controller window] orderOut:self];
-        [miniaturizeWindow setFrame:endRect display:YES animate:YES];
-        [miniaturizeWindow orderOut:self];
-        [miniaturizeWindow release];
-        
-    } else {
-        [[controller window] orderOut:self];
-    }
+    NSRect rect = [snapshotTableView frameOfCellAtColumn:0 row:row];
+    
+    rect = [snapshotTableView convertRect:rect toView:nil];
+    rect.origin = [[snapshotTableView window] convertBaseToScreen:rect.origin];
+    
+    return rect;
 }
 
-- (void)deminiaturizeSnapshots:(NSArray *)snapshotToShow {
-    // there should only be a single note
-	SKThumbnail *thumbnail = [snapshotToShow lastObject];
-    SKSnapshotWindowController *controller = [thumbnail controller];
-    BOOL snapshotsOnTop = [[NSUserDefaults standardUserDefaults] boolForKey:SKSnapshotsOnTopKey];
-    
-    if (controller == nil) return;
+- (NSRect)snapshotControllerSourceRectForDeminiaturize:(SKSnapshotWindowController *)controller {
     [[self document] addWindowController:controller];
-    if ([self isFullScreen] || snapshotsOnTop)
-        [[controller window] setLevel:NSFloatingWindowLevel];
-    [[controller window] setHidesOnDeactivate:snapshotsOnTop];
     
-    if ([self isPresentation] == NO) {
-        NSRect endRect = [controller rectForThumbnail];
-        NSRect cellRect = [snapshotTableView frameOfCellAtColumn:0 row:[[snapshotArrayController arrangedObjects] indexOfObject:thumbnail]];
-        NSRect startRect = [snapshotTableView convertRect:cellRect toView:nil];
-        float thumbRatio = NSHeight(endRect) / NSWidth(endRect);
-        float cellRatio = NSHeight(cellRect) / NSWidth(cellRect);
+    int row = [[snapshotArrayController arrangedObjects] indexOfObject:controller];
+    NSRect rect = [snapshotTableView frameOfCellAtColumn:0 row:row];
         
-        endRect.origin = [[controller window] convertBaseToScreen:endRect.origin];
-        startRect.origin = [[snapshotTableView window] convertBaseToScreen:startRect.origin];
-        if (thumbRatio > cellRatio)
-            startRect = NSInsetRect(startRect, 0.5 * NSWidth(startRect) * (1.0 - cellRatio / thumbRatio), 0.0);
-        else
-            startRect = NSInsetRect(startRect, 0.0, 0.5 * NSHeight(startRect) * (1.0 - thumbRatio / cellRatio));
-        
-        NSImage *image = [controller thumbnailWithSize:0.0 shadowBlurRadius:0.0 shadowOffset:NSZeroSize];
-        SKMiniaturizeWindow *miniaturizeWindow = [[SKMiniaturizeWindow alloc] initWithContentRect:startRect image:image];
-        [miniaturizeWindow orderFront:self];
-        [thumbnail setImage:nil];
-        [snapshotTableView display];
-        [miniaturizeWindow setFrame:endRect display:YES animate:YES];
-        [[controller window] orderFront:self];
-        [miniaturizeWindow orderOut:self];
-        [miniaturizeWindow release];
-    } else {
-        [controller showWindow:self];
-    }
-    [snapshotArrayController removeObject:thumbnail];
+    rect = [snapshotTableView convertRect:rect toView:nil];
+    rect.origin = [[snapshotTableView window] convertBaseToScreen:rect.origin];
+    
+    return rect;
 }
 
 - (void)showNote:(PDFAnnotation *)annotation {
@@ -1535,16 +1513,14 @@ static NSString *SKDocumentToolbarSearchItemIdentifier = @"SKDocumentToolbarSear
             [self resetSnapshotSizeIfNeeded];
             [snapshotTableView noteHeightOfRowsWithIndexesChanged:[NSIndexSet indexSetWithIndexesInRange:NSMakeRange(0, [self countOfSnapshots])]];
         } else if ([key isEqualToString:SKSnapshotsOnTopKey]) {
-            NSEnumerator *wcEnum = [[[self document] windowControllers] objectEnumerator];
+            NSEnumerator *wcEnum = [snapshots objectEnumerator];
             NSWindowController *wc = [wcEnum nextObject];
             BOOL snapshotsOnTop  = [[NSUserDefaults standardUserDefaults] boolForKey:SKSnapshotsOnTopKey];
             int level = snapshotsOnTop || [self isFullScreen] ? NSFloatingWindowLevel : NSNormalWindowLevel;
             
             while (wc = [wcEnum nextObject]) {
-                if ([wc isKindOfClass:[SKSnapshotWindowController class]]) {
-                    [[wc window] setLevel:level];
-                    [[wc window] setHidesOnDeactivate:snapshotsOnTop];
-                }
+                [[wc window] setLevel:level];
+                [[wc window] setHidesOnDeactivate:snapshotsOnTop];
             }
         }
     } else {
@@ -1840,11 +1816,11 @@ static NSString *SKDocumentToolbarSearchItemIdentifier = @"SKDocumentToolbarSear
     if (index != NSNotFound) {
         float shadowBlurRadius = roundf(snapshotCacheSize / 32.0);
         float shadowOffset = - ceilf(shadowBlurRadius * 0.75);
-        NSSize newSize, oldSize = [[[snapshots objectAtIndex:index] image] size];
+        NSSize newSize, oldSize = [[[snapshots objectAtIndex:index] thumbnail] size];
         
         SKSnapshotWindowController *controller = [[snapshots objectAtIndex:index] controller];
         NSImage *image = [controller thumbnailWithSize:snapshotCacheSize shadowBlurRadius:shadowBlurRadius shadowOffset:NSMakeSize(0.0, shadowOffset)];
-        [[snapshots objectAtIndex:index] setImage:image];
+        [[snapshots objectAtIndex:index] setThumbnail:image];
         [dirtySnapshotIndexes removeIndex:index];
         
         newSize = [image size];
