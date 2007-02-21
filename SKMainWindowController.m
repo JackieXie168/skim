@@ -2083,7 +2083,7 @@ static NSString *SKDocumentToolbarSearchItemIdentifier = @"SKDocumentToolbarSear
     [item release];
     
     item = [[NSToolbarItem alloc] initWithItemIdentifier:SKDocumentToolbarContentsPaneItemIdentifier];
-    [item setLabel:NSLocalizedString(@"Contenst Pane", @"Toolbar item label")];
+    [item setLabel:NSLocalizedString(@"Contents Pane", @"Toolbar item label")];
     [item setPaletteLabel:NSLocalizedString(@"Contents Pane", @"Toolbar item label")];
     [item setToolTip:NSLocalizedString(@"Toogle Contents Pan", @"Tool tip message")];
     [item setImage:[NSImage imageNamed:@"ToolbarLeftPane"]];
