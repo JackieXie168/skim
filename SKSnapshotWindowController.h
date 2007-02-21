@@ -1,5 +1,5 @@
 //
-//  SKSubWindowController.h
+//  SKSnapshotWindowController.h
 
 
 //  This code is licensed under a BSD license. Please see the file LICENSE for details.
@@ -13,7 +13,7 @@
 
 @class PDFView, PDFDocument;
 
-@interface SKSubWindowController : NSWindowController {
+@interface SKSnapshotWindowController : NSWindowController {
     IBOutlet PDFView* pdfView;
 }
 - (void)setPdfDocument:(PDFDocument *)pdfDocument scaleFactor:(float)factor goToPageNumber:(int)pageNum rect:(NSRect)rect;
@@ -24,5 +24,5 @@
 @end
 
 
-@interface SKSubWindow : NSWindow
+@interface SKSnapshotWindow : NSWindow
 @end

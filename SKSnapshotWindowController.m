@@ -1,5 +1,5 @@
 //
-//  SKSubWindowController.m
+//  SKSnapshotWindowController.m
 
 
 //  This code is licensed under a BSD license. Please see the file LICENSE for details.
@@ -8,14 +8,14 @@
 //  Copyright 2006 Michael O. McCracken. All rights reserved.
 //
 
-#import "SKSubWindowController.h"
+#import "SKSnapshotWindowController.h"
 #import "SKMainWindowController.h"
 #import "SKDocument.h"
 #import <Quartz/Quartz.h>
 
-static NSString *SKSubWindowFrameAutosaveName = @"SKSubWindowFrameAutosaveName";
+static NSString *SKSnapshotWindowFrameAutosaveName = @"SKSnapshotWindowFrameAutosaveName";
 
-@implementation SKSubWindowController
+@implementation SKSnapshotWindowController
 
 - (void)dealloc {
 	[[NSNotificationCenter defaultCenter] removeObserver: self];
@@ -27,10 +27,10 @@ static NSString *SKSubWindowFrameAutosaveName = @"SKSubWindowFrameAutosaveName";
 }
 
 - (void)windowDidLoad {
-    [[self window] setFrameUsingName:SKSubWindowFrameAutosaveName];
+    [[self window] setFrameUsingName:SKSnapshotWindowFrameAutosaveName];
     static NSPoint nextWindowLocation = {0.0, 0.0};
     [self setShouldCascadeWindows:NO];
-    if ([[self window] setFrameAutosaveName:SKSubWindowFrameAutosaveName]) {
+    if ([[self window] setFrameAutosaveName:SKSnapshotWindowFrameAutosaveName]) {
         NSRect windowFrame = [[self window] frame];
         nextWindowLocation = NSMakePoint(NSMinX(windowFrame), NSMaxY(windowFrame));
     }
@@ -169,7 +169,7 @@ static NSString *SKSubWindowFrameAutosaveName = @"SKSubWindowFrameAutosaveName";
 @end
 
 
-@implementation SKSubWindow
+@implementation SKSnapshotWindow
 
 - (id)initWithContentRect:(NSRect)contentRect styleMask:(unsigned int)styleMask backing:(NSBackingStoreType)bufferingType defer:(BOOL)deferCreation {
     if (self = [super initWithContentRect:contentRect styleMask:styleMask backing:bufferingType defer:deferCreation]) {

@@ -27,7 +27,7 @@ typedef struct _SKPDFViewState {
 	BOOL autoHidesScrollers;
 } SKPDFViewState;
 
-@class SKPDFView, PDFOutline, BDSKCollapsibleView, BDSKEdgeView, SKFullScreenWindow, SKNavigationWindow, SKSideWindow, SKSubWindowController, SKSplitView;
+@class SKPDFView, PDFOutline, BDSKCollapsibleView, BDSKEdgeView, SKFullScreenWindow, SKNavigationWindow, SKSideWindow, SKSnapshotWindowController, SKSplitView;
 
 @interface SKNoteTableView : NSTableView
 - (void)delete:(id)sender;
@@ -166,7 +166,7 @@ typedef struct _SKPDFViewState {
 - (IBAction)togglePresentation:(id)sender;
 
 - (void)showSnapshotAtPageNumber:(int)pageNum forRect:(NSRect)rect;
-- (void)miniaturizeSnapshotController:(SKSubWindowController *)controller;
+- (void)miniaturizeSnapshotController:(SKSnapshotWindowController *)controller;
 - (void)deminiaturizeSnapshots:(NSArray *)snapshotToShow;
 - (void)showNote:(PDFAnnotation *)annotation;
 
@@ -213,6 +213,9 @@ typedef struct _SKPDFViewState {
 - (void)updateThumbnail:(NSTimer *)timer;
 
 - (void)resetSnapshotSizeIfNeeded;
+- (void)snapshotAtIndexNeedsUpdate:(unsigned)index;
+- (void)snapshotsAtIndexesNeedUpdate:(NSIndexSet *)indexes;
+- (void)updateSnapshotsIfNeeded;
 - (void)updateSnapshot:(NSTimer *)timer;
 
 - (void)registerForNotifications;
