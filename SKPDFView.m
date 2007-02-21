@@ -467,6 +467,8 @@ NSString *SKPDFViewAnnotationDoubleClickedNotification = @"SKPDFViewAnnotationDo
         
         page = [self pageForPoint:point nearest:YES];
         point = [self convertPoint:point toPage:page];
+        if ([page rotation] % 180 == 90)
+            defaultSize = NSMakeSize(defaultSize.height, defaultSize.width);
         bounds = NSMakeRect(point.x - 0.5 * defaultSize.width, point.y - 0.5 * defaultSize.height, defaultSize.width, defaultSize.height);
 	} else if (selection != nil) {
 		// Get bounds (page space) for selection (first page in case selection spans multiple pages).
@@ -481,6 +483,8 @@ NSString *SKPDFViewAnnotationDoubleClickedNotification = @"SKPDFViewAnnotationDo
 		// Convert to "page space".
 		page = [self pageForPoint: center nearest: YES];
 		center = [self convertPoint: center toPage: page];
+        if ([page rotation] % 180 == 90)
+            defaultSize = NSMakeSize(defaultSize.height, defaultSize.width);
         bounds = NSMakeRect(center.x - 0.5 * defaultSize.width, center.y - 0.5 * defaultSize.height, defaultSize.width, defaultSize.height);
 	}
 	
@@ -763,6 +767,8 @@ NSString *SKPDFViewAnnotationDoubleClickedNotification = @"SKPDFViewAnnotationDo
 		case 180:
             thumb.origin.y += NSHeight(rect) - NSHeight(thumb);
             break;
+		case 270:
+            break;
 	}
 	
 	return thumb;
@@ -775,8 +781,24 @@ NSString *SKPDFViewAnnotationDoubleClickedNotification = @"SKPDFViewAnnotationDo
 	boxRect = [page boundsForBox:[self displayBox]];
 	
 	transform = [NSAffineTransform transform];
-	[transform translateXBy:-boxRect.origin.x yBy:-boxRect.origin.y];
-	[transform concat];
+    switch ([page rotation]) {
+        case 0:
+            [transform translateXBy:-NSMinX(boxRect) yBy:-NSMinY(boxRect)];
+            break;
+        case 90:
+            [transform rotateByDegrees:-90];
+            [transform translateXBy:-NSMaxX(boxRect) yBy:-NSMinY(boxRect)];
+            break;
+        case 180:
+            [transform rotateByDegrees:-180];
+            [transform translateXBy:-NSMaxX(boxRect) yBy:-NSMaxY(boxRect)];
+            break;
+        case 270:
+            [transform rotateByDegrees:-270];
+            [transform translateXBy:-NSMinX(boxRect) yBy:-NSMaxY(boxRect)];
+            break;
+	}
+    [transform concat];
 }
 
 #pragma mark Autohide timer
