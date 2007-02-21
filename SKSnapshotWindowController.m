@@ -80,7 +80,7 @@ static NSString *SKSnapshotViewChangedNotification = @"SKSnapshotViewChangedNoti
                                                  name:PDFViewPageChangedNotification object:pdfView];
     
     NSView *clipView = [[[pdfView documentView] enclosingScrollView] contentView];
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleClipViewFrameChangedNotification:) 
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handlePDFViewFrameChangedNotification:) 
                                                  name:NSViewFrameDidChangeNotification object:clipView];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handlePDFViewFrameChangedNotification:) 
                                                  name:NSViewBoundsDidChangeNotification object:clipView];
