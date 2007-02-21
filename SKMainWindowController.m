@@ -638,11 +638,13 @@ static NSString *SKDocumentToolbarSearchItemIdentifier = @"SKDocumentToolbarSear
 - (IBAction)rotateRight:(id)sender {
     [[pdfView currentPage] setRotation:[[pdfView currentPage] rotation] + 90];
     [pdfView layoutDocumentView];
+    [self thumbnailAtIndexNeedsUpdate:[[pdfView document] indexForPage:[pdfView currentPage]]];
 }
 
 - (IBAction)rotateLeft:(id)sender {
     [[pdfView currentPage] setRotation:[[pdfView currentPage] rotation] - 90];
     [pdfView layoutDocumentView];
+    [self thumbnailAtIndexNeedsUpdate:[[pdfView document] indexForPage:[pdfView currentPage]]];
 }
 
 - (IBAction)rotateAllRight:(id)sender {
@@ -651,6 +653,7 @@ static NSString *SKDocumentToolbarSearchItemIdentifier = @"SKDocumentToolbarSear
         [[[pdfView document] pageAtIndex:i] setRotation:[[[pdfView document] pageAtIndex:i] rotation] + 90];
     }
     [pdfView layoutDocumentView];
+    [self thumbnailsAtIndexesNeedUpdate:[NSIndexSet indexSetWithIndexesInRange:NSMakeRange(0, [self countOfThumbnails])]];
 }
 
 - (IBAction)rotateAllLeft:(id)sender {
@@ -659,6 +662,7 @@ static NSString *SKDocumentToolbarSearchItemIdentifier = @"SKDocumentToolbarSear
         [[[pdfView document] pageAtIndex:i] setRotation:[[[pdfView document] pageAtIndex:i] rotation] - 90];
     }
     [pdfView layoutDocumentView];
+    [self thumbnailsAtIndexesNeedUpdate:[NSIndexSet indexSetWithIndexesInRange:NSMakeRange(0, [self countOfThumbnails])]];
 }
 
 - (IBAction)getInfo:(id)sender {

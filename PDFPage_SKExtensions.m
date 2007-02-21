@@ -23,6 +23,9 @@
     NSSize thumbnailSize;
     NSImage *image;
     
+    if ([self rotation] % 180 == 90)
+        bounds = NSMakeRect(NSMinX(bounds), NSMinY(bounds), NSHeight(bounds), NSWidth(bounds));
+    
     if (isScaled) {
         if (NSHeight(bounds) > NSWidth(bounds))
             thumbnailSize = NSMakeSize(roundf((size - 2.0 * shadowBlurRadius) * NSWidth(bounds) / NSHeight(bounds) + 2.0 * shadowBlurRadius), size);
