@@ -833,8 +833,8 @@ static NSString *SKDocumentToolbarSearchItemIdentifier = @"SKDocumentToolbarSear
     [leftSideContentBox addSubview:leftSideBox];
     [leftSideBox release];
     
-    [rightSideBox retain]; // leftSideBox is removed from its old superview in the process
-    [rightSideBox setFrame:[leftSideContentBox bounds]];
+    [rightSideBox retain]; // rightSideBox is removed from its old superview in the process
+    [rightSideBox setFrame:[rightSideContentBox bounds]];
     [rightSideContentBox addSubview:rightSideBox];
     [rightSideBox release];
     
