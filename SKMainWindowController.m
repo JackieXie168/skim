@@ -12,7 +12,7 @@
 #import "SKStringConstants.h"
 #import "SKApplication.h"
 #import "SKStringConstants.h"
-#import "SKSubWindowController.h"
+#import "SKSnapshotWindowController.h"
 #import "SKNoteWindowController.h"
 #import "SKInfoWindowController.h"
 #import "SKFullScreenWindow.h"
@@ -750,7 +750,7 @@ static NSString *SKDocumentToolbarSearchItemIdentifier = @"SKDocumentToolbarSear
     NSWindowController *wc = [wcEnum nextObject];
     
     while (wc = [wcEnum nextObject]) {
-        if ([wc isKindOfClass:[SKNoteWindowController class]] || [wc isKindOfClass:[SKSubWindowController class]])
+        if ([wc isKindOfClass:[SKNoteWindowController class]] || [wc isKindOfClass:[SKSnapshotWindowController class]])
             [[wc window] setLevel:NSFloatingWindowLevel];
     }
     
@@ -768,7 +768,7 @@ static NSString *SKDocumentToolbarSearchItemIdentifier = @"SKDocumentToolbarSear
     BOOL snapshotsOnTop  = [[NSUserDefaults standardUserDefaults] boolForKey:SKSnapshotsOnTopKey];
     
     while (wc = [wcEnum nextObject]) {
-        if ([wc isKindOfClass:[SKNoteWindowController class]] || (snapshotsOnTop == NO && [wc isKindOfClass:[SKSubWindowController class]]))
+        if ([wc isKindOfClass:[SKNoteWindowController class]] || (snapshotsOnTop == NO && [wc isKindOfClass:[SKSnapshotWindowController class]]))
             [[wc window] setLevel:NSNormalWindowLevel];
     }
     
@@ -1247,7 +1247,7 @@ static NSString *SKDocumentToolbarSearchItemIdentifier = @"SKDocumentToolbarSear
 
 - (void)showSnapshotAtPageNumber:(int)pageNum forRect:(NSRect)rect{
     
-    SKSubWindowController *swc = [[SKSubWindowController alloc] init];
+    SKSnapshotWindowController *swc = [[SKSnapshotWindowController alloc] init];
     BOOL snapshotsOnTop = [[NSUserDefaults standardUserDefaults] boolForKey:SKSnapshotsOnTopKey];
     
     PDFDocument *doc = [pdfView document];
@@ -1265,7 +1265,7 @@ static NSString *SKDocumentToolbarSearchItemIdentifier = @"SKDocumentToolbarSear
     [swc showWindow:self];
 }
 
-- (void)miniaturizeSnapshotController:(SKSubWindowController *)controller {
+- (void)miniaturizeSnapshotController:(SKSnapshotWindowController *)controller {
     if ([self isPresentation] == NO) {
         if ([self isFullScreen] == NO && NSWidth([rightSideContentBox frame]) <= 0.0)
             [self toggleRightSidePane:self];
@@ -1318,7 +1318,7 @@ static NSString *SKDocumentToolbarSearchItemIdentifier = @"SKDocumentToolbarSear
 - (void)deminiaturizeSnapshots:(NSArray *)snapshotToShow {
     // there should only be a single note
 	SKThumbnail *thumbnail = [snapshotToShow lastObject];
-    SKSubWindowController *controller = [thumbnail controller];
+    SKSnapshotWindowController *controller = [thumbnail controller];
     BOOL snapshotsOnTop = [[NSUserDefaults standardUserDefaults] boolForKey:SKSnapshotsOnTopKey];
     
     if (controller == nil) return;
@@ -1541,7 +1541,7 @@ static NSString *SKDocumentToolbarSearchItemIdentifier = @"SKDocumentToolbarSear
             int level = snapshotsOnTop || [self isFullScreen] ? NSFloatingWindowLevel : NSNormalWindowLevel;
             
             while (wc = [wcEnum nextObject]) {
-                if ([wc isKindOfClass:[SKSubWindowController class]]) {
+                if ([wc isKindOfClass:[SKSnapshotWindowController class]]) {
                     [[wc window] setLevel:level];
                     [[wc window] setHidesOnDeactivate:snapshotsOnTop];
                 }
@@ -1815,11 +1815,23 @@ static NSString *SKDocumentToolbarSearchItemIdentifier = @"SKDocumentToolbarSear
             snapshotTimer = nil;
         }
         
-        if ([self countOfSnapshots]) {
-            [dirtySnapshotIndexes addIndexesInRange:NSMakeRange(0, [self countOfSnapshots])];
-            snapshotTimer = [[NSTimer scheduledTimerWithTimeInterval:0.03 target:self selector:@selector(updateSnapshot:) userInfo:NULL repeats:YES] retain];
-        }
+        if ([self countOfSnapshots])
+            [self snapshotsAtIndexesNeedUpdate:[NSIndexSet indexSetWithIndexesInRange:NSMakeRange(0, [self countOfSnapshots])]];
     }
+}
+
+- (void)snapshotAtIndexNeedsUpdate:(unsigned)index {
+    [self snapshotsAtIndexesNeedUpdate:[NSIndexSet indexSetWithIndex:index]];
+}
+
+- (void)snapshotsAtIndexesNeedUpdate:(NSIndexSet *)indexes {
+    [dirtySnapshotIndexes addIndexes:indexes];
+    [self updateSnapshotsIfNeeded];
+}
+
+- (void)updateSnapshotsIfNeeded {
+    if ([snapshotTableView window] != nil && [dirtySnapshotIndexes count] > 0 && thumbnailTimer == nil)
+        snapshotTimer = [[NSTimer scheduledTimerWithTimeInterval:0.03 target:self selector:@selector(updateSnapshot:) userInfo:NULL repeats:YES] retain];
 }
 
 - (void)updateSnapshot:(NSTimer *)timer {
@@ -1830,7 +1842,7 @@ static NSString *SKDocumentToolbarSearchItemIdentifier = @"SKDocumentToolbarSear
         float shadowOffset = - ceilf(shadowBlurRadius * 0.75);
         NSSize newSize, oldSize = [[[snapshots objectAtIndex:index] image] size];
         
-        SKSubWindowController *controller = [[snapshots objectAtIndex:index] controller];
+        SKSnapshotWindowController *controller = [[snapshots objectAtIndex:index] controller];
         NSImage *image = [controller thumbnailWithSize:snapshotCacheSize shadowBlurRadius:shadowBlurRadius shadowOffset:NSMakeSize(0.0, shadowOffset)];
         [[snapshots objectAtIndex:index] setImage:image];
         [dirtySnapshotIndexes removeIndex:index];
