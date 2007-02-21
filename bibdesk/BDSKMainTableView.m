@@ -326,6 +326,7 @@
 			tc = [[[NSTableColumn alloc] initWithIdentifier:colName] autorelease];
             [tc setResizingMask:(NSTableColumnAutoresizingMask | NSTableColumnUserResizingMask)];
 			[tc setEditable:NO];
+            [tc setMinWidth:16.0];
 
             if([colName isURLField]){
                 [tc setDataCell:imageCell];
