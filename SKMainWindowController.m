@@ -490,22 +490,18 @@ static NSString *SKDocumentToolbarSearchItemIdentifier = @"SKDocumentToolbarSear
     [snapshots removeObjectAtIndex:theIndex];
 }
 
-- (NSArray *)orderedNotes {
-    return [noteArrayController arrangedObjects];
-}
-
 #pragma mark Actions
 
 - (IBAction)pickColor:(id)sender{
     PDFAnnotation *annotation = [pdfView activeAnnotation];
-    if (annotation)
+    if ([annotation isNoteAnnotation])
         [[NSColorPanel sharedColorPanel] setColor:[annotation color]];
     [[NSColorPanel sharedColorPanel] makeKeyAndOrderFront:self];
 }
 
 - (IBAction)changeColor:(id)sender{
     PDFAnnotation *annotation = [pdfView activeAnnotation];
-    if (annotation) {
+    if ([annotation isNoteAnnotation]) {
         [annotation setDefaultColor:[sender color]];
         [pdfView setNeedsDisplayForAnnotation:annotation];
     }
@@ -1404,9 +1400,9 @@ static NSString *SKDocumentToolbarSearchItemIdentifier = @"SKDocumentToolbarSear
 - (void)handleDidChangeActiveAnnotationNotification:(NSNotification *)notification {
     PDFAnnotation *annotation = [pdfView activeAnnotation];
     updatingNoteSelection = YES;
-    [noteArrayController setSelectedObjects:[NSArray arrayWithObjects:annotation, nil]];
+    [noteArrayController setSelectedObjects:[NSArray arrayWithObjects:[annotation isNoteAnnotation] ? annotation : nil, nil]];
     updatingNoteSelection = NO;
-    if (annotation)
+    if ([annotation isNoteAnnotation])
         [[NSColorPanel sharedColorPanel] setColor:[annotation color]];
 }
 
