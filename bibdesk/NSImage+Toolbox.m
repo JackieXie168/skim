@@ -39,6 +39,7 @@
 #import "NSImage+Toolbox.h"
 #import <OmniFoundation/NSString-OFExtensions.h>
 #import "NSBezierPath_BDSKExtensions.h"
+#import <OmniAppKit/IconFamily.h>
 
 @implementation NSImage (Toolbox)
 
@@ -119,21 +120,34 @@
     
     if (!path)
         return nil;
-    
-    NSString *pathExtension = [path pathExtension];
-    if(![pathExtension isEqualToString:@""])
-        return [NSImage imageForFileType:pathExtension]; // prefer this (more common case)
-    
+   
     // if no file type, we'll just cache the path and waste some memory
     if (imageDictionary == nil)
         imageDictionary = [[NSMutableDictionary alloc] init];
     
-    image = [imageDictionary objectForKey:path];
-    if (image == nil) {
-        image = [[NSWorkspace sharedWorkspace] iconForFile:path];
-        if (image == nil)
-            image = [NSNull null];
-        [imageDictionary setObject:image forKey:path];
+    NSString *pathExtension = [path pathExtension];
+    if(![pathExtension isEqualToString:@""]) {
+        image = [imageDictionary objectForKey:pathExtension];
+        if (image == nil) {
+            IconFamily *iconFamily = [[IconFamily alloc] initWithIconOfFile:path];
+            image = [iconFamily imageWithAllReps];
+            [image setFlipped:NO];
+            if (image == nil)
+                image = [NSNull null];
+            [imageDictionary setObject:image forKey:pathExtension];
+            [iconFamily release];
+        }
+    } else {    
+        image = [imageDictionary objectForKey:path];
+        if (image == nil) {
+            IconFamily *iconFamily = [[IconFamily alloc] initWithIconOfFile:path];
+            image = [iconFamily imageWithAllReps];
+            [image setFlipped:NO];
+            if (image == nil)
+                image = [NSNull null];
+            [imageDictionary setObject:image forKey:path];
+            [iconFamily release];
+        }
     }
     return image != [NSNull null] ? image : nil;
 }
