@@ -11,14 +11,17 @@
 #import "SKSnapshotWindowController.h"
 #import "SKMainWindowController.h"
 #import "SKDocument.h"
+#import "SKMiniaturizeWindow.h"
 #import <Quartz/Quartz.h>
 
 static NSString *SKSnapshotWindowFrameAutosaveName = @"SKSnapshotWindowFrameAutosaveName";
+static NSString *SKSnapshotViewChangedNotification = @"SKSnapshotViewChangedNotification";
 
 @implementation SKSnapshotWindowController
 
 - (void)dealloc {
 	[[NSNotificationCenter defaultCenter] removeObserver: self];
+    [thumbnail release];
     [super dealloc];
 }
 
@@ -37,9 +40,6 @@ static NSString *SKSnapshotWindowFrameAutosaveName = @"SKSnapshotWindowFrameAuto
     nextWindowLocation = [[self window] cascadeTopLeftFromPoint:nextWindowLocation];
     
     [[self window] makeFirstResponder:pdfView];
-	
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handlePageChangedNotification:) 
-                                                 name:PDFViewPageChangedNotification object:pdfView];
 }
 
 - (NSString *)windowTitleForDocumentDisplayName:(NSString *)displayName {
@@ -48,6 +48,47 @@ static NSString *SKSnapshotWindowFrameAutosaveName = @"SKSnapshotWindowFrameAuto
 
 - (void)handlePageChangedNotification:(NSNotification *)notification {
     [[self window] setTitle:[self windowTitleForDocumentDisplayName:[[self document] displayName]]];
+    [self willChangeValueForKey:@"pageLabel"];
+    [self willChangeValueForKey:@"pageIndex"];
+    [self didChangeValueForKey:@"pageIndex"];
+    [self didChangeValueForKey:@"pageLabel"];
+}
+
+- (void)handlePDFViewFrameChangedNotification:(NSNotification *)notification {
+    if ([[self delegate] respondsToSelector:@selector(snapshotControllerViewDidChange:)]) {
+        NSNotification *note = [NSNotification notificationWithName:SKSnapshotViewChangedNotification object:self];
+        [[NSNotificationQueue defaultQueue] enqueueNotification:note postingStyle:NSPostWhenIdle coalesceMask:NSNotificationCoalescingOnName forModes:nil];
+    }
+}
+
+- (void)handleViewChangedNotification:(NSNotification *)notification {
+    if ([[self delegate] respondsToSelector:@selector(snapshotControllerViewDidChange:)])
+        [[self delegate] snapshotControllerViewDidChange:self];
+}
+
+- (void)windowWillClose:(NSNotification *)notification {
+    if (miniaturizing == NO && [[self delegate] respondsToSelector:@selector(snapshotControllerWindowWillClose:)])
+        [[self delegate] snapshotControllerWindowWillClose:self];
+}
+
+- (void)goToDestination:(PDFDestination *)destination {
+    [pdfView goToDestination:destination];
+	
+    [self handlePageChangedNotification:nil];
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handlePageChangedNotification:) 
+                                                 name:PDFViewPageChangedNotification object:pdfView];
+    
+    NSView *clipView = [[[pdfView documentView] enclosingScrollView] contentView];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleClipViewFrameChangedNotification:) 
+                                                 name:NSViewFrameDidChangeNotification object:clipView];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handlePDFViewFrameChangedNotification:) 
+                                                 name:NSViewBoundsDidChangeNotification object:clipView];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleViewChangedNotification:) 
+                                                 name:SKSnapshotViewChangedNotification object:self];
+    
+    if ([[self delegate] respondsToSelector:@selector(snapshotControllerDidFinishSetup:)])
+        [[self delegate] snapshotControllerDidFinishSetup:self];
 }
 
 - (void)setPdfDocument:(PDFDocument *)pdfDocument scaleFactor:(float)factor goToPageNumber:(int)pageNum rect:(NSRect)rect{
@@ -93,21 +134,47 @@ static NSString *SKSnapshotWindowFrameAutosaveName = @"SKSnapshotWindowFrameAuto
     
     // Delayed to allow PDFView to finish its bookkeeping 
     // fixes bug of apparently ignoring the point but getting the page right.
-    [pdfView performSelector:@selector(goToDestination:) withObject:dest afterDelay:0.1];
+    [self performSelector:@selector(goToDestination:) withObject:dest afterDelay:0.0];
+}
+
+#pragma mark Acessors
+
+- (id)delegate {
+    return delegate;
+}
+
+- (void)setDelegate:(id)newDelegate {
+    delegate = newDelegate;
 }
 
 - (PDFView *)pdfView {
     return pdfView;
 }
 
-- (NSRect)rectForThumbnail {
-    NSView *clipView = [[[pdfView documentView] enclosingScrollView] contentView];
-    NSRect rect = [pdfView convertRect:[clipView bounds] fromView:clipView];
-    return [pdfView convertRect:rect toView:nil];
+- (NSImage *)thumbnail {
+    return thumbnail;
 }
 
+- (void)setThumbnail:(NSImage *)newThumbnail {
+    if (thumbnail != newThumbnail) {
+        [thumbnail release];
+        thumbnail = [newThumbnail retain];
+    }
+}
+
+- (NSString *)pageLabel {
+    return [[pdfView currentPage] label];
+}
+
+- (unsigned int)pageIndex {
+    return [[pdfView document] indexForPage:[pdfView currentPage]];
+}
+
+#pragma mark Thumbnails
+
 - (NSImage *)thumbnailWithSize:(float)size shadowBlurRadius:(float)shadowBlurRadius shadowOffset:(NSSize)shadowOffset {
-    NSRect bounds = [pdfView convertRect:[self rectForThumbnail] fromView:nil];
+    NSView *clipView = [[[pdfView documentView] enclosingScrollView] contentView];
+    NSRect bounds = [pdfView convertRect:[clipView bounds] fromView:clipView];
     NSBitmapImageRep *imageRep = [pdfView bitmapImageRepForCachingDisplayInRect:bounds];
     BOOL isScaled = size > 0.0;
     BOOL hasShadow = shadowBlurRadius > 0.0;
@@ -161,13 +228,73 @@ static NSString *SKSnapshotWindowFrameAutosaveName = @"SKSnapshotWindowFrameAuto
     return [image autorelease];
 }
 
+#pragma mark Miniaturize / Deminiaturize
+
+- (void)miniaturize {
+    miniaturizing = YES;
+    if ([[self delegate] respondsToSelector:@selector(snapshotControllerTargetRectForMiniaturize:)]) {
+        NSView *clipView = [[[pdfView documentView] enclosingScrollView] contentView];
+        NSRect startRect = [pdfView convertRect:[clipView bounds] fromView:clipView];
+        NSRect endRect = [[self delegate] snapshotControllerTargetRectForMiniaturize:self];
+        float thumbRatio = NSHeight(startRect) / NSWidth(startRect);
+        float cellRatio = NSHeight(endRect) / NSWidth(endRect);
+        
+        startRect = [pdfView convertRect:startRect toView:nil];
+        startRect.origin = [[self window] convertBaseToScreen:startRect.origin];
+        if (thumbRatio > cellRatio)
+            endRect = NSInsetRect(endRect, 0.5 * NSWidth(endRect) * (1.0 - cellRatio / thumbRatio), 0.0);
+        else
+            endRect = NSInsetRect(endRect, 0.0, 0.5 * NSHeight(endRect) * (1.0 - thumbRatio / cellRatio));
+        
+        NSImage *image = [self thumbnailWithSize:0.0 shadowBlurRadius:0.0 shadowOffset:NSZeroSize];
+        SKMiniaturizeWindow *miniaturizeWindow = [[SKMiniaturizeWindow alloc] initWithContentRect:startRect image:image];
+        
+        [miniaturizeWindow orderFront:self];
+        [[self window] orderOut:self];
+        [miniaturizeWindow setFrame:endRect display:YES animate:YES];
+        [miniaturizeWindow orderOut:self];
+        [miniaturizeWindow release];
+    } else {
+        [[self window] orderOut:self];
+    }
+    miniaturizing = NO;
+}
+
+- (void)deminiaturize {
+    if ([[self delegate] respondsToSelector:@selector(snapshotControllerSourceRectForDeminiaturize:)]) {
+        NSView *clipView = [[[pdfView documentView] enclosingScrollView] contentView];
+        NSRect endRect = [pdfView convertRect:[clipView bounds] fromView:clipView];
+        NSRect startRect = [[self delegate] snapshotControllerSourceRectForDeminiaturize:self];
+        float thumbRatio = NSHeight(endRect) / NSWidth(endRect);
+        float cellRatio = NSHeight(startRect) / NSWidth(startRect);
+        
+        endRect = [pdfView convertRect:endRect toView:nil];
+        endRect.origin = [[self window] convertBaseToScreen:endRect.origin];
+        if (thumbRatio > cellRatio)
+            startRect = NSInsetRect(startRect, 0.5 * NSWidth(startRect) * (1.0 - cellRatio / thumbRatio), 0.0);
+        else
+            startRect = NSInsetRect(startRect, 0.0, 0.5 * NSHeight(startRect) * (1.0 - thumbRatio / cellRatio));
+        
+        NSImage *image = [self thumbnailWithSize:0.0 shadowBlurRadius:0.0 shadowOffset:NSZeroSize];
+        SKMiniaturizeWindow *miniaturizeWindow = [[SKMiniaturizeWindow alloc] initWithContentRect:startRect image:image];
+        
+        [miniaturizeWindow orderFront:self];
+        [miniaturizeWindow setFrame:endRect display:YES animate:YES];
+        [[self window] orderFront:self];
+        [miniaturizeWindow orderOut:self];
+        [miniaturizeWindow release];
+    } else {
+        [self showWindow:self];
+    }
+}
+
 @end
 
+#pragma mark -
 
 @interface NSWindow (SKPrivate)
 - (id)_updateButtonsForModeChanged;
 @end
-
 
 @implementation SKSnapshotWindow
 
@@ -185,7 +312,7 @@ static NSString *SKSnapshotWindowFrameAutosaveName = @"SKSnapshotWindowFrameAuto
 }
 
 - (void)miniaturize:(id)sender {
-    [[[[self windowController] document] mainWindowController] miniaturizeSnapshotController:[self windowController]];
+    [[self windowController] miniaturize];
 }
 
 @end

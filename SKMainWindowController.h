@@ -166,8 +166,7 @@ typedef struct _SKPDFViewState {
 - (IBAction)togglePresentation:(id)sender;
 
 - (void)showSnapshotAtPageNumber:(int)pageNum forRect:(NSRect)rect;
-- (void)miniaturizeSnapshotController:(SKSnapshotWindowController *)controller;
-- (void)deminiaturizeSnapshots:(NSArray *)snapshotToShow;
+- (void)showSnapshots:(NSArray *)snapshotToShow;
 - (void)showNote:(PDFAnnotation *)annotation;
 
 - (PDFView *)pdfView;
