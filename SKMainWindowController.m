@@ -84,6 +84,7 @@ static NSString *SKDocumentToolbarSearchItemIdentifier = @"SKDocumentToolbarSear
         dirtyThumbnailIndexes = [[NSMutableIndexSet alloc] init];
         snapshots = [[NSMutableArray alloc] init];
         dirtySnapshotIndexes = [[NSMutableIndexSet alloc] init];
+        lastViewedPages = [[NSMutableArray alloc] init];
         leftSidePaneState = SKOutlineSidePaneState;
         rightSidePaneState = SKNoteSidePaneState;
     }
@@ -112,6 +113,7 @@ static NSString *SKDocumentToolbarSearchItemIdentifier = @"SKDocumentToolbarSear
     [pdfOutline release];
 	[thumbnails release];
 	[snapshots release];
+    [lastViewedPages release];
     [[outlineView enclosingScrollView] release];
     [[findTableView enclosingScrollView] release];
     [[thumbnailTableView enclosingScrollView] release];
@@ -1257,6 +1259,10 @@ static NSString *SKDocumentToolbarSearchItemIdentifier = @"SKDocumentToolbarSear
     }
 }
 
+- (NSArray *)tableViewHighlightedRows:(NSTableView *)tableView {
+    return lastViewedPages;
+}
+
 #pragma mark Sub- and note- windows
 
 - (void)showSnapshotAtPageNumber:(int)pageNum forRect:(NSRect)rect{
@@ -1364,6 +1370,12 @@ static NSString *SKDocumentToolbarSearchItemIdentifier = @"SKDocumentToolbarSear
 }
 
 - (void)handlePageChangedNotification:(NSNotification *)notification {
+    [lastViewedPages insertObject:[NSNumber numberWithInt:[[pdfView document] indexForPage:[pdfView currentPage]]] atIndex:0];
+    if ([lastViewedPages count] > 4)
+        [lastViewedPages removeLastObject];
+    [thumbnailTableView setNeedsDisplay:YES];
+    [outlineView setNeedsDisplay:YES];
+    
     [self willChangeValueForKey:@"pageNumber"];
     [self didChangeValueForKey:@"pageNumber"];
     
@@ -1606,51 +1618,57 @@ static NSString *SKDocumentToolbarSearchItemIdentifier = @"SKDocumentToolbarSear
 	[self updateOutlineSelection];
 }
 
+- (int)outlineRowForPageIndex:(unsigned int)pageIndex {
+	int i, numRows = [outlineView numberOfRows];
+	for (i = 0; i < numRows; i++) {
+		// Get the destination of the given row....
+		PDFOutline *outlineItem = (PDFOutline *)[outlineView itemAtRow: i];
+		
+		if ([[pdfView document] indexForPage: [[outlineItem destination] page]] == pageIndex) {
+            break;
+        } else if ([[pdfView document] indexForPage: [[outlineItem destination] page]] > pageIndex) {
+			if (i > 0) --i;
+            break;	
+		}
+	}
+    return i == numRows ? -1 : i;
+}
 
 - (void)updateOutlineSelection{
 
-	PDFOutline	*outlineItem;
-	unsigned int pageIndex;
-	int			 numRows;
-	int			 i;
-	
 	// Skip out if this PDF has no outline.
 	if (pdfOutline == nil)
 		return;
 	
 	// Get index of current page.
-	pageIndex = [[pdfView document] indexForPage: [pdfView currentPage]];
+	unsigned int pageIndex = [[pdfView document] indexForPage: [pdfView currentPage]];
 	
 	// Test that the current selection is still valid.
-	outlineItem = (PDFOutline *)[outlineView itemAtRow: [outlineView selectedRow]];
+	PDFOutline *outlineItem = (PDFOutline *)[outlineView itemAtRow: [outlineView selectedRow]];
 	if ([[pdfView document] indexForPage: [[outlineItem destination] page]] == pageIndex)
 		return;
 	
-	// Walk outline view looking for best firstpage number match.
-	numRows = [outlineView numberOfRows];
-	for (i = 0; i < numRows; i++)
-	{
-		// Get the destination of the given row....
-		outlineItem = (PDFOutline *)[outlineView itemAtRow: i];
-		
-		if ([[pdfView document] indexForPage: [[outlineItem destination] page]] == pageIndex)
-		{
-			updatingOutlineSelection = YES;
-			[outlineView selectRow: i byExtendingSelection: NO];
-			updatingOutlineSelection = NO;
-			break;
-		}
-		else if ([[pdfView document] indexForPage: [[outlineItem destination] page]] > pageIndex)
-		{
-			updatingOutlineSelection = YES;
-			if (i < 1)				
-				[outlineView selectRow: 0 byExtendingSelection: NO];
-			else
-				[outlineView selectRow: i - 1 byExtendingSelection: NO];
-			updatingOutlineSelection = NO;
-			break;
-		}
-	}
+    int row = [self outlineRowForPageIndex:pageIndex];
+    
+    if (row != -1) {
+        updatingOutlineSelection = YES;
+        [outlineView selectRow:row byExtendingSelection: NO];
+        updatingOutlineSelection = NO;
+    }
+}
+
+- (NSArray *)outlineViewHighlightedRows:(NSOutlineView *)anOutlineView {
+    NSMutableArray *array = [NSMutableArray array];
+    NSEnumerator *rowEnum = [lastViewedPages objectEnumerator];
+    NSNumber *rowNumber;
+    
+    while (rowNumber = [rowEnum nextObject]) {
+        int row = [self outlineRowForPageIndex:[rowNumber intValue]];
+        if (row != -1)
+            [array addObject:[NSNumber numberWithInt:row]];
+    }
+    
+    return array;
 }
 
 #pragma mark Thumbnails
@@ -2406,6 +2424,56 @@ static NSString *SKDocumentToolbarSearchItemIdentifier = @"SKDocumentToolbarSear
 - (void)setFrameSize:(NSSize)frameSize {
     [super setFrameSize:frameSize];
     [self noteHeightOfRowsWithIndexesChanged:[NSIndexSet indexSetWithIndexesInRange:NSMakeRange(0, [self numberOfRows])]];
+}
+
+- (void)highlightSelectionInClipRect:(NSRect)clipRect {
+    NSMutableIndexSet *rowIndexes = [[[self selectedRowIndexes] mutableCopy] autorelease];
+    NSArray *rows = [[self delegate] tableViewHighlightedRows:self];
+    NSColor *color = ([[self window] isKeyWindow] && [[self window] firstResponder] == self) ? [NSColor alternateSelectedControlColor] : [NSColor secondarySelectedControlColor];
+    float factor = 0.5;
+    int i, count = [rows count];
+    
+    [NSGraphicsContext saveGraphicsState];
+    for (i = 0; i < count; i++) {
+        int row = [[rows objectAtIndex:i] intValue];
+        [[[NSColor controlBackgroundColor] blendedColorWithFraction:factor ofColor:color] set];
+        factor /= 2.0;
+        if ([rowIndexes containsIndex:row] == NO) {
+            NSRectFill([self rectOfRow:row]);
+            [rowIndexes addIndex:row];
+        }
+    }
+    [NSGraphicsContext restoreGraphicsState];
+    
+    [super highlightSelectionInClipRect:clipRect]; 
+}
+
+@end
+
+#pragma mark -
+
+@implementation SKOutlineView
+
+- (void)highlightSelectionInClipRect:(NSRect)clipRect {
+    NSMutableIndexSet *rowIndexes = [[[self selectedRowIndexes] mutableCopy] autorelease];
+    NSArray *rows = [[self delegate] outlineViewHighlightedRows:self];
+    NSColor *color = ([[self window] isKeyWindow] && [[self window] firstResponder] == self) ? [NSColor alternateSelectedControlColor] : [NSColor secondarySelectedControlColor];
+    float factor = 0.5;
+    int i, count = [rows count];
+    
+    [NSGraphicsContext saveGraphicsState];
+    for (i = 0; i < count; i++) {
+        int row = [[rows objectAtIndex:i] intValue];
+        [[[NSColor controlBackgroundColor] blendedColorWithFraction:factor ofColor:color] set];
+        factor /= 2.0;
+        if ([rowIndexes containsIndex:row] == NO) {
+            NSRectFill([self rectOfRow:row]);
+            [rowIndexes addIndex:row];
+        }
+    }
+    [NSGraphicsContext restoreGraphicsState];
+    
+    [super highlightSelectionInClipRect:clipRect]; 
 }
 
 @end

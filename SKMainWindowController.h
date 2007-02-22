@@ -39,6 +39,9 @@ typedef struct _SKPDFViewState {
 @interface SKThumbnailTableView : NSTableView
 @end
 
+@interface SKOutlineView : NSOutlineView
+@end
+
 @interface SKMainWindowController : NSWindowController {
     IBOutlet SKPDFView          *pdfView;
     IBOutlet BDSKEdgeView       *pdfContentBox;
@@ -122,6 +125,8 @@ typedef struct _SKPDFViewState {
     
     IBOutlet NSWindow           *saveProgressSheet;
     IBOutlet NSProgressIndicator *saveProgressBar;
+    
+    NSMutableArray *lastViewedPages;
 }
 
 - (IBAction)pickColor:(id)sender;
@@ -248,6 +253,16 @@ typedef struct _SKPDFViewState {
 
 @interface NSObject (SKNoteTableViewDelegate)
 - (void)tableView:(NSTableView *)aTableView deleteRowsWithIndexes:(NSIndexSet *)rowIndexes;
+@end
+
+
+@interface NSObject (SKThumbnailTableViewDelegate)
+- (NSArray *)tableViewHighlightedRows:(NSTableView *)tableView;
+@end
+
+
+@interface NSObject (SKOutlineViewDelegate)
+- (NSArray *)outlineViewHighlightedRows:(NSOutlineView *)anOutlineView;
 @end
 
 
