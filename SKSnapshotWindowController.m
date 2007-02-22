@@ -116,7 +116,7 @@ static NSString *SKSnapshotViewChangedNotification = @"SKSnapshotViewChangedNoti
                                                  name:SKSnapshotViewChangedNotification object:self];
     
     if ([[self delegate] respondsToSelector:@selector(snapshotControllerDidFinishSetup:)])
-        [[self delegate] snapshotControllerDidFinishSetup:self];
+        [[self delegate] performSelector:@selector(snapshotControllerDidFinishSetup:) withObject:self afterDelay:0.1];
 }
 
 - (void)setPdfDocument:(PDFDocument *)pdfDocument scaleFactor:(float)factor goToPageNumber:(int)pageNum rect:(NSRect)rect{
@@ -162,7 +162,7 @@ static NSString *SKSnapshotViewChangedNotification = @"SKSnapshotViewChangedNoti
     
     // Delayed to allow PDFView to finish its bookkeeping 
     // fixes bug of apparently ignoring the point but getting the page right.
-    [self performSelector:@selector(goToDestination:) withObject:dest afterDelay:0.0];
+    [self performSelector:@selector(goToDestination:) withObject:dest afterDelay:0.1];
 }
 
 #pragma mark Acessors
