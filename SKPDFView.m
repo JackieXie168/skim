@@ -717,6 +717,11 @@ NSString *SKPDFViewAnnotationDoubleClickedNotification = @"SKPDFViewAnnotationDo
     }
 }
 
+- (void)scrollAnnotationToVisible:(PDFAnnotation *)annotation {
+    NSRect rect = [self convertRect:[self convertRect:[annotation bounds] fromPage:[annotation page]] toView:[self documentView]];
+    [[self documentView] scrollRectToVisible:rect];
+}
+
 #pragma mark FullScreen navigation and autohide
 
 - (void)handleWindowWillCloseNotification:(NSNotification *)notification {
