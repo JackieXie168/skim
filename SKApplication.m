@@ -101,7 +101,7 @@ NSString *SKApplicationWillTerminateNotification = @"SKApplicationWillTerminateN
         if (itemIndex + 1 < numberOfItems && [[windowsMenu itemAtIndex:itemIndex + 1] isSeparatorItem] == NO)
             [windowsMenu insertItem:[NSMenuItem separatorItem] atIndex:itemIndex + 1];
         if ([[windowsMenu itemAtIndex:itemIndex - 1] isSeparatorItem] == NO)
-            [windowsMenu insertItem:[NSMenuItem separatorItem] atIndex:itemIndex - 1];
+            [windowsMenu insertItem:[NSMenuItem separatorItem] atIndex:itemIndex];
     } else {
         int index = [windowsMenu indexOfItemWithTarget:[mainWindowController window]];
         NSMenuItem *item = [windowsMenu itemAtIndex:itemIndex];
@@ -125,7 +125,7 @@ NSString *SKApplicationWillTerminateNotification = @"SKApplicationWillTerminateN
     int itemIndex = [[self windowsMenu] indexOfItemWithTarget:aWindow];
     NSMenuItem *item = itemIndex >= 0 ? [[self windowsMenu] itemAtIndex:itemIndex] : nil;
     
-    if ([windowController document] && windowController != [[windowController document] mainWindowController])
+    if ([windowController document] && [windowController isEqual:[[windowController document] mainWindowController]])
         [item setIndentationLevel:1];
 }
 
