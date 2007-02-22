@@ -2,7 +2,7 @@
 //  NSFileManager_ExtendedAttributes.h
 //
 //  Created by Adam R. Maxwell on 05/12/05.
-//  Copyright 2005, 2006 Adam R. Maxwell. All rights reserved.
+//  Copyright 2005, 2006, 2007 Adam R. Maxwell. All rights reserved.
 //
 /*
  

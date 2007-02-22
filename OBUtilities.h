@@ -3,8 +3,6 @@
 //  Skim
 //
 //  Created by Christiaan Hofman on 2/15/07.
-//  Copyright 2007 __MyCompanyName__. All rights reserved.
-//
 
 /* Following functions are from OmniBase/OBUtilities.h and subject to the following copyright */
 
