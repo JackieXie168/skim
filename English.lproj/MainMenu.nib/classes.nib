@@ -3,6 +3,8 @@
         {
             ACTIONS = {
                 changeAnnotationMode = id; 
+                changeLeftSidePaneState = id; 
+                changeRightSidePaneState = id; 
                 changeToolMode = id; 
                 createNewNote = id; 
                 displayCropBox = id; 
