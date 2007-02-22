@@ -90,6 +90,7 @@ NSString *SKPDFViewAnnotationDoubleClickedNotification = @"SKPDFViewAnnotationDo
     if (self = [super initWithFrame:frameRect]) {
         toolMode = SKTextToolMode;
         [[self window] setAcceptsMouseMovedEvents:YES];
+        isMagnifying = NO;
     }
     return self;
 }
@@ -97,6 +98,7 @@ NSString *SKPDFViewAnnotationDoubleClickedNotification = @"SKPDFViewAnnotationDo
 - (id)initWithCoder:(NSCoder *)decoder {
     if (self = [super initWithCoder:decoder]) {
         toolMode = SKTextToolMode;
+        isMagnifying = NO;
     }
     return self;
 }
@@ -346,6 +348,11 @@ NSString *SKPDFViewAnnotationDoubleClickedNotification = @"SKPDFViewAnnotationDo
 }
 
 - (void)mouseMoved:(NSEvent *)theEvent {
+    
+    // don't display hover windows while magnifying
+    if (isMagnifying)
+        return;
+
     // we receive this message whenever we are first responder, so check the location
     NSPoint p = [[self documentView] convertPoint:[theEvent locationInWindow] fromView:nil];
     
@@ -1292,7 +1299,10 @@ NSString *SKPDFViewAnnotationDoubleClickedNotification = @"SKPDFViewAnnotationDo
 	[documentView setPostsBoundsChangedNotifications: NO];
 	
 	[[self window] discardCachedImage]; // make sure not to use the cached image
-	
+    
+    // used to ignore mouseMoved: events (and window hovering) while magnifying
+	isMagnifying = YES;
+    
 	while ([theEvent type] != NSLeftMouseUp) {
         
         // set up the currentLevel and magScale
@@ -1341,15 +1351,16 @@ NSString *SKPDFViewAnnotationDoubleClickedNotification = @"SKPDFViewAnnotationDo
             [documentView setBounds:originalBounds];
             
             [clipView lockFocus];
-            [[NSGraphicsContext currentContext] saveGraphicsState];
-            outlineRect = NSInsetRect([clipView convertRect:magRect fromView:nil], 0.5, 0.5);
+            NSGraphicsContext *ctxt = [NSGraphicsContext currentContext];
+            [ctxt saveGraphicsState];
+            outlineRect = NSIntegralRect(NSInsetRect([clipView convertRect:magRect fromView:nil], 0.5, 0.5));
             path = [NSBezierPath bezierPathWithRect:outlineRect];
             [path setLineWidth:1.0];
             [[NSColor blackColor] set];
             [path stroke];
-            [[NSGraphicsContext currentContext] restoreGraphicsState];
+            [ctxt flushGraphics];
+            [ctxt restoreGraphicsState];
             [clipView unlockFocus];
-			[[self window] flushWindow];
             
         } else { // mouse is not in the rect
             // show cursor 
@@ -1370,8 +1381,9 @@ NSString *SKPDFViewAnnotationDoubleClickedNotification = @"SKPDFViewAnnotationDo
         theEvent = [[self window] nextEventMatchingMask: NSLeftMouseUpMask | NSLeftMouseDraggedMask | NSFlagsChangedMask];
 	}
 	
+    isMagnifying = NO;
 	[[self window] restoreCachedImage];
-	[[self window] flushWindow];
+	[[self window] flushWindowIfNeeded];
 	[NSCursor unhide];
 	[documentView setPostsBoundsChangedNotifications:postNotification];
 	[self flagsChanged:theEvent]; // update cursor

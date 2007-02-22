@@ -80,6 +80,7 @@ typedef enum _SKAnnotationMode {
 	BOOL selecting;
 	BOOL resizing;
 	BOOL mouseDownInAnnotation;
+    BOOL isMagnifying;
 }
 
 - (SKToolMode)toolMode;
