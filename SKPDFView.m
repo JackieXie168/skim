@@ -282,9 +282,6 @@ NSString *SKPDFViewAnnotationDoubleClickedNotification = @"SKPDFViewAnnotationDo
         [self setActiveAnnotation:nil];
     
     switch (toolMode) {
-        case SKMoveToolMode:
-            [[NSCursor closedHandCursor] push];
-            break;
         case SKTextToolMode:
             if ([theEvent modifierFlags] & NSCommandKeyMask)
                 [self selectSnapshotWithEvent:theEvent];
@@ -292,6 +289,12 @@ NSString *SKPDFViewAnnotationDoubleClickedNotification = @"SKPDFViewAnnotationDo
                 [super mouseDown:theEvent];
             else 
                 [self selectAnnotationWithEvent:theEvent];
+            break;
+        case SKMoveToolMode:
+            if ([theEvent modifierFlags] & NSCommandKeyMask)
+                [self selectSnapshotWithEvent:theEvent];
+            else
+                [[NSCursor closedHandCursor] push];
             break;
         case SKMagnifyToolMode:
             [self magnifyWithEvent:theEvent];
@@ -301,10 +304,6 @@ NSString *SKPDFViewAnnotationDoubleClickedNotification = @"SKPDFViewAnnotationDo
 
 - (void)mouseUp:(NSEvent *)theEvent{
     switch (toolMode) {
-        case SKMoveToolMode:
-            [NSCursor pop];
-            [[NSCursor openHandCursor] set];
-            break;
         case SKTextToolMode:
             if (mouseDownInAnnotation) {
                 mouseDownInAnnotation = NO;
@@ -317,6 +316,10 @@ NSString *SKPDFViewAnnotationDoubleClickedNotification = @"SKPDFViewAnnotationDo
                 }
             } else
                 [super mouseUp:theEvent];
+        case SKMoveToolMode:
+            [NSCursor pop];
+            [[NSCursor openHandCursor] set];
+            break;
         case SKMagnifyToolMode:
             [super mouseUp:theEvent];
             break;
@@ -325,16 +328,16 @@ NSString *SKPDFViewAnnotationDoubleClickedNotification = @"SKPDFViewAnnotationDo
 
 - (void)mouseDragged:(NSEvent *)theEvent {
     switch (toolMode) {
-        case SKMoveToolMode:
-            [self dragWithEvent:theEvent];	
-            // ??? PDFView's delayed layout seems to reset the cursor to an arrow
-            [self performSelector:@selector(mouseMoved:) withObject:theEvent afterDelay:0];
-            break;
         case SKTextToolMode:
             if (mouseDownInAnnotation)
                 [self dragAnnotationWithEvent:theEvent];
             else
                 [super mouseDragged:theEvent];
+            break;
+        case SKMoveToolMode:
+            [self dragWithEvent:theEvent];	
+            // ??? PDFView's delayed layout seems to reset the cursor to an arrow
+            [self performSelector:@selector(mouseMoved:) withObject:theEvent afterDelay:0];
             break;
         case SKMagnifyToolMode:
             [super mouseDragged:theEvent];
@@ -343,16 +346,25 @@ NSString *SKPDFViewAnnotationDoubleClickedNotification = @"SKPDFViewAnnotationDo
 }
 
 - (void)mouseMoved:(NSEvent *)theEvent {
-    
     // we receive this message whenever we are first responder, so check the location
-    if (toolMode == SKTextToolMode) {
-        NSPoint p = [[self documentView] convertPoint:[theEvent locationInWindow] fromView:nil];
-        if (NSPointInRect(p, [[self documentView] visibleRect]) && [theEvent modifierFlags] & NSCommandKeyMask) 
-            [[NSCursor cameraCursor] set];
-        else
-            [super mouseMoved:theEvent];
-    } else {
-        [[self cursorForMouseMovedEvent:theEvent] set];
+    NSPoint p = [[self documentView] convertPoint:[theEvent locationInWindow] fromView:nil];
+    
+    switch (toolMode) {
+        case SKTextToolMode:
+            if (NSPointInRect(p, [[self documentView] visibleRect]) && [theEvent modifierFlags] & NSCommandKeyMask) 
+                [[NSCursor cameraCursor] set];
+            else
+                [super mouseMoved:theEvent];
+            break;
+        case SKMoveToolMode:
+            if (NSPointInRect(p, [[self documentView] visibleRect]) && [theEvent modifierFlags] & NSCommandKeyMask) 
+                [[NSCursor cameraCursor] set];
+            else
+                [[self cursorForMouseMovedEvent:theEvent] set];
+            break;
+        case SKMagnifyToolMode:
+            [[self cursorForMouseMovedEvent:theEvent] set];
+            break;
     }
     
     BOOL isLink = NO;
@@ -379,15 +391,23 @@ NSString *SKPDFViewAnnotationDoubleClickedNotification = @"SKPDFViewAnnotationDo
 
 - (void)flagsChanged:(NSEvent *)theEvent {
     [super flagsChanged:theEvent];
-    if (toolMode == SKTextToolMode) {
-        if (selecting == NO) {
-            NSCursor *cursor = ([theEvent modifierFlags] & NSCommandKeyMask) ? [NSCursor cameraCursor] : [NSCursor arrowCursor];
-            [cursor set];
-        }
-    } else if (toolMode == SKMagnifyToolMode) {
-        NSCursor *cursor = ([theEvent modifierFlags] & NSShiftKeyMask) ? [NSCursor zoomOutCursor] : [NSCursor zoomInCursor];
-        [cursor set];
+    
+    NSCursor *cursor = nil;
+    
+    switch (toolMode) {
+        case SKTextToolMode:
+            if (selecting == NO)
+                cursor = ([theEvent modifierFlags] & NSCommandKeyMask) ? [NSCursor cameraCursor] : [NSCursor arrowCursor];
+            break;
+        case SKMoveToolMode:
+            if (selecting == NO)
+                cursor = ([theEvent modifierFlags] & NSCommandKeyMask) ? [NSCursor cameraCursor] : [NSCursor openHandCursor];
+            break;
+        case SKMagnifyToolMode:
+            cursor = ([theEvent modifierFlags] & NSShiftKeyMask) ? [NSCursor zoomOutCursor] : [NSCursor zoomInCursor];
+            break;
     }
+    [cursor set];
 }
 
 - (NSMenu *)menuForEvent:(NSEvent *)theEvent {
@@ -1248,7 +1268,7 @@ NSString *SKPDFViewAnnotationDoubleClickedNotification = @"SKPDFViewAnnotationDo
     
     SKMainWindowController *controller = [[self window] windowController];
     
-    [controller showSnapshotAtPageNumber:[[self document] indexForPage:page] forRect:[self convertRect:rect toPage:page]];        
+    [controller showSnapshotAtPageNumber:[[self document] indexForPage:page] forRect:[self convertRect:rect toPage:page]];
 }
 
 #define MAG_RECT_1 NSMakeRect(-150.0, -100.0, 300.0, 200.0)
