@@ -1407,7 +1407,7 @@ static NSString *SKDocumentToolbarSearchItemIdentifier = @"SKDocumentToolbarSear
 
 - (void)handlePageChangedNotification:(NSNotification *)notification {
     [lastViewedPages insertObject:[NSNumber numberWithInt:[[pdfView document] indexForPage:[pdfView currentPage]]] atIndex:0];
-    if ([lastViewedPages count] > 4)
+    if ([lastViewedPages count] > 5)
         [lastViewedPages removeLastObject];
     [thumbnailTableView setNeedsDisplay:YES];
     [outlineView setNeedsDisplay:YES];
@@ -2479,11 +2479,12 @@ static NSString *SKDocumentToolbarSearchItemIdentifier = @"SKDocumentToolbarSear
     for (i = 0; i < count; i++) {
         int row = [[rows objectAtIndex:i] intValue];
         [[[NSColor controlBackgroundColor] blendedColorWithFraction:factor ofColor:color] set];
-        factor /= 2.0;
+        factor -= 0.1;
         if ([rowIndexes containsIndex:row] == NO) {
             NSRectFill([self rectOfRow:row]);
             [rowIndexes addIndex:row];
         }
+        if (factor <= 0.0) break;
     }
     [NSGraphicsContext restoreGraphicsState];
     
@@ -2507,11 +2508,12 @@ static NSString *SKDocumentToolbarSearchItemIdentifier = @"SKDocumentToolbarSear
     for (i = 0; i < count; i++) {
         int row = [[rows objectAtIndex:i] intValue];
         [[[NSColor controlBackgroundColor] blendedColorWithFraction:factor ofColor:color] set];
-        factor /= 2.0;
+        factor -= 0.1;
         if ([rowIndexes containsIndex:row] == NO) {
             NSRectFill([self rectOfRow:row]);
             [rowIndexes addIndex:row];
         }
+        if (factor <= 0.0) break;
     }
     [NSGraphicsContext restoreGraphicsState];
     
