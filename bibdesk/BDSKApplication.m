@@ -38,6 +38,7 @@
 
 #import "BDSKApplication.h"
 #import "BDAlias.h"
+#import "NSMenu_BDSKExtensions.h"
 
 @interface NSWindow (BDSKApplication)
 // these are implemented in AppKit as private methods
@@ -83,6 +84,77 @@
             return [super sendAction:anAction to:keyWindow from:sender];
     }
     return [super sendAction:anAction to:theTarget from:sender];
+}
+
+- (void)addWindowsItem:(NSWindow *)aWindow title:(NSString *)aString filename:(BOOL)isFilename {
+    NSMenu *windowsMenu = [self windowsMenu];
+    int itemIndex = [windowsMenu indexOfItemWithTarget:aWindow];
+    
+    [super addWindowsItem:aWindow title:aString filename:isFilename];
+    
+    if (itemIndex >= 0)
+        return;
+    
+    NSWindowController *windowController = [aWindow windowController];
+    NSWindowController *mainWindowController = [[[windowController document] windowControllers] objectAtIndex:0];
+    int numberOfItems = [windowsMenu numberOfItems];
+    
+    itemIndex = [windowsMenu indexOfItemWithTarget:aWindow];
+    
+    if ([windowController document] == nil) {
+        int index = numberOfItems;
+        while (index-- && [[windowsMenu itemAtIndex:index] isSeparatorItem] == NO && 
+               [[[[windowsMenu itemAtIndex:index] target] windowController] document] == nil) {}
+        if (index >= 0) {
+            if (itemIndex < index) {
+                NSMenuItem *item = [[windowsMenu itemAtIndex:itemIndex] retain];
+                [windowsMenu removeItem:item];
+                [windowsMenu insertItem:item atIndex:index];
+                [item release];
+                index--;
+            }
+            if ([[windowsMenu itemAtIndex:index] isSeparatorItem] == NO)
+                [windowsMenu insertItem:[NSMenuItem separatorItem] atIndex:index + 1];
+        }
+    } else if ([windowController isEqual:mainWindowController]) {
+        if (itemIndex + 1 < numberOfItems && [[windowsMenu itemAtIndex:itemIndex + 1] isSeparatorItem] == NO)
+            [windowsMenu insertItem:[NSMenuItem separatorItem] atIndex:itemIndex + 1];
+        if ([[windowsMenu itemAtIndex:itemIndex - 1] isSeparatorItem] == NO)
+            [windowsMenu insertItem:[NSMenuItem separatorItem] atIndex:itemIndex];
+    } else {
+        int index = [windowsMenu indexOfItemWithTarget:[mainWindowController window]];
+        NSMenuItem *item = [windowsMenu itemAtIndex:itemIndex];
+        
+        [item setIndentationLevel:1];
+        
+        if (index >= 0) {
+            while (++index < numberOfItems && [[windowsMenu itemAtIndex:index] isSeparatorItem] == NO) {}
+            [item retain];
+            [windowsMenu removeItem:item];
+            [windowsMenu insertItem:item atIndex:itemIndex < index ? --index : index];
+            [item release];
+        }
+    }
+}
+
+- (void)changeWindowsItem:(NSWindow *)aWindow title:(NSString *)aString filename:(BOOL)isFilename {
+    [super changeWindowsItem:aWindow title:aString filename:isFilename];
+    
+    NSWindowController *windowController = [aWindow windowController];
+    NSWindowController *mainWindowController = [[[windowController document] windowControllers] objectAtIndex:0];
+    int itemIndex = [[self windowsMenu] indexOfItemWithTarget:aWindow];
+    NSMenuItem *item = itemIndex >= 0 ? [[self windowsMenu] itemAtIndex:itemIndex] : nil;
+    
+    if ([windowController document] && [windowController isEqual:mainWindowController] == NO)
+        [item setIndentationLevel:1];
+}
+
+- (void)removeWindowsItem:(NSWindow *)aWindow {
+    int index = [[self windowsMenu] indexOfItemWithTarget:aWindow];
+    [super removeWindowsItem:aWindow];
+    if ((index >= 0) && (index < [[self windowsMenu] numberOfItems]) && 
+        [[[self windowsMenu] itemAtIndex:index - 1] isSeparatorItem])
+        [[self windowsMenu] removeItemAtIndex:index - 1];
 }
 
 @end
