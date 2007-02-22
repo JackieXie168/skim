@@ -125,7 +125,7 @@ NSString *SKApplicationWillTerminateNotification = @"SKApplicationWillTerminateN
     int itemIndex = [[self windowsMenu] indexOfItemWithTarget:aWindow];
     NSMenuItem *item = itemIndex >= 0 ? [[self windowsMenu] itemAtIndex:itemIndex] : nil;
     
-    if ([windowController document] && [windowController isEqual:[[windowController document] mainWindowController]])
+    if ([windowController document] && [windowController isEqual:[[windowController document] mainWindowController]] == NO)
         [item setIndentationLevel:1];
 }
 
