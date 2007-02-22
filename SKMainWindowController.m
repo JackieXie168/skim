@@ -735,6 +735,14 @@ static NSString *SKDocumentToolbarSearchItemIdentifier = @"SKDocumentToolbarSear
     [splitView adjustSubviews];
 }
 
+- (IBAction)changeLeftSidePaneState:(id)sender {
+    [self setLeftSidePaneState:[sender tag]];
+}
+
+- (IBAction)changeRightSidePaneState:(id)sender {
+    [self setRightSidePaneState:[sender tag]];
+}
+
 - (void)goFullScreen {
     NSScreen *screen = [NSScreen mainScreen]; // @@ or should we use the window's screen?
 
@@ -2247,16 +2255,22 @@ static NSString *SKDocumentToolbarSearchItemIdentifier = @"SKDocumentToolbarSear
         return [pdfView autoScales] == NO;
     } else if (action == @selector(toggleLeftSidePane:)) {
         if (NSWidth([leftSideContentBox frame]) > 0.0)
-            [menuItem setTitle:NSLocalizedString(@"Hide Contents", @"Menu item title")];
+            [menuItem setTitle:NSLocalizedString(@"Hide Contents Pane", @"Menu item title")];
         else
-            [menuItem setTitle:NSLocalizedString(@"Show Contents", @"Menu item title")];
+            [menuItem setTitle:NSLocalizedString(@"Show Contents Pane", @"Menu item title")];
         return [self isFullScreen] == NO && [self isPresentation] == NO;
     } else if (action == @selector(toggleRightSidePane:)) {
         if (NSWidth([rightSideContentBox frame]) > 0.0)
-            [menuItem setTitle:NSLocalizedString(@"Hide Notes", @"Menu item title")];
+            [menuItem setTitle:NSLocalizedString(@"Hide Notes Pane", @"Menu item title")];
         else
-            [menuItem setTitle:NSLocalizedString(@"Show Notes", @"Menu item title")];
+            [menuItem setTitle:NSLocalizedString(@"Show Notes Pane", @"Menu item title")];
         return [self isFullScreen] == NO && [self isPresentation] == NO;
+    } else if (action == @selector(changeLeftSidePaneState:)) {
+        [menuItem setState:(int)leftSidePaneState == [menuItem tag] ? ([findTableView window] ? NSMixedState : NSOnState) : NSOffState];
+        return YES;
+    } else if (action == @selector(changeRightSidePaneState:)) {
+        [menuItem setState:(int)rightSidePaneState == [menuItem tag] ? NSOnState : NSOffState];
+        return YES;
     } else if (action == @selector(toggleFullScreen:)) {
         return YES;
     } else if (action == @selector(togglePresentation:)) {

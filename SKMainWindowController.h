@@ -163,6 +163,8 @@ typedef struct _SKPDFViewState {
 - (IBAction)changeAnnotationMode:(id)sender;
 - (IBAction)toggleLeftSidePane:(id)sender;
 - (IBAction)toggleRightSidePane:(id)sender;
+- (IBAction)changeLeftSidePaneState:(id)sender;
+- (IBAction)changeRightSidePaneState:(id)sender;
 - (IBAction)enterFullScreen:(id)sender;
 - (IBAction)exitFullScreen:(id)sender;
 - (IBAction)toggleFullScreen:(id)sender;
