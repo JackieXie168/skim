@@ -3,11 +3,6 @@
 //  Skim
 //
 //  Created by Christiaan Hofman on 2/15/07.
-//  Copyright 2007 __MyCompanyName__. All rights reserved.
-//
-
-#import "OBUtilities.h"
-#import <Foundation/Foundation.h>
 
 /* Following functions are from OmniBase/OBUtilities.h and subject to the following copyright */
 
@@ -17,6 +12,9 @@
 // terms in the file OmniSourceLicense.html, which should be
 // distributed with this project and can also be found at
 // <http://www.omnigroup.com/developer/sourcecode/sourcelicense/>.
+
+#import "OBUtilities.h"
+#import <Foundation/Foundation.h>
 
 static void _OBRegisterMethod(IMP methodImp, Class class, const char *methodTypes, SEL selector)
 {
