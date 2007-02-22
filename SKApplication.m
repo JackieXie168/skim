@@ -118,6 +118,17 @@ NSString *SKApplicationWillTerminateNotification = @"SKApplicationWillTerminateN
     }
 }
 
+- (void)changeWindowsItem:(NSWindow *)aWindow title:(NSString *)aString filename:(BOOL)isFilename {
+    [super changeWindowsItem:aWindow title:aString filename:isFilename];
+    
+    NSWindowController *windowController = [aWindow windowController];
+    int itemIndex = [[self windowsMenu] indexOfItemWithTarget:aWindow];
+    NSMenuItem *item = itemIndex >= 0 ? [[self windowsMenu] itemAtIndex:itemIndex] : nil;
+    
+    if ([windowController document] && windowController != [[windowController document] mainWindowController])
+        [item setIndentationLevel:1];
+}
+
 - (void)removeWindowsItem:(NSWindow *)aWindow {
     int index = [[self windowsMenu] indexOfItemWithTarget:aWindow];
     [super removeWindowsItem:aWindow];
