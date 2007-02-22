@@ -88,34 +88,7 @@
     NSRect bounds = [page boundsForBox:kPDFDisplayBoxCropBox];
     NSRect rect = [[imageView superview] bounds];
     
-    NSPoint hoverOrigin = [dest point];
-    
-#warning FIXME: I don't know what this is supposed to do, but it doesn't work
-    // this heuristic is only applied if there's no character at the destination
-    /*
-    if ([page characterIndexAtPoint:[dest point]] == -1) {
-        // point is in screen coordinates; convert to originating window
-        NSPoint pgPt = [[srcView window] convertScreenToBase:point];
-        // convert to originating view
-        pgPt = [srcView convertPoint:pgPt fromView:nil];
-        // convert to page
-        pgPt = [srcView convertPoint:pgPt toPage:[srcView currentPage]];
-        NSString *srcString = [[[srcView currentPage] selectionForWordAtPoint:pgPt] string];
-        
-        // this is correct for author/year citations
-        if (srcString)
-            srcString = [srcString stringByTrimmingCharactersInSet:[NSCharacterSet punctuationCharacterSet]];
-
-        NSRange r = srcString ? [[page string] rangeOfString:srcString] : NSMakeRange(NSNotFound, 0);
-        if (r.length) {
-            NSRect charBounds = [page characterBoundsAtIndex:r.location];
-            hoverOrigin = charBounds.origin;
-            hoverOrigin.y += 0.5 * NSHeight(rect);
-        }
-    }
-    */
-    
-    rect.origin = hoverOrigin;
+    rect.origin = [destination point];
     rect.origin.x -= NSMinX(bounds);
     rect.origin.y -= NSMinY(bounds) + NSHeight(rect);
     
