@@ -1868,7 +1868,7 @@ static NSString *SKDocumentToolbarSearchItemIdentifier = @"SKDocumentToolbarSear
 }
 
 - (void)updateSnapshotsIfNeeded {
-    if ([snapshotTableView window] != nil && [dirtySnapshotIndexes count] > 0 && thumbnailTimer == nil)
+    if ([snapshotTableView window] != nil && [dirtySnapshotIndexes count] > 0 && snapshotTimer == nil)
         snapshotTimer = [[NSTimer scheduledTimerWithTimeInterval:0.03 target:self selector:@selector(updateSnapshot:) userInfo:NULL repeats:YES] retain];
 }
 
