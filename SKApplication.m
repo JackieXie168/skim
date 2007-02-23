@@ -51,7 +51,7 @@ NSString *SKApplicationWillTerminateNotification = @"SKApplicationWillTerminateN
 @implementation NSMenu (SKExtensions)
 - (int)indexOfItemWithTarget:(id)target {
     int index = [self numberOfItems];
-    while (--index)
+    while (index--)
         if ([[self itemAtIndex:index] target] == target)
             break;
     return index;
