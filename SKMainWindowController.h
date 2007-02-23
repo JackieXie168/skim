@@ -133,6 +133,8 @@ typedef struct _SKPDFViewState {
     IBOutlet NSTableView        *findTableView;
     NSMutableArray              *searchResults;
     IBOutlet NSArrayController  *findArrayController;
+    IBOutlet BDSKEdgeView       *findEdgeView;
+    IBOutlet BDSKCollapsibleView *findCollapsibleView;
     IBOutlet NSProgressIndicator *spinner;
     
     IBOutlet NSArrayController  *thumbnailArrayController;

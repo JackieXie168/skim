@@ -148,7 +148,7 @@ static NSString *SKDocumentToolbarSearchItemIdentifier = @"SKDocumentToolbarSear
     [selectedNoteIndexPaths release];
     [selectedNote release];
     [[outlineView enclosingScrollView] release];
-    [[findTableView enclosingScrollView] release];
+    [[[findTableView enclosingScrollView] superview] release];
     [[thumbnailTableView enclosingScrollView] release];
     [[noteOutlineView enclosingScrollView] release];
     [[snapshotTableView enclosingScrollView] release];
@@ -168,22 +168,8 @@ static NSString *SKDocumentToolbarSearchItemIdentifier = @"SKDocumentToolbarSear
     // this is not called automatically, because the document overrides makeWindowControllers
     [[self document] windowControllerDidLoadNib:self];
     
-    // we retain as we might replace it with the full screen window
-    mainWindow = [[self window] retain];
-    
-    [[self window] setFrameUsingName:SKMainWindowFrameAutosaveName];
-    static NSPoint nextWindowLocation = {0.0, 0.0};
-    [self setShouldCascadeWindows:NO];
-    if ([[self window] setFrameAutosaveName:SKMainWindowFrameAutosaveName]) {
-        NSRect windowFrame = [[self window] frame];
-        nextWindowLocation = NSMakePoint(NSMinX(windowFrame), NSMaxY(windowFrame));
-    }
-    nextWindowLocation = [[self window] cascadeTopLeftFromPoint:nextWindowLocation];
-    
-    [[self window] setBackgroundColor:[NSColor colorWithDeviceWhite:0.9 alpha:1.0]];
-    
     [[outlineView enclosingScrollView] retain];
-    [[findTableView enclosingScrollView] retain];
+    [[[findTableView enclosingScrollView] superview] retain];
     [[thumbnailTableView enclosingScrollView] retain];
     [[noteOutlineView enclosingScrollView] retain];
     [[snapshotTableView enclosingScrollView] retain];
@@ -201,11 +187,29 @@ static NSString *SKDocumentToolbarSearchItemIdentifier = @"SKDocumentToolbarSear
     [[rightSideButton cell] setToolTip:NSLocalizedString(@"View Snapshots", @"Tool tip message") forSegment:SKSnapshotSidePaneState];
     
     [searchBox setCollapseEdges:BDSKMaxXEdgeMask | BDSKMinYEdgeMask];
-    [searchBox setMinSize:NSMakeSize(150.0, 42.0)];
+    [searchBox setMinSize:NSMakeSize(100.0, 42.0)];
+    
+    [findCollapsibleView setCollapseEdges:BDSKMaxXEdgeMask | BDSKMinYEdgeMask];
+    [findCollapsibleView setMinSize:NSMakeSize(50.0, 26.0)];
     
     [pdfContentBox setEdges:BDSKMinXEdgeMask | BDSKMaxXEdgeMask];
+    [findEdgeView setEdges:BDSKMaxXEdgeMask];
     [leftSideEdgeView setEdges:BDSKMaxXEdgeMask];
     [rightSideEdgeView setEdges:BDSKMinXEdgeMask];
+    
+    // we retain as we might replace it with the full screen window
+    mainWindow = [[self window] retain];
+    
+    [[self window] setFrameUsingName:SKMainWindowFrameAutosaveName];
+    static NSPoint nextWindowLocation = {0.0, 0.0};
+    [self setShouldCascadeWindows:NO];
+    if ([[self window] setFrameAutosaveName:SKMainWindowFrameAutosaveName]) {
+        NSRect windowFrame = [[self window] frame];
+        nextWindowLocation = NSMakePoint(NSMinX(windowFrame), NSMaxY(windowFrame));
+    }
+    nextWindowLocation = [[self window] cascadeTopLeftFromPoint:nextWindowLocation];
+    
+    [[self window] setBackgroundColor:[NSColor colorWithDeviceWhite:0.9 alpha:1.0]];
     
     NSSortDescriptor *indexSortDescriptor = [[[NSSortDescriptor alloc] initWithKey:@"pageIndex" ascending:YES] autorelease];
     NSSortDescriptor *contentsSortDescriptor = [[[NSSortDescriptor alloc] initWithKey:@"contents" ascending:YES] autorelease];
@@ -1068,10 +1072,14 @@ static NSString *SKDocumentToolbarSearchItemIdentifier = @"SKDocumentToolbarSear
     if ([newTableView window] == nil) {
         NSView *newTable = [newTableView enclosingScrollView];
         NSView *oldTable = [oldTableView enclosingScrollView];
-        NSRect frame = [oldTable frame];
         BOOL wasFirstResponder = [[[oldTableView window] firstResponder] isEqual:oldTableView];
         
-        [newTable setFrame:frame];
+        if ([oldTableView isEqual:findTableView])
+            oldTable = [oldTable superview];
+        if ([newTableView isEqual:findTableView])
+            newTable = [newTable superview];
+        
+        [newTable setFrame:[oldTable frame]];
         [newTable setHidden:animate];
         [[oldTable superview] addSubview:newTable];
         
