@@ -828,6 +828,8 @@ static NSString *SKDocumentToolbarSearchItemIdentifier = @"SKDocumentToolbarSear
         [fullScreenWindow setFrame:[screen frame] display:NO];
     }
     
+    if ([[mainWindow firstResponder] respondsToSelector:@selector(isDescendantOf:)] && [(NSView *)[mainWindow firstResponder] isDescendantOf:pdfView])
+        [mainWindow makeFirstResponder:nil];
     [fullScreenWindow setMainView:pdfView];
     [pdfView setBackgroundColor:[NSUnarchiver unarchiveObjectWithData:[[NSUserDefaults standardUserDefaults] dataForKey:SKFullScreenBackgroundColorKey]]];
     [pdfView layoutDocumentView];
@@ -842,6 +844,7 @@ static NSString *SKDocumentToolbarSearchItemIdentifier = @"SKDocumentToolbarSear
     }
     
     [self setWindow:fullScreenWindow];
+    [fullScreenWindow makeFirstResponder:pdfView];
     [fullScreenWindow makeKeyAndOrderFront:self];
     [mainWindow orderOut:self];
 }
@@ -874,6 +877,7 @@ static NSString *SKDocumentToolbarSearchItemIdentifier = @"SKDocumentToolbarSear
     [animation release];
     [fullScreenWindow orderOut:self];
     [fullScreenWindow setAlphaValue:1.0];
+    [mainWindow makeFirstResponder:pdfView];
     [mainWindow makeKeyAndOrderFront:self];
 }
 
@@ -889,10 +893,14 @@ static NSString *SKDocumentToolbarSearchItemIdentifier = @"SKDocumentToolbarSear
         [rightSideWindow moveToScreen:[[self window] screen]];
     }
     
+    if ([[mainWindow firstResponder] respondsToSelector:@selector(isDescendantOf:)] && [(NSView *)[mainWindow firstResponder] isDescendantOf:leftSideBox])
+        [mainWindow makeFirstResponder:nil];
     [leftSideBox retain]; // leftSideBox is removed from its old superview in the process
     [leftSideWindow setMainView:leftSideBox];
     [leftSideBox release];
     
+    if ([[mainWindow firstResponder] respondsToSelector:@selector(isDescendantOf:)] && [(NSView *)[mainWindow firstResponder] isDescendantOf:rightSideBox])
+        [mainWindow makeFirstResponder:nil];
     [rightSideBox retain];
     [rightSideWindow setMainView:rightSideBox];
     [rightSideBox release];
@@ -911,11 +919,15 @@ static NSString *SKDocumentToolbarSearchItemIdentifier = @"SKDocumentToolbarSear
     [leftSideWindow orderOut:self];
     [rightSideWindow orderOut:self];
     
+    if ([[leftSideWindow firstResponder] respondsToSelector:@selector(isDescendantOf:)] && [(NSView *)[leftSideWindow firstResponder] isDescendantOf:leftSideBox])
+        [leftSideWindow makeFirstResponder:nil];
     [leftSideBox retain]; // leftSideBox is removed from its old superview in the process
     [leftSideBox setFrame:[leftSideContentBox bounds]];
     [leftSideContentBox addSubview:leftSideBox];
     [leftSideBox release];
     
+    if ([[rightSideWindow firstResponder] respondsToSelector:@selector(isDescendantOf:)] && [(NSView *)[rightSideWindow firstResponder] isDescendantOf:rightSideBox])
+        [rightSideWindow makeFirstResponder:nil];
     [rightSideBox retain]; // rightSideBox is removed from its old superview in the process
     [rightSideBox setFrame:[rightSideContentBox bounds]];
     [rightSideContentBox addSubview:rightSideBox];
@@ -1018,6 +1030,8 @@ static NSString *SKDocumentToolbarSearchItemIdentifier = @"SKDocumentToolbarSear
     if ([self isFullScreen])
         [self hideSideWindows];
     
+    if ([[fullScreenWindow firstResponder] respondsToSelector:@selector(isDescendantOf:)] && [(NSView *)[fullScreenWindow firstResponder] isDescendantOf:pdfView])
+        [fullScreenWindow makeFirstResponder:nil];
     [pdfView setHasNavigation:NO autohidesCursor:NO];
     [pdfView setFrame:[[pdfContentBox contentView] bounds]];
     [pdfContentBox addSubview:pdfView]; // this should be done before exitPresentationMode to get a smooth transition
@@ -1055,6 +1069,7 @@ static NSString *SKDocumentToolbarSearchItemIdentifier = @"SKDocumentToolbarSear
         NSView *newTable = [newTableView enclosingScrollView];
         NSView *oldTable = [oldTableView enclosingScrollView];
         NSRect frame = [oldTable frame];
+        BOOL wasFirstResponder = [[[oldTableView window] firstResponder] isEqual:oldTableView];
         
         [newTable setFrame:frame];
         [newTable setHidden:animate];
@@ -1075,6 +1090,8 @@ static NSString *SKDocumentToolbarSearchItemIdentifier = @"SKDocumentToolbarSear
             [animation startAnimation];
         }
         
+        if (wasFirstResponder)
+            [[newTableView window] makeFirstResponder:newTableView];
         [oldTable removeFromSuperview];
         [oldTable setHidden:NO];
     }
