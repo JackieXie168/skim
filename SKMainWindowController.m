@@ -1080,10 +1080,12 @@ static NSString *SKDocumentToolbarSearchItemIdentifier = @"SKDocumentToolbarSear
 
 - (void)displaySnapshotView {
     [self replaceTable:noteTableView withTable:snapshotTableView animate:NO];
+    [self updateSnapshotsIfNeeded];
 }
 
 - (void)fadeInSnapshotView {
     [self replaceTable:noteTableView withTable:snapshotTableView animate:YES];
+    [self updateSnapshotsIfNeeded];
 }
 
 #pragma mark Searching
