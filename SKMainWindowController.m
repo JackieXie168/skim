@@ -190,7 +190,7 @@ static NSString *SKDocumentToolbarSearchItemIdentifier = @"SKDocumentToolbarSear
     [searchBox setMinSize:NSMakeSize(100.0, 42.0)];
     
     [findCollapsibleView setCollapseEdges:BDSKMaxXEdgeMask | BDSKMinYEdgeMask];
-    [findCollapsibleView setMinSize:NSMakeSize(50.0, 26.0)];
+    [findCollapsibleView setMinSize:NSMakeSize(50.0, 25.0)];
     
     [pdfContentBox setEdges:BDSKMinXEdgeMask | BDSKMaxXEdgeMask];
     [findEdgeView setEdges:BDSKMaxXEdgeMask];
