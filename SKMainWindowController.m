@@ -1633,7 +1633,7 @@ static NSString *SKDocumentToolbarSearchItemIdentifier = @"SKDocumentToolbarSear
         return 17.0;
     } else if ([ov isEqual:noteOutlineView]) {
         // the item is an opaque wrapper object used for binding. The actual note is is given by -observedeObject. I don't know of any alternative (read public) way to get the actual item
-        if ([item respondsToSelector:@selector(observedObject)] == NO || [item valueForKeyPath:@"observedObject.type"])
+        if ([item respondsToSelector:@selector(observedObject)] == NO || [[item observedObject] type])
             return 17.0;
         else
             return 85.0;
