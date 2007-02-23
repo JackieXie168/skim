@@ -1397,11 +1397,12 @@ static NSString *SKDocumentToolbarSearchItemIdentifier = @"SKDocumentToolbarSear
     PDFAnnotation *annotation = [pdfView activeAnnotation];
     
     if ([annotation isNoteAnnotation]) {
-        int index = [[noteArrayController arrangedObjects] indexOfObject:annotation];
-        NSIndexPath *indexPath = [NSIndexPath indexPathWithIndex:index];
-        
-        [self setSelectedNoteIndexPaths:[NSArray arrayWithObject:indexPath]];
-        
+        if ([self selectedNote] != annotation) {
+            int index = [[noteArrayController arrangedObjects] indexOfObject:annotation];
+            NSIndexPath *indexPath = [NSIndexPath indexPathWithIndex:index];
+            
+            [self setSelectedNoteIndexPaths:[NSArray arrayWithObject:indexPath]];
+        }
         [[NSColorPanel sharedColorPanel] setColor:[annotation color]];
     } else {
         [noteOutlineView deselectAll:self];
