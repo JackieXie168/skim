@@ -75,6 +75,8 @@
                 currentTableView = NSTableView; 
                 displayBoxPopUpButton = NSPopUpButton; 
                 findArrayController = NSArrayController; 
+                findCollapsibleView = BDSKCollapsibleView; 
+                findEdgeView = BDSKEdgeView; 
                 findField = NSSearchField; 
                 findTableView = NSTableView; 
                 leftSideBox = NSBox; 
