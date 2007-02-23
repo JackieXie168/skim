@@ -69,7 +69,6 @@ NSString *SKPDFViewAnnotationDoubleClickedNotification = @"SKPDFViewAnnotationDo
 - (void)autohideTimerFired:(NSTimer *)aTimer;
 - (void)doAutohide:(BOOL)flag;
 
-- (NSCursor *)cursorForMouseMovedEvent:(NSEvent *)event;
 - (PDFDestination *)destinationForEvent:(NSEvent *)theEvent isLink:(BOOL *)isLink;
 
 - (void)moveActiveAnnotationForKey:(unichar)eventChar byAmount:(float)delta;
@@ -354,23 +353,29 @@ NSString *SKPDFViewAnnotationDoubleClickedNotification = @"SKPDFViewAnnotationDo
         return;
 
     // we receive this message whenever we are first responder, so check the location
-    NSPoint p = [[self documentView] convertPoint:[theEvent locationInWindow] fromView:nil];
+    NSView *clipView = [[[self documentView] enclosingScrollView] contentView];
+    NSPoint p = [clipView convertPoint:[theEvent locationInWindow] fromView:nil];
+    NSCursor *cursor = nil;
     
-    if (NSPointInRect(p, [[self documentView] visibleRect]) && [theEvent modifierFlags] & NSCommandKeyMask) {
-        [[NSCursor cameraCursor] set];
+    if (NSPointInRect(p, [clipView visibleRect]) == NO) {
+        // ideally, we take the cursor relevant for the area, but this doesn't work
+        cursor = [NSCursor arrowCursor];
+    } else if ([theEvent modifierFlags] & NSCommandKeyMask) {
+        cursor = [NSCursor cameraCursor];
     } else {
         switch (toolMode) {
             case SKTextToolMode:
                 [super mouseMoved:theEvent];
                 break;
             case SKMoveToolMode:
-                [[self cursorForMouseMovedEvent:theEvent] set];
+                cursor = [NSCursor openHandCursor];
                 break;
             case SKMagnifyToolMode:
-                [[self cursorForMouseMovedEvent:theEvent] set];
+                cursor = ([theEvent modifierFlags] & NSShiftKeyMask) ? [NSCursor zoomOutCursor] : [NSCursor zoomInCursor];
                 break;
         }
     }
+    [cursor set];
     
     BOOL isLink = NO;
     PDFDestination *dest = [self destinationForEvent:theEvent isLink:&isLink];
@@ -884,27 +889,6 @@ NSString *SKPDFViewAnnotationDoubleClickedNotification = @"SKPDFViewAnnotationDo
 }
 
 #pragma mark Event handling
-
-- (NSCursor *)cursorForMouseMovedEvent:(NSEvent *)event {
-    NSCursor *cursor = nil;
-    NSPoint p = [[self documentView] convertPoint:[event locationInWindow] fromView:nil];
-    if (NSPointInRect(p, [[self documentView] visibleRect])) {
-        switch (toolMode) {
-            case SKMoveToolMode:
-                cursor = [NSCursor openHandCursor];
-                break;
-            case SKMagnifyToolMode:
-                cursor = ([event modifierFlags] & NSShiftKeyMask) ? [NSCursor zoomOutCursor] : [NSCursor zoomInCursor];
-                break;
-            default:
-                cursor = [NSCursor arrowCursor];
-        }
-    } else {
-        // we want this cursor for toolbar and other views, generally
-        cursor = [NSCursor arrowCursor];
-    }
-    return cursor;
-}
 
 - (PDFDestination *)destinationForEvent:(NSEvent *)theEvent isLink:(BOOL *)isLink {
     NSPoint windowMouseLoc = [theEvent locationInWindow];
