@@ -911,6 +911,7 @@ static NSString *SKDocumentToolbarSearchItemIdentifier = @"SKDocumentToolbarSear
     
     [leftSideEdgeView setEdges:BDSKNoEdgeMask];
     [rightSideEdgeView setEdges:BDSKNoEdgeMask];
+    [findEdgeView setEdges:BDSKNoEdgeMask];
     
     [leftSideWindow orderFront:self];
     [rightSideWindow orderFront:self];
@@ -939,6 +940,7 @@ static NSString *SKDocumentToolbarSearchItemIdentifier = @"SKDocumentToolbarSear
     
     [leftSideEdgeView setEdges:BDSKMaxXEdgeMask];
     [rightSideEdgeView setEdges:BDSKMinXEdgeMask];
+    [findEdgeView setEdges:BDSKMaxXEdgeMask];
     
     [pdfView setFrame:[[pdfView superview] bounds]];
 }
