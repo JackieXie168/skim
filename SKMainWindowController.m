@@ -1301,7 +1301,7 @@ static NSString *SKDocumentToolbarSearchItemIdentifier = @"SKDocumentToolbarSear
 
 #pragma mark Sub- and note- windows
 
-- (void)showSnapshotAtPageNumber:(int)pageNum forRect:(NSRect)rect{
+- (void)showSnapshotAtPageNumber:(int)pageNum forRect:(NSRect)rect factor:(int)factor{
     
     SKSnapshotWindowController *swc = [[SKSnapshotWindowController alloc] init];
     BOOL snapshotsOnTop = [[NSUserDefaults standardUserDefaults] boolForKey:SKSnapshotsOnTopKey];
@@ -1310,7 +1310,7 @@ static NSString *SKDocumentToolbarSearchItemIdentifier = @"SKDocumentToolbarSear
     
     PDFDocument *doc = [pdfView document];
     [swc setPdfDocument:doc
-            scaleFactor:[pdfView scaleFactor]
+            scaleFactor:[pdfView scaleFactor] * factor
          goToPageNumber:pageNum
                    rect:rect];
     

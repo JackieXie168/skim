@@ -1195,6 +1195,7 @@ NSString *SKPDFViewAnnotationDoubleClickedNotification = @"SKPDFViewAnnotationDo
     NSRect selectionRect = {startPoint, NSZeroSize};
     NSRect bounds;
     float minX, maxX, minY, maxY;
+    BOOL dragged = NO;
 	
     [[self window] discardCachedImage];
     
@@ -1210,6 +1211,7 @@ NSString *SKPDFViewAnnotationDoubleClickedNotification = @"SKPDFViewAnnotationDo
 			case NSLeftMouseDragged:
 				[[self documentView] autoscroll:theEvent];
                 mouseLoc = [theEvent locationInWindow];
+                dragged = YES;
                 
 			case NSFlagsChanged:
                 currentPoint = [[self documentView] convertPoint:mouseLoc fromView:nil];
@@ -1265,17 +1267,41 @@ NSString *SKPDFViewAnnotationDoubleClickedNotification = @"SKPDFViewAnnotationDo
     NSPoint point = [self convertPoint:NSMakePoint(NSMidX(selectionRect), NSMidY(selectionRect)) fromView:[self documentView]];
     PDFPage *page = [self pageForPoint:point nearest:YES];
     NSRect rect = [self convertRect:selectionRect fromView:[self documentView]];
+    int factor = 1;
     
-    if (NSWidth(rect) < 50.0 || NSHeight(rect) < 50.0) {
+    if (dragged == NO) {
         rect.origin.x = [self convertPoint:[page boundsForBox:[self displayBox]].origin fromPage:page].x;
         rect.origin.y = point.y - 100.0;
         rect.size.width = [self rowSizeForPage:page].width;
         rect.size.height = 200.0;
+    } else {
+    
+        bounds = [self convertRect:[[self documentView] bounds] fromView:[self documentView]];
+        
+        if (NSWidth(rect) < 40.0 && NSHeight(rect) < 40.0)
+            factor = 3;
+        else if (NSWidth(rect) < 60.0 && NSHeight(rect) < 60.0)
+            factor = 2;
+        
+        if (factor * NSWidth(rect) < 60.0) {
+            rect = NSInsetRect(rect, 0.5 * (NSWidth(rect) - 60.0 / factor), 0.0);
+            if (NSMinX(rect) < NSMinX(bounds))
+                rect.origin.x = NSMinX(bounds);
+            if (NSMaxX(rect) > NSMaxX(bounds))
+                rect.origin.x = NSMaxX(bounds) - NSWidth(rect);
+        }
+        if (factor * NSHeight(rect) < 60.0) {
+            rect = NSInsetRect(rect, 0.5 * (NSHeight(rect) - 60.0 / factor), 0.0);
+            if (NSMinY(rect) < NSMinY(bounds))
+                rect.origin.y = NSMinY(bounds);
+            if (NSMaxX(rect) > NSMaxY(bounds))
+                rect.origin.y = NSMaxY(bounds) - NSHeight(rect);
+        }
     }
     
     SKMainWindowController *controller = [[self window] windowController];
     
-    [controller showSnapshotAtPageNumber:[[self document] indexForPage:page] forRect:[self convertRect:rect toPage:page]];
+    [controller showSnapshotAtPageNumber:[[self document] indexForPage:page] forRect:[self convertRect:rect toPage:page] factor:factor];
 }
 
 #define MAG_RECT_1 NSMakeRect(-150.0, -100.0, 300.0, 200.0)
