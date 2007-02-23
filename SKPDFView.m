@@ -318,6 +318,7 @@ NSString *SKPDFViewAnnotationDoubleClickedNotification = @"SKPDFViewAnnotationDo
                 }
             } else
                 [super mouseUp:theEvent];
+            break;
         case SKMoveToolMode:
             [NSCursor pop];
             [[NSCursor openHandCursor] set];
