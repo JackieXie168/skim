@@ -77,7 +77,6 @@ typedef enum _SKAnnotationMode {
 	NSRect wasBounds;
 	NSPoint mouseDownLoc;
 	NSPoint clickDelta;
-	BOOL selecting;
 	BOOL resizing;
 	BOOL mouseDownInAnnotation;
     BOOL isMagnifying;
