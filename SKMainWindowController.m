@@ -1543,8 +1543,8 @@ static NSString *SKDocumentToolbarSearchItemIdentifier = @"SKDocumentToolbarSear
             [snapshotTableView noteHeightOfRowsWithIndexesChanged:[NSIndexSet indexSetWithIndexesInRange:NSMakeRange(0, [self countOfSnapshots])]];
         } else if ([key isEqualToString:SKSnapshotsOnTopKey]) {
             NSEnumerator *wcEnum = [snapshots objectEnumerator];
-            NSWindowController *wc = [wcEnum nextObject];
-            BOOL snapshotsOnTop  = [[NSUserDefaults standardUserDefaults] boolForKey:SKSnapshotsOnTopKey];
+            NSWindowController *wc;
+            BOOL snapshotsOnTop = [[NSUserDefaults standardUserDefaults] boolForKey:SKSnapshotsOnTopKey];
             int level = snapshotsOnTop || [self isFullScreen] ? NSFloatingWindowLevel : NSNormalWindowLevel;
             
             while (wc = [wcEnum nextObject]) {
