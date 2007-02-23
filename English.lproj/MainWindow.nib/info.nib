@@ -24,10 +24,10 @@
 	<key>IBOpenObjects</key>
 	<array>
 		<integer>168</integer>
+		<integer>224</integer>
+		<integer>5</integer>
 		<integer>314</integer>
 		<integer>256</integer>
-		<integer>5</integer>
-		<integer>224</integer>
 		<integer>208</integer>
 	</array>
 	<key>IBSystem Version</key>
