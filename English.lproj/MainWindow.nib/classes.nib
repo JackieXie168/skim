@@ -26,6 +26,8 @@
                 changeAnnotationMode = id; 
                 changeColor = id; 
                 changeDisplayBox = id; 
+                changeLeftSidePaneState = id; 
+                changeRightSidePaneState = id; 
                 changeScaleFactor = id; 
                 changeToolMode = id; 
                 createNewNote = id; 
@@ -79,8 +81,8 @@
                 leftSideButton = NSSegmentedControl; 
                 leftSideContentBox = NSBox; 
                 leftSideEdgeView = BDSKEdgeView; 
-                noteArrayController = NSArrayController; 
-                noteTableView = SKNoteTableView; 
+                noteOutlineView = SKNoteOutlineView; 
+                noteTreeController = NSTreeController; 
                 outlineView = NSOutlineView; 
                 pageNumberField = NSTextField; 
                 pageNumberStepper = NSStepper; 
@@ -106,6 +108,7 @@
             }; 
             SUPERCLASS = NSWindowController; 
         }, 
+        {CLASS = SKNoteOutlineView; LANGUAGE = ObjC; SUPERCLASS = NSOutlineView; }, 
         {
             ACTIONS = {delete = id; }; 
             CLASS = SKNoteTableView; 

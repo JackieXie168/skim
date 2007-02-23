@@ -63,6 +63,9 @@ typedef struct _SKPDFViewState {
 - (void)delete:(id)sender;
 @end
 
+@interface SKNoteOutlineView : NSOutlineView
+@end
+
 @interface SKSnapshotTableView : SKNoteTableView
 @end
 
@@ -90,8 +93,8 @@ typedef struct _SKPDFViewState {
     
     IBOutlet NSSearchField      *findField;
     
-    IBOutlet NSArrayController  *noteArrayController;
-    IBOutlet SKNoteTableView   *noteTableView;
+    IBOutlet NSTreeController   *noteTreeController;
+    IBOutlet SKNoteOutlineView  *noteOutlineView;
     BOOL                        updatingNoteSelection;
     
     IBOutlet NSSegmentedControl *backForwardButton;
@@ -237,7 +240,9 @@ typedef struct _SKPDFViewState {
 
 - (void)removeTemporaryAnnotations;
 
+- (int)outlineRowForPageIndex:(unsigned int)pageIndex;
 - (void)updateOutlineSelection;
+
 - (void)updateNoteSelection;
 
 - (void)updateThumbnailSelection;
@@ -285,6 +290,11 @@ typedef struct _SKPDFViewState {
 
 @interface NSObject (SKNoteTableViewDelegate)
 - (void)tableView:(NSTableView *)aTableView deleteRowsWithIndexes:(NSIndexSet *)rowIndexes;
+@end
+
+
+@interface NSObject (SKNoteOutlineViewDelegate)
+- (void)outlineView:(NSOutlineView *)anOutlineView deleteRowsWithIndexes:(NSIndexSet *)rowIndexes;
 @end
 
 

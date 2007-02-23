@@ -111,6 +111,8 @@
     [self setColor:newColor];
 }
 
+- (NSArray *)texts { return nil; }
+
 - (BOOL)isNoteAnnotation { return NO; }
 
 - (BOOL)isTemporaryAnnotation { return NO; }
@@ -246,6 +248,7 @@ static NSColor *noteColor = nil;
         if (noteColor == nil)
             noteColor = [[NSColor colorWithDeviceRed:1.0 green:1.0 blue:0.5 alpha:1.0] retain];
         [self setColor:noteColor];
+        texts = [[NSArray alloc] initWithObjects:[[[SKNoteText alloc] initWithAnnotation:self] autorelease], nil];
     }
     return self;
 }
@@ -261,6 +264,7 @@ static NSColor *noteColor = nil;
 - (void)dealloc {
     [text release];
     [image release];
+    [texts release];
     [super dealloc];
 }
 
@@ -303,6 +307,10 @@ static NSColor *noteColor = nil;
     }
 }
 
+- (NSArray *)texts {
+    return texts;
+}
+
 @end
 
 #pragma mark -
@@ -313,5 +321,43 @@ static NSColor *noteColor = nil;
 - (BOOL)isTemporaryAnnotation { return YES; }
 
 - (BOOL)shouldPrint { return NO; }
+
+@end
+
+@implementation SKNoteText
+
+- (id)initWithAnnotation:(PDFAnnotation *)anAnnotation {
+    if (self = [super init]) {
+        annotation = anAnnotation;
+        [annotation addObserver:self forKeyPath:@"text" options:0 context:NULL];
+    }
+    return self;
+}
+
+- (void)dealloc {
+    [annotation removeObserver:self forKeyPath:@"text"];
+    [super dealloc];
+}
+
+- (PDFAnnotation *)annotation {
+    return annotation;
+}
+
+- (NSArray *)texts { return nil; }
+
+- (NSString *)type { return nil; }
+
+- (unsigned int)pageIndex { return [annotation pageIndex]; }
+
+- (NSString *)pageLabel { return nil; }
+
+- (NSAttributedString *)contents { return [annotation text]; }
+
+- (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context {
+    if (object == annotation && [keyPath isEqualToString:@"text"]) {
+        [self willChangeValueForKey:@"contents"];
+        [self didChangeValueForKey:@"contents"];
+    }
+}
 
 @end
