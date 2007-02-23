@@ -73,6 +73,7 @@ NSString *SKApplicationWillTerminateNotification = @"SKApplicationWillTerminateN
     SKMainWindowController *mainWindowController = [[windowController document] mainWindowController];
     int numberOfItems = [windowsMenu numberOfItems];
     int itemIndex = [windowsMenu indexOfItemWithTarget:aWindow];
+    NSMenuItem *item = [windowsMenu itemAtIndex:itemIndex];
     
     if ([windowController document] == nil) {
         int index = numberOfItems;
@@ -80,7 +81,6 @@ NSString *SKApplicationWillTerminateNotification = @"SKApplicationWillTerminateN
                [[[[windowsMenu itemAtIndex:index] target] windowController] document] == nil) {}
         if (index >= 0) {
             if (itemIndex < index) {
-                NSMenuItem *item = [[windowsMenu itemAtIndex:itemIndex] retain];
                 [windowsMenu removeItem:item];
                 [windowsMenu insertItem:item atIndex:index];
                 [item release];
@@ -92,17 +92,28 @@ NSString *SKApplicationWillTerminateNotification = @"SKApplicationWillTerminateN
     } else if ([windowController isEqual:mainWindowController]) {
         int index = itemIndex;
         if ([[windowsMenu itemAtIndex:itemIndex - 1] isSeparatorItem] == NO) {
-            [windowsMenu insertItem:[NSMenuItem separatorItem] atIndex:itemIndex - 1];
-            index++;
+            if ([[[[windowsMenu itemAtIndex:itemIndex - 1] target] windowController] document]) {
+                while (++index < numberOfItems && [[windowsMenu itemAtIndex:index] isSeparatorItem] == NO) {}
+                if (index == numberOfItems) {
+                    [windowsMenu insertItem:[NSMenuItem separatorItem] atIndex:index];
+                    numberOfItems++;
+                }
+            } else {
+                while (--index >= 0 && [[windowsMenu itemAtIndex:index] isSeparatorItem] == NO) {}
+            }
+            itemIndex = index < itemIndex ? index + 1 : index;
+            [item retain];
+            [windowsMenu removeItem:item];
+            [windowsMenu insertItem:item atIndex:itemIndex];
+            [item release];
         }
+        index = itemIndex;
         while (++index < numberOfItems && [[[[[windowsMenu itemAtIndex:index] target] windowController] document] isEqual:[windowController document]]) {}
         if (index < numberOfItems && [[windowsMenu itemAtIndex:index] isSeparatorItem] == NO)
             [windowsMenu insertItem:[NSMenuItem separatorItem] atIndex:index];
-        
     } else {
         int mainIndex = [windowsMenu indexOfItemWithTarget:[mainWindowController window]];
         int index = mainIndex;
-        NSMenuItem *item = [windowsMenu itemAtIndex:itemIndex];
         
         [item setIndentationLevel:1];
         
