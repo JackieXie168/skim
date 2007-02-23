@@ -67,20 +67,12 @@ NSString *SKApplicationWillTerminateNotification = @"SKApplicationWillTerminateN
     [super terminate:sender];
 }
 
-- (void)addWindowsItem:(NSWindow *)aWindow title:(NSString *)aString filename:(BOOL)isFilename {
+- (void)reorganizeWindowsItem:(NSWindow *)aWindow {
     NSMenu *windowsMenu = [self windowsMenu];
-    int itemIndex = [windowsMenu indexOfItemWithTarget:aWindow];
-    
-    [super addWindowsItem:aWindow title:aString filename:isFilename];
-    
-    if (itemIndex >= 0)
-        return;
-    
     NSWindowController *windowController = [aWindow windowController];
     SKMainWindowController *mainWindowController = [[windowController document] mainWindowController];
     int numberOfItems = [windowsMenu numberOfItems];
-    
-    itemIndex = [windowsMenu indexOfItemWithTarget:aWindow];
+    int itemIndex = [windowsMenu indexOfItemWithTarget:aWindow];
     
     if ([windowController document] == nil) {
         int index = numberOfItems;
@@ -98,35 +90,47 @@ NSString *SKApplicationWillTerminateNotification = @"SKApplicationWillTerminateN
                 [windowsMenu insertItem:[NSMenuItem separatorItem] atIndex:index + 1];
         }
     } else if ([windowController isEqual:mainWindowController]) {
-        if (itemIndex + 1 < numberOfItems && [[windowsMenu itemAtIndex:itemIndex + 1] isSeparatorItem] == NO)
-            [windowsMenu insertItem:[NSMenuItem separatorItem] atIndex:itemIndex + 1];
-        if ([[windowsMenu itemAtIndex:itemIndex - 1] isSeparatorItem] == NO)
-            [windowsMenu insertItem:[NSMenuItem separatorItem] atIndex:itemIndex];
+        int index = itemIndex;
+        if ([[windowsMenu itemAtIndex:itemIndex - 1] isSeparatorItem] == NO) {
+            [windowsMenu insertItem:[NSMenuItem separatorItem] atIndex:itemIndex - 1];
+            index++;
+        }
+        while (++index < numberOfItems && [[[[[windowsMenu itemAtIndex:index] target] windowController] document] isEqual:[windowController document]]) {}
+        if (index < numberOfItems && [[windowsMenu itemAtIndex:index] isSeparatorItem] == NO)
+            [windowsMenu insertItem:[NSMenuItem separatorItem] atIndex:index];
+        
     } else {
-        int index = [windowsMenu indexOfItemWithTarget:[mainWindowController window]];
+        int mainIndex = [windowsMenu indexOfItemWithTarget:[mainWindowController window]];
+        int index = mainIndex;
         NSMenuItem *item = [windowsMenu itemAtIndex:itemIndex];
         
         [item setIndentationLevel:1];
         
         if (index >= 0) {
             while (++index < numberOfItems && [[windowsMenu itemAtIndex:index] isSeparatorItem] == NO) {}
-            [item retain];
-            [windowsMenu removeItem:item];
-            [windowsMenu insertItem:item atIndex:itemIndex < index ? --index : index];
-            [item release];
+            if (itemIndex < mainIndex || itemIndex > index) {
+                [item retain];
+                [windowsMenu removeItem:item];
+                [windowsMenu insertItem:item atIndex:itemIndex < index ? --index : index];
+                [item release];
+            }
         }
     }
+}
+
+- (void)addWindowsItem:(NSWindow *)aWindow title:(NSString *)aString filename:(BOOL)isFilename {
+    int itemIndex = [[self windowsMenu] indexOfItemWithTarget:aWindow];
+    
+    [super addWindowsItem:aWindow title:aString filename:isFilename];
+    
+    if (itemIndex == -1)
+        [self reorganizeWindowsItem:aWindow];
 }
 
 - (void)changeWindowsItem:(NSWindow *)aWindow title:(NSString *)aString filename:(BOOL)isFilename {
     [super changeWindowsItem:aWindow title:aString filename:isFilename];
     
-    NSWindowController *windowController = [aWindow windowController];
-    int itemIndex = [[self windowsMenu] indexOfItemWithTarget:aWindow];
-    NSMenuItem *item = itemIndex >= 0 ? [[self windowsMenu] itemAtIndex:itemIndex] : nil;
-    
-    if ([windowController document] && [windowController isEqual:[[windowController document] mainWindowController]] == NO)
-        [item setIndentationLevel:1];
+    [self reorganizeWindowsItem:aWindow];
 }
 
 - (void)removeWindowsItem:(NSWindow *)aWindow {
