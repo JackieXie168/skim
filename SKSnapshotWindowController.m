@@ -54,7 +54,7 @@ static NSString *SKSnapshotViewChangedNotification = @"SKSnapshotViewChangedNoti
 }
 
 - (NSString *)windowNibName {
-    return @"SubWindow";
+    return @"SnapshotWindow";
 }
 
 - (void)windowDidLoad {
