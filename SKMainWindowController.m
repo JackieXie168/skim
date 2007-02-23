@@ -145,7 +145,7 @@ static NSString *SKDocumentToolbarSearchItemIdentifier = @"SKDocumentToolbarSear
     [[outlineView enclosingScrollView] release];
     [[findTableView enclosingScrollView] release];
     [[thumbnailTableView enclosingScrollView] release];
-    [[noteTableView enclosingScrollView] release];
+    [[noteOutlineView enclosingScrollView] release];
     [[snapshotTableView enclosingScrollView] release];
 	[leftSideWindow release];
 	[rightSideWindow release];
@@ -180,7 +180,7 @@ static NSString *SKDocumentToolbarSearchItemIdentifier = @"SKDocumentToolbarSear
     [[outlineView enclosingScrollView] retain];
     [[findTableView enclosingScrollView] retain];
     [[thumbnailTableView enclosingScrollView] retain];
-    [[noteTableView enclosingScrollView] retain];
+    [[noteOutlineView enclosingScrollView] retain];
     [[snapshotTableView enclosingScrollView] retain];
     
     NSRect frame = [leftSideButton frame];
@@ -204,7 +204,7 @@ static NSString *SKDocumentToolbarSearchItemIdentifier = @"SKDocumentToolbarSear
     
     NSSortDescriptor *indexSortDescriptor = [[[NSSortDescriptor alloc] initWithKey:@"pageIndex" ascending:YES] autorelease];
     NSSortDescriptor *contentsSortDescriptor = [[[NSSortDescriptor alloc] initWithKey:@"contents" ascending:YES] autorelease];
-    [noteArrayController setSortDescriptors:[NSArray arrayWithObjects:indexSortDescriptor, contentsSortDescriptor, nil]];
+    [noteTreeController setSortDescriptors:[NSArray arrayWithObjects:indexSortDescriptor, contentsSortDescriptor, nil]];
     [snapshotArrayController setSortDescriptors:[NSArray arrayWithObjects:indexSortDescriptor, nil]];
     
     [self setupToolbar];
@@ -542,7 +542,9 @@ static NSString *SKDocumentToolbarSearchItemIdentifier = @"SKDocumentToolbarSear
 
 - (void)selectNotes:(NSArray *)notesToShow{
     // there should only be a single note
-    PDFAnnotation *annotation = [notesToShow lastObject];
+    id annotation = [notesToShow lastObject];
+    if ([annotation type] == nil)
+        annotation = [(SKNoteText *)annotation annotation];
     [pdfView scrollAnnotationToVisible:annotation];
 	[pdfView setActiveAnnotation:annotation];
 }
@@ -1071,20 +1073,20 @@ static NSString *SKDocumentToolbarSearchItemIdentifier = @"SKDocumentToolbarSear
 }
 
 - (void)displayNoteView {
-    [self replaceTable:snapshotTableView withTable:noteTableView animate:NO];
+    [self replaceTable:snapshotTableView withTable:noteOutlineView animate:NO];
 }
 
 - (void)fadeInNoteView {
-    [self replaceTable:snapshotTableView withTable:noteTableView animate:YES];
+    [self replaceTable:snapshotTableView withTable:noteOutlineView animate:YES];
 }
 
 - (void)displaySnapshotView {
-    [self replaceTable:noteTableView withTable:snapshotTableView animate:NO];
+    [self replaceTable:noteOutlineView withTable:snapshotTableView animate:NO];
     [self updateSnapshotsIfNeeded];
 }
 
 - (void)fadeInSnapshotView {
-    [self replaceTable:noteTableView withTable:snapshotTableView animate:YES];
+    [self replaceTable:noteOutlineView withTable:snapshotTableView animate:YES];
     [self updateSnapshotsIfNeeded];
 }
 
@@ -1188,117 +1190,6 @@ static NSString *SKDocumentToolbarSearchItemIdentifier = @"SKDocumentToolbarSear
 	} else {
 		NSBeep();
 	}
-}
-
-#pragma mark NSTableView delegate protocol
-
-- (void)tableViewSelectionDidChange:(NSNotification *)aNotification {
-    if ([[aNotification object] isEqual:findTableView]) {
-        
-        BOOL highlight = [[NSUserDefaults standardUserDefaults] boolForKey:SKShouldHighlightSearchResultsKey];
-        
-        // clear the selection
-        [pdfView setCurrentSelection:nil];
-        [self removeTemporaryAnnotations];
-        
-        // union all selected objects
-        NSEnumerator *selE = [[findArrayController selectedObjects] objectEnumerator];
-        PDFSelection *sel;
-        
-        // arm:  PDFSelection is mutable, and using -addSelection on an object from selectedObjects will actually mutate the object in searchResults, which does bad things.  MagicHat indicates that PDFSelection implements copyWithZone: even though it doesn't conform to <NSCopying>, so we'll use that since -init doesn't work (-initWithDocument: does, but it's not listed in the header either).  I filed rdar://problem/4888251 and also noticed that PDFKitViewer sample code uses -[PDFSelection copy].
-        PDFSelection *currentSel = [[[selE nextObject] copy] autorelease];
-        
-        // add an annotation so it's easier to see the search result
-        if (highlight)
-            [self addAnnotationsForSelection:currentSel];
-        
-        while (sel = [selE nextObject]) {
-            [currentSel addSelection:sel];
-            if (highlight)
-                [self addAnnotationsForSelection:sel];
-        }
-        
-        [pdfView setCurrentSelection:currentSel];
-        [pdfView scrollSelectionToVisible:self];
-    } else if ([[aNotification object] isEqual:thumbnailTableView]) {
-        if (updatingThumbnailSelection == NO) {
-            int row = [thumbnailTableView selectedRow];
-            if (row != -1)
-                [pdfView goToPage:[[pdfView document] pageAtIndex:row]];
-        }
-    } else if ([[aNotification object] isEqual:noteTableView]) {
-        // Disable this for now. Selection change does not always come from a selection by the user, e.g. also after an annotation delete 
-        return;
-        if (updatingNoteSelection == NO) {
-            NSArray *selectedNotes = [noteArrayController selectedObjects];
-            if ([selectedNotes count])
-                [pdfView scrollAnnotationToVisible:[selectedNotes objectAtIndex:0]];
-        }
-    } else if ([[aNotification object] isEqual:snapshotTableView]) {
-        if (updatingThumbnailSelection == NO) {
-            int row = [snapshotTableView selectedRow];
-            if (row != -1) {
-                SKSnapshotWindowController *controller = [[snapshotArrayController arrangedObjects] objectAtIndex:row];
-                if ([[controller window] isVisible])
-                    [[controller window] orderFront:self];
-            }
-        }
-    }
-}
-
-// AppKit bug: need a dummy NSTableDataSource implementation, otherwise some NSTableView delegate methods are ignored
-- (int)numberOfRowsInTableView:(NSTableView *)tv { return 0; }
-
-- (id)tableView:(NSTableView *)tv objectValueForTableColumn:(NSTableColumn *)tableColumn row:(int)row { return nil; }
-
-- (NSString *)tableView:(NSTableView *)tv toolTipForCell:(NSCell *)aCell rect:(NSRectPointer)rect tableColumn:(NSTableColumn *)tableColumn row:(int)row mouseLocation:(NSPoint)mouseLocation{
-    if ([tv isEqual:noteTableView])
-        return [[[noteArrayController arrangedObjects] objectAtIndex:row] contents];
-    return nil;
-}
-
-- (float)tableView:(NSTableView *)tableView heightOfRow:(int)row {
-    if (tableView == thumbnailTableView) {
-        NSSize thumbSize = [[[[thumbnailArrayController arrangedObjects] objectAtIndex:row] image] size];
-        NSSize cellSize = NSMakeSize([[[tableView tableColumns] objectAtIndex:0] width], 
-                                     MIN(thumbSize.height, roundf([[NSUserDefaults standardUserDefaults] floatForKey:SKThumbnailSizeKey])));
-        if (thumbSize.height < 1.0)
-            return 1.0;
-        else if (thumbSize.width / thumbSize.height < cellSize.width / cellSize.height)
-            return cellSize.height;
-        else
-            return MAX(1.0, MIN(cellSize.width, thumbSize.width) * thumbSize.height / thumbSize.width);
-    } else if (tableView == snapshotTableView) {
-        NSSize thumbSize = [[[[snapshotArrayController arrangedObjects] objectAtIndex:row] thumbnail] size];
-        NSSize cellSize = NSMakeSize([[[tableView tableColumns] objectAtIndex:0] width], 
-                                     MIN(thumbSize.height, roundf([[NSUserDefaults standardUserDefaults] floatForKey:SKSnapshotThumbnailSizeKey])));
-        if (thumbSize.height < 1.0)
-            return 1.0;
-        else if (thumbSize.width / thumbSize.height < cellSize.width / cellSize.height)
-            return cellSize.height;
-        else
-            return MAX(1.0, MIN(cellSize.width, thumbSize.width) * thumbSize.height / thumbSize.width);
-    }
-    return 17.0;
-}
-
-- (void)tableView:(NSTableView *)tv deleteRowsWithIndexes:(NSIndexSet *)rowIndexes {
-    if ([tv isEqual:noteTableView]) {
-        NSArray *notesToRemove = [[noteArrayController arrangedObjects] objectsAtIndexes:rowIndexes];
-        NSEnumerator *noteEnum = [notesToRemove objectEnumerator];
-        PDFAnnotation *annotation;
-        
-        while (annotation = [noteEnum nextObject])
-            [pdfView removeAnnotation:annotation];
-    } else if ([tv isEqual:snapshotTableView]) {
-        NSArray *controllers = [[snapshotArrayController arrangedObjects] objectsAtIndexes:rowIndexes];
-        [[controllers valueForKey:@"window"] makeObjectsPerformSelector:@selector(orderOut:) withObject:self];
-        [[self mutableArrayValueForKey:@"snapshots"] removeObjectsInArray:controllers];
-    }
-}
-
-- (NSArray *)tableViewHighlightedRows:(NSTableView *)tableView {
-    return lastViewedPages;
 }
 
 #pragma mark Sub- and note- windows
@@ -1433,11 +1324,22 @@ static NSString *SKDocumentToolbarSearchItemIdentifier = @"SKDocumentToolbarSear
 
 - (void)handleDidChangeActiveAnnotationNotification:(NSNotification *)notification {
     PDFAnnotation *annotation = [pdfView activeAnnotation];
-    updatingNoteSelection = YES;
-    [noteArrayController setSelectedObjects:[NSArray arrayWithObjects:[annotation isNoteAnnotation] ? annotation : nil, nil]];
-    updatingNoteSelection = NO;
-    if ([annotation isNoteAnnotation])
+    
+    if ([annotation isNoteAnnotation]) {
+        int row, numRows = [noteOutlineView numberOfRows];
+        
+        for (row = 0; row < numRows; row++) {
+            if ([[[noteOutlineView itemAtRow:row] valueForKey:@"observedObject"] isEqual:annotation]) {
+                updatingNoteSelection = YES;
+                [noteOutlineView selectRowIndexes:[NSIndexSet indexSetWithIndex:row] byExtendingSelection:NO];
+                updatingNoteSelection = NO;
+                break;
+            }
+        }
         [[NSColorPanel sharedColorPanel] setColor:[annotation color]];
+    } else {
+        [noteOutlineView deselectAll:self];
+    }
 }
 
 - (void)handleDidAddAnnotationNotification:(NSNotification *)notification {
@@ -1586,75 +1488,239 @@ static NSString *SKDocumentToolbarSearchItemIdentifier = @"SKDocumentToolbarSear
 
 #pragma mark NSOutlineView methods
 
-- (int)outlineView:(NSOutlineView *)outlineView numberOfChildrenOfItem:(id)item{
-	if (item == nil){
-		if ((pdfOutline) && ([[pdfView document] isLocked] == NO)){
-			return [pdfOutline numberOfChildren];
-		}else{
-			return 0;
-        }
-	}else{
-		return [(PDFOutline *)item numberOfChildren];
-    }
-}
-
-- (id)outlineView:(NSOutlineView *)outlineView child:(int)index ofItem:(id)item{
-	if (item == nil){
-		if ((pdfOutline) && ([[pdfView document] isLocked] == NO)){
-            
-			return [[pdfOutline childAtIndex: index] retain];
-            
+- (int)outlineView:(NSOutlineView *)ov numberOfChildrenOfItem:(id)item{
+    if ([ov isEqual:outlineView]) {
+        if (item == nil){
+            if ((pdfOutline) && ([[pdfView document] isLocked] == NO)){
+                return [pdfOutline numberOfChildren];
+            }else{
+                return 0;
+            }
         }else{
-			return nil;
+            return [(PDFOutline *)item numberOfChildren];
         }
-	}else{
-		return [[(PDFOutline *)item childAtIndex: index] retain];
     }
+    return 0;
+}
+
+- (id)outlineView:(NSOutlineView *)ov child:(int)index ofItem:(id)item{
+    if ([ov isEqual:outlineView]) {
+        if (item == nil){
+            if ((pdfOutline) && ([[pdfView document] isLocked] == NO)){
+                
+                return [[pdfOutline childAtIndex: index] retain];
+                
+            }else{
+                return nil;
+            }
+        }else{
+            return [[(PDFOutline *)item childAtIndex: index] retain];
+        }
+    }
+    return nil;
 }
 
 
-- (BOOL)outlineView:(NSOutlineView *)outlineView isItemExpandable:(id)item{
-	if (item == nil){
-		if ((pdfOutline) && ([[pdfView document] isLocked] == NO)){
-			return ([pdfOutline numberOfChildren] > 0);
-		}else{
-			return NO;
+- (BOOL)outlineView:(NSOutlineView *)ov isItemExpandable:(id)item{
+    if ([ov isEqual:outlineView]) {
+        if (item == nil){
+            if ((pdfOutline) && ([[pdfView document] isLocked] == NO)){
+                return ([pdfOutline numberOfChildren] > 0);
+            }else{
+                return NO;
+            }
+        }else{
+            return ([(PDFOutline *)item numberOfChildren] > 0);
         }
-	}else{
-		return ([(PDFOutline *)item numberOfChildren] > 0);
+    } else if ([ov isEqual:noteOutlineView]) {
+        return [[item valueForKeyPath:@"observedObject.type"] isEqualToString:@"Note"];
     }
+    return NO;
 }
 
 
-- (id)outlineView:(NSOutlineView *)outlineView objectValueForTableColumn:(NSTableColumn *)tableColumn byItem:(id)item{
-    NSString *tcID = [tableColumn identifier];
-    if([tcID isEqualToString:@"label"]){
-        return [(PDFOutline *)item label];
-    }else if([tcID isEqualToString:@"icon"]){
-        return [[[(PDFOutline *)item destination] page] label];
-    }else{
-        [NSException raise:@"Unexpected tablecolumn identifier" format:@" - %@ ", tcID];
-        return nil;
+- (id)outlineView:(NSOutlineView *)ov objectValueForTableColumn:(NSTableColumn *)tableColumn byItem:(id)item{
+    if ([ov isEqual:outlineView]) {
+        NSString *tcID = [tableColumn identifier];
+        if([tcID isEqualToString:@"label"]){
+            return [(PDFOutline *)item label];
+        }else if([tcID isEqualToString:@"icon"]){
+            return [[[(PDFOutline *)item destination] page] label];
+        }else{
+            [NSException raise:@"Unexpected tablecolumn identifier" format:@" - %@ ", tcID];
+            return nil;
+        }
     }
+    return nil;
 }
 
 
 - (void)outlineViewSelectionDidChange:(NSNotification *)notification{
 	// Get the destination associated with the search result list. Tell the PDFView to go there.
-	if (([notification object] == outlineView) && (updatingOutlineSelection == NO)){
+	if ([[notification object] isEqual:outlineView] && (updatingOutlineSelection == NO)){
 		[pdfView goToDestination: [[outlineView itemAtRow: [outlineView selectedRow]] destination]];
     }
 }
 
 
 - (void)outlineViewItemDidExpand:(NSNotification *)notification{
-	[self updateOutlineSelection];
+    if ([[notification object] isEqual:outlineView]) {
+        [self updateOutlineSelection];
+    }
 }
 
 
 - (void)outlineViewItemDidCollapse:(NSNotification *)notification{
-	[self updateOutlineSelection];
+    if ([[notification object] isEqual:outlineView]) {
+        [self updateOutlineSelection];
+    }
 }
+
+- (NSString *)outlineView:(NSOutlineView *)ov toolTipForCell:(NSCell *)cell rect:(NSRectPointer)rect tableColumn:(NSTableColumn *)tc item:(id)item mouseLocation:(NSPoint)mouseLocation{
+    if ([ov isEqual:noteOutlineView]) {
+        item = [item valueForKey:@"observedeObject"];
+        return [item type] ? [item contents] : [[(SKNoteText *)item contents] string];
+    }
+    return nil;
+}
+
+- (float)outlineView:(NSOutlineView *)ov heightOfRowByItem:(id)item {
+    if ([ov isEqual:outlineView]) {
+        return 17.0;
+    } else if ([ov isEqual:noteOutlineView]) {
+        if ([item valueForKeyPath:@"observedObject.type"])
+            return 17.0;
+        else
+            return 85.0;
+    }
+    return 17.0;
+}
+
+- (void)outlineView:(NSOutlineView *)ov deleteRowsWithIndexes:(NSIndexSet *)rowIndexes {
+    if ([ov isEqual:noteOutlineView]) {
+        unsigned row = [rowIndexes firstIndex];
+        NSMutableArray *notesToRemove = [NSMutableArray array];
+        
+        while (row != NSNotFound) {
+            PDFAnnotation *annotation = [[ov itemAtRow:row] valueForKeyPath:@"observedObject"];
+            if ([annotation type])
+                [notesToRemove addObject:annotation];
+            row = [rowIndexes indexGreaterThanIndex:row];
+        }
+        
+        for (row = 0 ; row < [notesToRemove count]; row++)
+            [pdfView removeAnnotation:[notesToRemove objectAtIndex:row]];
+    }
+}
+
+- (NSArray *)outlineViewHighlightedRows:(NSOutlineView *)ov {
+    if ([ov isEqual:outlineView]) {
+        NSMutableArray *array = [NSMutableArray array];
+        NSEnumerator *rowEnum = [lastViewedPages objectEnumerator];
+        NSNumber *rowNumber;
+        
+        while (rowNumber = [rowEnum nextObject]) {
+            int row = [self outlineRowForPageIndex:[rowNumber intValue]];
+            if (row != -1)
+                [array addObject:[NSNumber numberWithInt:row]];
+        }
+        
+        return array;
+    }
+    return nil;
+}
+
+#pragma mark NSTableView delegate protocol
+
+- (void)tableViewSelectionDidChange:(NSNotification *)aNotification {
+    if ([[aNotification object] isEqual:findTableView]) {
+        
+        BOOL highlight = [[NSUserDefaults standardUserDefaults] boolForKey:SKShouldHighlightSearchResultsKey];
+        
+        // clear the selection
+        [pdfView setCurrentSelection:nil];
+        [self removeTemporaryAnnotations];
+        
+        // union all selected objects
+        NSEnumerator *selE = [[findArrayController selectedObjects] objectEnumerator];
+        PDFSelection *sel;
+        
+        // arm:  PDFSelection is mutable, and using -addSelection on an object from selectedObjects will actually mutate the object in searchResults, which does bad things.  MagicHat indicates that PDFSelection implements copyWithZone: even though it doesn't conform to <NSCopying>, so we'll use that since -init doesn't work (-initWithDocument: does, but it's not listed in the header either).  I filed rdar://problem/4888251 and also noticed that PDFKitViewer sample code uses -[PDFSelection copy].
+        PDFSelection *currentSel = [[[selE nextObject] copy] autorelease];
+        
+        // add an annotation so it's easier to see the search result
+        if (highlight)
+            [self addAnnotationsForSelection:currentSel];
+        
+        while (sel = [selE nextObject]) {
+            [currentSel addSelection:sel];
+            if (highlight)
+                [self addAnnotationsForSelection:sel];
+        }
+        
+        [pdfView setCurrentSelection:currentSel];
+        [pdfView scrollSelectionToVisible:self];
+    } else if ([[aNotification object] isEqual:thumbnailTableView]) {
+        if (updatingThumbnailSelection == NO) {
+            int row = [thumbnailTableView selectedRow];
+            if (row != -1)
+                [pdfView goToPage:[[pdfView document] pageAtIndex:row]];
+        }
+    } else if ([[aNotification object] isEqual:snapshotTableView]) {
+        if (updatingThumbnailSelection == NO) {
+            int row = [snapshotTableView selectedRow];
+            if (row != -1) {
+                SKSnapshotWindowController *controller = [[snapshotArrayController arrangedObjects] objectAtIndex:row];
+                if ([[controller window] isVisible])
+                    [[controller window] orderFront:self];
+            }
+        }
+    }
+}
+
+// AppKit bug: need a dummy NSTableDataSource implementation, otherwise some NSTableView delegate methods are ignored
+- (int)numberOfRowsInTableView:(NSTableView *)tv { return 0; }
+
+- (id)tableView:(NSTableView *)tv objectValueForTableColumn:(NSTableColumn *)tableColumn row:(int)row { return nil; }
+
+- (float)tableView:(NSTableView *)tv heightOfRow:(int)row {
+    if ([tv isEqual:thumbnailTableView]) {
+        NSSize thumbSize = [[[[thumbnailArrayController arrangedObjects] objectAtIndex:row] image] size];
+        NSSize cellSize = NSMakeSize([[[tv tableColumns] objectAtIndex:0] width], 
+                                     MIN(thumbSize.height, roundf([[NSUserDefaults standardUserDefaults] floatForKey:SKThumbnailSizeKey])));
+        if (thumbSize.height < 1.0)
+            return 1.0;
+        else if (thumbSize.width / thumbSize.height < cellSize.width / cellSize.height)
+            return cellSize.height;
+        else
+            return MAX(1.0, MIN(cellSize.width, thumbSize.width) * thumbSize.height / thumbSize.width);
+    } else if ([tv isEqual:snapshotTableView]) {
+        NSSize thumbSize = [[[[snapshotArrayController arrangedObjects] objectAtIndex:row] thumbnail] size];
+        NSSize cellSize = NSMakeSize([[[tv tableColumns] objectAtIndex:0] width], 
+                                     MIN(thumbSize.height, roundf([[NSUserDefaults standardUserDefaults] floatForKey:SKSnapshotThumbnailSizeKey])));
+        if (thumbSize.height < 1.0)
+            return 1.0;
+        else if (thumbSize.width / thumbSize.height < cellSize.width / cellSize.height)
+            return cellSize.height;
+        else
+            return MAX(1.0, MIN(cellSize.width, thumbSize.width) * thumbSize.height / thumbSize.width);
+    }
+    return 17.0;
+}
+
+- (void)tableView:(NSTableView *)tv deleteRowsWithIndexes:(NSIndexSet *)rowIndexes {
+    if ([tv isEqual:snapshotTableView]) {
+        NSArray *controllers = [[snapshotArrayController arrangedObjects] objectsAtIndexes:rowIndexes];
+        [[controllers valueForKey:@"window"] makeObjectsPerformSelector:@selector(orderOut:) withObject:self];
+        [[self mutableArrayValueForKey:@"snapshots"] removeObjectsInArray:controllers];
+    }
+}
+
+- (NSArray *)tableViewHighlightedRows:(NSTableView *)tv {
+    return lastViewedPages;
+}
+
+#pragma mark Outline
 
 - (int)outlineRowForPageIndex:(unsigned int)pageIndex {
 	int i, numRows = [outlineView numberOfRows];
@@ -1693,20 +1759,6 @@ static NSString *SKDocumentToolbarSearchItemIdentifier = @"SKDocumentToolbarSear
         [outlineView selectRow:row byExtendingSelection: NO];
         updatingOutlineSelection = NO;
     }
-}
-
-- (NSArray *)outlineViewHighlightedRows:(NSOutlineView *)anOutlineView {
-    NSMutableArray *array = [NSMutableArray array];
-    NSEnumerator *rowEnum = [lastViewedPages objectEnumerator];
-    NSNumber *rowNumber;
-    
-    while (rowNumber = [rowEnum nextObject]) {
-        int row = [self outlineRowForPageIndex:[rowNumber intValue]];
-        if (row != -1)
-            [array addObject:[NSNumber numberWithInt:row]];
-    }
-    
-    return array;
 }
 
 #pragma mark Thumbnails
@@ -1805,13 +1857,14 @@ static NSString *SKDocumentToolbarSearchItemIdentifier = @"SKDocumentToolbarSear
     }
 }
 
+#pragma mark Notes
+
 - (void)updateNoteSelection {
 
-	NSArray *notes = [noteArrayController arrangedObjects];
-    PDFAnnotation *annotation;
     unsigned int pageIndex = [[pdfView document] indexForPage: [pdfView currentPage]];
-	int i, numRows = [notes count];
-    unsigned int selPageIndex = [noteTableView numberOfSelectedRows] ? [[notes objectAtIndex:[noteTableView selectedRow]] pageIndex] : NSNotFound;
+	int i, numRows = [noteOutlineView numberOfRows];
+    id selItem = [noteOutlineView numberOfSelectedRows] ? [[noteOutlineView itemAtRow:[noteOutlineView selectedRow]] valueForKeyPath:@"observedObject"] : nil;
+    unsigned int selPageIndex = selItem ? [selItem pageIndex] : NSNotFound;
 	
     if (numRows == 0 || selPageIndex == pageIndex)
 		return;
@@ -1819,20 +1872,24 @@ static NSString *SKDocumentToolbarSearchItemIdentifier = @"SKDocumentToolbarSear
 	// Walk outline view looking for best firstpage number match.
 	for (i = 0; i < numRows; i++) {
 		// Get the destination of the given row....
-		annotation = [notes objectAtIndex:i];
+		id annotation = [[noteOutlineView itemAtRow:i] valueForKeyPath:@"observedObject"];
 		
 		if ([annotation pageIndex] == pageIndex) {
 			updatingNoteSelection = YES;
-			[noteTableView selectRow:i byExtendingSelection:NO];
+			[noteOutlineView selectRow:i byExtendingSelection:NO];
 			updatingNoteSelection = NO;
 			break;
 		} else if ([annotation pageIndex] > pageIndex) {
 			updatingNoteSelection = YES;
-			if (i < 1)				
-				[noteTableView selectRow:0 byExtendingSelection:NO];
-			else if ([[notes objectAtIndex:i - 1] pageIndex] != selPageIndex)
-				[noteTableView selectRow:i - 1 byExtendingSelection:NO];
-			updatingNoteSelection = NO;
+			if (i == 0) {
+				[noteOutlineView selectRow:0 byExtendingSelection:NO];
+			} else if ([[[noteOutlineView itemAtRow:i - 1] valueForKeyPath:@"observedObject"] pageIndex] != selPageIndex) {
+                if ([[noteOutlineView itemAtRow:i - 1] valueForKeyPath:@"observedObject.type"])
+                    [noteOutlineView selectRow:i - 1 byExtendingSelection:NO];
+                else
+                    [noteOutlineView selectRow:i - 2 byExtendingSelection:NO];
+			}
+            updatingNoteSelection = NO;
 			break;
 		}
 	}
@@ -2415,6 +2472,30 @@ static NSString *SKDocumentToolbarSearchItemIdentifier = @"SKDocumentToolbarSear
 @end
 
 #pragma mark -
+
+@implementation SKNoteOutlineView
+
+- (void)delete:(id)sender {
+    if ([[self delegate] respondsToSelector:@selector(outlineView:deleteRowsWithIndexes:)]) {
+		if ([[self selectedRowIndexes] count] == 0)
+			NSBeep();
+		else
+			[[self delegate] outlineView:self deleteRowsWithIndexes:[self selectedRowIndexes]];
+    }
+}
+
+- (void)keyDown:(NSEvent *)theEvent {
+    NSString *characters = [theEvent charactersIgnoringModifiers];
+    unichar eventChar = [characters length] > 0 ? [characters characterAtIndex:0] : 0;
+	unsigned int modifiers = [theEvent modifierFlags] & NSDeviceIndependentModifierFlagsMask;
+    
+	if ((eventChar == NSDeleteCharacter || eventChar == NSDeleteFunctionKey) && modifiers == 0)
+        [self delete:self];
+	else
+		[super keyDown:theEvent];
+}
+
+@end
 
 @implementation SKNoteTableView
 

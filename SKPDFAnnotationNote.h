@@ -55,6 +55,8 @@
 
 - (void)setDefaultColor:(NSColor *)newColor;
 
+- (NSArray *)texts;
+
 - (BOOL)isNoteAnnotation;
 - (BOOL)isTemporaryAnnotation;
 - (BOOL)isResizable;
@@ -76,6 +78,7 @@
 @interface SKPDFAnnotationNote : PDFAnnotationText {
     NSImage *image;
     NSAttributedString *text;
+    NSArray *texts;
 }
 
 - (void)setImage:(NSImage *)newImage;
@@ -84,4 +87,21 @@
 @end
 
 @interface SKPDFAnnotationTemporary : PDFAnnotationCircle
+@end
+
+@interface SKNoteText : NSObject {
+    PDFAnnotation *annotation;
+}
+
+- (id)initWithAnnotation:(PDFAnnotation *)anAnnotation;
+
+- (PDFAnnotation *)annotation;
+
+- (NSArray *)texts;
+
+- (NSString *)type;
+- (unsigned int)pageIndex;
+- (NSString *)pageLabel;
+- (NSAttributedString *)contents;
+
 @end
