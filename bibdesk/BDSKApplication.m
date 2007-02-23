@@ -89,7 +89,7 @@ static int indexOfWindowsMenuItemWithTarget(id target)
 {
     NSMenu *windowsMenu = [NSApp windowsMenu];
     int index = [windowsMenu numberOfItems];
-    while (--index) {
+    while (index--) {
         if ([[[windowsMenu itemAtIndex:index] target] isEqual:target]) {
             break;
         }
