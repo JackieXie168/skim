@@ -94,6 +94,9 @@ static NSString *SKDocumentToolbarSearchItemIdentifier = @"SKDocumentToolbarSear
 #define TOOLBAR_SEARCHFIELD_MIN_SIZE NSMakeSize(110.0, 22.0)
 #define TOOLBAR_SEARCHFIELD_MAX_SIZE NSMakeSize(1000.0, 22.0)
 
+@interface NSObject (SKAppleTreeControllerPrivate)
+- (id)observedObject;
+@end
 
 @implementation SKMainWindowController
 
@@ -1617,9 +1620,9 @@ static NSString *SKDocumentToolbarSearchItemIdentifier = @"SKDocumentToolbarSear
 - (NSString *)outlineView:(NSOutlineView *)ov toolTipForCell:(NSCell *)cell rect:(NSRectPointer)rect tableColumn:(NSTableColumn *)tc item:(id)item mouseLocation:(NSPoint)mouseLocation{
     if ([ov isEqual:noteOutlineView]) {
         // the item is an opaque wrapper object used for binding. The actual note is is given by -observedeObject. I don't know of any alternative (read public) way to get the actual item
-        if ([item respondsToSelector:@selector(observedeObject)] == NO)
+        if ([item respondsToSelector:@selector(observedObject)] == NO)
             return nil;
-        item = [item valueForKey:@"observedeObject"];
+        item = [item observedObject];
         return [item type] ? [item contents] : [[(SKNoteText *)item contents] string];
     }
     return nil;
