@@ -142,6 +142,8 @@ static NSString *SKDocumentToolbarSearchItemIdentifier = @"SKDocumentToolbarSear
 	[thumbnails release];
 	[snapshots release];
     [lastViewedPages release];
+    [selectedNoteIndexPaths release];
+    [selectedNote release];
     [[outlineView enclosingScrollView] release];
     [[findTableView enclosingScrollView] release];
     [[thumbnailTableView enclosingScrollView] release];
@@ -204,7 +206,7 @@ static NSString *SKDocumentToolbarSearchItemIdentifier = @"SKDocumentToolbarSear
     
     NSSortDescriptor *indexSortDescriptor = [[[NSSortDescriptor alloc] initWithKey:@"pageIndex" ascending:YES] autorelease];
     NSSortDescriptor *contentsSortDescriptor = [[[NSSortDescriptor alloc] initWithKey:@"contents" ascending:YES] autorelease];
-    [noteTreeController setSortDescriptors:[NSArray arrayWithObjects:indexSortDescriptor, contentsSortDescriptor, nil]];
+    [noteArrayController setSortDescriptors:[NSArray arrayWithObjects:indexSortDescriptor, contentsSortDescriptor, nil]];
     [snapshotArrayController setSortDescriptors:[NSArray arrayWithObjects:indexSortDescriptor, nil]];
     
     [self setupToolbar];
@@ -519,6 +521,33 @@ static NSString *SKDocumentToolbarSearchItemIdentifier = @"SKDocumentToolbarSear
     [snapshots removeObjectAtIndex:theIndex];
 }
 
+- (NSArray *)selectedNoteIndexPaths {
+    return selectedNoteIndexPaths;
+}
+
+- (PDFAnnotation *)selectedNote {
+    return selectedNote;
+}
+
+- (void)setSelectedNote:(PDFAnnotation *)note {
+    if (selectedNote != note) {
+        [selectedNote release];
+        selectedNote = [note retain];
+    }
+}
+
+- (void)setSelectedNoteIndexPaths:(NSArray *)indexPaths {
+    if (selectedNoteIndexPaths != indexPaths) {
+        [selectedNoteIndexPaths release];
+        selectedNoteIndexPaths = [indexPaths retain];
+        
+        if ([indexPaths count] == 0)
+            [self setSelectedNote:nil];
+        else 
+            [self setSelectedNote:[[noteArrayController arrangedObjects] objectAtIndex:[[indexPaths lastObject] indexAtPosition:0]]];
+    }
+}
+
 #pragma mark Actions
 
 - (IBAction)pickColor:(id)sender{
@@ -542,11 +571,11 @@ static NSString *SKDocumentToolbarSearchItemIdentifier = @"SKDocumentToolbarSear
 
 - (void)selectNotes:(NSArray *)notesToShow{
     // there should only be a single note
-    id annotation = [notesToShow lastObject];
-    if ([annotation type] == nil)
-        annotation = [(SKNoteText *)annotation annotation];
-    [pdfView scrollAnnotationToVisible:annotation];
-	[pdfView setActiveAnnotation:annotation];
+    //id annotation = [notesToShow lastObject];
+    //if ([annotation type] == nil)
+    //    annotation = [(SKNoteText *)annotation annotation];
+    [pdfView scrollAnnotationToVisible:selectedNote];
+	[pdfView setActiveAnnotation:selectedNote];
 }
 
 - (IBAction)displaySinglePages:(id)sender {
@@ -1326,16 +1355,11 @@ static NSString *SKDocumentToolbarSearchItemIdentifier = @"SKDocumentToolbarSear
     PDFAnnotation *annotation = [pdfView activeAnnotation];
     
     if ([annotation isNoteAnnotation]) {
-        int row, numRows = [noteOutlineView numberOfRows];
+        int index = [[noteArrayController arrangedObjects] indexOfObject:annotation];
+        NSIndexPath *indexPath = [NSIndexPath indexPathWithIndex:index];
         
-        for (row = 0; row < numRows; row++) {
-            if ([[[noteOutlineView itemAtRow:row] valueForKey:@"observedObject"] isEqual:annotation]) {
-                updatingNoteSelection = YES;
-                [noteOutlineView selectRowIndexes:[NSIndexSet indexSetWithIndex:row] byExtendingSelection:NO];
-                updatingNoteSelection = NO;
-                break;
-            }
-        }
+        [self setSelectedNoteIndexPaths:[NSArray arrayWithObject:indexPath]];
+        
         [[NSColorPanel sharedColorPanel] setColor:[annotation color]];
     } else {
         [noteOutlineView deselectAll:self];
@@ -1357,7 +1381,11 @@ static NSString *SKDocumentToolbarSearchItemIdentifier = @"SKDocumentToolbarSear
 
 - (void)handleDidRemoveAnnotationNotification:(NSNotification *)notification {
     PDFAnnotation *annotation = [[notification userInfo] objectForKey:@"annotation"];
-    PDFPage *page = [[notification userInfo] objectForKey:@"page"];;
+    PDFPage *page = [[notification userInfo] objectForKey:@"page"];
+    
+    if (selectedNote == annotation)
+        [self setSelectedNote:nil];
+    
     if (annotation) {
         NSWindowController *wc = nil;
         NSEnumerator *wcEnum = [[[self document] windowControllers] objectEnumerator];
@@ -1532,8 +1560,6 @@ static NSString *SKDocumentToolbarSearchItemIdentifier = @"SKDocumentToolbarSear
         }else{
             return ([(PDFOutline *)item numberOfChildren] > 0);
         }
-    } else if ([ov isEqual:noteOutlineView]) {
-        return [[item valueForKeyPath:@"observedObject.type"] isEqualToString:@"Note"];
     }
     return NO;
 }
@@ -1578,6 +1604,9 @@ static NSString *SKDocumentToolbarSearchItemIdentifier = @"SKDocumentToolbarSear
 
 - (NSString *)outlineView:(NSOutlineView *)ov toolTipForCell:(NSCell *)cell rect:(NSRectPointer)rect tableColumn:(NSTableColumn *)tc item:(id)item mouseLocation:(NSPoint)mouseLocation{
     if ([ov isEqual:noteOutlineView]) {
+        // the item is an opaque wrapper object used for binding. The actual note is is given by -observedeObject. I don't know of any alternative (read public) way to get the actual item
+        if ([item respondsToSelector:@selector(observedeObject)] == NO)
+            return nil;
         item = [item valueForKey:@"observedeObject"];
         return [item type] ? [item contents] : [[(SKNoteText *)item contents] string];
     }
@@ -1588,7 +1617,8 @@ static NSString *SKDocumentToolbarSearchItemIdentifier = @"SKDocumentToolbarSear
     if ([ov isEqual:outlineView]) {
         return 17.0;
     } else if ([ov isEqual:noteOutlineView]) {
-        if ([item valueForKeyPath:@"observedObject.type"])
+        // the item is an opaque wrapper object used for binding. The actual note is is given by -observedeObject. I don't know of any alternative (read public) way to get the actual item
+        if ([item respondsToSelector:@selector(observedObject)] == NO || [item valueForKeyPath:@"observedObject.type"])
             return 17.0;
         else
             return 85.0;
@@ -1596,20 +1626,10 @@ static NSString *SKDocumentToolbarSearchItemIdentifier = @"SKDocumentToolbarSear
     return 17.0;
 }
 
-- (void)outlineView:(NSOutlineView *)ov deleteRowsWithIndexes:(NSIndexSet *)rowIndexes {
+- (void)outlineViewDeleteSelectedRows:(NSOutlineView *)ov  {
     if ([ov isEqual:noteOutlineView]) {
-        unsigned row = [rowIndexes firstIndex];
-        NSMutableArray *notesToRemove = [NSMutableArray array];
-        
-        while (row != NSNotFound) {
-            PDFAnnotation *annotation = [[ov itemAtRow:row] valueForKeyPath:@"observedObject"];
-            if ([annotation type])
-                [notesToRemove addObject:annotation];
-            row = [rowIndexes indexGreaterThanIndex:row];
-        }
-        
-        for (row = 0 ; row < [notesToRemove count]; row++)
-            [pdfView removeAnnotation:[notesToRemove objectAtIndex:row]];
+        if ([self selectedNote])
+            [pdfView removeAnnotation:[self selectedNote]];
     }
 }
 
@@ -1861,38 +1881,37 @@ static NSString *SKDocumentToolbarSearchItemIdentifier = @"SKDocumentToolbarSear
 
 - (void)updateNoteSelection {
 
+    NSArray *notes = [noteArrayController arrangedObjects];
+    PDFAnnotation *annotation;
     unsigned int pageIndex = [[pdfView document] indexForPage: [pdfView currentPage]];
-	int i, numRows = [noteOutlineView numberOfRows];
-    id selItem = [noteOutlineView numberOfSelectedRows] ? [[noteOutlineView itemAtRow:[noteOutlineView selectedRow]] valueForKeyPath:@"observedObject"] : nil;
-    unsigned int selPageIndex = selItem ? [selItem pageIndex] : NSNotFound;
-	
-    if (numRows == 0 || selPageIndex == pageIndex)
+	int i, count = [notes count];
+    unsigned int selPageIndex = [self selectedNote] ? [[self selectedNote] pageIndex] : NSNotFound;
+	unsigned int index = NSNotFound;
+    
+    if (count == 0 || selPageIndex == pageIndex)
 		return;
 	
 	// Walk outline view looking for best firstpage number match.
-	for (i = 0; i < numRows; i++) {
+	for (i = 0; i < count; i++) {
 		// Get the destination of the given row....
-		id annotation = [[noteOutlineView itemAtRow:i] valueForKeyPath:@"observedObject"];
+        annotation = [notes objectAtIndex:i];
 		
 		if ([annotation pageIndex] == pageIndex) {
-			updatingNoteSelection = YES;
-			[noteOutlineView selectRow:i byExtendingSelection:NO];
-			updatingNoteSelection = NO;
+            index = i;
 			break;
 		} else if ([annotation pageIndex] > pageIndex) {
-			updatingNoteSelection = YES;
-			if (i == 0) {
-				[noteOutlineView selectRow:0 byExtendingSelection:NO];
-			} else if ([[[noteOutlineView itemAtRow:i - 1] valueForKeyPath:@"observedObject"] pageIndex] != selPageIndex) {
-                if ([[noteOutlineView itemAtRow:i - 1] valueForKeyPath:@"observedObject.type"])
-                    [noteOutlineView selectRow:i - 1 byExtendingSelection:NO];
-                else
-                    [noteOutlineView selectRow:i - 2 byExtendingSelection:NO];
-			}
-            updatingNoteSelection = NO;
+			if (i == 0)
+				index = 0;
+			else if ([[notes objectAtIndex:i - 1] pageIndex] != selPageIndex)
+                index = i - 1;
 			break;
 		}
 	}
+    if (index != NSNotFound) {
+        updatingNoteSelection = YES;
+        [self setSelectedNoteIndexPaths:[NSArray arrayWithObject:[NSIndexPath indexPathWithIndex:index]]];
+        updatingNoteSelection = NO;
+    }
 }
 
 #pragma mark Snapshots
@@ -2476,11 +2495,11 @@ static NSString *SKDocumentToolbarSearchItemIdentifier = @"SKDocumentToolbarSear
 @implementation SKNoteOutlineView
 
 - (void)delete:(id)sender {
-    if ([[self delegate] respondsToSelector:@selector(outlineView:deleteRowsWithIndexes:)]) {
+    if ([[self delegate] respondsToSelector:@selector(outlineViewDeleteSelectedRows:)]) {
 		if ([[self selectedRowIndexes] count] == 0)
 			NSBeep();
 		else
-			[[self delegate] outlineView:self deleteRowsWithIndexes:[self selectedRowIndexes]];
+			[[self delegate] outlineViewDeleteSelectedRows:self];
     }
 }
 

@@ -81,6 +81,7 @@
                 leftSideButton = NSSegmentedControl; 
                 leftSideContentBox = NSBox; 
                 leftSideEdgeView = BDSKEdgeView; 
+                noteArrayController = NSArrayController; 
                 noteOutlineView = SKNoteOutlineView; 
                 noteTreeController = NSTreeController; 
                 outlineView = NSOutlineView; 

@@ -93,9 +93,12 @@ typedef struct _SKPDFViewState {
     
     IBOutlet NSSearchField      *findField;
     
+    IBOutlet NSArrayController  *noteArrayController;
     IBOutlet NSTreeController   *noteTreeController;
     IBOutlet SKNoteOutlineView  *noteOutlineView;
     BOOL                        updatingNoteSelection;
+    NSArray                     *selectedNoteIndexPaths;
+    PDFAnnotation               *selectedNote;
     
     IBOutlet NSSegmentedControl *backForwardButton;
     IBOutlet NSView             *pageNumberView;
@@ -294,7 +297,7 @@ typedef struct _SKPDFViewState {
 
 
 @interface NSObject (SKNoteOutlineViewDelegate)
-- (void)outlineView:(NSOutlineView *)anOutlineView deleteRowsWithIndexes:(NSIndexSet *)rowIndexes;
+- (void)outlineViewDeleteSelectedRows:(NSOutlineView *)anOutlineView;
 @end
 
 
