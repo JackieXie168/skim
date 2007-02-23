@@ -299,17 +299,29 @@ static NSString *SKDocumentToolbarSearchItemIdentifier = @"SKDocumentToolbarSear
 }
 
 - (void)setupWindow:(NSDictionary *)setup{
-    [[self window] setFrame:NSRectFromString([setup objectForKey:@"windowFrame"]) display:NO];
-    NSRect frame = [leftSideContentBox frame];
-    frame.size.width = [[setup objectForKey:@"leftSidePaneWidth"] floatValue];
-    [leftSideContentBox setFrame:frame];
-    frame = [rightSideContentBox frame];
-    frame.size.width = [[setup objectForKey:@"rightSidePaneWidth"] floatValue];
-    [rightSideContentBox setFrame:frame];
+    NSRect frame = NSRectFromString([setup objectForKey:@"windowFrame"]);
+    float width, factor;
+    
+    if (NSIsEmptyRect(frame) == NO)
+        [[self window] setFrame:frame display:NO];
+    width = [[setup objectForKey:@"leftSidePaneWidth"] floatValue];
+    if (width >= 0.0) {
+        frame = [leftSideContentBox frame];
+        frame.size.width = width;
+        [leftSideContentBox setFrame:frame];
+    }
+    width = [[setup objectForKey:@"rightSidePaneWidth"] floatValue];
+    if (width >= 0.0) {
+        frame = [rightSideContentBox frame];
+        frame.size.width = width;
+        [rightSideContentBox setFrame:frame];
+    }
     frame = [pdfContentBox frame];
     frame.size.width = NSWidth([splitView frame]) - NSWidth([leftSideContentBox frame]) - NSWidth([rightSideContentBox frame]) - 2 * [splitView dividerThickness];
     [pdfContentBox setFrame:frame];
-    [pdfView setScaleFactor:[[setup objectForKey:@"scaleFactor"] floatValue]];
+    factor = [[setup objectForKey:@"scaleFactor"] floatValue];
+    if (factor > 0.0)
+        [pdfView setScaleFactor:factor];
     [pdfView setAutoScales:[[setup objectForKey:@"autoScales"] boolValue]];
     [pdfView setDisplaysPageBreaks:[[setup objectForKey:@"displaysPageBreaks"] boolValue]];
     [pdfView setDisplaysAsBook:[[setup objectForKey:@"displaysAsBook"] boolValue]];
