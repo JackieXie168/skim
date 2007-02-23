@@ -283,24 +283,23 @@ NSString *SKPDFViewAnnotationDoubleClickedNotification = @"SKPDFViewAnnotationDo
     if ([[activeAnnotation type] isEqualToString:@"Link"])
         [self setActiveAnnotation:nil];
     
-    switch (toolMode) {
-        case SKTextToolMode:
-            if ([theEvent modifierFlags] & NSCommandKeyMask)
-                [self selectSnapshotWithEvent:theEvent];
-            else if ([[self document] isLocked])
-                [super mouseDown:theEvent];
-            else 
-                [self selectAnnotationWithEvent:theEvent];
-            break;
-        case SKMoveToolMode:
-            if ([theEvent modifierFlags] & NSCommandKeyMask)
-                [self selectSnapshotWithEvent:theEvent];
-            else
+    if ([theEvent modifierFlags] & NSCommandKeyMask) {
+        [self selectSnapshotWithEvent:theEvent];
+    } else {
+        switch (toolMode) {
+            case SKTextToolMode:
+                if ([[self document] isLocked])
+                    [super mouseDown:theEvent];
+                else 
+                    [self selectAnnotationWithEvent:theEvent];
+                break;
+            case SKMoveToolMode:
                 [[NSCursor closedHandCursor] push];
-            break;
-        case SKMagnifyToolMode:
-            [self magnifyWithEvent:theEvent];
-            break;
+                break;
+            case SKMagnifyToolMode:
+                [self magnifyWithEvent:theEvent];
+                break;
+        }
     }
 }
 
@@ -357,22 +356,20 @@ NSString *SKPDFViewAnnotationDoubleClickedNotification = @"SKPDFViewAnnotationDo
     // we receive this message whenever we are first responder, so check the location
     NSPoint p = [[self documentView] convertPoint:[theEvent locationInWindow] fromView:nil];
     
-    switch (toolMode) {
-        case SKTextToolMode:
-            if (NSPointInRect(p, [[self documentView] visibleRect]) && [theEvent modifierFlags] & NSCommandKeyMask) 
-                [[NSCursor cameraCursor] set];
-            else
+    if (NSPointInRect(p, [[self documentView] visibleRect]) && [theEvent modifierFlags] & NSCommandKeyMask) {
+        [[NSCursor cameraCursor] set];
+    } else {
+        switch (toolMode) {
+            case SKTextToolMode:
                 [super mouseMoved:theEvent];
-            break;
-        case SKMoveToolMode:
-            if (NSPointInRect(p, [[self documentView] visibleRect]) && [theEvent modifierFlags] & NSCommandKeyMask) 
-                [[NSCursor cameraCursor] set];
-            else
+                break;
+            case SKMoveToolMode:
                 [[self cursorForMouseMovedEvent:theEvent] set];
-            break;
-        case SKMagnifyToolMode:
-            [[self cursorForMouseMovedEvent:theEvent] set];
-            break;
+                break;
+            case SKMagnifyToolMode:
+                [[self cursorForMouseMovedEvent:theEvent] set];
+                break;
+        }
     }
     
     BOOL isLink = NO;
@@ -402,19 +399,22 @@ NSString *SKPDFViewAnnotationDoubleClickedNotification = @"SKPDFViewAnnotationDo
     
     NSCursor *cursor = nil;
     
-    switch (toolMode) {
-        case SKTextToolMode:
-            if (selecting == NO)
-                cursor = ([theEvent modifierFlags] & NSCommandKeyMask) ? [NSCursor cameraCursor] : [NSCursor arrowCursor];
-            break;
-        case SKMoveToolMode:
-            if (selecting == NO)
-                cursor = ([theEvent modifierFlags] & NSCommandKeyMask) ? [NSCursor cameraCursor] : [NSCursor openHandCursor];
-            break;
-        case SKMagnifyToolMode:
-            cursor = ([theEvent modifierFlags] & NSShiftKeyMask) ? [NSCursor zoomOutCursor] : [NSCursor zoomInCursor];
-            break;
+    if ([theEvent modifierFlags] & NSCommandKeyMask) {
+        cursor = [NSCursor cameraCursor];
+    } else {
+        switch (toolMode) {
+            case SKTextToolMode:
+                cursor = [NSCursor arrowCursor];
+                break;
+            case SKMoveToolMode:
+                cursor = [NSCursor openHandCursor];
+                break;
+            case SKMagnifyToolMode:
+                cursor = ([theEvent modifierFlags] & NSShiftKeyMask) ? [NSCursor zoomOutCursor] : [NSCursor zoomInCursor];
+                break;
+        }
     }
+    
     [cursor set];
 }
 
@@ -1197,12 +1197,11 @@ NSString *SKPDFViewAnnotationDoubleClickedNotification = @"SKPDFViewAnnotationDo
     NSRect bounds;
     float minX, maxX, minY, maxY;
     BOOL dragged = NO;
+    BOOL keepGoing = YES;
 	
     [[self window] discardCachedImage];
     
-    selecting = YES;
-	
-	while (selecting) {
+	while (keepGoing) {
 		theEvent = [[self window] nextEventMatchingMask: NSLeftMouseUpMask | NSLeftMouseDraggedMask | NSFlagsChangedMask];
         
         [[self window] restoreCachedImage];
@@ -1253,7 +1252,7 @@ NSString *SKPDFViewAnnotationDoubleClickedNotification = @"SKPDFViewAnnotationDo
 				break;
 				
 			case NSLeftMouseUp:
-				selecting = NO;
+				keepGoing = NO;
 				break;
 				
 			default:
@@ -1380,7 +1379,7 @@ NSString *SKPDFViewAnnotationDoubleClickedNotification = @"SKPDFViewAnnotationDo
             [clipView lockFocus];
             NSGraphicsContext *ctxt = [NSGraphicsContext currentContext];
             [ctxt saveGraphicsState];
-            outlineRect = NSIntegralRect(NSInsetRect([clipView convertRect:magRect fromView:nil], 0.5, 0.5));
+            outlineRect = NSInsetRect(NSIntegralRect([clipView convertRect:magRect fromView:nil]), 0.5, 0.5);
             path = [NSBezierPath bezierPathWithRect:outlineRect];
             [path setLineWidth:1.0];
             [[NSColor blackColor] set];
