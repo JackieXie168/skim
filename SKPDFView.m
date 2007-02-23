@@ -223,13 +223,11 @@ NSString *SKPDFViewAnnotationDoubleClickedNotification = @"SKPDFViewAnnotationDo
 	// Assign.
 	if (newAnnotation) {
 		activeAnnotation = newAnnotation;
-		activePage = [newAnnotation page];
 		
 		// Force redisplay.
 		[self setNeedsDisplayForAnnotation:activeAnnotation];
 	} else {
 		activeAnnotation = nil;
-		activePage = nil;
 	}
 	
 	if (changed)
@@ -941,6 +939,7 @@ NSString *SKPDFViewAnnotationDoubleClickedNotification = @"SKPDFViewAnnotationDo
     int numAnnotations, i;
     NSPoint pagePoint;
     BOOL changed;
+    PDFPage *activePage;
     
     // Mouse in display view coordinates.
     mouseDownLoc = [self convertPoint:[theEvent locationInWindow] fromView:nil];
@@ -1043,6 +1042,7 @@ NSString *SKPDFViewAnnotationDoubleClickedNotification = @"SKPDFViewAnnotationDo
 }
 
 - (void)dragAnnotationWithEvent:(NSEvent *)theEvent {
+    PDFPage *activePage = [activeAnnotation page];
     NSRect newBounds;
     NSRect currentBounds = [activeAnnotation bounds];
     NSPoint mouseLoc = [self convertPoint:[theEvent locationInWindow] fromView:nil];

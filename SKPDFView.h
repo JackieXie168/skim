@@ -73,7 +73,6 @@ typedef enum _SKAnnotationMode {
     
 	PDFAnnotation *activeAnnotation;
 	PDFAnnotationTextWidget *editAnnotation;
-	PDFPage *activePage;
 	NSRect wasBounds;
 	NSPoint mouseDownLoc;
 	NSPoint clickDelta;
