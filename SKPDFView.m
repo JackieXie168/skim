@@ -89,7 +89,6 @@ NSString *SKPDFViewAnnotationDoubleClickedNotification = @"SKPDFViewAnnotationDo
     if (self = [super initWithFrame:frameRect]) {
         toolMode = SKTextToolMode;
         [[self window] setAcceptsMouseMovedEvents:YES];
-        isMagnifying = NO;
     }
     return self;
 }
@@ -97,7 +96,6 @@ NSString *SKPDFViewAnnotationDoubleClickedNotification = @"SKPDFViewAnnotationDo
 - (id)initWithCoder:(NSCoder *)decoder {
     if (self = [super initWithCoder:decoder]) {
         toolMode = SKTextToolMode;
-        isMagnifying = NO;
     }
     return self;
 }
@@ -347,10 +345,6 @@ NSString *SKPDFViewAnnotationDoubleClickedNotification = @"SKPDFViewAnnotationDo
 }
 
 - (void)mouseMoved:(NSEvent *)theEvent {
-    
-    // don't display hover windows while magnifying
-    if (isMagnifying)
-        return;
 
     // we receive this message whenever we are first responder, so check the location
     NSView *clipView = [[[self documentView] enclosingScrollView] contentView];
@@ -1309,10 +1303,7 @@ NSString *SKPDFViewAnnotationDoubleClickedNotification = @"SKPDFViewAnnotationDo
 	[documentView setPostsBoundsChangedNotifications: NO];
 	
 	[[self window] discardCachedImage]; // make sure not to use the cached image
-    
-    // used to ignore mouseMoved: events (and window hovering) while magnifying
-	isMagnifying = YES;
-    
+        
 	while ([theEvent type] != NSLeftMouseUp) {
         
         // set up the currentLevel and magScale
@@ -1391,7 +1382,6 @@ NSString *SKPDFViewAnnotationDoubleClickedNotification = @"SKPDFViewAnnotationDo
         theEvent = [[self window] nextEventMatchingMask: NSLeftMouseUpMask | NSLeftMouseDraggedMask | NSFlagsChangedMask];
 	}
 	
-    isMagnifying = NO;
 	[[self window] restoreCachedImage];
 	[[self window] flushWindowIfNeeded];
 	[NSCursor unhide];

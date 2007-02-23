@@ -79,7 +79,6 @@ typedef enum _SKAnnotationMode {
 	NSPoint clickDelta;
 	BOOL resizing;
 	BOOL mouseDownInAnnotation;
-    BOOL isMagnifying;
 }
 
 - (SKToolMode)toolMode;
