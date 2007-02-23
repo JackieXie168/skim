@@ -10,7 +10,6 @@
 		4530D7E80B27AAB9007C59F4 /* SKSnapshotWindowController.m in Sources */ = {isa = PBXBuildFile; fileRef = 4530D7E70B27AAB9007C59F4 /* SKSnapshotWindowController.m */; };
 		4530D7EF0B27AAD6007C59F4 /* SKMainWindowController.m in Sources */ = {isa = PBXBuildFile; fileRef = 4530D7EE0B27AAD6007C59F4 /* SKMainWindowController.m */; };
 		4530D81D0B27ACAC007C59F4 /* MainWindow.nib in Resources */ = {isa = PBXBuildFile; fileRef = 4530D81B0B27ACAC007C59F4 /* MainWindow.nib */; };
-		4530D8200B27ACD0007C59F4 /* SubWindow.nib in Resources */ = {isa = PBXBuildFile; fileRef = 4530D81E0B27ACD0007C59F4 /* SubWindow.nib */; };
 		4530D8C90B27B04D007C59F4 /* SKApplicationController.m in Sources */ = {isa = PBXBuildFile; fileRef = 4530D8C80B27B04D007C59F4 /* SKApplicationController.m */; };
 		4530DCF70B27CACE007C59F4 /* SKPDFView.m in Sources */ = {isa = PBXBuildFile; fileRef = 4530DCF60B27CACE007C59F4 /* SKPDFView.m */; };
 		453DC2770B4F242200A72509 /* BDAlias.m in Sources */ = {isa = PBXBuildFile; fileRef = 453DC2750B4F242200A72509 /* BDAlias.m */; };
@@ -89,6 +88,7 @@
 		CE7468820B7F3C0000CBF969 /* zoomOutCursor.tiff in Resources */ = {isa = PBXBuildFile; fileRef = CE7467550B7F321A00CBF969 /* zoomOutCursor.tiff */; };
 		CE7469180B7F40B700CBF969 /* Skim.icns in Resources */ = {isa = PBXBuildFile; fileRef = CE7469170B7F40B600CBF969 /* Skim.icns */; };
 		CE9C423C0B8B5633004AD8CF /* PreferenceWindow.nib in Resources */ = {isa = PBXBuildFile; fileRef = CE9C42360B8B5633004AD8CF /* PreferenceWindow.nib */; };
+		CEF707240B8F8EFC003A2771 /* SnapshotWindow.nib in Resources */ = {isa = PBXBuildFile; fileRef = CEF7071D0B8F8EFC003A2771 /* SnapshotWindow.nib */; };
 		CEFDF8BE0B3848C40091C61A /* SKNavigationWindow.m in Sources */ = {isa = PBXBuildFile; fileRef = CEFDF8BD0B3848C40091C61A /* SKNavigationWindow.m */; };
 		F92DB5AC0B36FE1F002A26E9 /* BDSKHeaderPopUpButtonCell.m in Sources */ = {isa = PBXBuildFile; fileRef = F92DB5A90B36FE1F002A26E9 /* BDSKHeaderPopUpButtonCell.m */; };
 		F92DB5AD0B36FE1F002A26E9 /* BDSKZoomablePDFView.m in Sources */ = {isa = PBXBuildFile; fileRef = F92DB5AB0B36FE1F002A26E9 /* BDSKZoomablePDFView.m */; };
@@ -117,7 +117,6 @@
 		4530D7ED0B27AAD6007C59F4 /* SKMainWindowController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SKMainWindowController.h; sourceTree = "<group>"; };
 		4530D7EE0B27AAD6007C59F4 /* SKMainWindowController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SKMainWindowController.m; sourceTree = "<group>"; };
 		4530D81C0B27ACAC007C59F4 /* English */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = English; path = English.lproj/MainWindow.nib; sourceTree = "<group>"; };
-		4530D81F0B27ACD0007C59F4 /* English */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = English; path = English.lproj/SubWindow.nib; sourceTree = "<group>"; };
 		4530D8C70B27B04D007C59F4 /* SKApplicationController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SKApplicationController.h; sourceTree = "<group>"; };
 		4530D8C80B27B04D007C59F4 /* SKApplicationController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SKApplicationController.m; sourceTree = "<group>"; };
 		4530DCF50B27CACE007C59F4 /* SKPDFView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SKPDFView.h; sourceTree = "<group>"; };
@@ -224,6 +223,7 @@
 		CE7467550B7F321A00CBF969 /* zoomOutCursor.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; name = zoomOutCursor.tiff; path = Images/zoomOutCursor.tiff; sourceTree = "<group>"; };
 		CE7469170B7F40B600CBF969 /* Skim.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; name = Skim.icns; path = Images/Skim.icns; sourceTree = "<group>"; };
 		CE9C42370B8B5633004AD8CF /* English */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = English; path = English.lproj/PreferenceWindow.nib; sourceTree = "<group>"; };
+		CEF7071E0B8F8EFC003A2771 /* English */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = English; path = English.lproj/SnapshotWindow.nib; sourceTree = "<group>"; };
 		CEFDF8BC0B3848C40091C61A /* SKNavigationWindow.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SKNavigationWindow.h; sourceTree = "<group>"; };
 		CEFDF8BD0B3848C40091C61A /* SKNavigationWindow.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SKNavigationWindow.m; sourceTree = "<group>"; };
 		F92DB5A80B36FE1F002A26E9 /* BDSKHeaderPopUpButtonCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BDSKHeaderPopUpButtonCell.h; sourceTree = "<group>"; };
@@ -324,7 +324,7 @@
 				2A37F4B6FDCFA73011CA2CEA /* MainMenu.nib */,
 				4530D81B0B27ACAC007C59F4 /* MainWindow.nib */,
 				CE5470010B32D96500F8AFB6 /* NoteWindow.nib */,
-				4530D81E0B27ACD0007C59F4 /* SubWindow.nib */,
+				CEF7071D0B8F8EFC003A2771 /* SnapshotWindow.nib */,
 				CE9C42360B8B5633004AD8CF /* PreferenceWindow.nib */,
 				CE2DEB900B86206400D0DA12 /* FindPanel.nib */,
 				F977515E0B37460100DF673B /* ConversionProgressWindow.nib */,
@@ -569,7 +569,6 @@
 				8D15AC2D0486D014006FF6A4 /* MainMenu.nib in Resources */,
 				4530D81D0B27ACAC007C59F4 /* MainWindow.nib in Resources */,
 				CE5470030B32D96500F8AFB6 /* NoteWindow.nib in Resources */,
-				4530D8200B27ACD0007C59F4 /* SubWindow.nib in Resources */,
 				CE5478C80B33456300F8AFB6 /* AnnotateToolAdorn.tiff in Resources */,
 				CE5478C90B33456300F8AFB6 /* BackAdorn.tiff in Resources */,
 				CE3A42350B7927D3006B64D3 /* CircleToolAdorn.tiff in Resources */,
@@ -607,6 +606,7 @@
 				CE07158B0B8A3D6500733CC8 /* NoteDocument.icns in Resources */,
 				CE07158C0B8A3D6500733CC8 /* PDFDocument.icns in Resources */,
 				CE9C423C0B8B5633004AD8CF /* PreferenceWindow.nib in Resources */,
+				CEF707240B8F8EFC003A2771 /* SnapshotWindow.nib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -696,14 +696,6 @@
 			name = MainWindow.nib;
 			sourceTree = "<group>";
 		};
-		4530D81E0B27ACD0007C59F4 /* SubWindow.nib */ = {
-			isa = PBXVariantGroup;
-			children = (
-				4530D81F0B27ACD0007C59F4 /* English */,
-			);
-			name = SubWindow.nib;
-			sourceTree = "<group>";
-		};
 		CE2DEA9D0B860A7000D0DA12 /* SaveProgressSheet.nib */ = {
 			isa = PBXVariantGroup;
 			children = (
@@ -742,6 +734,14 @@
 				CE9C42370B8B5633004AD8CF /* English */,
 			);
 			name = PreferenceWindow.nib;
+			sourceTree = "<group>";
+		};
+		CEF7071D0B8F8EFC003A2771 /* SnapshotWindow.nib */ = {
+			isa = PBXVariantGroup;
+			children = (
+				CEF7071E0B8F8EFC003A2771 /* English */,
+			);
+			name = SnapshotWindow.nib;
 			sourceTree = "<group>";
 		};
 		F977515E0B37460100DF673B /* ConversionProgressWindow.nib */ = {
