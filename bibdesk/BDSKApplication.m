@@ -38,7 +38,6 @@
 
 #import "BDSKApplication.h"
 #import "BDAlias.h"
-#import "NSMenu_BDSKExtensions.h"
 
 @interface NSWindow (BDSKApplication)
 // these are implemented in AppKit as private methods
