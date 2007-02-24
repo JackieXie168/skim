@@ -19,7 +19,7 @@
         <string>SKSnapshotsOnTop</string>
         <string>SKSnapshotThumbnailSize</string>
         <string>SKThumbnailSize</string>
-        <string>SKUpdateCheckIntervalKey</string>
+        <string>SKUpdateCheckInterval</string>
     </array>
 	<key>SKAutoCheckFileUpdate</key>
 	<false/>
@@ -60,7 +60,11 @@
 	<real>128</real>
 	<key>SKThumbnailSize</key>
 	<real>128</real>
-    <key>SKUpdateCheckIntervalKey</key>
+    <key>SKUpdateCheckInterval</key>
     <integer>1</integer>
+    <key>SKUpdateCheckLastDate</key>
+    <string></string>
+    <key>SKUpdateLatestNotifiedVersion</key>
+    <string></string>
 </dict>
 </plist>
