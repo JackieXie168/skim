@@ -48,7 +48,7 @@ typedef enum {
     SKCheckForUpdatesMonthly =  3
 } SKUpdateCheckInterval;
 
-@class SKVersionNumber;
+@class SKVersionNumber, SKReleaseNotesController;
 
 @interface SKUpdateChecker : NSObject {
     NSLock *plistLock;
@@ -56,7 +56,7 @@ typedef enum {
     NSTimer *updateTimer;
     SKVersionNumber *localVersionNumber;
     NSString *keyForCurrentMajorVersion;
-    //SKRelNotesController *releaseNotesWindowController;
+    SKReleaseNotesController *releaseNotesController;
 }
 
 // API
