@@ -102,6 +102,8 @@ typedef enum _SKAnnotationMode {
 - (void)selectPreviousActiveAnnotation:(id)sender;
 - (void)scrollAnnotationToVisible:(PDFAnnotation *)annotation;
 
+- (void)takeSnapshot:(id)sender;
+
 - (void)setHasNavigation:(BOOL)hasNav autohidesCursor:(BOOL)hideCursor;
 
 - (void)setNeedsDisplayInRect:(NSRect)rect ofPage:(PDFPage *)page;
