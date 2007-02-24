@@ -90,13 +90,20 @@ static NSString *SKDocumentToolbarAnnotationModeItemIdentifier = @"SKDocumentToo
 static NSString *SKDocumentToolbarDisplayBoxItemIdentifier = @"SKDocumentToolbarDisplayBoxItemIdentifier";
 static NSString *SKDocumentToolbarContentsPaneItemIdentifier = @"SKDocumentToolbarContentsPaneItemIdentifier";
 static NSString *SKDocumentToolbarNotesPaneItemIdentifier = @"SKDocumentToolbarNotesPaneItemIdentifier";
-static NSString *SKDocumentToolbarSearchItemIdentifier = @"SKDocumentToolbarSearchItemIdentifier";
 
 #define TOOLBAR_SEARCHFIELD_MIN_SIZE NSMakeSize(110.0, 22.0)
 #define TOOLBAR_SEARCHFIELD_MAX_SIZE NSMakeSize(1000.0, 22.0)
 
 @interface NSObject (SKAppleTreeControllerPrivate)
 - (id)observedObject;
+@end
+
+@interface NSResponder (SKExtensions)
+- (BOOL)isDescendantOf:(NSView *)aView;
+@end
+
+@implementation NSResponder (SKExtensions)
+- (BOOL)isDescendantOf:(NSView *)aView { return NO; }
 @end
 
 @implementation SKMainWindowController
@@ -148,11 +155,6 @@ static NSString *SKDocumentToolbarSearchItemIdentifier = @"SKDocumentToolbarSear
     [lastViewedPages release];
     [selectedNoteIndexPaths release];
     [selectedNote release];
-    [[outlineView enclosingScrollView] release];
-    [[[findTableView enclosingScrollView] superview] release];
-    [[thumbnailTableView enclosingScrollView] release];
-    [[noteOutlineView enclosingScrollView] release];
-    [[snapshotTableView enclosingScrollView] release];
 	[leftSideWindow release];
 	[rightSideWindow release];
 	[fullScreenWindow release];
@@ -169,12 +171,6 @@ static NSString *SKDocumentToolbarSearchItemIdentifier = @"SKDocumentToolbarSear
     // this is not called automatically, because the document overrides makeWindowControllers
     [[self document] windowControllerDidLoadNib:self];
     
-    [[outlineView enclosingScrollView] retain];
-    [[[findTableView enclosingScrollView] superview] retain];
-    [[thumbnailTableView enclosingScrollView] retain];
-    [[noteOutlineView enclosingScrollView] retain];
-    [[snapshotTableView enclosingScrollView] retain];
-    
     NSRect frame = [leftSideButton frame];
     frame.size.height = SEGMENTED_CONTROL_HEIGHT;
     [leftSideButton setFrame:frame];
@@ -187,8 +183,8 @@ static NSString *SKDocumentToolbarSearchItemIdentifier = @"SKDocumentToolbarSear
     [[rightSideButton cell] setToolTip:NSLocalizedString(@"View Notes", @"Tool tip message") forSegment:SKNoteSidePaneState];
     [[rightSideButton cell] setToolTip:NSLocalizedString(@"View Snapshots", @"Tool tip message") forSegment:SKSnapshotSidePaneState];
     
-    [searchBox setCollapseEdges:BDSKMaxXEdgeMask | BDSKMinYEdgeMask];
-    [searchBox setMinSize:NSMakeSize(100.0, 42.0)];
+    [leftSideCollapsibleView setCollapseEdges:BDSKMaxXEdgeMask | BDSKMinYEdgeMask];
+    [leftSideCollapsibleView setMinSize:NSMakeSize(100.0, 42.0)];
     
     [findCollapsibleView setCollapseEdges:BDSKMaxXEdgeMask | BDSKMinYEdgeMask];
     [findCollapsibleView setMinSize:NSMakeSize(50.0, 25.0)];
@@ -197,6 +193,9 @@ static NSString *SKDocumentToolbarSearchItemIdentifier = @"SKDocumentToolbarSear
     [findEdgeView setEdges:BDSKMaxXEdgeMask];
     [leftSideEdgeView setEdges:BDSKMaxXEdgeMask];
     [rightSideEdgeView setEdges:BDSKMinXEdgeMask];
+    
+    [self displayOutlineView];
+    [self displayNoteView];
     
     // we retain as we might replace it with the full screen window
     mainWindow = [[self window] retain];
@@ -466,8 +465,8 @@ static NSString *SKDocumentToolbarSearchItemIdentifier = @"SKDocumentToolbarSear
     if (leftSidePaneState != newLeftSidePaneState) {
         leftSidePaneState = newLeftSidePaneState;
         
-        if ([findField stringValue] && [[findField stringValue] isEqualToString:@""] == NO) {
-            [findField setStringValue:@""];
+        if ([searchField stringValue] && [[searchField stringValue] isEqualToString:@""] == NO) {
+            [searchField setStringValue:@""];
             [self removeTemporaryAnnotations];
         }
         
@@ -833,7 +832,7 @@ static NSString *SKDocumentToolbarSearchItemIdentifier = @"SKDocumentToolbarSear
         [fullScreenWindow setFrame:[screen frame] display:NO];
     }
     
-    if ([[mainWindow firstResponder] respondsToSelector:@selector(isDescendantOf:)] && [(NSView *)[mainWindow firstResponder] isDescendantOf:pdfView])
+    if ([[mainWindow firstResponder] isDescendantOf:pdfView])
         [mainWindow makeFirstResponder:nil];
     [fullScreenWindow setMainView:pdfView];
     [pdfView setBackgroundColor:[NSUnarchiver unarchiveObjectWithData:[[NSUserDefaults standardUserDefaults] dataForKey:SKFullScreenBackgroundColorKey]]];
@@ -898,13 +897,13 @@ static NSString *SKDocumentToolbarSearchItemIdentifier = @"SKDocumentToolbarSear
         [rightSideWindow moveToScreen:[[self window] screen]];
     }
     
-    if ([[mainWindow firstResponder] respondsToSelector:@selector(isDescendantOf:)] && [(NSView *)[mainWindow firstResponder] isDescendantOf:leftSideBox])
+    if ([[mainWindow firstResponder] isDescendantOf:leftSideBox])
         [mainWindow makeFirstResponder:nil];
     [leftSideBox retain]; // leftSideBox is removed from its old superview in the process
     [leftSideWindow setMainView:leftSideBox];
     [leftSideBox release];
     
-    if ([[mainWindow firstResponder] respondsToSelector:@selector(isDescendantOf:)] && [(NSView *)[mainWindow firstResponder] isDescendantOf:rightSideBox])
+    if ([[mainWindow firstResponder] isDescendantOf:rightSideBox])
         [mainWindow makeFirstResponder:nil];
     [rightSideBox retain];
     [rightSideWindow setMainView:rightSideBox];
@@ -925,14 +924,14 @@ static NSString *SKDocumentToolbarSearchItemIdentifier = @"SKDocumentToolbarSear
     [leftSideWindow orderOut:self];
     [rightSideWindow orderOut:self];
     
-    if ([[leftSideWindow firstResponder] respondsToSelector:@selector(isDescendantOf:)] && [(NSView *)[leftSideWindow firstResponder] isDescendantOf:leftSideBox])
+    if ([[leftSideWindow firstResponder] isDescendantOf:leftSideBox])
         [leftSideWindow makeFirstResponder:nil];
     [leftSideBox retain]; // leftSideBox is removed from its old superview in the process
     [leftSideBox setFrame:[leftSideContentBox bounds]];
     [leftSideContentBox addSubview:leftSideBox];
     [leftSideBox release];
     
-    if ([[rightSideWindow firstResponder] respondsToSelector:@selector(isDescendantOf:)] && [(NSView *)[rightSideWindow firstResponder] isDescendantOf:rightSideBox])
+    if ([[rightSideWindow firstResponder] isDescendantOf:rightSideBox])
         [rightSideWindow makeFirstResponder:nil];
     [rightSideBox retain]; // rightSideBox is removed from its old superview in the process
     [rightSideBox setFrame:[rightSideContentBox bounds]];
@@ -1037,7 +1036,7 @@ static NSString *SKDocumentToolbarSearchItemIdentifier = @"SKDocumentToolbarSear
     if ([self isFullScreen])
         [self hideSideWindows];
     
-    if ([[fullScreenWindow firstResponder] respondsToSelector:@selector(isDescendantOf:)] && [(NSView *)[fullScreenWindow firstResponder] isDescendantOf:pdfView])
+    if ([[fullScreenWindow firstResponder] isDescendantOf:pdfView])
         [fullScreenWindow makeFirstResponder:nil];
     [pdfView setHasNavigation:NO autohidesCursor:NO];
     [pdfView setFrame:[[pdfContentBox contentView] bounds]];
@@ -1071,25 +1070,18 @@ static NSString *SKDocumentToolbarSearchItemIdentifier = @"SKDocumentToolbarSear
 
 #pragma mark Swapping tables
 
-- (void)replaceTable:(NSTableView *)oldTableView withTable:(NSTableView *)newTableView animate:(BOOL)animate {
-    if ([newTableView window] == nil) {
-        NSView *newTable = [newTableView enclosingScrollView];
-        NSView *oldTable = [oldTableView enclosingScrollView];
-        BOOL wasFirstResponder = [[[oldTableView window] firstResponder] isEqual:oldTableView];
+- (void)replaceSideView:(NSView *)oldView withView:(NSView *)newView animate:(BOOL)animate {
+    if ([newView window] == nil) {
+        BOOL wasFirstResponder = [[[oldView window] firstResponder] isDescendantOf:oldView];
         
-        if ([oldTableView isEqual:findTableView])
-            oldTable = [oldTable superview];
-        if ([newTableView isEqual:findTableView])
-            newTable = [newTable superview];
-        
-        [newTable setFrame:[oldTable frame]];
-        [newTable setHidden:animate];
-        [[oldTable superview] addSubview:newTable];
+        [newView setFrame:[oldView frame]];
+        [newView setHidden:animate];
+        [[oldView superview] addSubview:newView];
         
         if (animate) {
             NSViewAnimation *animation;
-            NSDictionary *fadeOutDict = [[NSDictionary alloc] initWithObjectsAndKeys:oldTable, NSViewAnimationTargetKey, NSViewAnimationFadeOutEffect, NSViewAnimationEffectKey, nil];
-            NSDictionary *fadeInDict = [[NSDictionary alloc] initWithObjectsAndKeys:newTable, NSViewAnimationTargetKey, NSViewAnimationFadeInEffect, NSViewAnimationEffectKey, nil];
+            NSDictionary *fadeOutDict = [[NSDictionary alloc] initWithObjectsAndKeys:oldView, NSViewAnimationTargetKey, NSViewAnimationFadeOutEffect, NSViewAnimationEffectKey, nil];
+            NSDictionary *fadeInDict = [[NSDictionary alloc] initWithObjectsAndKeys:newView, NSViewAnimationTargetKey, NSViewAnimationFadeInEffect, NSViewAnimationEffectKey, nil];
             
             animation = [[[NSViewAnimation alloc] initWithViewAnimations:[NSArray arrayWithObjects:fadeOutDict, fadeInDict, nil]] autorelease];
             [fadeOutDict release];
@@ -1102,63 +1094,67 @@ static NSString *SKDocumentToolbarSearchItemIdentifier = @"SKDocumentToolbarSear
         }
         
         if (wasFirstResponder)
-            [[newTableView window] makeFirstResponder:newTableView];
-        [oldTable removeFromSuperview];
-        [oldTable setHidden:NO];
+            [[newView window] makeFirstResponder:[newView nextKeyView]];
+        [oldView removeFromSuperview];
+        [oldView setHidden:NO];
     }
 }
 
 - (void)displayOutlineView {
-    [self replaceTable:currentTableView withTable:outlineView animate:NO];
-    currentTableView = outlineView;
+    [self  replaceSideView:currentLeftSideView withView:tocView animate:NO];
+    currentLeftSideView = tocView;
     [self updateOutlineSelection];
 }
 
 - (void)fadeInOutlineView {
-    [self replaceTable:currentTableView withTable:outlineView animate:YES];
-    currentTableView = outlineView;
+    [self  replaceSideView:currentLeftSideView withView:tocView animate:YES];
+    currentLeftSideView = tocView;
     [self updateOutlineSelection];
 }
 
 - (void)displayThumbnailView {
-    [self replaceTable:currentTableView withTable:thumbnailTableView animate:NO];
-    currentTableView = thumbnailTableView;
+    [self  replaceSideView:currentLeftSideView withView:thumbnailView animate:NO];
+    currentLeftSideView = thumbnailView;
     [self updateThumbnailSelection];
     [self updateThumbnailsIfNeeded];
 }
 
 - (void)fadeInThumbnailView {
-    [self replaceTable:currentTableView withTable:thumbnailTableView animate:YES];
-    currentTableView = thumbnailTableView;
+    [self  replaceSideView:currentLeftSideView withView:thumbnailView animate:YES];
+    currentLeftSideView = thumbnailView;
     [self updateThumbnailSelection];
     [self updateThumbnailsIfNeeded];
 }
 
 - (void)displaySearchView {
-    [self replaceTable:currentTableView withTable:findTableView animate:NO];
-    currentTableView = findTableView;
+    [self  replaceSideView:currentLeftSideView withView:findView animate:NO];
+    currentLeftSideView = findView;
 }
 
 - (void)fadeInSearchView {
-    [self replaceTable:currentTableView withTable:findTableView animate:YES];
-    currentTableView = findTableView;
+    [self  replaceSideView:currentLeftSideView withView:findView animate:YES];
+    currentLeftSideView = findView;
 }
 
 - (void)displayNoteView {
-    [self replaceTable:snapshotTableView withTable:noteOutlineView animate:NO];
+    [self  replaceSideView:currentRightSideView withView:noteView animate:NO];
+    currentRightSideView = noteView;
 }
 
 - (void)fadeInNoteView {
-    [self replaceTable:snapshotTableView withTable:noteOutlineView animate:YES];
+    [self  replaceSideView:currentRightSideView withView:noteView animate:YES];
+    currentRightSideView = noteView;
 }
 
 - (void)displaySnapshotView {
-    [self replaceTable:noteOutlineView withTable:snapshotTableView animate:NO];
+    [self  replaceSideView:currentRightSideView withView:snapshotView animate:NO];
+    currentRightSideView = snapshotView;
     [self updateSnapshotsIfNeeded];
 }
 
 - (void)fadeInSnapshotView {
-    [self replaceTable:noteOutlineView withTable:snapshotTableView animate:YES];
+    [self  replaceSideView:currentRightSideView withView:snapshotTableView animate:YES];
+    currentRightSideView = snapshotTableView;
     [self updateSnapshotsIfNeeded];
 }
 
@@ -1513,7 +1509,7 @@ static NSString *SKDocumentToolbarSearchItemIdentifier = @"SKDocumentToolbarSear
             }
         } else if ([key isEqualToString:SKSearchHighlightColorKey]) {
             if ([[NSUserDefaults standardUserDefaults] boolForKey:SKShouldHighlightSearchResultsKey] && 
-                [[findField stringValue] length] && [findTableView numberOfSelectedRows]) {
+                [[searchField stringValue] length] && [findTableView numberOfSelectedRows]) {
                 // clear the selection
                 [self removeTemporaryAnnotations];
                 
@@ -1524,7 +1520,7 @@ static NSString *SKDocumentToolbarSearchItemIdentifier = @"SKDocumentToolbarSear
                     [self addAnnotationsForSelection:sel];
             }
         } else if ([key isEqualToString:SKShouldHighlightSearchResultsKey]) {
-            if ([[findField stringValue] length] && [findTableView numberOfSelectedRows]) {
+            if ([[searchField stringValue] length] && [findTableView numberOfSelectedRows]) {
                 // clear the selection
                 [self removeTemporaryAnnotations];
                 
@@ -2232,17 +2228,6 @@ static NSString *SKDocumentToolbarSearchItemIdentifier = @"SKDocumentToolbarSear
     [item setMinSize:[displayBoxPopUpButton bounds].size];
     [item setMaxSize:[displayBoxPopUpButton bounds].size];
     [toolbarItems setObject:item forKey:SKDocumentToolbarDisplayBoxItemIdentifier];
-    [item release];
-	
-    item = [[NSToolbarItem alloc] initWithItemIdentifier:SKDocumentToolbarSearchItemIdentifier];
-    [item setLabel:NSLocalizedString(@"Search", @"Toolbar item label")];
-    [item setPaletteLabel:NSLocalizedString(@"Search", @"Toolbar item label")];
-    [item setToolTip:NSLocalizedString(@"Search", @"Tool tip message")];
-    [item setTarget:self];
-    [item setView:searchField];
-    [item setMinSize:TOOLBAR_SEARCHFIELD_MIN_SIZE];
-    [item setMaxSize:TOOLBAR_SEARCHFIELD_MAX_SIZE];
-    [toolbarItems setObject:item forKey:SKDocumentToolbarSearchItemIdentifier];
     [item release];
     
     item = [[NSToolbarItem alloc] initWithItemIdentifier:SKDocumentToolbarInfoItemIdentifier];

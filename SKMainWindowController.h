@@ -72,29 +72,69 @@ typedef struct _SKPDFViewState {
 @end
 
 @interface SKMainWindowController : NSWindowController {
+    IBOutlet SKSplitView        *splitView;
+    
     IBOutlet SKPDFView          *pdfView;
     IBOutlet BDSKEdgeView       *pdfContentBox;
     
-    IBOutlet SKSplitView        *splitView;
     IBOutlet NSBox              *leftSideContentBox;
     IBOutlet NSBox              *leftSideBox;
     IBOutlet BDSKEdgeView       *leftSideEdgeView;
+    IBOutlet BDSKCollapsibleView *leftSideCollapsibleView;
+    IBOutlet NSSegmentedControl *leftSideButton;
+    IBOutlet NSSearchField      *searchField;
+    
     IBOutlet NSBox              *rightSideContentBox;
     IBOutlet NSBox              *rightSideBox;
     IBOutlet BDSKEdgeView       *rightSideEdgeView;
+    IBOutlet NSSegmentedControl *rightSideButton;
+    
+    IBOutlet NSView             *currentLeftSideView;
+    IBOutlet NSView             *currentRightSideView;
+    SKLeftSidePaneState         leftSidePaneState;
+    SKRightSidePaneState        rightSidePaneState;
     
     IBOutlet NSOutlineView      *outlineView;
+    IBOutlet NSView             *tocView;
     PDFOutline                  *pdfOutline;
     BOOL                        updatingOutlineSelection;
     
-    IBOutlet NSSearchField      *findField;
+    IBOutlet NSArrayController  *thumbnailArrayController;
+    IBOutlet SKThumbnailTableView *thumbnailTableView;
+    IBOutlet NSView             *thumbnailView;
+    NSMutableArray              *thumbnails;
+    BOOL                        updatingThumbnailSelection;
+    NSMutableIndexSet           *dirtyThumbnailIndexes;
+    NSTimer                     *thumbnailTimer;
+    
+    IBOutlet NSArrayController  *findArrayController;
+    IBOutlet NSTableView        *findTableView;
+    IBOutlet NSView             *findView;
+    IBOutlet BDSKEdgeView       *findEdgeView;
+    IBOutlet BDSKCollapsibleView *findCollapsibleView;
+    IBOutlet NSProgressIndicator *spinner;
+    NSMutableArray              *searchResults;
+    BOOL                        findPanelFind;
     
     IBOutlet NSArrayController  *noteArrayController;
     IBOutlet NSTreeController   *noteTreeController;
     IBOutlet SKNoteOutlineView  *noteOutlineView;
+    IBOutlet NSView             *noteView;
     BOOL                        updatingNoteSelection;
     NSArray                     *selectedNoteIndexPaths;
     PDFAnnotation               *selectedNote;
+    
+    IBOutlet NSArrayController  *snapshotArrayController;
+    IBOutlet SKSnapshotTableView *snapshotTableView;
+    IBOutlet NSView             *snapshotView;
+    NSMutableArray              *snapshots;
+    NSMutableIndexSet           *dirtySnapshotIndexes;
+    NSTimer                     *snapshotTimer;
+    
+    NSWindow                    *mainWindow;
+    SKFullScreenWindow          *fullScreenWindow;
+    SKSideWindow                *leftSideWindow;
+    SKSideWindow                *rightSideWindow;
     
     IBOutlet NSSegmentedControl *backForwardButton;
     IBOutlet NSView             *pageNumberView;
@@ -104,48 +144,18 @@ typedef struct _SKPDFViewState {
     IBOutlet NSSegmentedControl *annotationModeButton;
     IBOutlet NSTextField        *scaleField;
     IBOutlet NSPopUpButton      *displayBoxPopUpButton;
-    IBOutlet NSSearchField      *searchField;
-    IBOutlet BDSKCollapsibleView  *searchBox;
     NSMutableDictionary         *toolbarItems;
-    
-    IBOutlet NSSegmentedControl *leftSideButton;
-    IBOutlet NSSegmentedControl *rightSideButton;
     
     IBOutlet NSWindow           *choosePageSheet;
     IBOutlet NSTextField        *choosePageField;
     
-    NSWindow                    *mainWindow;
-    SKFullScreenWindow          *fullScreenWindow;
-    SKSideWindow                *leftSideWindow;
-    SKSideWindow                *rightSideWindow;
+    IBOutlet NSWindow           *saveProgressSheet;
+    IBOutlet NSProgressIndicator *saveProgressBar;
+    
+    NSMutableArray              *lastViewedPages;
     
     BOOL                        isPresentation;
     SKPDFViewState              savedState;
-    
-    IBOutlet NSTableView        *currentTableView;
-    SKLeftSidePaneState         leftSidePaneState;
-    SKRightSidePaneState        rightSidePaneState;
-    
-    IBOutlet NSTableView        *findTableView;
-    NSMutableArray              *searchResults;
-    IBOutlet NSArrayController  *findArrayController;
-    IBOutlet BDSKEdgeView       *findEdgeView;
-    IBOutlet BDSKCollapsibleView *findCollapsibleView;
-    IBOutlet NSProgressIndicator *spinner;
-    
-    IBOutlet NSArrayController  *thumbnailArrayController;
-    IBOutlet SKThumbnailTableView *thumbnailTableView;
-    NSMutableArray              *thumbnails;
-    BOOL                        updatingThumbnailSelection;
-    NSMutableIndexSet           *dirtyThumbnailIndexes;
-    NSTimer                     *thumbnailTimer;
-    
-    NSMutableIndexSet           *dirtySnapshotIndexes;
-    NSTimer                     *snapshotTimer;
-    
-    IBOutlet NSArrayController  *snapshotArrayController;
-    IBOutlet SKSnapshotTableView *snapshotTableView;
-    NSMutableArray              *snapshots;
     
     float                       lastLeftSidePaneWidth;
     float                       lastRightSidePaneWidth;
@@ -154,13 +164,6 @@ typedef struct _SKPDFViewState {
     float                       snapshotCacheSize;
     
     BOOL                        edited;
-    
-    BOOL                        findPanelFind;
-    
-    IBOutlet NSWindow           *saveProgressSheet;
-    IBOutlet NSProgressIndicator *saveProgressBar;
-    
-    NSMutableArray *lastViewedPages;
 }
 
 - (IBAction)pickColor:(id)sender;
