@@ -57,7 +57,7 @@ typedef struct _SKPDFViewState {
 	BOOL autoHidesScrollers;
 } SKPDFViewState;
 
-@class SKPDFView, PDFOutline, BDSKCollapsibleView, BDSKEdgeView, SKFullScreenWindow, SKNavigationWindow, SKSideWindow, SKSnapshotWindowController, SKSplitView;
+@class SKPDFView, PDFOutline, SKThumbnail, BDSKCollapsibleView, BDSKEdgeView, SKFullScreenWindow, SKNavigationWindow, SKSideWindow, SKSnapshotWindowController, SKSplitView;
 
 @interface SKThumbnailTableView : NSTableView
 @end
@@ -104,7 +104,7 @@ typedef struct _SKPDFViewState {
     IBOutlet NSView             *thumbnailView;
     NSMutableArray              *thumbnails;
     BOOL                        updatingThumbnailSelection;
-    NSMutableIndexSet           *dirtyThumbnailIndexes;
+    NSMutableArray              *dirtyThumbnails;
     NSTimer                     *thumbnailTimer;
     
     IBOutlet NSArrayController  *findArrayController;
@@ -128,7 +128,7 @@ typedef struct _SKPDFViewState {
     IBOutlet SKSnapshotTableView *snapshotTableView;
     IBOutlet NSView             *snapshotView;
     NSMutableArray              *snapshots;
-    NSMutableIndexSet           *dirtySnapshotIndexes;
+    NSMutableArray              *dirtySnapshots;
     NSTimer                     *snapshotTimer;
     
     NSWindow                    *mainWindow;
@@ -252,14 +252,14 @@ typedef struct _SKPDFViewState {
 - (void)updateThumbnailSelection;
 - (void)resetThumbnails;
 - (void)resetThumbnailSizeIfNeeded;
-- (void)thumbnailAtIndexNeedsUpdate:(unsigned)index;
-- (void)thumbnailsAtIndexesNeedUpdate:(NSIndexSet *)indexes;
+- (void)thumbnailNeedsUpdate:(SKThumbnail *)dirtyThumbnail;
+- (void)allThumbnailsNeedUpdate;
 - (void)updateThumbnailsIfNeeded;
 - (void)updateThumbnail:(NSTimer *)timer;
 
 - (void)resetSnapshotSizeIfNeeded;
-- (void)snapshotAtIndexNeedsUpdate:(unsigned)index;
-- (void)snapshotsAtIndexesNeedUpdate:(NSIndexSet *)indexes;
+- (void)snapshotNeedsUpdate:(SKSnapshotWindowController *)dirstySnapshot;
+- (void)allSnapshotsNeedUpdate;
 - (void)updateSnapshotsIfNeeded;
 - (void)updateSnapshot:(NSTimer *)timer;
 
