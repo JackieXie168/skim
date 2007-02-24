@@ -120,9 +120,9 @@ static NSString *SKDocumentToolbarNotesPaneItemIdentifier = @"SKDocumentToolbarN
         isPresentation = NO;
         searchResults = [[NSMutableArray alloc] init];
         thumbnails = [[NSMutableArray alloc] init];
-        dirtyThumbnailIndexes = [[NSMutableIndexSet alloc] init];
+        dirtyThumbnails = [[NSMutableArray alloc] init];
         snapshots = [[NSMutableArray alloc] init];
-        dirtySnapshotIndexes = [[NSMutableIndexSet alloc] init];
+        dirtySnapshots = [[NSMutableArray alloc] init];
         lastViewedPages = [[NSMutableArray alloc] init];
         leftSidePaneState = SKOutlineSidePaneState;
         rightSidePaneState = SKNoteSidePaneState;
@@ -146,8 +146,8 @@ static NSString *SKDocumentToolbarNotesPaneItemIdentifier = @"SKDocumentToolbarN
         [snapshotTimer release];
         snapshotTimer = nil;
     }
-    [dirtyThumbnailIndexes release];
-    [dirtySnapshotIndexes release];
+    [dirtyThumbnails release];
+    [dirtySnapshots release];
 	[searchResults release];
     [pdfOutline release];
 	[thumbnails release];
@@ -425,7 +425,7 @@ static NSString *SKDocumentToolbarNotesPaneItemIdentifier = @"SKDocumentToolbarN
             [annotation release];
         }
     }
-    [self thumbnailsAtIndexesNeedUpdate:[NSIndexSet indexSetWithIndexesInRange:NSMakeRange(0, [pdfDoc pageCount])]];
+    [self allThumbnailsNeedUpdate];
 }
 
 - (PDFView *)pdfView {
@@ -513,6 +513,7 @@ static NSString *SKDocumentToolbarNotesPaneItemIdentifier = @"SKDocumentToolbarN
 }
 
 - (void)removeObjectFromThumbnailsAtIndex:(unsigned)theIndex {
+    [dirtyThumbnails removeObject:[thumbnails objectAtIndex:theIndex]];
     [thumbnails removeObjectAtIndex:theIndex];
 }
 
@@ -537,6 +538,7 @@ static NSString *SKDocumentToolbarNotesPaneItemIdentifier = @"SKDocumentToolbarN
 }
 
 - (void)removeObjectFromSnapshotsAtIndex:(unsigned)theIndex {
+    [dirtySnapshots removeObject:[snapshots objectAtIndex:theIndex]];
     [snapshots removeObjectAtIndex:theIndex];
 }
 
@@ -718,13 +720,17 @@ static NSString *SKDocumentToolbarNotesPaneItemIdentifier = @"SKDocumentToolbarN
 - (IBAction)rotateRight:(id)sender {
     [[pdfView currentPage] setRotation:[[pdfView currentPage] rotation] + 90];
     [pdfView layoutDocumentView];
-    [self thumbnailAtIndexNeedsUpdate:[[pdfView document] indexForPage:[pdfView currentPage]]];
+    
+    SKThumbnail *thumbnail = [[thumbnailArrayController arrangedObjects] objectAtIndex:[[pdfView document] indexForPage:[pdfView currentPage]]];
+    [self thumbnailNeedsUpdate:thumbnail];
 }
 
 - (IBAction)rotateLeft:(id)sender {
     [[pdfView currentPage] setRotation:[[pdfView currentPage] rotation] - 90];
     [pdfView layoutDocumentView];
-    [self thumbnailAtIndexNeedsUpdate:[[pdfView document] indexForPage:[pdfView currentPage]]];
+    
+    SKThumbnail *thumbnail = [[thumbnailArrayController arrangedObjects] objectAtIndex:[[pdfView document] indexForPage:[pdfView currentPage]]];
+    [self thumbnailNeedsUpdate:thumbnail];
 }
 
 - (IBAction)rotateAllRight:(id)sender {
@@ -733,7 +739,7 @@ static NSString *SKDocumentToolbarNotesPaneItemIdentifier = @"SKDocumentToolbarN
         [[[pdfView document] pageAtIndex:i] setRotation:[[[pdfView document] pageAtIndex:i] rotation] + 90];
     }
     [pdfView layoutDocumentView];
-    [self thumbnailsAtIndexesNeedUpdate:[NSIndexSet indexSetWithIndexesInRange:NSMakeRange(0, [self countOfThumbnails])]];
+    [self allThumbnailsNeedUpdate];
 }
 
 - (IBAction)rotateAllLeft:(id)sender {
@@ -742,7 +748,7 @@ static NSString *SKDocumentToolbarNotesPaneItemIdentifier = @"SKDocumentToolbarN
         [[[pdfView document] pageAtIndex:i] setRotation:[[[pdfView document] pageAtIndex:i] rotation] - 90];
     }
     [pdfView layoutDocumentView];
-    [self thumbnailsAtIndexesNeedUpdate:[NSIndexSet indexSetWithIndexesInRange:NSMakeRange(0, [self countOfThumbnails])]];
+    [self allThumbnailsNeedUpdate];
 }
 
 - (IBAction)getInfo:(id)sender {
@@ -1185,9 +1191,7 @@ static NSString *SKDocumentToolbarNotesPaneItemIdentifier = @"SKDocumentToolbarN
 }
 
 - (void)addAnnotationsForSelection:(PDFSelection *)sel {
-    PDFDocument *doc = [pdfView document];
     NSArray *pages = [sel pages];
-    NSMutableIndexSet *indexes = [NSMutableIndexSet indexSet];
     int i, iMax = [pages count];
     NSColor *color = nil;
     NSData *colorData = [[NSUserDefaults standardUserDefaults] dataForKey:SKSearchHighlightColorKey];
@@ -1204,33 +1208,33 @@ static NSString *SKDocumentToolbarNotesPaneItemIdentifier = @"SKDocumentToolbarN
         [circle setColor:color];
         [page addAnnotation:circle];
         [pdfView setNeedsDisplayForAnnotation:circle];
-        [indexes addIndex:[doc indexForPage:page]];
         [circle release];
+        [self thumbnailNeedsUpdate:[[thumbnailArrayController arrangedObjects] objectAtIndex:i]];
     }
-    
-    [self thumbnailsAtIndexesNeedUpdate:indexes];
 }
 
 - (void)removeTemporaryAnnotations {
     PDFDocument *doc = [pdfView document];
-    NSMutableIndexSet *indexes = [NSMutableIndexSet indexSet];
     unsigned i, iMax = [doc pageCount];
+    
     for (i = 0; i < iMax; i++) {
         PDFPage *page = [doc pageAtIndex:i];
         NSArray *annotations = [[page annotations] copy];
         unsigned j, jMax = [annotations count];
         PDFAnnotation *annote;
+        BOOL found = NO;
+        
         for (j = 0; j < jMax; j++) {
             annote = [annotations objectAtIndex:j];
             if ([annote isTemporaryAnnotation]) {
                 [page removeAnnotation:annote];
                 [pdfView setNeedsDisplayForAnnotation:annote];
-                [indexes addIndex:[doc indexForPage:page]];
+                found = YES;
             }
         }
-        [annotations release];
+        if (found)
+            [self thumbnailNeedsUpdate:[[thumbnailArrayController arrangedObjects] objectAtIndex:i]];
     }
-    [self thumbnailsAtIndexesNeedUpdate:indexes];
 }
 
 - (IBAction)search:(id)sender {
@@ -1308,8 +1312,7 @@ static NSString *SKDocumentToolbarNotesPaneItemIdentifier = @"SKDocumentToolbarN
 }
 
 - (void)snapshotControllerViewDidChange:(SKSnapshotWindowController *)controller {
-    int index = [snapshots indexOfObject:controller];
-    [self snapshotAtIndexNeedsUpdate:index];
+    [self snapshotNeedsUpdate:controller];
 }
 
 - (NSRect)snapshotControllerTargetRectForMiniaturize:(SKSnapshotWindowController *)controller {
@@ -1408,13 +1411,14 @@ static NSString *SKDocumentToolbarNotesPaneItemIdentifier = @"SKDocumentToolbarN
 
 - (void)handleDidAddAnnotationNotification:(NSNotification *)notification {
     PDFAnnotation *annotation = [[notification userInfo] objectForKey:@"annotation"];
-    PDFPage *page = [[notification userInfo] objectForKey:@"page"];;
+    PDFPage *page = [[notification userInfo] objectForKey:@"page"];
+    
     if (annotation) {
         updatingNoteSelection = YES;
         [[(SKDocument *)[self document] mutableArrayValueForKey:@"notes"] addObject:annotation];
         updatingNoteSelection = NO;
         if (page)
-            [self thumbnailAtIndexNeedsUpdate:[[pdfView document] indexForPage:page]];
+            [self thumbnailNeedsUpdate:[[thumbnailArrayController arrangedObjects] objectAtIndex:[[pdfView document] indexForPage:page]]];
     }
     [[self document] updateChangeCount:NSChangeDone];
 }
@@ -1438,7 +1442,7 @@ static NSString *SKDocumentToolbarNotesPaneItemIdentifier = @"SKDocumentToolbarN
         }
         [[[self document] mutableArrayValueForKey:@"notes"] removeObject:annotation];
         if (page)
-            [self thumbnailAtIndexNeedsUpdate:[[pdfView document] indexForPage:page]];
+            [self thumbnailNeedsUpdate:[[thumbnailArrayController arrangedObjects] objectAtIndex:[[pdfView document] indexForPage:page]]];
     }
     [[self document] updateChangeCount:NSChangeDone];
 }
@@ -1446,7 +1450,7 @@ static NSString *SKDocumentToolbarNotesPaneItemIdentifier = @"SKDocumentToolbarN
 - (void)handleDidChangeAnnotationNotification:(NSNotification *)notification {
     PDFAnnotation *annotation = [[notification userInfo] objectForKey:@"annotation"];
     [[self document] updateChangeCount:NSChangeDone];
-    [self thumbnailAtIndexNeedsUpdate:[annotation pageIndex]];
+    [self thumbnailNeedsUpdate:[[thumbnailArrayController arrangedObjects] objectAtIndex:[annotation pageIndex]]];
 }
 
 - (void)handleDoubleClickedAnnotationNotification:(NSNotification *)notification {
@@ -1858,9 +1862,7 @@ static NSString *SKDocumentToolbarNotesPaneItemIdentifier = @"SKDocumentToolbarN
         }
     }
     [[self mutableArrayValueForKey:@"thumbnails"] setArray:array];
-    [dirtyThumbnailIndexes removeAllIndexes];
-    [dirtyThumbnailIndexes addIndexesInRange:NSMakeRange(0, count)];
-    [self updateThumbnailsIfNeeded];
+    [self allThumbnailsNeedUpdate];
 }
 
 - (void)resetThumbnailSizeIfNeeded {
@@ -1877,43 +1879,47 @@ static NSString *SKDocumentToolbarNotesPaneItemIdentifier = @"SKDocumentToolbarN
         }
         
         if ([self countOfThumbnails])
-            [self thumbnailsAtIndexesNeedUpdate:[NSIndexSet indexSetWithIndexesInRange:NSMakeRange(0, [self countOfThumbnails])]];
+            [self allThumbnailsNeedUpdate];
     }
 }
 
-- (void)thumbnailAtIndexNeedsUpdate:(unsigned)index {
-    [self thumbnailsAtIndexesNeedUpdate:[NSIndexSet indexSetWithIndex:index]];
+- (void)thumbnailNeedsUpdate:(SKThumbnail *)dirtyThumbnail {
+    if ([dirtyThumbnails containsObject:dirtyThumbnail] == NO) {
+        [dirtyThumbnails addObject:dirtyThumbnail];
+        [self updateThumbnailsIfNeeded];
+    }
 }
 
-- (void)thumbnailsAtIndexesNeedUpdate:(NSIndexSet *)indexes {
-    [dirtyThumbnailIndexes addIndexes:indexes];
+- (void)allThumbnailsNeedUpdate {
+    [dirtyThumbnails setArray:[self thumbnails]];
     [self updateThumbnailsIfNeeded];
 }
 
 - (void)updateThumbnailsIfNeeded {
-    if ([thumbnailTableView window] != nil && [dirtyThumbnailIndexes count] > 0 && thumbnailTimer == nil)
+    if ([thumbnailTableView window] != nil && [dirtyThumbnails count] > 0 && thumbnailTimer == nil)
         thumbnailTimer = [[NSTimer scheduledTimerWithTimeInterval:0.03 target:self selector:@selector(updateThumbnail:) userInfo:NULL repeats:YES] retain];
 }
 
 - (void)updateThumbnail:(NSTimer *)timer {
-    unsigned index = [dirtyThumbnailIndexes firstIndex];
-    
-    if (index != NSNotFound) {
+    if ([dirtyThumbnails count]) {
+        SKThumbnail *thumbnail = [dirtySnapshots objectAtIndex:0];
         float shadowBlurRadius = roundf(thumbnailCacheSize / 32.0);
         float shadowOffset = - ceilf(shadowBlurRadius * 0.75);
-        NSSize newSize, oldSize = [[[thumbnails objectAtIndex:index] image] size];
-        
+        NSSize newSize, oldSize = [[thumbnail image] size];
         PDFDocument *pdfDoc = [pdfView document];
-        PDFPage *page = [pdfDoc pageAtIndex:index];
+        PDFPage *page = [pdfDoc pageAtIndex:[thumbnail pageIndex]];
         NSImage *image = [page thumbnailWithSize:thumbnailCacheSize shadowBlurRadius:shadowBlurRadius shadowOffset:NSMakeSize(0.0, shadowOffset)];
-        [[thumbnails objectAtIndex:index] setImage:image];
-        [dirtyThumbnailIndexes removeIndex:index];
+        
+        [thumbnail setImage:image];
+        [dirtyThumbnails removeObject:thumbnail];
         
         newSize = [image size];
-        if (fabs(newSize.width - oldSize.width) > 1.0 || fabs(newSize.height - oldSize.height) > 1.0)
+        if (fabs(newSize.width - oldSize.width) > 1.0 || fabs(newSize.height - oldSize.height) > 1.0) {
+            unsigned index = [[thumbnailArrayController arrangedObjects] indexOfObject:thumbnail];
             [thumbnailTableView noteHeightOfRowsWithIndexesChanged:[NSIndexSet indexSetWithIndex:index]];
+        }
     }
-    if ([dirtyThumbnailIndexes count] == 0) {
+    if ([dirtyThumbnails count] == 0) {
         [thumbnailTimer invalidate];
         [thumbnailTimer release];
         thumbnailTimer = nil;
@@ -1973,42 +1979,45 @@ static NSString *SKDocumentToolbarNotesPaneItemIdentifier = @"SKDocumentToolbarN
         }
         
         if ([self countOfSnapshots])
-            [self snapshotsAtIndexesNeedUpdate:[NSIndexSet indexSetWithIndexesInRange:NSMakeRange(0, [self countOfSnapshots])]];
+            [self allSnapshotsNeedUpdate];
     }
 }
 
-- (void)snapshotAtIndexNeedsUpdate:(unsigned)index {
-    [self snapshotsAtIndexesNeedUpdate:[NSIndexSet indexSetWithIndex:index]];
+- (void)snapshotNeedsUpdate:(SKSnapshotWindowController *)dirtySnapshot {
+    if ([dirtySnapshots containsObject:dirtySnapshot] == NO) {
+        [dirtySnapshots addObject:dirtySnapshot];
+        [self updateSnapshotsIfNeeded];
+    }
 }
 
-- (void)snapshotsAtIndexesNeedUpdate:(NSIndexSet *)indexes {
-    [dirtySnapshotIndexes addIndexes:indexes];
+- (void)allSnapshotsNeedUpdate {
+    [dirtySnapshots setArray:[self snapshots]];
     [self updateSnapshotsIfNeeded];
 }
 
 - (void)updateSnapshotsIfNeeded {
-    if ([snapshotTableView window] != nil && [dirtySnapshotIndexes count] > 0 && snapshotTimer == nil)
+    if ([snapshotTableView window] != nil && [dirtySnapshots count] > 0 && snapshotTimer == nil)
         snapshotTimer = [[NSTimer scheduledTimerWithTimeInterval:0.03 target:self selector:@selector(updateSnapshot:) userInfo:NULL repeats:YES] retain];
 }
 
 - (void)updateSnapshot:(NSTimer *)timer {
-    unsigned index = [dirtySnapshotIndexes firstIndex];
-    
-    if (index != NSNotFound) {
+    if ([dirtySnapshots count]) {
+        SKSnapshotWindowController *controller = [dirtySnapshots objectAtIndex:0];
         float shadowBlurRadius = roundf(snapshotCacheSize / 32.0);
         float shadowOffset = - ceilf(shadowBlurRadius * 0.75);
-        NSSize newSize, oldSize = [[[snapshots objectAtIndex:index] thumbnail] size];
-        
-        SKSnapshotWindowController *controller = [snapshots objectAtIndex:index];
+        NSSize newSize, oldSize = [[controller thumbnail] size];
         NSImage *image = [controller thumbnailWithSize:snapshotCacheSize shadowBlurRadius:shadowBlurRadius shadowOffset:NSMakeSize(0.0, shadowOffset)];
-        [[snapshots objectAtIndex:index] setThumbnail:image];
-        [dirtySnapshotIndexes removeIndex:index];
+        
+        [controller setThumbnail:image];
+        [dirtySnapshots removeObject:controller];
         
         newSize = [image size];
-        if (fabs(newSize.width - oldSize.width) > 1.0 || fabs(newSize.height - oldSize.height) > 1.0)
+        if (fabs(newSize.width - oldSize.width) > 1.0 || fabs(newSize.height - oldSize.height) > 1.0) {
+            unsigned index = [[snapshotArrayController arrangedObjects] indexOfObject:controller];
             [snapshotTableView noteHeightOfRowsWithIndexesChanged:[NSIndexSet indexSetWithIndex:index]];
+        }
     }
-    if ([dirtySnapshotIndexes count] == 0) {
+    if ([dirtySnapshots count] == 0) {
         [snapshotTimer invalidate];
         [snapshotTimer release];
         snapshotTimer = nil;
