@@ -461,9 +461,16 @@ NSString *SKPDFViewAnnotationDoubleClickedNotification = @"SKPDFViewAnnotationDo
     [item setSubmenu:submenu];
     [submenu release];
     
+    NSPoint point = [self convertPoint:[theEvent locationInWindow] fromView:nil];
+    
+    [menu addItem:[NSMenuItem separatorItem]];
+    
+    item = [menu addItemWithTitle:NSLocalizedString(@"Take Snapshot", @"Menu item title") action:@selector(takeSnapshot:) keyEquivalent:@""];
+    [item setRepresentedObject:[NSValue valueWithPoint:point]];
+    [item setTarget:self];
+    
     if ([self toolMode] == SKTextToolMode) {
         
-        NSPoint point = [self convertPoint:[theEvent locationInWindow] fromView:nil];
         PDFPage *page = [self pageForPoint:point nearest:YES];
         PDFAnnotation *annotation = nil;
         
@@ -773,6 +780,25 @@ NSString *SKPDFViewAnnotationDoubleClickedNotification = @"SKPDFViewAnnotationDo
 - (void)scrollAnnotationToVisible:(PDFAnnotation *)annotation {
     NSRect rect = [self convertRect:[self convertRect:[annotation bounds] fromPage:[annotation page]] toView:[self documentView]];
     [[self documentView] scrollRectToVisible:rect];
+}
+
+#pragma mark Snapshots
+
+- (void)takeSnapshot:(id)sender {
+    NSPoint point = [[sender representedObject] pointValue];
+    PDFPage *page = [self pageForPoint:point nearest:YES];
+    NSRect rect;
+    
+    point = [self convertPoint:point toPage:page];
+    
+    rect.origin.x = [self convertPoint:[page boundsForBox:[self displayBox]].origin fromPage:page].x;
+    rect.origin.y = point.y - 100.0;
+    rect.size.width = [self rowSizeForPage:page].width;
+    rect.size.height = 200.0;
+    
+    SKMainWindowController *controller = [[self window] windowController];
+    
+    [controller showSnapshotAtPageNumber:[[self document] indexForPage:page] forRect:[self convertRect:rect toPage:page] factor:1];
 }
 
 #pragma mark FullScreen navigation and autohide
