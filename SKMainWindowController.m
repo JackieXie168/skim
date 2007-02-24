@@ -1288,12 +1288,12 @@ static NSString *SKDocumentToolbarSearchItemIdentifier = @"SKDocumentToolbarSear
     [swc showWindow:self];
 }
 
-- (void)showSnapshots:(NSArray *)snapshotToShow {
-    // there should only be a single note
-    SKSnapshotWindowController *controller = [snapshotToShow lastObject];
+- (void)toggleSnapshots:(NSArray *)snapshotArray {
+    // there should only be a single snapshot
+    SKSnapshotWindowController *controller = [snapshotArray lastObject];
     
     if ([[controller window] isVisible])
-        [[controller window] orderFront:self];
+        [controller miniaturize];
     else
         [controller deminiaturize];
 }
@@ -2676,19 +2676,44 @@ static NSString *SKDocumentToolbarSearchItemIdentifier = @"SKDocumentToolbarSear
     NSDivideRect(cellFrame, &textRect, &imageRect, 17.0, NSMinYEdge);
     [super drawInteriorWithFrame:textRect inView:controlView];
     if (hasWindow) {
+        BOOL isSelected = [self isHighlighted] && [[controlView window] isKeyWindow] && [[[controlView window] firstResponder] isEqual:controlView];
+        float radius = 2.0;
+        NSBezierPath *path = [NSBezierPath bezierPath];
+        NSShadow *shadow = [[[NSShadow alloc] init] autorelease];
+        
+        [NSGraphicsContext saveGraphicsState];
+        
+        [shadow setShadowOffset:NSMakeSize(0.0, -1.0)];
+        if (isSelected)
+            [shadow setShadowColor:[NSColor colorWithDeviceWhite:1.0 alpha:0.2]];
+        else
+            [shadow setShadowColor:[NSColor colorWithDeviceWhite:0.0 alpha:0.1]];
+        [shadow set];
+        
         NSDivideRect(imageRect, &imageRect, &ignored, 10.0, NSMinYEdge);
         imageRect.origin.x += 4.0;
         imageRect.size.width = 10.0;
-        NSBezierPath *path = [NSBezierPath bezierPathWithRoundRectInRect:imageRect radius:1.5];
+        
+        [path moveToPoint:NSMakePoint(NSMinX(imageRect), NSMaxY(imageRect))];
+        [path appendBezierPathWithArcWithCenter:NSMakePoint(NSMinX(imageRect) + radius, NSMinY(imageRect) + radius) radius:radius startAngle:180.0 endAngle:270.0];
+        [path appendBezierPathWithArcWithCenter:NSMakePoint(NSMaxX(imageRect) - radius, NSMinY(imageRect) + radius) radius:radius startAngle:270.0 endAngle:360.0];
+        [path lineToPoint:NSMakePoint(NSMaxX(imageRect), NSMaxY(imageRect))];
+        [path closePath];
+        
         imageRect = NSInsetRect(imageRect, 1.0, 2.0);
         imageRect.size.height += 1.0;
+        
         [path appendBezierPath:[NSBezierPath bezierPathWithRect:imageRect]];
         [path setWindingRule:NSEvenOddWindingRule];
-        if ([self isHighlighted] && [[controlView window] isKeyWindow] && [[[controlView window] firstResponder] isEqual:controlView])
+        
+        if (isSelected)
             [[NSColor colorWithDeviceWhite:1.0 alpha:1.0] set];
         else
             [[NSColor colorWithDeviceWhite:0.0 alpha:0.8] set];
+        
         [path fill];
+        
+        [NSGraphicsContext restoreGraphicsState];
     }
 }
 
