@@ -37,6 +37,8 @@
  */
 
 
+extern NSString *SKAutoCheckFileUpdateKey;
+extern NSString *SKAutoCheckFileUpdateAskKey;
 extern NSString *SKBackgroundColorKey;
 extern NSString *SKDefaultDocumentScaleKey;
 extern NSString *SKDefaultDocumentAutoScaleKey;
@@ -50,4 +52,6 @@ extern NSString *SKShouldHighlightSearchResultsKey;
 extern NSString *SKSnapshotsOnTopKey;
 extern NSString *SKSnapshotThumbnailSizeKey;
 extern NSString *SKThumbnailSizeKey;
-
+extern NSString *SKUpdateCheckIntervalKey;
+extern NSString *SKUpdateCheckLastDateKey;
+extern NSString *SKUpdateLatestNotifiedVersionKey;

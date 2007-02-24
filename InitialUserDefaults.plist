@@ -4,6 +4,8 @@
 <dict>
 	<key>SKResettableKeys</key>
 	<array>
+        <string>SKAutoCheckFileUpdate</string>
+        <string>SKAutoCheckFileUpdateAsk</string>
         <string>SKBackgroundColor</string>
         <string>SKDefaultDocumentScale</string>
         <string>SKDefaultDocumentScaleOption</string>
@@ -17,7 +19,12 @@
         <string>SKSnapshotsOnTop</string>
         <string>SKSnapshotThumbnailSize</string>
         <string>SKThumbnailSize</string>
+        <string>SKUpdateCheckIntervalKey</string>
     </array>
+	<key>SKAutoCheckFileUpdate</key>
+	<false/>
+	<key>SKAutoCheckFileUpdateAsk</key>
+	<true/>
 	<key>SKBackgroundColor</key>
 	<data>
 	BAt0eXBlZHN0cmVhbYED6IQBQISEhAdOU0NvbG9yAISECE5TT2JqZWN0AIWEAWMChARm
@@ -53,5 +60,7 @@
 	<real>128</real>
 	<key>SKThumbnailSize</key>
 	<real>128</real>
+    <key>SKUpdateCheckIntervalKey</key>
+    <integer>1</integer>
 </dict>
 </plist>

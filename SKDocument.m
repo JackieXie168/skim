@@ -44,6 +44,8 @@
 #import "SKPSProgressController.h"
 #import "SKFindController.h"
 #import "BDAlias.h"
+#import "NSUserDefaultsController_SKExtensions.h"
+#import "SKStringConstants.h"
 
 // maximum length of xattr value recommended by Apple
 #define MAX_XATTR_LENGTH 4096
@@ -77,6 +79,7 @@ static NSString *SKPostScriptDocumentType = @"PostScript document";
 }
 
 - (void)dealloc {
+    [[NSUserDefaultsController sharedUserDefaultsController] removeObserver:self forKey:SKAutoCheckFileUpdateKey];
     [[NSNotificationCenter defaultCenter] removeObserver:self];
     [pdfData release];
     [notes release];
@@ -104,6 +107,14 @@ static NSString *SKPostScriptDocumentType = @"PostScript document";
     [mainController setAnnotationsFromDictionaries:noteDicts];
     [noteDicts release];
     noteDicts = nil;
+    
+    [self checkFileUpdatesIfNeeded];
+    
+    [[NSUserDefaultsController sharedUserDefaultsController] addObserver:self forKey:SKAutoCheckFileUpdateKey];
+	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleApplicationWillTerminateNotification:) 
+                                                 name:NSApplicationWillTerminateNotification object:NSApp];
+	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleWindowWillCloseNotification:) 
+                                                 name:NSWindowWillCloseNotification object:[mainController window]];
 }
 
 
@@ -112,8 +123,11 @@ static NSString *SKPostScriptDocumentType = @"PostScript document";
     // we check for notes and save a .skim as well:
     if (success && [typeName isEqualToString:SKPDFDocumentType]) {
        [self saveNotesToExtendedAttributesAtURL:absoluteURL];
-       if (saveOperation == NSSaveOperation || saveOperation == NSSaveAsOperation)
+       if (saveOperation == NSSaveOperation || saveOperation == NSSaveAsOperation) {
             [self updateChangeCount:NSChangeCleared];
+            [lastChangedDate release];
+            lastChangedDate = [[NSDate alloc] init];
+        }
     }
     
     return success;
@@ -164,6 +178,8 @@ static NSString *SKPostScriptDocumentType = @"PostScript document";
         pdfDocument = [[PDFDocument alloc] initWithURL:absoluteURL];    
         didRead = pdfDocument != nil;
         [self readNotesFromExtendedAttributesAtURL:absoluteURL];
+        [lastChangedDate release];
+        lastChangedDate = [[NSDate alloc] init];
     } else if ([docType isEqualToString:SKPostScriptDocumentType]) {
         [pdfData release];
         [pdfDocument release];
@@ -366,6 +382,92 @@ static NSString *SKPostScriptDocumentType = @"PostScript document";
         success = NO;
     }
     return success;
+}
+
+#pragma mark File update checking
+
+// For now this just uses a timer checking the modification date of the file. We may want to use kqueue (UKKqueue) at some point. 
+
+- (void)checkFileUpdatesIfNeeded {
+    BOOL autoUpdate = [[NSUserDefaults standardUserDefaults] boolForKey:SKAutoCheckFileUpdateKey];
+    
+    if (autoUpdate == NO && fileUpdateTimer) {
+        [fileUpdateTimer invalidate];
+        [fileUpdateTimer release];
+        fileUpdateTimer = nil;
+    } else if (autoUpdate) {
+        fileUpdateTimer = [[NSTimer scheduledTimerWithTimeInterval:2 target:self selector:@selector(checkFileUpdateStatus:) userInfo:nil repeats:NO] retain];
+    }
+}
+
+- (void)fileUpdateAlertDidEnd:(NSAlert *)alert returnCode:(int)returnCode contextInfo:(void *)contextInfo {
+    if (returnCode == NSAlertDefaultReturn)
+        [self revertDocumentToSaved:self];
+    
+    [self checkFileUpdatesIfNeeded];
+}
+
+- (void)checkFileUpdateStatus:(NSTimer *)timer {
+    [fileUpdateTimer release];
+    fileUpdateTimer = nil;
+    
+    NSFileManager *fm = [NSFileManager defaultManager];
+    
+    if ([fm fileExistsAtPath:[self fileName]]) {
+        NSDate *fileChangedDate = [[fm fileAttributesAtPath:[self fileName] traverseLink:YES] fileModificationDate];
+        
+        if ([lastChangedDate compare:fileChangedDate] == NSOrderedAscending) {
+            BOOL autoUpdate = [[NSUserDefaults standardUserDefaults] boolForKey:SKAutoCheckFileUpdateKey];
+            BOOL askPref = [[NSUserDefaults standardUserDefaults] boolForKey:SKAutoCheckFileUpdateAskKey];
+            if (autoUpdate && (askPref == NO && [self isDocumentEdited] == NO)) {
+                [self fileUpdateAlertDidEnd:nil returnCode:NSAlertDefaultReturn contextInfo:NULL];
+            } else {
+                NSString *message;
+                if ([self isDocumentEdited])
+                    message = NSLocalizedString(@"The PDF file has changed on disk. If you reload, your chnages will be lost. Do you want to reload this document now?", @"Informative text in alert dialog");
+                else 
+                    message = NSLocalizedString(@"The PDF file has changed on disk. Do you want to reload this document now?", @"Informative text in alert dialog");
+                
+                NSAlert *alert = [NSAlert alertWithMessageText:NSLocalizedString(@"File Updated", @"Message in alert dialog") 
+                                                 defaultButton:NSLocalizedString(@"Yes", @"Button title")
+                                               alternateButton:NSLocalizedString(@"No", @"Button title")
+                                                   otherButton:nil
+                                     informativeTextWithFormat:message];
+                [alert beginSheetModalForWindow:[[self mainWindowController] window]
+                                  modalDelegate:self
+                                 didEndSelector:@selector(fileUpdateAlertDidEnd:returnCode:contextInfo:) 
+                                    contextInfo:NULL];
+            }
+        }
+        
+    } else {
+        [self checkFileUpdatesIfNeeded];
+    }
+}
+
+- (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context {
+    if (object == [NSUserDefaultsController sharedUserDefaultsController]) {
+        if (NO == [keyPath hasPrefix:@"values."])
+            return;
+        NSString *key = [keyPath substringFromIndex:7];
+        if ([key isEqualToString:SKAutoCheckFileUpdateKey]) {
+            [self checkFileUpdatesIfNeeded];
+        }
+    } else {
+        [super observeValueForKeyPath:keyPath ofObject:object change:change context:context];
+    }
+}
+
+- (void)handleApplicationWillTerminateNotification:(NSNotification *)notification {
+    [fileUpdateTimer invalidate];
+    [fileUpdateTimer release];
+    fileUpdateTimer = nil;
+}
+
+- (void)handleWindowWillCloseNotification:(NSNotification *)notification {
+    [fileUpdateTimer invalidate];
+    [fileUpdateTimer release];
+    fileUpdateTimer = nil;
 }
 
 #pragma mark Accessors

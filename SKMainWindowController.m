@@ -59,6 +59,7 @@
 #import "SKAnnotationTypeIconTransformer.h"
 #import "NSScrollView_SKExtensions.h"
 #import "NSBezierPath_BDSKExtensions.h"
+#import "NSUserDefaultsController_SKExtensions.h"
 #import <Carbon/Carbon.h>
 
 #define SEGMENTED_CONTROL_HEIGHT    25.0
@@ -2710,20 +2711,6 @@ static NSString *SKDocumentToolbarNotesPaneItemIdentifier = @"SKDocumentToolbarN
         
         [NSGraphicsContext restoreGraphicsState];
     }
-}
-
-@end
-
-#pragma mark -
-
-@implementation NSUserDefaultsController (SKExtensions)
-
-- (void)addObserver:(NSObject *)anObserver forKey:(NSString *)key {
-    [self addObserver:anObserver forKeyPath:[NSString stringWithFormat:@"values.%@", key] options:0 context:NULL];
-}
-
-- (void)removeObserver:(NSObject *)anObserver forKey:(NSString *)key {
-    [self removeObserver:anObserver forKeyPath:[NSString stringWithFormat:@"values.%@", key]];
 }
 
 @end

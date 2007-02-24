@@ -315,9 +315,3 @@ typedef struct _SKPDFViewState {
 @interface NSObject (SKOutlineViewDelegate)
 - (NSArray *)outlineViewHighlightedRows:(NSOutlineView *)anOutlineView;
 @end
-
-
-@interface NSUserDefaultsController (SKExtensions)
-- (void)addObserver:(NSObject *)anObserver forKey:(NSString *)key;
-- (void)removeObserver:(NSObject *)anObserver forKey:(NSString *)key;
-@end

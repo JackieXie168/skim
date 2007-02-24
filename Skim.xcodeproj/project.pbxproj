@@ -89,6 +89,9 @@
 		CE7469180B7F40B700CBF969 /* Skim.icns in Resources */ = {isa = PBXBuildFile; fileRef = CE7469170B7F40B600CBF969 /* Skim.icns */; };
 		CE9C423C0B8B5633004AD8CF /* PreferenceWindow.nib in Resources */ = {isa = PBXBuildFile; fileRef = CE9C42360B8B5633004AD8CF /* PreferenceWindow.nib */; };
 		CEF707240B8F8EFC003A2771 /* SnapshotWindow.nib in Resources */ = {isa = PBXBuildFile; fileRef = CEF7071D0B8F8EFC003A2771 /* SnapshotWindow.nib */; };
+		CEF7117E0B90B58F003A2771 /* SKUpdateChecker.m in Sources */ = {isa = PBXBuildFile; fileRef = CEF7117B0B90B58E003A2771 /* SKUpdateChecker.m */; };
+		CEF7117F0B90B58F003A2771 /* SKVersionNumber.m in Sources */ = {isa = PBXBuildFile; fileRef = CEF7117D0B90B58E003A2771 /* SKVersionNumber.m */; };
+		CEF711A10B90B714003A2771 /* NSUserDefaultsController_SKExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = CEF711A00B90B714003A2771 /* NSUserDefaultsController_SKExtensions.m */; };
 		CEFDF8BE0B3848C40091C61A /* SKNavigationWindow.m in Sources */ = {isa = PBXBuildFile; fileRef = CEFDF8BD0B3848C40091C61A /* SKNavigationWindow.m */; };
 		F92DB5AC0B36FE1F002A26E9 /* BDSKHeaderPopUpButtonCell.m in Sources */ = {isa = PBXBuildFile; fileRef = F92DB5A90B36FE1F002A26E9 /* BDSKHeaderPopUpButtonCell.m */; };
 		F92DB5AD0B36FE1F002A26E9 /* BDSKZoomablePDFView.m in Sources */ = {isa = PBXBuildFile; fileRef = F92DB5AB0B36FE1F002A26E9 /* BDSKZoomablePDFView.m */; };
@@ -224,6 +227,12 @@
 		CE7469170B7F40B600CBF969 /* Skim.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; name = Skim.icns; path = Images/Skim.icns; sourceTree = "<group>"; };
 		CE9C42370B8B5633004AD8CF /* English */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = English; path = English.lproj/PreferenceWindow.nib; sourceTree = "<group>"; };
 		CEF7071E0B8F8EFC003A2771 /* English */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = English; path = English.lproj/SnapshotWindow.nib; sourceTree = "<group>"; };
+		CEF7117A0B90B58E003A2771 /* SKUpdateChecker.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = SKUpdateChecker.h; sourceTree = "<group>"; };
+		CEF7117B0B90B58E003A2771 /* SKUpdateChecker.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = SKUpdateChecker.m; sourceTree = "<group>"; };
+		CEF7117C0B90B58E003A2771 /* SKVersionNumber.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = SKVersionNumber.h; sourceTree = "<group>"; };
+		CEF7117D0B90B58E003A2771 /* SKVersionNumber.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = SKVersionNumber.m; sourceTree = "<group>"; };
+		CEF7119F0B90B714003A2771 /* NSUserDefaultsController_SKExtensions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NSUserDefaultsController_SKExtensions.h; sourceTree = "<group>"; };
+		CEF711A00B90B714003A2771 /* NSUserDefaultsController_SKExtensions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NSUserDefaultsController_SKExtensions.m; sourceTree = "<group>"; };
 		CEFDF8BC0B3848C40091C61A /* SKNavigationWindow.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SKNavigationWindow.h; sourceTree = "<group>"; };
 		CEFDF8BD0B3848C40091C61A /* SKNavigationWindow.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SKNavigationWindow.m; sourceTree = "<group>"; };
 		F92DB5A80B36FE1F002A26E9 /* BDSKHeaderPopUpButtonCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BDSKHeaderPopUpButtonCell.h; sourceTree = "<group>"; };
@@ -366,14 +375,16 @@
 				CE3A45520B7A04A4006B64D3 /* NSBezierPath_BDSKExtensions.m */,
 				CE4EC87D0B7E6E110091F228 /* NSBezierPath_CoreImageExtensions.h */,
 				CE4EC87E0B7E6E110091F228 /* NSBezierPath_CoreImageExtensions.m */,
+				CE2DE4EC0B85DB6300D0DA12 /* NSCursor_SKExtensions.h */,
+				CE2DE4ED0B85DB6300D0DA12 /* NSCursor_SKExtensions.m */,
 				CE5487BA0B35A20A00F8AFB6 /* NSFileManager_ExtendedAttributes.h */,
 				CE5487BB0B35A20A00F8AFB6 /* NSFileManager_ExtendedAttributes.m */,
 				CE070EA00B89039700733CC8 /* NSScrollView_SKExtensions.h */,
 				CE070EA10B89039700733CC8 /* NSScrollView_SKExtensions.m */,
 				CE38ECD10B8093B200A1B779 /* NSString_SKExtensions.h */,
 				CE38ECD20B8093B200A1B779 /* NSString_SKExtensions.m */,
-				CE2DE4EC0B85DB6300D0DA12 /* NSCursor_SKExtensions.h */,
-				CE2DE4ED0B85DB6300D0DA12 /* NSCursor_SKExtensions.m */,
+				CEF7119F0B90B714003A2771 /* NSUserDefaultsController_SKExtensions.h */,
+				CEF711A00B90B714003A2771 /* NSUserDefaultsController_SKExtensions.m */,
 				F92DB6600B371481002A26E9 /* PDFDocument_BDSKExtensions.h */,
 				F92DB6610B371481002A26E9 /* PDFDocument_BDSKExtensions.m */,
 				CE2DE50B0B85DC4000D0DA12 /* PDFPage_SKExtensions.h */,
@@ -385,6 +396,8 @@
 		CE2DE4CF0B85D89B00D0DA12 /* Controllers */ = {
 			isa = PBXGroup;
 			children = (
+				CEF7117A0B90B58E003A2771 /* SKUpdateChecker.h */,
+				CEF7117B0B90B58E003A2771 /* SKUpdateChecker.m */,
 				CE0463C90B84D24300C11E4A /* SKApplication.h */,
 				CE0463CA0B84D24300C11E4A /* SKApplication.m */,
 				4530D8C70B27B04D007C59F4 /* SKApplicationController.h */,
@@ -460,6 +473,8 @@
 				CE3A3D2B0B78C0A0006B64D3 /* SKPDFAnnotationNote.m */,
 				CE2DE4900B85D48F00D0DA12 /* SKThumbnail.h */,
 				CE2DE4910B85D48F00D0DA12 /* SKThumbnail.m */,
+				CEF7117C0B90B58E003A2771 /* SKVersionNumber.h */,
+				CEF7117D0B90B58E003A2771 /* SKVersionNumber.m */,
 			);
 			name = Data;
 			sourceTree = "<group>";
@@ -658,6 +673,9 @@
 				CE0710170B89BDD600733CC8 /* BDSKCollapsibleView.m in Sources */,
 				CE0710180B89BDD600733CC8 /* BDSKContainerView.m in Sources */,
 				CE0710190B89BDD600733CC8 /* BDSKEdgeView.m in Sources */,
+				CEF7117E0B90B58F003A2771 /* SKUpdateChecker.m in Sources */,
+				CEF7117F0B90B58F003A2771 /* SKVersionNumber.m in Sources */,
+				CEF711A10B90B714003A2771 /* NSUserDefaultsController_SKExtensions.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
