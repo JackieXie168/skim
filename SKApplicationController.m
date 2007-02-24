@@ -44,6 +44,7 @@
 #import "SKDocument.h"
 #import "SKMainWindowController.h"
 #import "BDAlias.h"
+#import "SKVersionNumber.h"
 #import <Quartz/Quartz.h>
 
 
@@ -104,6 +105,14 @@
 }    
 
 - (void)applicationDidFinishLaunching:(NSNotification *)aNotification{
+    NSString *versionString = [[[NSBundle mainBundle] infoDictionary] objectForKey:@"CFBundleShortVersionString"];
+    SKVersionNumber *versionNumber = versionString ? [[[SKVersionNumber alloc] initWithVersionString:versionString] autorelease] : nil;
+    NSString *lastVersionString = [[NSUserDefaults standardUserDefaults] stringForKey:SKLastVersionLaunchedKey];
+    SKVersionNumber *lastVersionNumber = lastVersionString ? [[[SKVersionNumber alloc] initWithVersionString:lastVersionString] autorelease] : nil;
+    if(lastVersionNumber == nil || [lastVersionNumber compareToVersionNumber:versionNumber] == NSOrderedAscending) {
+        //[self showReleaseNotes:nil];
+        //[[NSUserDefaults standardUserDefaults] setObject:versionString forKey:SKLastVersionLaunchedKey];
+    }
     [[SKUpdateChecker sharedChecker] scheduleUpdateCheckIfNeeded];
 }
 

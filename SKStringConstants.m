@@ -45,6 +45,7 @@ NSString *SKDefaultDocumentScaleKey = @"SKDefaultDocumentScale";
 NSString *SKDefaultDocumentAutoScaleKey = @"SKDefaultDocumentAutoScale";
 NSString *SKFullScreenBackgroundColorKey = @"SKFullScreenBackgroundColor";
 NSString *SKLastOpenFileNamesKey = @"SKLastOpenFileNames";
+NSString *SKLastVersionLaunchedKey = @"SKLastVersionLaunched";
 NSString *SKOpenContentsPaneOnlyForTOCKey = @"SKOpenContentsPaneOnlyForTOC";
 NSString *SKOpenFilesMaximizedKey = @"SKOpenFilesMaximized";
 NSString *SKReopenLastOpenFilesKey = @"SKReopenLastOpenFiles";
