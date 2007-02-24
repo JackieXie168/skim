@@ -785,9 +785,18 @@ NSString *SKPDFViewAnnotationDoubleClickedNotification = @"SKPDFViewAnnotationDo
 #pragma mark Snapshots
 
 - (void)takeSnapshot:(id)sender {
-    NSPoint point = [[sender representedObject] pointValue];
-    PDFPage *page = [self pageForPoint:point nearest:YES];
+    NSPoint point;
+    PDFPage *page;
     NSRect rect;
+    
+	if ([sender respondsToSelector:@selector(representedObject)] && [[sender representedObject] respondsToSelector:@selector(pointValue)]) {
+        point = [[sender representedObject] pointValue];
+        page = [self pageForPoint:point nearest:YES];
+    } else {
+		NSRect viewFrame = [self frame];
+        point = NSMakePoint(NSMidX(viewFrame), NSMidY(viewFrame));
+        page = [self currentPage];
+    }
     
     point = [self convertPoint:point toPage:page];
     
