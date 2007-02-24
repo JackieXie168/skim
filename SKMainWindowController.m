@@ -58,6 +58,7 @@
 #import "NSString_SKExtensions.h"
 #import "SKAnnotationTypeIconTransformer.h"
 #import "NSScrollView_SKExtensions.h"
+#import "NSBezierPath_BDSKExtensions.h"
 #import <Carbon/Carbon.h>
 
 #define SEGMENTED_CONTROL_HEIGHT    25.0
@@ -1766,7 +1767,7 @@ static NSString *SKDocumentToolbarSearchItemIdentifier = @"SKDocumentToolbarSear
         else if (thumbSize.width / thumbSize.height < cellSize.width / cellSize.height)
             return cellSize.height;
         else
-            return MAX(1.0, MIN(cellSize.width, thumbSize.width) * thumbSize.height / thumbSize.width);
+            return MAX(32.0, MIN(cellSize.width, thumbSize.width) * thumbSize.height / thumbSize.width);
     }
     return 17.0;
 }
@@ -2653,6 +2654,42 @@ static NSString *SKDocumentToolbarSearchItemIdentifier = @"SKDocumentToolbarSear
         [self delete:self];
 	else
 		[super keyDown:theEvent];
+}
+
+@end
+
+#pragma mark -
+
+@implementation SKSnapshotPageCell
+
+- (void)setObjectValue:(id)anObject {
+    [super setObjectValue:[anObject valueForKey:@"label"]];
+    hasWindow = [[anObject valueForKey:@"hasWindow"] boolValue];
+}
+
+- (id)objectValue {
+    return [NSDictionary dictionaryWithObjectsAndKeys:[NSNumber numberWithBool:hasWindow], @"hasWindow", [self stringValue], @"label", nil];
+}
+
+- (void)drawInteriorWithFrame:(NSRect)cellFrame inView:(NSView *)controlView {
+    NSRect textRect, imageRect, ignored;
+    NSDivideRect(cellFrame, &textRect, &imageRect, 17.0, NSMinYEdge);
+    [super drawInteriorWithFrame:textRect inView:controlView];
+    if (hasWindow) {
+        NSDivideRect(imageRect, &imageRect, &ignored, 10.0, NSMinYEdge);
+        imageRect.origin.x += 4.0;
+        imageRect.size.width = 10.0;
+        NSBezierPath *path = [NSBezierPath bezierPathWithRoundRectInRect:imageRect radius:1.5];
+        imageRect = NSInsetRect(imageRect, 1.0, 2.0);
+        imageRect.size.height += 1.0;
+        [path appendBezierPath:[NSBezierPath bezierPathWithRect:imageRect]];
+        [path setWindingRule:NSEvenOddWindingRule];
+        if ([self isHighlighted] && [[controlView window] isKeyWindow] && [[[controlView window] firstResponder] isEqual:controlView])
+            [[NSColor colorWithDeviceWhite:1.0 alpha:1.0] set];
+        else
+            [[NSColor colorWithDeviceWhite:0.0 alpha:0.8] set];
+        [path fill];
+    }
 }
 
 @end

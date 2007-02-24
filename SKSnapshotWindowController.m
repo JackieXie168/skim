@@ -77,9 +77,11 @@ static NSString *SKSnapshotViewChangedNotification = @"SKSnapshotViewChangedNoti
 - (void)handlePageChangedNotification:(NSNotification *)notification {
     [[self window] setTitle:[self windowTitleForDocumentDisplayName:[[self document] displayName]]];
     [self willChangeValueForKey:@"pageLabel"];
+    [self didChangeValueForKey:@"pageLabel"];
     [self willChangeValueForKey:@"pageIndex"];
     [self didChangeValueForKey:@"pageIndex"];
-    [self didChangeValueForKey:@"pageLabel"];
+    [self willChangeValueForKey:@"pageAndWindow"];
+    [self didChangeValueForKey:@"pageAndWindow"];
 }
 
 - (void)handlePDFViewFrameChangedNotification:(NSNotification *)notification {
@@ -198,6 +200,12 @@ static NSString *SKSnapshotViewChangedNotification = @"SKSnapshotViewChangedNoti
     return [[pdfView document] indexForPage:[pdfView currentPage]];
 }
 
+- (NSDictionary *)pageAndWindow {
+    NSString *label = [self pageLabel] ? [self pageLabel] : @"";
+    NSNumber *hasWindow = [NSNumber numberWithBool:[[self window] isVisible]];
+    return [NSDictionary dictionaryWithObjectsAndKeys:label, @"label", hasWindow, @"hasWindow", nil];
+}
+
 #pragma mark Thumbnails
 
 - (NSImage *)thumbnailWithSize:(float)size shadowBlurRadius:(float)shadowBlurRadius shadowOffset:(NSSize)shadowOffset {
@@ -286,6 +294,8 @@ static NSString *SKSnapshotViewChangedNotification = @"SKSnapshotViewChangedNoti
         [[self window] orderOut:self];
     }
     miniaturizing = NO;
+    [self willChangeValueForKey:@"pageAndWindow"];
+    [self didChangeValueForKey:@"pageAndWindow"];
 }
 
 - (void)deminiaturize {
@@ -314,6 +324,8 @@ static NSString *SKSnapshotViewChangedNotification = @"SKSnapshotViewChangedNoti
     } else {
         [self showWindow:self];
     }
+    [self willChangeValueForKey:@"pageAndWindow"];
+    [self didChangeValueForKey:@"pageAndWindow"];
 }
 
 @end
