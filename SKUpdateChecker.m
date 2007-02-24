@@ -198,8 +198,8 @@ enum {
         [self displayUpdateAvailableWindow:[NSArray arrayWithObjects:[remoteVersion cleanVersionString], nil]];
     } else if(remoteVersionForCurrentMajor || remoteVersion){
         // tell user software is up to date
-        NSRunAlertPanel(NSLocalizedString(@"BibDesk is up to date", @"Title of alert when a the user's software is up to date."),
-                        NSLocalizedString(@"You have the most recent version of BibDesk.", @"Alert text when the user's software is up to date."),
+        NSRunAlertPanel(NSLocalizedString(@"Skim is up to date", @"Title of alert when a the user's software is up to date."),
+                        NSLocalizedString(@"You have the most recent version of Skim.", @"Alert text when the user's software is up to date."),
                         nil, nil, nil);                
     } else {
         
@@ -250,7 +250,7 @@ enum {
     return URLString ? [NSURL URLWithString:URLString] : nil;
 }
 
-// string of the form BibDesk1.3 for BibDesk 1.3.x; update check info is keyed to a specific branch of development
+// string of the form Skim1.3 for Skim 1.3.x; update check info is keyed to a specific branch of development
 - (NSString *)keyForVersion:(NSString *)versionString;
 {
     SKVersionNumber *versionNumber = [[[SKVersionNumber alloc] initWithVersionString:versionString] autorelease];
@@ -556,11 +556,11 @@ enum {
     const int SKAlertAltAlternateReturn = 1003;
     
     if(altLatestVersion != nil){
-        message = NSLocalizedString(@"A new version of BibDesk is available (versions %@ and %@). Would you like to download the new version now?", @"Informative text in alert dialog");
+        message = NSLocalizedString(@"A new version of Skim is available (versions %@ and %@). Would you like to download the new version now?", @"Informative text in alert dialog");
         alternateButton = [NSString stringWithFormat:NSLocalizedString(@"Release Notes for %@", @"Buttton title"), altLatestVersion];
         altAlternateButton = [NSString stringWithFormat:NSLocalizedString(@"Release Notes for %@", @"Buttton title"), latestVersion];
     }else{
-        message = NSLocalizedString(@"A new version of BibDesk is available (version %@). Would you like to download the new version now?", @"Informative text in alert dialog");
+        message = NSLocalizedString(@"A new version of Skim is available (version %@). Would you like to download the new version now?", @"Informative text in alert dialog");
         alternateButton = NSLocalizedString(@"View Release Notes", @"Button title");
     }
     
