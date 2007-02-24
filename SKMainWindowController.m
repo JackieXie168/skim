@@ -1732,13 +1732,11 @@ static NSString *SKDocumentToolbarNotesPaneItemIdentifier = @"SKDocumentToolbarN
                 [pdfView goToPage:[[pdfView document] pageAtIndex:row]];
         }
     } else if ([[aNotification object] isEqual:snapshotTableView]) {
-        if (updatingThumbnailSelection == NO) {
-            int row = [snapshotTableView selectedRow];
-            if (row != -1) {
-                SKSnapshotWindowController *controller = [[snapshotArrayController arrangedObjects] objectAtIndex:row];
-                if ([[controller window] isVisible])
-                    [[controller window] orderFront:self];
-            }
+        int row = [snapshotTableView selectedRow];
+        if (row != -1) {
+            SKSnapshotWindowController *controller = [[snapshotArrayController arrangedObjects] objectAtIndex:row];
+            if ([[controller window] isVisible])
+                [[controller window] orderFront:self];
         }
     }
 }
