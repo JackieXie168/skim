@@ -41,5 +41,6 @@
 @interface SKApplicationController : NSObject {
 }
 + (void)setupDefaults;
+- (IBAction)checkForUpdates:(id)sender;
 - (IBAction)showPreferencePanel:(id)sender;
 @end

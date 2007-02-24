@@ -40,7 +40,7 @@
             SUPERCLASS = NSObject; 
         }, 
         {
-            ACTIONS = {showPreferencePanel = id; }; 
+            ACTIONS = {checkForUpdates = id; showPreferencePanel = id; }; 
             CLASS = SKApplicationController; 
             LANGUAGE = ObjC; 
             SUPERCLASS = NSObject; 
