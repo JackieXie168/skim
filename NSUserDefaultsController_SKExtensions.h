@@ -1,11 +1,11 @@
 //
-//  SKStringConstants.m
+//  NSUserDefaultsController_SKExtensions.h
 //  Skim
 //
-//  Created by Michael McCracken on 1/5/07.
+//  Created by Christiaan Hofman on 2/24/07.
 /*
  This software is Copyright (c) 2007
- Michael O. McCracken. All rights reserved.
+ Christiaan Hofman. All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
  modification, are permitted provided that the following conditions
@@ -19,7 +19,7 @@
     the documentation and/or other materials provided with the
     distribution.
 
- - Neither the name of Michael O. McCracken nor the names of any
+ - Neither the name of Christiaan Hofman nor the names of any
     contributors may be used to endorse or promote products derived
     from this software without specific prior written permission.
 
@@ -36,24 +36,10 @@
  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-#import "SKStringConstants.h"
+#import <Cocoa/Cocoa.h>
 
-NSString *SKAutoCheckFileUpdateKey = @"SKAutoCheckFileUpdate";
-NSString *SKAutoCheckFileUpdateAskKey = @"SKAutoCheckFileUpdateAsk";
-NSString *SKBackgroundColorKey = @"SKBackgroundColor";
-NSString *SKDefaultDocumentScaleKey = @"SKDefaultDocumentScale";
-NSString *SKDefaultDocumentAutoScaleKey = @"SKDefaultDocumentAutoScale";
-NSString *SKFullScreenBackgroundColorKey = @"SKFullScreenBackgroundColor";
-NSString *SKLastOpenFileNamesKey = @"SKLastOpenFileNames";
-NSString *SKOpenContentsPaneOnlyForTOCKey = @"SKOpenContentsPaneOnlyForTOC";
-NSString *SKOpenFilesMaximizedKey = @"SKOpenFilesMaximized";
-NSString *SKReopenLastOpenFilesKey = @"SKReopenLastOpenFiles";
-NSString *SKSearchHighlightColorKey = @"SKSearchHighlightColor";
-NSString *SKShouldHighlightSearchResultsKey = @"SKShouldHighlightSearchResults";
-NSString *SKSnapshotsOnTopKey = @"SKSnapshotsOnTop";
-NSString *SKSnapshotThumbnailSizeKey = @"SKSnapshotThumbnailSize";
-NSString *SKThumbnailSizeKey = @"SKThumbnailSize";
-NSString *SKUpdateCheckIntervalKey = @"SKUpdateCheckInterval";
-NSString *SKUpdateCheckLastDateKey = @"SKUpdateCheckLastDate";
-NSString *SKUpdateLatestNotifiedVersionKey = @"SKUpdateLatestNotifiedVersion";
 
+@interface NSUserDefaultsController (SKExtensions)
+- (void)addObserver:(NSObject *)anObserver forKey:(NSString *)key;
+- (void)removeObserver:(NSObject *)anObserver forKey:(NSString *)key;
+@end

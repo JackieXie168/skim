@@ -38,6 +38,7 @@
 
 #import "SKApplicationController.h"
 #import "SKPreferenceController.h"
+#import "SKUpdateChecker.h"
 #import "SKStringConstants.h"
 #import "SKDocument.h"
 #import "SKMainWindowController.h"
@@ -100,6 +101,10 @@
     
     return NO;
 }    
+
+- (void)applicationDidFinishLaunching:(NSNotification *)aNotification{
+    //[[SKUpdateChecker sharedChecker] scheduleUpdateCheckIfNeeded];
+}
 
 - (IBAction)showPreferencePanel:(id)sender{
     [[SKPreferenceController sharedPrefenceController] showWindow:self];

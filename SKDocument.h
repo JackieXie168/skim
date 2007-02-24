@@ -51,6 +51,9 @@ extern NSString *SKDocumentErrorDomain;
     // temporary variables:
     PDFDocument *pdfDocument;
     NSMutableArray *noteDicts;
+    
+    NSTimer *fileUpdateTimer;
+    NSDate *lastChangedDate;
 }
 
 - (IBAction)readNotes:(id)sender;
@@ -71,6 +74,12 @@ extern NSString *SKDocumentErrorDomain;
 - (PDFDocument *)pdfDocument;
 
 - (NSDictionary *)currentDocumentSetup;
+
+- (void)checkFileUpdatesIfNeeded;
+- (void)checkFileUpdateStatus:(NSTimer *)timer;
+
+- (void)handleApplicationWillTerminateNotification:(NSNotification *)notification;
+- (void)handleWindowWillCloseNotification:(NSNotification *)notification;
 
 @end
 
