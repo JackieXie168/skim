@@ -42,8 +42,6 @@
 @interface SKThumbnail : NSObject {
     NSImage *image;
     NSString *label;
-    unsigned int pageIndex;
-    id controller;
 }
 
 - (id)initWithImage:(NSImage *)anImage label:(NSString *)aLabel;
@@ -53,11 +51,5 @@
 
 - (NSString *)label;
 - (void)setLabel:(NSString *)newLabel;
-
-- (unsigned int)pageIndex;
-- (void)setPageIndex:(unsigned int)newPageIndex;
-
-- (id)controller;
-- (void)setController:(id)newController;
 
 @end

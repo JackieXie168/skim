@@ -721,7 +721,7 @@ static NSString *SKDocumentToolbarNotesPaneItemIdentifier = @"SKDocumentToolbarN
     [[pdfView currentPage] setRotation:[[pdfView currentPage] rotation] + 90];
     [pdfView layoutDocumentView];
     
-    SKThumbnail *thumbnail = [[thumbnailArrayController arrangedObjects] objectAtIndex:[[pdfView document] indexForPage:[pdfView currentPage]]];
+    SKThumbnail *thumbnail = [[self thumbnails] objectAtIndex:[[pdfView document] indexForPage:[pdfView currentPage]]];
     [self thumbnailNeedsUpdate:thumbnail];
 }
 
@@ -729,7 +729,7 @@ static NSString *SKDocumentToolbarNotesPaneItemIdentifier = @"SKDocumentToolbarN
     [[pdfView currentPage] setRotation:[[pdfView currentPage] rotation] - 90];
     [pdfView layoutDocumentView];
     
-    SKThumbnail *thumbnail = [[thumbnailArrayController arrangedObjects] objectAtIndex:[[pdfView document] indexForPage:[pdfView currentPage]]];
+    SKThumbnail *thumbnail = [[self thumbnails] objectAtIndex:[[pdfView document] indexForPage:[pdfView currentPage]]];
     [self thumbnailNeedsUpdate:thumbnail];
 }
 
@@ -1209,7 +1209,7 @@ static NSString *SKDocumentToolbarNotesPaneItemIdentifier = @"SKDocumentToolbarN
         [page addAnnotation:circle];
         [pdfView setNeedsDisplayForAnnotation:circle];
         [circle release];
-        [self thumbnailNeedsUpdate:[[thumbnailArrayController arrangedObjects] objectAtIndex:i]];
+        [self thumbnailNeedsUpdate:[[self thumbnails] objectAtIndex:i]];
     }
 }
 
@@ -1233,7 +1233,7 @@ static NSString *SKDocumentToolbarNotesPaneItemIdentifier = @"SKDocumentToolbarN
             }
         }
         if (found)
-            [self thumbnailNeedsUpdate:[[thumbnailArrayController arrangedObjects] objectAtIndex:i]];
+            [self thumbnailNeedsUpdate:[[self thumbnails] objectAtIndex:i]];
     }
 }
 
@@ -1418,7 +1418,7 @@ static NSString *SKDocumentToolbarNotesPaneItemIdentifier = @"SKDocumentToolbarN
         [[(SKDocument *)[self document] mutableArrayValueForKey:@"notes"] addObject:annotation];
         updatingNoteSelection = NO;
         if (page)
-            [self thumbnailNeedsUpdate:[[thumbnailArrayController arrangedObjects] objectAtIndex:[[pdfView document] indexForPage:page]]];
+            [self thumbnailNeedsUpdate:[[self thumbnails] objectAtIndex:[[pdfView document] indexForPage:page]]];
     }
     [[self document] updateChangeCount:NSChangeDone];
 }
@@ -1442,7 +1442,7 @@ static NSString *SKDocumentToolbarNotesPaneItemIdentifier = @"SKDocumentToolbarN
         }
         [[[self document] mutableArrayValueForKey:@"notes"] removeObject:annotation];
         if (page)
-            [self thumbnailNeedsUpdate:[[thumbnailArrayController arrangedObjects] objectAtIndex:[[pdfView document] indexForPage:page]]];
+            [self thumbnailNeedsUpdate:[[self thumbnails] objectAtIndex:[[pdfView document] indexForPage:page]]];
     }
     [[self document] updateChangeCount:NSChangeDone];
 }
@@ -1450,7 +1450,7 @@ static NSString *SKDocumentToolbarNotesPaneItemIdentifier = @"SKDocumentToolbarN
 - (void)handleDidChangeAnnotationNotification:(NSNotification *)notification {
     PDFAnnotation *annotation = [[notification userInfo] objectForKey:@"annotation"];
     [[self document] updateChangeCount:NSChangeDone];
-    [self thumbnailNeedsUpdate:[[thumbnailArrayController arrangedObjects] objectAtIndex:[annotation pageIndex]]];
+    [self thumbnailNeedsUpdate:[[self thumbnails] objectAtIndex:[annotation pageIndex]]];
 }
 
 - (void)handleDoubleClickedAnnotationNotification:(NSNotification *)notification {
@@ -1749,7 +1749,7 @@ static NSString *SKDocumentToolbarNotesPaneItemIdentifier = @"SKDocumentToolbarN
 
 - (float)tableView:(NSTableView *)tv heightOfRow:(int)row {
     if ([tv isEqual:thumbnailTableView]) {
-        NSSize thumbSize = [[[[thumbnailArrayController arrangedObjects] objectAtIndex:row] image] size];
+        NSSize thumbSize = [[[[self thumbnails] objectAtIndex:row] image] size];
         NSSize cellSize = NSMakeSize([[[tv tableColumns] objectAtIndex:0] width], 
                                      MIN(thumbSize.height, roundf([[NSUserDefaults standardUserDefaults] floatForKey:SKThumbnailSizeKey])));
         if (thumbSize.height < 1.0)
@@ -1902,12 +1902,13 @@ static NSString *SKDocumentToolbarNotesPaneItemIdentifier = @"SKDocumentToolbarN
 
 - (void)updateThumbnail:(NSTimer *)timer {
     if ([dirtyThumbnails count]) {
-        SKThumbnail *thumbnail = [dirtySnapshots objectAtIndex:0];
+        SKThumbnail *thumbnail = [dirtyThumbnails objectAtIndex:0];
+        unsigned int pageIndex = [[self thumbnails] indexOfObject:thumbnail];
         float shadowBlurRadius = roundf(thumbnailCacheSize / 32.0);
         float shadowOffset = - ceilf(shadowBlurRadius * 0.75);
         NSSize newSize, oldSize = [[thumbnail image] size];
         PDFDocument *pdfDoc = [pdfView document];
-        PDFPage *page = [pdfDoc pageAtIndex:[thumbnail pageIndex]];
+        PDFPage *page = [pdfDoc pageAtIndex:pageIndex];
         NSImage *image = [page thumbnailWithSize:thumbnailCacheSize shadowBlurRadius:shadowBlurRadius shadowOffset:NSMakeSize(0.0, shadowOffset)];
         
         [thumbnail setImage:image];
@@ -1915,7 +1916,7 @@ static NSString *SKDocumentToolbarNotesPaneItemIdentifier = @"SKDocumentToolbarN
         
         newSize = [image size];
         if (fabs(newSize.width - oldSize.width) > 1.0 || fabs(newSize.height - oldSize.height) > 1.0) {
-            unsigned index = [[thumbnailArrayController arrangedObjects] indexOfObject:thumbnail];
+            unsigned index = [[self thumbnails] indexOfObject:thumbnail];
             [thumbnailTableView noteHeightOfRowsWithIndexesChanged:[NSIndexSet indexSetWithIndex:index]];
         }
     }
