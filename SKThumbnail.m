@@ -45,8 +45,6 @@
     if (self = [super init]) {
         image = [anImage retain];
         label = [aLabel retain];
-        pageIndex = 0;
-        controller = nil;
     }
     return self;
 }
@@ -54,7 +52,6 @@
 - (void)dealloc {
     [image release];
     [label release];
-    [controller release];
     [super dealloc];
 }
 
@@ -77,27 +74,6 @@
     if (label != newLabel) {
         [label release];
         label = [newLabel retain];
-    }
-}
-
-- (unsigned int)pageIndex {
-    return pageIndex;
-}
-
-- (void)setPageIndex:(unsigned int)newPageIndex {
-    if (pageIndex != newPageIndex) {
-        pageIndex = newPageIndex;
-    }
-}
-
-- (id)controller {
-    return controller;
-}
-
-- (void)setController:(id)newController {
-    if (controller != newController) {
-        [controller release];
-        controller = [newController retain];
     }
 }
 
