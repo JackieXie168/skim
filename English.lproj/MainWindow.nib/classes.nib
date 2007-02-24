@@ -120,6 +120,7 @@
         }, 
         {CLASS = SKOutlineView; LANGUAGE = ObjC; SUPERCLASS = NSOutlineView; }, 
         {CLASS = SKPDFView; LANGUAGE = ObjC; SUPERCLASS = PDFView; }, 
+        {CLASS = SKSnapshotPageCell; LANGUAGE = ObjC; SUPERCLASS = NSTextFieldCell; }, 
         {CLASS = SKSnapshotTableView; LANGUAGE = ObjC; SUPERCLASS = SKNoteTableView; }, 
         {CLASS = SKSplitView; LANGUAGE = ObjC; SUPERCLASS = NSSplitView; }, 
         {

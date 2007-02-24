@@ -289,6 +289,11 @@ typedef struct _SKPDFViewState {
 @end
 
 
+@interface SKSnapshotPageCell : NSTextFieldCell {
+    BOOL hasWindow;
+}
+@end
+
 @interface NSObject (SKSnapshotTableViewDelegate)
 - (void)tableView:(NSTableView *)aTableView deleteRowsWithIndexes:(NSIndexSet *)rowIndexes;
 @end

@@ -55,6 +55,7 @@
 - (void)setThumbnail:(NSImage *)newThumbnail;
 - (NSString *)pageLabel;
 - (unsigned int)pageIndex;
+- (NSDictionary *)pageAndWindow;
 - (NSImage *)thumbnailWithSize:(float)size shadowBlurRadius:(float)shadowBlurRadius shadowOffset:(NSSize)shadowOffset;
 - (void)miniaturize;
 - (void)deminiaturize;
