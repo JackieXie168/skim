@@ -21,83 +21,85 @@
 // Initializes the receiver from a string representation of a version number.  The input string may have an optional leading 'v' or 'V' followed by a sequence of positive integers separated by '.'s.  Any trailing component of the input string that doesn't match this pattern is ignored.  If no portion of this string matches the pattern, nil is returned.
 - (id)initWithVersionString:(NSString *)versionString;
 {
-    // Input might be from a NSBundle info dictionary that could be misconfigured, so check at runtime too
-    if (versionString == nil || [versionString isKindOfClass:[NSString class]] == NO) {
-        [self release];
-        return nil;
-    }
-
-    originalVersionString = [versionString copy];
-    releaseType = SKReleaseVersionType;
     
-    NSMutableString *mutableVersionString = [[NSMutableString alloc] init];
-    NSString *lastSep = @"";
-    NSScanner *scanner = [[NSScanner alloc] initWithString:versionString];
-    
-    [scanner setCharactersToBeSkipped:nil];
-    
-    unichar c = [versionString length] ? [versionString characterAtIndex:0] : 0;
-    if (c == 'v' || c == 'V')
-        [scanner setScanLocation:1];
-
-    while ([scanner isAtEnd] == NO) {
-        int component;
-
-        if ([scanner scanInt:&component] == NO || component < 0)
-            // Failed to scan integer
-            break;
-
-        [mutableVersionString appendFormat: @"%@%u", lastSep, component];
-
-        componentCount++;
-        components = realloc(components, sizeof(*components) * componentCount);
-        components[componentCount - 1] = component;
+    if (self = [super init]) {
+        // Input might be from a NSBundle info dictionary that could be misconfigured, so check at runtime too
+        if (versionString == nil || [versionString isKindOfClass:[NSString class]] == NO) {
+            [self release];
+            return nil;
+        }
         
-        if ([scanner isAtEnd])
-            break;
+        originalVersionString = [versionString copy];
+        releaseType = SKReleaseVersionType;
         
-        c = [versionString characterAtIndex:[scanner scanLocation]];
-        if (c == '.') {
-            lastSep = @".";
-        } else if (releaseType == SKReleaseVersionType) {
-            if (c == 'a' || c == 'A') {
-                releaseType = SKAlphaVersionType;
-                lastSep = c == 'a' ? @"a" : @"A";
-            } else if (c == 'b' || c == 'B') {
-                releaseType = SKBetaVersionType;
-                lastSep = c == 'b' ? @"b" : @"B";
-            } else if (c == 'r' || c == 'R') {
-                scannerSkipPeekedCharacter(scanner);
-                c = scannerPeekCharacter(scanner);
-                if (c != 'c' && c != 'C')
-                    break;
-                releaseType = SKReleaseCandidateVersionType;
-                lastSep = c == 'c' ? @"rc" : @"RC";
-            } else 
+        NSMutableString *mutableVersionString = [[NSMutableString alloc] init];
+        NSString *lastSep = @"";
+        NSScanner *scanner = [[NSScanner alloc] initWithString:versionString];
+        
+        [scanner setCharactersToBeSkipped:nil];
+        
+        unichar c = [versionString length] ? [versionString characterAtIndex:0] : 0;
+        if (c == 'v' || c == 'V')
+            [scanner setScanLocation:1];
+
+        while ([scanner isAtEnd] == NO) {
+            int component;
+
+            if ([scanner scanInt:&component] == NO || component < 0)
+                // Failed to scan integer
                 break;
-            
+
+            [mutableVersionString appendFormat: @"%@%u", lastSep, component];
+
             componentCount++;
             components = realloc(components, sizeof(*components) * componentCount);
-            components[componentCount - 1] = releaseType;
-        } else
-            break;
-        [scanner setScanLocation:[scanner scanLocation] + 1];
-    }
+            components[componentCount - 1] = component;
+            
+            if ([scanner isAtEnd])
+                break;
+            
+            c = [versionString characterAtIndex:[scanner scanLocation]];
+            if (c == '.') {
+                lastSep = @".";
+            } else if (releaseType == SKReleaseVersionType) {
+                if (c == 'a' || c == 'A') {
+                    releaseType = SKAlphaVersionType;
+                    lastSep = c == 'a' ? @"a" : @"A";
+                } else if (c == 'b' || c == 'B') {
+                    releaseType = SKBetaVersionType;
+                    lastSep = c == 'b' ? @"b" : @"B";
+                } else if (c == 'r' || c == 'R') {
+                    scannerSkipPeekedCharacter(scanner);
+                    c = scannerPeekCharacter(scanner);
+                    if (c != 'c' && c != 'C')
+                        break;
+                    releaseType = SKReleaseCandidateVersionType;
+                    lastSep = c == 'c' ? @"rc" : @"RC";
+                } else 
+                    break;
+                
+                componentCount++;
+                components = realloc(components, sizeof(*components) * componentCount);
+                components[componentCount - 1] = releaseType;
+            } else
+                break;
+            [scanner setScanLocation:[scanner scanLocation] + 1];
+        }
 
-    if ([mutableVersionString isEqualToString:originalVersionString])
-        cleanVersionString = [originalVersionString retain];
-    else
-        cleanVersionString = [mutableVersionString copy];
-    
-    [cleanVersionString release];
-    [scanner release];
+        if ([mutableVersionString isEqualToString:originalVersionString])
+            cleanVersionString = [originalVersionString retain];
+        else
+            cleanVersionString = [mutableVersionString copy];
+        
+        [mutableVersionString release];
+        [scanner release];
 
-    if (componentCount == 0) {
-        // Failed to parse anything and we don't allow empty version strings.  For now, we'll not assert on this, since people might want to use this to detect if a string begins with a valid version number.
-        [self release];
-        return nil;
+        if (componentCount == 0) {
+            // Failed to parse anything and we don't allow empty version strings.  For now, we'll not assert on this, since people might want to use this to detect if a string begins with a valid version number.
+            [self release];
+            return nil;
+        }
     }
-    
     return self;
 }
 
