@@ -103,7 +103,11 @@
 }    
 
 - (void)applicationDidFinishLaunching:(NSNotification *)aNotification{
-    //[[SKUpdateChecker sharedChecker] scheduleUpdateCheckIfNeeded];
+    [[SKUpdateChecker sharedChecker] scheduleUpdateCheckIfNeeded];
+}
+
+- (IBAction)checkForUpdates:(id)sender{
+    [[SKUpdateChecker sharedChecker] checkForUpdates:sender];  
 }
 
 - (IBAction)showPreferencePanel:(id)sender{
