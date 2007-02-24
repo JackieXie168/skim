@@ -1780,7 +1780,10 @@ static NSString *SKDocumentToolbarSearchItemIdentifier = @"SKDocumentToolbarSear
 }
 
 - (NSArray *)tableViewHighlightedRows:(NSTableView *)tv {
-    return lastViewedPages;
+    if ([tv isEqual:thumbnailTableView]) {
+        return lastViewedPages;
+    }
+    return nil;
 }
 
 #pragma mark Outline
@@ -2535,31 +2538,47 @@ static NSString *SKDocumentToolbarSearchItemIdentifier = @"SKDocumentToolbarSear
 
 #pragma mark -
 
-@implementation SKNoteOutlineView
+@implementation SKThumbnailTableView
 
-- (void)delete:(id)sender {
-    if ([[self delegate] respondsToSelector:@selector(outlineViewDeleteSelectedRows:)]) {
-		if ([[self selectedRowIndexes] count] == 0)
-			NSBeep();
-		else
-			[[self delegate] outlineViewDeleteSelectedRows:self];
-    }
+- (void)setFrame:(NSRect)frameRect {
+    [super setFrame:frameRect];
+    [self noteHeightOfRowsWithIndexesChanged:[NSIndexSet indexSetWithIndexesInRange:NSMakeRange(0, [self numberOfRows])]];
 }
 
-- (void)keyDown:(NSEvent *)theEvent {
-    NSString *characters = [theEvent charactersIgnoringModifiers];
-    unichar eventChar = [characters length] > 0 ? [characters characterAtIndex:0] : 0;
-	unsigned int modifiers = [theEvent modifierFlags] & NSDeviceIndependentModifierFlagsMask;
-    
-	if ((eventChar == NSDeleteCharacter || eventChar == NSDeleteFunctionKey) && modifiers == 0)
-        [self delete:self];
-	else
-		[super keyDown:theEvent];
+- (void)setFrameSize:(NSSize)frameSize {
+    [super setFrameSize:frameSize];
+    [self noteHeightOfRowsWithIndexesChanged:[NSIndexSet indexSetWithIndexesInRange:NSMakeRange(0, [self numberOfRows])]];
+}
+
+- (void)highlightSelectionInClipRect:(NSRect)clipRect {
+    if ([[self delegate] respondsToSelector:@selector(tableViewHighlightedRows:)]) {
+        NSMutableIndexSet *rowIndexes = [[[self selectedRowIndexes] mutableCopy] autorelease];
+        NSArray *rows = [[self delegate] tableViewHighlightedRows:self];
+        NSColor *color = ([[self window] isKeyWindow] && [[self window] firstResponder] == self) ? [NSColor alternateSelectedControlColor] : [NSColor secondarySelectedControlColor];
+        float factor = 0.5;
+        int i, count = [rows count];
+        
+        [NSGraphicsContext saveGraphicsState];
+        for (i = 0; i < count; i++) {
+            int row = [[rows objectAtIndex:i] intValue];
+            [[[NSColor controlBackgroundColor] blendedColorWithFraction:factor ofColor:color] set];
+            factor -= 0.1;
+            if ([rowIndexes containsIndex:row] == NO) {
+                NSRectFill([self rectOfRow:row]);
+                [rowIndexes addIndex:row];
+            }
+            if (factor <= 0.0) break;
+        }
+        [NSGraphicsContext restoreGraphicsState];
+    }
+    [super highlightSelectionInClipRect:clipRect]; 
 }
 
 @end
 
-@implementation SKNoteTableView
+#pragma mark -
+
+@implementation SKSnapshotTableView
 
 - (void)delete:(id)sender {
     if ([[self delegate] respondsToSelector:@selector(tableView:deleteRowsWithIndexes:)]) {
@@ -2579,61 +2598,6 @@ static NSString *SKDocumentToolbarSearchItemIdentifier = @"SKDocumentToolbarSear
         [self delete:self];
 	else
 		[super keyDown:theEvent];
-}
-
-@end
-
-#pragma mark -
-
-@implementation SKSnapshotTableView
-
-- (void)setFrame:(NSRect)frameRect {
-    [super setFrame:frameRect];
-    [self noteHeightOfRowsWithIndexesChanged:[NSIndexSet indexSetWithIndexesInRange:NSMakeRange(0, [self numberOfRows])]];
-}
-
-- (void)setFrameSize:(NSSize)frameSize {
-    [super setFrameSize:frameSize];
-    [self noteHeightOfRowsWithIndexesChanged:[NSIndexSet indexSetWithIndexesInRange:NSMakeRange(0, [self numberOfRows])]];
-}
-
-@end
-
-#pragma mark -
-
-@implementation SKThumbnailTableView
-
-- (void)setFrame:(NSRect)frameRect {
-    [super setFrame:frameRect];
-    [self noteHeightOfRowsWithIndexesChanged:[NSIndexSet indexSetWithIndexesInRange:NSMakeRange(0, [self numberOfRows])]];
-}
-
-- (void)setFrameSize:(NSSize)frameSize {
-    [super setFrameSize:frameSize];
-    [self noteHeightOfRowsWithIndexesChanged:[NSIndexSet indexSetWithIndexesInRange:NSMakeRange(0, [self numberOfRows])]];
-}
-
-- (void)highlightSelectionInClipRect:(NSRect)clipRect {
-    NSMutableIndexSet *rowIndexes = [[[self selectedRowIndexes] mutableCopy] autorelease];
-    NSArray *rows = [[self delegate] tableViewHighlightedRows:self];
-    NSColor *color = ([[self window] isKeyWindow] && [[self window] firstResponder] == self) ? [NSColor alternateSelectedControlColor] : [NSColor secondarySelectedControlColor];
-    float factor = 0.5;
-    int i, count = [rows count];
-    
-    [NSGraphicsContext saveGraphicsState];
-    for (i = 0; i < count; i++) {
-        int row = [[rows objectAtIndex:i] intValue];
-        [[[NSColor controlBackgroundColor] blendedColorWithFraction:factor ofColor:color] set];
-        factor -= 0.1;
-        if ([rowIndexes containsIndex:row] == NO) {
-            NSRectFill([self rectOfRow:row]);
-            [rowIndexes addIndex:row];
-        }
-        if (factor <= 0.0) break;
-    }
-    [NSGraphicsContext restoreGraphicsState];
-    
-    [super highlightSelectionInClipRect:clipRect]; 
 }
 
 @end
@@ -2663,6 +2627,32 @@ static NSString *SKDocumentToolbarSearchItemIdentifier = @"SKDocumentToolbarSear
     [NSGraphicsContext restoreGraphicsState];
     
     [super highlightSelectionInClipRect:clipRect]; 
+}
+
+@end
+
+#pragma mark -
+
+@implementation SKNoteOutlineView
+
+- (void)delete:(id)sender {
+    if ([[self delegate] respondsToSelector:@selector(outlineViewDeleteSelectedRows:)]) {
+		if ([[self selectedRowIndexes] count] == 0)
+			NSBeep();
+		else
+			[[self delegate] outlineViewDeleteSelectedRows:self];
+    }
+}
+
+- (void)keyDown:(NSEvent *)theEvent {
+    NSString *characters = [theEvent charactersIgnoringModifiers];
+    unichar eventChar = [characters length] > 0 ? [characters characterAtIndex:0] : 0;
+	unsigned int modifiers = [theEvent modifierFlags] & NSDeviceIndependentModifierFlagsMask;
+    
+	if ((eventChar == NSDeleteCharacter || eventChar == NSDeleteFunctionKey) && modifiers == 0)
+        [self delete:self];
+	else
+		[super keyDown:theEvent];
 }
 
 @end

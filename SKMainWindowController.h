@@ -59,20 +59,16 @@ typedef struct _SKPDFViewState {
 
 @class SKPDFView, PDFOutline, BDSKCollapsibleView, BDSKEdgeView, SKFullScreenWindow, SKNavigationWindow, SKSideWindow, SKSnapshotWindowController, SKSplitView;
 
-@interface SKNoteTableView : NSTableView
-- (void)delete:(id)sender;
-@end
-
-@interface SKNoteOutlineView : NSOutlineView
-@end
-
-@interface SKSnapshotTableView : SKNoteTableView
-@end
-
 @interface SKThumbnailTableView : NSTableView
 @end
 
+@interface SKSnapshotTableView : SKThumbnailTableView
+@end
+
 @interface SKOutlineView : NSOutlineView
+@end
+
+@interface SKNoteOutlineView : NSOutlineView
 @end
 
 @interface SKMainWindowController : NSWindowController {
@@ -293,7 +289,7 @@ typedef struct _SKPDFViewState {
 @end
 
 
-@interface NSObject (SKNoteTableViewDelegate)
+@interface NSObject (SKSnapshotTableViewDelegate)
 - (void)tableView:(NSTableView *)aTableView deleteRowsWithIndexes:(NSIndexSet *)rowIndexes;
 @end
 
