@@ -39,6 +39,7 @@
 #import "SKUpdateChecker.h"
 #import "SKVersionNumber.h"
 #import "NSUserDefaultsController_SKExtensions.h"
+#import "SKReleaseNotesController.h"
 #import "SKStringConstants.h"
 
 #define PROPERTY_LIST_URL @"http://bibdesk.sourceforge.net/skim-versions-xml.txt"
@@ -110,7 +111,7 @@ enum {
     [[NSUserDefaultsController sharedUserDefaultsController] removeObserver:self forKey:SKUpdateCheckIntervalKey];
     
     // these objects are only accessed from the main thread
-    //[releaseNotesWindowController release];
+    [releaseNotesController release];
     [self setUpdateTimer:nil];
 
     // propertyListFromServer is currently the only object shared between threads
@@ -536,13 +537,11 @@ enum {
     else
         attrString = [[[NSAttributedString alloc] initWithString:NSLocalizedString(@"Download Failed", @"Message when download failed") attributes:[NSDictionary dictionaryWithObjectsAndKeys:[NSColor redColor], NSForegroundColorAttributeName, nil]] autorelease];
     
-    /*
-    if (nil == releaseNotesWindowController)
-        releaseNotesWindowController = [[SKRelNotesController alloc] init];
+    if (nil == releaseNotesController)
+        releaseNotesController = [[SKReleaseNotesController alloc] init];
     
-    [releaseNotesWindowController displayAttributedString:attrString];
-    [releaseNotesWindowController showWindow:nil];
-    */
+    [releaseNotesController displayAttributedString:attrString];
+    [releaseNotesController showWindow:nil];
 }
 
 - (void)displayUpdateAvailableWindow:(NSArray *)latestVersions;

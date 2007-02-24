@@ -92,6 +92,8 @@
 		CEF7117E0B90B58F003A2771 /* SKUpdateChecker.m in Sources */ = {isa = PBXBuildFile; fileRef = CEF7117B0B90B58E003A2771 /* SKUpdateChecker.m */; };
 		CEF7117F0B90B58F003A2771 /* SKVersionNumber.m in Sources */ = {isa = PBXBuildFile; fileRef = CEF7117D0B90B58E003A2771 /* SKVersionNumber.m */; };
 		CEF711A10B90B714003A2771 /* NSUserDefaultsController_SKExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = CEF711A00B90B714003A2771 /* NSUserDefaultsController_SKExtensions.m */; };
+		CEF7175C0B90DEEF003A2771 /* ReleaseNotes.nib in Resources */ = {isa = PBXBuildFile; fileRef = CEF717560B90DEEF003A2771 /* ReleaseNotes.nib */; };
+		CEF7175F0B90DF10003A2771 /* SKReleaseNotesController.m in Sources */ = {isa = PBXBuildFile; fileRef = CEF7175E0B90DF10003A2771 /* SKReleaseNotesController.m */; };
 		CEFDF8BE0B3848C40091C61A /* SKNavigationWindow.m in Sources */ = {isa = PBXBuildFile; fileRef = CEFDF8BD0B3848C40091C61A /* SKNavigationWindow.m */; };
 		F92DB5AC0B36FE1F002A26E9 /* BDSKHeaderPopUpButtonCell.m in Sources */ = {isa = PBXBuildFile; fileRef = F92DB5A90B36FE1F002A26E9 /* BDSKHeaderPopUpButtonCell.m */; };
 		F92DB5AD0B36FE1F002A26E9 /* BDSKZoomablePDFView.m in Sources */ = {isa = PBXBuildFile; fileRef = F92DB5AB0B36FE1F002A26E9 /* BDSKZoomablePDFView.m */; };
@@ -233,6 +235,9 @@
 		CEF7117D0B90B58E003A2771 /* SKVersionNumber.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = SKVersionNumber.m; sourceTree = "<group>"; };
 		CEF7119F0B90B714003A2771 /* NSUserDefaultsController_SKExtensions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NSUserDefaultsController_SKExtensions.h; sourceTree = "<group>"; };
 		CEF711A00B90B714003A2771 /* NSUserDefaultsController_SKExtensions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NSUserDefaultsController_SKExtensions.m; sourceTree = "<group>"; };
+		CEF717570B90DEEF003A2771 /* English */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = English; path = English.lproj/ReleaseNotes.nib; sourceTree = "<group>"; };
+		CEF7175D0B90DF10003A2771 /* SKReleaseNotesController.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = SKReleaseNotesController.h; sourceTree = "<group>"; };
+		CEF7175E0B90DF10003A2771 /* SKReleaseNotesController.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = SKReleaseNotesController.m; sourceTree = "<group>"; };
 		CEFDF8BC0B3848C40091C61A /* SKNavigationWindow.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SKNavigationWindow.h; sourceTree = "<group>"; };
 		CEFDF8BD0B3848C40091C61A /* SKNavigationWindow.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SKNavigationWindow.m; sourceTree = "<group>"; };
 		F92DB5A80B36FE1F002A26E9 /* BDSKHeaderPopUpButtonCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BDSKHeaderPopUpButtonCell.h; sourceTree = "<group>"; };
@@ -336,6 +341,7 @@
 				CEF7071D0B8F8EFC003A2771 /* SnapshotWindow.nib */,
 				CE9C42360B8B5633004AD8CF /* PreferenceWindow.nib */,
 				CE2DEB900B86206400D0DA12 /* FindPanel.nib */,
+				CEF717560B90DEEF003A2771 /* ReleaseNotes.nib */,
 				F977515E0B37460100DF673B /* ConversionProgressWindow.nib */,
 				CE2DEA9D0B860A7000D0DA12 /* SaveProgressSheet.nib */,
 				45A3BD380B4F097D002B297F /* InitialUserDefaults.plist */,
@@ -396,6 +402,8 @@
 		CE2DE4CF0B85D89B00D0DA12 /* Controllers */ = {
 			isa = PBXGroup;
 			children = (
+				CEF7175D0B90DF10003A2771 /* SKReleaseNotesController.h */,
+				CEF7175E0B90DF10003A2771 /* SKReleaseNotesController.m */,
 				CEF7117A0B90B58E003A2771 /* SKUpdateChecker.h */,
 				CEF7117B0B90B58E003A2771 /* SKUpdateChecker.m */,
 				CE0463C90B84D24300C11E4A /* SKApplication.h */,
@@ -622,6 +630,7 @@
 				CE07158C0B8A3D6500733CC8 /* PDFDocument.icns in Resources */,
 				CE9C423C0B8B5633004AD8CF /* PreferenceWindow.nib in Resources */,
 				CEF707240B8F8EFC003A2771 /* SnapshotWindow.nib in Resources */,
+				CEF7175C0B90DEEF003A2771 /* ReleaseNotes.nib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -676,6 +685,7 @@
 				CEF7117E0B90B58F003A2771 /* SKUpdateChecker.m in Sources */,
 				CEF7117F0B90B58F003A2771 /* SKVersionNumber.m in Sources */,
 				CEF711A10B90B714003A2771 /* NSUserDefaultsController_SKExtensions.m in Sources */,
+				CEF7175F0B90DF10003A2771 /* SKReleaseNotesController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -760,6 +770,14 @@
 				CEF7071E0B8F8EFC003A2771 /* English */,
 			);
 			name = SnapshotWindow.nib;
+			sourceTree = "<group>";
+		};
+		CEF717560B90DEEF003A2771 /* ReleaseNotes.nib */ = {
+			isa = PBXVariantGroup;
+			children = (
+				CEF717570B90DEEF003A2771 /* English */,
+			);
+			name = ReleaseNotes.nib;
 			sourceTree = "<group>";
 		};
 		F977515E0B37460100DF673B /* ConversionProgressWindow.nib */ = {

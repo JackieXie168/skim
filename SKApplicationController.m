@@ -38,6 +38,7 @@
 
 #import "SKApplicationController.h"
 #import "SKPreferenceController.h"
+#import "SKReleaseNotesController.h"
 #import "SKUpdateChecker.h"
 #import "SKStringConstants.h"
 #import "SKDocument.h"
@@ -112,6 +113,10 @@
 
 - (IBAction)showPreferencePanel:(id)sender{
     [[SKPreferenceController sharedPrefenceController] showWindow:self];
+}
+
+- (IBAction)showReleaseNotes:(id)sender{
+    [[SKReleaseNotesController sharedReleaseNotesController] showWindow:self];
 }
 
 @end
