@@ -141,6 +141,13 @@
 
 @implementation SKSideWindowContentView
 
+- (void)dealloc {
+    [timer invalidate];
+    [timer release];
+    timer = nil;
+    [super dealloc];
+}
+
 - (NSRect)resizeHandleRect {
     NSRect rect, ignored;
     NSDivideRect([self bounds], &rect, &ignored, CONTENT_INSET, [(SKSideWindow *)[self window] edge] == NSMaxXEdge ? NSMinXEdge : NSMaxXEdge);
@@ -240,13 +247,31 @@
 }
 
 - (void)mouseEntered:(NSEvent *)theEvent {
-    if (NSPointInRect([NSEvent mouseLocation], [[self window] frame]))
-        [(SKSideWindow *)[self window] slideIn];
+    if (NSPointInRect([NSEvent mouseLocation], [[self window] frame])) {
+        if (timer == nil)
+            timer = [[NSTimer scheduledTimerWithTimeInterval:0.3 target:self selector:@selector(slideIn:) userInfo:NULL repeats:NO] retain];
+    } else if (timer) {
+        [timer invalidate];
+        [timer release];
+        timer = nil;
+    }
 }
 
 - (void)mouseExited:(NSEvent *)theEvent {
+    if (timer) {
+        [timer invalidate];
+        [timer release];
+        timer = nil;
+    }
     //if (NSPointInRect([NSEvent mouseLocation], [[self window] frame]) == NO)
-        [(SKSideWindow *)[self window] slideOut];
+    [(SKSideWindow *)[self window] slideOut];
+}
+
+- (void)slideIn:(NSTimer *)aTimer {
+    [timer invalidate];
+    [timer release];
+    timer = nil;
+    [(SKSideWindow *)[self window] slideIn];
 }
 
 @end
