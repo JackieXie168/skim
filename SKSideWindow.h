@@ -62,6 +62,7 @@
 
 @interface SKSideWindowContentView : NSView {
     NSTrackingRectTag trackingRect;
+    NSTimer *timer;
 }
 - (void)trackMouseOvers;
 @end
