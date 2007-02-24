@@ -590,11 +590,11 @@ static NSString *SKDocumentToolbarNotesPaneItemIdentifier = @"SKDocumentToolbarN
 
 - (void)selectNotes:(NSArray *)notesToShow{
     // there should only be a single note
-    //id annotation = [notesToShow lastObject];
-    //if ([annotation type] == nil)
-    //    annotation = [(SKNoteText *)annotation annotation];
-    [pdfView scrollAnnotationToVisible:selectedNote];
-	[pdfView setActiveAnnotation:selectedNote];
+    id annotation = [notesToShow lastObject];
+    if ([annotation type] == nil)
+        annotation = [(SKNoteText *)annotation annotation];
+    [pdfView scrollAnnotationToVisible:annotation];
+	[pdfView setActiveAnnotation:annotation];
 }
 
 - (IBAction)displaySinglePages:(id)sender {
