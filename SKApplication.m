@@ -81,6 +81,7 @@ NSString *SKApplicationWillTerminateNotification = @"SKApplicationWillTerminateN
                [[[[windowsMenu itemAtIndex:index] target] windowController] document] == nil) {}
         if (index >= 0) {
             if (itemIndex < index) {
+                [item retain];
                 [windowsMenu removeItem:item];
                 [windowsMenu insertItem:item atIndex:index];
                 [item release];
