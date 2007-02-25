@@ -21,6 +21,7 @@
         
         url = [aURL retain];
         
+        [self refresh:self];
         NSError *error = nil;
         notes = [[[NSFileManager defaultManager] skimNotesFromExtendedAttributesAtPath:[url path] error:&error] retain];
         
@@ -40,6 +41,39 @@
     NSString *path = [url path];
     return path ? path : @"";
 }
+
+- (void)loadNotes {
+    NSError *error = nil;
+    NSArray *array = [[[NSFileManager defaultManager] skimNotesFromExtendedAttributesAtPath:[url path] error:&error] retain];
+    
+    if (array) {
+        [notes release];
+        notes = [array copy];
+    } else {
+        [NSApp presentError:error];
+    }
+}
+
+#pragma mark Actions
+
+- (IBAction)refresh:(id)sender {
+    NSError *error = nil;
+    NSArray *array = [[[NSFileManager defaultManager] skimNotesFromExtendedAttributesAtPath:[url path] error:&error] retain];
+    
+    if (array) {
+        [notes release];
+        notes = [array copy];
+        [outlineView reloadData];
+    } else {
+        [NSApp presentError:error];
+    }
+}
+
+- (IBAction)openInSkim:(id)sender {
+    [[NSWorkspace sharedWorkspace] openFile:[url path] withApplication:@"Skim"];
+}
+
+#pragma mark NSOutlineView datasource and delegate methods
 
 - (int)outlineView:(NSOutlineView *)ov numberOfChildrenOfItem:(id)item {
     if (item == nil)

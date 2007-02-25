@@ -14,5 +14,10 @@
     NSArray *notes;
     IBOutlet NSOutlineView *outlineView;
 }
+
 - (id)initWithURL:(NSURL *)aURL;
+
+- (IBAction)refresh:(id)sender;
+- (IBAction)openInSkim:(id)sender;
+
 @end

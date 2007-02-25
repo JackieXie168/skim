@@ -1,6 +1,7 @@
 {
     IBClasses = (
         {
+            ACTIONS = {openInSkim = id; refresh = id; }; 
             CLASS = BDSKNotesWindowController; 
             LANGUAGE = ObjC; 
             OUTLETS = {outlineView = NSOutlineView; }; 
