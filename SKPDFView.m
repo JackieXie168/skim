@@ -53,6 +53,7 @@ NSString *SKPDFViewDidRemoveAnnotationNotification = @"SKPDFViewDidRemoveAnnotat
 NSString *SKPDFViewDidChangeAnnotationNotification = @"SKPDFViewDidChangeAnnotationNotification";
 NSString *SKPDFViewAnnotationDoubleClickedNotification = @"SKPDFViewAnnotationDoubleClickedNotification";
 
+NSString *SKSkimNotePboardType = @"SKSkimNotePboardType";
 
 @interface PDFView (PDFViewPrivateDeclarations)
 - (void)pdfViewControlHit:(id)sender;
@@ -241,6 +242,83 @@ NSString *SKPDFViewAnnotationDoubleClickedNotification = @"SKPDFViewAnnotationDo
 	if ([activeAnnotation isNoteAnnotation])
         [self removeActiveAnnotation:self];
     else
+        NSBeep();
+}
+
+- (void)copy:(id)sender
+{
+    [super copy:sender];
+    
+    if ([activeAnnotation isNoteAnnotation]) {
+        NSPasteboard *pboard = [NSPasteboard generalPasteboard];
+        NSData *data = [NSKeyedArchiver archivedDataWithRootObject:[activeAnnotation dictionaryValue]];
+        [pboard declareTypes:[NSArray arrayWithObjects:SKSkimNotePboardType, nil] owner:nil];
+        [pboard setData:data forType:SKSkimNotePboardType];
+    }
+}
+
+- (void)paste:(id)sender
+{
+    NSPasteboard *pboard = [NSPasteboard generalPasteboard];
+    NSString *pboardType = [pboard availableTypeFromArray:[NSArray arrayWithObjects:SKSkimNotePboardType, NSStringPboardType, nil]];
+    if (pboardType == nil) {
+        NSBeep();
+        return;
+    }
+    
+    PDFAnnotation *newAnnotation;
+    NSRect viewFrame = [self frame];
+    NSPoint center = NSMakePoint(NSMidX(viewFrame), NSMidY(viewFrame));
+    PDFPage *page = [self pageForPoint: center nearest: YES];;
+    
+    center = [self convertPoint: center toPage: page];
+    
+    if ([pboardType isEqualToString:SKSkimNotePboardType]) {
+    
+        NSData *data = [pboard dataForType:SKSkimNotePboardType];
+        NSDictionary *note = [NSKeyedUnarchiver unarchiveObjectWithData:data];
+        NSRect bounds;
+        
+        newAnnotation = [[[PDFAnnotation alloc] initWithDictionary:note] autorelease];
+        bounds = [newAnnotation bounds];
+        bounds.origin.x = center.x - 0.5 * NSWidth(bounds);
+        bounds.origin.y = center.y - 0.5 * NSHeight(bounds);
+        
+        [newAnnotation setBounds:bounds];
+        
+    } else if ([pboardType isEqualToString:NSStringPboardType]) {
+        
+        NSSize defaultSize = ([self annotationMode] == SKTextAnnotationMode || [self annotationMode] == SKNoteAnnotationMode) ? NSMakeSize(16.0, 16.0) : NSMakeSize(128.0, 64.0);
+        NSRect bounds = NSMakeRect(center.x - 0.5 * defaultSize.width, center.y - 0.5 * defaultSize.height, defaultSize.width, defaultSize.height);
+    
+        switch ([self annotationMode]) {
+            case SKTextAnnotationMode:
+                newAnnotation = [[SKPDFAnnotationText alloc] initWithBounds:bounds];
+                break;
+            case SKNoteAnnotationMode:
+                newAnnotation = [[SKPDFAnnotationNote alloc] initWithBounds:bounds];
+                break;
+            default:
+                newAnnotation = [[SKPDFAnnotationFreeText alloc] initWithBounds:bounds];
+                break;
+        }
+        [newAnnotation setContents:[pboard stringForType:NSStringPboardType]];
+    }
+    
+    [page addAnnotation:newAnnotation];
+    
+    [[NSNotificationCenter defaultCenter] postNotificationName:SKPDFViewDidAddAnnotationNotification object:self 
+        userInfo:[NSDictionary dictionaryWithObjectsAndKeys:newAnnotation, @"annotation", page, @"page", nil]];
+
+    [self setActiveAnnotation:newAnnotation];
+}
+
+- (void)cut:(id)sender
+{
+	if ([activeAnnotation isNoteAnnotation]) {
+        [self copy:sender];
+        [self delete:sender];
+    } else
         NSBeep();
 }
 

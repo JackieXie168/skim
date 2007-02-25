@@ -48,6 +48,8 @@ extern NSString *SKPDFViewDidRemoveAnnotationNotification;
 extern NSString *SKPDFViewDidChangeAnnotationNotification;
 extern NSString *SKPDFViewAnnotationDoubleClickedNotification;
 
+extern NSString *SKSkimNotePboardType;
+
 typedef enum _SKToolMode {
     SKTextToolMode,
     SKMoveToolMode,
