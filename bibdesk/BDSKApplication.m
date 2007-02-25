@@ -90,7 +90,8 @@ static int indexOfWindowsMenuItemWithTarget(id target)
     NSMenu *windowsMenu = [NSApp windowsMenu];
     int index = [windowsMenu numberOfItems];
     while (index--) {
-        if ([[[windowsMenu itemAtIndex:index] target] isEqual:target]) {
+        id itemTarget = [[windowsMenu itemAtIndex:index] target];
+        if ([itemTarget isEqual:target]) {
             break;
         }
     }
@@ -175,11 +176,21 @@ static int indexOfWindowsMenuItemWithTarget(id target)
 }
 
 - (void)removeWindowsItem:(NSWindow *)aWindow {
-    int index = indexOfWindowsMenuItemWithTarget(aWindow);
     [super removeWindowsItem:aWindow];
-    if (index != -1 && (index < [[self windowsMenu] numberOfItems]) && 
-        [[[self windowsMenu] itemAtIndex:index - 1] isSeparatorItem])
-        [[self windowsMenu] removeItemAtIndex:index - 1];
+    
+    int index = [[self windowsMenu] numberOfItems];
+    BOOL wasSeparator = YES;
+    
+    while (index--) {
+        if ([[[self windowsMenu] itemAtIndex:index] isSeparatorItem]) {
+            if (wasSeparator)
+                [[self windowsMenu] removeItemAtIndex:index];
+            else
+                wasSeparator = YES;
+        } else {
+            wasSeparator = NO;
+        }
+    }
 }
 
 @end
