@@ -37,6 +37,8 @@
  */
 
 #import "SKMainWindowController.h"
+#import <Quartz/Quartz.h>
+#import <Carbon/Carbon.h>
 #import "SKStringConstants.h"
 #import "SKApplication.h"
 #import "SKStringConstants.h"
@@ -46,7 +48,6 @@
 #import "SKFullScreenWindow.h"
 #import "SKNavigationWindow.h"
 #import "SKSideWindow.h"
-#import <Quartz/Quartz.h>
 #import "PDFPage_SKExtensions.h"
 #import "SKDocument.h"
 #import "SKThumbnail.h"
@@ -60,7 +61,9 @@
 #import "NSScrollView_SKExtensions.h"
 #import "NSBezierPath_BDSKExtensions.h"
 #import "NSUserDefaultsController_SKExtensions.h"
-#import <Carbon/Carbon.h>
+#import "SKOutlineView.h"
+#import "SKNoteOutlineView.h"
+#import "SKThumbnailTableView.h"
 
 #define SEGMENTED_CONTROL_HEIGHT    25.0
 #define WINDOW_X_DELTA              0.0
@@ -2541,278 +2544,6 @@ static NSString *SKDocumentToolbarNotesPaneItemIdentifier = @"SKDocumentToolbarN
 	[extendedSelection release];
 	
 	return [attributedSample autorelease];
-}
-
-@end
-
-#pragma mark -
-
-@implementation SKThumbnailTableView
-
-- (void)setFrame:(NSRect)frameRect {
-    [super setFrame:frameRect];
-    [self noteHeightOfRowsWithIndexesChanged:[NSIndexSet indexSetWithIndexesInRange:NSMakeRange(0, [self numberOfRows])]];
-}
-
-- (void)setFrameSize:(NSSize)frameSize {
-    [super setFrameSize:frameSize];
-    [self noteHeightOfRowsWithIndexesChanged:[NSIndexSet indexSetWithIndexesInRange:NSMakeRange(0, [self numberOfRows])]];
-}
-
-- (void)highlightSelectionInClipRect:(NSRect)clipRect {
-    if ([[self delegate] respondsToSelector:@selector(tableViewHighlightedRows:)]) {
-        NSMutableIndexSet *rowIndexes = [[[self selectedRowIndexes] mutableCopy] autorelease];
-        NSArray *rows = [[self delegate] tableViewHighlightedRows:self];
-        NSColor *color = ([[self window] isKeyWindow] && [[self window] firstResponder] == self) ? [NSColor alternateSelectedControlColor] : [NSColor secondarySelectedControlColor];
-        float factor = 0.5;
-        int i, count = [rows count];
-        
-        [NSGraphicsContext saveGraphicsState];
-        for (i = 0; i < count; i++) {
-            int row = [[rows objectAtIndex:i] intValue];
-            [[[NSColor controlBackgroundColor] blendedColorWithFraction:factor ofColor:color] set];
-            factor -= 0.1;
-            if ([rowIndexes containsIndex:row] == NO) {
-                NSRectFill([self rectOfRow:row]);
-                [rowIndexes addIndex:row];
-            }
-            if (factor <= 0.0) break;
-        }
-        [NSGraphicsContext restoreGraphicsState];
-    }
-    [super highlightSelectionInClipRect:clipRect]; 
-}
-
-@end
-
-#pragma mark -
-
-@implementation SKSnapshotTableView
-
-- (void)delete:(id)sender {
-    if ([[self delegate] respondsToSelector:@selector(tableView:deleteRowsWithIndexes:)]) {
-		if ([self selectedRow] == -1)
-			NSBeep();
-		else
-			[[self delegate] tableView:self deleteRowsWithIndexes:[self selectedRowIndexes]];
-    }
-}
-
-- (void)keyDown:(NSEvent *)theEvent {
-    NSString *characters = [theEvent charactersIgnoringModifiers];
-    unichar eventChar = [characters length] > 0 ? [characters characterAtIndex:0] : 0;
-	unsigned int modifiers = [theEvent modifierFlags] & NSDeviceIndependentModifierFlagsMask;
-    
-	if ((eventChar == NSDeleteCharacter || eventChar == NSDeleteFunctionKey) && modifiers == 0)
-        [self delete:self];
-	else
-		[super keyDown:theEvent];
-}
-
-@end
-
-#pragma mark -
-
-@implementation SKOutlineView
-
-- (void)highlightSelectionInClipRect:(NSRect)clipRect {
-    NSMutableIndexSet *rowIndexes = [[[self selectedRowIndexes] mutableCopy] autorelease];
-    NSArray *rows = [[self delegate] outlineViewHighlightedRows:self];
-    NSColor *color = ([[self window] isKeyWindow] && [[self window] firstResponder] == self) ? [NSColor alternateSelectedControlColor] : [NSColor secondarySelectedControlColor];
-    float factor = 0.5;
-    int i, count = [rows count];
-    
-    [NSGraphicsContext saveGraphicsState];
-    for (i = 0; i < count; i++) {
-        int row = [[rows objectAtIndex:i] intValue];
-        [[[NSColor controlBackgroundColor] blendedColorWithFraction:factor ofColor:color] set];
-        factor -= 0.1;
-        if ([rowIndexes containsIndex:row] == NO) {
-            NSRectFill([self rectOfRow:row]);
-            [rowIndexes addIndex:row];
-        }
-        if (factor <= 0.0) break;
-    }
-    [NSGraphicsContext restoreGraphicsState];
-    
-    [super highlightSelectionInClipRect:clipRect]; 
-}
-
-@end
-
-#pragma mark -
-
-@implementation SKNoteOutlineView
-
-- (void)delete:(id)sender {
-    if ([[self delegate] respondsToSelector:@selector(outlineViewDeleteSelectedRows:)]) {
-		if ([[self selectedRowIndexes] count] == 0)
-			NSBeep();
-		else
-			[[self delegate] outlineViewDeleteSelectedRows:self];
-    }
-}
-
-- (void)keyDown:(NSEvent *)theEvent {
-    NSString *characters = [theEvent charactersIgnoringModifiers];
-    unichar eventChar = [characters length] > 0 ? [characters characterAtIndex:0] : 0;
-	unsigned int modifiers = [theEvent modifierFlags] & NSDeviceIndependentModifierFlagsMask;
-    
-	if ((eventChar == NSDeleteCharacter || eventChar == NSDeleteFunctionKey) && modifiers == 0)
-        [self delete:self];
-	else
-		[super keyDown:theEvent];
-}
-
-- (BOOL)resizeRow:(int)row withEvent:(NSEvent *)theEvent {
-    id item = [self itemAtRow:row];
-    NSPoint startPoint = [self convertPoint:[theEvent locationInWindow] fromView:nil];
-    float startHeight = [[self delegate] outlineView:self heightOfRowByItem:item];
-	BOOL keepGoing = YES;
-    BOOL dragged = NO;
-	
-    [[NSCursor resizeUpDownCursor] push];
-    
-	while (keepGoing) {
-		theEvent = [[self window] nextEventMatchingMask: NSLeftMouseUpMask | NSLeftMouseDraggedMask];
-		switch ([theEvent type]) {
-			case NSLeftMouseDragged:
-            {
-                NSPoint currentPoint = [self convertPoint:[theEvent locationInWindow] fromView:nil];
-                float currentHeight = fmax([self rowHeight], startHeight + currentPoint.y - startPoint.y);
-                
-                [[self delegate] outlineView:self setHeightOfRow:currentHeight byItem:item];
-                [self noteHeightOfRowsWithIndexesChanged:[NSIndexSet indexSetWithIndex:row]];
-                
-                dragged = YES;
-                
-                break;
-			}
-            
-            case NSLeftMouseUp:
-                keepGoing = NO;
-                break;
-			
-            default:
-                break;
-        }
-    }
-    [NSCursor pop];
-    
-    return dragged;
-}
-
-- (void)mouseDown:(NSEvent *)theEvent {
-    if ([[self delegate] respondsToSelector:@selector(outlineView:canResizeRowByItem:)] && [[self delegate] respondsToSelector:@selector(outlineView:setHeightOfRow:byItem:)]) {
-        NSPoint mouseLoc = [self convertPoint:[theEvent locationInWindow] fromView:nil];
-        int row = [self rowAtPoint:mouseLoc];
-        
-        if (row != -1 && [[self delegate] outlineView:self canResizeRowByItem:[self itemAtRow:row]]) {
-            NSRect ignored, rect = [self rectOfRow:row];
-            NSDivideRect(rect, &rect, &ignored, 5.0, [self isFlipped] ? NSMaxYEdge : NSMinYEdge);
-            if (NSPointInRect(mouseLoc, rect) && [self resizeRow:row withEvent:theEvent])
-                return;
-        }
-    }
-    [super mouseDown:theEvent];
-}
-
-- (void)drawRect:(NSRect)aRect {
-    [super drawRect:aRect];
-    if ([[self delegate] respondsToSelector:@selector(outlineView:canResizeRowByItem:)]) {
-        NSRange visibleRows = [self rowsInRect:[self visibleRect]];
-        
-        if (visibleRows.length == 0)
-            return;
-        
-        unsigned int row;
-        BOOL isFirstResponder = [[self window] isKeyWindow] && [[self window] firstResponder] == self;
-        
-        [NSGraphicsContext saveGraphicsState];
-        [NSBezierPath setDefaultLineWidth:1.0];
-        
-        for (row = visibleRows.location; row < NSMaxRange(visibleRows); row++) {
-            id item = [self itemAtRow:row];
-            if ([[self delegate] outlineView:self canResizeRowByItem:item] == NO)
-                continue;
-            
-            BOOL isHighlighted = isFirstResponder && [self isRowSelected:row];
-            NSColor *color = isHighlighted ? [NSColor whiteColor] : [NSColor grayColor];
-            NSRect rect = [self rectOfRow:row];
-            NSPoint startPoint = NSMakePoint(NSMaxX(rect) - 20.0, NSMaxY(rect) - 1.5);
-            NSPoint endPoint = NSMakePoint(NSMaxX(rect), NSMaxY(rect) - 1.5);
-            
-            [color set];
-            [NSBezierPath strokeLineFromPoint:startPoint toPoint:endPoint];
-            [[color colorWithAlphaComponent:0.5] set];
-            startPoint.y -= 2.0;
-            endPoint.y -= 2.0;
-            [NSBezierPath strokeLineFromPoint:startPoint toPoint:endPoint];
-        }
-        
-        [NSGraphicsContext restoreGraphicsState];
-    }
-}
-
-@end
-
-#pragma mark -
-
-@implementation SKSnapshotPageCell
-
-- (void)setObjectValue:(id)anObject {
-    [super setObjectValue:[anObject valueForKey:@"label"]];
-    hasWindow = [[anObject valueForKey:@"hasWindow"] boolValue];
-}
-
-- (id)objectValue {
-    return [NSDictionary dictionaryWithObjectsAndKeys:[NSNumber numberWithBool:hasWindow], @"hasWindow", [self stringValue], @"label", nil];
-}
-
-- (void)drawInteriorWithFrame:(NSRect)cellFrame inView:(NSView *)controlView {
-    NSRect textRect, imageRect, ignored;
-    NSDivideRect(cellFrame, &textRect, &imageRect, 17.0, NSMinYEdge);
-    [super drawInteriorWithFrame:textRect inView:controlView];
-    if (hasWindow) {
-        BOOL isSelected = [self isHighlighted] && [[controlView window] isKeyWindow] && [[[controlView window] firstResponder] isEqual:controlView];
-        float radius = 2.0;
-        NSBezierPath *path = [NSBezierPath bezierPath];
-        NSShadow *shadow = [[[NSShadow alloc] init] autorelease];
-        
-        [NSGraphicsContext saveGraphicsState];
-        
-        [shadow setShadowOffset:NSMakeSize(0.0, -1.0)];
-        if (isSelected)
-            [shadow setShadowColor:[NSColor colorWithDeviceWhite:1.0 alpha:0.2]];
-        else
-            [shadow setShadowColor:[NSColor colorWithDeviceWhite:0.0 alpha:0.1]];
-        [shadow set];
-        
-        NSDivideRect(imageRect, &imageRect, &ignored, 10.0, NSMinYEdge);
-        imageRect.origin.x += 4.0;
-        imageRect.size.width = 10.0;
-        
-        [path moveToPoint:NSMakePoint(NSMinX(imageRect), NSMaxY(imageRect))];
-        [path appendBezierPathWithArcWithCenter:NSMakePoint(NSMinX(imageRect) + radius, NSMinY(imageRect) + radius) radius:radius startAngle:180.0 endAngle:270.0];
-        [path appendBezierPathWithArcWithCenter:NSMakePoint(NSMaxX(imageRect) - radius, NSMinY(imageRect) + radius) radius:radius startAngle:270.0 endAngle:360.0];
-        [path lineToPoint:NSMakePoint(NSMaxX(imageRect), NSMaxY(imageRect))];
-        [path closePath];
-        
-        imageRect = NSInsetRect(imageRect, 1.0, 2.0);
-        imageRect.size.height += 1.0;
-        
-        [path appendBezierPath:[NSBezierPath bezierPathWithRect:imageRect]];
-        [path setWindingRule:NSEvenOddWindingRule];
-        
-        if (isSelected)
-            [[NSColor colorWithDeviceWhite:1.0 alpha:1.0] set];
-        else
-            [[NSColor colorWithDeviceWhite:0.0 alpha:0.8] set];
-        
-        [path fill];
-        
-        [NSGraphicsContext restoreGraphicsState];
-    }
 }
 
 @end

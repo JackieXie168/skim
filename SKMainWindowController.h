@@ -57,19 +57,9 @@ typedef struct _SKPDFViewState {
 	BOOL autoHidesScrollers;
 } SKPDFViewState;
 
-@class SKPDFView, PDFOutline, SKThumbnail, BDSKCollapsibleView, BDSKEdgeView, SKFullScreenWindow, SKNavigationWindow, SKSideWindow, SKSnapshotWindowController, SKSplitView;
-
-@interface SKThumbnailTableView : NSTableView
-@end
-
-@interface SKSnapshotTableView : SKThumbnailTableView
-@end
-
-@interface SKOutlineView : NSOutlineView
-@end
-
-@interface SKNoteOutlineView : NSOutlineView
-@end
+@class PDFOutline, SKThumbnail;
+@class SKPDFView, SKOutlineView, SKNoteOutlineView, SKThumbnailTableView, SKSnapshotTableView, SKSplitView, BDSKCollapsibleView, BDSKEdgeView;
+@class SKFullScreenWindow, SKNavigationWindow, SKSideWindow, SKSnapshotWindowController;
 
 @interface SKMainWindowController : NSWindowController {
     IBOutlet SKSplitView        *splitView;
@@ -289,31 +279,4 @@ typedef struct _SKPDFViewState {
 
 - (void)setupToolbar;
 
-@end
-
-
-@interface SKSnapshotPageCell : NSTextFieldCell {
-    BOOL hasWindow;
-}
-@end
-
-@interface NSObject (SKSnapshotTableViewDelegate)
-- (void)tableView:(NSTableView *)aTableView deleteRowsWithIndexes:(NSIndexSet *)rowIndexes;
-@end
-
-
-@interface NSObject (SKNoteOutlineViewDelegate)
-- (void)outlineViewDeleteSelectedRows:(NSOutlineView *)anOutlineView;
-- (BOOL)outlineView:(NSOutlineView *)anOutlineView canResizeRowByItem:(id)item;
-- (void)outlineView:(NSOutlineView *)anOutlineView setHeightOfRow:(int)newHeight byItem:(id)item;
-@end
-
-
-@interface NSObject (SKThumbnailTableViewDelegate)
-- (NSArray *)tableViewHighlightedRows:(NSTableView *)tableView;
-@end
-
-
-@interface NSObject (SKOutlineViewDelegate)
-- (NSArray *)outlineViewHighlightedRows:(NSOutlineView *)anOutlineView;
 @end
