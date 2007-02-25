@@ -448,6 +448,42 @@
 	}
 }	
 
+- (BOOL) validateShowNotesForLinkedFileMenuItem:(NSMenuItem*) menuItem {
+    BOOL enabled = [[NSUserDefaults standardUserDefaults] boolForKey:@"BDSKShouldShowSkimNotesKey"];
+	NSString * s;
+	NSString *field = [menuItem representedObject];
+	BibItem *selectedBI = nil;
+	NSString *lurl = nil;
+    if (field == nil)
+		field = BDSKLocalUrlString;
+    
+	if ([self numberOfSelectedPubs] == 0) {
+		// no selection
+		s = NSLocalizedString(@"Show Notes For Linked File", @"Menu item title");
+		[menuItem setTitle:s];
+		return NO;
+	}
+	else if ([self numberOfSelectedPubs] == 1) {
+		// single selection
+		s = NSLocalizedString(@"Show Notes For Linked File", @"Menu item title");
+		[menuItem setTitle:s];
+		selectedBI = [[self selectedPublications] objectAtIndex:0];
+		lurl = [selectedBI localFilePathForField:field];
+		return enabled && (lurl && [[NSFileManager defaultManager] fileExistsAtPath:lurl]);
+	}
+	else {
+		s = NSLocalizedString(@"Show Notes For %i Linked Files", @"Menu item title");
+		[menuItem setTitle:[NSString stringWithFormat:s, [self numberOfSelectedPubs]]];
+		NSEnumerator *e = [[self selectedPublications] objectEnumerator];
+		while(selectedBI = [e nextObject]){
+			lurl = [selectedBI localFilePathForField:field];
+			if (lurl && [[NSFileManager defaultManager] fileExistsAtPath:lurl])
+				return enabled;
+		}
+		return NO;
+	}
+}	
+
 - (BOOL) validateDuplicateTitleToBooktitleMenuItem:(NSMenuItem*) menuItem {
 	NSString * s;
 	
@@ -921,6 +957,9 @@
 	}
 	else if(act == @selector(openRemoteURL:)) {
 		return [self validateOpenRemoteURLMenuItem:menuItem];
+	}
+	else if(act == @selector(showNotesForLinkedFile:)) {
+		return [self validateShowNotesForLinkedFileMenuItem:menuItem];
 	}
 	else if(act == @selector(toggleShowingCustomCiteDrawer:)) {
 		return [self validateToggleToggleCustomCiteDrawerMenuItem:menuItem];
