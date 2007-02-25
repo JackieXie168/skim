@@ -100,9 +100,11 @@
     return [[self class] lowerColor];
 }
 
-- (NSSize)iconCellSize {
-    float cellSide = NSHeight([self bounds]) - 2.0;
-	return NSMakeSize(cellSide, cellSide);
+- (NSSize)cellSizeForIcon:(NSImage *)icon {
+    NSSize iconSize = [icon size];
+    float cellHeight = NSHeight([self bounds]) - 2.0;
+    float cellWidth = iconSize.width * cellHeight / iconSize.height;
+	return NSMakeSize(cellWidth, cellHeight);
 }
 
 - (void)drawRect:(NSRect)rect {
@@ -120,10 +122,11 @@
 	NSDictionary *dict;
 	NSImage *icon;
 	NSRect iconRect;    
-	NSSize size = [self iconCellSize];
+	NSSize size;
 	
 	while (dict = [dictEnum nextObject]) {
 		icon = [dict objectForKey:@"icon"];
+        size = [self cellSizeForIcon:icon];
         NSDivideRect(textRect, &iconRect, &textRect, size.width, NSMaxXEdge);
         NSDivideRect(textRect, &ignored, &textRect, MARGIN_BETWEEN_ITEMS, NSMaxXEdge);
         iconRect = BDSKCenterRectVertically(iconRect, size.height, [self isFlipped]);
@@ -336,11 +339,12 @@
 	NSEnumerator *dictEnum = [icons objectEnumerator];
 	NSDictionary *dict;
 	NSRect iconRect;
-    NSSize size = [self iconCellSize];
+    NSSize size;
 	
 	[self removeAllToolTips];
 	
 	while (dict = [dictEnum nextObject]) {
+        size = [self cellSizeForIcon:[dict objectForKey:@"icon"]];
         NSDivideRect(rect, &iconRect, &rect, size.width, NSMaxXEdge);
         NSDivideRect(rect, &ignored, &rect, MARGIN_BETWEEN_ITEMS, NSMaxXEdge);
         iconRect = BDSKCenterRectVertically(iconRect, size.height, [self isFlipped]);
