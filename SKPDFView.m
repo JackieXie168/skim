@@ -1283,10 +1283,21 @@ NSString *SKPDFViewAnnotationDoubleClickedNotification = @"SKPDFViewAnnotationDo
     int factor = 1;
     
     if (dragged == NO) {
+        
+        BOOL isLink = NO;
+        PDFDestination *dest = [self destinationForEvent:theEvent isLink:&isLink];
+        
+        if (isLink) {
+            page = [dest page];
+            point = [self convertPoint:[dest point] fromPage:page];
+            point.y -= 100.0;
+        }
+        
         rect.origin.x = [self convertPoint:[page boundsForBox:[self displayBox]].origin fromPage:page].x;
         rect.origin.y = point.y - 100.0;
         rect.size.width = [self rowSizeForPage:page].width;
         rect.size.height = 200.0;
+        
     } else {
     
         bounds = [self convertRect:[[self documentView] bounds] fromView:[self documentView]];
