@@ -6,6 +6,21 @@
 	objectVersion = 42;
 	objects = {
 
+/* Begin PBXAggregateTarget section */
+		CE592C5D0B9239C500C113DF /* DiskImage */ = {
+			isa = PBXAggregateTarget;
+			buildConfigurationList = CE592C5E0B9239C600C113DF /* Build configuration list for PBXAggregateTarget "DiskImage" */;
+			buildPhases = (
+				CE592C630B9239E300C113DF /* ShellScript */,
+			);
+			dependencies = (
+				CE592C620B9239CD00C113DF /* PBXTargetDependency */,
+			);
+			name = DiskImage;
+			productName = DiskImage;
+		};
+/* End PBXAggregateTarget section */
+
 /* Begin PBXBuildFile section */
 		4530D7E80B27AAB9007C59F4 /* SKSnapshotWindowController.m in Sources */ = {isa = PBXBuildFile; fileRef = 4530D7E70B27AAB9007C59F4 /* SKSnapshotWindowController.m */; };
 		4530D7EF0B27AAD6007C59F4 /* SKMainWindowController.m in Sources */ = {isa = PBXBuildFile; fileRef = 4530D7EE0B27AAD6007C59F4 /* SKMainWindowController.m */; };
@@ -107,6 +122,16 @@
 		F98E24BF0B702D9400914AF0 /* Carbon.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F98E24BE0B702D9400914AF0 /* Carbon.framework */; };
 		F9CDD67B0B837A7F006363C3 /* SKPreferenceController.m in Sources */ = {isa = PBXBuildFile; fileRef = CE4EC4F40B7E24490091F228 /* SKPreferenceController.m */; };
 /* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		CE592C610B9239CD00C113DF /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 2A37F4A9FDCFA73011CA2CEA /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 8D15AC270486D014006FF6A4 /* Skim */;
+			remoteInfo = Skim;
+		};
+/* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
 		089C1660FE840EACC02AAC07 /* English */ = {isa = PBXFileReference; fileEncoding = 10; lastKnownFileType = text.plist.strings; name = English; path = English.lproj/InfoPlist.strings; sourceTree = "<group>"; };
@@ -589,6 +614,7 @@
 			projectRoot = "";
 			targets = (
 				8D15AC270486D014006FF6A4 /* Skim */,
+				CE592C5D0B9239C500C113DF /* DiskImage */,
 			);
 		};
 /* End PBXProject section */
@@ -651,6 +677,22 @@
 		};
 /* End PBXResourcesBuildPhase section */
 
+/* Begin PBXShellScriptBuildPhase section */
+		CE592C630B9239E300C113DF /* ShellScript */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "rm -f /tmp/Skim.dmg\n/bin/cp ${SOURCE_ROOT}/Skim.dmg /tmp\n/usr/bin/hdiutil attach /tmp/Skim.dmg\n${SYSTEM_DEVELOPER_TOOLS}/CpMac -r ${BUILT_PRODUCTS_DIR}/Skim.app /Volumes/BibDesk\nosascript -e \"tell application \\\"Finder\\\" to set the position of application file \\\"Skim.app\\\" of disk named \\\"Skim\\\" to {90, 206}\" && \\\nsleep 7; \\\n/usr/sbin/diskutil eject /Volumes/Skim\n/usr/bin/hdiutil convert /tmp/Skim.dmg -format UDZO -imagekey zlib-level=9 -o $HOME/Desktop/Skim.dmg\n/usr/bin/hdiutil internet-enable -YES $HOME/Desktop/Skim.dmg\nexit 0";
+		};
+/* End PBXShellScriptBuildPhase section */
+
 /* Begin PBXSourcesBuildPhase section */
 		8D15AC300486D014006FF6A4 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
@@ -708,6 +750,14 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		CE592C620B9239CD00C113DF /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 8D15AC270486D014006FF6A4 /* Skim */;
+			targetProxy = CE592C610B9239CD00C113DF /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
 
 /* Begin PBXVariantGroup section */
 		089C165FFE840EACC02AAC07 /* InfoPlist.strings */ = {
@@ -889,6 +939,28 @@
 			};
 			name = Release;
 		};
+		CE592C5F0B9239C600C113DF /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				COPY_PHASE_STRIP = NO;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				PRODUCT_NAME = DiskImage;
+			};
+			name = Debug;
+		};
+		CE592C600B9239C600C113DF /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				COPY_PHASE_STRIP = YES;
+				GCC_ENABLE_FIX_AND_CONTINUE = NO;
+				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
+				PRODUCT_NAME = DiskImage;
+				ZERO_LINK = NO;
+			};
+			name = Release;
+		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -906,6 +978,15 @@
 			buildConfigurations = (
 				C05733CC08A9546B00998B17 /* Debug */,
 				C05733CD08A9546B00998B17 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		CE592C5E0B9239C600C113DF /* Build configuration list for PBXAggregateTarget "DiskImage" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				CE592C5F0B9239C600C113DF /* Debug */,
+				CE592C600B9239C600C113DF /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
