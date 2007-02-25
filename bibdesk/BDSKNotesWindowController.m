@@ -194,4 +194,41 @@
     [super mouseDown:theEvent];
 }
 
+- (void)drawRect:(NSRect)aRect {
+    [super drawRect:aRect];
+    if ([[self delegate] respondsToSelector:@selector(outlineView:canResizeRowByItem:)]) {
+        NSRange visibleRows = [self rowsInRect:[self visibleRect]];
+        
+        if (visibleRows.length == 0)
+            return;
+        
+        unsigned int row;
+        BOOL isFirstResponder = [[self window] isKeyWindow] && [[self window] firstResponder] == self;
+        
+        [NSGraphicsContext saveGraphicsState];
+        [NSBezierPath setDefaultLineWidth:1.0];
+        
+        for (row = visibleRows.location; row < NSMaxRange(visibleRows); row++) {
+            id item = [self itemAtRow:row];
+            if ([[self delegate] outlineView:self canResizeRowByItem:item] == NO)
+                continue;
+            
+            BOOL isHighlighted = isFirstResponder && [self isRowSelected:row];
+            NSColor *color = isHighlighted ? [NSColor whiteColor] : [NSColor grayColor];
+            NSRect rect = [self rectOfRow:row];
+            NSPoint startPoint = NSMakePoint(NSMaxX(rect) - 20.0, NSMaxY(rect) - 1.5);
+            NSPoint endPoint = NSMakePoint(NSMaxX(rect), NSMaxY(rect) - 1.5);
+            
+            [color set];
+            [NSBezierPath strokeLineFromPoint:startPoint toPoint:endPoint];
+            [[color colorWithAlphaComponent:0.5] set];
+            startPoint.y -= 2.0;
+            endPoint.y -= 2.0;
+            [NSBezierPath strokeLineFromPoint:startPoint toPoint:endPoint];
+        }
+        
+        [NSGraphicsContext restoreGraphicsState];
+    }
+}
+
 @end
