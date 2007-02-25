@@ -2666,7 +2666,7 @@ static NSString *SKDocumentToolbarNotesPaneItemIdentifier = @"SKDocumentToolbarN
 
 - (BOOL)resizeRow:(int)row withEvent:(NSEvent *)theEvent {
     id item = [self itemAtRow:row];
-    NSPoint startPoint = [theEvent locationInWindow];
+    NSPoint startPoint = [self convertPoint:[theEvent locationInWindow] fromView:nil];
     float startHeight = [[self delegate] outlineView:self heightOfRowByItem:item];
 	BOOL keepGoing = YES;
     BOOL dragged = NO;
@@ -2678,8 +2678,8 @@ static NSString *SKDocumentToolbarNotesPaneItemIdentifier = @"SKDocumentToolbarN
 		switch ([theEvent type]) {
 			case NSLeftMouseDragged:
             {
-                NSPoint currentPoint = [theEvent locationInWindow];
-                float currentHeight = fmax([self rowHeight], startHeight - currentPoint.y + startPoint.y);
+                NSPoint currentPoint = [self convertPoint:[theEvent locationInWindow] fromView:nil];
+                float currentHeight = fmax([self rowHeight], startHeight + currentPoint.y - startPoint.y);
                 
                 [[self delegate] outlineView:self setHeightOfRow:currentHeight byItem:item];
                 [self noteHeightOfRowsWithIndexesChanged:[NSIndexSet indexSetWithIndex:row]];
