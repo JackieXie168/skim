@@ -279,7 +279,10 @@ NSString *SKSkimNotePboardType = @"SKSkimNotePboardType";
         NSDictionary *note = [NSKeyedUnarchiver unarchiveObjectWithData:data];
         NSRect bounds;
         
-        newAnnotation = [[[PDFAnnotation alloc] initWithDictionary:note] autorelease];
+        if ([page rotation] % 180 == 90)
+            defaultSize = NSMakeSize(defaultSize.height, defaultSize.width);
+       
+         newAnnotation = [[[PDFAnnotation alloc] initWithDictionary:note] autorelease];
         bounds = [newAnnotation bounds];
         bounds.origin.x = center.x - 0.5 * NSWidth(bounds);
         bounds.origin.y = center.y - 0.5 * NSHeight(bounds);
