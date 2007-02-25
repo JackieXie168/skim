@@ -307,6 +307,9 @@
                 item = [menu addItemWithTitle:NSLocalizedString(@"Reveal Linked File in Finder", @"Menu item title") action:@selector(revealLinkedFile:) keyEquivalent:@""];
                 [item setTarget:self];
                 [item setRepresentedObject:tcId];
+                item = [menu addItemWithTitle:NSLocalizedString(@"Show Notes For Linked File in Finder", @"Menu item title") action:@selector(showNotesForLinkedFile:) keyEquivalent:@""];
+                [item setTarget:self];
+                [item setRepresentedObject:tcId];
             }else{
                 item = [menu addItemWithTitle:NSLocalizedString(@"Open URL in Browser", @"Menu item title") action:@selector(openRemoteURL:) keyEquivalent:@""];
                 [item setTarget:self];

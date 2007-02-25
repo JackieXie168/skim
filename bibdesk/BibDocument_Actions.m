@@ -52,6 +52,7 @@
 #import "BibPersonController.h"
 #import "BDSKDocumentInfoWindowController.h"
 #import "MacroWindowController.h"
+#import "BDSKNotesWindowController.h"
 
 #import "NSString_BDSKExtensions.h"
 #import "NSArray_BDSKExtensions.h"
@@ -698,6 +699,52 @@
                             contextInfo:NULL];
 	} else {
         [self openRemoteURLAlertDidEnd:nil returnCode:NSAlertAlternateReturn contextInfo:[field retain]];
+    }
+}
+
+- (IBAction)showNotesForLinkedFile:(id)sender{
+	NSString *field = [sender representedObject];
+    if (field == nil)
+		field = BDSKLocalUrlString;
+    [self showNotesForLinkedFileForField:field];
+}
+
+- (void)showNotesForLinkedFileAlertDidEnd:(NSAlert *)alert returnCode:(int)returnCode contextInfo:(void *)contextInfo {
+    NSString *field = (NSString *)contextInfo;
+    if (returnCode == NSAlertAlternateReturn) {
+        NSEnumerator *e = [[self selectedPublications] objectEnumerator];
+        BibItem *pub;
+        NSURL *fileURL;
+        BDSKNotesWindowController *notesController;
+        
+        // the user said to go ahead
+        while (pub = [e nextObject]) {
+            fileURL = [pub URLForField:field];
+            if(fileURL == nil) continue;
+            notesController = [[[BDSKNotesWindowController alloc] initWithURL:fileURL] autorelease];
+            [self addWindowController:notesController];
+            [notesController showWindow:self];
+        }
+    }
+    [field release];
+}
+
+- (void)showNotesForLinkedFileForField:(NSString *)field{
+	int n = [self numberOfSelectedPubs];
+    
+    if (n > 6) {
+		// Do we really want a gazillion of files open?
+        NSAlert *alert = [NSAlert alertWithMessageText:NSLocalizedString(@"Show Notes For Linked Files", @"Message in alert dialog when showing notes for a lot of linked files")
+                                         defaultButton:NSLocalizedString(@"No", @"Button title")
+                                       alternateButton:NSLocalizedString(@"Open", @"Button title")
+                                           otherButton:nil
+                             informativeTextWithFormat:[NSString stringWithFormat:NSLocalizedString(@"BibDesk is about to open windows for notes for %i linked files. Do you want to proceed?" , @"Informative text in alert dialog"), n]];
+        [alert beginSheetModalForWindow:documentWindow
+                          modalDelegate:self
+                         didEndSelector:@selector(showNotesForLinkedFileAlertDidEnd:returnCode:contextInfo:) 
+                            contextInfo:NULL];
+	} else {
+        [self showNotesForLinkedFileAlertDidEnd:nil returnCode:NSAlertAlternateReturn contextInfo:[field retain]];
     }
 }
 

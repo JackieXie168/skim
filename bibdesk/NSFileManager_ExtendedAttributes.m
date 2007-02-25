@@ -404,5 +404,118 @@ static NSString *xattrError(int err, const char *myPath)
     return errMsg;
 }
     
+@end
+
+
+@implementation NSFileManager (BDSKSkimNotesExtensions)
+
+#define MAX_XATTR_LENGTH 4096
+
+- (BOOL)setSkimNotes:(NSArray *)notes inExtendedAttributesAtPath:(NSString *)path error:(NSError **)outError {
+    BOOL success = YES;
+    
+    int i, j, n, numberOfNotes = [notes count];
+    NSArray *oldNotes = [self extendedAttributeNamesAtPath:path traverseLink:YES error:NULL];
+    NSDictionary *dictionary = [NSDictionary dictionaryWithObjectsAndKeys:[NSNumber numberWithInt:numberOfNotes], @"numberOfNotes", nil];
+    NSMutableDictionary *longNotes = [NSMutableDictionary dictionary];
+    NSString *name = nil;
+    NSData *data = nil;
+    NSError *error = nil;
+    
+    // first remove all old notes
+    n = [oldNotes count];
+    for (i = 0; i < n; i++) {
+        name = [oldNotes objectAtIndex:i];
+        if ([name hasPrefix:@"net_sourceforge_bibdesk_skim_note-"]) {
+            if ([self removeExtendedAttribute:name atPath:path traverseLink:YES error:&error] == NO) {
+            }
+        }
+    }
+    
+    for (i = 0; i < numberOfNotes && success; i++) {
+        name = [NSString stringWithFormat:@"net_sourceforge_bibdesk_skim_note-%i", i];
+        data = [NSKeyedArchiver archivedDataWithRootObject:[notes objectAtIndex:i]];
+        if ([data length] > MAX_XATTR_LENGTH) {
+            n = ceil([data length] / MAX_XATTR_LENGTH);
+            NSData *subdata;
+            for (j = 0; j < n; j++) {
+                name = [NSString stringWithFormat:@"net_sourceforge_bibdesk_skim_note-%i-%i", i, j];
+                subdata = [data subdataWithRange:NSMakeRange(j * MAX_XATTR_LENGTH, j == n - 1 ? [data length] - j * MAX_XATTR_LENGTH : MAX_XATTR_LENGTH)];
+                if ([self setExtendedAttributeNamed:name toValue:subdata atPath:path options:nil error:&error] == NO) {
+                    success = NO;
+                    if (outError) *outError = error;
+                }                    
+            }
+            [longNotes setObject:[NSNumber numberWithInt:j] forKey:[NSString stringWithFormat:@"%i", i]];
+        } else if ([self setExtendedAttributeNamed:name toValue:data atPath:path options:nil error:&error] == NO) {
+            success = NO;
+            if (outError) *outError = error;
+        }
+    }
+    
+    if (success == NO || [notes count] == 0) {
+        if ([self removeExtendedAttribute:@"net_sourceforge_bibdesk_skim_notesInfo" atPath:path traverseLink:YES error:&error] == NO) {
+            success = NO;
+            if (outError) *outError = error;
+        }
+    } else {
+        dictionary = [NSDictionary dictionaryWithObjectsAndKeys:[NSNumber numberWithInt:numberOfNotes], @"numberOfNotes", [longNotes count] ? longNotes : nil, @"longNotes", nil];
+        if ([self setExtendedAttributeNamed:@"net_sourceforge_bibdesk_skim_notesInfo" toPropertyListValue:dictionary atPath:path options:nil error:&error] == NO) {
+            success = NO;
+            if (outError) *outError = error;
+        }
+    }
+    return success;
+}
+
+- (NSArray *)skimNotesFromExtendedAttributesAtPath:(NSString *)path error:(NSError **)outError {
+    NSMutableArray *noteDicts = [NSMutableArray array];
+    NSDictionary *dict = nil;
+    BOOL success = YES;
+    NSError *error = nil;
+    
+    dict = [self propertyListFromExtendedAttributeNamed:@"net_sourceforge_bibdesk_skim_notesInfo" atPath:path traverseLink:YES error:&error];
+    
+    if (dict != nil) {
+        int i, numberOfNotes = [[dict objectForKey:@"numberOfNotes"] intValue];
+        NSDictionary *longNotes = [dict objectForKey:@"longNotes"];
+        NSString *name = nil;
+        int n;
+        NSData *data = nil;
+        
+        for (i = 0; i < numberOfNotes && success; i++) {
+            n = [[longNotes objectForKey:[NSString stringWithFormat:@"%i", i]] intValue];
+            if (n == 0) {
+                name = [NSString stringWithFormat:@"net_sourceforge_bibdesk_skim_note-%i", i];
+                if ((data = [self extendedAttributeNamed:name atPath:path traverseLink:YES error:&error]) &&
+                    (dict = [NSKeyedUnarchiver unarchiveObjectWithData:data])) {
+                    [noteDicts addObject:dict];
+                } else {
+                    success = NO;
+                    if (outError) *outError = error;
+                }
+            } else {
+                NSMutableData *mutableData = [NSMutableData dataWithCapacity:n * MAX_XATTR_LENGTH];
+                int j;
+                for (j = 0; j < n; j++) {
+                    name = [NSString stringWithFormat:@"net_sourceforge_bibdesk_skim_note-%i-%i", i, j];
+                    if (data = [self extendedAttributeNamed:name atPath:path traverseLink:YES error:&error]) {
+                        [mutableData appendData:data];
+                    } else {
+                        success = NO;
+                        if (outError) *outError = error;
+                    }
+                }
+                if (dict = [NSKeyedUnarchiver unarchiveObjectWithData:mutableData]) {
+                    [noteDicts addObject:dict];
+                } else {
+                    success = NO;
+                    if (outError) *outError = error;
+                }
+            }
+        }
+    }
+    return success ? noteDicts : nil;
+}
 
 @end

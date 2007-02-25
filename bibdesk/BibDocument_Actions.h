@@ -183,6 +183,16 @@
 
 - (void)openRemoteURLForField:(NSString *)field;
 
+/*!
+    @method showNotesForLinkedFile:
+    @abstract Shows Skim notes of the selected publication in separate windows
+    @discussion - 
+    @param sender The sender. Not used.
+*/
+- (IBAction)showNotesForLinkedFile:(id)sender;
+
+- (void)showNotesForLinkedFileForField:(NSString *)field;
+
 #pragma mark View Actions
 
 /*!

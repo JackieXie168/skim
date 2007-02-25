@@ -79,6 +79,7 @@
 #import "NSWindowController_BDSKExtensions.h"
 #import "BDSKPublicationsArray.h"
 #import "BDSKCitationFormatter.h"
+#import "BDSKNotesWindowController.h"
 
 static NSString *BDSKBibEditorFrameAutosaveName = @"BibEditor window autosave name";
 
@@ -476,6 +477,23 @@ enum{
     
 }
 
+- (IBAction)showLinkedFileNotes:(id)sender{
+	NSString *field = [sender representedObject];
+    if (field == nil)
+		field = BDSKLocalUrlString;
+	NSURL *fileURL = [publication localFileURLForField:field];
+    
+    if (fileURL == nil) {
+        NSBeep();
+        return;
+    }
+    
+    BDSKNotesWindowController *notesController = [[[BDSKNotesWindowController alloc] initWithURL:fileURL] autorelease];
+    
+    [[self document] addWindowController:notesController];
+    [notesController showWindow:self];
+}
+
 #pragma mark Menus
 
 - (void)menuNeedsUpdate:(NSMenu *)menu{
@@ -547,6 +565,11 @@ enum{
             
 			item = [menu addItemWithTitle:[[NSString stringWithFormat:NSLocalizedString(@"Move %@",@"Menu item title: Move Local-Url..."), [field localizedFieldName]] stringByAppendingEllipsis]
                                    action:@selector(moveLinkedFile:)
+                            keyEquivalent:@""];
+			[item setRepresentedObject:field];
+            
+			item = [menu addItemWithTitle:[[NSString stringWithFormat:NSLocalizedString(@"Notes For %@",@"Menu item title: Move Local-Url..."), [field localizedFieldName]] stringByAppendingEllipsis]
+                                   action:@selector(showLinkedFileNotes:)
                             keyEquivalent:@""];
 			[item setRepresentedObject:field];
 		}
@@ -944,7 +967,18 @@ enum{
 			[menuItem setTitle:NSLocalizedString(@"Open URL in Browser", @"Menu item title")];
 		return ([publication remoteURLForField:field] != nil);
 	}
-	else if (theAction == @selector(saveFileAsLocalUrl:)) {
+	else if (theAction == @selector(showNotesForLinkedFile:)) {
+		NSString *field = (NSString *)[menuItem representedObject];
+		if (field == nil)
+			field = BDSKLocalUrlString;
+		NSURL *lurl = [[publication URLForField:field] fileURLByResolvingAliases];
+		if ([[menuItem menu] supermenu])
+			[menuItem setTitle:NSLocalizedString(@"Notes For Linked File", @"Menu item title")];
+        if ([[NSUserDefaults standardUserDefaults] boolForKey:@"BDSKShouldShowSkimNotesKey"] == NO)
+            return NO;
+		return (lurl == nil ? NO : YES);
+	}
+    else if (theAction == @selector(saveFileAsLocalUrl:)) {
 		return (isEditable && [[[remoteSnoopWebView mainFrame] dataSource] isLoading] == NO);
 	}
 	else if (theAction == @selector(downloadLinkedFileAsLocalUrl:)) {
