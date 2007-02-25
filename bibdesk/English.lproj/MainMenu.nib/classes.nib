@@ -156,6 +156,7 @@
                 showDocumentInfoWindow = id; 
                 showFindPanel = id; 
                 showMacrosWindow = id; 
+                showNotesForLinkedFile = id; 
                 showReadMe = id; 
                 showRelNotes = id; 
                 sortForCrossrefs = id; 
