@@ -304,6 +304,8 @@ typedef struct _SKPDFViewState {
 
 @interface NSObject (SKNoteOutlineViewDelegate)
 - (void)outlineViewDeleteSelectedRows:(NSOutlineView *)anOutlineView;
+- (BOOL)outlineView:(NSOutlineView *)anOutlineView canResizeRowByItem:(id)item;
+- (void)outlineView:(NSOutlineView *)anOutlineView setHeightOfRow:(int)newHeight byItem:(id)item;
 @end
 
 

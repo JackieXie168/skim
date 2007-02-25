@@ -1663,12 +1663,26 @@ static NSString *SKDocumentToolbarNotesPaneItemIdentifier = @"SKDocumentToolbarN
         return 17.0;
     } else if ([ov isEqual:noteOutlineView]) {
         // the item is an opaque wrapper object used for binding. The actual note is is given by -observedeObject. I don't know of any alternative (read public) way to get the actual item
-        if ([item respondsToSelector:@selector(observedObject)] == NO || [[item observedObject] type])
+        if ([item respondsToSelector:@selector(observedObject)] == NO || [[item observedObject] respondsToSelector:@selector(rowHeight)] == NO)
             return 17.0;
         else
-            return 85.0;
+            return [[item observedObject] rowHeight];
     }
     return 17.0;
+}
+
+- (BOOL)outlineView:(NSOutlineView *)ov canResizeRowByItem:(id)item {
+    if ([ov isEqual:noteOutlineView]) {
+        if ([item respondsToSelector:@selector(observedObject)] == NO || [[item observedObject] respondsToSelector:@selector(setRowHeight:)] == NO)
+            return NO;
+        else
+            return YES;
+    }
+    return NO;
+}
+
+- (void)outlineView:(NSOutlineView *)ov setHeightOfRow:(int)newHeight byItem:(id)item {
+    [[item observedObject] setRowHeight:newHeight];
 }
 
 - (void)outlineViewDeleteSelectedRows:(NSOutlineView *)ov  {
@@ -2648,6 +2662,59 @@ static NSString *SKDocumentToolbarNotesPaneItemIdentifier = @"SKDocumentToolbarN
         [self delete:self];
 	else
 		[super keyDown:theEvent];
+}
+
+- (BOOL)resizeRow:(int)row withEvent:(NSEvent *)theEvent {
+    id item = [self itemAtRow:row];
+    NSPoint startPoint = [theEvent locationInWindow];
+    float startHeight = [[self delegate] outlineView:self heightOfRowByItem:item];
+	BOOL keepGoing = YES;
+    BOOL dragged = NO;
+	
+    [[NSCursor resizeUpDownCursor] push];
+    
+	while (keepGoing) {
+		theEvent = [[self window] nextEventMatchingMask: NSLeftMouseUpMask | NSLeftMouseDraggedMask];
+		switch ([theEvent type]) {
+			case NSLeftMouseDragged:
+            {
+                NSPoint currentPoint = [theEvent locationInWindow];
+                float currentHeight = fmax([self rowHeight], startHeight - currentPoint.y + startPoint.y);
+                
+                [[self delegate] outlineView:self setHeightOfRow:currentHeight byItem:item];
+                [self noteHeightOfRowsWithIndexesChanged:[NSIndexSet indexSetWithIndex:row]];
+                
+                dragged = YES;
+                
+                break;
+			}
+            
+            case NSLeftMouseUp:
+                keepGoing = NO;
+                break;
+			
+            default:
+                break;
+        }
+    }
+    [NSCursor pop];
+    
+    return dragged;
+}
+
+- (void)mouseDown:(NSEvent *)theEvent {
+    if ([[self delegate] respondsToSelector:@selector(outlineView:canResizeRowByItem:)] && [[self delegate] respondsToSelector:@selector(outlineView:setHeightOfRow:byItem:)]) {
+        NSPoint mouseLoc = [self convertPoint:[theEvent locationInWindow] fromView:nil];
+        int row = [self rowAtPoint:mouseLoc];
+        
+        if (row != -1 && [[self delegate] outlineView:self canResizeRowByItem:[self itemAtRow:row]]) {
+            NSRect ignored, rect = [self rectOfRow:row];
+            NSDivideRect(rect, &rect, &ignored, 5.0, [self isFlipped] ? NSMaxYEdge : NSMinYEdge);
+            if (NSPointInRect(mouseLoc, rect) && [self resizeRow:row withEvent:theEvent])
+                return;
+        }
+    }
+    [super mouseDown:theEvent];
 }
 
 @end
