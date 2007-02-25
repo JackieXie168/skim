@@ -71,7 +71,6 @@
                 } else if (c == 'r' || c == 'R') {
                     [scanner setScanLocation:[scanner scanLocation] + 1];
                     c = [versionString characterAtIndex:[scanner scanLocation]];
-                    scannerPeekCharacter(scanner);
                     if (c != 'c' && c != 'C')
                         break;
                     releaseType = SKReleaseCandidateVersionType;
