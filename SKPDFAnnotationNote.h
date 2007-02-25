@@ -91,6 +91,7 @@
 
 @interface SKNoteText : NSObject {
     PDFAnnotation *annotation;
+    float rowHeight;
 }
 
 - (id)initWithAnnotation:(PDFAnnotation *)anAnnotation;
@@ -103,5 +104,8 @@
 - (unsigned int)pageIndex;
 - (NSString *)pageLabel;
 - (NSAttributedString *)contents;
+
+- (float)rowHeight;
+- (void)setRowHeight:(float)newRowHeight;
 
 @end

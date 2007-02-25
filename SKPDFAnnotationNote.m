@@ -330,6 +330,7 @@ static NSColor *noteColor = nil;
     if (self = [super init]) {
         annotation = anAnnotation;
         [annotation addObserver:self forKeyPath:@"text" options:0 context:NULL];
+        rowHeight = 85.0;
     }
     return self;
 }
@@ -358,6 +359,14 @@ static NSColor *noteColor = nil;
         [self willChangeValueForKey:@"contents"];
         [self didChangeValueForKey:@"contents"];
     }
+}
+
+- (float)rowHeight {
+    return rowHeight;
+}
+
+- (void)setRowHeight:(float)newRowHeight {
+    rowHeight = newRowHeight;
 }
 
 @end
