@@ -179,7 +179,7 @@ static NSString *SKPostScriptDocumentType = @"PostScript document";
         didRead = pdfDocument != nil;
         [self readNotesFromExtendedAttributesAtURL:absoluteURL];
         [lastChangedDate release];
-        lastChangedDate = [[NSDate alloc] init];
+        lastChangedDate = [[[[NSFileManager defaultManager] fileAttributesAtPath:[absoluteURL path] traverseLink:YES] fileModificationDate] retain];
     } else if ([docType isEqualToString:SKPostScriptDocumentType]) {
         [pdfData release];
         [pdfDocument release];
@@ -401,8 +401,15 @@ static NSString *SKPostScriptDocumentType = @"PostScript document";
 }
 
 - (void)fileUpdateAlertDidEnd:(NSAlert *)alert returnCode:(int)returnCode contextInfo:(void *)contextInfo {
-    if (returnCode == NSAlertDefaultReturn)
+    NSDate *changeDate = (NSDate *)contextInfo;
+    
+    if (returnCode == NSAlertDefaultReturn) {
         [self revertDocumentToSaved:self];
+        [changeDate release];
+    } else {
+        [lastChangedDate release];
+        lastChangedDate = changeDate;
+    }
     
     [self checkFileUpdatesIfNeeded];
 }
@@ -420,7 +427,7 @@ static NSString *SKPostScriptDocumentType = @"PostScript document";
             BOOL autoUpdate = [[NSUserDefaults standardUserDefaults] boolForKey:SKAutoCheckFileUpdateKey];
             BOOL askPref = [[NSUserDefaults standardUserDefaults] boolForKey:SKAutoCheckFileUpdateAskKey];
             if (autoUpdate && (askPref == NO && [self isDocumentEdited] == NO)) {
-                [self fileUpdateAlertDidEnd:nil returnCode:NSAlertDefaultReturn contextInfo:NULL];
+                [self fileUpdateAlertDidEnd:nil returnCode:NSAlertDefaultReturn contextInfo:[fileChangedDate retain]];
             } else {
                 NSString *message;
                 if ([self isDocumentEdited])
@@ -436,8 +443,10 @@ static NSString *SKPostScriptDocumentType = @"PostScript document";
                 [alert beginSheetModalForWindow:[[self mainWindowController] window]
                                   modalDelegate:self
                                  didEndSelector:@selector(fileUpdateAlertDidEnd:returnCode:contextInfo:) 
-                                    contextInfo:NULL];
+                                    contextInfo:[fileChangedDate retain]];
             }
+        } else {
+            [self checkFileUpdatesIfNeeded];
         }
         
     } else {
