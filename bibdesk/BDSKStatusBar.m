@@ -40,6 +40,7 @@
 #import "NSGeometry_BDSKExtensions.h"
 #import <OmniBase/assertions.h>
 #import "CIImage_BDSKExtensions.h"
+#import "BDSKCenterScaledImageCell.h"
 
 #define LEFT_MARGIN				5.0
 #define RIGHT_MARGIN			15.0
@@ -68,7 +69,7 @@
         textCell = [[NSCell alloc] initTextCell:@""];
 		[textCell setFont:[NSFont labelFontOfSize:0]];
 		
-        iconCell = [[NSImageCell alloc] init];
+        iconCell = [[BDSKCenterScaledImageCell alloc] init];
 		
 		progressIndicator = nil;
 		
@@ -99,6 +100,11 @@
     return [[self class] lowerColor];
 }
 
+- (NSSize)iconCellSize {
+    float cellSide = NSHeight([self bounds]) - 2.0;
+	return NSMakeSize(cellSide, cellSide);
+}
+
 - (void)drawRect:(NSRect)rect {
 	NSRect textRect, ignored;
     float rightMargin = RIGHT_MARGIN;
@@ -113,12 +119,11 @@
 	NSEnumerator *dictEnum = [icons objectEnumerator];
 	NSDictionary *dict;
 	NSImage *icon;
-	NSRect iconRect;
-	NSSize size;
+	NSRect iconRect;    
+	NSSize size = [self iconCellSize];
 	
 	while (dict = [dictEnum nextObject]) {
 		icon = [dict objectForKey:@"icon"];
-		size = [icon size];
         NSDivideRect(textRect, &iconRect, &textRect, size.width, NSMaxXEdge);
         NSDivideRect(textRect, &ignored, &textRect, MARGIN_BETWEEN_ITEMS, NSMaxXEdge);
         iconRect = BDSKCenterRectVertically(iconRect, size.height, [self isFlipped]);
@@ -331,12 +336,11 @@
 	NSEnumerator *dictEnum = [icons objectEnumerator];
 	NSDictionary *dict;
 	NSRect iconRect;
-    NSSize size;
+    NSSize size = [self iconCellSize];
 	
 	[self removeAllToolTips];
 	
 	while (dict = [dictEnum nextObject]) {
-		size = [(NSImage *)[dict objectForKey:@"icon"] size];
         NSDivideRect(rect, &iconRect, &rect, size.width, NSMaxXEdge);
         NSDivideRect(rect, &ignored, &rect, MARGIN_BETWEEN_ITEMS, NSMaxXEdge);
         iconRect = BDSKCenterRectVertically(iconRect, size.height, [self isFlipped]);
