@@ -301,9 +301,12 @@ static NSColor *noteColor = nil;
 
 - (void)setText:(NSAttributedString *)newText;
 {
-    if (text != newText) { 
+    if (text != newText) {
+        // ideally SKNotetext should handle this, but removing as an observer in dealloc comes too late and leads to a crash
+        [[texts lastObject] willChangeValueForKey:@"contents"];
         [text release];
         text = [newText retain];
+        [[texts lastObject] didChangeValueForKey:@"contents"];
     }
 }
 
@@ -329,15 +332,9 @@ static NSColor *noteColor = nil;
 - (id)initWithAnnotation:(PDFAnnotation *)anAnnotation {
     if (self = [super init]) {
         annotation = anAnnotation;
-        [annotation addObserver:self forKeyPath:@"text" options:0 context:NULL];
         rowHeight = 85.0;
     }
     return self;
-}
-
-- (void)dealloc {
-    [annotation removeObserver:self forKeyPath:@"text"];
-    [super dealloc];
 }
 
 - (PDFAnnotation *)annotation {
@@ -353,13 +350,6 @@ static NSColor *noteColor = nil;
 - (NSString *)pageLabel { return nil; }
 
 - (NSAttributedString *)contents { return [annotation text]; }
-
-- (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context {
-    if (object == annotation && [keyPath isEqualToString:@"text"]) {
-        [self willChangeValueForKey:@"contents"];
-        [self didChangeValueForKey:@"contents"];
-    }
-}
 
 - (float)rowHeight {
     return rowHeight;
