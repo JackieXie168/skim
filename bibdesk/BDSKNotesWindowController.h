@@ -11,7 +11,7 @@
 
 @interface BDSKNotesWindowController : NSWindowController {
     NSURL *url;
-    NSArray *notes;
+    NSMutableArray *notes;
     IBOutlet NSOutlineView *outlineView;
 }
 
@@ -20,4 +20,14 @@
 - (IBAction)refresh:(id)sender;
 - (IBAction)openInSkim:(id)sender;
 
+@end
+
+
+@interface BDSKNotesOutlineView : NSOutlineView
+@end
+
+
+@interface NSObject(BDSKNotesOutlineViewDelegate)
+- (BOOL)outlineView:(NSOutlineView *)ov canResizeRowByItem:(id)item;
+- (void)outlineView:(NSOutlineView *)ov setHeightOfRow:(int)newHeight byItem:(id)item;
 @end

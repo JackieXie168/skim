@@ -20,15 +20,16 @@
         }
         
         url = [aURL retain];
+        notes = [[NSMutableArray alloc] init];
         
         [self refresh:self];
-        NSError *error = nil;
-        notes = [[[NSFileManager defaultManager] skimNotesFromExtendedAttributesAtPath:[url path] error:&error] retain];
-        
-        if (notes == nil)
-            [NSApp presentError:error];
     }
     return self;
+}
+
+- (void)dealloc {
+    [notes release];
+    [super dealloc];
 }
 
 - (NSString *)windowNibName { return @"NotesWindow"; }
@@ -47,8 +48,8 @@
     NSArray *array = [[[NSFileManager defaultManager] skimNotesFromExtendedAttributesAtPath:[url path] error:&error] retain];
     
     if (array) {
-        [notes release];
-        notes = [array copy];
+        [notes removeAllObjects];
+        notes = [array mutableCopy];
     } else {
         [NSApp presentError:error];
     }
@@ -61,8 +62,20 @@
     NSArray *array = [[[NSFileManager defaultManager] skimNotesFromExtendedAttributesAtPath:[url path] error:&error] retain];
     
     if (array) {
-        [notes release];
-        notes = [array copy];
+        NSEnumerator *dictEnum = [array objectEnumerator];
+        NSDictionary *dict;
+        
+        [notes removeAllObjects];
+        while (dict = [dictEnum nextObject]) {
+            NSMutableDictionary *note = [dict mutableCopy];
+            
+            if ([[dict valueForKey:@"type"] isEqualToString:@"Note"])
+                [note setObject:[NSMutableDictionary dictionaryWithObjectsAndKeys:[NSNumber numberWithFloat:85.0], @"rowHeight", [dict valueForKey:@"text"], @"contents", nil] forKey:@"child"];
+            
+            [notes addObject:note];
+            [note release];
+        }
+        
         [outlineView reloadData];
     } else {
         [NSApp presentError:error];
@@ -87,26 +100,98 @@
     return [[item valueForKey:@"type"] isEqualToString:@"Note"];
 }
 
-- (id)outlineView:(NSOutlineView *)outlineView child:(int)index ofItem:(id)item {
-    if (item == nil)
+- (id)outlineView:(NSOutlineView *)ov child:(int)index ofItem:(id)item {
+    if (item == nil) {
         return [notes objectAtIndex:index];
-    else
-        return [NSDictionary dictionaryWithObjectsAndKeys:[item valueForKey:@"text"], @"contents", nil];
+    } else {
+        return [item valueForKey:@"child"];
+    }
 }
 
 - (id)outlineView:(NSOutlineView *)ov objectValueForTableColumn:(NSTableColumn *)tableColumn byItem:(id)item {
     NSString *tcID = [tableColumn identifier];
-    if ([tcID isEqualToString:@"note"])
+    if ([tcID isEqualToString:@"note"]) {
         return [item valueForKey:@"contents"];
-    else if ([tcID isEqualToString:@"page"])
-        return [NSString stringWithFormat:@"%i", [[item valueForKey:@"pageIndex"] intValue] + 1];
+    } else if ([tcID isEqualToString:@"page"]) {
+        NSNumber *pageNumber = [item valueForKey:@"pageIndex"];
+        return pageNumber ? [NSString stringWithFormat:@"%i", [pageNumber intValue] + 1] : nil;
+    }
     return nil;
 }
 
-- (float)outlineView:(NSOutlineView *)outlineView heightOfRowByItem:(id)item {
-    if ([item valueForKey:@"type"] == nil)
-        return 85.0;
-    return 17.0;
+- (float)outlineView:(NSOutlineView *)ov heightOfRowByItem:(id)item {
+    NSNumber *heightNumber = [item valueForKey:@"rowHeight"];
+    return heightNumber ? [heightNumber floatValue] : 17.0;
+}
+
+- (void)outlineView:(NSOutlineView *)ov setHeightOfRow:(int)newHeight byItem:(id)item {
+    [item setObject:[NSNumber numberWithFloat:newHeight] forKey:@"rowHeight"];
+}
+
+- (BOOL)outlineView:(NSOutlineView *)ov canResizeRowByItem:(id)item {
+    return nil != [item valueForKey:@"rowHeight"];
+}
+
+- (NSString *)outlineView:(NSOutlineView *)ov toolTipForCell:(NSCell *)cell rect:(NSRectPointer)rect tableColumn:(NSTableColumn *)tableColumn item:(id)item mouseLocation:(NSPoint)mouseLocation {
+    return [item valueForKey:@"type"] ? [item valueForKey:@"contents"] : [[item valueForKey:@"contents"] string];
+}
+
+@end
+
+
+@implementation BDSKNotesOutlineView
+
+- (BOOL)resizeRow:(int)row withEvent:(NSEvent *)theEvent {
+    id item = [self itemAtRow:row];
+    NSPoint startPoint = [theEvent locationInWindow];
+    float startHeight = [[self delegate] outlineView:self heightOfRowByItem:item];
+	BOOL keepGoing = YES;
+    BOOL dragged = NO;
+	
+    [[NSCursor resizeUpDownCursor] push];
+    
+	while (keepGoing) {
+		theEvent = [[self window] nextEventMatchingMask: NSLeftMouseUpMask | NSLeftMouseDraggedMask];
+		switch ([theEvent type]) {
+			case NSLeftMouseDragged:
+            {
+                NSPoint currentPoint = [theEvent locationInWindow];
+                float currentHeight = fmax([self rowHeight], startHeight - currentPoint.y + startPoint.y);
+                
+                [[self delegate] outlineView:self setHeightOfRow:currentHeight byItem:item];
+                [self noteHeightOfRowsWithIndexesChanged:[NSIndexSet indexSetWithIndex:row]];
+                
+                dragged = YES;
+                
+                break;
+			}
+            
+            case NSLeftMouseUp:
+                keepGoing = NO;
+                break;
+			
+            default:
+                break;
+        }
+    }
+    [NSCursor pop];
+    
+    return dragged;
+}
+
+- (void)mouseDown:(NSEvent *)theEvent {
+    if ([[self delegate] respondsToSelector:@selector(outlineView:canResizeRowByItem:)] && [[self delegate] respondsToSelector:@selector(outlineView:setHeightOfRow:byItem:)]) {
+        NSPoint mouseLoc = [self convertPoint:[theEvent locationInWindow] fromView:nil];
+        int row = [self rowAtPoint:mouseLoc];
+        
+        if (row != -1 && [[self delegate] outlineView:self canResizeRowByItem:[self itemAtRow:row]]) {
+            NSRect ignored, rect = [self rectOfRow:row];
+            NSDivideRect(rect, &rect, &ignored, 5.0, [self isFlipped] ? NSMaxYEdge : NSMinYEdge);
+            if (NSPointInRect(mouseLoc, rect) && [self resizeRow:row withEvent:theEvent])
+                return;
+        }
+    }
+    [super mouseDown:theEvent];
 }
 
 @end
