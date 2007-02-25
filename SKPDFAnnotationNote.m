@@ -51,7 +51,7 @@
     NSColor *color = [dict objectForKey:@"color"];
     
     if ([type isEqualToString:@"Text"]) {
-        self = [[PDFAnnotationText alloc] initWithBounds:bounds];
+        self = [[SKPDFAnnotationText alloc] initWithBounds:bounds];
     } else if ([type isEqualToString:@"Note"]) {
         self = [[SKPDFAnnotationNote alloc] initWithBounds:bounds];
         NSAttributedString *text = [dict objectForKey:@"text"];
@@ -61,11 +61,11 @@
         if (text)
             [( SKPDFAnnotationNote *)self setText:text];
     } else if ([type isEqualToString:@"FreeText"]) {
-        self = [[PDFAnnotationFreeText alloc] initWithBounds:bounds];
+        self = [[SKPDFAnnotationFreeText alloc] initWithBounds:bounds];
     } else if ([type isEqualToString:@"Circle"]) {
-        self = [[PDFAnnotationText alloc] initWithBounds:bounds];
+        self = [[SKPDFAnnotationText alloc] initWithBounds:bounds];
     } else if ([type isEqualToString:@"Square"]) {
-        self = [[PDFAnnotationText alloc] initWithBounds:bounds];
+        self = [[SKPDFAnnotationText alloc] initWithBounds:bounds];
     } else {
         self = nil;
     }
