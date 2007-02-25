@@ -69,8 +69,8 @@
                     releaseType = SKBetaVersionType;
                     lastSep = c == 'b' ? @"b" : @"B";
                 } else if (c == 'r' || c == 'R') {
-                    scannerSkipPeekedCharacter(scanner);
-                    c = scannerPeekCharacter(scanner);
+                    [scanner setScanLocation:[scanner scanLocation] + 1];
+                    c = [versionString characterAtIndex:[scanner scanLocation]];
                     if (c != 'c' && c != 'C')
                         break;
                     releaseType = SKReleaseCandidateVersionType;
