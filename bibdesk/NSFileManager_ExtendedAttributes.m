@@ -409,7 +409,7 @@ static NSString *xattrError(int err, const char *myPath)
 
 @implementation NSFileManager (BDSKSkimNotesExtensions)
 
-#define MAX_XATTR_LENGTH 4096
+#define MAX_XATTR_LENGTH 2048
 
 - (BOOL)setSkimNotes:(NSArray *)notes inExtendedAttributesAtPath:(NSString *)path error:(NSError **)outError {
     BOOL success = YES;
@@ -438,12 +438,16 @@ static NSString *xattrError(int err, const char *myPath)
         if ([data length] > MAX_XATTR_LENGTH) {
             n = ceil([data length] / MAX_XATTR_LENGTH);
             NSData *subdata;
-            for (j = 0; j < n; j++) {
+            for (j = 0; j < n && success; j++) {
                 name = [NSString stringWithFormat:@"net_sourceforge_bibdesk_skim_note-%i-%i", i, j];
                 subdata = [data subdataWithRange:NSMakeRange(j * MAX_XATTR_LENGTH, j == n - 1 ? [data length] - j * MAX_XATTR_LENGTH : MAX_XATTR_LENGTH)];
                 if ([self setExtendedAttributeNamed:name toValue:subdata atPath:path options:nil error:&error] == NO) {
                     success = NO;
                     if (outError) *outError = error;
+                    while (j--) {
+                        name = [NSString stringWithFormat:@"net_sourceforge_bibdesk_skim_note-%i-%i", i, j];
+                        [fm removeExtendedAttribute:name atPath:path traverseLink:YES error:NULL];
+                    }
                 }                    
             }
             [longNotes setObject:[NSNumber numberWithInt:j] forKey:[NSString stringWithFormat:@"%i", i]];
@@ -497,7 +501,7 @@ static NSString *xattrError(int err, const char *myPath)
             } else {
                 NSMutableData *mutableData = [NSMutableData dataWithCapacity:n * MAX_XATTR_LENGTH];
                 int j;
-                for (j = 0; j < n; j++) {
+                for (j = 0; j < n && success; j++) {
                     name = [NSString stringWithFormat:@"net_sourceforge_bibdesk_skim_note-%i-%i", i, j];
                     if (data = [self extendedAttributeNamed:name atPath:path traverseLink:YES error:&error]) {
                         [mutableData appendData:data];
