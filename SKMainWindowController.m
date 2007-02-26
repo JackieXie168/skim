@@ -795,6 +795,7 @@ static NSString *SKDocumentToolbarNotesPaneItemIdentifier = @"SKDocumentToolbarN
         pdfFrame.size.width -= lastLeftSidePaneWidth;
 		sideFrame.size.width = lastLeftSidePaneWidth;
     }
+    pdfFrame.origin.x = NSMaxX(sideFrame) + [splitView dividerThickness];
     [leftSideContentBox setFrame:sideFrame];
     [pdfContentBox setFrame:pdfFrame];
     [splitView setNeedsDisplay:YES];
@@ -817,6 +818,7 @@ static NSString *SKDocumentToolbarNotesPaneItemIdentifier = @"SKDocumentToolbarN
         pdfFrame.size.width -= lastRightSidePaneWidth;
 		sideFrame.size.width = lastRightSidePaneWidth;
     }
+    sideFrame.origin.x = NSMaxX(pdfFrame) + [splitView dividerThickness];
     [rightSideContentBox setFrame:sideFrame];
     [pdfContentBox setFrame:pdfFrame];
     [splitView setNeedsDisplay:YES];
@@ -2475,7 +2477,8 @@ static NSString *SKDocumentToolbarNotesPaneItemIdentifier = @"SKDocumentToolbarN
         rightSideFrame.size.width = floorf(resizeFactor * NSWidth(rightSideFrame));
         mainFrame.size.width = NSWidth([sender frame]) - NSWidth(leftSideFrame) - NSWidth(rightSideFrame) - 2 * [sender dividerThickness];
     }
-    
+    mainFrame.origin.x = NSMaxX(leftSideFrame) + [sender dividerThickness];
+    rightSideFrame.origin.x =  NSMaxX(mainFrame) + [sender dividerThickness];
     [leftSideView setFrame:leftSideFrame];
     [rightSideView setFrame:rightSideFrame];
     [mainView setFrame:mainFrame];
