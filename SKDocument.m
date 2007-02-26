@@ -318,7 +318,7 @@ static NSString *SKPostScriptDocumentType = @"PostScript document";
             [noteDicts release];
         noteDicts = [[NSMutableArray alloc] initWithCapacity:numberOfNotes];
         
-        for (i = 0; i < numberOfNotes; i++) {
+        for (i = 0; success && i < numberOfNotes; i++) {
             n = [[longNotes objectForKey:[NSString stringWithFormat:@"%i", i]] intValue];
             if (n == 0) {
                 name = [NSString stringWithFormat:@"net_sourceforge_bibdesk_skim_note-%i", i];
@@ -332,7 +332,7 @@ static NSString *SKPostScriptDocumentType = @"PostScript document";
             } else {
                 NSMutableData *mutableData = [NSMutableData dataWithCapacity:n * MAX_XATTR_LENGTH];
                 int j;
-                for (j = 0; j < n; j++) {
+                for (j = 0; success && j < n; j++) {
                     name = [NSString stringWithFormat:@"net_sourceforge_bibdesk_skim_note-%i-%i", i, j];
                     if (data = [fm extendedAttributeNamed:name atPath:[aURL path] traverseLink:YES error:&error]) {
                         [mutableData appendData:data];
