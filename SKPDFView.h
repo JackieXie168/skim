@@ -80,6 +80,8 @@ typedef enum _SKAnnotationMode {
 	NSPoint clickDelta;
 	BOOL resizing;
 	BOOL mouseDownInAnnotation;
+    
+    int trackingRect;
 }
 
 - (SKToolMode)toolMode;
