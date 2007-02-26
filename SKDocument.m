@@ -48,7 +48,7 @@
 #import "SKStringConstants.h"
 
 // maximum length of xattr value recommended by Apple
-#define MAX_XATTR_LENGTH 4096
+#define MAX_XATTR_LENGTH 2048
 
 NSString *SKDocumentErrorDomain = @"SKDocumentErrorDomain";
 
@@ -252,18 +252,22 @@ static NSString *SKPostScriptDocumentType = @"PostScript document";
             }
         }
         
-        for (i = 0; i < numberOfNotes; i++) {
+        for (i = 0; success && i < numberOfNotes; i++) {
             name = [NSString stringWithFormat:@"net_sourceforge_bibdesk_skim_note-%i", i];
             data = [NSKeyedArchiver archivedDataWithRootObject:[[notes objectAtIndex:i] dictionaryValue]];
             if ([data length] > MAX_XATTR_LENGTH) {
                 n = ceil([data length] / MAX_XATTR_LENGTH);
                 NSData *subdata;
-                for (j = 0; j < n; j++) {
+                for (j = 0; success && j < n; j++) {
                     name = [NSString stringWithFormat:@"net_sourceforge_bibdesk_skim_note-%i-%i", i, j];
                     subdata = [data subdataWithRange:NSMakeRange(j * MAX_XATTR_LENGTH, j == n - 1 ? [data length] - j * MAX_XATTR_LENGTH : MAX_XATTR_LENGTH)];
                     if ([fm setExtendedAttributeNamed:name toValue:subdata atPath:path options:nil error:&error] == NO) {
                         success = NO;
                         NSLog(@"%@: %@", self, error);
+                        while (j--) {
+                            name = [NSString stringWithFormat:@"net_sourceforge_bibdesk_skim_note-%i-%i", i, j];
+                            [fm removeExtendedAttribute:name atPath:path traverseLink:YES error:NULL];
+                        }
                     }                    
                 }
                 [longNotes setObject:[NSNumber numberWithInt:j] forKey:[NSString stringWithFormat:@"%i", i]];
@@ -273,7 +277,7 @@ static NSString *SKPostScriptDocumentType = @"PostScript document";
             }
         }
         
-        if ([notes count] == 0) {
+        if (success == NO || [notes count] == 0) {
             if ([fm removeExtendedAttribute:@"net_sourceforge_bibdesk_skim_notesInfo" atPath:path traverseLink:YES error:&error] == NO) {
                 success = NO;
                 NSLog(@"%@: %@", self, error);
