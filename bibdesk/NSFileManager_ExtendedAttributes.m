@@ -506,11 +506,8 @@ static NSString *xattrError(int err, const char *myPath)
                         if (outError) *outError = error;
                     }
                 }
-                if (dict = [NSKeyedUnarchiver unarchiveObjectWithData:mutableData]) {
+                if (success && (dict = [NSKeyedUnarchiver unarchiveObjectWithData:mutableData])) {
                     [noteDicts addObject:dict];
-                } else {
-                    success = NO;
-                    if (outError) *outError = error;
                 }
             }
         }
