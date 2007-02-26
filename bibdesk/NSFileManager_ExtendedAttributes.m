@@ -446,7 +446,7 @@ static NSString *xattrError(int err, const char *myPath)
                     if (outError) *outError = error;
                     while (j--) {
                         name = [NSString stringWithFormat:@"net_sourceforge_bibdesk_skim_note-%i-%i", i, j];
-                        [fm removeExtendedAttribute:name atPath:path traverseLink:YES error:NULL];
+                        [self removeExtendedAttribute:name atPath:path traverseLink:YES error:NULL];
                     }
                 }                    
             }
