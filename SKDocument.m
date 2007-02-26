@@ -153,7 +153,7 @@ static NSString *SKPostScriptDocumentType = @"PostScript document";
 
 - (BOOL)revertToContentsOfURL:(NSURL *)absoluteURL ofType:(NSString *)typeName error:(NSError **)outError{
     if ([super revertToContentsOfURL:absoluteURL ofType:typeName error:outError]) {
-        if ([typeName isEqualToString:SKPDFDocumentType] == NO) {
+        if ([typeName isEqualToString:SKNotesDocumentType] == NO) {
             [[self mainWindowController] setPdfDocument:pdfDocument];
             [pdfDocument autorelease];
             pdfDocument = nil;
@@ -178,6 +178,7 @@ static NSString *SKPostScriptDocumentType = @"PostScript document";
         pdfDocument = [[PDFDocument alloc] initWithURL:absoluteURL];    
         didRead = pdfDocument != nil;
         [self readNotesFromExtendedAttributesAtURL:absoluteURL];
+        [[self mutableArrayValueForKey:@"notes"] removeAllObjects];
         [lastChangedDate release];
         lastChangedDate = [[[[NSFileManager defaultManager] fileAttributesAtPath:[absoluteURL path] traverseLink:YES] fileModificationDate] retain];
     } else if ([docType isEqualToString:SKPostScriptDocumentType]) {
