@@ -235,6 +235,57 @@ NSString *SKSkimNotePboardType = @"SKSkimNotePboardType";
 		[[NSNotificationCenter defaultCenter] postNotificationName:SKPDFViewActiveAnnotationDidChangeNotification object:self userInfo:nil];
 }
 
+#pragma mark Tracking mousemoved fix
+
+- (void)setFrame:(NSRect)frame {
+    [super setFrame:frame];
+    if ([self window] && trackingRect)
+        [self removeTrackingRect:trackingRect];
+    trackingRect = [self addTrackingRect:[self bounds] owner:self userData:NULL assumeInside:NO];
+}
+
+- (void)setFrameSize:(NSSize)size {
+    [super setFrameSize:size];
+    if ([self window] && trackingRect)
+        [self removeTrackingRect:trackingRect];
+    trackingRect = [self addTrackingRect:[self bounds] owner:self userData:NULL assumeInside:NO];
+}
+ 
+- (void)setBounds:(NSRect)bounds {
+    [super setBounds:bounds];
+    if ([self window] && trackingRect)
+        [self removeTrackingRect:trackingRect];
+    trackingRect = [self addTrackingRect:[self bounds] owner:self userData:NULL assumeInside:NO];
+}
+ 
+- (void)setBoundsSize:(NSSize)size {
+    [super setBoundsSize:size];
+    if ([self window] && trackingRect)
+        [self removeTrackingRect:trackingRect];
+    trackingRect = [self addTrackingRect:[self bounds] owner:self userData:NULL assumeInside:NO];
+}
+
+- (void)viewWillMoveToWindow:(NSWindow *)newWindow {
+    if ([self window] && trackingRect)
+        [self removeTrackingRect:trackingRect];
+}
+
+- (void)viewDidMoveToWindow {
+    trackingRect = [self addTrackingRect:[self bounds] owner:self userData:NULL assumeInside:NO];
+}
+
+- (void)mouseEntered:(NSEvent *)theEvent {
+    [super mouseEntered:theEvent];
+    if ([theEvent trackingNumber] == trackingRect)
+        [[self window] setAcceptsMouseMovedEvents:YES];
+}
+ 
+- (void)mouseExited:(NSEvent *)theEvent {
+    [super mouseExited:theEvent];
+    if ([theEvent trackingNumber] == trackingRect)
+        [[self window] setAcceptsMouseMovedEvents:NO];
+}
+
 #pragma mark Actions
 
 - (void)delete:(id)sender

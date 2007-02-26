@@ -325,10 +325,12 @@ static NSString *SKDocumentToolbarNotesPaneItemIdentifier = @"SKDocumentToolbarN
     if (width >= 0.0) {
         frame = [rightSideContentBox frame];
         frame.size.width = width;
+        frame.origin.x = NSMaxX([splitView frame]) - width;
         [rightSideContentBox setFrame:frame];
     }
     frame = [pdfContentBox frame];
     frame.size.width = NSWidth([splitView frame]) - NSWidth([leftSideContentBox frame]) - NSWidth([rightSideContentBox frame]) - 2 * [splitView dividerThickness];
+    frame.origin.x = NSMaxX([leftSideContentBox frame]) + [splitView dividerThickness];
     [pdfContentBox setFrame:frame];
     factor = [[setup objectForKey:@"scaleFactor"] floatValue];
     if (factor > 0.0)
