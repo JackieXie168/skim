@@ -153,7 +153,7 @@ static NSString *SKPostScriptDocumentType = @"PostScript document";
 
 - (BOOL)revertToContentsOfURL:(NSURL *)absoluteURL ofType:(NSString *)typeName error:(NSError **)outError{
     if ([super revertToContentsOfURL:absoluteURL ofType:typeName error:outError]) {
-        if ([typeName isEqualToString:SKNotesDocumentType] == NO) {
+        if ([typeName isEqualToString:SKPDFDocumentType] == NO) {
             [[self mainWindowController] setPdfDocument:pdfDocument];
             [pdfDocument autorelease];
             pdfDocument = nil;
@@ -404,8 +404,14 @@ static NSString *SKPostScriptDocumentType = @"PostScript document";
     NSDate *changeDate = (NSDate *)contextInfo;
     
     if (returnCode == NSAlertDefaultReturn) {
-        [self revertDocumentToSaved:self];
-        [changeDate release];
+        NSError *error = nil;
+        if ([self revertToContentsOfURL:[self fileURL] ofType:[self fileType] error:&error]) {
+            [changeDate release];
+        } else {
+            [NSApp presentError:error];
+            [lastChangedDate release];
+            lastChangedDate = changeDate;
+        }
     } else {
         [lastChangedDate release];
         lastChangedDate = changeDate;
