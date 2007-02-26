@@ -261,4 +261,34 @@
     }
 }
 
+- (void)collapseItem:(id)item collapseChildren:(BOOL)collapseChildren {
+    // NSOutlineView seems to call resetCursorRect when expanding, but not when collapsing
+    [super collapseItem:item collapseChildren:collapseChildren];
+    [self resetCursorRects];
+}
+
+-(void)resetCursorRects {
+    if ([[self delegate] respondsToSelector:@selector(outlineView:canResizeRowByItem:)]) {
+        [self discardCursorRects];
+        [super resetCursorRects];
+
+        NSRange visibleRows = [self rowsInRect:[self visibleRect]];
+        unsigned int row;
+        
+        if (visibleRows.length == 0)
+            return;
+        
+        for (row = visibleRows.location; row < NSMaxRange(visibleRows); row++) {
+            id item = [self itemAtRow:row];
+            if ([[self delegate] outlineView:self canResizeRowByItem:item] == NO)
+                continue;
+            NSRect ignored, rect = [self rectOfRow:row];
+            NSDivideRect(rect, &rect, &ignored, 5.0, [self isFlipped] ? NSMaxYEdge : NSMinYEdge);
+            [self addCursorRect:rect cursor:[NSCursor resizeUpDownCursor]];
+        }
+    } else {
+        [super resetCursorRects];
+    }
+}
+
 @end
