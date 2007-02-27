@@ -39,6 +39,8 @@
 #import <Cocoa/Cocoa.h>
 #import <Quartz/Quartz.h>
 
+extern NSString *SKAnnotationWillChangeNotification;
+extern NSString *SKAnnotationDidChangeNotification;
 
 @interface PDFAnnotation (SKExtensions)
 
@@ -107,5 +109,7 @@
 
 - (float)rowHeight;
 - (void)setRowHeight:(float)newRowHeight;
+
+- (void)handleAnnotationDidChangeNotification:(NSNotification *)notification;
 
 @end

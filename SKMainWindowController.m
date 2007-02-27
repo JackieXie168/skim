@@ -273,10 +273,10 @@ static NSString *SKDocumentToolbarNotesPaneItemIdentifier = @"SKDocumentToolbarN
                                                  name:SKPDFViewDidAddAnnotationNotification object:pdfView];
 	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleDidRemoveAnnotationNotification:) 
                                                  name:SKPDFViewDidRemoveAnnotationNotification object:pdfView];
-	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleDidChangeAnnotationNotification:) 
-                                                 name:SKPDFViewDidChangeAnnotationNotification object:pdfView];
 	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleDoubleClickedAnnotationNotification:) 
                                                  name:SKPDFViewAnnotationDoubleClickedNotification object:pdfView];
+	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleAnnotationDidChangeNotification:) 
+                                                 name:SKAnnotationDidChangeNotification object:nil];
 }
 
 - (void)registerForDocumentNotifications {
@@ -1491,16 +1491,18 @@ static NSString *SKDocumentToolbarNotesPaneItemIdentifier = @"SKDocumentToolbarN
     [[self document] updateChangeCount:NSChangeDone];
 }
 
-- (void)handleDidChangeAnnotationNotification:(NSNotification *)notification {
-    PDFAnnotation *annotation = [[notification userInfo] objectForKey:@"annotation"];
-    [[self document] updateChangeCount:NSChangeDone];
-    [self thumbnailNeedsUpdate:[[self thumbnails] objectAtIndex:[annotation pageIndex]]];
-}
-
 - (void)handleDoubleClickedAnnotationNotification:(NSNotification *)notification {
     PDFAnnotation *annotation = [[notification userInfo] objectForKey:@"annotation"];
     
     [self showNote:annotation];
+}
+
+- (void)handleAnnotationDidChangeNotification:(NSNotification *)notification {
+    PDFAnnotation *annotation = [notification object];
+    if ([[[annotation page] document] isEqual:[[self pdfView] document]]) {
+        [[self document] updateChangeCount:NSChangeDone];
+        [self thumbnailNeedsUpdate:[[self thumbnails] objectAtIndex:[annotation pageIndex]]];
+    }
 }
 
 - (void)saveProgressSheetDidEnd:(NSWindow *)sheet returnCode:(int)returnCode contextInfo:(void *)contextInfo {

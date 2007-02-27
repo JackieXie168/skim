@@ -39,6 +39,8 @@
 #import "SKPDFAnnotationNote.h"
 #import "SKStringConstants.h"
 
+NSString *SKAnnotationWillChangeNotification = @"SKAnnotationWillChangeNotification";
+NSString *SKAnnotationDidChangeNotification = @"SKAnnotationDidChangeNotification";
 
 @implementation PDFAnnotation (SKExtensions)
 
@@ -149,6 +151,21 @@ static NSColor *circleColor = nil;
 
 - (BOOL)isResizable { return YES; }
 
+- (void)setBounds:(NSRect)bounds {
+    [super setBounds:bounds];
+    [[NSNotificationCenter defaultCenter] postNotificationName:SKAnnotationDidChangeNotification object:self];
+}
+
+- (void)setContents:(NSString *)contents {
+    [super setContents:contents];
+    [[NSNotificationCenter defaultCenter] postNotificationName:SKAnnotationDidChangeNotification object:self];
+}
+
+- (void)setColor:(NSColor *)color {
+    [super setColor:color];
+    [[NSNotificationCenter defaultCenter] postNotificationName:SKAnnotationDidChangeNotification object:self];
+}
+
 @end
 
 #pragma mark -
@@ -179,6 +196,21 @@ static NSColor *squareColor = nil;
 
 - (BOOL)isResizable { return YES; }
 
+- (void)setBounds:(NSRect)bounds {
+    [super setBounds:bounds];
+    [[NSNotificationCenter defaultCenter] postNotificationName:SKAnnotationDidChangeNotification object:self];
+}
+
+- (void)setContents:(NSString *)contents {
+    [super setContents:contents];
+    [[NSNotificationCenter defaultCenter] postNotificationName:SKAnnotationDidChangeNotification object:self];
+}
+
+- (void)setColor:(NSColor *)color {
+    [super setColor:color];
+    [[NSNotificationCenter defaultCenter] postNotificationName:SKAnnotationDidChangeNotification object:self];
+}
+
 @end
 
 #pragma mark -
@@ -208,6 +240,21 @@ static NSColor *freeTextColor = nil;
 
 - (BOOL)isResizable { return YES; }
 
+- (void)setBounds:(NSRect)bounds {
+    [super setBounds:bounds];
+    [[NSNotificationCenter defaultCenter] postNotificationName:SKAnnotationDidChangeNotification object:self];
+}
+
+- (void)setContents:(NSString *)contents {
+    [super setContents:contents];
+    [[NSNotificationCenter defaultCenter] postNotificationName:SKAnnotationDidChangeNotification object:self];
+}
+
+- (void)setColor:(NSColor *)color {
+    [super setColor:color];
+    [[NSNotificationCenter defaultCenter] postNotificationName:SKAnnotationDidChangeNotification object:self];
+}
+
 @end
 
 #pragma mark -
@@ -234,6 +281,36 @@ static NSColor *textColor = nil;
 }
 
 - (BOOL)isNoteAnnotation { return YES; }
+
+- (void)setBounds:(NSRect)bounds {
+    [[NSNotificationCenter defaultCenter] postNotificationName:SKAnnotationWillChangeNotification
+            object:self
+          userInfo:[NSDictionary dictionaryWithObjectsAndKeys:@"bounds", @"key", nil]];
+    [super setBounds:bounds];
+    [[NSNotificationCenter defaultCenter] postNotificationName:SKAnnotationDidChangeNotification
+            object:self
+          userInfo:[NSDictionary dictionaryWithObjectsAndKeys:@"bounds", @"key", nil]];
+}
+
+- (void)setContents:(NSString *)contents {
+    [[NSNotificationCenter defaultCenter] postNotificationName:SKAnnotationWillChangeNotification
+            object:self
+          userInfo:[NSDictionary dictionaryWithObjectsAndKeys:@"contents", @"key", nil]];
+    [super setContents:contents];
+    [[NSNotificationCenter defaultCenter] postNotificationName:SKAnnotationDidChangeNotification
+            object:self
+          userInfo:[NSDictionary dictionaryWithObjectsAndKeys:@"contents", @"key", nil]];
+}
+
+- (void)setColor:(NSColor *)color {
+    [[NSNotificationCenter defaultCenter] postNotificationName:SKAnnotationWillChangeNotification
+            object:self
+          userInfo:[NSDictionary dictionaryWithObjectsAndKeys:@"color", @"key", nil]];
+    [super setColor:color];
+    [[NSNotificationCenter defaultCenter] postNotificationName:SKAnnotationDidChangeNotification
+            object:self
+          userInfo:[NSDictionary dictionaryWithObjectsAndKeys:@"color", @"key", nil]];
+}
 
 @end
 
@@ -289,8 +366,14 @@ static NSColor *noteColor = nil;
 - (void)setImage:(NSImage *)newImage;
 {
     if (image != newImage) {
+        [[NSNotificationCenter defaultCenter] postNotificationName:SKAnnotationWillChangeNotification
+                object:self
+              userInfo:[NSDictionary dictionaryWithObjectsAndKeys:@"image", @"key", nil]];
         [image release];
         image = [newImage retain];
+        [[NSNotificationCenter defaultCenter] postNotificationName:SKAnnotationDidChangeNotification
+                object:self
+              userInfo:[NSDictionary dictionaryWithObjectsAndKeys:@"image", @"key", nil]];
     }
 }
 
@@ -302,11 +385,14 @@ static NSColor *noteColor = nil;
 - (void)setText:(NSAttributedString *)newText;
 {
     if (text != newText) {
-        // ideally SKNotetext should handle this, but removing as an observer in dealloc comes too late and leads to a crash
-        [[texts lastObject] willChangeValueForKey:@"contents"];
+        [[NSNotificationCenter defaultCenter] postNotificationName:SKAnnotationWillChangeNotification
+                object:self
+              userInfo:[NSDictionary dictionaryWithObjectsAndKeys:@"text", @"key", nil]];
         [text release];
         text = [newText retain];
-        [[texts lastObject] didChangeValueForKey:@"contents"];
+        [[NSNotificationCenter defaultCenter] postNotificationName:SKAnnotationDidChangeNotification
+                object:self
+              userInfo:[NSDictionary dictionaryWithObjectsAndKeys:@"text", @"key", nil]];
     }
 }
 
@@ -333,8 +419,15 @@ static NSColor *noteColor = nil;
     if (self = [super init]) {
         annotation = anAnnotation;
         rowHeight = 85.0;
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleAnnotationDidChangeNotification:) 
+                                                     name:SKAnnotationDidChangeNotification object:annotation];
     }
     return self;
+}
+
+- (void)dealloc {
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
+    [super dealloc];
 }
 
 - (PDFAnnotation *)annotation {
@@ -357,6 +450,13 @@ static NSColor *noteColor = nil;
 
 - (void)setRowHeight:(float)newRowHeight {
     rowHeight = newRowHeight;
+}
+
+- (void)handleAnnotationDidChangeNotification:(NSNotification *)notification {
+    if ([[[notification userInfo] objectForKey:@"key"] isEqualToString:@"text"]) {
+        [self willChangeValueForKey:@"contents"];
+        [self didChangeValueForKey:@"contents"];
+    }
 }
 
 @end
