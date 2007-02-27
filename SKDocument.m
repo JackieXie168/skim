@@ -122,7 +122,7 @@ static NSString *SKPostScriptDocumentType = @"PostScript document";
     BOOL success = [super saveToURL:absoluteURL ofType:typeName forSaveOperation:saveOperation error:outError];
     // we check for notes and save a .skim as well:
     if (success && [typeName isEqualToString:SKPDFDocumentType]) {
-       [self saveNotesToExtendedAttributesAtURL:absoluteURL];
+       [self saveNotesToExtendedAttributesAtURL:absoluteURL error:NULL];
        if (saveOperation == NSSaveOperation || saveOperation == NSSaveAsOperation) {
             [self updateChangeCount:NSChangeCleared];
             [lastChangedDate release];
@@ -136,7 +136,9 @@ static NSString *SKPostScriptDocumentType = @"PostScript document";
 - (BOOL)writeToURL:(NSURL *)absoluteURL ofType:(NSString *)typeName error:(NSError **)outError{
     BOOL didWrite = NO;
     if ([typeName isEqualToString:SKPDFDocumentType]) {
-        didWrite = [pdfData writeToURL:absoluteURL options:NSAtomicWrite error:outError];
+        // notes are only saved as a dry-run to test if we can write, they are not copied to the final destination. 
+        didWrite = [pdfData writeToURL:absoluteURL options:NSAtomicWrite error:outError] &&
+                   [self saveNotesToExtendedAttributesAtURL:absoluteURL error:outError];
     } else if ([typeName isEqualToString:SKEmbeddedPDFDocumentType]) {
         [[self mainWindowController] removeTemporaryAnnotations];
         didWrite = [[[self mainWindowController] pdfDocument] writeToURL:absoluteURL];
@@ -172,31 +174,35 @@ static NSString *SKPostScriptDocumentType = @"PostScript document";
 - (BOOL)readFromURL:(NSURL *)absoluteURL ofType:(NSString *)docType error:(NSError **)outError{
     BOOL didRead = NO;
     if ([docType isEqualToString:SKPDFDocumentType]) {
-        [pdfData release];
-        [pdfDocument release];
-        pdfData = [[NSData alloc] initWithContentsOfURL:absoluteURL];    
-        pdfDocument = [[PDFDocument alloc] initWithURL:absoluteURL];    
-        didRead = pdfDocument != nil;
-        [self readNotesFromExtendedAttributesAtURL:absoluteURL];
-        [[self mutableArrayValueForKey:@"notes"] removeAllObjects];
-        [lastChangedDate release];
-        lastChangedDate = [[[[NSFileManager defaultManager] fileAttributesAtPath:[absoluteURL path] traverseLink:YES] fileModificationDate] retain];
-    } else if ([docType isEqualToString:SKPostScriptDocumentType]) {
-        [pdfData release];
-        [pdfDocument release];
         NSData *data = [[NSData alloc] initWithContentsOfURL:absoluteURL];
+        PDFDocument *pdfDoc = [[PDFDocument alloc] initWithURL:absoluteURL];
+        if (data && pdfDoc) {
+            if (didRead = [self readNotesFromExtendedAttributesAtURL:absoluteURL error:outError]) {
+                [pdfData release];
+                pdfData = data;    
+                [pdfDocument release];
+                pdfDocument = pdfDoc;
+                [[self mutableArrayValueForKey:@"notes"] removeAllObjects];
+                [lastChangedDate release];
+                lastChangedDate = [[[[NSFileManager defaultManager] fileAttributesAtPath:[absoluteURL path] traverseLink:YES] fileModificationDate] retain];
+            }
+        }
+    } else if ([docType isEqualToString:SKPostScriptDocumentType]) {
+        NSData *data = [[NSData alloc] initWithContentsOfURL:absoluteURL];
+        PDFDocument *pdfDoc = nil;
         if (data) {
             SKPSProgressController *progressController = [[SKPSProgressController alloc] init];
-            pdfData = [[progressController PDFDataWithPostScriptData:data] retain];
+            data = [[progressController PDFDataWithPostScriptData:data] retain];
             [progressController autorelease];
-            pdfDocument = [[PDFDocument alloc] initWithData:pdfData];    
-        } else {
-            pdfData = nil;
-            pdfDocument = nil;
+            if (data && (pdfDoc = [[PDFDocument alloc] initWithData:data])) {
+                [pdfData release];
+                pdfData = data;    
+                [pdfDocument release];
+                pdfDocument = pdfDoc;
+            }
         }
-        didRead = pdfDocument != nil;
     }
-    if (NO == didRead && outError)
+    if (NO == didRead && outError && *outError == nil)
         *outError = [NSError errorWithDomain:SKDocumentErrorDomain code:0 userInfo:[NSDictionary dictionaryWithObjectsAndKeys:NSLocalizedString(@"Unable to load file", @""), NSLocalizedDescriptionKey, nil]];
     return didRead;
 }
@@ -227,7 +233,7 @@ static NSString *SKPostScriptDocumentType = @"PostScript document";
                        contextInfo:NULL];		
 }
 
-- (BOOL)saveNotesToExtendedAttributesAtURL:(NSURL *)aURL {
+- (BOOL)saveNotesToExtendedAttributesAtURL:(NSURL *)aURL error:(NSError **)outError {
     NSFileManager *fm = [NSFileManager defaultManager];
     BOOL success = YES;
     
@@ -247,7 +253,8 @@ static NSString *SKPostScriptDocumentType = @"PostScript document";
             name = [oldNotes objectAtIndex:i];
             if ([name hasPrefix:@"net_sourceforge_bibdesk_skim_note-"]) {
                 if ([fm removeExtendedAttribute:name atPath:path traverseLink:YES error:&error] == NO) {
-                    NSLog(@"%@: %@", self, error);
+                    // should we set success to NO and return an error?
+                    //NSLog(@"%@: %@", self, error);
                 }
             }
         }
@@ -263,7 +270,8 @@ static NSString *SKPostScriptDocumentType = @"PostScript document";
                     subdata = [data subdataWithRange:NSMakeRange(j * MAX_XATTR_LENGTH, j == n - 1 ? [data length] - j * MAX_XATTR_LENGTH : MAX_XATTR_LENGTH)];
                     if ([fm setExtendedAttributeNamed:name toValue:subdata atPath:path options:nil error:&error] == NO) {
                         success = NO;
-                        NSLog(@"%@: %@", self, error);
+                        if (outError) *outError = error;
+                        //NSLog(@"%@: %@", self, error);
                         while (j--) {
                             name = [NSString stringWithFormat:@"net_sourceforge_bibdesk_skim_note-%i-%i", i, j];
                             [fm removeExtendedAttribute:name atPath:path traverseLink:YES error:NULL];
@@ -273,27 +281,30 @@ static NSString *SKPostScriptDocumentType = @"PostScript document";
                 [longNotes setObject:[NSNumber numberWithInt:j] forKey:[NSString stringWithFormat:@"%i", i]];
             } else if ([fm setExtendedAttributeNamed:name toValue:data atPath:path options:nil error:&error] == NO) {
                 success = NO;
-                NSLog(@"%@: %@", self, error);
+                if (outError) *outError = error;
+                //NSLog(@"%@: %@", self, error);
             }
         }
         
         if (success == NO || [notes count] == 0) {
             if ([fm removeExtendedAttribute:@"net_sourceforge_bibdesk_skim_notesInfo" atPath:path traverseLink:YES error:&error] == NO) {
                 success = NO;
-                NSLog(@"%@: %@", self, error);
+                if (outError) *outError = error;
+                //NSLog(@"%@: %@", self, error);
             }
         } else {
             dictionary = [NSDictionary dictionaryWithObjectsAndKeys:[NSNumber numberWithInt:numberOfNotes], @"numberOfNotes", [longNotes count] ? longNotes : nil, @"longNotes", nil];
             if ([fm setExtendedAttributeNamed:@"net_sourceforge_bibdesk_skim_notesInfo" toPropertyListValue:dictionary atPath:path options:nil error:&error] == NO) {
                 success = NO;
-                NSLog(@"%@: %@", self, error);
+                if (outError) *outError = error;
+                //NSLog(@"%@: %@", self, error);
             }
         }
     }
     return success;
 }
 
-- (BOOL)readNotesFromExtendedAttributesAtURL:(NSURL *)aURL {
+- (BOOL)readNotesFromExtendedAttributesAtURL:(NSURL *)aURL error:(NSError **)outError {
     NSFileManager *fm = [NSFileManager defaultManager];
     NSDictionary *dict = nil;
     BOOL success = YES;
@@ -303,54 +314,64 @@ static NSString *SKPostScriptDocumentType = @"PostScript document";
         dict = [fm propertyListFromExtendedAttributeNamed:@"net_sourceforge_bibdesk_skim_notesInfo" atPath:[aURL path] traverseLink:YES error:&error];
         if (dict == nil) {
             success = NO;
-            if ([[[error userInfo] objectForKey:NSUnderlyingErrorKey] code] != ENOATTR)
-                NSLog(@"%@: %@", self, error);
-        }
-    }
-    if (dict != nil) {
-        int i, numberOfNotes = [[dict objectForKey:@"numberOfNotes"] intValue];
-        NSDictionary *longNotes = [dict objectForKey:@"longNotes"];
-        NSString *name = nil;
-        int n;
-        NSData *data = nil;
-        
-        if (noteDicts)
-            [noteDicts release];
-        noteDicts = [[NSMutableArray alloc] initWithCapacity:numberOfNotes];
-        
-        for (i = 0; success && i < numberOfNotes; i++) {
-            n = [[longNotes objectForKey:[NSString stringWithFormat:@"%i", i]] intValue];
-            if (n == 0) {
-                name = [NSString stringWithFormat:@"net_sourceforge_bibdesk_skim_note-%i", i];
-                if ((data = [fm extendedAttributeNamed:name atPath:[aURL path] traverseLink:YES error:&error]) &&
-                    (dict = [NSKeyedUnarchiver unarchiveObjectWithData:data])) {
-                    [noteDicts addObject:dict];
-                } else {
-                    success = NO;
-                    NSLog(@"%@: %@", self, error);
-                }
-            } else {
-                NSMutableData *mutableData = [NSMutableData dataWithCapacity:n * MAX_XATTR_LENGTH];
-                int j;
-                for (j = 0; success && j < n; j++) {
-                    name = [NSString stringWithFormat:@"net_sourceforge_bibdesk_skim_note-%i-%i", i, j];
-                    if (data = [fm extendedAttributeNamed:name atPath:[aURL path] traverseLink:YES error:&error]) {
-                        [mutableData appendData:data];
+            if ([[[error userInfo] objectForKey:NSUnderlyingErrorKey] code] != ENOATTR) {
+                // should we set success to NO and return an error?
+                //NSLog(@"%@: %@", self, error);
+            }
+        } else {
+            int i, numberOfNotes = [[dict objectForKey:@"numberOfNotes"] intValue];
+            NSDictionary *longNotes = [dict objectForKey:@"longNotes"];
+            NSString *name = nil;
+            int n;
+            NSData *data = nil;
+            
+            if (noteDicts)
+                [noteDicts release];
+            noteDicts = [[NSMutableArray alloc] initWithCapacity:numberOfNotes];
+            
+            for (i = 0; success && i < numberOfNotes; i++) {
+                n = [[longNotes objectForKey:[NSString stringWithFormat:@"%i", i]] intValue];
+                if (n == 0) {
+                    name = [NSString stringWithFormat:@"net_sourceforge_bibdesk_skim_note-%i", i];
+                    if ((data = [fm extendedAttributeNamed:name atPath:[aURL path] traverseLink:YES error:&error]) &&
+                        (dict = [NSKeyedUnarchiver unarchiveObjectWithData:data])) {
+                        [noteDicts addObject:dict];
                     } else {
                         success = NO;
-                        NSLog(@"%@: %@", self, error);
+                        if (outError) *outError = error;
+                        //NSLog(@"%@: %@", self, error);
                     }
-                }
-                if (dict = [NSKeyedUnarchiver unarchiveObjectWithData:mutableData]) {
-                    [noteDicts addObject:dict];
                 } else {
-                    success = NO;
-                    NSLog(@"%@: %@", self, error);
+                    NSMutableData *mutableData = [NSMutableData dataWithCapacity:n * MAX_XATTR_LENGTH];
+                    int j;
+                    for (j = 0; success && j < n; j++) {
+                        name = [NSString stringWithFormat:@"net_sourceforge_bibdesk_skim_note-%i-%i", i, j];
+                        if (data = [fm extendedAttributeNamed:name atPath:[aURL path] traverseLink:YES error:&error]) {
+                            [mutableData appendData:data];
+                        } else {
+                            success = NO;
+                            if (outError) *outError = error;
+                            //NSLog(@"%@: %@", self, error);
+                        }
+                    }
+                    if (dict = [NSKeyedUnarchiver unarchiveObjectWithData:mutableData]) {
+                        [noteDicts addObject:dict];
+                    } else {
+                        success = NO;
+                        if (outError) *outError = error;
+                        //NSLog(@"%@: %@", self, error);
+                    }
                 }
             }
         }
     } else {
         success = NO;
+        if(error == nil && outError) 
+            *outError = [NSError errorWithDomain:NSPOSIXErrorDomain code:ENOENT userInfo:[NSDictionary dictionaryWithObjectsAndKeys:NSLocalizedString(@"The file does not exist or is not a file.", @""), NSLocalizedDescriptionKey, nil]];
+    }
+    if (success == NO) {
+        [noteDicts release];
+        noteDicts = nil;
     }
     return success;
 }
