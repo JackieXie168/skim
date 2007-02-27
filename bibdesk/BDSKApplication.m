@@ -104,58 +104,61 @@ static int indexOfWindowsMenuItemWithTarget(id target)
     NSWindowController *mainWindowController = [[[windowController document] windowControllers] objectAtIndex:0];
     int numberOfItems = [windowsMenu numberOfItems];
     int itemIndex = indexOfWindowsMenuItemWithTarget(aWindow);
-    NSMenuItem *item = [windowsMenu itemAtIndex:itemIndex];
     
-    if ([windowController document] == nil) {
-        int index = numberOfItems;
-        while (index-- && [[windowsMenu itemAtIndex:index] isSeparatorItem] == NO && 
-               [[[[windowsMenu itemAtIndex:index] target] windowController] document] == nil) {}
-        if (index >= 0) {
-            if (itemIndex < index) {
-                [item retain];
-                [windowsMenu removeItem:item];
-                [windowsMenu insertItem:item atIndex:index];
-                [item release];
-                index--;
-            }
-            if ([[windowsMenu itemAtIndex:index] isSeparatorItem] == NO)
-                [windowsMenu insertItem:[NSMenuItem separatorItem] atIndex:index + 1];
-        }
-    } else if ([windowController isEqual:mainWindowController]) {
-        int index = itemIndex;
-        if ([[windowsMenu itemAtIndex:itemIndex - 1] isSeparatorItem] == NO) {
-            if ([[[[windowsMenu itemAtIndex:itemIndex - 1] target] windowController] document]) {
-                while (++index < numberOfItems && [[windowsMenu itemAtIndex:index] isSeparatorItem] == NO) {}
-                if (index == numberOfItems) {
-                    [windowsMenu insertItem:[NSMenuItem separatorItem] atIndex:index];
-                    numberOfItems++;
+    if (itemIndex != -1) {
+        NSMenuItem *item = [windowsMenu itemAtIndex:itemIndex];
+        
+        if ([windowController document] == nil) {
+            int index = numberOfItems;
+            while (index-- && [[windowsMenu itemAtIndex:index] isSeparatorItem] == NO && 
+                   [[[[windowsMenu itemAtIndex:index] target] windowController] document] == nil) {}
+            if (index >= 0) {
+                if (itemIndex < index) {
+                    [item retain];
+                    [windowsMenu removeItem:item];
+                    [windowsMenu insertItem:item atIndex:index];
+                    [item release];
+                    index--;
                 }
-            } else {
-                while (--index >= 0 && [[windowsMenu itemAtIndex:index] isSeparatorItem] == NO) {}
+                if ([[windowsMenu itemAtIndex:index] isSeparatorItem] == NO)
+                    [windowsMenu insertItem:[NSMenuItem separatorItem] atIndex:index + 1];
             }
-            itemIndex = index < itemIndex ? index + 1 : index;
-            [item retain];
-            [windowsMenu removeItem:item];
-            [windowsMenu insertItem:item atIndex:itemIndex];
-            [item release];
-        }
-        index = itemIndex;
-        while (++index < numberOfItems && [[[[[windowsMenu itemAtIndex:index] target] windowController] document] isEqual:[windowController document]]) {}
-        if (index < numberOfItems && [[windowsMenu itemAtIndex:index] isSeparatorItem] == NO)
-            [windowsMenu insertItem:[NSMenuItem separatorItem] atIndex:index];
-    } else {
-        int mainIndex = indexOfWindowsMenuItemWithTarget([mainWindowController window]);
-        int index = mainIndex;
-        
-        [item setIndentationLevel:1];
-        
-        if (index >= 0) {
-            while (++index < numberOfItems && [[windowsMenu itemAtIndex:index] isSeparatorItem] == NO) {}
-            if (itemIndex < mainIndex || itemIndex > index) {
+        } else if ([windowController isEqual:mainWindowController]) {
+            int index = itemIndex;
+            if ([[windowsMenu itemAtIndex:itemIndex - 1] isSeparatorItem] == NO) {
+                if ([[[[windowsMenu itemAtIndex:itemIndex - 1] target] windowController] document]) {
+                    while (++index < numberOfItems && [[windowsMenu itemAtIndex:index] isSeparatorItem] == NO) {}
+                    if (index == numberOfItems) {
+                        [windowsMenu insertItem:[NSMenuItem separatorItem] atIndex:index];
+                        numberOfItems++;
+                    }
+                } else {
+                    while (--index >= 0 && [[windowsMenu itemAtIndex:index] isSeparatorItem] == NO) {}
+                }
+                itemIndex = index < itemIndex ? index + 1 : index;
                 [item retain];
                 [windowsMenu removeItem:item];
-                [windowsMenu insertItem:item atIndex:itemIndex < index ? --index : index];
+                [windowsMenu insertItem:item atIndex:itemIndex];
                 [item release];
+            }
+            index = itemIndex;
+            while (++index < numberOfItems && [[[[[windowsMenu itemAtIndex:index] target] windowController] document] isEqual:[windowController document]]) {}
+            if (index < numberOfItems && [[windowsMenu itemAtIndex:index] isSeparatorItem] == NO)
+                [windowsMenu insertItem:[NSMenuItem separatorItem] atIndex:index];
+        } else {
+            int mainIndex = indexOfWindowsMenuItemWithTarget([mainWindowController window]);
+            int index = mainIndex;
+            
+            [item setIndentationLevel:1];
+            
+            if (index >= 0) {
+                while (++index < numberOfItems && [[windowsMenu itemAtIndex:index] isSeparatorItem] == NO) {}
+                if (itemIndex < mainIndex || itemIndex > index) {
+                    [item retain];
+                    [windowsMenu removeItem:item];
+                    [windowsMenu insertItem:item atIndex:itemIndex < index ? --index : index];
+                    [item release];
+                }
             }
         }
     }
