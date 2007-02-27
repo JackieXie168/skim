@@ -312,13 +312,7 @@ static NSString *SKPostScriptDocumentType = @"PostScript document";
     
     if ([aURL isFileURL]) {
         dict = [fm propertyListFromExtendedAttributeNamed:@"net_sourceforge_bibdesk_skim_notesInfo" atPath:[aURL path] traverseLink:YES error:&error];
-        if (dict == nil) {
-            success = NO;
-            if ([[[error userInfo] objectForKey:NSUnderlyingErrorKey] code] != ENOATTR) {
-                // should we set success to NO and return an error?
-                //NSLog(@"%@: %@", self, error);
-            }
-        } else {
+        if (dict != nil) {
             int i, numberOfNotes = [[dict objectForKey:@"numberOfNotes"] intValue];
             NSDictionary *longNotes = [dict objectForKey:@"longNotes"];
             NSString *name = nil;
