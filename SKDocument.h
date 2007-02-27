@@ -65,8 +65,8 @@ extern NSString *SKDocumentErrorDomain;
 - (void)insertObject:(id)obj inNotesAtIndex:(unsigned)index;
 - (void)removeObjectFromNotesAtIndex:(unsigned)index;
 
-- (BOOL)saveNotesToExtendedAttributesAtURL:(NSURL *)aURL;
-- (BOOL)readNotesFromExtendedAttributesAtURL:(NSURL *)aURL;
+- (BOOL)saveNotesToExtendedAttributesAtURL:(NSURL *)aURL error:(NSError **)outError;
+- (BOOL)readNotesFromExtendedAttributesAtURL:(NSURL *)aURL error:(NSError **)outError;
 - (NSData *)notesData;
 - (BOOL)readNotesFromData:(NSData *)data;
 
