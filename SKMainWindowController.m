@@ -902,13 +902,13 @@ static NSString *SKDocumentToolbarNotesPaneItemIdentifier = @"SKDocumentToolbarN
 - (void)showSideWindows {
     if (leftSideWindow == nil) {
         leftSideWindow = [[SKSideWindow alloc] initWithMainController:self edge:NSMinXEdge];
-    } else if ([[self window] screen] != [leftSideWindow screen]) {
+    } else if ([NSScreen mainScreen] != [leftSideWindow screen]) {
         [leftSideWindow moveToScreen:[[self window] screen]];
     }
     if (rightSideWindow == nil) {
         rightSideWindow = [[SKSideWindow alloc] initWithMainController:self edge:NSMaxXEdge];
-    } else if ([[self window] screen] != [rightSideWindow screen]) {
-        [rightSideWindow moveToScreen:[[self window] screen]];
+    } else if ([NSScreen mainScreen] != [rightSideWindow screen]) {
+        [rightSideWindow moveToScreen:[NSScreen mainScreen]];
     }
     
     if ([[mainWindow firstResponder] isDescendantOf:leftSideBox])
@@ -1011,7 +1011,7 @@ static NSString *SKDocumentToolbarNotesPaneItemIdentifier = @"SKDocumentToolbarN
     if ([self isFullScreen])
         return;
     
-    if ([[fullScreenWindow screen] isEqual:[[NSScreen screens] objectAtIndex:0]])
+    if ([[NSScreean mainScreen] isEqual:[[NSScreen screens] objectAtIndex:0]])
         SetSystemUIMode(kUIModeAllHidden, kUIOptionAutoShowMenuBar);
     
     if ([self isPresentation])
