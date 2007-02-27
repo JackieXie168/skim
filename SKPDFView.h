@@ -95,7 +95,9 @@ typedef enum _SKAnnotationMode {
 
 - (IBAction)delete:(id)sender;
 
-- (void)addAnnotation:(id)sender;
+- (void)addAnnotationFromMenu:(id)sender;
+- (void)addAnnotationFromSelectionWithType:(SKAnnotationMode)annotationType;
+- (void)addAnnotationWithType:(SKAnnotationMode)annotationType contents:(NSString *)text page:(PDFPage *)page bounds:(NSRect)bounds;
 - (void)removeActiveAnnotation:(id)sender;
 - (void)removeThisAnnotation:(id)sender;
 - (void)removeAnnotation:(PDFAnnotation *)annotation;

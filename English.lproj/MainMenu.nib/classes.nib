@@ -4,6 +4,7 @@
             ACTIONS = {
                 alternatePaste = id; 
                 changeAnnotationMode = id; 
+                changeDisplayBox = id; 
                 changeLeftSidePaneState = id; 
                 changeRightSidePaneState = id; 
                 changeToolMode = id; 

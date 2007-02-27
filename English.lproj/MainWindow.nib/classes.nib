@@ -30,11 +30,11 @@
                 changeRightSidePaneState = id; 
                 changeScaleFactor = id; 
                 changeToolMode = id; 
+                chooseScale = id; 
                 createNewNote = id; 
                 dismissChoosePageSheet = id; 
-                displayCropBox = id; 
+                dismissChooseScaleSheet = id; 
                 displayFacingPages = id; 
-                displayMediaBox = id; 
                 displaySinglePages = id; 
                 doGoBack = id; 
                 doGoForward = id; 
@@ -72,6 +72,8 @@
                 backForwardButton = NSSegmentedControl; 
                 choosePageField = NSTextField; 
                 choosePageSheet = NSWindow; 
+                chooseScaleField = NSTextField; 
+                chooseScaleSheet = NSWindow; 
                 currentLeftSideView = NSView; 
                 currentRightSideView = NSView; 
                 displayBoxPopUpButton = NSPopUpButton; 
