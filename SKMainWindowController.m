@@ -2257,6 +2257,11 @@ static NSString *SKDocumentToolbarNotesPaneItemIdentifier = @"SKDocumentToolbarN
     [toolbarItems setObject:item forKey:SKDocumentToolbarPresentationItemIdentifier];
     [item release];
     
+	menuItem = [[[NSMenuItem allocWithZone:[NSMenu menuZone]] initWithTitle:NSLocalizedString(@"New Note", @"Menu item title") 
+                                                                     action:@selector(createNewNote:)
+									                          keyEquivalent:@""] autorelease];
+	[menuItem setTarget:self];
+    [menuItem setTag:-1];
     item = [[NSToolbarItem alloc] initWithItemIdentifier:SKDocumentToolbarNewNoteItemIdentifier];
     [item setLabel:NSLocalizedString(@"New Note", @"Toolbar item label")];
     [item setPaletteLabel:NSLocalizedString(@"New Note", @"Toolbar item label")];
@@ -2265,9 +2270,15 @@ static NSString *SKDocumentToolbarNotesPaneItemIdentifier = @"SKDocumentToolbarN
     [item setTarget:self];
     [item setAction:@selector(createNewNote:)];
     [item setTag:-1];
+    [item setMenuFormRepresentation:menuItem];
     [toolbarItems setObject:item forKey:SKDocumentToolbarNewNoteItemIdentifier];
     [item release];
     
+	menuItem = [[[NSMenuItem allocWithZone:[NSMenu menuZone]] initWithTitle:NSLocalizedString(@"New Note", @"Menu item title") 
+                                                                     action:@selector(createNewNote:)
+									                          keyEquivalent:@""] autorelease];
+	[menuItem setTarget:self];
+    [menuItem setTag:SKFreeTextAnnotationMode];
     item = [[NSToolbarItem alloc] initWithItemIdentifier:SKDocumentToolbarNewTextNoteItemIdentifier];
     [item setLabel:NSLocalizedString(@"Text Note", @"Toolbar item label")];
     [item setPaletteLabel:NSLocalizedString(@"New Text Note", @"Toolbar item label")];
@@ -2276,9 +2287,15 @@ static NSString *SKDocumentToolbarNotesPaneItemIdentifier = @"SKDocumentToolbarN
     [item setTarget:self];
     [item setAction:@selector(createNewNote:)];
     [item setTag:SKFreeTextAnnotationMode];
+    [item setMenuFormRepresentation:menuItem];
     [toolbarItems setObject:item forKey:SKDocumentToolbarNewTextNoteItemIdentifier];
     [item release];
     
+	menuItem = [[[NSMenuItem allocWithZone:[NSMenu menuZone]] initWithTitle:NSLocalizedString(@"New Note", @"Menu item title") 
+                                                                     action:@selector(createNewNote:)
+									                          keyEquivalent:@""] autorelease];
+	[menuItem setTarget:self];
+    [menuItem setTag:SKNoteAnnotationMode];
     item = [[NSToolbarItem alloc] initWithItemIdentifier:SKDocumentToolbarNewAnchoredNoteItemIdentifier];
     [item setLabel:NSLocalizedString(@"Anchored Note", @"Toolbar item label")];
     [item setPaletteLabel:NSLocalizedString(@"New Anchored Note", @"Toolbar item label")];
@@ -2287,9 +2304,15 @@ static NSString *SKDocumentToolbarNotesPaneItemIdentifier = @"SKDocumentToolbarN
     [item setTarget:self];
     [item setAction:@selector(createNewNote:)];
     [item setTag:SKNoteAnnotationMode];
+    [item setMenuFormRepresentation:menuItem];
     [toolbarItems setObject:item forKey:SKDocumentToolbarNewAnchoredNoteItemIdentifier];
     [item release];
     
+	menuItem = [[[NSMenuItem allocWithZone:[NSMenu menuZone]] initWithTitle:NSLocalizedString(@"New Note", @"Menu item title") 
+                                                                     action:@selector(createNewNote:)
+									                          keyEquivalent:@""] autorelease];
+	[menuItem setTarget:self];
+    [menuItem setTag:SKCircleAnnotationMode];
     item = [[NSToolbarItem alloc] initWithItemIdentifier:SKDocumentToolbarNewCircleNoteItemIdentifier];
     [item setLabel:NSLocalizedString(@"Circle Note", @"Toolbar item label")];
     [item setPaletteLabel:NSLocalizedString(@"New Circle Note", @"Toolbar item label")];
@@ -2298,6 +2321,7 @@ static NSString *SKDocumentToolbarNotesPaneItemIdentifier = @"SKDocumentToolbarN
     [item setTarget:self];
     [item setAction:@selector(createNewNote:)];
     [item setTag:SKCircleAnnotationMode];
+    [item setMenuFormRepresentation:menuItem];
     [toolbarItems setObject:item forKey:SKDocumentToolbarNewCircleNoteItemIdentifier];
     [item release];
     
