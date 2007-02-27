@@ -45,7 +45,6 @@ extern NSString *SKPDFViewAnnotationModeChangedNotification;
 extern NSString *SKPDFViewActiveAnnotationDidChangeNotification;
 extern NSString *SKPDFViewDidAddAnnotationNotification;
 extern NSString *SKPDFViewDidRemoveAnnotationNotification;
-extern NSString *SKPDFViewDidChangeAnnotationNotification;
 extern NSString *SKPDFViewAnnotationDoubleClickedNotification;
 
 extern NSString *SKSkimNotePboardType;
@@ -114,5 +113,9 @@ typedef enum _SKAnnotationMode {
 
 - (void)setNeedsDisplayInRect:(NSRect)rect ofPage:(PDFPage *)page;
 - (void)setNeedsDisplayForAnnotation:(PDFAnnotation *)annotation;
+
+- (void)handleAnnotationWillChangeNotification:(NSNotification *)notification;
+- (void)handleAnnotationDidChangeNotification:(NSNotification *)notification;
+- (void)handleWindowWillCloseNotification:(NSNotification *)notification;
 
 @end

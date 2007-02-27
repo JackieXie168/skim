@@ -50,7 +50,6 @@ NSString *SKPDFViewAnnotationModeChangedNotification = @"SKPDFViewAnnotationMode
 NSString *SKPDFViewActiveAnnotationDidChangeNotification = @"SKPDFViewActiveAnnotationDidChangeNotification";
 NSString *SKPDFViewDidAddAnnotationNotification = @"SKPDFViewDidAddAnnotationNotification";
 NSString *SKPDFViewDidRemoveAnnotationNotification = @"SKPDFViewDidRemoveAnnotationNotification";
-NSString *SKPDFViewDidChangeAnnotationNotification = @"SKPDFViewDidChangeAnnotationNotification";
 NSString *SKPDFViewAnnotationDoubleClickedNotification = @"SKPDFViewAnnotationDoubleClickedNotification";
 
 NSString *SKSkimNotePboardType = @"SKSkimNotePboardType";
@@ -89,6 +88,10 @@ NSString *SKSkimNotePboardType = @"SKSkimNotePboardType";
 - (id)initWithFrame:(NSRect)frameRect {
     if (self = [super initWithFrame:frameRect]) {
         toolMode = SKTextToolMode;
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleAnnotationWillChangeNotification:) 
+                                                     name:SKAnnotationWillChangeNotification object:nil];
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleAnnotationDidChangeNotification:) 
+                                                     name:SKAnnotationDidChangeNotification object:nil];
     }
     return self;
 }
@@ -96,6 +99,10 @@ NSString *SKSkimNotePboardType = @"SKSkimNotePboardType";
 - (id)initWithCoder:(NSCoder *)decoder {
     if (self = [super initWithCoder:decoder]) {
         toolMode = SKTextToolMode;
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleAnnotationWillChangeNotification:) 
+                                                     name:SKAnnotationWillChangeNotification object:nil];
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleAnnotationDidChangeNotification:) 
+                                                     name:SKAnnotationDidChangeNotification object:nil];
     }
     return self;
 }
@@ -447,9 +454,6 @@ NSString *SKSkimNotePboardType = @"SKSkimNotePboardType";
                 if ([[activeAnnotation type] isEqualToString:@"Circle"] || [[activeAnnotation type] isEqualToString:@"Square"]) {
                     NSString *selString = [[[[activeAnnotation page] selectionForRect:[activeAnnotation bounds]] string] stringByCollapsingWhitespaceAndNewlinesAndRemovingSurroundingWhitespaceAndNewlines];
                     [activeAnnotation setContents:selString];
-                    [self setNeedsDisplayForAnnotation:activeAnnotation];
-                    [[NSNotificationCenter defaultCenter] postNotificationName:SKPDFViewDidChangeAnnotationNotification object:self 
-                        userInfo:[NSDictionary dictionaryWithObjectsAndKeys:activeAnnotation, @"annotation", nil]];
                 }
             } else
                 [super mouseUp:theEvent];
@@ -821,8 +825,6 @@ NSString *SKSkimNotePboardType = @"SKSkimNotePboardType";
             [self removeAnnotationControl]; // this removes the textfield from the pdfview, need to do this before we remove the text widget
         if ([[editAnnotation stringValue] isEqualToString:[activeAnnotation contents]] == NO) {
             [activeAnnotation setContents:[editAnnotation stringValue]];
-            [[NSNotificationCenter defaultCenter] postNotificationName:SKPDFViewDidChangeAnnotationNotification object:self 
-                userInfo:[NSDictionary dictionaryWithObjectsAndKeys:activeAnnotation, @"annotation", nil]];
         }
         [[editAnnotation page] removeAnnotation:editAnnotation];
         editAnnotation = nil;
@@ -954,6 +956,18 @@ NSString *SKSkimNotePboardType = @"SKSkimNotePboardType";
     SKMainWindowController *controller = [[self window] windowController];
     
     [controller showSnapshotAtPageNumber:[[self document] indexForPage:page] forRect:[self convertRect:rect toPage:page] factor:1];
+}
+
+- (void)handleAnnotationWillChangeNotification:(NSNotification *)notification {
+    PDFAnnotation *annotation = [notification object];
+    if ([[[annotation page] document] isEqual:[self document]] && [[[notification userInfo] objectForKey:@"key"] isEqualToString:@"bounds"])
+        [self setNeedsDisplayForAnnotation:annotation];
+}
+
+- (void)handleAnnotationDidChangeNotification:(NSNotification *)notification {
+    PDFAnnotation *annotation = [notification object];
+    if ([[[annotation page] document] isEqual:[self document]])
+        [self setNeedsDisplayForAnnotation:annotation];
 }
 
 #pragma mark FullScreen navigation and autohide
@@ -1107,9 +1121,6 @@ NSString *SKSkimNotePboardType = @"SKSkimNotePboardType";
         [activeAnnotation setBounds:newBounds];
         NSString *selString = [[[[activeAnnotation page] selectionForRect:newBounds] string] stringByCollapsingWhitespaceAndNewlinesAndRemovingSurroundingWhitespaceAndNewlines];
         [activeAnnotation setContents:selString];
-        [self setNeedsDisplayInRect:NSUnionRect(bounds, newBounds) ofPage:page];
-        [[NSNotificationCenter defaultCenter] postNotificationName:SKPDFViewDidChangeAnnotationNotification object:self 
-            userInfo:[NSDictionary dictionaryWithObjectsAndKeys:activeAnnotation, @"annotation", nil]];
     }
 }
 
@@ -1307,9 +1318,6 @@ NSString *SKSkimNotePboardType = @"SKSkimNotePboardType";
     
     // Force redraw.
     [self setNeedsDisplayInRect:NSUnionRect(currentBounds, newBounds) ofPage:activePage];
-    
-    [[NSNotificationCenter defaultCenter] postNotificationName:SKPDFViewDidChangeAnnotationNotification object:self 
-        userInfo:[NSDictionary dictionaryWithObjectsAndKeys:activeAnnotation, @"annotation", nil]];
 }
 
 - (void)dragWithEvent:(NSEvent *)theEvent {
