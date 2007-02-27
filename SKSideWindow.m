@@ -93,7 +93,7 @@
 - (void)slideOut {
     if (state == NSDrawerOpenState || state == NSDrawerOpeningState) {
         state = NSDrawerClosingState;
-        NSRect screenFrame = [[self screen] frame];
+        NSRect screenFrame = [[[controller window] screen] frame];
         NSRect frame = [self frame];
         frame.origin.x = edge == NSMaxXEdge ? NSMaxX(screenFrame) - WINDOW_OFFSET : NSMinX(screenFrame) - NSWidth(frame) + WINDOW_OFFSET;
         [self setFrame:frame display:YES animate:YES];
@@ -105,7 +105,7 @@
 - (void)slideIn {
     if (state == NSDrawerClosedState || state == NSDrawerClosingState) {
         state = NSDrawerOpeningState;
-        NSRect screenFrame = [[self screen] frame];
+        NSRect screenFrame = [[[controller window] screen] frame];
         NSRect frame = [self frame];
         frame.origin.x = edge == NSMaxXEdge ? NSMaxX(screenFrame) - NSWidth(frame) + CONTENT_INSET : NSMinX(screenFrame) - CONTENT_INSET;
         [self setFrame:frame display:YES animate:YES];
