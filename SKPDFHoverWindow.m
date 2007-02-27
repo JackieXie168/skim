@@ -64,8 +64,16 @@
         [self setContentView:scrollView];
         [scrollView release];
         [imageView release];
+        
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleApplicationWillResignActiveNotification:) 
+                                                     name:NSApplicationWillResignActiveNotification object:NSApp];
     }
     return self;
+}
+
+
+- (void)handleApplicationWillResignActiveNotification:(NSNotification *)notification {
+    [self orderOut:self];
 }
 
 - (BOOL)canBecomeKeyWindow { return NO; }
