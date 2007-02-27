@@ -139,6 +139,9 @@ typedef struct _SKPDFViewState {
     IBOutlet NSWindow           *choosePageSheet;
     IBOutlet NSTextField        *choosePageField;
     
+    IBOutlet NSWindow           *chooseScaleSheet;
+    IBOutlet NSTextField        *chooseScaleField;
+    
     IBOutlet NSWindow           *saveProgressSheet;
     IBOutlet NSProgressIndicator *saveProgressBar;
     
@@ -164,8 +167,6 @@ typedef struct _SKPDFViewState {
 - (IBAction)toggleDisplayContinuous:(id)sender;
 - (IBAction)toggleDisplayAsBook:(id)sender;
 - (IBAction)toggleDisplayPageBreaks:(id)sender;
-- (IBAction)displayMediaBox:(id)sender;
-- (IBAction)displayCropBox:(id)sender;
 - (IBAction)changeDisplayBox:(id)sender;
 - (IBAction)doGoToNextPage:(id)sender;
 - (IBAction)doGoToPreviousPage:(id)sender;
@@ -186,6 +187,8 @@ typedef struct _SKPDFViewState {
 - (IBAction)getInfo:(id)sender;
 - (IBAction)search:(id)sender;
 - (IBAction)changeScaleFactor:(id)sender;
+- (IBAction)chooseScale:(id)sender;
+- (IBAction)dismissChooseScaleSheet:(id)sender;
 - (IBAction)changeToolMode:(id)sender;
 - (IBAction)changeAnnotationMode:(id)sender;
 - (IBAction)toggleLeftSidePane:(id)sender;

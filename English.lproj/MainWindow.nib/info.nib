@@ -9,13 +9,13 @@
 		<key>168</key>
 		<string>601 562 237 158 0 0 1440 938 </string>
 		<key>224</key>
-		<string>850 415 220 442 0 0 1440 938 </string>
+		<string>610 420 220 442 0 0 1440 938 </string>
 		<key>256</key>
-		<string>449 496 220 442 0 0 1440 938 </string>
+		<string>610 420 220 442 0 0 1440 938 </string>
 		<key>314</key>
 		<string>610 420 220 442 0 0 1440 938 </string>
 		<key>502</key>
-		<string>678 495 220 442 0 0 1440 938 </string>
+		<string>610 420 220 442 0 0 1440 938 </string>
 		<key>511</key>
 		<string>610 420 220 442 0 0 1440 938 </string>
 	</dict>
@@ -27,13 +27,14 @@
 	</array>
 	<key>IBOpenObjects</key>
 	<array>
-		<integer>502</integer>
-		<integer>314</integer>
-		<integer>224</integer>
-		<integer>256</integer>
-		<integer>511</integer>
-		<integer>5</integer>
 		<integer>208</integer>
+		<integer>256</integer>
+		<integer>502</integer>
+		<integer>224</integer>
+		<integer>511</integer>
+		<integer>539</integer>
+		<integer>314</integer>
+		<integer>5</integer>
 		<integer>168</integer>
 	</array>
 	<key>IBSystem Version</key>
