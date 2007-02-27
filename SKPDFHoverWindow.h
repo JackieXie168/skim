@@ -50,4 +50,6 @@
 - (void)showWithDestination:(PDFDestination *)dest atPoint:(NSPoint)point fromView:(PDFView *)srcView;
 - (void)hide;
 
+- (void)handleApplicationWillResignActiveNotification:(NSNotification *)notification;
+
 @end
