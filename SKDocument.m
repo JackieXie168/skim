@@ -126,7 +126,7 @@ static NSString *SKPostScriptDocumentType = @"PostScript document";
        if (saveOperation == NSSaveOperation || saveOperation == NSSaveAsOperation) {
             [self updateChangeCount:NSChangeCleared];
             [lastChangedDate release];
-            lastChangedDate = [[NSDate alloc] init];
+            lastChangedDate = [[[[NSFileManager defaultManager] fileAttributesAtPath:[absoluteURL path] traverseLink:YES] fileModificationDate] retain];
         }
     }
     
@@ -173,37 +173,40 @@ static NSString *SKPostScriptDocumentType = @"PostScript document";
 
 - (BOOL)readFromURL:(NSURL *)absoluteURL ofType:(NSString *)docType error:(NSError **)outError{
     BOOL didRead = NO;
+    NSData *data = nil;
+    PDFDocument *pdfDoc = nil;
+    NSError *error = nil;
+    
     if ([docType isEqualToString:SKPDFDocumentType]) {
-        NSData *data = [[NSData alloc] initWithContentsOfURL:absoluteURL];
-        PDFDocument *pdfDoc = [[PDFDocument alloc] initWithURL:absoluteURL];
-        if (data && pdfDoc) {
-            if (didRead = [self readNotesFromExtendedAttributesAtURL:absoluteURL error:outError]) {
-                [pdfData release];
-                pdfData = data;    
-                [pdfDocument release];
-                pdfDocument = pdfDoc;
-                [[self mutableArrayValueForKey:@"notes"] removeAllObjects];
-                [lastChangedDate release];
-                lastChangedDate = [[[[NSFileManager defaultManager] fileAttributesAtPath:[absoluteURL path] traverseLink:YES] fileModificationDate] retain];
-            }
+        if ([self readNotesFromExtendedAttributesAtURL:absoluteURL error:&error]) {
+            data = [[NSData alloc] initWithContentsOfURL:absoluteURL];
+            pdfDoc = [[PDFDocument alloc] initWithURL:absoluteURL];
         }
     } else if ([docType isEqualToString:SKPostScriptDocumentType]) {
         NSData *data = [[NSData alloc] initWithContentsOfURL:absoluteURL];
         PDFDocument *pdfDoc = nil;
         if (data) {
             SKPSProgressController *progressController = [[SKPSProgressController alloc] init];
-            data = [[progressController PDFDataWithPostScriptData:data] retain];
+            if (data = [[progressController PDFDataWithPostScriptData:data] retain])
+                pdfDoc = [[PDFDocument alloc] initWithData:data];
             [progressController autorelease];
-            if (data && (pdfDoc = [[PDFDocument alloc] initWithData:data])) {
-                [pdfData release];
-                pdfData = data;    
-                [pdfDocument release];
-                pdfDocument = pdfDoc;
-            }
         }
     }
-    if (NO == didRead && outError && *outError == nil)
-        *outError = [NSError errorWithDomain:SKDocumentErrorDomain code:0 userInfo:[NSDictionary dictionaryWithObjectsAndKeys:NSLocalizedString(@"Unable to load file", @""), NSLocalizedDescriptionKey, nil]];
+    
+    if (data && pdfDoc) {
+        didRead = YES;
+        [pdfData release];
+        pdfData = data;
+        [pdfDocument release];
+        pdfDocument = pdfDoc;
+        [[self mutableArrayValueForKey:@"notes"] removeAllObjects];
+        [lastChangedDate release];
+        lastChangedDate = [[[[NSFileManager defaultManager] fileAttributesAtPath:[absoluteURL path] traverseLink:YES] fileModificationDate] retain];
+    }
+    
+    if (didRead == NO && outError != NULL)
+        *outError = error ? error : [NSError errorWithDomain:SKDocumentErrorDomain code:0 userInfo:[NSDictionary dictionaryWithObjectsAndKeys:NSLocalizedString(@"Unable to load file", @""), NSLocalizedDescriptionKey, nil]];
+    
     return didRead;
 }
 
@@ -287,7 +290,8 @@ static NSString *SKPostScriptDocumentType = @"PostScript document";
         }
         
         if (success == NO || [notes count] == 0) {
-            if ([fm removeExtendedAttribute:@"net_sourceforge_bibdesk_skim_notesInfo" atPath:path traverseLink:YES error:&error] == NO) {
+            name = @"net_sourceforge_bibdesk_skim_notesInfo";
+            if ([oldNotes containsObject:name] && [fm removeExtendedAttribute:name atPath:path traverseLink:YES error:&error] == NO) {
                 success = NO;
                 if (outError) *outError = error;
                 //NSLog(@"%@: %@", self, error);
