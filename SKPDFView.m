@@ -89,7 +89,6 @@ NSString *SKSkimNotePboardType = @"SKSkimNotePboardType";
 - (id)initWithFrame:(NSRect)frameRect {
     if (self = [super initWithFrame:frameRect]) {
         toolMode = SKTextToolMode;
-        [[self window] setAcceptsMouseMovedEvents:YES];
     }
     return self;
 }
