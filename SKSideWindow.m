@@ -249,7 +249,7 @@
 - (void)mouseEntered:(NSEvent *)theEvent {
     if (NSPointInRect([NSEvent mouseLocation], [[self window] frame])) {
         if (timer == nil)
-            timer = [[NSTimer scheduledTimerWithTimeInterval:0.3 target:self selector:@selector(slideIn:) userInfo:NULL repeats:NO] retain];
+            timer = [[NSTimer scheduledTimerWithTimeInterval:0.3 target:self selector:@selector(slideIn) userInfo:NULL repeats:NO] retain];
     } else if (timer) {
         [timer invalidate];
         [timer release];
