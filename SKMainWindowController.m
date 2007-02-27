@@ -255,6 +255,8 @@ static NSString *SKDocumentToolbarNotesPaneItemIdentifier = @"SKDocumentToolbarN
     // Application
 	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleApplicationWillTerminateNotification:) 
                                                  name:SKApplicationWillTerminateNotification object:NSApp];
+	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleApplicationWillResignActiveNotification:) 
+                                                 name:NSApplicationWillResignActiveNotification object:NSApp];
 	// PDFView
 	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handlePageChangedNotification:) 
                                                  name:PDFViewPageChangedNotification object:pdfView];
@@ -1398,6 +1400,11 @@ static NSString *SKDocumentToolbarNotesPaneItemIdentifier = @"SKDocumentToolbarN
 }
 
 - (void)handleApplicationWillTerminateNotification:(NSNotification *)notification {
+    if ([self isFullScreen] || [self isPresentation])
+        [self exitFullScreen:self];
+}
+
+- (void)handleApplicationWillResignActiveNotification:(NSNotification *)notification {
     if ([self isFullScreen] || [self isPresentation])
         [self exitFullScreen:self];
 }
