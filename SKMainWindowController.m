@@ -1011,7 +1011,8 @@ static NSString *SKDocumentToolbarNotesPaneItemIdentifier = @"SKDocumentToolbarN
     if ([self isFullScreen])
         return;
     
-    SetSystemUIMode(kUIModeAllHidden, kUIOptionAutoShowMenuBar);
+    if ([[fullScreenWindow screen] isEqual:[[NSScreen screens] objectAtIndex:0]])
+        SetSystemUIMode(kUIModeAllHidden, kUIOptionAutoShowMenuBar);
     
     if ([self isPresentation])
         [self exitPresentationMode];
