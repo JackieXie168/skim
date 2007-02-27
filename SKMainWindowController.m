@@ -2283,7 +2283,7 @@ static NSString *SKDocumentToolbarNotesPaneItemIdentifier = @"SKDocumentToolbarN
     [item setLabel:NSLocalizedString(@"Text Note", @"Toolbar item label")];
     [item setPaletteLabel:NSLocalizedString(@"New Text Note", @"Toolbar item label")];
     [item setToolTip:NSLocalizedString(@"Add New Text Note", @"Tool tip message")];
-    [item setImage:[NSImage imageNamed:@"ToolbarNote"]];
+    [item setImage:[NSImage imageNamed:@"ToolbarTextNote"]];
     [item setTarget:self];
     [item setAction:@selector(createNewNote:)];
     [item setTag:SKFreeTextAnnotationMode];
@@ -2317,7 +2317,7 @@ static NSString *SKDocumentToolbarNotesPaneItemIdentifier = @"SKDocumentToolbarN
     [item setLabel:NSLocalizedString(@"Circle Note", @"Toolbar item label")];
     [item setPaletteLabel:NSLocalizedString(@"New Circle Note", @"Toolbar item label")];
     [item setToolTip:NSLocalizedString(@"Add New Circle Note", @"Tool tip message")];
-    [item setImage:[NSImage imageNamed:@"ToolbarNote"]];
+    [item setImage:[NSImage imageNamed:@"ToolbarCircleNote"]];
     [item setTarget:self];
     [item setAction:@selector(createNewNote:)];
     [item setTag:SKCircleAnnotationMode];

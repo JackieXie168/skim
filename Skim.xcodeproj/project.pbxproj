@@ -70,6 +70,8 @@
 		CE3A45530B7A04A4006B64D3 /* NSBezierPath_BDSKExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = CE3A45520B7A04A4006B64D3 /* NSBezierPath_BDSKExtensions.m */; };
 		CE3A4BA50B7A4D0D006B64D3 /* ToolbarNote.tiff in Resources */ = {isa = PBXBuildFile; fileRef = CE3A4BA40B7A4D0C006B64D3 /* ToolbarNote.tiff */; };
 		CE3A4DE30B7A7FC7006B64D3 /* ToolbarPresentation.tiff in Resources */ = {isa = PBXBuildFile; fileRef = CE3A4DE20B7A7FC7006B64D3 /* ToolbarPresentation.tiff */; };
+		CE4190C40B94963A00ECF819 /* ToolbarCircleNote.tiff in Resources */ = {isa = PBXBuildFile; fileRef = CE4190C20B94963A00ECF819 /* ToolbarCircleNote.tiff */; };
+		CE4190C50B94963A00ECF819 /* ToolbarTextNote.tiff in Resources */ = {isa = PBXBuildFile; fileRef = CE4190C30B94963A00ECF819 /* ToolbarTextNote.tiff */; };
 		CE4EB8240B7B96D00091F228 /* OutlineViewAdorn.tiff in Resources */ = {isa = PBXBuildFile; fileRef = CE4EB8220B7B96D00091F228 /* OutlineViewAdorn.tiff */; };
 		CE4EB8250B7B96D00091F228 /* ThumbnailViewAdorn.tiff in Resources */ = {isa = PBXBuildFile; fileRef = CE4EB8230B7B96D00091F228 /* ThumbnailViewAdorn.tiff */; };
 		CE4EBDDA0B7BF3B30091F228 /* SKSideWindow.m in Sources */ = {isa = PBXBuildFile; fileRef = CE4EBDD90B7BF3B30091F228 /* SKSideWindow.m */; };
@@ -214,6 +216,8 @@
 		CE3A45520B7A04A4006B64D3 /* NSBezierPath_BDSKExtensions.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = NSBezierPath_BDSKExtensions.m; sourceTree = "<group>"; };
 		CE3A4BA40B7A4D0C006B64D3 /* ToolbarNote.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; name = ToolbarNote.tiff; path = Images/ToolbarNote.tiff; sourceTree = "<group>"; };
 		CE3A4DE20B7A7FC7006B64D3 /* ToolbarPresentation.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; name = ToolbarPresentation.tiff; path = Images/ToolbarPresentation.tiff; sourceTree = "<group>"; };
+		CE4190C20B94963A00ECF819 /* ToolbarCircleNote.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; name = ToolbarCircleNote.tiff; path = Images/ToolbarCircleNote.tiff; sourceTree = "<group>"; };
+		CE4190C30B94963A00ECF819 /* ToolbarTextNote.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; name = ToolbarTextNote.tiff; path = Images/ToolbarTextNote.tiff; sourceTree = "<group>"; };
 		CE4EB8220B7B96D00091F228 /* OutlineViewAdorn.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; name = OutlineViewAdorn.tiff; path = Images/OutlineViewAdorn.tiff; sourceTree = "<group>"; };
 		CE4EB8230B7B96D00091F228 /* ThumbnailViewAdorn.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; name = ThumbnailViewAdorn.tiff; path = Images/ThumbnailViewAdorn.tiff; sourceTree = "<group>"; };
 		CE4EBDD80B7BF3B30091F228 /* SKSideWindow.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = SKSideWindow.h; sourceTree = "<group>"; };
@@ -560,6 +564,7 @@
 				CE5478BF0B33456300F8AFB6 /* PopUpToolAdorn.tiff */,
 				CE5478C30B33456300F8AFB6 /* TextToolAdorn.tiff */,
 				CE4EB8230B7B96D00091F228 /* ThumbnailViewAdorn.tiff */,
+				CE4190C20B94963A00ECF819 /* ToolbarCircleNote.tiff */,
 				CE5478BA0B33456300F8AFB6 /* ToolbarFullScreen.tiff */,
 				CE7467330B7F2ED700CBF969 /* ToolbarInfo.tiff */,
 				CE0465050B850D7C00C11E4A /* ToolbarLeftPane.tiff */,
@@ -571,6 +576,7 @@
 				CE0465060B850D7C00C11E4A /* ToolbarRightPane.tiff */,
 				CE5478C10B33456300F8AFB6 /* ToolbarRotateLeft.tiff */,
 				CE5478C20B33456300F8AFB6 /* ToolbarRotateRight.tiff */,
+				CE4190C30B94963A00ECF819 /* ToolbarTextNote.tiff */,
 				CE5478C40B33456300F8AFB6 /* ToolbarZoomActual.tiff */,
 				CE5478C50B33456300F8AFB6 /* ToolbarZoomIn.tiff */,
 				CE5478C60B33456300F8AFB6 /* ToolbarZoomOut.tiff */,
@@ -672,6 +678,8 @@
 				CE9C423C0B8B5633004AD8CF /* PreferenceWindow.nib in Resources */,
 				CEF707240B8F8EFC003A2771 /* SnapshotWindow.nib in Resources */,
 				CEF7175C0B90DEEF003A2771 /* ReleaseNotes.nib in Resources */,
+				CE4190C40B94963A00ECF819 /* ToolbarCircleNote.tiff in Resources */,
+				CE4190C50B94963A00ECF819 /* ToolbarTextNote.tiff in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
