@@ -308,8 +308,7 @@ NSString *SKSkimNotePboardType = @"SKSkimNotePboardType";
     }
 }
 
-- (void)paste:(id)sender
-{
+- (void)pasteNoteAlternate:(BOOL)isAlternate {
     NSPasteboard *pboard = [NSPasteboard generalPasteboard];
     NSString *pboardType = [pboard availableTypeFromArray:[NSArray arrayWithObjects:SKSkimNotePboardType, NSStringPboardType, nil]];
     if (pboardType == nil) {
@@ -319,43 +318,44 @@ NSString *SKSkimNotePboardType = @"SKSkimNotePboardType";
     
     PDFAnnotation *newAnnotation;
     NSRect viewFrame = [self frame];
-    NSPoint center = NSMakePoint(NSMidX(viewFrame), NSMidY(viewFrame));
-    PDFPage *page = [self pageForPoint: center nearest: YES];;
-    
-    center = [self convertPoint: center toPage: page];
+    PDFPage *page;
     
     if ([pboardType isEqualToString:SKSkimNotePboardType]) {
     
         NSData *data = [pboard dataForType:SKSkimNotePboardType];
         NSDictionary *note = [NSKeyedUnarchiver unarchiveObjectWithData:data];
-        NSRect bounds;
+        NSRect bounds, pageBounds;
         
         newAnnotation = [[[PDFAnnotation alloc] initWithDictionary:note] autorelease];
         bounds = [newAnnotation bounds];
-        bounds.origin.x = center.x - 0.5 * NSWidth(bounds);
-        bounds.origin.y = center.y - 0.5 * NSHeight(bounds);
+        page = [self currentPage];
+        pageBounds = [page boundsForBox:[self displayBox]];
+        
+        if (NSMaxX(bounds) > NSMaxX(pageBounds))
+            bounds.origin.x = NSMaxX(pageBounds) - NSWidth(bounds);
+        if (NSMinX(bounds) < NSMinX(pageBounds))
+            bounds.origin.x = NSMinX(pageBounds);
+        if (NSMaxY(bounds) > NSMaxY(pageBounds))
+            bounds.origin.y = NSMaxY(pageBounds) - NSHeight(bounds);
+        if (NSMinY(bounds) < NSMinY(pageBounds))
+            bounds.origin.y = NSMinY(pageBounds);
         
         [newAnnotation setBounds:bounds];
         
     } else if ([pboardType isEqualToString:NSStringPboardType]) {
         
-        NSSize defaultSize = ([self annotationMode] == SKTextAnnotationMode || [self annotationMode] == SKNoteAnnotationMode) ? NSMakeSize(16.0, 16.0) : NSMakeSize(128.0, 64.0);
-        NSRect bounds = NSMakeRect(center.x - 0.5 * defaultSize.width, center.y - 0.5 * defaultSize.height, defaultSize.width, defaultSize.height);
-    
-        if ([page rotation] % 180 == 90)
-            defaultSize = NSMakeSize(defaultSize.height, defaultSize.width);
+        NSPoint center = NSMakePoint(NSMidX(viewFrame), NSMidY(viewFrame));
+        NSSize defaultSize;
+        NSRect bounds;
+        
+        page = [self pageForPoint: center nearest: YES];
+        defaultSize = isAlternate ? NSMakeSize(16.0, 16.0) : ([page rotation] % 180 == 90) ? NSMakeSize(64.0, 128.0) : NSMakeSize(128.0, 64.0);
+        bounds = NSMakeRect(center.x - 0.5 * defaultSize.width, center.y - 0.5 * defaultSize.height, defaultSize.width, defaultSize.height);
        
-        switch ([self annotationMode]) {
-            case SKTextAnnotationMode:
-                newAnnotation = [[SKPDFAnnotationText alloc] initWithBounds:bounds];
-                break;
-            case SKNoteAnnotationMode:
-                newAnnotation = [[SKPDFAnnotationNote alloc] initWithBounds:bounds];
-                break;
-            default:
-                newAnnotation = [[SKPDFAnnotationFreeText alloc] initWithBounds:bounds];
-                break;
-        }
+        if (isAlternate)
+            newAnnotation = [[SKPDFAnnotationNote alloc] initWithBounds:bounds];
+        else
+            newAnnotation = [[SKPDFAnnotationFreeText alloc] initWithBounds:bounds];
         [newAnnotation setContents:[pboard stringForType:NSStringPboardType]];
     }
     
@@ -365,6 +365,14 @@ NSString *SKSkimNotePboardType = @"SKSkimNotePboardType";
         userInfo:[NSDictionary dictionaryWithObjectsAndKeys:newAnnotation, @"annotation", page, @"page", nil]];
 
     [self setActiveAnnotation:newAnnotation];
+}
+
+- (void)paste:(id)sender {
+    [self pasteNoteAlternate:NO];
+}
+
+- (void)alternatePaste:(id)sender {
+    [self pasteNoteAlternate:YES];
 }
 
 - (void)cut:(id)sender
