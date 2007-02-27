@@ -246,17 +246,6 @@
     trackingRect = [self addTrackingRect:[self bounds] owner:self userData:NULL assumeInside:NO];
 }
 
-- (void)mouseEntered:(NSEvent *)theEvent {
-    if (NSPointInRect([NSEvent mouseLocation], [[self window] frame])) {
-        if (timer == nil)
-            timer = [[NSTimer scheduledTimerWithTimeInterval:0.3 target:self selector:@selector(slideIn) userInfo:NULL repeats:NO] retain];
-    } else if (timer) {
-        [timer invalidate];
-        [timer release];
-        timer = nil;
-    }
-}
-
 - (void)mouseExited:(NSEvent *)theEvent {
     if (timer) {
         [timer invalidate];
@@ -267,11 +256,22 @@
     [(SKSideWindow *)[self window] slideOut];
 }
 
-- (void)slideIn:(NSTimer *)aTimer {
+- (void)slideInWithTimer:(NSTimer *)aTimer {
     [timer invalidate];
     [timer release];
     timer = nil;
     [(SKSideWindow *)[self window] slideIn];
+}
+
+- (void)mouseEntered:(NSEvent *)theEvent {
+    if (NSPointInRect([NSEvent mouseLocation], [[self window] frame])) {
+        if (timer == nil)
+            timer = [[NSTimer scheduledTimerWithTimeInterval:0.3 target:self selector:@selector(slideInWithTimer:) userInfo:NULL repeats:NO] retain];
+    } else if (timer) {
+        [timer invalidate];
+        [timer release];
+        timer = nil;
+    }
 }
 
 @end
