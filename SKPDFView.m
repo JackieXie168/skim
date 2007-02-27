@@ -341,7 +341,9 @@ NSString *SKSkimNotePboardType = @"SKSkimNotePboardType";
         
         [newAnnotation setBounds:bounds];
         
-    } else if ([pboardType isEqualToString:NSStringPboardType]) {
+    } else {
+        
+        NSAssert([pboardType isEqualToString:NSStringPboardType], @"inconsistent pasteboard type");
         
         NSPoint center = NSMakePoint(NSMidX(viewFrame), NSMidY(viewFrame));
         NSSize defaultSize;
