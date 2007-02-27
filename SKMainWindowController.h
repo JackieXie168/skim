@@ -260,6 +260,7 @@ typedef struct _SKPDFViewState {
 - (void)unregisterForChangeNotification;
 
 - (void)handleApplicationWillTerminateNotification:(NSNotification *)notification;
+- (void)handleApplicationWillResignActiveNotification:(NSNotification *)notification;
 - (void)handlePageChangedNotification:(NSNotification *)notification;
 - (void)handleScaleChangedNotification:(NSNotification *)notification;
 - (void)handleChangedHistoryNotification:(NSNotification *)notification;
