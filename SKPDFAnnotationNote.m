@@ -59,13 +59,13 @@
         if (image)
             [(SKPDFAnnotationNote *)self setImage:image];
         if (text)
-            [( SKPDFAnnotationNote *)self setText:text];
+            [(SKPDFAnnotationNote *)self setText:text];
     } else if ([type isEqualToString:@"FreeText"]) {
         self = [[SKPDFAnnotationFreeText alloc] initWithBounds:bounds];
     } else if ([type isEqualToString:@"Circle"]) {
-        self = [[SKPDFAnnotationText alloc] initWithBounds:bounds];
+        self = [[SKPDFAnnotationCircle alloc] initWithBounds:bounds];
     } else if ([type isEqualToString:@"Square"]) {
-        self = [[SKPDFAnnotationText alloc] initWithBounds:bounds];
+        self = [[SKPDFAnnotationSquare alloc] initWithBounds:bounds];
     } else {
         self = nil;
     }
