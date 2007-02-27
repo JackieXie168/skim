@@ -2,6 +2,7 @@
     IBClasses = (
         {
             ACTIONS = {
+                alternatePaste = id; 
                 changeAnnotationMode = id; 
                 changeLeftSidePaneState = id; 
                 changeRightSidePaneState = id; 
