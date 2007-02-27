@@ -2274,7 +2274,7 @@ static NSString *SKDocumentToolbarNotesPaneItemIdentifier = @"SKDocumentToolbarN
     [toolbarItems setObject:item forKey:SKDocumentToolbarNewNoteItemIdentifier];
     [item release];
     
-	menuItem = [[[NSMenuItem allocWithZone:[NSMenu menuZone]] initWithTitle:NSLocalizedString(@"New Note", @"Menu item title") 
+	menuItem = [[[NSMenuItem allocWithZone:[NSMenu menuZone]] initWithTitle:NSLocalizedString(@"Text Note", @"Menu item title") 
                                                                      action:@selector(createNewNote:)
 									                          keyEquivalent:@""] autorelease];
 	[menuItem setTarget:self];
@@ -2291,7 +2291,7 @@ static NSString *SKDocumentToolbarNotesPaneItemIdentifier = @"SKDocumentToolbarN
     [toolbarItems setObject:item forKey:SKDocumentToolbarNewTextNoteItemIdentifier];
     [item release];
     
-	menuItem = [[[NSMenuItem allocWithZone:[NSMenu menuZone]] initWithTitle:NSLocalizedString(@"New Note", @"Menu item title") 
+	menuItem = [[[NSMenuItem allocWithZone:[NSMenu menuZone]] initWithTitle:NSLocalizedString(@"Anchored Note", @"Menu item title") 
                                                                      action:@selector(createNewNote:)
 									                          keyEquivalent:@""] autorelease];
 	[menuItem setTarget:self];
@@ -2308,7 +2308,7 @@ static NSString *SKDocumentToolbarNotesPaneItemIdentifier = @"SKDocumentToolbarN
     [toolbarItems setObject:item forKey:SKDocumentToolbarNewAnchoredNoteItemIdentifier];
     [item release];
     
-	menuItem = [[[NSMenuItem allocWithZone:[NSMenu menuZone]] initWithTitle:NSLocalizedString(@"New Note", @"Menu item title") 
+	menuItem = [[[NSMenuItem allocWithZone:[NSMenu menuZone]] initWithTitle:NSLocalizedString(@"Circle Note", @"Menu item title") 
                                                                      action:@selector(createNewNote:)
 									                          keyEquivalent:@""] autorelease];
 	[menuItem setTarget:self];
