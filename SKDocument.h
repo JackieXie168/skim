@@ -67,8 +67,6 @@ extern NSString *SKDocumentErrorDomain;
 
 - (BOOL)saveNotesToExtendedAttributesAtURL:(NSURL *)aURL error:(NSError **)outError;
 - (BOOL)readNotesFromExtendedAttributesAtURL:(NSURL *)aURL error:(NSError **)outError;
-- (NSData *)notesData;
-- (BOOL)readNotesFromData:(NSData *)data;
 
 - (SKMainWindowController *)mainWindowController;
 - (PDFDocument *)pdfDocument;

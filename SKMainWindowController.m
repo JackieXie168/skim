@@ -432,6 +432,7 @@ static NSString *SKDocumentToolbarNotesPaneItemIdentifier = @"SKDocumentToolbarN
                 pageIndex = [pdfDoc pageCount] - 1;
             PDFPage *page = [pdfDoc pageAtIndex:pageIndex];
             [page addAnnotation:annotation];
+            [pdfView setNeedsDisplayForAnnotation:annotation];
             [notes addObject:annotation];
             [annotation release];
         }

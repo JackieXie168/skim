@@ -146,9 +146,13 @@ static NSString *SKPostScriptDocumentType = @"PostScript document";
         [[self mainWindowController] removeTemporaryAnnotations];
         didWrite = [pdfData writeToURL:absoluteURL options:NSAtomicWrite error:outError];
     } else if ([typeName isEqualToString:SKNotesDocumentType]) {
-        NSData *data = [self notesData];
-        if (data != nil)
+        NSArray *array = [notes valueForKey:@"dictionaryValue"];
+        NSData *data;
+        if (array && (data = [NSKeyedArchiver archivedDataWithRootObject:array]))
             didWrite = [data writeToURL:absoluteURL options:NSAtomicWrite error:outError];
+        else if (outError != NULL)
+            *outError = [NSError errorWithDomain:SKDocumentErrorDomain code:1 userInfo:[NSDictionary dictionaryWithObjectsAndKeys:NSLocalizedString(@"Unable to write notes", @""), NSLocalizedDescriptionKey, nil]];
+            
     }
     return didWrite;
 }
@@ -213,14 +217,13 @@ static NSString *SKPostScriptDocumentType = @"PostScript document";
 - (void)openPanelDidEnd:(NSOpenPanel *)oPanel returnCode:(int)returnCode  contextInfo:(void  *)contextInfo{
     if (returnCode == NSOKButton) {
         NSURL *notesURL = [[oPanel URLs] objectAtIndex:0];
+        NSArray *array = [NSKeyedUnarchiver unarchiveObjectWithFile:[notesURL path]];
         
-        if ([self readNotesFromData:[NSKeyedUnarchiver unarchiveObjectWithFile:[notesURL path]]] && noteDicts) {
-            [[self mainWindowController] setAnnotationsFromDictionaries:noteDicts];
-            [noteDicts release];
-            noteDicts = nil;
+        if (array) {
+            [[self mainWindowController] setAnnotationsFromDictionaries:array];
+            [self updateChangeCount:NSChangeDone];
         }
         
-        [self updateChangeCount:NSChangeDone];
     }
 }
 
@@ -370,40 +373,6 @@ static NSString *SKPostScriptDocumentType = @"PostScript document";
     if (success == NO) {
         [noteDicts release];
         noteDicts = nil;
-    }
-    return success;
-}
-
-- (NSData *)notesData {
-    int i, numberOfNotes = [notes count];
-    NSMutableArray *array = [[NSMutableArray alloc] initWithCapacity:numberOfNotes];
-    NSData *data;
-    
-    for (i = 0; i < numberOfNotes; i++)
-        [array addObject:[[notes objectAtIndex:i] dictionaryValue]];
-    data = [NSKeyedArchiver archivedDataWithRootObject:array];
-    
-    return data;
-}
-
-- (BOOL)readNotesFromData:(NSData *)data {
-    NSDictionary *dict = nil;
-    BOOL success = YES;
-    NSArray *array = [NSKeyedUnarchiver unarchiveObjectWithData:data];
-    
-    if (array != nil) {
-        int i, numberOfNotes = [array count];
-        
-        if (noteDicts)
-            [noteDicts release];
-        noteDicts = [[NSMutableDictionary alloc] initWithCapacity:numberOfNotes];
-        
-        for (i = 0; i < numberOfNotes; i++) {
-            dict = [array objectAtIndex:i];
-            [noteDicts addObject:dict];
-        }
-    } else {
-        success = NO;
     }
     return success;
 }
