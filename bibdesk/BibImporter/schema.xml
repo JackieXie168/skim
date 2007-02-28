@@ -18,6 +18,16 @@
 		The keys that this metadata importer handles.
             </note>
             <allattrs>
+                kMDItemCreator
+                kMDItemTitle
+                kMDItemDisplayName
+                kMDItemAuthors
+                kMDItemDescription
+                kMDItemContentModificationDate
+                kMDItemContentCreationDate
+                kMDItemKeywords
+                kMDItemStarRating
+                kMDItemWhereFroms
                 net_sourceforge_bibdesk_citekey
                 net_sourceforge_bibdesk_owningfilepath
                 net_sourceforge_bibdesk_itemreadstatus
@@ -26,12 +36,19 @@
                 net_sourceforge_bibdesk_pubtype
             </allattrs>
             <displayattrs>
+                kMDItemTitle
+                kMDItemAuthors
+                net_sourceforge_bibdesk_container
                 net_sourceforge_bibdesk_citekey
+                net_sourceforge_bibdesk_pubtype
                 net_sourceforge_bibdesk_owningfilepath
                 net_sourceforge_bibdesk_itemreadstatus
                 net_sourceforge_bibdesk_container
                 net_sourceforge_bibdesk_publicationdate
-                net_sourceforge_bibdesk_pubtype
+                kMDItemContentModificationDate
+                kMDItemContentCreationDate
+                kMDItemKeywords
+                kMDItemWhereFroms
             </displayattrs>
         </type>
     </types>
