@@ -42,7 +42,7 @@
 
 #define DEFAULT_WINDOW_WIDTH    300.0
 #define WINDOW_INSET            1.0
-#define WINDOW_OFFSET           2.0
+#define WINDOW_OFFSET           9.0
 #define CORNER_RADIUS           8.0
 #define CONTENT_INSET           8.0
 #define WINDOW_MIN_WIDTH        14.0
@@ -134,6 +134,14 @@
 
 - (int)state {
     return state;
+}
+
+- (void)showSideWindow {
+    [[self contentView] showWindow];
+}
+
+- (void)hideSideWindow {
+    [[self contentView] hideWindow];
 }
 
 @end
@@ -247,6 +255,8 @@
 }
 
 - (void)mouseExited:(NSEvent *)theEvent {
+    if (isStatic)
+        return;
     if (timer) {
         [timer invalidate];
         [timer release];
@@ -264,6 +274,8 @@
 }
 
 - (void)mouseEntered:(NSEvent *)theEvent {
+    if (isStatic)
+        return;
     if (NSPointInRect([NSEvent mouseLocation], [[self window] frame])) {
         if (timer == nil)
             timer = [[NSTimer scheduledTimerWithTimeInterval:0.3 target:self selector:@selector(slideInWithTimer:) userInfo:NULL repeats:NO] retain];
@@ -272,6 +284,26 @@
         [timer release];
         timer = nil;
     }
+}
+
+- (void)showWindow {
+    isStatic = YES;
+    if (timer) {
+        [timer invalidate];
+        [timer release];
+        timer = nil;
+    }
+    [(SKSideWindow *)[self window] slideIn];
+}
+
+- (void)hideWindow {
+    isStatic = NO;
+    if (timer) {
+        [timer invalidate];
+        [timer release];
+        timer = nil;
+    }
+    [(SKSideWindow *)[self window] slideOut];
 }
 
 @end
