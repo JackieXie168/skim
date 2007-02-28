@@ -30,6 +30,15 @@
 
 #import "NSFileManager_ExtendedAttributes.h"
 #include <sys/xattr.h>
+#import "bzlib.h"
+
+@interface NSData (Bzip2)
+
+- (NSData *) bzip2;
+- (NSData *) bzip2WithCompressionSetting:(int)OneToNine;
+- (NSData *) bunzip2;
+
+@end
 
 // private function to print error messages
 static NSString *xattrError(int err, const char *path);
@@ -147,6 +156,12 @@ static NSString *xattrError(int err, const char *path);
     return attributes;
 }
 
+#define MAX_XATTR_LENGTH 2048
+#define UNIQUE_VALUE [[NSProcessInfo processInfo] globallyUniqueString]
+#define UNIQUE_KEY @"net_sourceforge_skim_unique_key"
+#define WRAPPER_KEY @"net_sourceforge_skim_has_wrapper"
+#define FRAGMENTS_KEY @"net_sourceforge_skim_number_of_fragments"
+
 - (NSData *)extendedAttributeNamed:(NSString *)attr atPath:(NSString *)path traverseLink:(BOOL)follow error:(NSError **)error;
 {
     const char *fsPath = [self fileSystemRepresentationWithPath:path];
@@ -182,9 +197,45 @@ static NSString *xattrError(int err, const char *path);
         return nil;
     }
     
-    NSData *attribute = [[NSData alloc] initWithBytes:namebuf length:bufSize];
-    NSZoneFree(NSDefaultMallocZone(), namebuf);
+    NSData *attribute = [[NSData alloc] initWithBytesNoCopy:namebuf length:bufSize];
     
+    NSPropertyListFormat format;
+    NSString *errorString;
+    
+    // the plist parser logs annoying messages when failing to parse non-plist data, so sniff the header (this is correct for the binary plist that we use for split data)
+    static NSData *plistHeaderData = nil;
+    if (nil == plistHeaderData) {
+        char *h = "bplist00";
+        plistHeaderData = [[NSData alloc] initWithBytes:h length:strlen(h)];
+    }
+
+    id plist = nil;
+    
+    if ([attribute length] >= [plistHeaderData length] && [plistHeaderData isEqual:[attribute subdataWithRange:NSMakeRange(0, [plistHeaderData length])]])
+        plist = [NSPropertyListSerialization propertyListFromData:attribute mutabilityOption:NSPropertyListImmutable format:&format errorDescription:&errorString];
+    
+    if (plist && [plist respondsToSelector:@selector(objectForKey:)] && [[plist objectForKey:WRAPPER_KEY] boolValue]) {
+        
+        NSString *uniqueValue = [plist objectForKey:UNIQUE_KEY];
+        unsigned int i, numberOfFragments = [[plist objectForKey:FRAGMENTS_KEY] unsignedIntValue];
+        NSString *name;
+
+        NSMutableData *buffer = [NSMutableData data];
+        NSData *subdata;
+        BOOL success = (nil != uniqueValue && numberOfFragments > 0);
+        
+        for (i = 0; success && i < numberOfFragments; i++) {
+            name = [NSString stringWithFormat:@"%@-%i", uniqueValue, i];
+            subdata = [self extendedAttributeNamed:name atPath:path traverseLink:follow error:error];
+            if (nil == subdata)
+                success = NO;
+            else
+                [buffer appendData:subdata];
+        }
+        
+        [attribute release];
+        attribute = success ? [[buffer bunzip2] copy] : nil;
+    }
     return [attribute autorelease];
 }
 
@@ -238,14 +289,18 @@ static NSString *xattrError(int err, const char *path);
     const char *attrName = [attr UTF8String];
     NSString *errMsg;
     
+    // !!! we should replace the options dictionary with a bitfield so it's less annoying to use
+    
     BOOL noFollow = NO;    // default setting of NO will prevent following symlinks
     BOOL createOnly = NO;  // YES will only allow creation (it will fail if the attr already exists)
     BOOL replaceOnly = NO; // YES will only allow replacement (it will fail if the attr does not exist)
     
+    BOOL shouldSplitData = [options objectForKey:@"SplitData"] ? [[options objectForKey:@"SplitData"] boolValue] : YES;
+    
     if(options != nil){
         noFollow = [[options objectForKey:@"NoFollowLinks"] boolValue];
         createOnly = [[options objectForKey:@"CreateOnly"] boolValue];
-        replaceOnly = [[options objectForKey:@"ReplaceOnly"] boolValue];
+        replaceOnly = [[options objectForKey:@"ReplaceOnly"] boolValue];        
     }
     
     int xopts = 0;
@@ -257,14 +312,59 @@ static NSString *xattrError(int err, const char *path);
     if(replaceOnly)
         xopts = xopts | XATTR_REPLACE;
     
-    int status = setxattr(fsPath, attrName, data, dataSize, 0, xopts);
-    
-    if(status == -1){
-        errMsg = xattrError(errno, fsPath);
-        if(error) *error = [NSError errorWithDomain:NSPOSIXErrorDomain code:errno userInfo:[NSDictionary dictionaryWithObjectsAndKeys:path, NSFilePathErrorKey, errMsg, NSLocalizedDescriptionKey, nil]];
-        return NO;
-    } else 
-        return YES;
+    BOOL success;
+
+    if (shouldSplitData && [value length] > MAX_XATTR_LENGTH) {
+            
+        static BOOL canRecurse = YES;
+        
+        NSParameterAssert(YES == canRecurse);
+        canRecurse = NO;
+        
+        // compress to save space, and so we don't identify this as a plist when reading it (in case it really is plist data)
+        value = [value bzip2];
+        
+        NSString *uniqueValue = UNIQUE_VALUE;
+        unsigned numberOfFragments = ceil([value length] / MAX_XATTR_LENGTH);
+        NSDictionary *wrapper = [NSDictionary dictionaryWithObjectsAndKeys:[NSNumber numberWithBool:YES], WRAPPER_KEY, uniqueValue, UNIQUE_KEY, [NSNumber numberWithUnsignedInt:numberOfFragments], FRAGMENTS_KEY, nil];
+        NSData *wrapperData = [NSPropertyListSerialization dataFromPropertyList:wrapper format:NSPropertyListBinaryFormat_v1_0 errorDescription:NULL];
+        NSParameterAssert([wrapperData length] < MAX_XATTR_LENGTH);
+        
+        // recursive call; we don't want to split this dictionary (or compress it)
+        NSMutableDictionary *newOpts = [NSMutableDictionary dictionary];
+        [newOpts addEntriesFromDictionary:options];
+        [newOpts setObject:[NSNumber numberWithBool:NO] forKey:@"SplitData"];
+        success = [self setExtendedAttributeNamed:attr toValue:wrapperData atPath:path options:newOpts error:error];
+        
+        NSString *name;
+        unsigned j;
+        const char *valuePtr = [value bytes];
+        
+        for (j = 0; success && j < numberOfFragments; j++) {
+            name = [[NSString alloc] initWithFormat:@"%@-%i", uniqueValue, j];
+            
+            char *subdataPtr = &valuePtr[j * MAX_XATTR_LENGTH];
+            unsigned subdataLen = j == numberOfFragments - 1 ? ([value length] - j * MAX_XATTR_LENGTH) : MAX_XATTR_LENGTH;
+            
+            // could recurse here, but it's more efficient to use the variables we already have
+            if (setxattr(fsPath, [name UTF8String], subdataPtr, subdataLen, 0, xopts)) {
+                NSLog(@"full data length of note named %@ was %d, subdata length was %d (failed on pass %d)", name, [value length], subdataLen, j);
+            }
+            [name release];
+        }
+        canRecurse = YES;
+        
+    } else {
+        int status = setxattr(fsPath, attrName, data, dataSize, 0, xopts);
+        if(status == -1){
+            errMsg = xattrError(errno, fsPath);
+            if(error) *error = [NSError errorWithDomain:NSPOSIXErrorDomain code:errno userInfo:[NSDictionary dictionaryWithObjectsAndKeys:path, NSFilePathErrorKey, errMsg, NSLocalizedDescriptionKey, nil]];
+            success = NO;
+        } else {
+            success = YES;
+        }
+    }
+    return success;
 }
 
 - (BOOL)setExtendedAttributeNamed:(NSString *)attr toPropertyListValue:(id)plist atPath:(NSString *)path options:(NSDictionary *)options error:(NSError **)error;
@@ -274,6 +374,10 @@ static NSString *xattrError(int err, const char *path);
                                                               format:NSPropertyListBinaryFormat_v1_0 
                                                     errorDescription:&errorString];
     BOOL success;
+    NSMutableDictionary *newOpts = [NSMutableDictionary dictionary];
+    [newOpts addEntriesFromDictionary:options];
+    [newOpts setObject:[NSNumber numberWithBool:YES] forKey:@"SplitData"];
+    
     if (nil == data) {
         if (error) *error = [NSError errorWithDomain:@"BDSKErrorDomain" code:0 userInfo:[NSDictionary dictionaryWithObjectsAndKeys:path, NSFilePathErrorKey, errorString, NSLocalizedDescriptionKey, nil]];
         [errorString release];
@@ -385,4 +489,76 @@ static NSString *xattrError(int err, const char *myPath)
 }
     
 
+@end
+
+@implementation NSData (Bzip2)
+
+- (NSData *)bzip2 { return [self bzip2WithCompressionSetting:5]; }
+
+- (NSData *)bzip2WithCompressionSetting:(int)compression
+{
+	int bzret, buffer_size = 1000000;
+	bz_stream stream = { 0 };
+	stream.next_in = (char *)[self bytes];
+	stream.avail_in = [self length];
+	
+	NSMutableData *buffer = [[NSMutableData alloc] initWithLength:buffer_size];
+	stream.next_out = [buffer mutableBytes];
+	stream.avail_out = buffer_size;
+	
+	NSMutableData *compressed = [NSMutableData dataWithCapacity:[self length]];
+	
+	BZ2_bzCompressInit(&stream, compression, 0, 0);
+    BOOL hadError = NO;
+    do {
+        bzret = BZ2_bzCompress(&stream, (stream.avail_in) ? BZ_RUN : BZ_FINISH);
+        if (bzret != BZ_RUN_OK && bzret != BZ_STREAM_END) {
+            hadError = YES;
+            compressed = nil;
+        } else {        
+            [compressed appendBytes:[buffer bytes] length:(buffer_size - stream.avail_out)];
+            stream.next_out = [buffer mutableBytes];
+            stream.avail_out = buffer_size;
+        }
+    } while(bzret != BZ_STREAM_END && NO == hadError);
+    
+    BZ2_bzCompressEnd(&stream);
+	[buffer release];
+    
+	return compressed;
+}
+
+- (NSData *)bunzip2
+{
+	int bzret;
+	bz_stream stream = { 0 };
+	stream.next_in = (char *)[self bytes];
+	stream.avail_in = [self length];
+	
+	const int buffer_size = 10000;
+	NSMutableData *buffer = [[NSMutableData alloc] initWithLength:buffer_size];
+	stream.next_out = [buffer mutableBytes];
+	stream.avail_out = buffer_size;
+	
+	NSMutableData *decompressed = [NSMutableData dataWithCapacity:[self length]];
+	
+	BZ2_bzDecompressInit(&stream, 0, NO);
+    BOOL hadError = NO;
+    do {
+        bzret = BZ2_bzDecompress(&stream);
+        if (bzret != BZ_OK && bzret != BZ_STREAM_END) {
+            hadError = YES;
+            decompressed = nil;
+        } else {        
+            [decompressed appendBytes:[buffer bytes] length:(buffer_size - stream.avail_out)];
+            stream.next_out = [buffer mutableBytes];
+            stream.avail_out = buffer_size;
+        }
+    } while(bzret != BZ_STREAM_END && NO == hadError);
+    
+    BZ2_bzCompressEnd(&stream);
+    [buffer release];
+
+	return decompressed;
+}
 @end
