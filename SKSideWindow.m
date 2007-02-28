@@ -94,12 +94,16 @@
     if (state == NSDrawerOpenState || state == NSDrawerOpeningState) {
         state = NSDrawerClosingState;
         NSRect screenFrame = [[[controller window] screen] frame];
-        NSRect frame = [self frame];
-        frame.origin.x = edge == NSMaxXEdge ? NSMaxX(screenFrame) - WINDOW_OFFSET : NSMinX(screenFrame) - NSWidth(frame) + WINDOW_OFFSET;
-        [self setFrame:frame display:YES animate:YES];
-        frame.size.width = WINDOW_OFFSET;
-        frame.origin.x = edge == NSMaxXEdge ? NSMaxX(screenFrame) - WINDOW_OFFSET : NSMinX(screenFrame);
-        [self setFrame:frame display:YES animate:NO];
+        NSRect endFrame, startFrame = [self frame];
+        endFrame = startFrame;
+        endFrame.size.width = WINDOW_OFFSET;
+        endFrame.origin.x = edge == NSMaxXEdge ? NSMaxX(screenFrame) - WINDOW_OFFSET : NSMinX(screenFrame);
+        NSDictionary *slideInDict = [NSDictionary dictionaryWithObjectsAndKeys:self, NSViewAnimationTargetKey, [NSValue valueWithRect:startFrame], NSViewAnimationStartFrameKey, [NSValue valueWithRect:endFrame], NSViewAnimationEndFrameKey, nil];
+        NSViewAnimation *animation = [[NSViewAnimation alloc] initWithViewAnimations:[NSArray arrayWithObjects:slideInDict, nil]];
+        [animation setAnimationBlockingMode:NSAnimationBlocking];
+        [animation setDuration:[self animationResizeTime:endFrame]];
+        [animation startAnimation];
+        [animation release];
         [[controller window] makeKeyAndOrderFront:self];
         state = NSDrawerClosedState;
     }
@@ -109,12 +113,16 @@
     if (state == NSDrawerClosedState || state == NSDrawerClosingState) {
         state = NSDrawerOpeningState;
         NSRect screenFrame = [[[controller window] screen] frame];
-        NSRect frame = [self frame];
-        frame.size.width = NSWidth([[[self contentView] contentView] frame]) + CONTENT_INSET;
-        frame.origin.x = edge == NSMaxXEdge ? NSMaxX(screenFrame) - WINDOW_OFFSET : NSMinX(screenFrame) - NSWidth(frame) + WINDOW_OFFSET;
-        [self setFrame:frame display:YES animate:NO];
-        frame.origin.x = edge == NSMaxXEdge ? NSMaxX(screenFrame) - NSWidth(frame) : NSMinX(screenFrame);
-        [self setFrame:frame display:YES animate:YES];
+        NSRect endFrame, startFrame = [self frame];
+        endFrame = startFrame;
+        endFrame.size.width = NSWidth([[[self contentView] contentView] frame]) + CONTENT_INSET;
+        endFrame.origin.x = edge == NSMaxXEdge ? NSMaxX(screenFrame) - NSWidth(endFrame) : NSMinX(screenFrame);
+        NSDictionary *slideInDict = [NSDictionary dictionaryWithObjectsAndKeys:self, NSViewAnimationTargetKey, [NSValue valueWithRect:startFrame], NSViewAnimationStartFrameKey, [NSValue valueWithRect:endFrame], NSViewAnimationEndFrameKey, nil];
+        NSViewAnimation *animation = [[NSViewAnimation alloc] initWithViewAnimations:[NSArray arrayWithObjects:slideInDict, nil]];
+        [animation setAnimationBlockingMode:NSAnimationBlocking];
+        [animation setDuration:[self animationResizeTime:endFrame]];
+        [animation startAnimation];
+        [animation release];
         state = NSDrawerOpenState;
     }
 }

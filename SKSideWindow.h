@@ -43,7 +43,6 @@
 
 @interface SKSideWindow : NSWindow {
     SKMainWindowController *controller;
-    NSAnimation *animation;
     NSDrawerState state;
     NSRectEdge edge;
 }
