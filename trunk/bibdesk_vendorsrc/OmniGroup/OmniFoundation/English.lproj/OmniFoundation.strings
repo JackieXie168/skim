@@ -1,0 +1,228 @@
+/* page break placeholder for RTF scanner */
+"\n[New Page]\n" = "\n[New Page]\n";
+
+/* formatter input error format */
+"'%@' is not a valid social security number." = "'%@' is not a valid social security number.";
+
+/* humanReadableStringForTimeInterval */
+"%@ ago" = "%@ ago";
+
+/* abbreviated string for bytes format */
+"%0.1f GB" = "%0.1f GB";
+
+/* abbreviated string for gigahertz format */
+"%0.1f GHz" = "%0.1f GHz";
+
+/* abbreviated string for bytes format */
+"%0.1f kB" = "%0.1f kB";
+
+/* abbreviated string for kilohertz format */
+"%0.1f KHz" = "%0.1f KHz";
+
+/* abbreviated string for bytes format */
+"%0.1f MB" = "%0.1f MB";
+
+/* abbreviated string for megahertz format */
+"%0.1f MHz" = "%0.1f MHz";
+
+/* abbreviated string for bytes format */
+"%0.1f PB" = "%0.1f PB";
+
+/* abbreviated string for bytes format */
+"%0.1f TB" = "%0.1f TB";
+
+/* abbreviated string for terahertz format */
+"%0.1f THz" = "%0.1f THz";
+
+/* abbreviated string for bytes format */
+"%d bytes" = "%d bytes";
+
+/* time span formatter span singular */
+"%g day" = "%g day";
+
+/* time span formatter span */
+"%g days" = "%g days";
+
+/* time span formatter span singular */
+"%g hour" = "%g hour";
+
+/* time span formatter span */
+"%g hours" = "%g hours";
+
+/* time span formatter span singular */
+"%g month" = "%g month";
+
+/* time span formatter span */
+"%g months" = "%g months";
+
+/* time span formatter span singular */
+"%g week" = "%g week";
+
+/* time span formatter span */
+"%g weeks" = "%g weeks";
+
+/* time span formatter span singular */
+"%g year" = "%g year";
+
+/* time span formatter span */
+"%g years" = "%g years";
+
+/* time span formatter span abbreviated */
+"%gd" = "%gd";
+
+/* time span formatter span abbreviated */
+"%gh" = "%gh";
+
+/* time span formatter span abbreviated */
+"%gm" = "%gm";
+
+/* time span formatter span abbreviated */
+"%gw" = "%gw";
+
+/* time span formatter span abbreviated */
+"%gy" = "%gy";
+
+/* humanReadableStringForTimeInterval */
+"%ld day, %ld:%02ld:%02ld" = "%1$ld day, %2$ld:%3$02ld:%4$02ld";
+
+/* humanReadableStringForTimeInterval */
+"%ld days, %ld:%02ld:%02ld" = "%1$ld days, %2$ld:%3$02ld:%4$02ld";
+
+/* humanReadableStringForTimeInterval */
+"%ld seconds" = "%ld seconds";
+
+/* humanReadableStringForTimeInterval */
+"%ld:%02ld" = "%1$ld:%2$02ld";
+
+/* humanReadableStringForTimeInterval */
+"%ld:%02ld:%02ld" = "%1$ld:%2$02ld:%3$02ld";
+
+/* abbreviated string for hertz format */
+"%u Hz" = "%u Hz";
+
+/* script exception format */
+"Add command has invalid 'to' specifier." = "Add command has invalid 'to' specifier.";
+
+/* script exception format */
+"Add command missing the required 'to' specifier." = "Add command missing the required 'to' specifier.";
+
+/* invalid bundle reason */
+"Bundle is obsolete" = "Bundle is obsolete";
+
+/* invalid bundle reason */
+"Bundle requires additional software" = "Bundle requires additional software";
+
+/* timespan formatter lowercase first character in days */
+"d" = "d";
+
+/* timespan formatter uppercase first character in days */
+"D" = "D";
+
+/* invalid bundle reason */
+"Duplicate bundle name" = "Duplicate bundle name";
+
+/* exception reason */
+"Element '%@' not allowed at path: %@" = "Element '%1$@' not allowed at path: %2$@";
+
+/* Error encountered when trying to pass data through a UNIX command, details in parameters */
+"Error filtering data through UNIX command %@: %s" = "Error filtering data through UNIX command %1$@: %2$s";
+
+/* Error encountered when trying to pass data through a UNIX command, details in parameters */
+"Error filtering data through UNIX command %@: command returned %d" = "Error filtering data through UNIX command %1$@: command returned %2$d";
+
+/* timespan formatter lowercase first character in hours */
+"h" = "h";
+
+/* timespan formatter uppercase first character in hours */
+"H" = "H";
+
+/* formatter input error */
+"Invalid time span format" = "Invalid time span format";
+
+/* local bundle path readable string */
+"local configuration file" = "local configuration file";
+
+/* timespan formatter lowercase first character in months */
+"m" = "m";
+
+/* timespan formatter uppercase first character in months */
+"M" = "M";
+
+/* invalid bundle reason */
+"Not a valid bundle" = "Not a valid bundle";
+
+/* formatter input error */
+"Only enter numbers separated by spaces." = "Only enter numbers separated by spaces.";
+
+/* script exception format */
+"Remove command has invalid 'from' specifier." = "Remove command has invalid 'from' specifier.";
+
+/* script exception format */
+"Remove command missing the required 'from' specifier." = "Remove command missing the required 'from' specifier.";
+
+/* humanReadableStringForTimeInterval */
+"right now" = "right now";
+
+/* script exception format */
+"Specified container doesn't handle the add command." = "Specified container doesn't handle the add command.";
+
+/* script exception format */
+"Specified container doesn't handle the remove command." = "Specified container doesn't handle the remove command.";
+
+/* formatter input error */
+"That is not a valid date." = "That is not a valid date.";
+
+/* formatter input error */
+"That is not a valid phone number." = "That is not a valid phone number.";
+
+/* formatter input error */
+"That is not a valid social security number." = "That is not a valid social security number.";
+
+/* formatter input error */
+"That is not a valid state abbreviation." = "That is not a valid state abbreviation.";
+
+/* formatter input error */
+"That is not a valid zip code." = "That is not a valid zip code.";
+
+/* compression exception format */
+"Unable to compress data (rc:%d '%s')" = "Unable to compress data (rc:%1$d '%2$s')";
+
+/* decompression exception format */
+"Unable to decompress data (rc:%d '%s')" = "Unable to decompress data (rc:%1$d '%2$s')";
+
+/* decompression exception format */
+"Unable to decompress data: unrecognized compression format" = "Unable to decompress data: unrecognized compression format";
+
+/* decompression exception format */
+"Unable to decompress gzip data: invalid header" = "Unable to decompress gzip data: invalid header";
+
+/* compression exception format */
+"Unable to finish compressing data" = "Unable to finish compressing data";
+
+/* compression exception format */
+"Unable to initialize compression" = "Unable to initialize compression";
+
+/* decompression exception format */
+"Unable to initialize decompression" = "Unable to initialize decompression";
+
+/* script exception format */
+"Unable to resolve insertion container in specifier %@" = "Unable to resolve insertion container in specifier %@";
+
+/* script exception format */
+"Unable to resolve insertion index in specifier %@" = "Unable to resolve insertion index in specifier %@";
+
+/* script exception format */
+"Unable to resolve insertion key in specifier %@" = "Unable to resolve insertion key in specifier %@";
+
+/* timespan formatter lowercase first character in weeks */
+"w" = "w";
+
+/* timespan formatter uppercase first character in weeks */
+"W" = "W";
+
+/* timespan formatter lowercase first character in years */
+"y" = "y";
+
+/* timespan formatter uppercase first character in years */
+"Y" = "Y";
+

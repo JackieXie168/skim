@@ -1,0 +1,711 @@
+<!-- $Id: installation.xml,v 1.34 2006/12/13 09:40:32 adam Exp $ -->
+ <chapter id="installation"><title>Compilation and Installation</title>
+  
+  <sect1 id="installation-introduction"><title>Introduction</title>
+   <para>
+    The latest version of the software will generally be found at:
+   </para>
+   <para>
+    <ulink url="&url.yaz.download;"/>
+   </para>
+   <para>
+    We have tried our best to keep the software portable, and on many
+    platforms, you should be able to compile everything with little or
+    no changes. 
+   </para>
+
+   <para>
+    The software is regularly tested on
+    <ulink url="&url.debian;">Debian GNU/Linux</ulink>,
+    <ulink url="&url.redhat;">Redhat Linux</ulink>,
+    <ulink url="&url.gentoo;">Gentoo Linux</ulink>,
+    <ulink url="&url.freebsd;">FreeBSD (i386)</ulink>,
+    <ulink url="&url.macosx;">MAC OSX</ulink>,
+    <ulink url="&url.solaris;">SunOS 5.8 (sparc)</ulink>,
+    <ulink url="&url.windows2000;">Windows 2000</ulink>,
+    <ulink url="&url.windows2003server;">Windows 2003 server</ulink>.
+   </para>
+   
+   <para>
+    Some versions have be known to work on HP/UX,
+    DEC Unix, <ulink url="&url.netbsd;">NetBSD</ulink>,
+    <ulink url="&url.openbsd;">OpenBSD</ulink>,
+    IBM AIX,
+    Data General DG/UX (with some CFLAGS tinkering),
+    SGI/IRIX, DDE Supermax, Apple Macintosh (using the Codewarrior programming
+    environment and the GUSI socket libraries),
+    IBM AS/400 .
+   </para>
+
+   <para>
+    If you move the software to other platforms, we'd be grateful if you'd
+    let us know about it. If you run into difficulties, we will try to help
+    if we can, and if you solve the problems, we would be happy to include
+    your fixes in the next release. So far, we have mostly avoided
+    <literal>&num;ifdefs</literal> for individual platforms, and we'd
+    like to keep it that way as far as it makes sense.
+   </para>
+   
+   <para>
+    We maintain a mailing-list for the purpose of announcing new releases and
+    bug-fixes, as well as general discussion. Subscribe by 
+    filling-in the form
+    <ulink url="&url.yaz.mailinglist;">here</ulink>.
+    General questions and problems can be directed at 
+    <ulink url="&url.yaz.mail;"/>, or the address given at the top of
+     this document.
+   </para>
+   
+  </sect1>
+  <sect1 id="installation.unix"><title>UNIX</title>
+
+   <para>
+    We provide 
+    <ulink url="&url.debian;">Debian GNU/Linux</ulink>
+    and 
+    <ulink url="&url.redhat;">Redhat</ulink> packages for &yaz;. 
+    Only i386 binary packages are available. You should be able to
+    create packages for other CPUs by building them from the source
+    package.
+   </para>
+   
+   <sect2 id="installation.source.unix">
+    <title>Compiling from source on Unix</title>
+    
+    <para>
+     Note that if your system doesn't have a native ANSI C compiler, you may
+     have to acquire one separately. We recommend
+     <ulink url="&url.gcc;">GCC</ulink>.
+    </para>
+
+    <para>
+     If you wish to use character set conversion facilities in &yaz; or if you
+     are compiling &yaz; for use with Zebra it is a good idea to ensure that
+     the iconv library is installed. Some Unixes today already have it
+     - if not, we suggest 
+     <ulink url="&url.libiconv;">GNU libiconv</ulink>.
+    </para>
+
+    <para>
+     The <ulink url="&url.libxslt;">libxslt</ulink>,
+     <ulink url="&url.libxml2;">libxml2</ulink> librararies are required
+     if &yaz; is to support SRU.
+     These libraries are very portable and should compile out-of-the
+     box on virtually all Unix platforms. It is available in binary
+     forms for Linux and others.
+    </para>
+
+    <para>
+     The GNU tools
+     <ulink url="&url.autoconf;">Autoconf</ulink>,
+     <ulink url="&url.automake;">Automake</ulink> and
+     <ulink url="&url.libtool;">Libtool</ulink>
+     are used to generate Makefiles and configure &yaz; for the system.
+     You do <emphasis>not</emphasis> these tools unless you're using the
+     CVS version of &yaz;.
+    </para>
+
+    <para>
+     YAZ can optionally be compiled with 
+     <ulink url="&url.libpcap;">libpcap</ulink> support. By default,
+     configure enables libpcap if it is available. 
+     The libpcap library is required for
+     <link linkend="ziffy">ziffy</link>. And without libpcap,
+     ziffy will not be built.
+    </para>
+
+    <para>
+     The CQL parser for &yaz; is built using
+     GNU <ulink url="&url.bison;">Bison</ulink>.
+     This tool is only needed if you're using the CVS version of &yaz;.
+    </para>
+        
+    <para>
+     &yaz; includes a tiny ASN.1 compiler. This compiler is
+     written in <ulink url="&url.tcl;">Tcl</ulink>.
+     But as for Bison you do not need it unless you're using CVS
+     version of &yaz; or you're using the compiler to built own codecs
+     for private ASN.1. 
+    </para>
+     
+    <para>
+     Generally it should be sufficient to run configure without options,
+     like this:
+    </para>
+    
+    <screen>
+     ./configure
+    </screen>
+    
+    <para>
+     The configure script attempts to use use the C compiler specified by
+     the <literal>CC</literal> environment variable. If not set, GNU C will be
+     used if it is available. The <literal>CFLAGS</literal> environment
+     variable holds options to be passed to the C compiler. If you're using
+     Bourne-compatible shell you may pass something like this to use a
+     particular C compiler with optimization enabled:
+    </para>
+    
+    <screen>
+     CC=/opt/ccs/bin/cc CFLAGS=-O ./configure
+    </screen>
+    
+    <para>
+     To customize &yaz;, the configure script also accepts a set of options.
+     The most important are:
+     
+     <variablelist>
+      <varlistentry><term>
+        <literal>--prefix</literal>=<replaceable>prefix</replaceable></term>
+       <listitem><para>Specifies installation prefix for &yaz;. This is
+         only needed if you run <literal>make install</literal> later to
+         perform a "system" installation. The prefix is
+         <literal>/usr/local</literal> if not specified.
+        </para></listitem>
+      </varlistentry>
+      <varlistentry><term><literal>--enable-tcpd</literal></term>
+       <listitem><para>The front end server will be built using Wietse's
+         <ulink url="&url.tcpwrapper;">TCP wrapper library</ulink>.
+	 It allows you to allow/deny clients depending on IP number.
+	 The TCP wrapper library is often used in GNU/Linux and
+	 BSD distributions.
+         See
+         <citerefentry>
+          <refentrytitle>hosts_access</refentrytitle>
+          <manvolnum>5</manvolnum>
+         </citerefentry>
+         and 
+         <citerefentry>
+          <refentrytitle>tcpd</refentrytitle>
+          <manvolnum>8</manvolnum>
+         </citerefentry>.
+        </para></listitem>
+      </varlistentry>
+
+      <varlistentry><term><literal>--enable-threads</literal></term>
+       <listitem><para>&yaz; will be built using POSIX threads.
+	Specifically, <constant>_REENTRANT</constant> will be defined during
+         compilation.
+        </para></listitem>
+      </varlistentry>
+
+      <varlistentry><term><literal>--disable-shared</literal></term>
+       <listitem><para>The make process will not create shared
+         libraries (also known as shared objects <filename>.so</filename>).
+         By default, shared libraries are created -
+         equivalent to <literal>--enable-shared</literal>.
+        </para></listitem>
+      </varlistentry>
+
+      <varlistentry><term><literal>--disable-shared</literal></term>
+       <listitem><para>The make process will not create
+         static libraries (<filename>.a</filename>).
+         By default, static libraries are created -
+         equivalent to <literal>--enable-static</literal>.
+        </para></listitem>
+      </varlistentry>
+      
+      <varlistentry><term>
+        <literal>--with-iconv</literal>[=<replaceable>prefix</replaceable>]
+       </term>
+       <listitem><para>Compile &yaz; with iconv library in directory
+         <replaceable>prefix</replaceable>. By default configure will
+         search for iconv on the system. Use this option if it
+         doesn't find iconv. Alternatively, 
+         <literal>--without-iconv</literal>, can be uset to force &yaz;
+	 not to use iconv.
+        </para></listitem>
+      </varlistentry>
+
+      <varlistentry><term>
+        <literal>--with-xslt</literal>[=<replaceable>prefix</replaceable>]
+       </term>
+       <listitem><para>Compile &yaz; with 
+         <ulink url="&url.libxslt;">libxslt</ulink> in directory
+         <replaceable>prefix</replaceable>. 
+         Use this option if you want SRU support.
+         By default, configure will
+         search for libxslt on the system. Use this option if it
+         libxslt is not found automatically. Alternatively, 
+         <literal>--without-xslt</literal>, can be used to force &yaz;
+	 not to use libxslt.
+        </para></listitem>
+      </varlistentry>
+
+      <varlistentry><term>
+        <literal>--with-openssl</literal>[=<replaceable>prefix</replaceable>]
+       </term>
+       <listitem><para>&yaz; will be linked with the OpenSSL libraries and
+         an SSL COMSTACK will be provided. Note that SSL support is still
+         experimental.
+        </para></listitem>
+      </varlistentry>
+
+      <varlistentry><term>
+        <literal>--with-libpcap</literal>[=<replaceable>prefix</replaceable>]
+       </term>
+       <listitem><para>Compile &yaz; with
+	 <ulink url="&url.libpcap;">libpcap</ulink> support and the
+	 <link linkend="ziffy">ziffy</link> utility.
+        </para></listitem>
+      </varlistentry>
+      
+     </variablelist>
+     
+    </para>
+    <para>
+     When configured, build the software by typing:
+     <screen>
+      make
+     </screen>
+    </para>
+    
+    <para>
+     The following files are generated by the make process:
+     <variablelist>
+      <varlistentry><term><filename>src/libyaz.la</filename></term>
+       <listitem><para>
+         Main &yaz; library. This is no ordinary library. It's
+         a Libtool archive.
+         By default, &yaz; creates a static library in 
+         <filename>lib/.libs/libyaz.a</filename>.
+        </para></listitem>
+      </varlistentry>
+      
+      <varlistentry><term><filename>src/libyazthread.la</filename></term>
+       <listitem><para>
+         When threading is supported/enabled by configure this Libtool
+         library is created. It includes functions that allows &yaz;
+         to use threads.
+        </para></listitem>
+      </varlistentry>
+      
+      <varlistentry><term><filename>ztest/yaz-ztest</filename></term>
+       <listitem><para>Test Z39.50 server. 
+        </para></listitem>
+      </varlistentry>
+      
+      <varlistentry><term><filename>client/yaz-client</filename></term>
+       <listitem><para>Z39.50 client for testing the protocol.
+         See chapter <link linkend="client">
+          YAZ client</link> for more information.
+        </para></listitem>
+      </varlistentry>
+
+      <varlistentry><term><filename>ziffy/ziffy</filename></term>
+       <listitem><para>A promiscuous Z39.50 APDU sniffer. 
+         ziffy is only built on systems where libpcap is available.
+	 See <xref linkend="ziffy"/> for more information. 
+        </para></listitem>
+      </varlistentry>
+            
+      <varlistentry><term><filename>util/yaz-config</filename></term>
+       <listitem><para>A Bourne-shell script, generated by configure, that
+         specifies how external applications should compile - and link with
+         &yaz;.
+        </para></listitem>
+      </varlistentry>
+      
+      <varlistentry><term><filename>util/yaz-asncomp</filename></term>
+       <listitem><para>The ASN.1 compiler for &yaz;. Requires the
+         Tcl Shell, <application>tclsh</application>, in
+         <literal>PATH</literal> to operate.
+        </para></listitem>
+      </varlistentry>
+      
+      <varlistentry><term><filename>util/yaz-iconv</filename></term>
+       <listitem><para>This program converts data in one character set to
+	 another. This command exercises the YAZ character set
+	 conversion API.
+        </para></listitem>
+      </varlistentry>
+       
+      <varlistentry><term><filename>util/yaz-marcdump</filename></term>
+       <listitem><para>This program parses ISO2709 encoded MARC records
+	 and prints them in line-format or XML.
+        </para></listitem>
+      </varlistentry>
+      
+     <varlistentry><term><filename>zoom/zoomsh</filename></term>
+       <listitem><para>
+         A simple shell implemented on top of the 
+         <link linkend="zoom">ZOOM</link> functions.
+         The shell is a command line application that allows you to enter
+         simple commands to perform ZOOM operations.
+        </para></listitem>
+      </varlistentry>
+      
+      <varlistentry><term><filename>zoom/zoomtst1</filename>, 
+        <filename>zoom/zoomtst2</filename>, ..</term>
+       <listitem><para>
+         Several small applications that demonstrates the ZOOM API.
+        </para></listitem>
+      </varlistentry>
+     </variablelist>
+     
+    </para>
+    
+    <para>
+     If you wish to install &yaz; in system directories  
+     <filename>/usr/local/bin</filename>,
+     <filename>/usr/local/lib</filename> .. etc, you can type:
+    </para>
+    
+    <screen>
+     make install
+    </screen>
+   
+    <para>
+     You probably need to have root access in order to perform this.
+     You must specify the <literal>--prefix</literal> option for configure if
+     you wish to install &yaz; in other directories than the default 
+     <filename>/usr/local/</filename>.
+    </para>
+    
+    <para>
+     If you wish to perform an un-installation of &yaz;, use:
+    </para>
+    
+    <screen>
+     make uninstall
+    </screen>
+    
+    <para>
+     This will only work if you haven't reconfigured &yaz; (and therefore
+     changed installation prefix). Note that uninstall will not
+     remove directories created by make install, e.g.
+     <filename>/usr/local/include/yaz</filename>.
+    </para>
+   </sect2>
+
+   <sect2 id="installation-linking-yaz-unix">
+    <title>How to make apps using YAZ on UNIX</title>
+    <para>
+     This section describes how to compile - and link your own
+     applications using the &yaz; toolkit.
+     If you're used to Makefiles this shouldn't be hard. As for
+     other libraries you have used before, you have to set a proper include
+     path for your C/C++ compiler and specify the location of
+     &yaz; libraries. You can do it by hand, but generally we suggest
+     you use the <filename>yaz-config</filename> that is generated
+     by <filename>configure</filename>. This is especially
+     important if you're using the threaded version of &yaz; which
+     require you to pass more options to your linker/compiler.
+    </para>
+    <para>
+     The <filename>yaz-config</filename> script accepts command line
+     options that makes the <filename>yaz-config</filename> script print
+     options that you should use in your make process.
+     The most important ones are:
+     <literal>--cflags</literal>, <literal>--libs</literal>
+     which prints C compiler flags, and linker flags respectively.
+     </para>
+    <para>
+     A small and complete <literal>Makefile</literal> for a C
+     application consisting of one source file,
+     <filename>myprog.c</filename>, may look like this:
+     <screen>
+      YAZCONFIG=/usr/local/bin/yaz-config
+      CFLAGS=`$(YAZCONFIG) --cflags`
+      LIBS=`$(YAZCONFIG) --libs`
+      myprog: myprog.o
+         $(CC) $(CFLAGS) -o myprog myprog.o $(LIBS)
+      </screen>
+     </para>
+    <para>
+     The CFLAGS variable consists of a C compiler directive that will set
+     the include path to the <emphasis>parent</emphasis> directory
+     of <filename>yaz</filename>. That is, if &yaz; header files were
+     installed in <filename>/usr/local/include/yaz</filename>,
+     then include path is set to <filename>/usr/local/include</filename>.
+     Therefore, in your applications you should use
+     <screen>
+      #include &lt;yaz/proto.h>
+     </screen>
+     and <emphasis>not</emphasis>
+     <screen>
+      #include &lt;proto.h>
+     </screen>
+    </para> 
+    <para>
+     For Libtool users, the <filename>yaz-config</filename> script provides
+     a different variant of option <literal>--libs</literal>, called
+     <literal>--lalibs</literal> that returns the name of the
+     Libtool acrhive(s) for &yaz; rather than the ordinary ones.
+    </para>
+    <para>
+     For applications using the threaded version of &yaz;,
+     specify <literal>threads</literal> after the
+     other options. When <literal>threads</literal> is given,
+     more flags and linker flags will be printed by
+     <filename>yaz-config</filename>. If our previous example was
+      using threads, you'd have to modify the lines that set
+     <literal>CFLAGS</literal> and <literal>LIBS</literal> as
+     follows:
+     <screen>
+      CFLAGS=`$(YAZCONFIG) --cflags threads`
+      LIBS=`$(YAZCONFIG) --libs threads`
+     </screen>
+     There is no need specify POSIX thread libraries in your Makefile.
+     The <literal>LIBS</literal> variable includes that as well.
+    </para>
+   </sect2>
+  </sect1>
+  <sect1 id="installation.win32"><title>WIN32</title>
+   
+   <para>The easiest way to install YAZ on Windows is by downloading
+    an installer from 
+    <ulink url="&url.yaz.download.win32;">here</ulink>.
+    The installer comes with source too - in case you wish to
+    compile YAZ with different Compiler options etc. 
+   </para>
+   
+   <sect2 id="installation.win32.source">
+    <title>Compiling from Source on WIN32</title>
+    <para>
+     &yaz; is shipped with "makefiles" for the NMAKE tool that comes
+     with <ulink url="&url.vstudio;">
+      Microsoft Visual Studio</ulink>.
+     Version 6 and .NET has been tested. We expect that &yaz; compiles
+     with version 5 as well.
+    </para>
+    <para>
+     Start a command prompt and switch the sub directory
+     <filename>WIN</filename> where the file <filename>makefile</filename>
+     is located. Customize the installation by editing the
+     <filename>makefile</filename> file (for example by using notepad).
+     
+     The following summarizes the most important settings in that file:
+     
+     <variablelist>
+      <varlistentry><term><literal>DEBUG</literal></term>
+       <listitem><para>
+         If set to 1, the software is
+         compiled with debugging libraries (code generation is
+         multi-threaded debug DLL).
+         If set to 0, the software is compiled with release libraries
+         (code generation is multi-threaded DLL).
+        </para></listitem>
+      </varlistentry>
+      <varlistentry>
+       <term><literal>HAVE_TCL</literal>, <literal>TCL</literal></term>
+       <listitem><para>
+         If <literal>HAVE_TCL</literal> is set to 1, nmake will
+         use the ASN.1 compiler (Tcl based). You must set
+         <literal>TCL</literal> to the full path of the Tcl
+         interpreter.
+        </para>
+        <para>
+         If you do not have Tcl installed, set
+         <literal>HAVE_TCL</literal> to 0.
+        </para></listitem>
+      </varlistentry>
+
+      <varlistentry>
+       <term><literal>HAVE_BISON</literal>,
+        <literal>BISON</literal></term>
+       <listitem><para>
+         If GNU Bison is present, you might set <literal>HAVE_ICONV</literal>
+         to 1 and specify the Bison executable in <literal>BISON</literal>.
+         Bison is only required if you use the CVS version of
+         YAZ or if you modify the grammar for CQL
+         (<filename>cql.y</filename>).
+        </para>
+        <para>
+         A Windows version of GNU Bison is part of 
+         <ulink url="&url.unxutils;">unxutils</ulink>.
+        </para></listitem>
+      </varlistentry>
+
+      <varlistentry>
+       <term><literal>HAVE_ICONV</literal>,
+        <literal>ICONV_DIR</literal></term>
+       <listitem><para>
+         If <literal>HAVE_ICONV</literal> is set to 1, YAZ is compiled
+         with iconv support. In this configuration, set 
+         <literal>ICONV_DIR</literal> to the iconv source directory.
+        </para></listitem>
+      </varlistentry>
+      
+      <varlistentry>
+       <term><literal>HAVE_LIBXML2</literal>,
+        <literal>LIBXML2_DIR</literal></term>
+       <listitem>
+        <para>
+         If <literal>HAVE_LIBXML2</literal> is set to 1, YAZ is compiled
+         with SRU support. In this configuration, set 
+         <literal>LIBXML2_DIR</literal> to the 
+         <ulink url="&url.libxml2;">libxml2</ulink> source directory
+	 and
+	 <literal>ZLIB_DIR</literal> to the zlib directory.
+        </para>
+
+        <para>
+         Windows versions of libxslt, libxml2, zlib and iconv can be found
+	 <ulink url="&url.libxml2.download.win32;">
+	  Igor Zlatkovi&#x0107;' site</ulink>.
+        </para>
+
+	<note>
+	 <para>
+	  YAZ is not using zlib but libxml2 is depending on it.
+	 </para>
+	</note>
+       </listitem>
+      </varlistentry>
+
+      <varlistentry>
+       <term><literal>HAVE_LIBXSLT</literal>,
+        <literal>LIBXSLT_DIR</literal></term>
+       <listitem>
+        <para>
+         If <literal>HAVE_LIBXSLT</literal> is set to 1, YAZ is compiled
+         with XSLT support. In this configuration, set 
+         <literal>LIBXSLT_DIR</literal> to the 
+         <ulink url="&url.libxslt;">libxslt</ulink> source directory.
+        </para>
+
+	<note>
+	 <para>
+	  libxslt depends libxml2.
+	 </para>
+	</note>
+       </listitem>
+
+      </varlistentry>
+
+     </variablelist>
+    </para>
+    <para>
+     When satisfied with the settings in the makefile, type
+     <screen>
+      nmake
+     </screen>
+    </para>
+    <note>
+     <para>
+      If the <filename>nmake</filename> command is not found on your system
+      you probably haven't defined the environment variables required to
+      use that tool. To fix that, find and run the batch file
+      <filename>vcvars32.bat</filename>. You need to run it from within
+      the command prompt or set the environment variables "globally";
+      otherwise it doesn't work.
+     </para>
+    </note>
+    <para>
+     If you wish to recompile &yaz; - for example if you modify
+     settings in the <filename>makefile</filename> you can delete
+     object files, etc by running.
+     <screen>
+      nmake clean
+     </screen>
+    </para>
+    <para>
+     The following files are generated upon successful compilation:
+     
+     <variablelist>
+      <varlistentry><term><filename>bin/yaz.dll</filename></term>
+       <listitem><para>
+         &yaz; release mode multi-threaded Dynamic Link Library.
+        </para></listitem></varlistentry>
+      
+      <varlistentry><term><filename>lib/yaz.lib</filename></term>
+       <listitem><para>
+         Import library for <filename>yaz.dll</filename>.
+        </para></listitem></varlistentry>
+      
+      <varlistentry><term><filename>bin/yazd.dll</filename></term>
+       <listitem><para>
+         &yaz; debug mode multi-threaded Dynamic Link Library.
+        </para></listitem></varlistentry>
+      
+      <varlistentry><term><filename>lib/yazd.lib</filename></term>
+       <listitem><para>
+         Import library for <filename>yazd.dll</filename>.
+        </para></listitem></varlistentry>
+      
+      <varlistentry><term><filename>bin/yaz-client.exe</filename></term>
+       <listitem><para>
+         &yaz; Z39.50 client application. It's a WIN32 console application.
+         See chapter <link linkend="client">YAZ client</link> for more
+         information.
+        </para></listitem></varlistentry>
+      
+      <varlistentry><term><filename>bin/yaz-ztest.exe</filename></term>
+       <listitem><para>
+         Z39.50 multi-threaded test/example server. It's a WIN32
+         console application.
+        </para></listitem></varlistentry>
+      
+      <varlistentry><term><filename>bin/zoomsh.exe</filename></term>
+       <listitem><para>
+         Simple console application implemented on top of the
+         <link linkend="zoom">ZOOM</link> functions.
+         The application is a command line shell that allows you to enter
+         simple commands to perform ZOOM operations.
+        </para></listitem></varlistentry>
+      
+      <varlistentry><term><filename>bin/zoomtst1.exe</filename>, 
+        <filename>bin/zoomtst2.exe</filename>, ..</term>
+       <listitem><para>
+         Several small applications that demonstrates the ZOOM API.
+        </para></listitem></varlistentry>
+      
+     </variablelist>
+     
+    </para>
+   </sect2>
+
+   <sect2 id="installation-linking-yaz-win32">
+    <title>How to make apps using YAZ on WIN32</title>
+    <para>
+     This section will go though the process of linking your WIN32
+     applications with &yaz;.
+    </para>
+    <para>
+     Some people are confused by the fact that we use the nmake
+     tool to build &yaz;. They think they have to do that too - in order
+     to make their WIN32 applications work with &yaz;. The good news is that
+     you don't have to. You can use the integrated environment of
+     Visual Studio if desired for your own application.
+    </para>
+    <para>
+     When setting up a project or Makefile you have to set the following:
+     <variablelist>
+      <varlistentry><term>include path</term><listitem><para>
+         Set it to the <filename>include</filename> directory of &yaz;.
+        </para></listitem></varlistentry>
+      <varlistentry><term>import library <filename>yaz.lib</filename>
+       </term><listitem><para>
+         You must link with this library. It's located in the 
+         sub directory <filename>lib</filename> of &yaz;.
+	 If you want to link with the debug version of &yaz;, you must
+	 link with <filename>yazd.dll</filename> instead.
+        </para></listitem></varlistentry>
+      <varlistentry><term>dynamic link library <filename>yaz.dll</filename>
+       </term><listitem><para>
+         This DLL must be in your execution path when you invoke
+         your application. Specifically, you should distribute this
+         DLL with your application.
+        </para></listitem></varlistentry>
+     </variablelist>
+    </para>
+   </sect2>
+  </sect1>
+ </chapter>
+ 
+ <!-- Keep this comment at the end of the file
+ Local variables:
+ mode: sgml
+ sgml-omittag:t
+ sgml-shorttag:t
+ sgml-minimize-attributes:nil
+ sgml-always-quote-attributes:t
+ sgml-indent-step:1
+ sgml-indent-data:t
+ sgml-parent-document: "yaz.xml"
+ sgml-local-catalogs: nil
+ sgml-namecase-general:t
+ End:
+ -->
+ 

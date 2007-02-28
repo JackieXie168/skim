@@ -1,0 +1,43 @@
+
+AutoFile
+========
+
+
+This help page describes how to use the AutoFile feature to keep your electronic copies of papers organized.
+You will need to choose a Papers Folder as described in the `AutoFile preference pane help topic`_
+
+.. _`AutoFile preference pane help topic`: `AutoFile Preferences`_
+
+.. contents:: Topics
+   :local:
+   :backlinks: none
+
+<p><font size="+1" face="Lucida Grande,Geneva,Arial">Topics:</font>
+
+<ul>
+<li><a href="#consolidating">Consolidate Linked Files</a> - Move all linked files to your Papers Folder.</li>
+<li><a href="#automatic">Automatically Move Files</a> - How Bibdesk can keep new papers organized automatically once you've consolidated them.</li>
+</ul>
+
+
+Consolidate Linked Files
+------------------------
+
+<img src="gfx/consolidateLinkedFiles.png" alt="" >
+
+
+Choose this command to scan all publications in the file for linked files. A preview window will be opened that shows you some information about each of the linked files. You can then choose to move them all to your Papers Folder or cancel. 
+
+
+<img src="gfx/consolidateLinkedFilesWindow.png" alt="" >
+
+
+You have the option to change links that match files in the Papers Folder. This means that if a link specifies a filename that already exists in the Papers Folder, even if the link isn't pointing to the Papers Folder, Bibdesk will change the link to point to the Papers Folder. You can also optionally delete a duplicate file if a file with the same name exists in the Papers Folder. 
+
+
+
+Automatically Move Files
+------------------------
+
+
+When linking a file by dragging and dropping it onto an edit window or the publications table, or by using the Choose File button in the edit window, AutoFile will automatically move the file to the Papers Folder if the "File Papers Automatically" preference is selected, as described in the <a href="prefs.htm#autofile">AutoFile preference pane help topic</a>.

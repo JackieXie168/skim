@@ -1,0 +1,28 @@
+                                                                 -*-text-*-
+-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
+Original authors of ziffy
+
+Rocco Carbone <rocco@ntop.org>
+-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
+
+ziffy exists because of Luca Deri <deri@ntop.org>, the author
+of the popular and cool ntop program (http://www.ntop.org).
+His great work suggested me the initial idea for implementing ziffy.
+
+I am waiting for many others who want to send me patches, bug fixes,
+comments, wish-list and other stuff for ziffy.
+ziffy will be much better because of them.
+I will attempt to include folks on the Net who helped me in the following list.
+
+Contributors
+============
+o Adam Dickmeiss <adam@indexdata.dk>
+  sent me a patch to make ziffy compatible with YAZ 1.6 and 1.7
+
+
+Credits
+=======
+o luca deri       <deri@ntop.org>
+o jama musse jama <jama@tecsiel.it>
+
+

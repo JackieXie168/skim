@@ -1,0 +1,7 @@
+<searchClause>
+  <index>dc.title</index>
+  <relation>
+    <value>any</value>
+  </relation>
+  <term>fish chips</term>
+</searchClause>

@@ -1,0 +1,13 @@
+%!PS-Adobe-3.0 EPSF-3.0
+%%BoundingBox: 29 25 249 178
+gsave /helvetica findfont 10 scalefont setfont
+/ps{(PostScript ) show} def /rad {ps ps ps ps ps} def
+gsave 30 30 translate 1 .7 scale
+newpath 110 110 100 0 360 arc gsave stroke grestore clip
+1 1.43 scale 45 rotate -70 70 moveto
+{10 -10 rmoveto gsave rad grestore currentpoint pop 100 ge{exit}if}
+loop grestore
+/Times-Roman findfont 150 scalefont setfont .7 setgray
+/tex {(T) show -35 -35 rmoveto (E) show -35 35 rmoveto (X) show} def
+30 60 moveto 0 setgray tex 27 63 moveto .7 setgray tex grestore 
+showpage

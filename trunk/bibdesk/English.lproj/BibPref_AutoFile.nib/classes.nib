@@ -1,0 +1,61 @@
+{
+    IBClasses = (
+        {
+            ACTIONS = {
+                changeLocalUrlLowercase = id; 
+                choosePapersFolderLocationAction = id; 
+                clearPapersFolderLocationAction = id; 
+                closeFormatSheet = id; 
+                formatHelp = id; 
+                localUrlFormatAdd = id; 
+                localUrlFormatChanged = id; 
+                localUrlHelp = id; 
+                setFormatCleanOption = id; 
+                setPapersFolderPathFromTextField = id; 
+                showFormatSheet = id; 
+                showLocalUrlFormatWarning = id; 
+                toggleFilePapersAutomaticallyAction = id; 
+                toggleUseRelativePathAction = id; 
+                toggleWarnOnMoveFolderAction = id; 
+            }; 
+            CLASS = "BibPref_AutoFile"; 
+            LANGUAGE = ObjC; 
+            OUTLETS = {
+                choosePapersFolderLocationButton = NSButton; 
+                clearPapersFolderLocationButton = NSButton; 
+                filePapersAutomaticallyCheckButton = NSButton; 
+                formatCleanRadio = NSMatrix; 
+                formatField = NSTextField; 
+                formatLowercaseCheckButton = NSButton; 
+                formatPresetPopUp = NSPopUpButton; 
+                formatPresetSheetPopUp = NSPopUpButton; 
+                formatRepositoryPopUp = NSPopUpButton; 
+                formatSheet = NSPanel; 
+                formatSheetField = NSTextField; 
+                formatWarningButton = NSButton; 
+                papersFolderLocationTextField = NSTextField; 
+                previewDisplay = NSTextField; 
+                previewTextField = NSTextField; 
+                useRelativePathCheckButton = NSButton; 
+                warnOnMoveFolderCheckButton = NSButton; 
+            }; 
+            SUPERCLASS = OAPreferenceClient; 
+        }, 
+        {
+            ACTIONS = {"" = id; }; 
+            CLASS = FirstResponder; 
+            LANGUAGE = ObjC; 
+            SUPERCLASS = NSObject; 
+        }, 
+        {
+            ACTIONS = {restoreDefaults = id; setValueForSender = id; }; 
+            CLASS = OAPreferenceClient; 
+            LANGUAGE = ObjC; 
+            OUTLETS = {controlBox = NSView; initialFirstResponder = NSView; lastKeyView = NSView; }; 
+            SUPERCLASS = OFObject; 
+        }, 
+        {CLASS = OBObject; LANGUAGE = ObjC; SUPERCLASS = NSObject; }, 
+        {CLASS = OFObject; LANGUAGE = ObjC; SUPERCLASS = OBObject; }
+    ); 
+    IBVersion = 1; 
+}

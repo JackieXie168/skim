@@ -1,0 +1,33 @@
+{
+    IBClasses = (
+        {
+            CLASS = BDSKAddFieldSheetController; 
+            LANGUAGE = ObjC; 
+            SUPERCLASS = BDSKFieldSheetController; 
+        }, 
+        {
+            CLASS = BDSKFieldSheetController; 
+            LANGUAGE = ObjC; 
+            OUTLETS = {
+                cancelButton = NSButton; 
+                fieldsControl = NSControl; 
+                okButton = NSButton; 
+                promptField = NSTextField; 
+            }; 
+            SUPERCLASS = BDSKSheetController; 
+        }, 
+        {
+            CLASS = BDSKRemoveFieldSheetController; 
+            LANGUAGE = ObjC; 
+            SUPERCLASS = BDSKFieldSheetController; 
+        }, 
+        {
+            ACTIONS = {dismiss = id; }; 
+            CLASS = BDSKSheetController; 
+            LANGUAGE = ObjC; 
+            SUPERCLASS = NSWindowController; 
+        }, 
+        {CLASS = FirstResponder; LANGUAGE = ObjC; SUPERCLASS = NSObject; }
+    ); 
+    IBVersion = 1; 
+}

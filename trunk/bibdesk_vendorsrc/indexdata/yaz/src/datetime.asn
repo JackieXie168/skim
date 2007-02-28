@@ -1,0 +1,81 @@
+UserInfoFormat-dateTime
+{Z39-50-userInfoFormat dateTime (6)} DEFINITIONS ::=
+BEGIN
+IMPORTS IntUnit FROM Z39-50-APDU-1995;
+
+DateTime ::= SEQUENCE{
+     date [1]  Z3950Date OPTIONAL,
+     time [2]  Z3950Time OPTIONAL
+                    -- one or the other, or both
+          }
+
+Z3950Date ::= SEQUENCE{
+ year         [1] IMPLICIT INTEGER,
+                    -- For "positive" years, i.e. 1 AD or later, supply
+                    -- the absolute year, e.g. If the year is 1995, supply
+                    -- the integer 1995; the value 95 would indicate the
+                    -- year 0095.
+                    -- For "negative" years, e.g. 1 BC or earlier, -1
+                    -- represents 1 BC, -2 represents 2 BC, etc. Zero is
+                    -- invalid, because there was no year zero.
+ partOfYear   [2] CHOICE{ -- may be omitted if only year is significant
+        monthAndDay [1]   IMPLICIT SEQUENCE{
+                       month [2]  IMPLICIT INTEGER, 
+                                   -- value 1-12
+                       day   [3]  IMPLICIT INTEGER OPTIONAL
+                                   -- may be omitted if only year and month
+                                   -- are significant. Value 1-31.
+                                           },
+        julianDay   [2]   IMPLICIT INTEGER, -- Value 1 - 366.
+        weekNumber  [3]   IMPLICIT INTEGER, -- Value 1 - 53. 
+        quarter     [4] CHOICE{
+                       first    [1] IMPLICIT NULL,
+                       second   [2] IMPLICIT NULL,
+                       third    [3] IMPLICIT NULL,
+                       fourth   [4] IMPLICIT NULL},
+        season      [5] CHOICE{
+                       winter   [1] IMPLICIT NULL,
+                       spring   [2] IMPLICIT NULL,
+                       summer   [3] IMPLICIT NULL,
+                       autumn   [4] IMPLICIT NULL}
+                                              } OPTIONAL, 
+ flags        [3] IMPLICIT SEQUENCE{
+     circa          [1]   IMPLICIT NULL OPTIONAL,
+                          -- if this flag is set then the date is "approximate".
+     era            [2]   CHOICE{
+                          -- If era occurs, partOfYear should not occur.
+                          decade         [1] IMPLICIT NULL,
+                                              -- year must be multiple of 10.
+                                              -- For example, 1900 refers to
+                                              -- the decade covering the years
+                                              -- 1900 through 1909.
+                          century        [2] IMPLICIT NULL,
+                                              -- year must be multiple of 100.
+                          millennium     [3] IMPLICIT NULL
+                                              -- year must be multiple of 1000.
+                                                    } OPTIONAL
+                                              } OPTIONAL
+                                }
+
+
+Z3950Time ::= SEQUENCE{
+     hour           [1] IMPLICIT INTEGER,
+                             -- Value 0-23. 
+     minute         [2]  IMPLICIT INTEGER OPTIONAL,
+                             -- value 0-59. May be omitted when hour only is
+                             -- significant (in which case second and
+                             -- partOfSecond must also be omitted). 
+     second         [3]  IMPLICIT INTEGER OPTIONAL,
+                             -- value 0-59. May be omitted when only hour, or
+                             -- hour and minute, is significant (in which case
+                             -- partOfSecond must also be omitted).
+     partOfSecond   [4]  IMPLICIT IntUnit OPTIONAL,
+                             -- Use Unit System = 'si', Unit type = 'time'; 
+                             -- Unit = 'second', with appropriate value and
+                             -- scale factor.
+     zone           [5]  CHOICE{
+                              local      [1]  IMPLICIT NULL,
+                              utc        [2]  IMPLICIT NULL,
+                              utcOffset  [3]  IMPLICIT INTEGER  -- in minutes
+                                                    }}             
+END                              

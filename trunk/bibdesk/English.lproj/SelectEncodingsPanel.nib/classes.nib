@@ -1,0 +1,24 @@
+{
+    IBClasses = (
+        {
+            CLASS = BDSKEncodingPopUpButton; 
+            LANGUAGE = ObjC; 
+            SUPERCLASS = NSPopUpButton; 
+        }, 
+        {
+            ACTIONS = {
+                clearAll = id; 
+                encodingListChanged = id; 
+                revertToDefault = id; 
+                selectAll = id; 
+                showPanel = id; 
+            }; 
+            CLASS = BDSKStringEncodingManager; 
+            LANGUAGE = ObjC; 
+            OUTLETS = {encodingMatrix = NSMatrix; }; 
+            SUPERCLASS = NSObject; 
+        }, 
+        {CLASS = FirstResponder; LANGUAGE = ObjC; SUPERCLASS = NSObject; }
+    ); 
+    IBVersion = 1; 
+}

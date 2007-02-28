@@ -1,0 +1,30 @@
+{
+    IBClasses = (
+        {
+            ACTIONS = {add = id; changeList = id; remove = id; }; 
+            CLASS = BDSKCharacterConversion; 
+            LANGUAGE = ObjC; 
+            OUTLETS = {
+                addButton = NSButton; 
+                listButton = NSPopUpButton; 
+                removeButton = NSButton; 
+                tableView = NSTableView; 
+            }; 
+            SUPERCLASS = BDSKSheetController; 
+        }, 
+        {
+            CLASS = BDSKRomanCharacterFormatter; 
+            LANGUAGE = ObjC; 
+            SUPERCLASS = NSFormatter; 
+        }, 
+        {
+            ACTIONS = {dismiss = id; }; 
+            CLASS = BDSKSheetController; 
+            LANGUAGE = ObjC; 
+            SUPERCLASS = NSWindowController; 
+        }, 
+        {CLASS = BDSKTeXFormatter; LANGUAGE = ObjC; SUPERCLASS = NSFormatter; }, 
+        {CLASS = FirstResponder; LANGUAGE = ObjC; SUPERCLASS = NSObject; }
+    ); 
+    IBVersion = 1; 
+}

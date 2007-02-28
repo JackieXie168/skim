@@ -1,0 +1,120 @@
+<record xmlns="http://www.loc.gov/MARC21/slim">
+<!-- Length implementation at offset 22 should hold a digit. Assuming 0 -->
+  <leader>00914naa a2200337   450 </leader>
+  <datafield tag="001" ind1=" " ind2=" ">
+    <subfield code="a">a00001508</subfield>
+    <subfield code="f">a</subfield>
+  </datafield>
+  <datafield tag="004" ind1=" " ind2=" ">
+    <subfield code="a">i</subfield>
+    <subfield code="r">n</subfield>
+  </datafield>
+  <datafield tag="008" ind1=" " ind2=" ">
+    <subfield code="a">1991</subfield>
+    <subfield code="b">xx</subfield>
+    <subfield code="l">nor</subfield>
+    <subfield code="t">a</subfield>
+    <subfield code="v">9</subfield>
+  </datafield>
+  <datafield tag="009" ind1=" " ind2=" ">
+    <subfield code="a">a</subfield>
+    <subfield code="g">xx</subfield>
+  </datafield>
+  <datafield tag="041" ind1=" " ind2=" ">
+    <subfield code="a">nor</subfield>
+  </datafield>
+  <datafield tag="041" ind1=" " ind2=" ">
+    <subfield code="d">eng</subfield>
+  </datafield>
+  <datafield tag="097" ind1="0" ind2="0">
+    <subfield code="a">06</subfield>
+  </datafield>
+  <datafield tag="245" ind1=" " ind2=" ">
+    <subfield code="a">Byfornyelse ved Ibsen-Ringen</subfield>
+  </datafield>
+  <datafield tag="300" ind1=" " ind2=" ">
+    <subfield code="b">farvefoto</subfield>
+    <subfield code="b">plan</subfield>
+    <subfield code="b">snit</subfield>
+  </datafield>
+  <datafield tag="557" ind1=" " ind2=" ">
+    <subfield code="a">Byggekunst</subfield>
+    <subfield code="j">1991</subfield>
+    <subfield code="v">1/2</subfield>
+    <subfield code="k">41-45</subfield>
+  </datafield>
+  <datafield tag="630" ind1=" " ind2=" ">
+    <subfield code="f">byfornyelse</subfield>
+  </datafield>
+  <datafield tag="630" ind1=" " ind2=" ">
+    <subfield code="f">sanering</subfield>
+  </datafield>
+  <datafield tag="633" ind1=" " ind2=" ">
+    <subfield code="f">Norge</subfield>
+  </datafield>
+  <datafield tag="633" ind1=" " ind2=" ">
+    <subfield code="f">Oslo</subfield>
+  </datafield>
+  <datafield tag="648" ind1=" " ind2=" ">
+    <subfield code="a">Telje Torp Aasen Arkitektkontor</subfield>
+    <subfield code="c">Kristian Augustsgate 7B</subfield>
+  </datafield>
+  <datafield tag="648" ind1=" " ind2=" ">
+    <subfield code="a">Eng, Dagfin</subfield>
+  </datafield>
+  <datafield tag="648" ind1=" " ind2=" ">
+    <subfield code="r">anlund, Tom</subfield>
+    <subfield code="c">Kristian Augustsgate</subfield>
+    <subfield code="c">Pilestredet 19</subfield>
+  </datafield>
+  <datafield tag="J01" ind1=" " ind2=" ">
+    <subfield code="a">a</subfield>
+  </datafield>
+  <datafield tag="BAS" ind1=" " ind2=" ">
+    <subfield code="0"></subfield>
+  </datafield>
+  <datafield tag="LKR" ind1=" " ind2=" ">
+    <subfield code="a">ITM</subfield>
+    <subfield code="l">ARK50</subfield>
+    <subfield code="b">0000145</subfield>
+    <subfield code="y">1991</subfield>
+    <subfield code="i">1/2</subfield>
+    <subfield code="k">41-45</subfield>
+  </datafield>
+  <datafield tag="CAT" ind1=" " ind2=" ">
+    <subfield code="a"></subfield>
+    <subfield code="b"></subfield>
+    <subfield code="c">20020111</subfield>
+    <subfield code="l">ARK01</subfield>
+    <subfield code="h">2002</subfield>
+  </datafield>
+  <datafield tag="CAT" ind1=" " ind2=" ">
+    <subfield code="a"></subfield>
+    <subfield code="b"></subfield>
+    <subfield code="c">20020111</subfield>
+    <subfield code="l">ARK01</subfield>
+    <subfield code="h">2116</subfield>
+  </datafield>
+  <datafield tag="CAT" ind1=" " ind2=" ">
+    <subfield code="a"></subfield>
+    <subfield code="b"></subfield>
+    <subfield code="c">20021002</subfield>
+    <subfield code="l">ARK01</subfield>
+    <subfield code="h">1000</subfield>
+  </datafield>
+  <datafield tag="CAT" ind1=" " ind2=" ">
+    <subfield code="a">ICLLOAD</subfield>
+    <subfield code="b">00</subfield>
+    <subfield code="c">20021122</subfield>
+    <subfield code="l">ARK01</subfield>
+    <subfield code="h">1948</subfield>
+  </datafield>
+  <datafield tag="CAT" ind1=" " ind2=" ">
+    <subfield code="c">20030618</subfield>
+    <subfield code="l">ARK01</subfield>
+    <subfield code="h">1330</subfield>
+  </datafield>
+  <datafield tag="UID" ind1=" " ind2=" ">
+    <subfield code="a">a00001508</subfield>
+  </datafield>
+</record>

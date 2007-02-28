@@ -1,0 +1,31 @@
+<record xmlns="http://www.loc.gov/MARC21/slim">
+  <leader>00492nam a22001455a 4500</leader>
+  <controlfield tag="001">000277485</controlfield>
+  <controlfield tag="005">20051026111436.0</controlfield>
+  <controlfield tag="008">050413s1894    gr            000 0 gre d</controlfield>
+  <datafield tag="100" ind1="1" ind2=" ">
+    <subfield code="a">Μαρούδης, Κωνσταντίνος Ιω</subfield>
+  </datafield>
+  <datafield tag="245" ind1="1" ind2="0">
+    <subfield code="a">Ελληνικόν κρυπτογραφικόν λεξικόν /</subfield>
+    <subfield code="c">Κωνστ. Ι. Μαρούδης.</subfield>
+  </datafield>
+  <datafield tag="250" ind1=" " ind2=" ">
+    <subfield code="η"> εκδ.</subfield>
+  </datafield>
+  <datafield tag="260" ind1=" " ind2=" ">
+    <subfield code="a">Αθήνα,</subfield>
+    <subfield code="c">1894.</subfield>
+  </datafield>
+  <datafield tag="300" ind1=" " ind2=" ">
+    <subfield code="a">248 σελ.</subfield>
+  </datafield>
+  <datafield tag="650" ind1=" " ind2="0">
+    <subfield code="a">Greek language, Modern</subfield>
+    <subfield code="x">Dialects</subfield>
+    <subfield code="v">Dictionaries</subfield>
+  </datafield>
+  <datafield tag="650" ind1=" " ind2="0">
+    <subfield code="a">Cryptography.</subfield>
+  </datafield>
+</record>

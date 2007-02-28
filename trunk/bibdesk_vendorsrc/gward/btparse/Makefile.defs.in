@@ -1,0 +1,67 @@
+#
+# Makefile.defs
+# 
+# Makefile macro definitions for possibly non-portable stuff for
+# the btparse library.
+#
+# $Id: Makefile.defs.in,v 1.10 2000/05/14 15:49:21 greg Exp $
+#
+
+# If you plan to install btparse on your system, you might want to change
+# the installation directories.  Note that these can also be overridden
+# when you run `configure'; see the INSTALL file for details.  Other than
+# that, though, everything in this file is set automatically when you run
+# the `configure' script -- so nothing else should need changing.
+
+SHELL = /bin/sh
+INSTALL = @INSTALL@
+
+# Installation directories
+prefix      = @prefix@
+exec_prefix = @exec_prefix@
+INSTALL_INC = @includedir@
+INSTALL_LIB = @libdir@
+INSTALL_MAN = @mandir@
+INSTALL_MAN3 = $(INSTALL_MAN)/man3
+
+
+# Compiler settings:
+#   CC        must be an ANSI compiler (possibly with options in CFLAGS
+#             that enable ANSI behaviour)
+#   CFLAGS    optimization, debugging, warning flags
+#   CFLAGS2   same, without warnings (for compiling PCCTS files, which
+#             generate many warnings)
+#   DEFINES   preprocessor token definitions (or undefs): -D and -U
+#   EXTRA_CPPFLAGS
+#             anything the user might want to supply manually when
+#             running `make' (more -I, -D, -U, whatever...)
+#   CPPFLAGS  all flags for the C preprocessor
+
+CC = @CC@
+CFLAGS = @CFLAGS@
+CFLAGS2 = @CFLAGS2@
+DEFINES = @DEFINES@
+EXTRA_CPPFLAGS = -x objective-c -framework Cocoa
+CPPFLAGS = -Ipccts $(DEFINES) $(EXTRA_CPPFLAGS)
+
+# Linker flags -- needed to build the standalone programs included with
+# the library (test and example programs).  This doesn't include flags
+# needed to link with btparse itself; those are the responsbility of
+# the lower-level makefiles.
+EXTRA_LDFLAGS = @EXTRA_LDFLAGS@
+
+# Archiver (ar) options
+AR = @AR@
+ARFLAGS = @ARFLAGS@
+RANLIB = @RANLIB@
+
+
+# PCCTS programs, directories, and options -- not for user consumption
+# or modification.  
+ANTLR = antlr
+DLG = dlg
+RUN_PCCTS = ./run_pccts#              # my wrapper for antlr and dlg
+PERL = @PERL@#                        # needed for run_pccts
+
+AFLAGS = -ga -gh -gt
+DFLAGS = -C2 -i

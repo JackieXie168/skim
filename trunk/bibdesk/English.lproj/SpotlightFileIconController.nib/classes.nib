@@ -1,0 +1,33 @@
+{
+    IBClasses = (
+        {CLASS = BDSKClearView; LANGUAGE = ObjC; SUPERCLASS = NSView; }, 
+        {
+            CLASS = BDSKSpotlightIconController; 
+            LANGUAGE = ObjC; 
+            OUTLETS = {clearView = BDSKClearView; tableView = BDSKSpotlightIconTableView; }; 
+            SUPERCLASS = NSWindowController; 
+        }, 
+        {
+            CLASS = BDSKSpotlightIconTableView; 
+            LANGUAGE = ObjC; 
+            SUPERCLASS = NSTableView; 
+        }, 
+        {CLASS = ClearView; LANGUAGE = ObjC; SUPERCLASS = NSView; }, 
+        {
+            ACTIONS = {saveAction = id; }; 
+            CLASS = Controller; 
+            LANGUAGE = ObjC; 
+            OUTLETS = {clearView = ClearView; saveButton = NSButton; tableView = IconTableView; }; 
+            SUPERCLASS = NSObject; 
+        }, 
+        {CLASS = FirstResponder; LANGUAGE = ObjC; SUPERCLASS = NSObject; }, 
+        {CLASS = IconTableView; LANGUAGE = ObjC; SUPERCLASS = NSTableView; }, 
+        {
+            CLASS = WindowController; 
+            LANGUAGE = ObjC; 
+            OUTLETS = {clearView = ClearView; tableView = IconTableView; }; 
+            SUPERCLASS = NSWindowController; 
+        }
+    ); 
+    IBVersion = 1; 
+}

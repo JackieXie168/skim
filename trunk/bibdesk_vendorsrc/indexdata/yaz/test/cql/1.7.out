@@ -1,0 +1,7 @@
+<searchClause>
+  <index>cql.serverChoice</index>
+  <relation>
+    <value>scr</value>
+  </relation>
+  <term>prox/distance&lt;3/unit=word</term>
+</searchClause>

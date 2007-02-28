@@ -1,0 +1,13 @@
+<searchClause>
+  <index>dc.title</index>
+  <relation>
+    <value>any</value>
+    <modifiers>
+      <modifier>
+        <type>stem</type>
+        <relation>=</relation>
+      </modifier>
+    </modifiers>
+  </relation>
+  <term>fish</term>
+</searchClause>

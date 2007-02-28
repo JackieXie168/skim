@@ -1,0 +1,33 @@
+{
+    IBClasses = (
+        {
+            CLASS = BDSKFilePathCell; 
+            LANGUAGE = ObjC; 
+            SUPERCLASS = BDSKTextWithIconCell; 
+        }, 
+        {CLASS = BDSKTextWithIconCell; LANGUAGE = ObjC; SUPERCLASS = NSTextFieldCell; }, 
+        {
+            ACTIONS = {addScriptHook = id; removeScriptHook = id; showScriptFile = id; }; 
+            CLASS = "BibPref_ScriptHooks"; 
+            LANGUAGE = ObjC; 
+            OUTLETS = {addButton = NSButton; removeButton = NSButton; tableView = NSTableView; }; 
+            SUPERCLASS = OAPreferenceClient; 
+        }, 
+        {
+            ACTIONS = {"" = id; }; 
+            CLASS = FirstResponder; 
+            LANGUAGE = ObjC; 
+            SUPERCLASS = NSObject; 
+        }, 
+        {
+            ACTIONS = {restoreDefaults = id; setValueForSender = id; }; 
+            CLASS = OAPreferenceClient; 
+            LANGUAGE = ObjC; 
+            OUTLETS = {controlBox = NSView; initialFirstResponder = NSView; lastKeyView = NSView; }; 
+            SUPERCLASS = OFObject; 
+        }, 
+        {CLASS = OBObject; LANGUAGE = ObjC; SUPERCLASS = NSObject; }, 
+        {CLASS = OFObject; LANGUAGE = ObjC; SUPERCLASS = OBObject; }
+    ); 
+    IBVersion = 1; 
+}

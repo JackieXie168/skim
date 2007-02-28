@@ -1,0 +1,36 @@
+//
+// Prefix header for all source files of the 'BibDesk' target in the 'BibDesk' project
+//
+
+#define OMNI_BUNDLE_IDENTIFIER @"edu.ucsd.cs.mmccrack.bibdesk"
+#define __FILENAMEASNSSTRING__ \
+[[NSString stringWithCString:__FILE__] lastPathComponent]
+
+#ifdef __OBJC__
+    #import <Cocoa/Cocoa.h>
+    #import <OmniBase/OmniBase.h>
+    #import <OmniFoundation/OmniFoundation.h>
+    #import <OmniAppKit/OmniAppKit.h>
+    #import "NSString_BDSKExtensions.h"
+    #import "BDSKComplexString.h"
+    #import "BibPrefController.h"
+    #import "BDSKPreferenceController.h"
+
+#if defined (OMNI_ASSERTIONS_ON)
+
+#define log_method() \
+NSLog(@"%@[%@ %@] (%@ line %d)", OBPointerIsClass(self) ? @"+" : @"-", \
+      [self class], NSStringFromSelector(_cmd), __FILENAMEASNSSTRING__, __LINE__)
+
+#define log_function() \
+NSLog(@"%s (%@ line %d)", __PRETTY_FUNCTION__, __FILENAMEASNSSTRING__, __LINE__)
+
+#else
+
+#define log_method();
+#define log_function();
+
+#endif
+
+#endif
+

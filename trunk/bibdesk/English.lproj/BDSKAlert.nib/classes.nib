@@ -1,0 +1,23 @@
+{
+    IBClasses = (
+        {
+            CLASS = BDSKAlert; 
+            LANGUAGE = ObjC; 
+            OUTLETS = {
+                checkButton = NSButton; 
+                imageView = NSImageView; 
+                informationField = NSTextField; 
+                messageField = NSTextField; 
+            }; 
+            SUPERCLASS = BDSKSheetController; 
+        }, 
+        {
+            ACTIONS = {dismiss = id; }; 
+            CLASS = BDSKSheetController; 
+            LANGUAGE = ObjC; 
+            SUPERCLASS = NSWindowController; 
+        }, 
+        {CLASS = FirstResponder; LANGUAGE = ObjC; SUPERCLASS = NSObject; }
+    ); 
+    IBVersion = 1; 
+}

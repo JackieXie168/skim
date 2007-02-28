@@ -1,0 +1,22 @@
+installation:
+============
+1) edit Makefile to define -DOS2 and location of  
+1) copy latex2rtf.exe latex2png.cmd png2png.exe to %PATH%
+2) edit variable LATEX in latex2png.cmd
+   for example: 
+   LATEX="tex -progname=cslatex -default-translate-file=cp852-cs"
+2) copy cfg/* to c:/usr/local/share/latex2rtf/cfg or to other
+   directory , use switch -P , example: latex2rtf -P e:/home/l2r/cfg
+
+requiered:
+==========
+emx runtime,tex,sh,gsos2
+
+notes:
+======
+1) read latex2rtf original documentation 
+2) option -i : only small subseet languages curerently 
+               supported in original code
+
+
+horeni@quick.cz

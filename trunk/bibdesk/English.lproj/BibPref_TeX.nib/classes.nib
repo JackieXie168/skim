@@ -1,0 +1,47 @@
+{
+    IBClasses = (
+        {
+            CLASS = BDSKEncodingPopUpButton; 
+            LANGUAGE = ObjC; 
+            SUPERCLASS = NSPopUpButton; 
+        }, 
+        {
+            ACTIONS = {
+                changeBibTexBinPath = id; 
+                changeDefaultTeXEncoding = id; 
+                changeStyle = id; 
+                changeTexBinPath = id; 
+                changeUsesTeX = id; 
+                downloadTeX = id; 
+                openTeXPreviewFile = id; 
+                resetTeXPreviewFile = id; 
+            }; 
+            CLASS = "BibPref_TeX"; 
+            LANGUAGE = ObjC; 
+            OUTLETS = {
+                bibTeXStyleField = NSComboBox; 
+                bibtexBinaryPathField = NSTextField; 
+                encodingPopUpButton = BDSKEncodingPopUpButton; 
+                texBinaryPathField = NSTextField; 
+                usesTeXButton = NSButton; 
+            }; 
+            SUPERCLASS = OAPreferenceClient; 
+        }, 
+        {
+            ACTIONS = {"" = id; }; 
+            CLASS = FirstResponder; 
+            LANGUAGE = ObjC; 
+            SUPERCLASS = NSObject; 
+        }, 
+        {
+            ACTIONS = {restoreDefaults = id; setValueForSender = id; }; 
+            CLASS = OAPreferenceClient; 
+            LANGUAGE = ObjC; 
+            OUTLETS = {controlBox = NSView; initialFirstResponder = NSView; lastKeyView = NSView; }; 
+            SUPERCLASS = OFObject; 
+        }, 
+        {CLASS = OBObject; LANGUAGE = ObjC; SUPERCLASS = NSObject; }, 
+        {CLASS = OFObject; LANGUAGE = ObjC; SUPERCLASS = OBObject; }
+    ); 
+    IBVersion = 1; 
+}

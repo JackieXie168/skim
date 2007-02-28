@@ -1,0 +1,26 @@
+{
+    IBClasses = (
+        {CLASS = BDSKConditionsView; LANGUAGE = ObjC; SUPERCLASS = NSView; }, 
+        {
+            CLASS = BDSKFilterController; 
+            LANGUAGE = ObjC; 
+            OUTLETS = {
+                conditionsView = BDSKConditionsView; 
+                conjunctionPopUp = NSPopUpButton; 
+                messageEndTextField = NSTextField; 
+                messageStartTextField = NSTextField; 
+            }; 
+            SUPERCLASS = BDSKSheetController; 
+        }, 
+        {
+            ACTIONS = {dismiss = id; }; 
+            CLASS = BDSKSheetController; 
+            LANGUAGE = ObjC; 
+            SUPERCLASS = NSWindowController; 
+        }, 
+        {CLASS = FirstResponder; LANGUAGE = ObjC; SUPERCLASS = NSObject; }, 
+        {CLASS = NSObject; LANGUAGE = ObjC; }, 
+        {CLASS = NSView; LANGUAGE = ObjC; SUPERCLASS = NSResponder; }
+    ); 
+    IBVersion = 1; 
+}

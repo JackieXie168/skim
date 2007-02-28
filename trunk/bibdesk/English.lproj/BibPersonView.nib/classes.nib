@@ -1,0 +1,28 @@
+{
+    IBClasses = (
+        {
+            CLASS = BDSKCollapsibleView; 
+            LANGUAGE = ObjC; 
+            SUPERCLASS = BDSKContainerView; 
+        }, 
+        {CLASS = BDSKContainerView; LANGUAGE = ObjC; SUPERCLASS = NSView; }, 
+        {CLASS = BDSKDragImageView; LANGUAGE = ObjC; SUPERCLASS = NSImageView; }, 
+        {
+            ACTIONS = {openSelectedPub = id; }; 
+            CLASS = BibPersonController; 
+            LANGUAGE = ObjC; 
+            OUTLETS = {
+                collapsibleView = BDSKCollapsibleView; 
+                imageView = BDSKDragImageView; 
+                nameTextField = NSTextField; 
+                pubsTableView = NSTableView; 
+                splitView = OASplitView; 
+            }; 
+            SUPERCLASS = NSWindowController; 
+        }, 
+        {CLASS = FirstResponder; LANGUAGE = ObjC; SUPERCLASS = NSObject; }, 
+        {CLASS = MyObject; LANGUAGE = ObjC; SUPERCLASS = NSObject; }, 
+        {CLASS = OASplitView; LANGUAGE = ObjC; SUPERCLASS = NSSplitView; }
+    ); 
+    IBVersion = 1; 
+}

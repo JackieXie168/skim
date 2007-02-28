@@ -1,0 +1,477 @@
+01127cam a2200277 a 4500
+001    70813420 /AJ/r86
+003 DLC
+005 19871006084439.0
+008 860826m19689999ja ab        l00000 jpn  
+010    $a    70813420 /AJ/r86
+035    $a (CStRLIN)DCLP86-B14482
+040    $c NNC $d NNC $d DLC
+043    $a a-ja---
+050 0  $a DS897.H325 $b H36 1968
+066    $c $1
+245 00 $6 880-01 $a Handa shishi.
+260 0  $6 880-02 $a [Handa-shi] : $b Handa-shi, $c Shōwa 43-<59> [1968-<1984>
+300    $a v. <1-5, 7-8> : $b ill. ; $c 22 cm.
+500    $a Vol. 3 accompanied by Handa-shi chiiki chishitsuzu; v. 8, Handa-shi Otsukawa Asaiyama dashi kumiage zumen (1 folded) leaf).
+505 1  $a [1]-[4] Shiryō hen -- [5] Honbun hen    -- [7] Bunkazai hen -- [8] Sairei minzoku hen
+651  0 $6 880-03 $a Handa-shi (Japan)
+651  0 $6 880-04 $a Handa-shi (Japan) $x History $x Sources.
+880 00 $6 245-01/$1 $a 半田 市誌.
+880 0  $6 260-02/$1 $a [半田市] : $b 半田市, $c 昭和 43-<59> [1968-<1984>
+880  4 $6 651-03/$1 $a 半田市 (Japan)
+880  4 $6 651-04/$1 $a 半田市 (Japan) $x History $x Sources.
+
+00885nam a2200229 a 4500
+001    75840215 /ACN/r86
+003 DLC
+005 19870219000000.0
+008 860606m19009999ch            00001 chi  
+010    $a    75840215 /ACN/r86
+035    $a (CStRLIN)DCLP86-B9742
+050 0  $a PL3031.T32 $b L5
+066    $c $1
+245 00 $6 880-01 $a Li tsʻung.
+260 0  $6 880-02 $a [Kao-hsiung shih] : $b Wen hua yüan : $b Fa hsing so Sheng su chʻu pan she, $c <min kuo 63-66   [1974-1977    >
+300    $a v. <4, pts 1-2; v. 5> in <3   > ; $c 22 cm.
+500    $a Cover title.
+650  0 $a Didactic fiction, Chinese $z Taiwan.
+710 20 $6 880-03 $a Kao-hsiung shih wen hua yüan.
+880 00 $6 245-01/$1 $a 歷叢.
+880 0  $6 260-02/$1 $a [高雄市] : $b 文化院 : $b 發行所　聖書　出版社, $c <民國63-66   [1974-1977   >
+880 20 $6 710-03/$1 $a 高雄市  文化院.
+
+01054nam a2200277 a 4500
+001    84226659 /ACN
+003 DLC
+005 19870219000000.0
+008 860227s1983    cc ac    b    00000dchi  
+010    $a    84226659 /ACN
+035    $a (CStRLIN)DCLP86-B3400
+050 0  $a NX90 $b .I18 1983
+066    $c $1
+082 0  $a 174/.97 $2 19
+245 00 $6 880-01 $a I shu chia yü te yü.
+250    $6 880-02 $a Ti 1 pan.
+260 0  $6 880-03 $a Chʻeng-tu : $b Ssu-chʻuan jen min chʻu pan she : $b Ssu-chʻuan sheng hsin hua shu tien fa hsing, $c 1983.
+300    $a 2, 3, 4, 244 p. : $b ill., ports. ; $c 19 cm.
+440  0 $6 880-04 $a Te yü tsʻung shu
+504    $a Bibliography: p. 239-240.
+650  0 $a Artists $x Anecdotes, facetiae, satire, etc.
+650  0 $a Ethics $x Anecdotes, facetiae, satire, etc.
+880 00 $6 245-01/$1 $a 艺术家　与　德育.
+880    $6 250-02/$1 $a 第1版.
+880 0  $6 260-03/$1 $a 成都 : $b 四川　人民　出版社 : $b 四川省　新华　书店　发行, $c 1983.
+880  0 $6 440-04/$1 $a 德育　丛书
+
+01390cam a2200349 a 4500
+001    84231405 
+003 DLC
+005 20001214140017.0
+008 841203m19849999cc       b    000 0 chi  
+010    $a    84231405 
+020    $c RMBY0.38 (v. 1)
+035    $a (CStRLIN)DCLP84-B5184
+040    $a DLC-R $c DLC-R $d DLC-R $d CStRLIN $d DLC
+043    $a a-cc---
+050 00 $a JQ1519.A5 $b C47529 1984
+066    $c $1
+082 00 $a 324.251/075 $2 19
+245 00 $6 880-01 $a Zheng dang xue xi cai liao / $c ben she bian.
+250    $6 880-02 $a Di 1 ban.
+260    $6 880-03 $a Shenyang : $b Liaoning ren min chu ban she : $b Liaoning sheng xin hua shu dian fa xing, $c 1984-
+300    $a v. <1, 3-5,   > ; $c 19 cm.
+500    $a Colophon title also in pinyin: Zhengdang xuexi cailiao.
+504    $a Includes bibliographical references.
+610 20 $6 880-04 $a Zhongguo gong chan dang $x Party work.
+710 2  $6 880-05 $a Liaoning ren min chu ban she.
+740 0  $a Zhengdang xuexi cailiao.
+880 00 $6 245-01/$1 $a 整党　学习　材料 / $c 本社　编.
+880    $6 250-02/$1 $a 第1版.
+880    $6 260-03/$1 $a 沈阳 : $b 辽宁　人氱　出版社 : $b 辽宁省　新华　书店　叱行, $c 1984-
+880 24 $6 610-04/$1 $a 中国　共产党 $x Party work.
+880 2  $6 710-05/$1 $a 辽宁　人氱　出版社.
+987    $a PINYIN $b CStRLIN $c 20001212 $d c $e 1.0
+
+00953nam a2200241 a 4500
+001    85174785 /ACN
+003 DLC
+005 19870219000000.0
+008 860312s1983    cc a          00000 chi  
+010    $a    85174785 /ACN
+035    $a (CStRLIN)DCLP86-B4377
+043    $a a-cc-hp
+050 0  $a GR336.H67 $b H6 1983
+066    $c $1
+082 0  $a 398.2/32/5115 $2 19
+245 00 $6 880-01 $a Ho-pei min chien ku shih hsüan / $c [chʻa tʻu Chang Wen-hsüeh].
+250    $6 880-02 $a Hsin 1 pan.
+260 0  $6 880-03 $a Shih-chia-chuang : $b Hua shan wen i chʻu pan she : $b Ho-pei sheng hsin hua shu tien fa hsing, $c 1983.
+300    $a 2, 255 p. : $b ill. ; $c 19 cm.
+650  0 $a Tales $z China $z Hopeh Province.
+880 00 $6 245-01/$1 $a 河北　氱间　故事　选 / $c [插图　张　文学].
+880    $6 250-02/$1 $a 新1版.
+880 0  $6 260-03/$1 $a 石家庄 : $b 花山　文艺　出版社 : $b 河北省　新華　書店　叱行, $c 1983.
+
+01219nam a2200325 a 4500
+001    86116930 /ACN
+003 DLC
+005 19870219000000.0
+008 860430s1984    cc       b    00010 chi  
+010    $a    86116930 /ACN
+020    $c RMBY1.00
+035    $a (CStRLIN)DCLP86-B7190
+050 0  $a PN45 $b .C436 1984
+066    $c $1
+082 0  $a 809 $2 19
+100 10 $6 880-01 $a Chang, Hsin-chien.
+245 10 $6 880-02 $a Wen hsüeh chi chʻu chih shih / $c Chang Hsin-chien.
+250    $6 880-03 $a Ti 1 pan.
+260 0  $6 880-04 $a Ho-fei shih : $b An-hui wen i chʻu pan she : $b An-hui sheng hsin hua shu tien fa hsing, $c 1984.
+300    $a 196 p. ; $c 19 cm.
+440  0 $6 880-05 $a Chʻing nien wen hsüeh tsʻung shu
+500    $a Cover title also in pinyin: Wenxuejichuzhishi.
+504    $a Includes bibliographies.
+650  0 $a Literature.
+740 01 $a Wenxuejichuzhishi.
+880 10 $6 100-01/$1 $a 章　新建.
+880 10 $6 245-02/$1 $a 文学　基础　知识 / $c 章　新建.
+880    $6 250-03/$1 $a 第1版.
+880 0  $6 260-04/$1 $a 合肥市 : $b 安徽　文艺　出版社 : $b 安徽省　新華　書店　发行, $c 1984.
+880  0 $6 440-05/$1 $a 青年　文学　丛书
+
+01502nam a2200301 a 4500
+001    86117080 /ACN
+003 DLC
+005 19870219000000.0
+008 860502s1985    cc ab    b    00000 chi  
+010    $a    86117080 /ACN
+020    $c RMBY2.30
+035    $a (CStRLIN)DCLP86-B7475
+043    $a a-cc---
+050 0  $a QE537.2.C6 $b S5 1985
+066    $c $1
+082 0  $a 551.2/2/09514 $2 19
+245 00 $6 880-01 $a Shan Kan Ning Chʻing ssu sheng (chʻü) chʻiang ti chen mu lu : $b kung yüan [chʻien] 1177 nien-kung yüan 1982 nien / $c Kuo chia ti chen chü Lan-chou ti chen yen chiu so.
+250    $6 880-02 $a Ti 1 pan.
+260 0  $6 880-03 $a Hsi-an : $b Shan-hsi kʻo hsüeh chi shu chʻu pan she : $b Shan-hsi sheng hsin hua shu tien fa hsing, $c 1985.
+300    $a 2, 170 p. : $b ill., maps ; $c 26 cm.
+504    $a Bibliography: p. 170.
+650  0 $a Earthquakes $z China, Northwest $x Chronology.
+710 20 $6 880-04 $a Kuo chia ti chen chü Lan-chou ti chen yen chiu so.
+740 01 $a Shan Kan Ning Chʻing 4 sheng (chʻü) chʻiang ti chen mu lu.
+880 00 $6 245-01/$1 $a 陕甘宁青　四省(区) 强　地震　目录 : $b 公元[前] 1177年－公元 1982年 / $c 国家　地震局　兰州　地震　研究所.
+880    $6 250-02/$1 $a 第1版.
+880 0  $6 260-03/$1 $a 西安 : $b 陕西　学　技术　出版社 : $b 陕西省　新華　書店　叱行, $c 1985.
+880 20 $6 710-04/$1 $a 国家　地震局　兰州　地震　研究所.
+
+01333cam a2200337 a 4500
+001    86118651 /ACN/r88
+003 DLC
+005 19880830123434.0
+008 860218s1985    ch       d    00110 chi  
+010    $a    86118651 /ACN/r88
+020    $c NT$260.00
+035    $a (CStRLIN)DCLP86-B2669
+041 0  $a chieng
+050 0  $a SD126 $b .C473 1985
+066    $c $1
+082 0  $a 634.9/03/21 $2 19
+100 10 $6 880-01 $a Chʻen, Ming-tsʻun.
+245 10 $6 880-02 $a Sen lin hsüeh ming tzʻu tzʻu tien = $b English Chinese dictionary of forestry / $c Chʻen Ming-tsʻun, Huang Chin-hsien ho pien.
+250    $6 880-03 $a Chʻu pan.
+260 0  $6 880-04 $a Tʻai-pei shih : $b Ming shan chʻu pan she, $c min kuo 74 [1985]
+300    $a 274 p. ; $c 20 cm.
+500    $a Includes index.
+650  0 $a Forests and forestry $x Dictionaries.
+650  0 $a English language $x Dictionaries $x Chinese.
+700 10 $6 880-05 $a Huang, Chin-hsien.
+740 01 $a English Chinese dictionary of forestry.
+880 10 $6 100-01/$1 $a 陳　銘東.
+880 10 $6 245-02/$1 $a 森林學　名詞　辭典 = $b English Chinese dictionary of forestry / $c 陳　銘東, 黃　釱仙　合編.
+880    $6 250-03/$1 $a 初版.
+880 0  $6 260-04/$1 $a 台北市 : $b 名山　出版社, $c 氱國74 [1985]
+880 10 $6 700-05/$1 $a 黃　釱仙.
+
+01051nam a2200289 a 4500
+001    86118679 /ACN
+003 DLC
+005 19870219000000.0
+008 860218s1985    ch            00011 chi  
+010    $a    86118679 /ACN
+035    $a (CStRLIN)DCLP86-B2674
+050 0  $a PL2865.H3 $b H84 1985
+066    $c $1
+082 0  $a 895.1/35 $2 19
+100 10 $6 880-01 $a Huang, Hai, $d 1943-
+245 10 $6 880-02 $a Hsing hsing ti hsiang lien / $c Huang Hai chu.
+250    $6 880-03 $a Chʻu pan.
+260 0  $6 880-04 $a Tʻai-pei shih : $b Huang kuan chʻu pan she, $c min kuo 74 [1985]
+300    $a 297 p. ; $c 19 cm.
+440  0 $6 880-05 $a Huang kuan tsʻung shu ; $v ti 1143 chung
+500    $a Short stories.
+650  0 $a Science fiction, Chinese.
+880 10 $6 100-01/$1 $a 黃　海, $d 1943-
+880 10 $6 245-02/$1 $a 星星　的　項練 / $c 黃　海　著.
+880    $6 250-03/$1 $a 初版.
+880 0  $6 260-04/$1 $a 台北市 : $b 皇冠　出版社, $c 民國74 [1985]
+880  0 $6 440-05/$1 $a 皇冠　叢書 ; $v 第1143種
+
+01437cam a2200361 a 4500
+001    86119726 
+003 DLC
+005 20010412140706.0
+008 860403s1985    cc af    b    00000 chi  
+010    $a    86119726 
+020    $c RMBY3.90
+035    $a (CStRLIN)DCLP86-B5782
+040    $a DLC-R $c DLC-R $d DLC-R $d CStRLIN $d DLC-R
+043    $a a-cc---
+050 00 $a DS751 $b .C4945 1985
+066    $c $1
+082 00 $a 951/.024 $2 19
+245 00 $6 880-01 $a Jian ming Song shi / $c Zhou Baozhu, Chen Zhen zhu bian ; Zhou Baozhu ... [et al.] bian xie.
+250    $6 880-02 $a Di 1 ban.
+260    $6 880-03 $a Beijing : $b Ren min chu ban she : $b Xin hua shu dian fa xing, $c 1985.
+300    $a 4, 5, 603 p., [12] p. of plates : $b ill. ; $c 21 cm.
+500    $a Colophon title also in pinyin : Jianming Songshi.
+504    $a Includes bibliographical references.
+651  0 $a China $x History $y Song dynasty,  960-1279.
+700 1  $6 880-04 $a Zhou, Baozhu.
+700 1  $6 880-05 $a Chen, Zhen.
+740 0  $a Jianming Songshi.
+880 00 $6 245-01/$1 $a 簡明　宋　史 / $c 周　宝珠, 陈　振　主编 ; 周　宝珠 ... [et al.] 编写.
+880    $6 250-02/$1 $a 第1版.
+880    $6 260-03/$1 $a 北京 : $b 人民　出版社 : $b 新華　書店　发行, $c 1985.
+880 1  $6 700-04/$1 $a 周　宝珠.
+880 1  $6 700-05/$1 $a 陈　振.
+987    $a PINYIN $b CStRLIN $c 20001214 $d c $e 1.0
+
+01114nam a2200289 a 4500
+001    86122256 /ACN
+003 DLC
+005 19870219000000.0
+008 860303s1984    cc       b    00010 chi  
+010    $a    86122256 /ACN
+020    $c RMBY2.80
+035    $a (CStRLIN)DCLP86-B3622
+043    $a a-cc---
+050 0  $a PL2333 $b .L63 1984
+066    $c $1
+082 0  $a 895.1/15/09 $2 19
+100 10 $6 880-01 $a Lo, Han-chʻao.
+245 10 $6 880-02 $a Chung-kuo hsien tai shih ko lun / $c [Lo Han-chʻao].
+250    $6 880-03 $a Ti 1 pan.
+260 0  $6 880-04 $a [Nan-ching shih] : $b Chiang-su jen min chʻu pan she : $b Chiang-su sheng hsin hua shu tien fa hsing, $c 1984.
+300    $a 11, 411 p. ; $c 20 cm.
+504    $a Includes bibliographical references.
+650  0 $a Chinese poetry $y 20th century $x History and criticism.
+880 10 $6 100-01/$1 $a 骆　寒超.
+880 10 $6 245-02/$1 $a 中国　现代　诗歌　论 / $c [骆　寒超].
+880    $6 250-03/$1 $a 第1版.
+880 0  $6 260-04/$1 $a [南京市] : $b 江苏　人氱　出版社 : $b 江苏省　新華　書店　叱行, $c 1984.
+
+01244nam a2200325 a 4500
+001    86124008 /ACN
+003 DLC
+005 19870219000000.0
+008 860417s1985    cc     j      00010 chi  
+010    $a    86124008 /ACN
+020    $c RMBY0.61
+035    $a (CStRLIN)DCLP86-B6501
+043    $a a-cc---
+050 0  $a DS731.U4 $b H75 1985
+066    $c $1
+082 0  $a 951/.6 $2 19
+100 10 $6 880-01 $a Hsin, She.
+245 10 $6 880-02 $a Tsai Wei-wu-erh chih hsiang / $c Hsin She.
+250    $6 880-03 $a Ti 1 pan.
+260 0  $6 880-04 $a Wu-lu-mu-chʻi shih : $b Hsin-chiang jen min chʻu pan she : $b Hsin-chiang hsin hua shu tien fa hsing, $c 1985.
+300    $a 2, 178 p. ; $c 19 cm.
+440  0 $6 880-05 $a Tsu kuo ta chia tʻing tsʻung shu
+650  0 $a Uigurs $x Juvenile literature.
+650  0 $a Ethnology $z China $x Juvenile literatture.
+651  0 $a China $x Ethnic relations $x Juvenile literature.
+880 10 $6 100-01/$1 $a 辛　涉.
+880 10 $6 245-02/$1 $a 在　维吾尔　之　乡 / $c 辛　涉.
+880    $6 250-03/$1 $a 第1版.
+880 0  $6 260-04/$1 $a 乌鲁木齐市 : $b 新疆　人民　出版社 : $b 新疆　新華　書店　发行, $c 1985.
+880  0 $6 440-05/$1 $a 祖国　大家庭　丛书
+
+01252cam a2200313 a 4500
+001    86124229 
+003 DLC
+005 20001214140017.0
+008 860703s1985    cc            000 1 chi  
+010    $a    86124229 
+020    $c RMBY1.05
+035    $a (CStRLIN)DCLP86-B11515
+040    $a DLC-R $c DLC-R $d CStRLIN $d DLC
+050 00 $a PL2724.H37 $b H7 1985
+066    $c $1
+082 00 $a 895.1/34 $2 19
+100 1  $6 880-01 $a Shen, Qifeng, $d b. 1741.
+245 10 $6 880-02 $a Xie duo / $c Shen Qifeng zhu ; Qiao Yuzhou jiao dian.
+250    $6 880-03 $a Beijing di 1 ban.
+260    $6 880-04 $a Beijing : $b Ren min wen xue chu ban she : $b Xin hua shu dian Beijing fa xing suo fa xing, $c 1985.
+300    $a 7, 198 p. ; $c 19 cm.
+440  0 $6 880-05 $a Zhongguo xiao shuo shi liao cong shu
+500    $a Short stories.
+880 1  $6 100-01/$1 $a 沈　起凤, $d b. 1741.
+880 10 $6 245-02/$1 $a 谐铎 / $c 沈　起凤　著 ; 乔　雨舟　校点.
+880    $6 250-03/$1 $a 北京　第1版.
+880    $6 260-04/$1 $a 北京 : $b 人民　文学　出版社 : $b 新华　书店　北京　发行所　发行, $c 1985.
+880  0 $6 440-05/$1 $a 中国　小说　史料　丛书
+987    $a PINYIN $b CStRLIN $c 20001214 $d c $e 1.0
+
+01516cam a2200349 a 4500
+001    86124531 /ACN/r93
+003 DLC
+005 19930723073715.0
+008 860319s1985    cc            00000 chi  
+010    $a    86124531 /ACN/r93
+020    $c RMBY1.80
+035    $a (CStRLIN)DCLP86-B4826
+043    $a a-cc---
+050 0  $a HX418.5 $b .C482 1985
+066    $c $1
+082 0  $a 322/.2/0951 $2 19
+245 00 $6 880-01 $a Chʻing kung cheng chih lun hsün chiao tsʻai / $c Chung kung Shang-hai shih wei hsüan chʻuan pu tsu chih pien hsieh.
+250    $6 880-02 $a Ti 1 pan.
+260    $6 880-03 $a Shang-hai : $b Shang-hai jen min chʻu pan she : $b Hsin hua shu tien Shang-hai fa hsing so fa hsing, $c 1985.
+300    $a 8, 479 p. ; $c 19 cm.
+500    $a Cover title also in pinyin: Qinggong zhengzhi lunxun jiaocai.
+650  0 $a Communism $z China.
+650  0 $a Working class $z China.
+651  0 $a China $x History $y 19th century.
+651  0 $a China $x History $y 20th century.
+651  0 $a China $x Description and travel.
+710 20 $6 880-04 $a Chung kung Shang-hai shih wei. $b Hsüan chʻuan pu.
+740 01 $a Qinggong zhengzhi lunxun jiaocai.
+880 00 $6 245-01/$1 $a 青工　政治　轮训　教材 / $c 中共　上海　市委　宣传部　组织　编写.
+880    $6 250-02/$1 $a 第1版.
+880    $6 260-03/$1 $a 上海 : $b 上海　人氱　出版社 : $b 新華　書店　上海　叱行所　叱行, $c 1985.
+880 20 $6 710-04/$1 $a 中共　上海　市委. $b 宣传部.
+
+01121nam a2200301 a 4500
+001    86125160 /ACN
+003 DLC
+005 19870219000000.0
+008 860327s1985    cc cfh        00010 chi  
+010    $a    86125160 /ACN
+020    $c RMBY1.05
+035    $a (CStRLIN)DCLP86-B5292
+050 0  $a PL2862.I276 $b W8 1985
+066    $c $1
+082 0  $a 895.1/15 $2 19
+100 10 $6 880-01 $a Hsiao, Chʻing.
+245 10 $6 880-02 $a Wu shu hua / $c Hsiao Chʻing.
+250    $6 880-03 $a Ti 1 pan.
+260 0  $6 880-04 $a Pei-ching : $b Pei-ching shih yüeh wen i chʻu pan she : $b Hsin hua shu tien Pei-ching fa hsing so fa hsing, $c 1985.
+300    $a 4, 3, 199 p., [2] p. of plates : $b facsim., port. ; $c 19 cm.
+440  0 $6 880-05 $a Hung yeh shih tsʻung
+500    $a Poems.
+740 01 $a 5 shu hua.
+880 10 $6 100-01/$1 $a 晓　晴.
+880 10 $6 245-02/$1 $a 五束　花/ $c 晓　晴.
+880    $6 250-03/$1 $a 第1版.
+880 0  $6 260-04/$1 $a 北京 : $b 北京　十月　文艺　出版社 : $b 新华　书店　北京　叱行所　叱行, $c 1985.
+880  0 $6 440-05/$1 $a 红叶　诗丛
+
+01301nam a2200301 a 4500
+001    86125348 /ACN
+003 DLC
+005 19870219000000.0
+008 860304r19851917ch            00010 chi  
+010    $a    86125348 /ACN
+035    $a (CStRLIN)DCLP86-B3824
+043    $a a-cc---
+050 0  $a DS754.18 $b .C446 1985
+066    $c $1
+082 0  $a 327.51 $2 19
+100 10 $6 880-01 $a Chuang, Ping-hai.
+245 10 $6 880-02 $a Wai chiao ssu tʻung lu / $c Chuang Ping-hai pien [tsuan].
+260 0  $6 880-03 $a [Tʻai-pei hsien Yung-ho shih] : $b Wen hai chʻu pan she, $c min kuo 74 [1985]
+300    $a 2, 2, 2, 272 p. ; $c 22 cm.
+490 1  $6 880-04 $a Chin tai Chung-kuo shih liao tsʻung kʻan 3 pien : ti 2 chi ; $v 20
+500    $a Reprint. Originally published: 1917?
+651  0 $a China $x Foreign relations $y 1644-1912.
+830  0 $6 880-05 $a Chin tai Chung-kuo shih liao tsʻung kʻan 3 pien ; $v 20.
+880 10 $6 100-01/$1 $a 莊　病骸.
+880 10 $6 245-02/$1 $a 外交　思痛　錄 / $c 莊　病骸　編[纂].
+880 0  $6 260-03/$1 $a [臺北縣　永和市] : $b 文海　出版社, $c 民國74 [1985]
+880 1  $6 490-04/$1 $a 近代　中國　史料　叢刊　三編 : 第二輯 ; $v 20
+880  0 $6 830-05/$1 $a 近代　中國　史料　叢刊　三編 ; $v 20.
+
+01158cam a2200325 a 4500
+001    86125443 
+003 DLC
+005 20020326070412.0
+008 860304s1985    ch a          00010 chi  
+010    $a    86125443 
+020    $c $9.00 (U.S.)
+035    $a (CStRLIN)DCLP86-B3795
+040    $a DLC-R $c DLC-R $d CStRLIN $d DLC-R
+043    $a a-cc---
+050 00 $a B5231 $b .L59 1985
+066    $c $1
+082 00 $a 181/.11 $2 19
+100 1  $6 880-01 $a Liu, Shaoji.
+245 10 $6 880-02 $a Zhongguo zhe xue xin lun = $b A new view of the Chinese philosophy / $c Liu Shaoji zhu.
+250    $6 880-03 $a Chu ban.
+260    $6 880-04 $a Taibei Shi : $b Shi jie shu ju, $c min guo 74 [1985]
+300    $a 6, 12, 424 p. : $b ill. ; $c 27 cm.
+546    $a In Chinese.
+650  0 $a Philosophy, Chinese.
+740 0  $a New view of the Chinese philosophy.
+880 1  $6 100-01/$1 $a 劉　紹基.
+880 10 $6 245-02/$1 $a 中國　哲學　新論 = $b A new view of the Chinese philosophy / $c 劉　紹基　豗.
+880    $6 250-03/$1 $a 初版.
+880    $6 260-04/$1 $a 台北市 : $b 世界　書局, $c 氱國74 [1985]
+987    $a PINYIN $b DLC $c 20020326 $d c
+
+01247nam a2200301 a 4500
+001    86154542 /ACN/r86
+003 DLC
+005 19870219000000.0
+008 860528s1985    cc            00000 chi  
+010    $a    86154542 /ACN/r86
+020    $c RMBY3.60 (v. 1)
+035    $a (CStRLIN)DCLP86-B9002
+043    $a a-cc---
+050 0  $a HB126.C4 $b C533 1985
+066    $c $1
+082 0  $a 330/.0951 $2 19
+245 00 $6 880-01 $a Chung-kuo ku tai ching chi chu shu hsüan tu / $c Yü Tsu-yao ... [et al.] pien chu.
+250    $6 880-02 $a Ti 1 pan.
+260 0  $6 880-03 $a [Chʻang-chʻun shih] : $b Chi-lin jen min chʻu pan she : $b Chi-lin sheng hsin hua shu tien fa hsing, $c 1985.
+300    $a 2 v. ; $c 20 cm.
+500    $a Colophon title also in pinyin: Zhongguo gudai jingji zhushu xuandu.
+650  0 $a Economics $z China $x History.
+700 10 $6 880-04 $a Yü, Tsu-yao.
+740 01 $a Zhongguo gudai jingji zhushu xuandu.
+880 00 $6 245-01/$1 $a 中國　古代　經濟　著述　選讀 / $c 虞　祖尧 ... [et al.] 编著.
+880    $6 250-02/$1 $a 第1版.
+880 0  $6 260-03/$1 $a [长春市] : $b 吉林　人民　出版社 : $b 吉林省　新华　书店　发行, $c 1985.
+880 10 $6 700-04/$1 $a 虞　祖尧.
+
+00951nam a2200253 a 4500
+001    86159478 /AK
+003 DLC
+005 19870219000000.0
+008 860602s1984    ko            00010 kor  
+010    $a    86159478 /AK
+020    $c W2800
+035    $a (CStRLIN)DCLP86-B9357
+040    $a CLASIA $c CLASIA $d DLC
+050 0  $a AC148 $b .K589256 1985
+066    $c $1
+100 10 $6 880-01 $a Kim, Tong-gil, $d 1928-
+245 10 $6 880-02 $a Tŭrŏra, ttaltŭl a : $b Kim Tong-gil taepʻyo esei.
+260 0  $6 880-03 $a Sŏul : $b Chʻŏngnyŏnsa, $c 1984 $g (1985 printing)
+300    $a 271 p. ; $c 23 cm.
+440  0 $6 880-04 $a Uri sidae ŭi taepʻyo sanmunsŏn ; $v 1
+880 10 $6 100-01/$1 $a 김　동길, $d 1928-
+880 10 $6 245-02/$1 $a 들어라,　딸들　아 : $b 김　동길　대표　에세이.
+880 0  $6 260-03/$1 $a 서울 : $b 청년사, $c 1984 $g (1985 printing)
+880  0 $6 440-04/$1 $a 우리　시대　의　대표　산문선 ; $v 1
+
