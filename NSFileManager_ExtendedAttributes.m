@@ -343,7 +343,7 @@ static NSString *xattrError(int err, const char *path);
         for (j = 0; success && j < numberOfFragments; j++) {
             name = [[NSString alloc] initWithFormat:@"%@-%i", uniqueValue, j];
             
-            char *subdataPtr = &valuePtr[j * MAX_XATTR_LENGTH];
+            char *subdataPtr = (char *)&valuePtr[j * MAX_XATTR_LENGTH];
             unsigned subdataLen = j == numberOfFragments - 1 ? ([value length] - j * MAX_XATTR_LENGTH) : MAX_XATTR_LENGTH;
             
             // could recurse here, but it's more efficient to use the variables we already have
