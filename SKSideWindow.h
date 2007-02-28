@@ -52,6 +52,8 @@
 - (void)moveToScreen:(NSScreen *)screen;
 - (void)slideIn;
 - (void)slideOut;
+- (void)showSideWindow;
+- (void)hideSideWindow;
 - (NSView *)mainView;
 - (void)setMainView:(NSView *)newContentView;
 - (NSRectEdge)edge;
@@ -63,6 +65,9 @@
 @interface SKSideWindowContentView : NSView {
     NSTrackingRectTag trackingRect;
     NSTimer *timer;
+    BOOL isStatic;
 }
+- (void)showWindow;
+- (void)hideWindow;
 - (void)trackMouseOvers;
 @end

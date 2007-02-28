@@ -812,49 +812,63 @@ static NSString *SKDocumentToolbarNotesPaneItemIdentifier = @"SKDocumentToolbarN
 
 
 - (IBAction)toggleLeftSidePane:(id)sender {
-    NSRect sideFrame = [leftSideContentBox frame];
-    NSRect pdfFrame = [pdfContentBox frame];
-    
-    if(NSWidth(sideFrame) > 0.0){
-        lastLeftSidePaneWidth = NSWidth(sideFrame); // cache this
-        pdfFrame.size.width += lastLeftSidePaneWidth;
-        sideFrame.size.width = 0.0;
+    if ([self isFullScreen]) {
+        if ([leftSideWindow state] == NSDrawerOpenState || [leftSideWindow state] == NSDrawerOpeningState)
+            [leftSideWindow hideSideWindow];
+        else
+            [leftSideWindow showSideWindow];
     } else {
-        if(lastLeftSidePaneWidth <= 0.0)
-            lastLeftSidePaneWidth = 250.0; // a reasonable value to start
-        if (lastLeftSidePaneWidth > 0.5 * NSWidth(pdfFrame))
-            lastLeftSidePaneWidth = floorf(0.5 * NSWidth(pdfFrame));
-        pdfFrame.size.width -= lastLeftSidePaneWidth;
-		sideFrame.size.width = lastLeftSidePaneWidth;
+        NSRect sideFrame = [leftSideContentBox frame];
+        NSRect pdfFrame = [pdfContentBox frame];
+        
+        if(NSWidth(sideFrame) > 0.0){
+            lastLeftSidePaneWidth = NSWidth(sideFrame); // cache this
+            pdfFrame.size.width += lastLeftSidePaneWidth;
+            sideFrame.size.width = 0.0;
+        } else {
+            if(lastLeftSidePaneWidth <= 0.0)
+                lastLeftSidePaneWidth = 250.0; // a reasonable value to start
+            if (lastLeftSidePaneWidth > 0.5 * NSWidth(pdfFrame))
+                lastLeftSidePaneWidth = floorf(0.5 * NSWidth(pdfFrame));
+            pdfFrame.size.width -= lastLeftSidePaneWidth;
+            sideFrame.size.width = lastLeftSidePaneWidth;
+        }
+        pdfFrame.origin.x = NSMaxX(sideFrame) + [splitView dividerThickness];
+        [leftSideContentBox setFrame:sideFrame];
+        [pdfContentBox setFrame:pdfFrame];
+        [splitView setNeedsDisplay:YES];
+        [splitView adjustSubviews];
     }
-    pdfFrame.origin.x = NSMaxX(sideFrame) + [splitView dividerThickness];
-    [leftSideContentBox setFrame:sideFrame];
-    [pdfContentBox setFrame:pdfFrame];
-    [splitView setNeedsDisplay:YES];
-    [splitView adjustSubviews];
 }
 
 - (IBAction)toggleRightSidePane:(id)sender {
-    NSRect sideFrame = [rightSideContentBox frame];
-    NSRect pdfFrame = [pdfContentBox frame];
-    
-    if(NSWidth(sideFrame) > 1.0){
-        lastRightSidePaneWidth = NSWidth(sideFrame); // cache this
-        pdfFrame.size.width += lastRightSidePaneWidth;
-        sideFrame.size.width = 0.0;
+    if ([self isFullScreen]) {
+        if ([rightSideWindow state] == NSDrawerOpenState || [rightSideWindow state] == NSDrawerOpeningState)
+            [rightSideWindow hideSideWindow];
+        else
+            [rightSideWindow showSideWindow];
     } else {
-        if(lastRightSidePaneWidth <= 0.0)
-            lastRightSidePaneWidth = 250.0; // a reasonable value to start
-        if (lastRightSidePaneWidth > 0.5 * NSWidth(pdfFrame))
-            lastRightSidePaneWidth = floorf(0.5 * NSWidth(pdfFrame));
-        pdfFrame.size.width -= lastRightSidePaneWidth;
-		sideFrame.size.width = lastRightSidePaneWidth;
+        NSRect sideFrame = [rightSideContentBox frame];
+        NSRect pdfFrame = [pdfContentBox frame];
+        
+        if(NSWidth(sideFrame) > 1.0){
+            lastRightSidePaneWidth = NSWidth(sideFrame); // cache this
+            pdfFrame.size.width += lastRightSidePaneWidth;
+            sideFrame.size.width = 0.0;
+        } else {
+            if(lastRightSidePaneWidth <= 0.0)
+                lastRightSidePaneWidth = 250.0; // a reasonable value to start
+            if (lastRightSidePaneWidth > 0.5 * NSWidth(pdfFrame))
+                lastRightSidePaneWidth = floorf(0.5 * NSWidth(pdfFrame));
+            pdfFrame.size.width -= lastRightSidePaneWidth;
+            sideFrame.size.width = lastRightSidePaneWidth;
+        }
+        sideFrame.origin.x = NSMaxX(pdfFrame) + [splitView dividerThickness];
+        [rightSideContentBox setFrame:sideFrame];
+        [pdfContentBox setFrame:pdfFrame];
+        [splitView setNeedsDisplay:YES];
+        [splitView adjustSubviews];
     }
-    sideFrame.origin.x = NSMaxX(pdfFrame) + [splitView dividerThickness];
-    [rightSideContentBox setFrame:sideFrame];
-    [pdfContentBox setFrame:pdfFrame];
-    [splitView setNeedsDisplay:YES];
-    [splitView adjustSubviews];
 }
 
 - (IBAction)changeLeftSidePaneState:(id)sender {
@@ -957,10 +971,13 @@ static NSString *SKDocumentToolbarNotesPaneItemIdentifier = @"SKDocumentToolbarN
     [rightSideEdgeView setEdges:BDSKNoEdgeMask];
     [findEdgeView setEdges:BDSKNoEdgeMask];
     
+    [leftSideWindow hideSideWindow];
+    [rightSideWindow hideSideWindow];
+    
     [leftSideWindow orderFront:self];
     [rightSideWindow orderFront:self];
     
-    [pdfView setFrame:NSInsetRect([[pdfView superview] bounds], 3.0, 0.0)];
+    [pdfView setFrame:NSInsetRect([[pdfView superview] bounds], 10.0, 0.0)];
     [[pdfView superview] setNeedsDisplay:YES];
 }
 
@@ -2561,17 +2578,31 @@ static NSString *SKDocumentToolbarNotesPaneItemIdentifier = @"SKDocumentToolbarN
     } else if (action == @selector(doZoomToFit:)) {
         return [pdfView autoScales] == NO;
     } else if (action == @selector(toggleLeftSidePane:)) {
-        if (NSWidth([leftSideContentBox frame]) > 0.0)
-            [menuItem setTitle:NSLocalizedString(@"Hide Contents Pane", @"Menu item title")];
-        else
-            [menuItem setTitle:NSLocalizedString(@"Show Contents Pane", @"Menu item title")];
-        return [self isFullScreen] == NO && [self isPresentation] == NO;
+        if ([self isFullScreen]) {
+            if ([leftSideWindow state] == NSDrawerOpenState || [leftSideWindow state] == NSDrawerOpeningState)
+                [menuItem setTitle:NSLocalizedString(@"Hide Contents Pane", @"Menu item title")];
+            else
+                [menuItem setTitle:NSLocalizedString(@"Show Contents Pane", @"Menu item title")];
+        } else {
+            if (NSWidth([leftSideContentBox frame]) > 0.0)
+                [menuItem setTitle:NSLocalizedString(@"Hide Contents Pane", @"Menu item title")];
+            else
+                [menuItem setTitle:NSLocalizedString(@"Show Contents Pane", @"Menu item title")];
+        }
+        return [self isPresentation] == NO;
     } else if (action == @selector(toggleRightSidePane:)) {
-        if (NSWidth([rightSideContentBox frame]) > 0.0)
-            [menuItem setTitle:NSLocalizedString(@"Hide Notes Pane", @"Menu item title")];
-        else
-            [menuItem setTitle:NSLocalizedString(@"Show Notes Pane", @"Menu item title")];
-        return [self isFullScreen] == NO && [self isPresentation] == NO;
+        if ([self isFullScreen]) {
+            if ([rightSideWindow state] == NSDrawerOpenState || [rightSideWindow state] == NSDrawerOpeningState)
+                [menuItem setTitle:NSLocalizedString(@"Hide Notes Pane", @"Menu item title")];
+            else
+                [menuItem setTitle:NSLocalizedString(@"Show Notes Pane", @"Menu item title")];
+        } else {
+            if (NSWidth([rightSideContentBox frame]) > 0.0)
+                [menuItem setTitle:NSLocalizedString(@"Hide Notes Pane", @"Menu item title")];
+            else
+                [menuItem setTitle:NSLocalizedString(@"Show Notes Pane", @"Menu item title")];
+        }
+        return [self isPresentation] == NO;
     } else if (action == @selector(changeLeftSidePaneState:)) {
         [menuItem setState:(int)leftSidePaneState == [menuItem tag] ? ([findTableView window] ? NSMixedState : NSOnState) : NSOffState];
         return YES;
