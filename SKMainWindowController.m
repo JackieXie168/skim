@@ -2579,8 +2579,16 @@ static NSString *SKDocumentToolbarNotesPaneItemIdentifier = @"SKDocumentToolbarN
         [menuItem setState:(int)rightSidePaneState == [menuItem tag] ? NSOnState : NSOffState];
         return YES;
     } else if (action == @selector(toggleFullScreen:)) {
+        if ([self isFullScreen])
+            [menuItem setTitle:NSLocalizedString(@"Remove Full Screen", @"Menu item title")];
+        else
+            [menuItem setTitle:NSLocalizedString(@"Full Screen", @"Menu item title")];
         return YES;
     } else if (action == @selector(togglePresentation:)) {
+        if ([self isPresentation])
+            [menuItem setTitle:NSLocalizedString(@"Remove Presentation", @"Menu item title")];
+        else
+            [menuItem setTitle:NSLocalizedString(@"Presentation", @"Menu item title")];
         return YES;
     } else if (action == @selector(getInfo:)) {
         return YES;
