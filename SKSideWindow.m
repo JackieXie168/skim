@@ -329,9 +329,12 @@
 - (void)mouseDown:(NSEvent *)theEvent {
 	NSPoint mouseLoc = [self convertPoint:[theEvent locationInWindow] fromView:nil];
     NSRect resizeHandleRect = [self resizeHandleRect];
-    if (NSPointInRect(mouseLoc, resizeHandleRect) && [(SKSideWindow *)[self window] state] == NSDrawerOpenState)
-        [self resizeWithEvent:theEvent];
-    else
+    if (NSPointInRect(mouseLoc, resizeHandleRect) && [(SKSideWindow *)[self window] state] == NSDrawerOpenState) {
+        if ([theEvent clickCount] == 2)
+            [self hideWindow];
+        else
+            [self resizeWithEvent:theEvent];
+    } else
         [super mouseDown:theEvent];
 }
 
