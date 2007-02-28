@@ -977,7 +977,7 @@ static NSString *SKDocumentToolbarNotesPaneItemIdentifier = @"SKDocumentToolbarN
     [leftSideWindow orderFront:self];
     [rightSideWindow orderFront:self];
     
-    [pdfView setFrame:NSInsetRect([[pdfView superview] bounds], 10.0, 0.0)];
+    [pdfView setFrame:NSInsetRect([[pdfView superview] bounds], 9.0, 0.0)];
     [[pdfView superview] setNeedsDisplay:YES];
 }
 
