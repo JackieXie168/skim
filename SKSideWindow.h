@@ -63,10 +63,14 @@
 
 
 @interface SKSideWindowContentView : NSView {
+    NSView *contentView;
     NSTrackingRectTag trackingRect;
     NSTimer *timer;
+    NSRectEdge edge;
+    BOOL resizing;
     BOOL isStatic;
 }
+- (id)initWithFrame:(NSRect)frameRect edge:(NSRectEdge)anEdge;
 - (void)showWindow;
 - (void)hideWindow;
 - (void)trackMouseOvers;

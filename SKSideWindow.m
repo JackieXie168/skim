@@ -42,7 +42,7 @@
 
 #define DEFAULT_WINDOW_WIDTH    300.0
 #define WINDOW_INSET            1.0
-#define WINDOW_OFFSET           9.0
+#define WINDOW_OFFSET           8.0
 #define CORNER_RADIUS           8.0
 #define CONTENT_INSET           8.0
 #define WINDOW_MIN_WIDTH        14.0
@@ -56,15 +56,13 @@
     NSScreen *screen = [[aController window] screen];
     NSRect contentRect = [screen frame];
     if (anEdge == NSMaxXEdge)
-        contentRect.origin.x = NSMaxX(contentRect) - WINDOW_OFFSET;
-    else
-        contentRect.origin.x -= DEFAULT_WINDOW_WIDTH - WINDOW_OFFSET;
+        contentRect.origin.x = NSMaxX(contentRect) - DEFAULT_WINDOW_WIDTH;
     contentRect.size.width = DEFAULT_WINDOW_WIDTH;
     contentRect = NSInsetRect(contentRect, 0.0, WINDOW_INSET);
     if (self = [super initWithContentRect:contentRect styleMask:NSBorderlessWindowMask | NSUnifiedTitleAndToolbarWindowMask backing:NSBackingStoreBuffered defer:NO screen:screen]) {
         controller = aController;
         edge = anEdge;
-        SKSideWindowContentView *contentView = [[[SKSideWindowContentView alloc] init] autorelease];
+        SKSideWindowContentView *contentView = [[[SKSideWindowContentView alloc] initWithFrame:[[self contentView] frame] edge:edge] autorelease];
         [self setContentView:contentView];
         [contentView trackMouseOvers];
 		[self setBackgroundColor:[NSColor clearColor]];
@@ -73,6 +71,7 @@
         [self setDisplaysWhenScreenProfileChanges:YES];
         [self setReleasedWhenClosed:NO];
         [self setLevel:NSFloatingWindowLevel];
+        [self moveToScreen:screen];
     }
     return self;
 }
@@ -85,7 +84,8 @@
     NSRect screenFrame = [screen frame];
     NSRect frame = [self frame];
     frame.size.height = NSHeight(screenFrame);
-    frame.origin.x = edge == NSMaxXEdge ? NSMaxX(screenFrame) - WINDOW_OFFSET : NSMinX(screenFrame) - NSWidth(frame) + WINDOW_OFFSET;
+    frame.size.width = WINDOW_OFFSET;
+    frame.origin.x = edge == NSMaxXEdge ? NSMaxX(screenFrame) - WINDOW_OFFSET : NSMinX(screenFrame);
     frame = NSInsetRect(frame, 0.0, WINDOW_INSET);
     [self setFrame:frame display:NO];
 }
@@ -97,6 +97,9 @@
         NSRect frame = [self frame];
         frame.origin.x = edge == NSMaxXEdge ? NSMaxX(screenFrame) - WINDOW_OFFSET : NSMinX(screenFrame) - NSWidth(frame) + WINDOW_OFFSET;
         [self setFrame:frame display:YES animate:YES];
+        frame.size.width = WINDOW_OFFSET;
+        frame.origin.x = edge == NSMaxXEdge ? NSMaxX(screenFrame) - WINDOW_OFFSET : NSMinX(screenFrame);
+        [self setFrame:frame display:YES animate:NO];
         [[controller window] makeKeyAndOrderFront:self];
         state = NSDrawerClosedState;
     }
@@ -107,7 +110,10 @@
         state = NSDrawerOpeningState;
         NSRect screenFrame = [[[controller window] screen] frame];
         NSRect frame = [self frame];
-        frame.origin.x = edge == NSMaxXEdge ? NSMaxX(screenFrame) - NSWidth(frame) + CONTENT_INSET : NSMinX(screenFrame) - CONTENT_INSET;
+        frame.size.width = NSWidth([[[self contentView] contentView] frame]) + CONTENT_INSET;
+        frame.origin.x = edge == NSMaxXEdge ? NSMaxX(screenFrame) - WINDOW_OFFSET : NSMinX(screenFrame) - NSWidth(frame) + WINDOW_OFFSET;
+        [self setFrame:frame display:YES animate:NO];
+        frame.origin.x = edge == NSMaxXEdge ? NSMaxX(screenFrame) - NSWidth(frame) : NSMinX(screenFrame);
         [self setFrame:frame display:YES animate:YES];
         state = NSDrawerOpenState;
     }
@@ -119,13 +125,12 @@
 }
 
 - (void)setMainView:(NSView *)newContentView {
-    NSArray *subviews = [[super contentView] subviews];
-    NSRect contentRect = NSInsetRect([[self contentView] bounds], CONTENT_INSET, CONTENT_INSET);
-    [newContentView setFrame:contentRect];
-    if ([subviews count])
-        [[self contentView] replaceSubview:[subviews objectAtIndex:0] with:newContentView];
+    NSView *contentView = [[self contentView] contentView];
+    [newContentView setFrame:[contentView bounds]];
+    if ([[contentView subviews] count])
+        [contentView replaceSubview:[[contentView subviews] objectAtIndex:0] with:newContentView];
     else
-        [[self contentView] addSubview:newContentView];
+        [contentView addSubview:newContentView];
 }
 
 - (NSRectEdge)edge {
@@ -149,6 +154,18 @@
 
 @implementation SKSideWindowContentView
 
+- (id)initWithFrame:(NSRect)frameRect edge:(NSRectEdge)anEdge {
+    if (self = [super initWithFrame:frameRect]) {
+        NSRect ignored, contentRect = NSInsetRect(frameRect, 0.0, CONTENT_INSET);
+        NSDivideRect(contentRect, &ignored, &contentRect, CONTENT_INSET, anEdge == NSMaxXEdge ? NSMinXEdge : NSMaxXEdge);
+        contentView = [[[NSView alloc] initWithFrame:contentRect] autorelease];
+        [contentView setAutoresizingMask:(anEdge == NSMaxXEdge ? NSViewMaxXMargin : NSViewMinXMargin) | NSViewHeightSizable];
+        [self addSubview:contentView];
+        edge = anEdge;
+    }
+    return self;
+}
+
 - (void)dealloc {
     [timer invalidate];
     [timer release];
@@ -158,14 +175,15 @@
 
 - (NSRect)resizeHandleRect {
     NSRect rect, ignored;
-    NSDivideRect([self bounds], &rect, &ignored, CONTENT_INSET, [(SKSideWindow *)[self window] edge] == NSMaxXEdge ? NSMinXEdge : NSMaxXEdge);
+    NSDivideRect([self bounds], &rect, &ignored, CONTENT_INSET, edge == NSMaxXEdge ? NSMinXEdge : NSMaxXEdge);
     return rect;
 }
 
 - (void)drawRect:(NSRect)aRect {
-    NSRect ignored, topRect, bottomRect, rect = [self bounds];
+    NSRect ignored, topRect, bottomRect, rect;
     NSPoint startPoint, endPoint;
     
+    NSDivideRect([self bounds], &ignored, &rect, -CONTENT_INSET, edge);
     NSDivideRect(rect, &topRect, &ignored, 2.0 * CORNER_RADIUS, NSMaxYEdge);
     NSDivideRect(rect, &bottomRect, &ignored, 2.0 * CORNER_RADIUS, NSMinYEdge);
     
@@ -198,25 +216,89 @@
     [NSGraphicsContext restoreGraphicsState];
 }
 
+- (id)contentView {
+    return contentView;
+}
+
+- (void)setContentView:(NSView *)newContentView {
+    contentView = newContentView;
+}
+
+- (void)setFrame:(NSRect)frame {
+    [super setFrame:frame];
+    if (resizing)
+        return;
+    if ([self window] && trackingRect)
+        [self removeTrackingRect:trackingRect];
+    trackingRect = [self addTrackingRect:[self bounds] owner:self userData:NULL assumeInside:NO];
+}
+
+- (void)setFrameSize:(NSSize)size {
+    [super setFrameSize:size];
+    if (resizing)
+        return;
+    if ([self window] && trackingRect)
+        [self removeTrackingRect:trackingRect];
+    trackingRect = [self addTrackingRect:[self bounds] owner:self userData:NULL assumeInside:NO];
+}
+ 
+- (void)setBounds:(NSRect)bounds {
+    [super setBounds:bounds];
+    if (resizing)
+        return;
+    if ([self window] && trackingRect)
+        [self removeTrackingRect:trackingRect];
+    trackingRect = [self addTrackingRect:[self bounds] owner:self userData:NULL assumeInside:NO];
+}
+ 
+- (void)setBoundsSize:(NSSize)size {
+    [super setBoundsSize:size];
+    if (resizing)
+        return;
+    if ([self window] && trackingRect)
+        [self removeTrackingRect:trackingRect];
+    trackingRect = [self addTrackingRect:[self bounds] owner:self userData:NULL assumeInside:NO];
+}
+
+- (void)viewWillMoveToWindow:(NSWindow *)newWindow {
+    if ([self window] && trackingRect)
+        [self removeTrackingRect:trackingRect];
+}
+
+- (void)viewDidMoveToWindow {
+    if ([self window] && trackingRect)
+        [self removeTrackingRect:trackingRect];
+    trackingRect = [self addTrackingRect:[self bounds] owner:self userData:NULL assumeInside:NO];
+}
+
 - (void)resizeWithEvent:(NSEvent *)theEvent {
-	NSPoint initialLocation = [theEvent locationInWindow];
+	NSPoint initialLocation = [[self window] convertBaseToScreen:[theEvent locationInWindow]];
 	NSRect initialFrame = [[self window] frame];
 	BOOL keepGoing = YES;
 	
     [self removeTrackingRect:trackingRect];
+    trackingRect = 0;
+    resizing = YES;
+    [contentView setAutoresizingMask:NSViewWidthSizable | NSViewHeightSizable];
     
 	while (keepGoing) {
 		theEvent = [[self window] nextEventMatchingMask: NSLeftMouseUpMask | NSLeftMouseDraggedMask];
 		switch ([theEvent type]) {
 			case NSLeftMouseDragged:
             {
-				NSPoint	newLocation = [theEvent locationInWindow];
+				NSPoint	newLocation = [[self window] convertBaseToScreen:[theEvent locationInWindow]];
                 NSRect newFrame = initialFrame;
                 
-                newFrame.size.width += newLocation.x - initialLocation.x;
-                if (NSWidth(newFrame) < WINDOW_MIN_WIDTH)
-                    newFrame.size.width = WINDOW_MIN_WIDTH;
-                
+                if (edge == NSMaxXEdge) {
+                    newFrame.size.width -= newLocation.x - initialLocation.x;
+                    if (NSWidth(newFrame) < WINDOW_MIN_WIDTH)
+                        newFrame.size.width = WINDOW_MIN_WIDTH;
+                    newFrame.origin.x = NSMaxX(initialFrame) - NSWidth(newFrame);
+                } else {
+                    newFrame.size.width += newLocation.x - initialLocation.x;
+                    if (NSWidth(newFrame) < WINDOW_MIN_WIDTH)
+                        newFrame.size.width = WINDOW_MIN_WIDTH;
+                }
                 [[self window] setFrame:newFrame display:YES];
 			}
 				break;
@@ -231,7 +313,9 @@
 		} // end of switch (event type)
 	} // end of mouse-tracking loop
     
+    [contentView setAutoresizingMask:(edge == NSMaxXEdge ? NSViewMaxXMargin : NSViewMinXMargin) | NSViewHeightSizable];
     [self trackMouseOvers];
+    resizing = NO;
 }
 
 - (void)mouseDown:(NSEvent *)theEvent {
@@ -251,6 +335,8 @@
 }
 
 - (void)trackMouseOvers {
+    if ([self window] && trackingRect)
+        [self removeTrackingRect:trackingRect];
     trackingRect = [self addTrackingRect:[self bounds] owner:self userData:NULL assumeInside:NO];
 }
 
