@@ -371,6 +371,12 @@ static NSString *SKDocumentToolbarNotesPaneItemIdentifier = @"SKDocumentToolbarN
     return setup;
 }
 
+- (void)windowDidBecomeKey:(NSNotification *)aNotification {
+    PDFAnnotation *annotation = [pdfView activeAnnotation];
+    if ([annotation isNoteAnnotation])
+        [[NSColorPanel sharedColorPanel] setColor:[annotation color]];
+}
+
 #pragma mark Accessors
 
 - (PDFDocument *)pdfDocument{
@@ -593,7 +599,8 @@ static NSString *SKDocumentToolbarNotesPaneItemIdentifier = @"SKDocumentToolbarN
 - (IBAction)changeColor:(id)sender{
     PDFAnnotation *annotation = [pdfView activeAnnotation];
     if ([annotation isNoteAnnotation]) {
-        [annotation setDefaultColor:[sender color]];
+        if ([[annotation color] isEqual:[sender color]] == NO)
+            [annotation setDefaultColor:[sender color]];
         [pdfView setNeedsDisplayForAnnotation:annotation];
     }
 }
@@ -1472,7 +1479,8 @@ static NSString *SKDocumentToolbarNotesPaneItemIdentifier = @"SKDocumentToolbarN
             
             [self setSelectedNoteIndexPaths:[NSArray arrayWithObject:indexPath]];
         }
-        [[NSColorPanel sharedColorPanel] setColor:[annotation color]];
+        if ([[self window] isKeyWindow])
+            [[NSColorPanel sharedColorPanel] setColor:[annotation color]];
     } else {
         [noteOutlineView deselectAll:self];
     }
