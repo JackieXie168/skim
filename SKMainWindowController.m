@@ -1260,8 +1260,15 @@ static NSString *SKDocumentToolbarNotesPaneItemIdentifier = @"SKDocumentToolbarN
     
     for (i = 0; i < iMax; i++) {
         PDFPage *page = [pages objectAtIndex:i];
-        NSRect bounds = NSInsetRect([sel boundsForPage:page], -3.0, -3.0);
+        NSRect bounds = NSInsetRect([sel boundsForPage:page], -4.0, -4.0);
         SKPDFAnnotationTemporary *circle = [[SKPDFAnnotationTemporary alloc] initWithBounds:bounds];
+        
+        // use a heavier line width at low magnification levels; would be nice if PDFAnnotation did this for us
+        PDFBorder *border = [[PDFBorder alloc] init];
+        [border setLineWidth:1.5 / ([pdfView scaleFactor])];
+        [border setStyle:kPDFBorderStyleSolid];
+        [circle setBorder:border];
+        [border release];
         [circle setColor:color];
         [page addAnnotation:circle];
         [pdfView setNeedsDisplayForAnnotation:circle];
