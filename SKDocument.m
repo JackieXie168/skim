@@ -122,7 +122,6 @@ static NSString *SKPostScriptDocumentType = @"PostScript document";
     BOOL success = [super saveToURL:absoluteURL ofType:typeName forSaveOperation:saveOperation error:outError];
     // we check for notes and save a .skim as well:
     if (success && [typeName isEqualToString:SKPDFDocumentType]) {
-       [self saveNotesToExtendedAttributesAtURL:absoluteURL error:NULL];
        if (saveOperation == NSSaveOperation || saveOperation == NSSaveAsOperation) {
             [self updateChangeCount:NSChangeCleared];
             [lastChangedDate release];
