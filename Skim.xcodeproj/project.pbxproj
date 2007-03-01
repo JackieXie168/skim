@@ -72,6 +72,7 @@
 		CE3A4DE30B7A7FC7006B64D3 /* ToolbarPresentation.tiff in Resources */ = {isa = PBXBuildFile; fileRef = CE3A4DE20B7A7FC7006B64D3 /* ToolbarPresentation.tiff */; };
 		CE4190C40B94963A00ECF819 /* ToolbarCircleNote.tiff in Resources */ = {isa = PBXBuildFile; fileRef = CE4190C20B94963A00ECF819 /* ToolbarCircleNote.tiff */; };
 		CE4190C50B94963A00ECF819 /* ToolbarTextNote.tiff in Resources */ = {isa = PBXBuildFile; fileRef = CE4190C30B94963A00ECF819 /* ToolbarTextNote.tiff */; };
+		CE41A6CC0B975E5000ECF819 /* Skim.sdef in Resources */ = {isa = PBXBuildFile; fileRef = CE41A6CB0B975E5000ECF819 /* Skim.sdef */; };
 		CE4EB8240B7B96D00091F228 /* OutlineViewAdorn.tiff in Resources */ = {isa = PBXBuildFile; fileRef = CE4EB8220B7B96D00091F228 /* OutlineViewAdorn.tiff */; };
 		CE4EB8250B7B96D00091F228 /* ThumbnailViewAdorn.tiff in Resources */ = {isa = PBXBuildFile; fileRef = CE4EB8230B7B96D00091F228 /* ThumbnailViewAdorn.tiff */; };
 		CE4EBDDA0B7BF3B30091F228 /* SKSideWindow.m in Sources */ = {isa = PBXBuildFile; fileRef = CE4EBDD90B7BF3B30091F228 /* SKSideWindow.m */; };
@@ -165,7 +166,7 @@
 		45A3BD380B4F097D002B297F /* InitialUserDefaults.plist */ = {isa = PBXFileReference; explicitFileType = text.xml; fileEncoding = 4; path = InitialUserDefaults.plist; sourceTree = "<group>"; };
 		45B113BF0B329A7E00DE0660 /* LICENSE */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = LICENSE; sourceTree = "<group>"; };
 		8D15AC360486D014006FF6A4 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = Info.plist; sourceTree = "<group>"; };
-		8D15AC370486D014006FF6A4 /* Skim.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = Skim.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		8D15AC370486D014006FF6A4 /* Skim.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Skim.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		CE0463C90B84D24300C11E4A /* SKApplication.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SKApplication.h; sourceTree = "<group>"; };
 		CE0463CA0B84D24300C11E4A /* SKApplication.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SKApplication.m; sourceTree = "<group>"; };
 		CE0464A00B84E3E400C11E4A /* OBUtilities.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OBUtilities.h; sourceTree = "<group>"; };
@@ -219,6 +220,7 @@
 		CE3A4DE20B7A7FC7006B64D3 /* ToolbarPresentation.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; name = ToolbarPresentation.tiff; path = Images/ToolbarPresentation.tiff; sourceTree = "<group>"; };
 		CE4190C20B94963A00ECF819 /* ToolbarCircleNote.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; name = ToolbarCircleNote.tiff; path = Images/ToolbarCircleNote.tiff; sourceTree = "<group>"; };
 		CE4190C30B94963A00ECF819 /* ToolbarTextNote.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; name = ToolbarTextNote.tiff; path = Images/ToolbarTextNote.tiff; sourceTree = "<group>"; };
+		CE41A6CB0B975E5000ECF819 /* Skim.sdef */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text.sdef; path = Skim.sdef; sourceTree = "<group>"; };
 		CE4EB8220B7B96D00091F228 /* OutlineViewAdorn.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; name = OutlineViewAdorn.tiff; path = Images/OutlineViewAdorn.tiff; sourceTree = "<group>"; };
 		CE4EB8230B7B96D00091F228 /* ThumbnailViewAdorn.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; name = ThumbnailViewAdorn.tiff; path = Images/ThumbnailViewAdorn.tiff; sourceTree = "<group>"; };
 		CE4EBDD80B7BF3B30091F228 /* SKSideWindow.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = SKSideWindow.h; sourceTree = "<group>"; };
@@ -389,6 +391,7 @@
 				2A37F4B9FDCFA73011CA2CEA /* Credits.rtf */,
 				8D15AC360486D014006FF6A4 /* Info.plist */,
 				089C165FFE840EACC02AAC07 /* InfoPlist.strings */,
+				CE41A6CB0B975E5000ECF819 /* Skim.sdef */,
 			);
 			name = Resources;
 			sourceTree = "<group>";
@@ -684,6 +687,7 @@
 				CEF7175C0B90DEEF003A2771 /* ReleaseNotes.nib in Resources */,
 				CE4190C40B94963A00ECF819 /* ToolbarCircleNote.tiff in Resources */,
 				CE4190C50B94963A00ECF819 /* ToolbarTextNote.tiff in Resources */,
+				CE41A6CC0B975E5000ECF819 /* Skim.sdef in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
