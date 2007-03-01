@@ -335,7 +335,57 @@ static NSString *xattrError(int err, const char *path);
     else
         xopts = XATTR_NOFOLLOW;
     
-    int status = removexattr(fsPath, attrName, xopts);
+    ssize_t bufSize;
+    ssize_t status;
+    status = getxattr(fsPath, attrName, NULL, 0, 0, xopts);
+    
+    if(status != -1){
+        bufSize = status;
+        char *namebuf = (char *)NSZoneMalloc(NSDefaultMallocZone(), sizeof(char) * bufSize);
+        NSAssert(namebuf != NULL, @"unable to allocate memory");
+        status = getxattr(fsPath, attrName, namebuf, bufSize, 0, xopts);
+        
+        if(status != -1){
+            
+            // let NSData worry about freeing the buffer
+            NSData *attribute = [[NSData alloc] initWithBytesNoCopy:namebuf length:bufSize];
+            
+            NSPropertyListFormat format;
+            NSString *errorString;
+            
+            // the plist parser logs annoying messages when failing to parse non-plist data, so sniff the header (this is correct for the binary plist that we use for split data)
+            static NSData *plistHeaderData = nil;
+            if (nil == plistHeaderData) {
+                char *h = "bplist00";
+                plistHeaderData = [[NSData alloc] initWithBytes:h length:strlen(h)];
+            }
+
+            id plist = nil;
+            
+            if ([attribute length] >= [plistHeaderData length] && [plistHeaderData isEqual:[attribute subdataWithRange:NSMakeRange(0, [plistHeaderData length])]])
+                plist = [NSPropertyListSerialization propertyListFromData:attribute mutabilityOption:NSPropertyListImmutable format:&format errorDescription:&errorString];
+            
+            // even if it's a plist, it may not be a dictionary or have the key we're looking for
+            if (plist && [plist respondsToSelector:@selector(objectForKey:)] && [[plist objectForKey:WRAPPER_KEY] boolValue]) {
+                
+                NSString *uniqueValue = [plist objectForKey:UNIQUE_KEY];
+                unsigned int i, numberOfFragments = [[plist objectForKey:FRAGMENTS_KEY] unsignedIntValue];
+                NSString *name;
+                
+                // remove the sub attributes
+                for (i = 0; i < numberOfFragments; i++) {
+                    name = [NSString stringWithFormat:@"%@-%i", uniqueValue, i];
+                    const char *subAttrName = [name UTF8String];
+                    status = removexattr(fsPath, subAttrName, xopts);
+                    if (status == -1) {
+                        NSLog(@"failed to remove subattribute %@ of attribute named %@", name, attr);
+                    }
+                }
+            }
+        }
+    }
+    
+    status = removexattr(fsPath, attrName, xopts);
     
     if(status == -1){
         errMsg = xattrError(errno, fsPath);
@@ -343,7 +393,6 @@ static NSString *xattrError(int err, const char *path);
         return NO;
     } else 
         return YES;    
-    
 }
 
 - (BOOL)removeAllExtendedAttributesAtPath:(NSString *)path traverseLink:(BOOL)follow error:(NSError **)error;
