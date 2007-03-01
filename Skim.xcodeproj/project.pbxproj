@@ -119,6 +119,7 @@
 		F92DB5AD0B36FE1F002A26E9 /* BDSKZoomablePDFView.m in Sources */ = {isa = PBXBuildFile; fileRef = F92DB5AB0B36FE1F002A26E9 /* BDSKZoomablePDFView.m */; };
 		F92DB5B30B36FE5E002A26E9 /* BDSKHeaderPopUpButton.m in Sources */ = {isa = PBXBuildFile; fileRef = F92DB5B20B36FE5E002A26E9 /* BDSKHeaderPopUpButton.m */; };
 		F92DB6620B371481002A26E9 /* PDFDocument_BDSKExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = F92DB6610B371481002A26E9 /* PDFDocument_BDSKExtensions.m */; };
+		F977319F0B939B7D002A7823 /* libbz2.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = F977319E0B939B7D002A7823 /* libbz2.dylib */; };
 		F97751600B37460100DF673B /* ConversionProgressWindow.nib in Resources */ = {isa = PBXBuildFile; fileRef = F977515E0B37460100DF673B /* ConversionProgressWindow.nib */; };
 		F97751630B37461000DF673B /* SKPSProgressController.m in Sources */ = {isa = PBXBuildFile; fileRef = F97751620B37461000DF673B /* SKPSProgressController.m */; };
 		F98E24BF0B702D9400914AF0 /* Carbon.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F98E24BE0B702D9400914AF0 /* Carbon.framework */; };
@@ -164,7 +165,7 @@
 		45A3BD380B4F097D002B297F /* InitialUserDefaults.plist */ = {isa = PBXFileReference; explicitFileType = text.xml; fileEncoding = 4; path = InitialUserDefaults.plist; sourceTree = "<group>"; };
 		45B113BF0B329A7E00DE0660 /* LICENSE */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = LICENSE; sourceTree = "<group>"; };
 		8D15AC360486D014006FF6A4 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = Info.plist; sourceTree = "<group>"; };
-		8D15AC370486D014006FF6A4 /* Skim.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Skim.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		8D15AC370486D014006FF6A4 /* Skim.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = Skim.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		CE0463C90B84D24300C11E4A /* SKApplication.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SKApplication.h; sourceTree = "<group>"; };
 		CE0463CA0B84D24300C11E4A /* SKApplication.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SKApplication.m; sourceTree = "<group>"; };
 		CE0464A00B84E3E400C11E4A /* OBUtilities.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OBUtilities.h; sourceTree = "<group>"; };
@@ -286,6 +287,7 @@
 		F92DB5B20B36FE5E002A26E9 /* BDSKHeaderPopUpButton.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BDSKHeaderPopUpButton.m; sourceTree = "<group>"; };
 		F92DB6600B371481002A26E9 /* PDFDocument_BDSKExtensions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PDFDocument_BDSKExtensions.h; sourceTree = "<group>"; };
 		F92DB6610B371481002A26E9 /* PDFDocument_BDSKExtensions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PDFDocument_BDSKExtensions.m; sourceTree = "<group>"; };
+		F977319E0B939B7D002A7823 /* libbz2.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libbz2.dylib; path = /usr/lib/libbz2.dylib; sourceTree = "<absolute>"; };
 		F977515F0B37460100DF673B /* English */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = English; path = English.lproj/ConversionProgressWindow.nib; sourceTree = "<group>"; };
 		F97751610B37461000DF673B /* SKPSProgressController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SKPSProgressController.h; sourceTree = "<group>"; };
 		F97751620B37461000DF673B /* SKPSProgressController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SKPSProgressController.m; sourceTree = "<group>"; };
@@ -300,6 +302,7 @@
 				8D15AC340486D014006FF6A4 /* Cocoa.framework in Frameworks */,
 				455989F80B2662FF00E5419B /* Quartz.framework in Frameworks */,
 				F98E24BF0B702D9400914AF0 /* Carbon.framework in Frameworks */,
+				F977319F0B939B7D002A7823 /* libbz2.dylib in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -393,6 +396,7 @@
 		2A37F4C3FDCFA73011CA2CEA /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				F977319E0B939B7D002A7823 /* libbz2.dylib */,
 				F98E24BE0B702D9400914AF0 /* Carbon.framework */,
 				455989F70B2662FF00E5419B /* Quartz.framework */,
 				1058C7A6FEA54F5311CA2CBB /* Linked Frameworks */,
