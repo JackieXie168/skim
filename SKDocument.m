@@ -117,6 +117,17 @@ static NSString *SKPostScriptDocumentType = @"PostScript document";
                                                  name:NSWindowWillCloseNotification object:[mainController window]];
 }
 
+- (void)showWindows{
+    [super showWindows];
+    
+    // Get the search string keyword if available (Spotlight passes this)
+    NSAppleEventDescriptor *event = [[NSAppleEventManager sharedAppleEventManager] currentAppleEvent];
+    NSString *searchString = [[event descriptorForKeyword:keyAESearchText] stringValue];
+    
+    if([event eventID] == kAEOpenDocuments && searchString != nil){
+        [[self mainWindowController] displaySearchResultsForString:searchString];
+    }
+}
 
 - (BOOL)saveToURL:(NSURL *)absoluteURL ofType:(NSString *)typeName forSaveOperation:(NSSaveOperationType)saveOperation error:(NSError **)outError{
     BOOL success = [super saveToURL:absoluteURL ofType:typeName forSaveOperation:saveOperation error:outError];

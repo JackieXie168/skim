@@ -1308,6 +1308,11 @@ static NSString *SKDocumentToolbarNotesPaneItemIdentifier = @"SKDocumentToolbarN
     }
 }
 
+- (void)displaySearchResultsForString:(NSString *)string {
+    [searchField setStringValue:string];
+    [self search:searchField];
+}
+
 - (IBAction)search:(id)sender {
     if ([[sender stringValue] isEqualToString:@""]) {
         // get rid of temporary annotations

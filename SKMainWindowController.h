@@ -185,6 +185,7 @@ typedef struct _SKPDFViewState {
 - (IBAction)rotateAllRight:(id)sender;
 - (IBAction)rotateAllLeft:(id)sender;
 - (IBAction)getInfo:(id)sender;
+- (void)displaySearchResultsForString:(NSString *)string;
 - (IBAction)search:(id)sender;
 - (IBAction)changeScaleFactor:(id)sender;
 - (IBAction)chooseScale:(id)sender;
