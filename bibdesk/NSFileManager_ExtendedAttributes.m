@@ -410,113 +410,105 @@ static NSString *xattrError(int err, const char *myPath)
 @implementation NSFileManager (BDSKSkimNotesExtensions)
 
 #define MAX_XATTR_LENGTH 2048
+#define UNIQUE_VALUE [[NSProcessInfo processInfo] globallyUniqueString]
+#define UNIQUE_KEY @"net_sourceforge_skim_unique_key"
+#define WRAPPER_KEY @"net_sourceforge_skim_has_wrapper"
+#define FRAGMENTS_KEY @"net_sourceforge_skim_number_of_fragments"
+#define NOTES_NAME @"net_sourceforge_skim_notes"
 
 - (BOOL)setSkimNotes:(NSArray *)notes inExtendedAttributesAtPath:(NSString *)path error:(NSError **)outError {
-    BOOL success = YES;
-    
-    int i, j, n, numberOfNotes = [notes count];
-    NSArray *oldNotes = [self extendedAttributeNamesAtPath:path traverseLink:YES error:NULL];
-    NSDictionary *dictionary = [NSDictionary dictionaryWithObjectsAndKeys:[NSNumber numberWithInt:numberOfNotes], @"numberOfNotes", nil];
-    NSMutableDictionary *longNotes = [NSMutableDictionary dictionary];
-    NSString *name = nil;
-    NSData *data = nil;
+    NSData *data = [NSKeyedArchiver archivedDataWithRootObject:notes];
     NSError *error = nil;
+    BOOL success;
     
-    // first remove all old notes
-    n = [oldNotes count];
-    for (i = 0; i < n; i++) {
-        name = [oldNotes objectAtIndex:i];
-        if ([name hasPrefix:@"net_sourceforge_bibdesk_skim_note-"]) {
-            if ([self removeExtendedAttribute:name atPath:path traverseLink:YES error:&error] == NO) {
-            }
-        }
-    }
     
-    for (i = 0; i < numberOfNotes && success; i++) {
-        name = [NSString stringWithFormat:@"net_sourceforge_bibdesk_skim_note-%i", i];
-        data = [NSKeyedArchiver archivedDataWithRootObject:[notes objectAtIndex:i]];
-        if ([data length] > MAX_XATTR_LENGTH) {
-            n = ceil([data length] / MAX_XATTR_LENGTH);
-            NSData *subdata;
-            for (j = 0; j < n && success; j++) {
-                name = [NSString stringWithFormat:@"net_sourceforge_bibdesk_skim_note-%i-%i", i, j];
-                subdata = [data subdataWithRange:NSMakeRange(j * MAX_XATTR_LENGTH, j == n - 1 ? [data length] - j * MAX_XATTR_LENGTH : MAX_XATTR_LENGTH)];
-                if ([self setExtendedAttributeNamed:name toValue:subdata atPath:path options:nil error:&error] == NO) {
-                    success = NO;
-                    if (outError) *outError = error;
-                    while (j--) {
-                        name = [NSString stringWithFormat:@"net_sourceforge_bibdesk_skim_note-%i-%i", i, j];
-                        [self removeExtendedAttribute:name atPath:path traverseLink:YES error:NULL];
-                    }
-                }                    
-            }
-            [longNotes setObject:[NSNumber numberWithInt:j] forKey:[NSString stringWithFormat:@"%i", i]];
-        } else if ([self setExtendedAttributeNamed:name toValue:data atPath:path options:nil error:&error] == NO) {
-            success = NO;
-            if (outError) *outError = error;
+    if ([data length] > MAX_XATTR_LENGTH) {
+                    
+        // compress to save space, and so we don't identify this as a plist when reading it (in case it really is plist data)
+        data = [data compressedBzip2Data];
+        
+        // this will be a unique identifier for the set of keys we're about to write (appending a counter to the UUID)
+        NSString *uniqueValue = UNIQUE_VALUE;
+        unsigned numberOfFragments = ceil([data length] / MAX_XATTR_LENGTH);
+        NSDictionary *wrapper = [NSDictionary dictionaryWithObjectsAndKeys:[NSNumber numberWithBool:YES], WRAPPER_KEY, uniqueValue, UNIQUE_KEY, [NSNumber numberWithUnsignedInt:numberOfFragments], FRAGMENTS_KEY, nil];
+        NSData *wrapperData = [NSPropertyListSerialization dataFromPropertyList:wrapper format:NSPropertyListBinaryFormat_v1_0 errorDescription:NULL];
+        NSParameterAssert([wrapperData length] < MAX_XATTR_LENGTH && [wrapperData length] > 0);
+        
+        success = [self setExtendedAttributeNamed:NOTES_NAME toValue:wrapperData atPath:path options:0 error:&error];
+        
+        // now split the original data value into multiple segments
+        NSString *name;
+        unsigned j;
+        const char *valuePtr = [data bytes];
+        
+        for (j = 0; success && j < numberOfFragments; j++) {
+            name = [[NSString alloc] initWithFormat:@"%@-%i", uniqueValue, j];
+            
+            char *subdataPtr = (char *)&valuePtr[j * MAX_XATTR_LENGTH];
+            unsigned subdataLen = j == numberOfFragments - 1 ? ([data length] - j * MAX_XATTR_LENGTH) : MAX_XATTR_LENGTH;
+            NSData *subdata = [[NSData alloc] initWithBytes:subdataPtr length:subdataLen];
+            
+            success = [self setExtendedAttributeNamed:name toValue:subdata atPath:path options:0 error:&error];
+            [subdata release];
+            [name release];
         }
-    }
-    
-    if (success == NO || [notes count] == 0) {
-        if ([self removeExtendedAttribute:@"net_sourceforge_bibdesk_skim_notesInfo" atPath:path traverseLink:YES error:&error] == NO) {
-            success = NO;
-            if (outError) *outError = error;
-        }
+        
     } else {
-        dictionary = [NSDictionary dictionaryWithObjectsAndKeys:[NSNumber numberWithInt:numberOfNotes], @"numberOfNotes", [longNotes count] ? longNotes : nil, @"longNotes", nil];
-        if ([self setExtendedAttributeNamed:@"net_sourceforge_bibdesk_skim_notesInfo" toPropertyListValue:dictionary atPath:path options:nil error:&error] == NO) {
-            success = NO;
-            if (outError) *outError = error;
-        }
+        success = [self setExtendedAttributeNamed:NOTES_NAME toValue:data atPath:path options:0 error:&error];
     }
+    
+    if (success == NO && outError)
+        *outError = error;
+    
     return success;
 }
 
 - (NSArray *)skimNotesFromExtendedAttributesAtPath:(NSString *)path error:(NSError **)outError {
-    NSMutableArray *noteDicts = [NSMutableArray array];
-    NSDictionary *dict = nil;
-    BOOL success = YES;
-    NSError *error = nil;
+    NSArray *notes = nil;
+    NSData *data = [self extendedAttributeNamed:NOTES_NAME atPath:path traverseLink:YES error:outError];
+    NSPropertyListFormat format;
+    NSString *errorString;
     
-    dict = [self propertyListFromExtendedAttributeNamed:@"net_sourceforge_bibdesk_skim_notesInfo" atPath:path traverseLink:YES error:&error];
-    
-    if (dict != nil) {
-        int i, numberOfNotes = [[dict objectForKey:@"numberOfNotes"] intValue];
-        NSDictionary *longNotes = [dict objectForKey:@"longNotes"];
-        NSString *name = nil;
-        int n;
-        NSData *data = nil;
-        
-        for (i = 0; i < numberOfNotes && success; i++) {
-            n = [[longNotes objectForKey:[NSString stringWithFormat:@"%i", i]] intValue];
-            if (n == 0) {
-                name = [NSString stringWithFormat:@"net_sourceforge_bibdesk_skim_note-%i", i];
-                if ((data = [self extendedAttributeNamed:name atPath:path traverseLink:YES error:&error]) &&
-                    (dict = [NSKeyedUnarchiver unarchiveObjectWithData:data])) {
-                    [noteDicts addObject:dict];
-                } else {
-                    success = NO;
-                    if (outError) *outError = error;
-                }
-            } else {
-                NSMutableData *mutableData = [NSMutableData dataWithCapacity:n * MAX_XATTR_LENGTH];
-                int j;
-                for (j = 0; j < n && success; j++) {
-                    name = [NSString stringWithFormat:@"net_sourceforge_bibdesk_skim_note-%i-%i", i, j];
-                    if (data = [self extendedAttributeNamed:name atPath:path traverseLink:YES error:&error]) {
-                        [mutableData appendData:data];
-                    } else {
-                        success = NO;
-                        if (outError) *outError = error;
-                    }
-                }
-                if (success && (dict = [NSKeyedUnarchiver unarchiveObjectWithData:mutableData])) {
-                    [noteDicts addObject:dict];
-                }
-            }
-        }
+    // the plist parser logs annoying messages when failing to parse non-plist data, so sniff the header (this is correct for the binary plist that we use for split data)
+    static NSData *plistHeaderData = nil;
+    if (nil == plistHeaderData) {
+        char *h = "bplist00";
+        plistHeaderData = [[NSData alloc] initWithBytes:h length:strlen(h)];
     }
-    return success ? noteDicts : nil;
+
+    id plist = nil;
+    
+    if ([data length] >= [plistHeaderData length] && [plistHeaderData isEqual:[data subdataWithRange:NSMakeRange(0, [plistHeaderData length])]])
+        plist = [NSPropertyListSerialization propertyListFromData:data mutabilityOption:NSPropertyListImmutable format:&format errorDescription:&errorString];
+    
+    // even if it's a plist, it may not be a dictionary or have the key we're looking for
+    if (plist && [plist respondsToSelector:@selector(objectForKey:)] && [[plist objectForKey:WRAPPER_KEY] boolValue]) {
+        
+        NSString *uniqueValue = [plist objectForKey:UNIQUE_KEY];
+        unsigned int i, numberOfFragments = [[plist objectForKey:FRAGMENTS_KEY] unsignedIntValue];
+        NSString *name;
+
+        NSMutableData *buffer = [NSMutableData data];
+        NSData *subdata;
+        BOOL success = (nil != uniqueValue && numberOfFragments > 0);
+        
+        // reassemble the original data object
+        for (i = 0; success && i < numberOfFragments; i++) {
+            name = [NSString stringWithFormat:@"%@-%i", uniqueValue, i];
+            subdata = [self extendedAttributeNamed:name atPath:path traverseLink:YES error:outError];
+            if (nil == subdata)
+                success = NO;
+            else
+                [buffer appendData:subdata];
+        }
+        
+        data = success ? [buffer decompressedBzip2Data] : nil;
+    }
+    
+    if (data)
+        notes = [NSKeyedUnarchiver unarchiveObjectWithData:data];
+    
+    return notes;
 }
 
 @end
