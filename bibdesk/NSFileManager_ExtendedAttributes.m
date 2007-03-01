@@ -429,7 +429,7 @@ static NSString *xattrError(int err, const char *myPath)
         
         // this will be a unique identifier for the set of keys we're about to write (appending a counter to the UUID)
         NSString *uniqueValue = UNIQUE_VALUE;
-        unsigned numberOfFragments = ceil([data length] / MAX_XATTR_LENGTH);
+        unsigned numberOfFragments = ([value length] / MAX_XATTR_LENGTH) + ([value length] % MAX_XATTR_LENGTH ? 1 : 0);
         NSDictionary *wrapper = [NSDictionary dictionaryWithObjectsAndKeys:[NSNumber numberWithBool:YES], WRAPPER_KEY, uniqueValue, UNIQUE_KEY, [NSNumber numberWithUnsignedInt:numberOfFragments], FRAGMENTS_KEY, nil];
         NSData *wrapperData = [NSPropertyListSerialization dataFromPropertyList:wrapper format:NSPropertyListBinaryFormat_v1_0 errorDescription:NULL];
         NSParameterAssert([wrapperData length] < MAX_XATTR_LENGTH && [wrapperData length] > 0);
