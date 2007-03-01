@@ -102,34 +102,6 @@ static NSString *xattrError(int err, const char *path);
     return attrs;
 }
 
-- (NSArray *)allExtendedAttributesAsStringsAtPath:(NSString *)path traverseLink:(BOOL)follow error:(NSError **)error;
-{
-    NSError *anError = nil;
-    NSArray *dataAttrs = [self allExtendedAttributesAtPath:path traverseLink:follow error:&anError];
-    if(dataAttrs == nil){
-        if(error) *error = anError;
-        return nil;
-    }
-    
-    NSMutableArray *array = [NSMutableArray arrayWithCapacity:[dataAttrs count]];
-    NSEnumerator *e = [dataAttrs objectEnumerator];
-    NSData *data = nil;
-    NSString *string = nil;
-    
-    while(data = [e nextObject]){
-        string = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
-        if(string != nil){
-            [array addObject:string];
-            [string release];
-        } else {
-            if(error) *error = [NSError errorWithDomain:NSCocoaErrorDomain code:0 userInfo:[NSDictionary dictionaryWithObjectsAndKeys:path, NSFilePathErrorKey, [NSNumber numberWithInt:NSUTF8StringEncoding], NSStringEncodingErrorKey, NSLocalizedString(@"unable to convert to a string", @"Error description"), NSLocalizedDescriptionKey, nil]]; 
-            return nil;
-        }
-    }
-    
-    return array;
-}
-
 - (NSArray *)allExtendedAttributesAtPath:(NSString *)path traverseLink:(BOOL)follow error:(NSError **)error;
 {
     NSError *anError = nil;
@@ -197,6 +169,7 @@ static NSString *xattrError(int err, const char *path);
         return nil;
     }
     
+    // let NSData worry about freeing the buffer
     NSData *attribute = [[NSData alloc] initWithBytesNoCopy:namebuf length:bufSize];
     
     NSPropertyListFormat format;
@@ -214,6 +187,7 @@ static NSString *xattrError(int err, const char *path);
     if ([attribute length] >= [plistHeaderData length] && [plistHeaderData isEqual:[attribute subdataWithRange:NSMakeRange(0, [plistHeaderData length])]])
         plist = [NSPropertyListSerialization propertyListFromData:attribute mutabilityOption:NSPropertyListImmutable format:&format errorDescription:&errorString];
     
+    // even if it's a plist, it may not be a dictionary or have the key we're looking for
     if (plist && [plist respondsToSelector:@selector(objectForKey:)] && [[plist objectForKey:WRAPPER_KEY] boolValue]) {
         
         NSString *uniqueValue = [plist objectForKey:UNIQUE_KEY];
@@ -224,6 +198,7 @@ static NSString *xattrError(int err, const char *path);
         NSData *subdata;
         BOOL success = (nil != uniqueValue && numberOfFragments > 0);
         
+        // reassemble the original data object
         for (i = 0; success && i < numberOfFragments; i++) {
             name = [NSString stringWithFormat:@"%@-%i", uniqueValue, i];
             subdata = [self extendedAttributeNamed:name atPath:path traverseLink:follow error:error];
@@ -260,27 +235,7 @@ static NSString *xattrError(int err, const char *path);
     return plist;
 }
 
-- (BOOL)addExtendedAttributeNamed:(NSString *)attr withStringValue:(NSString *)value atPath:(NSString *)path error:(NSError **)error;
-{
-    return [self setExtendedAttributeNamed:attr toValue:[value dataUsingEncoding:NSUTF8StringEncoding] atPath:path options:nil error:error];
-}
-
-- (BOOL)addExtendedAttributeNamed:(NSString *)attr withValue:(NSData *)value atPath:(NSString *)path error:(NSError **)error;
-{
-    return [self setExtendedAttributeNamed:attr toValue:value atPath:path options:nil error:error];
-}
-
-- (BOOL)replaceExtendedAttributeNamed:(NSString *)attr withStringValue:(NSString *)value atPath:(NSString *)path error:(NSError **)error;
-{
-    return [self setExtendedAttributeNamed:attr toValue:[value dataUsingEncoding:NSUTF8StringEncoding] atPath:path options:[NSDictionary dictionaryWithObjectsAndKeys:[NSNumber numberWithBool:YES], @"ReplaceOnly", nil] error:error];
-}
-
-- (BOOL)replaceExtendedAttributeNamed:(NSString *)attr withValue:(NSData *)value atPath:(NSString *)path error:(NSError **)error;
-{
-    return [self setExtendedAttributeNamed:attr toValue:value atPath:path options:[NSDictionary dictionaryWithObjectsAndKeys:[NSNumber numberWithBool:YES], @"ReplaceOnly", nil] error:error];
-}
-
-- (BOOL)setExtendedAttributeNamed:(NSString *)attr toValue:(NSData *)value atPath:(NSString *)path options:(NSDictionary *)options error:(NSError **)error;
+- (BOOL)setExtendedAttributeNamed:(NSString *)attr toValue:(NSData *)value atPath:(NSString *)path options:(BDSKXattrFlags)options error:(NSError **)error;
 {
 
     const char *fsPath = [self fileSystemRepresentationWithPath:path];
@@ -288,54 +243,37 @@ static NSString *xattrError(int err, const char *path);
     size_t dataSize = [value length];
     const char *attrName = [attr UTF8String];
     NSString *errMsg;
-    
-    // !!! we should replace the options dictionary with a bitfield so it's less annoying to use
-    
-    BOOL noFollow = NO;    // default setting of NO will prevent following symlinks
-    BOOL createOnly = NO;  // YES will only allow creation (it will fail if the attr already exists)
-    BOOL replaceOnly = NO; // YES will only allow replacement (it will fail if the attr does not exist)
-    
-    BOOL shouldSplitData = [options objectForKey:@"SplitData"] ? [[options objectForKey:@"SplitData"] boolValue] : YES;
-    
-    if(options != nil){
-        noFollow = [[options objectForKey:@"NoFollowLinks"] boolValue];
-        createOnly = [[options objectForKey:@"CreateOnly"] boolValue];
-        replaceOnly = [[options objectForKey:@"ReplaceOnly"] boolValue];        
-    }
-    
+        
+    // options passed to xattr functions
     int xopts = 0;
-    
-    if(noFollow)
+    if(options & kBDSKXattrNoFollow)
         xopts = xopts | XATTR_NOFOLLOW;
-    if(createOnly)
+    if(options & kBDSKXattrCreateOnly)
         xopts = xopts | XATTR_CREATE;
-    if(replaceOnly)
+    if(options & kBDSKXattrReplaceOnly)
         xopts = xopts | XATTR_REPLACE;
     
     BOOL success;
 
-    if (shouldSplitData && [value length] > MAX_XATTR_LENGTH) {
-            
-        static BOOL canRecurse = YES;
-        
-        NSParameterAssert(YES == canRecurse);
-        canRecurse = NO;
-        
+    if ((options & kBDSKXattrNoSplitData) == 0 && [value length] > MAX_XATTR_LENGTH) {
+                    
         // compress to save space, and so we don't identify this as a plist when reading it (in case it really is plist data)
         value = [value bzip2];
         
+        // this will be a unique identifier for the set of keys we're about to write (appending a counter to the UUID)
         NSString *uniqueValue = UNIQUE_VALUE;
         unsigned numberOfFragments = ceil([value length] / MAX_XATTR_LENGTH);
         NSDictionary *wrapper = [NSDictionary dictionaryWithObjectsAndKeys:[NSNumber numberWithBool:YES], WRAPPER_KEY, uniqueValue, UNIQUE_KEY, [NSNumber numberWithUnsignedInt:numberOfFragments], FRAGMENTS_KEY, nil];
         NSData *wrapperData = [NSPropertyListSerialization dataFromPropertyList:wrapper format:NSPropertyListBinaryFormat_v1_0 errorDescription:NULL];
-        NSParameterAssert([wrapperData length] < MAX_XATTR_LENGTH);
+        NSParameterAssert([wrapperData length] < MAX_XATTR_LENGTH && [wrapperData length] > 0);
         
-        // recursive call; we don't want to split this dictionary (or compress it)
-        NSMutableDictionary *newOpts = [NSMutableDictionary dictionary];
-        [newOpts addEntriesFromDictionary:options];
-        [newOpts setObject:[NSNumber numberWithBool:NO] forKey:@"SplitData"];
-        success = [self setExtendedAttributeNamed:attr toValue:wrapperData atPath:path options:newOpts error:error];
+        // we don't want to split this dictionary (or compress it)
+        if (setxattr(fsPath, attrName, [wrapperData bytes], [wrapperData length], 0, xopts))
+            success = NO;
+        else
+            success = YES;
         
+        // now split the original data value into multiple segments
         NSString *name;
         unsigned j;
         const char *valuePtr = [value bytes];
@@ -352,7 +290,6 @@ static NSString *xattrError(int err, const char *path);
             }
             [name release];
         }
-        canRecurse = YES;
         
     } else {
         int status = setxattr(fsPath, attrName, data, dataSize, 0, xopts);
@@ -367,17 +304,13 @@ static NSString *xattrError(int err, const char *path);
     return success;
 }
 
-- (BOOL)setExtendedAttributeNamed:(NSString *)attr toPropertyListValue:(id)plist atPath:(NSString *)path options:(NSDictionary *)options error:(NSError **)error;
+- (BOOL)setExtendedAttributeNamed:(NSString *)attr toPropertyListValue:(id)plist atPath:(NSString *)path options:(BDSKXattrFlags)options error:(NSError **)error;
 {
     NSString *errorString;
     NSData *data = [NSPropertyListSerialization dataFromPropertyList:plist 
                                                               format:NSPropertyListBinaryFormat_v1_0 
                                                     errorDescription:&errorString];
     BOOL success;
-    NSMutableDictionary *newOpts = [NSMutableDictionary dictionary];
-    [newOpts addEntriesFromDictionary:options];
-    [newOpts setObject:[NSNumber numberWithBool:YES] forKey:@"SplitData"];
-    
     if (nil == data) {
         if (error) *error = [NSError errorWithDomain:@"BDSKErrorDomain" code:0 userInfo:[NSDictionary dictionaryWithObjectsAndKeys:path, NSFilePathErrorKey, errorString, NSLocalizedDescriptionKey, nil]];
         [errorString release];

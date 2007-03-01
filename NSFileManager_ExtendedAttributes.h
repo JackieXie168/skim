@@ -30,6 +30,15 @@
 
 #import <Cocoa/Cocoa.h>
 
+typedef UInt32 BDSKXattrFlags;
+enum {
+    kBDSKXattrDefault     = 0,       /* create or replace, follow symlinks, split data    */
+    kBDSKXattrNoFollow    = 1L << 1, /* don't follow symlinks                             */
+    kBDSKXattrCreateOnly  = 1L << 2, /* setting will fail if the attribute already exists */
+    kBDSKXattrReplaceOnly = 1L << 3, /* setting will fail if the attribute does not exist */
+    kBDSKXattrNoSplitData = 1L << 4  /* don't split data objects into segments            */
+};
+
 /*!
     @category    NSFileManager (ExtendedAttributes)
     @abstract    Provides an Objective-C wrapper for the low-level BSD functions dealing with file attributes.
@@ -62,17 +71,6 @@
 - (NSData *)extendedAttributeNamed:(NSString *)attr atPath:(NSString *)path traverseLink:(BOOL)follow error:(NSError **)error;
 
 /*!
-    @method     allExtendedAttributesAsStringsAtPath:traverseLink:error:
-    @abstract   Returns all extended attributes for the given file, converting each to an NSString object.
-    @discussion (comprehensive description)
-    @param      path (description)
-    @param      follow (description)
-    @param      error (description)
-    @result     (description)
-*/
-- (NSArray *)allExtendedAttributesAsStringsAtPath:(NSString *)path traverseLink:(BOOL)follow error:(NSError **)error;
-
-/*!
     @method     allExtendedAttributesAtPath:traverseLink:error:
     @abstract   Returns all extended attributes for the given file, each as an NSData object.
     @discussion (comprehensive description)
@@ -102,39 +100,11 @@
     @param      attr The attribute name.
     @param      value The value of the attribute as NSData.
     @param      path Path to the object in the file system.
-    @param      options Dictionary containing three BOOL keys, or nil for default options of <tt>setxattr(2)</tt>.
-                The key strings are <tt>@"FollowLinks"</tt> to traverse symlinks, <tt>@"CreateOnly"</tt> to create, but
-                not replace the attribute, and <tt>@"ReplaceOnly"</tt> to replace, but not create the attribute.
+    @param      options see BDSKXattrFlags
     @param      error Error object describing the error if NO was returned.
     @result     Returns NO if an error occurred.
 */
-- (BOOL)setExtendedAttributeNamed:(NSString *)attr toValue:(NSData *)value atPath:(NSString *)path options:(NSDictionary *)options error:(NSError **)error;
-
-/*!
-    @method     addExtendedAttributeNamed:withValue:atPath:error:
-    @abstract   Adds the extended attribute named <tt>attr</tt> with a value of <tt>value</tt> to the given file.
-                Returns NO if an error occurred or the named attribute already exists.
-    @discussion (comprehensive description)
-    @param      attr The attribute name.
-    @param      value The value of the attribute as NSData.
-    @param      path Path to the object in the file system.
-    @param      error Error object describing the error if NO was returned.
-    @result     Returns NO if an error occurred.
-
-*/
-- (BOOL)addExtendedAttributeNamed:(NSString *)attr withValue:(NSData *)value atPath:(NSString *)path error:(NSError **)error;
-
-/*!
-    @method     addExtendedAttributeNamed:withStringValue:atPath:error:
-    @abstract   Adds an NSString object as the specified attribute name.
-    @discussion (comprehensive description)
-    @param      attr (description)
-    @param      value (description)
-    @param      path (description)
-    @param      error (description)
-    @result     (description)
-*/
-- (BOOL)addExtendedAttributeNamed:(NSString *)attr withStringValue:(NSString *)value atPath:(NSString *)path error:(NSError **)error;
+- (BOOL)setExtendedAttributeNamed:(NSString *)attr toValue:(NSData *)value atPath:(NSString *)path options:(BDSKXattrFlags)options error:(NSError **)error;
 
 /*!
     @method     setExtendedAttributeNamed:toPropertyListValue:atPath:options:error:
@@ -147,33 +117,7 @@
     @param      error (description)
     @result     (description)
 */
-- (BOOL)setExtendedAttributeNamed:(NSString *)attr toPropertyListValue:(id)plist atPath:(NSString *)path options:(NSDictionary *)options error:(NSError **)error;
-
-
-/*!
-    @method     replaceExtendedAttributeNamed:withValue:atPath:error:
-    @abstract   Replaces the attributed name <tt>attr</tt> with a value of <tt>value</tt> for the given file.
-                Returns NO if an error occurred or the named attribute does not exist.
-    @discussion (comprehensive description)
-    @param      attr The attribute name.
-    @param      value The value of the attribute as NSData.
-    @param      path Path to the object in the file system.
-    @param      error Error object describing the error if NO was returned.
-    @result     Returns NO if an error occurred.
-*/
-- (BOOL)replaceExtendedAttributeNamed:(NSString *)attr withValue:(NSData *)value atPath:(NSString *)path error:(NSError **)error;
-
-/*!
-    @method     replaceExtendedAttributeNamed:withStringValue:atPath:error:
-    @abstract   Convenience for replacing string attributes on a file
-    @discussion (comprehensive description)
-    @param      attr (description)
-    @param      value (description)
-    @param      path (description)
-    @param      error (description)
-    @result     (description)
-*/
-- (BOOL)replaceExtendedAttributeNamed:(NSString *)attr withStringValue:(NSString *)value atPath:(NSString *)path error:(NSError **)error;
+- (BOOL)setExtendedAttributeNamed:(NSString *)attr toPropertyListValue:(id)plist atPath:(NSString *)path options:(BDSKXattrFlags)options error:(NSError **)error;
 
 /*!
     @method     removeExtendedAttribute:atPath:followLinks:error:
