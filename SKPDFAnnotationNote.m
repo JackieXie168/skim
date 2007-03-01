@@ -354,6 +354,36 @@ static NSColor *noteColor = nil;
 
 - (BOOL)isNoteAnnotation { return YES; }
 
+- (void)setBounds:(NSRect)bounds {
+    [[NSNotificationCenter defaultCenter] postNotificationName:SKAnnotationWillChangeNotification
+            object:self
+          userInfo:[NSDictionary dictionaryWithObjectsAndKeys:@"bounds", @"key", nil]];
+    [super setBounds:bounds];
+    [[NSNotificationCenter defaultCenter] postNotificationName:SKAnnotationDidChangeNotification
+            object:self
+          userInfo:[NSDictionary dictionaryWithObjectsAndKeys:@"bounds", @"key", nil]];
+}
+
+- (void)setContents:(NSString *)contents {
+    [[NSNotificationCenter defaultCenter] postNotificationName:SKAnnotationWillChangeNotification
+            object:self
+          userInfo:[NSDictionary dictionaryWithObjectsAndKeys:@"contents", @"key", nil]];
+    [super setContents:contents];
+    [[NSNotificationCenter defaultCenter] postNotificationName:SKAnnotationDidChangeNotification
+            object:self
+          userInfo:[NSDictionary dictionaryWithObjectsAndKeys:@"contents", @"key", nil]];
+}
+
+- (void)setColor:(NSColor *)color {
+    [[NSNotificationCenter defaultCenter] postNotificationName:SKAnnotationWillChangeNotification
+            object:self
+          userInfo:[NSDictionary dictionaryWithObjectsAndKeys:@"color", @"key", nil]];
+    [super setColor:color];
+    [[NSNotificationCenter defaultCenter] postNotificationName:SKAnnotationDidChangeNotification
+            object:self
+          userInfo:[NSDictionary dictionaryWithObjectsAndKeys:@"color", @"key", nil]];
+}
+
 - (NSString *)type {
     return @"Note";
 }
