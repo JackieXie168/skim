@@ -507,6 +507,9 @@
 			<responds-to name="close">
 				<cocoa method="handleCloseScriptCommand:"/>
 			</responds-to>
+			<responds-to name="print">
+				<cocoa method="handlePrintScriptCommand:"/>
+			</responds-to>
 			<responds-to name="save">
 				<cocoa method="handleSaveScriptCommand:"/>
 			</responds-to>
@@ -531,9 +534,6 @@
 				description="The text of the page.">
 				<cocoa key="text"/>
 			</property>
-			<responds-to name="make">
-				<cocoa method=""/>
-			</responds-to>
 		</class>
 
 		<class name="note" plural="notes" code="Note" inherits="item"
