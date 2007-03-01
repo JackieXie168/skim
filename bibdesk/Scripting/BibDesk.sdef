@@ -333,7 +333,11 @@ Having all three of these seems to work best for Panther. For Tiger include this
 			<cocoa class="NSColor"/>
 		</value-type>
 
-		<class name="rich text" plural="rich text" code="ctxt"
+        <!--
+            According to the documentation and standard examples, the code for rich txt should be "ctxt".
+            However this is a mistake, as ctxt corresponds to type "text", which is the recommended type for strings.
+        -->
+		<class name="rich text" plural="rich text" code="ricT"
 			description="Rich (styled) text">
 			<cocoa class="NSTextStorage"/>
 			<!-- this "type" element and the ones that follow, while they
