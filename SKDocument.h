@@ -71,6 +71,8 @@ extern NSString *SKDocumentErrorDomain;
 - (SKMainWindowController *)mainWindowController;
 - (PDFDocument *)pdfDocument;
 
+- (PDFView *)pdfView;
+
 - (NSDictionary *)currentDocumentSetup;
 
 - (void)checkFileUpdatesIfNeeded;
