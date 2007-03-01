@@ -491,6 +491,10 @@ static NSString *xattrError(int err, const char *myPath)
 
 @end
 
+// 
+// implementation modified after http://www.cocoadev.com/index.pl?NSDataPlusBzip (removed exceptions)
+//
+
 @implementation NSData (Bzip2)
 
 - (NSData *)bzip2 { return [self bzip2WithCompressionSetting:5]; }
