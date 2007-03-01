@@ -38,6 +38,14 @@
 
 #import "SKPDFAnnotationNote.h"
 #import "SKStringConstants.h"
+#import "PDFPage_SKExtensions.h"
+#import "SKPDFView.h"
+
+enum {
+    SKASTextAnnotation = 'NTxt',
+    SKASAnchoredAnnotation = 'NAnc',
+    SKASCircleAnnotation = 'NCir',
+};
 
 NSString *SKAnnotationWillChangeNotification = @"SKAnnotationWillChangeNotification";
 NSString *SKAnnotationDidChangeNotification = @"SKAnnotationDidChangeNotification";
@@ -120,6 +128,83 @@ NSString *SKAnnotationDidChangeNotification = @"SKAnnotationDidChangeNotificatio
 - (BOOL)isTemporaryAnnotation { return NO; }
 
 - (BOOL)isResizable { return NO; }
+
+#pragma mark Scripting support
+
+- (id)init {
+    self = nil;
+    NSScriptCommand *currentCommand = [NSScriptCommand currentCommand];
+    if ([currentCommand isKindOfClass:[NSCreateCommand class]]) {
+        unsigned long classCode = [[(NSCreateCommand *)currentCommand createClassDescription] appleEventCode];
+       
+        if (classCode == 'Note') {
+            
+            NSMutableDictionary *properties = [[[(NSCreateCommand *)currentCommand resolvedKeyDictionary] mutableCopy] autorelease];
+            int type = [[properties objectForKey:@"noteType"] intValue];
+            
+            if (type == 0) {
+                [currentCommand setScriptErrorNumber:NSRequiredArgumentsMissingScriptError]; 
+                [currentCommand setScriptErrorString:NSLocalizedString(@"New notes need a type.", @"Error description")];
+                return nil;
+            }
+            
+            PDFAnnotation *annotation = nil;
+            
+            if (type == SKASTextAnnotation)
+                annotation = [[SKPDFAnnotationFreeText alloc] initWithBounds:NSMakeRect(100.0, 100.0, 64.0, 64.0)];
+            else if (type == SKASAnchoredAnnotation)
+                annotation = [[SKPDFAnnotationNote alloc] initWithBounds:NSMakeRect(100.0, 100.0, 16.0, 16.0)];
+            else if (type == SKASCircleAnnotation)
+                annotation = [[PDFAnnotationCircle alloc] initWithBounds:NSMakeRect(100.0, 100.0, 64.0, 64.0)];
+            
+            self = annotation;
+        }
+    }
+    return self;
+}
+
+- (NSScriptObjectSpecifier *)objectSpecifier {
+	unsigned index = [[[self page] notes] indexOfObjectIdenticalTo:self];
+    if (index != NSNotFound) {
+        NSScriptObjectSpecifier *containerRef = [[self page] objectSpecifier];
+        return [[[NSIndexSpecifier allocWithZone:[self zone]] initWithContainerClassDescription:[containerRef keyClassDescription] containerSpecifier:containerRef key:@"notes" index:index] autorelease];
+    } else {
+        return nil;
+    }
+}
+
+- (int)noteType {
+    if ([[self type] isEqualToString:@"FreeText"])
+        return SKASTextAnnotation;
+    else if ([[self type] isEqualToString:@"Note"])
+        return SKASAnchoredAnnotation;
+    else if ([[self type] isEqualToString:@"Circle"])
+        return SKASCircleAnnotation;
+    return 0;
+}
+
+- (NSTextStorage *)richText {
+    return [self text] ? [[[NSTextStorage alloc] initWithAttributedString:[self text]] autorelease] : nil;
+}
+
+- (void)setBoundsAsQDRect:(NSData *)inQDBoundsAsData {
+    if ([inQDBoundsAsData length] == sizeof(Rect)) {
+        const Rect *qdBounds = (const Rect *)[inQDBoundsAsData bytes];
+        SKPDFView *pdfView = (SKPDFView *)[[[self page] containingDocument] pdfView];
+        NSRect newBounds = NSRectFromRect(*qdBounds);
+        if ([self isResizable] == NO)
+            newBounds.size = [self bounds].size;
+        [pdfView setNeedsDisplayForAnnotation:self];
+        [self setBounds:newBounds];
+        [pdfView setNeedsDisplayForAnnotation:self];
+    }
+
+}
+
+- (NSData *)boundsAsQDRect {
+    Rect qdBounds = RectFromNSRect([self bounds]);
+    return [NSData dataWithBytes:&qdBounds length:sizeof(Rect)];
+}
 
 @end
 

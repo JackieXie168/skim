@@ -222,9 +222,13 @@
 	<string>????</string>
 	<key>CFBundleVersion</key>
 	<string>1.0</string>
+	<key>NSAppleScriptEnabled</key>
+	<string>YES</string>
 	<key>NSMainNibFile</key>
 	<string>MainMenu</string>
 	<key>NSPrincipalClass</key>
 	<string>SKApplication</string>
+	<key>OSAScriptingDefinition</key>
+	<string>Skim.sdef</string>
 </dict>
 </plist>

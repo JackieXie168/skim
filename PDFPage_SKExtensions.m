@@ -37,6 +37,9 @@
  */
 
 #import "PDFPage_SKExtensions.h"
+#import "SKPDFAnnotationNote.h"
+#import "SKDocument.h"
+#import "SKPDFView.h"
 
 
 @implementation PDFPage (SKExtensions) 
@@ -126,6 +129,66 @@
     [image unlockFocus];
     
     return [image autorelease];
+}
+
+#pragma mark Scripting support
+
+- (SKDocument *)containingDocument {
+    NSEnumerator *docEnum = [[[NSDocumentController sharedDocumentController] documents] objectEnumerator];
+    SKDocument *document;
+    
+    while (document = [docEnum nextObject]) {
+        if ([[self document] isEqual:[document pdfDocument]])
+            break;
+    }
+    
+    return document;
+}
+
+- (NSData *)boundsAsQDRect {
+    Rect qdBounds = RectFromNSRect([self boundsForBox:kPDFDisplayBoxCropBox]);
+    return [NSData dataWithBytes:&qdBounds length:sizeof(Rect)];
+}
+
+- (NSArray *)notes {
+    NSEnumerator *annEnum = [[self annotations] objectEnumerator];
+    PDFAnnotation *annotation;
+    NSMutableArray *notes = [NSMutableArray array];
+    
+    while (annotation = [annEnum nextObject]) {
+        if ([annotation isNoteAnnotation])
+            [notes addObject:annotation];
+    }
+    return notes;
+}
+
+- (void)insertInNotes:(id)newNote {
+    SKDocument *document = [self containingDocument];
+    
+    [self addAnnotation:newNote];
+    
+    [(SKPDFView *)[document pdfView] setNeedsDisplayForAnnotation:newNote];
+    
+    [[NSNotificationCenter defaultCenter] postNotificationName:SKPDFViewDidAddAnnotationNotification object:[document pdfView] 
+        userInfo:[NSDictionary dictionaryWithObjectsAndKeys:newNote, @"annotation", self, @"page", nil]];
+}
+
+- (void)removeFromNotesAtIndex:(unsigned int)index {
+    PDFAnnotation *note = [[self notes] objectAtIndex:index];
+    
+    [(SKPDFView *)[[self containingDocument] pdfView] removeAnnotation:note];
+}
+
+- (NSScriptObjectSpecifier *)objectSpecifier {
+    SKDocument *document = [self containingDocument];
+	unsigned index = [[self document] indexForPage:self];
+    
+    if (document && index != NSNotFound) {
+        NSScriptObjectSpecifier *containerRef = [document objectSpecifier];
+        return [[[NSIndexSpecifier allocWithZone:[self zone]] initWithContainerClassDescription:[containerRef keyClassDescription] containerSpecifier:containerRef key:@"pages" index:index] autorelease];
+    } else {
+        return nil;
+    }
 }
 
 @end

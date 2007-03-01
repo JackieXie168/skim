@@ -113,3 +113,24 @@ extern NSString *SKAnnotationDidChangeNotification;
 - (void)handleAnnotationDidChangeNotification:(NSNotification *)notification;
 
 @end
+
+
+static inline
+Rect RectFromNSRect(NSRect rect) {
+    Rect qdRect;
+    qdRect.left = round(NSMinX(rect));
+    qdRect.bottom = round(NSMinY(rect));
+    qdRect.right = round(NSMaxX(rect));
+    qdRect.top = round(NSMaxY(rect));
+    return qdRect;
+}
+
+static inline
+NSRect NSRectFromRect(Rect qdRect) {
+    NSRect rect;
+    rect.origin.x = (float)qdRect.left;
+    rect.origin.y = (float)qdRect.bottom;
+    rect.size.width = (float)(qdRect.right - qdRect.left);
+    rect.size.height = (float)(qdRect.top - qdRect.bottom);
+    return rect;
+}

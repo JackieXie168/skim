@@ -39,10 +39,19 @@
 #import <Cocoa/Cocoa.h>
 #import <Quartz/Quartz.h>
 
+@class SKDocument;
 
 @interface PDFPage (SKExtensions)
 
 - (NSImage *)image;
 - (NSImage *)thumbnailWithSize:(float)size shadowBlurRadius:(float)shadowBlurRadius shadowOffset:(NSSize)shadowOffset;
+
+- (NSScriptObjectSpecifier *)objectSpecifier;
+- (SKDocument *)containingDocument;
+- (NSData *)boundsAsQDRect;
+- (NSArray *)notes;
+- (void)insertInNotes:(id)newNote;
+- (void)removeFromNotesAtIndex:(unsigned int)index;
+- (NSScriptObjectSpecifier *)objectSpecifier;
 
 @end
