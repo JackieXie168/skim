@@ -40,6 +40,7 @@
 #import <Quartz/Quartz.h>
 #import "BDSKDragImageView.h"
 #import "SKPDFAnnotationNote.h"
+#import "SKDocument.h"
 
 static NSString *SKNoteWindowFrameAutosaveName = @"SKNoteWindowFrameAutosaveName";
 
@@ -64,6 +65,7 @@ static NSString *SKNoteWindowFrameAutosaveName = @"SKNoteWindowFrameAutosaveName
 }
 
 - (void)dealloc {
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
     CFRelease(editors);
     [note release];
     [super dealloc];
@@ -84,6 +86,9 @@ static NSString *SKNoteWindowFrameAutosaveName = @"SKNoteWindowFrameAutosaveName
         nextWindowLocation = NSMakePoint(NSMinX(windowFrame), NSMaxY(windowFrame));
     }
     nextWindowLocation = [[self window] cascadeTopLeftFromPoint:nextWindowLocation];
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleDocumentWillSaveNotification:) 
+                                                 name:SKDocumentWillSaveNotification object:[self document]];
 }
 
 - (void)windowWillClose:(NSNotification *)aNotification {
@@ -136,6 +141,10 @@ static NSString *SKNoteWindowFrameAutosaveName = @"SKNoteWindowFrameAutosaveName
 			return NO;
     
     return YES;
+}
+
+- (void)handleDocumentWillSaveNotification:(NSNotification *)notification {
+    [self commitEditing];
 }
 
 #pragma mark BDSKDragImageView delegate protocol

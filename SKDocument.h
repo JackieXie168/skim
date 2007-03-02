@@ -40,6 +40,8 @@
 
 extern NSString *SKDocumentErrorDomain;
 
+extern NSString *SKDocumentWillSaveNotification;
+
 @class PDFDocument, SKMainWindowController, SKPDFView;
 
 @interface SKDocument : NSDocument

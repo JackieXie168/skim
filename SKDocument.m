@@ -60,6 +60,8 @@ static NSString *SKBarePDFDocumentType = @"PDF Without Notes";
 static NSString *SKNotesDocumentType = @"Skim Notes";
 static NSString *SKPostScriptDocumentType = @"PostScript document";
 
+NSString *SKDocumentWillSaveNotification = @"SKDocumentWillSaveNotification";
+
 @implementation SKDocument
 
 + (void)initialize {
@@ -146,6 +148,7 @@ static NSString *SKPostScriptDocumentType = @"PostScript document";
 }
 
 - (BOOL)writeToURL:(NSURL *)absoluteURL ofType:(NSString *)typeName error:(NSError **)outError{
+    [[NSNotificationCenter defaultCenter] postNotificationName:SKDocumentWillSaveNotification object:self];
     BOOL didWrite = NO;
     if ([typeName isEqualToString:SKPDFDocumentType]) {
         // notes are only saved as a dry-run to test if we can write, they are not copied to the final destination. 
