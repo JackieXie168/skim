@@ -162,6 +162,11 @@
     return [NSData dataWithBytes:&qdBounds length:sizeof(Rect)];
 }
 
+- (id)richText {
+    NSAttributedString *attrString = [self attributedString];
+    return attrString ? [[[NSTextStorage alloc] initWithAttributedString:attrString] autorelease] : [NSNull null];
+}
+
 - (NSArray *)notes {
     NSEnumerator *annEnum = [[self annotations] objectEnumerator];
     PDFAnnotation *annotation;

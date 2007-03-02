@@ -49,6 +49,7 @@
 - (NSScriptObjectSpecifier *)objectSpecifier;
 - (SKDocument *)containingDocument;
 - (NSData *)boundsAsQDRect;
+- (id)richText;
 - (NSArray *)notes;
 - (void)insertInNotes:(id)newNote;
 - (void)removeFromNotesAtIndex:(unsigned int)index;

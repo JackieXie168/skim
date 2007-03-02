@@ -183,8 +183,8 @@ NSString *SKAnnotationDidChangeNotification = @"SKAnnotationDidChangeNotificatio
     return 0;
 }
 
-- (NSTextStorage *)richText {
-    return [self text] ? [[[NSTextStorage alloc] initWithAttributedString:[self text]] autorelease] : nil;
+- (id)richText {
+    return [self text] ? [[[NSTextStorage alloc] initWithAttributedString:[self text]] autorelease] : [NSNull null];
 }
 
 - (void)setBoundsAsQDRect:(NSData *)inQDBoundsAsData {
