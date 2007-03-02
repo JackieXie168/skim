@@ -1427,10 +1427,11 @@ static Boolean stringIsEqualToString(const void *value1, const void *value2) { r
         if(nil == date) 
             return nil;
         NSString *monthStr = [self valueOfField:BDSKMonthString];
+        NSDictionary *locale = [[NSUserDefaults standardUserDefaults] dictionaryRepresentation];
         if([NSString isEmptyString:monthStr])
-            return [date descriptionWithCalendarFormat:@"%Y"];
+            return [date descriptionWithCalendarFormat:@"%Y" locale:locale];
         else
-            return [date descriptionWithCalendarFormat:@"%b %Y"];
+            return [date descriptionWithCalendarFormat:@"%b %Y" locale:locale];
     }else if([field isEqualToString: BDSKFirstAuthorString] ){
         return [[self authorAtIndex:0] displayName];
     }else if([field isEqualToString: BDSKSecondAuthorString] ){
