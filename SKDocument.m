@@ -194,14 +194,24 @@ static NSString *SKPostScriptDocumentType = @"PostScript document";
     NSError *error = nil;
     
     if ([docType isEqualToString:SKPDFDocumentType]) {
-        if ([self readNotesFromExtendedAttributesAtURL:absoluteURL error:&error]) {
-            data = [[NSData alloc] initWithContentsOfURL:absoluteURL];
-            pdfDoc = [[PDFDocument alloc] initWithURL:absoluteURL];
+        if ((data = [[NSData alloc] initWithContentsOfURL:absoluteURL options:0 error:&error]) &&
+            (pdfDoc = [[PDFDocument alloc] initWithURL:absoluteURL])) {
+            if ([self readNotesFromExtendedAttributesAtURL:absoluteURL error:&error] == NO) {
+                NSAlert *alert = [NSAlert alertWithMessageText:NSLocalizedString(@"Unable to Read Notes", @"Message in alert dialog") 
+                                                 defaultButton:NSLocalizedString(@"No", @"Button title")
+                                               alternateButton:NSLocalizedString(@"Yes", @"Button title")
+                                                   otherButton:nil
+                                     informativeTextWithFormat:NSLocalizedString(@"Skim was not able to read the notes at %@. %@ Do you want to continue to open the PDF document anyway?", @"Informative text in alert dialog"), [absoluteURL path], [[error userInfo] objectForKey:NSLocalizedDescriptionKey]];
+                if ([alert runModal] == NSAlertDefaultReturn) {
+                    [data release];
+                    data = nil;
+                    [pdfDoc release];
+                    pdfDoc = nil;
+                }
+            }
         }
     } else if ([docType isEqualToString:SKPostScriptDocumentType]) {
-        NSData *data = [[NSData alloc] initWithContentsOfURL:absoluteURL];
-        PDFDocument *pdfDoc = nil;
-        if (data) {
+        if (data = [NSData dataWithContentsOfURL:absoluteURL options:0 error:&error]) {
             SKPSProgressController *progressController = [[SKPSProgressController alloc] init];
             if (data = [[progressController PDFDataWithPostScriptData:data] retain])
                 pdfDoc = [[PDFDocument alloc] initWithData:data];
@@ -209,15 +219,20 @@ static NSString *SKPostScriptDocumentType = @"PostScript document";
         }
     }
     
-    if (data && pdfDoc) {
-        didRead = YES;
-        [pdfData release];
-        pdfData = data;
-        [pdfDocument release];
-        pdfDocument = pdfDoc;
-        [[self mutableArrayValueForKey:@"notes"] removeAllObjects];
-        [lastChangedDate release];
-        lastChangedDate = [[[[NSFileManager defaultManager] fileAttributesAtPath:[absoluteURL path] traverseLink:YES] fileModificationDate] retain];
+    if (data) {
+        if (pdfDoc) {
+            didRead = YES;
+            [pdfData release];
+            pdfData = data;
+            [pdfDocument release];
+            pdfDocument = pdfDoc;
+            [[self mutableArrayValueForKey:@"notes"] removeAllObjects];
+            [lastChangedDate release];
+            lastChangedDate = [[[[NSFileManager defaultManager] fileAttributesAtPath:[absoluteURL path] traverseLink:YES] fileModificationDate] retain];
+        } else {
+            [data release];
+            data = nil;
+        }
     }
     
     if (didRead == NO && outError != NULL)
