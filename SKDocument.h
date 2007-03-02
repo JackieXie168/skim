@@ -86,3 +86,7 @@ extern NSString *SKDocumentErrorDomain;
 
 @interface SKDocumentController : NSDocumentController
 @end
+
+
+@interface SKGoToCommand : NSScriptCommand
+@end
