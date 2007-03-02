@@ -70,23 +70,10 @@ NSString *SKDocumentWillSaveNotification = @"SKDocumentWillSaveNotification";
         SKPDFDocumentType = [NSPDFPboardType copy];
 }
 
-- (id)init{
-    
-    self = [super init];
-    if (self) {
-    
-        // Add your subclass-specific initialization here.
-        // If an error occurs here, send a [self release] message and return nil.
-        notes = [[NSMutableArray alloc] initWithCapacity:10];
-    }
-    return self;
-}
-
 - (void)dealloc {
     [[NSUserDefaultsController sharedUserDefaultsController] removeObserver:self forKey:SKAutoCheckFileUpdateKey];
     [[NSNotificationCenter defaultCenter] removeObserver:self];
     [pdfData release];
-    [notes release];
     [noteDicts release];
     [super dealloc];
 }
@@ -162,7 +149,7 @@ NSString *SKDocumentWillSaveNotification = @"SKDocumentWillSaveNotification";
         [[self mainWindowController] removeTemporaryAnnotations];
         didWrite = [pdfData writeToURL:absoluteURL options:NSAtomicWrite error:outError];
     } else if ([typeName isEqualToString:SKNotesDocumentType]) {
-        NSArray *array = [notes valueForKey:@"dictionaryValue"];
+        NSArray *array = [[self notes] valueForKey:@"dictionaryValue"];
         NSData *data;
         if (array && (data = [NSKeyedArchiver archivedDataWithRootObject:array]))
             didWrite = [data writeToURL:absoluteURL options:NSAtomicWrite error:outError];
@@ -230,7 +217,6 @@ NSString *SKDocumentWillSaveNotification = @"SKDocumentWillSaveNotification";
             pdfData = data;
             [pdfDocument release];
             pdfDocument = pdfDoc;
-            [[self mutableArrayValueForKey:@"notes"] removeAllObjects];
             [lastChangedDate release];
             lastChangedDate = [[[[NSFileManager defaultManager] fileAttributesAtPath:[absoluteURL path] traverseLink:YES] fileModificationDate] retain];
         } else {
@@ -273,6 +259,7 @@ NSString *SKDocumentWillSaveNotification = @"SKDocumentWillSaveNotification";
 - (BOOL)saveNotesToExtendedAttributesAtURL:(NSURL *)aURL error:(NSError **)outError {
     NSFileManager *fm = [NSFileManager defaultManager];
     BOOL success = YES;
+    NSArray *notes = [self notes];
     
     if ([aURL isFileURL]) {
         NSString *path = [aURL path];
@@ -431,41 +418,6 @@ NSString *SKDocumentWillSaveNotification = @"SKDocumentWillSaveNotification";
 
 #pragma mark Accessors
 
-- (NSArray *)notes {
-    return notes;
-}
-
-- (void)setNotes:(NSArray *)newNotes {
-    [notes setArray:notes];
-}
-
-- (unsigned)countOfNotes {
-    return [notes count];
-}
-
-- (id)objectInNotesAtIndex:(unsigned)theIndex {
-    return [notes objectAtIndex:theIndex];
-}
-
-- (void)insertObject:(id)obj inNotesAtIndex:(unsigned)theIndex {
-    [notes insertObject:obj atIndex:theIndex];
-}
-
-- (void)removeObjectFromNotesAtIndex:(unsigned)theIndex {
-    PDFAnnotation *note = [notes objectAtIndex:theIndex];
-    NSEnumerator *wcEnum = [[self windowControllers] objectEnumerator];
-    NSWindowController *wc = [wcEnum nextObject];
-    
-    while (wc = [wcEnum nextObject]) {
-        if ([wc isKindOfClass:[SKNoteWindowController class]] && [[(SKNoteWindowController *)wc note] isEqual:note]) {
-            [[wc window] orderOut:self];
-            break;
-        }
-    }
-    
-    [notes removeObjectAtIndex:theIndex];
-}
-
 - (SKMainWindowController *)mainWindowController {
     NSArray *windowControllers = [self windowControllers];
     return [windowControllers count] ? [windowControllers objectAtIndex:0] : nil;
@@ -518,8 +470,8 @@ NSString *SKDocumentWillSaveNotification = @"SKDocumentWillSaveNotification";
     return [[self pdfDocument] pageAtIndex:index];
 }
 
-- (NSArray *)allNotes {
-    return [self notes];
+- (NSArray *)notes {
+    return [[self mainWindowController] notes];
 }
 
 - (void)removeFromNotesAtIndex:(unsigned int)index {

@@ -486,7 +486,7 @@
             </element>
             <element type="note" access="r"
                 description="Notes in the PDF file">
-                <cocoa key="allNotes"/>
+                <cocoa key="notes"/>
             </element>
             <property name="name" code="pnam" type="text" access="r"
                 description="The document's name.">

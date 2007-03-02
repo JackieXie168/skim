@@ -110,6 +110,7 @@ typedef struct _SKPDFViewState {
     IBOutlet NSTreeController   *noteTreeController;
     IBOutlet SKNoteOutlineView  *noteOutlineView;
     IBOutlet NSView             *noteView;
+    NSMutableArray              *notes;
     BOOL                        updatingNoteSelection;
     NSArray                     *selectedNoteIndexPaths;
     PDFAnnotation               *selectedNote;
@@ -211,6 +212,32 @@ typedef struct _SKPDFViewState {
 
 - (PDFDocument *)pdfDocument;
 - (void)setPdfDocument:(PDFDocument *)document;
+
+- (NSArray *)notes;
+- (void)setNotes:(NSArray *)newNotes;
+- (unsigned)countOfNotes;
+- (id)objectInNotesAtIndex:(unsigned)index;
+- (void)insertObject:(id)obj inNotesAtIndex:(unsigned)index;
+- (void)removeObjectFromNotesAtIndex:(unsigned)index;
+
+- (NSArray *)thumbnails;
+- (void)setThumbnails:(NSArray *)newThumbnails;
+- (unsigned)countOfThumbnails;
+- (id)objectInThumbnailsAtIndex:(unsigned)theIndex;
+- (void)insertObject:(id)obj inThumbnailsAtIndex:(unsigned)theIndex;
+- (void)removeObjectFromThumbnailsAtIndex:(unsigned)theIndex;
+
+- (NSArray *)snapshots;
+- (void)setSnapshots:(NSArray *)newSnapshots;
+- (unsigned)countOfSnapshots;
+- (id)objectInSnapshotsAtIndex:(unsigned)theIndex;
+- (void)insertObject:(id)obj inSnapshotsAtIndex:(unsigned)theIndex;
+- (void)removeObjectFromSnapshotsAtIndex:(unsigned)theIndex;
+
+- (NSArray *)selectedNoteIndexPaths;
+- (void)setSelectedNoteIndexPaths:(NSArray *)indexPaths;
+- (PDFAnnotation *)selectedNote;
+- (void)setSelectedNote:(PDFAnnotation *)note;
 
 - (unsigned int)pageNumber;
 - (void)setPageNumber:(unsigned int)pageNumber;
