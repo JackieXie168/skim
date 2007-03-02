@@ -128,6 +128,7 @@ static NSString *SKDocumentToolbarNotesPaneItemIdentifier = @"SKDocumentToolbarN
         searchResults = [[NSMutableArray alloc] init];
         thumbnails = [[NSMutableArray alloc] init];
         dirtyThumbnails = [[NSMutableArray alloc] init];
+        notes = [[NSMutableArray alloc] init];
         snapshots = [[NSMutableArray alloc] init];
         dirtySnapshots = [[NSMutableArray alloc] init];
         lastViewedPages = [[NSMutableArray alloc] init];
@@ -158,6 +159,7 @@ static NSString *SKDocumentToolbarNotesPaneItemIdentifier = @"SKDocumentToolbarN
 	[searchResults release];
     [pdfOutline release];
 	[thumbnails release];
+	[notes release];
 	[snapshots release];
     [lastViewedPages release];
     [selectedNoteIndexPaths release];
@@ -386,6 +388,9 @@ static NSString *SKDocumentToolbarNotesPaneItemIdentifier = @"SKDocumentToolbarN
 - (void)setPdfDocument:(PDFDocument *)document{
     if ([pdfView document] != document) {
         
+        // these will be invalid. If needed, the document will restore them
+        [[self mutableArrayValueForKey:@"notes"] removeAllObjects];
+        
         [self unregisterForDocumentNotifications];
         
         [[pdfView document] setDelegate:nil];
@@ -413,7 +418,6 @@ static NSString *SKDocumentToolbarNotesPaneItemIdentifier = @"SKDocumentToolbarN
 }
 
 - (void)setAnnotationsFromDictionaries:(NSArray *)noteDicts{
-    NSMutableArray *notes = [[self document] mutableArrayValueForKey:@"notes"];
     NSEnumerator *e = [notes objectEnumerator];
     PDFAnnotation *annotation;
     NSDictionary *dict;
@@ -425,7 +429,9 @@ static NSString *SKDocumentToolbarNotesPaneItemIdentifier = @"SKDocumentToolbarN
         [pdfView setNeedsDisplayForAnnotation:annotation];
         [[annotation page] removeAnnotation:annotation];
     }
-    [notes removeAllObjects];
+    
+    NSMutableArray *observedNotes = [self mutableArrayValueForKey:@"notes"];
+    [observedNotes removeAllObjects];
     
     // create new annotations from the dictionary and add them to their page and to the document
     e = [noteDicts objectEnumerator];
@@ -439,7 +445,7 @@ static NSString *SKDocumentToolbarNotesPaneItemIdentifier = @"SKDocumentToolbarN
             PDFPage *page = [pdfDoc pageAtIndex:pageIndex];
             [page addAnnotation:annotation];
             [pdfView setNeedsDisplayForAnnotation:annotation];
-            [notes addObject:annotation];
+            [observedNotes addObject:annotation];
             [annotation release];
         }
     }
@@ -510,6 +516,41 @@ static NSString *SKDocumentToolbarNotesPaneItemIdentifier = @"SKDocumentToolbarN
     }
 }
 
+- (NSArray *)notes {
+    return notes;
+}
+
+- (void)setNotes:(NSArray *)newNotes {
+    [notes setArray:notes];
+}
+
+- (unsigned)countOfNotes {
+    return [notes count];
+}
+
+- (id)objectInNotesAtIndex:(unsigned)theIndex {
+    return [notes objectAtIndex:theIndex];
+}
+
+- (void)insertObject:(id)obj inNotesAtIndex:(unsigned)theIndex {
+    [notes insertObject:obj atIndex:theIndex];
+}
+
+- (void)removeObjectFromNotesAtIndex:(unsigned)theIndex {
+    PDFAnnotation *note = [notes objectAtIndex:theIndex];
+    NSEnumerator *wcEnum = [[[self document] windowControllers] objectEnumerator];
+    NSWindowController *wc = [wcEnum nextObject];
+    
+    while (wc = [wcEnum nextObject]) {
+        if ([wc isKindOfClass:[SKNoteWindowController class]] && [[(SKNoteWindowController *)wc note] isEqual:note]) {
+            [[wc window] orderOut:self];
+            break;
+        }
+    }
+    
+    [notes removeObjectAtIndex:theIndex];
+}
+
 - (NSArray *)thumbnails {
     return thumbnails;
 }
@@ -564,17 +605,6 @@ static NSString *SKDocumentToolbarNotesPaneItemIdentifier = @"SKDocumentToolbarN
     return selectedNoteIndexPaths;
 }
 
-- (PDFAnnotation *)selectedNote {
-    return selectedNote;
-}
-
-- (void)setSelectedNote:(PDFAnnotation *)note {
-    if (selectedNote != note) {
-        [selectedNote release];
-        selectedNote = [note retain];
-    }
-}
-
 - (void)setSelectedNoteIndexPaths:(NSArray *)indexPaths {
     if (selectedNoteIndexPaths != indexPaths) {
         [selectedNoteIndexPaths release];
@@ -584,6 +614,17 @@ static NSString *SKDocumentToolbarNotesPaneItemIdentifier = @"SKDocumentToolbarN
             [self setSelectedNote:nil];
         else 
             [self setSelectedNote:[[noteArrayController arrangedObjects] objectAtIndex:[[indexPaths lastObject] indexAtPosition:0]]];
+    }
+}
+
+- (PDFAnnotation *)selectedNote {
+    return selectedNote;
+}
+
+- (void)setSelectedNote:(PDFAnnotation *)note {
+    if (selectedNote != note) {
+        [selectedNote release];
+        selectedNote = [note retain];
     }
 }
 
@@ -2027,10 +2068,10 @@ static NSString *SKDocumentToolbarNotesPaneItemIdentifier = @"SKDocumentToolbarN
 
 - (void)updateNoteSelection {
 
-    NSArray *notes = [noteArrayController arrangedObjects];
+    NSArray *orderedNotes = [noteArrayController arrangedObjects];
     PDFAnnotation *annotation;
     unsigned int pageIndex = [[pdfView document] indexForPage: [pdfView currentPage]];
-	int i, count = [notes count];
+	int i, count = [orderedNotes count];
     unsigned int selPageIndex = [self selectedNote] ? [[self selectedNote] pageIndex] : NSNotFound;
 	unsigned int index = NSNotFound;
     
@@ -2040,7 +2081,7 @@ static NSString *SKDocumentToolbarNotesPaneItemIdentifier = @"SKDocumentToolbarN
 	// Walk outline view looking for best firstpage number match.
 	for (i = 0; i < count; i++) {
 		// Get the destination of the given row....
-        annotation = [notes objectAtIndex:i];
+        annotation = [orderedNotes objectAtIndex:i];
 		
 		if ([annotation pageIndex] == pageIndex) {
             index = i;
@@ -2048,7 +2089,7 @@ static NSString *SKDocumentToolbarNotesPaneItemIdentifier = @"SKDocumentToolbarN
 		} else if ([annotation pageIndex] > pageIndex) {
 			if (i == 0)
 				index = 0;
-			else if ([[notes objectAtIndex:i - 1] pageIndex] != selPageIndex)
+			else if ([[orderedNotes objectAtIndex:i - 1] pageIndex] != selPageIndex)
                 index = i - 1;
 			break;
 		}

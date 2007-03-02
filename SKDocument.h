@@ -47,7 +47,6 @@ extern NSString *SKDocumentWillSaveNotification;
 @interface SKDocument : NSDocument
 {
     // variables to be saved:
-    NSMutableArray *notes;
     NSData *pdfData;
     
     // temporary variables:
@@ -59,13 +58,6 @@ extern NSString *SKDocumentWillSaveNotification;
 }
 
 - (IBAction)readNotes:(id)sender;
-
-- (NSArray *)notes;
-- (void)setNotes:(NSArray *)newNotes;
-- (unsigned)countOfNotes;
-- (id)objectInNotesAtIndex:(unsigned)index;
-- (void)insertObject:(id)obj inNotesAtIndex:(unsigned)index;
-- (void)removeObjectFromNotesAtIndex:(unsigned)index;
 
 - (BOOL)saveNotesToExtendedAttributesAtURL:(NSURL *)aURL error:(NSError **)outError;
 - (BOOL)readNotesFromExtendedAttributesAtURL:(NSURL *)aURL error:(NSError **)outError;
@@ -85,7 +77,7 @@ extern NSString *SKDocumentWillSaveNotification;
 
 - (unsigned int)countOfPages;
 - (PDFPage *)objectInPagesAtIndex:(unsigned int)index;
-- (NSArray *)allNotes;
+- (NSArray *)notes;
 - (void)removeFromNotesAtIndex:(unsigned int)index;
 - (PDFPage *)currentPage;
 - (void)setCurrentPage:(PDFPage *)page;
