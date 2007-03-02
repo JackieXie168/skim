@@ -490,6 +490,16 @@ static NSString *SKPostScriptDocumentType = @"PostScript document";
     return [[self pdfDocument] pageAtIndex:index];
 }
 
+- (NSArray *)allNotes {
+    return [self notes];
+}
+
+- (void)removeFromNotesAtIndex:(unsigned int)index {
+    PDFAnnotation *note = [[self notes] objectAtIndex:index];
+    
+    [(SKPDFView *)[self pdfView] removeAnnotation:note];
+}
+
 - (PDFPage *)currentPage {
     return [[self pdfView] currentPage];
 }
