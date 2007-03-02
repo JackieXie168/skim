@@ -1013,8 +1013,8 @@ NSString *SKSkimNotePboardType = @"SKSkimNotePboardType";
             navWindow = [[SKNavigationWindow alloc] initWithPDFView:self];
             [[NSNotificationCenter defaultCenter] addObserver: self selector: @selector(handleWindowWillCloseNotification:) 
                                                          name: NSWindowWillCloseNotification object: [self window]];
-        } else if ([NSScreen mainScreen] != [navWindow screen]) {
-            [navWindow moveToScreen:[NSScreen mainScreen]];
+        } else if ([[self window] screen] != [navWindow screen]) {
+            [navWindow moveToScreen:[[self window] screen]];
         }
         [navWindow setLevel:[[self window] level]];
     } else if ([navWindow isVisible]) {

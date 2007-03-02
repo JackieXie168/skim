@@ -888,7 +888,7 @@ static NSString *SKDocumentToolbarNotesPaneItemIdentifier = @"SKDocumentToolbarN
 }
 
 - (void)goFullScreen {
-    NSScreen *screen = [NSScreen mainScreen]; // @@ or should we use the window's screen?
+    NSScreen *screen = [[self window] screen]; // @@ or should we use the window's screen?
 
     // Create the full-screen window if it does not already  exist.
     if (fullScreenWindow == nil) {
@@ -954,13 +954,13 @@ static NSString *SKDocumentToolbarNotesPaneItemIdentifier = @"SKDocumentToolbarN
 - (void)showSideWindows {
     if (leftSideWindow == nil) {
         leftSideWindow = [[SKSideWindow alloc] initWithMainController:self edge:NSMinXEdge];
-    } else if ([NSScreen mainScreen] != [leftSideWindow screen]) {
+    } else if ([[self window] screen] != [leftSideWindow screen]) {
         [leftSideWindow moveToScreen:[[self window] screen]];
     }
     if (rightSideWindow == nil) {
         rightSideWindow = [[SKSideWindow alloc] initWithMainController:self edge:NSMaxXEdge];
-    } else if ([NSScreen mainScreen] != [rightSideWindow screen]) {
-        [rightSideWindow moveToScreen:[NSScreen mainScreen]];
+    } else if ([[self window] screen] != [rightSideWindow screen]) {
+        [rightSideWindow moveToScreen:[[self window] screen]];
     }
     
     if ([[mainWindow firstResponder] isDescendantOf:leftSideBox])
@@ -1030,7 +1030,7 @@ static NSString *SKDocumentToolbarNotesPaneItemIdentifier = @"SKDocumentToolbarN
 	[scrollView setAutohidesScrollers:YES];
     
     // Get the screen information.
-    NSScreen *screen = [NSScreen mainScreen]; // @@ or should we use the window's screen?
+    NSScreen *screen = [[self window] screen]; // @@ or should we use the mainScreen?
     NSNumber *screenID = [[screen deviceDescription] objectForKey:@"NSScreenNumber"];
     
     // Capture the screen.
@@ -1066,7 +1066,7 @@ static NSString *SKDocumentToolbarNotesPaneItemIdentifier = @"SKDocumentToolbarN
     if ([self isFullScreen])
         return;
     
-    if ([[NSScreen mainScreen] isEqual:[[NSScreen screens] objectAtIndex:0]])
+    if ([[[self window] screen] isEqual:[[NSScreen screens] objectAtIndex:0]])
         SetSystemUIMode(kUIModeAllHidden, kUIOptionAutoShowMenuBar);
     
     if ([self isPresentation])
