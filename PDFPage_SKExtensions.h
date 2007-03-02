@@ -53,5 +53,6 @@
 - (void)insertInNotes:(id)newNote;
 - (void)removeFromNotesAtIndex:(unsigned int)index;
 - (NSScriptObjectSpecifier *)objectSpecifier;
+- (id)handleGoToScriptCommand:(NSScriptCommand *)command;
 
 @end

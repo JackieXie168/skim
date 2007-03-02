@@ -47,8 +47,6 @@
 #import "NSUserDefaultsController_SKExtensions.h"
 #import "SKStringConstants.h"
 #import "SKPDFView.h"
-#import "SKPDFAnnotationNote.h"
-#import "PDFPage_SKExtensions.h"
 
 // maximum length of xattr value recommended by Apple
 #define MAX_XATTR_LENGTH 2048
@@ -476,7 +474,7 @@ static NSString *SKPostScriptDocumentType = @"PostScript document";
     [[self mainWindowController] findString:string options:options];
 }
 
-- (PDFView *)pdfView {
+- (SKPDFView *)pdfView {
     return [[self mainWindowController] pdfView];
 }
 
@@ -497,7 +495,7 @@ static NSString *SKPostScriptDocumentType = @"PostScript document";
 - (void)removeFromNotesAtIndex:(unsigned int)index {
     PDFAnnotation *note = [[self notes] objectAtIndex:index];
     
-    [(SKPDFView *)[self pdfView] removeAnnotation:note];
+    [[self pdfView] removeAnnotation:note];
 }
 
 - (PDFPage *)currentPage {
@@ -509,13 +507,13 @@ static NSString *SKPostScriptDocumentType = @"PostScript document";
 }
 
 - (id)activeNote {
-    id note = [(SKPDFView *)[self pdfView] activeAnnotation];
+    id note = [[self pdfView] activeAnnotation];
     return [note isNoteAnnotation] ? note : [NSNull null];
 }
 
 - (void)setActiveNote:(id)note {
     if ([note isEqual:[NSNull null]] == NO && [note isNoteAnnotation])
-        [(SKPDFView *)[self pdfView] setActiveAnnotation:note];
+        [[self pdfView] setActiveAnnotation:note];
 }
 
 @end
@@ -534,19 +532,3 @@ static NSString *SKPostScriptDocumentType = @"PostScript document";
 }
 
 @end
-
-
-@implementation SKGoToCommand
-
-- (id)performDefaultImplementation {
-    id param = [[self directParameter] objectsByEvaluatingSpecifier];
-    if ([param isKindOfClass:[PDFPage class]]) {
-        [[[param containingDocument] pdfView] goToPage:param];
-    } else if ([param isKindOfClass:[PDFAnnotation class]]) {
-        [[[[param page] containingDocument] pdfView] goToPage:param];
-    }
-    return nil;
-}
-
-@end
-
