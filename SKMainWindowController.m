@@ -446,7 +446,7 @@ static NSString *SKDocumentToolbarNotesPaneItemIdentifier = @"SKDocumentToolbarN
     [self allThumbnailsNeedUpdate];
 }
 
-- (PDFView *)pdfView {
+- (SKPDFView *)pdfView {
     return pdfView;
 }
 

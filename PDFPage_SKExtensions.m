@@ -133,6 +133,18 @@
 
 #pragma mark Scripting support
 
+- (NSScriptObjectSpecifier *)objectSpecifier {
+    SKDocument *document = [self containingDocument];
+	unsigned index = [[self document] indexForPage:self];
+    
+    if (document && index != NSNotFound) {
+        NSScriptObjectSpecifier *containerRef = [document objectSpecifier];
+        return [[[NSIndexSpecifier allocWithZone:[self zone]] initWithContainerClassDescription:[containerRef keyClassDescription] containerSpecifier:containerRef key:@"pages" index:index] autorelease];
+    } else {
+        return nil;
+    }
+}
+
 - (SKDocument *)containingDocument {
     NSEnumerator *docEnum = [[[NSDocumentController sharedDocumentController] documents] objectEnumerator];
     SKDocument *document;
@@ -167,7 +179,7 @@
     
     [self addAnnotation:newNote];
     
-    [(SKPDFView *)[document pdfView] setNeedsDisplayForAnnotation:newNote];
+    [[document pdfView] setNeedsDisplayForAnnotation:newNote];
     
     [[NSNotificationCenter defaultCenter] postNotificationName:SKPDFViewDidAddAnnotationNotification object:[document pdfView] 
         userInfo:[NSDictionary dictionaryWithObjectsAndKeys:newNote, @"annotation", self, @"page", nil]];
@@ -176,19 +188,13 @@
 - (void)removeFromNotesAtIndex:(unsigned int)index {
     PDFAnnotation *note = [[self notes] objectAtIndex:index];
     
-    [(SKPDFView *)[[self containingDocument] pdfView] removeAnnotation:note];
+    [[[self containingDocument] pdfView] removeAnnotation:note];
 }
 
-- (NSScriptObjectSpecifier *)objectSpecifier {
-    SKDocument *document = [self containingDocument];
-	unsigned index = [[self document] indexForPage:self];
-    
-    if (document && index != NSNotFound) {
-        NSScriptObjectSpecifier *containerRef = [document objectSpecifier];
-        return [[[NSIndexSpecifier allocWithZone:[self zone]] initWithContainerClassDescription:[containerRef keyClassDescription] containerSpecifier:containerRef key:@"pages" index:index] autorelease];
-    } else {
-        return nil;
-    }
+
+- (id)handleGoToScriptCommand:(NSScriptCommand *)command {
+    [[[self containingDocument] pdfView] goToPage:self];
+    return nil;
 }
 
 @end

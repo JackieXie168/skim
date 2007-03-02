@@ -40,7 +40,7 @@
 
 extern NSString *SKDocumentErrorDomain;
 
-@class PDFDocument, SKMainWindowController;
+@class PDFDocument, SKMainWindowController, SKPDFView;
 
 @interface SKDocument : NSDocument
 {
@@ -71,7 +71,7 @@ extern NSString *SKDocumentErrorDomain;
 - (SKMainWindowController *)mainWindowController;
 - (PDFDocument *)pdfDocument;
 
-- (PDFView *)pdfView;
+- (SKPDFView *)pdfView;
 
 - (NSDictionary *)currentDocumentSetup;
 
@@ -81,12 +81,17 @@ extern NSString *SKDocumentErrorDomain;
 - (void)handleApplicationWillTerminateNotification:(NSNotification *)notification;
 - (void)handleWindowWillCloseNotification:(NSNotification *)notification;
 
+- (unsigned int)countOfPages;
+- (PDFPage *)objectInPagesAtIndex:(unsigned int)index;
+- (NSArray *)allNotes;
+- (void)removeFromNotesAtIndex:(unsigned int)index;
+- (PDFPage *)currentPage;
+- (void)setCurrentPage:(PDFPage *)page;
+- (id)activeNote;
+- (void)setActiveNote:(id)note;
+
 @end
 
 
 @interface SKDocumentController : NSDocumentController
-@end
-
-
-@interface SKGoToCommand : NSScriptCommand
 @end

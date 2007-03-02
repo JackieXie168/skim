@@ -46,9 +46,9 @@
 
         <class name="application" code="capp"
             description="Skim's top level scripting object.">
-            <cocoa class="NSApplication"/>
+            <cocoa class="SKApplication"/>
             <element type="document" access="r"
-                description="The bibliography files currently opened by Skim.">
+                description="The PDF files currently opened by Skim.">
                 <cocoa key="orderedDocuments"/>
             </element>
             <element type="window" access="r">
@@ -521,9 +521,6 @@
             <responds-to name="save">
                 <cocoa method="handleSaveScriptCommand:"/>
             </responds-to>
-            <responds-to name="go to">
-                <cocoa method=""/>
-            </responds-to>
         </class>
 
         <class name="page" plural="pages" code="Page" inherits="item"
@@ -545,6 +542,9 @@
                 description="The text of the page.">
                 <cocoa key="text"/>
             </property>
+            <responds-to name="go to">
+                <cocoa method="handleGoToScriptCommand:"/>
+            </responds-to>
         </class>
 
         <class name="note" plural="notes" code="Note" inherits="item"
@@ -574,6 +574,9 @@
                 description="The rich text of the note.">
                 <cocoa key="richText"/>
             </property>
+            <responds-to name="go to">
+                <cocoa method="handleGoToScriptCommand:"/>
+            </responds-to>
         </class>
         
         <enumeration name="note type" code="NTpE">
@@ -587,7 +590,6 @@
 
         <command name="go to" code="SKIMGoTo"
             description="Go to a location.">
-            <cocoa class="SKGoToCommand"/>
             <direct-parameter description="the page or note to go to.">
                 <type type="page"/>
                 <type type="note"/>

@@ -63,6 +63,13 @@ extern NSString *SKAnnotationDidChangeNotification;
 - (BOOL)isTemporaryAnnotation;
 - (BOOL)isResizable;
 
+- (NSScriptObjectSpecifier *)objectSpecifier;
+- (int)noteType;
+- (NSTextStorage *)richText;
+- (void)setBoundsAsQDRect:(NSData *)inQDBoundsAsData;
+- (NSData *)boundsAsQDRect;
+- (id)handleGoToScriptCommand:(NSScriptCommand *)command;
+
 @end
 
 @interface SKPDFAnnotationCircle : PDFAnnotationCircle

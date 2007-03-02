@@ -190,7 +190,7 @@ NSString *SKAnnotationDidChangeNotification = @"SKAnnotationDidChangeNotificatio
 - (void)setBoundsAsQDRect:(NSData *)inQDBoundsAsData {
     if ([inQDBoundsAsData length] == sizeof(Rect)) {
         const Rect *qdBounds = (const Rect *)[inQDBoundsAsData bytes];
-        SKPDFView *pdfView = (SKPDFView *)[[[self page] containingDocument] pdfView];
+        SKPDFView *pdfView = [[[self page] containingDocument] pdfView];
         NSRect newBounds = NSRectFromRect(*qdBounds);
         if ([self isResizable] == NO)
             newBounds.size = [self bounds].size;
@@ -204,6 +204,11 @@ NSString *SKAnnotationDidChangeNotification = @"SKAnnotationDidChangeNotificatio
 - (NSData *)boundsAsQDRect {
     Rect qdBounds = RectFromNSRect([self bounds]);
     return [NSData dataWithBytes:&qdBounds length:sizeof(Rect)];
+}
+
+- (id)handleGoToScriptCommand:(NSScriptCommand *)command {
+    [[[[self page] containingDocument] pdfView] scrollAnnotationToVisible:self];
+    return nil;
 }
 
 @end
