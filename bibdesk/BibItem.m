@@ -3150,9 +3150,16 @@ Boolean stringContainsLossySubstring(NSString *theString, NSString *stringToFind
             yearValue = [(BDSKStringNode *)[[yearValue nodes] objectAtIndex:0] value];
 		if (![NSString isEmptyString:yearValue]) {
 			NSString *monthValue = [pubFields objectForKey:BDSKMonthString];
-			if([monthValue isComplex])
-				monthValue = [(BDSKStringNode *)[[monthValue nodes] objectAtIndex:0] value];
-			if (!monthValue) monthValue = @"";
+			if([monthValue isComplex]) {
+                NSArray *nodes = [monthValue nodes];
+                if ([nodes count] > 1 && [(BDSKStringNode *)[nodes objectAtIndex:1] type] == BSN_MACRODEF)
+                    monthValue = [(BDSKStringNode *)[nodes objectAtIndex:0] value];
+                else if ([nodes count] > 2 && [(BDSKStringNode *)[nodes objectAtIndex:2] type] == BSN_MACRODEF)
+                    monthValue = [(BDSKStringNode *)[nodes objectAtIndex:0] value];
+				else
+                    monthValue = [(BDSKStringNode *)[nodes objectAtIndex:0] value];
+			}
+            if (!monthValue) monthValue = @"";
             // allows month as number, name or abbreviated name
             theDate = [[NSCalendarDate alloc] initWithMonthDayYearString:[NSString stringWithFormat:@"%@-15-%@", monthValue, yearValue]];
 			[self setDate:theDate];
