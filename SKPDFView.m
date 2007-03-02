@@ -81,6 +81,32 @@ NSString *SKSkimNotePboardType = @"SKSkimNotePboardType";
 
 @end
 
+// Adobe Reader recognizes a path from the hyperref command \url{./test.pdf} as a file: URL, but PDFKit turns it into an http: URL (which of course doesn't work); I notice this because my collaborators use Adobe Reader
+@interface PDFAnnotationLink (SKRelativePathFix)
+- (void)fixRelativeURLIfNeeded;
+@end
+
+@implementation PDFAnnotationLink (SKRelativePathFix)
+
+// class posing indicates that setURL: is never called, and neither is setContents: (-contents returns nil), so this is the only way I can find to fix the thing, since we don't have an equivalent to textView:clickedOnLink:atIndex:
+- (void)fixRelativeURLIfNeeded {
+    NSURL *theURL = [self URL];
+    // http://./path/to/file will never make sense, right?
+    if (theURL && [[theURL host] isEqualToString:@"."]) {
+        NSString *basePath = [[[[[self page] document] documentURL] path] stringByDeletingLastPathComponent];
+        if (basePath) {
+            NSString *realPath = [basePath stringByAppendingPathComponent:[theURL path]];
+            realPath = [realPath stringByStandardizingPath];
+            if (realPath)
+                theURL = [NSURL fileURLWithPath:realPath];
+            if (theURL)
+                [self setURL:theURL];
+        }
+    }
+}
+
+@end
+
 #pragma mark -
 
 @implementation SKPDFView
@@ -143,6 +169,8 @@ NSString *SKSkimNotePboardType = @"SKSkimNotePboardType";
                     [[NSColor grayColor] set];
                     [path stroke];
                 }
+                if ([[annotation type] isEqualToString:@"Link"])
+                    [(PDFAnnotationLink *)annotation fixRelativeURLIfNeeded];
             }
         }
         
@@ -1087,11 +1115,12 @@ NSString *SKSkimNotePboardType = @"SKSkimNotePboardType";
     BOOL link = NO;
     
     if (([self areaOfInterestForMouse: theEvent] &  kPDFLinkArea) != 0) {
-        link = YES;
         PDFAnnotation *ann = [page annotationAtPoint:pageSpaceMouseLoc];
         if (ann != NULL && [[ann destination] page]){
             dest = [ann destination];
-        }
+            link = YES;
+        } 
+        // Set link = NO if the annotation links outside the document (e.g. for a URL); currently this is only used for the hover window.  We could do something clever like show a URL icon in the hover window (or a WebView!), but for now we'll just ignore these links.
     }
     
     if (isLink) *isLink = link;
