@@ -46,6 +46,9 @@
 #import "BDAlias.h"
 #import "NSUserDefaultsController_SKExtensions.h"
 #import "SKStringConstants.h"
+#import "SKPDFView.h"
+#import "SKPDFAnnotationNote.h"
+#import "PDFPage_SKExtensions.h"
 
 // maximum length of xattr value recommended by Apple
 #define MAX_XATTR_LENGTH 2048
@@ -477,6 +480,30 @@ static NSString *SKPostScriptDocumentType = @"PostScript document";
     return [[self mainWindowController] pdfView];
 }
 
+#pragma mark Scripting support
+
+- (unsigned int)countOfPages {
+    return [[self pdfDocument] pageCount];
+}
+
+- (PDFPage *)objectInPagesAtIndex:(unsigned int)index {
+    return [[self pdfDocument] pageAtIndex:index];
+}
+
+- (PDFPage *)currentPage {
+    return [[self pdfView] currentPage];
+}
+
+- (id)activeNote {
+    id note = [(SKPDFView *)[self pdfView] activeAnnotation];
+    return [note isNoteAnnotation] ? note : [NSNull null];
+}
+
+- (void)setActiveNote:(id)note {
+    if ([note isEqual:[NSNull null]] == NO && [note isNoteAnnotation])
+        [(SKPDFView *)[self pdfView] setActiveAnnotation:note];
+}
+
 @end
 
 
@@ -490,6 +517,21 @@ static NSString *SKPostScriptDocumentType = @"PostScript document";
         type = NSPDFPboardType;
     }
 	return type;
+}
+
+@end
+
+
+@implementation SKGoToCommand
+
+- (id)performDefaultImplementation {
+    id param = [[self directParameter] objectsByEvaluatingSpecifier];
+    if ([param isKindOfClass:[PDFPage class]]) {
+        [[[param containingDocument] pdfView] goToPage:param];
+    } else if ([param isKindOfClass:[PDFAnnotation class]]) {
+        [[[[param page] containingDocument] pdfView] goToPage:param];
+    }
+    return nil;
 }
 
 @end
