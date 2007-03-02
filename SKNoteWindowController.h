@@ -60,6 +60,7 @@
 - (BOOL)isNoteType;
 
 - (BOOL)commitEditing;
+- (void)handleDocumentWillSaveNotification:(NSNotification *)notification;
 
 @end
 
