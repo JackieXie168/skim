@@ -45,6 +45,7 @@
 #import "NSString_BDSKExtensions.h"
 #import "NSDate_BDSKExtensions.h"
 #import "NSScanner_BDSKExtensions.h"
+#import "BDSKStringNode.h"
 
 @implementation BDSKFormatParser
 
@@ -280,6 +281,15 @@
 					// month
                     string = [pub stringValueOfField:BDSKMonthString];
                     if ([NSString isEmptyString:string] == NO) {
+                        if([string isComplex]) {
+                            NSArray *nodes = [string nodes];
+                            if ([nodes count] > 1 && [(BDSKStringNode *)[nodes objectAtIndex:1] type] == BSN_MACRODEF)
+                                string = [(BDSKStringNode *)[nodes objectAtIndex:0] value];
+                            else if ([nodes count] > 2 && [(BDSKStringNode *)[nodes objectAtIndex:2] type] == BSN_MACRODEF)
+                                string = [(BDSKStringNode *)[nodes objectAtIndex:0] value];
+                            else
+                                string = [(BDSKStringNode *)[nodes objectAtIndex:0] value];
+                        }
                         NSDate *date = [[NSDate alloc] initWithMonthDayYearString:[NSString stringWithFormat:@"%@-15-2000", string]];
 						string = [date descriptionWithCalendarFormat:@"%m" timeZone:nil locale:nil];
 						[parsedStr appendString:string];
