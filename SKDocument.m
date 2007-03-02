@@ -504,6 +504,10 @@ static NSString *SKPostScriptDocumentType = @"PostScript document";
     return [[self pdfView] currentPage];
 }
 
+- (void)setCurrentPage:(PDFPage *)page {
+    return [[self pdfView] goToPage:page];
+}
+
 - (id)activeNote {
     id note = [(SKPDFView *)[self pdfView] activeAnnotation];
     return [note isNoteAnnotation] ? note : [NSNull null];
