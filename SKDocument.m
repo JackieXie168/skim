@@ -47,6 +47,7 @@
 #import "NSUserDefaultsController_SKExtensions.h"
 #import "SKStringConstants.h"
 #import "SKPDFView.h"
+#import "SKNoteWindowController.h"
 
 // maximum length of xattr value recommended by Apple
 #define MAX_XATTR_LENGTH 2048
@@ -451,6 +452,17 @@ NSString *SKDocumentWillSaveNotification = @"SKDocumentWillSaveNotification";
 }
 
 - (void)removeObjectFromNotesAtIndex:(unsigned)theIndex {
+    PDFAnnotation *note = [notes objectAtIndex:theIndex];
+    NSEnumerator *wcEnum = [[self windowControllers] objectEnumerator];
+    NSWindowController *wc = [wcEnum nextObject];
+    
+    while (wc = [wcEnum nextObject]) {
+        if ([wc isKindOfClass:[SKNoteWindowController class]] && [[(SKNoteWindowController *)wc note] isEqual:note]) {
+            [[wc window] orderOut:self];
+            break;
+        }
+    }
+    
     [notes removeObjectAtIndex:theIndex];
 }
 
