@@ -504,7 +504,7 @@
                 description="The document's path.">
                 <cocoa key="fileName"/>
             </property>
-            <property name="current page" code="CPag" type="page" access="r"
+            <property name="current page" code="CPag" type="page"
                 description="The current page.">
                 <cocoa key="currentPage"/>
             </property>
