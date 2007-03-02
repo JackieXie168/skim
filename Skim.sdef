@@ -512,6 +512,10 @@
                 description="The active note.">
                 <cocoa key="activeNote"/>
             </property>
+            <property name="text" code="ctxt" type="text" access="r"
+                description="The text of the document.">
+                <cocoa key="text"/>
+            </property>
             <responds-to name="close">
                 <cocoa method="handleCloseScriptCommand:"/>
             </responds-to>
@@ -542,6 +546,10 @@
                 description="The text of the page.">
                 <cocoa key="text"/>
             </property>
+            <property name="rich text" code="ricT" type="rich text" access="r"
+                description="The rich text of the page.">
+                <cocoa key="richText"/>
+            </property>
             <responds-to name="go to">
                 <cocoa method="handleGoToScriptCommand:"/>
             </responds-to>
@@ -571,7 +579,7 @@
                 <cocoa key="boundsAsQDRect"/>
             </property>
             <property name="extended text" code="XTxt" type="rich text"
-                description="The rich text of the note.">
+                description="The rich extended text of the note. Only for anchored notes.">
                 <cocoa key="richText"/>
             </property>
             <responds-to name="go to">

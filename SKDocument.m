@@ -498,6 +498,10 @@ NSString *SKDocumentWillSaveNotification = @"SKDocumentWillSaveNotification";
         [[self pdfView] setActiveAnnotation:note];
 }
 
+- (NSString *)string {
+    return [[self pdfDocument] string];
+}
+
 @end
 
 

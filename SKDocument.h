@@ -83,6 +83,7 @@ extern NSString *SKDocumentWillSaveNotification;
 - (void)setCurrentPage:(PDFPage *)page;
 - (id)activeNote;
 - (void)setActiveNote:(id)note;
+- (NSString *)string;
 
 @end
 
