@@ -199,6 +199,22 @@ NSString *SKDocumentWillSaveNotification = @"SKDocumentWillSaveNotification";
                     [pdfDoc release];
                     pdfDoc = nil;
                 }
+            } else if ([noteDicts count] == 0) {
+                NSString *path = [[[absoluteURL path] stringByDeletingPathExtension] stringByAppendingPathExtension:@"skim"];
+                if ([[NSFileManager defaultManager] fileExistsAtPath:path]) {
+                    NSAlert *alert = [NSAlert alertWithMessageText:NSLocalizedString(@"Found Separate Notes", @"Message in alert dialog") 
+                                                     defaultButton:NSLocalizedString(@"Yes", @"Button title")
+                                                   alternateButton:NSLocalizedString(@"No", @"Button title")
+                                                       otherButton:nil
+                                         informativeTextWithFormat:NSLocalizedString(@"Skim was not able to read the notes at %@, but there a Skim notes file %@ with the same name was found. Do you want Skim the read the from this file?", @"Informative text in alert dialog"), [absoluteURL path], path];
+                    if ([alert runModal] == NSAlertDefaultReturn) {
+                        NSArray *array = [NSKeyedUnarchiver unarchiveObjectWithFile:path];
+                        if (array) {
+                            [noteDicts release];
+                            noteDicts = [array copy];
+                        }
+                    }
+                }
             }
         }
     } else if ([docType isEqualToString:SKPostScriptDocumentType]) {
