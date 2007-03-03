@@ -73,18 +73,6 @@
     return path ? path : @"";
 }
 
-- (void)loadNotes {
-    NSError *error = nil;
-    NSArray *array = [[[NSFileManager defaultManager] skimNotesFromExtendedAttributesAtPath:[url path] error:&error] retain];
-    
-    if (array) {
-        [notes removeAllObjects];
-        notes = [array mutableCopy];
-    } else {
-        [NSApp presentError:error];
-    }
-}
-
 #pragma mark Actions
 
 - (IBAction)refresh:(id)sender {
