@@ -111,6 +111,8 @@
 		CEA575FD0B9208B60003D2E7 /* SKOutlineView.m in Sources */ = {isa = PBXBuildFile; fileRef = CEA575FC0B9208B60003D2E7 /* SKOutlineView.m */; };
 		CEF3BF7E0B99CA4A00E12E3D /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2A37F4C5FDCFA73011CA2CEA /* Foundation.framework */; };
 		CEF3BF860B99CAD300E12E3D /* skimnotes.m in Sources */ = {isa = PBXBuildFile; fileRef = CEF3BF850B99CAD300E12E3D /* skimnotes.m */; };
+		CEF3C0210B99FF8F00E12E3D /* libbz2.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = F977319E0B939B7D002A7823 /* libbz2.dylib */; };
+		CEF3C0AE0B9A15E800E12E3D /* NSFileManager_ExtendedAttributes.m in Sources */ = {isa = PBXBuildFile; fileRef = CE5487BB0B35A20A00F8AFB6 /* NSFileManager_ExtendedAttributes.m */; };
 		CEF707240B8F8EFC003A2771 /* SnapshotWindow.nib in Resources */ = {isa = PBXBuildFile; fileRef = CEF7071D0B8F8EFC003A2771 /* SnapshotWindow.nib */; };
 		CEF7117E0B90B58F003A2771 /* SKUpdateChecker.m in Sources */ = {isa = PBXBuildFile; fileRef = CEF7117B0B90B58E003A2771 /* SKUpdateChecker.m */; };
 		CEF7117F0B90B58F003A2771 /* SKVersionNumber.m in Sources */ = {isa = PBXBuildFile; fileRef = CEF7117D0B90B58E003A2771 /* SKVersionNumber.m */; };
@@ -317,6 +319,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				CEF3BF7E0B99CA4A00E12E3D /* Foundation.framework in Frameworks */,
+				CEF3C0210B99FF8F00E12E3D /* libbz2.dylib in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -809,6 +812,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				CEF3BF860B99CAD300E12E3D /* skimnotes.m in Sources */,
+				CEF3C0AE0B9A15E800E12E3D /* NSFileManager_ExtendedAttributes.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
