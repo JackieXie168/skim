@@ -44,8 +44,10 @@ int main (int argc, const char * argv[]) {
             success = [data writeToFile:notesPath atomically:YES];
     } else if (notesPath && [fm fileExistsAtPath:notesPath isDirectory:&isDir] && isDir == NO) {
         NSData *data = [NSData dataWithContentsOfFile:notesPath];
-        if (data)
-            success = [fm setExtendedAttributeNamed:SKIM_NOTES_KEY toValue:data atPath:pdfPath options:0 error:NULL];
+        if (data) {
+            success = [fm removeExtendedAttribute:SKIM_NOTES_KEY atPath:pdfPath traverseLink:YES error:NULL] &&
+                      [fm setExtendedAttributeNamed:SKIM_NOTES_KEY toValue:data atPath:pdfPath options:0 error:NULL];
+        }
     }
     
     [pool release];
