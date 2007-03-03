@@ -46,13 +46,12 @@
     
     PDFAnnotation *note;
     
-    id theModalDelegate;
-    SEL theDidEndSelector;
-    
     CFArrayRef editors;
 }
 
 - (id)initWithNote:(PDFAnnotation *)aNote;
+
+- (IBAction)changeKeepOnTop:(id)sender;
 
 - (PDFAnnotation *)note;
 - (void)setNote:(PDFAnnotation *)newNote;
@@ -62,7 +61,4 @@
 - (BOOL)commitEditing;
 - (void)handleDocumentWillSaveNotification:(NSNotification *)notification;
 
-@end
-
-@interface SKRectStringTransformer : NSValueTransformer
 @end
