@@ -368,20 +368,28 @@ textRect.origin.y += vOffset; \
 
 @end
 
-// Category that implements -[NSObject valueForKey:] with OATextWithIconCellStringKey and OATextWithIconCellImageKey, so we can use any object that is KVC-compliant for -string or -attributedString and -image.
+/* Category that implements -[NSObject valueForKey:] with OATextWithIconCellStringKey and OATextWithIconCellImageKey, so we can use any object that is KVC-compliant for -string or -attributedString and -image.  However, this breaks objects that provide these values via valueForUndefinedKey:, so it's a bad idea to pollute NSObject like this.
+
+We should probably change the definition of OATextWithIconCell*Key to have a prefix on it since -image or -attributedString are common method names.
+ */
+/*
 @interface NSObject (BDSKTextWithIconCell) @end
 @implementation NSObject (BDSKTextWithIconCell)
 - (id)attributedString { return nil; }
 - (id)string { return nil; }
 - (id)image { return nil; }
 @end
+*/
 
 // special cases for strings
 @interface NSAttributedString (BDSKTextWithIconCell) @end
 @implementation NSAttributedString (BDSKTextWithIconCell)
 - (id)attributedString { return self; }
+- (id)image { return nil; }
 @end
 @interface NSString (BDSKTextWithIconCell) @end
 @implementation NSString (BDSKTextWithIconCell)
+- (id)attributedString { return nil; }
 - (NSString *)string { return self; }
+- (id)image { return nil; }
 @end
