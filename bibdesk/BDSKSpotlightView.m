@@ -40,6 +40,24 @@
 #import <QuartzCore/QuartzCore.h>
 #import "CIImage_BDSKExtensions.h"
 
+@implementation BDSKSpotlightCircle
+
+- (id)initWithCenterPoint:(NSPoint)p radius:(float)r;
+{
+    self = [super init];
+    center = p;
+    radius = r;
+    return self;
+}
+- (float)radius {
+    return radius;
+}
+- (NSPoint)center {
+    return center;
+}
+
+@end
+
 @implementation BDSKSpotlightView;
 
 static NSColor *maskColor = nil;
@@ -73,11 +91,10 @@ static CIFilter *cropFilter = nil;
 
 - (CIImage *)spotlightMaskImageWithFrame:(NSRect)aRect
 {
-    NSArray *highlightRects = [delegate highlightRectsInScreenCoordinates];
+    NSArray *highlightCircles = [delegate highlightCirclesInScreenCoordinates];
     
-    // array of NSValue objects; aRect and highlightRects should have same coordinate system
-    NSEnumerator *rectEnum = [highlightRects objectEnumerator];
-    NSValue *value;
+    // array of BDSKSpotlightCircle objects; centers in screen coordinates
+    NSEnumerator *circleEnum = [highlightCircles objectEnumerator];
         
     unsigned int maximumBlur = 10;
     float blurPadding = maximumBlur * 2;
@@ -89,15 +106,16 @@ static CIFilter *cropFilter = nil;
     // this causes the paths we append to act as holes in the overall path
     [path setWindingRule:NSEvenOddWindingRule];
     
-    NSRect holeRect;
-    NSPoint baseOrigin;
+    NSPoint center;
+    float radius;
     NSWindow *window = [self window];
+    BDSKSpotlightCircle *circle;
     
-    while(value = [rectEnum nextObject]){
-        holeRect = [value rectValue];
-        baseOrigin = [window convertScreenToBase:holeRect.origin];
-        holeRect.origin = baseOrigin;
-        [path appendBezierPathWithOvalInRect:holeRect];
+    while (circle = [circleEnum nextObject]) {
+        center = [window convertScreenToBase:[circle center]];
+        center = [self convertPoint:center fromView:nil];
+        radius = [circle radius];
+        [path appendBezierPathWithOvalInRect:NSMakeRect(center.x - radius, center.y - radius, radius * 2, radius * 2)];
     }
     
     // we need to shift because canvas of the image is at positive values
@@ -105,10 +123,21 @@ static CIFilter *cropFilter = nil;
     [transform translateXBy:blurPadding yBy:blurPadding];
     [path transformUsingAffineTransform:transform];
         
-    // @@ resolution independence:  drawing to an NSImage and then creating the CIImage with -[NSImage TIFFRepresentation] gives an incorrect CIImage extent when display scaling is turned on, probably due to NSCachedImageRep.  Drawing directly to an NSBitmapImageRep gives the correct overall size, but the hole locations are off, and there appears to be a blurred section on the top and right side.
-    NSImage *image = [[NSImage alloc] initWithSize:maskRect.size];
-    [image lockFocus];
+    // Drawing to an NSImage and then creating the CIImage with -[NSImage TIFFRepresentation] gives an incorrect CIImage extent when display scaling is turned on, probably due to NSCachedImageRep.  We also have to pass bytesPerRow:0 when scaling is on, which seems like a bug.
+    NSBitmapImageRep *imageRep = [[NSBitmapImageRep alloc] initWithBitmapDataPlanes:NULL 
+                                                                         pixelsWide:NSWidth(maskRect) 
+                                                                         pixelsHigh:NSHeight(maskRect) 
+                                                                      bitsPerSample:8 
+                                                                    samplesPerPixel:4
+                                                                           hasAlpha:YES 
+                                                                           isPlanar:NO 
+                                                                     colorSpaceName:NSCalibratedRGBColorSpace 
+                                                                       bitmapFormat:0 
+                                                                        bytesPerRow:0 /*(4 * NSWidth(maskRect)) */
+                                                                       bitsPerPixel:32];
+
     [NSGraphicsContext saveGraphicsState];
+    [NSGraphicsContext setCurrentContext:[NSGraphicsContext graphicsContextWithBitmapImageRep:imageRep]];
     
     // fill the entire space with clear
     [[NSColor clearColor] setFill];
@@ -119,13 +148,12 @@ static CIFilter *cropFilter = nil;
     [path fill];
     
     [NSGraphicsContext restoreGraphicsState];
-    [image unlockFocus];
     
-    CIImage *ciImage = [[CIImage alloc] initWithData:[image TIFFRepresentation]];
-    [image release];
+    // see NSCIImageRep.h for this and other useful methods that aren't documented
+    CIImage *ciImage = [[CIImage alloc] initWithBitmapImageRep:imageRep];
     
     // sys prefs uses fuzzier circles for more matches; filter range 0 -- 100, values 0 -- 10 are reasonable?
-    float radius = MIN([highlightRects count], maximumBlur);
+    radius = MIN([highlightCircles count], maximumBlur);
     
     // apply the blur filter to soften the edges of the circles
     CIImage *blurredImage = [ciImage blurredImageWithBlurRadius:radius];
@@ -148,13 +176,14 @@ static CIFilter *cropFilter = nil;
 - (void)drawRect:(NSRect)aRect;
 {
     if([delegate isSearchActive]){
-        CIContext *ciContext = [[NSGraphicsContext currentContext] CIContext];
         NSRect boundsRect = [self bounds];
-        [ciContext drawImage:[self spotlightMaskImageWithFrame:boundsRect] atPoint:CGPointZero fromRect:CGRectMake(0, 0, NSWidth(boundsRect), NSHeight(boundsRect))];
+        CIImage *image = [self spotlightMaskImageWithFrame:boundsRect];
+        CGRect extent = [image extent];
+        [image drawInRect:boundsRect fromRect:*(NSRect *)&extent operation:NSCompositeCopy fraction:1.0];
     } else {
         [[NSColor clearColor] setFill];
         NSRectFill(aRect);
-    }
+    }   
 }
 
 @end

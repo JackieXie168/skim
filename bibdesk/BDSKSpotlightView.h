@@ -38,9 +38,19 @@
 
 #import <Cocoa/Cocoa.h>
 
+@interface BDSKSpotlightCircle : NSObject
+{
+    NSPoint center;
+    float radius;
+}
+- (id)initWithCenterPoint:(NSPoint)p radius:(float)r;
+- (float)radius;
+- (NSPoint)center;
+@end
+
 @protocol BDSKSpotlightViewDelegate <NSObject>
 
-- (NSArray *)highlightRectsInScreenCoordinates;
+- (NSArray *)highlightCirclesInScreenCoordinates;
 - (BOOL)isSearchActive;
 
 @end
