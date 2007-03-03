@@ -1565,7 +1565,7 @@ static NSString *SKDocumentToolbarNotesPaneItemIdentifier = @"SKDocumentToolbarN
     
     if (annotation) {
         updatingNoteSelection = YES;
-        [[(SKDocument *)[self document] mutableArrayValueForKey:@"notes"] addObject:annotation];
+        [[self mutableArrayValueForKey:@"notes"] addObject:annotation];
         updatingNoteSelection = NO;
         if (page)
             [self thumbnailNeedsUpdate:[[self thumbnails] objectAtIndex:[[pdfView document] indexForPage:page]]];
@@ -1590,7 +1590,7 @@ static NSString *SKDocumentToolbarNotesPaneItemIdentifier = @"SKDocumentToolbarN
                 break;
             }
         }
-        [[[self document] mutableArrayValueForKey:@"notes"] removeObject:annotation];
+        [[self mutableArrayValueForKey:@"notes"] removeObject:annotation];
         if (page)
             [self thumbnailNeedsUpdate:[[self thumbnails] objectAtIndex:[[pdfView document] indexForPage:page]]];
     }
