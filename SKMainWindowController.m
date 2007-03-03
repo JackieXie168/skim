@@ -633,10 +633,13 @@ static NSString *SKDocumentToolbarNotesPaneItemIdentifier = @"SKDocumentToolbarN
         [selectedNoteIndexPaths release];
         selectedNoteIndexPaths = [indexPaths retain];
         
-        if ([indexPaths count] == 0)
+        if ([indexPaths count] == 0) {
             [self setSelectedNote:nil];
-        else 
-            [self setSelectedNote:[[noteArrayController arrangedObjects] objectAtIndex:[[indexPaths lastObject] indexAtPosition:0]]];
+        } else {
+            unsigned idx = [[indexPaths lastObject] indexAtPosition:0];
+            NSParameterAssert(idx != NSNotFound);
+            [self setSelectedNote:[[noteArrayController arrangedObjects] objectAtIndex:idx]];
+        }
     }
 }
 
@@ -1548,6 +1551,7 @@ static NSString *SKDocumentToolbarNotesPaneItemIdentifier = @"SKDocumentToolbarN
     if ([annotation isNoteAnnotation]) {
         if ([self selectedNote] != annotation) {
             int index = [[noteArrayController arrangedObjects] indexOfObject:annotation];
+            NSAssert1(NSNotFound != index, @"Index for annotation %@ not found", annotation);
             NSIndexPath *indexPath = [NSIndexPath indexPathWithIndex:index];
             
             [self setSelectedNoteIndexPaths:[NSArray arrayWithObject:indexPath]];
@@ -2018,6 +2022,7 @@ static NSString *SKDocumentToolbarNotesPaneItemIdentifier = @"SKDocumentToolbarN
         
         PDFPage *emptyPage = [[[PDFPage alloc] init] autorelease];
         [emptyPage setBounds:[[[pdfView document] pageAtIndex:0] boundsForBox:kPDFDisplayBoxCropBox] forBox:kPDFDisplayBoxCropBox];
+        [emptyPage setBounds:[[[pdfView document] pageAtIndex:0] boundsForBox:kPDFDisplayBoxCropBox] forBox:kPDFDisplayBoxMediaBox];
         NSImage *image = [emptyPage thumbnailWithSize:thumbnailCacheSize shadowBlurRadius:shadowBlurRadius shadowOffset:NSMakeSize(0.0, shadowOffset)];
         for (i = 0; i < count; i++) {
             SKThumbnail *thumbnail = [[SKThumbnail alloc] initWithImage:image label:[[pdfDoc pageAtIndex:i] label]];
