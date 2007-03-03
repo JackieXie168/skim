@@ -234,12 +234,35 @@ static NSString *SKDocumentToolbarNotesPaneItemIdentifier = @"SKDocumentToolbarN
         [pdfView setAutoScales:YES];
     else
         [pdfView setScaleFactor:0.01 * [[NSUserDefaults standardUserDefaults] floatForKey:SKDefaultDocumentScaleKey]];
-
+    
+    if ([[NSUserDefaults standardUserDefaults] objectForKey:@"SKLeftSidePaneWidth"]) {
+        float width = [[NSUserDefaults standardUserDefaults] floatForKey:@"SKLeftSidePaneWidth"];
+        if (width >= 0.0) {
+            frame = [leftSideContentBox frame];
+            frame.size.width = width;
+            [leftSideContentBox setFrame:frame];
+        }
+        width = [[NSUserDefaults standardUserDefaults] floatForKey:@"SKRightSidePaneWidth"];
+        if (width >= 0.0) {
+            frame = [rightSideContentBox frame];
+            frame.size.width = width;
+            frame.origin.x = NSMaxX([splitView frame]) - width;
+            [rightSideContentBox setFrame:frame];
+        }
+        frame = [pdfContentBox frame];
+        frame.size.width = NSWidth([splitView frame]) - NSWidth([leftSideContentBox frame]) - NSWidth([rightSideContentBox frame]) - 2 * [splitView dividerThickness];
+        frame.origin.x = NSMaxX([leftSideContentBox frame]) + [splitView dividerThickness];
+        [pdfContentBox setFrame:frame];
+    }
+    
     if (pdfOutline == nil) {
-        if ([[NSUserDefaults standardUserDefaults] boolForKey:SKOpenContentsPaneOnlyForTOCKey])
+        if ([[NSUserDefaults standardUserDefaults] boolForKey:SKOpenContentsPaneOnlyForTOCKey] &&
+            NSWidth([rightSideContentBox frame]) > 0.0)
             [self toggleLeftSidePane:self];
-        else
-            [self setLeftSidePaneState:SKThumbnailSidePaneState];
+        [self setLeftSidePaneState:SKThumbnailSidePaneState];
+    } else if ([[NSUserDefaults standardUserDefaults] boolForKey:SKOpenContentsPaneOnlyForTOCKey] &&
+               NSWidth([rightSideContentBox frame]) <= 0.0) {
+        [self toggleLeftSidePane:self];
     }
     if (NSWidth([rightSideContentBox frame]) > 0.0)
         [self toggleRightSidePane:self];
@@ -887,6 +910,8 @@ static NSString *SKDocumentToolbarNotesPaneItemIdentifier = @"SKDocumentToolbarN
         [pdfContentBox setFrame:pdfFrame];
         [splitView setNeedsDisplay:YES];
         [splitView adjustSubviews];
+        
+        [self splitViewDidResizeSubviews:nil];
     }
 }
 
@@ -917,6 +942,8 @@ static NSString *SKDocumentToolbarNotesPaneItemIdentifier = @"SKDocumentToolbarN
         [pdfContentBox setFrame:pdfFrame];
         [splitView setNeedsDisplay:YES];
         [splitView adjustSubviews];
+        
+        [self splitViewDidResizeSubviews:nil];
     }
 }
 
@@ -2726,6 +2753,13 @@ static NSString *SKDocumentToolbarNotesPaneItemIdentifier = @"SKDocumentToolbarN
     [mainView setFrame:mainFrame];
     
     [sender adjustSubviews];
+}
+
+- (void)splitViewDidResizeSubviews:(NSNotification *)notification {
+    if ([[self window] frameAutosaveName]) {
+        [[NSUserDefaults standardUserDefaults] setFloat:NSWidth([leftSideContentBox frame]) forKey:@"SKLeftSidePaneWidth"];
+        [[NSUserDefaults standardUserDefaults] setFloat:NSWidth([rightSideContentBox frame]) forKey:@"SKRightSidePaneWidth"];
+    }
 }
 
 @end
