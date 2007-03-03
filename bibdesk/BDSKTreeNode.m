@@ -81,13 +81,6 @@
     [coder encodeConditionalObject:parent forKey:@"parent"];
 }
 
-- (BOOL)isEqual:(id)other;
-{
-    // should we compare the children and/or parent as well?
-    return [other isKindOfClass:[self class]] && 
-           [((BDSKTreeNode *)other)->columnValues isEqualToDictionary:columnValues];
-}
-
 - (BDSKTreeNode *)parent { return parent; }
 
 - (void)setParent:(BDSKTreeNode *)anObject;
@@ -111,17 +104,8 @@
     NSMutableArray *newChildren = [[NSMutableArray alloc] initWithArray:[self children] copyItems:YES];
     [node setChildren:newChildren];
     [newChildren release];
-    
-    node->columnValues = [columnValues mutableCopy];
+    [node setColumnValues:columnValues];
     return node;
-}
-
-- (id)valueForKey:(NSString *)aKey
-{
-#warning wth?
-    // when using these as values to be displayed in BDSKTextWithIconCell, valueForUndefinedKey: isn't called
-    id obj = [super valueForKey:aKey];
-    return obj ? obj : [self valueForUndefinedKey:aKey];
 }
 
 - (id)valueForUndefinedKey:(NSString *)key { 
