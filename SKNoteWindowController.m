@@ -44,6 +44,9 @@
 
 static NSString *SKNoteWindowFrameAutosaveName = @"SKNoteWindowFrameAutosaveName";
 
+@interface SKRectStringTransformer : NSValueTransformer
+@end
+
 @implementation SKNoteWindowController
 
 + (void)initialize {
@@ -101,6 +104,10 @@ static NSString *SKNoteWindowFrameAutosaveName = @"SKNoteWindowFrameAutosaveName
     [super showWindow:sender];
     if ([note respondsToSelector:@selector(setWindowIsOpen:)])
         [(PDFAnnotationText *)note setWindowIsOpen:YES];
+}
+
+- (IBAction)changeKeepOnTop:(id)sender {
+    [[self window] setLevel:[sender state] == NSOnState ? NSFloatingWindowLevel : NSNormalWindowLevel];
 }
 
 - (NSString *)windowTitleForDocumentDisplayName:(NSString *)displayName {
