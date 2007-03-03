@@ -347,9 +347,9 @@ int main (int argc, const char * argv[]) {
         fprintf (stderr, "%s\n%s\n", usageStr, versionStr);
         exit (1);
     } else if (strcmp("get", argv[1]) == 0) {
-        read = YES;
+        get = YES;
     } else if (strcmp("set", argv[1]) == 0) {
-        read = NO;
+        get = NO;
     } else {
         fprintf (stderr, "%s\n%s\n", usageStr, versionStr);
         exit (1);
