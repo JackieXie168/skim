@@ -112,8 +112,9 @@ static NSString *BDSKPreferencesSearchField = @"BDSKPreferencesSearchField";
     overlay = [[BDSKOverlayWindow alloc] initWithContentRect:contentRect styleMask:[theWindow styleMask] backing:[theWindow backingType] defer:YES];
     [overlay setReleasedWhenClosed:NO];
 
-    NSView *view = [[BDSKSpotlightView alloc] initWithFrame:contentRect delegate:self];
+    NSView *view = [[BDSKSpotlightView alloc] initWithFrame:[[overlay contentView] frame] delegate:self];
     [overlay setContentView:view];
+    [view setAutoresizingMask:NSViewWidthSizable|NSViewHeightSizable];
     [view release];
     [overlay overlayView:[theWindow contentView]];
     [theWindow setShowsToolbarButton:NO];
@@ -142,27 +143,7 @@ static NSString *BDSKPreferencesSearchField = @"BDSKPreferencesSearchField";
 
 - (BOOL)isSearchActive { return isSearchActive; }
 
-static NSRect insetButtonRectAndShift(const NSRect aRect)
-{
-    // convert to a square
-    float side = MAX(NSHeight(aRect), NSWidth(aRect));
-    NSPoint center = NSMakePoint(NSMidX(aRect), NSMidY(aRect));
-    
-    // raise to account for the text; this is the button rect
-    // @@ resolution independence
-    center.y += 10;
-    
-    return NSInsetRect(NSMakeRect(center.x - 0.5f * side, center.y - 0.5f * side, side, side), 10, 10);
-}
-
-static inline NSRect convertRectInWindowToScreen(NSRect aRect, NSWindow *window)
-{
-    NSPoint pt = [window convertBaseToScreen:aRect.origin];
-    aRect.origin = pt;
-    return aRect;
-}
-
-- (NSArray *)highlightRectsInScreenCoordinates;
+- (NSArray *)highlightCirclesInScreenCoordinates;
 {
     // we have an array of OAPreferencesIconViews; one per category (row)
     NSEnumerator *viewE = [preferencesIconViews objectEnumerator];
@@ -192,9 +173,14 @@ static inline NSRect convertRectInWindowToScreen(NSRect aRect, NSWindow *window)
                 // this is a private method, but declared in the header
                 NSRect rect = [view _boundsForIndex:i];
                 
-                // convert to screen coordinates
-                rect = convertRectInWindowToScreen([view convertRect:rect toView:nil], theWindow);
-                [rectArray addObject:[NSValue valueWithRect:insetButtonRectAndShift(rect)]];
+                float radius = 0.4 * MAX(NSHeight(rect), NSWidth(rect));
+                NSPoint center = NSMakePoint(NSMidX(rect), NSMidY(rect));
+                center = [view convertPoint:center toView:nil];
+                center = [theWindow convertBaseToScreen:center];
+                
+                BDSKSpotlightCircle *circle = [[BDSKSpotlightCircle alloc] initWithCenterPoint:center radius:radius];                
+                [rectArray addObject:circle];
+                [circle release];
             }
         }
     }

@@ -165,8 +165,12 @@
 }
 
 - (void)parentViewFrameChanged:(NSNotification *)notification {
-	NSWindow *parentWindow = [parentView window];
-    NSRect viewRect = [parentWindow contentRectForFrameRect:[parentWindow frame]];
+	NSRect viewRect = [parentView convertRect:[parentView bounds] toView:nil];
+	NSPoint windowOrigin = [[parentView window] frame].origin;
+	
+	viewRect.origin.x += windowOrigin.x;
+	viewRect.origin.y += windowOrigin.y;
+	
 	[self setFrame:viewRect display:YES];
 }
 
