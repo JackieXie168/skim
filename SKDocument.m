@@ -212,6 +212,7 @@ NSString *SKDocumentWillSaveNotification = @"SKDocumentWillSaveNotification";
                         if (array) {
                             [noteDicts release];
                             noteDicts = [array copy];
+                            [self updateChangeCount:NSChangeDone];
                         }
                     }
                 }
