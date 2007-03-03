@@ -756,6 +756,7 @@ NSString *SKSkimNotePboardType = @"SKSkimNotePboardType";
         userInfo:[NSDictionary dictionaryWithObjectsAndKeys:newAnnotation, @"annotation", page, @"page", nil]];
 
     [self setActiveAnnotation:newAnnotation];
+    [newAnnotation release];
 }
 
 - (void)removeActiveAnnotation:(id)sender{
