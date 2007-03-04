@@ -56,6 +56,7 @@
                 rotateLeft = id; 
                 rotateRight = id; 
                 search = id; 
+                takeSnapshot = id; 
                 toggleDisplayAsBook = id; 
                 toggleDisplayContinuous = id; 
                 toggleDisplayPageBreaks = id; 
