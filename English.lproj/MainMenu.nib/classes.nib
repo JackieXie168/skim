@@ -29,6 +29,7 @@
                 rotateAllRight = id; 
                 rotateLeft = id; 
                 rotateRight = id; 
+                takeSnapshot = id; 
                 toggleDisplayAsBook = id; 
                 toggleDisplayContinuous = id; 
                 toggleDisplayPageBreaks = id; 

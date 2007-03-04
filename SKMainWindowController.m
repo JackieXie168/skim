@@ -697,6 +697,10 @@ static NSString *SKDocumentToolbarNotesPaneItemIdentifier = @"SKDocumentToolbarN
 	[pdfView setActiveAnnotation:annotation];
 }
 
+- (IBAction)takeSnapshot:(id)sender{
+    [pdfView takeSnapshot:sender];
+}
+
 - (IBAction)displaySinglePages:(id)sender {
     PDFDisplayMode displayMode = [pdfView displayMode];
     if (displayMode == kPDFDisplayTwoUp)

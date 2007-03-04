@@ -163,6 +163,7 @@ typedef struct _SKPDFViewState {
 - (IBAction)pickColor:(id)sender;
 - (IBAction)changeColor:(id)sender;
 - (IBAction)createNewNote:(id)sender;
+- (IBAction)takeSnapshot:(id)sender;
 - (IBAction)displaySinglePages:(id)sender;
 - (IBAction)displayFacingPages:(id)sender;
 - (IBAction)toggleDisplayContinuous:(id)sender;
