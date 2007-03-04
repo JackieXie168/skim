@@ -202,6 +202,7 @@ typedef struct _SKPDFViewState {
 - (IBAction)toggleFullScreen:(id)sender;
 - (IBAction)enterPresentation:(id)sender;
 - (IBAction)togglePresentation:(id)sender;
+- (IBAction)performFit:(id)sender;
 
 - (void)showSnapshotAtPageNumber:(int)pageNum forRect:(NSRect)rect factor:(int)factor;
 - (void)toggleSnapshots:(NSArray *)snapshotArray;
