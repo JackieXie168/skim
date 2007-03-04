@@ -23,7 +23,6 @@
         {CLASS = SKFullScreenWindow; LANGUAGE = ObjC; SUPERCLASS = NSWindow; }, 
         {
             ACTIONS = {
-                changeAnnotationMode = id; 
                 changeColor = id; 
                 changeDisplayBox = id; 
                 changeLeftSidePaneState = id; 
@@ -69,7 +68,6 @@
             CLASS = SKMainWindowController; 
             LANGUAGE = ObjC; 
             OUTLETS = {
-                annotationModeButton = NSSegmentedControl; 
                 backForwardButton = NSSegmentedControl; 
                 choosePageField = NSTextField; 
                 choosePageSheet = NSWindow; 

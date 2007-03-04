@@ -132,7 +132,6 @@ typedef struct _SKPDFViewState {
     IBOutlet NSStepper          *pageNumberStepper;
     IBOutlet NSTextField        *pageNumberField;
     IBOutlet NSSegmentedControl *toolModeButton;
-    IBOutlet NSSegmentedControl *annotationModeButton;
     IBOutlet NSTextField        *scaleField;
     IBOutlet NSPopUpButton      *displayBoxPopUpButton;
     NSMutableDictionary         *toolbarItems;
@@ -193,7 +192,6 @@ typedef struct _SKPDFViewState {
 - (IBAction)chooseScale:(id)sender;
 - (IBAction)dismissChooseScaleSheet:(id)sender;
 - (IBAction)changeToolMode:(id)sender;
-- (IBAction)changeAnnotationMode:(id)sender;
 - (IBAction)toggleLeftSidePane:(id)sender;
 - (IBAction)toggleRightSidePane:(id)sender;
 - (IBAction)changeLeftSidePaneState:(id)sender;

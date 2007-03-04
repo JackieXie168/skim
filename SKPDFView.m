@@ -232,18 +232,6 @@ NSString *SKSkimNotePboardType = @"SKSkimNotePboardType";
     }
 }
 
-- (SKAnnotationMode)annotationMode {
-    return annotationMode;
-}
-
-- (void)setAnnotationMode:(SKAnnotationMode)newAnnotationMode {
-    if (annotationMode != newAnnotationMode) {
-        annotationMode = newAnnotationMode;
-        
-        [[NSNotificationCenter defaultCenter] postNotificationName:SKPDFViewAnnotationModeChangedNotification object:self];
-    }
-}
-
 - (PDFAnnotation *)activeAnnotation {
 	return activeAnnotation;
 }
@@ -639,17 +627,17 @@ NSString *SKSkimNotePboardType = @"SKSkimNotePboardType";
         
         item = [menu addItemWithTitle:NSLocalizedString(@"New Text Note", @"Menu item title") action:@selector(addAnnotationFromMenu:) keyEquivalent:@""];
         [item setRepresentedObject:[NSValue valueWithPoint:point]];
-        [item setTag:SKFreeTextAnnotationMode];
+        [item setTag:SKFreeTextNote];
         [item setTarget:self];
         
         item = [menu addItemWithTitle:NSLocalizedString(@"New Anchored Note", @"Menu item title") action:@selector(addAnnotationFromMenu:) keyEquivalent:@""];
         [item setRepresentedObject:[NSValue valueWithPoint:point]];
-        [item setTag:SKNoteAnnotationMode];
+        [item setTag:SKAnchoredNote];
         [item setTarget:self];
         
         item = [menu addItemWithTitle:NSLocalizedString(@"New Circle Note", @"Menu item title") action:@selector(addAnnotationFromMenu:) keyEquivalent:@""];
         [item setRepresentedObject:[NSValue valueWithPoint:point]];
-        [item setTag:SKCircleAnnotationMode];
+        [item setTag:SKCircleNote];
         [item setTarget:self];
         
         if (annotation) {
@@ -682,10 +670,10 @@ NSString *SKSkimNotePboardType = @"SKSkimNotePboardType";
 - (void)addAnnotationFromMenu:(id)sender {
     PDFSelection *selection = [self currentSelection];
     NSString *text = [[selection string] stringByCollapsingWhitespaceAndNewlinesAndRemovingSurroundingWhitespaceAndNewlines];
-    SKAnnotationMode annotationType = [sender tag];
+    SKNoteType annotationType = [sender tag];
     NSPoint point = [[sender representedObject] pointValue];
 	PDFPage *page = [self pageForPoint:point nearest:YES];
-    NSSize defaultSize = (annotationType == SKTextAnnotationMode || annotationType == SKNoteAnnotationMode) ? NSMakeSize(16.0, 16.0) : ([page rotation] % 180 == 90) ? NSMakeSize(64.0, 128.0) : NSMakeSize(128.0, 64.0);
+    NSSize defaultSize = (annotationType == SKTextNote || annotationType == SKAnchoredNote) ? NSMakeSize(16.0, 16.0) : ([page rotation] % 180 == 90) ? NSMakeSize(64.0, 128.0) : NSMakeSize(128.0, 64.0);
 	NSRect bounds;
     
     point = [self convertPoint:point toPage:page];
@@ -694,7 +682,7 @@ NSString *SKSkimNotePboardType = @"SKSkimNotePboardType";
     [self addAnnotationWithType:annotationType contents:text page:page bounds:bounds];
 }
 
-- (void)addAnnotationFromSelectionWithType:(SKAnnotationMode)annotationType {
+- (void)addAnnotationFromSelectionWithType:(SKNoteType)annotationType {
 	PDFPage *page;
 	NSRect bounds;
     PDFSelection *selection = [self currentSelection];
@@ -712,7 +700,7 @@ NSString *SKSkimNotePboardType = @"SKSkimNotePboardType";
 		// Get center of the PDFView.
 		NSRect viewFrame = [self frame];
 		NSPoint center = NSMakePoint(NSMidX(viewFrame), NSMidY(viewFrame));
-		NSSize defaultSize = (annotationType == SKTextAnnotationMode || annotationType == SKNoteAnnotationMode) ? NSMakeSize(16.0, 16.0) : NSMakeSize(128.0, 64.0);
+		NSSize defaultSize = (annotationType == SKTextNote || annotationType == SKAnchoredNote) ? NSMakeSize(16.0, 16.0) : NSMakeSize(128.0, 64.0);
 		
 		// Convert to "page space".
 		page = [self pageForPoint: center nearest: YES];
@@ -724,25 +712,25 @@ NSString *SKSkimNotePboardType = @"SKSkimNotePboardType";
     [self addAnnotationWithType:annotationType contents:text page:page bounds:bounds];
 }
 
-- (void)addAnnotationWithType:(SKAnnotationMode)annotationType contents:(NSString *)text page:(PDFPage *)page bounds:(NSRect)bounds {
+- (void)addAnnotationWithType:(SKNoteType)annotationType contents:(NSString *)text page:(PDFPage *)page bounds:(NSRect)bounds {
 	PDFAnnotation *newAnnotation = nil;
 	// Create annotation and add to page.
     switch (annotationType) {
-        case SKFreeTextAnnotationMode:
+        case SKFreeTextNote:
             newAnnotation = [[SKPDFAnnotationFreeText alloc] initWithBounds:bounds];
             break;
-        case SKTextAnnotationMode:
+        case SKTextNote:
             newAnnotation = [[SKPDFAnnotationText alloc] initWithBounds:bounds];
             break;
-        case SKNoteAnnotationMode:
+        case SKAnchoredNote:
             newAnnotation = [[SKPDFAnnotationNote alloc] initWithBounds:bounds];
             break;
-        case SKCircleAnnotationMode:
+        case SKCircleNote:
             newAnnotation = [[SKPDFAnnotationCircle alloc] initWithBounds:NSInsetRect(bounds, -5.0, -5.0)];
             if (text == nil)
                 text = [[[page selectionForRect:bounds] string] stringByCollapsingWhitespaceAndNewlinesAndRemovingSurroundingWhitespaceAndNewlines];
             break;
-        case SKSquareAnnotationMode:
+        case SKSquareNote:
             newAnnotation = [[PDFAnnotationSquare alloc] initWithBounds:bounds];
             if (text == nil)
                 text = [[[page selectionForRect:bounds] string] stringByCollapsingWhitespaceAndNewlinesAndRemovingSurroundingWhitespaceAndNewlines];
