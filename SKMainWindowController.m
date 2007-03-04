@@ -958,7 +958,8 @@ static NSString *SKDocumentToolbarNotesPaneItemIdentifier = @"SKDocumentToolbarN
 
 - (void)goFullScreen {
     NSScreen *screen = [[self window] screen]; // @@ or should we use the window's screen?
-
+    NSColor *backgroundColor = [self isPresentation] ? [NSColor blackColor] : [NSUnarchiver unarchiveObjectWithData:[[NSUserDefaults standardUserDefaults] dataForKey:SKFullScreenBackgroundColorKey]];
+    
     // Create the full-screen window if it does not already  exist.
     if (fullScreenWindow == nil) {
         fullScreenWindow = [[SKFullScreenWindow alloc] initWithScreen:screen];
@@ -970,7 +971,9 @@ static NSString *SKDocumentToolbarNotesPaneItemIdentifier = @"SKDocumentToolbarN
     if ([[mainWindow firstResponder] isDescendantOf:pdfView])
         [mainWindow makeFirstResponder:nil];
     [fullScreenWindow setMainView:pdfView];
-    [pdfView setBackgroundColor:[NSUnarchiver unarchiveObjectWithData:[[NSUserDefaults standardUserDefaults] dataForKey:SKFullScreenBackgroundColorKey]]];
+    [fullScreenWindow setBackgroundColor:backgroundColor];
+    [fullScreenWindow setLevel:[self isPresentation] ? CGShieldingWindowLevel() : NSNormalWindowLevel];
+    [pdfView setBackgroundColor:backgroundColor];
     [pdfView layoutDocumentView];
     [pdfView setNeedsDisplay:YES];
     
@@ -1105,6 +1108,11 @@ static NSString *SKDocumentToolbarNotesPaneItemIdentifier = @"SKDocumentToolbarN
     // Capture the screen.
     CGDisplayCapture((CGDirectDisplayID)[screenID longValue]);
     
+    NSColor *backgroundColor = [NSColor blackColor];
+    [pdfView setBackgroundColor:backgroundColor];
+    [fullScreenWindow setBackgroundColor:backgroundColor];
+    [fullScreenWindow setLevel:CGShieldingWindowLevel()];
+    
     isPresentation = YES;
 }
 
@@ -1128,6 +1136,11 @@ static NSString *SKDocumentToolbarNotesPaneItemIdentifier = @"SKDocumentToolbarN
     NSNumber *screenID = [[screen deviceDescription] objectForKey:@"NSScreenNumber"];
     CGDisplayRelease((CGDirectDisplayID)[screenID longValue]);
     
+    NSColor *backgroundColor = [NSUnarchiver unarchiveObjectWithData:[[NSUserDefaults standardUserDefaults] dataForKey:SKFullScreenBackgroundColorKey]];
+    [pdfView setBackgroundColor:backgroundColor];
+    [fullScreenWindow setBackgroundColor:backgroundColor];
+    [fullScreenWindow setLevel:NSNormalWindowLevel];
+    
     isPresentation = NO;
 }
 
@@ -1143,8 +1156,6 @@ static NSString *SKDocumentToolbarNotesPaneItemIdentifier = @"SKDocumentToolbarN
     else
         [self goFullScreen];
     
-    [fullScreenWindow setBackgroundColor:[NSUnarchiver unarchiveObjectWithData:[[NSUserDefaults standardUserDefaults] dataForKey:SKFullScreenBackgroundColorKey]]];
-    [fullScreenWindow setLevel:NSNormalWindowLevel];
     [pdfView setHasNavigation:YES autohidesCursor:NO];
     [self showSideWindows];
 }
@@ -1163,8 +1174,6 @@ static NSString *SKDocumentToolbarNotesPaneItemIdentifier = @"SKDocumentToolbarN
     } else
         [self goFullScreen];
     
-    [fullScreenWindow setBackgroundColor:[NSColor blackColor]];
-    [fullScreenWindow setLevel:CGShieldingWindowLevel()];
     [pdfView setHasNavigation:YES autohidesCursor:YES];
 }
 
