@@ -179,6 +179,19 @@ static NSString *SKDocumentToolbarNotesPaneItemIdentifier = @"SKDocumentToolbarN
     // this is not called automatically, because the document overrides makeWindowControllers
     [[self document] windowControllerDidLoadNib:self];
     
+    [leftSideCollapsibleView setCollapseEdges:BDSKMaxXEdgeMask | BDSKMinYEdgeMask];
+    [leftSideCollapsibleView setMinSize:NSMakeSize(100.0, 42.0)];
+    
+    [findCollapsibleView setCollapseEdges:BDSKMaxXEdgeMask | BDSKMinYEdgeMask];
+    [findCollapsibleView setMinSize:NSMakeSize(50.0, 25.0)];
+    
+    [pdfContentBox setEdges:BDSKMinXEdgeMask | BDSKMaxXEdgeMask];
+    [findEdgeView setEdges:BDSKMaxXEdgeMask];
+    [leftSideEdgeView setEdges:BDSKMaxXEdgeMask];
+    [rightSideEdgeView setEdges:BDSKMinXEdgeMask];
+    
+    [pdfView setFrame:[[pdfContentBox contentView] bounds]];
+    
     NSRect frame = [leftSideButton frame];
     frame.size.height = SEGMENTED_CONTROL_HEIGHT;
     [leftSideButton setFrame:frame];
@@ -190,17 +203,6 @@ static NSString *SKDocumentToolbarNotesPaneItemIdentifier = @"SKDocumentToolbarN
     [rightSideButton setFrame:frame];
     [[rightSideButton cell] setToolTip:NSLocalizedString(@"View Notes", @"Tool tip message") forSegment:SKNoteSidePaneState];
     [[rightSideButton cell] setToolTip:NSLocalizedString(@"View Snapshots", @"Tool tip message") forSegment:SKSnapshotSidePaneState];
-    
-    [leftSideCollapsibleView setCollapseEdges:BDSKMaxXEdgeMask | BDSKMinYEdgeMask];
-    [leftSideCollapsibleView setMinSize:NSMakeSize(100.0, 42.0)];
-    
-    [findCollapsibleView setCollapseEdges:BDSKMaxXEdgeMask | BDSKMinYEdgeMask];
-    [findCollapsibleView setMinSize:NSMakeSize(50.0, 25.0)];
-    
-    [pdfContentBox setEdges:BDSKMinXEdgeMask | BDSKMaxXEdgeMask];
-    [findEdgeView setEdges:BDSKMaxXEdgeMask];
-    [leftSideEdgeView setEdges:BDSKMaxXEdgeMask];
-    [rightSideEdgeView setEdges:BDSKMinXEdgeMask];
     
     [self displayOutlineView];
     [self displayNoteView];
@@ -1210,6 +1212,37 @@ static NSString *SKDocumentToolbarNotesPaneItemIdentifier = @"SKDocumentToolbarN
         [self exitFullScreen:sender];
     else
         [self enterPresentation:sender];
+}
+
+- (IBAction)performFit:(id)sender {
+    if ([[self pdfView] autoScales] || [self isFullScreen] || [self isPresentation]) {
+        NSBeep();
+        return;
+    }
+    
+    PDFDisplayMode displayMode = [pdfView displayMode];
+    NSRect screenFrame = [[[self window] screen] visibleFrame];
+    NSRect frame = [splitView frame];
+    NSRect documentRect = [[[self pdfView] documentView] convertRect:[[[self pdfView] documentView] bounds] toView:nil];
+    
+    frame.size.width = NSWidth([leftSideContentBox frame]) + NSWidth([rightSideContentBox frame]) + NSWidth(documentRect) + 2 * [splitView dividerThickness] + 2.0;
+    if (displayMode == kPDFDisplaySinglePage || displayMode == kPDFDisplayTwoUp)
+        frame.size.height = NSHeight(documentRect);
+    else
+        frame.size.width += [NSScroller scrollerWidth];
+    frame.origin = [[self window] convertBaseToScreen:[[[self window] contentView] convertPoint:frame.origin toView:nil]];
+    
+    frame = [[self window] frameRectForContentRect:frame];
+    if (frame.size.width > NSWidth(screenFrame))
+        frame.size.width = NSWidth(screenFrame);
+    if (frame.size.height > NSHeight(screenFrame))
+        frame.size.height = NSHeight(screenFrame);
+    if (NSMaxX(frame) > NSMaxX(screenFrame))
+        frame.origin.x = NSMaxX(screenFrame) - NSWidth(frame);
+    if (NSMaxY(frame) > NSMaxY(screenFrame))
+        frame.origin.y = NSMaxY(screenFrame) - NSHeight(frame);
+    
+    [[self window] setFrame:frame display:[[self window] isVisible]];
 }
 
 - (IBAction)printDocument:(id)sender{
@@ -2703,6 +2736,11 @@ static NSString *SKDocumentToolbarNotesPaneItemIdentifier = @"SKDocumentToolbarN
         return YES;
     } else if (action == @selector(getInfo:)) {
         return YES;
+    } else if (action == @selector(performFit:)) {
+        if ([[self pdfView] autoScales] || [self isFullScreen] || [self isPresentation])
+            return NO;
+        else
+            return YES;
     }
     return YES;
 }
