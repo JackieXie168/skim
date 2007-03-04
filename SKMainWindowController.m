@@ -93,7 +93,6 @@ static NSString *SKDocumentToolbarNewCircleNoteItemIdentifier = @"SKDocumentTool
 static NSString *SKDocumentToolbarToggleDrawerItemIdentifier = @"SKDocumentToolbarToggleDrawerItemIdentifier";
 static NSString *SKDocumentToolbarInfoItemIdentifier = @"SKDocumentToolbarInfoItemIdentifier";
 static NSString *SKDocumentToolbarToolModeItemIdentifier = @"SKDocumentToolbarToolModeItemIdentifier";
-//static NSString *SKDocumentToolbarAnnotationModeItemIdentifier = @"SKDocumentToolbarAnnotationModeItemIdentifier";
 static NSString *SKDocumentToolbarDisplayBoxItemIdentifier = @"SKDocumentToolbarDisplayBoxItemIdentifier";
 static NSString *SKDocumentToolbarContentsPaneItemIdentifier = @"SKDocumentToolbarContentsPaneItemIdentifier";
 static NSString *SKDocumentToolbarNotesPaneItemIdentifier = @"SKDocumentToolbarNotesPaneItemIdentifier";
@@ -678,11 +677,11 @@ static NSString *SKDocumentToolbarNotesPaneItemIdentifier = @"SKDocumentToolbarN
     if (type == -1) {
         int modifiers = GetCurrentKeyModifiers();
         if (modifiers & optionKey)
-            type = SKNoteAnnotationMode;
+            type = SKAnchoredNote;
         else if (modifiers & shiftKey)
-            type = SKCircleAnnotationMode;
+            type = SKCircleNote;
         else
-            type = SKFreeTextAnnotationMode;
+            type = SKFreeTextNote;
     }
         
     [pdfView addAnnotationFromSelectionWithType:type];
@@ -884,11 +883,6 @@ static NSString *SKDocumentToolbarNotesPaneItemIdentifier = @"SKDocumentToolbarN
 - (IBAction)changeToolMode:(id)sender {
     [pdfView setToolMode:[sender tag]];
 }
-
-- (IBAction)changeAnnotationMode:(id)sender {
-    [pdfView setAnnotationMode:[sender tag]];
-}
-
 
 - (IBAction)toggleLeftSidePane:(id)sender {
     if ([self isFullScreen]) {
@@ -2395,7 +2389,7 @@ static NSString *SKDocumentToolbarNotesPaneItemIdentifier = @"SKDocumentToolbarN
                                                                      action:@selector(createNewNote:)
 									                          keyEquivalent:@""] autorelease];
 	[menuItem setTarget:self];
-    [menuItem setTag:SKFreeTextAnnotationMode];
+    [menuItem setTag:SKFreeTextNote];
     item = [[NSToolbarItem alloc] initWithItemIdentifier:SKDocumentToolbarNewTextNoteItemIdentifier];
     [item setLabel:NSLocalizedString(@"Text Note", @"Toolbar item label")];
     [item setPaletteLabel:NSLocalizedString(@"New Text Note", @"Toolbar item label")];
@@ -2403,7 +2397,7 @@ static NSString *SKDocumentToolbarNotesPaneItemIdentifier = @"SKDocumentToolbarN
     [item setImage:[NSImage imageNamed:@"ToolbarTextNote"]];
     [item setTarget:self];
     [item setAction:@selector(createNewNote:)];
-    [item setTag:SKFreeTextAnnotationMode];
+    [item setTag:SKFreeTextNote];
     [item setMenuFormRepresentation:menuItem];
     [toolbarItems setObject:item forKey:SKDocumentToolbarNewTextNoteItemIdentifier];
     [item release];
@@ -2412,7 +2406,7 @@ static NSString *SKDocumentToolbarNotesPaneItemIdentifier = @"SKDocumentToolbarN
                                                                      action:@selector(createNewNote:)
 									                          keyEquivalent:@""] autorelease];
 	[menuItem setTarget:self];
-    [menuItem setTag:SKNoteAnnotationMode];
+    [menuItem setTag:SKAnchoredNote];
     item = [[NSToolbarItem alloc] initWithItemIdentifier:SKDocumentToolbarNewAnchoredNoteItemIdentifier];
     [item setLabel:NSLocalizedString(@"Anchored Note", @"Toolbar item label")];
     [item setPaletteLabel:NSLocalizedString(@"New Anchored Note", @"Toolbar item label")];
@@ -2420,7 +2414,7 @@ static NSString *SKDocumentToolbarNotesPaneItemIdentifier = @"SKDocumentToolbarN
     [item setImage:[NSImage imageNamed:@"ToolbarNote"]];
     [item setTarget:self];
     [item setAction:@selector(createNewNote:)];
-    [item setTag:SKNoteAnnotationMode];
+    [item setTag:SKAnchoredNote];
     [item setMenuFormRepresentation:menuItem];
     [toolbarItems setObject:item forKey:SKDocumentToolbarNewAnchoredNoteItemIdentifier];
     [item release];
@@ -2429,7 +2423,7 @@ static NSString *SKDocumentToolbarNotesPaneItemIdentifier = @"SKDocumentToolbarN
                                                                      action:@selector(createNewNote:)
 									                          keyEquivalent:@""] autorelease];
 	[menuItem setTarget:self];
-    [menuItem setTag:SKCircleAnnotationMode];
+    [menuItem setTag:SKCircleNote];
     item = [[NSToolbarItem alloc] initWithItemIdentifier:SKDocumentToolbarNewCircleNoteItemIdentifier];
     [item setLabel:NSLocalizedString(@"Circle Note", @"Toolbar item label")];
     [item setPaletteLabel:NSLocalizedString(@"New Circle Note", @"Toolbar item label")];
@@ -2437,7 +2431,7 @@ static NSString *SKDocumentToolbarNotesPaneItemIdentifier = @"SKDocumentToolbarN
     [item setImage:[NSImage imageNamed:@"ToolbarCircleNote"]];
     [item setTarget:self];
     [item setAction:@selector(createNewNote:)];
-    [item setTag:SKCircleAnnotationMode];
+    [item setTag:SKCircleNote];
     [item setMenuFormRepresentation:menuItem];
     [toolbarItems setObject:item forKey:SKDocumentToolbarNewCircleNoteItemIdentifier];
     [item release];
@@ -2478,23 +2472,6 @@ static NSString *SKDocumentToolbarNotesPaneItemIdentifier = @"SKDocumentToolbarN
     [item setMenuFormRepresentation:menuItem];
     [toolbarItems setObject:item forKey:SKDocumentToolbarToolModeItemIdentifier];
     [item release];
-    /*
-    item = [[NSToolbarItem alloc] initWithItemIdentifier:SKDocumentToolbarAnnotationModeItemIdentifier];
-    [item setLabel:NSLocalizedString(@"Annotation", @"Toolbar item label")];
-    [item setPaletteLabel:NSLocalizedString(@"Annotation Mode", @"Toolbar item label")];
-    [item setToolTip:NSLocalizedString(@"Annotation Mode", @"Tool tip message")];
-    [[annotationModeButton cell] setToolTip:NSLocalizedString(@"Text Annotation", @"Tool tip message") forSegment:SKFreeTextAnnotationMode];
-    [[annotationModeButton cell] setToolTip:NSLocalizedString(@"Note Annotation", @"Tool tip message") forSegment:SKNoteAnnotationMode];
-    [[annotationModeButton cell] setToolTip:NSLocalizedString(@"Oval Annotation", @"Tool tip message") forSegment:SKCircleAnnotationMode];
-    frame = [annotationModeButton frame];
-    frame.size.height = SEGMENTED_CONTROL_HEIGHT;
-    [annotationModeButton setFrame:frame];
-    [item setView:annotationModeButton];
-    [item setMinSize:[annotationModeButton bounds].size];
-    [item setMaxSize:[annotationModeButton bounds].size];
-    [toolbarItems setObject:item forKey:SKDocumentToolbarAnnotationModeItemIdentifier];
-    [item release];
-    */
     
 	menu = [[NSMenu allocWithZone:[NSMenu menuZone]] init];
     menuItem = [menu addItemWithTitle:NSLocalizedString(@"Media Box", @"Menu item title") action:@selector(changeDisplayBox:) keyEquivalent:@""];
@@ -2594,7 +2571,6 @@ static NSString *SKDocumentToolbarNotesPaneItemIdentifier = @"SKDocumentToolbarN
         SKDocumentToolbarContentsPaneItemIdentifier, 
         SKDocumentToolbarNotesPaneItemIdentifier, 
         SKDocumentToolbarToolModeItemIdentifier, 
-        //SKDocumentToolbarAnnotationModeItemIdentifier, 
         SKDocumentToolbarDisplayBoxItemIdentifier, 
 		NSToolbarPrintItemIdentifier,
 		NSToolbarFlexibleSpaceItemIdentifier, 
@@ -2655,9 +2631,6 @@ static NSString *SKDocumentToolbarNotesPaneItemIdentifier = @"SKDocumentToolbarN
         return YES;
     } else if (action == @selector(changeToolMode:)) {
         [menuItem setState:[pdfView toolMode] == (unsigned)[menuItem tag] ? NSOnState : NSOffState];
-        return YES;
-    } else if (action == @selector(changeAnnotationMode:)) {
-        [menuItem setState:[pdfView annotationMode] == (unsigned)[menuItem tag] ? NSOnState : NSOffState];
         return YES;
     } else if (action == @selector(doGoToNextPage:)) {
         return [pdfView canGoToNextPage];

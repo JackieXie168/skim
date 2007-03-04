@@ -41,7 +41,6 @@
 #import "SKMainWindowController.h"
 
 extern NSString *SKPDFViewToolModeChangedNotification;
-extern NSString *SKPDFViewAnnotationModeChangedNotification;
 extern NSString *SKPDFViewActiveAnnotationDidChangeNotification;
 extern NSString *SKPDFViewDidAddAnnotationNotification;
 extern NSString *SKPDFViewDidRemoveAnnotationNotification;
@@ -55,17 +54,16 @@ typedef enum _SKToolMode {
     SKMagnifyToolMode
 } SKToolMode;
 
-typedef enum _SKAnnotationMode {
-    SKFreeTextAnnotationMode,
-    SKNoteAnnotationMode,
-    SKCircleAnnotationMode,
-    SKTextAnnotationMode,
-    SKSquareAnnotationMode
-} SKAnnotationMode;
+typedef enum _SKNoteType {
+    SKFreeTextNote,
+    SKAnchoredNote,
+    SKCircleNote,
+    SKTextNote,
+    SKSquareNote
+} SKNoteType;
 
 @interface SKPDFView : PDFView {
     SKToolMode toolMode;
-    SKAnnotationMode annotationMode;
     
     BOOL autohidesCursor;
     BOOL hasNavigation;
@@ -86,17 +84,14 @@ typedef enum _SKAnnotationMode {
 - (SKToolMode)toolMode;
 - (void)setToolMode:(SKToolMode)newToolMode;
 
-- (SKAnnotationMode)annotationMode;
-- (void)setAnnotationMode:(SKAnnotationMode)newAnnotationMode;
-
 - (PDFAnnotation *)activeAnnotation;
 - (void)setActiveAnnotation:(PDFAnnotation *)newAnnotation;
 
 - (IBAction)delete:(id)sender;
 
 - (void)addAnnotationFromMenu:(id)sender;
-- (void)addAnnotationFromSelectionWithType:(SKAnnotationMode)annotationType;
-- (void)addAnnotationWithType:(SKAnnotationMode)annotationType contents:(NSString *)text page:(PDFPage *)page bounds:(NSRect)bounds;
+- (void)addAnnotationFromSelectionWithType:(SKNoteType)annotationType;
+- (void)addAnnotationWithType:(SKNoteType)annotationType contents:(NSString *)text page:(PDFPage *)page bounds:(NSRect)bounds;
 - (void)removeActiveAnnotation:(id)sender;
 - (void)removeThisAnnotation:(id)sender;
 - (void)removeAnnotation:(PDFAnnotation *)annotation;
