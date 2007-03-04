@@ -338,8 +338,6 @@ NSString *BDSKWeblocFilePboardType = @"CorePasteboardFlavorType 0x75726C20";
     drawerSize = [customCiteDrawer contentSize];
     [customCiteDrawer setContentSize:NSMakeSize(100,drawerSize.height)];
 
-	showingCustomCiteDrawer = NO;
-	
 	// unfortunately we cannot set this in IB
 	[actionMenuButton setArrowImage:[NSImage imageNamed:@"ArrowPointingDown"]];
 	[actionMenuButton setShowsMenuWhenIconClicked:YES];
@@ -3378,11 +3376,6 @@ NSString *BDSKWeblocFilePboardType = @"CorePasteboardFlavorType 0x75726C20";
 
 - (IBAction)toggleShowingCustomCiteDrawer:(id)sender{
     [customCiteDrawer toggle:sender];
-	if(showingCustomCiteDrawer){
-		showingCustomCiteDrawer = NO;
-	}else{
-		showingCustomCiteDrawer = YES;
-	}
 }
 
 - (IBAction)addCustomCiteString:(id)sender{

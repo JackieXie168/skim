@@ -131,7 +131,6 @@ extern NSString* BDSKWeblocFilePboardType; // core pasteboard type for webloc fi
     IBOutlet NSButton *addCustomCiteStringButton;
     IBOutlet NSButton *removeCustomCiteStringButton;
     NSMutableArray* customStringArray;
-	BOOL showingCustomCiteDrawer;
     
     NSMutableArray *publications;    // holds all the publications
     NSMutableArray *shownPublications;    // holds the ones we want to show.

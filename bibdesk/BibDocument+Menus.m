@@ -536,13 +536,11 @@
 
 - (BOOL) validateToggleToggleCustomCiteDrawerMenuItem:(NSMenuItem*) menuItem {
     NSString *s;
-	if(showingCustomCiteDrawer){
+	if([customCiteDrawer state] == NSDrawerOpenState : [customCiteDrawer state] == NSDrawerOpeningState)
 		s = NSLocalizedString(@"Hide Custom \\cite Commands",@"");
-		[menuItem setTitle:s];
-	}else{
+	else
 		s = NSLocalizedString(@"Show Custom \\cite Commands",@"should be the same as in the nib");
-		[menuItem setTitle:s];
-	}
+    [menuItem setTitle:s];
 	return YES;
 }
 
