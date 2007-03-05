@@ -127,9 +127,11 @@ static NSString *SKSnapshotViewChangedNotification = @"SKSnapshotViewChangedNoti
     [pdfView setDocument:pdfDocument];
     [pdfView setScaleFactor:factor];
     [pdfView setAutoScales:NO];
+    [pdfView setDisplaysPageBreaks:NO];
     
     PDFPage *page = [pdfDocument pageAtIndex:pageNum];
     NSRect contentRect = [pdfView convertRect:rect fromPage:page];
+    contentRect = [pdfView convertRect:contentRect toView:nil];
     NSRect frame = [[self window] frame];
     NSRect screenFrame = [[[self window] screen] visibleFrame];
     
