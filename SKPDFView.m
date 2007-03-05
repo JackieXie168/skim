@@ -640,6 +640,11 @@ NSString *SKSkimNotePboardType = @"SKSkimNotePboardType";
         [item setTag:SKCircleNote];
         [item setTarget:self];
         
+        item = [menu addItemWithTitle:NSLocalizedString(@"New Square Note", @"Menu item title") action:@selector(addAnnotationFromMenu:) keyEquivalent:@""];
+        [item setRepresentedObject:[NSValue valueWithPoint:point]];
+        [item setTag:SKSquareNote];
+        [item setTarget:self];
+        
         if (annotation) {
             item = [menu addItemWithTitle:NSLocalizedString(@"Remove Note", @"Menu item title") action:@selector(removeThisAnnotation:) keyEquivalent:@""];
             [item setRepresentedObject:annotation];
@@ -731,7 +736,7 @@ NSString *SKSkimNotePboardType = @"SKSkimNotePboardType";
                 text = [[[page selectionForRect:bounds] string] stringByCollapsingWhitespaceAndNewlinesAndRemovingSurroundingWhitespaceAndNewlines];
             break;
         case SKSquareNote:
-            newAnnotation = [[PDFAnnotationSquare alloc] initWithBounds:bounds];
+            newAnnotation = [[SKPDFAnnotationSquare alloc] initWithBounds:bounds];
             if (text == nil)
                 text = [[[page selectionForRect:bounds] string] stringByCollapsingWhitespaceAndNewlinesAndRemovingSurroundingWhitespaceAndNewlines];
             break;
