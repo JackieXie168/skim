@@ -425,7 +425,7 @@ static NSString *SKDocumentToolbarNotesPaneItemIdentifier = @"SKDocumentToolbarN
         
         [pdfOutline release];
         pdfOutline = [[[pdfView document] outlineRoot] retain];
-        if (outline && [[pdfView document] isLocked] == NO) {
+        if (pdfOutline && [[pdfView document] isLocked] == NO) {
             [outlineView reloadData];
             [outlineView setAutoresizesOutlineColumn: NO];
             
@@ -1243,6 +1243,33 @@ static NSString *SKDocumentToolbarNotesPaneItemIdentifier = @"SKDocumentToolbarN
         frame.origin.y = NSMaxY(screenFrame) - NSHeight(frame);
     
     [[self window] setFrame:frame display:[[self window] isVisible]];
+}
+
+- (void)passwordSheetDidEnd:(NSWindow *)sheet returnCode:(int)returnCode contextInfo:(void *)contextInfo {
+    if (returnCode == NSOKButton) {
+        [pdfView takePasswordFrom:passwordField];
+        if (pdfOutline && [[pdfView document] isLocked] == NO) {
+            [outlineView reloadData];
+            [outlineView setAutoresizesOutlineColumn: NO];
+            
+            if ([outlineView numberOfRows] == 1)
+                [outlineView expandItem: [outlineView itemAtRow: 0] expandChildren: NO];
+            [self updateOutlineSelection];
+        }
+    }
+}
+
+- (IBAction)password:(id)sender {
+	[NSApp beginSheet:passwordSheet
+       modalForWindow:[self window]
+        modalDelegate:self 
+       didEndSelector:@selector(passwordSheetDidEnd:returnCode:contextInfo:)
+          contextInfo:NULL];
+}
+
+- (IBAction)dismissPasswordSheet:(id)sender {
+    [NSApp endSheet:passwordSheet returnCode:[sender tag]];
+    [passwordSheet orderOut:self];
 }
 
 - (IBAction)printDocument:(id)sender{
@@ -2741,6 +2768,8 @@ static NSString *SKDocumentToolbarNotesPaneItemIdentifier = @"SKDocumentToolbarN
             return NO;
         else
             return YES;
+    } else if (action == @selector(password:)) {
+        return [[self pdfDocument] isEncrypted] && [[self pdfDocument] isLocked];
     }
     return YES;
 }

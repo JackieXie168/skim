@@ -23,6 +23,7 @@
                 doZoomToActualSize = id; 
                 doZoomToFit = id; 
                 getInfo = id; 
+                password = id; 
                 performFit = id; 
                 pickColor = id; 
                 readNotes = id; 

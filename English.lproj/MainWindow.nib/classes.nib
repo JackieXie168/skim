@@ -33,6 +33,7 @@
                 createNewNote = id; 
                 dismissChoosePageSheet = id; 
                 dismissChooseScaleSheet = id; 
+                dismissPasswordSheet = id; 
                 displayFacingPages = id; 
                 displaySinglePages = id; 
                 doGoBack = id; 
@@ -49,6 +50,8 @@
                 exitFullScreen = id; 
                 getInfo = id; 
                 goBackOrForward = id; 
+                password = id; 
+                performFit = id; 
                 pickColor = id; 
                 rotateAllLeft = id; 
                 rotateAllRight = id; 
@@ -94,6 +97,8 @@
                 pageNumberField = NSTextField; 
                 pageNumberStepper = NSStepper; 
                 pageNumberView = NSView; 
+                passwordField = NSTextField; 
+                passwordSheet = NSWindow; 
                 pdfContentBox = BDSKEdgeView; 
                 pdfView = SKPDFView; 
                 rightSideBox = NSBox; 
