@@ -986,11 +986,31 @@ static NSString *SKDocumentToolbarNotesPaneItemIdentifier = @"SKDocumentToolbarN
         if ([wc isKindOfClass:[SKNoteWindowController class]] || [wc isKindOfClass:[SKSnapshotWindowController class]])
             [[wc window] setLevel:NSFloatingWindowLevel];
     }
+        
+    if (NO == [self isPresentation] && [[NSUserDefaults standardUserDefaults] boolForKey:@"SKBlankAllWindows"] && [[NSScreen screens] count] > 1) {
+        if (nil == blankingWindows)
+            blankingWindows = [[NSMutableArray alloc] init];
+        [blankingWindows removeAllObjects];
+        NSEnumerator *screenEnum = [[NSScreen screens] objectEnumerator];
+        NSScreen *screenToBlank;
+        while (screenToBlank = [screenEnum nextObject]) {
+            if ([screenToBlank isEqual:screen] == NO) {
+                SKFullScreenWindow *window = [[SKFullScreenWindow alloc] initWithScreen:screenToBlank];
+                [window setBackgroundColor:backgroundColor];
+                [window setLevel:NSNormalWindowLevel];
+                [window setFrame:[screenToBlank frame] display:YES];
+                [window orderFront:nil];
+                [window setReleasedWhenClosed:YES];
+                [blankingWindows addObject:window];
+                [window release];
+            }
+        }
+    }
     
     [self setWindow:fullScreenWindow];
     [fullScreenWindow makeFirstResponder:pdfView];
     [fullScreenWindow makeKeyAndOrderFront:self];
-    [mainWindow orderOut:self];
+    [mainWindow orderOut:self];    
 }
 
 - (void)removeFullScreen {
@@ -1023,6 +1043,19 @@ static NSString *SKDocumentToolbarNotesPaneItemIdentifier = @"SKDocumentToolbarN
     [fullScreenWindow setAlphaValue:1.0];
     [mainWindow makeFirstResponder:pdfView];
     [mainWindow makeKeyAndOrderFront:self];
+    
+    NSEnumerator *blankScreenEnumerator = [blankingWindows objectEnumerator];
+    NSWindow *window;
+    while (window = [blankScreenEnumerator nextObject]) {
+        NSDictionary *fadeOutDict = [[NSDictionary alloc] initWithObjectsAndKeys:window, NSViewAnimationTargetKey, NSViewAnimationFadeOutEffect, NSViewAnimationEffectKey, nil];
+        NSViewAnimation *animation = [[NSViewAnimation alloc] initWithViewAnimations:[NSArray arrayWithObject:fadeOutDict]];
+        [fadeOutDict release];
+        [animation setAnimationBlockingMode:NSAnimationNonblockingThreaded];
+        [animation setDelegate:self];
+        [animation setDuration:0.5];
+        [animation startAnimation];
+        [animation release];        
+    }
 }
 
 - (void)showSideWindows {
@@ -1732,6 +1765,15 @@ static NSString *SKDocumentToolbarNotesPaneItemIdentifier = @"SKDocumentToolbarN
                     [pdfView setBackgroundColor:color];
                     [fullScreenWindow setBackgroundColor:color];
                     [[fullScreenWindow contentView] setNeedsDisplay:YES];
+                    
+                    if ([blankingWindows count]) {
+                        NSWindow *window;
+                        NSEnumerator *windowEnum = [blankingWindows objectEnumerator];
+                        while (window = [windowEnum nextObject]) {
+                            [window setBackgroundColor:color];
+                            [[window contentView] setNeedsDisplay:YES];
+                        }
+                    }
                 }
             }
         } else if ([key isEqualToString:SKSearchHighlightColorKey]) {
