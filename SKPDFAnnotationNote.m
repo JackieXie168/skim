@@ -45,6 +45,7 @@ enum {
     SKASTextAnnotation = 'NTxt',
     SKASAnchoredAnnotation = 'NAnc',
     SKASCircleAnnotation = 'NCir',
+    SKASSquareAnnotation = 'NSqu',
 };
 
 NSString *SKAnnotationWillChangeNotification = @"SKAnnotationWillChangeNotification";
@@ -156,6 +157,8 @@ NSString *SKAnnotationDidChangeNotification = @"SKAnnotationDidChangeNotificatio
                 annotation = [[SKPDFAnnotationNote alloc] initWithBounds:NSMakeRect(100.0, 100.0, 16.0, 16.0)];
             else if (type == SKASCircleAnnotation)
                 annotation = [[PDFAnnotationCircle alloc] initWithBounds:NSMakeRect(100.0, 100.0, 64.0, 64.0)];
+            else if (type == SKASSquareAnnotation)
+                annotation = [[PDFAnnotationSquare alloc] initWithBounds:NSMakeRect(100.0, 100.0, 64.0, 64.0)];
             
             self = annotation;
         }
@@ -180,6 +183,8 @@ NSString *SKAnnotationDidChangeNotification = @"SKAnnotationDidChangeNotificatio
         return SKASAnchoredAnnotation;
     else if ([[self type] isEqualToString:@"Circle"])
         return SKASCircleAnnotation;
+    else if ([[self type] isEqualToString:@"Square"])
+        return SKASSquareAnnotation;
     return 0;
 }
 
