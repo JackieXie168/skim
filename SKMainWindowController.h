@@ -145,6 +145,9 @@ typedef struct _SKPDFViewState {
     IBOutlet NSWindow           *saveProgressSheet;
     IBOutlet NSProgressIndicator *saveProgressBar;
     
+    IBOutlet NSWindow           *passwordSheet;
+    IBOutlet NSTextField        *passwordField;
+    
     NSMutableArray              *lastViewedPages;
     
     BOOL                        isPresentation;
@@ -203,6 +206,8 @@ typedef struct _SKPDFViewState {
 - (IBAction)enterPresentation:(id)sender;
 - (IBAction)togglePresentation:(id)sender;
 - (IBAction)performFit:(id)sender;
+- (IBAction)password:(id)sender;
+- (IBAction)dismissPasswordSheet:(id)sender;
 
 - (void)showSnapshotAtPageNumber:(int)pageNum forRect:(NSRect)rect factor:(int)factor;
 - (void)toggleSnapshots:(NSArray *)snapshotArray;
