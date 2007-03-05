@@ -126,6 +126,7 @@ typedef struct _SKPDFViewState {
     SKFullScreenWindow          *fullScreenWindow;
     SKSideWindow                *leftSideWindow;
     SKSideWindow                *rightSideWindow;
+    NSMutableArray              *blankingWindows;
     
     IBOutlet NSSegmentedControl *backForwardButton;
     IBOutlet NSView             *pageNumberView;
