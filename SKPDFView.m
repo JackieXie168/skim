@@ -967,7 +967,8 @@ NSString *SKSkimNotePboardType = @"SKSkimNotePboardType";
     
     rect.origin.x = [self convertPoint:[page boundsForBox:[self displayBox]].origin fromPage:page].x;
     rect.origin.y = point.y - 100.0;
-    rect.size.width = [self rowSizeForPage:page].width;
+    // rowSizeForPage: allows for facing pages, but the snapshot is single page width
+    rect.size.width = NSWidth([page boundsForBox:[self displayBox]]);
     rect.size.height = 200.0;
     
     SKMainWindowController *controller = [[self window] windowController];
@@ -1467,7 +1468,8 @@ NSString *SKSkimNotePboardType = @"SKSkimNotePboardType";
         
         rect.origin.x = [self convertPoint:[page boundsForBox:[self displayBox]].origin fromPage:page].x;
         rect.origin.y = point.y - 100.0;
-        rect.size.width = [self rowSizeForPage:page].width;
+        // rowSizeForPage: allows for facing pages, but the snapshot is single page width
+        rect.size.width = NSWidth([page boundsForBox:[self displayBox]]);
         rect.size.height = 200.0;
         
     } else {
