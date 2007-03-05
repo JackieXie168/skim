@@ -1331,6 +1331,18 @@ NSString *SKSkimNotePboardType = @"SKSkimNotePboardType";
             newBounds = currentBounds;
             newBounds.origin.x = roundf(endPt.x - clickDelta.x);
             newBounds.origin.y = roundf(endPt.y - clickDelta.y);
+        } else if ([self pageForPoint:mouseLoc nearest:NO]) {
+            // move the annotation to the new page
+            PDFPage *newActivePage = [self pageForPoint:mouseLoc nearest:NO];
+            [activeAnnotation retain];
+            [activePage removeAnnotation:activeAnnotation];
+            [newActivePage addAnnotation:activeAnnotation];
+            [activeAnnotation release];
+            
+            endPt = [self convertPoint:mouseLoc toPage:newActivePage];
+            newBounds = currentBounds;
+            newBounds.origin.x = roundf(endPt.x - clickDelta.x);
+            newBounds.origin.y = roundf(endPt.y - clickDelta.y);
         } else {
             // Snap back to initial location.
             newBounds = wasBounds;
