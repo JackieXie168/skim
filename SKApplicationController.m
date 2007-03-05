@@ -80,6 +80,26 @@
     [[NSUserDefaultsController sharedUserDefaultsController] setInitialValues:initialValuesDict];
 }
 
+static BOOL fileIsInTrash(NSURL *fileURL)
+{
+    NSCParameterAssert([fileURL isFileURL]);    
+    FSRef parentRef;
+    CFURLRef parentURL = CFURLCreateCopyDeletingLastPathComponent(CFGetAllocator((CFURLRef)fileURL), (CFURLRef)fileURL);
+    [(id)parentURL autorelease];
+    if (CFURLGetFSRef(parentURL, &parentRef)) {
+        OSStatus err;
+        FSRef fsRef;
+        err = FSFindFolder(kUserDomain, kTrashFolderType, TRUE, &fsRef);
+        if (noErr == err && noErr == FSCompareFSRefs(&fsRef, &parentRef))
+            return YES;
+        
+        err = FSFindFolder(kOnAppropriateDisk, kSystemTrashFolderType, TRUE, &fsRef);
+        if (noErr == err && noErr == FSCompareFSRefs(&fsRef, &parentRef))
+            return YES;
+    }
+    return NO;
+}
+
 - (BOOL)applicationShouldOpenUntitledFile:(NSApplication *)sender{
     
     if ([[NSUserDefaults standardUserDefaults] boolForKey:SKReopenLastOpenFilesKey]) {
@@ -93,7 +113,7 @@
             fileURL = [[BDAlias aliasWithData:[dict objectForKey:@"_BDAlias"]] fileURL];
             if(fileURL == nil)
                 fileURL = [NSURL fileURLWithPath:[dict objectForKey:@"fileName"]];
-            if(fileURL && (document = [[NSDocumentController sharedDocumentController] openDocumentWithContentsOfURL:fileURL display:NO error:NULL])) {
+            if(fileURL && NO == fileIsInTrash(fileURL) && (document = [[NSDocumentController sharedDocumentController] openDocumentWithContentsOfURL:fileURL display:NO error:NULL])) {
                 [document makeWindowControllers];
                 [[document mainWindowController] setupWindow:dict];
                 [document showWindows];
