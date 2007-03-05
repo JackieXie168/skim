@@ -594,6 +594,8 @@
                 description="Anchored note."/>
             <enumerator name="circle note" code="NCir"
                 description="Circle."/>
+            <enumerator name="rectangle note" code="NSqu"
+                description="Rectangle."/>
         </enumeration>
 
         <command name="go to" code="SKIMGoTo"
