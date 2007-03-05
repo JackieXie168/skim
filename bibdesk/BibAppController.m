@@ -368,6 +368,24 @@ static void createTemporaryDirectory()
     
 }
 
+static BOOL fileIsInTrash(NSURL *fileURL)
+{
+    NSCParameterAssert([fileURL isFileURL]);    
+    FSRef parentRef;
+    if (CFURLGetFSRef((CFURLRef)[fileURL URLByDeletingLastPathComponent], &parentRef)) {
+        OSStatus err;
+        FSRef fsRef;
+        err = FSFindFolder(kUserDomain, kTrashFolderType, TRUE, &fsRef);
+        if (noErr == err && noErr == FSCompareFSRefs(&fsRef, &parentRef))
+            return YES;
+        
+        err = FSFindFolder(kOnAppropriateDisk, kSystemTrashFolderType, TRUE, &fsRef);
+        if (noErr == err && noErr == FSCompareFSRefs(&fsRef, &parentRef))
+            return YES;
+    }
+    return NO;
+}
+
 - (BOOL)applicationShouldOpenUntitledFile:(NSApplication *)sender
 {
     OFPreferenceWrapper *defaults = [OFPreferenceWrapper sharedPreferenceWrapper];
@@ -395,7 +413,7 @@ static void createTemporaryDirectory()
                 if([data length])
                     alias = [BDAlias aliasWithData:data];
                 NSURL *fileURL = [alias fileURL];
-                if(fileURL)
+                if(fileURL && NO == fileIsInTrash(fileURL))
                     [[NSDocumentController sharedDocumentController] openDocumentWithContentsOfURL:fileURL display:YES error:NULL];
             }
             return NO;
