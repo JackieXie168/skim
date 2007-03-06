@@ -151,7 +151,7 @@
 			isa = PBXContainerItemProxy;
 			containerPortal = 2A37F4A9FDCFA73011CA2CEA /* Project object */;
 			proxyType = 1;
-			remoteGlobalIDString = CE4DA8D60B9E16100039E89C /* Skim Help */;
+			remoteGlobalIDString = CE4DA8D60B9E16100039E89C;
 			remoteInfo = "Skim Help";
 		};
 		CE592C610B9239CD00C113DF /* PBXContainerItemProxy */ = {
@@ -192,7 +192,7 @@
 		45A3BD380B4F097D002B297F /* InitialUserDefaults.plist */ = {isa = PBXFileReference; explicitFileType = text.xml; fileEncoding = 4; path = InitialUserDefaults.plist; sourceTree = "<group>"; };
 		45B113BF0B329A7E00DE0660 /* LICENSE */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = LICENSE; sourceTree = "<group>"; };
 		8D15AC360486D014006FF6A4 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = Info.plist; sourceTree = "<group>"; };
-		8D15AC370486D014006FF6A4 /* Skim.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Skim.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		8D15AC370486D014006FF6A4 /* Skim.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = Skim.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		CE0463C90B84D24300C11E4A /* SKApplication.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SKApplication.h; sourceTree = "<group>"; };
 		CE0463CA0B84D24300C11E4A /* SKApplication.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SKApplication.m; sourceTree = "<group>"; };
 		CE0464A00B84E3E400C11E4A /* OBUtilities.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OBUtilities.h; sourceTree = "<group>"; };
@@ -673,7 +673,6 @@
 				8D15AC2B0486D014006FF6A4 /* Resources */,
 				8D15AC300486D014006FF6A4 /* Sources */,
 				8D15AC330486D014006FF6A4 /* Frameworks */,
-				CE4DA90A0B9E18710039E89C /* ShellScript */,
 				CE4DA9060B9E17890039E89C /* ShellScript */,
 			);
 			buildRules = (
@@ -797,7 +796,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "cd ${SOURCE_ROOT}/Skim\\ Help;\ntexi2html=./texi2html\n\nINPUT='Skim Help/skim.texi'\nDEST='Skim Help'\n\nfor LOC_DIR in ${SOURCE_ROOT}/*.lproj; do \\\n\t${texi2html} \"${LOC_DIR}/${INPUT}\" --init-file=applehelp.init --prefix=\"Skim Help\" --output=\"${LOC_DIR}/${DEST}\" --split=node && \\\n\tperl -pi -e 's#<!--AppleMeta-->#<meta name=\\\"AppleTitle\\\" content=\\\"Skim Help\\\"><meta name=\\\"AppleIcon\\\" content=\\\"Skim%20Help/gfx/SkimIcon.png\\\"><meta name=\\\"robots\\\" content=\\\"anchors\\\">#' \"${LOC_DIR}/${DEST}\"/Skim\\ Help.html && \\\n\tpython postprocess-nontitle.py \"${LOC_DIR}/${DEST}\"/Skim\\ Help_*.html;\\\ndone;\n";
+			shellScript = "cd ${SOURCE_ROOT}/Skim\\ Help;\ntexi2html=/usr/bin/texi2html\n\nINPUT='Skim Help/skim.texi'\nDEST='Skim Help'\n\nfor LOC_DIR in ${SOURCE_ROOT}/*.lproj; do \\\n\t${texi2html} \"${LOC_DIR}/${INPUT}\" --init-file=applehelp.init --prefix=\"Skim Help\" --output=\"${LOC_DIR}/${DEST}\" --split=node && \\\n\tperl -pi -e 's#<!--AppleMeta-->#<meta name=\\\"AppleTitle\\\" content=\\\"Skim Help\\\"><meta name=\\\"AppleIcon\\\" content=\\\"Skim%20Help/gfx/SkimIcon.png\\\"><meta name=\\\"robots\\\" content=\\\"anchors\\\">#' \"${LOC_DIR}/${DEST}\"/Skim\\ Help.html && \\\n\tpython postprocess-nontitle.py \"${LOC_DIR}/${DEST}\"/Skim\\ Help_*.html;\\\ndone;\n";
 		};
 		CE4DA9060B9E17890039E89C /* ShellScript */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -812,19 +811,6 @@
 			shellPath = /bin/sh;
 			shellScript = "if [ -d /Developer/Applications/Utilities/Help\\ Indexer.app/ ]; then\nif [ ${BUILD_STYLE} = \"Debug\" ]; then\nexit 0\nfi\necho \"*** Indexing Tiger Help ***\"\nfor LOC_DIR in ${BUILT_PRODUCTS_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/*.lproj; do \\\n/Developer/Applications/Utilities/Help\\ Indexer.app/Contents/MacOS/Help\\ Indexer \\\n${LOC_DIR}/Skim\\ Help \\\n-Tokenizer 1 \\\n-ShowProgress NO \\\n-LogStyle 2 \\\n-IndexAnchors YES \\\n-TigerIndexing YES \\\n-GenerateSummaries YES \\\n-Stopwords en \\\n-MinTermLength 3;\\\ndone\nfi\nexit 0";
 		};
-		CE4DA90A0B9E18710039E89C /* ShellScript */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-			);
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "if [ ${BUILD_STYLE} = \"Debug\" ]; then\nexit 0\nfi\n\necho \"*** stripping header files from frameworks ***\"\ncd ${BUILT_PRODUCTS_DIR}/${FRAMEWORKS_FOLDER_PATH} && \\\nfind . -type file -name \"*.h\" -delete\nexit 0";
-		};
 		CE592C630B9239E300C113DF /* ShellScript */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
@@ -836,7 +822,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "rm -f /tmp/Skim.dmg\n/bin/cp ${SOURCE_ROOT}/Skim.dmg /tmp\n/usr/bin/hdiutil attach /tmp/Skim.dmg\n${SYSTEM_DEVELOPER_TOOLS}/CpMac -r ${BUILT_PRODUCTS_DIR}/Skim.app /Volumes/BibDesk\nosascript -e \"tell application \\\"Finder\\\" to set the position of application file \\\"Skim.app\\\" of disk named \\\"Skim\\\" to {90, 206}\" && \\\nsleep 7; \\\n/usr/sbin/diskutil eject /Volumes/Skim\n/usr/bin/hdiutil convert /tmp/Skim.dmg -format UDZO -imagekey zlib-level=9 -o $HOME/Desktop/Skim.dmg\n/usr/bin/hdiutil internet-enable -YES $HOME/Desktop/Skim.dmg\nexit 0";
+			shellScript = "rm -f /tmp/Skim.dmg\n/bin/cp ${SOURCE_ROOT}/Skim.dmg /tmp\n/usr/bin/hdiutil attach /tmp/Skim.dmg\n${SYSTEM_DEVELOPER_TOOLS}/CpMac -r ${BUILT_PRODUCTS_DIR}/Skim.app /Volumes/Skim\nosascript -e \"tell application \\\"Finder\\\" to set the position of application file \\\"Skim.app\\\" of disk named \\\"Skim\\\" to {90, 206}\" && \\\nsleep 7; \\\n/usr/sbin/diskutil eject /Volumes/Skim\n/usr/bin/hdiutil convert /tmp/Skim.dmg -format UDZO -imagekey zlib-level=9 -o $HOME/Desktop/Skim.dmg\n/usr/bin/hdiutil internet-enable -YES $HOME/Desktop/Skim.dmg\nexit 0";
 		};
 /* End PBXShellScriptBuildPhase section */
 
