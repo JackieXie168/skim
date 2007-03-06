@@ -2206,13 +2206,22 @@ static NSArray *prioritySortedThumbnails(NSArray *dirtyNails, int currentPageInd
         int start = MAX(0, middle - 20);
         int end = MIN((int)[dirtyNails count], middle + 20);
         
-        // reverse the first batch
+        // reverse the first batch; second is already ascending
         NSRange range = NSMakeRange(start, middle - start);
-        NSMutableArray *firstToUpdate = [NSMutableArray arrayWithArray:[[[mutableArray subarrayWithRange:range] reverseObjectEnumerator] allObjects]];
-        
-        // insert the second batch; could be clever and interlace first and second...
+        NSEnumerator *e1 = [[mutableArray subarrayWithRange:range] reverseObjectEnumerator];
         range = NSMakeRange(middle, end - middle);
-        [firstToUpdate addObjectsFromArray:[mutableArray subarrayWithRange:range]];
+        NSEnumerator *e2 = [[mutableArray subarrayWithRange:range] objectEnumerator];
+        
+        // now interlace first and second
+        NSMutableArray *firstToUpdate = [NSMutableArray arrayWithCapacity:20];
+        id obj1 = nil, obj2 = nil;
+        int count = MAX(end - middle, middle - start);
+        while (count--) {
+            if ((obj2 = [e2 nextObject]))
+                [firstToUpdate addObject:obj2];
+            if ((obj1 = [e1 nextObject]))
+                [firstToUpdate addObject:obj1];
+        }
         
         // remove the objects we just rearranged, then insert at the beginning of the array
         [mutableArray removeObjectsInRange:NSMakeRange(start, end - start)];
