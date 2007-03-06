@@ -44,6 +44,7 @@
 #import "PDFPage_SKExtensions.h"
 #import "NSString_SKExtensions.h"
 #import "NSCursor_SKExtensions.h"
+#import "SKApplication.h"
 
 NSString *SKPDFViewToolModeChangedNotification = @"SKPDFViewToolModeChangedNotification";
 NSString *SKPDFViewAnnotationModeChangedNotification = @"SKPDFViewAnnotationModeChangedNotification";
@@ -118,6 +119,8 @@ NSString *SKSkimNotePboardType = @"SKSkimNotePboardType";
                                                      name:SKAnnotationWillChangeNotification object:nil];
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleAnnotationDidChangeNotification:) 
                                                      name:SKAnnotationDidChangeNotification object:nil];
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleScrollMagnifyNotification:) 
+                                                     name:SKScrollMagnifyNotification object:nil];
     }
     return self;
 }
@@ -129,6 +132,8 @@ NSString *SKSkimNotePboardType = @"SKSkimNotePboardType";
                                                      name:SKAnnotationWillChangeNotification object:nil];
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleAnnotationDidChangeNotification:) 
                                                      name:SKAnnotationDidChangeNotification object:nil];
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleScrollMagnifyNotification:) 
+                                                     name:SKScrollMagnifyNotification object:nil];
     }
     return self;
 }
@@ -484,6 +489,12 @@ NSString *SKSkimNotePboardType = @"SKSkimNotePboardType";
     }
 }
 
+- (void)scrollWheel:(NSEvent *)theEvent {
+    NSLog(@"%@", theEvent);
+    [super scrollWheel:theEvent];
+}
+
+
 - (void)mouseDragged:(NSEvent *)theEvent {
     switch (toolMode) {
         case SKTextToolMode:
@@ -668,6 +679,12 @@ NSString *SKSkimNotePboardType = @"SKSkimNotePboardType";
     }
     
     return menu;
+}
+
+- (void)handleScrollMagnifyNotification:(NSNotification *)note {
+    float dy = [[note object] deltaY];
+    dy = dy > 0 ? MIN(0.2, dy) : MAX(-0.2, dy);
+    [self setScaleFactor:[self scaleFactor] + 0.5 * dy];
 }
 
 #pragma mark Annotation management
