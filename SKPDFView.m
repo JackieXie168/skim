@@ -1342,30 +1342,40 @@ NSString *SKSkimNotePboardType = @"SKSkimNotePboardType";
         newBounds = NSIntegralRect(newBounds);
     } else {
         // Move annotation.
-        // Hit test, is mouse still within page bounds?
-        if (NSPointInRect([self convertPoint:mouseLoc toPage:activePage], [activePage boundsForBox:[self displayBox]])) {
-            // Calculate new bounds for annotation.
-            newBounds = currentBounds;
-            newBounds.origin.x = roundf(endPt.x - clickDelta.x);
-            newBounds.origin.y = roundf(endPt.y - clickDelta.y);
-        } else if ([self pageForPoint:mouseLoc nearest:NO]) {
-            // move the annotation to the new page
-            PDFPage *newActivePage = [self pageForPoint:mouseLoc nearest:NO];
-            [activeAnnotation retain];
-            [activePage removeAnnotation:activeAnnotation];
-            [newActivePage addAnnotation:activeAnnotation];
-            [activeAnnotation release];
-            
-            endPt = [self convertPoint:mouseLoc toPage:newActivePage];
-            newBounds = currentBounds;
-            newBounds.origin.x = roundf(endPt.x - clickDelta.x);
-            newBounds.origin.y = roundf(endPt.y - clickDelta.y);
-            
-            [[NSNotificationCenter defaultCenter] postNotificationName:SKPDFViewDidRemoveAnnotationNotification object:self userInfo:[NSDictionary dictionaryWithObjectsAndKeys:activeAnnotation, @"annotation", activePage, @"page", nil]];
-            [[NSNotificationCenter defaultCenter] postNotificationName:SKPDFViewDidAddAnnotationNotification object:self userInfo:[NSDictionary dictionaryWithObjectsAndKeys:activeAnnotation, @"annotation", newActivePage, @"page", nil]];
-        } else {
-            // Snap back to initial location.
+        PDFPage *newActivePage = [self pageForPoint:mouseLoc nearest:YES];
+        NSRect pageBounds = [newActivePage  boundsForBox:[self displayBox]];
+        
+        if (newActivePage == nil) {
+            // this should never happen, but just to be sure
             newBounds = wasBounds;
+        } else {
+            if (newActivePage != activePage) {
+                // move the annotation to the new page
+                [activeAnnotation retain];
+                [self setNeedsDisplayForAnnotation:activeAnnotation];
+                [activePage removeAnnotation:activeAnnotation];
+                [newActivePage addAnnotation:activeAnnotation];
+                [activeAnnotation release];
+                
+                [[NSNotificationCenter defaultCenter] postNotificationName:SKPDFViewDidRemoveAnnotationNotification object:self userInfo:[NSDictionary dictionaryWithObjectsAndKeys:activeAnnotation, @"annotation", activePage, @"page", nil]];
+                [[NSNotificationCenter defaultCenter] postNotificationName:SKPDFViewDidAddAnnotationNotification object:self userInfo:[NSDictionary dictionaryWithObjectsAndKeys:activeAnnotation, @"annotation", newActivePage, @"page", nil]];
+                
+                endPt = [self convertPoint:mouseLoc toPage:newActivePage];
+                activePage = newActivePage;
+            }
+            
+            newBounds = currentBounds;
+            newBounds.origin.x = roundf(endPt.x - clickDelta.x);
+            newBounds.origin.y = roundf(endPt.y - clickDelta.y);
+            // constrain bounds inside page bounds
+            if (NSMaxX(newBounds) > NSMaxX(pageBounds))
+                newBounds.origin.x = NSMaxX(pageBounds) - NSWidth(newBounds);
+            if (NSMinX(newBounds) < NSMinX(pageBounds))
+                newBounds.origin.x = NSMinX(pageBounds);
+            if (NSMaxY(newBounds) > NSMaxY(pageBounds))
+                newBounds.origin.y = NSMaxY(pageBounds) - NSHeight(newBounds);
+            if (NSMinY(newBounds) < NSMinY(pageBounds))
+                newBounds.origin.y = NSMinY(pageBounds);
         }
     }
     
