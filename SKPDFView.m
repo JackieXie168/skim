@@ -1357,11 +1357,10 @@ NSString *SKSkimNotePboardType = @"SKSkimNotePboardType";
                 [activeAnnotation retain];
                 [self setNeedsDisplayForAnnotation:activeAnnotation];
                 [activePage removeAnnotation:activeAnnotation];
-                // pass only the page; if the annotation is passed, it's removed from the tree and we crash in outlineView:heightOfRowByItem: with a garbage item
-                [[NSNotificationCenter defaultCenter] postNotificationName:SKPDFViewDidRemoveAnnotationNotification object:self userInfo:[NSDictionary dictionaryWithObjectsAndKeys:activePage, @"page", nil]];                
+                [[NSNotificationCenter defaultCenter] postNotificationName:SKPDFViewDidRemoveAnnotationNotification object:self userInfo:[NSDictionary dictionaryWithObjectsAndKeys:activePage, @"page", activeAnnotation, @"annotation", nil]];                
                 [newActivePage addAnnotation:activeAnnotation];
                 [activeAnnotation release];
-                [[NSNotificationCenter defaultCenter] postNotificationName:SKPDFViewDidAddAnnotationNotification object:self userInfo:[NSDictionary dictionaryWithObjectsAndKeys:newActivePage, @"page", nil]];                
+                [[NSNotificationCenter defaultCenter] postNotificationName:SKPDFViewDidAddAnnotationNotification object:self userInfo:[NSDictionary dictionaryWithObjectsAndKeys:newActivePage, @"page", activeAnnotation, @"annotation", nil]];                
                 activePage = newActivePage;
             }
             
