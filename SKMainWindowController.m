@@ -680,12 +680,11 @@ static NSString *SKDocumentToolbarNotesPaneItemIdentifier = @"SKDocumentToolbarN
     if (type == -1) {
         int modifiers = GetCurrentKeyModifiers();
         if (modifiers & optionKey) {
-            if (modifiers & shiftKey)
-                type = SKSquareNote;
-            else
-                type = SKAnchoredNote;
+            type = SKAnchoredNote;
         } else if (modifiers & shiftKey) {
             type = SKCircleNote;
+        } else if (modifiers & controlKey) {
+            type = SKSquareNote;
         } else {
             type = SKFreeTextNote;
         }
@@ -2492,7 +2491,7 @@ static NSString *SKDocumentToolbarNotesPaneItemIdentifier = @"SKDocumentToolbarN
     item = [[NSToolbarItem alloc] initWithItemIdentifier:SKDocumentToolbarNewNoteItemIdentifier];
     [item setLabel:NSLocalizedString(@"New Note", @"Toolbar item label")];
     [item setPaletteLabel:NSLocalizedString(@"New Note", @"Toolbar item label")];
-    [item setToolTip:NSLocalizedString(@"Add new note. No key for text. Option key for anchored, Shift key for circle. Shift and Option key for rectangle.", @"Tool tip message")];
+    [item setToolTip:NSLocalizedString(@"Add new note. No key for a text note. Option key for an anchored note, Shift key for a circle. Control key for a rectangle.", @"Tool tip message")];
     [item setImage:[NSImage imageNamed:@"ToolbarNote"]];
     [item setTarget:self];
     [item setAction:@selector(createNewNote:)];
