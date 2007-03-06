@@ -1673,11 +1673,18 @@ static NSString *SKDocumentToolbarNotesPaneItemIdentifier = @"SKDocumentToolbarN
     
     if (annotation) {
         updatingNoteSelection = YES;
-        [[self mutableArrayValueForKey:@"notes"] addObject:annotation];
+        [noteArrayController addObject:annotation];
         updatingNoteSelection = NO;
     }
-    if (page)
+    if (page) {
         [self thumbnailNeedsUpdate:[[self thumbnails] objectAtIndex:[[pdfView document] indexForPage:page]]];
+        NSEnumerator *snapshotEnum = [snapshots objectEnumerator];
+        SKSnapshotWindowController *wc;
+        while (wc = [snapshotEnum nextObject]) {
+            if ([[[wc pdfView] currentPage] isEqual:page])
+                [self snapshotNeedsUpdate:wc];
+        }
+    }
     [[self document] updateChangeCount:NSChangeDone];
 }
 
@@ -1698,10 +1705,19 @@ static NSString *SKDocumentToolbarNotesPaneItemIdentifier = @"SKDocumentToolbarN
                 break;
             }
         }
+        // clear the tree controller's selection, or else it may crash when asking for the height of row by item
+        [noteTreeController setSelectionIndexPaths:nil];
         [noteArrayController removeObject:annotation];
     }
-    if (page)
+    if (page) {
         [self thumbnailNeedsUpdate:[[self thumbnails] objectAtIndex:[[pdfView document] indexForPage:page]]];
+        NSEnumerator *snapshotEnum = [snapshots objectEnumerator];
+        SKSnapshotWindowController *wc;
+        while (wc = [snapshotEnum nextObject]) {
+            if ([[[wc pdfView] currentPage] isEqual:page])
+                [self snapshotNeedsUpdate:wc];
+        }
+    }
     [[self document] updateChangeCount:NSChangeDone];
 }
 
@@ -1716,6 +1732,13 @@ static NSString *SKDocumentToolbarNotesPaneItemIdentifier = @"SKDocumentToolbarN
     if ([[[annotation page] document] isEqual:[[self pdfView] document]]) {
         [[self document] updateChangeCount:NSChangeDone];
         [self thumbnailNeedsUpdate:[[self thumbnails] objectAtIndex:[annotation pageIndex]]];
+        
+        NSEnumerator *snapshotEnum = [snapshots objectEnumerator];
+        SKSnapshotWindowController *wc;
+        while (wc = [snapshotEnum nextObject]) {
+            if ([[[wc pdfView] currentPage] isEqual:[annotation page]])
+                [self snapshotNeedsUpdate:wc];
+        }
     }
 }
 
