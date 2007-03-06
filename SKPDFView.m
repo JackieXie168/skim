@@ -1360,6 +1360,9 @@ NSString *SKSkimNotePboardType = @"SKSkimNotePboardType";
             newBounds = currentBounds;
             newBounds.origin.x = roundf(endPt.x - clickDelta.x);
             newBounds.origin.y = roundf(endPt.y - clickDelta.y);
+            
+            [[NSNotificationCenter defaultCenter] postNotificationName:SKPDFViewDidRemoveAnnotationNotification object:self userInfo:[NSDictionary dictionaryWithObjectsAndKeys:activeAnnotation, @"annotation", activePage, @"page", nil]];
+            [[NSNotificationCenter defaultCenter] postNotificationName:SKPDFViewDidAddAnnotationNotification object:self userInfo:[NSDictionary dictionaryWithObjectsAndKeys:activeAnnotation, @"annotation", newActivePage, @"page", nil]];
         } else {
             // Snap back to initial location.
             newBounds = wasBounds;
