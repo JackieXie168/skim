@@ -8,8 +8,6 @@ static char *versionStr = "SkimNotes command-line client, version 0.1.";
 
 int main (int argc, const char * argv[]) {
 	BOOL get = YES; 
-    const char *pdfFilePath = 0;
-    const char *notesFilePath = 0;
     
     if (argc == 2 &&  (strcmp("-h", argv[1]) == 0 || strcmp("-help", argv[1]) == 0)) {
         fprintf (stderr, "%s\n%s\n", usageStr, versionStr);
@@ -26,15 +24,12 @@ int main (int argc, const char * argv[]) {
         exit (1);
     }
     
-    pdfFilePath = argv[2];
-    notesFilePath = argv[3];
-    
     NSAutoreleasePool * pool = [[NSAutoreleasePool alloc] init];
-    
+ 
     NSFileManager *fm = [NSFileManager defaultManager];
     BOOL success = NO;
-    NSString *pdfPath = [NSString stringWithCString:pdfFilePath encoding:[NSString defaultCStringEncoding]];
-    NSString *notesPath = [NSString stringWithCString:notesFilePath encoding:[NSString defaultCStringEncoding]];
+    NSString *pdfPath = [[[[NSProcessInfo processInfo] arguments] objectAtIndex:2] stringByStandardizingPath];
+    NSString *notesPath = [[[[NSProcessInfo processInfo] arguments] objectAtIndex:3] stringByStandardizingPath];
     BOOL isDir = NO;
     
     if ([fm fileExistsAtPath:pdfPath isDirectory:&isDir] == NO || isDir) {
