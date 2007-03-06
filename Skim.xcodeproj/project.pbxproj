@@ -7,6 +7,17 @@
 	objects = {
 
 /* Begin PBXAggregateTarget section */
+		CE4DA8D60B9E16100039E89C /* Skim Help */ = {
+			isa = PBXAggregateTarget;
+			buildConfigurationList = CE4DA8D90B9E16370039E89C /* Build configuration list for PBXAggregateTarget "Skim Help" */;
+			buildPhases = (
+				CE4DA8D70B9E16190039E89C /* ShellScript */,
+			);
+			dependencies = (
+			);
+			name = "Skim Help";
+			productName = "Skim Help";
+		};
 		CE592C5D0B9239C500C113DF /* DiskImage */ = {
 			isa = PBXAggregateTarget;
 			buildConfigurationList = CE592C5E0B9239C600C113DF /* Build configuration list for PBXAggregateTarget "DiskImage" */;
@@ -14,6 +25,7 @@
 				CE592C630B9239E300C113DF /* ShellScript */,
 			);
 			dependencies = (
+				CE4DA9280B9E19400039E89C /* PBXTargetDependency */,
 				CE592C620B9239CD00C113DF /* PBXTargetDependency */,
 			);
 			name = DiskImage;
@@ -75,6 +87,7 @@
 		CE41A6CC0B975E5000ECF819 /* Skim.sdef in Resources */ = {isa = PBXBuildFile; fileRef = CE41A6CB0B975E5000ECF819 /* Skim.sdef */; };
 		CE4DA2380B9D9BE10039E89C /* ToolbarSquareNote.tiff in Resources */ = {isa = PBXBuildFile; fileRef = CE4DA2160B9D9AA70039E89C /* ToolbarSquareNote.tiff */; };
 		CE4DA2440B9D9EC00039E89C /* SquareToolAdorn.tiff in Resources */ = {isa = PBXBuildFile; fileRef = CE4DA2430B9D9E640039E89C /* SquareToolAdorn.tiff */; };
+		CE4DA9240B9E190D0039E89C /* Skim Help in Resources */ = {isa = PBXBuildFile; fileRef = CE4DA9190B9E190D0039E89C /* Skim Help */; };
 		CE4EB8240B7B96D00091F228 /* OutlineViewAdorn.tiff in Resources */ = {isa = PBXBuildFile; fileRef = CE4EB8220B7B96D00091F228 /* OutlineViewAdorn.tiff */; };
 		CE4EB8250B7B96D00091F228 /* ThumbnailViewAdorn.tiff in Resources */ = {isa = PBXBuildFile; fileRef = CE4EB8230B7B96D00091F228 /* ThumbnailViewAdorn.tiff */; };
 		CE4EBDDA0B7BF3B30091F228 /* SKSideWindow.m in Sources */ = {isa = PBXBuildFile; fileRef = CE4EBDD90B7BF3B30091F228 /* SKSideWindow.m */; };
@@ -134,6 +147,13 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
+		CE4DA9270B9E19400039E89C /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 2A37F4A9FDCFA73011CA2CEA /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = CE4DA8D60B9E16100039E89C /* Skim Help */;
+			remoteInfo = "Skim Help";
+		};
 		CE592C610B9239CD00C113DF /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 2A37F4A9FDCFA73011CA2CEA /* Project object */;
@@ -229,6 +249,11 @@
 		CE41A6CB0B975E5000ECF819 /* Skim.sdef */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text.sdef; path = Skim.sdef; sourceTree = "<group>"; };
 		CE4DA2160B9D9AA70039E89C /* ToolbarSquareNote.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; name = ToolbarSquareNote.tiff; path = Images/ToolbarSquareNote.tiff; sourceTree = "<group>"; };
 		CE4DA2430B9D9E640039E89C /* SquareToolAdorn.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; name = SquareToolAdorn.tiff; path = Images/SquareToolAdorn.tiff; sourceTree = "<group>"; };
+		CE4DA8D00B9E15AD0039E89C /* applehelp.init */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text; name = applehelp.init; path = "Skim Help/applehelp.init"; sourceTree = "<group>"; };
+		CE4DA8D10B9E15AD0039E89C /* postprocess-nontitle.py */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text.script.python; name = "postprocess-nontitle.py"; path = "Skim Help/postprocess-nontitle.py"; sourceTree = "<group>"; };
+		CE4DA8D20B9E15C20039E89C /* skim.texi */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text; name = skim.texi; path = "English.lproj/Skim Help/skim.texi"; sourceTree = "<group>"; };
+		CE4DA8D30B9E15C20039E89C /* version.texi */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text; name = version.texi; path = "English.lproj/Skim Help/version.texi"; sourceTree = "<group>"; };
+		CE4DA91A0B9E190D0039E89C /* English */ = {isa = PBXFileReference; lastKnownFileType = folder; name = English; path = "English.lproj/Skim Help"; sourceTree = "<group>"; };
 		CE4EB8220B7B96D00091F228 /* OutlineViewAdorn.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; name = OutlineViewAdorn.tiff; path = Images/OutlineViewAdorn.tiff; sourceTree = "<group>"; };
 		CE4EB8230B7B96D00091F228 /* ThumbnailViewAdorn.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; name = ThumbnailViewAdorn.tiff; path = Images/ThumbnailViewAdorn.tiff; sourceTree = "<group>"; };
 		CE4EBDD80B7BF3B30091F228 /* SKSideWindow.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = SKSideWindow.h; sourceTree = "<group>"; };
@@ -365,6 +390,7 @@
 				2A37F4ABFDCFA73011CA2CEA /* Classes */,
 				CEF3BF840B99CA9900E12E3D /* Skimnotes */,
 				2A37F4AFFDCFA73011CA2CEA /* Other Sources */,
+				CE4DA8CF0B9E157E0039E89C /* Help Sources */,
 				2A37F4B8FDCFA73011CA2CEA /* Resources */,
 				2A37F4C3FDCFA73011CA2CEA /* Frameworks */,
 				19C28FB0FE9D524F11CA2CBB /* Products */,
@@ -398,6 +424,7 @@
 			isa = PBXGroup;
 			children = (
 				CE5475A00B33058B00F8AFB6 /* Images */,
+				CE4DA9190B9E190D0039E89C /* Skim Help */,
 				CE54898A0B35D4EF00F8AFB6 /* InfoWindow.nib */,
 				2A37F4B6FDCFA73011CA2CEA /* MainMenu.nib */,
 				4530D81B0B27ACAC007C59F4 /* MainWindow.nib */,
@@ -572,6 +599,17 @@
 			name = Miscellaneous;
 			sourceTree = "<group>";
 		};
+		CE4DA8CF0B9E157E0039E89C /* Help Sources */ = {
+			isa = PBXGroup;
+			children = (
+				CE4DA8D20B9E15C20039E89C /* skim.texi */,
+				CE4DA8D30B9E15C20039E89C /* version.texi */,
+				CE4DA8D00B9E15AD0039E89C /* applehelp.init */,
+				CE4DA8D10B9E15AD0039E89C /* postprocess-nontitle.py */,
+			);
+			name = "Help Sources";
+			sourceTree = "<group>";
+		};
 		CE5475A00B33058B00F8AFB6 /* Images */ = {
 			isa = PBXGroup;
 			children = (
@@ -635,6 +673,8 @@
 				8D15AC2B0486D014006FF6A4 /* Resources */,
 				8D15AC300486D014006FF6A4 /* Sources */,
 				8D15AC330486D014006FF6A4 /* Frameworks */,
+				CE4DA90A0B9E18710039E89C /* ShellScript */,
+				CE4DA9060B9E17890039E89C /* ShellScript */,
 			);
 			buildRules = (
 			);
@@ -674,6 +714,7 @@
 			projectRoot = "";
 			targets = (
 				8D15AC270486D014006FF6A4 /* Skim */,
+				CE4DA8D60B9E16100039E89C /* Skim Help */,
 				CE592C5D0B9239C500C113DF /* DiskImage */,
 				CEF3BF740B99CA2900E12E3D /* skimnotes */,
 			);
@@ -738,12 +779,52 @@
 				CEF707240B8F8EFC003A2771 /* SnapshotWindow.nib in Resources */,
 				CEF7175C0B90DEEF003A2771 /* ReleaseNotes.nib in Resources */,
 				CE41A6CC0B975E5000ECF819 /* Skim.sdef in Resources */,
+				CE4DA9240B9E190D0039E89C /* Skim Help in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
+		CE4DA8D70B9E16190039E89C /* ShellScript */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "cd ${SOURCE_ROOT}/Skim\\ Help;\ntexi2html=./texi2html\n\nINPUT='Skim Help/skim.texi'\nDEST='Skim Help/pgs'\n\nfor LOC_DIR in ${SOURCE_ROOT}/*.lproj; do \\\n\t${texi2html} \"${LOC_DIR}/${INPUT}\" --init-file=applehelp.init --prefix=\"Skim Help\" --output=\"${LOC_DIR}/${DEST}\" --split=node && \\\n\tperl -pi -e 's#<!--AppleMeta-->#<meta name=\\\"AppleTitle\\\" content=\\\"Skim Help\\\"><meta name=\\\"AppleIcon\\\" content=\\\"Skim%20Help/gfx/SkimIcon.png\\\"><meta name=\\\"robots\\\" content=\\\"anchors\\\">#' \"${LOC_DIR}/${DEST}\"/Skim\\ Help.html && \\\n\tpython postprocess-nontitle.py \"${LOC_DIR}/${DEST}\"/Skim\\ Help_*.html;\\\ndone;\n";
+		};
+		CE4DA9060B9E17890039E89C /* ShellScript */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "if [ -d /Developer/Applications/Utilities/Help\\ Indexer.app/ ]; then\nif [ ${BUILD_STYLE} = \"Debug\" ]; then\nexit 0\nfi\necho \"*** Indexing Tiger Help ***\"\nfor LOC_DIR in ${BUILT_PRODUCTS_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/*.lproj; do \\\n/Developer/Applications/Utilities/Help\\ Indexer.app/Contents/MacOS/Help\\ Indexer \\\n${LOC_DIR}/Skim\\ Help/pgs \\\n-Tokenizer 1 \\\n-ShowProgress NO \\\n-LogStyle 2 \\\n-IndexAnchors YES \\\n-TigerIndexing YES \\\n-GenerateSummaries YES \\\n-Stopwords en \\\n-MinTermLength 3;\\\ndone\nfi\nexit 0";
+		};
+		CE4DA90A0B9E18710039E89C /* ShellScript */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "if [ ${BUILD_STYLE} = \"Debug\" ]; then\nexit 0\nfi\n\necho \"*** stripping header files from frameworks ***\"\ncd ${BUILT_PRODUCTS_DIR}/${FRAMEWORKS_FOLDER_PATH} && \\\nfind . -type file -name \"*.h\" -delete\nexit 0";
+		};
 		CE592C630B9239E300C113DF /* ShellScript */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
@@ -827,6 +908,11 @@
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
+		CE4DA9280B9E19400039E89C /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = CE4DA8D60B9E16100039E89C /* Skim Help */;
+			targetProxy = CE4DA9270B9E19400039E89C /* PBXContainerItemProxy */;
+		};
 		CE592C620B9239CD00C113DF /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			target = 8D15AC270486D014006FF6A4 /* Skim */;
@@ -881,6 +967,14 @@
 				CE2DEB910B86206400D0DA12 /* English */,
 			);
 			name = FindPanel.nib;
+			sourceTree = "<group>";
+		};
+		CE4DA9190B9E190D0039E89C /* Skim Help */ = {
+			isa = PBXVariantGroup;
+			children = (
+				CE4DA91A0B9E190D0039E89C /* English */,
+			);
+			name = "Skim Help";
 			sourceTree = "<group>";
 		};
 		CE5470010B32D96500F8AFB6 /* NoteWindow.nib */ = {
@@ -1014,6 +1108,28 @@
 			};
 			name = Release;
 		};
+		CE4DA8DA0B9E16370039E89C /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				COPY_PHASE_STRIP = NO;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				PRODUCT_NAME = "Skim Help";
+			};
+			name = Debug;
+		};
+		CE4DA8DB0B9E16370039E89C /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				COPY_PHASE_STRIP = YES;
+				GCC_ENABLE_FIX_AND_CONTINUE = NO;
+				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
+				PRODUCT_NAME = "Skim Help";
+				ZERO_LINK = NO;
+			};
+			name = Release;
+		};
 		CE592C5F0B9239C600C113DF /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -1123,6 +1239,15 @@
 			buildConfigurations = (
 				C05733CC08A9546B00998B17 /* Debug */,
 				C05733CD08A9546B00998B17 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		CE4DA8D90B9E16370039E89C /* Build configuration list for PBXAggregateTarget "Skim Help" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				CE4DA8DA0B9E16370039E89C /* Debug */,
+				CE4DA8DB0B9E16370039E89C /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;

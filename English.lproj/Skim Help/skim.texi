@@ -1,0 +1,561 @@
+\input texinfo @c -*-texinfo-*-
+@c This is the manual for Skim.
+
+@c ======================================================================================
+@c Document info
+@c ======================================================================================
+@c
+@setfilename skim.info
+
+@c define an index for preference setting entries
+@defindex pref
+
+@settitle Skim Help
+@setchapternewpage odd
+@footnotestyle separate
+@ifset shorttitlepage-enabled
+@shorttitlepage Skim v@value{VERSION}
+@end ifset
+
+@c ======================================================================================
+@c Macro definitions
+@c ======================================================================================
+
+@c macros for keyboard shortcuts
+
+@macro cmd {key}
+@html
+&#8984;\key\
+@end html
+@ifnothtml
+Cmd-\key\
+@end ifnothtml
+@end macro
+
+@macro opt {key}
+@html
+&#8997;\key\
+@end html
+@ifnothtml
+Opt-\key\
+@end ifnothtml
+@end macro
+
+@macro shiftcmd {key}
+@html
+&#8679;&#8984;\key\
+@end html
+@ifnothtml
+Shift-Cmd-\key\
+@end ifnothtml
+@end macro
+
+@macro optcmd {key}
+@html
+&#8997;&#8984;\key\
+@end html
+@ifnothtml
+Option-Cmd-\key\
+@end ifnothtml
+@end macro
+
+@macro ctrcmd {key}
+@html
+&#8963;&#8984;\key\
+@end html
+@ifnothtml
+Control-Cmd-\key\
+@end ifnothtml
+@end macro
+
+@c A macro for search-result abstracts
+
+@macro abstract{text}
+@html
+<META NAME="DESCRIPTION" CONTENT="\text\">
+@end html
+@end macro
+
+@c Macros for special boxes
+
+@macro box{class}
+@html
+<div class="\class\">
+@end html
+@end macro
+
+@macro endbox
+@html
+</div>
+@end html
+@end macro
+
+@c ======================================================================================
+@c The content of the Help Pages starts here...
+@c ======================================================================================
+
+@ifnottex
+@node Top
+@top Skim Help
+
+@heading Skim Help
+
+Skim is a PDF viewer, intended for easy reading and studying PDF document.
+
+@menu
+* indexcp:: Help Topics
+@end menu
+
+@box{copyright}
+Copyright @copyright{} 2006 - 2007 Michael O. McCracken@*
+Copyright @copyright{} many others@*
+@endbox
+
+@c ======================================================================================
+
+@node Zooming in and out
+
+@chapter Zooming in and out
+@cindex Zooming in and out
+@abstract{Zooming in and out}
+
+You can change your view of a page in a PDF file in several ways. 
+
+@box{taskbox}
+@itemize
+@item To zoom in or out, choose View > Zoom In or View > Zoom Out.
+@end itemize
+@itemize
+@item To see the page in its original size, choose View > Actual Size.
+@end itemize
+@itemize
+@item To view a page at a size you specify, resize the window to the size you want, then choose View > Size To Fit. The page resizes to fit the window size.
+@end itemize
+@itemize
+@item To see a page at a specific percentage of its original size, type a percentage in the Scale field in the toolbar. If you don't see the Scale field, choose View > Customize Toolbar.
+@end itemize
+@endbox
+
+You can also use toolbar buttons to zoom. To add zoom buttons to the toolbar, choose View > Customize Toolbar and drag the buttons to the toolbar.
+
+You can also use the contextual menu to zoom.
+
+You cannot save changes to the way you view a page.
+
+@c ======================================================================================
+
+@node Magnifying a section
+
+@chapter Magnifying a section of a PDF document
+@cindex Magnifying a section of a PDF document
+@abstract{Magnifying a section of a PDF document}
+
+You can live-magnify a section of the PDF file, for example to better view small text.
+
+@box{taskbox}
+@heading To magnify a section:
+@enumerate
+@item Choose Tools > Mangify Tool.
+@item Press the left mouse button while moving over the section you want to magnify.
+@end enumerate
+@heading To modify the magnification:
+@itemize
+@item Hold the Apple key for extra magnification.
+@item Hold the Option key and/or double-click to magnify a larger area.
+@item Hold the Shift key to zoom out (invert the magnification).
+@end itemize
+@endbox
+
+@c ======================================================================================
+
+@node Selecting the page to view in a PDF document
+@cindex Selecting the page to view in a PDF document
+@abstract{Selecting the page to view in a PDF document}
+
+@chapter Selecting the page to view in a PDF document
+
+When you open a PDF document with multiple pages, a single Skim window opens showing the first page of the document. You can see thumbnails of additional pages in the Contents pane on the left.
+
+@box{taskbox}
+@itemize
+@item To open the left side pane (if it isn't already open), choose View > Show Contents pane, or double-click the divider on the left of the PDF.
+@end itemize
+@itemize
+@item If a PDF has a table of contents (TOC), a TOC icon appears at the top of the left side pane. Click the icon to use the TOC to navigate the PDF.
+@end itemize
+@itemize
+@item To navigate using thumbnail images of the document's pages, click the Thumbnails icon in the drawer and click the thumbnail image for the page.
+@end itemize
+@itemize
+@item To jump to the next page, press the Down Arrow or Page Down key. To jump to the previous page, press the Up Arrow or Page Up key.
+@end itemize
+@itemize
+@item To use the vertical scroll bar to scroll through a PDF with several pages, choose View > PDF Display > Continuous.
+@end itemize
+@itemize
+@item To view a specific page in a PDF document, type the page number that you want to view in the Page Number field in the toolbar, then press Return.
+@end itemize
+@endbox
+
+By default, the contents pane opens automatically only if you open a PDF file with a table of contents. To set the drawer to open automatically even if there is no table of contents, choose Skim > Preferences, click PDF, and deselect "Open pane only for Table of Contents."
+
+@c ======================================================================================
+
+@node Scrolling PDF pages
+@cindex Scrolling PDF pages
+@abstract{Scrolling PDF pages}
+
+@chapter Scrolling PDF pages
+
+When you open a PDF file with multiple pages in Skim, you select the page you want to view by clicking it in the drawer. If the page does not fit within the window size, then you use the vertical or horizontal scroll bars to view the hidden parts of the current page.
+
+By default, you can't use the vertical scroll bar to view the next or previous pages of the document. However, you can change this by turning on continuous scrolling.
+
+You can also scroll pages by dragging with the mouse.
+
+@box{taskbox}
+@heading To use the vertical scroll bar to scroll through the pages of the document:
+@itemize
+@item Choose View > PDF Display > Continuous.
+@end itemize
+@heading To scroll by dragging:
+@itemize
+@item Choose Tools > Scroll Tool.
+@end itemize
+@endbox
+
+@c ======================================================================================
+
+@node Changing the background color
+@cindex Changing the background color
+@abstract{Changing the background color}
+
+@chapter Changing the background color
+
+By default, Skim shows a gray background behind images and PDF files, and a darker shade of gray in Full Screen mode. If you expand the window larger than the size of the document, or if the image has transparent sections, you can see the background color.
+
+@box{taskbox}
+@itemize
+@item To change the default background color, Choose Skim > Preferences, click Colors, and then click Normal below "Background color".
+@end itemize
+@itemize
+@item To change the background color for Full Screen mode, Choose Skim > Preferences, click Colors, and then click "Full Screen" below "Background color".
+@end itemize
+@endbox
+
+@c ======================================================================================
+
+@node Selecting and copying text in a PDF file
+@cindex Selecting and copying text in a PDF file
+@abstract{Selecting and copying text in a PDF file}
+
+@chapter Selecting and copying text in a PDF file
+
+You can select and copy text from a PDF file, then paste it into another application, such as a word processor.
+
+@box{taskbox}
+@itemize
+@item To copy text, choose Tools > Text Tool and drag over the text as you normally would. Then choose Edit &gt; Copy. With some PDF files, line breaks are not saved when you copy text, so when you paste the text, the lines all run together.
+@item To select only a portion of text horizontally (for example, to select only one column in a two-column document), choose Tools > Text Tool, then press the Option key and select the text.
+@end itemize
+@endbox
+
+@c ======================================================================================
+
+@node Finding text in a PDF file
+@cindex Finding text in a PDF file
+@abstract{Finding text in a PDF file}
+
+@chapter Finding text in a PDF file
+
+You can search a PDF file for a word or any set of characters.
+
+@box{taskbox}
+@heading To find all occurrences of text:
+@enumerate
+@item Open the PDF file. If the Contents pane isn't open, choose View Show Contents Pane.
+@item Type some text in the search field and press Return. A list of places where the text occurs appears in the drawer.
+@item Click an occurrence of the text in the Contents pane. Skim shows the page where the text occurs, and highlights the text.
+@end enumerate
+@heading To find a single occurrences of text:
+@enumerate
+@item Choose Edit > Find > Find@dots{}, to show a Find panel.
+@item Type some text in the search field, and press Enter or hit Next. 
+@end enumerate
+@endbox
+
+@c ======================================================================================
+
+@node Rotating a PDF file or page
+@cindex Rotating a PDF file or page
+@abstract{Rotating a PDF file or page}
+
+@chapter Rotating a PDF file or page
+
+In Skim, you can rotate a PDF file in 90-degree increments, or flip it horizontally or vertically. You can rotate and flip an image several times to orient it the way you want it. 
+
+@box{taskbox}
+@itemize
+@item To turn all the pages in a PDF file 90 degrees in either direction, choose Tools > Rotate Left or Tools > Rotate Right.
+@end itemize
+@itemize
+@item To turn only the currently viewed page  90 degrees in either direction, choose Tools > Rotate Page Left or Tools > Rotate Page Right.
+@end itemize
+@endbox
+
+You can also use toolbar buttons to rotate images. To add rotate buttons to the toolbar, choose View > Customize Toolbar and drag the buttons to the toolbar.
+
+@c ======================================================================================
+
+@node Viewing the table of contents for a PDF file
+@cindex Viewing the table of contents for a PDF file
+@abstract{Viewing the table of contents for a PDF file}
+
+@chapter Viewing the table of contents for a PDF file
+
+Some PDF files contain a table of contents, which lets you quickly jump to sections within a document.
+
+@box{taskbox}
+@itemize
+@item To view the table of contents, Choose View > Show Contents Pane, and click the TOC button or choose View > Table Of Contents.
+@end itemize
+@itemize
+@item To jump to a specific section, click its name in the drawer. 
+@end itemize
+@endbox
+
+@c ======================================================================================
+
+@node Setting the default size for a PDF document
+@cindex Setting the default size for a PDF document
+@abstract{Setting the default size for a PDF document}
+
+@chapter Setting the default size for a PDF document
+
+You can choose the size at which Skim displays PDF documents: either as large as possible or at a specific percentage of their actual size.
+
+@box{taskbox}
+@enumerate
+@item Choose Skim > Preferences, and click General.
+@item Select one of the options under "Default document scale."
+@end enumerate
+@itemize
+@item To open PDF documents as large as your display will allow, select "Auto-scale."
+@item To open PDF documents at a specific percentage of their original size, select "Use scale of," and enter the scaling percentage.
+@end itemize
+@endbox
+
+@c ======================================================================================
+
+@node Viewing pages side-by-side
+@cindex Viewing pages side-by-side
+@abstract{Viewing pages side-by-side}
+
+@chapter Viewing pages side-by-side
+
+Viewing pages side-by-side lets you display more of a document on the screen.
+
+@box{taskbox}
+@itemize
+@item To view two pages side-by-side, choose View > PDF Display > Facing Pages. If you want the first page to be a right-hand page, as it would be in a book, choose View >PDF Display > Book Mode. Otherwise, the first page will be a left-hand page. 
+@end itemize
+@itemize
+@item To stop viewing pages side-by-side, choose View > PDF Display > Single Pages.
+@end itemize
+@endbox
+
+@c ======================================================================================
+
+@node Viewing page breaks
+@cindex Viewing page breaks
+@abstract{Viewing page breaks}
+
+@chapter Viewing page breaks
+
+When you're viewing more than one PDF page at a time, it can be difficult to tell when one ends and another begins. Displaying a border around each page makes this easier. 
+
+@box{taskbox}
+@itemize
+@item To display a border around each page, Choose View > PDF Display > Page Breaks.
+@end itemize
+@endbox
+
+@c ======================================================================================
+
+@node Adding notes to a PDF document
+@cindex Adding notes to a PDF document
+@abstract{Adding notes to a PDF document}
+
+@chapter Adding notes to a PDF document
+
+You can add your notes to a PDF document in boxes that look like paper sticky notes, or longer notes that can be viewed by double-clicking. 
+
+The notes are saved with the document, and are seen by anyone who reads it. The notes are not saved in the PDF data itself, so other PDF viewers will probbaly not be able to show the notes. 
+
+@box{taskbox}
+@heading To add a text note:
+@enumerate
+@item Choose Tools > Text Tool. 
+@item Choose File > Text Note. 
+@item Drag in the document until the note is located where you want and has the size you want.
+@item To enter text, double-click the note. 
+@end enumerate
+@heading To add a longer text note:
+@enumerate
+@item Choose Tools > Text Tool. 
+@item Choose File > Anchored Note. 
+@item Drag in the document until the note is located where you want.
+@item To enter text, double-click the note. A window will show containing the text of the note. It has a short text that is used for identification, and a longer text that can also contain attributes. 
+@item You can also add a simple image to the note. Drag an image to the image well in the window for the note. 
+@end enumerate
+@endbox
+
+You can edit or delete the notes. To move or resize the note, choose Tools > Text Tool, and use the mouse. To edit the note's text, choose Tools > Text Tool, and double-click the note. To change the color used for the note, choose Tools > Show Colors. To delete the note, choose Tools > Text Tool, select the note, and press Delete.
+
+@c ======================================================================================
+
+@node Highlighting sections of a PDF document
+@cindex Highlighting sections of a PDF document
+@abstract{Highlighting sections of a PDF document}
+
+@chapter Highlighting sections of a PDF document
+
+You can highlight interesting or important parts of a document by enclosing them in a red oval or a green rectangle.
+
+The notes are saved with the document, and are seen by anyone who reads it. The notes are not saved in the PDF data itself, so other PDF viewers will probbaly not be able to show the notes. 
+
+@box{taskbox}
+@heading To highlight a section of a PDF document:
+@enumerate
+@item Choose Tools > Text Tool. 
+@item Choose File > Circle Note or File > Rectangle Note. 
+@item Drag in the document until the note is located where you want and has the size you want.
+@end enumerate
+@endbox
+
+You can edit or delete the highlights. To move or resize the highlight, choose Tools > Text Tool, and use the mouse. To change the color used for the highlight, choose Tools > Show Colors. To delete the highlight, choose Tools > Text Tool, select the highlight, and press Delete. 
+
+@c ======================================================================================
+
+@node Taking snapshots of a section of a PDF document
+@cindex Taking snapshots of a section of a PDF document
+@abstract{Taking snapshots of a section of a PDF document}
+
+@chapter Taking snapshots of a section of a PDF document
+
+You can take "snapshots" of important sections of a PDF document, to keep them on your screen for easy reference. This way you don't have to leaf back to the section every time you want to see it. 
+
+Your snapshots are kept for easy reference in a table in the Notes pane to the right of the PDF document. 
+
+@box{taskbox}
+@heading To take a snapshot of a section:
+@enumerate
+@item Choose Tools > Text Tool or Tools > Scrolll Tool.
+@item Hold the Apple key and click on point or select a region.
+@item A window will pop up displaying the chosen region. If the selected regaion is small, this will be magnified. 
+@end enumerate
+@heading To see all your snapshots:
+@enumerate
+@item Choose View > Show Notes Pane, or double-click the divider on the left, if necessary.
+@item Choose View > Snapshots.
+@end enumerate
+@endbox
+
+You can minimize the button to leave it only in the table. Choose Window > Minimize, hit the Minimize button on the snapshot window, or double-click the item in the Snapshots table.
+
+You can later show the snapshot window again by double-clicking the snapshot in the Snapshot table. 
+
+Snapshots are not saved with the PDF document. 
+
+@c ======================================================================================
+
+@node I can't select or copy text in a PDF file
+@cindex I can't select or copy text in a PDF file
+@abstract{I can't select or copy text in a PDF file}
+
+@chapter I can't select or copy text in a PDF file
+
+Some PDF files require you to enter a password before you can select or copy text. Ask the person who gave you the document for that password.
+
+@box{taskbox}
+@itemize
+@item To enter the password for a PDF file, choose File > Password.
+@end itemize
+@endbox
+
+If the Password command is disabled, this document does not require you to enter one. Make sure you've selected the Text tool by choosing Tools > Text. 
+
+@c ======================================================================================
+
+@node Resizing a PDF file to fit its window
+@cindex Resizing a PDF file to fit its window
+@abstract{Resizing a PDF file to fit its window}
+
+@chapter Resizing a PDF file to fit its window
+
+Skim can automatically resize an image or PDF file so that it always fits its window. As you resize the window, Skim resizes the image or PDF. 
+
+@box{taskbox}
+@itemize
+@item Choose View > Zoom To Fit. 
+@end itemize
+@endbox
+
+@c ======================================================================================
+
+@node Viewing PDF documents in full screen
+@cindex Viewing PDF documents in full screen
+@abstract{Viewing PDF documents in full screen}
+
+@chapter Viewing PDF documents in full screen
+
+Skim allows you to view PDF documents in kiosk mode, so you can concentrate just on reading. 
+
+@box{taskbox}
+@itemize
+@item To view a PDF document in kiosk mode, Choose View > Full Screen. 
+@end itemize
+@endbox
+
+In full screen mode, you can still do all the task you can do in normal mode. 
+
+The main menu auto-hides, and can be shown by moving the mouse to the top of the screen. Many options are also available in the context menu.
+
+The contents tables and the notes and snapshot tables automically show if you move the mouse to the side of the screen. You can also show them by choosing View > Show Contents Pane or View > Show Notes Pane. 
+
+@c ======================================================================================
+
+@node Giving a presentation of a PDF document
+@cindex Giving a presentation of a PDF document
+@abstract{Giving a presentation of a PDF document}
+
+@chapter Giving a presentation of a PDF document
+
+You can also use Skim to give presentations of a PDF document. 
+
+@box{taskbox}
+@heading To show a presentation of a PDF document:
+@enumerate
+@item Drag the window of the PDF docuemtn to the screen you want to use for the presentation, likely a beamer. 
+@item Choose View > Presentation. 
+@item To get out of Presentation mode by the shortcut @optcmd{F}, or by hitting the escape button. 
+@end enumerate
+@endbox
+
+In presentation mode, you can use the Left and Right Arrow buttons to navigate through the pages of the document. 
+
+You can show navigation buttons by moving the mouse to the bottom of the screen.
+
+@c ======================================================================================
+@c INDEXES
+@c ======================================================================================
+
+@node indexcp
+@appendix Help Topics
+@abstract{Help Topics}
+
+Click a topic below.
+
+@printindex cp
+
+@bye
