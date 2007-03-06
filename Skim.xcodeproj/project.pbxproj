@@ -797,7 +797,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "cd ${SOURCE_ROOT}/Skim\\ Help;\ntexi2html=./texi2html\n\nINPUT='Skim Help/skim.texi'\nDEST='Skim Help/pgs'\n\nfor LOC_DIR in ${SOURCE_ROOT}/*.lproj; do \\\n\t${texi2html} \"${LOC_DIR}/${INPUT}\" --init-file=applehelp.init --prefix=\"Skim Help\" --output=\"${LOC_DIR}/${DEST}\" --split=node && \\\n\tperl -pi -e 's#<!--AppleMeta-->#<meta name=\\\"AppleTitle\\\" content=\\\"Skim Help\\\"><meta name=\\\"AppleIcon\\\" content=\\\"Skim%20Help/gfx/SkimIcon.png\\\"><meta name=\\\"robots\\\" content=\\\"anchors\\\">#' \"${LOC_DIR}/${DEST}\"/Skim\\ Help.html && \\\n\tpython postprocess-nontitle.py \"${LOC_DIR}/${DEST}\"/Skim\\ Help_*.html;\\\ndone;\n";
+			shellScript = "cd ${SOURCE_ROOT}/Skim\\ Help;\ntexi2html=./texi2html\n\nINPUT='Skim Help/skim.texi'\nDEST='Skim Help'\n\nfor LOC_DIR in ${SOURCE_ROOT}/*.lproj; do \\\n\t${texi2html} \"${LOC_DIR}/${INPUT}\" --init-file=applehelp.init --prefix=\"Skim Help\" --output=\"${LOC_DIR}/${DEST}\" --split=node && \\\n\tperl -pi -e 's#<!--AppleMeta-->#<meta name=\\\"AppleTitle\\\" content=\\\"Skim Help\\\"><meta name=\\\"AppleIcon\\\" content=\\\"Skim%20Help/gfx/SkimIcon.png\\\"><meta name=\\\"robots\\\" content=\\\"anchors\\\">#' \"${LOC_DIR}/${DEST}\"/Skim\\ Help.html && \\\n\tpython postprocess-nontitle.py \"${LOC_DIR}/${DEST}\"/Skim\\ Help_*.html;\\\ndone;\n";
 		};
 		CE4DA9060B9E17890039E89C /* ShellScript */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -810,7 +810,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "if [ -d /Developer/Applications/Utilities/Help\\ Indexer.app/ ]; then\nif [ ${BUILD_STYLE} = \"Debug\" ]; then\nexit 0\nfi\necho \"*** Indexing Tiger Help ***\"\nfor LOC_DIR in ${BUILT_PRODUCTS_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/*.lproj; do \\\n/Developer/Applications/Utilities/Help\\ Indexer.app/Contents/MacOS/Help\\ Indexer \\\n${LOC_DIR}/Skim\\ Help/pgs \\\n-Tokenizer 1 \\\n-ShowProgress NO \\\n-LogStyle 2 \\\n-IndexAnchors YES \\\n-TigerIndexing YES \\\n-GenerateSummaries YES \\\n-Stopwords en \\\n-MinTermLength 3;\\\ndone\nfi\nexit 0";
+			shellScript = "if [ -d /Developer/Applications/Utilities/Help\\ Indexer.app/ ]; then\nif [ ${BUILD_STYLE} = \"Debug\" ]; then\nexit 0\nfi\necho \"*** Indexing Tiger Help ***\"\nfor LOC_DIR in ${BUILT_PRODUCTS_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/*.lproj; do \\\n/Developer/Applications/Utilities/Help\\ Indexer.app/Contents/MacOS/Help\\ Indexer \\\n${LOC_DIR}/Skim\\ Help \\\n-Tokenizer 1 \\\n-ShowProgress NO \\\n-LogStyle 2 \\\n-IndexAnchors YES \\\n-TigerIndexing YES \\\n-GenerateSummaries YES \\\n-Stopwords en \\\n-MinTermLength 3;\\\ndone\nfi\nexit 0";
 		};
 		CE4DA90A0B9E18710039E89C /* ShellScript */ = {
 			isa = PBXShellScriptBuildPhase;
