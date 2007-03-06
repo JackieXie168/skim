@@ -532,7 +532,8 @@
     if (nil == releaseNotesWindowController)
         releaseNotesWindowController = [[BDSKRelNotesController alloc] init];
     
-    [releaseNotesWindowController displayAttributedString:attrString];
+    if (attrString)
+        [releaseNotesWindowController displayAttributedString:attrString];
     [releaseNotesWindowController showWindow:nil];
 }
 
