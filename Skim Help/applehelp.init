@@ -36,7 +36,7 @@ sub t2h_html32_heading($)
     }
     if (($tag_level eq "chapter") || ($tag_level eq "section") || ($tag_level eq "subsection") || ($tag_level eq "appendix"))
     {
-        $text = "<img src=\"../gfx/Skim.png\" alt=\"Skim\" width=\"32\" height=\"32\"> " . $text;
+        $text = "<img src=\"gfx/Skim.png\" alt=\"Skim\" width=\"32\" height=\"32\"> " . $text;
     }
     return "<h$level class=\"$tag_level\"> $text</h$level>$node\n";
 }
