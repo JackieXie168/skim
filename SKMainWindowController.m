@@ -2139,6 +2139,7 @@ static NSString *SKDocumentToolbarNotesPaneItemIdentifier = @"SKDocumentToolbarN
 	unsigned pageIndex = [[pdfView document] indexForPage: [pdfView currentPage]];
     updatingThumbnailSelection = YES;
     [thumbnailTableView selectRowIndexes:[NSIndexSet indexSetWithIndex:pageIndex] byExtendingSelection:NO];
+    [thumbnailTableView scrollRowToVisible:pageIndex];
     updatingThumbnailSelection = NO;
 }
 
@@ -2195,14 +2196,43 @@ static NSString *SKDocumentToolbarNotesPaneItemIdentifier = @"SKDocumentToolbarN
     }
 }
 
+static NSArray *prioritySortedThumbnails(NSArray *dirtyNails, int currentPageIndex)
+{
+    // if you resume reading in the middle of a long document, it can take a long time for the thumbnails at the current page to update
+    // this is only useful when all thumbnails are being updated; otherwise the indexes in dirtyThumbnails aren't page indexes
+    NSMutableArray *mutableArray = [NSMutableArray arrayWithArray:dirtyNails];
+    if (currentPageIndex > 20) {
+        int middle = currentPageIndex;
+        int start = MAX(0, middle - 20);
+        int end = MIN((int)[dirtyNails count], middle + 20);
+        
+        // reverse the first batch
+        NSRange range = NSMakeRange(start, middle - start);
+        NSMutableArray *firstToUpdate = [NSMutableArray arrayWithArray:[[[mutableArray subarrayWithRange:range] reverseObjectEnumerator] allObjects]];
+        
+        // insert the second batch; could be clever and interlace first and second...
+        range = NSMakeRange(middle, end - middle);
+        [firstToUpdate addObjectsFromArray:[mutableArray subarrayWithRange:range]];
+        
+        // remove the objects we just rearranged, then insert at the beginning of the array
+        [mutableArray removeObjectsInRange:NSMakeRange(start, end - start)];
+        range = NSMakeRange(0, [firstToUpdate count]);
+        [mutableArray insertObjects:firstToUpdate atIndexes:[NSIndexSet indexSetWithIndexesInRange:range]];
+    }
+    return mutableArray;
+}
+
 - (void)allThumbnailsNeedUpdate {
     [dirtyThumbnails setArray:[self thumbnails]];
     [self updateThumbnailsIfNeeded];
 }
 
 - (void)updateThumbnailsIfNeeded {
-    if ([thumbnailTableView window] != nil && [dirtyThumbnails count] > 0 && thumbnailTimer == nil)
+    if ([thumbnailTableView window] != nil && [dirtyThumbnails count] > 0 && thumbnailTimer == nil) {
+        if ([dirtyThumbnails count] == [thumbnails count])
+            [dirtyThumbnails setArray:prioritySortedThumbnails([self thumbnails], [[pdfView document] indexForPage:[pdfView currentPage]])];
         thumbnailTimer = [[NSTimer scheduledTimerWithTimeInterval:0.03 target:self selector:@selector(updateThumbnail:) userInfo:NULL repeats:YES] retain];
+    }
 }
 
 - (void)updateThumbnail:(NSTimer *)timer {
