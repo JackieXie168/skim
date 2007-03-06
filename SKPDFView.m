@@ -1278,11 +1278,11 @@ NSString *SKSkimNotePboardType = @"SKSkimNotePboardType";
     PDFPage *activePage = [activeAnnotation page];
     NSRect newBounds;
     NSRect currentBounds = [activeAnnotation bounds];
-    NSPoint mouseLoc = [self convertPoint:[theEvent locationInWindow] fromView:nil];
-    NSPoint endPt = [self convertPoint:mouseLoc toPage:activePage];
     
     if (resizing) {
+        NSPoint mouseLoc = [self convertPoint:[theEvent locationInWindow] fromView:nil];
         NSPoint startPoint = [self convertPoint:mouseDownLoc toPage:activePage];
+        NSPoint endPt = [self convertPoint:mouseLoc toPage:activePage];
         NSPoint relPoint = NSMakePoint(endPt.x - startPoint.x, endPt.y - startPoint.y);
         newBounds = wasBounds;
         
@@ -1342,6 +1342,9 @@ NSString *SKSkimNotePboardType = @"SKSkimNotePboardType";
         newBounds = NSIntegralRect(newBounds);
     } else {
         // Move annotation.
+        [[self documentView] autoscroll:theEvent];
+        
+        NSPoint mouseLoc = [self convertPoint:[theEvent locationInWindow] fromView:nil];
         PDFPage *newActivePage = [self pageForPoint:mouseLoc nearest:YES];
         NSRect pageBounds = [newActivePage  boundsForBox:[self displayBox]];
         
@@ -1360,10 +1363,10 @@ NSString *SKSkimNotePboardType = @"SKSkimNotePboardType";
                 [[NSNotificationCenter defaultCenter] postNotificationName:SKPDFViewDidRemoveAnnotationNotification object:self userInfo:[NSDictionary dictionaryWithObjectsAndKeys:activeAnnotation, @"annotation", activePage, @"page", nil]];
                 [[NSNotificationCenter defaultCenter] postNotificationName:SKPDFViewDidAddAnnotationNotification object:self userInfo:[NSDictionary dictionaryWithObjectsAndKeys:activeAnnotation, @"annotation", newActivePage, @"page", nil]];
                 
-                endPt = [self convertPoint:mouseLoc toPage:newActivePage];
                 activePage = newActivePage;
             }
             
+            NSPoint endPt = [self convertPoint:mouseLoc toPage:activePage];
             newBounds = currentBounds;
             newBounds.origin.x = roundf(endPt.x - clickDelta.x);
             newBounds.origin.y = roundf(endPt.y - clickDelta.y);

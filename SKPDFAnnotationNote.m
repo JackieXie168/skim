@@ -110,10 +110,6 @@ NSString *SKAnnotationDidChangeNotification = @"SKAnnotationDidChangeNotificatio
     return page ? [[page document] indexForPage:page] : NSNotFound;
 }
 
-- (NSString *)pageLabel {
-    return [[self page] label];
-}
-
 - (NSImage *)image { return nil; }
 
 - (NSAttributedString *)text { return nil; }
@@ -563,9 +559,9 @@ static NSColor *noteColor = nil;
 
 - (NSString *)type { return nil; }
 
-- (unsigned int)pageIndex { return [annotation pageIndex]; }
+- (PDFPage *)page { return nil; }
 
-- (NSString *)pageLabel { return nil; }
+- (unsigned int)pageIndex { return [annotation pageIndex]; }
 
 - (NSAttributedString *)contents { return [annotation text]; }
 
