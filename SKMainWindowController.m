@@ -90,6 +90,7 @@ static NSString *SKDocumentToolbarNewNoteItemIdentifier = @"SKDocumentToolbarNew
 static NSString *SKDocumentToolbarNewTextNoteItemIdentifier = @"SKDocumentToolbarNewTextNoteItemIdentifier";
 static NSString *SKDocumentToolbarNewAnchoredNoteItemIdentifier = @"SKDocumentToolbarNewAnchoredNoteItemIdentifier";
 static NSString *SKDocumentToolbarNewCircleNoteItemIdentifier = @"SKDocumentToolbarNewCircleNoteItemIdentifier";
+static NSString *SKDocumentToolbarNewSquareNoteItemIdentifier = @"SKDocumentToolbarNewSquareNoteItemIdentifier";
 static NSString *SKDocumentToolbarToggleDrawerItemIdentifier = @"SKDocumentToolbarToggleDrawerItemIdentifier";
 static NSString *SKDocumentToolbarInfoItemIdentifier = @"SKDocumentToolbarInfoItemIdentifier";
 static NSString *SKDocumentToolbarToolModeItemIdentifier = @"SKDocumentToolbarToolModeItemIdentifier";
@@ -678,12 +679,16 @@ static NSString *SKDocumentToolbarNotesPaneItemIdentifier = @"SKDocumentToolbarN
     
     if (type == -1) {
         int modifiers = GetCurrentKeyModifiers();
-        if (modifiers & optionKey)
-            type = SKAnchoredNote;
-        else if (modifiers & shiftKey)
+        if (modifiers & optionKey) {
+            if (modifiers & shiftKey)
+                type = SKSquareNote;
+            else
+                type = SKAnchoredNote;
+        } else if (modifiers & shiftKey) {
             type = SKCircleNote;
-        else
+        } else {
             type = SKFreeTextNote;
+        }
     }
         
     [pdfView addAnnotationFromSelectionWithType:type];
@@ -2487,7 +2492,7 @@ static NSString *SKDocumentToolbarNotesPaneItemIdentifier = @"SKDocumentToolbarN
     item = [[NSToolbarItem alloc] initWithItemIdentifier:SKDocumentToolbarNewNoteItemIdentifier];
     [item setLabel:NSLocalizedString(@"New Note", @"Toolbar item label")];
     [item setPaletteLabel:NSLocalizedString(@"New Note", @"Toolbar item label")];
-    [item setToolTip:NSLocalizedString(@"Add new note. Option key for an anchored note, Shift key for a circle note.", @"Tool tip message")];
+    [item setToolTip:NSLocalizedString(@"Add new note. No key for text. Option key for anchored, Shift key for circle. Shift and Option key for rectangle.", @"Tool tip message")];
     [item setImage:[NSImage imageNamed:@"ToolbarNote"]];
     [item setTarget:self];
     [item setAction:@selector(createNewNote:)];
@@ -2545,6 +2550,20 @@ static NSString *SKDocumentToolbarNotesPaneItemIdentifier = @"SKDocumentToolbarN
     [item setTag:SKCircleNote];
     [item setMenuFormRepresentation:menuItem];
     [toolbarItems setObject:item forKey:SKDocumentToolbarNewCircleNoteItemIdentifier];
+    [item release];
+    
+	[menuItem setTarget:self];
+    [menuItem setTag:SKSquareNote];
+    item = [[NSToolbarItem alloc] initWithItemIdentifier:SKDocumentToolbarNewSquareNoteItemIdentifier];
+    [item setLabel:NSLocalizedString(@"Rectangle Note", @"Toolbar item label")];
+    [item setPaletteLabel:NSLocalizedString(@"New Rectangle Note", @"Toolbar item label")];
+    [item setToolTip:NSLocalizedString(@"Add New Rectangle Note", @"Tool tip message")];
+    [item setImage:[NSImage imageNamed:@"ToolbarSquareNote"]];
+    [item setTarget:self];
+    [item setAction:@selector(createNewNote:)];
+    [item setTag:SKSquareNote];
+    [item setMenuFormRepresentation:menuItem];
+    [toolbarItems setObject:item forKey:SKDocumentToolbarNewSquareNoteItemIdentifier];
     [item release];
     
     item = [[NSToolbarItem alloc] initWithItemIdentifier:SKDocumentToolbarToggleDrawerItemIdentifier];
@@ -2678,6 +2697,7 @@ static NSString *SKDocumentToolbarNotesPaneItemIdentifier = @"SKDocumentToolbarN
         SKDocumentToolbarNewTextNoteItemIdentifier, 
         SKDocumentToolbarNewAnchoredNoteItemIdentifier, 
         SKDocumentToolbarNewCircleNoteItemIdentifier, 
+        SKDocumentToolbarNewSquareNoteItemIdentifier, 
         SKDocumentToolbarInfoItemIdentifier, 
         SKDocumentToolbarContentsPaneItemIdentifier, 
         SKDocumentToolbarNotesPaneItemIdentifier, 

@@ -56,6 +56,8 @@
         return [NSImage imageNamed:@"NoteToolAdorn"];
     if ([type isEqualToString:@"Circle"])
         return [NSImage imageNamed:@"CircleToolAdorn"];
+    if ([type isEqualToString:@"Square"])
+        return [NSImage imageNamed:@"SquareToolAdorn"];
     return nil;
 }
 
