@@ -50,7 +50,6 @@ extern NSString *SKAnnotationDidChangeNotification;
 
 - (PDFDestination *)destination;
 - (unsigned int)pageIndex;
-- (NSString *)pageLabel;
 
 - (NSImage *)image;
 - (NSAttributedString *)text;
@@ -110,8 +109,8 @@ extern NSString *SKAnnotationDidChangeNotification;
 - (NSArray *)texts;
 
 - (NSString *)type;
+- (PDFPage *)page;
 - (unsigned int)pageIndex;
-- (NSString *)pageLabel;
 - (NSAttributedString *)contents;
 
 - (float)rowHeight;
