@@ -540,7 +540,8 @@ enum {
     if (nil == releaseNotesController)
         releaseNotesController = [[SKReleaseNotesController alloc] init];
     
-    [releaseNotesController displayAttributedString:attrString];
+    if (attrString)
+        [releaseNotesController displayAttributedString:attrString];
     [releaseNotesController showWindow:nil];
 }
 
