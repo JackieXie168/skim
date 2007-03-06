@@ -2201,10 +2201,10 @@ static NSArray *prioritySortedThumbnails(NSArray *dirtyNails, int currentPageInd
     // if you resume reading in the middle of a long document, it can take a long time for the thumbnails at the current page to update
     // this is only useful when all thumbnails are being updated; otherwise the indexes in dirtyThumbnails aren't page indexes
     NSMutableArray *mutableArray = [NSMutableArray arrayWithArray:dirtyNails];
-    if (currentPageIndex > 20) {
-        int middle = currentPageIndex;
-        int start = MAX(0, middle - 20);
-        int end = MIN((int)[dirtyNails count], middle + 20);
+    if (currentPageIndex > 10) {
+        unsigned int middle = currentPageIndex;
+        unsigned int start = 0;
+        unsigned int end = [dirtyNails count];
         
         // reverse the first batch; second is already ascending
         NSRange range = NSMakeRange(start, middle - start);
@@ -2213,20 +2213,15 @@ static NSArray *prioritySortedThumbnails(NSArray *dirtyNails, int currentPageInd
         NSEnumerator *e2 = [[mutableArray subarrayWithRange:range] objectEnumerator];
         
         // now interlace first and second
-        NSMutableArray *firstToUpdate = [NSMutableArray arrayWithCapacity:20];
+        [mutableArray removeAllObjects];
         id obj1 = nil, obj2 = nil;
         int count = MAX(end - middle, middle - start);
         while (count--) {
             if ((obj2 = [e2 nextObject]))
-                [firstToUpdate addObject:obj2];
+                [mutableArray addObject:obj2];
             if ((obj1 = [e1 nextObject]))
-                [firstToUpdate addObject:obj1];
+                [mutableArray addObject:obj1];
         }
-        
-        // remove the objects we just rearranged, then insert at the beginning of the array
-        [mutableArray removeObjectsInRange:NSMakeRange(start, end - start)];
-        range = NSMakeRange(0, [firstToUpdate count]);
-        [mutableArray insertObjects:firstToUpdate atIndexes:[NSIndexSet indexSetWithIndexesInRange:range]];
     }
     return mutableArray;
 }
