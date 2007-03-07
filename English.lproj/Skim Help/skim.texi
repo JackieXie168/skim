@@ -155,7 +155,7 @@ You can live-magnify a section of the PDF file, for example to better view small
 @box{taskbox}
 @heading To magnify a section:
 @enumerate
-@item Choose Tools > Mangify Tool.
+@item Choose Tools > Magnify Tool.
 @item Press the left mouse button while moving over the section you want to magnify.
 @end enumerate
 @heading To modify the magnification:
@@ -390,7 +390,7 @@ When you're viewing more than one PDF page at a time, it can be difficult to tel
 
 You can add your notes to a PDF document in boxes that look like paper sticky notes, or longer notes that can be viewed by double-clicking. 
 
-The notes are saved with the document, and are seen by anyone who reads it. The notes are not saved in the PDF data itself, so other PDF viewers will probbaly not be able to show the notes. 
+The notes are saved with the document, and are seen by anyone who reads it. The notes are not saved in the PDF data itself, so other PDF viewers will probably not be able to show the notes. 
 
 @box{taskbox}
 @heading To add a text note:
@@ -422,7 +422,7 @@ You can edit or delete the notes. To move or resize the note, choose Tools > Tex
 
 You can highlight interesting or important parts of a document by enclosing them in a red oval or a green rectangle.
 
-The notes are saved with the document, and are seen by anyone who reads it. The notes are not saved in the PDF data itself, so other PDF viewers will probbaly not be able to show the notes. 
+The notes are saved with the document, and are seen by anyone who reads it. The notes are not saved in the PDF data itself, so other PDF viewers will probably not be able to show the notes. 
 
 @box{taskbox}
 @heading To highlight a section of a PDF document:
@@ -450,9 +450,9 @@ Your snapshots are kept for easy reference in a table in the Notes pane to the r
 @box{taskbox}
 @heading To take a snapshot of a section:
 @enumerate
-@item Choose Tools > Text Tool or Tools > Scrolll Tool.
+@item Choose Tools > Text Tool or Tools > Scroll Tool.
 @item Hold the Apple key and click on point or select a region.
-@item A window will pop up displaying the chosen region. If the selected regaion is small, this will be magnified. 
+@item A window will pop up displaying the chosen region. If the selected region is small, this will be magnified. 
 @end enumerate
 @heading To see all your snapshots:
 @enumerate
@@ -521,7 +521,7 @@ In full screen mode, you can still do all the task you can do in normal mode.
 
 The main menu auto-hides, and can be shown by moving the mouse to the top of the screen. Many options are also available in the context menu.
 
-The contents tables and the notes and snapshot tables automically show if you move the mouse to the side of the screen. You can also show them by choosing View > Show Contents Pane or View > Show Notes Pane. 
+The contents tables and the notes and snapshot tables automatically show if you move the mouse to the side of the screen. You can also show them by choosing View > Show Contents Pane or View > Show Notes Pane. 
 
 @c ======================================================================================
 
@@ -536,7 +536,7 @@ You can also use Skim to give presentations of a PDF document.
 @box{taskbox}
 @heading To show a presentation of a PDF document:
 @enumerate
-@item Drag the window of the PDF docuemtn to the screen you want to use for the presentation, likely a beamer. 
+@item Drag the window of the PDF document to the screen you want to use for the presentation, likely a beamer. 
 @item Choose View > Presentation. 
 @item To get out of Presentation mode by the shortcut @optcmd{F}, or by hitting the escape button. 
 @end enumerate
