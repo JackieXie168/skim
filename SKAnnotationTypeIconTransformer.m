@@ -58,6 +58,8 @@
         return [NSImage imageNamed:@"CircleToolAdorn"];
     if ([type isEqualToString:@"Square"])
         return [NSImage imageNamed:@"SquareToolAdorn"];
+    if ([type isEqualToString:@"MarkUp"])
+        return [NSImage imageNamed:@"HighlightToolAdorn"];
     return nil;
 }
 

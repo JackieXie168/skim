@@ -121,6 +121,8 @@
 		CE7468820B7F3C0000CBF969 /* zoomOutCursor.tiff in Resources */ = {isa = PBXBuildFile; fileRef = CE7467550B7F321A00CBF969 /* zoomOutCursor.tiff */; };
 		CE7469180B7F40B700CBF969 /* Skim.icns in Resources */ = {isa = PBXBuildFile; fileRef = CE7469170B7F40B600CBF969 /* Skim.icns */; };
 		CE9C423C0B8B5633004AD8CF /* PreferenceWindow.nib in Resources */ = {isa = PBXBuildFile; fileRef = CE9C42360B8B5633004AD8CF /* PreferenceWindow.nib */; };
+		CE9DC2E90B9F131900D64F28 /* HighlightToolAdorn.tiff in Resources */ = {isa = PBXBuildFile; fileRef = CE9DC2E70B9F131800D64F28 /* HighlightToolAdorn.tiff */; };
+		CE9DC2EA0B9F131900D64F28 /* ToolbarHighlightNote.tiff in Resources */ = {isa = PBXBuildFile; fileRef = CE9DC2E80B9F131800D64F28 /* ToolbarHighlightNote.tiff */; };
 		CEA575CE0B9206E60003D2E7 /* SKNoteOutlineView.m in Sources */ = {isa = PBXBuildFile; fileRef = CEA575CD0B9206E60003D2E7 /* SKNoteOutlineView.m */; };
 		CEA575E50B9207B80003D2E7 /* SKThumbnailTableView.m in Sources */ = {isa = PBXBuildFile; fileRef = CEA575E40B9207B80003D2E7 /* SKThumbnailTableView.m */; };
 		CEA575FD0B9208B60003D2E7 /* SKOutlineView.m in Sources */ = {isa = PBXBuildFile; fileRef = CEA575FC0B9208B60003D2E7 /* SKOutlineView.m */; };
@@ -296,6 +298,8 @@
 		CE7467550B7F321A00CBF969 /* zoomOutCursor.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; name = zoomOutCursor.tiff; path = Images/zoomOutCursor.tiff; sourceTree = "<group>"; };
 		CE7469170B7F40B600CBF969 /* Skim.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; name = Skim.icns; path = Images/Skim.icns; sourceTree = "<group>"; };
 		CE9C42370B8B5633004AD8CF /* English */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = English; path = English.lproj/PreferenceWindow.nib; sourceTree = "<group>"; };
+		CE9DC2E70B9F131800D64F28 /* HighlightToolAdorn.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; name = HighlightToolAdorn.tiff; path = Images/HighlightToolAdorn.tiff; sourceTree = "<group>"; };
+		CE9DC2E80B9F131800D64F28 /* ToolbarHighlightNote.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; name = ToolbarHighlightNote.tiff; path = Images/ToolbarHighlightNote.tiff; sourceTree = "<group>"; };
 		CEA575CC0B9206E60003D2E7 /* SKNoteOutlineView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SKNoteOutlineView.h; sourceTree = "<group>"; };
 		CEA575CD0B9206E60003D2E7 /* SKNoteOutlineView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SKNoteOutlineView.m; sourceTree = "<group>"; };
 		CEA575E30B9207B80003D2E7 /* SKThumbnailTableView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SKThumbnailTableView.h; sourceTree = "<group>"; };
@@ -621,6 +625,7 @@
 				CE5478B90B33456300F8AFB6 /* ForwardAdorn.tiff */,
 				CE5478B70B33456300F8AFB6 /* AnnotateToolAdorn.tiff */,
 				CE3A42330B7927D3006B64D3 /* CircleToolAdorn.tiff */,
+				CE9DC2E70B9F131800D64F28 /* HighlightToolAdorn.tiff */,
 				CE5478E40B334CAC00F8AFB6 /* MagnifyToolAdorn.tiff */,
 				CE5478BC0B33456300F8AFB6 /* MoveToolAdorn.tif */,
 				CE3A42340B7927D3006B64D3 /* NoteToolAdorn.tiff */,
@@ -633,6 +638,7 @@
 				CE4EB8230B7B96D00091F228 /* ThumbnailViewAdorn.tiff */,
 				CE4190C20B94963A00ECF819 /* ToolbarCircleNote.tiff */,
 				CE5478BA0B33456300F8AFB6 /* ToolbarFullScreen.tiff */,
+				CE9DC2E80B9F131800D64F28 /* ToolbarHighlightNote.tiff */,
 				CE7467330B7F2ED700CBF969 /* ToolbarInfo.tiff */,
 				CE0465050B850D7C00C11E4A /* ToolbarLeftPane.tiff */,
 				CE5478BD0B33456300F8AFB6 /* ToolbarNext.tiff */,
@@ -779,6 +785,8 @@
 				CEF7175C0B90DEEF003A2771 /* ReleaseNotes.nib in Resources */,
 				CE41A6CC0B975E5000ECF819 /* Skim.sdef in Resources */,
 				CE4DA9240B9E190D0039E89C /* Skim Help in Resources */,
+				CE9DC2E90B9F131900D64F28 /* HighlightToolAdorn.tiff in Resources */,
+				CE9DC2EA0B9F131900D64F28 /* ToolbarHighlightNote.tiff in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -91,6 +91,7 @@ static NSString *SKDocumentToolbarNewTextNoteItemIdentifier = @"SKDocumentToolba
 static NSString *SKDocumentToolbarNewAnchoredNoteItemIdentifier = @"SKDocumentToolbarNewAnchoredNoteItemIdentifier";
 static NSString *SKDocumentToolbarNewCircleNoteItemIdentifier = @"SKDocumentToolbarNewCircleNoteItemIdentifier";
 static NSString *SKDocumentToolbarNewSquareNoteItemIdentifier = @"SKDocumentToolbarNewSquareNoteItemIdentifier";
+static NSString *SKDocumentToolbarNewHighlightNoteItemIdentifier = @"SKDocumentToolbarNewHighlightNoteItemIdentifier";
 static NSString *SKDocumentToolbarToggleDrawerItemIdentifier = @"SKDocumentToolbarToggleDrawerItemIdentifier";
 static NSString *SKDocumentToolbarInfoItemIdentifier = @"SKDocumentToolbarInfoItemIdentifier";
 static NSString *SKDocumentToolbarToolModeItemIdentifier = @"SKDocumentToolbarToolModeItemIdentifier";
@@ -680,7 +681,10 @@ static NSString *SKDocumentToolbarNotesPaneItemIdentifier = @"SKDocumentToolbarN
     if (type == -1) {
         int modifiers = GetCurrentKeyModifiers();
         if (modifiers & optionKey) {
-            type = SKAnchoredNote;
+            if (modifiers & shiftKey)
+                type = SKHighlightNote;
+            else
+                type = SKAnchoredNote;
         } else if (modifiers & shiftKey) {
             type = SKCircleNote;
         } else if (modifiers & controlKey) {
@@ -2622,6 +2626,20 @@ static NSArray *prioritySortedThumbnails(NSArray *dirtyNails, int currentPageInd
     [toolbarItems setObject:item forKey:SKDocumentToolbarNewSquareNoteItemIdentifier];
     [item release];
     
+	[menuItem setTarget:self];
+    [menuItem setTag:SKHighlightNote];
+    item = [[NSToolbarItem alloc] initWithItemIdentifier:SKDocumentToolbarNewHighlightNoteItemIdentifier];
+    [item setLabel:NSLocalizedString(@"Highlight Note", @"Toolbar item label")];
+    [item setPaletteLabel:NSLocalizedString(@"New Highlight Note", @"Toolbar item label")];
+    [item setToolTip:NSLocalizedString(@"Add New Highlight Note", @"Tool tip message")];
+    [item setImage:[NSImage imageNamed:@"ToolbarHighlightNote"]];
+    [item setTarget:self];
+    [item setAction:@selector(createNewNote:)];
+    [item setTag:SKHighlightNote];
+    [item setMenuFormRepresentation:menuItem];
+    [toolbarItems setObject:item forKey:SKDocumentToolbarNewHighlightNoteItemIdentifier];
+    [item release];
+    
     item = [[NSToolbarItem alloc] initWithItemIdentifier:SKDocumentToolbarToggleDrawerItemIdentifier];
     [item setLabel:NSLocalizedString(@"Drawer", @"Toolbar item label")];
     [item setPaletteLabel:NSLocalizedString(@"Drawer", @"Toolbar item label")];
@@ -2754,6 +2772,7 @@ static NSArray *prioritySortedThumbnails(NSArray *dirtyNails, int currentPageInd
         SKDocumentToolbarNewAnchoredNoteItemIdentifier, 
         SKDocumentToolbarNewCircleNoteItemIdentifier, 
         SKDocumentToolbarNewSquareNoteItemIdentifier, 
+        SKDocumentToolbarNewHighlightNoteItemIdentifier, 
         SKDocumentToolbarInfoItemIdentifier, 
         SKDocumentToolbarContentsPaneItemIdentifier, 
         SKDocumentToolbarNotesPaneItemIdentifier, 
