@@ -405,6 +405,39 @@ static NSString *SKDocumentToolbarNotesPaneItemIdentifier = @"SKDocumentToolbarN
         [[NSColorPanel sharedColorPanel] setColor:[annotation color]];
 }
 
+- (void)windowWillClose:(NSNotification *)aNotification {
+    if ([[aNotification object] isEqual:[self window]]) {
+/*
+ This is a workaround for a crash.  Under some conditions, the PDFPage (PDFView and document/data) is deallocated while key value observers (the tree controller) are still registered with it.  I could reliably reproduce this, but it required multiple documents open, so seems sensitive to timing of autorelease pool dealloc.
+ 
+ An instance 0x3e1540 of class PDFPage is being deallocated while key value observers are still registered with it.  Break on _NSKVODeallocateLog to start debugging.
+#0	0xfffeff20 in objc_msgSend_rtp
+#1	0x929e733c in -[NSObject(NSKeyValueObserverRegistration) removeObserver:forKeyPath:]
+#2	0x93c31674 in -[_NSArrayControllerTreeNode _clearObserving]
+#3	0x93c31448 in -[_NSArrayControllerTreeNode dealloc]
+#4	0x907c008c in __CFArrayReleaseValues
+#5	0x907bfdf8 in __CFArrayDeallocate
+#6	0x907bcf34 in _CFRelease
+#7	0x93c3146c in -[_NSArrayControllerTreeNode dealloc]
+#8	0x93c345bc in -[NSTreeController _dealloc]
+#9	0x9396c1b8 in -[NSController dealloc]
+#10	0x93bca7a4 in -[_NSBindingInfo dealloc]
+#11	0x907c008c in __CFArrayReleaseValues
+#12	0x907bfdf8 in __CFArrayDeallocate
+#13	0x907bcf34 in _CFRelease
+#14	0x93932764 in -[NSBinder _dealloc]
+#15	0x93932664 in -[NSBinder dealloc]
+#16	0x9293d968 in NSPopAutoreleasePool
+#17	0x9296d76c in +[NSAutoreleasePool releaseAllPools]
+#18	0x937b1438 in -[NSApplication _deallocHardCore:]
+#19	0x937affb4 in -[NSApplication terminate:]
+#20	0x0003154c in -[SKApplication terminate:]
+#21	0x937adc4c in -[NSApplication sendAction:to:from:]
+*/         
+       [noteTreeController setContent:nil];
+    }
+}
+
 #pragma mark Accessors
 
 - (PDFDocument *)pdfDocument{
