@@ -59,7 +59,6 @@ typedef enum _SKNoteType {
     SKAnchoredNote,
     SKCircleNote,
     SKSquareNote,
-    SKTextNote,
     SKHighlightNote
 } SKNoteType;
 

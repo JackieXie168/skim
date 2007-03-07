@@ -699,7 +699,7 @@ NSString *SKSkimNotePboardType = @"SKSkimNotePboardType";
     if (selection && page) {
         bounds = [selection boundsForPage:page];
     } else {
-        NSSize defaultSize = (annotationType == SKTextNote || annotationType == SKAnchoredNote) ? NSMakeSize(16.0, 16.0) : ([page rotation] % 180 == 90) ? NSMakeSize(64.0, 128.0) : NSMakeSize(128.0, 64.0);
+        NSSize defaultSize = (annotationType == SKAnchoredNote) ? NSMakeSize(16.0, 16.0) : ([page rotation] % 180 == 90) ? NSMakeSize(64.0, 128.0) : NSMakeSize(128.0, 64.0);
         
         point = [self convertPoint:point toPage:page];
         bounds = NSMakeRect(point.x - 0.5 * defaultSize.width, point.y - 0.5 * defaultSize.height, defaultSize.width, defaultSize.height);
@@ -726,7 +726,7 @@ NSString *SKSkimNotePboardType = @"SKSkimNotePboardType";
 		// Get center of the PDFView.
 		NSRect viewFrame = [self frame];
 		NSPoint center = NSMakePoint(NSMidX(viewFrame), NSMidY(viewFrame));
-		NSSize defaultSize = (annotationType == SKTextNote || annotationType == SKAnchoredNote) ? NSMakeSize(16.0, 16.0) : NSMakeSize(128.0, 64.0);
+		NSSize defaultSize = (annotationType == SKAnchoredNote) ? NSMakeSize(16.0, 16.0) : NSMakeSize(128.0, 64.0);
 		
 		// Convert to "page space".
 		page = [self pageForPoint: center nearest: YES];
@@ -744,9 +744,6 @@ NSString *SKSkimNotePboardType = @"SKSkimNotePboardType";
     switch (annotationType) {
         case SKFreeTextNote:
             newAnnotation = [[SKPDFAnnotationFreeText alloc] initWithBounds:bounds];
-            break;
-        case SKTextNote:
-            newAnnotation = [[SKPDFAnnotationText alloc] initWithBounds:bounds];
             break;
         case SKAnchoredNote:
             newAnnotation = [[SKPDFAnnotationNote alloc] initWithBounds:bounds];
@@ -836,21 +833,9 @@ NSString *SKSkimNotePboardType = @"SKSkimNotePboardType";
 		[[NSNotificationCenter defaultCenter] postNotificationName:SKPDFViewAnnotationDoubleClickedNotification object:self 
             userInfo:[NSDictionary dictionaryWithObjectsAndKeys:activeAnnotation, @"annotation", nil]];
         
-    } else if ([type isEqualToString:@"FreeText"] || [type isEqualToString:@"Text"]) {
+    } else if ([type isEqualToString:@"FreeText"]) {
         
         NSRect editBounds = [activeAnnotation bounds];
-        if ([type isEqualToString:@"Text"]) {
-            NSRect pageBounds = [[activeAnnotation page] boundsForBox:[self displayBox]];
-            editBounds = NSInsetRect(editBounds, -120.0, -120.0);
-            if (NSMaxX(editBounds) > NSMaxX(pageBounds))
-                editBounds.origin.x = NSMaxX(pageBounds) - NSWidth(editBounds);
-            if (NSMinX(editBounds) < NSMinX(pageBounds))
-                editBounds.origin.x = NSMinX(pageBounds);
-            if (NSMaxY(editBounds) > NSMaxY(pageBounds))
-                editBounds.origin.y = NSMaxY(pageBounds) - NSHeight(editBounds);
-            if (NSMinY(editBounds) < NSMinY(pageBounds))
-                editBounds.origin.y = NSMinY(pageBounds);
-        }
         editAnnotation = [[[PDFAnnotationTextWidget alloc] initWithBounds:editBounds] autorelease];
         [editAnnotation setStringValue:[activeAnnotation contents]];
         if ([activeAnnotation respondsToSelector:@selector(font)])
@@ -1240,21 +1225,9 @@ NSString *SKSkimNotePboardType = @"SKSkimNotePboardType";
     
     if (newActiveAnnotation == nil) {
         [super mouseDown:theEvent];
-    } else if ([theEvent clickCount] == 2 && ([[activeAnnotation type] isEqualToString:@"FreeText"] || [[activeAnnotation type] isEqualToString:@"Text"])) {
+    } else if ([theEvent clickCount] == 2 && ([[activeAnnotation type] isEqualToString:@"FreeText"])) {
         // probably we should use the note window for Text annotations
         NSRect editBounds = [activeAnnotation bounds];
-        if ([[activeAnnotation type] isEqualToString:@"Text"]) {
-            NSRect pageBounds = [[activeAnnotation page] boundsForBox:[self displayBox]];
-            editBounds = NSInsetRect(editBounds, -120.0, -120.0);
-            if (NSMaxX(editBounds) > NSMaxX(pageBounds))
-                editBounds.origin.x = NSMaxX(pageBounds) - NSWidth(editBounds);
-            if (NSMinX(editBounds) < NSMinX(pageBounds))
-                editBounds.origin.x = NSMinX(pageBounds);
-            if (NSMaxY(editBounds) > NSMaxY(pageBounds))
-                editBounds.origin.y = NSMaxY(pageBounds) - NSHeight(editBounds);
-            if (NSMinY(editBounds) < NSMinY(pageBounds))
-                editBounds.origin.y = NSMinY(pageBounds);
-        }
         editAnnotation = [[[PDFAnnotationTextWidget alloc] initWithBounds:editBounds] autorelease];
         [editAnnotation setStringValue:[activeAnnotation contents]];
         if ([activeAnnotation respondsToSelector:@selector(font)])
@@ -1279,7 +1252,7 @@ NSString *SKSkimNotePboardType = @"SKSkimNotePboardType";
         mouseDownInAnnotation = YES;
         
         // Hit-test for resize box.
-        resizing = [[activeAnnotation type] isEqualToString:@"Text"] == NO && [[activeAnnotation type] isEqualToString:@"Note"] == NO && NSPointInRect(pagePoint, [self resizeThumbForRect:wasBounds rotation:[activePage rotation]]);
+        resizing = [[activeAnnotation type] isEqualToString:@"Note"] == NO && NSPointInRect(pagePoint, [self resizeThumbForRect:wasBounds rotation:[activePage rotation]]);
     }
 }
 
