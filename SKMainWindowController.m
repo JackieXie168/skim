@@ -2195,7 +2195,8 @@ static NSString *SKDocumentToolbarNotesPaneItemIdentifier = @"SKDocumentToolbarN
 
 - (void)thumbnailNeedsUpdate:(SKThumbnail *)dirtyThumbnail {
     if ([dirtyThumbnails containsObject:dirtyThumbnail] == NO) {
-        [dirtyThumbnails addObject:dirtyThumbnail];
+        // If we insert at index 0, this one will be updated immediately (since presumably this is in response to some user-initiated change), even though all thumbnails may be in process of updating.
+        [dirtyThumbnails insertObject:dirtyThumbnail atIndex:0];
         [self updateThumbnailsIfNeeded];
     }
 }
