@@ -52,6 +52,10 @@ enum {
 NSString *SKAnnotationWillChangeNotification = @"SKAnnotationWillChangeNotification";
 NSString *SKAnnotationDidChangeNotification = @"SKAnnotationDidChangeNotification";
 
+@interface PDFAnnotation (PDFAnnotationPrivateDeclarations)
+- (void)drawWithBox:(CGPDFBox)box inContext:(CGContextRef)context;
+@end
+
 @implementation PDFAnnotation (SKExtensions)
 
 - (id)initWithDictionary:(NSDictionary *)dict{
@@ -399,6 +403,20 @@ static NSColor *markupColor = nil;
 - (void)setQuadrilateralPoints:(NSArray *)points {
     [super setQuadrilateralPoints:points];
     [[NSNotificationCenter defaultCenter] postNotificationName:SKAnnotationDidChangeNotification object:self];
+}
+
+// fix a bug in PDFKit, the color space sometimes is not correct
+- (void)drawWithBox:(CGPDFBox)box inContext:(CGContextRef)context {
+    CMProfileRef profile;
+    CMGetDefaultProfileBySpace(cmRGBData, &profile);
+    CGColorSpaceRef colorSpace = CGColorSpaceCreateWithPlatformColorSpace(profile);
+    
+    CMCloseProfile(profile);
+    CGContextSetStrokeColorSpace(context, colorSpace);
+    CGContextSetFillColorSpace(context, colorSpace);
+    CGColorSpaceRelease(colorSpace);
+    
+    [super drawWithBox:box inContext:context];
 }
 
 @end
