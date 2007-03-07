@@ -178,6 +178,37 @@ NSString *SKDocumentWillSaveNotification = @"SKDocumentWillSaveNotification";
     } else return NO;
 }
 
+- (BOOL)readFromData:(NSData *)data ofType:(NSString *)docType error:(NSError **)outError;
+{
+    BOOL didRead = NO;
+    PDFDocument *pdfDoc = nil;
+    NSError *error = nil;
+    
+    if ([docType isEqualToString:SKPDFDocumentType]) {
+        pdfDoc = [[PDFDocument alloc] initWithData:data];
+    } else if ([docType isEqualToString:SKPostScriptDocumentType]) {
+        SKPSProgressController *progressController = [[SKPSProgressController alloc] init];
+        if (data = [[progressController PDFDataWithPostScriptData:data] retain])
+            pdfDoc = [[PDFDocument alloc] initWithData:data];
+        [progressController autorelease];
+    }
+    
+    if (pdfDoc) {
+        didRead = YES;
+        [pdfData release];
+        pdfData = data;
+        [pdfDocument release];
+        pdfDocument = pdfDoc;
+        [lastChangedDate release];
+        lastChangedDate = nil;
+    }
+    
+    if (didRead == NO && outError != NULL)
+        *outError = error ? error : [NSError errorWithDomain:SKDocumentErrorDomain code:0 userInfo:[NSDictionary dictionaryWithObjectsAndKeys:NSLocalizedString(@"Unable to load file", @""), NSLocalizedDescriptionKey, nil]];
+    
+    return didRead;
+}
+
 - (BOOL)readFromURL:(NSURL *)absoluteURL ofType:(NSString *)docType error:(NSError **)outError{
     BOOL didRead = NO;
     NSData *data = nil;
@@ -447,13 +478,15 @@ NSString *SKDocumentWillSaveNotification = @"SKDocumentWillSaveNotification";
 - (NSDictionary *)currentDocumentSetup {
     NSMutableDictionary *setup = [NSMutableDictionary dictionary];
     NSString *fileName = [self fileName];
-    NSData *data = [[BDAlias aliasWithPath:fileName] aliasData];
-
-    [setup setObject:fileName forKey:@"fileName"];
-    if(data)
-         [setup setObject:data forKey:@"_BDAlias"];
-    
-    [setup addEntriesFromDictionary:[[self mainWindowController] currentSetup]];
+    if (fileName) {
+        NSData *data = [[BDAlias aliasWithPath:fileName] aliasData];
+        
+        [setup setObject:fileName forKey:@"fileName"];
+        if(data)
+            [setup setObject:data forKey:@"_BDAlias"];
+        
+        [setup addEntriesFromDictionary:[[self mainWindowController] currentSetup]];
+    }
     
     return setup;
 }
@@ -465,7 +498,7 @@ NSString *SKDocumentWillSaveNotification = @"SKDocumentWillSaveNotification";
 - (BOOL)validateUserInterfaceItem:(id <NSValidatedUserInterfaceItem>)anItem {
 	if ([anItem action] == @selector(performFindPanelAction:))
         return [[SKFindController sharedFindController] validateUserInterfaceItem:anItem];
-    else 
+    else
         return [super validateUserInterfaceItem:anItem];
 }
 

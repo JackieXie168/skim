@@ -106,12 +106,12 @@ static BOOL fileIsInTrash(NSURL *fileURL)
         NSArray *files = [[NSUserDefaults standardUserDefaults] objectForKey:SKLastOpenFileNamesKey];
         NSEnumerator *fileEnum = [files objectEnumerator];
         NSDictionary *dict;
-        NSURL *fileURL;
+        NSURL *fileURL = nil;
         SKDocument *document;
         
         while (dict = [fileEnum nextObject]){ 
             fileURL = [[BDAlias aliasWithData:[dict objectForKey:@"_BDAlias"]] fileURL];
-            if(fileURL == nil)
+            if(fileURL == nil && [dict objectForKey:@"fileName"])
                 fileURL = [NSURL fileURLWithPath:[dict objectForKey:@"fileName"]];
             if(fileURL && NO == fileIsInTrash(fileURL) && (document = [[NSDocumentController sharedDocumentController] openDocumentWithContentsOfURL:fileURL display:NO error:NULL])) {
                 [document makeWindowControllers];
@@ -146,6 +146,32 @@ static BOOL fileIsInTrash(NSURL *fileURL)
 
 - (IBAction)showReleaseNotes:(id)sender{
     [[SKReleaseNotesController sharedReleaseNotesController] showWindow:self];
+}
+
+- (void)newDocumentFromClipboard:(id)sender {
+    NSString *type = [[NSPasteboard generalPasteboard] availableTypeFromArray:[NSArray arrayWithObjects:NSPDFPboardType, NSPostScriptPboardType, nil]];
+    if (nil == type) {
+        NSBeep();
+        return;
+    }
+    NSData *data = [[NSPasteboard generalPasteboard] dataForType:type];
+    type = [type isEqualToString:NSPostScriptPboardType] ? @"PostScript document" : NSPDFPboardType;
+    NSError *error;
+    id document = [[SKDocument alloc] initWithType:type error:&error];
+    if (nil == document || [document readFromData:data ofType:type error:&error] == NO) {
+        [NSApp presentError:error];
+        return;
+    }
+    [[NSDocumentController sharedDocumentController] addDocument:document];
+    [document makeWindowControllers];
+    [document showWindows];
+}
+
+- (BOOL)validateUserInterfaceItem:(id <NSValidatedUserInterfaceItem>)anItem {
+    if ([anItem action] == @selector(newDocumentFromClipboard:)) {
+        NSPasteboard *pboard = [NSPasteboard generalPasteboard];
+        return ([[pboard types] containsObject:NSPDFPboardType] || [[pboard types] containsObject:NSPostScriptPboardType]);
+    } return NO;
 }
 
 @end

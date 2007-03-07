@@ -24,6 +24,7 @@
                 doZoomToFit = id; 
                 editNote = id; 
                 getInfo = id; 
+                newDocumentFromClipboard = id; 
                 password = id; 
                 performFit = id; 
                 pickColor = id; 
