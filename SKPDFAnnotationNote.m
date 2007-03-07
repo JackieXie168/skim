@@ -395,16 +395,6 @@ static NSColor *markupColor = nil;
     [[NSNotificationCenter defaultCenter] postNotificationName:SKAnnotationDidChangeNotification object:self];
 }
 
-- (void)setMarkupType:(int)type {
-    [super setMarkupType:type];
-    [[NSNotificationCenter defaultCenter] postNotificationName:SKAnnotationDidChangeNotification object:self];
-}
-
-- (void)setQuadrilateralPoints:(NSArray *)points {
-    [super setQuadrilateralPoints:points];
-    [[NSNotificationCenter defaultCenter] postNotificationName:SKAnnotationDidChangeNotification object:self];
-}
-
 // fix a bug in PDFKit, the color space sometimes is not correct
 - (void)drawWithBox:(CGPDFBox)box inContext:(CGContextRef)context {
     CGContextSaveGState(context);
