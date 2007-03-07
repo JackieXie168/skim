@@ -56,3 +56,4 @@ extern NSString *SKThumbnailSizeKey;
 extern NSString *SKUpdateCheckIntervalKey;
 extern NSString *SKUpdateCheckLastDateKey;
 extern NSString *SKUpdateLatestNotifiedVersionKey;
+extern NSString *SKLastToolModeKey;

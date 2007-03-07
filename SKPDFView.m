@@ -45,6 +45,7 @@
 #import "NSString_SKExtensions.h"
 #import "NSCursor_SKExtensions.h"
 #import "SKApplication.h"
+#import "SKStringConstants.h"
 
 NSString *SKPDFViewToolModeChangedNotification = @"SKPDFViewToolModeChangedNotification";
 NSString *SKPDFViewAnnotationModeChangedNotification = @"SKPDFViewAnnotationModeChangedNotification";
@@ -114,7 +115,7 @@ NSString *SKSkimNotePboardType = @"SKSkimNotePboardType";
 
 - (id)initWithFrame:(NSRect)frameRect {
     if (self = [super initWithFrame:frameRect]) {
-        toolMode = SKTextToolMode;
+        toolMode = [[NSUserDefaults standardUserDefaults] integerForKey:SKLastToolModeKey];
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleAnnotationWillChangeNotification:) 
                                                      name:SKAnnotationWillChangeNotification object:nil];
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleAnnotationDidChangeNotification:) 
@@ -127,7 +128,7 @@ NSString *SKSkimNotePboardType = @"SKSkimNotePboardType";
 
 - (id)initWithCoder:(NSCoder *)decoder {
     if (self = [super initWithCoder:decoder]) {
-        toolMode = SKTextToolMode;
+        toolMode = [[NSUserDefaults standardUserDefaults] integerForKey:SKLastToolModeKey];
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleAnnotationWillChangeNotification:) 
                                                      name:SKAnnotationWillChangeNotification object:nil];
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleAnnotationDidChangeNotification:) 
@@ -235,6 +236,7 @@ NSString *SKSkimNotePboardType = @"SKSkimNotePboardType";
         }
     
         toolMode = newToolMode;
+        [[NSUserDefaults standardUserDefaults] setInteger:toolMode forKey:SKLastToolModeKey];
         [[NSNotificationCenter defaultCenter] postNotificationName:SKPDFViewToolModeChangedNotification object:self];
         // hack to make sure we update the cursor
         [[self window] makeFirstResponder:self];
