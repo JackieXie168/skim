@@ -634,30 +634,36 @@ NSString *SKSkimNotePboardType = @"SKSkimNotePboardType";
         
         [menu addItem:[NSMenuItem separatorItem]];
         
-        item = [menu addItemWithTitle:NSLocalizedString(@"New Text Note", @"Menu item title") action:@selector(addAnnotationFromMenu:) keyEquivalent:@""];
+        submenu = [[NSMenu allocWithZone:[menu zone]] init];
+        
+        item = [submenu addItemWithTitle:NSLocalizedString(@"Text Note", @"Menu item title") action:@selector(addAnnotationFromMenu:) keyEquivalent:@""];
         [item setRepresentedObject:[NSValue valueWithPoint:point]];
         [item setTag:SKFreeTextNote];
         [item setTarget:self];
         
-        item = [menu addItemWithTitle:NSLocalizedString(@"New Anchored Note", @"Menu item title") action:@selector(addAnnotationFromMenu:) keyEquivalent:@""];
+        item = [submenu addItemWithTitle:NSLocalizedString(@"Anchored Note", @"Menu item title") action:@selector(addAnnotationFromMenu:) keyEquivalent:@""];
         [item setRepresentedObject:[NSValue valueWithPoint:point]];
         [item setTag:SKAnchoredNote];
         [item setTarget:self];
         
-        item = [menu addItemWithTitle:NSLocalizedString(@"New Circle Note", @"Menu item title") action:@selector(addAnnotationFromMenu:) keyEquivalent:@""];
+        item = [submenu addItemWithTitle:NSLocalizedString(@"Circle", @"Menu item title") action:@selector(addAnnotationFromMenu:) keyEquivalent:@""];
         [item setRepresentedObject:[NSValue valueWithPoint:point]];
         [item setTag:SKCircleNote];
         [item setTarget:self];
         
-        item = [menu addItemWithTitle:NSLocalizedString(@"New Rectangle Note", @"Menu item title") action:@selector(addAnnotationFromMenu:) keyEquivalent:@""];
+        item = [submenu addItemWithTitle:NSLocalizedString(@"Box", @"Menu item title") action:@selector(addAnnotationFromMenu:) keyEquivalent:@""];
         [item setRepresentedObject:[NSValue valueWithPoint:point]];
         [item setTag:SKSquareNote];
         [item setTarget:self];
 
-        item = [menu addItemWithTitle:NSLocalizedString(@"Highlight Selection", @"Menu item title") action:@selector(addAnnotationFromMenu:) keyEquivalent:@""];
+        item = [submenu addItemWithTitle:NSLocalizedString(@"Highlight", @"Menu item title") action:@selector(addAnnotationFromMenu:) keyEquivalent:@""];
         [item setRepresentedObject:[NSValue valueWithPoint:point]];
         [item setTag:SKHighlightNote];
         [item setTarget:self];
+        
+        item = [menu addItemWithTitle:NSLocalizedString(@"New Note", @"Menu item title") action:NULL keyEquivalent:@""];
+        [item setSubmenu:submenu];
+        [submenu release];
         
         if (annotation) {
             item = [menu addItemWithTitle:NSLocalizedString(@"Remove Note", @"Menu item title") action:@selector(removeThisAnnotation:) keyEquivalent:@""];

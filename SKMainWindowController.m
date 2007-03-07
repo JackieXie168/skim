@@ -697,6 +697,10 @@ static NSString *SKDocumentToolbarNotesPaneItemIdentifier = @"SKDocumentToolbarN
     [pdfView addAnnotationFromSelectionWithType:type];
 }
 
+- (IBAction)editNote:(id)sender{
+    [pdfView editActiveAnnotation:sender];
+}
+
 - (void)selectNotes:(NSArray *)notesToShow{
     // there should only be a single note
     id annotation = [notesToShow lastObject];
@@ -2553,7 +2557,7 @@ static NSArray *prioritySortedThumbnails(NSArray *dirtyNails, int currentPageInd
     item = [[NSToolbarItem alloc] initWithItemIdentifier:SKDocumentToolbarNewNoteItemIdentifier];
     [item setLabel:NSLocalizedString(@"New Note", @"Toolbar item label")];
     [item setPaletteLabel:NSLocalizedString(@"New Note", @"Toolbar item label")];
-    [item setToolTip:NSLocalizedString(@"Add new note. No key for a text note. Option key for an anchored note, Shift key for a circle. Control key for a rectangle.", @"Tool tip message")];
+    [item setToolTip:NSLocalizedString(@"Add new note. No key for a text note. Option key for an anchored note, Shift key for a circle. Control key for a rectangle. Shift-Option key for a highlight.", @"Tool tip message")];
     [item setImage:[NSImage imageNamed:@"ToolbarNote"]];
     [item setTarget:self];
     [item setAction:@selector(createNewNote:)];
@@ -2568,7 +2572,7 @@ static NSArray *prioritySortedThumbnails(NSArray *dirtyNails, int currentPageInd
 	[menuItem setTarget:self];
     [menuItem setTag:SKFreeTextNote];
     item = [[NSToolbarItem alloc] initWithItemIdentifier:SKDocumentToolbarNewTextNoteItemIdentifier];
-    [item setLabel:NSLocalizedString(@"Text Note", @"Toolbar item label")];
+    [item setLabel:NSLocalizedString(@"New Text Note", @"Toolbar item label")];
     [item setPaletteLabel:NSLocalizedString(@"New Text Note", @"Toolbar item label")];
     [item setToolTip:NSLocalizedString(@"Add New Text Note", @"Tool tip message")];
     [item setImage:[NSImage imageNamed:@"ToolbarTextNote"]];
@@ -2585,7 +2589,7 @@ static NSArray *prioritySortedThumbnails(NSArray *dirtyNails, int currentPageInd
 	[menuItem setTarget:self];
     [menuItem setTag:SKAnchoredNote];
     item = [[NSToolbarItem alloc] initWithItemIdentifier:SKDocumentToolbarNewAnchoredNoteItemIdentifier];
-    [item setLabel:NSLocalizedString(@"Anchored Note", @"Toolbar item label")];
+    [item setLabel:NSLocalizedString(@"New Anchored Note", @"Toolbar item label")];
     [item setPaletteLabel:NSLocalizedString(@"New Anchored Note", @"Toolbar item label")];
     [item setToolTip:NSLocalizedString(@"Add New Anchored Note", @"Tool tip message")];
     [item setImage:[NSImage imageNamed:@"ToolbarNote"]];
@@ -2602,9 +2606,9 @@ static NSArray *prioritySortedThumbnails(NSArray *dirtyNails, int currentPageInd
 	[menuItem setTarget:self];
     [menuItem setTag:SKCircleNote];
     item = [[NSToolbarItem alloc] initWithItemIdentifier:SKDocumentToolbarNewCircleNoteItemIdentifier];
-    [item setLabel:NSLocalizedString(@"Circle Note", @"Toolbar item label")];
-    [item setPaletteLabel:NSLocalizedString(@"New Circle Note", @"Toolbar item label")];
-    [item setToolTip:NSLocalizedString(@"Add New Circle Note", @"Tool tip message")];
+    [item setLabel:NSLocalizedString(@"New Circle", @"Toolbar item label")];
+    [item setPaletteLabel:NSLocalizedString(@"New Circle", @"Toolbar item label")];
+    [item setToolTip:NSLocalizedString(@"Add New Circle", @"Tool tip message")];
     [item setImage:[NSImage imageNamed:@"ToolbarCircleNote"]];
     [item setTarget:self];
     [item setAction:@selector(createNewNote:)];
@@ -2616,9 +2620,9 @@ static NSArray *prioritySortedThumbnails(NSArray *dirtyNails, int currentPageInd
 	[menuItem setTarget:self];
     [menuItem setTag:SKSquareNote];
     item = [[NSToolbarItem alloc] initWithItemIdentifier:SKDocumentToolbarNewSquareNoteItemIdentifier];
-    [item setLabel:NSLocalizedString(@"Rectangle Note", @"Toolbar item label")];
-    [item setPaletteLabel:NSLocalizedString(@"New Rectangle Note", @"Toolbar item label")];
-    [item setToolTip:NSLocalizedString(@"Add New Rectangle Note", @"Tool tip message")];
+    [item setLabel:NSLocalizedString(@"New Box", @"Toolbar item label")];
+    [item setPaletteLabel:NSLocalizedString(@"New Box Note", @"Toolbar item label")];
+    [item setToolTip:NSLocalizedString(@"Add New Box Note", @"Tool tip message")];
     [item setImage:[NSImage imageNamed:@"ToolbarSquareNote"]];
     [item setTarget:self];
     [item setAction:@selector(createNewNote:)];
@@ -2815,6 +2819,9 @@ static NSArray *prioritySortedThumbnails(NSArray *dirtyNails, int currentPageInd
     SEL action = [menuItem action];
     if (action == @selector(createNewNote:)) {
         return [pdfView toolMode] == SKTextToolMode;
+    } else if (action == @selector(editNote:)) {
+        PDFAnnotation *annotation = [pdfView activeAnnotation];
+        return [annotation isNoteAnnotation] && ([[annotation type] isEqualToString:@"FreeText"] || [[annotation type] isEqualToString:@"Note"]);
     } else if (action == @selector(displaySinglePages:)) {
         BOOL displaySinglePages = [pdfView displayMode] == kPDFDisplaySinglePage || [pdfView displayMode] == kPDFDisplaySinglePageContinuous;
         [menuItem setState:displaySinglePages ? NSOnState : NSOffState];
