@@ -1334,26 +1334,31 @@ OFWeakRetainConcreteImplementation_NULL_IMPLEMENTATION
         [innerPool release];
         innerPool = nil;
         
-        entryEnum = [entries objectEnumerator];
+        long version;
+        OSStatus err = Gestalt(gestaltSystemVersion, &version);
         
-        innerPool = [NSAutoreleasePool new];
-        
-        while(anItem = [entryEnum nextObject]){
+        if (noErr == err && version < 0x00001050) {
+            entryEnum = [entries objectEnumerator];
             
-            if(canWriteMetadata == 0){
-                NSLog(@"Application will quit without finishing metadata cache icons.");
-                break;
+            innerPool = [NSAutoreleasePool new];
+            
+            while(anItem = [entryEnum nextObject]){
+                
+                if(canWriteMetadata == 0){
+                    NSLog(@"Application will quit without finishing metadata cache icons.");
+                    break;
+                }
+                
+                [innerPool release];
+                innerPool = [NSAutoreleasePool new];
+                
+                if ((metadata = [anItem objectForKey:@"metadata"]) && (path = [anItem objectForKey:@"path"]))
+                    [[BDSKSpotlightIconController iconFamilyWithMetadataItem:metadata] setAsCustomIconForFile:path];
             }
             
             [innerPool release];
-            innerPool = [NSAutoreleasePool new];
-            
-            if ((metadata = [anItem objectForKey:@"metadata"]) && (path = [anItem objectForKey:@"path"]))
-                [[BDSKSpotlightIconController iconFamilyWithMetadataItem:metadata] setAsCustomIconForFile:path];
+            innerPool = nil;
         }
-        
-        [innerPool release];
-        innerPool = nil;
         
         [entries release];
         entries = nil;
