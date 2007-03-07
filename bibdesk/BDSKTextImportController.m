@@ -1161,7 +1161,7 @@
 
 - (void)webView:(WebView *)sender mouseDidMoveOverElement:(NSDictionary *)elementInformation modifierFlags:(unsigned int)modifierFlags {
     NSURL *link = [elementInformation objectForKey:WebElementLinkURLKey];
-    [statusLine setStringValue:[link absoluteString]];
+    [statusLine setStringValue:link ? [link absoluteString] : @""];
 }
 
 #pragma mark WebEditingDelegate methods
