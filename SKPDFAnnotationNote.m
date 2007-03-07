@@ -42,10 +42,11 @@
 #import "SKPDFView.h"
 
 enum {
-    SKASTextAnnotation = 'NTxt',
-    SKASAnchoredAnnotation = 'NAnc',
-    SKASCircleAnnotation = 'NCir',
-    SKASSquareAnnotation = 'NSqu',
+    SKASTextNote = 'NTxt',
+    SKASAnchoredNote = 'NAnc',
+    SKASCircleNote = 'NCir',
+    SKASSquareNote = 'NSqu',
+    SKASHighlightNote = 'NHil',
 };
 
 NSString *SKAnnotationWillChangeNotification = @"SKAnnotationWillChangeNotification";
@@ -61,9 +62,7 @@ NSString *SKAnnotationDidChangeNotification = @"SKAnnotationDidChangeNotificatio
     NSString *contents = [dict objectForKey:@"contents"];
     NSColor *color = [dict objectForKey:@"color"];
     
-    if ([type isEqualToString:@"Text"]) {
-        self = [[SKPDFAnnotationText alloc] initWithBounds:bounds];
-    } else if ([type isEqualToString:@"Note"]) {
+    if ([type isEqualToString:@"Note"]) {
         self = [[SKPDFAnnotationNote alloc] initWithBounds:bounds];
         NSAttributedString *text = [dict objectForKey:@"text"];
         NSImage *image = [dict objectForKey:@"image"];
@@ -79,7 +78,7 @@ NSString *SKAnnotationDidChangeNotification = @"SKAnnotationDidChangeNotificatio
         self = [[SKPDFAnnotationSquare alloc] initWithBounds:bounds];
     } else if ([type isEqualToString:@"MarkUp"]) {
         self = [[SKPDFAnnotationMarkup alloc] initWithBounds:bounds];
-        [(SKPDFAnnotationMarkup *)self setQuadrilateralPointsFromStrings:[dict objectForKey:@"quadrilateralPointsAsStrings"]];
+        [(SKPDFAnnotationMarkup *)self setQuadrilateralPointsFromStrings:[dict objectForKey:@"quadrilateralPoints"]];
         [(SKPDFAnnotationMarkup *)self setMarkupType:[[dict objectForKey:@"markupType"] intValue]];
     } else {
         self = nil;
@@ -151,13 +150,13 @@ NSString *SKAnnotationDidChangeNotification = @"SKAnnotationDidChangeNotificatio
             
             PDFAnnotation *annotation = nil;
             
-            if (type == SKASTextAnnotation)
+            if (type == SKASTextNote)
                 annotation = [[SKPDFAnnotationFreeText alloc] initWithBounds:NSMakeRect(100.0, 100.0, 64.0, 64.0)];
-            else if (type == SKASAnchoredAnnotation)
+            else if (type == SKASAnchoredNote)
                 annotation = [[SKPDFAnnotationNote alloc] initWithBounds:NSMakeRect(100.0, 100.0, 16.0, 16.0)];
-            else if (type == SKASCircleAnnotation)
+            else if (type == SKASCircleNote)
                 annotation = [[PDFAnnotationCircle alloc] initWithBounds:NSMakeRect(100.0, 100.0, 64.0, 64.0)];
-            else if (type == SKASSquareAnnotation)
+            else if (type == SKASSquareNote)
                 annotation = [[PDFAnnotationSquare alloc] initWithBounds:NSMakeRect(100.0, 100.0, 64.0, 64.0)];
             
             self = annotation;
@@ -178,13 +177,13 @@ NSString *SKAnnotationDidChangeNotification = @"SKAnnotationDidChangeNotificatio
 
 - (int)noteType {
     if ([[self type] isEqualToString:@"FreeText"])
-        return SKASTextAnnotation;
+        return SKASTextNote;
     else if ([[self type] isEqualToString:@"Note"])
-        return SKASAnchoredAnnotation;
+        return SKASAnchoredNote;
     else if ([[self type] isEqualToString:@"Circle"])
-        return SKASCircleAnnotation;
+        return SKASCircleNote;
     else if ([[self type] isEqualToString:@"Square"])
-        return SKASSquareAnnotation;
+        return SKASSquareNote;
     return 0;
 }
 
@@ -340,7 +339,7 @@ static NSColor *markupColor = nil;
     NSMutableDictionary *dict = (NSMutableDictionary *)[super dictionaryValue];
     [dict setValue:[NSNumber numberWithInt:[self markupType]] forKey:@"markupType"];
     // NSValue conforms to NSCoding, but NSKeyedArchiver throws an exception when encoding points
-    [dict setValue:[self quadrilateralPointsAsStrings] forKey:@"quadrilateralPointsAsStrings"];
+    [dict setValue:[self quadrilateralPointsAsStrings] forKey:@"quadrilateralPoints"];
     return dict;
 }
 

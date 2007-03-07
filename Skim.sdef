@@ -596,6 +596,8 @@
                 description="Circle."/>
             <enumerator name="rectangle note" code="NSqu"
                 description="Rectangle."/>
+            <enumerator name="highlight note" code="NHil"
+                description="Highlight."/>
         </enumeration>
 
         <command name="go to" code="SKIMGoTo"
