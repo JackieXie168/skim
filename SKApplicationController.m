@@ -148,30 +148,4 @@ static BOOL fileIsInTrash(NSURL *fileURL)
     [[SKReleaseNotesController sharedReleaseNotesController] showWindow:self];
 }
 
-- (void)newDocumentFromClipboard:(id)sender {
-    NSString *type = [[NSPasteboard generalPasteboard] availableTypeFromArray:[NSArray arrayWithObjects:NSPDFPboardType, NSPostScriptPboardType, nil]];
-    if (nil == type) {
-        NSBeep();
-        return;
-    }
-    NSData *data = [[NSPasteboard generalPasteboard] dataForType:type];
-    type = [type isEqualToString:NSPostScriptPboardType] ? @"PostScript document" : NSPDFPboardType;
-    NSError *error;
-    id document = [[SKDocument alloc] initWithType:type error:&error];
-    if (nil == document || [document readFromData:data ofType:type error:&error] == NO) {
-        [NSApp presentError:error];
-        return;
-    }
-    [[NSDocumentController sharedDocumentController] addDocument:document];
-    [document makeWindowControllers];
-    [document showWindows];
-}
-
-- (BOOL)validateUserInterfaceItem:(id <NSValidatedUserInterfaceItem>)anItem {
-    if ([anItem action] == @selector(newDocumentFromClipboard:)) {
-        NSPasteboard *pboard = [NSPasteboard generalPasteboard];
-        return ([[pboard types] containsObject:NSPDFPboardType] || [[pboard types] containsObject:NSPostScriptPboardType]);
-    } return NO;
-}
-
 @end
