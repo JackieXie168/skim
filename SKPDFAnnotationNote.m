@@ -407,6 +407,8 @@ static NSColor *markupColor = nil;
 
 // fix a bug in PDFKit, the color space sometimes is not correct
 - (void)drawWithBox:(CGPDFBox)box inContext:(CGContextRef)context {
+    CGContextSaveGState(context);
+    
     CMProfileRef profile;
     CMGetDefaultProfileBySpace(cmRGBData, &profile);
     CGColorSpaceRef colorSpace = CGColorSpaceCreateWithPlatformColorSpace(profile);
@@ -416,7 +418,37 @@ static NSColor *markupColor = nil;
     CGContextSetFillColorSpace(context, colorSpace);
     CGColorSpaceRelease(colorSpace);
     
-    [super drawWithBox:box inContext:context];
+    CGContextSetBlendMode(context, kCGBlendModeMultiply);
+    
+    NSColor *c = [self color];
+    float color[4] = { [c redComponent], [c greenComponent], [c blueComponent], [c alphaComponent] };
+    CGContextSetFillColor(context, color);
+    
+    PDFPage *page = [self page];
+	NSRect bounds = [page boundsForBox:box]; // CGPDFBox corresponds identically to PDFDisplayBox
+	
+    switch ([page rotation]) {
+        case 0:
+            CGContextTranslateCTM(context, -NSMinX(bounds), -NSMinY(bounds));
+            break;
+        case 90:
+            CGContextRotateCTM(context, -M_PI / 2);
+            CGContextTranslateCTM(context, -NSMaxX(bounds), -NSMinY(bounds));
+            break;
+        case 180:
+            CGContextRotateCTM(context, M_PI);
+            CGContextTranslateCTM(context, -NSMaxX(bounds), -NSMaxY(bounds));
+            break;
+        case 270:
+            CGContextRotateCTM(context, M_PI / 2);
+            CGContextTranslateCTM(context, -NSMinX(bounds), -NSMaxY(bounds));
+            break;
+	}
+    
+    bounds = [self bounds];
+    CGContextFillRect(context, *(CGRect*)&bounds);
+    
+    CGContextRestoreGState(context);
 }
 
 @end
