@@ -2621,8 +2621,8 @@ static NSArray *prioritySortedThumbnails(NSArray *dirtyNails, int currentPageInd
     [menuItem setTag:SKSquareNote];
     item = [[NSToolbarItem alloc] initWithItemIdentifier:SKDocumentToolbarNewSquareNoteItemIdentifier];
     [item setLabel:NSLocalizedString(@"New Box", @"Toolbar item label")];
-    [item setPaletteLabel:NSLocalizedString(@"New Box Note", @"Toolbar item label")];
-    [item setToolTip:NSLocalizedString(@"Add New Box Note", @"Tool tip message")];
+    [item setPaletteLabel:NSLocalizedString(@"New Box", @"Toolbar item label")];
+    [item setToolTip:NSLocalizedString(@"Add New Box", @"Tool tip message")];
     [item setImage:[NSImage imageNamed:@"ToolbarSquareNote"]];
     [item setTarget:self];
     [item setAction:@selector(createNewNote:)];
@@ -2635,8 +2635,8 @@ static NSArray *prioritySortedThumbnails(NSArray *dirtyNails, int currentPageInd
     [menuItem setTag:SKHighlightNote];
     item = [[NSToolbarItem alloc] initWithItemIdentifier:SKDocumentToolbarNewHighlightNoteItemIdentifier];
     [item setLabel:NSLocalizedString(@"Highlight Note", @"Toolbar item label")];
-    [item setPaletteLabel:NSLocalizedString(@"New Highlight Note", @"Toolbar item label")];
-    [item setToolTip:NSLocalizedString(@"Add New Highlight Note", @"Tool tip message")];
+    [item setPaletteLabel:NSLocalizedString(@"New Highlight", @"Toolbar item label")];
+    [item setToolTip:NSLocalizedString(@"Add New Highlight", @"Tool tip message")];
     [item setImage:[NSImage imageNamed:@"ToolbarHighlightNote"]];
     [item setTarget:self];
     [item setAction:@selector(createNewNote:)];
