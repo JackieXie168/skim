@@ -158,6 +158,8 @@ NSString *SKSkimNotePboardType = @"SKSkimNotePboardType";
         unsigned int i, count = [allAnnotations count];
         BOOL foundActive = NO;
         
+        [NSGraphicsContext saveGraphicsState];
+        
         [self transformContextForPage: pdfPage];
         
         for (i = 0; i < count; i++) {
@@ -200,6 +202,8 @@ NSString *SKSkimNotePboardType = @"SKSkimNotePboardType";
             if ([activeAnnotation isResizable])
                 NSRectFill(NSIntegralRect([self resizeThumbForRect:bounds rotation:[pdfPage rotation]]));
         }
+        
+        [NSGraphicsContext restoreGraphicsState];
     }
 }
 
