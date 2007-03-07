@@ -664,7 +664,7 @@ NSString *SKSkimNotePboardType = @"SKSkimNotePboardType";
             [item setRepresentedObject:annotation];
             [item setTarget:self];
             
-            if (annotation != activeAnnotation || editAnnotation == nil) {
+            if ((annotation != activeAnnotation || editAnnotation == nil) && ([[annotation type] isEqualToString:@"FreeText"] || [[annotation type] isEqualToString:@"Note"])) {
                 item = [menu addItemWithTitle:NSLocalizedString(@"Edit Note", @"Menu item title") action:@selector(editThisAnnotation:) keyEquivalent:@""];
                 [item setRepresentedObject:annotation];
                 [item setTarget:self];
@@ -673,7 +673,7 @@ NSString *SKSkimNotePboardType = @"SKSkimNotePboardType";
             item = [menu addItemWithTitle:NSLocalizedString(@"Remove Current Note", @"Menu item title") action:@selector(removeActiveAnnotation:) keyEquivalent:@""];
             [item setTarget:self];
             
-            if (editAnnotation == nil) {
+            if (editAnnotation == nil && ([[activeAnnotation type] isEqualToString:@"FreeText"] || [[activeAnnotation type] isEqualToString:@"Note"])) {
                 item = [menu addItemWithTitle:NSLocalizedString(@"Edit Current Note", @"Menu item title") action:@selector(editActiveAnnotation:) keyEquivalent:@""];
                 [item setTarget:self];
             }
