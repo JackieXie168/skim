@@ -1172,7 +1172,7 @@
 	if ([NSString isEmptyString:selString] || selString == webSelection)
 		return;
 	[webSelection release];
-	webSelection = [selString copy];
+	webSelection = [[selString fastStringByCollapsingWhitespaceAndNewlinesAndRemovingSurroundingWhitespaceAndNewlines] copy];
 }
 
 #pragma mark WebFrameLoadDelegate methods
