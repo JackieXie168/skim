@@ -289,10 +289,10 @@ sub appleHelp_index_entry_label{
     $was_pre = shift;
     $lin = shift;
     $anchor_str = "<div class=\"machelp\">";
-    $anchor_str .= "\n<a name=\"$id\"></a>";
+    $anchor_str .= "\n<a name=\"$id\"></a>\n";
     $label_str = "<META name=\"keywords\" content=\"$lin\">";
     $anchor_str .= $label_str;
-    $anchor_str .= "\n</div>";
+    $anchor_str .= "\n</div>\n";
     $anchor_str .= "\n" if $was_pre;
     print "FOUND" if $was_pre;
     return $anchor_str;

@@ -114,10 +114,10 @@ Copyright @copyright{} many others@*
 @c ======================================================================================
 
 @node Zooming in and out
-
-@chapter Zooming in and out
 @cindex Zooming in and out
 @abstract{Zooming in and out}
+
+@chapter Zooming in and out
 
 You can change your view of a page in a PDF file in several ways. 
 
@@ -145,10 +145,10 @@ You cannot save changes to the way you view a page.
 @c ======================================================================================
 
 @node Magnifying a section
-
-@chapter Magnifying a section of a PDF document
 @cindex Magnifying a section of a PDF document
 @abstract{Magnifying a section of a PDF document}
+
+@chapter Magnifying a section of a PDF document
 
 You can live-magnify a section of the PDF file, for example to better view small text.
 
