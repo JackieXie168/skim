@@ -20,7 +20,7 @@
         <string>SKSnapshotThumbnailSize</string>
         <string>SKThumbnailSize</string>
         <string>SKUpdateCheckInterval</string>
-        <string>SKLastToolModeKey</string>
+        <string>SKLastToolMode</string>
         <string>SKBlankAllWindows</string>
     </array>
 	<key>SKAutoCheckFileUpdate</key>
@@ -68,8 +68,8 @@
     <string></string>
     <key>SKUpdateLatestNotifiedVersion</key>
     <string></string>
-    <key>SKLastToolModeKey</key>
-    <real>0</real>
+    <key>SKLastToolMode</key>
+    <integer>0</integer>
     <key>SKBlankAllWindows</key>
     <false/>
 </dict>
