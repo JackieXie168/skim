@@ -57,4 +57,4 @@ NSString *SKThumbnailSizeKey = @"SKThumbnailSize";
 NSString *SKUpdateCheckIntervalKey = @"SKUpdateCheckInterval";
 NSString *SKUpdateCheckLastDateKey = @"SKUpdateCheckLastDate";
 NSString *SKUpdateLatestNotifiedVersionKey = @"SKUpdateLatestNotifiedVersion";
-
+NSString *SKLastToolModeKey = @"SKLastToolModeKey";
