@@ -77,6 +77,10 @@ NSString *SKAnnotationDidChangeNotification = @"SKAnnotationDidChangeNotificatio
         self = [[SKPDFAnnotationCircle alloc] initWithBounds:bounds];
     } else if ([type isEqualToString:@"Square"]) {
         self = [[SKPDFAnnotationSquare alloc] initWithBounds:bounds];
+    } else if ([type isEqualToString:@"MarkUp"]) {
+        self = [[SKPDFAnnotationMarkup alloc] initWithBounds:bounds];
+        [(SKPDFAnnotationMarkup *)self setQuadrilateralPointsFromStrings:[dict objectForKey:@"quadrilateralPointsAsStrings"]];
+        [(SKPDFAnnotationMarkup *)self setMarkupType:[[dict objectForKey:@"markupType"] intValue]];
     } else {
         self = nil;
     }
@@ -299,6 +303,102 @@ static NSColor *squareColor = nil;
 
 - (void)setColor:(NSColor *)color {
     [super setColor:color];
+    [[NSNotificationCenter defaultCenter] postNotificationName:SKAnnotationDidChangeNotification object:self];
+}
+
+@end
+
+#pragma mark -
+
+@implementation SKPDFAnnotationMarkup
+
+static NSColor *markupColor = nil;
+
+- (id)initWithBounds:(NSRect)bounds {
+    if (self = [super initWithBounds:bounds]) {
+        if (markupColor == nil)
+            markupColor = [[NSColor yellowColor] retain];
+        [self setColor:markupColor];
+        /*
+         http://www.cocoabuilder.com/archive/message/cocoa/2007/2/16/178891
+          The docs are wrong (as is Adobe's spec).  The ordering is:
+          --------
+          | 0  1 |
+          | 2  3 |
+          --------
+         */         
+        [self setQuadrilateralPoints: [NSArray arrayWithObjects:
+            [NSValue valueWithPoint: NSMakePoint(0.0, NSHeight(bounds))],
+            [NSValue valueWithPoint: NSMakePoint(NSWidth(bounds), NSHeight (bounds))],
+            [NSValue valueWithPoint: NSMakePoint(0.0, 0.0)],
+            [NSValue valueWithPoint: NSMakePoint(NSWidth(bounds), 0.0)], nil]];        
+    }
+    return self;
+}
+
+- (NSDictionary *)dictionaryValue{
+    NSMutableDictionary *dict = (NSMutableDictionary *)[super dictionaryValue];
+    [dict setValue:[NSNumber numberWithInt:[self markupType]] forKey:@"markupType"];
+    // NSValue conforms to NSCoding, but NSKeyedArchiver throws an exception when encoding points
+    [dict setValue:[self quadrilateralPointsAsStrings] forKey:@"quadrilateralPointsAsStrings"];
+    return dict;
+}
+
+- (void)setQuadrilateralPointsFromStrings:(NSArray *)pointStrings {
+    NSMutableArray *points = [pointStrings mutableCopy];
+    unsigned i, iMax = [points count];
+    for (i = 0; i < iMax; i++ )
+        [points replaceObjectAtIndex:i withObject:[NSValue valueWithPoint:NSPointFromString([points objectAtIndex:i])]];
+    [self setQuadrilateralPoints:points];
+    [points release];
+}
+
+- (NSArray *)quadrilateralPointsAsStrings {
+    NSMutableArray *points = [[self quadrilateralPoints] mutableCopy];
+    unsigned i, iMax = [points count];
+    for (i = 0; i < iMax; i++ )
+        [points replaceObjectAtIndex:i withObject:NSStringFromPoint([[points objectAtIndex:i] pointValue])];
+    return [points autorelease];
+}
+
+- (void)setDefaultColor:(NSColor *)newColor {
+    [self setColor:newColor];
+    if (markupColor != newColor) {
+        [markupColor release];
+        markupColor = [newColor retain];
+    }
+}
+
+- (BOOL)isNoteAnnotation { return YES; }
+
+- (BOOL)isResizable { return YES; }
+
+- (void)setBounds:(NSRect)bounds {
+    [super setBounds:bounds];
+    [self setQuadrilateralPoints: [NSArray arrayWithObjects:
+        [NSValue valueWithPoint: NSMakePoint(0.0, NSHeight(bounds))],
+        [NSValue valueWithPoint: NSMakePoint(NSWidth(bounds), NSHeight (bounds))],
+        [NSValue valueWithPoint: NSMakePoint(0.0, 0.0)],
+        [NSValue valueWithPoint: NSMakePoint(NSWidth(bounds), 0.0)], nil]];   
+}
+
+- (void)setContents:(NSString *)contents {
+    [super setContents:contents];
+    [[NSNotificationCenter defaultCenter] postNotificationName:SKAnnotationDidChangeNotification object:self];
+}
+
+- (void)setColor:(NSColor *)color {
+    [super setColor:color];
+    [[NSNotificationCenter defaultCenter] postNotificationName:SKAnnotationDidChangeNotification object:self];
+}
+
+- (void)setMarkupType:(int)type {
+    [super setMarkupType:type];
+    [[NSNotificationCenter defaultCenter] postNotificationName:SKAnnotationDidChangeNotification object:self];
+}
+
+- (void)setQuadrilateralPoints:(NSArray *)points {
+    [super setQuadrilateralPoints:points];
     [[NSNotificationCenter defaultCenter] postNotificationName:SKAnnotationDidChangeNotification object:self];
 }
 
