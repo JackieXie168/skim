@@ -69,12 +69,12 @@ static NSString *joinedArrayComponents(NSArray *arrayOfXMLNodes, NSString *separ
     NSXMLElement *root = [doc rootElement];
     
     BOOL isOAI = [xmlString isOAIDublinCoreXMLString];
-    BOOL hasPrefix = YES;
+    BOOL hasPrefix = NO;
     
-    if (isOAI == NO && [[root nodesForXPath:@"record-list/record-list" error:NULL] count] == 0 && [[root nodesForXPath:@"dc:record-list/dc:record-list" error:NULL] count] != 0)
+    if (isOAI == NO && [[root nodesForXPath:@"//record-list" error:NULL] count] == 0 && [[root nodesForXPath:@"//dc:record-list" error:NULL] count] != 0)
         hasPrefix = YES;
     
-    NSString *recordsXPath = isOAI ? @"/OAI-PMH/ListRecords/record/metadata" : hasPrefix ? @"dc:record-list/dc:dc-record" : @"record-list/dc-record";
+    NSString *recordsXPath = isOAI ? @"//ListRecords/record/metadata" : hasPrefix ? @"//dc:record-list/dc:dc-record" : @"//record-list/dc-record";
     NSMutableArray *arrayOfPubs = [NSMutableArray array];
     NSEnumerator *nodeEnum = [[root nodesForXPath:recordsXPath error:NULL] objectEnumerator];
     NSXMLNode *node;
