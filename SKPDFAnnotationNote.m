@@ -385,6 +385,12 @@ static NSColor *markupColor = nil;
         [NSValue valueWithPoint: NSMakePoint(NSWidth(bounds), 0.0)], nil]];   
 }
 
+// override this to notify of changes; our override of setBounds calls this method
+- (void)setQuadrilateralPoints:(NSArray *)quadPoints {
+    [super setQuadrilateralPoints:quadPoints];
+    [[NSNotificationCenter defaultCenter] postNotificationName:SKAnnotationDidChangeNotification object:self];
+}
+
 - (void)setContents:(NSString *)contents {
     [super setContents:contents];
     [[NSNotificationCenter defaultCenter] postNotificationName:SKAnnotationDidChangeNotification object:self];
