@@ -567,4 +567,34 @@ NSString *SKDocumentWillSaveNotification = @"SKDocumentWillSaveNotification";
 	return type;
 }
 
+- (void)newDocumentFromClipboard:(id)sender {
+    NSString *pboardType = [[NSPasteboard generalPasteboard] availableTypeFromArray:[NSArray arrayWithObjects:NSPDFPboardType, NSPostScriptPboardType, nil]];
+    if (nil == pboardType) {
+        NSBeep();
+        return;
+    }
+    NSData *data = [[NSPasteboard generalPasteboard] dataForType:pboardType];
+    NSString *type = [pboardType isEqualToString:NSPostScriptPboardType] ? SKPostScriptDocumentType : SKPDFDocumentType;
+    NSError *error = nil;
+    id document = [self makeUntitledDocumentOfType:type error:&error];
+    
+    if ([document readFromData:data ofType:type error:&error]) {
+        [self addDocument:document];
+        [document makeWindowControllers];
+        [document showWindows];
+    } else {
+        [NSApp presentError:error];
+    }
+}
+
+- (BOOL)validateUserInterfaceItem:(id <NSValidatedUserInterfaceItem>)anItem {
+    if ([anItem action] == @selector(newDocumentFromClipboard:)) {
+        NSPasteboard *pboard = [NSPasteboard generalPasteboard];
+        return ([[pboard types] containsObject:NSPDFPboardType] || [[pboard types] containsObject:NSPostScriptPboardType]);
+    } else if ([super respondsToSelector:_cmd]) {
+        return [super validateUserInterfaceItem:anItem];
+    } else
+        return YES;
+}
+
 @end

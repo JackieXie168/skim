@@ -89,4 +89,5 @@ extern NSString *SKDocumentWillSaveNotification;
 
 
 @interface SKDocumentController : NSDocumentController
+- (void)newDocumentFromClipboard:(id)sender;
 @end
