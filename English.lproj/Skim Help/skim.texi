@@ -396,14 +396,14 @@ The notes are saved with the document, and are seen by anyone who reads it. The 
 @heading To add a text note:
 @enumerate
 @item Choose Tools > Text Tool. 
-@item Choose File > Text Note. 
+@item Choose Notes > Text Note. 
 @item Drag in the document until the note is located where you want and has the size you want.
 @item To enter text, double-click the note. 
 @end enumerate
 @heading To add a longer text note:
 @enumerate
 @item Choose Tools > Text Tool. 
-@item Choose File > Anchored Note. 
+@item Choose Notes > Anchored Note. 
 @item Drag in the document until the note is located where you want.
 @item To enter text, double-click the note. A window will show containing the text of the note. It has a short text that is used for identification, and a longer text that can also contain attributes. 
 @item You can also add a simple image to the note. Drag an image to the image well in the window for the note. 
@@ -420,7 +420,7 @@ You can edit or delete the notes. To move or resize the note, choose Tools > Tex
 
 @chapter Highlighting sections of a PDF document
 
-You can highlight interesting or important parts of a document by enclosing them in a red oval or a green rectangle.
+You can highlight interesting or important parts of a document by enclosing them in a red oval or a green rectangle, or by a felt mark effect.
 
 The notes are saved with the document, and are seen by anyone who reads it. The notes are not saved in the PDF data itself, so other PDF viewers will probably not be able to show the notes. 
 
@@ -428,8 +428,9 @@ The notes are saved with the document, and are seen by anyone who reads it. The 
 @heading To highlight a section of a PDF document:
 @enumerate
 @item Choose Tools > Text Tool. 
-@item Choose File > Circle Note or File > Rectangle Note. 
-@item Drag in the document until the note is located where you want and has the size you want.
+@item Select the text you want to highlight.
+@item Choose Notes > Circle, Notes > Box, or Notes > Highlight. 
+@item You may drag in the document until the note is located where you want and has the size you want.
 @end enumerate
 @endbox
 
