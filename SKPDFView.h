@@ -59,7 +59,8 @@ typedef enum _SKNoteType {
     SKAnchoredNote,
     SKCircleNote,
     SKSquareNote,
-    SKTextNote
+    SKTextNote,
+    SKHighlightNote
 } SKNoteType;
 
 @interface SKPDFView : PDFView {

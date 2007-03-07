@@ -472,7 +472,7 @@ NSString *SKSkimNotePboardType = @"SKSkimNotePboardType";
         case SKTextToolMode:
             if (mouseDownInAnnotation) {
                 mouseDownInAnnotation = NO;
-                if ([[activeAnnotation type] isEqualToString:@"Circle"] || [[activeAnnotation type] isEqualToString:@"Square"]) {
+                if ([[activeAnnotation type] isEqualToString:@"Circle"] || [[activeAnnotation type] isEqualToString:@"Square"] || [[activeAnnotation type] isEqualToString:@"MarkUp"]) {
                     NSString *selString = [[[[activeAnnotation page] selectionForRect:[activeAnnotation bounds]] string] stringByCollapsingWhitespaceAndNewlinesAndRemovingSurroundingWhitespaceAndNewlines];
                     [activeAnnotation setContents:selString];
                 }
@@ -488,12 +488,6 @@ NSString *SKSkimNotePboardType = @"SKSkimNotePboardType";
             break;
     }
 }
-
-- (void)scrollWheel:(NSEvent *)theEvent {
-    NSLog(@"%@", theEvent);
-    [super scrollWheel:theEvent];
-}
-
 
 - (void)mouseDragged:(NSEvent *)theEvent {
     switch (toolMode) {
@@ -655,6 +649,11 @@ NSString *SKSkimNotePboardType = @"SKSkimNotePboardType";
         [item setRepresentedObject:[NSValue valueWithPoint:point]];
         [item setTag:SKSquareNote];
         [item setTarget:self];
+
+        item = [menu addItemWithTitle:NSLocalizedString(@"Highlight Selection", @"Menu item title") action:@selector(addAnnotationFromMenu:) keyEquivalent:@""];
+        [item setRepresentedObject:[NSValue valueWithPoint:point]];
+        [item setTag:SKHighlightNote];
+        [item setTarget:self];
         
         if (annotation) {
             item = [menu addItemWithTitle:NSLocalizedString(@"Remove Note", @"Menu item title") action:@selector(removeThisAnnotation:) keyEquivalent:@""];
@@ -695,11 +694,16 @@ NSString *SKSkimNotePboardType = @"SKSkimNotePboardType";
     SKNoteType annotationType = [sender tag];
     NSPoint point = [[sender representedObject] pointValue];
 	PDFPage *page = [self pageForPoint:point nearest:YES];
-    NSSize defaultSize = (annotationType == SKTextNote || annotationType == SKAnchoredNote) ? NSMakeSize(16.0, 16.0) : ([page rotation] % 180 == 90) ? NSMakeSize(64.0, 128.0) : NSMakeSize(128.0, 64.0);
-	NSRect bounds;
-    
-    point = [self convertPoint:point toPage:page];
-    bounds = NSMakeRect(point.x - 0.5 * defaultSize.width, point.y - 0.5 * defaultSize.height, defaultSize.width, defaultSize.height);
+    NSRect bounds;
+
+    if (selection && page) {
+        bounds = [selection boundsForPage:page];
+    } else {
+        NSSize defaultSize = (annotationType == SKTextNote || annotationType == SKAnchoredNote) ? NSMakeSize(16.0, 16.0) : ([page rotation] % 180 == 90) ? NSMakeSize(64.0, 128.0) : NSMakeSize(128.0, 64.0);
+        
+        point = [self convertPoint:point toPage:page];
+        bounds = NSMakeRect(point.x - 0.5 * defaultSize.width, point.y - 0.5 * defaultSize.height, defaultSize.width, defaultSize.height);
+    }
     
     [self addAnnotationWithType:annotationType contents:text page:page bounds:bounds];
 }
@@ -754,6 +758,11 @@ NSString *SKSkimNotePboardType = @"SKSkimNotePboardType";
             break;
         case SKSquareNote:
             newAnnotation = [[SKPDFAnnotationSquare alloc] initWithBounds:NSInsetRect(bounds, -5.0, -5.0)];
+            if (text == nil)
+                text = [[[page selectionForRect:bounds] string] stringByCollapsingWhitespaceAndNewlinesAndRemovingSurroundingWhitespaceAndNewlines];
+            break;
+        case SKHighlightNote:
+            newAnnotation = [[SKPDFAnnotationMarkup alloc] initWithBounds:bounds];
             if (text == nil)
                 text = [[[page selectionForRect:bounds] string] stringByCollapsingWhitespaceAndNewlinesAndRemovingSurroundingWhitespaceAndNewlines];
             break;
