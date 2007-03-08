@@ -340,6 +340,60 @@ static NSColor *markupColor = nil;
     return self;
 }
 
+static NSArray *createQuadPointsWithBounds(const NSRect bounds, const NSPoint origin)
+{
+    NSPoint p0 = NSMakePoint(NSMinX(bounds) - origin.x, NSMaxY(bounds) - origin.y);
+    NSPoint p1 = NSMakePoint(NSMaxX(bounds) - origin.x, NSMaxY(bounds) - origin.y);
+    NSPoint p2 = NSMakePoint(NSMinX(bounds) - origin.x, NSMinY(bounds) - origin.y);
+    NSPoint p3 = NSMakePoint(NSMaxX(bounds) - origin.x, NSMinY(bounds) - origin.y);
+    return [[NSArray alloc] initWithObjects:[NSValue valueWithPoint:p0], [NSValue valueWithPoint:p1], [NSValue valueWithPoint:p2], [NSValue valueWithPoint:p3], nil];
+}
+
+- (id)initWithSelection:(PDFSelection *)sel {
+    
+    PDFPage *page = [[sel pages] count] ? [[sel pages] objectAtIndex:0] : nil;
+    
+    if (page && (self = [self initWithBounds:[sel boundsForPage:page]])) {
+        
+        NSRect selBounds = [sel boundsForPage:page];
+        
+        // Take the middle of the lowest selection and hit-test for lines; problem is that there may be no characters at any y value along x = NSMidX(selBounds).  We really should do this on a per-character basis, since the selection may not extend to the end of a line.  There are some private methods on PDFSelection that look useful, so it must have character information.  
+        unsigned i, iMax = floor(NSMaxY(selBounds));
+        NSPoint p;
+        p.x = floor(NSMidX(selBounds));
+        NSRect r1 = NSZeroRect;
+        NSMutableArray *selections = [NSMutableArray array];
+        
+        for (i = ceil(NSMinY(selBounds)); i < iMax; i++) {
+            p.y = i;
+            // get the rect of this line
+            sel = [page selectionForLineAtPoint:p];
+            if (sel) {
+                // sadly, using an NSMutableSet doesn't work; selections seem to use pointer equality
+                NSRect r2 = [sel boundsForPage:page];
+                if (!NSEqualRects(r1, r2)) {
+                    [selections addObject:sel];
+                    r1 = r2;
+                }
+            }
+        }
+        
+        // now create quad points, using the first object in the selections array as the base point
+        NSMutableArray *quadPoints = [[NSMutableArray alloc] initWithCapacity:[selections count]];
+        NSEnumerator *selEnum = [selections objectEnumerator];
+        if ([selections count])
+            p = [[selections objectAtIndex:0] boundsForPage:page].origin;
+        while (sel = [selEnum nextObject]) {
+            NSArray *quadLine = createQuadPointsWithBounds([sel boundsForPage:page], p);
+            [quadPoints addObjectsFromArray:quadLine];
+            [quadLine release];
+        }
+        [self setQuadrilateralPoints:quadPoints];
+        [quadPoints release];
+    }
+    return self;
+}
+
 - (void)setDefaultColor:(NSColor *)newColor {
     [self setColor:newColor];
     if (markupColor != newColor) {
@@ -353,12 +407,7 @@ static NSColor *markupColor = nil;
 - (BOOL)isResizable { return YES; }
 
 - (void)setBounds:(NSRect)bounds {
-    [super setBounds:bounds];
-    [self setQuadrilateralPoints: [NSArray arrayWithObjects:
-        [NSValue valueWithPoint: NSMakePoint(0.0, NSHeight(bounds))],
-        [NSValue valueWithPoint: NSMakePoint(NSWidth(bounds), NSHeight (bounds))],
-        [NSValue valueWithPoint: NSMakePoint(0.0, 0.0)],
-        [NSValue valueWithPoint: NSMakePoint(NSWidth(bounds), 0.0)], nil]];   
+    [super setBounds:bounds];  
     [[NSNotificationCenter defaultCenter] postNotificationName:SKAnnotationDidChangeNotification object:self];
 }
 
