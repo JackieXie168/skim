@@ -825,6 +825,8 @@
 			inputPaths = (
 				"$(SRCROOT)/English.lproj/Skim Help/skim.texi",
 				"$(SRCROOT)/English.lproj/Skim Help/version.texi",
+				"$(SRCROOT)/Skim Help/applehelp.init",
+				"$(SRCROOT)/Skim Help/postprocess-nontitle.py",
 			);
 			outputPaths = (
 				"$(SRCROOT)/English.lproj/Skim Help/Skim Help.html",
