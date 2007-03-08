@@ -218,7 +218,12 @@ NSString *SKSkimNotePboardType = @"SKSkimNotePboardType";
 }
 
 - (void)setNeedsDisplayForAnnotation:(PDFAnnotation *)annotation {
-    [self setNeedsDisplayInRect:[annotation bounds] ofPage:[annotation page]];
+    NSRect bounds = [annotation bounds];
+    if ([[annotation type] isEqualToString:@"Underline"]) {
+        bounds.origin.y -= 0.03 * NSHeight(bounds);
+        bounds.size.height *= 1.03;
+    }
+    [self setNeedsDisplayInRect:bounds ofPage:[annotation page]];
 }
 
 #pragma mark Accessors
