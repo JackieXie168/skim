@@ -64,6 +64,7 @@
 #import "SKOutlineView.h"
 #import "SKNoteOutlineView.h"
 #import "SKThumbnailTableView.h"
+#import "BDSKImagePopUpButton.h"
 
 #define SEGMENTED_CONTROL_HEIGHT    25.0
 #define WINDOW_X_DELTA              0.0
@@ -100,6 +101,7 @@ static NSString *SKDocumentToolbarToolModeItemIdentifier = @"SKDocumentToolbarTo
 static NSString *SKDocumentToolbarDisplayBoxItemIdentifier = @"SKDocumentToolbarDisplayBoxItemIdentifier";
 static NSString *SKDocumentToolbarContentsPaneItemIdentifier = @"SKDocumentToolbarContentsPaneItemIdentifier";
 static NSString *SKDocumentToolbarNotesPaneItemIdentifier = @"SKDocumentToolbarNotesPaneItemIdentifier";
+static NSString *SKDocumentToolbarMarkupItemIdentifier = @"SKDocumentToolbarMarkupItemIdentifier";
 
 #define TOOLBAR_SEARCHFIELD_MIN_SIZE NSMakeSize(110.0, 22.0)
 #define TOOLBAR_SEARCHFIELD_MAX_SIZE NSMakeSize(1000.0, 22.0)
@@ -2638,6 +2640,71 @@ static NSArray *prioritySortedThumbnails(NSArray *dirtyNails, int currentPageInd
     [toolbarItems setObject:item forKey:SKDocumentToolbarNewSquareNoteItemIdentifier];
     [item release];
     
+    
+    // toolbar item for all markup annotation as popup button
+    // ??? not sure of all the options for the popup button subclass
+    // ??? could make this switch the type of the selected (markup) annotation
+     menuItem = [[[NSMenuItem allocWithZone:[NSMenu menuZone]] initWithTitle:NSLocalizedString(@"Add Markup", @"Toolbar item label") 
+                                                             action:NULL
+                                                      keyEquivalent:@""] autorelease];
+     NSMenu *submenu = [[[NSMenu allocWithZone:[NSMenu menuZone]] initWithTitle:@""] autorelease];
+     [menuItem setSubmenu:submenu];
+     item = [[NSToolbarItem alloc] initWithItemIdentifier:SKDocumentToolbarMarkupItemIdentifier];
+     [item setLabel:NSLocalizedString(@"Add Markup", @"Toolbar item label")];
+     [item setPaletteLabel:NSLocalizedString(@"Add Markup", @"Toolbar item label")];
+     [item setToolTip:NSLocalizedString(@"Add Markup", @"Tool tip message")];
+     [item setTarget:self];
+     [item setView:markupPopUpButton];
+     [item setMinSize:[markupPopUpButton bounds].size];
+     [item setMaxSize:[markupPopUpButton bounds].size];
+     [item setMenuFormRepresentation:menuItem];
+     [toolbarItems setObject:item forKey:SKDocumentToolbarMarkupItemIdentifier];
+     [item release];
+     
+     NSImage *downArrow = [[[NSImage alloc] initWithSize:NSMakeSize(10, 10)] autorelease];
+     {
+         [downArrow lockFocus];
+         [NSGraphicsContext saveGraphicsState];
+         [[NSColor clearColor] setFill];
+         NSRect r = NSZeroRect;
+         r.size = [downArrow size];
+         NSRectFill(r);
+         r = NSInsetRect(r, 2.0, 2.0);
+         NSBezierPath *bezierPath = [NSBezierPath bezierPath];
+         [bezierPath moveToPoint:NSMakePoint(NSMinX(r), NSMaxY(r))];
+         [bezierPath lineToPoint:NSMakePoint(NSMaxX(r), NSMaxY(r))];
+         [bezierPath lineToPoint:NSMakePoint(NSMidX(r), NSMinY(r))];
+         [bezierPath closePath];
+         [[NSColor blackColor] setFill];
+         [bezierPath fill];
+         [NSGraphicsContext restoreGraphicsState];
+         [downArrow unlockFocus];
+     }
+     
+     [markupPopUpButton setArrowImage:downArrow];
+     [markupPopUpButton setShowsMenuWhenIconClicked:NO];
+     [[markupPopUpButton cell] setAltersStateOfSelectedItem:NO];
+     [[markupPopUpButton cell] setAlwaysUsesFirstItemAsSelected:NO];
+     [[markupPopUpButton cell] setUsesItemFromMenu:YES];
+     [markupPopUpButton setRefreshesMenu:NO];
+     
+     menuItem = [submenu addItemWithTitle:NSLocalizedString(@"Highlight", @"Menu item title") action:@selector(createNewNote:) keyEquivalent:@""];
+     [menuItem setTag:SKHighlightNote];
+     [menuItem setImage:[NSImage imageNamed:@"ToolbarHighlightNote"]];
+     [menuItem setTarget:self];
+     
+     menuItem = [submenu addItemWithTitle:NSLocalizedString(@"Strike Out", @"Menu item title") action:@selector(createNewNote:) keyEquivalent:@""];
+     [menuItem setTag:SKStrikeOutNote];
+     [menuItem setImage:[NSImage imageNamed:@"ToolbarStrikeOutNote"]];
+     [menuItem setTarget:self];
+     
+     menuItem = [submenu addItemWithTitle:NSLocalizedString(@"Underline", @"Menu item title") action:@selector(createNewNote:) keyEquivalent:@""];
+     [menuItem setTag:SKUnderlineNote];
+     [menuItem setTarget:self];
+     [menuItem setImage:[NSImage imageNamed:@"ToolbarUnderlineNote"]];
+     [markupPopUpButton setMenu:submenu];
+     
+    // separate toolbar items for each markup type
 	[menuItem setTarget:self];
     [menuItem setTag:SKHighlightNote];
     item = [[NSToolbarItem alloc] initWithItemIdentifier:SKDocumentToolbarNewHighlightNoteItemIdentifier];
@@ -2811,7 +2878,8 @@ static NSArray *prioritySortedThumbnails(NSArray *dirtyNails, int currentPageInd
         SKDocumentToolbarNewTextNoteItemIdentifier, 
         SKDocumentToolbarNewAnchoredNoteItemIdentifier, 
         SKDocumentToolbarNewCircleNoteItemIdentifier, 
-        SKDocumentToolbarNewSquareNoteItemIdentifier, 
+        SKDocumentToolbarNewSquareNoteItemIdentifier,
+        SKDocumentToolbarMarkupItemIdentifier,
         SKDocumentToolbarNewHighlightNoteItemIdentifier, 
         SKDocumentToolbarNewStrikeOutNoteItemIdentifier, 
         SKDocumentToolbarNewUnderlineNoteItemIdentifier, 
