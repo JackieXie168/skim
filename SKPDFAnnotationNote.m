@@ -47,6 +47,8 @@ enum {
     SKASCircleNote = 'NCir',
     SKASSquareNote = 'NSqu',
     SKASHighlightNote = 'NHil',
+    SKASStrikeOutNote = 'NStr',
+    SKASUnderlineNote = 'NUnd',
 };
 
 NSString *SKAnnotationWillChangeNotification = @"SKAnnotationWillChangeNotification";
@@ -89,14 +91,11 @@ NSString *SKAnnotationDidChangeNotification = @"SKAnnotationDidChangeNotificatio
     } else if ([type isEqualToString:@"Square"]) {
         self = [[SKPDFAnnotationSquare alloc] initWithBounds:bounds];
     } else if ([type isEqualToString:@"Highlight"] || [type isEqualToString:@"MarkUp"]) {
-        self = [[SKPDFAnnotationMarkup alloc] initWithBounds:bounds];
-        [(SKPDFAnnotationMarkup *)self setMarkupType:kPDFMarkupTypeHighlight];
+        self = [[SKPDFAnnotationMarkup alloc] initWithBounds:bounds markupType:kPDFMarkupTypeHighlight];
     } else if ([type isEqualToString:@"StrikeOut"]) {
-        self = [[SKPDFAnnotationMarkup alloc] initWithBounds:bounds];
-        [(SKPDFAnnotationMarkup *)self setMarkupType:kPDFMarkupTypeStrikeOut];
+        self = [[SKPDFAnnotationMarkup alloc] initWithBounds:bounds markupType:kPDFMarkupTypeStrikeOut];
     } else if ([type isEqualToString:@"Underline"]) {
-        self = [[SKPDFAnnotationMarkup alloc] initWithBounds:bounds];
-        [(SKPDFAnnotationMarkup *)self setMarkupType:kPDFMarkupTypeUnderline];
+        self = [[SKPDFAnnotationMarkup alloc] initWithBounds:bounds markupType:kPDFMarkupTypeUnderline];
     } else {
         self = nil;
     }
@@ -146,6 +145,8 @@ NSString *SKAnnotationDidChangeNotification = @"SKAnnotationDidChangeNotificatio
 
 - (BOOL)isResizable { return NO; }
 
+- (BOOL)isEditable { return NO; }
+
 #pragma mark Scripting support
 
 - (id)init {
@@ -172,10 +173,16 @@ NSString *SKAnnotationDidChangeNotification = @"SKAnnotationDidChangeNotificatio
             else if (type == SKASAnchoredNote)
                 annotation = [[SKPDFAnnotationNote alloc] initWithBounds:NSMakeRect(100.0, 100.0, 16.0, 16.0)];
             else if (type == SKASCircleNote)
-                annotation = [[PDFAnnotationCircle alloc] initWithBounds:NSMakeRect(100.0, 100.0, 64.0, 64.0)];
+                annotation = [[SKPDFAnnotationCircle alloc] initWithBounds:NSMakeRect(100.0, 100.0, 64.0, 64.0)];
             else if (type == SKASSquareNote)
-                annotation = [[PDFAnnotationSquare alloc] initWithBounds:NSMakeRect(100.0, 100.0, 64.0, 64.0)];
-            
+                annotation = [[SKPDFAnnotationSquare alloc] initWithBounds:NSMakeRect(100.0, 100.0, 64.0, 64.0)];
+            else if (type == SKASHighlightNote)
+                annotation = [[SKPDFAnnotationMarkup alloc] initWithBounds:NSMakeRect(100.0, 100.0, 64.0, 64.0) markupType:kPDFMarkupTypeHighlight];
+            else if (type == SKASStrikeOutNote)
+                annotation = [[SKPDFAnnotationMarkup alloc] initWithBounds:NSMakeRect(100.0, 100.0, 64.0, 64.0) markupType:kPDFMarkupTypeStrikeOut];
+             else if (type == SKASUnderlineNote)
+                annotation = [[SKPDFAnnotationMarkup alloc] initWithBounds:NSMakeRect(100.0, 100.0, 64.0, 64.0) markupType:kPDFMarkupTypeUnderline];
+           
             self = annotation;
         }
     }
@@ -201,6 +208,12 @@ NSString *SKAnnotationDidChangeNotification = @"SKAnnotationDidChangeNotificatio
         return SKASCircleNote;
     else if ([[self type] isEqualToString:@"Square"])
         return SKASSquareNote;
+    else if ([[self type] isEqualToString:@"Highlight"] || [[self type] isEqualToString:@"MarkUp"])
+        return SKASHighlightNote;
+    else if ([[self type] isEqualToString:@"StrikeOut"])
+        return SKASStrikeOutNote;
+    else if ([[self type] isEqualToString:@"Underline"])
+        return SKASUnderlineNote;
     return 0;
 }
 
@@ -328,13 +341,30 @@ static NSColor *squareColor = nil;
 
 @implementation SKPDFAnnotationMarkup
 
-static NSColor *markupColor = nil;
+static NSColor *highlightColor = nil;
+static NSColor *strikeOutColor = nil;
+static NSColor *underlineColor = nil;
 
 - (id)initWithBounds:(NSRect)bounds {
+    self = [self initWithBounds:bounds markupType:kPDFMarkupTypeHighlight];
+    return self;
+}
+
+- (id)initWithBounds:(NSRect)bounds markupType:(int)type {
     if (self = [super initWithBounds:bounds]) {
-        if (markupColor == nil)
-            markupColor = [[NSColor yellowColor] retain];
-        [self setColor:markupColor];
+        if (highlightColor == nil)
+            highlightColor = [[NSColor yellowColor] retain];
+        if (strikeOutColor == nil)
+            strikeOutColor = [[NSColor redColor] retain];
+        if (underlineColor == nil)
+            underlineColor = [[NSColor colorWithDeviceRed:0.0 green:0.5 blue:0.0 alpha:1.0] retain];
+        [self setMarkupType:type];
+        if (type == kPDFMarkupTypeHighlight)
+            [self setColor:highlightColor];
+        else if (type == kPDFMarkupTypeStrikeOut)
+            [self setColor:strikeOutColor];
+        else if (type == kPDFMarkupTypeUnderline)
+            [self setColor:underlineColor];
         /*
          http://www.cocoabuilder.com/archive/message/cocoa/2007/2/16/178891
           The docs are wrong (as is Adobe's spec).  The ordering is:
@@ -362,48 +392,58 @@ static NSArray *createQuadPointsWithBounds(const NSRect bounds, const NSPoint or
 }
 
 - (void)setQuadrilateralPointsFromRect:(NSRect)rect inPage:(PDFPage *)page {
-    if (page == nil)
+    if (page == nil || [PDFSelection instancesRespondToSelector:@selector(numberOfRangesOnPage:)] == NO || [PDFSelection instancesRespondToSelector:@selector(rangeAtIndex:onPage:)] == NO)
         return;
     PDFSelection *sel = [page selectionForRect:rect];
+    NSMutableArray *quadPoints = [[NSMutableArray alloc] init];
     if (sel) {
         unsigned i, iMax = [sel numberOfRangesOnPage:page];
-        NSMutableArray *quadPoints = [[NSMutableArray alloc] init];
         for (i = 0; i < iMax; i++) {
             NSRange range = [sel rangeAtIndex:i onPage:page];
             unsigned int j;
-            NSRect r1 = NSZeroRect;
+            NSRect lineRect = NSZeroRect;
             for (j = range.location; j < NSMaxRange(range); j++) {
-                NSRect r2 = [page characterBoundsAtIndex:j];
-                if (NSEqualRects(r1, NSZeroRect)) {
-                    r1 = r2;
-                } else if (fabs(NSMaxX(r1) - NSMinX(r2)) < 0.1 * NSWidth(r2) && fabs(NSMidX(r1) - NSMidY(r2)) < 0.5 * NSWidth(r2)) {
-                    r1 = NSUnionRect(r1, r2);
+                NSRect charRect = [page characterBoundsAtIndex:j];
+                if (NSEqualRects(lineRect, NSZeroRect)) {
+                    lineRect = charRect;
+                } else if (fabs(NSMaxX(lineRect) - NSMinX(charRect)) < 0.1 * NSWidth(charRect) && fabs(NSMidX(lineRect) - NSMidY(charRect)) < 0.5 * NSHeight(charRect)) {
+                    lineRect = NSUnionRect(lineRect, charRect);
                 } else {
-                    NSArray *quadLine = createQuadPointsWithBounds(r1, [self bounds].origin);
+                    NSArray *quadLine = createQuadPointsWithBounds(lineRect, [self bounds].origin);
                     [quadPoints addObjectsFromArray:quadLine];
                     [quadLine release];
-                    r1 = r2;
+                    lineRect = charRect;
                 }
             }
-            if (NSEqualRects(r1, NSZeroRect) == NO) {
-                NSArray *quadLine = createQuadPointsWithBounds(r1, [self bounds].origin);
+            if (NSEqualRects(lineRect, NSZeroRect) == NO) {
+                NSArray *quadLine = createQuadPointsWithBounds(lineRect, [self bounds].origin);
                 [quadPoints addObjectsFromArray:quadLine];
                 [quadLine release];
             }
         }
         
-        [self setQuadrilateralPoints:quadPoints];
-        [quadPoints release];
-    } else {
-        [self setQuadrilateralPoints:[NSArray array]];
     }
+    [self setQuadrilateralPoints:quadPoints];
+    [quadPoints release];
 }
 
 - (void)setDefaultColor:(NSColor *)newColor {
     [self setColor:newColor];
-    if (markupColor != newColor) {
-        [markupColor release];
-        markupColor = [newColor retain];
+    if ([self markupType] == kPDFMarkupTypeHighlight) {
+        if (highlightColor != newColor) {
+            [highlightColor release];
+            highlightColor = [newColor retain];
+        }
+    } else if ([self markupType] == kPDFMarkupTypeStrikeOut) {
+        if (strikeOutColor != newColor) {
+            [strikeOutColor release];
+            strikeOutColor = [newColor retain];
+        }
+    } else if ([self markupType] == kPDFMarkupTypeUnderline) {
+        if (underlineColor != newColor) {
+            [underlineColor release];
+            underlineColor = [newColor retain];
+        }
     }
 }
 
@@ -445,43 +485,9 @@ static NSArray *createQuadPointsWithBounds(const NSRect bounds, const NSPoint or
     CGContextSetFillColorSpace(context, colorSpace);
     CGColorSpaceRelease(colorSpace);
     
-    if ([self markupType] == kPDFMarkupTypeHighlight)
-        CGContextSetBlendMode(context, kCGBlendModeMultiply);
-    
     [super drawWithBox:box inContext:context];
     
     CGContextRestoreGState(context);
-    
-    /*
-    NSColor *c = [self color];
-    float color[4] = { [c redComponent], [c greenComponent], [c blueComponent], [c alphaComponent] };
-    CGContextSetFillColor(context, color);
-    
-    PDFPage *page = [self page];
-	NSRect bounds = [page boundsForBox:box]; // CGPDFBox corresponds identically to PDFDisplayBox
-	
-    switch ([page rotation]) {
-        case 0:
-            CGContextTranslateCTM(context, -NSMinX(bounds), -NSMinY(bounds));
-            break;
-        case 90:
-            CGContextRotateCTM(context, -M_PI / 2);
-            CGContextTranslateCTM(context, -NSMaxX(bounds), -NSMinY(bounds));
-            break;
-        case 180:
-            CGContextRotateCTM(context, M_PI);
-            CGContextTranslateCTM(context, -NSMaxX(bounds), -NSMaxY(bounds));
-            break;
-        case 270:
-            CGContextRotateCTM(context, M_PI / 2);
-            CGContextTranslateCTM(context, -NSMinX(bounds), -NSMaxY(bounds));
-            break;
-	}
-    
-    bounds = [self bounds];
-    CGContextFillRect(context, *(CGRect*)&bounds);
-    
-    */
 }
 
 @end
@@ -566,6 +572,8 @@ static NSColor *textColor = nil;
 
 - (BOOL)isNoteAnnotation { return YES; }
 
+- (BOOL)isEditable { return YES; }
+
 - (void)setBounds:(NSRect)bounds {
     [[NSNotificationCenter defaultCenter] postNotificationName:SKAnnotationWillChangeNotification
             object:self
@@ -637,6 +645,8 @@ static NSColor *noteColor = nil;
 }
 
 - (BOOL)isNoteAnnotation { return YES; }
+
+- (BOOL)isEditable { return YES; }
 
 - (void)setBounds:(NSRect)bounds {
     [[NSNotificationCenter defaultCenter] postNotificationName:SKAnnotationWillChangeNotification

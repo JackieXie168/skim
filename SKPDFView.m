@@ -478,7 +478,7 @@ NSString *SKSkimNotePboardType = @"SKSkimNotePboardType";
         case SKTextToolMode:
             if (mouseDownInAnnotation) {
                 mouseDownInAnnotation = NO;
-                if ([[activeAnnotation type] isEqualToString:@"Circle"] || [[activeAnnotation type] isEqualToString:@"Square"] || [[activeAnnotation type] isEqualToString:@"Highlight"]) {
+                if ([activeAnnotation isEditable] == NO) {
                     NSString *selString = [[[[activeAnnotation page] selectionForRect:[activeAnnotation bounds]] string] stringByCollapsingWhitespaceAndNewlinesAndRemovingSurroundingWhitespaceAndNewlines];
                     [activeAnnotation setContents:selString];
                 }
@@ -672,7 +672,7 @@ NSString *SKSkimNotePboardType = @"SKSkimNotePboardType";
             [item setRepresentedObject:annotation];
             [item setTarget:self];
             
-            if ((annotation != activeAnnotation || editAnnotation == nil) && ([[annotation type] isEqualToString:@"FreeText"] || [[annotation type] isEqualToString:@"Note"])) {
+            if ((annotation != activeAnnotation || editAnnotation == nil) && [annotation isEditable]) {
                 item = [menu addItemWithTitle:NSLocalizedString(@"Edit Note", @"Menu item title") action:@selector(editThisAnnotation:) keyEquivalent:@""];
                 [item setRepresentedObject:annotation];
                 [item setTarget:self];
@@ -681,7 +681,7 @@ NSString *SKSkimNotePboardType = @"SKSkimNotePboardType";
             item = [menu addItemWithTitle:NSLocalizedString(@"Remove Current Note", @"Menu item title") action:@selector(removeActiveAnnotation:) keyEquivalent:@""];
             [item setTarget:self];
             
-            if (editAnnotation == nil && ([[activeAnnotation type] isEqualToString:@"FreeText"] || [[activeAnnotation type] isEqualToString:@"Note"])) {
+            if (editAnnotation == nil && [activeAnnotation isEditable]) {
                 item = [menu addItemWithTitle:NSLocalizedString(@"Edit Current Note", @"Menu item title") action:@selector(editActiveAnnotation:) keyEquivalent:@""];
                 [item setTarget:self];
             }
@@ -762,22 +762,28 @@ NSString *SKSkimNotePboardType = @"SKSkimNotePboardType";
             break;
         case SKCircleNote:
             newAnnotation = [[SKPDFAnnotationCircle alloc] initWithBounds:NSInsetRect(bounds, -5.0, -5.0)];
-            if (text == nil)
-                text = [[[page selectionForRect:bounds] string] stringByCollapsingWhitespaceAndNewlinesAndRemovingSurroundingWhitespaceAndNewlines];
             break;
         case SKSquareNote:
             newAnnotation = [[SKPDFAnnotationSquare alloc] initWithBounds:NSInsetRect(bounds, -5.0, -5.0)];
-            if (text == nil)
-                text = [[[page selectionForRect:bounds] string] stringByCollapsingWhitespaceAndNewlinesAndRemovingSurroundingWhitespaceAndNewlines];
             break;
         case SKHighlightNote:
-            newAnnotation = [[SKPDFAnnotationMarkup alloc] initWithBounds:bounds];
-            [(SKPDFAnnotationMarkup *)newAnnotation setMarkupType:kPDFMarkupTypeHighlight];
-            if (text == nil)
-                text = [[[page selectionForRect:bounds] string] stringByCollapsingWhitespaceAndNewlinesAndRemovingSurroundingWhitespaceAndNewlines];
+            newAnnotation = [[SKPDFAnnotationMarkup alloc] initWithBounds:bounds markupType:kPDFMarkupTypeHighlight];
+            break;
+        case SKStrikeOutNote:
+            newAnnotation = [[SKPDFAnnotationMarkup alloc] initWithBounds:bounds markupType:kPDFMarkupTypeStrikeOut];
+            break;
+        case SKUnderlineNote:
+            newAnnotation = [[SKPDFAnnotationMarkup alloc] initWithBounds:bounds markupType:kPDFMarkupTypeUnderline];
             break;
 	}
-    [newAnnotation setContents:text ? text : NSLocalizedString(@"New note", @"Default text for new note")];
+    if (text == nil) {
+        if ([newAnnotation isEditable])
+            text = NSLocalizedString(@"New note", @"Default text for new note");
+        else
+            text = [[[page selectionForRect:bounds] string] stringByCollapsingWhitespaceAndNewlinesAndRemovingSurroundingWhitespaceAndNewlines];
+    }
+        
+    [newAnnotation setContents:text];
     
     [page addAnnotation:newAnnotation];
     
@@ -1246,7 +1252,7 @@ NSString *SKSkimNotePboardType = @"SKSkimNotePboardType";
     
     if (newActiveAnnotation == nil) {
         [super mouseDown:theEvent];
-    } else if ([theEvent clickCount] == 2 && ([[activeAnnotation type] isEqualToString:@"FreeText"])) {
+    } else if ([theEvent clickCount] == 2 && [[activeAnnotation type] isEqualToString:@"FreeText"]) {
         // probably we should use the note window for Text annotations
         NSRect editBounds = [activeAnnotation bounds];
         editAnnotation = [[[PDFAnnotationTextWidget alloc] initWithBounds:editBounds] autorelease];
