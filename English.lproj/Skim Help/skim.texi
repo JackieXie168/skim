@@ -90,6 +90,13 @@ Control-Cmd-\key\
 @end html
 @end macro
 
+@macro topic{title}
+@node \title\
+@cindex \title\
+@abstract{\title\}
+@chapter \title
+@end macro
+
 @c ======================================================================================
 @c The content of the Help Pages starts here...
 @c ======================================================================================
@@ -108,16 +115,12 @@ Skim is a PDF viewer, intended for easy reading and studying PDF document.
 
 @box{copyright}
 Copyright @copyright{} 2006 - 2007 Michael O. McCracken@*
-Copyright @copyright{} many others@*
+Copyright @copyright{} many others
 @endbox
 
 @c ======================================================================================
 
-@node Zooming in and out
-@cindex Zooming in and out
-@abstract{Zooming in and out}
-
-@chapter Zooming in and out
+@topic Zooming in and out
 
 You can change your view of a page in a PDF file in several ways. 
 
@@ -144,11 +147,7 @@ You cannot save changes to the way you view a page.
 
 @c ======================================================================================
 
-@node Magnifying a section
-@cindex Magnifying a section of a PDF document
-@abstract{Magnifying a section of a PDF document}
-
-@chapter Magnifying a section of a PDF document
+@topic Magnifying a section of a PDF document
 
 You can live-magnify a section of the PDF file, for example to better view small text.
 
@@ -168,11 +167,7 @@ You can live-magnify a section of the PDF file, for example to better view small
 
 @c ======================================================================================
 
-@node Selecting the page to view in a PDF document
-@cindex Selecting the page to view in a PDF document
-@abstract{Selecting the page to view in a PDF document}
-
-@chapter Selecting the page to view in a PDF document
+@topic Selecting the page to view in a PDF document
 
 When you open a PDF document with multiple pages, a single Skim window opens showing the first page of the document. You can see thumbnails of additional pages in the Contents pane on the left.
 
@@ -201,11 +196,7 @@ By default, the contents pane opens automatically only if you open a PDF file wi
 
 @c ======================================================================================
 
-@node Scrolling PDF pages
-@cindex Scrolling PDF pages
-@abstract{Scrolling PDF pages}
-
-@chapter Scrolling PDF pages
+@topic Scrolling PDF pages
 
 When you open a PDF file with multiple pages in Skim, you select the page you want to view by clicking it in the drawer. If the page does not fit within the window size, then you use the vertical or horizontal scroll bars to view the hidden parts of the current page.
 
@@ -226,11 +217,7 @@ You can also scroll pages by dragging with the mouse.
 
 @c ======================================================================================
 
-@node Changing the background color
-@cindex Changing the background color
-@abstract{Changing the background color}
-
-@chapter Changing the background color
+@topic Changing the background color
 
 By default, Skim shows a gray background behind images and PDF files, and a darker shade of gray in Full Screen mode. If you expand the window larger than the size of the document, or if the image has transparent sections, you can see the background color.
 
@@ -245,11 +232,7 @@ By default, Skim shows a gray background behind images and PDF files, and a dark
 
 @c ======================================================================================
 
-@node Selecting and copying text in a PDF file
-@cindex Selecting and copying text in a PDF file
-@abstract{Selecting and copying text in a PDF file}
-
-@chapter Selecting and copying text in a PDF file
+@topic Selecting and copying text in a PDF file
 
 You can select and copy text from a PDF file, then paste it into another application, such as a word processor.
 
@@ -262,11 +245,7 @@ You can select and copy text from a PDF file, then paste it into another applica
 
 @c ======================================================================================
 
-@node Finding text in a PDF file
-@cindex Finding text in a PDF file
-@abstract{Finding text in a PDF file}
-
-@chapter Finding text in a PDF file
+@topic Finding text in a PDF file
 
 You can search a PDF file for a word or any set of characters.
 
@@ -286,11 +265,7 @@ You can search a PDF file for a word or any set of characters.
 
 @c ======================================================================================
 
-@node Rotating a PDF file or page
-@cindex Rotating a PDF file or page
-@abstract{Rotating a PDF file or page}
-
-@chapter Rotating a PDF file or page
+@topic Rotating a PDF file or page
 
 In Skim, you can rotate a PDF file in 90-degree increments, or flip it horizontally or vertically. You can rotate and flip an image several times to orient it the way you want it. 
 
@@ -307,11 +282,7 @@ You can also use toolbar buttons to rotate images. To add rotate buttons to the 
 
 @c ======================================================================================
 
-@node Viewing the table of contents for a PDF file
-@cindex Viewing the table of contents for a PDF file
-@abstract{Viewing the table of contents for a PDF file}
-
-@chapter Viewing the table of contents for a PDF file
+@topic Viewing the table of contents for a PDF file
 
 Some PDF files contain a table of contents, which lets you quickly jump to sections within a document.
 
@@ -326,11 +297,7 @@ Some PDF files contain a table of contents, which lets you quickly jump to secti
 
 @c ======================================================================================
 
-@node Setting the default size for a PDF document
-@cindex Setting the default size for a PDF document
-@abstract{Setting the default size for a PDF document}
-
-@chapter Setting the default size for a PDF document
+@topic Setting the default size for a PDF document
 
 You can choose the size at which Skim displays PDF documents: either as large as possible or at a specific percentage of their actual size.
 
@@ -347,11 +314,7 @@ You can choose the size at which Skim displays PDF documents: either as large as
 
 @c ======================================================================================
 
-@node Viewing pages side-by-side
-@cindex Viewing pages side-by-side
-@abstract{Viewing pages side-by-side}
-
-@chapter Viewing pages side-by-side
+@topic Viewing pages side-by-side
 
 Viewing pages side-by-side lets you display more of a document on the screen.
 
@@ -366,11 +329,7 @@ Viewing pages side-by-side lets you display more of a document on the screen.
 
 @c ======================================================================================
 
-@node Viewing page breaks
-@cindex Viewing page breaks
-@abstract{Viewing page breaks}
-
-@chapter Viewing page breaks
+@topic Viewing page breaks
 
 When you're viewing more than one PDF page at a time, it can be difficult to tell when one ends and another begins. Displaying a border around each page makes this easier. 
 
@@ -382,11 +341,7 @@ When you're viewing more than one PDF page at a time, it can be difficult to tel
 
 @c ======================================================================================
 
-@node Adding notes to a PDF document
-@cindex Adding notes to a PDF document
-@abstract{Adding notes to a PDF document}
-
-@chapter Adding notes to a PDF document
+@topic Adding notes to a PDF document
 
 You can add your notes to a PDF document in boxes that look like paper sticky notes, or longer notes that can be viewed by double-clicking. 
 
@@ -414,11 +369,7 @@ You can edit or delete the notes. To move or resize the note, choose Tools > Tex
 
 @c ======================================================================================
 
-@node Highlighting sections of a PDF document
-@cindex Highlighting sections of a PDF document
-@abstract{Highlighting sections of a PDF document}
-
-@chapter Highlighting sections of a PDF document
+@topic Highlighting sections of a PDF document
 
 You can highlight interesting or important parts of a document. You can enclosing them in a red oval or a green box. Or you can highlight, underline or strike out text.
 
@@ -438,11 +389,7 @@ You can edit or delete the highlights. To move or resize the highlight, choose T
 
 @c ======================================================================================
 
-@node Taking snapshots of a section of a PDF document
-@cindex Taking snapshots of a section of a PDF document
-@abstract{Taking snapshots of a section of a PDF document}
-
-@chapter Taking snapshots of a section of a PDF document
+@topic Taking snapshots of a section of a PDF document
 
 You can take "snapshots" of important sections of a PDF document, to keep them on your screen for easy reference. This way you don't have to leaf back to the section every time you want to see it. 
 
@@ -470,11 +417,7 @@ Snapshots are not saved with the PDF document.
 
 @c ======================================================================================
 
-@node I can't select or copy text in a PDF file
-@cindex I can't select or copy text in a PDF file
-@abstract{I can't select or copy text in a PDF file}
-
-@chapter I can't select or copy text in a PDF file
+@topic I can't select or copy text in a PDF file
 
 Some PDF files require you to enter a password before you can select or copy text. Ask the person who gave you the document for that password.
 
@@ -488,11 +431,7 @@ If the Password command is disabled, this document does not require you to enter
 
 @c ======================================================================================
 
-@node Resizing a PDF file to fit its window
-@cindex Resizing a PDF file to fit its window
-@abstract{Resizing a PDF file to fit its window}
-
-@chapter Resizing a PDF file to fit its window
+@topic Resizing a PDF file to fit its window
 
 Skim can automatically resize an image or PDF file so that it always fits its window. As you resize the window, Skim resizes the image or PDF. 
 
@@ -504,11 +443,7 @@ Skim can automatically resize an image or PDF file so that it always fits its wi
 
 @c ======================================================================================
 
-@node Viewing PDF documents in full screen
-@cindex Viewing PDF documents in full screen
-@abstract{Viewing PDF documents in full screen}
-
-@chapter Viewing PDF documents in full screen
+@topic Viewing PDF documents in full screen
 
 Skim allows you to view PDF documents in kiosk mode, so you can concentrate just on reading. 
 
@@ -526,11 +461,7 @@ The contents tables and the notes and snapshot tables automatically show if you 
 
 @c ======================================================================================
 
-@node Giving a presentation of a PDF document
-@cindex Giving a presentation of a PDF document
-@abstract{Giving a presentation of a PDF document}
-
-@chapter Giving a presentation of a PDF document
+@topic Giving a presentation of a PDF document
 
 You can also use Skim to give presentations of a PDF document. 
 
