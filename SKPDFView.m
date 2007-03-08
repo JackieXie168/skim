@@ -771,7 +771,7 @@ NSString *SKSkimNotePboardType = @"SKSkimNotePboardType";
                 text = [[[page selectionForRect:bounds] string] stringByCollapsingWhitespaceAndNewlinesAndRemovingSurroundingWhitespaceAndNewlines];
             break;
         case SKHighlightNote:
-            newAnnotation = [[SKPDFAnnotationMarkup alloc] initWithBounds:bounds];
+            newAnnotation = [[SKPDFAnnotationHighlight alloc] initWithBounds:bounds];
             if (text == nil)
                 text = [[[page selectionForRect:bounds] string] stringByCollapsingWhitespaceAndNewlinesAndRemovingSurroundingWhitespaceAndNewlines];
             break;
