@@ -94,7 +94,7 @@ Control-Cmd-\key\
 @node \title\
 @cindex \title\
 @abstract{\title\}
-@chapter \title
+@chapter \title\
 @end macro
 
 @c ======================================================================================
@@ -116,6 +116,26 @@ Skim is a PDF viewer, intended for easy reading and studying PDF document.
 @box{copyright}
 Copyright @copyright{} 2006 - 2007 Michael O. McCracken@*
 Copyright @copyright{} many others
+@endbox
+
+@c ======================================================================================
+
+@topic Viewing PDF files
+
+Skim can be used to open and print documents in Portable Document Format (PDF). A PDF file has elements of a printed document. Many PDF files are converted from printed documents, or created from the same source files as printed documents.
+
+PDF files opened in Skim can be read, resized for onscreen viewing, and printed. You can search a PDF document for specific text, navigate some PDF files using a table of contents, select and copy text in the file, add notes and highlights, and give presentations.
+
+If you open a PostScript (PS) or EPS file in Skim, it is converted to a PDF file.
+
+@box{taskbox}
+@heading To open all PDF documents in Skim:
+@enumerate
+@item In the Finder, select a PDF document.
+@item Choose File > Get Info.
+@item Click Open with:.
+@item Choose Preview from the pop-up menu, and click Change All.
+@end enumerate
 @endbox
 
 @c ======================================================================================
@@ -477,6 +497,64 @@ You can also use Skim to give presentations of a PDF document.
 In presentation mode, you can use the Left and Right Arrow buttons to navigate through the pages of the document. 
 
 You can show navigation buttons by moving the mouse to the bottom of the screen.
+
+@c ======================================================================================
+
+@topic Changing the size of the thumbnails
+
+Skim allows you to change the size of thumbnails for pages and for snapshots.
+
+@box{taskbox}
+@itemize
+@item To change the size of for page thumbnails, Choose Skim > Preferences, click Thumbnails, and move the Pages slider.
+@end itemize
+@itemize
+@item To change the size of for snapshot thumbnails, Choose Skim > Preferences, click Thumbnails, and move the Snapshots slider.
+@end itemize
+@endbox
+
+If you select the "Discrete sizes" button, you can restrict the sizes to certain discrete sizes. This may lead to sharper thumbnails. 
+
+@c ======================================================================================
+
+@topic Changing the highlighting of Find results
+
+You can set whether Skim should circle highlight results of a text searchas well as the color uysed for these highlights.
+
+@box{taskbox}
+@itemize
+@item To highlight Find results using a circle, Choose Skim > Preferences, click Colors, and select "Highlight search results".
+@item To change the color used for the Find highlights, click Color.
+@end itemize
+@endbox
+
+@c ======================================================================================
+
+@topic Automatically update files for external updates
+
+Skim can automatically reload files you view when their contents changes on disc, by another program. 
+
+@box{taskbox}
+@itemize
+@item To reload files when their contents changes on disc, Choose Skim > Preferences, click Updates, and select "Check file changes" below "File updates".
+@end itemize
+@endbox
+
+Skim will always first ask you whether it should reload the file when the contents changes on disc. 
+
+@c ======================================================================================
+
+@topic Check for updates from Skim
+
+Skim can automatically check whether an update for Skim is available. You can also choose how often Skim checks for updates.  
+
+@box{taskbox}
+@itemize
+@item To select how often Skim checks for updates, Choose Skim > Preferences, click Updates, and select a period blow "Skim update". 
+@end itemize
+@endbox
+
+You can also check immediately for Skim updates yourself. Choose Skim > Check for Updates@dots{}.
 
 @c ======================================================================================
 @c INDEXES
