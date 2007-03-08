@@ -207,7 +207,7 @@
 		45A3BD380B4F097D002B297F /* InitialUserDefaults.plist */ = {isa = PBXFileReference; explicitFileType = text.xml; fileEncoding = 4; path = InitialUserDefaults.plist; sourceTree = "<group>"; };
 		45B113BF0B329A7E00DE0660 /* LICENSE */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = LICENSE; sourceTree = "<group>"; };
 		8D15AC360486D014006FF6A4 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = Info.plist; sourceTree = "<group>"; };
-		8D15AC370486D014006FF6A4 /* Skim.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = Skim.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		8D15AC370486D014006FF6A4 /* Skim.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Skim.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		CE0463C90B84D24300C11E4A /* SKApplication.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SKApplication.h; sourceTree = "<group>"; };
 		CE0463CA0B84D24300C11E4A /* SKApplication.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SKApplication.m; sourceTree = "<group>"; };
 		CE0464A00B84E3E400C11E4A /* OBUtilities.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OBUtilities.h; sourceTree = "<group>"; };

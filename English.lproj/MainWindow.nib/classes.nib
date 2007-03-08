@@ -82,6 +82,7 @@
                 choosePageSheet = NSWindow; 
                 chooseScaleField = NSTextField; 
                 chooseScaleSheet = NSWindow; 
+                circlePopUpButton = BDSKImagePopUpButton; 
                 currentLeftSideView = NSView; 
                 currentRightSideView = NSView; 
                 displayBoxPopUpButton = NSPopUpButton; 
@@ -95,9 +96,10 @@
                 leftSideCollapsibleView = BDSKCollapsibleView; 
                 leftSideContentBox = NSBox; 
                 leftSideEdgeView = BDSKEdgeView; 
-                markupPopUpButton = NSPopUpButton; 
+                markupPopUpButton = BDSKImagePopUpButton; 
                 noteArrayController = NSArrayController; 
                 noteOutlineView = SKNoteOutlineView; 
+                notePopUpButton = BDSKImagePopUpButton; 
                 noteTreeController = NSTreeController; 
                 noteView = NSView; 
                 outlineView = NSOutlineView; 
