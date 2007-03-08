@@ -478,7 +478,7 @@ NSString *SKSkimNotePboardType = @"SKSkimNotePboardType";
         case SKTextToolMode:
             if (mouseDownInAnnotation) {
                 mouseDownInAnnotation = NO;
-                if ([[activeAnnotation type] isEqualToString:@"Circle"] || [[activeAnnotation type] isEqualToString:@"Square"] || [[activeAnnotation type] isEqualToString:@"MarkUp"]) {
+                if ([[activeAnnotation type] isEqualToString:@"Circle"] || [[activeAnnotation type] isEqualToString:@"Square"] || [[activeAnnotation type] isEqualToString:@"Highlight"]) {
                     NSString *selString = [[[[activeAnnotation page] selectionForRect:[activeAnnotation bounds]] string] stringByCollapsingWhitespaceAndNewlinesAndRemovingSurroundingWhitespaceAndNewlines];
                     [activeAnnotation setContents:selString];
                 }
