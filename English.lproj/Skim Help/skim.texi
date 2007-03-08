@@ -420,7 +420,7 @@ You can edit or delete the notes. To move or resize the note, choose Tools > Tex
 
 @chapter Highlighting sections of a PDF document
 
-You can highlight interesting or important parts of a document by enclosing them in a red oval or a green rectangle, or by a felt mark effect.
+You can highlight interesting or important parts of a document. You can enclosing them in a red oval or a green box. Or you can highlight, underline or strike out text.
 
 The notes are saved with the document, and are seen by anyone who reads it. The notes are not saved in the PDF data itself, so other PDF viewers will probably not be able to show the notes. 
 
@@ -429,7 +429,7 @@ The notes are saved with the document, and are seen by anyone who reads it. The 
 @enumerate
 @item Choose Tools > Text Tool. 
 @item Select the text you want to highlight.
-@item Choose Notes > Circle, Notes > Box, or Notes > Highlight. 
+@item Choose Notes > Circle, Notes > Box, Notes > Highlight, Notes > Strike Out, or Notes > Underline. 
 @item You may drag in the document until the note is located where you want and has the size you want.
 @end enumerate
 @endbox
