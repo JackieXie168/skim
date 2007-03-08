@@ -598,6 +598,10 @@
                 description="Box."/>
             <enumerator name="highlight note" code="NHil"
                 description="Highlight."/>
+            <enumerator name="strike out note" code="NStr"
+                description="Strike out highlight."/>
+            <enumerator name="underline note" code="NUnd"
+                description="Underline highlight."/>
         </enumeration>
 
         <command name="go to" code="SKIMGoTo"
