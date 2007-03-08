@@ -163,6 +163,8 @@ You can also use toolbar buttons to zoom. To add zoom buttons to the toolbar, ch
 
 You can also use the contextual menu to zoom.
 
+If your mouse or other input device has a scroll wheel, you can also zoom by holding the Option key and moving the scroll wheel.
+
 You cannot save changes to the way you view a page.
 
 @c ======================================================================================
