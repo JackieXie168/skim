@@ -149,6 +149,13 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
+		CE157D880B9F89CE00D5B03F /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 2A37F4A9FDCFA73011CA2CEA /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = CE4DA8D60B9E16100039E89C /* Skim Help */;
+			remoteInfo = "Skim Help";
+		};
 		CE4DA9270B9E19400039E89C /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 2A37F4A9FDCFA73011CA2CEA /* Project object */;
@@ -684,6 +691,7 @@
 			buildRules = (
 			);
 			dependencies = (
+				CE157D890B9F89CE00D5B03F /* PBXTargetDependency */,
 			);
 			name = Skim;
 			productInstallPath = "$(HOME)/Applications";
@@ -799,8 +807,11 @@
 			files = (
 			);
 			inputPaths = (
+				"$(SRCROOT)/English.lproj/Skim Help/skim.texi",
+				"$(SRCROOT)/English.lproj/Skim Help/version.texi",
 			);
 			outputPaths = (
+				"$(SRCROOT)/English.lproj/Skim Help/Skim Help.html",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
@@ -902,6 +913,11 @@
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
+		CE157D890B9F89CE00D5B03F /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = CE4DA8D60B9E16100039E89C /* Skim Help */;
+			targetProxy = CE157D880B9F89CE00D5B03F /* PBXContainerItemProxy */;
+		};
 		CE4DA9280B9E19400039E89C /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			target = CE4DA8D60B9E16100039E89C /* Skim Help */;
