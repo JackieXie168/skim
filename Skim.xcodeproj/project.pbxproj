@@ -148,6 +148,8 @@
 		F977319F0B939B7D002A7823 /* libbz2.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = F977319E0B939B7D002A7823 /* libbz2.dylib */; };
 		F97751600B37460100DF673B /* ConversionProgressWindow.nib in Resources */ = {isa = PBXBuildFile; fileRef = F977515E0B37460100DF673B /* ConversionProgressWindow.nib */; };
 		F97751630B37461000DF673B /* SKPSProgressController.m in Sources */ = {isa = PBXBuildFile; fileRef = F97751620B37461000DF673B /* SKPSProgressController.m */; };
+		F98DC2680BA090D8008E46EC /* BDSKImagePopUpButton.m in Sources */ = {isa = PBXBuildFile; fileRef = F98DC2650BA090D8008E46EC /* BDSKImagePopUpButton.m */; };
+		F98DC2690BA090D8008E46EC /* BDSKImagePopUpButtonCell.m in Sources */ = {isa = PBXBuildFile; fileRef = F98DC2670BA090D8008E46EC /* BDSKImagePopUpButtonCell.m */; };
 		F98E24BF0B702D9400914AF0 /* Carbon.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F98E24BE0B702D9400914AF0 /* Carbon.framework */; };
 		F9CDD67B0B837A7F006363C3 /* SKPreferenceController.m in Sources */ = {isa = PBXBuildFile; fileRef = CE4EC4F40B7E24490091F228 /* SKPreferenceController.m */; };
 /* End PBXBuildFile section */
@@ -157,7 +159,7 @@
 			isa = PBXContainerItemProxy;
 			containerPortal = 2A37F4A9FDCFA73011CA2CEA /* Project object */;
 			proxyType = 1;
-			remoteGlobalIDString = CE4DA8D60B9E16100039E89C /* Skim Help */;
+			remoteGlobalIDString = CE4DA8D60B9E16100039E89C;
 			remoteInfo = "Skim Help";
 		};
 		CE4DA9270B9E19400039E89C /* PBXContainerItemProxy */ = {
@@ -205,7 +207,7 @@
 		45A3BD380B4F097D002B297F /* InitialUserDefaults.plist */ = {isa = PBXFileReference; explicitFileType = text.xml; fileEncoding = 4; path = InitialUserDefaults.plist; sourceTree = "<group>"; };
 		45B113BF0B329A7E00DE0660 /* LICENSE */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = LICENSE; sourceTree = "<group>"; };
 		8D15AC360486D014006FF6A4 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = Info.plist; sourceTree = "<group>"; };
-		8D15AC370486D014006FF6A4 /* Skim.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Skim.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		8D15AC370486D014006FF6A4 /* Skim.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = Skim.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		CE0463C90B84D24300C11E4A /* SKApplication.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SKApplication.h; sourceTree = "<group>"; };
 		CE0463CA0B84D24300C11E4A /* SKApplication.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SKApplication.m; sourceTree = "<group>"; };
 		CE0464A00B84E3E400C11E4A /* OBUtilities.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OBUtilities.h; sourceTree = "<group>"; };
@@ -347,6 +349,10 @@
 		F977515F0B37460100DF673B /* English */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = English; path = English.lproj/ConversionProgressWindow.nib; sourceTree = "<group>"; };
 		F97751610B37461000DF673B /* SKPSProgressController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SKPSProgressController.h; sourceTree = "<group>"; };
 		F97751620B37461000DF673B /* SKPSProgressController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SKPSProgressController.m; sourceTree = "<group>"; };
+		F98DC2640BA090D8008E46EC /* BDSKImagePopUpButton.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BDSKImagePopUpButton.h; sourceTree = "<group>"; };
+		F98DC2650BA090D8008E46EC /* BDSKImagePopUpButton.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BDSKImagePopUpButton.m; sourceTree = "<group>"; };
+		F98DC2660BA090D8008E46EC /* BDSKImagePopUpButtonCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BDSKImagePopUpButtonCell.h; sourceTree = "<group>"; };
+		F98DC2670BA090D8008E46EC /* BDSKImagePopUpButtonCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BDSKImagePopUpButtonCell.m; sourceTree = "<group>"; };
 		F98E24BE0B702D9400914AF0 /* Carbon.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Carbon.framework; path = /System/Library/Frameworks/Carbon.framework; sourceTree = "<absolute>"; };
 /* End PBXFileReference section */
 
@@ -578,6 +584,10 @@
 				CE0710140B89BDD600733CC8 /* BDSKContainerView.m */,
 				CE0710150B89BDD600733CC8 /* BDSKEdgeView.h */,
 				CE0710160B89BDD600733CC8 /* BDSKEdgeView.m */,
+				F98DC2640BA090D8008E46EC /* BDSKImagePopUpButton.h */,
+				F98DC2650BA090D8008E46EC /* BDSKImagePopUpButton.m */,
+				F98DC2660BA090D8008E46EC /* BDSKImagePopUpButtonCell.h */,
+				F98DC2670BA090D8008E46EC /* BDSKImagePopUpButtonCell.m */,
 				CE3A41560B790C56006B64D3 /* BDSKDragImageView.h */,
 				CE3A41570B790C56006B64D3 /* BDSKDragImageView.m */,
 				CE2DED6A0B86334900D0DA12 /* BDSKFindFieldEditor.h */,
@@ -916,6 +926,8 @@
 				CEA575CE0B9206E60003D2E7 /* SKNoteOutlineView.m in Sources */,
 				CEA575E50B9207B80003D2E7 /* SKThumbnailTableView.m in Sources */,
 				CEA575FD0B9208B60003D2E7 /* SKOutlineView.m in Sources */,
+				F98DC2680BA090D8008E46EC /* BDSKImagePopUpButton.m in Sources */,
+				F98DC2690BA090D8008E46EC /* BDSKImagePopUpButtonCell.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

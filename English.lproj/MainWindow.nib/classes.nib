@@ -12,6 +12,12 @@
             SUPERCLASS = NSView; 
         }, 
         {CLASS = BDSKEdgeView; LANGUAGE = ObjC; SUPERCLASS = BDSKContainerView; }, 
+        {
+            CLASS = BDSKImagePopUpButton; 
+            LANGUAGE = ObjC; 
+            OUTLETS = {delegate = id; }; 
+            SUPERCLASS = NSPopUpButton; 
+        }, 
         {CLASS = FirstResponder; LANGUAGE = ObjC; SUPERCLASS = NSObject; }, 
         {ACTIONS = {splitViewDoubleClick = id; }; CLASS = NSObject; LANGUAGE = ObjC; }, 
         {CLASS = NSSegmentedControl; LANGUAGE = ObjC; SUPERCLASS = NSControl; }, 
@@ -89,6 +95,7 @@
                 leftSideCollapsibleView = BDSKCollapsibleView; 
                 leftSideContentBox = NSBox; 
                 leftSideEdgeView = BDSKEdgeView; 
+                markupPopUpButton = NSPopUpButton; 
                 noteArrayController = NSArrayController; 
                 noteOutlineView = SKNoteOutlineView; 
                 noteTreeController = NSTreeController; 

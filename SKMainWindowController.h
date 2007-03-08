@@ -58,7 +58,7 @@ typedef struct _SKPDFViewState {
 } SKPDFViewState;
 
 @class PDFOutline, SKThumbnail;
-@class SKPDFView, SKOutlineView, SKNoteOutlineView, SKThumbnailTableView, SKSnapshotTableView, SKSplitView, BDSKCollapsibleView, BDSKEdgeView;
+@class SKPDFView, SKOutlineView, SKNoteOutlineView, SKThumbnailTableView, SKSnapshotTableView, SKSplitView, BDSKCollapsibleView, BDSKEdgeView, BDSKImagePopUpButton;
 @class SKFullScreenWindow, SKNavigationWindow, SKSideWindow, SKSnapshotWindowController;
 
 @interface SKMainWindowController : NSWindowController {
@@ -135,6 +135,7 @@ typedef struct _SKPDFViewState {
     IBOutlet NSSegmentedControl *toolModeButton;
     IBOutlet NSTextField        *scaleField;
     IBOutlet NSPopUpButton      *displayBoxPopUpButton;
+    IBOutlet BDSKImagePopUpButton *markupPopUpButton;
     NSMutableDictionary         *toolbarItems;
     
     IBOutlet NSWindow           *choosePageSheet;
