@@ -53,7 +53,13 @@ NSString *SKAnnotationWillChangeNotification = @"SKAnnotationWillChangeNotificat
 NSString *SKAnnotationDidChangeNotification = @"SKAnnotationDidChangeNotification";
 
 @interface PDFAnnotation (PDFAnnotationPrivateDeclarations)
+- (void)setPage:(PDFPage *)page;
 - (void)drawWithBox:(CGPDFBox)box inContext:(CGContextRef)context;
+@end
+
+@interface PDFSelection (PDFSelectionPrivateDeclarations)
+- (int)numberOfRangesOnPage:(PDFPage *)page;
+- (NSRange)rangeAtIndex:(int)index onPage:(PDFPage *)page;
 @end
 
 @implementation PDFAnnotation (SKExtensions)
@@ -82,8 +88,15 @@ NSString *SKAnnotationDidChangeNotification = @"SKAnnotationDidChangeNotificatio
         self = [[SKPDFAnnotationCircle alloc] initWithBounds:bounds];
     } else if ([type isEqualToString:@"Square"]) {
         self = [[SKPDFAnnotationSquare alloc] initWithBounds:bounds];
-    } else if ([type isEqualToString:@"Highlight"]) {
-        self = [[SKPDFAnnotationHighlight alloc] initWithBounds:bounds];
+    } else if ([type isEqualToString:@"Highlight"] || [type isEqualToString:@"MarkUp"]) {
+        self = [[SKPDFAnnotationMarkup alloc] initWithBounds:bounds];
+        [(SKPDFAnnotationMarkup *)self setMarkupType:kPDFMarkupTypeHighlight];
+    } else if ([type isEqualToString:@"StrikeOut"]) {
+        self = [[SKPDFAnnotationMarkup alloc] initWithBounds:bounds];
+        [(SKPDFAnnotationMarkup *)self setMarkupType:kPDFMarkupTypeStrikeOut];
+    } else if ([type isEqualToString:@"Underline"]) {
+        self = [[SKPDFAnnotationMarkup alloc] initWithBounds:bounds];
+        [(SKPDFAnnotationMarkup *)self setMarkupType:kPDFMarkupTypeUnderline];
     } else {
         self = nil;
     }
@@ -313,7 +326,7 @@ static NSColor *squareColor = nil;
 
 #pragma mark -
 
-@implementation SKPDFAnnotationHighlight
+@implementation SKPDFAnnotationMarkup
 
 static NSColor *markupColor = nil;
 
@@ -322,7 +335,6 @@ static NSColor *markupColor = nil;
         if (markupColor == nil)
             markupColor = [[NSColor yellowColor] retain];
         [self setColor:markupColor];
-        [self setMarkupType:kPDFMarkupTypeHighlight];
         /*
          http://www.cocoabuilder.com/archive/message/cocoa/2007/2/16/178891
           The docs are wrong (as is Adobe's spec).  The ordering is:
@@ -349,49 +361,42 @@ static NSArray *createQuadPointsWithBounds(const NSRect bounds, const NSPoint or
     return [[NSArray alloc] initWithObjects:[NSValue valueWithPoint:p0], [NSValue valueWithPoint:p1], [NSValue valueWithPoint:p2], [NSValue valueWithPoint:p3], nil];
 }
 
-- (id)initWithSelection:(PDFSelection *)sel {
-    
-    PDFPage *page = [[sel pages] count] ? [[sel pages] objectAtIndex:0] : nil;
-    
-    if (page && (self = [self initWithBounds:[sel boundsForPage:page]])) {
-        
-        NSRect selBounds = [sel boundsForPage:page];
-        
-        // Take the middle of the lowest selection and hit-test for lines; problem is that there may be no characters at any y value along x = NSMidX(selBounds).  We really should do this on a per-character basis, since the selection may not extend to the end of a line.  There are some private methods on PDFSelection that look useful, so it must have character information.  
-        unsigned i, iMax = floor(NSMaxY(selBounds));
-        NSPoint p;
-        p.x = floor(NSMidX(selBounds));
-        NSRect r1 = NSZeroRect;
-        NSMutableArray *selections = [NSMutableArray array];
-        
-        for (i = ceil(NSMinY(selBounds)); i < iMax; i++) {
-            p.y = i;
-            // get the rect of this line
-            sel = [page selectionForLineAtPoint:p];
-            if (sel) {
-                // sadly, using an NSMutableSet doesn't work; selections seem to use pointer equality
-                NSRect r2 = [sel boundsForPage:page];
-                if (!NSEqualRects(r1, r2)) {
-                    [selections addObject:sel];
+- (void)setQuadrilateralPointsFromRect:(NSRect)rect inPage:(PDFPage *)page {
+    if (page == nil)
+        return;
+    PDFSelection *sel = [page selectionForRect:rect];
+    if (sel) {
+        unsigned i, iMax = [sel numberOfRangesOnPage:page];
+        NSMutableArray *quadPoints = [[NSMutableArray alloc] init];
+        for (i = 0; i < iMax; i++) {
+            NSRange range = [sel rangeAtIndex:i onPage:page];
+            unsigned int j;
+            NSRect r1 = NSZeroRect;
+            for (j = range.location; j < NSMaxRange(range); j++) {
+                NSRect r2 = [page characterBoundsAtIndex:j];
+                if (NSEqualRects(r1, NSZeroRect)) {
+                    r1 = r2;
+                } else if (fabs(NSMaxX(r1) - NSMinX(r2)) < 0.1 * NSWidth(r2) && fabs(NSMidX(r1) - NSMidY(r2)) < 0.5 * NSWidth(r2)) {
+                    r1 = NSUnionRect(r1, r2);
+                } else {
+                    NSArray *quadLine = createQuadPointsWithBounds(r1, [self bounds].origin);
+                    [quadPoints addObjectsFromArray:quadLine];
+                    [quadLine release];
                     r1 = r2;
                 }
             }
+            if (NSEqualRects(r1, NSZeroRect) == NO) {
+                NSArray *quadLine = createQuadPointsWithBounds(r1, [self bounds].origin);
+                [quadPoints addObjectsFromArray:quadLine];
+                [quadLine release];
+            }
         }
         
-        // now create quad points, using the first object in the selections array as the base point
-        NSMutableArray *quadPoints = [[NSMutableArray alloc] initWithCapacity:[selections count]];
-        NSEnumerator *selEnum = [selections objectEnumerator];
-        if ([selections count])
-            p = [[selections objectAtIndex:0] boundsForPage:page].origin;
-        while (sel = [selEnum nextObject]) {
-            NSArray *quadLine = createQuadPointsWithBounds([sel boundsForPage:page], p);
-            [quadPoints addObjectsFromArray:quadLine];
-            [quadLine release];
-        }
         [self setQuadrilateralPoints:quadPoints];
         [quadPoints release];
+    } else {
+        [self setQuadrilateralPoints:[NSArray array]];
     }
-    return self;
 }
 
 - (void)setDefaultColor:(NSColor *)newColor {
@@ -407,8 +412,14 @@ static NSArray *createQuadPointsWithBounds(const NSRect bounds, const NSPoint or
 - (BOOL)isResizable { return YES; }
 
 - (void)setBounds:(NSRect)bounds {
-    [super setBounds:bounds];  
+    [super setBounds:bounds];
+    [self setQuadrilateralPointsFromRect:[self bounds] inPage:[self page]];
     [[NSNotificationCenter defaultCenter] postNotificationName:SKAnnotationDidChangeNotification object:self];
+}
+
+- (void)setPage:(PDFPage *)page {
+    [super setPage:page];
+    [self setQuadrilateralPointsFromRect:[self bounds] inPage:[self page]];
 }
 
 - (void)setContents:(NSString *)contents {
@@ -434,8 +445,14 @@ static NSArray *createQuadPointsWithBounds(const NSRect bounds, const NSPoint or
     CGContextSetFillColorSpace(context, colorSpace);
     CGColorSpaceRelease(colorSpace);
     
-    CGContextSetBlendMode(context, kCGBlendModeMultiply);
+    if ([self markupType] == kPDFMarkupTypeHighlight)
+        CGContextSetBlendMode(context, kCGBlendModeMultiply);
     
+    [super drawWithBox:box inContext:context];
+    
+    CGContextRestoreGState(context);
+    
+    /*
     NSColor *c = [self color];
     float color[4] = { [c redComponent], [c greenComponent], [c blueComponent], [c alphaComponent] };
     CGContextSetFillColor(context, color);
@@ -464,7 +481,7 @@ static NSArray *createQuadPointsWithBounds(const NSRect bounds, const NSPoint or
     bounds = [self bounds];
     CGContextFillRect(context, *(CGRect*)&bounds);
     
-    CGContextRestoreGState(context);
+    */
 }
 
 @end

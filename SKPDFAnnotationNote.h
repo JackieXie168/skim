@@ -77,7 +77,8 @@ extern NSString *SKAnnotationDidChangeNotification;
 @interface SKPDFAnnotationSquare : PDFAnnotationSquare
 @end
 
-@interface SKPDFAnnotationHighlight : PDFAnnotationMarkup
+@interface SKPDFAnnotationMarkup : PDFAnnotationMarkup
+- (void)setQuadrilateralPointsFromRect:(NSRect)rect inPage:(PDFPage *)page;
 @end
 
 @interface SKPDFAnnotationFreeText : PDFAnnotationFreeText
