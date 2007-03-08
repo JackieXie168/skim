@@ -120,8 +120,9 @@ my $DEBUG_ELEMENTS  = 32;
 my $DEBUG_USER  = 64;
 my $DEBUG_L2H   = 128;
 
-my $ERROR = "***";                 # prefix for errors
-my $WARN  = "**";                  # prefix for warnings
+# arm: modified for compatibility with Xcode's build output
+my $ERROR = "error: ";                    # prefix for errors
+my $WARN  = "warning: ";                  # prefix for warnings
 
 my $VARRE = '[\w\-]+';          # RE for a variable name
 my $NODERE = '[^:]+';             # RE for node names
@@ -12565,9 +12566,6 @@ sub echo_warn($;$)
     chomp ($text);
     my $line_number = shift;
     warn "$WARN $text " . format_line_number($line_number) . "\n";
-# the following two lines are added for Xcode
-    my $text = "$WARN $text " . format_line_number($line_number);
-    print STDERR "warning: $text \n";
 }
 
 sub echo_error($;$)
@@ -12576,9 +12574,6 @@ sub echo_error($;$)
     chomp ($text);
     my $line_number = shift;
     warn "$ERROR $text " . format_line_number($line_number) . "\n";
-# the following two lines are added for Xcode
-    my $text = "$ERROR $text " . format_line_number($line_number);
-    print STDERR "error: $text \n";
 }
 
 sub format_line_number($)
