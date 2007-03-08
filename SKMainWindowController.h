@@ -135,6 +135,8 @@ typedef struct _SKPDFViewState {
     IBOutlet NSSegmentedControl *toolModeButton;
     IBOutlet NSTextField        *scaleField;
     IBOutlet NSPopUpButton      *displayBoxPopUpButton;
+    IBOutlet BDSKImagePopUpButton *notePopUpButton;
+    IBOutlet BDSKImagePopUpButton *circlePopUpButton;
     IBOutlet BDSKImagePopUpButton *markupPopUpButton;
     NSMutableDictionary         *toolbarItems;
     
