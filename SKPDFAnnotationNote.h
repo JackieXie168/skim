@@ -77,7 +77,7 @@ extern NSString *SKAnnotationDidChangeNotification;
 @interface SKPDFAnnotationSquare : PDFAnnotationSquare
 @end
 
-@interface SKPDFAnnotationMarkup : PDFAnnotationMarkup
+@interface SKPDFAnnotationHighlight : PDFAnnotationMarkup
 @end
 
 @interface SKPDFAnnotationFreeText : PDFAnnotationFreeText

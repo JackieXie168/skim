@@ -81,7 +81,7 @@ NSString *SKAnnotationDidChangeNotification = @"SKAnnotationDidChangeNotificatio
     } else if ([type isEqualToString:@"Square"]) {
         self = [[SKPDFAnnotationSquare alloc] initWithBounds:bounds];
     } else if ([type isEqualToString:@"Highlight"]) {
-        self = [[SKPDFAnnotationMarkup alloc] initWithBounds:bounds];
+        self = [[SKPDFAnnotationHighlight alloc] initWithBounds:bounds];
     } else {
         self = nil;
     }
@@ -311,7 +311,7 @@ static NSColor *squareColor = nil;
 
 #pragma mark -
 
-@implementation SKPDFAnnotationMarkup
+@implementation SKPDFAnnotationHighlight
 
 static NSColor *markupColor = nil;
 
