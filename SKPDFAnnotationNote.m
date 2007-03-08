@@ -406,7 +406,7 @@ static NSArray *createQuadPointsWithBounds(const NSRect bounds, const NSPoint or
                 NSRect charRect = [page characterBoundsAtIndex:j];
                 if (NSEqualRects(lineRect, NSZeroRect)) {
                     lineRect = charRect;
-                } else if (fabs(NSMaxX(lineRect) - NSMinX(charRect)) < 0.1 * NSWidth(charRect) && fabs(NSMidX(lineRect) - NSMidY(charRect)) < 0.5 * NSHeight(charRect)) {
+                } else if (fabs(NSMaxX(lineRect) - NSMinX(charRect)) < 0.1 * NSWidth(charRect) && fabs(NSMinY(lineRect) - NSMinY(charRect)) < 0.1 * NSHeight(charRect) && fabs(NSMaxY(lineRect) - NSMaxY(charRect)) < 0.1 * NSHeight(charRect)) {
                     lineRect = NSUnionRect(lineRect, charRect);
                 } else {
                     NSArray *quadLine = createQuadPointsWithBounds(lineRect, [self bounds].origin);
