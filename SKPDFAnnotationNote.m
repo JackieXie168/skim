@@ -76,6 +76,8 @@ NSString *SKAnnotationDidChangeNotification = @"SKAnnotationDidChangeNotificatio
             [(SKPDFAnnotationNote *)self setText:text];
     } else if ([type isEqualToString:@"FreeText"]) {
         self = [[SKPDFAnnotationFreeText alloc] initWithBounds:bounds];
+        if ([dict objectForKey:@"font"])
+            [(SKPDFAnnotationFreeText *)self setFont:[dict objectForKey:@"font"]];
     } else if ([type isEqualToString:@"Circle"]) {
         self = [[SKPDFAnnotationCircle alloc] initWithBounds:bounds];
     } else if ([type isEqualToString:@"Square"]) {
@@ -433,6 +435,12 @@ static NSColor *freeTextColor = nil;
     return self;
 }
 
+- (NSDictionary *)dictionaryValue{
+    NSMutableDictionary *dict = (NSMutableDictionary *)[super dictionaryValue];
+    [dict setValue:[self font] forKey:@"font"];
+    return dict;
+}
+
 - (void)setDefaultColor:(NSColor *)newColor {
     [self setColor:newColor];
     if (freeTextColor != newColor) {
@@ -457,6 +465,11 @@ static NSColor *freeTextColor = nil;
 
 - (void)setColor:(NSColor *)color {
     [super setColor:color];
+    [[NSNotificationCenter defaultCenter] postNotificationName:SKAnnotationDidChangeNotification object:self];
+}
+
+- (void)setFont:(NSFont *)font {
+    [super setFont:font];
     [[NSNotificationCenter defaultCenter] postNotificationName:SKAnnotationDidChangeNotification object:self];
 }
 
