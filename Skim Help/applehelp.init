@@ -12,7 +12,45 @@ $things_map{'dots'} = '<small>...</small>';
 $things_map{'enddots'} = '<small>....</small>';
 $things_map{'euro'} = 'Euro';
 $style_map{'sansserif'} = {};
+$simple_map{'*'} = '<br/>';
 # &quot; is not in html 3.2
+
+# External stylesheet:
+$CSS_LINES = "<link href=\"sty/skimhelp.css\" rel=\"stylesheet\" media=\"all\" />";
+
+@MISC_BUTTONS = ('Top');
+@SECTION_BUTTONS = @MISC_BUTTONS;
+@CHAPTER_BUTTONS = @MISC_BUTTONS;
+@NODE_FOOTER_BUTTONS = ();
+
+# horizontal rules
+$SMALL_RULE = '';
+$DEFAULT_RULE = '';
+$MIDDLE_RULE = '';
+$BIG_RULE = '';
+
+# placeholder for Apple meta tags
+$EXTRA_HEAD= "<!--AppleMeta-->";
+
+$DO_CONTENTS = 1;
+$SECTION_NAVIGATION = 1;
+$WORDS_IN_PAGE = 1000000;
+
+$AFTER_NAVIGATION = "<div class=\"mainbox\">";
+$PRE_BODY_CLOSE = "</div>";
+
+# formatting functions
+
+#$summary_letter    = \&t2h_html32_summary_letter;
+$protect_text       = \&t2h_html32_protect_text;
+$heading            = \&t2h_html32_heading;
+$preformatted       = \&t2h_html32_preformatted;
+$menu               = \&t2h_html32_menu;
+$foot_section       = \&t2h_html32_foot_section;
+#$cartouche         = \&t2h_html32_cartouche;
+#$listoffloats      = \&t2h_html32_listoffloats;
+#$float             = \&t2h_html32_float;
+
 sub t2h_html32_protect_text($)
 {
    my $text = shift;
@@ -52,7 +90,6 @@ sub t2h_html32_preformatted($$$)
     return "<pre>$text</pre>";
 }
 
-
 # a simple menu entry ref in case we aren't in a standard menu context
 sub t2h_html32_foot_section($)
 {
@@ -60,6 +97,7 @@ sub t2h_html32_foot_section($)
     unshift (@$lines, "<hr>\n", "<h3>Footnotes</h3>\n");
     return $lines; 
 }
+
 # a whole menu
 sub t2h_html32_menu($)
 {
@@ -71,205 +109,7 @@ sub t2h_html32_menu($)
     }
 }
 
-
-#$summary_letter    = \&t2h_html32_summary_letter;
-$protect_text      = \&t2h_html32_protect_text;
-$heading           = \&t2h_html32_heading;
-$preformatted      = \&t2h_html32_preformatted;
-$menu              = \&t2h_html32_menu;
-$foot_section      = \&t2h_html32_foot_section;
-#$cartouche         = \&t2h_html32_cartouche;
-#$listoffloats      = \&t2h_html32_listoffloats;
-#$float             = \&t2h_html32_float;
-
-# Embedded stylesheet:
-$CSS_LINES = <<'EOT';
-<style type="text/css">
-body {
-    margin-top: 20px;
-    margin-bottom: 20px;
-    margin-left: 20px;
-    margin-right: 20px;
-}
-body  {
-    margin: 2px 12px 12px
-    }
-
-h1            {
-    font-size: 11pt;
-    font-family: "Lucida Grande", Arial, sans-serif;
-    margin-bottom: 0
-    }
-
-
-h2               {
-    font-size: 11pt;
-    font-family: "Lucida Grande", Arial, sans-serif;
-    margin-top: 0;
-    margin-bottom: 0
-    }
-
-h3   {
-    font-size: 9pt;
-    font-family: "Lucida Grande", Arial, sans-serif;
-    font-weight: bold;
-    margin-top: -4px;
-    margin-bottom: -4px
-    }
-
-p               {
-    font-size: 9pt;
-    font-family: "Lucida Grande", Arial, sans-serif;
-    line-height: 12pt;
-    text-decoration: none
-    }
-
-
-ol                     {
-    font-size: 9pt;
-    font-family: "Lucida Grande", Arial, sans-serif;
-    line-height: 12pt;
-    list-style-position: outside;
-    margin-top: 12px;
-    margin-bottom: 12px;
-    margin-left: -18px;
-    padding-left: 40px
-    }
-
-
-ol li         {
-    margin-top: 6px;
-    margin-bottom: 6px
-    }
-
-
-ol p        {
-    margin-top: 6px;
-    margin-bottom: 6px
-    }
-
-
-ul                     {
-    font-size: 9pt;
-    font-family: "Lucida Grande", Arial, sans-serif;
-    line-height: 12pt;
-    list-style-type: square;
-    list-style-position: outside;
-    margin-top: 12px;
-    margin-bottom: 12px;
-    margin-left: -24px;
-    padding-left: 40px
-    }
-
-
-ul li        {
-    margin-top: 6px;
-    margin-bottom: 6px
-    }
-
-
-ul p        {
-    margin-top: 6px;
-    margin-bottom: 6px
-    }
-
-
-a         {
-    color: #00f;
-    font-size: 9pt;
-    font-family: "Lucida Grande", Arial, sans-serif;
-    line-height: 12pt;
-    text-decoration: none
-    }
-
-
-a:hover    {
-    color: #00f;
-    font-family: "Lucida Grande", Arial, sans-serif;
-    text-decoration: underline
-    }
-
-hr  {
-    text-decoration: none;
-    border: solid 1px #bfbfbf
-    }
-
-td  {
-    padding: 6px
-    }
-.banner {
-    background-color: #f2f2f2;
-    background-repeat: no-repeat;
-    padding: -2px 6px 0;
-    position: fixed;
-    top: 0; left: 0; width: 100%; height: 1.2em;
-    float: left;
-    border-bottom: 1px solid #bfbfbf
-    }
-.pagetitle                {
-    margin-top: 12px;
-    margin-bottom: -3px;
-    margin-left: 40px;
-    width: 88%;
-    border: solid 1px #fff
-    }
-.mainbox             {
-    margin-top: 36px;
-    padding-right: 6px
-    }
-.taskbox {
-    background-color: #e6edff;
-    list-style-type: decimal;
-    list-style-position: outside;
-    margin: 12px 0;
-    padding: 2px 12px;
-    border: solid 1px #bfbfbf
-    }
-.banner  a {
-    position: absolute;
-    top: 2px;
-    left: 10px
-    margin: -9px 0 -6px
-    }
-.taskbox  h2 {
-    font-size: 9pt;
-    margin-top: 8px;
-    margin-bottom: -4px
-    }
-.copyright {
-    font-size: 7pt
-    }
-.machelp   {
-    position: absolute; top: 2px; left: 10p
-    }
-</style>
-EOT
-
-#@CHAPTER_BUTTONS = @MISC_BUTTONS;
-
-@MISC_BUTTONS = ('Top');
-@SECTION_BUTTONS = ('Top');
-@NODE_FOOTER_BUTTONS = ();
-
-# horizontal rules
-$SMALL_RULE = '';
-$DEFAULT_RULE = '';
-$MIDDLE_RULE = '';
-$BIG_RULE = '';
-
-$print_page_foot = \&appleHelp_print_page_foot;
-
-$EXTRA_HEAD= "<!--AppleMeta-->";
-
-$DO_CONTENTS = 1;
-$SECTION_NAVIGATION = 1;
-$WORDS_IN_PAGE = 1000000;
-
-$AFTER_NAVIGATION = "<div class=\"mainbox\">";
-$PRE_BODY_CLOSE = "</div>";
-
-$simple_map{'*'} = '<br/>';
-
+# an image
 $image = \&appleHelp_image;
 
 sub appleHelp_image{
@@ -281,23 +121,7 @@ sub appleHelp_image{
    return "<img src=\"$file_name\" alt=\"$base\">";
 }
 
-$index_entry_label = \&appleHelp_index_entry_label;
-
-sub appleHelp_index_entry_label{
-
-    $id = shift;
-    $was_pre = shift;
-    $lin = shift;
-    $anchor_str = "<div class=\"machelp\">";
-    $anchor_str .= "\n<a name=\"$id\"></a>\n";
-    $label_str = "<META name=\"keywords\" content=\"$lin\">";
-    $anchor_str .= $label_str;
-    $anchor_str .= "\n</div>\n";
-    $anchor_str .= "\n" if $was_pre;
-    print "FOUND" if $was_pre;
-    return $anchor_str;
-}
-
+# indexes
 $index_summary = \&appleHelp_index_summary;
 $index_letter = \&appleHelp_index_letter;
 $print_index = \&appleHelp_print_index;
@@ -334,8 +158,8 @@ sub appleHelp_index_entry($$$$)
     return '<tr><td valign="top">' . &$anchor('', $text_href, $entry) . "</td></tr>\n";
 }
 
+# footers
 $print_page_foot = \&appleHelp_print_page_foot;
-
 $print_Top_footer = \&appleHelp_print_page_foot;
 
 sub appleHelp_print_page_foot{
@@ -347,14 +171,17 @@ $PRE_BODY_CLOSE
 EOT
 }
 
-$print_head_navigation = \&appleHelp_print_top_navigation;
+# head and foot navigation
+$print_head_navigation = \&appleHelp_print_head_navigation;
 $print_foot_navigation = \&appleHelp_print_no_navigation;
 
-sub appleHelp_print_top_navigation{
+sub appleHelp_print_head_navigation{
     my $fh = shift;
     my $buttons = shift;
+    print $fh "<div class=\"anchor\">\n";
     main::print_lines($fh, $Texi2HTML::THIS_HEADER);
-    print $fh "<div class=\"banner\">\n";
+    print $fh "</div>\n" .
+              "<div class=\"banner\">\n";
     for my $button (@$buttons)
     {
         if ($Texi2HTML::HREF{$button})
@@ -366,11 +193,12 @@ sub appleHelp_print_top_navigation{
                               $Texi2HTML::HREF{$button},
                               $Texi2HTML::NAME{$button},
                               $btitle
-                             )
-                              ;
+                             );
         }
     }
-    print $fh "\n</div>\n" . $AFTER_NAVIGATION . "\n"
+    print $fh "\n</div>\n" .
+          $AFTER_NAVIGATION .
+          "\n"
 }
 
 sub appleHelp_print_no_navigation{
