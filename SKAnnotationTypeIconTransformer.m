@@ -60,6 +60,10 @@
         return [NSImage imageNamed:@"SquareToolAdorn"];
     if ([type isEqualToString:@"Highlight"])
         return [NSImage imageNamed:@"HighlightToolAdorn"];
+    if ([type isEqualToString:@"StrikeOut"])
+        return [NSImage imageNamed:@"StrikeOutToolAdorn"];
+    if ([type isEqualToString:@"Underline"])
+        return [NSImage imageNamed:@"UnderlineToolAdorn"];
     return nil;
 }
 

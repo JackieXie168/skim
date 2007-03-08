@@ -662,6 +662,16 @@ NSString *SKSkimNotePboardType = @"SKSkimNotePboardType";
         [item setRepresentedObject:[NSValue valueWithPoint:point]];
         [item setTag:SKHighlightNote];
         [item setTarget:self];
+
+        item = [submenu addItemWithTitle:NSLocalizedString(@"Strike Out", @"Menu item title") action:@selector(addAnnotationFromMenu:) keyEquivalent:@""];
+        [item setRepresentedObject:[NSValue valueWithPoint:point]];
+        [item setTag:SKStrikeOutNote];
+        [item setTarget:self];
+
+        item = [submenu addItemWithTitle:NSLocalizedString(@"Underline", @"Menu item title") action:@selector(addAnnotationFromMenu:) keyEquivalent:@""];
+        [item setRepresentedObject:[NSValue valueWithPoint:point]];
+        [item setTag:SKUnderlineNote];
+        [item setTarget:self];
         
         item = [menu addItemWithTitle:NSLocalizedString(@"New Note", @"Menu item title") action:NULL keyEquivalent:@""];
         [item setSubmenu:submenu];
