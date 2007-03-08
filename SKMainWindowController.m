@@ -92,6 +92,8 @@ static NSString *SKDocumentToolbarNewAnchoredNoteItemIdentifier = @"SKDocumentTo
 static NSString *SKDocumentToolbarNewCircleNoteItemIdentifier = @"SKDocumentToolbarNewCircleNoteItemIdentifier";
 static NSString *SKDocumentToolbarNewSquareNoteItemIdentifier = @"SKDocumentToolbarNewSquareNoteItemIdentifier";
 static NSString *SKDocumentToolbarNewHighlightNoteItemIdentifier = @"SKDocumentToolbarNewHighlightNoteItemIdentifier";
+static NSString *SKDocumentToolbarNewStrikeOutNoteItemIdentifier = @"SKDocumentToolbarNewStrikeOutNoteItemIdentifier";
+static NSString *SKDocumentToolbarNewUnderlineNoteItemIdentifier = @"SKDocumentToolbarNewUnderlineNoteItemIdentifier";
 static NSString *SKDocumentToolbarToggleDrawerItemIdentifier = @"SKDocumentToolbarToggleDrawerItemIdentifier";
 static NSString *SKDocumentToolbarInfoItemIdentifier = @"SKDocumentToolbarInfoItemIdentifier";
 static NSString *SKDocumentToolbarToolModeItemIdentifier = @"SKDocumentToolbarToolModeItemIdentifier";
@@ -682,11 +684,14 @@ static NSString *SKDocumentToolbarNotesPaneItemIdentifier = @"SKDocumentToolbarN
     
     if (type == -1) {
         int modifiers = GetCurrentKeyModifiers();
-        if (modifiers & optionKey) {
-            if (modifiers & shiftKey)
-                type = SKHighlightNote;
-            else
-                type = SKAnchoredNote;
+        if ((modifiers & optionKey) && (modifiers & shiftKey)) {
+            type = SKHighlightNote;
+        } else if ((modifiers & optionKey) && (modifiers & controlKey)) {
+            type = SKStrikeOutNote;
+        } else if ((modifiers & controlKey) && (modifiers & shiftKey)) {
+            type = SKUnderlineNote;
+        } else if (modifiers & optionKey) {
+            type = SKAnchoredNote;
         } else if (modifiers & shiftKey) {
             type = SKCircleNote;
         } else if (modifiers & controlKey) {
@@ -2647,6 +2652,34 @@ static NSArray *prioritySortedThumbnails(NSArray *dirtyNails, int currentPageInd
     [toolbarItems setObject:item forKey:SKDocumentToolbarNewHighlightNoteItemIdentifier];
     [item release];
     
+	[menuItem setTarget:self];
+    [menuItem setTag:SKStrikeOutNote];
+    item = [[NSToolbarItem alloc] initWithItemIdentifier:SKDocumentToolbarNewStrikeOutNoteItemIdentifier];
+    [item setLabel:NSLocalizedString(@"Strike Out Note", @"Toolbar item label")];
+    [item setPaletteLabel:NSLocalizedString(@"New Strike Out", @"Toolbar item label")];
+    [item setToolTip:NSLocalizedString(@"Add New Strike Out", @"Tool tip message")];
+    [item setImage:[NSImage imageNamed:@"ToolbarStrikeOutNote"]];
+    [item setTarget:self];
+    [item setAction:@selector(createNewNote:)];
+    [item setTag:SKStrikeOutNote];
+    [item setMenuFormRepresentation:menuItem];
+    [toolbarItems setObject:item forKey:SKDocumentToolbarNewStrikeOutNoteItemIdentifier];
+    [item release];
+    
+	[menuItem setTarget:self];
+    [menuItem setTag:SKUnderlineNote];
+    item = [[NSToolbarItem alloc] initWithItemIdentifier:SKDocumentToolbarNewUnderlineNoteItemIdentifier];
+    [item setLabel:NSLocalizedString(@"Underline Note", @"Toolbar item label")];
+    [item setPaletteLabel:NSLocalizedString(@"New Underline", @"Toolbar item label")];
+    [item setToolTip:NSLocalizedString(@"Add New Underline", @"Tool tip message")];
+    [item setImage:[NSImage imageNamed:@"ToolbarUnderlineNote"]];
+    [item setTarget:self];
+    [item setAction:@selector(createNewNote:)];
+    [item setTag:SKUnderlineNote];
+    [item setMenuFormRepresentation:menuItem];
+    [toolbarItems setObject:item forKey:SKDocumentToolbarNewUnderlineNoteItemIdentifier];
+    [item release];
+    
     item = [[NSToolbarItem alloc] initWithItemIdentifier:SKDocumentToolbarToggleDrawerItemIdentifier];
     [item setLabel:NSLocalizedString(@"Drawer", @"Toolbar item label")];
     [item setPaletteLabel:NSLocalizedString(@"Drawer", @"Toolbar item label")];
@@ -2780,6 +2813,8 @@ static NSArray *prioritySortedThumbnails(NSArray *dirtyNails, int currentPageInd
         SKDocumentToolbarNewCircleNoteItemIdentifier, 
         SKDocumentToolbarNewSquareNoteItemIdentifier, 
         SKDocumentToolbarNewHighlightNoteItemIdentifier, 
+        SKDocumentToolbarNewStrikeOutNoteItemIdentifier, 
+        SKDocumentToolbarNewUnderlineNoteItemIdentifier, 
         SKDocumentToolbarInfoItemIdentifier, 
         SKDocumentToolbarContentsPaneItemIdentifier, 
         SKDocumentToolbarNotesPaneItemIdentifier, 
