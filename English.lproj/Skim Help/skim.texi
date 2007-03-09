@@ -245,10 +245,10 @@ By default, Skim shows a gray background behind images and PDF files, and a dark
 
 @box{taskbox}
 @itemize
-@item To change the default background color, Choose Skim > Preferences, click Colors, and then click Normal below "Background color".
+@item To change the default background color, choose Skim > Preferences, click Colors, and then click Normal below "Background color".
 @end itemize
 @itemize
-@item To change the background color for Full Screen mode, Choose Skim > Preferences, click Colors, and then click "Full Screen" below "Background color".
+@item To change the background color for Full Screen mode, choose Skim > Preferences, click Colors, and then click "Full Screen" below "Background color".
 @end itemize
 @endbox
 
@@ -439,6 +439,32 @@ Snapshots are not saved with the PDF document.
 
 @c ======================================================================================
 
+@topic Keeping snapshot windows on top
+
+By default, snapshot windows are at the same level as any other normal windows. Therefore, if you select the main windows, the snapshot windows may be hidden behind it. Skim allows you to keep all your snapshot windows on top of the main window, so they are always visible. 
+
+@box{taskbox}
+@itemize
+@item To keep snapshot windows on top, choose Skim > Preferences, click General, and select "Keep snapshot windows on top".
+@end itemize
+@endbox
+
+In full screen mode, snapshot windows are always on top. 
+
+@c ======================================================================================
+
+@topic Keeping anchored note windows on top
+
+By default, note windows for anchored notes are at the same level as any other normal windows. Therefore, if you select the main windows, the note windows may be hidden behind it. Skim allows you to keep note windows on top of the main window, so they are always visible. 
+
+@box{taskbox}
+@itemize
+@item To keep a note window on top, select "Keep on top" at the bottom of the window.
+@end itemize
+@endbox
+
+@c ======================================================================================
+
 @topic I can't select or copy text in a PDF file
 
 Some PDF files require you to enter a password before you can select or copy text. Ask the person who gave you the document for that password.
@@ -508,10 +534,10 @@ Skim allows you to change the size of thumbnails for pages and for snapshots.
 
 @box{taskbox}
 @itemize
-@item To change the size of for page thumbnails, Choose Skim > Preferences, click Thumbnails, and move the Pages slider.
+@item To change the size of for page thumbnails, choose Skim > Preferences, click Thumbnails, and move the Pages slider.
 @end itemize
 @itemize
-@item To change the size of for snapshot thumbnails, Choose Skim > Preferences, click Thumbnails, and move the Snapshots slider.
+@item To change the size of for snapshot thumbnails, choose Skim > Preferences, click Thumbnails, and move the Snapshots slider.
 @end itemize
 @endbox
 
@@ -525,7 +551,7 @@ You can set whether Skim should circle highlight results of a text searchas well
 
 @box{taskbox}
 @itemize
-@item To highlight Find results using a circle, Choose Skim > Preferences, click Colors, and select "Highlight search results".
+@item To highlight Find results using a circle, choose Skim > Preferences, click Colors, and select "Highlight search results".
 @item To change the color used for the Find highlights, click Color.
 @end itemize
 @endbox
@@ -538,7 +564,7 @@ Skim can automatically reload files you view when their contents changes on disc
 
 @box{taskbox}
 @itemize
-@item To reload files when their contents changes on disc, Choose Skim > Preferences, click Updates, and select "Check file changes" below "File updates".
+@item To reload files when their contents changes on disc, choose Skim > Preferences, click Updates, and select "Check file changes" below "File updates".
 @end itemize
 @endbox
 
@@ -552,7 +578,7 @@ Skim can automatically check whether an update for Skim is available. You can al
 
 @box{taskbox}
 @itemize
-@item To select how often Skim checks for updates, Choose Skim > Preferences, click Updates, and select a period blow "Skim update". 
+@item To select how often Skim checks for updates, choose Skim > Preferences, click Updates, and select a period blow "Skim update". 
 @end itemize
 @endbox
 
