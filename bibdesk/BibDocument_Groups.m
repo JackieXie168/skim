@@ -535,7 +535,7 @@ The groupedPublications array is a subset of the publications array, developed b
     while(NSLocationInRange(--row, smartRange)){
 		[(BDSKSmartGroup *)[groups objectAtIndex:row] filterItems:publications];
 		if([groupTableView isRowSelected:row])
-			shouldUpdate = shouldUpdate;
+			needsUpdate = shouldUpdate;
     }
     
     if([sortGroupsKey isEqualToString:BDSKGroupCellCountKey]){
