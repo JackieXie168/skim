@@ -100,10 +100,6 @@ static NSString *SKDocumentToolbarNotesPaneItemIdentifier = @"SKDocumentToolbarN
 #define TOOLBAR_SEARCHFIELD_MIN_SIZE NSMakeSize(110.0, 22.0)
 #define TOOLBAR_SEARCHFIELD_MAX_SIZE NSMakeSize(1000.0, 22.0)
 
-@interface NSObject (SKAppleTreeControllerPrivate)
-- (id)observedObject;
-@end
-
 @interface NSResponder (SKExtensions)
 - (BOOL)isDescendantOf:(NSView *)aView;
 @end
@@ -142,8 +138,6 @@ static NSString *SKDocumentToolbarNotesPaneItemIdentifier = @"SKDocumentToolbarN
     
 	[[NSNotificationCenter defaultCenter] removeObserver: self];
     [self unregisterForChangeNotification];
-    // This is a workaround for a crash.  Under some conditions, the PDFPage (PDFView and document/data) is deallocated while key value observers (the tree controller) are still registered with it.  I could reliably reproduce this, but it required multiple documents open, so seems sensitive to timing of autorelease pool dealloc.
-    [noteTreeController setContent:nil];
     
     if (thumbnailTimer) {
         [thumbnailTimer invalidate];
@@ -163,7 +157,6 @@ static NSString *SKDocumentToolbarNotesPaneItemIdentifier = @"SKDocumentToolbarN
 	[notes release];
 	[snapshots release];
     [lastViewedPages release];
-    [selectedNoteIndexPaths release];
     [selectedNote release];
 	[leftSideWindow release];
 	[rightSideWindow release];
@@ -548,6 +541,7 @@ static NSString *SKDocumentToolbarNotesPaneItemIdentifier = @"SKDocumentToolbarN
 
 - (void)setNotes:(NSArray *)newNotes {
     [notes setArray:notes];
+    [noteOutlineView reloadData];
 }
 
 - (unsigned)countOfNotes {
@@ -560,6 +554,7 @@ static NSString *SKDocumentToolbarNotesPaneItemIdentifier = @"SKDocumentToolbarN
 
 - (void)insertObject:(id)obj inNotesAtIndex:(unsigned)theIndex {
     [notes insertObject:obj atIndex:theIndex];
+    [noteOutlineView reloadData];
 }
 
 - (void)removeObjectFromNotesAtIndex:(unsigned)theIndex {
@@ -575,6 +570,7 @@ static NSString *SKDocumentToolbarNotesPaneItemIdentifier = @"SKDocumentToolbarN
     }
     
     [notes removeObjectAtIndex:theIndex];
+    [noteOutlineView reloadData];
 }
 
 - (NSArray *)thumbnails {
@@ -625,25 +621,6 @@ static NSString *SKDocumentToolbarNotesPaneItemIdentifier = @"SKDocumentToolbarN
 - (void)removeObjectFromSnapshotsAtIndex:(unsigned)theIndex {
     [dirtySnapshots removeObject:[snapshots objectAtIndex:theIndex]];
     [snapshots removeObjectAtIndex:theIndex];
-}
-
-- (NSArray *)selectedNoteIndexPaths {
-    return selectedNoteIndexPaths;
-}
-
-- (void)setSelectedNoteIndexPaths:(NSArray *)indexPaths {
-    if (selectedNoteIndexPaths != indexPaths) {
-        [selectedNoteIndexPaths release];
-        selectedNoteIndexPaths = [indexPaths retain];
-        
-        if ([indexPaths count] == 0) {
-            [self setSelectedNote:nil];
-        } else {
-            unsigned idx = [[indexPaths lastObject] indexAtPosition:0];
-            NSParameterAssert(idx != NSNotFound);
-            [self setSelectedNote:[[noteArrayController arrangedObjects] objectAtIndex:idx]];
-        }
-    }
 }
 
 - (PDFAnnotation *)selectedNote {
@@ -704,13 +681,12 @@ static NSString *SKDocumentToolbarNotesPaneItemIdentifier = @"SKDocumentToolbarN
     [pdfView editActiveAnnotation:sender];
 }
 
-- (void)selectNotes:(NSArray *)notesToShow{
-    // there should only be a single note
-    id annotation = [notesToShow lastObject];
-    if ([annotation type] == nil)
-        annotation = [(SKNoteText *)annotation annotation];
-    [pdfView scrollAnnotationToVisible:annotation];
-	[pdfView setActiveAnnotation:annotation];
+- (void)selectSelectedNote{
+    id annotation = [self selectedNote];
+    if (annotation) {
+        [pdfView scrollAnnotationToVisible:annotation];
+        [pdfView setActiveAnnotation:annotation];
+    }
 }
 
 - (IBAction)takeSnapshot:(id)sender{
@@ -1665,11 +1641,7 @@ static NSString *SKDocumentToolbarNotesPaneItemIdentifier = @"SKDocumentToolbarN
     
     if ([annotation isNoteAnnotation]) {
         if ([self selectedNote] != annotation) {
-            int index = [[noteArrayController arrangedObjects] indexOfObject:annotation];
-            NSAssert1(NSNotFound != index, @"Index for annotation %@ not found", annotation);
-            NSIndexPath *indexPath = [NSIndexPath indexPathWithIndex:index];
-            
-            [self setSelectedNoteIndexPaths:[NSArray arrayWithObject:indexPath]];
+            [noteOutlineView selectRowIndexes:[NSIndexSet indexSetWithIndex:[noteOutlineView rowForItem:annotation]] byExtendingSelection:NO];
         }
         if ([[self window] isKeyWindow])
             [[NSColorPanel sharedColorPanel] setColor:[annotation color]];
@@ -1716,8 +1688,6 @@ static NSString *SKDocumentToolbarNotesPaneItemIdentifier = @"SKDocumentToolbarN
                 break;
             }
         }
-        // clear the tree controller's selection, or else it may crash when asking for the height of row by item
-        [noteTreeController setSelectionIndexPaths:nil];
         [noteArrayController removeObject:annotation];
     }
     if (page) {
@@ -1750,6 +1720,7 @@ static NSString *SKDocumentToolbarNotesPaneItemIdentifier = @"SKDocumentToolbarN
             if ([[[wc pdfView] currentPage] isEqual:[annotation page]])
                 [self snapshotNeedsUpdate:wc];
         }
+        [noteOutlineView reloadData];
     }
 }
 
@@ -1874,6 +1845,12 @@ static NSString *SKDocumentToolbarNotesPaneItemIdentifier = @"SKDocumentToolbarN
         }else{
             return [(PDFOutline *)item numberOfChildren];
         }
+    } else if ([ov isEqual:noteOutlineView]) {
+        if (item == nil) {
+            return [self countOfNotes];
+        } else {
+            return [[item texts] count];
+        }
     }
     return 0;
 }
@@ -1891,6 +1868,12 @@ static NSString *SKDocumentToolbarNotesPaneItemIdentifier = @"SKDocumentToolbarN
         }else{
             return [[(PDFOutline *)item childAtIndex: index] retain];
         }
+    } else if ([ov isEqual:noteOutlineView]) {
+        if (item == nil) {
+            return [[noteArrayController arrangedObjects] objectAtIndex:index];
+        } else {
+            return [[item texts] lastObject];
+        }
     }
     return nil;
 }
@@ -1907,6 +1890,8 @@ static NSString *SKDocumentToolbarNotesPaneItemIdentifier = @"SKDocumentToolbarN
         }else{
             return ([(PDFOutline *)item numberOfChildren] > 0);
         }
+    } else if ([ov isEqual:noteOutlineView]) {
+        return [[item texts] count] > 0;
     }
     return NO;
 }
@@ -1923,6 +1908,29 @@ static NSString *SKDocumentToolbarNotesPaneItemIdentifier = @"SKDocumentToolbarN
             [NSException raise:@"Unexpected tablecolumn identifier" format:@" - %@ ", tcID];
             return nil;
         }
+    } else if ([ov isEqual:noteOutlineView]) {
+        NSString *tcID = [tableColumn  identifier];
+        if ([tcID isEqualToString:@"note"]) {
+            return [item contents];
+        } else if([tcID isEqualToString:@"type"]) {
+            NSString *type = [item type];
+            if ([type isEqualToString:@"FreeText"])
+                return [NSImage imageNamed:@"AnnotateToolAdorn"];
+            if ([type isEqualToString:@"Note"])
+                return [NSImage imageNamed:@"NoteToolAdorn"];
+            if ([type isEqualToString:@"Circle"])
+                return [NSImage imageNamed:@"CircleToolAdorn"];
+            if ([type isEqualToString:@"Square"])
+                return [NSImage imageNamed:@"SquareToolAdorn"];
+            if ([type isEqualToString:@"Highlight"])
+                return [NSImage imageNamed:@"HighlightToolAdorn"];
+            if ([type isEqualToString:@"StrikeOut"])
+                return [NSImage imageNamed:@"StrikeOutToolAdorn"];
+            if ([type isEqualToString:@"Underline"])
+                return [NSImage imageNamed:@"UnderlineToolAdorn"];
+        } else if([tcID isEqualToString:@"page"]) {
+            return [[item page] label];
+        }
     }
     return nil;
 }
@@ -1932,6 +1940,15 @@ static NSString *SKDocumentToolbarNotesPaneItemIdentifier = @"SKDocumentToolbarN
 	// Get the destination associated with the search result list. Tell the PDFView to go there.
 	if ([[notification object] isEqual:outlineView] && (updatingOutlineSelection == NO)){
 		[pdfView goToDestination: [[outlineView itemAtRow: [outlineView selectedRow]] destination]];
+    } else if ([[notification object] isEqual:noteOutlineView]) {
+        int row = [noteOutlineView selectedRow];
+        id item = nil;
+        if (row != -1) {
+            item = [noteOutlineView itemAtRow:row];
+            if ([item type] == nil)
+                item = [(SKNoteText *)item annotation];
+        }
+        [self setSelectedNote:item];
     }
 }
 
@@ -1950,11 +1967,9 @@ static NSString *SKDocumentToolbarNotesPaneItemIdentifier = @"SKDocumentToolbarN
 }
 
 - (NSString *)outlineView:(NSOutlineView *)ov toolTipForCell:(NSCell *)cell rect:(NSRectPointer)rect tableColumn:(NSTableColumn *)tc item:(id)item mouseLocation:(NSPoint)mouseLocation{
-    if ([ov isEqual:noteOutlineView]) {
-        // the item is an opaque wrapper object used for binding. The actual note is is given by -observedeObject. I don't know of any alternative (read public) way to get the actual item
-        if ([item respondsToSelector:@selector(observedObject)] == NO)
-            return nil;
-        item = [item observedObject];
+    if ([ov isEqual:outlineView]) {
+        return [(PDFOutline *)item label];
+    } else if ([ov isEqual:noteOutlineView]) {
         return [item type] ? [item contents] : [[(SKNoteText *)item contents] string];
     }
     return nil;
@@ -1965,17 +1980,17 @@ static NSString *SKDocumentToolbarNotesPaneItemIdentifier = @"SKDocumentToolbarN
         return 17.0;
     } else if ([ov isEqual:noteOutlineView]) {
         // the item is an opaque wrapper object used for binding. The actual note is is given by -observedeObject. I don't know of any alternative (read public) way to get the actual item
-        if ([item respondsToSelector:@selector(observedObject)] == NO || [[item observedObject] respondsToSelector:@selector(rowHeight)] == NO)
+        if ([item respondsToSelector:@selector(rowHeight)] == NO)
             return 17.0;
         else
-            return [[item observedObject] rowHeight];
+            return [item rowHeight];
     }
     return 17.0;
 }
 
 - (BOOL)outlineView:(NSOutlineView *)ov canResizeRowByItem:(id)item {
     if ([ov isEqual:noteOutlineView]) {
-        if ([item respondsToSelector:@selector(observedObject)] == NO || [[item observedObject] respondsToSelector:@selector(setRowHeight:)] == NO)
+        if ([item respondsToSelector:@selector(setRowHeight:)] == NO)
             return NO;
         else
             return YES;
@@ -1984,7 +1999,7 @@ static NSString *SKDocumentToolbarNotesPaneItemIdentifier = @"SKDocumentToolbarN
 }
 
 - (void)outlineView:(NSOutlineView *)ov setHeightOfRow:(int)newHeight byItem:(id)item {
-    [[item observedObject] setRowHeight:newHeight];
+    [item setRowHeight:newHeight];
 }
 
 - (void)outlineViewDeleteSelectedRows:(NSOutlineView *)ov  {
@@ -2283,11 +2298,10 @@ static NSArray *prioritySortedThumbnails(NSArray *dirtyNails, int currentPageInd
 - (void)updateNoteSelection {
 
     NSArray *orderedNotes = [noteArrayController arrangedObjects];
-    PDFAnnotation *annotation;
+    PDFAnnotation *annotation, *selAnnotation = nil;
     unsigned int pageIndex = [[pdfView document] indexForPage: [pdfView currentPage]];
 	int i, count = [orderedNotes count];
     unsigned int selPageIndex = [self selectedNote] ? [[self selectedNote] pageIndex] : NSNotFound;
-	unsigned int index = NSNotFound;
     
     if (count == 0 || selPageIndex == pageIndex)
 		return;
@@ -2298,19 +2312,19 @@ static NSArray *prioritySortedThumbnails(NSArray *dirtyNails, int currentPageInd
         annotation = [orderedNotes objectAtIndex:i];
 		
 		if ([annotation pageIndex] == pageIndex) {
-            index = i;
+            selAnnotation = annotation;
 			break;
 		} else if ([annotation pageIndex] > pageIndex) {
 			if (i == 0)
-				index = 0;
+				selAnnotation = [orderedNotes objectAtIndex:0];
 			else if ([[orderedNotes objectAtIndex:i - 1] pageIndex] != selPageIndex)
-                index = i - 1;
+                selAnnotation = [orderedNotes objectAtIndex:i - 1];
 			break;
 		}
 	}
-    if (index != NSNotFound) {
+    if (selAnnotation) {
         updatingNoteSelection = YES;
-        [self setSelectedNoteIndexPaths:[NSArray arrayWithObject:[NSIndexPath indexPathWithIndex:index]]];
+        [noteOutlineView selectRowIndexes:[NSIndexSet indexSetWithIndex:[noteOutlineView rowForItem:selAnnotation]] byExtendingSelection:NO];
         updatingNoteSelection = NO;
     }
 }
