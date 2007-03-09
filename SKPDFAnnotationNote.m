@@ -436,6 +436,37 @@ static NSColor *underlineColor = nil;
     return dict;
 }
 
+// adjust the range to remove whitespace and newlines at the end
+static void adjustRangeForWhitespaceAndNewlines(NSRange *range, NSString *string)
+{
+    static NSCharacterSet *nonWhitespaceAndNewlineSet = nil;
+    if (nil == nonWhitespaceAndNewlineSet)
+        nonWhitespaceAndNewlineSet = [[[NSCharacterSet whitespaceAndNewlineCharacterSet] invertedSet] copy];
+    NSRange r = [string rangeOfCharacterFromSet:nonWhitespaceAndNewlineSet options:0 range:*range];
+    if (r.length && (r.location != range->location)) {
+        range->location = r.location;
+        range->length -= (r.length + 1);
+    }
+    r = [string rangeOfCharacterFromSet:nonWhitespaceAndNewlineSet options:NSBackwardsSearch range:*range];
+    if (r.length)
+        range->length = r.location - range->location + 1;
+    else
+        range->length = 0;
+}
+
+// returns NO if the only characters in the rect are whitespace
+static BOOL lineRectTrimmingWhitespaceForPage(NSRect *lineRect, PDFPage *page)
+{
+    PDFSelection *selection = [page selectionForRect:*lineRect];
+    NSRange r = [selection rangeAtIndex:([selection numberOfRangesOnPage:page] - 1) onPage:page];
+    adjustRangeForWhitespaceAndNewlines(&r, [page string]);
+    if (r.length) {
+        *lineRect = [[page selectionForRange:r] boundsForPage:page];
+        return YES;
+    }
+    return NO;
+}    
+
 - (void)setQuadrilateralPointsFromSelection:(PDFSelection *)selection {
     if ([selection respondsToSelector:@selector(numberOfRangesOnPage:)] == NO || [selection respondsToSelector:@selector(rangeAtIndex:onPage:)] == NO)
         return;
@@ -445,22 +476,24 @@ static NSColor *underlineColor = nil;
         unsigned i, iMax = [selection numberOfRangesOnPage:page];
         for (i = 0; i < iMax; i++) {
             NSRange range = [selection rangeAtIndex:i onPage:page];
-            unsigned int j;
+            unsigned int j, jMax = NSMaxRange(range);
             NSRect lineRect = NSZeroRect;
-            for (j = range.location; j < NSMaxRange(range); j++) {
+            for (j = range.location; j < jMax; j++) {
                 NSRect charRect = [page characterBoundsAtIndex:j];
                 if (NSEqualRects(lineRect, NSZeroRect)) {
                     lineRect = charRect;
                 } else if (fabs(NSMaxX(lineRect) - NSMinX(charRect)) < 0.1 * NSWidth(charRect) && fabs(NSMinY(lineRect) - NSMinY(charRect)) < 0.1 * NSHeight(charRect) && fabs(NSMaxY(lineRect) - NSMaxY(charRect)) < 0.1 * NSHeight(charRect)) {
                     lineRect = NSUnionRect(lineRect, charRect);
                 } else {
-                    NSArray *quadLine = createQuadPointsWithBounds(lineRect, [self bounds].origin);
-                    [quadPoints addObjectsFromArray:quadLine];
-                    [quadLine release];
+                    if (lineRectTrimmingWhitespaceForPage(&lineRect, page)) {
+                        NSArray *quadLine = createQuadPointsWithBounds(lineRect, [self bounds].origin);
+                        [quadPoints addObjectsFromArray:quadLine];
+                        [quadLine release];
+                    }
                     lineRect = charRect;
                 }
             }
-            if (NSEqualRects(lineRect, NSZeroRect) == NO) {
+            if (NSEqualRects(lineRect, NSZeroRect) == NO && lineRectTrimmingWhitespaceForPage(&lineRect, page)) {
                 NSArray *quadLine = createQuadPointsWithBounds(lineRect, [self bounds].origin);
                 [quadPoints addObjectsFromArray:quadLine];
                 [quadLine release];
