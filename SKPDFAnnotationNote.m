@@ -597,6 +597,8 @@ static NSColor *freeTextColor = nil;
 
 - (BOOL)isMovable { return YES; }
 
+- (BOOL)isEditable { return YES; }
+
 - (void)setBounds:(NSRect)bounds {
     [super setBounds:bounds];
     [[NSNotificationCenter defaultCenter] postNotificationName:SKAnnotationDidChangeNotification object:self];
