@@ -494,8 +494,6 @@ static NSColor *underlineColor = nil;
 
 - (BOOL)isNoteAnnotation { return YES; }
 
-- (BOOL)isResizable { return YES; }
-
 - (void)setBounds:(NSRect)bounds {
     [super setBounds:bounds];
     [[NSNotificationCenter defaultCenter] postNotificationName:SKAnnotationDidChangeNotification object:self];
