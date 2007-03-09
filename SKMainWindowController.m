@@ -2839,7 +2839,7 @@ static NSArray *prioritySortedThumbnails(NSArray *dirtyNails, int currentPageInd
     } else if ([identifier isEqualToString:SKDocumentToolbarNewNoteItemIdentifier] || [identifier isEqualToString:SKDocumentToolbarNewCircleNoteItemIdentifier]) {
         return [pdfView toolMode] == SKTextToolMode;
     } else if ([identifier isEqualToString:SKDocumentToolbarNewMarkupItemIdentifier]) {
-        return [pdfView toolMode] == SKTextToolMode && [pdfView currentSelection];
+        return [pdfView toolMode] == SKTextToolMode && [[[pdfView currentSelection] pages] count];
     } else if ([identifier isEqualToString:SKDocumentToolbarInfoItemIdentifier]) {
         return YES;
     } else {
@@ -2851,7 +2851,7 @@ static NSArray *prioritySortedThumbnails(NSArray *dirtyNails, int currentPageInd
     SEL action = [menuItem action];
     if (action == @selector(createNewNote:)) {
         BOOL isMarkup = [menuItem tag] == SKHighlightNote || [menuItem tag] == SKStrikeOutNote || [menuItem tag] == SKUnderlineNote;
-        return [pdfView toolMode] == SKTextToolMode && (isMarkup == NO || [pdfView currentSelection] != nil);
+        return [pdfView toolMode] == SKTextToolMode && (isMarkup == NO || [[[pdfView currentSelection] pages] count]);
     } else if (action == @selector(editNote:)) {
         PDFAnnotation *annotation = [pdfView activeAnnotation];
         return [annotation isNoteAnnotation] && ([[annotation type] isEqualToString:@"FreeText"] || [[annotation type] isEqualToString:@"Note"]);
@@ -3078,8 +3078,6 @@ static NSArray *prioritySortedThumbnails(NSArray *dirtyNails, int currentPageInd
     if ([self view] && [delegate respondsToSelector:@selector(validateToolbarItem:)]) {
         BOOL enabled = [[self delegate] validateToolbarItem:self];
         [self setEnabled:enabled];
-        if ([[self view] respondsToSelector:@selector(setEnabled:)])
-            [(id)[self view] setEnabled:enabled];
     } else {
         [super validate];
     }
