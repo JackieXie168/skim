@@ -54,6 +54,28 @@ enum {
 NSString *SKAnnotationWillChangeNotification = @"SKAnnotationWillChangeNotification";
 NSString *SKAnnotationDidChangeNotification = @"SKAnnotationDidChangeNotification";
 
+static NSArray *stringsFromPoints(NSArray *points)
+{
+    if (points == nil)
+        return nil;
+    int i, iMax = [points count];
+    NSMutableArray *strings = [[points mutableCopy] autorelease];
+    for (i = 0; i < iMax; i++)
+        [strings replaceObjectAtIndex:i withObject:NSStringFromPoint([[strings objectAtIndex:i] pointValue])];
+    return strings;
+}
+
+static NSArray *pointsFromStrings(NSArray *strings)
+{
+    if (strings == nil)
+        return nil;
+    int i, iMax = [strings count];
+    NSMutableArray *points = [[strings mutableCopy] autorelease];
+    for (i = 0; i < iMax; i++)
+        [points replaceObjectAtIndex:i withObject:[NSValue valueWithPoint:NSPointFromString([points objectAtIndex:i])]];
+    return points;
+}
+
 @interface PDFAnnotation (PDFAnnotationPrivateDeclarations)
 - (void)setPage:(PDFPage *)page;
 - (void)drawWithBox:(CGPDFBox)box inContext:(CGContextRef)context;
@@ -92,10 +114,13 @@ NSString *SKAnnotationDidChangeNotification = @"SKAnnotationDidChangeNotificatio
         self = [[SKPDFAnnotationSquare alloc] initWithBounds:bounds];
     } else if ([type isEqualToString:@"Highlight"] || [type isEqualToString:@"MarkUp"]) {
         self = [[SKPDFAnnotationMarkup alloc] initWithBounds:bounds markupType:kPDFMarkupTypeHighlight];
+        [(SKPDFAnnotationMarkup *)self setQuadrilateralPoints:pointsFromStrings([dict objectForKey:@"quadrilateralPoints"])];
     } else if ([type isEqualToString:@"StrikeOut"]) {
         self = [[SKPDFAnnotationMarkup alloc] initWithBounds:bounds markupType:kPDFMarkupTypeStrikeOut];
+        [(SKPDFAnnotationMarkup *)self setQuadrilateralPoints:pointsFromStrings([dict objectForKey:@"quadrilateralPoints"])];
     } else if ([type isEqualToString:@"Underline"]) {
         self = [[SKPDFAnnotationMarkup alloc] initWithBounds:bounds markupType:kPDFMarkupTypeUnderline];
+        [(SKPDFAnnotationMarkup *)self setQuadrilateralPoints:pointsFromStrings([dict objectForKey:@"quadrilateralPoints"])];
     } else {
         self = nil;
     }
@@ -144,6 +169,8 @@ NSString *SKAnnotationDidChangeNotification = @"SKAnnotationDidChangeNotificatio
 - (BOOL)isTemporaryAnnotation { return NO; }
 
 - (BOOL)isResizable { return NO; }
+
+- (BOOL)isMovable { return NO; }
 
 - (BOOL)isEditable { return NO; }
 
@@ -275,6 +302,8 @@ static NSColor *circleColor = nil;
 
 - (BOOL)isResizable { return YES; }
 
+- (BOOL)isMovable { return YES; }
+
 - (void)setBounds:(NSRect)bounds {
     [super setBounds:bounds];
     [[NSNotificationCenter defaultCenter] postNotificationName:SKAnnotationDidChangeNotification object:self];
@@ -320,6 +349,8 @@ static NSColor *squareColor = nil;
 
 - (BOOL)isResizable { return YES; }
 
+- (BOOL)isMovable { return YES; }
+
 - (void)setBounds:(NSRect)bounds {
     [super setBounds:bounds];
     [[NSNotificationCenter defaultCenter] postNotificationName:SKAnnotationDidChangeNotification object:self];
@@ -340,6 +371,15 @@ static NSColor *squareColor = nil;
 #pragma mark -
 
 @implementation SKPDFAnnotationMarkup
+
+static NSArray *createQuadPointsWithBounds(const NSRect bounds, const NSPoint origin)
+{
+    NSPoint p0 = NSMakePoint(NSMinX(bounds) - origin.x, NSMaxY(bounds) - origin.y);
+    NSPoint p1 = NSMakePoint(NSMaxX(bounds) - origin.x, NSMaxY(bounds) - origin.y);
+    NSPoint p2 = NSMakePoint(NSMinX(bounds) - origin.x, NSMinY(bounds) - origin.y);
+    NSPoint p3 = NSMakePoint(NSMaxX(bounds) - origin.x, NSMinY(bounds) - origin.y);
+    return [[NSArray alloc] initWithObjects:[NSValue valueWithPoint:p0], [NSValue valueWithPoint:p1], [NSValue valueWithPoint:p2], [NSValue valueWithPoint:p3], nil];
+}
 
 static NSColor *highlightColor = nil;
 static NSColor *strikeOutColor = nil;
@@ -382,24 +422,29 @@ static NSColor *underlineColor = nil;
     return self;
 }
 
-static NSArray *createQuadPointsWithBounds(const NSRect bounds, const NSPoint origin)
-{
-    NSPoint p0 = NSMakePoint(NSMinX(bounds) - origin.x, NSMaxY(bounds) - origin.y);
-    NSPoint p1 = NSMakePoint(NSMaxX(bounds) - origin.x, NSMaxY(bounds) - origin.y);
-    NSPoint p2 = NSMakePoint(NSMinX(bounds) - origin.x, NSMinY(bounds) - origin.y);
-    NSPoint p3 = NSMakePoint(NSMaxX(bounds) - origin.x, NSMinY(bounds) - origin.y);
-    return [[NSArray alloc] initWithObjects:[NSValue valueWithPoint:p0], [NSValue valueWithPoint:p1], [NSValue valueWithPoint:p2], [NSValue valueWithPoint:p3], nil];
+- (id)initWithSelection:(PDFSelection *)selection markupType:(int)type {
+    NSRect bounds = selection ? [selection boundsForPage:[[selection pages] objectAtIndex:0]] : NSZeroRect;
+    if (self = [self initWithBounds:bounds markupType:type]) {
+        [self setQuadrilateralPointsFromSelection:selection];        
+    }
+    return self;
 }
 
-- (void)setQuadrilateralPointsFromRect:(NSRect)rect inPage:(PDFPage *)page {
-    if (page == nil || [PDFSelection instancesRespondToSelector:@selector(numberOfRangesOnPage:)] == NO || [PDFSelection instancesRespondToSelector:@selector(rangeAtIndex:onPage:)] == NO)
+- (NSDictionary *)dictionaryValue {
+    NSMutableDictionary *dict = (NSMutableDictionary *)[super dictionaryValue];
+    [dict setValue:stringsFromPoints([self quadrilateralPoints]) forKey:@"quadrilateralPoints"];
+    return dict;
+}
+
+- (void)setQuadrilateralPointsFromSelection:(PDFSelection *)selection {
+    if ([selection respondsToSelector:@selector(numberOfRangesOnPage:)] == NO || [selection respondsToSelector:@selector(rangeAtIndex:onPage:)] == NO)
         return;
-    PDFSelection *sel = [page selectionForRect:rect];
+    PDFPage *page = [[selection pages] objectAtIndex:0];
     NSMutableArray *quadPoints = [[NSMutableArray alloc] init];
-    if (sel) {
-        unsigned i, iMax = [sel numberOfRangesOnPage:page];
+    if (selection) {
+        unsigned i, iMax = [selection numberOfRangesOnPage:page];
         for (i = 0; i < iMax; i++) {
-            NSRange range = [sel rangeAtIndex:i onPage:page];
+            NSRange range = [selection rangeAtIndex:i onPage:page];
             unsigned int j;
             NSRect lineRect = NSZeroRect;
             for (j = range.location; j < NSMaxRange(range); j++) {
@@ -453,13 +498,7 @@ static NSArray *createQuadPointsWithBounds(const NSRect bounds, const NSPoint or
 
 - (void)setBounds:(NSRect)bounds {
     [super setBounds:bounds];
-    [self setQuadrilateralPointsFromRect:[self bounds] inPage:[self page]];
     [[NSNotificationCenter defaultCenter] postNotificationName:SKAnnotationDidChangeNotification object:self];
-}
-
-- (void)setPage:(PDFPage *)page {
-    [super setPage:page];
-    [self setQuadrilateralPointsFromRect:[self bounds] inPage:[self page]];
 }
 
 - (void)setContents:(NSString *)contents {
@@ -524,6 +563,8 @@ static NSColor *freeTextColor = nil;
 - (BOOL)isNoteAnnotation { return YES; }
 
 - (BOOL)isResizable { return YES; }
+
+- (BOOL)isMovable { return YES; }
 
 - (void)setBounds:(NSRect)bounds {
     [super setBounds:bounds];
@@ -645,6 +686,8 @@ static NSColor *noteColor = nil;
 }
 
 - (BOOL)isNoteAnnotation { return YES; }
+
+- (BOOL)isMovable { return YES; }
 
 - (BOOL)isEditable { return YES; }
 

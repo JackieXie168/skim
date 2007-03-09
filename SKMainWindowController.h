@@ -321,3 +321,13 @@ typedef struct _SKPDFViewState {
 - (void)setupToolbar;
 
 @end
+
+
+@interface SKToolbarItem : NSToolbarItem {
+    id delegate;
+}
+
+- (id)delegate;
+- (void)setDelegate:(id)newDelegate;
+
+@end

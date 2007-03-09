@@ -662,21 +662,23 @@ NSString *SKSkimNotePboardType = @"SKSkimNotePboardType";
         [item setRepresentedObject:[NSValue valueWithPoint:point]];
         [item setTag:SKSquareNote];
         [item setTarget:self];
-
-        item = [submenu addItemWithTitle:NSLocalizedString(@"Highlight", @"Menu item title") action:@selector(addAnnotationFromMenu:) keyEquivalent:@""];
-        [item setRepresentedObject:[NSValue valueWithPoint:point]];
-        [item setTag:SKHighlightNote];
-        [item setTarget:self];
-
-        item = [submenu addItemWithTitle:NSLocalizedString(@"Strike Out", @"Menu item title") action:@selector(addAnnotationFromMenu:) keyEquivalent:@""];
-        [item setRepresentedObject:[NSValue valueWithPoint:point]];
-        [item setTag:SKStrikeOutNote];
-        [item setTarget:self];
-
-        item = [submenu addItemWithTitle:NSLocalizedString(@"Underline", @"Menu item title") action:@selector(addAnnotationFromMenu:) keyEquivalent:@""];
-        [item setRepresentedObject:[NSValue valueWithPoint:point]];
-        [item setTag:SKUnderlineNote];
-        [item setTarget:self];
+        
+        if ([self currentSelection]) {
+            item = [submenu addItemWithTitle:NSLocalizedString(@"Highlight", @"Menu item title") action:@selector(addAnnotationFromMenu:) keyEquivalent:@""];
+            [item setRepresentedObject:[NSValue valueWithPoint:point]];
+            [item setTag:SKHighlightNote];
+            [item setTarget:self];
+            
+            item = [submenu addItemWithTitle:NSLocalizedString(@"Strike Out", @"Menu item title") action:@selector(addAnnotationFromMenu:) keyEquivalent:@""];
+            [item setRepresentedObject:[NSValue valueWithPoint:point]];
+            [item setTag:SKStrikeOutNote];
+            [item setTarget:self];
+            
+            item = [submenu addItemWithTitle:NSLocalizedString(@"Underline", @"Menu item title") action:@selector(addAnnotationFromMenu:) keyEquivalent:@""];
+            [item setRepresentedObject:[NSValue valueWithPoint:point]];
+            [item setTag:SKUnderlineNote];
+            [item setTarget:self];
+        }
         
         item = [menu addItemWithTitle:NSLocalizedString(@"New Note", @"Menu item title") action:NULL keyEquivalent:@""];
         [item setSubmenu:submenu];
@@ -749,7 +751,10 @@ NSString *SKSkimNotePboardType = @"SKSkimNotePboardType";
 		// Get bounds (page space) for selection (first page in case selection spans multiple pages).
 		page = [[selection pages] objectAtIndex: 0];
 		bounds = [selection boundsForPage: page];
-	} else {
+	} else if (annotationType == SKHighlightNote || annotationType == SKStrikeOutNote || annotationType == SKUnderlineNote) {
+        NSBeep();
+        return;
+    } else {
 		// Get center of the PDFView.
 		NSRect viewFrame = [self frame];
 		NSPoint center = NSMakePoint(NSMidX(viewFrame), NSMidY(viewFrame));
@@ -782,13 +787,13 @@ NSString *SKSkimNotePboardType = @"SKSkimNotePboardType";
             newAnnotation = [[SKPDFAnnotationSquare alloc] initWithBounds:NSInsetRect(bounds, -5.0, -5.0)];
             break;
         case SKHighlightNote:
-            newAnnotation = [[SKPDFAnnotationMarkup alloc] initWithBounds:bounds markupType:kPDFMarkupTypeHighlight];
+            newAnnotation = [[SKPDFAnnotationMarkup alloc] initWithSelection:[self currentSelection] markupType:kPDFMarkupTypeHighlight];
             break;
         case SKStrikeOutNote:
-            newAnnotation = [[SKPDFAnnotationMarkup alloc] initWithBounds:bounds markupType:kPDFMarkupTypeStrikeOut];
+            newAnnotation = [[SKPDFAnnotationMarkup alloc] initWithSelection:[self currentSelection] markupType:kPDFMarkupTypeStrikeOut];
             break;
         case SKUnderlineNote:
-            newAnnotation = [[SKPDFAnnotationMarkup alloc] initWithBounds:bounds markupType:kPDFMarkupTypeUnderline];
+            newAnnotation = [[SKPDFAnnotationMarkup alloc] initWithSelection:[self currentSelection] markupType:kPDFMarkupTypeUnderline];
             break;
 	}
     if (text == nil) {
@@ -1291,7 +1296,7 @@ NSString *SKSkimNotePboardType = @"SKSkimNotePboardType";
         
         // Force redisplay.
 		[self setNeedsDisplayForAnnotation:activeAnnotation];
-        mouseDownInAnnotation = YES;
+        mouseDownInAnnotation = [activeAnnotation isMovable];
         
         // Hit-test for resize box.
         resizing = [[activeAnnotation type] isEqualToString:@"Note"] == NO && NSPointInRect(pagePoint, [self resizeThumbForRect:wasBounds rotation:[activePage rotation]]);

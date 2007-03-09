@@ -61,6 +61,7 @@ extern NSString *SKAnnotationDidChangeNotification;
 - (BOOL)isNoteAnnotation;
 - (BOOL)isTemporaryAnnotation;
 - (BOOL)isResizable;
+- (BOOL)isMovable;
 - (BOOL)isEditable;
 
 - (NSScriptObjectSpecifier *)objectSpecifier;
@@ -80,7 +81,8 @@ extern NSString *SKAnnotationDidChangeNotification;
 
 @interface SKPDFAnnotationMarkup : PDFAnnotationMarkup
 - (id)initWithBounds:(NSRect)bounds markupType:(int)type;
-- (void)setQuadrilateralPointsFromRect:(NSRect)rect inPage:(PDFPage *)page;
+- (id)initWithSelection:(PDFSelection *)selection markupType:(int)type;
+- (void)setQuadrilateralPointsFromSelection:(PDFSelection *)selection;
 @end
 
 @interface SKPDFAnnotationFreeText : PDFAnnotationFreeText
