@@ -100,7 +100,6 @@
                 noteArrayController = NSArrayController; 
                 noteOutlineView = SKNoteOutlineView; 
                 notePopUpButton = BDSKImagePopUpButton; 
-                noteTreeController = NSTreeController; 
                 noteView = NSView; 
                 outlineView = NSOutlineView; 
                 pageNumberField = NSTextField; 

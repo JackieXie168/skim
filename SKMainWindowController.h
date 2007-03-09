@@ -107,12 +107,10 @@ typedef struct _SKPDFViewState {
     BOOL                        findPanelFind;
     
     IBOutlet NSArrayController  *noteArrayController;
-    IBOutlet NSTreeController   *noteTreeController;
     IBOutlet SKNoteOutlineView  *noteOutlineView;
     IBOutlet NSView             *noteView;
     NSMutableArray              *notes;
     BOOL                        updatingNoteSelection;
-    NSArray                     *selectedNoteIndexPaths;
     PDFAnnotation               *selectedNote;
     
     IBOutlet NSArrayController  *snapshotArrayController;
@@ -243,8 +241,6 @@ typedef struct _SKPDFViewState {
 - (void)insertObject:(id)obj inSnapshotsAtIndex:(unsigned)theIndex;
 - (void)removeObjectFromSnapshotsAtIndex:(unsigned)theIndex;
 
-- (NSArray *)selectedNoteIndexPaths;
-- (void)setSelectedNoteIndexPaths:(NSArray *)indexPaths;
 - (PDFAnnotation *)selectedNote;
 - (void)setSelectedNote:(PDFAnnotation *)note;
 
