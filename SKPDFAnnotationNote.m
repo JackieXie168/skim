@@ -482,7 +482,8 @@ static BOOL lineRectTrimmingWhitespaceForPage(NSRect *lineRect, PDFPage *page)
                 NSRect charRect = [page characterBoundsAtIndex:j];
                 if (NSEqualRects(lineRect, NSZeroRect)) {
                     lineRect = charRect;
-                } else if (fabs(NSMaxX(lineRect) - NSMinX(charRect)) < 0.1 * NSWidth(charRect) && fabs(NSMinY(lineRect) - NSMinY(charRect)) < 0.1 * NSHeight(charRect) && fabs(NSMaxY(lineRect) - NSMaxY(charRect)) < 0.1 * NSHeight(charRect)) {
+                    /* this test of whether a character is part of a line depends on kerning */
+                } else if (fabs(NSMaxX(lineRect) - NSMinX(charRect)) < 1.0 * NSWidth(charRect) && fabs(NSMinY(lineRect) - NSMinY(charRect)) < 0.1 * NSHeight(charRect) && fabs(NSMaxY(lineRect) - NSMaxY(charRect)) < 0.1 * NSHeight(charRect)) {
                     lineRect = NSUnionRect(lineRect, charRect);
                 } else {
                     if (lineRectTrimmingWhitespaceForPage(&lineRect, page)) {
