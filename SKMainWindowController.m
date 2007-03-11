@@ -429,6 +429,8 @@ static NSString *SKDocumentToolbarNotesPaneItemIdentifier = @"SKDocumentToolbarN
             [self updateOutlineSelection];
         }
         
+        [noteOutlineView reloadData];
+        
         [self updateNoteSelection];
         
         [self resetThumbnails];
@@ -468,6 +470,7 @@ static NSString *SKDocumentToolbarNotesPaneItemIdentifier = @"SKDocumentToolbarN
             [annotation release];
         }
     }
+    [noteOutlineView reloadData];
     [self allThumbnailsNeedUpdate];
 }
 
@@ -554,7 +557,6 @@ static NSString *SKDocumentToolbarNotesPaneItemIdentifier = @"SKDocumentToolbarN
 
 - (void)insertObject:(id)obj inNotesAtIndex:(unsigned)theIndex {
     [notes insertObject:obj atIndex:theIndex];
-    [noteOutlineView reloadData];
 }
 
 - (void)removeObjectFromNotesAtIndex:(unsigned)theIndex {
@@ -570,7 +572,6 @@ static NSString *SKDocumentToolbarNotesPaneItemIdentifier = @"SKDocumentToolbarN
     }
     
     [notes removeObjectAtIndex:theIndex];
-    [noteOutlineView reloadData];
 }
 
 - (NSArray *)thumbnails {
@@ -1668,6 +1669,7 @@ static NSString *SKDocumentToolbarNotesPaneItemIdentifier = @"SKDocumentToolbarN
                 [self snapshotNeedsUpdate:wc];
         }
     }
+    [noteOutlineView reloadData];
     [[self document] updateChangeCount:NSChangeDone];
 }
 
@@ -1699,6 +1701,7 @@ static NSString *SKDocumentToolbarNotesPaneItemIdentifier = @"SKDocumentToolbarN
                 [self snapshotNeedsUpdate:wc];
         }
     }
+    [noteOutlineView reloadData];
     [[self document] updateChangeCount:NSChangeDone];
 }
 
