@@ -2672,8 +2672,10 @@ originalContentsURL:(NSURL *)absoluteOriginalContentsURL
             [statusStr appendFormat:NSLocalizedString(@". There was 1 match.", @"Partial status message")];
         else if (matchCount > 1)
             [statusStr appendFormat:NSLocalizedString(@". There were %i matches.", @"Partial status message"), matchCount];
-        if (matchCount > groupPubsCount)
+        if ([group hasMoreResults])
             [statusStr appendString:NSLocalizedString(@" Hit \"Search\" to load more.", @"Partial status message")];
+        else if (groupPubsCount < matchCount)
+            [statusStr appendString:NSLocalizedString(@" Some results could not be parsed.", @"Partial status message")];
 	} else if (groupPubsCount != totalPubsCount) {
 		NSString *groupStr = ([groupTableView numberOfSelectedRows] == 1) ?
 			[NSString stringWithFormat:@"%@ \"%@\"", NSLocalizedString(@"in group", @"Partial status message"), [[[self selectedGroups] lastObject] stringValue]] :
