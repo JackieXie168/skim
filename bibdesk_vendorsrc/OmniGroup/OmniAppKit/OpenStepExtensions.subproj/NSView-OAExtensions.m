@@ -274,6 +274,9 @@ static unsigned int scrollEntriesCount = 0;
 {
     NSRect bounds = [self bounds];
     NSScrollView *enclosingScrollView = [self enclosingScrollView];
+    if (nil == enclosingScrollView)
+        return NSZeroPoint;
+    
     NSRect documentVisibleRect = [enclosingScrollView documentVisibleRect];
 
     NSPoint scrollPosition;
