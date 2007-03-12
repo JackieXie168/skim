@@ -129,6 +129,7 @@ static NSString *SKDocumentToolbarNotesPaneItemIdentifier = @"SKDocumentToolbarN
         lastViewedPages = [[NSMutableArray alloc] init];
         leftSidePaneState = SKOutlineSidePaneState;
         rightSidePaneState = SKNoteSidePaneState;
+        temporaryAnnotations = CFSetCreateMutable(kCFAllocatorDefault, 0, &kCFTypeSetCallBacks);
     }
     
     return self;
@@ -149,6 +150,7 @@ static NSString *SKDocumentToolbarNotesPaneItemIdentifier = @"SKDocumentToolbarN
         [snapshotTimer release];
         snapshotTimer = nil;
     }
+    [(id)temporaryAnnotations release];
     [dirtyThumbnails release];
     [dirtySnapshots release];
 	[searchResults release];
@@ -1443,32 +1445,23 @@ static NSString *SKDocumentToolbarNotesPaneItemIdentifier = @"SKDocumentToolbarN
         [page addAnnotation:circle];
         [pdfView setNeedsDisplayForAnnotation:circle];
         [circle release];
-        [self thumbnailNeedsUpdate:[[self thumbnails] objectAtIndex:i]];
+        CFSetAddValue(temporaryAnnotations, (void *)circle);
     }
 }
 
+void removeTemporaryAnnotations(const void *annotation, void *context)
+{
+    SKMainWindowController *wc = (SKMainWindowController *)context;
+    PDFAnnotation *annote = (PDFAnnotation *)annotation;
+    [[annote page] removeAnnotation:annote];
+    [[wc pdfView] setNeedsDisplayForAnnotation:annote];
+    // no need to update thumbnail, since temp annotations are only displayed when the search table is displayed
+}
+
 - (void)removeTemporaryAnnotations {
-    PDFDocument *doc = [pdfView document];
-    unsigned i, iMax = [doc pageCount];
-    
-    for (i = 0; i < iMax; i++) {
-        PDFPage *page = [doc pageAtIndex:i];
-        NSArray *annotations = [[page annotations] copy];
-        unsigned j, jMax = [annotations count];
-        PDFAnnotation *annote;
-        BOOL found = NO;
-        
-        for (j = 0; j < jMax; j++) {
-            annote = [annotations objectAtIndex:j];
-            if ([annote isTemporaryAnnotation]) {
-                [page removeAnnotation:annote];
-                [pdfView setNeedsDisplayForAnnotation:annote];
-                found = YES;
-            }
-        }
-        if (found)
-            [self thumbnailNeedsUpdate:[[self thumbnails] objectAtIndex:i]];
-    }
+    // for long documents, this is much faster than iterating all pages and sending -isTemporaryAnnotation to each one
+    CFSetApplyFunction(temporaryAnnotations, removeTemporaryAnnotations, self);
+    CFSetRemoveAllValues(temporaryAnnotations);
 }
 
 - (void)displaySearchResultsForString:(NSString *)string {
