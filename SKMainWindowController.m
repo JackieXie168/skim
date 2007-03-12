@@ -1554,10 +1554,18 @@ static NSString *SKDocumentToolbarNotesPaneItemIdentifier = @"SKDocumentToolbarN
     [self snapshotNeedsUpdate:controller];
 }
 
+- (void)hideRightSideWindow:(NSTimer *)timer {
+    [rightSideWindow hideSideWindow];
+}
+
 - (NSRect)snapshotControllerTargetRectForMiniaturize:(SKSnapshotWindowController *)controller {
     if ([self isPresentation] == NO) {
-        if ([self isFullScreen] == NO && NSWidth([rightSideContentBox frame]) <= 0.0)
+        if ([self isFullScreen] == NO && NSWidth([rightSideContentBox frame]) <= 0.0) {
             [self toggleRightSidePane:self];
+        } else if ([self isFullScreen] && ([rightSideWindow state] == NSDrawerClosedState || [rightSideWindow state] == NSDrawerClosingState)) {
+            [rightSideWindow showSideWindow];
+            [NSTimer scheduledTimerWithTimeInterval:1.0 target:self selector:@selector(hideRightSideWindow:) userInfo:NULL repeats:NO];
+        }
         [self setRightSidePaneState:SKSnapshotSidePaneState];
     }
     
