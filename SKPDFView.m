@@ -424,6 +424,10 @@ NSString *SKSkimNotePboardType = @"SKSkimNotePboardType";
         NSBeep();
 }
 
+- (void)changeToolMode:(id)sender {
+    [self setToolMode:[sender tag]];
+}
+
 #pragma mark Event Handling
 
 - (void)keyDown:(NSEvent *)theEvent
@@ -606,15 +610,15 @@ NSString *SKSkimNotePboardType = @"SKSkimNotePboardType";
     
     item = [submenu addItemWithTitle:NSLocalizedString(@"Text", @"Menu item title") action:@selector(changeToolMode:) keyEquivalent:@""];
     [item setTag:SKTextToolMode];
-    [item setTarget:[[self window] windowController]];
+    [item setTarget:self];
 
     item = [submenu addItemWithTitle:NSLocalizedString(@"Scroll", @"Menu item title") action:@selector(changeToolMode:) keyEquivalent:@""];
     [item setTag:SKMoveToolMode];
-    [item setTarget:[[self window] windowController]];
+    [item setTarget:self];
 
     item = [submenu addItemWithTitle:NSLocalizedString(@"Magnify", @"Menu item title") action:@selector(changeToolMode:) keyEquivalent:@""];
     [item setTag:SKMagnifyToolMode];
-    [item setTarget:[[self window] windowController]];
+    [item setTarget:self];
     
     item = [menu addItemWithTitle:NSLocalizedString(@"Tools", @"Menu item title") action:NULL keyEquivalent:@""];
     [item setSubmenu:submenu];
