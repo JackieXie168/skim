@@ -7,10 +7,6 @@
 @c
 @setfilename skim.info
 
-@c define an index for preference setting entries
-@defindex pref
-
-@settitle Skim Help
 @setchapternewpage odd
 @footnotestyle separate
 @ifset shorttitlepage-enabled
@@ -100,6 +96,8 @@ Control-Cmd-\key\
 @c ======================================================================================
 @c The content of the Help Pages starts here...
 @c ======================================================================================
+
+@settitle Skim Help
 
 @ifnottex
 @node Top
