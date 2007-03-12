@@ -2730,11 +2730,10 @@ originalContentsURL:(NSURL *)absoluteOriginalContentsURL
 - (void)splitView:(NSSplitView *)sender resizeSubviewsWithOldSize:(NSSize)oldSize {
     int i = [[sender subviews] count] - 2;
     OBASSERT(i >= 0);
-#warning FIXME: we send -frame to nil (zerothView)
 	NSView *zerothView = i == 0 ? nil : [[sender subviews] objectAtIndex:0];
 	NSView *firstView = [[sender subviews] objectAtIndex:i];
 	NSView *secondView = [[sender subviews] objectAtIndex:++i];
-	NSRect zerothFrame = [zerothView frame];
+	NSRect zerothFrame = zerothView ? [zerothView frame] : NSZeroRect;
 	NSRect firstFrame = [firstView frame];
 	NSRect secondFrame = [secondView frame];
     float factor = (NSWidth([sender frame]) - [sender dividerThickness]) / (oldSize.width - [sender dividerThickness]);
