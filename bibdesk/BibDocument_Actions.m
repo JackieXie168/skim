@@ -618,7 +618,7 @@
         [alert beginSheetModalForWindow:documentWindow
                           modalDelegate:self
                          didEndSelector:@selector(openLinkedFileAlertDidEnd:returnCode:contextInfo:) 
-                            contextInfo:NULL];
+                            contextInfo:[field retain]];
 	} else {
         [self openLinkedFileAlertDidEnd:nil returnCode:NSAlertAlternateReturn contextInfo:[field retain]];
     }
@@ -657,7 +657,7 @@
         [alert beginSheetModalForWindow:documentWindow
                           modalDelegate:self
                          didEndSelector:@selector(revealLinkedFileAlertDidEnd:returnCode:contextInfo:) 
-                            contextInfo:NULL];
+                            contextInfo:[field retain]];
 	} else {
         [self revealLinkedFileAlertDidEnd:nil returnCode:NSAlertAlternateReturn contextInfo:[field retain]];
     }
@@ -696,7 +696,7 @@
         [alert beginSheetModalForWindow:documentWindow
                           modalDelegate:self
                          didEndSelector:@selector(openRemoteURLAlertDidEnd:returnCode:contextInfo:) 
-                            contextInfo:NULL];
+                            contextInfo:[field retain]];
 	} else {
         [self openRemoteURLAlertDidEnd:nil returnCode:NSAlertAlternateReturn contextInfo:[field retain]];
     }
@@ -742,7 +742,7 @@
         [alert beginSheetModalForWindow:documentWindow
                           modalDelegate:self
                          didEndSelector:@selector(showNotesForLinkedFileAlertDidEnd:returnCode:contextInfo:) 
-                            contextInfo:NULL];
+                            contextInfo:[field retain]];
 	} else {
         [self showNotesForLinkedFileAlertDidEnd:nil returnCode:NSAlertAlternateReturn contextInfo:[field retain]];
     }
