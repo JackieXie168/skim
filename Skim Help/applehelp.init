@@ -32,7 +32,7 @@ $BIG_RULE = '';
 # placeholder for Apple meta tags
 $EXTRA_HEAD= "<!--AppleMeta-->";
 
-$DO_CONTENTS = 1;
+$DO_CONTENTS = 0;
 $SECTION_NAVIGATION = 1;
 $WORDS_IN_PAGE = 1000000;
 
