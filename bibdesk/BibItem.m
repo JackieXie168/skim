@@ -2427,6 +2427,11 @@ Boolean stringContainsLossySubstring(NSString *theString, NSString *stringToFind
         return returnURL;
     
     NSString *value = [self valueOfField:field inherit:NO];
+    
+    // early return to avoid using a struct from nil
+    if(nil == value)
+        return nil;
+    
     NSURL *baseURL = nil;
     
     // resolve DOI fields against a base URL if necessary, so they can be opened directly by NSWorkspace

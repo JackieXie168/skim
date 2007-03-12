@@ -97,7 +97,7 @@
         [self fixAttributesForURLs];
     } else if(editedRange.location != NSNotFound){
         NSString *editedWord = [self URLStringFromRange:&editedRange inString:string];
-        if([editedWord rangeOfString:@"://"].length == 0)
+        if(editedWord && [editedWord rangeOfString:@"://"].length == 0)
             editedWord = nil;
         NSURL *url = editedWord ? [[NSURL alloc] initWithString:editedWord] : nil;
         if(url != nil)
