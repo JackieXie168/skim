@@ -489,11 +489,23 @@ If the Password command is disabled, this document does not require you to enter
 
 @topic Resizing a PDF file to fit its window
 
-Skim can automatically resize an image or PDF file so that it always fits its window. As you resize the window, Skim resizes the image or PDF. 
+Skim can automatically resize a PDF file so that it always fits its window. As you resize the window, Skim resizes the image or PDF. 
 
 @box{taskbox}
 @itemize
-@item Choose View > Zoom To Fit. 
+@item To keep a PDF file resized to fit its window, choose View > Zoom To Fit. 
+@end itemize
+@endbox
+
+@c ======================================================================================
+
+@topic Resizing the widnow to fit its contents.
+
+When the PDF file is not set to zoom to fit its window, you can resize the window to fit around the PDF file and the side panes. 
+
+@box{taskbox}
+@itemize
+@item To resize a window so that it fits around the PDF file, choose Window > Fit. 
 @end itemize
 @endbox
 
