@@ -1724,6 +1724,8 @@ void removeTemporaryAnnotations(const void *annotation, void *context)
             if ([[[wc pdfView] currentPage] isEqual:[annotation page]])
                 [self snapshotNeedsUpdate:wc];
         }
+        
+        [noteArrayController rearrangeObjects];
         [noteOutlineView reloadData];
     }
 }
