@@ -623,7 +623,8 @@ enum {
 #pragma mark Action methods
 
 - (IBAction)openHelp:(id)sender{
-	[[NSHelpManager sharedHelpManager] openHelpAnchor:@"Find-and-Replace" inBook:@"BibDesk Help"];
+    NSString *helpBookName = [[NSBundle mainBundle] objectForInfoDictionaryKey: @"CFBundleHelpBookName"];
+	[[NSHelpManager sharedHelpManager] openHelpAnchor:@"FindAndReplace" inBook:helpBookName];
 }
 
 - (IBAction)toggleStatusBar:(id)sender{

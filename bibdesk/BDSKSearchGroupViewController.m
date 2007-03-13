@@ -103,7 +103,8 @@
 }
 
 - (IBAction)searchHelp:(id)sender{
-	[[NSHelpManager sharedHelpManager] openHelpAnchor:@"Searching-External-Databases" inBook:@"BibDesk Help"];
+    NSString *helpBookName = [[NSBundle mainBundle] objectForInfoDictionaryKey: @"CFBundleHelpBookName"];
+	[[NSHelpManager sharedHelpManager] openHelpAnchor:@"SearchingExternalDatabases" inBook:helpBookName];
 }
 
 - (BOOL)control:(NSControl *)control didFailToFormatString:(NSString *)aString errorDescription:(NSString *)error {
