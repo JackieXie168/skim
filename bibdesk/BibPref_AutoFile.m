@@ -208,11 +208,13 @@ static NSString *repositorySpecifierStrings[] = {@"", @"%a00", @"%A0", @"%p00", 
 #pragma mark Local-Url format stuff
 
 - (IBAction)localUrlHelp:(id)sender{
-	[[NSHelpManager sharedHelpManager] openHelpAnchor:@"AutoFile" inBook:@"BibDesk Help"];
+    NSString *helpBookName = [[NSBundle mainBundle] objectForInfoDictionaryKey: @"CFBundleHelpBookName"];
+	[[NSHelpManager sharedHelpManager] openHelpAnchor:@"AutoFiling" inBook:@"BibDesk Help"];
 }
 
 - (IBAction)formatHelp:(id)sender{
-	[[NSHelpManager sharedHelpManager] openHelpAnchor:@"Autogeneration-Format-Syntax" inBook:@"BibDesk Help"];
+    NSString *helpBookName = [[NSBundle mainBundle] objectForInfoDictionaryKey: @"CFBundleHelpBookName"];
+	[[NSHelpManager sharedHelpManager] openHelpAnchor:@"AutogenerationFormatSyntax" inBook:helpBookName];
 }
 
 - (IBAction)changeLocalUrlLowercase:(id)sender{

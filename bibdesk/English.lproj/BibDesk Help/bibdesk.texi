@@ -622,6 +622,8 @@ this will not find @samp{bibdesk}, since uppercase letters were used in this
 example.
 
 @node Find and Replace
+@c DO NOT LOCALIZE THE NEXT LINE
+@anchor{FindAndReplace}
 @section Find and Replace
 
 @cindex searching
@@ -867,6 +869,8 @@ menu item of BibDesk's @menutitle{Services} submenu.
 The selected text will be added to the frontmost document in BibDesk automatically.
 
 @node Adding References From Text Sources
+@c DO NOT LOCALIZE THE NEXT LINE
+@anchor{AddingReferencesFromTextSources}
 @subsection Adding References From Text Sources
 @abstract{Adding new references from text sources.}
 
@@ -1588,6 +1592,8 @@ provide the necessary AppleScript commands for their favorite software.
 @c ======================================================================================
 
 @node Searching External Databases
+@c DO NOT LOCALIZE THE NEXT LINE
+@anchor{SearchingExternalDatabases}
 @chapter Searching External Databases
 @abstract{How to search external databases.}
 
@@ -1778,6 +1784,8 @@ Complete documentation of the extensions is provided at
 @c ======================================================================================
 
 @node Citation Keys
+@c DO NOT LOCALIZE THE NEXT LINE
+@anchor{CitationKeys}
 @chapter Citation Keys
 @abstract{Controlling the automatic generation of citation keys.}
 
@@ -1851,6 +1859,8 @@ The syntax of the format is described in more detail in
 @c ======================================================================================
 
 @node AutoFile
+@c DO NOT LOCALIZE THE NEXT LINE
+@anchor{AutoFiling}
 @chapter AutoFile
 @abstract{Automatically file papers.}
 
@@ -2308,6 +2318,8 @@ from the @menutitle{BibDesk} menu, or press the key shortcut @cmd{,} (Command
 @c --------------------------------------------------------------------------------------
 
 @node General Preferences
+@c DO NOT LOCALIZE THE NEXT LINE
+@anchor{GeneralPreferences}
 @section General
 @abstract{Configuring Startup behavior}
 
@@ -2340,6 +2352,8 @@ These warnings can also be deactivated from the warning dialog.
 @c --------------------------------------------------------------------------------------
 
 @node Display Preferences
+@c DO NOT LOCALIZE THE NEXT LINE
+@anchor{DisplayPreferences}
 @section Display
 @abstract{Configuring Overall Appearance}
 
@@ -2371,6 +2385,8 @@ the lower preview pane of the main browser window (in Details view).
 @c --------------------------------------------------------------------------------------
 
 @node Citation Preferences
+@c DO NOT LOCALIZE THE NEXT LINE
+@anchor{CitationPreferences}
 @section Citation
 @abstract{Configuring Dragging and Citation Commands}
 
@@ -2397,6 +2413,8 @@ The alternate default format is used when the Option key is held down during the
 @c --------------------------------------------------------------------------------------
 
 @node Preview Preferences
+@c DO NOT LOCALIZE THE NEXT LINE
+@anchor{PreviewPreferences}
 @section Preview
 @abstract{Configuring the Preview Settings}
 
@@ -2437,6 +2455,8 @@ modify the template and TeX command appropriately.
 @c --------------------------------------------------------------------------------------
 
 @node Sharing Preferences
+@c DO NOT LOCALIZE THE NEXT LINE
+@anchor{SharingPreferences}
 @section Sharing
 @abstract{Sharing bilbliographies over the network.}
 
@@ -2465,6 +2485,8 @@ sharing password.  The password is stored in your keychain, and is never transmi
 @c --------------------------------------------------------------------------------------
 
 @node Completion Preferences
+@c DO NOT LOCALIZE THE NEXT LINE
+@anchor{CompletionPreferences}
 @section Completion
 @abstract{Autocompletion of citation commands in other applications.}
 
@@ -2499,6 +2521,8 @@ feature once it is set up.
 @c --------------------------------------------------------------------------------------
 
 @node Files Preferences
+@c DO NOT LOCALIZE THE NEXT LINE
+@anchor{FilesPreferences}
 @section Files
 @abstract{Configuring Saving and Reading Defaults}
 
@@ -2616,6 +2640,8 @@ they will show up on a subsequent edit.
 @c --------------------------------------------------------------------------------------
 
 @node Template Preferences
+@c DO NOT LOCALIZE THE NEXT LINE
+@anchor{TemplatePreferences}
 @section Templates
 @abstract{Configuring Templates for Export and Services}
 
@@ -2659,6 +2685,8 @@ their original content by clicking this button. Be careful though, as you can no
 @c --------------------------------------------------------------------------------------
 
 @node Default Fields Preferences
+@c DO NOT LOCALIZE THE NEXT LINE
+@anchor{DefaultFieldsPreferences}
 @section Default Fields
 @abstract{Configuring the Default Fields}
 
@@ -2809,6 +2837,8 @@ header instead of the image path.
 @c --------------------------------------------------------------------------------------
 
 @node Crossref Preferences
+@c DO NOT LOCALIZE THE NEXT LINE
+@anchor{CrossrefPreferences}
 @section Crossref
 @abstract{Configuring Crossref support}
 
@@ -2847,6 +2877,8 @@ BibDesk will warn you when you try to edit an inherited field.
 @c --------------------------------------------------------------------------------------
 
 @node Cite Key Preferences
+@c DO NOT LOCALIZE THE NEXT LINE
+@anchor{CiteKeyPreferences}
 @section Cite Key
 @abstract{Configuring the Cite Key Autogeneration Feature}
 
@@ -2898,6 +2930,8 @@ also remove the braces.
 @c --------------------------------------------------------------------------------------
 
 @node AutoFile Preferences
+@c DO NOT LOCALIZE THE NEXT LINE
+@anchor{AutoFilePreferences}
 @section AutoFile
 @abstract{Configuring the AutoFile feature}
 
@@ -2971,6 +3005,8 @@ only ASCII characters; accented characters are converted if possible.
 @c --------------------------------------------------------------------------------------
 
 @node Script Hook Preferences
+@c DO NOT LOCALIZE THE NEXT LINE
+@anchor{ScriptHookPreferences}
 @section Script Hooks
 @abstract{Configuring Script Hooks}
 
@@ -3414,6 +3450,8 @@ Note: for BibTeX, it is also necessary to enclose the accent sequence in braces
 @c ======================================================================================
 
 @node Autogeneration Format Syntax
+@c DO NOT LOCALIZE THE NEXT LINE
+@anchor{AutogenerationFormatSyntax}
 @appendix Autogeneration Format Syntax
 @abstract{The syntax of the format used for Cite Key and Local-Url AutoGeneration.}
 

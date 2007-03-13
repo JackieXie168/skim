@@ -412,7 +412,7 @@
 					<string>~/Documents/Papers</string>
 				</dict>
 				<key>helpURL</key>
-				<string>AutoFile-Preferences</string>
+				<string>AutoFilePreferences</string>
 				<key>icon</key>
 				<string>autofile.tiff</string>
 				<key>identifier</key>
@@ -461,7 +461,7 @@
 					<false/>
 				</dict>
 				<key>helpURL</key>
-				<string>Citation-Preferences</string>
+				<string>CitationPreferences</string>
 				<key>icon</key>
 				<string>citation.tiff</string>
 				<key>identifier</key>
@@ -495,7 +495,7 @@
 					<false/>
 				</dict>
 				<key>helpURL</key>
-				<string>Citation-Keys</string>
+				<string>CiteKeyPreferences</string>
 				<key>icon</key>
 				<string>key.tiff</string>
 				<key>identifier</key>
@@ -534,7 +534,7 @@
 					<true/>
 				</dict>
 				<key>helpURL</key>
-				<string>Crossref-Preferences</string>
+				<string>CrossrefPreferences</string>
 				<key>icon</key>
 				<string>crossref.tiff</string>
 				<key>identifier</key>
@@ -604,7 +604,7 @@
 					<array/>
 				</dict>
 				<key>helpURL</key>
-				<string>Default-Fields-Preferences</string>
+				<string>DefaultFieldsPreferences</string>
 				<key>icon</key>
 				<string>defaults.tiff</string>
 				<key>identifier</key>
@@ -674,7 +674,7 @@
 					<array/>
 				</dict>
 				<key>helpURL</key>
-				<string>Display-Preferences</string>
+				<string>DisplayPreferences</string>
 				<key>icon</key>
 				<string>display.tiff</string>
 				<key>identifier</key>
@@ -706,7 +706,7 @@
 					</data>
 				</dict>
 				<key>helpURL</key>
-				<string>Template-Preferences</string>
+				<string>TemplatePreferences</string>
 				<key>icon</key>
 				<string>exportPrefs.tiff</string>
 				<key>identifier</key>
@@ -752,7 +752,7 @@
 					<true/>
 				</dict>
 				<key>helpURL</key>
-				<string>Files-Preferences</string>
+				<string>FilesPreferences</string>
 				<key>icon</key>
 				<string>genericBibDocIcon.tiff</string>
 				<key>identifier</key>
@@ -918,7 +918,7 @@
                     <false/>
 				</dict>
 				<key>helpURL</key>
-				<string>General-Preferences</string>
+				<string>GeneralPreferences</string>
 				<key>icon</key>
 				<string>startup.tiff</string>
 				<key>identifier</key>
@@ -944,7 +944,7 @@
 					<true/>
 				</dict>
 				<key>helpURL</key>
-				<string>Autocompletion-Preferences</string>
+				<string>AutocompletionPreferences</string>
 				<key>icon</key>
 				<string>inputmanager.tiff</string>
 				<key>identifier</key>
@@ -970,7 +970,7 @@
 					<dict/>
 				</dict>
 				<key>helpURL</key>
-				<string>Script-Hook-Preferences</string>
+				<string>ScriptHookPreferences</string>
 				<key>icon</key>
 				<string>scripthook.tiff</string>
 				<key>identifier</key>
@@ -1002,7 +1002,7 @@
 					<false/>
 				</dict>
 				<key>helpURL</key>
-				<string>Sharing-Preferences</string>
+				<string>SharingPreferences</string>
 				<key>icon</key>
 				<string>networkIcon.tiff</string>
 				<key>identifier</key>
@@ -1036,7 +1036,7 @@
 					<false/>
 				</dict>
 				<key>helpURL</key>
-				<string>Preview-Preferences</string>
+				<string>PreviewPreferences</string>
 				<key>icon</key>
 				<string>preview.tiff</string>
 				<key>identifier</key>

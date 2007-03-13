@@ -324,7 +324,8 @@
 }
 
 - (IBAction)showHelpAction:(id)sender{
-	[[NSHelpManager sharedHelpManager] openHelpAnchor:@"Adding-References-From-Text-Sources" inBook:@"BibDesk Help"];
+    NSString *helpBookName = [[NSBundle mainBundle] objectForInfoDictionaryKey: @"CFBundleHelpBookName"];
+	[[NSHelpManager sharedHelpManager] openHelpAnchor:@"AddingReferencesFromTextSources" inBook:helpBookName];
 }
 
 - (IBAction)addTextToCurrentFieldAction:(id)sender{
