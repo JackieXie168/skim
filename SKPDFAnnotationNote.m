@@ -77,7 +77,6 @@ static NSArray *pointsFromStrings(NSArray *strings)
 }
 
 @interface PDFAnnotation (PDFAnnotationPrivateDeclarations)
-- (void)setPage:(PDFPage *)page;
 - (void)drawWithBox:(CGPDFBox)box inContext:(CGContextRef)context;
 @end
 
@@ -412,7 +411,9 @@ static NSColor *underlineColor = nil;
           | 0  1 |
           | 2  3 |
           --------
-         */         
+         */        
+        numberOfLines = 0;
+        lineRects = NULL;
         [self setQuadrilateralPoints: [NSArray arrayWithObjects:
             [NSValue valueWithPoint: NSMakePoint(0.0, NSHeight(bounds))],
             [NSValue valueWithPoint: NSMakePoint(NSWidth(bounds), NSHeight (bounds))],
@@ -428,6 +429,12 @@ static NSColor *underlineColor = nil;
         [self setQuadrilateralPointsFromSelection:selection];        
     }
     return self;
+}
+
+- (void)dealloc
+{
+    if (lineRects) NSZoneFree([self zone], lineRects);
+    [super dealloc];
 }
 
 - (NSDictionary *)dictionaryValue {
@@ -467,6 +474,54 @@ static BOOL lineRectTrimmingWhitespaceForPage(NSRect *lineRect, PDFPage *page)
     return NO;
 }    
 
+- (void)addLineRect:(NSRect)aRect {
+    numberOfLines++;
+    lineRects = NSZoneRealloc([self zone], lineRects, numberOfLines * sizeof(NSRect));
+    lineRects[numberOfLines - 1] = aRect;
+}
+
+- (void)regenerateLineRects {
+    
+    NSArray *quadPoints = [self quadrilateralPoints];
+    NSAssert([quadPoints count] % 4 == 0, @"inconsistent number of quad points");
+
+    unsigned j, jMax = [quadPoints count] / 4;
+    
+    for (j = 0; j < jMax; j += 1) {
+        
+        NSRange range = NSMakeRange(4 * j, 4);
+
+        NSValue *values[4];
+        [quadPoints getObjects:values range:range];
+        
+        NSPoint points[4];
+        unsigned i = 0;
+        for (i = 0; i < 4; i++)
+            points[i] = [values[i] pointValue];
+        
+        NSRect lineRect;
+        lineRect.size.height = points[1].y - points[2].y;
+        lineRect.size.width = points[1].x - points[2].x;
+        lineRect.origin = points[2];
+        lineRect.origin.x += [self bounds].origin.x;
+        lineRect.origin.y += [self bounds].origin.y;
+        [self addLineRect:lineRect];
+    }
+}
+
+// this allows more precise hit testing of these annotations, since markup may not cover the entire bounds
+- (BOOL)linesContainPoint:(NSPoint)point {
+    // archived annotations (or annotations we didn't create) won't have these
+    if (0 == numberOfLines)
+        [self regenerateLineRects];
+    
+    unsigned i = numberOfLines;
+    BOOL isContained = NO;
+    while (i-- && NO == isContained)
+        isContained = NSPointInRect(point, lineRects[i]);
+    return isContained;
+}
+
 - (void)setQuadrilateralPointsFromSelection:(PDFSelection *)selection {
     if ([selection respondsToSelector:@selector(numberOfRangesOnPage:)] == NO || [selection respondsToSelector:@selector(rangeAtIndex:onPage:)] == NO)
         return;
@@ -487,6 +542,7 @@ static BOOL lineRectTrimmingWhitespaceForPage(NSRect *lineRect, PDFPage *page)
                     lineRect = NSUnionRect(lineRect, charRect);
                 } else {
                     if (lineRectTrimmingWhitespaceForPage(&lineRect, page)) {
+                        [self addLineRect:lineRect];
                         NSArray *quadLine = createQuadPointsWithBounds(lineRect, [self bounds].origin);
                         [quadPoints addObjectsFromArray:quadLine];
                         [quadLine release];
@@ -495,6 +551,7 @@ static BOOL lineRectTrimmingWhitespaceForPage(NSRect *lineRect, PDFPage *page)
                 }
             }
             if (NSEqualRects(lineRect, NSZeroRect) == NO && lineRectTrimmingWhitespaceForPage(&lineRect, page)) {
+                [self addLineRect:lineRect];
                 NSArray *quadLine = createQuadPointsWithBounds(lineRect, [self bounds].origin);
                 [quadPoints addObjectsFromArray:quadLine];
                 [quadLine release];

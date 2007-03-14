@@ -80,9 +80,14 @@ extern NSString *SKAnnotationDidChangeNotification;
 @end
 
 @interface SKPDFAnnotationMarkup : PDFAnnotationMarkup
+{
+    NSRect *lineRects;
+    unsigned numberOfLines;
+}
 - (id)initWithBounds:(NSRect)bounds markupType:(int)type;
 - (id)initWithSelection:(PDFSelection *)selection markupType:(int)type;
 - (void)setQuadrilateralPointsFromSelection:(PDFSelection *)selection;
+- (BOOL)linesContainPoint:(NSPoint)point;
 @end
 
 @interface SKPDFAnnotationFreeText : PDFAnnotationFreeText
