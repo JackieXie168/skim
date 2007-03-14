@@ -487,8 +487,9 @@ NSString *SKSkimNotePboardType = @"SKSkimNotePboardType";
 - (void)mouseUp:(NSEvent *)theEvent{
     switch (toolMode) {
         case SKTextToolMode:
-            if (mouseDownInAnnotation) {
-                mouseDownInAnnotation = NO;
+            mouseDownInAnnotation = NO;
+            if (draggingAnnotation) {
+                draggingAnnotation = NO;
                 if ([activeAnnotation isEditable] == NO) {
                     NSString *selString = [[[[activeAnnotation page] selectionForRect:[activeAnnotation bounds]] string] stringByCollapsingWhitespaceAndNewlinesAndRemovingSurroundingWhitespaceAndNewlines];
                     [activeAnnotation setContents:selString];
@@ -519,35 +520,39 @@ static inline NSRect rectWithCorners(NSPoint p1, NSPoint p2)
 - (void)mouseDragged:(NSEvent *)theEvent {
     switch (toolMode) {
         case SKTextToolMode:
-            if (mouseDownInAnnotation) {
+            if (draggingAnnotation) {
                 [self dragAnnotationWithEvent:theEvent];
             } else if (nil == activeAnnotation) {
-                // reimplement text selection behavior so we can select text inside markup annotation bounds rectangles (and have a highlight and strikeout on the same line, for instance), but don't select inside an existing markup annotation
+                if (mouseDownInAnnotation) {
+                    // reimplement text selection behavior so we can select text inside markup annotation bounds rectangles (and have a highlight and strikeout on the same line, for instance), but don't select inside an existing markup annotation
 
-                NSPoint p1 = [self convertPoint:mouseDownLoc fromView:nil];
-                PDFPage *page1 = [self pageForPoint:p1 nearest:YES];
-                p1 = [self convertPoint:p1 toPage:page1];
+                    NSPoint p1 = [self convertPoint:mouseDownLoc fromView:nil];
+                    PDFPage *page1 = [self pageForPoint:p1 nearest:YES];
+                    p1 = [self convertPoint:p1 toPage:page1];
 
-                NSPoint p2 = [self convertPoint:[theEvent locationInWindow] fromView:nil];
-                PDFPage *page2 = [self pageForPoint:p2 nearest:YES];
-                p2 = [self convertPoint:p2 toPage:page2];
-                
-                PDFSelection *sel = nil;
-                if  ([theEvent modifierFlags] & NSAlternateKeyMask) {
-                    // how to handle multipage selection?  Preview.app's behavior is screwy as well, so we'll do the same thing
-                    sel = [page1 selectionForRect:rectWithCorners(p1, p2)];
+                    NSPoint p2 = [self convertPoint:[theEvent locationInWindow] fromView:nil];
+                    PDFPage *page2 = [self pageForPoint:p2 nearest:YES];
+                    p2 = [self convertPoint:p2 toPage:page2];
+                    
+                    PDFSelection *sel = nil;
+                    if  ([theEvent modifierFlags] & NSAlternateKeyMask) {
+                        // how to handle multipage selection?  Preview.app's behavior is screwy as well, so we'll do the same thing
+                        sel = [page1 selectionForRect:rectWithCorners(p1, p2)];
+                    } else {
+                        sel = [[self document] selectionFromPage:page1 atPoint:p1 toPage:page2 atPoint:p2];
+                    }
+
+                    [self setCurrentSelection:sel];
+
+                    // if we autoscroll, the mouseDownLoc is no longer correct as a starting point
+                    float y0 = NSMinY([[[self documentView] enclosingScrollView] documentVisibleRect]);
+                    float x0 = NSMinX([[[self documentView] enclosingScrollView] documentVisibleRect]);
+                    if ([[self documentView] autoscroll:theEvent]) {
+                        mouseDownLoc.y -= y0 - NSMinY([[[self documentView] enclosingScrollView] documentVisibleRect]);
+                        mouseDownLoc.x -= x0 - NSMinX([[[self documentView] enclosingScrollView] documentVisibleRect]);
+                    }
                 } else {
-                    sel = [[self document] selectionFromPage:page1 atPoint:p1 toPage:page2 atPoint:p2];
-                }
-
-                [self setCurrentSelection:sel];
-
-                // if we autoscroll, the mouseDownLoc is no longer correct as a starting point
-                float y0 = NSMinY([[[self documentView] enclosingScrollView] documentVisibleRect]);
-                float x0 = NSMinX([[[self documentView] enclosingScrollView] documentVisibleRect]);
-                if ([[self documentView] autoscroll:theEvent]) {
-                    mouseDownLoc.y -= y0 - NSMinY([[[self documentView] enclosingScrollView] documentVisibleRect]);
-                    mouseDownLoc.x -= x0 - NSMinX([[[self documentView] enclosingScrollView] documentVisibleRect]);
+                    [super mouseDragged:theEvent];
                 }
             }
             break;
@@ -1276,20 +1281,20 @@ static inline NSRect rectWithCorners(NSPoint p1, NSPoint p2)
     for (i = 0; i < numAnnotations; i++) {
         NSRect annotationBounds;
         PDFAnnotation *annotationHit = [annotations objectAtIndex:i];
-
-        // markup annotations aren't necessarily defined by a box
-        if ([annotationHit respondsToSelector:@selector(linesContainPoint:)]) {
-            if ([(SKPDFAnnotationMarkup *)annotationHit linesContainPoint:pagePoint]) {
-                newActiveAnnotation = annotationHit;
-                break;
-            }
-            
-        } else {
         
-            // Hit test annotation.
-            annotationBounds = [annotationHit bounds];
-            if (NSPointInRect(pagePoint, annotationBounds)) {
-                if ([annotationHit isNoteAnnotation]) {
+        // Hit test annotation.
+        annotationBounds = [annotationHit bounds];
+        if (NSPointInRect(pagePoint, annotationBounds)) {
+            if ([annotationHit isNoteAnnotation]) {
+                mouseDownInAnnotation = YES;
+                
+                if ([annotationHit respondsToSelector:@selector(linesContainPoint:)]) {
+                    // markup annotations aren't necessarily defined by a box
+                    if ([(SKPDFAnnotationMarkup *)annotationHit linesContainPoint:pagePoint]) {
+                        newActiveAnnotation = annotationHit;
+                        break;
+                    }
+                } else {
                     // We count this one.
                     newActiveAnnotation = annotationHit;
                     
@@ -1339,6 +1344,7 @@ static inline NSRect rectWithCorners(NSPoint p1, NSPoint p2)
         
         // Start editing
         [super mouseDown:theEvent];
+        mouseDownInAnnotation = NO;
         
     } else if ([theEvent clickCount] == 2 && [[activeAnnotation type] isEqualToString:@"Note"]) {
         
@@ -1351,7 +1357,7 @@ static inline NSRect rectWithCorners(NSPoint p1, NSPoint p2)
         
         // Force redisplay.
 		[self setNeedsDisplayForAnnotation:activeAnnotation];
-        mouseDownInAnnotation = [activeAnnotation isMovable];
+        draggingAnnotation = [activeAnnotation isMovable];
         
         // Hit-test for resize box.
         resizing = [[activeAnnotation type] isEqualToString:@"Note"] == NO && NSPointInRect(pagePoint, [self resizeThumbForRect:wasBounds rotation:[activePage rotation]]);
