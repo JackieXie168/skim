@@ -61,7 +61,6 @@
 @implementation BDSKSpotlightView;
 
 static NSColor *maskColor = nil;
-static CIFilter *shiftFilter = nil;
 static CIFilter *cropFilter = nil;
 
 + (void)initialize
@@ -69,7 +68,6 @@ static CIFilter *cropFilter = nil;
     static BOOL alreadyInit = NO;
     if(NO == alreadyInit){
         maskColor = [[[NSColor blackColor] colorWithAlphaComponent:0.3] retain];
-        shiftFilter = [[CIFilter filterWithName:@"CIAffineTransform"] retain];
         cropFilter = [[CIFilter filterWithName:@"CICrop"] retain];
         alreadyInit = YES;
     }
@@ -117,12 +115,7 @@ static CIFilter *cropFilter = nil;
         radius = [circle radius];
         [path appendBezierPathWithOvalInRect:NSMakeRect(center.x - radius, center.y - radius, radius * 2, radius * 2)];
     }
-    
-    // we need to shift because canvas of the image is at positive values
-    NSAffineTransform *transform = [NSAffineTransform transform];
-    [transform translateXBy:blurPadding yBy:blurPadding];
-    [path transformUsingAffineTransform:transform];
-        
+            
     // Drawing to an NSImage and then creating the CIImage with -[NSImage TIFFRepresentation] gives an incorrect CIImage extent when display scaling is turned on, probably due to NSCachedImageRep.  We also have to pass bytesPerRow:0 when scaling is on, which seems like a bug.
     NSBitmapImageRep *imageRep = [[NSBitmapImageRep alloc] initWithBitmapDataPlanes:NULL 
                                                                          pixelsWide:NSWidth(maskRect) 
@@ -138,6 +131,11 @@ static CIFilter *cropFilter = nil;
 
     [NSGraphicsContext saveGraphicsState];
     [NSGraphicsContext setCurrentContext:[NSGraphicsContext graphicsContextWithBitmapImageRep:imageRep]];
+    
+    // we need to shift because canvas of the image is at positive values
+    NSAffineTransform *transform = [NSAffineTransform transform];
+    [transform translateXBy:blurPadding yBy:blurPadding];
+    [transform concat];
     
     // fill the entire space with clear
     [[NSColor clearColor] setFill];
@@ -159,15 +157,10 @@ static CIFilter *cropFilter = nil;
     CIImage *blurredImage = [ciImage blurredImageWithBlurRadius:radius];
     [ciImage release];
     
-    // shift the image back by inverting the transform
-    [transform invert];
-    [shiftFilter setValue:transform forKey:@"inputTransform"];
-    [shiftFilter setValue:blurredImage forKey:@"inputImage"];
-    
     // crop to the original bounds size; this crops all sides of the image
-    CIVector *cropVector = [CIVector vectorWithX:0 Y:0 Z:NSWidth(aRect) W:NSHeight(aRect)];
+    CIVector *cropVector = [CIVector vectorWithX:blurPadding Y:blurPadding Z:NSWidth(aRect) W:NSHeight(aRect)];
     [cropFilter setValue:cropVector forKey:@"inputRectangle"];
-    [cropFilter setValue:[shiftFilter valueForKey:@"outputImage"] forKey:@"inputImage"];
+    [cropFilter setValue:blurredImage forKey:@"inputImage"];
     
     return [cropFilter valueForKey:@"outputImage"];
 }
