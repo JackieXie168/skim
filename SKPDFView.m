@@ -462,6 +462,8 @@ NSString *SKSkimNotePboardType = @"SKSkimNotePboardType";
     if ([[activeAnnotation type] isEqualToString:@"Link"])
         [self setActiveAnnotation:nil];
     
+    mouseDownLoc = [theEvent locationInWindow];
+
     if ([theEvent modifierFlags] & NSCommandKeyMask) {
         [self selectSnapshotWithEvent:theEvent];
     } else {
@@ -504,14 +506,56 @@ NSString *SKSkimNotePboardType = @"SKSkimNotePboardType";
     }
 }
 
+static inline NSRect rectWithCorners(NSPoint p1, NSPoint p2)
+{
+    NSRect rect;
+    rect.size.width = ABS(p2.x - p1.x);
+    rect.size.height = ABS(p2.y - p1.y);
+    rect.origin.x = MIN(p2.x, p1.x);
+    rect.origin.y = MIN(p2.y, p1.y);
+    return rect;
+}
+
 - (void)mouseDragged:(NSEvent *)theEvent {
     switch (toolMode) {
         case SKTextToolMode:
-            if (mouseDownInAnnotation)
+            if (mouseDownInAnnotation) {
                 [self dragAnnotationWithEvent:theEvent];
-            else
-                [super mouseDragged:theEvent];
-            break;
+                break;
+                
+                // reimplement text selection behavior so we can select text inside markup annotation bounds rectangles (and have a highlight and strikeout on the same line, for instance), but don't select inside an existing markup annotation
+            } else if (nil == activeAnnotation) {
+
+                NSPoint p1 = [self convertPoint:mouseDownLoc fromView:nil];
+                PDFPage *page1 = [self pageForPoint:p1 nearest:YES];
+                p1 = [self convertPoint:p1 toPage:page1];
+
+                NSPoint p2 = [self convertPoint:[theEvent locationInWindow] fromView:nil];
+                PDFPage *page2 = [self pageForPoint:p2 nearest:YES];
+                p2 = [self convertPoint:p2 toPage:page2];
+                
+                PDFSelection *sel = nil;
+                if  ([theEvent modifierFlags] & NSAlternateKeyMask) {
+                    // how to handle multipage selection?  Preview.app's behavior is screwy as well, so we'll do the same thing
+                    sel = [page1 selectionForRect:rectWithCorners(p1, p2)];
+                } else {
+                    sel = [[self document] selectionFromPage:page1 atPoint:p1 toPage:page2 atPoint:p2];
+                }
+
+                [self setCurrentSelection:sel];
+
+                // if we autoscroll, the mouseDownLoc is no longer correct as a starting point
+                float y0 = NSMinY([[[self documentView] enclosingScrollView] documentVisibleRect]);
+                float x0 = NSMinX([[[self documentView] enclosingScrollView] documentVisibleRect]);
+                if ([[self documentView] autoscroll:theEvent]) {
+                    mouseDownLoc.y -= y0 - NSMinY([[[self documentView] enclosingScrollView] documentVisibleRect]);
+                    mouseDownLoc.x -= x0 - NSMinX([[[self documentView] enclosingScrollView] documentVisibleRect]);
+                }
+                
+                break;
+            }
+            [[NSCursor currentCursor] push];
+            [[NSCursor closedHandCursor] set];
         case SKMoveToolMode:
             [self dragWithEvent:theEvent];	
             // ??? PDFView's delayed layout seems to reset the cursor to an arrow
@@ -1220,13 +1264,15 @@ NSString *SKSkimNotePboardType = @"SKSkimNotePboardType";
     PDFPage *activePage;
     
     // Mouse in display view coordinates.
-    mouseDownLoc = [self convertPoint:[theEvent locationInWindow] fromView:nil];
+    mouseDownLoc = [theEvent locationInWindow];
+    
+    NSPoint mouseDownOnPage = [self convertPoint:mouseDownLoc fromView:nil];
     
     // Page we're on.
-    activePage = [self pageForPoint:mouseDownLoc nearest:YES];
+    activePage = [self pageForPoint:mouseDownOnPage nearest:YES];
     
     // Get mouse in "page space".
-    pagePoint = [self convertPoint:mouseDownLoc toPage:activePage];
+    pagePoint = [self convertPoint:mouseDownOnPage toPage:activePage];
     
     // Hit test for annotation.
     annotations = [activePage annotations];
@@ -1234,19 +1280,29 @@ NSString *SKSkimNotePboardType = @"SKSkimNotePboardType";
     
     for (i = 0; i < numAnnotations; i++) {
         NSRect annotationBounds;
-        
-        // Hit test annotation.
-        annotationBounds = [[annotations objectAtIndex:i] bounds];
-        if (NSPointInRect(pagePoint, annotationBounds)) {
-            PDFAnnotation *annotationHit = [annotations objectAtIndex:i];
-            if ([annotationHit isNoteAnnotation]) {
-                // We count this one.
+        PDFAnnotation *annotationHit = [annotations objectAtIndex:i];
+
+        // markup annotations aren't necessarily defined by a box
+        if ([annotationHit respondsToSelector:@selector(linesContainPoint:)]) {
+            if ([(SKPDFAnnotationMarkup *)annotationHit linesContainPoint:pagePoint]) {
                 newActiveAnnotation = annotationHit;
-                
-                // Remember click point relative to annotation origin.
-                clickDelta.x = pagePoint.x - annotationBounds.origin.x;
-                clickDelta.y = pagePoint.y - annotationBounds.origin.y;
                 break;
+            }
+            
+        } else {
+        
+            // Hit test annotation.
+            annotationBounds = [annotationHit bounds];
+            if (NSPointInRect(pagePoint, annotationBounds)) {
+                if ([annotationHit isNoteAnnotation]) {
+                    // We count this one.
+                    newActiveAnnotation = annotationHit;
+                    
+                    // Remember click point relative to annotation origin.
+                    clickDelta.x = pagePoint.x - annotationBounds.origin.x;
+                    clickDelta.y = pagePoint.y - annotationBounds.origin.y;
+                    break;
+                }
             }
         }
     }
@@ -1314,7 +1370,7 @@ NSString *SKSkimNotePboardType = @"SKSkimNotePboardType";
     
     if (resizing) {
         NSPoint mouseLoc = [self convertPoint:[theEvent locationInWindow] fromView:nil];
-        NSPoint startPoint = [self convertPoint:mouseDownLoc toPage:activePage];
+        NSPoint startPoint = [self convertPoint:[self convertPoint:mouseDownLoc fromView:nil] toPage:activePage];
         NSPoint endPt = [self convertPoint:mouseLoc toPage:activePage];
         NSPoint relPoint = NSMakePoint(endPt.x - startPoint.x, endPt.y - startPoint.y);
         newBounds = wasBounds;
