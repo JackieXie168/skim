@@ -25,7 +25,6 @@
 				CE592C630B9239E300C113DF /* ShellScript */,
 			);
 			dependencies = (
-				CE4DA9280B9E19400039E89C /* PBXTargetDependency */,
 				CE592C620B9239CD00C113DF /* PBXTargetDependency */,
 			);
 			name = DiskImage;
@@ -156,13 +155,6 @@
 
 /* Begin PBXContainerItemProxy section */
 		CE157D880B9F89CE00D5B03F /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 2A37F4A9FDCFA73011CA2CEA /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = CE4DA8D60B9E16100039E89C;
-			remoteInfo = "Skim Help";
-		};
-		CE4DA9270B9E19400039E89C /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 2A37F4A9FDCFA73011CA2CEA /* Project object */;
 			proxyType = 1;
@@ -869,7 +861,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "rm -f /tmp/Skim.dmg\n/bin/cp ${SOURCE_ROOT}/Skim.dmg /tmp\n/usr/bin/hdiutil attach /tmp/Skim.dmg\n${SYSTEM_DEVELOPER_TOOLS}/CpMac -r ${BUILT_PRODUCTS_DIR}/Skim.app /Volumes/Skim\nosascript -e \"tell application \\\"Finder\\\" to set the position of application file \\\"Skim.app\\\" of disk named \\\"Skim\\\" to {90, 206}\" && \\\nsleep 7; \\\n/usr/sbin/diskutil eject /Volumes/Skim\n/usr/bin/hdiutil convert /tmp/Skim.dmg -format UDZO -imagekey zlib-level=9 -o $HOME/Desktop/Skim.dmg\n/usr/bin/hdiutil internet-enable -YES $HOME/Desktop/Skim.dmg\nexit 0";
+			shellScript = "rm -f /tmp/Skim.dmg\nunzip ${SOURCE_ROOT}/Skim.dmg.zip\n/bin/cp ${SOURCE_ROOT}/Skim.dmg /tmp\n/usr/bin/hdiutil attach /tmp/Skim.dmg\n${SYSTEM_DEVELOPER_TOOLS}/CpMac -r ${BUILT_PRODUCTS_DIR}/Skim.app /Volumes/Skim\nosascript -e \"tell application \\\"Finder\\\" to set the position of application file \\\"Skim.app\\\" of disk named \\\"Skim\\\" to {90, 206}\" && \\\nsleep 7; \\\n/usr/sbin/diskutil eject /Volumes/Skim\n/usr/bin/hdiutil convert /tmp/Skim.dmg -format UDZO -imagekey zlib-level=9 -o $HOME/Desktop/Skim.dmg\n/usr/bin/hdiutil internet-enable -YES $HOME/Desktop/Skim.dmg\nexit 0";
 		};
 /* End PBXShellScriptBuildPhase section */
 
@@ -947,11 +939,6 @@
 			isa = PBXTargetDependency;
 			target = CE4DA8D60B9E16100039E89C /* Skim Help */;
 			targetProxy = CE157D880B9F89CE00D5B03F /* PBXContainerItemProxy */;
-		};
-		CE4DA9280B9E19400039E89C /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = CE4DA8D60B9E16100039E89C /* Skim Help */;
-			targetProxy = CE4DA9270B9E19400039E89C /* PBXContainerItemProxy */;
 		};
 		CE592C620B9239CD00C113DF /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
