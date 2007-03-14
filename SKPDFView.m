@@ -521,10 +521,8 @@ static inline NSRect rectWithCorners(NSPoint p1, NSPoint p2)
         case SKTextToolMode:
             if (mouseDownInAnnotation) {
                 [self dragAnnotationWithEvent:theEvent];
-                break;
-                
-                // reimplement text selection behavior so we can select text inside markup annotation bounds rectangles (and have a highlight and strikeout on the same line, for instance), but don't select inside an existing markup annotation
             } else if (nil == activeAnnotation) {
+                // reimplement text selection behavior so we can select text inside markup annotation bounds rectangles (and have a highlight and strikeout on the same line, for instance), but don't select inside an existing markup annotation
 
                 NSPoint p1 = [self convertPoint:mouseDownLoc fromView:nil];
                 PDFPage *page1 = [self pageForPoint:p1 nearest:YES];
@@ -551,11 +549,8 @@ static inline NSRect rectWithCorners(NSPoint p1, NSPoint p2)
                     mouseDownLoc.y -= y0 - NSMinY([[[self documentView] enclosingScrollView] documentVisibleRect]);
                     mouseDownLoc.x -= x0 - NSMinX([[[self documentView] enclosingScrollView] documentVisibleRect]);
                 }
-                
-                break;
             }
-            [[NSCursor currentCursor] push];
-            [[NSCursor closedHandCursor] set];
+            break;
         case SKMoveToolMode:
             [self dragWithEvent:theEvent];	
             // ??? PDFView's delayed layout seems to reset the cursor to an arrow
