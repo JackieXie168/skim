@@ -209,7 +209,7 @@ static NSString *repositorySpecifierStrings[] = {@"", @"%a00", @"%A0", @"%p00", 
 
 - (IBAction)localUrlHelp:(id)sender{
     NSString *helpBookName = [[NSBundle mainBundle] objectForInfoDictionaryKey: @"CFBundleHelpBookName"];
-	[[NSHelpManager sharedHelpManager] openHelpAnchor:@"AutoFiling" inBook:@"BibDesk Help"];
+	[[NSHelpManager sharedHelpManager] openHelpAnchor:@"AutoFiling" inBook:helpBookName];
 }
 
 - (IBAction)formatHelp:(id)sender{
