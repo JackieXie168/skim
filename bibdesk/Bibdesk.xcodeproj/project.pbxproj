@@ -769,7 +769,7 @@
 			isa = PBXContainerItemProxy;
 			containerPortal = 29B97313FDCFA39411CA2CEA /* Project object */;
 			proxyType = 1;
-			remoteGlobalIDString = 3D8A5779082D3077008E818C /* BibDesk Help */;
+			remoteGlobalIDString = 3D8A5779082D3077008E818C;
 			remoteInfo = "BibDesk Help";
 		};
 		CEBC820C0B4D0D2500CE0B2D /* PBXContainerItemProxy */ = {
