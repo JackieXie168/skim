@@ -1106,7 +1106,7 @@
 		4575382D0B70170D00C0E49B /* BDSKWebGroupViewController.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = BDSKWebGroupViewController.m; sourceTree = "<group>"; };
 		457538410B701ECD00C0E49B /* English */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = English; path = English.lproj/BDSKWebGroupView.nib; sourceTree = "<group>"; };
 		8D1107310486CEB800E47090 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
-		8D1107320486CEB800E47090 /* BibDesk.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = BibDesk.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		8D1107320486CEB800E47090 /* BibDesk.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = BibDesk.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		CE11A6340AE6BB77008C47AC /* urlFolderIcon.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; name = urlFolderIcon.tiff; path = Images/urlFolderIcon.tiff; sourceTree = "<group>"; };
 		CE11AC080AE7E0DC008C47AC /* BDSKScriptGroup.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BDSKScriptGroup.h; sourceTree = "<group>"; };
 		CE11AC090AE7E0DC008C47AC /* BDSKScriptGroup.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BDSKScriptGroup.m; sourceTree = "<group>"; };
@@ -3435,7 +3435,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "cd ${SOURCE_ROOT}/BibDesk\\ Help;\ntexi2html=./texi2html\n\nINPUT='BibDesk Help/bibdesk.texi'\nDEST='BibDesk Help'\n\nfor LOC_DIR in ${SOURCE_ROOT}/*.lproj; do \\\n\t${texi2html} \"${LOC_DIR}/${INPUT}\" --init-file=applehelp.init --prefix=\"BibDesk Help\" --output=\"${LOC_DIR}/${DEST}\" --split=node && \\\n\tperl -pi -e 's#<!--AppleMeta-->#<meta name=\\\"AppleTitle\\\" content=\\\"BibDesk Help\\\"><meta name=\\\"AppleIcon\\\" content=\\\"BibDesk%20Help/gfx/BibDeskIcon.png\\\"><meta name=\\\"robots\\\" content=\\\"anchors\\\">#' \"${LOC_DIR}/${DEST}\"/BibDesk\\ Help.html && \\\n\tpython postprocess-nontitle.py \"${LOC_DIR}/${DEST}\"/BibDesk\\ Help_*.html;\\\ndone;\n";
+			shellScript = "cd ${SOURCE_ROOT}/BibDesk\\ Help;\ntexi2html=./texi2html\n\nINPUT='BibDesk Help/bibdesk.texi'\nDEST='BibDesk Help'\n\nfor LOC_DIR in ${SOURCE_ROOT}/*.lproj; do \\\n\trm \"${LOC_DIR}/${DEST}\"/BibDesk\\ Help*.html; \\\n\t${texi2html} \"${LOC_DIR}/${INPUT}\" --init-file=applehelp.init --prefix=\"BibDesk Help\" --output=\"${LOC_DIR}/${DEST}\" --split=node && \\\n\tperl -pi -e 's#<!--AppleMeta-->#<meta name=\\\"AppleTitle\\\" content=\\\"BibDesk Help\\\"><meta name=\\\"AppleIcon\\\" content=\\\"BibDesk%20Help/gfx/BibDeskIcon.png\\\"><meta name=\\\"robots\\\" content=\\\"anchors\\\">#' \"${LOC_DIR}/${DEST}\"/BibDesk\\ Help.html && \\\n\tpython postprocess-nontitle.py \"${LOC_DIR}/${DEST}\"/BibDesk\\ Help_*.html;\\\ndone;\n";
 		};
 		F91E54660853576600208CDF /* ShellScript */ = {
 			isa = PBXShellScriptBuildPhase;
