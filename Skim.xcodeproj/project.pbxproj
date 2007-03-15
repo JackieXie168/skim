@@ -835,7 +835,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "cd ${SOURCE_ROOT}/Skim\\ Help;\ntexi2html=./texi2html\n\nINPUT='Skim Help/skim.texi'\nDEST='Skim Help'\n\nfor LOC_DIR in ${SOURCE_ROOT}/*.lproj; do \\\n\trm \"${LOC_DIR}/${DEST}\"/Skim\\ Help*.html; \\\n\t${texi2html} \"${LOC_DIR}/${INPUT}\" --init-file=applehelp.init --prefix=\"Skim Help\" --output=\"${LOC_DIR}/${DEST}\" --split=node --nonumber && \\\n\tperl -pi -e 's#<!--AppleMeta-->#<meta name=\\\"AppleTitle\\\" content=\\\"Skim Help\\\"><meta name=\\\"AppleIcon\\\" content=\\\"Skim%20Help/gfx/SkimIcon.png\\\"><meta name=\\\"robots\\\" content=\\\"anchors\\\">#' \"${LOC_DIR}/${DEST}\"/Skim\\ Help.html && \\\n\tpython postprocess-nontitle.py \"${LOC_DIR}/${DEST}\"/Skim\\ Help_*.html;\\\ndone;\n";
+			shellScript = "cd ${SOURCE_ROOT}/Skim\\ Help;\ntexi2html=./texi2html\n\nINPUT='Skim Help/skim.texi'\nDEST='Skim Help'\n\nfor LOC_DIR in ${SOURCE_ROOT}/*.lproj; do \\\n\t/bin/rm \"${LOC_DIR}/${DEST}\"/Skim\\ Help*.html; \\\n\t${texi2html} \"${LOC_DIR}/${INPUT}\" --init-file=applehelp.init --prefix=\"Skim Help\" --output=\"${LOC_DIR}/${DEST}\" --split=node --nonumber && \\\n\tperl -pi -e 's#<!--AppleMeta-->#<meta name=\\\"AppleTitle\\\" content=\\\"Skim Help\\\"><meta name=\\\"AppleIcon\\\" content=\\\"Skim%20Help/gfx/SkimIcon.png\\\"><meta name=\\\"robots\\\" content=\\\"anchors\\\">#' \"${LOC_DIR}/${DEST}\"/Skim\\ Help.html && \\\n\tpython postprocess-nontitle.py \"${LOC_DIR}/${DEST}\"/Skim\\ Help_*.html;\\\ndone;\n";
 		};
 		CE4DA9060B9E17890039E89C /* ShellScript */ = {
 			isa = PBXShellScriptBuildPhase;
