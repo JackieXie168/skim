@@ -11,7 +11,7 @@ body {
 h1  {
     font-size: 11pt;
     font-family: "Lucida Grande", Arial, sans-serif;
-    margin-bottom: 0
+    margin-bottom: 10px
     }
 
 h2  {
@@ -156,3 +156,28 @@ td  {
     top: 0;
     left: 0
     }
+
+.frame     { text-align: left; margin-top: 20px; margin-right: auto; margin-left: auto; padding:0; width: 500px }
+
+.frameleft {
+    margin: 0;
+    padding-top: 20px;
+    padding-left: 10px;
+    width: 236px;
+    float: left
+}
+
+.frameright {
+    margin: 0;
+    padding-top: 20px;
+    padding-left: 20px;
+    width: 224px;
+    height: 172px;
+    float: left;
+    border-left: 1px solid #808080
+}
+
+.frameleft img, p {
+    margin: 0; padding: 0; border: 0; 
+}
+

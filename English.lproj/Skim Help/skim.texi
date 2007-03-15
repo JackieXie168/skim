@@ -105,15 +105,23 @@ Control-Cmd-\key\
 
 @heading Skim Help
 
-Skim is a PDF viewer, intended for easy reading and studying PDF document.
+@box{frame}
 
+@box{frameleft}
+
+@image{gfx/screenshot}
+
+@endbox
+
+@box{frameright}
+
+Skim is a PDF viewer, intended for easy reading and studying PDF document.
 @menu
 * indexcp:: Help Topics
 @end menu
 
-@box{copyright}
-Copyright @copyright{} 2006 - 2007 Michael O. McCracken@*
-Copyright @copyright{} many others
+@endbox
+
 @endbox
 
 @c ======================================================================================
