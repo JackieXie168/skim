@@ -765,6 +765,13 @@
 			remoteGlobalIDString = 8D5B49B6048680CD000E48DA;
 			remoteInfo = BibDeskInputManager;
 		};
+		CE87D7E70BA964D50027BBDD /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 29B97313FDCFA39411CA2CEA /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 3D8A5779082D3077008E818C /* BibDesk Help */;
+			remoteInfo = "BibDesk Help";
+		};
 		CEBC820C0B4D0D2500CE0B2D /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = F9377F550B423A4C00ECCB3A /* yaz.xcodeproj */;
@@ -3022,6 +3029,7 @@
 				F9EF0CDC0B4EFC7B00A1F282 /* PBXTargetDependency */,
 				F9EF0CE00B4EFC8500A1F282 /* PBXTargetDependency */,
 				F9EF0CDE0B4EFC8100A1F282 /* PBXTargetDependency */,
+				CE87D7E80BA964D50027BBDD /* PBXTargetDependency */,
 			);
 			name = BibDesk;
 			productInstallPath = "$(HOME)/Applications";
@@ -3430,8 +3438,13 @@
 			files = (
 			);
 			inputPaths = (
+				"$(SRCROOT)/English.lproj/BibDesk Help/bibdesk.texi",
+				"$(SRCROOT)/English.lproj/BibDesk Help/version.texi",
+				"$(SRCROOT)/BibDesk Help/applehelp.init",
+				"$(SRCROOT)/BibDesk Help/postprocess-nontitle.py",
 			);
 			outputPaths = (
+				"$(SRCROOT)/English.lproj/BibDesk Help/BibDesk Help.html",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
@@ -3799,6 +3812,11 @@
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
+		CE87D7E80BA964D50027BBDD /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 3D8A5779082D3077008E818C /* BibDesk Help */;
+			targetProxy = CE87D7E70BA964D50027BBDD /* PBXContainerItemProxy */;
+		};
 		F98870D807580EA1001D4D49 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			target = 8D1107260486CEB800E47090 /* BibDesk */;
