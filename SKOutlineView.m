@@ -42,25 +42,26 @@
 @implementation SKOutlineView
 
 - (void)highlightSelectionInClipRect:(NSRect)clipRect {
-    NSMutableIndexSet *rowIndexes = [[[self selectedRowIndexes] mutableCopy] autorelease];
-    NSArray *rows = [[self delegate] outlineViewHighlightedRows:self];
-    NSColor *color = ([[self window] isKeyWindow] && [[self window] firstResponder] == self) ? [NSColor alternateSelectedControlColor] : [NSColor secondarySelectedControlColor];
-    float factor = 0.5;
-    int i, count = [rows count];
-    
-    [NSGraphicsContext saveGraphicsState];
-    for (i = 0; i < count; i++) {
-        int row = [[rows objectAtIndex:i] intValue];
-        [[[NSColor controlBackgroundColor] blendedColorWithFraction:factor ofColor:color] set];
-        factor -= 0.1;
-        if ([rowIndexes containsIndex:row] == NO) {
-            NSRectFill([self rectOfRow:row]);
-            [rowIndexes addIndex:row];
+    if ([[self delegate] respondsToSelector:@selector(outlineViewHighlightedRows:)]) {
+        NSMutableIndexSet *rowIndexes = [[[self selectedRowIndexes] mutableCopy] autorelease];
+        NSArray *rows = [[self delegate] outlineViewHighlightedRows:self];
+        NSColor *color = ([[self window] isKeyWindow] && [[self window] firstResponder] == self) ? [NSColor alternateSelectedControlColor] : [NSColor secondarySelectedControlColor];
+        float factor = 0.5;
+        int i, count = [rows count];
+        
+        [NSGraphicsContext saveGraphicsState];
+        for (i = 0; i < count; i++) {
+            int row = [[rows objectAtIndex:i] intValue];
+            [[[NSColor controlBackgroundColor] blendedColorWithFraction:factor ofColor:color] set];
+            factor -= 0.1;
+            if ([rowIndexes containsIndex:row] == NO) {
+                NSRectFill([self rectOfRow:row]);
+                [rowIndexes addIndex:row];
+            }
+            if (factor <= 0.0) break;
         }
-        if (factor <= 0.0) break;
+        [NSGraphicsContext restoreGraphicsState];
     }
-    [NSGraphicsContext restoreGraphicsState];
-    
     [super highlightSelectionInClipRect:clipRect]; 
 }
 
