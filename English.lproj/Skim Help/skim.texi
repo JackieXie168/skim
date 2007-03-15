@@ -604,7 +604,7 @@ You can also check immediately for Skim updates yourself. Choose Skim > Check fo
 
 @c ======================================================================================
 
-@topic When I email my PDF file, notes or highlights are lost.
+@topic Emailing a PDF file loses notes or highlights.
 
 Notes and highlights you add to a PDF document are not saved in the PDF data, but are added to the file as extended attributes. Those are usually lost when you email the file. 
 
