@@ -526,6 +526,11 @@ static inline NSRect rectWithCorners(NSPoint p1, NSPoint p2)
                 if (mouseDownInAnnotation) {
                     // reimplement text selection behavior so we can select text inside markup annotation bounds rectangles (and have a highlight and strikeout on the same line, for instance), but don't select inside an existing markup annotation
 
+                    // if we autoscroll, the mouseDownLoc is no longer correct as a starting point
+                    NSPoint mouseDownLocInDoc = [[self documentView] convertPoint:mouseDownLoc fromView:nil];
+                    if ([[self documentView] autoscroll:theEvent])
+                        mouseDownLoc = [[self documentView] convertPoint:mouseDownLocInDoc toView:nil];
+
                     NSPoint p1 = [self convertPoint:mouseDownLoc fromView:nil];
                     PDFPage *page1 = [self pageForPoint:p1 nearest:YES];
                     p1 = [self convertPoint:p1 toPage:page1];
@@ -543,14 +548,6 @@ static inline NSRect rectWithCorners(NSPoint p1, NSPoint p2)
                     }
 
                     [self setCurrentSelection:sel];
-
-                    // if we autoscroll, the mouseDownLoc is no longer correct as a starting point
-                    float y0 = NSMinY([[[self documentView] enclosingScrollView] documentVisibleRect]);
-                    float x0 = NSMinX([[[self documentView] enclosingScrollView] documentVisibleRect]);
-                    if ([[self documentView] autoscroll:theEvent]) {
-                        mouseDownLoc.y -= y0 - NSMinY([[[self documentView] enclosingScrollView] documentVisibleRect]);
-                        mouseDownLoc.x -= x0 - NSMinX([[[self documentView] enclosingScrollView] documentVisibleRect]);
-                    }
                 } else {
                     [super mouseDragged:theEvent];
                 }
