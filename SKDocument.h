@@ -55,6 +55,7 @@ extern NSString *SKDocumentWillSaveNotification;
     
     NSTimer *fileUpdateTimer;
     NSDate *lastChangedDate;
+    BOOL autoUpdate;
 }
 
 - (IBAction)readNotes:(id)sender;
