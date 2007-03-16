@@ -365,7 +365,7 @@ static NSArray *createPointsFromStrings(NSArray *strings)
     int i, iMax = [strings count];
     NSMutableArray *points = [[NSMutableArray alloc] initWithCapacity:iMax];
     for (i = 0; i < iMax; i++) {
-        NSPoint p = NSPointFromString([points objectAtIndex:i]);
+        NSPoint p = NSPointFromString([strings objectAtIndex:i]);
         NSValue *value = [[NSValue alloc] initWithBytes:&p objCType:@encode(NSPoint)];
         [points addObject:value];
         [value release];
