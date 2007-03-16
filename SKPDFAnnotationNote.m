@@ -54,28 +54,6 @@ enum {
 NSString *SKAnnotationWillChangeNotification = @"SKAnnotationWillChangeNotification";
 NSString *SKAnnotationDidChangeNotification = @"SKAnnotationDidChangeNotification";
 
-static NSArray *stringsFromPoints(NSArray *points)
-{
-    if (points == nil)
-        return nil;
-    int i, iMax = [points count];
-    NSMutableArray *strings = [[points mutableCopy] autorelease];
-    for (i = 0; i < iMax; i++)
-        [strings replaceObjectAtIndex:i withObject:NSStringFromPoint([[strings objectAtIndex:i] pointValue])];
-    return strings;
-}
-
-static NSArray *pointsFromStrings(NSArray *strings)
-{
-    if (strings == nil)
-        return nil;
-    int i, iMax = [strings count];
-    NSMutableArray *points = [[strings mutableCopy] autorelease];
-    for (i = 0; i < iMax; i++)
-        [points replaceObjectAtIndex:i withObject:[NSValue valueWithPoint:NSPointFromString([points objectAtIndex:i])]];
-    return points;
-}
-
 @interface PDFAnnotation (PDFAnnotationPrivateDeclarations)
 - (void)drawWithBox:(CGPDFBox)box inContext:(CGContextRef)context;
 @end
@@ -105,21 +83,19 @@ static NSArray *pointsFromStrings(NSArray *strings)
             [(SKPDFAnnotationNote *)self setText:text];
     } else if ([type isEqualToString:@"FreeText"]) {
         self = [[SKPDFAnnotationFreeText alloc] initWithBounds:bounds];
-        if ([dict objectForKey:@"font"])
-            [(SKPDFAnnotationFreeText *)self setFont:[dict objectForKey:@"font"]];
+        NSFont *font = [dict objectForKey:@"font"];
+        if (font)
+            [(SKPDFAnnotationFreeText *)self setFont:font];
     } else if ([type isEqualToString:@"Circle"]) {
         self = [[SKPDFAnnotationCircle alloc] initWithBounds:bounds];
     } else if ([type isEqualToString:@"Square"]) {
         self = [[SKPDFAnnotationSquare alloc] initWithBounds:bounds];
     } else if ([type isEqualToString:@"Highlight"] || [type isEqualToString:@"MarkUp"]) {
-        self = [[SKPDFAnnotationMarkup alloc] initWithBounds:bounds markupType:kPDFMarkupTypeHighlight];
-        [(SKPDFAnnotationMarkup *)self setQuadrilateralPoints:pointsFromStrings([dict objectForKey:@"quadrilateralPoints"])];
+        self = [[SKPDFAnnotationMarkup alloc] initWithBounds:bounds markupType:kPDFMarkupTypeHighlight quadrilateralPointsAsStrings:[dict objectForKey:@"quadrilateralPoints"]];
     } else if ([type isEqualToString:@"StrikeOut"]) {
-        self = [[SKPDFAnnotationMarkup alloc] initWithBounds:bounds markupType:kPDFMarkupTypeStrikeOut];
-        [(SKPDFAnnotationMarkup *)self setQuadrilateralPoints:pointsFromStrings([dict objectForKey:@"quadrilateralPoints"])];
+        self = [[SKPDFAnnotationMarkup alloc] initWithBounds:bounds markupType:kPDFMarkupTypeStrikeOut quadrilateralPointsAsStrings:[dict objectForKey:@"quadrilateralPoints"]];
     } else if ([type isEqualToString:@"Underline"]) {
-        self = [[SKPDFAnnotationMarkup alloc] initWithBounds:bounds markupType:kPDFMarkupTypeUnderline];
-        [(SKPDFAnnotationMarkup *)self setQuadrilateralPoints:pointsFromStrings([dict objectForKey:@"quadrilateralPoints"])];
+        self = [[SKPDFAnnotationMarkup alloc] initWithBounds:bounds markupType:kPDFMarkupTypeUnderline quadrilateralPointsAsStrings:[dict objectForKey:@"quadrilateralPoints"]];
     } else {
         self = nil;
     }
@@ -203,11 +179,11 @@ static NSArray *pointsFromStrings(NSArray *strings)
             else if (type == SKASSquareNote)
                 annotation = [[SKPDFAnnotationSquare alloc] initWithBounds:NSMakeRect(100.0, 100.0, 64.0, 64.0)];
             else if (type == SKASHighlightNote)
-                annotation = [[SKPDFAnnotationMarkup alloc] initWithBounds:NSMakeRect(100.0, 100.0, 64.0, 64.0) markupType:kPDFMarkupTypeHighlight];
+                annotation = [[SKPDFAnnotationMarkup alloc] initWithBounds:NSMakeRect(100.0, 100.0, 64.0, 64.0) markupType:kPDFMarkupTypeHighlight quadrilateralPointsAsStrings:nil];
             else if (type == SKASStrikeOutNote)
-                annotation = [[SKPDFAnnotationMarkup alloc] initWithBounds:NSMakeRect(100.0, 100.0, 64.0, 64.0) markupType:kPDFMarkupTypeStrikeOut];
+                annotation = [[SKPDFAnnotationMarkup alloc] initWithBounds:NSMakeRect(100.0, 100.0, 64.0, 64.0) markupType:kPDFMarkupTypeStrikeOut quadrilateralPointsAsStrings:nil];
              else if (type == SKASUnderlineNote)
-                annotation = [[SKPDFAnnotationMarkup alloc] initWithBounds:NSMakeRect(100.0, 100.0, 64.0, 64.0) markupType:kPDFMarkupTypeUnderline];
+                annotation = [[SKPDFAnnotationMarkup alloc] initWithBounds:NSMakeRect(100.0, 100.0, 64.0, 64.0) markupType:kPDFMarkupTypeUnderline quadrilateralPointsAsStrings:nil];
            
             self = annotation;
         }
@@ -371,6 +347,32 @@ static NSColor *squareColor = nil;
 
 @implementation SKPDFAnnotationMarkup
 
+static NSArray *createStringsFromPoints(NSArray *points)
+{
+    if (points == nil)
+        return nil;
+    int i, iMax = [points count];
+    NSMutableArray *strings = [[NSMutableArray alloc] initWithCapacity:iMax];
+    for (i = 0; i < iMax; i++)
+        [strings addObject:NSStringFromPoint([[points objectAtIndex:i] pointValue])];
+    return strings;
+}
+
+static NSArray *createPointsFromStrings(NSArray *strings)
+{
+    if (strings == nil)
+        return nil;
+    int i, iMax = [strings count];
+    NSMutableArray *points = [[NSMutableArray alloc] initWithCapacity:iMax];
+    for (i = 0; i < iMax; i++) {
+        NSPoint p = NSPointFromString([points objectAtIndex:i]);
+        NSValue *value = [[NSValue alloc] initWithBytes:&p objCType:@encode(NSPoint)];
+        [points addObject:value];
+        [value release];
+    }
+    return points;
+}
+
 static NSArray *createQuadPointsWithBounds(const NSRect bounds, const NSPoint origin)
 {
     NSPoint p0 = NSMakePoint(NSMinX(bounds) - origin.x, NSMaxY(bounds) - origin.y);
@@ -378,69 +380,6 @@ static NSArray *createQuadPointsWithBounds(const NSRect bounds, const NSPoint or
     NSPoint p2 = NSMakePoint(NSMinX(bounds) - origin.x, NSMinY(bounds) - origin.y);
     NSPoint p3 = NSMakePoint(NSMaxX(bounds) - origin.x, NSMinY(bounds) - origin.y);
     return [[NSArray alloc] initWithObjects:[NSValue valueWithPoint:p0], [NSValue valueWithPoint:p1], [NSValue valueWithPoint:p2], [NSValue valueWithPoint:p3], nil];
-}
-
-static NSColor *highlightColor = nil;
-static NSColor *strikeOutColor = nil;
-static NSColor *underlineColor = nil;
-
-- (id)initWithBounds:(NSRect)bounds {
-    self = [self initWithBounds:bounds markupType:kPDFMarkupTypeHighlight];
-    return self;
-}
-
-- (id)initWithBounds:(NSRect)bounds markupType:(int)type {
-    if (self = [super initWithBounds:bounds]) {
-        if (highlightColor == nil)
-            highlightColor = [[NSColor yellowColor] retain];
-        if (strikeOutColor == nil)
-            strikeOutColor = [[NSColor redColor] retain];
-        if (underlineColor == nil)
-            underlineColor = [[NSColor colorWithDeviceRed:0.0 green:0.5 blue:0.0 alpha:1.0] retain];
-        [self setMarkupType:type];
-        if (type == kPDFMarkupTypeHighlight)
-            [self setColor:highlightColor];
-        else if (type == kPDFMarkupTypeStrikeOut)
-            [self setColor:strikeOutColor];
-        else if (type == kPDFMarkupTypeUnderline)
-            [self setColor:underlineColor];
-        /*
-         http://www.cocoabuilder.com/archive/message/cocoa/2007/2/16/178891
-          The docs are wrong (as is Adobe's spec).  The ordering is:
-          --------
-          | 0  1 |
-          | 2  3 |
-          --------
-         */        
-        numberOfLines = 0;
-        lineRects = NULL;
-        [self setQuadrilateralPoints: [NSArray arrayWithObjects:
-            [NSValue valueWithPoint: NSMakePoint(0.0, NSHeight(bounds))],
-            [NSValue valueWithPoint: NSMakePoint(NSWidth(bounds), NSHeight (bounds))],
-            [NSValue valueWithPoint: NSMakePoint(0.0, 0.0)],
-            [NSValue valueWithPoint: NSMakePoint(NSWidth(bounds), 0.0)], nil]];        
-    }
-    return self;
-}
-
-- (id)initWithSelection:(PDFSelection *)selection markupType:(int)type {
-    NSRect bounds = selection ? [selection boundsForPage:[[selection pages] objectAtIndex:0]] : NSZeroRect;
-    if (self = [self initWithBounds:bounds markupType:type]) {
-        [self setQuadrilateralPointsFromSelection:selection];        
-    }
-    return self;
-}
-
-- (void)dealloc
-{
-    if (lineRects) NSZoneFree([self zone], lineRects);
-    [super dealloc];
-}
-
-- (NSDictionary *)dictionaryValue {
-    NSMutableDictionary *dict = (NSMutableDictionary *)[super dictionaryValue];
-    [dict setValue:stringsFromPoints([self quadrilateralPoints]) forKey:@"quadrilateralPoints"];
-    return dict;
 }
 
 // adjust the range to remove whitespace and newlines at the end
@@ -474,10 +413,120 @@ static BOOL lineRectTrimmingWhitespaceForPage(NSRect *lineRect, PDFPage *page)
     return NO;
 }    
 
+static NSColor *highlightColor = nil;
+static NSColor *strikeOutColor = nil;
+static NSColor *underlineColor = nil;
+
+- (id)initWithBounds:(NSRect)bounds {
+    self = [self initWithBounds:bounds markupType:kPDFMarkupTypeHighlight quadrilateralPointsAsStrings:nil];
+    return self;
+}
+
+- (id)initWithBounds:(NSRect)bounds markupType:(int)type quadrilateralPointsAsStrings:(NSArray *)pointStrings {
+    if (self = [super initWithBounds:bounds]) {
+        if (highlightColor == nil)
+            highlightColor = [[NSColor yellowColor] retain];
+        if (strikeOutColor == nil)
+            strikeOutColor = [[NSColor redColor] retain];
+        if (underlineColor == nil)
+            underlineColor = [[NSColor colorWithDeviceRed:0.0 green:0.5 blue:0.0 alpha:1.0] retain];
+        [self setMarkupType:type];
+        if (type == kPDFMarkupTypeHighlight)
+            [self setColor:highlightColor];
+        else if (type == kPDFMarkupTypeStrikeOut)
+            [self setColor:strikeOutColor];
+        else if (type == kPDFMarkupTypeUnderline)
+            [self setColor:underlineColor];
+        
+        NSArray *quadPoints = nil;
+        if (pointStrings) {
+            quadPoints = createPointsFromStrings(pointStrings);
+        } else {
+            /*
+             http://www.cocoabuilder.com/archive/message/cocoa/2007/2/16/178891
+              The docs are wrong (as is Adobe's spec).  The ordering is:
+              --------
+              | 0  1 |
+              | 2  3 |
+              --------
+             */        
+            quadPoints = [[NSArray alloc] initWithObjects:
+                [NSValue valueWithPoint: NSMakePoint(0.0, NSHeight(bounds))],
+                [NSValue valueWithPoint: NSMakePoint(NSWidth(bounds), NSHeight (bounds))],
+                [NSValue valueWithPoint: NSMakePoint(0.0, 0.0)],
+                [NSValue valueWithPoint: NSMakePoint(NSWidth(bounds), 0.0)], nil];
+        }
+        [self setQuadrilateralPoints:quadPoints];
+        [quadPoints release];
+        numberOfLines = 0;
+        lineRects = NULL;
+    }
+    return self;
+}
+
 - (void)addLineRect:(NSRect)aRect {
     numberOfLines++;
     lineRects = NSZoneRealloc([self zone], lineRects, numberOfLines * sizeof(NSRect));
     lineRects[numberOfLines - 1] = aRect;
+}
+
+- (id)initWithSelection:(PDFSelection *)selection markupType:(int)type {
+    NSRect bounds = selection ? [selection boundsForPage:[[selection pages] objectAtIndex:0]] : NSZeroRect;
+    if (self = [self initWithBounds:bounds markupType:type quadrilateralPointsAsStrings:nil]) {
+        if ([selection respondsToSelector:@selector(numberOfRangesOnPage:)] && [selection respondsToSelector:@selector(rangeAtIndex:onPage:)]) {
+            PDFPage *page = [[selection pages] objectAtIndex:0];
+            NSMutableArray *quadPoints = [[NSMutableArray alloc] init];
+            if (selection) {
+                unsigned i, iMax = [selection numberOfRangesOnPage:page];
+                for (i = 0; i < iMax; i++) {
+                    NSRange range = [selection rangeAtIndex:i onPage:page];
+                    unsigned int j, jMax = NSMaxRange(range);
+                    NSRect lineRect = NSZeroRect;
+                    for (j = range.location; j < jMax; j++) {
+                        NSRect charRect = [page characterBoundsAtIndex:j];
+                        if (NSEqualRects(lineRect, NSZeroRect)) {
+                            lineRect = charRect;
+                            /* this test of whether a character is part of a line depends on kerning */
+                        } else if (fabs(NSMaxX(lineRect) - NSMinX(charRect)) < 1.0 * NSWidth(charRect) && fabs(NSMinY(lineRect) - NSMinY(charRect)) < 0.1 * NSHeight(charRect) && fabs(NSMaxY(lineRect) - NSMaxY(charRect)) < 0.1 * NSHeight(charRect)) {
+                            lineRect = NSUnionRect(lineRect, charRect);
+                        } else {
+                            if (lineRectTrimmingWhitespaceForPage(&lineRect, page)) {
+                                [self addLineRect:lineRect];
+                                NSArray *quadLine = createQuadPointsWithBounds(lineRect, [self bounds].origin);
+                                [quadPoints addObjectsFromArray:quadLine];
+                                [quadLine release];
+                            }
+                            lineRect = charRect;
+                        }
+                    }
+                    if (NSEqualRects(lineRect, NSZeroRect) == NO && lineRectTrimmingWhitespaceForPage(&lineRect, page)) {
+                        [self addLineRect:lineRect];
+                        NSArray *quadLine = createQuadPointsWithBounds(lineRect, [self bounds].origin);
+                        [quadPoints addObjectsFromArray:quadLine];
+                        [quadLine release];
+                    }
+                }
+                
+            }
+            [self setQuadrilateralPoints:quadPoints];
+            [quadPoints release];
+        }
+    }
+    return self;
+}
+
+- (void)dealloc
+{
+    if (lineRects) NSZoneFree([self zone], lineRects);
+    [super dealloc];
+}
+
+- (NSDictionary *)dictionaryValue {
+    NSMutableDictionary *dict = (NSMutableDictionary *)[super dictionaryValue];
+    NSArray *quadPoints = createStringsFromPoints([self quadrilateralPoints]);
+    [dict setValue:quadPoints forKey:@"quadrilateralPoints"];
+    [quadPoints release];
+    return dict;
 }
 
 - (void)regenerateLineRects {
@@ -520,47 +569,6 @@ static BOOL lineRectTrimmingWhitespaceForPage(NSRect *lineRect, PDFPage *page)
     while (i-- && NO == isContained)
         isContained = NSPointInRect(point, lineRects[i]);
     return isContained;
-}
-
-- (void)setQuadrilateralPointsFromSelection:(PDFSelection *)selection {
-    if ([selection respondsToSelector:@selector(numberOfRangesOnPage:)] == NO || [selection respondsToSelector:@selector(rangeAtIndex:onPage:)] == NO)
-        return;
-    PDFPage *page = [[selection pages] objectAtIndex:0];
-    NSMutableArray *quadPoints = [[NSMutableArray alloc] init];
-    if (selection) {
-        unsigned i, iMax = [selection numberOfRangesOnPage:page];
-        for (i = 0; i < iMax; i++) {
-            NSRange range = [selection rangeAtIndex:i onPage:page];
-            unsigned int j, jMax = NSMaxRange(range);
-            NSRect lineRect = NSZeroRect;
-            for (j = range.location; j < jMax; j++) {
-                NSRect charRect = [page characterBoundsAtIndex:j];
-                if (NSEqualRects(lineRect, NSZeroRect)) {
-                    lineRect = charRect;
-                    /* this test of whether a character is part of a line depends on kerning */
-                } else if (fabs(NSMaxX(lineRect) - NSMinX(charRect)) < 1.0 * NSWidth(charRect) && fabs(NSMinY(lineRect) - NSMinY(charRect)) < 0.1 * NSHeight(charRect) && fabs(NSMaxY(lineRect) - NSMaxY(charRect)) < 0.1 * NSHeight(charRect)) {
-                    lineRect = NSUnionRect(lineRect, charRect);
-                } else {
-                    if (lineRectTrimmingWhitespaceForPage(&lineRect, page)) {
-                        [self addLineRect:lineRect];
-                        NSArray *quadLine = createQuadPointsWithBounds(lineRect, [self bounds].origin);
-                        [quadPoints addObjectsFromArray:quadLine];
-                        [quadLine release];
-                    }
-                    lineRect = charRect;
-                }
-            }
-            if (NSEqualRects(lineRect, NSZeroRect) == NO && lineRectTrimmingWhitespaceForPage(&lineRect, page)) {
-                [self addLineRect:lineRect];
-                NSArray *quadLine = createQuadPointsWithBounds(lineRect, [self bounds].origin);
-                [quadPoints addObjectsFromArray:quadLine];
-                [quadLine release];
-            }
-        }
-        
-    }
-    [self setQuadrilateralPoints:quadPoints];
-    [quadPoints release];
 }
 
 - (void)setDefaultColor:(NSColor *)newColor {
