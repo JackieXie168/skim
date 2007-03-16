@@ -57,7 +57,6 @@
 #import "SKPDFAnnotationNote.h"
 #import "SKSplitView.h"
 #import "NSString_SKExtensions.h"
-#import "SKAnnotationTypeIconTransformer.h"
 #import "NSScrollView_SKExtensions.h"
 #import "NSBezierPath_BDSKExtensions.h"
 #import "NSUserDefaultsController_SKExtensions.h"
@@ -109,10 +108,6 @@ static NSString *SKDocumentToolbarNotesPaneItemIdentifier = @"SKDocumentToolbarN
 @end
 
 @implementation SKMainWindowController
-
-+ (void)initialize {
-    [NSValueTransformer setValueTransformer:[[[SKAnnotationTypeIconTransformer alloc] init] autorelease] forName:@"SKAnnotationTypeIconTransformer"];
-}
 
 - (id)initWithWindowNibName:(NSString *)windowNibName owner:(id)owner{
     self = [super initWithWindowNibName:windowNibName owner:owner];
