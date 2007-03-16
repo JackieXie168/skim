@@ -56,3 +56,6 @@
 - (NSString *)bookmarksFilePath;
 
 @end
+
+@interface SKPageIndexTransformer : NSValueTransformer
+@end
