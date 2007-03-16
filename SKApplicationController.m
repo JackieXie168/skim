@@ -157,14 +157,14 @@ static BOOL fileIsInTrash(NSURL *fileURL)
     int i = [sender tag];
     NSArray *bookmarks = [[SKBookmarkController sharedBookmarkController] bookmarks];
     NSDictionary *bm = [bookmarks objectAtIndex:i];
+    id document = nil;
+    NSURL *fileURL = [[BDAlias aliasWithData:[bm objectForKey:@"_BDAlias"]] fileURL];
     
-    NSString *path = [bm objectForKey:@"path"];
-    NSNumber *pageNumber = [bm objectForKey:@"pageIndex"];
-    NSURL *fileURL = [NSURL fileURLWithPath:path];
-    
-    id document = [[NSDocumentController sharedDocumentController] openDocumentWithContentsOfURL:fileURL display:YES error:NULL];
-    
-    [[document mainWindowController] goToPageIndexWhenReady:pageNumber];
+    if (fileURL == nil && [bm objectForKey:@"path"])
+        fileURL = [NSURL fileURLWithPath:[bm objectForKey:@"path"]];
+    if (fileURL && NO == fileIsInTrash(fileURL) && (document = [[NSDocumentController sharedDocumentController] openDocumentWithContentsOfURL:fileURL display:YES error:NULL])) {
+        [[document mainWindowController] goToPageIndexWhenReady:[bm objectForKey:@"pageIndex"]];
+    }
 }
 
 - (void)menuNeedsUpdate:(NSMenu *)menu {

@@ -37,6 +37,7 @@
  */
 
 #import "SKBookmarkController.h"
+#import "BDAlias.h"
 
 
 @implementation SKBookmarkController
@@ -113,7 +114,10 @@
 }
 
 - (void)addBookmarkForPath:(NSString *)path pageIndex:(unsigned)pageIndex label:(NSString *)label {
-    NSMutableDictionary *bm = [NSMutableDictionary dictionaryWithObjectsAndKeys:path, @"path", label, @"label", [NSNumber numberWithUnsignedInt:pageIndex], @"pageIndex", nil];
+    if (path == nil)
+        return;
+    NSData *data = [[BDAlias aliasWithPath:path] aliasData];
+    NSMutableDictionary *bm = [NSMutableDictionary dictionaryWithObjectsAndKeys:path, @"path", label, @"label", [NSNumber numberWithUnsignedInt:pageIndex], @"pageIndex", data, @"_BDAlias", nil];
     [[self mutableArrayValueForKey:@"bookmarks"] addObject:bm];
 }
 
