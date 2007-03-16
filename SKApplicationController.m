@@ -170,8 +170,10 @@ static BOOL fileIsInTrash(NSURL *fileURL)
 - (void)menuNeedsUpdate:(NSMenu *)menu {
     NSArray *bookmarks = [[SKBookmarkController sharedBookmarkController] bookmarks];
     int i = [menu numberOfItems], iMax = [bookmarks count];
-    while (--i > 2)
+    while (--i > 1)
         [menu removeItemAtIndex:i];
+    if (iMax > 0)
+        [menu addItem:[NSMenuItem separatorItem]];
     for (i = 0; i < iMax; i++) {
         NSDictionary *bm = [bookmarks objectAtIndex:i];
         NSMenuItem *item = [menu addItemWithTitle:[bm objectForKey:@"label"] action:@selector(openBookmark:)  keyEquivalent:@""];

@@ -104,16 +104,17 @@
 
 - (void)insertObject:(id)obj inBookmarksAtIndex:(unsigned)index {
     [bookmarks insertObject:obj atIndex:index];
+    [self saveBookmarks];
 }
 
 - (void)removeObjectFromBookmarksAtIndex:(unsigned)index {
     [bookmarks removeObjectAtIndex:index];
+    [self saveBookmarks];
 }
 
 - (void)addBookmarkForPath:(NSString *)path pageIndex:(unsigned)pageIndex label:(NSString *)label {
     NSMutableDictionary *bm = [NSMutableDictionary dictionaryWithObjectsAndKeys:path, @"path", label, @"label", [NSNumber numberWithUnsignedInt:pageIndex], @"pageIndex", nil];
     [[self mutableArrayValueForKey:@"bookmarks"] addObject:bm];
-    [self saveBookmarks];
 }
 
 - (void)saveBookmarks {
