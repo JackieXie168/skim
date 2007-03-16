@@ -45,6 +45,7 @@
 #import "SKSnapshotWindowController.h"
 #import "SKNoteWindowController.h"
 #import "SKInfoWindowController.h"
+#import "SKBookmarkController.h"
 #import "SKFullScreenWindow.h"
 #import "SKNavigationWindow.h"
 #import "SKSideWindow.h"
@@ -1595,6 +1596,40 @@ void removeTemporaryAnnotations(const void *annotation, void *context)
         [wc release];
     }
     [wc showWindow:self];
+}
+
+#pragma mark Bookmarks
+
+- (void)bookmarkSheetDidEnd:(NSWindow *)sheet returnCode:(int)returnCode contextInfo:(void *)contextInfo {
+    if (returnCode == NSAlertDefaultReturn) {
+        SKBookmarkController *bmController = [SKBookmarkController sharedBookmarkController];
+        NSString *path = [[self document] fileName];
+        NSString *label = [bookmarkField stringValue];
+        unsigned int pageIndex = [[pdfView document] indexForPage:[pdfView currentPage]];
+        [bmController addBookmarkForPath:path pageIndex:pageIndex label:label];
+    }
+}
+
+- (IBAction)addBookmark:(id)sender {
+	[bookmarkField setStringValue:[[self document] displayName]];
+    
+    [NSApp beginSheet:bookmarkSheet
+       modalForWindow:[self window]
+        modalDelegate:self 
+       didEndSelector:@selector(bookmarkSheetDidEnd:returnCode:contextInfo:)
+          contextInfo:NULL];
+}
+
+- (IBAction)dismissBookmarkSheet:(id)sender {
+    [NSApp endSheet:bookmarkSheet returnCode:[sender tag]];
+    [bookmarkSheet orderOut:self];
+}
+
+- (void)goToPageIndexWhenReady:(NSNumber *)pageNumber {
+    if ([self pdfDocument] == nil)
+        [self performSelector:_cmd withObject:pageNumber afterDelay:0.1];
+    else
+        [self setPageNumber:[pageNumber unsignedIntValue] + 1];
 }
 
 #pragma mark Notification handlers

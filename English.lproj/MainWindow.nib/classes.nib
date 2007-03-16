@@ -37,6 +37,7 @@
                 changeToolMode = id; 
                 chooseScale = id; 
                 createNewNote = id; 
+                dismissBookmarkSheet = id; 
                 dismissChoosePageSheet = id; 
                 dismissChooseScaleSheet = id; 
                 dismissPasswordSheet = id; 
@@ -78,6 +79,8 @@
             LANGUAGE = ObjC; 
             OUTLETS = {
                 backForwardButton = NSSegmentedControl; 
+                bookmarkField = NSTextField; 
+                bookmarkSheet = NSWindow; 
                 choosePageField = NSTextField; 
                 choosePageSheet = NSWindow; 
                 chooseScaleField = NSTextField; 

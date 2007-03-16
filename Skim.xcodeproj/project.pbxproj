@@ -87,6 +87,8 @@
 		CE4190C40B94963A00ECF819 /* ToolbarCircleNote.tiff in Resources */ = {isa = PBXBuildFile; fileRef = CE4190C20B94963A00ECF819 /* ToolbarCircleNote.tiff */; };
 		CE4190C50B94963A00ECF819 /* ToolbarTextNote.tiff in Resources */ = {isa = PBXBuildFile; fileRef = CE4190C30B94963A00ECF819 /* ToolbarTextNote.tiff */; };
 		CE41A6CC0B975E5000ECF819 /* Skim.sdef in Resources */ = {isa = PBXBuildFile; fileRef = CE41A6CB0B975E5000ECF819 /* Skim.sdef */; };
+		CE4A659F0BAB1598004AD07D /* SKBookmarkController.m in Sources */ = {isa = PBXBuildFile; fileRef = CE4A659E0BAB1598004AD07D /* SKBookmarkController.m */; };
+		CE4A65CC0BAB1E2E004AD07D /* BookmarksWindow.nib in Resources */ = {isa = PBXBuildFile; fileRef = CE4A65CA0BAB1E2E004AD07D /* BookmarksWindow.nib */; };
 		CE4DA2380B9D9BE10039E89C /* ToolbarSquareNote.tiff in Resources */ = {isa = PBXBuildFile; fileRef = CE4DA2160B9D9AA70039E89C /* ToolbarSquareNote.tiff */; };
 		CE4DA2440B9D9EC00039E89C /* SquareToolAdorn.tiff in Resources */ = {isa = PBXBuildFile; fileRef = CE4DA2430B9D9E640039E89C /* SquareToolAdorn.tiff */; };
 		CE4DA9240B9E190D0039E89C /* Skim Help in Resources */ = {isa = PBXBuildFile; fileRef = CE4DA9190B9E190D0039E89C /* Skim Help */; };
@@ -255,6 +257,9 @@
 		CE4190C20B94963A00ECF819 /* ToolbarCircleNote.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; name = ToolbarCircleNote.tiff; path = Images/ToolbarCircleNote.tiff; sourceTree = "<group>"; };
 		CE4190C30B94963A00ECF819 /* ToolbarTextNote.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; name = ToolbarTextNote.tiff; path = Images/ToolbarTextNote.tiff; sourceTree = "<group>"; };
 		CE41A6CB0B975E5000ECF819 /* Skim.sdef */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text.sdef; path = Skim.sdef; sourceTree = "<group>"; };
+		CE4A659D0BAB1598004AD07D /* SKBookmarkController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SKBookmarkController.h; sourceTree = "<group>"; };
+		CE4A659E0BAB1598004AD07D /* SKBookmarkController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SKBookmarkController.m; sourceTree = "<group>"; };
+		CE4A65CB0BAB1E2E004AD07D /* English */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = English; path = English.lproj/BookmarksWindow.nib; sourceTree = "<group>"; };
 		CE4DA2160B9D9AA70039E89C /* ToolbarSquareNote.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; name = ToolbarSquareNote.tiff; path = Images/ToolbarSquareNote.tiff; sourceTree = "<group>"; };
 		CE4DA2430B9D9E640039E89C /* SquareToolAdorn.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; name = SquareToolAdorn.tiff; path = Images/SquareToolAdorn.tiff; sourceTree = "<group>"; };
 		CE4DA8D00B9E15AD0039E89C /* applehelp.init */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text; name = applehelp.init; path = "Skim Help/applehelp.init"; sourceTree = "<group>"; };
@@ -455,6 +460,7 @@
 				8D15AC360486D014006FF6A4 /* Info.plist */,
 				089C165FFE840EACC02AAC07 /* InfoPlist.strings */,
 				CE41A6CB0B975E5000ECF819 /* Skim.sdef */,
+				CE4A65CA0BAB1E2E004AD07D /* BookmarksWindow.nib */,
 			);
 			name = Resources;
 			sourceTree = "<group>";
@@ -526,6 +532,8 @@
 				4530D7E70B27AAB9007C59F4 /* SKSnapshotWindowController.m */,
 				CE546FC20B32D5DB00F8AFB6 /* SKNoteWindowController.h */,
 				CE546FC30B32D5DB00F8AFB6 /* SKNoteWindowController.m */,
+				CE4A659D0BAB1598004AD07D /* SKBookmarkController.h */,
+				CE4A659E0BAB1598004AD07D /* SKBookmarkController.m */,
 				CE54898D0B35D50E00F8AFB6 /* SKInfoWindowController.h */,
 				CE54898E0B35D50E00F8AFB6 /* SKInfoWindowController.m */,
 				CE4EC4F30B7E24490091F228 /* SKPreferenceController.h */,
@@ -810,6 +818,7 @@
 				CEF7175C0B90DEEF003A2771 /* ReleaseNotes.nib in Resources */,
 				CE41A6CC0B975E5000ECF819 /* Skim.sdef in Resources */,
 				CE4DA9240B9E190D0039E89C /* Skim Help in Resources */,
+				CE4A65CC0BAB1E2E004AD07D /* BookmarksWindow.nib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -916,6 +925,7 @@
 				CEA575FD0B9208B60003D2E7 /* SKOutlineView.m in Sources */,
 				F98DC2680BA090D8008E46EC /* BDSKImagePopUpButton.m in Sources */,
 				F98DC2690BA090D8008E46EC /* BDSKImagePopUpButtonCell.m in Sources */,
+				CE4A659F0BAB1598004AD07D /* SKBookmarkController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -990,6 +1000,14 @@
 				CE2DEB910B86206400D0DA12 /* English */,
 			);
 			name = FindPanel.nib;
+			sourceTree = "<group>";
+		};
+		CE4A65CA0BAB1E2E004AD07D /* BookmarksWindow.nib */ = {
+			isa = PBXVariantGroup;
+			children = (
+				CE4A65CB0BAB1E2E004AD07D /* English */,
+			);
+			name = BookmarksWindow.nib;
 			sourceTree = "<group>";
 		};
 		CE4DA9190B9E190D0039E89C /* Skim Help */ = {
