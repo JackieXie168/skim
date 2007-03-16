@@ -1,11 +1,11 @@
 //
-//  SKApplicationController.h
+//  SKBookmarkController.h
 //  Skim
 //
-//  Created by Michael McCracken on 12/6/06.
+//  Created by Christiaan Hofman on 3/16/07.
 /*
- This software is Copyright (c) 2006,2007
- Michael O. McCracken. All rights reserved.
+ This software is Copyright (c) 2007
+ Christiaan Hofman. All rights reserved.
 
  Redistribution and use in source and binary forms, with or without
  modification, are permitted provided that the following conditions
@@ -19,7 +19,7 @@
     the documentation and/or other materials provided with the
     distribution.
 
- - Neither the name of Michael O. McCracken nor the names of any
+ - Neither the name of Christiaan Hofman nor the names of any
     contributors may be used to endorse or promote products derived
     from this software without specific prior written permission.
 
@@ -38,16 +38,21 @@
 
 #import <Cocoa/Cocoa.h>
 
-@interface SKApplicationController : NSObject {
+
+@interface SKBookmarkController : NSWindowController {
+    NSMutableArray *bookmarks;
 }
 
-+ (void)setupDefaults;
++ (id)sharedBookmarkController;
 
-- (IBAction)checkForUpdates:(id)sender;
-- (IBAction)showPreferencePanel:(id)sender;
-- (IBAction)showReleaseNotes:(id)sender;
-
-- (IBAction)editBookmarks:(id)sender;
-- (IBAction)openBookmark:(id)sender;
+- (NSArray *)bookmarks;
+- (void)setBookmarks:(NSArray *)newBookmarks;
+- (unsigned)countOfBookmarks;
+- (id)objectInBookmarksAtIndex:(unsigned)index;
+- (void)insertObject:(id)obj inBookmarksAtIndex:(unsigned)index;
+- (void)removeObjectFromBookmarksAtIndex:(unsigned)index;
+- (void)addBookmarkForPath:(NSString *)path pageIndex:(unsigned)pageIndex label:(NSString *)label;
+- (void)saveBookmarks;
+- (NSString *)userPreferencesPath;
 
 @end

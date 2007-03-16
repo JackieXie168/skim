@@ -145,6 +145,9 @@ typedef struct _SKPDFViewState {
     IBOutlet NSWindow           *chooseScaleSheet;
     IBOutlet NSTextField        *chooseScaleField;
     
+    IBOutlet NSWindow           *bookmarkSheet;
+    IBOutlet NSTextField        *bookmarkField;
+    
     IBOutlet NSWindow           *saveProgressSheet;
     IBOutlet NSProgressIndicator *saveProgressBar;
     
@@ -289,6 +292,10 @@ typedef struct _SKPDFViewState {
 - (void)allSnapshotsNeedUpdate;
 - (void)updateSnapshotsIfNeeded;
 - (void)updateSnapshot:(NSTimer *)timer;
+
+- (IBAction)addBookmark:(id)sender;
+- (IBAction)dismissBookmarkSheet:(id)sender;
+- (void)goToPageIndexWhenReady:(NSNumber *)pageNumber;
 
 - (void)registerForNotifications;
 - (void)registerForDocumentNotifications;

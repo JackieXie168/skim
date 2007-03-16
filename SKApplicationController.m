@@ -43,6 +43,7 @@
 #import "SKStringConstants.h"
 #import "SKDocument.h"
 #import "SKMainWindowController.h"
+#import "SKBookmarkController.h"
 #import "BDAlias.h"
 #import "SKVersionNumber.h"
 #import <Quartz/Quartz.h>
@@ -146,6 +147,37 @@ static BOOL fileIsInTrash(NSURL *fileURL)
 
 - (IBAction)showReleaseNotes:(id)sender{
     [[SKReleaseNotesController sharedReleaseNotesController] showWindow:self];
+}
+
+- (IBAction)editBookmarks:(id)sender {
+    [[SKBookmarkController sharedBookmarkController] showWindow:self];
+}
+
+- (IBAction)openBookmark:(id)sender {
+    int i = [sender tag];
+    NSArray *bookmarks = [[SKBookmarkController sharedBookmarkController] bookmarks];
+    NSDictionary *bm = [bookmarks objectAtIndex:i];
+    
+    NSString *path = [bm objectForKey:@"path"];
+    NSNumber *pageNumber = [bm objectForKey:@"pageIndex"];
+    NSURL *fileURL = [NSURL fileURLWithPath:path];
+    
+    id document = [[NSDocumentController sharedDocumentController] openDocumentWithContentsOfURL:fileURL display:YES error:NULL];
+    
+    [[document mainWindowController] goToPageIndexWhenReady:pageNumber];
+}
+
+- (void)menuNeedsUpdate:(NSMenu *)menu {
+    NSArray *bookmarks = [[SKBookmarkController sharedBookmarkController] bookmarks];
+    int i = [menu numberOfItems], iMax = [bookmarks count];
+    while (--i > 2)
+        [menu removeItemAtIndex:i];
+    for (i = 0; i < iMax; i++) {
+        NSDictionary *bm = [bookmarks objectAtIndex:i];
+        NSMenuItem *item = [menu addItemWithTitle:[bm objectForKey:@"label"] action:@selector(openBookmark:)  keyEquivalent:@""];
+        [item setTarget:self];
+        [item setTag:i];
+    }
 }
 
 @end
