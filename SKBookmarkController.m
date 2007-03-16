@@ -41,6 +41,10 @@
 
 @implementation SKBookmarkController
 
++ (void)initialize {
+    [NSValueTransformer setValueTransformer:[[[SKPageIndexTransformer alloc] init] autorelease] forName:@"SKPageIndexTransformer"];
+}
+
 + (id)sharedBookmarkController {
     static SKBookmarkController *sharedBookmarkController = nil;
     if (sharedBookmarkController == nil)
@@ -153,6 +157,23 @@
     }
     
     return bookmarksPath;
+}
+
+@end
+
+
+@implementation SKPageIndexTransformer
+
++ (Class)transformedValueClass {
+    return [NSNumber class];
+}
+
++ (BOOL)allowsReverseTransformation {
+    return NO;
+}
+
+- (id)transformedValue:(id)number {
+    return [NSNumber numberWithUnsignedInt:[number unsignedIntValue] + 1];
 }
 
 @end
