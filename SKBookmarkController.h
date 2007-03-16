@@ -59,3 +59,6 @@
 
 @interface SKPageIndexTransformer : NSValueTransformer
 @end
+
+@interface SKAliasDataTransformer : NSValueTransformer
+@end

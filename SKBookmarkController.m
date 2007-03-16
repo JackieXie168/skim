@@ -44,6 +44,7 @@
 
 + (void)initialize {
     [NSValueTransformer setValueTransformer:[[[SKPageIndexTransformer alloc] init] autorelease] forName:@"SKPageIndexTransformer"];
+    [NSValueTransformer setValueTransformer:[[[SKAliasDataTransformer alloc] init] autorelease] forName:@"SKAliasDataTransformer"];
 }
 
 + (id)sharedBookmarkController {
@@ -179,6 +180,26 @@
 
 - (id)transformedValue:(id)number {
     return [NSNumber numberWithUnsignedInt:[number unsignedIntValue] + 1];
+}
+
+@end
+
+
+@implementation SKAliasDataTransformer
+
++ (Class)transformedValueClass {
+    return [NSString class];
+}
+
++ (BOOL)allowsReverseTransformation {
+    return NO;
+}
+
+- (id)transformedValue:(id)dictionary {
+    NSString *path = [[BDAlias aliasWithData:[dictionary valueForKey:@"_BDAlias"]] fullPath];
+    if (path == nil)
+        path = [dictionary valueForKey:@"path"];
+    return path;
 }
 
 @end
