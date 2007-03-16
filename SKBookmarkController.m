@@ -52,7 +52,7 @@
     if (self = [super init]) {
         bookmarks = [[NSMutableArray alloc] init];
         
-        NSData *data = [NSData dataWithContentsOfFile:[self userPreferencesPath]];
+        NSData *data = [NSData dataWithContentsOfFile:[self bookmarksFilePath]];
         if (data) {
             NSString *error = nil;
             NSPropertyListFormat format = NSPropertyListXMLFormat_v1_0;
@@ -113,13 +113,6 @@
 }
 
 - (void)saveBookmarks {
-    static NSString *bookmarksPath = nil;
-    if (bookmarksPath == nil) {
-        NSString *userPrefsPath = [self userPreferencesPath];
-        NSString *bundleIdentifier = [[NSBundle mainBundle] objectForInfoDictionaryKey:(NSString *)kCFBundleIdentifierKey];
-        bookmarksPath = [[[userPrefsPath stringByAppendingPathComponent:[bundleIdentifier stringByAppendingString:@".bookmarks"]] stringByAppendingPathExtension:@"plist"] copy];
-    }
-    
     NSString *error = nil;
     NSPropertyListFormat format = NSPropertyListXMLFormat_v1_0;
     NSData *data = [NSPropertyListSerialization dataFromPropertyList:bookmarks format:format errorDescription:&error];
@@ -128,15 +121,15 @@
 		NSLog(@"Error deserializing: %@", error);
         [error release];
 	} else {
-        [data writeToFile:bookmarksPath atomically:YES];
+        [data writeToFile:[self bookmarksFilePath] atomically:YES];
     }
 }
 
-- (NSString *)userPreferencesPath {
+- (NSString *)bookmarksFilePath {
+    static NSString *bookmarksPath = nil;
     
-    static NSString *path = nil;
-    
-    if (path == nil) {
+    if (bookmarksPath == nil) {
+        NSString *prefsPath = nil;
         FSRef foundRef;
         OSStatus err = noErr;
         
@@ -149,11 +142,17 @@
         CFURLRef url = CFURLCreateFromFSRef(kCFAllocatorDefault, &foundRef);
         
         if (url != nil) {
-            path = [[(NSURL *)url path] copy];
+            prefsPath = [(NSURL *)url path];
             CFRelease(url);
+            
+            NSString *bundleIdentifier = [[NSBundle mainBundle] objectForInfoDictionaryKey:(NSString *)kCFBundleIdentifierKey];
+            
+            bookmarksPath = [[[prefsPath stringByAppendingPathComponent:[bundleIdentifier stringByAppendingString:@".bookmarks"]] stringByAppendingPathExtension:@"plist"] copy];
         }
+        
     }
-    return path;
+    
+    return bookmarksPath;
 }
 
 @end
