@@ -53,6 +53,6 @@
 - (void)removeObjectFromBookmarksAtIndex:(unsigned)index;
 - (void)addBookmarkForPath:(NSString *)path pageIndex:(unsigned)pageIndex label:(NSString *)label;
 - (void)saveBookmarks;
-- (NSString *)userPreferencesPath;
+- (NSString *)bookmarksFilePath;
 
 @end
