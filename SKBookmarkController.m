@@ -165,6 +165,10 @@
     return bookmarksPath;
 }
 
+- (void)controlTextDidEndEditing:(NSNotification *)notification {
+    [self saveBookmarks];
+}
+
 @end
 
 
