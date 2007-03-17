@@ -1,10 +1,4 @@
 body {
-    margin-top: 20px;
-    margin-bottom: 20px;
-    margin-left: 20px;
-    margin-right: 20px;
-}
-body {
     margin: 2px 12px 12px
     }
 
@@ -107,17 +101,19 @@ td  {
     background-repeat: no-repeat;
     padding: -2px 6px 0;
     position: fixed;
-    top: 0; left: 0; width: 100%; height: 1.2em;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 1.2em;
     float: left;
     border-bottom: 1px solid #bfbfbf
     }
 
-.pagetitle {
-    margin-top: 12px;
-    margin-bottom: -3px;
-    margin-left: 40px;
-    width: 88%;
-    border: solid 1px #fff
+.banner a {
+	font-size: 8pt;
+    position:absolute;
+    top: 2px;
+    left: 10px
     }
 
 .mainbox {
@@ -134,21 +130,10 @@ td  {
     border: solid 1px #bfbfbf
     }
 
-.banner a {
-    position: absolute;
-    top: 2px;
-    left: 10px
-    margin: -9px 0 -6px
-    }
-
 .taskbox h2 {
     font-size: 9pt;
     margin-top: 8px;
     margin-bottom: -4px
-    }
-
-.copyright {
-    font-size: 7pt
     }
 
 .anchor {
@@ -157,27 +142,27 @@ td  {
     left: 0
     }
 
-.frame     { text-align: left; margin-top: 20px; margin-right: auto; margin-left: auto; padding:0; width: 500px }
+.frame {
+    text-align: left;
+    margin-top: 20px;
+    margin-right: auto;
+    margin-left: auto;
+    padding:0;
+    width: 500px
+    }
 
 .frameleft {
     margin: 0;
-    padding-top: 20px;
     padding-left: 10px;
     width: 236px;
     float: left
-}
+    }
 
 .frameright {
     margin: 0;
-    padding-top: 20px;
     padding-left: 20px;
     width: 224px;
     height: 172px;
     float: left;
     border-left: 1px solid #808080
-}
-
-.frameleft img, p {
-    margin: 0; padding: 0; border: 0; 
-}
-
+    }
