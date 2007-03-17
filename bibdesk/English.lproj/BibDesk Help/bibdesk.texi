@@ -2,6 +2,17 @@
 @c This is the manual for BibDesk.
 
 @c ======================================================================================
+@c Localization Notes
+@c ======================================================================================
+@c 
+@c Localization starts after "The content of the Help Pages starts here...".
+@c Command names start with '@' and should not be localized.
+@c Lines starting with @c, such as this one, are comments and should not be localized.
+@c Arguments are written on the line after the command, or as a comma-separated list within braces. 
+@c Most arguments should be localized, but not for @end.
+@c References (first argument of @ref or @xref, or between * and :: in a @menu) should be exactly the same as their target (argument of @node or @anchor). 
+
+@c ======================================================================================
 @c Document info
 @c ======================================================================================
 @c
@@ -106,10 +117,11 @@ Control-Cmd-\key\
 @c ======================================================================================
 
 @ifnottex
+@c DO NOT LOCALIZE THE NEXT LINE
 @node Top
 @top BibDesk 
 
-@image{gfx/BibDeskIcon}
+@image{gfx/BibDeskIcon,,, BibDesk}
 @heading About BibDesk
 
 BibDesk @value{VERSION} is a BibTeX editor and reference manager. Because it is a
