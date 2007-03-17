@@ -166,3 +166,11 @@ td  {
     float: left;
     border-left: 1px solid #808080
     }
+
+.frame h2  {
+    font-size: 15pt;
+    font-family: "Lucida Grande", Arial, sans-serif;
+    margin-top: 10px;
+    margin-bottom: 0
+    }
+

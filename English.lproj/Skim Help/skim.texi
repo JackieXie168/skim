@@ -103,18 +103,17 @@ Control-Cmd-\key\
 @node Top
 @top Skim Help
 
-@heading Skim Help
-
 @box{frame}
 
 @box{frameleft}
 
-@image{gfx/screenshot}
+@image{gfx/screenshot, Screenshot}
 
 @endbox
 
 @box{frameright}
 
+@heading @image{/gfx/Skim, Skim} Skim Help
 Skim is a PDF viewer, intended for easy reading and studying PDF documents.
 @menu
 * indexcp::
