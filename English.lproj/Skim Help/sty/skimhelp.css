@@ -9,7 +9,7 @@ h1  {
     }
 
 h2  {
-    font-size: 11pt;
+    font-size: 10pt;
     font-family: "Lucida Grande", Arial, sans-serif;
     margin-top: 0;
     margin-bottom: 0
@@ -142,7 +142,7 @@ td  {
     left: 0
     }
 
-.frame {
+.topframe {
     text-align: left;
     margin-top: 20px;
     margin-right: auto;
@@ -151,26 +151,26 @@ td  {
     width: 500px
     }
 
-.frameleft {
+.topframeleft {
     margin: 0;
     padding-left: 10px;
     width: 236px;
     float: left
     }
 
-.frameright {
+.topframeright {
     margin: 0;
     padding-left: 20px;
+    padding-bottom: 8px;
     width: 224px;
-    height: 172px;
+    height: auto;
     float: left;
     border-left: 1px solid #808080
     }
 
-.frame h2  {
-    font-size: 15pt;
+.topframe h2  {
+    font-size: 18pt;
     font-family: "Lucida Grande", Arial, sans-serif;
-    margin-top: 10px;
-    margin-bottom: 0
+    margin-top: 30px;
+    margin-bottom: 30px
     }
-

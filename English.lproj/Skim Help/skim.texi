@@ -115,21 +115,27 @@ Control-Cmd-\key\
 @node Top
 @top Skim Help
 
-@box{frame}
+@box{topframe}
 
-@box{frameleft}
+@box{topframeleft}
+
+@heading @image{gfx/Skim,,, Skim} Skim Help
 
 @image{gfx/screenshot,,, Screenshot}
 
 @endbox
 
-@box{frameright}
+@box{topframeright}
 
-@heading @image{gfx/Skim,,, Skim} Skim Help
+Skim is a viewer for Portable Document Format (PDF) files, intended for easy reading and studying PDF documents.
 
-Skim is a PDF viewer, intended for easy reading and studying PDF documents.
+You can search PDF files, bookmark them, add notes, highlight sections, and take "snapshot" for easy reference. Skim can also open PostScript (PS) files, converting them to PDF. 
+
+In addition, with Skim you can fully concentrate  on reading the PDF file in a powerfull full screen mode, or give full screen presentations of your PDF file. 
+
 @menu
 * indexcp::
+* More information::
 @end menu
 
 @endbox
@@ -692,6 +698,41 @@ Skim allows you to save a copy of your PDF file without the notes and highlights
 @item Select "PDF Without Notes" from the popup, choose a location to save the PDF to, and press OK. 
 @end enumerate
 @endbox
+
+@c ======================================================================================
+
+@node More information
+@chapter More information
+@abstract{Getting more help}
+
+@heading Online Resources
+@itemize
+@item @uref{http://, Skim Website}
+@end itemize
+
+@heading Mailing List
+
+If your questions aren't answered in this help file, the
+@uref{http://, skim-users mailing list} 
+may have an answer. Your question
+may have been answered already, so you can check the 
+@uref{http://,list archives} 
+to get instant gratification.
+
+@heading Bug reports
+
+You can submit a bug report to the bug tracker at 
+@uref{http://}.
+
+The reports are most useful if they provide a clear description of
+what went wrong, what you expected, and how to reproduce the problem
+at a different computer without you there helping us.
+
+If you're submitting a problem with how it handled a certain file, it
+would help if you sent that file too, or at least the representative
+subset that causes the errors. Crash reports are also useful and can
+be obtained from the Console application (in `Applications/Utilities`).
+
 
 @c ======================================================================================
 @c INDEXES
