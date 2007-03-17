@@ -4,6 +4,7 @@
         {
             CLASS = SKBookmarkController; 
             LANGUAGE = ObjC; 
+            OUTLETS = {}; 
             SUPERCLASS = NSWindowController; 
         }
     ); 
