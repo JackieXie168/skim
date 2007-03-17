@@ -2,6 +2,17 @@
 @c This is the manual for Skim.
 
 @c ======================================================================================
+@c Localization Notes
+@c ======================================================================================
+@c 
+@c Localization starts after "The content of the Help Pages starts here...".
+@c Command names start with '@' and should not be localized.
+@c Lines starting with @c, such as this one, are comments and should not be localized.
+@c Arguments are written on the line after the command, or as a comma-separated list within braces. 
+@c Most arguments should be localized, but not for @end or @box.
+@c References (first argument of @ref or @xref, or between * and :: in a @menu) should be exactly the same as their target (argument of @node or @anchor). 
+
+@c ======================================================================================
 @c Document info
 @c ======================================================================================
 @c
@@ -100,6 +111,7 @@ Control-Cmd-\key\
 @settitle Skim Help
 
 @ifnottex
+@c DO NOT LOCALIZE THE NEXT LINE
 @node Top
 @top Skim Help
 
@@ -107,13 +119,14 @@ Control-Cmd-\key\
 
 @box{frameleft}
 
-@image{gfx/screenshot, Screenshot}
+@image{gfx/screenshot,,, Screenshot}
 
 @endbox
 
 @box{frameright}
 
-@heading @image{/gfx/Skim, Skim} Skim Help
+@heading @image{gfx/Skim,,, Skim} Skim Help
+
 Skim is a PDF viewer, intended for easy reading and studying PDF documents.
 @menu
 * indexcp::
