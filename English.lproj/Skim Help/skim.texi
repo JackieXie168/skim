@@ -115,9 +115,9 @@ Control-Cmd-\key\
 
 @box{frameright}
 
-Skim is a PDF viewer, intended for easy reading and studying PDF document.
+Skim is a PDF viewer, intended for easy reading and studying PDF documents.
 @menu
-* indexcp:: Help Topics
+* indexcp::
 @end menu
 
 @endbox
@@ -371,7 +371,7 @@ When you're viewing more than one PDF page at a time, it can be difficult to tel
 
 @topic Adding notes to a PDF document
 
-You can add your notes to a PDF document in boxes that look like paper sticky notes, or longer notes that can be viewed by double-clicking. 
+You can add your notes to a PDF document in boxes that look like paper sticky notes, or more extensive anchored notes that can be viewed in a separate window by double-clicking. 
 
 The notes are saved with the document, and are seen by anyone who reads it. The notes are not saved in the PDF data itself, so other PDF viewers will probably not be able to show the notes. 
 
@@ -479,6 +479,21 @@ By default, note windows for anchored notes are at the same level as any other n
 
 @c ======================================================================================
 
+@topic Adding a bookmark to a PDF document
+
+You can bookmark a page in a PDF document so you can quickly return to it, much like a web browser's bookmarks.
+
+@box{taskbox}
+@itemize
+@item To add a bookmark, choose Bookmarks > Add Bookmark, and enter a name.
+@item To rename a bookmark, choose Bookmarks > Edit Bookmarks, and double-click its name.
+@item To delete a bookmark, choose Bookmarks > Edit Bookmarks, select it, and click Remove.
+@item To go to a bookmark, choose its name from the Bookmarks menu.
+@end itemize
+@endbox
+
+@c ======================================================================================
+
 @topic I can't select or copy text in a PDF file
 
 Some PDF files require you to enter a password before you can select or copy text. Ask the person who gave you the document for that password.
@@ -505,7 +520,7 @@ Skim can automatically resize a PDF file so that it always fits its window. As y
 
 @c ======================================================================================
 
-@topic Resizing the widnow to fit its contents.
+@topic Resizing the window to fit its contents
 
 When the PDF file is not set to zoom to fit its window, you can resize the window to fit around the PDF file and the side panes. 
 
@@ -612,7 +627,7 @@ You can also check immediately for Skim updates yourself. Choose Skim > Check fo
 
 @c ======================================================================================
 
-@topic Emailing a PDF file loses notes or highlights.
+@topic Emailing a PDF file loses notes or highlights
 
 Notes and highlights you add to a PDF document are not saved in the PDF data, but are added to the file as extended attributes. Those are usually lost when you email the file. 
 
@@ -639,7 +654,7 @@ It is important that the notes file is associated to the PDF file. Therefore it 
 
 @c ======================================================================================
 
-@topic Saving PDF files with the notes and highlights included.
+@topic Saving PDF files with the notes and highlights included
 
 Normally, Notes and highlights you add to a PDF document are not saved in the PDF data, but are added to the file as extended attributes. However, Skim allows you to save a copy of your PDF file that does contain the notes in the PDF data. This allows you to see the notes also in other PDF viewers. 
 
@@ -654,7 +669,7 @@ It is important that the notes file is associated to the PDF file. Therefore it 
 
 @c ======================================================================================
 
-@topic Saving PDF files without notes and highlights.
+@topic Saving PDF files without notes and highlights
 
 Skim allows you to save a copy of your PDF file without the notes and highlights. 
 
