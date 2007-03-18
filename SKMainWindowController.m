@@ -1680,6 +1680,7 @@ void removeTemporaryAnnotations(const void *annotation, void *context)
     } else {
         [noteOutlineView deselectAll:self];
     }
+    [noteOutlineView reloadData];
 }
 
 - (void)handleDidAddAnnotationNotification:(NSNotification *)notification {
@@ -1949,7 +1950,7 @@ void removeTemporaryAnnotations(const void *annotation, void *context)
         if ([tcID isEqualToString:@"note"]) {
             return [item contents];
         } else if([tcID isEqualToString:@"type"]) {
-            return [item type];
+            return [NSDictionary dictionaryWithObjectsAndKeys:[NSNumber numberWithBool:item == [pdfView activeAnnotation]], @"active", [item type], @"type", nil];
         } else if([tcID isEqualToString:@"page"]) {
             return [[item page] label];
         }

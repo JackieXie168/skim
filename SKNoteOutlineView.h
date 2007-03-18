@@ -52,5 +52,6 @@
 
 @interface SKAnnotationTypeImageCell : NSImageCell {
     NSString *type;
+    BOOL active;
 }
 @end

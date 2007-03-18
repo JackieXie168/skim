@@ -194,10 +194,22 @@
 }
 
 - (void)setObjectValue:(id)anObject {
-    NSAssert2(anObject == nil || [anObject isKindOfClass:[NSString class]], @"wrong object class %@ for %@.", [anObject class], [self class]);
-    if (type != anObject) {
-        [type release];
-        type = [anObject retain];
+    if ([anObject isKindOfClass:[NSDictionary class]]) {
+        NSString *newType = [anObject valueForKey:@"type"];
+        BOOL newActive = [[anObject valueForKey:@"active"] boolValue];
+        if (type != newType) {
+            [type release];
+            type = [newType retain];
+        }
+        active = newActive;
+    } else if ([anObject isKindOfClass:[NSString class]]) {
+        if (type != anObject) {
+            [type release];
+            type = [anObject retain];
+        }
+        active = NO;
+    } else {
+        [super setObjectValue:anObject];
     }
 }
 
@@ -273,6 +285,16 @@ static NSImage *createInvertedImage(NSImage *image)
         image = isSelected ? invertedStrikeOutImage : strikeOutImage;
     else if ([type isEqualToString:@"Underline"])
         image = isSelected ? invertedUnderlineImage : underlineImage;
+    
+    if (active) {
+        [[NSGraphicsContext currentContext] saveGraphicsState];
+        if (isSelected)
+            [[NSColor colorWithDeviceWhite:1.0 alpha:0.8] set];
+        else
+            [[NSColor colorWithDeviceWhite:0.0 alpha:0.7] set];
+        [NSBezierPath strokeRect:NSInsetRect(cellFrame, 0.5, 0.5)];
+        [[NSGraphicsContext currentContext] restoreGraphicsState];
+    }
     
     [super setObjectValue:image];
     [super drawWithFrame:cellFrame inView:controlView];
