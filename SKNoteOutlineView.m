@@ -194,7 +194,7 @@
 }
 
 - (void)setObjectValue:(id)anObject {
-    NSAssert2([anObject isKindOfClass:[NSString class]], @"wrong object class %@ for %@.", [anObject class], [self class]);
+    NSAssert2(anObject == nil || [anObject isKindOfClass:[NSString class]], @"wrong object class %@ for %@.", [anObject class], [self class]);
     if (type != anObject) {
         [type release];
         type = [anObject retain];
