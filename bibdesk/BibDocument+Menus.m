@@ -534,9 +534,9 @@
 	}
 }
 
-- (BOOL) validateToggleToggleCustomCiteDrawerMenuItem:(NSMenuItem*) menuItem {
+- (BOOL) validateToggleCustomCiteDrawerMenuItem:(NSMenuItem*) menuItem {
     NSString *s;
-	if([customCiteDrawer state] == NSDrawerOpenState : [customCiteDrawer state] == NSDrawerOpeningState)
+	if([customCiteDrawer state] == NSDrawerOpenState || [customCiteDrawer state] == NSDrawerOpeningState)
 		s = NSLocalizedString(@"Hide Custom \\cite Commands",@"");
 	else
 		s = NSLocalizedString(@"Show Custom \\cite Commands",@"should be the same as in the nib");
@@ -856,7 +856,7 @@
 		return [self validateOpenRemoteURLMenuItem:menuItem];
 	}
 	else if(act == @selector(toggleShowingCustomCiteDrawer:)) {
-		return [self validateToggleToggleCustomCiteDrawerMenuItem:menuItem];
+		return [self validateToggleCustomCiteDrawerMenuItem:menuItem];
 	}
 	else if (act == @selector(printDocument:)) {
 		return [self validatePrintDocumentMenuItem:menuItem];
