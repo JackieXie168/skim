@@ -99,9 +99,9 @@ Control-Cmd-\key\
 
 @macro topic{title}
 @node \title\
+@chapter \title\
 @cindex \title\
 @abstract{\title\}
-@chapter \title\
 @end macro
 
 @c ======================================================================================
@@ -176,6 +176,9 @@ You can change your view of a page in a PDF file in several ways.
 @item To see the page in its original size, choose View > Actual Size.
 @end itemize
 @itemize
+@item To view the PDF so that its pages fit in its window, choose View > Zoom To Fit.
+@end itemize
+@itemize
 @item To view a page at a size you specify, resize the window to the size you want, then choose View > Size To Fit. The page resizes to fit the window size.
 @end itemize
 @itemize
@@ -190,6 +193,11 @@ You can also use the contextual menu to zoom.
 If your mouse or other input device has a scroll wheel, you can also zoom by holding the Option key and moving the scroll wheel.
 
 You cannot save changes to the way you view a page.
+
+@heading See also
+@menu
+* Resizing the window to fit its contents::
+@end menu
 
 @c ======================================================================================
 
@@ -240,6 +248,12 @@ When you open a PDF document with multiple pages, a single Skim window opens sho
 
 By default, the contents pane opens automatically only if you open a PDF file with a table of contents. To set the drawer to open automatically even if there is no table of contents, choose Skim > Preferences, click PDF, and deselect "Open pane only for Table of Contents."
 
+@heading See also
+@menu
+* Viewing the table of contents for a PDF file::
+* Scrolling PDF pages::
+@end menu
+
 @c ======================================================================================
 
 @topic Scrolling PDF pages
@@ -261,6 +275,12 @@ You can also scroll pages by dragging with the mouse.
 @end itemize
 @endbox
 
+@heading See also
+@menu
+* Selecting the page to view in a PDF document::
+* Viewing page breaks
+@end menu
+
 @c ======================================================================================
 
 @topic Changing the background color
@@ -275,6 +295,11 @@ By default, Skim shows a gray background behind images and PDF files, and a dark
 @item To change the background color for Full Screen mode, choose Skim > Preferences, click Colors, and then click "Full Screen" below "Background color".
 @end itemize
 @endbox
+
+@heading See also
+@menu
+* Viewing PDF documents in full screen::
+@end menu
 
 @c ======================================================================================
 
@@ -309,6 +334,11 @@ You can search a PDF file for a word or any set of characters.
 @end enumerate
 @endbox
 
+@heading See also
+@menu
+* Changing the highlighting of Find results::
+@end menu
+
 @c ======================================================================================
 
 @topic Rotating a PDF file or page
@@ -340,6 +370,11 @@ Some PDF files contain a table of contents, which lets you quickly jump to secti
 @item To jump to a specific section, click its name in the drawer. 
 @end itemize
 @endbox
+
+@heading See also
+@menu
+* Selecting the page to view in a PDF document::
+@end menu
 
 @c ======================================================================================
 
@@ -373,6 +408,11 @@ Viewing pages side-by-side lets you display more of a document on the screen.
 @end itemize
 @endbox
 
+@heading See also
+@menu
+* Viewing page breaks::
+@end menu
+
 @c ======================================================================================
 
 @topic Viewing page breaks
@@ -384,6 +424,12 @@ When you're viewing more than one PDF page at a time, it can be difficult to tel
 @item To display a border around each page, Choose View > PDF Display > Page Breaks.
 @end itemize
 @endbox
+
+@heading See also
+@menu
+* Viewing pages side-by-side::
+* Scrolling PDF pages::
+@end menu
 
 @c ======================================================================================
 
@@ -415,6 +461,11 @@ You can also use toolbar buttons to add notes. To add notes buttons to the toolb
 
 You can edit or delete the notes. To move or resize the note, choose Tools > Text Tool, and use the mouse.  Drag the black box to resize. To edit the note's text, choose Tools > Text Tool, and double-click the note. To change the color used for the note, choose Tools > Show Colors. To delete the note, choose Tools > Text Tool, select the note, and press Delete.
 
+@heading See also
+@menu
+* Highlighting sections of a PDF document::
+@end menu
+
 @c ======================================================================================
 
 @topic Highlighting sections of a PDF document
@@ -439,6 +490,12 @@ You can edit or delete the highlights. To change the color used for the highligh
 
 Circle and box highlights can also be moved and resized. To move or resize the highlight, choose Tools > Text Tool, and use the mouse. Drag the black box to resize. 
 
+The highlights are saved with the document, and are seen by anyone who reads it. The highlights are not saved in the PDF data itself, so other PDF viewers will probably not be able to show the notes. 
+
+@heading See also
+@menu
+* Adding notes to a PDF document::
+@end menu
 The highlights are saved with the document, and are seen by anyone who reads it. The highlights are not saved in the PDF data itself, so other PDF viewers will probably not be able to show the notes. 
 
 @c ======================================================================================
@@ -538,6 +595,13 @@ When you view a PDF file in Skim, some line art images may disappear if anti-ali
 @end enumerate
 @endbox
 
+@heading See also
+@menu
+* The text looks jagged in my PDF document::
+* Small text is unreadable in my PDF document::
+* Text in a PDF appears slowly::
+@end menu
+
 @c ======================================================================================
 
 @topic The text looks jagged in my PDF document
@@ -553,6 +617,13 @@ When viewing a PDF file in Skim, larger text may look jagged. You can turn on an
 @endbox
 
 If you turn on the "Anti-alias text and line art" option, large characters and line art are smoothed out and do not appear to be so jagged. Preview may take longer to display your document when smoothing out characters and line art.
+
+@heading See also
+@menu
+* I don't see line art in my PDF document::
+* Small text is unreadable in my PDF document::
+* Text in a PDF appears slowly::
+@end menu
 
 @c ======================================================================================
 
@@ -573,6 +644,13 @@ Text in a point size smaller than the greeking threshold appears as a gray blur.
 
 If you turn off the "Anti-alias text and line art" option, large characters and line art may appear jagged instead of smooth. Smoothing out the characters and art takes more time.
 
+@heading See also
+@menu
+* I don't see line art in my PDF document::
+* The text looks jagged in my PDF document::
+* Text in a PDF appears slowly::
+@end menu
+
 @c ======================================================================================
 
 @topic Text in a PDF appears slowly
@@ -592,6 +670,13 @@ Text in a point size smaller than the greeking threshold appears as a gray blur.
 
 If you turn off the "Anti-alias text and line art" option, small characters may appear fuzzy, and large characters and line art may appear jagged instead of smooth.
 
+@heading See also
+@menu
+* I don't see line art in my PDF document::
+* The text looks jagged in my PDF document::
+* Small text is unreadable in my PDF document::
+@end menu
+
 @c ======================================================================================
 
 @topic Resizing the window to fit its contents
@@ -603,6 +688,11 @@ When the PDF file is not set to zoom to fit its window, you can resize the windo
 @item To resize a window so that it fits around the PDF file, choose Window > Fit. 
 @end itemize
 @endbox
+
+@heading See also
+@menu
+* Zooming in and out::
+@end menu
 
 @c ======================================================================================
 
@@ -622,6 +712,12 @@ The main menu auto-hides, and can be shown by moving the mouse to the top of the
 
 The contents tables and the notes and snapshot tables automatically show if you move the mouse to the side of the screen. You can also show them by choosing View > Show Contents Pane or View > Show Notes Pane. 
 
+@heading See also
+@menu
+* Giving a presentation of a PDF document::
+* Changing the background color::
+@end menu
+
 @c ======================================================================================
 
 @topic Giving a presentation of a PDF document
@@ -640,6 +736,11 @@ You can also use Skim to give presentations of a PDF document.
 In presentation mode, you can use the Left and Right Arrow buttons to navigate through the pages of the document. 
 
 You can show navigation buttons by moving the mouse to the bottom of the screen.
+
+@heading See also
+@menu
+* Viewing PDF documents in full screen::
+@end menu
 
 @c ======================================================================================
 
@@ -670,6 +771,11 @@ You can set whether Skim should circle highlight results of a text searchas well
 @item To change the color used for the Find highlights, click Color.
 @end itemize
 @endbox
+
+@heading See also
+@menu
+* Finding text in a PDF file::
+@end menu
 
 @c ======================================================================================
 
@@ -715,7 +821,7 @@ You can also save the notes to a separate .skim file. The receiver of the email 
 @heading To save the notes to a separate file:
 @enumerate
 @item Choose File > Export@dots{}. 
-@item Select "Skim Notes" from the popup, choose a location to save the notes to, and press OK. 
+@item Select "Skim Notes" from the File Format popup, choose a location to save the notes to, and press OK. 
 @end enumerate
 @heading To add notes from a separate .skim notes file to a PDF file:
 @enumerate
@@ -724,7 +830,65 @@ You can also save the notes to a separate .skim file. The receiver of the email 
 @end enumerate
 @endbox
 
-It is important that the notes file is associated to the PDF file. Therefore it is best to choose the same file name for the .pdf file and the .skim file. In that case, Skimwill automatically offer to add the notes from the notes file when you open the PDF file. 
+It is important that the notes file is associated to the PDF file. Therefore it is best to choose the same file name for the .pdf file and the .skim file. In that case, Skim will automatically offer to add the notes from the notes file when you open the PDF file. 
+
+@heading See also
+@menu
+* Adding notes to a PDF document::
+* Highlighting sections of a PDF document::
+@end menu
+
+@c ======================================================================================
+
+@topic Saving notes and highlights to a separate file
+
+Notes and highlights you add to a PDF document are not saved in the PDF data, but are added to the file as extended attributes. Those can sometimes be lost when archiving the PDF file or sending it over email.
+
+You can save the notes to a separate .skim file, for backup or to send them by email. 
+
+@box{taskbox}
+@heading To save the notes to a separate file:
+@enumerate
+@item Choose File > Export@dots{}. 
+@item Select "Skim Notes" from the File Format popup, choose a location to save the notes to, and press OK. 
+@end enumerate
+@endbox
+
+It is important that the notes file is associated to the PDF file. Therefore it is best to choose the same file name for the .pdf file and the .skim file. In that case, Skim will automatically offer to add the notes from the notes file when you open the PDF file. 
+
+@heading See also
+@menu
+* Adding notes and highlights from a separate Skim notes file::
+* Emailing a PDF file loses notes or highlights::
+* Adding notes to a PDF document::
+* Highlighting sections of a PDF document::
+@end menu
+
+@c ======================================================================================
+
+@topic Adding notes and highlights from a separate Skim notes file
+
+You can have notes contained in a separate file with extension "skim", for backup or when the notes were send by email with the PDF file. 
+
+You can add the notes to the companion PDF file. 
+
+@box{taskbox}
+@heading To add notes from a separate .skim notes file to a PDF file:
+@enumerate
+@item Open the PDF file.
+@item Choose File > Read Notes@dots{}, and choose the .skim file that holds the notes. 
+@end enumerate
+@endbox
+
+It is important that the notes file is associated to the PDF file. If the file name for the .pdf file and the .skim file are the same apart from the extension, Skim will automatically offer to add the notes from the notes file when you open the PDF file. 
+
+@heading See also
+@menu
+* Saving notes and highlights to a separate file::
+* Emailing a PDF file loses notes or highlights::
+* Adding notes to a PDF document::
+* Highlighting sections of a PDF document::
+@end menu
 
 @c ======================================================================================
 
@@ -736,10 +900,14 @@ Normally, Notes and highlights you add to a PDF document are not saved in the PD
 @heading To save a copy of the PDF with notes included:
 @enumerate
 @item Choose File > Export@dots{}. 
-@item Select "PDF With Embedded Notes" from the popup, choose a location to save the PDF to, and press OK. 
+@item Select "PDF With Embedded Notes" from the File Format popup, choose a location to save the PDF to, and press OK. 
 @end enumerate
 @endbox
-It is important that the notes file is associated to the PDF file. Therefore it is best to choose the same file name for the .pdf file and the .skim file. In that case, Skimwill automatically offer to add the notes from the notes file when you open the PDF file. 
+
+@heading See also
+@menu
+* Saving PDF files without notes and highlights::
+@end menu
 
 @c ======================================================================================
 
@@ -751,9 +919,14 @@ Skim allows you to save a copy of your PDF file without the notes and highlights
 @heading To save a copy of the PDF without notes:
 @enumerate
 @item Choose File > Export@dots{}. 
-@item Select "PDF Without Notes" from the popup, choose a location to save the PDF to, and press OK. 
+@item Select "PDF Without Notes" from the File Format popup, choose a location to save the PDF to, and press OK. 
 @end enumerate
 @endbox
+
+@heading See also
+@menu
+* Saving PDF files with the notes and highlights included::
+@end menu
 
 @c ======================================================================================
 
