@@ -5,7 +5,7 @@ import re
 
 fnames = sys.argv[1:]
 
-titlenumber = re.compile(r': \d+. ')
+titlenumber = re.compile(r'<title>Skim Help: (\d+|[A-Z]+)\. ')
 
 for fname in fnames:
 
@@ -21,7 +21,7 @@ for fname in fnames:
             teximetaline = lines.index(line)
         if line[:34] == "<META NAME=\"DESCRIPTION\" CONTENT=\"":
             metaline = lines.index(line)
-        if line[:7] == "<title>":
+        if line[:18] == "<title>Skim Help: ":
             titleline = lines.index(line)
 
     f.close()
@@ -35,7 +35,7 @@ for fname in fnames:
 
         if titleline > 0:
 
-            lines[titleline] = titlenumber.sub(': ', lines[titleline], 1)
+            lines[titleline] = titlenumber.sub('<title>Skim Help: ', lines[titleline], 1)
 
         f = open(fname, 'w')
         f.seek(0)
