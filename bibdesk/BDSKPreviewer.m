@@ -121,13 +121,13 @@ static NSString *BDSKPreviewPanelFrameAutosaveName = @"BDSKPreviewPanel";
     float rtfScaleFactor = 1.0;
     BDSKCollapsibleView *collapsibleView = (BDSKCollapsibleView *)[[[progressOverlay contentView] subviews] firstObject];
     NSSize minSize = [progressIndicator frame].size;
-    NSRect rect = [warningIcon bounds];
+    NSRect rect = [warningImageView bounds];
     NSImage *image = [[NSImage alloc] initWithSize:rect.size];
     
     [image lockFocus];
-    [[warningIcon image] drawAtPoint:NSZeroPoint fromRect:rect operation:NSCompositeSourceOver fraction:0.7];
+    [[warningImageView image] drawAtPoint:NSZeroPoint fromRect:rect operation:NSCompositeSourceOver fraction:0.7];
     [image unlockFocus];
-    [warningIcon setImage:image];
+    [warningImageView setImage:image];
     [image release];
 	
     rect = [warningView frame];
