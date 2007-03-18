@@ -526,15 +526,71 @@ If the Password command is disabled, this document does not require you to enter
 
 @c ======================================================================================
 
-@topic Resizing a PDF file to fit its window
+@topic I don't see line art in my PDF document
 
-Skim can automatically resize a PDF file so that it always fits its window. As you resize the window, Skim resizes the image or PDF. 
+When you view a PDF file in Skim, some line art images may disappear if anti-aliasing is turned on.
 
 @box{taskbox}
-@itemize
-@item To keep a PDF file resized to fit its window, choose View > Zoom To Fit. 
-@end itemize
+@heading To turn anti-aliasing on or off:
+@enumerate
+@item Choose Skim > Preferences, and click Display.
+@item Select or deselect the "Anti-alias text and line art" checkbox.
+@end enumerate
 @endbox
+
+@c ======================================================================================
+
+@topic The text looks jagged in my PDF document
+
+When viewing a PDF file in Skim, larger text may look jagged. You can turn on anti-aliasing in Skim to make PDF files more readable.
+
+@box{taskbox}
+@heading To turn on anti-aliasing:
+@enumerate
+@item Choose Skim > Preferences, and click Display.
+@item Select the "Anti-alias text and line art" checkbox.
+@end enumerate
+@endbox
+
+If you turn on the "Anti-alias text and line art" option, large characters and line art are smoothed out and do not appear to be so jagged. Preview may take longer to display your document when smoothing out characters and line art.
+
+@c ======================================================================================
+
+@topic Small text is unreadable in my PDF document
+
+When you view a PDF file in Preview, small text may look fuzzy or illegible. You can change a few options to make the text more legible.
+
+@box{taskbox}
+@heading To make small text more readable:
+@enumerate
+@item Choose Skim > Preferences, and click Display.
+@item Deselect the "Anti-alias text and line art" checkbox.
+@item Enter a smaller number in the "Greeking threshold" field.
+@end enumerate
+@endbox
+
+Text in a point size smaller than the greeking threshold appears as a gray blur. The blurred text fits the outline of what the text would actually look like, but is illegible. Displaying blurred text takes less time because Skim doesn't need to render each character individually.
+
+If you turn off the "Anti-alias text and line art" option, large characters and line art may appear jagged instead of smooth. Smoothing out the characters and art takes more time.
+
+@c ======================================================================================
+
+@topic Text in a PDF appears slowly
+
+If the text in a PDF document takes a long time to appear, you can change a few options to help speed it up.
+
+@box{taskbox}
+@heading To speed up the appearance of text:
+@enumerate
+@item Choose Skim > Preferences, and click Display.
+@item Enter a larger number in the "Greeking threshold" field.
+@item Deselect the "Anti-alias text and line art" checkbox.
+@end enumerate
+@endbox
+
+Text in a point size smaller than the greeking threshold appears as a gray blur. The blurred text fits the outline of what the text would actually look like, but is illegible. Legible text may take longer to display because Skim must render each character individually.
+
+If you turn off the "Anti-alias text and line art" option, small characters may appear fuzzy, and large characters and line art may appear jagged instead of smooth.
 
 @c ======================================================================================
 
@@ -593,10 +649,10 @@ Skim allows you to change the size of thumbnails for pages and for snapshots.
 
 @box{taskbox}
 @itemize
-@item To change the size of for page thumbnails, choose Skim > Preferences, click Thumbnails, and move the Pages slider.
+@item To change the size of for page thumbnails, choose Skim > Preferences, click Display, and move the Pages slider.
 @end itemize
 @itemize
-@item To change the size of for snapshot thumbnails, choose Skim > Preferences, click Thumbnails, and move the Snapshots slider.
+@item To change the size of for snapshot thumbnails, choose Skim > Preferences, click Display, and move the Snapshots slider.
 @end itemize
 @endbox
 

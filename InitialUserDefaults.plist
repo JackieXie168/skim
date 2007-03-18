@@ -21,6 +21,8 @@
         <string>SKThumbnailSize</string>
         <string>SKUpdateCheckInterval</string>
         <string>SKLastToolMode</string>
+        <string>SKGreekingThreshold</string>
+        <string>SKShouldAntiAlias</string>
         <string>SKBlankAllWindows</string>
     </array>
 	<key>SKAutoCheckFileUpdate</key>
@@ -33,7 +35,7 @@
 	ZmZmgz8AAACDPwAAAIM/AAAAAYY=
 	</data>
 	<key>SKDefaultDocumentScale</key>
-	<real>100</real>
+	<real>100.0</real>
 	<key>SKDefaultDocumentAutoScale</key>
 	<false/>
 	<key>SKFullScreenBackgroundColor</key>
@@ -59,9 +61,9 @@
 	<key>SKSnapshotsOnTop</key>
 	<false/>
 	<key>SKSnapshotThumbnailSize</key>
-	<real>128</real>
+	<real>128.0</real>
 	<key>SKThumbnailSize</key>
-	<real>128</real>
+	<real>128.0</real>
     <key>SKUpdateCheckInterval</key>
     <integer>1</integer>
     <key>SKUpdateCheckLastDate</key>
@@ -70,6 +72,10 @@
     <string></string>
     <key>SKLastToolMode</key>
     <integer>0</integer>
+    <key>SKGreekingThreshold</key>
+	<real>3.0</real>
+    <key>SKShouldAntiAlias</key>
+	<true/>
     <key>SKBlankAllWindows</key>
     <false/>
 </dict>

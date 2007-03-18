@@ -57,3 +57,5 @@ extern NSString *SKUpdateCheckIntervalKey;
 extern NSString *SKUpdateCheckLastDateKey;
 extern NSString *SKUpdateLatestNotifiedVersionKey;
 extern NSString *SKLastToolModeKey;
+extern NSString *SKShouldAntiAliasKey;
+extern NSString *SKGreekingThresholdKey;

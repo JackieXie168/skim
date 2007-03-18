@@ -229,6 +229,9 @@ static NSString *SKDocumentToolbarNotesPaneItemIdentifier = @"SKDocumentToolbarN
     else
         [pdfView setScaleFactor:0.01 * [[NSUserDefaults standardUserDefaults] floatForKey:SKDefaultDocumentScaleKey]];
     
+    [pdfView setShouldAntiAlias:[[NSUserDefaults standardUserDefaults] boolForKey:SKShouldAntiAliasKey]];
+    [pdfView setGreekingThreshold:[[NSUserDefaults standardUserDefaults] floatForKey:SKGreekingThresholdKey]];
+    
     if ([[NSUserDefaults standardUserDefaults] objectForKey:@"SKLeftSidePaneWidth"]) {
         float width = [[NSUserDefaults standardUserDefaults] floatForKey:@"SKLeftSidePaneWidth"];
         if (width >= 0.0) {
@@ -321,6 +324,8 @@ static NSString *SKDocumentToolbarNotesPaneItemIdentifier = @"SKDocumentToolbarN
     [[NSUserDefaultsController sharedUserDefaultsController] addObserver:self forKey:SKThumbnailSizeKey];
     [[NSUserDefaultsController sharedUserDefaultsController] addObserver:self forKey:SKSnapshotThumbnailSizeKey];
     [[NSUserDefaultsController sharedUserDefaultsController] addObserver:self forKey:SKSnapshotsOnTopKey];
+    [[NSUserDefaultsController sharedUserDefaultsController] addObserver:self forKey:SKShouldAntiAliasKey];
+    [[NSUserDefaultsController sharedUserDefaultsController] addObserver:self forKey:SKGreekingThresholdKey];
 }
 
 - (void)unregisterForChangeNotification {
@@ -331,6 +336,8 @@ static NSString *SKDocumentToolbarNotesPaneItemIdentifier = @"SKDocumentToolbarN
     [[NSUserDefaultsController sharedUserDefaultsController] removeObserver:self forKey:SKThumbnailSizeKey];
     [[NSUserDefaultsController sharedUserDefaultsController] removeObserver:self forKey:SKSnapshotThumbnailSizeKey];
     [[NSUserDefaultsController sharedUserDefaultsController] removeObserver:self forKey:SKSnapshotsOnTopKey];
+    [[NSUserDefaultsController sharedUserDefaultsController] removeObserver:self forKey:SKShouldAntiAliasKey];
+    [[NSUserDefaultsController sharedUserDefaultsController] removeObserver:self forKey:SKGreekingThresholdKey];
 }
 
 - (void)setupWindow:(NSDictionary *)setup{
@@ -1863,6 +1870,10 @@ void removeTemporaryAnnotations(const void *annotation, void *context)
                 [[wc window] setLevel:level];
                 [[wc window] setHidesOnDeactivate:snapshotsOnTop];
             }
+        } else if ([key isEqualToString:SKShouldAntiAliasKey]) {
+            [pdfView setShouldAntiAlias:[[NSUserDefaults standardUserDefaults] boolForKey:SKShouldAntiAliasKey]];
+        } else if ([key isEqualToString:SKGreekingThresholdKey]) {
+            [pdfView setGreekingThreshold:[[NSUserDefaults standardUserDefaults] floatForKey:SKGreekingThresholdKey]];
         }
     } else {
         [super observeValueForKeyPath:keyPath ofObject:object change:change context:context];

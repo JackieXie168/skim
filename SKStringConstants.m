@@ -58,3 +58,5 @@ NSString *SKUpdateCheckIntervalKey = @"SKUpdateCheckInterval";
 NSString *SKUpdateCheckLastDateKey = @"SKUpdateCheckLastDate";
 NSString *SKUpdateLatestNotifiedVersionKey = @"SKUpdateLatestNotifiedVersion";
 NSString *SKLastToolModeKey = @"SKLastToolMode";
+NSString *SKShouldAntiAliasKey = @"SKShouldAntiAlias";
+NSString *SKGreekingThresholdKey = @"SKGreekingThreshold";
