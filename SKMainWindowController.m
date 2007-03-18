@@ -1949,21 +1949,7 @@ void removeTemporaryAnnotations(const void *annotation, void *context)
         if ([tcID isEqualToString:@"note"]) {
             return [item contents];
         } else if([tcID isEqualToString:@"type"]) {
-            NSString *type = [item type];
-            if ([type isEqualToString:@"FreeText"])
-                return [NSImage imageNamed:@"AnnotateToolAdorn"];
-            if ([type isEqualToString:@"Note"])
-                return [NSImage imageNamed:@"NoteToolAdorn"];
-            if ([type isEqualToString:@"Circle"])
-                return [NSImage imageNamed:@"CircleToolAdorn"];
-            if ([type isEqualToString:@"Square"])
-                return [NSImage imageNamed:@"SquareToolAdorn"];
-            if ([type isEqualToString:@"Highlight"])
-                return [NSImage imageNamed:@"HighlightToolAdorn"];
-            if ([type isEqualToString:@"StrikeOut"])
-                return [NSImage imageNamed:@"StrikeOutToolAdorn"];
-            if ([type isEqualToString:@"Underline"])
-                return [NSImage imageNamed:@"UnderlineToolAdorn"];
+            return [item type];
         } else if([tcID isEqualToString:@"page"]) {
             return [[item page] label];
         }

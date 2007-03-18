@@ -37,6 +37,7 @@
  */
 
 #import "SKNoteOutlineView.h"
+#import <Quartz/Quartz.h>
 
 
 @implementation SKNoteOutlineView
@@ -179,6 +180,102 @@
     } else {
         [super resetCursorRects];
     }
+}
+
+@end
+
+#pragma mark -
+
+@implementation SKAnnotationTypeImageCell
+
+- (void)dealloc {
+    [type release];
+    [super dealloc];
+}
+
+- (void)setObjectValue:(id)anObject {
+    NSAssert2([anObject isKindOfClass:[NSString class]], @"wrong object class %@ for %@.", [anObject class], [self class]);
+    if (type != anObject) {
+        [type release];
+        type = [anObject retain];
+    }
+}
+
+static NSImage *createInvertedImage(NSImage *image)
+{
+    static CIFilter *invertFilter = nil;
+    if (invertFilter == nil)
+        invertFilter = [[CIFilter filterWithName:@"CIColorInvert"] retain];    
+    
+    CIImage *ciImage = [CIImage imageWithData:[image TIFFRepresentation]];
+    
+    [invertFilter setValue:ciImage forKey:@"inputImage"];
+    ciImage = [invertFilter valueForKey:@"outputImage"];
+    
+    NSImage *nsImage = [[NSImage alloc] initWithSize:[image size]];
+    CGRect cgRect = [ciImage extent];
+    NSRect nsRect = *(NSRect*)&cgRect;
+    
+    [nsImage lockFocus];
+    [ciImage drawAtPoint:NSZeroPoint fromRect:nsRect operation:NSCompositeCopy fraction:1.0];
+    [nsImage unlockFocus];
+    
+    return nsImage;
+}
+
+- (void)drawWithFrame:(NSRect)cellFrame inView:(NSView *)controlView {
+    static NSImage *textImage = nil;
+    static NSImage *noteImage = nil;
+    static NSImage *circleImage = nil;
+    static NSImage *squareImage = nil;
+    static NSImage *highlightImage = nil;
+    static NSImage *strikeOutImage = nil;
+    static NSImage *underlineImage = nil;
+    static NSImage *invertedTextImage = nil;
+    static NSImage *invertedNoteImage = nil;
+    static NSImage *invertedCircleImage = nil;
+    static NSImage *invertedSquareImage = nil;
+    static NSImage *invertedHighlightImage = nil;
+    static NSImage *invertedStrikeOutImage = nil;
+    static NSImage *invertedUnderlineImage = nil;
+    
+    if (textImage == nil) {
+        textImage = [[NSImage imageNamed:@"AnnotateToolAdorn"] retain];
+        noteImage = [[NSImage imageNamed:@"NoteToolAdorn"] retain];
+        circleImage = [[NSImage imageNamed:@"CircleToolAdorn"] retain];
+        squareImage = [[NSImage imageNamed:@"SquareToolAdorn"] retain];
+        highlightImage = [[NSImage imageNamed:@"HighlightToolAdorn"] retain];
+        strikeOutImage = [[NSImage imageNamed:@"StrikeOutToolAdorn"] retain];
+        underlineImage = [[NSImage imageNamed:@"UnderlineToolAdorn"] retain];
+        invertedTextImage = createInvertedImage(textImage);
+        invertedNoteImage = createInvertedImage(noteImage);
+        invertedCircleImage = createInvertedImage(circleImage);
+        invertedSquareImage = createInvertedImage(squareImage);
+        invertedHighlightImage = createInvertedImage(highlightImage);
+        invertedStrikeOutImage = createInvertedImage(strikeOutImage);
+        invertedUnderlineImage = createInvertedImage(underlineImage);
+    }
+    
+    BOOL isSelected = [self isHighlighted] && [[controlView window] isKeyWindow] && [[[controlView window] firstResponder] isEqual:controlView];
+    NSImage *image = nil;
+    
+    if ([type isEqualToString:@"FreeText"])
+        image = isSelected ? invertedTextImage : textImage;
+    else if ([type isEqualToString:@"Note"])
+        image = isSelected ? invertedNoteImage : noteImage;
+    else if ([type isEqualToString:@"Circle"])
+        image = isSelected ? invertedCircleImage : circleImage;
+    else if ([type isEqualToString:@"Square"])
+        image = isSelected ? invertedTextImage : squareImage;
+    else if ([type isEqualToString:@"Highlight"])
+        image = isSelected ? invertedHighlightImage : highlightImage;
+    else if ([type isEqualToString:@"StrikeOut"])
+        image = isSelected ? invertedStrikeOutImage : strikeOutImage;
+    else if ([type isEqualToString:@"Underline"])
+        image = isSelected ? invertedUnderlineImage : underlineImage;
+    
+    [super setObjectValue:image];
+    [super drawWithFrame:cellFrame inView:controlView];
 }
 
 @end
