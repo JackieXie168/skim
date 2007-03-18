@@ -1121,6 +1121,18 @@ static inline NSRect rectWithCorners(NSPoint p1, NSPoint p2)
     [self doAutohide:autohidesCursor || hasNavigation];
 }
 
+#pragma mark FullScreen navigation and autohide
+
+- (BOOL)validateMenuItem:(NSMenuItem *)menuItem {
+    SEL action = [menuItem action];
+    if (action == @selector(changeToolMode:)) {
+        [menuItem setState:[self toolMode] == (unsigned)[menuItem tag] ? NSOnState : NSOffState];
+        return YES;
+    } else {
+        return [super validateMenuItem:menuItem];
+    }
+}
+
 @end
 
 #pragma mark -
