@@ -194,35 +194,24 @@
 }
 
 - (void)setObjectValue:(id)anObject {
-    if ([anObject isKindOfClass:[NSDictionary class]]) {
-        NSString *newType = [anObject valueForKey:@"type"];
-        BOOL newActive = [[anObject valueForKey:@"active"] boolValue];
+    if ([anObject respondsToSelector:@selector(objectForKey:)]) {
+        NSString *newType = [anObject objectForKey:@"type"];
         if (type != newType) {
             [type release];
             type = [newType retain];
         }
-        active = newActive;
-    } else if ([anObject isKindOfClass:[NSString class]]) {
-        if (type != anObject) {
-            [type release];
-            type = [anObject retain];
-        }
-        active = NO;
+        active = [[anObject objectForKey:@"active"] boolValue];
     } else {
         [super setObjectValue:anObject];
     }
 }
 
-static NSImage *createInvertedImage(NSImage *image)
+static NSImage *createFilteredImage(NSImage *image, CIFilter *filter)
 {
-    static CIFilter *invertFilter = nil;
-    if (invertFilter == nil)
-        invertFilter = [[CIFilter filterWithName:@"CIColorInvert"] retain];    
-    
     CIImage *ciImage = [CIImage imageWithData:[image TIFFRepresentation]];
     
-    [invertFilter setValue:ciImage forKey:@"inputImage"];
-    ciImage = [invertFilter valueForKey:@"outputImage"];
+    [filter setValue:ciImage forKey:@"inputImage"];
+    ciImage = [filter valueForKey:@"outputImage"];
     
     NSImage *nsImage = [[NSImage alloc] initWithSize:[image size]];
     CGRect cgRect = [ciImage extent];
@@ -252,6 +241,8 @@ static NSImage *createInvertedImage(NSImage *image)
     static NSImage *invertedUnderlineImage = nil;
     
     if (textImage == nil) {
+        CIFilter *filter = [CIFilter filterWithName:@"CIColorInvert"];    
+        
         textImage = [[NSImage imageNamed:@"AnnotateToolAdorn"] retain];
         noteImage = [[NSImage imageNamed:@"NoteToolAdorn"] retain];
         circleImage = [[NSImage imageNamed:@"CircleToolAdorn"] retain];
@@ -259,13 +250,13 @@ static NSImage *createInvertedImage(NSImage *image)
         highlightImage = [[NSImage imageNamed:@"HighlightToolAdorn"] retain];
         strikeOutImage = [[NSImage imageNamed:@"StrikeOutToolAdorn"] retain];
         underlineImage = [[NSImage imageNamed:@"UnderlineToolAdorn"] retain];
-        invertedTextImage = createInvertedImage(textImage);
-        invertedNoteImage = createInvertedImage(noteImage);
-        invertedCircleImage = createInvertedImage(circleImage);
-        invertedSquareImage = createInvertedImage(squareImage);
-        invertedHighlightImage = createInvertedImage(highlightImage);
-        invertedStrikeOutImage = createInvertedImage(strikeOutImage);
-        invertedUnderlineImage = createInvertedImage(underlineImage);
+        invertedTextImage = createFilteredImage(textImage, filter);
+        invertedNoteImage = createFilteredImage(noteImage, filter);
+        invertedCircleImage = createFilteredImage(circleImage, filter);
+        invertedSquareImage = createFilteredImage(squareImage, filter);
+        invertedHighlightImage = createFilteredImage(highlightImage, filter);
+        invertedStrikeOutImage = createFilteredImage(strikeOutImage, filter);
+        invertedUnderlineImage = createFilteredImage(underlineImage, filter);
     }
     
     BOOL isSelected = [self isHighlighted] && [[controlView window] isKeyWindow] && [[[controlView window] firstResponder] isEqual:controlView];
