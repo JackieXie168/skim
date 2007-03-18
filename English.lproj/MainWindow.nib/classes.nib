@@ -26,6 +26,11 @@
             LANGUAGE = ObjC; 
             SUPERCLASS = NSController; 
         }, 
+        {
+            CLASS = SKAnnotationTypeImageCell; 
+            LANGUAGE = ObjC; 
+            SUPERCLASS = NSImageCell; 
+        }, 
         {CLASS = SKFullScreenWindow; LANGUAGE = ObjC; SUPERCLASS = NSWindow; }, 
         {
             ACTIONS = {
