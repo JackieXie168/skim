@@ -61,7 +61,7 @@ typedef enum {
     IBOutlet NSTabView *tabView;
     IBOutlet NSProgressIndicator *progressIndicator;
     IBOutlet BDSKOverlay *progressOverlay;
-    IBOutlet NSImageView *warningIcon;
+    IBOutlet NSImageView *warningImageView;
     IBOutlet NSView *warningView;
     
     BDSKPreviewerServer *server;
