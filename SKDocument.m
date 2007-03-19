@@ -363,6 +363,65 @@ NSString *SKDocumentWillSaveNotification = @"SKDocumentWillSaveNotification";
     return success;
 }
 
+- (void)diskImageSavePanelDidEnd:(NSSavePanel *)sheet returnCode:(int)returnCode  contextInfo:(void  *)contextInfo {
+    
+    if (NSOKButton == returnCode && [self fileURL]) {
+        
+        NSString *destPath = [sheet filename];
+        FSRef chewableRef;
+        OSStatus err = FSFindFolder(kUserDomain, kChewableItemsFolderType, TRUE, &chewableRef);
+        
+        NSString *chewablePath = [[(id)CFURLCreateFromFSRef(NULL, &chewableRef) autorelease] path];
+        NSString *tempPath = [chewablePath stringByAppendingPathComponent:[destPath lastPathComponent]];
+        
+        unsigned int i = 0;
+        while ([[NSFileManager defaultManager] fileExistsAtPath:tempPath]) {
+            tempPath = [chewablePath stringByAppendingPathComponent:[[destPath lastPathComponent] stringByDeletingPathExtension]];
+            tempPath = [tempPath stringByAppendingFormat:@"-%d", i];
+            tempPath = [tempPath stringByAppendingPathExtension:[destPath pathExtension]];
+        }
+        
+        NSTask *task = nil;
+        
+        if (noErr == err) {
+            
+            @try {
+                // create the initial (temporary) disk image, sized appropriately for this file
+                task = [NSTask launchedTaskWithLaunchPath:@"/usr/bin/hdiutil" arguments:[NSArray arrayWithObjects:@"create", @"-srcfolder", [[self fileURL] path], tempPath, nil]];            
+                [task waitUntilExit];
+            
+                if ([task terminationStatus] == EXIT_SUCCESS) {
+                    // compress the temporary image and save it to the final output path
+                    task = [NSTask launchedTaskWithLaunchPath:@"/usr/bin/hdiutil" arguments:[NSArray arrayWithObjects:@"convert", tempPath, @"-format", @"UDZO", @"-imagekey", @"zlib-level=9", @"-o", destPath, nil]];
+                    [task waitUntilExit];
+                }
+            }
+            @catch(id exception) {
+                NSLog(@"caught exception %@ while creating disk image %@ (temporary file %@)", exception, destPath, tempPath);
+            }
+                
+        } else {
+            // should never happen
+            NSLog(@"unable to find chewable items folder");
+        }
+        [[NSFileManager defaultManager] removeFileAtPath:tempPath handler:nil];
+
+    }
+}
+
+- (void)saveDiskImage:(id)sender {
+    NSSavePanel *sp = [NSSavePanel savePanel];
+    [sp setRequiredFileType:@"dmg"];
+    [sp setCanCreateDirectories:YES];
+    NSString *filename = [[[[[self fileURL] path] lastPathComponent] stringByDeletingPathExtension] stringByAppendingPathExtension:@"dmg"];
+    if (nil != filename && [self isDocumentEdited] == NO) {
+        [sp beginSheetForDirectory:nil file:filename modalForWindow:[[[self windowControllers] objectAtIndex:0] window] modalDelegate:self didEndSelector:@selector(diskImageSavePanelDidEnd:returnCode:contextInfo:) contextInfo:NULL];
+    } else {
+        NSAlert *alert = [NSAlert alertWithMessageText:NSLocalizedString(@"You must save this file first", @"") defaultButton:nil alternateButton:nil otherButton:nil informativeTextWithFormat:NSLocalizedString(@"The document has unsaved changes, or has not previously been saved to disk.", @"")];
+        [alert beginSheetModalForWindow:[[[self windowControllers] objectAtIndex:0] window] modalDelegate:nil didEndSelector:NULL contextInfo:NULL];
+    }
+}
+
 #pragma mark File update checking
 
 // For now this just uses a timer checking the modification date of the file. We may want to use kqueue (UKKqueue) at some point. 

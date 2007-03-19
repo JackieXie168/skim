@@ -35,6 +35,7 @@
                 rotateAllRight = id; 
                 rotateLeft = id; 
                 rotateRight = id; 
+                saveDiskImage = id; 
                 takeSnapshot = id; 
                 toggleDisplayAsBook = id; 
                 toggleDisplayContinuous = id; 
