@@ -478,7 +478,7 @@ NSString *SKDocumentWillSaveNotification = @"SKDocumentWillSaveNotification";
             } else {
                 NSString *message;
                 if ([self isDocumentEdited])
-                    message = NSLocalizedString(@"The PDF file has changed on disk. If you reload, your chnages will be lost. Do you want to reload this document now?", @"Informative text in alert dialog");
+                    message = NSLocalizedString(@"The PDF file has changed on disk. If you reload, your changes will be lost. Do you want to reload this document now?", @"Informative text in alert dialog");
                 else 
                     message = NSLocalizedString(@"The PDF file has changed on disk. Do you want to reload this document now? Choosing Auto will reload this file automatically for future changes.", @"Informative text in alert dialog");
                 
