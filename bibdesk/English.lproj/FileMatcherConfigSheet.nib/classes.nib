@@ -1,11 +1,10 @@
 {
     IBClasses = (
         {
-            ACTIONS = {add = id; remove = id; }; 
+            ACTIONS = {add = id; remove = id; selectAllDocuments = id; }; 
             CLASS = BDSKFileMatchConfigController; 
             LANGUAGE = ObjC; 
             OUTLETS = {
-                allDocsCheckbox = NSButton; 
                 documentArrayController = NSArrayController; 
                 documentTableView = NSTableView; 
                 fileArrayController = NSArrayController; 
@@ -23,7 +22,7 @@
             ACTIONS = {dismiss = id; }; 
             CLASS = BDSKSheetController; 
             LANGUAGE = ObjC; 
-            OUTLETS = {theModalDelegate = id; }; 
+            OUTLETS = {}; 
             SUPERCLASS = NSWindowController; 
         }, 
         {CLASS = BDSKTextWithIconCell; LANGUAGE = ObjC; SUPERCLASS = NSTextFieldCell; }, 

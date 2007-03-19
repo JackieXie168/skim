@@ -11,7 +11,6 @@
         documents = [NSMutableArray new];
         files = [NSMutableArray new];
         useOrphanedFiles = NO;
-        useAllOpenDocuments = NO;
         
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleDocumentAddRemove:) name:BDSKDocumentControllerRemoveDocumentNotification object:nil];
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleDocumentAddRemove:) name:BDSKDocumentControllerAddDocumentNotification object:nil];
@@ -44,6 +43,12 @@
 - (IBAction)remove:(id)sender;
 {
     [fileArrayController removeSelectedObjects:[fileArrayController selectedObjects]];
+}
+
+- (IBAction)selectAllDocuments:(id)sender;
+{
+    BOOL flag = (BOOL)[sender tag];
+    [documents setValue:[NSNumber numberWithBool:flag] forKeyPath:@"useDocument"];
 }
 
 - (void)handleDocumentAddRemove:(NSNotification *)note
@@ -96,7 +101,8 @@
 
 - (NSArray *)publications;
 {
-    return [documents valueForKeyPath:@"@unionOfArrays.document.publications"];
+    NSPredicate *predicate = [NSPredicate predicateWithFormat:@"useDocument == YES"];
+    return [[documents filteredArrayUsingPredicate:predicate] valueForKeyPath:@"@unionOfArrays.document.publications"];
 }
 
 - (BOOL)useOrphanedFiles;
@@ -111,17 +117,6 @@
         [[self mutableArrayValueForKey:@"files"] addObjectsFromArray:[[BDSKOrphanedFilesFinder sharedFinder] orphanedFiles]];
     else
         [[self mutableArrayValueForKey:@"files"] removeObjectsInArray:[[BDSKOrphanedFilesFinder sharedFinder] orphanedFiles]];
-}
-
-- (BOOL)useAllOpenDocuments;
-{
-    return useAllOpenDocuments;
-}
-
-- (void)setUseAllOpenDocuments:(BOOL)flag;
-{
-    useAllOpenDocuments = flag;
-    [documents setValue:[NSNumber numberWithBool:flag] forKeyPath:@"useDocument"];
 }
     
 - (NSString *)windowNibName { return @"FileMatcherConfigSheet"; }
