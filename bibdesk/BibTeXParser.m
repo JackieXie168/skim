@@ -227,25 +227,11 @@ static NSString *copyStringFromNoteField(AST *field, const char *data, NSString 
                             [newBI release];
                         } else {
                             // no citekey
-                            hadProblems = YES;
-                            BDSKErrorObject *errorObject = [[BDSKErrorObject alloc] init];
-                            [errorObject setFileName:filePath];
-                            [errorObject setLineNumber:entry->line];
-                            [errorObject setErrorClassName:NSLocalizedString(@"error", @"")];
-                            [errorObject setErrorMessage:NSLocalizedString(@"Missing citekey for entry (skipped entry)", @"Error description")];
-                            [errorObject report];
-                            [errorObject release];
+							@throw BibTeXParserInternalException;
                         }
                     } else {
                         // no entry type
-                        hadProblems = YES;
-                        BDSKErrorObject *errorObject = [[BDSKErrorObject alloc] init];
-                        [errorObject setFileName:filePath];
-                        [errorObject setLineNumber:entry->line];
-                        [errorObject setErrorClassName:NSLocalizedString(@"error", @"")];
-                        [errorObject setErrorMessage:NSLocalizedString(@"Missing entry type (skipped entry)", @"Error description")];
-                        [errorObject report];
-                        [errorObject release];
+						@throw BibTeXParserInternalException;
                     }
                     
                     [dictionary removeAllObjects];
