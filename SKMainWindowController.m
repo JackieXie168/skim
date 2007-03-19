@@ -1005,8 +1005,8 @@ static NSString *SKDocumentToolbarNotesPaneItemIdentifier = @"SKDocumentToolbarN
     }
     
     [self setWindow:fullScreenWindow];
-    [fullScreenWindow makeFirstResponder:pdfView];
     [fullScreenWindow makeKeyAndOrderFront:self];
+    [fullScreenWindow makeFirstResponder:pdfView];
     [mainWindow orderOut:self];    
 }
 
@@ -1038,8 +1038,8 @@ static NSString *SKDocumentToolbarNotesPaneItemIdentifier = @"SKDocumentToolbarN
     [animation release];
     [fullScreenWindow orderOut:self];
     [fullScreenWindow setAlphaValue:1.0];
-    [mainWindow makeFirstResponder:pdfView];
     [mainWindow makeKeyAndOrderFront:self];
+    [mainWindow makeFirstResponder:pdfView];
     
     NSEnumerator *blankScreenEnumerator = [blankingWindows objectEnumerator];
     NSWindow *window;
