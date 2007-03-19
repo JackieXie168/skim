@@ -303,19 +303,6 @@ By default, Skim shows a gray background behind images and PDF files, and a dark
 
 @c ======================================================================================
 
-@topic Selecting and copying text in a PDF file
-
-You can select and copy text from a PDF file, then paste it into another application, such as a word processor.
-
-@box{taskbox}
-@itemize
-@item To copy text, choose Tools > Text Tool and drag over the text as you normally would. Then choose Edit &gt; Copy. With some PDF files, line breaks are not saved when you copy text, so when you paste the text, the lines all run together.
-@item To select only a portion of text horizontally (for example, to select only one column in a two-column document), choose Tools > Text Tool, then press the Option key and select the text.
-@end itemize
-@endbox
-
-@c ======================================================================================
-
 @topic Finding text in a PDF file
 
 You can search a PDF file for a word or any set of characters.
@@ -337,6 +324,68 @@ You can search a PDF file for a word or any set of characters.
 @heading See also
 @menu
 * Changing the highlighting of Find results::
+@end menu
+
+@c ======================================================================================
+
+@topic Selecting and copying text in a PDF file
+
+You can select and copy text from a PDF file, then paste it into another application, such as a word processor.
+
+@box{taskbox}
+@itemize
+@item To copy text, choose Tools > Text Tool and drag over the text as you normally would. Then choose Edit &gt; Copy. With some PDF files, line breaks are not saved when you copy text, so when you paste the text, the lines all run together.
+@item To select only a portion of text horizontally (for example, to select only one column in a two-column document), choose Tools > Text Tool, then press the Option key and select the text.
+@end itemize
+@endbox
+
+@heading See also
+@menu
+* Pasting notes in a PDF file::
+@end menu
+
+@c ======================================================================================
+
+@topic Copying notes in a PDF file
+
+You can select and copy notes from a PDF file, then paste it into the same or another PDF document. Notes that can copied are text notes, anchored notes, circle highlights and box highlights. 
+
+@box{taskbox}
+@itemize
+@item To copy a note, choose Tools > Text Tool and select a note. Then choose Edit &gt; Copy.
+@end itemize
+@endbox
+
+@heading See also
+@menu
+* Pasting notes in a PDF file::
+* Selecting and copying text in a PDF file::
+@end menu
+
+@c ======================================================================================
+
+@topic Pasting notes in a PDF file
+
+You can paste a note you have copied from a PDF file into the same or another PDF document. Notes that can copied are text notes, anchored notes, circle highlights and box highlights. 
+
+You can also paste copied text to create a new text or anchored note. 
+
+@box{taskbox}
+@itemize
+@item To paste a copied note, choose Edit &gt; Paste after copying a note.
+@end itemize
+@itemize
+@item To paste copied text as a new text note, choose Edit &gt; Paste after copying text.
+@end itemize
+@itemize
+@item To paste copied text as a anchored text note, hold down the Option key, and choose Edit &gt; Paste after copying text.
+@end itemize
+@endbox
+
+@heading See also
+@menu
+* Copying notes in a PDF file::
+* Selecting and copying text in a PDF file::
 @end menu
 
 @c ======================================================================================
