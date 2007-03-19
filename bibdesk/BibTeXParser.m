@@ -211,7 +211,7 @@ static NSString *copyStringFromNoteField(AST *field, const char *data, NSString 
                     if([entryType isEqualToString:@"bibdesk_info"]){
                         if(nil != frontMatter)
                             [aDocument setDocumentInfoWithoutUndo:dictionary];
-                    }else{
+                    }else if (entryType) {
                         
                         newBI = [[BibItem alloc] initWithType:entryType
                                                      fileType:BDSKBibtexString
@@ -219,12 +219,33 @@ static NSString *copyStringFromNoteField(AST *field, const char *data, NSString 
                                                         isNew:isPasteOrDrag];
 
                         tmpStr = copyCheckedString(bt_entry_key(entry), entry->line, filePath, parserEncoding);
-                        if (nil == tmpStr) @throw BibTeXParserInternalException;
-                        [newBI setCiteKeyString:tmpStr];
-                        [tmpStr release];
-                        
-                        [returnArray addObject:newBI];
-                        [newBI release];
+                        if (tmpStr) {
+                            [newBI setCiteKeyString:tmpStr];
+                            [tmpStr release];
+                            
+                            [returnArray addObject:newBI];
+                            [newBI release];
+                        } else {
+                            // no citekey
+                            hadProblems = YES;
+                            BDSKErrorObject *errorObject = [[BDSKErrorObject alloc] init];
+                            [errorObject setFileName:filePath];
+                            [errorObject setLineNumber:entry->line];
+                            [errorObject setErrorClassName:NSLocalizedString(@"error", @"")];
+                            [errorObject setErrorMessage:NSLocalizedString(@"Missing citekey for entry (skipped entry)", @"Error description")];
+                            [errorObject report];
+                            [errorObject release];
+                        }
+                    } else {
+                        // no entry type
+                        hadProblems = YES;
+                        BDSKErrorObject *errorObject = [[BDSKErrorObject alloc] init];
+                        [errorObject setFileName:filePath];
+                        [errorObject setLineNumber:entry->line];
+                        [errorObject setErrorClassName:NSLocalizedString(@"error", @"")];
+                        [errorObject setErrorMessage:NSLocalizedString(@"Missing entry type (skipped entry)", @"Error description")];
+                        [errorObject report];
+                        [errorObject release];
                     }
                     
                     [dictionary removeAllObjects];

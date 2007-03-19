@@ -407,7 +407,8 @@ NSString *BDSKWeblocFilePboardType = @"CorePasteboardFlavorType 0x75726C20";
     // @@ awakeFromNib is called long after the document's data is loaded, so the UI update from setPublications is too early when loading a new document; there may be a better way to do this
     [self updateGroupsPreservingSelection:NO];
     [self updateAllSmartGroups];
-
+    
+    [saveTextEncodingPopupButton selectItemWithTitle:nil];
 }
 
 - (NSString *)windowNibName{
@@ -747,9 +748,15 @@ NSString *BDSKWeblocFilePboardType = @"CorePasteboardFlavorType 0x75726C20";
           delegate:(id)delegate 
    didSaveSelector:(SEL)didSaveSelector 
        contextInfo:(void *)contextInfo{
-	// set the string encoding according to the popup
-	[self setDocumentStringEncoding:[[BDSKStringEncodingManager sharedEncodingManager] stringEncodingForDisplayedName:[saveTextEncodingPopupButton titleOfSelectedItem]]];
+    // Set the string encoding according to the popup.  
+    // NB: the popup has the incorrect encoding if it wasn't displayed, for example for the Save action and saving using AppleScript, so don't reset encoding unless we're actually modifying this document through a menu .
+    if (NSSaveAsOperation == saveOperation && [saveTextEncodingPopupButton titleOfSelectedItem] != nil)
+        [self setDocumentStringEncoding:[[BDSKStringEncodingManager sharedEncodingManager] stringEncodingForDisplayedName:[saveTextEncodingPopupButton titleOfSelectedItem]]];
+    
     [super saveToFile:fileName saveOperation:saveOperation delegate:delegate didSaveSelector:didSaveSelector contextInfo:contextInfo];
+    
+    // reset the encoding popup so we know when it wasn't shown to the user next time
+    [saveTextEncodingPopupButton selectItemWithTitle:nil];
 }
 
 - (BOOL)writeToURL:(NSURL *)absoluteURL ofType:(NSString *)typeName forSaveOperation:(NSSaveOperationType)saveOperation originalContentsURL:(NSURL *)absoluteOriginalContentsURL error:(NSError **)outError {
@@ -964,7 +971,8 @@ NSString *BDSKWeblocFilePboardType = @"CorePasteboardFlavorType 0x75726C20";
     if(returnCode == NSOKButton){
         fileName = [sp filename];
         NSString *templateStyle = nil;
-        NSStringEncoding encoding = [[BDSKStringEncodingManager sharedEncodingManager] stringEncodingForDisplayedName:[saveTextEncodingPopupButton titleOfSelectedItem]];
+        NSString *encodingName = [saveTextEncodingPopupButton titleOfSelectedItem];
+        NSStringEncoding encoding = encodingName ? [[BDSKStringEncodingManager sharedEncodingManager] stringEncodingForDisplayedName:encodingName] : [BDSKStringEncodingManager defaultEncoding];
         NSError *nsError = nil;
         
         switch (exportFileType) {
@@ -1038,6 +1046,8 @@ NSString *BDSKWeblocFilePboardType = @"CorePasteboardFlavorType 0x75726C20";
     }
     [sp setRequiredFileType:@"bib"]; // just in case...
     [sp setAccessoryView:nil];
+    // reset the encoding popup so we know when it wasn't shown to the user next time
+    [saveTextEncodingPopupButton selectItemWithTitle:nil];
 }
 
 #pragma mark Data representations
@@ -2747,6 +2757,8 @@ NSString *BDSKWeblocFilePboardType = @"CorePasteboardFlavorType 0x75726C20";
                 [tc setResizable:YES];
 			[tc setEditable:NO];
 			[[tc dataCell] setDrawsBackground:NO]; // this is necessary for the alternating row background before Tiger
+            [tc setMinWidth:16.0];
+
             if([typeManager isURLField:colName]){
                 [tc setDataCell:imageCell];
             }else if([typeManager isRatingField:colName]){

@@ -230,7 +230,7 @@
     URLString = [URLString stringByAppendingPathComponent:localizationPath];
     URLString = [URLString stringByAppendingPathComponent:@"RelNotes.rtf"];
     
-    return [NSURL URLWithString:URLString];
+    return URLString ? [NSURL URLWithString:URLString] : nil;
 }
 
 // string of the form BibDesk1.3 for BibDesk 1.3.x; update check info is keyed to a specific branch of development
@@ -488,7 +488,8 @@
     if (nil == releaseNotesWindowController)
         releaseNotesWindowController = [[BDSKRelNotesController alloc] init];
     
-    [releaseNotesWindowController displayAttributedString:attrString];
+    if (attrString)
+        [releaseNotesWindowController displayAttributedString:attrString];
     [releaseNotesWindowController showWindow:nil];
 }
 

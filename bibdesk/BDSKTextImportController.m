@@ -141,6 +141,7 @@
 	[macroTextFieldWC release];
 	[webSelection release];
     [tableFieldEditor release];
+    [downloadFileName release];
     [super dealloc];
 }
 
@@ -1011,13 +1012,11 @@
 
 // workaround for webview bug, which looses its selection when the focus changes to another view
 - (void)webViewDidChangeSelection:(NSNotification *)notification{
-	NSView *docView = [[[[notification object] mainFrame] frameView] documentView];
-	if (![docView conformsToProtocol:@protocol(WebDocumentText)]) return;
-	NSString *selString = [docView selectedString];
+	NSString *selString = [[[notification object] selectedDOMRange] toString];
 	if ([NSString isEmptyString:selString] || selString == webSelection)
 		return;
 	[webSelection release];
-	webSelection = [selString copy];
+	webSelection = [[selString fastStringByCollapsingWhitespaceAndNewlinesAndRemovingSurroundingWhitespaceAndNewlines] copy];
 }
 
 #pragma mark WebFrameLoadDelegate methods
