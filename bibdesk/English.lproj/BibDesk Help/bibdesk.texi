@@ -2083,8 +2083,7 @@ Note that on laptop keyboards, the "fn" key must
 be used to get the actual F5 key behavior with the default keyboard
 preferences.  Alternatives are to use option-escape, which will also
 trigger autocompletion, or to set up a key binding for the
-@code{complete:} selector (TextExtras can be used for this, but see
-the caveat below).
+@code{complete:} selector.
 
 @subheading Bonus feature: reference completion
 
@@ -2098,9 +2097,7 @@ characters, so the more you type, the fewer options you'll be presented with in 
 @subheading Caveats and known issues
 
 There is a conflict with the @uref{http://www.lorax.com/FreeStuff/TextExtras.html, TextExtras 1.7}
-input manager at present.  The author of TextExtras is aware of the issue and working on a fix, 
-but the only solution at present is to remove TextExtras or install an unsupported 
-@uref{http://bibdesk.sourceforge.net/TextExtras_1.7BDSK.dmg, modified version}.
+input manager, so make sure you have the latest TextExtras installed.
 
 By default, @uref{http://itexmac.sourceforge.net, iTeXMac 1.3} does not support the keybinding for
 autocompletion, but it can easily be made to work by adding a @code{complete:} keybinding to 
@@ -2119,9 +2116,8 @@ to provide similar functionality.  It can be obtained from
 For @uref{http://www.lyx.org/, LyX} users, Mark Reid has written an AppleScript to push BibDesk citations
 to LyX, and his script is available at @uref{http://www.threewordslong.com/projects/misc/bibdesktolyx/}.
 
-Users who develop similar functionality for other applications are encouraged to post their 
-scripts and e-mail a link to @uref{mailto:bibdesk-users@@lists.sourceforge.net}
-for inclusion here.
+BibDesk also provides a Distributed Objects API for developers to search for publications.  
+See the @uref{http://bibdesk.sourceforge.net/wiki/index.php/Other_Applications, BibDesk Wiki} for details and examples.
 
 @c --------------------------------------------------------------------------------------
 
