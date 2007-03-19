@@ -338,7 +338,7 @@ NSString *SKSkimNotePboardType = @"SKSkimNotePboardType";
 {
     [super copy:sender];
     
-    if ([activeAnnotation isNoteAnnotation]) {
+    if ([activeAnnotation isNoteAnnotation] && [activeAnnotation isMovable]) {
         NSPasteboard *pboard = [NSPasteboard generalPasteboard];
         NSData *data = [NSKeyedArchiver archivedDataWithRootObject:[activeAnnotation dictionaryValue]];
         [pboard declareTypes:[NSArray arrayWithObjects:SKSkimNotePboardType, nil] owner:nil];
