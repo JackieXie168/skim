@@ -190,8 +190,6 @@
 			<array>
 				<string>skim</string>
 			</array>
-			<key>CFBundleTypeIconFile</key>
-			<string>NoteDocument</string>
 			<key>CFBundleTypeName</key>
 			<string>Skim Notes</string>
 			<key>CFBundleTypeRole</key>
