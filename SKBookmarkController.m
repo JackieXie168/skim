@@ -70,8 +70,8 @@
             if (error) {
                 NSLog(@"Error deserializing: %@", error);
                 [error release];
-            } else if ([plist isKindOfClass:[NSArray class]]) {
-                [bookmarks addObjectsFromArray:plist];
+            } else if ([plist isKindOfClass:[NSDictionary class]]) {
+                [bookmarks addObjectsFromArray:[plist objectForKey:@"bookmarks"]];
             }
         }
     }
@@ -86,14 +86,11 @@
 - (NSString *)windowNibName { return @"BookmarksWindow"; }
 
 - (NSArray *)bookmarks {
-    return [[bookmarks retain] autorelease];
+    return bookmarks;
 }
 
 - (void)setBookmarks:(NSArray *)newBookmarks {
-    if (bookmarks != newBookmarks) {
-        [bookmarks release];
-        bookmarks = [newBookmarks mutableCopy];
-    }
+    return [bookmarks setArray:newBookmarks];
 }
 
 - (unsigned)countOfBookmarks {
@@ -123,9 +120,10 @@
 }
 
 - (void)saveBookmarks {
+    NSDictionary *bookmarksDictionary = [NSDictionary dictionaryWithObjectsAndKeys:bookmarks, @"bookmarks", nil];
     NSString *error = nil;
     NSPropertyListFormat format = NSPropertyListXMLFormat_v1_0;
-    NSData *data = [NSPropertyListSerialization dataFromPropertyList:bookmarks format:format errorDescription:&error];
+    NSData *data = [NSPropertyListSerialization dataFromPropertyList:bookmarksDictionary format:format errorDescription:&error];
     
 	if (error) {
 		NSLog(@"Error deserializing: %@", error);
