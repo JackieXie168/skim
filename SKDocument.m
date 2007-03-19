@@ -367,6 +367,9 @@ NSString *SKDocumentWillSaveNotification = @"SKDocumentWillSaveNotification";
     
     if (NSOKButton == returnCode && [self fileURL]) {
         
+        NSProgressIndicator *bar = [[[sheet accessoryView] subviews] lastObject];
+        [bar startAnimation:self];
+        
         NSString *destPath = [sheet filename];
         FSRef chewableRef;
         OSStatus err = FSFindFolder(kUserDomain, kChewableItemsFolderType, TRUE, &chewableRef);
@@ -405,6 +408,8 @@ NSString *SKDocumentWillSaveNotification = @"SKDocumentWillSaveNotification";
             NSLog(@"unable to find chewable items folder");
         }
         [[NSFileManager defaultManager] removeFileAtPath:tempPath handler:nil];
+        
+        [bar stopAnimation:self];
 
     }
 }
@@ -415,10 +420,17 @@ NSString *SKDocumentWillSaveNotification = @"SKDocumentWillSaveNotification";
     [sp setCanCreateDirectories:YES];
     NSString *filename = [[[[[self fileURL] path] lastPathComponent] stringByDeletingPathExtension] stringByAppendingPathExtension:@"dmg"];
     if (nil != filename && [self isDocumentEdited] == NO) {
-        [sp beginSheetForDirectory:nil file:filename modalForWindow:[[[self windowControllers] objectAtIndex:0] window] modalDelegate:self didEndSelector:@selector(diskImageSavePanelDidEnd:returnCode:contextInfo:) contextInfo:NULL];
+        NSView *view = [[[NSView alloc] initWithFrame:NSMakeRect(0.0, 0.0, 400.0, 36.0)] autorelease];
+        NSProgressIndicator *bar = [[[NSProgressIndicator alloc] initWithFrame:NSMakeRect(14.0, 6.0, 368.0, 20.0)] autorelease];
+        [bar setStyle:NSProgressIndicatorBarStyle];
+        [bar setIndeterminate:YES];
+        [bar setDisplayedWhenStopped:NO];
+        [view addSubview:bar];
+        [sp setAccessoryView:view];
+        [sp beginSheetForDirectory:nil file:filename modalForWindow:[self windowForSheet] modalDelegate:self didEndSelector:@selector(diskImageSavePanelDidEnd:returnCode:contextInfo:) contextInfo:NULL];
     } else {
         NSAlert *alert = [NSAlert alertWithMessageText:NSLocalizedString(@"You must save this file first", @"") defaultButton:nil alternateButton:nil otherButton:nil informativeTextWithFormat:NSLocalizedString(@"The document has unsaved changes, or has not previously been saved to disk.", @"")];
-        [alert beginSheetModalForWindow:[[[self windowControllers] objectAtIndex:0] window] modalDelegate:nil didEndSelector:NULL contextInfo:NULL];
+        [alert beginSheetModalForWindow:[self windowForSheet] modalDelegate:nil didEndSelector:NULL contextInfo:NULL];
     }
 }
 
