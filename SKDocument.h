@@ -55,6 +55,7 @@ extern NSString *SKDocumentWillSaveNotification;
     
     NSTimer *fileUpdateTimer;
     NSDate *lastChangedDate;
+    NSDate *previousCheckedDate;
     BOOL autoUpdate;
 }
 
