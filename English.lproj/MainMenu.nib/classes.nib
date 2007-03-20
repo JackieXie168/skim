@@ -1,148 +1,65 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
-<plist version="1.0">
-<dict>
-	<key>IBClasses</key>
-	<array>
-		<dict>
-			<key>ACTIONS</key>
-			<dict>
-				<key>checkForUpdates:</key>
-				<string>id</string>
-				<key>editBookmarks:</key>
-				<string>id</string>
-				<key>openBookmark:</key>
-				<string>id</string>
-				<key>showPreferencePanel:</key>
-				<string>id</string>
-				<key>showReleaseNotes:</key>
-				<string>id</string>
-			</dict>
-			<key>CLASS</key>
-			<string>SKApplicationController</string>
-			<key>LANGUAGE</key>
-			<string>ObjC</string>
-			<key>SUPERCLASS</key>
-			<string>NSObject</string>
-		</dict>
-		<dict>
-			<key>ACTIONS</key>
-			<dict>
-				<key>newDocumentFromClipboard:</key>
-				<string>id</string>
-			</dict>
-			<key>CLASS</key>
-			<string>SKDocumentController</string>
-			<key>LANGUAGE</key>
-			<string>ObjC</string>
-			<key>SUPERCLASS</key>
-			<string>NSDocumentController</string>
-		</dict>
-		<dict>
-			<key>CLASS</key>
-			<string>NSDocumentController</string>
-			<key>LANGUAGE</key>
-			<string>ObjC</string>
-			<key>SUPERCLASS</key>
-			<string>NSObject</string>
-		</dict>
-		<dict>
-			<key>ACTIONS</key>
-			<dict>
-				<key>addBookmark</key>
-				<string>id</string>
-				<key>alternatePaste</key>
-				<string>id</string>
-				<key>changeAnnotationMode</key>
-				<string>id</string>
-				<key>changeDisplayBox</key>
-				<string>id</string>
-				<key>changeLeftSidePaneState</key>
-				<string>id</string>
-				<key>changeRightSidePaneState</key>
-				<string>id</string>
-				<key>changeToolMode</key>
-				<string>id</string>
-				<key>createNewNote</key>
-				<string>id</string>
-				<key>displayCropBox</key>
-				<string>id</string>
-				<key>displayFacingPages</key>
-				<string>id</string>
-				<key>displayMediaBox</key>
-				<string>id</string>
-				<key>displaySinglePages</key>
-				<string>id</string>
-				<key>doGoBack</key>
-				<string>id</string>
-				<key>doGoForward</key>
-				<string>id</string>
-				<key>doGoToNextPage</key>
-				<string>id</string>
-				<key>doGoToPage</key>
-				<string>id</string>
-				<key>doGoToPreviousPage</key>
-				<string>id</string>
-				<key>doZoomIn</key>
-				<string>id</string>
-				<key>doZoomOut</key>
-				<string>id</string>
-				<key>doZoomToActualSize</key>
-				<string>id</string>
-				<key>doZoomToFit</key>
-				<string>id</string>
-				<key>editBookmarks</key>
-				<string>id</string>
-				<key>editNote</key>
-				<string>id</string>
-				<key>getInfo</key>
-				<string>id</string>
-				<key>newDocumentFromClipboard</key>
-				<string>id</string>
-				<key>password</key>
-				<string>id</string>
-				<key>performFit</key>
-				<string>id</string>
-				<key>pickColor</key>
-				<string>id</string>
-				<key>readNotes</key>
-				<string>id</string>
-				<key>rotateAllLeft</key>
-				<string>id</string>
-				<key>rotateAllRight</key>
-				<string>id</string>
-				<key>rotateLeft</key>
-				<string>id</string>
-				<key>rotateRight</key>
-				<string>id</string>
-				<key>saveDiskImage</key>
-				<string>id</string>
-				<key>takeSnapshot</key>
-				<string>id</string>
-				<key>toggleDisplayAsBook</key>
-				<string>id</string>
-				<key>toggleDisplayContinuous</key>
-				<string>id</string>
-				<key>toggleDisplayPageBreaks</key>
-				<string>id</string>
-				<key>toggleFullScreen</key>
-				<string>id</string>
-				<key>toggleLeftSidePane</key>
-				<string>id</string>
-				<key>togglePresentation</key>
-				<string>id</string>
-				<key>toggleRightSidePane</key>
-				<string>id</string>
-			</dict>
-			<key>CLASS</key>
-			<string>FirstResponder</string>
-			<key>LANGUAGE</key>
-			<string>ObjC</string>
-			<key>SUPERCLASS</key>
-			<string>NSObject</string>
-		</dict>
-	</array>
-	<key>IBVersion</key>
-	<string>1</string>
-</dict>
-</plist>
+{
+    IBClasses = (
+        {
+            ACTIONS = {
+                addBookmark = id; 
+                alternatePaste = id; 
+                changeAnnotationMode = id; 
+                changeDisplayBox = id; 
+                changeLeftSidePaneState = id; 
+                changeRightSidePaneState = id; 
+                changeToolMode = id; 
+                createNewNote = id; 
+                displayCropBox = id; 
+                displayFacingPages = id; 
+                displayMediaBox = id; 
+                displaySinglePages = id; 
+                doGoBack = id; 
+                doGoForward = id; 
+                doGoToNextPage = id; 
+                doGoToPage = id; 
+                doGoToPreviousPage = id; 
+                doZoomIn = id; 
+                doZoomOut = id; 
+                doZoomToActualSize = id; 
+                doZoomToFit = id; 
+                editBookmarks = id; 
+                editNote = id; 
+                getInfo = id; 
+                newDocumentFromClipboard = id; 
+                password = id; 
+                performFit = id; 
+                pickColor = id; 
+                readNotes = id; 
+                rotateAllLeft = id; 
+                rotateAllRight = id; 
+                rotateLeft = id; 
+                rotateRight = id; 
+                saveArchive = id; 
+                takeSnapshot = id; 
+                toggleDisplayAsBook = id; 
+                toggleDisplayContinuous = id; 
+                toggleDisplayPageBreaks = id; 
+                toggleFullScreen = id; 
+                toggleLeftSidePane = id; 
+                togglePresentation = id; 
+                toggleRightSidePane = id; 
+            }; 
+            CLASS = FirstResponder; 
+            LANGUAGE = ObjC; 
+            SUPERCLASS = NSObject; 
+        }, 
+        {
+            ACTIONS = {checkForUpdates = id; showPreferencePanel = id; showReleaseNotes = id; }; 
+            CLASS = SKApplicationController; 
+            LANGUAGE = ObjC; 
+            SUPERCLASS = NSObject; 
+        }, 
+        {
+            CLASS = SKDocumentController; 
+            LANGUAGE = ObjC; 
+            SUPERCLASS = NSDocumentController; 
+        }
+    ); 
+    IBVersion = 1; 
+}
