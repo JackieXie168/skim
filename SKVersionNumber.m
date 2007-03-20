@@ -44,13 +44,15 @@
 
         while ([scanner isAtEnd] == NO) {
             int component;
-
+            
             if ([scanner scanInt:&component] == NO || component < 0)
                 // Failed to scan integer
                 break;
-
-            [mutableVersionString appendFormat: @"%@%u", lastSep, component];
-
+            
+            if (c == '.')
+                [mutableVersionString appendString: @"."];
+            [mutableVersionString appendString: component];
+            
             componentCount++;
             components = realloc(components, sizeof(*components) * componentCount);
             components[componentCount - 1] = component;
@@ -60,21 +62,21 @@
             
             c = [versionString characterAtIndex:[scanner scanLocation]];
             if (c == '.') {
-                lastSep = @".";
             } else if (releaseType == SKReleaseVersionType) {
                 if (c == 'a' || c == 'A') {
                     releaseType = SKAlphaVersionType;
-                    lastSep = c == 'a' ? @"a" : @"A";
+                    [mutableVersionString appendString:c == 'a' ? @"a" : @"A"];
                 } else if (c == 'b' || c == 'B') {
                     releaseType = SKBetaVersionType;
-                    lastSep = c == 'b' ? @"b" : @"B";
+                    [mutableVersionString appendString:c == 'b' ? @"b" : @"B"];
                 } else if (c == 'r' || c == 'R') {
                     [scanner setScanLocation:[scanner scanLocation] + 1];
                     c = [versionString characterAtIndex:[scanner scanLocation]];
-                    if (c != 'c' && c != 'C')
+                    if (c == 'c' || c == 'C') {
+                        releaseType = SKReleaseCandidateVersionType;
+                        [mutableVersionString appendString:c == 'c' ? @"rc" : @"RC"];
+                    } else
                         break;
-                    releaseType = SKReleaseCandidateVersionType;
-                    lastSep = c == 'c' ? @"rc" : @"RC";
                 } else 
                     break;
                 
@@ -85,7 +87,7 @@
                 break;
             [scanner setScanLocation:[scanner scanLocation] + 1];
         }
-
+        
         if ([mutableVersionString isEqualToString:originalVersionString])
             cleanVersionString = [originalVersionString retain];
         else
@@ -93,7 +95,7 @@
         
         [mutableVersionString release];
         [scanner release];
-
+        
         if (componentCount == 0) {
             // Failed to parse anything and we don't allow empty version strings.  For now, we'll not assert on this, since people might want to use this to detect if a string begins with a valid version number.
             [self release];
