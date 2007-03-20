@@ -77,7 +77,7 @@ typedef enum _SKNoteType {
 	NSRect wasBounds;
 	NSPoint mouseDownLoc;
 	NSPoint clickDelta;
-	BOOL resizing;
+	BOOL resizingAnnotation;
 	BOOL draggingAnnotation;
     BOOL mouseDownInAnnotation;
     
