@@ -397,12 +397,17 @@ NSString *SKDocumentWillSaveNotification = @"SKDocumentWillSaveNotification";
 }
 
 - (IBAction)saveArchive:(id)sender {
-    NSSavePanel *sp = [NSSavePanel savePanel];
-    [sp setRequiredFileType:@"tgz"];
-    [sp setCanCreateDirectories:YES];
-    NSString *filename = [[[[[self fileURL] path] lastPathComponent] stringByDeletingPathExtension] stringByAppendingPathExtension:@"tgz"];
-    if (nil != filename && [self isDocumentEdited] == NO) {
-        [sp beginSheetForDirectory:nil file:filename modalForWindow:[self windowForSheet] modalDelegate:self didEndSelector:@selector(archiveSavePanelDidEnd:returnCode:contextInfo:) contextInfo:NULL];
+    NSString *path = [[self fileURL] path];
+    if (path && [[NSFileManager defaultManager] fileExistsAtPath:path] && [self isDocumentEdited] == NO) {
+        NSSavePanel *sp = [NSSavePanel savePanel];
+        [sp setRequiredFileType:@"tgz"];
+        [sp setCanCreateDirectories:YES];
+        [sp beginSheetForDirectory:nil
+                              file:[[[path lastPathComponent] stringByDeletingPathExtension] stringByAppendingPathExtension:@"tgz"]
+                    modalForWindow:[self windowForSheet]
+                     modalDelegate:self
+                    didEndSelector:@selector(archiveSavePanelDidEnd:returnCode:contextInfo:)
+                       contextInfo:NULL];
     } else {
         NSAlert *alert = [NSAlert alertWithMessageText:NSLocalizedString(@"You must save this file first", @"") defaultButton:nil alternateButton:nil otherButton:nil informativeTextWithFormat:NSLocalizedString(@"The document has unsaved changes, or has not previously been saved to disk.", @"")];
         [alert beginSheetModalForWindow:[self windowForSheet] modalDelegate:nil didEndSelector:NULL contextInfo:NULL];
