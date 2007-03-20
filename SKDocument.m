@@ -73,6 +73,10 @@ NSString *SKDocumentWillSaveNotification = @"SKDocumentWillSaveNotification";
 - (void)dealloc {
     [[NSUserDefaultsController sharedUserDefaultsController] removeObserver:self forKey:SKAutoCheckFileUpdateKey];
     [[NSNotificationCenter defaultCenter] removeObserver:self];
+    [fileUpdateTimer invalidate];
+    [fileUpdateTimer release];
+    [lastChangedDate release];
+    [previousCheckedDate release];
     [pdfData release];
     [noteDicts release];
     [super dealloc];
@@ -426,7 +430,7 @@ NSString *SKDocumentWillSaveNotification = @"SKDocumentWillSaveNotification";
         [fileUpdateTimer release];
         fileUpdateTimer = nil;
         autoUpdate = NO;
-    } else if (autoUpdatePref) {
+    } else if (autoUpdatePref && fileUpdateTimer == nil) {
         fileUpdateTimer = [[NSTimer scheduledTimerWithTimeInterval:2 target:self selector:@selector(checkFileUpdateStatus:) userInfo:nil repeats:NO] retain];
     }
 }
@@ -462,36 +466,42 @@ NSString *SKDocumentWillSaveNotification = @"SKDocumentWillSaveNotification";
     
     if ([[NSUserDefaults standardUserDefaults] boolForKey:SKAutoCheckFileUpdateKey] &&
         [fm fileExistsAtPath:[self fileName]]) {
+        
         NSDate *fileChangedDate = [[fm fileAttributesAtPath:[self fileName] traverseLink:YES] fileModificationDate];
         
         if ([lastChangedDate compare:fileChangedDate] == NSOrderedAscending) {
-            BOOL askPref = [[NSUserDefaults standardUserDefaults] boolForKey:SKAutoCheckFileUpdateAskKey];
-            if ((autoUpdate  || askPref == NO) && [self isDocumentEdited] == NO) {
-                [self fileUpdateAlertDidEnd:nil returnCode:NSAlertDefaultReturn contextInfo:[fileChangedDate retain]];
+            // check until the data stabilizes, because a (tex) process may be busy writing to the file
+            if (previousCheckedDate && [previousCheckedDate compare:fileChangedDate] == NSOrderedSame) {
+                BOOL askPref = [[NSUserDefaults standardUserDefaults] boolForKey:SKAutoCheckFileUpdateAskKey];
+                if ((autoUpdate  || askPref == NO) && [self isDocumentEdited] == NO) {
+                    [self fileUpdateAlertDidEnd:nil returnCode:NSAlertDefaultReturn contextInfo:[fileChangedDate retain]];
+                    return;
+                } else {
+                    NSString *message;
+                    if ([self isDocumentEdited])
+                        message = NSLocalizedString(@"The PDF file has changed on disk. If you reload, your changes will be lost. Do you want to reload this document now?", @"Informative text in alert dialog");
+                    else 
+                        message = NSLocalizedString(@"The PDF file has changed on disk. Do you want to reload this document now? Choosing Auto will reload this file automatically for future changes.", @"Informative text in alert dialog");
+                    
+                    NSAlert *alert = [NSAlert alertWithMessageText:NSLocalizedString(@"File Updated", @"Message in alert dialog") 
+                                                     defaultButton:NSLocalizedString(@"Yes", @"Button title")
+                                                   alternateButton:NSLocalizedString(@"Auto", @"Button title")
+                                                       otherButton:NSLocalizedString(@"No", @"Button title")
+                                         informativeTextWithFormat:message];
+                    [alert beginSheetModalForWindow:[[self mainWindowController] window]
+                                      modalDelegate:self
+                                     didEndSelector:@selector(fileUpdateAlertDidEnd:returnCode:contextInfo:) 
+                                        contextInfo:[fileChangedDate retain]];
+                    return;
+                }
             } else {
-                NSString *message;
-                if ([self isDocumentEdited])
-                    message = NSLocalizedString(@"The PDF file has changed on disk. If you reload, your changes will be lost. Do you want to reload this document now?", @"Informative text in alert dialog");
-                else 
-                    message = NSLocalizedString(@"The PDF file has changed on disk. Do you want to reload this document now? Choosing Auto will reload this file automatically for future changes.", @"Informative text in alert dialog");
-                
-                NSAlert *alert = [NSAlert alertWithMessageText:NSLocalizedString(@"File Updated", @"Message in alert dialog") 
-                                                 defaultButton:NSLocalizedString(@"Yes", @"Button title")
-                                               alternateButton:nil//NSLocalizedString(@"Auto", @"Button title")
-                                                   otherButton:NSLocalizedString(@"No", @"Button title")
-                                     informativeTextWithFormat:message];
-                [alert beginSheetModalForWindow:[[self mainWindowController] window]
-                                  modalDelegate:self
-                                 didEndSelector:@selector(fileUpdateAlertDidEnd:returnCode:contextInfo:) 
-                                    contextInfo:[fileChangedDate retain]];
+                [previousCheckedDate release];
+                previousCheckedDate = [fileChangedDate retain];
             }
-        } else {
-            [self checkFileUpdatesIfNeeded];
         }
-        
-    } else {
-        [self checkFileUpdatesIfNeeded];
     }
+    
+    [self checkFileUpdatesIfNeeded];
 }
 
 - (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context {
