@@ -83,32 +83,6 @@ NSString *SKSkimNotePboardType = @"SKSkimNotePboardType";
 
 @end
 
-// Adobe Reader recognizes a path from the hyperref command \url{./test.pdf} as a file: URL, but PDFKit turns it into an http: URL (which of course doesn't work); I notice this because my collaborators use Adobe Reader
-@interface PDFAnnotationLink (SKRelativePathFix)
-- (void)fixRelativeURLIfNeeded;
-@end
-
-@implementation PDFAnnotationLink (SKRelativePathFix)
-
-// class posing indicates that setURL: is never called, and neither is setContents: (-contents returns nil), so this is the only way I can find to fix the thing, since we don't have an equivalent to textView:clickedOnLink:atIndex:
-- (void)fixRelativeURLIfNeeded {
-    NSURL *theURL = [self URL];
-    // http://./path/to/file will never make sense, right?
-    if (theURL && [[theURL host] isEqualToString:@"."]) {
-        NSString *basePath = [[[[[self page] document] documentURL] path] stringByDeletingLastPathComponent];
-        if (basePath) {
-            NSString *realPath = [basePath stringByAppendingPathComponent:[theURL path]];
-            realPath = [realPath stringByStandardizingPath];
-            if (realPath)
-                theURL = [NSURL fileURLWithPath:realPath];
-            if (theURL)
-                [self setURL:theURL];
-        }
-    }
-}
-
-@end
-
 #pragma mark -
 
 @implementation SKPDFView
@@ -177,8 +151,6 @@ NSString *SKSkimNotePboardType = @"SKSkimNotePboardType";
                     [[NSColor grayColor] set];
                     [path stroke];
                 }
-                if ([[annotation type] isEqualToString:@"Link"])
-                    [(PDFAnnotationLink *)annotation fixRelativeURLIfNeeded];
             }
         }
         
@@ -227,6 +199,36 @@ NSString *SKSkimNotePboardType = @"SKSkimNotePboardType";
 }
 
 #pragma mark Accessors
+
+// Adobe Reader recognizes a path from the hyperref command \url{./test.pdf} as a file: URL, but PDFKit turns it into an http: URL (which of course doesn't work); I notice this because my collaborators use Adobe Reader
+// class posing indicates that setURL: is never called, and neither is setContents: (-contents returns nil), so this is the only way I can find to fix the thing, since we don't have an equivalent to textView:clickedOnLink:atIndex:
+- (void)setDocument:(PDFDocument *)document {
+    NSString *basePath = [[[document documentURL] path] stringByDeletingLastPathComponent];
+    if (basePath) {
+        int i, iMax = [document pageCount];
+        for (i = 0; i < iMax; i++) {
+            PDFPage *page = [document pageAtIndex:i];
+            NSArray *annotations = [page annotations];
+            int j, jMax = [annotations count];
+            for (j = 0; j < jMax; j++) {
+                id annotation = [annotations objectAtIndex:j];
+                if ([[annotation type] isEqualToString:@"Link"] == NO)
+                    continue;
+                NSURL *theURL = [annotation URL];
+                // http://./path/to/file will never make sense, right?
+                if (theURL && [[theURL host] isEqualToString:@"."]) {
+                    NSString *realPath = [basePath stringByAppendingPathComponent:[theURL path]];
+                    realPath = [realPath stringByStandardizingPath];
+                    if (realPath)
+                        theURL = [NSURL fileURLWithPath:realPath];
+                    if (theURL)
+                        [annotation setURL:theURL];
+                }
+            }
+        }
+    }
+    [super setDocument:document];
+}
 
 - (SKToolMode)toolMode {
     return toolMode;
