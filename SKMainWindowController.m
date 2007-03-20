@@ -1256,10 +1256,13 @@ static NSString *SKDocumentToolbarNotesPaneItemIdentifier = @"SKDocumentToolbarN
     NSRect documentRect = [[[self pdfView] documentView] convertRect:[[[self pdfView] documentView] bounds] toView:nil];
     
     frame.size.width = NSWidth([leftSideContentBox frame]) + NSWidth([rightSideContentBox frame]) + NSWidth(documentRect) + 2 * [splitView dividerThickness] + 2.0;
-    if (displayMode == kPDFDisplaySinglePage || displayMode == kPDFDisplayTwoUp)
+    if (displayMode == kPDFDisplaySinglePage || displayMode == kPDFDisplayTwoUp) {
         frame.size.height = NSHeight(documentRect);
-    else
+    } else {
+        NSRect pageBounds = [[self pdfView] convertRect:[[[self pdfView] currentPage] boundsForBox:[[self pdfView] displayBox]] fromPage:[[self pdfView] currentPage]];
+        frame.size.height = NSHeight(pageBounds) + NSWidth(documentRect) - NSWidth(pageBounds);
         frame.size.width += [NSScroller scrollerWidth];
+    }
     frame.origin = [[self window] convertBaseToScreen:[[[self window] contentView] convertPoint:frame.origin toView:nil]];
     
     frame = [[self window] frameRectForContentRect:frame];
