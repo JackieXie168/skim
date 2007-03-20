@@ -416,8 +416,10 @@ find_tokens (char *  name,
    tokens->items = NULL;
 
    if (len == 0)                        /* empty string? */
+   {
+      tokens->num_items = 0; /* arm: early return wasn't initializing num_items */
       return tokens;                    /* return empty token list */
-
+   }
    tokens->items = (char **) malloc (sizeof (char *) * len);
 
    while (i < len)
