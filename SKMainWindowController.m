@@ -2118,7 +2118,7 @@ void removeTemporaryAnnotations(const void *annotation, void *context)
     if ([tv isEqual:thumbnailTableView]) {
         NSSize thumbSize = [[[[self thumbnails] objectAtIndex:row] image] size];
         NSSize cellSize = NSMakeSize([[[tv tableColumns] objectAtIndex:0] width], 
-                                     MIN(thumbSize.height, roundf([[NSUserDefaults standardUserDefaults] floatForKey:SKThumbnailSizeKey])));
+                                     MIN(thumbSize.height, roundedThumbnailSize));
         if (thumbSize.height < 1.0)
             return 1.0;
         else if (thumbSize.width / thumbSize.height < cellSize.width / cellSize.height)
@@ -2128,7 +2128,7 @@ void removeTemporaryAnnotations(const void *annotation, void *context)
     } else if ([tv isEqual:snapshotTableView]) {
         NSSize thumbSize = [[[[snapshotArrayController arrangedObjects] objectAtIndex:row] thumbnail] size];
         NSSize cellSize = NSMakeSize([[[tv tableColumns] objectAtIndex:0] width], 
-                                     MIN(thumbSize.height, roundf([[NSUserDefaults standardUserDefaults] floatForKey:SKSnapshotThumbnailSizeKey])));
+                                     MIN(thumbSize.height, roundedSnapshotThumbnailSize));
         if (thumbSize.height < 1.0)
             return 1.0;
         else if (thumbSize.width / thumbSize.height < cellSize.width / cellSize.height)
@@ -2235,7 +2235,9 @@ void removeTemporaryAnnotations(const void *annotation, void *context)
 }
 
 - (void)resetThumbnailSizeIfNeeded {
-    float defaultSize = roundf([[NSUserDefaults standardUserDefaults] floatForKey:SKThumbnailSizeKey]);
+    roundedThumbnailSize = roundf([[NSUserDefaults standardUserDefaults] floatForKey:SKThumbnailSizeKey]);
+
+    float defaultSize = roundedThumbnailSize;
     float thumbnailSize = (defaultSize < 32.1) ? 32.0 : (defaultSize < 64.1) ? 64.0 : (defaultSize < 128.1) ? 128.0 : 256.0;
     
     if (fabs(thumbnailSize - thumbnailCacheSize) > 0.1) {
@@ -2369,7 +2371,8 @@ static NSArray *prioritySortedThumbnails(NSArray *dirtyNails, int currentPageInd
 #pragma mark Snapshots
 
 - (void)resetSnapshotSizeIfNeeded {
-    float defaultSize = roundf([[NSUserDefaults standardUserDefaults] floatForKey:SKSnapshotThumbnailSizeKey]);
+    roundedSnapshotThumbnailSize = roundf([[NSUserDefaults standardUserDefaults] floatForKey:SKSnapshotThumbnailSizeKey]);
+    float defaultSize = roundedSnapshotThumbnailSize;
     float snapshotSize = (defaultSize < 32.1) ? 32.0 : (defaultSize < 64.1) ? 64.0 : (defaultSize < 128.1) ? 128.0 : 256.0;
     
     if (fabs(snapshotSize - snapshotCacheSize) > 0.1) {

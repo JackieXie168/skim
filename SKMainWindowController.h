@@ -96,6 +96,7 @@ typedef struct _SKPDFViewState {
     BOOL                        updatingThumbnailSelection;
     NSMutableArray              *dirtyThumbnails;
     NSTimer                     *thumbnailTimer;
+    float                       roundedThumbnailSize;
     
     IBOutlet NSArrayController  *findArrayController;
     IBOutlet NSTableView        *findTableView;
@@ -120,6 +121,7 @@ typedef struct _SKPDFViewState {
     NSMutableArray              *snapshots;
     NSMutableArray              *dirtySnapshots;
     NSTimer                     *snapshotTimer;
+    float                       roundedSnapshotThumbnailSize;
     
     NSWindow                    *mainWindow;
     SKFullScreenWindow          *fullScreenWindow;
