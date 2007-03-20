@@ -59,6 +59,7 @@ extern NSString *SKDocumentWillSaveNotification;
 }
 
 - (IBAction)readNotes:(id)sender;
+- (IBAction)saveArchive:(id)sender;
 
 - (BOOL)saveNotesToExtendedAttributesAtURL:(NSURL *)aURL error:(NSError **)outError;
 - (BOOL)readNotesFromExtendedAttributesAtURL:(NSURL *)aURL error:(NSError **)outError;

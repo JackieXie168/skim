@@ -91,7 +91,6 @@ NSString *SKDocumentWillSaveNotification = @"SKDocumentWillSaveNotification";
     
     [mainController setPdfDocument:pdfDocument];
     
-    // we keep a pristine copy for save, as we shouldn't save the annotations
     [pdfDocument autorelease];
     pdfDocument = nil;
     
@@ -119,6 +118,8 @@ NSString *SKDocumentWillSaveNotification = @"SKDocumentWillSaveNotification";
         [[self mainWindowController] displaySearchResultsForString:searchString];
     }
 }
+
+#pragma mark Document read/write
 
 - (BOOL)saveToURL:(NSURL *)absoluteURL ofType:(NSString *)typeName forSaveOperation:(NSSaveOperationType)saveOperation error:(NSError **)outError{
     BOOL success = [super saveToURL:absoluteURL ofType:typeName forSaveOperation:saveOperation error:outError];
@@ -288,31 +289,6 @@ NSString *SKDocumentWillSaveNotification = @"SKDocumentWillSaveNotification";
     return didRead;
 }
 
-- (void)openPanelDidEnd:(NSOpenPanel *)oPanel returnCode:(int)returnCode  contextInfo:(void  *)contextInfo{
-    if (returnCode == NSOKButton) {
-        NSURL *notesURL = [[oPanel URLs] objectAtIndex:0];
-        NSArray *array = [NSKeyedUnarchiver unarchiveObjectWithFile:[notesURL path]];
-        
-        if (array) {
-            [[self mainWindowController] setAnnotationsFromDictionaries:array];
-            [self updateChangeCount:NSChangeDone];
-        }
-        
-    }
-}
-
-- (IBAction)readNotes:(id)sender{
-    NSOpenPanel *oPanel = [NSOpenPanel openPanel];
-    NSString *path = [[self fileURL] path];
-    [oPanel beginSheetForDirectory:[path stringByDeletingLastPathComponent]
-                              file:[[[path lastPathComponent] stringByDeletingPathExtension] stringByAppendingPathExtension:@"skim"]
-                             types:[NSArray arrayWithObject:@"skim"]
-                    modalForWindow:[[self mainWindowController] window]
-                     modalDelegate:self
-                    didEndSelector:@selector(openPanelDidEnd:returnCode:contextInfo:)
-                       contextInfo:NULL];		
-}
-
 - (BOOL)saveNotesToExtendedAttributesAtURL:(NSURL *)aURL error:(NSError **)outError {
     NSFileManager *fm = [NSFileManager defaultManager];
     BOOL success = YES;
@@ -372,7 +348,34 @@ NSString *SKDocumentWillSaveNotification = @"SKDocumentWillSaveNotification";
     return success;
 }
 
-- (void)diskImageSavePanelDidEnd:(NSSavePanel *)sheet returnCode:(int)returnCode  contextInfo:(void  *)contextInfo {
+#pragma mark Actions
+
+- (void)openPanelDidEnd:(NSOpenPanel *)oPanel returnCode:(int)returnCode  contextInfo:(void  *)contextInfo{
+    if (returnCode == NSOKButton) {
+        NSURL *notesURL = [[oPanel URLs] objectAtIndex:0];
+        NSArray *array = [NSKeyedUnarchiver unarchiveObjectWithFile:[notesURL path]];
+        
+        if (array) {
+            [[self mainWindowController] setAnnotationsFromDictionaries:array];
+            [self updateChangeCount:NSChangeDone];
+        }
+        
+    }
+}
+
+- (IBAction)readNotes:(id)sender{
+    NSOpenPanel *oPanel = [NSOpenPanel openPanel];
+    NSString *path = [[self fileURL] path];
+    [oPanel beginSheetForDirectory:[path stringByDeletingLastPathComponent]
+                              file:[[[path lastPathComponent] stringByDeletingPathExtension] stringByAppendingPathExtension:@"skim"]
+                             types:[NSArray arrayWithObject:@"skim"]
+                    modalForWindow:[[self mainWindowController] window]
+                     modalDelegate:self
+                    didEndSelector:@selector(openPanelDidEnd:returnCode:contextInfo:)
+                       contextInfo:NULL];		
+}
+
+- (void)archiveSavePanelDidEnd:(NSSavePanel *)sheet returnCode:(int)returnCode  contextInfo:(void  *)contextInfo {
     
     if (NSOKButton == returnCode && [self fileURL]) {
                             
@@ -393,13 +396,13 @@ NSString *SKDocumentWillSaveNotification = @"SKDocumentWillSaveNotification";
     }
 }
 
-- (void)saveDiskImage:(id)sender {
+- (IBAction)saveArchive:(id)sender {
     NSSavePanel *sp = [NSSavePanel savePanel];
     [sp setRequiredFileType:@"tgz"];
     [sp setCanCreateDirectories:YES];
     NSString *filename = [[[[[self fileURL] path] lastPathComponent] stringByDeletingPathExtension] stringByAppendingPathExtension:@"tgz"];
     if (nil != filename && [self isDocumentEdited] == NO) {
-        [sp beginSheetForDirectory:nil file:filename modalForWindow:[self windowForSheet] modalDelegate:self didEndSelector:@selector(diskImageSavePanelDidEnd:returnCode:contextInfo:) contextInfo:NULL];
+        [sp beginSheetForDirectory:nil file:filename modalForWindow:[self windowForSheet] modalDelegate:self didEndSelector:@selector(archiveSavePanelDidEnd:returnCode:contextInfo:) contextInfo:NULL];
     } else {
         NSAlert *alert = [NSAlert alertWithMessageText:NSLocalizedString(@"You must save this file first", @"") defaultButton:nil alternateButton:nil otherButton:nil informativeTextWithFormat:NSLocalizedString(@"The document has unsaved changes, or has not previously been saved to disk.", @"")];
         [alert beginSheetModalForWindow:[self windowForSheet] modalDelegate:nil didEndSelector:NULL contextInfo:NULL];
