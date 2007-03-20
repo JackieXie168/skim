@@ -375,67 +375,30 @@ NSString *SKDocumentWillSaveNotification = @"SKDocumentWillSaveNotification";
 - (void)diskImageSavePanelDidEnd:(NSSavePanel *)sheet returnCode:(int)returnCode  contextInfo:(void  *)contextInfo {
     
     if (NSOKButton == returnCode && [self fileURL]) {
-        
-        NSProgressIndicator *bar = [[[sheet accessoryView] subviews] lastObject];
-        [bar startAnimation:self];
-        
-        NSString *destPath = [sheet filename];
-        FSRef chewableRef;
-        OSStatus err = FSFindFolder(kUserDomain, kChewableItemsFolderType, TRUE, &chewableRef);
-        
-        NSString *chewablePath = [[(id)CFURLCreateFromFSRef(NULL, &chewableRef) autorelease] path];
-        NSString *tempPath = [chewablePath stringByAppendingPathComponent:[destPath lastPathComponent]];
-        
-        unsigned int i = 0;
-        while ([[NSFileManager defaultManager] fileExistsAtPath:tempPath]) {
-            tempPath = [chewablePath stringByAppendingPathComponent:[[destPath lastPathComponent] stringByDeletingPathExtension]];
-            tempPath = [tempPath stringByAppendingFormat:@"-%d", i];
-            tempPath = [tempPath stringByAppendingPathExtension:[destPath pathExtension]];
-        }
-        
-        NSTask *task = nil;
-        
-        if (noErr == err) {
-            
-            @try {
-                // create the initial (temporary) disk image, sized appropriately for this file
-                task = [NSTask launchedTaskWithLaunchPath:@"/usr/bin/hdiutil" arguments:[NSArray arrayWithObjects:@"create", @"-srcfolder", [[self fileURL] path], tempPath, nil]];            
+                            
+        @try {            
+            // create a tar archive; make sure we use a relative path in the archive
+            NSTask *task = [[[NSTask alloc] init] autorelease];
+            [task setLaunchPath:@"/usr/bin/tar"];
+            [task setCurrentDirectoryPath:[[[self fileURL] path] stringByDeletingLastPathComponent]];
+            [task setArguments:[NSArray arrayWithObjects:@"-czf", [sheet filename], [[[self fileURL] path] lastPathComponent], nil]];
+            [task launch];
+            // just in case this is a really huge file, we don't want the user to move it before tar completes
+            if ([task isRunning])
                 [task waitUntilExit];
-            
-                if ([task terminationStatus] == EXIT_SUCCESS) {
-                    // compress the temporary image and save it to the final output path
-                    task = [NSTask launchedTaskWithLaunchPath:@"/usr/bin/hdiutil" arguments:[NSArray arrayWithObjects:@"convert", tempPath, @"-format", @"UDZO", @"-imagekey", @"zlib-level=9", @"-o", destPath, nil]];
-                    [task waitUntilExit];
-                }
-            }
-            @catch(id exception) {
-                NSLog(@"caught exception %@ while creating disk image %@ (temporary file %@)", exception, destPath, tempPath);
-            }
-                
-        } else {
-            // should never happen
-            NSLog(@"unable to find chewable items folder");
         }
-        [[NSFileManager defaultManager] removeFileAtPath:tempPath handler:nil];
-        
-        [bar stopAnimation:self];
-
+        @catch(id exception) {
+            NSLog(@"caught exception %@ while archiving %@ to %@", exception, [[self fileURL] path], [sheet filename]);
+        }
     }
 }
 
 - (void)saveDiskImage:(id)sender {
     NSSavePanel *sp = [NSSavePanel savePanel];
-    [sp setRequiredFileType:@"dmg"];
+    [sp setRequiredFileType:@"tgz"];
     [sp setCanCreateDirectories:YES];
-    NSString *filename = [[[[[self fileURL] path] lastPathComponent] stringByDeletingPathExtension] stringByAppendingPathExtension:@"dmg"];
+    NSString *filename = [[[[[self fileURL] path] lastPathComponent] stringByDeletingPathExtension] stringByAppendingPathExtension:@"tgz"];
     if (nil != filename && [self isDocumentEdited] == NO) {
-        NSView *view = [[[NSView alloc] initWithFrame:NSMakeRect(0.0, 0.0, 400.0, 36.0)] autorelease];
-        NSProgressIndicator *bar = [[[NSProgressIndicator alloc] initWithFrame:NSMakeRect(14.0, 6.0, 368.0, 20.0)] autorelease];
-        [bar setStyle:NSProgressIndicatorBarStyle];
-        [bar setIndeterminate:YES];
-        [bar setDisplayedWhenStopped:NO];
-        [view addSubview:bar];
-        [sp setAccessoryView:view];
         [sp beginSheetForDirectory:nil file:filename modalForWindow:[self windowForSheet] modalDelegate:self didEndSelector:@selector(diskImageSavePanelDidEnd:returnCode:contextInfo:) contextInfo:NULL];
     } else {
         NSAlert *alert = [NSAlert alertWithMessageText:NSLocalizedString(@"You must save this file first", @"") defaultButton:nil alternateButton:nil otherButton:nil informativeTextWithFormat:NSLocalizedString(@"The document has unsaved changes, or has not previously been saved to disk.", @"")];
