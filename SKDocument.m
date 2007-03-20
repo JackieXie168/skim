@@ -425,6 +425,7 @@ NSString *SKDocumentWillSaveNotification = @"SKDocumentWillSaveNotification";
         [fileUpdateTimer invalidate];
         [fileUpdateTimer release];
         fileUpdateTimer = nil;
+        autoUpdate = NO;
     } else if (autoUpdatePref) {
         fileUpdateTimer = [[NSTimer scheduledTimerWithTimeInterval:2 target:self selector:@selector(checkFileUpdateStatus:) userInfo:nil repeats:NO] retain];
     }
@@ -446,8 +447,8 @@ NSString *SKDocumentWillSaveNotification = @"SKDocumentWillSaveNotification";
             [lastChangedDate release];
             lastChangedDate = changeDate;
         }
-    if (returnCode == NSAlertAlternateReturn);
-        autoUpdate = YES;
+        if (returnCode == NSAlertAlternateReturn)
+            autoUpdate = YES;
     }
     
     [self checkFileUpdatesIfNeeded];
@@ -476,7 +477,7 @@ NSString *SKDocumentWillSaveNotification = @"SKDocumentWillSaveNotification";
                 
                 NSAlert *alert = [NSAlert alertWithMessageText:NSLocalizedString(@"File Updated", @"Message in alert dialog") 
                                                  defaultButton:NSLocalizedString(@"Yes", @"Button title")
-                                               alternateButton:NSLocalizedString(@"Auto", @"Button title")
+                                               alternateButton:nil//NSLocalizedString(@"Auto", @"Button title")
                                                    otherButton:NSLocalizedString(@"No", @"Button title")
                                      informativeTextWithFormat:message];
                 [alert beginSheetModalForWindow:[[self mainWindowController] window]
