@@ -472,8 +472,7 @@ NSString *SKDocumentWillSaveNotification = @"SKDocumentWillSaveNotification";
         if ([lastChangedDate compare:fileChangedDate] == NSOrderedAscending) {
             // check until the data stabilizes, because a (tex) process may be busy writing to the file
             if (previousCheckedDate && [previousCheckedDate compare:fileChangedDate] == NSOrderedSame) {
-                BOOL askPref = [[NSUserDefaults standardUserDefaults] boolForKey:SKAutoCheckFileUpdateAskKey];
-                if ((autoUpdate  || askPref == NO) && [self isDocumentEdited] == NO) {
+                if (autoUpdate && [self isDocumentEdited] == NO) {
                     [self fileUpdateAlertDidEnd:nil returnCode:NSAlertDefaultReturn contextInfo:[fileChangedDate retain]];
                     return;
                 } else {
