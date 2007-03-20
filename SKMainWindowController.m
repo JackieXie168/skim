@@ -1245,7 +1245,7 @@ static NSString *SKDocumentToolbarNotesPaneItemIdentifier = @"SKDocumentToolbarN
 }
 
 - (IBAction)performFit:(id)sender {
-    if ([[self pdfView] autoScales] || [self isFullScreen] || [self isPresentation]) {
+    if ([self isFullScreen] || [self isPresentation]) {
         NSBeep();
         return;
     }
@@ -1255,11 +1255,20 @@ static NSString *SKDocumentToolbarNotesPaneItemIdentifier = @"SKDocumentToolbarN
     NSRect frame = [splitView frame];
     NSRect documentRect = [[[self pdfView] documentView] convertRect:[[[self pdfView] documentView] bounds] toView:nil];
     
+    if ([[self pdfView] autoScales]) {
+        documentRect.size.width /= [[self pdfView] scaleFactor];
+        documentRect.size.height /= [[self pdfView] scaleFactor];
+    }
+    
     frame.size.width = NSWidth([leftSideContentBox frame]) + NSWidth([rightSideContentBox frame]) + NSWidth(documentRect) + 2 * [splitView dividerThickness] + 2.0;
     if (displayMode == kPDFDisplaySinglePage || displayMode == kPDFDisplayTwoUp) {
         frame.size.height = NSHeight(documentRect);
     } else {
         NSRect pageBounds = [[self pdfView] convertRect:[[[self pdfView] currentPage] boundsForBox:[[self pdfView] displayBox]] fromPage:[[self pdfView] currentPage]];
+        if ([[self pdfView] autoScales]) {
+            pageBounds.size.width /= [[self pdfView] scaleFactor];
+            pageBounds.size.height /= [[self pdfView] scaleFactor];
+        }
         frame.size.height = NSHeight(pageBounds) + NSWidth(documentRect) - NSWidth(pageBounds);
         frame.size.width += [NSScroller scrollerWidth];
     }
@@ -2996,7 +3005,7 @@ static NSArray *prioritySortedThumbnails(NSArray *dirtyNails, int currentPageInd
     } else if (action == @selector(getInfo:)) {
         return YES;
     } else if (action == @selector(performFit:)) {
-        if ([[self pdfView] autoScales] || [self isFullScreen] || [self isPresentation])
+        if ([self isFullScreen] || [self isPresentation])
             return NO;
         else
             return YES;
