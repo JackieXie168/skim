@@ -178,6 +178,16 @@ NSString *SKDocumentWillSaveNotification = @"SKDocumentWillSaveNotification";
     } else return NO;
 }
 
+- (void)setPDFData:(NSData *)data {
+    [pdfData autorelease];
+    pdfData = [data copy];
+}
+
+- (void)setPDFDocument:(PDFDocument *)doc {
+    [pdfDocument autorelease];
+    pdfDocument = [doc retain];
+}
+
 - (BOOL)readFromData:(NSData *)data ofType:(NSString *)docType error:(NSError **)outError;
 {
     BOOL didRead = NO;
@@ -188,17 +198,17 @@ NSString *SKDocumentWillSaveNotification = @"SKDocumentWillSaveNotification";
         pdfDoc = [[PDFDocument alloc] initWithData:data];
     } else if ([docType isEqualToString:SKPostScriptDocumentType]) {
         SKPSProgressController *progressController = [[SKPSProgressController alloc] init];
-        if (data = [[progressController PDFDataWithPostScriptData:data] retain])
+        if (data = [progressController PDFDataWithPostScriptData:data])
             pdfDoc = [[PDFDocument alloc] initWithData:data];
         [progressController autorelease];
     }
     
+    [self setPDFData:data];
+    [self setPDFDocument:pdfDoc];
+    [pdfDoc release];
+
     if (pdfDoc) {
         didRead = YES;
-        [pdfData release];
-        pdfData = data;
-        [pdfDocument release];
-        pdfDocument = pdfDoc;
         [lastChangedDate release];
         lastChangedDate = nil;
     }
@@ -261,15 +271,14 @@ NSString *SKDocumentWillSaveNotification = @"SKDocumentWillSaveNotification";
     if (data) {
         if (pdfDoc) {
             didRead = YES;
+            [self setPDFData:data];
+            [self setPDFDocument:pdfDoc];
+            [pdfDoc release];
             [pdfData release];
-            pdfData = data;
-            [pdfDocument release];
-            pdfDocument = pdfDoc;
             [lastChangedDate release];
             lastChangedDate = [[[[NSFileManager defaultManager] fileAttributesAtPath:[absoluteURL path] traverseLink:YES] fileModificationDate] retain];
         } else {
-            [data release];
-            data = nil;
+            [self setPDFData:nil];
         }
     }
     
