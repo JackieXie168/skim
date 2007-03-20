@@ -90,7 +90,7 @@
         rect.size.width = BUTTON_WIDTH;
         button = [[[SKNavigationZoomButton alloc] initWithFrame:rect] autorelease];
         [button setTarget:controller];
-        [button setAction:@selector(toggleZoomToFit:)];
+        [button setAction:@selector(toggleAutoActualSize:)];
         [button setToolTip:NSLocalizedString(@"Fit to Screen", @"Tool tip message")];
         [button setAlternateToolTip:NSLocalizedString(@"Actual Size", @"Tool tip message")];
         [button setState:[pdfView autoScales]];
