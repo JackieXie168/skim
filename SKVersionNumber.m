@@ -33,7 +33,6 @@
         releaseType = SKReleaseVersionType;
         
         NSMutableString *mutableVersionString = [[NSMutableString alloc] init];
-        NSString *lastSep = @"";
         NSScanner *scanner = [[NSScanner alloc] initWithString:versionString];
         
         [scanner setCharactersToBeSkipped:nil];
@@ -49,9 +48,7 @@
                 // Failed to scan integer
                 break;
             
-            if (c == '.')
-                [mutableVersionString appendString: @"."];
-            [mutableVersionString appendString: component];
+            [mutableVersionString appendFormat: @"%@%C", c == '.' ? @"." : @"", component];
             
             componentCount++;
             components = realloc(components, sizeof(*components) * componentCount);
