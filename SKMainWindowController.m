@@ -1016,6 +1016,7 @@ static NSString *SKDocumentToolbarNotesPaneItemIdentifier = @"SKDocumentToolbarN
     [self setWindow:fullScreenWindow];
     [fullScreenWindow makeKeyAndOrderFront:self];
     [fullScreenWindow makeFirstResponder:pdfView];
+    [fullScreenWindow setAcceptsMouseMovedEvents:YES];
     [mainWindow orderOut:self];    
 }
 
