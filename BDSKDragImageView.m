@@ -118,7 +118,7 @@
 						dragImage = [[NSImage alloc] initWithSize:imageSize];
 						[dragImage lockFocus];
 						[image compositeToPoint:NSZeroPoint operation:NSCompositeCopy fraction:0.7];
-						[dragImage lockFocus];
+						[dragImage unlockFocus];
 
 						[self dragImage:dragImage at:NSMakePoint(mouseLoc.x - 0.5f * imageSize.width, mouseLoc.y - 0.5f * imageSize.height) offset:NSZeroSize event:theEvent pasteboard:pboard source:self slideBack:YES]; 
 						[dragImage release];
