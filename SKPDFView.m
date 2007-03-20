@@ -75,7 +75,7 @@ NSString *SKSkimNotePboardType = @"SKSkimNotePboardType";
 
 - (void)moveActiveAnnotationForKey:(unichar)eventChar byAmount:(float)delta;
 
-- (void)selectAnnotationWithEvent:(NSEvent *)theEvent;
+- (BOOL)selectAnnotationWithEvent:(NSEvent *)theEvent;
 - (void)dragAnnotationWithEvent:(NSEvent *)theEvent;
 - (void)selectSnapshotWithEvent:(NSEvent *)theEvent;
 - (void)magnifyWithEvent:(NSEvent *)theEvent;
@@ -471,13 +471,21 @@ NSString *SKSkimNotePboardType = @"SKSkimNotePboardType";
     } else {
         switch (toolMode) {
             case SKTextToolMode:
-                if ([[self document] isLocked])
+                if ([[self document] isLocked]) {
                     [super mouseDown:theEvent];
-                else 
-                    [self selectAnnotationWithEvent:theEvent];
+                } else if([self selectAnnotationWithEvent:theEvent] == NO) {
+                    NSPoint p = mouseDownLoc;
+                    p = [self convertPoint:p fromView:nil];
+                    PDFPage *page = [self pageForPoint:p nearest:NO];
+                    p = [self convertPoint:p toPage:page];
+                    if ([[page selectionForRect:NSMakeRect(p.x - 30.0, p.y - 30.0, 60.0, 60.0)] string] == nil)
+                        [self dragWithEvent:theEvent];
+                    else
+                        [super mouseDown:theEvent];
+                }
                 break;
             case SKMoveToolMode:
-                [[NSCursor closedHandCursor] push];
+                [self dragWithEvent:theEvent];	
                 break;
             case SKMagnifyToolMode:
                 [self magnifyWithEvent:theEvent];
@@ -500,8 +508,7 @@ NSString *SKSkimNotePboardType = @"SKSkimNotePboardType";
                 [super mouseUp:theEvent];
             break;
         case SKMoveToolMode:
-            [NSCursor pop];
-            [[NSCursor openHandCursor] set];
+            // shouldn't reach this
             break;
         case SKMagnifyToolMode:
             [super mouseUp:theEvent];
@@ -556,9 +563,7 @@ static inline NSRect rectWithCorners(NSPoint p1, NSPoint p2)
             }
             break;
         case SKMoveToolMode:
-            [self dragWithEvent:theEvent];	
-            // ??? PDFView's delayed layout seems to reset the cursor to an arrow
-            [self performSelector:@selector(mouseMoved:) withObject:theEvent afterDelay:0];
+            // shouldn't reach this
             break;
         case SKMagnifyToolMode:
             [super mouseDragged:theEvent];
@@ -1265,7 +1270,7 @@ static inline NSRect rectWithCorners(NSPoint p1, NSPoint p2)
     }
 }
 
-- (void)selectAnnotationWithEvent:(NSEvent *)theEvent {
+- (BOOL)selectAnnotationWithEvent:(NSEvent *)theEvent {
     PDFAnnotation *newActiveAnnotation = NULL;
     PDFAnnotation *wasActiveAnnotation;
     NSArray *annotations;
@@ -1342,7 +1347,7 @@ static inline NSRect rectWithCorners(NSPoint p1, NSPoint p2)
     }
     
     if (newActiveAnnotation == nil) {
-        [super mouseDown:theEvent];
+        //[super mouseDown:theEvent];
     } else if ([theEvent clickCount] == 2 && [[activeAnnotation type] isEqualToString:@"FreeText"]) {
         // probably we should use the note window for Text annotations
         NSRect editBounds = [activeAnnotation bounds];
@@ -1355,7 +1360,6 @@ static inline NSRect rectWithCorners(NSPoint p1, NSPoint p2)
         
         // Start editing
         [super mouseDown:theEvent];
-        mouseDownInAnnotation = NO;
         
     } else if ([theEvent clickCount] == 2 && [[activeAnnotation type] isEqualToString:@"Note"]) {
         
@@ -1371,8 +1375,10 @@ static inline NSRect rectWithCorners(NSPoint p1, NSPoint p2)
         draggingAnnotation = [activeAnnotation isMovable];
         
         // Hit-test for resize box.
-        resizing = [[activeAnnotation type] isEqualToString:@"Note"] == NO && NSPointInRect(pagePoint, [self resizeThumbForRect:wasBounds rotation:[activePage rotation]]);
+        resizingAnnotation = [[activeAnnotation type] isEqualToString:@"Note"] == NO && NSPointInRect(pagePoint, [self resizeThumbForRect:wasBounds rotation:[activePage rotation]]);
     }
+    
+    return newActiveAnnotation != nil;
 }
 
 - (void)dragAnnotationWithEvent:(NSEvent *)theEvent {
@@ -1380,7 +1386,7 @@ static inline NSRect rectWithCorners(NSPoint p1, NSPoint p2)
     NSRect newBounds;
     NSRect currentBounds = [activeAnnotation bounds];
     
-    if (resizing) {
+    if (resizingAnnotation) {
         NSPoint mouseLoc = [self convertPoint:[theEvent locationInWindow] fromView:nil];
         NSPoint startPoint = [self convertPoint:[self convertPoint:mouseDownLoc fromView:nil] toPage:activePage];
         NSPoint endPt = [self convertPoint:mouseLoc toPage:activePage];
@@ -1493,6 +1499,8 @@ static inline NSRect rectWithCorners(NSPoint p1, NSPoint p2)
 	NSRect visibleRect = [[self documentView] visibleRect];
 	BOOL keepGoing = YES;
 	
+    [[NSCursor closedHandCursor] push];
+    
 	while (keepGoing) {
 		theEvent = [[self window] nextEventMatchingMask: NSLeftMouseUpMask | NSLeftMouseDraggedMask];
 		switch ([theEvent type]) {
@@ -1522,6 +1530,10 @@ static inline NSRect rectWithCorners(NSPoint p1, NSPoint p2)
 				break;
 		} // end of switch (event type)
 	} // end of mouse-tracking loop
+    
+    [NSCursor pop];
+    // ??? PDFView's delayed layout seems to reset the cursor to an arrow
+    [self performSelector:@selector(mouseMoved:) withObject:theEvent afterDelay:0];
 }
 
 - (void)selectSnapshotWithEvent:(NSEvent *)theEvent {
