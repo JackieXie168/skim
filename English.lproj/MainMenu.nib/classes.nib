@@ -37,6 +37,7 @@
                 rotateRight = id; 
                 saveArchive = id; 
                 takeSnapshot = id; 
+                toggleAutoScale = id; 
                 toggleDisplayAsBook = id; 
                 toggleDisplayContinuous = id; 
                 toggleDisplayPageBreaks = id; 

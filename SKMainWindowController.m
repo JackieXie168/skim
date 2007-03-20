@@ -82,7 +82,7 @@ static NSString *SKDocumentToolbarScaleItemIdentifier = @"SKDocumentToolbarScale
 static NSString *SKDocumentToolbarZoomInItemIdentifier = @"SKDocumentZoomInToolbarItemIdentifier";
 static NSString *SKDocumentToolbarZoomOutItemIdentifier = @"SKDocumentZoomOutToolbarItemIdentifier";
 static NSString *SKDocumentToolbarZoomActualItemIdentifier = @"SKDocumentZoomActualToolbarItemIdentifier";
-static NSString *SKDocumentToolbarZoomAutoItemIdentifier = @"SKDocumentZoomAutoToolbarItemIdentifier";
+static NSString *SKDocumentToolbarZoomToFitItemIdentifier = @"SKDocumentZoomAutoToolbarItemIdentifier";
 static NSString *SKDocumentToolbarRotateRightItemIdentifier = @"SKDocumentRotateRightToolbarItemIdentifier";
 static NSString *SKDocumentToolbarRotateLeftItemIdentifier = @"SKDocumentRotateLeftToolbarItemIdentifier";
 static NSString *SKDocumentToolbarFullScreenItemIdentifier = @"SKDocumentFullScreenToolbarItemIdentifier";
@@ -801,13 +801,22 @@ static NSString *SKDocumentToolbarNotesPaneItemIdentifier = @"SKDocumentToolbarN
 
 - (IBAction)doZoomToFit:(id)sender {
     [pdfView setAutoScales:YES];
+    [pdfView setAutoScales:NO];
 }
 
-- (IBAction)toggleZoomToFit:(id)sender {
+- (IBAction)doAutoScale:(id)sender {
+    [pdfView setAutoScales:YES];
+}
+
+- (IBAction)toggleAutoScale:(id)sender {
+    [pdfView setAutoScales:[pdfView autoScales] == NO];
+}
+
+- (IBAction)toggleAutoActualSize:(id)sender {
     if ([pdfView autoScales])
         [self doZoomToActualSize:sender];
     else
-        [self doZoomToFit:sender];
+        [self doAutoScale:sender];
 }
 
 - (IBAction)rotateRight:(id)sender {
@@ -2565,14 +2574,14 @@ static NSArray *prioritySortedThumbnails(NSArray *dirtyNails, int currentPageInd
     [toolbarItems setObject:item forKey:SKDocumentToolbarZoomActualItemIdentifier];
     [item release];
     
-    item = [[SKToolbarItem alloc] initWithItemIdentifier:SKDocumentToolbarZoomAutoItemIdentifier];
+    item = [[SKToolbarItem alloc] initWithItemIdentifier:SKDocumentToolbarZoomToFitItemIdentifier];
     [item setLabel:NSLocalizedString(@"Zoom To Fit", @"Toolbar item label")];
     [item setPaletteLabel:NSLocalizedString(@"Zoom To Fit", @"Toolbar item label")];
     [item setToolTip:NSLocalizedString(@"Zoom To Fit", @"Tool tip message")];
     [item setImage:[NSImage imageNamed:@"ToolbarZoomToFit"]];
     [item setTarget:self];
     [item setAction:@selector(doZoomToFit:)];
-    [toolbarItems setObject:item forKey:SKDocumentToolbarZoomAutoItemIdentifier];
+    [toolbarItems setObject:item forKey:SKDocumentToolbarZoomToFitItemIdentifier];
     [item release];
     
     item = [[SKToolbarItem alloc] initWithItemIdentifier:SKDocumentToolbarRotateRightItemIdentifier];
@@ -2861,7 +2870,7 @@ static NSArray *prioritySortedThumbnails(NSArray *dirtyNails, int currentPageInd
         SKDocumentToolbarZoomInItemIdentifier, 
         SKDocumentToolbarZoomOutItemIdentifier, 
         SKDocumentToolbarZoomActualItemIdentifier, 
-        SKDocumentToolbarZoomAutoItemIdentifier, 
+        SKDocumentToolbarZoomToFitItemIdentifier, 
         SKDocumentToolbarRotateRightItemIdentifier, 
         SKDocumentToolbarRotateLeftItemIdentifier, 
         SKDocumentToolbarFullScreenItemIdentifier, 
@@ -2891,7 +2900,7 @@ static NSArray *prioritySortedThumbnails(NSArray *dirtyNails, int currentPageInd
         return [pdfView canGoToNextPage];
     } else if ([identifier isEqualToString:SKDocumentToolbarZoomInItemIdentifier]) {
         return [pdfView canZoomIn];
-    } else if ([identifier isEqualToString:SKDocumentToolbarZoomAutoItemIdentifier]) {
+    } else if ([identifier isEqualToString:SKDocumentToolbarZoomToFitItemIdentifier]) {
         return [pdfView autoScales] == NO;
     } else if ([identifier isEqualToString:SKDocumentToolbarZoomActualItemIdentifier]) {
         return fabs([pdfView scaleFactor] - 1.0) > 0.01;
@@ -2958,6 +2967,11 @@ static NSArray *prioritySortedThumbnails(NSArray *dirtyNails, int currentPageInd
         return fabs([pdfView scaleFactor] - 1.0 ) > 0.01;
     } else if (action == @selector(doZoomToFit:)) {
         return [pdfView autoScales] == NO;
+    } else if (action == @selector(doAutoScale:)) {
+        return [pdfView autoScales] == NO;
+    } else if (action == @selector(toggleAutoScale:)) {
+        [menuItem setState:[pdfView autoScales] ? NSOnState : NSOffState];
+        return YES;
     } else if (action == @selector(toggleLeftSidePane:)) {
         if ([self isFullScreen]) {
             if ([leftSideWindow state] == NSDrawerOpenState || [leftSideWindow state] == NSDrawerOpeningState)

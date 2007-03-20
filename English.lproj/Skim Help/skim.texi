@@ -179,6 +179,9 @@ You can change your view of a page in a PDF file in several ways.
 @item To view the PDF so that its pages fit in its window, choose View > Zoom To Fit.
 @end itemize
 @itemize
+@item To keep the PDF so that its pages always fit in its window, also if you resize the window, choose View > Automatically Resize.
+@end itemize
+@itemize
 @item To view a page at a size you specify, resize the window to the size you want, then choose View > Size To Fit. The page resizes to fit the window size.
 @end itemize
 @itemize
