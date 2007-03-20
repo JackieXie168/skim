@@ -64,7 +64,7 @@ NSString *SKScrollMagnifyNotification = @"SKScrollMagnifyNotification";
 
 - (void)sendEvent:(NSEvent *)anEvent {
     if ([anEvent type] == NSScrollWheel && [anEvent modifierFlags] & NSAlternateKeyMask)
-        [[NSNotificationCenter defaultCenter] postNotificationName:@"SKScrollMagnifyNotification" object:anEvent];
+        [[NSNotificationCenter defaultCenter] postNotificationName:SKScrollMagnifyNotification object:anEvent];
     else
         [super sendEvent:anEvent];
 }
