@@ -154,24 +154,39 @@ static int BDSKRectValueCompare(id value1, id value2, void *context) {
 }
 
 - (NSArray *)lineBounds {
+    static NSCharacterSet *nonWhitespaceAndNewlineCharacterSet = nil;
+    if (nonWhitespaceAndNewlineCharacterSet == nil)
+        nonWhitespaceAndNewlineCharacterSet = [[[NSCharacterSet whitespaceAndNewlineCharacterSet] invertedSet] copy];
+    
     NSMutableArray *lines = [NSMutableArray array];
     PDFSelection *sel = [self selectionForRect:[self boundsForBox:kPDFDisplayBoxCropBox]];
     unsigned i, iMax = [sel numberOfRangesOnPage:self];
     NSMutableIndexSet *indexes = [NSMutableIndexSet indexSet];
+    NSString *string = [self string];
+    NSRange stringRange = NSMakeRange(0, [string length]);
     
     for (i = 0; i < iMax; i++) {
         NSRange range = [sel rangeAtIndex:i onPage:self];
         unsigned j;
+        
         for (j = range.location; j < NSMaxRange(range); j++) {
             if ([indexes containsIndex:j])
                 continue;
+            
             NSRect r = [self characterBoundsAtIndex:j];
             PDFSelection *s = [self selectionForLineAtPoint:NSMakePoint(NSMidX(r), NSMidY(r))];
             unsigned k, kMax = [s numberOfRangesOnPage:self];
-            for (k = 0; k < kMax; k++)
-                [indexes addIndexesInRange:[s rangeAtIndex:k onPage:self]];
-            r = [s boundsForPage:self];
-            [lines addObject:[NSValue valueWithRect:r]];
+            BOOL notEmpty = NO;
+            
+            for (k = 0; k < kMax; k++) {
+                NSRange selRange = [s rangeAtIndex:k onPage:self];
+                [indexes addIndexesInRange:selRange];
+                // due to a bug in PDFKit, the range of the selection can sometimes lie partly outside the range of the string
+                if ([string rangeOfCharacterFromSet:nonWhitespaceAndNewlineCharacterSet options:0 range:NSIntersectionRange(selRange, stringRange)].length)
+                    notEmpty = YES;
+            }
+            if (notEmpty)
+                [lines addObject:[NSValue valueWithRect:[s boundsForPage:self]]];
         }
     }
     
