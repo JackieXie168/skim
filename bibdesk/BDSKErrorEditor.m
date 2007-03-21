@@ -46,6 +46,7 @@
 #import "BibDocument.h"
 #import "BibAppController.h"
 #import "BDSKStringEncodingManager.h"
+#import "NSWindowController_BDSKExtensions.h"
 
 @implementation BDSKErrorEditor
 
