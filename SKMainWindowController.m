@@ -65,6 +65,7 @@
 #import "SKNoteOutlineView.h"
 #import "SKThumbnailTableView.h"
 #import "BDSKImagePopUpButton.h"
+#import "NSWindowController_SKExtensions.h"
 
 #define SEGMENTED_CONTROL_HEIGHT    25.0
 #define WINDOW_X_DELTA              0.0
@@ -203,14 +204,7 @@ static NSString *SKDocumentToolbarNotesPaneItemIdentifier = @"SKDocumentToolbarN
     // we retain as we might replace it with the full screen window
     mainWindow = [[self window] retain];
     
-    [[self window] setFrameUsingName:SKMainWindowFrameAutosaveName];
-    static NSPoint nextWindowLocation = {0.0, 0.0};
-    [self setShouldCascadeWindows:NO];
-    if ([[self window] setFrameAutosaveName:SKMainWindowFrameAutosaveName]) {
-        NSRect windowFrame = [[self window] frame];
-        nextWindowLocation = NSMakePoint(NSMinX(windowFrame), NSMaxY(windowFrame));
-    }
-    nextWindowLocation = [[self window] cascadeTopLeftFromPoint:nextWindowLocation];
+    [self setWindowFrameAutosaveNameOrCascade:SKMainWindowFrameAutosaveName];
     
     [[self window] setBackgroundColor:[NSColor colorWithDeviceWhite:0.9 alpha:1.0]];
     
