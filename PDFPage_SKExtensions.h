@@ -46,6 +46,8 @@
 - (NSImage *)image;
 - (NSImage *)thumbnailWithSize:(float)size shadowBlurRadius:(float)shadowBlurRadius shadowOffset:(NSSize)shadowOffset;
 
+- (NSArray *)lineBounds;
+
 - (NSScriptObjectSpecifier *)objectSpecifier;
 - (SKDocument *)containingDocument;
 - (NSData *)boundsAsQDRect;

@@ -44,6 +44,7 @@
                 toggleFullScreen = id; 
                 toggleLeftSidePane = id; 
                 togglePresentation = id; 
+                toggleReadingBar = id; 
                 toggleRightSidePane = id; 
             }; 
             CLASS = FirstResponder; 

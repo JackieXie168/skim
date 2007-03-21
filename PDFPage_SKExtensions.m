@@ -42,6 +42,11 @@
 #import "SKPDFView.h"
 
 
+@interface PDFSelection (PDFSelectionPrivateDeclarations)
+- (int)numberOfRangesOnPage:(PDFPage *)page;
+- (NSRange)rangeAtIndex:(int)index onPage:(PDFPage *)page;
+@end
+
 @implementation PDFPage (SKExtensions) 
 
 - (NSImage *)image {
@@ -129,6 +134,68 @@
     [image unlockFocus];
     
     return [image autorelease];
+}
+
+static int BDSKRectValueCompare(id value1, id value2, void *context) {
+    float y1 = NSMinY([value1 rectValue]);
+    float y2 = NSMinY([value2 rectValue]);
+    float x1 = NSMinX([value1 rectValue]);
+    float x2 = NSMinX([value2 rectValue]);
+    if (y1 > y2)
+        return NSOrderedAscending;
+    else if (y1 < y2)
+        return NSOrderedDescending;
+    else if (x1 < x2)
+        return NSOrderedAscending;
+    else if (x1 > x2)
+        return NSOrderedDescending;
+    else
+        return NSOrderedSame;
+}
+
+- (NSArray *)lineBounds {
+    NSMutableArray *lines = [NSMutableArray array];
+    PDFSelection *sel = [self selectionForRect:[self boundsForBox:kPDFDisplayBoxCropBox]];
+    unsigned i, iMax = [sel numberOfRangesOnPage:self];
+    NSMutableIndexSet *indexes = [NSMutableIndexSet indexSet];
+    
+    for (i = 0; i < iMax; i++) {
+        NSRange range = [sel rangeAtIndex:i onPage:self];
+        unsigned j;
+        for (j = range.location; j < NSMaxRange(range); j++) {
+            if ([indexes containsIndex:j])
+                continue;
+            NSRect r = [self characterBoundsAtIndex:j];
+            PDFSelection *s = [self selectionForLineAtPoint:NSMakePoint(NSMidX(r), NSMidY(r))];
+            unsigned k, kMax = [s numberOfRangesOnPage:self];
+            for (k = 0; k < kMax; k++)
+                [indexes addIndexesInRange:[s rangeAtIndex:k onPage:self]];
+            r = [s boundsForPage:self];
+            [lines addObject:[NSValue valueWithRect:r]];
+        }
+    }
+    
+    [lines sortUsingFunction:BDSKRectValueCompare context:NULL];
+    
+    iMax = [lines count];
+    NSMutableArray *fullLines = [NSMutableArray array];
+    NSRect r1 = NSZeroRect;
+    
+    for (i = 0; i < iMax; i++) {
+        NSRect r2 = [[lines objectAtIndex:i] rectValue];
+        if (NSEqualRects(r1, NSZeroRect)) {
+            r1 = r2;
+        } else if ((NSMinY(r1) < NSMidY(r2) && NSMidY(r1) > NSMinY(r2)) || (NSMidY(r1) < NSMaxY(r2) && NSMaxY(r1) > NSMidY(r2))) {
+            r1 = NSUnionRect(r1, r2);
+        } else if (NSEqualRects(r1, NSZeroRect) == NO) {
+            [fullLines addObject:[NSValue valueWithRect:r1]];
+            r1 = r2;
+        }
+    }
+    if (NSEqualRects(r1, NSZeroRect) == NO)
+        [fullLines addObject:[NSValue valueWithRect:r1]];
+    
+    return fullLines;
 }
 
 #pragma mark Scripting support

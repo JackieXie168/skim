@@ -64,6 +64,8 @@ typedef enum _SKNoteType {
     SKUnderlineNote
 } SKNoteType;
 
+@class SKReadingBar;
+
 @interface SKPDFView : PDFView {
     SKToolMode toolMode;
     
@@ -71,6 +73,8 @@ typedef enum _SKNoteType {
     BOOL hasNavigation;
     NSTimer *autohideTimer;
     SKNavigationWindow *navWindow;
+    
+    SKReadingBar *readingBar;
     
 	PDFAnnotation *activeAnnotation;
 	PDFAnnotationTextWidget *editAnnotation;
@@ -89,6 +93,10 @@ typedef enum _SKNoteType {
 
 - (PDFAnnotation *)activeAnnotation;
 - (void)setActiveAnnotation:(PDFAnnotation *)newAnnotation;
+
+- (BOOL)hasReadingBar;
+
+- (void)toggleReadingBar;
 
 - (IBAction)delete:(id)sender;
 
@@ -116,5 +124,24 @@ typedef enum _SKNoteType {
 - (void)handleAnnotationDidChangeNotification:(NSNotification *)notification;
 - (void)handleWindowWillCloseNotification:(NSNotification *)notification;
 - (void)handleScrollMagnifyNotification:(NSNotification *)note;
+
+@end
+
+
+@interface SKReadingBar : NSObject {
+    PDFPage *page;
+    NSArray *lineBounds;
+    int currentLine;
+}
+
+- (PDFPage *)page;
+- (void)setPage:(PDFPage *)newPage;
+- (int)currentLine;
+- (void)setCurrentLine:(int)lineIndex;
+- (unsigned int)numberOfLines;
+- (NSRect)currentBounds;
+- (NSRect)currentBoundsForBox:(PDFDisplayBox)box;
+- (BOOL)nextLine;
+- (BOOL)previousLine;
 
 @end
