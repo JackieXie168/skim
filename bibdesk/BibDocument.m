@@ -358,25 +358,7 @@ static NSString *BDSKRecentSearchesKey = @"BDSKRecentSearchesKey";
 
     NSRect frameRect = [xattrDefaults rectForKey:BDSKDocumentWindowFrameKey defaultValue:NSZeroRect];
     
-    // we should only cascade windows if we have multiple documents open; bug #1299305
-    // the default cascading does not reset the next location when all windows have closed, so we do cascading ourselves
-    static NSPoint nextWindowLocation = {0.0, 0.0};
-    
-    if (NSEqualRects(frameRect, NSZeroRect) == NO) {
-        [[aController window] setFrame:frameRect display:YES];
-        [aController setShouldCascadeWindows:NO];
-        nextWindowLocation = [[aController window] cascadeTopLeftFromPoint:NSMakePoint(NSMinX(frameRect), NSMaxY(frameRect))];
-    } else {
-        // set the frame from prefs first, or setFrameAutosaveName: will overwrite the prefs with the nib values if it returns NO
-        [[aController window] setFrameUsingName:@"Main Window Frame Autosave"];
-
-        [aController setShouldCascadeWindows:NO];
-        if ([[aController window] setFrameAutosaveName:@"Main Window Frame Autosave"]) {
-            NSRect windowFrame = [[aController window] frame];
-            nextWindowLocation = NSMakePoint(NSMinX(windowFrame), NSMaxY(windowFrame));
-        }
-        nextWindowLocation = [[aController window] cascadeTopLeftFromPoint:nextWindowLocation];
-    }
+    [aController setWindowFrameAutosaveNameOrCascade:@"Main Window Frame Autosave" setFrame:frameRect];
             
     [documentWindow setAutorecalculatesKeyViewLoop:YES];
     [documentWindow makeFirstResponder:tableView];	

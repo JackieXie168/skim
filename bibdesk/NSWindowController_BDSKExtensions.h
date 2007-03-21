@@ -45,6 +45,9 @@
 - (IBAction)hideWindow:(id)sender;
 - (IBAction)toggleShowingWindow:(id)sender;
 
+- (void)setWindowFrameAutosaveNameOrCascade:(NSString *)name;
+- (void)setWindowFrameAutosaveNameOrCascade:(NSString *)name setFrame:(NSRect)frameRect;
+
 @end
 
 // Allows the window's delegate (usually an NSWindowController) to

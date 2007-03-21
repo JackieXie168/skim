@@ -185,17 +185,7 @@ enum{
 	[statusBar setDelegate:self];
     [statusBar setTextOffset:NSMaxX([actionButton frame])];
     
-    // Set the frame from prefs first, or setFrameAutosaveName: will overwrite the prefs with the nib values if it returns NO
-    [[self window] setFrameUsingName:BDSKBibEditorFrameAutosaveName];
-    // we should only cascade windows if we have multiple editors open; bug #1299305
-    // the default cascading does not reset the next location when all windows have closed, so we do cascading ourselves
-    static NSPoint nextWindowLocation = {0.0, 0.0};
-    [self setShouldCascadeWindows:NO];
-    if ([[self window] setFrameAutosaveName:BDSKBibEditorFrameAutosaveName]) {
-        NSRect windowFrame = [[self window] frame];
-        nextWindowLocation = NSMakePoint(NSMinX(windowFrame), NSMaxY(windowFrame));
-    }
-    nextWindowLocation = [[self window] cascadeTopLeftFromPoint:nextWindowLocation];
+    [self setWindowFrameAutosaveNameOrCascade:BDSKBibEditorFrameAutosaveName];
     
     // Setup the splitview autosave frame, should be done after the statusBar is setup
     [splitView setPositionAutosaveName:@"OASplitView Position BibEditor"];
