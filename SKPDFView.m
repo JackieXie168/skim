@@ -118,6 +118,7 @@ NSString *SKSkimNotePboardType = @"SKSkimNotePboardType";
     [self doAutohide:NO]; // invalidates and releases the timer
     [[SKPDFHoverWindow sharedHoverWindow] orderOut:self];
     [navWindow release];
+    [readingBar release];
     [super dealloc];
 }
 
@@ -129,13 +130,13 @@ NSString *SKSkimNotePboardType = @"SKSkimNotePboardType";
 	
     NSArray *allAnnotations = [pdfPage annotations];
     
+    [NSGraphicsContext saveGraphicsState];
+    
+    [self transformContextForPage: pdfPage];
+    
     if (allAnnotations) {
         unsigned int i, count = [allAnnotations count];
         BOOL foundActive = NO;
-        
-        [NSGraphicsContext saveGraphicsState];
-        
-        [self transformContextForPage: pdfPage];
         
         for (i = 0; i < count; i++) {
             PDFAnnotation *annotation;
@@ -175,9 +176,29 @@ NSString *SKSkimNotePboardType = @"SKSkimNotePboardType";
             if ([activeAnnotation isResizable])
                 NSRectFill(NSIntegralRect([self resizeThumbForRect:bounds rotation:[pdfPage rotation]]));
         }
-        
-        [NSGraphicsContext restoreGraphicsState];
+                
     }
+    
+    if (readingBar) {
+        [[NSColor colorWithDeviceRed:1.0 green:1.0 blue:0.0 alpha:0.2] set];
+        NSRect bounds = [pdfPage boundsForBox:[self displayBox]];
+        if ([[readingBar page] isEqual:pdfPage]) {
+            NSRect rect = [readingBar currentBoundsForBox:[self displayBox]];
+            if (NSEqualRects(rect, NSZeroRect)) {
+                [NSBezierPath fillRect:bounds];
+            } else {
+                NSRect outRect, ignored;
+                NSDivideRect(bounds, &outRect, &ignored, NSMaxY(bounds) - NSMaxY(rect), NSMaxYEdge);
+                [NSBezierPath fillRect:outRect];
+                NSDivideRect(bounds, &outRect, &ignored, NSMinY(rect) - NSMinY(bounds), NSMinYEdge);
+                [NSBezierPath fillRect:outRect];
+            }
+        } else {
+            [NSBezierPath fillRect:bounds];
+        }
+    }
+    
+    [NSGraphicsContext restoreGraphicsState];
 }
 
 - (void)setNeedsDisplayInRect:(NSRect)rect ofPage:(PDFPage *)page {
@@ -227,7 +248,15 @@ NSString *SKSkimNotePboardType = @"SKSkimNotePboardType";
             }
         }
     }
+    [readingBar setPage:nil];
     [super setDocument:document];
+    if (readingBar) {
+        int i = -1;
+        while ([readingBar nextLine] == NO) {
+            if (++i < (int)[document pageCount])
+                [readingBar setPage:[document pageAtIndex:i]];
+        }
+    }
 }
 
 - (SKToolMode)toolMode {
@@ -273,6 +302,27 @@ NSString *SKSkimNotePboardType = @"SKSkimNotePboardType";
 	
 	if (changed)
 		[[NSNotificationCenter defaultCenter] postNotificationName:SKPDFViewActiveAnnotationDidChangeNotification object:self userInfo:nil];
+}
+
+#pragma mark Reading bar
+
+- (BOOL)hasReadingBar {
+    return readingBar != nil;
+}
+
+- (void)toggleReadingBar {
+    if (readingBar) {
+        [readingBar release];
+        readingBar = nil;
+        [self setNeedsDisplay:YES];
+    } else {
+        readingBar = [[SKReadingBar alloc] init];
+        [readingBar setPage:[self currentPage]];
+        int i = [[self document] indexForPage:[self currentPage]];
+        while ([readingBar nextLine] == NO && ++i < (int)[[self document] pageCount])
+            [readingBar setPage:[[self document] pageAtIndex:i]];
+        [self setNeedsDisplay:YES];
+    }
 }
 
 #pragma mark Tracking mousemoved fix
@@ -454,6 +504,33 @@ NSString *SKSkimNotePboardType = @"SKSkimNotePboardType";
         [self selectPreviousActiveAnnotation:self];
 	} else if (isPresentation == NO && [activeAnnotation isNoteAnnotation] && ((eventChar == NSRightArrowFunctionKey) || (eventChar == NSLeftArrowFunctionKey) || (eventChar == NSUpArrowFunctionKey) || (eventChar == NSDownArrowFunctionKey))) {
         [self moveActiveAnnotationForKey:eventChar byAmount:(modifiers & NSShiftKeyMask) ? 10.0 : 1.0];
+    } else if (readingBar && (eventChar == NSDownArrowFunctionKey) && (modifiers & NSAlternateKeyMask)) {
+        unsigned i = [[self document] indexForPage:[readingBar page]];
+        if (modifiers & NSShiftKeyMask) {
+            if (++i < [[self document] pageCount])
+                [readingBar setPage:[[self document] pageAtIndex:i]];
+            else return;
+        }
+        while ([readingBar nextLine] == NO && ++i < [[self document] pageCount])
+            [readingBar setPage:[[self document] pageAtIndex:i]];
+        if ([readingBar page] && [[readingBar page] isEqual:[self currentPage]] == NO)
+            [self goToPage:[readingBar page]];
+        [self setNeedsDisplay:YES];
+    } else if (readingBar && (eventChar == NSUpArrowFunctionKey) && (modifiers & NSAlternateKeyMask)) {
+        unsigned i = [[self document] indexForPage:[readingBar page]];
+        if (modifiers & NSShiftKeyMask) {
+            if (i-- > 0) {
+                [readingBar setPage:[[self document] pageAtIndex:i]];
+                while ([readingBar nextLine] == NO && i-- > 0)
+                    [readingBar setPage:[[self document] pageAtIndex:i]];
+            } else return;
+        } else {
+            while ([readingBar previousLine] == NO && i-- > 0)
+                [readingBar setPage:[[self document] pageAtIndex:i]];
+        }
+        if ([readingBar page] && [[readingBar page] isEqual:[self currentPage]] == NO)
+            [self goToPage:[readingBar page]];
+        [self setNeedsDisplay:YES];
     } else {
 		[super keyDown:theEvent];
     }
@@ -1768,6 +1845,87 @@ static inline NSRect rectWithCorners(NSPoint p1, NSPoint p2)
 	[NSCursor unhide];
 	[documentView setPostsBoundsChangedNotifications:postNotification];
 	[self flagsChanged:theEvent]; // update cursor
+}
+
+@end
+
+#pragma mark -
+
+@implementation SKReadingBar
+
+- (id)init {
+    if (self = [super init]) {
+        page = nil;
+        lineBounds = nil;
+        currentLine = -1;
+    }
+    return self;
+}
+
+- (void)dealloc {
+    [page release];
+    [lineBounds release];
+    [super dealloc];
+}
+
+- (PDFPage *)page {
+    return page;
+}
+
+- (void)setPage:(PDFPage *)newPage {
+    if (page != newPage) {
+        [page release];
+        page = [newPage retain];
+        [lineBounds release];
+        lineBounds = [[page lineBounds] retain];
+        currentLine = -1;
+    } 
+}
+
+- (int)currentLine {
+    return currentLine;
+}
+
+- (void)setCurrentLine:(int)lineIndex {
+    currentLine = lineIndex;
+}
+
+- (unsigned int)numberOfLines {
+    return [lineBounds count];
+}
+
+- (NSRect)currentBounds {
+    if (page ==nil || currentLine == -1)
+        return NSZeroRect;
+    return [[lineBounds objectAtIndex:currentLine] rectValue];
+}
+
+- (NSRect)currentBoundsForBox:(PDFDisplayBox)box {
+    if (page ==nil || currentLine == -1)
+        return NSZeroRect;
+    NSRect rect = [self currentBounds];
+    NSRect bounds = [page boundsForBox:box];
+    rect.origin.x = NSMinX(bounds);
+    rect.size.width = NSWidth(bounds);
+    return rect;
+}
+
+- (BOOL)nextLine {
+    if (currentLine < (int)[lineBounds count] - 1) {
+        currentLine++;
+        return YES;
+    }
+    return NO;
+}
+
+- (BOOL)previousLine {
+    if (currentLine == -1 && [lineBounds count])
+        currentLine = [lineBounds count];
+    if (currentLine > 0) {
+        currentLine--;
+        return YES;
+    }
+    return NO;
 }
 
 @end

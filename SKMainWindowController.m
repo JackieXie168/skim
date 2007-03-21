@@ -1137,6 +1137,9 @@ static NSString *SKDocumentToolbarNotesPaneItemIdentifier = @"SKDocumentToolbarN
 	savedState.autoHidesScrollers = [scrollView autohidesScrollers];
 	[scrollView setAutohidesScrollers:YES];
     
+    if ([pdfView hasReadingBar])
+        [pdfView toggleReadingBar];
+    
     // Get the screen information.
     NSScreen *screen = [[self window] screen]; // @@ or should we use the mainScreen?
     NSNumber *screenID = [[screen deviceDescription] objectForKey:@"NSScreenNumber"];
@@ -1316,6 +1319,10 @@ static NSString *SKDocumentToolbarNotesPaneItemIdentifier = @"SKDocumentToolbarN
 - (IBAction)dismissPasswordSheet:(id)sender {
     [NSApp endSheet:passwordSheet returnCode:[sender tag]];
     [passwordSheet orderOut:self];
+}
+
+- (IBAction)toggleReadingBar:(id)sender {
+    [pdfView toggleReadingBar];
 }
 
 - (IBAction)printDocument:(id)sender{
@@ -3020,6 +3027,12 @@ static NSArray *prioritySortedThumbnails(NSArray *dirtyNails, int currentPageInd
             return YES;
     } else if (action == @selector(password:)) {
         return [[self pdfDocument] isEncrypted] && [[self pdfDocument] isLocked];
+    } else if (action == @selector(toggleReadingBar:)) {
+        if ([[self pdfView] hasReadingBar])
+            [menuItem setTitle:NSLocalizedString(@"Hide Reading Bar", @"Menu item title")];
+        else
+            [menuItem setTitle:NSLocalizedString(@"Show Reading Bar", @"Menu item title")];
+        return YES;
     }
     return YES;
 }
