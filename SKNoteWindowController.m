@@ -41,6 +41,7 @@
 #import "BDSKDragImageView.h"
 #import "SKPDFAnnotationNote.h"
 #import "SKDocument.h"
+#import "NSWindowController_SKExtensions.h"
 
 static NSString *SKNoteWindowFrameAutosaveName = @"SKNoteWindowFrameAutosaveName";
 
@@ -81,14 +82,7 @@ static NSString *SKNoteWindowFrameAutosaveName = @"SKNoteWindowFrameAutosaveName
 - (void)windowDidLoad {
     [[self window] setBackgroundColor:[NSColor colorWithDeviceWhite:0.9 alpha:1.0]];
     
-    [[self window] setFrameUsingName:SKNoteWindowFrameAutosaveName];
-    static NSPoint nextWindowLocation = {0.0, 0.0};
-    [self setShouldCascadeWindows:NO];
-    if ([[self window] setFrameAutosaveName:SKNoteWindowFrameAutosaveName]) {
-        NSRect windowFrame = [[self window] frame];
-        nextWindowLocation = NSMakePoint(NSMinX(windowFrame), NSMaxY(windowFrame));
-    }
-    nextWindowLocation = [[self window] cascadeTopLeftFromPoint:nextWindowLocation];
+    [self setWindowFrameAutosaveNameOrCascade:SKNoteWindowFrameAutosaveName];
     
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleDocumentWillSaveNotification:) 
                                                  name:SKDocumentWillSaveNotification object:[self document]];

@@ -43,6 +43,7 @@
 #import <Quartz/Quartz.h>
 #import "SKPDFAnnotationNote.h"
 #import "SKPDFView.h"
+#import "NSWindowController_SKExtensions.h"
 
 static NSString *SKSnapshotWindowFrameAutosaveName = @"SKSnapshotWindowFrameAutosaveName";
 static NSString *SKSnapshotViewChangedNotification = @"SKSnapshotViewChangedNotification";
@@ -60,15 +61,7 @@ static NSString *SKSnapshotViewChangedNotification = @"SKSnapshotViewChangedNoti
 }
 
 - (void)windowDidLoad {
-    [[self window] setFrameUsingName:SKSnapshotWindowFrameAutosaveName];
-    static NSPoint nextWindowLocation = {0.0, 0.0};
-    [self setShouldCascadeWindows:NO];
-    if ([[self window] setFrameAutosaveName:SKSnapshotWindowFrameAutosaveName]) {
-        NSRect windowFrame = [[self window] frame];
-        nextWindowLocation = NSMakePoint(NSMinX(windowFrame), NSMaxY(windowFrame));
-    }
-    nextWindowLocation = [[self window] cascadeTopLeftFromPoint:nextWindowLocation];
-    
+    [self setWindowFrameAutosaveNameOrCascade:SKSnapshotWindowFrameAutosaveName];
     [[self window] makeFirstResponder:pdfView];
 }
 
