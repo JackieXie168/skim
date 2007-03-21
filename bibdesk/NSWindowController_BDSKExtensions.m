@@ -63,6 +63,38 @@
     }
 }
 
+// we should only cascade windows if we have multiple documents open; bug #1299305
+// the default cascading does not reset the next location when all windows have closed, so we do cascading ourselves
+- (void)setWindowFrameAutosaveNameOrCascade:(NSString *)name {
+    [self setWindowFrameAutosaveNameOrCascade:name setFrame:NSZeroRect];
+}
+
+- (void)setWindowFrameAutosaveNameOrCascade:(NSString *)name setFrame:(NSRect)frameRect {
+    static NSMutableDictionary *nextWindowLocations = nil;
+    if (nextWindowLocations == nil)
+        nextWindowLocations = [[NSMutableDictionary alloc] init];
+    
+    NSValue *value = [nextWindowLocations objectForKey:name];
+    NSPoint point = [value pointValue];
+    
+    if (NSEqualRects(frameRect, NSZeroRect) == NO) {
+        [[self window] setFrameAutosaveName:name];
+        [[self window] setFrame:frameRect display:YES];
+        [self setShouldCascadeWindows:NO];
+        point = NSMakePoint(NSMinX(frameRect), NSMaxY(frameRect));
+    } else {
+        // Set the frame from prefs first, or setFrameAutosaveName: will overwrite the prefs with the nib values if it returns NO
+        [[self window] setFrameUsingName:name];
+        [self setShouldCascadeWindows:NO];
+        if ([[self window] setFrameAutosaveName:name] || value == nil) {
+            frameRect = [[self window] frame];
+            point = NSMakePoint(NSMinX(frameRect), NSMaxY(frameRect));
+        }
+    }
+    point = [[self window] cascadeTopLeftFromPoint:point];
+    [nextWindowLocations setObject:[NSValue valueWithPoint:point] forKey:name];
+}
+
 @end
 
 
