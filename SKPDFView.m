@@ -248,15 +248,11 @@ NSString *SKSkimNotePboardType = @"SKSkimNotePboardType";
             }
         }
     }
-    [readingBar setPage:nil];
+    
+    [readingBar release];
+    readingBar = nil;
+    
     [super setDocument:document];
-    if (readingBar) {
-        int i = -1;
-        while ([readingBar nextLine] == NO) {
-            if (++i < (int)[document pageCount])
-                [readingBar setPage:[document pageAtIndex:i]];
-        }
-    }
 }
 
 - (SKToolMode)toolMode {
