@@ -1025,13 +1025,13 @@
 				<key>defaultsDictionary</key>
 				<dict>
 					<key>BibTeX Binary Path</key>
-					<string>/usr/local/teTeX/bin/powerpc-apple-darwin-current/bibtex</string>
+					<string>/usr/texbin/bibtex</string>
 					<key>BibTeX Style</key>
 					<string>abbrv</string>
 					<key>Character encoding for TeX preview file</key>
 					<integer>1</integer>
 					<key>TeX Binary Path</key>
-					<string>/usr/local/teTeX/bin/powerpc-apple-darwin-current/pdflatex</string>
+					<string>/usr/texbin/pdflatex</string>
 					<key>Uses TeX</key>
 					<false/>
 				</dict>
