@@ -59,3 +59,5 @@ extern NSString *SKUpdateLatestNotifiedVersionKey;
 extern NSString *SKLastToolModeKey;
 extern NSString *SKShouldAntiAliasKey;
 extern NSString *SKGreekingThresholdKey;
+extern NSString *SKReadingBarColorKey;
+extern NSString *SKReadingBarTransparencyKey;

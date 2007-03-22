@@ -46,6 +46,7 @@
 #import "NSCursor_SKExtensions.h"
 #import "SKApplication.h"
 #import "SKStringConstants.h"
+#import "NSUserDefaultsController_SKExtensions.h"
 
 NSString *SKPDFViewToolModeChangedNotification = @"SKPDFViewToolModeChangedNotification";
 NSString *SKPDFViewAnnotationModeChangedNotification = @"SKPDFViewAnnotationModeChangedNotification";
@@ -96,6 +97,8 @@ NSString *SKSkimNotePboardType = @"SKSkimNotePboardType";
                                                      name:SKAnnotationDidChangeNotification object:nil];
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleScrollMagnifyNotification:) 
                                                      name:SKScrollMagnifyNotification object:nil];
+        [[NSUserDefaultsController sharedUserDefaultsController] addObserver:self forKey:SKReadingBarColorKey];
+        [[NSUserDefaultsController sharedUserDefaultsController] addObserver:self forKey:SKReadingBarTransparencyKey];
     }
     return self;
 }
@@ -109,11 +112,15 @@ NSString *SKSkimNotePboardType = @"SKSkimNotePboardType";
                                                      name:SKAnnotationDidChangeNotification object:nil];
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleScrollMagnifyNotification:) 
                                                      name:SKScrollMagnifyNotification object:nil];
+        [[NSUserDefaultsController sharedUserDefaultsController] addObserver:self forKey:SKReadingBarColorKey];
+        [[NSUserDefaultsController sharedUserDefaultsController] addObserver:self forKey:SKReadingBarTransparencyKey];
     }
     return self;
 }
 
 - (void)dealloc {
+    [[NSUserDefaultsController sharedUserDefaultsController] removeObserver:self forKey:SKReadingBarColorKey];
+    [[NSUserDefaultsController sharedUserDefaultsController] removeObserver:self forKey:SKReadingBarTransparencyKey];
     [[NSNotificationCenter defaultCenter] removeObserver:self];
     [self doAutohide:NO]; // invalidates and releases the timer
     [[SKPDFHoverWindow sharedHoverWindow] orderOut:self];
@@ -180,7 +187,9 @@ NSString *SKSkimNotePboardType = @"SKSkimNotePboardType";
     }
     
     if (readingBar) {
-        [[NSColor colorWithDeviceRed:1.0 green:1.0 blue:0.0 alpha:0.2] set];
+        NSColor *color = [NSUnarchiver unarchiveObjectWithData:[[NSUserDefaults standardUserDefaults] dataForKey:SKReadingBarColorKey]];
+        float alpha = 1.0 - [[NSUserDefaults standardUserDefaults] floatForKey:SKReadingBarTransparencyKey];
+        [[color colorWithAlphaComponent:alpha] set];
         NSRect bounds = [pdfPage boundsForBox:[self displayBox]];
         if ([[readingBar page] isEqual:pdfPage]) {
             NSRect rect = [readingBar currentBoundsForBox:[self displayBox]];
@@ -1210,6 +1219,20 @@ static inline NSRect rectWithCorners(NSPoint p1, NSPoint p2)
         return YES;
     } else {
         return [super validateMenuItem:menuItem];
+    }
+}
+
+#pragma mark KVO
+
+- (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context {
+    if (object == [NSUserDefaultsController sharedUserDefaultsController] && [keyPath hasPrefix:@"values."]) {
+        NSString *key = [keyPath substringFromIndex:7];
+        if ([key isEqualToString:SKReadingBarColorKey] || [key isEqualToString:SKReadingBarTransparencyKey]) {
+            if (readingBar)
+                [self setNeedsDisplay:YES];
+        }
+    } else {
+        [super observeValueForKeyPath:keyPath ofObject:object change:change context:context];
     }
 }
 
