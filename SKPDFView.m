@@ -81,6 +81,7 @@ NSString *SKSkimNotePboardType = @"SKSkimNotePboardType";
 - (void)selectSnapshotWithEvent:(NSEvent *)theEvent;
 - (void)magnifyWithEvent:(NSEvent *)theEvent;
 - (void)dragWithEvent:(NSEvent *)theEvent;
+- (void)dragReadingBarWithEvent:(NSEvent *)theEvent;
 
 @end
 
@@ -562,19 +563,23 @@ NSString *SKSkimNotePboardType = @"SKSkimNotePboardType";
     } else {
         switch (toolMode) {
             case SKTextToolMode:
-                if ([[self document] isLocked]) {
+            {
+                NSPoint p = mouseDownLoc;
+                p = [self convertPoint:p fromView:nil];
+                PDFPage *page = [self pageForPoint:p nearest:NO];
+                p = [self convertPoint:p toPage:page];
+                if (readingBar && [[readingBar page] isEqual:page] && NSPointInRect(p, [readingBar currentBoundsForBox:[self displayBox]])) {
+                    [self dragReadingBarWithEvent:theEvent];
+                } else if ([[self document] isLocked]) {
                     [super mouseDown:theEvent];
                 } else if([self selectAnnotationWithEvent:theEvent] == NO) {
-                    NSPoint p = mouseDownLoc;
-                    p = [self convertPoint:p fromView:nil];
-                    PDFPage *page = [self pageForPoint:p nearest:NO];
-                    p = [self convertPoint:p toPage:page];
                     if ([[page selectionForRect:NSMakeRect(p.x - 30.0, p.y - 30.0, 60.0, 60.0)] string] == nil)
                         [self dragWithEvent:theEvent];
                     else
                         [super mouseDown:theEvent];
                 }
                 break;
+            }
             case SKMoveToolMode:
                 [self dragWithEvent:theEvent];	
                 break;
@@ -1626,6 +1631,57 @@ static inline NSRect rectWithCorners(NSPoint p1, NSPoint p2)
 			}
 				break;
 				
+			case NSLeftMouseUp:
+				keepGoing = NO;
+				break;
+				
+			default:
+				/* Ignore any other kind of event. */
+				break;
+		} // end of switch (event type)
+	} // end of mouse-tracking loop
+    
+    [NSCursor pop];
+    // ??? PDFView's delayed layout seems to reset the cursor to an arrow
+    [self performSelector:@selector(mouseMoved:) withObject:theEvent afterDelay:0];
+}
+
+- (void)dragReadingBarWithEvent:(NSEvent *)theEvent {
+	BOOL keepGoing = YES;
+    PDFPage *page = [readingBar page];
+    NSArray *lineBounds = [page lineBounds];
+	
+    [[NSCursor closedHandCursor] push];
+    
+	while (keepGoing) {
+		theEvent = [[self window] nextEventMatchingMask: NSLeftMouseUpMask | NSLeftMouseDraggedMask];
+		switch ([theEvent type]) {
+			case NSLeftMouseDragged:
+            {
+                [[self documentView] autoscroll:theEvent];
+                NSPoint mouseLoc = [self convertPoint:[theEvent locationInWindow] fromView:nil];
+                PDFPage *currentPage = [self pageForPoint:mouseLoc nearest:YES];
+                
+                mouseLoc = [self convertPoint:mouseLoc toPage:currentPage];
+                
+                if ([currentPage isEqual:page] == NO) {
+                    page = currentPage;
+                    lineBounds = [page lineBounds];
+                }
+                
+                int i, iMax = [lineBounds count];
+                
+                for (i = 0; i < iMax; i++) {
+                    NSRect rect = [[lineBounds objectAtIndex:i] rectValue];
+                    if (NSMinY(rect) <= mouseLoc.y && NSMaxY(rect) >= mouseLoc.y) {
+                        [readingBar setPage:page];
+                        [readingBar setCurrentLine:i];
+                        [self setNeedsDisplay:YES];
+                        break;
+                    }
+                }
+				break;
+            }
 			case NSLeftMouseUp:
 				keepGoing = NO;
 				break;
