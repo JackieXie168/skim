@@ -71,7 +71,7 @@
 #define WINDOW_X_DELTA              0.0
 #define WINDOW_Y_DELTA              70.0
 
-static NSString *SKMainWindowFrameAutosaveName = @"SKMainWindowFrameAutosaveName";
+static NSString *SKMainWindowFrameAutosaveName = @"SKMainWindow";
 
 static NSString *SKDocumentToolbarIdentifier = @"SKDocumentToolbarIdentifier";
 

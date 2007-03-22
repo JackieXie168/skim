@@ -43,7 +43,7 @@
 #import "SKDocument.h"
 #import "NSWindowController_SKExtensions.h"
 
-static NSString *SKNoteWindowFrameAutosaveName = @"SKNoteWindowFrameAutosaveName";
+static NSString *SKNoteWindowFrameAutosaveName = @"SKNoteWindow";
 
 @interface SKRectStringTransformer : NSValueTransformer
 @end
