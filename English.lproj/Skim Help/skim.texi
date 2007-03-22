@@ -748,6 +748,49 @@ When the PDF file is not set to zoom to fit its window, you can resize the windo
 
 @c ======================================================================================
 
+@topic Showing the reading bar
+
+In skim you can highlight the line of text you are reading, to help you concentrate on reading or easily find back what you were reading. 
+
+@box{taskbox}
+@itemize
+@item To show the reading bar, choose View > Show Reading Bar.
+@end itemize
+@itemize
+@item To move the reading bar to the next (previous) line, hold down the Option key and press the down arrow (up arrow) key.
+@end itemize
+@itemize
+@item To move the reading bar to the next (previous) page, hold down the Option key and press the left arrow (right arrow) key.
+@end itemize
+@endbox
+
+You can also drag the reading bar to another line.
+
+@heading See also
+@menu
+* Changing the color of the reading bar::
+@end menu
+
+@c ======================================================================================
+
+@topic Changing the color of the reading bar
+
+In skim you can highlight the line of text you are reading. You can change the color and transparency 
+
+@box{taskbox}
+@heading To change the color or transparency of the reading bar:
+@itemize
+@item To change the color or transparency of the reading bar, choose Skim > Preferences, click Colors, and select Color or move the Transparency slider. 
+@end itemize
+@endbox
+
+@heading See also
+@menu
+* Showing the reading bar::
+@end menu
+
+@c ======================================================================================
+
 @topic Viewing PDF documents in full screen
 
 Skim allows you to view PDF documents in kiosk mode, so you can concentrate just on reading. 
