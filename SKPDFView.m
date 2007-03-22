@@ -682,8 +682,13 @@ static inline NSRect rectWithCorners(NSPoint p1, NSPoint p2)
     } else {
         switch (toolMode) {
             case SKTextToolMode:
-                [super mouseMoved:theEvent];
+            {
+                if (readingBar && NSPointInRect([self convertPoint:[theEvent locationInWindow] fromView:nil], [self convertRect:[readingBar currentBoundsForBox:[self displayBox]] fromPage:[readingBar page]]))
+                    cursor = [NSCursor openHandCursor];
+                else
+                    [super mouseMoved:theEvent];
                 break;
+            }
             case SKMoveToolMode:
                 cursor = [NSCursor openHandCursor];
                 break;
