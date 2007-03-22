@@ -491,48 +491,55 @@ NSString *SKSkimNotePboardType = @"SKSkimNotePboardType";
 {
     NSString *characters = [theEvent charactersIgnoringModifiers];
     unichar eventChar = [characters length] > 0 ? [characters characterAtIndex:0] : 0;
-	unsigned int modifiers = [theEvent modifierFlags] & NSDeviceIndependentModifierFlagsMask;
+	unsigned int modifiers = [theEvent modifierFlags] & (NSCommandKeyMask | NSAlternateKeyMask | NSShiftKeyMask | NSControlKeyMask);
     BOOL isPresentation = hasNavigation && autohidesCursor;
     
-	if (isPresentation && (eventChar == NSRightArrowFunctionKey)) {
+	if (isPresentation && (eventChar == NSRightArrowFunctionKey) && (modifiers == 0)) {
         [self goToNextPage:self];
-    } else if (isPresentation && (eventChar == NSLeftArrowFunctionKey)) {
+    } else if (isPresentation && (eventChar == NSLeftArrowFunctionKey) && (modifiers == 0)) {
 		[self goToPreviousPage:self];
-	} else if ((eventChar == NSDeleteCharacter) || (eventChar == NSDeleteFunctionKey)) {
+	} else if ((eventChar == NSDeleteCharacter || eventChar == NSDeleteFunctionKey) && (modifiers == 0)) {
 		[self delete:self];
-    } else if (isPresentation == NO && [self toolMode] == SKTextToolMode && ((eventChar == NSEnterCharacter) || (eventChar == NSFormFeedCharacter) || (eventChar == NSNewlineCharacter) || (eventChar == NSCarriageReturnCharacter))){
+    } else if (isPresentation == NO && [self toolMode] == SKTextToolMode && (eventChar == NSEnterCharacter || eventChar == NSFormFeedCharacter || eventChar == NSNewlineCharacter || eventChar == NSCarriageReturnCharacter) && (modifiers == 0)) {
         if (activeAnnotation && activeAnnotation != editAnnotation)
             [self editActiveAnnotation:self];
-    } else if (isPresentation == NO && [self toolMode] == SKTextToolMode && (eventChar == NSTabCharacter) && (modifiers & NSAlternateKeyMask)){
+    } else if (isPresentation == NO && [self toolMode] == SKTextToolMode && (eventChar == NSTabCharacter) && (modifiers == NSAlternateKeyMask)){
         [self selectNextActiveAnnotation:self];
-    } else if (isPresentation == NO && [self toolMode] == SKTextToolMode && (eventChar == NSBackTabCharacter) && (modifiers & NSAlternateKeyMask)){
+    } else if (isPresentation == NO && [self toolMode] == SKTextToolMode && (eventChar == NSBackTabCharacter) && (modifiers == NSAlternateKeyMask)){
         [self selectPreviousActiveAnnotation:self];
-	} else if (isPresentation == NO && [activeAnnotation isNoteAnnotation] && ((eventChar == NSRightArrowFunctionKey) || (eventChar == NSLeftArrowFunctionKey) || (eventChar == NSUpArrowFunctionKey) || (eventChar == NSDownArrowFunctionKey))) {
+	} else if (isPresentation == NO && [activeAnnotation isNoteAnnotation] && (eventChar == NSRightArrowFunctionKey || eventChar == NSLeftArrowFunctionKey || eventChar == NSUpArrowFunctionKey || eventChar == NSDownArrowFunctionKey) && (modifiers == 0 || modifiers == NSShiftKeyMask)) {
         [self moveActiveAnnotationForKey:eventChar byAmount:(modifiers & NSShiftKeyMask) ? 10.0 : 1.0];
-    } else if (readingBar && (eventChar == NSDownArrowFunctionKey) && (modifiers & NSAlternateKeyMask)) {
+    } else if (readingBar && (eventChar == NSDownArrowFunctionKey) && (modifiers == NSAlternateKeyMask)) {
         unsigned i = [[self document] indexForPage:[readingBar page]];
-        if (modifiers & NSShiftKeyMask) {
-            if (++i < [[self document] pageCount])
-                [readingBar setPage:[[self document] pageAtIndex:i]];
-            else return;
-        }
+        if (i == NSNotFound) return;
         while ([readingBar nextLine] == NO && ++i < [[self document] pageCount])
             [readingBar setPage:[[self document] pageAtIndex:i]];
         if ([readingBar page] && [[readingBar page] isEqual:[self currentPage]] == NO)
             [self goToPage:[readingBar page]];
         [self setNeedsDisplay:YES];
-    } else if (readingBar && (eventChar == NSUpArrowFunctionKey) && (modifiers & NSAlternateKeyMask)) {
+    } else if (readingBar && (eventChar == NSRightArrowFunctionKey) && (modifiers == NSAlternateKeyMask)) {
         unsigned i = [[self document] indexForPage:[readingBar page]];
-        if (modifiers & NSShiftKeyMask) {
-            if (i-- > 0) {
-                [readingBar setPage:[[self document] pageAtIndex:i]];
-                while ([readingBar nextLine] == NO && i-- > 0)
-                    [readingBar setPage:[[self document] pageAtIndex:i]];
-            } else return;
-        } else {
-            while ([readingBar previousLine] == NO && i-- > 0)
-                [readingBar setPage:[[self document] pageAtIndex:i]];
-        }
+        if (i == NSNotFound || ++i >= [[self document] pageCount]) return;
+        [readingBar setPage:[[self document] pageAtIndex:i]];
+        while ([readingBar nextLine] == NO && ++i < [[self document] pageCount])
+            [readingBar setPage:[[self document] pageAtIndex:i]];
+        if ([readingBar page] && [[readingBar page] isEqual:[self currentPage]] == NO)
+            [self goToPage:[readingBar page]];
+        [self setNeedsDisplay:YES];
+    } else if (readingBar && (eventChar == NSUpArrowFunctionKey) && (modifiers == NSAlternateKeyMask)) {
+        unsigned i = [[self document] indexForPage:[readingBar page]];
+        if (i == NSNotFound) return;
+        while ([readingBar previousLine] == NO && i-- > 0)
+            [readingBar setPage:[[self document] pageAtIndex:i]];
+        if ([readingBar page] && [[readingBar page] isEqual:[self currentPage]] == NO)
+            [self goToPage:[readingBar page]];
+        [self setNeedsDisplay:YES];
+    } else if (readingBar && (eventChar == NSLeftArrowFunctionKey) && (modifiers == NSAlternateKeyMask)) {
+        unsigned i = [[self document] indexForPage:[readingBar page]];
+        if (i == NSNotFound || i-- <= 0) return;
+        [readingBar setPage:[[self document] pageAtIndex:i]];
+        while ([readingBar nextLine] == NO && i-- > 0)
+            [readingBar setPage:[[self document] pageAtIndex:i]];
         if ([readingBar page] && [[readingBar page] isEqual:[self currentPage]] == NO)
             [self goToPage:[readingBar page]];
         [self setNeedsDisplay:YES];
@@ -1914,13 +1921,13 @@ static inline NSRect rectWithCorners(NSPoint p1, NSPoint p2)
 }
 
 - (NSRect)currentBounds {
-    if (page ==nil || currentLine == -1)
+    if (page == nil || currentLine == -1)
         return NSZeroRect;
     return [[lineBounds objectAtIndex:currentLine] rectValue];
 }
 
 - (NSRect)currentBoundsForBox:(PDFDisplayBox)box {
-    if (page ==nil || currentLine == -1)
+    if (page == nil || currentLine == -1)
         return NSZeroRect;
     NSRect rect = [self currentBounds];
     NSRect bounds = [page boundsForBox:box];
