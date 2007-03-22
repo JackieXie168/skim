@@ -46,17 +46,24 @@
     
     PDFAnnotation *note;
     
+    BOOL keepOnTop;
+    BOOL forceOnTop;
+    
     CFArrayRef editors;
 }
 
 - (id)initWithNote:(PDFAnnotation *)aNote;
 
-- (IBAction)changeKeepOnTop:(id)sender;
-
 - (PDFAnnotation *)note;
 - (void)setNote:(PDFAnnotation *)newNote;
 
 - (BOOL)isNoteType;
+
+- (BOOL)keepOnTop;
+- (void)setKeepOnTop:(BOOL)flag;
+
+- (BOOL)forceOnTop;
+- (void)setForceOnTop:(BOOL)flag;
 
 - (BOOL)commitEditing;
 - (void)handleDocumentWillSaveNotification:(NSNotification *)notification;
