@@ -23,6 +23,8 @@
         <string>SKGreekingThreshold</string>
         <string>SKShouldAntiAlias</string>
         <string>SKBlankAllWindows</string>
+        <string>SKReadingBarColor</string>
+        <string>SKReadingBarTransparency</string>
     </array>
 	<key>SKAutoCheckFileUpdate</key>
 	<false/>
@@ -73,7 +75,12 @@
 	<real>3.0</real>
     <key>SKShouldAntiAlias</key>
 	<true/>
-    <key>SKBlankAllWindows</key>
-    <false/>
+    <key>SKReadingBarColor</key>
+	<data>
+	BAt0eXBlZHN0cmVhbYED6IQBQISEhAdOU0NvbG9yAISECE5TT2JqZWN0AIWEAWMBhARm
+	ZmZmAQEAAYY=
+	</data>
+    <key>SKReadingBarTransparency</key>
+    <real>0.7</real>
 </dict>
 </plist>

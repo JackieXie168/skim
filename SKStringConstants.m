@@ -60,3 +60,5 @@ NSString *SKUpdateLatestNotifiedVersionKey = @"SKUpdateLatestNotifiedVersion";
 NSString *SKLastToolModeKey = @"SKLastToolMode";
 NSString *SKShouldAntiAliasKey = @"SKShouldAntiAlias";
 NSString *SKGreekingThresholdKey = @"SKGreekingThreshold";
+NSString *SKReadingBarColorKey = @"SKReadingBarColor";
+NSString *SKReadingBarTransparencyKey = @"SKReadingBarTransparency";
