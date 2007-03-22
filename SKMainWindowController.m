@@ -1119,37 +1119,41 @@ static NSString *SKDocumentToolbarNotesPaneItemIdentifier = @"SKDocumentToolbarN
     [pdfView setFrame:[[pdfView superview] bounds]];
 }
 
-- (void)enterPresentationMode {
-    NSScrollView *scrollView = [[pdfView documentView] enclosingScrollView];
-	// Set up presentation mode
-	savedState.displayMode = [pdfView displayMode];
-	[pdfView setDisplayMode:kPDFDisplaySinglePage];
-	savedState.autoScales = [pdfView autoScales];
-	savedState.scaleFactor = [pdfView scaleFactor];
-	[pdfView setAutoScales:YES];
-	savedState.hasHorizontalScroller = [scrollView hasHorizontalScroller];
-	[scrollView setNeverHasHorizontalScroller:YES];
-	savedState.hasVerticalScroller = [scrollView hasVerticalScroller];
-	[scrollView setNeverHasVerticalScroller:YES];
-	savedState.autoHidesScrollers = [scrollView autohidesScrollers];
-	[scrollView setAutohidesScrollers:YES];
-    
-    if ([pdfView hasReadingBar])
-        [pdfView toggleReadingBar];
-    
+- (BOOL)enterPresentationMode {
     // Get the screen information.
     NSScreen *screen = [[self window] screen]; // @@ or should we use the mainScreen?
     NSNumber *screenID = [[screen deviceDescription] objectForKey:@"NSScreenNumber"];
     
     // Capture the screen.
-    CGDisplayCapture((CGDirectDisplayID)[screenID longValue]);
+    CGDisplayErr err = CGDisplayCapture((CGDirectDisplayID)[screenID longValue]);
     
-    NSColor *backgroundColor = [NSColor blackColor];
-    [pdfView setBackgroundColor:backgroundColor];
-    [fullScreenWindow setBackgroundColor:backgroundColor];
-    [fullScreenWindow setLevel:CGShieldingWindowLevel()];
+    if (err == kCGErrorSuccess) {
+        NSScrollView *scrollView = [[pdfView documentView] enclosingScrollView];
+        // Set up presentation mode
+        savedState.displayMode = [pdfView displayMode];
+        [pdfView setDisplayMode:kPDFDisplaySinglePage];
+        savedState.autoScales = [pdfView autoScales];
+        savedState.scaleFactor = [pdfView scaleFactor];
+        [pdfView setAutoScales:YES];
+        savedState.hasHorizontalScroller = [scrollView hasHorizontalScroller];
+        [scrollView setNeverHasHorizontalScroller:YES];
+        savedState.hasVerticalScroller = [scrollView hasVerticalScroller];
+        [scrollView setNeverHasVerticalScroller:YES];
+        savedState.autoHidesScrollers = [scrollView autohidesScrollers];
+        [scrollView setAutohidesScrollers:YES];
+        
+        if ([pdfView hasReadingBar])
+            [pdfView toggleReadingBar];
+        
+        NSColor *backgroundColor = [NSColor blackColor];
+        [pdfView setBackgroundColor:backgroundColor];
+        [fullScreenWindow setBackgroundColor:backgroundColor];
+        [fullScreenWindow setLevel:CGShieldingWindowLevel()];
+        
+        isPresentation = YES;
+    }
     
-    isPresentation = YES;
+    return err == kCGErrorSuccess;
 }
 
 - (void)exitPresentationMode {
@@ -1202,15 +1206,17 @@ static NSString *SKDocumentToolbarNotesPaneItemIdentifier = @"SKDocumentToolbarN
     
     BOOL wasFullScreen = [self isFullScreen];
     
-    [self enterPresentationMode];
-    
-    if (wasFullScreen) {
-        [self hideSideWindows];
-        SetSystemUIMode(kUIModeNormal, 0);
-    } else
-        [self goFullScreen];
-    
-    [pdfView setHasNavigation:YES autohidesCursor:YES];
+    if ([self enterPresentationMode]) {
+        
+        if (wasFullScreen) {
+            [self hideSideWindows];
+            SetSystemUIMode(kUIModeNormal, 0);
+        } else
+            [self goFullScreen];
+        
+        [pdfView setHasNavigation:YES autohidesCursor:YES];
+        
+    } else NSBeep(); // or an alert?
 }
 
 - (IBAction)exitFullScreen:(id)sender {
