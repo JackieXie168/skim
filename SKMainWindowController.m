@@ -972,7 +972,7 @@ static NSString *SKDocumentToolbarNotesPaneItemIdentifier = @"SKDocumentToolbarN
         [mainWindow makeFirstResponder:nil];
     [fullScreenWindow setMainView:pdfView];
     [fullScreenWindow setBackgroundColor:backgroundColor];
-    [fullScreenWindow setLevel:[self isPresentation] ? CGShieldingWindowLevel() : NSNormalWindowLevel];
+    [fullScreenWindow setLevel:[self isPresentation] ? NSScreenSaverWindowLevel : NSNormalWindowLevel];
     [pdfView setBackgroundColor:backgroundColor];
     [pdfView layoutDocumentView];
     [pdfView setNeedsDisplay:YES];
@@ -1121,13 +1121,13 @@ static NSString *SKDocumentToolbarNotesPaneItemIdentifier = @"SKDocumentToolbarN
 
 - (BOOL)enterPresentationMode {
     // Get the screen information.
-    NSScreen *screen = [[self window] screen]; // @@ or should we use the mainScreen?
-    NSNumber *screenID = [[screen deviceDescription] objectForKey:@"NSScreenNumber"];
+    //NSScreen *screen = [[self window] screen]; // @@ or should we use the mainScreen?
+    //NSNumber *screenID = [[screen deviceDescription] objectForKey:@"NSScreenNumber"];
     
     // Capture the screen.
-    CGDisplayErr err = CGDisplayCapture((CGDirectDisplayID)[screenID longValue]);
+    //CGDisplayErr err = CGDisplayCapture((CGDirectDisplayID)[screenID longValue]);
     
-    if (err == kCGErrorSuccess) {
+    //if (err == kCGErrorSuccess) {
         NSScrollView *scrollView = [[pdfView documentView] enclosingScrollView];
         // Set up presentation mode
         savedState.displayMode = [pdfView displayMode];
@@ -1148,12 +1148,12 @@ static NSString *SKDocumentToolbarNotesPaneItemIdentifier = @"SKDocumentToolbarN
         NSColor *backgroundColor = [NSColor blackColor];
         [pdfView setBackgroundColor:backgroundColor];
         [fullScreenWindow setBackgroundColor:backgroundColor];
-        [fullScreenWindow setLevel:CGShieldingWindowLevel()];
+        [fullScreenWindow setLevel:NSScreenSaverWindowLevel];
         
         isPresentation = YES;
-    }
+    //}
     
-    return err == kCGErrorSuccess;
+    return YES; //err == kCGErrorSuccess;
 }
 
 - (void)exitPresentationMode {
@@ -1172,9 +1172,9 @@ static NSString *SKDocumentToolbarNotesPaneItemIdentifier = @"SKDocumentToolbarN
     [scrollView setAutohidesScrollers:savedState.autoHidesScrollers];		
     
     // Get the screen information.
-    NSScreen *screen = [fullScreenWindow screen];
-    NSNumber *screenID = [[screen deviceDescription] objectForKey:@"NSScreenNumber"];
-    CGDisplayRelease((CGDirectDisplayID)[screenID longValue]);
+    //NSScreen *screen = [fullScreenWindow screen];
+    //NSNumber *screenID = [[screen deviceDescription] objectForKey:@"NSScreenNumber"];
+    //CGDisplayRelease((CGDirectDisplayID)[screenID longValue]);
     
     NSColor *backgroundColor = [NSUnarchiver unarchiveObjectWithData:[[NSUserDefaults standardUserDefaults] dataForKey:SKFullScreenBackgroundColorKey]];
     [pdfView setBackgroundColor:backgroundColor];
@@ -1190,6 +1190,8 @@ static NSString *SKDocumentToolbarNotesPaneItemIdentifier = @"SKDocumentToolbarN
     
     if ([[[self window] screen] isEqual:[[NSScreen screens] objectAtIndex:0]])
         SetSystemUIMode(kUIModeAllHidden, kUIOptionAutoShowMenuBar);
+    else
+        SetSystemUIMode(kUIModeNormal, 0);
     
     if ([self isPresentation])
         [self exitPresentationMode];
@@ -1210,9 +1212,10 @@ static NSString *SKDocumentToolbarNotesPaneItemIdentifier = @"SKDocumentToolbarN
         
         if (wasFullScreen) {
             [self hideSideWindows];
-            SetSystemUIMode(kUIModeNormal, 0);
         } else
             [self goFullScreen];
+        
+        SetSystemUIMode(kUIModeAllHidden, 0);
         
         [pdfView setHasNavigation:YES autohidesCursor:YES];
         
@@ -1234,8 +1237,8 @@ static NSString *SKDocumentToolbarNotesPaneItemIdentifier = @"SKDocumentToolbarN
     
     if ([self isPresentation])
         [self exitPresentationMode];
-    else
-        SetSystemUIMode(kUIModeNormal, 0);
+    
+    SetSystemUIMode(kUIModeNormal, 0);
     
     [self removeFullScreen];
 }
