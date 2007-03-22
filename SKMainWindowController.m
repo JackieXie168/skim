@@ -317,7 +317,6 @@ static NSString *SKDocumentToolbarNotesPaneItemIdentifier = @"SKDocumentToolbarN
     [[NSUserDefaultsController sharedUserDefaultsController] addObserver:self forKey:SKShouldHighlightSearchResultsKey];
     [[NSUserDefaultsController sharedUserDefaultsController] addObserver:self forKey:SKThumbnailSizeKey];
     [[NSUserDefaultsController sharedUserDefaultsController] addObserver:self forKey:SKSnapshotThumbnailSizeKey];
-    [[NSUserDefaultsController sharedUserDefaultsController] addObserver:self forKey:SKSnapshotsOnTopKey];
     [[NSUserDefaultsController sharedUserDefaultsController] addObserver:self forKey:SKShouldAntiAliasKey];
     [[NSUserDefaultsController sharedUserDefaultsController] addObserver:self forKey:SKGreekingThresholdKey];
 }
@@ -329,7 +328,6 @@ static NSString *SKDocumentToolbarNotesPaneItemIdentifier = @"SKDocumentToolbarN
     [[NSUserDefaultsController sharedUserDefaultsController] removeObserver:self forKey:SKShouldHighlightSearchResultsKey];
     [[NSUserDefaultsController sharedUserDefaultsController] removeObserver:self forKey:SKThumbnailSizeKey];
     [[NSUserDefaultsController sharedUserDefaultsController] removeObserver:self forKey:SKSnapshotThumbnailSizeKey];
-    [[NSUserDefaultsController sharedUserDefaultsController] removeObserver:self forKey:SKSnapshotsOnTopKey];
     [[NSUserDefaultsController sharedUserDefaultsController] removeObserver:self forKey:SKShouldAntiAliasKey];
     [[NSUserDefaultsController sharedUserDefaultsController] removeObserver:self forKey:SKGreekingThresholdKey];
 }
@@ -984,7 +982,7 @@ static NSString *SKDocumentToolbarNotesPaneItemIdentifier = @"SKDocumentToolbarN
     
     while (wc = [wcEnum nextObject]) {
         if ([wc isKindOfClass:[SKNoteWindowController class]] || [wc isKindOfClass:[SKSnapshotWindowController class]])
-            [[wc window] setLevel:NSFloatingWindowLevel];
+            [(id)wc setForceOnTop:YES];
     }
         
     if (NO == [self isPresentation] && [[NSUserDefaults standardUserDefaults] boolForKey:@"SKBlankAllWindows"] && [[NSScreen screens] count] > 1) {
@@ -1020,11 +1018,10 @@ static NSString *SKDocumentToolbarNotesPaneItemIdentifier = @"SKDocumentToolbarN
     
     NSEnumerator *wcEnum = [[[self document] windowControllers] objectEnumerator];
     NSWindowController *wc = [wcEnum nextObject];
-    BOOL snapshotsOnTop  = [[NSUserDefaults standardUserDefaults] boolForKey:SKSnapshotsOnTopKey];
     
     while (wc = [wcEnum nextObject]) {
-        if ([wc isKindOfClass:[SKNoteWindowController class]] || (snapshotsOnTop == NO && [wc isKindOfClass:[SKSnapshotWindowController class]]))
-            [[wc window] setLevel:NSNormalWindowLevel];
+        if ([wc isKindOfClass:[SKNoteWindowController class]] || [wc isKindOfClass:[SKSnapshotWindowController class]])
+            [(id)wc setForceOnTop:NO];
     }
     
     [self setWindow:mainWindow];
@@ -1537,8 +1534,7 @@ void removeTemporaryAnnotations(const void *annotation, void *context)
          goToPageNumber:pageNum
                    rect:rect];
     
-    if ([self isFullScreen] || snapshotsOnTop)
-        [[swc window] setLevel:NSFloatingWindowLevel];
+    [swc setForceOnTop:[self isFullScreen] || [self isPresentation]];
     [[swc window] setHidesOnDeactivate:snapshotsOnTop];
     
     [[self document] addWindowController:swc];
@@ -1622,6 +1618,7 @@ void removeTemporaryAnnotations(const void *annotation, void *context)
     }
     if (wc == nil) {
         wc = [[SKNoteWindowController alloc] initWithNote:annotation];
+        [(SKNoteWindowController *)wc setForceOnTop:[self isFullScreen] || [self isPresentation]];
         [[self document] addWindowController:wc];
         [wc release];
     }
@@ -1883,16 +1880,6 @@ void removeTemporaryAnnotations(const void *annotation, void *context)
         } else if ([key isEqualToString:SKSnapshotThumbnailSizeKey]) {
             [self resetSnapshotSizeIfNeeded];
             [snapshotTableView noteHeightOfRowsWithIndexesChanged:[NSIndexSet indexSetWithIndexesInRange:NSMakeRange(0, [self countOfSnapshots])]];
-        } else if ([key isEqualToString:SKSnapshotsOnTopKey]) {
-            NSEnumerator *wcEnum = [snapshots objectEnumerator];
-            NSWindowController *wc;
-            BOOL snapshotsOnTop = [[NSUserDefaults standardUserDefaults] boolForKey:SKSnapshotsOnTopKey];
-            int level = snapshotsOnTop || [self isFullScreen] ? NSFloatingWindowLevel : NSNormalWindowLevel;
-            
-            while (wc = [wcEnum nextObject]) {
-                [[wc window] setLevel:level];
-                [[wc window] setHidesOnDeactivate:snapshotsOnTop];
-            }
         } else if ([key isEqualToString:SKShouldAntiAliasKey]) {
             [pdfView setShouldAntiAlias:[[NSUserDefaults standardUserDefaults] boolForKey:SKShouldAntiAliasKey]];
         } else if ([key isEqualToString:SKGreekingThresholdKey]) {

@@ -81,6 +81,8 @@ static NSString *SKNoteWindowFrameAutosaveName = @"SKNoteWindowFrameAutosaveName
 
 - (void)windowDidLoad {
     [[self window] setBackgroundColor:[NSColor colorWithDeviceWhite:0.9 alpha:1.0]];
+    [[self window] setLevel:keepOnTop || forceOnTop ? NSFloatingWindowLevel : NSNormalWindowLevel];
+    [[self window] setHidesOnDeactivate:keepOnTop];
     
     [self setWindowFrameAutosaveNameOrCascade:SKNoteWindowFrameAutosaveName];
     
@@ -100,10 +102,6 @@ static NSString *SKNoteWindowFrameAutosaveName = @"SKNoteWindowFrameAutosaveName
         [(PDFAnnotationText *)note setWindowIsOpen:YES];
 }
 
-- (IBAction)changeKeepOnTop:(id)sender {
-    [[self window] setLevel:[sender state] == NSOnState ? NSFloatingWindowLevel : NSNormalWindowLevel];
-}
-
 - (NSString *)windowTitleForDocumentDisplayName:(NSString *)displayName {
     return [[self note] contents];
 }
@@ -121,6 +119,25 @@ static NSString *SKNoteWindowFrameAutosaveName = @"SKNoteWindowFrameAutosaveName
 
 - (BOOL)isNoteType {
     return [[note type] isEqualToString:@"Note"];
+}
+
+- (BOOL)keepOnTop {
+    return keepOnTop;
+}
+
+- (void)setKeepOnTop:(BOOL)flag {
+    keepOnTop = flag;
+    [[self window] setLevel:keepOnTop || forceOnTop ? NSFloatingWindowLevel : NSNormalWindowLevel];
+    [[self window] setHidesOnDeactivate:keepOnTop];
+}
+
+- (BOOL)forceOnTop {
+    return forceOnTop;
+}
+
+- (void)setForceOnTop:(BOOL)flag {
+    forceOnTop = flag;
+    [[self window] setLevel:keepOnTop || forceOnTop ? NSFloatingWindowLevel : NSNormalWindowLevel];
 }
 
 - (void)objectDidBeginEditing:(id)editor {

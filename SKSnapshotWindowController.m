@@ -44,6 +44,8 @@
 #import "SKPDFAnnotationNote.h"
 #import "SKPDFView.h"
 #import "NSWindowController_SKExtensions.h"
+#import "SKStringConstants.h"
+#import "NSUserDefaultsController_SKExtensions.h"
 
 static NSString *SKSnapshotWindowFrameAutosaveName = @"SKSnapshotWindowFrameAutosaveName";
 static NSString *SKSnapshotViewChangedNotification = @"SKSnapshotViewChangedNotification";
@@ -51,6 +53,7 @@ static NSString *SKSnapshotViewChangedNotification = @"SKSnapshotViewChangedNoti
 @implementation SKSnapshotWindowController
 
 - (void)dealloc {
+    [[NSUserDefaultsController sharedUserDefaultsController] removeObserver:self forKey:SKSnapshotsOnTopKey];
 	[[NSNotificationCenter defaultCenter] removeObserver: self];
     [thumbnail release];
     [super dealloc];
@@ -61,8 +64,12 @@ static NSString *SKSnapshotViewChangedNotification = @"SKSnapshotViewChangedNoti
 }
 
 - (void)windowDidLoad {
+    BOOL keepOnTop = [[NSUserDefaults standardUserDefaults] boolForKey:SKSnapshotsOnTopKey];
+    [[self window] setLevel:keepOnTop || forceOnTop ? NSFloatingWindowLevel : NSNormalWindowLevel];
+    [[self window] setHidesOnDeactivate:keepOnTop];
     [self setWindowFrameAutosaveNameOrCascade:SKSnapshotWindowFrameAutosaveName];
     [[self window] makeFirstResponder:pdfView];
+    [[NSUserDefaultsController sharedUserDefaultsController] addObserver:self forKey:SKSnapshotsOnTopKey];
 }
 
 - (NSString *)windowTitleForDocumentDisplayName:(NSString *)displayName {
@@ -229,6 +236,16 @@ static NSString *SKSnapshotViewChangedNotification = @"SKSnapshotViewChangedNoti
     return [NSDictionary dictionaryWithObjectsAndKeys:label, @"label", hasWindow, @"hasWindow", nil];
 }
 
+- (BOOL)forceOnTop {
+    return forceOnTop;
+}
+
+- (void)setForceOnTop:(BOOL)flag {
+    forceOnTop = flag;
+    BOOL keepOnTop = [[NSUserDefaults standardUserDefaults] boolForKey:SKSnapshotsOnTopKey];
+    [[self window] setLevel:keepOnTop || forceOnTop ? NSFloatingWindowLevel : NSNormalWindowLevel];
+}
+
 #pragma mark Thumbnails
 
 - (NSImage *)thumbnailWithSize:(float)size shadowBlurRadius:(float)shadowBlurRadius shadowOffset:(NSSize)shadowOffset {
@@ -349,6 +366,21 @@ static NSString *SKSnapshotViewChangedNotification = @"SKSnapshotViewChangedNoti
     }
     [self willChangeValueForKey:@"pageAndWindow"];
     [self didChangeValueForKey:@"pageAndWindow"];
+}
+
+#pragma mark KVO
+
+- (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context {
+    if (object == [NSUserDefaultsController sharedUserDefaultsController] && [keyPath hasPrefix:@"values."]) {
+        NSString *key = [keyPath substringFromIndex:7];
+        if ([key isEqualToString:SKSnapshotsOnTopKey]) {
+            BOOL keepOnTop = [[NSUserDefaults standardUserDefaults] boolForKey:SKSnapshotsOnTopKey];
+            [[self window] setLevel:keepOnTop || forceOnTop ? NSFloatingWindowLevel : NSNormalWindowLevel];
+            [[self window] setHidesOnDeactivate:keepOnTop];
+        }
+    } else {
+        [super observeValueForKeyPath:keyPath ofObject:object change:change context:context];
+    }
 }
 
 @end

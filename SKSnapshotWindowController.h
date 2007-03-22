@@ -46,6 +46,7 @@
     NSImage *thumbnail;
     id delegate;
     BOOL miniaturizing;
+    BOOL forceOnTop;
 }
 - (void)setPdfDocument:(PDFDocument *)pdfDocument scaleFactor:(float)factor goToPageNumber:(int)pageNum rect:(NSRect)rect;
 - (id)delegate;
@@ -56,6 +57,8 @@
 - (NSString *)pageLabel;
 - (unsigned int)pageIndex;
 - (NSDictionary *)pageAndWindow;
+- (BOOL)forceOnTop;
+- (void)setForceOnTop:(BOOL)flag;
 - (NSImage *)thumbnailWithSize:(float)size shadowBlurRadius:(float)shadowBlurRadius shadowOffset:(NSSize)shadowOffset;
 - (void)miniaturize;
 - (void)deminiaturize;
