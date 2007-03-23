@@ -1458,9 +1458,9 @@ originalContentsURL:(NSURL *)absoluteOriginalContentsURL
     NSString *dataString = [[[NSString alloc] initWithData:data encoding:encoding] autorelease];
     NSArray *newPubs = nil;
     
-    if(dataString == nil && outError){
+    if(dataString == nil){
         OFErrorWithInfo(&error, BDSKParserError, NSLocalizedDescriptionKey, NSLocalizedString(@"Unable to Interpret", @"Error description"), NSLocalizedRecoverySuggestionErrorKey, [NSString stringWithFormat:NSLocalizedString(@"Unable to interpret data as %@.  Try a different encoding.", @"Error informative text"), [NSString localizedNameOfStringEncoding:encoding]], NSStringEncodingErrorKey, [NSNumber numberWithInt:encoding], nil);
-        *outError = error;
+        if(outError)    *outError = error;
         return NO;
     }
     
@@ -1474,7 +1474,7 @@ originalContentsURL:(NSURL *)absoluteOriginalContentsURL
     else // since we can't save other files in its native format
         [self setFileName:nil];
     
-    return error == nil;
+    return newPubs == nil;
 }
 
 #pragma mark -
