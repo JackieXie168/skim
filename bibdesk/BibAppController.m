@@ -695,10 +695,10 @@ static BOOL fileIsInTrash(NSURL *fileURL)
 	// find the first separator preceding the current word being entered
     NSRange punctuationRange = [fullString rangeOfCharacterFromSet:acSet
 														   options:NSBackwardsSearch
-															 range:searchRange]; // check to see if this is a keyword-type
+															 range:searchRange];
     NSRange andRange = [fullString rangeOfString:@" and "
 										 options:NSBackwardsSearch | NSLiteralSearch
-										   range:searchRange]; // check to see if it's an author (not robust)
+										   range:searchRange];
 	unsigned matchStart = 0;
 	// now find the beginning of the match, reflecting addString:forCompletionEntry:. We might be more sophisticated, like in groups
     if ([entry isPersonField]) {
@@ -787,7 +787,7 @@ static BOOL fileIsInTrash(NSURL *fileURL)
     // Search the definitions case-insensitively; we match on key or value, but only return keys.
     while (key = [keyE nextObject]) {
         if ([key rangeOfString:partialString options:NSCaseInsensitiveSearch].location != NSNotFound ||
-			[[definitions valueForKey:key] rangeOfString:partialString options:NSCaseInsensitiveSearch].location != NSNotFound)
+			([definitions valueForKey:key] != nil && [[definitions valueForKey:key] rangeOfString:partialString options:NSCaseInsensitiveSearch].location != NSNotFound))
             [matches addObject:key];
     }
     [matches sortUsingSelector:@selector(caseInsensitiveCompare:)];
