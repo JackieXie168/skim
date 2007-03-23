@@ -44,6 +44,7 @@
 
 static BibTypeManager *sharedInstance = nil;
 
+// note: if calling this in a loop, @synchronized() can be very expensive, so call it before entering the loop
 @implementation BibTypeManager
 + (BibTypeManager *)sharedManager{
     @synchronized(sharedInstance){
@@ -52,14 +53,7 @@ static BibTypeManager *sharedInstance = nil;
     }
     return sharedInstance;
 }
-/*
-- (NSString *)fieldNameForReferTag:(NSString *)tag;
-- (NSString *)bibtexTypeForReferType:(NSString *)type;
-- (void)setFieldNameForReferTagDict:(NSDictionary *)newNames;
-- (void)setBibtexTypeForReferTypeDict:(NSDictionary *)newNames;
-    NSDictionary *fieldNameForReferTagDict;
-    NSDictionary *bibtexTypeForReferTypeDict;
-*/
+
 - (id)init{
     self = [super init];
     
