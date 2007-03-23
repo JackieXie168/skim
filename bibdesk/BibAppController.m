@@ -656,8 +656,7 @@ static BOOL fileIsInTrash(NSURL *fileURL)
     // also adding complex strings can lead to a crash after the containing document closes
     if([string isComplex]) string = [NSString stringWithString:string];
 
-    if([entry isInvalidGroupField] ||
-	   [entry isSingleValuedField]){ // add the whole string 
+    if([entry isSingleValuedField]){ // add the whole string 
         [completionSet addObject:[string fastStringByCollapsingWhitespaceAndRemovingSurroundingWhitespace]];
         return;
     }
@@ -705,7 +704,7 @@ static BOOL fileIsInTrash(NSURL *fileURL)
 		// these are delimited by "and"
 		if (andRange.location != NSNotFound)
 			matchStart = NSMaxRange(andRange);
-    } else if([entry isInvalidGroupField] || [entry isSingleValuedField]){
+    } else if([entry isSingleValuedField]){
 		// these are added as the whole string. Shouldn't there be more?
 	} else if (punctuationRange.location != NSNotFound) {
 		// should we delimited by these punctuations by default?

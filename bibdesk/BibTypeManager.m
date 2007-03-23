@@ -718,7 +718,8 @@ static BibTypeManager *sharedInstance = nil;
 - (BOOL)isURLField { return [[[BibTypeManager sharedManager] allURLFieldsSet] containsObject:self]; }
 - (BOOL)isNoteField { return [[[BibTypeManager sharedManager] noteFieldsSet] containsObject:self]; }
 - (BOOL)isNumericField { return [[[BibTypeManager sharedManager] numericFieldsSet] containsObject:self]; }
-- (BOOL)isSingleValuedField { return [[[BibTypeManager sharedManager] singleValuedGroupFieldsSet] containsObject:self]; }
+- (BOOL)isSingleValuedGroupField { return [[[BibTypeManager sharedManager] singleValuedGroupFieldsSet] containsObject:self]; }
+- (BOOL)isSingleValuedField { return [[[BibTypeManager sharedManager] singleValuedGroupFieldsSet] containsObject:self] || [self isInvalidGroupField]; }
 - (BOOL)isInvalidGroupField { return [[[BibTypeManager sharedManager] invalidGroupFieldsSet] containsObject:self]; }
 
 @end

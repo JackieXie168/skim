@@ -1312,7 +1312,7 @@ The groupedPublications array is a subset of the publications array, developed b
             }
 		}else if(rv == BDSKOperationAsk){
 			NSString *otherButton = nil;
-			if([[self currentGroupField] isSingleValuedField] == NO)
+			if([[self currentGroupField] isSingleValuedGroupField] == NO)
 				otherButton = NSLocalizedString(@"Append", @"Button title");
 			
 			BDSKAlert *alert = [BDSKAlert alertWithMessageText:NSLocalizedString(@"Inherited Value", @"Message in alert dialog when trying to edit inherited value")
@@ -1364,7 +1364,7 @@ The groupedPublications array is a subset of the publications array, developed b
             [[self undoManager] setActionName:NSLocalizedString(@"Remove From Group", @"Undo action name")];
             count = [pubs count];
             continue;
-        } else if ([group isCategory] && [[(BDSKCategoryGroup *)group key] isSingleValuedField]) {
+        } else if ([group isCategory] && [[(BDSKCategoryGroup *)group key] isSingleValuedGroupField]) {
             continue;
         }
 		
