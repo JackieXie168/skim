@@ -295,7 +295,8 @@
 - (BOOL)isCitationField;
 - (BOOL)isNoteField;
 - (BOOL)isNumericField;
+// isSingleValuedField checks invalid group fields and single valued group fields; single valuedGroupFields doesn't include the invalid ones, which are single valued as well
 - (BOOL)isSingleValuedField;
 - (BOOL)isInvalidGroupField;
-
+- (BOOL)isSingleValuedGroupField;
 @end

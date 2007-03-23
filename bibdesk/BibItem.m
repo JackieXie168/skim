@@ -2655,7 +2655,7 @@ Boolean stringContainsLossySubstring(NSString *theString, NSString *stringToFind
 	
 	NSMutableSet *mutableGroupSet;
 	
-    if([field isSingleValuedField]){
+    if([field isSingleValuedGroupField]){
 		// types and journals should be added as a whole
 		mutableGroupSet = [[NSMutableSet alloc] initCaseInsensitiveWithCapacity:1];
 		[mutableGroupSet addObject:value];
@@ -2707,7 +2707,7 @@ Boolean stringContainsLossySubstring(NSString *theString, NSString *stringToFind
 		if(operation ==  BDSKOperationAsk || operation == BDSKOperationIgnore)
 			return operation;
 	}else{
-		if([field isSingleValuedField] || [NSString isEmptyString:oldString])
+		if([field isSingleValuedGroupField] || [NSString isEmptyString:oldString])
 			operation = BDSKOperationSet;
 		else
 			operation = BDSKOperationAppend;
@@ -2761,7 +2761,7 @@ Boolean stringContainsLossySubstring(NSString *theString, NSString *stringToFind
 			return operation;
 	}
 	
-	if([field isSingleValuedField] || [NSString isEmptyString:oldString] || [groupNames count] < 2)
+	if([field isSingleValuedGroupField] || [NSString isEmptyString:oldString] || [groupNames count] < 2)
 		operation = BDSKOperationSet;
 	else
 		operation = BDSKOperationAppend; // Append really means Remove here
@@ -2894,7 +2894,7 @@ Boolean stringContainsLossySubstring(NSString *theString, NSString *stringToFind
 			return operation;
 	}
 	
-	if([field isSingleValuedField] || [NSString isEmptyString:oldString] || [groupNames count] < 2)
+	if([field isSingleValuedGroupField] || [NSString isEmptyString:oldString] || [groupNames count] < 2)
 		operation = BDSKOperationSet;
 	else
 		operation = BDSKOperationAppend; // Append really means Replace here

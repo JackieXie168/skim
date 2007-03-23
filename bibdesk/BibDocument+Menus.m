@@ -287,7 +287,7 @@
         return [self validateDeleteSelectionMenuItem:menuItem];
     } else {
         m = [groups numberOfStaticGroupsAtIndexes:selIndexes];
-        if ([[self currentGroupField] isSingleValuedField] == NO)
+        if ([[self currentGroupField] isSingleValuedGroupField] == NO)
             m += [groups numberOfCategoryGroupsAtIndexes:selIndexes];
     }
 	

@@ -96,7 +96,7 @@
 	
     NSEnumerator *groupEnum = [[self selectedGroups] objectEnumerator];
 	BDSKGroup *group;
-	BOOL isSingleValued = [[self currentGroupField] isSingleValuedField];
+	BOOL isSingleValued = [[self currentGroupField] isSingleValuedGroupField];
     int count = 0;
     // we don't overwrite inherited single valued fields, they already have the field set through inheritance
     int op, handleInherited = isSingleValued ? BDSKOperationIgnore : BDSKOperationAsk;
@@ -191,7 +191,7 @@
 		BOOL canRemove = NO;
         if ([self hasStaticGroupsSelected])
             canRemove = YES;
-        else if ([[self currentGroupField] isSingleValuedField] == NO)
+        else if ([[self currentGroupField] isSingleValuedGroupField] == NO)
             canRemove = [self hasCategoryGroupsSelected];
 		if(canRemove == NO){
 			NSBeep();
