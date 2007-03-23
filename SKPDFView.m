@@ -67,7 +67,7 @@ NSString *SKSkimNotePboardType = @"SKSkimNotePboardType";
 @interface SKPDFView (Private)
 
 - (NSRect)resizeThumbForRect:(NSRect) rect rotation:(int)rotation;
-- (void)transformContextForPage:(PDFPage *)page;
+- (void)transformCGContext:(CGContextRef)context forPage:(PDFPage *)page;
 
 - (void)autohideTimerFired:(NSTimer *)aTimer;
 - (void)doAutohide:(BOOL)flag;
@@ -128,6 +128,7 @@ NSString *SKSkimNotePboardType = @"SKSkimNotePboardType";
                                                      name:SKScrollMagnifyNotification object:nil];
         [[NSUserDefaultsController sharedUserDefaultsController] addObserver:self forKey:SKReadingBarColorKey];
         [[NSUserDefaultsController sharedUserDefaultsController] addObserver:self forKey:SKReadingBarTransparencyKey];
+        [[NSUserDefaultsController sharedUserDefaultsController] addObserver:self forKey:SKReadingBarInvertKey];
     }
     return self;
 }
@@ -143,6 +144,7 @@ NSString *SKSkimNotePboardType = @"SKSkimNotePboardType";
                                                      name:SKScrollMagnifyNotification object:nil];
         [[NSUserDefaultsController sharedUserDefaultsController] addObserver:self forKey:SKReadingBarColorKey];
         [[NSUserDefaultsController sharedUserDefaultsController] addObserver:self forKey:SKReadingBarTransparencyKey];
+        [[NSUserDefaultsController sharedUserDefaultsController] addObserver:self forKey:SKReadingBarInvertKey];
     }
     return self;
 }
@@ -164,29 +166,29 @@ NSString *SKSkimNotePboardType = @"SKSkimNotePboardType";
 	// Let PDFView do most of the hard work.
 	[super drawPage: pdfPage];
 	
+    CGContextRef context = [[NSGraphicsContext currentContext] graphicsPort];
+    CGContextSaveGState(context);
+    
+    [self transformCGContext:context forPage:pdfPage];
+    SKCGContextSetDefaultRGBColorSpace(context);
+    
     NSArray *allAnnotations = [pdfPage annotations];
-    
-    [NSGraphicsContext saveGraphicsState];
-    
-    [self transformContextForPage: pdfPage];
     
     if (allAnnotations) {
         unsigned int i, count = [allAnnotations count];
         BOOL foundActive = NO;
         
         for (i = 0; i < count; i++) {
-            PDFAnnotation *annotation;
-            
-            annotation = [allAnnotations objectAtIndex: i];
+            PDFAnnotation *annotation = [allAnnotations objectAtIndex: i];
             if ([annotation isNoteAnnotation] || [[annotation type] isEqualToString:@"Link"]) {
                 if (annotation == activeAnnotation) {
                     foundActive = YES;
                 } else if ([[annotation type] isEqualToString:@"FreeText"]) {
                     NSRect bounds = [annotation bounds];
-                    NSBezierPath *path = [NSBezierPath bezierPathWithRect:NSInsetRect(NSIntegralRect(bounds), 0.5, 0.5)];
-                    [path setLineWidth:1.0];
-                    [[NSColor grayColor] set];
-                    [path stroke];
+                    NSRect rect = NSInsetRect(NSIntegralRect(bounds), 0.5, 0.5);
+                    float color[4] = { 0.5, 0.5, 0.5, 1.0 };
+                    CGContextSetStrokeColor(context, color);
+                    CGContextStrokeRectWithWidth(context, *(CGRect *)&rect, 1.0);
                 }
                 if ([[annotation type] isEqualToString:@"Link"]) 	 
                     [(PDFAnnotationLink *)annotation fixRelativeURLIfNeeded];
@@ -198,47 +200,56 @@ NSString *SKSkimNotePboardType = @"SKSkimNotePboardType";
             BOOL isLink = [[activeAnnotation type] isEqualToString:@"Link"];
             float lineWidth = isLink ? 2.0 : 1.0;
             NSRect bounds = [activeAnnotation bounds];
-            NSBezierPath *path = [NSBezierPath bezierPathWithRect:NSInsetRect(NSIntegralRect(bounds), 0.5 * lineWidth, 0.5 * lineWidth)];
-            [path setLineWidth:lineWidth];
+            float color[4] = { 0.0, 0.0, 0.0, 1.0 };
+            NSRect rect = NSInsetRect(NSIntegralRect(bounds), 0.5 * lineWidth, 0.5 * lineWidth);
             if (isLink) {
-                [[NSColor colorWithDeviceWhite:0.0 alpha:0.1] set];
-                [path fill];
-                [path setLineJoinStyle:NSRoundLineJoinStyle];
-                [[NSColor colorWithDeviceWhite:0.0 alpha:0.5] set];
+                color[3] = 0.1;
+                CGContextSetFillColor(context, color);
+                CGContextFillRect(context, *(CGRect *)&rect);
+                color[3] = 0.5;
             } else {
-                [[NSColor blackColor] set];
+                color[3] = 1.0;
             }
-            [path stroke];
+            CGContextSetStrokeColor(context, color);
+            CGContextStrokeRectWithWidth(context, *(CGRect *)&rect, lineWidth);
             
-            // Draw resize handle.
-            if ([activeAnnotation isResizable])
-                NSRectFill(NSIntegralRect([self resizeThumbForRect:bounds rotation:[pdfPage rotation]]));
+            if ([activeAnnotation isResizable]) {
+                rect = NSIntegralRect([self resizeThumbForRect:bounds rotation:[pdfPage rotation]]);
+                CGContextSetFillColor(context, color);
+                CGContextFillRect(context, *(CGRect *)&rect);
+            }
         }
                 
     }
     
     if (readingBar) {
-        NSColor *color = [NSUnarchiver unarchiveObjectWithData:[[NSUserDefaults standardUserDefaults] dataForKey:SKReadingBarColorKey]];
+        
+        NSRect rect = [readingBar currentBoundsForBox:[self displayBox]];
+        BOOL invert = [[NSUserDefaults standardUserDefaults] boolForKey:SKReadingBarInvertKey];
+        NSColor *nsColor = [NSUnarchiver unarchiveObjectWithData:[[NSUserDefaults standardUserDefaults] dataForKey:SKReadingBarColorKey]];
         float alpha = 1.0 - [[NSUserDefaults standardUserDefaults] floatForKey:SKReadingBarTransparencyKey];
-        [[color colorWithAlphaComponent:alpha] set];
-        NSRect bounds = [pdfPage boundsForBox:[self displayBox]];
-        if ([[readingBar page] isEqual:pdfPage]) {
-            NSRect rect = [readingBar currentBoundsForBox:[self displayBox]];
+        float color[4] = { [nsColor redComponent], [nsColor greenComponent], [nsColor blueComponent], alpha };
+        
+        CGContextSetFillColor(context, color);
+        
+        if (invert) {
+            NSRect bounds = [pdfPage boundsForBox:[self displayBox]];
             if (NSEqualRects(rect, NSZeroRect)) {
-                [NSBezierPath fillRect:bounds];
+                CGContextFillRect(context, *(CGRect *)&bounds);
             } else {
                 NSRect outRect, ignored;
                 NSDivideRect(bounds, &outRect, &ignored, NSMaxY(bounds) - NSMaxY(rect), NSMaxYEdge);
-                [NSBezierPath fillRect:outRect];
+                CGContextFillRect(context, *(CGRect *)&outRect);
                 NSDivideRect(bounds, &outRect, &ignored, NSMinY(rect) - NSMinY(bounds), NSMinYEdge);
-                [NSBezierPath fillRect:outRect];
+                CGContextFillRect(context, *(CGRect *)&outRect);
             }
-        } else {
-            [NSBezierPath fillRect:bounds];
+        } else if ([[readingBar page] isEqual:pdfPage]) {
+            CGContextSetBlendMode(context, kCGBlendModeMultiply);        
+            CGContextFillRect(context, *(CGRect *)&rect);
         }
     }
     
-    [NSGraphicsContext restoreGraphicsState];
+    CGContextRestoreGState(context);
 }
 
 - (void)setNeedsDisplayInRect:(NSRect)rect ofPage:(PDFPage *)page {
@@ -1246,7 +1257,7 @@ static inline NSRect rectWithCorners(NSPoint p1, NSPoint p2)
 - (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context {
     if (object == [NSUserDefaultsController sharedUserDefaultsController] && [keyPath hasPrefix:@"values."]) {
         NSString *key = [keyPath substringFromIndex:7];
-        if ([key isEqualToString:SKReadingBarColorKey] || [key isEqualToString:SKReadingBarTransparencyKey]) {
+        if ([key isEqualToString:SKReadingBarColorKey] || [key isEqualToString:SKReadingBarTransparencyKey] || [key isEqualToString:SKReadingBarInvertKey]) {
             if (readingBar)
                 [self setNeedsDisplay:YES];
         }
@@ -1287,31 +1298,26 @@ static inline NSRect rectWithCorners(NSPoint p1, NSPoint p2)
 	return thumb;
 }
 
-- (void)transformContextForPage:(PDFPage *)page {
-	NSAffineTransform *transform;
-	NSRect boxRect;
-	
-	boxRect = [page boundsForBox:[self displayBox]];
-	
-	transform = [NSAffineTransform transform];
+- (void)transformCGContext:(CGContextRef)context forPage:(PDFPage *)page {
+    NSRect boxRect = [page boundsForBox:[self displayBox]];
+    
     switch ([page rotation]) {
         case 0:
-            [transform translateXBy:-NSMinX(boxRect) yBy:-NSMinY(boxRect)];
+            CGContextTranslateCTM(context, -NSMinX(boxRect), -NSMinY(boxRect));
             break;
         case 90:
-            [transform rotateByDegrees:-90];
-            [transform translateXBy:-NSMaxX(boxRect) yBy:-NSMinY(boxRect)];
+            CGContextRotateCTM(context, - M_PI / 2);
+            CGContextTranslateCTM(context, -NSMaxX(boxRect), -NSMinY(boxRect));
             break;
         case 180:
-            [transform rotateByDegrees:-180];
-            [transform translateXBy:-NSMaxX(boxRect) yBy:-NSMaxY(boxRect)];
+            CGContextRotateCTM(context, M_PI);
+            CGContextTranslateCTM(context, -NSMaxX(boxRect), -NSMaxY(boxRect));
             break;
         case 270:
-            [transform rotateByDegrees:-270];
-            [transform translateXBy:-NSMinX(boxRect) yBy:-NSMaxY(boxRect)];
+            CGContextRotateCTM(context, M_PI / 2);
+            CGContextTranslateCTM(context, -NSMinX(boxRect), -NSMaxY(boxRect));
             break;
-	}
-    [transform concat];
+    }
 }
 
 #pragma mark Autohide timer
