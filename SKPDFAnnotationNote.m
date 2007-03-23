@@ -54,6 +54,19 @@ enum {
 NSString *SKAnnotationWillChangeNotification = @"SKAnnotationWillChangeNotification";
 NSString *SKAnnotationDidChangeNotification = @"SKAnnotationDidChangeNotification";
 
+
+void SKCGContextSetDefaultRGBColorSpace(CGContextRef context) {
+    CMProfileRef profile;
+    CMGetDefaultProfileBySpace(cmRGBData, &profile);
+    CGColorSpaceRef colorSpace = CGColorSpaceCreateWithPlatformColorSpace(profile);
+    
+    CMCloseProfile(profile);
+    CGContextSetStrokeColorSpace(context, colorSpace);
+    CGContextSetFillColorSpace(context, colorSpace);
+    CGColorSpaceRelease(colorSpace);
+}
+
+
 @interface PDFAnnotation (PDFAnnotationPrivateDeclarations)
 - (void)drawWithBox:(CGPDFBox)box inContext:(CGContextRef)context;
 @end
@@ -611,15 +624,7 @@ static NSColor *underlineColor = nil;
 // fix a bug in PDFKit, the color space sometimes is not correct
 - (void)drawWithBox:(CGPDFBox)box inContext:(CGContextRef)context {
     CGContextSaveGState(context);
-    
-    CMProfileRef profile;
-    CMGetDefaultProfileBySpace(cmRGBData, &profile);
-    CGColorSpaceRef colorSpace = CGColorSpaceCreateWithPlatformColorSpace(profile);
-    
-    CMCloseProfile(profile);
-    CGContextSetStrokeColorSpace(context, colorSpace);
-    CGContextSetFillColorSpace(context, colorSpace);
-    CGColorSpaceRelease(colorSpace);
+    SKCGContextSetDefaultRGBColorSpace(context);
     
     [super drawWithBox:box inContext:context];
     

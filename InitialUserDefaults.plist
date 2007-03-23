@@ -25,6 +25,7 @@
         <string>SKBlankAllWindows</string>
         <string>SKReadingBarColor</string>
         <string>SKReadingBarTransparency</string>
+        <string>SKReadingBarInvert</string>
     </array>
 	<key>SKAutoCheckFileUpdate</key>
 	<false/>
@@ -82,5 +83,7 @@
 	</data>
     <key>SKReadingBarTransparency</key>
     <real>0.7</real>
+    <key>SKReadingBarInvert</key>
+	<true/>
 </dict>
 </plist>

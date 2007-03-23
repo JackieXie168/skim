@@ -61,3 +61,4 @@ extern NSString *SKShouldAntiAliasKey;
 extern NSString *SKGreekingThresholdKey;
 extern NSString *SKReadingBarColorKey;
 extern NSString *SKReadingBarTransparencyKey;
+extern NSString *SKReadingBarInvertKey;

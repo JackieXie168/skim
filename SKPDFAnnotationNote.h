@@ -42,6 +42,8 @@
 extern NSString *SKAnnotationWillChangeNotification;
 extern NSString *SKAnnotationDidChangeNotification;
 
+extern void SKCGContextSetDefaultRGBColorSpace(CGContextRef context);
+
 @interface PDFAnnotation (SKExtensions)
 
 - (id)initWithDictionary:(NSDictionary *)dict;
