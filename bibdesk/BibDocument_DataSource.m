@@ -902,6 +902,7 @@
             
 			pubs = [pboardHelper promisedItemsForPasteboard:[NSPasteboard pasteboardWithName:NSDragPboard]];
         } else {
+            
             if([self addPublicationsFromPasteboard:pboard selectLibrary:YES error:NULL] == NO)
                 return NO;
             
@@ -932,11 +933,12 @@
         
         // add to the group we're dropping on, /not/ the currently selected group; no need to add to all pubs group, though
         if(group != nil && row != 0 && [pubs count]){
+            
             [self addPublications:pubs toGroup:group];
-            // reselect if necessary, or we default to selecting the all publications group (which is really annoying when creating a new pub by dropping a PDF on a group)
-            // don't use row, because we might have added the Last Import group
+            
+            // Reselect if necessary, or we default to selecting the all publications group (which is really annoying when creating a new pub by dropping a PDF on a group).  Don't use row, because we might have added the Last Import group.  Also, note that a side effect of addPublicationsFromPasteboard:selectLibrary: may create a new group (if dropping on a selected category group), so [groups indexOfObjectIdenticalTo:group] == NSNotFound.
             if(shouldSelect) 
-                [groupTableView selectRowIndexes:[NSIndexSet indexSetWithIndex:[groups indexOfObjectIdenticalTo:group]] byExtendingSelection:NO];
+                [groupTableView selectRowIndexes:[NSIndexSet indexSetWithIndex:[groups indexOfObject:group]] byExtendingSelection:NO];
         }
         
         return YES;
