@@ -122,7 +122,7 @@
 }
 
 - (NSString *)description {
-    return [NSString stringWithFormat:@"%@: name=\"%@\",count=%d", [self class], name, count];
+    return [NSString stringWithFormat:@"%@<%p>: name=\"%@\",count=%d", [self class], self, name, count];
 }
 
 // accessors
