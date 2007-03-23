@@ -593,7 +593,10 @@ NSString *SKSkimNotePboardType = @"SKSkimNotePboardType";
                 [self dragWithEvent:theEvent];	
                 break;
             case SKMagnifyToolMode:
-                [self magnifyWithEvent:theEvent];
+                if ([self areaOfInterestForMouse:theEvent] == kPDFNoArea)
+                    [self dragWithEvent:theEvent];
+                else
+                    [self magnifyWithEvent:theEvent];
                 break;
         }
     }
@@ -706,7 +709,10 @@ static inline NSRect rectWithCorners(NSPoint p1, NSPoint p2)
                 cursor = [NSCursor openHandCursor];
                 break;
             case SKMagnifyToolMode:
-                cursor = ([theEvent modifierFlags] & NSShiftKeyMask) ? [NSCursor zoomOutCursor] : [NSCursor zoomInCursor];
+                if ([self areaOfInterestForMouse:theEvent] == kPDFNoArea)
+                    cursor = [NSCursor openHandCursor];
+                else
+                    cursor = ([theEvent modifierFlags] & NSShiftKeyMask) ? [NSCursor zoomOutCursor] : [NSCursor zoomInCursor];
                 break;
         }
     }
