@@ -581,9 +581,7 @@ NSString *SKSkimNotePboardType = @"SKSkimNotePboardType";
                 p = [self convertPoint:p toPage:page];
                 if (readingBar && [[readingBar page] isEqual:page] && NSPointInRect(p, [readingBar currentBoundsForBox:[self displayBox]])) {
                     [self dragReadingBarWithEvent:theEvent];
-                } else if ([[self document] isLocked]) {
-                    [super mouseDown:theEvent];
-                } else if([self selectAnnotationWithEvent:theEvent] == NO) {
+                } else if ([[self document] isLocked] || [self selectAnnotationWithEvent:theEvent] == NO) {
                     if ([[page selectionForRect:NSMakeRect(p.x - 30.0, p.y - 30.0, 60.0, 60.0)] string] == nil)
                         [self dragWithEvent:theEvent];
                     else
@@ -1395,7 +1393,7 @@ static inline NSRect rectWithCorners(NSPoint p1, NSPoint p2)
     PDFAnnotation *newActiveAnnotation = NULL;
     PDFAnnotation *wasActiveAnnotation;
     NSArray *annotations;
-    int numAnnotations, i;
+    int i;
     NSPoint pagePoint;
     BOOL changed;
     PDFPage *activePage;
@@ -1413,9 +1411,9 @@ static inline NSRect rectWithCorners(NSPoint p1, NSPoint p2)
     
     // Hit test for annotation.
     annotations = [activePage annotations];
-    numAnnotations = [annotations count];
+    i = [annotations count];
     
-    for (i = 0; i < numAnnotations; i++) {
+    while (i-- > 0) {
         NSRect annotationBounds;
         PDFAnnotation *annotationHit = [annotations objectAtIndex:i];
         
