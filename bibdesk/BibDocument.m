@@ -2385,7 +2385,7 @@ static void applyChangesToCiteFieldsWithInfo(const void *citeField, void *contex
     
     while (pub = [pubEnum nextObject]) {
         NSString *crossref = [pub valueOfField:BDSKCrossrefString inherit:NO];
-        if([NSString isEmptyString:crossref] == NO)
+        if([NSString isEmptyString:crossref])
             continue;
         
         // invalidate groups that depend on inherited values
