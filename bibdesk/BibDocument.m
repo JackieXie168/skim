@@ -1474,7 +1474,7 @@ originalContentsURL:(NSURL *)absoluteOriginalContentsURL
     else // since we can't save other files in its native format
         [self setFileName:nil];
     
-    return newPubs == nil;
+    return newPubs != nil;
 }
 
 #pragma mark -
