@@ -448,7 +448,7 @@ enum{
     if(url == nil){
         NSString *rurl = [publication valueOfField:field];
         
-        if([rurl isEqualToString:@""])
+        if([NSString isEmptyString:rurl])
             return;
     
         if([rurl rangeOfString:@"://"].location == NSNotFound)
