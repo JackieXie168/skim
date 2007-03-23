@@ -2326,6 +2326,33 @@ originalContentsURL:(NSURL *)absoluteOriginalContentsURL
     }
 }
 
+// this structure is only used in the following CFSetApplierFunction
+typedef struct __BibItemCiteKeyChangeInfo {
+    BibItem *pub;
+    NSCharacterSet *invalidSet;
+    NSString *key;
+    NSString *oldKey;
+} _BibItemCiteKeyChangeInfo;
+
+static void applyChangesToCiteFieldsWithInfo(const void *citeField, void *context)
+{
+    NSString *field = (NSString *)citeField;
+    _BibItemCiteKeyChangeInfo *changeInfo = context;
+    NSString *value = [changeInfo->pub valueOfField:field inherit:NO];
+    // value may be nil, so check before calling rangeOfString:
+    if (nil != value) {
+        NSRange range = [value rangeOfString:changeInfo->oldKey];
+        if (range.location != NSNotFound &&
+            (range.location == 0 || [changeInfo->invalidSet characterIsMember:[value characterAtIndex:range.location]]) &&
+            (NSMaxRange(range) == [value length] || [changeInfo->invalidSet characterIsMember:[value characterAtIndex:NSMaxRange(range)]])) {
+            NSMutableString *tmpString = [value mutableCopy];
+            [tmpString replaceCharactersInRange:range withString:changeInfo->key];
+            [changeInfo->pub setField:field toValue:tmpString];
+            [tmpString release];
+        }
+    }
+}
+
 - (void)handleBibItemChangedNotification:(NSNotification *)notification{
 
 	NSDictionary *userInfo = [notification userInfo];
@@ -2348,34 +2375,33 @@ originalContentsURL:(NSURL *)absoluteOriginalContentsURL
             oldKey = nil;
     }
     
+    // access type manager outside the enumerator, since it's @synchronized...
+    BibTypeManager *typeManager = [BibTypeManager sharedManager];
+    NSCharacterSet *invalidSet = [typeManager invalidCharactersForField:BDSKCiteKeyString inFileType:BDSKBibtexString];
+    NSSet *citeFields = [typeManager citationFieldsSet];
+    
+    _BibItemCiteKeyChangeInfo changeInfo;
+    changeInfo.invalidSet = invalidSet;
+    changeInfo.key = key;
+    changeInfo.oldKey = oldKey;
+    
     while (pub = [pubEnum nextObject]) {
         NSString *crossref = [pub valueOfField:BDSKCrossrefString inherit:NO];
         if([NSString isEmptyString:crossref] == NO)
             continue;
+        
         // invalidate groups that depend on inherited values
         if ([key caseInsensitiveCompare:crossref] == NSOrderedSame)
             [pub invalidateGroupNames];
+        
         // change the crossrefs if we change the parent cite key
         if (oldKey) {
             if ([oldKey caseInsensitiveCompare:crossref] == NSOrderedSame)
                 [pub setField:BDSKCrossrefString toValue:key];
-            if (oldKey) {
-                NSCharacterSet *invalidSet = [[BibTypeManager sharedManager] invalidCharactersForField:BDSKCiteKeyString inFileType:BDSKBibtexString];
-                NSEnumerator *fieldEnum = [[[BibTypeManager sharedManager] citationFieldsSet] objectEnumerator];
-                NSString *field;
-                while (field = [fieldEnum nextObject]) {
-                    NSString *value = [pub valueOfField:field inherit:NO];
-                    NSRange range = [value rangeOfString:oldKey];
-                    if (range.location != NSNotFound &&
-                        (range.location == 0 || [invalidSet characterIsMember:[value characterAtIndex:range.location]]) &&
-                        (NSMaxRange(range) == [value length] || [invalidSet characterIsMember:[value characterAtIndex:NSMaxRange(range)]])) {
-                        NSMutableString *tmpString = [value mutableCopy];
-                        [tmpString replaceCharactersInRange:range withString:key];
-                        [pub setField:field toValue:tmpString];
-                        [tmpString release];
-                    }
-                }
-            }
+            changeInfo.pub = pub;
+            
+            // faster than creating an enumerator for what's typically a tiny set (helpful when generating keys for an entire file)
+            CFSetApplyFunction((CFSetRef)citeFields, applyChangesToCiteFieldsWithInfo, &changeInfo);
         }
     }
     
