@@ -400,7 +400,7 @@ static NSString *searchStringWithPub(BibItem *pub)
 {
     // may be better ways to do this, but we'll try search for title and then append the first author's last name (if available) (note that we're not using phrase search at the moment, since it causes an occasional crash; that would require enclosing title in double quotes
     NSMutableString *searchString = [NSMutableString stringWithString:[[pub title] stringByRemovingTeX]];
-    NSString *name = [[pub firstAuthor] lastName];
+    NSString *name = [[pub firstAuthorOrEditor] lastName];
     if (name)
         [searchString appendFormat:@" AND %@", [[pub firstAuthor] lastName]];
     return searchString;
