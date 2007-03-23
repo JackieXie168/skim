@@ -582,7 +582,7 @@ NSString *SKSkimNotePboardType = @"SKSkimNotePboardType";
                 if (readingBar && [[readingBar page] isEqual:page] && NSPointInRect(p, [readingBar currentBoundsForBox:[self displayBox]])) {
                     [self dragReadingBarWithEvent:theEvent];
                 } else if ([[self document] isLocked] || [self selectAnnotationWithEvent:theEvent] == NO) {
-                    if ([[page selectionForRect:NSMakeRect(p.x - 30.0, p.y - 30.0, 60.0, 60.0)] string] == nil)
+                    if ([page annotationAtPoint:p] == nil && [[page selectionForRect:NSMakeRect(p.x - 30.0, p.y - 30.0, 60.0, 60.0)] string] == nil)
                         [self dragWithEvent:theEvent];
                     else
                         [super mouseDown:theEvent];
@@ -692,7 +692,11 @@ static inline NSRect rectWithCorners(NSPoint p1, NSPoint p2)
         switch (toolMode) {
             case SKTextToolMode:
             {
-                if (readingBar && NSPointInRect([self convertPoint:[theEvent locationInWindow] fromView:nil], [self convertRect:[readingBar currentBoundsForBox:[self displayBox]] fromPage:[readingBar page]]))
+                p = [self convertPoint:[theEvent locationInWindow] fromView:nil];
+                PDFPage *page = [self pageForPoint:p nearest:NO];
+                p = [self convertPoint:p toPage:page];
+                if ((readingBar && [[readingBar page] isEqual:page] && NSPointInRect(p, [readingBar currentBoundsForBox:[self displayBox]])) ||
+                    ([page annotationAtPoint:p] == nil && [[page selectionForRect:NSMakeRect(p.x - 30.0, p.y - 30.0, 60.0, 60.0)] string] == nil))
                     cursor = [NSCursor openHandCursor];
                 else
                     [super mouseMoved:theEvent];
