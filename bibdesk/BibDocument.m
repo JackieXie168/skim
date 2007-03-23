@@ -1452,8 +1452,6 @@ originalContentsURL:(NSURL *)absoluteOriginalContentsURL
 
 - (BOOL)readFromData:(NSData *)data ofStringType:(int)type fromURL:(NSURL *)absoluteURL encoding:(NSStringEncoding)encoding error:(NSError **)outError {
     
-    NSAssert(type == BDSKRISStringType || type == BDSKJSTORStringType || type == BDSKWOSStringType, @"Unknown data type");
-
     NSError *error = nil;    
     NSString *dataString = [[[NSString alloc] initWithData:data encoding:encoding] autorelease];
     NSArray *newPubs = nil;
