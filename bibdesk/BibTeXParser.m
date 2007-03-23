@@ -280,15 +280,15 @@ error:(NSError **)outError{
         OFErrorWithInfo(&error, BDSKParserError, NSLocalizedDescriptionKey, NSLocalizedString(@"Unable to parse string as BibTeX", @"Error description"), nil);
         
     // If no critical errors, warn about ignoring macros or frontmatter; callers can ignore this by passing a valid NSMutableString for frontmatter (or ignoring the partial data flag).  Mainly relevant for paste/drag on the document.
-    } else if (ignoredMacros && ignoredFrontmatter && outError) {
+    } else if (ignoredMacros && ignoredFrontmatter) {
         error = [NSError mutableLocalErrorWithCode:kBDSKParserIgnoredFrontMatter localizedDescription:NSLocalizedString(@"Macros and front matter ignored while parsing BibTeX", @"")];
         [error setValue:NSLocalizedString(@"Frontmatter (preamble and comments) from pasted data should be added via a text editor, and macros should be added via the macro editor (cmd-shift-M)", @"") forKey:NSLocalizedRecoverySuggestionErrorKey];
         hadProblems = YES;
-    } else if (ignoredMacros && outError) {
+    } else if (ignoredMacros) {
         error = [NSError mutableLocalErrorWithCode:kBDSKParserIgnoredFrontMatter localizedDescription:NSLocalizedString(@"Macros ignored while parsing BibTeX", @"")];
         [error setValue:NSLocalizedString(@"Macros must be added via the macro editor (cmd-shift-M)", @"") forKey:NSLocalizedRecoverySuggestionErrorKey];
         hadProblems = YES;
-    } else if (ignoredFrontmatter && outError) {
+    } else if (ignoredFrontmatter) {
          error = [NSError mutableLocalErrorWithCode:kBDSKParserIgnoredFrontMatter localizedDescription:NSLocalizedString(@"Macros ignored while parsing BibTeX", @"")];
         [error setValue:NSLocalizedString(@"Frontmatter from pasted data should be added via a text editor", @"") forKey:NSLocalizedRecoverySuggestionErrorKey];
         hadProblems = YES;
