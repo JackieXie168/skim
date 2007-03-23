@@ -234,7 +234,7 @@ NSString *SKSkimNotePboardType = @"SKSkimNotePboardType";
         
         if (invert) {
             NSRect bounds = [pdfPage boundsForBox:[self displayBox]];
-            if (NSEqualRects(rect, NSZeroRect)) {
+            if (NSEqualRects(rect, NSZeroRect) || [[readingBar page] isEqual:pdfPage] == NO) {
                 CGContextFillRect(context, *(CGRect *)&bounds);
             } else {
                 NSRect outRect, ignored;
