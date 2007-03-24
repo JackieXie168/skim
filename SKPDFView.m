@@ -688,8 +688,7 @@ static inline NSRect rectWithCorners(NSPoint p1, NSPoint p2)
     NSPoint p = [clipView convertPoint:[theEvent locationInWindow] fromView:nil];
     NSCursor *cursor = nil;
     
-    if (NSPointInRect(p, [clipView visibleRect]) == NO) {
-        // ideally, we take the cursor relevant for the area, but this doesn't work
+    if ([navWindow isVisible] && NSPointInRect([NSEvent mouseLocation], [navWindow frame])) {
         cursor = [NSCursor arrowCursor];
     } else if ([theEvent modifierFlags] & NSCommandKeyMask) {
         cursor = [NSCursor cameraCursor];
