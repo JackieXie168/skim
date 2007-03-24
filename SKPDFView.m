@@ -152,6 +152,7 @@ NSString *SKSkimNotePboardType = @"SKSkimNotePboardType";
 - (void)dealloc {
     [[NSUserDefaultsController sharedUserDefaultsController] removeObserver:self forKey:SKReadingBarColorKey];
     [[NSUserDefaultsController sharedUserDefaultsController] removeObserver:self forKey:SKReadingBarTransparencyKey];
+    [[NSUserDefaultsController sharedUserDefaultsController] removeObserver:self forKey:SKReadingBarInvertKey];
     [[NSNotificationCenter defaultCenter] removeObserver:self];
     [self doAutohide:NO]; // invalidates and releases the timer
     [[SKPDFHoverWindow sharedHoverWindow] orderOut:self];
