@@ -113,7 +113,6 @@ typedef struct _SKPDFViewState {
     IBOutlet NSView             *noteView;
     NSMutableArray              *notes;
     BOOL                        updatingNoteSelection;
-    PDFAnnotation               *selectedNote;
     
     IBOutlet NSArrayController  *snapshotArrayController;
     IBOutlet SKSnapshotTableView *snapshotTableView;
@@ -250,7 +249,6 @@ typedef struct _SKPDFViewState {
 - (void)removeObjectFromSnapshotsAtIndex:(unsigned)theIndex;
 
 - (PDFAnnotation *)selectedNote;
-- (void)setSelectedNote:(PDFAnnotation *)note;
 
 - (unsigned int)pageNumber;
 - (void)setPageNumber:(unsigned int)pageNumber;

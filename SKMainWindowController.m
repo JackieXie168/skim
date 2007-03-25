@@ -156,7 +156,6 @@ static NSString *SKDocumentToolbarNotesPaneItemIdentifier = @"SKDocumentToolbarN
 	[notes release];
 	[snapshots release];
     [lastViewedPages release];
-    [selectedNote release];
 	[leftSideWindow release];
 	[rightSideWindow release];
 	[fullScreenWindow release];
@@ -625,14 +624,14 @@ static NSString *SKDocumentToolbarNotesPaneItemIdentifier = @"SKDocumentToolbarN
 }
 
 - (PDFAnnotation *)selectedNote {
-    return selectedNote;
-}
-
-- (void)setSelectedNote:(PDFAnnotation *)note {
-    if (selectedNote != note) {
-        [selectedNote release];
-        selectedNote = [note retain];
+    int row = [noteOutlineView selectedRow];
+    id item = nil;
+    if (row != -1) {
+        item = [noteOutlineView itemAtRow:row];
+        if ([item type] == nil)
+            item = [(SKNoteText *)item annotation];
     }
+    return item;
 }
 
 #pragma mark Actions
@@ -1748,8 +1747,8 @@ void removeTemporaryAnnotations(const void *annotation, void *context)
     PDFAnnotation *annotation = [[notification userInfo] objectForKey:@"annotation"];
     PDFPage *page = [[notification userInfo] objectForKey:@"page"];
     
-    if (selectedNote == annotation)
-        [self setSelectedNote:nil];
+    if ([self selectedNote] == annotation)
+        [noteOutlineView deselectAll:self];
     
     if (annotation) {
         NSWindowController *wc = nil;
@@ -1996,15 +1995,6 @@ void removeTemporaryAnnotations(const void *annotation, void *context)
 	// Get the destination associated with the search result list. Tell the PDFView to go there.
 	if ([[notification object] isEqual:outlineView] && (updatingOutlineSelection == NO)){
 		[pdfView goToDestination: [[outlineView itemAtRow: [outlineView selectedRow]] destination]];
-    } else if ([[notification object] isEqual:noteOutlineView]) {
-        int row = [noteOutlineView selectedRow];
-        id item = nil;
-        if (row != -1) {
-            item = [noteOutlineView itemAtRow:row];
-            if ([item type] == nil)
-                item = [(SKNoteText *)item annotation];
-        }
-        [self setSelectedNote:item];
     }
 }
 
@@ -2059,9 +2049,8 @@ void removeTemporaryAnnotations(const void *annotation, void *context)
 }
 
 - (void)outlineViewDeleteSelectedRows:(NSOutlineView *)ov  {
-    if ([ov isEqual:noteOutlineView]) {
-        if ([self selectedNote])
-            [pdfView removeAnnotation:[self selectedNote]];
+    if ([ov isEqual:noteOutlineView] && [ov selectedRow] != -1) {
+        [pdfView removeAnnotation:[self selectedNote]];
     }
 }
 
@@ -2359,7 +2348,7 @@ static NSArray *prioritySortedThumbnails(NSArray *dirtyNails, int currentPageInd
     PDFAnnotation *annotation, *selAnnotation = nil;
     unsigned int pageIndex = [[pdfView document] indexForPage: [pdfView currentPage]];
 	int i, count = [orderedNotes count];
-    unsigned int selPageIndex = [self selectedNote] ? [[self selectedNote] pageIndex] : NSNotFound;
+    unsigned int selPageIndex = [noteOutlineView selectedRow] != -1 ? [[self selectedNote] pageIndex] : NSNotFound;
     
     if (count == 0 || selPageIndex == pageIndex)
 		return;
