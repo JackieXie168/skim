@@ -146,7 +146,6 @@
 		F92DB5AC0B36FE1F002A26E9 /* BDSKHeaderPopUpButtonCell.m in Sources */ = {isa = PBXBuildFile; fileRef = F92DB5A90B36FE1F002A26E9 /* BDSKHeaderPopUpButtonCell.m */; };
 		F92DB5AD0B36FE1F002A26E9 /* BDSKZoomablePDFView.m in Sources */ = {isa = PBXBuildFile; fileRef = F92DB5AB0B36FE1F002A26E9 /* BDSKZoomablePDFView.m */; };
 		F92DB5B30B36FE5E002A26E9 /* BDSKHeaderPopUpButton.m in Sources */ = {isa = PBXBuildFile; fileRef = F92DB5B20B36FE5E002A26E9 /* BDSKHeaderPopUpButton.m */; };
-		F92DB6620B371481002A26E9 /* PDFDocument_BDSKExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = F92DB6610B371481002A26E9 /* PDFDocument_BDSKExtensions.m */; };
 		F977319F0B939B7D002A7823 /* libbz2.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = F977319E0B939B7D002A7823 /* libbz2.dylib */; };
 		F97751600B37460100DF673B /* ConversionProgressWindow.nib in Resources */ = {isa = PBXBuildFile; fileRef = F977515E0B37460100DF673B /* ConversionProgressWindow.nib */; };
 		F97751630B37461000DF673B /* SKPSProgressController.m in Sources */ = {isa = PBXBuildFile; fileRef = F97751620B37461000DF673B /* SKPSProgressController.m */; };
@@ -343,8 +342,6 @@
 		F92DB5AB0B36FE1F002A26E9 /* BDSKZoomablePDFView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BDSKZoomablePDFView.m; sourceTree = "<group>"; };
 		F92DB5B10B36FE5E002A26E9 /* BDSKHeaderPopUpButton.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BDSKHeaderPopUpButton.h; sourceTree = "<group>"; };
 		F92DB5B20B36FE5E002A26E9 /* BDSKHeaderPopUpButton.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BDSKHeaderPopUpButton.m; sourceTree = "<group>"; };
-		F92DB6600B371481002A26E9 /* PDFDocument_BDSKExtensions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PDFDocument_BDSKExtensions.h; sourceTree = "<group>"; };
-		F92DB6610B371481002A26E9 /* PDFDocument_BDSKExtensions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PDFDocument_BDSKExtensions.m; sourceTree = "<group>"; };
 		F977319E0B939B7D002A7823 /* libbz2.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libbz2.dylib; path = /usr/lib/libbz2.dylib; sourceTree = "<absolute>"; };
 		F977515F0B37460100DF673B /* English */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = English; path = English.lproj/ConversionProgressWindow.nib; sourceTree = "<group>"; };
 		F97751610B37461000DF673B /* SKPSProgressController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SKPSProgressController.h; sourceTree = "<group>"; };
@@ -512,8 +509,6 @@
 				CEF711A00B90B714003A2771 /* NSUserDefaultsController_SKExtensions.m */,
 				CE4A8BA00BB1597F004AD07D /* NSWindowController_SKExtensions.h */,
 				CE4A8BA10BB15980004AD07D /* NSWindowController_SKExtensions.m */,
-				F92DB6600B371481002A26E9 /* PDFDocument_BDSKExtensions.h */,
-				F92DB6610B371481002A26E9 /* PDFDocument_BDSKExtensions.m */,
 				CE2DE50B0B85DC4000D0DA12 /* PDFPage_SKExtensions.h */,
 				CE2DE50C0B85DC4000D0DA12 /* PDFPage_SKExtensions.m */,
 			);
@@ -897,7 +892,6 @@
 				F92DB5AC0B36FE1F002A26E9 /* BDSKHeaderPopUpButtonCell.m in Sources */,
 				F92DB5AD0B36FE1F002A26E9 /* BDSKZoomablePDFView.m in Sources */,
 				F92DB5B30B36FE5E002A26E9 /* BDSKHeaderPopUpButton.m in Sources */,
-				F92DB6620B371481002A26E9 /* PDFDocument_BDSKExtensions.m in Sources */,
 				F97751630B37461000DF673B /* SKPSProgressController.m in Sources */,
 				CEFDF8BE0B3848C40091C61A /* SKNavigationWindow.m in Sources */,
 				45A3BD080B4F0770002B297F /* SKStringConstants.m in Sources */,
