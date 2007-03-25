@@ -117,42 +117,54 @@ NSString *SKSkimNotePboardType = @"SKSkimNotePboardType";
 
 @implementation SKPDFView
 
+- (void)commonInitialization {
+    toolMode = [[NSUserDefaults standardUserDefaults] integerForKey:SKLastToolModeKey];
+    
+    autohidesCursor = NO;
+    hasNavigation = NO;
+    autohideTimer = nil;
+    navWindow = nil;
+    
+    readingBar = nil;
+    
+    activeAnnotation = nil;
+    editAnnotation = NO;
+    wasBounds = NSZeroRect;
+    mouseDownLoc = NSZeroPoint;
+    clickDelta = NSZeroPoint;
+    resizingAnnotation = NO;
+    draggingAnnotation = NO;
+    mouseDownInAnnotation = NO;
+    
+    trackingRect = 0;
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleAnnotationWillChangeNotification:) 
+                                                 name:SKAnnotationWillChangeNotification object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleAnnotationDidChangeNotification:) 
+                                                 name:SKAnnotationDidChangeNotification object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleScrollMagnifyNotification:) 
+                                                 name:SKScrollMagnifyNotification object:nil];
+    [[NSUserDefaultsController sharedUserDefaultsController] addObserver:self forKeys:
+        [NSArray arrayWithObjects:SKReadingBarColorKey, SKReadingBarTransparencyKey, SKReadingBarInvertKey, nil]];
+}
+
 - (id)initWithFrame:(NSRect)frameRect {
     if (self = [super initWithFrame:frameRect]) {
-        toolMode = [[NSUserDefaults standardUserDefaults] integerForKey:SKLastToolModeKey];
-        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleAnnotationWillChangeNotification:) 
-                                                     name:SKAnnotationWillChangeNotification object:nil];
-        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleAnnotationDidChangeNotification:) 
-                                                     name:SKAnnotationDidChangeNotification object:nil];
-        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleScrollMagnifyNotification:) 
-                                                     name:SKScrollMagnifyNotification object:nil];
-        [[NSUserDefaultsController sharedUserDefaultsController] addObserver:self forKeys:
-            [NSArray arrayWithObjects:SKReadingBarColorKey, SKReadingBarTransparencyKey, SKReadingBarInvertKey, nil]];
+        [self commonInitialization];
     }
     return self;
 }
 
 - (id)initWithCoder:(NSCoder *)decoder {
     if (self = [super initWithCoder:decoder]) {
-        toolMode = [[NSUserDefaults standardUserDefaults] integerForKey:SKLastToolModeKey];
-        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleAnnotationWillChangeNotification:) 
-                                                     name:SKAnnotationWillChangeNotification object:nil];
-        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleAnnotationDidChangeNotification:) 
-                                                     name:SKAnnotationDidChangeNotification object:nil];
-        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleScrollMagnifyNotification:) 
-                                                     name:SKScrollMagnifyNotification object:nil];
-        [[NSUserDefaultsController sharedUserDefaultsController] addObserver:self forKey:SKReadingBarColorKey];
-        [[NSUserDefaultsController sharedUserDefaultsController] addObserver:self forKey:SKReadingBarTransparencyKey];
-        [[NSUserDefaultsController sharedUserDefaultsController] addObserver:self forKeys:
-            [NSArray arrayWithObjects:SKReadingBarColorKey, SKReadingBarTransparencyKey, SKReadingBarInvertKey, nil]];
+        [self commonInitialization];
     }
     return self;
 }
 
 - (void)dealloc {
-    [[NSUserDefaultsController sharedUserDefaultsController] removeObserver:self forKey:SKReadingBarColorKey];
-    [[NSUserDefaultsController sharedUserDefaultsController] removeObserver:self forKey:SKReadingBarTransparencyKey];
-    [[NSUserDefaultsController sharedUserDefaultsController] removeObserver:self forKey:SKReadingBarInvertKey];
+    [[NSUserDefaultsController sharedUserDefaultsController] removeObserver:self forKeys:
+        [NSArray arrayWithObjects:SKReadingBarColorKey, SKReadingBarTransparencyKey, SKReadingBarInvertKey, nil]];
     [[NSNotificationCenter defaultCenter] removeObserver:self];
     [self doAutohide:NO]; // invalidates and releases the timer
     [[SKPDFHoverWindow sharedHoverWindow] orderOut:self];
