@@ -135,7 +135,7 @@ static NSString *SKDocumentToolbarNotesPaneItemIdentifier = @"SKDocumentToolbarN
 - (void)dealloc {
     
 	[[NSNotificationCenter defaultCenter] removeObserver: self];
-    [self unregisterForChangeNotification];
+    [self unregisterAsObserver];
     
     if (thumbnailTimer) {
         [thumbnailTimer invalidate];
@@ -271,65 +271,62 @@ static NSString *SKDocumentToolbarNotesPaneItemIdentifier = @"SKDocumentToolbarN
 }
 
 - (void)registerForNotifications {
+    NSNotificationCenter *nc = [NSNotificationCenter defaultCenter];
     // Application
-	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleApplicationWillTerminateNotification:) 
-                                                 name:SKApplicationWillTerminateNotification object:NSApp];
-	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleApplicationWillResignActiveNotification:) 
-                                                 name:NSApplicationWillResignActiveNotification object:NSApp];
-	// PDFView
-	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handlePageChangedNotification:) 
-                                                 name:PDFViewPageChangedNotification object:pdfView];
-	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleScaleChangedNotification:) 
-                                                 name:PDFViewScaleChangedNotification object:pdfView];
-	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleChangedHistoryNotification:) 
-                                                 name:PDFViewChangedHistoryNotification object:pdfView];
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleDidChangeActiveAnnotationNotification:) 
-                                                 name:SKPDFViewActiveAnnotationDidChangeNotification object:pdfView];
-	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleDidAddAnnotationNotification:) 
-                                                 name:SKPDFViewDidAddAnnotationNotification object:pdfView];
-	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleDidRemoveAnnotationNotification:) 
-                                                 name:SKPDFViewDidRemoveAnnotationNotification object:pdfView];
-	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleDoubleClickedAnnotationNotification:) 
-                                                 name:SKPDFViewAnnotationDoubleClickedNotification object:pdfView];
-	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleAnnotationDidChangeNotification:) 
-                                                 name:SKAnnotationDidChangeNotification object:nil];
+    [nc addObserver:self selector:@selector(handleApplicationWillTerminateNotification:) 
+                             name:SKApplicationWillTerminateNotification object:NSApp];
+    [nc addObserver:self selector:@selector(handleApplicationWillResignActiveNotification:) 
+                             name:NSApplicationWillResignActiveNotification object:NSApp];
+    // PDFView
+    [nc addObserver:self selector:@selector(handlePageChangedNotification:) 
+                             name:PDFViewPageChangedNotification object:pdfView];
+    [nc addObserver:self selector:@selector(handleScaleChangedNotification:) 
+                             name:PDFViewScaleChangedNotification object:pdfView];
+    [nc addObserver:self selector:@selector(handleChangedHistoryNotification:) 
+                             name:PDFViewChangedHistoryNotification object:pdfView];
+    [nc addObserver:self selector:@selector(handleDidChangeActiveAnnotationNotification:) 
+                             name:SKPDFViewActiveAnnotationDidChangeNotification object:pdfView];
+    [nc addObserver:self selector:@selector(handleDidAddAnnotationNotification:) 
+                             name:SKPDFViewDidAddAnnotationNotification object:pdfView];
+    [nc addObserver:self selector:@selector(handleDidRemoveAnnotationNotification:) 
+                             name:SKPDFViewDidRemoveAnnotationNotification object:pdfView];
+    [nc addObserver:self selector:@selector(handleDoubleClickedAnnotationNotification:) 
+                             name:SKPDFViewAnnotationDoubleClickedNotification object:pdfView];
+    [nc addObserver:self selector:@selector(handleAnnotationDidChangeNotification:) 
+                             name:SKAnnotationDidChangeNotification object:nil];
 }
 
 - (void)registerForDocumentNotifications {
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleDocumentBeginWrite:) 
-                                                 name:@"PDFDidBeginDocumentWrite" object:[pdfView document]];
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleDocumentEndWrite:) 
-                                                 name:@"PDFDidEndDocumentWrite" object:[pdfView document]];
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleDocumentEndPageWrite:) 
-                                                 name:@"PDFDidEndPageWrite" object:[pdfView document]];
+    NSNotificationCenter *nc = [NSNotificationCenter defaultCenter];
+    [nc addObserver:self selector:@selector(handleDocumentBeginWrite:) 
+                             name:@"PDFDidBeginDocumentWrite" object:[pdfView document]];
+    [nc addObserver:self selector:@selector(handleDocumentEndWrite:) 
+                             name:@"PDFDidEndDocumentWrite" object:[pdfView document]];
+    [nc addObserver:self selector:@selector(handleDocumentEndPageWrite:) 
+                             name:@"PDFDidEndPageWrite" object:[pdfView document]];
 }
 
 - (void)unregisterForDocumentNotifications {
-    [[NSNotificationCenter defaultCenter] removeObserver:self name:@"PDFDidBeginDocumentWrite" object:[pdfView document]];
-    [[NSNotificationCenter defaultCenter] removeObserver:self name:@"PDFDidEndDocumentWrite" object:[pdfView document]];
-    [[NSNotificationCenter defaultCenter] removeObserver:self name:@"PDFDidEndPageWrite" object:[pdfView document]];
+    NSNotificationCenter *nc = [NSNotificationCenter defaultCenter];
+    [nc removeObserver:self name:@"PDFDidBeginDocumentWrite" object:[pdfView document]];
+    [nc removeObserver:self name:@"PDFDidEndDocumentWrite" object:[pdfView document]];
+    [nc removeObserver:self name:@"PDFDidEndPageWrite" object:[pdfView document]];
 }
 
 - (void)registerAsObserver {
-    [[NSUserDefaultsController sharedUserDefaultsController] addObserver:self forKey:SKBackgroundColorKey];
-    [[NSUserDefaultsController sharedUserDefaultsController] addObserver:self forKey:SKFullScreenBackgroundColorKey];
-    [[NSUserDefaultsController sharedUserDefaultsController] addObserver:self forKey:SKSearchHighlightColorKey];
-    [[NSUserDefaultsController sharedUserDefaultsController] addObserver:self forKey:SKShouldHighlightSearchResultsKey];
-    [[NSUserDefaultsController sharedUserDefaultsController] addObserver:self forKey:SKThumbnailSizeKey];
-    [[NSUserDefaultsController sharedUserDefaultsController] addObserver:self forKey:SKSnapshotThumbnailSizeKey];
-    [[NSUserDefaultsController sharedUserDefaultsController] addObserver:self forKey:SKShouldAntiAliasKey];
-    [[NSUserDefaultsController sharedUserDefaultsController] addObserver:self forKey:SKGreekingThresholdKey];
+    [[NSUserDefaultsController sharedUserDefaultsController] addObserver:self forKeys:
+        [NSArray arrayWithObjects:SKBackgroundColorKey, SKFullScreenBackgroundColorKey, 
+                                  SKSearchHighlightColorKey, SKShouldHighlightSearchResultsKey, 
+                                  SKThumbnailSizeKey, SKSnapshotThumbnailSizeKey, 
+                                  SKShouldAntiAliasKey, SKGreekingThresholdKey, nil]];
 }
 
-- (void)unregisterForChangeNotification {
-    [[NSUserDefaultsController sharedUserDefaultsController] removeObserver:self forKey:SKBackgroundColorKey];
-    [[NSUserDefaultsController sharedUserDefaultsController] removeObserver:self forKey:SKFullScreenBackgroundColorKey];
-    [[NSUserDefaultsController sharedUserDefaultsController] removeObserver:self forKey:SKSearchHighlightColorKey];
-    [[NSUserDefaultsController sharedUserDefaultsController] removeObserver:self forKey:SKShouldHighlightSearchResultsKey];
-    [[NSUserDefaultsController sharedUserDefaultsController] removeObserver:self forKey:SKThumbnailSizeKey];
-    [[NSUserDefaultsController sharedUserDefaultsController] removeObserver:self forKey:SKSnapshotThumbnailSizeKey];
-    [[NSUserDefaultsController sharedUserDefaultsController] removeObserver:self forKey:SKShouldAntiAliasKey];
-    [[NSUserDefaultsController sharedUserDefaultsController] removeObserver:self forKey:SKGreekingThresholdKey];
+- (void)unregisterAsObserver {
+    [[NSUserDefaultsController sharedUserDefaultsController] removeObserver:self forKeys:
+        [NSArray arrayWithObjects:SKBackgroundColorKey, SKFullScreenBackgroundColorKey, 
+                                  SKSearchHighlightColorKey, SKShouldHighlightSearchResultsKey, 
+                                  SKThumbnailSizeKey, SKSnapshotThumbnailSizeKey, 
+                                  SKShouldAntiAliasKey, SKGreekingThresholdKey, nil]];
 }
 
 - (void)setupWindow:(NSDictionary *)setup{
@@ -406,6 +403,8 @@ static NSString *SKDocumentToolbarNotesPaneItemIdentifier = @"SKDocumentToolbarN
         
         // these will be invalid. If needed, the document will restore them
         [[self mutableArrayValueForKey:@"notes"] removeAllObjects];
+        
+        [lastViewedPages removeAllObjects];
         
         [self unregisterForDocumentNotifications];
         

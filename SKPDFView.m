@@ -126,9 +126,8 @@ NSString *SKSkimNotePboardType = @"SKSkimNotePboardType";
                                                      name:SKAnnotationDidChangeNotification object:nil];
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleScrollMagnifyNotification:) 
                                                      name:SKScrollMagnifyNotification object:nil];
-        [[NSUserDefaultsController sharedUserDefaultsController] addObserver:self forKey:SKReadingBarColorKey];
-        [[NSUserDefaultsController sharedUserDefaultsController] addObserver:self forKey:SKReadingBarTransparencyKey];
-        [[NSUserDefaultsController sharedUserDefaultsController] addObserver:self forKey:SKReadingBarInvertKey];
+        [[NSUserDefaultsController sharedUserDefaultsController] addObserver:self forKeys:
+            [NSArray arrayWithObjects:SKReadingBarColorKey, SKReadingBarTransparencyKey, SKReadingBarInvertKey, nil]];
     }
     return self;
 }
@@ -144,7 +143,8 @@ NSString *SKSkimNotePboardType = @"SKSkimNotePboardType";
                                                      name:SKScrollMagnifyNotification object:nil];
         [[NSUserDefaultsController sharedUserDefaultsController] addObserver:self forKey:SKReadingBarColorKey];
         [[NSUserDefaultsController sharedUserDefaultsController] addObserver:self forKey:SKReadingBarTransparencyKey];
-        [[NSUserDefaultsController sharedUserDefaultsController] addObserver:self forKey:SKReadingBarInvertKey];
+        [[NSUserDefaultsController sharedUserDefaultsController] addObserver:self forKeys:
+            [NSArray arrayWithObjects:SKReadingBarColorKey, SKReadingBarTransparencyKey, SKReadingBarInvertKey, nil]];
     }
     return self;
 }
