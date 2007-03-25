@@ -61,7 +61,7 @@
     int i, iMax = [keys count];
     for (i = 0; i < iMax; i++) {
         NSString *keyPath = [NSString stringWithFormat:@"values.%@", [keys objectAtIndex:i]];
-        [self removeObserver:anObserver forKeyPath:keyPath options:0 context:NULL];
+        [self removeObserver:anObserver forKeyPath:keyPath];
     }
 }
 
