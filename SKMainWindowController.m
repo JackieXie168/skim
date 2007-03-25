@@ -330,37 +330,41 @@ static NSString *SKDocumentToolbarNotesPaneItemIdentifier = @"SKDocumentToolbarN
 }
 
 - (void)setupWindow:(NSDictionary *)setup{
-    NSRect frame = NSRectFromString([setup objectForKey:@"windowFrame"]);
-    float width, factor;
+    NSString *rectString;
+    NSNumber *number;
+    NSRect frame;
     
-    if (NSIsEmptyRect(frame) == NO)
-        [[self window] setFrame:frame display:NO];
-    width = [[setup objectForKey:@"leftSidePaneWidth"] floatValue];
-    if (width >= 0.0) {
+    if (rectString = [setup objectForKey:@"windowFrame"])
+        [[self window] setFrame:NSRectFromString(rectString) display:NO];
+    if (number = [setup objectForKey:@"leftSidePaneWidth"]) {
         frame = [leftSideContentBox frame];
-        frame.size.width = width;
+        frame.size.width = [number floatValue];
         [leftSideContentBox setFrame:frame];
     }
-    width = [[setup objectForKey:@"rightSidePaneWidth"] floatValue];
-    if (width >= 0.0) {
+    if (number = [setup objectForKey:@"rightSidePaneWidth"]) {
         frame = [rightSideContentBox frame];
-        frame.size.width = width;
-        frame.origin.x = NSMaxX([splitView frame]) - width;
+        frame.size.width = [number floatValue];
+        frame.origin.x = NSMaxX([splitView frame]) - NSWidth(frame);
         [rightSideContentBox setFrame:frame];
     }
     frame = [pdfContentBox frame];
     frame.size.width = NSWidth([splitView frame]) - NSWidth([leftSideContentBox frame]) - NSWidth([rightSideContentBox frame]) - 2 * [splitView dividerThickness];
     frame.origin.x = NSMaxX([leftSideContentBox frame]) + [splitView dividerThickness];
     [pdfContentBox setFrame:frame];
-    factor = [[setup objectForKey:@"scaleFactor"] floatValue];
-    if (factor > 0.0)
-        [pdfView setScaleFactor:factor];
-    [pdfView setAutoScales:[[setup objectForKey:@"autoScales"] boolValue]];
-    [pdfView setDisplaysPageBreaks:[[setup objectForKey:@"displaysPageBreaks"] boolValue]];
-    [pdfView setDisplaysAsBook:[[setup objectForKey:@"displaysAsBook"] boolValue]];
-    [pdfView setDisplayMode:[[setup objectForKey:@"displayMode"] intValue]];
-    [pdfView setDisplayBox:[[setup objectForKey:@"displayBox"] intValue]];
-    [pdfView goToPage:[[pdfView document] pageAtIndex:[[setup objectForKey:@"pageIndex"] intValue]]];
+    if (number = [setup objectForKey:@"scaleFactor"])
+        [pdfView setScaleFactor:[number floatValue]];
+    if (number = [setup objectForKey:@"autoScales"])
+        [pdfView setAutoScales:[number boolValue]];
+    if (number = [setup objectForKey:@"displaysPageBreaks"])
+        [pdfView setDisplaysPageBreaks:[number boolValue]];
+    if (number = [setup objectForKey:@"displaysAsBook"])
+        [pdfView setDisplaysAsBook:[number boolValue]];
+    if (number = [setup objectForKey:@"displayMode"])
+        [pdfView setDisplayMode:[number intValue]];
+    if (number = [setup objectForKey:@"displayBox"])
+        [pdfView setDisplayBox:[number intValue]];
+    if (number = [setup objectForKey:@"pageIndex"])
+        [pdfView goToPage:[[pdfView document] pageAtIndex:[number intValue]]];
 }
 
 - (NSDictionary *)currentSetup {
