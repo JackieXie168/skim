@@ -146,10 +146,10 @@
     
     // Finally send the event
     if (err == noErr)
-        AESendMessage(&theAEvent, NULL, kAENoReply, kAEDefaultTimeout);
+        err = AESendMessage(&theAEvent, NULL, kAENoReply, kAEDefaultTimeout);
     
     // If the send failed because the app wasn't running, we need to use LaunchApplication...which doesn't seem to work if the app (at least Skim) is already running, hence the initial call to AESendMessage.  Possibly this can be done with LaunchServices, but the documentation for this stuff isn't sufficient to say and I'm not in the mood for any more trial-and-error AppleEvent coding.
-    if (noErr == err) { 
+    if (procNotFound  == err) { 
         // This code was distilled from http://static.userland.com/Iowa/sourceListings/macbirdSource/Frontier%20SDK%204.1b1/Toolkits/Applet%20Toolkit/appletprocess.c.html
         LaunchParamBlockRec pb;
         memset(&pb, 0, sizeof(LaunchParamBlockRec));
