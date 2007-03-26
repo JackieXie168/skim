@@ -58,15 +58,15 @@
     
     OSStatus err = noErr;
 	AppleEvent theAEvent;
-	AEAddressDesc fndrAddress;
+	AEAddressDesc appAddress;
 	AEDescList targetListDesc;
-	OSType fndrCreator;
+	OSType appCreator;
 	AliasHandle targetAlias;    
     AEDesc searchText;
     
     // initialize descriptors so we can safely dispose of them
     AEInitializeDesc(&theAEvent);
-    AEInitializeDesc(&fndrAddress);
+    AEInitializeDesc(&appAddress);
     AEInitializeDesc(&targetListDesc);
     AEInitializeDesc(&searchText);
 	targetAlias = NULL;
@@ -97,21 +97,19 @@
     if(appURL) CFRelease(appURL);
     
     if (err == noErr){
-        fndrCreator = lsRecord.creator;
-        OBASSERT(fndrCreator != 0); 
+        appCreator = lsRecord.creator;
+        OBASSERT(appCreator != 0); 
     } else {
         // We'll try the Finder instead; remember to reset err, though!  The problem with passing this to the Finder is that keyAESearchText will be stripped off, but at least it should open the file.
-        fndrCreator = 'MACS';
+        appCreator = 'MACS';
         err = noErr;
     }
     
     if (err == noErr)
-        err = AECreateDesc(typeApplSignature, (Ptr) &fndrCreator, sizeof(fndrCreator), &fndrAddress);
+        err = AECreateDesc(typeApplSignature, (Ptr) &appCreator, sizeof(OSType), &appAddress);
     
 	if (err == noErr)
-        err = AECreateAppleEvent(kCoreEventClass, kAEOpenDocuments,
-                                 &fndrAddress, kAutoGenerateReturnID,
-                                 kAnyTransactionID, &theAEvent);
+        err = AECreateAppleEvent(kCoreEventClass, kAEOpenDocuments, &appAddress, kAutoGenerateReturnID, kAnyTransactionID, &theAEvent);
     
     // Here's the search text; convert it to UTF8 bytes without null termination.
     NSData *UTF8data = [searchString dataUsingEncoding:NSUTF8StringEncoding];
@@ -143,13 +141,26 @@
     /* add the file list to the apple event */
     if( err == noErr )
         err = AEPutParamDesc(&theAEvent, keyDirectObject, &targetListDesc);
-    
+        
     // Finally send the event
     if (err == noErr) {
-        err = AESendMessage(&theAEvent, NULL, kAENoReply, kAEDefaultTimeout);
+        
+        // AESendMessage doesn't bring the app to the foreground, so we'll use this undocumented event to do it manually (LSOpen... can do this, but it has undesirable side effects).
+        // !!! For some reason, this brings Skim to the foreground if it's already running, but it then doesn't open the document (although sending the odoc event succeeds).  Since it works with Preview.app, this may be specific to Skim.
+        AppleEvent makeFrontEvent;
+        AEInitializeDesc(&makeFrontEvent);
+        if (noErr == err)
+            err = AECreateAppleEvent('misc', 'actv', &appAddress, kAutoGenerateReturnID, kAnyTransactionID, &makeFrontEvent);
+        if (noErr == err)
+            err = AESendMessage(&makeFrontEvent, NULL, kAENoReply, kAEDefaultTimeout);
+        AEDisposeDesc(&makeFrontEvent);
+        
+        // try to send the odoc event
+        if (noErr == err)
+            err = AESendMessage(&theAEvent, NULL, kAENoReply, kAEDefaultTimeout);
     
         // If the send failed because the app wasn't running, we need to use LaunchApplication...which doesn't seem to work if the app (at least Skim) is already running, hence the initial call to AESendMessage.  Possibly this can be done with LaunchServices, but the documentation for this stuff isn't sufficient to say and I'm not in the mood for any more trial-and-error AppleEvent coding.
-        if (procNotFound  == err) { 
+        if (procNotFound == err) { 
             // This code was distilled from http://static.userland.com/Iowa/sourceListings/macbirdSource/Frontier%20SDK%204.1b1/Toolkits/Applet%20Toolkit/appletprocess.c.html
             LaunchParamBlockRec pb;
             memset(&pb, 0, sizeof(LaunchParamBlockRec));
@@ -174,7 +185,7 @@
     /* clean up and leave */
 	AEDisposeDesc(&targetListDesc);
 	AEDisposeDesc(&theAEvent);
-	AEDisposeDesc(&fndrAddress);
+	AEDisposeDesc(&appAddress);
     AEDisposeDesc(&searchText);
 	
     return (err == noErr);
