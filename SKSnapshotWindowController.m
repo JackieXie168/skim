@@ -306,21 +306,28 @@ static NSString *SKSnapshotViewChangedNotification = @"SKSnapshotViewChangedNoti
 
 #pragma mark Miniaturize / Deminiaturize
 
+- (void)getMiniRect:(NSRect *)miniRect maxiRect:(NSRect *)maxiRect forDockingRect:(NSRect)dockRect {
+    NSView *clipView = [[[pdfView documentView] enclosingScrollView] contentView];
+    NSRect clipRect = [pdfView convertRect:[clipView bounds] fromView:clipView];
+    float thumbRatio = NSHeight(clipRect) / NSWidth(clipRect);
+    float dockRatio = NSHeight(dockRect) / NSWidth(dockRect);
+    
+    clipRect = [pdfView convertRect:clipRect toView:nil];
+    clipRect.origin = [[self window] convertBaseToScreen:clipRect.origin];
+    *maxiRect = clipRect;
+    
+    if (thumbRatio > dockRatio)
+        *miniRect = NSInsetRect(dockRect, 0.5 * NSWidth(dockRect) * (1.0 - dockRatio / thumbRatio), 0.0);
+    else
+        *miniRect = NSInsetRect(dockRect, 0.0, 0.5 * NSHeight(dockRect) * (1.0 - thumbRatio / dockRatio));
+}
+
 - (void)miniaturize {
     miniaturizing = YES;
     if ([[self delegate] respondsToSelector:@selector(snapshotControllerTargetRectForMiniaturize:)]) {
-        NSView *clipView = [[[pdfView documentView] enclosingScrollView] contentView];
-        NSRect startRect = [pdfView convertRect:[clipView bounds] fromView:clipView];
-        NSRect endRect = [[self delegate] snapshotControllerTargetRectForMiniaturize:self];
-        float thumbRatio = NSHeight(startRect) / NSWidth(startRect);
-        float cellRatio = NSHeight(endRect) / NSWidth(endRect);
+        NSRect startRect, endRect, dockRect = [[self delegate] snapshotControllerTargetRectForMiniaturize:self];
         
-        startRect = [pdfView convertRect:startRect toView:nil];
-        startRect.origin = [[self window] convertBaseToScreen:startRect.origin];
-        if (thumbRatio > cellRatio)
-            endRect = NSInsetRect(endRect, 0.5 * NSWidth(endRect) * (1.0 - cellRatio / thumbRatio), 0.0);
-        else
-            endRect = NSInsetRect(endRect, 0.0, 0.5 * NSHeight(endRect) * (1.0 - thumbRatio / cellRatio));
+        [self getMiniRect:&endRect maxiRect:&startRect forDockingRect:dockRect];
         
         NSImage *image = [self thumbnailWithSize:0.0 shadowBlurRadius:0.0 shadowOffset:NSZeroSize];
         SKMiniaturizeWindow *miniaturizeWindow = [[SKMiniaturizeWindow alloc] initWithContentRect:startRect image:image];
@@ -340,18 +347,9 @@ static NSString *SKSnapshotViewChangedNotification = @"SKSnapshotViewChangedNoti
 
 - (void)deminiaturize {
     if ([[self delegate] respondsToSelector:@selector(snapshotControllerSourceRectForDeminiaturize:)]) {
-        NSView *clipView = [[[pdfView documentView] enclosingScrollView] contentView];
-        NSRect endRect = [pdfView convertRect:[clipView bounds] fromView:clipView];
-        NSRect startRect = [[self delegate] snapshotControllerSourceRectForDeminiaturize:self];
-        float thumbRatio = NSHeight(endRect) / NSWidth(endRect);
-        float cellRatio = NSHeight(startRect) / NSWidth(startRect);
+        NSRect startRect, endRect, dockRect = [[self delegate] snapshotControllerSourceRectForDeminiaturize:self];
         
-        endRect = [pdfView convertRect:endRect toView:nil];
-        endRect.origin = [[self window] convertBaseToScreen:endRect.origin];
-        if (thumbRatio > cellRatio)
-            startRect = NSInsetRect(startRect, 0.5 * NSWidth(startRect) * (1.0 - cellRatio / thumbRatio), 0.0);
-        else
-            startRect = NSInsetRect(startRect, 0.0, 0.5 * NSHeight(startRect) * (1.0 - thumbRatio / cellRatio));
+        [self getMiniRect:&startRect maxiRect:&endRect forDockingRect:dockRect];
         
         NSImage *image = [self thumbnailWithSize:0.0 shadowBlurRadius:0.0 shadowOffset:NSZeroSize];
         SKMiniaturizeWindow *miniaturizeWindow = [[SKMiniaturizeWindow alloc] initWithContentRect:startRect image:image];
