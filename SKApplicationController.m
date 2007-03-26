@@ -63,19 +63,19 @@
     NSArray *resettableUserDefaultsKeys;
     
     // load the default values for the user defaults
-    userDefaultsValuesPath = [[NSBundle mainBundle] pathForResource:@"InitialUserDefaults" 
-                                                           ofType:@"plist"];
+    userDefaultsValuesPath = [[NSBundle mainBundle] pathForResource:@"InitialUserDefaults" ofType:@"plist"];
     userDefaultsValuesDict = [NSDictionary dictionaryWithContentsOfFile:userDefaultsValuesPath];
+    initialValuesDict = [userDefaultsValuesDict objectForKey:@"RegisteredDefaults"];
     
     // set them in the standard user defaults
-    [[NSUserDefaults standardUserDefaults] registerDefaults:userDefaultsValuesDict];
+    [[NSUserDefaults standardUserDefaults] registerDefaults:initialValuesDict];
     
     // if your application supports resetting a subset of the defaults to 
     // factory values, you should set those values 
     // in the shared user defaults controller
-    resettableUserDefaultsKeys = [userDefaultsValuesDict objectForKey:@"SKResettableKeys"];
+    resettableUserDefaultsKeys = [userDefaultsValuesDict objectForKey:@"ResettableKeys"];
     
-    initialValuesDict = [userDefaultsValuesDict dictionaryWithValuesForKeys:resettableUserDefaultsKeys];
+    initialValuesDict = [initialValuesDict dictionaryWithValuesForKeys:resettableUserDefaultsKeys];
     
     // Set the initial values in the shared user defaults controller 
     [[NSUserDefaultsController sharedUserDefaultsController] setInitialValues:initialValuesDict];
