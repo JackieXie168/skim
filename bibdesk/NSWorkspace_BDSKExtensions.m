@@ -81,10 +81,11 @@
 	if(noErr == err)
 		err = LSGetApplicationForURL((CFURLRef)fileURL, kLSRolesAll, NULL, &appURL);
 		
-    
-    // Make sure the app is launched before sending the event, or AE will give an error
-    if (err == noErr)
-        err = LSOpenCFURLRef(appURL, NULL);
+    // convert application location to FSSpec in case we need it
+    FSRef appRef;
+    CFURLGetFSRef(appURL, &appRef);
+    FSSpec appSpec;
+    FSGetCatalogInfo(&appRef, kFSCatInfoNone, NULL, NULL, &appSpec, NULL);
     
     // Get the type info of the creator application from LS, so we know should receive the event
     LSItemInfoRecord lsRecord;
@@ -145,7 +146,29 @@
     
     // Finally send the event
     if (err == noErr)
-        err = AESendMessage(&theAEvent, NULL, kAENoReply, kAEDefaultTimeout);
+        AESendMessage(&theAEvent, NULL, kAENoReply, kAEDefaultTimeout);
+    
+    // If the send failed because the app wasn't running, we need to use LaunchApplication...which doesn't seem to work if the app (at least Skim) is already running, hence the initial call to AESendMessage.  Possibly this can be done with LaunchServices, but the documentation for this stuff isn't sufficient to say and I'm not in the mood for any more trial-and-error AppleEvent coding.
+    if (noErr == err) { 
+        // This code was distilled from http://static.userland.com/Iowa/sourceListings/macbirdSource/Frontier%20SDK%204.1b1/Toolkits/Applet%20Toolkit/appletprocess.c.html
+        LaunchParamBlockRec pb;
+        memset(&pb, 0, sizeof(LaunchParamBlockRec));
+        pb.launchAppSpec = &appSpec;
+        pb.launchBlockID = extendedBlock;
+        pb.launchEPBLength = extendedBlockLen;
+        pb.launchControlFlags = launchContinue | launchNoFileFlags | launchDontSwitch;
+        
+        typedef AppParameters **AppParametersHandle;
+
+        AppParametersHandle params = NULL;
+        AEDesc launchDesc;
+        AEInitializeDesc(&launchDesc);
+        err = AECoerceDesc(&theAEvent, typeAppParameters, &launchDesc);
+        params = (AppParametersHandle)(launchDesc.dataHandle);
+        pb.launchAppParameters = *params;
+        err = LaunchApplication (&pb);
+        AEDisposeDesc(&launchDesc);
+    }
     
     /* clean up and leave */
 	AEDisposeDesc(&targetListDesc);
