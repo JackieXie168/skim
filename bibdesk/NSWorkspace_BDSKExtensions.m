@@ -145,7 +145,7 @@
     
     // Finally send the event
     if (err == noErr)
-        AESendMessage(&theAEvent, NULL, kAENoReply, kAEDefaultTimeout);
+        err = AESendMessage(&theAEvent, NULL, kAENoReply, kAEDefaultTimeout);
     
     /* clean up and leave */
 	AEDisposeDesc(&targetListDesc);
