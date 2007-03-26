@@ -808,6 +808,10 @@
     return ([self numberOfSelectedPubs] > 0);
 }
 
+- (BOOL)validateAddSearchBookmarkMenuItem:(NSMenuItem *)menuItem {
+    return [self hasSearchGroupsSelected];
+}
+
 - (BOOL)validateRevertDocumentToSavedMenuItem:(NSMenuItem *)menuItem {
     return [self isDocumentEdited];
 }
@@ -1043,6 +1047,9 @@
     }
     else if (act == @selector(editNewGroupWithSelection:)){
         return [self validateEditNewGroupWithSelectionMenuItem:menuItem];
+    }
+    else if (act == @selector(addSearchBookmark:)){
+        return [self validateAddSearchBookmarkMenuItem:menuItem];
     }
     else if (act == @selector(revertDocumentToSaved:)){
         return [self validateRevertDocumentToSavedMenuItem:menuItem];

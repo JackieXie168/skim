@@ -120,6 +120,7 @@ extern NSString *BDSKReadExtendedAttributesKey;
 extern NSString *BDSKShouldUsePDFMetadata;
 extern NSString *BDSKShouldWritePDFMetadata;
 extern NSString *BDSKIntersectGroupsKey;
+extern NSString *BDSKSearchGroupBookmarksKey;
 
 extern NSString *BDSKCiteKeyFormatKey;
 extern NSString *BDSKCiteKeyFormatPresetKey;

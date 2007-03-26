@@ -79,6 +79,7 @@
 #import "NSImage+Toolbox.h"
 #import <libkern/OSAtomic.h>
 #import "BDSKFileMatcher.h"
+#import "BDSKSearchBookmarkController.h"
 
 @implementation BibAppController
 
@@ -592,6 +593,21 @@ static BOOL fileIsInTrash(NSURL *fileURL)
             item = [menu addItemWithTitle:[styles objectAtIndex:i] action:@selector(copyAsAction:) keyEquivalent:@""];
             [item setTag:BDSKTemplateDragCopyType + i];
         }
+        
+    } else if ([menu isEqual:searchBookmarksMenu]) {
+        
+        NSArray *bookmarks = [[BDSKSearchBookmarkController sharedBookmarkController] bookmarks];
+        int i = [menu numberOfItems], iMax = [bookmarks count];
+        while (--i > 2)
+            [menu removeItemAtIndex:i];
+        if (iMax > 0)
+            [menu addItem:[NSMenuItem separatorItem]];
+        for (i = 0; i < iMax; i++) {
+            NSDictionary *bm = [bookmarks objectAtIndex:i];
+            NSMenuItem *item = [menu addItemWithTitle:[bm objectForKey:@"label"] action:@selector(newSearchGroupFromBookmark:)  keyEquivalent:@""];
+            [item setRepresentedObject:bm];
+        }
+        
     }
 }
 
@@ -910,6 +926,10 @@ static BOOL fileIsInTrash(NSURL *fileURL)
 
 - (IBAction)matchFiles:(id)sender{
     [[BDSKFileMatcher sharedInstance] showWindow:sender];
+}
+
+- (IBAction)editSearchBookmarks:(id)sender {
+    [[BDSKSearchBookmarkController sharedBookmarkController] showWindow:self];
 }
 
 #pragma mark Service code

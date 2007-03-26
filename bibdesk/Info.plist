@@ -795,7 +795,41 @@
 					<false/>
 					<key>BDSKReadExtendedAttributesKey</key>
 					<false/>
-					<key>BDSKShouldUsePDFMetadata</key>
+                    <key>BDSKSearchGroupBookmarksKey</key>
+                    <array>
+                        <dict>
+                            <key>database</key>
+                            <string>pubmed</string>
+                            <key>label</key>
+                            <string>PubMed</string>
+                            <key>name</key>
+                            <string>PubMed</string>
+                            <key>type</key>
+                            <string>entrez</string>
+                        </dict>
+                        <dict>
+                            <key>database</key>
+                            <string>Voyager</string>
+                            <key>host</key>
+                            <string>z3950.loc.gov</string>
+                            <key>label</key>
+                            <string>Library of Congress</string>
+                            <key>name</key>
+                            <string>Library of Congress</string>
+                            <key>options</key>
+                            <dict>
+                                <key>recordSyntax</key>
+                                <string>US MARC</string>
+                                <key>resultEncoding</key>
+                                <string>marc-8</string>
+                            </dict>
+                            <key>port</key>
+                            <string>7090</string>
+                            <key>type</key>
+                            <string>zoom</string>
+                        </dict>
+					</array>
+                    <key>BDSKShouldUsePDFMetadata</key>
 					<false/>
 					<key>BDSKShouldWritePDFMetadata</key>
 					<false/>

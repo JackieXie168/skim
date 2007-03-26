@@ -60,6 +60,7 @@
 	IBOutlet NSMenu *columnsMenu;
 	IBOutlet NSMenu *groupSortMenu;
 	IBOutlet NSMenu *copyAsTemplateMenu;
+	IBOutlet NSMenu *searchBookmarksMenu;
 
     NSLock *metadataCacheLock;
     int32_t canWriteMetadata __attribute__ ((aligned (4)));
@@ -118,6 +119,9 @@
 
 - (IBAction)showReadMeFile:(id)sender;
 - (IBAction)showRelNotes:(id)sender;
+
+- (IBAction)editSearchBookmarks:(id)sender;
+
 - (BOOL)isInputManagerInstalledAndCurrent:(BOOL *)current;
 - (void)showInputManagerUpdateAlert;
 

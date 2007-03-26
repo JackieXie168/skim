@@ -97,6 +97,9 @@
 - (IBAction)addURLGroupAction:(id)sender;
 - (IBAction)addScriptGroupAction:(id)sender;
 - (IBAction)addSearchGroupAction:(id)sender;
+- (IBAction)newSearchGroupFromBookmark:(id)sender;
+- (IBAction)addSearchBookmark:(id)sender;
+- (IBAction)dismissSearchBookmarkSheet:(id)sender;
 - (IBAction)addGroupButtonAction:(id)sender;
 - (IBAction)removeSelectedGroups:(id)sender;
 - (void)editGroupAtRow:(int)row;

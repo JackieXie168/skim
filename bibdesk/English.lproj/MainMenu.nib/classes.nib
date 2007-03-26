@@ -20,16 +20,23 @@
         {
             ACTIONS = {
                 checkForUpdates = id; 
+                editSearchBookmarks = id; 
                 showPreferencePanel = id; 
                 showReadMeFile = id; 
                 showRelNotes = id; 
                 toggleShowingErrorPanel = id; 
+                toggleShowingOrphanedFilesPanel = id; 
                 toggleShowingPreviewPanel = id; 
                 visitWebSite = id; 
             }; 
             CLASS = BibAppController; 
             LANGUAGE = ObjC; 
-            OUTLETS = {columnsMenu = NSMenu; copyAsTemplateMenu = NSMenu; groupSortMenu = NSMenu; }; 
+            OUTLETS = {
+                columnsMenu = NSMenu; 
+                copyAsTemplateMenu = NSMenu; 
+                groupSortMenu = NSMenu; 
+                searchBookmarksMenu = NSMenu; 
+            }; 
             SUPERCLASS = NSObject; 
         }, 
         {
@@ -98,6 +105,7 @@
         {
             ACTIONS = {
                 addScriptGroupAction = id; 
+                addSearchBookmark = id; 
                 addSearchGroupAction = id; 
                 addSmartGroupAction = id; 
                 addStaticGroupAction = id; 

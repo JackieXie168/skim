@@ -75,6 +75,7 @@
 #import "BDSKWebGroupViewController.h"
 #import "BDSKServerInfo.h"
 #import "NSObject_BDSKExtensions.h"
+#import "BDSKSearchBookmarkController.h"
 
 @implementation BibDocument (Groups)
 
@@ -987,6 +988,46 @@ The groupedPublications array is a subset of the publications array, developed b
                                didEndSelector:@selector(searchGroupSheetDidEnd:returnCode:contextInfo:)
                                   contextInfo:NULL];
     [sheetController release];
+}
+
+- (IBAction)newSearchGroupFromBookmark:(id)sender {
+    NSDictionary *dict = [sender representedObject];
+    BDSKSearchGroup *group = [[[BDSKSearchGroup alloc] initWithDictionary:dict] autorelease];
+    unsigned int insertIndex = NSMaxRange([groups rangeOfSearchGroups]);
+    [groups addSearchGroup:(id)group];        
+    [groupTableView selectRowIndexes:[NSIndexSet indexSetWithIndex:insertIndex] byExtendingSelection:NO];
+}
+
+- (void)searchBookmarkSheetDidEnd:(NSWindow *)sheet returnCode:(int)returnCode contextInfo:(void *)contextInfo {
+    if (returnCode == NSOKButton) {
+        BDSKSearchBookmarkController *bmController = [BDSKSearchBookmarkController sharedBookmarkController];
+        BDSKGroup *group = [[self selectedGroups] lastObject];
+        NSMutableDictionary *bm = [[group dictionaryValue] mutableCopy];
+        [bm setObject:[searchBookmarkField stringValue] forKey:@"label"];
+        [[bmController mutableArrayValueForKey:@"bookmarks"] addObject:bm];
+        [bm release];
+    }
+}
+
+- (IBAction)addSearchBookmark:(id)sender {
+    if ([self hasSearchGroupsSelected] == NO) {
+        NSBeep();
+        return;
+    }
+    
+    BDSKSearchGroup *group = (BDSKSearchGroup *)[[self selectedGroups] lastObject];
+	[searchBookmarkField setStringValue:[NSString stringWithFormat:@"%@: %@", [[group serverInfo] name], [group name]]];
+    
+    [NSApp beginSheet:searchBookmarkSheet
+       modalForWindow:[self windowForSheet]
+        modalDelegate:self 
+       didEndSelector:@selector(searchBookmarkSheetDidEnd:returnCode:contextInfo:)
+          contextInfo:NULL];
+}
+
+- (IBAction)dismissSearchBookmarkSheet:(id)sender {
+    [NSApp endSheet:searchBookmarkSheet returnCode:[sender tag]];
+    [searchBookmarkSheet orderOut:self];
 }
 
 - (IBAction)addURLGroupAction:(id)sender {
