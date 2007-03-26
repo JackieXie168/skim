@@ -172,6 +172,11 @@ extern NSString* BDSKWeblocFilePboardType; // core pasteboard type for webloc fi
    
     BDSKGroupsArray *groups;
 	
+#pragma mark Search group bookmarks
+
+    IBOutlet NSWindow *searchBookmarkSheet;
+    IBOutlet NSTextField *searchBookmarkField;
+
 #pragma mark Macros, Document Info and Front Matter variables
 
     BDSKMacroResolver *macroResolver;

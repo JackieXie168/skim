@@ -85,6 +85,7 @@ NSString *BDSKReadExtendedAttributesKey = @"BDSKReadExtendedAttributesKey";
 NSString *BDSKShouldUsePDFMetadata = @"BDSKShouldUsePDFMetadata";
 NSString *BDSKShouldWritePDFMetadata = @"BDSKShouldWritePDFMetadata";
 NSString *BDSKIntersectGroupsKey = @"BDSKIntersectGroupsKey";
+NSString *BDSKSearchGroupBookmarksKey = @"BDSKSearchGroupBookmarksKey";
 
 NSString *BDSKStringEncodingsKey = @"BDSKStringEncodingsKey";
 NSString *BDSKDefaultStringEncodingKey = @"Default string encoding for opening and saving";

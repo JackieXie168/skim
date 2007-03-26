@@ -42,6 +42,7 @@
                 addGroupButtonAction = id; 
                 addGroupFieldAction = id; 
                 addScriptGroupAction = id; 
+                addSearchBookmark = id; 
                 addSearchGroupAction = id; 
                 addSmartGroupAction = id; 
                 addStaticGroupAction = id; 
@@ -62,6 +63,7 @@
                 cut = id; 
                 deleteSelectedPubs = id; 
                 deselectAllPublications = id; 
+                dismissSearchBookmarkSheet = id; 
                 duplicateTitleToBooktitle = id; 
                 editAction = id; 
                 editGroupAction = id; 
@@ -150,11 +152,9 @@
                 previewTextView = NSTextView; 
                 saveAccessoryView = NSView; 
                 saveTextEncodingPopupButton = BDSKEncodingPopUpButton; 
+                searchBookmarkField = NSTextField; 
+                searchBookmarkSheet = NSWindow; 
                 searchField = BDSKSearchField; 
-                searchGroupEdgeView = BDSKEdgeView; 
-                searchGroupSearchButton = NSButton; 
-                searchGroupSearchField = NSSearchField; 
-                searchGroupView = BDSKCollapsibleView; 
                 splitView = BDSKSplitView; 
                 statusBar = BDSKStatusBar; 
                 tableView = BDSKMainTableView; 
