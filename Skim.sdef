@@ -147,17 +147,15 @@
             </responds-to>
         </class>
         
-        <command name="open" code="aevtodoc"
-            description="Open a document.">
+        <command name="open" code="aevtodoc" description="Open a document.">
             <direct-parameter description="The file(s) to be opened.">
-                <type type="file"/>
-                <type type="file" list="yes"/>
+            <type type="file" list="yes"/>
             </direct-parameter>
-            <!--
+              <!--
                 According to TN2106, 'open' should return the resulting document
                 object.  However, the Cocoa implementation does not do this yet.
-            <result type="specifier"/>
-            -->
+              <result type="specifier"/>
+              -->
         </command>
         
         <enumeration name="save options" code="savo">
