@@ -125,6 +125,23 @@ static BOOL fileIsInTrash(NSURL *fileURL)
     return NO;
 }    
 
+- (void)application:(NSApplication *)sender openFiles:(NSArray *)filenames {
+    if ([filenames isKindOfClass:[NSString class]])
+        filenames = [NSArray arrayWithObject:filenames];
+    NSDocumentController *docController = [NSDocumentController sharedDocumentController];
+    NSEnumerator *fileEnum = [filenames objectEnumerator];
+    NSString *file;
+    BOOL success = YES;
+    
+    while (file = [fileEnum nextObject]) {
+        NSURL *url = [NSURL fileURLWithPath:file];
+        if (url == nil || [docController openDocumentWithContentsOfURL:url display:YES error:NULL] == NO)
+            success = NO;
+    }
+    
+    [NSApp replyToOpenOrPrint:success ? NSApplicationDelegateReplySuccess : NSApplicationDelegateReplyFailure];
+}
+
 - (void)applicationDidFinishLaunching:(NSNotification *)aNotification{
     NSString *versionString = [[[NSBundle mainBundle] infoDictionary] objectForKey:@"CFBundleShortVersionString"];
     SKVersionNumber *versionNumber = versionString ? [[[SKVersionNumber alloc] initWithVersionString:versionString] autorelease] : nil;
