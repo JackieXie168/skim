@@ -43,6 +43,29 @@
 
 @implementation NSWorkspace (BDSKExtensions)
 
+static OSErr
+FindRunningAppBySignature( OSType sig, ProcessSerialNumber *psn, FSSpec *fileSpec )
+{
+    OSErr err;
+    ProcessInfoRec info;
+    
+    psn->highLongOfPSN = 0;
+    psn->lowLongOfPSN  = kNoProcess;
+    do{
+        err= GetNextProcess(psn);
+        if( !err ) {
+            info.processInfoLength = sizeof(info);
+            info.processName = NULL;
+            info.processAppSpec = fileSpec;
+            err= GetProcessInformation(psn,&info);
+        }
+    } while( !err && info.processSignature != sig );
+    
+    if( !err )
+        *psn = info.processNumber;
+    return err;
+}
+
 - (BOOL)openURL:(NSURL *)fileURL withSearchString:(NSString *)searchString
 {
     
@@ -139,24 +162,25 @@
     
     if (noErr == err) {
         
-        // we can use SetFrontProcess if we know the PSN, but it's easiest to get that after sending the event
-        AppleEvent makeFrontEvent;
-        AEInitializeDesc(&makeFrontEvent);
+        ProcessSerialNumber psn;
+        // don't overwrite our appSpec...
+        FSSpec runningAppSpec;
+        err = FindRunningAppBySignature(appCreator, &psn, &runningAppSpec);
         
-        if (noErr == err)
-            err = AECreateAppleEvent('misc', 'actv', &appAddress, kAutoGenerateReturnID, kAnyTransactionID, &makeFrontEvent);
+        if (noErr == err) {
+            
+            // using this call, we end up with the newly opened doc in front; with 'misc'/'actv', window layering is messed up
+            err = SetFrontProcessWithOptions(&psn, 0);
+
+            // try to send the odoc event
+            if (noErr == err)
+                err = AESendMessage(&theAEvent, NULL, kAENoReply, kAEDefaultTimeout);
+            
+        }
         
-        if (noErr == err)
-            err = AESendMessage(&makeFrontEvent, NULL, kAENoReply, kAEDefaultTimeout);
-        
-        AEDisposeDesc(&makeFrontEvent);
-        
-        // try to send the odoc event
-        if (noErr == err)
-            err = AESendMessage(&theAEvent, NULL, kAENoReply, kAEDefaultTimeout);
-        
-        // If the send failed because the app wasn't running, we need to use LaunchApplication...which doesn't seem to work if the app (at least Skim) is already running, hence the initial call to AESendMessage.  Possibly this can be done with LaunchServices, but the documentation for this stuff isn't sufficient to say and I'm not in the mood for any more trial-and-error AppleEvent coding.
-        if (procNotFound == err) { 
+         // If the app wasn't running, we need to use LaunchApplication...which doesn't seem to work if the app (at least Skim) is already running, hence the initial call to AESendMessage.  Possibly this can be done with LaunchServices, but the documentation for this stuff isn't sufficient to say and I'm not in the mood for any more trial-and-error AppleEvent coding.
+        if (procNotFound == err) {
+            
             // This code was distilled from http://static.userland.com/Iowa/sourceListings/macbirdSource/Frontier%20SDK%204.1b1/Toolkits/Applet%20Toolkit/appletprocess.c.html
             LaunchParamBlockRec pb;
             memset(&pb, 0, sizeof(LaunchParamBlockRec));
