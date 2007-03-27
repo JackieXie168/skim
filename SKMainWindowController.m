@@ -247,11 +247,11 @@ static NSString *SKDocumentToolbarNotesPaneItemIdentifier = @"SKDocumentToolbarN
     
     if (pdfOutline == nil) {
         if ([[NSUserDefaults standardUserDefaults] boolForKey:SKOpenContentsPaneOnlyForTOCKey] &&
-            NSWidth([rightSideContentBox frame]) > 0.0)
+            NSWidth([leftSideContentBox frame]) > 0.0)
             [self toggleLeftSidePane:self];
         [self setLeftSidePaneState:SKThumbnailSidePaneState];
     } else if ([[NSUserDefaults standardUserDefaults] boolForKey:SKOpenContentsPaneOnlyForTOCKey] &&
-               NSWidth([rightSideContentBox frame]) <= 0.0) {
+               NSWidth([leftSideContentBox frame]) <= 0.0) {
         [self toggleLeftSidePane:self];
     }
     if (NSWidth([rightSideContentBox frame]) > 0.0)
