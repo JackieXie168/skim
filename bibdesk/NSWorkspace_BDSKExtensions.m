@@ -99,11 +99,12 @@
     if (err == noErr){
         appCreator = lsRecord.creator;
         OBASSERT(appCreator != 0); 
-    } else {
-        // We'll try the Finder instead; remember to reset err, though!  The problem with passing this to the Finder is that keyAESearchText will be stripped off, but at least it should open the file.
-        appCreator = 'MACS';
-        err = noErr;
-    }
+        OBASSERT(appCreator != '????'); 
+    } 
+    
+    // if the app has an invalid creator, our AppleEvent stuff won't work
+    if (appCreator == '????')
+        err = fnfErr;
     
     if (err == noErr)
         err = AECreateDesc(typeApplSignature, (Ptr) &appCreator, sizeof(OSType), &appAddress);
@@ -141,24 +142,25 @@
     /* add the file list to the apple event */
     if( err == noErr )
         err = AEPutParamDesc(&theAEvent, keyDirectObject, &targetListDesc);
+    
+    if (noErr == err) {
         
-    // Finally send the event
-    if (err == noErr) {
-        
-        // AESendMessage doesn't bring the app to the foreground, so we'll use this undocumented event to do it manually (LSOpen... can do this, but it has undesirable side effects).
-        // !!! For some reason, this brings Skim to the foreground if it's already running, but it then doesn't open the document (although sending the odoc event succeeds).  Since it works with Preview.app, this may be specific to Skim.
+        // we can use SetFrontProcess if we know the PSN, but it's easiest to get that after sending the event
         AppleEvent makeFrontEvent;
         AEInitializeDesc(&makeFrontEvent);
+        
         if (noErr == err)
             err = AECreateAppleEvent('misc', 'actv', &appAddress, kAutoGenerateReturnID, kAnyTransactionID, &makeFrontEvent);
+        
         if (noErr == err)
             err = AESendMessage(&makeFrontEvent, NULL, kAENoReply, kAEDefaultTimeout);
+        
         AEDisposeDesc(&makeFrontEvent);
         
         // try to send the odoc event
         if (noErr == err)
             err = AESendMessage(&theAEvent, NULL, kAENoReply, kAEDefaultTimeout);
-    
+        
         // If the send failed because the app wasn't running, we need to use LaunchApplication...which doesn't seem to work if the app (at least Skim) is already running, hence the initial call to AESendMessage.  Possibly this can be done with LaunchServices, but the documentation for this stuff isn't sufficient to say and I'm not in the mood for any more trial-and-error AppleEvent coding.
         if (procNotFound == err) { 
             // This code was distilled from http://static.userland.com/Iowa/sourceListings/macbirdSource/Frontier%20SDK%204.1b1/Toolkits/Applet%20Toolkit/appletprocess.c.html
@@ -170,10 +172,11 @@
             pb.launchControlFlags = launchContinue | launchNoFileFlags;
             
             typedef AppParameters **AppParametersHandle;
-
+            
             AppParametersHandle params = NULL;
             AEDesc launchDesc;
             AEInitializeDesc(&launchDesc);
+            // the coercion is apparently a key to making this work
             err = AECoerceDesc(&theAEvent, typeAppParameters, &launchDesc);
             params = (AppParametersHandle)(launchDesc.dataHandle);
             pb.launchAppParameters = *params;
@@ -181,6 +184,10 @@
             AEDisposeDesc(&launchDesc);
         }
     }
+    
+    // handle the case of '????' creator and probably others
+    if (noErr != err)
+        err = (OSStatus)[self openURL:fileURL];
     
     /* clean up and leave */
 	AEDisposeDesc(&targetListDesc);
