@@ -8,42 +8,6 @@
 
         <cocoa name="NSCoreSuite"/>
 
-<!-- The definition of AbstractObject is required for Panther -->        
-        <class name="item" code="cobj" description="A scriptable object.">
-            <cocoa class="AbstractObject"/>
-            <property name="class" code="pcls" type="type" access="r" description="The class of the object.">
-                <cocoa key="classCode"/>
-            </property>
-            <property name="properties" code="pALL" type="record" description="All of the object's properties.">
-                <cocoa key="scriptingProperties"/>
-            </property>
-<!--
-                        The blank method declarations are needed to emulate the existing
-                        NSCoreSuite.scriptSuite.framework.  Ordinarily, you wouldn't do this.
-                    -->
-            <responds-to name="count">
-                <cocoa method=""/>
-            </responds-to>
-            <responds-to name="delete">
-                <cocoa method=""/>
-            </responds-to>
-            <responds-to name="duplicate">
-                <cocoa method=""/>
-            </responds-to>
-            <responds-to name="exists">
-                <cocoa method=""/>
-            </responds-to>
-            <responds-to name="get">
-                <cocoa method=""/>
-            </responds-to>
-            <responds-to name="move">
-                <cocoa method=""/>
-            </responds-to>
-            <responds-to name="set">
-                <cocoa method=""/>
-            </responds-to>
-        </class>
-
         <class name="application" code="capp"
             description="Skim's top level scripting object.">
             <cocoa class="SKApplication"/>
@@ -62,8 +26,64 @@
             </property>
             <property name="version" code="vers" type="text" access="r"
                 description="The version of the application."/>
+			<responds-to name="open">
+				<cocoa method="handleOpenScriptCommand:"/>
+			</responds-to>
+			<responds-to name="print">
+				<cocoa method="handlePrintScriptCommand:"/>
+			</responds-to>
             <responds-to name="quit">
                 <cocoa method="handleQuitScriptCommand:"/>
+            </responds-to>
+        </class>
+
+        <class name="document" code="docu"
+            description="A Skim document.">
+            <cocoa class="SKDocument"/>
+            <element type="page" access="r"
+                description="Pages of the PDF file">
+                <cocoa key="pages"/>
+            </element>
+            <element type="note" access="r"
+                description="Notes in the PDF file">
+                <cocoa key="notes"/>
+            </element>
+            <property name="name" code="pnam" type="text" access="r"
+                description="The document's name.">
+                <cocoa key="displayName"/>
+            </property>
+            <property name="modified" code="imod" type="boolean" access="r"
+                description="Has the document been modified since the last save?">
+                <cocoa key="isDocumentEdited"/>
+            </property>
+            <property name="file" code="file" type="file" access="r"
+                description="The document's location on disk.">
+                <cocoa key="fileURL"/>
+            </property>
+            <property name="path" code="ppth" type="text"
+                description="The document's path.">
+                <cocoa key="fileName"/>
+            </property>
+            <property name="current page" code="CPag" type="page"
+                description="The current page.">
+                <cocoa key="currentPage"/>
+            </property>
+            <property name="active note" code="ANot" type="note"
+                description="The active note.">
+                <cocoa key="activeNote"/>
+            </property>
+            <property name="text" code="ctxt" type="text" access="r"
+                description="The text of the document.">
+                <cocoa key="text"/>
+            </property>
+            <responds-to name="close">
+                <cocoa method="handleCloseScriptCommand:"/>
+            </responds-to>
+            <responds-to name="print">
+                <cocoa method="handlePrintScriptCommand:"/>
+            </responds-to>
+            <responds-to name="save">
+                <cocoa method="handleSaveScriptCommand:"/>
             </responds-to>
         </class>
         
@@ -476,56 +496,6 @@
     <suite name="Skim Suite" code="SKIM"
             description="Skim specific commands and classes for dealing with PDF.">
         <cocoa name="SkimSuite"/>
-
-        <class name="document" code="docu"
-            description="A Skim document.">
-            <cocoa class="SKDocument"/>
-            <element type="page" access="r"
-                description="Pages of the PDF file">
-                <cocoa key="pages"/>
-            </element>
-            <element type="note" access="r"
-                description="Notes in the PDF file">
-                <cocoa key="notes"/>
-            </element>
-            <property name="name" code="pnam" type="text" access="r"
-                description="The document's name.">
-                <cocoa key="displayName"/>
-            </property>
-            <property name="modified" code="imod" type="boolean" access="r"
-                description="Has the document been modified since the last save?">
-                <cocoa key="isDocumentEdited"/>
-            </property>
-            <property name="file" code="file" type="file" access="r"
-                description="The document's location on disk.">
-                <cocoa key="fileURL"/>
-            </property>
-            <property name="path" code="ppth" type="text"
-                description="The document's path.">
-                <cocoa key="fileName"/>
-            </property>
-            <property name="current page" code="CPag" type="page"
-                description="The current page.">
-                <cocoa key="currentPage"/>
-            </property>
-            <property name="active note" code="ANot" type="note"
-                description="The active note.">
-                <cocoa key="activeNote"/>
-            </property>
-            <property name="text" code="ctxt" type="text" access="r"
-                description="The text of the document.">
-                <cocoa key="text"/>
-            </property>
-            <responds-to name="close">
-                <cocoa method="handleCloseScriptCommand:"/>
-            </responds-to>
-            <responds-to name="print">
-                <cocoa method="handlePrintScriptCommand:"/>
-            </responds-to>
-            <responds-to name="save">
-                <cocoa method="handleSaveScriptCommand:"/>
-            </responds-to>
-        </class>
 
         <class name="page" plural="pages" code="Page" inherits="item"
             description="A page.">
