@@ -392,7 +392,8 @@ static float GROUP_ROW_HEIGHT = 28.0;
 {
     if (pubs != currentPublications) {
         [currentPublications release];
-        currentPublications = [pubs copy];
+        // strangely, -[NSArray copy] gives us a deep copy, and copied pubs have a nil owner
+        currentPublications = [[NSArray alloc] initWithArray:pubs copyItems:NO];
     }
 }
 
