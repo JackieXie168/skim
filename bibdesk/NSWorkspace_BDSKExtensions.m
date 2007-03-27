@@ -132,10 +132,6 @@
     
     if (noErr == err)
         err = AEPutPtr(&targetListDesc, 1, typeFSRef, &fileRef, sizeof(FSRef));
-    
-    // @@ Put this in the list again to fool Skim into thinking this is an array; otherwise -[NSApplication handleOpenScriptCommand:] ends up passing a string instead of an array to _handleAEOpenDocuments:.  If we fix that, remove this hack.
-    if (noErr == err)
-        err = AEPutPtr(&targetListDesc, 2, typeFSRef, &fileRef, sizeof(FSRef));
 	
     /* add the file list to the apple event */
     if( err == noErr )
