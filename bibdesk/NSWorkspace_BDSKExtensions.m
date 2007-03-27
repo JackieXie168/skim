@@ -61,7 +61,6 @@
 	AEAddressDesc appAddress;
 	AEDescList targetListDesc;
 	OSType appCreator;
-	AliasHandle targetAlias;    
     AEDesc searchText;
     
     // initialize descriptors so we can safely dispose of them
@@ -69,7 +68,6 @@
     AEInitializeDesc(&appAddress);
     AEInitializeDesc(&targetListDesc);
     AEInitializeDesc(&searchText);
-	targetAlias = NULL;
 
     fileURL = [fileURL fileURLByResolvingAliases]; 
     OBASSERT(fileURL != nil);
@@ -96,14 +94,16 @@
     
     if(appURL) CFRelease(appURL);
     
+    OSType invalidCreator = '????';
+    
     if (err == noErr){
         appCreator = lsRecord.creator;
         OBASSERT(appCreator != 0); 
-        OBASSERT(appCreator != '????'); 
+        OBASSERT(appCreator != invalidCreator); 
     } 
     
     // if the app has an invalid creator, our AppleEvent stuff won't work
-    if (appCreator == '????')
+    if (appCreator == invalidCreator)
         err = fnfErr;
     
     if (err == noErr)
@@ -123,21 +123,19 @@
     
 	if (err == noErr)
         // We could create a list from an array of FSSpecs, as in the original FinderLaunch sample
-        err = AECreateList(NULL, 0, false, &targetListDesc);
+        err = AECreateList(NULL, 0, FALSE, &targetListDesc);
     
-    // Was using BDAlias to get an AliasHandle, but it crashes if the file doesn't exist; we now check for that, and we'll create our own AliasHandle to be extra safe
+    // FSRefs are now valid across processes, so we can pass them directly
     FSRef fileRef;
     if(CFURLGetFSRef((CFURLRef)fileURL, &fileRef) == NO)
         err = coreFoundationUnknownErr;
     
-    if(err == noErr)
-        err = FSNewAlias(NULL, &fileRef, &targetAlias);
+    if (noErr == err)
+        err = AEPutPtr(&targetListDesc, 1, typeFSRef, &fileRef, sizeof(FSRef));
     
-    if(err == noErr && targetAlias != NULL){
-        HLock((Handle)targetAlias);
-        err = AEPutPtr(&targetListDesc, 1, typeAlias, *targetAlias, GetHandleSize((Handle)targetAlias));
-        HUnlock((Handle)targetAlias);
-    }
+    // @@ Put this in the list again to fool Skim into thinking this is an array; otherwise -[NSApplication handleOpenScriptCommand:] ends up passing a string instead of an array to _handleAEOpenDocuments:.  If we fix that, remove this hack.
+    if (noErr == err)
+        err = AEPutPtr(&targetListDesc, 2, typeFSRef, &fileRef, sizeof(FSRef));
 	
     /* add the file list to the apple event */
     if( err == noErr )
