@@ -116,10 +116,8 @@ Having all three of these seems to work best for Panther. For Tiger include this
 			</responds-to>
 		</class>
         
-		<command name="open" code="aevtodoc"
-			description="Open a document.">
+		<command name="open" code="aevtodoc" description="Open a document.">
 			<direct-parameter description="The file(s) to be opened.">
-				<type type="file"/>
 				<type type="file" list="yes"/>
 			</direct-parameter>
 			<!--
