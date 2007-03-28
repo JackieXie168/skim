@@ -350,9 +350,7 @@ NSString *SKSkimNotePboardType = @"SKSkimNotePboardType";
     } else {
         readingBar = [[SKReadingBar alloc] init];
         [readingBar setPage:[self currentPage]];
-        int i = [[self document] indexForPage:[self currentPage]];
-        while ([readingBar nextLine] == NO && ++i < (int)[[self document] pageCount])
-            [readingBar setPage:[[self document] pageAtIndex:i]];
+        [readingBar goToNextLine];
         [self setNeedsDisplay:YES];
     }
 }
@@ -537,39 +535,29 @@ NSString *SKSkimNotePboardType = @"SKSkimNotePboardType";
 	} else if (isPresentation == NO && [activeAnnotation isNoteAnnotation] && (eventChar == NSRightArrowFunctionKey || eventChar == NSLeftArrowFunctionKey || eventChar == NSUpArrowFunctionKey || eventChar == NSDownArrowFunctionKey) && (modifiers == 0 || modifiers == NSShiftKeyMask)) {
         [self moveActiveAnnotationForKey:eventChar byAmount:(modifiers & NSShiftKeyMask) ? 10.0 : 1.0];
     } else if (readingBar && (eventChar == NSDownArrowFunctionKey) && (modifiers == NSAlternateKeyMask)) {
-        unsigned i = [[self document] indexForPage:[readingBar page]];
-        if (i == NSNotFound) return;
-        while ([readingBar nextLine] == NO && ++i < [[self document] pageCount])
-            [readingBar setPage:[[self document] pageAtIndex:i]];
-        if ([readingBar page] && [[readingBar page] isEqual:[self currentPage]] == NO)
-            [self goToPage:[readingBar page]];
-        [self setNeedsDisplay:YES];
+        if ([readingBar goToNextLine]) {
+            if ([[self currentPage] isEqual:[readingBar page]] == NO)
+                [self goToPage:[readingBar page]];
+            [self setNeedsDisplay:YES];
+        }
     } else if (readingBar && (eventChar == NSRightArrowFunctionKey) && (modifiers == NSAlternateKeyMask)) {
-        unsigned i = [[self document] indexForPage:[readingBar page]];
-        if (i == NSNotFound || ++i >= [[self document] pageCount]) return;
-        [readingBar setPage:[[self document] pageAtIndex:i]];
-        while ([readingBar nextLine] == NO && ++i < [[self document] pageCount])
-            [readingBar setPage:[[self document] pageAtIndex:i]];
-        if ([readingBar page] && [[readingBar page] isEqual:[self currentPage]] == NO)
-            [self goToPage:[readingBar page]];
-        [self setNeedsDisplay:YES];
+        if ([readingBar goToNextPage]) {
+            if ([[self currentPage] isEqual:[readingBar page]] == NO)
+                [self goToPage:[readingBar page]];
+            [self setNeedsDisplay:YES];
+        }
     } else if (readingBar && (eventChar == NSUpArrowFunctionKey) && (modifiers == NSAlternateKeyMask)) {
-        unsigned i = [[self document] indexForPage:[readingBar page]];
-        if (i == NSNotFound) return;
-        while ([readingBar previousLine] == NO && i-- > 0)
-            [readingBar setPage:[[self document] pageAtIndex:i]];
-        if ([readingBar page] && [[readingBar page] isEqual:[self currentPage]] == NO)
-            [self goToPage:[readingBar page]];
-        [self setNeedsDisplay:YES];
+        if ([readingBar goToPreviousLine]) {
+            if ([[self currentPage] isEqual:[readingBar page]] == NO)
+                [self goToPage:[readingBar page]];
+            [self setNeedsDisplay:YES];
+        }
     } else if (readingBar && (eventChar == NSLeftArrowFunctionKey) && (modifiers == NSAlternateKeyMask)) {
-        unsigned i = [[self document] indexForPage:[readingBar page]];
-        if (i == NSNotFound || i-- <= 0) return;
-        [readingBar setPage:[[self document] pageAtIndex:i]];
-        while ([readingBar nextLine] == NO && i-- > 0)
-            [readingBar setPage:[[self document] pageAtIndex:i]];
-        if ([readingBar page] && [[readingBar page] isEqual:[self currentPage]] == NO)
-            [self goToPage:[readingBar page]];
-        [self setNeedsDisplay:YES];
+        if ([readingBar goToPreviousPage]) {
+            if ([[self currentPage] isEqual:[readingBar page]] == NO)
+                [self goToPage:[readingBar page]];
+            [self setNeedsDisplay:YES];
+        }
     } else {
 		[super keyDown:theEvent];
     }
@@ -2027,22 +2015,69 @@ static inline NSRect rectWithCorners(NSPoint p1, NSPoint p2)
     return rect;
 }
 
-- (BOOL)nextLine {
+- (BOOL)goToNextLine {
+    BOOL didMove = NO;
     if (currentLine < (int)[lineBounds count] - 1) {
-        currentLine++;
-        return YES;
+        ++currentLine;
+        didMove = YES;
+    } else if ([self goToNextPage]) {
+        didMove = YES;
     }
-    return NO;
+    return didMove;
 }
 
-- (BOOL)previousLine {
+- (BOOL)goToPreviousLine {
+    BOOL didMove = NO;
     if (currentLine == -1 && [lineBounds count])
         currentLine = [lineBounds count];
     if (currentLine > 0) {
-        currentLine--;
-        return YES;
+        --currentLine;
+        didMove =  YES;
+    } else if ([self goToPreviousPage]) {
+        currentLine = [lineBounds count] - 1;
+        didMove = YES;
     }
-    return NO;
+    return didMove;
+}
+
+- (BOOL)goToNextPage {
+    BOOL didMove = NO;
+    PDFDocument *doc = [page document];
+    int i = [doc indexForPage:page], iMax = [doc pageCount];
+    
+    while (++i < iMax) {
+        PDFPage *nextPage = [doc pageAtIndex:i];
+        NSArray *lines = [nextPage lineBounds];
+        if ([lines count]) {
+            [page release];
+            page = [nextPage retain];
+            [lineBounds release];
+            lineBounds = [lines retain];
+            currentLine = 0;
+            didMove = YES;
+        }
+    }
+    return didMove;
+}
+
+- (BOOL)goToPreviousPage {
+    BOOL didMove = NO;
+    PDFDocument *doc = [page document];
+    int i = [doc indexForPage:page];
+    
+    while (i-- > 0) {
+        PDFPage *prevPage = [doc pageAtIndex:i];
+        NSArray *lines = [prevPage lineBounds];
+        if ([lines count]) {
+            [page release];
+            page = [prevPage retain];
+            [lineBounds release];
+            lineBounds = [lines retain];
+            currentLine = 0;
+            didMove = YES;
+        }
+    }
+    return didMove;
 }
 
 @end
