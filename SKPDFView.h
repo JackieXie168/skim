@@ -136,12 +136,18 @@ typedef enum _SKNoteType {
 
 - (PDFPage *)page;
 - (void)setPage:(PDFPage *)newPage;
+
 - (int)currentLine;
 - (void)setCurrentLine:(int)lineIndex;
+
 - (unsigned int)numberOfLines;
+
 - (NSRect)currentBounds;
 - (NSRect)currentBoundsForBox:(PDFDisplayBox)box;
-- (BOOL)nextLine;
-- (BOOL)previousLine;
+
+- (BOOL)goToNextLine;
+- (BOOL)goToPreviousLine;
+- (BOOL)goToNextPage;
+- (BOOL)goToPreviousPage;
 
 @end
