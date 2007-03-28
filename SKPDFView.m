@@ -2055,6 +2055,7 @@ static inline NSRect rectWithCorners(NSPoint p1, NSPoint p2)
             lineBounds = [lines retain];
             currentLine = 0;
             didMove = YES;
+            break;
         }
     }
     return didMove;
@@ -2075,6 +2076,7 @@ static inline NSRect rectWithCorners(NSPoint p1, NSPoint p2)
             lineBounds = [lines retain];
             currentLine = 0;
             didMove = YES;
+            break;
         }
     }
     return didMove;
