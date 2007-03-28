@@ -297,7 +297,6 @@ typedef struct _SKPDFViewState {
 
 - (IBAction)addBookmark:(id)sender;
 - (IBAction)dismissBookmarkSheet:(id)sender;
-- (void)goToPageIndexWhenReady:(NSNumber *)pageNumber;
 
 - (void)registerForNotifications;
 - (void)registerForDocumentNotifications;

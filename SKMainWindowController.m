@@ -1663,13 +1663,6 @@ void removeTemporaryAnnotations(const void *annotation, void *context)
     [bookmarkSheet orderOut:self];
 }
 
-- (void)goToPageIndexWhenReady:(NSNumber *)pageNumber {
-    if ([self pdfDocument] == nil)
-        [self performSelector:_cmd withObject:pageNumber afterDelay:0.1];
-    else
-        [self setPageNumber:[pageNumber unsignedIntValue] + 1];
-}
-
 #pragma mark Notification handlers
 
 - (void)handleChangedHistoryNotification:(NSNotification *)notification {
