@@ -117,7 +117,7 @@ FindRunningAppBySignature( OSType sig, ProcessSerialNumber *psn, FSSpec *fileSpe
     
     if(appURL) CFRelease(appURL);
     
-    OSType invalidCreator = '????';
+    OSType invalidCreator = '???\?';
     
     if (err == noErr){
         appCreator = lsRecord.creator;
