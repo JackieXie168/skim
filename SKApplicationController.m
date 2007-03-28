@@ -162,9 +162,8 @@ static BOOL fileIsInTrash(NSURL *fileURL)
     
     if (fileURL == nil && [bm objectForKey:@"path"])
         fileURL = [NSURL fileURLWithPath:[bm objectForKey:@"path"]];
-    if (fileURL && NO == fileIsInTrash(fileURL) && (document = [[NSDocumentController sharedDocumentController] openDocumentWithContentsOfURL:fileURL display:YES error:NULL])) {
-        [[document mainWindowController] goToPageIndexWhenReady:[bm objectForKey:@"pageIndex"]];
-    }
+    if (fileURL && NO == fileIsInTrash(fileURL) && (document = [[NSDocumentController sharedDocumentController] openDocumentWithContentsOfURL:fileURL display:YES error:NULL]))
+        [[document mainWindowController] setPageNumber:[[bm objectForKey:@"pageIndex"] unsignedIntValue] + 1];
 }
 
 - (void)menuNeedsUpdate:(NSMenu *)menu {
