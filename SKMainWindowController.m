@@ -1983,6 +1983,19 @@ void removeTemporaryAnnotations(const void *annotation, void *context)
     return nil;
 }
 
+- (void)outlineView:(NSOutlineView *)ov setObjectValue:(id)object forTableColumn:(NSTableColumn *)tableColumn byItem:(id)item{
+    if ([ov isEqual:noteOutlineView]) {
+        if ([[tableColumn identifier] isEqualToString:@"note"]) 
+            [item setContents:object];
+    }
+}
+
+- (BOOL)outlineView:(NSOutlineView *)ov shouldEditTableColumn:(NSTableColumn *)tableColumn item:(id)item{
+    if ([ov isEqual:noteOutlineView]) {
+        return [[tableColumn identifier] isEqualToString:@"note"] && [item type] && [item isMovable];
+    }
+    return NO;
+}
 
 - (void)outlineViewSelectionDidChange:(NSNotification *)notification{
 	// Get the destination associated with the search result list. Tell the PDFView to go there.
