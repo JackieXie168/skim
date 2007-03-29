@@ -223,7 +223,7 @@
 	<key>CFBundleIconFile</key>
 	<string>Skim</string>
 	<key>CFBundleIdentifier</key>
-	<string>net.sourceforge.bibdesk.skim</string>
+	<string>net.sourceforge.skim-app.skim</string>
 	<key>CFBundleInfoDictionaryVersion</key>
 	<string>6.0</string>
 	<key>CFBundleName</key>

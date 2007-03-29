@@ -130,9 +130,9 @@ static NSString *xattrError(int err, const char *path);
 
 #define MAX_XATTR_LENGTH 2048
 #define UNIQUE_VALUE [[NSProcessInfo processInfo] globallyUniqueString]
-#define UNIQUE_KEY @"net_sourceforge_skim_unique_key"
-#define WRAPPER_KEY @"net_sourceforge_skim_has_wrapper"
-#define FRAGMENTS_KEY @"net_sourceforge_skim_number_of_fragments"
+#define UNIQUE_KEY @"net_sourceforge_skim-app_unique_key"
+#define WRAPPER_KEY @"net_sourceforge_skim-app_has_wrapper"
+#define FRAGMENTS_KEY @"net_sourceforge_skim-app_number_of_fragments"
 
 - (NSData *)extendedAttributeNamed:(NSString *)attr atPath:(NSString *)path traverseLink:(BOOL)follow error:(NSError **)error;
 {
