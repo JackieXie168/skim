@@ -42,11 +42,11 @@
 #import "SKReleaseNotesController.h"
 #import "SKStringConstants.h"
 
-#define PROPERTY_LIST_URL @"http://bibdesk.sourceforge.net/skim-versions-xml.txt"
-#define DOWNLOAD_URL @"http://bibdesk.sourceforge.net/"
+#define PROPERTY_LIST_URL @"http://skim-app.sourceforge.net/skim-versions-xml.txt"
+#define DOWNLOAD_URL @"http://skim-app.sourceforge.net/"
 #define SKIM_VERSION_KEY @"Skim"
 
-static NSString *SKErrorDomain = @"net.sourceforge.bibdesk.skim.errors";
+static NSString *SKErrorDomain = @"net.sourceforge.skim-app.skim.errors";
 
 enum {
     kSKNetworkConnectionFailed,
