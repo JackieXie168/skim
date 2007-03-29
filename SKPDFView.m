@@ -1455,6 +1455,17 @@ static inline NSRect rectWithCorners(NSPoint p1, NSPoint p2)
         }
     }
     
+    if (([theEvent modifierFlags] & NSAlternateKeyMask) && [newActiveAnnotation isMovable]) {
+        // select a new copy of the annotation
+        PDFAnnotation *newAnnotation = [[PDFAnnotation alloc] initWithDictionary:[newActiveAnnotation dictionaryValue]];
+        [activePage addAnnotation:newAnnotation];
+        newActiveAnnotation = newAnnotation;
+        [newAnnotation release];
+        
+        [[NSNotificationCenter defaultCenter] postNotificationName:SKPDFViewDidAddAnnotationNotification object:self 
+            userInfo:[NSDictionary dictionaryWithObjectsAndKeys:newAnnotation, @"annotation", activePage, @"page", nil]];
+    }
+    
     // Flag indicating if activeAnnotation will change. 
     changed = (activeAnnotation != newActiveAnnotation);
     
