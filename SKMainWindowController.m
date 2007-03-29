@@ -977,7 +977,7 @@ static NSString *SKDocumentToolbarNotesPaneItemIdentifier = @"SKDocumentToolbarN
         [mainWindow makeFirstResponder:nil];
     [fullScreenWindow setMainView:pdfView];
     [fullScreenWindow setBackgroundColor:backgroundColor];
-    [fullScreenWindow setLevel:[self isPresentation] ? NSScreenSaverWindowLevel : NSNormalWindowLevel];
+    [fullScreenWindow setLevel:[self isPresentation] ? NSPopUpMenuWindowLevel : NSNormalWindowLevel];
     [pdfView setBackgroundColor:backgroundColor];
     [pdfView layoutDocumentView];
     [pdfView setNeedsDisplay:YES];
@@ -1156,7 +1156,7 @@ static NSString *SKDocumentToolbarNotesPaneItemIdentifier = @"SKDocumentToolbarN
         NSColor *backgroundColor = [NSColor blackColor];
         [pdfView setBackgroundColor:backgroundColor];
         [fullScreenWindow setBackgroundColor:backgroundColor];
-        [fullScreenWindow setLevel:NSScreenSaverWindowLevel];
+        [fullScreenWindow setLevel:NSPopUpMenuWindowLevel];
         
         isPresentation = YES;
     //}
