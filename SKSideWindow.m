@@ -82,10 +82,10 @@
 
 - (void)moveToScreen:(NSScreen *)screen {
     NSRect screenFrame = [screen frame];
-    NSRect frame = [self frame];
-    frame.size.height = NSHeight(screenFrame);
+    NSRect frame = screenFrame;
     frame.size.width = WINDOW_OFFSET;
-    frame.origin.x = edge == NSMaxXEdge ? NSMaxX(screenFrame) - WINDOW_OFFSET : NSMinX(screenFrame);
+    if (edge == NSMaxXEdge)
+        frame.origin.x = NSMaxX(screenFrame) - WINDOW_OFFSET;
     frame = NSInsetRect(frame, 0.0, WINDOW_INSET);
     [self setFrame:frame display:NO];
 }
