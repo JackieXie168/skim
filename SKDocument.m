@@ -305,7 +305,7 @@ NSString *SKDocumentWillSaveNotification = @"SKDocumentWillSaveNotification";
         NSError *error = nil;
         
         // first remove all old notes
-        if ([fm removeExtendedAttribute:@"net_sourceforge_skim_notes" atPath:path traverseLink:YES error:&error] == NO) {
+        if ([fm removeExtendedAttribute:@"net_sourceforge_skim-app_notes" atPath:path traverseLink:YES error:&error] == NO) {
             // should we set success to NO and return an error?
             //NSLog(@"%@: %@", self, error);
         }
@@ -315,7 +315,7 @@ NSString *SKDocumentWillSaveNotification = @"SKDocumentWillSaveNotification";
             [rootObject addObject:[[notes objectAtIndex:i] dictionaryValue]];
         }
         data = [NSKeyedArchiver archivedDataWithRootObject:rootObject];
-        if ([fm setExtendedAttributeNamed:@"net_sourceforge_skim_notes" toValue:data atPath:path options:nil error:&error] == NO) {
+        if ([fm setExtendedAttributeNamed:@"net_sourceforge_skim-app_notes" toValue:data atPath:path options:nil error:&error] == NO) {
             success = NO;
             if (outError) *outError = error;
             NSLog(@"%@: %@", self, error);
@@ -331,7 +331,7 @@ NSString *SKDocumentWillSaveNotification = @"SKDocumentWillSaveNotification";
     
     if ([aURL isFileURL]) {
 
-        NSData *data = [fm extendedAttributeNamed:@"net_sourceforge_skim_notes" atPath:[aURL path] traverseLink:YES error:&error];
+        NSData *data = [fm extendedAttributeNamed:@"net_sourceforge_skim-app_notes" atPath:[aURL path] traverseLink:YES error:&error];
         
         if (noteDicts)
             [noteDicts release];
