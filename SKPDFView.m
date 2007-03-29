@@ -75,6 +75,7 @@ NSString *SKSkimNotePboardType = @"SKSkimNotePboardType";
 - (PDFDestination *)destinationForEvent:(NSEvent *)theEvent isLink:(BOOL *)isLink;
 
 - (void)moveActiveAnnotationForKey:(unichar)eventChar byAmount:(float)delta;
+- (void)moveReadingBarForKey:(unichar)eventChar;
 
 - (BOOL)selectAnnotationWithEvent:(NSEvent *)theEvent;
 - (void)dragAnnotationWithEvent:(NSEvent *)theEvent;
@@ -534,30 +535,8 @@ NSString *SKSkimNotePboardType = @"SKSkimNotePboardType";
         [self selectPreviousActiveAnnotation:self];
 	} else if (isPresentation == NO && [activeAnnotation isNoteAnnotation] && [activeAnnotation isMovable] && (eventChar == NSRightArrowFunctionKey || eventChar == NSLeftArrowFunctionKey || eventChar == NSUpArrowFunctionKey || eventChar == NSDownArrowFunctionKey) && (modifiers == 0 || modifiers == NSShiftKeyMask)) {
         [self moveActiveAnnotationForKey:eventChar byAmount:(modifiers & NSShiftKeyMask) ? 10.0 : 1.0];
-    } else if (readingBar && (eventChar == NSDownArrowFunctionKey) && (modifiers == NSAlternateKeyMask)) {
-        if ([readingBar goToNextLine]) {
-            if ([[self currentPage] isEqual:[readingBar page]] == NO)
-                [self goToPage:[readingBar page]];
-            [self setNeedsDisplay:YES];
-        }
-    } else if (readingBar && (eventChar == NSRightArrowFunctionKey) && (modifiers == NSAlternateKeyMask)) {
-        if ([readingBar goToNextPage]) {
-            if ([[self currentPage] isEqual:[readingBar page]] == NO)
-                [self goToPage:[readingBar page]];
-            [self setNeedsDisplay:YES];
-        }
-    } else if (readingBar && (eventChar == NSUpArrowFunctionKey) && (modifiers == NSAlternateKeyMask)) {
-        if ([readingBar goToPreviousLine]) {
-            if ([[self currentPage] isEqual:[readingBar page]] == NO)
-                [self goToPage:[readingBar page]];
-            [self setNeedsDisplay:YES];
-        }
-    } else if (readingBar && (eventChar == NSLeftArrowFunctionKey) && (modifiers == NSAlternateKeyMask)) {
-        if ([readingBar goToPreviousPage]) {
-            if ([[self currentPage] isEqual:[readingBar page]] == NO)
-                [self goToPage:[readingBar page]];
-            [self setNeedsDisplay:YES];
-        }
+    } else if (readingBar && (eventChar == NSRightArrowFunctionKey || eventChar == NSLeftArrowFunctionKey || eventChar == NSUpArrowFunctionKey || eventChar == NSDownArrowFunctionKey) && (modifiers == NSAlternateKeyMask)) {
+        [self moveReadingBarForKey:eventChar];
     } else {
 		[super keyDown:theEvent];
     }
@@ -1396,8 +1375,27 @@ static inline NSRect rectWithCorners(NSPoint p1, NSPoint p2)
     }
     if (NSEqualRects(bounds, newBounds) == NO) {
         [activeAnnotation setBounds:newBounds];
-        NSString *selString = [[[[activeAnnotation page] selectionForRect:newBounds] string] stringByCollapsingWhitespaceAndNewlinesAndRemovingSurroundingWhitespaceAndNewlines];
-        [activeAnnotation setContents:selString];
+        if ([activeAnnotation isEditable] == NO) {
+            NSString *selString = [[[[activeAnnotation page] selectionForRect:newBounds] string] stringByCollapsingWhitespaceAndNewlinesAndRemovingSurroundingWhitespaceAndNewlines];
+            [activeAnnotation setContents:selString];
+        }
+    }
+}
+
+- (void)moveReadingBarForKey:(unichar)eventChar {
+    BOOL moved = NO;
+    if (eventChar == NSDownArrowFunctionKey)
+        moved = [readingBar goToNextLine];
+    else if (eventChar == NSUpArrowFunctionKey)
+        moved = [readingBar goToPreviousLine];
+    else if (eventChar == NSRightArrowFunctionKey)
+        moved = [readingBar goToNextPage];
+    else if (eventChar == NSLeftArrowFunctionKey)
+        moved = [readingBar goToPreviousPage];
+    if (moved) {
+        if ([[self currentPage] isEqual:[readingBar page]] == NO)
+            [self goToPage:[readingBar page]];
+        [self setNeedsDisplay:YES];
     }
 }
 
