@@ -1066,9 +1066,12 @@ static inline NSRect rectWithCorners(NSPoint p1, NSPoint p2)
 
 // this is the action for the textfield for the text widget. Override to remove it after an edit. 
 - (void)pdfViewControlHit:(id)sender{
-    if ([PDFView instancesRespondToSelector:@selector(pdfViewControlHit:)] && [sender isKindOfClass:[NSTextField class]]) {
+    if ([PDFView instancesRespondToSelector:@selector(pdfViewControlHit:)]) {
         [super pdfViewControlHit:sender];
-        [self endAnnotationEdit:self];
+        if ([sender isKindOfClass:[NSTextField class]] && editAnnotation) {
+            [self endAnnotationEdit:self];
+            [[self window] makeFirstResponder:self];
+        }
     }
 }
 
