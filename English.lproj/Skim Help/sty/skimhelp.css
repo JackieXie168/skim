@@ -1,0 +1,180 @@
+body {
+    margin: 2px 12px 12px
+    }
+
+h1  {
+    font-size: 11pt;
+    font-family: "Lucida Grande", Arial, sans-serif;
+    margin-bottom: 10px
+    }
+
+h2  {
+    font-size: 10pt;
+    font-family: "Lucida Grande", Arial, sans-serif;
+    margin-top: 2px;
+    margin-bottom: 2px
+    }
+
+h3  {
+    font-size: 9pt;
+    font-family: "Lucida Grande", Arial, sans-serif;
+    font-weight: bold;
+    margin-top: -4px;
+    margin-bottom: -4px
+    }
+
+p   {
+    font-size: 9pt;
+    font-family: "Lucida Grande", Arial, sans-serif;
+    line-height: 12pt;
+    text-decoration: none
+    }
+
+ol  {
+    font-size: 9pt;
+    font-family: "Lucida Grande", Arial, sans-serif;
+    line-height: 12pt;
+    list-style-position: outside;
+    margin-top: 12px;
+    margin-bottom: 12px;
+    margin-left: -18px;
+    padding-left: 40px
+    }
+
+ol li {
+    margin-top: 6px;
+    margin-bottom: 6px
+    }
+
+ol p {
+    margin-top: 6px;
+    margin-bottom: 6px
+    }
+
+ul  {
+    font-size: 9pt;
+    font-family: "Lucida Grande", Arial, sans-serif;
+    line-height: 12pt;
+    list-style-type: square;
+    list-style-position: outside;
+    margin-top: 12px;
+    margin-bottom: 12px;
+    margin-left: -24px;
+    padding-left: 40px
+    }
+
+ul li {
+    margin-top: 6px;
+    margin-bottom: 6px
+    }
+
+ul p {
+    margin-top: 6px;
+    margin-bottom: 6px
+    }
+
+a   {
+    color: #00f;
+    font-size: 9pt;
+    font-family: "Lucida Grande", Arial, sans-serif;
+    line-height: 12pt;
+    text-decoration: none
+    }
+
+a:hover {
+    color: #00f;
+    font-family: "Lucida Grande", Arial, sans-serif;
+    text-decoration: underline
+    }
+
+hr  {
+    text-decoration: none;
+    border: solid 1px #bfbfbf
+    }
+
+td  {
+    padding: 2px 0px
+    }
+
+.index-cp td  {
+    padding: 6px
+    }
+
+.banner {
+    background-color: #f2f2f2;
+    background-repeat: no-repeat;
+    padding: -2px 6px 0;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 1.2em;
+    float: left;
+    border-bottom: 1px solid #bfbfbf
+    }
+
+.banner a {
+	font-size: 8pt;
+    position:absolute;
+    top: 2px;
+    left: 10px
+    }
+
+.mainbox {
+    margin-top: 36px;
+    padding-right: 6px
+    }
+
+.taskbox {
+    background-color: #e6edff;
+    list-style-type: decimal;
+    list-style-position: outside;
+    margin: 12px 0;
+    padding: 2px 12px;
+    border: solid 1px #bfbfbf
+    }
+
+.taskbox h2 {
+    font-size: 9pt;
+    margin-top: 8px;
+    margin-bottom: -4px
+    }
+
+.anchor {
+    position: absolute;
+    top: 0;
+    left: 0
+    }
+
+.topframe {
+    text-align: left;
+    margin-top: 20px;
+    margin-right: auto;
+    margin-left: auto;
+    padding:0;
+    width: 500px
+    }
+
+.topframeleft {
+    margin: 0;
+    padding-left: 10px;
+    width: 236px;
+    float: left
+    }
+
+.topframeright {
+    margin: 0;
+    padding-left: 20px;
+    padding-bottom: 8px;
+    width: 224px;
+    height: auto;
+    float: left;
+    border-left: 1px solid #808080
+    }
+
+.topframe h2  {
+    font-size: 18pt;
+    font-family: "Lucida Grande", Arial, sans-serif;
+    margin-top: 30px;
+    margin-bottom: 30px
+    }

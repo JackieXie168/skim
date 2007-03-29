@@ -1,7 +1,0 @@
-<searchClause>
-  <index>cql.serverChoice</index>
-  <relation>
-    <value>scr</value>
-  </relation>
-  <term>dog</term>
-</searchClause>

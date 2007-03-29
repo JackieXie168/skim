@@ -1,3 +1,0 @@
-<!-- $Id: local.ent.in,v 1.1 2006/05/28 19:56:25 adam Exp $ -->
-<!ENTITY version "@VERSION@">
-<!ENTITY prefix "@prefix@">

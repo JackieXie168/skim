@@ -1,1 +1,0 @@
-void WriteEightBitChar(char cThis);

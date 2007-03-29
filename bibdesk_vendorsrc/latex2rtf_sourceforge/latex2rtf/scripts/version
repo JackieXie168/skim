@@ -1,2 +1,0 @@
-#!/bin/sh
-grep 'Version =' version.h | sed 's/[^"]*"\([^ ]*\).*/\1/'
