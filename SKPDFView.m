@@ -908,13 +908,19 @@ static inline NSRect rectWithCorners(NSPoint p1, NSPoint p2)
         NSBeep();
         return;
     } else {
-		// Get center of the PDFView.
-		NSRect viewFrame = [self frame];
-		NSPoint center = NSMakePoint(NSMidX(viewFrame), NSMidY(viewFrame));
-		NSSize defaultSize = (annotationType == SKAnchoredNote) ? NSMakeSize(16.0, 16.0) : NSMakeSize(128.0, 64.0);
+        NSSize defaultSize = (annotationType == SKAnchoredNote) ? NSMakeSize(16.0, 16.0) : NSMakeSize(128.0, 64.0);
+		// First try the current mouse position
+        NSPoint center = [self convertPoint:[[self window] mouseLocationOutsideOfEventStream] fromView:nil];
+        page = [self pageForPoint:center nearest:NO];
+        
+        if (page == nil) {
+            // Get center of the PDFView.
+            NSRect viewFrame = [self frame];
+            center = NSMakePoint(NSMidX(viewFrame), NSMidY(viewFrame));
+            page = [self pageForPoint: center nearest: YES];
+        }
 		
 		// Convert to "page space".
-		page = [self pageForPoint: center nearest: YES];
 		center = [self convertPoint: center toPage: page];
         if ([page rotation] % 180 == 90)
             defaultSize = NSMakeSize(defaultSize.height, defaultSize.width);
@@ -965,6 +971,8 @@ static inline NSRect rectWithCorners(NSPoint p1, NSPoint p2)
 
     [self setActiveAnnotation:newAnnotation];
     [newAnnotation release];
+    if ([newAnnotation isEditable])
+        [self editActiveAnnotation:self];
 }
 
 - (void)removeActiveAnnotation:(id)sender{
