@@ -532,7 +532,7 @@ NSString *SKSkimNotePboardType = @"SKSkimNotePboardType";
         [self selectNextActiveAnnotation:self];
     } else if (isPresentation == NO && [self toolMode] == SKTextToolMode && (eventChar == NSBackTabCharacter) && (modifiers == NSAlternateKeyMask)){
         [self selectPreviousActiveAnnotation:self];
-	} else if (isPresentation == NO && [activeAnnotation isNoteAnnotation] && (eventChar == NSRightArrowFunctionKey || eventChar == NSLeftArrowFunctionKey || eventChar == NSUpArrowFunctionKey || eventChar == NSDownArrowFunctionKey) && (modifiers == 0 || modifiers == NSShiftKeyMask)) {
+	} else if (isPresentation == NO && [activeAnnotation isNoteAnnotation] && [activeAnnotation isMovable] && (eventChar == NSRightArrowFunctionKey || eventChar == NSLeftArrowFunctionKey || eventChar == NSUpArrowFunctionKey || eventChar == NSDownArrowFunctionKey) && (modifiers == 0 || modifiers == NSShiftKeyMask)) {
         [self moveActiveAnnotationForKey:eventChar byAmount:(modifiers & NSShiftKeyMask) ? 10.0 : 1.0];
     } else if (readingBar && (eventChar == NSDownArrowFunctionKey) && (modifiers == NSAlternateKeyMask)) {
         if ([readingBar goToNextLine]) {
