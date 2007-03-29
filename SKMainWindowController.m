@@ -959,8 +959,11 @@ static NSString *SKDocumentToolbarNotesPaneItemIdentifier = @"SKDocumentToolbarN
 }
 
 - (void)goFullScreen {
-    NSScreen *screen = [[self window] screen]; // @@ or should we use the window's screen?
+    NSScreen *screen = [[self window] screen]; // @@ or should we use the main screen?
     NSColor *backgroundColor = [self isPresentation] ? [NSColor blackColor] : [NSUnarchiver unarchiveObjectWithData:[[NSUserDefaults standardUserDefaults] dataForKey:SKFullScreenBackgroundColorKey]];
+    
+    if (screen == nil)
+        screen = [NSScreen mainScreen];
     
     // Create the full-screen window if it does not already  exist.
     if (fullScreenWindow == nil) {
@@ -1059,15 +1062,18 @@ static NSString *SKDocumentToolbarNotesPaneItemIdentifier = @"SKDocumentToolbarN
 }
 
 - (void)showSideWindows {
+    NSScreen *screen = [[self window] screen]; // @@ or should we use the main screen?
+    if (screen == nil)
+        screen = [NSScreen mainScreen];
     if (leftSideWindow == nil) {
         leftSideWindow = [[SKSideWindow alloc] initWithMainController:self edge:NSMinXEdge];
-    } else if ([[self window] screen] != [leftSideWindow screen]) {
-        [leftSideWindow moveToScreen:[[self window] screen]];
+    } else if (screen != [leftSideWindow screen]) {
+        [leftSideWindow moveToScreen:screen];
     }
     if (rightSideWindow == nil) {
         rightSideWindow = [[SKSideWindow alloc] initWithMainController:self edge:NSMaxXEdge];
-    } else if ([[self window] screen] != [rightSideWindow screen]) {
-        [rightSideWindow moveToScreen:[[self window] screen]];
+    } else if (screen != [rightSideWindow screen]) {
+        [rightSideWindow moveToScreen:screen];
     }
     
     if ([[mainWindow firstResponder] isDescendantOf:leftSideBox])
@@ -1190,7 +1196,11 @@ static NSString *SKDocumentToolbarNotesPaneItemIdentifier = @"SKDocumentToolbarN
     if ([self isFullScreen])
         return;
     
-    if ([[[self window] screen] isEqual:[[NSScreen screens] objectAtIndex:0]])
+    NSScreen *screen = [[self window] screen]; // @@ or should we use the main screen?
+    if (screen == nil)
+        screen = [NSScreen mainScreen];
+    
+    if ([screen isEqual:[[NSScreen screens] objectAtIndex:0]])
         SetSystemUIMode(kUIModeAllHidden, kUIOptionAutoShowMenuBar);
     else
         SetSystemUIMode(kUIModeNormal, 0);
