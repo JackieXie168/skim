@@ -39,7 +39,7 @@
 #import "SKReleaseNotesController.h"
 #include <sys/utsname.h>
 
-#define DOWNLOAD_URL @"http://bibdesk.sourceforge.net/"
+#define DOWNLOAD_URL @"http://skim-app.sourceforge.net/"
 
 
 @implementation SKReleaseNotesController

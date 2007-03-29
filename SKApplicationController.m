@@ -131,8 +131,8 @@ static BOOL fileIsInTrash(NSURL *fileURL)
     NSString *lastVersionString = [[NSUserDefaults standardUserDefaults] stringForKey:SKLastVersionLaunchedKey];
     SKVersionNumber *lastVersionNumber = lastVersionString ? [[[SKVersionNumber alloc] initWithVersionString:lastVersionString] autorelease] : nil;
     if(lastVersionNumber == nil || [lastVersionNumber compareToVersionNumber:versionNumber] == NSOrderedAscending) {
-        //[self showReleaseNotes:nil];
-        //[[NSUserDefaults standardUserDefaults] setObject:versionString forKey:SKLastVersionLaunchedKey];
+        [self showReleaseNotes:nil];
+        [[NSUserDefaults standardUserDefaults] setObject:versionString forKey:SKLastVersionLaunchedKey];
     }
     [[SKUpdateChecker sharedChecker] scheduleUpdateCheckIfNeeded];
 }
