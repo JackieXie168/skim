@@ -1034,22 +1034,22 @@ Skim allows you to save a copy of your PDF file without the notes and highlights
 
 @heading Online Resources
 @itemize
-@item @uref{http://, Skim Website}
+@item @uref{http://skim-app.sourceforge.net, Skim Website}
 @end itemize
 
 @heading Mailing List
 
 If your questions aren't answered in this help file, the
-@uref{http://, skim-users mailing list} 
+@uref{http://lists.sourceforge.net/lists/listinfo/skim-app-users, skim-users mailing list} 
 may have an answer. Your question
 may have been answered already, so you can check the 
-@uref{http://,list archives} 
+@uref{http://sourceforge.net/mailarchive/forum.php?forum=skim-app-users,list archives} 
 to get instant gratification.
 
 @heading Bug reports
 
 You can submit a bug report to the bug tracker at 
-@uref{http://}.
+@uref{http://sourceforge.net/projects/skim-app}.
 
 The reports are most useful if they provide a clear description of
 what went wrong, what you expected, and how to reproduce the problem
