@@ -1,0 +1,289 @@
+# -*-perl-*-
+
+# HTML 3.2 - ouch!
+$DOCTYPE = '<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 3.2//EN" "http://www.w3.org/TR/html32/loose.dtd">';
+$FRAMESET_DOCTYPE = $DOCTYPE;
+$USE_ISO = 0;
+$things_map{'oe'} = '&#156;';
+$things_map{'OE'} = '&#140;';
+$things_map{'ue'} = '&#252;';
+$things_map{'UE'} = '&#220;';
+$things_map{'dots'} = '<small>...</small>';
+$things_map{'enddots'} = '<small>....</small>';
+$things_map{'euro'} = 'Euro';
+$style_map{'sansserif'} = {};
+$simple_map{'*'} = '<br/>';
+# &quot; is not in html 3.2
+
+# External stylesheet:
+$CSS_LINES = "<link href=\"sty/skimhelp.css\" rel=\"stylesheet\" media=\"all\" />";
+
+@MISC_BUTTONS = ('Top');
+@SECTION_BUTTONS = @MISC_BUTTONS;
+@CHAPTER_BUTTONS = @MISC_BUTTONS;
+@NODE_FOOTER_BUTTONS = ();
+
+# horizontal rules
+$SMALL_RULE = '';
+$DEFAULT_RULE = '';
+$MIDDLE_RULE = '';
+$BIG_RULE = '';
+
+$DO_CONTENTS = 0;
+$SECTION_NAVIGATION = 1;
+$WORDS_IN_PAGE = 1000000;
+
+$AFTER_NAVIGATION = "<div class=\"mainbox\">";
+$PRE_BODY_CLOSE = "</div>";
+
+# formatting functions
+
+#$summary_letter    = \&t2h_html32_summary_letter;
+$protect_text       = \&t2h_html32_protect_text;
+$heading            = \&t2h_html32_heading;
+$preformatted       = \&t2h_html32_preformatted;
+$menu               = \&t2h_html32_menu;
+$foot_section       = \&t2h_html32_foot_section;
+#$cartouche         = \&t2h_html32_cartouche;
+#$listoffloats      = \&t2h_html32_listoffloats;
+#$float             = \&t2h_html32_float;
+
+sub t2h_html32_protect_text($)
+{
+   my $text = shift;
+   $text =~ s/&/&amp;/g;
+   $text =~ s/</&lt;/g;
+   $text =~ s/>/&gt;/g;
+   #$text =~ s/\"/&quot;/g;
+   return $text;
+}
+
+# a heading
+sub t2h_html32_heading($)
+{
+    my $element = shift;
+    my $text = $element->{'text'};
+    my $level = $element->{'level'};
+    my $tag_level = $element->{'tag_level'};
+    if (!$element->{'node'} && !$NUMBER_SECTIONS)
+    {
+        $text = $element->{'name'};
+    }
+    if (($tag_level eq "chapter") || ($tag_level eq "section") || ($tag_level eq "subsection") || ($tag_level eq "appendix"))
+    {
+        $text = "<img src=\"gfx/Skim.png\" alt=\"Skim\" width=\"32\" height=\"32\"> " . $text;
+    }
+    return "<h$level class=\"$tag_level\"> $text</h$level>\n";
+}
+
+# a preformatted section
+sub t2h_html32_preformatted($$$)
+{
+    my $text = shift;
+    my $pre_style = shift;
+    my $class = shift;
+
+    return '' if ($text eq '');
+    return "<pre>$text</pre>";
+}
+
+# a simple menu entry ref in case we aren't in a standard menu context
+sub t2h_html32_foot_section($)
+{
+    my $lines = shift;
+    unshift (@$lines, "<hr>\n", "<h3>Footnotes</h3>\n");
+    return $lines; 
+}
+
+# a whole menu
+sub t2h_html32_menu($)
+{
+    my $text = shift;
+    if ($text =~ /\S/)
+    {
+        return "<table border=\"0\" cellspacing=\"0\">\n" 
+        . $text . "</table>\n";
+    }
+}
+
+# an image
+$image = \&appleHelp_image;
+
+sub appleHelp_image{
+   my $file = shift;
+   my $base = shift;
+   my $preformatted = shift;
+   my $file_name = shift;
+   return "[ $base ]" if ($preformatted);
+   return "<img src=\"$file_name\" alt=\"$base\">";
+}
+
+# indexes
+$index_summary = \&appleHelp_index_summary;
+$index_letter = \&appleHelp_index_letter;
+$print_index = \&appleHelp_print_index;
+$index_entry = \&appleHelp_index_entry;
+
+sub appleHelp_index_summary($$)
+{
+    my $alpha = shift;
+    my $nonalpha = shift;
+    return "";
+}
+
+sub appleHelp_index_letter($$$)
+{
+    my $letter = shift;
+    my $id = shift;
+    my $text = shift;
+}
+
+sub appleHelp_print_index($$)
+{
+    my $text = shift;
+    my $name = shift;
+    return "<table border=\"0\" class=\"index-$name\">\n" . $text . "</table>\n";
+}
+
+sub appleHelp_index_entry($$$$)
+{
+    my $text_href = shift;
+    my $entry = shift;
+    my $element_href = shift;
+    my $element_text = shift;
+    
+    return '<tr><td valign="top">' . &$anchor('', $text_href, $entry) . "</td></tr>\n";
+}
+
+# footers
+$print_page_foot = \&appleHelp_print_page_foot;
+$print_Top_footer = \&appleHelp_print_page_foot;
+
+sub appleHelp_print_page_foot{
+    $fh = shift;
+    print $fh <<EOT;
+$PRE_BODY_CLOSE
+</body>
+</html>
+EOT
+}
+
+# head and foot navigation
+$print_head_navigation = \&appleHelp_print_head_navigation;
+$print_foot_navigation = \&appleHelp_print_no_navigation;
+
+sub appleHelp_print_head_navigation{
+    my $fh = shift;
+    my $buttons = shift;
+    print $fh "<div class=\"anchor\">\n";
+    main::print_lines($fh, $Texi2HTML::THIS_HEADER);
+    print $fh "</div>\n" .
+              "<div class=\"banner\">\n";
+    for my $button (@$buttons)
+    {
+        if ($Texi2HTML::HREF{$button})
+        {
+        my $btitle = $BUTTONS_GOTO{$button} ?
+            'title="' . ucfirst($BUTTONS_GOTO{$button}) . '"' : '';
+            print $fh "" .
+                  &$anchor('',
+                              $Texi2HTML::HREF{$button},
+                              $Texi2HTML::NAME{$button},
+                              $btitle
+                             );
+        }
+    }
+    print $fh "\n</div>\n" .
+          $AFTER_NAVIGATION .
+          "\n"
+}
+
+sub appleHelp_print_no_navigation{
+    my $fh = shift;
+    my $buttons = shift;
+}
+
+$print_Top_header = \&appleHelp_print_Top_header;
+$print_Top_head = \&appleHelp_print_Top_head;
+
+sub appleHelp_print_Top_header($$)
+{
+    my $fh = shift;
+    my $do_page_head = shift;
+    &$print_Top_head($fh) if ($do_page_head);
+}
+
+sub appleHelp_print_Top_head($)
+{
+    my $fh = shift;
+    my $longtitle = "$Texi2HTML::THISDOC{'title_unformatted'}";
+    $longtitle .= ": $Texi2HTML::UNFORMATTED{'This'}" if exists $Texi2HTML::UNFORMATTED{'This'};
+    #my $longtitle = "$Texi2HTML::THISDOC{'title_no_texi'}";
+    #$longtitle .= ": $Texi2HTML::NO_TEXI{'This'}" if exists $Texi2HTML::NO_TEXI{'This'};
+    my $description = $DOCUMENT_DESCRIPTION;
+    $description = $longtitle if (!defined($description));
+    $description = "<meta name=\"description\" content=\"$description\">" if
+         ($description ne '');
+    $description = $Texi2HTML::THISDOC{'documentdescription'} if (defined($Texi2HTML::THISDOC{'documentdescription'}));
+    my $encoding = '';
+    $encoding = "<meta http-equiv=\"Content-Type\" content=\"text/html; charset=$ENCODING\">" if (defined($ENCODING) and ($ENCODING ne ''));
+    print $fh <<EOT;
+$DOCTYPE
+<html>
+$Texi2HTML::THISDOC{'copying'}<!-- Created on $Texi2HTML::THISDOC{today} by $Texi2HTML::THISDOC{program} -->
+<!--
+$Texi2HTML::THISDOC{program_authors}
+-->
+<head>
+<title>$longtitle</title>
+
+$description
+<meta name="keywords" content="$longtitle">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+<meta name="Generator" content="$Texi2HTML::THISDOC{program}">
+<meta name="AppleTitle" content="Skim Help">
+<meta name="AppleIcon" content="Skim%20Help/gfx/SkimIcon.png">
+<meta name="robots" content="anchors">
+$encoding
+$CSS_LINES
+</head>
+
+<body $BODYTEXT>
+$AFTER_BODY_OPEN
+EOT
+}
+
+$print_Top = \&appleHelp_print_Top;
+
+sub appleHelp_print_Top
+{
+    my $fh = shift;
+    my $has_top_heading = shift;
+
+    # we don't pront the navigation buttons' on the Top page
+    #my $buttons = \@MISC_BUTTONS;
+    #&$print_head_navigation($fh, $buttons);
+    main::print_lines($fh, $Texi2HTML::THIS_HEADER);
+    my $nw;
+    if ($Texi2HTML::THIS_SECTION)
+    {
+        # if top-level node has content, then print it with extra header
+        #print $fh "<h1>$Texi2HTML::NAME{Top}</h1>\n"
+        print $fh "<h1 class=\"settitle\">$Texi2HTML::NAME{Top}</h1>\n"
+            unless ($has_top_heading);
+        $nw = main::print_lines($fh, $Texi2HTML::THIS_SECTION);
+    }
+    else
+    {
+        # top-level node is fully enclosed in @ifnothtml
+        # print fulltitle, subtitle, author, Overview
+        print $fh $Texi2HTML::TITLEPAGE;
+        if (@{$Texi2HTML::OVERVIEW})
+        {
+             print $fh '<h2> ' . &$I('Overview:') . "</h2>\n" . "<blockquote>\n";
+             my $nw = main::print_lines($fh, $Texi2HTML::OVERVIEW);
+             print $fh "</blockquote>\n";
+        }
+    }
+}

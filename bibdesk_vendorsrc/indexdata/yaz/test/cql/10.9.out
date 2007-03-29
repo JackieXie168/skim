@@ -1,7 +1,0 @@
-<searchClause>
-  <index>title</index>
-  <relation>
-    <value>=</value>
-  </relation>
-  <term>illegal parentheses</term>
-</searchClause>
