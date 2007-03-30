@@ -78,7 +78,7 @@
 }
 
 - (NSView *)mainView {
-    return [[self contentView] lastObject];
+    return [[[self contentView] subviews] lastObject];
 }
 
 - (void)setMainView:(NSView *)view {
