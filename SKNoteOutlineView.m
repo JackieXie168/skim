@@ -243,13 +243,13 @@ static NSImage *createFilteredImage(NSImage *image, CIFilter *filter)
     if (textImage == nil) {
         CIFilter *filter = [CIFilter filterWithName:@"CIColorInvert"];    
         
-        textImage = [[NSImage imageNamed:@"AnnotateToolAdorn"] retain];
-        noteImage = [[NSImage imageNamed:@"NoteToolAdorn"] retain];
-        circleImage = [[NSImage imageNamed:@"CircleToolAdorn"] retain];
-        squareImage = [[NSImage imageNamed:@"SquareToolAdorn"] retain];
-        highlightImage = [[NSImage imageNamed:@"HighlightToolAdorn"] retain];
-        strikeOutImage = [[NSImage imageNamed:@"StrikeOutToolAdorn"] retain];
-        underlineImage = [[NSImage imageNamed:@"UnderlineToolAdorn"] retain];
+        textImage = [[NSImage imageNamed:@"TextNoteAdorn"] retain];
+        noteImage = [[NSImage imageNamed:@"AnchoredNoteAdorn"] retain];
+        circleImage = [[NSImage imageNamed:@"CircleNoteAdorn"] retain];
+        squareImage = [[NSImage imageNamed:@"SquareNoteAdorn"] retain];
+        highlightImage = [[NSImage imageNamed:@"HighlightNoteAdorn"] retain];
+        strikeOutImage = [[NSImage imageNamed:@"StrikeOutNoteAdorn"] retain];
+        underlineImage = [[NSImage imageNamed:@"UnderlineNoteAdorn"] retain];
         invertedTextImage = createFilteredImage(textImage, filter);
         invertedNoteImage = createFilteredImage(noteImage, filter);
         invertedCircleImage = createFilteredImage(circleImage, filter);
