@@ -76,10 +76,6 @@
                 description="The text of the document.">
                 <cocoa key="text"/>
             </property>
-            <property name="current selection" code="CSel" type="selection" access="r"
-                description="The selection of the document.">
-                <cocoa key="currentSelection"/>
-            </property>
             <responds-to name="close">
                 <cocoa method="handleCloseScriptCommand:"/>
             </responds-to>
@@ -557,24 +553,6 @@
             <responds-to name="go to">
                 <cocoa method="handleGoToScriptCommand:"/>
             </responds-to>
-        </class>
-        
-        <class name="selection" plural="selections" code="sele" inherits="item"
-            description="A selection.">
-            <cocoa class="PDFSelection"/>
-            <property name="text" code="ctxt" type="text"
-                description="The text of the selection.">
-                <cocoa key="string"/>
-            </property>
-            <property name="pages" code="Pags" access="r"
-                description="The pages for the selection.">
-                <type type="page" list="yes"/>
-                <cocoa key="pages"/>
-            </property>
-            <property name="bounds" code="pbnd" type="rectangle"
-                description="The bounding rectangle of the note (left, top, right, bottom).">
-                <cocoa key="boundsAsQDRect"/>
-            </property>
         </class>
         
         <enumeration name="note type" code="NTpE">
