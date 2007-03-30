@@ -1995,14 +1995,26 @@ void removeTemporaryAnnotations(const void *annotation, void *context)
 
 - (void)outlineView:(NSOutlineView *)ov setObjectValue:(id)object forTableColumn:(NSTableColumn *)tableColumn byItem:(id)item{
     if ([ov isEqual:noteOutlineView]) {
-        if ([[tableColumn identifier] isEqualToString:@"note"]) 
-            [item setContents:object];
+        if ([[tableColumn identifier] isEqualToString:@"note"]) {
+            if ([object isEqualToString:[item contents]] == NO)
+                [item setContents:object];
+        }
     }
 }
 
 - (BOOL)outlineView:(NSOutlineView *)ov shouldEditTableColumn:(NSTableColumn *)tableColumn item:(id)item{
     if ([ov isEqual:noteOutlineView]) {
-        return [[tableColumn identifier] isEqualToString:@"note"] && [item type] && [item isMovable];
+        if ([[tableColumn identifier] isEqualToString:@"note"]) {
+            if ([item type] == nil) {
+                PDFAnnotation *annotation = [(SKNoteText *)item annotation];
+                [pdfView scrollAnnotationToVisible:annotation];
+                [pdfView setActiveAnnotation:annotation];
+                [self showNote:annotation];
+                return NO;
+            } else if ([item isMovable]) {
+                return YES;
+            }
+        }
     }
     return NO;
 }
