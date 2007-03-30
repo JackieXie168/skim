@@ -959,10 +959,10 @@ static NSString *SKDocumentToolbarNotesPaneItemIdentifier = @"SKDocumentToolbarN
 }
 
 - (void)goFullScreen {
-    NSScreen *screen = [[self window] screen]; // @@ or should we use the main screen?
+    NSScreen *screen = [[self window] screen]; // @@ screen: or should we use the main screen?
     NSColor *backgroundColor = [self isPresentation] ? [NSColor blackColor] : [NSUnarchiver unarchiveObjectWithData:[[NSUserDefaults standardUserDefaults] dataForKey:SKFullScreenBackgroundColorKey]];
     
-    if (screen == nil)
+    if (screen == nil) // @@ screen: can this ever happen?
         screen = [NSScreen mainScreen];
     
     // Create the full-screen window if it does not already  exist.
@@ -1127,41 +1127,30 @@ static NSString *SKDocumentToolbarNotesPaneItemIdentifier = @"SKDocumentToolbarN
     [pdfView setFrame:[[pdfView superview] bounds]];
 }
 
-- (BOOL)enterPresentationMode {
-    // Get the screen information.
-    //NSScreen *screen = [[self window] screen]; // @@ or should we use the mainScreen?
-    //NSNumber *screenID = [[screen deviceDescription] objectForKey:@"NSScreenNumber"];
+- (void)enterPresentationMode {
+    NSScrollView *scrollView = [[pdfView documentView] enclosingScrollView];
+    // Set up presentation mode
+    savedState.displayMode = [pdfView displayMode];
+    [pdfView setDisplayMode:kPDFDisplaySinglePage];
+    savedState.autoScales = [pdfView autoScales];
+    savedState.scaleFactor = [pdfView scaleFactor];
+    [pdfView setAutoScales:YES];
+    savedState.hasHorizontalScroller = [scrollView hasHorizontalScroller];
+    [scrollView setNeverHasHorizontalScroller:YES];
+    savedState.hasVerticalScroller = [scrollView hasVerticalScroller];
+    [scrollView setNeverHasVerticalScroller:YES];
+    savedState.autoHidesScrollers = [scrollView autohidesScrollers];
+    [scrollView setAutohidesScrollers:YES];
     
-    // Capture the screen.
-    //CGDisplayErr err = CGDisplayCapture((CGDirectDisplayID)[screenID longValue]);
+    if ([pdfView hasReadingBar])
+        [pdfView toggleReadingBar];
     
-    //if (err == kCGErrorSuccess) {
-        NSScrollView *scrollView = [[pdfView documentView] enclosingScrollView];
-        // Set up presentation mode
-        savedState.displayMode = [pdfView displayMode];
-        [pdfView setDisplayMode:kPDFDisplaySinglePage];
-        savedState.autoScales = [pdfView autoScales];
-        savedState.scaleFactor = [pdfView scaleFactor];
-        [pdfView setAutoScales:YES];
-        savedState.hasHorizontalScroller = [scrollView hasHorizontalScroller];
-        [scrollView setNeverHasHorizontalScroller:YES];
-        savedState.hasVerticalScroller = [scrollView hasVerticalScroller];
-        [scrollView setNeverHasVerticalScroller:YES];
-        savedState.autoHidesScrollers = [scrollView autohidesScrollers];
-        [scrollView setAutohidesScrollers:YES];
-        
-        if ([pdfView hasReadingBar])
-            [pdfView toggleReadingBar];
-        
-        NSColor *backgroundColor = [NSColor blackColor];
-        [pdfView setBackgroundColor:backgroundColor];
-        [fullScreenWindow setBackgroundColor:backgroundColor];
-        [fullScreenWindow setLevel:NSPopUpMenuWindowLevel];
-        
-        isPresentation = YES;
-    //}
+    NSColor *backgroundColor = [NSColor blackColor];
+    [pdfView setBackgroundColor:backgroundColor];
+    [fullScreenWindow setBackgroundColor:backgroundColor];
+    [fullScreenWindow setLevel:NSPopUpMenuWindowLevel];
     
-    return YES; //err == kCGErrorSuccess;
+    isPresentation = YES;
 }
 
 - (void)exitPresentationMode {
@@ -1179,11 +1168,6 @@ static NSString *SKDocumentToolbarNotesPaneItemIdentifier = @"SKDocumentToolbarN
     [scrollView setHasVerticalScroller:savedState.hasVerticalScroller];
     [scrollView setAutohidesScrollers:savedState.autoHidesScrollers];		
     
-    // Get the screen information.
-    //NSScreen *screen = [fullScreenWindow screen];
-    //NSNumber *screenID = [[screen deviceDescription] objectForKey:@"NSScreenNumber"];
-    //CGDisplayRelease((CGDirectDisplayID)[screenID longValue]);
-    
     NSColor *backgroundColor = [NSUnarchiver unarchiveObjectWithData:[[NSUserDefaults standardUserDefaults] dataForKey:SKFullScreenBackgroundColorKey]];
     [pdfView setBackgroundColor:backgroundColor];
     [fullScreenWindow setBackgroundColor:backgroundColor];
@@ -1196,14 +1180,11 @@ static NSString *SKDocumentToolbarNotesPaneItemIdentifier = @"SKDocumentToolbarN
     if ([self isFullScreen])
         return;
     
-    NSScreen *screen = [[self window] screen]; // @@ or should we use the main screen?
-    if (screen == nil)
+    NSScreen *screen = [[self window] screen]; // @@ screen: or should we use the main screen?
+    if (screen == nil) // @@ screen: can this ever happen?
         screen = [NSScreen mainScreen];
-    
     if ([screen isEqual:[[NSScreen screens] objectAtIndex:0]])
         SetSystemUIMode(kUIModeAllHidden, kUIOptionAutoShowMenuBar);
-    else
-        SetSystemUIMode(kUIModeNormal, 0);
     
     if ([self isPresentation])
         [self exitPresentationMode];
@@ -1220,18 +1201,20 @@ static NSString *SKDocumentToolbarNotesPaneItemIdentifier = @"SKDocumentToolbarN
     
     BOOL wasFullScreen = [self isFullScreen];
     
-    if ([self enterPresentationMode]) {
-        
-        if (wasFullScreen) {
-            [self hideSideWindows];
-        } else
-            [self goFullScreen];
-        
+    [self enterPresentationMode];
+    
+    NSScreen *screen = [[self window] screen]; // @@ screen: or should we use the main screen?
+    if (screen == nil) // @@ screen: can this ever happen?
+        screen = [NSScreen mainScreen];
+    if ([screen isEqual:[[NSScreen screens] objectAtIndex:0]])
         SetSystemUIMode(kUIModeAllHidden, 0);
-        
-        [pdfView setHasNavigation:YES autohidesCursor:YES];
-        
-    } else NSBeep(); // or an alert?
+    
+    if (wasFullScreen)
+        [self hideSideWindows];
+    else
+        [self goFullScreen];
+    
+    [pdfView setHasNavigation:YES autohidesCursor:YES];
 }
 
 - (IBAction)exitFullScreen:(id)sender {
