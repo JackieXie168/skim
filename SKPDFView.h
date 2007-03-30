@@ -126,28 +126,3 @@ typedef enum _SKNoteType {
 - (void)handleScrollMagnifyNotification:(NSNotification *)note;
 
 @end
-
-
-@interface SKReadingBar : NSObject {
-    PDFPage *page;
-    NSArray *lineBounds;
-    int currentLine;
-}
-
-- (PDFPage *)page;
-- (void)setPage:(PDFPage *)newPage;
-
-- (int)currentLine;
-- (void)setCurrentLine:(int)lineIndex;
-
-- (unsigned int)numberOfLines;
-
-- (NSRect)currentBounds;
-- (NSRect)currentBoundsForBox:(PDFDisplayBox)box;
-
-- (BOOL)goToNextLine;
-- (BOOL)goToPreviousLine;
-- (BOOL)goToNextPage;
-- (BOOL)goToPreviousPage;
-
-@end
