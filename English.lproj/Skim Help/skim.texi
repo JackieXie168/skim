@@ -108,6 +108,8 @@ Control-Cmd-\key\
 @c The content of the Help Pages starts here...
 @c ======================================================================================
 
+@documentlanguage en
+
 @settitle Skim Help
 
 @ifnottex
