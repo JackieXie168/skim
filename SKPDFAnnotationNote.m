@@ -179,6 +179,10 @@ void SKCGContextSetDefaultRGBColorSpace(CGContextRef context) {
                 [currentCommand setScriptErrorNumber:NSRequiredArgumentsMissingScriptError]; 
                 [currentCommand setScriptErrorString:NSLocalizedString(@"New notes need a type.", @"Error description")];
                 return nil;
+            } else if (type == SKASHighlightNote || type == SKASStrikeOutNote || type == SKASUnderlineNote) {
+                [currentCommand setScriptErrorNumber:NSArgumentsWrongScriptError]; 
+                [currentCommand setScriptErrorString:NSLocalizedString(@"Text markups cannot be created in scripts.", @"Error description")];
+                return nil;
             }
             
             PDFAnnotation *annotation = nil;
