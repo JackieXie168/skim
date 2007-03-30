@@ -1186,9 +1186,15 @@ static inline NSRect rectWithCorners(NSPoint p1, NSPoint p2)
         point = [[sender representedObject] pointValue];
         page = [self pageForPoint:point nearest:YES];
     } else {
-		NSRect viewFrame = [self frame];
-        point = NSMakePoint(NSMidX(viewFrame), NSMidY(viewFrame));
-        page = [self currentPage];
+		// First try the current mouse position
+        point = [self convertPoint:[[self window] mouseLocationOutsideOfEventStream] fromView:nil];
+        page = [self pageForPoint:point nearest:NO];
+        if (page == nil) {
+            // Get the center
+            NSRect viewFrame = [self frame];
+            point = NSMakePoint(NSMidX(viewFrame), NSMidY(viewFrame));
+            page = [self pageForPoint:point nearest:YES];
+        }
     }
     
     point = [self convertPoint:point toPage:page];
