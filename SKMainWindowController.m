@@ -964,12 +964,15 @@ static NSString *SKDocumentToolbarNotesPaneItemIdentifier = @"SKDocumentToolbarN
     
     if (screen == nil) // @@ screen: can this ever happen?
         screen = [NSScreen mainScreen];
-    
+        
     // Create the full-screen window if it does not already  exist.
     if (fullScreenWindow == nil) {
         fullScreenWindow = [[SKFullScreenWindow alloc] initWithScreen:screen];
         [fullScreenWindow setDelegate:self];
-    } else if (screen != [fullScreenWindow screen]) {
+    }
+        
+    // explicitly set window frame; screen may have moved, or may be nil (in which case [fullScreenWindow frame] is wrong, which is weird); the first time through this method, [fullScreenWindow screen] is nil
+    if ([screen isEqual:[fullScreenWindow screen]] == NO) {
         [fullScreenWindow setFrame:[screen frame] display:NO];
     }
     
