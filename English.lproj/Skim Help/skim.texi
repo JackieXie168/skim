@@ -359,6 +359,8 @@ You can select and copy notes from a PDF file, then paste it into the same or an
 @end itemize
 @endbox
 
+You can also create a dublicate of a note by selecting the note while holding the Option key. 
+
 @heading See also
 @menu
 * Pasting notes in a PDF file::
