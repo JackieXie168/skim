@@ -1233,13 +1233,14 @@ static inline NSRect rectWithCorners(NSPoint p1, NSPoint p2)
     autohidesCursor = hideCursor;
     
     if (hasNavigation) {
-        if (navWindow == nil) {
-            navWindow = [[SKNavigationWindow alloc] initWithPDFView:self];
+        // always recreate the navWindow, since moving between screens of different resolution can mess up the location (in spite of moveToScreen:)
+        if (navWindow != nil)
+            [navWindow release];
+        else
             [[NSNotificationCenter defaultCenter] addObserver: self selector: @selector(handleWindowWillCloseNotification:) 
                                                          name: NSWindowWillCloseNotification object: [self window]];
-        } else if ([[self window] screen] != [navWindow screen]) {
-            [navWindow moveToScreen:[[self window] screen]];
-        }
+        navWindow = [[SKNavigationWindow alloc] initWithPDFView:self];
+        [navWindow moveToScreen:[[self window] screen]];
         [navWindow setLevel:[[self window] level]];
     } else if ([navWindow isVisible]) {
         [navWindow orderOut:self];
