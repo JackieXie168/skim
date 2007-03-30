@@ -87,6 +87,7 @@
 		CE4190C40B94963A00ECF819 /* ToolbarCircleNote.tiff in Resources */ = {isa = PBXBuildFile; fileRef = CE4190C20B94963A00ECF819 /* ToolbarCircleNote.tiff */; };
 		CE4190C50B94963A00ECF819 /* ToolbarTextNote.tiff in Resources */ = {isa = PBXBuildFile; fileRef = CE4190C30B94963A00ECF819 /* ToolbarTextNote.tiff */; };
 		CE41A6CC0B975E5000ECF819 /* Skim.sdef in Resources */ = {isa = PBXBuildFile; fileRef = CE41A6CB0B975E5000ECF819 /* Skim.sdef */; };
+		CE4294A30BBD29120016FDC2 /* SKReadingBar.m in Sources */ = {isa = PBXBuildFile; fileRef = CE4294A20BBD29120016FDC2 /* SKReadingBar.m */; };
 		CE4373B40BB5440E00A56987 /* PSDocument.icns in Resources */ = {isa = PBXBuildFile; fileRef = CE4373B30BB5440E00A56987 /* PSDocument.icns */; };
 		CE4A659F0BAB1598004AD07D /* SKBookmarkController.m in Sources */ = {isa = PBXBuildFile; fileRef = CE4A659E0BAB1598004AD07D /* SKBookmarkController.m */; };
 		CE4A65CC0BAB1E2E004AD07D /* BookmarksWindow.nib in Resources */ = {isa = PBXBuildFile; fileRef = CE4A65CA0BAB1E2E004AD07D /* BookmarksWindow.nib */; };
@@ -259,6 +260,8 @@
 		CE4190C20B94963A00ECF819 /* ToolbarCircleNote.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; name = ToolbarCircleNote.tiff; path = Images/ToolbarCircleNote.tiff; sourceTree = "<group>"; };
 		CE4190C30B94963A00ECF819 /* ToolbarTextNote.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; name = ToolbarTextNote.tiff; path = Images/ToolbarTextNote.tiff; sourceTree = "<group>"; };
 		CE41A6CB0B975E5000ECF819 /* Skim.sdef */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text.sdef; path = Skim.sdef; sourceTree = "<group>"; };
+		CE4294A10BBD29120016FDC2 /* SKReadingBar.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SKReadingBar.h; sourceTree = "<group>"; };
+		CE4294A20BBD29120016FDC2 /* SKReadingBar.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SKReadingBar.m; sourceTree = "<group>"; };
 		CE4373B30BB5440E00A56987 /* PSDocument.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; name = PSDocument.icns; path = Images/PSDocument.icns; sourceTree = "<group>"; };
 		CE4A659D0BAB1598004AD07D /* SKBookmarkController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SKBookmarkController.h; sourceTree = "<group>"; };
 		CE4A659E0BAB1598004AD07D /* SKBookmarkController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SKBookmarkController.m; sourceTree = "<group>"; };
@@ -610,6 +613,8 @@
 			children = (
 				CE3A3D2A0B78C0A0006B64D3 /* SKPDFAnnotationNote.h */,
 				CE3A3D2B0B78C0A0006B64D3 /* SKPDFAnnotationNote.m */,
+				CE4294A10BBD29120016FDC2 /* SKReadingBar.h */,
+				CE4294A20BBD29120016FDC2 /* SKReadingBar.m */,
 				CE2DE4900B85D48F00D0DA12 /* SKThumbnail.h */,
 				CE2DE4910B85D48F00D0DA12 /* SKThumbnail.m */,
 				CEF7117C0B90B58E003A2771 /* SKVersionNumber.h */,
@@ -934,6 +939,7 @@
 				F98DC2690BA090D8008E46EC /* BDSKImagePopUpButtonCell.m in Sources */,
 				CE4A659F0BAB1598004AD07D /* SKBookmarkController.m in Sources */,
 				CE4A8BA20BB15980004AD07D /* NSWindowController_SKExtensions.m in Sources */,
+				CE4294A30BBD29120016FDC2 /* SKReadingBar.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
