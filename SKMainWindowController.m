@@ -1497,8 +1497,8 @@ void removeTemporaryAnnotations(const void *annotation, void *context)
 {
     SKMainWindowController *wc = (SKMainWindowController *)context;
     PDFAnnotation *annote = (PDFAnnotation *)annotation;
-    [[annote page] removeAnnotation:annote];
     [[wc pdfView] setNeedsDisplayForAnnotation:annote];
+    [[annote page] removeAnnotation:annote];
     // no need to update thumbnail, since temp annotations are only displayed when the search table is displayed
 }
 
