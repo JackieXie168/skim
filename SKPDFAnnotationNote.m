@@ -893,12 +893,16 @@ static NSColor *noteColor = nil;
     return texts;
 }
 
-- (void)textStorageDidProcessEditing:(NSNotification *)notification;
+- (void)textStorageWillProcessEditing:(NSNotification *)notification;
 {
     [[NSNotificationCenter defaultCenter] postNotificationName:SKAnnotationWillChangeNotification
             object:self
           userInfo:[NSDictionary dictionaryWithObjectsAndKeys:@"text", @"key", nil]];
     [self willChangeValueForKey:@"text"];
+}
+
+- (void)textStorageDidProcessEditing:(NSNotification *)notification;
+{
     [self didChangeValueForKey:@"text"];
     [[NSNotificationCenter defaultCenter] postNotificationName:SKAnnotationDidChangeNotification
             object:self

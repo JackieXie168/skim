@@ -110,8 +110,6 @@ extern void SKCGContextSetDefaultRGBColorSpace(CGContextRef context);
 
 - (void)setRichText:(id)newText;
 
-- (void)textStorageDidProcessEditing:(NSNotification *)notification;
-
 @end
 
 @interface SKPDFAnnotationTemporary : PDFAnnotationCircle
