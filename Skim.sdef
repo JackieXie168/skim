@@ -85,6 +85,9 @@
             <responds-to name="save">
                 <cocoa method="handleSaveScriptCommand:"/>
             </responds-to>
+            <responds-to name="find">
+                <cocoa method="handleFindScriptCommand:"/>
+            </responds-to>
         </class>
         
         <class name="window" code="cwin"
@@ -502,6 +505,10 @@
                 description="Notes in the page">
                 <cocoa key="notes"/>
             </element>
+            <contents name="text" code="ctxt" type="rich text" access="r"
+                description="The text of the page.">
+                <cocoa key="richText"/>
+            </contents>
             <property name="label" code="Labl" type="text" access="r"
                 description="The label of the page.">
                 <cocoa key="label"/>
@@ -509,14 +516,6 @@
             <property name="bounds" code="pbnd" type="rectangle" access="r"
                 description="The bounding rectangle of the page (left, top, right, bottom).">
                 <cocoa key="boundsAsQDRect"/>
-            </property>
-            <property name="text" code="ctxt" type="text" access="r"
-                description="The text of the page.">
-                <cocoa key="text"/>
-            </property>
-            <property name="rich text" code="ricT" type="rich text" access="r"
-                description="The rich text of the page.">
-                <cocoa key="richText"/>
             </property>
             <responds-to name="go to">
                 <cocoa method="handleGoToScriptCommand:"/>
@@ -530,10 +529,10 @@
                 description="The type of note.">
                 <cocoa key="noteType"/>
             </property>
-            <property name="text" code="ctxt" type="text"
-                description="The text of the note.">
-                <cocoa key="contents"/>
-            </property>
+            <contents name="text" code="ctxt" type="rich text"
+                description="The text of the note. Attributes are ignored.">
+                <cocoa key="textContents"/>
+            </contents>
             <property name="color" code="cRGB" type="color"
                 description="The color of the note.">
                 <cocoa key="color"/>
@@ -574,7 +573,7 @@
 
         <command name="go to" code="SKIMGoTo"
             description="Go to a location.">
-            <direct-parameter description="the page or note to go to.">
+            <direct-parameter description="The page or note to go to.">
                 <type type="page"/>
                 <type type="note"/>
             </direct-parameter>
