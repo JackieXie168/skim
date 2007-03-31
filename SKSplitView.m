@@ -68,12 +68,12 @@
         for (i = 0; i < (count-1); i++) {
             view = [subviews objectAtIndex:i];
             divRect = [view frame];
-            if ([self isVertical] == NO) {
-                divRect.origin.y = NSMaxY (divRect);
-                divRect.size.height = [self dividerThickness];
-            } else {
+            if ([self isVertical]) {
                 divRect.origin.x = NSMaxX (divRect);
                 divRect.size.width = [self dividerThickness];
+            } else {
+                divRect.origin.y = NSMaxY (divRect);
+                divRect.size.height = [self dividerThickness];
             }
             
             if (NSPointInRect(mouseLoc, divRect)) {
@@ -85,29 +85,55 @@
     [super mouseDown:theEvent];
 }
 
-- (void)drawRect:(NSRect)rect {
-	
-	NSArray *subviews = [self subviews];
-	int i, count = [subviews count];
-	id view;
-	NSRect divRect;
-
-	// draw the dimples 
-	for (i = 0; i < (count-1); i++) {
-		view = [subviews objectAtIndex:i];
-		divRect = [view frame];
-		if ([self isVertical] == NO) {
-			divRect.origin.y = NSMaxY (divRect);
-			divRect.size.height = [self dividerThickness];
-		} else {
-			divRect.origin.x = NSMaxX (divRect);
-			divRect.size.width = [self dividerThickness];
-		}
-		if (NSIntersectsRect(rect, divRect)) {
-			[[NSBezierPath bezierPathWithRect:divRect] fillPathVertically:![self isVertical] withStartColor:[[self class] startColor] endColor:[[self class] endColor]];
-			[self drawDividerInRect: divRect];
-		}
-	}
+- (void)drawDividerInRect:(NSRect)aRect {
+    NSPoint startPoint, endPoint;
+    float handleSize = 20.0;
+    NSColor *darkColor = [NSColor colorWithDeviceWhite:0.6 alpha:1.0];
+    NSColor *lightColor = [NSColor colorWithDeviceWhite:0.95 alpha:1.0];
+    
+    // Draw the gradient
+    [[NSBezierPath bezierPathWithRect:aRect] fillPathVertically:NO == [self isVertical] withStartColor:[[self class] startColor] endColor:[[self class] endColor]];
+    
+    [NSGraphicsContext saveGraphicsState];
+    
+    // Draw the handle
+    [NSBezierPath setDefaultLineWidth:1.0];
+    
+    if ([self isVertical]) {
+        handleSize = fmin(handleSize, 2.0 * floorf(0.5 * NSHeight(aRect)));
+        startPoint = NSMakePoint(NSMinX(aRect) + 1.5, NSMidY(aRect) - 0.5 * handleSize);
+        endPoint = NSMakePoint(startPoint.x, startPoint.y + handleSize);
+        [darkColor set];
+        [NSBezierPath strokeLineFromPoint:startPoint toPoint:endPoint];
+        startPoint.x += 2.0;
+        endPoint.x += 2.0;
+        [NSBezierPath strokeLineFromPoint:startPoint toPoint:endPoint];
+        [lightColor set];
+        startPoint.x -= 1.0;
+        endPoint.x -= 1.0;
+        [NSBezierPath strokeLineFromPoint:startPoint toPoint:endPoint];
+        startPoint.x += 2.0;
+        endPoint.x += 2.0;
+        [NSBezierPath strokeLineFromPoint:startPoint toPoint:endPoint];
+    } else {
+        handleSize = fmin(handleSize, 2.0 * floorf(0.5 * NSWidth(aRect)));
+        startPoint = NSMakePoint(NSMidX(aRect) - 0.5 * handleSize, NSMinY(aRect) + 1.5);
+        endPoint = NSMakePoint(startPoint.x + handleSize, startPoint.y);
+        [darkColor set];
+        [NSBezierPath strokeLineFromPoint:startPoint toPoint:endPoint];
+        startPoint.y += 2.0;
+        endPoint.y += 2.0;
+        [NSBezierPath strokeLineFromPoint:startPoint toPoint:endPoint];
+        [lightColor set];
+        startPoint.y -= 1.0;
+        endPoint.y -= 1.0;
+        [NSBezierPath strokeLineFromPoint:startPoint toPoint:endPoint];
+        startPoint.y += 2.0;
+        endPoint.y += 2.0;
+        [NSBezierPath strokeLineFromPoint:startPoint toPoint:endPoint];
+    }
+    
+    [NSGraphicsContext restoreGraphicsState];
 }
 
 - (float)dividerThickness {
