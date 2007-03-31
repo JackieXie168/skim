@@ -236,8 +236,22 @@ void SKCGContextSetDefaultRGBColorSpace(CGContextRef context) {
     return 0;
 }
 
+- (id)textContents;
+{
+    return [self contents] ? [[[NSTextStorage alloc] initWithString:[self contents]] autorelease] : [NSNull null];
+}
+
+- (void)setTextContents:(id)text;
+{
+    [self setContents:[text string]];
+}
+
+- (id)coerceValueForTextContents:(id)value {
+    return [[NSScriptCoercionHandler sharedCoercionHandler] coerceValue:value toClass:[NSTextStorage class]];
+}
+
 - (id)richText {
-    return [self text] ? [[[NSTextStorage alloc] initWithAttributedString:[self text]] autorelease] : [NSNull null];
+    return [NSNull null];
 }
 
 - (void)setBoundsAsQDRect:(NSData *)inQDBoundsAsData {
@@ -694,6 +708,15 @@ static NSColor *freeTextColor = nil;
     [[NSNotificationCenter defaultCenter] postNotificationName:SKAnnotationDidChangeNotification object:self];
 }
 
+#pragma mark Scripting support
+
+- (id)textContents {
+    NSTextStorage *textContents = [[[NSTextStorage alloc] initWithString:[self contents]] autorelease];
+    if ([self font])
+        [textContents addAttribute:NSFontAttributeName value:[self font] range:NSMakeRange(0, [textContents length])];
+    return [self contents] ? textContents : (id)[NSNull null];
+}
+
 @end
 
 #pragma mark -
@@ -767,6 +790,8 @@ static NSColor *noteColor = nil;
             noteColor = [[NSColor colorWithDeviceRed:1.0 green:1.0 blue:0.5 alpha:1.0] retain];
         [self setColor:noteColor];
         texts = [[NSArray alloc] initWithObjects:[[[SKNoteText alloc] initWithAnnotation:self] autorelease], nil];
+        textStorage = [[NSTextStorage allocWithZone:[self zone]] init];
+        [textStorage setDelegate:self];
     }
     return self;
 }
@@ -780,7 +805,7 @@ static NSColor *noteColor = nil;
 }
 
 - (void)dealloc {
-    [text release];
+    [textStorage release];
     [image release];
     [texts release];
     [super dealloc];
@@ -854,25 +879,57 @@ static NSColor *noteColor = nil;
 
 - (NSAttributedString *)text;
 {
-    return text;
+    return [[[NSAttributedString allocWithZone:[self zone]] initWithAttributedString:textStorage] autorelease];
 }
 
 - (void)setText:(NSAttributedString *)newText;
 {
-    if (text != newText) {
-        [[NSNotificationCenter defaultCenter] postNotificationName:SKAnnotationWillChangeNotification
-                object:self
-              userInfo:[NSDictionary dictionaryWithObjectsAndKeys:@"text", @"key", nil]];
-        [text release];
-        text = [newText retain];
-        [[NSNotificationCenter defaultCenter] postNotificationName:SKAnnotationDidChangeNotification
-                object:self
-              userInfo:[NSDictionary dictionaryWithObjectsAndKeys:@"text", @"key", nil]];
+    if (textStorage != newText) {
+        [textStorage replaceCharactersInRange:NSMakeRange(0, [textStorage length]) withAttributedString:newText];
     }
 }
 
 - (NSArray *)texts {
     return texts;
+}
+
+- (void)textStorageDidProcessEditing:(NSNotification *)notification;
+{
+    [[NSNotificationCenter defaultCenter] postNotificationName:SKAnnotationWillChangeNotification
+            object:self
+          userInfo:[NSDictionary dictionaryWithObjectsAndKeys:@"text", @"key", nil]];
+    [self willChangeValueForKey:@"text"];
+    [self didChangeValueForKey:@"text"];
+    [[NSNotificationCenter defaultCenter] postNotificationName:SKAnnotationDidChangeNotification
+            object:self
+          userInfo:[NSDictionary dictionaryWithObjectsAndKeys:@"text", @"key", nil]];
+}
+
+#pragma mark Scripting support
+
+- (id)richText;
+{
+    return textStorage;
+}
+
+- (void)setRichText:(id)newText;
+{
+    if (newText != textStorage) {
+        // We are willing to accept either a string or an attributed string.
+        if ([newText isKindOfClass:[NSAttributedString class]])
+            [textStorage replaceCharactersInRange:NSMakeRange(0, [textStorage length]) withAttributedString:newText];
+        else
+            [textStorage replaceCharactersInRange:NSMakeRange(0, [textStorage length]) withString:newText];
+    }
+}
+
+- (id)coerceValueForRichText:(id)value;
+{
+    // We want to just get Strings unchanged.  We will detect this and do the right thing in setRichText.  We do this because, this way, we will do more reasonable things about attributes when we are receiving plain text.
+    if ([value isKindOfClass:[NSString class]])
+        return value;
+    else
+        return [[NSScriptCoercionHandler sharedCoercionHandler] coerceValue:value toClass:[NSTextStorage class]];
 }
 
 @end

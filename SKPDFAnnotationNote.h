@@ -68,6 +68,8 @@ extern void SKCGContextSetDefaultRGBColorSpace(CGContextRef context);
 
 - (NSScriptObjectSpecifier *)objectSpecifier;
 - (int)noteType;
+- (id)textContents;
+- (void)setTextContents:(id)text;
 - (id)richText;
 - (void)setBoundsAsQDRect:(NSData *)inQDBoundsAsData;
 - (NSData *)boundsAsQDRect;
@@ -99,12 +101,16 @@ extern void SKCGContextSetDefaultRGBColorSpace(CGContextRef context);
 
 @interface SKPDFAnnotationNote : PDFAnnotationText {
     NSImage *image;
-    NSAttributedString *text;
+    NSTextStorage *textStorage;
     NSArray *texts;
 }
 
 - (void)setImage:(NSImage *)newImage;
 - (void)setText:(NSAttributedString *)newText;
+
+- (void)setRichText:(id)newText;
+
+- (void)textStorageDidProcessEditing:(NSNotification *)notification;
 
 @end
 
