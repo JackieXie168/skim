@@ -49,6 +49,7 @@ static NSString *xattrError(int err, const char *path);
 {
     const char *fsPath = [self fileSystemRepresentationWithPath:path];
     NSString *errMsg;
+    int err;
     
     int xopts;
     
@@ -64,8 +65,9 @@ static NSString *xattrError(int err, const char *path);
     status = listxattr(fsPath, NULL, 0, xopts);
     
     if(status == -1){
-        errMsg = xattrError(errno, fsPath);
-        if(error) *error = [NSError errorWithDomain:NSPOSIXErrorDomain code:errno userInfo:[NSDictionary dictionaryWithObjectsAndKeys:path, NSFilePathErrorKey, errMsg, NSLocalizedDescriptionKey, nil]];
+        err = errno;
+        errMsg = xattrError(err, fsPath);
+        if(error) *error = [NSError errorWithDomain:NSPOSIXErrorDomain code:err userInfo:[NSDictionary dictionaryWithObjectsAndKeys:path, NSFilePathErrorKey, errMsg, NSLocalizedDescriptionKey, nil]];
         return nil;
     }
     
@@ -76,8 +78,9 @@ static NSString *xattrError(int err, const char *path);
     status = listxattr(fsPath, namebuf, bufSize, xopts);
     
     if(status == -1){
-        errMsg = xattrError(errno, fsPath);
-        if(error) *error = [NSError errorWithDomain:NSPOSIXErrorDomain code:errno userInfo:[NSDictionary dictionaryWithObjectsAndKeys:path, NSFilePathErrorKey, errMsg, NSLocalizedDescriptionKey, nil]];
+        err = errno;
+        errMsg = xattrError(err, fsPath);
+        if(error) *error = [NSError errorWithDomain:NSPOSIXErrorDomain code:err userInfo:[NSDictionary dictionaryWithObjectsAndKeys:path, NSFilePathErrorKey, errMsg, NSLocalizedDescriptionKey, nil]];
         NSZoneFree(zone, namebuf);
         return nil;
     }
@@ -139,6 +142,7 @@ static NSString *xattrError(int err, const char *path);
     const char *fsPath = [self fileSystemRepresentationWithPath:path];
     const char *attrName = [attr UTF8String];
     NSString *errMsg;
+    int err;
     
     int xopts;
     
@@ -152,8 +156,9 @@ static NSString *xattrError(int err, const char *path);
     status = getxattr(fsPath, attrName, NULL, 0, 0, xopts);
     
     if(status == -1){
-        errMsg = xattrError(errno, fsPath);
-        if(error) *error = [NSError errorWithDomain:NSPOSIXErrorDomain code:errno userInfo:[NSDictionary dictionaryWithObjectsAndKeys:path, NSFilePathErrorKey, errMsg, NSLocalizedDescriptionKey, nil]];
+        int err = errno;
+        errMsg = xattrError(err, fsPath);
+        if(error) *error = [NSError errorWithDomain:NSPOSIXErrorDomain code:err userInfo:[NSDictionary dictionaryWithObjectsAndKeys:path, NSFilePathErrorKey, errMsg, NSLocalizedDescriptionKey, nil]];
         return nil;
     }
     
@@ -163,8 +168,9 @@ static NSString *xattrError(int err, const char *path);
     status = getxattr(fsPath, attrName, namebuf, bufSize, 0, xopts);
     
     if(status == -1){
-        errMsg = xattrError(errno, fsPath);
-        if(error) *error = [NSError errorWithDomain:NSPOSIXErrorDomain code:errno userInfo:[NSDictionary dictionaryWithObjectsAndKeys:path, NSFilePathErrorKey, errMsg, NSLocalizedDescriptionKey, nil]];
+        err = errno;
+        errMsg = xattrError(err, fsPath);
+        if(error) *error = [NSError errorWithDomain:NSPOSIXErrorDomain code:err userInfo:[NSDictionary dictionaryWithObjectsAndKeys:path, NSFilePathErrorKey, errMsg, NSLocalizedDescriptionKey, nil]];
         NSZoneFree(NSDefaultMallocZone(), namebuf);
         return nil;
     }
@@ -243,6 +249,7 @@ static NSString *xattrError(int err, const char *path);
     size_t dataSize = [value length];
     const char *attrName = [attr UTF8String];
     NSString *errMsg;
+    int err;
         
     // options passed to xattr functions
     int xopts = 0;
@@ -294,8 +301,9 @@ static NSString *xattrError(int err, const char *path);
     } else {
         int status = setxattr(fsPath, attrName, data, dataSize, 0, xopts);
         if(status == -1){
-            errMsg = xattrError(errno, fsPath);
-            if(error) *error = [NSError errorWithDomain:NSPOSIXErrorDomain code:errno userInfo:[NSDictionary dictionaryWithObjectsAndKeys:path, NSFilePathErrorKey, errMsg, NSLocalizedDescriptionKey, nil]];
+            err = errno;
+            errMsg = xattrError(err, fsPath);
+            if(error) *error = [NSError errorWithDomain:NSPOSIXErrorDomain code:err userInfo:[NSDictionary dictionaryWithObjectsAndKeys:path, NSFilePathErrorKey, errMsg, NSLocalizedDescriptionKey, nil]];
             success = NO;
         } else {
             success = YES;
@@ -327,6 +335,7 @@ static NSString *xattrError(int err, const char *path);
     const char *fsPath = [self fileSystemRepresentationWithPath:path];
     const char *attrName = [attr UTF8String];
     NSString *errMsg;
+    int err;
     
     int xopts;
     
@@ -388,8 +397,9 @@ static NSString *xattrError(int err, const char *path);
     status = removexattr(fsPath, attrName, xopts);
     
     if(status == -1){
-        errMsg = xattrError(errno, fsPath);
-        if(error) *error = [NSError errorWithDomain:NSPOSIXErrorDomain code:errno userInfo:[NSDictionary dictionaryWithObjectsAndKeys:path, NSFilePathErrorKey, errMsg, NSLocalizedDescriptionKey, nil]];
+        err = errno;
+        errMsg = xattrError(err, fsPath);
+        if(error) *error = [NSError errorWithDomain:NSPOSIXErrorDomain code:err userInfo:[NSDictionary dictionaryWithObjectsAndKeys:path, NSFilePathErrorKey, errMsg, NSLocalizedDescriptionKey, nil]];
         return NO;
     } else 
         return YES;    
@@ -413,7 +423,7 @@ static NSString *xattrError(int err, const char *path);
 }
 
 // guaranteed to return non-nil
-static NSString *xattrError(int err, const char *myPath)
+static NSString *xattrError(const int err, const char *myPath)
 {
     NSString *errMsg = nil;
     switch (err)
