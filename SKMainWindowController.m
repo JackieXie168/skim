@@ -250,6 +250,7 @@ static NSString *SKDocumentToolbarNotesPaneItemIdentifier = @"SKDocumentToolbarN
             NSWidth([leftSideContentBox frame]) > 0.0)
             [self toggleLeftSidePane:self];
         [self setLeftSidePaneState:SKThumbnailSidePaneState];
+        [leftSideButton setEnabled:NO forSegment:SKOutlineSidePaneState];
     } else if ([[NSUserDefaults standardUserDefaults] boolForKey:SKOpenContentsPaneOnlyForTOCKey] &&
                NSWidth([leftSideContentBox frame]) <= 0.0) {
         [self toggleLeftSidePane:self];
