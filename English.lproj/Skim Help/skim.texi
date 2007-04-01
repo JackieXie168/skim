@@ -764,7 +764,7 @@ In skim you can highlight the line of text you are reading, to help you concentr
 @item To move the reading bar to the next (previous) line, hold down the Option key and press the down arrow (up arrow) key.
 @end itemize
 @itemize
-@item To move the reading bar to the next (previous) page, hold down the Option key and press the left arrow (right arrow) key.
+@item To move the reading bar to the next (previous) page, hold down the Option key and press the right arrow (left arrow) key.
 @end itemize
 @endbox
 
@@ -787,6 +787,8 @@ In skim you can highlight the line of text you are reading. You can change the c
 @item To change the color or transparency of the reading bar, choose Skim > Preferences, click Colors, and select Color or move the Transparency slider. 
 @end itemize
 @endbox
+
+You can also choose whether the reading bar should highlight just the current line, or mask all the other text. Select or deselect "Invert bar" in the preferences. 
 
 @heading See also
 @menu
@@ -1039,6 +1041,7 @@ Skim allows you to save a copy of your PDF file without the notes and highlights
 @heading Online Resources
 @itemize
 @item @uref{http://skim-app.sourceforge.net, Skim Website}
+@item @uref{http://skim-app.sourceforge.net/manual, Online copy of this manual}
 @end itemize
 
 @heading Mailing List
