@@ -58,16 +58,25 @@ int main (int argc, const char * argv[]) {
     
     if ([fm fileExistsAtPath:pdfPath isDirectory:&isDir] == NO || isDir) {
     } else if (action == SKNActionGet) {
-        NSData *data = [fm extendedAttributeNamed:SKIM_NOTES_KEY atPath:pdfPath traverseLink:YES error:NULL];
+        NSError *error = nil;
+        NSData *data = [fm extendedAttributeNamed:SKIM_NOTES_KEY atPath:pdfPath traverseLink:YES error:&error];
+        if (data == nil && [error code] == ENOATTR)
+            data = [NSKeyedArchiver archivedDataWithRootObject:[NSArray array]];
         if (data)
             success = [data writeToFile:notesPath atomically:YES];
     } else if (action == SKNActionSet && notesPath && [fm fileExistsAtPath:notesPath isDirectory:&isDir] && isDir == NO) {
         NSData *data = [NSData dataWithContentsOfFile:notesPath];
-        if (data)
-            success = [fm removeExtendedAttribute:SKIM_NOTES_KEY atPath:pdfPath traverseLink:YES error:NULL] &&
-                      [fm setExtendedAttributeNamed:SKIM_NOTES_KEY toValue:data atPath:pdfPath options:0 error:NULL];
+        NSError *error = nil;
+        if (data) {
+            success = [fm removeExtendedAttribute:SKIM_NOTES_KEY atPath:pdfPath traverseLink:YES error:&error];
+            if (success || [error code] == ENOATTR)
+                success = [fm setExtendedAttributeNamed:SKIM_NOTES_KEY toValue:data atPath:pdfPath options:0 error:NULL];
+        }
     } else if (action == SKNActionRemove) {
-        success = [fm removeExtendedAttribute:SKIM_NOTES_KEY atPath:pdfPath traverseLink:YES error:NULL];
+        NSError *error = nil;
+        success = [fm removeExtendedAttribute:SKIM_NOTES_KEY atPath:pdfPath traverseLink:YES error:&error];
+        if (success == NO && [error code] == ENOATTR)
+            success = YES;
     }
     
     [pool release];
