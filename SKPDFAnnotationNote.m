@@ -310,6 +310,8 @@ static NSColor *circleColor = nil;
 
 - (BOOL)isMovable { return YES; }
 
+- (BOOL)shouldPrint { return YES; }
+
 - (void)setBounds:(NSRect)bounds {
     [super setBounds:bounds];
     [[NSNotificationCenter defaultCenter] postNotificationName:SKAnnotationDidChangeNotification object:self];
@@ -356,6 +358,8 @@ static NSColor *squareColor = nil;
 - (BOOL)isResizable { return YES; }
 
 - (BOOL)isMovable { return YES; }
+
+- (BOOL)shouldPrint { return YES; }
 
 - (void)setBounds:(NSRect)bounds {
     [super setBounds:bounds];
@@ -624,6 +628,8 @@ static NSColor *underlineColor = nil;
 
 - (BOOL)isNoteAnnotation { return YES; }
 
+- (BOOL)shouldPrint { return YES; }
+
 - (void)setBounds:(NSRect)bounds {
     [super setBounds:bounds];
     [[NSNotificationCenter defaultCenter] postNotificationName:SKAnnotationDidChangeNotification object:self];
@@ -701,6 +707,8 @@ static NSFont *freeTextFont = nil;
 
 - (BOOL)isEditable { return YES; }
 
+- (BOOL)shouldPrint { return YES; }
+
 - (void)setBounds:(NSRect)bounds {
     [super setBounds:bounds];
     [[NSNotificationCenter defaultCenter] postNotificationName:SKAnnotationDidChangeNotification object:self];
@@ -758,6 +766,8 @@ static NSColor *textColor = nil;
 - (BOOL)isNoteAnnotation { return YES; }
 
 - (BOOL)isEditable { return YES; }
+
+- (BOOL)shouldPrint { return YES; }
 
 - (void)setBounds:(NSRect)bounds {
     [[NSNotificationCenter defaultCenter] postNotificationName:SKAnnotationWillChangeNotification
@@ -836,6 +846,8 @@ static NSColor *noteColor = nil;
 - (BOOL)isMovable { return YES; }
 
 - (BOOL)isEditable { return YES; }
+
+- (BOOL)shouldPrint { return YES; }
 
 - (void)setBounds:(NSRect)bounds {
     [[NSNotificationCenter defaultCenter] postNotificationName:SKAnnotationWillChangeNotification
