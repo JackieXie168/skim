@@ -1110,7 +1110,7 @@ static inline NSRect rectWithCorners(NSPoint p1, NSPoint p2)
         i = -1;
     }
     if (annotation) {
-        [[self documentView] scrollRectToVisible:[self convertRect:[self convertRect:[annotation bounds] fromPage:[annotation page]] toView:[self documentView]]];
+        [self scrollAnnotationToVisible:annotation];
         [self setActiveAnnotation:annotation];
         if ([[annotation type] isEqualToString:@"Link"]) {
             NSRect bounds = [annotation bounds]; 
@@ -1153,7 +1153,7 @@ static inline NSRect rectWithCorners(NSPoint p1, NSPoint p2)
         i = [[[pdfDoc pageAtIndex:pageIndex] annotations] count];
     }
     if (annotation) {
-        [[self documentView] scrollRectToVisible:[self convertRect:[self convertRect:[annotation bounds] fromPage:[annotation page]] toView:[self documentView]]];
+        [self scrollAnnotationToVisible:annotation];
         [self setActiveAnnotation:annotation];
         if ([[annotation type] isEqualToString:@"Link"]) {
             NSRect bounds = [annotation bounds]; 
