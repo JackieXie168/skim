@@ -656,12 +656,17 @@ static NSColor *underlineColor = nil;
 @implementation SKPDFAnnotationFreeText
 
 static NSColor *freeTextColor = nil;
+static NSFont *freeTextFont = nil;
 
 - (id)initWithBounds:(NSRect)bounds {
     if (self = [super initWithBounds:bounds]) {
         if (freeTextColor == nil)
             freeTextColor = [[NSColor colorWithDeviceRed:1.0 green:1.0 blue:0.5 alpha:1.0] retain];
         [self setColor:freeTextColor];
+        if (freeTextFont == nil)
+            freeTextFont = [[self font] retain];
+        else
+            [self setFont:freeTextFont];
     }
     return self;
 }
@@ -677,6 +682,14 @@ static NSColor *freeTextColor = nil;
     if (freeTextColor != newColor) {
         [freeTextColor release];
         freeTextColor = [newColor retain];
+    }
+}
+
+- (void)setDefaultFont:(NSFont *)newFont {
+    [self setFont:newFont];
+    if (freeTextFont != newFont) {
+        [freeTextFont release];
+        freeTextFont = [newFont retain];
     }
 }
 

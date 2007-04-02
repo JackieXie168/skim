@@ -94,6 +94,9 @@ extern void SKCGContextSetDefaultRGBColorSpace(CGContextRef context);
 @end
 
 @interface SKPDFAnnotationFreeText : PDFAnnotationFreeText
+
+- (void)setDefaultFont:(NSFont *)newFont;
+
 @end
 
 @interface SKPDFAnnotationText : PDFAnnotationText
