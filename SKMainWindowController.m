@@ -392,8 +392,12 @@ static NSString *SKDocumentToolbarNotesPaneItemIdentifier = @"SKDocumentToolbarN
 
 - (void)windowDidBecomeKey:(NSNotification *)aNotification {
     PDFAnnotation *annotation = [pdfView activeAnnotation];
-    if ([annotation isNoteAnnotation])
+    
+    if ([annotation isNoteAnnotation]) {
+        if ([annotation respondsToSelector:@selector(font)])
+            [[NSFontManager sharedFontManager] setSelectedFont:[(PDFAnnotationFreeText *)annotation font] isMultiple:NO];
         [[NSColorPanel sharedColorPanel] setColor:[annotation color]];
+    }
 }
 
 #pragma mark Accessors
@@ -1703,8 +1707,11 @@ void removeTemporaryAnnotations(const void *annotation, void *context)
         if ([self selectedNote] != annotation) {
             [noteOutlineView selectRowIndexes:[NSIndexSet indexSetWithIndex:[noteOutlineView rowForItem:annotation]] byExtendingSelection:NO];
         }
-        if ([[self window] isKeyWindow])
+        if ([[self window] isKeyWindow]) {
+            if ([annotation respondsToSelector:@selector(font)])
+                [[NSFontManager sharedFontManager] setSelectedFont:[(PDFAnnotationFreeText *)annotation font] isMultiple:NO];
             [[NSColorPanel sharedColorPanel] setColor:[annotation color]];
+        }
     } else {
         [noteOutlineView deselectAll:self];
     }
