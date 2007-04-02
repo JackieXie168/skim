@@ -1017,14 +1017,6 @@ static inline NSRect rectWithCorners(NSPoint p1, NSPoint p2)
     [self editActiveAnnotation:sender];
 }
 
-- (void)changeFont:(id)sender {
-    if ([activeAnnotation respondsToSelector:@selector(setFont:)] && [activeAnnotation respondsToSelector:@selector(font)]) {
-        NSFont *font = [[NSFontPanel sharedFontPanel] panelConvertFont:[(PDFAnnotationFreeText *)activeAnnotation font]];
-        [(PDFAnnotationFreeText *)activeAnnotation setFont:font];
-        [self setNeedsDisplayForAnnotation:activeAnnotation];
-    }
-}
-
 - (void)editActiveAnnotation:(id)sender {
     if (nil == activeAnnotation)
         return;

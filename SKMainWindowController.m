@@ -657,6 +657,18 @@ static NSString *SKDocumentToolbarNotesPaneItemIdentifier = @"SKDocumentToolbarN
     }
 }
 
+- (IBAction)changeFont:(id)sender{
+    PDFAnnotation *annotation = [pdfView activeAnnotation];
+    if ([annotation isNoteAnnotation] && [annotation respondsToSelector:@selector(setFont:)] && [annotation respondsToSelector:@selector(font)]) {
+        NSFont *font = [[NSFontPanel sharedFontPanel] panelConvertFont:[(PDFAnnotationFreeText *)annotation font]];
+        if ([annotation respondsToSelector:@selector(setDefaultFont:)] && [annotation respondsToSelector:@selector(font)])
+            [(SKPDFAnnotationFreeText *)annotation setDefaultFont:font];
+        else
+            [(PDFAnnotationFreeText *)annotation setFont:font];
+        [pdfView setNeedsDisplayForAnnotation:annotation];
+    }
+}
+
 - (IBAction)createNewNote:(id)sender{
     int type = [sender tag];
     
