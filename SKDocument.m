@@ -159,7 +159,7 @@ NSString *SKDocumentWillSaveNotification = @"SKDocumentWillSaveNotification";
         if (array && (data = [NSKeyedArchiver archivedDataWithRootObject:array]))
             didWrite = [data writeToURL:absoluteURL options:NSAtomicWrite error:outError];
         else if (outError != NULL)
-            *outError = [NSError errorWithDomain:SKDocumentErrorDomain code:1 userInfo:[NSDictionary dictionaryWithObjectsAndKeys:NSLocalizedString(@"Unable to write notes", @""), NSLocalizedDescriptionKey, nil]];
+            *outError = [NSError errorWithDomain:SKDocumentErrorDomain code:1 userInfo:[NSDictionary dictionaryWithObjectsAndKeys:NSLocalizedString(@"Unable to write notes", @"Error description"), NSLocalizedDescriptionKey, nil]];
             
     }
     return didWrite;
@@ -219,7 +219,7 @@ NSString *SKDocumentWillSaveNotification = @"SKDocumentWillSaveNotification";
     }
     
     if (didRead == NO && outError != NULL)
-        *outError = error ? error : [NSError errorWithDomain:SKDocumentErrorDomain code:0 userInfo:[NSDictionary dictionaryWithObjectsAndKeys:NSLocalizedString(@"Unable to load file", @""), NSLocalizedDescriptionKey, nil]];
+        *outError = error ? error : [NSError errorWithDomain:SKDocumentErrorDomain code:0 userInfo:[NSDictionary dictionaryWithObjectsAndKeys:NSLocalizedString(@"Unable to load file", @"Error description"), NSLocalizedDescriptionKey, nil]];
     
     return didRead;
 }
@@ -288,7 +288,7 @@ NSString *SKDocumentWillSaveNotification = @"SKDocumentWillSaveNotification";
     }
     
     if (didRead == NO && outError != NULL)
-        *outError = error ? error : [NSError errorWithDomain:SKDocumentErrorDomain code:0 userInfo:[NSDictionary dictionaryWithObjectsAndKeys:NSLocalizedString(@"Unable to load file", @""), NSLocalizedDescriptionKey, nil]];
+        *outError = error ? error : [NSError errorWithDomain:SKDocumentErrorDomain code:0 userInfo:[NSDictionary dictionaryWithObjectsAndKeys:NSLocalizedString(@"Unable to load file", @"Error description"), NSLocalizedDescriptionKey, nil]];
     
     return didRead;
 }
@@ -343,7 +343,7 @@ NSString *SKDocumentWillSaveNotification = @"SKDocumentWillSaveNotification";
     } else {
         success = NO;
         if(error == nil && outError) 
-            *outError = [NSError errorWithDomain:NSPOSIXErrorDomain code:ENOENT userInfo:[NSDictionary dictionaryWithObjectsAndKeys:NSLocalizedString(@"The file does not exist or is not a file.", @""), NSLocalizedDescriptionKey, nil]];
+            *outError = [NSError errorWithDomain:NSPOSIXErrorDomain code:ENOENT userInfo:[NSDictionary dictionaryWithObjectsAndKeys:NSLocalizedString(@"The file does not exist or is not a file.", @"Error description"), NSLocalizedDescriptionKey, nil]];
     }
     if (success == NO) {
         [noteDicts release];
@@ -413,7 +413,7 @@ NSString *SKDocumentWillSaveNotification = @"SKDocumentWillSaveNotification";
                     didEndSelector:@selector(archiveSavePanelDidEnd:returnCode:contextInfo:)
                        contextInfo:NULL];
     } else {
-        NSAlert *alert = [NSAlert alertWithMessageText:NSLocalizedString(@"You must save this file first", @"") defaultButton:nil alternateButton:nil otherButton:nil informativeTextWithFormat:NSLocalizedString(@"The document has unsaved changes, or has not previously been saved to disk.", @"")];
+        NSAlert *alert = [NSAlert alertWithMessageText:NSLocalizedString(@"You must save this file first", @"Alert text when trying to create archive for unsaved document") defaultButton:nil alternateButton:nil otherButton:nil informativeTextWithFormat:NSLocalizedString(@"The document has unsaved changes, or has not previously been saved to disk.", @"Informative text in alert dialog")];
         [alert beginSheetModalForWindow:[self windowForSheet] modalDelegate:nil didEndSelector:NULL contextInfo:NULL];
     }
 }

@@ -37,6 +37,7 @@
  */
 
 #import "SKPSProgressController.h"
+#import "NSString_SKExtensions.h"
 
 typedef enum {
     SKPSConversionCanceled = -1,
@@ -117,8 +118,8 @@ static void PSConverterMessageCallback(void *info, CFStringRef message)
 
     if (CGPSConverterAbort(converter) == false) {
         NSBeep();
-        [textField setStringValue:NSLocalizedString(@"Converter already stopped.", @"")];
-        [cancelButton setTitle:NSLocalizedString(@"Close", @"")];
+        [textField setStringValue:NSLocalizedString(@"Converter already stopped.", @"PS conversion progress message")];
+        [cancelButton setTitle:NSLocalizedString(@"Close", @"Button title")];
         [cancelButton setAction:@selector(close:)];
     }
 }
@@ -208,21 +209,21 @@ static void PSConverterMessageCallback(void *info, CFStringRef message)
 
 - (void)processingPostScriptPage:(NSNumber *)page;
 {
-    [textField setStringValue:[NSString stringWithFormat:NSLocalizedString(@"Processing page %d%C", @""), [page intValue], 0x2026]];
+    [textField setStringValue:[[NSString stringWithFormat:NSLocalizedString(@"Processing page %d", @"PS conversion progress message"), [page intValue]] stringByAppendingEllipsis]];
 }
 
 - (void)postscriptConversionCompleted:(BOOL)didComplete;
 {
-    [textField setStringValue:NSLocalizedString(@"File successfully converted!", @"")];
+    [textField setStringValue:NSLocalizedString(@"File successfully converted!", @"PS conversion progress message")];
     [progressBar stopAnimation:nil];
-    [cancelButton setTitle:NSLocalizedString(@"Close", @"")];
+    [cancelButton setTitle:NSLocalizedString(@"Close", @"Button title")];
     [cancelButton setAction:@selector(close:)];
 }
 
 - (void)postscriptConversionStarted;
 {
     [progressBar startAnimation:nil];
-    [textField setStringValue:[NSString stringWithFormat:NSLocalizedString(@"Converting PostScript%C", @""), 0x2026]];
+    [textField setStringValue:[[NSString stringWithFormat:NSLocalizedString(@"Converting PostScript", @"PS conversion progress message")] stringByAppendingEllipsis]];
 }
 
 - (void)showPostScriptConversionMessage:(NSString *)message;
