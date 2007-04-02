@@ -3024,7 +3024,7 @@ static NSArray *prioritySortedThumbnails(NSArray *dirtyNails, int currentPageInd
         return [self isPresentation] == NO;
     } else if (action == @selector(changeLeftSidePaneState:)) {
         [menuItem setState:(int)leftSidePaneState == [menuItem tag] ? ([findTableView window] ? NSMixedState : NSOnState) : NSOffState];
-        return YES;
+        return [menuItem tag] == SKThumbnailSidePaneState || pdfOutline;
     } else if (action == @selector(changeRightSidePaneState:)) {
         [menuItem setState:(int)rightSidePaneState == [menuItem tag] ? NSOnState : NSOffState];
         return YES;
