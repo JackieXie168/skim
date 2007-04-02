@@ -416,9 +416,25 @@ static NSString *SKDocumentToolbarNotesPaneItemIdentifier = @"SKDocumentToolbarN
         
         [self unregisterForDocumentNotifications];
         
+        PDFDestination *dest;
+        unsigned pageIndex = NSNotFound;
+        NSPoint point = NSZeroPoint;
+        
+        if ([pdfView document]) {
+            dest = [pdfView currentDestination];
+            pageIndex = [[pdfView document] indexForPage:[dest page]];
+            point = [dest point];
+        }
+        
         [[pdfView document] setDelegate:nil];
         [pdfView setDocument:document];
         [[pdfView document] setDelegate:self];
+        
+        if (pageIndex != NSNotFound && [document pageCount]) {
+            PDFPage *page = [document pageAtIndex:MIN(pageIndex, [document pageCount])];
+            dest = [[[PDFDestination alloc] initWithPage:page point:point] autorelease];
+            [pdfView goToDestination:dest];
+        }
         
         [self registerForDocumentNotifications];
         
