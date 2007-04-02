@@ -936,9 +936,13 @@ static inline NSRect rectWithCorners(NSPoint p1, NSPoint p2)
     switch (annotationType) {
         case SKFreeTextNote:
             newAnnotation = [[SKPDFAnnotationFreeText alloc] initWithBounds:bounds];
+            if (text == nil)
+                text = NSLocalizedString(@"Double-click to edit.", @"Default text for new text note");
             break;
         case SKAnchoredNote:
             newAnnotation = [[SKPDFAnnotationNote alloc] initWithBounds:bounds];
+            if (text == nil)
+                text = NSLocalizedString(@"New note", @"Default text for new anchored note");
             break;
         case SKCircleNote:
             newAnnotation = [[SKPDFAnnotationCircle alloc] initWithBounds:NSInsetRect(bounds, -5.0, -5.0)];
@@ -956,12 +960,8 @@ static inline NSRect rectWithCorners(NSPoint p1, NSPoint p2)
             newAnnotation = [[SKPDFAnnotationMarkup alloc] initWithSelection:[self currentSelection] markupType:kPDFMarkupTypeUnderline];
             break;
 	}
-    if (text == nil) {
-        if ([newAnnotation isEditable])
-            text = NSLocalizedString(@"New note", @"Default text for new note");
-        else
-            text = [[[page selectionForRect:bounds] string] stringByCollapsingWhitespaceAndNewlinesAndRemovingSurroundingWhitespaceAndNewlines];
-    }
+    if (text == nil)
+        text = [[[page selectionForRect:bounds] string] stringByCollapsingWhitespaceAndNewlinesAndRemovingSurroundingWhitespaceAndNewlines];
         
     [newAnnotation setContents:text];
     
@@ -972,8 +972,9 @@ static inline NSRect rectWithCorners(NSPoint p1, NSPoint p2)
 
     [self setActiveAnnotation:newAnnotation];
     [newAnnotation release];
-    if ([newAnnotation isEditable])
-        [self editActiveAnnotation:self];
+    if (annotationType == SKAnchoredNote)
+		[[NSNotificationCenter defaultCenter] postNotificationName:SKPDFViewAnnotationDoubleClickedNotification object:self 
+            userInfo:[NSDictionary dictionaryWithObjectsAndKeys:activeAnnotation, @"annotation", nil]];
 }
 
 - (void)removeActiveAnnotation:(id)sender{
