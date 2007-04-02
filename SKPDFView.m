@@ -912,7 +912,9 @@ static inline NSRect rectWithCorners(NSPoint p1, NSPoint p2)
         NSSize defaultSize = (annotationType == SKAnchoredNote) ? NSMakeSize(16.0, 16.0) : NSMakeSize(128.0, 64.0);
 		// First try the current mouse position
         NSPoint center = [self convertPoint:[[self window] mouseLocationOutsideOfEventStream] fromView:nil];
-        page = [self pageForPoint:center nearest:NO];
+        
+        // if the mouse was in the toolbar and there is a page below the toolbar, we get a point outside of the visible rect
+        page = NSPointInRect(center, [[self documentView] visibleRect]) ? [self pageForPoint:center nearest:NO] : nil;
         
         if (page == nil) {
             // Get center of the PDFView.
