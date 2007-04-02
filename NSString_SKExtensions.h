@@ -42,5 +42,6 @@
 @interface NSString (SKExtensions)
 
 - (NSString *)stringByCollapsingWhitespaceAndNewlinesAndRemovingSurroundingWhitespaceAndNewlines;
+- (NSString *)stringByAppendingEllipsis;
 
 @end

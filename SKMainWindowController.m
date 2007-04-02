@@ -432,7 +432,7 @@ static NSString *SKDocumentToolbarNotesPaneItemIdentifier = @"SKDocumentToolbarN
         
         if (pageIndex != NSNotFound && [document pageCount]) {
             PDFPage *page = [document pageAtIndex:MIN(pageIndex, [document pageCount])];
-            dest = [[[PDFDestination alloc] initWithPage:page point:point] autorelease];
+            dest = [[[PDFDestination alloc] initWithPage:page atPoint:point] autorelease];
             [pdfView goToDestination:dest];
         }
         
@@ -2851,7 +2851,7 @@ static NSArray *prioritySortedThumbnails(NSArray *dirtyNails, int currentPageInd
     item = [[SKToolbarItem alloc] initWithItemIdentifier:SKDocumentToolbarContentsPaneItemIdentifier];
     [item setLabel:NSLocalizedString(@"Contents Pane", @"Toolbar item label")];
     [item setPaletteLabel:NSLocalizedString(@"Contents Pane", @"Toolbar item label")];
-    [item setToolTip:NSLocalizedString(@"Toogle Contents Pan", @"Tool tip message")];
+    [item setToolTip:NSLocalizedString(@"Toggle Contents Pane", @"Tool tip message")];
     [item setImage:[NSImage imageNamed:@"ToolbarLeftPane"]];
     [item setTarget:self];
     [item setAction:@selector(toggleLeftSidePane:)];
@@ -2861,7 +2861,7 @@ static NSArray *prioritySortedThumbnails(NSArray *dirtyNails, int currentPageInd
     item = [[SKToolbarItem alloc] initWithItemIdentifier:SKDocumentToolbarNotesPaneItemIdentifier];
     [item setLabel:NSLocalizedString(@"Notes Pane", @"Toolbar item label")];
     [item setPaletteLabel:NSLocalizedString(@"Notes Pane", @"Toolbar item label")];
-    [item setToolTip:NSLocalizedString(@"Toogle Notes Pan", @"Tool tip message")];
+    [item setToolTip:NSLocalizedString(@"Toggle Notes Pane", @"Tool tip message")];
     [item setImage:[NSImage imageNamed:@"ToolbarRightPane"]];
     [item setTarget:self];
     [item setAction:@selector(toggleRightSidePane:)];

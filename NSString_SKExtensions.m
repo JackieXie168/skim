@@ -105,4 +105,9 @@ CFStringRef SKStringCreateByCollapsingAndTrimmingWhitespaceAndNewlines(CFAllocat
     return [(id)SKStringCreateByCollapsingAndTrimmingWhitespaceAndNewlines(CFAllocatorGetDefault(), (CFStringRef)self) autorelease];
 }
 
+- (NSString *)stringByAppendingEllipsis;
+{
+    return [self stringByAppendingFormat:@"%C", 0x2026];
+}
+
 @end
