@@ -3229,38 +3229,3 @@ static NSArray *prioritySortedThumbnails(NSArray *dirtyNails, int currentPageInd
 }
 
 @end
-
-
-@interface SKProgressIndicator : NSProgressIndicator
-@end
-
-@implementation SKProgressIndicator
-
-- (void)setDoubleValue:(double)newValue {
-    [super setDoubleValue:newValue];
-    [self setNeedsDisplay:YES];
-}
-
-- (void)drawRect:(NSRect)aRect {
-    NSRect bounds = [self bounds];
-    NSPoint center = NSMakePoint(NSMidX(bounds), NSMidY(bounds));
-    NSBezierPath *path = [NSBezierPath bezierPath];
-    double angle = ([self doubleValue] - [self minValue]) / ([self maxValue] - [self minValue]) * 360.0;
-    
-    [NSGraphicsContext saveGraphicsState];
-    
-    [[NSColor selectedControlColor] set];
-    [[NSBezierPath bezierPathWithOvalInRect:bounds] fill];
-    [[NSColor controlBackgroundColor] set];
-    [[NSBezierPath bezierPathWithOvalInRect:NSInsetRect(bounds, 2.0, 2.0)] fill];
-    [[NSColor selectedControlColor] set];
-    
-    [path moveToPoint:center];
-    [path appendBezierPathWithArcWithCenter:center radius:0.5 * NSWidth(bounds) - 1.0 startAngle:270.0 + angle endAngle:270.0 clockwise:YES];
-    [path closePath];
-    [path fill];
-    
-    [NSGraphicsContext restoreGraphicsState];
-}
-
-@end
