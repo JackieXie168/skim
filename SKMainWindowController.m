@@ -1561,8 +1561,6 @@ void removeTemporaryAnnotations(const void *annotation, void *context)
     if (selection) {
         [findTableView deselectAll:self];
 		[pdfView setCurrentSelection:selection];
-        [self removeTemporaryAnnotations];
-        [self addAnnotationsForSelection:selection];
 		[pdfView scrollSelectionToVisible:self];
 	} else {
 		NSBeep();
