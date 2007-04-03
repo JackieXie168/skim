@@ -75,6 +75,15 @@
     [super highlightSelectionInClipRect:clipRect]; 
 }
 
+- (void)mouseDown:(NSEvent *)theEvent {
+    if (([theEvent modifierFlags] & NSCommandKeyMask) && [[self delegate] respondsToSelector:@selector(tableView:commandSelectRow:)]) {
+        int row = [self rowAtPoint:[self convertPoint:[theEvent locationInWindow] fromView:nil]];
+        if (row != -1 && [[self delegate] tableView:self commandSelectRow:row])
+            return;
+    }
+    [super mouseDown:theEvent];
+}
+
 @end
 
 #pragma mark -
