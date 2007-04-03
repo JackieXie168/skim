@@ -1543,7 +1543,7 @@ void removeTemporaryAnnotations(const void *annotation, void *context)
     } else {
         [self fadeInSearchView];
     }
-    [[pdfView document] findString:[sender stringValue] withOptions:NSCaseInsensitiveSearch];
+    [[pdfView document] beginFindString:[sender stringValue] withOptions:NSCaseInsensitiveSearch];
 }
 
 - (void)findString:(NSString *)string options:(int)options{
@@ -2173,6 +2173,18 @@ void removeTemporaryAnnotations(const void *annotation, void *context)
 - (int)numberOfRowsInTableView:(NSTableView *)tv { return 0; }
 
 - (id)tableView:(NSTableView *)tv objectValueForTableColumn:(NSTableColumn *)tableColumn row:(int)row { return nil; }
+
+- (BOOL)tableView:(NSTableView *)tv commandSelectRow:(int)row {
+    if ([tv isEqual:thumbnailTableView]) {
+        NSRect rect = [[[pdfView document] pageAtIndex:row] boundsForBox:[pdfView displayBox]];
+        
+        rect.origin.y = NSMidY(rect) - 100.0;
+        rect.size.height = 200.0;
+        [self showSnapshotAtPageNumber:row forRect:rect factor:1];
+        return YES;
+    }
+    return NO;
+}
 
 - (float)tableView:(NSTableView *)tv heightOfRow:(int)row {
     if ([tv isEqual:thumbnailTableView]) {
