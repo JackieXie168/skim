@@ -409,13 +409,6 @@ static NSString *SKDocumentToolbarNotesPaneItemIdentifier = @"SKDocumentToolbarN
 - (void)setPdfDocument:(PDFDocument *)document{
     if ([pdfView document] != document) {
         
-        // these will be invalid. If needed, the document will restore them
-        [[self mutableArrayValueForKey:@"notes"] removeAllObjects];
-        
-        [lastViewedPages removeAllObjects];
-        
-        [self unregisterForDocumentNotifications];
-        
         PDFDestination *dest;
         unsigned pageIndex = NSNotFound;
         NSPoint point = NSZeroPoint;
@@ -426,15 +419,16 @@ static NSString *SKDocumentToolbarNotesPaneItemIdentifier = @"SKDocumentToolbarN
             point = [dest point];
         }
         
+        // these will be invalid. If needed, the document will restore them
+        [[self mutableArrayValueForKey:@"notes"] removeAllObjects];
+        
+        [lastViewedPages removeAllObjects];
+        
+        [self unregisterForDocumentNotifications];
+        
         [[pdfView document] setDelegate:nil];
         [pdfView setDocument:document];
         [[pdfView document] setDelegate:self];
-        
-        if (pageIndex != NSNotFound && [document pageCount]) {
-            PDFPage *page = [document pageAtIndex:MIN(pageIndex, [document pageCount])];
-            dest = [[[PDFDestination alloc] initWithPage:page atPoint:point] autorelease];
-            [pdfView goToDestination:dest];
-        }
         
         [self registerForDocumentNotifications];
         
@@ -455,6 +449,12 @@ static NSString *SKDocumentToolbarNotesPaneItemIdentifier = @"SKDocumentToolbarN
         
         [self resetThumbnails];
         [self updateThumbnailSelection];
+        
+        if (pageIndex != NSNotFound && [document pageCount]) {
+            PDFPage *page = [document pageAtIndex:MIN(pageIndex, [document pageCount])];
+            dest = [[[PDFDestination alloc] initWithPage:page atPoint:point] autorelease];
+            [pdfView performSelector:@selector(goToDestination:) withObject:dest afterDelay:0.0];
+        }
     }
 }
 
@@ -1553,6 +1553,8 @@ void removeTemporaryAnnotations(const void *annotation, void *context)
     if (selection) {
         [findTableView deselectAll:self];
 		[pdfView setCurrentSelection:selection];
+        [self removeTemporaryAnnotations];
+        [self addAnnotationsForSelection:selection];
 		[pdfView scrollSelectionToVisible:self];
 	} else {
 		NSBeep();
