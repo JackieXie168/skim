@@ -200,6 +200,8 @@ static NSString *SKDocumentToolbarNotesPaneItemIdentifier = @"SKDocumentToolbarN
     [self displayOutlineView];
     [self displayNoteView];
     
+    [spinner setUsesThreadedAnimation:YES];
+    
     // we retain as we might replace it with the full screen window
     mainWindow = [[self window] retain];
     
@@ -1533,7 +1535,13 @@ void removeTemporaryAnnotations(const void *annotation, void *context)
 }
 
 - (IBAction)search:(id)sender {
+
+    // cancel any previous find to remove those results, or else they stay around
+    if ([[pdfView document] isFinding])
+        [[pdfView document] cancelFindString];
+
     if ([[sender stringValue] isEqualToString:@""]) {
+        
         // get rid of temporary annotations
         [self removeTemporaryAnnotations];
         if (leftSidePaneState == SKThumbnailSidePaneState)
@@ -1542,8 +1550,8 @@ void removeTemporaryAnnotations(const void *annotation, void *context)
             [self fadeInOutlineView];
     } else {
         [self fadeInSearchView];
+        [[pdfView document] beginFindString:[sender stringValue] withOptions:NSCaseInsensitiveSearch];
     }
-    [[pdfView document] beginFindString:[sender stringValue] withOptions:NSCaseInsensitiveSearch];
 }
 
 - (void)findString:(NSString *)string options:(int)options{
