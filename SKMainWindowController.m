@@ -2176,7 +2176,7 @@ void removeTemporaryAnnotations(const void *annotation, void *context)
 
 - (BOOL)tableView:(NSTableView *)tv commandSelectRow:(int)row {
     if ([tv isEqual:thumbnailTableView]) {
-        NSRect rect = [[[pdfView document] pageAtIndex:row] boundsForBox:[pdfView displayBox]];
+        NSRect rect = [[[pdfView document] pageAtIndex:row] boundsForBox:kPDFDisplayBoxCropBox];
         
         rect.origin.y = NSMidY(rect) - 100.0;
         rect.size.height = 200.0;
