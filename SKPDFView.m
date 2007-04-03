@@ -784,15 +784,6 @@ static inline NSRect rectWithCorners(NSPoint p1, NSPoint p2)
     
     if ([self toolMode] == SKTextToolMode) {
         
-        PDFPage *page = [self pageForPoint:point nearest:YES];
-        PDFAnnotation *annotation = nil;
-        
-        if (page) {
-            annotation = [page annotationAtPoint:[self convertPoint:point toPage:page]];
-            if ([annotation isNoteAnnotation] == NO)
-                annotation = nil;
-        }
-        
         [menu addItem:[NSMenuItem separatorItem]];
         
         submenu = [[NSMenu allocWithZone:[menu zone]] init];
@@ -837,6 +828,28 @@ static inline NSRect rectWithCorners(NSPoint p1, NSPoint p2)
         item = [menu addItemWithTitle:NSLocalizedString(@"New Note", @"Menu item title") action:NULL keyEquivalent:@""];
         [item setSubmenu:submenu];
         [submenu release];
+        
+        [menu addItem:[NSMenuItem separatorItem]];
+        
+        if ([self currentSelection] || ([activeAnnotation isNoteAnnotation] && [activeAnnotation isMovable])) {
+            item = [menu addItemWithTitle:NSLocalizedString(@"Copy", @"Menu item title") action:@selector(copy:) keyEquivalent:@""];
+            if ([activeAnnotation isNoteAnnotation] && [activeAnnotation isMovable])
+                item = [menu addItemWithTitle:NSLocalizedString(@"Cut", @"Menu item title") action:@selector(copy:) keyEquivalent:@""];
+        }
+        
+        if ([[NSPasteboard generalPasteboard] availableTypeFromArray:[NSArray arrayWithObjects:SKSkimNotePboardType, NSStringPboardType, nil]]) {
+            SEL selector = ([theEvent modifierFlags] & NSAlternateKeyMask) ? @selector(alternatePaste:) : @selector(paste:);
+            item = [menu addItemWithTitle:NSLocalizedString(@"Paste", @"Menu item title") action:selector keyEquivalent:@""];
+        }
+        
+        PDFPage *page = [self pageForPoint:point nearest:YES];
+        PDFAnnotation *annotation = nil;
+        
+        if (page) {
+            annotation = [page annotationAtPoint:[self convertPoint:point toPage:page]];
+            if ([annotation isNoteAnnotation] == NO)
+                annotation = nil;
+        }
         
         if (annotation) {
             item = [menu addItemWithTitle:NSLocalizedString(@"Remove Note", @"Menu item title") action:@selector(removeThisAnnotation:) keyEquivalent:@""];
