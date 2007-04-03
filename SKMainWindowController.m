@@ -1514,7 +1514,7 @@ static NSString *SKDocumentToolbarNotesPaneItemIdentifier = @"SKDocumentToolbarN
     }
 }
 
-void removeTemporaryAnnotations(const void *annotation, void *context)
+static void removeTemporaryAnnotations(const void *annotation, void *context)
 {
     SKMainWindowController *wc = (SKMainWindowController *)context;
     PDFAnnotation *annote = (PDFAnnotation *)annotation;
