@@ -339,7 +339,7 @@ You can select and copy text from a PDF file, then paste it into another applica
 
 @box{taskbox}
 @itemize
-@item To copy text, choose Tools > Text Tool and drag over the text as you normally would. Then choose Edit &gt; Copy. With some PDF files, line breaks are not saved when you copy text, so when you paste the text, the lines all run together.
+@item To copy text, choose Tools > Text Tool and drag over the text as you normally would. Then choose Edit > Copy. With some PDF files, line breaks are not saved when you copy text, so when you paste the text, the lines all run together.
 @item To select only a portion of text horizontally (for example, to select only one column in a two-column document), choose Tools > Text Tool, then press the Option key and select the text.
 @end itemize
 @endbox
@@ -357,7 +357,7 @@ You can select and copy notes from a PDF file, then paste it into the same or an
 
 @box{taskbox}
 @itemize
-@item To copy a note, choose Tools > Text Tool and select a note. Then choose Edit &gt; Copy.
+@item To copy a note, choose Tools > Text Tool and select a note. Then choose Edit > Copy.
 @end itemize
 @endbox
 
@@ -379,13 +379,13 @@ You can also paste copied text to create a new text or anchored note.
 
 @box{taskbox}
 @itemize
-@item To paste a copied note, choose Edit &gt; Paste after copying a note.
+@item To paste a copied note, choose Edit > Paste after copying a note.
 @end itemize
 @itemize
-@item To paste copied text as a new text note, choose Edit &gt; Paste after copying text.
+@item To paste copied text as a new text note, choose Edit > Paste after copying text.
 @end itemize
 @itemize
-@item To paste copied text as a anchored text note, hold down the Option key, and choose Edit &gt; Paste after copying text.
+@item To paste copied text as a anchored text note, hold down the Option key, and choose Edit > Paste after copying text.
 @end itemize
 @endbox
 
