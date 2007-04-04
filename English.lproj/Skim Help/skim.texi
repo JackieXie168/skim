@@ -399,7 +399,7 @@ You can also paste copied text to create a new text or anchored note.
 
 @topic Rotating a PDF file or page
 
-In Skim, you can rotate a PDF file in 90-degree increments, or flip it horizontally or vertically. You can rotate and flip an image several times to orient it the way you want it. 
+In Skim, you can rotate a PDF file in 90-degree increments. You can rotate and flip an image several times to orient it the way you want it. 
 
 @box{taskbox}
 @itemize
