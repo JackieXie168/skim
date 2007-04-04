@@ -535,8 +535,8 @@ The highlights are saved with the document, and are seen by anyone who reads it.
 @enumerate
 @item Choose Tools > Text Tool. 
 @item Select the text you want to highlight.
-@item Choose Notes > Circle, Notes > Box, Notes > Highlight, Notes > Strike Out, or Notes > Underline. 
-@item You may drag in the document until the note is located where you want and has the size you want.
+@item Choose Notes > Circle, Notes > Box, Notes > Highlight, Notes > Underline, or Notes > Strike Out. 
+@item You may drag circle and box highlights in the document until the highlight is located where you want and has the size you want.
 @end enumerate
 @endbox
 
@@ -546,13 +546,10 @@ You can edit or delete the highlights. To change the color used for the highligh
 
 Circle and box highlights can also be moved and resized. To move or resize the highlight, choose Tools > Text Tool, and use the mouse. Drag the black box to resize. 
 
-The highlights are saved with the document, and are seen by anyone who reads it. The highlights are not saved in the PDF data itself, so other PDF viewers will probably not be able to show the notes. 
-
 @heading See also
 @menu
 * Adding notes to a PDF document::
 @end menu
-The highlights are saved with the document, and are seen by anyone who reads it. The highlights are not saved in the PDF data itself, so other PDF viewers will probably not be able to show the notes. 
 
 @c ======================================================================================
 
