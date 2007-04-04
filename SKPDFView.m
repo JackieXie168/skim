@@ -814,14 +814,14 @@ static inline NSRect rectWithCorners(NSPoint p1, NSPoint p2)
             [item setTag:SKHighlightNote];
             [item setTarget:self];
             
-            item = [submenu addItemWithTitle:NSLocalizedString(@"Strike Out", @"Menu item title") action:@selector(addAnnotationFromMenu:) keyEquivalent:@""];
-            [item setRepresentedObject:[NSValue valueWithPoint:point]];
-            [item setTag:SKStrikeOutNote];
-            [item setTarget:self];
-            
             item = [submenu addItemWithTitle:NSLocalizedString(@"Underline", @"Menu item title") action:@selector(addAnnotationFromMenu:) keyEquivalent:@""];
             [item setRepresentedObject:[NSValue valueWithPoint:point]];
             [item setTag:SKUnderlineNote];
+            [item setTarget:self];
+            
+            item = [submenu addItemWithTitle:NSLocalizedString(@"Strike Out", @"Menu item title") action:@selector(addAnnotationFromMenu:) keyEquivalent:@""];
+            [item setRepresentedObject:[NSValue valueWithPoint:point]];
+            [item setTag:SKStrikeOutNote];
             [item setTarget:self];
         }
         
@@ -918,7 +918,7 @@ static inline NSRect rectWithCorners(NSPoint p1, NSPoint p2)
 		// Get bounds (page space) for selection (first page in case selection spans multiple pages).
 		page = [[selection pages] objectAtIndex: 0];
 		bounds = [selection boundsForPage: page];
-	} else if (annotationType == SKHighlightNote || annotationType == SKStrikeOutNote || annotationType == SKUnderlineNote) {
+	} else if (annotationType == SKHighlightNote || annotationType == SKUnderlineNote || annotationType == SKStrikeOutNote) {
         NSBeep();
         return;
     } else {
@@ -968,11 +968,11 @@ static inline NSRect rectWithCorners(NSPoint p1, NSPoint p2)
         case SKHighlightNote:
             newAnnotation = [[SKPDFAnnotationMarkup alloc] initWithSelection:[self currentSelection] markupType:kPDFMarkupTypeHighlight];
             break;
-        case SKStrikeOutNote:
-            newAnnotation = [[SKPDFAnnotationMarkup alloc] initWithSelection:[self currentSelection] markupType:kPDFMarkupTypeStrikeOut];
-            break;
         case SKUnderlineNote:
             newAnnotation = [[SKPDFAnnotationMarkup alloc] initWithSelection:[self currentSelection] markupType:kPDFMarkupTypeUnderline];
+            break;
+        case SKStrikeOutNote:
+            newAnnotation = [[SKPDFAnnotationMarkup alloc] initWithSelection:[self currentSelection] markupType:kPDFMarkupTypeStrikeOut];
             break;
 	}
     if (text == nil)
