@@ -91,7 +91,6 @@ static NSString *SKDocumentToolbarPresentationItemIdentifier = @"SKDocumentToolb
 static NSString *SKDocumentToolbarNewNoteItemIdentifier = @"SKDocumentToolbarNewNoteItemIdentifier";
 static NSString *SKDocumentToolbarNewCircleNoteItemIdentifier = @"SKDocumentToolbarNewCircleNoteItemIdentifier";
 static NSString *SKDocumentToolbarNewMarkupItemIdentifier = @"SKDocumentToolbarNewMarkupItemIdentifier";
-static NSString *SKDocumentToolbarToggleDrawerItemIdentifier = @"SKDocumentToolbarToggleDrawerItemIdentifier";
 static NSString *SKDocumentToolbarInfoItemIdentifier = @"SKDocumentToolbarInfoItemIdentifier";
 static NSString *SKDocumentToolbarToolModeItemIdentifier = @"SKDocumentToolbarToolModeItemIdentifier";
 static NSString *SKDocumentToolbarDisplayBoxItemIdentifier = @"SKDocumentToolbarDisplayBoxItemIdentifier";
@@ -688,28 +687,7 @@ static NSString *SKDocumentToolbarNotesPaneItemIdentifier = @"SKDocumentToolbarN
 }
 
 - (IBAction)createNewNote:(id)sender{
-    int type = [sender tag];
-    
-    if (type == -1) {
-        int modifiers = GetCurrentKeyModifiers();
-        if ((modifiers & optionKey) && (modifiers & shiftKey)) {
-            type = SKHighlightNote;
-        } else if ((modifiers & optionKey) && (modifiers & controlKey)) {
-            type = SKStrikeOutNote;
-        } else if ((modifiers & controlKey) && (modifiers & shiftKey)) {
-            type = SKUnderlineNote;
-        } else if (modifiers & optionKey) {
-            type = SKAnchoredNote;
-        } else if (modifiers & shiftKey) {
-            type = SKCircleNote;
-        } else if (modifiers & controlKey) {
-            type = SKSquareNote;
-        } else {
-            type = SKFreeTextNote;
-        }
-    }
-        
-    [pdfView addAnnotationFromSelectionWithType:type];
+    [pdfView addAnnotationFromSelectionWithType:[sender tag]];
 }
 
 - (IBAction)editNote:(id)sender{
@@ -2771,14 +2749,14 @@ static NSArray *prioritySortedThumbnails(NSArray *dirtyNails, int currentPageInd
     [menuItem setTag:SKHighlightNote];
     [menuItem setImage:[NSImage imageNamed:@"ToolbarHighlightNote"]];
     [menuItem setTarget:self];
-    menuItem = [menu addItemWithTitle:NSLocalizedString(@"Strike Out", @"Menu item title") action:@selector(createNewNote:) keyEquivalent:@""];
-    [menuItem setTag:SKStrikeOutNote];
-    [menuItem setImage:[NSImage imageNamed:@"ToolbarStrikeOutNote"]];
-    [menuItem setTarget:self];
     menuItem = [menu addItemWithTitle:NSLocalizedString(@"Underline", @"Menu item title") action:@selector(createNewNote:) keyEquivalent:@""];
     [menuItem setTag:SKUnderlineNote];
     [menuItem setTarget:self];
     [menuItem setImage:[NSImage imageNamed:@"ToolbarUnderlineNote"]];
+    menuItem = [menu addItemWithTitle:NSLocalizedString(@"Strike Out", @"Menu item title") action:@selector(createNewNote:) keyEquivalent:@""];
+    [menuItem setTag:SKStrikeOutNote];
+    [menuItem setImage:[NSImage imageNamed:@"ToolbarStrikeOutNote"]];
+    [menuItem setTarget:self];
     menuItem = [[[NSMenuItem allocWithZone:[NSMenu menuZone]] initWithTitle:NSLocalizedString(@"Add Markup", @"Toolbar item label") action:NULL keyEquivalent:@""] autorelease];
     [menuItem setSubmenu:menu];
     item = [[SKToolbarItem alloc] initWithItemIdentifier:SKDocumentToolbarNewMarkupItemIdentifier];
@@ -2800,14 +2778,6 @@ static NSArray *prioritySortedThumbnails(NSArray *dirtyNails, int currentPageInd
     [[markupPopUpButton cell] setUsesItemFromMenu:YES];
     [markupPopUpButton setRefreshesMenu:NO];
     [markupPopUpButton setMenu:menu];
-    
-    item = [[SKToolbarItem alloc] initWithItemIdentifier:SKDocumentToolbarToggleDrawerItemIdentifier];
-    [item setLabel:NSLocalizedString(@"Drawer", @"Toolbar item label")];
-    [item setPaletteLabel:NSLocalizedString(@"Drawer", @"Toolbar item label")];
-    [item setToolTip:NSLocalizedString(@"Toggle Drawer", @"Tool tip message")];
-    [item setImage:[NSImage imageNamed:@"ToolbarNotesDrawer"]];
-    [toolbarItems setObject:item forKey:SKDocumentToolbarToggleDrawerItemIdentifier];
-    [item release];
     
 	menu = [[NSMenu allocWithZone:[NSMenu menuZone]] init];
     menuItem = [menu addItemWithTitle:NSLocalizedString(@"Text Tool", @"Menu item title") action:@selector(changeToolMode:) keyEquivalent:@""];
@@ -2982,7 +2952,7 @@ static NSArray *prioritySortedThumbnails(NSArray *dirtyNails, int currentPageInd
 - (BOOL)validateMenuItem:(NSMenuItem *)menuItem {
     SEL action = [menuItem action];
     if (action == @selector(createNewNote:)) {
-        BOOL isMarkup = [menuItem tag] == SKHighlightNote || [menuItem tag] == SKStrikeOutNote || [menuItem tag] == SKUnderlineNote;
+        BOOL isMarkup = [menuItem tag] == SKHighlightNote || [menuItem tag] == SKUnderlineNote || [menuItem tag] == SKStrikeOutNote;
         return [pdfView toolMode] == SKTextToolMode && (isMarkup == NO || [[[pdfView currentSelection] pages] count]);
     } else if (action == @selector(editNote:)) {
         PDFAnnotation *annotation = [pdfView activeAnnotation];

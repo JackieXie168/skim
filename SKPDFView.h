@@ -60,8 +60,8 @@ typedef enum _SKNoteType {
     SKCircleNote,
     SKSquareNote,
     SKHighlightNote,
-    SKStrikeOutNote,
-    SKUnderlineNote
+    SKUnderlineNote,
+    SKStrikeOutNote
 } SKNoteType;
 
 @class SKReadingBar;

@@ -47,8 +47,8 @@ enum {
     SKASCircleNote = 'NCir',
     SKASSquareNote = 'NSqu',
     SKASHighlightNote = 'NHil',
-    SKASStrikeOutNote = 'NStr',
     SKASUnderlineNote = 'NUnd',
+    SKASStrikeOutNote = 'NStr'
 };
 
 NSString *SKAnnotationWillChangeNotification = @"SKAnnotationWillChangeNotification";
@@ -105,10 +105,10 @@ void SKCGContextSetDefaultRGBColorSpace(CGContextRef context) {
         self = [[SKPDFAnnotationSquare alloc] initWithBounds:bounds];
     } else if ([type isEqualToString:@"Highlight"] || [type isEqualToString:@"MarkUp"]) {
         self = [[SKPDFAnnotationMarkup alloc] initWithBounds:bounds markupType:kPDFMarkupTypeHighlight quadrilateralPointsAsStrings:[dict objectForKey:@"quadrilateralPoints"]];
-    } else if ([type isEqualToString:@"StrikeOut"]) {
-        self = [[SKPDFAnnotationMarkup alloc] initWithBounds:bounds markupType:kPDFMarkupTypeStrikeOut quadrilateralPointsAsStrings:[dict objectForKey:@"quadrilateralPoints"]];
     } else if ([type isEqualToString:@"Underline"]) {
         self = [[SKPDFAnnotationMarkup alloc] initWithBounds:bounds markupType:kPDFMarkupTypeUnderline quadrilateralPointsAsStrings:[dict objectForKey:@"quadrilateralPoints"]];
+    } else if ([type isEqualToString:@"StrikeOut"]) {
+        self = [[SKPDFAnnotationMarkup alloc] initWithBounds:bounds markupType:kPDFMarkupTypeStrikeOut quadrilateralPointsAsStrings:[dict objectForKey:@"quadrilateralPoints"]];
     } else {
         self = nil;
     }
@@ -229,10 +229,10 @@ void SKCGContextSetDefaultRGBColorSpace(CGContextRef context) {
         return SKASSquareNote;
     else if ([[self type] isEqualToString:@"Highlight"] || [[self type] isEqualToString:@"MarkUp"])
         return SKASHighlightNote;
-    else if ([[self type] isEqualToString:@"StrikeOut"])
-        return SKASStrikeOutNote;
     else if ([[self type] isEqualToString:@"Underline"])
         return SKASUnderlineNote;
+    else if ([[self type] isEqualToString:@"StrikeOut"])
+        return SKASStrikeOutNote;
     return 0;
 }
 
