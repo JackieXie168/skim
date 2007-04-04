@@ -573,7 +573,7 @@ Your snapshots are kept for easy reference in a table in the Notes pane to the r
 @end enumerate
 @endbox
 
-You can minimize the button to leave it only in the table. Choose Window > Minimize, hit the Minimize button on the snapshot window, or double-click the item in the Snapshots table.
+You can minimize the window to leave it only in the table. Choose Window > Minimize, hit the Minimize button on the snapshot window, or double-click the item in the Snapshots table.
 
 You can later show the snapshot window again by double-clicking the snapshot in the Snapshot table. 
 
