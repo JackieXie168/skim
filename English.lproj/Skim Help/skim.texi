@@ -238,7 +238,7 @@ When you open a PDF document with multiple pages, a single Skim window opens sho
 @item If a PDF has a table of contents (TOC), a TOC icon appears at the top of the left side pane. Click the icon to use the TOC to navigate the PDF.
 @end itemize
 @itemize
-@item To navigate using thumbnail images of the document's pages, click the Thumbnails icon in the drawer and click the thumbnail image for the page.
+@item To navigate using thumbnail images of the document's pages, click the Thumbnails icon in the contents pane and click the thumbnail image for the page.
 @end itemize
 @itemize
 @item To jump to the next page, press the Down Arrow or Page Down key. To jump to the previous page, press the Up Arrow or Page Up key.
@@ -251,7 +251,7 @@ When you open a PDF document with multiple pages, a single Skim window opens sho
 @end itemize
 @endbox
 
-By default, the contents pane opens automatically only if you open a PDF file with a table of contents. To set the drawer to open automatically even if there is no table of contents, choose Skim > Preferences, click PDF, and deselect "Open pane only for Table of Contents."
+By default, the contents pane always opens automatically. However you can choose to open the contents pane automatically only when the PDF file has a table of contents. To set the contents pane to open automatically only if there is a table of contents, choose Skim > Preferences, click PDF, and select "Open pane only for Table of Contents."
 
 @heading See also
 @menu
@@ -263,7 +263,7 @@ By default, the contents pane opens automatically only if you open a PDF file wi
 
 @topic Scrolling PDF pages
 
-When you open a PDF file with multiple pages in Skim, you select the page you want to view by clicking it in the drawer. If the page does not fit within the window size, then you use the vertical or horizontal scroll bars to view the hidden parts of the current page.
+When you open a PDF file with multiple pages in Skim, you select the page you want to view by clicking it in the contents pane. If the page does not fit within the window size, then you use the vertical or horizontal scroll bars to view the hidden parts of the current page.
 
 By default, you can't use the vertical scroll bar to view the next or previous pages of the document. However, you can change this by turning on continuous scrolling.
 
@@ -316,7 +316,7 @@ You can search a PDF file for a word or any set of characters.
 @heading To find all occurrences of text:
 @enumerate
 @item Open the PDF file. If the Contents pane isn't open, choose View Show Contents Pane.
-@item Type some text in the search field and press Return. A list of places where the text occurs appears in the drawer.
+@item Type some text in the search field and press Return. A list of places where the text occurs appears in the contents pane.
 @item Click an occurrence of the text in the Contents pane. Skim shows the page where the text occurs, and highlights the text.
 @end enumerate
 @heading To find a single occurrences of text:
@@ -423,7 +423,7 @@ Some PDF files contain a table of contents, which lets you quickly jump to secti
 @item To view the table of contents, Choose View > Show Contents Pane, and click the TOC button or choose View > Table Of Contents.
 @end itemize
 @itemize
-@item To jump to a specific section, click its name in the drawer. 
+@item To jump to a specific section, click its name in the contents pane. 
 @end itemize
 @endbox
 
