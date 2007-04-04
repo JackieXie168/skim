@@ -779,7 +779,6 @@ You can also drag the reading bar to another line.
 In skim you can highlight the line of text you are reading. You can change the color and transparency 
 
 @box{taskbox}
-@heading To change the color or transparency of the reading bar:
 @itemize
 @item To change the color or transparency of the reading bar, choose Skim > Preferences, click Colors, and select Color or move the Transparency slider. 
 @end itemize
