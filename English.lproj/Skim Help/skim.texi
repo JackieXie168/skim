@@ -528,7 +528,7 @@ You can edit or delete the notes. To move or resize the note, choose Tools > Tex
 
 You can highlight interesting or important parts of a document. You can enclosing them in a red oval or a green box. Or you can highlight, underline or strike out text.
 
-The notes are saved with the document, and are seen by anyone who reads it. The notes are not saved in the PDF data itself, so other PDF viewers will probably not be able to show the notes. 
+The highlights are saved with the document, and are seen by anyone who reads it. The highlights are not saved in the PDF data itself, so other PDF viewers will probably not be able to show the highlights. 
 
 @box{taskbox}
 @heading To highlight a section of a PDF document:
