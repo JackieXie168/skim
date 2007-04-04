@@ -133,6 +133,7 @@ static NSString *xattrError(int err, const char *path);
 
 #define MAX_XATTR_LENGTH 2048
 #define UNIQUE_VALUE [[NSProcessInfo processInfo] globallyUniqueString]
+#define NAME_PREFIX @"net_sourceforge_skim-app_"
 #define UNIQUE_KEY @"net_sourceforge_skim-app_unique_key"
 #define WRAPPER_KEY @"net_sourceforge_skim-app_has_wrapper"
 #define FRAGMENTS_KEY @"net_sourceforge_skim-app_number_of_fragments"
@@ -268,7 +269,7 @@ static NSString *xattrError(int err, const char *path);
         value = [value bzip2];
         
         // this will be a unique identifier for the set of keys we're about to write (appending a counter to the UUID)
-        NSString *uniqueValue = UNIQUE_VALUE;
+        NSString *uniqueValue = [NAME_PREFIX stringByAppendingString:UNIQUE_VALUE];
         unsigned numberOfFragments = ([value length] / MAX_XATTR_LENGTH) + ([value length] % MAX_XATTR_LENGTH ? 1 : 0);
         NSDictionary *wrapper = [NSDictionary dictionaryWithObjectsAndKeys:[NSNumber numberWithBool:YES], WRAPPER_KEY, uniqueValue, UNIQUE_KEY, [NSNumber numberWithUnsignedInt:numberOfFragments], FRAGMENTS_KEY, nil];
         NSData *wrapperData = [NSPropertyListSerialization dataFromPropertyList:wrapper format:NSPropertyListBinaryFormat_v1_0 errorDescription:NULL];
