@@ -886,7 +886,7 @@ Skim can automatically reload files you view when their contents changes on disc
 @end itemize
 @endbox
 
-Skim will always first ask you whether it should reload the file when the contents changes on disc. 
+Skim will always first ask you whether it should reload the file when the contents changes on disc, unless you have chosen Auto. 
 
 @c ======================================================================================
 
@@ -896,7 +896,7 @@ Skim can automatically check whether an update for Skim is available. You can al
 
 @box{taskbox}
 @itemize
-@item To select how often Skim checks for updates, choose Skim > Preferences, click Updates, and select a period blow "Skim update". 
+@item To select how often Skim checks for updates, choose Skim > Preferences, click Updates, and select a period below "Skim updates". 
 @end itemize
 @endbox
 
@@ -908,7 +908,7 @@ You can also check immediately for Skim updates yourself. Choose Skim > Check fo
 
 Notes and highlights you add to a PDF document are not saved in the PDF data, but are added to the file as extended attributes. Those are usually lost when you email the file. 
 
-There are several ways to preserve the notes. Some compression methods preserve extended attributes. Apple's Create Archive unfortunately does not preserve them. You should compress and expand to test whether they are saved. You can also create a disk image to wrap the PDF file.
+There are several ways to preserve the notes. Some compression methods preserve extended attributes. Apple's Create Archive unfortunately does not preserve them. You should compress and expand to test whether they are saved. You can also create a disk image to wrap the PDF file. Compression using tar and gzip also preserves the notes.
 
 You can also save the notes to a separate .skim file. The receiver of the email can later add the notes to the PDF. 
 
