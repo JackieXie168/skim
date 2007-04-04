@@ -251,7 +251,7 @@ When you open a PDF document with multiple pages, a single Skim window opens sho
 @end itemize
 @endbox
 
-By default, the contents pane always opens automatically. However you can choose to open the contents pane automatically only when the PDF file has a table of contents. To set the contents pane to open automatically only if there is a table of contents, choose Skim > Preferences, click PDF, and select "Open pane only for Table of Contents."
+By default, the contents pane always opens automatically. However you can choose to open the contents pane automatically only when the PDF file has a table of contents. To set the contents pane to open automatically only if there is a table of contents, choose Skim > Preferences, click General, and select "Open pane only for Table of Contents."
 
 @heading See also
 @menu
