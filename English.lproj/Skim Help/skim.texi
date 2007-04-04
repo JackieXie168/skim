@@ -160,7 +160,7 @@ If you open a PostScript (PS) or EPS file in Skim, it is converted to a PDF file
 @item In the Finder, select a PDF document.
 @item Choose File > Get Info.
 @item Click Open with:.
-@item Choose Preview from the pop-up menu, and click Change All.
+@item Choose Skim from the pop-up menu, and click Change All.
 @end enumerate
 @endbox
 
@@ -672,7 +672,7 @@ When viewing a PDF file in Skim, larger text may look jagged. You can turn on an
 @end enumerate
 @endbox
 
-If you turn on the "Anti-alias text and line art" option, large characters and line art are smoothed out and do not appear to be so jagged. Preview may take longer to display your document when smoothing out characters and line art.
+If you turn on the "Anti-alias text and line art" option, large characters and line art are smoothed out and do not appear to be so jagged. Skim may take longer to display your document when smoothing out characters and line art.
 
 @heading See also
 @menu
@@ -685,7 +685,7 @@ If you turn on the "Anti-alias text and line art" option, large characters and l
 
 @topic Small text is unreadable in my PDF document
 
-When you view a PDF file in Preview, small text may look fuzzy or illegible. You can change a few options to make the text more legible.
+When you view a PDF file in Skim, small text may look fuzzy or illegible. You can change a few options to make the text more legible.
 
 @box{taskbox}
 @heading To make small text more readable:
