@@ -62,6 +62,10 @@
         <real>0.7</real>
         <key>SKReadingBarInvert</key>
         <true/>
+        <key>SKTextNoteFontName</key>
+        <string>LucidaGrande</string>
+        <key>SKTextNoteFontSize</key>
+        <real>11.0</real>
     </dict>
 	<key>ResettableKeys</key>
 	<array>
@@ -87,6 +91,8 @@
         <string>SKReadingBarColor</string>
         <string>SKReadingBarTransparency</string>
         <string>SKReadingBarInvert</string>
+        <string>SKTextNoteFontName</string>
+        <string>SKTextNoteFontSize</string>
     </array>
 </dict>
 </plist>

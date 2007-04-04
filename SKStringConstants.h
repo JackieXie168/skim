@@ -62,3 +62,5 @@ extern NSString *SKGreekingThresholdKey;
 extern NSString *SKReadingBarColorKey;
 extern NSString *SKReadingBarTransparencyKey;
 extern NSString *SKReadingBarInvertKey;
+extern NSString *SKTextNoteFontNameKey;
+extern NSString *SKTextNoteFontSizeKey;
