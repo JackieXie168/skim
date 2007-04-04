@@ -860,7 +860,7 @@ If you select the "Discrete sizes" button, you can restrict the sizes to certain
 
 @topic Changing the highlighting of Find results
 
-You can set whether Skim should circle highlight results of a text searchas well as the color uysed for these highlights.
+You can set whether Skim should circle highlight results of a text searches well as the color uysed for these highlights.
 
 @box{taskbox}
 @itemize
