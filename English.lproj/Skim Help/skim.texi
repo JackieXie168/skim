@@ -315,7 +315,7 @@ You can search a PDF file for a word or any set of characters.
 @box{taskbox}
 @heading To find all occurrences of text:
 @enumerate
-@item Open the PDF file. If the Contents pane isn't open, choose View Show Contents Pane.
+@item Open the PDF file. If the Contents pane isn't open, choose View > Show Contents Pane.
 @item Type some text in the search field and press Return. A list of places where the text occurs appears in the contents pane.
 @item Click an occurrence of the text in the Contents pane. Skim shows the page where the text occurs, and highlights the text.
 @end enumerate
