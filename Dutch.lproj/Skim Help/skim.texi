@@ -1,0 +1,1082 @@
+\input texinfo @c -*-texinfo-*-
+@c This is the manual for Skim.
+
+@c ======================================================================================
+@c Localization Notes
+@c ======================================================================================
+@c 
+@c Localization starts after "The content of the Help Pages starts here...".
+@c Command names start with '@' and should not be localized.
+@c Lines starting with @c, such as this one, are comments and should not be localized.
+@c Arguments are written on the line after the command, or as a comma-separated list within braces. 
+@c Most arguments should be localized, but not for @end or @box.
+@c References (first argument of @ref or @xref, or between * and :: in a @menu) should be exactly the same as their target (argument of @node or @anchor). 
+
+@c ======================================================================================
+@c Document info
+@c ======================================================================================
+@c
+@setfilename skim.info
+
+@setchapternewpage odd
+@footnotestyle separate
+@ifset shorttitlepage-enabled
+@shorttitlepage Skim v@value{VERSION}
+@end ifset
+
+@c ======================================================================================
+@c Macro definitions
+@c ======================================================================================
+
+@c macros for keyboard shortcuts
+
+@macro cmd {key}
+@html
+&#8984;\key\
+@end html
+@ifnothtml
+Cmd-\key\
+@end ifnothtml
+@end macro
+
+@macro opt {key}
+@html
+&#8997;\key\
+@end html
+@ifnothtml
+Opt-\key\
+@end ifnothtml
+@end macro
+
+@macro shiftcmd {key}
+@html
+&#8679;&#8984;\key\
+@end html
+@ifnothtml
+Shift-Cmd-\key\
+@end ifnothtml
+@end macro
+
+@macro optcmd {key}
+@html
+&#8997;&#8984;\key\
+@end html
+@ifnothtml
+Option-Cmd-\key\
+@end ifnothtml
+@end macro
+
+@macro ctrcmd {key}
+@html
+&#8963;&#8984;\key\
+@end html
+@ifnothtml
+Control-Cmd-\key\
+@end ifnothtml
+@end macro
+
+@c A macro for search-result abstracts
+
+@macro abstract{tekst}
+@html
+<META NAME="DESCRIPTION" CONTENT="\tekst\">
+@end html
+@end macro
+
+@c Macros for special boxes
+
+@macro box{class}
+@html
+<div class="\class\">
+@end html
+@end macro
+
+@macro endbox
+@html
+</div>
+@end html
+@end macro
+
+@macro topic{title}
+@node \title\
+@chapter \title\
+@cindex \title\
+@abstract{\title\}
+@end macro
+
+@c ======================================================================================
+@c The content of the Help Pages starts here...
+@c ======================================================================================
+
+@documentlanguage nl
+
+@settitle Skim Help
+
+@ifnottex
+@c DO NOT LOCALIZE THE NEXT LINE
+@node Top
+@top Skim Help
+
+@box{topframe}
+
+@box{topframeleft}
+
+@heading @image{gfx/Skim,,, Skim} Skim Help
+
+@image{gfx/screenshot,,, Screenshot}
+
+@endbox
+
+@box{topframeright}
+
+Skim is een vertoner voor Portable Document Format (PDF) bestanden, bedoeld voor het gemakkelijk lezen en bestuderen van PDF-documenten. 
+
+U kunt zoeken in PDF-bestanden, bladwijzers aanmaken, onderdelen benadrukken, en "kiekjes" nemen als hadige referenties bij het lezen. Skim kan ook PosScript (PS) bestanden openen, waarbij deze worden omgezet in PDF. 
+
+Daarbij kunt u zich met Skim volledig concentreren op het lezen van het PDF-bestand in een krachtige schermvullende modus, of u kunt een schermvullende presentatie van uw PDF-bestand geven op een beamer. 
+
+@menu
+* indexcp::
+* Meer informatie::
+@end menu
+
+@endbox
+
+@endbox
+
+@c ======================================================================================
+
+@topic PDF-bestanden bekijken
+
+Met het programma Skim kunt u documenten in de PDF-structuur (Portable Document Format) openen en afdrukken. Een PDF-bestand bevat elementen van een afgedrukt bestand. Veel PDF-bestanden zijn geconverteerd van een afgedrukt document of aangemaakt op basis van hetzelfde bronbestand als een afgedrukt document.
+
+U kunt PDF-bestanden in Skim lezen en afdrukken. Ook kunt u de grootte aanpassen om het bestand op het scherm te bekijken. U kunt in een PDF-document zoeken naar bepaalde tekst, aan de hand van de inhoudsopgave door het bestand bladeren, tekst selecteren en kopi‘ren, notities en markeringen toevoegen, en presentaties geven.
+
+PS- of EPS-bestanden (PostScript/Encapsulated PostScript) die u in Skim opent, worden naar een PDF-bestand geconverteerd.
+
+@box{taskbox}
+@heading Om alle PDF-documenten te openen in Skim, gaat u als volgt te werk:
+@enumerate
+@item Selecteer een PDF-document in de Finder.
+@item Kies Archief > Toon Info.
+@item Klik op Open met:.
+@item Kies Skim uit het venstermenu en klik op Wijzig Alles.
+@end enumerate
+@endbox
+
+@c ======================================================================================
+
+@topic In- en uitzoomen
+
+U kunt de weergave van een pagina in een PDF-bestand op verschillende manieren wijzigen. 
+
+U kunt bijvoorbeeld inzoomen om een afbeelding te vergroten of uitzoomen om een groter gedeelte van de afbeelding weer te geven.
+You can change your view of a page in a PDF file in several ways. 
+
+@box{taskbox}
+@itemize
+@item Om in of uit te zoomen, kiest u Weergave > Zoom In or Weergave > Zoom Uit.
+@end itemize
+@itemize
+@item Als u de pagina op werkelijke grootte wilt weergeven, kiest u Weergave > Werkelijke Grootte
+@end itemize
+@itemize
+@item To view the PDF so that its pages fit in its window, kies Weergave > Passend.
+@end itemize
+@itemize
+@item Als u wilt dat de paginas altijd in het venster passen, ook als u het venster groter of kleiner maakt, kiest u Weergave > Vergroot Automatisch.
+@end itemize
+@itemize
+@item Als U de pagina op een zelf gekozen formaat wilt weergeven, vergroot u het venster tot het gewenste formaat en kiest U Weergave > Passend. De grootte van de pagina wordt aangepast aan de grootte van het venster.
+@end itemize
+@itemize
+@item Om een pagina weer te geven op een bepaald percentage van de oorspronkelijke grootte, typt u een percentage in het veld Vergroting in de knoppenbalk. Als dit veld niet in de knoppenbalk wordt weergegeven, kiest u Weergave > Pas Knoppenbalk aan.
+@end itemize
+@endbox
+
+U kunt ook in- of uitzoomen met behulp van de zoomknoppen in de knoppenbalk. Om de zoomknoppen aan de knoppenbalk toe te voegen, kiest u Weergave > Pas Knoppenbalk aan, en sleept u de zoomknoppen naar de knoppenbalk.
+
+U kunt ook het locale menu gebruiken om te zoomen.
+
+Als uw muis een schuifwieltje heeft, kunt u ook zoomen door het wieltje te verplaatsen terwijl u de Option-toets indrukt. 
+
+U kunt de weergave-instellingen voor een afbeelding of pagina niet bewaren.
+
+@heading Zie ook
+@menu
+* Resizing the window to fit its contents::
+@end menu
+
+@c ======================================================================================
+
+@topic Een gedeelte van een PDF-document vergroten
+
+U kunt een gedeelte van een PDF-document live vergroten, bijvoorbeeld om kleine tekst beter te kunnen lezen. 
+
+@box{taskbox}
+@heading Om een gedeelte te vergroten:
+@enumerate
+@item Kies Extra's > Vergrotingsfunctie.
+@item Druk de linker muisknop in terwijl u over de tekst die u wilt vergroten heen beweegt.
+@end enumerate
+@heading Om de vergrotingsinstellingen te veranderen:
+@itemize
+@item Houd de Appel-toets ingedrukt voor extra vergroting.
+@item Houd de Option-toets ingedrukt en/of klik dubbel om een groter gebied te vergroten. 
+@item Houd de Shift-toets ingedrukt om uit te zoomen (verkleinen).
+@end itemize
+@endbox
+
+@c ======================================================================================
+
+@topic Pagina's in een PDF-document selecteren voor weergave
+
+Als u in Voorvertoning een PDF-bestand met meerdere pagina's opent, wordt ŽŽn venster geopend met daarin de eerste pagina van het document. De overige afbeeldingen of pagina's worden in het inhoudspaneel als miniaturen weergegeven.
+
+@box{taskbox}
+@itemize
+@item Om het inhoudspaneel te openen (als deze nog niet is geopend), kiest U Weergave > Toon Inhoudspaneel, of klik dubbel op de splitser aan de linkerzijde van de PDF. 
+@end itemize
+@itemize
+@item Als een PDF een inhoudsopgave bevat, verschijnt boven in het inhoudspaneel een inhoudsopgavesymbool. Klik op het symbool om aan de hand van de inhoudsopgave door de PDF te bladeren.
+@end itemize
+@itemize
+@item U navigeert door de miniatuurafbeeldingen van de pagina's in het document door te klikken op de desbetreffende miniatuur in het inhoudspaneel. 
+@end itemize
+@itemize
+@item Om naar de volgende pagina te gaan, drukt u op de pijl-omlaagtoets of de Page Down-toets. Om naar de vorige pagina te gaan, drukt u op de pijl-omhoogtoets of de Page Up-toets. 
+@end itemize
+@itemize
+@item Om met de verticale schuifbalk door de verschillende pagina's in de PDF te bladeren, kiest u Weergave > PDF Weergave > Doorlopend. 
+@end itemize
+@itemize
+@item Om een bepaalde pagina in een PDF-bestand te bekijken, typt u het paginanummer dat u wilt bekijken in het veld Pagina in de knoppenbalk en drukt u vervolgens op de Return-toets.
+@end itemize
+@endbox
+
+Standaard wordt het ihoudspaneel altijd geopend. U kunt er voor kiezen om het inhoudspaneel alleen automatisch te openen wanneer het PDF-bestand met een inhoudsopgave bevat. Om in te stellen dat de lade alleen in dit geval automatisch wordt geopend, kiest u Skim > Voorkeuren. Klik op Algemeen en schakel het aankruisvak 'Open inhoudspaneel alleen voor inhoudsopgave' aan. 
+
+@heading Zie ook
+@menu
+* De inhoudsopgave van PDF-bestanden weergeven::
+* Door de pagina's van een PDF-bestand bladeren::
+@end menu
+
+@c ======================================================================================
+
+@topic Door de pagina's van een PDF-bestand bladeren
+
+Als u in Skim een PDF-bestand met meerdere pagina's opent, selecteert u de pagina die u wilt bekijken door er in de lade op te klikken. Als de pagina niet in het venster past, kunt u de gedeelten die niet worden weergegeven bekijken met behulp van de verticale of horizontale schuifbalk.
+When you open a PDF file with multiple pages in Skim, you select the page you want to view by clicking it in the contents pane. If the page does not fit within the window size, then you use the vertical or horizontal scroll bars to view the hidden parts of the current page.
+
+U kunt niet standaard met de verticale schuifbalk door de verschillende pagina's bladeren. Als u dit wilt doen, schakelt u het commando voor ononderbroken bladeren in.
+
+U kunt ook bladeren met behulp van de muis. 
+
+@box{taskbox}
+@heading Om met de verticale schuifbalk door de pagina's van een document bladeren:
+@itemize
+@item Kies Weergave > PDF Weergave > Doorlopend.
+@end itemize
+@heading Om te bladeren door te slepen:
+@itemize
+@item Kies Functies > Schuiffunctie.
+@end itemize
+@endbox
+
+@heading Zie ook
+@menu
+* Pagina's in een PDF-document selecteren voor weergave::
+* Pagina onderbrekingen weergeven::
+@end menu
+
+@c ======================================================================================
+
+@topic De achtergrondkleur wijzigen
+
+In Skim wordt standaard een donkergrijze achtergrond weergegeven achter PDF-bestanden. Als u het venster groter maakt dan het formaat van het document, kunt u de achtergrondkleur zien.
+
+@box{taskbox}
+@itemize
+@item Om de normale achtergrondkleur te wijzigen, kies Skim > Voorkeuren, klik op Kleuren, en vervolgens op Normaal onder Achtergrondkleur.
+@end itemize
+@itemize
+@item Om de achtergrondkleur voor beeldschermvullende modus te wijzigen, kies Skim > Voorkeuren, klik op Kleuren, en vervolgens op Beeldschermvullend onder Achtergrondkleur.
+@end itemize
+@endbox
+
+@heading Zie ook
+@menu
+* PDF-documenten beeldvullend bekijken::
+@end menu
+
+@c ======================================================================================
+
+@topic Tekst zoeken in PDF-bestanden
+
+U kunt in PDF-bestanden zoeken naar een woord of naar elke andere tekencombinatie.
+
+@box{taskbox}
+@heading Om alle keren dat een bepaalde tekst voorkomt te vinden gaat u als volgt te werk:
+@enumerate
+@item Open het PDF-bestand. Als het inhoudspaneel niet geopend is, kiest u Weergave > Toon Inhoudspaneel.
+@item Typ de tekst in het zoekveld en druk op de Return-toets. In het inhoudspaneel wordt een gegeven van alle keren dat de desbetreffende tekst voorkomt.
+@item Klik in het inhoudspaneel op de tekst. De pagina waarop de tekst voorkomt, wordt automatisch weergegeven en de desbetreffende tekst wordt gemarkeerd.
+@end enumerate
+@heading Om eenmaal tekst te vinden gaat u als volgt te werk:
+@enumerate
+@item Kies Wijzig > Zoek > Zoek@dots{}, om een Zoekpaneel te tonen.
+@item Typ de tekst in het zoekveld en druk op de Return-toets, of druk op de Volgende toets.
+@end enumerate
+@endbox
+
+@heading Zie ook
+@menu
+* De markering van zoekresultaten wijzigen::
+@end menu
+
+@c ======================================================================================
+
+@topic Tekst in PDF-bestanden selecteren en kopi‘ren
+
+U kunt tekst in een PDF-bestand selecteren en kopi‘ren en vervolgens in een ander programma plakken, zoals een tekstverwerkingsprogramma.
+
+@box{taskbox}
+@itemize
+@item Om tekst te kopi‘ren, kiest u Extra's > Tekstfunctie en sleept u de aanwijzer over de tekst zoals u dat anders ook doet. Vervolgens kiest u Wijzig > Kopieer. In sommige PDF-bestanden worden de regeleinden bij het kopi‘ren van tekst niet bewaard, zodat bij het plakken van de tekst alle regels achter elkaar worden geplaatst.
+@item Als u slechts een gedeelte van de totale tekstbreedte wilt selecteren (bijvoorbeeld ŽŽn kolom van een uit twee kolommen bestaand document), kiest u Extra's > Tekstfunctie en selecteert u de tekst terwijl u de Option-toets ingedrukt houdt.
+@end itemize
+@endbox
+
+@heading Zie ook
+@menu
+* Gekopi‘erde notities in een PDF-bestand plakken::
+@end menu
+
+@c ======================================================================================
+
+@topic Notities in een PDF-bestand kopi‘ren
+
+U kunt notities in een PDF-bestand selecteren en kopi‘ren, en deze vervolgens in hetzelfde of een ander PDF-bestand plakken. Notities die gekopi‘erd kunnen worden zijn tekstnotities, verankerde notities, cirke markeringen en box markeringen.
+
+@box{taskbox}
+@itemize
+@item Om een notitie te kopi‘ren, kiest u Extra's > Tekstfunctie en selecteert de notitie. Kies vervolgens Wijzig > Kopi‘er.
+@end itemize
+@endbox
+
+U kunt ook een notitie dupliceren door de notitie te selecteren terwijl u de Option-toets ingedrukt houdt. 
+
+@heading Zie ook
+@menu
+* Gekopi‘erde notities in een PDF-bestand plakken::
+* Tekst in PDF-bestanden selecteren en kopi‘ren::
+@end menu
+
+@c ======================================================================================
+
+@topic Gekopi‘erde notities in een PDF-bestand plakken
+
+U kunt notities die u heeft gekopi‘erd van een PDF-bestand in een hetzelfde of een ander PDF-bestand plakken. Notities die gekopi‘erd kunnen worden zijn tekstnotities, verankerde notities, cirke markeringen en box markeringen.
+
+u kunt ook gekopi‘erde tekst plakken om een nieuwe tekstnotitie of verankerde notitie te maken. 
+
+@box{taskbox}
+@itemize
+@item Om een gekopi‘erde notitie te plakken, kies Wijzig > Plak nadat u een notitie heeft gekopi‘erd.
+@end itemize
+@itemize
+@item Om gekopi‘erde tekst te plakken als een nieuwe verankerde notitie, kies Wijzig > Plak nadat u tekst heeft gekopi‘erd. 
+@end itemize
+@itemize
+@item Om gekopi‘erde tekst te plakken als een nieuwe tekstnotitie, houd de Option-toets ingedrukt en kies Wijzig > Plak nadat u tekst heeft gekopi‘erd. 
+@end itemize
+@endbox
+
+@heading Zie ook
+@menu
+* Notities in een PDF-bestand kopi‘ren::
+* Tekst in PDF-bestanden selecteren en kopi‘ren::
+@end menu
+
+@c ======================================================================================
+
+@topic PDF-bestanden of paginas roteren
+
+In Skim kunt u een afbeelding of PDF-bestand roteren in stappen van negentig graden. U kunt een afbeelding indien gewenst verschillende malen roteren en spiegelen.
+
+@box{taskbox}
+@itemize
+@item Om alle pagina's in een PDF-bestand negentig graden linksom of rechtsom te roteren, kiest u Extra's > 'Roteer linksom' of Extra's > 'Roteer rechtsom'. 
+@end itemize
+@itemize
+@item Om alleen de weergegeven pagina negentig graden linksom of rechtsom te roteren, kiest u Extra's > 'Roteer pagina linksom' of Extra's > 'Roteer pagina rechtsom'. 
+@end itemize
+@endbox
+
+U kunt pagina's ook roteren met behulp van de rotatieknoppen op de knoppenbalk. Om de rotatieknoppen aan de knoppenbalk toe te voegen, kiest u Weergave > 'Pas knoppenbalk aan' en sleept u de rotatieknoppen naar de knoppenbalk.
+
+@c ======================================================================================
+
+@topic De inhoudsopgave van PDF-bestanden weergeven
+
+Sommige PDF-bestanden bevatten een inhoudsopgave, waarmee u snel naar bepaalde gedeelten in een document kunt gaan.
+
+@box{taskbox}
+@itemize
+@item Om de inhoudsopgave weer te geven, kies Weergave > Toon Inhoudsopgave, en klik op de inhoudsopgavenop, of kies Weergave Inhoudsopgave. 
+@end itemize
+@itemize
+@item Om naar een bepaald gedeelte te gaan, klikt u op de desbetreffende naam in de inhoudsopgave.
+@end itemize
+@endbox
+
+@heading Zie ook
+@menu
+* Pagina's in een PDF-document selecteren voor weergave::
+@end menu
+
+@c ======================================================================================
+
+@topic Standaardgrootte instellen voor PDF-documenten
+
+U kunt opgeven in welke grootte u PDF-documenten in Skim wilt weergeven: zo groot mogelijk of als een bepaald percentage van de werkelijke grootte.
+You can kies the size at which Skim displays PDF-documenten: either as large as possible or at a specific percentage of their actual size.
+
+@box{taskbox}
+@enumerate
+@item Kies Voorvertoning > Voorkeuren en klik op Algemeen.
+@item Selecteer een van de opties bij 'Standaard documentvergroting'.
+@end enumerate
+@itemize
+@item Om PDF-documenten te openen in de grootste weergave die mogelijk is in het venster, selecteert u 'Vergroot automatisch'.
+@item Om PDF-documenten weer te geven als een bepaald percentage van hun oorspronkelijke grootte, selecteert u 'Gebruik vergroting' en voert u het gewenste vergrotings- of verkleiningspercentage in.
+@end itemize
+@endbox
+
+@c ======================================================================================
+
+@topic Pagina's in een PDF-bestand naast elkaar weergeven
+
+Als u pagina's naast elkaar weergeeft, is een groter gedeelte van een document zichtbaar op het scherm.
+
+@box{taskbox}
+@itemize
+@item Om twee PDF-pagina's naast elkaar weer te geven, kiest u Weergave > 'PDF weergave' > 'Tegenoverliggende pagina's'. Als u wilt dat de eerste pagina een rechterpagina is, net als in een boek, kiest u Weergave > 'PDF weergave' > Boekmodus. Als deze optie uitgeschakeld is, wordt de eerste pagina weergegeven als een linkerpagina.
+@end itemize
+@itemize
+@item Als u de weergave van twee PDF-pagina's naast elkaar wilt stoppen, kiest u Weergave > 'PDF weergave' > 'Enkele pagina's'.
+@end itemize
+@endbox
+
+@heading Zie ook
+@menu
+* Pagina onderbrekingen weergeven::
+@end menu
+
+@c ======================================================================================
+
+@topic Pagina onderbrekingen weergeven
+
+Wanneer u meerdere PDF-pagina's tegelijkertijd bekijkt, is het soms moeilijk om te onderscheiden waar de ene pagina ophoudt en de volgende begint. Dit kunt u oplossen door een rand om elke pagina weer te geven.
+
+@box{taskbox}
+@itemize
+@item Kies Weergave > 'PDF weergave' > 'Pagina onderbrekingen'.
+@end itemize
+@endbox
+
+@heading Zie ook
+@menu
+* Pagina's in een PDF-bestand naast elkaar weergeven::
+* Door de pagina's van een PDF-bestand bladeren::
+@end menu
+
+@c ======================================================================================
+
+@topic Notities aan een PDF-document toevoegen
+
+U kunt uw notities toevoegen aan een PDF-document in vakken die eruitzien als velletjes uit een notitieblok, of langere notities die u kunt bekijken in een apart venster door er dubbel op te klikken.
+
+De notities worden bewaard bij het document en zijn zichtbaar voor iedereen die het document leest. De notities worden niet bewaard in de PDF-data zelf, zodat u de notitities niet kunt zien in de meeste andere PDF vertoningsprogrammas 
+
+@box{taskbox}
+@heading Om een tekstnotitie toe te voegen:
+@enumerate
+@item Kies Extra's > Tekstfunctie. 
+@item Kies Notities > Tekstnotitie. 
+@item Sleep de notitie in het document tot dit op de gewenste plaats is en de gewenste grootte heeft.
+@item Om tekst in te voeren, klikt u dubbel op de notitie.
+@end enumerate
+@heading Om een langere tekstnotitie (verankerde notitie) toe te voegen:
+@enumerate
+@item Kies Extra's > Tekstfunctie. 
+@item Kies Notities > Verankerde Notitie. 
+@item Sleep de notitie in het document tot dit op de gewenste plaats is.
+@item Om tekst in te voeren, klikt u dubbel op de notitie. Een venster zal vertoond worden die de tekst van de notitie bevat. Er is een korte tekst die gebruikt kan worden om de notitie te identificeren, en een langer tekst die ook opmaak kan bevatten. 
+@item U kunt ook een eenvoudig plaatje aan de notitie toevoegen. Sleep een plaatje naar de plaatjesput in het notitievenster. 
+@end enumerate
+@endbox
+
+U kunt notities ook toevoegen met behulp van knoppen op de knoppenbalk. Om de knoppen aan de knoppenbalk toe te voegen, kiest u Weergave > 'Pas knoppenbalk aan' en sleept u de knoppen naar de knoppenbalk.
+
+U kunt notities wijzigen en verwijderen. Om een notitie te verplaatsen of te vergroten of verkleinen, kies Extra's > Tekstfunctie, en gebruik de muis om te selecteren en te slepen. Sleep het zwarte vierkantje om de grootte aan te passen. Om de tekst van de notitie te wijzigen, klik dubbel op de notitie. Om de kleur van de notitie te wijzigen, kies Extra's > 'Toon kleuren'. Om een notitie te verwijderen, kies Extra's > Textfunctie, selecteer de notitie, en druk op de Delete-toets.
+
+@heading Zie ook
+@menu
+* Gedeelten van een PDF-document markeren::
+@end menu
+
+@c ======================================================================================
+
+@topic Gedeelten van een PDF-document markeren
+
+U kunt interessante of belangrijke gedeelten van een document markeren. U kunt deze in een rode ovaal te plaatsen. Of u kunt tekst markeren, onderlijnen of doorstrepen.
+
+De markeringen worden bewaard bij het document en zijn zichtbaar voor iedereen die het document leest. De markeringen worden niet bewaard in de PDF-data zelf, zodat u de markeringen niet kunt zien in de meeste andere PDF vertoningsprogrammas 
+
+@box{taskbox}
+@heading Om gedeelten van een PDF-document markeren:
+@enumerate
+@item Kies Extra's > Tekstfunctie. 
+@item Selecteer de tekst die u wilt markeren.
+@item Kies Notities > Nieuwe cirkel, Notities > Nieuwe box, Notities > Nieuwe markering, Notities > Nieuwe ondelijning, of Notities > Nieuwe doorstreping. 
+@item U kunt cirkel- en box-markeringen totdat de markering juist geplaatst is en de gewenste grootte heeft. 
+@end enumerate
+@endbox
+
+U kunt markeringen ook toevoegen met behulp van knoppen op de knoppenbalk. Om de knoppen aan de knoppenbalk toe te voegen, kiest u Weergave > 'Pas knoppenbalk aan' en sleept u de knoppen naar de knoppenbalk.
+
+U kunt markeringen wijzigen en verwijderen. Om de tekst van de notitie te wijzigen, klik dubbel op de notitie. Om de kleur van de markering te wijzigen, kies Extra's > 'Toon kleuren'. Om een markering te verwijderen, kies Extra's > Textfunctie, selecteer de markering, en druk op de Delete-toets.
+
+Circel- en box-markeringen kunnen ook verplaatst en vergroot of verkleind worden. Om een markeringen te verplaatsen of te vergroten of verkleinen, kies Extra's > Tekstfunctie, en gebruik de muis om te selecteren en te slepen. Sleep het zwarte vierkantje om de grootte aan te passen.
+
+@heading Zie ook
+@menu
+* Notities aan een PDF-document toevoegen::
+@end menu
+
+@c ======================================================================================
+
+@topic Een kiekje maken van een gedeelte van een PDF-document
+
+U kunt een "kiekje" maken van belangrijke gedeeltes van een PDF-document, zodat u er later snel weer naar kunt kijken voor referentie. Hierdoor hoeft u niet elke keer terug te bladeren als u dit gedeelte wilt bekijken. 
+
+Uw kiekjes worden "bewaard" in een tabel in het notitiepaneel aan de rechterzijde van het PDF-document, zodat u het makkelijk kunt opzoeken.
+
+@box{taskbox}
+@heading Om een kiekje van een gedeelte van een PDF-document te maken:
+@enumerate
+@item Kies Extra's > Tekstfunctie of Extra's > Schuiffunctie.
+@item Houd de Apple-toets ingedrukt en klik op een punt in de PDF of selecteer een gedeelte.
+@item Een venster wordt getoond die het gebied dat u heeft gekozen weergeeft. 
+@end enumerate
+@heading om alle kiekjes te zien:
+@enumerate
+@item Kies Weergave > 'Toon notitiepaneel', of klik dubbel op de splitser aan de rechterzijde van de PDF, indien nodig.
+@item Kies Weergave > Kiekjes.
+@end enumerate
+@endbox
+
+U kunt het kiekjesvenster minimaliseren zodat het alleen in de tabel getoond wordt. Kies Venster > Minimaliseer, druk op de Minimaliseer-knop aan de bovenzijde van het kiekjesvenster, of klik dubbel op het kiekje in de Kiekjestabel. 
+
+U kunt het kiekjesvenster later weer laten zien door dubbel te klikken op het kiekje in de Kiekjestabel. 
+
+Kiekjes worden niet in het PDF-document bewaard.
+
+@c ======================================================================================
+
+@topic Kiekjesvensters boven alle andere vensters houden
+
+Standaard zijn kiekjesvensters op hetzelfde niveau als andere normale vensters. Daardoor, als je het hoofdvenster selecteerd, kunnen de kiekjesvensters erachter verborgen worden. U kunt in Skim alle kiekjesvensters boven alle normale vensters laten "zweven", zodat ze altijd zichtbaar zijn.
+
+@box{taskbox}
+@itemize
+@item Om de kiekjesvensters boven alle andere vensters te houden, kies Skim > Voorkeuren, klik Algemeen, en selecteer "Houd kiekjesvensters bovenop".
+@end itemize
+@endbox
+
+In beeldvullende modus zweven de kiekjesvensters altijd boven de andere vensters.
+
+@c ======================================================================================
+
+@topic Houd notitievensters voor verankerde notities boven alle andere vensters
+
+Standaard zijn notitievensters voor verankerde notities op hetzelfde niveau als andere normale vensters. Daardoor, als je het hoofdvenster selecteerd, kunnen de notitievensters erachter verborgen worden. U kunt in Skim een notitievenster boven normale vensters laten "zweven", zodat ze altijd zichtbaar zijn.
+
+@box{taskbox}
+@itemize
+@item Om een notitievenster boven alle andere vensters te houden, selecteerd u "Houd bovenop" rechts onderaan het venster.
+@end itemize
+@endbox
+
+@c ======================================================================================
+
+@topic Bladwijzers toevoegen aan een PDF-document
+
+U kunt een bladwijzer toevoegen aan een pagina in een PDF-document. Hiermee kunt u deze pagina gemakkelijk weer terugvinden, net als bij de bladwijzers in een webbrowser.
+
+@box{taskbox}
+@itemize
+@item Om een bladwijzer toe te voegen, kiest u Bladwijzers > 'Bladwijzer toevoegen' en voert u een naam in.
+@item Om de naam van een bladwijzer te wijzigen, kiest u Bladwijzers > 'Wijzig bladwijzers' en klikt u dubbel op de betreffende naam.
+@item Om een bladwijzer te verwijderen, kiest u Bladwijzers > 'Wijzig bladwijzers', selecteert u de betreffende bladwijzer, en klikt u op Verwijder.
+@item Om naar een bladwijzer te gaan, kiest u de gewenste naam uit het Bladwijzers-menu.
+@end itemize
+@endbox
+
+@c ======================================================================================
+
+@topic Ik kan geen tekst selecteren of kopi‘ren in een PDF-bestand
+
+In sommige PDF-bestanden moet u eerst een wachtwoord invoeren voordat u tekst kunt selecteren of kopi‘ren. Vraag aan degene van wie u dit document hebt gekregen wat dit wachtwoord is.
+
+@box{taskbox}
+@itemize
+@item Om het wachtwoord van een PDF-bestand in te voeren, kies Archief > Wachtwoord.
+@end itemize
+@endbox
+
+Als het commando Wachtwoord grijs wordt weergegeven, hoeft u geen wachtwoord op te geven om dit document te kunnen openen. Zorg ervoor dat u de tekstfunctie hebt ingeschakeld, door Extra's > Tekstfunctie te kiezen.
+
+@c ======================================================================================
+
+@topic De lijntekeningen in een PDF-document worden niet weergegeven
+
+Wanneer u een PDF-bestand bekijkt in Voorvertoning, worden sommige lijntekeningen mogelijk niet weergegeven als anti-aliasing is ingeschakeld.
+
+
+@box{taskbox}
+@heading Om anti-aliasing in of uit te schakelen:
+@enumerate
+@item Kies Skim > Voorkeuren, en klik op Weergave.
+@item Schakel het aankruisvak 'Gebruik anti-aliasing voor tekst en lijntekeningen' in of uit.
+@end enumerate
+@endbox
+
+@heading Zie ook
+@menu
+* De tekst in een PDF-document wordt rafelig weergegeven::
+* Kleine tekst in een PDF-document is onleesbaar::
+* Tekst in PDF-bestanden verschijnt langzaam::
+@end menu
+
+@c ======================================================================================
+
+@topic De tekst in een PDF-document wordt rafelig weergegeven
+
+Wanneer u een PDF-bestand bekijkt in Voorvertoning, wordt tekst in een groter letterformaat soms rafelig weergegeven. U kunt de leesbaarheid van PDF-bestanden in Skim verbeteren door anti-aliasing in te schakelen.
+
+@box{taskbox}
+@heading Om anti-aliasing in te schakelen:
+@enumerate
+@item Kies Skim > Voorkeuren, and klik op Display.
+@item Schakel het aankruisvak 'Gebruik anti-aliasing voor tekst en lijntekeningen' in.
+@end enumerate
+@endbox
+
+Als u de optie 'Gebruik anti-aliasing voor tekst en lijntekeningen' inschakelt, worden grote letters en lijntekeningen weergegeven met gladde randen en zien deze er niet zo rafelig uit. Voorvertoning kan er langer over doen om letters en lijntekeningen in uw document weer te geven met gladde randen.
+
+@heading Zie ook
+@menu
+* De lijntekeningen in een PDF-document worden niet weergegeven::
+* Kleine tekst in een PDF-document is onleesbaar::
+* Tekst in PDF-bestanden verschijnt langzaam::
+@end menu
+
+@c ======================================================================================
+
+@topic Kleine tekst in een PDF-document is onleesbaar
+
+Wanneer u een PDF-bestand bekijkt in Skim, ziet tekst in een kleiner letterformaat er soms onscherp of onleesbaar uit. U kunt enkele opties aanpassen om de tekst beter leesbaar te maken. 
+
+@box{taskbox}
+@heading Om kleinere tekst beter leesbaar te maken, gaat u als volgt te werk:
+@enumerate
+@item Kies Skim > Voorkeuren, en klik op Weergave.
+@item Schakel het aankruisvak 'Gebruik anti-aliasing voor tekst en lijntekeningen' uit.
+@item Geef een lager getal op in het veld 'Greeking-drempel'.
+@end enumerate
+@endbox
+
+Tekst met een puntgrootte die kleiner is dan de greeking-drempel wordt grijs vervaagd weergegeven. De vervaagde tekst heeft de vorm van de eigenlijke tekst, maar is onleesbaar. Skim kan er langer over doen om tekst in uw document beter leesbaar te maken omdat elk teken afzonderlijk moet worden opgebouwd.
+
+Als u de optie 'Gebruik anti-aliasing voor tekst en lijntekeningen' uitschakelt, kunnen kleine letters er onscherp uitzien, en kunnen grote letters en lijntekeningen gekartelde randen hebben in plaats van gladde. 
+
+@heading Zie ook
+@menu
+* De lijntekeningen in een PDF-document worden niet weergegeven::
+* De tekst in een PDF-document wordt rafelig weergegeven::
+* Tekst in PDF-bestanden verschijnt langzaam::
+@end menu
+
+@c ======================================================================================
+
+@topic Tekst in PDF-bestanden verschijnt langzaam
+
+Als het lang duurt voordat de tekst in een PDF-document verschijnt, kunt u enkele opties aanpassen om dit proces te versnellen.
+
+@box{taskbox}
+@heading Om de tekstweergave te versnellen:
+@enumerate
+@item Kies Skim > Voorkeuren, and klik op Weergave.
+@item Geef een hoger getal op bij 'Greeking-drempel'.
+@item Schakel het aankruisvak 'Gebruik anti-aliasing voor tekst en lijntekeningen' uit.
+@end enumerate
+@endbox
+
+Tekst met een puntgrootte die kleiner is dan de greeking-drempel wordt als een grijze streep weergegeven. De vervaagde tekst heeft de vorm van de eigenlijke tekst, maar is onleesbaar. Het weergeven van vervaagde tekst neemt minder tijd in beslag omdat Skim hierbij niet elk teken afzonderlijk hoeft op te bouwen.
+
+Als u de optie 'Gebruik anti-aliasing voor tekst en lijntekeningen' uitschakelt, kunnen grote letters en lijntekeningen gekartelde randen hebben in plaats van gladde. Het weergeven van de letters en lijntekeningen met gladde randen duurt langer.
+
+@heading Zie ook
+@menu
+* De lijntekeningen in een PDF-document worden niet weergegeven::
+* De tekst in een PDF-document wordt rafelig weergegeven::
+* Kleine tekst in een PDF-document is onleesbaar::
+@end menu
+
+@c ======================================================================================
+
+@topic Resizing the window to fit its contents
+
+Wannneer het PDF-document niet is ingesteld om automatisch in het venster te passen, kunt u de grootte van het venster aanpassen zodat het precies om de PDF en de zijpanelen past.
+
+@box{taskbox}
+@itemize
+@item Om het venster te vergroten of verkleinen zodat het precies om de PDF past, kies Venster > Passend.
+@end itemize
+@endbox
+
+@heading Zie ook
+@menu
+* In- en uitzoomen::
+@end menu
+
+@c ======================================================================================
+
+@topic De leesbalk tonen
+
+In Skim kunt u de tekstregel die u aan het lezen bent markeren, zodat u zich beter kunt concentreren op wat u leest, en makkelijk kan terugvinden waar u gebleven was.
+
+@box{taskbox}
+@itemize
+@item Om de leesbalk te tonen, kies Weergave > Toon Leesbalk.
+@end itemize
+@itemize
+@item Om de leesbalk naar de volgende of vorige regel te verplaatsen, houd de Option-toets ingedrukt en druk de pijl-omlaagtoets of pijl-omhoogtoets in.
+@end itemize
+@itemize
+@item Om de leesbalk naar de volgende of vorige pagina te verplaatsen, houd de Option-toets ingedrukt en druk de pijl-rechtstoets of pijl-linkstoets in.
+@end itemize
+@endbox
+
+U kunt de leesbalk ook slepen.
+
+@heading Zie ook
+@menu
+* De kleur van de leesbalk wijzigen::
+@end menu
+
+@c ======================================================================================
+
+@topic De kleur van de leesbalk wijzigen
+
+In Skim kunt u de tekstregel die u aan het lezen bent markeren. U kunt de kleur en de transparantie van de leesbalk wijzigen.
+
+@box{taskbox}
+@heading Om de kleur van de leesbalk of de transparantie te wijzigen:
+@itemize
+@item Om de kleur van de leesbalk of de transparantie te wijzigen, kies Skim > Voorkeuren, klik op Kleuren, en selecteer Kleur of verschuif de Transparentie schuifknop naar de juiste waarde. 
+@end itemize
+@endbox
+
+U kunt ook kiezen of de leesbalk alleen ŽŽn regel markeert, of alle andere tekst bedekt. Schakel het aankruisvak 'Inverteer balk' in de Voorkeuren aan of uit.
+
+@heading Zie ook
+@menu
+* De leesbalk tonen::
+@end menu
+
+@c ======================================================================================
+
+@topic PDF-documenten beeldvullend bekijken
+
+In Skim kunt u PDF-documenten kioskmodus bekijken, zodat u zich optimaal op het lezen kunt concentreren.
+
+@box{taskbox}
+@itemize
+@item Om een PDF-document schermvullend te bekijken, kiest u Weergave > Schermvullend.
+@end itemize
+@endbox
+
+In schermvullende modus kunt u nog alle taken van de normale modus verrichten. 
+
+Het hoofdmenu verbergt zich automatisch, en kan worden getoond door de muis naar de top van het scherm te bewegen. Veel opties zijn ook beschikbaar in het contextuele menu.
+
+De inhoudstabellen en de notitie- en kiekjestabellen kunnen automatisch getoond worden wanneer u de muis naar de zijkant van het scherm beweegt. U kunt deze ook tonen door Weergave > Toon Inhoudspaneel of Weergave > Toon Notitiepaneel.
+
+@heading Zie ook
+@menu
+* Een presentatie van een PDF-document geven::
+* De achtergrondkleur wijzigen::
+@end menu
+
+@c ======================================================================================
+
+@topic Een presentatie van een PDF-document geven
+
+U kunt Skim ook gebruiken om presentatie van een PDF-document te geven. 
+
+@box{taskbox}
+@heading Om een presentatie van een PDF-document te vertonen:
+@enumerate
+@item Sleep het venster van de PDF naar het scherm dat u wilt gebruiken voor de presentatie, bijvoorbeeld van een beamer.
+@item Kies Weergave > Presentatie. 
+@item Om uit Presentatiemodus te komen, gebruik de toetscombinatie @optcmd{F}, of druk op de Escape-toets.
+@end enumerate
+@endbox
+
+In presentatiemodus kunt u de pijl-rechtstoets en pijl-linkstoets gebruiken om door de paginas te navigeren.
+
+Als u de muis naar de onderzijde van het scherm beweegt, worden navigatietoetsen getoond.
+
+@heading Zie ook
+@menu
+* PDF-documenten beeldvullend bekijken::
+@end menu
+
+@c ======================================================================================
+
+@topic Het formaat van miniaturen wijzigen
+
+U kunt in Skim het formaat van miniaturen voor de paginas en de kiekjes aanpassen.
+
+@box{taskbox}
+@itemize
+@item Om het formaat van miniaturen te wijzigen, kies Skim > Voorkeuren, klik op Weergave, en sleep de schuifknop Pagina's naar de gewenste grootte.
+@end itemize
+@itemize
+@item Om het formaat van miniaturen van de kiekjes te wijzigen, kies Skim > Voorkeuren, klik op Weergave, en sleep de schuifknop Kiekjes naar de gewenste grootte.
+@end itemize
+@endbox
+
+Als u het aankruisvak 'Discrete groottes' aanschakeld, worden de te kiezen formaten beperkt tot bepaalde discrete groottes. Dit kan leiden tot scherpere miniaturen.
+
+@c ======================================================================================
+
+@topic De markering van zoekresultaten wijzigen
+
+U kunt aangeven of Skim zoekresultaten markeert met een cirkel. U kunt ook de kleur die voor deze markeringen wordt gebruikt wijzigen.
+
+@box{taskbox}
+@itemize
+@item Om zoekresultaten te markeren met een cirkel, kies Skim > Voorkeuren, klik op Kleuren, en selecteer "Markeer zoekresultaten".
+@item Om de kleur die gebruikt wordt voor zoekresultaten te wijzigen, klik op Kleur.
+@end itemize
+@endbox
+
+@heading Zie ook
+@menu
+* Tekst zoeken in PDF-bestanden::
+@end menu
+
+@c ======================================================================================
+
+@topic Automatisch bestanden herladen die externe gewijzigd worden
+Automatically update files for external updates
+
+Skim kan automatisch de bestanden die u bekijkt herladen wanneer deze bestanden door een ander programma op de disk worden gewijzigd.
+
+@box{taskbox}
+@itemize
+@item Om bestanden te herladen zodra hun inhoud op de disk verandert, kies Skim > Voorkeuren, klik op Wijzigingen, and selecteer "Controleer veranderingen van het bestand" below "Wijzigingen van het bestand".
+@end itemize
+@endbox
+
+Skim zal altijd eerst vragen om het bestand te herladen wanneer de inhoud op de disk verandert, tenzij u Auto heeft gekozen. 
+
+@c ======================================================================================
+
+@topic Zoek naar nieuwe Skim versies
+
+Skimkan automatisch checken of er een nieuwe versie beschikbaar is. U kunt ook bepalen hoe vaak Skim naar nieuwe versies zoekt.
+
+@box{taskbox}
+@itemize
+@item Om te bepaelen hoe vaak Skim nieuwe versies checkt, kies Skim > Voorkeuren, klik op Wijzigingen, and selecteer een periode onder "Nieuwe Skim versies". 
+@end itemize
+@endbox
+
+U kunt ook op elk moment zelf checken of er een nieuwe Skim versie beschikbaar is. Kies Skim > 'Zoek naar nieuwe versie@dots{}'.
+
+@c ======================================================================================
+
+@topic Als ik een PDF-bestand email verlies ik de notities en markeringen
+
+Notities en markeringen die aan een PDF-bestabd zijn toegevoegd worden niet bewaard in de PDF-data, maar worden toegevoegd als 'uitgebreide attributen' (extended attributes). Deze gaan meestal verloren als het bestand via email word verstuurd.
+
+Er zijn een aantal manieren om notities te behouden. Sommige compressie-methoden behouden uitgebreide attributen. Apple's 'Maak archief aan' commando behoudt ze helaas niet. U kunt zelf een bestand met notities comprimeren en uitpakken om uit te testen of ze worden behouden. U kunt ook een schijfkopie aanmaken om het PDF-bestand in te pakken. Comprimeren met tar en gzip behoudt de notities ook.
+
+U kunt de notities en markeringen ook in een apart .sim-bestand bewaren. De ontvanger van de email kan de notities dan later aan het PDF-bestand toevoegen.
+
+@box{taskbox}
+@heading Om de notities in een apart bestand te bewaren:
+@enumerate
+@item Kies File > Exporteer@dots{}. 
+@item Selecteer "Skim Notities" van de Structuur popup, kies een locatie om de notities te bewaren, en druk op de OK-knop.
+@end enumerate
+@heading Om notities uit een aparte .skim notitie-bestand aan een PDF toe te voegen:
+@enumerate
+@item Open het PDF-bestand.
+@item Kies Archief > Lees notities@dots{}, en kies het .skim-bestand dat de notities bevat. 
+@end enumerate
+@heading Om een gecomprimeerd archief van een PDF-document te maken:
+@enumerate
+@item Maak zeker dat u het PDF-bestand bewaard heeft.
+@item Kies Archief > Bewaar gearchiveerd bestand@dots{}, kies a locatie om het archief te bewaren, en druk op de OK-knop.
+@end enumerate
+@endbox
+
+Het is belangrijk dat het notitie-bestand geassocieerd is met het PDF-bestand. Daarom is het meestal het beste om dezelfde naam voor het PDF-bestand en het .skim-bestand te kiezen. Als dit het geval is, zal Skim automatisch de keuze aanbieden om de notities in de notitie-bestand te lezen wanneer u het PDF-bestand opent.
+
+@heading Zie ook
+@menu
+* Notities aan een PDF-document toevoegen::
+* Gedeelten van een PDF-document markeren::
+@end menu
+
+@c ======================================================================================
+
+@topic Notities en markeringen in een apart bestand bewaren
+
+Notities en markeringen die aan een PDF-bestabd zijn toegevoegd worden niet bewaard in de PDF-data, maar worden toegevoegd als 'uitgebreide attributen' (extended attributes). Deze kunnen soms verloren gaan als het bestand gecomprimeerd wordt of via email word verstuurd.
+
+U kunt de notities en markeringen in een apart .sim-bestand bewaren, voor backup of om met een email mee te sturen.
+
+@box{taskbox}
+@heading Om de notities in een apart bestand te bewaren:
+@enumerate
+@item Kies File > Exporteer@dots{}. 
+@item Selecteer "Skim Notities" van de Structuur popup, kies een locatie om de notities te bewaren, en druk op de OK-knop.
+@end enumerate
+@endbox
+
+Het is belangrijk dat het notitie-bestand geassocieerd is met het PDF-bestand. Daarom is het meestal het beste om dezelfde naam voor het PDF-bestand en het .skim-bestand te kiezen. Als dit het geval is, zal Skim automatisch de keuze aanbieden om de notities in de notitie-bestand te lezen wanneer u het PDF-bestand opent.
+
+@heading Zie ook
+@menu
+* Notities en markeringen uit een apart Skim notities-bestand toevoegen::
+* Als ik een PDF-bestand email verlies ik de notities en markeringen::
+* Notities aan een PDF-document toevoegen::
+* Gedeelten van een PDF-document markeren::
+@end menu
+
+@c ======================================================================================
+
+@topic Notities en markeringen uit een apart Skim notities-bestand toevoegen
+
+Notities kunnen bevat ziech bevinden in een apart bestand met bestandsextensie "skim", voor backup of wanneer de notities met een meil zijn meegestuurd.
+
+U kunt deze notities aan een bijbehoren PDF-bestand toevoegen.
+
+@box{taskbox}
+@heading Om notities uit een aparte .skim notitie-bestand aan een PDF toe te voegen:
+@enumerate
+@item Open het PDF-bestand.
+@item Kies Archief > Lees notities@dots{}, en kies het .skim-bestand dat de notities bevat. 
+@end enumerate
+@endbox
+
+Het is belangrijk dat het notitie-bestand geassocieerd is met het PDF-bestand. Daarom is het meestal het beste om dezelfde naam voor het PDF-bestand en het .skim-bestand te kiezen. Als dit het geval is, zal Skim automatisch de keuze aanbieden om de notities in de notitie-bestand te lezen wanneer u het PDF-bestand opent.
+
+@heading Zie ook
+@menu
+* Notities en markeringen in een apart bestand bewaren::
+* Als ik een PDF-bestand email verlies ik de notities en markeringen::
+* Notities aan een PDF-document toevoegen::
+* Gedeelten van een PDF-document markeren::
+@end menu
+
+@c ======================================================================================
+
+@topic PDF-bestanden met de notities en markeringen inbegrepen bewaren
+
+Normaal worden notities en markeringen die aan een PDF-bestabd zijn toegevoegd worden niet bewaard in de PDF-data, maar worden toegevoegd als 'uitgebreide attributen' (extended attributes). U kunt in Skim ook een kopie van het PDF-bestand bewaren dat de notities in de PDF-data insluit. Daarmee kunt u de notities ook in andere PDF-vertoningsprogrammas bekijken.
+
+@box{taskbox}
+@heading Om een kopie van een PDF-document met de notities inbegrepen te bewaren:
+@enumerate
+@item Kies Archief > Exporteer@dots{}. 
+@item Selecteer "PDF met ingebedde notities" van de Structuur popup, kies een locatie om de notities te bewaren, en druk op de OK-knop.
+@end enumerate
+@endbox
+
+@heading Zie ook
+@menu
+* PDF-bestanden zonder de notities en markeringen bewaren::
+@end menu
+
+@c ======================================================================================
+
+@topic PDF-bestanden zonder de notities en markeringen bewaren
+
+U kunt in Skim een kopie van een PDF-bestand zonder de notities en markeringen bewaren.
+
+@box{taskbox}
+@heading Om een kopie van een PDF-document zonder de notities te bewaren:
+@enumerate
+@item Kies Archief > Exporteer@dots{}. 
+@item Select "PDF zonder notities" van de Structuur popup, kies een locatie om de notities te bewaren, en druk op de OK-knop.
+@end enumerate
+@endbox
+
+@heading Zie ook
+@menu
+* PDF-bestanden met de notities en markeringen inbegrepen bewaren::
+@end menu
+
+@c ======================================================================================
+
+@node Meer informatie
+@chapter Meer informatie
+@abstract{Vind meer help}
+
+@heading Weblocaties
+@itemize
+@item @uref{http://skim-app.sourceforge.net, Skim Website}
+@item @uref{http://skim-app.sourceforge.net/manual, Online kopie van deze handleiding}
+@end itemize
+
+@heading Verzendlijst
+
+Als deze help-gids uw vragen niet beantwoord dan kan de
+@uref{http://lists.sourceforge.net/lists/listinfo/skim-app-users, skim-users verzendlijst} 
+een antwoord voor u hebben. Het kan zijn dat uw vraag al is beantwoord, dus controleer het 
+@uref{http://sourceforge.net/mailarchive/forum.php?forum=skim-app-users,verzendlijst archief} 
+voor directe voldoening.
+
+@heading Bugmelding
+
+U kunt een bugmelding meedelen aan de bug tracker 
+@uref{http://sourceforge.net/projects/skim-app}.
+
+De meldingen zijn het nuttigst als zij een duidelijke beschrijving bevatten van wat er fout ging, 
+wat u had verwacht, en hoe het probleem kan worden gereproduceerd op een andere computer zonder dat u erbij hoeft te zijn om het uit te leggen. 
+
+Als u een probleem meedeeld dat plaatsvind met een bepaald bestand, kan het helpen om het bestand ook mee te sturen. 
+Crashverslagen kunnen ook nuttig zijn en kunnen worden verkregen via het programma Console (in 'Programma's/Hulpprogramma's'). 
+
+@c ======================================================================================
+@c INDEXES
+@c ======================================================================================
+
+@node indexcp
+@appendix Help-onderwerpen
+@abstract{Help-onderwerpen}
+
+Klik op een van de onderwerpen hieronder.
+
+@printindex cp
+
+@bye
