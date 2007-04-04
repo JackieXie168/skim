@@ -1,0 +1,18 @@
+{
+    IBClasses = (
+        {
+            ACTIONS = {"" = id; }; 
+            CLASS = FirstResponder; 
+            LANGUAGE = ObjC; 
+            SUPERCLASS = NSObject; 
+        }, 
+        {
+            ACTIONS = {changeDiscreteThumbnailSizes = id; }; 
+            CLASS = SKPreferenceController; 
+            LANGUAGE = ObjC; 
+            OUTLETS = {snapshotSizeSlider = NSSlider; thumbnailSizeSlider = NSSlider; }; 
+            SUPERCLASS = NSWindowController; 
+        }
+    ); 
+    IBVersion = 1; 
+}

@@ -1,0 +1,19 @@
+{
+    IBClasses = (
+        {
+            CLASS = BDSKDragImageView; 
+            LANGUAGE = ObjC; 
+            OUTLETS = {delegate = id; }; 
+            SUPERCLASS = NSImageView; 
+        }, 
+        {CLASS = FirstResponder; LANGUAGE = ObjC; SUPERCLASS = NSObject; }, 
+        {CLASS = NSObject; LANGUAGE = ObjC; }, 
+        {
+            CLASS = SKNoteWindowController; 
+            LANGUAGE = ObjC; 
+            OUTLETS = {imageView = BDSKDragImageView; }; 
+            SUPERCLASS = NSWindowController; 
+        }
+    ); 
+    IBVersion = 1; 
+}
