@@ -353,7 +353,7 @@ You can select and copy text from a PDF file, then paste it into another applica
 
 @topic Copying notes in a PDF file
 
-You can select and copy notes from a PDF file, then paste it into the same or another PDF document. Notes that can copied are text notes, anchored notes, circle highlights and box highlights. 
+You can select and copy notes from a PDF file, then paste it into the same or another PDF document. Notes that can be copied are text notes, anchored notes, circle highlights and box highlights. 
 
 @box{taskbox}
 @itemize
@@ -373,7 +373,7 @@ You can also create a dublicate of a note by selecting the note while holding th
 
 @topic Pasting notes in a PDF file
 
-You can paste a note you have copied from a PDF file into the same or another PDF document. Notes that can copied are text notes, anchored notes, circle highlights and box highlights. 
+You can paste a note you have copied from a PDF file into the same or another PDF document. Notes that can be copied are text notes, anchored notes, circle highlights and box highlights. 
 
 You can also paste copied text to create a new text or anchored note. 
 
