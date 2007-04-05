@@ -276,8 +276,6 @@ static NSString *SKDocumentToolbarNotesPaneItemIdentifier = @"SKDocumentToolbarN
     // Application
     [nc addObserver:self selector:@selector(handleApplicationWillTerminateNotification:) 
                              name:SKApplicationWillTerminateNotification object:NSApp];
-    [nc addObserver:self selector:@selector(handleApplicationWillResignActiveNotification:) 
-                             name:NSApplicationWillResignActiveNotification object:NSApp];
     // PDFView
     [nc addObserver:self selector:@selector(handlePageChangedNotification:) 
                              name:PDFViewPageChangedNotification object:pdfView];
