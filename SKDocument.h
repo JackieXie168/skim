@@ -70,6 +70,8 @@ extern NSString *SKDocumentWillSaveNotification;
 
 - (SKPDFView *)pdfView;
 
+- (NSData *)notesRTFData;
+
 - (NSDictionary *)currentDocumentSetup;
 
 - (void)checkFileUpdatesIfNeeded;

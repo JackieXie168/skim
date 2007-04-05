@@ -40,6 +40,7 @@
 				<string>PDF With Embedded Notes</string>
 				<string>PDF Without Notes</string>
 				<string>Skim Notes</string>
+				<string>Notes as RTF</string>
 			</array>
 		</dict>
 		<dict>
@@ -204,6 +205,30 @@
 			<string>NoteDocument</string>
 			<key>CFBundleTypeName</key>
 			<string>Skim Notes</string>
+			<key>CFBundleTypeRole</key>
+			<string>None</string>
+			<key>LSTypeIsPackage</key>
+			<false/>
+			<key>NSDocumentClass</key>
+			<string>SKDocument</string>
+			<key>NSPersistentStoreTypeKey</key>
+			<string>Binary</string>
+		</dict>
+		<dict>
+			<key>CFBundleTypeExtensions</key>
+			<array>
+				<string>rtf</string>
+			</array>
+			<key>CFBundleTypeMIMETypes</key>
+			<array>
+				<string>text/rtf</string>
+			</array>
+			<key>CFBundleTypeName</key>
+			<string>Notes as RTF</string>
+			<key>CFBundleTypeOSTypes</key>
+			<array>
+				<string>RTF </string>
+			</array>
 			<key>CFBundleTypeRole</key>
 			<string>None</string>
 			<key>LSTypeIsPackage</key>
