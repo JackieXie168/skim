@@ -231,7 +231,7 @@ U kunt een gedeelte van een PDF-document live vergroten, bijvoorbeeld om kleine 
 
 @topic Pagina's in een PDF-document selecteren voor weergave
 
-Als u in Voorvertoning een PDF-bestand met meerdere pagina's opent, wordt ŽŽn venster geopend met daarin de eerste pagina van het document. De overige afbeeldingen of pagina's worden in het inhoudspaneel als miniaturen weergegeven.
+Als u in Skim een PDF-bestand met meerdere pagina's opent, wordt ŽŽn venster geopend met daarin de eerste pagina van het document. De overige afbeeldingen of pagina's worden in het inhoudspaneel als miniaturen weergegeven.
 
 @box{taskbox}
 @itemize
@@ -445,7 +445,7 @@ You can kies the size at which Skim displays PDF-documenten: either as large as 
 
 @box{taskbox}
 @enumerate
-@item Kies Voorvertoning > Voorkeuren en klik op Algemeen.
+@item Kies Skim > Voorkeuren en klik op Algemeen.
 @item Selecteer een van de opties bij 'Standaard documentvergroting'.
 @end enumerate
 @itemize
@@ -643,7 +643,7 @@ Als het commando Wachtwoord grijs wordt weergegeven, hoeft u geen wachtwoord op 
 
 @topic De lijntekeningen in een PDF-document worden niet weergegeven
 
-Wanneer u een PDF-bestand bekijkt in Voorvertoning, worden sommige lijntekeningen mogelijk niet weergegeven als anti-aliasing is ingeschakeld.
+Wanneer u een PDF-bestand bekijkt in Skim, worden sommige lijntekeningen mogelijk niet weergegeven als anti-aliasing is ingeschakeld.
 
 
 @box{taskbox}
@@ -665,7 +665,7 @@ Wanneer u een PDF-bestand bekijkt in Voorvertoning, worden sommige lijntekeninge
 
 @topic De tekst in een PDF-document wordt rafelig weergegeven
 
-Wanneer u een PDF-bestand bekijkt in Voorvertoning, wordt tekst in een groter letterformaat soms rafelig weergegeven. U kunt de leesbaarheid van PDF-bestanden in Skim verbeteren door anti-aliasing in te schakelen.
+Wanneer u een PDF-bestand bekijkt in Skim, wordt tekst in een groter letterformaat soms rafelig weergegeven. U kunt de leesbaarheid van PDF-bestanden in Skim verbeteren door anti-aliasing in te schakelen.
 
 @box{taskbox}
 @heading Om anti-aliasing in te schakelen:
@@ -675,7 +675,7 @@ Wanneer u een PDF-bestand bekijkt in Voorvertoning, wordt tekst in een groter le
 @end enumerate
 @endbox
 
-Als u de optie 'Gebruik anti-aliasing voor tekst en lijntekeningen' inschakelt, worden grote letters en lijntekeningen weergegeven met gladde randen en zien deze er niet zo rafelig uit. Voorvertoning kan er langer over doen om letters en lijntekeningen in uw document weer te geven met gladde randen.
+Als u de optie 'Gebruik anti-aliasing voor tekst en lijntekeningen' inschakelt, worden grote letters en lijntekeningen weergegeven met gladde randen en zien deze er niet zo rafelig uit. Skim kan er langer over doen om letters en lijntekeningen in uw document weer te geven met gladde randen.
 
 @heading Zie ook
 @menu
