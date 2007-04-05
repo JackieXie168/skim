@@ -59,6 +59,7 @@ static NSString *SKPDFDocumentType = nil; /* set to NSPDFPboardType, not @"NSPDF
 static NSString *SKEmbeddedPDFDocumentType = @"PDF With Embedded Notes";
 static NSString *SKBarePDFDocumentType = @"PDF Without Notes";
 static NSString *SKNotesDocumentType = @"Skim Notes";
+static NSString *SKNotesRTFDocumentType = @"Notes as RTF";
 static NSString *SKPostScriptDocumentType = @"PostScript document";
 
 NSString *SKDocumentWillSaveNotification = @"SKDocumentWillSaveNotification";
@@ -161,6 +162,12 @@ NSString *SKDocumentWillSaveNotification = @"SKDocumentWillSaveNotification";
         else if (outError != NULL)
             *outError = [NSError errorWithDomain:SKDocumentErrorDomain code:1 userInfo:[NSDictionary dictionaryWithObjectsAndKeys:NSLocalizedString(@"Unable to write notes", @"Error description"), NSLocalizedDescriptionKey, nil]];
             
+    } else if ([typeName isEqualToString:SKNotesRTFDocumentType]) {
+        NSData *data = [self notesRTFData];
+        if (data)
+            didWrite = [data writeToURL:absoluteURL options:NSAtomicWrite error:outError];
+        else if (outError != NULL)
+            *outError = [NSError errorWithDomain:SKDocumentErrorDomain code:1 userInfo:[NSDictionary dictionaryWithObjectsAndKeys:NSLocalizedString(@"Unable to write notes as RTF", @"Error description"), NSLocalizedDescriptionKey, nil]];
     }
     return didWrite;
 }
@@ -572,6 +579,59 @@ NSString *SKDocumentWillSaveNotification = @"SKDocumentWillSaveNotification";
 
 - (SKPDFView *)pdfView {
     return [[self mainWindowController] pdfView];
+}
+
+- (NSData *)notesRTFData {
+    NSMutableAttributedString *attrString = [[NSMutableAttributedString alloc] init];
+    NSEnumerator *noteEnum = [[[self mainWindowController] notes] objectEnumerator];
+    PDFAnnotation *note;
+    NSData *data;
+    NSFont *standardFont = [NSFont systemFontOfSize:12.0];
+    NSAttributedString *newlinesAttrString = [[NSAttributedString alloc] initWithString:@"\n\n" attributes:[NSDictionary dictionaryWithObjectsAndKeys:standardFont, NSFontAttributeName, nil]];
+    
+    while (note = [noteEnum nextObject]) {
+        NSString *type = [note type];
+        NSString *contents = [note contents];
+        NSFont *font = [note respondsToSelector:@selector(font)] ? [(PDFAnnotationFreeText *)note font] : standardFont;
+        NSAttributedString *tmpAttrString = nil;
+        NSString *tmpString = nil;
+        
+        if ([type isEqualToString:@"FreeText"]) 
+            tmpString = @"Text note";
+        else if ([type isEqualToString:@"Note"]) 
+            tmpString = @"Anchored note";
+        else if ([type isEqualToString:@"Circle"]) 
+            tmpString = @"Circle";
+        else if ([type isEqualToString:@"Square"]) 
+            tmpString = @"Box";
+        else if ([type isEqualToString:@"MarkUp"] || [type isEqualToString:@"Highlight"]) 
+            tmpString = @"Highlight";
+        else if ([type isEqualToString:@"Underline"]) 
+            tmpString = @"Underline";
+        else if ([type isEqualToString:@"StrikeOut"]) 
+            tmpString = @"Strike out";
+        tmpString = [NSString stringWithFormat:@"%C %@\n page %i at %@", 0x2022, tmpString, [note pageIndex] + 1, NSStringFromRect([note bounds])]; 
+        tmpAttrString = [[NSAttributedString alloc] initWithString:tmpString attributes:[NSDictionary dictionaryWithObjectsAndKeys:standardFont, NSFontAttributeName, nil]];
+        [attrString appendAttributedString:tmpAttrString];
+        [tmpAttrString release];
+        [attrString appendAttributedString:newlinesAttrString];
+        
+        tmpAttrString = [[NSAttributedString alloc] initWithString:contents ? contents : @"" attributes:[NSDictionary dictionaryWithObjectsAndKeys:font, NSFontAttributeName, nil]];
+        [attrString appendAttributedString:tmpAttrString];
+        [tmpAttrString release];
+        [attrString appendAttributedString:newlinesAttrString];
+        
+        if (tmpAttrString = [note text]) {
+            [attrString appendAttributedString:tmpAttrString];
+            [attrString appendAttributedString:newlinesAttrString];
+        }
+    }
+    
+    data = [attrString RTFFromRange:NSMakeRange(0, [attrString length]) documentAttributes:nil];
+    [attrString release];
+    [newlinesAttrString release];
+    
+    return data;
 }
 
 #pragma mark Scripting support
