@@ -1709,11 +1709,6 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
         [self exitFullScreen:self];
 }
 
-- (void)handleApplicationWillResignActiveNotification:(NSNotification *)notification {
-    if ([self isFullScreen] || [self isPresentation])
-        [self exitFullScreen:self];
-}
-
 - (void)handleDidChangeActiveAnnotationNotification:(NSNotification *)notification {
     PDFAnnotation *annotation = [pdfView activeAnnotation];
     
