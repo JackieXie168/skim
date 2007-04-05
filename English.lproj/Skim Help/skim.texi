@@ -493,7 +493,7 @@ When you're viewing more than one PDF page at a time, it can be difficult to tel
 
 You can add your notes to a PDF document in boxes that look like paper sticky notes, or more extensive anchored notes that can be viewed in a separate window by double-clicking. 
 
-The notes are saved with the document, and are seen by anyone who reads it. The notes are not saved in the PDF data itself, so other PDF viewers will probably not be able to show the notes. 
+The notes are saved with the document, so also other Skim users can see them. The notes are not saved in the PDF data itself, therefore other PDF viewers will probably not be able to show the notes. 
 
 @box{taskbox}
 @heading To add a text note:
@@ -528,7 +528,7 @@ You can edit or delete the notes. To move or resize the note, choose Tools > Tex
 
 You can highlight interesting or important parts of a document. You can enclosing them in a red oval or a green box. Or you can highlight, underline or strike out text.
 
-The highlights are saved with the document, and are seen by anyone who reads it. The highlights are not saved in the PDF data itself, so other PDF viewers will probably not be able to show the highlights. 
+The highlights are saved with the document, so also other Skim users can see them. The highlights are not saved in the PDF data itself, therefore other PDF viewers will probably not be able to show the highlights. 
 
 @box{taskbox}
 @heading To highlight a section of a PDF document:

@@ -498,7 +498,7 @@ Wanneer u meerdere PDF-pagina's tegelijkertijd bekijkt, is het soms moeilijk om 
 
 U kunt uw notities toevoegen aan een PDF-document in vakken die eruitzien als velletjes uit een notitieblok, of langere notities die u kunt bekijken in een apart venster door er dubbel op te klikken.
 
-De notities worden bewaard bij het document en zijn zichtbaar voor iedereen die het document leest. De notities worden niet bewaard in de PDF-data zelf, zodat u de notitities niet kunt zien in de meeste andere PDF vertoningsprogrammas 
+De notities worden bewaard bij het document en zijn zichtbaar voor andere gebruikers van Skim. De notities worden niet bewaard in de PDF-data zelf, zodat u de notitities niet kunt zien in de meeste andere PDF vertoningsprogrammas.
 
 @box{taskbox}
 @heading Om een tekstnotitie toe te voegen:
@@ -533,7 +533,7 @@ U kunt notities wijzigen en verwijderen. Om een notitie te verplaatsen of te ver
 
 U kunt interessante of belangrijke gedeelten van een document markeren. U kunt deze in een rode ovaal te plaatsen. Of u kunt tekst markeren, onderlijnen of doorstrepen.
 
-De markeringen worden bewaard bij het document en zijn zichtbaar voor iedereen die het document leest. De markeringen worden niet bewaard in de PDF-data zelf, zodat u de markeringen niet kunt zien in de meeste andere PDF vertoningsprogrammas 
+De markeringen worden bewaard bij het document en zijn zichtbaar voor andere gebruikers van Skim. De markeringen worden niet bewaard in de PDF-data zelf, zodat u de markeringen niet kunt zien in de meeste andere PDF vertoningsprogrammas.
 
 @box{taskbox}
 @heading Om gedeelten van een PDF-document markeren:
