@@ -98,7 +98,8 @@ NSString *SKSkimNotePboardType = @"SKSkimNotePboardType";
 
 // class posing indicates that setURL: is never called, and neither is setContents: (-contents returns nil), so this is the only way I can find to fix the thing, since we don't have an equivalent to textView:clickedOnLink:atIndex: 	 
 - (void)fixRelativeURLIfNeeded { 	 
-    NSURL *theURL = [self URL]; 	 
+    // Adam G. provided a console log with *** -[PDFAnnotationLink URL]: selector not recognized, which really seems weird
+    NSURL *theURL = [self respondsToselector:@selector(URL)] ? [self URL] : nil; 	 
     // http://./path/to/file will never make sense, right? 	 
     if (theURL && [[theURL host] isEqualToString:@"."]) { 	 
         NSString *basePath = [[[[[self page] document] documentURL] path] stringByDeletingLastPathComponent]; 	 
