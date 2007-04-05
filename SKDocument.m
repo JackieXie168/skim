@@ -597,20 +597,20 @@ NSString *SKDocumentWillSaveNotification = @"SKDocumentWillSaveNotification";
         NSString *tmpString = nil;
         
         if ([type isEqualToString:@"FreeText"]) 
-            tmpString = @"Text note";
+            tmpString = NSLocalizedString(@"Text Note", @"Description for export");
         else if ([type isEqualToString:@"Note"]) 
-            tmpString = @"Anchored note";
+            tmpString = NSLocalizedString(@"Anchored Note", @"Description for export");
         else if ([type isEqualToString:@"Circle"]) 
-            tmpString = @"Circle";
+            tmpString = NSLocalizedString(@"Circle", @"Description for export");
         else if ([type isEqualToString:@"Square"]) 
-            tmpString = @"Box";
+            tmpString = NSLocalizedString(@"Box", @"Description for export");
         else if ([type isEqualToString:@"MarkUp"] || [type isEqualToString:@"Highlight"]) 
-            tmpString = @"Highlight";
+            tmpString = NSLocalizedString(@"Highlight", @"Description for export");
         else if ([type isEqualToString:@"Underline"]) 
-            tmpString = @"Underline";
+            tmpString = NSLocalizedString(@"Underline", @"Description for export");
         else if ([type isEqualToString:@"StrikeOut"]) 
-            tmpString = @"Strike out";
-        tmpString = [NSString stringWithFormat:@"%C %@\n page %i at %@", 0x2022, tmpString, [note pageIndex] + 1, NSStringFromRect([note bounds])]; 
+            tmpString = NSLocalizedString(@"Strike Out", @"Description for export");
+        tmpString = [NSString stringWithFormat:NSLocalizedString(@"%C %@, page %i", @"Description for export"), 0x2022, tmpString, [note pageIndex] + 1]; 
         tmpAttrString = [[NSAttributedString alloc] initWithString:tmpString attributes:[NSDictionary dictionaryWithObjectsAndKeys:standardFont, NSFontAttributeName, nil]];
         [attrString appendAttributedString:tmpAttrString];
         [tmpAttrString release];
