@@ -279,7 +279,7 @@ NSString *SKDocumentWillSaveNotification = @"SKDocumentWillSaveNotification";
             [self setPDFData:data];
             [self setPDFDocument:pdfDoc];
             [pdfDoc release];
-            [pdfData release];
+            [data release];
             [lastChangedDate release];
             lastChangedDate = [[[[NSFileManager defaultManager] fileAttributesAtPath:[absoluteURL path] traverseLink:YES] fileModificationDate] retain];
         } else {
