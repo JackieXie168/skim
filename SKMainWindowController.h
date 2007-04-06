@@ -107,6 +107,7 @@ typedef struct _SKPDFViewState {
     NSMutableArray              *searchResults;
     BOOL                        findPanelFind;
     CFMutableSetRef             temporaryAnnotations;
+    NSTimer                     *findTimer;
     
     IBOutlet NSArrayController  *noteArrayController;
     IBOutlet SKNoteOutlineView  *noteOutlineView;
