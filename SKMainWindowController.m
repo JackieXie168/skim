@@ -1122,12 +1122,15 @@ static NSString *SKDocumentToolbarNotesPaneItemIdentifier = @"SKDocumentToolbarN
     [leftSideBox retain]; // leftSideBox is removed from its old superview in the process
     [leftSideWindow setMainView:leftSideBox];
     [leftSideBox release];
+    [leftSideWindow recalculateKeyViewLoop];
+    [leftSideWindow setInitialFirstResponder:searchField];
     
     if ([[mainWindow firstResponder] isDescendantOf:rightSideBox])
         [mainWindow makeFirstResponder:nil];
     [rightSideBox retain];
     [rightSideWindow setMainView:rightSideBox];
     [rightSideBox release];
+    [rightSideWindow recalculateKeyViewLoop];
     
     [leftSideEdgeView setEdges:BDSKNoEdgeMask];
     [rightSideEdgeView setEdges:BDSKNoEdgeMask];

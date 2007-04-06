@@ -151,6 +151,7 @@
 
 - (void)showSideWindow {
     [[self contentView] showWindow];
+    [self makeKeyAndOrderFront:nil];
 }
 
 - (void)hideSideWindow {
