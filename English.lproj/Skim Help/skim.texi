@@ -1117,8 +1117,7 @@ what went wrong, what you expected, and how to reproduce the problem
 at a different computer without you there helping us.
 
 If you're submitting a problem with how it handled a certain file, it
-would help if you sent that file too, or at least the representative
-subset that causes the errors. Crash reports are also useful and can
+would help if you sent that file too. Crash reports are also useful and can
 be obtained from the Console application (in `Applications/Utilities`).
 
 
