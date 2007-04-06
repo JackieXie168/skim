@@ -146,10 +146,6 @@ void SKCGContextSetDefaultRGBColorSpace(CGContextRef context) {
 
 - (NSAttributedString *)text { return nil; }
 
-- (void)setDefaultColor:(NSColor *)newColor {
-    [self setColor:newColor];
-}
-
 - (NSArray *)texts { return nil; }
 
 - (BOOL)isNoteAnnotation { return NO; }
@@ -284,24 +280,12 @@ void SKCGContextSetDefaultRGBColorSpace(CGContextRef context) {
 
 @implementation SKPDFAnnotationCircle
 
-static NSColor *circleColor = nil;
-
 - (id)initWithBounds:(NSRect)bounds {
     if (self = [super initWithBounds:bounds]) {
-        if (circleColor == nil)
-            circleColor = [[NSColor redColor] retain];
-        [self setColor:circleColor];
+        [self setColor:[NSUnarchiver unarchiveObjectWithData:[[NSUserDefaults standardUserDefaults] objectForKey:SKCircleNoteColorKey]]];
         [[self border] setLineWidth:2.0];
     }
     return self;
-}
-
-- (void)setDefaultColor:(NSColor *)newColor {
-    [self setColor:newColor];
-    if (circleColor != newColor) {
-        [circleColor release];
-        circleColor = [newColor retain];
-    }
 }
 
 - (BOOL)isNoteAnnotation { return YES; }
@@ -333,24 +317,12 @@ static NSColor *circleColor = nil;
 
 @implementation SKPDFAnnotationSquare
 
-static NSColor *squareColor = nil;
-
 - (id)initWithBounds:(NSRect)bounds {
     if (self = [super initWithBounds:bounds]) {
-        if (squareColor == nil)
-            squareColor = [[NSColor greenColor] retain];
-        [self setColor:squareColor];
+        [self setColor:[NSUnarchiver unarchiveObjectWithData:[[NSUserDefaults standardUserDefaults] objectForKey:SKSquareNoteColorKey]]];
         [[self border] setLineWidth:2.0];
     }
     return self;
-}
-
-- (void)setDefaultColor:(NSColor *)newColor {
-    [self setColor:newColor];
-    if (squareColor != newColor) {
-        [squareColor release];
-        squareColor = [newColor retain];
-    }
 }
 
 - (BOOL)isNoteAnnotation { return YES; }
@@ -448,10 +420,6 @@ static BOOL lineRectTrimmingWhitespaceForPage(NSRect *lineRect, PDFPage *page)
     return NO;
 }    
 
-static NSColor *highlightColor = nil;
-static NSColor *strikeOutColor = nil;
-static NSColor *underlineColor = nil;
-
 - (id)initWithBounds:(NSRect)bounds {
     self = [self initWithBounds:bounds markupType:kPDFMarkupTypeHighlight quadrilateralPointsAsStrings:nil];
     return self;
@@ -459,19 +427,13 @@ static NSColor *underlineColor = nil;
 
 - (id)initWithBounds:(NSRect)bounds markupType:(int)type quadrilateralPointsAsStrings:(NSArray *)pointStrings {
     if (self = [super initWithBounds:bounds]) {
-        if (highlightColor == nil)
-            highlightColor = [[NSColor yellowColor] retain];
-        if (strikeOutColor == nil)
-            strikeOutColor = [[NSColor redColor] retain];
-        if (underlineColor == nil)
-            underlineColor = [[NSColor colorWithDeviceRed:0.0 green:0.5 blue:0.0 alpha:1.0] retain];
         [self setMarkupType:type];
         if (type == kPDFMarkupTypeHighlight)
-            [self setColor:highlightColor];
-        else if (type == kPDFMarkupTypeStrikeOut)
-            [self setColor:strikeOutColor];
+            [self setColor:[NSUnarchiver unarchiveObjectWithData:[[NSUserDefaults standardUserDefaults] objectForKey:SKHighlightNoteColorKey]]];
         else if (type == kPDFMarkupTypeUnderline)
-            [self setColor:underlineColor];
+            [self setColor:[NSUnarchiver unarchiveObjectWithData:[[NSUserDefaults standardUserDefaults] objectForKey:SKUnderlineNoteColorKey]]];
+        else if (type == kPDFMarkupTypeStrikeOut)
+            [self setColor:[NSUnarchiver unarchiveObjectWithData:[[NSUserDefaults standardUserDefaults] objectForKey:SKStrikeOutNoteColorKey]]];
         
         NSArray *quadPoints = nil;
         if (pointStrings) {
@@ -606,26 +568,6 @@ static NSColor *underlineColor = nil;
     return isContained;
 }
 
-- (void)setDefaultColor:(NSColor *)newColor {
-    [self setColor:newColor];
-    if ([self markupType] == kPDFMarkupTypeHighlight) {
-        if (highlightColor != newColor) {
-            [highlightColor release];
-            highlightColor = [newColor retain];
-        }
-    } else if ([self markupType] == kPDFMarkupTypeStrikeOut) {
-        if (strikeOutColor != newColor) {
-            [strikeOutColor release];
-            strikeOutColor = [newColor retain];
-        }
-    } else if ([self markupType] == kPDFMarkupTypeUnderline) {
-        if (underlineColor != newColor) {
-            [underlineColor release];
-            underlineColor = [newColor retain];
-        }
-    }
-}
-
 - (BOOL)isNoteAnnotation { return YES; }
 
 - (BOOL)shouldPrint { return YES; }
@@ -661,17 +603,12 @@ static NSColor *underlineColor = nil;
 
 @implementation SKPDFAnnotationFreeText
 
-static NSColor *freeTextColor = nil;
-
 - (id)initWithBounds:(NSRect)bounds {
     if (self = [super initWithBounds:bounds]) {
-        if (freeTextColor == nil)
-            freeTextColor = [[NSColor colorWithDeviceRed:1.0 green:1.0 blue:0.5 alpha:1.0] retain];
-        [self setColor:freeTextColor];
         NSFont *font = [NSFont fontWithName:[[NSUserDefaults standardUserDefaults] stringForKey:SKTextNoteFontNameKey]
                                        size:[[NSUserDefaults standardUserDefaults] floatForKey:SKTextNoteFontSizeKey]];
-        if (font)
-            [self setFont:font];
+        [self setFont:font];
+        [self setColor:[NSUnarchiver unarchiveObjectWithData:[[NSUserDefaults standardUserDefaults] objectForKey:SKFreeTextNoteColorKey]]];
     }
     return self;
 }
@@ -680,20 +617,6 @@ static NSColor *freeTextColor = nil;
     NSMutableDictionary *dict = (NSMutableDictionary *)[super dictionaryValue];
     [dict setValue:[self font] forKey:@"font"];
     return dict;
-}
-
-- (void)setDefaultColor:(NSColor *)newColor {
-    [self setColor:newColor];
-    if (freeTextColor != newColor) {
-        [freeTextColor release];
-        freeTextColor = [newColor retain];
-    }
-}
-
-- (void)setDefaultFont:(NSFont *)newFont {
-    [self setFont:newFont];
-    [[NSUserDefaults standardUserDefaults] setObject:[newFont fontName] forKey:SKTextNoteFontNameKey];
-    [[NSUserDefaults standardUserDefaults] setFloat:[newFont pointSize] forKey:SKTextNoteFontSizeKey];
 }
 
 - (BOOL)isNoteAnnotation { return YES; }
@@ -739,89 +662,16 @@ static NSColor *freeTextColor = nil;
 
 #pragma mark -
 
-@implementation SKPDFAnnotationText
-
-static NSColor *textColor = nil;
-
-- (id)initWithBounds:(NSRect)bounds {
-    if (self = [super initWithBounds:bounds]) {
-        if (textColor == nil)
-            textColor = [[NSColor colorWithDeviceRed:1.0 green:1.0 blue:0.5 alpha:1.0] retain];
-        [self setColor:textColor];
-    }
-    return self;
-}
-
-- (void)setDefaultColor:(NSColor *)newColor {
-    [self setColor:newColor];
-    if (textColor != newColor) {
-        [textColor release];
-        textColor = [newColor retain];
-    }
-}
-
-- (BOOL)isNoteAnnotation { return YES; }
-
-- (BOOL)isEditable { return YES; }
-
-- (BOOL)shouldPrint { return YES; }
-
-- (void)setBounds:(NSRect)bounds {
-    [[NSNotificationCenter defaultCenter] postNotificationName:SKAnnotationWillChangeNotification
-            object:self
-          userInfo:[NSDictionary dictionaryWithObjectsAndKeys:@"bounds", @"key", nil]];
-    [super setBounds:bounds];
-    [[NSNotificationCenter defaultCenter] postNotificationName:SKAnnotationDidChangeNotification
-            object:self
-          userInfo:[NSDictionary dictionaryWithObjectsAndKeys:@"bounds", @"key", nil]];
-}
-
-- (void)setContents:(NSString *)contents {
-    [[NSNotificationCenter defaultCenter] postNotificationName:SKAnnotationWillChangeNotification
-            object:self
-          userInfo:[NSDictionary dictionaryWithObjectsAndKeys:@"contents", @"key", nil]];
-    [super setContents:contents];
-    [[NSNotificationCenter defaultCenter] postNotificationName:SKAnnotationDidChangeNotification
-            object:self
-          userInfo:[NSDictionary dictionaryWithObjectsAndKeys:@"contents", @"key", nil]];
-}
-
-- (void)setColor:(NSColor *)color {
-    [[NSNotificationCenter defaultCenter] postNotificationName:SKAnnotationWillChangeNotification
-            object:self
-          userInfo:[NSDictionary dictionaryWithObjectsAndKeys:@"color", @"key", nil]];
-    [super setColor:color];
-    [[NSNotificationCenter defaultCenter] postNotificationName:SKAnnotationDidChangeNotification
-            object:self
-          userInfo:[NSDictionary dictionaryWithObjectsAndKeys:@"color", @"key", nil]];
-}
-
-@end
-
-#pragma mark -
-
 @implementation SKPDFAnnotationNote
 
-static NSColor *noteColor = nil;
-
 - (id)initWithBounds:(NSRect)bounds {
     if (self = [super initWithBounds:bounds]) {
-        if (noteColor == nil)
-            noteColor = [[NSColor colorWithDeviceRed:1.0 green:1.0 blue:0.5 alpha:1.0] retain];
-        [self setColor:noteColor];
+        [self setColor:[NSUnarchiver unarchiveObjectWithData:[[NSUserDefaults standardUserDefaults] objectForKey:SKAnchoredNoteColorKey]]];
         texts = [[NSArray alloc] initWithObjects:[[[SKNoteText alloc] initWithAnnotation:self] autorelease], nil];
         textStorage = [[NSTextStorage allocWithZone:[self zone]] init];
         [textStorage setDelegate:self];
     }
     return self;
-}
-
-- (void)setDefaultColor:(NSColor *)newColor {
-    [self setColor:newColor];
-    if (noteColor != newColor) {
-        [noteColor release];
-        noteColor = [newColor retain];
-    }
 }
 
 - (void)dealloc {

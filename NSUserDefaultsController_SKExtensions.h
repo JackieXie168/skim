@@ -40,8 +40,12 @@
 
 
 @interface NSUserDefaultsController (SKExtensions)
+
 - (void)addObserver:(NSObject *)anObserver forKey:(NSString *)key;
 - (void)removeObserver:(NSObject *)anObserver forKey:(NSString *)key;
 - (void)addObserver:(NSObject *)anObserver forKeys:(NSArray *)keys;
 - (void)removeObserver:(NSObject *)anObserver forKeys:(NSArray *)keys;
+- (void)revertToInitialValueForKey:(NSString *)key;
+- (void)revertToInitialValuesForKeys:(NSArray *)keys;
+
 @end

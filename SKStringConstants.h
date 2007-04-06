@@ -38,7 +38,6 @@
 
 
 extern NSString *SKAutoCheckFileUpdateKey;
-extern NSString *SKAutoCheckFileUpdateAskKey;
 extern NSString *SKBackgroundColorKey;
 extern NSString *SKDefaultDocumentScaleKey;
 extern NSString *SKDefaultDocumentAutoScaleKey;
@@ -64,3 +63,11 @@ extern NSString *SKReadingBarTransparencyKey;
 extern NSString *SKReadingBarInvertKey;
 extern NSString *SKTextNoteFontNameKey;
 extern NSString *SKTextNoteFontSizeKey;
+extern NSString *SKFreeTextNoteColorKey;
+extern NSString *SKAnchoredNoteColorKey;
+extern NSString *SKCircleNoteColorKey;
+extern NSString *SKSquareNoteColorKey;
+extern NSString *SKHighlightNoteColorKey;
+extern NSString *SKUnderlineNoteColorKey;
+extern NSString *SKStrikeOutNoteColorKey;
+extern NSString *SKDefaultPDFDisplaySettingsKey;

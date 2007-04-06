@@ -56,8 +56,6 @@ extern void SKCGContextSetDefaultRGBColorSpace(CGContextRef context);
 - (NSImage *)image;
 - (NSAttributedString *)text;
 
-- (void)setDefaultColor:(NSColor *)newColor;
-
 - (NSArray *)texts;
 
 - (BOOL)isNoteAnnotation;
@@ -94,12 +92,6 @@ extern void SKCGContextSetDefaultRGBColorSpace(CGContextRef context);
 @end
 
 @interface SKPDFAnnotationFreeText : PDFAnnotationFreeText
-
-- (void)setDefaultFont:(NSFont *)newFont;
-
-@end
-
-@interface SKPDFAnnotationText : PDFAnnotationText
 @end
 
 @interface SKPDFAnnotationNote : PDFAnnotationText {

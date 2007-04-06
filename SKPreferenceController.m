@@ -37,19 +37,58 @@
  */
 
 #import "SKPreferenceController.h"
+#import "SKStringConstants.h"
+#import "NSUserDefaultsController_SKExtensions.h"
 
 
 @implementation SKPreferenceController
-
-- (NSString *)windowNibName {
-    return @"PreferenceWindow";
-}
 
 + (id)sharedPrefenceController {
     static SKPreferenceController *sharedPrefenceController = nil;
     if (sharedPrefenceController == nil)
         sharedPrefenceController = [[self alloc] init];
     return sharedPrefenceController;
+}
+
+- (id)init {
+    if (self = [super init]) {
+        NSMutableArray *fontNames = [[[[NSFontManager sharedFontManager] availableFontFamilies] mutableCopy] autorelease];
+        NSEnumerator *fontEnum;
+        NSString *fontName;
+        
+        [fontNames sortUsingSelector:@selector(caseInsensitiveCompare:)];
+        fontEnum = [fontNames objectEnumerator];
+        fonts = [[NSMutableArray alloc] init];
+        while (fontName = [fontEnum nextObject]) {
+            NSFont *font = [NSFont fontWithName:fontName size:0.0];
+            [fonts addObject:[NSDictionary dictionaryWithObjectsAndKeys:[font fontName], @"fontName", [font displayName], @"displayName", nil]];
+        }
+        
+        sizes = [[NSMutableArray alloc] initWithObjects:[NSNumber numberWithFloat:8.0], [NSNumber numberWithFloat:9.0], [NSNumber numberWithFloat:10.0], 
+                                                        [NSNumber numberWithFloat:11.0], [NSNumber numberWithFloat:12.0], [NSNumber numberWithFloat:13.0], 
+                                                        [NSNumber numberWithFloat:14.0], [NSNumber numberWithFloat:16.0], [NSNumber numberWithFloat:18.0], 
+                                                        [NSNumber numberWithFloat:20.0], [NSNumber numberWithFloat:24.0], [NSNumber numberWithFloat:28.0], 
+                                                        [NSNumber numberWithFloat:32.0], [NSNumber numberWithFloat:48.0], [NSNumber numberWithFloat:64.0], nil];
+    }
+    return self;
+}
+
+- (void)dealloc {
+    [fonts release];
+    [sizes release];
+    [super dealloc];
+}
+
+- (NSString *)windowNibName {
+    return @"PreferenceWindow";
+}
+
+- (NSArray *)fonts {
+    return fonts;
+}
+
+- (NSArray *)sizes {
+    return sizes;
 }
 
 - (IBAction)changeDiscreteThumbnailSizes:(id)sender {
@@ -68,6 +107,17 @@
     }
     [thumbnailSizeSlider sizeToFit];
     [snapshotSizeSlider sizeToFit];
+}
+
+- (IBAction)resetNoteColors:(id)sender {
+    [[NSUserDefaultsController sharedUserDefaultsController] revertToInitialValuesForKeys:
+        [NSArray arrayWithObjects:SKFreeTextNoteColorKey, SKAnchoredNoteColorKey, SKCircleNoteColorKey, SKSquareNoteColorKey, 
+                                  SKHighlightNoteColorKey, SKUnderlineNoteColorKey, SKStrikeOutNoteColorKey, nil]];
+}
+
+- (IBAction)resetTextNoteFont:(id)sender {
+    [[NSUserDefaultsController sharedUserDefaultsController] revertToInitialValuesForKeys:
+        [NSArray arrayWithObjects:SKTextNoteFontNameKey, SKTextNoteFontSizeKey, nil]];
 }
 
 @end
