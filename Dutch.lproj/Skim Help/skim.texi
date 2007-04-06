@@ -288,6 +288,7 @@ U kunt ook bladeren met behulp van de muis.
 @menu
 * Pagina's in een PDF-document selecteren voor weergave::
 * Pagina onderbrekingen weergeven::
+* Standaard weergave-opties instellen voor PDF-documenten::
 @end menu
 
 @c ======================================================================================
@@ -438,21 +439,23 @@ Sommige PDF-bestanden bevatten een inhoudsopgave, waarmee u snel naar bepaalde g
 
 @c ======================================================================================
 
-@topic Standaardgrootte instellen voor PDF-documenten
+@topic Standaard weergave-opties instellen voor PDF-documenten
 
-U kunt opgeven in welke grootte u PDF-documenten in Skim wilt weergeven: zo groot mogelijk of als een bepaald percentage van de werkelijke grootte.
-You can kies the size at which Skim displays PDF-documenten: either as large as possible or at a specific percentage of their actual size.
+U kunt opgeven met welke opties Skim nieuwe PDF-document weergeeft. Deze opties omvatten alle keuzes uit het Weergave > 'PDF weergave' menu, de standaard grootte als een percentage, ofdat het document zijn grootte automatisch aanpast aan het venster.
 
 @box{taskbox}
-@enumerate
-@item Kies Skim > Voorkeuren en klik op Algemeen.
-@item Selecteer een van de opties bij 'Standaard documentvergroting'.
-@end enumerate
 @itemize
-@item Om PDF-documenten te openen in de grootste weergave die mogelijk is in het venster, selecteert u 'Vergroot automatisch'.
-@item Om PDF-documenten weer te geven als een bepaald percentage van hun oorspronkelijke grootte, selecteert u 'Gebruik vergroting' en voert u het gewenste vergrotings- of verkleiningspercentage in.
+@item Om de huidige weergave-opties van een PDF-document te bewaren, kies Weergave > 'Gebruik de huidige weergaveinstellingen als standaard'.
 @end itemize
 @endbox
+
+@heading Zie ook
+@menu
+* Pagina's in een PDF-bestand naast elkaar weergeven::
+* Pagina onderbrekingen weergeven::
+* Door de pagina's van een PDF-bestand bladeren::
+* In- en uitzoomen::
+@end menu
 
 @c ======================================================================================
 
@@ -472,6 +475,7 @@ Als u pagina's naast elkaar weergeeft, is een groter gedeelte van een document z
 @heading Zie ook
 @menu
 * Pagina onderbrekingen weergeven::
+* Standaard weergave-opties instellen voor PDF-documenten::
 @end menu
 
 @c ======================================================================================
@@ -490,6 +494,7 @@ Wanneer u meerdere PDF-pagina's tegelijkertijd bekijkt, is het soms moeilijk om 
 @menu
 * Pagina's in een PDF-bestand naast elkaar weergeven::
 * Door de pagina's van een PDF-bestand bladeren::
+* Standaard weergave-opties instellen voor PDF-documenten::
 @end menu
 
 @c ======================================================================================
@@ -525,6 +530,8 @@ U kunt notities wijzigen en verwijderen. Om een notitie te verplaatsen of te ver
 @heading Zie ook
 @menu
 * Gedeelten van een PDF-document markeren::
+* De kleur van notities en markeringen wijzigen::
+* Het lettertype en de lettergrootte van textnotities wijzigen::
 @end menu
 
 @c ======================================================================================
@@ -554,6 +561,56 @@ Circel- en box-markeringen kunnen ook verplaatst en vergroot of verkleind worden
 @heading Zie ook
 @menu
 * Notities aan een PDF-document toevoegen::
+* De kleur van notities en markeringen wijzigen::
+@end menu
+
+@c ======================================================================================
+
+@topic De kleur van notities en markeringen wijzigen
+
+In Skim kunt u de kleur van een notitie of markering die u met Skim heeft aangebracht wijzigen. U kunt ook de standaardkleuren die gebruikt worden voor nieuwe notities en markeringen instellen.
+
+@box{taskbox}
+@heading Om de standaardkleuren voor notities of markeringen te wijzigen:
+@itemize
+@item Kies Skim > Voorkeuren, selecteer Notities, en klik op een kleur behorende bij de type notitie of markering die u wilt veranderen.
+@item Om de standaardkleuren voor notities en markeringen op hun  oorspronkelijke waarde terug te zetten, druk op de 'Herstel Kleuren' knop.
+To revert the default colors for notes or highlights to their factory values, press the Reset Colors button.
+@end itemize
+@heading Om de kleur van een enkele notitie of markering te wijzigen:
+@itemize
+@item Selecteer de notitie of markering in de PDF en kies Extra's > Toon kleuren.
+@end itemize
+@endbox
+
+@heading See also
+@menu
+* Notities aan een PDF-document toevoegen::
+* Gedeelten van een PDF-document markeren::
+* Het lettertype en de lettergrootte van textnotities wijzigen::
+@end menu
+
+@topic Het lettertype en de lettergrootte van textnotities wijzigen
+
+In Skim kunt u het lettertype en de lettergrootte van een tekstnotitie dat u met Skim heeft aangebracht wijzigen. U kunt ook het standaardlettertype en de standaardlettergrootte die gebruikt worden voor nieuwe tekstnotities instellen.
+
+@box{taskbox}
+@heading Om het standaardlettertype en de standaardlettergrootte voor nieuwe tekstnotities te wijzigen:
+@itemize
+@item Kies Skim > Voorkeuren, selecteer Notities, en selecteer het gewenste lettertype en de gewenste lettergrootte onder 'Lettertype voor tekstnotities'.
+@item Om het standaardlettertype en de standaardlettergrootte voor tekstnotities op hun  oorspronkelijke waarde terug te zetten, druk op de 'Herstel Lettertype' knop.
+@end itemize
+@heading Om het lettertype of de lettergrootte van een enkele tekstnotitie te wijzigen:
+@itemize
+@item Selecteer de notitie in de PDF en kies Weergave > Lettergrootte > 'Toon Lettergrootte'.
+@end itemize
+@endbox
+
+@heading See also
+@menu
+* Notities aan een PDF-document toevoegen::
+* Gedeelten van een PDF-document markeren::
+* De kleur van notities en markeringen wijzigen::
 @end menu
 
 @c ======================================================================================
@@ -871,7 +928,7 @@ U kunt aangeven of Skim zoekresultaten markeert met een cirkel. U kunt ook de kl
 
 @box{taskbox}
 @itemize
-@item Om zoekresultaten te markeren met een cirkel, kies Skim > Voorkeuren, klik op Kleuren, en selecteer "Markeer zoekresultaten".
+@item Om zoekresultaten te markeren met een cirkel, kies Skim > Voorkeuren, klik op Kleuren, en selecteer "Markeer zoekresultaten met kleur".
 @item Om de kleur die gebruikt wordt voor zoekresultaten te wijzigen, klik op Kleur.
 @end itemize
 @endbox
@@ -890,7 +947,7 @@ Skim kan automatisch de bestanden die u bekijkt herladen wanneer deze bestanden 
 
 @box{taskbox}
 @itemize
-@item Om bestanden te herladen zodra hun inhoud op de disk verandert, kies Skim > Voorkeuren, klik op Wijzigingen, and selecteer "Controleer veranderingen van het bestand" below "Wijzigingen van het bestand".
+@item Om bestanden te herladen zodra hun inhoud op de disk verandert, kies Skim > Voorkeuren, klik op Algemeen, and selecteer "Check voor veranderingen van het bestand".
 @end itemize
 @endbox
 
@@ -900,11 +957,11 @@ Skim zal altijd eerst vragen om het bestand te herladen wanneer de inhoud op de 
 
 @topic Zoek naar nieuwe Skim versies
 
-Skimkan automatisch checken of er een nieuwe versie beschikbaar is. U kunt ook bepalen hoe vaak Skim naar nieuwe versies zoekt.
+Skim kan automatisch checken of er een nieuwe versie beschikbaar is. U kunt ook bepalen hoe vaak Skim naar nieuwe versies zoekt.
 
 @box{taskbox}
 @itemize
-@item Om te bepaelen hoe vaak Skim nieuwe versies checkt, kies Skim > Voorkeuren, klik op Wijzigingen, and selecteer een periode onder "Nieuwe Skim versies". 
+@item Om te bepaelen hoe vaak Skim nieuwe versies checkt, kies Skim > Voorkeuren, klik op Algemeen, and selecteer een periode onder "Check voor nieuwe Skim versies". 
 @end itemize
 @endbox
 
