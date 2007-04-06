@@ -160,6 +160,11 @@ static NSString *SKDocumentToolbarNotesPaneItemIdentifier = @"SKDocumentToolbarN
         [snapshotTimer release];
         snapshotTimer = nil;
     }
+    if (findTimer) {
+        [findTimer invalidate];
+        [findTimer release];
+        findTimer = nil;
+    }
     [(id)temporaryAnnotations release];
     [dirtyThumbnails release];
     [dirtySnapshots release];
@@ -1526,9 +1531,16 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
 }
 
 - (void)removeTemporaryAnnotations {
+    [findTimer invalidate];
+    [findTimer release];
+    findTimer = nil;
     // for long documents, this is much faster than iterating all pages and sending -isTemporaryAnnotation to each one
     CFSetApplyFunction(temporaryAnnotations, removeTemporaryAnnotations, self);
     CFSetRemoveAllValues(temporaryAnnotations);
+}
+
+- (void)findTimerFired:(NSTimer *)timer {
+    [self removeTemporaryAnnotations];
 }
 
 - (void)displaySearchResultsForString:(NSString *)string {
@@ -1561,9 +1573,12 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
     PDFSelection *selection = [[pdfView document] findString:string fromSelection:[pdfView currentSelection] withOptions:options];
 	findPanelFind = NO;
     if (selection) {
+        [self removeTemporaryAnnotations];
         [findTableView deselectAll:self];
 		[pdfView setCurrentSelection:selection];
+        [self addAnnotationsForSelection:selection];
 		[pdfView scrollSelectionToVisible:self];
+        findTimer = [[NSTimer scheduledTimerWithTimeInterval:10 target:self selector:@selector(findTimerFired:) userInfo:NULL repeats:NO] retain];
 	} else {
 		NSBeep();
 	}
