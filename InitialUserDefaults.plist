@@ -8,8 +8,8 @@
         <false/>
         <key>SKBackgroundColor</key>
         <data>
-	BAt0eXBlZHN0cmVhbYED6IQBQISEhAdOU0NvbG9yAISECE5TT2JqZWN0AIWEAWMChARm
-	ZmZmgz8AAACDPwAAAIM/AAAAAYY=
+	BAt0eXBlZHN0cmVhbYED6IQBQISEhAdOU0NvbG9yAISECE5TT2JqZWN0AIWEAWMDhAJm
+	ZoM/AAAAAYY=
 	</data>
         <key>SKDefaultDocumentScale</key>
         <real>100.0</real>
@@ -66,6 +66,56 @@
         <string>LucidaGrande</string>
         <key>SKTextNoteFontSize</key>
         <real>11.0</real>
+        <key>SKDefaultPDFDisplaySettings</key>
+        <dict>
+            <key>scaleFactor</key>
+            <real>1.0</real>
+            <key>autoScales</key>
+            <false/>
+            <key>displaysPageBreaks</key>
+            <true/>
+            <key>displaysAsBook</key>
+            <false/>
+            <key>displayMode</key>
+            <integer>1</integer>
+            <key>displayBox</key>
+            <integer>1</integer>
+        </dict>
+        <key>SKFreeTextNoteColor</key>
+        <data>
+	BAt0eXBlZHN0cmVhbYED6IQBQISEhAdOU0NvbG9yAISECE5TT2JqZWN0AIWEAWMBhARm
+	ZmZmAQGDPwCAgQGG
+	</data>
+        <key>SKAnchoredNoteColor</key>
+        <data>
+	BAt0eXBlZHN0cmVhbYED6IQBQISEhAdOU0NvbG9yAISECE5TT2JqZWN0AIWEAWMBhARm
+	ZmZmAQGDPwCAgQGG
+	</data>
+        <key>SKCircleNoteColor</key>
+        <data>
+	BAt0eXBlZHN0cmVhbYED6IQBQISEhAdOU0NvbG9yAISECE5TT2JqZWN0AIWEAWMBhARm
+	ZmZmAQAAAYY=
+	</data>
+        <key>SKSquareNoteColor</key>
+        <data>
+	BAt0eXBlZHN0cmVhbYED6IQBQISEhAdOU0NvbG9yAISECE5TT2JqZWN0AIWEAWMBhARm
+	ZmZmAAEAAYY=
+	</data>
+        <key>SKHighlightNoteColor</key>
+        <data>
+	BAt0eXBlZHN0cmVhbYED6IQBQISEhAdOU0NvbG9yAISECE5TT2JqZWN0AIWEAWMBhARm
+	ZmZmAQEAAYY=
+	</data>
+        <key>SKUnderlineNoteColor</key>
+        <data>
+	BAt0eXBlZHN0cmVhbYED6IQBQISEhAdOU0NvbG9yAISECE5TT2JqZWN0AIWEAWMBhARm
+	ZmZmAIM/AICBAAGG
+	</data>
+        <key>SKStrikeOutNoteColor</key>
+        <data>
+	BAt0eXBlZHN0cmVhbYED6IQBQISEhAdOU0NvbG9yAISECE5TT2JqZWN0AIWEAWMBhARm
+	ZmZmAQAAAYY=
+	</data>
     </dict>
 	<key>ResettableKeys</key>
 	<array>
@@ -93,6 +143,14 @@
         <string>SKReadingBarInvert</string>
         <string>SKTextNoteFontName</string>
         <string>SKTextNoteFontSize</string>
+        <string>SKFreeTextNoteColor</string>
+        <string>SKAnchoredNoteColor</string>
+        <string>SKCircleNoteColor</string>
+        <string>SKSquareNoteColor</string>
+        <string>SKHighlightNoteColor</string>
+        <string>SKUnderlineNoteColor</string>
+        <string>SKStrikeOutNoteColor</string>
+        <string>SKDefaultPDFDisplaySettings</string>
     </array>
 </dict>
 </plist>

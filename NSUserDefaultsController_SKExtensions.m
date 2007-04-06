@@ -65,4 +65,16 @@
     }
 }
 
+- (void)revertToInitialValueForKey:(NSString *)key {
+    [[self values] setValue:[[self initialValues] objectForKey:key] forKey:key];
+}
+
+- (void)revertToInitialValuesForKeys:(NSArray *)keys {
+    int i, iMax = [keys count];
+    for (i = 0; i < iMax; i++) {
+        NSString *key = [keys objectAtIndex:i];
+        [[self values] setValue:[[self initialValues] objectForKey:key] forKey:key];
+    }
+}
+
 @end

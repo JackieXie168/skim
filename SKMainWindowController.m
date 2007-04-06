@@ -112,7 +112,21 @@ static NSString *SKDocumentToolbarNotesPaneItemIdentifier = @"SKDocumentToolbarN
 
 - (id)initWithWindowNibName:(NSString *)windowNibName owner:(id)owner{
     self = [super initWithWindowNibName:windowNibName owner:owner];
-    
+    NSColor *color;
+    color = [[[[SKPDFAnnotationFreeText alloc] initWithBounds:NSZeroRect] autorelease] color];
+    [[NSUserDefaults standardUserDefaults] setObject:[NSArchiver archivedDataWithRootObject:color] forKey:@"SKFreeTextNoteColorKey"];
+    color = [[[[SKPDFAnnotationNote alloc] initWithBounds:NSZeroRect] autorelease] color];
+    [[NSUserDefaults standardUserDefaults] setObject:[NSArchiver archivedDataWithRootObject:color] forKey:@"SKAnchoredNoteColorKey"];
+    color = [[[[SKPDFAnnotationCircle alloc] initWithBounds:NSZeroRect] autorelease] color];
+    [[NSUserDefaults standardUserDefaults] setObject:[NSArchiver archivedDataWithRootObject:color] forKey:@"SKCircleNoteColorKey"];
+    color = [[[[SKPDFAnnotationSquare alloc] initWithBounds:NSZeroRect] autorelease] color];
+    [[NSUserDefaults standardUserDefaults] setObject:[NSArchiver archivedDataWithRootObject:color] forKey:@"SKSquareNoteColorKey"];
+    color = [[[[SKPDFAnnotationMarkup alloc] initWithBounds:NSZeroRect markupType:kPDFMarkupTypeHighlight quadrilateralPointsAsStrings:nil] autorelease] color];
+    [[NSUserDefaults standardUserDefaults] setObject:[NSArchiver archivedDataWithRootObject:color] forKey:@"SKHighlightNoteColorKey"];
+    color = [[[[SKPDFAnnotationMarkup alloc] initWithBounds:NSZeroRect markupType:kPDFMarkupTypeUnderline quadrilateralPointsAsStrings:nil] autorelease] color];
+    [[NSUserDefaults standardUserDefaults] setObject:[NSArchiver archivedDataWithRootObject:color] forKey:@"SKUnderlineNoteColorKey"];
+    color = [[[[SKPDFAnnotationMarkup alloc] initWithBounds:NSZeroRect markupType:kPDFMarkupTypeStrikeOut quadrilateralPointsAsStrings:nil] autorelease] color];
+    [[NSUserDefaults standardUserDefaults] setObject:[NSArchiver archivedDataWithRootObject:color] forKey:@"SKStrikeOutNoteColorKey"];
     if(self){
         [self setShouldCloseDocument:YES];
         isPresentation = NO;
@@ -218,10 +232,7 @@ static NSString *SKDocumentToolbarNotesPaneItemIdentifier = @"SKDocumentToolbarN
     if ([[NSUserDefaults standardUserDefaults] boolForKey:SKOpenFilesMaximizedKey])
         [[self window] setFrame:[[NSScreen mainScreen] visibleFrame] display:NO];
     
-    if ([[NSUserDefaults standardUserDefaults] boolForKey:SKDefaultDocumentAutoScaleKey])
-        [pdfView setAutoScales:YES];
-    else
-        [pdfView setScaleFactor:0.01 * [[NSUserDefaults standardUserDefaults] floatForKey:SKDefaultDocumentScaleKey]];
+    [self applyPDFSettings:[[NSUserDefaults standardUserDefaults] dictionaryForKey:SKDefaultPDFDisplaySettingsKey]];
     
     [pdfView setShouldAntiAlias:[[NSUserDefaults standardUserDefaults] boolForKey:SKShouldAntiAliasKey]];
     [pdfView setGreekingThreshold:[[NSUserDefaults standardUserDefaults] floatForKey:SKGreekingThresholdKey]];
@@ -350,6 +361,26 @@ static NSString *SKDocumentToolbarNotesPaneItemIdentifier = @"SKDocumentToolbarN
     frame.size.width = NSWidth([splitView frame]) - NSWidth([leftSideContentBox frame]) - NSWidth([rightSideContentBox frame]) - 2 * [splitView dividerThickness];
     frame.origin.x = NSMaxX([leftSideContentBox frame]) + [splitView dividerThickness];
     [pdfContentBox setFrame:frame];
+    
+    [self applyPDFSettings:setup];
+    if (number = [setup objectForKey:@"pageIndex"])
+        [pdfView goToPage:[[pdfView document] pageAtIndex:[number intValue]]];
+}
+
+- (NSDictionary *)currentSetup {
+    NSMutableDictionary *setup = [NSMutableDictionary dictionary];
+    
+    [setup setObject:NSStringFromRect([mainWindow frame]) forKey:@"windowFrame"];
+    [setup setObject:[NSNumber numberWithFloat:NSWidth([leftSideContentBox frame])] forKey:@"leftSidePaneWidth"];
+    [setup setObject:[NSNumber numberWithFloat:NSWidth([rightSideContentBox frame])] forKey:@"rightSidePaneWidth"];
+    [setup setObject:[NSNumber numberWithUnsignedInt:[[pdfView document] indexForPage:[pdfView currentPage]]] forKey:@"pageIndex"];
+    [setup addEntriesFromDictionary:[self currentPDFSettings]];
+    
+    return setup;
+}
+
+- (void)applyPDFSettings:(NSDictionary *)setup {
+    NSNumber *number;
     if (number = [setup objectForKey:@"scaleFactor"])
         [pdfView setScaleFactor:[number floatValue]];
     if (number = [setup objectForKey:@"autoScales"])
@@ -362,17 +393,11 @@ static NSString *SKDocumentToolbarNotesPaneItemIdentifier = @"SKDocumentToolbarN
         [pdfView setDisplayMode:[number intValue]];
     if (number = [setup objectForKey:@"displayBox"])
         [pdfView setDisplayBox:[number intValue]];
-    if (number = [setup objectForKey:@"pageIndex"])
-        [pdfView goToPage:[[pdfView document] pageAtIndex:[number intValue]]];
 }
 
-- (NSDictionary *)currentSetup {
+- (NSDictionary *)currentPDFSettings {
     NSMutableDictionary *setup = [NSMutableDictionary dictionary];
     
-    [setup setObject:NSStringFromRect([mainWindow frame]) forKey:@"windowFrame"];
-    [setup setObject:[NSNumber numberWithFloat:NSWidth([leftSideContentBox frame])] forKey:@"leftSidePaneWidth"];
-    [setup setObject:[NSNumber numberWithFloat:NSWidth([rightSideContentBox frame])] forKey:@"rightSidePaneWidth"];
-    [setup setObject:[NSNumber numberWithUnsignedInt:[[pdfView document] indexForPage:[pdfView currentPage]]] forKey:@"pageIndex"];
     [setup setObject:[NSNumber numberWithBool:[pdfView displaysPageBreaks]] forKey:@"displaysPageBreaks"];
     [setup setObject:[NSNumber numberWithBool:[pdfView displaysAsBook]] forKey:@"displaysAsBook"];
     [setup setObject:[NSNumber numberWithInt:[pdfView displayBox]] forKey:@"displayBox"];
@@ -667,7 +692,7 @@ static NSString *SKDocumentToolbarNotesPaneItemIdentifier = @"SKDocumentToolbarN
     PDFAnnotation *annotation = [pdfView activeAnnotation];
     if ([annotation isNoteAnnotation]) {
         if ([[annotation color] isEqual:[sender color]] == NO)
-            [annotation setDefaultColor:[sender color]];
+            [annotation setColor:[sender color]];
         [pdfView setNeedsDisplayForAnnotation:annotation];
     }
 }
@@ -676,10 +701,7 @@ static NSString *SKDocumentToolbarNotesPaneItemIdentifier = @"SKDocumentToolbarN
     PDFAnnotation *annotation = [pdfView activeAnnotation];
     if ([annotation isNoteAnnotation] && [annotation respondsToSelector:@selector(setFont:)] && [annotation respondsToSelector:@selector(font)]) {
         NSFont *font = [sender convertFont:[(PDFAnnotationFreeText *)annotation font]];
-        if ([annotation respondsToSelector:@selector(setDefaultFont:)] && [annotation respondsToSelector:@selector(font)])
-            [(SKPDFAnnotationFreeText *)annotation setDefaultFont:font];
-        else
-            [(PDFAnnotationFreeText *)annotation setFont:font];
+        [(PDFAnnotationFreeText *)annotation setFont:font];
         [pdfView setNeedsDisplayForAnnotation:annotation];
     }
 }
@@ -1338,6 +1360,10 @@ static NSString *SKDocumentToolbarNotesPaneItemIdentifier = @"SKDocumentToolbarN
 
 - (IBAction)toggleReadingBar:(id)sender {
     [pdfView toggleReadingBar];
+}
+
+- (IBAction)savePDFSettingToDefaults:(id)sender {
+    [[NSUserDefaults standardUserDefaults] setObject:[self currentPDFSettings] forKey:SKDefaultPDFDisplaySettingsKey];
 }
 
 - (IBAction)printDocument:(id)sender{

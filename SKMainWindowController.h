@@ -217,6 +217,7 @@ typedef struct _SKPDFViewState {
 - (IBAction)performFit:(id)sender;
 - (IBAction)password:(id)sender;
 - (IBAction)dismissPasswordSheet:(id)sender;
+- (IBAction)savePDFSettingToDefaults:(id)sender;
 
 - (void)showSnapshotAtPageNumber:(int)pageNum forRect:(NSRect)rect factor:(int)factor;
 - (void)toggleSnapshots:(NSArray *)snapshotArray;
@@ -321,6 +322,8 @@ typedef struct _SKPDFViewState {
 
 - (void)setupWindow:(NSDictionary *)setup;
 - (NSDictionary *)currentSetup;
+- (void)applyPDFSettings:(NSDictionary *)setup;
+- (NSDictionary *)currentPDFSettings;
 
 - (void)setupToolbar;
 

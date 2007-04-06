@@ -39,7 +39,6 @@
 #import "SKStringConstants.h"
 
 NSString *SKAutoCheckFileUpdateKey = @"SKAutoCheckFileUpdate";
-NSString *SKAutoCheckFileUpdateAskKey = @"SKAutoCheckFileUpdateAsk";
 NSString *SKBackgroundColorKey = @"SKBackgroundColor";
 NSString *SKDefaultDocumentScaleKey = @"SKDefaultDocumentScale";
 NSString *SKDefaultDocumentAutoScaleKey = @"SKDefaultDocumentAutoScale";
@@ -65,3 +64,11 @@ NSString *SKReadingBarTransparencyKey = @"SKReadingBarTransparency";
 NSString *SKReadingBarInvertKey = @"SKReadingBarInvert";
 NSString *SKTextNoteFontNameKey = @"SKTextNoteFontName";
 NSString *SKTextNoteFontSizeKey = @"SKTextNoteFontSize";
+NSString *SKFreeTextNoteColorKey = @"SKFreeTextNoteColor";
+NSString *SKAnchoredNoteColorKey = @"SKAnchoredNoteColor";
+NSString *SKCircleNoteColorKey = @"SKCircleNoteColor";
+NSString *SKSquareNoteColorKey = @"SKSquareNoteColor";
+NSString *SKHighlightNoteColorKey = @"SKHighlightNoteColor";
+NSString *SKUnderlineNoteColorKey = @"SKUnderlineNoteColor";
+NSString *SKStrikeOutNoteColorKey = @"SKStrikeOutNoteColor";
+NSString *SKDefaultPDFDisplaySettingsKey = @"SKDefaultPDFDisplaySettings";
