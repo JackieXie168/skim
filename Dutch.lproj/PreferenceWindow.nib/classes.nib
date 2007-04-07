@@ -7,14 +7,14 @@
             SUPERCLASS = NSObject; 
         }, 
         {
-            ACTIONS = {
-                changeDiscreteThumbnailSizes = id; 
-                resetNoteColors = id; 
-                resetTextNoteFont = id; 
-            }; 
+            ACTIONS = {changeDiscreteThumbnailSizes = id; resetAll = id; resetCurrent = id; }; 
             CLASS = SKPreferenceController; 
             LANGUAGE = ObjC; 
-            OUTLETS = {snapshotSizeSlider = NSSlider; thumbnailSizeSlider = NSSlider; }; 
+            OUTLETS = {
+                snapshotSizeSlider = NSSlider; 
+                tabView = NSTabView; 
+                thumbnailSizeSlider = NSSlider; 
+            }; 
             SUPERCLASS = NSWindowController; 
         }
     ); 

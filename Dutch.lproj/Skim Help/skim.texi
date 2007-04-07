@@ -574,8 +574,6 @@ In Skim kunt u de kleur van een notitie of markering die u met Skim heeft aangeb
 @heading Om de standaardkleuren voor notities of markeringen te wijzigen:
 @itemize
 @item Kies Skim > Voorkeuren, selecteer Notities, en klik op een kleur behorende bij de type notitie of markering die u wilt veranderen.
-@item Om de standaardkleuren voor notities en markeringen op hun  oorspronkelijke waarde terug te zetten, druk op de 'Herstel Kleuren' knop.
-To revert the default colors for notes or highlights to their factory values, press the Reset Colors button.
 @end itemize
 @heading Om de kleur van een enkele notitie of markering te wijzigen:
 @itemize
@@ -598,7 +596,6 @@ In Skim kunt u het lettertype en de lettergrootte van een tekstnotitie dat u met
 @heading Om het standaardlettertype en de standaardlettergrootte voor nieuwe tekstnotities te wijzigen:
 @itemize
 @item Kies Skim > Voorkeuren, selecteer Notities, en selecteer het gewenste lettertype en de gewenste lettergrootte onder 'Lettertype voor tekstnotities'.
-@item Om het standaardlettertype en de standaardlettergrootte voor tekstnotities op hun  oorspronkelijke waarde terug te zetten, druk op de 'Herstel Lettertype' knop.
 @end itemize
 @heading Om het lettertype of de lettergrootte van een enkele tekstnotitie te wijzigen:
 @itemize
