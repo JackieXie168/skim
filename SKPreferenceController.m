@@ -120,4 +120,50 @@
         [NSArray arrayWithObjects:SKTextNoteFontNameKey, SKTextNoteFontSizeKey, nil]];
 }
 
+- (void)resetSheetDidEnd:(NSWindow *)sheet returnCode:(int)returnCode contextInfo:(void *)contextInfo {
+    if (returnCode == NSAlertDefaultReturn) {
+        NSString *tabID = (NSString *)contextInfo;
+        NSArray *keys = nil;
+        if (tabID == nil) {
+            [[NSUserDefaultsController sharedUserDefaultsController] revertToInitialValues:nil];
+            return;
+        } else if ([tabID isEqualToString:@"general"]) {
+            keys = [NSArray arrayWithObjects:SKReopenLastOpenFilesKey, SKOpenFilesMaximizedKey, SKOpenContentsPaneOnlyForTOCKey, SKSnapshotsOnTopKey, SKUpdateCheckIntervalKey, SKAutoCheckFileUpdateKey, nil];
+        } else if ([tabID isEqualToString:@"display"]) {
+            keys = [NSArray arrayWithObjects:SKThumbnailSizeKey, SKSnapshotThumbnailSizeKey, SKShouldAntiAliasKey, SKGreekingThresholdKey, nil];
+        } else if ([tabID isEqualToString:@"colors"]) {
+            keys = [NSArray arrayWithObjects:SKBackgroundColorKey, SKFullScreenBackgroundColorKey, SKShouldHighlightSearchResultsKey, SKSearchHighlightColorKey, SKReadingBarColorKey, SKReadingBarTransparencyKey, SKReadingBarInvertKey, nil];
+        } else if ([tabID isEqualToString:@"notes"]) {
+            keys = [NSArray arrayWithObjects:SKFreeTextNoteColorKey, SKAnchoredNoteColorKey, SKCircleNoteColorKey, SKSquareNoteColorKey, SKHighlightNoteColorKey, SKUnderlineNoteColorKey, SKStrikeOutNoteColorKey, SKTextNoteFontNameKey, SKTextNoteFontSizeKey, nil];
+        }
+        if (keys)
+            [[NSUserDefaultsController sharedUserDefaultsController] revertToInitialValuesForKeys:keys];
+    }
+}
+
+- (IBAction)resetAll:(id)sender {
+    NSAlert *alert = [NSAlert alertWithMessageText:NSLocalizedString(@"Reset all preferences to their original values?", @"Message in alert dialog when pressing Reset All button") 
+                                     defaultButton:NSLocalizedString(@"Reset", @"Button title")
+                                   alternateButton:NSLocalizedString(@"Cancel", @"Button title")
+                                       otherButton:nil
+                         informativeTextWithFormat:NSLocalizedString(@"Choosing Reset will restore all settings to the state they were in when Skim was first installed.", @"Informative text in alert dialog when pressing Reset All button")];
+    [alert beginSheetModalForWindow:[self window]
+                      modalDelegate:nil
+                     didEndSelector:NULL
+                        contextInfo:NULL];
+}
+
+- (IBAction)resetCurrent:(id)sender {
+    NSString *label = [[tabView selectedTabViewItem] label];
+    NSAlert *alert = [NSAlert alertWithMessageText:[NSString stringWithFormat:NSLocalizedString(@"Reset %@ preferences to their original values?", @"Message in alert dialog when pressing Reset All button"), label]
+                                     defaultButton:NSLocalizedString(@"Reset", @"Button title")
+                                   alternateButton:NSLocalizedString(@"Cancel", @"Button title")
+                                       otherButton:nil
+                         informativeTextWithFormat:NSLocalizedString(@"Choosing Reset will restore all settings in this pane to the state they were in when Skim was first installed.", @"Informative text in alert dialog when pressing Reset All button"), label];
+    [alert beginSheetModalForWindow:[self window]
+                      modalDelegate:nil
+                     didEndSelector:NULL
+                        contextInfo:[[tabView selectedTabViewItem] identifier]];
+}
+
 @end

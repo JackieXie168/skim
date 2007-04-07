@@ -571,7 +571,6 @@ Skim allows you can change the color of a note or highlight you have added using
 @heading To change the default color for notes or highlights:
 @itemize
 @item Choose Skim > Preferences, select Notes, and click a color for the type of note or highlight you want to change.
-@item To revert the default colors for notes or highlights to their factory values, press the Reset Colors button.
 @end itemize
 @heading To change the color of a single note or highlight:
 @itemize
@@ -594,7 +593,6 @@ Skim allows you can change the font of a text note you have added using Skim. Yo
 @heading To change the default font for text notes:
 @itemize
 @item Choose Skim > Preferences, select Notes, and select a font name and size below 'Text note font'.
-@item To revert the default font for text notes to its factory value, choose Skim > Preferences, select Notes, and press the Reset Font button.
 @end itemize
 @heading To change the font of a single text note:
 @itemize

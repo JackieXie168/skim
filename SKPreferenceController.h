@@ -40,6 +40,7 @@
 
 
 @interface SKPreferenceController : NSWindowController {
+    IBOutlet NSTabView *tabView;
     IBOutlet NSSlider *thumbnailSizeSlider;
     IBOutlet NSSlider *snapshotSizeSlider;
     NSMutableArray *fonts;
@@ -53,7 +54,7 @@
 
 - (IBAction)changeDiscreteThumbnailSizes:(id)sender;
 
-- (IBAction)resetNoteColors:(id)sender;
-- (IBAction)resetTextNoteFont:(id)sender;
+- (IBAction)resetAll:(id)sender;
+- (IBAction)resetCurrent:(id)sender;
 
 @end

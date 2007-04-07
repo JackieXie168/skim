@@ -39,8 +39,6 @@
 
 extern NSString *SKAutoCheckFileUpdateKey;
 extern NSString *SKBackgroundColorKey;
-extern NSString *SKDefaultDocumentScaleKey;
-extern NSString *SKDefaultDocumentAutoScaleKey;
 extern NSString *SKFullScreenBackgroundColorKey;
 extern NSString *SKLastOpenFileNamesKey;
 extern NSString *SKLastVersionLaunchedKey;

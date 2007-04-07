@@ -11,10 +11,6 @@
 	BAt0eXBlZHN0cmVhbYED6IQBQISEhAdOU0NvbG9yAISECE5TT2JqZWN0AIWEAWMDhAJm
 	ZoM/AAAAAYY=
 	</data>
-        <key>SKDefaultDocumentScale</key>
-        <real>100.0</real>
-        <key>SKDefaultDocumentAutoScale</key>
-        <false/>
         <key>SKFullScreenBackgroundColor</key>
         <data>
 	BAt0eXBlZHN0cmVhbYED6IQBQISEhAdOU0NvbG9yAISECE5TT2JqZWN0AIWEAWMDhAJm
@@ -121,8 +117,6 @@
 	<array>
         <string>SKAutoCheckFileUpdate</string>
         <string>SKBackgroundColor</string>
-        <string>SKDefaultDocumentScale</string>
-        <string>SKDefaultDocumentScaleOption</string>
         <string>SKFullScreenBackgroundColor</string>
         <string>SKLastOpenFileNames</string>
         <string>SKOpenContentsPaneOnlyForTOC</string>

@@ -329,7 +329,7 @@
 		CE54898D0B35D50E00F8AFB6 /* SKInfoWindowController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SKInfoWindowController.h; sourceTree = "<group>"; };
 		CE54898E0B35D50E00F8AFB6 /* SKInfoWindowController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SKInfoWindowController.m; sourceTree = "<group>"; };
 		CE54AA8E0BBC037400008750 /* English */ = {isa = PBXFileReference; lastKnownFileType = text.rtf; name = English; path = English.lproj/ReleaseNotes.rtf; sourceTree = "<group>"; };
-		CE67BB250BC44AC9007B6929 /* English */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text.plist.strings; name = English; path = English.lproj/ZoomValues.strings; sourceTree = "<group>"; };
+		CE67BB250BC44AC9007B6929 /* English */ = {isa = PBXFileReference; fileEncoding = 10; lastKnownFileType = text.plist.strings; name = English; path = English.lproj/ZoomValues.strings; sourceTree = "<group>"; };
 		CE67BB290BC44AD5007B6929 /* Dutch */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = Dutch; path = Dutch.lproj/ZoomValues.strings; sourceTree = "<group>"; };
 		CE67BD380BC44E79007B6929 /* Dutch */ = {isa = PBXFileReference; lastKnownFileType = text.rtf; name = Dutch; path = Dutch.lproj/ReleaseNotes.rtf; sourceTree = "<group>"; };
 		CE7467330B7F2ED700CBF969 /* ToolbarInfo.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; name = ToolbarInfo.tiff; path = Images/ToolbarInfo.tiff; sourceTree = "<group>"; };
