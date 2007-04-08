@@ -205,6 +205,23 @@
 		45B113BF0B329A7E00DE0660 /* LICENSE */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = LICENSE; sourceTree = "<group>"; };
 		8D15AC360486D014006FF6A4 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = Info.plist; sourceTree = "<group>"; };
 		8D15AC370486D014006FF6A4 /* Skim.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Skim.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		A489FDBA0BC8E8D100BA14DD /* Italian */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = Italian; path = Italian.lproj/InfoWindow.nib; sourceTree = "<group>"; };
+		A489FDBD0BC8E8DA00BA14DD /* Italian */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = Italian; path = Italian.lproj/MainMenu.nib; sourceTree = "<group>"; };
+		A489FDC00BC8E8DF00BA14DD /* Italian */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = Italian; path = Italian.lproj/MainWindow.nib; sourceTree = "<group>"; };
+		A489FDC30BC8E8EE00BA14DD /* Italian */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = Italian; path = Italian.lproj/NoteWindow.nib; sourceTree = "<group>"; };
+		A489FDC60BC8E8F400BA14DD /* Italian */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = Italian; path = Italian.lproj/SnapshotWindow.nib; sourceTree = "<group>"; };
+		A489FDC90BC8E8FA00BA14DD /* Italian */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = Italian; path = Italian.lproj/PreferenceWindow.nib; sourceTree = "<group>"; };
+		A489FDCC0BC8E90100BA14DD /* Italian */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = Italian; path = Italian.lproj/FindPanel.nib; sourceTree = "<group>"; };
+		A489FDCF0BC8E90700BA14DD /* Italian */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = Italian; path = Italian.lproj/ReleaseNotes.nib; sourceTree = "<group>"; };
+		A489FDD20BC8E90C00BA14DD /* Italian */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = Italian; path = Italian.lproj/ConversionProgressWindow.nib; sourceTree = "<group>"; };
+		A489FDD50BC8E91100BA14DD /* Italian */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = Italian; path = Italian.lproj/SaveProgressSheet.nib; sourceTree = "<group>"; };
+		A489FDD80BC8E91700BA14DD /* Italian */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = Italian; path = Italian.lproj/BookmarksWindow.nib; sourceTree = "<group>"; };
+		A489FDDB0BC8E91B00BA14DD /* Italian */ = {isa = PBXFileReference; lastKnownFileType = text.rtf; name = Italian; path = Italian.lproj/Credits.rtf; sourceTree = "<group>"; };
+		A489FDDE0BC8E92600BA14DD /* Italian */ = {isa = PBXFileReference; lastKnownFileType = text.rtf; name = Italian; path = Italian.lproj/ReleaseNotes.rtf; sourceTree = "<group>"; };
+		A489FDE10BC8E93100BA14DD /* Italian */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = Italian; path = Italian.lproj/InfoPlist.strings; sourceTree = "<group>"; };
+		A489FDE40BC8E93D00BA14DD /* Italian */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = Italian; path = Italian.lproj/Localizable.strings; sourceTree = "<group>"; };
+		A489FDE70BC8E94200BA14DD /* Italian */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = Italian; path = Italian.lproj/ZoomValues.strings; sourceTree = "<group>"; };
+		A489FE240BC8E97800BA14DD /* Italian */ = {isa = PBXFileReference; lastKnownFileType = folder; name = Italian; path = "Italian.lproj/Skim Help"; sourceTree = "<group>"; };
 		CE0463C90B84D24300C11E4A /* SKApplication.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SKApplication.h; sourceTree = "<group>"; };
 		CE0463CA0B84D24300C11E4A /* SKApplication.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SKApplication.m; sourceTree = "<group>"; };
 		CE0464A00B84E3E400C11E4A /* OBUtilities.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OBUtilities.h; sourceTree = "<group>"; };
@@ -778,6 +795,7 @@
 				French,
 				German,
 				Dutch,
+				Italian,
 			);
 			mainGroup = 2A37F4AAFDCFA73011CA2CEA /* Skim */;
 			projectDirPath = "";
@@ -1003,6 +1021,7 @@
 			children = (
 				089C1660FE840EACC02AAC07 /* English */,
 				CE485B960BC442BA00FA7109 /* Dutch */,
+				A489FDE10BC8E93100BA14DD /* Italian */,
 			);
 			name = InfoPlist.strings;
 			sourceTree = "<group>";
@@ -1012,6 +1031,7 @@
 			children = (
 				2A37F4B7FDCFA73011CA2CEA /* English */,
 				CE485B7B0BC4427100FA7109 /* Dutch */,
+				A489FDBD0BC8E8DA00BA14DD /* Italian */,
 			);
 			name = MainMenu.nib;
 			sourceTree = "<group>";
@@ -1021,6 +1041,7 @@
 			children = (
 				2A37F4BAFDCFA73011CA2CEA /* English */,
 				CE485BF00BC4443B00FA7109 /* Dutch */,
+				A489FDDB0BC8E91B00BA14DD /* Italian */,
 			);
 			name = Credits.rtf;
 			sourceTree = "<group>";
@@ -1030,6 +1051,7 @@
 			children = (
 				4530D81C0B27ACAC007C59F4 /* English */,
 				CE485B7E0BC4427A00FA7109 /* Dutch */,
+				A489FDC00BC8E8DF00BA14DD /* Italian */,
 			);
 			name = MainWindow.nib;
 			sourceTree = "<group>";
@@ -1039,6 +1061,7 @@
 			children = (
 				CE2DEA9E0B860A7000D0DA12 /* English */,
 				CE485B930BC442A800FA7109 /* Dutch */,
+				A489FDD50BC8E91100BA14DD /* Italian */,
 			);
 			name = SaveProgressSheet.nib;
 			sourceTree = "<group>";
@@ -1048,6 +1071,7 @@
 			children = (
 				CE2DEB910B86206400D0DA12 /* English */,
 				CE485B8A0BC4429700FA7109 /* Dutch */,
+				A489FDCC0BC8E90100BA14DD /* Italian */,
 			);
 			name = FindPanel.nib;
 			sourceTree = "<group>";
@@ -1057,6 +1081,7 @@
 			children = (
 				CE4A65CB0BAB1E2E004AD07D /* English */,
 				CE485B9C0BC442CB00FA7109 /* Dutch */,
+				A489FDD80BC8E91700BA14DD /* Italian */,
 			);
 			name = BookmarksWindow.nib;
 			sourceTree = "<group>";
@@ -1066,6 +1091,7 @@
 			children = (
 				CE4DA91A0B9E190D0039E89C /* English */,
 				CE485B650BC4420900FA7109 /* Dutch */,
+				A489FE240BC8E97800BA14DD /* Italian */,
 			);
 			name = "Skim Help";
 			sourceTree = "<group>";
@@ -1075,6 +1101,7 @@
 			children = (
 				CE4F9DED0BC1BE3A005BE0A1 /* English */,
 				CE485B990BC442C000FA7109 /* Dutch */,
+				A489FDE40BC8E93D00BA14DD /* Italian */,
 			);
 			name = Localizable.strings;
 			sourceTree = "<group>";
@@ -1084,6 +1111,7 @@
 			children = (
 				CE5470020B32D96500F8AFB6 /* English */,
 				CE485B810BC4428200FA7109 /* Dutch */,
+				A489FDC30BC8E8EE00BA14DD /* Italian */,
 			);
 			name = NoteWindow.nib;
 			sourceTree = "<group>";
@@ -1093,6 +1121,7 @@
 			children = (
 				CE54898B0B35D4EF00F8AFB6 /* English */,
 				CE485B780BC4426800FA7109 /* Dutch */,
+				A489FDBA0BC8E8D100BA14DD /* Italian */,
 			);
 			name = InfoWindow.nib;
 			sourceTree = "<group>";
@@ -1102,6 +1131,7 @@
 			children = (
 				CE54AA8E0BBC037400008750 /* English */,
 				CE67BD380BC44E79007B6929 /* Dutch */,
+				A489FDDE0BC8E92600BA14DD /* Italian */,
 			);
 			name = ReleaseNotes.rtf;
 			sourceTree = "<group>";
@@ -1111,6 +1141,7 @@
 			children = (
 				CE67BB250BC44AC9007B6929 /* English */,
 				CE67BB290BC44AD5007B6929 /* Dutch */,
+				A489FDE70BC8E94200BA14DD /* Italian */,
 			);
 			name = ZoomValues.strings;
 			sourceTree = "<group>";
@@ -1120,6 +1151,7 @@
 			children = (
 				CE9C42370B8B5633004AD8CF /* English */,
 				CE485B870BC4429100FA7109 /* Dutch */,
+				A489FDC90BC8E8FA00BA14DD /* Italian */,
 			);
 			name = PreferenceWindow.nib;
 			sourceTree = "<group>";
@@ -1129,6 +1161,7 @@
 			children = (
 				CEF7071E0B8F8EFC003A2771 /* English */,
 				CE485B840BC4428900FA7109 /* Dutch */,
+				A489FDC60BC8E8F400BA14DD /* Italian */,
 			);
 			name = SnapshotWindow.nib;
 			sourceTree = "<group>";
@@ -1138,6 +1171,7 @@
 			children = (
 				CEF717570B90DEEF003A2771 /* English */,
 				CE485B8D0BC4429C00FA7109 /* Dutch */,
+				A489FDCF0BC8E90700BA14DD /* Italian */,
 			);
 			name = ReleaseNotes.nib;
 			sourceTree = "<group>";
@@ -1147,6 +1181,7 @@
 			children = (
 				F977515F0B37460100DF673B /* English */,
 				CE485B900BC442A200FA7109 /* Dutch */,
+				A489FDD20BC8E90C00BA14DD /* Italian */,
 			);
 			name = ConversionProgressWindow.nib;
 			sourceTree = "<group>";
