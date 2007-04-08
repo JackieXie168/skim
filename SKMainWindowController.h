@@ -158,6 +158,8 @@ typedef struct _SKPDFViewState {
     
     NSMutableArray              *lastViewedPages;
     
+    NSTimer                     *activityTimer;
+    
     BOOL                        isPresentation;
     SKPDFViewState              savedState;
     
