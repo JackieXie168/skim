@@ -896,6 +896,8 @@
 				"$(SRCROOT)/English.lproj/Skim Help/version.texi",
 				"$(SRCROOT)/Dutch.lproj/Skim Help/skim.texi",
 				"$(SRCROOT)/Dutch.lproj/Skim Help/version.texi",
+				"$(SRCROOT)/Italian.lproj/Skim Help/skim.texi",
+				"$(SRCROOT)/Italian.lproj/Skim Help/version.texi",
 			);
 			outputPaths = (
 				"$(SRCROOT)/English.lproj/Skim Help/Skim Help.html",
