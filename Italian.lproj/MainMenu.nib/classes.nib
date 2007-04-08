@@ -1,0 +1,68 @@
+{
+    IBClasses = (
+        {
+            ACTIONS = {
+                addBookmark = id; 
+                alternatePaste = id; 
+                changeAnnotationMode = id; 
+                changeDisplayBox = id; 
+                changeLeftSidePaneState = id; 
+                changeRightSidePaneState = id; 
+                changeToolMode = id; 
+                createNewNote = id; 
+                displayCropBox = id; 
+                displayFacingPages = id; 
+                displayMediaBox = id; 
+                displaySinglePages = id; 
+                doGoBack = id; 
+                doGoForward = id; 
+                doGoToNextPage = id; 
+                doGoToPage = id; 
+                doGoToPreviousPage = id; 
+                doZoomIn = id; 
+                doZoomOut = id; 
+                doZoomToActualSize = id; 
+                doZoomToFit = id; 
+                editBookmarks = id; 
+                editNote = id; 
+                getInfo = id; 
+                newDocumentFromClipboard = id; 
+                password = id; 
+                performFit = id; 
+                pickColor = id; 
+                readNotes = id; 
+                rotateAllLeft = id; 
+                rotateAllRight = id; 
+                rotateLeft = id; 
+                rotateRight = id; 
+                saveArchive = id; 
+                savePDFSettingToDefaults = id; 
+                takeSnapshot = id; 
+                toggleAutoScale = id; 
+                toggleDisplayAsBook = id; 
+                toggleDisplayContinuous = id; 
+                toggleDisplayPageBreaks = id; 
+                toggleFullScreen = id; 
+                toggleLeftSidePane = id; 
+                togglePresentation = id; 
+                toggleReadingBar = id; 
+                toggleRightSidePane = id; 
+            }; 
+            CLASS = FirstResponder; 
+            LANGUAGE = ObjC; 
+            SUPERCLASS = NSObject; 
+        }, 
+        {
+            ACTIONS = {checkForUpdates = id; showPreferencePanel = id; showReleaseNotes = id; }; 
+            CLASS = SKApplicationController; 
+            LANGUAGE = ObjC; 
+            SUPERCLASS = NSObject; 
+        }, 
+        {
+            CLASS = SKDocumentController; 
+            LANGUAGE = ObjC; 
+            SUPERCLASS = NSDocumentController; 
+        }
+    ); 
+    IBVersion = 1; 
+}
