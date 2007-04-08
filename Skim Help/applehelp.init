@@ -15,6 +15,10 @@ $style_map{'sansserif'} = {};
 $simple_map{'*'} = '<br/>';
 # &quot; is not in html 3.2
 
+# undefined localizations
+$LANGUAGES->{'it'} = $LANGUAGES->{'en'};
+$LANGUAGES->{'it'}->{'cover (top) of document'} = '';
+
 # External stylesheet:
 $CSS_LINES = "<link href=\"sty/skimhelp.css\" rel=\"stylesheet\" media=\"all\" />";
 
@@ -22,7 +26,6 @@ $CSS_LINES = "<link href=\"sty/skimhelp.css\" rel=\"stylesheet\" media=\"all\" /
 @SECTION_BUTTONS = @MISC_BUTTONS;
 @CHAPTER_BUTTONS = @MISC_BUTTONS;
 @NODE_FOOTER_BUTTONS = ();
-
 # horizontal rules
 $SMALL_RULE = '';
 $DEFAULT_RULE = '';
