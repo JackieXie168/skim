@@ -1171,6 +1171,10 @@ static NSString *SKDocumentToolbarNotesPaneItemIdentifier = @"SKDocumentToolbarN
     [pdfView setFrame:[[pdfView superview] bounds]];
 }
 
+- (void)activityTimerFired:(NSTimer *)timer {
+    UpdateSystemActivity(UsrActivity);
+}
+
 - (void)enterPresentationMode {
     NSScrollView *scrollView = [[pdfView documentView] enclosingScrollView];
     // Set up presentation mode
@@ -1194,10 +1198,17 @@ static NSString *SKDocumentToolbarNotesPaneItemIdentifier = @"SKDocumentToolbarN
     [fullScreenWindow setBackgroundColor:backgroundColor];
     [fullScreenWindow setLevel:NSPopUpMenuWindowLevel];
     
+    // periodically send a 'user activity' to prevent sleep mode and screensaver from being activated
+    activityTimer = [[NSTimer scheduledTimerWithTimeInterval:30 target:self selector:@selector(activityTimerFired:) userInfo:NULL repeats:YES] retain];
+    
     isPresentation = YES;
 }
 
 - (void)exitPresentationMode {
+    [activityTimer invalidate];
+    [activityTimer release];
+    activityTimer = nil;
+    
     NSScrollView *scrollView = [[pdfView documentView] enclosingScrollView];
     [pdfView setDisplayMode:savedState.displayMode];
     if (savedState.autoScales) {
