@@ -24,6 +24,8 @@
         <false/>
         <key>SKReopenLastOpenFiles</key>
         <true/>
+        <key>SKRememberLastPageViewed</key>
+        <false/>
         <key>SKSearchHighlightColor</key>
         <data>
 	BAt0eXBlZHN0cmVhbYED6IQBQISEhAdOU0NvbG9yAISECE5TT2JqZWN0AIWEAWMBhARm
@@ -122,6 +124,7 @@
         <string>SKOpenContentsPaneOnlyForTOC</string>
         <string>SKOpenFilesMaximized</string>
         <string>SKReopenLastOpenFiles</string>
+        <string>SKRememberLastPageViewed</string>
         <string>SKSearchHighlightColor</string>
         <string>SKShouldHighlightSearchResults</string>
         <string>SKSnapshotsOnTop</string>
