@@ -930,7 +930,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "rm -f /tmp/Skim.dmg\nunzip ${SOURCE_ROOT}/Skim.dmg.zip\n/bin/cp ${SOURCE_ROOT}/Skim.dmg /tmp\n/usr/bin/hdiutil attach /tmp/Skim.dmg\n${SYSTEM_DEVELOPER_TOOLS}/CpMac -r ${BUILT_PRODUCTS_DIR}/Skim.app /Volumes/Skim\nosascript -e \"tell application \\\"Finder\\\" to set the position of application file \\\"Skim.app\\\" of disk named \\\"Skim\\\" to {90, 206}\" && \\\nsleep 7; \\\n/usr/sbin/diskutil eject /Volumes/Skim\n/usr/bin/hdiutil convert /tmp/Skim.dmg -format UDZO -imagekey zlib-level=9 -o $HOME/Desktop/Skim.dmg\n/usr/bin/hdiutil internet-enable -YES $HOME/Desktop/Skim.dmg\nexit 0";
+			shellScript = "rm -f /tmp/Skim.dmg\nunzip ${SOURCE_ROOT}/Skim.dmg.zip\n/bin/cp ${SOURCE_ROOT}/Skim.dmg /tmp\n/usr/bin/hdiutil attach /tmp/Skim.dmg\n${SYSTEM_DEVELOPER_TOOLS}/CpMac -r ${BUILT_PRODUCTS_DIR}/Skim.app /Volumes/Skim\nosascript -e \"tell application \\\"Finder\\\" to set the position of application file \\\"Skim.app\\\" of disk named \\\"Skim\\\" to {90, 206}\" && \\\nsleep 7; \\\n/usr/sbin/diskutil eject /Volumes/Skim\n/usr/bin/hdiutil resize -size `/usr/bin/hdiutil resize /tmp/Skim.dmg | cut -f -1 -d \" \" -`b /tmp/Skim.dmg\n/usr/bin/hdiutil convert /tmp/Skim.dmg -format UDZO -imagekey zlib-level=9 -o $HOME/Desktop/Skim.dmg\n/usr/bin/hdiutil internet-enable -YES $HOME/Desktop/Skim.dmg\nexit 0";
 		};
 /* End PBXShellScriptBuildPhase section */
 
