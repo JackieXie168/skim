@@ -17,7 +17,7 @@ $simple_map{'*'} = '<br/>';
 
 # undefined localizations
 $LANGUAGES->{'it'} = $LANGUAGES->{'en'};
-$LANGUAGES->{'it'}->{'cover (top) of document'} = '';
+$LANGUAGES->{'it'}->{'cover (top) of document'} = 'copertina (in testa) del documento';
 
 # External stylesheet:
 $CSS_LINES = "<link href=\"sty/skimhelp.css\" rel=\"stylesheet\" media=\"all\" />";
