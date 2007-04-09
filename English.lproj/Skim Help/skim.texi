@@ -109,6 +109,7 @@ Control-Cmd-\key\
 @c ======================================================================================
 
 @documentlanguage en
+@documentencoding UTF-8
 
 @settitle Skim Help
 
