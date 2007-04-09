@@ -132,9 +132,13 @@
     
     PDFSelection *selection = [page selectionForRect:bounds];
     if ([selection string]) {
-        float top = NSMaxY([selection boundsForPage:page]);
-        if (top > NSMaxY(rect))
+        NSRect selBounds = [selection boundsForPage:page];
+        float top = fmax(NSMaxY(selBounds), NSMinX(selBounds) + NSHeight(rect));
+        float left = fmin(NSMinX(selBounds), NSMaxX(bounds) - NSWidth(rect));
+        if (top < NSMaxY(rect))
             rect.origin.y = top - NSHeight(rect);
+        if (left > NSMinX(rect))
+            rect.origin.x = left;
     }
     
     [imageView setFrameSize:[image size]];
