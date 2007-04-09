@@ -45,6 +45,7 @@ extern NSString *SKLastVersionLaunchedKey;
 extern NSString *SKOpenContentsPaneOnlyForTOCKey;
 extern NSString *SKOpenFilesMaximizedKey;
 extern NSString *SKReopenLastOpenFilesKey;
+extern NSString *SKRememberLastPageViewedKey;
 extern NSString *SKSearchHighlightColorKey;
 extern NSString *SKShouldHighlightSearchResultsKey;
 extern NSString *SKSnapshotsOnTopKey;
