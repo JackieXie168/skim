@@ -128,7 +128,7 @@
             [[NSUserDefaultsController sharedUserDefaultsController] revertToInitialValues:nil];
             return;
         } else if ([tabID isEqualToString:@"general"]) {
-            keys = [NSArray arrayWithObjects:SKReopenLastOpenFilesKey, SKOpenFilesMaximizedKey, SKOpenContentsPaneOnlyForTOCKey, SKSnapshotsOnTopKey, SKUpdateCheckIntervalKey, SKAutoCheckFileUpdateKey, nil];
+            keys = [NSArray arrayWithObjects:SKReopenLastOpenFilesKey, SKOpenFilesMaximizedKey, SKOpenContentsPaneOnlyForTOCKey, SKRememberLastPageViewedKey, SKSnapshotsOnTopKey, SKUpdateCheckIntervalKey, SKAutoCheckFileUpdateKey, nil];
         } else if ([tabID isEqualToString:@"display"]) {
             keys = [NSArray arrayWithObjects:SKThumbnailSizeKey, SKSnapshotThumbnailSizeKey, SKShouldAntiAliasKey, SKGreekingThresholdKey, nil];
         } else if ([tabID isEqualToString:@"colors"]) {
