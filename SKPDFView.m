@@ -176,6 +176,10 @@ NSString *SKSkimNotePboardType = @"SKSkimNotePboardType";
     [super dealloc];
 }
 
+// Fix a bug in Tiger's PDFKit, tooltips lead to a crash when you reload a PDFDocument in a PDFView
+// see http://www.cocoabuilder.com/archive/message/cocoa/2007/3/12/180190
+- (void)scheduleAddingToolips {}
+
 #pragma mark Drawing
 
 - (void)drawPage:(PDFPage *)pdfPage {
