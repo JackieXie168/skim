@@ -41,6 +41,7 @@
 
 @interface SKBookmarkController : NSWindowController {
     NSMutableArray *bookmarks;
+    NSMutableArray *recentDocuments;
 }
 
 + (id)sharedBookmarkController;
@@ -54,6 +55,10 @@
 - (void)addBookmarkForPath:(NSString *)path pageIndex:(unsigned)pageIndex label:(NSString *)label;
 - (void)saveBookmarks;
 - (NSString *)bookmarksFilePath;
+
+- (NSArray *)recentDocuments;
+- (void)addRecentDocumentForPath:(NSString *)path pageIndex:(unsigned)pageIndex;
+- (unsigned int)pageIndexForRecentDocumentAtPath:(NSString *)path;
 
 @end
 

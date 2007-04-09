@@ -57,6 +57,7 @@
 - (id)init {
     if (self = [super init]) {
         bookmarks = [[NSMutableArray alloc] init];
+        recentDocuments = [[NSMutableArray alloc] init];
         
         NSData *data = [NSData dataWithContentsOfFile:[self bookmarksFilePath]];
         if (data) {
@@ -72,6 +73,7 @@
                 [error release];
             } else if ([plist isKindOfClass:[NSDictionary class]]) {
                 [bookmarks addObjectsFromArray:[plist objectForKey:@"bookmarks"]];
+                [recentDocuments addObjectsFromArray:[plist objectForKey:@"recentDocuments"]];
             }
         }
     }
@@ -80,6 +82,7 @@
 
 - (void)dealloc {
     [bookmarks release];
+    [recentDocuments release];
     [super dealloc];
 }
 
@@ -119,8 +122,43 @@
     [[self mutableArrayValueForKey:@"bookmarks"] addObject:bm];
 }
 
+- (NSArray *)recentDocuments {
+    return recentDocuments;
+}
+
+- (void)addRecentDocumentForPath:(NSString *)path pageIndex:(unsigned)pageIndex {
+    if (path == nil)
+        return;
+    NSArray *paths = [recentDocuments valueForKey:@"path"];
+    unsigned int index = [paths indexOfObject:path];
+    
+    if (index == NSNotFound) {
+        paths = [recentDocuments valueForKeyPath:@"fullPathNoUI"];
+        index = [paths indexOfObject:path];
+    }
+    if (index != NSNotFound)
+        [recentDocuments removeObjectAtIndex:index];
+    NSData *data = [[BDAlias aliasWithPath:path] aliasData];
+    NSMutableDictionary *bm = [NSMutableDictionary dictionaryWithObjectsAndKeys:path, @"path", [NSNumber numberWithUnsignedInt:pageIndex], @"pageIndex", data, @"_BDAlias", nil];
+    [recentDocuments addObject:bm];
+    [self saveBookmarks];
+}
+
+- (unsigned int)pageIndexForRecentDocumentAtPath:(NSString *)path {
+    if (path == nil)
+        return NSNotFound;
+    NSArray *paths = [recentDocuments valueForKey:@"path"];
+    unsigned int index = [paths indexOfObject:path];
+    
+    if (index == NSNotFound) {
+        paths = [recentDocuments valueForKeyPath:@"fullPathNoUI"];
+        index = [paths indexOfObject:path];
+    }
+    return index == NSNotFound ? NSNotFound : [[[recentDocuments objectAtIndex:index] objectForKey:@"pageIndex"] unsignedIntValue];
+}
+
 - (void)saveBookmarks {
-    NSDictionary *bookmarksDictionary = [NSDictionary dictionaryWithObjectsAndKeys:bookmarks, @"bookmarks", nil];
+    NSDictionary *bookmarksDictionary = [NSDictionary dictionaryWithObjectsAndKeys:bookmarks, @"bookmarks", recentDocuments, @"recentDocuments", nil];
     NSString *error = nil;
     NSPropertyListFormat format = NSPropertyListXMLFormat_v1_0;
     NSData *data = [NSPropertyListSerialization dataFromPropertyList:bookmarksDictionary format:format errorDescription:&error];

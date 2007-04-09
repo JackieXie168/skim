@@ -46,6 +46,7 @@ NSString *SKLastVersionLaunchedKey = @"SKLastVersionLaunched";
 NSString *SKOpenContentsPaneOnlyForTOCKey = @"SKOpenContentsPaneOnlyForTOC";
 NSString *SKOpenFilesMaximizedKey = @"SKOpenFilesMaximized";
 NSString *SKReopenLastOpenFilesKey = @"SKReopenLastOpenFiles";
+NSString *SKRememberLastPageViewedKey = @"SKRememberLastPageViewed";
 NSString *SKSearchHighlightColorKey = @"SKSearchHighlightColor";
 NSString *SKShouldHighlightSearchResultsKey = @"SKShouldHighlightSearchResults";
 NSString *SKSnapshotsOnTopKey = @"SKSnapshotsOnTop";

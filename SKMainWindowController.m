@@ -277,6 +277,12 @@ static NSString *SKDocumentToolbarNotesPaneItemIdentifier = @"SKDocumentToolbarN
     
     [pdfView setBackgroundColor:[NSUnarchiver unarchiveObjectWithData:[[NSUserDefaults standardUserDefaults] dataForKey:SKBackgroundColorKey]]];
     
+    if ([[NSUserDefaults standardUserDefaults] boolForKey:SKRememberLastPageViewedKey]) {
+        unsigned int pageIndex = [[SKBookmarkController sharedBookmarkController] pageIndexForRecentDocumentAtPath:[[[self document] fileURL] path]];
+        if (pageIndex != NSNotFound)
+            [pdfView goToPage:[[pdfView document] pageAtIndex:pageIndex]];
+    }
+    
     [[self window] makeFirstResponder:[pdfView documentView]];
     
     [self handleChangedHistoryNotification:nil];
@@ -419,13 +425,22 @@ static NSString *SKDocumentToolbarNotesPaneItemIdentifier = @"SKDocumentToolbarN
     return setup;
 }
 
-- (void)windowDidBecomeKey:(NSNotification *)aNotification {
+- (void)windowDidBecomeKey:(NSNotification *)notification {
     PDFAnnotation *annotation = [pdfView activeAnnotation];
     
     if ([annotation isNoteAnnotation]) {
         if ([annotation respondsToSelector:@selector(font)])
             [[NSFontManager sharedFontManager] setSelectedFont:[(PDFAnnotationFreeText *)annotation font] isMultiple:NO];
         [[NSColorPanel sharedColorPanel] setColor:[annotation color]];
+    }
+}
+
+- (void)windowWillClose:(NSNotification *)notification {
+    if ([[notification object] isEqual:[self window]]) {
+        unsigned int pageIndex = [[pdfView document] indexForPage:[pdfView currentPage]];
+        NSString *path = [[[self document] fileURL] path];
+        if (pageIndex != NSNotFound && path)
+            [[SKBookmarkController sharedBookmarkController] addRecentDocumentForPath:path pageIndex:pageIndex];
     }
 }
 
