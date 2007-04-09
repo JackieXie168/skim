@@ -39,6 +39,7 @@
 #import "SKBookmarkController.h"
 #import "BDAlias.h"
 
+#define MAX_RECENT_DOCUMENTS_COUNT 50
 
 @implementation SKBookmarkController
 
@@ -140,7 +141,9 @@
         [recentDocuments removeObjectAtIndex:index];
     NSData *data = [[BDAlias aliasWithPath:path] aliasData];
     NSMutableDictionary *bm = [NSMutableDictionary dictionaryWithObjectsAndKeys:path, @"path", [NSNumber numberWithUnsignedInt:pageIndex], @"pageIndex", data, @"_BDAlias", nil];
-    [recentDocuments addObject:bm];
+    [recentDocuments insertObject:bm atIndex:0];
+    if ([recentDocuments count] > MAX_RECENT_DOCUMENTS_COUNT)
+        [recentDocuments removeLastObject];
     [self saveBookmarks];
 }
 
