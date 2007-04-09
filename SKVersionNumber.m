@@ -48,7 +48,7 @@
                 // Failed to scan integer
                 break;
             
-            [mutableVersionString appendFormat: @"%@%C", c == '.' ? @"." : @"", component];
+            [mutableVersionString appendFormat: @"%@%i", c == '.' ? @"." : @"", component];
             
             componentCount++;
             components = realloc(components, sizeof(*components) * componentCount);
