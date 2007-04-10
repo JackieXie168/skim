@@ -384,6 +384,7 @@
 		CEE106590BCBBE1200BF2D3E /* English */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = English; path = English.lproj/NotesDocument.nib; sourceTree = "<group>"; };
 		CEE107380BCBCA3200BF2D3E /* Dutch */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = Dutch; path = Dutch.lproj/NotesDocument.nib; sourceTree = "<group>"; };
 		CEE112610BCBF51900BF2D3E /* Sparkle.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Sparkle.framework; path = vendorsrc/Sparkle.framework; sourceTree = "<group>"; };
+		CEE11EF50BCC262800BF2D3E /* Italian */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = Italian; path = Italian.lproj/NotesDocument.nib; sourceTree = "<group>"; };
 		CEF3BF750B99CA2900E12E3D /* skimnotes */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = skimnotes; sourceTree = BUILT_PRODUCTS_DIR; };
 		CEF3BF850B99CAD300E12E3D /* skimnotes.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = skimnotes.m; sourceTree = "<group>"; };
 		CEF7071E0B8F8EFC003A2771 /* English */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = English; path = English.lproj/SnapshotWindow.nib; sourceTree = "<group>"; };
@@ -1187,6 +1188,7 @@
 			children = (
 				CEE106590BCBBE1200BF2D3E /* English */,
 				CEE107380BCBCA3200BF2D3E /* Dutch */,
+				CEE11EF50BCC262800BF2D3E /* Italian */,
 			);
 			name = NotesDocument.nib;
 			sourceTree = "<group>";
