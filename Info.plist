@@ -46,6 +46,28 @@
 		<dict>
 			<key>CFBundleTypeExtensions</key>
 			<array>
+				<string>skim</string>
+			</array>
+			<key>CFBundleTypeIconFile</key>
+			<string>NoteDocument</string>
+			<key>CFBundleTypeName</key>
+			<string>Skim Notes</string>
+			<key>CFBundleTypeRole</key>
+			<string>Editor</string>
+			<key>LSTypeIsPackage</key>
+			<false/>
+			<key>NSDocumentClass</key>
+			<string>SKNotesDocument</string>
+			<key>NSExportableAs</key>
+			<array>
+				<string>Notes as RTF</string>
+			</array>
+			<key>NSPersistentStoreTypeKey</key>
+			<string>Binary</string>
+		</dict>
+		<dict>
+			<key>CFBundleTypeExtensions</key>
+			<array>
 				<string>ai</string>
 				<string>AI</string>
 			</array>
@@ -189,24 +211,6 @@
 			<array>
 				<string>com.adobe.pdf</string>
 			</array>
-			<key>LSTypeIsPackage</key>
-			<false/>
-			<key>NSDocumentClass</key>
-			<string>SKDocument</string>
-			<key>NSPersistentStoreTypeKey</key>
-			<string>Binary</string>
-		</dict>
-		<dict>
-			<key>CFBundleTypeExtensions</key>
-			<array>
-				<string>skim</string>
-			</array>
-			<key>CFBundleTypeIconFile</key>
-			<string>NoteDocument</string>
-			<key>CFBundleTypeName</key>
-			<string>Skim Notes</string>
-			<key>CFBundleTypeRole</key>
-			<string>None</string>
 			<key>LSTypeIsPackage</key>
 			<false/>
 			<key>NSDocumentClass</key>

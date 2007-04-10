@@ -42,6 +42,14 @@ extern NSString *SKDocumentErrorDomain;
 
 extern NSString *SKDocumentWillSaveNotification;
 
+extern NSString *SKPDFDocumentType;
+extern NSString *SKEmbeddedPDFDocumentType;
+extern NSString *SKBarePDFDocumentType;
+extern NSString *SKNotesDocumentType;
+extern NSString *SKNotesRTFDocumentType;
+extern NSString *SKPostScriptDocumentType;
+
+
 @class PDFDocument, SKMainWindowController, SKPDFView;
 
 @interface SKDocument : NSDocument
