@@ -327,6 +327,7 @@ NSString *SKDocumentWillSaveNotification = @"SKDocumentWillSaveNotification";
             if (outError) *outError = error;
             NSLog(@"%@: %@", self, error);
         }
+        [fm setExtendedAttributeNamed:@"net_sourceforge_skim-app_rtf_notes" toValue:[self notesRTFData] atPath:path options:0 error:NULL];
     }
     return success;
 }
