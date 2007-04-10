@@ -53,6 +53,7 @@
 - (NSArray *)sizes;
 
 - (IBAction)changeDiscreteThumbnailSizes:(id)sender;
+- (IBAction)changeUpdateInterval:(id)sender;
 
 - (IBAction)resetAll:(id)sender;
 - (IBAction)resetCurrent:(id)sender;

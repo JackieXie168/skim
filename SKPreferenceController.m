@@ -39,7 +39,8 @@
 #import "SKPreferenceController.h"
 #import "SKStringConstants.h"
 #import "NSUserDefaultsController_SKExtensions.h"
-
+#import "SKApplicationController.h"
+#import <Sparkle/Sparkle.h>
 
 @implementation SKPreferenceController
 
@@ -109,6 +110,12 @@
     [snapshotSizeSlider sizeToFit];
 }
 
+- (IBAction)changeUpdateInterval:(id)sender {
+    int checkInterval = [[sender selectedItem] tag];
+    if (checkInterval)
+       [[[NSApp delegate] updater] scheduleCheckWithInterval:checkInterval];
+}
+
 - (IBAction)resetNoteColors:(id)sender {
     [[NSUserDefaultsController sharedUserDefaultsController] revertToInitialValuesForKeys:
         [NSArray arrayWithObjects:SKFreeTextNoteColorKey, SKAnchoredNoteColorKey, SKCircleNoteColorKey, SKSquareNoteColorKey, 
@@ -124,11 +131,8 @@
     if (returnCode == NSAlertDefaultReturn) {
         NSString *tabID = (NSString *)contextInfo;
         NSArray *keys = nil;
-        if (tabID == nil) {
-            [[NSUserDefaultsController sharedUserDefaultsController] revertToInitialValues:nil];
-            return;
-        } else if ([tabID isEqualToString:@"general"]) {
-            keys = [NSArray arrayWithObjects:SKReopenLastOpenFilesKey, SKOpenFilesMaximizedKey, SKOpenContentsPaneOnlyForTOCKey, SKRememberLastPageViewedKey, SKSnapshotsOnTopKey, SKUpdateCheckIntervalKey, SKAutoCheckFileUpdateKey, nil];
+        if ([tabID isEqualToString:@"general"]) {
+            keys = [NSArray arrayWithObjects:SKReopenLastOpenFilesKey, SKOpenFilesMaximizedKey, SKOpenContentsPaneOnlyForTOCKey, SKRememberLastPageViewedKey, SKSnapshotsOnTopKey, SUCheckAtStartupKey, SUScheduledCheckIntervalKey, SKAutoCheckFileUpdateKey, nil];
         } else if ([tabID isEqualToString:@"display"]) {
             keys = [NSArray arrayWithObjects:SKThumbnailSizeKey, SKSnapshotThumbnailSizeKey, SKShouldAntiAliasKey, SKGreekingThresholdKey, nil];
         } else if ([tabID isEqualToString:@"colors"]) {
@@ -138,6 +142,13 @@
         }
         if (keys)
             [[NSUserDefaultsController sharedUserDefaultsController] revertToInitialValuesForKeys:keys];
+        else
+            [[NSUserDefaultsController sharedUserDefaultsController] revertToInitialValues:nil];
+        if (keys == nil || [keys containsObject:SUScheduledCheckIntervalKey]) {
+            int checkInterval = [[NSUserDefaults standardUserDefaults] integerForKey:SUScheduledCheckIntervalKey];
+            if (checkInterval)
+               [[[NSApp delegate] updater] scheduleCheckWithInterval:checkInterval];
+        }
     }
 }
 

@@ -273,5 +273,7 @@
 	<string>SKApplication</string>
 	<key>OSAScriptingDefinition</key>
 	<string>Skim.sdef</string>
+	<key>SUFeedURL</key>
+	<string>http://skim-app.sourceforge.net/skim.xml</string>
 </dict>
 </plist>

@@ -53,9 +53,15 @@
             SUPERCLASS = NSObject; 
         }, 
         {
-            ACTIONS = {checkForUpdates = id; showPreferencePanel = id; showReleaseNotes = id; }; 
+            ACTIONS = {
+                editBookmarks = id; 
+                openBookmark = id; 
+                showPreferencePanel = id; 
+                showReleaseNotes = id; 
+            }; 
             CLASS = SKApplicationController; 
             LANGUAGE = ObjC; 
+            OUTLETS = {updater = SUUpdater; }; 
             SUPERCLASS = NSObject; 
         }, 
         {

@@ -38,16 +38,20 @@
 
 #import <Cocoa/Cocoa.h>
 
+@class SUUpdater;
+
 @interface SKApplicationController : NSObject {
+    IBOutlet SUUpdater *updater;
 }
 
 + (void)setupDefaults;
 
-- (IBAction)checkForUpdates:(id)sender;
 - (IBAction)showPreferencePanel:(id)sender;
 - (IBAction)showReleaseNotes:(id)sender;
 
 - (IBAction)editBookmarks:(id)sender;
 - (IBAction)openBookmark:(id)sender;
+
+- (SUUpdater *)updater;
 
 @end

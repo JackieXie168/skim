@@ -7,7 +7,12 @@
             SUPERCLASS = NSObject; 
         }, 
         {
-            ACTIONS = {changeDiscreteThumbnailSizes = id; resetAll = id; resetCurrent = id; }; 
+            ACTIONS = {
+                changeDiscreteThumbnailSizes = id; 
+                changeUpdateInterval = id; 
+                resetAll = id; 
+                resetCurrent = id; 
+            }; 
             CLASS = SKPreferenceController; 
             LANGUAGE = ObjC; 
             OUTLETS = {
