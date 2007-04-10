@@ -39,14 +39,15 @@
 #import "SKApplicationController.h"
 #import "SKPreferenceController.h"
 #import "SKReleaseNotesController.h"
-#import "SKUpdateChecker.h"
 #import "SKStringConstants.h"
 #import "SKDocument.h"
 #import "SKMainWindowController.h"
 #import "SKBookmarkController.h"
 #import "BDAlias.h"
 #import "SKVersionNumber.h"
+#import "NSUserDefaultsController_SKExtensions.h"
 #import <Quartz/Quartz.h>
+#import <Sparkle/Sparkle.h>
 
 
 @implementation SKApplicationController
@@ -134,11 +135,6 @@ static BOOL fileIsInTrash(NSURL *fileURL)
         [self showReleaseNotes:nil];
         [[NSUserDefaults standardUserDefaults] setObject:versionString forKey:SKLastVersionLaunchedKey];
     }
-    [[SKUpdateChecker sharedChecker] scheduleUpdateCheckIfNeeded];
-}
-
-- (IBAction)checkForUpdates:(id)sender{
-    [[SKUpdateChecker sharedChecker] checkForUpdates:sender];  
 }
 
 - (IBAction)showPreferencePanel:(id)sender{
@@ -179,6 +175,10 @@ static BOOL fileIsInTrash(NSURL *fileURL)
         [item setTarget:self];
         [item setTag:i];
     }
+}
+
+- (SUUpdater *)updater {
+    return updater;
 }
 
 @end

@@ -114,6 +114,10 @@
 	BAt0eXBlZHN0cmVhbYED6IQBQISEhAdOU0NvbG9yAISECE5TT2JqZWN0AIWEAWMBhARm
 	ZmZmAQAAAYY=
 	</data>
+        <key>SUCheckAtStartup</key>
+        <false/>
+        <key>SUScheduledCheckInterval</key>
+        <integer>86400</integer>
     </dict>
 	<key>ResettableKeys</key>
 	<array>
@@ -148,6 +152,8 @@
         <string>SKUnderlineNoteColor</string>
         <string>SKStrikeOutNoteColor</string>
         <string>SKDefaultPDFDisplaySettings</string>
+        <string>SUCheckAtStartup</string>
+        <string>SUScheduledCheckInterval</string>
     </array>
 </dict>
 </plist>

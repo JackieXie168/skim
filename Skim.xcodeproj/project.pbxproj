@@ -137,12 +137,13 @@
 		CEA575FD0B9208B60003D2E7 /* SKOutlineView.m in Sources */ = {isa = PBXBuildFile; fileRef = CEA575FC0B9208B60003D2E7 /* SKOutlineView.m */; };
 		CEE106150BCBB72C00BF2D3E /* SKNotesDocument.m in Sources */ = {isa = PBXBuildFile; fileRef = CEE106140BCBB72C00BF2D3E /* SKNotesDocument.m */; };
 		CEE1065E0BCBBE1300BF2D3E /* NotesDocument.nib in Resources */ = {isa = PBXBuildFile; fileRef = CEE106580BCBBE1200BF2D3E /* NotesDocument.nib */; };
+		CEE112750BCBF51900BF2D3E /* Sparkle.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CEE112610BCBF51900BF2D3E /* Sparkle.framework */; };
+		CEE112780BCBF52C00BF2D3E /* Sparkle.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = CEE112610BCBF51900BF2D3E /* Sparkle.framework */; };
 		CEF3BF7E0B99CA4A00E12E3D /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2A37F4C5FDCFA73011CA2CEA /* Foundation.framework */; };
 		CEF3BF860B99CAD300E12E3D /* skimnotes.m in Sources */ = {isa = PBXBuildFile; fileRef = CEF3BF850B99CAD300E12E3D /* skimnotes.m */; };
 		CEF3C0210B99FF8F00E12E3D /* libbz2.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = F977319E0B939B7D002A7823 /* libbz2.dylib */; };
 		CEF3C0AE0B9A15E800E12E3D /* NSFileManager_ExtendedAttributes.m in Sources */ = {isa = PBXBuildFile; fileRef = CE5487BB0B35A20A00F8AFB6 /* NSFileManager_ExtendedAttributes.m */; };
 		CEF707240B8F8EFC003A2771 /* SnapshotWindow.nib in Resources */ = {isa = PBXBuildFile; fileRef = CEF7071D0B8F8EFC003A2771 /* SnapshotWindow.nib */; };
-		CEF7117E0B90B58F003A2771 /* SKUpdateChecker.m in Sources */ = {isa = PBXBuildFile; fileRef = CEF7117B0B90B58E003A2771 /* SKUpdateChecker.m */; };
 		CEF7117F0B90B58F003A2771 /* SKVersionNumber.m in Sources */ = {isa = PBXBuildFile; fileRef = CEF7117D0B90B58E003A2771 /* SKVersionNumber.m */; };
 		CEF711A10B90B714003A2771 /* NSUserDefaultsController_SKExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = CEF711A00B90B714003A2771 /* NSUserDefaultsController_SKExtensions.m */; };
 		CEF7175C0B90DEEF003A2771 /* ReleaseNotes.nib in Resources */ = {isa = PBXBuildFile; fileRef = CEF717560B90DEEF003A2771 /* ReleaseNotes.nib */; };
@@ -176,6 +177,19 @@
 			remoteInfo = Skim;
 		};
 /* End PBXContainerItemProxy section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		CEE112760BCBF52500BF2D3E /* CopyFiles */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 10;
+			files = (
+				CEE112780BCBF52C00BF2D3E /* Sparkle.framework in CopyFiles */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
 		089C1660FE840EACC02AAC07 /* English */ = {isa = PBXFileReference; fileEncoding = 10; lastKnownFileType = text.plist.strings; name = English; path = English.lproj/InfoPlist.strings; sourceTree = "<group>"; };
@@ -369,11 +383,10 @@
 		CEE106140BCBB72C00BF2D3E /* SKNotesDocument.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SKNotesDocument.m; sourceTree = "<group>"; };
 		CEE106590BCBBE1200BF2D3E /* English */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = English; path = English.lproj/NotesDocument.nib; sourceTree = "<group>"; };
 		CEE107380BCBCA3200BF2D3E /* Dutch */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = Dutch; path = Dutch.lproj/NotesDocument.nib; sourceTree = "<group>"; };
+		CEE112610BCBF51900BF2D3E /* Sparkle.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Sparkle.framework; path = vendorsrc/Sparkle.framework; sourceTree = "<group>"; };
 		CEF3BF750B99CA2900E12E3D /* skimnotes */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = skimnotes; sourceTree = BUILT_PRODUCTS_DIR; };
 		CEF3BF850B99CAD300E12E3D /* skimnotes.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = skimnotes.m; sourceTree = "<group>"; };
 		CEF7071E0B8F8EFC003A2771 /* English */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = English; path = English.lproj/SnapshotWindow.nib; sourceTree = "<group>"; };
-		CEF7117A0B90B58E003A2771 /* SKUpdateChecker.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = SKUpdateChecker.h; sourceTree = "<group>"; };
-		CEF7117B0B90B58E003A2771 /* SKUpdateChecker.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = SKUpdateChecker.m; sourceTree = "<group>"; };
 		CEF7117C0B90B58E003A2771 /* SKVersionNumber.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = SKVersionNumber.h; sourceTree = "<group>"; };
 		CEF7117D0B90B58E003A2771 /* SKVersionNumber.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = SKVersionNumber.m; sourceTree = "<group>"; };
 		CEF7119F0B90B714003A2771 /* NSUserDefaultsController_SKExtensions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NSUserDefaultsController_SKExtensions.h; sourceTree = "<group>"; };
@@ -409,6 +422,7 @@
 				455989F80B2662FF00E5419B /* Quartz.framework in Frameworks */,
 				F98E24BF0B702D9400914AF0 /* Carbon.framework in Frameworks */,
 				F977319F0B939B7D002A7823 /* libbz2.dylib in Frameworks */,
+				CEE112750BCBF51900BF2D3E /* Sparkle.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -428,6 +442,10 @@
 			isa = PBXGroup;
 			children = (
 				1058C7A7FEA54F5311CA2CBB /* Cocoa.framework */,
+				F98E24BE0B702D9400914AF0 /* Carbon.framework */,
+				455989F70B2662FF00E5419B /* Quartz.framework */,
+				CEE112610BCBF51900BF2D3E /* Sparkle.framework */,
+				F977319E0B939B7D002A7823 /* libbz2.dylib */,
 			);
 			name = "Linked Frameworks";
 			sourceTree = "<group>";
@@ -521,9 +539,6 @@
 		2A37F4C3FDCFA73011CA2CEA /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
-				F977319E0B939B7D002A7823 /* libbz2.dylib */,
-				F98E24BE0B702D9400914AF0 /* Carbon.framework */,
-				455989F70B2662FF00E5419B /* Quartz.framework */,
 				1058C7A6FEA54F5311CA2CBB /* Linked Frameworks */,
 				1058C7A8FEA54F5311CA2CBB /* Other Frameworks */,
 			);
@@ -571,8 +586,6 @@
 			children = (
 				CEF7175D0B90DF10003A2771 /* SKReleaseNotesController.h */,
 				CEF7175E0B90DF10003A2771 /* SKReleaseNotesController.m */,
-				CEF7117A0B90B58E003A2771 /* SKUpdateChecker.h */,
-				CEF7117B0B90B58E003A2771 /* SKUpdateChecker.m */,
 				CE0463C90B84D24300C11E4A /* SKApplication.h */,
 				CE0463CA0B84D24300C11E4A /* SKApplication.m */,
 				4530D8C70B27B04D007C59F4 /* SKApplicationController.h */,
@@ -762,6 +775,7 @@
 				8D15AC2B0486D014006FF6A4 /* Resources */,
 				8D15AC300486D014006FF6A4 /* Sources */,
 				8D15AC330486D014006FF6A4 /* Frameworks */,
+				CEE112760BCBF52500BF2D3E /* CopyFiles */,
 				CE4DA9060B9E17890039E89C /* ShellScript */,
 			);
 			buildRules = (
@@ -988,7 +1002,6 @@
 				CE0710170B89BDD600733CC8 /* BDSKCollapsibleView.m in Sources */,
 				CE0710180B89BDD600733CC8 /* BDSKContainerView.m in Sources */,
 				CE0710190B89BDD600733CC8 /* BDSKEdgeView.m in Sources */,
-				CEF7117E0B90B58F003A2771 /* SKUpdateChecker.m in Sources */,
 				CEF7117F0B90B58F003A2771 /* SKVersionNumber.m in Sources */,
 				CEF711A10B90B714003A2771 /* NSUserDefaultsController_SKExtensions.m in Sources */,
 				CEF7175F0B90DF10003A2771 /* SKReleaseNotesController.m in Sources */,
@@ -1215,6 +1228,11 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				COPY_PHASE_STRIP = NO;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(FRAMEWORK_SEARCH_PATHS_QUOTED_1)",
+				);
+				FRAMEWORK_SEARCH_PATHS_QUOTED_1 = "\"$(SRCROOT)/vendorsrc\"";
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_ENABLE_CPP_EXCEPTIONS = NO;
 				GCC_ENABLE_CPP_RTTI = NO;
@@ -1242,6 +1260,11 @@
 					ppc,
 					i386,
 				);
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(FRAMEWORK_SEARCH_PATHS_QUOTED_1)",
+				);
+				FRAMEWORK_SEARCH_PATHS_QUOTED_1 = "\"$(SRCROOT)/vendorsrc\"";
 				GCC_ENABLE_CPP_EXCEPTIONS = NO;
 				GCC_ENABLE_CPP_RTTI = NO;
 				GCC_ENABLE_OBJC_EXCEPTIONS = YES;
