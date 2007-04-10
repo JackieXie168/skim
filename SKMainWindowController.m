@@ -1573,6 +1573,8 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
 }
 
 - (void)displaySearchResultsForString:(NSString *)string {
+    if (NSWidth([leftSideContentBox frame]) <= 0.0)
+        [self toggleLeftSidePane:self];
     [searchField setStringValue:string];
     [self search:searchField];
 }
