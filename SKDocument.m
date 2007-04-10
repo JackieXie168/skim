@@ -55,12 +55,12 @@
 NSString *SKDocumentErrorDomain = @"SKDocumentErrorDomain";
 
 // See CFBundleTypeName in Info.plist
-static NSString *SKPDFDocumentType = nil; /* set to NSPDFPboardType, not @"NSPDFPboardType" */
-static NSString *SKEmbeddedPDFDocumentType = @"PDF With Embedded Notes";
-static NSString *SKBarePDFDocumentType = @"PDF Without Notes";
-static NSString *SKNotesDocumentType = @"Skim Notes";
-static NSString *SKNotesRTFDocumentType = @"Notes as RTF";
-static NSString *SKPostScriptDocumentType = @"PostScript document";
+NSString *SKPDFDocumentType = nil; /* set to NSPDFPboardType, not @"NSPDFPboardType" */
+NSString *SKEmbeddedPDFDocumentType = @"PDF With Embedded Notes";
+NSString *SKBarePDFDocumentType = @"PDF Without Notes";
+NSString *SKNotesDocumentType = @"Skim Notes";
+NSString *SKNotesRTFDocumentType = @"Notes as RTF";
+NSString *SKPostScriptDocumentType = @"PostScript document";
 
 NSString *SKDocumentWillSaveNotification = @"SKDocumentWillSaveNotification";
 

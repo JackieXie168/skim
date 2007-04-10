@@ -135,6 +135,8 @@
 		CEA575CE0B9206E60003D2E7 /* SKNoteOutlineView.m in Sources */ = {isa = PBXBuildFile; fileRef = CEA575CD0B9206E60003D2E7 /* SKNoteOutlineView.m */; };
 		CEA575E50B9207B80003D2E7 /* SKThumbnailTableView.m in Sources */ = {isa = PBXBuildFile; fileRef = CEA575E40B9207B80003D2E7 /* SKThumbnailTableView.m */; };
 		CEA575FD0B9208B60003D2E7 /* SKOutlineView.m in Sources */ = {isa = PBXBuildFile; fileRef = CEA575FC0B9208B60003D2E7 /* SKOutlineView.m */; };
+		CEE106150BCBB72C00BF2D3E /* SKNotesDocument.m in Sources */ = {isa = PBXBuildFile; fileRef = CEE106140BCBB72C00BF2D3E /* SKNotesDocument.m */; };
+		CEE1065E0BCBBE1300BF2D3E /* NotesDocument.nib in Resources */ = {isa = PBXBuildFile; fileRef = CEE106580BCBBE1200BF2D3E /* NotesDocument.nib */; };
 		CEF3BF7E0B99CA4A00E12E3D /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2A37F4C5FDCFA73011CA2CEA /* Foundation.framework */; };
 		CEF3BF860B99CAD300E12E3D /* skimnotes.m in Sources */ = {isa = PBXBuildFile; fileRef = CEF3BF850B99CAD300E12E3D /* skimnotes.m */; };
 		CEF3C0210B99FF8F00E12E3D /* libbz2.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = F977319E0B939B7D002A7823 /* libbz2.dylib */; };
@@ -363,6 +365,10 @@
 		CEA575E40B9207B80003D2E7 /* SKThumbnailTableView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SKThumbnailTableView.m; sourceTree = "<group>"; };
 		CEA575FB0B9208B60003D2E7 /* SKOutlineView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SKOutlineView.h; sourceTree = "<group>"; };
 		CEA575FC0B9208B60003D2E7 /* SKOutlineView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SKOutlineView.m; sourceTree = "<group>"; };
+		CEE106130BCBB72C00BF2D3E /* SKNotesDocument.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SKNotesDocument.h; sourceTree = "<group>"; };
+		CEE106140BCBB72C00BF2D3E /* SKNotesDocument.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SKNotesDocument.m; sourceTree = "<group>"; };
+		CEE106590BCBBE1200BF2D3E /* English */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = English; path = English.lproj/NotesDocument.nib; sourceTree = "<group>"; };
+		CEE107380BCBCA3200BF2D3E /* Dutch */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = Dutch; path = Dutch.lproj/NotesDocument.nib; sourceTree = "<group>"; };
 		CEF3BF750B99CA2900E12E3D /* skimnotes */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = skimnotes; sourceTree = BUILT_PRODUCTS_DIR; };
 		CEF3BF850B99CAD300E12E3D /* skimnotes.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = skimnotes.m; sourceTree = "<group>"; };
 		CEF7071E0B8F8EFC003A2771 /* English */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = English; path = English.lproj/SnapshotWindow.nib; sourceTree = "<group>"; };
@@ -492,6 +498,7 @@
 				2A37F4B6FDCFA73011CA2CEA /* MainMenu.nib */,
 				4530D81B0B27ACAC007C59F4 /* MainWindow.nib */,
 				CE5470010B32D96500F8AFB6 /* NoteWindow.nib */,
+				CEE106580BCBBE1200BF2D3E /* NotesDocument.nib */,
 				CEF7071D0B8F8EFC003A2771 /* SnapshotWindow.nib */,
 				CE9C42360B8B5633004AD8CF /* PreferenceWindow.nib */,
 				CE2DEB900B86206400D0DA12 /* FindPanel.nib */,
@@ -572,6 +579,8 @@
 				4530D8C80B27B04D007C59F4 /* SKApplicationController.m */,
 				2A37F4AEFDCFA73011CA2CEA /* SKDocument.h */,
 				2A37F4ACFDCFA73011CA2CEA /* SKDocument.m */,
+				CEE106130BCBB72C00BF2D3E /* SKNotesDocument.h */,
+				CEE106140BCBB72C00BF2D3E /* SKNotesDocument.m */,
 				4530D7ED0B27AAD6007C59F4 /* SKMainWindowController.h */,
 				4530D7EE0B27AAD6007C59F4 /* SKMainWindowController.m */,
 				4530D7E60B27AAB9007C59F4 /* SKSnapshotWindowController.h */,
@@ -878,6 +887,7 @@
 				CE54AA8F0BBC037400008750 /* ReleaseNotes.rtf in Resources */,
 				CE4F9DEE0BC1BE3A005BE0A1 /* Localizable.strings in Resources */,
 				CE67BB260BC44AC9007B6929 /* ZoomValues.strings in Resources */,
+				CEE1065E0BCBBE1300BF2D3E /* NotesDocument.nib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -990,6 +1000,7 @@
 				CE4A659F0BAB1598004AD07D /* SKBookmarkController.m in Sources */,
 				CE4A8BA20BB15980004AD07D /* NSWindowController_SKExtensions.m in Sources */,
 				CE4294A30BBD29120016FDC2 /* SKReadingBar.m in Sources */,
+				CEE106150BCBB72C00BF2D3E /* SKNotesDocument.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1156,6 +1167,15 @@
 				A489FDC90BC8E8FA00BA14DD /* Italian */,
 			);
 			name = PreferenceWindow.nib;
+			sourceTree = "<group>";
+		};
+		CEE106580BCBBE1200BF2D3E /* NotesDocument.nib */ = {
+			isa = PBXVariantGroup;
+			children = (
+				CEE106590BCBBE1200BF2D3E /* English */,
+				CEE107380BCBCA3200BF2D3E /* Dutch */,
+			);
+			name = NotesDocument.nib;
 			sourceTree = "<group>";
 		};
 		CEF7071D0B8F8EFC003A2771 /* SnapshotWindow.nib */ = {
