@@ -425,6 +425,13 @@ static NSString *SKDocumentToolbarNotesPaneItemIdentifier = @"SKDocumentToolbarN
     return setup;
 }
 
+- (NSString *)windowTitleForDocumentDisplayName:(NSString *)displayName {
+    if ([pdfView document])
+        return [NSString stringWithFormat:NSLocalizedString(@"%@ (%i pages)", @"Window title format"), displayName, [[pdfView document] pageCount]];
+    else
+        return displayName;
+}
+
 - (void)windowDidBecomeKey:(NSNotification *)notification {
     PDFAnnotation *annotation = [pdfView activeAnnotation];
     
