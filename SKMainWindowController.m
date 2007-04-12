@@ -220,6 +220,8 @@ static NSString *SKDocumentToolbarNotesPaneItemIdentifier = @"SKDocumentToolbarN
     
     [spinner setUsesThreadedAnimation:YES];
     
+    [self setupToolbar];
+    
     // we retain as we might replace it with the full screen window
     mainWindow = [[self window] retain];
     
@@ -231,8 +233,6 @@ static NSString *SKDocumentToolbarNotesPaneItemIdentifier = @"SKDocumentToolbarN
     NSSortDescriptor *contentsSortDescriptor = [[[NSSortDescriptor alloc] initWithKey:@"contents" ascending:YES] autorelease];
     [noteArrayController setSortDescriptors:[NSArray arrayWithObjects:indexSortDescriptor, contentsSortDescriptor, nil]];
     [snapshotArrayController setSortDescriptors:[NSArray arrayWithObjects:indexSortDescriptor, nil]];
-    
-    [self setupToolbar];
     
     if ([[NSUserDefaults standardUserDefaults] boolForKey:SKOpenFilesMaximizedKey])
         [[self window] setFrame:[[NSScreen mainScreen] visibleFrame] display:NO];
