@@ -102,6 +102,17 @@ static BOOL fileIsInTrash(NSURL *fileURL)
     return NO;
 }
 
+- (void)awakeFromNib {
+    NSMenu *viewMenu = [[[NSApp mainMenu] itemAtIndex:4] submenu];
+    int i, count = [viewMenu numberOfItems];
+    
+    for (i = 0; i < count; i++) {
+        NSMenuItem *menuItem = [viewMenu itemAtIndex:i];
+        if ([menuItem action] == @selector(changeLeftSidePaneState:) || [menuItem action] == @selector(changeRightSidePaneState:)) 
+            [menuItem setIndentationLevel:1];
+    }
+}
+
 - (BOOL)applicationShouldOpenUntitledFile:(NSApplication *)sender{
     
     if ([[NSUserDefaults standardUserDefaults] boolForKey:SKReopenLastOpenFilesKey]) {
