@@ -26,6 +26,8 @@
         <true/>
         <key>SKRememberLastPageViewed</key>
         <false/>
+        <key>SKAutoSaveSkimNotes</key>
+        <false/>
         <key>SKSearchHighlightColor</key>
         <data>
 	BAt0eXBlZHN0cmVhbYED6IQBQISEhAdOU0NvbG9yAISECE5TT2JqZWN0AIWEAWMBhARm
@@ -129,6 +131,7 @@
         <string>SKOpenFilesMaximized</string>
         <string>SKReopenLastOpenFiles</string>
         <string>SKRememberLastPageViewed</string>
+        <string>SKAutoSaveSkimNotes</string>
         <string>SKSearchHighlightColor</string>
         <string>SKShouldHighlightSearchResults</string>
         <string>SKSnapshotsOnTop</string>

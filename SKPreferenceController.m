@@ -132,7 +132,7 @@
         NSString *tabID = (NSString *)contextInfo;
         NSArray *keys = nil;
         if ([tabID isEqualToString:@"general"]) {
-            keys = [NSArray arrayWithObjects:SKReopenLastOpenFilesKey, SKOpenFilesMaximizedKey, SKOpenContentsPaneOnlyForTOCKey, SKRememberLastPageViewedKey, SKSnapshotsOnTopKey, SUCheckAtStartupKey, SUScheduledCheckIntervalKey, SKAutoCheckFileUpdateKey, nil];
+            keys = [NSArray arrayWithObjects:SKReopenLastOpenFilesKey, SKOpenFilesMaximizedKey, SKOpenContentsPaneOnlyForTOCKey, SKRememberLastPageViewedKey, SKAutoSaveSkimNotesKey, SKSnapshotsOnTopKey, SUCheckAtStartupKey, SUScheduledCheckIntervalKey, SKAutoCheckFileUpdateKey, nil];
         } else if ([tabID isEqualToString:@"display"]) {
             keys = [NSArray arrayWithObjects:SKThumbnailSizeKey, SKSnapshotThumbnailSizeKey, SKShouldAntiAliasKey, SKGreekingThresholdKey, nil];
         } else if ([tabID isEqualToString:@"colors"]) {
