@@ -135,6 +135,35 @@ NSString *SKDocumentWillSaveNotification = @"SKDocumentWillSaveNotification";
             [self updateChangeCount:NSChangeCleared];
             [lastChangedDate release];
             lastChangedDate = [[[[NSFileManager defaultManager] fileAttributesAtPath:[absoluteURL path] traverseLink:YES] fileModificationDate] retain];
+            
+            if ([[NSUserDefaults standardUserDefaults] boolForKey:SKAutoSaveSkimNotesKey]) {
+                NSString *notesPath = [[[absoluteURL path] stringByDeletingPathExtension] stringByAppendingPathExtension:@"skim"];
+                NSFileManager *fm = [NSFileManager defaultManager];
+                BOOL canMove = YES;
+                BOOL fileExists = [fm fileExistsAtPath:notesPath];
+                
+                if (fileExists && (saveOperation == NSSaveAsOperation || saveOperation == NSSaveToOperation)) {
+                    NSAlert *alert = [NSAlert alertWithMessageText:[NSString stringWithFormat:NSLocalizedString(@"\"%@\" already exists. Do you want to replace it?", @"Message in alert dialog"), [notesPath lastPathComponent]]
+                                                     defaultButton:NSLocalizedString(@"Save", @"Button title")
+                                                   alternateButton:NSLocalizedString(@"Cancel", @"Button title")
+                                                       otherButton:nil
+                                         informativeTextWithFormat:NSLocalizedString(@"A file or folder with the same name already exists in %@. Replacing it will overwrite its current contents.", @"Informative text in alert dialog"), [[notesPath stringByDeletingLastPathComponent] lastPathComponent]];
+                    
+                    canMove = NSAlertDefaultReturn == [alert runModal];
+                }
+                
+                if (canMove) {
+                    NSString *tmpPath = [NSTemporaryDirectory() stringByAppendingPathComponent:[[NSProcessInfo processInfo] globallyUniqueString]];
+                    if ([self writeToURL:[NSURL fileURLWithPath:tmpPath] ofType:SKNotesDocumentType error:NULL]) {
+                        if (fileExists)
+                            canMove = [fm removeFileAtPath:notesPath handler:nil];
+                        if (canMove)
+                            [fm movePath:tmpPath toPath:notesPath handler:nil];
+                        else
+                            [fm removeFileAtPath:tmpPath handler:nil];
+                    }
+                }
+            }
         }
     }
     
