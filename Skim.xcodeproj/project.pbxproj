@@ -773,6 +773,7 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = C05733C708A9546B00998B17 /* Build configuration list for PBXNativeTarget "Skim" */;
 			buildPhases = (
+				CEE1383C0BCEA63F00BF2D3E /* ShellScript */,
 				8D15AC2B0486D014006FF6A4 /* Resources */,
 				8D15AC300486D014006FF6A4 /* Sources */,
 				8D15AC330486D014006FF6A4 /* Frameworks */,
@@ -956,6 +957,19 @@
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
 			shellScript = "rm -f /tmp/Skim.dmg\nunzip ${SOURCE_ROOT}/Skim.dmg.zip\n/bin/cp ${SOURCE_ROOT}/Skim.dmg /tmp\n/usr/bin/hdiutil attach /tmp/Skim.dmg\n${SYSTEM_DEVELOPER_TOOLS}/CpMac -r ${BUILT_PRODUCTS_DIR}/Skim.app /Volumes/Skim\nosascript -e \"tell application \\\"Finder\\\" to set the position of application file \\\"Skim.app\\\" of disk named \\\"Skim\\\" to {90, 206}\" && \\\nsleep 7; \\\n/usr/sbin/diskutil eject /Volumes/Skim\n/usr/bin/hdiutil resize -size `/usr/bin/hdiutil resize /tmp/Skim.dmg | cut -f -1 -d \" \" -`b /tmp/Skim.dmg\n/usr/bin/hdiutil convert /tmp/Skim.dmg -format UDZO -imagekey zlib-level=9 -o $HOME/Desktop/Skim.dmg\n/usr/bin/hdiutil internet-enable -YES $HOME/Desktop/Skim.dmg\nexit 0";
+		};
+		CEE1383C0BCEA63F00BF2D3E /* ShellScript */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 8;
+			files = (
+			);
+			inputPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 1;
+			shellPath = /bin/sh;
+			shellScript = "#\n# Run the genstrings build phase\n# This takes a while to generate, so it's not worth\n# the wait for development builds.\n#\ncd ${SOURCE_ROOT}\nif [ -f \"English.lproj/Localizable.strings\" ]; then\nmv English.lproj/Localizable.strings English.lproj/Localizable.strings.bak \nfi\nif [ -f \"English.lproj/ZoomValues.strings\" ]; then\nmv English.lproj/ZoomValues.strings English.lproj/ZoomValues.strings.bak \nfi\n/usr/bin/genstrings -o ${SOURCE_ROOT}/English.lproj `/usr/bin/find . -type file -name \"*.[mh]\"`";
 		};
 /* End PBXShellScriptBuildPhase section */
 
