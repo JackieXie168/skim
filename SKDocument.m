@@ -128,43 +128,46 @@ NSString *SKDocumentWillSaveNotification = @"SKDocumentWillSaveNotification";
 
 - (BOOL)saveToURL:(NSURL *)absoluteURL ofType:(NSString *)typeName forSaveOperation:(NSSaveOperationType)saveOperation error:(NSError **)outError{
     BOOL success = [super saveToURL:absoluteURL ofType:typeName forSaveOperation:saveOperation error:outError];
-    // we check for notes and save a .skim as well:
+    // we check for notes and may save a .skim as well:
     if (success && [typeName isEqualToString:SKPDFDocumentType]) {
-       if (saveOperation == NSSaveOperation || saveOperation == NSSaveAsOperation) {
-            [self saveNotesToExtendedAttributesAtURL:absoluteURL error:NULL];
-            [self updateChangeCount:NSChangeCleared];
-            [lastChangedDate release];
-            lastChangedDate = [[[[NSFileManager defaultManager] fileAttributesAtPath:[absoluteURL path] traverseLink:YES] fileModificationDate] retain];
+        NSFileManager *fm = [NSFileManager defaultManager];
+        
+        [self saveNotesToExtendedAttributesAtURL:absoluteURL error:NULL];
+        
+        if ([[NSUserDefaults standardUserDefaults] boolForKey:SKAutoSaveSkimNotesKey]) {
+            NSString *notesPath = [[[absoluteURL path] stringByDeletingPathExtension] stringByAppendingPathExtension:@"skim"];
+            BOOL canMove = YES;
+            BOOL fileExists = [fm fileExistsAtPath:notesPath];
             
-            if ([[NSUserDefaults standardUserDefaults] boolForKey:SKAutoSaveSkimNotesKey]) {
-                NSString *notesPath = [[[absoluteURL path] stringByDeletingPathExtension] stringByAppendingPathExtension:@"skim"];
-                NSFileManager *fm = [NSFileManager defaultManager];
-                BOOL canMove = YES;
-                BOOL fileExists = [fm fileExistsAtPath:notesPath];
+            if (fileExists && (saveOperation == NSSaveAsOperation || saveOperation == NSSaveToOperation)) {
+                NSAlert *alert = [NSAlert alertWithMessageText:[NSString stringWithFormat:NSLocalizedString(@"\"%@\" already exists. Do you want to replace it?", @"Message in alert dialog"), [notesPath lastPathComponent]]
+                                                 defaultButton:NSLocalizedString(@"Save", @"Button title")
+                                               alternateButton:NSLocalizedString(@"Cancel", @"Button title")
+                                                   otherButton:nil
+                                     informativeTextWithFormat:NSLocalizedString(@"A file or folder with the same name already exists in %@. Replacing it will overwrite its current contents.", @"Informative text in alert dialog"), [[notesPath stringByDeletingLastPathComponent] lastPathComponent]];
                 
-                if (fileExists && (saveOperation == NSSaveAsOperation || saveOperation == NSSaveToOperation)) {
-                    NSAlert *alert = [NSAlert alertWithMessageText:[NSString stringWithFormat:NSLocalizedString(@"\"%@\" already exists. Do you want to replace it?", @"Message in alert dialog"), [notesPath lastPathComponent]]
-                                                     defaultButton:NSLocalizedString(@"Save", @"Button title")
-                                                   alternateButton:NSLocalizedString(@"Cancel", @"Button title")
-                                                       otherButton:nil
-                                         informativeTextWithFormat:NSLocalizedString(@"A file or folder with the same name already exists in %@. Replacing it will overwrite its current contents.", @"Informative text in alert dialog"), [[notesPath stringByDeletingLastPathComponent] lastPathComponent]];
-                    
-                    canMove = NSAlertDefaultReturn == [alert runModal];
-                }
-                
-                if (canMove) {
-                    NSString *tmpPath = [NSTemporaryDirectory() stringByAppendingPathComponent:[[NSProcessInfo processInfo] globallyUniqueString]];
-                    if ([self writeToURL:[NSURL fileURLWithPath:tmpPath] ofType:SKNotesDocumentType error:NULL]) {
-                        if (fileExists)
-                            canMove = [fm removeFileAtPath:notesPath handler:nil];
-                        if (canMove)
-                            [fm movePath:tmpPath toPath:notesPath handler:nil];
-                        else
-                            [fm removeFileAtPath:tmpPath handler:nil];
-                    }
+                canMove = NSAlertDefaultReturn == [alert runModal];
+            }
+            
+            if (canMove) {
+                NSString *tmpPath = [NSTemporaryDirectory() stringByAppendingPathComponent:[[NSProcessInfo processInfo] globallyUniqueString]];
+                if ([self writeToURL:[NSURL fileURLWithPath:tmpPath] ofType:SKNotesDocumentType error:NULL]) {
+                    if (fileExists)
+                        canMove = [fm removeFileAtPath:notesPath handler:nil];
+                    if (canMove)
+                        [fm movePath:tmpPath toPath:notesPath handler:nil];
+                    else
+                        [fm removeFileAtPath:tmpPath handler:nil];
                 }
             }
         }
+        
+        if (saveOperation == NSSaveOperation || saveOperation == NSSaveAsOperation) {
+            [self updateChangeCount:NSChangeCleared];
+            [lastChangedDate release];
+            lastChangedDate = [[[fm fileAttributesAtPath:[absoluteURL path] traverseLink:YES] fileModificationDate] retain];
+        }
+        
     }
     
     return success;
