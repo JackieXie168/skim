@@ -59,3 +59,8 @@
 - (id)handleGoToScriptCommand:(NSScriptCommand *)command;
 
 @end
+
+
+@interface NSValue (SKExtensions)
+- (NSComparisonResult)boundsCompare:(NSValue *)aValue;
+@end

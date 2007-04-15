@@ -136,23 +136,6 @@
     return [image autorelease];
 }
 
-static int BDSKRectValueCompare(id value1, id value2, void *context) {
-    float y1 = NSMinY([value1 rectValue]);
-    float y2 = NSMinY([value2 rectValue]);
-    float x1 = NSMinX([value1 rectValue]);
-    float x2 = NSMinX([value2 rectValue]);
-    if (y1 > y2)
-        return NSOrderedAscending;
-    else if (y1 < y2)
-        return NSOrderedDescending;
-    else if (x1 < x2)
-        return NSOrderedAscending;
-    else if (x1 > x2)
-        return NSOrderedDescending;
-    else
-        return NSOrderedSame;
-}
-
 - (NSArray *)lineBounds {
     static NSCharacterSet *nonWhitespaceAndNewlineCharacterSet = nil;
     if (nonWhitespaceAndNewlineCharacterSet == nil)
@@ -190,7 +173,7 @@ static int BDSKRectValueCompare(id value1, id value2, void *context) {
         }
     }
     
-    [lines sortUsingFunction:BDSKRectValueCompare context:NULL];
+    [lines sortUsingSelector:@selector(boundsCompare:)];
     
     iMax = [lines count];
     NSMutableArray *fullLines = [NSMutableArray array];
@@ -282,6 +265,34 @@ static int BDSKRectValueCompare(id value1, id value2, void *context) {
 - (id)handleGoToScriptCommand:(NSScriptCommand *)command {
     [[[self containingDocument] pdfView] goToPage:self];
     return nil;
+}
+
+@end
+
+#pragma mark -
+
+@implementation NSValue (SKExtensions)
+
+- (NSComparisonResult)boundsCompare:(NSValue *)aValue {
+    NSRect rect1 = [self rectValue];
+    NSRect rect2 = [aValue rectValue];
+    float y1 = NSMaxY(rect1);
+    float y2 = NSMaxY(rect2);
+    
+    if (y1 > y2)
+        return NSOrderedAscending;
+    else if (y1 < y2)
+        return NSOrderedDescending;
+    
+    float x1 = NSMinX(rect1);
+    float x2 = NSMinX(rect2);
+    
+    if (x1 < x2)
+        return NSOrderedAscending;
+    else if (x1 > x2)
+        return NSOrderedDescending;
+    else
+        return NSOrderedSame;
 }
 
 @end

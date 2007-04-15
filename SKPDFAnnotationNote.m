@@ -142,10 +142,6 @@ void SKCGContextSetDefaultRGBColorSpace(CGContextRef context) {
     return page ? [[page document] indexForPage:page] : NSNotFound;
 }
 
-- (float)boundsTop {
-    return NSMaxY([self bounds]);
-}
-
 - (NSImage *)image { return nil; }
 
 - (NSAttributedString *)text { return nil; }
@@ -303,9 +299,7 @@ void SKCGContextSetDefaultRGBColorSpace(CGContextRef context) {
 - (void)setBounds:(NSRect)bounds {
     [[NSNotificationCenter defaultCenter] postNotificationName:SKAnnotationWillChangeNotification 
             object:self userInfo:[NSDictionary dictionaryWithObjectsAndKeys:@"bounds", @"key", nil]];
-    [self willChangeValueForKey:@"boundsTop"];
     [super setBounds:bounds];
-    [self didChangeValueForKey:@"boundsTop"];
     [[NSNotificationCenter defaultCenter] postNotificationName:SKAnnotationDidChangeNotification 
             object:self userInfo:[NSDictionary dictionaryWithObjectsAndKeys:@"bounds", @"key", nil]];
 }
@@ -347,9 +341,7 @@ void SKCGContextSetDefaultRGBColorSpace(CGContextRef context) {
 - (void)setBounds:(NSRect)bounds {
     [[NSNotificationCenter defaultCenter] postNotificationName:SKAnnotationWillChangeNotification 
             object:self userInfo:[NSDictionary dictionaryWithObjectsAndKeys:@"bounds", @"key", nil]];
-    [self willChangeValueForKey:@"boundsTop"];
     [super setBounds:bounds];
-    [self didChangeValueForKey:@"boundsTop"];
     [[NSNotificationCenter defaultCenter] postNotificationName:SKAnnotationDidChangeNotification 
             object:self userInfo:[NSDictionary dictionaryWithObjectsAndKeys:@"bounds", @"key", nil]];
 }
@@ -593,9 +585,7 @@ static BOOL lineRectTrimmingWhitespaceForPage(NSRect *lineRect, PDFPage *page)
 - (void)setBounds:(NSRect)bounds {
     [[NSNotificationCenter defaultCenter] postNotificationName:SKAnnotationWillChangeNotification 
             object:self userInfo:[NSDictionary dictionaryWithObjectsAndKeys:@"bounds", @"key", nil]];
-    [self willChangeValueForKey:@"boundsTop"];
     [super setBounds:bounds];
-    [self didChangeValueForKey:@"boundsTop"];
     [[NSNotificationCenter defaultCenter] postNotificationName:SKAnnotationDidChangeNotification 
             object:self userInfo:[NSDictionary dictionaryWithObjectsAndKeys:@"bounds", @"key", nil]];
 }
@@ -657,9 +647,7 @@ static BOOL lineRectTrimmingWhitespaceForPage(NSRect *lineRect, PDFPage *page)
 - (void)setBounds:(NSRect)bounds {
     [[NSNotificationCenter defaultCenter] postNotificationName:SKAnnotationWillChangeNotification 
             object:self userInfo:[NSDictionary dictionaryWithObjectsAndKeys:@"bounds", @"key", nil]];
-    [self willChangeValueForKey:@"boundsTop"];
     [super setBounds:bounds];
-    [self didChangeValueForKey:@"boundsTop"];
     [[NSNotificationCenter defaultCenter] postNotificationName:SKAnnotationDidChangeNotification 
             object:self userInfo:[NSDictionary dictionaryWithObjectsAndKeys:@"bounds", @"key", nil]];
 }
@@ -732,9 +720,7 @@ static BOOL lineRectTrimmingWhitespaceForPage(NSRect *lineRect, PDFPage *page)
 - (void)setBounds:(NSRect)bounds {
     [[NSNotificationCenter defaultCenter] postNotificationName:SKAnnotationWillChangeNotification
             object:self userInfo:[NSDictionary dictionaryWithObjectsAndKeys:@"bounds", @"key", nil]];
-    [self willChangeValueForKey:@"boundsTop"];
     [super setBounds:bounds];
-    [self didChangeValueForKey:@"boundsTop"];
     [[NSNotificationCenter defaultCenter] postNotificationName:SKAnnotationDidChangeNotification
             object:self userInfo:[NSDictionary dictionaryWithObjectsAndKeys:@"bounds", @"key", nil]];
 }

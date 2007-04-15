@@ -52,7 +52,6 @@ extern void SKCGContextSetDefaultRGBColorSpace(CGContextRef context);
 
 - (PDFDestination *)destination;
 - (unsigned int)pageIndex;
-- (float)boundsTop;
 
 - (NSImage *)image;
 - (NSAttributedString *)text;
