@@ -334,18 +334,23 @@ void SKCGContextSetDefaultRGBColorSpace(CGContextRef context) {
 - (BOOL)shouldPrint { return YES; }
 
 - (void)setBounds:(NSRect)bounds {
+    [[NSNotificationCenter defaultCenter] postNotificationName:SKAnnotationWillChangeNotification 
+            object:self userInfo:[NSDictionary dictionaryWithObjectsAndKeys:@"bounds", @"key", nil]];
     [super setBounds:bounds];
-    [[NSNotificationCenter defaultCenter] postNotificationName:SKAnnotationDidChangeNotification object:self];
+    [[NSNotificationCenter defaultCenter] postNotificationName:SKAnnotationDidChangeNotification 
+            object:self userInfo:[NSDictionary dictionaryWithObjectsAndKeys:@"bounds", @"key", nil]];
 }
 
 - (void)setContents:(NSString *)contents {
     [super setContents:contents];
-    [[NSNotificationCenter defaultCenter] postNotificationName:SKAnnotationDidChangeNotification object:self];
+    [[NSNotificationCenter defaultCenter] postNotificationName:SKAnnotationDidChangeNotification 
+            object:self userInfo:[NSDictionary dictionaryWithObjectsAndKeys:@"contents", @"key", nil]];
 }
 
 - (void)setColor:(NSColor *)color {
     [super setColor:color];
-    [[NSNotificationCenter defaultCenter] postNotificationName:SKAnnotationDidChangeNotification object:self];
+    [[NSNotificationCenter defaultCenter] postNotificationName:SKAnnotationDidChangeNotification 
+            object:self userInfo:[NSDictionary dictionaryWithObjectsAndKeys:@"color", @"key", nil]];
 }
 
 @end
@@ -573,18 +578,23 @@ static BOOL lineRectTrimmingWhitespaceForPage(NSRect *lineRect, PDFPage *page)
 - (BOOL)shouldPrint { return YES; }
 
 - (void)setBounds:(NSRect)bounds {
+    [[NSNotificationCenter defaultCenter] postNotificationName:SKAnnotationWillChangeNotification 
+            object:self userInfo:[NSDictionary dictionaryWithObjectsAndKeys:@"bounds", @"key", nil]];
     [super setBounds:bounds];
-    [[NSNotificationCenter defaultCenter] postNotificationName:SKAnnotationDidChangeNotification object:self];
+    [[NSNotificationCenter defaultCenter] postNotificationName:SKAnnotationDidChangeNotification 
+            object:self userInfo:[NSDictionary dictionaryWithObjectsAndKeys:@"bounds", @"key", nil]];
 }
 
 - (void)setContents:(NSString *)contents {
     [super setContents:contents];
-    [[NSNotificationCenter defaultCenter] postNotificationName:SKAnnotationDidChangeNotification object:self];
+    [[NSNotificationCenter defaultCenter] postNotificationName:SKAnnotationDidChangeNotification 
+            object:self userInfo:[NSDictionary dictionaryWithObjectsAndKeys:@"contents", @"key", nil]];
 }
 
 - (void)setColor:(NSColor *)color {
     [super setColor:color];
-    [[NSNotificationCenter defaultCenter] postNotificationName:SKAnnotationDidChangeNotification object:self];
+    [[NSNotificationCenter defaultCenter] postNotificationName:SKAnnotationDidChangeNotification 
+            object:self userInfo:[NSDictionary dictionaryWithObjectsAndKeys:@"color", @"key", nil]];
 }
 
 // fix a bug in PDFKit, the color space sometimes is not correct
@@ -630,23 +640,29 @@ static BOOL lineRectTrimmingWhitespaceForPage(NSRect *lineRect, PDFPage *page)
 - (BOOL)shouldPrint { return YES; }
 
 - (void)setBounds:(NSRect)bounds {
+    [[NSNotificationCenter defaultCenter] postNotificationName:SKAnnotationWillChangeNotification 
+            object:self userInfo:[NSDictionary dictionaryWithObjectsAndKeys:@"bounds", @"key", nil]];
     [super setBounds:bounds];
-    [[NSNotificationCenter defaultCenter] postNotificationName:SKAnnotationDidChangeNotification object:self];
+    [[NSNotificationCenter defaultCenter] postNotificationName:SKAnnotationDidChangeNotification 
+            object:self userInfo:[NSDictionary dictionaryWithObjectsAndKeys:@"bounds", @"key", nil]];
 }
 
 - (void)setContents:(NSString *)contents {
     [super setContents:contents];
-    [[NSNotificationCenter defaultCenter] postNotificationName:SKAnnotationDidChangeNotification object:self];
+    [[NSNotificationCenter defaultCenter] postNotificationName:SKAnnotationDidChangeNotification 
+            object:self userInfo:[NSDictionary dictionaryWithObjectsAndKeys:@"contents", @"key", nil]];
 }
 
 - (void)setColor:(NSColor *)color {
     [super setColor:color];
-    [[NSNotificationCenter defaultCenter] postNotificationName:SKAnnotationDidChangeNotification object:self];
+    [[NSNotificationCenter defaultCenter] postNotificationName:SKAnnotationDidChangeNotification 
+            object:self userInfo:[NSDictionary dictionaryWithObjectsAndKeys:@"color", @"key", nil]];
 }
 
 - (void)setFont:(NSFont *)font {
     [super setFont:font];
-    [[NSNotificationCenter defaultCenter] postNotificationName:SKAnnotationDidChangeNotification object:self];
+    [[NSNotificationCenter defaultCenter] postNotificationName:SKAnnotationDidChangeNotification 
+            object:self userInfo:[NSDictionary dictionaryWithObjectsAndKeys:@"font", @"key", nil]];
 }
 
 #pragma mark Scripting support
@@ -698,32 +714,22 @@ static BOOL lineRectTrimmingWhitespaceForPage(NSRect *lineRect, PDFPage *page)
 
 - (void)setBounds:(NSRect)bounds {
     [[NSNotificationCenter defaultCenter] postNotificationName:SKAnnotationWillChangeNotification
-            object:self
-          userInfo:[NSDictionary dictionaryWithObjectsAndKeys:@"bounds", @"key", nil]];
+            object:self userInfo:[NSDictionary dictionaryWithObjectsAndKeys:@"bounds", @"key", nil]];
     [super setBounds:bounds];
     [[NSNotificationCenter defaultCenter] postNotificationName:SKAnnotationDidChangeNotification
-            object:self
-          userInfo:[NSDictionary dictionaryWithObjectsAndKeys:@"bounds", @"key", nil]];
+            object:self userInfo:[NSDictionary dictionaryWithObjectsAndKeys:@"bounds", @"key", nil]];
 }
 
 - (void)setContents:(NSString *)contents {
-    [[NSNotificationCenter defaultCenter] postNotificationName:SKAnnotationWillChangeNotification
-            object:self
-          userInfo:[NSDictionary dictionaryWithObjectsAndKeys:@"contents", @"key", nil]];
     [super setContents:contents];
     [[NSNotificationCenter defaultCenter] postNotificationName:SKAnnotationDidChangeNotification
-            object:self
-          userInfo:[NSDictionary dictionaryWithObjectsAndKeys:@"contents", @"key", nil]];
+            object:self userInfo:[NSDictionary dictionaryWithObjectsAndKeys:@"contents", @"key", nil]];
 }
 
 - (void)setColor:(NSColor *)color {
-    [[NSNotificationCenter defaultCenter] postNotificationName:SKAnnotationWillChangeNotification
-            object:self
-          userInfo:[NSDictionary dictionaryWithObjectsAndKeys:@"color", @"key", nil]];
     [super setColor:color];
     [[NSNotificationCenter defaultCenter] postNotificationName:SKAnnotationDidChangeNotification
-            object:self
-          userInfo:[NSDictionary dictionaryWithObjectsAndKeys:@"color", @"key", nil]];
+            object:self userInfo:[NSDictionary dictionaryWithObjectsAndKeys:@"color", @"key", nil]];
 }
 
 - (NSString *)type {
@@ -738,14 +744,10 @@ static BOOL lineRectTrimmingWhitespaceForPage(NSRect *lineRect, PDFPage *page)
 - (void)setImage:(NSImage *)newImage;
 {
     if (image != newImage) {
-        [[NSNotificationCenter defaultCenter] postNotificationName:SKAnnotationWillChangeNotification
-                object:self
-              userInfo:[NSDictionary dictionaryWithObjectsAndKeys:@"image", @"key", nil]];
         [image release];
         image = [newImage retain];
         [[NSNotificationCenter defaultCenter] postNotificationName:SKAnnotationDidChangeNotification
-                object:self
-              userInfo:[NSDictionary dictionaryWithObjectsAndKeys:@"image", @"key", nil]];
+                object:self userInfo:[NSDictionary dictionaryWithObjectsAndKeys:@"image", @"key", nil]];
     }
 }
 
@@ -767,9 +769,6 @@ static BOOL lineRectTrimmingWhitespaceForPage(NSRect *lineRect, PDFPage *page)
 
 - (void)textStorageWillProcessEditing:(NSNotification *)notification;
 {
-    [[NSNotificationCenter defaultCenter] postNotificationName:SKAnnotationWillChangeNotification
-            object:self
-          userInfo:[NSDictionary dictionaryWithObjectsAndKeys:@"text", @"key", nil]];
     [self willChangeValueForKey:@"text"];
 }
 
@@ -777,8 +776,7 @@ static BOOL lineRectTrimmingWhitespaceForPage(NSRect *lineRect, PDFPage *page)
 {
     [self didChangeValueForKey:@"text"];
     [[NSNotificationCenter defaultCenter] postNotificationName:SKAnnotationDidChangeNotification
-            object:self
-          userInfo:[NSDictionary dictionaryWithObjectsAndKeys:@"text", @"key", nil]];
+            object:self userInfo:[NSDictionary dictionaryWithObjectsAndKeys:@"text", @"key", nil]];
 }
 
 #pragma mark Scripting support
