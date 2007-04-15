@@ -23,7 +23,7 @@
         <key>SKOpenFilesMaximized</key>
         <false/>
         <key>SKReopenLastOpenFiles</key>
-        <true/>
+        <false/>
         <key>SKRememberLastPageViewed</key>
         <false/>
         <key>SKAutoSaveSkimNotes</key>
