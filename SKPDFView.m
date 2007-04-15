@@ -76,6 +76,7 @@ NSString *SKSkimNotePboardType = @"SKSkimNotePboardType";
 - (PDFDestination *)destinationForEvent:(NSEvent *)theEvent isLink:(BOOL *)isLink;
 
 - (void)moveActiveAnnotationForKey:(unichar)eventChar byAmount:(float)delta;
+- (void)resizeActiveAnnotationForKey:(unichar)eventChar byAmount:(float)delta;
 - (void)moveReadingBarForKey:(unichar)eventChar;
 
 - (BOOL)selectAnnotationWithEvent:(NSEvent *)theEvent;
@@ -541,6 +542,8 @@ NSString *SKSkimNotePboardType = @"SKSkimNotePboardType";
         [self selectPreviousActiveAnnotation:self];
 	} else if (isPresentation == NO && [activeAnnotation isNoteAnnotation] && [activeAnnotation isMovable] && (eventChar == NSRightArrowFunctionKey || eventChar == NSLeftArrowFunctionKey || eventChar == NSUpArrowFunctionKey || eventChar == NSDownArrowFunctionKey) && (modifiers == 0 || modifiers == NSShiftKeyMask)) {
         [self moveActiveAnnotationForKey:eventChar byAmount:(modifiers & NSShiftKeyMask) ? 10.0 : 1.0];
+	} else if (isPresentation == NO && [activeAnnotation isNoteAnnotation] && [activeAnnotation isResizable] && (eventChar == NSRightArrowFunctionKey || eventChar == NSLeftArrowFunctionKey || eventChar == NSUpArrowFunctionKey || eventChar == NSDownArrowFunctionKey) && (modifiers == NSControlKeyMask || modifiers == NSControlKeyMask | NSShiftKeyMask)) {
+        [self resizeActiveAnnotationForKey:eventChar byAmount:(modifiers & NSShiftKeyMask) ? 10.0 : 1.0];
     } else if (readingBar && (eventChar == NSRightArrowFunctionKey || eventChar == NSLeftArrowFunctionKey || eventChar == NSUpArrowFunctionKey || eventChar == NSDownArrowFunctionKey) && (modifiers == NSAlternateKeyMask)) {
         [self moveReadingBarForKey:eventChar];
     } else {
@@ -1402,6 +1405,43 @@ static inline NSRect rectWithCorners(NSPoint p1, NSPoint p2)
     } else if (eventChar == NSDownArrowFunctionKey) {
         if (NSMinY(bounds) - delta >= NSMinY(pageBounds))
             newBounds.origin.y -= delta;
+    }
+    if (NSEqualRects(bounds, newBounds) == NO) {
+        [activeAnnotation setBounds:newBounds];
+        if ([activeAnnotation isEditable] == NO) {
+            NSString *selString = [[[[activeAnnotation page] selectionForRect:newBounds] string] stringByCollapsingWhitespaceAndNewlinesAndRemovingSurroundingWhitespaceAndNewlines];
+            [activeAnnotation setContents:selString];
+        }
+    }
+}
+
+- (void)resizeActiveAnnotationForKey:(unichar)eventChar byAmount:(float)delta {
+    NSRect bounds = [activeAnnotation bounds];
+    NSRect newBounds = bounds;
+    PDFPage *page = [activeAnnotation page];
+    NSRect pageBounds = [page boundsForBox:[self displayBox]];
+    
+    if (eventChar == NSRightArrowFunctionKey) {
+        if (NSMaxX(bounds) + delta <= NSMaxX(pageBounds)) {
+            newBounds.size.width += delta;
+        }
+    } else if (eventChar == NSLeftArrowFunctionKey) {
+        newBounds.size.width -= delta;
+        if (NSWidth(newBounds) < 8.0) {
+            newBounds.size.width = 8.0;
+        }
+    } else if (eventChar == NSUpArrowFunctionKey) {
+        newBounds.origin.y += delta;
+        newBounds.size.height -= delta;
+        if (NSHeight(newBounds) < 8.0) {
+            newBounds.origin.y += NSHeight(newBounds) - 8.0;
+            newBounds.size.height = 8.0;
+        }
+    } else if (eventChar == NSDownArrowFunctionKey) {
+        if (NSMinY(bounds) - delta >= NSMinY(pageBounds)) {
+            newBounds.origin.y -= delta;
+            newBounds.size.height += delta;
+        }
     }
     if (NSEqualRects(bounds, newBounds) == NO) {
         [activeAnnotation setBounds:newBounds];
