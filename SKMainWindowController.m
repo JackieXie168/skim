@@ -272,8 +272,6 @@ static NSString *SKDocumentToolbarNotesPaneItemIdentifier = @"SKDocumentToolbarN
                NSWidth([leftSideContentBox frame]) <= 0.0) {
         [self toggleLeftSidePane:self];
     }
-    if (NSWidth([rightSideContentBox frame]) > 0.0)
-        [self toggleRightSidePane:self];
     
     [pdfView setBackgroundColor:[NSUnarchiver unarchiveObjectWithData:[[NSUserDefaults standardUserDefaults] dataForKey:SKBackgroundColorKey]]];
     
