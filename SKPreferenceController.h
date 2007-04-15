@@ -45,6 +45,7 @@
     IBOutlet NSSlider *snapshotSizeSlider;
     NSMutableArray *fonts;
     NSMutableArray *sizes;
+    NSDictionary *resettableKeys;
 }
 
 + (id)sharedPrefenceController;

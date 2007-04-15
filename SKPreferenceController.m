@@ -53,6 +53,9 @@
 
 - (id)init {
     if (self = [super init]) {
+        NSString *userDefaultsValuesPath = [[NSBundle mainBundle] pathForResource:@"InitialUserDefaults" ofType:@"plist"];
+        resettableKeys = [[[NSDictionary dictionaryWithContentsOfFile:userDefaultsValuesPath] valueForKey:@"ResettableKeys"] retain];
+        
         NSMutableArray *fontNames = [[[[NSFontManager sharedFontManager] availableFontFamilies] mutableCopy] autorelease];
         NSEnumerator *fontEnum;
         NSString *fontName;
@@ -75,6 +78,7 @@
 }
 
 - (void)dealloc {
+    [resettableKeys release];
     [fonts release];
     [sizes release];
     [super dealloc];
@@ -130,21 +134,12 @@
 - (void)resetSheetDidEnd:(NSWindow *)sheet returnCode:(int)returnCode contextInfo:(void *)contextInfo {
     if (returnCode == NSAlertDefaultReturn) {
         NSString *tabID = (NSString *)contextInfo;
-        NSArray *keys = nil;
-        if ([tabID isEqualToString:@"general"]) {
-            keys = [NSArray arrayWithObjects:SKReopenLastOpenFilesKey, SKOpenFilesMaximizedKey, SKOpenContentsPaneOnlyForTOCKey, SKRememberLastPageViewedKey, SKAutoSaveSkimNotesKey, SKSnapshotsOnTopKey, SUCheckAtStartupKey, SUScheduledCheckIntervalKey, SKAutoCheckFileUpdateKey, nil];
-        } else if ([tabID isEqualToString:@"display"]) {
-            keys = [NSArray arrayWithObjects:SKThumbnailSizeKey, SKSnapshotThumbnailSizeKey, SKShouldAntiAliasKey, SKGreekingThresholdKey, nil];
-        } else if ([tabID isEqualToString:@"colors"]) {
-            keys = [NSArray arrayWithObjects:SKBackgroundColorKey, SKFullScreenBackgroundColorKey, SKShouldHighlightSearchResultsKey, SKSearchHighlightColorKey, SKReadingBarColorKey, SKReadingBarTransparencyKey, SKReadingBarInvertKey, nil];
-        } else if ([tabID isEqualToString:@"notes"]) {
-            keys = [NSArray arrayWithObjects:SKFreeTextNoteColorKey, SKAnchoredNoteColorKey, SKCircleNoteColorKey, SKSquareNoteColorKey, SKHighlightNoteColorKey, SKUnderlineNoteColorKey, SKStrikeOutNoteColorKey, SKTextNoteFontNameKey, SKTextNoteFontSizeKey, nil];
-        }
-        if (keys)
+        NSArray *keys = tabID ? [resettableKeys objectForKey:tabID] : nil;
+        if (tabID)
             [[NSUserDefaultsController sharedUserDefaultsController] revertToInitialValuesForKeys:keys];
         else
             [[NSUserDefaultsController sharedUserDefaultsController] revertToInitialValues:nil];
-        if (keys == nil || [keys containsObject:SUScheduledCheckIntervalKey]) {
+        if (tabID == nil || [keys containsObject:SUScheduledCheckIntervalKey]) {
             int checkInterval = [[NSUserDefaults standardUserDefaults] integerForKey:SUScheduledCheckIntervalKey];
             if (checkInterval)
                [[[NSApp delegate] updater] scheduleCheckWithInterval:checkInterval];
