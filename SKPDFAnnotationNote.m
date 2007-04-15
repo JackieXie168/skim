@@ -142,6 +142,10 @@ void SKCGContextSetDefaultRGBColorSpace(CGContextRef context) {
     return page ? [[page document] indexForPage:page] : NSNotFound;
 }
 
+- (float)boundsTop {
+    return NSMaxY([self bounds]);
+}
+
 - (NSImage *)image { return nil; }
 
 - (NSAttributedString *)text { return nil; }
@@ -297,18 +301,25 @@ void SKCGContextSetDefaultRGBColorSpace(CGContextRef context) {
 - (BOOL)shouldPrint { return YES; }
 
 - (void)setBounds:(NSRect)bounds {
+    [[NSNotificationCenter defaultCenter] postNotificationName:SKAnnotationWillChangeNotification 
+            object:self userInfo:[NSDictionary dictionaryWithObjectsAndKeys:@"bounds", @"key", nil]];
+    [self willChangeValueForKey:@"boundsTop"];
     [super setBounds:bounds];
-    [[NSNotificationCenter defaultCenter] postNotificationName:SKAnnotationDidChangeNotification object:self];
+    [self didChangeValueForKey:@"boundsTop"];
+    [[NSNotificationCenter defaultCenter] postNotificationName:SKAnnotationDidChangeNotification 
+            object:self userInfo:[NSDictionary dictionaryWithObjectsAndKeys:@"bounds", @"key", nil]];
 }
 
 - (void)setContents:(NSString *)contents {
     [super setContents:contents];
-    [[NSNotificationCenter defaultCenter] postNotificationName:SKAnnotationDidChangeNotification object:self];
+    [[NSNotificationCenter defaultCenter] postNotificationName:SKAnnotationDidChangeNotification 
+            object:self userInfo:[NSDictionary dictionaryWithObjectsAndKeys:@"contents", @"key", nil]];
 }
 
 - (void)setColor:(NSColor *)color {
     [super setColor:color];
-    [[NSNotificationCenter defaultCenter] postNotificationName:SKAnnotationDidChangeNotification object:self];
+    [[NSNotificationCenter defaultCenter] postNotificationName:SKAnnotationDidChangeNotification 
+            object:self userInfo:[NSDictionary dictionaryWithObjectsAndKeys:@"color", @"key", nil]];
 }
 
 @end
@@ -336,7 +347,9 @@ void SKCGContextSetDefaultRGBColorSpace(CGContextRef context) {
 - (void)setBounds:(NSRect)bounds {
     [[NSNotificationCenter defaultCenter] postNotificationName:SKAnnotationWillChangeNotification 
             object:self userInfo:[NSDictionary dictionaryWithObjectsAndKeys:@"bounds", @"key", nil]];
+    [self willChangeValueForKey:@"boundsTop"];
     [super setBounds:bounds];
+    [self didChangeValueForKey:@"boundsTop"];
     [[NSNotificationCenter defaultCenter] postNotificationName:SKAnnotationDidChangeNotification 
             object:self userInfo:[NSDictionary dictionaryWithObjectsAndKeys:@"bounds", @"key", nil]];
 }
@@ -580,7 +593,9 @@ static BOOL lineRectTrimmingWhitespaceForPage(NSRect *lineRect, PDFPage *page)
 - (void)setBounds:(NSRect)bounds {
     [[NSNotificationCenter defaultCenter] postNotificationName:SKAnnotationWillChangeNotification 
             object:self userInfo:[NSDictionary dictionaryWithObjectsAndKeys:@"bounds", @"key", nil]];
+    [self willChangeValueForKey:@"boundsTop"];
     [super setBounds:bounds];
+    [self didChangeValueForKey:@"boundsTop"];
     [[NSNotificationCenter defaultCenter] postNotificationName:SKAnnotationDidChangeNotification 
             object:self userInfo:[NSDictionary dictionaryWithObjectsAndKeys:@"bounds", @"key", nil]];
 }
@@ -642,7 +657,9 @@ static BOOL lineRectTrimmingWhitespaceForPage(NSRect *lineRect, PDFPage *page)
 - (void)setBounds:(NSRect)bounds {
     [[NSNotificationCenter defaultCenter] postNotificationName:SKAnnotationWillChangeNotification 
             object:self userInfo:[NSDictionary dictionaryWithObjectsAndKeys:@"bounds", @"key", nil]];
+    [self willChangeValueForKey:@"boundsTop"];
     [super setBounds:bounds];
+    [self didChangeValueForKey:@"boundsTop"];
     [[NSNotificationCenter defaultCenter] postNotificationName:SKAnnotationDidChangeNotification 
             object:self userInfo:[NSDictionary dictionaryWithObjectsAndKeys:@"bounds", @"key", nil]];
 }
@@ -715,7 +732,9 @@ static BOOL lineRectTrimmingWhitespaceForPage(NSRect *lineRect, PDFPage *page)
 - (void)setBounds:(NSRect)bounds {
     [[NSNotificationCenter defaultCenter] postNotificationName:SKAnnotationWillChangeNotification
             object:self userInfo:[NSDictionary dictionaryWithObjectsAndKeys:@"bounds", @"key", nil]];
+    [self willChangeValueForKey:@"boundsTop"];
     [super setBounds:bounds];
+    [self didChangeValueForKey:@"boundsTop"];
     [[NSNotificationCenter defaultCenter] postNotificationName:SKAnnotationDidChangeNotification
             object:self userInfo:[NSDictionary dictionaryWithObjectsAndKeys:@"bounds", @"key", nil]];
 }
