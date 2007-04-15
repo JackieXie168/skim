@@ -98,10 +98,21 @@ static NSString *SKSnapshotViewChangedNotification = @"SKSnapshotViewChangedNoti
         [[self delegate] snapshotControllerViewDidChange:self];
 }
 
+- (void)handleAnnotationWillChangeNotification:(NSNotification *)notification {
+    PDFAnnotation *annotation = [notification object];
+    if ([[annotation page] isEqual:[pdfView currentPage]] && [[[notification userInfo] objectForKey:@"key"] isEqualToString:@"bounds"]) {
+        NSRect aRect = [pdfView convertRect:[[annotation page] boundsForBox:kPDFDisplayBoxCropBox] fromPage:[annotation page]];
+        float scale = [pdfView scaleFactor];
+        NSPoint max = NSMakePoint(ceilf(NSMaxX(aRect)) + scale, ceilf(NSMaxY(aRect)) + scale);
+        NSPoint origin = NSMakePoint(floorf(NSMinX(aRect)) - scale, floorf(NSMinY(aRect)) - scale);
+        [pdfView setNeedsDisplayInRect:NSMakeRect(origin.x, origin.y, max.x - origin.x, max.y - origin.y)];
+    }
+}
+
 - (void)handleAnnotationDidChangeNotification:(NSNotification *)notification {
     PDFAnnotation *annotation = [notification object];
     if ([[annotation page] isEqual:[pdfView currentPage]]) {
-        NSRect aRect = [pdfView convertRect:[[annotation page] boundsForBox:kPDFDisplayBoxMediaBox] fromPage:[annotation page]];
+        NSRect aRect = [pdfView convertRect:[[annotation page] boundsForBox:kPDFDisplayBoxCropBox] fromPage:[annotation page]];
         float scale = [pdfView scaleFactor];
         NSPoint max = NSMakePoint(ceilf(NSMaxX(aRect)) + scale, ceilf(NSMaxY(aRect)) + scale);
         NSPoint origin = NSMakePoint(floorf(NSMinX(aRect)) - scale, floorf(NSMinY(aRect)) - scale);
@@ -113,7 +124,7 @@ static NSString *SKSnapshotViewChangedNotification = @"SKSnapshotViewChangedNoti
     PDFPage *page = [[notification userInfo] objectForKey:@"page"];
     if ([page isEqual:[pdfView currentPage]]) {
         [page removeAnnotation:[[notification userInfo] objectForKey:@"annotation"]];
-        NSRect aRect = [pdfView convertRect:[page boundsForBox:kPDFDisplayBoxMediaBox] fromPage:page];
+        NSRect aRect = [pdfView convertRect:[page boundsForBox:kPDFDisplayBoxCropBox] fromPage:page];
         float scale = [pdfView scaleFactor];
         NSPoint max = NSMakePoint(ceilf(NSMaxX(aRect)) + scale, ceilf(NSMaxY(aRect)) + scale);
         NSPoint origin = NSMakePoint(floorf(NSMinX(aRect)) - scale, floorf(NSMinY(aRect)) - scale);
@@ -141,6 +152,8 @@ static NSString *SKSnapshotViewChangedNotification = @"SKSnapshotViewChangedNoti
                                                  name:NSViewBoundsDidChangeNotification object:clipView];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleViewChangedNotification:) 
                                                  name:SKSnapshotViewChangedNotification object:self];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleAnnotationWillChangeNotification:) 
+                                                 name:SKAnnotationWillChangeNotification object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleAnnotationDidChangeNotification:) 
                                                  name:SKAnnotationDidChangeNotification object:nil];
 	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleDidRemoveAnnotationNotification:) 
@@ -156,6 +169,7 @@ static NSString *SKSnapshotViewChangedNotification = @"SKSnapshotViewChangedNoti
     [pdfView setScaleFactor:factor];
     [pdfView setAutoScales:NO];
     [pdfView setDisplaysPageBreaks:NO];
+    [pdfView setDisplayBox:kPDFDisplayBoxCropBox];
     
     PDFPage *page = [pdfDocument pageAtIndex:pageNum];
     NSRect contentRect = [pdfView convertRect:rect fromPage:page];
