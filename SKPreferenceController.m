@@ -154,8 +154,8 @@
                                        otherButton:nil
                          informativeTextWithFormat:NSLocalizedString(@"Choosing Reset will restore all settings to the state they were in when Skim was first installed.", @"Informative text in alert dialog when pressing Reset All button")];
     [alert beginSheetModalForWindow:[self window]
-                      modalDelegate:nil
-                     didEndSelector:NULL
+                      modalDelegate:self
+                     didEndSelector:@selector(resetSheetDidEnd:returnCode:contextInfo:)
                         contextInfo:NULL];
 }
 
@@ -167,8 +167,8 @@
                                        otherButton:nil
                          informativeTextWithFormat:NSLocalizedString(@"Choosing Reset will restore all settings in this pane to the state they were in when Skim was first installed.", @"Informative text in alert dialog when pressing Reset All button"), label];
     [alert beginSheetModalForWindow:[self window]
-                      modalDelegate:nil
-                     didEndSelector:NULL
+                      modalDelegate:self
+                     didEndSelector:@selector(resetSheetDidEnd:returnCode:contextInfo:)
                         contextInfo:[[tabView selectedTabViewItem] identifier]];
 }
 
