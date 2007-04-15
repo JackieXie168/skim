@@ -1811,6 +1811,7 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
     if (annotation) {
         updatingNoteSelection = YES;
         [noteArrayController addObject:annotation];
+        [noteArrayController rearrangeObjects]; // doesn't see to be done automatically
         updatingNoteSelection = NO;
     }
     if (page) {
