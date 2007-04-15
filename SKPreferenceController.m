@@ -120,17 +120,6 @@
        [[[NSApp delegate] updater] scheduleCheckWithInterval:checkInterval];
 }
 
-- (IBAction)resetNoteColors:(id)sender {
-    [[NSUserDefaultsController sharedUserDefaultsController] revertToInitialValuesForKeys:
-        [NSArray arrayWithObjects:SKFreeTextNoteColorKey, SKAnchoredNoteColorKey, SKCircleNoteColorKey, SKSquareNoteColorKey, 
-                                  SKHighlightNoteColorKey, SKUnderlineNoteColorKey, SKStrikeOutNoteColorKey, nil]];
-}
-
-- (IBAction)resetTextNoteFont:(id)sender {
-    [[NSUserDefaultsController sharedUserDefaultsController] revertToInitialValuesForKeys:
-        [NSArray arrayWithObjects:SKTextNoteFontNameKey, SKTextNoteFontSizeKey, nil]];
-}
-
 - (void)resetSheetDidEnd:(NSWindow *)sheet returnCode:(int)returnCode contextInfo:(void *)contextInfo {
     if (returnCode == NSAlertDefaultReturn) {
         NSString *tabID = (NSString *)contextInfo;
