@@ -2013,7 +2013,7 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
         if (item == nil){
             if ((pdfOutline) && ([[pdfView document] isLocked] == NO)){
 #warning leaks 
-                // arm: This return and the one just below that retain the item are necessary to prevent a crash (and appear in Apple's sample code), but MallocDebug says we're leaking them when the doc is closed.  Can someone explain this?
+                // arm: This retain and the one just below are necessary to prevent a crash (and appear in Apple's sample code), but MallocDebug says we're leaking them when the doc is closed.  Can someone explain this?
                 return [[pdfOutline childAtIndex: index] retain];
                 
             }else{
