@@ -149,22 +149,6 @@ static NSString *SKDocumentToolbarNotesPaneItemIdentifier = @"SKDocumentToolbarN
     
 	[[NSNotificationCenter defaultCenter] removeObserver: self];
     [self unregisterAsObserver];
-    
-    if (thumbnailTimer) {
-        [thumbnailTimer invalidate];
-        [thumbnailTimer release];
-        thumbnailTimer = nil;
-    }
-    if (snapshotTimer) {
-        [snapshotTimer invalidate];
-        [snapshotTimer release];
-        snapshotTimer = nil;
-    }
-    if (findTimer) {
-        [findTimer invalidate];
-        [findTimer release];
-        findTimer = nil;
-    }
     [(id)temporaryAnnotations release];
     [dirtyThumbnails release];
     [dirtySnapshots release];
@@ -178,6 +162,7 @@ static NSString *SKDocumentToolbarNotesPaneItemIdentifier = @"SKDocumentToolbarN
 	[rightSideWindow release];
 	[fullScreenWindow release];
     [mainWindow release];
+    [toolbarItems release];
     
     [super dealloc];
 }
@@ -446,6 +431,23 @@ static NSString *SKDocumentToolbarNotesPaneItemIdentifier = @"SKDocumentToolbarN
         NSString *path = [[[self document] fileURL] path];
         if (pageIndex != NSNotFound && path)
             [[SKBookmarkController sharedBookmarkController] addRecentDocumentForPath:path pageIndex:pageIndex];
+        
+        // timers retain their target, so invalidate them now or they may keep firing after the PDF is gone
+        if (thumbnailTimer) {
+            [thumbnailTimer invalidate];
+            [thumbnailTimer release];
+            thumbnailTimer = nil;
+        }
+        if (snapshotTimer) {
+            [snapshotTimer invalidate];
+            [snapshotTimer release];
+            snapshotTimer = nil;
+        }
+        if (findTimer) {
+            [findTimer invalidate];
+            [findTimer release];
+            findTimer = nil;
+        }
     }
 }
 
@@ -2010,7 +2012,8 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
     if ([ov isEqual:outlineView]) {
         if (item == nil){
             if ((pdfOutline) && ([[pdfView document] isLocked] == NO)){
-                
+#warning leaks 
+                // arm: This return and the one just below that retain the item are necessary to prevent a crash (and appear in Apple's sample code), but MallocDebug says we're leaking them when the doc is closed.  Can someone explain this?
                 return [[pdfOutline childAtIndex: index] retain];
                 
             }else{
