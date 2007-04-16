@@ -1,7 +1,7 @@
 // !$*UTF8*$!
 {
 	0867D690FE84028FC02AAC07 /* Project object */ = {
-		activeBuildConfigurationName = Release;
+		activeBuildConfigurationName = Debug;
 		activeExecutable = CE2BD80D0BD4116900A5F4DB /* Sparkle Test App */;
 		activeTarget = 8DC2EF4F0486A6940098B216 /* Sparkle */;
 		addToTargets = (
