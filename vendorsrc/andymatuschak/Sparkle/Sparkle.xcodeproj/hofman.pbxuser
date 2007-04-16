@@ -1,9 +1,12 @@
 // !$*UTF8*$!
 {
 	0867D690FE84028FC02AAC07 /* Project object */ = {
-		activeBuildConfigurationName = Debug;
+		activeBuildConfigurationName = Release;
 		activeExecutable = CE2BD80D0BD4116900A5F4DB /* Sparkle Test App */;
 		activeTarget = 8DC2EF4F0486A6940098B216 /* Sparkle */;
+		addToTargets = (
+			8DC2EF4F0486A6940098B216 /* Sparkle */,
+		);
 		codeSenseManager = CE2BD8150BD4117400A5F4DB /* Code sense */;
 		executables = (
 			CE2BD80D0BD4116900A5F4DB /* Sparkle Test App */,
@@ -16,7 +19,7 @@
 					20,
 					243,
 					20,
-					48.1626,
+					48,
 					43,
 					43,
 					20,
@@ -31,8 +34,8 @@
 					PBXFileDataSource_Target_ColumnID,
 				);
 			};
-			PBXPerProjectTemplateStateSaveDate = 198447784;
-			PBXWorkspaceStateSaveDate = 198447784;
+			PBXPerProjectTemplateStateSaveDate = 198448624;
+			PBXWorkspaceStateSaveDate = 198448624;
 		};
 		sourceControlManager = CE2BD8140BD4117400A5F4DB /* Source Control */;
 		userBuildSettings = {
