@@ -935,7 +935,7 @@ static inline NSRect rectWithCorners(NSPoint p1, NSPoint p2)
         NSPoint center = [self convertPoint:[[self window] mouseLocationOutsideOfEventStream] fromView:nil];
         
         // if the mouse was in the toolbar and there is a page below the toolbar, we get a point outside of the visible rect
-        page = NSPointInRect(center, [[self documentView] visibleRect]) ? [self pageForPoint:center nearest:NO] : nil;
+        page = NSPointInRect(center, [[self documentView] convertRect:[[self documentView] visibleRect] toView:self]) ? [self pageForPoint:center nearest:NO] : nil;
         
         if (page == nil) {
             // Get center of the PDFView.
@@ -949,6 +949,17 @@ static inline NSRect rectWithCorners(NSPoint p1, NSPoint p2)
         if ([page rotation] % 180 == 90)
             defaultSize = NSMakeSize(defaultSize.height, defaultSize.width);
         bounds = NSMakeRect(center.x - 0.5 * defaultSize.width, center.y - 0.5 * defaultSize.height, defaultSize.width, defaultSize.height);
+        
+        // Make sure it fits in the page
+        NSRect pageBounds = [page boundsForBox:[self displayBox]];
+        if (NSMaxX(bounds) > NSMaxX(pageBounds))
+            bounds.origin.x = NSMaxX(pageBounds) - NSWidth(bounds);
+        if (NSMinX(bounds) < NSMinX(pageBounds))
+            bounds.origin.x = NSMinX(pageBounds);
+        if (NSMaxY(bounds) > NSMaxY(pageBounds))
+            bounds.origin.y = NSMaxY(pageBounds) - NSHeight(bounds);
+        if (NSMinY(bounds) < NSMinY(pageBounds))
+            bounds.origin.y = NSMinY(pageBounds);
 	}
     [self addAnnotationWithType:annotationType contents:text page:page bounds:bounds];
 }
