@@ -122,6 +122,7 @@
     NSRect rect, contentRect = [self hoverWindowRectFittingScreenFromRect:NSMakeRect(point.x, point.y + fmin(NSHeight([annotation bounds]) + 3.0, 16.0), 400.0, 80.0)];
     NSImage *image = nil;
     NSAttributedString *text = nil;
+    NSColor *color = [NSColor controlBackgroundColor];
     
     if ([[annotation type] isEqualToString:@"Link"]) {
         
@@ -167,7 +168,7 @@
     
     if (text) {
         
-        rect = [text boundingRectWithSize:contentRect.size options:0];
+        rect = [text boundingRectWithSize:contentRect.size options:NSStringDrawingUsesLineFragmentOrigin];
         if (NSWidth(rect) < NSWidth(contentRect))
             contentRect.size.width = NSWidth(rect);
         if (NSHeight(rect) < NSHeight(contentRect))
@@ -176,13 +177,10 @@
         rect.origin = NSZeroPoint;
         
         image = [[NSImage alloc] initWithSize:rect.size];
+        color = [NSColor colorWithDeviceRed:1.0 green:1.0 blue:0.6 alpha:1.0];
         
         [image lockFocus];
-        [NSGraphicsContext saveGraphicsState];
-        [[NSColor controlBackgroundColor] setFill];
-        NSRectFill(rect);
-        [text drawInRect:rect];
-        [NSGraphicsContext restoreGraphicsState];
+        [text drawWithRect:rect options:NSStringDrawingUsesLineFragmentOrigin];
         [image unlockFocus];
         
     }
@@ -194,8 +192,10 @@
         [image release];
         
         // Convert to window and expand for the border
-        [self setFrame:[self frameRectForContentRect:NSInsetRect(contentRect, -1.0, -1.0)] display:NO];
+        [self setFrame:[self frameRectForContentRect:contentRect] display:NO];
         [imageView scrollRectToVisible:rect];
+        
+        [[imageView enclosingScrollView] setBackgroundColor:color];
         
         if ([self isVisible] == NO)
             [self setAlphaValue:0.0];
