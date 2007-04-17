@@ -119,7 +119,7 @@
     [annotation release];
     annotation = [note retain];
     
-    NSRect rect, contentRect = [self hoverWindowRectFittingScreenFromRect:NSMakeRect(point.x, point.y + fmin(NSHeight([annotation bounds]) + 2.0, 16.0), 400.0, 80.0)];
+    NSRect rect, contentRect = [self hoverWindowRectFittingScreenFromRect:NSMakeRect(point.x, point.y + fmin(NSHeight([annotation bounds]) + 3.0, 16.0), 400.0, 80.0)];
     NSImage *image = nil;
     
     if ([[annotation type] isEqualToString:@"Link"]) {
@@ -128,7 +128,7 @@
         PDFPage *page = [dest page];
         NSRect bounds = [page boundsForBox:kPDFDisplayBoxCropBox];
         
-        rect = [[imageView superview] bounds];
+        rect = contentRect;
         rect.origin = [dest point];
         rect.origin.x -= NSMinX(bounds);
         rect.origin.y -= NSMinY(bounds) + NSHeight(rect);
@@ -174,7 +174,8 @@
     [imageView setImage:image];
     [image release];
     
-    [self setFrame:[self frameRectForContentRect:contentRect] display:NO];
+    // Convert to window and expand for the border
+    [self setFrame:[self frameRectForContentRect:NSInsetRect(contentRect, -1.0, -1.0)] display:NO];
     [imageView scrollRectToVisible:rect];
     
     if ([self isVisible] == NO)
