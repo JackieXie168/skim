@@ -996,16 +996,16 @@
 		};
 		CE4DA9060B9E17890039E89C /* ShellScript */ = {
 			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 8;
+			buildActionMask = 12;
 			files = (
 			);
 			inputPaths = (
 			);
 			outputPaths = (
 			);
-			runOnlyForDeploymentPostprocessing = 1;
+			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "if [ -d /Developer/Applications/Utilities/Help\\ Indexer.app/ ]; then\necho \"*** Indexing Tiger Help ***\"\nfor LOC_DIR in ${BUILT_PRODUCTS_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/*.lproj; do \\\n/Developer/Applications/Utilities/Help\\ Indexer.app/Contents/MacOS/Help\\ Indexer \\\n${LOC_DIR}/Skim\\ Help \\\n-Tokenizer 1 \\\n-ShowProgress NO \\\n-LogStyle 2 \\\n-IndexAnchors YES \\\n-TigerIndexing YES \\\n-GenerateSummaries YES \\\n-Stopwords en \\\n-MinTermLength 3;\\\ndone\nfi\nexit 0";
+			shellScript = "if [ ${BUILD_STYLE} = \"Debug\" ]; then\nexit 0\nfi\nif [ -d /Developer/Applications/Utilities/Help\\ Indexer.app/ ]; then\necho \"*** Indexing Tiger Help ***\"\nfor LOC_DIR in ${BUILT_PRODUCTS_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/*.lproj; do \\\n/Developer/Applications/Utilities/Help\\ Indexer.app/Contents/MacOS/Help\\ Indexer \\\n${LOC_DIR}/Skim\\ Help \\\n-Tokenizer 1 \\\n-ShowProgress NO \\\n-LogStyle 2 \\\n-IndexAnchors YES \\\n-TigerIndexing YES \\\n-GenerateSummaries YES \\\n-Stopwords en \\\n-MinTermLength 3;\\\ndone\nfi\nexit 0";
 		};
 		CE592C630B9239E300C113DF /* ShellScript */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -1022,16 +1022,16 @@
 		};
 		CEE1383C0BCEA63F00BF2D3E /* ShellScript */ = {
 			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 8;
+			buildActionMask = 12;
 			files = (
 			);
 			inputPaths = (
 			);
 			outputPaths = (
 			);
-			runOnlyForDeploymentPostprocessing = 1;
+			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "#\n# Run the genstrings build phase\n# This takes a while to generate, so it's not worth\n# the wait for development builds.\n#\ncd ${SOURCE_ROOT}\nif [ -f \"English.lproj/Localizable.strings\" ]; then\nmv English.lproj/Localizable.strings English.lproj/Localizable.strings.bak \nfi\nif [ -f \"English.lproj/ZoomValues.strings\" ]; then\nmv English.lproj/ZoomValues.strings English.lproj/ZoomValues.strings.bak \nfi\n/usr/bin/genstrings -o ${SOURCE_ROOT}/English.lproj `/usr/bin/find . -type file -name \"*.[mh]\"`";
+			shellScript = "#\n# Run the genstrings build phase\n# This takes a while to generate, so it's not worth\n# the wait for development builds.\n#\nif [ ${BUILD_STYLE} = \"Debug\" ]; then\nexit 0\nfi\ncd ${SOURCE_ROOT}\n/usr/bin/genstrings -o ${SOURCE_ROOT}/English.lproj `/usr/bin/find . -type file -name \"*.[mh]\"`";
 		};
 /* End PBXShellScriptBuildPhase section */
 
