@@ -38,16 +38,17 @@
 
 #import <Cocoa/Cocoa.h>
 
+@class PDFAnnotation;
 
 @interface SKPDFHoverWindow : NSPanel {
     NSImageView *imageView;
-    PDFDestination *destination;
+    PDFAnnotation *annotation;
     NSViewAnimation *animation;
 }
 
 + (id)sharedHoverWindow;
 
-- (void)showWithDestination:(PDFDestination *)dest atPoint:(NSPoint)point fromView:(PDFView *)srcView;
+- (void)showForAnnotation:(PDFAnnotation *)annotation atPoint:(NSPoint)point fromView:(PDFView *)srcView;
 - (void)hide;
 
 - (void)handleApplicationWillResignActiveNotification:(NSNotification *)notification;
