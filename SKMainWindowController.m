@@ -122,6 +122,8 @@ static NSString *SKDocumentToolbarNotesPaneItemIdentifier = @"SKDocumentToolbarN
         snapshots = [[NSMutableArray alloc] init];
         dirtySnapshots = [[NSMutableArray alloc] init];
         lastViewedPages = [[NSMutableArray alloc] init];
+        // @@ remove or set to nil for Leopard?
+        pdfOutlineItems = [[NSMutableArray alloc] init];
         leftSidePaneState = SKOutlineSidePaneState;
         rightSidePaneState = SKNoteSidePaneState;
         temporaryAnnotations = CFSetCreateMutable(kCFAllocatorDefault, 0, &kCFTypeSetCallBacks);
@@ -148,7 +150,7 @@ static NSString *SKDocumentToolbarNotesPaneItemIdentifier = @"SKDocumentToolbarN
 	[fullScreenWindow release];
     [mainWindow release];
     [toolbarItems release];
-    
+    [pdfOutlineItems release];
     [super dealloc];
 }
 
@@ -1997,15 +1999,20 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
     if ([ov isEqual:outlineView]) {
         if (item == nil){
             if ((pdfOutline) && ([[pdfView document] isLocked] == NO)){
-#warning leaks 
-                // arm: This retain and the one just below are necessary to prevent a crash (and appear in Apple's sample code), but MallocDebug says we're leaking them when the doc is closed.  Can someone explain this?
-                return [[pdfOutline childAtIndex: index] retain];
+                // Apple's sample code retains this object before returning it, which prevents a crash, but also causes a leak.  We could rewrite PDFOutline, but it's easier just to collect these objects and release them in -dealloc.
+                id obj = [pdfOutline childAtIndex:index];
+                if (obj)
+                    [pdfOutlineItems addObject:obj];
+                return obj;
                 
             }else{
                 return nil;
             }
         }else{
-            return [[(PDFOutline *)item childAtIndex: index] retain];
+            id obj = [(PDFOutline *)item childAtIndex:index];
+            if (obj)
+                [pdfOutlineItems addObject:obj];
+            return obj;
         }
     } else if ([ov isEqual:noteOutlineView]) {
         if (item == nil) {
