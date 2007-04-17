@@ -24,10 +24,10 @@
 	long current = 0;
 	FILE *fp, *cmdFP;
 	sig_t oldSigPipeHandler = signal(SIGPIPE, SIG_IGN);
-	if ((fp = fopen([archivePath UTF8String], "r")))
+	if ((fp = fopen([archivePath fileSystemRepresentation], "r")))
 	{
-		setenv("DESTINATION", [[archivePath stringByDeletingLastPathComponent] UTF8String], 1);
-		if ((cmdFP = popen([command cString], "w")))
+		setenv("DESTINATION", [[archivePath stringByDeletingLastPathComponent] fileSystemRepresentation], 1);
+		if ((cmdFP = popen([command fileSystemRepresentation], "w")))
 		{
 			char buf[32*1024];
 			long len;
@@ -90,20 +90,48 @@
 	return YES;
 }
 
+static CFStringRef CopyUTIForPath(NSString *path)
+{
+	FSRef fileRef;
+	OSStatus err = noErr;
+	
+	NSURL *fileURL = [NSURL fileURLWithPath:path];
+	
+	if (FALSE == CFURLGetFSRef((CFURLRef)fileURL, &fileRef))
+		err = coreFoundationUnknownErr;
+	
+	CFTypeRef theUTI = NULL;
+	if (noErr == err)
+		err = LSCopyItemAttribute(&fileRef, kLSRolesAll, kLSItemContentType, &theUTI);
+	
+	return theUTI;
+}	
+
 - (void)_unarchivePath:(NSString *)path
 {
 	NSAutoreleasePool* pool = [[NSAutoreleasePool alloc] init];
 
-	// This dictionary associates names of methods responsible for extraction with file extensions.
-	// The methods take the path of the archive to extract. They return a BOOL indicating whether
-	// we should continue with the update; returns NO if an error occurred.
-	NSDictionary *commandDictionary = [NSDictionary dictionaryWithObjectsAndKeys:
-																   @"_extractTBZ:", @"tbz",
-																   @"_extractTGZ:", @"tgz",
-																   @"_extractTAR:", @"tar", 
-																   @"_extractZIP:", @"zip", 
-																   @"_extractDMG:", @"dmg", nil];
-	SEL command = NSSelectorFromString([commandDictionary objectForKey:[path pathExtension]]);
+	CFStringRef theUTI = CopyUTIForPath(path);
+	SEL command = NULL;
+	
+	// look up selector based on UTI; previous version used a case-sensitive dictionary lookup of file extension
+	if (theUTI)
+	{
+		if (UTTypeConformsTo(theUTI, CFSTR("org.gnu-zip-tar-archive")))
+			command = @selector(_extractTGZ:);
+		else if (UTTypeConformsTo(theUTI, CFSTR("public.tar-archive")))
+			command = @selector(_extractTAR:);
+		else if (UTTypeConformsTo(theUTI, CFSTR("com.pkware.zip-archive")))
+			command = @selector(_extractZIP:);
+		else if (UTTypeConformsTo(theUTI, kUTTypeDiskImage))
+			command = @selector(_extractDMG:);
+		else if ([[[path pathExtension] lowercaseString] isEqualToString:@"tbz"])
+			command = @selector(_extractTBZ:);
+		else 
+			NSLog(@"Unknown file type at path %@", path);
+		
+		CFRelease(theUTI);
+	}
 	
 	BOOL result;
 	if (command)

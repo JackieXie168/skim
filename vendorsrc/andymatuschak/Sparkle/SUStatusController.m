@@ -17,7 +17,9 @@
 	if (!path) // slight hack to resolve issues with running in debug configurations
 	{
 		NSBundle *current = [NSBundle bundleForClass:[self class]];
-		NSString *frameworkPath = [[[NSBundle mainBundle] sharedFrameworksPath] stringByAppendingFormat:@"/Sparkle.framework", [current bundleIdentifier]];
+		NSString *frameworkPath = [[NSBundle mainBundle] sharedFrameworksPath];
+		frameworkPath = [frameworkPath stringByAppendingPathComponent:@"Sparkle.framework"];
+		frameworkPath = [frameworkPath stringByAppendingPathComponent:[current bundleIdentifier]];
 		NSBundle *framework = [NSBundle bundleWithPath:frameworkPath];
 		path = [framework pathForResource:@"SUStatus" ofType:@"nib"];
 	}

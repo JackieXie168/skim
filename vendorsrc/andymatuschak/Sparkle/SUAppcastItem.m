@@ -76,8 +76,11 @@
 
 - (void)setTitle:(NSString *)aTitle
 {
-    [title release];
-    title = [aTitle copy];
+    if (title != aTitle)
+    {
+        [title release];
+        title = [aTitle copy];
+    }
 }
 
 
@@ -85,8 +88,11 @@
 
 - (void)setDate:(NSDate *)aDate
 {
-    [date release];
-    date = [aDate copy];
+    if (date != aDate)
+    {
+        [date release];
+        date = [aDate copy];
+	}
 }
 
 
@@ -94,8 +100,11 @@
 
 - (void)setDescription:(NSString *)aDescription
 {
-    [description release];
-    description = [aDescription copy];
+    if (description != aDescription)
+    {
+        [description release];
+        description = [aDescription copy];
+	}
 }
 
 
@@ -103,8 +112,11 @@
 
 - (void)setReleaseNotesURL:(NSURL *)aReleaseNotesURL
 {
-    [releaseNotesURL release];
-    releaseNotesURL = [aReleaseNotesURL copy];
+    if (releaseNotesURL != aReleaseNotesURL)
+    {
+        [releaseNotesURL release];
+        releaseNotesURL = [aReleaseNotesURL copy];
+	}
 }
 
 
@@ -112,8 +124,11 @@
 
 - (void)setDSASignature:(NSString *)aDSASignature
 {
-    [DSASignature release];
-    DSASignature = [aDSASignature copy];
+    if (DSASignature != aDSASignature)
+    {
+        [DSASignature release];
+        DSASignature = [aDSASignature copy];
+	}
 }
 
 
@@ -121,8 +136,11 @@
 
 - (void)setMD5Sum:(NSString *)aMD5Sum
 {
-    [MD5Sum release];
-    MD5Sum = [aMD5Sum copy];
+    if (MD5Sum != aMD5Sum)
+    {
+        [MD5Sum release];
+        MD5Sum = [aMD5Sum copy];
+	}
 }
 
 
@@ -130,8 +148,11 @@
 
 - (void)setFileURL:(NSURL *)aFileURL
 {
-    [fileURL release];
-    fileURL = [aFileURL copy];
+    if (fileURL != aFileURL)
+    {
+        [fileURL release];
+        fileURL = [aFileURL copy];
+	}
 }
 
 
@@ -139,8 +160,11 @@
 
 - (void)setFileVersion:(NSString *)aFileVersion
 {
-    [fileVersion release];
-    fileVersion = [aFileVersion copy];
+    if (fileVersion != aFileVersion)
+    {
+        [fileVersion release];
+        fileVersion = [aFileVersion copy];
+	}
 }
 
 
@@ -148,8 +172,11 @@
 
 - (void)setVersionString:(NSString *)aVersionString
 {
-    [versionString release];
-    versionString = [aVersionString copy];
+    if (versionString != aVersionString)
+    {
+        [versionString release];
+        versionString = [aVersionString copy];
+	}
 }
 
 

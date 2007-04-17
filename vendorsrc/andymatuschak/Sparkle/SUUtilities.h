@@ -18,3 +18,5 @@ NSComparisonResult SUStandardVersionComparison(NSString * versionA, NSString * v
 
 // If running make localizable-strings for genstrings, ignore the error on this line.
 NSString *SULocalizedString(NSString *key, NSString *comment);
+
+NSString *SUStringByAppendingEllipsis(NSString *string);
