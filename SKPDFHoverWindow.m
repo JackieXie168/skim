@@ -121,34 +121,51 @@
     
     NSRect rect, contentRect = [self hoverWindowRectFittingScreenFromRect:NSMakeRect(point.x, point.y + fmin(NSHeight([annotation bounds]) + 3.0, 16.0), 400.0, 80.0)];
     NSImage *image = nil;
+    NSAttributedString *text = nil;
     
     if ([[annotation type] isEqualToString:@"Link"]) {
         
         PDFDestination *dest = [annotation destination];
         PDFPage *page = [dest page];
-        NSRect bounds = [page boundsForBox:kPDFDisplayBoxCropBox];
         
-        rect = contentRect;
-        rect.origin = [dest point];
-        rect.origin.x -= NSMinX(bounds);
-        rect.origin.y -= NSMinY(bounds) + NSHeight(rect);
-        
-        PDFSelection *selection = [page selectionForRect:bounds];
-        if ([selection string]) {
-            NSRect selBounds = [selection boundsForPage:page];
-            float top = fmax(NSMaxY(selBounds), NSMinX(selBounds) + NSHeight(rect));
-            float left = fmin(NSMinX(selBounds), NSMaxX(bounds) - NSWidth(rect));
-            if (top < NSMaxY(rect))
-                rect.origin.y = top - NSHeight(rect);
-            if (left > NSMinX(rect))
-                rect.origin.x = left;
+        if (page) {
+            
+            NSRect bounds = [page boundsForBox:kPDFDisplayBoxCropBox];
+            
+            rect = contentRect;
+            rect.origin = [dest point];
+            rect.origin.x -= NSMinX(bounds);
+            rect.origin.y -= NSMinY(bounds) + NSHeight(rect);
+            
+            PDFSelection *selection = [page selectionForRect:bounds];
+            if ([selection string]) {
+                NSRect selBounds = [selection boundsForPage:page];
+                float top = fmax(NSMaxY(selBounds), NSMinX(selBounds) + NSHeight(rect));
+                float left = fmin(NSMinX(selBounds), NSMaxX(bounds) - NSWidth(rect));
+                if (top < NSMaxY(rect))
+                    rect.origin.y = top - NSHeight(rect);
+                if (left > NSMinX(rect))
+                    rect.origin.x = left;
+            }
+            
+            image = [[page image] retain];
+            
+        } else {
+            
+            NSString *urlString = [[(PDFAnnotationLink *)annotation URL] absoluteString];
+            NSDictionary *attrs = [NSDictionary dictionaryWithObjectsAndKeys:[NSFont systemFontOfSize:11.0], NSFontAttributeName, nil];
+            
+            text = [[[NSAttributedString alloc] initWithString:urlString attributes:attrs] autorelease];
+            
         }
-        
-        image = [[page image] retain];
         
     } else {
         
-        NSAttributedString *text = [annotation text];
+        text = [annotation text];
+        
+    }
+    
+    if (text) {
         
         rect = [text boundingRectWithSize:contentRect.size options:0];
         if (NSWidth(rect) < NSWidth(contentRect))
@@ -164,35 +181,39 @@
         [NSGraphicsContext saveGraphicsState];
         [[NSColor controlBackgroundColor] setFill];
         NSRectFill(rect);
-        [[annotation text] drawInRect:rect];
+        [text drawInRect:rect];
         [NSGraphicsContext restoreGraphicsState];
         [image unlockFocus];
         
     }
     
-    [imageView setFrameSize:[image size]];
-    [imageView setImage:image];
-    [image release];
-    
-    // Convert to window and expand for the border
-    [self setFrame:[self frameRectForContentRect:NSInsetRect(contentRect, -1.0, -1.0)] display:NO];
-    [imageView scrollRectToVisible:rect];
-    
-    if ([self isVisible] == NO)
-        [self setAlphaValue:0.0];
-    [animation stopAnimation];
-    [super orderFront:self];
-    
-    if (wasHidden) {
-        NSDictionary *fadeInDict = [[NSDictionary alloc] initWithObjectsAndKeys:self, NSViewAnimationTargetKey, NSViewAnimationFadeInEffect, NSViewAnimationEffectKey, nil];
+    if (image) {
         
-        animation = [[NSViewAnimation alloc] initWithViewAnimations:[NSArray arrayWithObjects:fadeInDict, nil]];
-        [fadeInDict release];
+        [imageView setFrameSize:[image size]];
+        [imageView setImage:image];
+        [image release];
         
-        [animation setAnimationBlockingMode:NSAnimationNonblocking];
-        [animation setDuration:0.5];
-        [animation setDelegate:self];
-        [animation startAnimation];
+        // Convert to window and expand for the border
+        [self setFrame:[self frameRectForContentRect:NSInsetRect(contentRect, -1.0, -1.0)] display:NO];
+        [imageView scrollRectToVisible:rect];
+        
+        if ([self isVisible] == NO)
+            [self setAlphaValue:0.0];
+        [animation stopAnimation];
+        [super orderFront:self];
+        
+        if (wasHidden) {
+            NSDictionary *fadeInDict = [[NSDictionary alloc] initWithObjectsAndKeys:self, NSViewAnimationTargetKey, NSViewAnimationFadeInEffect, NSViewAnimationEffectKey, nil];
+            
+            animation = [[NSViewAnimation alloc] initWithViewAnimations:[NSArray arrayWithObjects:fadeInDict, nil]];
+            [fadeInDict release];
+            
+            [animation setAnimationBlockingMode:NSAnimationNonblocking];
+            [animation setDuration:0.5];
+            [animation setDelegate:self];
+            [animation startAnimation];
+        }
+        
     }
 }
 
