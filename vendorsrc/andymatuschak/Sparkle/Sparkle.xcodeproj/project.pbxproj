@@ -28,10 +28,6 @@
 		6196CFFA09C72149000DC222 /* SUStatusController.m in Sources */ = {isa = PBXBuildFile; fileRef = 6196CFE409C71ADE000DC222 /* SUStatusController.m */; };
 		61B5F8E709C4CE3C00B25A18 /* md5.c in Sources */ = {isa = PBXBuildFile; fileRef = 61B5F8DD09C4CE3C00B25A18 /* md5.c */; };
 		61B5F8E809C4CE3C00B25A18 /* md5.h in Headers */ = {isa = PBXBuildFile; fileRef = 61B5F8DE09C4CE3C00B25A18 /* md5.h */; settings = {ATTRIBUTES = (); }; };
-		61B5F8E909C4CE3C00B25A18 /* NSString+extras.h in Headers */ = {isa = PBXBuildFile; fileRef = 61B5F8DF09C4CE3C00B25A18 /* NSString+extras.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		61B5F8EA09C4CE3C00B25A18 /* NSString+extras.m in Sources */ = {isa = PBXBuildFile; fileRef = 61B5F8E009C4CE3C00B25A18 /* NSString+extras.m */; };
-		61B5F8EB09C4CE3C00B25A18 /* RSS.h in Headers */ = {isa = PBXBuildFile; fileRef = 61B5F8E109C4CE3C00B25A18 /* RSS.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		61B5F8EC09C4CE3C00B25A18 /* RSS.m in Sources */ = {isa = PBXBuildFile; fileRef = 61B5F8E209C4CE3C00B25A18 /* RSS.m */; };
 		61B5F8ED09C4CE3C00B25A18 /* SUUpdater.h in Headers */ = {isa = PBXBuildFile; fileRef = 61B5F8E309C4CE3C00B25A18 /* SUUpdater.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		61B5F8EE09C4CE3C00B25A18 /* SUUpdater.m in Sources */ = {isa = PBXBuildFile; fileRef = 61B5F8E409C4CE3C00B25A18 /* SUUpdater.m */; };
 		61B5F8EF09C4CE3C00B25A18 /* NSFileManager+Authentication.m in Sources */ = {isa = PBXBuildFile; fileRef = 61B5F8E509C4CE3C00B25A18 /* NSFileManager+Authentication.m */; };
@@ -103,10 +99,6 @@
 		6196CFE409C71ADE000DC222 /* SUStatusController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SUStatusController.m; sourceTree = "<group>"; };
 		61B5F8DD09C4CE3C00B25A18 /* md5.c */ = {isa = PBXFileReference; fileEncoding = 30; includeInIndex = 0; lastKnownFileType = sourcecode.c.c; path = md5.c; sourceTree = "<group>"; };
 		61B5F8DE09C4CE3C00B25A18 /* md5.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = md5.h; sourceTree = "<group>"; };
-		61B5F8DF09C4CE3C00B25A18 /* NSString+extras.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = "NSString+extras.h"; sourceTree = "<group>"; };
-		61B5F8E009C4CE3C00B25A18 /* NSString+extras.m */ = {isa = PBXFileReference; fileEncoding = 30; includeInIndex = 0; lastKnownFileType = sourcecode.c.objc; path = "NSString+extras.m"; sourceTree = "<group>"; };
-		61B5F8E109C4CE3C00B25A18 /* RSS.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = RSS.h; sourceTree = "<group>"; };
-		61B5F8E209C4CE3C00B25A18 /* RSS.m */ = {isa = PBXFileReference; fileEncoding = 30; includeInIndex = 0; lastKnownFileType = sourcecode.c.objc; path = RSS.m; sourceTree = "<group>"; };
 		61B5F8E309C4CE3C00B25A18 /* SUUpdater.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = SUUpdater.h; sourceTree = "<group>"; };
 		61B5F8E409C4CE3C00B25A18 /* SUUpdater.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = SUUpdater.m; sourceTree = "<group>"; };
 		61B5F8E509C4CE3C00B25A18 /* NSFileManager+Authentication.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = "NSFileManager+Authentication.m"; sourceTree = "<group>"; };
@@ -128,7 +120,7 @@
 		61BBDF810A49220C00378739 /* Sparkle.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; path = Sparkle.icns; sourceTree = "<group>"; };
 		8DC2EF5A0486A6940098B216 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		8DC2EF5B0486A6940098B216 /* Sparkle.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Sparkle.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		CE2BDB7A0BD4161900A5F4DB /* en */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/Sparkle.strings; sourceTree = "<group>"; };
+		CE2BDB7A0BD4161900A5F4DB /* en */ = {isa = PBXFileReference; fileEncoding = 10; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/Sparkle.strings; sourceTree = "<group>"; };
 		CE2BDB7F0BD4163200A5F4DB /* en */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = en; path = en.lproj/SUAutomaticUpdateAlert.nib; sourceTree = "<group>"; };
 		CE2BDB810BD4163200A5F4DB /* en */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = en; path = en.lproj/SUUpdateAlert.nib; sourceTree = "<group>"; };
 		CE2BDB8A0BD4167D00A5F4DB /* nl */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = nl; path = nl.lproj/Sparkle.strings; sourceTree = "<group>"; };
@@ -294,10 +286,6 @@
 			children = (
 				61B5F8DD09C4CE3C00B25A18 /* md5.c */,
 				61B5F8DE09C4CE3C00B25A18 /* md5.h */,
-				61B5F8DF09C4CE3C00B25A18 /* NSString+extras.h */,
-				61B5F8E009C4CE3C00B25A18 /* NSString+extras.m */,
-				61B5F8E109C4CE3C00B25A18 /* RSS.h */,
-				61B5F8E209C4CE3C00B25A18 /* RSS.m */,
 				61B5FBCB09C4FBAB00B25A18 /* SUUtilities.h */,
 				61B5FBCC09C4FBAB00B25A18 /* SUUtilities.m */,
 				61299A5B09CA6D4500B7442F /* SUConstants.h */,
@@ -327,8 +315,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				61B5F8E809C4CE3C00B25A18 /* md5.h in Headers */,
-				61B5F8E909C4CE3C00B25A18 /* NSString+extras.h in Headers */,
-				61B5F8EB09C4CE3C00B25A18 /* RSS.h in Headers */,
 				61B5F8ED09C4CE3C00B25A18 /* SUUpdater.h in Headers */,
 				61B5FC0D09C4FC8200B25A18 /* SUAppcast.h in Headers */,
 				61B5FC0E09C4FC8400B25A18 /* SUUtilities.h in Headers */,
@@ -475,8 +461,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				61B5F8E709C4CE3C00B25A18 /* md5.c in Sources */,
-				61B5F8EA09C4CE3C00B25A18 /* NSString+extras.m in Sources */,
-				61B5F8EC09C4CE3C00B25A18 /* RSS.m in Sources */,
 				61B5F8EE09C4CE3C00B25A18 /* SUUpdater.m in Sources */,
 				61B5F8EF09C4CE3C00B25A18 /* NSFileManager+Authentication.m in Sources */,
 				61B5FBB709C4FAFF00B25A18 /* SUAppcast.m in Sources */,

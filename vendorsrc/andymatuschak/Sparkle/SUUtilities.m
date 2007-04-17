@@ -19,7 +19,7 @@ id SUInfoValueForKey(NSString *key)
 
 NSString *SUHostAppName()
 {
-	if (SUInfoValueForKey(@"CFBundleName")) { return SUInfoValueForKey(@"CFBundleName"); }
+	if (SUInfoValueForKey((id)kCFBundleNameKey)) { return SUInfoValueForKey((id)kCFBundleNameKey); }
 	return [[[NSFileManager defaultManager] displayNameAtPath:[[NSBundle mainBundle] bundlePath]] stringByDeletingPathExtension];
 }
 
@@ -31,7 +31,7 @@ NSString *SUHostAppDisplayName()
 
 NSString *SUHostAppVersion()
 {
-	return SUInfoValueForKey(@"CFBundleVersion");
+	return SUInfoValueForKey((id)kCFBundleVersionKey);
 }
 
 NSString *SUHostAppVersionString()
@@ -186,6 +186,14 @@ NSComparisonResult SUStandardVersionComparison(NSString *versionA, NSString *ver
     
     // The 2 strings are identical
     return NSOrderedSame;
+}
+
+NSString *SUStringByAppendingEllipsis(NSString *string)
+{
+    static NSString *horizontalEllipsis = nil;
+    if (nil == horizontalEllipsis)
+        horizontalEllipsis = [[NSString alloc] initWithFormat:@"%C", 0x2026];
+    return [string stringByAppendingString:horizontalEllipsis];
 }
 
 @implementation SUUtilities

@@ -17,45 +17,12 @@
 
 @implementation NSFileManager (SUAuthenticationAdditions)
 
-- (BOOL)currentUserOwnsPath:(NSString *)oPath
-{
-	char *path = (char *)[oPath fileSystemRepresentation];
-	unsigned int uid = getuid();
-	bool res = false;
-	struct stat sb;
-	if(stat(path, &sb) == 0)
-	{
-		if(sb.st_uid == uid)
-		{
-			res = true;
-			if(sb.st_mode & S_IFDIR)
-			{
-				DIR* dir = opendir(path);
-				struct dirent* entry = NULL;
-				while(res && (entry = readdir(dir)))
-				{
-					if(strcmp(entry->d_name, ".") == 0 || strcmp(entry->d_name, "..") == 0)
-						continue;
-					
-					char descend[strlen(path) + 1 + entry->d_namlen + 1];
-					strcpy(descend, path);
-					strcat(descend, "/");
-					strcat(descend, entry->d_name);
-					res = [self currentUserOwnsPath:[NSString stringWithUTF8String:descend]];
-				}
-				closedir(dir);
-			}
-		}
-	}
-	return res;
-}
-
 - (BOOL)_movePathWithForcedAuthentication:(NSString *)src toPath:(NSString *)dst
 {
 	NSString *tmp = [[[dst stringByDeletingPathExtension] stringByAppendingString:@".old"] stringByAppendingPathExtension:[dst pathExtension]];
 	BOOL res = NO;
 	struct stat sb;
-	if((stat([src UTF8String], &sb) != 0) || (stat([tmp UTF8String], &sb) == 0) || stat([dst UTF8String], &sb) != 0)
+	if((stat([src fileSystemRepresentation], &sb) != 0) || (stat([tmp fileSystemRepresentation], &sb) == 0) || stat([dst fileSystemRepresentation], &sb) != 0)
 		return false;
 	
 	char* buf = NULL;
@@ -72,9 +39,9 @@
 	AuthorizationRef auth;
 	if(AuthorizationCreate(NULL, kAuthorizationEmptyEnvironment, kAuthorizationFlagDefaults, &auth) == errAuthorizationSuccess)
 	{
-		setenv("SRC_PATH", [src UTF8String], 1);
-		setenv("DST_PATH", [dst UTF8String], 1);
-		setenv("TMP_PATH", [tmp UTF8String], 1);
+		setenv("SRC_PATH", [src fileSystemRepresentation], 1);
+		setenv("DST_PATH", [dst fileSystemRepresentation], 1);
+		setenv("TMP_PATH", [tmp fileSystemRepresentation], 1);
 		sig_t oldSigChildHandler = signal(SIGCHLD, SIG_DFL);
 		char const* arguments[] = { "-c", buf, NULL };
 		if(AuthorizationExecuteWithPrivileges(auth, "/bin/sh", kAuthorizationFlagDefaults, (char**)arguments, NULL) == errAuthorizationSuccess)

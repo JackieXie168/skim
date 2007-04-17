@@ -26,8 +26,13 @@
 #import <signal.h>
 #import <dirent.h>
 
+#define kNetworkConnectionFailed 10
+
 @interface SUUpdater (Private)
+- (NSURL *)appcastURL;
 - (void)checkForUpdatesAndNotify:(BOOL)verbosity;
+- (BOOL)checkForNetworkAvailability:(NSError **)error;
+- (BOOL)attemptRecoveryFromError:(NSError *)error optionIndex:(unsigned int)recoveryOptionIndex;
 - (void)showUpdateErrorAlertWithInfo:(NSString *)info;
 - (NSTimeInterval)storedCheckInterval;
 - (void)abandonUpdate;
@@ -97,7 +102,12 @@
 			}
 			else
 			{
-				shouldCheckAtStartup = [NSNumber numberWithBool:NSRunAlertPanel(SULocalizedString(@"Check for updates on startup?", nil), [NSString stringWithFormat:SULocalizedString(@"Would you like %@ to check for updates on startup? If not, you can initiate the check manually from the application menu.", nil), SUHostAppDisplayName()], SULocalizedString(@"Yes", nil), SULocalizedString(@"No", nil), nil) == NSAlertDefaultReturn];
+				NSAlert *alert = [NSAlert alertWithMessageText:SULocalizedString(@"Check for updates on startup?", nil)
+ 												 defaultButton:SULocalizedString(@"Yes", nil) 
+   											   alternateButton:SULocalizedString(@"No", nil) 
+   												   otherButton:nil
+										informativeTextWithFormat:[NSString stringWithFormat:SULocalizedString(@"Would you like %@ to check for updates on startup? If not, you can initiate the check manually from the application menu.", nil), SUHostAppDisplayName()]];
+				shouldCheckAtStartup = [NSNumber numberWithBool:([alert runModal] == NSAlertDefaultReturn)];
 			}
 			[[NSUserDefaults standardUserDefaults] setObject:shouldCheckAtStartup forKey:SUCheckAtStartupKey];
 		}
@@ -123,6 +133,24 @@
 	[super dealloc];
 }
 
+- (BOOL)validateMenuItem:(NSMenuItem *)anItem
+{
+	if ([anItem action] == @selector(checkForUpdates:))
+		return (updateInProgress == NO);
+	else 
+		return YES;
+}
+
+- (NSURL *)appcastURL
+{
+	// A value in the user defaults overrides one in the Info.plist (so preferences panels can be created wherein users choose between beta / release feeds).
+	NSString *appcastString = [[NSUserDefaults standardUserDefaults] objectForKey:SUFeedURLKey];
+	if (!appcastString)
+		appcastString = SUInfoValueForKey(SUFeedURLKey);
+    NSAssert(nil != appcastString, @"No feed URL is specified in the Info.plist or the user defaults!");
+    return [NSURL URLWithString:appcastString];
+}
+
 - (void)checkForUpdatesInBackground
 {
 	[self checkForUpdatesAndNotify:NO];
@@ -137,32 +165,24 @@
 // This is generally useful for a menu item--when the check is explicitly invoked.
 - (void)checkForUpdatesAndNotify:(BOOL)verbosity
 {	
-	if (updateInProgress)
-	{
-		if (verbosity)
+	if (NO == updateInProgress) {
+		
+		NSError *nsError;
+		if ([self checkForNetworkAvailability:&nsError] == NO)
 		{
-			NSBeep();
-			if ([[statusController window] isVisible])
-				[statusController showWindow:self];
-			else if ([[updateAlert window] isVisible])
-				[updateAlert showWindow:self];
-			else
-				[self showUpdateErrorAlertWithInfo:SULocalizedString(@"An update is already in progress!", nil)];
+			if (verbosity)
+				[NSApp presentError:nsError];
 		}
-		return;
+		else
+		{	
+			verbose = verbosity;
+			updateInProgress = YES;
+
+			SUAppcast *appcast = [[SUAppcast alloc] init];
+			[appcast setDelegate:self];
+			[appcast fetchAppcastFromURL:[self appcastURL]];
+		}
 	}
-	verbose = verbosity;
-	updateInProgress = YES;
-	
-	// A value in the user defaults overrides one in the Info.plist (so preferences panels can be created wherein users choose between beta / release feeds).
-	NSString *appcastString = [[NSUserDefaults standardUserDefaults] objectForKey:SUFeedURLKey];
-	if (!appcastString)
-		appcastString = SUInfoValueForKey(SUFeedURLKey);
-	if (!appcastString) { [NSException raise:@"SUNoFeedURL" format:@"No feed URL is specified in the Info.plist or the user defaults!"]; }
-	
-	SUAppcast *appcast = [[SUAppcast alloc] init];
-	[appcast setDelegate:self];
-	[appcast fetchAppcastFromURL:[NSURL URLWithString:appcastString]];
 }
 
 - (BOOL)automaticallyUpdates
@@ -177,10 +197,86 @@
 	return [self automaticallyUpdates] && !verbose;
 }
 
+- (BOOL)checkForNetworkAvailability:(NSError **)error
+{
+	CFURLRef theURL = (CFURLRef)[self appcastURL];
+	CFNetDiagnosticRef diagnostic = CFNetDiagnosticCreateWithURL(CFGetAllocator(theURL), theURL);
+	
+	NSString *details;
+	CFNetDiagnosticStatus status = CFNetDiagnosticCopyNetworkStatusPassively(diagnostic, (CFStringRef *)&details);
+	CFRelease(diagnostic);
+	[details autorelease];
+	
+	BOOL success;
+	
+	if (kCFNetDiagnosticConnectionUp == status)
+	{
+		success = YES;
+	}
+	else
+	{
+		if (nil == details) details = SULocalizedString(@"Unknown network error", nil);
+		
+		// This error contains all the information needed for NSErrorRecoveryAttempting.  
+		// Note that buttons in the alert will be ordered right-to-left {0, 1, 2} and correspond to objects in the NSLocalizedRecoveryOptionsErrorKey array.
+		if (error)
+		{
+			NSArray *recoveryOptions = [NSArray arrayWithObjects:SULocalizedString(@"Ignore", nil), SULocalizedString(@"Diagnose", nil), SULocalizedString(@"Open Console", nil), nil];
+			
+			*error = [NSError errorWithDomain:SUInfoValueForKey((id)kCFBundleIdentifierKey) code:kNetworkConnectionFailed userInfo:[NSDictionary dictionaryWithObjectsAndKeys:self, NSRecoveryAttempterErrorKey, details, NSLocalizedDescriptionKey, SULocalizedString(@"Would you like to ignore this problem or attempt to diagnose it?  You may also open the Console log to check for errors.", nil), NSLocalizedRecoverySuggestionErrorKey, recoveryOptions, NSLocalizedRecoveryOptionsErrorKey, nil]];
+		}
+		success = NO;
+	}
+	
+	return success;
+}
+
+// Recovery attempter is called if we're doing an interactive check and the network is not available
+- (BOOL)attemptRecoveryFromError:(NSError *)error optionIndex:(unsigned int)recoveryOptionIndex
+{
+	BOOL didRecover = NO;
+	
+	// we only receive this for a single error at present
+	if ([error code] == kNetworkConnectionFailed)
+	{
+		if (0 == recoveryOptionIndex)
+		{
+			// ignore
+			didRecover = NO;
+			
+		}
+		else if (1 == recoveryOptionIndex)
+		{
+			// diagnose
+			CFURLRef theURL = (CFURLRef)[self appcastURL];
+			CFNetDiagnosticRef diagnostic = CFNetDiagnosticCreateWithURL(CFGetAllocator(theURL), theURL);
+			CFNetDiagnosticStatus status = CFNetDiagnosticDiagnoseProblemInteractively(diagnostic);
+			CFRelease(diagnostic);
+			didRecover = (status == kCFNetDiagnosticNoErr);
+			
+		}
+		else if (2 == recoveryOptionIndex)
+		{
+			// open console
+			didRecover = [[NSWorkspace sharedWorkspace] launchAppWithBundleIdentifier:@"com.apple.console" options:0 additionalEventParamDescriptor:nil launchIdentifier:NULL];
+		}
+	}
+	else
+	{
+		didRecover = NO;
+	}
+	
+	return didRecover;
+}
+
 - (void)showUpdateErrorAlertWithInfo:(NSString *)info
 {
 	if ([self isAutomaticallyUpdating]) { return; }
-	NSRunAlertPanel(SULocalizedString(@"Update Error!", nil), info, NSLocalizedString(@"Cancel", nil), nil, nil);
+    NSAlert *alert = [[[NSAlert alloc] init] autorelease];
+    [alert setMessageText:SULocalizedString(@"Update Error!", nil)];
+    [alert setInformativeText:info];
+    [alert addButtonWithTitle:SULocalizedString(@"Cancel", @"")];
+    [alert runModal];
 }
 
 - (NSTimeInterval)storedCheckInterval
@@ -202,8 +298,8 @@
 	if (![self isAutomaticallyUpdating])
 	{
 		statusController = [[SUStatusController alloc] init];
-		[statusController beginActionWithTitle:SULocalizedString(@"Downloading update...", nil) maxProgressValue:0 statusText:nil];
-		[statusController setButtonTitle:NSLocalizedString(@"Cancel", nil) target:self action:@selector(cancelDownload:) isDefault:NO];
+		[statusController beginActionWithTitle:SUStringByAppendingEllipsis(SULocalizedString(@"Downloading update", nil)) maxProgressValue:0 statusText:nil];
+		[statusController setButtonTitle:SULocalizedString(@"Cancel", nil) target:self action:@selector(cancelDownload:) isDefault:NO];
 		[statusController showWindow:self];
 	}
 	
@@ -272,26 +368,39 @@
 
 - (void)appcastDidFinishLoading:(SUAppcast *)ac
 {
-	@try
+	BOOL failed = NO;
+	if (nil == ac)
 	{
-		if (!ac) { [NSException raise:@"SUAppcastException" format:@"Couldn't get a valid appcast from the server."]; }
+		failed = YES;
+		NSLog(@"Couldn't get a valid appcast from the server.");
+	}
 
-		updateItem = [[ac newestItem] retain];
-		[ac autorelease];
+	updateItem = [[ac newestItem] retain];
+	[ac release];
 
+	if (!failed)
+	{
 		// Record the time of the check for host app use and for interval checks on startup.
 		[[NSUserDefaults standardUserDefaults] setObject:[NSDate date] forKey:SULastCheckTimeKey];
+	}
+	else if (nil == [updateItem fileVersion])
+	{
+		NSLog(@"Can't extract a version string from the appcast feed. The filenames should look like YourApp_1.5.tgz, where 1.5 is the version number.");
+	}
 
-		if (![updateItem fileVersion])
-		{
-			[NSException raise:@"SUAppcastException" format:@"Can't extract a version string from the appcast feed. The filenames should look like YourApp_1.5.tgz, where 1.5 is the version number."];
-		}
+	if (!verbose && [[[NSUserDefaults standardUserDefaults] objectForKey:SUSkippedVersionKey] isEqualToString:[updateItem fileVersion]]) { 
+		updateInProgress = NO;
+		return; 
+	}
 
-		if (!verbose && [[[NSUserDefaults standardUserDefaults] objectForKey:SUSkippedVersionKey] isEqualToString:[updateItem fileVersion]]) { updateInProgress = NO; return; }
-
+	if (!failed)
+	{
+		
 		if ([self newVersionAvailable])
 		{
-			if (checkTimer)	// There's a new version! Let's disable the automated checking timer unless the user cancels.
+			
+			// There's a new version! Let's disable the automated checking timer unless the user cancels.
+			if (checkTimer)
 			{
 				[checkTimer invalidate];
 				checkTimer = nil;
@@ -308,16 +417,21 @@
 		}
 		else
 		{
-			if (verbose) // We only notify on no new version when we're being verbose.
+			// We only notify on no new version when we're being verbose.
+			if (verbose)
 			{
-				NSRunAlertPanel(SULocalizedString(@"You're up to date!", nil), [NSString stringWithFormat:SULocalizedString(@"%@ %@ is currently the newest version available.", nil), SUHostAppDisplayName(), SUHostAppVersionString()], NSLocalizedString(@"OK", nil), nil, nil);
+				NSAlert *alert = [[NSAlert new] autorelease];
+				[alert setMessageText:SULocalizedString(@"You're up to date!", nil)];
+				[alert setInformativeText:[NSString stringWithFormat:SULocalizedString(@"%@ %@ is currently the newest version available.", nil), SUHostAppDisplayName(), SUHostAppVersionString()]];
+				[alert addButtonWithTitle:SULocalizedString(@"OK", nil)];
+				[alert runModal];
 			}
 			updateInProgress = NO;
 		}
 	}
-	@catch (NSException *e)
+
+	if(failed)
 	{
-		NSLog([e reason]);
 		updateInProgress = NO;
 		if (verbose)
 			[self showUpdateErrorAlertWithInfo:SULocalizedString(@"An error occurred in retrieving update information. Please try again later.", nil)];
@@ -331,24 +445,20 @@
 
 - (void)download:(NSURLDownload *)download decideDestinationWithSuggestedFilename:(NSString *)name
 {
-	// If name ends in .txt, the server probably has a stupid MIME configuration. We'll give
-	// the developer the benefit of the doubt and chop that off.
-	if ([[name pathExtension] isEqualToString:@"txt"])
-		name = [name stringByDeletingPathExtension];
-	
 	// We create a temporary directory in /tmp and stick the file there.
 	NSString *tempDir = [NSTemporaryDirectory() stringByAppendingPathComponent:[[NSProcessInfo processInfo] globallyUniqueString]];
-	BOOL success = [[NSFileManager defaultManager] createDirectoryAtPath:tempDir attributes:nil];
-	if (!success)
+	if ([[NSFileManager defaultManager] createDirectoryAtPath:tempDir attributes:nil])
 	{
-		[NSException raise:@"SUFailTmpWrite" format:@"Couldn't create temporary directory in /tmp"];
+		[downloadPath autorelease];
+		downloadPath = [[tempDir stringByAppendingPathComponent:name] retain];
+		[download setDestination:downloadPath allowOverwrite:YES];
+	}
+	else
+	{
+		NSLog(@"Failed to create temporary directory %@", tempDir);
 		[download cancel];
 		[download release];
 	}
-	
-	[downloadPath autorelease];
-	downloadPath = [[tempDir stringByAppendingPathComponent:name] retain];
-	[download setDestination:downloadPath allowOverwrite:YES];
 }
 
 - (void)download:(NSURLDownload *)download didReceiveDataOfLength:(unsigned)length
@@ -393,32 +503,38 @@
 {
 	// Now we have to extract the downloaded archive.
 	if (![self isAutomaticallyUpdating])
-		[statusController beginActionWithTitle:SULocalizedString(@"Extracting update...", nil) maxProgressValue:0 statusText:nil];
+		[statusController beginActionWithTitle:SUStringByAppendingEllipsis(SULocalizedString(@"Extracting update", nil)) maxProgressValue:0 statusText:nil];
 	
-	@try 
+	BOOL failed = NO;
+	
+	// If the developer's provided a sparkle:md5Hash attribute on the enclosure, let's verify that.
+	if ([updateItem MD5Sum] && ![[NSFileManager defaultManager] validatePath:downloadPath withMD5Hash:[updateItem MD5Sum]])
 	{
-		// If the developer's provided a sparkle:md5Hash attribute on the enclosure, let's verify that.
-		if ([updateItem MD5Sum] && ![[NSFileManager defaultManager] validatePath:downloadPath withMD5Hash:[updateItem MD5Sum]])
+		failed = YES;
+		NSLog(@"MD5 verification of the update archive failed.");
+	}
+	
+	// DSA verification, if activated by the developer
+	if (!failed && [SUInfoValueForKey(SUExpectsDSASignatureKey) boolValue])
+	{
+		NSString *dsaSignature = [updateItem DSASignature];
+		if (![[NSFileManager defaultManager] validatePath:downloadPath withEncodedDSASignature:dsaSignature])
 		{
-			[NSException raise:@"SUUnarchiveException" format:@"MD5 verification of the update archive failed."];
+			failed = YES;
+			NSLog(@"DSA verification of the update archive failed.");
 		}
-		
-		// DSA verification, if activated by the developer
-		if ([SUInfoValueForKey(SUExpectsDSASignatureKey) boolValue])
-		{
-			NSString *dsaSignature = [updateItem DSASignature];
-			if (![[NSFileManager defaultManager] validatePath:downloadPath withEncodedDSASignature:dsaSignature])
-			{
-				[NSException raise:@"SUUnarchiveException" format:@"DSA verification of the update archive failed."];
-			}
-		}
-		
+	}
+	
+	if (!failed)
+	{
 		SUUnarchiver *unarchiver = [[SUUnarchiver alloc] init];
 		[unarchiver setDelegate:self];
-		[unarchiver unarchivePath:downloadPath]; // asynchronous extraction!
+		
+		// asynchronous extraction!
+		[unarchiver unarchivePath:downloadPath];
 	}
-	@catch(NSException *e) {
-		NSLog([e reason]);
+	else
+	{
 		[self showUpdateErrorAlertWithInfo:SULocalizedString(@"An error occurred while extracting the archive. Please try again later.", nil)];
 		[self abandonUpdate];
 	}	
@@ -447,34 +563,60 @@
 	[self showUpdateErrorAlertWithInfo:SULocalizedString(@"An error occurred while trying to download the file. Please try again later.", nil)];
 }
 
+static BOOL IsAliasFolderAtPath(NSString *path)
+{
+	FSRef fileRef;
+	OSStatus err = noErr;
+	Boolean aliasFileFlag, folderFlag;
+	NSURL *fileURL = [NSURL fileURLWithPath:path];
+	
+	if (FALSE == CFURLGetFSRef((CFURLRef)fileURL, &fileRef))
+		err = coreFoundationUnknownErr;
+	
+	if (noErr == err)
+		err = FSIsAliasFile(&fileRef, &aliasFileFlag, &folderFlag);
+	
+	if (noErr == err)
+		return (BOOL)(aliasFileFlag && folderFlag);
+	else
+		return NO;
+}
+
 - (IBAction)installAndRestart:sender
 {
 	NSString *currentAppPath = [[NSBundle mainBundle] bundlePath];
 	NSString *newAppDownloadPath = [[downloadPath stringByDeletingLastPathComponent] stringByAppendingPathComponent:[SUInfoValueForKey(@"CFBundleName") stringByAppendingPathExtension:@"app"]];
-	@try 
+	BOOL failed = NO;
+	
+	if (![self isAutomaticallyUpdating])
 	{
-		if (![self isAutomaticallyUpdating])
-		{
-			[statusController beginActionWithTitle:SULocalizedString(@"Installing update...", nil) maxProgressValue:0 statusText:nil];
-			[statusController setButtonEnabled:NO];
-			
-			// We have to wait for the UI to update.
-			NSEvent *event;
-			while((event = [NSApp nextEventMatchingMask:NSAnyEventMask untilDate:nil inMode:NSDefaultRunLoopMode dequeue:YES]))
-				[NSApp sendEvent:event];			
-		}
+		[statusController beginActionWithTitle:SUStringByAppendingEllipsis(SULocalizedString(@"Installing update", nil)) maxProgressValue:0 statusText:nil];
+		[statusController setButtonEnabled:NO];
 		
-		// We assume that the archive will contain a file named {CFBundleName}.app
-		// (where, obviously, CFBundleName comes from Info.plist)
-		if (!SUInfoValueForKey(@"CFBundleName")) { [NSException raise:@"SUInstallException" format:@"This application has no CFBundleName! This key must be set to the application's name."]; }
-		
+		// We have to wait for the UI to update.
+		NSEvent *event;
+		while((event = [NSApp nextEventMatchingMask:NSAnyEventMask untilDate:nil inMode:NSDefaultRunLoopMode dequeue:YES]))
+			[NSApp sendEvent:event];			
+	}
+	
+	// We assume that the archive will contain a file named {CFBundleName}.app
+	// (where, obviously, CFBundleName comes from Info.plist)
+	if (!SUInfoValueForKey(@"CFBundleName"))
+	{
+		failed = YES;
+		NSLog(@"This application has no CFBundleName! This key must be set to the application's name.");
+	}
+	
+	if (!failed)
+	{
 		// Search subdirectories for the application
 		NSString *file, *appName = [SUInfoValueForKey(@"CFBundleName") stringByAppendingPathExtension:@"app"];
 		NSDirectoryEnumerator *dirEnum = [[NSFileManager defaultManager] enumeratorAtPath:[downloadPath stringByDeletingLastPathComponent]];
 		while ((file = [dirEnum nextObject]))
 		{
 			// Some DMGs have symlinks into /Applications! That's no good!
-			if ([file isEqualToString:@"/Applications"])
+			if ([[[dirEnum fileAttributes] objectForKey:NSFileType] isEqualToString:NSFileTypeSymbolicLink] ||
+				IsAliasFolderAtPath([[downloadPath stringByDeletingLastPathComponent] stringByAppendingPathComponent:file]))
 				[dirEnum skipDescendents];
 			if ([[file lastPathComponent] isEqualToString:appName])
 				newAppDownloadPath = [[downloadPath stringByDeletingLastPathComponent] stringByAppendingPathComponent:file];
@@ -482,17 +624,18 @@
 		
 		if (!newAppDownloadPath || ![[NSFileManager defaultManager] fileExistsAtPath:newAppDownloadPath])
 		{
-			[NSException raise:@"SUInstallException" format:@"The update archive didn't contain an application with the proper name: %@. Remember, the updated app's file name must be identical to {CFBundleName}.app", [SUInfoValueForKey(@"CFBundleName") stringByAppendingPathExtension:@"app"]];
+			failed = YES;
+			NSLog(@"The update archive didn't contain an application with the proper name: %@. Remember, the updated app's file name must be identical to {CFBundleName}.app", [SUInfoValueForKey(@"CFBundleName") stringByAppendingPathExtension:@"app"]);
 		}
 	}
-	@catch(NSException *e) 
-	{
-		NSLog([e reason]);
-		[self showUpdateErrorAlertWithInfo:SULocalizedString(@"An error occurred during installation. Please try again later.", nil)];
-		[self abandonUpdate];		
-	}
 	
-	if ([self isAutomaticallyUpdating]) // Don't do authentication if we're automatically updating; that'd be surprising.
+	if (failed)
+	{
+		[self showUpdateErrorAlertWithInfo:SULocalizedString(@"An error occurred during installation. Please try again later.", nil)];
+		[self abandonUpdate];
+        return;	
+	}
+	else if ([self isAutomaticallyUpdating]) // Don't do authentication if we're automatically updating; that'd be surprising.
 	{
 		int tag = 0;
 		BOOL result = [[NSWorkspace sharedWorkspace] performFileOperation:NSWorkspaceRecycleOperation source:[currentAppPath stringByDeletingLastPathComponent] destination:@"" files:[NSArray arrayWithObject:[currentAppPath lastPathComponent]] tag:&tag];
@@ -528,8 +671,8 @@
 	[[NSNotificationCenter defaultCenter] postNotificationName:SUUpdaterWillRestartNotification object:self];
 
 	// Thanks to Allan Odgaard for this restart code, which is much more clever than mine was.
-	setenv("LAUNCH_PATH", [currentAppPath UTF8String], 1);
-	setenv("TEMP_FOLDER", [[downloadPath stringByDeletingLastPathComponent] UTF8String], 1); // delete the temp stuff after it's all over
+	setenv("LAUNCH_PATH", [currentAppPath fileSystemRepresentation], 1);
+	setenv("TEMP_FOLDER", [[downloadPath stringByDeletingLastPathComponent] fileSystemRepresentation], 1); // delete the temp stuff after it's all over
 	system("/bin/bash -c '{ for (( i = 0; i < 3000 && $(echo $(/bin/ps -xp $PPID|/usr/bin/wc -l))-1; i++ )); do\n"
 		   "    /bin/sleep .2;\n"
 		   "  done\n"
