@@ -472,6 +472,7 @@ static NSString *SKDocumentToolbarNotesPaneItemIdentifier = @"SKDocumentToolbarN
         
         [pdfOutline release];
         pdfOutline = [[[pdfView document] outlineRoot] retain];
+        [pdfOutlineItems removeAllObjects];
         if (pdfOutline && [[pdfView document] isLocked] == NO) {
             [outlineView reloadData];
             [outlineView setAutoresizesOutlineColumn: NO];
