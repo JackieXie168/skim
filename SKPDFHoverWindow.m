@@ -168,7 +168,7 @@
     
     if (text) {
         
-        rect = [text boundingRectWithSize:contentRect.size options:NSStringDrawingUsesLineFragmentOrigin];
+        rect = NSInsetRect([text boundingRectWithSize:contentRect.size options:NSStringDrawingUsesLineFragmentOrigin], -2.0, 0.0);
         if (NSWidth(rect) < NSWidth(contentRect))
             contentRect.size.width = NSWidth(rect);
         if (NSHeight(rect) < NSHeight(contentRect))
@@ -180,7 +180,7 @@
         color = [NSColor colorWithDeviceRed:1.0 green:1.0 blue:0.6 alpha:1.0];
         
         [image lockFocus];
-        [text drawWithRect:rect options:NSStringDrawingUsesLineFragmentOrigin];
+        [text drawWithRect:NSInsetRect(rect, 2.0, 0.0) options:NSStringDrawingUsesLineFragmentOrigin];
         [image unlockFocus];
         
     }
