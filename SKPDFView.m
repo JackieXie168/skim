@@ -708,14 +708,18 @@ static inline NSRect rectWithCorners(NSPoint p1, NSPoint p2)
     }
     [cursor set];
     
-    BOOL isLink = NO;
-    PDFDestination *dest = [self destinationForEvent:theEvent isLink:&isLink];
+    p = [self convertPoint:[theEvent locationInWindow] fromView:nil];
+    PDFPage *page = [self pageForPoint:p nearest:NO];
+    PDFAnnotation *annotation = nil;
     
-    if (isLink)
-        [[SKPDFHoverWindow sharedHoverWindow] showWithDestination:dest atPoint:[[self window] convertBaseToScreen:[theEvent locationInWindow]] fromView:self];
+    if (page) 
+        annotation = [page annotationAtPoint:[self convertPoint:p toPage:page]];  
+    
+    if ([[annotation type] isEqualToString:@"Link"] || [annotation text])
+        [[SKPDFHoverWindow sharedHoverWindow] showForAnnotation:annotation atPoint:[[self window] convertBaseToScreen:[theEvent locationInWindow]] fromView:self];
     else
         [[SKPDFHoverWindow sharedHoverWindow] hide];
-
+    
     if ([[activeAnnotation type] isEqualToString:@"Link"])
         [self setActiveAnnotation:nil];
     
@@ -1066,6 +1070,8 @@ static inline NSRect rectWithCorners(NSPoint p1, NSPoint p2)
         
     } else if ([type isEqualToString:@"Note"]) {
         
+        [[SKPDFHoverWindow sharedHoverWindow] orderOut:self];
+        
 		[[NSNotificationCenter defaultCenter] postNotificationName:SKPDFViewAnnotationDoubleClickedNotification object:self 
             userInfo:[NSDictionary dictionaryWithObjectsAndKeys:activeAnnotation, @"annotation", nil]];
         
@@ -1144,10 +1150,10 @@ static inline NSRect rectWithCorners(NSPoint p1, NSPoint p2)
     if (annotation) {
         [self scrollAnnotationToVisible:annotation];
         [self setActiveAnnotation:annotation];
-        if ([[annotation type] isEqualToString:@"Link"]) {
+        if ([[annotation type] isEqualToString:@"Link"] || [annotation text]) {
             NSRect bounds = [annotation bounds]; 
             NSPoint point = [self convertPoint:[self convertPoint:NSMakePoint(NSMidX(bounds), NSMidY(bounds)) fromPage:[annotation page]] toView:nil]; 
-            [[SKPDFHoverWindow sharedHoverWindow] showWithDestination:[annotation destination] atPoint:[[self window] convertBaseToScreen:point] fromView:self];
+            [[SKPDFHoverWindow sharedHoverWindow] showForAnnotation:annotation atPoint:[[self window] convertBaseToScreen:point] fromView:self];
         } else {
             [[SKPDFHoverWindow sharedHoverWindow] orderOut:self];
         }
@@ -1187,10 +1193,10 @@ static inline NSRect rectWithCorners(NSPoint p1, NSPoint p2)
     if (annotation) {
         [self scrollAnnotationToVisible:annotation];
         [self setActiveAnnotation:annotation];
-        if ([[annotation type] isEqualToString:@"Link"]) {
+        if ([[annotation type] isEqualToString:@"Link"] || [annotation text]) {
             NSRect bounds = [annotation bounds]; 
             NSPoint point = [self convertPoint:[self convertPoint:NSMakePoint(NSMidX(bounds), NSMidY(bounds)) fromPage:[annotation page]] toView:nil]; 
-            [[SKPDFHoverWindow sharedHoverWindow] showWithDestination:[annotation destination] atPoint:[[self window] convertBaseToScreen:point] fromView:self];
+            [[SKPDFHoverWindow sharedHoverWindow] showForAnnotation:annotation atPoint:[[self window] convertBaseToScreen:point] fromView:self];
         } else {
             [[SKPDFHoverWindow sharedHoverWindow] orderOut:self];
         }

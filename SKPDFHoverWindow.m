@@ -38,6 +38,7 @@
 
 #import "SKPDFHoverWindow.h"
 #import "PDFPage_SKExtensions.h"
+#import "SKPDFAnnotationNote.h"
 
 
 @implementation SKPDFHoverWindow
@@ -71,7 +72,6 @@
     return self;
 }
 
-
 - (void)handleApplicationWillResignActiveNotification:(NSNotification *)notification {
     [self orderOut:self];
 }
@@ -89,8 +89,8 @@
 - (void)orderOut:(id)sender {
     [animation stopAnimation];
     [self setAlphaValue:1.0];
-    [destination release];
-    destination = nil;
+    [annotation release];
+    annotation = nil;
     [super orderOut:sender];
 }
 
@@ -109,40 +109,70 @@
     return rect;
 }
 
-- (void)showWithDestination:(PDFDestination *)dest atPoint:(NSPoint)point fromView:(PDFView *)srcView{
+- (void)showForAnnotation:(PDFAnnotation *)note atPoint:(NSPoint)point fromView:(PDFView *)srcView{
     
-    if ([destination isEqual:dest])
+    if ([note isEqual:annotation])
         return;
     
-    BOOL wasHidden = destination == nil;
+    BOOL wasHidden = annotation == nil;
     
-    [destination release];
-    destination = [dest retain];
+    [annotation release];
+    annotation = [note retain];
     
-    // FIXME: magic number 15 ought to be calculated from the line height of the current line?
-    NSRect contentRect = [self hoverWindowRectFittingScreenFromRect:NSMakeRect(point.x, point.y + 15.0, 400.0, 50.0)];
-    PDFPage *page = [destination page];
-    NSImage *image = [page image];
-    NSRect bounds = [page boundsForBox:kPDFDisplayBoxCropBox];
-    NSRect rect = [[imageView superview] bounds];
+    NSRect rect, contentRect = [self hoverWindowRectFittingScreenFromRect:NSMakeRect(point.x, point.y + fmin(NSHeight([annotation bounds]) + 2.0, 16.0), 400.0, 80.0)];
+    NSImage *image = nil;
     
-    rect.origin = [destination point];
-    rect.origin.x -= NSMinX(bounds);
-    rect.origin.y -= NSMinY(bounds) + NSHeight(rect);
-    
-    PDFSelection *selection = [page selectionForRect:bounds];
-    if ([selection string]) {
-        NSRect selBounds = [selection boundsForPage:page];
-        float top = fmax(NSMaxY(selBounds), NSMinX(selBounds) + NSHeight(rect));
-        float left = fmin(NSMinX(selBounds), NSMaxX(bounds) - NSWidth(rect));
-        if (top < NSMaxY(rect))
-            rect.origin.y = top - NSHeight(rect);
-        if (left > NSMinX(rect))
-            rect.origin.x = left;
+    if ([[annotation type] isEqualToString:@"Link"]) {
+        
+        PDFDestination *dest = [annotation destination];
+        PDFPage *page = [dest page];
+        NSRect bounds = [page boundsForBox:kPDFDisplayBoxCropBox];
+        
+        rect = [[imageView superview] bounds];
+        rect.origin = [dest point];
+        rect.origin.x -= NSMinX(bounds);
+        rect.origin.y -= NSMinY(bounds) + NSHeight(rect);
+        
+        PDFSelection *selection = [page selectionForRect:bounds];
+        if ([selection string]) {
+            NSRect selBounds = [selection boundsForPage:page];
+            float top = fmax(NSMaxY(selBounds), NSMinX(selBounds) + NSHeight(rect));
+            float left = fmin(NSMinX(selBounds), NSMaxX(bounds) - NSWidth(rect));
+            if (top < NSMaxY(rect))
+                rect.origin.y = top - NSHeight(rect);
+            if (left > NSMinX(rect))
+                rect.origin.x = left;
+        }
+        
+        image = [[page image] retain];
+        
+    } else {
+        
+        NSAttributedString *text = [annotation text];
+        
+        rect = [text boundingRectWithSize:contentRect.size options:0];
+        if (NSWidth(rect) < NSWidth(contentRect))
+            contentRect.size.width = NSWidth(rect);
+        if (NSHeight(rect) < NSHeight(contentRect))
+            contentRect.size.height = NSHeight(rect);
+        rect.size = contentRect.size;
+        rect.origin = NSZeroPoint;
+        
+        image = [[NSImage alloc] initWithSize:rect.size];
+        
+        [image lockFocus];
+        [NSGraphicsContext saveGraphicsState];
+        [[NSColor controlBackgroundColor] setFill];
+        NSRectFill(rect);
+        [[annotation text] drawInRect:rect];
+        [NSGraphicsContext restoreGraphicsState];
+        [image unlockFocus];
+        
     }
     
     [imageView setFrameSize:[image size]];
     [imageView setImage:image];
+    [image release];
     
     [self setFrame:[self frameRectForContentRect:contentRect] display:NO];
     [imageView scrollRectToVisible:rect];
@@ -166,13 +196,13 @@
 }
 
 - (void)hide {
-    if (destination == nil)
+    if (annotation == nil)
         return;
     
     [animation stopAnimation];
     
-    [destination release];
-    destination = nil;
+    [annotation release];
+    annotation = nil;
     
     NSDictionary *fadeOutDict = [[NSDictionary alloc] initWithObjectsAndKeys:self, NSViewAnimationTargetKey, NSViewAnimationFadeOutEffect, NSViewAnimationEffectKey, nil];
     
