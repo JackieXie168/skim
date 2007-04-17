@@ -112,21 +112,6 @@ static NSString *SKDocumentToolbarNotesPaneItemIdentifier = @"SKDocumentToolbarN
 
 - (id)initWithWindowNibName:(NSString *)windowNibName owner:(id)owner{
     self = [super initWithWindowNibName:windowNibName owner:owner];
-    NSColor *color;
-    color = [[[[SKPDFAnnotationFreeText alloc] initWithBounds:NSZeroRect] autorelease] color];
-    [[NSUserDefaults standardUserDefaults] setObject:[NSArchiver archivedDataWithRootObject:color] forKey:@"SKFreeTextNoteColorKey"];
-    color = [[[[SKPDFAnnotationNote alloc] initWithBounds:NSZeroRect] autorelease] color];
-    [[NSUserDefaults standardUserDefaults] setObject:[NSArchiver archivedDataWithRootObject:color] forKey:@"SKAnchoredNoteColorKey"];
-    color = [[[[SKPDFAnnotationCircle alloc] initWithBounds:NSZeroRect] autorelease] color];
-    [[NSUserDefaults standardUserDefaults] setObject:[NSArchiver archivedDataWithRootObject:color] forKey:@"SKCircleNoteColorKey"];
-    color = [[[[SKPDFAnnotationSquare alloc] initWithBounds:NSZeroRect] autorelease] color];
-    [[NSUserDefaults standardUserDefaults] setObject:[NSArchiver archivedDataWithRootObject:color] forKey:@"SKSquareNoteColorKey"];
-    color = [[[[SKPDFAnnotationMarkup alloc] initWithBounds:NSZeroRect markupType:kPDFMarkupTypeHighlight quadrilateralPointsAsStrings:nil] autorelease] color];
-    [[NSUserDefaults standardUserDefaults] setObject:[NSArchiver archivedDataWithRootObject:color] forKey:@"SKHighlightNoteColorKey"];
-    color = [[[[SKPDFAnnotationMarkup alloc] initWithBounds:NSZeroRect markupType:kPDFMarkupTypeUnderline quadrilateralPointsAsStrings:nil] autorelease] color];
-    [[NSUserDefaults standardUserDefaults] setObject:[NSArchiver archivedDataWithRootObject:color] forKey:@"SKUnderlineNoteColorKey"];
-    color = [[[[SKPDFAnnotationMarkup alloc] initWithBounds:NSZeroRect markupType:kPDFMarkupTypeStrikeOut quadrilateralPointsAsStrings:nil] autorelease] color];
-    [[NSUserDefaults standardUserDefaults] setObject:[NSArchiver archivedDataWithRootObject:color] forKey:@"SKStrikeOutNoteColorKey"];
     if(self){
         [self setShouldCloseDocument:YES];
         isPresentation = NO;
