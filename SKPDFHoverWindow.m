@@ -77,7 +77,7 @@
         font = [[NSFont toolTipsFontOfSize:11.0] retain];
         backgroundColor = [[NSColor colorWithCalibratedRed:1.0 green:1.0 blue:0.75 alpha:1.0] retain];
         labelFont = [[NSFont boldSystemFontOfSize:11.0] retain];
-        labelColor = [[NSColor colorWithCalibratedWhite:0.3 alpha:0.8] retain];
+        labelColor = [[NSColor colorWithCalibratedWhite:0.5 alpha:0.8] retain];
         
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleApplicationWillResignActiveNotification:) 
                                                      name:NSApplicationWillResignActiveNotification object:NSApp];
