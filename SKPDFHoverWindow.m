@@ -42,7 +42,10 @@
 
 #define WINDOW_WIDTH    400.0
 #define WINDOW_HEIGHT   80.0
-#define WINDOW_OFFSET   25.0
+#define WINDOW_OFFSET   20.0
+#define TEXT_MARGIN_X   2.0
+#define TEXT_MARGIN_Y   2.0
+#define ALPHA_VALUE     0.95
 
 @implementation SKPDFHoverWindow
 
@@ -60,6 +63,7 @@
         [self setBackgroundColor:[NSColor whiteColor]];
         [self setHasShadow:YES];
         [self setLevel:NSStatusWindowLevel];
+        [self setAlphaValue:ALPHA_VALUE];
         
         NSScrollView *scrollView = [[NSScrollView alloc] init];
         imageView = [[NSImageView alloc] init];
@@ -69,7 +73,7 @@
         [scrollView release];
         [imageView release];
         
-        font = [[NSFont systemFontOfSize:11.0] retain];
+        font = [[NSFont toolTipsFontOfSize:11.0] retain];
         backgroundColor = [[NSColor colorWithCalibratedRed:1.0 green:1.0 blue:0.75 alpha:1.0] retain];
         labelFont = [[NSFont boldSystemFontOfSize:11.0] retain];
         labelColor = [[NSColor colorWithCalibratedWhite:0.3 alpha:0.8] retain];
@@ -149,14 +153,14 @@
 - (void)orderFront:(id)sender {
     [self stopTimer];
     [animation stopAnimation];
-    [self setAlphaValue:1.0];
+    [self setAlphaValue:ALPHA_VALUE];
     [super orderFront:sender];
 }
 
 - (void)orderOut:(id)sender {
     [self stopTimer];
     [animation stopAnimation];
-    [self setAlphaValue:1.0];
+    [self setAlphaValue:ALPHA_VALUE];
     [annotation release];
     annotation = nil;
     [super orderOut:sender];
@@ -257,8 +261,8 @@
             NSDictionary *attrs = [[NSDictionary alloc] initWithObjectsAndKeys:labelFont, NSFontAttributeName, labelColor, NSForegroundColorAttributeName, nil];
             NSAttributedString *labelString = [[NSAttributedString alloc] initWithString:[NSString stringWithFormat:@"%@ %@", NSLocalizedString(@"Page", @""), [page label]] attributes:attrs];
             NSRect labelRect = [labelString boundingRectWithSize:NSZeroSize options:NSStringDrawingUsesLineFragmentOrigin];
-            labelRect.origin.x = NSMaxX(rect) - NSWidth(labelRect) - 2.0;
-            labelRect.origin.y = NSMinY(rect) + 2.0;
+            labelRect.origin.x = NSMaxX(rect) - NSWidth(labelRect) - TEXT_MARGIN_X;
+            labelRect.origin.y = NSMinY(rect) + TEXT_MARGIN_Y;
             
             [image lockFocus];
             [labelString drawWithRect:labelRect options:NSStringDrawingUsesLineFragmentOrigin];
@@ -294,16 +298,16 @@
     
     if (text) {
         
-        rect = [text boundingRectWithSize:NSInsetRect(contentRect, 2.0, 0.0).size options:NSStringDrawingUsesLineFragmentOrigin];
-        rect.size.width = contentRect.size.width = NSWidth(rect) + 4.0;
-        rect.size.height = contentRect.size.height = fmin(NSHeight(rect), NSHeight(contentRect));
+        rect = [text boundingRectWithSize:NSInsetRect(contentRect, TEXT_MARGIN_X, TEXT_MARGIN_Y).size options:NSStringDrawingUsesLineFragmentOrigin];
+        rect.size.width = contentRect.size.width = NSWidth(rect) + 2.0 * TEXT_MARGIN_X;
+        rect.size.height = contentRect.size.height = fmin(NSHeight(rect) + 2.0 * TEXT_MARGIN_Y, NSHeight(contentRect));
         rect.origin = NSZeroPoint;
         
         image = [[NSImage alloc] initWithSize:rect.size];
         color = backgroundColor;
         
         [image lockFocus];
-        [text drawWithRect:NSInsetRect(rect, 2.0, 0.0) options:NSStringDrawingUsesLineFragmentOrigin];
+        [text drawWithRect:NSInsetRect(rect, TEXT_MARGIN_X, TEXT_MARGIN_Y) options:NSStringDrawingUsesLineFragmentOrigin];
         [image unlockFocus];
         
         [text release];
@@ -368,7 +372,7 @@
     animation = nil;
     if (isFadeOut)
         [self orderOut:self];
-    [self setAlphaValue:1.0];
+    [self setAlphaValue:ALPHA_VALUE];
 }
 
 - (void)animationDidStop:(NSAnimation*)anAnimation {
