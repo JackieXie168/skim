@@ -557,7 +557,7 @@ CGMutablePathRef CGCreatePathWithRoundRectInRect(CGRect rect, float radius);
     } else if (readingBar && (eventChar == NSRightArrowFunctionKey || eventChar == NSLeftArrowFunctionKey || eventChar == NSUpArrowFunctionKey || eventChar == NSDownArrowFunctionKey) && (modifiers == NSAlternateKeyMask)) {
         [self moveReadingBarForKey:eventChar];
     } else {
-		[super keyDown:theEvent
+		[super keyDown:theEvent];
     }
 }
 
