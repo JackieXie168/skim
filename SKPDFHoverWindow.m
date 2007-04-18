@@ -70,7 +70,9 @@
         [imageView release];
         
         font = [[NSFont systemFontOfSize:11.0] retain];
-        backgroundColor = [[NSColor colorWithDeviceRed:1.0 green:1.0 blue:0.6 alpha:1.0] retain];
+        backgroundColor = [[NSColor colorWithCalibratedRed:1.0 green:1.0 blue:0.75 alpha:1.0] retain];
+        labelFont = [[NSFont boldSystemFontOfSize:11.0] retain];
+        labelColor = [[NSColor colorWithCalibratedWhite:0.3 alpha:0.8] retain];
         
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleApplicationWillResignActiveNotification:) 
                                                      name:NSApplicationWillResignActiveNotification object:NSApp];
@@ -81,6 +83,8 @@
 - (void)dealloc {
     [font release];
     [backgroundColor release];
+    [labelFont release];
+    [labelColor release];
     [super dealloc];
 }
 
@@ -103,6 +107,28 @@
     if (backgroundColor != newColor) {
         [backgroundColor release];
         backgroundColor = [newColor retain];
+    }
+}
+
+- (NSFont *)labelFont {
+    return labelFont;
+}
+
+- (void)setLabelFont:(NSFont *)newFont {
+    if (labelFont != newFont) {
+        [labelFont release];
+        labelFont = [newFont retain];
+    }
+}
+
+- (NSColor *)labelColor {
+    return labelColor;
+}
+
+- (void)setLabelColor:(NSColor *)newColor {
+    if (labelColor != newColor) {
+        [labelColor release];
+        labelColor = [newColor retain];
     }
 }
 
@@ -218,6 +244,28 @@
             
             image = [[page image] retain];
             color = [NSColor controlBackgroundColor];
+            
+            if (NSMaxX(rect) > [image size].width)
+                rect.origin.x = [image size].width - NSWidth(rect);
+            if (NSMinX(rect) < 0.0)
+                rect.origin.x = 0.0;
+            if (NSMaxY(rect) > [image size].height)
+                rect.origin.y = [image size].height - NSHeight(rect);
+            if (NSMinY(rect) < 0.0)
+                rect.origin.y = 0.0;
+            
+            NSDictionary *attrs = [[NSDictionary alloc] initWithObjectsAndKeys:labelFont, NSFontAttributeName, labelColor, NSForegroundColorAttributeName, nil];
+            NSAttributedString *labelString = [[NSAttributedString alloc] initWithString:[NSString stringWithFormat:@"%@ %@", NSLocalizedString(@"Page", @""), [page label]] attributes:attrs];
+            NSRect labelRect = [labelString boundingRectWithSize:NSZeroSize options:NSStringDrawingUsesLineFragmentOrigin];
+            labelRect.origin.x = NSMaxX(rect) - NSWidth(labelRect) - 2.0;
+            labelRect.origin.y = NSMinY(rect) + 2.0;
+            
+            [image lockFocus];
+            [labelString drawWithRect:labelRect options:NSStringDrawingUsesLineFragmentOrigin];
+            [image unlockFocus];
+            
+            [attrs release];
+            [labelString release];
             
         } else {
             
