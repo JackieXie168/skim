@@ -58,6 +58,8 @@ NSString *SKPDFViewAnnotationDoubleClickedNotification = @"SKPDFViewAnnotationDo
 
 NSString *SKSkimNotePboardType = @"SKSkimNotePboardType";
 
+CGMutablePathRef CGCreatePathWithRoundRectInRect(CGRect rect, float radius);
+
 @interface PDFView (PDFViewPrivateDeclarations)
 - (void)pdfViewControlHit:(id)sender;
 - (void)removeAnnotationControl;
@@ -224,20 +226,27 @@ NSString *SKSkimNotePboardType = @"SKSkimNotePboardType";
             float color[4] = { 0.0, 0.0, 0.0, 1.0 };
             NSRect rect = NSInsetRect(NSIntegralRect(bounds), 0.5 * lineWidth, 0.5 * lineWidth);
             if (isLink) {
+                CGMutablePathRef path = CGCreatePathWithRoundRectInRect(*(CGRect *)&rect, 2.0);
                 color[3] = 0.1;
                 CGContextSetFillColor(context, color);
-                CGContextFillRect(context, *(CGRect *)&rect);
+                CGContextBeginPath(context);
+                CGContextAddPath(context, path);
+                CGContextFillPath(context);
                 color[3] = 0.5;
+                CGContextSetStrokeColor(context, color);
+                CGContextSetLineWidth(context, lineWidth);
+                CGContextAddPath(context, path);
+                CGContextStrokePath(context);
+                CGPathRelease(path);
             } else {
-                color[3] = 1.0;
-            }
-            CGContextSetStrokeColor(context, color);
-            CGContextStrokeRectWithWidth(context, *(CGRect *)&rect, lineWidth);
-            
-            if ([activeAnnotation isResizable]) {
-                rect = NSIntegralRect([self resizeThumbForRect:bounds rotation:[pdfPage rotation]]);
-                CGContextSetFillColor(context, color);
-                CGContextFillRect(context, *(CGRect *)&rect);
+                CGContextSetStrokeColor(context, color);
+                CGContextStrokeRectWithWidth(context, *(CGRect *)&rect, lineWidth);
+                
+                if ([activeAnnotation isResizable]) {
+                    rect = NSIntegralRect([self resizeThumbForRect:bounds rotation:[pdfPage rotation]]);
+                    CGContextSetFillColor(context, color);
+                    CGContextFillRect(context, *(CGRect *)&rect);
+                }
             }
         }
                 
@@ -536,9 +545,10 @@ NSString *SKSkimNotePboardType = @"SKSkimNotePboardType";
     } else if (isPresentation == NO && [self toolMode] == SKTextToolMode && (eventChar == NSEnterCharacter || eventChar == NSFormFeedCharacter || eventChar == NSNewlineCharacter || eventChar == NSCarriageReturnCharacter) && (modifiers == 0)) {
         if (activeAnnotation && activeAnnotation != editAnnotation)
             [self editActiveAnnotation:self];
-    } else if (isPresentation == NO && [self toolMode] == SKTextToolMode && (eventChar == NSTabCharacter) && (modifiers == NSAlternateKeyMask)){
+    } else if (isPresentation == NO && [self toolMode] == SKTextToolMode && (eventChar == NSTabCharacter) && (modifiers == NSAlternateKeyMask)) {
         [self selectNextActiveAnnotation:self];
-    } else if (isPresentation == NO && [self toolMode] == SKTextToolMode && (eventChar == NSBackTabCharacter) && (modifiers == NSAlternateKeyMask)){
+    // backtab is a bit inconsistent, it seems Shift+Tab gives a Shift-BackTab key event, I would have expected either Shift-Tab (as for the raw event) or BackTab (as for most shift-modified keys)
+    } else if (isPresentation == NO && [self toolMode] == SKTextToolMode && (((eventChar == NSBackTabCharacter) && (modifiers == NSAlternateKeyMask | NSShiftKeyMask)) || ((eventChar == NSBackTabCharacter) && (modifiers == NSAlternateKeyMask)) || ((eventChar == NSTabCharacter) && (modifiers == NSAlternateKeyMask)))) {
         [self selectPreviousActiveAnnotation:self];
 	} else if (isPresentation == NO && [activeAnnotation isNoteAnnotation] && [activeAnnotation isMovable] && (eventChar == NSRightArrowFunctionKey || eventChar == NSLeftArrowFunctionKey || eventChar == NSUpArrowFunctionKey || eventChar == NSDownArrowFunctionKey) && (modifiers == 0 || modifiers == NSShiftKeyMask)) {
         [self moveActiveAnnotationForKey:eventChar byAmount:(modifiers & NSShiftKeyMask) ? 10.0 : 1.0];
@@ -547,7 +557,7 @@ NSString *SKSkimNotePboardType = @"SKSkimNotePboardType";
     } else if (readingBar && (eventChar == NSRightArrowFunctionKey || eventChar == NSLeftArrowFunctionKey || eventChar == NSUpArrowFunctionKey || eventChar == NSDownArrowFunctionKey) && (modifiers == NSAlternateKeyMask)) {
         [self moveReadingBarForKey:eventChar];
     } else {
-		[super keyDown:theEvent];
+		[super keyDown:theEvent
     }
 }
 
@@ -2202,3 +2212,32 @@ static inline NSRect rectWithCorners(NSPoint p1, NSPoint p2)
 }
 
 @end
+
+#pragma mark Core Graphics extension
+
+CGMutablePathRef CGCreatePathWithRoundRectInRect(CGRect rect, float radius)
+{
+    // Make sure radius doesn't exceed a maximum size to avoid artifacts:
+    radius = fmin(radius, 0.5f * fmin(rect.size.width, rect.size.height));
+    
+    CGMutablePathRef path = CGPathCreateMutable();
+    
+    // Make sure silly values simply lead to un-rounded corners:
+    if(radius <= 0) {
+        CGPathAddRect(path, NULL, rect);
+    } else {
+        // Now draw our rectangle:
+        CGPathMoveToPoint(path, NULL, rect.origin.x, rect.origin.y + radius);
+        // Bottom left (origin):
+        CGPathAddArcToPoint(path, NULL, rect.origin.x, rect.origin.y, rect.origin.x + rect.size.width, rect.origin.y, radius);
+        // Bottom edge and bottom right:
+        CGPathAddArcToPoint(path, NULL, rect.origin.x + rect.size.width, rect.origin.y, rect.origin.x + rect.size.width, rect.origin.y + rect.size.height, radius);
+        // Right edge and top right:
+        CGPathAddArcToPoint(path, NULL, rect.origin.x + rect.size.width, rect.origin.y + rect.size.height, rect.origin.x, rect.origin.y + rect.size.height, radius);
+        // Top edge and top left:
+        CGPathAddArcToPoint(path, NULL, rect.origin.x, rect.origin.y + rect.size.height, rect.origin.x, rect.origin.y, radius);
+        // Left edge:
+        CGPathCloseSubpath(path);
+    }
+    return path;
+}
