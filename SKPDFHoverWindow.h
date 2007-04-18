@@ -46,6 +46,7 @@
     NSColor *backgroundColor;
     PDFAnnotation *annotation;
     NSViewAnimation *animation;
+    NSTimer *timer;
 }
 
 + (id)sharedHoverWindow;
