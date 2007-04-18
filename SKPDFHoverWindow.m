@@ -40,6 +40,9 @@
 #import "PDFPage_SKExtensions.h"
 #import "SKPDFAnnotationNote.h"
 
+#define WINDOW_WIDTH    400.0
+#define WINDOW_HEIGHT   80.0
+#define WINDOW_OFFSET   25.0
 
 @implementation SKPDFHoverWindow
 
@@ -66,10 +69,41 @@
         [scrollView release];
         [imageView release];
         
+        font = [[NSFont systemFontOfSize:11.0] retain];
+        backgroundColor = [[NSColor colorWithDeviceRed:1.0 green:1.0 blue:0.6 alpha:1.0] retain];
+        
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleApplicationWillResignActiveNotification:) 
                                                      name:NSApplicationWillResignActiveNotification object:NSApp];
     }
     return self;
+}
+
+- (void)dealloc {
+    [font release];
+    [backgroundColor release];
+    [super dealloc];
+}
+
+- (NSFont *)font {
+    return font;
+}
+
+- (void)setFont:(NSFont *)newFont {
+    if (font != newFont) {
+        [font release];
+        font = [newFont retain];
+    }
+}
+
+- (NSColor *)backgroundColor {
+    return backgroundColor;
+}
+
+- (void)setBackgroundColor:(NSColor *)newColor {
+    if (backgroundColor != newColor) {
+        [backgroundColor release];
+        backgroundColor = [newColor retain];
+    }
 }
 
 - (void)handleApplicationWillResignActiveNotification:(NSNotification *)notification {
@@ -106,23 +140,22 @@
     if (NSMinY(rect) < NSMinY(screenRect) + 2.0)
         rect.origin.y = NSMinY(screenRect) + 2.0;
     
-    return rect;
+    return [self frameRectForContentRect:rect];
 }
 
-- (void)showForAnnotation:(PDFAnnotation *)note atPoint:(NSPoint)point fromView:(PDFView *)srcView{
+- (void)showForAnnotation:(PDFAnnotation *)note atPoint:(NSPoint)point {
     
     if ([note isEqual:annotation])
         return;
     
-    BOOL wasHidden = annotation == nil;
-    
     [annotation release];
     annotation = [note retain];
     
-    NSRect rect, contentRect = [self hoverWindowRectFittingScreenFromRect:NSMakeRect(point.x, point.y + fmin(NSHeight([annotation bounds]) + 3.0, 16.0), 400.0, 80.0)];
+    NSRect rect, contentRect = NSMakeRect(point.x, point.y - WINDOW_OFFSET, WINDOW_WIDTH, WINDOW_HEIGHT);
     NSImage *image = nil;
     NSAttributedString *text = nil;
-    NSColor *color = [NSColor controlBackgroundColor];
+    NSString *string = nil;
+    NSColor *color = nil;
     
     if ([[annotation type] isEqualToString:@"Link"]) {
         
@@ -150,39 +183,48 @@
             }
             
             image = [[page image] retain];
+            color = [NSColor controlBackgroundColor];
             
         } else {
             
-            NSString *urlString = [[(PDFAnnotationLink *)annotation URL] absoluteString];
-            NSDictionary *attrs = [NSDictionary dictionaryWithObjectsAndKeys:[NSFont systemFontOfSize:11.0], NSFontAttributeName, nil];
-            
-            text = [[[NSAttributedString alloc] initWithString:urlString attributes:attrs] autorelease];
+            string = [[(PDFAnnotationLink *)annotation URL] absoluteString];
             
         }
         
     } else {
         
-        text = [annotation text];
+        text = [[annotation text] retain];
         
+        if ([text length] == 0) {
+            [text release];
+            text = nil;
+            if ([[annotation contents] length])
+                string = [annotation contents];
+        }
+        
+    }
+    
+    if (string) {
+        NSDictionary *attrs = [[NSDictionary alloc] initWithObjectsAndKeys:font, NSFontAttributeName, nil];
+        text = [[NSAttributedString alloc] initWithString:string attributes:attrs];
+        [attrs release];
     }
     
     if (text) {
         
-        rect = NSInsetRect([text boundingRectWithSize:contentRect.size options:NSStringDrawingUsesLineFragmentOrigin], -2.0, 0.0);
-        if (NSWidth(rect) < NSWidth(contentRect))
-            contentRect.size.width = NSWidth(rect);
-        if (NSHeight(rect) < NSHeight(contentRect))
-            contentRect.size.height = NSHeight(rect);
-        rect.size = contentRect.size;
+        rect = [text boundingRectWithSize:NSInsetRect(contentRect, 2.0, 0.0).size options:NSStringDrawingUsesLineFragmentOrigin];
+        rect.size.width = contentRect.size.width = NSWidth(rect) + 4.0;
+        rect.size.height = contentRect.size.height = fmin(NSHeight(rect), NSHeight(contentRect));
         rect.origin = NSZeroPoint;
         
         image = [[NSImage alloc] initWithSize:rect.size];
-        color = [NSColor colorWithDeviceRed:1.0 green:1.0 blue:0.6 alpha:1.0];
+        color = backgroundColor;
         
         [image lockFocus];
         [text drawWithRect:NSInsetRect(rect, 2.0, 0.0) options:NSStringDrawingUsesLineFragmentOrigin];
         [image unlockFocus];
         
+        [text release];
     }
     
     if (image) {
@@ -191,28 +233,34 @@
         [imageView setImage:image];
         [image release];
         
-        // Convert to window and expand for the border
-        [self setFrame:[self frameRectForContentRect:contentRect] display:NO];
+        contentRect.origin.y -= NSHeight(contentRect);
+        [self setFrame:[self hoverWindowRectFittingScreenFromRect:contentRect] display:NO];
         [imageView scrollRectToVisible:rect];
         
         [[imageView enclosingScrollView] setBackgroundColor:color];
         
-        if ([self isVisible] == NO)
-            [self setAlphaValue:0.0];
-        [animation stopAnimation];
-        [super orderFront:self];
-        
-        if (wasHidden) {
+        if ([self isVisible] == NO || [self alphaValue] < 0.9) {
+            [animation stopAnimation];
+            
             NSDictionary *fadeInDict = [[NSDictionary alloc] initWithObjectsAndKeys:self, NSViewAnimationTargetKey, NSViewAnimationFadeInEffect, NSViewAnimationEffectKey, nil];
             
             animation = [[NSViewAnimation alloc] initWithViewAnimations:[NSArray arrayWithObjects:fadeInDict, nil]];
             [fadeInDict release];
             
+            [self setAlphaValue:0.0];
+            [super orderFront:self];
+            
             [animation setAnimationBlockingMode:NSAnimationNonblocking];
             [animation setDuration:0.5];
             [animation setDelegate:self];
             [animation startAnimation];
+        } else {
+            [self orderFront:self];
         }
+        
+    } else {
+        
+        [self hide];
         
     }
 }

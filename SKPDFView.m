@@ -716,7 +716,7 @@ static inline NSRect rectWithCorners(NSPoint p1, NSPoint p2)
         annotation = [page annotationAtPoint:[self convertPoint:p toPage:page]];  
     
     if ([[annotation type] isEqualToString:@"Link"] || [annotation text])
-        [[SKPDFHoverWindow sharedHoverWindow] showForAnnotation:annotation atPoint:[[self window] convertBaseToScreen:[theEvent locationInWindow]] fromView:self];
+        [[SKPDFHoverWindow sharedHoverWindow] showForAnnotation:annotation atPoint:[[self window] convertBaseToScreen:[theEvent locationInWindow]]];
     else
         [[SKPDFHoverWindow sharedHoverWindow] hide];
     
@@ -1153,7 +1153,7 @@ static inline NSRect rectWithCorners(NSPoint p1, NSPoint p2)
         if ([[annotation type] isEqualToString:@"Link"] || [annotation text]) {
             NSRect bounds = [annotation bounds]; 
             NSPoint point = [self convertPoint:[self convertPoint:NSMakePoint(NSMidX(bounds), NSMidY(bounds)) fromPage:[annotation page]] toView:nil]; 
-            [[SKPDFHoverWindow sharedHoverWindow] showForAnnotation:annotation atPoint:[[self window] convertBaseToScreen:point] fromView:self];
+            [[SKPDFHoverWindow sharedHoverWindow] showForAnnotation:annotation atPoint:[[self window] convertBaseToScreen:point]];
         } else {
             [[SKPDFHoverWindow sharedHoverWindow] orderOut:self];
         }
@@ -1196,7 +1196,7 @@ static inline NSRect rectWithCorners(NSPoint p1, NSPoint p2)
         if ([[annotation type] isEqualToString:@"Link"] || [annotation text]) {
             NSRect bounds = [annotation bounds]; 
             NSPoint point = [self convertPoint:[self convertPoint:NSMakePoint(NSMidX(bounds), NSMidY(bounds)) fromPage:[annotation page]] toView:nil]; 
-            [[SKPDFHoverWindow sharedHoverWindow] showForAnnotation:annotation atPoint:[[self window] convertBaseToScreen:point] fromView:self];
+            [[SKPDFHoverWindow sharedHoverWindow] showForAnnotation:annotation atPoint:[[self window] convertBaseToScreen:point]];
         } else {
             [[SKPDFHoverWindow sharedHoverWindow] orderOut:self];
         }

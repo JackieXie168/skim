@@ -42,15 +42,23 @@
 
 @interface SKPDFHoverWindow : NSPanel {
     NSImageView *imageView;
+    NSFont *font;
+    NSColor *backgroundColor;
     PDFAnnotation *annotation;
     NSViewAnimation *animation;
 }
 
 + (id)sharedHoverWindow;
 
-- (void)showForAnnotation:(PDFAnnotation *)annotation atPoint:(NSPoint)point fromView:(PDFView *)srcView;
+- (void)showForAnnotation:(PDFAnnotation *)annotation atPoint:(NSPoint)point;
 - (void)hide;
 
 - (void)handleApplicationWillResignActiveNotification:(NSNotification *)notification;
+
+- (NSFont *)font;
+- (void)setFont:(NSFont *)newFont;
+
+- (NSColor *)backgroundColor;
+- (void)setBackgroundColor:(NSColor *)newColor;
 
 @end
