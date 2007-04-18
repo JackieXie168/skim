@@ -261,7 +261,7 @@
                 rect.origin.y = 0.0;
             
             NSDictionary *attrs = [[NSDictionary alloc] initWithObjectsAndKeys:labelFont, NSFontAttributeName, color, NSForegroundColorAttributeName, nil];
-            NSAttributedString *labelString = [[NSAttributedString alloc] initWithString:[NSString stringWithFormat:@"%@ %@", NSLocalizedString(@"Page", @""), [page label]] attributes:attrs];
+            NSAttributedString *labelString = [[NSAttributedString alloc] initWithString:[NSString stringWithFormat:NSLocalizedString(@"Page %@", @"Tool tip label format"), [page label]] attributes:attrs];
             NSRect labelRect = [labelString boundingRectWithSize:NSZeroSize options:NSStringDrawingUsesLineFragmentOrigin];
             float labelOffset = (0.5 * NSHeight(labelRect)); // make sure the cap radius is integral
             
