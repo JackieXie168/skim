@@ -44,6 +44,8 @@
     NSImageView *imageView;
     NSFont *font;
     NSColor *backgroundColor;
+    NSFont *labelFont;
+    NSColor *labelColor;
     PDFAnnotation *annotation;
     NSViewAnimation *animation;
     NSTimer *timer;
@@ -61,5 +63,11 @@
 
 - (NSColor *)backgroundColor;
 - (void)setBackgroundColor:(NSColor *)newColor;
+
+- (NSFont *)labelFont;
+- (void)setLabelFont:(NSFont *)newFont;
+
+- (NSColor *)labelColor;
+- (void)setLabelColor:(NSColor *)newColor;
 
 @end
