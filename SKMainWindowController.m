@@ -1006,6 +1006,16 @@ static NSString *SKDocumentToolbarNotesPaneItemIdentifier = @"SKDocumentToolbarN
     [self setRightSidePaneState:[sender tag]];
 }
 
+- (IBAction)searchPDF:(id)sender {
+    if ([self isFullScreen]) {
+        if ([leftSideWindow state] == NSDrawerClosedState || [leftSideWindow state] == NSDrawerClosingState)
+            [leftSideWindow showSideWindow];
+    } else if (NSWidth([leftSideContentBox frame]) <= 0.0) {
+        [self toggleLeftSidePane:sender];
+    }
+    [searchField selectText:self];
+}
+
 - (void)goFullScreen {
     NSScreen *screen = [[self window] screen]; // @@ screen: or should we use the main screen?
     NSColor *backgroundColor = [self isPresentation] ? [NSColor blackColor] : [NSUnarchiver unarchiveObjectWithData:[[NSUserDefaults standardUserDefaults] dataForKey:SKFullScreenBackgroundColorKey]];
@@ -3101,6 +3111,8 @@ static NSArray *prioritySortedThumbnails(NSArray *dirtyNails, int currentPageInd
     } else if (action == @selector(changeRightSidePaneState:)) {
         [menuItem setState:(int)rightSidePaneState == [menuItem tag] ? NSOnState : NSOffState];
         return YES;
+    } else if (action == @selector(searchPDF:)) {
+        return [self isPresentation] == NO;
     } else if (action == @selector(toggleFullScreen:)) {
         if ([self isFullScreen])
             [menuItem setTitle:NSLocalizedString(@"Remove Full Screen", @"Menu item title")];

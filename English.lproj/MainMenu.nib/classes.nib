@@ -37,6 +37,7 @@
                 rotateRight = id; 
                 saveArchive = id; 
                 savePDFSettingToDefaults = id; 
+                searchPDF = id; 
                 takeSnapshot = id; 
                 toggleAutoScale = id; 
                 toggleDisplayAsBook = id; 

@@ -212,6 +212,7 @@ typedef struct _SKPDFViewState {
 - (IBAction)toggleRightSidePane:(id)sender;
 - (IBAction)changeLeftSidePaneState:(id)sender;
 - (IBAction)changeRightSidePaneState:(id)sender;
+- (IBAction)searchPDF:(id)sender;
 - (IBAction)enterFullScreen:(id)sender;
 - (IBAction)exitFullScreen:(id)sender;
 - (IBAction)toggleFullScreen:(id)sender;
