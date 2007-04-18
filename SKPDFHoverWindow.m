@@ -110,17 +110,25 @@
     [self orderOut:self];
 }
 
+- (void)stopTimer {
+    [timer invalidate];
+    [timer release];
+    timer = nil;
+}
+
 - (BOOL)canBecomeKeyWindow { return NO; }
 
 - (BOOL)canBecomeMainWindow { return NO; }
 
 - (void)orderFront:(id)sender {
+    [self stopTimer];
     [animation stopAnimation];
     [self setAlphaValue:1.0];
     [super orderFront:sender];
 }
 
 - (void)orderOut:(id)sender {
+    [self stopTimer];
     [animation stopAnimation];
     [self setAlphaValue:1.0];
     [annotation release];
@@ -143,10 +151,36 @@
     return [self frameRectForContentRect:rect];
 }
 
-- (void)showForAnnotation:(PDFAnnotation *)note atPoint:(NSPoint)point {
+- (void)fadeIn:(NSTimer *)aTimer {
+    [self stopTimer];
     
-    if ([note isEqual:annotation])
+    NSDictionary *fadeInDict = [[NSDictionary alloc] initWithObjectsAndKeys:self, NSViewAnimationTargetKey, NSViewAnimationFadeInEffect, NSViewAnimationEffectKey, nil];
+    
+    animation = [[NSViewAnimation alloc] initWithViewAnimations:[NSArray arrayWithObjects:fadeInDict, nil]];
+    [fadeInDict release];
+    
+    [self setAlphaValue:0.0];
+    [super orderFront:self];
+    
+    [animation setAnimationBlockingMode:NSAnimationNonblocking];
+    [animation setDuration:0.3];
+    [animation setDelegate:self];
+    [animation startAnimation];
+}
+
+- (void)showForAnnotation:(PDFAnnotation *)note atPoint:(NSPoint)point {
+    if ([note isEqual:annotation]) {
+        if (timer) {
+            NSRect contentRect = [self contentRectForFrameRect:[self frame]];
+            contentRect.origin.x = point.x;
+            contentRect.origin.y = point.y - NSHeight(contentRect) - WINDOW_OFFSET;
+            [self setFrame:[self hoverWindowRectFittingScreenFromRect:contentRect] display:NO];
+            // Should we reset the timer?
+        }
         return;
+    }
+    
+    [self stopTimer];
     
     [annotation release];
     annotation = [note retain];
@@ -239,21 +273,15 @@
         
         [[imageView enclosingScrollView] setBackgroundColor:color];
         
-        if ([self isVisible] == NO || [self alphaValue] < 0.9) {
+        if (animation) {
             [animation stopAnimation];
-            
-            NSDictionary *fadeInDict = [[NSDictionary alloc] initWithObjectsAndKeys:self, NSViewAnimationTargetKey, NSViewAnimationFadeInEffect, NSViewAnimationEffectKey, nil];
-            
-            animation = [[NSViewAnimation alloc] initWithViewAnimations:[NSArray arrayWithObjects:fadeInDict, nil]];
-            [fadeInDict release];
-            
-            [self setAlphaValue:0.0];
-            [super orderFront:self];
-            
-            [animation setAnimationBlockingMode:NSAnimationNonblocking];
-            [animation setDuration:0.5];
-            [animation setDelegate:self];
-            [animation startAnimation];
+            if ([self alphaValue] > 0.9)
+                [self orderFront:self];
+            else
+                [self fadeIn:nil];
+        } else if ([self isVisible] == NO) {
+            [super orderOut:self];
+            timer = [[NSTimer scheduledTimerWithTimeInterval:1.5 target:self selector:@selector(fadeIn:) userInfo:NULL repeats:NO] retain];
         } else {
             [self orderFront:self];
         }
@@ -269,6 +297,7 @@
     if (annotation == nil)
         return;
     
+    [self stopTimer];
     [animation stopAnimation];
     
     [annotation release];
