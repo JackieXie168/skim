@@ -216,7 +216,8 @@
     [annotation release];
     annotation = [note retain];
     
-    NSRect rect, contentRect = NSMakeRect(point.x, point.y - WINDOW_OFFSET, WINDOW_WIDTH, WINDOW_HEIGHT);
+    NSRect rect = NSZeroRect;
+    NSRect contentRect = NSMakeRect(point.x, point.y - WINDOW_OFFSET, WINDOW_WIDTH, WINDOW_HEIGHT);
     NSImage *image = nil;
     NSAttributedString *text = nil;
     NSString *string = nil;
