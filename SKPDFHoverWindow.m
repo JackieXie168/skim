@@ -39,6 +39,7 @@
 #import "SKPDFHoverWindow.h"
 #import "PDFPage_SKExtensions.h"
 #import "SKPDFAnnotationNote.h"
+#import "NSBezierPath_BDSKExtensions.h"
 
 #define WINDOW_WIDTH    400.0
 #define WINDOW_HEIGHT   80.0
@@ -258,14 +259,21 @@
             if (NSMinY(rect) < 0.0)
                 rect.origin.y = 0.0;
             
-            NSDictionary *attrs = [[NSDictionary alloc] initWithObjectsAndKeys:labelFont, NSFontAttributeName, labelColor, NSForegroundColorAttributeName, nil];
+            NSDictionary *attrs = [[NSDictionary alloc] initWithObjectsAndKeys:labelFont, NSFontAttributeName, color, NSForegroundColorAttributeName, nil];
             NSAttributedString *labelString = [[NSAttributedString alloc] initWithString:[NSString stringWithFormat:@"%@ %@", NSLocalizedString(@"Page", @""), [page label]] attributes:attrs];
             NSRect labelRect = [labelString boundingRectWithSize:NSZeroSize options:NSStringDrawingUsesLineFragmentOrigin];
-            labelRect.origin.x = NSMaxX(rect) - NSWidth(labelRect) - TEXT_MARGIN_X;
+            float labelOffset = (0.5 * NSHeight(labelRect)); // make sure the cap radius is integral
+            
+            labelRect.size.height = 2.0 * labelOffset;
+            labelRect.origin.x = NSMaxX(rect) - NSWidth(labelRect) - labelOffset - TEXT_MARGIN_X;
             labelRect.origin.y = NSMinY(rect) + TEXT_MARGIN_Y;
             
             [image lockFocus];
+            [NSGraphicsContext saveGraphicsState];
+            [labelColor setFill];
+            [NSBezierPath fillHorizontalOvalAroundRect:labelRect];
             [labelString drawWithRect:labelRect options:NSStringDrawingUsesLineFragmentOrigin];
+            [NSGraphicsContext restoreGraphicsState];
             [image unlockFocus];
             
             [attrs release];
