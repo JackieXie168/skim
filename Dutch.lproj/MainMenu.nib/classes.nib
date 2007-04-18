@@ -37,6 +37,7 @@
                 rotateRight = id; 
                 saveArchive = id; 
                 savePDFSettingToDefaults = id; 
+                searchPDF = id; 
                 takeSnapshot = id; 
                 toggleAutoScale = id; 
                 toggleDisplayAsBook = id; 
@@ -68,6 +69,12 @@
             CLASS = SKDocumentController; 
             LANGUAGE = ObjC; 
             SUPERCLASS = NSDocumentController; 
+        }, 
+        {
+            ACTIONS = {checkForUpdates = id; }; 
+            CLASS = SUUpdater; 
+            LANGUAGE = ObjC; 
+            SUPERCLASS = NSObject; 
         }
     ); 
     IBVersion = 1; 
