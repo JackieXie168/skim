@@ -1856,6 +1856,14 @@ static inline NSRect rectWithCorners(NSPoint p1, NSPoint p2)
                     break;
                 }
             }
+        } else if ([[annotationHit type] isEqualToString:@"Line"] && 
+                   (NSPointInRect(pagePoint, [self resizeThumbForRect:annotationBounds point:[(SKPDFAnnotationLine *)annotationHit endPoint]]) ||
+                    NSPointInRect(pagePoint, [self resizeThumbForRect:annotationBounds point:[(SKPDFAnnotationLine *)annotationHit startPoint]]))) {
+            newActiveAnnotation = annotationHit;
+            
+            // Remember click point relative to annotation origin.
+            clickDelta.x = pagePoint.x - annotationBounds.origin.x;
+            clickDelta.y = pagePoint.y - annotationBounds.origin.y;
         }
     }
     
