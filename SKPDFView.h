@@ -123,6 +123,5 @@ typedef enum _SKNoteType {
 - (void)handleAnnotationWillChangeNotification:(NSNotification *)notification;
 - (void)handleAnnotationDidChangeNotification:(NSNotification *)notification;
 - (void)handleWindowWillCloseNotification:(NSNotification *)notification;
-- (void)handleScrollMagnifyNotification:(NSNotification *)note;
 
 @end

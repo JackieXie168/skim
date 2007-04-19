@@ -148,8 +148,6 @@ CGMutablePathRef CGCreatePathWithRoundRectInRect(CGRect rect, float radius);
                                                  name:SKAnnotationWillChangeNotification object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleAnnotationDidChangeNotification:) 
                                                  name:SKAnnotationDidChangeNotification object:nil];
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleScrollMagnifyNotification:) 
-                                                 name:SKScrollMagnifyNotification object:nil];
     [[NSUserDefaultsController sharedUserDefaultsController] addObserver:self forKeys:
         [NSArray arrayWithObjects:SKReadingBarColorKey, SKReadingBarTransparencyKey, SKReadingBarInvertKey, nil]];
 }
@@ -898,8 +896,8 @@ static inline NSRect rectWithCorners(NSPoint p1, NSPoint p2)
     return menu;
 }
 
-- (void)handleScrollMagnifyNotification:(NSNotification *)note {
-    float dy = [[note object] deltaY];
+- (void)magnifyWheel:(NSEvent *)theEvent {
+    float dy = [theEvent deltaY];
     dy = dy > 0 ? MIN(0.2, dy) : MAX(-0.2, dy);
     [self setScaleFactor:[self scaleFactor] + 0.5 * dy];
 }
