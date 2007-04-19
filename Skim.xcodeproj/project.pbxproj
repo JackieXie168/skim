@@ -131,6 +131,8 @@
 		CE7468810B7F3C0000CBF969 /* zoomInCursor.tiff in Resources */ = {isa = PBXBuildFile; fileRef = CE7467540B7F321100CBF969 /* zoomInCursor.tiff */; };
 		CE7468820B7F3C0000CBF969 /* zoomOutCursor.tiff in Resources */ = {isa = PBXBuildFile; fileRef = CE7467550B7F321A00CBF969 /* zoomOutCursor.tiff */; };
 		CE7469180B7F40B700CBF969 /* Skim.icns in Resources */ = {isa = PBXBuildFile; fileRef = CE7469170B7F40B600CBF969 /* Skim.icns */; };
+		CE7C5D050BD8062C0011315D /* ArrowNoteAdorn.tiff in Resources */ = {isa = PBXBuildFile; fileRef = CE7C5D040BD8062C0011315D /* ArrowNoteAdorn.tiff */; };
+		CE7C5D190BD8086C0011315D /* ToolbarArrowNote.tiff in Resources */ = {isa = PBXBuildFile; fileRef = CE7C5D180BD8086C0011315D /* ToolbarArrowNote.tiff */; };
 		CE9C423C0B8B5633004AD8CF /* PreferenceWindow.nib in Resources */ = {isa = PBXBuildFile; fileRef = CE9C42360B8B5633004AD8CF /* PreferenceWindow.nib */; };
 		CE9DC2E90B9F131900D64F28 /* HighlightNoteAdorn.tiff in Resources */ = {isa = PBXBuildFile; fileRef = CE9DC2E70B9F131800D64F28 /* HighlightNoteAdorn.tiff */; };
 		CE9DC2EA0B9F131900D64F28 /* ToolbarHighlightNote.tiff in Resources */ = {isa = PBXBuildFile; fileRef = CE9DC2E80B9F131800D64F28 /* ToolbarHighlightNote.tiff */; };
@@ -391,6 +393,8 @@
 		CE7467540B7F321100CBF969 /* zoomInCursor.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; name = zoomInCursor.tiff; path = Images/zoomInCursor.tiff; sourceTree = "<group>"; };
 		CE7467550B7F321A00CBF969 /* zoomOutCursor.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; name = zoomOutCursor.tiff; path = Images/zoomOutCursor.tiff; sourceTree = "<group>"; };
 		CE7469170B7F40B600CBF969 /* Skim.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; name = Skim.icns; path = Images/Skim.icns; sourceTree = "<group>"; };
+		CE7C5D040BD8062C0011315D /* ArrowNoteAdorn.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; name = ArrowNoteAdorn.tiff; path = Images/ArrowNoteAdorn.tiff; sourceTree = "<group>"; };
+		CE7C5D180BD8086C0011315D /* ToolbarArrowNote.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; name = ToolbarArrowNote.tiff; path = Images/ToolbarArrowNote.tiff; sourceTree = "<group>"; };
 		CE87EF690BA9FF5A0027BBDD /* skimhelp.css */ = {isa = PBXFileReference; explicitFileType = text; fileEncoding = 30; name = skimhelp.css; path = "English.lproj/Skim Help/sty/skimhelp.css"; sourceTree = "<group>"; };
 		CE9C42370B8B5633004AD8CF /* English */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = English; path = English.lproj/PreferenceWindow.nib; sourceTree = "<group>"; };
 		CE9DC2E70B9F131800D64F28 /* HighlightNoteAdorn.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; name = HighlightNoteAdorn.tiff; path = Images/HighlightNoteAdorn.tiff; sourceTree = "<group>"; };
@@ -756,6 +760,7 @@
 				CE5478B80B33456300F8AFB6 /* BackAdorn.tiff */,
 				CE5478B90B33456300F8AFB6 /* ForwardAdorn.tiff */,
 				CE3A42340B7927D3006B64D3 /* AnchoredNoteAdorn.tiff */,
+				CE7C5D040BD8062C0011315D /* ArrowNoteAdorn.tiff */,
 				CE3A42330B7927D3006B64D3 /* CircleNoteAdorn.tiff */,
 				CE9DC2E70B9F131800D64F28 /* HighlightNoteAdorn.tiff */,
 				CE1583280BA073FF00D5B03F /* StrikeOutNoteAdorn.tiff */,
@@ -769,6 +774,7 @@
 				CE4EB8220B7B96D00091F228 /* OutlineViewAdorn.tiff */,
 				CE380C610B837B6100A1B779 /* SnapshotViewAdorn.tiff */,
 				CE4EB8230B7B96D00091F228 /* ThumbnailViewAdorn.tiff */,
+				CE7C5D180BD8086C0011315D /* ToolbarArrowNote.tiff */,
 				CE4190C20B94963A00ECF819 /* ToolbarCircleNote.tiff */,
 				CE5478BA0B33456300F8AFB6 /* ToolbarFullScreen.tiff */,
 				CE9DC2E80B9F131800D64F28 /* ToolbarHighlightNote.tiff */,
@@ -966,6 +972,8 @@
 				CE4F9DEE0BC1BE3A005BE0A1 /* Localizable.strings in Resources */,
 				CE67BB260BC44AC9007B6929 /* ZoomValues.strings in Resources */,
 				CEE1065E0BCBBE1300BF2D3E /* NotesDocument.nib in Resources */,
+				CE7C5D050BD8062C0011315D /* ArrowNoteAdorn.tiff in Resources */,
+				CE7C5D190BD8086C0011315D /* ToolbarArrowNote.tiff in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

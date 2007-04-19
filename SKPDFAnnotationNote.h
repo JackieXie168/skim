@@ -107,6 +107,10 @@ extern void SKCGContextSetDefaultRGBColorSpace(CGContextRef context);
 
 @end
 
+@interface SKPDFAnnotationLine : PDFAnnotationLine
+- (BOOL)pointNearLine:(NSPoint)point;
+@end
+
 @interface SKPDFAnnotationTemporary : PDFAnnotationCircle
 @end
 

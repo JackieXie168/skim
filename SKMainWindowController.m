@@ -91,6 +91,7 @@ static NSString *SKDocumentToolbarPresentationItemIdentifier = @"SKDocumentToolb
 static NSString *SKDocumentToolbarNewNoteItemIdentifier = @"SKDocumentToolbarNewNoteItemIdentifier";
 static NSString *SKDocumentToolbarNewCircleNoteItemIdentifier = @"SKDocumentToolbarNewCircleNoteItemIdentifier";
 static NSString *SKDocumentToolbarNewMarkupItemIdentifier = @"SKDocumentToolbarNewMarkupItemIdentifier";
+static NSString *SKDocumentToolbarNewArrowItemIdentifier = @"SKDocumentToolbarNewArrowItemIdentifier";
 static NSString *SKDocumentToolbarInfoItemIdentifier = @"SKDocumentToolbarInfoItemIdentifier";
 static NSString *SKDocumentToolbarToolModeItemIdentifier = @"SKDocumentToolbarToolModeItemIdentifier";
 static NSString *SKDocumentToolbarDisplayBoxItemIdentifier = @"SKDocumentToolbarDisplayBoxItemIdentifier";
@@ -2848,6 +2849,17 @@ static NSArray *prioritySortedThumbnails(NSArray *dirtyNails, int currentPageInd
     [toolbarItems setObject:item forKey:SKDocumentToolbarNewMarkupItemIdentifier];
     [item release];
     
+    item = [[SKToolbarItem alloc] initWithItemIdentifier:SKDocumentToolbarNewArrowItemIdentifier];
+    [item setLabel:NSLocalizedString(@"Add Arrow", @"Toolbar item label")];
+    [item setPaletteLabel:NSLocalizedString(@"Add Arrow", @"Toolbar item label")];
+    [item setToolTip:NSLocalizedString(@"Add New Arrow", @"Tool tip message")];
+    [item setTag:SKArrowNote];
+    [item setTarget:self];
+    [item setAction:@selector(createNewNote:)];
+    [item setImage:[NSImage imageNamed:@"ToolbarArrowNote"]];
+    [toolbarItems setObject:item forKey:SKDocumentToolbarNewArrowItemIdentifier];
+    [item release];
+    
     [markupPopUpButton setArrowImage:downArrow];
     [markupPopUpButton setShowsMenuWhenIconClicked:NO];
     [[markupPopUpButton cell] setAltersStateOfSelectedItem:YES];
@@ -2985,6 +2997,7 @@ static NSArray *prioritySortedThumbnails(NSArray *dirtyNails, int currentPageInd
         SKDocumentToolbarNewNoteItemIdentifier, 
         SKDocumentToolbarNewCircleNoteItemIdentifier, 
         SKDocumentToolbarNewMarkupItemIdentifier,
+        SKDocumentToolbarNewArrowItemIdentifier,
         SKDocumentToolbarInfoItemIdentifier, 
         SKDocumentToolbarContentsPaneItemIdentifier, 
         SKDocumentToolbarNotesPaneItemIdentifier, 
