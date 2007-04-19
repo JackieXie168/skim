@@ -68,4 +68,5 @@ NSString *SKSquareNoteColorKey = @"SKSquareNoteColor";
 NSString *SKHighlightNoteColorKey = @"SKHighlightNoteColor";
 NSString *SKUnderlineNoteColorKey = @"SKUnderlineNoteColor";
 NSString *SKStrikeOutNoteColorKey = @"SKStrikeOutNoteColor";
+NSString *SKArrowNoteColorKey = @"SKArrowNoteColor";
 NSString *SKDefaultPDFDisplaySettingsKey = @"SKDefaultPDFDisplaySettings";

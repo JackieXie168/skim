@@ -67,4 +67,5 @@ extern NSString *SKSquareNoteColorKey;
 extern NSString *SKHighlightNoteColorKey;
 extern NSString *SKUnderlineNoteColorKey;
 extern NSString *SKStrikeOutNoteColorKey;
+extern NSString *SKArrowNoteColorKey;
 extern NSString *SKDefaultPDFDisplaySettingsKey;

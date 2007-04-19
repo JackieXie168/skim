@@ -48,7 +48,8 @@ enum {
     SKASSquareNote = 'NSqu',
     SKASHighlightNote = 'NHil',
     SKASUnderlineNote = 'NUnd',
-    SKASStrikeOutNote = 'NStr'
+    SKASStrikeOutNote = 'NStr',
+    SKASArrowNote = 'NArr'
 };
 
 NSString *SKAnnotationWillChangeNotification = @"SKAnnotationWillChangeNotification";
@@ -109,6 +110,13 @@ void SKCGContextSetDefaultRGBColorSpace(CGContextRef context) {
         self = [[SKPDFAnnotationMarkup alloc] initWithBounds:bounds markupType:kPDFMarkupTypeUnderline quadrilateralPointsAsStrings:[dict objectForKey:@"quadrilateralPoints"]];
     } else if ([type isEqualToString:@"StrikeOut"]) {
         self = [[SKPDFAnnotationMarkup alloc] initWithBounds:bounds markupType:kPDFMarkupTypeStrikeOut quadrilateralPointsAsStrings:[dict objectForKey:@"quadrilateralPoints"]];
+    } else if ([type isEqualToString:@"Line"]) {
+        self = [[SKPDFAnnotationLine alloc] initWithBounds:bounds];
+        NSString *point;
+        if (point = [dict objectForKey:@"startPoint"])
+            [(SKPDFAnnotationLine *)self setStartPoint:NSPointFromString(point)];
+        if (point = [dict objectForKey:@"endPoint"])
+            [(SKPDFAnnotationLine *)self setEndPoint:NSPointFromString(point)];
     } else {
         self = nil;
     }
@@ -227,8 +235,10 @@ void SKCGContextSetDefaultRGBColorSpace(CGContextRef context) {
         return SKASHighlightNote;
     else if ([[self type] isEqualToString:@"Underline"])
         return SKASUnderlineNote;
-    else if ([[self type] isEqualToString:@"StrikeOut"])
+    else if ([[self type] isEqualToString:@"Line"])
         return SKASStrikeOutNote;
+    else if ([[self type] isEqualToString:@"StrikeOut"])
+        return SKASArrowNote;
     return 0;
 }
 
@@ -809,6 +819,86 @@ static BOOL lineRectTrimmingWhitespaceForPage(NSRect *lineRect, PDFPage *page)
         return value;
     else
         return [[NSScriptCoercionHandler sharedCoercionHandler] coerceValue:value toClass:[NSTextStorage class]];
+}
+
+@end
+
+#pragma mark -
+
+@implementation SKPDFAnnotationLine
+
+- (id)initWithBounds:(NSRect)bounds {
+    if (self = [super initWithBounds:bounds]) {
+        [self setColor:[NSUnarchiver unarchiveObjectWithData:[[NSUserDefaults standardUserDefaults] objectForKey:SKArrowNoteColorKey]]];
+        [self setStartLineStyle:kPDFLineStyleNone];
+        [self setEndLineStyle:kPDFLineStyleOpenArrow];
+        [self setStartPoint:NSZeroPoint];
+        [self setEndPoint:NSMakePoint(NSWidth(bounds), NSHeight(bounds))];
+    }
+    return self;
+}
+
+- (NSDictionary *)dictionaryValue {
+    NSMutableDictionary *dict = (NSMutableDictionary *)[super dictionaryValue];
+    [dict setValue:NSStringFromPoint([self startPoint]) forKey:@"startPoint"];
+    [dict setValue:NSStringFromPoint([self endPoint]) forKey:@"endPoint"];
+    return dict;
+}
+
+- (BOOL)isNoteAnnotation { return YES; }
+
+- (BOOL)isResizable { return YES; }
+
+- (BOOL)isMovable { return YES; }
+
+- (BOOL)shouldPrint { return YES; }
+
+- (void)setStartPoint:(NSPoint)point {
+    [super setStartPoint:point];
+    [[NSNotificationCenter defaultCenter] postNotificationName:SKAnnotationDidChangeNotification 
+            object:self userInfo:[NSDictionary dictionaryWithObjectsAndKeys:@"startPoint", @"key", nil]];
+}
+
+- (void)setEndPoint:(NSPoint)point {
+    [super setEndPoint:point];
+    [[NSNotificationCenter defaultCenter] postNotificationName:SKAnnotationDidChangeNotification 
+            object:self userInfo:[NSDictionary dictionaryWithObjectsAndKeys:@"endPoint", @"key", nil]];
+}
+
+- (void)setBounds:(NSRect)bounds {
+    [[NSNotificationCenter defaultCenter] postNotificationName:SKAnnotationWillChangeNotification
+            object:self userInfo:[NSDictionary dictionaryWithObjectsAndKeys:@"bounds", @"key", nil]];
+    [super setBounds:bounds];
+    [[NSNotificationCenter defaultCenter] postNotificationName:SKAnnotationDidChangeNotification
+            object:self userInfo:[NSDictionary dictionaryWithObjectsAndKeys:@"bounds", @"key", nil]];
+}
+
+- (void)setContents:(NSString *)contents {
+    [super setContents:contents];
+    [[NSNotificationCenter defaultCenter] postNotificationName:SKAnnotationDidChangeNotification 
+            object:self userInfo:[NSDictionary dictionaryWithObjectsAndKeys:@"contents", @"key", nil]];
+}
+
+- (void)setColor:(NSColor *)color {
+    [super setColor:color];
+    [[NSNotificationCenter defaultCenter] postNotificationName:SKAnnotationDidChangeNotification 
+            object:self userInfo:[NSDictionary dictionaryWithObjectsAndKeys:@"color", @"key", nil]];
+}
+
+- (BOOL)pointNearLine:(NSPoint)point {
+    NSPoint startPoint = [self startPoint];
+    NSPoint endPoint = [self endPoint];
+    NSPoint relPoint = NSMakePoint(endPoint.x - startPoint.x, endPoint.y - startPoint.y);
+    NSRect bounds = [self bounds];
+    float lengthSquared = relPoint.x * relPoint.x + relPoint.y * relPoint.y;
+    float extProduct;
+    
+    if (lengthSquared < 16.0)
+        return YES;
+    
+    extProduct = (point.x - NSMinX(bounds) - startPoint.x) * relPoint.y - (point.y - NSMinY(bounds) - startPoint.y) * relPoint.x;
+    
+    return extProduct * extProduct < 16.0 * lengthSquared;
 }
 
 @end

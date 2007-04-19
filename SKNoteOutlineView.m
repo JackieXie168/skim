@@ -232,6 +232,7 @@ static NSImage *createFilteredImage(NSImage *image, CIFilter *filter)
     static NSImage *highlightImage = nil;
     static NSImage *strikeOutImage = nil;
     static NSImage *underlineImage = nil;
+    static NSImage *arrowImage = nil;
     static NSImage *invertedTextImage = nil;
     static NSImage *invertedNoteImage = nil;
     static NSImage *invertedCircleImage = nil;
@@ -239,6 +240,7 @@ static NSImage *createFilteredImage(NSImage *image, CIFilter *filter)
     static NSImage *invertedHighlightImage = nil;
     static NSImage *invertedStrikeOutImage = nil;
     static NSImage *invertedUnderlineImage = nil;
+    static NSImage *invertedArrowImage = nil;
     
     if (textImage == nil) {
         CIFilter *filter = [CIFilter filterWithName:@"CIColorInvert"];    
@@ -250,6 +252,7 @@ static NSImage *createFilteredImage(NSImage *image, CIFilter *filter)
         highlightImage = [[NSImage imageNamed:@"HighlightNoteAdorn"] retain];
         strikeOutImage = [[NSImage imageNamed:@"StrikeOutNoteAdorn"] retain];
         underlineImage = [[NSImage imageNamed:@"UnderlineNoteAdorn"] retain];
+        arrowImage = [[NSImage imageNamed:@"ArrowNoteAdorn"] retain];
         invertedTextImage = createFilteredImage(textImage, filter);
         invertedNoteImage = createFilteredImage(noteImage, filter);
         invertedCircleImage = createFilteredImage(circleImage, filter);
@@ -257,6 +260,7 @@ static NSImage *createFilteredImage(NSImage *image, CIFilter *filter)
         invertedHighlightImage = createFilteredImage(highlightImage, filter);
         invertedStrikeOutImage = createFilteredImage(strikeOutImage, filter);
         invertedUnderlineImage = createFilteredImage(underlineImage, filter);
+        invertedArrowImage = createFilteredImage(arrowImage, filter);
     }
     
     BOOL isSelected = [self isHighlighted] && [[controlView window] isKeyWindow] && [[[controlView window] firstResponder] isEqual:controlView];
@@ -276,6 +280,8 @@ static NSImage *createFilteredImage(NSImage *image, CIFilter *filter)
         image = isSelected ? invertedStrikeOutImage : strikeOutImage;
     else if ([type isEqualToString:@"Underline"])
         image = isSelected ? invertedUnderlineImage : underlineImage;
+    else if ([type isEqualToString:@"Line"])
+        image = isSelected ? invertedArrowImage : arrowImage;
     
     if (active) {
         [[NSGraphicsContext currentContext] saveGraphicsState];

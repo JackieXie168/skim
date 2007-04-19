@@ -116,6 +116,11 @@
 	BAt0eXBlZHN0cmVhbYED6IQBQISEhAdOU0NvbG9yAISECE5TT2JqZWN0AIWEAWMBhARm
 	ZmZmAQAAAYY=
 	</data>
+        <key>SKArrowNoteColor</key>
+        <data>
+	BAt0eXBlZHN0cmVhbYED6IQBQISEhAdOU0NvbG9yAISECE5TT2JqZWN0AIWEAWMBhARm
+	ZmZmAAABAYY=
+	</data>
         <key>SUCheckAtStartup</key>
         <false/>
         <key>SUScheduledCheckInterval</key>
@@ -161,6 +166,7 @@
             <string>SKHighlightNoteColor</string>
             <string>SKUnderlineNoteColor</string>
             <string>SKStrikeOutNoteColor</string>
+            <string>SKArrowNoteColor</string>
             <string>SKTextNoteFontName</string>
             <string>SKTextNoteFontSize</string>
         </array>

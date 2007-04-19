@@ -61,7 +61,8 @@ typedef enum _SKNoteType {
     SKSquareNote,
     SKHighlightNote,
     SKUnderlineNote,
-    SKStrikeOutNote
+    SKStrikeOutNote,
+    SKArrowNote
 } SKNoteType;
 
 @class SKReadingBar;
@@ -79,10 +80,13 @@ typedef enum _SKNoteType {
 	PDFAnnotation *activeAnnotation;
 	PDFAnnotationTextWidget *editAnnotation;
 	NSRect wasBounds;
+    NSPoint wasStartPoint;
+    NSPoint wasEndPoint;
 	NSPoint mouseDownLoc;
 	NSPoint clickDelta;
 	BOOL resizingAnnotation;
 	BOOL draggingAnnotation;
+	BOOL draggingStartPoint;
     BOOL mouseDownInAnnotation;
     
     int trackingRect;

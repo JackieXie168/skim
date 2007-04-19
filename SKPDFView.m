@@ -70,6 +70,7 @@ CGMutablePathRef CGCreatePathWithRoundRectInRect(CGRect rect, float radius);
 @interface SKPDFView (Private)
 
 - (NSRect)resizeThumbForRect:(NSRect) rect rotation:(int)rotation;
+- (NSRect)resizeThumbForRect:(NSRect) rect point:(NSPoint)point;
 - (void)transformCGContext:(CGContextRef)context forPage:(PDFPage *)page;
 
 - (void)autohideTimerFired:(NSTimer *)aTimer;
@@ -236,6 +237,14 @@ CGMutablePathRef CGCreatePathWithRoundRectInRect(CGRect rect, float radius);
                 CGContextAddPath(context, path);
                 CGContextStrokePath(context);
                 CGPathRelease(path);
+            } else if ([[activeAnnotation type] isEqualToString:@"Line"]) {
+                color[3] = 0.7;
+                rect = NSIntegralRect([self resizeThumbForRect:bounds point:[(SKPDFAnnotationLine *)activeAnnotation startPoint]]);
+                CGContextSetFillColor(context, color);
+                CGContextFillRect(context, *(CGRect *)&rect);
+                rect = NSIntegralRect([self resizeThumbForRect:bounds point:[(SKPDFAnnotationLine *)activeAnnotation endPoint]]);
+                CGContextSetFillColor(context, color);
+                CGContextFillRect(context, *(CGRect *)&rect);
             } else {
                 CGContextSetStrokeColor(context, color);
                 CGContextStrokeRectWithWidth(context, *(CGRect *)&rect, lineWidth);
@@ -294,6 +303,8 @@ CGMutablePathRef CGCreatePathWithRoundRectInRect(CGRect rect, float radius);
     if ([[annotation type] isEqualToString:@"Underline"]) {
         bounds.origin.y -= 0.03 * NSHeight(bounds);
         bounds.size.height *= 1.03;
+    } else if ([[annotation type] isEqualToString:@"Line"] && [annotation isEqual:activeAnnotation]) {
+        bounds = NSInsetRect(bounds, -4.0, -4.0);
     }
     [self setNeedsDisplayInRect:bounds ofPage:[annotation page]];
 }
@@ -606,7 +617,7 @@ CGMutablePathRef CGCreatePathWithRoundRectInRect(CGRect rect, float radius);
             mouseDownInAnnotation = NO;
             if (draggingAnnotation) {
                 draggingAnnotation = NO;
-                if ([activeAnnotation isEditable] == NO) {
+                if ([[activeAnnotation type] isEqualToString:@"Square"] || [[activeAnnotation type] isEqualToString:@"Square"]) {
                     NSString *selString = [[[[activeAnnotation page] selectionForRect:[activeAnnotation bounds]] string] stringByCollapsingWhitespaceAndNewlinesAndRemovingSurroundingWhitespaceAndNewlines];
                     [activeAnnotation setContents:selString];
                 }
@@ -845,6 +856,11 @@ static inline NSRect rectWithCorners(NSPoint p1, NSPoint p2)
             [item setTarget:self];
         }
         
+        item = [submenu addItemWithTitle:NSLocalizedString(@"Arrow", @"Menu item title") action:@selector(addAnnotationFromMenu:) keyEquivalent:@""];
+        [item setRepresentedObject:[NSValue valueWithPoint:point]];
+        [item setTag:SKArrowNote];
+        [item setTarget:self];
+        
         item = [menu addItemWithTitle:NSLocalizedString(@"New Note", @"Menu item title") action:NULL keyEquivalent:@""];
         [item setSubmenu:submenu];
         [submenu release];
@@ -1005,11 +1021,15 @@ static inline NSRect rectWithCorners(NSPoint p1, NSPoint p2)
         case SKStrikeOutNote:
             newAnnotation = [[SKPDFAnnotationMarkup alloc] initWithSelection:[self currentSelection] markupType:kPDFMarkupTypeStrikeOut];
             break;
+        case SKArrowNote:
+            newAnnotation = [[SKPDFAnnotationLine alloc] initWithBounds:bounds];
+            break;
 	}
     if (text == nil)
         text = [[[page selectionForRect:bounds] string] stringByCollapsingWhitespaceAndNewlinesAndRemovingSurroundingWhitespaceAndNewlines];
-        
-    [newAnnotation setContents:text];
+    
+    if ([[activeAnnotation type] isEqualToString:@"Line"] == NO)
+        [newAnnotation setContents:text];
     
     [page addAnnotation:newAnnotation];
     
@@ -1345,6 +1365,19 @@ static inline NSRect rectWithCorners(NSPoint p1, NSPoint p2)
 	return thumb;
 }
 
+- (NSRect)resizeThumbForRect:(NSRect) rect point:(NSPoint)point
+{
+	NSRect thumb = rect;
+    float size = 8.0;
+    
+    thumb.size = NSMakeSize(size, size);
+	
+    thumb.origin.x = NSMinX(rect) + point.x - 0.5 * size;
+    thumb.origin.y = NSMinY(rect) + point.y - 0.5 * size;
+	
+	return thumb;
+}
+
 - (void)transformCGContext:(CGContextRef)context forPage:(PDFPage *)page {
     NSRect boxRect = [page boundsForBox:[self displayBox]];
     
@@ -1491,7 +1524,7 @@ static inline NSRect rectWithCorners(NSPoint p1, NSPoint p2)
     
     if (NSEqualRects(bounds, newBounds) == NO) {
         [activeAnnotation setBounds:newBounds];
-        if ([activeAnnotation isEditable] == NO) {
+        if ([[activeAnnotation type] isEqualToString:@"Square"] || [[activeAnnotation type] isEqualToString:@"Square"]) {
             NSString *selString = [[[[activeAnnotation page] selectionForRect:newBounds] string] stringByCollapsingWhitespaceAndNewlinesAndRemovingSurroundingWhitespaceAndNewlines];
             [activeAnnotation setContents:selString];
         }
@@ -1504,130 +1537,253 @@ static inline NSRect rectWithCorners(NSPoint p1, NSPoint p2)
     PDFPage *page = [activeAnnotation page];
     NSRect pageBounds = [page boundsForBox:[self displayBox]];
     
-    switch ([page rotation]) {
-        case 0:
-            if (eventChar == NSRightArrowFunctionKey) {
-                if (NSMaxX(bounds) + delta <= NSMaxX(pageBounds)) {
-                    newBounds.size.width += delta;
-                } else if (NSMaxX(bounds) < NSMaxX(pageBounds)) {
-                    newBounds.size.width += NSMaxX(pageBounds) - NSMaxX(bounds);
+    if ([[activeAnnotation type] isEqualToString:@"Line"]) {
+        
+        SKPDFAnnotationLine *annotation = (SKPDFAnnotationLine *)activeAnnotation;
+        NSPoint oldEndPoint = [annotation endPoint];
+        NSPoint endPoint;
+        NSPoint startPoint = [annotation startPoint];
+        startPoint.x += NSMinX(bounds);
+        startPoint.y += NSMinY(bounds);
+        oldEndPoint.x += NSMinX(bounds);
+        oldEndPoint.y += NSMinY(bounds);
+        endPoint = oldEndPoint;
+        
+        // Resize the annotation.
+        switch ([page rotation]) {
+            case 0:
+                if (eventChar == NSRightArrowFunctionKey) {
+                    endPoint.x += delta;
+                    if (endPoint.x > NSMaxX(pageBounds))
+                        endPoint.x = NSMaxX(pageBounds);
+                } else if (eventChar == NSLeftArrowFunctionKey) {
+                    endPoint.x -= delta;
+                    if (endPoint.x < NSMinX(pageBounds))
+                        endPoint.x = NSMinX(pageBounds);
+                } else if (eventChar == NSUpArrowFunctionKey) {
+                    endPoint.y += delta;
+                    if (endPoint.y > NSMaxY(pageBounds))
+                        endPoint.y = NSMaxY(pageBounds);
+                } else if (eventChar == NSDownArrowFunctionKey) {
+                    endPoint.y -= delta;
+                    if (endPoint.y < NSMinY(pageBounds))
+                        endPoint.y = NSMinY(pageBounds);
                 }
-            } else if (eventChar == NSLeftArrowFunctionKey) {
-                newBounds.size.width -= delta;
-                if (NSWidth(newBounds) < 8.0) {
-                    newBounds.size.width = 8.0;
+                break;
+            case 90:
+                if (eventChar == NSRightArrowFunctionKey) {
+                    endPoint.y += delta;
+                    if (endPoint.y > NSMaxY(pageBounds))
+                        endPoint.y = NSMaxY(pageBounds);
+                } else if (eventChar == NSLeftArrowFunctionKey) {
+                    endPoint.y -= delta;
+                    if (endPoint.y < NSMinY(pageBounds))
+                        endPoint.y = NSMinY(pageBounds);
+                } else if (eventChar == NSUpArrowFunctionKey) {
+                    endPoint.x -= delta;
+                    if (endPoint.x < NSMinX(pageBounds))
+                        endPoint.x = NSMinX(pageBounds);
+                } else if (eventChar == NSDownArrowFunctionKey) {
+                    endPoint.x += delta;
+                    if (endPoint.x > NSMaxX(pageBounds))
+                        endPoint.x = NSMaxX(pageBounds);
                 }
-            } else if (eventChar == NSUpArrowFunctionKey) {
-                newBounds.origin.y += delta;
-                newBounds.size.height -= delta;
-                if (NSHeight(newBounds) < 8.0) {
-                    newBounds.origin.y += NSHeight(newBounds) - 8.0;
-                    newBounds.size.height = 8.0;
+                break;
+            case 180:
+                if (eventChar == NSRightArrowFunctionKey) {
+                    endPoint.x -= delta;
+                    if (endPoint.x < NSMinX(bounds))
+                        endPoint.x = NSMinX(bounds);
+                } else if (eventChar == NSLeftArrowFunctionKey) {
+                    endPoint.x += delta;
+                    if (endPoint.x > NSMaxX(bounds))
+                        endPoint.x = NSMaxX(bounds);
+                } else if (eventChar == NSUpArrowFunctionKey) {
+                    endPoint.y -= delta;
+                    if (endPoint.y < NSMinY(bounds))
+                        endPoint.y = NSMinY(bounds);
+                } else if (eventChar == NSDownArrowFunctionKey) {
+                    endPoint.y += delta;
+                    if (endPoint.y > NSMaxY(bounds))
+                        endPoint.y = NSMaxY(bounds);
                 }
-            } else if (eventChar == NSDownArrowFunctionKey) {
-                if (NSMinY(bounds) - delta >= NSMinY(pageBounds)) {
-                    newBounds.origin.y -= delta;
-                    newBounds.size.height += delta;
-                } else if (NSMinY(bounds) > NSMinY(pageBounds)) {
-                    newBounds.origin.y -= NSMinY(bounds) - NSMinY(pageBounds);
-                    newBounds.size.height += NSMinY(bounds) - NSMinY(pageBounds);
+                break;
+            case 270:
+                if (eventChar == NSRightArrowFunctionKey) {
+                    endPoint.y -= delta;
+                    if (endPoint.y < NSMinY(bounds))
+                        endPoint.y = NSMinY(bounds);
+                } else if (eventChar == NSLeftArrowFunctionKey) {
+                    endPoint.y += delta;
+                    if (endPoint.y > NSMaxY(bounds))
+                        endPoint.y = NSMaxY(bounds);
+                } else if (eventChar == NSUpArrowFunctionKey) {
+                    endPoint.x += delta;
+                    if (endPoint.x > NSMaxX(bounds))
+                        endPoint.x = NSMaxX(bounds);
+                } else if (eventChar == NSDownArrowFunctionKey) {
+                    endPoint.x -= delta;
+                    if (endPoint.x < NSMinX(bounds))
+                        endPoint.x = NSMinX(bounds);
                 }
+                break;
+        }
+        
+        endPoint.x = roundf(endPoint.x);
+        endPoint.y = roundf(endPoint.y);
+        
+        if (NSEqualPoints(endPoint, oldEndPoint) == NO) {
+            newBounds.origin.x = fmin(startPoint.x, endPoint.x);
+            newBounds.size.width = fabs(endPoint.x - startPoint.x);
+            newBounds.origin.y = fmin(startPoint.y, endPoint.y);
+            newBounds.size.height = fabs(endPoint.y - startPoint.y);
+            
+            if (NSWidth(newBounds) < 8.0) {
+                newBounds.size.width = 8.0;
+                newBounds.origin.x = floorf(0.5 * (startPoint.x + endPoint.x)) - 4.0;
             }
-            break;
-        case 90:
-            if (eventChar == NSRightArrowFunctionKey) {
-                if (NSMinY(bounds) + delta <= NSMaxY(pageBounds)) {
-                    newBounds.size.height += delta;
-                } else if (NSMinY(bounds) < NSMaxY(pageBounds)) {
-                    newBounds.size.height += NSMaxY(pageBounds) - NSMinY(bounds);
-                }
-            } else if (eventChar == NSLeftArrowFunctionKey) {
-                newBounds.size.height -= delta;
-                if (NSHeight(newBounds) < 8.0) {
-                    newBounds.size.height = 8.0;
-                }
-            } else if (eventChar == NSUpArrowFunctionKey) {
-                newBounds.size.width -= delta;
-                if (NSWidth(newBounds) < 8.0) {
-                    newBounds.size.width = 8.0;
-                }
-            } else if (eventChar == NSDownArrowFunctionKey) {
-                if (NSMaxX(bounds) + delta <= NSMaxX(pageBounds)) {
-                    newBounds.size.width += delta;
-                } else if (NSMaxX(bounds) < NSMaxX(pageBounds)) {
-                    newBounds.size.width += NSMaxX(pageBounds) - NSMaxX(bounds);
-                }
+            if (NSHeight(newBounds) < 8.0) {
+                newBounds.size.height = 8.0;
+                newBounds.origin.y = floorf(0.5 * (startPoint.y + endPoint.y)) - 4.0;
             }
-            break;
-        case 180:
-            if (eventChar == NSRightArrowFunctionKey) {
-                if (NSMinX(bounds) - delta >= NSMinX(pageBounds)) {
-                    newBounds.origin.x -= delta;
-                    newBounds.size.width += delta;
-                } else if (NSMinX(bounds) > NSMinX(pageBounds)) {
-                    newBounds.origin.x -= NSMinX(bounds) - NSMinX(pageBounds);
-                    newBounds.size.width += NSMinX(bounds) - NSMinX(pageBounds);
+            
+            startPoint.x -= NSMinX(newBounds);
+            startPoint.y -= NSMinY(newBounds);
+            endPoint.x -= NSMinX(newBounds);
+            endPoint.y -= NSMinY(newBounds);
+            
+            [annotation setBounds:newBounds];
+            [annotation setStartPoint:startPoint];
+            [annotation setEndPoint:endPoint];
+        }
+        
+    } else {
+        
+        switch ([page rotation]) {
+            case 0:
+                if (eventChar == NSRightArrowFunctionKey) {
+                    if (NSMaxX(bounds) + delta <= NSMaxX(pageBounds)) {
+                        newBounds.size.width += delta;
+                    } else if (NSMaxX(bounds) < NSMaxX(pageBounds)) {
+                        newBounds.size.width += NSMaxX(pageBounds) - NSMaxX(bounds);
+                    }
+                } else if (eventChar == NSLeftArrowFunctionKey) {
+                    newBounds.size.width -= delta;
+                    if (NSWidth(newBounds) < 8.0) {
+                        newBounds.size.width = 8.0;
+                    }
+                } else if (eventChar == NSUpArrowFunctionKey) {
+                    newBounds.origin.y += delta;
+                    newBounds.size.height -= delta;
+                    if (NSHeight(newBounds) < 8.0) {
+                        newBounds.origin.y += NSHeight(newBounds) - 8.0;
+                        newBounds.size.height = 8.0;
+                    }
+                } else if (eventChar == NSDownArrowFunctionKey) {
+                    if (NSMinY(bounds) - delta >= NSMinY(pageBounds)) {
+                        newBounds.origin.y -= delta;
+                        newBounds.size.height += delta;
+                    } else if (NSMinY(bounds) > NSMinY(pageBounds)) {
+                        newBounds.origin.y -= NSMinY(bounds) - NSMinY(pageBounds);
+                        newBounds.size.height += NSMinY(bounds) - NSMinY(pageBounds);
+                    }
                 }
-            } else if (eventChar == NSLeftArrowFunctionKey) {
-                newBounds.origin.x += delta;
-                newBounds.size.width -= delta;
-                if (NSWidth(newBounds) < 8.0) {
-                    newBounds.origin.x += NSWidth(newBounds) - 8.0;
-                    newBounds.size.width = 8.0;
+                break;
+            case 90:
+                if (eventChar == NSRightArrowFunctionKey) {
+                    if (NSMinY(bounds) + delta <= NSMaxY(pageBounds)) {
+                        newBounds.size.height += delta;
+                    } else if (NSMinY(bounds) < NSMaxY(pageBounds)) {
+                        newBounds.size.height += NSMaxY(pageBounds) - NSMinY(bounds);
+                    }
+                } else if (eventChar == NSLeftArrowFunctionKey) {
+                    newBounds.size.height -= delta;
+                    if (NSHeight(newBounds) < 8.0) {
+                        newBounds.size.height = 8.0;
+                    }
+                } else if (eventChar == NSUpArrowFunctionKey) {
+                    newBounds.size.width -= delta;
+                    if (NSWidth(newBounds) < 8.0) {
+                        newBounds.size.width = 8.0;
+                    }
+                } else if (eventChar == NSDownArrowFunctionKey) {
+                    if (NSMaxX(bounds) + delta <= NSMaxX(pageBounds)) {
+                        newBounds.size.width += delta;
+                    } else if (NSMaxX(bounds) < NSMaxX(pageBounds)) {
+                        newBounds.size.width += NSMaxX(pageBounds) - NSMaxX(bounds);
+                    }
                 }
-            } else if (eventChar == NSUpArrowFunctionKey) {
-                newBounds.size.height -= delta;
-                if (NSHeight(newBounds) < 8.0) {
-                    newBounds.size.height = 8.0;
+                break;
+            case 180:
+                if (eventChar == NSRightArrowFunctionKey) {
+                    if (NSMinX(bounds) - delta >= NSMinX(pageBounds)) {
+                        newBounds.origin.x -= delta;
+                        newBounds.size.width += delta;
+                    } else if (NSMinX(bounds) > NSMinX(pageBounds)) {
+                        newBounds.origin.x -= NSMinX(bounds) - NSMinX(pageBounds);
+                        newBounds.size.width += NSMinX(bounds) - NSMinX(pageBounds);
+                    }
+                } else if (eventChar == NSLeftArrowFunctionKey) {
+                    newBounds.origin.x += delta;
+                    newBounds.size.width -= delta;
+                    if (NSWidth(newBounds) < 8.0) {
+                        newBounds.origin.x += NSWidth(newBounds) - 8.0;
+                        newBounds.size.width = 8.0;
+                    }
+                } else if (eventChar == NSUpArrowFunctionKey) {
+                    newBounds.size.height -= delta;
+                    if (NSHeight(newBounds) < 8.0) {
+                        newBounds.size.height = 8.0;
+                    }
+                } else if (eventChar == NSDownArrowFunctionKey) {
+                    if (NSMaxY(bounds) + delta <= NSMaxY(pageBounds)) {
+                        newBounds.size.height += delta;
+                    } else if (NSMaxY(bounds) < NSMaxY(pageBounds)) {
+                        newBounds.size.height += NSMaxY(pageBounds) - NSMaxY(bounds);
+                    }
                 }
-            } else if (eventChar == NSDownArrowFunctionKey) {
-                if (NSMaxY(bounds) + delta <= NSMaxY(pageBounds)) {
-                    newBounds.size.height += delta;
-                } else if (NSMaxY(bounds) < NSMaxY(pageBounds)) {
-                    newBounds.size.height += NSMaxY(pageBounds) - NSMaxY(bounds);
+                break;
+            case 270:
+                if (eventChar == NSRightArrowFunctionKey) {
+                    if (NSMinY(bounds) - delta >= NSMinY(pageBounds)) {
+                        newBounds.origin.y -= delta;
+                        newBounds.size.height += delta;
+                    } else if (NSMinY(bounds) > NSMinY(pageBounds)) {
+                        newBounds.origin.y -= NSMinY(bounds) - NSMinY(pageBounds);
+                        newBounds.size.height += NSMinY(bounds) - NSMinY(pageBounds);
+                    }
+                } else if (eventChar == NSLeftArrowFunctionKey) {
+                    newBounds.origin.y += delta;
+                    newBounds.size.height -= delta;
+                    if (NSHeight(newBounds) < 8.0) {
+                        newBounds.origin.y += NSHeight(newBounds) - 8.0;
+                        newBounds.size.height = 8.0;
+                    }
+                } else if (eventChar == NSUpArrowFunctionKey) {
+                    newBounds.origin.x += delta;
+                    newBounds.size.width -= delta;
+                    if (NSWidth(newBounds) < 8.0) {
+                        newBounds.origin.x += NSWidth(newBounds) - 8.0;
+                        newBounds.size.width = 8.0;
+                    }
+                } else if (eventChar == NSDownArrowFunctionKey) {
+                    if (NSMinX(bounds) - delta >= NSMinX(pageBounds)) {
+                        newBounds.origin.x -= delta;
+                        newBounds.size.width += delta;
+                    } else if (NSMinX(bounds) > NSMinX(pageBounds)) {
+                        newBounds.origin.x -= NSMinX(bounds) - NSMinX(pageBounds);
+                        newBounds.size.width += NSMinX(bounds) - NSMinX(pageBounds);
+                    }
                 }
+                break;
+        }
+        
+        if (NSEqualRects(bounds, newBounds) == NO) {
+            [activeAnnotation setBounds:newBounds];
+            if ([[activeAnnotation type] isEqualToString:@"Square"] || [[activeAnnotation type] isEqualToString:@"Square"]) {
+                NSString *selString = [[[[activeAnnotation page] selectionForRect:newBounds] string] stringByCollapsingWhitespaceAndNewlinesAndRemovingSurroundingWhitespaceAndNewlines];
+                [activeAnnotation setContents:selString];
             }
-            break;
-        case 270:
-            if (eventChar == NSRightArrowFunctionKey) {
-                if (NSMinY(bounds) - delta >= NSMinY(pageBounds)) {
-                    newBounds.origin.y -= delta;
-                    newBounds.size.height += delta;
-                } else if (NSMinY(bounds) > NSMinY(pageBounds)) {
-                    newBounds.origin.y -= NSMinY(bounds) - NSMinY(pageBounds);
-                    newBounds.size.height += NSMinY(bounds) - NSMinY(pageBounds);
-                }
-            } else if (eventChar == NSLeftArrowFunctionKey) {
-                newBounds.origin.y += delta;
-                newBounds.size.height -= delta;
-                if (NSHeight(newBounds) < 8.0) {
-                    newBounds.origin.y += NSHeight(newBounds) - 8.0;
-                    newBounds.size.height = 8.0;
-                }
-            } else if (eventChar == NSUpArrowFunctionKey) {
-                newBounds.origin.x += delta;
-                newBounds.size.width -= delta;
-                if (NSWidth(newBounds) < 8.0) {
-                    newBounds.origin.x += NSWidth(newBounds) - 8.0;
-                    newBounds.size.width = 8.0;
-                }
-            } else if (eventChar == NSDownArrowFunctionKey) {
-                if (NSMinX(bounds) - delta >= NSMinX(pageBounds)) {
-                    newBounds.origin.x -= delta;
-                    newBounds.size.width += delta;
-                } else if (NSMinX(bounds) > NSMinX(pageBounds)) {
-                    newBounds.origin.x -= NSMinX(bounds) - NSMinX(pageBounds);
-                    newBounds.size.width += NSMinX(bounds) - NSMinX(pageBounds);
-                }
-            }
-            break;
-    }
-    
-    if (NSEqualRects(bounds, newBounds) == NO) {
-        [activeAnnotation setBounds:newBounds];
-        if ([activeAnnotation isEditable] == NO) {
-            NSString *selString = [[[[activeAnnotation page] selectionForRect:newBounds] string] stringByCollapsingWhitespaceAndNewlinesAndRemovingSurroundingWhitespaceAndNewlines];
-            [activeAnnotation setContents:selString];
         }
     }
 }
@@ -1689,7 +1845,8 @@ static inline NSRect rectWithCorners(NSPoint p1, NSPoint p2)
                         newActiveAnnotation = annotationHit;
                         break;
                     }
-                } else {
+                } else if ([annotationHit respondsToSelector:@selector(pointNearLine:)] == NO ||
+                           [(SKPDFAnnotationLine *)annotationHit pointNearLine:pagePoint]) {
                     // We count this one.
                     newActiveAnnotation = annotationHit;
                     
@@ -1760,12 +1917,29 @@ static inline NSRect rectWithCorners(NSPoint p1, NSPoint p2)
         // Old (current) annotation location.
         wasBounds = [activeAnnotation bounds];
         
+        if ([[activeAnnotation type] isEqualToString:@"Line"]) {
+            wasStartPoint = [(SKPDFAnnotationLine *)activeAnnotation startPoint];
+            wasEndPoint = [(SKPDFAnnotationLine *)activeAnnotation endPoint];
+        }
+        
         // Force redisplay.
 		[self setNeedsDisplayForAnnotation:activeAnnotation];
         draggingAnnotation = [activeAnnotation isMovable];
         
         // Hit-test for resize box.
-        resizingAnnotation = [[activeAnnotation type] isEqualToString:@"Note"] == NO && NSPointInRect(pagePoint, [self resizeThumbForRect:wasBounds rotation:[activePage rotation]]);
+        if ([[activeAnnotation type] isEqualToString:@"Line"]) {
+            if (NSPointInRect(pagePoint, [self resizeThumbForRect:wasBounds point:[(SKPDFAnnotationLine *)activeAnnotation endPoint]])) {
+                resizingAnnotation = YES;
+                draggingStartPoint = NO;
+            } else if (NSPointInRect(pagePoint, [self resizeThumbForRect:wasBounds point:[(SKPDFAnnotationLine *)activeAnnotation startPoint]])) {
+                resizingAnnotation = YES;
+                draggingStartPoint = YES;
+            } else {
+                resizingAnnotation = NO;
+            }
+       }  else {
+            resizingAnnotation = [activeAnnotation isResizable] && NSPointInRect(pagePoint, [self resizeThumbForRect:wasBounds rotation:[activePage rotation]]);
+        }
     }
     
     return newActiveAnnotation != nil;
@@ -1783,60 +1957,143 @@ static inline NSRect rectWithCorners(NSPoint p1, NSPoint p2)
         NSPoint relPoint = NSMakePoint(endPt.x - startPoint.x, endPt.y - startPoint.y);
         newBounds = wasBounds;
         
-        // Resize the annotation.
-        switch ([activePage rotation]) {
-            case 0:
-                newBounds.origin.y += relPoint.y;
-                newBounds.size.width += relPoint.x;
-                newBounds.size.height -= relPoint.y;
-                if (NSWidth(newBounds) < 8.0) {
-                    newBounds.size.width = 8.0;
-                }
-                if (NSHeight(newBounds) < 8.0) {
-                    newBounds.origin.y += NSHeight(newBounds) - 8.0;
-                    newBounds.size.height = 8.0;
-                }
-                break;
-            case 90:
-                newBounds.size.width += relPoint.x;
-                newBounds.size.height += relPoint.y;
-                if (NSWidth(newBounds) < 8.0) {
-                    newBounds.size.width = 8.0;
-                }
-                if (NSHeight(newBounds) < 8.0) {
-                    newBounds.size.height = 8.0;
-                }
-                break;
-            case 180:
-                newBounds.origin.x += relPoint.x;
-                newBounds.size.width -= relPoint.x;
-                newBounds.size.height += relPoint.y;
-                if (NSWidth(newBounds) < 8.0) {
-                    newBounds.origin.x += NSWidth(newBounds) - 8.0;
-                    newBounds.size.width = 8.0;
-                }
-                if (NSHeight(newBounds) < 8.0) {
-                    newBounds.size.height = 8.0;
-                }
-                break;
-            case 270:
-                newBounds.origin.x += relPoint.x;
-                newBounds.origin.y += relPoint.y;
-                newBounds.size.width -= relPoint.x;
-                newBounds.size.height -= relPoint.y;
-                if (NSWidth(newBounds) < 8.0) {
-                    newBounds.origin.x += NSWidth(newBounds) - 8.0;
-                    newBounds.size.width = 8.0;
-                }
-                if (NSHeight(newBounds) < 8.0) {
-                    newBounds.origin.y += NSHeight(newBounds) - 8.0;
-                    newBounds.size.height = 8.0;
-                }
-                break;
+        if ([[activeAnnotation type] isEqualToString:@"Line"]) {
+            
+            SKPDFAnnotationLine *annotation = (SKPDFAnnotationLine *)activeAnnotation;
+            NSPoint endPoint = wasEndPoint;
+            endPoint.x += NSMinX(wasBounds);
+            endPoint.y += NSMinY(wasBounds);
+            startPoint = wasStartPoint;
+            startPoint.x += NSMinX(wasBounds);
+            startPoint.y += NSMinY(wasBounds);
+            
+            // Resize the annotation.
+            switch ([activePage rotation]) {
+                case 0:
+                    if (draggingStartPoint) {
+                        startPoint.x += relPoint.x;
+                        startPoint.y += relPoint.y;
+                    } else {
+                        endPoint.x += relPoint.x;
+                        endPoint.y += relPoint.y;
+                    }
+                    break;
+                case 90:
+                    if (draggingStartPoint) {
+                        startPoint.x += relPoint.y;
+                        startPoint.y -= relPoint.x;
+                    } else {
+                        endPoint.x += relPoint.y;
+                        endPoint.y -= relPoint.x;
+                    }
+                    break;
+                case 180:
+                    if (draggingStartPoint) {
+                        startPoint.x -= relPoint.x;
+                        startPoint.y -= relPoint.y;
+                    } else {
+                        endPoint.x -= relPoint.x;
+                        endPoint.y -= relPoint.y;
+                    }
+                    break;
+                case 270:
+                    if (draggingStartPoint) {
+                        startPoint.x -= relPoint.y;
+                        startPoint.y += relPoint.x;
+                    } else {
+                        endPoint.x -= relPoint.y;
+                        endPoint.y += relPoint.x;
+                    }
+                    break;
+            }
+            
+            if (draggingStartPoint) {
+                startPoint.x = roundf(startPoint.x);
+                startPoint.y = roundf(startPoint.y);
+            } else {
+                endPoint.x = roundf(endPoint.x);
+                endPoint.y = roundf(endPoint.y);
+            }
+            
+            newBounds.origin.x = fmin(startPoint.x, endPoint.x);
+            newBounds.size.width = fabs(endPoint.x - startPoint.x);
+            newBounds.origin.y = fmin(startPoint.y, endPoint.y);
+            newBounds.size.height = fabs(endPoint.y - startPoint.y);
+            
+            if (NSWidth(newBounds) < 8.0) {
+                newBounds.size.width = 8.0;
+                newBounds.origin.x = floorf(0.5 * (startPoint.x + endPoint.x)) - 4.0;
+            }
+            if (NSHeight(newBounds) < 8.0) {
+                newBounds.size.height = 8.0;
+                newBounds.origin.y = floorf(0.5 * (startPoint.y + endPoint.y)) - 4.0;
+            }
+            
+            startPoint.x -= NSMinX(newBounds);
+            startPoint.y -= NSMinY(newBounds);
+            endPoint.x -= NSMinX(newBounds);
+            endPoint.y -= NSMinY(newBounds);
+            
+            [annotation setStartPoint:startPoint];
+            [annotation setEndPoint:endPoint];
+            
+        } else {
+            
+            switch ([activePage rotation]) {
+                case 0:
+                    newBounds.origin.y += relPoint.y;
+                    newBounds.size.width += relPoint.x;
+                    newBounds.size.height -= relPoint.y;
+                    if (NSWidth(newBounds) < 8.0) {
+                        newBounds.size.width = 8.0;
+                    }
+                    if (NSHeight(newBounds) < 8.0) {
+                        newBounds.origin.y += NSHeight(newBounds) - 8.0;
+                        newBounds.size.height = 8.0;
+                    }
+                    break;
+                case 90:
+                    newBounds.size.width += relPoint.x;
+                    newBounds.size.height += relPoint.y;
+                    if (NSWidth(newBounds) < 8.0) {
+                        newBounds.size.width = 8.0;
+                    }
+                    if (NSHeight(newBounds) < 8.0) {
+                        newBounds.size.height = 8.0;
+                    }
+                    break;
+                case 180:
+                    newBounds.origin.x += relPoint.x;
+                    newBounds.size.width -= relPoint.x;
+                    newBounds.size.height += relPoint.y;
+                    if (NSWidth(newBounds) < 8.0) {
+                        newBounds.origin.x += NSWidth(newBounds) - 8.0;
+                        newBounds.size.width = 8.0;
+                    }
+                    if (NSHeight(newBounds) < 8.0) {
+                        newBounds.size.height = 8.0;
+                    }
+                    break;
+                case 270:
+                    newBounds.origin.x += relPoint.x;
+                    newBounds.origin.y += relPoint.y;
+                    newBounds.size.width -= relPoint.x;
+                    newBounds.size.height -= relPoint.y;
+                    if (NSWidth(newBounds) < 8.0) {
+                        newBounds.origin.x += NSWidth(newBounds) - 8.0;
+                        newBounds.size.width = 8.0;
+                    }
+                    if (NSHeight(newBounds) < 8.0) {
+                        newBounds.origin.y += NSHeight(newBounds) - 8.0;
+                        newBounds.size.height = 8.0;
+                    }
+                    break;
+            }
+            
+            // Keep integer.
+            newBounds = NSIntegralRect(newBounds);
+            
         }
-        
-        // Keep integer.
-        newBounds = NSIntegralRect(newBounds);
     } else {
         // Move annotation.
         [[self documentView] autoscroll:theEvent];
@@ -1879,9 +2136,6 @@ static inline NSRect rectWithCorners(NSPoint p1, NSPoint p2)
     
     // Change annotation's location.
     [activeAnnotation setBounds:newBounds];
-    
-    // Force redraw.
-    [self setNeedsDisplayInRect:NSUnionRect(currentBounds, newBounds) ofPage:activePage];
 }
 
 - (void)dragWithEvent:(NSEvent *)theEvent {
