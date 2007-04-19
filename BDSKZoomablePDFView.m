@@ -273,15 +273,19 @@ static float BDSKScaleMenuFontSize = 11.0;
 - (void)setScaleFactor:(float)newScaleFactor adjustPopup:(BOOL)flag {
     
 	if (flag) {
-		unsigned cnt = 1, numberOfDefaultItems = (sizeof(BDSKDefaultScaleMenuFactors) / sizeof(float));
-        
-		// We only work with some preset zoom values, so choose one of the appropriate values
-		while (cnt < numberOfDefaultItems - 1 && newScaleFactor > 0.5 * (BDSKDefaultScaleMenuFactors[cnt] + BDSKDefaultScaleMenuFactors[cnt + 1])) cnt++;
-		[scalePopUpButton selectItemAtIndex:cnt];
-		newScaleFactor = BDSKDefaultScaleMenuFactors[cnt];
+		if (newScaleFactor < 0.01) {
+            newScaleFactor = 0.0;
+        } else {
+            unsigned cnt = 1, numberOfDefaultItems = (sizeof(BDSKDefaultScaleMenuFactors) / sizeof(float));
+            
+            // We only work with some preset zoom values, so choose one of the appropriate values
+            while (cnt < numberOfDefaultItems - 1 && newScaleFactor > 0.5 * (BDSKDefaultScaleMenuFactors[cnt] + BDSKDefaultScaleMenuFactors[cnt + 1])) cnt++;
+            [scalePopUpButton selectItemAtIndex:cnt];
+            newScaleFactor = BDSKDefaultScaleMenuFactors[cnt];
+        }
     }
     
-    if(fabs(newScaleFactor) < 0.01)
+    if(newScaleFactor < 0.01)
         [self setAutoScales:YES];
     else
         [super setScaleFactor:newScaleFactor];
