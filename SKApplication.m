@@ -42,7 +42,6 @@
 #import "SKDocument.h"
 
 NSString *SKApplicationWillTerminateNotification = @"SKApplicationWillTerminateNotification";
-NSString *SKScrollMagnifyNotification = @"SKScrollMagnifyNotification";
 
 @interface NSMenu (SKExtensions)
 - (int)indexOfItemWithTarget:(id)target;
@@ -63,8 +62,11 @@ NSString *SKScrollMagnifyNotification = @"SKScrollMagnifyNotification";
 @implementation SKApplication
 
 - (void)sendEvent:(NSEvent *)anEvent {
+    id target = nil;
     if ([anEvent type] == NSScrollWheel && [anEvent modifierFlags] & NSAlternateKeyMask)
-        [[NSNotificationCenter defaultCenter] postNotificationName:SKScrollMagnifyNotification object:anEvent];
+        target = [self targetForAction:@selector(magnifyWheel:)];
+    if (target)
+        [target performSelector:@selector(magnifyWheel:) withObject:anEvent];
     else
         [super sendEvent:anEvent];
 }

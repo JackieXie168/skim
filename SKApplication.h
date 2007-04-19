@@ -39,7 +39,6 @@
 #import <Cocoa/Cocoa.h>
 
 extern NSString *SKApplicationWillTerminateNotification;
-extern NSString *SKScrollMagnifyNotification;
 
 @interface SKApplication : NSApplication
 @end
