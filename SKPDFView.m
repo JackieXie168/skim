@@ -1830,40 +1830,16 @@ static inline NSRect rectWithCorners(NSPoint p1, NSPoint p2)
     i = [annotations count];
     
     while (i-- > 0) {
-        NSRect annotationBounds;
         PDFAnnotation *annotationHit = [annotations objectAtIndex:i];
         
         // Hit test annotation.
-        annotationBounds = [annotationHit bounds];
-        if (NSPointInRect(pagePoint, annotationBounds)) {
-            if ([annotationHit isNoteAnnotation]) {
-                mouseDownInAnnotation = YES;
-                
-                if ([annotationHit respondsToSelector:@selector(linesContainPoint:)]) {
-                    // markup annotations aren't necessarily defined by a box
-                    if ([(SKPDFAnnotationMarkup *)annotationHit linesContainPoint:pagePoint]) {
-                        newActiveAnnotation = annotationHit;
-                        break;
-                    }
-                } else if ([annotationHit respondsToSelector:@selector(pointNearLine:)] == NO ||
-                           [(SKPDFAnnotationLine *)annotationHit pointNearLine:pagePoint]) {
-                    // We count this one.
-                    newActiveAnnotation = annotationHit;
-                    
-                    // Remember click point relative to annotation origin.
-                    clickDelta.x = pagePoint.x - annotationBounds.origin.x;
-                    clickDelta.y = pagePoint.y - annotationBounds.origin.y;
-                    break;
-                }
-            }
-        } else if ([[annotationHit type] isEqualToString:@"Line"] && 
-                   (NSPointInRect(pagePoint, [self resizeThumbForRect:annotationBounds point:[(SKPDFAnnotationLine *)annotationHit endPoint]]) ||
-                    NSPointInRect(pagePoint, [self resizeThumbForRect:annotationBounds point:[(SKPDFAnnotationLine *)annotationHit startPoint]]))) {
+        if ([annotationHit isNoteAnnotation] && [annotationHit hitTest:pagePoint]) {
+            mouseDownInAnnotation = YES;
             newActiveAnnotation = annotationHit;
-            
             // Remember click point relative to annotation origin.
-            clickDelta.x = pagePoint.x - annotationBounds.origin.x;
-            clickDelta.y = pagePoint.y - annotationBounds.origin.y;
+            clickDelta.x = pagePoint.x - NSMinX([annotationHit bounds]);
+            clickDelta.y = pagePoint.y - NSMinY([annotationHit bounds]);
+            break;
         }
     }
     

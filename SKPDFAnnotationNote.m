@@ -166,6 +166,10 @@ void SKCGContextSetDefaultRGBColorSpace(CGContextRef context) {
 
 - (BOOL)isEditable { return NO; }
 
+- (BOOL)hitTest:(NSPoint)point {
+    return NSPointInRect(point, [self bounds]);
+}
+
 #pragma mark Scripting support
 
 - (id)init {
@@ -575,16 +579,20 @@ static BOOL lineRectTrimmingWhitespaceForPage(NSRect *lineRect, PDFPage *page)
     }
 }
 
-// this allows more precise hit testing of these annotations, since markup may not cover the entire bounds
-- (BOOL)linesContainPoint:(NSPoint)point {
+- (BOOL)hitTest:(NSPoint)point {
+    if ([super hitTest:point] == NO)
+        return NO;
+    
     // archived annotations (or annotations we didn't create) won't have these
     if (0 == numberOfLines)
         [self regenerateLineRects];
     
     unsigned i = numberOfLines;
     BOOL isContained = NO;
+    
     while (i-- && NO == isContained)
         isContained = NSPointInRect(point, lineRects[i]);
+    
     return isContained;
 }
 
@@ -885,20 +893,29 @@ static BOOL lineRectTrimmingWhitespaceForPage(NSRect *lineRect, PDFPage *page)
             object:self userInfo:[NSDictionary dictionaryWithObjectsAndKeys:@"color", @"key", nil]];
 }
 
-- (BOOL)pointNearLine:(NSPoint)point {
+- (BOOL)hitTest:(NSPoint)point {
+    NSRect bounds = [self bounds];
     NSPoint startPoint = [self startPoint];
     NSPoint endPoint = [self endPoint];
-    NSPoint relPoint = NSMakePoint(endPoint.x - startPoint.x, endPoint.y - startPoint.y);
-    NSRect bounds = [self bounds];
-    float lengthSquared = relPoint.x * relPoint.x + relPoint.y * relPoint.y;
-    float extProduct;
     
-    if (lengthSquared < 16.0)
-        return YES;
-    
-    extProduct = (point.x - NSMinX(bounds) - startPoint.x) * relPoint.y - (point.y - NSMinY(bounds) - startPoint.y) * relPoint.x;
-    
-    return extProduct * extProduct < 16.0 * lengthSquared;
+    if ([super hitTest:point]) {
+        NSPoint relPoint = NSMakePoint(endPoint.x - startPoint.x, endPoint.y - startPoint.y);
+        float lengthSquared = relPoint.x * relPoint.x + relPoint.y * relPoint.y;
+        float extProduct;
+        
+        if (lengthSquared < 16.0)
+            return YES;
+        
+        extProduct = (point.x - NSMinX(bounds) - startPoint.x) * relPoint.y - (point.y - NSMinY(bounds) - startPoint.y) * relPoint.x;
+        
+        return extProduct * extProduct < 16.0 * lengthSquared;
+    } else {
+        point.x -= NSMinX(bounds);
+        point.y -= NSMinY(bounds);
+        
+        return (fabs(point.x - startPoint.x) < 4.0 && fabs(point.y - startPoint.y) < 4.0) ||
+               (fabs(point.x - endPoint.x) < 4.0 && fabs(point.y - endPoint.y) < 4.0);
+    }
 }
 
 @end

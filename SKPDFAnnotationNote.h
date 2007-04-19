@@ -64,6 +64,8 @@ extern void SKCGContextSetDefaultRGBColorSpace(CGContextRef context);
 - (BOOL)isMovable;
 - (BOOL)isEditable;
 
+- (BOOL)hitTest:(NSPoint)point;
+
 - (NSScriptObjectSpecifier *)objectSpecifier;
 - (int)noteType;
 - (id)textContents;
@@ -88,7 +90,6 @@ extern void SKCGContextSetDefaultRGBColorSpace(CGContextRef context);
 }
 - (id)initWithBounds:(NSRect)bounds markupType:(int)type quadrilateralPointsAsStrings:(NSArray *)pointStrings;
 - (id)initWithSelection:(PDFSelection *)selection markupType:(int)type;
-- (BOOL)linesContainPoint:(NSPoint)point;
 @end
 
 @interface SKPDFAnnotationFreeText : PDFAnnotationFreeText
@@ -108,7 +109,6 @@ extern void SKCGContextSetDefaultRGBColorSpace(CGContextRef context);
 @end
 
 @interface SKPDFAnnotationLine : PDFAnnotationLine
-- (BOOL)pointNearLine:(NSPoint)point;
 @end
 
 @interface SKPDFAnnotationTemporary : PDFAnnotationCircle
