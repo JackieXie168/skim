@@ -73,6 +73,8 @@ extern void SKCGContextSetDefaultRGBColorSpace(CGContextRef context);
 - (id)richText;
 - (void)setBoundsAsQDRect:(NSData *)inQDBoundsAsData;
 - (NSData *)boundsAsQDRect;
+- (NSData *)startPointAsQDPoint;
+- (NSData *)endPointAsQDPoint;
 - (id)handleGoToScriptCommand:(NSScriptCommand *)command;
 
 @end
@@ -109,6 +111,10 @@ extern void SKCGContextSetDefaultRGBColorSpace(CGContextRef context);
 @end
 
 @interface SKPDFAnnotationLine : PDFAnnotationLine
+
+- (void)setStartPointAsQDPoint:(NSData *)inQDPointAsData;
+- (void)setEndPointAsQDPoint:(NSData *)inQDPointAsData;
+
 @end
 
 @interface SKPDFAnnotationTemporary : PDFAnnotationCircle
@@ -156,4 +162,21 @@ NSRect NSRectFromRect(Rect qdRect) {
     rect.size.width = (float)(qdRect.right - qdRect.left);
     rect.size.height = (float)(qdRect.top - qdRect.bottom);
     return rect;
+}
+
+
+static inline
+Point PointFromNSPoint(NSPoint point) {
+    Point qdPoint;
+    qdPoint.h = round(point.x);
+    qdPoint.v = round(point.y);
+    return qdPoint;
+}
+
+static inline
+NSPoint NSPointFromPoint(Point qdPoint) {
+    NSPoint point;
+    point.x = (float)qdPoint.h;
+    point.y = (float)qdPoint.v;
+    return point;
 }
