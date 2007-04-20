@@ -756,8 +756,10 @@ static inline NSRect rectWithCorners(NSPoint p1, NSPoint p2)
     if (page) 
         annotation = [page annotationAtPoint:[self convertPoint:p toPage:page]];  
     
-    if ([[activeAnnotation type] isEqualToString:@"Link"])
+    if ([[activeAnnotation type] isEqualToString:@"Link"]) {
+        [[SKPDFHoverWindow sharedHoverWindow] hide];
         [self setActiveAnnotation:nil];
+    }
     
     // in presentation mode only show the navigation window only by moving the mouse to the bottom edge
     BOOL shouldShowNavWindow = hasNavigation && (autohidesCursor == NO || [theEvent locationInWindow].y < 5.0);
