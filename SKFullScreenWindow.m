@@ -38,6 +38,7 @@
 
 #import "SKFullScreenWindow.h"
 #import "SKMainWindowController.h"
+#import "SKPDFHoverWindow.h"
 
 
 @implementation SKFullScreenWindow
@@ -84,6 +85,22 @@
 - (void)setMainView:(NSView *)view {
     [view setFrame:[[self contentView] bounds]];
     [[self contentView] addSubview:view];
+}
+
+- (void)sendEvent:(NSEvent *)theEvent {
+    if ([theEvent type] == NSLeftMouseDown || [theEvent type] == NSRightMouseDown)
+        [[SKPDFHoverWindow sharedHoverWindow] orderOut:nil];
+    [super sendEvent:theEvent];
+}
+
+- (void)resignMainWindow {
+    [[SKPDFHoverWindow sharedHoverWindow] orderOut:nil];
+    [super resignMainWindow];
+}
+
+- (void)resignKeyWindow {
+    [[SKPDFHoverWindow sharedHoverWindow] orderOut:nil];
+    [super resignKeyWindow];
 }
 
 @end

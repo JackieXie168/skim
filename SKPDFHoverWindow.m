@@ -79,6 +79,11 @@
         labelFont = [[NSFont boldSystemFontOfSize:11.0] retain];
         labelColor = [[NSColor colorWithCalibratedWhite:0.5 alpha:0.8] retain];
         
+        annotation = nil;
+        point = NSZeroPoint;
+        animation = nil;
+        timer = nil;
+        
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleApplicationWillResignActiveNotification:) 
                                                      name:NSApplicationWillResignActiveNotification object:NSApp];
     }
@@ -164,6 +169,7 @@
     [self setAlphaValue:ALPHA_VALUE];
     [annotation release];
     annotation = nil;
+    point = NSZeroPoint;
     [super orderOut:sender];
 }
 
@@ -182,46 +188,16 @@
     return [self frameRectForContentRect:rect];
 }
 
-- (void)fadeIn:(NSTimer *)aTimer {
-    [self stopTimer];
-    
-    NSDictionary *fadeInDict = [[NSDictionary alloc] initWithObjectsAndKeys:self, NSViewAnimationTargetKey, NSViewAnimationFadeInEffect, NSViewAnimationEffectKey, nil];
-    
-    animation = [[NSViewAnimation alloc] initWithViewAnimations:[NSArray arrayWithObjects:fadeInDict, nil]];
-    [fadeInDict release];
-    
-    [self setAlphaValue:0.0];
-    [super orderFront:self];
-    
-    [animation setAnimationBlockingMode:NSAnimationNonblocking];
-    [animation setDuration:0.3];
-    [animation setDelegate:self];
-    [animation startAnimation];
-}
-
-- (void)showForAnnotation:(PDFAnnotation *)note atPoint:(NSPoint)point {
-    if ([note isEqual:annotation]) {
-        if (timer) {
-            NSRect contentRect = [self contentRectForFrameRect:[self frame]];
-            contentRect.origin.x = point.x;
-            contentRect.origin.y = point.y - NSHeight(contentRect) - WINDOW_OFFSET;
-            [self setFrame:[self hoverWindowRectFittingScreenFromRect:contentRect] display:NO];
-            // Should we reset the timer?
-        }
-        return;
-    }
-    
-    [self stopTimer];
-    
-    [annotation release];
-    annotation = [note retain];
-    
+- (void)timerFired:(NSTimer *)aTimer {
+    NSPoint thePoint = NSEqualPoints(point, NSZeroPoint) ? [NSEvent mouseLocation] : point;
     NSRect rect = NSZeroRect;
-    NSRect contentRect = NSMakeRect(point.x, point.y - WINDOW_OFFSET, WINDOW_WIDTH, WINDOW_HEIGHT);
+    NSRect contentRect = NSMakeRect(thePoint.x, thePoint.y - WINDOW_OFFSET, WINDOW_WIDTH, WINDOW_HEIGHT);
     NSImage *image = nil;
     NSAttributedString *text = nil;
     NSString *string = nil;
     NSColor *color = nil;
+    
+    [self stopTimer];
     
     if ([[annotation type] isEqualToString:@"Link"]) {
         
@@ -334,23 +310,45 @@
         
         [[imageView enclosingScrollView] setBackgroundColor:color];
         
-        if (animation) {
-            [animation stopAnimation];
-            if ([self alphaValue] > 0.9)
-                [self orderFront:self];
-            else
-                [self fadeIn:nil];
-        } else if ([self isVisible] == NO) {
-            [super orderOut:self];
-            timer = [[NSTimer scheduledTimerWithTimeInterval:1.5 target:self selector:@selector(fadeIn:) userInfo:NULL repeats:NO] retain];
-        } else {
+        [animation stopAnimation];
+        if ([self isVisible] && [self alphaValue] > 0.9) {
             [self orderFront:self];
+        } else {
+            NSDictionary *fadeInDict = [[NSDictionary alloc] initWithObjectsAndKeys:self, NSViewAnimationTargetKey, NSViewAnimationFadeInEffect, NSViewAnimationEffectKey, nil];
+            
+            animation = [[NSViewAnimation alloc] initWithViewAnimations:[NSArray arrayWithObjects:fadeInDict, nil]];
+            [fadeInDict release];
+            
+            [self setAlphaValue:0.0];
+            [super orderFront:self];
+            
+            [animation setAnimationBlockingMode:NSAnimationNonblocking];
+            [animation setDuration:0.3];
+            [animation setDelegate:self];
+            [animation startAnimation];
         }
-        
     } else {
         
         [self hide];
         
+    }
+}
+
+- (void)showForAnnotation:(PDFAnnotation *)note atPoint:(NSPoint)aPoint {
+    point = aPoint;
+    
+    if ([note isEqual:annotation] == NO) {
+        [self stopTimer];
+        
+        if ([self isVisible] && [self alphaValue] > 0.9)
+            [animation stopAnimation];
+        
+        [annotation release];
+        annotation = [note retain];
+        
+        NSDate *date = [NSDate dateWithTimeIntervalSinceNow:[self isVisible] ? 0.1 : 1.5];
+        timer = [[NSTimer alloc] initWithFireDate:date interval:0 target:self selector:@selector(timerFired:) userInfo:NULL repeats:NO];
+        [[NSRunLoop currentRunLoop] addTimer:timer forMode:NSDefaultRunLoopMode];
     }
 }
 
@@ -363,6 +361,7 @@
     
     [annotation release];
     annotation = nil;
+    point = NSZeroPoint;
     
     NSDictionary *fadeOutDict = [[NSDictionary alloc] initWithObjectsAndKeys:self, NSViewAnimationTargetKey, NSViewAnimationFadeOutEffect, NSViewAnimationEffectKey, nil];
     
