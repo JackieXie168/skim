@@ -203,12 +203,8 @@ void SKCGContextSetDefaultRGBColorSpace(CGContextRef context) {
                 annotation = [[SKPDFAnnotationCircle alloc] initWithBounds:NSMakeRect(100.0, 100.0, 64.0, 64.0)];
             else if (type == SKASSquareNote)
                 annotation = [[SKPDFAnnotationSquare alloc] initWithBounds:NSMakeRect(100.0, 100.0, 64.0, 64.0)];
-            else if (type == SKASHighlightNote)
-                annotation = [[SKPDFAnnotationMarkup alloc] initWithBounds:NSMakeRect(100.0, 100.0, 64.0, 64.0) markupType:kPDFMarkupTypeHighlight quadrilateralPointsAsStrings:nil];
-            else if (type == SKASStrikeOutNote)
-                annotation = [[SKPDFAnnotationMarkup alloc] initWithBounds:NSMakeRect(100.0, 100.0, 64.0, 64.0) markupType:kPDFMarkupTypeStrikeOut quadrilateralPointsAsStrings:nil];
-             else if (type == SKASUnderlineNote)
-                annotation = [[SKPDFAnnotationMarkup alloc] initWithBounds:NSMakeRect(100.0, 100.0, 64.0, 64.0) markupType:kPDFMarkupTypeUnderline quadrilateralPointsAsStrings:nil];
+            else if (type == SKASArrowNote)
+                annotation = [[SKPDFAnnotationLine alloc] initWithBounds:NSMakeRect(100.0, 100.0, 16.0, 16.0)];
            
             self = annotation;
         }
@@ -239,9 +235,9 @@ void SKCGContextSetDefaultRGBColorSpace(CGContextRef context) {
         return SKASHighlightNote;
     else if ([[self type] isEqualToString:@"Underline"])
         return SKASUnderlineNote;
-    else if ([[self type] isEqualToString:@"Line"])
-        return SKASStrikeOutNote;
     else if ([[self type] isEqualToString:@"StrikeOut"])
+        return SKASStrikeOutNote;
+    else if ([[self type] isEqualToString:@"Line"])
         return SKASArrowNote;
     return 0;
 }
@@ -281,6 +277,14 @@ void SKCGContextSetDefaultRGBColorSpace(CGContextRef context) {
 - (NSData *)boundsAsQDRect {
     Rect qdBounds = RectFromNSRect([self bounds]);
     return [NSData dataWithBytes:&qdBounds length:sizeof(Rect)];
+}
+
+- (NSData *)startPointAsQDPoint {
+    return (id)[NSNull null];
+}
+
+- (NSData *)endPointAsQDPoint {
+    return (id)[NSNull null];
 }
 
 - (id)handleGoToScriptCommand:(NSScriptCommand *)command {
@@ -916,6 +920,42 @@ static BOOL lineRectTrimmingWhitespaceForPage(NSRect *lineRect, PDFPage *page)
         return (fabs(point.x - startPoint.x) < 4.0 && fabs(point.y - startPoint.y) < 4.0) ||
                (fabs(point.x - endPoint.x) < 4.0 && fabs(point.y - endPoint.y) < 4.0);
     }
+}
+
+#pragma mark Scripting support
+
+- (void)setStartPointAsQDPoint:(NSData *)inQDPointAsData {
+    if ([inQDPointAsData length] == sizeof(Rect)) {
+        const Point *qdPoint = (const Point *)[inQDPointAsData bytes];
+        SKPDFView *pdfView = [[[self page] containingDocument] pdfView];
+        NSPoint newPoint = NSPointFromPoint(*qdPoint);
+        [pdfView setNeedsDisplayForAnnotation:self];
+        [self setStartPoint:newPoint];
+        [pdfView setNeedsDisplayForAnnotation:self];
+    }
+
+}
+
+- (NSData *)startPointAsQDPoint {
+    Point qdPoint = PointFromNSPoint([self startPoint]);
+    return [NSData dataWithBytes:&qdPoint length:sizeof(Point)];
+}
+
+- (void)setEndPointAsQDPoint:(NSData *)inQDPointAsData {
+    if ([inQDPointAsData length] == sizeof(Rect)) {
+        const Point *qdPoint = (const Point *)[inQDPointAsData bytes];
+        SKPDFView *pdfView = [[[self page] containingDocument] pdfView];
+        NSPoint newPoint = NSPointFromPoint(*qdPoint);
+        [pdfView setNeedsDisplayForAnnotation:self];
+        [self setEndPoint:newPoint];
+        [pdfView setNeedsDisplayForAnnotation:self];
+    }
+
+}
+
+- (NSData *)endPointAsQDPoint {
+    Point qdPoint = PointFromNSPoint([self endPoint]);
+    return [NSData dataWithBytes:&qdPoint length:sizeof(Point)];
 }
 
 @end

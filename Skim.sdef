@@ -546,8 +546,16 @@
                 <cocoa key="boundsAsQDRect"/>
             </property>
             <property name="extended text" code="XTxt" type="rich text"
-                description="The rich extended text of the note. Only for anchored notes.">
+                description="The rich extended text of an anchored note.">
                 <cocoa key="richText"/>
+            </property>
+            <property name="start point" code="SPnt" type="point"
+                description="The start point of an arrow. Relative to its bounding rectangle.">
+                <cocoa key="startPointAsQDPoint"/>
+            </property>
+            <property name="end point" code="EPnt" type="point"
+                description="The end point of an arrow. Relative to its bounding rectangle.">
+                <cocoa key="endPointAsQDPoint"/>
             </property>
             <responds-to name="go to">
                 <cocoa method="handleGoToScriptCommand:"/>
@@ -569,6 +577,8 @@
                 description="Strike out highlight."/>
             <enumerator name="underline note" code="NUnd"
                 description="Underline highlight."/>
+            <enumerator name="arrow note" code="NArr"
+                description="Arrow."/>
         </enumeration>
 
         <command name="go to" code="SKIMGoTo"
