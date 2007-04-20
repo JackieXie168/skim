@@ -66,6 +66,7 @@
 #import "SKThumbnailTableView.h"
 #import "BDSKImagePopUpButton.h"
 #import "NSWindowController_SKExtensions.h"
+#import "SKPDFHoverWindow.h"
 
 #define SEGMENTED_CONTROL_HEIGHT    25.0
 #define WINDOW_X_DELTA              0.0
@@ -3286,6 +3287,30 @@ static NSArray *prioritySortedThumbnails(NSArray *dirtyNails, int currentPageInd
     } else {
         [super validate];
     }
+}
+
+@end
+
+
+@interface SKMainWindow : NSWindow
+@end
+
+@implementation SKMainWindow
+
+- (void)sendEvent:(NSEvent *)theEvent {
+    if ([theEvent type] == NSLeftMouseDown || [theEvent type] == NSRightMouseDown)
+        [[SKPDFHoverWindow sharedHoverWindow] orderOut:nil];
+    [super sendEvent:theEvent];
+}
+
+- (void)resignMainWindow {
+    [[SKPDFHoverWindow sharedHoverWindow] orderOut:nil];
+    [super resignMainWindow];
+}
+
+- (void)resignKeyWindow {
+    [[SKPDFHoverWindow sharedHoverWindow] orderOut:nil];
+    [super resignKeyWindow];
 }
 
 @end

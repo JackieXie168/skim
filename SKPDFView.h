@@ -90,6 +90,8 @@ typedef enum _SKNoteType {
     BOOL mouseDownInAnnotation;
     
     int trackingRect;
+    NSMutableArray *hoverRects;
+    int hoverRect;
 }
 
 - (SKToolMode)toolMode;

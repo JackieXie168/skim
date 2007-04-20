@@ -47,13 +47,14 @@
     NSFont *labelFont;
     NSColor *labelColor;
     PDFAnnotation *annotation;
+    NSPoint point;
     NSViewAnimation *animation;
     NSTimer *timer;
 }
 
 + (id)sharedHoverWindow;
 
-- (void)showForAnnotation:(PDFAnnotation *)annotation atPoint:(NSPoint)point;
+- (void)showForAnnotation:(PDFAnnotation *)annotation atPoint:(NSPoint)aPoint;
 - (void)hide;
 
 - (void)handleApplicationWillResignActiveNotification:(NSNotification *)notification;

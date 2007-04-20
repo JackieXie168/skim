@@ -69,6 +69,11 @@ CGMutablePathRef CGCreatePathWithRoundRectInRect(CGRect rect, float radius);
 
 @interface SKPDFView (Private)
 
+- (NSRange)visiblePageIndexRange;
+
+- (void)resetHoverRects;
+- (void)removeHoverRects;
+
 - (NSRect)resizeThumbForRect:(NSRect) rect rotation:(int)rotation;
 - (NSRect)resizeThumbForRect:(NSRect) rect point:(NSPoint)point;
 - (void)transformCGContext:(CGContextRef)context forPage:(PDFPage *)page;
@@ -173,14 +178,18 @@ CGMutablePathRef CGCreatePathWithRoundRectInRect(CGRect rect, float radius);
     [[NSNotificationCenter defaultCenter] removeObserver:self];
     [self doAutohide:NO]; // invalidates and releases the timer
     [[SKPDFHoverWindow sharedHoverWindow] orderOut:self];
+    [self removeHoverRects];
+    [hoverRects release];
     [navWindow release];
     [readingBar release];
     [super dealloc];
 }
 
-// Fix a bug in Tiger's PDFKit, tooltips lead to a crash when you reload a PDFDocument in a PDFView
-// see http://www.cocoabuilder.com/archive/message/cocoa/2007/3/12/180190
-- (void)scheduleAddingToolips {}
+
+- (void)resetCursorRects {
+	[super resetCursorRects];
+    [self resetHoverRects];
+}
 
 #pragma mark Drawing
 
@@ -314,7 +323,9 @@ CGMutablePathRef CGCreatePathWithRoundRectInRect(CGRect rect, float radius);
 - (void)setDocument:(PDFDocument *)document {
     [readingBar release];
     readingBar = nil;
+    [self removeHoverRects];
     [super setDocument:document];
+    [self resetHoverRects];
 }
 
 - (SKToolMode)toolMode {
@@ -421,15 +432,27 @@ CGMutablePathRef CGCreatePathWithRoundRectInRect(CGRect rect, float radius);
 }
 
 - (void)mouseEntered:(NSEvent *)theEvent {
+    NSTrackingRectTag trackingNumber = [theEvent trackingNumber];
     [super mouseEntered:theEvent];
-    if ([theEvent trackingNumber] == trackingRect)
+    if (trackingNumber == trackingRect) {
         [[self window] setAcceptsMouseMovedEvents:YES];
+    } else if (NSNotFound != [hoverRects indexOfObject:(id)trackingNumber]) {
+        [[SKPDFHoverWindow sharedHoverWindow] showForAnnotation:(id)[theEvent userData] atPoint:NSZeroPoint];
+        hoverRect = trackingNumber;
+    }
 }
  
 - (void)mouseExited:(NSEvent *)theEvent {
+    NSTrackingRectTag trackingNumber = [theEvent trackingNumber];
     [super mouseExited:theEvent];
-    if ([theEvent trackingNumber] == trackingRect)
+    if (trackingNumber == trackingRect) {
         [[self window] setAcceptsMouseMovedEvents:NO];
+    } else if (NSNotFound != [hoverRects indexOfObject:(id)trackingNumber]) {
+        if (hoverRect == trackingNumber) {
+            [[SKPDFHoverWindow sharedHoverWindow] hide];
+            hoverRect = 0;
+        }
+    }
 }
 
 #pragma mark Actions
@@ -571,7 +594,6 @@ CGMutablePathRef CGCreatePathWithRoundRectInRect(CGRect rect, float radius);
 }
 
 - (void)mouseDown:(NSEvent *)theEvent{
-    [[SKPDFHoverWindow sharedHoverWindow] orderOut:self];
     if ([[activeAnnotation type] isEqualToString:@"Link"])
         [self setActiveAnnotation:nil];
     
@@ -733,11 +755,6 @@ static inline NSRect rectWithCorners(NSPoint p1, NSPoint p2)
     
     if (page) 
         annotation = [page annotationAtPoint:[self convertPoint:p toPage:page]];  
-    
-    if ([[annotation type] isEqualToString:@"Link"] || [annotation text])
-        [[SKPDFHoverWindow sharedHoverWindow] showForAnnotation:annotation atPoint:[[self window] convertBaseToScreen:[theEvent locationInWindow]]];
-    else
-        [[SKPDFHoverWindow sharedHoverWindow] hide];
     
     if ([[activeAnnotation type] isEqualToString:@"Link"])
         [self setActiveAnnotation:nil];
@@ -1400,6 +1417,67 @@ static inline NSRect rectWithCorners(NSPoint p1, NSPoint p2)
     }
 }
 
+- (void)doAutohide:(BOOL)flag {
+    if (autohideTimer) {
+        [autohideTimer invalidate];
+        [autohideTimer release];
+        autohideTimer = nil;
+    }
+    if (flag)
+        autohideTimer  = [[NSTimer scheduledTimerWithTimeInterval:3.0 target:self selector:@selector(autohideTimerFired:) userInfo:nil repeats:NO] retain];
+}
+
+- (NSRange)visiblePageIndexRange {
+    NSRect visibleRect = [[[self documentView] superview] convertRect:[[[self documentView] superview] visibleRect] toView:self];
+    PDFPage *page;
+    unsigned first, last;
+    
+    page = [self pageForPoint:NSMakePoint(NSMinX(visibleRect), NSMaxY(visibleRect)) nearest:YES];
+    first = [[self document] indexForPage:page];
+    page = [self pageForPoint:NSMakePoint(NSMaxX(visibleRect), NSMinY(visibleRect)) nearest:YES];
+    last = [[self document] indexForPage:page];
+    
+    return NSMakeRange(first, last - first + 1);
+}
+
+#pragma mark Hover-rects
+
+// Fix a bug in Tiger's PDFKit, tooltips lead to a crash when you reload a PDFDocument in a PDFView
+// see http://www.cocoabuilder.com/archive/message/cocoa/2007/3/12/180190
+- (void)scheduleAddingToolips {}
+
+- (void)removeHoverRects {
+    CFIndex idx = [hoverRects count];
+    while (idx--) {
+        [self removeTrackingRect:(NSTrackingRectTag)[hoverRects objectAtIndex:idx]];
+        [hoverRects removeObjectAtIndex:idx];
+    }
+}
+
+- (void)resetHoverRects {
+    if (hoverRects == nil)
+        hoverRects = (NSMutableArray *)CFArrayCreateMutable(NULL, 0, NULL);
+    else
+        [self removeHoverRects];
+    
+    NSRange range = [self visiblePageIndexRange];
+    int i, iMax = NSMaxRange(range);
+    NSRect visibleRect = [[[self documentView] superview] convertRect:[[[self documentView] superview] visibleRect] toView:self];
+    
+    for (i = 0; i < iMax; i++) {
+        PDFPage *page = [[self document] pageAtIndex:i];
+        NSArray *annotations = [page annotations];
+        unsigned j, jMax = [annotations count];
+        for (j = 0; j < jMax; j++) {
+            PDFAnnotation *annotation = [annotations objectAtIndex:j];
+            NSRect rect = NSIntersectionRect([self convertRect:[annotation bounds] fromPage:page], visibleRect);
+            if (NSIsEmptyRect(rect)) continue;
+            NSTrackingRectTag tag = [self addTrackingRect:rect owner:self userData:annotation assumeInside:NO];
+            [hoverRects addObject:(id)tag];
+        }
+    }
+}
+
 #pragma mark Autohide timer
 
 - (void)autohideTimerFired:(NSTimer *)aTimer {
@@ -1409,16 +1487,6 @@ static inline NSRect rectWithCorners(NSPoint p1, NSPoint p2)
         [NSCursor setHiddenUntilMouseMoves:YES];
     if (hasNavigation)
         [navWindow hide];
-}
-
-- (void)doAutohide:(BOOL)flag {
-    if (autohideTimer) {
-        [autohideTimer invalidate];
-        [autohideTimer release];
-        autohideTimer = nil;
-    }
-    if (flag)
-        autohideTimer  = [[NSTimer scheduledTimerWithTimeInterval:3.0 target:self selector:@selector(autohideTimerFired:) userInfo:nil repeats:NO] retain];
 }
 
 #pragma mark Event handling
