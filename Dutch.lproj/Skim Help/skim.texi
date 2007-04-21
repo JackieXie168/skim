@@ -1001,7 +1001,7 @@ U kunt ook op elk moment zelf checken of er een nieuwe Skim versie beschikbaar i
 
 @topic Als ik een PDF-bestand email verlies ik de notities en markeringen
 
-Notities en markeringen die aan een PDF-bestabd zijn toegevoegd worden niet bewaard in de PDF-data, maar worden toegevoegd als 'uitgebreide attributen' (extended attributes). Deze gaan meestal verloren als het bestand via email word verstuurd.
+Notities en markeringen die aan een PDF-bestand zijn toegevoegd worden niet bewaard in de PDF-data, maar worden toegevoegd als 'uitgebreide attributen' (extended attributes). Deze gaan meestal verloren als het bestand via email word verstuurd.
 
 Er zijn een aantal manieren om notities te behouden. Sommige compressie-methoden behouden uitgebreide attributen. Apple's 'Maak archief aan' commando behoudt ze helaas niet. U kunt zelf een bestand met notities comprimeren en uitpakken om uit te testen of ze worden behouden. U kunt ook een schijfkopie aanmaken om het PDF-bestand in te pakken. Comprimeren met tar en gzip behoudt de notities ook.
 
@@ -1037,9 +1037,9 @@ Het is belangrijk dat het notitie-bestand geassocieerd is met het PDF-bestand. D
 
 @topic Notities en markeringen in een apart bestand bewaren
 
-Notities en markeringen die aan een PDF-bestabd zijn toegevoegd worden niet bewaard in de PDF-data, maar worden toegevoegd als 'uitgebreide attributen' (extended attributes). Deze kunnen soms verloren gaan als het bestand gecomprimeerd wordt of via email word verstuurd.
+Notities en markeringen die aan een PDF-bestand zijn toegevoegd worden niet bewaard in de PDF-data, maar worden toegevoegd als 'uitgebreide attributen' (extended attributes). Deze kunnen soms verloren gaan als het bestand gecomprimeerd wordt of via email word verstuurd.
 
-U kunt de notities en markeringen in een apart .sim-bestand bewaren, voor backup of om met een email mee te sturen.
+U kunt de notities en markeringen in een apart .skim-bestand bewaren, voor backup of om met een email mee te sturen.
 
 @box{taskbox}
 @heading Om de notities in een apart bestand te bewaren:
@@ -1055,6 +1055,7 @@ Het is belangrijk dat het notitie-bestand geassocieerd is met het PDF-bestand. D
 @menu
 * Notities en markeringen uit een apart Skim notities-bestand toevoegen::
 * Als ik een PDF-bestand email verlies ik de notities en markeringen::
+* Notities en markeringen als tekst bewaren::
 * Notities aan een PDF-document toevoegen::
 * Gedeelten van een PDF-document markeren::
 @end menu
@@ -1089,7 +1090,7 @@ Het is belangrijk dat het notitie-bestand geassocieerd is met het PDF-bestand. D
 
 @topic PDF-bestanden met de notities en markeringen inbegrepen bewaren
 
-Normaal worden notities en markeringen die aan een PDF-bestabd zijn toegevoegd worden niet bewaard in de PDF-data, maar worden toegevoegd als 'uitgebreide attributen' (extended attributes). U kunt in Skim ook een kopie van het PDF-bestand bewaren dat de notities in de PDF-data insluit. Daarmee kunt u de notities ook in andere PDF-vertoningsprogrammas bekijken.
+Normaal worden notities en markeringen die aan een PDF-bestand zijn toegevoegd worden niet bewaard in de PDF-data, maar worden toegevoegd als 'uitgebreide attributen' (extended attributes). U kunt in Skim ook een kopie van het PDF-bestand bewaren dat de notities in de PDF-data insluit. Daarmee kunt u de notities ook in andere PDF-vertoningsprogrammas bekijken.
 
 @box{taskbox}
 @heading Om een kopie van een PDF-document met de notities inbegrepen te bewaren:
@@ -1121,6 +1122,27 @@ U kunt in Skim een kopie van een PDF-bestand zonder de notities en markeringen b
 @heading Zie ook
 @menu
 * PDF-bestanden met de notities en markeringen inbegrepen bewaren::
+@end menu
+
+@c ======================================================================================
+
+@topic Notities en markeringen als tekst bewaren
+
+U kunt de notities en markeringen apart in een door mensen leesbare vorm in een 'Rich Text Format' (RTF) bestand bewaren.
+
+@box{taskbox}
+@heading Om de notities in een RTF-bestand te bewaren:
+@enumerate
+@item Kies File > Exporteer@dots{}. 
+@item Selecteer "Notities als RTF" van de Structuur popup, kies een locatie om de notities te bewaren, en druk op de OK-knop.
+@end enumerate
+@endbox
+
+@heading Zie ook
+@menu
+* Notities en markeringen in een apart bestand bewaren::
+* Notities aan een PDF-document toevoegen::
+* Gedeelten van een PDF-document markeren::
 @end menu
 
 @c ======================================================================================
