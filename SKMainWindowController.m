@@ -498,25 +498,15 @@ static NSString *SKDocumentToolbarNotesPaneItemIdentifier = @"SKDocumentToolbarN
         }
     }
 }
-
-- (void)setAnnotationsFromDictionaries:(NSArray *)noteDicts{
-    NSEnumerator *e = [notes objectEnumerator];
+    
+- (void)addAnnotationsFromDictionaries:(NSArray *)noteDicts{
+    NSEnumerator *e = [noteDicts objectEnumerator];
     PDFAnnotation *annotation;
     NSDictionary *dict;
     PDFDocument *pdfDoc = [pdfView document];
-    
-    // remove the current anotations
-    [pdfView endAnnotationEdit:self];
-    while (annotation = [e nextObject]) {
-        [pdfView setNeedsDisplayForAnnotation:annotation];
-        [[annotation page] removeAnnotation:annotation];
-    }
-    
     NSMutableArray *observedNotes = [self mutableArrayValueForKey:@"notes"];
-    [observedNotes removeAllObjects];
     
     // create new annotations from the dictionary and add them to their page and to the document
-    e = [noteDicts objectEnumerator];
     while (dict = [e nextObject]) {
         unsigned pageIndex = [[dict objectForKey:@"pageIndex"] unsignedIntValue];
         if (annotation = [[PDFAnnotation alloc] initWithDictionary:dict]) {
@@ -533,6 +523,23 @@ static NSString *SKDocumentToolbarNotesPaneItemIdentifier = @"SKDocumentToolbarN
     }
     [noteOutlineView reloadData];
     [self allThumbnailsNeedUpdate];
+}
+
+- (void)setAnnotationsFromDictionaries:(NSArray *)noteDicts{
+    NSEnumerator *e = [notes objectEnumerator];
+    PDFAnnotation *annotation;
+    
+    // remove the current anotations
+    [pdfView endAnnotationEdit:self];
+    [pdfView setActiveAnnotation:nil];
+    while (annotation = [e nextObject]) {
+        [pdfView setNeedsDisplayForAnnotation:annotation];
+        [[annotation page] removeAnnotation:annotation];
+    }
+    
+    [[self mutableArrayValueForKey:@"notes"] removeAllObjects];
+    
+    [self addAnnotationsFromDictionaries:noteDicts];
 }
 
 - (SKPDFView *)pdfView {

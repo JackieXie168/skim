@@ -63,6 +63,7 @@
 		CE15832D0BA0740000D5B03F /* ToolbarStrikeOutNote.tiff in Resources */ = {isa = PBXBuildFile; fileRef = CE1583290BA073FF00D5B03F /* ToolbarStrikeOutNote.tiff */; };
 		CE15832E0BA0740000D5B03F /* ToolbarUnderlineNote.tiff in Resources */ = {isa = PBXBuildFile; fileRef = CE15832A0BA073FF00D5B03F /* ToolbarUnderlineNote.tiff */; };
 		CE15832F0BA0740000D5B03F /* UnderlineNoteAdorn.tiff in Resources */ = {isa = PBXBuildFile; fileRef = CE15832B0BA073FF00D5B03F /* UnderlineNoteAdorn.tiff */; };
+		CE1E25680BDA61E80011D9DD /* ReadNotesAccessoryView.nib in Resources */ = {isa = PBXBuildFile; fileRef = CE1E25660BDA61E80011D9DD /* ReadNotesAccessoryView.nib */; };
 		CE2BD83E0BD4132B00A5F4DB /* Sparkle.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CE2BD82A0BD4132B00A5F4DB /* Sparkle.framework */; };
 		CE2BD8450BD4135600A5F4DB /* Sparkle.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = CE2BD82A0BD4132B00A5F4DB /* Sparkle.framework */; };
 		CE2DE4920B85D48F00D0DA12 /* SKThumbnail.m in Sources */ = {isa = PBXBuildFile; fileRef = CE2DE4910B85D48F00D0DA12 /* SKThumbnail.m */; };
@@ -280,6 +281,9 @@
 		CE1583290BA073FF00D5B03F /* ToolbarStrikeOutNote.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; name = ToolbarStrikeOutNote.tiff; path = Images/ToolbarStrikeOutNote.tiff; sourceTree = "<group>"; };
 		CE15832A0BA073FF00D5B03F /* ToolbarUnderlineNote.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; name = ToolbarUnderlineNote.tiff; path = Images/ToolbarUnderlineNote.tiff; sourceTree = "<group>"; };
 		CE15832B0BA073FF00D5B03F /* UnderlineNoteAdorn.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; name = UnderlineNoteAdorn.tiff; path = Images/UnderlineNoteAdorn.tiff; sourceTree = "<group>"; };
+		CE1E25670BDA61E80011D9DD /* English */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = English; path = English.lproj/ReadNotesAccessoryView.nib; sourceTree = "<group>"; };
+		CE1E259E0BDA6E4D0011D9DD /* Dutch */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = Dutch; path = Dutch.lproj/ReadNotesAccessoryView.nib; sourceTree = "<group>"; };
+		CE1E259F0BDA6E570011D9DD /* Italian */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = Italian; path = Italian.lproj/ReadNotesAccessoryView.nib; sourceTree = "<group>"; };
 		CE2BD8170BD4127A00A5F4DB /* Sparkle.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = Sparkle.xcodeproj; path = vendorsrc/andymatuschak/Sparkle/Sparkle.xcodeproj; sourceTree = "<group>"; };
 		CE2BD82A0BD4132B00A5F4DB /* Sparkle.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = Sparkle.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		CE2DE4900B85D48F00D0DA12 /* SKThumbnail.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SKThumbnail.h; sourceTree = "<group>"; };
@@ -546,6 +550,7 @@
 				CEF7071D0B8F8EFC003A2771 /* SnapshotWindow.nib */,
 				CE9C42360B8B5633004AD8CF /* PreferenceWindow.nib */,
 				CE2DEB900B86206400D0DA12 /* FindPanel.nib */,
+				CE1E25660BDA61E80011D9DD /* ReadNotesAccessoryView.nib */,
 				CEF717560B90DEEF003A2771 /* ReleaseNotes.nib */,
 				F977515E0B37460100DF673B /* ConversionProgressWindow.nib */,
 				CE2DEA9D0B860A7000D0DA12 /* SaveProgressSheet.nib */,
@@ -974,6 +979,7 @@
 				CEE1065E0BCBBE1300BF2D3E /* NotesDocument.nib in Resources */,
 				CE7C5D050BD8062C0011315D /* ArrowNoteAdorn.tiff in Resources */,
 				CE7C5D190BD8086C0011315D /* ToolbarArrowNote.tiff in Resources */,
+				CE1E25680BDA61E80011D9DD /* ReadNotesAccessoryView.nib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1170,6 +1176,16 @@
 				A489FDC00BC8E8DF00BA14DD /* Italian */,
 			);
 			name = MainWindow.nib;
+			sourceTree = "<group>";
+		};
+		CE1E25660BDA61E80011D9DD /* ReadNotesAccessoryView.nib */ = {
+			isa = PBXVariantGroup;
+			children = (
+				CE1E25670BDA61E80011D9DD /* English */,
+				CE1E259E0BDA6E4D0011D9DD /* Dutch */,
+				CE1E259F0BDA6E570011D9DD /* Italian */,
+			);
+			name = ReadNotesAccessoryView.nib;
 			sourceTree = "<group>";
 		};
 		CE2DEA9D0B860A7000D0DA12 /* SaveProgressSheet.nib */ = {
