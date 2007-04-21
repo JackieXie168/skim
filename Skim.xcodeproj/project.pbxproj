@@ -1013,7 +1013,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "if [ ${BUILD_STYLE} = \"Debug\" ]; then\nexit 0\nfi\nif [ -d /Developer/Applications/Utilities/Help\\ Indexer.app/ ]; then\necho \"*** Indexing Tiger Help ***\"\nfor LOC_DIR in ${BUILT_PRODUCTS_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/*.lproj; do \\\n/Developer/Applications/Utilities/Help\\ Indexer.app/Contents/MacOS/Help\\ Indexer \\\n${LOC_DIR}/Skim\\ Help \\\n-Tokenizer 1 \\\n-ShowProgress NO \\\n-LogStyle 2 \\\n-IndexAnchors YES \\\n-TigerIndexing YES \\\n-GenerateSummaries YES \\\n-Stopwords en \\\n-MinTermLength 3;\\\ndone\nfi\nexit 0";
+			shellScript = "if [ ${BUILD_STYLE} = \"Debug\" ]; then\nexit 0\nfi\nif [ -d /Developer/Applications/Utilities/Help\\ Indexer.app/ ]; then\necho \"*** Indexing Tiger Help ***\"\ncd ${BUILT_PRODUCTS_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}\nfor LOC_DIR in *.lproj; do \\\nif [ \"${LOC_DIR}\" = \"French.lproj\" ]; then LANG=\"fr\"; \\\nelif [ \"${LOC_DIR}\" = \"German.lproj\" ]; then LANG=\"de\"; \\\nelif [ \"${LOC_DIR}\" = \"Hungarian.lproj\" ]; then LANG=\"hu\"; \\\nelif [ \"${LOC_DIR}\" = \"Italian.lproj\" ]; then LANG=\"it\"; \\\nelif [ \"${LOC_DIR}\" = \"Spanish.lproj\" ]; then LANG=\"es\"; \\\nelif [ \"${LOC_DIR}\" = \"Swedish.lproj\" ]; then LANG=\"sv\"; \\\nelse LANG=\"en\"; \\\nfi; \\\n/Developer/Applications/Utilities/Help\\ Indexer.app/Contents/MacOS/Help\\ Indexer \\\n${LOC_DIR}/Skim\\ Help \\\n-Tokenizer 1 \\\n-ShowProgress NO \\\n-LogStyle 2 \\\n-IndexAnchors YES \\\n-TigerIndexing YES \\\n-GenerateSummaries YES \\\n-Stopwords \"${LANG}\" \\\n-MinTermLength 3;\\\ndone\nfi\nexit 0";
 		};
 		CE592C630B9239E300C113DF /* ShellScript */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -1039,7 +1039,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "#\n# Run the genstrings build phase\n# This takes a while to generate, so it's not worth\n# the wait for development builds.\n#\nif [ ${BUILD_STYLE} = \"Debug\" ]; then\nexit 0\nfi\ncd ${SOURCE_ROOT}\n/usr/bin/genstrings -o ${SOURCE_ROOT}/English.lproj `/usr/bin/find . -type file -name \"*.[mh]\"`";
+			shellScript = "#\n# Run the genstrings build phase\n# This takes a while to generate, so it's not worth\n# the wait for development builds.\n#\nif [ ${BUILD_STYLE} = \"Debug\" ]; then\nexit 0\nfi\ncd ${SOURCE_ROOT}\n/usr/bin/genstrings -o ${SOURCE_ROOT}/English.lproj -skipTable Sparkle `/usr/bin/find . -type file -name \"*.[mh]\"`";
 		};
 /* End PBXShellScriptBuildPhase section */
 
