@@ -42,3 +42,8 @@ extern NSString *SKApplicationWillTerminateNotification;
 
 @interface SKApplication : NSApplication
 @end
+
+
+@interface NSResponder (SKMagnifyWheel)
+- (void)magnifyWheel:(NSEvent *)theEvent;
+@end
