@@ -323,6 +323,7 @@ typedef struct _SKPDFViewState {
 - (void)handleDocumentEndWrite:(NSNotification *)notification;
 - (void)handleDocumentEndPageWrite:(NSNotification *)notification;
 
+- (void)addAnnotationsFromDictionaries:(NSArray *)noteDicts;
 - (void)setAnnotationsFromDictionaries:(NSArray *)noteDicts;
 
 - (void)setupWindow:(NSDictionary *)setup;

@@ -54,6 +54,9 @@ extern NSString *SKPostScriptDocumentType;
 
 @interface SKDocument : NSDocument
 {
+    IBOutlet NSView *readNotesAccessoryView;
+    IBOutlet NSButton *replaceNotesCheckButton;
+    
     // variables to be saved:
     NSData *pdfData;
     

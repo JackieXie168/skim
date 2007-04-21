@@ -80,6 +80,7 @@ NSString *SKDocumentWillSaveNotification = @"SKDocumentWillSaveNotification";
     [previousCheckedDate release];
     [pdfData release];
     [noteDicts release];
+    [readNotesAccessoryView release];
     [super dealloc];
 }
 
@@ -400,7 +401,10 @@ NSString *SKDocumentWillSaveNotification = @"SKDocumentWillSaveNotification";
         NSArray *array = [NSKeyedUnarchiver unarchiveObjectWithFile:[notesURL path]];
         
         if (array) {
-            [[self mainWindowController] setAnnotationsFromDictionaries:array];
+            if ([[oPanel accessoryView] isEqual:readNotesAccessoryView] && [replaceNotesCheckButton state] == NSOnState)
+                [[self mainWindowController] setAnnotationsFromDictionaries:array];
+            else
+                [[self mainWindowController] addAnnotationsFromDictionaries:array];
             [self updateChangeCount:NSChangeDone];
         }
         
@@ -410,6 +414,17 @@ NSString *SKDocumentWillSaveNotification = @"SKDocumentWillSaveNotification";
 - (IBAction)readNotes:(id)sender{
     NSOpenPanel *oPanel = [NSOpenPanel openPanel];
     NSString *path = [[self fileURL] path];
+    
+    if ([[[self mainWindowController] notes] count]) {
+        if (readNotesAccessoryView == nil) {
+            if (NO == [NSBundle loadNibNamed:@"ReadNotesAccessoryView" owner:self])
+                NSLog(@"Failed to load ReadNotesAccessoryView.nib");
+            [readNotesAccessoryView retain];
+        }
+        [oPanel setAccessoryView:readNotesAccessoryView];
+        [replaceNotesCheckButton setState:NSOnState];
+    }
+    
     [oPanel beginSheetForDirectory:[path stringByDeletingLastPathComponent]
                               file:[[[path lastPathComponent] stringByDeletingPathExtension] stringByAppendingPathExtension:@"skim"]
                              types:[NSArray arrayWithObject:@"skim"]
