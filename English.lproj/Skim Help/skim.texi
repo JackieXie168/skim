@@ -528,6 +528,7 @@ You can edit or delete the notes. To move or resize the note, choose Tools > Tex
 @heading See also
 @menu
 * Highlighting sections of a PDF document::
+* Adding arrows to a PDF document::
 * Changing the color for notes and highlights::
 * Changing the font of text notes::
 @end menu
@@ -559,6 +560,35 @@ Circle and box highlights can also be moved and resized. To move or resize the h
 @heading See also
 @menu
 * Adding notes to a PDF document::
+* Adding arrows to a PDF document::
+* Changing the color for notes and highlights::
+@end menu
+
+@c ======================================================================================
+
+@topic Adding arrows to a PDF document
+
+You can add arrows to a PDF document, to highlight relations between sections. 
+
+The arrows are saved with the document, so also other Skim users can see them. The arrows are not saved in the PDF data itself, therefore other PDF viewers will probably not be able to show the arrows. 
+
+@box{taskbox}
+@heading To add an arrow:
+@enumerate
+@item Choose Tools > Text Tool. 
+@item Choose Notes > Arrow. 
+@item Drag in the document until the arrow, and drag the end points until it points where you want.
+@end enumerate
+@endbox
+
+You can also use toolbar buttons to add arrows. To add an arrow button to the toolbar, choose View > Customize Toolbar and drag the button to the toolbar.
+
+You can edit or delete the arrow. To move the arrow or its end points, choose Tools > Text Tool, and use the mouse. Drag a black box to move an end point. To change the color used for the arrow, choose Tools > Show Colors. To delete the arrow, choose Tools > Text Tool, select the arrow, and press Delete.
+
+@heading See also
+@menu
+* Adding notes to a PDF document::
+* Highlighting sections of a PDF document::
 * Changing the color for notes and highlights::
 @end menu
 
@@ -566,16 +596,16 @@ Circle and box highlights can also be moved and resized. To move or resize the h
 
 @topic Changing the color for notes and highlights
 
-Skim allows you can change the color of a note or highlight you have added using Skim. You can also change the default colors that are used for new notes and highlights.
+Skim allows you can change the color of a note, highlight or arrow you have added using Skim. You can also change the default colors that are used for new notes, highlights and arrows.
 
 @box{taskbox}
-@heading To change the default color for notes or highlights:
+@heading To change the default color for notes, highlights and arrows:
 @itemize
-@item Choose Skim > Preferences, select Notes, and click a color for the type of note or highlight you want to change.
+@item Choose Skim > Preferences, select Notes, and click a color for the type of note, highlight or arrow you want to change.
 @end itemize
-@heading To change the color of a single note or highlight:
+@heading To change the color of a single note, highlight or arrow:
 @itemize
-@item Select the note or highlight in the PDF and choose Tools > Show Colors.
+@item Select the note, highlight or arrow in the PDF and choose Tools > Show Colors.
 @end itemize
 @endbox
 
@@ -583,6 +613,7 @@ Skim allows you can change the color of a note or highlight you have added using
 @menu
 * Adding notes to a PDF document::
 * Highlighting sections of a PDF document::
+* Adding arrows to a PDF document::
 * Changing the font of text notes::
 @end menu
 
@@ -605,6 +636,7 @@ Skim allows you can change the font of a text note you have added using Skim. Yo
 @menu
 * Adding notes to a PDF document::
 * Highlighting sections of a PDF document::
+* Adding arrows to a PDF document::
 * Changing the color for notes and highlights::
 @end menu
 

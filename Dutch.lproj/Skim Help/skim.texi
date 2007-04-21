@@ -530,6 +530,7 @@ U kunt notities wijzigen en verwijderen. Om een notitie te verplaatsen of te ver
 @heading Zie ook
 @menu
 * Gedeelten van een PDF-document markeren::
+* Pijlen aan een PDF-document toevoegen::
 * De kleur van notities en markeringen wijzigen::
 * Het lettertype en de lettergrootte van textnotities wijzigen::
 @end menu
@@ -561,23 +562,53 @@ Circel- en box-markeringen kunnen ook verplaatst en vergroot of verkleind worden
 @heading Zie ook
 @menu
 * Notities aan een PDF-document toevoegen::
+* Pijlen aan een PDF-document toevoegen::
 * De kleur van notities en markeringen wijzigen::
+@end menu
+
+@c ======================================================================================
+
+@topic Pijlen aan een PDF-document toevoegen
+
+U kunt uw pijlen toevoegen aan een PDF-document om relaties tussen secties aan te geven.
+
+De pijlen worden bewaard bij het document en zijn zichtbaar voor andere gebruikers van Skim. De pijlen worden niet bewaard in de PDF-data zelf, zodat u de pijlen niet kunt zien in de meeste andere PDF vertoningsprogrammas.
+
+@box{taskbox}
+@heading Om een pijl toe te voegen:
+@enumerate
+@item Kies Extra's > Tekstfunctie. 
+@item Kies Notities > Pijl. 
+@item Sleep de pijl of ŽŽn van zijn eindpunten in het document tot deze op de gewenste plaats is en naar de juiste postie wijst.
+@end enumerate
+@endbox
+
+U kunt pijlen ook toevoegen met behulp van een knop op de knoppenbalk. Om de knop aan de knoppenbalk toe te voegen, kiest u Weergave > 'Pas knoppenbalk aan' en sleept u de knop naar de knoppenbalk.
+
+U kunt pijlen wijzigen en verwijderen. Om een pijl of ŽŽn van zijn eindpunten te verplaatsen, kies Extra's > Tekstfunctie, en gebruik de muis om te selecteren en te slepen. Sleep een zwarte vierkantje om een eindpunt te verplaatsen. Om de kleur van de pijl te wijzigen, kies Extra's > 'Toon kleuren'. Om een pijl te verwijderen, kies Extra's > Textfunctie, selecteer de pijl, en druk op de Delete-toets.
+
+@heading Zie ook
+@menu
+* Notities aan een PDF-document toevoegen::
+* Gedeelten van een PDF-document markeren::
+* De kleur van notities en markeringen wijzigen::
+* Het lettertype en de lettergrootte van textnotities wijzigen::
 @end menu
 
 @c ======================================================================================
 
 @topic De kleur van notities en markeringen wijzigen
 
-In Skim kunt u de kleur van een notitie of markering die u met Skim heeft aangebracht wijzigen. U kunt ook de standaardkleuren die gebruikt worden voor nieuwe notities en markeringen instellen.
+In Skim kunt u de kleur van een notitie, markering of pijl die u met Skim heeft aangebracht wijzigen. U kunt ook de standaardkleuren die gebruikt worden voor nieuwe notities, markeringen en pijlen instellen.
 
 @box{taskbox}
-@heading Om de standaardkleuren voor notities of markeringen te wijzigen:
+@heading Om de standaardkleuren voor notities, markeringenen pijlen te wijzigen:
 @itemize
-@item Kies Skim > Voorkeuren, selecteer Notities, en klik op een kleur behorende bij de type notitie of markering die u wilt veranderen.
+@item Kies Skim > Voorkeuren, selecteer Notities, en klik op een kleur behorende bij de type notitie, markering orfpijl die u wilt veranderen.
 @end itemize
-@heading Om de kleur van een enkele notitie of markering te wijzigen:
+@heading Om de kleur van een enkele notitie, markering of pijl te wijzigen:
 @itemize
-@item Selecteer de notitie of markering in de PDF en kies Extra's > Toon kleuren.
+@item Selecteer de notitie, markering of pijl in de PDF en kies Extra's > Toon kleuren.
 @end itemize
 @endbox
 
@@ -585,6 +616,7 @@ In Skim kunt u de kleur van een notitie of markering die u met Skim heeft aangeb
 @menu
 * Notities aan een PDF-document toevoegen::
 * Gedeelten van een PDF-document markeren::
+* Pijlen aan een PDF-document toevoegen::
 * Het lettertype en de lettergrootte van textnotities wijzigen::
 @end menu
 
@@ -607,6 +639,7 @@ In Skim kunt u het lettertype en de lettergrootte van een tekstnotitie dat u met
 @menu
 * Notities aan een PDF-document toevoegen::
 * Gedeelten van een PDF-document markeren::
+* Pijlen aan een PDF-document toevoegen::
 * De kleur van notities en markeringen wijzigen::
 @end menu
 
