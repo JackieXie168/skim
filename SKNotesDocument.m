@@ -144,18 +144,23 @@
             tmpString = NSLocalizedString(@"Underline", @"Description for export");
         else if ([type isEqualToString:@"StrikeOut"]) 
             tmpString = NSLocalizedString(@"Strike Out", @"Description for export");
+        else if ([type isEqualToString:@"Arrow"]) 
+            tmpString = NSLocalizedString(@"Arrow", @"Description for export");
         tmpString = [NSString stringWithFormat:NSLocalizedString(@"%C %@, page %i", @"Description for export"), 0x2022, tmpString, [[note valueForKey:@"pageIndex"] unsignedIntValue] + 1]; 
         tmpAttrString = [[NSAttributedString alloc] initWithString:tmpString attributes:[NSDictionary dictionaryWithObjectsAndKeys:standardFont, NSFontAttributeName, nil]];
         [attrString appendAttributedString:tmpAttrString];
         [tmpAttrString release];
         [attrString appendAttributedString:newlinesAttrString];
         
-        tmpAttrString = [[NSAttributedString alloc] initWithString:contents ? contents : @"" attributes:[NSDictionary dictionaryWithObjectsAndKeys:font ? font : standardFont, NSFontAttributeName, nil]];
-        [attrString appendAttributedString:tmpAttrString];
-        [tmpAttrString release];
-        [attrString appendAttributedString:newlinesAttrString];
+        if ([contents length]) {
+            tmpAttrString = [[NSAttributedString alloc] initWithString:contents ? contents : @"" attributes:[NSDictionary dictionaryWithObjectsAndKeys:font ? font : standardFont, NSFontAttributeName, nil]];
+            [attrString appendAttributedString:tmpAttrString];
+            [tmpAttrString release];
+            [attrString appendAttributedString:newlinesAttrString];
+        }
         
-        if (tmpAttrString = [note valueForKey:@"text"]) {
+        tmpAttrString = [note valueForKey:@"text"];
+        if ([tmpAttrString length]) {
             [attrString appendAttributedString:tmpAttrString];
             [attrString appendAttributedString:newlinesAttrString];
         }
