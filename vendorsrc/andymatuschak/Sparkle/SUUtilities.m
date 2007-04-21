@@ -39,8 +39,8 @@ NSString *SUHostAppVersionString()
 	NSString *shortVersionString = SUInfoValueForKey(@"CFBundleShortVersionString");
 	if (shortVersionString)
 	{
-		if (![shortVersionString isEqualToString:SUHostAppVersion()])
-			shortVersionString = [shortVersionString stringByAppendingFormat:@"/%@", SUHostAppVersion()];
+		//if (![shortVersionString isEqualToString:SUHostAppVersion()])
+		//	shortVersionString = [shortVersionString stringByAppendingFormat:@"/%@", SUHostAppVersion()];
 		return shortVersionString;
 	}
 	else
