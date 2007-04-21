@@ -2003,6 +2003,7 @@ static inline NSRect rectWithCorners(NSPoint p1, NSPoint p2)
     PDFPage *activePage = [activeAnnotation page];
     NSRect newBounds;
     NSRect currentBounds = [activeAnnotation bounds];
+    NSRect pageBounds = [activePage  boundsForBox:[self displayBox]];
     
     if (resizingAnnotation) {
         NSPoint mouseLoc = [self convertPoint:[theEvent locationInWindow] fromView:nil];
@@ -2062,9 +2063,25 @@ static inline NSRect rectWithCorners(NSPoint p1, NSPoint p2)
             }
             
             if (draggingStartPoint) {
+                if (startPoint.x > NSMaxX(pageBounds))
+                    startPoint.x = NSMaxX(pageBounds);
+                else if (startPoint.x < NSMinX(pageBounds))
+                    startPoint.x = NSMinX(pageBounds);
+                if (startPoint.y > NSMaxY(pageBounds))
+                    startPoint.y = NSMaxY(pageBounds);
+                else if (startPoint.y < NSMinY(pageBounds))
+                    startPoint.y = NSMinY(pageBounds);
                 startPoint.x = roundf(startPoint.x);
                 startPoint.y = roundf(startPoint.y);
             } else {
+                if (endPoint.x > NSMaxX(pageBounds))
+                    endPoint.x = NSMaxX(pageBounds);
+                else if (endPoint.x < NSMinX(pageBounds))
+                    endPoint.x = NSMinX(pageBounds);
+                if (endPoint.y > NSMaxY(pageBounds))
+                    endPoint.y = NSMaxY(pageBounds);
+                else if (endPoint.y < NSMinY(pageBounds))
+                    endPoint.y = NSMinY(pageBounds);
                 endPoint.x = roundf(endPoint.x);
                 endPoint.y = roundf(endPoint.y);
             }
@@ -2098,6 +2115,13 @@ static inline NSRect rectWithCorners(NSPoint p1, NSPoint p2)
                     newBounds.origin.y += relPoint.y;
                     newBounds.size.width += relPoint.x;
                     newBounds.size.height -= relPoint.y;
+                    if (NSMaxX(newBounds) > NSMaxX(pageBounds)) {
+                        newBounds.size.width = NSMaxX(pageBounds) - NSMinX(newBounds);
+                    }
+                    if (NSMinY(newBounds) < NSMinY(pageBounds)) {
+                        newBounds.size.height = NSMaxY(newBounds) - NSMinY(pageBounds);
+                        newBounds.origin.y = NSMinY(pageBounds);
+                    }
                     if (NSWidth(newBounds) < 8.0) {
                         newBounds.size.width = 8.0;
                     }
@@ -2109,6 +2133,12 @@ static inline NSRect rectWithCorners(NSPoint p1, NSPoint p2)
                 case 90:
                     newBounds.size.width += relPoint.x;
                     newBounds.size.height += relPoint.y;
+                    if (NSMaxX(newBounds) > NSMaxX(pageBounds)) {
+                        newBounds.size.width = NSMaxX(pageBounds) - NSMinX(newBounds);
+                    }
+                    if (NSMaxY(newBounds) > NSMaxY(pageBounds)) {
+                        newBounds.size.height = NSMaxY(pageBounds) - NSMinY(newBounds);
+                    }
                     if (NSWidth(newBounds) < 8.0) {
                         newBounds.size.width = 8.0;
                     }
@@ -2120,6 +2150,13 @@ static inline NSRect rectWithCorners(NSPoint p1, NSPoint p2)
                     newBounds.origin.x += relPoint.x;
                     newBounds.size.width -= relPoint.x;
                     newBounds.size.height += relPoint.y;
+                    if (NSMinX(newBounds) < NSMinX(pageBounds)) {
+                        newBounds.size.width = NSMaxX(newBounds) - NSMinX(pageBounds);
+                        newBounds.origin.x = NSMinX(pageBounds);
+                    }
+                    if (NSMaxY(newBounds) > NSMaxY(pageBounds)) {
+                        newBounds.size.height = NSMaxY(pageBounds) - NSMinY(newBounds);
+                    }
                     if (NSWidth(newBounds) < 8.0) {
                         newBounds.origin.x += NSWidth(newBounds) - 8.0;
                         newBounds.size.width = 8.0;
@@ -2133,6 +2170,14 @@ static inline NSRect rectWithCorners(NSPoint p1, NSPoint p2)
                     newBounds.origin.y += relPoint.y;
                     newBounds.size.width -= relPoint.x;
                     newBounds.size.height -= relPoint.y;
+                    if (NSMinX(newBounds) < NSMinX(pageBounds)) {
+                        newBounds.size.width = NSMaxX(newBounds) - NSMinX(pageBounds);
+                        newBounds.origin.x = NSMinX(pageBounds);
+                    }
+                    if (NSMinY(newBounds) < NSMinY(pageBounds)) {
+                        newBounds.size.height = NSMaxY(newBounds) - NSMinY(pageBounds);
+                        newBounds.origin.y = NSMinY(pageBounds);
+                    }
                     if (NSWidth(newBounds) < 8.0) {
                         newBounds.origin.x += NSWidth(newBounds) - 8.0;
                         newBounds.size.width = 8.0;
@@ -2154,7 +2199,8 @@ static inline NSRect rectWithCorners(NSPoint p1, NSPoint p2)
         
         NSPoint mouseLoc = [self convertPoint:[theEvent locationInWindow] fromView:nil];
         PDFPage *newActivePage = [self pageForPoint:mouseLoc nearest:YES];
-        NSRect pageBounds = [newActivePage  boundsForBox:[self displayBox]];
+        
+        pageBounds = [newActivePage  boundsForBox:[self displayBox]];
         
         if (newActivePage == nil) {
             // this should never happen, but just to be sure
