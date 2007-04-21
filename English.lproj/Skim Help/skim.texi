@@ -1049,6 +1049,7 @@ It is important that the notes file is associated to the PDF file. Therefore it 
 @menu
 * Adding notes and highlights from a separate Skim notes file::
 * Emailing a PDF file loses notes or highlights::
+* Saving notes and highlights as text::
 * Adding notes to a PDF document::
 * Highlighting sections of a PDF document::
 @end menu
@@ -1115,6 +1116,27 @@ Skim allows you to save a copy of your PDF file without the notes and highlights
 @heading See also
 @menu
 * Saving PDF files with the notes and highlights included::
+@end menu
+
+@c ======================================================================================
+
+@topic Saving notes and highlights as text
+
+You can save notes added in Skim to a separately in human readable form to a Rich Text Format (RTF) file. 
+
+@box{taskbox}
+@heading To save the notes as RTF:
+@enumerate
+@item Choose File > Export@dots{}. 
+@item Select "Notes as RTF" from the File Format popup, choose a location to save the notes to, and press OK. 
+@end enumerate
+@endbox
+
+@heading See also
+@menu
+* Saving notes and highlights to a separate file::
+* Adding notes to a PDF document::
+* Highlighting sections of a PDF document::
 @end menu
 
 @c ======================================================================================
