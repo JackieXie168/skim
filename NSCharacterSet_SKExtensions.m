@@ -1,8 +1,8 @@
 //
-//  SKPreferenceController.h
+//  NSCharacterSet_SKExtensions.m
 //  Skim
 //
-//  Created by Christiaan Hofman on 2/10/07.
+//  Created by Christiaan Hofman on 4/22/07.
 /*
  This software is Copyright (c) 2007
  Christiaan Hofman. All rights reserved.
@@ -36,34 +36,21 @@
  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-#import <Cocoa/Cocoa.h>
+#import "NSCharacterSet_SKExtensions.h"
 
 
-@interface SKPreferenceController : NSWindowController {
-    IBOutlet NSTabView *tabView;
-    IBOutlet NSSlider *thumbnailSizeSlider;
-    IBOutlet NSSlider *snapshotSizeSlider;
-    IBOutlet NSPopUpButton *texEditorPopUpButton;
-    NSMutableArray *fonts;
-    NSMutableArray *sizes;
-    NSMutableArray *texEditorCommands;
-    NSMutableArray *texEditorArguments;
-    NSDictionary *resettableKeys;
-    BOOL isCustomTeXEditor;
+@implementation NSCharacterSet (SKExtensions)
+
++ (NSCharacterSet *)newlineCharacterSet {
+    static NSCharacterSet *newlineCharacterSet = nil;
+    if (newlineCharacterSet == nil) {
+        NSMutableCharacterSet *tmpSet = [[NSCharacterSet whitespaceCharacterSet] mutableCopy];
+        [tmpSet invert];
+        [tmpSet formIntersectionWithCharacterSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
+        newlineCharacterSet = [tmpSet copy];
+        [tmpSet release];
+    }
+    return newlineCharacterSet;
 }
-
-+ (id)sharedPrefenceController;
-
-- (NSArray *)fonts;
-- (NSArray *)sizes;
-- (BOOL)isCustomTeXEditor;
-- (void)setCustomTeXEditor:(BOOL)flag;
-
-- (IBAction)changeDiscreteThumbnailSizes:(id)sender;
-- (IBAction)changeUpdateInterval:(id)sender;
-- (IBAction)changeTeXEditorPreset:(id)sender;
-
-- (IBAction)resetAll:(id)sender;
-- (IBAction)resetCurrent:(id)sender;
 
 @end

@@ -1,8 +1,8 @@
 //
-//  SKPreferenceController.h
+//  SKDisplayLineCommand.m
 //  Skim
 //
-//  Created by Christiaan Hofman on 2/10/07.
+//  Created by Christiaan Hofman on 4/22/07.
 /*
  This software is Copyright (c) 2007
  Christiaan Hofman. All rights reserved.
@@ -36,34 +36,48 @@
  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-#import <Cocoa/Cocoa.h>
+#import "SKDisplayTeXLineCommand.h"
+#import "SKDocument.h"
 
 
-@interface SKPreferenceController : NSWindowController {
-    IBOutlet NSTabView *tabView;
-    IBOutlet NSSlider *thumbnailSizeSlider;
-    IBOutlet NSSlider *snapshotSizeSlider;
-    IBOutlet NSPopUpButton *texEditorPopUpButton;
-    NSMutableArray *fonts;
-    NSMutableArray *sizes;
-    NSMutableArray *texEditorCommands;
-    NSMutableArray *texEditorArguments;
-    NSDictionary *resettableKeys;
-    BOOL isCustomTeXEditor;
+@implementation SKDisplayTeXLineCommand
+
+- (id)performDefaultImplementation {
+	id lineNumber = [self directParameter];
+	NSDictionary *args = [self evaluatedArguments];
+	id file = [args objectForKey:@"file"];
+	id project = [args objectForKey:@"project"];
+    NSURL *projectURL = nil;
+    
+    if (project == nil)
+        project = file;
+    
+    if ([project isKindOfClass:[NSURL class]]) {
+        projectURL = project;
+    } else if ([project isKindOfClass:[NSString class]]) {
+        if ([project hasPrefix:@"file://"])
+            projectURL = [NSURL URLWithString:project];
+        else
+            projectURL = [NSURL fileURLWithPath:[project stringByStandardizingPath]];
+	}
+    
+    if ([file isKindOfClass:[NSURL class]]) {
+        file = [file path];
+    } else if ([file isKindOfClass:[NSString class]]) {
+        if ([file hasPrefix:@"file://"])
+            file = [[NSURL URLWithString:file] path];
+        else
+            file = [file stringByStandardizingPath];
+	}
+    
+    if (file == nil || projectURL == nil)
+        return nil;
+	
+	SKDocument *document = [[NSDocumentController sharedDocumentController] openDocumentWithContentsOfURL:projectURL display:YES error:NULL];
+	
+    [document displayTeXLine:[lineNumber intValue] fromFile:file];
+    
+	return nil;
 }
-
-+ (id)sharedPrefenceController;
-
-- (NSArray *)fonts;
-- (NSArray *)sizes;
-- (BOOL)isCustomTeXEditor;
-- (void)setCustomTeXEditor:(BOOL)flag;
-
-- (IBAction)changeDiscreteThumbnailSizes:(id)sender;
-- (IBAction)changeUpdateInterval:(id)sender;
-- (IBAction)changeTeXEditorPreset:(id)sender;
-
-- (IBAction)resetAll:(id)sender;
-- (IBAction)resetCurrent:(id)sender;
 
 @end

@@ -43,5 +43,6 @@
 
 - (NSString *)stringByCollapsingWhitespaceAndNewlinesAndRemovingSurroundingWhitespaceAndNewlines;
 - (NSString *)stringByAppendingEllipsis;
+- (NSArray *)shellScriptArgumentsArray;
 
 @end

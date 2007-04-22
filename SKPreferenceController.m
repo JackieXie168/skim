@@ -73,6 +73,11 @@
                                                         [NSNumber numberWithFloat:14.0], [NSNumber numberWithFloat:16.0], [NSNumber numberWithFloat:18.0], 
                                                         [NSNumber numberWithFloat:20.0], [NSNumber numberWithFloat:24.0], [NSNumber numberWithFloat:28.0], 
                                                         [NSNumber numberWithFloat:32.0], [NSNumber numberWithFloat:48.0], [NSNumber numberWithFloat:64.0], nil];
+        texEditorCommands = [[NSMutableArray alloc] initWithObjects:@"/Applications/TextMate.app/Contents/SharedSupport/Support/bin/mate", @"/Applications/BBEdit.app/Contents/Resources/bbedit", @"/Applications/TextWrangler.app/Contents/Resources/edit", @"/Applications/Emacs.app/Contents/MacOS/bin/emacsclient", nil];
+        texEditorArguments = [[NSMutableArray alloc] initWithObjects:@"-l %line \"%file\"", @"+%line \"%file\"", @"+%line \"%file\"", @"--no-wait +%line \"%file\"", nil];
+        
+        isCustomTeXEditor = [texEditorCommands containsObject:[[NSUserDefaults standardUserDefaults] stringForKey:SKTeXEditorCommandKey]] == NO || 
+                            [texEditorArguments containsObject:[[NSUserDefaults standardUserDefaults] stringForKey:SKTeXEditorArgumentsKey]] == NO;
     }
     return self;
 }
@@ -81,11 +86,21 @@
     [resettableKeys release];
     [fonts release];
     [sizes release];
+    [texEditorCommands release];
+    [texEditorArguments release];
     [super dealloc];
 }
 
 - (NSString *)windowNibName {
     return @"PreferenceWindow";
+}
+
+- (void)windowDidLoad {
+    if (isCustomTeXEditor) {
+        [texEditorPopUpButton selectItem:[texEditorPopUpButton lastItem]];
+    } else {
+        [texEditorPopUpButton selectItemAtIndex:[texEditorCommands indexOfObject:[[NSUserDefaults standardUserDefaults] stringForKey:SKTeXEditorCommandKey]]];
+    }
 }
 
 - (NSArray *)fonts {
@@ -94,6 +109,14 @@
 
 - (NSArray *)sizes {
     return sizes;
+}
+
+- (BOOL)isCustomTeXEditor {
+    return isCustomTeXEditor;
+}
+
+- (void)setCustomTeXEditor:(BOOL)flag {
+    isCustomTeXEditor = flag;
 }
 
 - (IBAction)changeDiscreteThumbnailSizes:(id)sender {
@@ -118,6 +141,17 @@
     int checkInterval = [[sender selectedItem] tag];
     if (checkInterval)
        [[[NSApp delegate] updater] scheduleCheckWithInterval:checkInterval];
+}
+
+- (IBAction)changeTeXEditorPreset:(id)sender {
+    unsigned int index = [sender indexOfSelectedItem];
+    if (index < [texEditorCommands count]) {
+        [[NSUserDefaults standardUserDefaults] setObject:[texEditorCommands objectAtIndex:index] forKey:SKTeXEditorCommandKey];
+        [[NSUserDefaults standardUserDefaults] setObject:[texEditorArguments objectAtIndex:index] forKey:SKTeXEditorArgumentsKey];
+        [self setCustomTeXEditor:NO];
+    } else {
+        [self setCustomTeXEditor:YES];
+    }
 }
 
 - (void)resetSheetDidEnd:(NSWindow *)sheet returnCode:(int)returnCode contextInfo:(void *)contextInfo {

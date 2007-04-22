@@ -1,8 +1,8 @@
 //
-//  SKPreferenceController.h
+//  SKDisplayLineCommand.h
 //  Skim
 //
-//  Created by Christiaan Hofman on 2/10/07.
+//  Created by Christiaan Hofman on 4/22/07.
 /*
  This software is Copyright (c) 2007
  Christiaan Hofman. All rights reserved.
@@ -39,31 +39,5 @@
 #import <Cocoa/Cocoa.h>
 
 
-@interface SKPreferenceController : NSWindowController {
-    IBOutlet NSTabView *tabView;
-    IBOutlet NSSlider *thumbnailSizeSlider;
-    IBOutlet NSSlider *snapshotSizeSlider;
-    IBOutlet NSPopUpButton *texEditorPopUpButton;
-    NSMutableArray *fonts;
-    NSMutableArray *sizes;
-    NSMutableArray *texEditorCommands;
-    NSMutableArray *texEditorArguments;
-    NSDictionary *resettableKeys;
-    BOOL isCustomTeXEditor;
-}
-
-+ (id)sharedPrefenceController;
-
-- (NSArray *)fonts;
-- (NSArray *)sizes;
-- (BOOL)isCustomTeXEditor;
-- (void)setCustomTeXEditor:(BOOL)flag;
-
-- (IBAction)changeDiscreteThumbnailSizes:(id)sender;
-- (IBAction)changeUpdateInterval:(id)sender;
-- (IBAction)changeTeXEditorPreset:(id)sender;
-
-- (IBAction)resetAll:(id)sender;
-- (IBAction)resetCurrent:(id)sender;
-
+@interface SKDisplayTeXLineCommand : NSScriptCommand
 @end

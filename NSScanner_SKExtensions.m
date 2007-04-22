@@ -1,8 +1,8 @@
 //
-//  SKPreferenceController.h
+//  NSScanner_SKExtensions.m
 //  Skim
 //
-//  Created by Christiaan Hofman on 2/10/07.
+//  Created by Christiaan Hofman on 4/22/07.
 /*
  This software is Copyright (c) 2007
  Christiaan Hofman. All rights reserved.
@@ -36,34 +36,19 @@
  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-#import <Cocoa/Cocoa.h>
+#import "NSScanner_SKExtensions.h"
 
 
-@interface SKPreferenceController : NSWindowController {
-    IBOutlet NSTabView *tabView;
-    IBOutlet NSSlider *thumbnailSizeSlider;
-    IBOutlet NSSlider *snapshotSizeSlider;
-    IBOutlet NSPopUpButton *texEditorPopUpButton;
-    NSMutableArray *fonts;
-    NSMutableArray *sizes;
-    NSMutableArray *texEditorCommands;
-    NSMutableArray *texEditorArguments;
-    NSDictionary *resettableKeys;
-    BOOL isCustomTeXEditor;
+@implementation NSScanner (SKExtensions)
+
+- (BOOL)scanCharacter:(unichar *)ch {
+    if ([self isAtEnd])
+        return NO;
+    int location = [self scanLocation];
+    if (ch != NULL)
+        *ch = [[self string] characterAtIndex:location];
+    [self setScanLocation:location + 1];
+    return YES;
 }
-
-+ (id)sharedPrefenceController;
-
-- (NSArray *)fonts;
-- (NSArray *)sizes;
-- (BOOL)isCustomTeXEditor;
-- (void)setCustomTeXEditor:(BOOL)flag;
-
-- (IBAction)changeDiscreteThumbnailSizes:(id)sender;
-- (IBAction)changeUpdateInterval:(id)sender;
-- (IBAction)changeTeXEditorPreset:(id)sender;
-
-- (IBAction)resetAll:(id)sender;
-- (IBAction)resetCurrent:(id)sender;
 
 @end

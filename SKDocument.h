@@ -50,7 +50,7 @@ extern NSString *SKNotesRTFDocumentType;
 extern NSString *SKPostScriptDocumentType;
 
 
-@class PDFDocument, SKMainWindowController, SKPDFView;
+@class PDFDocument, SKMainWindowController, SKPDFView, SKPDFSynchronizer;
 
 @interface SKDocument : NSDocument
 {
@@ -63,6 +63,8 @@ extern NSString *SKPostScriptDocumentType;
     // temporary variables:
     PDFDocument *pdfDocument;
     NSMutableArray *noteDicts;
+    
+    SKPDFSynchronizer *synchronizer;
     
     NSTimer *fileUpdateTimer;
     NSDate *lastChangedDate;
@@ -87,6 +89,10 @@ extern NSString *SKPostScriptDocumentType;
 
 - (void)checkFileUpdatesIfNeeded;
 - (void)checkFileUpdateStatus:(NSTimer *)timer;
+
+- (SKPDFSynchronizer *)synchronizer;
+- (void)displayTeXLine:(int)line fromFile:(NSString *)file;
+- (void)displayTeXEditorForLocation:(NSPoint)location inRect:(NSRect)rect atPageIndex:(unsigned int)pageIndex;
 
 - (void)handleApplicationWillTerminateNotification:(NSNotification *)notification;
 - (void)handleWindowWillCloseNotification:(NSNotification *)notification;

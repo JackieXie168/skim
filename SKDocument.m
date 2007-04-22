@@ -48,6 +48,8 @@
 #import "SKStringConstants.h"
 #import "SKPDFView.h"
 #import "SKNoteWindowController.h"
+#import "SKPDFSynchronizer.h"
+#import "NSString_SKExtensions.h"
 
 // maximum length of xattr value recommended by Apple
 #define MAX_XATTR_LENGTH 2048
@@ -81,6 +83,7 @@ NSString *SKDocumentWillSaveNotification = @"SKDocumentWillSaveNotification";
     [pdfData release];
     [noteDicts release];
     [readNotesAccessoryView release];
+    [synchronizer release];
     [super dealloc];
 }
 
@@ -581,6 +584,92 @@ NSString *SKDocumentWillSaveNotification = @"SKDocumentWillSaveNotification";
     [fileUpdateTimer invalidate];
     [fileUpdateTimer release];
     fileUpdateTimer = nil;
+}
+
+#pragma mark Pdfsync support
+
+- (SKPDFSynchronizer *)synchronizer {
+    if (synchronizer == nil)
+        synchronizer = [[SKPDFSynchronizer alloc] init];
+    return synchronizer;
+}
+
+- (void)displayTeXLine:(int)line fromFile:(NSString *)file{
+    NSString *fileBase = [[self fileName] stringByDeletingPathExtension];
+    NSString *pdfsyncFile = [fileBase stringByAppendingPathExtension:@"pdfsync"];
+    NSString *texFile = file;
+    NSFileManager *fm = [NSFileManager defaultManager];
+    
+    if ([[file pathExtension] length])
+        texFile = [[file stringByDeletingPathExtension] stringByAppendingPathExtension:@"tex"];
+    
+    if ([fm fileExistsAtPath:pdfsyncFile] == NO || [fm fileExistsAtPath:texFile] == NO) {
+        NSBeep();
+        return;
+    }
+    
+    if ([[self synchronizer] parsePdfsyncFileIfNeeded:pdfsyncFile]) {
+        unsigned int pageIndex;
+        NSPoint point;
+        
+        if ([[self synchronizer] getPageIndex:&pageIndex location:&point forLine:line inFile:texFile]) {
+            PDFPage *page = [[[self pdfView] document] pageAtIndex:pageIndex];
+            PDFDestination *dest = [[PDFDestination alloc] initWithPage:page atPoint:point];
+            
+            [[self pdfView] goToDestination:dest];
+        } else NSBeep();
+    } else NSBeep();
+}
+
+- (void)showEditorForFile:(NSString *)file atLine:(unsigned int)line {
+	NSTask *task = [[[NSTask alloc] init] autorelease];
+	NSString *editorCmd = [[NSUserDefaults standardUserDefaults] objectForKey:SKTeXEditorCommandKey];
+	NSMutableString *argString = [[[NSUserDefaults standardUserDefaults] objectForKey:SKTeXEditorArgumentsKey] mutableCopy];
+    NSArray *arguments;
+    
+    [argString replaceOccurrencesOfString:@"%file" withString:file options:NSLiteralSearch range: NSMakeRange(0, [argString length] )];
+	[argString replaceOccurrencesOfString:@"%line" withString:[NSString stringWithFormat:@"%d", line] options:NSLiteralSearch range:NSMakeRange(0, [argString length])];
+	arguments = [argString shellScriptArgumentsArray];
+    [argString release];
+    
+	[task setCurrentDirectoryPath:[file stringByDeletingLastPathComponent]];
+	[task setLaunchPath:editorCmd];
+	[task setArguments:arguments];
+	[task launch];
+}
+
+- (void)displayTeXEditorForLocation:(NSPoint)location inRect:(NSRect)rect atPageIndex:(unsigned int)pageIndex {
+    NSString *fileBase = [[self fileName] stringByDeletingPathExtension];
+    NSString *pdfsyncFile = [fileBase stringByAppendingPathExtension:@"pdfsync"];
+    NSFileManager *fm = [NSFileManager defaultManager];
+    
+    if ([fm fileExistsAtPath:pdfsyncFile] == NO) {
+        NSLog(@"pdfsync file %@ doesn't exist", pdfsyncFile);
+        NSBeep();
+        return;
+    }
+    
+    if ([[self synchronizer] parsePdfsyncFileIfNeeded:pdfsyncFile]) {
+        NSString *file;
+        int line;
+        
+        if ([[self synchronizer] getLine:&line file:&file forLocation:location inRect:rect atPageIndex:pageIndex]) {
+            if ([fm fileExistsAtPath:file] == NO) {
+                NSLog(@"tex file %@ doesn't exist", file);
+                NSBeep();
+                return;
+            }
+            
+            [self showEditorForFile:file atLine:line];
+            
+        } else {
+            NSLog(@"Couldn't find file and line");
+            NSBeep();
+        }
+    } else {
+        NSLog(@"Parsing pdfsync file %@ failed", pdfsyncFile);
+        NSBeep();
+    }
 }
 
 #pragma mark Accessors

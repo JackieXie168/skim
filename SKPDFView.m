@@ -48,6 +48,8 @@
 #import "SKStringConstants.h"
 #import "NSUserDefaultsController_SKExtensions.h"
 #import "SKReadingBar.h"
+#import "SKDocument.h"
+#import "SKPDFSynchronizer.h"
 
 NSString *SKPDFViewToolModeChangedNotification = @"SKPDFViewToolModeChangedNotification";
 NSString *SKPDFViewAnnotationModeChangedNotification = @"SKPDFViewAnnotationModeChangedNotification";
@@ -93,6 +95,7 @@ CGMutablePathRef CGCreatePathWithRoundRectInRect(CGRect rect, float radius);
 - (void)magnifyWithEvent:(NSEvent *)theEvent;
 - (void)dragWithEvent:(NSEvent *)theEvent;
 - (void)dragReadingBarWithEvent:(NSEvent *)theEvent;
+- (void)pdfsyncWithEvent:(NSEvent *)theEvent;
 
 @end
 
@@ -600,7 +603,10 @@ CGMutablePathRef CGCreatePathWithRoundRectInRect(CGRect rect, float radius);
     mouseDownLoc = [theEvent locationInWindow];
 
     if ([theEvent modifierFlags] & NSCommandKeyMask) {
-        [self selectSnapshotWithEvent:theEvent];
+        if ([theEvent modifierFlags] & NSShiftKeyMask)
+            [self pdfsyncWithEvent:theEvent];
+        else
+            [self selectSnapshotWithEvent:theEvent];
     } else {
         switch (toolMode) {
             case SKTextToolMode:
@@ -2561,6 +2567,17 @@ static inline NSRect rectWithCorners(NSPoint p1, NSPoint p2)
 	[NSCursor unhide];
 	[documentView setPostsBoundsChangedNotifications:postNotification];
 	[self flagsChanged:theEvent]; // update cursor
+}
+
+- (void)pdfsyncWithEvent:(NSEvent *)theEvent {
+    NSPoint mouseLoc = [self convertPoint:[theEvent locationInWindow] fromView:nil];
+    PDFPage *page = [self pageForPoint:mouseLoc nearest:YES];
+    NSPoint location = [self convertPoint:mouseLoc toPage:page];
+    unsigned int pageIndex = [[self document] indexForPage:page];
+    PDFSelection *sel = [page selectionForLineAtPoint:location];
+    NSRect rect = [sel string] ? [sel boundsForPage:page] : NSMakeRect(location.x - 20.0, location.y - 5.0, 40.0, 10.0);
+    
+    [(SKDocument *)[[[self window] windowController] document] displayTeXEditorForLocation:location inRect:rect atPageIndex:pageIndex];
 }
 
 @end
