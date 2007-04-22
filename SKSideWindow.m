@@ -123,6 +123,7 @@
         [animation setDuration:[self animationResizeTime:endFrame]];
         [animation startAnimation];
         [animation release];
+        [self makeKeyAndOrderFront:nil];
         state = NSDrawerOpenState;
     }
 }
