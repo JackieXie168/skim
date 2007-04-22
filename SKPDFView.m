@@ -726,7 +726,10 @@ static inline NSRect rectWithCorners(NSPoint p1, NSPoint p2)
     if (NSPointInRect(p, [clipView visibleRect]) == NO || ([navWindow isVisible] && NSPointInRect([NSEvent mouseLocation], [navWindow frame]))) {
         cursor = [NSCursor arrowCursor];
     } else if ([theEvent modifierFlags] & NSCommandKeyMask) {
-        cursor = [NSCursor cameraCursor];
+        if ([theEvent modifierFlags] & NSShiftKeyMask)
+            cursor = [NSCursor arrowCursor];
+        else
+            cursor = [NSCursor cameraCursor];
     } else {
         switch (toolMode) {
             case SKTextToolMode:
