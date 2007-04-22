@@ -2581,7 +2581,7 @@ static inline NSRect rectWithCorners(NSPoint p1, NSPoint p2)
     NSPoint location = [self convertPoint:mouseLoc toPage:page];
     unsigned int pageIndex = [[self document] indexForPage:page];
     PDFSelection *sel = [page selectionForLineAtPoint:location];
-    NSRect rect = [sel string] ? [sel boundsForPage:page] : NSMakeRect(location.x - 20.0, location.y - 5.0, 40.0, 10.0);
+    NSRect rect = sel ? [sel boundsForPage:page] : NSMakeRect(location.x - 20.0, location.y - 5.0, 40.0, 10.0);
     
     [(SKDocument *)[[[self window] windowController] document] displayTeXEditorForLocation:location inRect:rect atPageIndex:pageIndex];
 }
