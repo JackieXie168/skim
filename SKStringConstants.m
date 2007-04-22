@@ -39,6 +39,8 @@
 #import "SKStringConstants.h"
 
 NSString *SKAutoCheckFileUpdateKey = @"SKAutoCheckFileUpdate";
+NSString *SKTeXEditorArgumentsKey = @"SKTeXEditorArguments";
+NSString *SKTeXEditorCommandKey = @"SKTeXEditorCommand";
 NSString *SKBackgroundColorKey = @"SKBackgroundColor";
 NSString *SKFullScreenBackgroundColorKey = @"SKFullScreenBackgroundColor";
 NSString *SKLastOpenFileNamesKey = @"SKLastOpenFileNames";

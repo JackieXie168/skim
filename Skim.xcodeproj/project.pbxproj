@@ -64,6 +64,16 @@
 		CE15832E0BA0740000D5B03F /* ToolbarUnderlineNote.tiff in Resources */ = {isa = PBXBuildFile; fileRef = CE15832A0BA073FF00D5B03F /* ToolbarUnderlineNote.tiff */; };
 		CE15832F0BA0740000D5B03F /* UnderlineNoteAdorn.tiff in Resources */ = {isa = PBXBuildFile; fileRef = CE15832B0BA073FF00D5B03F /* UnderlineNoteAdorn.tiff */; };
 		CE1E25680BDA61E80011D9DD /* ReadNotesAccessoryView.nib in Resources */ = {isa = PBXBuildFile; fileRef = CE1E25660BDA61E80011D9DD /* ReadNotesAccessoryView.nib */; };
+		CE1E2B280BDAB6180011D9DD /* SKPDFSynchronizer.h in CopyFiles */ = {isa = PBXBuildFile; fileRef = CE1E2B260BDAB6180011D9DD /* SKPDFSynchronizer.h */; };
+		CE1E2B290BDAB6180011D9DD /* SKPDFSynchronizer.m in Sources */ = {isa = PBXBuildFile; fileRef = CE1E2B270BDAB6180011D9DD /* SKPDFSynchronizer.m */; };
+		CE1E2E5F0BDB6C1F0011D9DD /* SKDisplayTeXLineCommand.h in CopyFiles */ = {isa = PBXBuildFile; fileRef = CE1E2E5D0BDB6C1F0011D9DD /* SKDisplayTeXLineCommand.h */; };
+		CE1E2E600BDB6C1F0011D9DD /* SKDisplayTeXLineCommand.m in Sources */ = {isa = PBXBuildFile; fileRef = CE1E2E5E0BDB6C1F0011D9DD /* SKDisplayTeXLineCommand.m */; };
+		CE1E2F130BDB86A20011D9DD /* displayline.sh in Resources */ = {isa = PBXBuildFile; fileRef = CE1E2F120BDB86A10011D9DD /* displayline.sh */; };
+		CE1E301C0BDB9D5C0011D9DD /* NSScanner_SKExtensions.h in CopyFiles */ = {isa = PBXBuildFile; fileRef = CE1E301A0BDB9D5C0011D9DD /* NSScanner_SKExtensions.h */; };
+		CE1E301D0BDB9D5C0011D9DD /* NSScanner_SKExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = CE1E301B0BDB9D5C0011D9DD /* NSScanner_SKExtensions.m */; };
+		CE1E30280BDB9D8E0011D9DD /* NSCharacterSet_SKExtensions.h in CopyFiles */ = {isa = PBXBuildFile; fileRef = CE1E30260BDB9D8E0011D9DD /* NSCharacterSet_SKExtensions.h */; };
+		CE1E30290BDB9D8E0011D9DD /* NSCharacterSet_SKExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = CE1E30270BDB9D8E0011D9DD /* NSCharacterSet_SKExtensions.m */; };
+		CE1E39E10BDBD6AC0011D9DD /* skimnotes in Resources */ = {isa = PBXBuildFile; fileRef = CEF3BF750B99CA2900E12E3D /* skimnotes */; };
 		CE2BD83E0BD4132B00A5F4DB /* Sparkle.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CE2BD82A0BD4132B00A5F4DB /* Sparkle.framework */; };
 		CE2BD8450BD4135600A5F4DB /* Sparkle.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = CE2BD82A0BD4132B00A5F4DB /* Sparkle.framework */; };
 		CE2DE4920B85D48F00D0DA12 /* SKThumbnail.m in Sources */ = {isa = PBXBuildFile; fileRef = CE2DE4910B85D48F00D0DA12 /* SKThumbnail.m */; };
@@ -172,6 +182,13 @@
 			remoteGlobalIDString = CE4DA8D60B9E16100039E89C;
 			remoteInfo = "Skim Help";
 		};
+		CE1E39870BDBCC930011D9DD /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 2A37F4A9FDCFA73011CA2CEA /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = CEF3BF740B99CA2900E12E3D /* skimnotes */;
+			remoteInfo = skimnotes;
+		};
 		CE2BD81F0BD4127A00A5F4DB /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = CE2BD8170BD4127A00A5F4DB /* Sparkle.xcodeproj */;
@@ -210,6 +227,10 @@
 			dstSubfolderSpec = 10;
 			files = (
 				CE2BD8450BD4135600A5F4DB /* Sparkle.framework in CopyFiles */,
+				CE1E2B280BDAB6180011D9DD /* SKPDFSynchronizer.h in CopyFiles */,
+				CE1E2E5F0BDB6C1F0011D9DD /* SKDisplayTeXLineCommand.h in CopyFiles */,
+				CE1E301C0BDB9D5C0011D9DD /* NSScanner_SKExtensions.h in CopyFiles */,
+				CE1E30280BDB9D8E0011D9DD /* NSCharacterSet_SKExtensions.h in CopyFiles */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -284,6 +305,15 @@
 		CE1E25670BDA61E80011D9DD /* English */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = English; path = English.lproj/ReadNotesAccessoryView.nib; sourceTree = "<group>"; };
 		CE1E259E0BDA6E4D0011D9DD /* Dutch */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = Dutch; path = Dutch.lproj/ReadNotesAccessoryView.nib; sourceTree = "<group>"; };
 		CE1E259F0BDA6E570011D9DD /* Italian */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = Italian; path = Italian.lproj/ReadNotesAccessoryView.nib; sourceTree = "<group>"; };
+		CE1E2B260BDAB6180011D9DD /* SKPDFSynchronizer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SKPDFSynchronizer.h; sourceTree = "<group>"; };
+		CE1E2B270BDAB6180011D9DD /* SKPDFSynchronizer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SKPDFSynchronizer.m; sourceTree = "<group>"; };
+		CE1E2E5D0BDB6C1F0011D9DD /* SKDisplayTeXLineCommand.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SKDisplayTeXLineCommand.h; sourceTree = "<group>"; };
+		CE1E2E5E0BDB6C1F0011D9DD /* SKDisplayTeXLineCommand.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SKDisplayTeXLineCommand.m; sourceTree = "<group>"; };
+		CE1E2F120BDB86A10011D9DD /* displayline.sh */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.sh; path = displayline.sh; sourceTree = "<group>"; };
+		CE1E301A0BDB9D5C0011D9DD /* NSScanner_SKExtensions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NSScanner_SKExtensions.h; sourceTree = "<group>"; };
+		CE1E301B0BDB9D5C0011D9DD /* NSScanner_SKExtensions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NSScanner_SKExtensions.m; sourceTree = "<group>"; };
+		CE1E30260BDB9D8E0011D9DD /* NSCharacterSet_SKExtensions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NSCharacterSet_SKExtensions.h; sourceTree = "<group>"; };
+		CE1E30270BDB9D8E0011D9DD /* NSCharacterSet_SKExtensions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NSCharacterSet_SKExtensions.m; sourceTree = "<group>"; };
 		CE2BD8170BD4127A00A5F4DB /* Sparkle.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = Sparkle.xcodeproj; path = vendorsrc/andymatuschak/Sparkle/Sparkle.xcodeproj; sourceTree = "<group>"; };
 		CE2BD82A0BD4132B00A5F4DB /* Sparkle.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = Sparkle.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		CE2DE4900B85D48F00D0DA12 /* SKThumbnail.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SKThumbnail.h; sourceTree = "<group>"; };
@@ -563,6 +593,7 @@
 				CE67BB240BC44AC9007B6929 /* ZoomValues.strings */,
 				45A3BD380B4F097D002B297F /* InitialUserDefaults.plist */,
 				CE41A6CB0B975E5000ECF819 /* Skim.sdef */,
+				CE1E2F120BDB86A10011D9DD /* displayline.sh */,
 			);
 			name = Resources;
 			sourceTree = "<group>";
@@ -594,10 +625,14 @@
 				CE3A45520B7A04A4006B64D3 /* NSBezierPath_BDSKExtensions.m */,
 				CE4EC87D0B7E6E110091F228 /* NSBezierPath_CoreImageExtensions.h */,
 				CE4EC87E0B7E6E110091F228 /* NSBezierPath_CoreImageExtensions.m */,
+				CE1E30260BDB9D8E0011D9DD /* NSCharacterSet_SKExtensions.h */,
+				CE1E30270BDB9D8E0011D9DD /* NSCharacterSet_SKExtensions.m */,
 				CE2DE4EC0B85DB6300D0DA12 /* NSCursor_SKExtensions.h */,
 				CE2DE4ED0B85DB6300D0DA12 /* NSCursor_SKExtensions.m */,
 				CE5487BA0B35A20A00F8AFB6 /* NSFileManager_ExtendedAttributes.h */,
 				CE5487BB0B35A20A00F8AFB6 /* NSFileManager_ExtendedAttributes.m */,
+				CE1E301A0BDB9D5C0011D9DD /* NSScanner_SKExtensions.h */,
+				CE1E301B0BDB9D5C0011D9DD /* NSScanner_SKExtensions.m */,
 				CE070EA00B89039700733CC8 /* NSScrollView_SKExtensions.h */,
 				CE070EA10B89039700733CC8 /* NSScrollView_SKExtensions.m */,
 				CE38ECD10B8093B200A1B779 /* NSString_SKExtensions.h */,
@@ -738,6 +773,10 @@
 				45A3BD070B4F0770002B297F /* SKStringConstants.m */,
 				CE0464A00B84E3E400C11E4A /* OBUtilities.h */,
 				CE0464A10B84E3E400C11E4A /* OBUtilities.m */,
+				CE1E2B260BDAB6180011D9DD /* SKPDFSynchronizer.h */,
+				CE1E2B270BDAB6180011D9DD /* SKPDFSynchronizer.m */,
+				CE1E2E5D0BDB6C1F0011D9DD /* SKDisplayTeXLineCommand.h */,
+				CE1E2E5E0BDB6C1F0011D9DD /* SKDisplayTeXLineCommand.m */,
 			);
 			name = Miscellaneous;
 			sourceTree = "<group>";
@@ -834,6 +873,7 @@
 			dependencies = (
 				CE157D890B9F89CE00D5B03F /* PBXTargetDependency */,
 				CE2BD8610BD4144000A5F4DB /* PBXTargetDependency */,
+				CE1E39880BDBCC930011D9DD /* PBXTargetDependency */,
 			);
 			name = Skim;
 			productInstallPath = "$(HOME)/Applications";
@@ -980,6 +1020,8 @@
 				CE7C5D050BD8062C0011315D /* ArrowNoteAdorn.tiff in Resources */,
 				CE7C5D190BD8086C0011315D /* ToolbarArrowNote.tiff in Resources */,
 				CE1E25680BDA61E80011D9DD /* ReadNotesAccessoryView.nib in Resources */,
+				CE1E2F130BDB86A20011D9DD /* displayline.sh in Resources */,
+				CE1E39E10BDBD6AC0011D9DD /* skimnotes in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1105,6 +1147,10 @@
 				CE4A8BA20BB15980004AD07D /* NSWindowController_SKExtensions.m in Sources */,
 				CE4294A30BBD29120016FDC2 /* SKReadingBar.m in Sources */,
 				CEE106150BCBB72C00BF2D3E /* SKNotesDocument.m in Sources */,
+				CE1E2B290BDAB6180011D9DD /* SKPDFSynchronizer.m in Sources */,
+				CE1E2E600BDB6C1F0011D9DD /* SKDisplayTeXLineCommand.m in Sources */,
+				CE1E301D0BDB9D5C0011D9DD /* NSScanner_SKExtensions.m in Sources */,
+				CE1E30290BDB9D8E0011D9DD /* NSCharacterSet_SKExtensions.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1124,6 +1170,11 @@
 			isa = PBXTargetDependency;
 			target = CE4DA8D60B9E16100039E89C /* Skim Help */;
 			targetProxy = CE157D880B9F89CE00D5B03F /* PBXContainerItemProxy */;
+		};
+		CE1E39880BDBCC930011D9DD /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = CEF3BF740B99CA2900E12E3D /* skimnotes */;
+			targetProxy = CE1E39870BDBCC930011D9DD /* PBXContainerItemProxy */;
 		};
 		CE2BD8610BD4144000A5F4DB /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;

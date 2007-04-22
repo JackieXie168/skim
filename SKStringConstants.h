@@ -38,6 +38,8 @@
 
 
 extern NSString *SKAutoCheckFileUpdateKey;
+extern NSString *SKTeXEditorArgumentsKey;
+extern NSString *SKTeXEditorCommandKey;
 extern NSString *SKBackgroundColorKey;
 extern NSString *SKFullScreenBackgroundColorKey;
 extern NSString *SKLastOpenFileNamesKey;

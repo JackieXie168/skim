@@ -589,6 +589,26 @@
             </direct-parameter>
         </command>
         
+        <command name="display TeX line" code="SKIMDTLn"
+            description="Open the file, and go to a location in the PDF corresponding to the line in a TeX file.">
+			<cocoa class="SKDisplayTeXLineCommand"/>
+            <direct-parameter type="integer"
+                description="The line number in the TeX file.">
+            </direct-parameter>
+			<parameter name="of file" code="File" optional="no" 
+				description="The file name">
+                <type type="text"/>
+                <type type="file"/>
+				<cocoa key="file"/> 
+			</parameter>
+			<parameter name="in project" code="Proj" optional="yes" 
+				description="The base TeX file name, if the file is included."> 
+                <type type="text"/>
+                <type type="file"/>
+				<cocoa key="project"/> 
+			</parameter>
+        </command>
+        
     </suite>
     
 </dictionary>

@@ -4,8 +4,6 @@
 <dict>
     <key>RegisteredDefaults</key>
     <dict>
-        <key>SKAutoCheckFileUpdate</key>
-        <false/>
         <key>SKBackgroundColor</key>
         <data>
 	BAt0eXBlZHN0cmVhbYED6IQBQISEhAdOU0NvbG9yAISECE5TT2JqZWN0AIWEAWMDhAJm
@@ -121,6 +119,12 @@
 	BAt0eXBlZHN0cmVhbYED6IQBQISEhAdOU0NvbG9yAISECE5TT2JqZWN0AIWEAWMBhARm
 	ZmZmAAABAYY=
 	</data>
+        <key>SKAutoCheckFileUpdate</key>
+        <false/>
+        <key>SKTeXEditorCommand</key>
+        <string>/Applications/TextMate.app/Contents/SharedSupport/Support/bin/mate</string>
+        <key>SKTeXEditorArguments</key>
+        <string>-l %line "%file"</string>
         <key>SUCheckAtStartup</key>
         <false/>
         <key>SUScheduledCheckInterval</key>
@@ -138,7 +142,6 @@
             <string>SKSnapshotsOnTop</string>
             <string>SUCheckAtStartup</string>
             <string>SUScheduledCheckInterval</string>
-            <string>SKAutoCheckFileUpdate</string>
         </array>
         <key>display</key>
         <array>
@@ -169,6 +172,12 @@
             <string>SKArrowNoteColor</string>
             <string>SKTextNoteFontName</string>
             <string>SKTextNoteFontSize</string>
+        </array>
+        <key>sync</key>
+        <array>
+            <string>SKAutoCheckFileUpdate</string>
+            <string>SKTeXEditorCommand</string>
+            <string>SKTeXEditorArguments</string>
         </array>
         <key>other</key>
         <array>

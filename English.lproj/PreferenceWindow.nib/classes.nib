@@ -9,6 +9,7 @@
         {
             ACTIONS = {
                 changeDiscreteThumbnailSizes = id; 
+                changeTeXEditorPreset = id; 
                 changeUpdateInterval = id; 
                 resetAll = id; 
                 resetCurrent = id; 
@@ -18,6 +19,7 @@
             OUTLETS = {
                 snapshotSizeSlider = NSSlider; 
                 tabView = NSTabView; 
+                texEditorPopUpButton = NSPopUpButton; 
                 thumbnailSizeSlider = NSSlider; 
             }; 
             SUPERCLASS = NSWindowController; 
