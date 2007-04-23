@@ -46,36 +46,47 @@
 	id lineNumber = [self directParameter];
 	NSDictionary *args = [self evaluatedArguments];
 	id file = [args objectForKey:@"file"];
-	id project = [args objectForKey:@"project"];
-    NSURL *projectURL = nil;
+	id source = [args objectForKey:@"source"];
+    NSURL *fileURL = nil;
     
-    if (project == nil)
-        project = file;
+    if (source == nil)
+        source = file;
     
-    if ([project isKindOfClass:[NSURL class]]) {
-        projectURL = project;
-    } else if ([project isKindOfClass:[NSString class]]) {
-        if ([project hasPrefix:@"file://"])
-            projectURL = [NSURL URLWithString:project];
+    if ([source isKindOfClass:[NSURL class]]) {
+        source = [source path];
+    } else if ([source isKindOfClass:[NSString class]]) {
+        if ([source hasPrefix:@"file://"])
+            source = [[NSURL URLWithString:source] path];
         else
-            projectURL = [NSURL fileURLWithPath:[project stringByStandardizingPath]];
+            source = [source stringByStandardizingPath];
 	}
+    
+    if ([[source pathExtension] length] == 0)
+        source = [source stringByAppendingPathExtension:@"tex"];
+    else if ([[source pathExtension] caseInsensitiveCompare:@"tex"] != NSOrderedSame) 
+        source = [[source stringByDeletingPathExtension] stringByAppendingPathExtension:@"tex"];
     
     if ([file isKindOfClass:[NSURL class]]) {
-        file = [file path];
-    } else if ([file isKindOfClass:[NSString class]]) {
+        fileURL = file;
+    } else if ([source isKindOfClass:[NSString class]]) {
         if ([file hasPrefix:@"file://"])
-            file = [[NSURL URLWithString:file] path];
+            fileURL = [NSURL URLWithString:file];
         else
-            file = [file stringByStandardizingPath];
+            fileURL = [NSURL fileURLWithPath:[file stringByStandardizingPath]];
 	}
     
-    if (file == nil || projectURL == nil)
+    file = [fileURL path];
+    if ([[file pathExtension] length] == 0)
+        fileURL = [NSURL fileURLWithPath:[file stringByAppendingPathExtension:@"pdf"]];
+    else if ([[file pathExtension] caseInsensitiveCompare:@"pdf"] != NSOrderedSame) 
+        fileURL = [NSURL fileURLWithPath:[[file stringByDeletingPathExtension] stringByAppendingPathExtension:@"pdf"]];
+    
+    if (source == nil || fileURL == nil)
         return nil;
+	NSLog(@"%@ %@ %@",lineNumber,fileURL,source);
+	SKDocument *document = [[NSDocumentController sharedDocumentController] openDocumentWithContentsOfURL:fileURL display:YES error:NULL];
 	
-	SKDocument *document = [[NSDocumentController sharedDocumentController] openDocumentWithContentsOfURL:projectURL display:YES error:NULL];
-	
-    [document displayTeXLine:[lineNumber intValue] fromFile:file];
+    [document displayTeXLine:[lineNumber intValue] fromFile:source];
     
 	return nil;
 }

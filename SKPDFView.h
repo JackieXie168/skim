@@ -118,6 +118,7 @@ typedef enum _SKNoteType {
 - (void)selectNextActiveAnnotation:(id)sender;
 - (void)selectPreviousActiveAnnotation:(id)sender;
 - (void)scrollAnnotationToVisible:(PDFAnnotation *)annotation;
+- (void)scrollRect:(NSRect)rect inPageToVisible:(PDFPage *)page;
 
 - (void)takeSnapshot:(id)sender;
 

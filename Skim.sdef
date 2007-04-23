@@ -595,17 +595,17 @@
             <direct-parameter type="integer"
                 description="The line number in the TeX file.">
             </direct-parameter>
-			<parameter name="of file" code="File" optional="no" 
-				description="The file name">
+			<parameter name="in" code="File" optional="no" 
+				description="The PDF file">
                 <type type="text"/>
                 <type type="file"/>
 				<cocoa key="file"/> 
 			</parameter>
-			<parameter name="in project" code="Proj" optional="yes" 
-				description="The base TeX file name, if the file is included."> 
+			<parameter name="from source" code="SrcF" optional="yes" 
+				description="The TeX source file. By default this is derived from the pdf file."> 
                 <type type="text"/>
                 <type type="file"/>
-				<cocoa key="project"/> 
+				<cocoa key="source"/> 
 			</parameter>
         </command>
         

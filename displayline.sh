@@ -7,4 +7,4 @@ if [ $# -gt 3 ]; then
 project="$2"
 fi
 
-/usr/bin/osascript -e "tell application \"Skim\"" -e "activate" -e "display TeX line "${line}" of file \""${file}"\" in project \""${project}"\"" -e "end tell"
+/usr/bin/osascript -e "tell application \"Skim\"" -e "activate" -e "display TeX line "${line}" in \""${file}"\" from source \""${project}"\"" -e "end tell"

@@ -594,13 +594,14 @@ NSString *SKDocumentWillSaveNotification = @"SKDocumentWillSaveNotification";
     return synchronizer;
 }
 
-- (void)displayTeXLine:(int)line fromFile:(NSString *)file{
-    NSString *fileBase = [[self fileName] stringByDeletingPathExtension];
-    NSString *pdfsyncFile = [fileBase stringByAppendingPathExtension:@"pdfsync"];
+- (void)displayTeXLine:(int)line fromFile:(NSString *)file {
+    NSString *pdfsyncFile = [[[self fileName] stringByDeletingPathExtension] stringByAppendingPathExtension:@"pdfsync"];
     NSString *texFile = file;
     NSFileManager *fm = [NSFileManager defaultManager];
     
-    if ([[file pathExtension] length])
+    if ([[file pathExtension] length] == 0)
+        texFile = [file stringByAppendingPathExtension:@"tex"];
+    else if ([[file pathExtension] caseInsensitiveCompare:@"tex"] != NSOrderedSame)
         texFile = [[file stringByDeletingPathExtension] stringByAppendingPathExtension:@"tex"];
     
     if ([fm fileExistsAtPath:pdfsyncFile] == NO || [fm fileExistsAtPath:texFile] == NO) {
@@ -614,9 +615,12 @@ NSString *SKDocumentWillSaveNotification = @"SKDocumentWillSaveNotification";
         
         if ([[self synchronizer] getPageIndex:&pageIndex location:&point forLine:line inFile:texFile]) {
             PDFPage *page = [[[self pdfView] document] pageAtIndex:pageIndex];
-            PDFDestination *dest = [[PDFDestination alloc] initWithPage:page atPoint:point];
+            PDFSelection *sel = [page selectionForLineAtPoint:point];
+            NSRect rect = sel ? [sel boundsForPage:page] : NSMakeRect(point.x - 5.0, point.y - 5.0, 10.0, 10.0);
             
-            [[self pdfView] goToDestination:dest];
+            if (sel)
+                [[self pdfView] setCurrentSelection:sel];
+            [[self pdfView] scrollRect:rect inPageToVisible:page];
         } else NSBeep();
     } else NSBeep();
 }
