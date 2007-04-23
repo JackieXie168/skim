@@ -1716,8 +1716,8 @@ static inline NSRect rectWithCorners(NSPoint p1, NSPoint p2)
                 break;
         }
         
-        endPoint.x = ceilf(endPoint.x) + 0.5;
-        endPoint.y = ceilf(endPoint.y) + 0.5;
+        endPoint.x = floorf(endPoint.x) + 0.5;
+        endPoint.y = floorf(endPoint.y) + 0.5;
         
         if (NSEqualPoints(endPoint, oldEndPoint) == NO) {
             newBounds.origin.x = floorf(fmin(startPoint.x, endPoint.x));
@@ -1725,13 +1725,13 @@ static inline NSRect rectWithCorners(NSPoint p1, NSPoint p2)
             newBounds.origin.y = floorf(fmin(startPoint.y, endPoint.y));
             newBounds.size.height = ceilf(fmax(endPoint.y, startPoint.y)) - NSMinY(newBounds);
             
-            if (NSWidth(newBounds) < 8.0) {
-                newBounds.size.width = 8.0;
-                newBounds.origin.x = floorf(0.5 * (startPoint.x + endPoint.x)) - 4.0;
+            if (NSWidth(newBounds) < 7.0) {
+                newBounds.size.width = 7.0;
+                newBounds.origin.x = floorf(0.5 * (startPoint.x + endPoint.x) - 3.5);
             }
-            if (NSHeight(newBounds) < 8.0) {
-                newBounds.size.height = 8.0;
-                newBounds.origin.y = floorf(0.5 * (startPoint.y + endPoint.y)) - 4.0;
+            if (NSHeight(newBounds) < 7.0) {
+                newBounds.size.height = 7.0;
+                newBounds.origin.y = floorf(0.5 * (startPoint.y + endPoint.y) - 3.5);
             }
             
             startPoint.x -= NSMinX(newBounds);
@@ -2088,8 +2088,8 @@ static inline NSRect rectWithCorners(NSPoint p1, NSPoint p2)
                     startPoint.y = NSMaxY(pageBounds) - 0.5;
                 else if (startPoint.y < NSMinY(pageBounds))
                     startPoint.y = NSMinY(pageBounds) + 0.5;
-                startPoint.x = ceilf(startPoint.x) + 0.5;
-                startPoint.y = ceilf(startPoint.y) + 0.5;
+                startPoint.x = floorf(startPoint.x) + 0.5;
+                startPoint.y = floorf(startPoint.y) + 0.5;
             } else {
                 if (endPoint.x > NSMaxX(pageBounds))
                     endPoint.x = NSMaxX(pageBounds) - 0.5;
@@ -2099,8 +2099,8 @@ static inline NSRect rectWithCorners(NSPoint p1, NSPoint p2)
                     endPoint.y = NSMaxY(pageBounds) - 0.5;
                 else if (endPoint.y < NSMinY(pageBounds))
                     endPoint.y = NSMinY(pageBounds) + 0.5;
-                endPoint.x = ceilf(endPoint.x) + 0.5;
-                endPoint.y = ceilf(endPoint.y) + 0.5;
+                endPoint.x = floorf(endPoint.x) + 0.5;
+                endPoint.y = floorf(endPoint.y) + 0.5;
             }
             
             newBounds.origin.x = floorf(fmin(startPoint.x, endPoint.x));
@@ -2108,13 +2108,13 @@ static inline NSRect rectWithCorners(NSPoint p1, NSPoint p2)
             newBounds.origin.y = floorf(fmin(startPoint.y, endPoint.y));
             newBounds.size.height = ceilf(fmax(endPoint.y, startPoint.y)) - NSMinX(newBounds);
             
-            if (NSWidth(newBounds) < 8.0) {
-                newBounds.size.width = 8.0;
-                newBounds.origin.x = floorf(0.5 * (startPoint.x + endPoint.x)) - 4.0;
+            if (NSWidth(newBounds) < 7.0) {
+                newBounds.size.width = 7.0;
+                newBounds.origin.x = floorf(0.5 * (startPoint.x + endPoint.x) - 3.5);
             }
-            if (NSHeight(newBounds) < 8.0) {
-                newBounds.size.height = 8.0;
-                newBounds.origin.y = floorf(0.5 * (startPoint.y + endPoint.y)) - 4.0;
+            if (NSHeight(newBounds) < 7.0) {
+                newBounds.size.height = 7.0;
+                newBounds.origin.y = floorf(0.5 * (startPoint.y + endPoint.y) - 3.5);
             }
             
             startPoint.x -= NSMinX(newBounds);
