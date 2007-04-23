@@ -1727,7 +1727,7 @@ static inline NSRect rectWithCorners(NSPoint p1, NSPoint p2)
             
             if (NSWidth(newBounds) < 7.0) {
                 newBounds.size.width = 7.0;
-                newBounds.origin.x = floorf(0.5 * ((startPoint.x + endPoint.x) - 3.5);
+                newBounds.origin.x = floorf(0.5 * (startPoint.x + endPoint.x) - 3.5);
             }
             if (NSHeight(newBounds) < 7.0) {
                 newBounds.size.height = 7.0;
