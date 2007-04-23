@@ -1500,10 +1500,13 @@ static inline NSRect rectWithCorners(NSPoint p1, NSPoint p2)
         unsigned j, jMax = [annotations count];
         for (j = 0; j < jMax; j++) {
             PDFAnnotation *annotation = [annotations objectAtIndex:j];
-            NSRect rect = NSIntersectionRect([self convertRect:[annotation bounds] fromPage:page], visibleRect);
-            if (NSIsEmptyRect(rect)) continue;
-            NSTrackingRectTag tag = [self addTrackingRect:rect owner:self userData:annotation assumeInside:NO];
-            [hoverRects addObject:(id)tag];
+            if ([[annotation type] isEqualToString:@"Note"] || [[annotation type] isEqualToString:@"Link"]) {
+                NSRect rect = NSIntersectionRect([self convertRect:[annotation bounds] fromPage:page], visibleRect);
+                if (NSIsEmptyRect(rect) == NO) {
+                    NSTrackingRectTag tag = [self addTrackingRect:rect owner:self userData:annotation assumeInside:NO];
+                    [hoverRects addObject:(id)tag];
+                }
+            }
         }
     }
 }
