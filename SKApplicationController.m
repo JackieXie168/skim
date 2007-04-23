@@ -111,6 +111,8 @@ static BOOL fileIsInTrash(NSURL *fileURL)
         if ([menuItem action] == @selector(changeLeftSidePaneState:) || [menuItem action] == @selector(changeRightSidePaneState:)) 
             [menuItem setIndentationLevel:1];
     }
+    
+    [[NSColorPanel sharedColorPanel] setShowsAlpha:YES];
 }
 
 - (BOOL)applicationShouldOpenUntitledFile:(NSApplication *)sender{

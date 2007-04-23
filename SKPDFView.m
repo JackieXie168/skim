@@ -276,8 +276,7 @@ CGMutablePathRef CGCreatePathWithRoundRectInRect(CGRect rect, float radius);
         NSRect rect = [readingBar currentBoundsForBox:[self displayBox]];
         BOOL invert = [[NSUserDefaults standardUserDefaults] boolForKey:SKReadingBarInvertKey];
         NSColor *nsColor = [NSUnarchiver unarchiveObjectWithData:[[NSUserDefaults standardUserDefaults] dataForKey:SKReadingBarColorKey]];
-        float alpha = 1.0 - [[NSUserDefaults standardUserDefaults] floatForKey:SKReadingBarTransparencyKey];
-        float color[4] = { [nsColor redComponent], [nsColor greenComponent], [nsColor blueComponent], alpha };
+        float color[4] = { [nsColor redComponent], [nsColor greenComponent], [nsColor blueComponent], [nsColor alphaComponent] };
         
         CGContextSetFillColor(context, color);
         
