@@ -967,6 +967,17 @@ static inline NSRect rectWithCorners(NSPoint p1, NSPoint p2)
         bounds = NSMakeRect(point.x - 0.5 * defaultSize.width, point.y - 0.5 * defaultSize.height, defaultSize.width, defaultSize.height);
     }
     
+    // Make sure it fits in the page
+    NSRect pageBounds = [page boundsForBox:[self displayBox]];
+    if (NSMaxX(bounds) > NSMaxX(pageBounds))
+        bounds.origin.x = NSMaxX(pageBounds) - NSWidth(bounds);
+    if (NSMinX(bounds) < NSMinX(pageBounds))
+        bounds.origin.x = NSMinX(pageBounds);
+    if (NSMaxY(bounds) > NSMaxY(pageBounds))
+        bounds.origin.y = NSMaxY(pageBounds) - NSHeight(bounds);
+    if (NSMinY(bounds) < NSMinY(pageBounds))
+        bounds.origin.y = NSMinY(pageBounds);
+    
     [self addAnnotationWithType:annotationType contents:text page:page bounds:bounds];
 }
 
