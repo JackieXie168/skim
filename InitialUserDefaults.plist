@@ -56,10 +56,8 @@
 	BAt0eXBlZHN0cmVhbYED6IQBQISEhAdOU0NvbG9yAISECE5TT2JqZWN0AIWEAWMBhARm
 	ZmZmAQEAAYY=
 	</data>
-        <key>SKReadingBarTransparency</key>
-        <real>0.7</real>
         <key>SKReadingBarInvert</key>
-        <true/>
+        <false/>
         <key>SKTextNoteFontName</key>
         <string>LucidaGrande</string>
         <key>SKTextNoteFontSize</key>
@@ -157,7 +155,6 @@
             <string>SKShouldHighlightSearchResults</string>
             <string>SKSearchHighlightColor</string>
             <string>SKReadingBarColor</string>
-            <string>SKReadingBarTransparency</string>
             <string>SKReadingBarInvert</string>
         </array>
         <key>notes</key>

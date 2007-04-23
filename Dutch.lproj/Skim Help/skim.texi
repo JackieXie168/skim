@@ -874,7 +874,7 @@ In Skim kunt u de tekstregel die u aan het lezen bent markeren. U kunt de kleur 
 @box{taskbox}
 @heading Om de kleur van de leesbalk of de transparantie te wijzigen:
 @itemize
-@item Om de kleur van de leesbalk of de transparantie te wijzigen, kies Skim > Voorkeuren, klik op Kleuren, en selecteer Kleur of verschuif de Transparentie schuifknop naar de juiste waarde. 
+@item Om de kleur van de leesbalk of de transparantie te wijzigen, kies Skim > Voorkeuren, klik op Kleuren, en selecteer Kleur. 
 @end itemize
 @endbox
 
