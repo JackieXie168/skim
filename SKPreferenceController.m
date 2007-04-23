@@ -73,7 +73,7 @@
                                                         [NSNumber numberWithFloat:14.0], [NSNumber numberWithFloat:16.0], [NSNumber numberWithFloat:18.0], 
                                                         [NSNumber numberWithFloat:20.0], [NSNumber numberWithFloat:24.0], [NSNumber numberWithFloat:28.0], 
                                                         [NSNumber numberWithFloat:32.0], [NSNumber numberWithFloat:48.0], [NSNumber numberWithFloat:64.0], nil];
-        texEditorCommands = [[NSMutableArray alloc] initWithObjects:@"/Applications/TextMate.app/Contents/SharedSupport/Support/bin/mate", @"/Applications/BBEdit.app/Contents/Resources/bbedit", @"/Applications/TextWrangler.app/Contents/Resources/edit", @"/Applications/Emacs.app/Contents/MacOS/bin/emacsclient", nil];
+        texEditorCommands = [[NSMutableArray alloc] initWithObjects:@"mate", @"bbedit", @"edit", @"/Applications/Emacs.app/Contents/MacOS/bin/emacsclient", nil];
         texEditorArguments = [[NSMutableArray alloc] initWithObjects:@"-l %line \"%file\"", @"+%line \"%file\"", @"+%line \"%file\"", @"--no-wait +%line \"%file\"", nil];
         
         isCustomTeXEditor = [texEditorCommands containsObject:[[NSUserDefaults standardUserDefaults] stringForKey:SKTeXEditorCommandKey]] == NO || 
