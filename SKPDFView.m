@@ -1262,9 +1262,14 @@ static inline NSRect rectWithCorners(NSPoint p1, NSPoint p2)
     }
 }
 
-- (void)scrollAnnotationToVisible:(PDFAnnotation *)annotation {
-    NSRect rect = [self convertRect:[self convertRect:[annotation bounds] fromPage:[annotation page]] toView:[self documentView]];
+- (void)scrollRect:(NSRect)rect inPageToVisible:(PDFPage *)page {
+    rect = [self convertRect:[self convertRect:rect fromPage:page] toView:[self documentView]];
+    [self goToPage:page];
     [[self documentView] scrollRectToVisible:rect];
+}
+
+- (void)scrollAnnotationToVisible:(PDFAnnotation *)annotation {
+    [self scrollRect:[annotation bounds] inPageToVisible:[annotation page]];
 }
 
 #pragma mark Snapshots
