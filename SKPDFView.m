@@ -1374,8 +1374,7 @@ static inline NSRect rectWithCorners(NSPoint p1, NSPoint p2)
 
 @implementation SKPDFView (Private)
 
-- (NSRect)resizeThumbForRect:(NSRect) rect rotation:(int)rotation
-{
+- (NSRect)resizeThumbForRect:(NSRect)rect rotation:(int)rotation {
 	NSRect thumb = rect;
     float size = 8.0;
     
@@ -1400,16 +1399,18 @@ static inline NSRect rectWithCorners(NSPoint p1, NSPoint p2)
 	return thumb;
 }
 
-- (NSRect)resizeThumbForRect:(NSRect) rect point:(NSPoint)point
-{
+- (NSRect)resizeThumbForRect:(NSRect)rect point:(NSPoint)point {
 	NSRect thumb = rect;
-    float size = 8.0;
+    float size = 7.0;
     
     thumb.size = NSMakeSize(size, size);
 	
     thumb.origin.x = NSMinX(rect) + point.x - 0.5 * size;
     thumb.origin.y = NSMinY(rect) + point.y - 0.5 * size;
 	
+    thumb.origin.x =  point.x > 0.5 * NSWidth(rect) ? floorf(NSMinX(thumb)) : ceilf(NSMinX(thumb));
+    thumb.origin.y =  point.y > 0.5 * NSHeight(rect) ? floorf(NSMinY(thumb)) : ceilf(NSMinY(thumb));
+    
 	return thumb;
 }
 
@@ -1641,26 +1642,26 @@ static inline NSRect rectWithCorners(NSPoint p1, NSPoint p2)
                 if (eventChar == NSRightArrowFunctionKey) {
                     endPoint.x += delta;
                     if (endPoint.x > NSMaxX(pageBounds))
-                        endPoint.x = NSMaxX(pageBounds);
+                        endPoint.x = NSMaxX(pageBounds) - 0.5;
                 } else if (eventChar == NSLeftArrowFunctionKey) {
                     endPoint.x -= delta;
                     if (endPoint.x < NSMinX(pageBounds))
-                        endPoint.x = NSMinX(pageBounds);
+                        endPoint.x = NSMinX(pageBounds) + 0.5;
                 } else if (eventChar == NSUpArrowFunctionKey) {
                     endPoint.y += delta;
                     if (endPoint.y > NSMaxY(pageBounds))
-                        endPoint.y = NSMaxY(pageBounds);
+                        endPoint.y = NSMaxY(pageBounds) - 0.5;
                 } else if (eventChar == NSDownArrowFunctionKey) {
                     endPoint.y -= delta;
                     if (endPoint.y < NSMinY(pageBounds))
-                        endPoint.y = NSMinY(pageBounds);
+                        endPoint.y = NSMinY(pageBounds) + 0.5;
                 }
                 break;
             case 90:
                 if (eventChar == NSRightArrowFunctionKey) {
                     endPoint.y += delta;
                     if (endPoint.y > NSMaxY(pageBounds))
-                        endPoint.y = NSMaxY(pageBounds);
+                        endPoint.y = NSMaxY(pageBounds) - 0.5;
                 } else if (eventChar == NSLeftArrowFunctionKey) {
                     endPoint.y -= delta;
                     if (endPoint.y < NSMinY(pageBounds))
@@ -1672,57 +1673,57 @@ static inline NSRect rectWithCorners(NSPoint p1, NSPoint p2)
                 } else if (eventChar == NSDownArrowFunctionKey) {
                     endPoint.x += delta;
                     if (endPoint.x > NSMaxX(pageBounds))
-                        endPoint.x = NSMaxX(pageBounds);
+                        endPoint.x = NSMaxX(pageBounds) - 0.5;
                 }
                 break;
             case 180:
                 if (eventChar == NSRightArrowFunctionKey) {
                     endPoint.x -= delta;
-                    if (endPoint.x < NSMinX(bounds))
-                        endPoint.x = NSMinX(bounds);
+                    if (endPoint.x < NSMinX(pageBounds))
+                        endPoint.x = NSMinX(pageBounds) + 0.5;
                 } else if (eventChar == NSLeftArrowFunctionKey) {
                     endPoint.x += delta;
-                    if (endPoint.x > NSMaxX(bounds))
-                        endPoint.x = NSMaxX(bounds);
+                    if (endPoint.x > NSMaxX(pageBounds))
+                        endPoint.x = NSMaxX(pageBounds) - 0.5;
                 } else if (eventChar == NSUpArrowFunctionKey) {
                     endPoint.y -= delta;
-                    if (endPoint.y < NSMinY(bounds))
-                        endPoint.y = NSMinY(bounds);
+                    if (endPoint.y < NSMinY(pageBounds))
+                        endPoint.y = NSMinY(pageBounds) + 0.5;
                 } else if (eventChar == NSDownArrowFunctionKey) {
                     endPoint.y += delta;
-                    if (endPoint.y > NSMaxY(bounds))
-                        endPoint.y = NSMaxY(bounds);
+                    if (endPoint.y > NSMaxY(pageBounds))
+                        endPoint.y = NSMaxY(pageBounds) - 0.5;
                 }
                 break;
             case 270:
                 if (eventChar == NSRightArrowFunctionKey) {
                     endPoint.y -= delta;
-                    if (endPoint.y < NSMinY(bounds))
-                        endPoint.y = NSMinY(bounds);
+                    if (endPoint.y < NSMinY(pageBounds))
+                        endPoint.y = NSMinY(pageBounds) + 0.5;
                 } else if (eventChar == NSLeftArrowFunctionKey) {
                     endPoint.y += delta;
-                    if (endPoint.y > NSMaxY(bounds))
-                        endPoint.y = NSMaxY(bounds);
+                    if (endPoint.y > NSMaxY(pageBounds))
+                        endPoint.y = NSMaxY(pageBounds) - 0.5;
                 } else if (eventChar == NSUpArrowFunctionKey) {
                     endPoint.x += delta;
-                    if (endPoint.x > NSMaxX(bounds))
-                        endPoint.x = NSMaxX(bounds);
+                    if (endPoint.x > NSMaxX(pageBounds))
+                        endPoint.x = NSMaxX(pageBounds) - 0.5;
                 } else if (eventChar == NSDownArrowFunctionKey) {
                     endPoint.x -= delta;
-                    if (endPoint.x < NSMinX(bounds))
-                        endPoint.x = NSMinX(bounds);
+                    if (endPoint.x < NSMinX(pageBounds))
+                        endPoint.x = NSMinX(pageBounds) + 0.5;
                 }
                 break;
         }
         
-        endPoint.x = roundf(endPoint.x);
-        endPoint.y = roundf(endPoint.y);
+        endPoint.x = ceilf(endPoint.x) + 0.5;
+        endPoint.y = ceilf(endPoint.y) + 0.5;
         
         if (NSEqualPoints(endPoint, oldEndPoint) == NO) {
-            newBounds.origin.x = fmin(startPoint.x, endPoint.x);
-            newBounds.size.width = fabs(endPoint.x - startPoint.x);
-            newBounds.origin.y = fmin(startPoint.y, endPoint.y);
-            newBounds.size.height = fabs(endPoint.y - startPoint.y);
+            newBounds.origin.x = floorf(fmin(startPoint.x, endPoint.x));
+            newBounds.size.width = ceilf(fmax(endPoint.x, startPoint.x)) - NSMinX(newBounds);
+            newBounds.origin.y = floorf(fmin(startPoint.y, endPoint.y));
+            newBounds.size.height = ceilf(fmax(endPoint.y, startPoint.y)) - NSMinY(newBounds);
             
             if (NSWidth(newBounds) < 8.0) {
                 newBounds.size.width = 8.0;
@@ -2080,32 +2081,32 @@ static inline NSRect rectWithCorners(NSPoint p1, NSPoint p2)
             
             if (draggingStartPoint) {
                 if (startPoint.x > NSMaxX(pageBounds))
-                    startPoint.x = NSMaxX(pageBounds);
+                    startPoint.x = NSMaxX(pageBounds) - 0.5;
                 else if (startPoint.x < NSMinX(pageBounds))
-                    startPoint.x = NSMinX(pageBounds);
+                    startPoint.x = NSMinX(pageBounds) + 0.5;
                 if (startPoint.y > NSMaxY(pageBounds))
-                    startPoint.y = NSMaxY(pageBounds);
+                    startPoint.y = NSMaxY(pageBounds) - 0.5;
                 else if (startPoint.y < NSMinY(pageBounds))
-                    startPoint.y = NSMinY(pageBounds);
-                startPoint.x = roundf(startPoint.x);
-                startPoint.y = roundf(startPoint.y);
+                    startPoint.y = NSMinY(pageBounds) + 0.5;
+                startPoint.x = ceilf(startPoint.x) + 0.5;
+                startPoint.y = ceilf(startPoint.y) + 0.5;
             } else {
                 if (endPoint.x > NSMaxX(pageBounds))
-                    endPoint.x = NSMaxX(pageBounds);
+                    endPoint.x = NSMaxX(pageBounds) - 0.5;
                 else if (endPoint.x < NSMinX(pageBounds))
-                    endPoint.x = NSMinX(pageBounds);
+                    endPoint.x = NSMinX(pageBounds) + 0.5;
                 if (endPoint.y > NSMaxY(pageBounds))
-                    endPoint.y = NSMaxY(pageBounds);
+                    endPoint.y = NSMaxY(pageBounds) - 0.5;
                 else if (endPoint.y < NSMinY(pageBounds))
-                    endPoint.y = NSMinY(pageBounds);
-                endPoint.x = roundf(endPoint.x);
-                endPoint.y = roundf(endPoint.y);
+                    endPoint.y = NSMinY(pageBounds) + 0.5;
+                endPoint.x = ceilf(endPoint.x) + 0.5;
+                endPoint.y = ceilf(endPoint.y) + 0.5;
             }
             
-            newBounds.origin.x = fmin(startPoint.x, endPoint.x);
-            newBounds.size.width = fabs(endPoint.x - startPoint.x);
-            newBounds.origin.y = fmin(startPoint.y, endPoint.y);
-            newBounds.size.height = fabs(endPoint.y - startPoint.y);
+            newBounds.origin.x = floorf(fmin(startPoint.x, endPoint.x));
+            newBounds.size.width = ceilf(fmax(endPoint.x, startPoint.x)) - NSMinX(newBounds);
+            newBounds.origin.y = floorf(fmin(startPoint.y, endPoint.y));
+            newBounds.size.height = ceilf(fmax(endPoint.y, startPoint.y)) - NSMinX(newBounds);
             
             if (NSWidth(newBounds) < 8.0) {
                 newBounds.size.width = 8.0;

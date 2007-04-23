@@ -844,8 +844,8 @@ static BOOL lineRectTrimmingWhitespaceForPage(NSRect *lineRect, PDFPage *page)
         [self setColor:[NSUnarchiver unarchiveObjectWithData:[[NSUserDefaults standardUserDefaults] objectForKey:SKArrowNoteColorKey]]];
         [self setStartLineStyle:kPDFLineStyleNone];
         [self setEndLineStyle:kPDFLineStyleOpenArrow];
-        [self setStartPoint:NSZeroPoint];
-        [self setEndPoint:NSMakePoint(NSWidth(bounds), NSHeight(bounds))];
+        [self setStartPoint:NSMakePoint(0.5, 0.5)];
+        [self setEndPoint:NSMakePoint(NSWidth(bounds) - 0.5, NSHeight(bounds) - 0.5)];
     }
     return self;
 }
@@ -917,8 +917,8 @@ static BOOL lineRectTrimmingWhitespaceForPage(NSRect *lineRect, PDFPage *page)
         point.x -= NSMinX(bounds);
         point.y -= NSMinY(bounds);
         
-        return (fabs(point.x - startPoint.x) < 4.0 && fabs(point.y - startPoint.y) < 4.0) ||
-               (fabs(point.x - endPoint.x) < 4.0 && fabs(point.y - endPoint.y) < 4.0);
+        return (fabs(point.x - startPoint.x) < 3.5 && fabs(point.y - startPoint.y) < 3.5) ||
+               (fabs(point.x - endPoint.x) < 3.5 && fabs(point.y - endPoint.y) < 3.5);
     }
 }
 
@@ -929,6 +929,16 @@ static BOOL lineRectTrimmingWhitespaceForPage(NSRect *lineRect, PDFPage *page)
         const Point *qdPoint = (const Point *)[inQDPointAsData bytes];
         SKPDFView *pdfView = [[[self page] containingDocument] pdfView];
         NSPoint newPoint = NSPointFromPoint(*qdPoint);
+        newPoint.x += 0.5;
+        newPoint.y += 0.5;
+        if (newPoint.x < 0.0)
+            newPoint.x = 0.5;
+        else if (newPoint.x > NSWidth([self bounds]))
+            newPoint.x = NSWidth([self bounds]) - 0.5;
+        if (newPoint.y < 0.0)
+            newPoint.y = 0.5;
+        else if (newPoint.y > NSHeight([self bounds]))
+            newPoint.y = NSHeight([self bounds]) - 0.5;
         [pdfView setNeedsDisplayForAnnotation:self];
         [self setStartPoint:newPoint];
         [pdfView setNeedsDisplayForAnnotation:self];
@@ -946,6 +956,16 @@ static BOOL lineRectTrimmingWhitespaceForPage(NSRect *lineRect, PDFPage *page)
         const Point *qdPoint = (const Point *)[inQDPointAsData bytes];
         SKPDFView *pdfView = [[[self page] containingDocument] pdfView];
         NSPoint newPoint = NSPointFromPoint(*qdPoint);
+        newPoint.x += 0.5;
+        newPoint.y += 0.5;
+        if (newPoint.x < 0.0)
+            newPoint.x = 0.5;
+        else if (newPoint.x > NSWidth([self bounds]))
+            newPoint.x = NSWidth([self bounds]) - 0.5;
+        if (newPoint.y < 0.0)
+            newPoint.y = 0.5;
+        else if (newPoint.y > NSHeight([self bounds]))
+            newPoint.y = NSHeight([self bounds]) - 0.5;
         [pdfView setNeedsDisplayForAnnotation:self];
         [self setEndPoint:newPoint];
         [pdfView setNeedsDisplayForAnnotation:self];
