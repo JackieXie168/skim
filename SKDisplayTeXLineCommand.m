@@ -38,6 +38,8 @@
 
 #import "SKDisplayTeXLineCommand.h"
 #import "SKDocument.h"
+#import "SKPDFSynchronizer.h"
+#import "SKPDFView.h"
 
 
 @implementation SKDisplayTeXLineCommand
@@ -81,14 +83,17 @@
     else if ([[file pathExtension] caseInsensitiveCompare:@"pdf"] != NSOrderedSame) 
         fileURL = [NSURL fileURLWithPath:[[file stringByDeletingPathExtension] stringByAppendingPathExtension:@"pdf"]];
     
-    if (source == nil || fileURL == nil)
-        return nil;
-	NSLog(@"%@ %@ %@",lineNumber,fileURL,source);
-	SKDocument *document = [[NSDocumentController sharedDocumentController] openDocumentWithContentsOfURL:fileURL display:YES error:NULL];
-	
-    [document displayTeXLine:[lineNumber intValue] fromFile:source];
+    if (fileURL && source && [[NSFileManager defaultManager] fileExistsAtPath:source]) {
+        SKDocument *document = [[NSDocumentController sharedDocumentController] openDocumentWithContentsOfURL:fileURL display:YES error:NULL];
+        SKPDFSynchronizer *synchronizer = [document synchronizer];
+        unsigned int pageIndex;
+        NSPoint point;
+        
+        if ([synchronizer getPageIndex:&pageIndex location:&point forLine:[lineNumber intValue] inFile:source])
+            [[document pdfView] displayLineAtPoint:point inPageAtIndex:pageIndex];
+    }
     
-	return nil;
+    return nil;
 }
 
 @end

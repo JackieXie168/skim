@@ -588,92 +588,20 @@ NSString *SKDocumentWillSaveNotification = @"SKDocumentWillSaveNotification";
 
 #pragma mark Pdfsync support
 
+- (void)setFileURL:(NSURL *)absoluteURL {
+    [super setFileURL:absoluteURL];
+    if ([absoluteURL isFileURL])
+        [synchronizer setFileName:[[[absoluteURL path] stringByDeletingPathExtension] stringByAppendingPathExtension:@"pdfsync"]];
+    else
+        [synchronizer setFileName:nil];
+}
+
 - (SKPDFSynchronizer *)synchronizer {
-    if (synchronizer == nil)
+    if (synchronizer == nil) {
         synchronizer = [[SKPDFSynchronizer alloc] init];
+        [synchronizer setFileName:[[[self fileName] stringByDeletingPathExtension] stringByAppendingPathExtension:@"pdfsync"]];
+    }
     return synchronizer;
-}
-
-- (void)displayTeXLine:(int)line fromFile:(NSString *)file {
-    NSString *pdfsyncFile = [[[self fileName] stringByDeletingPathExtension] stringByAppendingPathExtension:@"pdfsync"];
-    NSString *texFile = file;
-    NSFileManager *fm = [NSFileManager defaultManager];
-    
-    if ([[file pathExtension] length] == 0)
-        texFile = [file stringByAppendingPathExtension:@"tex"];
-    else if ([[file pathExtension] caseInsensitiveCompare:@"tex"] != NSOrderedSame)
-        texFile = [[file stringByDeletingPathExtension] stringByAppendingPathExtension:@"tex"];
-    
-    if ([fm fileExistsAtPath:pdfsyncFile] == NO || [fm fileExistsAtPath:texFile] == NO) {
-        NSBeep();
-        return;
-    }
-    
-    if ([[self synchronizer] parsePdfsyncFileIfNeeded:pdfsyncFile]) {
-        unsigned int pageIndex;
-        NSPoint point;
-        
-        if ([[self synchronizer] getPageIndex:&pageIndex location:&point forLine:line inFile:texFile]) {
-            PDFPage *page = [[[self pdfView] document] pageAtIndex:pageIndex];
-            PDFSelection *sel = [page selectionForLineAtPoint:point];
-            NSRect rect = sel ? [sel boundsForPage:page] : NSMakeRect(point.x - 5.0, point.y - 5.0, 10.0, 10.0);
-            
-            if (sel)
-                [[self pdfView] setCurrentSelection:sel];
-            [[self pdfView] scrollRect:rect inPageToVisible:page];
-        } else NSBeep();
-    } else NSBeep();
-}
-
-- (void)showEditorForFile:(NSString *)file atLine:(unsigned int)line {
-	NSTask *task = [[[NSTask alloc] init] autorelease];
-	NSString *editorCmd = [[NSUserDefaults standardUserDefaults] objectForKey:SKTeXEditorCommandKey];
-	NSMutableString *argString = [[[NSUserDefaults standardUserDefaults] objectForKey:SKTeXEditorArgumentsKey] mutableCopy];
-    NSArray *arguments;
-    
-    [argString replaceOccurrencesOfString:@"%file" withString:file options:NSLiteralSearch range: NSMakeRange(0, [argString length] )];
-	[argString replaceOccurrencesOfString:@"%line" withString:[NSString stringWithFormat:@"%d", line] options:NSLiteralSearch range:NSMakeRange(0, [argString length])];
-	arguments = [argString shellScriptArgumentsArray];
-    [argString release];
-    
-	[task setCurrentDirectoryPath:[file stringByDeletingLastPathComponent]];
-	[task setLaunchPath:editorCmd];
-	[task setArguments:arguments];
-	[task launch];
-}
-
-- (void)displayTeXEditorForLocation:(NSPoint)location inRect:(NSRect)rect atPageIndex:(unsigned int)pageIndex {
-    NSString *fileBase = [[self fileName] stringByDeletingPathExtension];
-    NSString *pdfsyncFile = [fileBase stringByAppendingPathExtension:@"pdfsync"];
-    NSFileManager *fm = [NSFileManager defaultManager];
-    
-    if ([fm fileExistsAtPath:pdfsyncFile] == NO) {
-        NSLog(@"pdfsync file %@ doesn't exist", pdfsyncFile);
-        NSBeep();
-        return;
-    }
-    
-    if ([[self synchronizer] parsePdfsyncFileIfNeeded:pdfsyncFile]) {
-        NSString *file;
-        int line;
-        
-        if ([[self synchronizer] getLine:&line file:&file forLocation:location inRect:rect atPageIndex:pageIndex]) {
-            if ([fm fileExistsAtPath:file] == NO) {
-                NSLog(@"tex file %@ doesn't exist", file);
-                NSBeep();
-                return;
-            }
-            
-            [self showEditorForFile:file atLine:line];
-            
-        } else {
-            NSLog(@"Couldn't find file and line");
-            NSBeep();
-        }
-    } else {
-        NSLog(@"Parsing pdfsync file %@ failed", pdfsyncFile);
-        NSBeep();
-    }
 }
 
 #pragma mark Accessors

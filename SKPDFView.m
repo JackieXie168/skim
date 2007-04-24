@@ -1282,6 +1282,18 @@ static inline NSRect rectWithCorners(NSPoint p1, NSPoint p2)
     [self scrollRect:[annotation bounds] inPageToVisible:[annotation page]];
 }
 
+- (void)displayLineAtPoint:(NSPoint)point inPageAtIndex:(unsigned int)pageIndex {
+    if (pageIndex < [[self document] pageCount]) {
+        PDFPage *page = [[self document] pageAtIndex:pageIndex];
+        PDFSelection *sel = [page selectionForLineAtPoint:point];
+        NSRect rect = sel ? [sel boundsForPage:page] : NSMakeRect(point.x - 5.0, point.y - 5.0, 10.0, 10.0);
+        
+        if (sel)
+            [self setCurrentSelection:sel];
+        [self scrollRect:rect inPageToVisible:page];
+    }
+}
+
 #pragma mark Snapshots
 
 - (void)takeSnapshot:(id)sender {
@@ -1314,6 +1326,8 @@ static inline NSRect rectWithCorners(NSPoint p1, NSPoint p2)
     
     [controller showSnapshotAtPageNumber:[[self document] indexForPage:page] forRect:[self convertRect:rect toPage:page] factor:1];
 }
+
+#pragma mark Notification handling
 
 - (void)handleAnnotationWillChangeNotification:(NSNotification *)notification {
     PDFAnnotation *annotation = [notification object];
@@ -1353,7 +1367,7 @@ static inline NSRect rectWithCorners(NSPoint p1, NSPoint p2)
     [self doAutohide:autohidesCursor || hasNavigation];
 }
 
-#pragma mark FullScreen navigation and autohide
+#pragma mark Menu validation
 
 - (BOOL)validateMenuItem:(NSMenuItem *)menuItem {
     SEL action = [menuItem action];
@@ -2595,14 +2609,40 @@ static inline NSRect rectWithCorners(NSPoint p1, NSPoint p2)
 }
 
 - (void)pdfsyncWithEvent:(NSEvent *)theEvent {
-    NSPoint mouseLoc = [self convertPoint:[theEvent locationInWindow] fromView:nil];
-    PDFPage *page = [self pageForPoint:mouseLoc nearest:YES];
-    NSPoint location = [self convertPoint:mouseLoc toPage:page];
-    unsigned int pageIndex = [[self document] indexForPage:page];
-    PDFSelection *sel = [page selectionForLineAtPoint:location];
-    NSRect rect = sel ? [sel boundsForPage:page] : NSMakeRect(location.x - 20.0, location.y - 5.0, 40.0, 10.0);
+    SKDocument *document = (SKDocument *)[[[self window] windowController] document];
     
-    [(SKDocument *)[[[self window] windowController] document] displayTeXEditorForLocation:location inRect:rect atPageIndex:pageIndex];
+    if ([document respondsToSelector:@selector(synchronizer)]) {
+        
+        SKPDFSynchronizer *synchronizer = [document synchronizer];
+        NSPoint mouseLoc = [self convertPoint:[theEvent locationInWindow] fromView:nil];
+        PDFPage *page = [self pageForPoint:mouseLoc nearest:YES];
+        NSPoint location = [self convertPoint:mouseLoc toPage:page];
+        unsigned int pageIndex = [[self document] indexForPage:page];
+        PDFSelection *sel = [page selectionForLineAtPoint:location];
+        NSRect rect = sel ? [sel boundsForPage:page] : NSMakeRect(location.x - 20.0, location.y - 5.0, 40.0, 10.0);
+        NSString *file = nil;
+        int line = -1;
+        
+        if ([synchronizer getLine:&line file:&file forLocation:location inRect:rect atPageIndex:pageIndex] &&
+            [[NSFileManager defaultManager] fileExistsAtPath:file]) {
+            
+            NSTask *task = [[[NSTask alloc] init] autorelease];
+            NSString *editorCmd = [[NSUserDefaults standardUserDefaults] objectForKey:SKTeXEditorCommandKey];
+            NSMutableString *argString = [[[NSUserDefaults standardUserDefaults] objectForKey:SKTeXEditorArgumentsKey] mutableCopy];
+            NSArray *arguments;
+            
+            [argString replaceOccurrencesOfString:@"%file" withString:file options:NSLiteralSearch range: NSMakeRange(0, [argString length] )];
+            [argString replaceOccurrencesOfString:@"%line" withString:[NSString stringWithFormat:@"%d", line] options:NSLiteralSearch range:NSMakeRange(0, [argString length])];
+            arguments = [argString shellScriptArgumentsArray];
+            [argString release];
+            
+            [task setCurrentDirectoryPath:[file stringByDeletingLastPathComponent]];
+            [task setLaunchPath:editorCmd];
+            [task setArguments:arguments];
+            [task launch];
+            
+        } else NSBeep();
+    }
 }
 
 @end

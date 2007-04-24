@@ -91,8 +91,6 @@ extern NSString *SKPostScriptDocumentType;
 - (void)checkFileUpdateStatus:(NSTimer *)timer;
 
 - (SKPDFSynchronizer *)synchronizer;
-- (void)displayTeXLine:(int)line fromFile:(NSString *)file;
-- (void)displayTeXEditorForLocation:(NSPoint)location inRect:(NSRect)rect atPageIndex:(unsigned int)pageIndex;
 
 - (void)handleApplicationWillTerminateNotification:(NSNotification *)notification;
 - (void)handleWindowWillCloseNotification:(NSNotification *)notification;
