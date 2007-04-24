@@ -57,7 +57,6 @@
 #import "BDSKEdgeView.h"
 #import "SKPDFAnnotationNote.h"
 #import "SKSplitView.h"
-#import "NSString_SKExtensions.h"
 #import "NSScrollView_SKExtensions.h"
 #import "NSBezierPath_BDSKExtensions.h"
 #import "NSUserDefaultsController_SKExtensions.h"
@@ -67,6 +66,8 @@
 #import "BDSKImagePopUpButton.h"
 #import "NSWindowController_SKExtensions.h"
 #import "SKPDFHoverWindow.h"
+#import "PDFSelection_SKExtensions.h"
+#import "SKToolbarItem.h"
 
 #define SEGMENTED_CONTROL_HEIGHT    25.0
 #define WINDOW_X_DELTA              0.0
@@ -3232,115 +3233,6 @@ static NSArray *prioritySortedThumbnails(NSArray *dirtyNails, int currentPageInd
         [[NSUserDefaults standardUserDefaults] setFloat:NSWidth([leftSideContentBox frame]) forKey:@"SKLeftSidePaneWidth"];
         [[NSUserDefaults standardUserDefaults] setFloat:NSWidth([rightSideContentBox frame]) forKey:@"SKRightSidePaneWidth"];
     }
-}
-
-@end
-
-#pragma mark -
-
-// the search table columns use these methods for display
-@interface PDFSelection (SKExtensions)
-@end
-
-@implementation PDFSelection (SKExtensions)
-
-// returns the label of the first page (if the selection spans multiple pages)
-- (NSString *)firstPageLabel { 
-    NSArray *pages = [self pages];
-    return [pages count] ? [[pages objectAtIndex:0] label] : nil;
-}
-
-- (NSAttributedString *)contextString {
-    PDFSelection *extendedSelection = [self copy]; // see remark in -tableViewSelectionDidChange:
-	NSMutableAttributedString *attributedSample;
-	NSString *searchString = [[self string] stringByCollapsingWhitespaceAndNewlinesAndRemovingSurroundingWhitespaceAndNewlines];
-	NSString *sample;
-    NSMutableString *attributedString;
-	NSString *ellipse = [NSString stringWithFormat:@"%C", 0x2026];
-	NSRange foundRange;
-    NSDictionary *attributes;
-	NSMutableParagraphStyle *paragraphStyle = nil;
-	
-	// Extend selection.
-	[extendedSelection extendSelectionAtStart:10];
-	[extendedSelection extendSelectionAtEnd:20];
-	
-    // get the cleaned string
-    sample = [[extendedSelection string] stringByCollapsingWhitespaceAndNewlinesAndRemovingSurroundingWhitespaceAndNewlines];
-    
-	// Finally, create attributed string.
- 	attributedSample = [[NSMutableAttributedString alloc] initWithString:sample];
-    attributedString = [attributedSample mutableString];
-    [attributedString insertString:ellipse atIndex:0];
-    [attributedString appendString:ellipse];
-	
-	// Find instances of search string and "bold" them.
-	foundRange = [sample rangeOfString:searchString options:NSCaseInsensitiveSearch];
-    if (foundRange.location != NSNotFound) {
-        // Bold the text range where the search term was found.
-        attributes = [[NSDictionary alloc] initWithObjectsAndKeys:[NSFont boldSystemFontOfSize:[NSFont systemFontSize]], NSFontAttributeName, nil];
-        [attributedSample setAttributes:attributes range:NSMakeRange(foundRange.location + 1, foundRange.length)];
-        [attributes release];
-    }
-    
-	// Create paragraph style that indicates truncation style.
-	paragraphStyle = [[NSParagraphStyle defaultParagraphStyle] mutableCopy];
-	[paragraphStyle setLineBreakMode:NSLineBreakByTruncatingTail];
-	attributes = [[NSDictionary alloc] initWithObjectsAndKeys:paragraphStyle, NSParagraphStyleAttributeName, nil];
-	// Add paragraph style.
-    [attributedSample addAttributes:attributes range:NSMakeRange(0, [attributedSample length])];
-	// Clean.
-	[attributes release];
-	[paragraphStyle release];
-	[extendedSelection release];
-	
-	return [attributedSample autorelease];
-}
-
-@end
-
-
-@implementation SKToolbarItem 
-
-- (id)delegate {
-    return delegate;
-}
-
-- (void)setDelegate:(id)newDelegate {
-    delegate = newDelegate;
-}
-
-- (void)validate {
-    if ([self view] && [delegate respondsToSelector:@selector(validateToolbarItem:)]) {
-        BOOL enabled = [[self delegate] validateToolbarItem:self];
-        [self setEnabled:enabled];
-    } else {
-        [super validate];
-    }
-}
-
-@end
-
-
-@interface SKMainWindow : NSWindow
-@end
-
-@implementation SKMainWindow
-
-- (void)sendEvent:(NSEvent *)theEvent {
-    if ([theEvent type] == NSLeftMouseDown || [theEvent type] == NSRightMouseDown)
-        [[SKPDFHoverWindow sharedHoverWindow] orderOut:nil];
-    [super sendEvent:theEvent];
-}
-
-- (void)resignMainWindow {
-    [[SKPDFHoverWindow sharedHoverWindow] orderOut:nil];
-    [super resignMainWindow];
-}
-
-- (void)resignKeyWindow {
-    [[SKPDFHoverWindow sharedHoverWindow] orderOut:nil];
-    [super resignKeyWindow];
 }
 
 @end
