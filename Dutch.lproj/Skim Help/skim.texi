@@ -447,7 +447,12 @@ U kunt opgeven met welke opties Skim nieuwe PDF-document weergeeft. Deze opties 
 @itemize
 @item Om de huidige weergave-opties van een PDF-document te bewaren, kies Weergave > 'Gebruik de huidige weergaveinstellingen als standaard'.
 @end itemize
+@itemize
+@item Om de initi‘le weergave-opties tot hun oorspronkelijke waarden te herstellen, kies Skim > Voorkeuren, kies Algemeen, en druk op de knop onder 'Herstel init‘le weergaveinstellingen voor:'.
+@end itemize
 @endbox
+
+Standaard gebruikt de beeldvullende modus dezelfde weergave-instellingen als de normale modus. U kunt echter ook aparte weergave-opties voor beeldvullende modus gebruiken. Volg eenvoudigweg de instructies hierboven terwijl u in beeldschermvullende modus bent. Om de menubalk te zien, beweegt u de muis naar de bovenzijde van het scherm. 
 
 @heading Zie ook
 @menu
