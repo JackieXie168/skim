@@ -44,6 +44,8 @@
     IBOutlet NSSlider *thumbnailSizeSlider;
     IBOutlet NSSlider *snapshotSizeSlider;
     IBOutlet NSPopUpButton *texEditorPopUpButton;
+    IBOutlet NSButton *revertPDFSettingsButton;
+    IBOutlet NSButton *revertFullScreenPDFSettingsButton;
     NSMutableArray *fonts;
     NSMutableArray *sizes;
     NSMutableArray *texEditorCommands;
@@ -62,6 +64,9 @@
 - (IBAction)changeDiscreteThumbnailSizes:(id)sender;
 - (IBAction)changeUpdateInterval:(id)sender;
 - (IBAction)changeTeXEditorPreset:(id)sender;
+
+- (IBAction)revertPDFViewSettings:(id)sender;
+- (IBAction)revertFullScreenPDFViewSettings:(id)sender;
 
 - (IBAction)resetAll:(id)sender;
 - (IBAction)resetCurrent:(id)sender;

@@ -64,14 +64,10 @@
 		CE15832E0BA0740000D5B03F /* ToolbarUnderlineNote.tiff in Resources */ = {isa = PBXBuildFile; fileRef = CE15832A0BA073FF00D5B03F /* ToolbarUnderlineNote.tiff */; };
 		CE15832F0BA0740000D5B03F /* UnderlineNoteAdorn.tiff in Resources */ = {isa = PBXBuildFile; fileRef = CE15832B0BA073FF00D5B03F /* UnderlineNoteAdorn.tiff */; };
 		CE1E25680BDA61E80011D9DD /* ReadNotesAccessoryView.nib in Resources */ = {isa = PBXBuildFile; fileRef = CE1E25660BDA61E80011D9DD /* ReadNotesAccessoryView.nib */; };
-		CE1E2B280BDAB6180011D9DD /* SKPDFSynchronizer.h in CopyFiles */ = {isa = PBXBuildFile; fileRef = CE1E2B260BDAB6180011D9DD /* SKPDFSynchronizer.h */; };
 		CE1E2B290BDAB6180011D9DD /* SKPDFSynchronizer.m in Sources */ = {isa = PBXBuildFile; fileRef = CE1E2B270BDAB6180011D9DD /* SKPDFSynchronizer.m */; };
-		CE1E2E5F0BDB6C1F0011D9DD /* SKDisplayTeXLineCommand.h in CopyFiles */ = {isa = PBXBuildFile; fileRef = CE1E2E5D0BDB6C1F0011D9DD /* SKDisplayTeXLineCommand.h */; };
 		CE1E2E600BDB6C1F0011D9DD /* SKDisplayTeXLineCommand.m in Sources */ = {isa = PBXBuildFile; fileRef = CE1E2E5E0BDB6C1F0011D9DD /* SKDisplayTeXLineCommand.m */; };
 		CE1E2F130BDB86A20011D9DD /* displayline.sh in Resources */ = {isa = PBXBuildFile; fileRef = CE1E2F120BDB86A10011D9DD /* displayline.sh */; };
-		CE1E301C0BDB9D5C0011D9DD /* NSScanner_SKExtensions.h in CopyFiles */ = {isa = PBXBuildFile; fileRef = CE1E301A0BDB9D5C0011D9DD /* NSScanner_SKExtensions.h */; };
 		CE1E301D0BDB9D5C0011D9DD /* NSScanner_SKExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = CE1E301B0BDB9D5C0011D9DD /* NSScanner_SKExtensions.m */; };
-		CE1E30280BDB9D8E0011D9DD /* NSCharacterSet_SKExtensions.h in CopyFiles */ = {isa = PBXBuildFile; fileRef = CE1E30260BDB9D8E0011D9DD /* NSCharacterSet_SKExtensions.h */; };
 		CE1E30290BDB9D8E0011D9DD /* NSCharacterSet_SKExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = CE1E30270BDB9D8E0011D9DD /* NSCharacterSet_SKExtensions.m */; };
 		CE1E39E10BDBD6AC0011D9DD /* skimnotes in Resources */ = {isa = PBXBuildFile; fileRef = CEF3BF750B99CA2900E12E3D /* skimnotes */; };
 		CE2BD83E0BD4132B00A5F4DB /* Sparkle.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CE2BD82A0BD4132B00A5F4DB /* Sparkle.framework */; };
@@ -227,10 +223,6 @@
 			dstSubfolderSpec = 10;
 			files = (
 				CE2BD8450BD4135600A5F4DB /* Sparkle.framework in CopyFiles */,
-				CE1E2B280BDAB6180011D9DD /* SKPDFSynchronizer.h in CopyFiles */,
-				CE1E2E5F0BDB6C1F0011D9DD /* SKDisplayTeXLineCommand.h in CopyFiles */,
-				CE1E301C0BDB9D5C0011D9DD /* NSScanner_SKExtensions.h in CopyFiles */,
-				CE1E30280BDB9D8E0011D9DD /* NSCharacterSet_SKExtensions.h in CopyFiles */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -162,7 +162,7 @@ typedef struct _SKPDFViewState {
     NSTimer                     *activityTimer;
     
     BOOL                        isPresentation;
-    SKPDFViewState              savedState;
+    NSMutableDictionary         *savedNormalSetup;
     
     float                       lastLeftSidePaneWidth;
     float                       lastRightSidePaneWidth;

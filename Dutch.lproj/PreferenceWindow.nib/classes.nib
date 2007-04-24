@@ -13,10 +13,14 @@
                 changeUpdateInterval = id; 
                 resetAll = id; 
                 resetCurrent = id; 
+                revertFullScreenPDFViewSettings = id; 
+                revertPDFViewSettings = id; 
             }; 
             CLASS = SKPreferenceController; 
             LANGUAGE = ObjC; 
             OUTLETS = {
+                revertFullScreenPDFSettingsButton = NSButton; 
+                revertPDFSettingsButton = NSButton; 
                 snapshotSizeSlider = NSSlider; 
                 tabView = NSTabView; 
                 texEditorPopUpButton = NSPopUpButton; 

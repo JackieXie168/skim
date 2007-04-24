@@ -126,6 +126,7 @@ static NSString *SKDocumentToolbarNotesPaneItemIdentifier = @"SKDocumentToolbarN
         lastViewedPages = [[NSMutableArray alloc] init];
         // @@ remove or set to nil for Leopard?
         pdfOutlineItems = [[NSMutableArray alloc] init];
+        savedNormalSetup = [[NSMutableDictionary alloc] init];
         leftSidePaneState = SKOutlineSidePaneState;
         rightSidePaneState = SKNoteSidePaneState;
         temporaryAnnotations = CFSetCreateMutable(kCFAllocatorDefault, 0, &kCFTypeSetCallBacks);
@@ -153,6 +154,7 @@ static NSString *SKDocumentToolbarNotesPaneItemIdentifier = @"SKDocumentToolbarN
     [mainWindow release];
     [toolbarItems release];
     [pdfOutlineItems release];
+    [savedNormalSetup release];
     [super dealloc];
 }
 
@@ -381,14 +383,13 @@ static NSString *SKDocumentToolbarNotesPaneItemIdentifier = @"SKDocumentToolbarN
 - (NSDictionary *)currentPDFSettings {
     NSMutableDictionary *setup = [NSMutableDictionary dictionary];
     
-    [setup setObject:[NSNumber numberWithBool:[pdfView displaysPageBreaks]] forKey:@"displaysPageBreaks"];
-    [setup setObject:[NSNumber numberWithBool:[pdfView displaysAsBook]] forKey:@"displaysAsBook"];
-    [setup setObject:[NSNumber numberWithInt:[pdfView displayBox]] forKey:@"displayBox"];
     if ([self isPresentation]) {
-        [setup setObject:[NSNumber numberWithFloat:savedState.scaleFactor] forKey:@"scaleFactor"];
-        [setup setObject:[NSNumber numberWithBool:savedState.autoScales] forKey:@"autoScales"];
-        [setup setObject:[NSNumber numberWithInt:savedState.displayMode] forKey:@"displayMode"];
+        [setup setDictionary:savedNormalSetup];
+        [setup removeObjectsForKeys:[NSArray arrayWithObjects:@"hasHorizontalScroller", @"hasVerticalScroller", @"autoHidesScrollers", nil]];
     } else {
+        [setup setObject:[NSNumber numberWithBool:[pdfView displaysPageBreaks]] forKey:@"displaysPageBreaks"];
+        [setup setObject:[NSNumber numberWithBool:[pdfView displaysAsBook]] forKey:@"displaysAsBook"];
+        [setup setObject:[NSNumber numberWithInt:[pdfView displayBox]] forKey:@"displayBox"];
         [setup setObject:[NSNumber numberWithFloat:[pdfView scaleFactor]] forKey:@"scaleFactor"];
         [setup setObject:[NSNumber numberWithBool:[pdfView autoScales]] forKey:@"autoScales"];
         [setup setObject:[NSNumber numberWithInt:[pdfView displayMode]] forKey:@"displayMode"];
@@ -1204,19 +1205,30 @@ static NSString *SKDocumentToolbarNotesPaneItemIdentifier = @"SKDocumentToolbarN
     UpdateSystemActivity(UsrActivity);
 }
 
+- (void)saveNormalSetup {
+    if ([self isPresentation] == NO && [self isFullScreen] == NO) {
+        NSScrollView *scrollView = [[pdfView documentView] enclosingScrollView];
+        [savedNormalSetup setDictionary:[self currentSetup]];
+        [savedNormalSetup setObject:[NSNumber numberWithBool:[scrollView hasHorizontalScroller]] forKey:@"hasHorizontalScroller"];
+        [savedNormalSetup setObject:[NSNumber numberWithBool:[scrollView hasVerticalScroller]] forKey:@"hasVerticalScroller"];
+        [savedNormalSetup setObject:[NSNumber numberWithBool:[scrollView autohidesScrollers]] forKey:@"autohidesScrollers"];
+    }
+    
+    NSDictionary *fullScreenSetup = [[NSUserDefaults standardUserDefaults] objectForKey:SKDefaultFullScreenPDFDisplaySettingsKey];
+    if ([fullScreenSetup count])
+        [self applyPDFSettings:fullScreenSetup];
+}
+
 - (void)enterPresentationMode {
     NSScrollView *scrollView = [[pdfView documentView] enclosingScrollView];
+    [self saveNormalSetup];
     // Set up presentation mode
-    savedState.displayMode = [pdfView displayMode];
-    [pdfView setDisplayMode:kPDFDisplaySinglePage];
-    savedState.autoScales = [pdfView autoScales];
-    savedState.scaleFactor = [pdfView scaleFactor];
     [pdfView setAutoScales:YES];
-    savedState.hasHorizontalScroller = [scrollView hasHorizontalScroller];
+    [pdfView setDisplayMode:kPDFDisplaySinglePage];
+    [pdfView setDisplayBox:kPDFDisplayBoxCropBox];
+    [pdfView setDisplaysPageBreaks:YES];
     [scrollView setNeverHasHorizontalScroller:YES];
-    savedState.hasVerticalScroller = [scrollView hasVerticalScroller];
     [scrollView setNeverHasVerticalScroller:YES];
-    savedState.autoHidesScrollers = [scrollView autohidesScrollers];
     [scrollView setAutohidesScrollers:YES];
     
     if ([pdfView hasReadingBar])
@@ -1239,18 +1251,12 @@ static NSString *SKDocumentToolbarNotesPaneItemIdentifier = @"SKDocumentToolbarN
     activityTimer = nil;
     
     NSScrollView *scrollView = [[pdfView documentView] enclosingScrollView];
-    [pdfView setDisplayMode:savedState.displayMode];
-    if (savedState.autoScales) {
-        [pdfView setAutoScales:YES];
-    } else {
-        [pdfView setAutoScales:NO];
-        [pdfView setScaleFactor:savedState.scaleFactor];
-    }		
-    [scrollView setNeverHasHorizontalScroller:NO];		
-    [scrollView setHasHorizontalScroller:savedState.hasHorizontalScroller];		
-    [scrollView setNeverHasVerticalScroller:NO];		
-    [scrollView setHasVerticalScroller:savedState.hasVerticalScroller];
-    [scrollView setAutohidesScrollers:savedState.autoHidesScrollers];		
+    [self applyPDFSettings:savedNormalSetup];
+    [scrollView setNeverHasHorizontalScroller:NO];
+    [scrollView setHasHorizontalScroller:[[savedNormalSetup objectForKey:@"hasHorizontalScroller"] boolValue]];
+    [scrollView setNeverHasVerticalScroller:NO];
+    [scrollView setHasVerticalScroller:[[savedNormalSetup objectForKey:@"hasVerticalScroller"] boolValue]];
+    [scrollView setAutohidesScrollers:[[savedNormalSetup objectForKey:@"autoHidesScrollers"] boolValue]];
     
     NSColor *backgroundColor = [NSUnarchiver unarchiveObjectWithData:[[NSUserDefaults standardUserDefaults] dataForKey:SKFullScreenBackgroundColorKey]];
     [pdfView setBackgroundColor:backgroundColor];
@@ -1270,10 +1276,16 @@ static NSString *SKDocumentToolbarNotesPaneItemIdentifier = @"SKDocumentToolbarN
     if ([screen isEqual:[[NSScreen screens] objectAtIndex:0]])
         SetSystemUIMode(kUIModeAllHidden, kUIOptionAutoShowMenuBar);
     
+    [self saveNormalSetup];
+    
     if ([self isPresentation])
         [self exitPresentationMode];
     else
         [self goFullScreen];
+    
+    NSDictionary *fullScreenSetup = [[NSUserDefaults standardUserDefaults] dictionaryForKey:SKDefaultFullScreenPDFDisplaySettingsKey];
+    if ([fullScreenSetup count])
+        [self applyPDFSettings:fullScreenSetup];
     
     [pdfView setHasNavigation:YES autohidesCursor:NO];
     [self showSideWindows];
@@ -1316,7 +1328,9 @@ static NSString *SKDocumentToolbarNotesPaneItemIdentifier = @"SKDocumentToolbarN
     
     if ([self isPresentation])
         [self exitPresentationMode];
-    
+    else
+        [self applyPDFSettings:savedNormalSetup];
+   
     SetSystemUIMode(kUIModeNormal, 0);
     
     [self removeFullScreen];
@@ -1411,7 +1425,10 @@ static NSString *SKDocumentToolbarNotesPaneItemIdentifier = @"SKDocumentToolbarN
 }
 
 - (IBAction)savePDFSettingToDefaults:(id)sender {
-    [[NSUserDefaults standardUserDefaults] setObject:[self currentPDFSettings] forKey:SKDefaultPDFDisplaySettingsKey];
+    if ([self isFullScreen])
+        [[NSUserDefaults standardUserDefaults] setObject:[self currentPDFSettings] forKey:SKDefaultFullScreenPDFDisplaySettingsKey];
+    else if ([self isPresentation] == NO)
+        [[NSUserDefaults standardUserDefaults] setObject:[self currentPDFSettings] forKey:SKDefaultPDFDisplaySettingsKey];
 }
 
 - (IBAction)printDocument:(id)sender{
@@ -3161,6 +3178,12 @@ static NSArray *prioritySortedThumbnails(NSArray *dirtyNails, int currentPageInd
         else
             [menuItem setTitle:NSLocalizedString(@"Show Reading Bar", @"Menu item title")];
         return YES;
+    } else if (action == @selector(savePDFSettingToDefaults:)) {
+        if ([self isFullScreen])
+            [menuItem setTitle:NSLocalizedString(@"Use Current View Settings as Default for Full Screen", @"Menu item title")];
+        else
+            [menuItem setTitle:NSLocalizedString(@"Use Current View Settings as Default", @"Menu item title")];
+        return [self isPresentation] == NO;
     }
     return YES;
 }
