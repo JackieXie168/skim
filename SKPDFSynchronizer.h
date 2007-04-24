@@ -41,17 +41,24 @@
 
 @interface SKPDFSynchronizer : NSObject {
     NSString *fileName;
+    NSDate *lastModDate;
     NSMutableArray *pages;
     NSMutableDictionary *lines;
-    NSMutableDictionary *records;
-    int version;
-    NSDate *lastModDate;
 }
 
-- (BOOL)parsePdfsyncFile:(NSString *)filePath;
-- (BOOL)parsePdfsyncFileIfNeeded:(NSString *)path;
+- (NSString *)fileName;
+- (void)setFileName:(NSString *)newFileName;
+
+- (BOOL)parsePdfsyncFile;
+- (BOOL)parsePdfsyncFileIfNeeded;
 
 - (BOOL)getLine:(int *)line file:(NSString **)file forLocation:(NSPoint)point inRect:(NSRect)rect atPageIndex:(unsigned int)pageIndex;
 - (BOOL)getPageIndex:(unsigned int *)pageIndex location:(NSPoint *)point forLine:(int)line inFile:(NSString *)file;
 
+@end
+
+
+@interface NSMutableDictionary (SKExtensions)
+- (void)setIntValue:(int)value forKey:(id)key;
+- (void)setFloatValue:(float)value forKey:(id)key;
 @end

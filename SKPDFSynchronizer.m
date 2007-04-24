@@ -50,8 +50,6 @@ static NSPoint pdfOffset = {0.0, 0.0};
     if (self = [super init]) {
         pages = [[NSMutableArray alloc] init];
         lines = [[NSMutableDictionary alloc] init];
-        records = [[NSMutableDictionary alloc] init];
-        version = 0;
         fileName = nil;
         lastModDate = nil;
     }
@@ -61,61 +59,88 @@ static NSPoint pdfOffset = {0.0, 0.0};
 - (void)dealloc {
     [pages release];
     [lines release];
-    [records release];
     [fileName release];
     [lastModDate release];
     [super dealloc];
 }
 
+- (NSString *)fileName {
+    return [[fileName retain] autorelease];
+}
 
-- (BOOL)parsePdfsyncFileIfNeeded:(NSString *)path {
+- (void)setFileName:(NSString *)newFileName {
+    if (fileName != newFileName) {
+        if ([fileName isEqualToString:newFileName] == NO && lastModDate) {
+            [lastModDate release];
+            lastModDate = nil;
+        }
+        [fileName release];
+        fileName = [newFileName retain];
+    }
+}
+
+- (BOOL)parsePdfsyncFileIfNeeded {
     NSFileManager *fm = [NSFileManager defaultManager];
-    NSDate *modDate = [[fm fileAttributesAtPath:path traverseLink:NO] fileModificationDate];
     
-    if ([fm fileExistsAtPath:path] == NO)
+    if (fileName == nil || [fm fileExistsAtPath:fileName] == NO)
         return NO;
     
-    if (lastModDate == nil || [path isEqualToString:fileName] == NO || [modDate compare:lastModDate] == NSOrderedDescending)
-        return [self parsePdfsyncFile:path];
+    NSDate *modDate = [[fm fileAttributesAtPath:fileName traverseLink:NO] fileModificationDate];
+   
+     if (lastModDate == nil || [modDate compare:lastModDate] == NSOrderedDescending)
+        return [self parsePdfsyncFile];
     
     return YES;
 }
 
-- (BOOL)parsePdfsyncFile:(NSString *)path {
+static NSString *SKTeXSourceFile(NSString *file, NSString *base) {
+    if ([[file pathExtension] caseInsensitiveCompare:@"tex"] != NSOrderedSame)
+        file = [file stringByAppendingPathExtension:@"tex"];
+    if ([file hasPrefix:@"/"] == NO)
+        file = [base stringByAppendingPathComponent:file];
+    return file;
+}
+
+static NSMutableDictionary *SKRecordForRecordIndex(NSMutableDictionary *records, int recordIndex) {
+    NSNumber *recordNumber = [[NSNumber alloc] initWithInt:recordIndex];
+    NSMutableDictionary *record = [records objectForKey:recordNumber];
+    if (record == nil) {
+        record = [[NSMutableDictionary alloc] initWithObjectsAndKeys:recordNumber, @"recordIndex", nil];
+        [records setObject:record forKey:recordNumber];
+        [record release];
+    }
+    [recordNumber release];
+    return record;
+}
+
+- (BOOL)parsePdfsyncFile {
     NSFileManager *fm = [NSFileManager defaultManager];
     
     [pages removeAllObjects];
     [lines removeAllObjects];
     
-    if ([fm fileExistsAtPath:path] == NO)
+    if ([fm fileExistsAtPath:fileName] == NO)
         return NO;
     
     [lastModDate release];
-    lastModDate = [[[fm fileAttributesAtPath:path traverseLink:NO] fileModificationDate] retain];
-    
-    [fileName release];
-    fileName = [path retain];
+    lastModDate = [[[fm fileAttributesAtPath:fileName traverseLink:NO] fileModificationDate] retain];
     
     NSString *basePath = [fileName stringByDeletingLastPathComponent];
+    NSMutableDictionary *records = [NSMutableDictionary dictionary];
     NSMutableArray *files = [NSMutableArray array];
     NSString *pdfsyncString = [NSString stringWithContentsOfFile:fileName encoding:NSUTF8StringEncoding error:NULL];
     NSString *file;
-    int recordIndex, line, column;
+    int recordIndex, line;
     float x, y;
     NSMutableDictionary *record;
     NSMutableArray *array;
-    NSNumber *recordNumber;
-    NSNumber *lineNumber;
-    NSNumber *pageNumber;
-    NSNumber *xNumber;
-    NSNumber *yNumber;
+    NSScanner *scanner;
+    unichar ch;
     
     if ([pdfsyncString length] == 0)
         return NO;
     
-    NSScanner *scanner = [[NSScanner alloc] initWithString:pdfsyncString];
-    unichar ch;
-    
+    scanner = [[NSScanner alloc] initWithString:pdfsyncString];
     [scanner setCharactersToBeSkipped:[NSCharacterSet whitespaceCharacterSet]];
     
     if ([scanner scanUpToCharactersFromSet:[NSCharacterSet newlineCharacterSet] intoString:&file] == NO ||
@@ -124,18 +149,16 @@ static NSPoint pdfOffset = {0.0, 0.0};
         return NO;
     }
     
-    if ([[file pathExtension] caseInsensitiveCompare:@"tex"] != NSOrderedSame)
-        file = [file stringByAppendingPathExtension:@"tex"];
-    
-    file = [basePath stringByAppendingPathComponent:file];
+    file = SKTeXSourceFile(file, basePath);
     [files addObject:file];
     
     array = [[NSMutableArray alloc] init];
     [lines setObject:array forKey:file];
     [array release];
     
+    // we ignore the version
     if ([scanner scanString:@"version" intoString:NULL] == NO ||
-        [scanner scanInt:&version] == NO) {
+        [scanner scanInt:NULL] == NO) {
         [scanner release];
         return NO;
     }
@@ -148,64 +171,46 @@ static NSPoint pdfOffset = {0.0, 0.0};
         
         if (ch == 'l') {
             if ([scanner scanInt:&recordIndex] && [scanner scanInt:&line]) {
-                [scanner scanInt:&column];
-                recordNumber = [[NSNumber alloc] initWithInt:recordIndex];
-                lineNumber = [[NSNumber alloc] initWithInt:line];
-                record = [records objectForKey:recordNumber];
-                if (record == nil) {
-                    record = [[NSMutableDictionary alloc] init];
-                    [records setObject:record forKey:recordNumber];
-                    [record release];
-                }
+                // we ignore the column
+                [scanner scanInt:NULL];
+                record = SKRecordForRecordIndex(records, recordIndex);
                 [record setObject:file forKey:@"file"];
-                [record setObject:lineNumber forKey:@"line"];
+                [record setIntValue:line forKey:@"line"];
                 [[lines objectForKey:file] addObject:record];
-                [lineNumber release];
-                [recordNumber release];
             }
         } else if (ch == 'p') {
+            // we ignore * and + modifiers
             [scanner scanString:@"*" intoString:NULL] || [scanner scanString:@"+" intoString:NULL];
             if ([scanner scanInt:&recordIndex] && [scanner scanFloat:&x] && [scanner scanFloat:&y]) {
-                recordNumber = [[NSNumber alloc] initWithInt:recordIndex];
-                pageNumber = [[NSNumber alloc] initWithUnsignedInt:[pages count] - 1];
-                xNumber = [[NSNumber alloc] initWithFloat:x / 65536 + pdfOffset.x];
-                yNumber = [[NSNumber alloc] initWithFloat:y / 65536 + pdfOffset.y];
-                record = [records objectForKey:recordNumber];
-                if (record == nil) {
-                    record = [[NSMutableDictionary alloc] initWithObjectsAndKeys:recordNumber, @"recordIndex", nil];
-                    [records setObject:record forKey:recordNumber];
-                    [record release];
-                }
-                [record setObject:pageNumber forKey:@"page"];
-                [record setObject:xNumber forKey:@"x"];
-                [record setObject:yNumber forKey:@"y"];
+                record = SKRecordForRecordIndex(records, recordIndex);
+                [record setIntValue:[pages count] - 1 forKey:@"page"];
+                [record setFloatValue:x / 65536 + pdfOffset.x forKey:@"x"];
+                [record setFloatValue:y / 65536 + pdfOffset.y forKey:@"y"];
                 [[pages lastObject] addObject:record];
-                [pageNumber release];
-                [xNumber release];
-                [yNumber release];
-                [recordNumber release];
             }
         } else if (ch == 's') {
+            // start of a new page, the scanned integer should always equal [pages count]+1
             [scanner scanInt:NULL];
             array = [[NSMutableArray alloc] init];
             [pages addObject:array];
             [array release];
         } else if (ch == '(') {
+            // start of a new source file
             if ([scanner scanUpToCharactersFromSet:[NSCharacterSet newlineCharacterSet] intoString:&file]) {
-                if ([[file pathExtension] caseInsensitiveCompare:@"tex"] != NSOrderedSame)
-                    file = [file stringByAppendingPathExtension:@"tex"];
-                file = [basePath stringByAppendingPathComponent:file];
+                file = SKTeXSourceFile(file, basePath);
                 [files addObject:file];
-                record = [lines objectForKey:file];
-                if (record == nil) {
+                if ([lines objectForKey:file] == nil) {
                     array = [[NSMutableArray alloc] init];
                     [lines setObject:array forKey:file];
                     [array release];
                 }
             }
         } else if (ch == ')') {
-            [files removeLastObject];
-            file = [files lastObject];
+            // closing of a source file
+            if ([files count]) {
+                [files removeLastObject];
+                file = [files lastObject];
+            }
         }
         
         [scanner scanUpToCharactersFromSet:[NSCharacterSet newlineCharacterSet] intoString:NULL];
@@ -217,23 +222,18 @@ static NSPoint pdfOffset = {0.0, 0.0};
     NSSortDescriptor *lineSortDescriptor = [[[NSSortDescriptor alloc] initWithKey:@"line" ascending:YES] autorelease];
     NSSortDescriptor *xSortDescriptor = [[[NSSortDescriptor alloc] initWithKey:@"x" ascending:YES] autorelease];
     NSSortDescriptor *ySortDescriptor = [[[NSSortDescriptor alloc] initWithKey:@"y" ascending:NO] autorelease];
-    NSEnumerator *e;
-    NSArray *sortDescriptors;
     
-    e = [lines objectEnumerator];
-    sortDescriptors = [NSArray arrayWithObjects:lineSortDescriptor, nil];
-    while (array = [e nextObject])
-        [array sortUsingDescriptors:sortDescriptors];
-    
-    e = [pages objectEnumerator];
-    sortDescriptors = [NSArray arrayWithObjects:ySortDescriptor, xSortDescriptor, nil];
-    while (array = [e nextObject])
-        [array sortUsingDescriptors:sortDescriptors];
+    [[lines allValues] makeObjectsPerformSelector:@selector(sortUsingDescriptors:)
+                                       withObject:[NSArray arrayWithObjects:lineSortDescriptor, nil]];
+    [pages makeObjectsPerformSelector:@selector(sortUsingDescriptors:)
+                           withObject:[NSArray arrayWithObjects:ySortDescriptor, xSortDescriptor, nil]];
     
     return YES;
 }
 
 - (BOOL)getLine:(int *)line file:(NSString **)file forLocation:(NSPoint)point inRect:(NSRect)rect atPageIndex:(unsigned int)pageIndex {
+    if ([self parsePdfsyncFileIfNeeded] == NO)
+        return NO;
     if (pageIndex >= [pages count])
         return NO;
     
@@ -290,9 +290,9 @@ static NSPoint pdfOffset = {0.0, 0.0};
     
     if (record) {
         if (line)
-            *line = [record objectForKey:@"line"] ? [[record objectForKey:@"line"] intValue] : -1;
+            *line = [[record objectForKey:@"line"] intValue];
         if (file)
-            *file = [record objectForKey:@"file"] ? [record objectForKey:@"file"] : nil;
+            *file = [record objectForKey:@"file"];
         return YES;
     } else {
         if (line)
@@ -304,6 +304,8 @@ static NSPoint pdfOffset = {0.0, 0.0};
 }
 
 - (BOOL)getPageIndex:(unsigned int *)pageIndex location:(NSPoint *)point forLine:(int)line inFile:(NSString *)file {
+    if ([self parsePdfsyncFileIfNeeded] == NO)
+        return NO;
     if (line < 0 || file == nil || [lines objectForKey:file] == nil)
         return NO;
     
@@ -347,9 +349,9 @@ static NSPoint pdfOffset = {0.0, 0.0};
     
     if (record) {
         if (pageIndex)
-            *pageIndex = [record objectForKey:@"page"] ? [[record objectForKey:@"page"] unsignedIntValue] : NSNotFound;
+            *pageIndex = [[record objectForKey:@"page"] unsignedIntValue];
         if (point)
-            *point = [record objectForKey:@"x"] ? NSMakePoint([[record objectForKey:@"x"] floatValue], [[record objectForKey:@"y"] floatValue]) : NSZeroPoint;
+            *point = NSMakePoint([[record objectForKey:@"x"] floatValue], [[record objectForKey:@"y"] floatValue]);
         return YES;
     } else {
         if (pageIndex)
@@ -358,6 +360,23 @@ static NSPoint pdfOffset = {0.0, 0.0};
             *point = NSZeroPoint;
         return NO;
     }
+}
+
+@end
+
+
+@implementation NSMutableDictionary (SKExtensions)
+
+- (void)setIntValue:(int)value forKey:(id)key {
+    NSNumber *number = [[NSNumber alloc] initWithInt:value];
+    [self setValue:number forKey:key];
+    [number release];
+}
+
+- (void)setFloatValue:(float)value forKey:(id)key {
+    NSNumber *number = [[NSNumber alloc] initWithFloat:value];
+    [self setValue:number forKey:key];
+    [number release];
 }
 
 @end
