@@ -1945,16 +1945,22 @@ static inline NSRect rectWithCorners(NSPoint p1, NSPoint p2)
     i = [annotations count];
     
     while (i-- > 0) {
-        PDFAnnotation *annotationHit = [annotations objectAtIndex:i];
+        PDFAnnotation *annotation = [annotations objectAtIndex:i];
+        NSRect bounds = [annotation bounds];
         
         // Hit test annotation.
-        if ([annotationHit isNoteAnnotation] && [annotationHit hitTest:pagePoint]) {
-            mouseDownInAnnotation = YES;
-            newActiveAnnotation = annotationHit;
-            // Remember click point relative to annotation origin.
-            clickDelta.x = pagePoint.x - NSMinX([annotationHit bounds]);
-            clickDelta.y = pagePoint.y - NSMinY([annotationHit bounds]);
-            break;
+        if ([annotation isNoteAnnotation]) {
+            if ([annotation hitTest:pagePoint]) {
+                mouseDownInAnnotation = YES;
+                newActiveAnnotation = annotation;
+                // Remember click point relative to annotation origin.
+                clickDelta.x = pagePoint.x - NSMinX(bounds);
+                clickDelta.y = pagePoint.y - NSMinY(bounds);
+                break;
+            } else if (NSPointInRect(pagePoint, bounds)) {
+                // register this, so we can do our own selection later
+                mouseDownInAnnotation = YES;
+            }
         }
     }
     
