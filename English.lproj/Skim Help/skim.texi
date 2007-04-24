@@ -443,9 +443,14 @@ You can choose the PDF display options at which Skim displays new PDF documents.
 
 @box{taskbox}
 @itemize
-@item To save the current display options of a document as the default to use for newly opened documents, select View > Use Current View Settings as Default
+@item To save the current display options of a document as the default to use for newly opened documents, select View > Use Current View Settings as Default.
+@end itemize
+@itemize
+@item To revert the initial display settings to their original default values, choose Skim > Preferences, choose General, and press the button below 'Revert initial PDF view settings for:'.
 @end itemize
 @endbox
+
+By default, full screen mode uses the same view settings as normal mode. You can however also use separate PDF display options for full screen mode. Simply follow the instructions above while you are in full screen mode. To see the menu bar, move the mouse to the top of the screen. 
 
 @heading See also
 @menu
