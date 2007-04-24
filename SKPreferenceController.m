@@ -78,11 +78,16 @@
         
         isCustomTeXEditor = [texEditorCommands containsObject:[[NSUserDefaults standardUserDefaults] stringForKey:SKTeXEditorCommandKey]] == NO || 
                             [texEditorArguments containsObject:[[NSUserDefaults standardUserDefaults] stringForKey:SKTeXEditorArgumentsKey]] == NO;
+        
+        [[NSUserDefaultsController sharedUserDefaultsController] addObserver:self forKey:SKDefaultPDFDisplaySettingsKey];
+        [[NSUserDefaultsController sharedUserDefaultsController] addObserver:self forKey:SKDefaultFullScreenPDFDisplaySettingsKey];
     }
     return self;
 }
 
 - (void)dealloc {
+    [[NSUserDefaultsController sharedUserDefaultsController] removeObserver:self forKey:SKDefaultPDFDisplaySettingsKey];
+    [[NSUserDefaultsController sharedUserDefaultsController] removeObserver:self forKey:SKDefaultFullScreenPDFDisplaySettingsKey];
     [resettableKeys release];
     [fonts release];
     [sizes release];
@@ -95,7 +100,15 @@
     return @"PreferenceWindow";
 }
 
+- (void)updateRevertButtons {
+    NSDictionary *initialValues = [[NSUserDefaultsController sharedUserDefaultsController] initialValues];
+    NSUserDefaults *sud = [NSUserDefaults standardUserDefaults];
+    [revertPDFSettingsButton setEnabled:[[initialValues objectForKey:SKDefaultPDFDisplaySettingsKey] isEqual:[sud dictionaryForKey:SKDefaultPDFDisplaySettingsKey]] == NO];
+    [revertFullScreenPDFSettingsButton setEnabled:[[initialValues objectForKey:SKDefaultFullScreenPDFDisplaySettingsKey] isEqual:[sud dictionaryForKey:SKDefaultFullScreenPDFDisplaySettingsKey]] == NO];
+}
+
 - (void)windowDidLoad {
+    [self updateRevertButtons];
     if (isCustomTeXEditor) {
         [texEditorPopUpButton selectItem:[texEditorPopUpButton lastItem]];
     } else {
@@ -154,6 +167,14 @@
     }
 }
 
+- (IBAction)revertPDFViewSettings:(id)sender {
+    [[NSUserDefaultsController sharedUserDefaultsController] revertToInitialValueForKey:SKDefaultPDFDisplaySettingsKey];
+}
+
+- (IBAction)revertFullScreenPDFViewSettings:(id)sender {
+    [[NSUserDefaultsController sharedUserDefaultsController] revertToInitialValueForKey:SKDefaultFullScreenPDFDisplaySettingsKey];
+}
+
 - (void)resetSheetDidEnd:(NSWindow *)sheet returnCode:(int)returnCode contextInfo:(void *)contextInfo {
     if (returnCode == NSAlertDefaultReturn) {
         NSString *tabID = (NSString *)contextInfo;
@@ -193,6 +214,19 @@
                       modalDelegate:self
                      didEndSelector:@selector(resetSheetDidEnd:returnCode:contextInfo:)
                         contextInfo:[[tabView selectedTabViewItem] identifier]];
+}
+
+#pragma mark KVO
+
+- (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context {
+    if (object == [NSUserDefaultsController sharedUserDefaultsController] && [keyPath hasPrefix:@"values."]) {
+        NSString *key = [keyPath substringFromIndex:7];
+        if ([key isEqualToString:SKDefaultPDFDisplaySettingsKey] || [key isEqualToString:SKDefaultFullScreenPDFDisplaySettingsKey]) {
+            [self updateRevertButtons];
+        }
+    } else {
+        [super observeValueForKeyPath:keyPath ofObject:object change:change context:context];
+    }
 }
 
 @end

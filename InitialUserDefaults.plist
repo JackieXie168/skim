@@ -24,6 +24,23 @@
         <false/>
         <key>SKRememberLastPageViewed</key>
         <false/>
+        <key>SKDefaultPDFDisplaySettings</key>
+        <dict>
+            <key>scaleFactor</key>
+            <real>1.0</real>
+            <key>autoScales</key>
+            <false/>
+            <key>displaysPageBreaks</key>
+            <true/>
+            <key>displaysAsBook</key>
+            <false/>
+            <key>displayMode</key>
+            <integer>1</integer>
+            <key>displayBox</key>
+            <integer>1</integer>
+        </dict>
+        <key>SKDefaultFullScreenPDFDisplaySettings</key>
+        <dict/>
         <key>SKAutoSaveSkimNotes</key>
         <false/>
         <key>SKSearchHighlightColor</key>
@@ -62,21 +79,6 @@
         <string>LucidaGrande</string>
         <key>SKTextNoteFontSize</key>
         <real>11.0</real>
-        <key>SKDefaultPDFDisplaySettings</key>
-        <dict>
-            <key>scaleFactor</key>
-            <real>1.0</real>
-            <key>autoScales</key>
-            <false/>
-            <key>displaysPageBreaks</key>
-            <true/>
-            <key>displaysAsBook</key>
-            <false/>
-            <key>displayMode</key>
-            <integer>1</integer>
-            <key>displayBox</key>
-            <integer>1</integer>
-        </dict>
         <key>SKFreeTextNoteColor</key>
         <data>
 	BAt0eXBlZHN0cmVhbYED6IQBQISEhAdOU0NvbG9yAISECE5TT2JqZWN0AIWEAWMBhARm
@@ -136,6 +138,8 @@
             <string>SKOpenFilesMaximized</string>
             <string>SKOpenContentsPaneOnlyForTOC</string>
             <string>SKRememberLastPageViewed</string>
+            <string>SKDefaultPDFDisplaySettings</string>
+            <string>SKDefaultFullScreenPDFDisplaySettings</string>
             <string>SKAutoSaveSkimNotes</string>
             <string>SKSnapshotsOnTop</string>
             <string>SUCheckAtStartup</string>
@@ -181,7 +185,6 @@
             <string>SKLastOpenFileNames</string>
             <string>SKLastToolMode</string>
             <string>SKBlankAllWindows</string>
-            <string>SKDefaultPDFDisplaySettings</string>
         </array>
     </dict>
 </dict>
