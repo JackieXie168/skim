@@ -120,7 +120,7 @@
         <key>SKAutoCheckFileUpdate</key>
         <false/>
         <key>SKTeXEditorCommand</key>
-        <string>mate</string>
+        <string>/Applications/TextMate.app/Contents/Resources/mate</string>
         <key>SKTeXEditorArguments</key>
         <string>-l %line "%file"</string>
         <key>SUCheckAtStartup</key>
