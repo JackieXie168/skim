@@ -2632,20 +2632,15 @@ static inline NSRect rectWithCorners(NSPoint p1, NSPoint p2)
         if ([synchronizer getLine:&line file:&file forLocation:location inRect:rect atPageIndex:pageIndex] &&
             [[NSFileManager defaultManager] fileExistsAtPath:file]) {
             
-            NSTask *task = [[[NSTask alloc] init] autorelease];
             NSString *editorCmd = [[NSUserDefaults standardUserDefaults] objectForKey:SKTeXEditorCommandKey];
-            NSMutableString *argString = [[[NSUserDefaults standardUserDefaults] objectForKey:SKTeXEditorArgumentsKey] mutableCopy];
-            NSArray *arguments;
+            NSMutableString *cmdString = [[[[NSUserDefaults standardUserDefaults] objectForKey:SKTeXEditorArgumentsKey] mutableCopy] autorelease];
             
-            [argString replaceOccurrencesOfString:@"%file" withString:file options:NSLiteralSearch range: NSMakeRange(0, [argString length] )];
-            [argString replaceOccurrencesOfString:@"%line" withString:[NSString stringWithFormat:@"%d", line] options:NSLiteralSearch range:NSMakeRange(0, [argString length])];
-            arguments = [argString shellScriptArgumentsArray];
-            [argString release];
+            [cmdString replaceOccurrencesOfString:@"%file" withString:file options:NSLiteralSearch range: NSMakeRange(0, [cmdString length] )];
+            [cmdString replaceOccurrencesOfString:@"%line" withString:[NSString stringWithFormat:@"%d", line] options:NSLiteralSearch range:NSMakeRange(0, [cmdString length])];
+            [cmdString insertString:@" " atIndex:0];
+            [cmdString insertString:editorCmd atIndex:0];
             
-            [task setCurrentDirectoryPath:[file stringByDeletingLastPathComponent]];
-            [task setLaunchPath:editorCmd];
-            [task setArguments:arguments];
-            [task launch];
+            [NSTask launchedTaskWithLaunchPath:@"/bin/sh" arguments:[NSArray arrayWithObjects:@"-c", cmdString, nil]];
             
         } else NSBeep();
     }

@@ -42,6 +42,15 @@
 #import "SKApplicationController.h"
 #import <Sparkle/Sparkle.h>
 
+#define TEXTMATE_CMD        @"mate"
+#define TEXTMATE_ARGS       @"-l %line \"%file\""
+#define BBEDIT_CMD          @"bbedit"
+#define BBEDIT_ARGS         @"+%line \"%file\""
+#define TEXTWRANGLER_CMD    @"edit"
+#define TEXTWRANGLER_ARGS   @"+%line \"%file\""
+#define EMACS_CMD           @"/Applications/Emacs.app/Contents/MacOS/bin/emacsclient"
+#define EMACS_ARGS          @"--no-wait +%line \"%file\""
+
 @implementation SKPreferenceController
 
 + (id)sharedPrefenceController {
@@ -73,8 +82,8 @@
                                                         [NSNumber numberWithFloat:14.0], [NSNumber numberWithFloat:16.0], [NSNumber numberWithFloat:18.0], 
                                                         [NSNumber numberWithFloat:20.0], [NSNumber numberWithFloat:24.0], [NSNumber numberWithFloat:28.0], 
                                                         [NSNumber numberWithFloat:32.0], [NSNumber numberWithFloat:48.0], [NSNumber numberWithFloat:64.0], nil];
-        texEditorCommands = [[NSMutableArray alloc] initWithObjects:@"/Applications/TextMate.app/Contents/Resources/mate", @"/Applications/BBEdit.app/Contents/Resources/bbedit", @"/Applications/TextWrangler.app/Contents/Resources/edit", @"/Applications/Emacs.app/Contents/MacOS/bin/emacsclient", nil];
-        texEditorArguments = [[NSMutableArray alloc] initWithObjects:@"-l %line \"%file\"", @"+%line \"%file\"", @"+%line \"%file\"", @"--no-wait +%line \"%file\"", nil];
+        texEditorCommands = [[NSMutableArray alloc] initWithObjects:TEXTMATE_CMD, BBEDIT_CMD, TEXTWRANGLER_CMD, EMACS_CMD, nil];
+        texEditorArguments = [[NSMutableArray alloc] initWithObjects:TEXTMATE_ARGS, BBEDIT_ARGS,TEXTWRANGLER_ARGS, EMACS_ARGS, nil];
         
         isCustomTeXEditor = [texEditorCommands containsObject:[[NSUserDefaults standardUserDefaults] stringForKey:SKTeXEditorCommandKey]] == NO || 
                             [texEditorArguments containsObject:[[NSUserDefaults standardUserDefaults] stringForKey:SKTeXEditorArgumentsKey]] == NO;
