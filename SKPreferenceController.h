@@ -46,10 +46,7 @@
     IBOutlet NSPopUpButton *texEditorPopUpButton;
     IBOutlet NSButton *revertPDFSettingsButton;
     IBOutlet NSButton *revertFullScreenPDFSettingsButton;
-    NSMutableArray *fonts;
-    NSMutableArray *sizes;
-    NSMutableArray *texEditorCommands;
-    NSMutableArray *texEditorArguments;
+    NSArray *fonts;
     NSDictionary *resettableKeys;
     BOOL isCustomTeXEditor;
 }
@@ -57,7 +54,8 @@
 + (id)sharedPrefenceController;
 
 - (NSArray *)fonts;
-- (NSArray *)sizes;
+- (unsigned)countOfSizes;
+- (id)objectInSizesAtIndex:(unsigned)index;
 - (BOOL)isCustomTeXEditor;
 - (void)setCustomTeXEditor:(BOOL)flag;
 

@@ -42,14 +42,10 @@
 #import "SKApplicationController.h"
 #import <Sparkle/Sparkle.h>
 
-#define TEXTMATE_CMD        @"mate"
-#define TEXTMATE_ARGS       @"-l %line \"%file\""
-#define BBEDIT_CMD          @"bbedit"
-#define BBEDIT_ARGS         @"+%line \"%file\""
-#define TEXTWRANGLER_CMD    @"edit"
-#define TEXTWRANGLER_ARGS   @"+%line \"%file\""
-#define EMACS_CMD           @"/Applications/Emacs.app/Contents/MacOS/bin/emacsclient"
-#define EMACS_ARGS          @"--no-wait +%line \"%file\""
+static float SKDefaultFontSizes[] = {8.0, 9.0, 10.0, 11.0, 12.0, 13.0, 14.0, 16.0, 18.0, 20.0, 24.0, 28.0, 32.0, 48.0, 64.0};
+static NSString *SKTeXEditors[] = {@"TextMate", @"BBEdit", @"TextWrangler", @"Emacs"};
+static NSString *SKTeXEditorCommands[] = {@"mate", @"bbedit", @"edit", @"/Applications/Emacs.app/Contents/MacOS/bin/emacsclient"};
+static NSString *SKTeXEditorArguments[] = {@"-l %line \"%file\"", @"+%line \"%file\"", @"+%line \"%file\"", @"--no-wait +%line \"%file\""};
 
 @implementation SKPreferenceController
 
@@ -65,28 +61,18 @@
         NSString *userDefaultsValuesPath = [[NSBundle mainBundle] pathForResource:@"InitialUserDefaults" ofType:@"plist"];
         resettableKeys = [[[NSDictionary dictionaryWithContentsOfFile:userDefaultsValuesPath] valueForKey:@"ResettableKeys"] retain];
         
+        NSMutableArray *tmpFonts = [NSMutableArray array];
         NSMutableArray *fontNames = [[[[NSFontManager sharedFontManager] availableFontFamilies] mutableCopy] autorelease];
         NSEnumerator *fontEnum;
         NSString *fontName;
         
         [fontNames sortUsingSelector:@selector(caseInsensitiveCompare:)];
         fontEnum = [fontNames objectEnumerator];
-        fonts = [[NSMutableArray alloc] init];
         while (fontName = [fontEnum nextObject]) {
             NSFont *font = [NSFont fontWithName:fontName size:0.0];
-            [fonts addObject:[NSDictionary dictionaryWithObjectsAndKeys:[font fontName], @"fontName", [font displayName], @"displayName", nil]];
+            [tmpFonts addObject:[NSDictionary dictionaryWithObjectsAndKeys:[font fontName], @"fontName", [font displayName], @"displayName", nil]];
         }
-        
-        sizes = [[NSMutableArray alloc] initWithObjects:[NSNumber numberWithFloat:8.0], [NSNumber numberWithFloat:9.0], [NSNumber numberWithFloat:10.0], 
-                                                        [NSNumber numberWithFloat:11.0], [NSNumber numberWithFloat:12.0], [NSNumber numberWithFloat:13.0], 
-                                                        [NSNumber numberWithFloat:14.0], [NSNumber numberWithFloat:16.0], [NSNumber numberWithFloat:18.0], 
-                                                        [NSNumber numberWithFloat:20.0], [NSNumber numberWithFloat:24.0], [NSNumber numberWithFloat:28.0], 
-                                                        [NSNumber numberWithFloat:32.0], [NSNumber numberWithFloat:48.0], [NSNumber numberWithFloat:64.0], nil];
-        texEditorCommands = [[NSMutableArray alloc] initWithObjects:TEXTMATE_CMD, BBEDIT_CMD, TEXTWRANGLER_CMD, EMACS_CMD, nil];
-        texEditorArguments = [[NSMutableArray alloc] initWithObjects:TEXTMATE_ARGS, BBEDIT_ARGS,TEXTWRANGLER_ARGS, EMACS_ARGS, nil];
-        
-        isCustomTeXEditor = [texEditorCommands containsObject:[[NSUserDefaults standardUserDefaults] stringForKey:SKTeXEditorCommandKey]] == NO || 
-                            [texEditorArguments containsObject:[[NSUserDefaults standardUserDefaults] stringForKey:SKTeXEditorArgumentsKey]] == NO;
+        fonts = [tmpFonts copy];
         
         [[NSUserDefaultsController sharedUserDefaultsController] addObserver:self forKey:SKDefaultPDFDisplaySettingsKey];
         [[NSUserDefaultsController sharedUserDefaultsController] addObserver:self forKey:SKDefaultFullScreenPDFDisplaySettingsKey];
@@ -99,9 +85,6 @@
     [[NSUserDefaultsController sharedUserDefaultsController] removeObserver:self forKey:SKDefaultFullScreenPDFDisplaySettingsKey];
     [resettableKeys release];
     [fonts release];
-    [sizes release];
-    [texEditorCommands release];
-    [texEditorArguments release];
     [super dealloc];
 }
 
@@ -117,20 +100,37 @@
 }
 
 - (void)windowDidLoad {
-    [self updateRevertButtons];
-    if (isCustomTeXEditor) {
-        [texEditorPopUpButton selectItem:[texEditorPopUpButton lastItem]];
-    } else {
-        [texEditorPopUpButton selectItemAtIndex:[texEditorCommands indexOfObject:[[NSUserDefaults standardUserDefaults] stringForKey:SKTeXEditorCommandKey]]];
+    NSString *editorCmd = [[NSUserDefaults standardUserDefaults] stringForKey:SKTeXEditorCommandKey];
+    NSString *editorArgs = [[NSUserDefaults standardUserDefaults] stringForKey:SKTeXEditorArgumentsKey];
+    int i = sizeof(SKTeXEditors) / sizeof(NSString *);
+    int index = -1;
+    
+    while (i--) {
+        [texEditorPopUpButton insertItemWithTitle:SKTeXEditors[i] atIndex:0];
+        if ([SKTeXEditorCommands[i] isEqualToString:editorCmd] && [SKTeXEditorArguments[i] isEqualToString:editorArgs])
+            index = i;
     }
+    
+    [self setCustomTeXEditor:index == -1];
+    
+    if (isCustomTeXEditor)
+        [texEditorPopUpButton selectItem:[texEditorPopUpButton lastItem]];
+    else
+        [texEditorPopUpButton selectItemAtIndex:index];
+    
+    [self updateRevertButtons];
 }
 
 - (NSArray *)fonts {
     return fonts;
 }
 
-- (NSArray *)sizes {
-    return sizes;
+- (unsigned)countOfSizes {
+    return sizeof(SKDefaultFontSizes) / sizeof(float);
+}
+
+- (id)objectInSizesAtIndex:(unsigned)index {
+    return [NSNumber numberWithFloat:SKDefaultFontSizes[index]];
 }
 
 - (BOOL)isCustomTeXEditor {
@@ -166,10 +166,10 @@
 }
 
 - (IBAction)changeTeXEditorPreset:(id)sender {
-    unsigned int index = [sender indexOfSelectedItem];
-    if (index < [texEditorCommands count]) {
-        [[NSUserDefaults standardUserDefaults] setObject:[texEditorCommands objectAtIndex:index] forKey:SKTeXEditorCommandKey];
-        [[NSUserDefaults standardUserDefaults] setObject:[texEditorArguments objectAtIndex:index] forKey:SKTeXEditorArgumentsKey];
+    int index = [sender indexOfSelectedItem];
+    if (index < [sender numberOfItems] - 1) {
+        [[NSUserDefaults standardUserDefaults] setObject:SKTeXEditorCommands[index] forKey:SKTeXEditorCommandKey];
+        [[NSUserDefaults standardUserDefaults] setObject:SKTeXEditorArguments[index] forKey:SKTeXEditorArgumentsKey];
         [self setCustomTeXEditor:NO];
     } else {
         [self setCustomTeXEditor:YES];
