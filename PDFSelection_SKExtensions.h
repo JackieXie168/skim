@@ -46,3 +46,10 @@
 - (NSAttributedString *)contextString;
 
 @end
+
+@interface PDFSelection (PDFSelectionPrivateDeclarations)
+
+- (int)numberOfRangesOnPage:(PDFPage *)page;
+- (NSRange)rangeAtIndex:(int)index onPage:(PDFPage *)page;
+
+@end

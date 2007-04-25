@@ -50,6 +50,7 @@
 #import "SKReadingBar.h"
 #import "SKDocument.h"
 #import "SKPDFSynchronizer.h"
+#import "PDFSelection_SKExtensions.h"
 
 NSString *SKPDFViewToolModeChangedNotification = @"SKPDFViewToolModeChangedNotification";
 NSString *SKPDFViewAnnotationModeChangedNotification = @"SKPDFViewAnnotationModeChangedNotification";
@@ -61,6 +62,10 @@ NSString *SKPDFViewAnnotationDoubleClickedNotification = @"SKPDFViewAnnotationDo
 NSString *SKSkimNotePboardType = @"SKSkimNotePboardType";
 
 CGMutablePathRef CGCreatePathWithRoundRectInRect(CGRect rect, float radius);
+
+@interface PDFDocument (SKExtensions)
+- (PDFSelection *)selectionByExtendingSelection:(PDFSelection *)selection toPage:(PDFPage *)page atPoint:(NSPoint)point;
+@end
 
 @interface PDFView (PDFViewPrivateDeclarations)
 - (void)pdfViewControlHit:(id)sender;
@@ -600,9 +605,10 @@ CGMutablePathRef CGCreatePathWithRoundRectInRect(CGRect rect, float radius);
         [self setActiveAnnotation:nil];
     
     mouseDownLoc = [theEvent locationInWindow];
+	unsigned int modifiers = [theEvent modifierFlags] & NSDeviceIndependentModifierFlagsMask;
 
-    if ([theEvent modifierFlags] & NSCommandKeyMask) {
-        if ([theEvent modifierFlags] & NSShiftKeyMask)
+    if (modifiers & NSCommandKeyMask) {
+        if (modifiers & NSShiftKeyMask)
             [self pdfsyncWithEvent:theEvent];
         else
             [self selectSnapshotWithEvent:theEvent];
@@ -618,10 +624,32 @@ CGMutablePathRef CGCreatePathWithRoundRectInRect(CGRect rect, float radius);
                     [self dragReadingBarWithEvent:theEvent];
                 } else if ([[self document] isLocked] || [self selectAnnotationWithEvent:theEvent] == NO) {
                     PDFAreaOfInterest area = [self areaOfInterestForMouse:theEvent];
-                    if (area == kPDFNoArea || (area == kPDFPageArea && [[page selectionForRect:NSMakeRect(p.x - 30.0, p.y - 40.0, 60.0, 80.0)] string] == nil))
+                    if (area == kPDFNoArea || (area == kPDFPageArea && [[page selectionForRect:NSMakeRect(p.x - 30.0, p.y - 40.0, 60.0, 80.0)] string] == nil)) {
                         [self dragWithEvent:theEvent];
-                    else
+                    } else {
+                        if (nil == activeAnnotation && mouseDownInAnnotation) {
+                            if (modifiers & NSAlternateKeyMask) {
+                                rectSelection = YES;
+                                extendSelection = NO;
+                                [self setCurrentSelection:NO];
+                            } else if (modifiers & NSShiftKeyMask) {
+                                rectSelection = NO;
+                                extendSelection = YES;
+                                wasSelection = [[self currentSelection] retain];
+                                if (page == nil) {
+                                    p = [self convertPoint:mouseDownLoc fromView:nil];
+                                    page = [self pageForPoint:p nearest:YES];
+                                    p = [self convertPoint:p toPage:page];
+                                }
+                                [self setCurrentSelection:[[self document] selectionByExtendingSelection:wasSelection toPage:page atPoint:p]];
+                            } else {
+                                rectSelection = NO;
+                                extendSelection = NO;
+                                [self setCurrentSelection:NO];
+                            }
+                        }
                         [super mouseDown:theEvent];
+                    }
                 }
                 break;
             }
@@ -642,6 +670,8 @@ CGMutablePathRef CGCreatePathWithRoundRectInRect(CGRect rect, float radius);
     switch (toolMode) {
         case SKTextToolMode:
             mouseDownInAnnotation = NO;
+            [wasSelection release];
+            wasSelection = nil;
             if (draggingAnnotation) {
                 draggingAnnotation = NO;
                 if ([[activeAnnotation type] isEqualToString:@"Square"] || [[activeAnnotation type] isEqualToString:@"Square"]) {
@@ -693,9 +723,11 @@ static inline NSRect rectWithCorners(NSPoint p1, NSPoint p2)
                     p2 = [self convertPoint:p2 toPage:page2];
                     
                     PDFSelection *sel = nil;
-                    if  ([theEvent modifierFlags] & NSAlternateKeyMask) {
+                    if (rectSelection) {
                         // how to handle multipage selection?  Preview.app's behavior is screwy as well, so we'll do the same thing
                         sel = [page1 selectionForRect:rectWithCorners(p1, p2)];
+                    } else if (extendSelection) {
+                        sel = [[self document] selectionByExtendingSelection:wasSelection toPage:page2 atPoint:p2];
                     } else {
                         sel = [[self document] selectionFromPage:page1 atPoint:p1 toPage:page2 atPoint:p2];
                     }
@@ -2676,3 +2708,32 @@ CGMutablePathRef CGCreatePathWithRoundRectInRect(CGRect rect, float radius)
     }
     return path;
 }
+
+
+@implementation PDFDocument (SKExtensions)
+
+- (PDFSelection *)selectionByExtendingSelection:(PDFSelection *)selection toPage:(PDFPage *)page atPoint:(NSPoint)point {
+    PDFSelection *sel = selection;
+    NSArray *pages = [selection pages];
+    
+    if ([pages count] && [selection respondsToSelector:@selector(numberOfRangesOnPage:)] && [selection respondsToSelector:@selector(rangeAtIndex:onPage:)]) {
+        PDFPage *firstPage = [pages objectAtIndex:0];
+        PDFPage *lastPage = [pages lastObject];
+        unsigned int pageIndex = [self indexForPage:page];
+        unsigned int firstPageIndex = [self indexForPage:firstPage];
+        unsigned int lastPageIndex = [self indexForPage:lastPage];
+        int firstChar = [selection rangeAtIndex:0 onPage:firstPage].location;
+        int lastChar = NSMaxRange([selection rangeAtIndex:[selection numberOfRangesOnPage:lastPage] - 1 onPage:lastPage]) - 1;
+        NSRect firstRect = [firstPage characterBoundsAtIndex:firstChar];
+        NSRect lastRect = [lastPage characterBoundsAtIndex:lastChar];
+        
+        if (pageIndex < firstPageIndex || (pageIndex == firstPageIndex && (point.y > NSMaxY(firstRect) || (point.y > NSMinY(firstRect) && point.x < NSMinX(firstRect)))))
+            sel = [self selectionFromPage:page atPoint:point toPage:lastPage atPoint:NSMakePoint(NSMaxX(lastRect), NSMidY(lastRect))];
+        if (pageIndex > lastPageIndex || (pageIndex == lastPageIndex && (point.y < NSMinY(lastRect) || (point.y < NSMaxY(lastRect) && point.x > NSMaxX(lastRect)))))
+            sel = [self selectionFromPage:firstPage atPoint:NSMakePoint(NSMinX(firstRect), NSMidY(firstRect)) toPage:page atPoint:point];
+    }
+    return sel;
+}
+
+@end
+

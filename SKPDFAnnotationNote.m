@@ -39,6 +39,7 @@
 #import "SKPDFAnnotationNote.h"
 #import "SKStringConstants.h"
 #import "PDFPage_SKExtensions.h"
+#import "PDFSelection_SKExtensions.h"
 #import "SKPDFView.h"
 
 enum {
@@ -72,10 +73,6 @@ void SKCGContextSetDefaultRGBColorSpace(CGContextRef context) {
 - (void)drawWithBox:(CGPDFBox)box inContext:(CGContextRef)context;
 @end
 
-@interface PDFSelection (PDFSelectionPrivateDeclarations)
-- (int)numberOfRangesOnPage:(PDFPage *)page;
-- (NSRange)rangeAtIndex:(int)index onPage:(PDFPage *)page;
-@end
 
 @implementation PDFAnnotation (SKExtensions)
 
