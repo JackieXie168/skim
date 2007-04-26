@@ -1094,6 +1094,8 @@ Skim allows you to save a copy of your PDF file without the notes and highlights
 @heading Online Resources
 @itemize
 @item @uref{http://skim-app.sourceforge.net, Skim Website}
+@item @uref{http://skim-ap.sourceforge.net/wiki, Skim Wiki}
+@item @uref{http://skim-ap.sourceforge.net/wiki/index.php/FAQ, Skim FAQ}
 @item @uref{http://skim-app.sourceforge.net/manual, Online copy of this manual}
 @end itemize
 
