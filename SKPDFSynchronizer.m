@@ -165,9 +165,7 @@ static NSMutableDictionary *SKRecordForRecordIndex(NSMutableDictionary *records,
     
     [scanner scanCharactersFromSet:[NSCharacterSet newlineCharacterSet] intoString:NULL];
     
-    while ([scanner isAtEnd] == NO) {
-        
-        [scanner scanCharacter:&ch];
+    while ([scanner scanCharacter:&ch]) {
         
         if (ch == 'l') {
             if ([scanner scanInt:&recordIndex] && [scanner scanInt:&line]) {
@@ -236,7 +234,7 @@ static NSMutableDictionary *SKRecordForRecordIndex(NSMutableDictionary *records,
     NSString *foundFile = nil;
     NSDictionary *record = nil;
     
-    if (pageIndex >= [pages count] && [self parsePdfsyncFileIfNeeded]) {
+    if ([self parsePdfsyncFileIfNeeded] && pageIndex < [pages count]) {
         
         NSDictionary *beforeRecord = nil;
         NSDictionary *afterRecord = nil;
@@ -306,7 +304,7 @@ static NSMutableDictionary *SKRecordForRecordIndex(NSMutableDictionary *records,
     NSPoint foundPoint = NSZeroPoint;
     NSDictionary *record = nil;
     
-    if (file && [lines objectForKey:file] && [self parsePdfsyncFileIfNeeded]) {
+    if (file && [self parsePdfsyncFileIfNeeded] && [lines objectForKey:file]) {
         
         NSDictionary *beforeRecord = nil;
         NSDictionary *afterRecord = nil;
