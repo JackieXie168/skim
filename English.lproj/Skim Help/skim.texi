@@ -1153,6 +1153,8 @@ You can save notes added in Skim to a separately in human readable form to a Ric
 @heading Online Resources
 @itemize
 @item @uref{http://skim-app.sourceforge.net, Skim Website}
+@item @uref{http://skim-ap.sourceforge.net/wiki, Skim Wiki}
+@item @uref{http://skim-ap.sourceforge.net/wiki/index.php/FAQ, Skim FAQ}
 @item @uref{http://skim-app.sourceforge.net/manual, Online copy of this manual}
 @end itemize
 
