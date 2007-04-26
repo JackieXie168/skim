@@ -232,134 +232,127 @@ static NSMutableDictionary *SKRecordForRecordIndex(NSMutableDictionary *records,
 }
 
 - (BOOL)getLine:(int *)line file:(NSString **)file forLocation:(NSPoint)point inRect:(NSRect)rect atPageIndex:(unsigned int)pageIndex {
-    if ([self parsePdfsyncFileIfNeeded] == NO)
-        return NO;
-    if (pageIndex >= [pages count])
-        return NO;
-    
-    NSDictionary *beforeRecord = nil;
-    NSDictionary *afterRecord = nil;
-    NSMutableDictionary *atRecords = [NSMutableDictionary dictionary];
-    NSEnumerator *recordEnum = [[pages objectAtIndex:pageIndex] objectEnumerator];
+    int foundLine = -1;
+    NSString *foundFile = nil;
     NSDictionary *record = nil;
     
-    while (record = [recordEnum nextObject]) {
-        if ([record objectForKey:@"line"] == nil)
-            continue;
-        float x = [[record objectForKey:@"x"] floatValue];
-        float y = [[record objectForKey:@"y"] floatValue];
-        if (y > NSMaxY(rect)) {
-            beforeRecord = record;
-        } else if (y < NSMinY(rect)) {
-            afterRecord = record;
-            break;
-        } else if (x < NSMinX(rect)) {
-            beforeRecord = record;
-        } else if (x > NSMaxX(rect)) {
-            afterRecord = record;
-            break;
-        } else {
-            [atRecords setObject:record forKey:[NSNumber numberWithFloat:fabs(x - point.x)]];
+    if (pageIndex >= [pages count] && [self parsePdfsyncFileIfNeeded]) {
+        
+        NSDictionary *beforeRecord = nil;
+        NSDictionary *afterRecord = nil;
+        NSMutableDictionary *atRecords = [NSMutableDictionary dictionary];
+        NSEnumerator *recordEnum = [[pages objectAtIndex:pageIndex] objectEnumerator];
+        
+        while (record = [recordEnum nextObject]) {
+            if ([record objectForKey:@"line"] == nil)
+                continue;
+            float x = [[record objectForKey:@"x"] floatValue];
+            float y = [[record objectForKey:@"y"] floatValue];
+            if (y > NSMaxY(rect)) {
+                beforeRecord = record;
+            } else if (y < NSMinY(rect)) {
+                afterRecord = record;
+                break;
+            } else if (x < NSMinX(rect)) {
+                beforeRecord = record;
+            } else if (x > NSMaxX(rect)) {
+                afterRecord = record;
+                break;
+            } else {
+                [atRecords setObject:record forKey:[NSNumber numberWithFloat:fabs(x - point.x)]];
+            }
         }
+        
+        record = nil;
+        if ([atRecords count]) {
+            NSNumber *nearest = [[[atRecords allKeys] sortedArrayUsingSelector:@selector(compare:)] objectAtIndex:0];
+            record = [atRecords objectForKey:nearest];
+        } else if (beforeRecord && afterRecord) {
+            float beforeX = [[beforeRecord objectForKey:@"x"] floatValue];
+            float beforeY = [[beforeRecord objectForKey:@"y"] floatValue];
+            float afterX = [[afterRecord objectForKey:@"x"] floatValue];
+            float afterY = [[afterRecord objectForKey:@"y"] floatValue];
+            if (beforeY - point.y < point.y - afterY)
+                record = beforeRecord;
+            else if (beforeY - point.y > point.y - afterY)
+                record = afterRecord;
+            else if (beforeX - point.x < point.x - afterX)
+                record = beforeRecord;
+            else if (beforeX - point.x > point.x - afterX)
+                record = afterRecord;
+            else
+                record = beforeRecord;
+        } else if (beforeRecord) {
+            record = beforeRecord;
+        } else if (afterRecord) {
+            record = afterRecord;
+        }
+        
+        if (record) {
+            foundLine = [[record objectForKey:@"line"] intValue];
+            foundFile = [record objectForKey:@"file"];
+        }
+        
     }
     
-    record = nil;
-    if ([atRecords count]) {
-        NSNumber *nearest = [[[atRecords allKeys] sortedArrayUsingSelector:@selector(compare:)] objectAtIndex:0];
-        record = [atRecords objectForKey:nearest];
-    } else if (beforeRecord && afterRecord) {
-        float beforeX = [[beforeRecord objectForKey:@"x"] floatValue];
-        float beforeY = [[beforeRecord objectForKey:@"y"] floatValue];
-        float afterX = [[afterRecord objectForKey:@"x"] floatValue];
-        float afterY = [[afterRecord objectForKey:@"y"] floatValue];
-        if (beforeY - point.y < point.y - afterY)
-            record = beforeRecord;
-        else if (beforeY - point.y > point.y - afterY)
-            record = afterRecord;
-        else if (beforeX - point.x < point.x - afterX)
-            record = beforeRecord;
-        else if (beforeX - point.x > point.x - afterX)
-            record = afterRecord;
-        else
-            record = beforeRecord;
-    } else if (beforeRecord) {
-        record = beforeRecord;
-    } else if (afterRecord) {
-        record = afterRecord;
-    }
+    if (line) *line = foundLine;
+    if (file) *file = foundFile;
     
-    if (record) {
-        if (line)
-            *line = [[record objectForKey:@"line"] intValue];
-        if (file)
-            *file = [record objectForKey:@"file"];
-        return YES;
-    } else {
-        if (line)
-            *line = -1;
-        if (file)
-            *file = nil;
-        return NO;
-    }
+    return record != nil;
 }
 
 - (BOOL)getPageIndex:(unsigned int *)pageIndex location:(NSPoint *)point forLine:(int)line inFile:(NSString *)file {
-    if ([self parsePdfsyncFileIfNeeded] == NO)
-        return NO;
-    if (line < 0 || file == nil || [lines objectForKey:file] == nil)
-        return NO;
-    
-    NSDictionary *beforeRecord = nil;
-    NSDictionary *afterRecord = nil;
-    NSDictionary *atRecord = nil;
-    NSEnumerator *recordEnum = [[lines objectForKey:file] objectEnumerator];
+    unsigned int foundPageIndex = NSNotFound;
+    NSPoint foundPoint = NSZeroPoint;
     NSDictionary *record = nil;
     
-    while (record = [recordEnum nextObject]) {
-        if ([record objectForKey:@"page"] == nil)
-            continue;
-        int l = [[record objectForKey:@"line"] intValue];
-        if (l < line) {
-            beforeRecord = record;
-        } else if (l > line) {
-            afterRecord = record;
-            break;
-        } else {
-            atRecord = record;
-            break;
+    if (file && [lines objectForKey:file] && [self parsePdfsyncFileIfNeeded]) {
+        
+        NSDictionary *beforeRecord = nil;
+        NSDictionary *afterRecord = nil;
+        NSDictionary *atRecord = nil;
+        NSEnumerator *recordEnum = [[lines objectForKey:file] objectEnumerator];
+        
+        while (record = [recordEnum nextObject]) {
+            if ([record objectForKey:@"page"] == nil)
+                continue;
+            int l = [[record objectForKey:@"line"] intValue];
+            if (l < line) {
+                beforeRecord = record;
+            } else if (l > line) {
+                afterRecord = record;
+                break;
+            } else {
+                atRecord = record;
+                break;
+            }
+        }
+        
+        if (atRecord) {
+            record = atRecord;
+        } else if (beforeRecord && afterRecord) {
+            int beforeLine = [[beforeRecord objectForKey:@"line"] intValue];
+            int afterLine = [[afterRecord objectForKey:@"line"] intValue];
+            if (beforeLine - line > line - afterLine)
+                record = afterRecord;
+            else
+                record = beforeRecord;
+        } else if (beforeRecord) {
+            record = beforeRecord;
+        } else if (afterRecord) {
+            record = afterRecord;
+        }
+        
+        if (record) {
+            foundPageIndex = [[record objectForKey:@"page"] unsignedIntValue];
+            foundPoint = NSMakePoint([[record objectForKey:@"x"] floatValue], [[record objectForKey:@"y"] floatValue]);
         }
     }
     
-    if (atRecord) {
-        record = atRecord;
-    } else if (beforeRecord && afterRecord) {
-        int beforeLine = [[beforeRecord objectForKey:@"line"] intValue];
-        int afterLine = [[afterRecord objectForKey:@"line"] intValue];
-        if (beforeLine - line < line - afterLine)
-            record = beforeRecord;
-        else if (beforeLine - line > line - afterLine)
-            record = afterRecord;
-        else
-            record = beforeRecord;
-    } else if (beforeRecord) {
-        record = beforeRecord;
-    } else if (afterRecord) {
-        record = afterRecord;
-    }
+    if (pageIndex) *pageIndex = foundPageIndex;
+    if (point) *point = foundPoint;
     
-    if (record) {
-        if (pageIndex)
-            *pageIndex = [[record objectForKey:@"page"] unsignedIntValue];
-        if (point)
-            *point = NSMakePoint([[record objectForKey:@"x"] floatValue], [[record objectForKey:@"y"] floatValue]);
-        return YES;
-    } else {
-        if (pageIndex)
-            *pageIndex = NSNotFound;
-        if (point)
-            *point = NSZeroPoint;
-        return NO;
-    }
+    return record != nil;
 }
 
 @end
