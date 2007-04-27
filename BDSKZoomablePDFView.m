@@ -164,6 +164,15 @@ static float BDSKScaleMenuFontSize = 11.0;
     [[NSSavePanel savePanel] beginSheetForDirectory:nil file:(name ? name : NSLocalizedString(@"Untitled.pdf", @"Default file name for saved PDF")) modalForWindow:[self window] modalDelegate:self didEndSelector:@selector(saveDocumentSheetDidEnd:returnCode:contextInfo:) contextInfo:NULL];
 }
 
+- (void)lookUpCurrentSelectionInDictionary:(id)sender;
+{
+    NSString *text = [[self currentSelection] string];
+    if (nil == text)
+        NSBeep();
+    else
+        [[NSWorkspace sharedWorkspace] openURL:[NSURL URLWithString:[@"dict://" stringByAppendingString:text]]];
+}
+
 - (NSMenu *)menuForEvent:(NSEvent *)theEvent;
 {
     NSMenu *menu = [super menuForEvent:theEvent];
@@ -181,6 +190,20 @@ static float BDSKScaleMenuFontSize = 11.0;
     item = [[NSMenuItem allocWithZone:[NSMenu menuZone]] initWithTitle:title action:@selector(copyAsText:) keyEquivalent:@""];
     [menu addItem:item];
     [item release];
+    
+    if ([self currentSelection]) {
+        long version;
+        OSStatus err = Gestalt(gestaltSystemVersion, &version);
+        
+        if (noErr == err && version < 0x00001050) {
+            
+            [menu addItem:[NSMenuItem separatorItem]];
+            
+            item = [[NSMenuItem allocWithZone:[NSMenu menuZone]] initWithTitle:NSLocalizedString(@"Look Up in Dictionary", @"") action:@selector(lookUpCurrentSelectionInDictionary:) keyEquivalent:@""];
+            [menu addItem:item];
+            [item release];
+        }
+    }
     
     [menu addItem:[NSMenuItem separatorItem]];
     
