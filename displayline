@@ -5,11 +5,18 @@
 # Usage: displayline LINE PDFFILE [TEXSOURCEFILE]
 
 line=$1
-file="$2"
+file="${2/#~/$HOME}"
 if [ $# -gt 3 ]; then
-source="$3"
+source="${3/#~/$HOME}"
 else
-source="$2"
+source="${file/%.pdf/.tex}"
 fi
 
-/usr/bin/osascript -e "tell application \"Skim\"" -e "activate" -e "open file display POSIX file \""${file}"\" at TeX line "${line}" from source POSIX file \""${source}"\"" -e "end tell"
+if [ "${file:-1}" != "/" ]; then
+file="${PWD}/${file}"
+fi
+if [ "${source:-1}" != "/" ]; then
+file="${PWD}/${source}"
+fi
+
+/usr/bin/osascript -e "tell application \"Skim\"" -e "activate" -e "open file POSIX file \""${file}"\" at TeX line "${line}" from source POSIX file \""${source}"\"" -e "end tell"
