@@ -12,4 +12,4 @@ else
 source="$2"
 fi
 
-/usr/bin/osascript -e "tell application \"Skim\"" -e "activate" -e "display TeX line "${line}" in \""${file}"\" from source \""${source}"\"" -e "end tell"
+/usr/bin/osascript -e "tell application \"Skim\"" -e "activate" -e "open file display POSIX file \""${file}"\" at TeX line "${line}" from source POSIX file \""${source}"\"" -e "end tell"
