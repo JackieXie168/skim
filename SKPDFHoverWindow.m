@@ -346,7 +346,7 @@
         [annotation release];
         annotation = [note retain];
         
-        NSDate *date = [NSDate dateWithTimeIntervalSinceNow:[self isVisible] ? 0.1 : 1.5];
+        NSDate *date = [NSDate dateWithTimeIntervalSinceNow:[self isVisible] ? 0.1 : 1.0];
         timer = [[NSTimer alloc] initWithFireDate:date interval:0 target:self selector:@selector(timerFired:) userInfo:NULL repeats:NO];
         [[NSRunLoop currentRunLoop] addTimer:timer forMode:NSDefaultRunLoopMode];
     }
