@@ -839,6 +839,15 @@ static inline NSRect rectWithCorners(NSPoint p1, NSPoint p2)
     [cursor set];
 }
 
+- (void)lookUpCurrentSelectionInDictionary:(id)sender;
+{
+    NSString *text = [[self currentSelection] string];
+    if (nil == text)
+        NSBeep();
+    else
+        [[NSWorkspace sharedWorkspace] openURL:[NSURL URLWithString:[@"dict://" stringByAppendingString:text]]];
+}
+
 - (NSMenu *)menuForEvent:(NSEvent *)theEvent {
     NSMenu *menu = [super menuForEvent:theEvent];
     NSMenu *submenu;
@@ -969,6 +978,17 @@ static inline NSRect rectWithCorners(NSPoint p1, NSPoint p2)
             }
         }
         
+        long version;
+        OSStatus err = Gestalt(gestaltSystemVersion, &version);
+        
+        if (noErr == err && version < 0x00001050) {
+            
+            [menu addItem:[NSMenuItem separatorItem]];
+            
+            item = [[NSMenuItem allocWithZone:[NSMenu menuZone]] initWithTitle:NSLocalizedString(@"Look Up in Dictionary", @"") action:@selector(lookUpCurrentSelectionInDictionary:) keyEquivalent:@""];
+            [menu addItem:item];
+            [item release];
+        }
     }
     
     return menu;
