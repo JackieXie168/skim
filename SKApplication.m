@@ -95,26 +95,38 @@ NSString *SKApplicationWillTerminateNotification = @"SKApplicationWillTerminateN
 	
     if ([file isKindOfClass:[NSArray class]])
         file = [file lastObject];
+    if ([file isKindOfClass:[NSString class]])
+        file = [NSURL fileURLWithPath:file];
     
     if (source == nil)
         source = file;
+    if ([source isKindOfClass:[NSString class]])
+        source = [NSURL fileURLWithPath:source];
     
-    if ([file isKindOfClass:[NSURL class]] && [source isKindOfClass:[NSURL class]] &&
-        [[NSFileManager defaultManager] fileExistsAtPath:[source path]]) {
+    if ([file isKindOfClass:[NSURL class]] && [source isKindOfClass:[NSURL class]]) {
         
-        SKDocument *document = [[NSDocumentController sharedDocumentController] openDocumentWithContentsOfURL:file display:YES error:NULL];
-        unsigned int pageIndex;
-        NSPoint point;
+        source = [source path];
+        if ([[[source pathExtension] pathExtension] length] == 0)
+            source = [source stringByAppendingPathExtension:@"tex"];
+        else if ([[[source pathExtension] pathExtension] caseInsensitiveCompare:@"tex"] == NO)
+            source = [[source stringByDeletingPathExtension] stringByAppendingPathExtension:@"tex"];
         
-        if ([document respondsToSelector:@selector(synchronizer)] && [document respondsToSelector:@selector(pdfView)] && 
-            [[document synchronizer] getPageIndex:&pageIndex location:&point forLine:[lineNumber intValue] inFile:[source path]]) {
+        if ([[NSFileManager defaultManager] fileExistsAtPath:[file path]] && [[NSFileManager defaultManager] fileExistsAtPath:source]) {
             
-            [[document pdfView] displayLineAtPoint:point inPageAtIndex:pageIndex];
-        }
-        
-    } else {
+            SKDocument *document = [[NSDocumentController sharedDocumentController] openDocumentWithContentsOfURL:file display:YES error:NULL];
+            unsigned int pageIndex;
+            NSPoint point;
+            
+            if ([document respondsToSelector:@selector(synchronizer)] && [document respondsToSelector:@selector(pdfView)] && 
+                [[document synchronizer] getPageIndex:&pageIndex location:&point forLine:[lineNumber intValue] inFile:source]) {
+                
+                [[document pdfView] displayLineAtPoint:point inPageAtIndex:pageIndex];
+            }
+            
+        } else
+            [command setScriptErrorNumber:NSArgumentsWrongScriptError];
+    } else
 		[command setScriptErrorNumber:NSArgumentsWrongScriptError];
-    }
     
     return nil;
 }
