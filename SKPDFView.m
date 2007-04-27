@@ -61,7 +61,7 @@ NSString *SKPDFViewAnnotationDoubleClickedNotification = @"SKPDFViewAnnotationDo
 
 NSString *SKSkimNotePboardType = @"SKSkimNotePboardType";
 
-CGMutablePathRef CGCreatePathWithRoundRectInRect(CGRect rect, float radius);
+static CGMutablePathRef SKCGCreatePathWithRoundRectInRect(CGRect rect, float radius);
 
 @interface PDFDocument (SKExtensions)
 - (PDFSelection *)selectionByExtendingSelection:(PDFSelection *)selection toPage:(PDFPage *)page atPoint:(NSPoint)point;
@@ -242,7 +242,7 @@ CGMutablePathRef CGCreatePathWithRoundRectInRect(CGRect rect, float radius);
             float color[4] = { 0.0, 0.0, 0.0, 1.0 };
             NSRect rect = NSInsetRect(NSIntegralRect(bounds), 0.5 * lineWidth, 0.5 * lineWidth);
             if (isLink) {
-                CGMutablePathRef path = CGCreatePathWithRoundRectInRect(*(CGRect *)&rect, 2.0);
+                CGMutablePathRef path = SKCGCreatePathWithRoundRectInRect(*(CGRect *)&rect, 2.0);
                 color[3] = 0.1;
                 CGContextSetFillColor(context, color);
                 CGContextBeginPath(context);
@@ -2682,7 +2682,7 @@ static inline NSRect rectWithCorners(NSPoint p1, NSPoint p2)
 
 #pragma mark Core Graphics extension
 
-CGMutablePathRef CGCreatePathWithRoundRectInRect(CGRect rect, float radius)
+static CGMutablePathRef SKCGCreatePathWithRoundRectInRect(CGRect rect, float radius)
 {
     // Make sure radius doesn't exceed a maximum size to avoid artifacts:
     radius = fmin(radius, 0.5f * fmin(rect.size.width, rect.size.height));
