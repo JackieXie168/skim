@@ -1,8 +1,8 @@
 #!/bin/sh
 
-# displayline.sh (Skim)
+# displayline (Skim)
 #
-# Usage: displayline.sh LINE PDFFILE [TEXSOURCEFILE]
+# Usage: displayline LINE PDFFILE [TEXSOURCEFILE]
 
 line=$1
 file="$2"
