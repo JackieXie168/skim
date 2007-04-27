@@ -6,17 +6,17 @@
 
 line=$1
 file="${2/#~/$HOME}"
-if [ $# -gt 3 ]; then
+if [ $# -gt 2 ]; then
 source="${3/#~/$HOME}"
 else
 source="${file/%.pdf/.tex}"
 fi
 
-if [ "${file:-1}" != "/" ]; then
+if [ "${file:0:1}" != "/" ]; then
 file="${PWD}/${file}"
 fi
-if [ "${source:-1}" != "/" ]; then
-file="${PWD}/${source}"
+if [ "${source:0:1}" != "/" ]; then
+source="${PWD}/${source}"
 fi
 
-/usr/bin/osascript -e "tell application \"Skim\"" -e "activate" -e "open file POSIX file \""${file}"\" at TeX line "${line}" from source POSIX file \""${source}"\"" -e "end tell"
+/usr/bin/osascript -e "tell application \"Skim\"" -e "activate" -e "open POSIX file \""${file}"\" at TeX line "${line}" from source POSIX file \""${source}"\"" -e "end tell"

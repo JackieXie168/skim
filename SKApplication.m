@@ -89,10 +89,13 @@ NSString *SKApplicationWillTerminateNotification = @"SKApplicationWillTerminateN
     id file = [command directParameter];
 	id lineNumber = [args objectForKey:@"line"];
  	id source = [args objectForKey:@"source"];
-   
-    if (lineNumber == nil)
+    
+    if (lineNumber == nil || ([file isKindOfClass:[NSArray class]] && [file count] != 1))
         return [super handleOpenScriptCommand:command];
 	
+    if ([file isKindOfClass:[NSArray class]])
+        file = [file lastObject];
+    
     if (source == nil)
         source = file;
     

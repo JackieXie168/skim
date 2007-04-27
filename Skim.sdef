@@ -154,7 +154,7 @@
             <direct-parameter description="The file(s) to be opened.">
             <type type="file" list="yes"/>
             </direct-parameter>
-            <parameter name="at TeX line" code="" type="integer" optional="yes"
+            <parameter name="at TeX line" code="Line" type="integer" optional="yes"
                 description="Go to a location in the PDF corresponding to the line in a TeX source file.">
                 <cocoa key="line"/>
             </parameter>
