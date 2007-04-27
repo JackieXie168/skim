@@ -65,7 +65,6 @@
 		CE15832F0BA0740000D5B03F /* UnderlineNoteAdorn.tiff in Resources */ = {isa = PBXBuildFile; fileRef = CE15832B0BA073FF00D5B03F /* UnderlineNoteAdorn.tiff */; };
 		CE1E25680BDA61E80011D9DD /* ReadNotesAccessoryView.nib in Resources */ = {isa = PBXBuildFile; fileRef = CE1E25660BDA61E80011D9DD /* ReadNotesAccessoryView.nib */; };
 		CE1E2B290BDAB6180011D9DD /* SKPDFSynchronizer.m in Sources */ = {isa = PBXBuildFile; fileRef = CE1E2B270BDAB6180011D9DD /* SKPDFSynchronizer.m */; };
-		CE1E2E600BDB6C1F0011D9DD /* SKDisplayTeXLineCommand.m in Sources */ = {isa = PBXBuildFile; fileRef = CE1E2E5E0BDB6C1F0011D9DD /* SKDisplayTeXLineCommand.m */; };
 		CE1E2F130BDB86A20011D9DD /* displayline in Resources */ = {isa = PBXBuildFile; fileRef = CE1E2F120BDB86A10011D9DD /* displayline */; };
 		CE1E301D0BDB9D5C0011D9DD /* NSScanner_SKExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = CE1E301B0BDB9D5C0011D9DD /* NSScanner_SKExtensions.m */; };
 		CE1E30290BDB9D8E0011D9DD /* NSCharacterSet_SKExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = CE1E30270BDB9D8E0011D9DD /* NSCharacterSet_SKExtensions.m */; };
@@ -302,8 +301,6 @@
 		CE1E259F0BDA6E570011D9DD /* Italian */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = Italian; path = Italian.lproj/ReadNotesAccessoryView.nib; sourceTree = "<group>"; };
 		CE1E2B260BDAB6180011D9DD /* SKPDFSynchronizer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SKPDFSynchronizer.h; sourceTree = "<group>"; };
 		CE1E2B270BDAB6180011D9DD /* SKPDFSynchronizer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SKPDFSynchronizer.m; sourceTree = "<group>"; };
-		CE1E2E5D0BDB6C1F0011D9DD /* SKDisplayTeXLineCommand.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SKDisplayTeXLineCommand.h; sourceTree = "<group>"; };
-		CE1E2E5E0BDB6C1F0011D9DD /* SKDisplayTeXLineCommand.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SKDisplayTeXLineCommand.m; sourceTree = "<group>"; };
 		CE1E2F120BDB86A10011D9DD /* displayline */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.sh; path = displayline; sourceTree = "<group>"; };
 		CE1E301A0BDB9D5C0011D9DD /* NSScanner_SKExtensions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NSScanner_SKExtensions.h; sourceTree = "<group>"; };
 		CE1E301B0BDB9D5C0011D9DD /* NSScanner_SKExtensions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NSScanner_SKExtensions.m; sourceTree = "<group>"; };
@@ -782,8 +779,6 @@
 				CE0464A10B84E3E400C11E4A /* OBUtilities.m */,
 				CE1E2B260BDAB6180011D9DD /* SKPDFSynchronizer.h */,
 				CE1E2B270BDAB6180011D9DD /* SKPDFSynchronizer.m */,
-				CE1E2E5D0BDB6C1F0011D9DD /* SKDisplayTeXLineCommand.h */,
-				CE1E2E5E0BDB6C1F0011D9DD /* SKDisplayTeXLineCommand.m */,
 			);
 			name = Miscellaneous;
 			sourceTree = "<group>";
@@ -1155,7 +1150,6 @@
 				CE4294A30BBD29120016FDC2 /* SKReadingBar.m in Sources */,
 				CEE106150BCBB72C00BF2D3E /* SKNotesDocument.m in Sources */,
 				CE1E2B290BDAB6180011D9DD /* SKPDFSynchronizer.m in Sources */,
-				CE1E2E600BDB6C1F0011D9DD /* SKDisplayTeXLineCommand.m in Sources */,
 				CE1E301D0BDB9D5C0011D9DD /* NSScanner_SKExtensions.m in Sources */,
 				CE1E30290BDB9D8E0011D9DD /* NSCharacterSet_SKExtensions.m in Sources */,
 				CE4972510BDE898F00D7F1D2 /* SKMainWindow.m in Sources */,

@@ -40,8 +40,15 @@
 #import "SKStringConstants.h"
 #import "SKMainWindowController.h"
 #import "SKDocument.h"
+#import "SKPDFSynchronizer.h"
+#import "SKPDFView.h"
 
 NSString *SKApplicationWillTerminateNotification = @"SKApplicationWillTerminateNotification";
+
+@interface NSApplication (NSApplicationPrivateDeclarations)
+- (id)handleOpenScriptCommand:(NSScriptCommand *)command;
+@end
+
 
 @interface NSMenu (SKExtensions)
 - (int)indexOfItemWithTarget:(id)target;
@@ -75,6 +82,33 @@ NSString *SKApplicationWillTerminateNotification = @"SKApplicationWillTerminateN
     [[NSNotificationCenter defaultCenter] postNotificationName:SKApplicationWillTerminateNotification object:self];
     [[NSUserDefaults standardUserDefaults] setObject:[[[NSDocumentController sharedDocumentController] documents] valueForKey:@"currentDocumentSetup"] forKey:SKLastOpenFileNamesKey];
     [super terminate:sender];
+}
+
+- (id)handleOpenScriptCommand:(NSScriptCommand *)command {
+	NSDictionary *args = [command evaluatedArguments];
+    id file = [command directParameter];
+	id lineNumber = [args objectForKey:@"line"];
+ 	id source = [args objectForKey:@"source"];
+   
+    if (lineNumber == nil)
+        return [super handleOpenScriptCommand:command];
+	
+    if (source == nil)
+        source = file;
+    
+    if ([file isKindOfClass:[NSURL class]] == NO || [source isKindOfClass:[NSURL class]] == NO) {
+		[command setScriptErrorNumber:NSArgumentsWrongScriptError];
+    } else if ([[NSFileManager defaultManager] fileExistsAtPath:[source path]]) {
+        SKDocument *document = [[NSDocumentController sharedDocumentController] openDocumentWithContentsOfURL:file display:YES error:NULL];
+        SKPDFSynchronizer *synchronizer = [document synchronizer];
+        unsigned int pageIndex;
+        NSPoint point;
+        
+        if ([synchronizer getPageIndex:&pageIndex location:&point forLine:[lineNumber intValue] inFile:[source path]])
+            [[document pdfView] displayLineAtPoint:point inPageAtIndex:pageIndex];
+    }
+    
+    return nil;
 }
 
 - (void)reorganizeWindowsItem:(NSWindow *)aWindow {

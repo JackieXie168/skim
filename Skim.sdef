@@ -154,6 +154,14 @@
             <direct-parameter description="The file(s) to be opened.">
             <type type="file" list="yes"/>
             </direct-parameter>
+            <parameter name="at TeX line" code="" type="integer" optional="yes"
+                description="Go to a location in the PDF corresponding to the line in a TeX source file.">
+                <cocoa key="line"/>
+            </parameter>
+			<parameter name="from source" type="file" code="SrcF" optional="yes" 
+				description="The TeX source file. By default this is derived from the file."> 
+				<cocoa key="source"/> 
+			</parameter>
               <!--
                 According to TN2106, 'open' should return the resulting document
                 object.  However, the Cocoa implementation does not do this yet.
@@ -587,26 +595,6 @@
                 <type type="page"/>
                 <type type="note"/>
             </direct-parameter>
-        </command>
-        
-        <command name="display TeX line" code="SKIMDTLn"
-            description="Open the file, and go to a location in the PDF corresponding to the line in a TeX file.">
-			<cocoa class="SKDisplayTeXLineCommand"/>
-            <direct-parameter type="integer"
-                description="The line number in the TeX file.">
-            </direct-parameter>
-			<parameter name="in" code="File" optional="no" 
-				description="The PDF file">
-                <type type="text"/>
-                <type type="file"/>
-				<cocoa key="file"/> 
-			</parameter>
-			<parameter name="from source" code="SrcF" optional="yes" 
-				description="The TeX source file. By default this is derived from the pdf file."> 
-                <type type="text"/>
-                <type type="file"/>
-				<cocoa key="source"/> 
-			</parameter>
         </command>
         
     </suite>
