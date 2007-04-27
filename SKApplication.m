@@ -99,16 +99,21 @@ NSString *SKApplicationWillTerminateNotification = @"SKApplicationWillTerminateN
     if (source == nil)
         source = file;
     
-    if ([file isKindOfClass:[NSURL class]] == NO || [source isKindOfClass:[NSURL class]] == NO) {
-		[command setScriptErrorNumber:NSArgumentsWrongScriptError];
-    } else if ([[NSFileManager defaultManager] fileExistsAtPath:[source path]]) {
+    if ([file isKindOfClass:[NSURL class]] && [source isKindOfClass:[NSURL class]] &&
+        [[NSFileManager defaultManager] fileExistsAtPath:[source path]]) {
+        
         SKDocument *document = [[NSDocumentController sharedDocumentController] openDocumentWithContentsOfURL:file display:YES error:NULL];
-        SKPDFSynchronizer *synchronizer = [document synchronizer];
         unsigned int pageIndex;
         NSPoint point;
         
-        if ([synchronizer getPageIndex:&pageIndex location:&point forLine:[lineNumber intValue] inFile:[source path]])
+        if ([document respondsToSelector:@selector(synchronizer)] && [document respondsToSelector:@selector(pdfView)] && 
+            [[document synchronizer] getPageIndex:&pageIndex location:&point forLine:[lineNumber intValue] inFile:[source path]]) {
+            
             [[document pdfView] displayLineAtPoint:point inPageAtIndex:pageIndex];
+        }
+        
+    } else {
+		[command setScriptErrorNumber:NSArgumentsWrongScriptError];
     }
     
     return nil;
