@@ -43,9 +43,9 @@
 #import <Sparkle/Sparkle.h>
 
 static float SKDefaultFontSizes[] = {8.0, 9.0, 10.0, 11.0, 12.0, 13.0, 14.0, 16.0, 18.0, 20.0, 24.0, 28.0, 32.0, 48.0, 64.0};
-static NSString *SKTeXEditors[] = {@"TextMate", @"BBEdit", @"TextWrangler", @"Emacs"};
-static NSString *SKTeXEditorCommands[] = {@"mate", @"bbedit", @"edit", @"/Applications/Emacs.app/Contents/MacOS/bin/emacsclient"};
-static NSString *SKTeXEditorArguments[] = {@"-l %line \"%file\"", @"+%line \"%file\"", @"+%line \"%file\"", @"--no-wait +%line \"%file\""};
+static NSString *SKTeXEditors[] = {@"TextMate", @"BBEdit", @"TextWrangler", @"Emacs", @"Aquamacs Emacs"};
+static NSString *SKTeXEditorCommands[] = {@"mate", @"bbedit", @"edit", @"emacsclient", @"emacsclient"};
+static NSString *SKTeXEditorArguments[] = {@"-l %line \"%file\"", @"+%line \"%file\"", @"+%line \"%file\"", @"--no-wait +%line \"%file\"", @"--no-wait +%line \"%file\""};
 
 @implementation SKPreferenceController
 
@@ -100,14 +100,13 @@ static NSString *SKTeXEditorArguments[] = {@"-l %line \"%file\"", @"+%line \"%fi
 }
 
 - (void)windowDidLoad {
-    NSString *editorCmd = [[NSUserDefaults standardUserDefaults] stringForKey:SKTeXEditorCommandKey];
-    NSString *editorArgs = [[NSUserDefaults standardUserDefaults] stringForKey:SKTeXEditorArgumentsKey];
+    NSString *editorPreset = [[NSUserDefaults standardUserDefaults] stringForKey:SKTeXEditorPresetKey];
     int i = sizeof(SKTeXEditors) / sizeof(NSString *);
     int index = -1;
     
     while (i--) {
         [texEditorPopUpButton insertItemWithTitle:SKTeXEditors[i] atIndex:0];
-        if ([SKTeXEditorCommands[i] isEqualToString:editorCmd] && [SKTeXEditorArguments[i] isEqualToString:editorArgs])
+        if ([SKTeXEditors[i] isEqualToString:editorPreset])
             index = i;
     }
     
@@ -168,10 +167,12 @@ static NSString *SKTeXEditorArguments[] = {@"-l %line \"%file\"", @"+%line \"%fi
 - (IBAction)changeTeXEditorPreset:(id)sender {
     int index = [sender indexOfSelectedItem];
     if (index < [sender numberOfItems] - 1) {
+        [[NSUserDefaults standardUserDefaults] setObject:[sender titleOfSelectedItem] forKey:SKTeXEditorPresetKey];
         [[NSUserDefaults standardUserDefaults] setObject:SKTeXEditorCommands[index] forKey:SKTeXEditorCommandKey];
         [[NSUserDefaults standardUserDefaults] setObject:SKTeXEditorArguments[index] forKey:SKTeXEditorArgumentsKey];
         [self setCustomTeXEditor:NO];
     } else {
+        [[NSUserDefaults standardUserDefaults] setObject:@"" forKey:SKTeXEditorPresetKey];
         [self setCustomTeXEditor:YES];
     }
 }
