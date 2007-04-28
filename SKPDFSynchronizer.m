@@ -244,13 +244,13 @@ static NSPoint pdfOffset = {0.0, 0.0};
 #pragma mark | Finding
 
 - (void)findLineForLocation:(NSPoint)point inRect:(NSRect)rect atPageIndex:(unsigned int)pageIndex {
-    while (serverOnServerThread == nil)
+    while (shouldKeepRunning && serverOnServerThread == nil)
         [[NSRunLoop currentRunLoop] runUntilDate:[NSDate dateWithTimeIntervalSinceNow:0.1]];
     [serverOnServerThread serverFindLineForLocation:point inRect:rect atPageIndex:pageIndex];
 }
 
 - (void)findPageLocationForLine:(int)line inFile:(NSString *)file {
-    while (serverOnServerThread == nil)
+    while (shouldKeepRunning && serverOnServerThread == nil)
         [[NSRunLoop currentRunLoop] runUntilDate:[NSDate dateWithTimeIntervalSinceNow:0.1]];
     [serverOnServerThread serverFindPageLocationForLine:line inFile:file];
 }
@@ -334,6 +334,8 @@ static NSPoint pdfOffset = {0.0, 0.0};
     }
 }
 
+#pragma mark | Parsing and Finding
+
 - (BOOL)parsePdfsyncFileIfNeeded {
     NSString *theFileName = [self fileName];
     
@@ -348,8 +350,6 @@ static NSPoint pdfOffset = {0.0, 0.0};
     
     return YES;
 }
-
-#pragma mark | Parsing and Finding
 
 - (BOOL)parsePdfsyncFile {
     NSString *theFileName = [self fileName];
