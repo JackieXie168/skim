@@ -845,7 +845,7 @@ static inline NSRect rectWithCorners(NSPoint p1, NSPoint p2)
     if (nil == text)
         NSBeep();
     else
-        [[NSWorkspace sharedWorkspace] openURL:[NSURL URLWithString:[@"dict://" stringByAppendingString:text]]];
+        [[NSWorkspace sharedWorkspace] openURL:[NSURL URLWithString:[@"dict:///" stringByAppendingString:text]]];
 }
 
 - (NSMenu *)menuForEvent:(NSEvent *)theEvent {
@@ -981,7 +981,7 @@ static inline NSRect rectWithCorners(NSPoint p1, NSPoint p2)
         long version;
         OSStatus err = Gestalt(gestaltSystemVersion, &version);
         
-        if (noErr == err && version < 0x00001050) {
+        if ([[self currentSelection] string] && noErr == err && version < 0x00001050) {
             
             [menu addItem:[NSMenuItem separatorItem]];
             
