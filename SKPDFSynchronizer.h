@@ -37,6 +37,7 @@
  */
 
 #import <Cocoa/Cocoa.h>
+#import <libkern/OSAtomic.h>
 
 
 @interface SKPDFSynchronizer : NSObject {
@@ -44,17 +45,37 @@
     NSDate *lastModDate;
     NSMutableArray *pages;
     NSMutableDictionary *lines;
+    
+    id delegate;
+    
+    NSLock *lock;
+    
+    id serverOnMainThread;
+    id serverOnServerThread;
+    NSConnection *mainThreadConnection;
+    NSConnection *localThreadConnection;
+    
+    volatile int32_t shouldKeepRunning __attribute__ ((aligned (4)));
 }
+
+
+- (id)delegate;
+- (void)setDelegate:(id)newDelegate;
 
 - (NSString *)fileName;
 - (void)setFileName:(NSString *)newFileName;
 
-- (BOOL)parsePdfsyncFile;
-- (BOOL)parsePdfsyncFileIfNeeded;
+- (void)findLineForLocation:(NSPoint)point inRect:(NSRect)rect atPageIndex:(unsigned int)pageIndex;
+- (void)findPageLocationForLine:(int)line inFile:(NSString *)file;
 
-- (BOOL)getLine:(int *)line file:(NSString **)file forLocation:(NSPoint)point inRect:(NSRect)rect atPageIndex:(unsigned int)pageIndex;
-- (BOOL)getPageIndex:(unsigned int *)pageIndex location:(NSPoint *)point forLine:(int)line inFile:(NSString *)file;
+- (void)stopDOServer;
 
+@end
+
+
+@interface NSObject (SKPDFSynchronizerDelegate)
+- (void)synchronizer:(SKPDFSynchronizer *)synchronizer foundLine:(int)line inFile:(NSString *)file;
+- (void)synchronizer:(SKPDFSynchronizer *)synchronizer foundLocation:(NSPoint)point atPageIndex:(unsigned int)pageIndex;
 @end
 
 

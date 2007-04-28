@@ -39,58 +39,43 @@
 #import "SKPDFSynchronizer.h"
 #import "NSCharacterSet_SKExtensions.h"
 #import "NSScanner_SKExtensions.h"
+#import <Carbon/Carbon.h>
 
 
-@implementation SKPDFSynchronizer
-
-// Offset of coordinates in PDFKit and what pdfsync tells us. Don't know what they are; is this implementation dependent?
-static NSPoint pdfOffset = {0.0, 0.0};
-
-- (id)init {
-    if (self = [super init]) {
-        pages = [[NSMutableArray alloc] init];
-        lines = [[NSMutableDictionary alloc] init];
-        fileName = nil;
-        lastModDate = nil;
-    }
-    return self;
-}
-
-- (void)dealloc {
-    [pages release];
-    [lines release];
-    [fileName release];
-    [lastModDate release];
-    [super dealloc];
-}
-
-- (NSString *)fileName {
-    return [[fileName retain] autorelease];
-}
-
-- (void)setFileName:(NSString *)newFileName {
-    if (fileName != newFileName) {
-        if ([fileName isEqualToString:newFileName] == NO && lastModDate) {
-            [lastModDate release];
-            lastModDate = nil;
-        }
-        [fileName release];
-        fileName = [newFileName retain];
-    }
-}
-
-- (BOOL)parsePdfsyncFileIfNeeded {
-    NSFileManager *fm = [NSFileManager defaultManager];
-    
-    if (fileName == nil || [fm fileExistsAtPath:fileName] == NO)
+// NSFileManager is not thread safe
+static BOOL SKFileExistsAtPath(NSString *path) {
+    if (path == nil)
         return NO;
     
-    NSDate *modDate = [[fm fileAttributesAtPath:fileName traverseLink:NO] fileModificationDate];
-   
-     if (lastModDate == nil || [modDate compare:lastModDate] == NSOrderedDescending)
-        return [self parsePdfsyncFile];
+    FSRef ref;
     
-    return YES;
+    return noErr == FSPathMakeRef((UInt8 *)[path fileSystemRepresentation], &ref, NULL);
+}
+
+static NSDate *SKFileModificationDateAtPath(NSString *path) {
+	static NSDate* jan1904 = nil;
+	if (jan1904 == nil)
+		jan1904 = [[NSDate dateWithString:@"1904-01-01 00:00:00 +0000"] retain];
+	
+    FSCatalogInfo info;
+    FSRef fileRef;
+    
+    if (NO == CFURLGetFSRef((CFURLRef)[NSURL fileURLWithPath:path], &fileRef))
+        return nil;
+    
+    if (noErr == FSGetCatalogInfo( &fileRef, kFSCatInfoContentMod, &info, NULL,NULL, NULL ))
+        return nil;
+    
+	union {
+		UTCDateTime local;
+		UInt64 shifted;
+	} time;
+    
+	time.local = info.contentModDate;
+	if (time.shifted)
+		return [[[NSDate alloc] initWithTimeInterval:time.shifted / 65536 sinceDate:jan1904] autorelease];
+	else
+        return nil;
 }
 
 static NSString *SKTeXSourceFile(NSString *file, NSString *base) {
@@ -113,22 +98,274 @@ static NSMutableDictionary *SKRecordForRecordIndex(NSMutableDictionary *records,
     return record;
 }
 
+#pragma mark -
+
+@protocol SKPDFSynchronizerServerThread
+- (oneway void)cleanup; 
+- (oneway void)serverFindLineForLocation:(NSPoint)point inRect:(NSRect)rect atPageIndex:(unsigned int)pageIndex;
+- (oneway void)serverFindPageLocationForLine:(int)line inFile:(bycopy NSString *)file;
+@end
+
+@protocol SKPDFSynchronizerMainThread
+- (oneway void)setLocalServer:(byref id)anObject;
+- (oneway void)serverFoundLine:(int)line inFile:(bycopy NSString *)file;
+- (oneway void)serverFoundLocation:(NSPoint)point atPageIndex:(unsigned int)pageIndex;
+@end
+
+#pragma mark -
+
+@interface SKPDFSynchronizer (Private)
+
+- (NSDate *)lastModDate;
+- (void)setLastModDate:(NSDate *)date;
+
+- (void)runDOServerForPorts:(NSArray *)ports;
+
+// these following methods only be called on the server thread
+- (BOOL)parsePdfsyncFile;
+- (BOOL)parsePdfsyncFileIfNeeded;
+
+@end
+
+#pragma mark -
+
+@implementation SKPDFSynchronizer
+
+// Offset of coordinates in PDFKit and what pdfsync tells us. Don't know what they are; is this implementation dependent?
+static NSPoint pdfOffset = {0.0, 0.0};
+
+- (id)init {
+    if (self = [super init]) {
+        pages = [[NSMutableArray alloc] init];
+        lines = [[NSMutableDictionary alloc] init];
+        fileName = nil;
+        lastModDate = nil;
+        
+        lock = [[NSLock alloc] init];
+        
+        NSPort *port1 = [NSPort port];
+        NSPort *port2 = [NSPort port];
+        
+        mainThreadConnection = [[NSConnection alloc] initWithReceivePort:port1 sendPort:port2];
+        [mainThreadConnection setRootObject:self];
+        [mainThreadConnection enableMultipleThreads];
+        
+        // these will be set when the background thread sets up
+        localThreadConnection = nil;
+        serverOnMainThread = nil;
+        serverOnServerThread = nil;
+       
+        shouldKeepRunning = 1;
+        
+        // run a background thread to connect to the remote server
+        // this will connect back to the connection we just set up
+        [NSThread detachNewThreadSelector:@selector(runDOServerForPorts:) toTarget:self withObject:[NSArray arrayWithObjects:port2, port1, nil]];
+    }
+    return self;
+}
+
+- (void)dealloc {
+    [lock release];
+    [pages release];
+    [lines release];
+    [fileName release];
+    [lastModDate release];
+    [super dealloc];
+}
+
+#pragma mark Accessors
+
+- (id)delegate {
+    return [[delegate retain] autorelease];
+}
+
+- (void)setDelegate:(id)newDelegate {
+    if (delegate != newDelegate) {
+        [delegate release];
+        delegate = [newDelegate retain];
+    }
+}
+
+- (NSString *)fileName {
+    [lock lock];
+    NSString *file = [[fileName retain] autorelease];
+    [lock unlock];
+    return file;
+}
+
+- (void)setFileName:(NSString *)newFileName {
+    [lock lock];
+    if (fileName != newFileName) {
+        if ([fileName isEqualToString:newFileName] == NO && lastModDate) {
+            [lastModDate release];
+            lastModDate = nil;
+        }
+        [fileName release];
+        fileName = [newFileName retain];
+    }
+    [lock unlock];
+}
+
+- (NSDate *)lastModDate {
+    [lock lock];
+    NSDate *date = [[lastModDate retain] autorelease];
+    [lock unlock];
+    return date;
+}
+
+- (void)setLastModDate:(NSDate *)date {
+    [lock lock];
+    if (date != lastModDate) {
+        [lastModDate release];
+        lastModDate = [date retain];
+    }
+    [lock unlock];
+}
+
+#pragma mark API
+#pragma mark | DO server
+
+- (void)stopDOServer {
+    // this cleans up the connections, ports and proxies on both sides
+    [serverOnServerThread cleanup];
+    // we're in the main thread, so set the stop flag
+    OSAtomicCompareAndSwap32Barrier(1, 0, (int32_t *)&shouldKeepRunning);
+    
+    // clean up the connection in the main thread; don't invalidate the ports, since they're still in use
+    [mainThreadConnection setRootObject:nil];
+    [mainThreadConnection invalidate];
+    [mainThreadConnection release];
+    mainThreadConnection = nil;
+    
+    [serverOnServerThread release];
+    serverOnServerThread = nil;    
+}
+
+#pragma mark | Finding
+
+- (void)findLineForLocation:(NSPoint)point inRect:(NSRect)rect atPageIndex:(unsigned int)pageIndex {
+    while (serverOnServerThread == nil)
+        [[NSRunLoop currentRunLoop] runUntilDate:[NSDate dateWithTimeIntervalSinceNow:0.1]];
+    [serverOnServerThread serverFindLineForLocation:point inRect:rect atPageIndex:pageIndex];
+}
+
+- (void)findPageLocationForLine:(int)line inFile:(NSString *)file {
+    while (serverOnServerThread == nil)
+        [[NSRunLoop currentRunLoop] runUntilDate:[NSDate dateWithTimeIntervalSinceNow:0.1]];
+    [serverOnServerThread serverFindPageLocationForLine:line inFile:file];
+}
+
+#pragma mark Main thread
+#pragma mark | DO server
+
+- (oneway void)setLocalServer:(byref id)anObject {
+    [anObject setProtocolForProxy:@protocol(SKPDFSynchronizerServerThread)];
+    serverOnServerThread = [anObject retain];
+}
+
+#pragma mark | Finding
+
+- (oneway void)serverFoundLine:(int)line inFile:(bycopy NSString *)file {
+    if (shouldKeepRunning && [delegate respondsToSelector:@selector(synchronizer:foundLine:inFile:)])
+        [delegate synchronizer:self foundLine:line inFile:file];
+}
+
+- (oneway void)serverFoundLocation:(NSPoint)point atPageIndex:(unsigned int)pageIndex {
+    if (shouldKeepRunning && [delegate respondsToSelector:@selector(synchronizer:foundLocation:atPageIndex:)])
+        [delegate synchronizer:self foundLocation:point atPageIndex:pageIndex];
+}
+
+#pragma mark Server thread
+#pragma mark | DO server
+
+- (oneway void)cleanup {   
+    // clean up the connection in the server thread
+    [localThreadConnection setRootObject:nil];
+    
+    // this frees up the CFMachPorts created in -init
+    [[localThreadConnection receivePort] invalidate];
+    [[localThreadConnection sendPort] invalidate];
+    [localThreadConnection invalidate];
+    [localThreadConnection release];
+    localThreadConnection = nil;
+    
+    [serverOnMainThread release];
+    serverOnMainThread = nil;    
+}
+
+- (void)runDOServerForPorts:(NSArray *)ports {
+    // detach a new thread to run this
+    NSAssert(localThreadConnection == nil, @"server is already running");
+    
+    NSAutoreleasePool *pool = [NSAutoreleasePool new];
+    
+    OSAtomicCompareAndSwap32Barrier(0, 1, (int32_t *)&shouldKeepRunning);
+    
+    @try {
+        // we'll use this to communicate between threads on the localhost
+        localThreadConnection = [[NSConnection alloc] initWithReceivePort:[ports objectAtIndex:0] sendPort:[ports objectAtIndex:1]];
+        if(localThreadConnection == nil)
+            @throw @"Unable to get default connection";
+        [localThreadConnection setRootObject:self];
+        
+        serverOnMainThread = [[localThreadConnection rootProxy] retain];
+        [serverOnMainThread setProtocolForProxy:@protocol(SKPDFSynchronizerMainThread)];
+        // handshake, this sets the proxy at the other side
+        [serverOnMainThread setLocalServer:self];
+        
+        NSRunLoop *rl = [NSRunLoop currentRunLoop];
+        BOOL didRun;
+        
+        // see http://lists.apple.com/archives/cocoa-dev/2006/Jun/msg01054.html for a helpful explanation of NSRunLoop
+        do {
+            [pool release];
+            pool = [NSAutoreleasePool new];
+            didRun = [rl runMode:NSDefaultRunLoopMode beforeDate:[NSDate distantFuture]];
+        } while (shouldKeepRunning == 1 && didRun);
+    }
+    @catch(id exception) {
+        NSLog(@"Discarding exception \"%@\" raised in object %@", exception, self);
+        // reset the flag so we can start over; shouldn't be necessary
+        OSAtomicCompareAndSwap32Barrier(0, 1, (int32_t *)&shouldKeepRunning);
+    }
+    
+    @finally {
+        [pool release];
+    }
+}
+
+- (BOOL)parsePdfsyncFileIfNeeded {
+    NSString *theFileName = [self fileName];
+    
+    if (theFileName == nil || SKFileExistsAtPath(theFileName) == NO)
+        return NO;
+    
+    NSDate *modDate = SKFileModificationDateAtPath(theFileName);
+    NSDate *currentModDate = [self lastModDate];
+    
+    if (currentModDate == nil || [modDate compare:currentModDate] == NSOrderedDescending)
+        return [self parsePdfsyncFile];
+    
+    return YES;
+}
+
+#pragma mark | Parsing and Finding
+
 - (BOOL)parsePdfsyncFile {
-    NSFileManager *fm = [NSFileManager defaultManager];
+    NSString *theFileName = [self fileName];
     
     [pages removeAllObjects];
     [lines removeAllObjects];
     
-    if ([fm fileExistsAtPath:fileName] == NO)
+    if (SKFileExistsAtPath(theFileName) == NO)
         return NO;
     
-    [lastModDate release];
-    lastModDate = [[[fm fileAttributesAtPath:fileName traverseLink:NO] fileModificationDate] retain];
+    [self setLastModDate:SKFileModificationDateAtPath(theFileName)];
     
-    NSString *basePath = [fileName stringByDeletingLastPathComponent];
+    NSString *basePath = [theFileName stringByDeletingLastPathComponent];
     NSMutableDictionary *records = [NSMutableDictionary dictionary];
     NSMutableArray *files = [NSMutableArray array];
-    NSString *pdfsyncString = [NSString stringWithContentsOfFile:fileName encoding:NSUTF8StringEncoding error:NULL];
+    NSString *pdfsyncString = [NSString stringWithContentsOfFile:theFileName encoding:NSUTF8StringEncoding error:NULL];
     NSString *file;
     int recordIndex, line;
     float x, y;
@@ -165,7 +402,7 @@ static NSMutableDictionary *SKRecordForRecordIndex(NSMutableDictionary *records,
     
     [scanner scanCharactersFromSet:[NSCharacterSet newlineCharacterSet] intoString:NULL];
     
-    while ([scanner scanCharacter:&ch]) {
+    while (shouldKeepRunning && [scanner scanCharacter:&ch]) {
         
         if (ch == 'l') {
             if ([scanner scanInt:&recordIndex] && [scanner scanInt:&line]) {
@@ -226,15 +463,15 @@ static NSMutableDictionary *SKRecordForRecordIndex(NSMutableDictionary *records,
     [pages makeObjectsPerformSelector:@selector(sortUsingDescriptors:)
                            withObject:[NSArray arrayWithObjects:ySortDescriptor, xSortDescriptor, nil]];
     
-    return YES;
+    return shouldKeepRunning;
 }
 
-- (BOOL)getLine:(int *)line file:(NSString **)file forLocation:(NSPoint)point inRect:(NSRect)rect atPageIndex:(unsigned int)pageIndex {
+- (oneway void)serverFindLineForLocation:(NSPoint)point inRect:(NSRect)rect atPageIndex:(unsigned int)pageIndex {
     int foundLine = -1;
     NSString *foundFile = nil;
     NSDictionary *record = nil;
     
-    if ([self parsePdfsyncFileIfNeeded] && pageIndex < [pages count]) {
+    if (shouldKeepRunning && [self parsePdfsyncFileIfNeeded] && pageIndex < [pages count]) {
         
         NSDictionary *beforeRecord = nil;
         NSDictionary *afterRecord = nil;
@@ -293,18 +530,16 @@ static NSMutableDictionary *SKRecordForRecordIndex(NSMutableDictionary *records,
         
     }
     
-    if (line) *line = foundLine;
-    if (file) *file = foundFile;
-    
-    return record != nil;
+    if (shouldKeepRunning)
+        [serverOnMainThread serverFoundLine:foundLine inFile:foundFile];
 }
 
-- (BOOL)getPageIndex:(unsigned int *)pageIndex location:(NSPoint *)point forLine:(int)line inFile:(NSString *)file {
+- (oneway void)serverFindPageLocationForLine:(int)line inFile:(bycopy NSString *)file {
     unsigned int foundPageIndex = NSNotFound;
     NSPoint foundPoint = NSZeroPoint;
     NSDictionary *record = nil;
     
-    if (file && [self parsePdfsyncFileIfNeeded] && [lines objectForKey:file]) {
+    if (shouldKeepRunning && file && [self parsePdfsyncFileIfNeeded] && [lines objectForKey:file]) {
         
         NSDictionary *beforeRecord = nil;
         NSDictionary *afterRecord = nil;
@@ -347,14 +582,13 @@ static NSMutableDictionary *SKRecordForRecordIndex(NSMutableDictionary *records,
         }
     }
     
-    if (pageIndex) *pageIndex = foundPageIndex;
-    if (point) *point = foundPoint;
-    
-    return record != nil;
+    if (shouldKeepRunning)
+        [serverOnMainThread serverFoundLocation:foundPoint atPageIndex:foundPageIndex];
 }
 
 @end
 
+#pragma mark -
 
 @implementation NSMutableDictionary (SKExtensions)
 

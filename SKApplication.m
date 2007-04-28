@@ -114,14 +114,9 @@ NSString *SKApplicationWillTerminateNotification = @"SKApplicationWillTerminateN
         if ([[NSFileManager defaultManager] fileExistsAtPath:[file path]] && [[NSFileManager defaultManager] fileExistsAtPath:source]) {
             
             SKDocument *document = [[NSDocumentController sharedDocumentController] openDocumentWithContentsOfURL:file display:YES error:NULL];
-            unsigned int pageIndex;
-            NSPoint point;
             
-            if ([document respondsToSelector:@selector(synchronizer)] && [document respondsToSelector:@selector(pdfView)] && 
-                [[document synchronizer] getPageIndex:&pageIndex location:&point forLine:[lineNumber intValue] inFile:source]) {
-                
-                [[document pdfView] displayLineAtPoint:point inPageAtIndex:pageIndex];
-            }
+            if ([document respondsToSelector:@selector(synchronizer)])
+                [[document synchronizer] findPageLocationForLine:[lineNumber intValue] inFile:source];
             
         } else {
             [command setScriptErrorNumber:NSArgumentsWrongScriptError];
