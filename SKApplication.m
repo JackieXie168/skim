@@ -123,10 +123,14 @@ NSString *SKApplicationWillTerminateNotification = @"SKApplicationWillTerminateN
                 [[document pdfView] displayLineAtPoint:point inPageAtIndex:pageIndex];
             }
             
-        } else
+        } else {
             [command setScriptErrorNumber:NSArgumentsWrongScriptError];
-    } else
+            [command setScriptErrorString:@"File does not exist."];
+        }
+    } else {
 		[command setScriptErrorNumber:NSArgumentsWrongScriptError];
+        [command setScriptErrorString:@"File argument is not a file."];
+    }
     
     return nil;
 }
