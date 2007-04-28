@@ -106,9 +106,9 @@ NSString *SKApplicationWillTerminateNotification = @"SKApplicationWillTerminateN
     if ([file isKindOfClass:[NSURL class]] && [source isKindOfClass:[NSURL class]]) {
         
         source = [source path];
-        if ([[[source pathExtension] pathExtension] length] == 0)
+        if ([[source pathExtension] length] == 0)
             source = [source stringByAppendingPathExtension:@"tex"];
-        else if ([[[source pathExtension] pathExtension] caseInsensitiveCompare:@"tex"] == NO)
+        else if ([[source pathExtension] caseInsensitiveCompare:@"tex"] == NO)
             source = [[source stringByDeletingPathExtension] stringByAppendingPathExtension:@"tex"];
         
         if ([[NSFileManager defaultManager] fileExistsAtPath:[file path]] && [[NSFileManager defaultManager] fileExistsAtPath:source]) {
