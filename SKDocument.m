@@ -76,6 +76,8 @@ NSString *SKDocumentWillSaveNotification = @"SKDocumentWillSaveNotification";
 - (void)dealloc {
     [[NSUserDefaultsController sharedUserDefaultsController] removeObserver:self forKey:SKAutoCheckFileUpdateKey];
     [[NSNotificationCenter defaultCenter] removeObserver:self];
+    [synchronizer stopDOServer];
+    [synchronizer release];
     [fileUpdateTimer invalidate];
     [fileUpdateTimer release];
     [lastChangedDate release];
@@ -83,7 +85,6 @@ NSString *SKDocumentWillSaveNotification = @"SKDocumentWillSaveNotification";
     [pdfData release];
     [noteDicts release];
     [readNotesAccessoryView release];
-    [synchronizer release];
     [super dealloc];
 }
 
@@ -599,10 +600,45 @@ NSString *SKDocumentWillSaveNotification = @"SKDocumentWillSaveNotification";
 - (SKPDFSynchronizer *)synchronizer {
     if (synchronizer == nil) {
         synchronizer = [[SKPDFSynchronizer alloc] init];
+        [synchronizer setDelegate:self];
         [synchronizer setFileName:[[[self fileName] stringByDeletingPathExtension] stringByAppendingPathExtension:@"pdfsync"]];
     }
     return synchronizer;
 }
+
+- (void)synchronizer:(SKPDFSynchronizer *)synchronizer foundLine:(int)line inFile:(NSString *)file {
+    if ([[NSFileManager defaultManager] fileExistsAtPath:file]) {
+        
+        NSString *editorPreset = [[NSUserDefaults standardUserDefaults] objectForKey:SKTeXEditorPresetKey];
+        NSString *editorCmd = [[NSUserDefaults standardUserDefaults] objectForKey:SKTeXEditorCommandKey];
+        NSMutableString *cmdString = [[[[NSUserDefaults standardUserDefaults] objectForKey:SKTeXEditorArgumentsKey] mutableCopy] autorelease];
+        
+        if ([editorPreset isEqualToString:@""] == NO) {
+            NSString *appPath = [[NSWorkspace sharedWorkspace] fullPathForApplication:editorPreset];
+            NSString *toolPath = appPath ? [NSBundle pathForResource:editorCmd ofType:nil inDirectory:appPath] : nil;
+            if (toolPath) {
+               editorCmd = toolPath;
+            } else {
+                // Emacs has its tool in Emacs.app/Contents/MacOS/bin/
+                toolPath = [[[[NSBundle bundleWithPath:appPath] executablePath] stringByAppendingPathComponent:@"bin"] stringByAppendingPathComponent:cmdString];
+                if ([[NSFileManager defaultManager] isExecutableFileAtPath:toolPath])
+                    editorCmd = toolPath;
+            }
+        }
+        
+        [cmdString replaceOccurrencesOfString:@"%file" withString:file options:NSLiteralSearch range: NSMakeRange(0, [cmdString length] )];
+        [cmdString replaceOccurrencesOfString:@"%line" withString:[NSString stringWithFormat:@"%d", line] options:NSLiteralSearch range:NSMakeRange(0, [cmdString length])];
+        [cmdString insertString:@" " atIndex:0];
+        [cmdString insertString:editorCmd atIndex:0];
+        
+        [NSTask launchedTaskWithLaunchPath:@"/bin/sh" arguments:[NSArray arrayWithObjects:@"-c", cmdString, nil]];
+    }
+}
+
+- (void)synchronizer:(SKPDFSynchronizer *)synchronizer foundLocation:(NSPoint)point atPageIndex:(unsigned int)pageIndex {
+   [[self pdfView] displayLineAtPoint:point inPageAtIndex:pageIndex];
+}
+
 
 #pragma mark Accessors
 

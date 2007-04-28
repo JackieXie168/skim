@@ -2671,44 +2671,14 @@ static inline NSRect rectWithCorners(NSPoint p1, NSPoint p2)
     
     if ([document respondsToSelector:@selector(synchronizer)]) {
         
-        SKPDFSynchronizer *synchronizer = [document synchronizer];
         NSPoint mouseLoc = [self convertPoint:[theEvent locationInWindow] fromView:nil];
         PDFPage *page = [self pageForPoint:mouseLoc nearest:YES];
         NSPoint location = [self convertPoint:mouseLoc toPage:page];
         unsigned int pageIndex = [[self document] indexForPage:page];
         PDFSelection *sel = [page selectionForLineAtPoint:location];
         NSRect rect = sel ? [sel boundsForPage:page] : NSMakeRect(location.x - 20.0, location.y - 5.0, 40.0, 10.0);
-        NSString *file = nil;
-        int line = -1;
         
-        if ([synchronizer getLine:&line file:&file forLocation:location inRect:rect atPageIndex:pageIndex] &&
-            [[NSFileManager defaultManager] fileExistsAtPath:file]) {
-            
-            NSString *editorPreset = [[NSUserDefaults standardUserDefaults] objectForKey:SKTeXEditorPresetKey];
-            NSString *editorCmd = [[NSUserDefaults standardUserDefaults] objectForKey:SKTeXEditorCommandKey];
-            NSMutableString *cmdString = [[[[NSUserDefaults standardUserDefaults] objectForKey:SKTeXEditorArgumentsKey] mutableCopy] autorelease];
-            
-            if ([editorPreset isEqualToString:@""] == NO) {
-                NSString *appPath = [[NSWorkspace sharedWorkspace] fullPathForApplication:editorPreset];
-                NSString *toolPath = appPath ? [NSBundle pathForResource:editorCmd ofType:nil inDirectory:appPath] : nil;
-                if (toolPath) {
-                   editorCmd = toolPath;
-                } else {
-                    // Emacs has its tool in Emacs.app/Contents/MacOS/bin/
-                    toolPath = [[[[NSBundle bundleWithPath:appPath] executablePath] stringByAppendingPathComponent:@"bin"] stringByAppendingPathComponent:cmdString];
-                    if ([[NSFileManager defaultManager] isExecutableFileAtPath:toolPath])
-                        editorCmd = toolPath;
-                }
-            }
-            
-            [cmdString replaceOccurrencesOfString:@"%file" withString:file options:NSLiteralSearch range: NSMakeRange(0, [cmdString length] )];
-            [cmdString replaceOccurrencesOfString:@"%line" withString:[NSString stringWithFormat:@"%d", line] options:NSLiteralSearch range:NSMakeRange(0, [cmdString length])];
-            [cmdString insertString:@" " atIndex:0];
-            [cmdString insertString:editorCmd atIndex:0];
-            
-            [NSTask launchedTaskWithLaunchPath:@"/bin/sh" arguments:[NSArray arrayWithObjects:@"-c", cmdString, nil]];
-            
-        } else NSBeep();
+        [[document synchronizer] findLineForLocation:location inRect:rect atPageIndex:pageIndex];
     }
 }
 
