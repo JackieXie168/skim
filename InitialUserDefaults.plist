@@ -121,8 +121,10 @@
 	</data>
         <key>SKAutoCheckFileUpdate</key>
         <false/>
+        <key>SKTeXEditorPreset</key>
+        <string>TextMate</string>
         <key>SKTeXEditorCommand</key>
-        <string>/Applications/TextMate.app/Contents/Resources/mate</string>
+        <string>mate</string>
         <key>SKTeXEditorArguments</key>
         <string>-l %line "%file"</string>
         <key>SUCheckAtStartup</key>
@@ -177,6 +179,7 @@
         <key>sync</key>
         <array>
             <string>SKAutoCheckFileUpdate</string>
+            <string>SKTeXEditorPreset</string>
             <string>SKTeXEditorCommand</string>
             <string>SKTeXEditorArguments</string>
         </array>
