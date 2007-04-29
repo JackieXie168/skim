@@ -677,8 +677,11 @@ static CGMutablePathRef SKCGCreatePathWithRoundRectInRect(CGRect rect, float rad
                     NSString *selString = [[[[activeAnnotation page] selectionForRect:[activeAnnotation bounds]] string] stringByCollapsingWhitespaceAndNewlinesAndRemovingSurroundingWhitespaceAndNewlines];
                     [activeAnnotation setContents:selString];
                 }
-                if (didDrag)
-                    [[[[[self window] windowController] document] undoManager] endUndoGrouping];
+                if (didDrag) {
+                    [[self undoManager] endUndoGrouping];
+                    // due to an Appkit bug, endUndoGrouping registers an extra change count, which is not reverted when the group is undone
+                    [[[[self window] windowController] document] updateChangeCount:NSChangeUndone];
+                }
             } else
                 [super mouseUp:theEvent];
             break;
@@ -707,7 +710,7 @@ static inline NSRect rectWithCorners(NSPoint p1, NSPoint p2)
             if (draggingAnnotation) {
                 if (didDrag == NO) {
                     didDrag = YES;
-                    [[[[[self window] windowController] document] undoManager] beginUndoGrouping];
+                    [[self undoManager] beginUndoGrouping];
                 }
                 [self dragAnnotationWithEvent:theEvent];
             } else if (nil == activeAnnotation) {
@@ -1003,6 +1006,12 @@ static inline NSRect rectWithCorners(NSPoint p1, NSPoint p2)
     [self setScaleFactor:[self scaleFactor] + 0.5 * dy];
 }
 
+#pragma mark UndoManager
+
+- (NSUndoManager *)undoManager {
+    return [[[[self window] windowController] document] undoManager];
+}
+
 #pragma mark Annotation management
 
 - (void)addAnnotationFromMenu:(id)sender {
@@ -1137,7 +1146,7 @@ static inline NSRect rectWithCorners(NSPoint p1, NSPoint p2)
 }
 
 - (void)addAnnotation:(PDFAnnotation *)annotation toPage:(PDFPage *)page {
-    [[[[[[self window] windowController] document] undoManager] prepareWithInvocationTarget:self] removeAnnotation:annotation];
+    [[[self undoManager] prepareWithInvocationTarget:self] removeAnnotation:annotation];
     [page addAnnotation:annotation];
     [self setNeedsDisplayForAnnotation:annotation];
     [[NSNotificationCenter defaultCenter] postNotificationName:SKPDFViewDidAddAnnotationNotification object:self userInfo:[NSDictionary dictionaryWithObjectsAndKeys:page, @"page", annotation, @"annotation", nil]];                
@@ -1159,7 +1168,7 @@ static inline NSRect rectWithCorners(NSPoint p1, NSPoint p2)
     PDFAnnotation *wasAnnotation = [annotation retain];
     PDFPage *page = [wasAnnotation page];
     
-    [[[[[[self window] windowController] document] undoManager] prepareWithInvocationTarget:self] addAnnotation:wasAnnotation toPage:page];
+    [[[self undoManager] prepareWithInvocationTarget:self] addAnnotation:wasAnnotation toPage:page];
     
     if (editAnnotation && activeAnnotation == annotation)
         [self endAnnotationEdit:self];
