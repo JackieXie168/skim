@@ -50,6 +50,13 @@
 
 @implementation SKPDFHoverWindow
 
+static NSMutableParagraphStyle *SKPDFHoverWindowTextParagraphStyle = nil;
+
++ (void)initialize {
+    SKPDFHoverWindowTextParagraphStyle = [[NSMutableParagraphStyle alloc] init];
+    [SKPDFHoverWindowTextParagraphStyle setLineBreakMode:NSLineBreakByClipping];
+}
+
 + (id)sharedHoverWindow {
     static SKPDFHoverWindow *sharedHoverWindow = nil;
     if (sharedHoverWindow == nil)
@@ -66,12 +73,9 @@
         [self setLevel:NSStatusWindowLevel];
         [self setAlphaValue:ALPHA_VALUE];
         
-        NSScrollView *scrollView = [[NSScrollView alloc] init];
-        imageView = [[NSImageView alloc] init];
+        NSImageView *imageView = [[NSImageView alloc] init];
         [imageView setImageFrameStyle:NSImageFrameNone];
-        [scrollView setDocumentView:imageView];
-        [self setContentView:scrollView];
-        [scrollView release];
+        [self setContentView:imageView];
         [imageView release];
         
         font = [[NSFont toolTipsFontOfSize:11.0] retain];
@@ -173,24 +177,24 @@
     [super orderOut:sender];
 }
 
-- (NSRect)hoverWindowRectFittingScreenFromRect:(NSRect)rect{
-    NSRect screenRect = [[NSScreen mainScreen] visibleFrame];
-    
-    if (NSMaxX(rect) > NSMaxX(screenRect) - 2.0)
-        rect.origin.x = NSMaxX(screenRect) - NSWidth(rect) - 2.0;
-    if (NSMinX(rect) < NSMinX(screenRect) + 2.0)
-        rect.origin.x = NSMinX(screenRect) + 2.0;
-    if (NSMaxY(rect) > NSMaxY(screenRect) - 2.0)
-        rect.origin.y = NSMaxY(screenRect) - NSHeight(rect) - 2.0;
-    if (NSMinY(rect) < NSMinY(screenRect) + 2.0)
-        rect.origin.y = NSMinY(screenRect) + 2.0;
-    
-    return [self frameRectForContentRect:rect];
+static NSRect SKRectFittingRectInRect(NSRect inRect, NSRect outRect) {
+    if (NSWidth(inRect) > NSWidth(outRect))
+        inRect.size.width = NSWidth(outRect);
+    if (NSHeight(inRect) > NSHeight(outRect))
+        inRect.size.height = NSHeight(outRect);
+    if (NSMaxX(inRect) > NSMaxX(outRect) )
+        inRect.origin.x = NSMaxX(outRect) - NSWidth(inRect);
+    if (NSMinX(inRect) < NSMinX(outRect))
+        inRect.origin.x = NSMinX(outRect);
+    if (NSMaxY(inRect) > NSMaxY(outRect))
+        inRect.origin.y = NSMaxY(outRect) - NSHeight(inRect);
+    if (NSMinY(inRect) < NSMinY(outRect))
+        inRect.origin.y = NSMinY(outRect);
+    return inRect;
 }
 
-- (void)timerFired:(NSTimer *)aTimer {
+- (void)showWithTimer:(NSTimer *)aTimer {
     NSPoint thePoint = NSEqualPoints(point, NSZeroPoint) ? [NSEvent mouseLocation] : point;
-    NSRect rect = NSZeroRect;
     NSRect contentRect = NSMakeRect(thePoint.x, thePoint.y - WINDOW_OFFSET, WINDOW_WIDTH, WINDOW_HEIGHT);
     NSImage *image = nil;
     NSAttributedString *text = nil;
@@ -206,47 +210,50 @@
         
         if (page) {
             
+            NSImage *pageImage = [page image];
+            NSRect pageImageRect = {NSZeroPoint, [pageImage size]};
             NSRect bounds = [page boundsForBox:kPDFDisplayBoxCropBox];
+            NSRect sourceRect = contentRect;
             
-            rect = contentRect;
-            rect.origin = [dest point];
-            rect.origin.x -= NSMinX(bounds);
-            rect.origin.y -= NSMinY(bounds) + NSHeight(rect);
+            sourceRect.origin = [dest point];
+            sourceRect.origin.x -= NSMinX(bounds);
+            sourceRect.origin.y -= NSMinY(bounds) + NSHeight(sourceRect);
             
             PDFSelection *selection = [page selectionForRect:bounds];
             if ([selection string]) {
                 NSRect selBounds = [selection boundsForPage:page];
-                float top = fmax(NSMaxY(selBounds), NSMinX(selBounds) + NSHeight(rect));
-                float left = fmin(NSMinX(selBounds), NSMaxX(bounds) - NSWidth(rect));
-                if (top < NSMaxY(rect))
-                    rect.origin.y = top - NSHeight(rect);
-                if (left > NSMinX(rect))
-                    rect.origin.x = left;
+                float top = ceilf(fmax(NSMaxY(selBounds), NSMinX(selBounds) + NSHeight(sourceRect)));
+                float left = floorf(fmin(NSMinX(selBounds), NSMaxX(bounds) - NSWidth(sourceRect)));
+                if (top < NSMaxY(sourceRect))
+                    sourceRect.origin.y = top - NSHeight(sourceRect);
+                if (left > NSMinX(sourceRect))
+                    sourceRect.origin.x = left;
             }
             
-            image = [[page image] retain];
             color = [NSColor controlBackgroundColor];
             
-            if (NSMaxX(rect) > [image size].width)
-                rect.origin.x = [image size].width - NSWidth(rect);
-            if (NSMinX(rect) < 0.0)
-                rect.origin.x = 0.0;
-            if (NSMaxY(rect) > [image size].height)
-                rect.origin.y = [image size].height - NSHeight(rect);
-            if (NSMinY(rect) < 0.0)
-                rect.origin.y = 0.0;
+            sourceRect = SKRectFittingRectInRect(sourceRect, pageImageRect);
             
-            NSDictionary *attrs = [[NSDictionary alloc] initWithObjectsAndKeys:labelFont, NSFontAttributeName, color, NSForegroundColorAttributeName, nil];
+            NSDictionary *attrs = [[NSDictionary alloc] initWithObjectsAndKeys:labelFont, NSFontAttributeName, color, NSForegroundColorAttributeName, SKPDFHoverWindowTextParagraphStyle, NSParagraphStyleAttributeName, nil];
             NSAttributedString *labelString = [[NSAttributedString alloc] initWithString:[NSString stringWithFormat:NSLocalizedString(@"Page %@", @"Tool tip label format"), [page label]] attributes:attrs];
             NSRect labelRect = [labelString boundingRectWithSize:NSZeroSize options:NSStringDrawingUsesLineFragmentOrigin];
-            float labelOffset = (0.5 * NSHeight(labelRect)); // make sure the cap radius is integral
             
-            labelRect.size.height = 2.0 * labelOffset;
-            labelRect.origin.x = NSMaxX(rect) - NSWidth(labelRect) - labelOffset - TEXT_MARGIN_X;
-            labelRect.origin.y = NSMinY(rect) + TEXT_MARGIN_Y;
+            labelRect.size.width = floorf(NSWidth(labelRect));
+            labelRect.size.height = 2.0 * floorf(0.5 * NSHeight(labelRect)); // make sure the cap radius is integral
+            labelRect.origin.x = NSWidth(sourceRect) - NSWidth(labelRect) - 0.5 * NSHeight(labelRect) - TEXT_MARGIN_X;
+            labelRect.origin.y = TEXT_MARGIN_Y;
+            labelRect = NSIntegralRect(labelRect);
+            
+            NSRect targetRect = sourceRect;
+            targetRect.origin = NSZeroPoint;
+            
+            contentRect.size = targetRect.size;
+            
+            image = [[NSImage alloc] initWithSize:targetRect.size];
             
             [image lockFocus];
             [NSGraphicsContext saveGraphicsState];
+            [pageImage drawInRect:targetRect fromRect:sourceRect operation:NSCompositeCopy fraction:1.0];
             [labelColor setFill];
             [NSBezierPath fillHorizontalOvalAroundRect:labelRect];
             [labelString drawWithRect:labelRect options:NSStringDrawingUsesLineFragmentOrigin];
@@ -276,16 +283,17 @@
     }
     
     if (string) {
-        NSDictionary *attrs = [[NSDictionary alloc] initWithObjectsAndKeys:font, NSFontAttributeName, nil];
+        NSDictionary *attrs = [[NSDictionary alloc] initWithObjectsAndKeys:font, NSFontAttributeName, SKPDFHoverWindowTextParagraphStyle, NSParagraphStyleAttributeName, nil];
         text = [[NSAttributedString alloc] initWithString:string attributes:attrs];
         [attrs release];
     }
     
     if (text) {
         
-        rect = [text boundingRectWithSize:NSInsetRect(contentRect, TEXT_MARGIN_X, TEXT_MARGIN_Y).size options:NSStringDrawingUsesLineFragmentOrigin];
-        rect.size.width = contentRect.size.width = NSWidth(rect) + 2.0 * TEXT_MARGIN_X;
-        rect.size.height = contentRect.size.height = fmin(NSHeight(rect) + 2.0 * TEXT_MARGIN_Y, NSHeight(contentRect));
+        NSRect rect = [text boundingRectWithSize:NSInsetRect(contentRect, TEXT_MARGIN_X, TEXT_MARGIN_Y).size options:NSStringDrawingUsesLineFragmentOrigin];
+        
+        rect.size.width = ceilf(NSWidth(rect) + 2.0 * TEXT_MARGIN_X);
+        rect.size.height = ceilf(fmin(NSHeight(rect) + 2.0 * TEXT_MARGIN_Y, NSHeight(contentRect)));
         rect.origin = NSZeroPoint;
         
         image = [[NSImage alloc] initWithSize:rect.size];
@@ -296,17 +304,20 @@
         [image unlockFocus];
         
         [text release];
+        
+        contentRect.size = rect.size;
     }
     
     if (image) {
         
-        [imageView setFrameSize:[image size]];
+        NSImageView *imageView = (NSImageView *)[self contentView];
+        
         [imageView setImage:image];
         [image release];
         
         contentRect.origin.y -= NSHeight(contentRect);
-        [self setFrame:[self hoverWindowRectFittingScreenFromRect:contentRect] display:NO];
-        [imageView scrollRectToVisible:rect];
+        contentRect = SKRectFittingRectInRect(contentRect, [[NSScreen mainScreen] visibleFrame]);
+        [self setFrame:[self frameRectForContentRect:contentRect] display:NO];
         
         [[imageView enclosingScrollView] setBackgroundColor:color];
         
@@ -347,7 +358,7 @@
         annotation = [note retain];
         
         NSDate *date = [NSDate dateWithTimeIntervalSinceNow:[self isVisible] ? 0.1 : 1.0];
-        timer = [[NSTimer alloc] initWithFireDate:date interval:0 target:self selector:@selector(timerFired:) userInfo:NULL repeats:NO];
+        timer = [[NSTimer alloc] initWithFireDate:date interval:0 target:self selector:@selector(showWithTimer:) userInfo:NULL repeats:NO];
         [[NSRunLoop currentRunLoop] addTimer:timer forMode:NSDefaultRunLoopMode];
     }
 }

@@ -41,7 +41,6 @@
 @class PDFAnnotation;
 
 @interface SKPDFHoverWindow : NSPanel {
-    NSImageView *imageView;
     NSFont *font;
     NSColor *backgroundColor;
     NSFont *labelFont;
