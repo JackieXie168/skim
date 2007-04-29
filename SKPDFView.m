@@ -856,7 +856,7 @@ static inline NSRect rectWithCorners(NSPoint p1, NSPoint p2)
     if (hasNavigation && autohidesCursor)
         return menu;
     
-    [menu addItem:[NSMenuItem separatorItem]];
+    [menu insertItem:[NSMenuItem separatorItem] atIndex:0];
     
     submenu = [[NSMenu allocWithZone:[menu zone]] init];
     
@@ -872,21 +872,31 @@ static inline NSRect rectWithCorners(NSPoint p1, NSPoint p2)
     [item setTag:SKMagnifyToolMode];
     [item setTarget:self];
     
-    item = [menu addItemWithTitle:NSLocalizedString(@"Tools", @"Menu item title") action:NULL keyEquivalent:@""];
+    item = [menu insertItemWithTitle:NSLocalizedString(@"Tools", @"Menu item title") action:NULL keyEquivalent:@"" atIndex:0];
     [item setSubmenu:submenu];
     [submenu release];
     
     NSPoint point = [self convertPoint:[theEvent locationInWindow] fromView:nil];
     
-    [menu addItem:[NSMenuItem separatorItem]];
+    [menu insertItem:[NSMenuItem separatorItem] atIndex:0];
     
-    item = [menu addItemWithTitle:NSLocalizedString(@"Take Snapshot", @"Menu item title") action:@selector(takeSnapshot:) keyEquivalent:@""];
+    item = [menu insertItemWithTitle:NSLocalizedString(@"Take Snapshot", @"Menu item title") action:@selector(takeSnapshot:) keyEquivalent:@"" atIndex:0];
     [item setRepresentedObject:[NSValue valueWithPoint:point]];
     [item setTarget:self];
     
     if ([self toolMode] == SKTextToolMode) {
         
-        [menu addItem:[NSMenuItem separatorItem]];
+        long version;
+        OSStatus err = Gestalt(gestaltSystemVersion, &version);
+        
+        if ([[self currentSelection] string] && noErr == err && version < 0x00001050) {
+            
+            [menu insertItem:[NSMenuItem separatorItem] atIndex:0];
+            
+            item = [menu insertItemWithTitle:NSLocalizedString(@"Look Up in Dictionary", @"") action:@selector(lookUpCurrentSelectionInDictionary:) keyEquivalent:@"" atIndex:0];
+        }
+        
+        [menu insertItem:[NSMenuItem separatorItem] atIndex:0];
         
         submenu = [[NSMenu allocWithZone:[menu zone]] init];
         
@@ -932,22 +942,11 @@ static inline NSRect rectWithCorners(NSPoint p1, NSPoint p2)
         [item setTag:SKArrowNote];
         [item setTarget:self];
         
-        item = [menu addItemWithTitle:NSLocalizedString(@"New Note", @"Menu item title") action:NULL keyEquivalent:@""];
+        item = [menu insertItemWithTitle:NSLocalizedString(@"New Note or Highlight", @"Menu item title") action:NULL keyEquivalent:@"" atIndex:0];
         [item setSubmenu:submenu];
         [submenu release];
         
-        [menu addItem:[NSMenuItem separatorItem]];
-        
-        if ([self currentSelection] || ([activeAnnotation isNoteAnnotation] && [activeAnnotation isMovable])) {
-            item = [menu addItemWithTitle:NSLocalizedString(@"Copy", @"Menu item title") action:@selector(copy:) keyEquivalent:@""];
-            if ([activeAnnotation isNoteAnnotation] && [activeAnnotation isMovable])
-                item = [menu addItemWithTitle:NSLocalizedString(@"Cut", @"Menu item title") action:@selector(copy:) keyEquivalent:@""];
-        }
-        
-        if ([[NSPasteboard generalPasteboard] availableTypeFromArray:[NSArray arrayWithObjects:SKSkimNotePboardType, NSStringPboardType, nil]]) {
-            SEL selector = ([theEvent modifierFlags] & NSAlternateKeyMask) ? @selector(alternatePaste:) : @selector(paste:);
-            item = [menu addItemWithTitle:NSLocalizedString(@"Paste", @"Menu item title") action:selector keyEquivalent:@""];
-        }
+        [menu insertItem:[NSMenuItem separatorItem] atIndex:0];
         
         PDFPage *page = [self pageForPoint:point nearest:YES];
         PDFAnnotation *annotation = nil;
@@ -959,35 +958,34 @@ static inline NSRect rectWithCorners(NSPoint p1, NSPoint p2)
         }
         
         if (annotation) {
-            item = [menu addItemWithTitle:NSLocalizedString(@"Remove Note", @"Menu item title") action:@selector(removeThisAnnotation:) keyEquivalent:@""];
-            [item setRepresentedObject:annotation];
-            [item setTarget:self];
-            
             if ((annotation != activeAnnotation || editAnnotation == nil) && [annotation isEditable]) {
-                item = [menu addItemWithTitle:NSLocalizedString(@"Edit Note", @"Menu item title") action:@selector(editThisAnnotation:) keyEquivalent:@""];
+                item = [menu insertItemWithTitle:NSLocalizedString(@"Edit Note", @"Menu item title") action:@selector(editThisAnnotation:) keyEquivalent:@"" atIndex:0];
                 [item setRepresentedObject:annotation];
                 [item setTarget:self];
             }
-        } else if ([activeAnnotation isNoteAnnotation]) {
-            item = [menu addItemWithTitle:NSLocalizedString(@"Remove Current Note", @"Menu item title") action:@selector(removeActiveAnnotation:) keyEquivalent:@""];
-            [item setTarget:self];
             
+            item = [menu insertItemWithTitle:NSLocalizedString(@"Remove Note", @"Menu item title") action:@selector(removeThisAnnotation:) keyEquivalent:@"" atIndex:0];
+            [item setRepresentedObject:annotation];
+            [item setTarget:self];
+        } else if ([activeAnnotation isNoteAnnotation]) {
             if (editAnnotation == nil && [activeAnnotation isEditable]) {
-                item = [menu addItemWithTitle:NSLocalizedString(@"Edit Current Note", @"Menu item title") action:@selector(editActiveAnnotation:) keyEquivalent:@""];
+                item = [menu insertItemWithTitle:NSLocalizedString(@"Edit Current Note", @"Menu item title") action:@selector(editActiveAnnotation:) keyEquivalent:@"" atIndex:0];
                 [item setTarget:self];
             }
+            
+            item = [menu insertItemWithTitle:NSLocalizedString(@"Remove Current Note", @"Menu item title") action:@selector(removeActiveAnnotation:) keyEquivalent:@"" atIndex:0];
+            [item setTarget:self];
         }
         
-        long version;
-        OSStatus err = Gestalt(gestaltSystemVersion, &version);
+        if ([[NSPasteboard generalPasteboard] availableTypeFromArray:[NSArray arrayWithObjects:SKSkimNotePboardType, NSStringPboardType, nil]]) {
+            SEL selector = ([theEvent modifierFlags] & NSAlternateKeyMask) ? @selector(alternatePaste:) : @selector(paste:);
+            item = [menu insertItemWithTitle:NSLocalizedString(@"Paste", @"Menu item title") action:selector keyEquivalent:@"" atIndex:0];
+        }
         
-        if ([[self currentSelection] string] && noErr == err && version < 0x00001050) {
-            
-            [menu addItem:[NSMenuItem separatorItem]];
-            
-            item = [[NSMenuItem allocWithZone:[NSMenu menuZone]] initWithTitle:NSLocalizedString(@"Look Up in Dictionary", @"") action:@selector(lookUpCurrentSelectionInDictionary:) keyEquivalent:@""];
-            [menu addItem:item];
-            [item release];
+        if ([self currentSelection] || ([activeAnnotation isNoteAnnotation] && [activeAnnotation isMovable])) {
+            if ([activeAnnotation isNoteAnnotation] && [activeAnnotation isMovable])
+                item = [menu insertItemWithTitle:NSLocalizedString(@"Cut", @"Menu item title") action:@selector(copy:) keyEquivalent:@"" atIndex:0];
+            item = [menu insertItemWithTitle:NSLocalizedString(@"Copy", @"Menu item title") action:@selector(copy:) keyEquivalent:@"" atIndex:0];
         }
     }
     
