@@ -64,6 +64,8 @@ extern void SKCGContextSetDefaultRGBColorSpace(CGContextRef context);
 - (BOOL)isMovable;
 - (BOOL)isEditable;
 
+- (NSUndoManager *)undoManager;
+
 - (BOOL)hitTest:(NSPoint)point;
 
 - (NSScriptObjectSpecifier *)objectSpecifier;
@@ -100,6 +102,7 @@ extern void SKCGContextSetDefaultRGBColorSpace(CGContextRef context);
 @interface SKPDFAnnotationNote : PDFAnnotationText {
     NSImage *image;
     NSTextStorage *textStorage;
+    NSAttributedString *text;
     NSArray *texts;
 }
 

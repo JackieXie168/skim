@@ -247,9 +247,7 @@
 - (void)insertInNotes:(id)newNote {
     SKDocument *document = [self containingDocument];
     
-    [self addAnnotation:newNote];
-    
-    [[document pdfView] setNeedsDisplayForAnnotation:newNote];
+    [[document pdfView] addAnnotation:newNote toPage:self];
     
     [[NSNotificationCenter defaultCenter] postNotificationName:SKPDFViewDidAddAnnotationNotification object:[document pdfView] 
         userInfo:[NSDictionary dictionaryWithObjectsAndKeys:newNote, @"annotation", self, @"page", nil]];
