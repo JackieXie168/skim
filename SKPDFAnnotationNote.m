@@ -268,9 +268,7 @@ void SKCGContextSetDefaultRGBColorSpace(CGContextRef context) {
         NSRect newBounds = NSRectFromRect(*qdBounds);
         if ([self isResizable] == NO)
             newBounds.size = [self bounds].size;
-        [pdfView setNeedsDisplayForAnnotation:self];
         [self setBounds:newBounds];
-        [pdfView setNeedsDisplayForAnnotation:self];
     }
 
 }
@@ -967,9 +965,7 @@ static BOOL lineRectTrimmingWhitespaceForPage(NSRect *lineRect, PDFPage *page)
             newPoint.y = 0.5;
         else if (newPoint.y > NSHeight([self bounds]))
             newPoint.y = NSHeight([self bounds]) - 0.5;
-        [pdfView setNeedsDisplayForAnnotation:self];
         [self setStartPoint:newPoint];
-        [pdfView setNeedsDisplayForAnnotation:self];
     }
 
 }
@@ -994,9 +990,7 @@ static BOOL lineRectTrimmingWhitespaceForPage(NSRect *lineRect, PDFPage *page)
             newPoint.y = 0.5;
         else if (newPoint.y > NSHeight([self bounds]))
             newPoint.y = NSHeight([self bounds]) - 0.5;
-        [pdfView setNeedsDisplayForAnnotation:self];
         [self setEndPoint:newPoint];
-        [pdfView setNeedsDisplayForAnnotation:self];
     }
 
 }

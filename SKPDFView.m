@@ -1992,11 +1992,9 @@ static inline NSRect rectWithCorners(NSPoint p1, NSPoint p2)
 
 - (BOOL)selectAnnotationWithEvent:(NSEvent *)theEvent {
     PDFAnnotation *newActiveAnnotation = NULL;
-    PDFAnnotation *wasActiveAnnotation;
     NSArray *annotations;
     int i;
     NSPoint pagePoint;
-    BOOL changed;
     PDFPage *activePage;
     
     // Mouse in display view coordinates.
@@ -2042,28 +2040,8 @@ static inline NSRect rectWithCorners(NSPoint p1, NSPoint p2)
         [newAnnotation release];
     }
     
-    // Flag indicating if activeAnnotation will change. 
-    changed = (activeAnnotation != newActiveAnnotation);
-    
-    // Deselect old annotation when appropriate.
-    if (activeAnnotation && changed)
-		[self setNeedsDisplayForAnnotation:activeAnnotation];
-    
-    if (changed) {
-        if (editAnnotation)
-            [self endAnnotationEdit:self];
-        
-        // Assign.
-        wasActiveAnnotation = activeAnnotation;
-        activeAnnotation = (PDFAnnotationFreeText *)newActiveAnnotation;
-        
-        NSMutableDictionary *userInfo = [NSMutableDictionary dictionaryWithCapacity:2];
-        if (wasActiveAnnotation)
-            [userInfo setObject:wasActiveAnnotation forKey:@"wasActiveAnnotation"];
-        if (activeAnnotation)
-            [userInfo setObject:activeAnnotation forKey:@"activeAnnotation"];
-        [[NSNotificationCenter defaultCenter] postNotificationName:SKPDFViewActiveAnnotationDidChangeNotification object:self userInfo:userInfo];
-    }
+    if (activeAnnotation != newActiveAnnotation)
+        [self setActiveAnnotation:newActiveAnnotation];
     
     if (newActiveAnnotation == nil) {
         //[super mouseDown:theEvent];
@@ -2094,8 +2072,6 @@ static inline NSRect rectWithCorners(NSPoint p1, NSPoint p2)
             wasEndPoint = [(SKPDFAnnotationLine *)activeAnnotation endPoint];
         }
         
-        // Force redisplay.
-		[self setNeedsDisplayForAnnotation:activeAnnotation];
         draggingAnnotation = [activeAnnotation isMovable];
         
         // Hit-test for resize box.
@@ -2328,7 +2304,7 @@ static inline NSRect rectWithCorners(NSPoint p1, NSPoint p2)
                 // move the annotation to the new page
                 PDFAnnotation *saveActiveAnnotation = [activeAnnotation retain];
                 [self removeAnnotation:saveActiveAnnotation];
-                [self addAnnotation:activeAnnotation toPage:newActivePage];
+                [self addAnnotation:saveActiveAnnotation toPage:newActivePage];
                 [self setActiveAnnotation:saveActiveAnnotation];
                 [saveActiveAnnotation release];
                 activePage = newActivePage;
