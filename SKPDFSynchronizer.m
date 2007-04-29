@@ -63,7 +63,7 @@ static NSDate *SKFileModificationDateAtPath(NSString *path) {
     if (NO == CFURLGetFSRef((CFURLRef)[NSURL fileURLWithPath:path], &fileRef))
         return nil;
     
-    if (noErr == FSGetCatalogInfo( &fileRef, kFSCatInfoContentMod, &info, NULL,NULL, NULL ))
+    if (noErr != FSGetCatalogInfo( &fileRef, kFSCatInfoContentMod, &info, NULL,NULL, NULL ))
         return nil;
     
 	union {
