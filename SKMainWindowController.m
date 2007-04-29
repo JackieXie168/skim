@@ -719,7 +719,6 @@ static NSString *SKDocumentToolbarNotesPaneItemIdentifier = @"SKDocumentToolbarN
     if ([annotation isNoteAnnotation]) {
         if ([[annotation color] isEqual:[sender color]] == NO)
             [annotation setColor:[sender color]];
-        [pdfView setNeedsDisplayForAnnotation:annotation];
     }
 }
 
@@ -728,7 +727,6 @@ static NSString *SKDocumentToolbarNotesPaneItemIdentifier = @"SKDocumentToolbarN
     if ([annotation isNoteAnnotation] && [annotation respondsToSelector:@selector(setFont:)] && [annotation respondsToSelector:@selector(font)]) {
         NSFont *font = [sender convertFont:[(PDFAnnotationFreeText *)annotation font]];
         [(PDFAnnotationFreeText *)annotation setFont:font];
-        [pdfView setNeedsDisplayForAnnotation:annotation];
     }
 }
 
