@@ -537,10 +537,7 @@ static CGMutablePathRef SKCGCreatePathWithRoundRectInRect(CGRect rect, float rad
         [newAnnotation setContents:[pboard stringForType:NSStringPboardType]];
     }
     
-    [page addAnnotation:newAnnotation];
-    
-    [[NSNotificationCenter defaultCenter] postNotificationName:SKPDFViewDidAddAnnotationNotification object:self 
-        userInfo:[NSDictionary dictionaryWithObjectsAndKeys:newAnnotation, @"annotation", page, @"page", nil]];
+    [self addAnnotation:newAnnotation toPage:page];
 
     [self setActiveAnnotation:newAnnotation];
 }
@@ -606,7 +603,9 @@ static CGMutablePathRef SKCGCreatePathWithRoundRectInRect(CGRect rect, float rad
     
     mouseDownLoc = [theEvent locationInWindow];
 	unsigned int modifiers = [theEvent modifierFlags] & NSDeviceIndependentModifierFlagsMask;
-
+    
+    didDrag = NO;
+    
     if (modifiers & NSCommandKeyMask) {
         if (modifiers & NSShiftKeyMask)
             [self pdfsyncWithEvent:theEvent];
@@ -674,10 +673,12 @@ static CGMutablePathRef SKCGCreatePathWithRoundRectInRect(CGRect rect, float rad
             wasSelection = nil;
             if (draggingAnnotation) {
                 draggingAnnotation = NO;
-                if ([[activeAnnotation type] isEqualToString:@"Square"] || [[activeAnnotation type] isEqualToString:@"Square"]) {
+                if ([[activeAnnotation type] isEqualToString:@"Circle"] || [[activeAnnotation type] isEqualToString:@"Square"]) {
                     NSString *selString = [[[[activeAnnotation page] selectionForRect:[activeAnnotation bounds]] string] stringByCollapsingWhitespaceAndNewlinesAndRemovingSurroundingWhitespaceAndNewlines];
                     [activeAnnotation setContents:selString];
                 }
+                if (didDrag)
+                    [[[[[self window] windowController] document] undoManager] endUndoGrouping];
             } else
                 [super mouseUp:theEvent];
             break;
@@ -704,6 +705,10 @@ static inline NSRect rectWithCorners(NSPoint p1, NSPoint p2)
     switch (toolMode) {
         case SKTextToolMode:
             if (draggingAnnotation) {
+                if (didDrag == NO) {
+                    didDrag = YES;
+                    [[[[[self window] windowController] document] undoManager] beginUndoGrouping];
+                }
                 [self dragAnnotationWithEvent:theEvent];
             } else if (nil == activeAnnotation) {
                 if (mouseDownInAnnotation) {
@@ -1122,16 +1127,20 @@ static inline NSRect rectWithCorners(NSPoint p1, NSPoint p2)
     if ([[activeAnnotation type] isEqualToString:@"Line"] == NO)
         [newAnnotation setContents:text];
     
-    [page addAnnotation:newAnnotation];
-    
-    [[NSNotificationCenter defaultCenter] postNotificationName:SKPDFViewDidAddAnnotationNotification object:self 
-        userInfo:[NSDictionary dictionaryWithObjectsAndKeys:newAnnotation, @"annotation", page, @"page", nil]];
+    [self addAnnotation:newAnnotation toPage:page];
 
     [self setActiveAnnotation:newAnnotation];
     [newAnnotation release];
     if (annotationType == SKAnchoredNote)
 		[[NSNotificationCenter defaultCenter] postNotificationName:SKPDFViewAnnotationDoubleClickedNotification object:self 
             userInfo:[NSDictionary dictionaryWithObjectsAndKeys:activeAnnotation, @"annotation", nil]];
+}
+
+- (void)addAnnotation:(PDFAnnotation *)annotation toPage:(PDFPage *)page {
+    [[[[[[self window] windowController] document] undoManager] prepareWithInvocationTarget:self] removeAnnotation:annotation];
+    [page addAnnotation:annotation];
+    [self setNeedsDisplayForAnnotation:annotation];
+    [[NSNotificationCenter defaultCenter] postNotificationName:SKPDFViewDidAddAnnotationNotification object:self userInfo:[NSDictionary dictionaryWithObjectsAndKeys:page, @"page", annotation, @"annotation", nil]];                
 }
 
 - (void)removeActiveAnnotation:(id)sender{
@@ -1149,6 +1158,8 @@ static inline NSRect rectWithCorners(NSPoint p1, NSPoint p2)
 - (void)removeAnnotation:(PDFAnnotation *)annotation{
     PDFAnnotation *wasAnnotation = [annotation retain];
     PDFPage *page = [wasAnnotation page];
+    
+    [[[[[[self window] windowController] document] undoManager] prepareWithInvocationTarget:self] addAnnotation:wasAnnotation toPage:page];
     
     if (editAnnotation && activeAnnotation == annotation)
         [self endAnnotationEdit:self];
@@ -2017,12 +2028,9 @@ static inline NSRect rectWithCorners(NSPoint p1, NSPoint p2)
     if (([theEvent modifierFlags] & NSAlternateKeyMask) && [newActiveAnnotation isMovable]) {
         // select a new copy of the annotation
         PDFAnnotation *newAnnotation = [[PDFAnnotation alloc] initWithDictionary:[newActiveAnnotation dictionaryValue]];
-        [activePage addAnnotation:newAnnotation];
+        [self addAnnotation:newAnnotation toPage:activePage];
         newActiveAnnotation = newAnnotation;
         [newAnnotation release];
-        
-        [[NSNotificationCenter defaultCenter] postNotificationName:SKPDFViewDidAddAnnotationNotification object:self 
-            userInfo:[NSDictionary dictionaryWithObjectsAndKeys:newAnnotation, @"annotation", activePage, @"page", nil]];
     }
     
     // Flag indicating if activeAnnotation will change. 
@@ -2309,13 +2317,11 @@ static inline NSRect rectWithCorners(NSPoint p1, NSPoint p2)
         } else {
             if (newActivePage != activePage) {
                 // move the annotation to the new page
-                [activeAnnotation retain];
-                [self setNeedsDisplayForAnnotation:activeAnnotation];
-                [activePage removeAnnotation:activeAnnotation];
-                [[NSNotificationCenter defaultCenter] postNotificationName:SKPDFViewDidRemoveAnnotationNotification object:self userInfo:[NSDictionary dictionaryWithObjectsAndKeys:activePage, @"page", activeAnnotation, @"annotation", nil]];                
-                [newActivePage addAnnotation:activeAnnotation];
-                [activeAnnotation release];
-                [[NSNotificationCenter defaultCenter] postNotificationName:SKPDFViewDidAddAnnotationNotification object:self userInfo:[NSDictionary dictionaryWithObjectsAndKeys:newActivePage, @"page", activeAnnotation, @"annotation", nil]];                
+                PDFAnnotation *saveActiveAnnotation = [activeAnnotation retain];
+                [self removeAnnotation:saveActiveAnnotation];
+                [self addAnnotation:activeAnnotation toPage:newActivePage];
+                [self setActiveAnnotation:saveActiveAnnotation];
+                [saveActiveAnnotation release];
                 activePage = newActivePage;
             }
             

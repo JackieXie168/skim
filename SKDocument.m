@@ -168,6 +168,7 @@ NSString *SKDocumentWillSaveNotification = @"SKDocumentWillSaveNotification";
         }
         
         if (saveOperation == NSSaveOperation || saveOperation == NSSaveAsOperation) {
+            [[self undoManager] removeAllActions];
             [self updateChangeCount:NSChangeCleared];
             [lastChangedDate release];
             lastChangedDate = [[[fm fileAttributesAtPath:[absoluteURL path] traverseLink:YES] fileModificationDate] retain];
@@ -215,7 +216,9 @@ NSString *SKDocumentWillSaveNotification = @"SKDocumentWillSaveNotification";
             [[self mainWindowController] setPdfDocument:pdfDocument];
             [pdfDocument autorelease];
             pdfDocument = nil;
+            [[self undoManager] removeAllActions];
         } else {
+            // Should this now be one?
             [self updateChangeCount:NSChangeCleared];
         }
         if (noteDicts) {
@@ -409,6 +412,8 @@ NSString *SKDocumentWillSaveNotification = @"SKDocumentWillSaveNotification";
                 [[self mainWindowController] setAnnotationsFromDictionaries:array];
             else
                 [[self mainWindowController] addAnnotationsFromDictionaries:array];
+            // previous undo actions are not reliable anymore
+            [[self undoManager] removeAllActions];
             [self updateChangeCount:NSChangeDone];
         }
         

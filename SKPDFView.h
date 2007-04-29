@@ -88,6 +88,7 @@ typedef enum _SKNoteType {
 	BOOL resizingAnnotation;
 	BOOL draggingAnnotation;
 	BOOL draggingStartPoint;
+    BOOL didDrag;
     BOOL mouseDownInAnnotation;
     BOOL extendSelection;
     BOOL rectSelection;
@@ -112,6 +113,7 @@ typedef enum _SKNoteType {
 - (void)addAnnotationFromMenu:(id)sender;
 - (void)addAnnotationFromSelectionWithType:(SKNoteType)annotationType;
 - (void)addAnnotationWithType:(SKNoteType)annotationType contents:(NSString *)text page:(PDFPage *)page bounds:(NSRect)bounds;
+- (void)addAnnotation:(PDFAnnotation *)annotation toPage:(PDFPage *)page;
 - (void)removeActiveAnnotation:(id)sender;
 - (void)removeThisAnnotation:(id)sender;
 - (void)removeAnnotation:(PDFAnnotation *)annotation;

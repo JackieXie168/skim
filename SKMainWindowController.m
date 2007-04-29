@@ -1849,7 +1849,6 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
         }
     }
     [noteOutlineView reloadData];
-    [[self document] updateChangeCount:NSChangeDone];
 }
 
 - (void)handleDidRemoveAnnotationNotification:(NSNotification *)notification {
@@ -1881,7 +1880,6 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
         }
     }
     [noteOutlineView reloadData];
-    [[self document] updateChangeCount:NSChangeDone];
 }
 
 - (void)handleDoubleClickedAnnotationNotification:(NSNotification *)notification {
@@ -1893,7 +1891,6 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
 - (void)handleAnnotationDidChangeNotification:(NSNotification *)notification {
     PDFAnnotation *annotation = [notification object];
     if ([[[annotation page] document] isEqual:[[self pdfView] document]]) {
-        [[self document] updateChangeCount:NSChangeDone];
         [self thumbnailNeedsUpdate:[[self thumbnails] objectAtIndex:[annotation pageIndex]]];
         
         NSEnumerator *snapshotEnum = [snapshots objectEnumerator];
