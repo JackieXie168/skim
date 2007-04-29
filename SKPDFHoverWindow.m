@@ -247,8 +247,6 @@ static NSRect SKRectFittingRectInRect(NSRect inRect, NSRect outRect) {
             NSRect targetRect = sourceRect;
             targetRect.origin = NSZeroPoint;
             
-            contentRect.size = targetRect.size;
-            
             image = [[NSImage alloc] initWithSize:targetRect.size];
             
             [image lockFocus];
@@ -290,22 +288,20 @@ static NSRect SKRectFittingRectInRect(NSRect inRect, NSRect outRect) {
     
     if (text) {
         
-        NSRect rect = [text boundingRectWithSize:NSInsetRect(contentRect, TEXT_MARGIN_X, TEXT_MARGIN_Y).size options:NSStringDrawingUsesLineFragmentOrigin];
+        NSRect textRect = [text boundingRectWithSize:NSInsetRect(contentRect, TEXT_MARGIN_X, TEXT_MARGIN_Y).size options:NSStringDrawingUsesLineFragmentOrigin];
         
-        rect.size.width = ceilf(NSWidth(rect) + 2.0 * TEXT_MARGIN_X);
-        rect.size.height = ceilf(fmin(NSHeight(rect) + 2.0 * TEXT_MARGIN_Y, NSHeight(contentRect)));
-        rect.origin = NSZeroPoint;
+        textRect.size.height = fmin(NSHeight(textRect), NSHeight(contentRect) - 2.0 * TEXT_MARGIN_Y);
+        textRect.origin = NSMakePoint(TEXT_MARGIN_X, TEXT_MARGIN_Y);
         
-        image = [[NSImage alloc] initWithSize:rect.size];
+        image = [[NSImage alloc] initWithSize:NSInsetRect(NSIntegralRect(textRect), -TEXT_MARGIN_X, -TEXT_MARGIN_X).size];
         color = backgroundColor;
         
         [image lockFocus];
-        [text drawWithRect:NSInsetRect(rect, TEXT_MARGIN_X, TEXT_MARGIN_Y) options:NSStringDrawingUsesLineFragmentOrigin];
+        [text drawWithRect:textRect options:NSStringDrawingUsesLineFragmentOrigin];
         [image unlockFocus];
         
         [text release];
         
-        contentRect.size = rect.size;
     }
     
     if (image) {
@@ -315,6 +311,7 @@ static NSRect SKRectFittingRectInRect(NSRect inRect, NSRect outRect) {
         [imageView setImage:image];
         [image release];
         
+        contentRect.size = [image size];
         contentRect.origin.y -= NSHeight(contentRect);
         contentRect = SKRectFittingRectInRect(contentRect, [[NSScreen mainScreen] visibleFrame]);
         [self setFrame:[self frameRectForContentRect:contentRect] display:NO];
