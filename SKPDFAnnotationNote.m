@@ -165,7 +165,7 @@ static IMP originalSetColor = NULL;
     return page ? [[page document] indexForPage:page] : NSNotFound;
 }
 
-- (void)replecamentSetBounds:(NSRect)bounds {
+- (void)replacementSetBounds:(NSRect)bounds {
     if ([self isNoteAnnotation]) {
         [[[self undoManager] prepareWithInvocationTarget:self] setBounds:[self bounds]];
         [[NSNotificationCenter defaultCenter] postNotificationName:SKAnnotationWillChangeNotification 
@@ -177,7 +177,7 @@ static IMP originalSetColor = NULL;
                 object:self userInfo:[NSDictionary dictionaryWithObjectsAndKeys:@"bounds", @"key", nil]];
 }
 
-- (void)replecamentSetContents:(NSString *)contents {
+- (void)replacementSetContents:(NSString *)contents {
     if ([self isNoteAnnotation])
         [[[self undoManager] prepareWithInvocationTarget:self] setContents:[self contents]];
     originalSetContents(self, _cmd, contents);
@@ -186,7 +186,7 @@ static IMP originalSetColor = NULL;
                 object:self userInfo:[NSDictionary dictionaryWithObjectsAndKeys:@"contents", @"key", nil]];
 }
 
-- (void)replecamentSetColor:(NSColor *)color {
+- (void)replacementSetColor:(NSColor *)color {
     if ([self isNoteAnnotation])
         [[[self undoManager] prepareWithInvocationTarget:self] setColor:[self color]];
     originalSetColor(self, _cmd, color);
