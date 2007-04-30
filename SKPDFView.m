@@ -243,7 +243,7 @@ static CGMutablePathRef SKCGCreatePathWithRoundRectInRect(CGRect rect, float rad
             float color[4] = { 0.0, 0.0, 0.0, 1.0 };
             NSRect rect = NSInsetRect(NSIntegralRect(bounds), 0.5 * lineWidth, 0.5 * lineWidth);
             if (isLink) {
-                CGMutablePathRef path = SKCGCreatePathWithRoundRectInRect(*(CGRect *)&rect, 2.0);
+                CGMutablePathRef path = SKCGCreatePathWithRoundRectInRect(*(CGRect *)&rect, floorf(0.3 * NSHeight(rect)));
                 color[3] = 0.1;
                 CGContextSetFillColor(context, color);
                 CGContextBeginPath(context);
