@@ -41,6 +41,7 @@
 #import "PDFPage_SKExtensions.h"
 #import "PDFSelection_SKExtensions.h"
 #import "SKPDFView.h"
+#import "OBUtilities.h"
 
 enum {
     SKASTextNote = 'NTxt',
@@ -74,7 +75,24 @@ void SKCGContextSetDefaultRGBColorSpace(CGContextRef context) {
 @end
 
 
+@interface PDFAnnotation (SKPDFAnnotationPrivate)
+- (void)replacementSetBounds:(NSRect)bounds;
+- (void)replacementSetContents:(NSString *)contents;
+- (void)replacementSetColor:(NSColor *)color;
+@end
+
+
 @implementation PDFAnnotation (SKExtensions)
+
+static IMP originalSetBounds = NULL;
+static IMP originalSetContents = NULL;
+static IMP originalSetColor = NULL;
+
++ (void)load {
+    originalSetBounds = OBReplaceMethodImplementationWithSelector(self, @selector(setBounds:), @selector(replacementSetBounds:));
+    originalSetContents = OBReplaceMethodImplementationWithSelector(self, @selector(setContents:), @selector(replacementSetContents:));
+    originalSetColor = OBReplaceMethodImplementationWithSelector(self, @selector(setColor:), @selector(replacementSetColor:));
+}
 
 - (id)initWithDictionary:(NSDictionary *)dict{
     [[self initWithBounds:NSZeroRect] release];
@@ -145,6 +163,36 @@ void SKCGContextSetDefaultRGBColorSpace(CGContextRef context) {
 - (unsigned int)pageIndex {
     PDFPage *page = [self page];
     return page ? [[page document] indexForPage:page] : NSNotFound;
+}
+
+- (void)replecamentSetBounds:(NSRect)bounds {
+    if ([self isNoteAnnotation]) {
+        [[[self undoManager] prepareWithInvocationTarget:self] setBounds:[self bounds]];
+        [[NSNotificationCenter defaultCenter] postNotificationName:SKAnnotationWillChangeNotification 
+                object:self userInfo:[NSDictionary dictionaryWithObjectsAndKeys:@"bounds", @"key", nil]];
+    }
+    originalSetBounds(self, _cmd, bounds);
+    if ([self isNoteAnnotation])
+        [[NSNotificationCenter defaultCenter] postNotificationName:SKAnnotationDidChangeNotification 
+                object:self userInfo:[NSDictionary dictionaryWithObjectsAndKeys:@"bounds", @"key", nil]];
+}
+
+- (void)replecamentSetContents:(NSString *)contents {
+    if ([self isNoteAnnotation])
+        [[[self undoManager] prepareWithInvocationTarget:self] setContents:[self contents]];
+    originalSetContents(self, _cmd, contents);
+    if ([self isNoteAnnotation])
+        [[NSNotificationCenter defaultCenter] postNotificationName:SKAnnotationDidChangeNotification 
+                object:self userInfo:[NSDictionary dictionaryWithObjectsAndKeys:@"contents", @"key", nil]];
+}
+
+- (void)replecamentSetColor:(NSColor *)color {
+    if ([self isNoteAnnotation])
+        [[[self undoManager] prepareWithInvocationTarget:self] setColor:[self color]];
+    originalSetColor(self, _cmd, color);
+    if ([self isNoteAnnotation])
+        [[NSNotificationCenter defaultCenter] postNotificationName:SKAnnotationDidChangeNotification 
+                object:self userInfo:[NSDictionary dictionaryWithObjectsAndKeys:@"color", @"key", nil]];
 }
 
 - (NSImage *)image { return nil; }
@@ -312,29 +360,6 @@ void SKCGContextSetDefaultRGBColorSpace(CGContextRef context) {
 
 - (BOOL)shouldPrint { return YES; }
 
-- (void)setBounds:(NSRect)bounds {
-    [[[self undoManager] prepareWithInvocationTarget:self] setBounds:[self bounds]];
-    [[NSNotificationCenter defaultCenter] postNotificationName:SKAnnotationWillChangeNotification 
-            object:self userInfo:[NSDictionary dictionaryWithObjectsAndKeys:@"bounds", @"key", nil]];
-    [super setBounds:bounds];
-    [[NSNotificationCenter defaultCenter] postNotificationName:SKAnnotationDidChangeNotification 
-            object:self userInfo:[NSDictionary dictionaryWithObjectsAndKeys:@"bounds", @"key", nil]];
-}
-
-- (void)setContents:(NSString *)contents {
-    [[[self undoManager] prepareWithInvocationTarget:self] setContents:[self contents]];
-    [super setContents:contents];
-    [[NSNotificationCenter defaultCenter] postNotificationName:SKAnnotationDidChangeNotification 
-            object:self userInfo:[NSDictionary dictionaryWithObjectsAndKeys:@"contents", @"key", nil]];
-}
-
-- (void)setColor:(NSColor *)color {
-    [[[self undoManager] prepareWithInvocationTarget:self] setColor:[self color]];
-    [super setColor:color];
-    [[NSNotificationCenter defaultCenter] postNotificationName:SKAnnotationDidChangeNotification 
-            object:self userInfo:[NSDictionary dictionaryWithObjectsAndKeys:@"color", @"key", nil]];
-}
-
 @end
 
 #pragma mark -
@@ -356,29 +381,6 @@ void SKCGContextSetDefaultRGBColorSpace(CGContextRef context) {
 - (BOOL)isMovable { return YES; }
 
 - (BOOL)shouldPrint { return YES; }
-
-- (void)setBounds:(NSRect)bounds {
-    [[[self undoManager] prepareWithInvocationTarget:self] setBounds:[self bounds]];
-    [[NSNotificationCenter defaultCenter] postNotificationName:SKAnnotationWillChangeNotification 
-            object:self userInfo:[NSDictionary dictionaryWithObjectsAndKeys:@"bounds", @"key", nil]];
-    [super setBounds:bounds];
-    [[NSNotificationCenter defaultCenter] postNotificationName:SKAnnotationDidChangeNotification 
-            object:self userInfo:[NSDictionary dictionaryWithObjectsAndKeys:@"bounds", @"key", nil]];
-}
-
-- (void)setContents:(NSString *)contents {
-    [[[self undoManager] prepareWithInvocationTarget:self] setContents:[self contents]];
-    [super setContents:contents];
-    [[NSNotificationCenter defaultCenter] postNotificationName:SKAnnotationDidChangeNotification 
-            object:self userInfo:[NSDictionary dictionaryWithObjectsAndKeys:@"contents", @"key", nil]];
-}
-
-- (void)setColor:(NSColor *)color {
-    [[[self undoManager] prepareWithInvocationTarget:self] setColor:[self color]];
-    [super setColor:color];
-    [[NSNotificationCenter defaultCenter] postNotificationName:SKAnnotationDidChangeNotification 
-            object:self userInfo:[NSDictionary dictionaryWithObjectsAndKeys:@"color", @"key", nil]];
-}
 
 @end
 
@@ -608,29 +610,6 @@ static BOOL lineRectTrimmingWhitespaceForPage(NSRect *lineRect, PDFPage *page)
 
 - (BOOL)shouldPrint { return YES; }
 
-- (void)setBounds:(NSRect)bounds {
-    [[[self undoManager] prepareWithInvocationTarget:self] setBounds:[self bounds]];
-    [[NSNotificationCenter defaultCenter] postNotificationName:SKAnnotationWillChangeNotification 
-            object:self userInfo:[NSDictionary dictionaryWithObjectsAndKeys:@"bounds", @"key", nil]];
-    [super setBounds:bounds];
-    [[NSNotificationCenter defaultCenter] postNotificationName:SKAnnotationDidChangeNotification 
-            object:self userInfo:[NSDictionary dictionaryWithObjectsAndKeys:@"bounds", @"key", nil]];
-}
-
-- (void)setContents:(NSString *)contents {
-    [[[self undoManager] prepareWithInvocationTarget:self] setContents:[self contents]];
-    [super setContents:contents];
-    [[NSNotificationCenter defaultCenter] postNotificationName:SKAnnotationDidChangeNotification 
-            object:self userInfo:[NSDictionary dictionaryWithObjectsAndKeys:@"contents", @"key", nil]];
-}
-
-- (void)setColor:(NSColor *)color {
-    [[[self undoManager] prepareWithInvocationTarget:self] setColor:[self color]];
-    [super setColor:color];
-    [[NSNotificationCenter defaultCenter] postNotificationName:SKAnnotationDidChangeNotification 
-            object:self userInfo:[NSDictionary dictionaryWithObjectsAndKeys:@"color", @"key", nil]];
-}
-
 // fix a bug in PDFKit, the color space sometimes is not correct
 - (void)drawWithBox:(CGPDFBox)box inContext:(CGContextRef)context {
     CGContextSaveGState(context);
@@ -672,29 +651,6 @@ static BOOL lineRectTrimmingWhitespaceForPage(NSRect *lineRect, PDFPage *page)
 - (BOOL)isEditable { return YES; }
 
 - (BOOL)shouldPrint { return YES; }
-
-- (void)setBounds:(NSRect)bounds {
-    [[[self undoManager] prepareWithInvocationTarget:self] setBounds:[self bounds]];
-    [[NSNotificationCenter defaultCenter] postNotificationName:SKAnnotationWillChangeNotification 
-            object:self userInfo:[NSDictionary dictionaryWithObjectsAndKeys:@"bounds", @"key", nil]];
-    [super setBounds:bounds];
-    [[NSNotificationCenter defaultCenter] postNotificationName:SKAnnotationDidChangeNotification 
-            object:self userInfo:[NSDictionary dictionaryWithObjectsAndKeys:@"bounds", @"key", nil]];
-}
-
-- (void)setContents:(NSString *)contents {
-    [[[self undoManager] prepareWithInvocationTarget:self] setContents:[self contents]];
-    [super setContents:contents];
-    [[NSNotificationCenter defaultCenter] postNotificationName:SKAnnotationDidChangeNotification 
-            object:self userInfo:[NSDictionary dictionaryWithObjectsAndKeys:@"contents", @"key", nil]];
-}
-
-- (void)setColor:(NSColor *)color {
-    [[[self undoManager] prepareWithInvocationTarget:self] setColor:[self color]];
-    [super setColor:color];
-    [[NSNotificationCenter defaultCenter] postNotificationName:SKAnnotationDidChangeNotification 
-            object:self userInfo:[NSDictionary dictionaryWithObjectsAndKeys:@"color", @"key", nil]];
-}
 
 - (void)setFont:(NSFont *)font {
     [[[self undoManager] prepareWithInvocationTarget:self] setFont:[self font]];
@@ -751,29 +707,6 @@ static BOOL lineRectTrimmingWhitespaceForPage(NSRect *lineRect, PDFPage *page)
 - (BOOL)isEditable { return YES; }
 
 - (BOOL)shouldPrint { return YES; }
-
-- (void)setBounds:(NSRect)bounds {
-    [[[self undoManager] prepareWithInvocationTarget:self] setBounds:[self bounds]];
-    [[NSNotificationCenter defaultCenter] postNotificationName:SKAnnotationWillChangeNotification
-            object:self userInfo:[NSDictionary dictionaryWithObjectsAndKeys:@"bounds", @"key", nil]];
-    [super setBounds:bounds];
-    [[NSNotificationCenter defaultCenter] postNotificationName:SKAnnotationDidChangeNotification
-            object:self userInfo:[NSDictionary dictionaryWithObjectsAndKeys:@"bounds", @"key", nil]];
-}
-
-- (void)setContents:(NSString *)contents {
-    [[[self undoManager] prepareWithInvocationTarget:self] setContents:[self contents]];
-    [super setContents:contents];
-    [[NSNotificationCenter defaultCenter] postNotificationName:SKAnnotationDidChangeNotification
-            object:self userInfo:[NSDictionary dictionaryWithObjectsAndKeys:@"contents", @"key", nil]];
-}
-
-- (void)setColor:(NSColor *)color {
-    [[[self undoManager] prepareWithInvocationTarget:self] setColor:[self color]];
-    [super setColor:color];
-    [[NSNotificationCenter defaultCenter] postNotificationName:SKAnnotationDidChangeNotification
-            object:self userInfo:[NSDictionary dictionaryWithObjectsAndKeys:@"color", @"key", nil]];
-}
 
 - (NSString *)type {
     return @"Note";
@@ -897,29 +830,6 @@ static BOOL lineRectTrimmingWhitespaceForPage(NSRect *lineRect, PDFPage *page)
     [super setEndPoint:point];
     [[NSNotificationCenter defaultCenter] postNotificationName:SKAnnotationDidChangeNotification 
             object:self userInfo:[NSDictionary dictionaryWithObjectsAndKeys:@"endPoint", @"key", nil]];
-}
-
-- (void)setBounds:(NSRect)bounds {
-    [[[self undoManager] prepareWithInvocationTarget:self] setBounds:[self bounds]];
-    [[NSNotificationCenter defaultCenter] postNotificationName:SKAnnotationWillChangeNotification
-            object:self userInfo:[NSDictionary dictionaryWithObjectsAndKeys:@"bounds", @"key", nil]];
-    [super setBounds:bounds];
-    [[NSNotificationCenter defaultCenter] postNotificationName:SKAnnotationDidChangeNotification
-            object:self userInfo:[NSDictionary dictionaryWithObjectsAndKeys:@"bounds", @"key", nil]];
-}
-
-- (void)setContents:(NSString *)contents {
-    [[[self undoManager] prepareWithInvocationTarget:self] setContents:[self contents]];
-    [super setContents:contents];
-    [[NSNotificationCenter defaultCenter] postNotificationName:SKAnnotationDidChangeNotification 
-            object:self userInfo:[NSDictionary dictionaryWithObjectsAndKeys:@"contents", @"key", nil]];
-}
-
-- (void)setColor:(NSColor *)color {
-    [[[self undoManager] prepareWithInvocationTarget:self] setColor:[self color]];
-    [super setColor:color];
-    [[NSNotificationCenter defaultCenter] postNotificationName:SKAnnotationDidChangeNotification 
-            object:self userInfo:[NSDictionary dictionaryWithObjectsAndKeys:@"color", @"key", nil]];
 }
 
 - (BOOL)hitTest:(NSPoint)point {
