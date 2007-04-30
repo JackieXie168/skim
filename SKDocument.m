@@ -66,6 +66,20 @@ NSString *SKPostScriptDocumentType = @"PostScript document";
 
 NSString *SKDocumentWillSaveNotification = @"SKDocumentWillSaveNotification";
 
+
+@interface SKDocument (Private)
+
+- (void)setPDFData:(NSData *)data;
+- (void)setPDFDoc:(PDFDocument *)doc;
+- (void)setNoteDicts:(NSArray *)array;
+- (void)setLastChangedDate:(NSDate *)date;
+
+- (void)checkFileUpdatesIfNeeded;
+- (void)checkFileUpdateStatus:(NSTimer *)timer;
+
+@end
+
+
 @implementation SKDocument
 
 + (void)initialize {
@@ -105,8 +119,7 @@ NSString *SKDocumentWillSaveNotification = @"SKDocumentWillSaveNotification";
     pdfDocument = nil;
     
     [mainController setAnnotationsFromDictionaries:noteDicts];
-    [noteDicts release];
-    noteDicts = nil;
+    [self setNoteDicts:nil];
     
     [self checkFileUpdatesIfNeeded];
     
@@ -170,8 +183,7 @@ NSString *SKDocumentWillSaveNotification = @"SKDocumentWillSaveNotification";
         if (saveOperation == NSSaveOperation || saveOperation == NSSaveAsOperation) {
             [[self undoManager] removeAllActions];
             [self updateChangeCount:NSChangeCleared];
-            [lastChangedDate release];
-            lastChangedDate = [[[fm fileAttributesAtPath:[absoluteURL path] traverseLink:YES] fileModificationDate] retain];
+            [self setLastChangedDate:[[fm fileAttributesAtPath:[absoluteURL path] traverseLink:YES] fileModificationDate]];
         }
         
     }
@@ -212,32 +224,44 @@ NSString *SKDocumentWillSaveNotification = @"SKDocumentWillSaveNotification";
 
 - (BOOL)revertToContentsOfURL:(NSURL *)absoluteURL ofType:(NSString *)typeName error:(NSError **)outError{
     if ([super revertToContentsOfURL:absoluteURL ofType:typeName error:outError]) {
-        if ([typeName isEqualToString:SKNotesDocumentType] == NO) {
-            [[self mainWindowController] setPdfDocument:pdfDocument];
-            [pdfDocument autorelease];
-            pdfDocument = nil;
-            [[self undoManager] removeAllActions];
-        } else {
-            // Should this now be one?
-            [self updateChangeCount:NSChangeCleared];
-        }
+        [[self mainWindowController] setPdfDocument:pdfDocument];
+        [pdfDocument autorelease];
+        pdfDocument = nil;
         if (noteDicts) {
             [[self mainWindowController] setAnnotationsFromDictionaries:noteDicts];
-            [noteDicts release];
-            noteDicts = nil;
+            [self setNoteDicts:nil];
         }
+        [[self undoManager] removeAllActions];
         return YES;
     } else return NO;
 }
 
 - (void)setPDFData:(NSData *)data {
-    [pdfData autorelease];
-    pdfData = [data copy];
+    if (pdfData != data) {
+        [pdfData release];
+        pdfData = [data retain];
+    }
 }
 
-- (void)setPDFDocument:(PDFDocument *)doc {
-    [pdfDocument autorelease];
-    pdfDocument = [doc retain];
+- (void)setPDFDoc:(PDFDocument *)doc {
+    if (pdfDocument != doc) {
+        [pdfDocument release];
+        pdfDocument = [doc retain];
+    }
+}
+
+- (void)setNoteDicts:(NSArray *)array {
+    if (noteDicts != array) {
+        [noteDicts autorelease];
+        noteDicts = [array retain];
+    }
+}
+
+- (void)setLastChangedDate:(NSDate *)date {
+    if (lastChangedDate != date) {
+        [lastChangedDate release];
+        lastChangedDate = [date retain];
+    }
 }
 
 - (BOOL)readFromData:(NSData *)data ofType:(NSString *)docType error:(NSError **)outError;
@@ -246,23 +270,21 @@ NSString *SKDocumentWillSaveNotification = @"SKDocumentWillSaveNotification";
     PDFDocument *pdfDoc = nil;
     NSError *error = nil;
     
-    if ([docType isEqualToString:SKPDFDocumentType]) {
-        pdfDoc = [[PDFDocument alloc] initWithData:data];
-    } else if ([docType isEqualToString:SKPostScriptDocumentType]) {
-        SKPSProgressController *progressController = [[SKPSProgressController alloc] init];
-        if (data = [progressController PDFDataWithPostScriptData:data])
-            pdfDoc = [[PDFDocument alloc] initWithData:data];
-        [progressController autorelease];
+    if ([docType isEqualToString:SKPostScriptDocumentType]) {
+        SKPSProgressController *progressController = [[[SKPSProgressController alloc] init] autorelease];
+        data = [progressController PDFDataWithPostScriptData:data];
     }
     
+    if (data)
+        pdfDoc = [[PDFDocument alloc] initWithData:data];
+    
     [self setPDFData:data];
-    [self setPDFDocument:pdfDoc];
-    [pdfDoc release];
+    [self setPDFDoc:pdfDoc];
 
     if (pdfDoc) {
+        [pdfDoc release];
         didRead = YES;
-        [lastChangedDate release];
-        lastChangedDate = nil;
+        [self setLastChangedDate:nil];
     }
     
     if (didRead == NO && outError != NULL)
@@ -303,8 +325,7 @@ NSString *SKDocumentWillSaveNotification = @"SKDocumentWillSaveNotification";
                     if ([alert runModal] == NSAlertDefaultReturn) {
                         NSArray *array = [NSKeyedUnarchiver unarchiveObjectWithFile:path];
                         if (array) {
-                            [noteDicts release];
-                            noteDicts = [array copy];
+                            [self setNoteDicts:array];
                             [self updateChangeCount:NSChangeDone];
                         }
                     }
@@ -324,11 +345,10 @@ NSString *SKDocumentWillSaveNotification = @"SKDocumentWillSaveNotification";
         if (pdfDoc) {
             didRead = YES;
             [self setPDFData:data];
-            [self setPDFDocument:pdfDoc];
+            [self setPDFDoc:pdfDoc];
             [pdfDoc release];
             [data release];
-            [lastChangedDate release];
-            lastChangedDate = [[[[NSFileManager defaultManager] fileAttributesAtPath:[absoluteURL path] traverseLink:YES] fileModificationDate] retain];
+            [self setLastChangedDate:[[[NSFileManager defaultManager] fileAttributesAtPath:[absoluteURL path] traverseLink:YES] fileModificationDate]];
         } else {
             [self setPDFData:nil];
         }
@@ -381,21 +401,18 @@ NSString *SKDocumentWillSaveNotification = @"SKDocumentWillSaveNotification";
 
         NSData *data = [fm extendedAttributeNamed:@"net_sourceforge_skim-app_notes" atPath:[aURL path] traverseLink:YES error:&error];
         
-        if (noteDicts)
-            [noteDicts release];
-        noteDicts = nil;
-        
         if ([data length])
-            noteDicts = [[NSKeyedUnarchiver unarchiveObjectWithData:data] retain];
-            
+            [self setNoteDicts:[NSKeyedUnarchiver unarchiveObjectWithData:data]];
+        else
+            [self setNoteDicts:nil];
+        
     } else {
         success = NO;
         if(error == nil && outError) 
             *outError = [NSError errorWithDomain:NSPOSIXErrorDomain code:ENOENT userInfo:[NSDictionary dictionaryWithObjectsAndKeys:NSLocalizedString(@"The file does not exist or is not a file.", @"Error description"), NSLocalizedDescriptionKey, nil]];
     }
     if (success == NO) {
-        [noteDicts release];
-        noteDicts = nil;
+        [self setNoteDicts:nil];
     }
     return success;
 }
@@ -503,8 +520,7 @@ NSString *SKDocumentWillSaveNotification = @"SKDocumentWillSaveNotification";
     NSDate *changeDate = (NSDate *)contextInfo;
     
     if (returnCode == NSAlertOtherReturn) {
-        [lastChangedDate release];
-        lastChangedDate = changeDate;
+        [self setLastChangedDate:changeDate];
         autoUpdate = NO;
     } else {
         NSError *error = nil;
@@ -512,8 +528,7 @@ NSString *SKDocumentWillSaveNotification = @"SKDocumentWillSaveNotification";
             [changeDate release];
         } else {
             [NSApp presentError:error];
-            [lastChangedDate release];
-            lastChangedDate = changeDate;
+            [self setLastChangedDate:changeDate];
         }
         if (returnCode == NSAlertAlternateReturn)
             autoUpdate = YES;

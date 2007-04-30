@@ -87,9 +87,6 @@ extern NSString *SKPostScriptDocumentType;
 
 - (NSDictionary *)currentDocumentSetup;
 
-- (void)checkFileUpdatesIfNeeded;
-- (void)checkFileUpdateStatus:(NSTimer *)timer;
-
 - (SKPDFSynchronizer *)synchronizer;
 
 - (void)handleApplicationWillTerminateNotification:(NSNotification *)notification;
