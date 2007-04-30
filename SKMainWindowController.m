@@ -286,6 +286,8 @@ static NSString *SKDocumentToolbarNotesPaneItemIdentifier = @"SKDocumentToolbarN
                              name:SKPDFViewDidAddAnnotationNotification object:pdfView];
     [nc addObserver:self selector:@selector(handleDidRemoveAnnotationNotification:) 
                              name:SKPDFViewDidRemoveAnnotationNotification object:pdfView];
+    [nc addObserver:self selector:@selector(handleDidMoveAnnotationNotification:) 
+                             name:SKPDFViewDidMoveAnnotationNotification object:pdfView];
     [nc addObserver:self selector:@selector(handleDoubleClickedAnnotationNotification:) 
                              name:SKPDFViewAnnotationDoubleClickedNotification object:pdfView];
     [nc addObserver:self selector:@selector(handleAnnotationDidChangeNotification:) 
@@ -1877,6 +1879,25 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
                 [self snapshotNeedsUpdate:wc];
         }
     }
+    [noteOutlineView reloadData];
+}
+
+- (void)handleDidMoveAnnotationNotification:(NSNotification *)notification {
+    PDFPage *oldPage = [[notification userInfo] objectForKey:@"oldPage"];
+    PDFPage *newPage = [[notification userInfo] objectForKey:@"newPage"];
+    
+    if (oldPage || newPage) {
+        [self thumbnailNeedsUpdate:[[self thumbnails] objectAtIndex:[[pdfView document] indexForPage:oldPage]]];
+        [self thumbnailNeedsUpdate:[[self thumbnails] objectAtIndex:[[pdfView document] indexForPage:newPage]]];
+        NSEnumerator *snapshotEnum = [snapshots objectEnumerator];
+        SKSnapshotWindowController *wc;
+        while (wc = [snapshotEnum nextObject]) {
+            if ([[[wc pdfView] currentPage] isEqual:oldPage] || [[[wc pdfView] currentPage] isEqual:newPage])
+                [self snapshotNeedsUpdate:wc];
+        }
+    }
+    
+    [noteArrayController rearrangeObjects];
     [noteOutlineView reloadData];
 }
 

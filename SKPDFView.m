@@ -57,6 +57,7 @@ NSString *SKPDFViewAnnotationModeChangedNotification = @"SKPDFViewAnnotationMode
 NSString *SKPDFViewActiveAnnotationDidChangeNotification = @"SKPDFViewActiveAnnotationDidChangeNotification";
 NSString *SKPDFViewDidAddAnnotationNotification = @"SKPDFViewDidAddAnnotationNotification";
 NSString *SKPDFViewDidRemoveAnnotationNotification = @"SKPDFViewDidRemoveAnnotationNotification";
+NSString *SKPDFViewDidMoveAnnotationNotification = @"SKPDFViewDidMoveAnnotationNotification";
 NSString *SKPDFViewAnnotationDoubleClickedNotification = @"SKPDFViewAnnotationDoubleClickedNotification";
 
 NSString *SKSkimNotePboardType = @"SKSkimNotePboardType";
@@ -1181,6 +1182,18 @@ static inline NSRect rectWithCorners(NSPoint p1, NSPoint p2)
     [wasAnnotation release];
 }
 
+- (void)moveAnnotation:(PDFAnnotation *)annotation toPage:(PDFPage *)page {
+    PDFPage *oldPage = [annotation page];
+    [[[self undoManager] prepareWithInvocationTarget:self] moveAnnotation:annotation toPage:oldPage];
+    [self setNeedsDisplayForAnnotation:annotation];
+    [annotation retain];
+    [page removeAnnotation:annotation];
+    [page addAnnotation:annotation];
+    [self setNeedsDisplayForAnnotation:annotation];
+    [annotation release];
+    [[NSNotificationCenter defaultCenter] postNotificationName:SKPDFViewDidMoveAnnotationNotification object:self userInfo:[NSDictionary dictionaryWithObjectsAndKeys:oldPage, @"oldPage", page, @"newPage", annotation, @"annotation", nil]];                
+}
+
 - (void)editThisAnnotation:(id)sender {
     PDFAnnotation *annotation = [sender representedObject];
     
@@ -2302,11 +2315,7 @@ static inline NSRect rectWithCorners(NSPoint p1, NSPoint p2)
         } else {
             if (newActivePage != activePage) {
                 // move the annotation to the new page
-                PDFAnnotation *saveActiveAnnotation = [activeAnnotation retain];
-                [self removeAnnotation:saveActiveAnnotation];
-                [self addAnnotation:saveActiveAnnotation toPage:newActivePage];
-                [self setActiveAnnotation:saveActiveAnnotation];
-                [saveActiveAnnotation release];
+                [self moveAnnotation:activeAnnotation toPage:newActivePage];
                 activePage = newActivePage;
             }
             
