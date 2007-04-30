@@ -309,18 +309,23 @@ static CGMutablePathRef SKCGCreatePathWithRoundRectInRect(CGRect rect, float rad
 - (void)setNeedsDisplayInRect:(NSRect)rect ofPage:(PDFPage *)page {
     NSRect aRect = [self convertRect:rect fromPage:page];
     float scale = [self scaleFactor];
-	NSPoint max = NSMakePoint(ceilf(NSMaxX(aRect)) + scale, ceilf(NSMaxY(aRect)) + scale);
-	NSPoint origin = NSMakePoint(floorf(NSMinX(aRect)) - scale, floorf(NSMinY(aRect)) - scale);
+	float maxX = ceilf(NSMaxX(aRect) + scale);
+	float maxY = ceilf(NSMaxY(aRect) + scale);
+	float minX = floorf(NSMinX(aRect) - scale);
+	float minY = floorf(NSMinY(aRect) - scale);
 	
-    [self setNeedsDisplayInRect:NSMakeRect(origin.x, origin.y, max.x - origin.x, max.y - origin.y)];
+    aRect = NSIntersectionRect([self bounds], NSMakeRect(minX, minY, maxX - minX, maxY - minY));
+    if (NSIsEmptyRect(aRect) == NO)
+        [self setNeedsDisplayInRect:aRect];
 }
 
 - (void)setNeedsDisplayForAnnotation:(PDFAnnotation *)annotation {
     NSRect bounds = [annotation bounds];
     if ([[annotation type] isEqualToString:@"Underline"]) {
-        bounds.origin.y -= 0.03 * NSHeight(bounds);
-        bounds.size.height *= 1.03;
-    } else if ([[annotation type] isEqualToString:@"Line"] && [annotation isEqual:activeAnnotation]) {
+        float delta = 0.03 * NSHeight(bounds);
+        bounds.origin.y -= delta;
+        bounds.size.height += delta;
+    } else if ([[annotation type] isEqualToString:@"Line"]) {
         bounds = NSInsetRect(bounds, -4.0, -4.0);
     }
     [self setNeedsDisplayInRect:bounds ofPage:[annotation page]];
