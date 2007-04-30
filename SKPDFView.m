@@ -631,7 +631,7 @@ static CGMutablePathRef SKCGCreatePathWithRoundRectInRect(CGRect rect, float rad
                             if (modifiers & NSAlternateKeyMask) {
                                 rectSelection = YES;
                                 extendSelection = NO;
-                                [self setCurrentSelection:NO];
+                                [self setCurrentSelection:nil];
                             } else if (modifiers & NSShiftKeyMask) {
                                 rectSelection = NO;
                                 extendSelection = YES;
@@ -645,7 +645,7 @@ static CGMutablePathRef SKCGCreatePathWithRoundRectInRect(CGRect rect, float rad
                             } else {
                                 rectSelection = NO;
                                 extendSelection = NO;
-                                [self setCurrentSelection:NO];
+                                [self setCurrentSelection:nil];
                             }
                         }
                         [super mouseDown:theEvent];
