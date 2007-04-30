@@ -264,7 +264,6 @@ void SKCGContextSetDefaultRGBColorSpace(CGContextRef context) {
 - (void)setBoundsAsQDRect:(NSData *)inQDBoundsAsData {
     if ([inQDBoundsAsData length] == sizeof(Rect)) {
         const Rect *qdBounds = (const Rect *)[inQDBoundsAsData bytes];
-        SKPDFView *pdfView = [[[self page] containingDocument] pdfView];
         NSRect newBounds = NSRectFromRect(*qdBounds);
         if ([self isResizable] == NO)
             newBounds.size = [self bounds].size;
@@ -953,7 +952,6 @@ static BOOL lineRectTrimmingWhitespaceForPage(NSRect *lineRect, PDFPage *page)
 - (void)setStartPointAsQDPoint:(NSData *)inQDPointAsData {
     if ([inQDPointAsData length] == sizeof(Rect)) {
         const Point *qdPoint = (const Point *)[inQDPointAsData bytes];
-        SKPDFView *pdfView = [[[self page] containingDocument] pdfView];
         NSPoint newPoint = NSPointFromPoint(*qdPoint);
         newPoint.x += 0.5;
         newPoint.y += 0.5;
@@ -978,7 +976,6 @@ static BOOL lineRectTrimmingWhitespaceForPage(NSRect *lineRect, PDFPage *page)
 - (void)setEndPointAsQDPoint:(NSData *)inQDPointAsData {
     if ([inQDPointAsData length] == sizeof(Rect)) {
         const Point *qdPoint = (const Point *)[inQDPointAsData bytes];
-        SKPDFView *pdfView = [[[self page] containingDocument] pdfView];
         NSPoint newPoint = NSPointFromPoint(*qdPoint);
         newPoint.x += 0.5;
         newPoint.y += 0.5;
