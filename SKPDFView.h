@@ -44,6 +44,7 @@ extern NSString *SKPDFViewToolModeChangedNotification;
 extern NSString *SKPDFViewActiveAnnotationDidChangeNotification;
 extern NSString *SKPDFViewDidAddAnnotationNotification;
 extern NSString *SKPDFViewDidRemoveAnnotationNotification;
+extern NSString *SKPDFViewDidMoveAnnotationNotification;
 extern NSString *SKPDFViewAnnotationDoubleClickedNotification;
 
 extern NSString *SKSkimNotePboardType;
