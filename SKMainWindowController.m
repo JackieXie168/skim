@@ -2997,7 +2997,8 @@ static NSArray *prioritySortedThumbnails(NSArray *dirtyNails, int currentPageInd
 		NSToolbarSeparatorItemIdentifier, 
         SKDocumentToolbarNewNoteItemIdentifier, 
         SKDocumentToolbarNewCircleNoteItemIdentifier, 
-        SKDocumentToolbarNewMarkupItemIdentifier, nil];
+        SKDocumentToolbarNewMarkupItemIdentifier,
+        SKDocumentToolbarNewArrowItemIdentifier, nil];
 }
 
 - (NSArray *)toolbarAllowedItemIdentifiers:(NSToolbar *)toolbar {
