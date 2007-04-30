@@ -1187,10 +1187,10 @@ static inline NSRect rectWithCorners(NSPoint p1, NSPoint p2)
     [[[self undoManager] prepareWithInvocationTarget:self] moveAnnotation:annotation toPage:oldPage];
     [self setNeedsDisplayForAnnotation:annotation];
     [annotation retain];
-    [page removeAnnotation:annotation];
+    [oldPage removeAnnotation:annotation];
     [page addAnnotation:annotation];
-    [self setNeedsDisplayForAnnotation:annotation];
     [annotation release];
+    [self setNeedsDisplayForAnnotation:annotation];
     [[NSNotificationCenter defaultCenter] postNotificationName:SKPDFViewDidMoveAnnotationNotification object:self userInfo:[NSDictionary dictionaryWithObjectsAndKeys:oldPage, @"oldPage", page, @"newPage", annotation, @"annotation", nil]];                
 }
 
