@@ -1887,8 +1887,10 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
     PDFPage *newPage = [[notification userInfo] objectForKey:@"newPage"];
     
     if (oldPage || newPage) {
-        [self thumbnailNeedsUpdate:[[self thumbnails] objectAtIndex:[[pdfView document] indexForPage:oldPage]]];
-        [self thumbnailNeedsUpdate:[[self thumbnails] objectAtIndex:[[pdfView document] indexForPage:newPage]]];
+        if (oldPage)
+            [self thumbnailNeedsUpdate:[[self thumbnails] objectAtIndex:[[pdfView document] indexForPage:oldPage]]];
+        if (newPage)
+            [self thumbnailNeedsUpdate:[[self thumbnails] objectAtIndex:[[pdfView document] indexForPage:newPage]]];
         NSEnumerator *snapshotEnum = [snapshots objectEnumerator];
         SKSnapshotWindowController *wc;
         while (wc = [snapshotEnum nextObject]) {

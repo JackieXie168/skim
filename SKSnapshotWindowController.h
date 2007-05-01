@@ -68,7 +68,8 @@
 - (void)handleViewChangedNotification:(NSNotification *)notification;
 - (void)handleAnnotationWillChangeNotification:(NSNotification *)notification;
 - (void)handleAnnotationDidChangeNotification:(NSNotification *)notification;
-- (void)handleDidRemoveAnnotationNotification:(NSNotification *)notification;
+- (void)handleDidAddRemoveAnnotationNotification:(NSNotification *)notification;
+- (void)handleDidMoveAnnotationNotification:(NSNotification *)notification;
 @end
 
 
