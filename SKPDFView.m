@@ -372,9 +372,12 @@ static CGMutablePathRef SKCGCreatePathWithRoundRectInRect(CGRect rect, float rad
 	BOOL changed = newAnnotation != activeAnnotation;
 	
 	// Will need to redraw old active anotation.
-	if (activeAnnotation != nil)
+	if (activeAnnotation != nil) {
 		[self setNeedsDisplayForAnnotation:activeAnnotation];
-	
+        if (changed && editAnnotation)
+            [self endAnnotationEdit:nil];
+	}
+    
 	// Assign.
 	if (newAnnotation) {
 		activeAnnotation = newAnnotation;
