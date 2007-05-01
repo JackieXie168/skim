@@ -211,6 +211,17 @@ static NSString *SKSnapshotViewChangedNotification = @"SKSnapshotViewChangedNoti
     [self performSelector:@selector(goToDestination:) withObject:dest afterDelay:0.1];
 }
 
+- (BOOL)isPageVisible:(PDFPage *)page {
+    NSView *clipView = [[[pdfView documentView] enclosingScrollView] contentView];
+    NSRect visibleRect = [clipView convertRect:[clipView visibleRect] toView:pdfView];
+    unsigned first, last, index = [[pdfView document] indexForPage:page];
+    
+    first = [[pdfView document] indexForPage:[pdfView pageForPoint:NSMakePoint(NSMinX(visibleRect), NSMaxY(visibleRect)) nearest:YES]];
+    last = [[pdfView document] indexForPage:[pdfView pageForPoint:NSMakePoint(NSMaxX(visibleRect), NSMinY(visibleRect)) nearest:YES]];
+    
+    return index >= first && index <= last;
+}
+
 #pragma mark Acessors
 
 - (id)delegate {

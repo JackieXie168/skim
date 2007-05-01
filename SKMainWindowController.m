@@ -1844,7 +1844,7 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
         NSEnumerator *snapshotEnum = [snapshots objectEnumerator];
         SKSnapshotWindowController *wc;
         while (wc = [snapshotEnum nextObject]) {
-            if ([[[wc pdfView] currentPage] isEqual:page])
+            if ([wc isPageVisible:page])
                 [self snapshotNeedsUpdate:wc];
         }
     }
@@ -1875,7 +1875,7 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
         NSEnumerator *snapshotEnum = [snapshots objectEnumerator];
         SKSnapshotWindowController *wc;
         while (wc = [snapshotEnum nextObject]) {
-            if ([[[wc pdfView] currentPage] isEqual:page])
+            if ([wc isPageVisible:page])
                 [self snapshotNeedsUpdate:wc];
         }
     }
@@ -1892,7 +1892,7 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
         NSEnumerator *snapshotEnum = [snapshots objectEnumerator];
         SKSnapshotWindowController *wc;
         while (wc = [snapshotEnum nextObject]) {
-            if ([[[wc pdfView] currentPage] isEqual:oldPage] || [[[wc pdfView] currentPage] isEqual:newPage])
+            if ([wc isPageVisible:oldPage] || [wc isPageVisible:newPage])
                 [self snapshotNeedsUpdate:wc];
         }
     }
@@ -1915,7 +1915,7 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
         NSEnumerator *snapshotEnum = [snapshots objectEnumerator];
         SKSnapshotWindowController *wc;
         while (wc = [snapshotEnum nextObject]) {
-            if ([[[wc pdfView] currentPage] isEqual:[annotation page]])
+            if ([wc isPageVisible:[annotation page]])
                 [self snapshotNeedsUpdate:wc];
         }
         

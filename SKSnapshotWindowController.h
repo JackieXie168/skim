@@ -49,6 +49,7 @@
     BOOL forceOnTop;
 }
 - (void)setPdfDocument:(PDFDocument *)pdfDocument scaleFactor:(float)factor goToPageNumber:(int)pageNum rect:(NSRect)rect;
+- (BOOL)isPageVisible:(PDFPage *)page;
 - (id)delegate;
 - (void)setDelegate:(id)newDelegate;
 - (PDFView *)pdfView;
