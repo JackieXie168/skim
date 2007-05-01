@@ -78,6 +78,7 @@ static CGMutablePathRef SKCGCreatePathWithRoundRectInRect(CGRect rect, float rad
 @interface SKPDFView (Private)
 
 - (NSRange)visiblePageIndexRange;
+- (NSRect)visibleContentRect;
 
 - (void)resetHoverRects;
 - (void)removeHoverRects;
@@ -100,8 +101,10 @@ static CGMutablePathRef SKCGCreatePathWithRoundRectInRect(CGRect rect, float rad
 - (void)selectSnapshotWithEvent:(NSEvent *)theEvent;
 - (void)magnifyWithEvent:(NSEvent *)theEvent;
 - (void)dragWithEvent:(NSEvent *)theEvent;
+- (void)selectTextWithEvent:(NSEvent *)theEvent;
 - (void)dragReadingBarWithEvent:(NSEvent *)theEvent;
 - (void)pdfsyncWithEvent:(NSEvent *)theEvent;
+- (NSCursor *)cursorForEvent:(NSEvent *)theEvent;
 
 @end
 
@@ -405,69 +408,6 @@ static CGMutablePathRef SKCGCreatePathWithRoundRectInRect(CGRect rect, float rad
     }
 }
 
-#pragma mark Tracking mousemoved fix
-
-- (void)setFrame:(NSRect)frame {
-    [super setFrame:frame];
-    if ([self window] && trackingRect)
-        [self removeTrackingRect:trackingRect];
-    trackingRect = [self addTrackingRect:[self bounds] owner:self userData:NULL assumeInside:NO];
-}
-
-- (void)setFrameSize:(NSSize)size {
-    [super setFrameSize:size];
-    if ([self window] && trackingRect)
-        [self removeTrackingRect:trackingRect];
-    trackingRect = [self addTrackingRect:[self bounds] owner:self userData:NULL assumeInside:NO];
-}
- 
-- (void)setBounds:(NSRect)bounds {
-    [super setBounds:bounds];
-    if ([self window] && trackingRect)
-        [self removeTrackingRect:trackingRect];
-    trackingRect = [self addTrackingRect:[self bounds] owner:self userData:NULL assumeInside:NO];
-}
- 
-- (void)setBoundsSize:(NSSize)size {
-    [super setBoundsSize:size];
-    if ([self window] && trackingRect)
-        [self removeTrackingRect:trackingRect];
-    trackingRect = [self addTrackingRect:[self bounds] owner:self userData:NULL assumeInside:NO];
-}
-
-- (void)viewWillMoveToWindow:(NSWindow *)newWindow {
-    if ([self window] && trackingRect)
-        [self removeTrackingRect:trackingRect];
-}
-
-- (void)viewDidMoveToWindow {
-    trackingRect = [self addTrackingRect:[self bounds] owner:self userData:NULL assumeInside:NO];
-}
-
-- (void)mouseEntered:(NSEvent *)theEvent {
-    NSTrackingRectTag trackingNumber = [theEvent trackingNumber];
-    [super mouseEntered:theEvent];
-    if (trackingNumber == trackingRect) {
-        [[self window] setAcceptsMouseMovedEvents:YES];
-    } else if (NSNotFound != [hoverRects indexOfObject:(id)trackingNumber]) {
-        [[SKPDFHoverWindow sharedHoverWindow] showForAnnotation:(id)[theEvent userData] atPoint:NSZeroPoint];
-        hoverRect = trackingNumber;
-    }
-}
- 
-- (void)mouseExited:(NSEvent *)theEvent {
-    NSTrackingRectTag trackingNumber = [theEvent trackingNumber];
-    [super mouseExited:theEvent];
-    if (trackingNumber == trackingRect) {
-        [[self window] setAcceptsMouseMovedEvents:NO];
-    } else if (NSNotFound != [hoverRects indexOfObject:(id)trackingNumber]) {
-        if (hoverRect == trackingNumber) {
-            [[SKPDFHoverWindow sharedHoverWindow] hide];
-            hoverRect = 0;
-        }
-    }
-}
-
 #pragma mark Actions
 
 - (void)delete:(id)sender
@@ -632,27 +572,8 @@ static CGMutablePathRef SKCGCreatePathWithRoundRectInRect(CGRect rect, float rad
                     if (area == kPDFNoArea || (area == kPDFPageArea && [[page selectionForRect:NSMakeRect(p.x - 30.0, p.y - 40.0, 60.0, 80.0)] string] == nil)) {
                         [self dragWithEvent:theEvent];
                     } else {
-                        if (nil == activeAnnotation && mouseDownInAnnotation) {
-                            if (modifiers & NSAlternateKeyMask) {
-                                rectSelection = YES;
-                                extendSelection = NO;
-                                [self setCurrentSelection:nil];
-                            } else if (modifiers & NSShiftKeyMask) {
-                                rectSelection = NO;
-                                extendSelection = YES;
-                                wasSelection = [[self currentSelection] retain];
-                                if (page == nil) {
-                                    p = [self convertPoint:mouseDownLoc fromView:nil];
-                                    page = [self pageForPoint:p nearest:YES];
-                                    p = [self convertPoint:p toPage:page];
-                                }
-                                [self setCurrentSelection:[[self document] selectionByExtendingSelection:wasSelection toPage:page atPoint:p]];
-                            } else {
-                                rectSelection = NO;
-                                extendSelection = NO;
-                                [self setCurrentSelection:nil];
-                            }
-                        }
+                        if (nil == activeAnnotation && mouseDownInAnnotation)
+                            [self selectTextWithEvent:theEvent];
                         [super mouseDown:theEvent];
                     }
                 }
@@ -700,16 +621,6 @@ static CGMutablePathRef SKCGCreatePathWithRoundRectInRect(CGRect rect, float rad
     }
 }
 
-static inline NSRect rectWithCorners(NSPoint p1, NSPoint p2)
-{
-    NSRect rect;
-    rect.size.width = ABS(p2.x - p1.x);
-    rect.size.height = ABS(p2.y - p1.y);
-    rect.origin.x = MIN(p2.x, p1.x);
-    rect.origin.y = MIN(p2.y, p1.y);
-    return rect;
-}
-
 - (void)mouseDragged:(NSEvent *)theEvent {
     switch (toolMode) {
         case SKTextToolMode:
@@ -720,36 +631,11 @@ static inline NSRect rectWithCorners(NSPoint p1, NSPoint p2)
                 }
                 [self dragAnnotationWithEvent:theEvent];
             } else if (nil == activeAnnotation) {
-                if (mouseDownInAnnotation) {
+                if (mouseDownInAnnotation)
                     // reimplement text selection behavior so we can select text inside markup annotation bounds rectangles (and have a highlight and strikeout on the same line, for instance), but don't select inside an existing markup annotation
-
-                    // if we autoscroll, the mouseDownLoc is no longer correct as a starting point
-                    NSPoint mouseDownLocInDoc = [[self documentView] convertPoint:mouseDownLoc fromView:nil];
-                    if ([[self documentView] autoscroll:theEvent])
-                        mouseDownLoc = [[self documentView] convertPoint:mouseDownLocInDoc toView:nil];
-
-                    NSPoint p1 = [self convertPoint:mouseDownLoc fromView:nil];
-                    PDFPage *page1 = [self pageForPoint:p1 nearest:YES];
-                    p1 = [self convertPoint:p1 toPage:page1];
-
-                    NSPoint p2 = [self convertPoint:[theEvent locationInWindow] fromView:nil];
-                    PDFPage *page2 = [self pageForPoint:p2 nearest:YES];
-                    p2 = [self convertPoint:p2 toPage:page2];
-                    
-                    PDFSelection *sel = nil;
-                    if (rectSelection) {
-                        // how to handle multipage selection?  Preview.app's behavior is screwy as well, so we'll do the same thing
-                        sel = [page1 selectionForRect:rectWithCorners(p1, p2)];
-                    } else if (extendSelection) {
-                        sel = [[self document] selectionByExtendingSelection:wasSelection toPage:page2 atPoint:p2];
-                    } else {
-                        sel = [[self document] selectionFromPage:page1 atPoint:p1 toPage:page2 atPoint:p2];
-                    }
-
-                    [self setCurrentSelection:sel];
-                } else {
+                    [self selectTextWithEvent:theEvent];
+                else
                     [super mouseDragged:theEvent];
-                }
             }
             break;
         case SKMoveToolMode:
@@ -763,52 +649,11 @@ static inline NSRect rectWithCorners(NSPoint p1, NSPoint p2)
 
 - (void)mouseMoved:(NSEvent *)theEvent {
 
-    // we receive this message whenever we are first responder, so check the location
-    NSView *clipView = [[[self documentView] enclosingScrollView] contentView];
-    NSPoint p = [clipView convertPoint:[theEvent locationInWindow] fromView:nil];
-    NSCursor *cursor = nil;
-    
-    if (NSPointInRect(p, [clipView visibleRect]) == NO || ([navWindow isVisible] && NSPointInRect([NSEvent mouseLocation], [navWindow frame]))) {
-        cursor = [NSCursor arrowCursor];
-    } else if ([theEvent modifierFlags] & NSCommandKeyMask) {
-        if ([theEvent modifierFlags] & NSShiftKeyMask)
-            cursor = [NSCursor arrowCursor];
-        else
-            cursor = [NSCursor cameraCursor];
-    } else {
-        switch (toolMode) {
-            case SKTextToolMode:
-            {
-                p = [self convertPoint:[theEvent locationInWindow] fromView:nil];
-                PDFPage *page = [self pageForPoint:p nearest:NO];
-                p = [self convertPoint:p toPage:page];
-                PDFAreaOfInterest area = [self areaOfInterestForMouse:theEvent];
-                if ((readingBar && [[readingBar page] isEqual:page] && NSPointInRect(p, [readingBar currentBoundsForBox:[self displayBox]])) ||
-                    (area == kPDFNoArea || (area == kPDFPageArea && [[page selectionForRect:NSMakeRect(p.x - 30.0, p.y - 40.0, 60.0, 80.0)] string] == nil)))
-                    cursor = [NSCursor openHandCursor];
-                else
-                    [super mouseMoved:theEvent];
-                break;
-            }
-            case SKMoveToolMode:
-                cursor = [NSCursor openHandCursor];
-                break;
-            case SKMagnifyToolMode:
-                if ([self areaOfInterestForMouse:theEvent] == kPDFNoArea)
-                    cursor = [NSCursor openHandCursor];
-                else
-                    cursor = ([theEvent modifierFlags] & NSShiftKeyMask) ? [NSCursor zoomOutCursor] : [NSCursor zoomInCursor];
-                break;
-        }
-    }
-    [cursor set];
-    
-    p = [self convertPoint:[theEvent locationInWindow] fromView:nil];
-    PDFPage *page = [self pageForPoint:p nearest:NO];
-    PDFAnnotation *annotation = nil;
-    
-    if (page) 
-        annotation = [page annotationAtPoint:[self convertPoint:p toPage:page]];  
+    NSCursor *cursor = [self cursorForEvent:theEvent];
+    if (cursor)
+        [cursor set];
+    else
+        [super mouseMoved:theEvent];
     
     if ([[activeAnnotation type] isEqualToString:@"Link"]) {
         [[SKPDFHoverWindow sharedHoverWindow] hide];
@@ -1010,6 +855,67 @@ static inline NSRect rectWithCorners(NSPoint p1, NSPoint p2)
     float dy = [theEvent deltaY];
     dy = dy > 0 ? MIN(0.2, dy) : MAX(-0.2, dy);
     [self setScaleFactor:[self scaleFactor] + 0.5 * dy];
+}
+
+- (void)mouseEntered:(NSEvent *)theEvent {
+    NSTrackingRectTag trackingNumber = [theEvent trackingNumber];
+    [super mouseEntered:theEvent];
+    if (trackingNumber == trackingRect) {
+        [[self window] setAcceptsMouseMovedEvents:YES];
+    } else if (NSNotFound != [hoverRects indexOfObject:(id)trackingNumber]) {
+        [[SKPDFHoverWindow sharedHoverWindow] showForAnnotation:(id)[theEvent userData] atPoint:NSZeroPoint];
+        hoverRect = trackingNumber;
+    }
+}
+ 
+- (void)mouseExited:(NSEvent *)theEvent {
+    NSTrackingRectTag trackingNumber = [theEvent trackingNumber];
+    [super mouseExited:theEvent];
+    if (trackingNumber == trackingRect) {
+        [[self window] setAcceptsMouseMovedEvents:NO];
+    } else if (hoverRect == trackingNumber) {
+        [[SKPDFHoverWindow sharedHoverWindow] hide];
+        hoverRect = 0;
+    }
+}
+
+#pragma mark Tracking mousemoved fix
+
+- (void)setFrame:(NSRect)frame {
+    [super setFrame:frame];
+    if ([self window] && trackingRect)
+        [self removeTrackingRect:trackingRect];
+    trackingRect = [self addTrackingRect:[self bounds] owner:self userData:NULL assumeInside:NO];
+}
+
+- (void)setFrameSize:(NSSize)size {
+    [super setFrameSize:size];
+    if ([self window] && trackingRect)
+        [self removeTrackingRect:trackingRect];
+    trackingRect = [self addTrackingRect:[self bounds] owner:self userData:NULL assumeInside:NO];
+}
+ 
+- (void)setBounds:(NSRect)bounds {
+    [super setBounds:bounds];
+    if ([self window] && trackingRect)
+        [self removeTrackingRect:trackingRect];
+    trackingRect = [self addTrackingRect:[self bounds] owner:self userData:NULL assumeInside:NO];
+}
+ 
+- (void)setBoundsSize:(NSSize)size {
+    [super setBoundsSize:size];
+    if ([self window] && trackingRect)
+        [self removeTrackingRect:trackingRect];
+    trackingRect = [self addTrackingRect:[self bounds] owner:self userData:NULL assumeInside:NO];
+}
+
+- (void)viewWillMoveToWindow:(NSWindow *)newWindow {
+    if ([self window] && trackingRect)
+        [self removeTrackingRect:trackingRect];
+}
+
+- (void)viewDidMoveToWindow {
+    trackingRect = [self addTrackingRect:[self bounds] owner:self userData:NULL assumeInside:NO];
 }
 
 #pragma mark UndoManager
@@ -1559,8 +1465,13 @@ static inline NSRect rectWithCorners(NSPoint p1, NSPoint p2)
         autohideTimer  = [[NSTimer scheduledTimerWithTimeInterval:3.0 target:self selector:@selector(autohideTimerFired:) userInfo:nil repeats:NO] retain];
 }
 
+- (NSRect)visibleContentRect {
+    NSView *clipView = [[[self documentView] enclosingScrollView] contentView];
+    return [clipView convertRect:[clipView visibleRect] toView:self];
+}
+
 - (NSRange)visiblePageIndexRange {
-    NSRect visibleRect = [[[self documentView] superview] convertRect:[[[self documentView] superview] visibleRect] toView:self];
+    NSRect visibleRect = [self visibleContentRect];
     PDFPage *page;
     unsigned first, last;
     
@@ -1594,7 +1505,7 @@ static inline NSRect rectWithCorners(NSPoint p1, NSPoint p2)
     
     NSRange range = [self visiblePageIndexRange];
     int i, iMax = NSMaxRange(range);
-    NSRect visibleRect = [[[self documentView] superview] convertRect:[[[self documentView] superview] visibleRect] toView:self];
+    NSRect visibleRect = [self visibleContentRect];
     
     for (i = 0; i < iMax; i++) {
         PDFPage *page = [[self document] pageAtIndex:i];
@@ -2383,7 +2294,61 @@ static inline NSRect rectWithCorners(NSPoint p1, NSPoint p2)
     
     [NSCursor pop];
     // ??? PDFView's delayed layout seems to reset the cursor to an arrow
-    [self performSelector:@selector(mouseMoved:) withObject:theEvent afterDelay:0];
+    [[self cursorForEvent:theEvent] performSelector:@selector(set) withObject:nil afterDelay:0];
+}
+
+- (void)selectTextWithEvent:(NSEvent *)theEvent {
+    if ([theEvent type] == NSLeftMouseDown) {
+        
+        unsigned int modifiers = [theEvent modifierFlags] & NSDeviceIndependentModifierFlagsMask;
+        
+        if (modifiers & NSAlternateKeyMask) {
+            rectSelection = YES;
+            extendSelection = NO;
+            [self setCurrentSelection:nil];
+        } else if (modifiers & NSShiftKeyMask) {
+            rectSelection = NO;
+            extendSelection = YES;
+            wasSelection = [[self currentSelection] retain];
+            NSPoint p = [self convertPoint:[theEvent locationInWindow] fromView:nil];
+            PDFPage *page = [self pageForPoint:p nearest:YES];
+            p = [self convertPoint:p toPage:page];
+            [self setCurrentSelection:[[self document] selectionByExtendingSelection:wasSelection toPage:page atPoint:p]];
+        } else {
+            rectSelection = NO;
+            extendSelection = NO;
+            [self setCurrentSelection:nil];
+        }
+        
+    } else if ([theEvent type] == NSLeftMouseDragged) {
+        // reimplement text selection behavior so we can select text inside markup annotation bounds rectangles (and have a highlight and strikeout on the same line, for instance), but don't select inside an existing markup annotation
+
+        // if we autoscroll, the mouseDownLoc is no longer correct as a starting point
+        NSPoint mouseDownLocInDoc = [[self documentView] convertPoint:mouseDownLoc fromView:nil];
+        if ([[self documentView] autoscroll:theEvent])
+            mouseDownLoc = [[self documentView] convertPoint:mouseDownLocInDoc toView:nil];
+
+        NSPoint p1 = [self convertPoint:mouseDownLoc fromView:nil];
+        PDFPage *page1 = [self pageForPoint:p1 nearest:YES];
+        p1 = [self convertPoint:p1 toPage:page1];
+
+        NSPoint p2 = [self convertPoint:[theEvent locationInWindow] fromView:nil];
+        PDFPage *page2 = [self pageForPoint:p2 nearest:YES];
+        p2 = [self convertPoint:p2 toPage:page2];
+        
+        PDFSelection *sel = nil;
+        if (rectSelection) {
+            // how to handle multipage selection?  Preview.app's behavior is screwy as well, so we'll do the same thing
+            sel = [page1 selectionForRect:NSMakeRect(fmin(p2.x, p1.x), fmin(p2.y, p1.y), fabs(p2.x - p1.x), fabs(p2.y - p1.y))];
+        } else if (extendSelection) {
+            sel = [[self document] selectionByExtendingSelection:wasSelection toPage:page2 atPoint:p2];
+        } else {
+            sel = [[self document] selectionFromPage:page1 atPoint:p1 toPage:page2 atPoint:p2];
+        }
+
+        [self setCurrentSelection:sel];
+        
+    }
 }
 
 - (void)dragReadingBarWithEvent:(NSEvent *)theEvent {
@@ -2434,7 +2399,7 @@ static inline NSRect rectWithCorners(NSPoint p1, NSPoint p2)
     
     [NSCursor pop];
     // ??? PDFView's delayed layout seems to reset the cursor to an arrow
-    [self performSelector:@selector(mouseMoved:) withObject:theEvent afterDelay:0];
+    [[self cursorForEvent:theEvent] performSelector:@selector(set) withObject:nil afterDelay:0];
 }
 
 - (void)selectSnapshotWithEvent:(NSEvent *)theEvent {
@@ -2683,6 +2648,43 @@ static inline NSRect rectWithCorners(NSPoint p1, NSPoint p2)
         
         [[document synchronizer] findLineForLocation:location inRect:rect atPageIndex:pageIndex];
     }
+}
+
+- (NSCursor *)cursorForEvent:(NSEvent *)theEvent {
+    NSPoint p = [self convertPoint:[theEvent locationInWindow] fromView:nil];
+    NSCursor *cursor = nil;
+    
+    if (NSPointInRect(p, [self visibleContentRect]) == NO || ([navWindow isVisible] && NSPointInRect([NSEvent mouseLocation], [navWindow frame]))) {
+        cursor = [NSCursor arrowCursor];
+    } else if ([theEvent modifierFlags] & NSCommandKeyMask) {
+        if ([theEvent modifierFlags] & NSShiftKeyMask)
+            cursor = [NSCursor arrowCursor];
+        else
+            cursor = [NSCursor cameraCursor];
+    } else {
+        switch (toolMode) {
+            case SKTextToolMode:
+            {
+                PDFPage *page = [self pageForPoint:p nearest:NO];
+                p = [self convertPoint:p toPage:page];
+                PDFAreaOfInterest area = [self areaOfInterestForMouse:theEvent];
+                if ((readingBar && [[readingBar page] isEqual:page] && NSPointInRect(p, [readingBar currentBoundsForBox:[self displayBox]])) ||
+                    (area == kPDFNoArea || (area == kPDFPageArea && [[page selectionForRect:NSMakeRect(p.x - 30.0, p.y - 40.0, 60.0, 80.0)] string] == nil)))
+                    cursor = [NSCursor openHandCursor];
+                break;
+            }
+            case SKMoveToolMode:
+                cursor = [NSCursor openHandCursor];
+                break;
+            case SKMagnifyToolMode:
+                if ([self areaOfInterestForMouse:theEvent] == kPDFNoArea)
+                    cursor = [NSCursor openHandCursor];
+                else
+                    cursor = ([theEvent modifierFlags] & NSShiftKeyMask) ? [NSCursor zoomOutCursor] : [NSCursor zoomInCursor];
+                break;
+        }
+    }
+    return cursor;
 }
 
 @end
