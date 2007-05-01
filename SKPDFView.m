@@ -2751,16 +2751,25 @@ static CGMutablePathRef SKCGCreatePathWithRoundRectInRect(CGRect rect, float rad
     PDFSelection *sel = selection;
     NSArray *pages = [selection pages];
     
-    if ([pages count] && [selection respondsToSelector:@selector(numberOfRangesOnPage:)] && [selection respondsToSelector:@selector(rangeAtIndex:onPage:)]) {
+    if ([pages count]) {
         PDFPage *firstPage = [pages objectAtIndex:0];
         PDFPage *lastPage = [pages lastObject];
         unsigned int pageIndex = [self indexForPage:page];
         unsigned int firstPageIndex = [self indexForPage:firstPage];
         unsigned int lastPageIndex = [self indexForPage:lastPage];
-        int firstChar = [selection rangeAtIndex:0 onPage:firstPage].location;
-        int lastChar = NSMaxRange([selection rangeAtIndex:[selection numberOfRangesOnPage:lastPage] - 1 onPage:lastPage]) - 1;
-        NSRect firstRect = [firstPage characterBoundsAtIndex:firstChar];
-        NSRect lastRect = [lastPage characterBoundsAtIndex:lastChar];
+        NSRect firstRect, lastRect;
+        
+        if ([selection respondsToSelector:@selector(numberOfRangesOnPage:)] && [selection respondsToSelector:@selector(rangeAtIndex:onPage:)]) {
+            int firstChar = [selection rangeAtIndex:0 onPage:firstPage].location;
+            int lastChar = NSMaxRange([selection rangeAtIndex:[selection numberOfRangesOnPage:lastPage] - 1 onPage:lastPage]) - 1;
+            firstRect = [firstPage characterBoundsAtIndex:firstChar];
+            lastRect = [lastPage characterBoundsAtIndex:lastChar];
+        } else {
+            firstRect = [selection boundsForPage:firstPage];
+            firstRect = NSMakeRect(NSMinX(firstRect), NSMaxY(firstRect), 0.0, 0.0);
+            lastRect = [selection boundsForPage:lastPage];
+            lastRect = NSMakeRect(NSMaxX(lastRect), NSMinY(lastRect), 0.0, 0.0);
+        }
         
         if (pageIndex < firstPageIndex || (pageIndex == firstPageIndex && (point.y > NSMaxY(firstRect) || (point.y > NSMinY(firstRect) && point.x < NSMinX(firstRect)))))
             sel = [self selectionFromPage:page atPoint:point toPage:lastPage atPoint:NSMakePoint(NSMaxX(lastRect), NSMidY(lastRect))];

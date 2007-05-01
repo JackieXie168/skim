@@ -137,6 +137,9 @@
 }
 
 - (NSArray *)lineBounds {
+    if ([PDFSelection instancesRespondToSelector:@selector(numberOfRangesOnPage:)] == NO || [PDFSelection instancesRespondToSelector:@selector(rangeAtIndex:onPage:)] == NO)
+        return [NSArray array];
+    
     static NSCharacterSet *nonWhitespaceAndNewlineCharacterSet = nil;
     if (nonWhitespaceAndNewlineCharacterSet == nil)
         nonWhitespaceAndNewlineCharacterSet = [[[NSCharacterSet whitespaceAndNewlineCharacterSet] invertedSet] copy];
