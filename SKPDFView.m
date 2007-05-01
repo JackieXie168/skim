@@ -306,6 +306,13 @@ static CGMutablePathRef SKCGCreatePathWithRoundRectInRect(CGRect rect, float rad
         }
     }
     
+    if (NSIsEmptyRect(selectionRect) == NO) {
+        NSRect rect = NSInsetRect([self convertRect:selectionRect toPage:pdfPage], 0.5, 0.5);
+        float color[4] = { 0.0, 0.0, 0.0, 1.0 };
+        CGContextSetStrokeColor(context, color);
+        CGContextStrokeRect(context, *(CGRect *)&rect);
+    }
+    
     CGContextRestoreGState(context);
 }
 
@@ -598,9 +605,15 @@ static CGMutablePathRef SKCGCreatePathWithRoundRectInRect(CGRect rect, float rad
 - (void)mouseUp:(NSEvent *)theEvent{
     switch (toolMode) {
         case SKTextToolMode:
-            mouseDownInAnnotation = NO;
-            [wasSelection release];
-            wasSelection = nil;
+            if (mouseDownInAnnotation) {
+                if (nil == activeAnnotation && NSIsEmptyRect(selectionRect) == NO) {
+                    [self setNeedsDisplayInRect:selectionRect];
+                    selectionRect = NSZeroRect;
+                }
+                mouseDownInAnnotation = NO;
+                [wasSelection release];
+                wasSelection = nil;
+            }
             if (draggingAnnotation) {
                 draggingAnnotation = NO;
                 if ([[activeAnnotation type] isEqualToString:@"Circle"] || [[activeAnnotation type] isEqualToString:@"Square"]) {
@@ -2346,7 +2359,13 @@ static CGMutablePathRef SKCGCreatePathWithRoundRectInRect(CGRect rect, float rad
         PDFSelection *sel = nil;
         if (rectSelection) {
             // how to handle multipage selection?  Preview.app's behavior is screwy as well, so we'll do the same thing
-            sel = [page1 selectionForRect:NSMakeRect(fmin(p2.x, p1.x), fmin(p2.y, p1.y), fabs(p2.x - p1.x), fabs(p2.y - p1.y))];
+            NSRect selRect = NSMakeRect(fmin(p2.x, p1.x), fmin(p2.y, p1.y), fabs(p2.x - p1.x), fabs(p2.y - p1.y));
+            sel = [page1 selectionForRect:selRect];
+            if (NSIsEmptyRect(selectionRect) == NO)
+                [self setNeedsDisplayInRect:selectionRect];
+            selectionRect = NSIntegralRect([self convertRect:selRect fromPage:page1]);
+            [self setNeedsDisplayInRect:selectionRect];
+            [[self window] flushWindow];
         } else if (extendSelection) {
             sel = [[self document] selectionByExtendingSelection:wasSelection toPage:page2 atPoint:p2];
         } else {
@@ -2413,7 +2432,7 @@ static CGMutablePathRef SKCGCreatePathWithRoundRectInRect(CGRect rect, float rad
     NSPoint mouseLoc = [theEvent locationInWindow];
 	NSPoint startPoint = [[self documentView] convertPoint:mouseLoc fromView:nil];
 	NSPoint	currentPoint;
-    NSRect selectionRect = {startPoint, NSZeroSize};
+    NSRect selRect = {startPoint, NSZeroSize};
     NSRect bounds;
     float minX, maxX, minY, maxY;
     BOOL dragged = NO;
@@ -2457,14 +2476,14 @@ static CGMutablePathRef SKCGCreatePathWithRoundRectInRect(CGRect rect, float rad
                 maxX = fmax(fmin(maxX, NSMaxX(bounds)), NSMinX(bounds));
                 minY = fmin(fmax(minY, NSMinY(bounds)), NSMaxY(bounds));
                 maxY = fmax(fmin(maxY, NSMaxY(bounds)), NSMinY(bounds));
-                selectionRect = NSMakeRect(minX, minY, maxX - minX, maxY - minY);
+                selRect = NSMakeRect(minX, minY, maxX - minX, maxY - minY);
                 
-                [[self window] cacheImageInRect:NSInsetRect([[self documentView] convertRect:selectionRect toView:nil], -2.0, -2.0)];
+                [[self window] cacheImageInRect:NSInsetRect([[self documentView] convertRect:selRect toView:nil], -2.0, -2.0)];
                 
                 [self lockFocus];
                 [NSGraphicsContext saveGraphicsState];
                 [[NSColor blackColor] set];
-                [NSBezierPath strokeRect:NSInsetRect(NSIntegralRect([self convertRect:selectionRect fromView:[self documentView]]), 0.5, 0.5)];
+                [NSBezierPath strokeRect:NSInsetRect(NSIntegralRect([self convertRect:selRect fromView:[self documentView]]), 0.5, 0.5)];
                 [NSGraphicsContext restoreGraphicsState];
                 [self unlockFocus];
                 [[self window] flushWindow];
@@ -2484,9 +2503,9 @@ static CGMutablePathRef SKCGCreatePathWithRoundRectInRect(CGRect rect, float rad
     [[self window] discardCachedImage];
 	[self flagsChanged:theEvent];
     
-    NSPoint point = [self convertPoint:NSMakePoint(NSMidX(selectionRect), NSMidY(selectionRect)) fromView:[self documentView]];
+    NSPoint point = [self convertPoint:NSMakePoint(NSMidX(selRect), NSMidY(selRect)) fromView:[self documentView]];
     PDFPage *page = [self pageForPoint:point nearest:YES];
-    NSRect rect = [self convertRect:selectionRect fromView:[self documentView]];
+    NSRect rect = [self convertRect:selRect fromView:[self documentView]];
     int factor = 1;
     
     if (dragged == NO) {
