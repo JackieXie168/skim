@@ -88,6 +88,10 @@ static NSString *SKSnapshotViewChangedNotification = @"SKSnapshotViewChangedNoti
         [pdfView setNeedsDisplayInRect:rect];
 }
 
+- (void)redisplay {
+    [pdfView setNeedsDisplay:YES];
+}
+
 - (void)handlePageChangedNotification:(NSNotification *)notification {
     [[self window] setTitle:[self windowTitleForDocumentDisplayName:[[self document] displayName]]];
     [self willChangeValueForKey:@"pageLabel"];
@@ -225,6 +229,9 @@ static NSString *SKSnapshotViewChangedNotification = @"SKSnapshotViewChangedNoti
 }
 
 - (BOOL)isPageVisible:(PDFPage *)page {
+    if ([[page document] isEqual:[pdfView document]] == NO)
+        return NO;
+    
     NSView *clipView = [[[pdfView documentView] enclosingScrollView] contentView];
     NSRect visibleRect = [clipView convertRect:[clipView visibleRect] toView:pdfView];
     unsigned first, last, index = [[pdfView document] indexForPage:page];

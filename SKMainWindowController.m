@@ -876,6 +876,15 @@ static NSString *SKDocumentToolbarNotesPaneItemIdentifier = @"SKDocumentToolbarN
     [[pdfView currentPage] setRotation:[[pdfView currentPage] rotation] + 90];
     [pdfView layoutDocumentView];
     
+    NSEnumerator *snapshotEnum = [snapshots objectEnumerator];
+    SKSnapshotWindowController *wc;
+    while (wc = [snapshotEnum nextObject]) {
+        if ([wc isPageVisible:[pdfView currentPage]]) {
+            [self snapshotNeedsUpdate:wc];
+            [wc redisplay];
+        }
+    }
+    
     SKThumbnail *thumbnail = [[self thumbnails] objectAtIndex:[[pdfView document] indexForPage:[pdfView currentPage]]];
     [self thumbnailNeedsUpdate:thumbnail];
 }
@@ -883,6 +892,15 @@ static NSString *SKDocumentToolbarNotesPaneItemIdentifier = @"SKDocumentToolbarN
 - (IBAction)rotateLeft:(id)sender {
     [[pdfView currentPage] setRotation:[[pdfView currentPage] rotation] - 90];
     [pdfView layoutDocumentView];
+    
+    NSEnumerator *snapshotEnum = [snapshots objectEnumerator];
+    SKSnapshotWindowController *wc;
+    while (wc = [snapshotEnum nextObject]) {
+        if ([wc isPageVisible:[pdfView currentPage]]) {
+            [self snapshotNeedsUpdate:wc];
+            [wc redisplay];
+        }
+    }
     
     SKThumbnail *thumbnail = [[self thumbnails] objectAtIndex:[[pdfView document] indexForPage:[pdfView currentPage]]];
     [self thumbnailNeedsUpdate:thumbnail];
@@ -894,6 +912,10 @@ static NSString *SKDocumentToolbarNotesPaneItemIdentifier = @"SKDocumentToolbarN
         [[[pdfView document] pageAtIndex:i] setRotation:[[[pdfView document] pageAtIndex:i] rotation] + 90];
     }
     [pdfView layoutDocumentView];
+    
+    [snapshots makeObjectsPerformSelector:@selector(redisplay) withObject:nil];
+    [self allSnapshotsNeedUpdate];
+    
     [self allThumbnailsNeedUpdate];
 }
 
@@ -903,6 +925,10 @@ static NSString *SKDocumentToolbarNotesPaneItemIdentifier = @"SKDocumentToolbarN
         [[[pdfView document] pageAtIndex:i] setRotation:[[[pdfView document] pageAtIndex:i] rotation] - 90];
     }
     [pdfView layoutDocumentView];
+    
+    [snapshots makeObjectsPerformSelector:@selector(redisplay) withObject:nil];
+    [self allSnapshotsNeedUpdate];
+    
     [self allThumbnailsNeedUpdate];
 }
 
