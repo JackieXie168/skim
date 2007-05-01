@@ -39,7 +39,7 @@
 #import <Cocoa/Cocoa.h>
 
 
-@class PDFView, PDFDocument;
+@class PDFView, PDFDocument, PDFPage;
 
 @interface SKSnapshotWindowController : NSWindowController {
     IBOutlet PDFView* pdfView;
@@ -50,6 +50,7 @@
 }
 - (void)setPdfDocument:(PDFDocument *)pdfDocument scaleFactor:(float)factor goToPageNumber:(int)pageNum rect:(NSRect)rect;
 - (BOOL)isPageVisible:(PDFPage *)page;
+- (void)redisplay;
 - (id)delegate;
 - (void)setDelegate:(id)newDelegate;
 - (PDFView *)pdfView;
