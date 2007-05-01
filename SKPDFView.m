@@ -2326,6 +2326,19 @@ static CGMutablePathRef SKCGCreatePathWithRoundRectInRect(CGRect rect, float rad
             rectSelection = YES;
             extendSelection = NO;
             [self setCurrentSelection:nil];
+        } else if ([theEvent clickCount] > 1) {
+            rectSelection = NO;
+            extendSelection = YES;
+            NSPoint p = [self convertPoint:[theEvent locationInWindow] fromView:nil];
+            PDFPage *page = [self pageForPoint:p nearest:YES];
+            p = [self convertPoint:p toPage:page];
+            if ([theEvent clickCount] == 2)
+                wasSelection = [[page selectionForWordAtPoint:p] retain];
+            else if ([theEvent clickCount] == 3)
+                wasSelection = [[page selectionForLineAtPoint:p] retain];
+            else
+                wasSelection = nil;
+            [self setCurrentSelection:wasSelection];
         } else if (modifiers & NSShiftKeyMask) {
             rectSelection = NO;
             extendSelection = YES;
