@@ -1218,8 +1218,10 @@ static CGMutablePathRef SKCGCreatePathWithRoundRectInRect(CGRect rect, float rad
         [self setActiveAnnotation:annotation];
         if ([[annotation type] isEqualToString:@"Link"] || [annotation text]) {
             NSRect bounds = [annotation bounds]; 
-            NSPoint point = [self convertPoint:[self convertPoint:NSMakePoint(NSMidX(bounds), NSMidY(bounds)) fromPage:[annotation page]] toView:nil]; 
-            [[SKPDFHoverWindow sharedHoverWindow] showForAnnotation:annotation atPoint:[[self window] convertBaseToScreen:point]];
+            NSPoint point = NSMakePoint(NSMinX(bounds) + 0.3 * NSWidth(bounds), NSMinY(bounds) + 0.3 * NSHeight(bounds));
+            point = [self convertPoint:[self convertPoint:point fromPage:[annotation page]] toView:nil];
+            point = [[self window] convertBaseToScreen:NSMakePoint(roundf(point.x), roundf(point.y))];
+            [[SKPDFHoverWindow sharedHoverWindow] showForAnnotation:annotation atPoint:point];
         } else {
             [[SKPDFHoverWindow sharedHoverWindow] orderOut:self];
         }
@@ -1261,8 +1263,10 @@ static CGMutablePathRef SKCGCreatePathWithRoundRectInRect(CGRect rect, float rad
         [self setActiveAnnotation:annotation];
         if ([[annotation type] isEqualToString:@"Link"] || [annotation text]) {
             NSRect bounds = [annotation bounds]; 
-            NSPoint point = [self convertPoint:[self convertPoint:NSMakePoint(NSMidX(bounds), NSMidY(bounds)) fromPage:[annotation page]] toView:nil]; 
-            [[SKPDFHoverWindow sharedHoverWindow] showForAnnotation:annotation atPoint:[[self window] convertBaseToScreen:point]];
+            NSPoint point = NSMakePoint(NSMinX(bounds) + 0.3 * NSWidth(bounds), NSMinY(bounds) + 0.3 * NSHeight(bounds));
+            point = [self convertPoint:[self convertPoint:point fromPage:[annotation page]] toView:nil];
+            point = [[self window] convertBaseToScreen:NSMakePoint(roundf(point.x), roundf(point.y))];
+            [[SKPDFHoverWindow sharedHoverWindow] showForAnnotation:annotation atPoint:point];
         } else {
             [[SKPDFHoverWindow sharedHoverWindow] orderOut:self];
         }
