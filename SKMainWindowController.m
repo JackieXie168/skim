@@ -2167,7 +2167,7 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
                 [pdfView setActiveAnnotation:annotation];
                 [self showNote:annotation];
                 return NO;
-            } else if ([item isMovable]) {
+            } else {
                 return YES;
             }
         }
