@@ -892,7 +892,7 @@ static NSString *SKDocumentToolbarNotesPaneItemIdentifier = @"SKDocumentToolbarN
     }
     
     SKThumbnail *thumbnail = [thumbnails objectAtIndex:[[pdfView document] indexForPage:[pdfView currentPage]]];
-    [thumbnail setDirty:YES];
+    [self thumbnailNeedsUpdate:thumbnail];
 }
 
 - (IBAction)rotateLeft:(id)sender {
@@ -909,7 +909,7 @@ static NSString *SKDocumentToolbarNotesPaneItemIdentifier = @"SKDocumentToolbarN
     }
     
     SKThumbnail *thumbnail = [thumbnails objectAtIndex:[[pdfView document] indexForPage:[pdfView currentPage]]];
-    [thumbnail setDirty:YES];
+    [self thumbnailNeedsUpdate:thumbnail];
 }
 
 - (IBAction)rotateAllRight:(id)sender {
@@ -1872,8 +1872,7 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
         updatingNoteSelection = NO;
     }
     if (page) {
-        [[thumbnails objectAtIndex:[[pdfView document] indexForPage:page]] setDirty:YES];
-        [thumbnailTableView reloadData];
+        [self thumbnailNeedsUpdate:[thumbnails objectAtIndex:[[pdfView document] indexForPage:page]]];
         NSEnumerator *snapshotEnum = [snapshots objectEnumerator];
         SKSnapshotWindowController *wc;
         while (wc = [snapshotEnum nextObject]) {
@@ -1904,7 +1903,7 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
         [noteArrayController removeObject:annotation];
     }
     if (page) {
-        [[thumbnails objectAtIndex:[[pdfView document] indexForPage:page]] setDirty:YES];
+        [self thumbnailNeedsUpdate:[thumbnails objectAtIndex:[[pdfView document] indexForPage:page]]];
         [thumbnailTableView reloadData];
         NSEnumerator *snapshotEnum = [snapshots objectEnumerator];
         SKSnapshotWindowController *wc;
@@ -1922,9 +1921,9 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
     
     if (oldPage || newPage) {
         if (oldPage)
-            [[thumbnails objectAtIndex:[[pdfView document] indexForPage:oldPage]] setDirty:YES];
+            [self thumbnailNeedsUpdate:[thumbnails objectAtIndex:[[pdfView document] indexForPage:oldPage]]];
         if (newPage)
-            [[thumbnails objectAtIndex:[[pdfView document] indexForPage:newPage]] setDirty:YES];
+            [self thumbnailNeedsUpdate:[thumbnails objectAtIndex:[[pdfView document] indexForPage:newPage]]];
         [thumbnailTableView reloadData];
         NSEnumerator *snapshotEnum = [snapshots objectEnumerator];
         SKSnapshotWindowController *wc;
@@ -1947,8 +1946,7 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
 - (void)handleAnnotationDidChangeNotification:(NSNotification *)notification {
     PDFAnnotation *annotation = [notification object];
     if ([[[annotation page] document] isEqual:[[self pdfView] document]]) {
-        [[thumbnails objectAtIndex:[annotation pageIndex]] setDirty:YES];
-        [thumbnailTableView reloadData];
+        [self thumbnailNeedsUpdate:[thumbnails objectAtIndex:[annotation pageIndex]]];
 
         NSEnumerator *snapshotEnum = [snapshots objectEnumerator];
         SKSnapshotWindowController *wc;
@@ -2456,11 +2454,17 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
     }
 }
 
+- (void)thumbnailNeedsUpdate:(SKThumbnail *)thumbnail {
+    [thumbnail setDirty:YES];
+    [thumbnailTableView reloadData];
+}
+
 - (void)allThumbnailsNeedUpdate {
     NSEnumerator *te = [thumbnails objectEnumerator];
     SKThumbnail *tn;
     while (tn = [te nextObject])
         [tn setDirty:YES];
+    [thumbnailTableView reloadData];
 }
 
 #pragma mark Notes
