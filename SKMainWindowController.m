@@ -2430,7 +2430,6 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
         
         PDFPage *emptyPage = [[[PDFPage alloc] init] autorelease];
         [emptyPage setBounds:[[[pdfView document] pageAtIndex:0] boundsForBox:kPDFDisplayBoxCropBox] forBox:kPDFDisplayBoxCropBox];
-        [emptyPage setBounds:[[[pdfView document] pageAtIndex:0] boundsForBox:kPDFDisplayBoxCropBox] forBox:kPDFDisplayBoxMediaBox];
         NSImage *image = [emptyPage thumbnailWithSize:thumbnailCacheSize shadowBlurRadius:shadowBlurRadius shadowOffset:NSMakeSize(0.0, shadowOffset)];
         for (i = 0; i < count; i++) {
             SKThumbnail *thumbnail = [[SKThumbnail alloc] initWithImage:image label:[[pdfDoc pageAtIndex:i] label]];
@@ -2462,10 +2461,6 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
     SKThumbnail *tn;
     while (tn = [te nextObject])
         [tn setDirty:YES];
-}
-
-- (void)updateThumbnailsIfNeeded {
-
 }
 
 #pragma mark Notes
