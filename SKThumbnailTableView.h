@@ -40,6 +40,10 @@
 
 
 @interface SKThumbnailTableView : NSTableView
+{
+    BOOL isScrolling;
+}
+- (BOOL)isScrolling;
 @end
 
 

@@ -45,6 +45,7 @@
     if (self = [super init]) {
         image = [anImage retain];
         label = [aLabel retain];
+        dirty = NO;
     }
     return self;
 }
@@ -54,6 +55,9 @@
     [label release];
     [super dealloc];
 }
+
+- (BOOL)isDirty { return dirty; }
+- (void)setDirty:(BOOL)flag { dirty = flag; }
 
 - (NSImage *)image {
     return image;

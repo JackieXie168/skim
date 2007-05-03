@@ -95,9 +95,8 @@ typedef struct _SKPDFViewState {
     IBOutlet NSView             *thumbnailView;
     NSMutableArray              *thumbnails;
     BOOL                        updatingThumbnailSelection;
-    NSMutableArray              *dirtyThumbnails;
-    NSTimer                     *thumbnailTimer;
     float                       roundedThumbnailSize;
+    BOOL                        isAnimating;
     
     IBOutlet NSArrayController  *findArrayController;
     IBOutlet NSTableView        *findTableView;
@@ -240,8 +239,6 @@ typedef struct _SKPDFViewState {
 - (void)insertObject:(id)obj inNotesAtIndex:(unsigned)index;
 - (void)removeObjectFromNotesAtIndex:(unsigned)index;
 
-- (NSArray *)thumbnails;
-- (void)setThumbnails:(NSArray *)newThumbnails;
 - (unsigned)countOfThumbnails;
 - (id)objectInThumbnailsAtIndex:(unsigned)theIndex;
 - (void)insertObject:(id)obj inThumbnailsAtIndex:(unsigned)theIndex;
@@ -290,10 +287,7 @@ typedef struct _SKPDFViewState {
 - (void)updateThumbnailSelection;
 - (void)resetThumbnails;
 - (void)resetThumbnailSizeIfNeeded;
-- (void)thumbnailNeedsUpdate:(SKThumbnail *)dirtyThumbnail;
 - (void)allThumbnailsNeedUpdate;
-- (void)updateThumbnailsIfNeeded;
-- (void)updateThumbnail:(NSTimer *)timer;
 
 - (void)resetSnapshotSizeIfNeeded;
 - (void)snapshotNeedsUpdate:(SKSnapshotWindowController *)dirstySnapshot;

@@ -37,9 +37,50 @@
  */
 
 #import "SKThumbnailTableView.h"
+#import "OBUtilities.h"
 
+@interface NSScroller (SKExtensions)
+- (void)replacementTrackKnob:(NSEvent *)theEvent;
+@end
+
+@implementation NSScroller (SKExtensions)
+
+static IMP originalTrackKnob = NULL;
+
++ (void)load {
+    originalTrackKnob = OBReplaceMethodImplementationWithSelector(self, @selector(trackKnob:), @selector(replacementTrackKnob:));
+}
+
+- (void)replacementTrackKnob:(NSEvent *)theEvent {
+    [[NSNotificationCenter defaultCenter] postNotificationName:@"SKScrollerWillScroll" object:self];
+    originalTrackKnob(self, _cmd, theEvent);
+    [[NSNotificationCenter defaultCenter] postNotificationName:@"SKScrollerDidScroll" object:self];
+}
+
+@end
 
 @implementation SKThumbnailTableView
+
+- (void)dealloc {
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
+    [super dealloc];
+}
+
+- (BOOL)isScrolling { return isScrolling; }
+
+- (void)handleScrollerWillScroll:(NSNotification *)note {
+    isScrolling = YES;
+}
+
+- (void)handleScrollerDidScroll:(NSNotification *)note {
+    isScrolling = NO;
+    [self setNeedsDisplayInRect:[self visibleRect]];
+}
+
+- (void)awakeFromNib {
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleScrollerWillScroll:) name:@"SKScrollerWillScroll" object:[[self enclosingScrollView] verticalScroller]];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleScrollerDidScroll:) name:@"SKScrollerDidScroll" object:[[self enclosingScrollView] verticalScroller]];
+}
 
 - (void)setFrame:(NSRect)frameRect {
     [super setFrame:frameRect];
@@ -60,15 +101,15 @@
         int i, count = [rows count];
         
         [NSGraphicsContext saveGraphicsState];
-        for (i = 0; i < count; i++) {
+        NSColor *bgColor = [NSColor controlBackgroundColor];
+        for (i = 0; i < count && factor > 0.0; i++) {
             int row = [[rows objectAtIndex:i] intValue];
-            [[[NSColor controlBackgroundColor] blendedColorWithFraction:factor ofColor:color] set];
+            [[bgColor blendedColorWithFraction:factor ofColor:color] setFill];
             factor -= 0.1;
             if ([rowIndexes containsIndex:row] == NO) {
                 NSRectFill([self rectOfRow:row]);
                 [rowIndexes addIndex:row];
             }
-            if (factor <= 0.0) break;
         }
         [NSGraphicsContext restoreGraphicsState];
     }
@@ -116,6 +157,28 @@
 
 @implementation SKSnapshotPageCell
 
+static NSShadow *selectedShadow = nil;
+static NSShadow *deselectedShadow = nil;
+static NSColor *selectedColor = nil;
+static NSColor *deselectedColor = nil;
+
++ (void)initialize
+{
+    BOOL didInit = NO;
+    if (NO == didInit) {
+        didInit = YES;
+        selectedShadow = [[NSShadow alloc] init];
+        [selectedShadow setShadowColor:[NSColor colorWithDeviceWhite:1.0 alpha:0.2]];
+        [selectedShadow setShadowOffset:NSMakeSize(0.0, -1.0)];
+        deselectedShadow = [[NSShadow alloc] init];
+        [deselectedShadow setShadowColor:[NSColor colorWithDeviceWhite:1.0 alpha:0.2]];
+        [deselectedShadow setShadowOffset:NSMakeSize(0.0, -1.0)];
+        
+        selectedColor = [[NSColor colorWithDeviceWhite:1.0 alpha:1.0] copy];
+        deselectedColor = [[NSColor colorWithDeviceWhite:0.0 alpha:0.8] copy];
+    }
+}
+
 - (void)setObjectValue:(id)anObject {
     [super setObjectValue:[anObject valueForKey:@"label"]];
     hasWindow = [[anObject valueForKey:@"hasWindow"] boolValue];
@@ -133,16 +196,16 @@
         BOOL isSelected = [self isHighlighted] && [[controlView window] isKeyWindow] && [[[controlView window] firstResponder] isEqual:controlView];
         float radius = 2.0;
         NSBezierPath *path = [NSBezierPath bezierPath];
-        NSShadow *shadow = [[[NSShadow alloc] init] autorelease];
+        NSShadow *shadow;
+        NSColor *fillColor;
         
-        [NSGraphicsContext saveGraphicsState];
-        
-        [shadow setShadowOffset:NSMakeSize(0.0, -1.0)];
-        if (isSelected)
-            [shadow setShadowColor:[NSColor colorWithDeviceWhite:1.0 alpha:0.2]];
-        else
-            [shadow setShadowColor:[NSColor colorWithDeviceWhite:0.0 alpha:0.1]];
-        [shadow set];
+        if (isSelected) {
+            shadow = selectedShadow;
+            fillColor = selectedColor;
+        } else {
+            shadow = deselectedShadow;
+            fillColor = deselectedColor;
+        }
         
         NSDivideRect(imageRect, &imageRect, &ignored, 10.0, NSMinYEdge);
         imageRect.origin.x += 4.0;
@@ -160,11 +223,11 @@
         [path appendBezierPath:[NSBezierPath bezierPathWithRect:imageRect]];
         [path setWindingRule:NSEvenOddWindingRule];
         
-        if (isSelected)
-            [[NSColor colorWithDeviceWhite:1.0 alpha:1.0] set];
-        else
-            [[NSColor colorWithDeviceWhite:0.0 alpha:0.8] set];
+        [NSGraphicsContext saveGraphicsState];
         
+        [shadow set];
+        [fillColor setFill];
+
         [path fill];
         
         [NSGraphicsContext restoreGraphicsState];
