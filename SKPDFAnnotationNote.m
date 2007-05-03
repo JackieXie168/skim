@@ -423,37 +423,6 @@ static NSArray *createQuadPointsWithBounds(const NSRect bounds, const NSPoint or
     return [[NSArray alloc] initWithObjects:[NSValue valueWithPoint:p0], [NSValue valueWithPoint:p1], [NSValue valueWithPoint:p2], [NSValue valueWithPoint:p3], nil];
 }
 
-// adjust the range to remove whitespace and newlines at the end
-static void adjustRangeForWhitespaceAndNewlines(NSRange *range, NSString *string)
-{
-    static NSCharacterSet *nonWhitespaceAndNewlineSet = nil;
-    if (nil == nonWhitespaceAndNewlineSet)
-        nonWhitespaceAndNewlineSet = [[[NSCharacterSet whitespaceAndNewlineCharacterSet] invertedSet] copy];
-    NSRange r = [string rangeOfCharacterFromSet:nonWhitespaceAndNewlineSet options:0 range:*range];
-    if (r.length && (r.location != range->location)) {
-        range->location = r.location;
-        range->length -= (r.length + 1);
-    }
-    r = [string rangeOfCharacterFromSet:nonWhitespaceAndNewlineSet options:NSBackwardsSearch range:*range];
-    if (r.length)
-        range->length = r.location - range->location + 1;
-    else
-        range->length = 0;
-}
-
-// returns NO if the only characters in the rect are whitespace
-static BOOL lineRectTrimmingWhitespaceForPage(NSRect *lineRect, PDFPage *page)
-{
-    PDFSelection *selection = [page selectionForRect:*lineRect];
-    NSRange r = [selection rangeAtIndex:([selection numberOfRangesOnPage:page] - 1) onPage:page];
-    adjustRangeForWhitespaceAndNewlines(&r, [page string]);
-    if (r.length) {
-        *lineRect = [[page selectionForRange:r] boundsForPage:page];
-        return YES;
-    }
-    return NO;
-}    
-
 - (id)initWithBounds:(NSRect)bounds {
     self = [self initWithBounds:bounds markupType:kPDFMarkupTypeHighlight quadrilateralPointsAsStrings:nil];
     return self;
@@ -506,36 +475,59 @@ static BOOL lineRectTrimmingWhitespaceForPage(NSRect *lineRect, PDFPage *page)
     if (self = [self initWithBounds:bounds markupType:type quadrilateralPointsAsStrings:nil]) {
         if ([selection respondsToSelector:@selector(numberOfRangesOnPage:)] && [selection respondsToSelector:@selector(rangeAtIndex:onPage:)]) {
             PDFPage *page = [[selection pages] objectAtIndex:0];
+            NSString *string = [page string];
             NSMutableArray *quadPoints = [[NSMutableArray alloc] init];
             if (selection) {
                 unsigned i, iMax = [selection numberOfRangesOnPage:page];
+                NSRect lineRect = NSZeroRect;
+                NSRect wsRect = NSZeroRect;
+                NSRect charRect = NSZeroRect;
+                NSRect lastCharRect = NSZeroRect;
                 for (i = 0; i < iMax; i++) {
                     NSRange range = [selection rangeAtIndex:i onPage:page];
                     unsigned int j, jMax = NSMaxRange(range);
-                    NSRect lineRect = NSZeroRect;
                     for (j = range.location; j < jMax; j++) {
-                        NSRect charRect = [page characterBoundsAtIndex:j];
-                        if (NSEqualRects(lineRect, NSZeroRect)) {
-                            lineRect = charRect;
+                        lastCharRect = charRect;
+                        charRect = [page characterBoundsAtIndex:j];
+                        BOOL isWS = [[NSCharacterSet whitespaceAndNewlineCharacterSet] characterIsMember:[string characterAtIndex:j]];
+                        float w = fmax(NSWidth(charRect), NSWidth(lastCharRect));
+                        float h = fmax(NSHeight(charRect), NSHeight(lastCharRect));
+                        if (NSIsEmptyRect(lineRect)) {
+                            // beginning of a line, just ignore whitespace
+                            if (isWS == NO)
+                                lineRect = charRect;
                             /* this test of whether a character is part of a line depends on kerning */
-                        } else if (fabs(NSMaxX(lineRect) - NSMinX(charRect)) < 1.0 * NSWidth(charRect) && fabs(NSMinY(lineRect) - NSMinY(charRect)) < 0.1 * NSHeight(charRect) && fabs(NSMaxY(lineRect) - NSMaxY(charRect)) < 0.1 * NSHeight(charRect)) {
-                            lineRect = NSUnionRect(lineRect, charRect);
+                        } else if ((fabs(NSMaxX(lastCharRect) - NSMinX(charRect)) < 0.9 * w || fabs(NSMinX(lastCharRect) - NSMaxX(charRect)) < 0.9 * w) && 
+                                   (fabs(NSMinY(lastCharRect) - NSMinY(charRect)) < 0.2 * h || fabs(NSMaxY(lastCharRect) - NSMaxY(charRect)) < 0.2 * h)) {
+                            // continuation of a line
+                            if (isWS) {
+                                wsRect = NSUnionRect(wsRect, charRect);
+                            } else {
+                                if (NSIsEmptyRect(wsRect) == NO) {
+                                    lineRect = NSUnionRect(lineRect, wsRect);
+                                    wsRect = NSZeroRect;
+                                }
+                                lineRect = NSUnionRect(lineRect, charRect);
+                            }
                         } else {
-                            if (lineRectTrimmingWhitespaceForPage(&lineRect, page)) {
+                            // start of a new line
+                            if (NSIsEmptyRect(lineRect) == NO) {
                                 [self addLineRect:lineRect];
                                 NSArray *quadLine = createQuadPointsWithBounds(lineRect, [self bounds].origin);
                                 [quadPoints addObjectsFromArray:quadLine];
                                 [quadLine release];
                             }
-                            lineRect = charRect;
-                        }
+                            // ignore whitespace at the beginning of the new line
+                            lineRect = isWS ? NSZeroRect : charRect;
+                            wsRect = NSZeroRect;
+                       }
                     }
-                    if (NSEqualRects(lineRect, NSZeroRect) == NO && lineRectTrimmingWhitespaceForPage(&lineRect, page)) {
-                        [self addLineRect:lineRect];
-                        NSArray *quadLine = createQuadPointsWithBounds(lineRect, [self bounds].origin);
-                        [quadPoints addObjectsFromArray:quadLine];
-                        [quadLine release];
-                    }
+                }
+                if (NSIsEmptyRect(lineRect) == NO) {
+                    [self addLineRect:lineRect];
+                    NSArray *quadLine = createQuadPointsWithBounds(lineRect, [self bounds].origin);
+                    [quadPoints addObjectsFromArray:quadLine];
+                    [quadLine release];
                 }
                 
             }
