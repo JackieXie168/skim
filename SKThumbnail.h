@@ -42,9 +42,13 @@
 @interface SKThumbnail : NSObject {
     NSImage *image;
     NSString *label;
+    BOOL dirty;
 }
 
 - (id)initWithImage:(NSImage *)anImage label:(NSString *)aLabel;
+
+- (BOOL)isDirty;
+- (void)setDirty:(BOOL)flag;
 
 - (NSImage *)image;
 - (void)setImage:(NSImage *)newImage;

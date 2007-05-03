@@ -120,7 +120,6 @@ static NSString *SKDocumentToolbarNotesPaneItemIdentifier = @"SKDocumentToolbarN
         isPresentation = NO;
         searchResults = [[NSMutableArray alloc] init];
         thumbnails = [[NSMutableArray alloc] init];
-        dirtyThumbnails = [[NSMutableArray alloc] init];
         notes = [[NSMutableArray alloc] init];
         snapshots = [[NSMutableArray alloc] init];
         dirtySnapshots = [[NSMutableArray alloc] init];
@@ -131,6 +130,7 @@ static NSString *SKDocumentToolbarNotesPaneItemIdentifier = @"SKDocumentToolbarN
         leftSidePaneState = SKOutlineSidePaneState;
         rightSidePaneState = SKNoteSidePaneState;
         temporaryAnnotations = CFSetCreateMutable(kCFAllocatorDefault, 0, &kCFTypeSetCallBacks);
+        isAnimating = NO;
     }
     
     return self;
@@ -141,7 +141,6 @@ static NSString *SKDocumentToolbarNotesPaneItemIdentifier = @"SKDocumentToolbarN
 	[[NSNotificationCenter defaultCenter] removeObserver: self];
     [self unregisterAsObserver];
     [(id)temporaryAnnotations release];
-    [dirtyThumbnails release];
     [dirtySnapshots release];
 	[searchResults release];
     [pdfOutline release];
@@ -426,11 +425,6 @@ static NSString *SKDocumentToolbarNotesPaneItemIdentifier = @"SKDocumentToolbarN
             [[SKBookmarkController sharedBookmarkController] addRecentDocumentForPath:path pageIndex:pageIndex];
         
         // timers retain their target, so invalidate them now or they may keep firing after the PDF is gone
-        if (thumbnailTimer) {
-            [thumbnailTimer invalidate];
-            [thumbnailTimer release];
-            thumbnailTimer = nil;
-        }
         if (snapshotTimer) {
             [snapshotTimer invalidate];
             [snapshotTimer release];
@@ -646,20 +640,33 @@ static NSString *SKDocumentToolbarNotesPaneItemIdentifier = @"SKDocumentToolbarN
     [notes removeObjectAtIndex:theIndex];
 }
 
-- (NSArray *)thumbnails {
-    return thumbnails;
-}
-
-- (void)setThumbnails:(NSArray *)newThumbnails {
-    [thumbnails setArray:thumbnails];
-}
-
 - (unsigned)countOfThumbnails {
     return [thumbnails count];
 }
 
 - (id)objectInThumbnailsAtIndex:(unsigned)theIndex {
-    return [thumbnails objectAtIndex:theIndex];
+    SKThumbnail *thumbnail = [thumbnails objectAtIndex:theIndex];
+    
+    if ([thumbnail isDirty] && NO == isAnimating && NO == [thumbnailTableView isScrolling]) {
+        
+        float shadowBlurRadius = roundf(thumbnailCacheSize / 32.0);
+        float shadowOffset = - ceilf(shadowBlurRadius * 0.75);
+        NSSize newSize, oldSize = [[thumbnail image] size];
+        PDFDocument *pdfDoc = [pdfView document];
+        PDFPage *page = [pdfDoc pageAtIndex:theIndex];
+        NSImage *image = [page thumbnailWithSize:thumbnailCacheSize shadowBlurRadius:shadowBlurRadius shadowOffset:NSMakeSize(0.0, shadowOffset)];
+        
+
+        // setImage: sends a KVO notification that results in calling objectInThumbnailsAtIndex: endlessly, so set dirty to NO first
+        [thumbnail setDirty:NO];
+        [thumbnail setImage:image];
+        
+        newSize = [image size];
+        if (fabs(newSize.width - oldSize.width) > 1.0 || fabs(newSize.height - oldSize.height) > 1.0) {
+            [thumbnailTableView noteHeightOfRowsWithIndexesChanged:[NSIndexSet indexSetWithIndex:theIndex]];
+        }
+    }
+    return thumbnail;
 }
 
 - (void)insertObject:(id)obj inThumbnailsAtIndex:(unsigned)theIndex {
@@ -667,7 +674,6 @@ static NSString *SKDocumentToolbarNotesPaneItemIdentifier = @"SKDocumentToolbarN
 }
 
 - (void)removeObjectFromThumbnailsAtIndex:(unsigned)theIndex {
-    [dirtyThumbnails removeObject:[thumbnails objectAtIndex:theIndex]];
     [thumbnails removeObjectAtIndex:theIndex];
 }
 
@@ -885,8 +891,8 @@ static NSString *SKDocumentToolbarNotesPaneItemIdentifier = @"SKDocumentToolbarN
         }
     }
     
-    SKThumbnail *thumbnail = [[self thumbnails] objectAtIndex:[[pdfView document] indexForPage:[pdfView currentPage]]];
-    [self thumbnailNeedsUpdate:thumbnail];
+    SKThumbnail *thumbnail = [thumbnails objectAtIndex:[[pdfView document] indexForPage:[pdfView currentPage]]];
+    [thumbnail setDirty:YES];
 }
 
 - (IBAction)rotateLeft:(id)sender {
@@ -902,8 +908,8 @@ static NSString *SKDocumentToolbarNotesPaneItemIdentifier = @"SKDocumentToolbarN
         }
     }
     
-    SKThumbnail *thumbnail = [[self thumbnails] objectAtIndex:[[pdfView document] indexForPage:[pdfView currentPage]]];
-    [self thumbnailNeedsUpdate:thumbnail];
+    SKThumbnail *thumbnail = [thumbnails objectAtIndex:[[pdfView document] indexForPage:[pdfView currentPage]]];
+    [thumbnail setDirty:YES];
 }
 
 - (IBAction)rotateAllRight:(id)sender {
@@ -1473,6 +1479,7 @@ static NSString *SKDocumentToolbarNotesPaneItemIdentifier = @"SKDocumentToolbarN
         [[oldView superview] addSubview:newView];
         
         if (animate) {
+            isAnimating = YES;
             NSViewAnimation *animation;
             NSDictionary *fadeOutDict = [[NSDictionary alloc] initWithObjectsAndKeys:oldView, NSViewAnimationTargetKey, NSViewAnimationFadeOutEffect, NSViewAnimationEffectKey, nil];
             NSDictionary *fadeInDict = [[NSDictionary alloc] initWithObjectsAndKeys:newView, NSViewAnimationTargetKey, NSViewAnimationFadeInEffect, NSViewAnimationEffectKey, nil];
@@ -1485,6 +1492,7 @@ static NSString *SKDocumentToolbarNotesPaneItemIdentifier = @"SKDocumentToolbarN
             [animation setDuration:0.75];
             [animation setAnimationCurve:NSAnimationEaseIn];
             [animation startAnimation];
+            isAnimating = NO;
         }
         
         if (wasFirstResponder)
@@ -1510,14 +1518,12 @@ static NSString *SKDocumentToolbarNotesPaneItemIdentifier = @"SKDocumentToolbarN
     [self  replaceSideView:currentLeftSideView withView:thumbnailView animate:NO];
     currentLeftSideView = thumbnailView;
     [self updateThumbnailSelection];
-    [self updateThumbnailsIfNeeded];
 }
 
 - (void)fadeInThumbnailView {
     [self  replaceSideView:currentLeftSideView withView:thumbnailView animate:YES];
     currentLeftSideView = thumbnailView;
     [self updateThumbnailSelection];
-    [self updateThumbnailsIfNeeded];
 }
 
 - (void)displaySearchView {
@@ -1866,7 +1872,8 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
         updatingNoteSelection = NO;
     }
     if (page) {
-        [self thumbnailNeedsUpdate:[[self thumbnails] objectAtIndex:[[pdfView document] indexForPage:page]]];
+        [[thumbnails objectAtIndex:[[pdfView document] indexForPage:page]] setDirty:YES];
+        [thumbnailTableView reloadData];
         NSEnumerator *snapshotEnum = [snapshots objectEnumerator];
         SKSnapshotWindowController *wc;
         while (wc = [snapshotEnum nextObject]) {
@@ -1897,7 +1904,8 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
         [noteArrayController removeObject:annotation];
     }
     if (page) {
-        [self thumbnailNeedsUpdate:[[self thumbnails] objectAtIndex:[[pdfView document] indexForPage:page]]];
+        [[thumbnails objectAtIndex:[[pdfView document] indexForPage:page]] setDirty:YES];
+        [thumbnailTableView reloadData];
         NSEnumerator *snapshotEnum = [snapshots objectEnumerator];
         SKSnapshotWindowController *wc;
         while (wc = [snapshotEnum nextObject]) {
@@ -1914,9 +1922,10 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
     
     if (oldPage || newPage) {
         if (oldPage)
-            [self thumbnailNeedsUpdate:[[self thumbnails] objectAtIndex:[[pdfView document] indexForPage:oldPage]]];
+            [[thumbnails objectAtIndex:[[pdfView document] indexForPage:oldPage]] setDirty:YES];
         if (newPage)
-            [self thumbnailNeedsUpdate:[[self thumbnails] objectAtIndex:[[pdfView document] indexForPage:newPage]]];
+            [[thumbnails objectAtIndex:[[pdfView document] indexForPage:newPage]] setDirty:YES];
+        [thumbnailTableView reloadData];
         NSEnumerator *snapshotEnum = [snapshots objectEnumerator];
         SKSnapshotWindowController *wc;
         while (wc = [snapshotEnum nextObject]) {
@@ -1938,8 +1947,9 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
 - (void)handleAnnotationDidChangeNotification:(NSNotification *)notification {
     PDFAnnotation *annotation = [notification object];
     if ([[[annotation page] document] isEqual:[[self pdfView] document]]) {
-        [self thumbnailNeedsUpdate:[[self thumbnails] objectAtIndex:[annotation pageIndex]]];
-        
+        [[thumbnails objectAtIndex:[annotation pageIndex]] setDirty:YES];
+        [thumbnailTableView reloadData];
+
         NSEnumerator *snapshotEnum = [snapshots objectEnumerator];
         SKSnapshotWindowController *wc;
         while (wc = [snapshotEnum nextObject]) {
@@ -2319,7 +2329,7 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
 
 - (float)tableView:(NSTableView *)tv heightOfRow:(int)row {
     if ([tv isEqual:thumbnailTableView]) {
-        NSSize thumbSize = [[[[self thumbnails] objectAtIndex:row] image] size];
+        NSSize thumbSize = [[[thumbnails objectAtIndex:row] image] size];
         NSSize cellSize = NSMakeSize([[[tv tableColumns] objectAtIndex:0] width], 
                                      MIN(thumbSize.height, roundedThumbnailSize));
         if (thumbSize.height < 1.0)
@@ -2410,15 +2420,10 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
 }
 
 - (void)resetThumbnails {
-    if (thumbnailTimer) {
-        [thumbnailTimer invalidate];
-        [thumbnailTimer release];
-        thumbnailTimer = nil;
-    }
     
     PDFDocument *pdfDoc = [pdfView document];
     unsigned i, count = [pdfDoc pageCount];
-    NSMutableArray *array = [NSMutableArray arrayWithCapacity:count];
+    [self willChange:NSKeyValueChangeRemoval valuesAtIndexes:[NSIndexSet indexSetWithIndexesInRange:NSMakeRange(0, [thumbnails count])] forKey:@"thumbnails"];
     if (count) {
         float shadowBlurRadius = roundf(thumbnailCacheSize / 32.0);
         float shadowOffset = - ceilf(shadowBlurRadius * 0.75);
@@ -2429,11 +2434,12 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
         NSImage *image = [emptyPage thumbnailWithSize:thumbnailCacheSize shadowBlurRadius:shadowBlurRadius shadowOffset:NSMakeSize(0.0, shadowOffset)];
         for (i = 0; i < count; i++) {
             SKThumbnail *thumbnail = [[SKThumbnail alloc] initWithImage:image label:[[pdfDoc pageAtIndex:i] label]];
-            [array insertObject:thumbnail atIndex:i];
+            [thumbnail setDirty:YES];
+            [thumbnails addObject:thumbnail];
             [thumbnail release];
         }
     }
-    [[self mutableArrayValueForKey:@"thumbnails"] setArray:array];
+    [self didChange:NSKeyValueChangeInsertion valuesAtIndexes:[NSIndexSet indexSetWithIndexesInRange:NSMakeRange(0, count)] forKey:@"thumbnails"];
     [self allThumbnailsNeedUpdate];
 }
 
@@ -2446,93 +2452,20 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
     if (fabs(thumbnailSize - thumbnailCacheSize) > 0.1) {
         thumbnailCacheSize = thumbnailSize;
         
-        if (thumbnailTimer) {
-            [thumbnailTimer invalidate];
-            [thumbnailTimer release];
-            thumbnailTimer = nil;
-        }
-        
         if ([self countOfThumbnails])
             [self allThumbnailsNeedUpdate];
     }
 }
 
-- (void)thumbnailNeedsUpdate:(SKThumbnail *)dirtyThumbnail {
-    if ([dirtyThumbnails containsObject:dirtyThumbnail] == NO) {
-        // If we insert at index 0, this one will be updated immediately (since presumably this is in response to some user-initiated change), even though all thumbnails may be in process of updating.
-        [dirtyThumbnails insertObject:dirtyThumbnail atIndex:0];
-        [self updateThumbnailsIfNeeded];
-    }
-}
-
-static NSArray *prioritySortedThumbnails(NSArray *dirtyNails, int currentPageIndex)
-{
-    // if you resume reading in the middle of a long document, it can take a long time for the thumbnails at the current page to update
-    // this is only useful when all thumbnails are being updated; otherwise the indexes in dirtyThumbnails aren't page indexes
-    NSMutableArray *mutableArray = [NSMutableArray arrayWithArray:dirtyNails];
-    if (currentPageIndex > 10) {
-        unsigned int middle = currentPageIndex;
-        unsigned int start = 0;
-        unsigned int end = [dirtyNails count];
-        
-        // reverse the first batch; second is already ascending
-        NSRange range = NSMakeRange(start, middle - start);
-        NSEnumerator *e1 = [[mutableArray subarrayWithRange:range] reverseObjectEnumerator];
-        range = NSMakeRange(middle, end - middle);
-        NSEnumerator *e2 = [[mutableArray subarrayWithRange:range] objectEnumerator];
-        
-        // now interlace first and second
-        [mutableArray removeAllObjects];
-        id obj1 = nil, obj2 = nil;
-        int count = MAX(end - middle, middle - start);
-        while (count--) {
-            if ((obj2 = [e2 nextObject]))
-                [mutableArray addObject:obj2];
-            if ((obj1 = [e1 nextObject]))
-                [mutableArray addObject:obj1];
-        }
-    }
-    return mutableArray;
-}
-
 - (void)allThumbnailsNeedUpdate {
-    [dirtyThumbnails setArray:[self thumbnails]];
-    [self updateThumbnailsIfNeeded];
+    NSEnumerator *te = [thumbnails objectEnumerator];
+    SKThumbnail *tn;
+    while (tn = [te nextObject])
+        [tn setDirty:YES];
 }
 
 - (void)updateThumbnailsIfNeeded {
-    if ([thumbnailTableView window] != nil && [dirtyThumbnails count] > 0 && thumbnailTimer == nil) {
-        if ([dirtyThumbnails count] == [thumbnails count])
-            [dirtyThumbnails setArray:prioritySortedThumbnails([self thumbnails], [[pdfView document] indexForPage:[pdfView currentPage]])];
-        thumbnailTimer = [[NSTimer scheduledTimerWithTimeInterval:0.03 target:self selector:@selector(updateThumbnail:) userInfo:NULL repeats:YES] retain];
-    }
-}
 
-- (void)updateThumbnail:(NSTimer *)timer {
-    if ([dirtyThumbnails count]) {
-        SKThumbnail *thumbnail = [dirtyThumbnails objectAtIndex:0];
-        unsigned int pageIndex = [[self thumbnails] indexOfObject:thumbnail];
-        float shadowBlurRadius = roundf(thumbnailCacheSize / 32.0);
-        float shadowOffset = - ceilf(shadowBlurRadius * 0.75);
-        NSSize newSize, oldSize = [[thumbnail image] size];
-        PDFDocument *pdfDoc = [pdfView document];
-        PDFPage *page = [pdfDoc pageAtIndex:pageIndex];
-        NSImage *image = [page thumbnailWithSize:thumbnailCacheSize shadowBlurRadius:shadowBlurRadius shadowOffset:NSMakeSize(0.0, shadowOffset)];
-        
-        [thumbnail setImage:image];
-        [dirtyThumbnails removeObject:thumbnail];
-        
-        newSize = [image size];
-        if (fabs(newSize.width - oldSize.width) > 1.0 || fabs(newSize.height - oldSize.height) > 1.0) {
-            unsigned index = [[self thumbnails] indexOfObject:thumbnail];
-            [thumbnailTableView noteHeightOfRowsWithIndexesChanged:[NSIndexSet indexSetWithIndex:index]];
-        }
-    }
-    if ([dirtyThumbnails count] == 0) {
-        [thumbnailTimer invalidate];
-        [thumbnailTimer release];
-        thumbnailTimer = nil;
-    }
 }
 
 #pragma mark Notes
