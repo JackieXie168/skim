@@ -480,7 +480,6 @@ static NSArray *createQuadPointsWithBounds(const NSRect bounds, const NSPoint or
             if (selection) {
                 unsigned i, iMax = [selection numberOfRangesOnPage:page];
                 NSRect lineRect = NSZeroRect;
-                NSRect wsRect = NSZeroRect;
                 NSRect charRect = NSZeroRect;
                 NSRect lastCharRect = NSZeroRect;
                 for (i = 0; i < iMax; i++) {
@@ -489,26 +488,19 @@ static NSArray *createQuadPointsWithBounds(const NSRect bounds, const NSPoint or
                     for (j = range.location; j < jMax; j++) {
                         lastCharRect = charRect;
                         charRect = [page characterBoundsAtIndex:j];
-                        BOOL isWS = [[NSCharacterSet whitespaceAndNewlineCharacterSet] characterIsMember:[string characterAtIndex:j]];
+                        BOOL nonWS = NO == [[NSCharacterSet whitespaceAndNewlineCharacterSet] characterIsMember:[string characterAtIndex:j]];
                         float w = fmax(NSWidth(charRect), NSWidth(lastCharRect));
                         float h = fmax(NSHeight(charRect), NSHeight(lastCharRect));
                         if (NSIsEmptyRect(lineRect)) {
                             // beginning of a line, just ignore whitespace
-                            if (isWS == NO)
+                            if (nonWS)
                                 lineRect = charRect;
                             /* this test of whether a character is part of a line depends on kerning */
                         } else if ((fabs(NSMaxX(lastCharRect) - NSMinX(charRect)) < 0.9 * w || fabs(NSMinX(lastCharRect) - NSMaxX(charRect)) < 0.9 * w) && 
                                    (fabs(NSMinY(lastCharRect) - NSMinY(charRect)) < 0.2 * h || fabs(NSMaxY(lastCharRect) - NSMaxY(charRect)) < 0.2 * h)) {
                             // continuation of a line
-                            if (isWS) {
-                                wsRect = NSUnionRect(wsRect, charRect);
-                            } else {
-                                if (NSIsEmptyRect(wsRect) == NO) {
-                                    lineRect = NSUnionRect(lineRect, wsRect);
-                                    wsRect = NSZeroRect;
-                                }
+                            if (nonWS)
                                 lineRect = NSUnionRect(lineRect, charRect);
-                            }
                         } else {
                             // start of a new line
                             if (NSIsEmptyRect(lineRect) == NO) {
@@ -518,8 +510,7 @@ static NSArray *createQuadPointsWithBounds(const NSRect bounds, const NSPoint or
                                 [quadLine release];
                             }
                             // ignore whitespace at the beginning of the new line
-                            lineRect = isWS ? NSZeroRect : charRect;
-                            wsRect = NSZeroRect;
+                            lineRect = nonWS ? charRect : NSZeroRect;
                        }
                     }
                 }
