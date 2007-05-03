@@ -1662,11 +1662,11 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
     PDFSelection *selection = [[pdfView document] findString:string fromSelection:[pdfView currentSelection] withOptions:options];
 	findPanelFind = NO;
     if (selection) {
-        [self removeTemporaryAnnotations];
-        [findTableView deselectAll:self];
 		[pdfView setCurrentSelection:selection];
-        [self addAnnotationsForSelection:selection];
 		[pdfView scrollSelectionToVisible:self];
+        [findTableView deselectAll:self];
+        [self removeTemporaryAnnotations];
+        [self addAnnotationsForSelection:selection];
         findTimer = [[NSTimer scheduledTimerWithTimeInterval:10 target:self selector:@selector(findTimerFired:) userInfo:NULL repeats:NO] retain];
 	} else {
 		NSBeep();
@@ -2262,16 +2262,17 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
         
         BOOL highlight = [[NSUserDefaults standardUserDefaults] boolForKey:SKShouldHighlightSearchResultsKey];
         
-        // clear the selection
-        [pdfView setCurrentSelection:nil];
-        [self removeTemporaryAnnotations];
-        
         // union all selected objects
         NSEnumerator *selE = [[findArrayController selectedObjects] objectEnumerator];
         PDFSelection *sel;
         
         // arm:  PDFSelection is mutable, and using -addSelection on an object from selectedObjects will actually mutate the object in searchResults, which does bad things.  MagicHat indicates that PDFSelection implements copyWithZone: even though it doesn't conform to <NSCopying>, so we'll use that since -init doesn't work (-initWithDocument: does, but it's not listed in the header either).  I filed rdar://problem/4888251 and also noticed that PDFKitViewer sample code uses -[PDFSelection copy].
         PDFSelection *currentSel = [[[selE nextObject] copy] autorelease];
+        
+        [pdfView setCurrentSelection:currentSel];
+        [pdfView scrollSelectionToVisible:self];
+        
+        [self removeTemporaryAnnotations];
         
         // add an annotation so it's easier to see the search result
         if (highlight)
@@ -2283,8 +2284,6 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
                 [self addAnnotationsForSelection:sel];
         }
         
-        [pdfView setCurrentSelection:currentSel];
-        [pdfView scrollSelectionToVisible:self];
     } else if ([[aNotification object] isEqual:thumbnailTableView]) {
         if (updatingThumbnailSelection == NO) {
             int row = [thumbnailTableView selectedRow];
