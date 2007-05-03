@@ -477,6 +477,7 @@ static NSArray *createQuadPointsWithBounds(const NSRect bounds, const NSPoint or
             PDFPage *page = [[selection pages] objectAtIndex:0];
             NSString *string = [page string];
             NSMutableArray *quadPoints = [[NSMutableArray alloc] init];
+            NSRect newBounds = NSZeroRect;
             if (selection) {
                 unsigned i, iMax = [selection numberOfRangesOnPage:page];
                 NSRect lineRect = NSZeroRect;
@@ -505,9 +506,7 @@ static NSArray *createQuadPointsWithBounds(const NSRect bounds, const NSPoint or
                             // start of a new line
                             if (NSIsEmptyRect(lineRect) == NO) {
                                 [self addLineRect:lineRect];
-                                NSArray *quadLine = createQuadPointsWithBounds(lineRect, [self bounds].origin);
-                                [quadPoints addObjectsFromArray:quadLine];
-                                [quadLine release];
+                                newBounds = NSUnionRect(lineRect, newBounds);
                             }
                             // ignore whitespace at the beginning of the new line
                             lineRect = nonWS ? charRect : NSZeroRect;
@@ -516,7 +515,12 @@ static NSArray *createQuadPointsWithBounds(const NSRect bounds, const NSPoint or
                 }
                 if (NSIsEmptyRect(lineRect) == NO) {
                     [self addLineRect:lineRect];
-                    NSArray *quadLine = createQuadPointsWithBounds(lineRect, [self bounds].origin);
+                    newBounds = NSUnionRect(lineRect, newBounds);
+                }
+                if (NSIsEmptyRect(newBounds) == NO && NSEqualRects(newBounds, bounds) == NO)
+                    [self setBounds:newBounds];
+                for (i = 0; i < numberOfLines; i++) {
+                    NSArray *quadLine = createQuadPointsWithBounds(lineRects[i], [self bounds].origin);
                     [quadPoints addObjectsFromArray:quadLine];
                     [quadLine release];
                 }
