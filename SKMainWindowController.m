@@ -2429,8 +2429,9 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
         [image lockFocus];
         NSRect imgRect = NSZeroRect;
         imgRect.size = [image size];
-        imgRect = NSInsetRect(imgRect, 0.2 * NSWidth(imgRect), 0.2 * NSHeight(imgRect));
-        [[NSImage imageNamed:@"NSApplicationIcon"] drawInRect:imgRect fromRect:NSZeroRect operation:NSCompositeCopy fraction:0.5];
+        float width = 0.8 * fmin(NSWidth(imgRect), NSHeight(imgRect));
+        imgRect = NSInsetRect(imgRect, 0.5 * (NSWidth(imgRect) - width), 0.5 * (NSHeight(imgRect) - width));
+        [[NSImage imageNamed:@"NSApplicationIcon"] drawInRect:imgRect fromRect:NSZeroRect operation:NSCompositeSourceOver fraction:0.5];
         [image unlockFocus];
         
         for (i = 0; i < count; i++) {
