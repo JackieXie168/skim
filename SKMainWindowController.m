@@ -889,10 +889,8 @@ static NSString *SKDocumentToolbarNotesPaneItemIdentifier = @"SKDocumentToolbarN
             [self snapshotNeedsUpdate:wc];
             [wc redisplay];
         }
-    }
-    
-    SKThumbnail *thumbnail = [thumbnails objectAtIndex:[[pdfView document] indexForPage:[pdfView currentPage]]];
-    [self thumbnailNeedsUpdate:thumbnail];
+    }    
+    [self updateThumbnailAtPageIndex:[[pdfView document] indexForPage:[pdfView currentPage]]];
 }
 
 - (IBAction)rotateLeft:(id)sender {
@@ -907,9 +905,7 @@ static NSString *SKDocumentToolbarNotesPaneItemIdentifier = @"SKDocumentToolbarN
             [wc redisplay];
         }
     }
-    
-    SKThumbnail *thumbnail = [thumbnails objectAtIndex:[[pdfView document] indexForPage:[pdfView currentPage]]];
-    [self thumbnailNeedsUpdate:thumbnail];
+    [self updateThumbnailAtPageIndex:[[pdfView document] indexForPage:[pdfView currentPage]]];
 }
 
 - (IBAction)rotateAllRight:(id)sender {
@@ -1872,7 +1868,7 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
         updatingNoteSelection = NO;
     }
     if (page) {
-        [self thumbnailNeedsUpdate:[thumbnails objectAtIndex:[[pdfView document] indexForPage:page]]];
+        [self updateThumbnailAtPageIndex:[[pdfView document] indexForPage:page]];
         NSEnumerator *snapshotEnum = [snapshots objectEnumerator];
         SKSnapshotWindowController *wc;
         while (wc = [snapshotEnum nextObject]) {
@@ -1903,8 +1899,7 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
         [noteArrayController removeObject:annotation];
     }
     if (page) {
-        [self thumbnailNeedsUpdate:[thumbnails objectAtIndex:[[pdfView document] indexForPage:page]]];
-        [thumbnailTableView reloadData];
+        [self updateThumbnailAtPageIndex:[[pdfView document] indexForPage:page]];
         NSEnumerator *snapshotEnum = [snapshots objectEnumerator];
         SKSnapshotWindowController *wc;
         while (wc = [snapshotEnum nextObject]) {
@@ -1921,10 +1916,9 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
     
     if (oldPage || newPage) {
         if (oldPage)
-            [self thumbnailNeedsUpdate:[thumbnails objectAtIndex:[[pdfView document] indexForPage:oldPage]]];
+            [self updateThumbnailAtPageIndex:[[pdfView document] indexForPage:oldPage]];
         if (newPage)
-            [self thumbnailNeedsUpdate:[thumbnails objectAtIndex:[[pdfView document] indexForPage:newPage]]];
-        [thumbnailTableView reloadData];
+            [self updateThumbnailAtPageIndex:[[pdfView document] indexForPage:newPage]];
         NSEnumerator *snapshotEnum = [snapshots objectEnumerator];
         SKSnapshotWindowController *wc;
         while (wc = [snapshotEnum nextObject]) {
@@ -1946,7 +1940,7 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
 - (void)handleAnnotationDidChangeNotification:(NSNotification *)notification {
     PDFAnnotation *annotation = [notification object];
     if ([[[annotation page] document] isEqual:[[self pdfView] document]]) {
-        [self thumbnailNeedsUpdate:[thumbnails objectAtIndex:[annotation pageIndex]]];
+        [self updateThumbnailAtPageIndex:[annotation pageIndex]];
 
         NSEnumerator *snapshotEnum = [snapshots objectEnumerator];
         SKSnapshotWindowController *wc;
@@ -2427,8 +2421,18 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
         float shadowOffset = - ceilf(shadowBlurRadius * 0.75);
         
         PDFPage *emptyPage = [[[PDFPage alloc] init] autorelease];
-        [emptyPage setBounds:[[[pdfView document] pageAtIndex:0] boundsForBox:kPDFDisplayBoxCropBox] forBox:kPDFDisplayBoxCropBox];
+        NSRect bounds = [[[pdfView document] pageAtIndex:0] boundsForBox:kPDFDisplayBoxCropBox];
+        [emptyPage setBounds:bounds forBox:kPDFDisplayBoxCropBox];
+        // thumbnail code only uses the crop box, but media box is required for PDF
+        [emptyPage setBounds:bounds forBox:kPDFDisplayBoxMediaBox];
         NSImage *image = [emptyPage thumbnailWithSize:thumbnailCacheSize shadowBlurRadius:shadowBlurRadius shadowOffset:NSMakeSize(0.0, shadowOffset)];
+        [image lockFocus];
+        NSRect imgRect = NSZeroRect;
+        imgRect.size = [image size];
+        imgRect = NSInsetRect(imgRect, 0.2 * NSWidth(imgRect), 0.2 * NSHeight(imgRect));
+        [[NSImage imageNamed:@"NSApplicationIcon"] drawInRect:imgRect fromRect:NSZeroRect operation:NSCompositeCopy fraction:0.5];
+        [image unlockFocus];
+        
         for (i = 0; i < count; i++) {
             SKThumbnail *thumbnail = [[SKThumbnail alloc] initWithImage:image label:[[pdfDoc pageAtIndex:i] label]];
             [thumbnail setDirty:YES];
@@ -2454,8 +2458,8 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
     }
 }
 
-- (void)thumbnailNeedsUpdate:(SKThumbnail *)thumbnail {
-    [thumbnail setDirty:YES];
+- (void)updateThumbnailAtPageIndex:(unsigned)index {
+    [[self objectInThumbnailsAtIndex:index] setDirty:YES];
     [thumbnailTableView reloadData];
 }
 

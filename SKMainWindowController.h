@@ -287,7 +287,7 @@ typedef struct _SKPDFViewState {
 - (void)updateThumbnailSelection;
 - (void)resetThumbnails;
 - (void)resetThumbnailSizeIfNeeded;
-- (void)thumbnailNeedsUpdate:(SKThumbnail *)thumbnail;
+- (void)updateThumbnailAtPageIndex:(unsigned)index;
 - (void)allThumbnailsNeedUpdate;
 
 - (void)resetSnapshotSizeIfNeeded;
