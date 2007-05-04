@@ -90,6 +90,7 @@ typedef struct _SKPDFViewState {
     NSMutableArray              *pdfOutlineItems;
     BOOL                        updatingOutlineSelection;
     
+    IBOutlet NSObjectController *ownerController;
     IBOutlet NSArrayController  *thumbnailArrayController;
     IBOutlet SKThumbnailTableView *thumbnailTableView;
     IBOutlet NSView             *thumbnailView;
