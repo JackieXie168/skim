@@ -159,11 +159,20 @@ static NSString *SKDocumentToolbarNotesPaneItemIdentifier = @"SKDocumentToolbarN
 }
 
 - (void)windowDidLoad{
-    // this needs to be done before loading the PDFDocument
-    [self resetThumbnailSizeIfNeeded];
-    [self resetSnapshotSizeIfNeeded];
     
-    // this is not called automatically, because the document overrides makeWindowControllers
+    // this needs to be done before loading the PDFDocument
+    {
+        [self resetThumbnailSizeIfNeeded];
+        [self resetSnapshotSizeIfNeeded];
+        
+        NSSortDescriptor *pageIndexSortDescriptor = [[[NSSortDescriptor alloc] initWithKey:@"pageIndex" ascending:YES] autorelease];
+        NSSortDescriptor *boundsSortDescriptor = [[[NSSortDescriptor alloc] initWithKey:@"bounds" ascending:YES selector:@selector(boundsCompare:)] autorelease];
+        [noteArrayController setSortDescriptors:[NSArray arrayWithObjects:pageIndexSortDescriptor, boundsSortDescriptor, nil]];
+        [snapshotArrayController setSortDescriptors:[NSArray arrayWithObjects:pageIndexSortDescriptor, nil]];
+    }
+    
+    // NB: the next line will load the PDF document and annotations, so necessary setup must be finished first!
+    // windowControllerDidLoadNib: is not called automatically because the document overrides makeWindowControllers
     [[self document] windowControllerDidLoadNib:self];
     
     [leftSideCollapsibleView setCollapseEdges:BDSKMaxXEdgeMask | BDSKMinYEdgeMask];
@@ -204,12 +213,7 @@ static NSString *SKDocumentToolbarNotesPaneItemIdentifier = @"SKDocumentToolbarN
     [self setWindowFrameAutosaveNameOrCascade:SKMainWindowFrameAutosaveName];
     
     [[self window] setBackgroundColor:[NSColor colorWithDeviceWhite:0.9 alpha:1.0]];
-    
-    NSSortDescriptor *pageIndexSortDescriptor = [[[NSSortDescriptor alloc] initWithKey:@"pageIndex" ascending:YES] autorelease];
-    NSSortDescriptor *boundsSortDescriptor = [[[NSSortDescriptor alloc] initWithKey:@"bounds" ascending:YES selector:@selector(boundsCompare:)] autorelease];
-    [noteArrayController setSortDescriptors:[NSArray arrayWithObjects:pageIndexSortDescriptor, boundsSortDescriptor, nil]];
-    [snapshotArrayController setSortDescriptors:[NSArray arrayWithObjects:pageIndexSortDescriptor, nil]];
-    
+
     if ([[NSUserDefaults standardUserDefaults] boolForKey:SKOpenFilesMaximizedKey])
         [[self window] setFrame:[[NSScreen mainScreen] visibleFrame] display:NO];
     
@@ -445,6 +449,7 @@ static NSString *SKDocumentToolbarNotesPaneItemIdentifier = @"SKDocumentToolbarN
 }
 
 - (void)setPdfDocument:(PDFDocument *)document{
+
     if ([pdfView document] != document) {
         
         PDFDestination *dest;
@@ -527,7 +532,7 @@ static NSString *SKDocumentToolbarNotesPaneItemIdentifier = @"SKDocumentToolbarN
     NSEnumerator *e = [notes objectEnumerator];
     PDFAnnotation *annotation;
     
-    // remove the current anotations
+    // remove the current annotations
     [pdfView endAnnotationEdit:self];
     [pdfView setActiveAnnotation:nil];
     while (annotation = [e nextObject]) {
