@@ -646,6 +646,11 @@ static NSString *SKDocumentToolbarNotesPaneItemIdentifier = @"SKDocumentToolbarN
     [notes removeObjectAtIndex:theIndex];
 }
 
+// this one shouldn't be needed, but leaving it out leads to a leak from the binding of the NSArrayController
+- (NSArray *)thumbnails {
+    return thumbnails;
+}
+
 - (unsigned)countOfThumbnails {
     return [thumbnails count];
 }
