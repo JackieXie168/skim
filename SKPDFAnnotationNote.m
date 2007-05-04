@@ -499,7 +499,7 @@ static NSArray *createQuadPointsWithBounds(const NSRect bounds, const NSPoint or
                         if (nonWS)
                             lineRect = charRect;
                         /* this test of whether a character is part of a line depends on kerning */
-                    } else if ((fabs(NSMaxX(lastCharRect) - NSMinX(charRect)) < 0.9 * w || fabs(NSMinX(lastCharRect) - NSMaxX(charRect)) < 0.9 * w) && 
+                    } else if (((NSMinX(lastCharRect) < NSMinX(charRect) && NSMinX(charRect) - NSMaxX(lastCharRect) < 0.4 * w) || (NSMaxX(lastCharRect) > NSMaxX(charRect) && NSMinX(lastCharRect) - NSMaxX(charRect) < 0.4 * w)) &&
                                (fabs(NSMinY(lastCharRect) - NSMinY(charRect)) < 0.2 * h || fabs(NSMaxY(lastCharRect) - NSMaxY(charRect)) < 0.2 * h)) {
                         // continuation of a line
                         if (nonWS)
