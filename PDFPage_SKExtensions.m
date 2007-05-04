@@ -40,12 +40,8 @@
 #import "SKPDFAnnotationNote.h"
 #import "SKDocument.h"
 #import "SKPDFView.h"
+#import "PDFSelection_SKExtensions.h"
 
-
-@interface PDFSelection (PDFSelectionPrivateDeclarations)
-- (int)numberOfRangesOnPage:(PDFPage *)page;
-- (NSRange)rangeAtIndex:(int)index onPage:(PDFPage *)page;
-@end
 
 @implementation PDFPage (SKExtensions) 
 
@@ -146,13 +142,13 @@
     
     NSMutableArray *lines = [NSMutableArray array];
     PDFSelection *sel = [self selectionForRect:[self boundsForBox:kPDFDisplayBoxCropBox]];
-    unsigned i, iMax = [sel numberOfRangesOnPage:self];
+    unsigned i, iMax = [sel safeNumberOfRangesOnPage:self];
     NSMutableIndexSet *indexes = [NSMutableIndexSet indexSet];
     NSString *string = [self string];
     NSRange stringRange = NSMakeRange(0, [string length]);
     
     for (i = 0; i < iMax; i++) {
-        NSRange range = [sel rangeAtIndex:i onPage:self];
+        NSRange range = [sel safeRangeAtIndex:i onPage:self];
         unsigned j;
         
         for (j = range.location; j < NSMaxRange(range); j++) {
@@ -161,11 +157,11 @@
             
             NSRect r = [self characterBoundsAtIndex:j];
             PDFSelection *s = [self selectionForLineAtPoint:NSMakePoint(NSMidX(r), NSMidY(r))];
-            unsigned k, kMax = [s numberOfRangesOnPage:self];
+            unsigned k, kMax = [s safeNumberOfRangesOnPage:self];
             BOOL notEmpty = NO;
             
             for (k = 0; k < kMax; k++) {
-                NSRange selRange = [s rangeAtIndex:k onPage:self];
+                NSRange selRange = [s safeRangeAtIndex:k onPage:self];
                 [indexes addIndexesInRange:selRange];
                 // due to a bug in PDFKit, the range of the selection can sometimes lie partly outside the range of the string
                 if ([string rangeOfCharacterFromSet:nonWhitespaceAndNewlineCharacterSet options:0 range:NSIntersectionRange(selRange, stringRange)].length)

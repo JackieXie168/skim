@@ -40,6 +40,14 @@
 #import "NSString_SKExtensions.h"
 
 
+@interface PDFSelection (PDFSelectionPrivateDeclarations)
+
+- (int)numberOfRangesOnPage:(PDFPage *)page;
+- (NSRange)rangeAtIndex:(int)index onPage:(PDFPage *)page;
+
+@end
+
+
 @implementation PDFSelection (SKExtensions)
 
 // returns the label of the first page (if the selection spans multiple pages)
@@ -93,6 +101,20 @@
 	[extendedSelection release];
 	
 	return [attributedSample autorelease];
+}
+
+- (int)safeNumberOfRangesOnPage:(PDFPage *)page {
+    if ([self respondsToSelector:@selector(numberOfRangesOnPage:)])
+        return [self numberOfRangesOnPage:page];
+    else
+        return 0;
+}
+
+- (NSRange)safeRangeAtIndex:(int)index onPage:(PDFPage *)page {
+    if ([self respondsToSelector:@selector(rangeAtIndex:onPage:)])
+        return [self rangeAtIndex:index onPage:page];
+    else
+        return NSMakeRange(NSNotFound, 0);
 }
 
 @end
