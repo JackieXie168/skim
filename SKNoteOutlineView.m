@@ -273,7 +273,7 @@ static NSImage *createFilteredImage(NSImage *image, CIFilter *filter)
     else if ([type isEqualToString:@"Circle"])
         image = isSelected ? invertedCircleImage : circleImage;
     else if ([type isEqualToString:@"Square"])
-        image = isSelected ? invertedTextImage : squareImage;
+        image = isSelected ? invertedSquareImage : squareImage;
     else if ([type isEqualToString:@"Highlight"])
         image = isSelected ? invertedHighlightImage : highlightImage;
     else if ([type isEqualToString:@"StrikeOut"])
