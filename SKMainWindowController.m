@@ -155,6 +155,7 @@ static NSString *SKDocumentToolbarNotesPaneItemIdentifier = @"SKDocumentToolbarN
     [toolbarItems release];
     [pdfOutlineItems release];
     [savedNormalSetup release];
+    [saveProgressSheet release];
     [super dealloc];
 }
 

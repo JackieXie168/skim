@@ -176,14 +176,11 @@ static NSPoint pdfOffset = {0.0, 0.0};
 #pragma mark Accessors
 
 - (id)delegate {
-    return [[delegate retain] autorelease];
+    return delegate;
 }
 
 - (void)setDelegate:(id)newDelegate {
-    if (delegate != newDelegate) {
-        [delegate release];
-        delegate = [newDelegate retain];
-    }
+    delegate = newDelegate;
 }
 
 - (NSString *)fileName {
