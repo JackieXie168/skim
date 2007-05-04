@@ -470,6 +470,23 @@ static NSArray *createQuadPointsWithBounds(const NSRect bounds, const NSPoint or
     lineRects[numberOfLines - 1] = aRect;
 }
 
+static BOOL adjacentCharacterBounds(NSRect rect1, NSRect rect2) {
+    float w = fmax(NSWidth(rect2), NSWidth(rect1));
+    float h = fmax(NSHeight(rect2), NSHeight(rect1));
+    // first check the vertical position; allow sub/superscripts
+    if (fabs(NSMinY(rect1) - NSMinY(rect2)) > 0.2 * h && fabs(NSMaxY(rect1) - NSMaxY(rect2)) > 0.2 * h)
+        return NO;
+    // compare horizontal position
+    // rect1 before rect2
+    if (NSMinX(rect1) < NSMinX(rect2))
+        return NSMinX(rect2) - NSMaxX(rect1) < 0.4 * w;
+    // rect1 after rect2
+    if (NSMaxX(rect1) > NSMaxX(rect2))
+        return NSMinX(rect1) - NSMaxX(rect2) < 0.4 * w;
+    // rect1 on top of rect2
+    return YES;
+}
+
 - (id)initWithSelection:(PDFSelection *)selection markupType:(int)type {
     NSRect bounds = selection ? [selection boundsForPage:[[selection pages] objectAtIndex:0]] : NSZeroRect;
     if (selection == nil || NSIsEmptyRect(bounds)) {
@@ -492,15 +509,11 @@ static NSArray *createQuadPointsWithBounds(const NSRect bounds, const NSPoint or
                     lastCharRect = charRect;
                     charRect = [page characterBoundsAtIndex:j];
                     BOOL nonWS = NO == [[NSCharacterSet whitespaceAndNewlineCharacterSet] characterIsMember:[string characterAtIndex:j]];
-                    float w = fmax(NSWidth(charRect), NSWidth(lastCharRect));
-                    float h = fmax(NSHeight(charRect), NSHeight(lastCharRect));
                     if (NSIsEmptyRect(lineRect)) {
                         // beginning of a line, just ignore whitespace
                         if (nonWS)
                             lineRect = charRect;
-                        /* this test of whether a character is part of a line depends on kerning */
-                    } else if (((NSMinX(lastCharRect) < NSMinX(charRect) && NSMinX(charRect) - NSMaxX(lastCharRect) < 0.4 * w) || (NSMaxX(lastCharRect) > NSMaxX(charRect) && NSMinX(lastCharRect) - NSMaxX(charRect) < 0.4 * w)) &&
-                               (fabs(NSMinY(lastCharRect) - NSMinY(charRect)) < 0.2 * h || fabs(NSMaxY(lastCharRect) - NSMaxY(charRect)) < 0.2 * h)) {
+                    } else if (adjacentCharacterBounds(lastCharRect, charRect)) {
                         // continuation of a line
                         if (nonWS)
                             lineRect = NSUnionRect(lineRect, charRect);
