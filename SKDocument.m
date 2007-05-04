@@ -606,6 +606,9 @@ NSString *SKDocumentWillSaveNotification = @"SKDocumentWillSaveNotification";
     [fileUpdateTimer release];
     fileUpdateTimer = nil;
 }
+- (void)removeWindowController:(id)controller {
+    [super removeWindowController:controller];
+}
 
 #pragma mark Pdfsync support
 
