@@ -170,6 +170,7 @@ static NSString *SKDocumentToolbarNotesPaneItemIdentifier = @"SKDocumentToolbarN
         NSSortDescriptor *boundsSortDescriptor = [[[NSSortDescriptor alloc] initWithKey:@"bounds" ascending:YES selector:@selector(boundsCompare:)] autorelease];
         [noteArrayController setSortDescriptors:[NSArray arrayWithObjects:pageIndexSortDescriptor, boundsSortDescriptor, nil]];
         [snapshotArrayController setSortDescriptors:[NSArray arrayWithObjects:pageIndexSortDescriptor, nil]];
+        [ownerController setContent:self];
     }
     
     // NB: the next line will load the PDF document and annotations, so necessary setup must be finished first!
@@ -440,6 +441,8 @@ static NSString *SKDocumentToolbarNotesPaneItemIdentifier = @"SKDocumentToolbarN
             [findTimer release];
             findTimer = nil;
         }
+        
+        [ownerController setContent:nil];
     }
 }
 
@@ -644,11 +647,6 @@ static NSString *SKDocumentToolbarNotesPaneItemIdentifier = @"SKDocumentToolbarN
     }
     
     [notes removeObjectAtIndex:theIndex];
-}
-
-// this one shouldn't be needed, but leaving it out leads to a leak from the binding of the NSArrayController
-- (NSArray *)thumbnails {
-    return thumbnails;
 }
 
 - (unsigned)countOfThumbnails {

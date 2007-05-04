@@ -35,6 +35,7 @@
         {CLASS = SKMainWindow; LANGUAGE = ObjC; SUPERCLASS = NSWindow; }, 
         {
             ACTIONS = {
+                addBookmark = id; 
                 changeColor = id; 
                 changeDisplayBox = id; 
                 changeLeftSidePaneState = id; 
@@ -71,7 +72,9 @@
                 rotateAllRight = id; 
                 rotateLeft = id; 
                 rotateRight = id; 
+                savePDFSettingToDefaults = id; 
                 search = id; 
+                searchPDF = id; 
                 takeSnapshot = id; 
                 toggleAutoActualSize = id; 
                 toggleAutoScale = id; 
@@ -113,6 +116,7 @@
                 notePopUpButton = BDSKImagePopUpButton; 
                 noteView = NSView; 
                 outlineView = NSOutlineView; 
+                ownerController = NSObjectController; 
                 pageNumberField = NSTextField; 
                 pageNumberStepper = NSStepper; 
                 pageNumberView = NSView; 
