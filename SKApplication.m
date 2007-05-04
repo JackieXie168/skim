@@ -80,7 +80,7 @@ NSString *SKApplicationWillTerminateNotification = @"SKApplicationWillTerminateN
 
 - (IBAction)terminate:(id)sender {
     [[NSNotificationCenter defaultCenter] postNotificationName:SKApplicationWillTerminateNotification object:self];
-    //[[NSUserDefaults standardUserDefaults] setObject:[[[NSDocumentController sharedDocumentController] documents] valueForKey:@"currentDocumentSetup"] forKey:SKLastOpenFileNamesKey];
+    [[NSUserDefaults standardUserDefaults] setObject:[[[NSDocumentController sharedDocumentController] documents] valueForKey:@"currentDocumentSetup"] forKey:SKLastOpenFileNamesKey];
     [super terminate:sender];
 }
 
