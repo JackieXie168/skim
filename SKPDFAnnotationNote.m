@@ -472,7 +472,10 @@ static NSArray *createQuadPointsWithBounds(const NSRect bounds, const NSPoint or
 
 - (id)initWithSelection:(PDFSelection *)selection markupType:(int)type {
     NSRect bounds = selection ? [selection boundsForPage:[[selection pages] objectAtIndex:0]] : NSZeroRect;
-    if (self = [self initWithBounds:bounds markupType:type quadrilateralPointsAsStrings:nil]) {
+    if (selection == nil || NSIsEmptyRect(bounds)) {
+        [[self initWithBounds:NSZeroRect] release];
+        self = nil;
+    } else if (self = [self initWithBounds:bounds markupType:type quadrilateralPointsAsStrings:nil]) {
         if ([selection respondsToSelector:@selector(numberOfRangesOnPage:)] && [selection respondsToSelector:@selector(rangeAtIndex:onPage:)]) {
             PDFPage *page = [[selection pages] objectAtIndex:0];
             NSString *string = [page string];
@@ -517,14 +520,17 @@ static NSArray *createQuadPointsWithBounds(const NSRect bounds, const NSPoint or
                     [self addLineRect:lineRect];
                     newBounds = NSUnionRect(lineRect, newBounds);
                 }
-                if (NSIsEmptyRect(newBounds) == NO && NSEqualRects(newBounds, bounds) == NO)
+                if (NSIsEmptyRect(newBounds)) {
+                    [self release];
+                    self = nil;
+                } else {
                     [self setBounds:newBounds];
-                for (i = 0; i < numberOfLines; i++) {
-                    NSArray *quadLine = createQuadPointsWithBounds(lineRects[i], [self bounds].origin);
-                    [quadPoints addObjectsFromArray:quadLine];
-                    [quadLine release];
+                    for (i = 0; i < numberOfLines; i++) {
+                        NSArray *quadLine = createQuadPointsWithBounds(lineRects[i], [self bounds].origin);
+                        [quadPoints addObjectsFromArray:quadLine];
+                        [quadLine release];
+                    }
                 }
-                
             }
             [self setQuadrilateralPoints:quadPoints];
             [quadPoints release];

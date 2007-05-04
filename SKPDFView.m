@@ -1058,19 +1058,21 @@ static CGMutablePathRef SKCGCreatePathWithRoundRectInRect(CGRect rect, float rad
             newAnnotation = [[SKPDFAnnotationLine alloc] initWithBounds:bounds];
             break;
 	}
-    if (text == nil)
-        text = [[[page selectionForRect:bounds] string] stringByCollapsingWhitespaceAndNewlinesAndRemovingSurroundingWhitespaceAndNewlines];
-    
-    if ([[activeAnnotation type] isEqualToString:@"Line"] == NO)
-        [newAnnotation setContents:text];
-    
-    [self addAnnotation:newAnnotation toPage:page];
+    if (newAnnotation) {
+        if (text == nil)
+            text = [[[page selectionForRect:bounds] string] stringByCollapsingWhitespaceAndNewlinesAndRemovingSurroundingWhitespaceAndNewlines];
+        
+        if ([[activeAnnotation type] isEqualToString:@"Line"] == NO)
+            [newAnnotation setContents:text];
+        
+        [self addAnnotation:newAnnotation toPage:page];
 
-    [self setActiveAnnotation:newAnnotation];
-    [newAnnotation release];
-    if (annotationType == SKAnchoredNote)
-		[[NSNotificationCenter defaultCenter] postNotificationName:SKPDFViewAnnotationDoubleClickedNotification object:self 
-            userInfo:[NSDictionary dictionaryWithObjectsAndKeys:activeAnnotation, @"annotation", nil]];
+        [self setActiveAnnotation:newAnnotation];
+        [newAnnotation release];
+        if (annotationType == SKAnchoredNote)
+            [[NSNotificationCenter defaultCenter] postNotificationName:SKPDFViewAnnotationDoubleClickedNotification object:self 
+                userInfo:[NSDictionary dictionaryWithObjectsAndKeys:activeAnnotation, @"annotation", nil]];
+    } else NSBeep();
 }
 
 - (void)addAnnotation:(PDFAnnotation *)annotation toPage:(PDFPage *)page {
