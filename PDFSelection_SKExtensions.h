@@ -45,11 +45,7 @@
 - (NSString *)firstPageLabel;
 - (NSAttributedString *)contextString;
 
-@end
-
-@interface PDFSelection (PDFSelectionPrivateDeclarations)
-
-- (int)numberOfRangesOnPage:(PDFPage *)page;
-- (NSRange)rangeAtIndex:(int)index onPage:(PDFPage *)page;
+- (int)safeNumberOfRangesOnPage:(PDFPage *)page;
+- (NSRange)safeRangeAtIndex:(int)index onPage:(PDFPage *)page;
 
 @end

@@ -2772,20 +2772,23 @@ static CGMutablePathRef SKCGCreatePathWithRoundRectInRect(CGRect rect, float rad
         unsigned int pageIndex = [self indexForPage:page];
         unsigned int firstPageIndex = [self indexForPage:firstPage];
         unsigned int lastPageIndex = [self indexForPage:lastPage];
+        int n = [selection safeNumberOfRangesOnPage:lastPage];
+        int firstChar = [selection safeRangeAtIndex:0 onPage:firstPage].location;
+        int lastChar = n ? NSMaxRange([selection safeRangeAtIndex:n - 1 onPage:lastPage]) - 1 : NSNotFound - 1;
         NSRect firstRect, lastRect;
         
-        if ([selection respondsToSelector:@selector(numberOfRangesOnPage:)] && [selection respondsToSelector:@selector(rangeAtIndex:onPage:)]) {
-            int firstChar = [selection rangeAtIndex:0 onPage:firstPage].location;
-            int lastChar = NSMaxRange([selection rangeAtIndex:[selection numberOfRangesOnPage:lastPage] - 1 onPage:lastPage]) - 1;
+        if (firstChar != NSNotFound) {
             firstRect = [firstPage characterBoundsAtIndex:firstChar];
+        } else {
+            NSRect bounds = [selection boundsForPage:firstPage];
+            firstRect = NSMakeRect(NSMinX(bounds), NSMaxY(bounds) - 10.0, 5.0, 10.0);
+        }
+        if (lastChar != NSNotFound - 1) {
             lastRect = [lastPage characterBoundsAtIndex:lastChar];
         } else {
-            firstRect = [selection boundsForPage:firstPage];
-            firstRect = NSMakeRect(NSMinX(firstRect), NSMaxY(firstRect), 0.0, 0.0);
-            lastRect = [selection boundsForPage:lastPage];
-            lastRect = NSMakeRect(NSMaxX(lastRect), NSMinY(lastRect), 0.0, 0.0);
+            NSRect bounds = [selection boundsForPage:lastPage];
+            lastRect = NSMakeRect(NSMaxX(bounds) - 5.0, NSMinY(bounds), 5.0, 10.0);
         }
-        
         if (pageIndex < firstPageIndex || (pageIndex == firstPageIndex && (point.y > NSMaxY(firstRect) || (point.y > NSMinY(firstRect) && point.x < NSMinX(firstRect)))))
             sel = [self selectionFromPage:page atPoint:point toPage:lastPage atPoint:NSMakePoint(NSMaxX(lastRect), NSMidY(lastRect))];
         if (pageIndex > lastPageIndex || (pageIndex == lastPageIndex && (point.y < NSMinY(lastRect) || (point.y < NSMaxY(lastRect) && point.x > NSMaxX(lastRect)))))
