@@ -1560,8 +1560,11 @@ static NSString *SKDocumentToolbarNotesPaneItemIdentifier = @"SKDocumentToolbarN
 }
 
 - (void)documentDidEndDocumentFind:(NSNotification *)note {
-    if (findPanelFind == NO)
+    if (findPanelFind == NO) {
         [spinner stopAnimation:nil];
+        [self willChangeValueForKey:@"searchResults"];
+        [self didChangeValueForKey:@"searchResults"];
+    }
 }
 
 - (void)documentDidEndPageFind:(NSNotification *)note {
@@ -1572,8 +1575,13 @@ static NSString *SKDocumentToolbarNotesPaneItemIdentifier = @"SKDocumentToolbarN
 }
 
 - (void)didMatchString:(PDFSelection *)instance {
-    if (findPanelFind == NO)
-        [findArrayController addObject:instance];
+    if (findPanelFind == NO) {
+        [searchResults addObject:instance];
+        if ([searchResults count] % 50 == 0) {
+            [self willChangeValueForKey:@"searchResults"];
+            [self didChangeValueForKey:@"searchResults"];
+        }
+    }
 }
 
 - (void)addAnnotationsForSelection:(PDFSelection *)sel {
