@@ -1363,7 +1363,7 @@ static CGMutablePathRef SKCGCreatePathWithRoundRectInRect(CGRect rect, float rad
     [navWindow orderOut:self];
 }
 
-- (void)setHasNavigation:(BOOL)hasNav activateNavigationAtBottom:(BOOL)atBottom autohidesCursor:(BOOL)hideCursor {
+- (void)setHasNavigation:(BOOL)hasNav activateAtBottom:(BOOL)atBottom autohidesCursor:(BOOL)hideCursor {
     hasNavigation = hasNav;
     autohidesCursor = hideCursor;
     activateNavigationAtBottom = atBottom;
