@@ -40,6 +40,7 @@
 #import <Quartz/Quartz.h>
 #import "NSBezierPath_BDSKExtensions.h"
 #import "SKMainWindowController.h"
+#import "NSParagraphStyle_SKExtensions.h"
 
 #define BUTTON_WIDTH 50.0
 #define SEP_WIDTH 21.0
@@ -267,8 +268,6 @@ static SKNavigationToolTipWindow *sharedToolTipWindow = nil;
 - (NSAttributedString *)attributedStringValue {
     if (stringValue == nil)
         return nil;
-    NSMutableParagraphStyle *parStyle = [[NSMutableParagraphStyle alloc] init];
-    [parStyle setLineBreakMode:NSLineBreakByClipping];
     NSShadow *shadow = [[NSShadow alloc] init];
     [shadow setShadowColor:[NSColor blackColor]];
     [shadow setShadowBlurRadius:3.0];
@@ -276,10 +275,9 @@ static SKNavigationToolTipWindow *sharedToolTipWindow = nil;
     NSDictionary *attrs = [NSDictionary dictionaryWithObjectsAndKeys:
         [NSFont boldSystemFontOfSize:15.0], NSFontAttributeName, 
         [NSColor whiteColor], NSForegroundColorAttributeName, 
-        parStyle, NSParagraphStyleAttributeName, 
+        [NSParagraphStyle defaultClippingParagraphStyle], NSParagraphStyleAttributeName, 
         shadow, NSShadowAttributeName, nil];
     [shadow release];
-    [parStyle release];
     return [[[NSAttributedString alloc] initWithString:stringValue attributes:attrs] autorelease];
 }
 
