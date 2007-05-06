@@ -1323,7 +1323,7 @@ static NSString *SKDocumentToolbarNotesPaneItemIdentifier = @"SKDocumentToolbarN
     if ([fullScreenSetup count])
         [self applyPDFSettings:fullScreenSetup];
     
-    [pdfView setHasNavigation:YES autohidesCursor:NO];
+    [pdfView setHasNavigation:YES activateAtBottom:[[NSUserDefaults standardUserDefaults] boolForKey:@"SKActivateFullScreenNavigationAtBottom"] autohidesCursor:NO];
     [self showSideWindows];
 }
 
@@ -1346,7 +1346,7 @@ static NSString *SKDocumentToolbarNotesPaneItemIdentifier = @"SKDocumentToolbarN
     else
         [self goFullScreen];
     
-    [pdfView setHasNavigation:YES autohidesCursor:YES];
+    [pdfView setHasNavigation:YES activateAtBottom:YES autohidesCursor:YES];
 }
 
 - (IBAction)exitFullScreen:(id)sender {
@@ -1358,7 +1358,7 @@ static NSString *SKDocumentToolbarNotesPaneItemIdentifier = @"SKDocumentToolbarN
     
     if ([[fullScreenWindow firstResponder] isDescendantOf:pdfView])
         [fullScreenWindow makeFirstResponder:nil];
-    [pdfView setHasNavigation:NO autohidesCursor:NO];
+    [pdfView setHasNavigation:NO activateAtBottom:NO autohidesCursor:NO];
     [pdfView setFrame:[[pdfContentBox contentView] bounds]];
     [pdfContentBox addSubview:pdfView]; // this should be done before exitPresentationMode to get a smooth transition
     

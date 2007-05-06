@@ -677,8 +677,8 @@ static CGMutablePathRef SKCGCreatePathWithRoundRectInRect(CGRect rect, float rad
     }
     
     // in presentation mode only show the navigation window only by moving the mouse to the bottom edge
-    BOOL shouldShowNavWindow = hasNavigation && (autohidesCursor == NO || [theEvent locationInWindow].y < 5.0);
-    if (autohidesCursor || shouldShowNavWindow) {
+    BOOL shouldShowNavWindow = hasNavigation && (activateNavigationAtBottom == NO || [theEvent locationInWindow].y < 5.0);
+    if (activateNavigationAtBottom || shouldShowNavWindow) {
         if (shouldShowNavWindow && [navWindow isVisible] == NO) {
             [[self window] addChildWindow:navWindow ordered:NSWindowAbove];
             [navWindow orderFront:self];
@@ -1363,9 +1363,10 @@ static CGMutablePathRef SKCGCreatePathWithRoundRectInRect(CGRect rect, float rad
     [navWindow orderOut:self];
 }
 
-- (void)setHasNavigation:(BOOL)hasNav autohidesCursor:(BOOL)hideCursor {
+- (void)setHasNavigation:(BOOL)hasNav activateNavigationAtBottom:(BOOL)atBottom autohidesCursor:(BOOL)hideCursor {
     hasNavigation = hasNav;
     autohidesCursor = hideCursor;
+    activateNavigationAtBottom = atBottom;
     
     if (hasNavigation) {
         // always recreate the navWindow, since moving between screens of different resolution can mess up the location (in spite of moveToScreen:)
