@@ -658,12 +658,10 @@ static NSString *SKDocumentToolbarNotesPaneItemIdentifier = @"SKDocumentToolbarN
     
     if ([thumbnail isDirty] && NO == isAnimating && NO == [thumbnailTableView isScrolling]) {
         
-        float shadowBlurRadius = roundf(thumbnailCacheSize / 32.0);
-        float shadowOffset = - ceilf(shadowBlurRadius * 0.75);
         NSSize newSize, oldSize = [[thumbnail image] size];
         PDFDocument *pdfDoc = [pdfView document];
         PDFPage *page = [pdfDoc pageAtIndex:theIndex];
-        NSImage *image = [page thumbnailWithSize:thumbnailCacheSize shadowBlurRadius:shadowBlurRadius shadowOffset:NSMakeSize(0.0, shadowOffset)];
+        NSImage *image = [page thumbnailWithSize:thumbnailCacheSize];
         
 
         // setImage: sends a KVO notification that results in calling objectInThumbnailsAtIndex: endlessly, so set dirty to NO first
@@ -1718,9 +1716,7 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
 }
 
 - (void)snapshotControllerDidFinishSetup:(SKSnapshotWindowController *)controller {
-    float shadowBlurRadius = roundf(snapshotCacheSize / 32.0);
-    float shadowOffset = - ceilf(shadowBlurRadius * 0.75);
-    NSImage *image = [controller thumbnailWithSize:snapshotCacheSize shadowBlurRadius:shadowBlurRadius shadowOffset:NSMakeSize(0.0, shadowOffset)];
+    NSImage *image = [controller thumbnailWithSize:snapshotCacheSize];
     
     [controller setThumbnail:image];
     [[self mutableArrayValueForKey:@"snapshots"] addObject:controller];
@@ -2426,15 +2422,12 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
     unsigned i, count = [pdfDoc pageCount];
     [self willChange:NSKeyValueChangeRemoval valuesAtIndexes:[NSIndexSet indexSetWithIndexesInRange:NSMakeRange(0, [thumbnails count])] forKey:@"thumbnails"];
     if (count) {
-        float shadowBlurRadius = roundf(thumbnailCacheSize / 32.0);
-        float shadowOffset = - ceilf(shadowBlurRadius * 0.75);
-        
         PDFPage *emptyPage = [[[PDFPage alloc] init] autorelease];
         NSRect bounds = [[[pdfView document] pageAtIndex:0] boundsForBox:kPDFDisplayBoxCropBox];
         [emptyPage setBounds:bounds forBox:kPDFDisplayBoxCropBox];
         // thumbnail code only uses the crop box, but media box is required for PDF
         [emptyPage setBounds:bounds forBox:kPDFDisplayBoxMediaBox];
-        NSImage *image = [emptyPage thumbnailWithSize:thumbnailCacheSize shadowBlurRadius:shadowBlurRadius shadowOffset:NSMakeSize(0.0, shadowOffset)];
+        NSImage *image = [emptyPage thumbnailWithSize:thumbnailCacheSize];
         [image lockFocus];
         NSRect imgRect = NSZeroRect;
         imgRect.size = [image size];
@@ -2558,10 +2551,8 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
 - (void)updateSnapshot:(NSTimer *)timer {
     if ([dirtySnapshots count]) {
         SKSnapshotWindowController *controller = [dirtySnapshots objectAtIndex:0];
-        float shadowBlurRadius = roundf(snapshotCacheSize / 32.0);
-        float shadowOffset = - ceilf(shadowBlurRadius * 0.75);
         NSSize newSize, oldSize = [[controller thumbnail] size];
-        NSImage *image = [controller thumbnailWithSize:snapshotCacheSize shadowBlurRadius:shadowBlurRadius shadowOffset:NSMakeSize(0.0, shadowOffset)];
+        NSImage *image = [controller thumbnailWithSize:snapshotCacheSize];
         
         [controller setThumbnail:image];
         [dirtySnapshots removeObject:controller];

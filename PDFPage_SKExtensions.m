@@ -78,6 +78,12 @@
     return [image autorelease];
 }
 
+- (NSImage *)thumbnailWithSize:(float)size {
+    float shadowBlurRadius = roundf(size / 32.0);
+    float shadowOffset = - ceilf(shadowBlurRadius * 0.75);
+    return  [self thumbnailWithSize:size shadowBlurRadius:shadowBlurRadius shadowOffset:NSMakeSize(0.0, shadowOffset)];
+}
+
 - (NSImage *)thumbnailWithSize:(float)size shadowBlurRadius:(float)shadowBlurRadius shadowOffset:(NSSize)shadowOffset {
     NSRect bounds = [self boundsForBox:kPDFDisplayBoxCropBox];
     BOOL isScaled = size > 0.0;

@@ -48,22 +48,34 @@
     BOOL miniaturizing;
     BOOL forceOnTop;
 }
+
 - (void)setPdfDocument:(PDFDocument *)pdfDocument scaleFactor:(float)factor goToPageNumber:(int)pageNum rect:(NSRect)rect;
+
 - (BOOL)isPageVisible:(PDFPage *)page;
+
 - (void)redisplay;
+
 - (id)delegate;
 - (void)setDelegate:(id)newDelegate;
+
 - (PDFView *)pdfView;
 - (NSImage *)thumbnail;
 - (void)setThumbnail:(NSImage *)newThumbnail;
+
 - (NSString *)pageLabel;
 - (unsigned int)pageIndex;
+
 - (NSDictionary *)pageAndWindow;
+
 - (BOOL)forceOnTop;
 - (void)setForceOnTop:(BOOL)flag;
+
+- (NSImage *)thumbnailWithSize:(float)size;
 - (NSImage *)thumbnailWithSize:(float)size shadowBlurRadius:(float)shadowBlurRadius shadowOffset:(NSSize)shadowOffset;
+
 - (void)miniaturize;
 - (void)deminiaturize;
+
 - (void)handlePageChangedNotification:(NSNotification *)notification;
 - (void)handlePDFViewFrameChangedNotification:(NSNotification *)notification;
 - (void)handleViewChangedNotification:(NSNotification *)notification;
@@ -71,6 +83,7 @@
 - (void)handleAnnotationDidChangeNotification:(NSNotification *)notification;
 - (void)handleDidAddRemoveAnnotationNotification:(NSNotification *)notification;
 - (void)handleDidMoveAnnotationNotification:(NSNotification *)notification;
+
 @end
 
 
