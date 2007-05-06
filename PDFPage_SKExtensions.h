@@ -44,6 +44,7 @@
 @interface PDFPage (SKExtensions)
 
 - (NSImage *)image;
+- (NSImage *)thumbnailWithSize:(float)size;
 - (NSImage *)thumbnailWithSize:(float)size shadowBlurRadius:(float)shadowBlurRadius shadowOffset:(NSSize)shadowOffset;
 
 - (NSArray *)lineBounds;
