@@ -40,6 +40,7 @@
 #import "PDFPage_SKExtensions.h"
 #import "SKPDFAnnotationNote.h"
 #import "NSBezierPath_BDSKExtensions.h"
+#import "NSParagraphStyle_SKExtensions.h"
 
 #define WINDOW_WIDTH    400.0
 #define WINDOW_HEIGHT   80.0
@@ -49,13 +50,6 @@
 #define ALPHA_VALUE     0.95
 
 @implementation SKPDFHoverWindow
-
-static NSMutableParagraphStyle *SKPDFHoverWindowTextParagraphStyle = nil;
-
-+ (void)initialize {
-    SKPDFHoverWindowTextParagraphStyle = [[NSMutableParagraphStyle alloc] init];
-    [SKPDFHoverWindowTextParagraphStyle setLineBreakMode:NSLineBreakByClipping];
-}
 
 + (id)sharedHoverWindow {
     static SKPDFHoverWindow *sharedHoverWindow = nil;
@@ -234,7 +228,7 @@ static NSRect SKRectFittingRectInRect(NSRect inRect, NSRect outRect) {
             
             sourceRect = SKRectFittingRectInRect(sourceRect, pageImageRect);
             
-            NSDictionary *attrs = [[NSDictionary alloc] initWithObjectsAndKeys:labelFont, NSFontAttributeName, color, NSForegroundColorAttributeName, SKPDFHoverWindowTextParagraphStyle, NSParagraphStyleAttributeName, nil];
+            NSDictionary *attrs = [[NSDictionary alloc] initWithObjectsAndKeys:labelFont, NSFontAttributeName, color, NSForegroundColorAttributeName, [NSParagraphStyle defaultClippingParagraphStyle], NSParagraphStyleAttributeName, nil];
             NSAttributedString *labelString = [[NSAttributedString alloc] initWithString:[NSString stringWithFormat:NSLocalizedString(@"Page %@", @"Tool tip label format"), [page label]] attributes:attrs];
             NSRect labelRect = [labelString boundingRectWithSize:NSZeroSize options:NSStringDrawingUsesLineFragmentOrigin];
             
@@ -281,7 +275,7 @@ static NSRect SKRectFittingRectInRect(NSRect inRect, NSRect outRect) {
     }
     
     if (string) {
-        NSDictionary *attrs = [[NSDictionary alloc] initWithObjectsAndKeys:font, NSFontAttributeName, SKPDFHoverWindowTextParagraphStyle, NSParagraphStyleAttributeName, nil];
+        NSDictionary *attrs = [[NSDictionary alloc] initWithObjectsAndKeys:font, NSFontAttributeName, [NSParagraphStyle defaultClippingParagraphStyle], NSParagraphStyleAttributeName, nil];
         text = [[NSAttributedString alloc] initWithString:string attributes:attrs];
         [attrs release];
     }

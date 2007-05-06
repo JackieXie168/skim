@@ -38,6 +38,7 @@
 
 #import "PDFSelection_SKExtensions.h"
 #import "NSString_SKExtensions.h"
+#import "NSParagraphStyle_SKExtensions.h"
 
 
 @interface PDFSelection (PDFSelectionPrivateDeclarations)
@@ -65,11 +66,10 @@
 	NSString *ellipse = [NSString stringWithFormat:@"%C", 0x2026];
 	NSRange foundRange;
     NSDictionary *attributes;
-	NSMutableParagraphStyle *paragraphStyle = nil;
 	
 	// Extend selection.
 	[extendedSelection extendSelectionAtStart:10];
-	[extendedSelection extendSelectionAtEnd:20];
+	[extendedSelection extendSelectionAtEnd:30];
 	
     // get the cleaned string
     sample = [[extendedSelection string] stringByCollapsingWhitespaceAndNewlinesAndRemovingSurroundingWhitespaceAndNewlines];
@@ -89,15 +89,11 @@
         [attributes release];
     }
     
-	// Create paragraph style that indicates truncation style.
-	paragraphStyle = [[NSParagraphStyle defaultParagraphStyle] mutableCopy];
-	[paragraphStyle setLineBreakMode:NSLineBreakByTruncatingTail];
-	attributes = [[NSDictionary alloc] initWithObjectsAndKeys:paragraphStyle, NSParagraphStyleAttributeName, nil];
+	attributes = [[NSDictionary alloc] initWithObjectsAndKeys:[NSParagraphStyle defaultTruncatingTailParagraphStyle], NSParagraphStyleAttributeName, nil];
 	// Add paragraph style.
     [attributedSample addAttributes:attributes range:NSMakeRange(0, [attributedSample length])];
 	// Clean.
 	[attributes release];
-	[paragraphStyle release];
 	[extendedSelection release];
 	
 	return [attributedSample autorelease];
