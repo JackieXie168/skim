@@ -274,9 +274,7 @@ typedef struct _SKPDFViewState {
 - (void)displaySearchView;
 - (void)fadeInSearchView;
 - (void)displayNoteView;
-- (void)fadeInNoteView;
 - (void)displaySnapshotView;
-- (void)fadeInSnapshotView;
 
 - (void)removeTemporaryAnnotations;
 

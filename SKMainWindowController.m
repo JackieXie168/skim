@@ -1544,20 +1544,9 @@ static NSString *SKDocumentToolbarNotesPaneItemIdentifier = @"SKDocumentToolbarN
     currentRightSideView = noteView;
 }
 
-- (void)fadeInNoteView {
-    [self  replaceSideView:currentRightSideView withView:noteView animate:YES];
-    currentRightSideView = noteView;
-}
-
 - (void)displaySnapshotView {
     [self  replaceSideView:currentRightSideView withView:snapshotView animate:NO];
     currentRightSideView = snapshotView;
-    [self updateSnapshotsIfNeeded];
-}
-
-- (void)fadeInSnapshotView {
-    [self  replaceSideView:currentRightSideView withView:snapshotTableView animate:YES];
-    currentRightSideView = snapshotTableView;
     [self updateSnapshotsIfNeeded];
 }
 
