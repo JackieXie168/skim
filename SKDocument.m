@@ -697,6 +697,8 @@ NSString *SKDocumentWillSaveNotification = @"SKDocumentWillSaveNotification";
 - (BOOL)validateUserInterfaceItem:(id <NSValidatedUserInterfaceItem>)anItem {
 	if ([anItem action] == @selector(performFindPanelAction:))
         return [[SKFindController sharedFindController] validateUserInterfaceItem:anItem];
+	else if ([anItem action] == @selector(revertDocumentToSaved:))
+        return [self isDocumentEdited];
     else
         return [super validateUserInterfaceItem:anItem];
 }
