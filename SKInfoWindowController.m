@@ -95,8 +95,7 @@ NSString *SKFileSizeStringForFileURL(NSURL *fileURL) {
         logicalSize = size = [[fileAttrs objectForKey:NSFileSize] unsignedLongLongValue];
     }
     
-    unsigned long bigSize = size >> 32;
-    if (bigSize == 0) {
+    if (size >> 40 == 0) {
         if (size == 0) {
             [string appendString:@"zero bytes"];
         } else if (size < 1024) {
@@ -115,19 +114,17 @@ NSString *SKFileSizeStringForFileURL(NSURL *fileURL) {
                 }
             }
         }
-    } else if (bigSize < 256) {
-        [string appendFormat:@"%.1f GB", (size >> 20) / 1024.0f];
     } else {
-        UInt32 adjSize = bigSize >> 8;
+        UInt32 adjSize = size >> 40; size >>= 30;
         if (adjSize < 1024) {
-            [string appendFormat:@"%.1f TB", bigSize / 265.0f];
+            [string appendFormat:@"%.1f TB", size / 1024.0f];
         } else {
-            adjSize >>= 10; bigSize >>= 8;
+            adjSize >>= 10; size >>= 10;
             if (adjSize < 1024) {
-                [string appendFormat:@"%.1f PB", bigSize / 1024.0f];
+                [string appendFormat:@"%.1f PB", size / 1024.0f];
             } else {
-                adjSize >>= 10; bigSize >>= 10;
-                [string appendFormat:@"%.1f EB", bigSize / 1024.0f];
+                adjSize >>= 10; size >>= 10;
+                [string appendFormat:@"%.1f EB", size / 1024.0f];
             }
         }
     }
