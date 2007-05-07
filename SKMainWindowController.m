@@ -425,11 +425,6 @@ static NSString *SKDocumentToolbarNotesPaneItemIdentifier = @"SKDocumentToolbarN
 
 - (void)windowWillClose:(NSNotification *)notification {
     if ([[notification object] isEqual:[self window]]) {
-        unsigned int pageIndex = [[pdfView document] indexForPage:[pdfView currentPage]];
-        NSString *path = [[[self document] fileURL] path];
-        if (pageIndex != NSNotFound && path)
-            [[SKBookmarkController sharedBookmarkController] addRecentDocumentForPath:path pageIndex:pageIndex];
-        
         // timers retain their target, so invalidate them now or they may keep firing after the PDF is gone
         if (snapshotTimer) {
             [snapshotTimer invalidate];
@@ -444,6 +439,16 @@ static NSString *SKDocumentToolbarNotesPaneItemIdentifier = @"SKDocumentToolbarN
         
         [ownerController setContent:nil];
     }
+}
+
+- (void)setDocument:(NSDocument *)document {
+    if ([self document] && document == nil) {
+        unsigned int pageIndex = [[pdfView document] indexForPage:[pdfView currentPage]];
+        NSString *path = [[[self document] fileURL] path];
+        if (pageIndex != NSNotFound && path)
+            [[SKBookmarkController sharedBookmarkController] addRecentDocumentForPath:path pageIndex:pageIndex];
+    }
+    [super setDocument:document];
 }
 
 #pragma mark Accessors
