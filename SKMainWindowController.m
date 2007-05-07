@@ -463,12 +463,10 @@ static NSString *SKDocumentToolbarNotesPaneItemIdentifier = @"SKDocumentToolbarN
         
         PDFDestination *dest;
         unsigned pageIndex = NSNotFound;
-        NSPoint point = NSZeroPoint;
         
         if ([pdfView document]) {
             dest = [pdfView currentDestination];
-            pageIndex = [[pdfView document] indexForPage:[dest page]];
-            point = [dest point];
+            pageIndex = [[pdfView document] indexForPage:[pdfView currentPage]];
         }
         
         // these will be invalid. If needed, the document will restore them
@@ -506,8 +504,7 @@ static NSString *SKDocumentToolbarNotesPaneItemIdentifier = @"SKDocumentToolbarN
         
         if (pageIndex != NSNotFound && [document pageCount]) {
             PDFPage *page = [document pageAtIndex:MIN(pageIndex, [document pageCount])];
-            dest = [[[PDFDestination alloc] initWithPage:page atPoint:point] autorelease];
-            [pdfView performSelector:@selector(goToDestination:) withObject:dest afterDelay:0.0];
+            [pdfView performSelector:@selector(goToPage:) withObject:page afterDelay:0.0];
         }
     }
 }

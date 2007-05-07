@@ -503,7 +503,7 @@ NSString *SKDocumentWillSaveNotification = @"SKDocumentWillSaveNotification";
 
 // For now this just uses a timer checking the modification date of the file. We may want to use kqueue (UKKqueue) at some point. 
 
-- (void)checkFileUpdatesIfNeeded {
+- (void)checkFileUpdatesIfNeededAfterDelay:(NSTimeInterval)delay {
     BOOL autoUpdatePref = [[NSUserDefaults standardUserDefaults] boolForKey:SKAutoCheckFileUpdateKey];
     
     if (autoUpdatePref == NO && fileUpdateTimer) {
@@ -512,8 +512,13 @@ NSString *SKDocumentWillSaveNotification = @"SKDocumentWillSaveNotification";
         fileUpdateTimer = nil;
         autoUpdate = NO;
     } else if (autoUpdatePref && fileUpdateTimer == nil) {
-        fileUpdateTimer = [[NSTimer scheduledTimerWithTimeInterval:2 target:self selector:@selector(checkFileUpdateStatus:) userInfo:nil repeats:NO] retain];
+        fileUpdateTimer = [[NSTimer alloc] initWithFireDate:[NSDate dateWithTimeIntervalSinceNow:delay] interval:0.0 target:self selector:@selector(checkFileUpdateStatus:) userInfo:NULL repeats:NO];
+        [[NSRunLoop currentRunLoop] addTimer:fileUpdateTimer forMode:NSDefaultRunLoopMode];
     }
+}
+
+- (void)checkFileUpdatesIfNeeded {
+    [self checkFileUpdatesIfNeededAfterDelay:2.0];
 }
 
 - (void)fileUpdateAlertDidEnd:(NSAlert *)alert returnCode:(int)returnCode contextInfo:(void *)contextInfo {
@@ -542,6 +547,7 @@ NSString *SKDocumentWillSaveNotification = @"SKDocumentWillSaveNotification";
     fileUpdateTimer = nil;
     
     NSFileManager *fm = [NSFileManager defaultManager];
+    NSTimeInterval delay = 2.0;
     
     if ([[NSUserDefaults standardUserDefaults] boolForKey:SKAutoCheckFileUpdateKey] &&
         [fm fileExistsAtPath:[self fileName]]) {
@@ -575,11 +581,12 @@ NSString *SKDocumentWillSaveNotification = @"SKDocumentWillSaveNotification";
             } else {
                 [previousCheckedDate release];
                 previousCheckedDate = [fileChangedDate retain];
+                delay = 0.5;
             }
         }
     }
     
-    [self checkFileUpdatesIfNeeded];
+    [self checkFileUpdatesIfNeededAfterDelay:delay];
 }
 
 - (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context {
