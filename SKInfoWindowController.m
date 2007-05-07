@@ -72,30 +72,26 @@
 }
 
 static inline 
-NSString *fileSizeOfFileAtPath(NSString *path) {
-    if (path == nil)
+NSString *SKFileSizeStringForFileURL(NSURL *fileURL) {
+    if (fileURL == nil)
         return @"";
     
-    CFURLRef fileURL = CFURLCreateWithFileSystemPath(kCFAllocatorDefault, (CFStringRef)path, kCFURLPOSIXPathStyle, false);
     FSRef fileRef;
     FSCatalogInfo catalogInfo;
     unsigned long long size, logicalSize;
     BOOL gotSize = NO;
     NSMutableString *string = [NSMutableString string];
     
-    if (fileURL != NULL) {
-        Boolean gotRef = CFURLGetFSRef(fileURL, &fileRef);
-        CFRelease(fileURL);
-        if (gotRef && noErr == FSGetCatalogInfo(&fileRef, kFSCatInfoDataSizes | kFSCatInfoRsrcSizes, &catalogInfo, NULL, NULL, NULL)) {
-            size = catalogInfo.dataPhysicalSize + catalogInfo.rsrcPhysicalSize;
-            logicalSize = catalogInfo.dataLogicalSize + catalogInfo.rsrcLogicalSize;
-            gotSize = YES;
-        }
+    Boolean gotRef = CFURLGetFSRef((CFURLRef)fileURL, &fileRef);
+    if (gotRef && noErr == FSGetCatalogInfo(&fileRef, kFSCatInfoDataSizes | kFSCatInfoRsrcSizes, &catalogInfo, NULL, NULL, NULL)) {
+        size = catalogInfo.dataPhysicalSize + catalogInfo.rsrcPhysicalSize;
+        logicalSize = catalogInfo.dataLogicalSize + catalogInfo.rsrcLogicalSize;
+        gotSize = YES;
     }
     
     if (gotSize == NO) {
         // this seems to give the logical size
-        NSDictionary *fileAttrs = [[NSFileManager defaultManager] fileAttributesAtPath:path traverseLink:NO];
+        NSDictionary *fileAttrs = [[NSFileManager defaultManager] fileAttributesAtPath:[fileURL path] traverseLink:NO];
         logicalSize = size = [[fileAttrs objectForKey:NSFileSize] unsignedLongLongValue];
     }
     
@@ -120,10 +116,20 @@ NSString *fileSizeOfFileAtPath(NSString *path) {
             }
         }
     } else if (bigSize < 256) {
-        [string appendFormat:@"%u GB", bigSize, logicalSize];
+        [string appendFormat:@"%.1f GB", (size >> 20) / 1024.0f];
     } else {
-        bigSize >>= 2;
-        [string appendFormat:@"%u TB", bigSize, logicalSize];
+        UInt32 adjSize = bigSize >> 8;
+        if (adjSize < 1024) {
+            [string appendFormat:@"%.1f TB", bigSize / 265.0f];
+        } else {
+            adjSize >>= 10; bigSize >>= 8;
+            if (adjSize < 1024) {
+                [string appendFormat:@"%.1f PB", bigSize / 1024.0f];
+            } else {
+                adjSize >>= 10; bigSize >>= 10;
+                [string appendFormat:@"%.1f EB", bigSize / 1024.0f];
+            }
+        }
     }
     
     NSNumberFormatter *formatter = [[[NSNumberFormatter alloc] init] autorelease];
@@ -142,7 +148,7 @@ NSString *fileSizeOfFileAtPath(NSString *path) {
         [info setValue:[[doc fileName] lastPathComponent] forKey:@"FileName"];
         [info setValue:[NSString stringWithFormat: @"%d.%d", [pdfDoc majorVersion], [pdfDoc minorVersion]] forKey:@"Version"];
         [info setValue:[NSNumber numberWithInt:[pdfDoc pageCount]] forKey:@"PageCount"];
-        [info setValue:fileSizeOfFileAtPath([doc fileName]) forKey:@"FileSize"];
+        [info setValue:SKFileSizeStringForFileURL([doc fileURL]) forKey:@"FileSize"];
         [info setValue:[[info valueForKey:@"KeyWords"] componentsJoinedByString:@" "] forKey:@"KeywordsString"];
     }
 }
