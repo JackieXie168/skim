@@ -473,6 +473,7 @@ static NSString *SKDocumentToolbarNotesPaneItemIdentifier = @"SKDocumentToolbarN
         
         // these will be invalid. If needed, the document will restore them
         [[self mutableArrayValueForKey:@"notes"] removeAllObjects];
+        [[self mutableArrayValueForKey:@"thumbnails"] removeAllObjects];
         
         [lastViewedPages removeAllObjects];
         
