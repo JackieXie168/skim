@@ -127,36 +127,42 @@
     return recentDocuments;
 }
 
+- (unsigned int)indexOfRecentDocumentAtPath:(NSString *)path {
+    unsigned int index = [[recentDocuments valueForKey:@"path"] indexOfObject:path];
+    if (index == NSNotFound) {
+        unsigned int i, iMax = [recentDocuments count];
+        for (i = 0; i < iMax; i++) {
+            NSData *aliasData = [[recentDocuments objectAtIndex:i] valueForKey:@"_BDAlias"];
+            if ([[[BDAlias aliasWithData:aliasData] fullPathNoUI] isEqualToString:path]) {
+                index = i;
+                break;
+            }
+        }
+    }
+    return index;
+}
+
 - (void)addRecentDocumentForPath:(NSString *)path pageIndex:(unsigned)pageIndex {
     if (path == nil)
         return;
-    NSArray *paths = [recentDocuments valueForKey:@"path"];
-    unsigned int index = [paths indexOfObject:path];
     
-    if (index == NSNotFound) {
-        paths = [recentDocuments valueForKeyPath:@"fullPathNoUI"];
-        index = [paths indexOfObject:path];
-    }
+    unsigned int index = [self indexOfRecentDocumentAtPath:path];
     if (index != NSNotFound)
         [recentDocuments removeObjectAtIndex:index];
+    
     NSData *data = [[BDAlias aliasWithPath:path] aliasData];
     NSMutableDictionary *bm = [NSMutableDictionary dictionaryWithObjectsAndKeys:path, @"path", [NSNumber numberWithUnsignedInt:pageIndex], @"pageIndex", data, @"_BDAlias", nil];
     [recentDocuments insertObject:bm atIndex:0];
     if ([recentDocuments count] > MAX_RECENT_DOCUMENTS_COUNT)
         [recentDocuments removeLastObject];
+    
     [self saveBookmarks];
 }
 
 - (unsigned int)pageIndexForRecentDocumentAtPath:(NSString *)path {
     if (path == nil)
         return NSNotFound;
-    NSArray *paths = [recentDocuments valueForKey:@"path"];
-    unsigned int index = [paths indexOfObject:path];
-    
-    if (index == NSNotFound) {
-        paths = [recentDocuments valueForKeyPath:@"fullPathNoUI"];
-        index = [paths indexOfObject:path];
-    }
+    unsigned int index = [self indexOfRecentDocumentAtPath:path];
     return index == NSNotFound ? NSNotFound : [[[recentDocuments objectAtIndex:index] objectForKey:@"pageIndex"] unsignedIntValue];
 }
 
@@ -239,7 +245,7 @@
 }
 
 - (id)transformedValue:(id)dictionary {
-    NSString *path = [[BDAlias aliasWithData:[dictionary valueForKey:@"_BDAlias"]] fullPath];
+    NSString *path = [[BDAlias aliasWithData:[dictionary valueForKey:@"_BDAlias"]] fullPathNoUI];
     if (path == nil)
         path = [dictionary valueForKey:@"path"];
     return path;
