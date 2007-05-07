@@ -53,29 +53,20 @@ static BOOL SKFileExistsAtPath(NSString *path) {
 }
 
 static NSDate *SKFileModificationDateAtPath(NSString *path) {
-	static NSDate* jan1904 = nil;
-	if (jan1904 == nil)
-		jan1904 = [[NSDate dateWithString:@"1904-01-01 00:00:00 +0000"] retain];
-	
+    CFAbsoluteTime absoluteTime;
     FSCatalogInfo info;
     FSRef fileRef;
     
     if (NO == CFURLGetFSRef((CFURLRef)[NSURL fileURLWithPath:path], &fileRef))
         return nil;
     
-    if (noErr != FSGetCatalogInfo( &fileRef, kFSCatInfoContentMod, &info, NULL,NULL, NULL ))
+    if (noErr != FSGetCatalogInfo(&fileRef, kFSCatInfoContentMod, &info, NULL, NULL, NULL))
         return nil;
     
-	union {
-		UTCDateTime local;
-		UInt64 shifted;
-	} time;
-    
-	time.local = info.contentModDate;
-	if (time.shifted)
-		return [[[NSDate alloc] initWithTimeInterval:time.shifted / 65536 sinceDate:jan1904] autorelease];
-	else
+    if (noErr != UCConvertUTCDateTimeToCFAbsoluteTime(&info.contentModDate, &absoluteTime))
         return nil;
+    
+    return [NSDate dateWithTimeIntervalSinceReferenceDate:(NSTimeInterval)absoluteTime];
 }
 
 static NSString *SKTeXSourceFile(NSString *file, NSString *base) {
