@@ -160,23 +160,6 @@ static NSString *SKDocumentToolbarNotesPaneItemIdentifier = @"SKDocumentToolbarN
 }
 
 - (void)windowDidLoad{
-    
-    // this needs to be done before loading the PDFDocument
-    {
-        [self resetThumbnailSizeIfNeeded];
-        [self resetSnapshotSizeIfNeeded];
-        
-        NSSortDescriptor *pageIndexSortDescriptor = [[[NSSortDescriptor alloc] initWithKey:@"pageIndex" ascending:YES] autorelease];
-        NSSortDescriptor *boundsSortDescriptor = [[[NSSortDescriptor alloc] initWithKey:@"bounds" ascending:YES selector:@selector(boundsCompare:)] autorelease];
-        [noteArrayController setSortDescriptors:[NSArray arrayWithObjects:pageIndexSortDescriptor, boundsSortDescriptor, nil]];
-        [snapshotArrayController setSortDescriptors:[NSArray arrayWithObjects:pageIndexSortDescriptor, nil]];
-        [ownerController setContent:self];
-    }
-    
-    // NB: the next line will load the PDF document and annotations, so necessary setup must be finished first!
-    // windowControllerDidLoadNib: is not called automatically because the document overrides makeWindowControllers
-    [[self document] windowControllerDidLoadNib:self];
-    
     [leftSideCollapsibleView setCollapseEdges:BDSKMaxXEdgeMask | BDSKMinYEdgeMask];
     [leftSideCollapsibleView setMinSize:NSMakeSize(100.0, 42.0)];
     
@@ -223,6 +206,7 @@ static NSString *SKDocumentToolbarNotesPaneItemIdentifier = @"SKDocumentToolbarN
     
     [pdfView setShouldAntiAlias:[[NSUserDefaults standardUserDefaults] boolForKey:SKShouldAntiAliasKey]];
     [pdfView setGreekingThreshold:[[NSUserDefaults standardUserDefaults] floatForKey:SKGreekingThresholdKey]];
+    [pdfView setBackgroundColor:[NSUnarchiver unarchiveObjectWithData:[[NSUserDefaults standardUserDefaults] dataForKey:SKBackgroundColorKey]]];
     
     if ([[NSUserDefaults standardUserDefaults] objectForKey:@"SKLeftSidePaneWidth"]) {
         float width = [[NSUserDefaults standardUserDefaults] floatForKey:@"SKLeftSidePaneWidth"];
@@ -244,6 +228,21 @@ static NSString *SKDocumentToolbarNotesPaneItemIdentifier = @"SKDocumentToolbarN
         [pdfContentBox setFrame:frame];
     }
     
+    // this needs to be done before loading the PDFDocument
+    [self resetThumbnailSizeIfNeeded];
+    [self resetSnapshotSizeIfNeeded];
+    
+    // this needs to be done before loading the PDFDocument
+    NSSortDescriptor *pageIndexSortDescriptor = [[[NSSortDescriptor alloc] initWithKey:@"pageIndex" ascending:YES] autorelease];
+    NSSortDescriptor *boundsSortDescriptor = [[[NSSortDescriptor alloc] initWithKey:@"bounds" ascending:YES selector:@selector(boundsCompare:)] autorelease];
+    [noteArrayController setSortDescriptors:[NSArray arrayWithObjects:pageIndexSortDescriptor, boundsSortDescriptor, nil]];
+    [snapshotArrayController setSortDescriptors:[NSArray arrayWithObjects:pageIndexSortDescriptor, nil]];
+    [ownerController setContent:self];
+    
+    // NB: the next line will load the PDF document and annotations, so necessary setup must be finished first!
+    // windowControllerDidLoadNib: is not called automatically because the document overrides makeWindowControllers
+    [[self document] windowControllerDidLoadNib:self];
+    
     if (pdfOutline == nil) {
         if ([[NSUserDefaults standardUserDefaults] boolForKey:SKOpenContentsPaneOnlyForTOCKey] &&
             NSWidth([leftSideContentBox frame]) > 0.0)
@@ -254,8 +253,6 @@ static NSString *SKDocumentToolbarNotesPaneItemIdentifier = @"SKDocumentToolbarN
                NSWidth([leftSideContentBox frame]) <= 0.0) {
         [self toggleLeftSidePane:self];
     }
-    
-    [pdfView setBackgroundColor:[NSUnarchiver unarchiveObjectWithData:[[NSUserDefaults standardUserDefaults] dataForKey:SKBackgroundColorKey]]];
     
     if ([[NSUserDefaults standardUserDefaults] boolForKey:SKRememberLastPageViewedKey]) {
         unsigned int pageIndex = [[SKBookmarkController sharedBookmarkController] pageIndexForRecentDocumentAtPath:[[[self document] fileURL] path]];
