@@ -347,7 +347,7 @@ static IMP originalSetColor = NULL;
 - (id)initWithBounds:(NSRect)bounds {
     if (self = [super initWithBounds:bounds]) {
         [self setColor:[NSUnarchiver unarchiveObjectWithData:[[NSUserDefaults standardUserDefaults] objectForKey:SKCircleNoteColorKey]]];
-        [[self border] setLineWidth:2.0];
+        [[self border] setLineWidth:[[NSUserDefaults standardUserDefaults] floatForKey:SKCircleNoteLineWidthKey]];
     }
     return self;
 }
@@ -369,7 +369,7 @@ static IMP originalSetColor = NULL;
 - (id)initWithBounds:(NSRect)bounds {
     if (self = [super initWithBounds:bounds]) {
         [self setColor:[NSUnarchiver unarchiveObjectWithData:[[NSUserDefaults standardUserDefaults] objectForKey:SKSquareNoteColorKey]]];
-        [[self border] setLineWidth:2.0];
+        [[self border] setLineWidth:[[NSUserDefaults standardUserDefaults] floatForKey:SKSquareNoteLineWidthKey]];
     }
     return self;
 }

@@ -119,6 +119,10 @@
 	BAt0eXBlZHN0cmVhbYED6IQBQISEhAdOU0NvbG9yAISECE5TT2JqZWN0AIWEAWMBhARm
 	ZmZmAAABAYY=
 	</data>
+        <key>SKCircleNoteLineWidth</key>
+        <real>2.0</real>
+        <key>SKSquareNoteLineWidth</key>
+        <real>2.0</real>
         <key>SKAutoCheckFileUpdate</key>
         <false/>
         <key>SKTeXEditorPreset</key>
@@ -175,6 +179,8 @@
             <string>SKArrowNoteColor</string>
             <string>SKTextNoteFontName</string>
             <string>SKTextNoteFontSize</string>
+            <string>SKCircleNoteLineWidth</string>
+            <string>SKSquareNoteLineWidth</string>
         </array>
         <key>sync</key>
         <array>
