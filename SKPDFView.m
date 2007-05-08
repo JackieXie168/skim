@@ -614,19 +614,17 @@ static CGMutablePathRef SKCGCreatePathWithRoundRectInRect(CGRect rect, float rad
                 [wasSelection release];
                 wasSelection = nil;
             }
-            if (draggingAnnotation) {
-                draggingAnnotation = NO;
+            if (draggingAnnotation && didDrag) {
                 if ([[activeAnnotation type] isEqualToString:@"Circle"] || [[activeAnnotation type] isEqualToString:@"Square"]) {
                     NSString *selString = [[[[activeAnnotation page] selectionForRect:[activeAnnotation bounds]] string] stringByCollapsingWhitespaceAndNewlinesAndRemovingSurroundingWhitespaceAndNewlines];
                     [activeAnnotation setContents:selString];
                 }
-                if (didDrag) {
-                    [[self undoManager] endUndoGrouping];
-                    // due to an Appkit bug, endUndoGrouping registers an extra change count, which is not reverted when the group is undone
-                    [[[[self window] windowController] document] updateChangeCount:NSChangeUndone];
-                }
+                [[self undoManager] endUndoGrouping];
+                // due to an Appkit bug, endUndoGrouping registers an extra change count, which is not reverted when the group is undone
+                [[[[self window] windowController] document] updateChangeCount:NSChangeUndone];
             } else
                 [super mouseUp:theEvent];
+            draggingAnnotation = NO;
             break;
         case SKMoveToolMode:
             // shouldn't reach this
@@ -635,16 +633,15 @@ static CGMutablePathRef SKCGCreatePathWithRoundRectInRect(CGRect rect, float rad
             [super mouseUp:theEvent];
             break;
     }
+    didDrag = NO;
 }
 
 - (void)mouseDragged:(NSEvent *)theEvent {
     switch (toolMode) {
         case SKTextToolMode:
             if (draggingAnnotation) {
-                if (didDrag == NO) {
-                    didDrag = YES;
+                if (didDrag == NO)
                     [[self undoManager] beginUndoGrouping];
-                }
                 [self dragAnnotationWithEvent:theEvent];
             } else if (nil == activeAnnotation) {
                 if (mouseDownInAnnotation)
@@ -661,6 +658,7 @@ static CGMutablePathRef SKCGCreatePathWithRoundRectInRect(CGRect rect, float rad
             [super mouseDragged:theEvent];
             break;
     }
+    didDrag = YES;
 }
 
 - (void)mouseMoved:(NSEvent *)theEvent {
