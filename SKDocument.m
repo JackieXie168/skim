@@ -104,19 +104,15 @@ NSString *SKDocumentWillSaveNotification = @"SKDocumentWillSaveNotification";
 
 - (void)makeWindowControllers{
     SKMainWindowController *mainWindowController = [[[SKMainWindowController alloc] initWithWindowNibName:@"MainWindow"] autorelease];
+    [mainWindowController setShouldCloseDocument:YES];
     [self addWindowController:mainWindowController];
 }
 
 - (void)windowControllerDidLoadNib:(NSWindowController *)aController{
-    
     SKMainWindowController *mainController =  (SKMainWindowController *)aController;
     
-    [mainController setShouldCloseDocument:YES];
-    
     [mainController setPdfDocument:pdfDocument];
-    
-    [pdfDocument autorelease];
-    pdfDocument = nil;
+    [self setPDFDoc:nil];
     
     [mainController setAnnotationsFromDictionaries:noteDicts];
     [self setNoteDicts:nil];
@@ -589,6 +585,8 @@ NSString *SKDocumentWillSaveNotification = @"SKDocumentWillSaveNotification";
     [self checkFileUpdatesIfNeededAfterDelay:delay];
 }
 
+#pragma mark Notification observation
+
 - (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context {
     if (object == [NSUserDefaultsController sharedUserDefaultsController]) {
         if (NO == [keyPath hasPrefix:@"values."])
@@ -609,12 +607,11 @@ NSString *SKDocumentWillSaveNotification = @"SKDocumentWillSaveNotification";
 }
 
 - (void)handleWindowWillCloseNotification:(NSNotification *)notification {
-    [fileUpdateTimer invalidate];
-    [fileUpdateTimer release];
-    fileUpdateTimer = nil;
-}
-- (void)removeWindowController:(id)controller {
-    [super removeWindowController:controller];
+    if ([[notification object] isEqual:[[self mainWindowController] window]]) {
+        [fileUpdateTimer invalidate];
+        [fileUpdateTimer release];
+        fileUpdateTimer = nil;
+    }
 }
 
 #pragma mark Pdfsync support
