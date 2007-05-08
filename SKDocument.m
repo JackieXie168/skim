@@ -607,7 +607,9 @@ NSString *SKDocumentWillSaveNotification = @"SKDocumentWillSaveNotification";
 }
 
 - (void)handleWindowWillCloseNotification:(NSNotification *)notification {
-    if ([[notification object] isEqual:[[self mainWindowController] window]]) {
+    NSWindow *window = [notification object];
+    // ignore when we're switching fullscreen/main windows
+    if ([window isEqual:[[window windowController] window]]) {
         [fileUpdateTimer invalidate];
         [fileUpdateTimer release];
         fileUpdateTimer = nil;
