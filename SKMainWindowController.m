@@ -268,6 +268,7 @@ static NSString *SKDocumentToolbarNotesPaneItemIdentifier = @"SKDocumentToolbarN
     [self handleChangedHistoryNotification:nil];
     [self handlePageChangedNotification:nil];
     [self handleScaleChangedNotification:nil];
+    [self handleToolModeChangedNotification:nil];
     [self handleAnnotationModeChangedNotification:nil];
     
     [self registerForNotifications];
@@ -284,6 +285,8 @@ static NSString *SKDocumentToolbarNotesPaneItemIdentifier = @"SKDocumentToolbarN
                              name:PDFViewPageChangedNotification object:pdfView];
     [nc addObserver:self selector:@selector(handleScaleChangedNotification:) 
                              name:PDFViewScaleChangedNotification object:pdfView];
+    [nc addObserver:self selector:@selector(handleToolModeChangedNotification:) 
+                             name:SKPDFViewToolModeChangedNotification object:pdfView];
     [nc addObserver:self selector:@selector(handleAnnotationModeChangedNotification:) 
                              name:SKPDFViewAnnotationModeChangedNotification object:pdfView];
     [nc addObserver:self selector:@selector(handleChangedHistoryNotification:) 
@@ -983,7 +986,8 @@ static NSString *SKDocumentToolbarNotesPaneItemIdentifier = @"SKDocumentToolbarN
 }
 
 - (IBAction)changeToolMode:(id)sender {
-    [pdfView setToolMode:[sender tag]];
+    int newToolMode = [sender respondsToSelector:@selector(selectedSegment)] ? [sender selectedSegment] : [sender tag];
+    [pdfView setToolMode:newToolMode];
 }
 
 - (IBAction)changeAnnotationMode:(id)sender {
@@ -1845,6 +1849,10 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
 
 - (void)handleScaleChangedNotification:(NSNotification *)notification {
     [scaleField setFloatValue:[pdfView scaleFactor] * 100.0];
+}
+
+- (void)handleToolModeChangedNotification:(NSNotification *)notification {
+    [toolModeButton selectSegmentWithTag:[pdfView toolMode]];
 }
 
 - (void)handleAnnotationModeChangedNotification:(NSNotification *)notification {
