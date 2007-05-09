@@ -265,6 +265,7 @@ static NSString *SKDocumentToolbarNotesPaneItemIdentifier = @"SKDocumentToolbarN
     [self handleChangedHistoryNotification:nil];
     [self handlePageChangedNotification:nil];
     [self handleScaleChangedNotification:nil];
+    [self handleAnnotationModeChangedNotification:nil];
     
     [self registerForNotifications];
     [self registerAsObserver];
@@ -280,6 +281,8 @@ static NSString *SKDocumentToolbarNotesPaneItemIdentifier = @"SKDocumentToolbarN
                              name:PDFViewPageChangedNotification object:pdfView];
     [nc addObserver:self selector:@selector(handleScaleChangedNotification:) 
                              name:PDFViewScaleChangedNotification object:pdfView];
+    [nc addObserver:self selector:@selector(handleAnnotationModeChangedNotification:) 
+                             name:SKPDFViewAnnotationModeChangedNotification object:pdfView];
     [nc addObserver:self selector:@selector(handleChangedHistoryNotification:) 
                              name:PDFViewChangedHistoryNotification object:pdfView];
     [nc addObserver:self selector:@selector(handleDidChangeActiveAnnotationNotification:) 
@@ -978,6 +981,11 @@ static NSString *SKDocumentToolbarNotesPaneItemIdentifier = @"SKDocumentToolbarN
 
 - (IBAction)changeToolMode:(id)sender {
     [pdfView setToolMode:[sender tag]];
+}
+
+- (IBAction)changeAnnotationMode:(id)sender {
+    [pdfView setToolMode:SKNoteToolMode];
+    [pdfView setAnnotationMode:[sender tag]];
 }
 
 - (IBAction)toggleLeftSidePane:(id)sender {
@@ -1834,6 +1842,30 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
 
 - (void)handleScaleChangedNotification:(NSNotification *)notification {
     [scaleField setFloatValue:[pdfView scaleFactor] * 100.0];
+}
+
+- (void)handleAnnotationModeChangedNotification:(NSNotification *)notification {
+    NSImage *image = nil;
+    switch ([pdfView annotationMode]) {
+        case SKFreeTextNote:
+            image = [NSImage imageNamed:@"TextNoteToolAdorn"];
+            break;
+        case SKAnchoredNote:
+            image = [NSImage imageNamed:@"AnchoredNoteToolAdorn"]; break;
+        case SKCircleNote:
+            image = [NSImage imageNamed:@"CircleNoteToolAdorn"]; break;
+        case SKSquareNote:
+            image = [NSImage imageNamed:@"SquareNoteToolAdorn"]; break;
+        case SKHighlightNote:
+            image = [NSImage imageNamed:@"HighlightNoteToolAdorn"]; break;
+        case SKUnderlineNote:
+            image = [NSImage imageNamed:@"UnderlineNoteToolAdorn"]; break;
+        case SKStrikeOutNote:
+            image = [NSImage imageNamed:@"StrikeOutNoteToolAdorn"]; break;
+        case SKArrowNote:
+            image = [NSImage imageNamed:@"ArrowNoteToolAdorn"]; break;
+    }
+    [toolModeButton setImage:image forSegment:SKNoteToolMode];
 }
 
 - (void)handleApplicationWillTerminateNotification:(NSNotification *)notification {
@@ -2881,6 +2913,31 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
     menuItem = [menu addItemWithTitle:NSLocalizedString(@"Magnify Tool", @"Menu item title") action:@selector(changeToolMode:) keyEquivalent:@""];
 	[menuItem setTarget:self];
 	[menuItem setTag:SKMagnifyToolMode];
+    [menu addItem:[NSMenuItem separatorItem]];
+    menuItem = [menu addItemWithTitle:NSLocalizedString(@"Text Note Tool", @"Menu item title") action:@selector(changeAnnotationMode:) keyEquivalent:@""];
+	[menuItem setTarget:self];
+	[menuItem setTag:SKFreeTextNote];
+    menuItem = [menu addItemWithTitle:NSLocalizedString(@"Anchored Note Tool", @"Menu item title") action:@selector(changeAnnotationMode:) keyEquivalent:@""];
+	[menuItem setTarget:self];
+	[menuItem setTag:SKAnchoredNote];
+    menuItem = [menu addItemWithTitle:NSLocalizedString(@"Circle Tool", @"Menu item title") action:@selector(changeAnnotationMode:) keyEquivalent:@""];
+	[menuItem setTarget:self];
+	[menuItem setTag:SKCircleNote];
+    menuItem = [menu addItemWithTitle:NSLocalizedString(@"Box Tool", @"Menu item title") action:@selector(changeAnnotationMode:) keyEquivalent:@""];
+	[menuItem setTarget:self];
+	[menuItem setTag:SKSquareNote];
+    menuItem = [menu addItemWithTitle:NSLocalizedString(@"Highlight Tool", @"Menu item title") action:@selector(changeAnnotationMode:) keyEquivalent:@""];
+	[menuItem setTarget:self];
+	[menuItem setTag:SKHighlightNote];
+    menuItem = [menu addItemWithTitle:NSLocalizedString(@"Underline Tool", @"Menu item title") action:@selector(changeAnnotationMode:) keyEquivalent:@""];
+	[menuItem setTarget:self];
+	[menuItem setTag:SKUnderlineNote];
+    menuItem = [menu addItemWithTitle:NSLocalizedString(@"Strike Out Tool", @"Menu item title") action:@selector(changeAnnotationMode:) keyEquivalent:@""];
+	[menuItem setTarget:self];
+	[menuItem setTag:SKStrikeOutNote];
+    menuItem = [menu addItemWithTitle:NSLocalizedString(@"Arrow Tool", @"Menu item title") action:@selector(changeAnnotationMode:) keyEquivalent:@""];
+	[menuItem setTarget:self];
+	[menuItem setTag:SKArrowNote];
 	menuItem = [[[NSMenuItem allocWithZone:[NSMenu menuZone]] initWithTitle:NSLocalizedString(@"Tool Mode", @"Toolbar item label") action:NULL keyEquivalent:@""] autorelease];
     [menuItem setSubmenu:menu];
     item = [[SKToolbarItem alloc] initWithItemIdentifier:SKDocumentToolbarToolModeItemIdentifier];
@@ -2890,6 +2947,7 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
     [[toolModeButton cell] setToolTip:NSLocalizedString(@"Text Tool", @"Tool tip message") forSegment:SKTextToolMode];
     [[toolModeButton cell] setToolTip:NSLocalizedString(@"Scroll Tool", @"Tool tip message") forSegment:SKMoveToolMode];
     [[toolModeButton cell] setToolTip:NSLocalizedString(@"Magnify Tool", @"Tool tip message") forSegment:SKMagnifyToolMode];
+    [[toolModeButton cell] setToolTip:NSLocalizedString(@"Note Tool", @"Tool tip message") forSegment:SKNoteToolMode];
     frame = [toolModeButton frame];
     frame.size.height = SEGMENTED_CONTROL_HEIGHT;
     [toolModeButton setFrame:frame];
@@ -2899,6 +2957,40 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
     [item setMenuFormRepresentation:menuItem];
     [toolbarItems setObject:item forKey:SKDocumentToolbarToolModeItemIdentifier];
     [item release];
+	menu = [[NSMenu allocWithZone:[NSMenu menuZone]] init];
+    menuItem = [menu addItemWithTitle:NSLocalizedString(@"Text Note", @"Menu item title") action:@selector(changeAnnotationMode:) keyEquivalent:@""];
+	[menuItem setTarget:self];
+	[menuItem setTag:SKFreeTextNote];
+	[menuItem setImage:[NSImage imageNamed:@"TextNoteAdorn"]];
+    menuItem = [menu addItemWithTitle:NSLocalizedString(@"Anchored Note", @"Menu item title") action:@selector(changeAnnotationMode:) keyEquivalent:@""];
+	[menuItem setTarget:self];
+	[menuItem setTag:SKAnchoredNote];
+	[menuItem setImage:[NSImage imageNamed:@"AnchoredNoteAdorn"]];
+    menuItem = [menu addItemWithTitle:NSLocalizedString(@"Circle", @"Menu item title") action:@selector(changeAnnotationMode:) keyEquivalent:@""];
+	[menuItem setTarget:self];
+	[menuItem setTag:SKCircleNote];
+	[menuItem setImage:[NSImage imageNamed:@"CircleNoteAdorn"]];
+    menuItem = [menu addItemWithTitle:NSLocalizedString(@"Box", @"Menu item title") action:@selector(changeAnnotationMode:) keyEquivalent:@""];
+	[menuItem setTarget:self];
+	[menuItem setTag:SKSquareNote];
+	[menuItem setImage:[NSImage imageNamed:@"SquareNoteAdorn"]];
+    menuItem = [menu addItemWithTitle:NSLocalizedString(@"Highlight", @"Menu item title") action:@selector(changeAnnotationMode:) keyEquivalent:@""];
+	[menuItem setTarget:self];
+	[menuItem setTag:SKHighlightNote];
+	[menuItem setImage:[NSImage imageNamed:@"HighlightNoteAdorn"]];
+    menuItem = [menu addItemWithTitle:NSLocalizedString(@"Underline", @"Menu item title") action:@selector(changeAnnotationMode:) keyEquivalent:@""];
+	[menuItem setTarget:self];
+	[menuItem setTag:SKUnderlineNote];
+	[menuItem setImage:[NSImage imageNamed:@"UnderlineNoteAdorn"]];
+    menuItem = [menu addItemWithTitle:NSLocalizedString(@"Strike Out", @"Menu item title") action:@selector(changeAnnotationMode:) keyEquivalent:@""];
+	[menuItem setTarget:self];
+	[menuItem setTag:SKStrikeOutNote];
+	[menuItem setImage:[NSImage imageNamed:@"StrikeOutNoteAdorn"]];
+    menuItem = [menu addItemWithTitle:NSLocalizedString(@"Arrow", @"Menu item title") action:@selector(changeAnnotationMode:) keyEquivalent:@""];
+	[menuItem setTarget:self];
+	[menuItem setTag:SKArrowNote];
+	[menuItem setImage:[NSImage imageNamed:@"ArrowNoteAdorn"]];
+    [toolModeButton setMenu:menu forSegment:SKNoteToolMode];
     
 	menu = [[NSMenu allocWithZone:[NSMenu menuZone]] init];
     menuItem = [menu addItemWithTitle:NSLocalizedString(@"Media Box", @"Menu item title") action:@selector(changeDisplayBox:) keyEquivalent:@""];
@@ -3074,6 +3166,12 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
         return YES;
     } else if (action == @selector(changeToolMode:)) {
         [menuItem setState:[pdfView toolMode] == (unsigned)[menuItem tag] ? NSOnState : NSOffState];
+        return YES;
+    } else if (action == @selector(changeAnnotationMode:)) {
+        if ([[menuItem menu] numberOfItems] > 8)
+            [menuItem setState:[pdfView toolMode] == SKNoteToolMode && [pdfView annotationMode] == (unsigned)[menuItem tag] ? NSOnState : NSOffState];
+        else
+            [menuItem setState:[pdfView annotationMode] == (unsigned)[menuItem tag] ? NSOnState : NSOffState];
         return YES;
     } else if (action == @selector(doGoToNextPage:)) {
         return [pdfView canGoToNextPage];

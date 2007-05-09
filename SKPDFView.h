@@ -41,6 +41,7 @@
 #import "SKMainWindowController.h"
 
 extern NSString *SKPDFViewToolModeChangedNotification;
+extern NSString *SKPDFViewAnnotationModeChangedNotification;
 extern NSString *SKPDFViewActiveAnnotationDidChangeNotification;
 extern NSString *SKPDFViewDidAddAnnotationNotification;
 extern NSString *SKPDFViewDidRemoveAnnotationNotification;
@@ -52,7 +53,8 @@ extern NSString *SKSkimNotePboardType;
 typedef enum _SKToolMode {
     SKTextToolMode,
     SKMoveToolMode,
-    SKMagnifyToolMode
+    SKMagnifyToolMode,
+    SKNoteToolMode
 } SKToolMode;
 
 typedef enum _SKNoteType {
@@ -70,6 +72,7 @@ typedef enum _SKNoteType {
 
 @interface SKPDFView : PDFView {
     SKToolMode toolMode;
+    SKNoteType annotationMode;
     
     BOOL autohidesCursor;
     BOOL hasNavigation;
@@ -103,6 +106,9 @@ typedef enum _SKNoteType {
 
 - (SKToolMode)toolMode;
 - (void)setToolMode:(SKToolMode)newToolMode;
+
+- (SKNoteType)annotationMode;
+- (void)setAnnotationMode:(SKNoteType)newAnnotationMode;
 
 - (PDFAnnotation *)activeAnnotation;
 - (void)setActiveAnnotation:(PDFAnnotation *)newAnnotation;
