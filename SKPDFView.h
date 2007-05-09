@@ -95,6 +95,7 @@ typedef enum _SKNoteType {
 	BOOL draggingAnnotation;
 	BOOL draggingStartPoint;
     BOOL didDrag;
+    BOOL didBeginUndoGrouping;
     BOOL mouseDownInAnnotation;
     BOOL extendSelection;
     BOOL rectSelection;

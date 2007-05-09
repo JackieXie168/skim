@@ -580,6 +580,7 @@ static CGMutablePathRef SKCGCreatePathWithRoundRectInRect(CGRect rect, float rad
     mouseDownLoc = [theEvent locationInWindow];
 	unsigned int modifiers = [theEvent modifierFlags] & NSDeviceIndependentModifierFlagsMask;
     
+    didBeginUndoGrouping = NO;
     didDrag = NO;
     
     if (modifiers & NSCommandKeyMask) {
@@ -641,14 +642,16 @@ static CGMutablePathRef SKCGCreatePathWithRoundRectInRect(CGRect rect, float rad
                     NSString *selString = [[[[activeAnnotation page] selectionForRect:[activeAnnotation bounds]] string] stringByCollapsingWhitespaceAndNewlinesAndRemovingSurroundingWhitespaceAndNewlines];
                     [activeAnnotation setContents:selString];
                 }
-                [[self undoManager] endUndoGrouping];
-                // due to an Appkit bug, endUndoGrouping registers an extra change count, which is not reverted when the group is undone
-                [[[[self window] windowController] document] updateChangeCount:NSChangeUndone];
             } else if (toolMode == SKNoteToolMode && [self currentSelection] && (annotationMode == SKHighlightNote || annotationMode == SKUnderlineNote || annotationMode == SKStrikeOutNote)) {
                 [self addAnnotationFromSelectionWithType:annotationMode];
                 [self setCurrentSelection:nil];
             } else
                 [super mouseUp:theEvent];
+            if (didBeginUndoGrouping) {
+                [[self undoManager] endUndoGrouping];
+                // due to an Appkit bug, endUndoGrouping registers an extra change count, which is not reverted when the group is undone
+                [[[[self window] windowController] document] updateChangeCount:NSChangeUndone];
+            }
             draggingAnnotation = NO;
             break;
         case SKMoveToolMode:
@@ -658,6 +661,7 @@ static CGMutablePathRef SKCGCreatePathWithRoundRectInRect(CGRect rect, float rad
             [super mouseUp:theEvent];
             break;
     }
+    didBeginUndoGrouping = NO;
     didDrag = NO;
 }
 
@@ -666,8 +670,10 @@ static CGMutablePathRef SKCGCreatePathWithRoundRectInRect(CGRect rect, float rad
         case SKTextToolMode:
         case SKNoteToolMode:
             if (draggingAnnotation) {
-                if (didDrag == NO)
+                if (didBeginUndoGrouping == NO) {
                     [[self undoManager] beginUndoGrouping];
+                    didBeginUndoGrouping = YES;
+                }
                 [self dragAnnotationWithEvent:theEvent];
             } else if (nil == activeAnnotation) {
                 if (mouseDownInAnnotation)
@@ -2056,6 +2062,8 @@ static CGMutablePathRef SKCGCreatePathWithRoundRectInRect(CGRect rect, float rad
     if (([theEvent modifierFlags] & NSAlternateKeyMask) && [newActiveAnnotation isMovable]) {
         // select a new copy of the annotation
         PDFAnnotation *newAnnotation = [[PDFAnnotation alloc] initWithDictionary:[newActiveAnnotation dictionaryValue]];
+        [[self undoManager] beginUndoGrouping];
+        didBeginUndoGrouping = YES;
         [self addAnnotation:newAnnotation toPage:activePage];
         newActiveAnnotation = newAnnotation;
         [newAnnotation release];
@@ -2063,6 +2071,8 @@ static CGMutablePathRef SKCGCreatePathWithRoundRectInRect(CGRect rect, float rad
                (annotationMode == SKFreeTextNote || annotationMode == SKAnchoredNote || annotationMode == SKCircleNote || annotationMode == SKSquareNote || annotationMode == SKArrowNote)) {
         float width = annotationMode == SKAnchoredNote ? 16.0 : annotationMode == SKArrowNote ? 7.0 : 8.0;
         NSRect bounds = NSMakeRect(pagePoint.x - ceilf(0.5 * width), pagePoint.y - ceilf(0.5 * width), width, width);
+        [[self undoManager] beginUndoGrouping];
+        didBeginUndoGrouping = YES;
         [self addAnnotationWithType:annotationMode contents:nil page:activePage bounds:bounds];
         newActiveAnnotation = activeAnnotation;
         mouseDownInAnnotation = YES;
