@@ -384,6 +384,7 @@ NSString *SKDocumentWillSaveNotification = @"SKDocumentWillSaveNotification";
             NSLog(@"%@: %@", self, error);
         }
         [fm setExtendedAttributeNamed:@"net_sourceforge_skim-app_rtf_notes" toValue:[self notesRTFData] atPath:path options:0 error:NULL];
+        [fm setExtendedAttributeNamed:@"net_sourceforge_skim-app_text_notes" toPropertyListValue:[self notesString] atPath:path options:0 error:NULL];
     }
     return success;
 }
@@ -715,6 +716,49 @@ NSString *SKDocumentWillSaveNotification = @"SKDocumentWillSaveNotification";
 
 - (SKPDFView *)pdfView {
     return [[self mainWindowController] pdfView];
+}
+
+- (NSString *)notesString {
+    NSEnumerator *noteEnum = [[[self mainWindowController] notes] objectEnumerator];
+    PDFAnnotation *note;
+    NSMutableString *mutableString = [NSMutableString stringWithCapacity:2048];
+    
+    while (note = [noteEnum nextObject]) {
+        NSString *type = [note type];
+        NSString *contents = [note contents];
+        NSString *textString = [[note text] string];
+        NSString *tmpString = nil;
+        
+        if ([type isEqualToString:@"FreeText"]) 
+            tmpString = NSLocalizedString(@"Text Note", @"Description for export");
+        else if ([type isEqualToString:@"Note"]) 
+            tmpString = NSLocalizedString(@"Anchored Note", @"Description for export");
+        else if ([type isEqualToString:@"Circle"]) 
+            tmpString = NSLocalizedString(@"Circle", @"Description for export");
+        else if ([type isEqualToString:@"Square"]) 
+            tmpString = NSLocalizedString(@"Box", @"Description for export");
+        else if ([type isEqualToString:@"MarkUp"] || [type isEqualToString:@"Highlight"]) 
+            tmpString = NSLocalizedString(@"Highlight", @"Description for export");
+        else if ([type isEqualToString:@"Underline"]) 
+            tmpString = NSLocalizedString(@"Underline", @"Description for export");
+        else if ([type isEqualToString:@"StrikeOut"]) 
+            tmpString = NSLocalizedString(@"Strike Out", @"Description for export");
+        else if ([type isEqualToString:@"Arrow"]) 
+            tmpString = NSLocalizedString(@"Arrow", @"Description for export");
+        [mutableString appendFormat:NSLocalizedString(@"%C %@, page %i", @"Description for export"), 0x2022, tmpString, [note pageIndex] + 1];
+        [mutableString appendString:@"\n\n"];
+        
+        if (contents) {
+            [mutableString appendString:contents];
+            [mutableString appendString:@"\n\n"];
+        }
+        
+        if (textString) {
+            [mutableString appendString:textString];
+            [mutableString appendString:@"\n\n"];
+        }
+    }
+    return mutableString;
 }
 
 - (NSData *)notesRTFData {
