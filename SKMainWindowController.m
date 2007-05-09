@@ -3130,7 +3130,7 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
     } else if ([identifier isEqualToString:SKDocumentToolbarNewNoteItemIdentifier] || [identifier isEqualToString:SKDocumentToolbarNewCircleNoteItemIdentifier] || [identifier isEqualToString:SKDocumentToolbarNewArrowItemIdentifier]) {
         return [pdfView toolMode] == SKTextToolMode || [pdfView toolMode] == SKNoteToolMode;
     } else if ([identifier isEqualToString:SKDocumentToolbarNewMarkupItemIdentifier]) {
-        return [pdfView toolMode] == SKTextToolMode && [[[pdfView currentSelection] pages] count];
+        return ([pdfView toolMode] == SKTextToolMode || [pdfView toolMode] == SKNoteToolMode) && [[[pdfView currentSelection] pages] count];
     } else if ([identifier isEqualToString:SKDocumentToolbarInfoItemIdentifier]) {
         return YES;
     } else {
@@ -3142,7 +3142,7 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
     SEL action = [menuItem action];
     if (action == @selector(createNewNote:)) {
         BOOL isMarkup = [menuItem tag] == SKHighlightNote || [menuItem tag] == SKUnderlineNote || [menuItem tag] == SKStrikeOutNote;
-        return [pdfView toolMode] == SKTextToolMode && (isMarkup == NO || [[[pdfView currentSelection] pages] count]);
+        return ([pdfView toolMode] == SKTextToolMode || [pdfView toolMode] == SKNoteToolMode) && (isMarkup == NO || [[[pdfView currentSelection] pages] count]);
     } else if (action == @selector(editNote:)) {
         PDFAnnotation *annotation = [pdfView activeAnnotation];
         return [annotation isNoteAnnotation] && ([[annotation type] isEqualToString:@"FreeText"] || [[annotation type] isEqualToString:@"Note"]);
