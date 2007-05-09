@@ -599,11 +599,12 @@ static CGMutablePathRef SKCGCreatePathWithRoundRectInRect(CGRect rect, float rad
                 p = [self convertPoint:p toPage:page];
                 if (readingBar && [[readingBar page] isEqual:page] && NSPointInRect(p, [readingBar currentBoundsForBox:[self displayBox]])) {
                     [self dragReadingBarWithEvent:theEvent];
-                } else if ([[self document] isLocked] || [self selectAnnotationWithEvent:theEvent] == NO) {
+                } else if ([self selectAnnotationWithEvent:theEvent] == NO) {
                     PDFAreaOfInterest area = [self areaOfInterestForMouse:theEvent];
-                    if (area == kPDFNoArea || (area == kPDFPageArea && [[page selectionForRect:NSMakeRect(p.x - 30.0, p.y - 40.0, 60.0, 80.0)] string] == nil)) {
+                    BOOL canSelectOrDrag = area == kPDFNoArea || toolMode == SKTextToolMode || annotationMode == SKHighlightNote || annotationMode == SKUnderlineNote || annotationMode == SKStrikeOutNote;
+                    if (area == kPDFNoArea || (canSelectOrDrag && area == kPDFPageArea && [[page selectionForRect:NSMakeRect(p.x - 30.0, p.y - 40.0, 60.0, 80.0)] string] == nil)) {
                         [self dragWithEvent:theEvent];
-                    } else {
+                    } else if (canSelectOrDrag) {
                         if (nil == activeAnnotation && mouseDownInAnnotation)
                             [self selectTextWithEvent:theEvent];
                         [super mouseDown:theEvent];
@@ -2068,6 +2069,7 @@ static CGMutablePathRef SKCGCreatePathWithRoundRectInRect(CGRect rect, float rad
         newActiveAnnotation = newAnnotation;
         [newAnnotation release];
     } else if (toolMode == SKNoteToolMode && newActiveAnnotation == nil &&
+               NSPointInRect(mouseDownOnPage, [activePage boundsForBox:[self displayBox]]) &&
                (annotationMode == SKFreeTextNote || annotationMode == SKAnchoredNote || annotationMode == SKCircleNote || annotationMode == SKSquareNote || annotationMode == SKArrowNote)) {
         float width = annotationMode == SKAnchoredNote ? 16.0 : annotationMode == SKArrowNote ? 7.0 : 8.0;
         NSRect bounds = NSMakeRect(pagePoint.x - ceilf(0.5 * width), pagePoint.y - ceilf(0.5 * width), width, width);
@@ -2797,8 +2799,9 @@ static CGMutablePathRef SKCGCreatePathWithRoundRectInRect(CGRect rect, float rad
                 PDFPage *page = [self pageForPoint:p nearest:NO];
                 p = [self convertPoint:p toPage:page];
                 PDFAreaOfInterest area = [self areaOfInterestForMouse:theEvent];
+                BOOL canSelectOrDrag = area == kPDFNoArea || toolMode == SKTextToolMode || annotationMode == SKHighlightNote || annotationMode == SKUnderlineNote || annotationMode == SKStrikeOutNote;
                 if ((readingBar && [[readingBar page] isEqual:page] && NSPointInRect(p, [readingBar currentBoundsForBox:[self displayBox]])) ||
-                    (area == kPDFNoArea || (area == kPDFPageArea && [[page selectionForRect:NSMakeRect(p.x - 30.0, p.y - 40.0, 60.0, 80.0)] string] == nil)))
+                    (area == kPDFNoArea || (canSelectOrDrag && area == kPDFPageArea && [[page selectionForRect:NSMakeRect(p.x - 30.0, p.y - 40.0, 60.0, 80.0)] string] == nil)))
                     cursor = [NSCursor openHandCursor];
                 break;
             }
