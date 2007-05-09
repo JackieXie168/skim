@@ -2071,13 +2071,15 @@ static CGMutablePathRef SKCGCreatePathWithRoundRectInRect(CGRect rect, float rad
     } else if (toolMode == SKNoteToolMode && newActiveAnnotation == nil &&
                NSPointInRect(mouseDownOnPage, [activePage boundsForBox:[self displayBox]]) &&
                (annotationMode == SKFreeTextNote || annotationMode == SKAnchoredNote || annotationMode == SKCircleNote || annotationMode == SKSquareNote || annotationMode == SKArrowNote)) {
-        float width = annotationMode == SKAnchoredNote ? 16.0 : annotationMode == SKArrowNote ? 7.0 : 8.0;
-        NSRect bounds = NSMakeRect(pagePoint.x - ceilf(0.5 * width), pagePoint.y - ceilf(0.5 * width), width, width);
+        float width = annotationMode == SKAnchoredNote ? 16.0 : annotationMode == SKArrowNote ? 4.0 : 8.0;
+        NSRect bounds = NSMakeRect(pagePoint.x - floorf(0.5 * width), pagePoint.y - floorf(0.5 * width), width, width);
         [[self undoManager] beginUndoGrouping];
         didBeginUndoGrouping = YES;
         [self addAnnotationWithType:annotationMode contents:nil page:activePage bounds:bounds];
         newActiveAnnotation = activeAnnotation;
         mouseDownInAnnotation = YES;
+        clickDelta.x = pagePoint.x - NSMinX(bounds);
+        clickDelta.y = pagePoint.y - NSMinY(bounds);
     }
     
     if (activeAnnotation != newActiveAnnotation)
