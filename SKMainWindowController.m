@@ -243,6 +243,9 @@ static NSString *SKDocumentToolbarNotesPaneItemIdentifier = @"SKDocumentToolbarN
     // windowControllerDidLoadNib: is not called automatically because the document overrides makeWindowControllers
     [[self document] windowControllerDidLoadNib:self];
     
+    // this is mainly needed when the pdf auto-scales
+    [pdfView layoutDocumentView];
+    
     if (pdfOutline == nil) {
         if ([[NSUserDefaults standardUserDefaults] boolForKey:SKOpenContentsPaneOnlyForTOCKey] &&
             NSWidth([leftSideContentBox frame]) > 0.0)
