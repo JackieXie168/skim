@@ -83,6 +83,7 @@ extern NSString *SKPostScriptDocumentType;
 
 - (SKPDFView *)pdfView;
 
+- (NSString *)notesString;
 - (NSData *)notesRTFData;
 
 - (NSDictionary *)currentDocumentSetup;
