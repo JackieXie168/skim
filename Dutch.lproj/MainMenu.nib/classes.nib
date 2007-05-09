@@ -26,6 +26,7 @@
                 editBookmarks = id; 
                 editNote = id; 
                 getInfo = id; 
+                myAction = id; 
                 newDocumentFromClipboard = id; 
                 password = id; 
                 performFit = id; 
