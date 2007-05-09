@@ -143,6 +143,7 @@ static CGMutablePathRef SKCGCreatePathWithRoundRectInRect(CGRect rect, float rad
 
 - (void)commonInitialization {
     toolMode = [[NSUserDefaults standardUserDefaults] integerForKey:SKLastToolModeKey];
+    annotationMode = [[NSUserDefaults standardUserDefaults] integerForKey:SKLastAnnotationModeKey];
     
     autohidesCursor = NO;
     hasNavigation = NO;
@@ -357,7 +358,7 @@ static CGMutablePathRef SKCGCreatePathWithRoundRectInRect(CGRect rect, float rad
 
 - (void)setToolMode:(SKToolMode)newToolMode {
     if (toolMode != newToolMode) {
-        if (toolMode == SKTextToolMode && activeAnnotation) {
+        if ((toolMode == SKTextToolMode || toolMode == SKNoteToolMode) && (newToolMode != SKTextToolMode && newToolMode != SKNoteToolMode) && activeAnnotation) {
             if (editAnnotation)
                 [self endAnnotationEdit:self];
             [self setActiveAnnotation:nil];
@@ -366,6 +367,20 @@ static CGMutablePathRef SKCGCreatePathWithRoundRectInRect(CGRect rect, float rad
         toolMode = newToolMode;
         [[NSUserDefaults standardUserDefaults] setInteger:toolMode forKey:SKLastToolModeKey];
         [[NSNotificationCenter defaultCenter] postNotificationName:SKPDFViewToolModeChangedNotification object:self];
+        // hack to make sure we update the cursor
+        [[self window] makeFirstResponder:self];
+    }
+}
+
+- (SKNoteType)annotationMode {
+    return annotationMode;
+}
+
+- (void)setAnnotationMode:(SKNoteType)newAnnotationMode {
+    if (annotationMode != newAnnotationMode) {
+        annotationMode = newAnnotationMode;
+        [[NSUserDefaults standardUserDefaults] setInteger:annotationMode forKey:SKLastAnnotationModeKey];
+        [[NSNotificationCenter defaultCenter] postNotificationName:SKPDFViewAnnotationModeChangedNotification object:self];
         // hack to make sure we update the cursor
         [[self window] makeFirstResponder:self];
     }
@@ -519,6 +534,11 @@ static CGMutablePathRef SKCGCreatePathWithRoundRectInRect(CGRect rect, float rad
     [self setToolMode:[sender tag]];
 }
 
+- (void)changeAnnotationMode:(id)sender {
+    [self setToolMode:SKNoteToolMode];
+    [self setAnnotationMode:[sender tag]];
+}
+
 #pragma mark Event Handling
 
 - (void)keyDown:(NSEvent *)theEvent
@@ -534,13 +554,13 @@ static CGMutablePathRef SKCGCreatePathWithRoundRectInRect(CGRect rect, float rad
 		[self goToPreviousPage:self];
 	} else if ((eventChar == NSDeleteCharacter || eventChar == NSDeleteFunctionKey) && (modifiers == 0)) {
 		[self delete:self];
-    } else if (isPresentation == NO && [self toolMode] == SKTextToolMode && (eventChar == NSEnterCharacter || eventChar == NSFormFeedCharacter || eventChar == NSNewlineCharacter || eventChar == NSCarriageReturnCharacter) && (modifiers == 0)) {
+    } else if (isPresentation == NO && ([self toolMode] == SKTextToolMode || [self toolMode] == SKNoteToolMode) && (eventChar == NSEnterCharacter || eventChar == NSFormFeedCharacter || eventChar == NSNewlineCharacter || eventChar == NSCarriageReturnCharacter) && (modifiers == 0)) {
         if (activeAnnotation && activeAnnotation != editAnnotation)
             [self editActiveAnnotation:self];
-    } else if (isPresentation == NO && [self toolMode] == SKTextToolMode && (eventChar == NSTabCharacter) && (modifiers == NSAlternateKeyMask)) {
+    } else if (isPresentation == NO && ([self toolMode] == SKTextToolMode || [self toolMode] == SKNoteToolMode) && (eventChar == NSTabCharacter) && (modifiers == NSAlternateKeyMask)) {
         [self selectNextActiveAnnotation:self];
     // backtab is a bit inconsistent, it seems Shift+Tab gives a Shift-BackTab key event, I would have expected either Shift-Tab (as for the raw event) or BackTab (as for most shift-modified keys)
-    } else if (isPresentation == NO && [self toolMode] == SKTextToolMode && (((eventChar == NSBackTabCharacter) && (modifiers == NSAlternateKeyMask | NSShiftKeyMask)) || ((eventChar == NSBackTabCharacter) && (modifiers == NSAlternateKeyMask)) || ((eventChar == NSTabCharacter) && (modifiers == NSAlternateKeyMask)))) {
+    } else if (isPresentation == NO && ([self toolMode] == SKTextToolMode || [self toolMode] == SKNoteToolMode) && (((eventChar == NSBackTabCharacter) && (modifiers == NSAlternateKeyMask | NSShiftKeyMask)) || ((eventChar == NSBackTabCharacter) && (modifiers == NSAlternateKeyMask)) || ((eventChar == NSTabCharacter) && (modifiers == NSAlternateKeyMask)))) {
         [self selectPreviousActiveAnnotation:self];
 	} else if (isPresentation == NO && [activeAnnotation isNoteAnnotation] && [activeAnnotation isMovable] && (eventChar == NSRightArrowFunctionKey || eventChar == NSLeftArrowFunctionKey || eventChar == NSUpArrowFunctionKey || eventChar == NSDownArrowFunctionKey) && (modifiers == 0 || modifiers == NSShiftKeyMask)) {
         [self moveActiveAnnotationForKey:eventChar byAmount:(modifiers & NSShiftKeyMask) ? 10.0 : 1.0];
@@ -570,6 +590,7 @@ static CGMutablePathRef SKCGCreatePathWithRoundRectInRect(CGRect rect, float rad
     } else {
         switch (toolMode) {
             case SKTextToolMode:
+            case SKNoteToolMode:
             {
                 NSPoint p = mouseDownLoc;
                 p = [self convertPoint:p fromView:nil];
@@ -605,6 +626,7 @@ static CGMutablePathRef SKCGCreatePathWithRoundRectInRect(CGRect rect, float rad
 - (void)mouseUp:(NSEvent *)theEvent{
     switch (toolMode) {
         case SKTextToolMode:
+        case SKNoteToolMode:
             if (mouseDownInAnnotation) {
                 if (nil == activeAnnotation && NSIsEmptyRect(selectionRect) == NO) {
                     [self setNeedsDisplayInRect:selectionRect];
@@ -622,6 +644,9 @@ static CGMutablePathRef SKCGCreatePathWithRoundRectInRect(CGRect rect, float rad
                 [[self undoManager] endUndoGrouping];
                 // due to an Appkit bug, endUndoGrouping registers an extra change count, which is not reverted when the group is undone
                 [[[[self window] windowController] document] updateChangeCount:NSChangeUndone];
+            } else if (toolMode == SKNoteToolMode && [self currentSelection] && (annotationMode == SKHighlightNote || annotationMode == SKUnderlineNote || annotationMode == SKStrikeOutNote)) {
+                [self addAnnotationFromSelectionWithType:annotationMode];
+                [self setCurrentSelection:nil];
             } else
                 [super mouseUp:theEvent];
             draggingAnnotation = NO;
@@ -639,6 +664,7 @@ static CGMutablePathRef SKCGCreatePathWithRoundRectInRect(CGRect rect, float rad
 - (void)mouseDragged:(NSEvent *)theEvent {
     switch (toolMode) {
         case SKTextToolMode:
+        case SKNoteToolMode:
             if (draggingAnnotation) {
                 if (didDrag == NO)
                     [[self undoManager] beginUndoGrouping];
@@ -698,6 +724,7 @@ static CGMutablePathRef SKCGCreatePathWithRoundRectInRect(CGRect rect, float rad
     } else {
         switch (toolMode) {
             case SKTextToolMode:
+            case SKNoteToolMode:
                 cursor = [NSCursor arrowCursor];
                 break;
             case SKMoveToolMode:
@@ -743,6 +770,40 @@ static CGMutablePathRef SKCGCreatePathWithRoundRectInRect(CGRect rect, float rad
 
     item = [submenu addItemWithTitle:NSLocalizedString(@"Magnify", @"Menu item title") action:@selector(changeToolMode:) keyEquivalent:@""];
     [item setTag:SKMagnifyToolMode];
+    [item setTarget:self];
+    
+    [submenu addItem:[NSMenuItem separatorItem]];
+    
+    item = [submenu addItemWithTitle:NSLocalizedString(@"Text Note", @"Menu item title") action:@selector(changeAnnotationMode:) keyEquivalent:@""];
+    [item setTag:SKFreeTextNote];
+    [item setTarget:self];
+
+    item = [submenu addItemWithTitle:NSLocalizedString(@"Anchored Note", @"Menu item title") action:@selector(changeAnnotationMode:) keyEquivalent:@""];
+    [item setTag:SKAnchoredNote];
+    [item setTarget:self];
+
+    item = [submenu addItemWithTitle:NSLocalizedString(@"Circle", @"Menu item title") action:@selector(changeAnnotationMode:) keyEquivalent:@""];
+    [item setTag:SKCircleNote];
+    [item setTarget:self];
+    
+    item = [submenu addItemWithTitle:NSLocalizedString(@"Box", @"Menu item title") action:@selector(changeAnnotationMode:) keyEquivalent:@""];
+    [item setTag:SKSquareNote];
+    [item setTarget:self];
+    
+    item = [submenu addItemWithTitle:NSLocalizedString(@"Highlight", @"Menu item title") action:@selector(changeAnnotationMode:) keyEquivalent:@""];
+    [item setTag:SKHighlightNote];
+    [item setTarget:self];
+    
+    item = [submenu addItemWithTitle:NSLocalizedString(@"Underline", @"Menu item title") action:@selector(changeAnnotationMode:) keyEquivalent:@""];
+    [item setTag:SKUnderlineNote];
+    [item setTarget:self];
+    
+    item = [submenu addItemWithTitle:NSLocalizedString(@"Strike Out", @"Menu item title") action:@selector(changeAnnotationMode:) keyEquivalent:@""];
+    [item setTag:SKStrikeOutNote];
+    [item setTarget:self];
+    
+    item = [submenu addItemWithTitle:NSLocalizedString(@"Arrow", @"Menu item title") action:@selector(changeAnnotationMode:) keyEquivalent:@""];
+    [item setTag:SKArrowNote];
     [item setTarget:self];
     
     item = [menu insertItemWithTitle:NSLocalizedString(@"Tools", @"Menu item title") action:NULL keyEquivalent:@"" atIndex:0];
@@ -950,6 +1011,8 @@ static CGMutablePathRef SKCGCreatePathWithRoundRectInRect(CGRect rect, float rad
 
     if (selection && page) {
         bounds = [selection boundsForPage:page];
+        if (annotationType == SKCircleNote || annotationType == SKSquareNote)
+            bounds = NSInsetRect(bounds, -5.0, -5.0);
     } else {
         NSSize defaultSize = (annotationType == SKAnchoredNote) ? NSMakeSize(16.0, 16.0) : ([page rotation] % 180 == 90) ? NSMakeSize(64.0, 128.0) : NSMakeSize(128.0, 64.0);
         
@@ -985,6 +1048,8 @@ static CGMutablePathRef SKCGCreatePathWithRoundRectInRect(CGRect rect, float rad
 		// Get bounds (page space) for selection (first page in case selection spans multiple pages).
 		page = [[selection pages] objectAtIndex: 0];
 		bounds = [selection boundsForPage: page];
+        if (annotationType == SKCircleNote || annotationType == SKSquareNote)
+            bounds = NSInsetRect(bounds, -5.0, -5.0);
 	} else if (annotationType == SKHighlightNote || annotationType == SKUnderlineNote || annotationType == SKStrikeOutNote) {
         NSBeep();
         return;
@@ -1038,10 +1103,10 @@ static CGMutablePathRef SKCGCreatePathWithRoundRectInRect(CGRect rect, float rad
                 text = NSLocalizedString(@"New note", @"Default text for new anchored note");
             break;
         case SKCircleNote:
-            newAnnotation = [[SKPDFAnnotationCircle alloc] initWithBounds:NSInsetRect(bounds, -5.0, -5.0)];
+            newAnnotation = [[SKPDFAnnotationCircle alloc] initWithBounds:bounds];
             break;
         case SKSquareNote:
-            newAnnotation = [[SKPDFAnnotationSquare alloc] initWithBounds:NSInsetRect(bounds, -5.0, -5.0)];
+            newAnnotation = [[SKPDFAnnotationSquare alloc] initWithBounds:bounds];
             break;
         case SKHighlightNote:
             newAnnotation = [[SKPDFAnnotationMarkup alloc] initWithSelection:[self currentSelection] markupType:kPDFMarkupTypeHighlight];
@@ -1388,6 +1453,12 @@ static CGMutablePathRef SKCGCreatePathWithRoundRectInRect(CGRect rect, float rad
     SEL action = [menuItem action];
     if (action == @selector(changeToolMode:)) {
         [menuItem setState:[self toolMode] == (unsigned)[menuItem tag] ? NSOnState : NSOffState];
+        return YES;
+    } else if (action == @selector(changeAnnotationMode:)) {
+        if ([[menuItem menu] numberOfItems] > 8)
+            [menuItem setState:[self toolMode] == SKNoteToolMode && [self annotationMode] == (unsigned)[menuItem tag] ? NSOnState : NSOffState];
+        else
+            [menuItem setState:[self annotationMode] == (unsigned)[menuItem tag] ? NSOnState : NSOffState];
         return YES;
     } else {
         return [super validateMenuItem:menuItem];
@@ -1988,6 +2059,13 @@ static CGMutablePathRef SKCGCreatePathWithRoundRectInRect(CGRect rect, float rad
         [self addAnnotation:newAnnotation toPage:activePage];
         newActiveAnnotation = newAnnotation;
         [newAnnotation release];
+    } else if (toolMode == SKNoteToolMode && newActiveAnnotation == nil &&
+               (annotationMode == SKFreeTextNote || annotationMode == SKAnchoredNote || annotationMode == SKCircleNote || annotationMode == SKSquareNote || annotationMode == SKArrowNote)) {
+        float width = annotationMode == SKAnchoredNote ? 16.0 : annotationMode == SKArrowNote ? 7.0 : 8.0;
+        NSRect bounds = NSMakeRect(pagePoint.x - ceilf(0.5 * width), pagePoint.y - ceilf(0.5 * width), width, width);
+        [self addAnnotationWithType:annotationMode contents:nil page:activePage bounds:bounds];
+        newActiveAnnotation = activeAnnotation;
+        mouseDownInAnnotation = YES;
     }
     
     if (activeAnnotation != newActiveAnnotation)
@@ -2704,6 +2782,7 @@ static CGMutablePathRef SKCGCreatePathWithRoundRectInRect(CGRect rect, float rad
     } else {
         switch (toolMode) {
             case SKTextToolMode:
+            case SKNoteToolMode:
             {
                 PDFPage *page = [self pageForPoint:p nearest:NO];
                 p = [self convertPoint:p toPage:page];

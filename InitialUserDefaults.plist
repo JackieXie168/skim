@@ -64,6 +64,8 @@
         <string></string>
         <key>SKLastToolMode</key>
         <integer>0</integer>
+        <key>SKLastAnnotationMode</key>
+        <integer>0</integer>
         <key>SKGreekingThreshold</key>
         <real>3.0</real>
         <key>SKShouldAntiAlias</key>
@@ -193,6 +195,7 @@
         <array>
             <string>SKLastOpenFileNames</string>
             <string>SKLastToolMode</string>
+            <string>SKLastAnnotationMode</string>
             <string>SKBlankAllWindows</string>
         </array>
     </dict>
