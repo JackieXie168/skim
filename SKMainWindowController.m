@@ -3127,8 +3127,8 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
         return YES;
     } else if ([identifier isEqualToString:SKDocumentToolbarPresentationItemIdentifier]) {
         return YES;
-    } else if ([identifier isEqualToString:SKDocumentToolbarNewNoteItemIdentifier] || [identifier isEqualToString:SKDocumentToolbarNewCircleNoteItemIdentifier]) {
-        return [pdfView toolMode] == SKTextToolMode;
+    } else if ([identifier isEqualToString:SKDocumentToolbarNewNoteItemIdentifier] || [identifier isEqualToString:SKDocumentToolbarNewCircleNoteItemIdentifier] || [identifier isEqualToString:SKDocumentToolbarNewArrowItemIdentifier]) {
+        return [pdfView toolMode] == SKTextToolMode || [pdfView toolMode] == SKNoteToolMode;
     } else if ([identifier isEqualToString:SKDocumentToolbarNewMarkupItemIdentifier]) {
         return [pdfView toolMode] == SKTextToolMode && [[[pdfView currentSelection] pages] count];
     } else if ([identifier isEqualToString:SKDocumentToolbarInfoItemIdentifier]) {
