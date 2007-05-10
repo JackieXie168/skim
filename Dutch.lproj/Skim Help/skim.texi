@@ -1159,8 +1159,8 @@ U kunt de notities en markeringen apart in een door mensen leesbare vorm in een 
 @heading Weblocaties
 @itemize
 @item @uref{http://skim-app.sourceforge.net, Skim Website}
-@item @uref{http://skim-ap.sourceforge.net/wiki, Skim Wiki}
-@item @uref{http://skim-ap.sourceforge.net/wiki/index.php/FAQ, Skim FAQ}
+@item @uref{http://skim-app.sourceforge.net/wiki, Skim Wiki}
+@item @uref{http://skim-app.sourceforge.net/wiki/index.php/FAQ, Skim FAQ}
 @item @uref{http://skim-app.sourceforge.net/manual, Online kopie van deze handleiding}
 @end itemize
 
