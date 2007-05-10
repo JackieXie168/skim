@@ -15,9 +15,9 @@ $style_map{'sansserif'} = {};
 $simple_map{'*'} = '<br/>';
 # &quot; is not in html 3.2
 
-# undefined localizations
-$LANGUAGES->{'it'} = $LANGUAGES->{'en'};
-$LANGUAGES->{'it'}->{'cover (top) of document'} = 'copertina (in testa) del documento';
+# undefined localizations, localization doesn't seem to work
+# $LANGUAGES->{'it'} = $LANGUAGES->{'en'};
+# $LANGUAGES->{'it'}->{'cover (top) of document'} = 'copertina (in testa) del documento';
 
 # External stylesheet:
 $CSS_LINES = "<link href=\"sty/skimhelp.css\" rel=\"stylesheet\" media=\"all\" />";
