@@ -1225,9 +1225,9 @@ static CGMutablePathRef SKCGCreatePathWithRoundRectInRect(CGRect rect, float rad
         
         [[SKPDFHoverWindow sharedHoverWindow] orderOut:self];
         if ([activeAnnotation destination])
-            [self goToDestination:[activeAnnotation destination]];
-        else if ([activeAnnotation URL])
-            [[NSWorkspace sharedWorkspace] openURL:[activeAnnotation URL]];
+            [self goToDestination:[(PDFAnnotationLink *)activeAnnotation destination]];
+        else if ([(PDFAnnotationLink *)activeAnnotation URL])
+            [[NSWorkspace sharedWorkspace] openURL:[(PDFAnnotationLink *)activeAnnotation URL]];
         [self setActiveAnnotation:nil];
         
     } else if ([type isEqualToString:@"Note"]) {
