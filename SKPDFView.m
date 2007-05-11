@@ -633,6 +633,13 @@ static CGMutablePathRef SKCGCreatePathWithRoundRectInRect(CGRect rect, float rad
                 if (nil == activeAnnotation && NSIsEmptyRect(selectionRect) == NO) {
                     [self setNeedsDisplayInRect:selectionRect];
                     selectionRect = NSZeroRect;
+                } else if ([[activeAnnotation type] isEqualToString:@"Link"]) {
+                    NSPoint p = [self convertPoint:[theEvent locationInWindow] fromView:nil];
+                    PDFPage *page = [self pageForPoint:p nearest:NO];
+                    if (page && NSPointInRect([self convertPoint:p toPage:page], [activeAnnotation bounds]))
+                        [self editActiveAnnotation:nil];
+                    else
+                        [self setActiveAnnotation:nil];
                 }
                 mouseDownInAnnotation = NO;
                 [wasSelection release];
@@ -1217,7 +1224,11 @@ static CGMutablePathRef SKCGCreatePathWithRoundRectInRect(CGRect rect, float rad
     if ([type isEqualToString:@"Link"]) {
         
         [[SKPDFHoverWindow sharedHoverWindow] orderOut:self];
-        [self goToDestination:[activeAnnotation destination]];
+        if ([activeAnnotation destination])
+            [self goToDestination:[activeAnnotation destination]];
+        else if ([activeAnnotation URL])
+            [[NSWorkspace sharedWorkspace] openURL:[activeAnnotation URL]];
+        [self setActiveAnnotation:nil];
         
     } else if ([type isEqualToString:@"Note"]) {
         
@@ -2057,6 +2068,15 @@ static CGMutablePathRef SKCGCreatePathWithRoundRectInRect(CGRect rect, float rad
                 // register this, so we can do our own selection later
                 mouseDownInAnnotation = YES;
             }
+        } else if (NSPointInRect(pagePoint, bounds)) {
+            if ([annotation isTemporaryAnnotation]) {
+                // register this, so we can do our own selection later
+                mouseDownInAnnotation = YES;
+            } else if ([[annotation type] isEqualToString:@"Link"]) {
+                if (mouseDownInAnnotation)
+                    newActiveAnnotation = annotation;
+                break;
+            }
         }
     }
     
@@ -2127,7 +2147,7 @@ static CGMutablePathRef SKCGCreatePathWithRoundRectInRect(CGRect rect, float rad
             } else {
                 resizingAnnotation = NO;
             }
-       }  else {
+        }  else {
             resizingAnnotation = [activeAnnotation isResizable] && NSPointInRect(pagePoint, [self resizeThumbForRect:wasBounds rotation:[activePage rotation]]);
         }
     }
