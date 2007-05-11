@@ -150,6 +150,11 @@ static BOOL fileIsInTrash(NSURL *fileURL)
     }
 }
 
+- (IBAction)visitWebSite:(id)sender{
+    if([[NSWorkspace sharedWorkspace] openURL:[NSURL URLWithString:@"http://skim-app.sourceforge.net/"]] == NO)
+        NSBeep();
+}
+
 - (IBAction)showPreferencePanel:(id)sender{
     [[SKPreferenceController sharedPrefenceController] showWindow:self];
 }
