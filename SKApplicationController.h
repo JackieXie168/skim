@@ -46,6 +46,8 @@
 
 + (void)setupDefaults;
 
+- (IBAction)visitWebSite:(id)sender;
+
 - (IBAction)showPreferencePanel:(id)sender;
 - (IBAction)showReleaseNotes:(id)sender;
 

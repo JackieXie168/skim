@@ -60,6 +60,7 @@
                 openBookmark = id; 
                 showPreferencePanel = id; 
                 showReleaseNotes = id; 
+                visitWebSite = id; 
             }; 
             CLASS = SKApplicationController; 
             LANGUAGE = ObjC; 
