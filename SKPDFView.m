@@ -568,6 +568,22 @@ static CGMutablePathRef SKCGCreatePathWithRoundRectInRect(CGRect rect, float rad
         [self resizeActiveAnnotationForKey:eventChar byAmount:(modifiers & NSShiftKeyMask) ? 10.0 : 1.0];
     } else if (readingBar && (eventChar == NSRightArrowFunctionKey || eventChar == NSLeftArrowFunctionKey || eventChar == NSUpArrowFunctionKey || eventChar == NSDownArrowFunctionKey) && (modifiers == NSAlternateKeyMask)) {
         [self moveReadingBarForKey:eventChar];
+    } else if (isPresentation == NO && [self toolMode] == SKNoteToolMode && modifiers == 0 && eventChar == 't') {
+        [self setAnnotationMode:SKFreeTextNote];
+    } else if (isPresentation == NO && [self toolMode] == SKNoteToolMode && modifiers == 0 && eventChar == 'n') {
+        [self setAnnotationMode:SKAnchoredNote];
+    } else if (isPresentation == NO && [self toolMode] == SKNoteToolMode && modifiers == 0 && eventChar == 'c') {
+        [self setAnnotationMode:SKCircleNote];
+    } else if (isPresentation == NO && [self toolMode] == SKNoteToolMode && modifiers == 0 && eventChar == 'b') {
+        [self setAnnotationMode:SKSquareNote];
+    } else if (isPresentation == NO && [self toolMode] == SKNoteToolMode && modifiers == 0 && eventChar == 'h') {
+        [self setAnnotationMode:SKHighlightNote];
+    } else if (isPresentation == NO && [self toolMode] == SKNoteToolMode && modifiers == 0 && eventChar == 'u') {
+        [self setAnnotationMode:SKUnderlineNote];
+    } else if (isPresentation == NO && [self toolMode] == SKNoteToolMode && modifiers == 0 && eventChar == 's') {
+        [self setAnnotationMode:SKStrikeOutNote];
+    } else if (isPresentation == NO && [self toolMode] == SKNoteToolMode && modifiers == 0 && eventChar == 'a') {
+        [self setAnnotationMode:SKArrowNote];
     } else {
 		[super keyDown:theEvent];
     }
