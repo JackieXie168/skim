@@ -23,4 +23,4 @@ source="${PWD}/${source}"
 fi
 
 # call the AppleScript
-/usr/bin/osascript -e "tell application \"Skim\"" -e "activate" -e "open POSIX file \""${file}"\" at TeX line "${line}" from source POSIX file \""${source}"\"" -e "end tell"
+/usr/bin/osascript -e "tell application \"Skim\"" -e "activate" -e "open POSIX file \"${file}\" at TeX line ${line} from source POSIX file \"${source}\"" -e "end tell"
