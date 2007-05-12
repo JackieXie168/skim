@@ -133,6 +133,10 @@
         <string>mate</string>
         <key>SKTeXEditorArguments</key>
         <string>-l %line "%file"</string>
+        <key>SKActivateFullScreenNavigationAtBottom</key>
+        <false/>
+        <key>SKActivatePresentationNavigationAtBottom</key>
+        <true/>
         <key>SUCheckAtStartup</key>
         <false/>
         <key>SUScheduledCheckInterval</key>
