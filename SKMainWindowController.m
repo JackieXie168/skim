@@ -1361,7 +1361,7 @@ static NSString *SKDocumentToolbarNotesPaneItemIdentifier = @"SKDocumentToolbarN
     else
         [self goFullScreen];
     
-    [pdfView setHasNavigation:YES activateAtBottom:YES autohidesCursor:YES];
+    [pdfView setHasNavigation:YES activateAtBottom:[[NSUserDefaults standardUserDefaults] boolForKey:@"SKActivateFullScreenNavigationAtBottom"] autohidesCursor:YES];
 }
 
 - (IBAction)exitFullScreen:(id)sender {
