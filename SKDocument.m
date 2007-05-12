@@ -661,7 +661,11 @@ NSString *SKDocumentWillSaveNotification = @"SKDocumentWillSaveNotification";
         [cmdString insertString:@" " atIndex:0];
         [cmdString insertString:editorCmd atIndex:0];
         
-        [NSTask launchedTaskWithLaunchPath:@"/bin/sh" arguments:[NSArray arrayWithObjects:@"-c", cmdString, nil]];
+        NSTask *task = [[[NSTask alloc] init] autorelease];
+        [task setLaunchPath:@"/bin/sh"];
+        [task setArguments:[NSArray arrayWithObjects:@"-c", cmdString, nil]];
+        [task setCurrentDirectoryPath:[file stringByDeletingLastPathComponent]];
+        [task launch];
     }
 }
 
