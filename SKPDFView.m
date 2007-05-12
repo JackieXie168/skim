@@ -615,7 +615,7 @@ static CGMutablePathRef SKCGCreatePathWithRoundRectInRect(CGRect rect, float rad
                 p = [self convertPoint:p toPage:page];
                 if (readingBar && [[readingBar page] isEqual:page] && NSPointInRect(p, [readingBar currentBoundsForBox:[self displayBox]])) {
                     [self dragReadingBarWithEvent:theEvent];
-                } else if ([self selectAnnotationWithEvent:theEvent] == NO) {
+                } else if (page == nil || [self selectAnnotationWithEvent:theEvent] == NO) {
                     PDFAreaOfInterest area = [self areaOfInterestForMouse:theEvent];
                     BOOL canSelectOrDrag = area == kPDFNoArea || toolMode == SKTextToolMode || annotationMode == SKHighlightNote || annotationMode == SKUnderlineNote || annotationMode == SKStrikeOutNote;
                     if (area == kPDFNoArea || (canSelectOrDrag && area == kPDFPageArea && [[page selectionForRect:NSMakeRect(p.x - 30.0, p.y - 40.0, 60.0, 80.0)] string] == nil)) {
