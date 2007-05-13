@@ -675,6 +675,8 @@ static CGMutablePathRef SKCGCreatePathWithRoundRectInRect(CGRect rect, float rad
                 [[self undoManager] endUndoGrouping];
                 // due to an Appkit bug, endUndoGrouping registers an extra change count, which is not reverted when the group is undone
                 [[[[self window] windowController] document] updateChangeCount:NSChangeUndone];
+                if (toolMode == SKNoteToolMode && draggingAnnotation && didDrag == NO)
+                    [[self undoManager] undo];
             }
             draggingAnnotation = NO;
             break;
