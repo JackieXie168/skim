@@ -799,8 +799,8 @@ static BOOL adjacentCharacterBounds(NSRect rect1, NSRect rect2) {
 - (id)initWithBounds:(NSRect)bounds {
     if (self = [super initWithBounds:bounds]) {
         [self setColor:[NSUnarchiver unarchiveObjectWithData:[[NSUserDefaults standardUserDefaults] objectForKey:SKArrowNoteColorKey]]];
-        [self setStartLineStyle:kPDFLineStyleNone];
-        [self setEndLineStyle:kPDFLineStyleOpenArrow];
+        [self setStartLineStyle:[[NSUserDefaults standardUserDefaults] integerForKey:SKArrowNoteStartLineStyleKey]];
+        [self setEndLineStyle:[[NSUserDefaults standardUserDefaults] integerForKey:SKArrowNoteEndLineStyleKey]];
         [self setStartPoint:NSMakePoint(0.5, 0.5)];
         [self setEndPoint:NSMakePoint(NSWidth(bounds) - 0.5, NSHeight(bounds) - 0.5)];
     }

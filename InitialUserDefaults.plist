@@ -125,6 +125,10 @@
         <real>2.0</real>
         <key>SKSquareNoteLineWidth</key>
         <real>2.0</real>
+        <key>SKArrowNoteStartLineStyle</key>
+        <integer>0</integer>
+        <key>SKArrowNoteEndLineStyle</key>
+        <integer>4</integer>
         <key>SKAutoCheckFileUpdate</key>
         <false/>
         <key>SKTeXEditorPreset</key>
@@ -136,6 +140,8 @@
         <key>SKActivateFullScreenNavigationAtBottom</key>
         <false/>
         <key>SKActivatePresentationNavigationAtBottom</key>
+        <true/>
+        <key>SKEnableAppleRemote</key>
         <true/>
         <key>SUCheckAtStartup</key>
         <false/>
@@ -187,6 +193,8 @@
             <string>SKTextNoteFontSize</string>
             <string>SKCircleNoteLineWidth</string>
             <string>SKSquareNoteLineWidth</string>
+            <string>SKArrowNoteStartLineStyle</string>
+            <string>SKArrowNoteEndLineStyle</string>
         </array>
         <key>sync</key>
         <array>

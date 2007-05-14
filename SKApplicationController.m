@@ -149,20 +149,25 @@ static BOOL fileIsInTrash(NSURL *fileURL)
         [self showReleaseNotes:nil];
         [[NSUserDefaults standardUserDefaults] setObject:versionString forKey:SKLastVersionLaunchedKey];
     }
-	[[AppleRemote sharedRemote] setDelegate:self];
+	if ([[NSUserDefaults standardUserDefaults] boolForKey:SKEnableAppleRemoteKey])
+        [[AppleRemote sharedRemote] setDelegate:self];
 }
 
 - (void)applicationDidBecomeActive:(NSNotification *)aNotification {
-    [[AppleRemote sharedRemote] setListeningToRemote:YES];
+	if ([[NSUserDefaults standardUserDefaults] boolForKey:SKEnableAppleRemoteKey])
+        [[AppleRemote sharedRemote] setListeningToRemote:YES];
 }
 
 - (void)applicationWillResignActive:(NSNotification *)aNotification {
-    [[AppleRemote sharedRemote] setListeningToRemote:NO];
+	if ([[NSUserDefaults standardUserDefaults] boolForKey:SKEnableAppleRemoteKey])
+        [[AppleRemote sharedRemote] setListeningToRemote:NO];
 }
 
 - (void)applicationWillTerminate:(NSNotification *)aNotification {
-    [[AppleRemote sharedRemote] setListeningToRemote:NO];
-	[[AppleRemote sharedRemote] setDelegate:nil];
+	if ([[NSUserDefaults standardUserDefaults] boolForKey:SKEnableAppleRemoteKey]) {
+        [[AppleRemote sharedRemote] setListeningToRemote:NO];
+        [[AppleRemote sharedRemote] setDelegate:nil];
+    }
 }
 
 - (IBAction)visitWebSite:(id)sender{
