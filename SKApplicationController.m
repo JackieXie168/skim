@@ -48,6 +48,7 @@
 #import "NSUserDefaultsController_SKExtensions.h"
 #import <Quartz/Quartz.h>
 #import <Sparkle/Sparkle.h>
+#import "AppleRemote.h"
 
 
 @implementation SKApplicationController
@@ -148,6 +149,7 @@ static BOOL fileIsInTrash(NSURL *fileURL)
         [self showReleaseNotes:nil];
         [[NSUserDefaults standardUserDefaults] setObject:versionString forKey:SKLastVersionLaunchedKey];
     }
+	[[AppleRemote sharedRemote] setDelegate:self];
 }
 
 - (IBAction)visitWebSite:(id)sender{
@@ -197,6 +199,49 @@ static BOOL fileIsInTrash(NSURL *fileURL)
 
 - (SUUpdater *)updater {
     return updater;
+}
+
+- (void)appleRemoteButton:(AppleRemoteEventIdentifier)buttonIdentifier pressedDown:(BOOL)pressedDown {
+    NSArray *docs = [NSApp orderedDocuments];
+    id document = [docs count] ? [docs objectAtIndex:0] : nil;
+    SKMainWindowController *controller = [document respondsToSelector:@selector(mainWindowController)]? [document mainWindowController] : nil;
+    
+    if (controller == nil)
+        return;
+    
+    switch (buttonIdentifier) {
+        case kRemoteButtonVolume_Plus:
+            if (pressedDown == NO)
+                break;
+            if ([controller isPresentation])
+                [controller doAutoScale:nil];
+            else
+                [controller doZoomIn:nil];
+            break;
+        case kRemoteButtonVolume_Minus:
+            if (pressedDown == NO)
+                break;
+            if ([controller isPresentation])
+                [controller doZoomToActualSize:nil];
+            else
+                [controller doZoomOut:nil];
+            break;
+        case kRemoteButtonRight_Hold:
+            if (pressedDown == NO)
+                break;
+        case kRemoteButtonRight:
+            [controller doGoToNextPage:nil];
+            break;
+        case kRemoteButtonLeft_Hold:
+            if (pressedDown == NO)
+                break;
+        case kRemoteButtonLeft:
+            [controller doGoToPreviousPage:nil];
+            break;
+        case kRemoteButtonPlay:
+            [controller togglePresentation:nil];
+            break;
+    }
 }
 
 @end
