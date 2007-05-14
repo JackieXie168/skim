@@ -152,6 +152,19 @@ static BOOL fileIsInTrash(NSURL *fileURL)
 	[[AppleRemote sharedRemote] setDelegate:self];
 }
 
+- (void)applicationDidBecomeActive:(NSNotification *)aNotification {
+    [[AppleRemote sharedRemote] setListeningToRemote:YES];
+}
+
+- (void)applicationWillResignActive:(NSNotification *)aNotification {
+    [[AppleRemote sharedRemote] setListeningToRemote:NO];
+}
+
+- (void)applicationWillTerminate:(NSNotification *)aNotification {
+    [[AppleRemote sharedRemote] setListeningToRemote:NO];
+	[[AppleRemote sharedRemote] setDelegate:nil];
+}
+
 - (IBAction)visitWebSite:(id)sender{
     if([[NSWorkspace sharedWorkspace] openURL:[NSURL URLWithString:@"http://skim-app.sourceforge.net/"]] == NO)
         NSBeep();
