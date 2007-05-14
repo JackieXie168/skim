@@ -216,7 +216,6 @@ typedef struct _SKPDFViewState {
 - (IBAction)enterFullScreen:(id)sender;
 - (IBAction)exitFullScreen:(id)sender;
 - (IBAction)toggleFullScreen:(id)sender;
-- (IBAction)toggleFullScreen:(id)sender;
 - (IBAction)enterPresentation:(id)sender;
 - (IBAction)togglePresentation:(id)sender;
 - (IBAction)performFit:(id)sender;
