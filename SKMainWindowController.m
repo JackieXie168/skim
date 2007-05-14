@@ -1679,8 +1679,16 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
 }
 
 - (void)findString:(NSString *)string options:(int)options{
+    PDFSelection *sel = [pdfView currentSelection];
+    unsigned pageIndex = [[pdfView document] indexForPage:[pdfView currentPage]];
+    while ([sel string] == nil && pageIndex-- > 0) {
+        PDFPage *page = [[pdfView document] pageAtIndex:pageIndex];
+        sel = [page selectionForRect:[page boundsForBox:kPDFDisplayBoxCropBox]];
+    }
 	findPanelFind = YES;
-    PDFSelection *selection = [[pdfView document] findString:string fromSelection:[pdfView currentSelection] withOptions:options];
+    PDFSelection *selection = [[pdfView document] findString:string fromSelection:sel withOptions:options];
+    if (selection == nil && [sel string])
+        selection = [[pdfView document] findString:string fromSelection:nil withOptions:options];
 	findPanelFind = NO;
     if (selection) {
 		[pdfView setCurrentSelection:selection];
