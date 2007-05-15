@@ -143,8 +143,10 @@
         <true/>
         <key>SKEnableAppleRemote</key>
         <true/>
-        <key>SUCheckAtStartup</key>
-        <false/>
+        <key>SKEnableAppleRemote</key>
+        <true/>
+        <key>SKReadMissingNotesFromSkimFileOption</key>
+        <integer>-1</integer>
         <key>SUScheduledCheckInterval</key>
         <integer>86400</integer>
     </dict>
