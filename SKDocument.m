@@ -299,12 +299,16 @@ NSString *SKDocumentWillSaveNotification = @"SKDocumentWillSaveNotification";
         if ((data = [[NSData alloc] initWithContentsOfURL:absoluteURL options:0 error:&error]) &&
             (pdfDoc = [[PDFDocument alloc] initWithURL:absoluteURL])) {
             if ([self readNotesFromExtendedAttributesAtURL:absoluteURL error:&error] == NO) {
-                NSAlert *alert = [NSAlert alertWithMessageText:NSLocalizedString(@"Unable to Read Notes", @"Message in alert dialog") 
-                                                 defaultButton:NSLocalizedString(@"No", @"Button title")
-                                               alternateButton:NSLocalizedString(@"Yes", @"Button title")
-                                                   otherButton:nil
-                                     informativeTextWithFormat:NSLocalizedString(@"Skim was not able to read the notes at %@. %@ Do you want to continue to open the PDF document anyway?", @"Informative text in alert dialog"), [[absoluteURL path] stringByAbbreviatingWithTildeInPath], [[error userInfo] objectForKey:NSLocalizedDescriptionKey]];
-                if ([alert runModal] == NSAlertDefaultReturn) {
+                int readOption = [[NSUserDefaults standardUserDefaults] integerForKey:@"SKReadMissingNotesFromSkimFileOption"];
+                if (readOption == NSAlertOtherReturn) {
+                    NSAlert *alert = [NSAlert alertWithMessageText:NSLocalizedString(@"Unable to Read Notes", @"Message in alert dialog") 
+                                                     defaultButton:NSLocalizedString(@"No", @"Button title")
+                                                   alternateButton:NSLocalizedString(@"Yes", @"Button title")
+                                                       otherButton:nil
+                                         informativeTextWithFormat:NSLocalizedString(@"Skim was not able to read the notes at %@. %@ Do you want to continue to open the PDF document anyway?", @"Informative text in alert dialog"), [[absoluteURL path] stringByAbbreviatingWithTildeInPath], [[error userInfo] objectForKey:NSLocalizedDescriptionKey]];
+                    readOption = [alert runModal];
+                }
+                if (readOption == NSAlertDefaultReturn) {
                     [data release];
                     data = nil;
                     [pdfDoc release];
