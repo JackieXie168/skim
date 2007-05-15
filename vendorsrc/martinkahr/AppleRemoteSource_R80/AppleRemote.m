@@ -13,7 +13,7 @@ const int REMOTE_SWITCH_COOKIE=19;
 
 @implementation AppleRemote
 
-#pragma public interface
+#pragma mark public interface
 
 - (id) init {	
 	if ( self = [super init] ) {
@@ -331,7 +331,7 @@ static void QueueCallbackFunction(void* target,  IOReturn result, void* refcon, 
 		memset(cookies, 0, sizeof(IOHIDElementCookie) * NUMBER_OF_APPLE_REMOTE_ACTIONS);
 		*/
 		allCookies = [[NSMutableArray alloc] init];
-		int i;
+		unsigned int i;
 		for (i=0; i< [elements count]; i++) {
 			element = [elements objectAtIndex:i];
 						
@@ -372,7 +372,7 @@ static void QueueCallbackFunction(void* target,  IOReturn result, void* refcon, 
 		if (queue) {
 			result = (*queue)->create(queue, 0, 12);	//depth: maximum number of elements in queue before oldest elements in queue begin to be lost.
 
-			int i=0;
+			unsigned int i=0;
 			for(i=0; i<[allCookies count]; i++) {
 				IOHIDElementCookie cookie = (IOHIDElementCookie)[[allCookies objectAtIndex:i] intValue];
 				(*queue)->addElement(queue, cookie, 0);

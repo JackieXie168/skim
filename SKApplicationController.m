@@ -259,6 +259,8 @@ static BOOL fileIsInTrash(NSURL *fileURL)
         case kRemoteButtonPlay:
             [controller togglePresentation:nil];
             break;
+        default:
+            break;
     }
 }
 
