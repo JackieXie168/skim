@@ -44,29 +44,25 @@
 
 // NSFileManager is not thread safe
 static BOOL SKFileExistsAtPath(NSString *path) {
-    if (path == nil)
+    FSRef fileRef;
+    
+    if (path && noErr == FSPathMakeRef((UInt8 *)[path fileSystemRepresentation], &fileRef, NULL))
+        return YES;
+    else
         return NO;
-    
-    FSRef ref;
-    
-    return noErr == FSPathMakeRef((UInt8 *)[path fileSystemRepresentation], &ref, NULL);
 }
 
 static NSDate *SKFileModificationDateAtPath(NSString *path) {
-    CFAbsoluteTime absoluteTime;
-    FSCatalogInfo info;
     FSRef fileRef;
+    FSCatalogInfo info;
+    CFAbsoluteTime absoluteTime;
     
-    if (NO == CFURLGetFSRef((CFURLRef)[NSURL fileURLWithPath:path], &fileRef))
+    if (CFURLGetFSRef((CFURLRef)[NSURL fileURLWithPath:path], &fileRef) &&
+        noErr == FSGetCatalogInfo(&fileRef, kFSCatInfoContentMod, &info, NULL, NULL, NULL) &&
+        noErr == UCConvertUTCDateTimeToCFAbsoluteTime(&info.contentModDate, &absoluteTime))
+        return [NSDate dateWithTimeIntervalSinceReferenceDate:(NSTimeInterval)absoluteTime];
+    else
         return nil;
-    
-    if (noErr != FSGetCatalogInfo(&fileRef, kFSCatInfoContentMod, &info, NULL, NULL, NULL))
-        return nil;
-    
-    if (noErr != UCConvertUTCDateTimeToCFAbsoluteTime(&info.contentModDate, &absoluteTime))
-        return nil;
-    
-    return [NSDate dateWithTimeIntervalSinceReferenceDate:(NSTimeInterval)absoluteTime];
 }
 
 static NSString *SKTeXSourceFile(NSString *file, NSString *base) {
