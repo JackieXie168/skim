@@ -861,6 +861,10 @@ static CGMutablePathRef SKCGCreatePathWithRoundRectInRect(CGRect rect, float rad
             
             item = [menu insertItemWithTitle:NSLocalizedString(@"Look Up in Dictionary", @"") action:@selector(lookUpCurrentSelectionInDictionary:) keyEquivalent:@"" atIndex:0];
         }
+    
+    }
+    
+    if ([self toolMode] == SKTextToolMode || [self toolMode] == SKNoteToolMode) {
         
         [menu insertItem:[NSMenuItem separatorItem] atIndex:0];
         
