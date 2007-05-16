@@ -45,6 +45,8 @@
     NSMutableArray *notes;
 }
 
+- (IBAction)openPDF:(id)sender;
+
 - (NSArray *)notes;
 - (void)setNotes:(NSArray *)newNotes;
 - (unsigned)countOfNotes;

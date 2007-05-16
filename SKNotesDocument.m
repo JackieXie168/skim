@@ -190,6 +190,13 @@
     return setup;
 }
 
+- (IBAction)openPDF:(id)sender {
+    NSString *path = [[[self fileName] stringByDeletingPathExtension] stringByAppendingPathExtension:@"pdf"];
+    if ([[NSFileManager defaultManager] fileExistsAtPath:path])
+        [[NSDocumentController sharedDocumentController] openDocumentWithContentsOfURL:[NSURL fileURLWithPath:path] display:YES error:NULL];
+    else NSBeep();
+}
+
 #pragma mark Accessors
 
 - (NSArray *)notes {
