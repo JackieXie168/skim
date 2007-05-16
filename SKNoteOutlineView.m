@@ -206,82 +206,49 @@
     }
 }
 
-static NSImage *createFilteredImage(NSImage *image, CIFilter *filter)
+static void SKAddNamedAndFilteredImageForKey(NSMutableDictionary *images, NSMutableDictionary *filteredImages, NSString *name, NSString *key, CIFilter *filter)
 {
+    NSImage *image = [NSImage imageNamed:name];
+    NSImage *filteredImage = [[NSImage alloc] initWithSize:[image size]];
     CIImage *ciImage = [CIImage imageWithData:[image TIFFRepresentation]];
     
     [filter setValue:ciImage forKey:@"inputImage"];
     ciImage = [filter valueForKey:@"outputImage"];
     
-    NSImage *nsImage = [[NSImage alloc] initWithSize:[image size]];
     CGRect cgRect = [ciImage extent];
     NSRect nsRect = *(NSRect*)&cgRect;
     
-    [nsImage lockFocus];
+    [filteredImage lockFocus];
     [ciImage drawAtPoint:NSZeroPoint fromRect:nsRect operation:NSCompositeCopy fraction:1.0];
-    [nsImage unlockFocus];
+    [filteredImage unlockFocus];
     
-    return nsImage;
+    [images setObject:image forKey:key];
+    [filteredImages setObject:filteredImage forKey:key];
+    [filteredImage release];
 }
 
 - (void)drawWithFrame:(NSRect)cellFrame inView:(NSView *)controlView {
-    static NSImage *textImage = nil;
-    static NSImage *noteImage = nil;
-    static NSImage *circleImage = nil;
-    static NSImage *squareImage = nil;
-    static NSImage *highlightImage = nil;
-    static NSImage *strikeOutImage = nil;
-    static NSImage *underlineImage = nil;
-    static NSImage *arrowImage = nil;
-    static NSImage *invertedTextImage = nil;
-    static NSImage *invertedNoteImage = nil;
-    static NSImage *invertedCircleImage = nil;
-    static NSImage *invertedSquareImage = nil;
-    static NSImage *invertedHighlightImage = nil;
-    static NSImage *invertedStrikeOutImage = nil;
-    static NSImage *invertedUnderlineImage = nil;
-    static NSImage *invertedArrowImage = nil;
+    static NSMutableDictionary *noteImages = nil;
+    static NSMutableDictionary *invertedNoteImages = nil;
     
-    if (textImage == nil) {
-        CIFilter *filter = [CIFilter filterWithName:@"CIColorInvert"];    
+    if (noteImages == nil) {
+        CIFilter *filter = [CIFilter filterWithName:@"CIColorInvert"];
         
-        textImage = [[NSImage imageNamed:@"TextNoteAdorn"] retain];
-        noteImage = [[NSImage imageNamed:@"AnchoredNoteAdorn"] retain];
-        circleImage = [[NSImage imageNamed:@"CircleNoteAdorn"] retain];
-        squareImage = [[NSImage imageNamed:@"SquareNoteAdorn"] retain];
-        highlightImage = [[NSImage imageNamed:@"HighlightNoteAdorn"] retain];
-        strikeOutImage = [[NSImage imageNamed:@"StrikeOutNoteAdorn"] retain];
-        underlineImage = [[NSImage imageNamed:@"UnderlineNoteAdorn"] retain];
-        arrowImage = [[NSImage imageNamed:@"ArrowNoteAdorn"] retain];
-        invertedTextImage = createFilteredImage(textImage, filter);
-        invertedNoteImage = createFilteredImage(noteImage, filter);
-        invertedCircleImage = createFilteredImage(circleImage, filter);
-        invertedSquareImage = createFilteredImage(squareImage, filter);
-        invertedHighlightImage = createFilteredImage(highlightImage, filter);
-        invertedStrikeOutImage = createFilteredImage(strikeOutImage, filter);
-        invertedUnderlineImage = createFilteredImage(underlineImage, filter);
-        invertedArrowImage = createFilteredImage(arrowImage, filter);
+        noteImages = [[NSMutableDictionary alloc] initWithCapacity:8];
+        invertedNoteImages = [[NSMutableDictionary alloc] initWithCapacity:8];
+        
+        SKAddNamedAndFilteredImageForKey(noteImages, invertedNoteImages, @"TextNoteAdorn", @"FreeText", filter);
+        SKAddNamedAndFilteredImageForKey(noteImages, invertedNoteImages, @"AnchoredNoteAdorn", @"Note", filter);
+        SKAddNamedAndFilteredImageForKey(noteImages, invertedNoteImages, @"CircleNoteAdorn", @"Circle", filter);
+        SKAddNamedAndFilteredImageForKey(noteImages, invertedNoteImages, @"SquareNoteAdorn", @"Square", filter);
+        SKAddNamedAndFilteredImageForKey(noteImages, invertedNoteImages, @"HighlightNoteAdorn", @"Highlight", filter);
+        SKAddNamedAndFilteredImageForKey(noteImages, invertedNoteImages, @"UnderlineNoteAdorn", @"Underline", filter);
+        SKAddNamedAndFilteredImageForKey(noteImages, invertedNoteImages, @"StrikeOutNoteAdorn", @"StrikeOut", filter);
+        SKAddNamedAndFilteredImageForKey(noteImages, invertedNoteImages, @"ArrowNoteAdorn", @"Line", filter);
     }
     
     BOOL isSelected = [self isHighlighted] && [[controlView window] isKeyWindow] && [[[controlView window] firstResponder] isEqual:controlView];
-    NSImage *image = nil;
-    
-    if ([type isEqualToString:@"FreeText"])
-        image = isSelected ? invertedTextImage : textImage;
-    else if ([type isEqualToString:@"Note"])
-        image = isSelected ? invertedNoteImage : noteImage;
-    else if ([type isEqualToString:@"Circle"])
-        image = isSelected ? invertedCircleImage : circleImage;
-    else if ([type isEqualToString:@"Square"])
-        image = isSelected ? invertedSquareImage : squareImage;
-    else if ([type isEqualToString:@"Highlight"])
-        image = isSelected ? invertedHighlightImage : highlightImage;
-    else if ([type isEqualToString:@"StrikeOut"])
-        image = isSelected ? invertedStrikeOutImage : strikeOutImage;
-    else if ([type isEqualToString:@"Underline"])
-        image = isSelected ? invertedUnderlineImage : underlineImage;
-    else if ([type isEqualToString:@"Line"])
-        image = isSelected ? invertedArrowImage : arrowImage;
+    NSImage *image = type ? [(isSelected ? invertedNoteImages : noteImages) objectForKey:type] : nil;
     
     if (active) {
         [[NSGraphicsContext currentContext] saveGraphicsState];
