@@ -313,7 +313,7 @@ NSString *SKDocumentWillSaveNotification = @"SKDocumentWillSaveNotification";
             } else if ([noteDicts count] == 0) {
                 NSString *path = [[[absoluteURL path] stringByDeletingPathExtension] stringByAppendingPathExtension:@"skim"];
                 if ([[NSFileManager defaultManager] fileExistsAtPath:path]) {
-                    int readOption = [[NSUserDefaults standardUserDefaults] integerForKey:@"SKReadMissingNotesFromSkimFileOption"];
+                    int readOption = [[NSUserDefaults standardUserDefaults] integerForKey:SKReadMissingNotesFromSkimFileOptionKey];
                     if (readOption == NSAlertOtherReturn) {
                         NSAlert *alert = [NSAlert alertWithMessageText:NSLocalizedString(@"Found Separate Notes", @"Message in alert dialog") 
                                                          defaultButton:NSLocalizedString(@"Yes", @"Button title")

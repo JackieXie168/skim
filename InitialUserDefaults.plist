@@ -143,10 +143,10 @@
         <true/>
         <key>SKEnableAppleRemote</key>
         <true/>
-        <key>SKEnableAppleRemote</key>
-        <true/>
         <key>SKReadMissingNotesFromSkimFileOption</key>
         <integer>-1</integer>
+        <key>SKBlankAllWindows</key>
+        <false/>
         <key>SUScheduledCheckInterval</key>
         <integer>86400</integer>
     </dict>
@@ -211,6 +211,10 @@
             <string>SKLastToolMode</string>
             <string>SKLastAnnotationMode</string>
             <string>SKBlankAllWindows</string>
+            <string>SKActivateFullScreenNavigationAtBottom</string>
+            <string>SKActivatePresentationNavigationAtBottom</string>
+            <string>SKReadMissingNotesFromSkimFileOption</string>
+            <string>SKEnableAppleRemote</string>
         </array>
     </dict>
 </dict>

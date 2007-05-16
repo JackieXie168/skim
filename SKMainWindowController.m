@@ -100,6 +100,9 @@ static NSString *SKDocumentToolbarDisplayBoxItemIdentifier = @"SKDocumentToolbar
 static NSString *SKDocumentToolbarContentsPaneItemIdentifier = @"SKDocumentToolbarContentsPaneItemIdentifier";
 static NSString *SKDocumentToolbarNotesPaneItemIdentifier = @"SKDocumentToolbarNotesPaneItemIdentifier";
 
+static NSString *SKLeftSidePaneWidthKey = @"SKLeftSidePaneWidth";
+static NSString *SKRightSidePaneWidthKey = @"SKRightSidePaneWidth";
+
 #define TOOLBAR_SEARCHFIELD_MIN_SIZE NSMakeSize(110.0, 22.0)
 #define TOOLBAR_SEARCHFIELD_MAX_SIZE NSMakeSize(1000.0, 22.0)
 
@@ -208,14 +211,14 @@ static NSString *SKDocumentToolbarNotesPaneItemIdentifier = @"SKDocumentToolbarN
     [pdfView setGreekingThreshold:[[NSUserDefaults standardUserDefaults] floatForKey:SKGreekingThresholdKey]];
     [pdfView setBackgroundColor:[NSUnarchiver unarchiveObjectWithData:[[NSUserDefaults standardUserDefaults] dataForKey:SKBackgroundColorKey]]];
     
-    if ([[NSUserDefaults standardUserDefaults] objectForKey:@"SKLeftSidePaneWidth"]) {
-        float width = [[NSUserDefaults standardUserDefaults] floatForKey:@"SKLeftSidePaneWidth"];
+    if ([[NSUserDefaults standardUserDefaults] objectForKey:SKLeftSidePaneWidthKey]) {
+        float width = [[NSUserDefaults standardUserDefaults] floatForKey:SKLeftSidePaneWidthKey];
         if (width >= 0.0) {
             frame = [leftSideContentBox frame];
             frame.size.width = width;
             [leftSideContentBox setFrame:frame];
         }
-        width = [[NSUserDefaults standardUserDefaults] floatForKey:@"SKRightSidePaneWidth"];
+        width = [[NSUserDefaults standardUserDefaults] floatForKey:SKRightSidePaneWidthKey];
         if (width >= 0.0) {
             frame = [rightSideContentBox frame];
             frame.size.width = width;
@@ -1112,7 +1115,7 @@ static NSString *SKDocumentToolbarNotesPaneItemIdentifier = @"SKDocumentToolbarN
             [(id)wc setForceOnTop:YES];
     }
         
-    if (NO == [self isPresentation] && [[NSUserDefaults standardUserDefaults] boolForKey:@"SKBlankAllWindows"] && [[NSScreen screens] count] > 1) {
+    if (NO == [self isPresentation] && [[NSUserDefaults standardUserDefaults] boolForKey:SKBlankAllWindowsKey] && [[NSScreen screens] count] > 1) {
         if (nil == blankingWindows)
             blankingWindows = [[NSMutableArray alloc] init];
         [blankingWindows removeAllObjects];
@@ -1338,7 +1341,7 @@ static NSString *SKDocumentToolbarNotesPaneItemIdentifier = @"SKDocumentToolbarN
     if ([fullScreenSetup count])
         [self applyPDFSettings:fullScreenSetup];
     
-    [pdfView setHasNavigation:YES activateAtBottom:[[NSUserDefaults standardUserDefaults] boolForKey:@"SKActivateFullScreenNavigationAtBottom"] autohidesCursor:NO];
+    [pdfView setHasNavigation:YES activateAtBottom:[[NSUserDefaults standardUserDefaults] boolForKey:SKActivateFullScreenNavigationAtBottomKey] autohidesCursor:NO];
     [self showSideWindows];
 }
 
@@ -1361,7 +1364,7 @@ static NSString *SKDocumentToolbarNotesPaneItemIdentifier = @"SKDocumentToolbarN
     else
         [self goFullScreen];
     
-    [pdfView setHasNavigation:YES activateAtBottom:[[NSUserDefaults standardUserDefaults] boolForKey:@"SKActivateFullScreenNavigationAtBottom"] autohidesCursor:YES];
+    [pdfView setHasNavigation:YES activateAtBottom:[[NSUserDefaults standardUserDefaults] boolForKey:SKActivatePresentationNavigationAtBottomKey] autohidesCursor:YES];
 }
 
 - (IBAction)exitFullScreen:(id)sender {
@@ -3325,8 +3328,8 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
 
 - (void)splitViewDidResizeSubviews:(NSNotification *)notification {
     if ([[self window] frameAutosaveName]) {
-        [[NSUserDefaults standardUserDefaults] setFloat:NSWidth([leftSideContentBox frame]) forKey:@"SKLeftSidePaneWidth"];
-        [[NSUserDefaults standardUserDefaults] setFloat:NSWidth([rightSideContentBox frame]) forKey:@"SKRightSidePaneWidth"];
+        [[NSUserDefaults standardUserDefaults] setFloat:NSWidth([leftSideContentBox frame]) forKey:SKLeftSidePaneWidthKey];
+        [[NSUserDefaults standardUserDefaults] setFloat:NSWidth([rightSideContentBox frame]) forKey:SKRightSidePaneWidthKey];
     }
 }
 
