@@ -201,8 +201,6 @@
 - (void)draggedImage:(NSImage *)anImage endedAt:(NSPoint)aPoint operation:(NSDragOperation)operation{
 	if ([delegate respondsToSelector:@selector(imagePopUpButton:cleanUpAfterDragOperation:)])
 		[delegate imagePopUpButton:self cleanUpAfterDragOperation:operation];
-    // flag changes during a drag are not forwarded to the application, so we fix that at the end of the drag
-    [[NSNotificationCenter defaultCenter] postNotificationName:@"SKFlagsChangedNotification" object:[NSApp currentEvent]];
 }
 
 #pragma mark Dragging destination
