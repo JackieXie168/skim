@@ -2095,7 +2095,7 @@ static CGMutablePathRef SKCGCreatePathWithRoundRectInRect(CGRect rect, float rad
                 // register this, so we can do our own selection later
                 mouseDownInAnnotation = YES;
             } else if ([[annotation type] isEqualToString:@"Link"]) {
-                if (mouseDownInAnnotation)
+                if (mouseDownInAnnotation && (toolMode == SKTextToolMode || annotationMode == SKHighlightNote || annotationMode == SKUnderlineNote || annotationMode == SKStrikeOutNote))
                     newActiveAnnotation = annotation;
                 break;
             }
