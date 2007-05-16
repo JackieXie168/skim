@@ -15,6 +15,7 @@
         }, 
         {CLASS = SKNoteOutlineView; LANGUAGE = ObjC; SUPERCLASS = NSOutlineView; }, 
         {
+            ACTIONS = {openPDF = id; }; 
             CLASS = SKNotesDocument; 
             LANGUAGE = ObjC; 
             OUTLETS = {arrayController = NSArrayController; outlineView = NSOutlineView; }; 
