@@ -39,6 +39,7 @@
 #import "SKNotesDocument.h"
 #import "SKDocument.h"
 #import "SKNoteOutlineView.h"
+#import "BDAlias.h"
 
 @implementation SKNotesDocument
 
@@ -175,11 +176,18 @@
 
 // these are necessary for the app controller, we may change it there
 - (NSDictionary *)currentDocumentSetup {
-    return [NSDictionary dictionary];
-}
-
-- (NSWindowController *)mainWindowController {
-    return nil;
+    NSMutableDictionary *setup = [NSMutableDictionary dictionary];
+    NSString *fileName = [self fileName];
+    
+    if (fileName) {
+        NSData *data = [[BDAlias aliasWithPath:fileName] aliasData];
+        
+        [setup setObject:fileName forKey:@"fileName"];
+        if(data)
+            [setup setObject:data forKey:@"_BDAlias"];
+    }
+    
+    return setup;
 }
 
 #pragma mark Accessors

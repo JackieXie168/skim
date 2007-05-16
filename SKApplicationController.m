@@ -131,7 +131,8 @@ static BOOL fileIsInTrash(NSURL *fileURL)
                 fileURL = [NSURL fileURLWithPath:[dict objectForKey:@"fileName"]];
             if(fileURL && NO == fileIsInTrash(fileURL) && (document = [[NSDocumentController sharedDocumentController] openDocumentWithContentsOfURL:fileURL display:NO error:NULL])) {
                 [document makeWindowControllers];
-                [[document mainWindowController] setupWindow:dict];
+                if ([document respondsToSelector:@selector(mainWindowController)])
+                    [[document mainWindowController] setupWindow:dict];
                 [document showWindows];
             }
         }

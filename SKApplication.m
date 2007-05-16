@@ -38,7 +38,6 @@
 
 #import "SKApplication.h"
 #import "SKStringConstants.h"
-#import "SKMainWindowController.h"
 #import "SKDocument.h"
 #import "SKPDFSynchronizer.h"
 #import "SKPDFView.h"
@@ -133,7 +132,7 @@ NSString *SKApplicationWillTerminateNotification = @"SKApplicationWillTerminateN
 - (void)reorganizeWindowsItem:(NSWindow *)aWindow {
     NSMenu *windowsMenu = [self windowsMenu];
     NSWindowController *windowController = [aWindow windowController];
-    SKMainWindowController *mainWindowController = [[windowController document] mainWindowController];
+    NSWindowController *mainWindowController = [[[windowController document] windowControllers] objectAtIndex:0];
     int numberOfItems = [windowsMenu numberOfItems];
     int itemIndex = [windowsMenu indexOfItemWithTarget:aWindow];
     
