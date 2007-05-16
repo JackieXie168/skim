@@ -6,12 +6,18 @@
 
 # get arguments, expand tilde in paths
 line=$1
+if [ "${0%forward-search.sh}" != "$0" ]; then
+# if called as forward-search.sh, the order of arguments is different
+source="${2/#~/$HOME}"
+file="${3/#~/$HOME}"
+else
 file="${2/#~/$HOME}"
 if [ $# -gt 2 ]; then
 source="${3/#~/$HOME}"
 else
 # derive source file from pdf file
 source="${file%.pdf}.tex"
+fi
 fi
 
 # expand relative paths
