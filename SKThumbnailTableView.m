@@ -39,6 +39,9 @@
 #import "SKThumbnailTableView.h"
 #import "OBUtilities.h"
 
+static NSString *SKScrollerWillScrollNotification = @"SKScrollerWillScrollNotification";
+static NSString *SKScrollerDidScrollNotification = @"SKScrollerDidScrollNotification";
+
 @interface NSScroller (SKExtensions)
 - (void)replacementTrackKnob:(NSEvent *)theEvent;
 @end
@@ -52,9 +55,9 @@ static IMP originalTrackKnob = NULL;
 }
 
 - (void)replacementTrackKnob:(NSEvent *)theEvent {
-    [[NSNotificationCenter defaultCenter] postNotificationName:@"SKScrollerWillScroll" object:self];
+    [[NSNotificationCenter defaultCenter] postNotificationName:SKScrollerWillScrollNotification object:self];
     originalTrackKnob(self, _cmd, theEvent);
-    [[NSNotificationCenter defaultCenter] postNotificationName:@"SKScrollerDidScroll" object:self];
+    [[NSNotificationCenter defaultCenter] postNotificationName:SKScrollerDidScrollNotification object:self];
 }
 
 @end
@@ -78,8 +81,11 @@ static IMP originalTrackKnob = NULL;
 }
 
 - (void)awakeFromNib {
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleScrollerWillScroll:) name:@"SKScrollerWillScroll" object:[[self enclosingScrollView] verticalScroller]];
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleScrollerDidScroll:) name:@"SKScrollerDidScroll" object:[[self enclosingScrollView] verticalScroller]];
+    NSScroller *scroller = [[self enclosingScrollView] verticalScroller];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleScrollerWillScroll:)
+                                                 name:SKScrollerWillScrollNotification object:scroller];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleScrollerDidScroll:)
+                                                 name:SKScrollerDidScrollNotification object:scroller];
 }
 
 - (void)setFrame:(NSRect)frameRect {
