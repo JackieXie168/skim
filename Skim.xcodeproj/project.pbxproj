@@ -65,10 +65,8 @@
 		CE15832F0BA0740000D5B03F /* UnderlineNoteAdorn.tiff in Resources */ = {isa = PBXBuildFile; fileRef = CE15832B0BA073FF00D5B03F /* UnderlineNoteAdorn.tiff */; };
 		CE1E25680BDA61E80011D9DD /* ReadNotesAccessoryView.nib in Resources */ = {isa = PBXBuildFile; fileRef = CE1E25660BDA61E80011D9DD /* ReadNotesAccessoryView.nib */; };
 		CE1E2B290BDAB6180011D9DD /* SKPDFSynchronizer.m in Sources */ = {isa = PBXBuildFile; fileRef = CE1E2B270BDAB6180011D9DD /* SKPDFSynchronizer.m */; };
-		CE1E2F130BDB86A20011D9DD /* displayline in Resources */ = {isa = PBXBuildFile; fileRef = CE1E2F120BDB86A10011D9DD /* displayline */; };
 		CE1E301D0BDB9D5C0011D9DD /* NSScanner_SKExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = CE1E301B0BDB9D5C0011D9DD /* NSScanner_SKExtensions.m */; };
 		CE1E30290BDB9D8E0011D9DD /* NSCharacterSet_SKExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = CE1E30270BDB9D8E0011D9DD /* NSCharacterSet_SKExtensions.m */; };
-		CE1E39E10BDBD6AC0011D9DD /* skimnotes in Resources */ = {isa = PBXBuildFile; fileRef = CEF3BF750B99CA2900E12E3D /* skimnotes */; };
 		CE2BD83E0BD4132B00A5F4DB /* Sparkle.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CE2BD82A0BD4132B00A5F4DB /* Sparkle.framework */; };
 		CE2BD8450BD4135600A5F4DB /* Sparkle.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = CE2BD82A0BD4132B00A5F4DB /* Sparkle.framework */; };
 		CE2DE4920B85D48F00D0DA12 /* SKThumbnail.m in Sources */ = {isa = PBXBuildFile; fileRef = CE2DE4910B85D48F00D0DA12 /* SKThumbnail.m */; };
@@ -163,6 +161,8 @@
 		CEE106150BCBB72C00BF2D3E /* SKNotesDocument.m in Sources */ = {isa = PBXBuildFile; fileRef = CEE106140BCBB72C00BF2D3E /* SKNotesDocument.m */; };
 		CEE1065E0BCBBE1300BF2D3E /* NotesDocument.nib in Resources */ = {isa = PBXBuildFile; fileRef = CEE106580BCBBE1200BF2D3E /* NotesDocument.nib */; };
 		CEE229390BFB7CE9002B746B /* ReleaseNotes.rtf in Resources */ = {isa = PBXBuildFile; fileRef = CE54AA8E0BBC037400008750 /* ReleaseNotes.rtf */; };
+		CEE22EA30BFB8672002B746B /* displayline in CopyFiles */ = {isa = PBXBuildFile; fileRef = CE1E2F120BDB86A10011D9DD /* displayline */; };
+		CEE22EA40BFB8684002B746B /* skimnotes in CopyFiles */ = {isa = PBXBuildFile; fileRef = CEF3BF750B99CA2900E12E3D /* skimnotes */; };
 		CEF3BF7E0B99CA4A00E12E3D /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2A37F4C5FDCFA73011CA2CEA /* Foundation.framework */; };
 		CEF3BF860B99CAD300E12E3D /* skimnotes.m in Sources */ = {isa = PBXBuildFile; fileRef = CEF3BF850B99CAD300E12E3D /* skimnotes.m */; };
 		CEF3C0210B99FF8F00E12E3D /* libbz2.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = F977319E0B939B7D002A7823 /* libbz2.dylib */; };
@@ -240,6 +240,17 @@
 				CE2BD8450BD4135600A5F4DB /* Sparkle.framework in CopyFiles */,
 				CE6C03F00BEDF759007BF0B5 /* NSParagraphStyle_SKExtensions.h in CopyFiles */,
 				CE5F42AE0BF89FE00069D89C /* AppleRemote.h in CopyFiles */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		CEE22EA00BFB8614002B746B /* CopyFiles */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 12;
+			files = (
+				CEE22EA30BFB8672002B746B /* displayline in CopyFiles */,
+				CEE22EA40BFB8684002B746B /* skimnotes in CopyFiles */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -564,6 +575,7 @@
 				2A37F4AFFDCFA73011CA2CEA /* Other Sources */,
 				CE4DA8CF0B9E157E0039E89C /* Help Sources */,
 				2A37F4B8FDCFA73011CA2CEA /* Resources */,
+				CEE22EA20BFB8631002B746B /* Shared Support */,
 				CE2BD8160BD4123D00A5F4DB /* Subprojects */,
 				2A37F4C3FDCFA73011CA2CEA /* Frameworks */,
 				19C28FB0FE9D524F11CA2CBB /* Products */,
@@ -619,7 +631,6 @@
 				CE67BB240BC44AC9007B6929 /* ZoomValues.strings */,
 				45A3BD380B4F097D002B297F /* InitialUserDefaults.plist */,
 				CE41A6CB0B975E5000ECF819 /* Skim.sdef */,
-				CE1E2F120BDB86A10011D9DD /* displayline */,
 			);
 			name = Resources;
 			sourceTree = "<group>";
@@ -888,6 +899,14 @@
 			name = Images;
 			sourceTree = "<group>";
 		};
+		CEE22EA20BFB8631002B746B /* Shared Support */ = {
+			isa = PBXGroup;
+			children = (
+				CE1E2F120BDB86A10011D9DD /* displayline */,
+			);
+			name = "Shared Support";
+			sourceTree = "<group>";
+		};
 		CEF3BF840B99CA9900E12E3D /* Skimnotes */ = {
 			isa = PBXGroup;
 			children = (
@@ -908,6 +927,8 @@
 				8D15AC300486D014006FF6A4 /* Sources */,
 				8D15AC330486D014006FF6A4 /* Frameworks */,
 				CEE112760BCBF52500BF2D3E /* CopyFiles */,
+				CEE22EA00BFB8614002B746B /* CopyFiles */,
+				CEE22EA50BFB8691002B746B /* ShellScript */,
 				CE4B67590BF4DC3000A73E42 /* ShellScript */,
 				CE4DA9060B9E17890039E89C /* ShellScript */,
 			);
@@ -1063,8 +1084,6 @@
 				CE7C5D050BD8062C0011315D /* ArrowNoteAdorn.tiff in Resources */,
 				CE7C5D190BD8086C0011315D /* ToolbarArrowNote.tiff in Resources */,
 				CE1E25680BDA61E80011D9DD /* ReadNotesAccessoryView.nib in Resources */,
-				CE1E2F130BDB86A20011D9DD /* displayline in Resources */,
-				CE1E39E10BDBD6AC0011D9DD /* skimnotes in Resources */,
 				CE468C410BF1F0F60007AA12 /* ArrowNoteToolAdorn.tiff in Resources */,
 				CE468C420BF1F0F60007AA12 /* UnderlineNoteToolAdorn.tiff in Resources */,
 				CE468C430BF1F0F60007AA12 /* StrikeOutNoteToolAdorn.tiff in Resources */,
@@ -1152,6 +1171,19 @@
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
 			shellScript = "#\n# Run the genstrings build phase\n# This takes a while to generate, so it's not worth\n# the wait for development builds.\n#\nif [ ${BUILD_STYLE} = \"Debug\" ]; then\nexit 0\nfi\ncd ${SOURCE_ROOT}\n/usr/bin/genstrings -o ${SOURCE_ROOT}/English.lproj -skipTable Sparkle `/usr/bin/find . -type file -name \"*.[mh]\"`";
+		};
+		CEE22EA50BFB8691002B746B /* ShellScript */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "cd \"${BUILT_PRODUCTS_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}\"\nln -fs ../SharedSupport/displayline displayline\nln -fs ../SharedSupport/displayline forward-search.sh\nexit 0";
 		};
 /* End PBXShellScriptBuildPhase section */
 
