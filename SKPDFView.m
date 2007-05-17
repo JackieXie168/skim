@@ -2523,7 +2523,7 @@ static void SKCGContextDrawGrabHandle(CGContextRef context, CGPoint point, float
         selectionRect.origin = initialPoint;
         selectionRect.size = NSZeroSize;
         xEdge = 1;
-        yEdge = 2;
+        yEdge = 1;
         [self setNeedsDisplay:YES];
     } else {
         if (initialPoint.x > NSMaxX(selectionRect) - margin)
@@ -2560,34 +2560,38 @@ static void SKCGContextDrawGrabHandle(CGContextRef context, CGPoint point, float
 				xDelta = newPoint.x - initialPoint.x;
 				yDelta = newPoint.y - initialPoint.y;
 				
-                if (xEdge == 1) {
-                    newRect.size.width += xDelta;
-                    if (NSWidth(newRect) < 0.0) {
-                        newRect.size.width = 0.0;
-                    }
-                } else if (xEdge == 2) {
-                    newRect.origin.x += xDelta;
-                    newRect.size.width -= xDelta;
-                    if (NSWidth(newRect) < 0.0) {
-                        newRect.origin.x += NSWidth(newRect);
-                        newRect.size.width = 0.0;
-                    }
-                } else if (yEdge == 0) {
+                if (xEdge == 0 && yEdge == 0) {
                     newRect.origin.x += xDelta;
                     newRect.origin.y += yDelta;
-                }
-                
-                if (yEdge == 1) {
-                    newRect.size.height += yDelta;
-                    if (NSHeight(newRect) < 0.0) {
-                        newRect.size.height = 0.0;
+                } else {
+                    if (xEdge == 1) {
+                        newRect.size.width += xDelta;
+                        if (NSWidth(newRect) < 0.0) {
+                            newRect.size.width *= -1.0;
+                            newRect.origin.x -= NSWidth(newRect);
+                        }
+                    } else if (xEdge == 2) {
+                        newRect.origin.x += xDelta;
+                        newRect.size.width -= xDelta;
+                        if (NSWidth(newRect) < 0.0) {
+                            newRect.size.width *= -1.0;
+                            newRect.origin.x -= NSWidth(newRect);
+                        }
                     }
-                } else if (yEdge == 2) {
-                    newRect.origin.y += yDelta;
-                    newRect.size.height -= yDelta;
-                    if (NSHeight(newRect) < 0.0) {
-                        newRect.origin.y += NSHeight(newRect);
-                        newRect.size.height = 0.0;
+                    
+                    if (yEdge == 1) {
+                        newRect.size.height += yDelta;
+                        if (NSHeight(newRect) < 0.0) {
+                            newRect.size.height *= -1.0;
+                            newRect.origin.y -= NSHeight(newRect);
+                        }
+                    } else if (yEdge == 2) {
+                        newRect.origin.y += yDelta;
+                        newRect.size.height -= yDelta;
+                        if (NSHeight(newRect) < 0.0) {
+                            newRect.size.height *= -1.0;
+                            newRect.origin.y -= NSHeight(newRect);
+                        }
                     }
                 }
                 
