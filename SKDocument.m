@@ -82,11 +82,6 @@ NSString *SKDocumentWillSaveNotification = @"SKDocumentWillSaveNotification";
 
 @implementation SKDocument
 
-+ (void)initialize {
-    if (nil == SKPDFDocumentType)
-        SKPDFDocumentType = [NSPDFPboardType copy];
-}
-
 - (void)dealloc {
     [[NSUserDefaultsController sharedUserDefaultsController] removeObserver:self forKey:SKAutoCheckFileUpdateKey];
     [[NSNotificationCenter defaultCenter] removeObserver:self];
@@ -530,16 +525,14 @@ NSString *SKDocumentWillSaveNotification = @"SKDocumentWillSaveNotification";
         autoUpdate = NO;
     } else {
         NSError *error = nil;
-        if ([self revertToContentsOfURL:[self fileURL] ofType:[self fileType] error:&error]) {
-            [changeDate release];
-        } else {
-            [NSApp presentError:error];
+        if (NO == [self revertToContentsOfURL:[self fileURL] ofType:[self fileType] error:&error]) {
+            [self presentError:error];
             [self setLastChangedDate:changeDate];
         }
         if (returnCode == NSAlertAlternateReturn)
             autoUpdate = YES;
     }
-    
+    [changeDate release];
     [self checkFileUpdatesIfNeeded];
 }
 
@@ -874,6 +867,11 @@ NSString *SKDocumentWillSaveNotification = @"SKDocumentWillSaveNotification";
 
 @implementation SKDocumentController
 
++ (void)initialize {
+    if (nil == SKPDFDocumentType)
+        SKPDFDocumentType = [NSPDFPboardType copy];
+}
+
 - (NSString *)typeFromFileExtension:(NSString *)fileExtensionOrHFSFileType {
 	NSString *type = [super typeFromFileExtension:fileExtensionOrHFSFileType];
     if ([type isEqualToString:SKEmbeddedPDFDocumentType] || [type isEqualToString:SKBarePDFDocumentType]) {
@@ -884,13 +882,57 @@ NSString *SKDocumentWillSaveNotification = @"SKDocumentWillSaveNotification";
 	return type;
 }
 
+static NSData *convertTIFFDataToPDF(NSData *tiffData)
+{
+    // this should accept any image data types we're likely to run across, but PICT returns a zero size image
+    CGImageSourceRef imsrc = CGImageSourceCreateWithData((CFDataRef)tiffData, (CFDictionaryRef)[NSDictionary dictionaryWithObject:(id)kUTTypeTIFF forKey:(id)kCGImageSourceTypeIdentifierHint]);
+
+    NSMutableData *pdfData = nil;
+    
+    if (CGImageSourceGetCount(imsrc)) {
+        CGImageRef cgImage = CGImageSourceCreateImageAtIndex(imsrc, 0, NULL);
+
+        pdfData = [NSMutableData dataWithCapacity:[tiffData length]];
+        CGDataConsumerRef consumer = CGDataConsumerCreateWithCFData((CFMutableDataRef)pdfData);
+        
+        // create full size image, assuming pixel == point
+        const CGRect rect = CGRectMake(0, 0, CGImageGetWidth(cgImage), CGImageGetHeight(cgImage));
+        
+        CGContextRef ctxt = CGPDFContextCreate(consumer, &rect, NULL);
+        CGPDFContextBeginPage(ctxt, NULL);
+        CGContextDrawImage(ctxt, rect, cgImage);
+        CGPDFContextEndPage(ctxt);
+        
+        CGContextFlush(ctxt);
+
+        CGDataConsumerRelease(consumer);
+        CGContextRelease(ctxt);
+        CGImageRelease(cgImage);
+    }
+    
+    CFRelease(imsrc);
+
+    return pdfData;
+}
+
 - (void)newDocumentFromClipboard:(id)sender {
-    NSString *pboardType = [[NSPasteboard generalPasteboard] availableTypeFromArray:[NSArray arrayWithObjects:NSPDFPboardType, NSPostScriptPboardType, nil]];
+    
+    // allow any filter services to convert to TIFF data if we can't get PDF or PS directly
+    NSPasteboard *pboard = [NSPasteboard pasteboardByFilteringTypesInPasteboard:[NSPasteboard generalPasteboard]];
+    NSString *pboardType = [pboard availableTypeFromArray:[NSArray arrayWithObjects:NSPDFPboardType, NSPostScriptPboardType, NSTIFFPboardType, nil]];
     if (nil == pboardType) {
         NSBeep();
         return;
     }
-    NSData *data = [[NSPasteboard generalPasteboard] dataForType:pboardType];
+    
+    NSData *data = [pboard dataForType:pboardType];
+    
+    // if it's image data, convert to PDF, then explicitly set the pboard type to PDF
+    if ([pboardType isEqualToString:NSTIFFPboardType]) {
+        data = convertTIFFDataToPDF(data);
+        pboardType = NSPDFPboardType;
+    }
+    
     NSString *type = [pboardType isEqualToString:NSPostScriptPboardType] ? SKPostScriptDocumentType : SKPDFDocumentType;
     NSError *error = nil;
     id document = [self makeUntitledDocumentOfType:type error:&error];
@@ -906,8 +948,8 @@ NSString *SKDocumentWillSaveNotification = @"SKDocumentWillSaveNotification";
 
 - (BOOL)validateUserInterfaceItem:(id <NSValidatedUserInterfaceItem>)anItem {
     if ([anItem action] == @selector(newDocumentFromClipboard:)) {
-        NSPasteboard *pboard = [NSPasteboard generalPasteboard];
-        return ([[pboard types] containsObject:NSPDFPboardType] || [[pboard types] containsObject:NSPostScriptPboardType]);
+        NSPasteboard *pboard = [NSPasteboard pasteboardByFilteringTypesInPasteboard:[NSPasteboard generalPasteboard]];
+        return ([[pboard types] firstObjectCommonWithArray:[NSArray arrayWithObjects:NSPDFPboardType, NSPostScriptPboardType, NSTIFFPboardType, nil]] != nil);
     } else if ([super respondsToSelector:_cmd]) {
         return [super validateUserInterfaceItem:anItem];
     } else
