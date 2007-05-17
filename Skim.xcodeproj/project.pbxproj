@@ -140,11 +140,9 @@
 		CE5487BC0B35A20A00F8AFB6 /* NSFileManager_ExtendedAttributes.m in Sources */ = {isa = PBXBuildFile; fileRef = CE5487BB0B35A20A00F8AFB6 /* NSFileManager_ExtendedAttributes.m */; };
 		CE54898C0B35D4EF00F8AFB6 /* InfoWindow.nib in Resources */ = {isa = PBXBuildFile; fileRef = CE54898A0B35D4EF00F8AFB6 /* InfoWindow.nib */; };
 		CE54898F0B35D50E00F8AFB6 /* SKInfoWindowController.m in Sources */ = {isa = PBXBuildFile; fileRef = CE54898E0B35D50E00F8AFB6 /* SKInfoWindowController.m */; };
-		CE5F42AE0BF89FE00069D89C /* AppleRemote.h in CopyFiles */ = {isa = PBXBuildFile; fileRef = CE5F42AC0BF89FE00069D89C /* AppleRemote.h */; };
 		CE5F42AF0BF89FE00069D89C /* AppleRemote.m in Sources */ = {isa = PBXBuildFile; fileRef = CE5F42AD0BF89FE00069D89C /* AppleRemote.m */; };
 		CE5F43730BF8A3410069D89C /* IOKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CE5F42D30BF8A3400069D89C /* IOKit.framework */; };
 		CE67BB260BC44AC9007B6929 /* ZoomValues.strings in Resources */ = {isa = PBXBuildFile; fileRef = CE67BB240BC44AC9007B6929 /* ZoomValues.strings */; };
-		CE6C03F00BEDF759007BF0B5 /* NSParagraphStyle_SKExtensions.h in CopyFiles */ = {isa = PBXBuildFile; fileRef = CE6C03EE0BEDF759007BF0B5 /* NSParagraphStyle_SKExtensions.h */; };
 		CE6C03F10BEDF759007BF0B5 /* NSParagraphStyle_SKExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = CE6C03EF0BEDF759007BF0B5 /* NSParagraphStyle_SKExtensions.m */; };
 		CE74686F0B7F3B1C00CBF969 /* ToolbarInfo.tiff in Resources */ = {isa = PBXBuildFile; fileRef = CE7467330B7F2ED700CBF969 /* ToolbarInfo.tiff */; };
 		CE7468810B7F3C0000CBF969 /* zoomInCursor.tiff in Resources */ = {isa = PBXBuildFile; fileRef = CE7467540B7F321100CBF969 /* zoomInCursor.tiff */; };
@@ -238,8 +236,6 @@
 			dstSubfolderSpec = 10;
 			files = (
 				CE2BD8450BD4135600A5F4DB /* Sparkle.framework in CopyFiles */,
-				CE6C03F00BEDF759007BF0B5 /* NSParagraphStyle_SKExtensions.h in CopyFiles */,
-				CE5F42AE0BF89FE00069D89C /* AppleRemote.h in CopyFiles */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -284,7 +280,7 @@
 		45A3BD380B4F097D002B297F /* InitialUserDefaults.plist */ = {isa = PBXFileReference; explicitFileType = text.xml; fileEncoding = 4; path = InitialUserDefaults.plist; sourceTree = "<group>"; };
 		45B113BF0B329A7E00DE0660 /* LICENSE */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = LICENSE; sourceTree = "<group>"; };
 		8D15AC360486D014006FF6A4 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = Info.plist; sourceTree = "<group>"; };
-		8D15AC370486D014006FF6A4 /* Skim.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Skim.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		8D15AC370486D014006FF6A4 /* Skim.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = Skim.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		A489FDBA0BC8E8D100BA14DD /* Italian */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = Italian; path = Italian.lproj/InfoWindow.nib; sourceTree = "<group>"; };
 		A489FDBD0BC8E8DA00BA14DD /* Italian */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = Italian; path = Italian.lproj/MainMenu.nib; sourceTree = "<group>"; };
 		A489FDC00BC8E8DF00BA14DD /* Italian */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = Italian; path = Italian.lproj/MainWindow.nib; sourceTree = "<group>"; };
