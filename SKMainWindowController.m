@@ -470,12 +470,12 @@ static NSString *SKRightSidePaneWidthKey = @"SKRightSidePaneWidth";
 
     if ([pdfView document] != document) {
         
-        PDFDestination *dest;
         unsigned pageIndex = NSNotFound;
+        NSRect visibleRect = NSZeroRect;
         
         if ([pdfView document]) {
-            dest = [pdfView currentDestination];
             pageIndex = [[pdfView document] indexForPage:[pdfView currentPage]];
+            visibleRect = [pdfView convertRect:[pdfView convertRect:[[pdfView documentView] visibleRect] fromView:[pdfView documentView]] toPage:[pdfView currentPage]];
         }
         
         // these will be invalid. If needed, the document will restore them
@@ -512,8 +512,12 @@ static NSString *SKRightSidePaneWidthKey = @"SKRightSidePaneWidth";
         [self updateThumbnailSelection];
         
         if (pageIndex != NSNotFound && [document pageCount]) {
-            PDFPage *page = [document pageAtIndex:MIN(pageIndex, [document pageCount])];
-            [pdfView performSelector:@selector(goToPage:) withObject:page afterDelay:0.0];
+            PDFPage *page = [document pageAtIndex:MIN(pageIndex, [document pageCount] - 1)];
+            [pdfView goToPage:page];
+            [[pdfView window] disableFlushWindow];
+            [pdfView display];
+            [[pdfView documentView] scrollRectToVisible:[pdfView convertRect:[pdfView convertRect:visibleRect fromPage:page] toView:[pdfView documentView]]];
+            [[pdfView window] enableFlushWindow];
         }
     }
 }
