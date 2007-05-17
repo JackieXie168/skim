@@ -1825,11 +1825,11 @@ static CGMutablePathRef SKCGCreatePathWithRoundRectInRect(CGRect rect, float rad
                 } else if (eventChar == NSLeftArrowFunctionKey) {
                     endPoint.y -= delta;
                     if (endPoint.y < NSMinY(pageBounds))
-                        endPoint.y = NSMinY(pageBounds);
+                        endPoint.y = NSMinY(pageBounds) + 0.5;
                 } else if (eventChar == NSUpArrowFunctionKey) {
                     endPoint.x -= delta;
                     if (endPoint.x < NSMinX(pageBounds))
-                        endPoint.x = NSMinX(pageBounds);
+                        endPoint.x = NSMinX(pageBounds) + 0.5;
                 } else if (eventChar == NSDownArrowFunctionKey) {
                     endPoint.x += delta;
                     if (endPoint.x > NSMaxX(pageBounds))
@@ -2200,70 +2200,38 @@ static CGMutablePathRef SKCGCreatePathWithRoundRectInRect(CGRect rect, float rad
             startPoint = wasStartPoint;
             startPoint.x += NSMinX(wasBounds);
             startPoint.y += NSMinY(wasBounds);
+            NSPoint *draggedPoint = draggingStartPoint ? &startPoint : &endPoint;
             
             // Resize the annotation.
             switch ([activePage rotation]) {
                 case 0:
-                    if (draggingStartPoint) {
-                        startPoint.x += relPoint.x;
-                        startPoint.y += relPoint.y;
-                    } else {
-                        endPoint.x += relPoint.x;
-                        endPoint.y += relPoint.y;
-                    }
+                    draggedPoint->x += relPoint.x;
+                    draggedPoint->y += relPoint.y;
                     break;
                 case 90:
-                    if (draggingStartPoint) {
-                        startPoint.x += relPoint.y;
-                        startPoint.y -= relPoint.x;
-                    } else {
-                        endPoint.x += relPoint.y;
-                        endPoint.y -= relPoint.x;
-                    }
+                    draggedPoint->x += relPoint.y;
+                    draggedPoint->y -= relPoint.x;
                     break;
                 case 180:
-                    if (draggingStartPoint) {
-                        startPoint.x -= relPoint.x;
-                        startPoint.y -= relPoint.y;
-                    } else {
-                        endPoint.x -= relPoint.x;
-                        endPoint.y -= relPoint.y;
-                    }
+                    draggedPoint->x -= relPoint.x;
+                    draggedPoint->y -= relPoint.y;
                     break;
                 case 270:
-                    if (draggingStartPoint) {
-                        startPoint.x -= relPoint.y;
-                        startPoint.y += relPoint.x;
-                    } else {
-                        endPoint.x -= relPoint.y;
-                        endPoint.y += relPoint.x;
-                    }
+                    draggedPoint->x -= relPoint.y;
+                    draggedPoint->y += relPoint.x;
                     break;
             }
             
-            if (draggingStartPoint) {
-                if (startPoint.x > NSMaxX(pageBounds))
-                    startPoint.x = NSMaxX(pageBounds) - 0.5;
-                else if (startPoint.x < NSMinX(pageBounds))
-                    startPoint.x = NSMinX(pageBounds) + 0.5;
-                if (startPoint.y > NSMaxY(pageBounds))
-                    startPoint.y = NSMaxY(pageBounds) - 0.5;
-                else if (startPoint.y < NSMinY(pageBounds))
-                    startPoint.y = NSMinY(pageBounds) + 0.5;
-                startPoint.x = floorf(startPoint.x) + 0.5;
-                startPoint.y = floorf(startPoint.y) + 0.5;
-            } else {
-                if (endPoint.x > NSMaxX(pageBounds))
-                    endPoint.x = NSMaxX(pageBounds) - 0.5;
-                else if (endPoint.x < NSMinX(pageBounds))
-                    endPoint.x = NSMinX(pageBounds) + 0.5;
-                if (endPoint.y > NSMaxY(pageBounds))
-                    endPoint.y = NSMaxY(pageBounds) - 0.5;
-                else if (endPoint.y < NSMinY(pageBounds))
-                    endPoint.y = NSMinY(pageBounds) + 0.5;
-                endPoint.x = floorf(endPoint.x) + 0.5;
-                endPoint.y = floorf(endPoint.y) + 0.5;
-            }
+            if (draggedPoint->x > NSMaxX(pageBounds))
+                draggedPoint->x = NSMaxX(pageBounds) - 0.5;
+            else if (draggedPoint->x < NSMinX(pageBounds))
+                draggedPoint->x = NSMinX(pageBounds) + 0.5;
+            if (draggedPoint->y > NSMaxY(pageBounds))
+                draggedPoint->y = NSMaxY(pageBounds) - 0.5;
+            else if (draggedPoint->y < NSMinY(pageBounds))
+                draggedPoint->y = NSMinY(pageBounds) + 0.5;
+            draggedPoint->x = floorf(draggedPoint->x) + 0.5;
+            draggedPoint->y = floorf(draggedPoint->y) + 0.5;
             
             newBounds.origin.x = floorf(fmin(startPoint.x, endPoint.x));
             newBounds.size.width = ceilf(fmax(endPoint.x, startPoint.x)) - NSMinX(newBounds);
