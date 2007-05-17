@@ -2412,6 +2412,21 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
     }
 }
 
+- (void)tableView:(NSTableView *)tv copyRowsWithIndexes:(NSIndexSet *)rowIndexes {
+    if ([tv isEqual:thumbnailTableView]) {
+        unsigned int index = [rowIndexes firstIndex];
+        if (index != NSNotFound) {
+            PDFPage *page = [[pdfView document] pageAtIndex:index];
+            NSData *pdfData = [page dataRepresentation];
+            NSData *tiffData = [[page image] TIFFRepresentation];
+            NSPasteboard *pboard = [NSPasteboard generalPasteboard];
+            [pboard declareTypes:[NSArray arrayWithObjects:NSPDFPboardType, NSTIFFPboardType, nil] owner:nil];
+            [pboard setData:pdfData forType:NSPDFPboardType];
+            [pboard setData:tiffData forType:NSTIFFPboardType];
+        }
+    }
+}
+
 - (NSArray *)tableViewHighlightedRows:(NSTableView *)tv {
     if ([tv isEqual:thumbnailTableView]) {
         return lastViewedPages;

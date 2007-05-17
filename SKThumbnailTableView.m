@@ -131,6 +131,11 @@ static IMP originalTrackKnob = NULL;
     [super mouseDown:theEvent];
 }
 
+- (void)copy:(id)sender {
+    if ([[self delegate] respondsToSelector:@selector(tableView:copyRowsWithIndexes:)])
+        [[self delegate] tableView:self copyRowsWithIndexes:[self selectedRowIndexes]];
+}
+
 @end
 
 #pragma mark -
