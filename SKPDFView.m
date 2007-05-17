@@ -63,6 +63,7 @@ NSString *SKPDFViewAnnotationDoubleClickedNotification = @"SKPDFViewAnnotationDo
 NSString *SKSkimNotePboardType = @"SKSkimNotePboardType";
 
 static CGMutablePathRef SKCGCreatePathWithRoundRectInRect(CGRect rect, float radius);
+static void SKCGContextDrawGrabHandle(CGContextRef context, CGPoint point, float radius);
 
 @interface PDFDocument (SKExtensions)
 - (PDFSelection *)selectionByExtendingSelection:(PDFSelection *)selection toPage:(PDFPage *)page atPoint:(NSPoint)point;
@@ -101,6 +102,7 @@ static CGMutablePathRef SKCGCreatePathWithRoundRectInRect(CGRect rect, float rad
 - (void)selectSnapshotWithEvent:(NSEvent *)theEvent;
 - (void)magnifyWithEvent:(NSEvent *)theEvent;
 - (void)dragWithEvent:(NSEvent *)theEvent;
+- (void)selectWithEvent:(NSEvent *)theEvent;
 - (void)selectTextWithEvent:(NSEvent *)theEvent;
 - (void)dragReadingBarWithEvent:(NSEvent *)theEvent;
 - (void)pdfsyncWithEvent:(NSEvent *)theEvent;
@@ -307,11 +309,31 @@ static CGMutablePathRef SKCGCreatePathWithRoundRectInRect(CGRect rect, float rad
         }
     }
     
-    if (NSIsEmptyRect(selectionRect) == NO) {
+    if (NSIsEmptyRect(selectionRect) == NO && toolMode != SKSelectToolMode) {
         NSRect rect = NSInsetRect([self convertRect:selectionRect toPage:pdfPage], 0.5, 0.5);
         float color[4] = { 0.0, 0.0, 0.0, 1.0 };
         CGContextSetStrokeColor(context, color);
         CGContextStrokeRect(context, *(CGRect *)&rect);
+    } else if (toolMode == SKSelectToolMode && activePage) {
+        NSRect bounds = [pdfPage boundsForBox:[self displayBox]];
+        float color[4] = { 0.0, 0.0, 0.0, 0.6 };
+        float radius = 4.0 / [self scaleFactor];
+        CGContextBeginPath(context);
+        CGContextAddRect(context, *(CGRect *)&bounds);
+        if ([activePage isEqual:pdfPage])
+            CGContextAddRect(context, *(CGRect *)&selectionRect);
+        CGContextSetFillColor(context, color);
+        CGContextEOFillPath(context);
+        if ([activePage isEqual:pdfPage]) {
+            SKCGContextDrawGrabHandle(context, CGPointMake(NSMinX(selectionRect), NSMinY(selectionRect)), radius);
+            SKCGContextDrawGrabHandle(context, CGPointMake(NSMinX(selectionRect), NSMaxY(selectionRect)), radius);
+            SKCGContextDrawGrabHandle(context, CGPointMake(NSMaxX(selectionRect), NSMinY(selectionRect)), radius);
+            SKCGContextDrawGrabHandle(context, CGPointMake(NSMaxX(selectionRect), NSMaxY(selectionRect)), radius);
+            SKCGContextDrawGrabHandle(context, CGPointMake(NSMinX(selectionRect), NSMidY(selectionRect)), radius);
+            SKCGContextDrawGrabHandle(context, CGPointMake(NSMaxX(selectionRect), NSMidY(selectionRect)), radius);
+            SKCGContextDrawGrabHandle(context, CGPointMake(NSMidX(selectionRect), NSMinY(selectionRect)), radius);
+            SKCGContextDrawGrabHandle(context, CGPointMake(NSMidX(selectionRect), NSMaxY(selectionRect)), radius);
+        }
     }
     
     CGContextRestoreGState(context);
@@ -362,6 +384,10 @@ static CGMutablePathRef SKCGCreatePathWithRoundRectInRect(CGRect rect, float rad
             if (editAnnotation)
                 [self endAnnotationEdit:self];
             [self setActiveAnnotation:nil];
+        } else if (toolMode == SKSelectToolMode && activePage) {
+            activePage = nil;
+            selectionRect = NSZeroRect;
+            [self setNeedsDisplay:YES];
         }
     
         toolMode = newToolMode;
@@ -453,6 +479,27 @@ static CGMutablePathRef SKCGCreatePathWithRoundRectInRect(CGRect rect, float rad
         NSData *data = [NSKeyedArchiver archivedDataWithRootObject:[activeAnnotation dictionaryValue]];
         [pboard declareTypes:[NSArray arrayWithObjects:SKSkimNotePboardType, nil] owner:nil];
         [pboard setData:data forType:SKSkimNotePboardType];
+    }
+    if (toolMode == SKSelectToolMode && activePage) {
+        NSRect bounds = [activePage boundsForBox:[self displayBox]];
+        NSRect targetRect = NSZeroRect, sourceRect = selectionRect;
+        NSImage *pageImage = [activePage imageForBox:[self displayBox]];
+        NSImage *image = nil;
+        NSData *data = nil;
+        
+        sourceRect.origin.x -= NSMinX(bounds);
+        sourceRect.origin.y -= NSMinY(bounds);
+        targetRect.size = sourceRect.size;
+        image = [[NSImage alloc] initWithSize:targetRect.size];
+        [image lockFocus];
+        [pageImage drawInRect:targetRect fromRect:sourceRect operation:NSCompositeCopy fraction:1.0];
+        [image unlockFocus];
+        data = [image TIFFRepresentation];
+        [image release];
+        
+        NSPasteboard *pboard = [NSPasteboard generalPasteboard];
+        [pboard declareTypes:[NSArray arrayWithObjects:NSTIFFPboardType, nil] owner:nil];
+        [pboard setData:data forType:NSTIFFPboardType];
     }
 }
 
@@ -632,6 +679,9 @@ static CGMutablePathRef SKCGCreatePathWithRoundRectInRect(CGRect rect, float rad
             case SKMoveToolMode:
                 [self dragWithEvent:theEvent];	
                 break;
+            case SKSelectToolMode:
+                [self selectWithEvent:theEvent];
+                break;
             case SKMagnifyToolMode:
                 if ([self areaOfInterestForMouse:theEvent] == kPDFNoArea)
                     [self dragWithEvent:theEvent];
@@ -682,6 +732,7 @@ static CGMutablePathRef SKCGCreatePathWithRoundRectInRect(CGRect rect, float rad
             draggingAnnotation = NO;
             break;
         case SKMoveToolMode:
+        case SKSelectToolMode:
             // shouldn't reach this
             break;
         case SKMagnifyToolMode:
@@ -711,6 +762,7 @@ static CGMutablePathRef SKCGCreatePathWithRoundRectInRect(CGRect rect, float rad
             }
             break;
         case SKMoveToolMode:
+        case SKSelectToolMode:
             // shouldn't reach this
             break;
         case SKMagnifyToolMode:
@@ -763,6 +815,8 @@ static CGMutablePathRef SKCGCreatePathWithRoundRectInRect(CGRect rect, float rad
             case SKMoveToolMode:
                 cursor = [NSCursor openHandCursor];
                 break;
+            case SKSelectToolMode:
+                break;
             case SKMagnifyToolMode:
                 cursor = ([theEvent modifierFlags] & NSShiftKeyMask) ? [NSCursor zoomOutCursor] : [NSCursor zoomInCursor];
                 break;
@@ -803,6 +857,10 @@ static CGMutablePathRef SKCGCreatePathWithRoundRectInRect(CGRect rect, float rad
 
     item = [submenu addItemWithTitle:NSLocalizedString(@"Magnify", @"Menu item title") action:@selector(changeToolMode:) keyEquivalent:@""];
     [item setTag:SKMagnifyToolMode];
+    [item setTarget:self];
+    
+    item = [submenu addItemWithTitle:NSLocalizedString(@"Select", @"Menu item title") action:@selector(changeToolMode:) keyEquivalent:@""];
+    [item setTag:SKSelectToolMode];
     [item setTarget:self];
     
     [submenu addItem:[NSMenuItem separatorItem]];
@@ -1418,33 +1476,41 @@ static CGMutablePathRef SKCGCreatePathWithRoundRectInRect(CGRect rect, float rad
 
 - (void)takeSnapshot:(id)sender {
     NSPoint point;
-    PDFPage *page;
-    NSRect rect;
+    PDFPage *page = nil;
+    NSRect rect = NSZeroRect;
     
-	if ([sender respondsToSelector:@selector(representedObject)] && [[sender representedObject] respondsToSelector:@selector(pointValue)]) {
-        point = [[sender representedObject] pointValue];
-        page = [self pageForPoint:point nearest:YES];
-    } else {
-		// First try the current mouse position
-        point = [self convertPoint:[[self window] mouseLocationOutsideOfEventStream] fromView:nil];
-        page = [self pageForPoint:point nearest:NO];
-        if (page == nil) {
-            // Get the center
-            NSRect viewFrame = [self frame];
-            point = NSMakePoint(NSMidX(viewFrame), NSMidY(viewFrame));
+    if (toolMode == SKSelectToolMode && activePage) {
+        rect = NSIntersectionRect(selectionRect, [activePage boundsForBox:kPDFDisplayBoxCropBox]);
+        page = activePage;
+	}
+    if (NSIsEmptyRect(rect)) {
+        if ([sender respondsToSelector:@selector(representedObject)] && [[sender representedObject] respondsToSelector:@selector(pointValue)]) {
+            point = [[sender representedObject] pointValue];
             page = [self pageForPoint:point nearest:YES];
+        } else {
+            // First try the current mouse position
+            point = [self convertPoint:[[self window] mouseLocationOutsideOfEventStream] fromView:nil];
+            page = [self pageForPoint:point nearest:NO];
+            if (page == nil) {
+                // Get the center
+                NSRect viewFrame = [self frame];
+                point = NSMakePoint(NSMidX(viewFrame), NSMidY(viewFrame));
+                page = [self pageForPoint:point nearest:YES];
+            }
         }
+        
+        point = [self convertPoint:point toPage:page];
+        
+        rect = [self convertRect:[page boundsForBox:kPDFDisplayBoxCropBox] fromPage:page];
+        rect.origin.y = point.y - 100.0;
+        rect.size.height = 200.0;
+        
+        rect = [self convertRect:rect toPage:page];
     }
-    
-    point = [self convertPoint:point toPage:page];
-    
-    rect = [self convertRect:[page boundsForBox:kPDFDisplayBoxCropBox] fromPage:page];
-    rect.origin.y = point.y - 100.0;
-    rect.size.height = 200.0;
     
     SKMainWindowController *controller = [[self window] windowController];
     
-    [controller showSnapshotAtPageNumber:[[self document] indexForPage:page] forRect:[self convertRect:rect toPage:page] factor:1];
+    [controller showSnapshotAtPageNumber:[[self document] indexForPage:page] forRect:rect factor:1];
 }
 
 #pragma mark Notification handling
@@ -1501,6 +1567,14 @@ static CGMutablePathRef SKCGCreatePathWithRoundRectInRect(CGRect rect, float rad
         else
             [menuItem setState:[self annotationMode] == (unsigned)[menuItem tag] ? NSOnState : NSOffState];
         return YES;
+    } else if (action == @selector(copy:)) {
+        if ([super validateMenuItem:menuItem])
+            return YES;
+        if ([activeAnnotation isNoteAnnotation] && [activeAnnotation isMovable])
+            return YES;
+        if (toolMode == SKSelectToolMode && activePage)
+            return YES;
+        return NO;
     } else {
         return [super validateMenuItem:menuItem];
     }
@@ -2057,7 +2131,7 @@ static CGMutablePathRef SKCGCreatePathWithRoundRectInRect(CGRect rect, float rad
     NSArray *annotations;
     int i;
     NSPoint pagePoint;
-    PDFPage *activePage;
+    PDFPage *page;
     
     // Mouse in display view coordinates.
     mouseDownLoc = [theEvent locationInWindow];
@@ -2065,13 +2139,13 @@ static CGMutablePathRef SKCGCreatePathWithRoundRectInRect(CGRect rect, float rad
     NSPoint mouseDownOnPage = [self convertPoint:mouseDownLoc fromView:nil];
     
     // Page we're on.
-    activePage = [self pageForPoint:mouseDownOnPage nearest:YES];
+    page = [self pageForPoint:mouseDownOnPage nearest:YES];
     
     // Get mouse in "page space".
-    pagePoint = [self convertPoint:mouseDownOnPage toPage:activePage];
+    pagePoint = [self convertPoint:mouseDownOnPage toPage:page];
     
     // Hit test for annotation.
-    annotations = [activePage annotations];
+    annotations = [page annotations];
     i = [annotations count];
     
     while (i-- > 0) {
@@ -2108,17 +2182,17 @@ static CGMutablePathRef SKCGCreatePathWithRoundRectInRect(CGRect rect, float rad
         PDFAnnotation *newAnnotation = [[PDFAnnotation alloc] initWithDictionary:[newActiveAnnotation dictionaryValue]];
         [[self undoManager] beginUndoGrouping];
         didBeginUndoGrouping = YES;
-        [self addAnnotation:newAnnotation toPage:activePage];
+        [self addAnnotation:newAnnotation toPage:page];
         newActiveAnnotation = newAnnotation;
         [newAnnotation release];
     } else if (toolMode == SKNoteToolMode && newActiveAnnotation == nil &&
-               NSPointInRect(mouseDownOnPage, [activePage boundsForBox:[self displayBox]]) &&
+               NSPointInRect(mouseDownOnPage, [page boundsForBox:[self displayBox]]) &&
                (annotationMode == SKFreeTextNote || annotationMode == SKAnchoredNote || annotationMode == SKCircleNote || annotationMode == SKSquareNote || annotationMode == SKArrowNote)) {
         float width = annotationMode == SKAnchoredNote ? 16.0 : annotationMode == SKArrowNote ? 4.0 : 8.0;
         NSRect bounds = NSMakeRect(pagePoint.x - floorf(0.5 * width), pagePoint.y - floorf(0.5 * width), width, width);
         [[self undoManager] beginUndoGrouping];
         didBeginUndoGrouping = YES;
-        [self addAnnotationWithType:annotationMode contents:nil page:activePage bounds:bounds];
+        [self addAnnotationWithType:annotationMode contents:nil page:page bounds:bounds];
         newActiveAnnotation = activeAnnotation;
         mouseDownInAnnotation = YES;
         clickDelta.x = pagePoint.x - NSMinX(bounds);
@@ -2171,7 +2245,7 @@ static CGMutablePathRef SKCGCreatePathWithRoundRectInRect(CGRect rect, float rad
                 resizingAnnotation = NO;
             }
         }  else {
-            resizingAnnotation = [activeAnnotation isResizable] && NSPointInRect(pagePoint, [self resizeThumbForRect:wasBounds rotation:[activePage rotation]]);
+            resizingAnnotation = [activeAnnotation isResizable] && NSPointInRect(pagePoint, [self resizeThumbForRect:wasBounds rotation:[page rotation]]);
         }
     }
     
@@ -2179,15 +2253,15 @@ static CGMutablePathRef SKCGCreatePathWithRoundRectInRect(CGRect rect, float rad
 }
 
 - (void)dragAnnotationWithEvent:(NSEvent *)theEvent {
-    PDFPage *activePage = [activeAnnotation page];
+    PDFPage *page = [activeAnnotation page];
     NSRect newBounds;
     NSRect currentBounds = [activeAnnotation bounds];
-    NSRect pageBounds = [activePage  boundsForBox:[self displayBox]];
+    NSRect pageBounds = [page  boundsForBox:[self displayBox]];
     
     if (resizingAnnotation) {
         NSPoint mouseLoc = [self convertPoint:[theEvent locationInWindow] fromView:nil];
-        NSPoint startPoint = [self convertPoint:[self convertPoint:mouseDownLoc fromView:nil] toPage:activePage];
-        NSPoint endPt = [self convertPoint:mouseLoc toPage:activePage];
+        NSPoint startPoint = [self convertPoint:[self convertPoint:mouseDownLoc fromView:nil] toPage:page];
+        NSPoint endPt = [self convertPoint:mouseLoc toPage:page];
         NSPoint relPoint = NSMakePoint(endPt.x - startPoint.x, endPt.y - startPoint.y);
         newBounds = wasBounds;
         
@@ -2203,7 +2277,7 @@ static CGMutablePathRef SKCGCreatePathWithRoundRectInRect(CGRect rect, float rad
             NSPoint *draggedPoint = draggingStartPoint ? &startPoint : &endPoint;
             
             // Resize the annotation.
-            switch ([activePage rotation]) {
+            switch ([page rotation]) {
                 case 0:
                     draggedPoint->x += relPoint.x;
                     draggedPoint->y += relPoint.y;
@@ -2257,7 +2331,7 @@ static CGMutablePathRef SKCGCreatePathWithRoundRectInRect(CGRect rect, float rad
             
         } else {
             
-            switch ([activePage rotation]) {
+            switch ([page rotation]) {
                 case 0:
                     newBounds.origin.y += relPoint.y;
                     newBounds.size.width += relPoint.x;
@@ -2353,13 +2427,13 @@ static CGMutablePathRef SKCGCreatePathWithRoundRectInRect(CGRect rect, float rad
             // this should never happen, but just to be sure
             newBounds = wasBounds;
         } else {
-            if (newActivePage != activePage) {
+            if (newActivePage != page) {
                 // move the annotation to the new page
                 [self moveAnnotation:activeAnnotation toPage:newActivePage];
-                activePage = newActivePage;
+                page = newActivePage;
             }
             
-            NSPoint endPt = [self convertPoint:mouseLoc toPage:activePage];
+            NSPoint endPt = [self convertPoint:mouseLoc toPage:page];
             newBounds = currentBounds;
             newBounds.origin.x = roundf(endPt.x - clickDelta.x);
             newBounds.origin.y = roundf(endPt.y - clickDelta.y);
@@ -2415,6 +2489,124 @@ static CGMutablePathRef SKCGCreatePathWithRoundRectInRect(CGRect rect, float rad
 				break;
 		} // end of switch (event type)
 	} // end of mouse-tracking loop
+    
+    [NSCursor pop];
+    // ??? PDFView's delayed layout seems to reset the cursor to an arrow
+    [[self cursorForEvent:theEvent] performSelector:@selector(set) withObject:nil afterDelay:0];
+}
+
+- (void)selectWithEvent:(NSEvent *)theEvent {
+    NSPoint mouseLoc = [self convertPoint:[theEvent locationInWindow] fromView:nil];
+    
+    PDFPage *page = [self pageForPoint:mouseLoc nearest:NO];
+    
+    if (page == nil) {
+        activePage = nil;
+        selectionRect = NSZeroRect;
+        [self setNeedsDisplay:YES];
+        return;
+    }
+    
+	NSPoint initialPoint = [self convertPoint:mouseLoc toPage:page];
+    NSPoint delta;
+    float margin = 4.0 / [self scaleFactor];
+    int xEdge = 0, yEdge = 0;
+    
+    if ([page isEqual:activePage] == NO || NSPointInRect(initialPoint, NSInsetRect(selectionRect, -margin, -margin)) == NO) {
+        activePage = page;
+        selectionRect.origin = initialPoint;
+        selectionRect.size = NSZeroSize;
+        xEdge = 1;
+        yEdge = 2;
+        [self setNeedsDisplay:YES];
+    } else {
+        if (initialPoint.x > NSMaxX(selectionRect) - margin)
+            xEdge = 1;
+        else if (initialPoint.x < NSMinX(selectionRect) + margin)
+            xEdge = 2;
+        if (initialPoint.y > NSMaxY(selectionRect) - margin)
+            yEdge = 1;
+        else if (initialPoint.y < NSMinY(selectionRect) + margin)
+            yEdge = 2;
+    }
+    
+    delta.x = initialPoint.x - NSMinX(selectionRect);
+    delta.y = initialPoint.y - NSMinY(selectionRect);
+    
+	NSRect initialRect = selectionRect;
+    BOOL keepGoing = YES;
+    
+    if (xEdge == 0 && yEdge == 0)
+        [[NSCursor closedHandCursor] push];
+    else
+        [[NSCursor crosshairCursor] push];
+    
+	while (keepGoing) {
+		theEvent = [[self window] nextEventMatchingMask: NSLeftMouseUpMask | NSLeftMouseDraggedMask];
+		switch ([theEvent type]) {
+			case NSLeftMouseDragged:
+            {
+				NSPoint	newPoint;
+				NSRect	newRect = initialRect;
+				float	xDelta, yDelta;
+				
+				newPoint = [self convertPoint:[self convertPoint:[theEvent locationInWindow] fromView:nil] toPage:page];
+				xDelta = newPoint.x - initialPoint.x;
+				yDelta = newPoint.y - initialPoint.y;
+				
+                if (xEdge == 1) {
+                    newRect.size.width += xDelta;
+                    if (NSWidth(newRect) < 0.0) {
+                        newRect.size.width = 0.0;
+                    }
+                } else if (xEdge == 2) {
+                    newRect.origin.x += xDelta;
+                    newRect.size.width -= xDelta;
+                    if (NSWidth(newRect) < 0.0) {
+                        newRect.origin.x += NSWidth(newRect);
+                        newRect.size.width = 0.0;
+                    }
+                } else if (yEdge == 0) {
+                    newRect.origin.x += xDelta;
+                    newRect.origin.y += yDelta;
+                }
+                
+                if (yEdge == 1) {
+                    newRect.size.height += yDelta;
+                    if (NSHeight(newRect) < 0.0) {
+                        newRect.size.height = 0.0;
+                    }
+                } else if (yEdge == 2) {
+                    newRect.origin.y += yDelta;
+                    newRect.size.height -= yDelta;
+                    if (NSHeight(newRect) < 0.0) {
+                        newRect.origin.y += NSHeight(newRect);
+                        newRect.size.height = 0.0;
+                    }
+                }
+                
+                newRect = NSIntersectionRect(newRect, [activePage boundsForBox:[self displayBox]]);
+                [self setNeedsDisplayInRect:NSInsetRect(NSUnionRect(newRect, selectionRect), -margin, -margin) ofPage:activePage];
+                selectionRect = newRect;
+                
+				break;
+			}
+				
+			case NSLeftMouseUp:
+				keepGoing = NO;
+				break;
+				
+			default:
+				/* Ignore any other kind of event. */
+				break;
+		} // end of switch (event type)
+	} // end of mouse-tracking loop
+    
+    if (NSIsEmptyRect(selectionRect)) {
+        activePage = nil;
+        selectionRect = NSZeroRect;
+        [self setNeedsDisplay:YES];
+    }
     
     [NSCursor pop];
     // ??? PDFView's delayed layout seems to reset the cursor to an arrow
@@ -2821,6 +3013,19 @@ static CGMutablePathRef SKCGCreatePathWithRoundRectInRect(CGRect rect, float rad
             case SKMoveToolMode:
                 cursor = [NSCursor openHandCursor];
                 break;
+            case SKSelectToolMode:
+            {
+                float margin = 4.0 / [self scaleFactor];
+                PDFPage *page = [self pageForPoint:p nearest:NO];
+                p = [self convertPoint:p toPage:page];
+                if ([page isEqual:activePage] == NO || NSPointInRect(p, NSInsetRect(selectionRect, -margin, -margin)) == NO)
+                    cursor = [NSCursor crosshairCursor];
+                else if (NSPointInRect(p, NSInsetRect(selectionRect, margin, margin)))
+                    cursor = [NSCursor openHandCursor];
+                else
+                    cursor = [NSCursor arrowCursor];
+                break;
+            }
             case SKMagnifyToolMode:
                 if ([self areaOfInterestForMouse:theEvent] == kPDFNoArea)
                     cursor = [NSCursor openHandCursor];
@@ -2863,6 +3068,17 @@ static CGMutablePathRef SKCGCreatePathWithRoundRectInRect(CGRect rect, float rad
     return path;
 }
 
+static void SKCGContextDrawGrabHandle(CGContextRef context, CGPoint point, float radius)
+{
+    float white[4] = { 1.0, 1.0, 1.0, 0.7 };
+    float gray[4] = { 0.5, 0.5, 0.6, 0.7 };
+    CGRect outerRect = CGRectMake(point.x - radius, point.y - radius, 2.0 * radius, 2.0 * radius);
+    CGRect innerRect = CGRectMake(point.x - 0.75 * radius, point.y - 0.75 * radius, 1.5 * radius, 1.5 * radius);
+    CGContextSetFillColor(context, white);
+    CGContextFillEllipseInRect(context, outerRect);
+    CGContextSetFillColor(context, gray);
+    CGContextFillEllipseInRect(context, innerRect);
+}
 
 @implementation PDFDocument (SKExtensions)
 

@@ -2939,6 +2939,9 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
     menuItem = [menu addItemWithTitle:NSLocalizedString(@"Magnify Tool", @"Menu item title") action:@selector(changeToolMode:) keyEquivalent:@""];
 	[menuItem setTarget:self];
 	[menuItem setTag:SKMagnifyToolMode];
+    menuItem = [menu addItemWithTitle:NSLocalizedString(@"Select Tool", @"Menu item title") action:@selector(changeToolMode:) keyEquivalent:@""];
+	[menuItem setTarget:self];
+	[menuItem setTag:SKSelectToolMode];
     [menu addItem:[NSMenuItem separatorItem]];
     menuItem = [menu addItemWithTitle:NSLocalizedString(@"Text Note Tool", @"Menu item title") action:@selector(changeAnnotationMode:) keyEquivalent:@""];
 	[menuItem setTarget:self];
@@ -2973,6 +2976,7 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
     [[toolModeButton cell] setToolTip:NSLocalizedString(@"Text Tool", @"Tool tip message") forSegment:SKTextToolMode];
     [[toolModeButton cell] setToolTip:NSLocalizedString(@"Scroll Tool", @"Tool tip message") forSegment:SKMoveToolMode];
     [[toolModeButton cell] setToolTip:NSLocalizedString(@"Magnify Tool", @"Tool tip message") forSegment:SKMagnifyToolMode];
+    [[toolModeButton cell] setToolTip:NSLocalizedString(@"Select Tool", @"Tool tip message") forSegment:SKSelectToolMode];
     [[toolModeButton cell] setToolTip:NSLocalizedString(@"Note Tool", @"Tool tip message") forSegment:SKNoteToolMode];
     frame = [toolModeButton frame];
     frame.size.height = SEGMENTED_CONTROL_HEIGHT;

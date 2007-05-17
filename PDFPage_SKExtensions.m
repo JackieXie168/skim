@@ -46,7 +46,11 @@
 @implementation PDFPage (SKExtensions) 
 
 - (NSImage *)image {
-    NSRect bounds = [self boundsForBox:kPDFDisplayBoxCropBox];
+    return [self imageForBox:kPDFDisplayBoxCropBox];
+}
+
+- (NSImage *)imageForBox:(PDFDisplayBox)box {
+    NSRect bounds = [self boundsForBox:box];
     NSImage *image = [[NSImage alloc] initWithSize:bounds.size];
     
     [image lockFocus];
@@ -71,7 +75,7 @@
     [[NSColor whiteColor] set];
     bounds.origin = NSZeroPoint;
     NSRectFill(bounds);
-    [self drawWithBox:kPDFDisplayBoxCropBox]; 
+    [self drawWithBox:box]; 
     [NSGraphicsContext restoreGraphicsState];
     [image unlockFocus];
     

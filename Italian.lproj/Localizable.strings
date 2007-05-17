@@ -336,6 +336,13 @@
 "Search permission denied for this path." = "Permessi di ricerca negati per questo percorso.";
 
 /* Menu item title */
+"Select" = "Selezione";
+
+/* Tool tip message
+   Menu item title */
+"Select Tool" = "Strumento Selezione";
+
+/* Menu item title */
 "Show Contents Pane" = "Mostra Pannello Contenuti";
 
 /* Menu item title */
