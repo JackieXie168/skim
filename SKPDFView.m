@@ -680,7 +680,10 @@ static void SKCGContextDrawGrabHandle(CGContextRef context, CGPoint point, float
                 [self dragWithEvent:theEvent];	
                 break;
             case SKSelectToolMode:
-                [self selectWithEvent:theEvent];
+                if ([self areaOfInterestForMouse:theEvent] == kPDFNoArea)
+                    [self dragWithEvent:theEvent];
+                else
+                    [self selectWithEvent:theEvent];
                 break;
             case SKMagnifyToolMode:
                 if ([self areaOfInterestForMouse:theEvent] == kPDFNoArea)
@@ -732,11 +735,9 @@ static void SKCGContextDrawGrabHandle(CGContextRef context, CGPoint point, float
             draggingAnnotation = NO;
             break;
         case SKMoveToolMode:
+        case SKMagnifyToolMode:
         case SKSelectToolMode:
             // shouldn't reach this
-            break;
-        case SKMagnifyToolMode:
-            [super mouseUp:theEvent];
             break;
     }
     didBeginUndoGrouping = NO;
@@ -762,11 +763,9 @@ static void SKCGContextDrawGrabHandle(CGContextRef context, CGPoint point, float
             }
             break;
         case SKMoveToolMode:
+        case SKMagnifyToolMode:
         case SKSelectToolMode:
             // shouldn't reach this
-            break;
-        case SKMagnifyToolMode:
-            [super mouseDragged:theEvent];
             break;
     }
     didDrag = YES;
@@ -1016,6 +1015,13 @@ static void SKCGContextDrawGrabHandle(CGContextRef context, CGPoint point, float
                 item = [menu insertItemWithTitle:NSLocalizedString(@"Cut", @"Menu item title") action:@selector(copy:) keyEquivalent:@"" atIndex:0];
             item = [menu insertItemWithTitle:NSLocalizedString(@"Copy", @"Menu item title") action:@selector(copy:) keyEquivalent:@"" atIndex:0];
         }
+        
+    } else if (toolMode == SKSelectToolMode && activePage) {
+        
+        [menu insertItem:[NSMenuItem separatorItem] atIndex:0];
+        
+        item = [menu insertItemWithTitle:NSLocalizedString(@"Copy", @"Menu item title") action:@selector(copy:) keyEquivalent:@"" atIndex:0];
+        
     }
     
     return menu;
@@ -3014,18 +3020,20 @@ static void SKCGContextDrawGrabHandle(CGContextRef context, CGPoint point, float
                 cursor = [NSCursor openHandCursor];
                 break;
             case SKSelectToolMode:
-            {
-                float margin = 4.0 / [self scaleFactor];
-                PDFPage *page = [self pageForPoint:p nearest:NO];
-                p = [self convertPoint:p toPage:page];
-                if ([page isEqual:activePage] == NO || NSPointInRect(p, NSInsetRect(selectionRect, -margin, -margin)) == NO)
-                    cursor = [NSCursor crosshairCursor];
-                else if (NSPointInRect(p, NSInsetRect(selectionRect, margin, margin)))
+                if ([self areaOfInterestForMouse:theEvent] == kPDFNoArea) {
                     cursor = [NSCursor openHandCursor];
-                else
-                    cursor = [NSCursor arrowCursor];
+                } else {
+                    float margin = 4.0 / [self scaleFactor];
+                    PDFPage *page = [self pageForPoint:p nearest:NO];
+                    p = [self convertPoint:p toPage:page];
+                    if ([page isEqual:activePage] == NO || NSPointInRect(p, NSInsetRect(selectionRect, -margin, -margin)) == NO)
+                        cursor = [NSCursor crosshairCursor];
+                    else if (NSPointInRect(p, NSInsetRect(selectionRect, margin, margin)))
+                        cursor = [NSCursor openHandCursor];
+                    else
+                        cursor = [NSCursor arrowCursor];
+                }
                 break;
-            }
             case SKMagnifyToolMode:
                 if ([self areaOfInterestForMouse:theEvent] == kPDFNoArea)
                     cursor = [NSCursor openHandCursor];
