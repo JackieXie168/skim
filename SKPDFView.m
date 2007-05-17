@@ -430,6 +430,7 @@ static CGMutablePathRef SKCGCreatePathWithRoundRectInRect(CGRect rect, float rad
         [readingBar setPage:[self currentPage]];
         [readingBar goToNextLine];
         [self setNeedsDisplay:YES];
+        [self scrollRect:[readingBar currentBounds] inPageToVisible:[readingBar page]];
     }
 }
 
