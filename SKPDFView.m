@@ -380,16 +380,19 @@ static void SKCGContextDrawGrabHandle(CGContextRef context, CGPoint point, float
 
 - (void)setToolMode:(SKToolMode)newToolMode {
     if (toolMode != newToolMode) {
-        if ((toolMode == SKTextToolMode || toolMode == SKNoteToolMode) && (newToolMode != SKTextToolMode && newToolMode != SKNoteToolMode) && activeAnnotation) {
+        if ((toolMode == SKTextToolMode || toolMode == SKNoteToolMode) && newToolMode != SKTextToolMode && newToolMode != SKNoteToolMode) {
             if (editAnnotation)
                 [self endAnnotationEdit:self];
-            [self setActiveAnnotation:nil];
+            if (activeAnnotation)
+                [self setActiveAnnotation:nil];
+            if ([self currentSelection])
+                [self setCurrentSelection:nil];
         } else if (toolMode == SKSelectToolMode && activePage) {
             activePage = nil;
             selectionRect = NSZeroRect;
             [self setNeedsDisplay:YES];
         }
-    
+        
         toolMode = newToolMode;
         [[NSUserDefaults standardUserDefaults] setInteger:toolMode forKey:SKLastToolModeKey];
         [[NSNotificationCenter defaultCenter] postNotificationName:SKPDFViewToolModeChangedNotification object:self];
