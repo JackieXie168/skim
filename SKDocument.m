@@ -648,7 +648,7 @@ NSString *SKDocumentWillSaveNotification = @"SKDocumentWillSaveNotification";
                editorCmd = toolPath;
             } else {
                 // Emacs has its tool in Emacs.app/Contents/MacOS/bin/
-                toolPath = [[[[NSBundle bundleWithPath:appPath] executablePath] stringByAppendingPathComponent:@"bin"] stringByAppendingPathComponent:cmdString];
+                toolPath = [[[[[NSBundle bundleWithPath:appPath] executablePath] stringByDeletingLastPathComponent] stringByAppendingPathComponent:@"bin"] stringByAppendingPathComponent:editorCmd];
                 if ([[NSFileManager defaultManager] isExecutableFileAtPath:toolPath])
                     editorCmd = toolPath;
             }
@@ -656,9 +656,9 @@ NSString *SKDocumentWillSaveNotification = @"SKDocumentWillSaveNotification";
         
         [cmdString replaceOccurrencesOfString:@"%file" withString:file options:NSLiteralSearch range: NSMakeRange(0, [cmdString length] )];
         [cmdString replaceOccurrencesOfString:@"%line" withString:[NSString stringWithFormat:@"%d", line] options:NSLiteralSearch range:NSMakeRange(0, [cmdString length])];
-        [cmdString insertString:@" " atIndex:0];
+        [cmdString insertString:@"\" " atIndex:0];
         [cmdString insertString:editorCmd atIndex:0];
-        
+        [cmdString insertString:@"\"" atIndex:0];
         NSTask *task = [[[NSTask alloc] init] autorelease];
         [task setLaunchPath:@"/bin/sh"];
         [task setArguments:[NSArray arrayWithObjects:@"-c", cmdString, nil]];
