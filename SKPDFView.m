@@ -2534,14 +2534,18 @@ static void SKCGContextDrawGrabHandle(CGContextRef context, CGPoint point, float
 	NSPoint initialPoint = [self convertPoint:mouseLoc toPage:page];
     float margin = 4.0 / [self scaleFactor];
     int xEdge = 0, yEdge = 0;
+    BOOL needsDisplay = NO;
     
     if ([page isEqual:activePage] == NO || NSPointInRect(initialPoint, NSInsetRect(selectionRect, -margin, -margin)) == NO) {
+        if (activePage)
+            [self setNeedsDisplay:YES];
+        else
+            needsDisplay = YES;
         activePage = page;
         selectionRect.origin = initialPoint;
         selectionRect.size = NSZeroSize;
         xEdge = 1;
         yEdge = 1;
-        [self setNeedsDisplay:YES];
     } else {
         if (initialPoint.x > NSMaxX(selectionRect) - margin)
             xEdge = 1;
@@ -2613,10 +2617,15 @@ static void SKCGContextDrawGrabHandle(CGContextRef context, CGPoint point, float
         
         if (NSMinX(newRect) < NSMinX(pageBounds) || NSMaxX(newRect) > NSMaxX(pageBounds) || NSMinY(newRect) < NSMinY(pageBounds) || NSMaxY(newRect) > NSMaxY(pageBounds))
             newRect = NSIntersectionRect(newRect, pageBounds);
-        if (NSEqualRects(selectionRect, NSZeroRect) == NO)
-            [self setNeedsDisplayInRect:NSInsetRect(selectionRect, -margin, -margin) ofPage:activePage];
-        if (NSEqualRects(newRect, NSZeroRect) == NO)
-            [self setNeedsDisplayInRect:NSInsetRect(newRect, -margin, -margin) ofPage:activePage];
+        if (needsDisplay) {
+            [self setNeedsDisplay:YES];
+            needsDisplay = NO;
+        } else {
+            if (NSEqualRects(selectionRect, NSZeroRect) == NO)
+                [self setNeedsDisplayInRect:NSInsetRect(selectionRect, -margin, -margin) ofPage:activePage];
+            if (NSEqualRects(newRect, NSZeroRect) == NO)
+                [self setNeedsDisplayInRect:NSInsetRect(newRect, -margin, -margin) ofPage:activePage];
+        }
         selectionRect = newRect;
         
 	}
