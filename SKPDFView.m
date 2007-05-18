@@ -369,6 +369,8 @@ static void SKCGContextDrawGrabHandle(CGContextRef context, CGPoint point, float
 - (void)setDocument:(PDFDocument *)document {
     [readingBar release];
     readingBar = nil;
+    activePage = nil;
+    selectionRect = NSZeroRect;
     [self removeHoverRects];
     [super setDocument:document];
     [self resetHoverRects];
