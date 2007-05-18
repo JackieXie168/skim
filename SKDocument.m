@@ -276,6 +276,7 @@ NSString *SKDocumentWillSaveNotification = @"SKDocumentWillSaveNotification";
         [pdfDoc release];
         didRead = YES;
         [self setLastChangedDate:nil];
+        [self updateChangeCount:NSChangeDone];
     }
     
     if (didRead == NO && outError != NULL)
