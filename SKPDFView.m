@@ -608,6 +608,11 @@ static void SKCGContextDrawGrabHandle(CGContextRef context, CGPoint point, float
     [self setAnnotationMode:[sender tag]];
 }
 
+- (IBAction)selectAll:(id)sender {
+    if (toolMode == SKTextToolMode || toolMode == SKNoteToolMode)
+        [super selectAll:sender];
+}
+
 #pragma mark Event Handling
 
 - (void)keyDown:(NSEvent *)theEvent
