@@ -2626,7 +2626,10 @@ static void SKCGContextDrawGrabHandle(CGContextRef context, CGPoint point, float
                 
                 if (NSMinX(newRect) < NSMinX(pageBounds) || NSMaxX(newRect) > NSMaxX(pageBounds) || NSMinY(newRect) < NSMinY(pageBounds) || NSMaxY(newRect) > NSMaxY(pageBounds))
                     newRect = NSIntersectionRect(newRect, pageBounds);
-                [self setNeedsDisplayInRect:NSInsetRect(NSUnionRect(newRect, selectionRect), -margin, -margin) ofPage:activePage];
+                if (NSEqualRects(selectionRect, NSZeroRect) == NO)
+                    [self setNeedsDisplayInRect:NSInsetRect(selectionRect, -margin, -margin) ofPage:activePage];
+                if (NSEqualRects(newRect, NSZeroRect) == NO)
+                    [self setNeedsDisplayInRect:NSInsetRect(newRect, -margin, -margin) ofPage:activePage];
                 selectionRect = newRect;
                 
 				break;
