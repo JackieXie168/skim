@@ -497,9 +497,19 @@ static void SKCGContextDrawGrabHandle(CGContextRef context, CGPoint point, float
         data = [image TIFFRepresentation];
         [image release];
         
+        /*
+         Possible hidden default?  Alternate way of getting a bitmap rep; this varies resolution with zoom level, which is very useful if you want to copy a single figure or equation for a non-PDF-capable program.  The first copy: action has some odd behavior, though (view moves).  Preview produces a fixed resolution bitmap for a given selection area regardless of zoom.
+         
+        sourceRect = [self convertRect:selectionRect fromPage:activePage];
+        NSBitmapImageRep *imageRep = [self bitmapImageRepForCachingDisplayInRect:sourceRect];
+        [self cacheDisplayInRect:sourceRect toBitmapImageRep:imageRep];
+        data = [imageRep TIFFRepresentation];
+         */
+        
         NSPasteboard *pboard = [NSPasteboard generalPasteboard];
-        [pboard declareTypes:[NSArray arrayWithObjects:NSTIFFPboardType, nil] owner:nil];
+        [pboard declareTypes:[NSArray arrayWithObjects:NSTIFFPboardType, NSPDFPboardType, nil] owner:nil];
         [pboard setData:data forType:NSTIFFPboardType];
+        [self writePDFInsideRect:[self convertRect:selectionRect fromPage:activePage] toPasteboard:pboard];
     }
 }
 
