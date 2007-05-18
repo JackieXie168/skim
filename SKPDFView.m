@@ -320,11 +320,11 @@ static void SKCGContextDrawGrabHandle(CGContextRef context, CGPoint point, float
         float radius = 4.0 / [self scaleFactor];
         CGContextBeginPath(context);
         CGContextAddRect(context, *(CGRect *)&bounds);
-        if ([activePage isEqual:pdfPage])
+        if ([activePage isEqual:pdfPage] && NSIsEmptyRect(selectionRect) == NO)
             CGContextAddRect(context, *(CGRect *)&selectionRect);
         CGContextSetFillColor(context, color);
         CGContextEOFillPath(context);
-        if ([activePage isEqual:pdfPage]) {
+        if ([activePage isEqual:pdfPage] && NSEqualRects(selectionRect, NSZeroRect) == NO) {
             SKCGContextDrawGrabHandle(context, CGPointMake(NSMinX(selectionRect), NSMinY(selectionRect)), radius);
             SKCGContextDrawGrabHandle(context, CGPointMake(NSMinX(selectionRect), NSMaxY(selectionRect)), radius);
             SKCGContextDrawGrabHandle(context, CGPointMake(NSMaxX(selectionRect), NSMinY(selectionRect)), radius);
@@ -2568,6 +2568,7 @@ static void SKCGContextDrawGrabHandle(CGContextRef context, CGPoint point, float
     delta.y = initialPoint.y - NSMinY(selectionRect);
     
 	NSRect initialRect = selectionRect;
+    NSRect pageBounds = [activePage boundsForBox:[self displayBox]];
     BOOL keepGoing = YES;
     
     if (xEdge == 0 && yEdge == 0)
@@ -2623,7 +2624,8 @@ static void SKCGContextDrawGrabHandle(CGContextRef context, CGPoint point, float
                     }
                 }
                 
-                newRect = NSIntersectionRect(newRect, [activePage boundsForBox:[self displayBox]]);
+                if (NSMinX(newRect) < NSMinX(pageBounds) || NSMaxX(newRect) > NSMaxX(pageBounds) || NSMinY(newRect) < NSMinY(pageBounds) || NSMaxY(newRect) > NSMaxY(pageBounds))
+                    newRect = NSIntersectionRect(newRect, pageBounds);
                 [self setNeedsDisplayInRect:NSInsetRect(NSUnionRect(newRect, selectionRect), -margin, -margin) ofPage:activePage];
                 selectionRect = newRect;
                 
