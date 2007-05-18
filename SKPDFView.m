@@ -510,11 +510,14 @@ static void SKCGContextDrawGrabHandle(CGContextRef context, CGPoint point, float
         [pboard declareTypes:[NSArray arrayWithObjects:NSTIFFPboardType, NSPDFPboardType, nil] owner:nil];
         [pboard setData:data forType:NSTIFFPboardType];
         
-        // temporarily reset active page to avoid drawing selection handles when copying
+        // temporarily reset reading bar and active page to avoid drawing selection handles when copying
+        SKReadingBar *previousReadingBar = readingBar;
+        readingBar = nil;
         PDFPage *previousActivePage = activePage;
         activePage = nil;
-        [self writePDFInsideRect:[self convertRect:selectionRect fromPage:previousActivePage] toPasteboard:pboard];
+        [[self documentView] writePDFInsideRect:[self convertRect:[self convertRect:selectionRect fromPage:previousActivePage] toView:[self documentView]] toPasteboard:pboard];
         activePage = previousActivePage;
+        readingBar = previousReadingBar;
     }
 }
 
