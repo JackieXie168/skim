@@ -2490,39 +2490,29 @@ static void SKCGContextDrawGrabHandle(CGContextRef context, CGPoint point, float
 - (void)dragWithEvent:(NSEvent *)theEvent {
 	NSPoint initialLocation = [theEvent locationInWindow];
 	NSRect visibleRect = [[self documentView] visibleRect];
-	BOOL keepGoing = YES;
 	
     [[NSCursor closedHandCursor] push];
     
-	while (keepGoing) {
+	while (YES) {
+        
 		theEvent = [[self window] nextEventMatchingMask: NSLeftMouseUpMask | NSLeftMouseDraggedMask];
-		switch ([theEvent type]) {
-			case NSLeftMouseDragged:
-            {
-				NSPoint	newLocation;
-				NSRect	newVisibleRect;
-				float	xDelta, yDelta;
-				
-				newLocation = [theEvent locationInWindow];
-				xDelta = initialLocation.x - newLocation.x;
-				yDelta = initialLocation.y - newLocation.y;
-				if ([self isFlipped])
-					yDelta = -yDelta;
-				
-				newVisibleRect = NSOffsetRect (visibleRect, xDelta, yDelta);
-				[[self documentView] scrollRectToVisible: newVisibleRect];
-			}
-				break;
-				
-			case NSLeftMouseUp:
-				keepGoing = NO;
-				break;
-				
-			default:
-				/* Ignore any other kind of event. */
-				break;
-		} // end of switch (event type)
-	} // end of mouse-tracking loop
+        if ([theEvent type] == NSLeftMouseUp)
+            break;
+        
+        // dragging
+        NSPoint	newLocation;
+        NSRect	newVisibleRect;
+        float	xDelta, yDelta;
+        
+        newLocation = [theEvent locationInWindow];
+        xDelta = initialLocation.x - newLocation.x;
+        yDelta = initialLocation.y - newLocation.y;
+        if ([self isFlipped])
+            yDelta = -yDelta;
+        
+        newVisibleRect = NSOffsetRect (visibleRect, xDelta, yDelta);
+        [[self documentView] scrollRectToVisible: newVisibleRect];
+	}
     
     [NSCursor pop];
     // ??? PDFView's delayed layout seems to reset the cursor to an arrow
@@ -2542,7 +2532,6 @@ static void SKCGContextDrawGrabHandle(CGContextRef context, CGPoint point, float
     }
     
 	NSPoint initialPoint = [self convertPoint:mouseLoc toPage:page];
-    NSPoint delta;
     float margin = 4.0 / [self scaleFactor];
     int xEdge = 0, yEdge = 0;
     
@@ -2564,86 +2553,73 @@ static void SKCGContextDrawGrabHandle(CGContextRef context, CGPoint point, float
             yEdge = 2;
     }
     
-    delta.x = initialPoint.x - NSMinX(selectionRect);
-    delta.y = initialPoint.y - NSMinY(selectionRect);
-    
 	NSRect initialRect = selectionRect;
     NSRect pageBounds = [activePage boundsForBox:[self displayBox]];
-    BOOL keepGoing = YES;
     
     if (xEdge == 0 && yEdge == 0)
         [[NSCursor closedHandCursor] push];
     else
         [[NSCursor crosshairCursor] push];
     
-	while (keepGoing) {
+	while (YES) {
+        
 		theEvent = [[self window] nextEventMatchingMask: NSLeftMouseUpMask | NSLeftMouseDraggedMask];
-		switch ([theEvent type]) {
-			case NSLeftMouseDragged:
-            {
-				NSPoint	newPoint;
-				NSRect	newRect = initialRect;
-				float	xDelta, yDelta;
-				
-				newPoint = [self convertPoint:[self convertPoint:[theEvent locationInWindow] fromView:nil] toPage:page];
-				xDelta = newPoint.x - initialPoint.x;
-				yDelta = newPoint.y - initialPoint.y;
-				
-                if (xEdge == 0 && yEdge == 0) {
-                    newRect.origin.x += xDelta;
-                    newRect.origin.y += yDelta;
-                } else {
-                    if (xEdge == 1) {
-                        newRect.size.width += xDelta;
-                        if (NSWidth(newRect) < 0.0) {
-                            newRect.size.width *= -1.0;
-                            newRect.origin.x -= NSWidth(newRect);
-                        }
-                    } else if (xEdge == 2) {
-                        newRect.origin.x += xDelta;
-                        newRect.size.width -= xDelta;
-                        if (NSWidth(newRect) < 0.0) {
-                            newRect.size.width *= -1.0;
-                            newRect.origin.x -= NSWidth(newRect);
-                        }
-                    }
-                    
-                    if (yEdge == 1) {
-                        newRect.size.height += yDelta;
-                        if (NSHeight(newRect) < 0.0) {
-                            newRect.size.height *= -1.0;
-                            newRect.origin.y -= NSHeight(newRect);
-                        }
-                    } else if (yEdge == 2) {
-                        newRect.origin.y += yDelta;
-                        newRect.size.height -= yDelta;
-                        if (NSHeight(newRect) < 0.0) {
-                            newRect.size.height *= -1.0;
-                            newRect.origin.y -= NSHeight(newRect);
-                        }
-                    }
+        if ([theEvent type] == NSLeftMouseUp)
+            break;
+		
+        // we must be dragging
+        NSPoint	newPoint;
+        NSRect	newRect = initialRect;
+        float	xDelta, yDelta;
+        
+        newPoint = [self convertPoint:[self convertPoint:[theEvent locationInWindow] fromView:nil] toPage:page];
+        xDelta = newPoint.x - initialPoint.x;
+        yDelta = newPoint.y - initialPoint.y;
+        
+        if (xEdge == 0 && yEdge == 0) {
+            newRect.origin.x += xDelta;
+            newRect.origin.y += yDelta;
+        } else {
+            if (xEdge == 1) {
+                newRect.size.width += xDelta;
+                if (NSWidth(newRect) < 0.0) {
+                    newRect.size.width *= -1.0;
+                    newRect.origin.x -= NSWidth(newRect);
                 }
-                
-                if (NSMinX(newRect) < NSMinX(pageBounds) || NSMaxX(newRect) > NSMaxX(pageBounds) || NSMinY(newRect) < NSMinY(pageBounds) || NSMaxY(newRect) > NSMaxY(pageBounds))
-                    newRect = NSIntersectionRect(newRect, pageBounds);
-                if (NSEqualRects(selectionRect, NSZeroRect) == NO)
-                    [self setNeedsDisplayInRect:NSInsetRect(selectionRect, -margin, -margin) ofPage:activePage];
-                if (NSEqualRects(newRect, NSZeroRect) == NO)
-                    [self setNeedsDisplayInRect:NSInsetRect(newRect, -margin, -margin) ofPage:activePage];
-                selectionRect = newRect;
-                
-				break;
-			}
-				
-			case NSLeftMouseUp:
-				keepGoing = NO;
-				break;
-				
-			default:
-				/* Ignore any other kind of event. */
-				break;
-		} // end of switch (event type)
-	} // end of mouse-tracking loop
+            } else if (xEdge == 2) {
+                newRect.origin.x += xDelta;
+                newRect.size.width -= xDelta;
+                if (NSWidth(newRect) < 0.0) {
+                    newRect.size.width *= -1.0;
+                    newRect.origin.x -= NSWidth(newRect);
+                }
+            }
+            
+            if (yEdge == 1) {
+                newRect.size.height += yDelta;
+                if (NSHeight(newRect) < 0.0) {
+                    newRect.size.height *= -1.0;
+                    newRect.origin.y -= NSHeight(newRect);
+                }
+            } else if (yEdge == 2) {
+                newRect.origin.y += yDelta;
+                newRect.size.height -= yDelta;
+                if (NSHeight(newRect) < 0.0) {
+                    newRect.size.height *= -1.0;
+                    newRect.origin.y -= NSHeight(newRect);
+                }
+            }
+        }
+        
+        if (NSMinX(newRect) < NSMinX(pageBounds) || NSMaxX(newRect) > NSMaxX(pageBounds) || NSMinY(newRect) < NSMinY(pageBounds) || NSMaxY(newRect) > NSMaxY(pageBounds))
+            newRect = NSIntersectionRect(newRect, pageBounds);
+        if (NSEqualRects(selectionRect, NSZeroRect) == NO)
+            [self setNeedsDisplayInRect:NSInsetRect(selectionRect, -margin, -margin) ofPage:activePage];
+        if (NSEqualRects(newRect, NSZeroRect) == NO)
+            [self setNeedsDisplayInRect:NSInsetRect(newRect, -margin, -margin) ofPage:activePage];
+        selectionRect = newRect;
+        
+	}
     
     if (NSIsEmptyRect(selectionRect)) {
         activePage = nil;
@@ -2730,50 +2706,41 @@ static void SKCGContextDrawGrabHandle(CGContextRef context, CGPoint point, float
 }
 
 - (void)dragReadingBarWithEvent:(NSEvent *)theEvent {
-	BOOL keepGoing = YES;
     PDFPage *page = [readingBar page];
     NSArray *lineBounds = [page lineBounds];
 	
     [[NSCursor closedHandCursor] push];
     
-	while (keepGoing) {
-		theEvent = [[self window] nextEventMatchingMask: NSLeftMouseUpMask | NSLeftMouseDraggedMask];
-		switch ([theEvent type]) {
-			case NSLeftMouseDragged:
-            {
-                [[self documentView] autoscroll:theEvent];
-                NSPoint mouseLoc = [self convertPoint:[theEvent locationInWindow] fromView:nil];
-                PDFPage *currentPage = [self pageForPoint:mouseLoc nearest:YES];
-                
-                mouseLoc = [self convertPoint:mouseLoc toPage:currentPage];
-                
-                if ([currentPage isEqual:page] == NO) {
-                    page = currentPage;
-                    lineBounds = [page lineBounds];
-                }
-                
-                int i, iMax = [lineBounds count];
-                
-                for (i = 0; i < iMax; i++) {
-                    NSRect rect = [[lineBounds objectAtIndex:i] rectValue];
-                    if (NSMinY(rect) <= mouseLoc.y && NSMaxY(rect) >= mouseLoc.y) {
-                        [readingBar setPage:page];
-                        [readingBar setCurrentLine:i];
-                        [self setNeedsDisplay:YES];
-                        break;
-                    }
-                }
-				break;
+	while (YES) {
+		
+        theEvent = [[self window] nextEventMatchingMask: NSLeftMouseUpMask | NSLeftMouseDraggedMask];
+		if ([theEvent type] == NSLeftMouseUpMask)
+            break;
+        
+        // dragging
+        [[self documentView] autoscroll:theEvent];
+        NSPoint mouseLoc = [self convertPoint:[theEvent locationInWindow] fromView:nil];
+        PDFPage *currentPage = [self pageForPoint:mouseLoc nearest:YES];
+        
+        mouseLoc = [self convertPoint:mouseLoc toPage:currentPage];
+        
+        if ([currentPage isEqual:page] == NO) {
+            page = currentPage;
+            lineBounds = [page lineBounds];
+        }
+        
+        int i, iMax = [lineBounds count];
+        
+        for (i = 0; i < iMax; i++) {
+            NSRect rect = [[lineBounds objectAtIndex:i] rectValue];
+            if (NSMinY(rect) <= mouseLoc.y && NSMaxY(rect) >= mouseLoc.y) {
+                [readingBar setPage:page];
+                [readingBar setCurrentLine:i];
+                [self setNeedsDisplay:YES];
+                break;
             }
-			case NSLeftMouseUp:
-				keepGoing = NO;
-				break;
-				
-			default:
-				/* Ignore any other kind of event. */
-				break;
-		} // end of switch (event type)
-	} // end of mouse-tracking loop
+        }
+    }
     
     [NSCursor pop];
     // ??? PDFView's delayed layout seems to reset the cursor to an arrow
@@ -2788,69 +2755,63 @@ static void SKCGContextDrawGrabHandle(CGContextRef context, CGPoint point, float
     NSRect bounds;
     float minX, maxX, minY, maxY;
     BOOL dragged = NO;
-    BOOL keepGoing = YES;
 	
     [[self window] discardCachedImage];
     
-	while (keepGoing) {
+	while (YES) {
 		theEvent = [[self window] nextEventMatchingMask: NSLeftMouseUpMask | NSLeftMouseDraggedMask | NSFlagsChangedMask];
         
         [[self window] restoreCachedImage];
         [[self window] flushWindow];
 		
-        switch ([theEvent type]) {
-			case NSLeftMouseDragged:
-				[[self documentView] autoscroll:theEvent];
-                mouseLoc = [theEvent locationInWindow];
-                dragged = YES;
-                
-			case NSFlagsChanged:
-                currentPoint = [[self documentView] convertPoint:mouseLoc fromView:nil];
-				
-                minX = fmin(startPoint.x, currentPoint.x);
-                maxX = fmax(startPoint.x, currentPoint.x);
-                minY = fmin(startPoint.y, currentPoint.y);
-                maxY = fmax(startPoint.y, currentPoint.y);
-                // center around startPoint when holding down the Shift key
-                if ([theEvent modifierFlags] & NSShiftKeyMask) {
-                    if (currentPoint.x > startPoint.x)
-                        minX -= maxX - minX;
-                    else
-                        maxX += maxX - minX;
-                    if (currentPoint.y > startPoint.y)
-                        minY -= maxY - minY;
-                    else
-                        maxY += maxY - minY;
-                }
-                // intersect with the bounds, project on the bounds if necessary and allow zero width or height
-                bounds = [[self documentView] bounds];
-                minX = fmin(fmax(minX, NSMinX(bounds)), NSMaxX(bounds));
-                maxX = fmax(fmin(maxX, NSMaxX(bounds)), NSMinX(bounds));
-                minY = fmin(fmax(minY, NSMinY(bounds)), NSMaxY(bounds));
-                maxY = fmax(fmin(maxY, NSMaxY(bounds)), NSMinY(bounds));
-                selRect = NSMakeRect(minX, minY, maxX - minX, maxY - minY);
-                
-                [[self window] cacheImageInRect:NSInsetRect([[self documentView] convertRect:selRect toView:nil], -2.0, -2.0)];
-                
-                [self lockFocus];
-                [NSGraphicsContext saveGraphicsState];
-                [[NSColor blackColor] set];
-                [NSBezierPath strokeRect:NSInsetRect(NSIntegralRect([self convertRect:selRect fromView:[self documentView]]), 0.5, 0.5)];
-                [NSGraphicsContext restoreGraphicsState];
-                [self unlockFocus];
-                [[self window] flushWindow];
-                
-				break;
-				
-			case NSLeftMouseUp:
-				keepGoing = NO;
-				break;
-				
-			default:
-				/* Ignore any other kind of event. */
-				break;
-		} // end of switch (event type)
-	} // end of mouse-tracking loop
+        if ([theEvent type] == NSLeftMouseUpMask)
+            break;
+        
+        if ([theEvent type] == NSLeftMouseDragged) {
+            // change mouseLoc
+            [[self documentView] autoscroll:theEvent];
+            mouseLoc = [theEvent locationInWindow];
+            dragged = YES;
+        }
+        
+        // dragging or flags changed
+        
+        currentPoint = [[self documentView] convertPoint:mouseLoc fromView:nil];
+        
+        minX = fmin(startPoint.x, currentPoint.x);
+        maxX = fmax(startPoint.x, currentPoint.x);
+        minY = fmin(startPoint.y, currentPoint.y);
+        maxY = fmax(startPoint.y, currentPoint.y);
+        // center around startPoint when holding down the Shift key
+        if ([theEvent modifierFlags] & NSShiftKeyMask) {
+            if (currentPoint.x > startPoint.x)
+                minX -= maxX - minX;
+            else
+                maxX += maxX - minX;
+            if (currentPoint.y > startPoint.y)
+                minY -= maxY - minY;
+            else
+                maxY += maxY - minY;
+        }
+        // intersect with the bounds, project on the bounds if necessary and allow zero width or height
+        bounds = [[self documentView] bounds];
+        minX = fmin(fmax(minX, NSMinX(bounds)), NSMaxX(bounds));
+        maxX = fmax(fmin(maxX, NSMaxX(bounds)), NSMinX(bounds));
+        minY = fmin(fmax(minY, NSMinY(bounds)), NSMaxY(bounds));
+        maxY = fmax(fmin(maxY, NSMaxY(bounds)), NSMinY(bounds));
+        selRect = NSMakeRect(minX, minY, maxX - minX, maxY - minY);
+        
+        [[self window] cacheImageInRect:NSInsetRect([[self documentView] convertRect:selRect toView:nil], -2.0, -2.0)];
+        
+        [self lockFocus];
+        [NSGraphicsContext saveGraphicsState];
+        [[NSColor blackColor] set];
+        [NSBezierPath strokeRect:NSInsetRect(NSIntegralRect([self convertRect:selRect fromView:[self documentView]]), 0.5, 0.5)];
+        [NSGraphicsContext restoreGraphicsState];
+        [self unlockFocus];
+        [[self window] flushWindow];
+        
+    }
     
     [[self window] discardCachedImage];
 	[self flagsChanged:theEvent];
@@ -2860,22 +2821,7 @@ static void SKCGContextDrawGrabHandle(CGContextRef context, CGPoint point, float
     NSRect rect = [self convertRect:selRect fromView:[self documentView]];
     int factor = 1;
     
-    if (dragged == NO) {
-        
-        BOOL isLink = NO;
-        PDFDestination *dest = [self destinationForEvent:theEvent isLink:&isLink];
-        
-        if (isLink) {
-            page = [dest page];
-            point = [self convertPoint:[dest point] fromPage:page];
-            point.y -= 100.0;
-        }
-        
-        rect = [self convertRect:[page boundsForBox:kPDFDisplayBoxCropBox] fromPage:page];
-        rect.origin.y = point.y - 100.0;
-        rect.size.height = 200.0;
-        
-    } else {
+    if (dragged) {
     
         bounds = [self convertRect:[[self documentView] bounds] fromView:[self documentView]];
         
@@ -2898,6 +2844,22 @@ static void SKCGContextDrawGrabHandle(CGContextRef context, CGPoint point, float
             if (NSMaxX(rect) > NSMaxY(bounds))
                 rect.origin.y = NSMaxY(bounds) - NSHeight(rect);
         }
+        
+    } else {
+        
+        BOOL isLink = NO;
+        PDFDestination *dest = [self destinationForEvent:theEvent isLink:&isLink];
+        
+        if (isLink) {
+            page = [dest page];
+            point = [self convertPoint:[dest point] fromPage:page];
+            point.y -= 100.0;
+        }
+        
+        rect = [self convertRect:[page boundsForBox:kPDFDisplayBoxCropBox] fromPage:page];
+        rect.origin.y = point.y - 100.0;
+        rect.size.height = 200.0;
+        
     }
     
     SKMainWindowController *controller = [[self window] windowController];
@@ -2929,8 +2891,8 @@ static void SKCGContextDrawGrabHandle(CGContextRef context, CGPoint point, float
         
 	while ([theEvent type] != NSLeftMouseUp) {
         
-        // set up the currentLevel and magScale
         if ([theEvent type] == NSLeftMouseDown || [theEvent type] == NSFlagsChanged) {	
+            // set up the currentLevel and magScale
             unsigned modifierFlags = [theEvent modifierFlags];
             currentLevel = originalLevel + ((modifierFlags & NSAlternateKeyMask) ? 1 : 0);
             if (currentLevel > 2) {
@@ -2941,11 +2903,10 @@ static void SKCGContextDrawGrabHandle(CGContextRef context, CGPoint point, float
             if ((modifierFlags & NSShiftKeyMask) == 0)
                 magScale = 1.0 / magScale;
             [self flagsChanged:theEvent]; // update the cursor
-        }
-        
-        // get Mouse location and check if it is with the view's rect
-        if ([theEvent type] == NSLeftMouseDragged)
+        } else if ([theEvent type] == NSLeftMouseDragged) {
+            // get Mouse location and check if it is with the view's rect
             mouseLoc = [theEvent locationInWindow];
+        }
         
         if ([self mouse:mouseLoc inRect:visibleRect]) {
             if (mouseInside == NO) {
