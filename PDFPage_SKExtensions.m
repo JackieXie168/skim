@@ -82,14 +82,14 @@
     return [image autorelease];
 }
 
-- (NSImage *)thumbnailWithSize:(float)size {
+- (NSImage *)thumbnailWithSize:(float)size forBox:(PDFDisplayBox)box {
     float shadowBlurRadius = roundf(size / 32.0);
     float shadowOffset = - ceilf(shadowBlurRadius * 0.75);
-    return  [self thumbnailWithSize:size shadowBlurRadius:shadowBlurRadius shadowOffset:NSMakeSize(0.0, shadowOffset)];
+    return  [self thumbnailWithSize:size forBox:box shadowBlurRadius:shadowBlurRadius shadowOffset:NSMakeSize(0.0, shadowOffset)];
 }
 
-- (NSImage *)thumbnailWithSize:(float)size shadowBlurRadius:(float)shadowBlurRadius shadowOffset:(NSSize)shadowOffset {
-    NSRect bounds = [self boundsForBox:kPDFDisplayBoxCropBox];
+- (NSImage *)thumbnailWithSize:(float)size forBox:(PDFDisplayBox)box shadowBlurRadius:(float)shadowBlurRadius shadowOffset:(NSSize)shadowOffset {
+    NSRect bounds = [self boundsForBox:box];
     BOOL isScaled = size > 0.0;
     BOOL hasShadow = shadowBlurRadius > 0.0;
     float scaleX, scaleY;
@@ -135,7 +135,7 @@
     bounds.origin = NSZeroPoint;
     NSRectFill(bounds);
     [NSGraphicsContext restoreGraphicsState];
-    [self drawWithBox:kPDFDisplayBoxCropBox]; 
+    [self drawWithBox:box]; 
     [NSGraphicsContext restoreGraphicsState];
     [image unlockFocus];
     
