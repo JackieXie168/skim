@@ -2419,7 +2419,7 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
         if (index != NSNotFound) {
             PDFPage *page = [[pdfView document] pageAtIndex:index];
             NSData *pdfData = [page dataRepresentation];
-            NSData *tiffData = [[page image] TIFFRepresentation];
+            NSData *tiffData = [[page imageForBox:[pdfView displayBox]] TIFFRepresentation];
             NSPasteboard *pboard = [NSPasteboard generalPasteboard];
             [pboard declareTypes:[NSArray arrayWithObjects:NSPDFPboardType, NSTIFFPboardType, nil] owner:nil];
             [pboard setData:pdfData forType:NSPDFPboardType];
