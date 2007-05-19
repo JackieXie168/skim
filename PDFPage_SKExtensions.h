@@ -45,8 +45,8 @@
 
 - (NSImage *)image;
 - (NSImage *)imageForBox:(PDFDisplayBox)box;
-- (NSImage *)thumbnailWithSize:(float)size;
-- (NSImage *)thumbnailWithSize:(float)size shadowBlurRadius:(float)shadowBlurRadius shadowOffset:(NSSize)shadowOffset;
+- (NSImage *)thumbnailWithSize:(float)size forBox:(PDFDisplayBox)box;
+- (NSImage *)thumbnailWithSize:(float)size forBox:(PDFDisplayBox)box shadowBlurRadius:(float)shadowBlurRadius shadowOffset:(NSSize)shadowOffset;
 
 - (NSArray *)lineBounds;
 

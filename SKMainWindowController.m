@@ -677,7 +677,7 @@ static NSString *SKRightSidePaneWidthKey = @"SKRightSidePaneWidth";
         NSSize newSize, oldSize = [[thumbnail image] size];
         PDFDocument *pdfDoc = [pdfView document];
         PDFPage *page = [pdfDoc pageAtIndex:theIndex];
-        NSImage *image = [page thumbnailWithSize:thumbnailCacheSize];
+        NSImage *image = [page thumbnailWithSize:thumbnailCacheSize forBox:[pdfView displayBox]];
         
 
         // setImage: sends a KVO notification that results in calling objectInThumbnailsAtIndex: endlessly, so set dirty to NO first
@@ -824,6 +824,7 @@ static NSString *SKRightSidePaneWidthKey = @"SKRightSidePaneWidth";
         displayBox = [sender indexOfSelectedItem] == 0 ? kPDFDisplayBoxMediaBox : kPDFDisplayBoxCropBox;
     [pdfView setDisplayBox:displayBox];
     [displayBoxPopUpButton selectItemWithTag:displayBox];
+    [self resetThumbnails];
 }
 
 - (IBAction)doGoToNextPage:(id)sender {
@@ -2490,14 +2491,13 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
     
     PDFDocument *pdfDoc = [pdfView document];
     unsigned i, count = [pdfDoc pageCount];
-    [self willChange:NSKeyValueChangeRemoval valuesAtIndexes:[NSIndexSet indexSetWithIndexesInRange:NSMakeRange(0, [thumbnails count])] forKey:@"thumbnails"];
+    [self willChange:NSKeyValueChangeReplacement valuesAtIndexes:[NSIndexSet indexSetWithIndexesInRange:NSMakeRange(0, count)] forKey:@"thumbnails"];
+    [thumbnails removeAllObjects];
     if (count) {
         PDFPage *emptyPage = [[[PDFPage alloc] init] autorelease];
-        NSRect bounds = [[[pdfView document] pageAtIndex:0] boundsForBox:kPDFDisplayBoxCropBox];
-        [emptyPage setBounds:bounds forBox:kPDFDisplayBoxCropBox];
-        // thumbnail code only uses the crop box, but media box is required for PDF
-        [emptyPage setBounds:bounds forBox:kPDFDisplayBoxMediaBox];
-        NSImage *image = [emptyPage thumbnailWithSize:thumbnailCacheSize];
+        [emptyPage setBounds:[[[pdfView document] pageAtIndex:0] boundsForBox:kPDFDisplayBoxCropBox] forBox:kPDFDisplayBoxCropBox];
+        [emptyPage setBounds:[[[pdfView document] pageAtIndex:0] boundsForBox:kPDFDisplayBoxMediaBox] forBox:kPDFDisplayBoxMediaBox];
+        NSImage *image = [emptyPage thumbnailWithSize:thumbnailCacheSize forBox:[pdfView displayBox]];
         [image lockFocus];
         NSRect imgRect = NSZeroRect;
         imgRect.size = [image size];
@@ -2513,7 +2513,7 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
             [thumbnail release];
         }
     }
-    [self didChange:NSKeyValueChangeInsertion valuesAtIndexes:[NSIndexSet indexSetWithIndexesInRange:NSMakeRange(0, count)] forKey:@"thumbnails"];
+    [self didChange:NSKeyValueChangeReplacement valuesAtIndexes:[NSIndexSet indexSetWithIndexesInRange:NSMakeRange(0, count)] forKey:@"thumbnails"];
     [self allThumbnailsNeedUpdate];
 }
 
