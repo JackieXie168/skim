@@ -479,18 +479,30 @@ static void SKCGContextDrawGrabHandle(CGContextRef context, CGPoint point, float
 {
     [super copy:sender];
     
+    NSMutableArray *types = [NSMutableArray array];
+    NSData *noteData = nil;
+    NSData *pdfData = nil;
+    NSData *tiffData = nil;
+    
     if ([activeAnnotation isNoteAnnotation] && [activeAnnotation isMovable]) {
-        NSPasteboard *pboard = [NSPasteboard generalPasteboard];
-        NSData *data = [NSKeyedArchiver archivedDataWithRootObject:[activeAnnotation dictionaryValue]];
-        [pboard declareTypes:[NSArray arrayWithObjects:SKSkimNotePboardType, nil] owner:nil];
-        [pboard setData:data forType:SKSkimNotePboardType];
+        if (noteData = [NSKeyedArchiver archivedDataWithRootObject:[activeAnnotation dictionaryValue]])
+            [types addObject:SKSkimNotePboardType];
     }
+    
     if (toolMode == SKSelectToolMode && activePage) {
+        PDFDocument *pdfDoc = [[PDFDocument alloc] initWithData:[activePage dataRepresentation]];
+        PDFPage *page = [pdfDoc pageAtIndex:0];
+        [page setBounds:[activePage boundsForBox:kPDFDisplayBoxMediaBox] forBox:kPDFDisplayBoxMediaBox];
+        [page setBounds:selectionRect forBox:kPDFDisplayBoxCropBox];
+        
+        if (pdfData = [page dataRepresentation])
+            [types addObject:NSPDFPboardType];
+        [pdfDoc release];
+        
         NSRect bounds = [activePage boundsForBox:[self displayBox]];
         NSRect targetRect = NSZeroRect, sourceRect = selectionRect;
         NSImage *pageImage = [activePage imageForBox:[self displayBox]];
         NSImage *image = nil;
-        NSData *data = nil;
         
         sourceRect.origin.x -= NSMinX(bounds);
         sourceRect.origin.y -= NSMinY(bounds);
@@ -499,7 +511,8 @@ static void SKCGContextDrawGrabHandle(CGContextRef context, CGPoint point, float
         [image lockFocus];
         [pageImage drawInRect:targetRect fromRect:sourceRect operation:NSCompositeCopy fraction:1.0];
         [image unlockFocus];
-        data = [image TIFFRepresentation];
+        if (tiffData = [image TIFFRepresentation])
+            [types addObject:NSTIFFPboardType];
         [image release];
         
         /*
@@ -508,20 +521,25 @@ static void SKCGContextDrawGrabHandle(CGContextRef context, CGPoint point, float
         sourceRect = [self convertRect:selectionRect fromPage:activePage];
         NSBitmapImageRep *imageRep = [self bitmapImageRepForCachingDisplayInRect:sourceRect];
         [self cacheDisplayInRect:sourceRect toBitmapImageRep:imageRep];
-        data = [imageRep TIFFRepresentation];
+        tiffData = [imageRep TIFFRepresentation];
          */
-
-        PDFDocument *pdfDoc = [[PDFDocument alloc] initWithData:[activePage dataRepresentation]];
-        PDFPage *page = [pdfDoc pageAtIndex:0];
-        [page setBounds:[activePage boundsForBox:kPDFDisplayBoxMediaBox] forBox:kPDFDisplayBoxMediaBox];
-        [page setBounds:selectionRect forBox:kPDFDisplayBoxCropBox];
-        
-        NSPasteboard *pboard = [NSPasteboard generalPasteboard];
-        [pboard declareTypes:[NSArray arrayWithObjects:NSPDFPboardType, NSTIFFPboardType, nil] owner:nil];
-        [pboard setData:[page dataRepresentation] forType:NSPDFPboardType];
-        [pboard setData:data forType:NSTIFFPboardType];
-        [pdfDoc release];
     }
+    
+    NSPasteboard *pboard = [NSPasteboard generalPasteboard];
+    
+    if ([types count]) {
+        if ([[self currentSelection] string])
+            [pboard addTypes:types owner:nil];
+        else
+            [pboard declareTypes:types owner:nil];
+    }
+    
+    if (noteData)
+        [pboard setData:noteData forType:SKSkimNotePboardType];
+    if (pdfData)
+        [pboard setData:pdfData forType:NSPDFPboardType];
+    if (tiffData)
+        [pboard setData:tiffData forType:NSTIFFPboardType];
 }
 
 - (void)pasteNoteAlternate:(BOOL)isAlternate {
@@ -1041,6 +1059,9 @@ static void SKCGContextDrawGrabHandle(CGContextRef context, CGPoint point, float
                 item = [menu insertItemWithTitle:NSLocalizedString(@"Cut", @"Menu item title") action:@selector(copy:) keyEquivalent:@"" atIndex:0];
             item = [menu insertItemWithTitle:NSLocalizedString(@"Copy", @"Menu item title") action:@selector(copy:) keyEquivalent:@"" atIndex:0];
         }
+        
+        if ([[menu itemAtIndex:0] isSeparatorItem])
+            [menu removeItemAtIndex:0];
         
     } else if (toolMode == SKSelectToolMode && activePage) {
         
