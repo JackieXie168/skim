@@ -3083,8 +3083,8 @@ static CGMutablePathRef SKCGCreatePathWithRoundRectInRect(CGRect rect, float rad
 
 static void SKCGContextDrawGrabHandle(CGContextRef context, CGPoint point, float radius)
 {
-    float white[4] = { 1.0, 1.0, 1.0, 0.7 };
-    float gray[4] = { 0.5, 0.5, 0.6, 0.7 };
+    float white[4] = { 1.0, 1.0, 1.0, 0.8 };
+    float gray[4] = { 0.0, 0.0, 0.0, 0.4 };
     CGRect outerRect = CGRectMake(point.x - radius, point.y - radius, 2.0 * radius, 2.0 * radius);
     CGRect innerRect = CGRectMake(point.x - 0.75 * radius, point.y - 0.75 * radius, 1.5 * radius, 1.5 * radius);
     CGContextSetFillColor(context, white);
