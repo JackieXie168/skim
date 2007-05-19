@@ -512,17 +512,48 @@ static void SKCGContextDrawGrabHandle(CGContextRef context, CGPoint point, float
          */
         
         NSPasteboard *pboard = [NSPasteboard generalPasteboard];
-        [pboard declareTypes:[NSArray arrayWithObjects:NSTIFFPboardType, NSPDFPboardType, nil] owner:nil];
+        [pboard declareTypes:[NSArray arrayWithObject:NSTIFFPboardType] owner:nil];
         [pboard setData:data forType:NSTIFFPboardType];
         
-        // temporarily reset reading bar and active page to avoid drawing selection handles when copying
-        SKReadingBar *previousReadingBar = readingBar;
-        readingBar = nil;
-        PDFPage *previousActivePage = activePage;
-        activePage = nil;
-        [[self documentView] writePDFInsideRect:[self convertRect:[self convertRect:selectionRect fromPage:previousActivePage] toView:[self documentView]] toPasteboard:pboard];
-        activePage = previousActivePage;
-        readingBar = previousReadingBar;
+        // Unfortunately, dataWithPDFInsideRect: doesn't work correctly when the selection is scrolled out of view.  Likewise, creating a PDF context, making it current, and drawing with -[PDFPage drawWithBox:] or -[PDFView drawPage:] does not work (the PDF produced is invalid), so we're taking the long way round.  This does mean that annotations won't be copied unless they're part of the page itself, but that's likely to be less of a problem than copying blank pages.
+        
+        // if Apple would make -[PDFPage pageRef] public, the next few lines wouldn't be necessary...
+        CGDataProviderRef provider = CGDataProviderCreateWithCFData((CFDataRef)[activePage dataRepresentation]);
+        CGPDFDocumentRef docRef = CGPDFDocumentCreateWithProvider(provider);
+        CGPDFPageRef pageRef = CGPDFDocumentGetPage(docRef, 1);
+        if (pageRef) {
+        
+            CFAllocatorRef alloc = CFAllocatorGetDefault();
+            CFMutableDataRef pdfData = CFDataCreateMutable(alloc, 0);
+            CGDataConsumerRef consumer = CGDataConsumerCreateWithCFData(pdfData);
+            
+            bounds = [activePage boundsForBox:kPDFDisplayBoxMediaBox];
+            const CGRect mediaBox = *(CGRect *)&bounds;
+            
+            // set the crop box to our selection rect
+            const CGRect cropBox = *(CGRect *)&selectionRect;
+            CFDataRef cropBoxData = CFDataCreate(alloc, (const UInt8 *)&cropBox, sizeof(cropBox));
+            CFMutableDictionaryRef options = CFDictionaryCreateMutable(alloc, 1, &kCFTypeDictionaryKeyCallBacks, &kCFTypeDictionaryValueCallBacks);
+            CFDictionaryAddValue(options, kCGPDFContextCropBox, cropBoxData);
+            
+            // create a PDF graphics context with this media/crop box combination
+            CGContextRef pdfContext = CGPDFContextCreate(consumer, &mediaBox, options);
+            CFRelease(options);
+            
+            CGPDFContextBeginPage(pdfContext, NULL);
+            CGContextDrawPDFPage(pdfContext, pageRef);
+            CGPDFContextEndPage(pdfContext);
+            CGContextFlush(pdfContext);
+            
+            CGContextRelease(pdfContext);
+            CGDataConsumerRelease(consumer);
+            
+            [pboard addTypes:[NSArray arrayWithObject:NSPDFPboardType] owner:nil];
+            [pboard setData:(id)pdfData forType:NSPDFPboardType];
+            CFRelease(pdfData);
+        }
+        CGPDFDocumentRelease(docRef);
+        CGDataProviderRelease(provider);
     }
 }
 
