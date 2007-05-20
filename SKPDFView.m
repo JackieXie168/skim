@@ -51,6 +51,7 @@
 #import "SKDocument.h"
 #import "SKPDFSynchronizer.h"
 #import "PDFSelection_SKExtensions.h"
+#import <Carbon/Carbon.h>
 
 NSString *SKPDFViewToolModeChangedNotification = @"SKPDFViewToolModeChangedNotification";
 NSString *SKPDFViewAnnotationModeChangedNotification = @"SKPDFViewAnnotationModeChangedNotification";
@@ -107,6 +108,7 @@ static void SKCGContextDrawGrabHandle(CGContextRef context, CGPoint point, float
 - (void)dragReadingBarWithEvent:(NSEvent *)theEvent;
 - (void)pdfsyncWithEvent:(NSEvent *)theEvent;
 - (NSCursor *)cursorForEvent:(NSEvent *)theEvent;
+- (void)updateCursor;
 
 @end
 
@@ -398,8 +400,7 @@ static void SKCGContextDrawGrabHandle(CGContextRef context, CGPoint point, float
         toolMode = newToolMode;
         [[NSUserDefaults standardUserDefaults] setInteger:toolMode forKey:SKLastToolModeKey];
         [[NSNotificationCenter defaultCenter] postNotificationName:SKPDFViewToolModeChangedNotification object:self];
-        // hack to make sure we update the cursor
-        [[self window] makeFirstResponder:self];
+        [self updateCursor];
     }
 }
 
@@ -844,32 +845,7 @@ static void SKCGContextDrawGrabHandle(CGContextRef context, CGPoint point, float
 
 - (void)flagsChanged:(NSEvent *)theEvent {
     [super flagsChanged:theEvent];
-    
-    NSCursor *cursor = nil;
-    
-    if ([theEvent modifierFlags] & NSCommandKeyMask) {
-        if ([theEvent modifierFlags] & NSShiftKeyMask)
-            cursor = [NSCursor arrowCursor];
-        else
-            cursor = [NSCursor cameraCursor];
-    } else {
-        switch (toolMode) {
-            case SKTextToolMode:
-            case SKNoteToolMode:
-                cursor = [NSCursor arrowCursor];
-                break;
-            case SKMoveToolMode:
-                cursor = [NSCursor openHandCursor];
-                break;
-            case SKSelectToolMode:
-                break;
-            case SKMagnifyToolMode:
-                cursor = ([theEvent modifierFlags] & NSShiftKeyMask) ? [NSCursor zoomOutCursor] : [NSCursor zoomInCursor];
-                break;
-        }
-    }
-    
-    [cursor set];
+    [self updateCursor];
 }
 
 - (void)lookUpCurrentSelectionInDictionary:(id)sender;
@@ -2845,7 +2821,7 @@ static void SKCGContextDrawGrabHandle(CGContextRef context, CGPoint point, float
     }
     
     [[self window] discardCachedImage];
-	[self flagsChanged:theEvent];
+	[[self cursorForEvent:theEvent] set];
     
     NSPoint point = [self convertPoint:NSMakePoint(NSMidX(selRect), NSMidY(selRect)) fromView:[self documentView]];
     PDFPage *page = [self pageForPoint:point nearest:YES];
@@ -2933,7 +2909,7 @@ static void SKCGContextDrawGrabHandle(CGContextRef context, CGPoint point, float
             magScale = (modifierFlags & NSCommandKeyMask) ? 4.0 : (modifierFlags & NSControlKeyMask) ? 1.5 : 2.5;
             if ((modifierFlags & NSShiftKeyMask) == 0)
                 magScale = 1.0 / magScale;
-            [self flagsChanged:theEvent]; // update the cursor
+            [[self cursorForEvent:theEvent] set];
         } else if ([theEvent type] == NSLeftMouseDragged) {
             // get Mouse location and check if it is with the view's rect
             mouseLoc = [theEvent locationInWindow];
@@ -3001,7 +2977,7 @@ static void SKCGContextDrawGrabHandle(CGContextRef context, CGPoint point, float
 	[[self window] flushWindowIfNeeded];
 	[NSCursor unhide];
 	[documentView setPostsBoundsChangedNotifications:postNotification];
-	[self flagsChanged:theEvent]; // update cursor
+	[[self cursorForEvent:theEvent] set];
 }
 
 - (void)pdfsyncWithEvent:(NSEvent *)theEvent {
@@ -3072,6 +3048,29 @@ static void SKCGContextDrawGrabHandle(CGContextRef context, CGPoint point, float
         }
     }
     return cursor;
+}
+
+- (void)updateCursor {
+    unsigned int flags = 0;
+    UInt32 currentKeyModifiers = GetCurrentKeyModifiers();
+    if (currentKeyModifiers & cmdKey)
+        flags |= NSCommandKeyMask;
+    if (currentKeyModifiers & shiftKey)
+        flags |= NSShiftKeyMask;
+    if (currentKeyModifiers & optionKey)
+        flags |= NSAlternateKeyMask;
+    if (currentKeyModifiers & controlKey)
+        flags |= NSControlKeyMask;
+    NSEvent *event = [NSEvent mouseEventWithType:NSMouseMoved
+                                        location:[[self window] mouseLocationOutsideOfEventStream]
+                                   modifierFlags:flags
+                                       timestamp:0
+                                    windowNumber:[[self window] windowNumber]
+                                         context:[[self window] graphicsContext]
+                                     eventNumber:0
+                                      clickCount:1
+                                        pressure:0.0];
+    [[self cursorForEvent:event] set];
 }
 
 @end
