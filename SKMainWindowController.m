@@ -2839,7 +2839,18 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
     [toolbarItems setObject:item forKey:SKDocumentToolbarNewNoteItemIdentifier];
     [item release];
     
-    [notePopUpButton setArrowImage:[NSImage imageNamed:@"ArrowDown"]];
+    NSImage *arrowImage = [[[NSImage alloc] initWithSize:NSMakeSize(7.0, 5.0)] autorelease];
+    [arrowImage lockFocus];
+    NSBezierPath *path = [NSBezierPath bezierPath];
+    [path moveToPoint:NSMakePoint(0.5, 5.0)];
+    [path lineToPoint:NSMakePoint(6.5, 5.0)];
+    [path lineToPoint:NSMakePoint(3.5, 0.0)];
+    [path closePath];
+    [[NSColor colorWithDeviceWhite:0.0 alpha:0.75] setFill];
+    [path fill];
+    [arrowImage unlockFocus];
+    
+    [notePopUpButton setArrowImage:arrowImage];
     [notePopUpButton setShowsMenuWhenIconClicked:NO];
     [[notePopUpButton cell] setAltersStateOfSelectedItem:YES];
     [[notePopUpButton cell] setAlwaysUsesFirstItemAsSelected:NO];
@@ -2870,7 +2881,7 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
     [toolbarItems setObject:item forKey:SKDocumentToolbarNewCircleNoteItemIdentifier];
     [item release];
     
-    [circlePopUpButton setArrowImage:[NSImage imageNamed:@"ArrowDown"]];
+    [circlePopUpButton setArrowImage:arrowImage];
     [circlePopUpButton setShowsMenuWhenIconClicked:NO];
     [[circlePopUpButton cell] setAltersStateOfSelectedItem:YES];
     [[circlePopUpButton cell] setAlwaysUsesFirstItemAsSelected:NO];
@@ -2916,7 +2927,7 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
     [toolbarItems setObject:item forKey:SKDocumentToolbarNewArrowItemIdentifier];
     [item release];
     
-    [markupPopUpButton setArrowImage:[NSImage imageNamed:@"ArrowDown"]];
+    [markupPopUpButton setArrowImage:arrowImage];
     [markupPopUpButton setShowsMenuWhenIconClicked:NO];
     [[markupPopUpButton cell] setAltersStateOfSelectedItem:YES];
     [[markupPopUpButton cell] setAlwaysUsesFirstItemAsSelected:NO];
