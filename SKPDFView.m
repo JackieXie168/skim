@@ -2721,7 +2721,7 @@ static void SKCGContextDrawGrabHandle(CGContextRef context, CGPoint point, float
 	while (YES) {
 		
         theEvent = [[self window] nextEventMatchingMask: NSLeftMouseUpMask | NSLeftMouseDraggedMask];
-		if ([theEvent type] == NSLeftMouseUpMask)
+		if ([theEvent type] == NSLeftMouseUp)
             break;
         
         // dragging
@@ -2771,7 +2771,7 @@ static void SKCGContextDrawGrabHandle(CGContextRef context, CGPoint point, float
         [[self window] restoreCachedImage];
         [[self window] flushWindow];
 		
-        if ([theEvent type] == NSLeftMouseUpMask)
+        if ([theEvent type] == NSLeftMouseUp)
             break;
         
         if ([theEvent type] == NSLeftMouseDragged) {
