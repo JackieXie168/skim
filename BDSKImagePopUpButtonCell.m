@@ -71,9 +71,23 @@
 		iconActionEnabled = YES;
 		alwaysUsesFirstItemAsSelected = NO;
 		refreshesMenu = NO;
-
+        
+        static NSImage *defaultArrowImage = nil;
+        if (defaultArrowImage == nil) {
+            defaultArrowImage = [[NSImage alloc] initWithSize:NSMakeSize(7.0, 5.0)];
+            [defaultArrowImage lockFocus];
+            NSBezierPath *path = [NSBezierPath bezierPath];
+            [path moveToPoint:NSMakePoint(0.5, 5.0)];
+            [path lineToPoint:NSMakePoint(6.5, 5.0)];
+            [path lineToPoint:NSMakePoint(3.5, 0.0)];
+            [path closePath];
+            [[NSColor colorWithDeviceWhite:0.0 alpha:0.75] setFill];
+            [path fill];
+            [defaultArrowImage unlockFocus];
+        }
+        
 		[self setIconImage: anImage];	
-		[self setArrowImage: nil];
+		[self setArrowImage: defaultArrowImage];
     }
     
     return self;
