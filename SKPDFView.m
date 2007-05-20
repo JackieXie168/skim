@@ -494,6 +494,9 @@ static void SKCGContextDrawGrabHandle(CGContextRef context, CGPoint point, float
         PDFPage *page = [pdfDoc pageAtIndex:0];
         [page setBounds:[activePage boundsForBox:kPDFDisplayBoxMediaBox] forBox:kPDFDisplayBoxMediaBox];
         [page setBounds:selectionRect forBox:kPDFDisplayBoxCropBox];
+        [page setBounds:NSZeroRect forBox:kPDFDisplayBoxBleedBox];
+        [page setBounds:NSZeroRect forBox:kPDFDisplayBoxTrimBox];
+        [page setBounds:NSZeroRect forBox:kPDFDisplayBoxArtBox];
         
         if (pdfData = [page dataRepresentation])
             [types addObject:NSPDFPboardType];
