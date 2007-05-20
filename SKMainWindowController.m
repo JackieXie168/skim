@@ -2816,26 +2816,6 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
     [toolbarItems setObject:item forKey:SKDocumentToolbarPresentationItemIdentifier];
     [item release];
     
-    NSImage *downArrow = [[[NSImage alloc] initWithSize:NSMakeSize(10, 10)] autorelease];
-    {
-        [downArrow lockFocus];
-        [NSGraphicsContext saveGraphicsState];
-        [[NSColor clearColor] setFill];
-        NSRect r = NSZeroRect;
-        r.size = [downArrow size];
-        NSRectFill(r);
-        r = NSInsetRect(r, 2.0, 2.0);
-        NSBezierPath *bezierPath = [NSBezierPath bezierPath];
-        [bezierPath moveToPoint:NSMakePoint(NSMinX(r), NSMaxY(r))];
-        [bezierPath lineToPoint:NSMakePoint(NSMaxX(r), NSMaxY(r))];
-        [bezierPath lineToPoint:NSMakePoint(NSMidX(r), NSMinY(r))];
-        [bezierPath closePath];
-        [[NSColor blackColor] setFill];
-        [bezierPath fill];
-        [NSGraphicsContext restoreGraphicsState];
-        [downArrow unlockFocus];
-    }
-    
     menu = [[[NSMenu allocWithZone:[NSMenu menuZone]] initWithTitle:@""] autorelease];
     menuItem = [menu addItemWithTitle:NSLocalizedString(@"Text Note", @"Menu item title") action:@selector(createNewNote:) keyEquivalent:@""];
     [menuItem setTag:SKFreeTextNote];
@@ -2859,7 +2839,7 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
     [toolbarItems setObject:item forKey:SKDocumentToolbarNewNoteItemIdentifier];
     [item release];
     
-    [notePopUpButton setArrowImage:downArrow];
+    [notePopUpButton setArrowImage:[NSImage imageNamed:@"ArrowDown"]];
     [notePopUpButton setShowsMenuWhenIconClicked:NO];
     [[notePopUpButton cell] setAltersStateOfSelectedItem:YES];
     [[notePopUpButton cell] setAlwaysUsesFirstItemAsSelected:NO];
@@ -2890,7 +2870,7 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
     [toolbarItems setObject:item forKey:SKDocumentToolbarNewCircleNoteItemIdentifier];
     [item release];
     
-    [circlePopUpButton setArrowImage:downArrow];
+    [circlePopUpButton setArrowImage:[NSImage imageNamed:@"ArrowDown"]];
     [circlePopUpButton setShowsMenuWhenIconClicked:NO];
     [[circlePopUpButton cell] setAltersStateOfSelectedItem:YES];
     [[circlePopUpButton cell] setAlwaysUsesFirstItemAsSelected:NO];
@@ -2936,7 +2916,7 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
     [toolbarItems setObject:item forKey:SKDocumentToolbarNewArrowItemIdentifier];
     [item release];
     
-    [markupPopUpButton setArrowImage:downArrow];
+    [markupPopUpButton setArrowImage:[NSImage imageNamed:@"ArrowDown"]];
     [markupPopUpButton setShowsMenuWhenIconClicked:NO];
     [[markupPopUpButton cell] setAltersStateOfSelectedItem:YES];
     [[markupPopUpButton cell] setAlwaysUsesFirstItemAsSelected:NO];
