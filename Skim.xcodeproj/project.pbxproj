@@ -171,7 +171,6 @@
 		CEF711A10B90B714003A2771 /* NSUserDefaultsController_SKExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = CEF711A00B90B714003A2771 /* NSUserDefaultsController_SKExtensions.m */; };
 		CEF7175C0B90DEEF003A2771 /* ReleaseNotes.nib in Resources */ = {isa = PBXBuildFile; fileRef = CEF717560B90DEEF003A2771 /* ReleaseNotes.nib */; };
 		CEF7175F0B90DF10003A2771 /* SKReleaseNotesController.m in Sources */ = {isa = PBXBuildFile; fileRef = CEF7175E0B90DF10003A2771 /* SKReleaseNotesController.m */; };
-		CEFD467A0C0077910027B933 /* ArrowDown.tiff in Resources */ = {isa = PBXBuildFile; fileRef = CEFD46790C0077900027B933 /* ArrowDown.tiff */; };
 		CEFDF8BE0B3848C40091C61A /* SKNavigationWindow.m in Sources */ = {isa = PBXBuildFile; fileRef = CEFDF8BD0B3848C40091C61A /* SKNavigationWindow.m */; };
 		F92DB5AC0B36FE1F002A26E9 /* BDSKHeaderPopUpButtonCell.m in Sources */ = {isa = PBXBuildFile; fileRef = F92DB5A90B36FE1F002A26E9 /* BDSKHeaderPopUpButtonCell.m */; };
 		F92DB5AD0B36FE1F002A26E9 /* BDSKZoomablePDFView.m in Sources */ = {isa = PBXBuildFile; fileRef = F92DB5AB0B36FE1F002A26E9 /* BDSKZoomablePDFView.m */; };
@@ -488,7 +487,6 @@
 		CEF717570B90DEEF003A2771 /* English */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = English; path = English.lproj/ReleaseNotes.nib; sourceTree = "<group>"; };
 		CEF7175D0B90DF10003A2771 /* SKReleaseNotesController.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = SKReleaseNotesController.h; sourceTree = "<group>"; };
 		CEF7175E0B90DF10003A2771 /* SKReleaseNotesController.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = SKReleaseNotesController.m; sourceTree = "<group>"; };
-		CEFD46790C0077900027B933 /* ArrowDown.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; name = ArrowDown.tiff; path = Images/ArrowDown.tiff; sourceTree = "<group>"; };
 		CEFDF8BC0B3848C40091C61A /* SKNavigationWindow.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SKNavigationWindow.h; sourceTree = "<group>"; };
 		CEFDF8BD0B3848C40091C61A /* SKNavigationWindow.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SKNavigationWindow.m; sourceTree = "<group>"; };
 		F92DB5A80B36FE1F002A26E9 /* BDSKHeaderPopUpButtonCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BDSKHeaderPopUpButtonCell.h; sourceTree = "<group>"; };
@@ -846,7 +844,6 @@
 				CE4373B30BB5440E00A56987 /* PSDocument.icns */,
 				CE0715890B8A3D6300733CC8 /* NoteDocument.icns */,
 				CE380A7A0B834E6100A1B779 /* CameraCursor.tiff */,
-				CEFD46790C0077900027B933 /* ArrowDown.tiff */,
 				CE5478B80B33456300F8AFB6 /* BackAdorn.tiff */,
 				CE5478B90B33456300F8AFB6 /* ForwardAdorn.tiff */,
 				CE3A42340B7927D3006B64D3 /* AnchoredNoteAdorn.tiff */,
@@ -1095,7 +1092,6 @@
 				CE468C470BF1F0F60007AA12 /* TextNoteToolAdorn.tiff in Resources */,
 				CE468C480BF1F0F60007AA12 /* AnchoredNoteToolAdorn.tiff in Resources */,
 				CECBA5910BFCEE260030AB59 /* SelectToolAdorn.tiff in Resources */,
-				CEFD467A0C0077910027B933 /* ArrowDown.tiff in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
