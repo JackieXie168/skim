@@ -39,45 +39,53 @@
 #include <CoreFoundation/CoreFoundation.h>
 #import <Foundation/Foundation.h>
 
+
 Boolean GetMetadataForFile(void* thisInterface, 
-			   CFMutableDictionaryRef attributes, 
-			   CFStringRef contentTypeUTI,
-			   CFStringRef pathToFile)
+                           CFMutableDictionaryRef attributes, 
+                           CFStringRef contentTypeUTI,
+                           CFStringRef pathToFile)
 {
     /* Pull any available metadata from the file at the specified path */
     /* Return the attribute keys and attribute values in the dict */
     /* Return TRUE if successful, FALSE if there was no data provided */
     
+#warning importer crashes 
+    // Got exception *** -[NSKeyedUnarchiver decodeObjectForKey:]: cannot decode object of class (NSFont) for path ... and I'm not sure if importers can link against AppKit
+    
+    return TRUE;
+    
     NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
     Boolean success = FALSE;
     
     if (UTTypeEqual(contentTypeUTI, CFSTR("net.sourceforge.skim-app.skimnotes"))) {
-        NSData *data = [[NSData alloc] initWithContentsOfFile:(NSString *)pathToFile options:0 error:NULL];
+        NSData *data = [[NSData alloc] initWithContentsOfFile:(NSString *)pathToFile options:NSUncachedRead error:NULL];
         if (data) {
             NSArray *array = [NSKeyedUnarchiver unarchiveObjectWithData:data];
+            [data release];
+            
             if (array) {
                 NSEnumerator *noteEnum = [array objectEnumerator];
                 NSDictionary *note;
-                NSMutableString *string = [[NSMutableString alloc] init];
+                NSMutableString *textContent = [[NSMutableString alloc] init];
                 NSMutableArray *notes = [[NSMutableArray alloc] init];
                 while (note = [noteEnum nextObject]) {
                     NSString *contents = [note objectForKey:@"contents"];
                     if (contents) {
-                        if ([string length])
-                            [string appendString:@"\n\n"];
-                        [string appendString:contents];
+                        if ([textContent length])
+                            [textContent appendString:@"\n\n"];
+                        [textContent appendString:contents];
                         [notes addObject:contents];
                     }
-                    contents = [[note objectForKey:@"text"] string];
-                    if (contents) {
-                        if ([string length])
-                            [string appendString:@"\n\n"];
-                        [string appendString:contents];
+                    NSString *text = [[note objectForKey:@"text"] string];
+                    if (text) {
+                        if ([textContent length])
+                            [textContent appendString:@"\n\n"];
+                        [textContent appendString:text];
                     }
                 }
-                [(NSMutableDictionary *)attributes setObject:string forKey:(NSString *)kMDItemTextContent];
-                [(NSMutableDictionary *)attributes setObject:notes forKey:@"net_sourceforge_skim-app_notes"];
-                [string release];
+                [(NSMutableDictionary *)attributes setObject:textContent forKey:(NSString *)kMDItemTextContent];
+                [(NSMutableDictionary *)attributes setObject:notes forKey:@"net_sourceforge_skim_app_notes"];
+                [textContent release];
                 [notes release];
             }
         }
