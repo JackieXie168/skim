@@ -9,6 +9,7 @@
 	are CFNumber, CFDate, CFBoolean and CFData.		      
     </note>
     <attributes>
+        <attribute name="net_sourceforge_skim-app_notes" multivalued="true" type="CFString"/>
     </attributes>
 
     <types>
@@ -17,12 +18,13 @@
 		The keys that this metadata importer handles.
             </note>
             <allattrs>
+                net_sourceforge_skim-app_notes
             </allattrs>
             <displayattrs>
-                kMDItemTextContent
                 kMDItemWhereFroms
                 kMDItemContentModificationDate
                 kMDItemContentCreationDate
+                net_sourceforge_skim-app_notes
             </displayattrs>
         </type>
     </types>
