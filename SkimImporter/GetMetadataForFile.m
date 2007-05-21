@@ -36,9 +36,9 @@
  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-#include <CoreFoundation/CoreFoundation.h>
+#import <CoreFoundation/CoreFoundation.h>
 #import <Foundation/Foundation.h>
-
+#import <AppKit/AppKit.h>
 
 Boolean GetMetadataForFile(void* thisInterface, 
                            CFMutableDictionaryRef attributes, 
@@ -48,11 +48,6 @@ Boolean GetMetadataForFile(void* thisInterface,
     /* Pull any available metadata from the file at the specified path */
     /* Return the attribute keys and attribute values in the dict */
     /* Return TRUE if successful, FALSE if there was no data provided */
-    
-#warning importer crashes 
-    // Got exception *** -[NSKeyedUnarchiver decodeObjectForKey:]: cannot decode object of class (NSFont) for path ... and I'm not sure if importers can link against AppKit
-    
-    return TRUE;
     
     NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
     Boolean success = FALSE;
