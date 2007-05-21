@@ -30,6 +30,10 @@
 		C88FB7DB0674470F006EBB30 /* English */ = {isa = PBXFileReference; fileEncoding = 10; lastKnownFileType = text.plist.strings; name = English; path = English.lproj/schema.strings; sourceTree = "<group>"; };
 		CEFD60CE0C01D0E40027B933 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = /System/Library/Frameworks/Foundation.framework; sourceTree = "<absolute>"; };
 		CEFD60D20C01D1040027B933 /* ApplicationServices.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = ApplicationServices.framework; path = /System/Library/Frameworks/ApplicationServices.framework; sourceTree = "<absolute>"; };
+		CEFD6C620C01EF770027B933 /* Dutch */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = Dutch; path = Dutch.lproj/schema.strings; sourceTree = "<group>"; };
+		CEFD6C630C01EF7A0027B933 /* Italian */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = Italian; path = Italian.lproj/schema.strings; sourceTree = "<group>"; };
+		CEFD6C660C01EF820027B933 /* Dutch */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = Dutch; path = Dutch.lproj/InfoPlist.strings; sourceTree = "<group>"; };
+		CEFD6C670C01EF850027B933 /* Italian */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = Italian; path = Italian.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -137,6 +141,14 @@
 			isa = PBXProject;
 			buildConfigurationList = 70138C880896BE9A00968C2F /* Build configuration list for PBXProject "SkimImporter" */;
 			hasScannedForEncodings = 1;
+			knownRegions = (
+				English,
+				Japanese,
+				French,
+				German,
+				Dutch,
+				Italian,
+			);
 			mainGroup = 089C166AFE841209C02AAC07 /* SkimImporter */;
 			projectDirPath = "";
 			targets = (
@@ -185,6 +197,8 @@
 			isa = PBXVariantGroup;
 			children = (
 				089C167EFE841241C02AAC07 /* English */,
+				CEFD6C660C01EF820027B933 /* Dutch */,
+				CEFD6C670C01EF850027B933 /* Italian */,
 			);
 			name = InfoPlist.strings;
 			sourceTree = "<group>";
@@ -193,6 +207,8 @@
 			isa = PBXVariantGroup;
 			children = (
 				C88FB7DB0674470F006EBB30 /* English */,
+				CEFD6C620C01EF770027B933 /* Dutch */,
+				CEFD6C630C01EF7A0027B933 /* Italian */,
 			);
 			name = schema.strings;
 			sourceTree = "<group>";

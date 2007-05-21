@@ -22,23 +22,30 @@ Boolean GetMetadataForFile(void* thisInterface,
                 NSEnumerator *noteEnum = [array objectEnumerator];
                 NSDictionary *note;
                 NSMutableString *string = [[NSMutableString alloc] init];
+                NSMutableArray *notes = [[NSMutableArray alloc] init];
                 while (note = [noteEnum nextObject]) {
                     NSString *contents = [note objectForKey:@"contents"];
-                    if ([string length])
-                        [string appendString:@"\n\n"];
-                    if (contents)
+                    if (contents) {
+                        if ([string length])
+                            [string appendString:@"\n\n"];
                         [string appendString:contents];
+                        [notes addObject:contents];
+                    }
                     contents = [[note objectForKey:@"text"] string];
                     if (contents) {
                         if ([string length])
-                            [string appendString:@"\n"];
+                            [string appendString:@"\n\n"];
                         [string appendString:contents];
                     }
                 }
                 [(NSMutableDictionary *)attributes setObject:string forKey:(NSString *)kMDItemTextContent];
+                [(NSMutableDictionary *)attributes setObject:notes forKey:@"net_sourceforge_skim-app_notes"];
                 [string release];
+                [notes release];
             }
         }
+        
+        [(NSMutableDictionary *)attributes setObject:@"Skim" forKey:(NSString *)kMDItemCreator];
         
         NSString *pdfFile = [[(NSString *)pathToFile stringByDeletingPathExtension] stringByAppendingPathExtension:@"pdf"];
         if ([[NSFileManager defaultManager] fileExistsAtPath:pdfFile])
