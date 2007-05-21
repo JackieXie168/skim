@@ -171,6 +171,7 @@
 		CEF711A10B90B714003A2771 /* NSUserDefaultsController_SKExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = CEF711A00B90B714003A2771 /* NSUserDefaultsController_SKExtensions.m */; };
 		CEF7175C0B90DEEF003A2771 /* ReleaseNotes.nib in Resources */ = {isa = PBXBuildFile; fileRef = CEF717560B90DEEF003A2771 /* ReleaseNotes.nib */; };
 		CEF7175F0B90DF10003A2771 /* SKReleaseNotesController.m in Sources */ = {isa = PBXBuildFile; fileRef = CEF7175E0B90DF10003A2771 /* SKReleaseNotesController.m */; };
+		CEFD68740C01D4080027B933 /* SkimImporter.mdimporter in CopyFiles */ = {isa = PBXBuildFile; fileRef = CEFD68690C01D3BB0027B933 /* SkimImporter.mdimporter */; };
 		CEFDF8BE0B3848C40091C61A /* SKNavigationWindow.m in Sources */ = {isa = PBXBuildFile; fileRef = CEFDF8BD0B3848C40091C61A /* SKNavigationWindow.m */; };
 		F92DB5AC0B36FE1F002A26E9 /* BDSKHeaderPopUpButtonCell.m in Sources */ = {isa = PBXBuildFile; fileRef = F92DB5A90B36FE1F002A26E9 /* BDSKHeaderPopUpButtonCell.m */; };
 		F92DB5AD0B36FE1F002A26E9 /* BDSKZoomablePDFView.m in Sources */ = {isa = PBXBuildFile; fileRef = F92DB5AB0B36FE1F002A26E9 /* BDSKZoomablePDFView.m */; };
@@ -227,6 +228,20 @@
 			remoteGlobalIDString = 8D15AC270486D014006FF6A4;
 			remoteInfo = Skim;
 		};
+		CEFD68680C01D3BB0027B933 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = CEFD68610C01D3BB0027B933 /* SkimImporter.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 8D576316048677EA00EA77CD /* SkimImporter.mdimporter */;
+			remoteInfo = SkimImporter;
+		};
+		CEFD68700C01D3E50027B933 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = CEFD68610C01D3BB0027B933 /* SkimImporter.xcodeproj */;
+			proxyType = 1;
+			remoteGlobalIDString = 8D57630D048677EA00EA77CD /* SkimImporter */;
+			remoteInfo = SkimImporter;
+		};
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -248,6 +263,16 @@
 			files = (
 				CEE22EA30BFB8672002B746B /* displayline in CopyFiles */,
 				CEE22EA40BFB8684002B746B /* skimnotes in CopyFiles */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		CEFD68720C01D3FE0027B933 /* CopyFiles */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = Contents/Library/Spotlight;
+			dstSubfolderSpec = 1;
+			files = (
+				CEFD68740C01D4080027B933 /* SkimImporter.mdimporter in CopyFiles */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -487,6 +512,7 @@
 		CEF717570B90DEEF003A2771 /* English */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = English; path = English.lproj/ReleaseNotes.nib; sourceTree = "<group>"; };
 		CEF7175D0B90DF10003A2771 /* SKReleaseNotesController.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = SKReleaseNotesController.h; sourceTree = "<group>"; };
 		CEF7175E0B90DF10003A2771 /* SKReleaseNotesController.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = SKReleaseNotesController.m; sourceTree = "<group>"; };
+		CEFD68610C01D3BB0027B933 /* SkimImporter.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = SkimImporter.xcodeproj; path = SkimImporter/SkimImporter.xcodeproj; sourceTree = "<group>"; };
 		CEFDF8BC0B3848C40091C61A /* SKNavigationWindow.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SKNavigationWindow.h; sourceTree = "<group>"; };
 		CEFDF8BD0B3848C40091C61A /* SKNavigationWindow.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SKNavigationWindow.m; sourceTree = "<group>"; };
 		F92DB5A80B36FE1F002A26E9 /* BDSKHeaderPopUpButtonCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BDSKHeaderPopUpButtonCell.h; sourceTree = "<group>"; };
@@ -691,6 +717,7 @@
 		CE2BD8160BD4123D00A5F4DB /* Subprojects */ = {
 			isa = PBXGroup;
 			children = (
+				CEFD68610C01D3BB0027B933 /* SkimImporter.xcodeproj */,
 				CE2BD8170BD4127A00A5F4DB /* Sparkle.xcodeproj */,
 			);
 			name = Subprojects;
@@ -914,6 +941,14 @@
 			name = Skimnotes;
 			sourceTree = "<group>";
 		};
+		CEFD68620C01D3BB0027B933 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				CEFD68690C01D3BB0027B933 /* SkimImporter.mdimporter */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -927,6 +962,7 @@
 				8D15AC330486D014006FF6A4 /* Frameworks */,
 				CEE112760BCBF52500BF2D3E /* CopyFiles */,
 				CEE22EA00BFB8614002B746B /* CopyFiles */,
+				CEFD68720C01D3FE0027B933 /* CopyFiles */,
 				CEE22EA50BFB8691002B746B /* ShellScript */,
 				CE4B67590BF4DC3000A73E42 /* ShellScript */,
 				CE4DA9060B9E17890039E89C /* ShellScript */,
@@ -937,6 +973,7 @@
 				CE157D890B9F89CE00D5B03F /* PBXTargetDependency */,
 				CE2BD8610BD4144000A5F4DB /* PBXTargetDependency */,
 				CE1E39880BDBCC930011D9DD /* PBXTargetDependency */,
+				CEFD68710C01D3E50027B933 /* PBXTargetDependency */,
 			);
 			name = Skim;
 			productInstallPath = "$(HOME)/Applications";
@@ -979,6 +1016,10 @@
 			projectDirPath = "";
 			projectReferences = (
 				{
+					ProductGroup = CEFD68620C01D3BB0027B933 /* Products */;
+					ProjectRef = CEFD68610C01D3BB0027B933 /* SkimImporter.xcodeproj */;
+				},
+				{
 					ProductGroup = CE2BD8180BD4127A00A5F4DB /* Products */;
 					ProjectRef = CE2BD8170BD4127A00A5F4DB /* Sparkle.xcodeproj */;
 				},
@@ -1006,6 +1047,13 @@
 			fileType = wrapper.application;
 			path = "Sparkle Test App.app";
 			remoteRef = CE2BD8210BD4127A00A5F4DB /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		CEFD68690C01D3BB0027B933 /* SkimImporter.mdimporter */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.cfbundle;
+			path = SkimImporter.mdimporter;
+			remoteRef = CEFD68680C01D3BB0027B933 /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
 /* End PBXReferenceProxy section */
@@ -1285,6 +1333,11 @@
 			isa = PBXTargetDependency;
 			target = 8D15AC270486D014006FF6A4 /* Skim */;
 			targetProxy = CE592C610B9239CD00C113DF /* PBXContainerItemProxy */;
+		};
+		CEFD68710C01D3E50027B933 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			name = SkimImporter;
+			targetProxy = CEFD68700C01D3E50027B933 /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
 

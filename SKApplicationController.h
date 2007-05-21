@@ -56,4 +56,6 @@
 
 - (SUUpdater *)updater;
 
+- (void)doSpotlightImportIfNeeded;
+
 @end

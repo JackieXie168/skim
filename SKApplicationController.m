@@ -152,6 +152,7 @@ static BOOL fileIsInTrash(NSURL *fileURL)
     }
 	if ([[NSUserDefaults standardUserDefaults] boolForKey:SKEnableAppleRemoteKey])
         [[AppleRemote sharedRemote] setDelegate:self];
+    [self doSpotlightImportIfNeeded];
 }
 
 - (void)applicationDidBecomeActive:(NSNotification *)aNotification {
@@ -262,6 +263,48 @@ static BOOL fileIsInTrash(NSURL *fileURL)
             break;
         default:
             break;
+    }
+}
+
+- (void)doSpotlightImportIfNeeded {
+    
+    // This code finds the spotlight importer and re-runs it if the importer or app version has changed since the last time we launched.
+    NSArray *pathComponents = [NSArray arrayWithObjects:[[NSBundle mainBundle] bundlePath], @"Contents", @"Library", @"Spotlight", @"SkimImporter", nil];
+    NSString *importerPath = [[NSString pathWithComponents:pathComponents] stringByAppendingPathExtension:@"mdimporter"];
+    
+    NSBundle *importerBundle = [NSBundle bundleWithPath:importerPath];
+    NSString *importerVersion = [importerBundle objectForInfoDictionaryKey:(NSString *)kCFBundleVersionKey];
+    if (importerVersion) {
+        SKVersionNumber *importerVersionNumber = [[[SKVersionNumber alloc] initWithVersionString:importerVersion] autorelease];
+        NSDictionary *versionInfo = [[NSUserDefaults standardUserDefaults] dictionaryForKey:@"SKSpotlightVersionInfo"];
+        
+        long sysVersion;
+        OSStatus err = Gestalt(gestaltSystemVersion, &sysVersion);
+        
+        BOOL runImporter = NO;
+        if ([versionInfo count] == 0) {
+            runImporter = YES;
+        } else {
+            NSString *lastImporterVersion = [versionInfo objectForKey:@"lastImporterVersion"];
+            SKVersionNumber *lastImporterVersionNumber = [[[SKVersionNumber alloc] initWithVersionString:lastImporterVersion] autorelease];
+            
+            long lastSysVersion = [[versionInfo objectForKey:@"lastSysVersion"] longValue];
+            
+            runImporter = noErr == err ? ([lastImporterVersionNumber compareToVersionNumber:importerVersionNumber] == NSOrderedAscending || sysVersion > lastSysVersion) : YES;
+        }
+        if (runImporter) {
+            NSString *mdimportPath = @"/usr/bin/mdimport";
+            if ([[NSFileManager defaultManager] isExecutableFileAtPath:mdimportPath]) {
+                NSTask *importerTask = [[[NSTask alloc] init] autorelease];
+                [importerTask setLaunchPath:mdimportPath];
+                [importerTask setArguments:[NSArray arrayWithObjects:@"-r", importerPath, nil]];
+                [importerTask launch];
+                
+                NSDictionary *info = [NSDictionary dictionaryWithObjectsAndKeys:[NSNumber numberWithLong:sysVersion], @"lastSysVersion", importerVersion, @"lastImporterVersion", nil];
+                [[NSUserDefaults standardUserDefaults] setObject:info forKey:@"SKSpotlightVersionInfo"];
+                
+            } else NSLog(@"%@ not found!", mdimportPath);
+        }
     }
 }
 
