@@ -40,6 +40,7 @@
 #import "SKDocument.h"
 #import "SKNoteOutlineView.h"
 #import "BDAlias.h"
+#import "SKDocumentController.h"
 
 @implementation SKNotesDocument
 

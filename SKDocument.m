@@ -50,19 +50,12 @@
 #import "SKNoteWindowController.h"
 #import "SKPDFSynchronizer.h"
 #import "NSString_SKExtensions.h"
+#import "SKDocumentController.h"
 
 // maximum length of xattr value recommended by Apple
 #define MAX_XATTR_LENGTH 2048
 
 NSString *SKDocumentErrorDomain = @"SKDocumentErrorDomain";
-
-// See CFBundleTypeName in Info.plist
-NSString *SKPDFDocumentType = nil; /* set to NSPDFPboardType, not @"NSPDFPboardType" */
-NSString *SKEmbeddedPDFDocumentType = @"PDF With Embedded Notes";
-NSString *SKBarePDFDocumentType = @"PDF Without Notes";
-NSString *SKNotesDocumentType = @"Skim Notes";
-NSString *SKNotesRTFDocumentType = @"Notes as RTF";
-NSString *SKPostScriptDocumentType = @"PostScript document";
 
 NSString *SKDocumentWillSaveNotification = @"SKDocumentWillSaveNotification";
 
@@ -861,100 +854,6 @@ NSString *SKDocumentWillSaveNotification = @"SKDocumentWillSaveNotification";
 
 - (NSString *)string {
     return [[self pdfDocument] string];
-}
-
-@end
-
-
-@implementation SKDocumentController
-
-+ (void)initialize {
-    if (nil == SKPDFDocumentType)
-        SKPDFDocumentType = [NSPDFPboardType copy];
-}
-
-- (NSString *)typeFromFileExtension:(NSString *)fileExtensionOrHFSFileType {
-	NSString *type = [super typeFromFileExtension:fileExtensionOrHFSFileType];
-    if ([type isEqualToString:SKEmbeddedPDFDocumentType] || [type isEqualToString:SKBarePDFDocumentType]) {
-        // fix of bug when reading a PDF file
-        // this is interpreted as SKEmbeddedPDFDocumentType, even though we don't declare that as a readable type
-        type = NSPDFPboardType;
-    }
-	return type;
-}
-
-static NSData *convertTIFFDataToPDF(NSData *tiffData)
-{
-    // this should accept any image data types we're likely to run across, but PICT returns a zero size image
-    CGImageSourceRef imsrc = CGImageSourceCreateWithData((CFDataRef)tiffData, (CFDictionaryRef)[NSDictionary dictionaryWithObject:(id)kUTTypeTIFF forKey:(id)kCGImageSourceTypeIdentifierHint]);
-
-    NSMutableData *pdfData = nil;
-    
-    if (CGImageSourceGetCount(imsrc)) {
-        CGImageRef cgImage = CGImageSourceCreateImageAtIndex(imsrc, 0, NULL);
-
-        pdfData = [NSMutableData dataWithCapacity:[tiffData length]];
-        CGDataConsumerRef consumer = CGDataConsumerCreateWithCFData((CFMutableDataRef)pdfData);
-        
-        // create full size image, assuming pixel == point
-        const CGRect rect = CGRectMake(0, 0, CGImageGetWidth(cgImage), CGImageGetHeight(cgImage));
-        
-        CGContextRef ctxt = CGPDFContextCreate(consumer, &rect, NULL);
-        CGPDFContextBeginPage(ctxt, NULL);
-        CGContextDrawImage(ctxt, rect, cgImage);
-        CGPDFContextEndPage(ctxt);
-        
-        CGContextFlush(ctxt);
-
-        CGDataConsumerRelease(consumer);
-        CGContextRelease(ctxt);
-        CGImageRelease(cgImage);
-    }
-    
-    CFRelease(imsrc);
-
-    return pdfData;
-}
-
-- (void)newDocumentFromClipboard:(id)sender {
-    
-    // allow any filter services to convert to TIFF data if we can't get PDF or PS directly
-    NSPasteboard *pboard = [NSPasteboard pasteboardByFilteringTypesInPasteboard:[NSPasteboard generalPasteboard]];
-    NSString *pboardType = [pboard availableTypeFromArray:[NSArray arrayWithObjects:NSPDFPboardType, NSPostScriptPboardType, NSTIFFPboardType, nil]];
-    if (nil == pboardType) {
-        NSBeep();
-        return;
-    }
-    
-    NSData *data = [pboard dataForType:pboardType];
-    
-    // if it's image data, convert to PDF, then explicitly set the pboard type to PDF
-    if ([pboardType isEqualToString:NSTIFFPboardType]) {
-        data = convertTIFFDataToPDF(data);
-        pboardType = NSPDFPboardType;
-    }
-    
-    NSString *type = [pboardType isEqualToString:NSPostScriptPboardType] ? SKPostScriptDocumentType : SKPDFDocumentType;
-    NSError *error = nil;
-    id document = [self makeUntitledDocumentOfType:type error:&error];
-    
-    if ([document readFromData:data ofType:type error:&error]) {
-        [self addDocument:document];
-        [document makeWindowControllers];
-        [document showWindows];
-    } else {
-        [NSApp presentError:error];
-    }
-}
-
-- (BOOL)validateUserInterfaceItem:(id <NSValidatedUserInterfaceItem>)anItem {
-    if ([anItem action] == @selector(newDocumentFromClipboard:)) {
-        NSPasteboard *pboard = [NSPasteboard pasteboardByFilteringTypesInPasteboard:[NSPasteboard generalPasteboard]];
-        return ([[pboard types] firstObjectCommonWithArray:[NSArray arrayWithObjects:NSPDFPboardType, NSPostScriptPboardType, NSTIFFPboardType, nil]] != nil);
-    } else if ([super respondsToSelector:_cmd]) {
-        return [super validateUserInterfaceItem:anItem];
-    } else
-        return YES;
 }
 
 @end

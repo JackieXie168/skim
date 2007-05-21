@@ -42,13 +42,6 @@ extern NSString *SKDocumentErrorDomain;
 
 extern NSString *SKDocumentWillSaveNotification;
 
-extern NSString *SKPDFDocumentType;
-extern NSString *SKEmbeddedPDFDocumentType;
-extern NSString *SKBarePDFDocumentType;
-extern NSString *SKNotesDocumentType;
-extern NSString *SKNotesRTFDocumentType;
-extern NSString *SKPostScriptDocumentType;
-
 
 @class PDFDocument, SKMainWindowController, SKPDFView, SKPDFSynchronizer;
 
@@ -103,9 +96,4 @@ extern NSString *SKPostScriptDocumentType;
 - (void)setActiveNote:(id)note;
 - (NSString *)string;
 
-@end
-
-
-@interface SKDocumentController : NSDocumentController
-- (void)newDocumentFromClipboard:(id)sender;
 @end
