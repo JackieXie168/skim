@@ -79,6 +79,7 @@
 		CE2DEB1C0B8618DE00D0DA12 /* SKFindController.m in Sources */ = {isa = PBXBuildFile; fileRef = CE2DEB1B0B8618DE00D0DA12 /* SKFindController.m */; };
 		CE2DEB920B86206400D0DA12 /* FindPanel.nib in Resources */ = {isa = PBXBuildFile; fileRef = CE2DEB900B86206400D0DA12 /* FindPanel.nib */; };
 		CE2DED6C0B86334900D0DA12 /* BDSKFindFieldEditor.m in Sources */ = {isa = PBXBuildFile; fileRef = CE2DED6B0B86334900D0DA12 /* BDSKFindFieldEditor.m */; };
+		CE31A6180C01FC45003612A9 /* SKDocumentController.m in Sources */ = {isa = PBXBuildFile; fileRef = CE31A6160C01FC45003612A9 /* SKDocumentController.m */; };
 		CE380A7B0B834E6200A1B779 /* CameraCursor.tiff in Resources */ = {isa = PBXBuildFile; fileRef = CE380A7A0B834E6100A1B779 /* CameraCursor.tiff */; };
 		CE380C620B837B6100A1B779 /* NoteViewAdorn.tiff in Resources */ = {isa = PBXBuildFile; fileRef = CE380C600B837B6100A1B779 /* NoteViewAdorn.tiff */; };
 		CE380C630B837B6100A1B779 /* SnapshotViewAdorn.tiff in Resources */ = {isa = PBXBuildFile; fileRef = CE380C610B837B6100A1B779 /* SnapshotViewAdorn.tiff */; };
@@ -232,14 +233,14 @@
 			isa = PBXContainerItemProxy;
 			containerPortal = CEFD68610C01D3BB0027B933 /* SkimImporter.xcodeproj */;
 			proxyType = 2;
-			remoteGlobalIDString = 8D576316048677EA00EA77CD /* SkimImporter.mdimporter */;
+			remoteGlobalIDString = 8D576316048677EA00EA77CD;
 			remoteInfo = SkimImporter;
 		};
 		CEFD68700C01D3E50027B933 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = CEFD68610C01D3BB0027B933 /* SkimImporter.xcodeproj */;
 			proxyType = 1;
-			remoteGlobalIDString = 8D57630D048677EA00EA77CD /* SkimImporter */;
+			remoteGlobalIDString = 8D57630D048677EA00EA77CD;
 			remoteInfo = SkimImporter;
 		};
 /* End PBXContainerItemProxy section */
@@ -373,6 +374,8 @@
 		CE2DEB910B86206400D0DA12 /* English */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = English; path = English.lproj/FindPanel.nib; sourceTree = "<group>"; };
 		CE2DED6A0B86334900D0DA12 /* BDSKFindFieldEditor.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = BDSKFindFieldEditor.h; sourceTree = "<group>"; };
 		CE2DED6B0B86334900D0DA12 /* BDSKFindFieldEditor.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = BDSKFindFieldEditor.m; sourceTree = "<group>"; };
+		CE31A6150C01FC45003612A9 /* SKDocumentController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SKDocumentController.h; sourceTree = "<group>"; };
+		CE31A6160C01FC45003612A9 /* SKDocumentController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SKDocumentController.m; sourceTree = "<group>"; };
 		CE380A7A0B834E6100A1B779 /* CameraCursor.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; name = CameraCursor.tiff; path = Images/CameraCursor.tiff; sourceTree = "<group>"; };
 		CE380C600B837B6100A1B779 /* NoteViewAdorn.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; name = NoteViewAdorn.tiff; path = Images/NoteViewAdorn.tiff; sourceTree = "<group>"; };
 		CE380C610B837B6100A1B779 /* SnapshotViewAdorn.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; name = SnapshotViewAdorn.tiff; path = Images/SnapshotViewAdorn.tiff; sourceTree = "<group>"; };
@@ -741,6 +744,8 @@
 				CE0463CA0B84D24300C11E4A /* SKApplication.m */,
 				4530D8C70B27B04D007C59F4 /* SKApplicationController.h */,
 				4530D8C80B27B04D007C59F4 /* SKApplicationController.m */,
+				CE31A6150C01FC45003612A9 /* SKDocumentController.h */,
+				CE31A6160C01FC45003612A9 /* SKDocumentController.m */,
 				2A37F4AEFDCFA73011CA2CEA /* SKDocument.h */,
 				2A37F4ACFDCFA73011CA2CEA /* SKDocument.m */,
 				CEE106130BCBB72C00BF2D3E /* SKNotesDocument.h */,
@@ -1299,6 +1304,7 @@
 				CE49728B0BDE8B2900D7F1D2 /* SKToolbarItem.m in Sources */,
 				CE6C03F10BEDF759007BF0B5 /* NSParagraphStyle_SKExtensions.m in Sources */,
 				CE5F42AF0BF89FE00069D89C /* AppleRemote.m in Sources */,
+				CE31A6180C01FC45003612A9 /* SKDocumentController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
