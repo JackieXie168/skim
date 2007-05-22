@@ -1770,7 +1770,7 @@ static void SKCGContextDrawGrabHandle(CGContextRef context, CGPoint point, float
     int i, iMax = NSMaxRange(range);
     NSRect visibleRect = [self visibleContentRect];
     
-    for (i = 0; i < iMax; i++) {
+    for (i = range.location; i < iMax; i++) {
         PDFPage *page = [[self document] pageAtIndex:i];
         NSArray *annotations = [page annotations];
         unsigned j, jMax = [annotations count];
