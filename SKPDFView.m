@@ -325,7 +325,7 @@ static void SKCGContextDrawGrabHandle(CGContextRef context, CGPoint point, float
         float color[4] = { 0.0, 0.0, 0.0, 1.0 };
         CGContextSetStrokeColor(context, color);
         CGContextStrokeRect(context, *(CGRect *)&rect);
-    } else if (toolMode == SKSelectToolMode && NSEqualRects(selectionRect, NSZeroRect) == NO) {
+    } else if (toolMode == SKSelectToolMode && (didDrag || NSEqualRects(selectionRect, NSZeroRect) == NO)) {
         NSRect bounds = [pdfPage boundsForBox:[self displayBox]];
         float color[4] = { 0.0, 0.0, 0.0, 0.6 };
         float radius = 4.0 / [self scaleFactor];
@@ -2541,13 +2541,14 @@ static void SKCGContextDrawGrabHandle(CGContextRef context, CGPoint point, float
 	NSPoint initialPoint = [self convertPoint:mouseLoc toPage:page];
     float margin = 4.0 / [self scaleFactor];
     int xEdge = 0, yEdge = 0;
-    BOOL needsDisplay = NO;
     
     if (NSIsEmptyRect(selectionRect) || NSPointInRect(initialPoint, NSInsetRect(selectionRect, -margin, -margin)) == NO) {
-        if (NSEqualRects(selectionRect, NSZeroRect))
-            needsDisplay = YES;
-        else
+        if (NSIsEmptyRect(selectionRect)) {
+            didDrag = NO;
+        } else {
             [self setNeedsDisplay:YES];
+            didDrag = YES;
+        }
         selectionRect.origin = initialPoint;
         selectionRect.size = NSZeroSize;
         xEdge = 1;
@@ -2561,6 +2562,7 @@ static void SKCGContextDrawGrabHandle(CGContextRef context, CGPoint point, float
             yEdge = 1;
         else if (initialPoint.y < NSMinY(selectionRect) + margin)
             yEdge = 2;
+        didDrag = YES;
     }
     
 	NSRect initialRect = selectionRect;
@@ -2627,23 +2629,21 @@ static void SKCGContextDrawGrabHandle(CGContextRef context, CGPoint point, float
         float minY = fmin(fmax(NSMinY(newRect), NSMinY(pageBounds)), NSMaxY(pageBounds));
         float maxY = fmax(fmin(NSMaxY(newRect), NSMaxY(pageBounds)), NSMinY(pageBounds));
         newRect = NSMakeRect(minX, minY, maxX - minX, maxY - minY);
-        if (needsDisplay) {
-            [self setNeedsDisplay:YES];
-            needsDisplay = NO;
+        if (didDrag) {
+            NSRect dirtyRect = NSUnionRect(NSInsetRect(selectionRect, -margin, -margin), NSInsetRect(newRect, -margin, -margin));
+            NSRange r = [self visiblePageIndexRange];
+            unsigned int i;
+            for (i = r.location; i < NSMaxRange(r); i++)
+                [self setNeedsDisplayInRect:dirtyRect ofPage:[[self document] pageAtIndex:i]];
         } else {
-            NSRect dirtyRect = NSEqualRects(selectionRect, NSZeroRect) ? NSZeroRect : NSInsetRect(selectionRect, -margin, -margin);
-            if (NSEqualRects(newRect, NSZeroRect) == NO)
-                dirtyRect = NSUnionRect(dirtyRect, NSInsetRect(newRect, -margin, -margin));
-            if (NSIsEmptyRect(dirtyRect) == NO) {
-                NSRange r = [self visiblePageIndexRange];
-                unsigned int i;
-                for (i = r.location; i < NSMaxRange(r); i++)
-                    [self setNeedsDisplayInRect:dirtyRect ofPage:[[self document] pageAtIndex:i]];
-            }
+            [self setNeedsDisplay:YES];
+            didDrag = YES;
         }
         selectionRect = newRect;
         
 	}
+    
+    didDrag = NO;
     
     if (NSIsEmptyRect(selectionRect)) {
         selectionRect = NSZeroRect;
