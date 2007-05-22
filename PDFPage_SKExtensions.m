@@ -41,10 +41,57 @@
 #import "SKDocument.h"
 #import "SKPDFView.h"
 #import "PDFSelection_SKExtensions.h"
+#import "OBUtilities.h"
+#import "NSBitmapImageRep_SKExtensions.h"
 
+@interface PDFPage (SKReplacementMethods)
+- (void)replacementDealloc;
+@end
 
 @implementation PDFPage (SKExtensions) 
 
+// A subclass with ivars would be nicer in some respects, but that would require subclassing PDFDocument and returning instances of the subclass for each page.
+static CFMutableDictionaryRef _bboxTable = NULL;
+static CFMutableSetRef _croppedPages = NULL;
+static IMP originalDealloc = NULL;
+
++ (void)load {
+    originalDealloc = OBReplaceMethodImplementationWithSelector(self, @selector(dealloc), @selector(replacementDealloc));
+    _bboxTable = CFDictionaryCreateMutable(NULL, 0, NULL, &kCFTypeDictionaryValueCallBacks);
+    _croppedPages = CFSetCreateMutable(NULL, 0, NULL);
+}
+
+- (void)replacementDealloc {
+    CFDictionaryRemoveValue(_bboxTable, self);
+    CFSetRemoveValue(_croppedPages, self);
+    originalDealloc(self, _cmd);
+}
+
+// mainly useful for drawing the box in a PDFView while debugging
+- (NSRect)foregroundBox {
+    
+    NSValue *rectValue = nil;
+    if (FALSE == CFDictionaryGetValueIfPresent(_bboxTable, (void *)self, (const void **)&rectValue)) {
+        NSBitmapImageRep *imageRep = [[NSBitmapImageRep alloc] initWithPDFPage:self forBox:kPDFDisplayBoxMediaBox];
+        NSRect r = imageRep ? [imageRep foregroundRect] : NSZeroRect;
+        [imageRep release];
+        if (NSEqualRects(NSZeroRect, r))
+            r = [self boundsForBox:kPDFDisplayBoxMediaBox];
+        else
+            r = NSInsetRect(r, -10, -10);
+        rectValue = [NSValue valueWithRect:r];
+        CFDictionarySetValue(_bboxTable, (void *)self, (void *)rectValue);
+    }
+    return [rectValue rectValue];
+}
+
+- (void)autoCrop {
+    if (CFSetContainsValue(_croppedPages, (void *)self) == FALSE) {
+        [self setBounds:[self foregroundBox] forBox:kPDFDisplayBoxCropBox];
+        CFSetAddValue(_croppedPages, (void *)self);
+    }
+}
+    
 - (NSImage *)image {
     return [self imageForBox:kPDFDisplayBoxCropBox];
 }

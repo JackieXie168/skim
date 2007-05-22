@@ -220,6 +220,10 @@ static void SKCGContextDrawGrabHandle(CGContextRef context, CGPoint point, float
 #pragma mark Drawing
 
 - (void)drawPage:(PDFPage *)pdfPage {
+    
+    if ([[NSUserDefaults standardUserDefaults] boolForKey:@"SKAutomaticallyCropPages"])
+        [pdfPage autoCrop];
+    
 	// Let PDFView do most of the hard work.
 	[super drawPage: pdfPage];
 	
