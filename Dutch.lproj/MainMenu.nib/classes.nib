@@ -10,6 +10,8 @@
                 changeRightSidePaneState = id; 
                 changeToolMode = id; 
                 createNewNote = id; 
+                crop = id; 
+                cropAll = id; 
                 displayCropBox = id; 
                 displayFacingPages = id; 
                 displayMediaBox = id; 
