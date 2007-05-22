@@ -63,6 +63,7 @@ extern NSString *SKDocumentWillSaveNotification;
     NSDate *lastChangedDate;
     NSDate *previousCheckedDate;
     BOOL autoUpdate;
+    int numberOfTries;
 }
 
 - (IBAction)readNotes:(id)sender;

@@ -333,6 +333,7 @@ NSString *SKDocumentWillSaveNotification = @"SKDocumentWillSaveNotification";
     if (data) {
         if (pdfDoc) {
             didRead = YES;
+            numberOfTries = 0;
             [self setPDFData:data];
             [self setPDFDoc:pdfDoc];
             [pdfDoc release];
@@ -516,9 +517,11 @@ NSString *SKDocumentWillSaveNotification = @"SKDocumentWillSaveNotification";
     } else {
         NSError *error = nil;
         if (NO == [self revertToContentsOfURL:[self fileURL] ofType:[self fileType] error:&error]) {
-            [[alert window] orderOut:nil];
-            [self presentError:error modalForWindow:[[self mainWindowController] window] delegate:nil didPresentSelector:NULL contextInfo:NULL];
-            [self setLastChangedDate:changeDate];
+            if (autoUpdate && ++numberOfTries > 10) {
+                [[alert window] orderOut:nil];
+                [self presentError:error modalForWindow:[[self mainWindowController] window] delegate:nil didPresentSelector:NULL contextInfo:NULL];
+                [self setLastChangedDate:changeDate];
+            }
         }
         if (returnCode == NSAlertAlternateReturn)
             autoUpdate = YES;
