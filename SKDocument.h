@@ -64,6 +64,7 @@ extern NSString *SKDocumentWillSaveNotification;
     NSDate *previousCheckedDate;
     BOOL autoUpdate;
     int numberOfTries;
+    BOOL fileChangedOnDisk;
 }
 
 - (IBAction)readNotes:(id)sender;

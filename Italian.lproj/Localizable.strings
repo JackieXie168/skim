@@ -136,6 +136,9 @@
    Toolbar item label */
 "Display Box" = "Rettangolo Disegno";
 
+/* Message in alert dialog */
+"Do you want to revert to the version of the document \"%@\" on disk?" = "Desideri ripristinare la revisione del documento Ò%@Ó su disco?";
+
 /* Default text for new text note */
 "Double-click to edit." = "Doppio-click per modificare.";
 
@@ -310,6 +313,9 @@
 /* Message in alert dialog when pressing Reset All button */
 "Reset all preferences to their original values?" = "Ripristina tutte le preferenze ai loro valori originali?";
 
+/* Button title */
+"Revert" = "Ripristina originale";
+
 /* Tool tip message
    Toolbar item label */
 "Rotate Left" = "Ruota Sinistra";
@@ -473,6 +479,9 @@
 
 /* Alert text when trying to create archive for unsaved document */
 "You must save this file first" = "Devi salvare questo file per prima cosa";
+
+/* Informative text in alert dialog */
+"Your current changes will be lost." = "Le tue modifiche attuali andranno perse.";
 
 /* Tool tip message
    Toolbar item label */
