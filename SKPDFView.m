@@ -652,7 +652,7 @@ static void SKCGContextDrawGrabHandle(CGContextRef context, CGPoint point, float
 - (IBAction)autoSelectContent:(id)sender {
     if (toolMode == SKSelectToolMode) {
         PDFPage *page = [self currentPage];
-        selectionRect = NSIntersectionRect([page foregroundBox], [page boundsForBox:[self displayBox]]);
+        selectionRect = NSIntersectionRect(NSUnionRect([page foregroundBox], selectionRect), [page boundsForBox:[self displayBox]]);
         [self setNeedsDisplay:YES];
     }
 }
