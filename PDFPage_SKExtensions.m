@@ -50,6 +50,8 @@
 
 @implementation PDFPage (SKExtensions) 
 
+#define FOREGROUND_BOX_MARGIN 10.0
+
 // A subclass with ivars would be nicer in some respects, but that would require subclassing PDFDocument and returning instances of the subclass for each page.
 static CFMutableDictionaryRef _bboxTable = NULL;
 static CFMutableSetRef _croppedPages = NULL;
@@ -74,11 +76,15 @@ static IMP originalDealloc = NULL;
     if (FALSE == CFDictionaryGetValueIfPresent(_bboxTable, (void *)self, (const void **)&rectValue)) {
         NSBitmapImageRep *imageRep = [[NSBitmapImageRep alloc] initWithPDFPage:self forBox:kPDFDisplayBoxMediaBox];
         NSRect r = imageRep ? [imageRep foregroundRect] : NSZeroRect;
+        NSRect b = [self boundsForBox:kPDFDisplayBoxMediaBox];
         [imageRep release];
-        if (NSEqualRects(NSZeroRect, r))
-            r = [self boundsForBox:kPDFDisplayBoxMediaBox];
-        else
-            r = NSInsetRect(r, -10, -10);
+        if (NSEqualRects(NSZeroRect, r)) {
+            r = b;
+        } else {
+            r.origin.x += NSMinX(b);
+            r.origin.y += NSMinY(b);
+            r = NSIntersectionRect(NSInsetRect(r, FOREGROUND_BOX_MARGIN, FOREGROUND_BOX_MARGIN), b);
+        }
         rectValue = [NSValue valueWithRect:r];
         CFDictionarySetValue(_bboxTable, (void *)self, (void *)rectValue);
     }
