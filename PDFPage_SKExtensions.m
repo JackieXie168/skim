@@ -83,7 +83,7 @@ static IMP originalDealloc = NULL;
         } else {
             r.origin.x += NSMinX(b);
             r.origin.y += NSMinY(b);
-            r = NSIntersectionRect(NSInsetRect(r, FOREGROUND_BOX_MARGIN, FOREGROUND_BOX_MARGIN), b);
+            r = NSIntersectionRect(NSInsetRect(r, -FOREGROUND_BOX_MARGIN, -FOREGROUND_BOX_MARGIN), b);
         }
         rectValue = [NSValue valueWithRect:r];
         CFDictionarySetValue(_bboxTable, (void *)self, (void *)rectValue);
