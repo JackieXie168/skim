@@ -903,37 +903,39 @@ static NSString *SKRightSidePaneWidthKey = @"SKRightSidePaneWidth";
         [self doAutoScale:sender];
 }
 
-- (IBAction)rotateRight:(id)sender {
-    [[pdfView currentPage] setRotation:[[pdfView currentPage] rotation] + 90];
+- (void)rotatePageAtIndex:(unsigned int)index by:(int)rotation {
+    NSUndoManager *undoManager = [[self document] undoManager];
+    [[undoManager prepareWithInvocationTarget:self] rotatePageAtIndex:index by:-rotation];
+    [[self document] updateChangeCount:[undoManager isUndoing] ? NSChangeDone : NSChangeUndone];
+    
+    PDFPage *page = [[pdfView document] pageAtIndex:index];
+    [page setRotation:[page rotation] + rotation];
     [pdfView layoutDocumentView];
     
     NSEnumerator *snapshotEnum = [snapshots objectEnumerator];
     SKSnapshotWindowController *wc;
     while (wc = [snapshotEnum nextObject]) {
-        if ([wc isPageVisible:[pdfView currentPage]]) {
+        if ([wc isPageVisible:page]) {
             [self snapshotNeedsUpdate:wc];
             [wc redisplay];
         }
     }    
-    [self updateThumbnailAtPageIndex:[[pdfView document] indexForPage:[pdfView currentPage]]];
+    [self updateThumbnailAtPageIndex:index];
+}
+
+- (IBAction)rotateRight:(id)sender {
+    [self rotatePageAtIndex:[[pdfView document] indexForPage:[pdfView currentPage]] by:90];
 }
 
 - (IBAction)rotateLeft:(id)sender {
-    [[pdfView currentPage] setRotation:[[pdfView currentPage] rotation] - 90];
-    [pdfView layoutDocumentView];
-    
-    NSEnumerator *snapshotEnum = [snapshots objectEnumerator];
-    SKSnapshotWindowController *wc;
-    while (wc = [snapshotEnum nextObject]) {
-        if ([wc isPageVisible:[pdfView currentPage]]) {
-            [self snapshotNeedsUpdate:wc];
-            [wc redisplay];
-        }
-    }
-    [self updateThumbnailAtPageIndex:[[pdfView document] indexForPage:[pdfView currentPage]]];
+    [self rotatePageAtIndex:[[pdfView document] indexForPage:[pdfView currentPage]] by:-90];
 }
 
 - (IBAction)rotateAllRight:(id)sender {
+    NSUndoManager *undoManager = [[self document] undoManager];
+    [[undoManager prepareWithInvocationTarget:self] rotateAllLeft:nil];
+    [[self document] updateChangeCount:[undoManager isUndoing] ? NSChangeDone : NSChangeUndone];
+    
     int i, count = [[pdfView document] pageCount];
     for (i = 0 ; i < count; ++ i ) {
         [[[pdfView document] pageAtIndex:i] setRotation:[[[pdfView document] pageAtIndex:i] rotation] + 90];
@@ -947,6 +949,10 @@ static NSString *SKRightSidePaneWidthKey = @"SKRightSidePaneWidth";
 }
 
 - (IBAction)rotateAllLeft:(id)sender {
+    NSUndoManager *undoManager = [[self document] undoManager];
+    [[undoManager prepareWithInvocationTarget:self] rotateAllRight:nil];
+    [[self document] updateChangeCount:[undoManager isUndoing] ? NSChangeDone : NSChangeUndone];
+    
     int i, count = [[pdfView document] pageCount];
     for (i = 0 ; i < count; ++ i ) {
         [[[pdfView document] pageAtIndex:i] setRotation:[[[pdfView document] pageAtIndex:i] rotation] - 90];
@@ -959,23 +965,56 @@ static NSString *SKRightSidePaneWidthKey = @"SKRightSidePaneWidth";
     [self allThumbnailsNeedUpdate];
 }
 
-- (IBAction)crop:(id)sender {
-    NSRect selRect = [pdfView currentSelectionRect];
-    if (NSIsEmptyRect(selRect))
-        return;
+- (void)cropPageAtIndex:(unsigned int)index toRect:(NSRect)rect {
+    NSRect oldRect = [[[pdfView document] pageAtIndex:index] boundsForBox:kPDFDisplayBoxCropBox];
+    NSUndoManager *undoManager = [[self document] undoManager];
+    [[undoManager prepareWithInvocationTarget:self] cropPageAtIndex:index toRect:oldRect];
+    [[self document] updateChangeCount:[undoManager isUndoing] ? NSChangeDone : NSChangeUndone];
     
-    [[pdfView currentPage] setBounds:selRect forBox:kPDFDisplayBoxCropBox];
+    PDFPage *page = [[pdfView document] pageAtIndex:index];
+    [page setBounds:rect forBox:kPDFDisplayBoxCropBox];
     [pdfView layoutDocumentView];
     
     NSEnumerator *snapshotEnum = [snapshots objectEnumerator];
     SKSnapshotWindowController *wc;
     while (wc = [snapshotEnum nextObject]) {
-        if ([wc isPageVisible:[pdfView currentPage]]) {
+        if ([wc isPageVisible:page]) {
             [self snapshotNeedsUpdate:wc];
             [wc redisplay];
         }
     }
-    [self updateThumbnailAtPageIndex:[[pdfView document] indexForPage:[pdfView currentPage]]];
+    [self updateThumbnailAtPageIndex:index];
+}
+
+- (IBAction)crop:(id)sender {
+    NSRect selRect = [pdfView currentSelectionRect];
+    if (NSIsEmptyRect(selRect))
+        return;
+    
+    [self cropPageAtIndex:[[pdfView document] indexForPage:[pdfView currentPage]] toRect:selRect];
+}
+
+- (void)cropPagesToRects:(NSArray *)rects {
+    NSRect selRect = [pdfView currentSelectionRect];
+    int i, count = [[pdfView document] pageCount];
+    NSMutableArray *oldRects = [NSMutableArray arrayWithCapacity:count];
+    for (i = 0 ; i < count; ++ i ) {
+        PDFPage *page = [[pdfView document] pageAtIndex:i];
+        NSRect rect = rects ? [[rects objectAtIndex:i] rectValue] : selRect;
+        [oldRects addObject:[NSValue valueWithRect:[page boundsForBox:kPDFDisplayBoxCropBox]]];
+        [page setBounds:rect forBox:kPDFDisplayBoxCropBox];
+    }
+    
+    NSUndoManager *undoManager = [[self document] undoManager];
+    [[undoManager prepareWithInvocationTarget:self] cropPagesToRects:oldRects];
+    [[self document] updateChangeCount:[undoManager isUndoing] ? NSChangeDone : NSChangeUndone];
+    
+    [pdfView layoutDocumentView];
+    
+    [snapshots makeObjectsPerformSelector:@selector(redisplay) withObject:nil];
+    [self allSnapshotsNeedUpdate];
+    
+    [self allThumbnailsNeedUpdate];
 }
 
 - (IBAction)cropAll:(id)sender {
@@ -983,16 +1022,7 @@ static NSString *SKRightSidePaneWidthKey = @"SKRightSidePaneWidth";
     if (NSIsEmptyRect(selRect))
         return;
     
-    int i, count = [[pdfView document] pageCount];
-    for (i = 0 ; i < count; ++ i ) {
-        [[[pdfView document] pageAtIndex:i] setBounds:selRect forBox:kPDFDisplayBoxCropBox];
-    }
-    [pdfView layoutDocumentView];
-    
-    [snapshots makeObjectsPerformSelector:@selector(redisplay) withObject:nil];
-    [self allSnapshotsNeedUpdate];
-    
-    [self allThumbnailsNeedUpdate];
+    [self cropPagesToRects:nil];
 }
 
 - (IBAction)getInfo:(id)sender {
