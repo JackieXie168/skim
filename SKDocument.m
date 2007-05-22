@@ -507,7 +507,7 @@ NSString *SKDocumentWillSaveNotification = @"SKDocumentWillSaveNotification";
     if ([self fileName]) {
         if ([self isDocumentEdited]) {
             [super revertDocumentToSaved:sender];
-        } else {
+        } else if (lastChangedDate) {
             BOOL shouldRevert = fileChangedOnDisk;
             if (shouldRevert == NO) {
                 NSDate *fileChangedDate = [[[NSFileManager defaultManager] fileAttributesAtPath:[self fileName] traverseLink:YES] fileModificationDate];
@@ -540,6 +540,8 @@ NSString *SKDocumentWillSaveNotification = @"SKDocumentWillSaveNotification";
             return NO;
         if ([self isDocumentEdited] || fileChangedOnDisk)
             return YES;
+        if (lastChangedDate == nil)
+            return NO;
         NSDate *fileChangedDate = [[[NSFileManager defaultManager] fileAttributesAtPath:[self fileName] traverseLink:YES] fileModificationDate];
         return [lastChangedDate compare:fileChangedDate] == NSOrderedAscending;
     } else
