@@ -4,6 +4,7 @@
             ACTIONS = {
                 addBookmark = id; 
                 alternatePaste = id; 
+                autoSelectContent = id; 
                 changeAnnotationMode = id; 
                 changeDisplayBox = id; 
                 changeLeftSidePaneState = id; 
