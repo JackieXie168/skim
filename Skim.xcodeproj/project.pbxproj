@@ -80,6 +80,7 @@
 		CE2DEB920B86206400D0DA12 /* FindPanel.nib in Resources */ = {isa = PBXBuildFile; fileRef = CE2DEB900B86206400D0DA12 /* FindPanel.nib */; };
 		CE2DED6C0B86334900D0DA12 /* BDSKFindFieldEditor.m in Sources */ = {isa = PBXBuildFile; fileRef = CE2DED6B0B86334900D0DA12 /* BDSKFindFieldEditor.m */; };
 		CE31A6180C01FC45003612A9 /* SKDocumentController.m in Sources */ = {isa = PBXBuildFile; fileRef = CE31A6160C01FC45003612A9 /* SKDocumentController.m */; };
+		CE31AC4E0C02E919003612A9 /* ToolbarCrop.tiff in Resources */ = {isa = PBXBuildFile; fileRef = CE31AC4D0C02E918003612A9 /* ToolbarCrop.tiff */; };
 		CE380A7B0B834E6200A1B779 /* CameraCursor.tiff in Resources */ = {isa = PBXBuildFile; fileRef = CE380A7A0B834E6100A1B779 /* CameraCursor.tiff */; };
 		CE380C620B837B6100A1B779 /* NoteViewAdorn.tiff in Resources */ = {isa = PBXBuildFile; fileRef = CE380C600B837B6100A1B779 /* NoteViewAdorn.tiff */; };
 		CE380C630B837B6100A1B779 /* SnapshotViewAdorn.tiff in Resources */ = {isa = PBXBuildFile; fileRef = CE380C610B837B6100A1B779 /* SnapshotViewAdorn.tiff */; };
@@ -376,6 +377,7 @@
 		CE2DED6B0B86334900D0DA12 /* BDSKFindFieldEditor.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = BDSKFindFieldEditor.m; sourceTree = "<group>"; };
 		CE31A6150C01FC45003612A9 /* SKDocumentController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SKDocumentController.h; sourceTree = "<group>"; };
 		CE31A6160C01FC45003612A9 /* SKDocumentController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SKDocumentController.m; sourceTree = "<group>"; };
+		CE31AC4D0C02E918003612A9 /* ToolbarCrop.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; name = ToolbarCrop.tiff; path = Images/ToolbarCrop.tiff; sourceTree = "<group>"; };
 		CE380A7A0B834E6100A1B779 /* CameraCursor.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; name = CameraCursor.tiff; path = Images/CameraCursor.tiff; sourceTree = "<group>"; };
 		CE380C600B837B6100A1B779 /* NoteViewAdorn.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; name = NoteViewAdorn.tiff; path = Images/NoteViewAdorn.tiff; sourceTree = "<group>"; };
 		CE380C610B837B6100A1B779 /* SnapshotViewAdorn.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; name = SnapshotViewAdorn.tiff; path = Images/SnapshotViewAdorn.tiff; sourceTree = "<group>"; };
@@ -904,6 +906,7 @@
 				CE4EB8230B7B96D00091F228 /* ThumbnailViewAdorn.tiff */,
 				CE7C5D180BD8086C0011315D /* ToolbarArrowNote.tiff */,
 				CE4190C20B94963A00ECF819 /* ToolbarCircleNote.tiff */,
+				CE31AC4D0C02E918003612A9 /* ToolbarCrop.tiff */,
 				CE5478BA0B33456300F8AFB6 /* ToolbarFullScreen.tiff */,
 				CE9DC2E80B9F131800D64F28 /* ToolbarHighlightNote.tiff */,
 				CE7467330B7F2ED700CBF969 /* ToolbarInfo.tiff */,
@@ -1145,6 +1148,7 @@
 				CE468C470BF1F0F60007AA12 /* TextNoteToolAdorn.tiff in Resources */,
 				CE468C480BF1F0F60007AA12 /* AnchoredNoteToolAdorn.tiff in Resources */,
 				CECBA5910BFCEE260030AB59 /* SelectToolAdorn.tiff in Resources */,
+				CE31AC4E0C02E919003612A9 /* ToolbarCrop.tiff in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

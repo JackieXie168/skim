@@ -88,6 +88,7 @@ static NSString *SKDocumentToolbarZoomActualItemIdentifier = @"SKDocumentZoomAct
 static NSString *SKDocumentToolbarZoomToFitItemIdentifier = @"SKDocumentZoomAutoToolbarItemIdentifier";
 static NSString *SKDocumentToolbarRotateRightItemIdentifier = @"SKDocumentRotateRightToolbarItemIdentifier";
 static NSString *SKDocumentToolbarRotateLeftItemIdentifier = @"SKDocumentRotateLeftToolbarItemIdentifier";
+static NSString *SKDocumentToolbarCropItemIdentifier = @"SKDocumentToolbarCropItemIdentifier";
 static NSString *SKDocumentToolbarFullScreenItemIdentifier = @"SKDocumentFullScreenToolbarItemIdentifier";
 static NSString *SKDocumentToolbarPresentationItemIdentifier = @"SKDocumentToolbarPresentationItemIdentifier";
 static NSString *SKDocumentToolbarNewNoteItemIdentifier = @"SKDocumentToolbarNewNoteItemIdentifier";
@@ -949,6 +950,42 @@ static NSString *SKRightSidePaneWidthKey = @"SKRightSidePaneWidth";
     int i, count = [[pdfView document] pageCount];
     for (i = 0 ; i < count; ++ i ) {
         [[[pdfView document] pageAtIndex:i] setRotation:[[[pdfView document] pageAtIndex:i] rotation] - 90];
+    }
+    [pdfView layoutDocumentView];
+    
+    [snapshots makeObjectsPerformSelector:@selector(redisplay) withObject:nil];
+    [self allSnapshotsNeedUpdate];
+    
+    [self allThumbnailsNeedUpdate];
+}
+
+- (IBAction)crop:(id)sender {
+    NSRect selRect = [pdfView currentSelectionRect];
+    if (NSIsEmptyRect(selRect))
+        return;
+    
+    [[pdfView currentPage] setBounds:selRect forBox:kPDFDisplayBoxCropBox];
+    [pdfView layoutDocumentView];
+    
+    NSEnumerator *snapshotEnum = [snapshots objectEnumerator];
+    SKSnapshotWindowController *wc;
+    while (wc = [snapshotEnum nextObject]) {
+        if ([wc isPageVisible:[pdfView currentPage]]) {
+            [self snapshotNeedsUpdate:wc];
+            [wc redisplay];
+        }
+    }
+    [self updateThumbnailAtPageIndex:[[pdfView document] indexForPage:[pdfView currentPage]]];
+}
+
+- (IBAction)cropAll:(id)sender {
+    NSRect selRect = [pdfView currentSelectionRect];
+    if (NSIsEmptyRect(selRect))
+        return;
+    
+    int i, count = [[pdfView document] pageCount];
+    for (i = 0 ; i < count; ++ i ) {
+        [[[pdfView document] pageAtIndex:i] setBounds:selRect forBox:kPDFDisplayBoxCropBox];
     }
     [pdfView layoutDocumentView];
     
@@ -2796,6 +2833,16 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
     [toolbarItems setObject:item forKey:SKDocumentToolbarRotateLeftItemIdentifier];
     [item release];
     
+    item = [[SKToolbarItem alloc] initWithItemIdentifier:SKDocumentToolbarCropItemIdentifier];
+    [item setLabel:NSLocalizedString(@"Crop", @"Toolbar item label")];
+    [item setPaletteLabel:NSLocalizedString(@"Crop", @"Toolbar item label")];
+    [item setToolTip:NSLocalizedString(@"Crop", @"Tool tip message")];
+    [item setImage:[NSImage imageNamed:@"ToolbarCrop"]];
+    [item setTarget:self];
+    [item setAction:@selector(cropAll:)];
+    [toolbarItems setObject:item forKey:SKDocumentToolbarCropItemIdentifier];
+    [item release];
+    
     item = [[SKToolbarItem alloc] initWithItemIdentifier:SKDocumentToolbarFullScreenItemIdentifier];
     [item setLabel:NSLocalizedString(@"Full Screen", @"Toolbar item label")];
     [item setPaletteLabel:NSLocalizedString(@"Full Screen", @"Toolbar item label")];
@@ -3110,6 +3157,7 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
         SKDocumentToolbarZoomToFitItemIdentifier, 
         SKDocumentToolbarRotateRightItemIdentifier, 
         SKDocumentToolbarRotateLeftItemIdentifier, 
+        SKDocumentToolbarCropItemIdentifier, 
         SKDocumentToolbarFullScreenItemIdentifier, 
         SKDocumentToolbarPresentationItemIdentifier, 
         SKDocumentToolbarNewNoteItemIdentifier, 
@@ -3216,6 +3264,8 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
     } else if (action == @selector(toggleAutoScale:)) {
         [menuItem setState:[pdfView autoScales] ? NSOnState : NSOffState];
         return YES;
+    } else if (action == @selector(crop:) || action == @selector(cropAll:)) {
+        return NO == NSIsEmptyRect([pdfView currentSelectionRect]);
     } else if (action == @selector(toggleLeftSidePane:)) {
         if ([self isFullScreen]) {
             if ([leftSideWindow state] == NSDrawerOpenState || [leftSideWindow state] == NSDrawerOpeningState)

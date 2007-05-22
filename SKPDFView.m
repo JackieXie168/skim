@@ -322,10 +322,14 @@ static void SKCGContextDrawGrabHandle(CGContextRef context, CGPoint point, float
         float radius = 4.0 / [self scaleFactor];
         CGContextBeginPath(context);
         CGContextAddRect(context, *(CGRect *)&bounds);
-        if ([activePage isEqual:pdfPage] && NSIsEmptyRect(selectionRect) == NO)
-            CGContextAddRect(context, *(CGRect *)&selectionRect);
+        CGContextAddRect(context, *(CGRect *)&selectionRect);
         CGContextSetFillColor(context, color);
         CGContextEOFillPath(context);
+        if ([activePage isEqual:pdfPage] == NO) {
+            color[3] = 0.4;
+            CGContextSetFillColor(context, color);
+            CGContextFillRect(context, *(CGRect *)&selectionRect);
+        }
         if ([activePage isEqual:pdfPage] && NSEqualRects(selectionRect, NSZeroRect) == NO) {
             SKCGContextDrawGrabHandle(context, CGPointMake(NSMinX(selectionRect), NSMinY(selectionRect)), radius);
             SKCGContextDrawGrabHandle(context, CGPointMake(NSMinX(selectionRect), NSMaxY(selectionRect)), radius);
@@ -444,6 +448,12 @@ static void SKCGContextDrawGrabHandle(CGContextRef context, CGPoint point, float
 	
 	if (changed)
 		[[NSNotificationCenter defaultCenter] postNotificationName:SKPDFViewActiveAnnotationDidChangeNotification object:self userInfo:nil];
+}
+
+- (NSRect)currentSelectionRect {
+    if (toolMode == SKSelectToolMode || activePage)
+        return selectionRect;
+    return NSZeroRect;
 }
 
 #pragma mark Reading bar
@@ -2615,15 +2625,15 @@ static void SKCGContextDrawGrabHandle(CGContextRef context, CGPoint point, float
         
         if (NSMinX(newRect) < NSMinX(pageBounds) || NSMaxX(newRect) > NSMaxX(pageBounds) || NSMinY(newRect) < NSMinY(pageBounds) || NSMaxY(newRect) > NSMaxY(pageBounds))
             newRect = NSIntersectionRect(newRect, pageBounds);
-        if (needsDisplay) {
+        //if (needsDisplay) {
             [self setNeedsDisplay:YES];
             needsDisplay = NO;
-        } else {
-            if (NSEqualRects(selectionRect, NSZeroRect) == NO)
-                [self setNeedsDisplayInRect:NSInsetRect(selectionRect, -margin, -margin) ofPage:activePage];
-            if (NSEqualRects(newRect, NSZeroRect) == NO)
-                [self setNeedsDisplayInRect:NSInsetRect(newRect, -margin, -margin) ofPage:activePage];
-        }
+        //} else {
+        //    if (NSEqualRects(selectionRect, NSZeroRect) == NO)
+        //        [self setNeedsDisplayInRect:NSInsetRect(selectionRect, -margin, -margin) ofPage:activePage];
+        //    if (NSEqualRects(newRect, NSZeroRect) == NO)
+        //        [self setNeedsDisplayInRect:NSInsetRect(newRect, -margin, -margin) ofPage:activePage];
+        //}
         selectionRect = newRect;
         
 	}

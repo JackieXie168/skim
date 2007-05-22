@@ -122,6 +122,10 @@
 /* Menu item title */
 "Copy Selected Text" = "Copia Testo Selezionato";
 
+/* Tool tip message
+   Toolbar item label */
+"Crop" = "Ritaglia";
+
 /* Menu item title */
 "Crop Box" = "Rettangolo Ritaglio";
 
