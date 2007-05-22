@@ -168,6 +168,7 @@ NSString *SKDocumentWillSaveNotification = @"SKDocumentWillSaveNotification";
             [[self undoManager] removeAllActions];
             [self updateChangeCount:NSChangeCleared];
             [self setLastChangedDate:[[fm fileAttributesAtPath:[absoluteURL path] traverseLink:YES] fileModificationDate]];
+            fileChangedOnDisk = NO;
         }
         
     }
@@ -270,6 +271,7 @@ NSString *SKDocumentWillSaveNotification = @"SKDocumentWillSaveNotification";
         didRead = YES;
         [self setLastChangedDate:nil];
         [self updateChangeCount:NSChangeDone];
+        fileChangedOnDisk = NO;
     }
     
     if (didRead == NO && outError != NULL)
@@ -278,7 +280,7 @@ NSString *SKDocumentWillSaveNotification = @"SKDocumentWillSaveNotification";
     return didRead;
 }
 
-- (BOOL)readFromURL:(NSURL *)absoluteURL ofType:(NSString *)docType error:(NSError **)outError{log_method();
+- (BOOL)readFromURL:(NSURL *)absoluteURL ofType:(NSString *)docType error:(NSError **)outError{
     BOOL didRead = NO;
     NSData *data = nil;
     PDFDocument *pdfDoc = nil;
@@ -339,6 +341,7 @@ NSString *SKDocumentWillSaveNotification = @"SKDocumentWillSaveNotification";
             [pdfDoc release];
             [data release];
             [self setLastChangedDate:[[[NSFileManager defaultManager] fileAttributesAtPath:[absoluteURL path] traverseLink:YES] fileModificationDate]];
+            fileChangedOnDisk = NO;
         } else {
             [self setPDFData:nil];
         }
@@ -490,6 +493,59 @@ NSString *SKDocumentWillSaveNotification = @"SKDocumentWillSaveNotification";
     }
 }
 
+- (void)revertAlertDidEnd:(NSAlert *)alert returnCode:(int)returnCode contextInfo:(void *)contextInfo {
+    if (returnCode == NSAlertDefaultReturn) {
+        NSError *error = nil;
+        if (NO == [self revertToContentsOfURL:[self fileURL] ofType:[self fileType] error:&error]) {
+            [[alert window] orderOut:nil];
+            [self presentError:error modalForWindow:[[self mainWindowController] window] delegate:nil didPresentSelector:NULL contextInfo:NULL];
+        }
+    }
+}
+
+- (void)revertDocumentToSaved:(id)sender {
+    if ([self fileName]) {
+        if ([self isDocumentEdited]) {
+            [super revertDocumentToSaved:sender];
+        } else {
+            BOOL shouldRevert = fileChangedOnDisk;
+            if (shouldRevert == NO) {
+                NSDate *fileChangedDate = [[[NSFileManager defaultManager] fileAttributesAtPath:[self fileName] traverseLink:YES] fileModificationDate];
+                shouldRevert = [lastChangedDate compare:fileChangedDate] == NSOrderedAscending;
+            }
+            if (shouldRevert) {
+                NSAlert *alert = [NSAlert alertWithMessageText:[NSString stringWithFormat:NSLocalizedString(@"Do you want to revert to the version of the document \"%@\" on disk?", @"Message in alert dialog"), [[self fileName] lastPathComponent]]
+                                                 defaultButton:NSLocalizedString(@"Revert", @"Button title")
+                                               alternateButton:NSLocalizedString(@"Cancel", @"Button title")
+                                                   otherButton:nil
+                                     informativeTextWithFormat:NSLocalizedString(@"Your current changes will be lost.", @"Informative text in alert dialog")];
+                [alert beginSheetModalForWindow:[[self mainWindowController] window]
+                                  modalDelegate:self
+                                 didEndSelector:@selector(revertAlertDidEnd:returnCode:contextInfo:) 
+                                    contextInfo:NULL];
+            }
+        }
+    }
+}
+
+- (void)performFindPanelAction:(id)sender {
+    [[SKFindController sharedFindController] performFindPanelAction:sender];
+}
+
+- (BOOL)validateUserInterfaceItem:(id <NSValidatedUserInterfaceItem>)anItem {
+	if ([anItem action] == @selector(performFindPanelAction:)) {
+        return [[SKFindController sharedFindController] validateUserInterfaceItem:anItem];
+	} else if ([anItem action] == @selector(revertDocumentToSaved:)) {
+        if ([self fileName] == nil)
+            return NO;
+        if ([self isDocumentEdited] || fileChangedOnDisk)
+            return YES;
+        NSDate *fileChangedDate = [[[NSFileManager defaultManager] fileAttributesAtPath:[self fileName] traverseLink:YES] fileModificationDate];
+        return [lastChangedDate compare:fileChangedDate] == NSOrderedAscending;
+    } else
+        return [super validateUserInterfaceItem:anItem];
+}
+
 #pragma mark File update checking
 
 // For now this just uses a timer checking the modification date of the file. We may want to use kqueue (UKKqueue) at some point. 
@@ -542,6 +598,7 @@ NSString *SKDocumentWillSaveNotification = @"SKDocumentWillSaveNotification";
         NSDate *fileChangedDate = [[fm fileAttributesAtPath:[self fileName] traverseLink:YES] fileModificationDate];
         
         if ([lastChangedDate compare:fileChangedDate] == NSOrderedAscending) {
+            fileChangedOnDisk = YES;
             // check until the data stabilizes, because a (tex) process may be busy writing to the file
             if (previousCheckedDate && [previousCheckedDate compare:fileChangedDate] == NSOrderedSame) {
                 if (autoUpdate && [self isDocumentEdited] == NO) {
@@ -688,17 +745,6 @@ NSString *SKDocumentWillSaveNotification = @"SKDocumentWillSaveNotification";
     }
     
     return setup;
-}
-
-- (void)performFindPanelAction:(id)sender {
-    [[SKFindController sharedFindController] performFindPanelAction:sender];
-}
-
-- (BOOL)validateUserInterfaceItem:(id <NSValidatedUserInterfaceItem>)anItem {
-	if ([anItem action] == @selector(performFindPanelAction:))
-        return [[SKFindController sharedFindController] validateUserInterfaceItem:anItem];
-    else
-        return [super validateUserInterfaceItem:anItem];
 }
 
 - (void)findString:(NSString *)string options:(int)options{
