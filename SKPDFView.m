@@ -157,13 +157,22 @@ static void SKCGContextDrawGrabHandle(CGContextRef context, CGPoint point, float
     readingBar = nil;
     
     activeAnnotation = nil;
-    editAnnotation = NO;
+    editAnnotation = nil;
+    wasSelection = nil;
     wasBounds = NSZeroRect;
+    wasStartPoint = NSZeroPoint;
+    wasEndPoint = NSZeroPoint;
     mouseDownLoc = NSZeroPoint;
     clickDelta = NSZeroPoint;
+    selectionRect = NSZeroRect;
     resizingAnnotation = NO;
     draggingAnnotation = NO;
+    draggingStartPoint = NO;
+    didDrag = NO;
+    didBeginUndoGrouping = NO;
     mouseDownInAnnotation = NO;
+    extendSelection = NO;
+    rectSelection = NO;
     
     trackingRect = 0;
     
@@ -311,12 +320,12 @@ static void SKCGContextDrawGrabHandle(CGContextRef context, CGPoint point, float
         }
     }
     
-    if (NSIsEmptyRect(selectionRect) == NO && toolMode != SKSelectToolMode) {
+    if (toolMode != SKSelectToolMode && NSIsEmptyRect(selectionRect) == NO) {
         NSRect rect = NSInsetRect([self convertRect:selectionRect toPage:pdfPage], 0.5, 0.5);
         float color[4] = { 0.0, 0.0, 0.0, 1.0 };
         CGContextSetStrokeColor(context, color);
         CGContextStrokeRect(context, *(CGRect *)&rect);
-    } else if (toolMode == SKSelectToolMode && activePage) {
+    } else if (toolMode == SKSelectToolMode && NSEqualRects(selectionRect, NSZeroRect) == NO) {
         NSRect bounds = [pdfPage boundsForBox:[self displayBox]];
         float color[4] = { 0.0, 0.0, 0.0, 0.6 };
         float radius = 4.0 / [self scaleFactor];
@@ -325,21 +334,14 @@ static void SKCGContextDrawGrabHandle(CGContextRef context, CGPoint point, float
         CGContextAddRect(context, *(CGRect *)&selectionRect);
         CGContextSetFillColor(context, color);
         CGContextEOFillPath(context);
-        if ([activePage isEqual:pdfPage] == NO) {
-            color[3] = 0.4;
-            CGContextSetFillColor(context, color);
-            CGContextFillRect(context, *(CGRect *)&selectionRect);
-        }
-        if ([activePage isEqual:pdfPage] && NSEqualRects(selectionRect, NSZeroRect) == NO) {
-            SKCGContextDrawGrabHandle(context, CGPointMake(NSMinX(selectionRect), NSMinY(selectionRect)), radius);
-            SKCGContextDrawGrabHandle(context, CGPointMake(NSMinX(selectionRect), NSMaxY(selectionRect)), radius);
-            SKCGContextDrawGrabHandle(context, CGPointMake(NSMaxX(selectionRect), NSMinY(selectionRect)), radius);
-            SKCGContextDrawGrabHandle(context, CGPointMake(NSMaxX(selectionRect), NSMaxY(selectionRect)), radius);
-            SKCGContextDrawGrabHandle(context, CGPointMake(NSMinX(selectionRect), NSMidY(selectionRect)), radius);
-            SKCGContextDrawGrabHandle(context, CGPointMake(NSMaxX(selectionRect), NSMidY(selectionRect)), radius);
-            SKCGContextDrawGrabHandle(context, CGPointMake(NSMidX(selectionRect), NSMinY(selectionRect)), radius);
-            SKCGContextDrawGrabHandle(context, CGPointMake(NSMidX(selectionRect), NSMaxY(selectionRect)), radius);
-        }
+        SKCGContextDrawGrabHandle(context, CGPointMake(NSMinX(selectionRect), NSMinY(selectionRect)), radius);
+        SKCGContextDrawGrabHandle(context, CGPointMake(NSMinX(selectionRect), NSMaxY(selectionRect)), radius);
+        SKCGContextDrawGrabHandle(context, CGPointMake(NSMaxX(selectionRect), NSMinY(selectionRect)), radius);
+        SKCGContextDrawGrabHandle(context, CGPointMake(NSMaxX(selectionRect), NSMaxY(selectionRect)), radius);
+        SKCGContextDrawGrabHandle(context, CGPointMake(NSMinX(selectionRect), NSMidY(selectionRect)), radius);
+        SKCGContextDrawGrabHandle(context, CGPointMake(NSMaxX(selectionRect), NSMidY(selectionRect)), radius);
+        SKCGContextDrawGrabHandle(context, CGPointMake(NSMidX(selectionRect), NSMinY(selectionRect)), radius);
+        SKCGContextDrawGrabHandle(context, CGPointMake(NSMidX(selectionRect), NSMaxY(selectionRect)), radius);
     }
     
     CGContextRestoreGState(context);
@@ -375,7 +377,6 @@ static void SKCGContextDrawGrabHandle(CGContextRef context, CGPoint point, float
 - (void)setDocument:(PDFDocument *)document {
     [readingBar release];
     readingBar = nil;
-    activePage = nil;
     selectionRect = NSZeroRect;
     [self removeHoverRects];
     [super setDocument:document];
@@ -395,8 +396,7 @@ static void SKCGContextDrawGrabHandle(CGContextRef context, CGPoint point, float
                 [self setActiveAnnotation:nil];
             if ([self currentSelection])
                 [self setCurrentSelection:nil];
-        } else if (toolMode == SKSelectToolMode && activePage) {
-            activePage = nil;
+        } else if (toolMode == SKSelectToolMode && NSEqualRects(selectionRect, NSZeroRect) == NO) {
             selectionRect = NSZeroRect;
             [self setNeedsDisplay:YES];
         }
@@ -451,7 +451,7 @@ static void SKCGContextDrawGrabHandle(CGContextRef context, CGPoint point, float
 }
 
 - (NSRect)currentSelectionRect {
-    if (toolMode == SKSelectToolMode || activePage)
+    if (toolMode == SKSelectToolMode)
         return selectionRect;
     return NSZeroRect;
 }
@@ -500,10 +500,10 @@ static void SKCGContextDrawGrabHandle(CGContextRef context, CGPoint point, float
             [types addObject:SKSkimNotePboardType];
     }
     
-    if (toolMode == SKSelectToolMode && activePage) {
-        PDFDocument *pdfDoc = [[PDFDocument alloc] initWithData:[activePage dataRepresentation]];
+    if (toolMode == SKSelectToolMode && NSIsEmptyRect(selectionRect) == NO) {
+        PDFDocument *pdfDoc = [[PDFDocument alloc] initWithData:[[self currentPage] dataRepresentation]];
         PDFPage *page = [pdfDoc pageAtIndex:0];
-        [page setBounds:[activePage boundsForBox:kPDFDisplayBoxMediaBox] forBox:kPDFDisplayBoxMediaBox];
+        [page setBounds:[[self currentPage] boundsForBox:kPDFDisplayBoxMediaBox] forBox:kPDFDisplayBoxMediaBox];
         [page setBounds:selectionRect forBox:kPDFDisplayBoxCropBox];
         [page setBounds:NSZeroRect forBox:kPDFDisplayBoxBleedBox];
         [page setBounds:NSZeroRect forBox:kPDFDisplayBoxTrimBox];
@@ -513,9 +513,9 @@ static void SKCGContextDrawGrabHandle(CGContextRef context, CGPoint point, float
             [types addObject:NSPDFPboardType];
         [pdfDoc release];
         
-        NSRect bounds = [activePage boundsForBox:[self displayBox]];
+        NSRect bounds = [[self currentPage] boundsForBox:[self displayBox]];
         NSRect targetRect = NSZeroRect, sourceRect = selectionRect;
-        NSImage *pageImage = [activePage imageForBox:[self displayBox]];
+        NSImage *pageImage = [[self currentPage] imageForBox:[self displayBox]];
         NSImage *image = nil;
         
         sourceRect.origin.x -= NSMinX(bounds);
@@ -532,7 +532,7 @@ static void SKCGContextDrawGrabHandle(CGContextRef context, CGPoint point, float
         /*
          Possible hidden default?  Alternate way of getting a bitmap rep; this varies resolution with zoom level, which is very useful if you want to copy a single figure or equation for a non-PDF-capable program.  The first copy: action has some odd behavior, though (view moves).  Preview produces a fixed resolution bitmap for a given selection area regardless of zoom.
          
-        sourceRect = [self convertRect:selectionRect fromPage:activePage];
+        sourceRect = [self convertRect:selectionRect fromPage:[self currentPage]];
         NSBitmapImageRep *imageRep = [self bitmapImageRepForCachingDisplayInRect:sourceRect];
         [self cacheDisplayInRect:sourceRect toBitmapImageRep:imageRep];
         tiffData = [imageRep TIFFRepresentation];
@@ -1052,7 +1052,7 @@ static void SKCGContextDrawGrabHandle(CGContextRef context, CGPoint point, float
         if ([[menu itemAtIndex:0] isSeparatorItem])
             [menu removeItemAtIndex:0];
         
-    } else if (toolMode == SKSelectToolMode && activePage) {
+    } else if (toolMode == SKSelectToolMode && NSIsEmptyRect(selectionRect) == NO) {
         
         [menu insertItem:[NSMenuItem separatorItem] atIndex:0];
         
@@ -1521,9 +1521,9 @@ static void SKCGContextDrawGrabHandle(CGContextRef context, CGPoint point, float
     PDFPage *page = nil;
     NSRect rect = NSZeroRect;
     
-    if (toolMode == SKSelectToolMode && activePage) {
-        rect = NSIntersectionRect(selectionRect, [activePage boundsForBox:kPDFDisplayBoxCropBox]);
-        page = activePage;
+    if (toolMode == SKSelectToolMode && NSIsEmptyRect(selectionRect) == NO) {
+        rect = NSIntersectionRect(selectionRect, [[self currentPage] boundsForBox:kPDFDisplayBoxCropBox]);
+        page = [self currentPage];
 	}
     if (NSIsEmptyRect(rect)) {
         if ([sender respondsToSelector:@selector(representedObject)] && [[sender representedObject] respondsToSelector:@selector(pointValue)]) {
@@ -1614,7 +1614,7 @@ static void SKCGContextDrawGrabHandle(CGContextRef context, CGPoint point, float
             return YES;
         if ([activeAnnotation isNoteAnnotation] && [activeAnnotation isMovable])
             return YES;
-        if (toolMode == SKSelectToolMode && activePage)
+        if (toolMode == SKSelectToolMode && NSIsEmptyRect(selectionRect) == NO)
             return YES;
         return NO;
     } else {
@@ -2533,7 +2533,6 @@ static void SKCGContextDrawGrabHandle(CGContextRef context, CGPoint point, float
     PDFPage *page = [self pageForPoint:mouseLoc nearest:NO];
     
     if (page == nil) {
-        activePage = nil;
         selectionRect = NSZeroRect;
         [self setNeedsDisplay:YES];
         return;
@@ -2544,12 +2543,11 @@ static void SKCGContextDrawGrabHandle(CGContextRef context, CGPoint point, float
     int xEdge = 0, yEdge = 0;
     BOOL needsDisplay = NO;
     
-    if ([page isEqual:activePage] == NO || NSPointInRect(initialPoint, NSInsetRect(selectionRect, -margin, -margin)) == NO) {
-        if (activePage)
-            [self setNeedsDisplay:YES];
-        else
+    if (NSIsEmptyRect(selectionRect) || NSPointInRect(initialPoint, NSInsetRect(selectionRect, -margin, -margin)) == NO) {
+        if (NSEqualRects(selectionRect, NSZeroRect))
             needsDisplay = YES;
-        activePage = page;
+        else
+            [self setNeedsDisplay:YES];
         selectionRect.origin = initialPoint;
         selectionRect.size = NSZeroSize;
         xEdge = 1;
@@ -2566,7 +2564,7 @@ static void SKCGContextDrawGrabHandle(CGContextRef context, CGPoint point, float
     }
     
 	NSRect initialRect = selectionRect;
-    NSRect pageBounds = [activePage boundsForBox:[self displayBox]];
+    NSRect pageBounds = [page boundsForBox:[self displayBox]];
     
     if (xEdge == 0 && yEdge == 0)
         [[NSCursor closedHandCursor] push];
@@ -2623,23 +2621,31 @@ static void SKCGContextDrawGrabHandle(CGContextRef context, CGPoint point, float
             }
         }
         
-        if (NSMinX(newRect) < NSMinX(pageBounds) || NSMaxX(newRect) > NSMaxX(pageBounds) || NSMinY(newRect) < NSMinY(pageBounds) || NSMaxY(newRect) > NSMaxY(pageBounds))
-            newRect = NSIntersectionRect(newRect, pageBounds);
-        //if (needsDisplay) {
+        // don't use NSIntersectionRect, because we want to keep empty rects
+        float minX = fmin(fmax(NSMinX(newRect), NSMinX(pageBounds)), NSMaxX(pageBounds));
+        float maxX = fmax(fmin(NSMaxX(newRect), NSMaxX(pageBounds)), NSMinX(pageBounds));
+        float minY = fmin(fmax(NSMinY(newRect), NSMinY(pageBounds)), NSMaxY(pageBounds));
+        float maxY = fmax(fmin(NSMaxY(newRect), NSMaxY(pageBounds)), NSMinY(pageBounds));
+        newRect = NSMakeRect(minX, minY, maxX - minX, maxY - minY);
+        if (needsDisplay) {
             [self setNeedsDisplay:YES];
             needsDisplay = NO;
-        //} else {
-        //    if (NSEqualRects(selectionRect, NSZeroRect) == NO)
-        //        [self setNeedsDisplayInRect:NSInsetRect(selectionRect, -margin, -margin) ofPage:activePage];
-        //    if (NSEqualRects(newRect, NSZeroRect) == NO)
-        //        [self setNeedsDisplayInRect:NSInsetRect(newRect, -margin, -margin) ofPage:activePage];
-        //}
+        } else {
+            NSRect dirtyRect = NSEqualRects(selectionRect, NSZeroRect) ? NSZeroRect : NSInsetRect(selectionRect, -margin, -margin);
+            if (NSEqualRects(newRect, NSZeroRect) == NO)
+                dirtyRect = NSUnionRect(dirtyRect, NSInsetRect(newRect, -margin, -margin));
+            if (NSIsEmptyRect(dirtyRect) == NO) {
+                NSRange r = [self visiblePageIndexRange];
+                unsigned int i;
+                for (i = r.location; i < NSMaxRange(r); i++)
+                    [self setNeedsDisplayInRect:dirtyRect ofPage:[[self document] pageAtIndex:i]];
+            }
+        }
         selectionRect = newRect;
         
 	}
     
     if (NSIsEmptyRect(selectionRect)) {
-        activePage = nil;
         selectionRect = NSZeroRect;
         [self setNeedsDisplay:YES];
     }
@@ -3041,7 +3047,7 @@ static void SKCGContextDrawGrabHandle(CGContextRef context, CGPoint point, float
                     float margin = 4.0 / [self scaleFactor];
                     PDFPage *page = [self pageForPoint:p nearest:NO];
                     p = [self convertPoint:p toPage:page];
-                    if ([page isEqual:activePage] == NO || NSPointInRect(p, NSInsetRect(selectionRect, -margin, -margin)) == NO)
+                    if (NSPointInRect(p, NSInsetRect(selectionRect, -margin, -margin)) == NO)
                         cursor = [NSCursor crosshairCursor];
                     else if (NSPointInRect(p, NSInsetRect(selectionRect, margin, margin)))
                         cursor = [NSCursor openHandCursor];
