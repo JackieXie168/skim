@@ -649,6 +649,14 @@ static void SKCGContextDrawGrabHandle(CGContextRef context, CGPoint point, float
         [super selectAll:sender];
 }
 
+- (IBAction)autoSelectContent:(id)sender {
+    if (toolMode == SKSelectToolMode) {
+        PDFPage *page = [self currentPage];
+        selectionRect = NSIntersectionRect([page foregroundBox], [page boundsForBox:[self displayBox]]);
+        [self setNeedsDisplay:YES];
+    }
+}
+
 #pragma mark Event Handling
 
 - (void)keyDown:(NSEvent *)theEvent
@@ -1621,6 +1629,8 @@ static void SKCGContextDrawGrabHandle(CGContextRef context, CGPoint point, float
         if (toolMode == SKSelectToolMode && NSIsEmptyRect(selectionRect) == NO)
             return YES;
         return NO;
+    } else if (action == @selector(autoSelectContent:)) {
+        return toolMode == SKSelectToolMode;
     } else {
         return [super validateMenuItem:menuItem];
     }

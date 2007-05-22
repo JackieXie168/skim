@@ -1025,6 +1025,10 @@ static NSString *SKRightSidePaneWidthKey = @"SKRightSidePaneWidth";
     [self cropPagesToRects:nil];
 }
 
+- (IBAction)autoSelectContent:(id)sender {
+    [pdfView autoSelectContent:sender];
+}
+
 - (IBAction)getInfo:(id)sender {
     SKInfoWindowController *infoController = [SKInfoWindowController sharedInstance];
     [infoController fillInfoForDocument:[self document]];
@@ -3296,6 +3300,8 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
         return YES;
     } else if (action == @selector(crop:) || action == @selector(cropAll:)) {
         return NO == NSIsEmptyRect([pdfView currentSelectionRect]);
+    } else if (action == @selector(autoSelectContent:)) {
+        return [pdfView toolMode] == SKSelectToolMode;
     } else if (action == @selector(toggleLeftSidePane:)) {
         if ([self isFullScreen]) {
             if ([leftSideWindow state] == NSDrawerOpenState || [leftSideWindow state] == NSDrawerOpeningState)

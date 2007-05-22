@@ -122,6 +122,7 @@ typedef enum _SKNoteType {
 - (void)toggleReadingBar;
 
 - (IBAction)delete:(id)sender;
+- (IBAction)autoSelectContent:(id)sender;
 
 - (void)addAnnotationFromMenu:(id)sender;
 - (void)addAnnotationFromSelectionWithType:(SKNoteType)annotationType;
