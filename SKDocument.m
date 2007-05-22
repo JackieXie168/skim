@@ -278,7 +278,7 @@ NSString *SKDocumentWillSaveNotification = @"SKDocumentWillSaveNotification";
     return didRead;
 }
 
-- (BOOL)readFromURL:(NSURL *)absoluteURL ofType:(NSString *)docType error:(NSError **)outError{
+- (BOOL)readFromURL:(NSURL *)absoluteURL ofType:(NSString *)docType error:(NSError **)outError{log_method();
     BOOL didRead = NO;
     NSData *data = nil;
     PDFDocument *pdfDoc = nil;
@@ -517,7 +517,7 @@ NSString *SKDocumentWillSaveNotification = @"SKDocumentWillSaveNotification";
     } else {
         NSError *error = nil;
         if (NO == [self revertToContentsOfURL:[self fileURL] ofType:[self fileType] error:&error]) {
-            if (autoUpdate && ++numberOfTries > 10) {
+            if (autoUpdate == NO || ++numberOfTries > 10) {
                 [[alert window] orderOut:nil];
                 [self presentError:error modalForWindow:[[self mainWindowController] window] delegate:nil didPresentSelector:NULL contextInfo:NULL];
                 [self setLastChangedDate:changeDate];
@@ -697,8 +697,6 @@ NSString *SKDocumentWillSaveNotification = @"SKDocumentWillSaveNotification";
 - (BOOL)validateUserInterfaceItem:(id <NSValidatedUserInterfaceItem>)anItem {
 	if ([anItem action] == @selector(performFindPanelAction:))
         return [[SKFindController sharedFindController] validateUserInterfaceItem:anItem];
-	else if ([anItem action] == @selector(revertDocumentToSaved:))
-        return [self isDocumentEdited];
     else
         return [super validateUserInterfaceItem:anItem];
 }
