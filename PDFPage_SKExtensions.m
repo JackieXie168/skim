@@ -74,7 +74,6 @@ static IMP originalDealloc = NULL;
         NSBitmapImageRep *imageRep = [[NSBitmapImageRep alloc] initWithPDFPage:self forBox:kPDFDisplayBoxMediaBox];
         NSRect r = imageRep ? [imageRep foregroundRect] : NSZeroRect;
         NSRect b = [self boundsForBox:kPDFDisplayBoxMediaBox];
-        [imageRep release];
         if (imageRep == nil) {
             r = b;
         } else if (NSEqualRects(NSZeroRect, r)) {
@@ -83,6 +82,7 @@ static IMP originalDealloc = NULL;
             r.origin.x += NSMinX(b);
             r.origin.y += NSMinY(b);
         }
+        [imageRep release];
         r = NSIntersectionRect(NSInsetRect(r, -FOREGROUND_BOX_MARGIN, -FOREGROUND_BOX_MARGIN), b);
         rectValue = [NSValue valueWithRect:r];
         CFDictionarySetValue(_bboxCache, (void *)self, (void *)rectValue);
