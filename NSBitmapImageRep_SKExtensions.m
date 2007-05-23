@@ -153,6 +153,7 @@ static inline BOOL differentPixels( const unsigned int *p1, const unsigned int *
         [NSGraphicsContext saveGraphicsState];
         [NSGraphicsContext setCurrentContext:[NSGraphicsContext graphicsContextWithBitmapImageRep:self]];
         [[NSGraphicsContext currentContext] setImageInterpolation:NSImageInterpolationNone];
+        [[NSGraphicsContext currentContext] setShouldAntialias:NO];
         int rotation = [page rotation];
         if (rotation) {
             NSAffineTransform *transform = [NSAffineTransform transform];
