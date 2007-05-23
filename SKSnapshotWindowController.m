@@ -94,8 +94,6 @@ static NSString *SKSnapshotViewChangedNotification = @"SKSnapshotViewChangedNoti
 
 - (void)handlePageChangedNotification:(NSNotification *)notification {
     [[self window] setTitle:[self windowTitleForDocumentDisplayName:[[self document] displayName]]];
-    [self willChangeValueForKey:@"pageLabel"];
-    [self didChangeValueForKey:@"pageLabel"];
     [self willChangeValueForKey:@"pageIndex"];
     [self didChangeValueForKey:@"pageIndex"];
     [self willChangeValueForKey:@"pageAndWindow"];
@@ -268,7 +266,7 @@ static NSString *SKSnapshotViewChangedNotification = @"SKSnapshotViewChangedNoti
 }
 
 - (NSString *)pageLabel {
-    return [[pdfView currentPage] label];
+    return [pdfView valueForKeyPath:@"currentPage.label"];
 }
 
 - (unsigned int)pageIndex {
