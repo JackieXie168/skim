@@ -460,6 +460,14 @@ static void SKCGContextDrawGrabHandle(CGContextRef context, CGPoint point, float
     return NSZeroRect;
 }
 
+- (void)setCurrentSelectionRect:(NSRect)rect {
+    if (toolMode == SKSelectToolMode) {
+        if (NSEqualRects(selectionRect, rect) == NO)
+            [self setNeedsDisplay:YES];
+        selectionRect = rect;
+    }
+}
+
 #pragma mark Reading bar
 
 - (BOOL)hasReadingBar {
