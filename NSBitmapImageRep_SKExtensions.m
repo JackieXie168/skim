@@ -79,9 +79,9 @@ static inline BOOL similarPixels( const unsigned int *p1, const unsigned int *p2
             // keep in mind that we're manipulating corner points, not height/width
             if (isForeground) {
                 lowerLeft.y = j;
-                upperRight.y = j;
+                upperRight.y = j + 1;
                 lowerLeft.x = i;
-                upperRight.x = i;
+                upperRight.x = i + 1;
                 break;
             }
         }
@@ -103,8 +103,8 @@ static inline BOOL similarPixels( const unsigned int *p1, const unsigned int *p2
                     upperRight.y = j;
                     if (lowerLeft.x > i)
                         lowerLeft.x = i;
-                    if (upperRight.x < i)
-                        upperRight.x = i;
+                    if (upperRight.x <= i)
+                        upperRight.x = i + 1;
                     break;
                 }
             }
@@ -128,7 +128,7 @@ static inline BOOL similarPixels( const unsigned int *p1, const unsigned int *p2
                 [self getPixel:pixel atX:i y:(jMax-j)];
                 BOOL isForeground = similarPixels(pixel, backgroundPixel, 4) == NO;
                 if (isForeground) {
-                    upperRight.x = i;
+                    upperRight.x = i + 1;
                     break;
                 }
             }
