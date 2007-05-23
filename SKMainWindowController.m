@@ -987,7 +987,7 @@ static NSString *SKRightSidePaneWidthKey = @"SKRightSidePaneWidth";
 }
 
 - (IBAction)crop:(id)sender {
-    NSRect selRect = [pdfView currentSelectionRect];
+    NSRect selRect = NSIntegralRect([pdfView currentSelectionRect]);
     if (NSIsEmptyRect(selRect))
         return;
     
@@ -995,7 +995,7 @@ static NSString *SKRightSidePaneWidthKey = @"SKRightSidePaneWidth";
 }
 
 - (void)cropPagesToRects:(NSArray *)rects {
-    NSRect selRect = [pdfView currentSelectionRect];
+    NSRect selRect = NSIntegralRect([pdfView currentSelectionRect]);
     int i, count = [[pdfView document] pageCount];
     NSMutableArray *oldRects = [NSMutableArray arrayWithCapacity:count];
     for (i = 0 ; i < count; ++ i ) {
@@ -1018,7 +1018,7 @@ static NSString *SKRightSidePaneWidthKey = @"SKRightSidePaneWidth";
 }
 
 - (IBAction)cropAll:(id)sender {
-    NSRect selRect = [pdfView currentSelectionRect];
+    NSRect selRect = NSIntegralRect([pdfView currentSelectionRect]);
     if (NSIsEmptyRect(selRect))
         return;
     
