@@ -44,7 +44,6 @@
 @interface PDFPage (SKExtensions)
 
 - (NSRect)foregroundBox;
-- (void)autoCrop;
 - (NSImage *)image;
 - (NSImage *)imageForBox:(PDFDisplayBox)box;
 - (NSImage *)thumbnailWithSize:(float)size forBox:(PDFDisplayBox)box;
