@@ -265,18 +265,14 @@ static NSString *SKSnapshotViewChangedNotification = @"SKSnapshotViewChangedNoti
     }
 }
 
-- (NSString *)pageLabel {
-    return [pdfView valueForKeyPath:@"currentPage.label"];
-}
-
 - (unsigned int)pageIndex {
     return [[pdfView document] indexForPage:[pdfView currentPage]];
 }
 
 - (NSDictionary *)pageAndWindow {
-    NSString *label = [self pageLabel] ? [self pageLabel] : @"";
+    NSString *label = [[pdfView currentPage] label];
     NSNumber *hasWindow = [NSNumber numberWithBool:[[self window] isVisible]];
-    return [NSDictionary dictionaryWithObjectsAndKeys:label, @"label", hasWindow, @"hasWindow", nil];
+    return [NSDictionary dictionaryWithObjectsAndKeys:label ? label : @"", @"label", hasWindow, @"hasWindow", nil];
 }
 
 - (BOOL)forceOnTop {
