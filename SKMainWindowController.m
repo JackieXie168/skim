@@ -1023,6 +1023,7 @@ static NSString *SKRightSidePaneWidthKey = @"SKRightSidePaneWidth";
         return;
     
     [self cropPagesToRects:nil];
+    [pdfView setCurrentSelectionRect:NSZeroRect];
 }
 
 - (IBAction)autoSelectContent:(id)sender {
