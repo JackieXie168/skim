@@ -60,25 +60,30 @@ static inline BOOL differentPixels( const unsigned int *p1, const unsigned int *
     int i, iMax = [self pixelsWide] - MARGIN;
     int j, jMax = [self pixelsHigh] - MARGIN;
     
-    unsigned int pixel[4] = { 0, 0, 0, 255 };
+    unsigned int samplesPerPixel = [self samplesPerPixel];
+    unsigned int pixel[samplesPerPixel];
+    memset(pixel, 0, samplesPerPixel);
     
     int iLeft = iMax;
     int jTop = jMax;
     int iRight = MARGIN - 1;
     int jBottom = MARGIN - 1;
     
-    unsigned int backgroundPixel[4];
+    unsigned int backgroundPixel[samplesPerPixel];
     [self getPixel:backgroundPixel atX:MIN(MARGIN, iMax) y:MIN(MARGIN, jMax)];
-    
+        
     // basic idea borrowed from ImageMagick's statistics.c implementation
     
-    // bitmap pixels are ordered top to bottom
+    /* 
+        bitmap pixels appear to be ordered top to bottom; this is not documented rdar://problem/5222982
+     http://www.cocoabuilder.com/archive/message/cocoa/2007/5/22/183540 indicates that it may be image-dependent
+    */
     
     // top margin
     for (j = MARGIN; j < jTop; j++) {
         for (i = MARGIN; i < iMax; i++) {            
             [self getPixel:pixel atX:i y:j];
-            if (differentPixels(pixel, backgroundPixel, 4)) {
+            if (differentPixels(pixel, backgroundPixel, samplesPerPixel)) {
                 // keep in mind that we're manipulating corner points, not height/width
                 jTop = j; // final
                 jBottom = j;
@@ -97,7 +102,7 @@ static inline BOOL differentPixels( const unsigned int *p1, const unsigned int *
     for (j = jMax - 1; j > jBottom; j--) {
         for (i = MARGIN; i < iMax; i++) {            
             [self getPixel:pixel atX:i y:j];
-            if (differentPixels(pixel, backgroundPixel, 4)) {
+            if (differentPixels(pixel, backgroundPixel, samplesPerPixel)) {
                 jBottom = j; // final
                 if (iLeft > i)
                     iLeft = i;
@@ -112,7 +117,7 @@ static inline BOOL differentPixels( const unsigned int *p1, const unsigned int *
     for (i = MARGIN; i < iLeft; i++) {
         for (j = jTop; j <= jBottom; j++) {            
             [self getPixel:pixel atX:i y:j];
-            if (differentPixels(pixel, backgroundPixel, 4)) {
+            if (differentPixels(pixel, backgroundPixel, samplesPerPixel)) {
                 iLeft = i; // final
                 break;
             }
@@ -123,7 +128,7 @@ static inline BOOL differentPixels( const unsigned int *p1, const unsigned int *
     for (i = iMax - 1; i > iRight; i--) {
         for (j = jTop; j <= jBottom; j++) {            
             [self getPixel:pixel atX:i y:j];
-            if (differentPixels(pixel, backgroundPixel, 4)) {
+            if (differentPixels(pixel, backgroundPixel, samplesPerPixel)) {
                 iRight = i; // final
                 break;
             }
@@ -137,8 +142,8 @@ static inline BOOL differentPixels( const unsigned int *p1, const unsigned int *
 - (NSBitmapImageRep *)initWithPDFPage:(PDFPage *)page forBox:(PDFDisplayBox)box;
 {
     
-    NSRect bounds = [page boundsForBox:box];
-    self = [self initWithBitmapDataPlanes:NULL 
+    NSRect bounds = [page boundsForBox:box];    
+    self = [self initWithBitmapDataPlanes:NULL
                                pixelsWide:NSWidth(bounds) 
                                pixelsHigh:NSHeight(bounds) 
                             bitsPerSample:8 
@@ -147,9 +152,9 @@ static inline BOOL differentPixels( const unsigned int *p1, const unsigned int *
                                  isPlanar:NO 
                            colorSpaceName:NSCalibratedRGBColorSpace 
                              bitmapFormat:0 
-                              bytesPerRow:0 /*(4 * NSWidth(maskRect)) */
+                              bytesPerRow:0
                              bitsPerPixel:32];
-    if (self) {    
+    if (self) {
         [NSGraphicsContext saveGraphicsState];
         [NSGraphicsContext setCurrentContext:[NSGraphicsContext graphicsContextWithBitmapImageRep:self]];
         [[NSGraphicsContext currentContext] setImageInterpolation:NSImageInterpolationNone];
