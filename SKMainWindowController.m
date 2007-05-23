@@ -1019,8 +1019,23 @@ static NSString *SKRightSidePaneWidthKey = @"SKRightSidePaneWidth";
 
 - (IBAction)cropAll:(id)sender {
     NSRect selRect = NSIntegralRect([pdfView currentSelectionRect]);
-    if (NSIsEmptyRect(selRect))
+    if (NSIsEmptyRect(selRect)) {
+        if ([[NSUserDefaults standardUserDefaults] boolForKey:@"SKAutomaticallyCropPages"]) {
+            int i, count = [[pdfView document] pageCount];
+            NSMutableArray *rects = [NSMutableArray arrayWithCapacity:count];
+            // use a local pool to avoid hitting the 32-bit limit when rendering all pages of a large doc
+            NSAutoreleasePool *pool = [NSAutoreleasePool new];
+            for (i = 0 ; i < count; ++ i ) {
+                PDFPage *page = [[pdfView document] pageAtIndex:i];
+                [rects addObject:[NSValue valueWithRect:[page foregroundBox]]];
+                [pool release];
+                pool = [NSAutoreleasePool new];
+            }
+            [pool release];
+            [self cropPagesToRects:rects];
+        }
         return;
+    }
     
     [self cropPagesToRects:nil];
     [pdfView setCurrentSelectionRect:NSZeroRect];
@@ -3226,7 +3241,7 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
     } else if ([identifier isEqualToString:SKDocumentToolbarZoomActualItemIdentifier]) {
         return fabs([pdfView scaleFactor] - 1.0) > 0.01;
     } else if ([identifier isEqualToString:SKDocumentToolbarCropItemIdentifier]) {
-        return NO == NSIsEmptyRect([pdfView currentSelectionRect]);
+        return NO == NSIsEmptyRect([pdfView currentSelectionRect]) || [[NSUserDefaults standardUserDefaults] boolForKey:@"SKAutomaticallyCropPages"];
     } else if ([identifier isEqualToString:SKDocumentToolbarFullScreenItemIdentifier]) {
         return YES;
     } else if ([identifier isEqualToString:SKDocumentToolbarPresentationItemIdentifier]) {
@@ -3302,7 +3317,7 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
         [menuItem setState:[pdfView autoScales] ? NSOnState : NSOffState];
         return YES;
     } else if (action == @selector(crop:) || action == @selector(cropAll:)) {
-        return NO == NSIsEmptyRect([pdfView currentSelectionRect]);
+        return NO == NSIsEmptyRect([pdfView currentSelectionRect]) || [[NSUserDefaults standardUserDefaults] boolForKey:@"SKAutomaticallyCropPages"];
     } else if (action == @selector(autoSelectContent:)) {
         return [pdfView toolMode] == SKSelectToolMode;
     } else if (action == @selector(toggleLeftSidePane:)) {

@@ -53,19 +53,16 @@
 #define FOREGROUND_BOX_MARGIN 10.0
 
 // A subclass with ivars would be nicer in some respects, but that would require subclassing PDFDocument and returning instances of the subclass for each page.
-static CFMutableDictionaryRef _bboxTable = NULL;
-static CFMutableSetRef _croppedPages = NULL;
+static CFMutableDictionaryRef _bboxCache = NULL;
 static IMP originalDealloc = NULL;
 
 + (void)load {
     originalDealloc = OBReplaceMethodImplementationWithSelector(self, @selector(dealloc), @selector(replacementDealloc));
-    _bboxTable = CFDictionaryCreateMutable(NULL, 0, NULL, &kCFTypeDictionaryValueCallBacks);
-    _croppedPages = CFSetCreateMutable(NULL, 0, NULL);
+    _bboxCache = CFDictionaryCreateMutable(NULL, 0, NULL, &kCFTypeDictionaryValueCallBacks);
 }
 
 - (void)replacementDealloc {
-    CFDictionaryRemoveValue(_bboxTable, self);
-    CFSetRemoveValue(_croppedPages, self);
+    CFDictionaryRemoveValue(_bboxCache, self);
     originalDealloc(self, _cmd);
 }
 
@@ -73,7 +70,7 @@ static IMP originalDealloc = NULL;
 - (NSRect)foregroundBox {
     
     NSValue *rectValue = nil;
-    if (FALSE == CFDictionaryGetValueIfPresent(_bboxTable, (void *)self, (const void **)&rectValue)) {
+    if (FALSE == CFDictionaryGetValueIfPresent(_bboxCache, (void *)self, (const void **)&rectValue)) {
         NSBitmapImageRep *imageRep = [[NSBitmapImageRep alloc] initWithPDFPage:self forBox:kPDFDisplayBoxMediaBox];
         NSRect r = imageRep ? [imageRep foregroundRect] : NSZeroRect;
         NSRect b = [self boundsForBox:kPDFDisplayBoxMediaBox];
@@ -88,16 +85,9 @@ static IMP originalDealloc = NULL;
         }
         r = NSIntersectionRect(NSInsetRect(r, -FOREGROUND_BOX_MARGIN, -FOREGROUND_BOX_MARGIN), b);
         rectValue = [NSValue valueWithRect:r];
-        CFDictionarySetValue(_bboxTable, (void *)self, (void *)rectValue);
+        CFDictionarySetValue(_bboxCache, (void *)self, (void *)rectValue);
     }
     return [rectValue rectValue];
-}
-
-- (void)autoCrop {
-    if (CFSetContainsValue(_croppedPages, (void *)self) == FALSE) {
-        [self setBounds:[self foregroundBox] forBox:kPDFDisplayBoxCropBox];
-        CFSetAddValue(_croppedPages, (void *)self);
-    }
 }
     
 - (NSImage *)image {
