@@ -45,103 +45,93 @@ static const int MARGIN = 2;
 
 static const unsigned EPSILON = 2;
 
-static inline BOOL similarPixels( const unsigned int *p1, const unsigned int *p2, unsigned count )
+static inline BOOL differentPixels( const unsigned int *p1, const unsigned int *p2, unsigned count )
 {
     unsigned i;    
     for (i = 0; i < count; i++) {
         if (abs(p2[i] - p1[i]) > EPSILON)
-            return NO;
+            return YES;
     }
-    return YES;
+    return NO;
 }
 
 - (NSRect)foregroundRect;
 {    
     int i, iMax = [self pixelsWide] - MARGIN;
     int j, jMax = [self pixelsHigh] - MARGIN;
-    NSRect bounds = NSZeroRect;
     
     unsigned int pixel[4] = { 0, 0, 0, 255 };
     
-    NSPoint lowerLeft = NSMakePoint(iMax, jMax);
-    NSPoint upperRight = NSMakePoint(MARGIN, MARGIN);
+    int iLeft = iMax;
+    int jTop = jMax;
+    int iRight = MARGIN - 1;
+    int jBottom = MARGIN - 1;
     
     unsigned int backgroundPixel[4];
     [self getPixel:backgroundPixel atX:MIN(MARGIN, iMax) y:MIN(MARGIN, jMax)];
     
     // basic idea borrowed from ImageMagick's statistics.c implementation
     
+    // bitmap pixels are ordered top to bottom
+    
     // top margin
-    for (j = MARGIN; j < lowerLeft.y; j++) {
+    for (j = MARGIN; j < jTop; j++) {
         for (i = MARGIN; i < iMax; i++) {            
-            [self getPixel:pixel atX:i y:(jMax-j)];
-            BOOL isForeground = similarPixels(pixel, backgroundPixel, 4) == NO;
-            // keep in mind that we're manipulating corner points, not height/width
-            if (isForeground) {
-                lowerLeft.y = j;
-                upperRight.y = j + 1;
-                lowerLeft.x = i;
-                upperRight.x = i + 1;
+            [self getPixel:pixel atX:i y:j];
+            if (differentPixels(pixel, backgroundPixel, 4)) {
+                // keep in mind that we're manipulating corner points, not height/width
+                jTop = j; // final
+                jBottom = j;
+                iLeft = i;
+                iRight = i;
                 break;
             }
         }
     }
     
-    if ((int)lowerLeft.y == jMax) {
-        
-        // no foreground pixel detected, we return NSZeroRect
-        lowerLeft = upperRight = NSZeroPoint;
-        
-    } else {
-        
-        // bottom margin
-        for (j = jMax - 1; j >= upperRight.y; j--) {
-            for (i = MARGIN; i < iMax; i++) {            
-                [self getPixel:pixel atX:i y:(jMax-j)];
-                BOOL isForeground = similarPixels(pixel, backgroundPixel, 4) == NO;
-                if (isForeground) {
-                    upperRight.y = j;
-                    if (lowerLeft.x > i)
-                        lowerLeft.x = i;
-                    if (upperRight.x <= i)
-                        upperRight.x = i + 1;
-                    break;
-                }
-            }
-        }
-        
-        // left margin
-        for (i = MARGIN; i < lowerLeft.x; i++) {
-            for (j = lowerLeft.y; j <= upperRight.y; j++) {            
-                [self getPixel:pixel atX:i y:(jMax-j)];
-                BOOL isForeground = similarPixels(pixel, backgroundPixel, 4) == NO;
-                if (isForeground) {
-                    lowerLeft.x = i;
-                    break;
-                }
-            }
-        }
-        
-        // right margin
-        for (i = iMax - 1; i >= upperRight.x; i--) {
-            for (j = lowerLeft.y; j <= upperRight.y; j++) {            
-                [self getPixel:pixel atX:i y:(jMax-j)];
-                BOOL isForeground = similarPixels(pixel, backgroundPixel, 4) == NO;
-                if (isForeground) {
-                    upperRight.x = i + 1;
-                    break;
-                }
-            }
-        }
+    if (jTop == jMax)
+        // no foreground pixel detected
+        return NSZeroRect;
     
+    // bottom margin
+    for (j = jMax - 1; j > jBottom; j--) {
+        for (i = MARGIN; i < iMax; i++) {            
+            [self getPixel:pixel atX:i y:j];
+            if (differentPixels(pixel, backgroundPixel, 4)) {
+                jBottom = j; // final
+                if (iLeft > i)
+                    iLeft = i;
+                if (iRight < i)
+                    iRight = i;
+                break;
+            }
+        }
+    }
+    
+    // left margin
+    for (i = MARGIN; i < iLeft; i++) {
+        for (j = jTop; j <= jBottom; j++) {            
+            [self getPixel:pixel atX:i y:j];
+            if (differentPixels(pixel, backgroundPixel, 4)) {
+                iLeft = i; // final
+                break;
+            }
+        }
+    }
+    
+    // right margin
+    for (i = iMax - 1; i > iRight; i--) {
+        for (j = jTop; j <= jBottom; j++) {            
+            [self getPixel:pixel atX:i y:j];
+            if (differentPixels(pixel, backgroundPixel, 4)) {
+                iRight = i; // final
+                break;
+            }
+        }
     }
     
     // finally, convert the corners to a bounding rect
-    bounds.origin = lowerLeft;
-    bounds.size.width = upperRight.x - lowerLeft.x;
-    bounds.size.height = upperRight.y - lowerLeft.y;
-    
-    return bounds;
+    return NSMakeRect(iLeft, jMax + MARGIN - jBottom - 1, iRight + 1 - iLeft, jBottom + 1 - jTop);
 }
 
 - (NSBitmapImageRep *)initWithPDFPage:(PDFPage *)page forBox:(PDFDisplayBox)box;
