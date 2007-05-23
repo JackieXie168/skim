@@ -505,10 +505,12 @@ static void SKCGContextDrawGrabHandle(CGContextRef context, CGPoint point, float
     }
     
     if (toolMode == SKSelectToolMode && NSIsEmptyRect(selectionRect) == NO) {
+        NSRect selRect = NSIntegralRect(selectionRect);
+        
         PDFDocument *pdfDoc = [[PDFDocument alloc] initWithData:[[self currentPage] dataRepresentation]];
         PDFPage *page = [pdfDoc pageAtIndex:0];
         [page setBounds:[[self currentPage] boundsForBox:kPDFDisplayBoxMediaBox] forBox:kPDFDisplayBoxMediaBox];
-        [page setBounds:selectionRect forBox:kPDFDisplayBoxCropBox];
+        [page setBounds:selRect forBox:kPDFDisplayBoxCropBox];
         [page setBounds:NSZeroRect forBox:kPDFDisplayBoxBleedBox];
         [page setBounds:NSZeroRect forBox:kPDFDisplayBoxTrimBox];
         [page setBounds:NSZeroRect forBox:kPDFDisplayBoxArtBox];
@@ -518,7 +520,7 @@ static void SKCGContextDrawGrabHandle(CGContextRef context, CGPoint point, float
         [pdfDoc release];
         
         NSRect bounds = [[self currentPage] boundsForBox:[self displayBox]];
-        NSRect targetRect = NSZeroRect, sourceRect = selectionRect;
+        NSRect targetRect = NSZeroRect, sourceRect = selRect;
         NSImage *pageImage = [[self currentPage] imageForBox:[self displayBox]];
         NSImage *image = nil;
         
