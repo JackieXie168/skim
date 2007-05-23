@@ -62,7 +62,6 @@
 - (NSImage *)thumbnail;
 - (void)setThumbnail:(NSImage *)newThumbnail;
 
-- (NSString *)pageLabel;
 - (unsigned int)pageIndex;
 
 - (NSDictionary *)pageAndWindow;
