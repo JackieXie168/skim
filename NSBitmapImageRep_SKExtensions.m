@@ -163,7 +163,7 @@ static BOOL isSignificantPixelFromBitMapData(SKBitmapData *bitmap, int x, int y,
     // right margin
     for (i = iMax - 1; i > iRight; i--) {
         for (j = jTop; j <= jBottom; j++) {            
-            if (isSignificantPixelFromBitMapData(&bitmap, MAX(MARGIN, i - 5), i, j, MIN(iMax, i + 1), MAX(MARGIN, j - 5), MIN(jMax, j + 5), backgroundPixel)) {
+            if (isSignificantPixelFromBitMapData(&bitmap, i, j, MAX(MARGIN, i - 5), MIN(iMax, i + 1), MAX(MARGIN, j - 5), MIN(jMax, j + 5), backgroundPixel)) {
                 iRight = i; // final
                 break;
             }
