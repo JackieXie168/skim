@@ -168,8 +168,8 @@ static void getRGBAPixelFromBitmapData(const unsigned char *data, unsigned int w
                                  isPlanar:NO 
                            colorSpaceName:NSCalibratedRGBColorSpace 
                              bitmapFormat:0 
-                              bytesPerRow:0
-                             bitsPerPixel:32];
+                              bytesPerRow:NSWidth(bounds) * NUMBER_OF_SAMPLES 
+                             bitsPerPixel:8 * NUMBER_OF_SAMPLES];
     if (self) {
         [NSGraphicsContext saveGraphicsState];
         [NSGraphicsContext setCurrentContext:[NSGraphicsContext graphicsContextWithBitmapImageRep:self]];
