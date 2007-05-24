@@ -995,12 +995,12 @@ static NSString *SKRightSidePaneWidthKey = @"SKRightSidePaneWidth";
 }
 
 - (void)cropPagesToRects:(NSArray *)rects {
-    NSRect selRect = NSIntegralRect([pdfView currentSelectionRect]);
     int i, count = [[pdfView document] pageCount];
+    int rectCount = [rects count];
     NSMutableArray *oldRects = [NSMutableArray arrayWithCapacity:count];
-    for (i = 0 ; i < count; ++ i ) {
+    for (i = 0 ; i < count; ++i) {
         PDFPage *page = [[pdfView document] pageAtIndex:i];
-        NSRect rect = rects ? [[rects objectAtIndex:i] rectValue] : selRect;
+        NSRect rect = [[rects objectAtIndex:i < rectCount ? i : rectCount - 1] rectValue];
         [oldRects addObject:[NSValue valueWithRect:[page boundsForBox:kPDFDisplayBoxCropBox]]];
         [page setBounds:rect forBox:kPDFDisplayBoxCropBox];
     }
@@ -1018,26 +1018,24 @@ static NSString *SKRightSidePaneWidthKey = @"SKRightSidePaneWidth";
 }
 
 - (IBAction)cropAll:(id)sender {
-    NSRect selRect = NSIntegralRect([pdfView currentSelectionRect]);
-    if (NSIsEmptyRect(selRect)) {
-        if ([[NSUserDefaults standardUserDefaults] boolForKey:@"SKAutomaticallyCropPages"]) {
-            int i, count = [[pdfView document] pageCount];
-            NSMutableArray *rects = [NSMutableArray arrayWithCapacity:count];
-            // use a local pool to avoid hitting the 32-bit limit when rendering all pages of a large doc
-            NSAutoreleasePool *pool = [NSAutoreleasePool new];
-            for (i = 0 ; i < count; ++ i ) {
-                PDFPage *page = [[pdfView document] pageAtIndex:i];
-                [rects addObject:[NSValue valueWithRect:[page foregroundBox]]];
-                [pool release];
-                pool = [NSAutoreleasePool new];
-            }
-            [pool release];
-            [self cropPagesToRects:rects];
+    NSRect rect = NSIntegralRect([pdfView currentSelectionRect]);
+    if (NSIsEmptyRect(rect)) {
+        int i, count = [[pdfView document] pageCount];
+        rect = NSZeroRect;
+        if (count < 15) {
+            for (i = 0; i < count; ++i)
+                rect = NSUnionRect(rect, [[[pdfView document] pageAtIndex:i] foregroundBox]);
+        } else {
+            for (i = 0; i < 5; ++i)
+                rect = NSUnionRect(rect, [[[pdfView document] pageAtIndex:i] foregroundBox]);
+            for (i = (count - 5) / 2; i < (count + 5) / 2; ++i)
+                rect = NSUnionRect(rect, [[[pdfView document] pageAtIndex:i] foregroundBox]);
+            for (i = count - 5; i < count; ++i)
+                rect = NSUnionRect(rect, [[[pdfView document] pageAtIndex:i] foregroundBox]);
         }
-        return;
     }
     
-    [self cropPagesToRects:nil];
+    [self cropPagesToRects:[NSArray arrayWithObject:[NSValue valueWithRect:rect]]];
     [pdfView setCurrentSelectionRect:NSZeroRect];
 }
 
@@ -3317,7 +3315,7 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
         [menuItem setState:[pdfView autoScales] ? NSOnState : NSOffState];
         return YES;
     } else if (action == @selector(cropAll:)) {
-        return NO == NSIsEmptyRect([pdfView currentSelectionRect]) || [[NSUserDefaults standardUserDefaults] boolForKey:@"SKAutomaticallyCropPages"];
+        return YES;
     } else if (action == @selector(crop:)) {
         return NO == NSIsEmptyRect([pdfView currentSelectionRect]);
     } else if (action == @selector(autoSelectContent:)) {
