@@ -3253,7 +3253,7 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
     } else if ([identifier isEqualToString:SKDocumentToolbarZoomActualItemIdentifier]) {
         return fabs([pdfView scaleFactor] - 1.0) > 0.01;
     } else if ([identifier isEqualToString:SKDocumentToolbarCropItemIdentifier]) {
-        return NO == NSIsEmptyRect([pdfView currentSelectionRect]) || [[NSUserDefaults standardUserDefaults] boolForKey:@"SKAutomaticallyCropPages"];
+        return YES;
     } else if ([identifier isEqualToString:SKDocumentToolbarFullScreenItemIdentifier]) {
         return YES;
     } else if ([identifier isEqualToString:SKDocumentToolbarPresentationItemIdentifier]) {
