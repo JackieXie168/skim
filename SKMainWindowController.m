@@ -972,6 +972,7 @@ static NSString *SKRightSidePaneWidthKey = @"SKRightSidePaneWidth";
     [[self document] updateChangeCount:[undoManager isUndoing] ? NSChangeDone : NSChangeUndone];
     
     PDFPage *page = [[pdfView document] pageAtIndex:index];
+    rect = NSIntersectionRect(rect, [page boundsForBox:kPDFDisplayBoxMediaBox]);
     [page setBounds:rect forBox:kPDFDisplayBoxCropBox];
     [pdfView layoutDocumentView];
     
@@ -1004,7 +1005,7 @@ static NSString *SKRightSidePaneWidthKey = @"SKRightSidePaneWidth";
     for (i = 0 ; i < count; ++i) {
         PDFPage *page = [[pdfView document] pageAtIndex:i];
         int index = i < rectCount ? i : rectCount == 1 ? 0 : i % 2;
-        NSRect rect = [[rects objectAtIndex:index] rectValue];
+        NSRect rect = NSIntersectionRect([[rects objectAtIndex:index] rectValue], [page boundsForBox:kPDFDisplayBoxMediaBox]);
         [oldRects addObject:[NSValue valueWithRect:[page boundsForBox:kPDFDisplayBoxCropBox]]];
         [page setBounds:rect forBox:kPDFDisplayBoxCropBox];
     }
