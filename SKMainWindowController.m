@@ -3316,8 +3316,10 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
     } else if (action == @selector(toggleAutoScale:)) {
         [menuItem setState:[pdfView autoScales] ? NSOnState : NSOffState];
         return YES;
-    } else if (action == @selector(crop:) || action == @selector(cropAll:)) {
+    } else if (action == @selector(cropAll:)) {
         return NO == NSIsEmptyRect([pdfView currentSelectionRect]) || [[NSUserDefaults standardUserDefaults] boolForKey:@"SKAutomaticallyCropPages"];
+    } else if (action == @selector(crop:)) {
+        return NO == NSIsEmptyRect([pdfView currentSelectionRect]);
     } else if (action == @selector(autoSelectContent:)) {
         return [pdfView toolMode] == SKSelectToolMode;
     } else if (action == @selector(toggleLeftSidePane:)) {
