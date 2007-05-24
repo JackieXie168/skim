@@ -62,7 +62,7 @@ static inline void getPixelFromBitmapData(unsigned char *data, int bytesPerRow, 
         *pixel++ = *ptr++;
 }
 
-static inline BOOL isSignificantPixelFromBitMapData(unsigned char *data, int bytesPerRow, int samplesPerPixel, int x, int y, int minX, int maxX, int minY, int maxY, unsigned char backgroundPixel[])
+static BOOL isSignificantPixelFromBitMapData(unsigned char *data, int bytesPerRow, int samplesPerPixel, int x, int y, int minX, int maxX, int minY, int maxY, unsigned char backgroundPixel[])
 {
     int i, j, count = 0;
     unsigned char pixel[samplesPerPixel];
