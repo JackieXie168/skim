@@ -55,24 +55,31 @@ static inline BOOL differentPixels( const unsigned char *p1, const unsigned char
     return NO;
 }
 
-static inline void getPixelFromBitmapData(unsigned char *data, int bytesPerRow, int samplesPerPixel, int x, int y, unsigned char pixel[])
+typedef struct _SKBitmapData {
+    unsigned char *data;
+    int bytesPerRow;
+    int samplesPerPixel;
+} SKBitmapData;
+
+static inline void getPixelFromBitmapData(SKBitmapData *bitmap, int x, int y, unsigned char pixel[])
 {    
-    unsigned char *ptr = &(data[(bytesPerRow * y) + (x * samplesPerPixel)]);
-    while (samplesPerPixel--)
+    int spp = bitmap->samplesPerPixel;
+    unsigned char *ptr = &(bitmap->data[(bitmap->bytesPerRow * y) + (x * spp)]);
+    while (spp--)
         *pixel++ = *ptr++;
 }
 
-static BOOL isSignificantPixelFromBitMapData(unsigned char *data, int bytesPerRow, int samplesPerPixel, int x, int y, int minX, int maxX, int minY, int maxY, unsigned char backgroundPixel[])
+static BOOL isSignificantPixelFromBitMapData(SKBitmapData *bitmap, int x, int y, int minX, int maxX, int minY, int maxY, unsigned char backgroundPixel[])
 {
     int i, j, count = 0;
-    unsigned char pixel[samplesPerPixel];
+    unsigned char pixel[bitmap->samplesPerPixel];
     
-    getPixelFromBitmapData(data, bytesPerRow, samplesPerPixel, x, y, pixel);
-    if (differentPixels(pixel, backgroundPixel, samplesPerPixel)) {
+    getPixelFromBitmapData(bitmap, x, y, pixel);
+    if (differentPixels(pixel, backgroundPixel, bitmap->samplesPerPixel)) {
         for (i = minX; i <= maxX; i++) {
             for (j = minY; j <= maxY; j++) {
-                getPixelFromBitmapData(data, bytesPerRow, samplesPerPixel, i, j, pixel);
-                if (differentPixels(pixel, backgroundPixel, samplesPerPixel)) {
+                getPixelFromBitmapData(bitmap, i, j, pixel);
+                if (differentPixels(pixel, backgroundPixel, bitmap->samplesPerPixel)) {
                     count += (ABS(i - x) < 4 && ABS(j - y) < 4) ? 2 : 1;
                     if (count > THRESHOLD)
                         return YES;
@@ -100,16 +107,21 @@ static BOOL isSignificantPixelFromBitMapData(unsigned char *data, int bytesPerRo
     int jBottom = MARGIN - 1;
     
     unsigned char *bitmapData = [self bitmapData];
+    
+    SKBitmapData bitmap;
+    bitmap.data = bitmapData;
+    bitmap.bytesPerRow = bytesPerRow;
+    bitmap.samplesPerPixel = samplesPerPixel;
 
     unsigned char backgroundPixel[samplesPerPixel];
-    getPixelFromBitmapData(bitmapData, bytesPerRow, samplesPerPixel, MIN(MARGIN, iMax), MIN(MARGIN, jMax), backgroundPixel);
+    getPixelFromBitmapData(&bitmap, MIN(MARGIN, iMax), MIN(MARGIN, jMax), backgroundPixel);
         
     // basic idea borrowed from ImageMagick's statistics.c implementation
     
     // top margin
     for (j = MARGIN; j < jTop; j++) {
         for (i = MARGIN; i < iMax; i++) {            
-            if (isSignificantPixelFromBitMapData(bitmapData, bytesPerRow, samplesPerPixel, i, j, MAX(MARGIN, i - 5), MIN(iMax - 1, i + 5), MAX(MARGIN, j - 1), MIN(jMax - 1, j + 5), backgroundPixel)) {
+            if (isSignificantPixelFromBitMapData(&bitmap, i, j, MAX(MARGIN, i - 5), MIN(iMax - 1, i + 5), MAX(MARGIN, j - 1), MIN(jMax - 1, j + 5), backgroundPixel)) {
                 // keep in mind that we're manipulating corner points, not height/width
                 jTop = j; // final
                 jBottom = j;
@@ -127,7 +139,7 @@ static BOOL isSignificantPixelFromBitMapData(unsigned char *data, int bytesPerRo
     // bottom margin
     for (j = jMax - 1; j > jBottom; j--) {
         for (i = MARGIN; i < iMax; i++) {            
-            if (isSignificantPixelFromBitMapData(bitmapData, bytesPerRow, samplesPerPixel, i, j, MAX(MARGIN, i - 5), MIN(iMax - 1, i + 5), MAX(MARGIN, j - 5), MIN(jMax - 1, j + 1), backgroundPixel)) {
+            if (isSignificantPixelFromBitMapData(&bitmap, i, j, MAX(MARGIN, i - 5), MIN(iMax - 1, i + 5), MAX(MARGIN, j - 5), MIN(jMax - 1, j + 1), backgroundPixel)) {
                 jBottom = j; // final
                 if (iLeft > i)
                     iLeft = i;
@@ -141,7 +153,7 @@ static BOOL isSignificantPixelFromBitMapData(unsigned char *data, int bytesPerRo
     // left margin
     for (i = MARGIN; i < iLeft; i++) {
         for (j = jTop; j <= jBottom; j++) {            
-            if (isSignificantPixelFromBitMapData(bitmapData, bytesPerRow, samplesPerPixel, i, j, MAX(MARGIN, i - 1), MIN(iMax - 1, i + 5), MAX(MARGIN, j - 5), MIN(jMax - 1, j + 5), backgroundPixel)) {
+            if (isSignificantPixelFromBitMapData(&bitmap, i, j, MAX(MARGIN, i - 1), MIN(iMax - 1, i + 5), MAX(MARGIN, j - 5), MIN(jMax - 1, j + 5), backgroundPixel)) {
                 iLeft = i; // final
                 break;
             }
@@ -151,7 +163,7 @@ static BOOL isSignificantPixelFromBitMapData(unsigned char *data, int bytesPerRo
     // right margin
     for (i = iMax - 1; i > iRight; i--) {
         for (j = jTop; j <= jBottom; j++) {            
-            if (isSignificantPixelFromBitMapData(bitmapData, bytesPerRow, samplesPerPixel, MAX(MARGIN, i - 5), MIN(iMax, i + 1), MAX(MARGIN, j - 5), MIN(jMax, j + 5), i, j, backgroundPixel)) {
+            if (isSignificantPixelFromBitMapData(&bitmap, MAX(MARGIN, i - 5), MIN(iMax, i + 1), MAX(MARGIN, j - 5), MIN(jMax, j + 5), i, j, backgroundPixel)) {
                 iRight = i; // final
                 break;
             }
