@@ -937,7 +937,7 @@ static NSString *SKRightSidePaneWidthKey = @"SKRightSidePaneWidth";
     [[self document] updateChangeCount:[undoManager isUndoing] ? NSChangeDone : NSChangeUndone];
     
     int i, count = [[pdfView document] pageCount];
-    for (i = 0 ; i < count; ++ i ) {
+    for (i = 0; i < count; i++) {
         [[[pdfView document] pageAtIndex:i] setRotation:[[[pdfView document] pageAtIndex:i] rotation] + 90];
     }
     [pdfView layoutDocumentView];
@@ -954,7 +954,7 @@ static NSString *SKRightSidePaneWidthKey = @"SKRightSidePaneWidth";
     [[self document] updateChangeCount:[undoManager isUndoing] ? NSChangeDone : NSChangeUndone];
     
     int i, count = [[pdfView document] pageCount];
-    for (i = 0 ; i < count; ++ i ) {
+    for (i = 0; i < count; i++) {
         [[[pdfView document] pageAtIndex:i] setRotation:[[[pdfView document] pageAtIndex:i] rotation] - 90];
     }
     [pdfView layoutDocumentView];
@@ -1002,10 +1002,9 @@ static NSString *SKRightSidePaneWidthKey = @"SKRightSidePaneWidth";
     int i, count = [[pdfView document] pageCount];
     int rectCount = [rects count];
     NSMutableArray *oldRects = [NSMutableArray arrayWithCapacity:count];
-    for (i = 0 ; i < count; ++i) {
+    for (i = 0; i < count; i++) {
         PDFPage *page = [[pdfView document] pageAtIndex:i];
-        int index = i < rectCount ? i : rectCount == 1 ? 0 : i % 2;
-        NSRect rect = NSIntersectionRect([[rects objectAtIndex:index] rectValue], [page boundsForBox:kPDFDisplayBoxMediaBox]);
+        NSRect rect = NSIntersectionRect([[rects objectAtIndex:i % rectCount] rectValue], [page boundsForBox:kPDFDisplayBoxMediaBox]);
         [oldRects addObject:[NSValue valueWithRect:[page boundsForBox:kPDFDisplayBoxCropBox]]];
         [page setBounds:rect forBox:kPDFDisplayBoxCropBox];
     }
@@ -1027,24 +1026,30 @@ static NSString *SKRightSidePaneWidthKey = @"SKRightSidePaneWidth";
 }
 
 - (IBAction)cropAll:(id)sender {
-    NSRect rect = NSIntegralRect([pdfView currentSelectionRect]);
-    if (NSIsEmptyRect(rect)) {
-        int i, count = [[pdfView document] pageCount];
-        rect = NSZeroRect;
+    NSRect rect[2] = {NSIntegralRect([pdfView currentSelectionRect]), NSZeroRect};
+    NSArray *rectArray;
+    if (NSIsEmptyRect(rect[0])) {
+        int i, j, count = [[pdfView document] pageCount];
+        rect[0] = rect[1] = NSZeroRect;
         if (count < 18) {
-            for (i = 0; i < count; ++i)
-                rect = NSUnionRect(rect, [[[pdfView document] pageAtIndex:i] foregroundBox]);
+            for (i = 0; i < count; i++)
+                rect[i % 2] = NSUnionRect(rect[i % 2], [[[pdfView document] pageAtIndex:i] foregroundBox]);
         } else {
-            for (i = 0; i < 6; ++i)
-                rect = NSUnionRect(rect, [[[pdfView document] pageAtIndex:i] foregroundBox]);
-            for (i = (count - 6) / 2; i < (count + 6) / 2; ++i)
-                rect = NSUnionRect(rect, [[[pdfView document] pageAtIndex:i] foregroundBox]);
-            for (i = count - 6; i < count; ++i)
-                rect = NSUnionRect(rect, [[[pdfView document] pageAtIndex:i] foregroundBox]);
+            int start[3] = {0, count / 2 - 3, count - 6};
+            for (j = 0; j < 3; j++)
+                for (i = start[j]; i < start[j] + 6; i++)
+                    rect[i % 2] = NSUnionRect(rect[i % 2], [[[pdfView document] pageAtIndex:i] foregroundBox]);
         }
+        float w = fmax(NSWidth(rect[0]), NSWidth(rect[1]));
+        float h = fmax(NSHeight(rect[0]), NSHeight(rect[1]));
+        for (j = 0; j < 2; j++)
+            rect[j] = NSMakeRect(floorf(NSMidX(rect[j]) - 0.5 * w), floorf(NSMidY(rect[j]) - 0.5 * h), w, h);
+        rectArray = [NSArray arrayWithObjects:[NSValue valueWithRect:rect[0]], [NSValue valueWithRect:rect[1]], nil];
+    } else {
+        rectArray = [NSArray arrayWithObject:[NSValue valueWithRect:rect[0]]];
     }
     
-    [self cropPagesToRects:[NSArray arrayWithObject:[NSValue valueWithRect:rect]]];
+    [self cropPagesToRects:rectArray];
     [pdfView setCurrentSelectionRect:NSZeroRect];
 }
 
