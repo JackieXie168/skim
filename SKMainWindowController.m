@@ -995,6 +995,9 @@ static NSString *SKRightSidePaneWidthKey = @"SKRightSidePaneWidth";
 }
 
 - (void)cropPagesToRects:(NSArray *)rects {
+    
+    PDFDestination *currentDestination = [pdfView currentDestination];
+    
     int i, count = [[pdfView document] pageCount];
     int rectCount = [rects count];
     NSMutableArray *oldRects = [NSMutableArray arrayWithCapacity:count];
@@ -1015,6 +1018,9 @@ static NSString *SKRightSidePaneWidthKey = @"SKRightSidePaneWidth";
     [self allSnapshotsNeedUpdate];
     
     [self allThumbnailsNeedUpdate];
+    
+    // layout after cropping when you're in the middle of a document can lose the current page
+    [pdfView goToDestination:currentDestination];
 }
 
 - (IBAction)cropAll:(id)sender {
