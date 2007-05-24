@@ -45,7 +45,7 @@ static const int MARGIN = 2;
 
 static const unsigned EPSILON = 2;
 
-static inline BOOL differentPixels( const unsigned int *p1, const unsigned int *p2, unsigned count )
+static inline BOOL differentPixels( const unsigned char *p1, const unsigned char *p2, unsigned count )
 {
     unsigned i;    
     for (i = 0; i < count; i++) {
@@ -55,50 +55,40 @@ static inline BOOL differentPixels( const unsigned int *p1, const unsigned int *
     return NO;
 }
 
-static void getRGBAPixelFromBitmapData(const unsigned char *data, unsigned int widthInPixels, int x, int y, unsigned int pixel[])
+static inline void getPixelFromBitmapData(unsigned char *data, int bytesPerRow, int samplesPerPixel, int x, int y, unsigned char pixel[])
 {    
-    typedef struct _RGBAPixel {
-        unsigned char redByte, greenByte, blueByte, alphaByte;  
-    } RGBAPixel;
-    
-    RGBAPixel *bitmapData = (RGBAPixel *)data;
-    
-    RGBAPixel *thisPixel = &(bitmapData[widthInPixels * y + x]);
-    pixel[0] = thisPixel->redByte;
-    pixel[1] = thisPixel->greenByte;
-    pixel[2] = thisPixel->blueByte;
-    pixel[3] = thisPixel->alphaByte;
+    unsigned char *ptr = &(data[(bytesPerRow * y) + (x * samplesPerPixel)]);
+    while (samplesPerPixel--)
+        *pixel++ = *ptr++;
 }
-
-// we're presently only using this with RGBA; if it ever needs to be generalized, use samplesPerPixel and add a wrapper function and more implementations; define instead of constant so the arrays show up in the debugger
-#define NUMBER_OF_SAMPLES 4
 
 - (NSRect)foregroundRect;
 {    
     int i, iMax = [self pixelsWide] - MARGIN;
     int j, jMax = [self pixelsHigh] - MARGIN;
     
-    unsigned int samplesPerPixel = NUMBER_OF_SAMPLES;
-    unsigned int pixel[NUMBER_OF_SAMPLES];
-    memset(pixel, 0, NUMBER_OF_SAMPLES);
+    int bytesPerRow = [self bytesPerRow];
+    int samplesPerPixel = [self samplesPerPixel];
+    unsigned char pixel[samplesPerPixel];
+    
+    memset(pixel, 0, samplesPerPixel);
     
     int iLeft = iMax;
     int jTop = jMax;
     int iRight = MARGIN - 1;
     int jBottom = MARGIN - 1;
     
-    const unsigned char *bitmapData = [self bitmapData];
-    unsigned widthInPixels = [self pixelsWide];
+    unsigned char *bitmapData = [self bitmapData];
 
-    unsigned int backgroundPixel[NUMBER_OF_SAMPLES];
-    getRGBAPixelFromBitmapData(bitmapData, widthInPixels, MIN(MARGIN, iMax), MIN(MARGIN, jMax), backgroundPixel);
+    unsigned char backgroundPixel[samplesPerPixel];
+    getPixelFromBitmapData(bitmapData, bytesPerRow, samplesPerPixel, MIN(MARGIN, iMax), MIN(MARGIN, jMax), backgroundPixel);
         
     // basic idea borrowed from ImageMagick's statistics.c implementation
     
     // top margin
     for (j = MARGIN; j < jTop; j++) {
         for (i = MARGIN; i < iMax; i++) {            
-            getRGBAPixelFromBitmapData(bitmapData, widthInPixels, i, j, pixel);
+            getPixelFromBitmapData(bitmapData, bytesPerRow, samplesPerPixel, i, j, pixel);
             if (differentPixels(pixel, backgroundPixel, samplesPerPixel)) {
                 // keep in mind that we're manipulating corner points, not height/width
                 jTop = j; // final
@@ -117,7 +107,7 @@ static void getRGBAPixelFromBitmapData(const unsigned char *data, unsigned int w
     // bottom margin
     for (j = jMax - 1; j > jBottom; j--) {
         for (i = MARGIN; i < iMax; i++) {            
-            getRGBAPixelFromBitmapData(bitmapData, widthInPixels, i, j, pixel);
+            getPixelFromBitmapData(bitmapData, bytesPerRow, samplesPerPixel, i, j, pixel);
             if (differentPixels(pixel, backgroundPixel, samplesPerPixel)) {
                 jBottom = j; // final
                 if (iLeft > i)
@@ -132,7 +122,7 @@ static void getRGBAPixelFromBitmapData(const unsigned char *data, unsigned int w
     // left margin
     for (i = MARGIN; i < iLeft; i++) {
         for (j = jTop; j <= jBottom; j++) {            
-            getRGBAPixelFromBitmapData(bitmapData, widthInPixels, i, j, pixel);
+            getPixelFromBitmapData(bitmapData, bytesPerRow, samplesPerPixel, i, j, pixel);
             if (differentPixels(pixel, backgroundPixel, samplesPerPixel)) {
                 iLeft = i; // final
                 break;
@@ -143,7 +133,7 @@ static void getRGBAPixelFromBitmapData(const unsigned char *data, unsigned int w
     // right margin
     for (i = iMax - 1; i > iRight; i--) {
         for (j = jTop; j <= jBottom; j++) {            
-            getRGBAPixelFromBitmapData(bitmapData, widthInPixels, i, j, pixel);
+            getPixelFromBitmapData(bitmapData, bytesPerRow, samplesPerPixel, i, j, pixel);
             if (differentPixels(pixel, backgroundPixel, samplesPerPixel)) {
                 iRight = i; // final
                 break;
@@ -163,13 +153,13 @@ static void getRGBAPixelFromBitmapData(const unsigned char *data, unsigned int w
                                pixelsWide:NSWidth(bounds) 
                                pixelsHigh:NSHeight(bounds) 
                             bitsPerSample:8 
-                          samplesPerPixel:NUMBER_OF_SAMPLES
+                          samplesPerPixel:4
                                  hasAlpha:YES 
                                  isPlanar:NO 
                            colorSpaceName:NSCalibratedRGBColorSpace 
                              bitmapFormat:0 
-                              bytesPerRow:NSWidth(bounds) * NUMBER_OF_SAMPLES 
-                             bitsPerPixel:8 * NUMBER_OF_SAMPLES];
+                              bytesPerRow:0 
+                             bitsPerPixel:32];
     if (self) {
         [NSGraphicsContext saveGraphicsState];
         [NSGraphicsContext setCurrentContext:[NSGraphicsContext graphicsContextWithBitmapImageRep:self]];
