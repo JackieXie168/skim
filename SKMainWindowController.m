@@ -988,11 +988,10 @@ static NSString *SKRightSidePaneWidthKey = @"SKRightSidePaneWidth";
 }
 
 - (IBAction)crop:(id)sender {
-    NSRect selRect = NSIntegralRect([pdfView currentSelectionRect]);
-    if (NSIsEmptyRect(selRect))
-        return;
-    
-    [self cropPageAtIndex:[[pdfView document] indexForPage:[pdfView currentPage]] toRect:selRect];
+    NSRect rect = NSIntegralRect([pdfView currentSelectionRect]);
+    if (NSIsEmptyRect(rect))
+        rect = [[pdfView currentPage] foregroundBox];
+    [self cropPageAtIndex:[[pdfView document] indexForPage:[pdfView currentPage]] toRect:rect];
 }
 
 - (void)cropPagesToRects:(NSArray *)rects {
@@ -3328,10 +3327,8 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
     } else if (action == @selector(toggleAutoScale:)) {
         [menuItem setState:[pdfView autoScales] ? NSOnState : NSOffState];
         return YES;
-    } else if (action == @selector(cropAll:)) {
+    } else if (action == @selector(cropAll:) || action == @selector(crop:)) {
         return YES;
-    } else if (action == @selector(crop:)) {
-        return NO == NSIsEmptyRect([pdfView currentSelectionRect]);
     } else if (action == @selector(autoSelectContent:)) {
         return [pdfView toolMode] == SKSelectToolMode;
     } else if (action == @selector(toggleLeftSidePane:)) {
