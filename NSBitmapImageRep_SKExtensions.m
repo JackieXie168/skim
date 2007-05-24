@@ -42,8 +42,8 @@
 
 // allow for a slight margin around the image; maybe caused by a shadow (found this in testing)
 static const int MARGIN = 2;
-
 static const unsigned EPSILON = 2;
+static const int THRESHOLD = 8;
 
 static inline BOOL differentPixels( const unsigned char *p1, const unsigned char *p2, unsigned count )
 {
@@ -60,6 +60,27 @@ static inline void getPixelFromBitmapData(unsigned char *data, int bytesPerRow, 
     unsigned char *ptr = &(data[(bytesPerRow * y) + (x * samplesPerPixel)]);
     while (samplesPerPixel--)
         *pixel++ = *ptr++;
+}
+
+static inline BOOL isSignificantPixelFromBitMapData(unsigned char *data, int bytesPerRow, int samplesPerPixel, int x, int y, int minX, int maxX, int minY, int maxY, unsigned char backgroundPixel[])
+{
+    int i, j, count = 0;
+    unsigned char pixel[samplesPerPixel];
+    
+    getPixelFromBitmapData(data, bytesPerRow, samplesPerPixel, x, y, pixel);
+    if (differentPixels(pixel, backgroundPixel, samplesPerPixel)) {
+        for (i = minX; i <= maxX; i++) {
+            for (j = minY; j <= maxY; j++) {
+                getPixelFromBitmapData(data, bytesPerRow, samplesPerPixel, i, j, pixel);
+                if (differentPixels(pixel, backgroundPixel, samplesPerPixel)) {
+                    count += (ABS(i - x) < 4 && ABS(j - y) < 4) ? 2 : 1;
+                    if (count > THRESHOLD)
+                        return YES;
+                }
+            }
+        }
+    }
+    return NO;
 }
 
 - (NSRect)foregroundRect;
@@ -88,8 +109,7 @@ static inline void getPixelFromBitmapData(unsigned char *data, int bytesPerRow, 
     // top margin
     for (j = MARGIN; j < jTop; j++) {
         for (i = MARGIN; i < iMax; i++) {            
-            getPixelFromBitmapData(bitmapData, bytesPerRow, samplesPerPixel, i, j, pixel);
-            if (differentPixels(pixel, backgroundPixel, samplesPerPixel)) {
+            if (isSignificantPixelFromBitMapData(bitmapData, bytesPerRow, samplesPerPixel, i, j, MAX(MARGIN, i - 5), MIN(iMax - 1, i + 5), MAX(MARGIN, j - 1), MIN(jMax - 1, j + 5), backgroundPixel)) {
                 // keep in mind that we're manipulating corner points, not height/width
                 jTop = j; // final
                 jBottom = j;
@@ -107,8 +127,7 @@ static inline void getPixelFromBitmapData(unsigned char *data, int bytesPerRow, 
     // bottom margin
     for (j = jMax - 1; j > jBottom; j--) {
         for (i = MARGIN; i < iMax; i++) {            
-            getPixelFromBitmapData(bitmapData, bytesPerRow, samplesPerPixel, i, j, pixel);
-            if (differentPixels(pixel, backgroundPixel, samplesPerPixel)) {
+            if (isSignificantPixelFromBitMapData(bitmapData, bytesPerRow, samplesPerPixel, i, j, MAX(MARGIN, i - 5), MIN(iMax - 1, i + 5), MAX(MARGIN, j - 5), MIN(jMax - 1, j + 1), backgroundPixel)) {
                 jBottom = j; // final
                 if (iLeft > i)
                     iLeft = i;
@@ -122,8 +141,7 @@ static inline void getPixelFromBitmapData(unsigned char *data, int bytesPerRow, 
     // left margin
     for (i = MARGIN; i < iLeft; i++) {
         for (j = jTop; j <= jBottom; j++) {            
-            getPixelFromBitmapData(bitmapData, bytesPerRow, samplesPerPixel, i, j, pixel);
-            if (differentPixels(pixel, backgroundPixel, samplesPerPixel)) {
+            if (isSignificantPixelFromBitMapData(bitmapData, bytesPerRow, samplesPerPixel, i, j, MAX(MARGIN, i - 1), MIN(iMax - 1, i + 5), MAX(MARGIN, j - 5), MIN(jMax - 1, j + 5), backgroundPixel)) {
                 iLeft = i; // final
                 break;
             }
@@ -133,8 +151,7 @@ static inline void getPixelFromBitmapData(unsigned char *data, int bytesPerRow, 
     // right margin
     for (i = iMax - 1; i > iRight; i--) {
         for (j = jTop; j <= jBottom; j++) {            
-            getPixelFromBitmapData(bitmapData, bytesPerRow, samplesPerPixel, i, j, pixel);
-            if (differentPixels(pixel, backgroundPixel, samplesPerPixel)) {
+            if (isSignificantPixelFromBitMapData(bitmapData, bytesPerRow, samplesPerPixel, MAX(MARGIN, i - 5), MIN(iMax, i + 1), MAX(MARGIN, j - 5), MIN(jMax, j + 5), i, j, backgroundPixel)) {
                 iRight = i; // final
                 break;
             }
