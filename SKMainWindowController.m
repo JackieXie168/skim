@@ -1003,7 +1003,8 @@ static NSString *SKRightSidePaneWidthKey = @"SKRightSidePaneWidth";
     NSMutableArray *oldRects = [NSMutableArray arrayWithCapacity:count];
     for (i = 0 ; i < count; ++i) {
         PDFPage *page = [[pdfView document] pageAtIndex:i];
-        NSRect rect = [[rects objectAtIndex:i < rectCount ? i : rectCount - 1] rectValue];
+        int index = i < rectCount ? i : rectCount == 1 ? 0 : i % 2;
+        NSRect rect = [[rects objectAtIndex:index] rectValue];
         [oldRects addObject:[NSValue valueWithRect:[page boundsForBox:kPDFDisplayBoxCropBox]]];
         [page setBounds:rect forBox:kPDFDisplayBoxCropBox];
     }
@@ -1029,15 +1030,15 @@ static NSString *SKRightSidePaneWidthKey = @"SKRightSidePaneWidth";
     if (NSIsEmptyRect(rect)) {
         int i, count = [[pdfView document] pageCount];
         rect = NSZeroRect;
-        if (count < 15) {
+        if (count < 18) {
             for (i = 0; i < count; ++i)
                 rect = NSUnionRect(rect, [[[pdfView document] pageAtIndex:i] foregroundBox]);
         } else {
-            for (i = 0; i < 5; ++i)
+            for (i = 0; i < 6; ++i)
                 rect = NSUnionRect(rect, [[[pdfView document] pageAtIndex:i] foregroundBox]);
-            for (i = (count - 5) / 2; i < (count + 5) / 2; ++i)
+            for (i = (count - 6) / 2; i < (count + 6) / 2; ++i)
                 rect = NSUnionRect(rect, [[[pdfView document] pageAtIndex:i] foregroundBox]);
-            for (i = count - 5; i < count; ++i)
+            for (i = count - 6; i < count; ++i)
                 rect = NSUnionRect(rect, [[[pdfView document] pageAtIndex:i] foregroundBox]);
         }
     }
