@@ -269,8 +269,10 @@
 	<string>SKIM</string>
 	<key>CFBundleVersion</key>
 	<string>v3</string>
+	<key>LSMinimumSystemVersion</key>
+	<string>10.4.0</string>
 	<key>NSAppleScriptEnabled</key>
-	<string>YES</string>
+	<true/>
 	<key>NSMainNibFile</key>
 	<string>MainMenu</string>
 	<key>NSPrincipalClass</key>
@@ -279,7 +281,7 @@
 	<string>Skim.sdef</string>
 	<key>SUFeedURL</key>
 	<string>http://skim-app.sourceforge.net/skim.xml</string>
-    	<key>UTExportedTypeDeclarations</key>
+	<key>UTExportedTypeDeclarations</key>
 	<array>
 		<dict>
 			<key>UTTypeConformsTo</key>
