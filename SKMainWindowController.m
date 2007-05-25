@@ -906,6 +906,7 @@ static NSString *SKRightSidePaneWidthKey = @"SKRightSidePaneWidth";
 - (void)rotatePageAtIndex:(unsigned int)index by:(int)rotation {
     NSUndoManager *undoManager = [[self document] undoManager];
     [[undoManager prepareWithInvocationTarget:self] rotatePageAtIndex:index by:-rotation];
+    [[self undoManager] setActionName:NSLocalizedString(@"Rotate Page", @"Undo action name")];
     [[self document] updateChangeCount:[undoManager isUndoing] ? NSChangeDone : NSChangeUndone];
     
     PDFPage *page = [[pdfView document] pageAtIndex:index];
@@ -934,6 +935,7 @@ static NSString *SKRightSidePaneWidthKey = @"SKRightSidePaneWidth";
 - (IBAction)rotateAllRight:(id)sender {
     NSUndoManager *undoManager = [[self document] undoManager];
     [[undoManager prepareWithInvocationTarget:self] rotateAllLeft:nil];
+    [[self undoManager] setActionName:NSLocalizedString(@"Rotate", @"Undo action name")];
     [[self document] updateChangeCount:[undoManager isUndoing] ? NSChangeDone : NSChangeUndone];
     
     int i, count = [[pdfView document] pageCount];
@@ -951,6 +953,7 @@ static NSString *SKRightSidePaneWidthKey = @"SKRightSidePaneWidth";
 - (IBAction)rotateAllLeft:(id)sender {
     NSUndoManager *undoManager = [[self document] undoManager];
     [[undoManager prepareWithInvocationTarget:self] rotateAllRight:nil];
+    [[self undoManager] setActionName:NSLocalizedString(@"Rotate", @"Undo action name")];
     [[self document] updateChangeCount:[undoManager isUndoing] ? NSChangeDone : NSChangeUndone];
     
     int i, count = [[pdfView document] pageCount];
@@ -969,6 +972,7 @@ static NSString *SKRightSidePaneWidthKey = @"SKRightSidePaneWidth";
     NSRect oldRect = [[[pdfView document] pageAtIndex:index] boundsForBox:kPDFDisplayBoxCropBox];
     NSUndoManager *undoManager = [[self document] undoManager];
     [[undoManager prepareWithInvocationTarget:self] cropPageAtIndex:index toRect:oldRect];
+    [[self undoManager] setActionName:NSLocalizedString(@"Crop Page", @"Undo action name")];
     [[self document] updateChangeCount:[undoManager isUndoing] ? NSChangeDone : NSChangeUndone];
     
     PDFPage *page = [[pdfView document] pageAtIndex:index];
@@ -1010,6 +1014,7 @@ static NSString *SKRightSidePaneWidthKey = @"SKRightSidePaneWidth";
     
     NSUndoManager *undoManager = [[self document] undoManager];
     [[undoManager prepareWithInvocationTarget:self] cropPagesToRects:oldRects];
+    [[self undoManager] setActionName:NSLocalizedString(@"Crop", @"Undo action name")];
     [[self document] updateChangeCount:[undoManager isUndoing] ? NSChangeDone : NSChangeUndone];
     
     [pdfView layoutDocumentView];

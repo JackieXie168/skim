@@ -41,7 +41,8 @@
 /* Tool tip message */
 "Add New Note" = "Aggiungi Nuova Nota";
 
-/* Toolbar item label */
+/* Toolbar item label
+   Undo action name */
 "Add Note" = "Aggiungi Nota";
 
 /* Description for export
@@ -123,11 +124,15 @@
 "Copy Selected Text" = "Copia Testo Selezionato";
 
 /* Tool tip message
-   Toolbar item label */
+   Toolbar item label
+   Undo action name */
 "Crop" = "Ritaglia";
 
 /* Menu item title */
 "Crop Box" = "Rettangolo Ritaglio";
+
+/* Undo action name */
+"Crop Page" = "Ritaglia Pagina";
 
 /* Menu item title */
 "Cut" = "Taglia";
@@ -145,7 +150,8 @@
 /* Menu item title */
 "Edit Current Note" = "Modifica Nota Corrente";
 
-/* Menu item title */
+/* Undo action name
+   Menu item title */
 "Edit Note" = "Modifica Nota";
 
 /* Error description */
@@ -298,7 +304,8 @@
 /* Menu item title */
 "Remove Full Screen" = "Rimuovi Schermo Intero";
 
-/* Menu item title */
+/* Undo action name
+   Menu item title */
 "Remove Note" = "Rimuovi Nota";
 
 /* Menu item title */
@@ -316,9 +323,15 @@
 /* Button title */
 "Revert" = "Ripristina originale";
 
+/* Undo action name */
+"Rotate" = "Ruota";
+
 /* Tool tip message
    Toolbar item label */
 "Rotate Left" = "Ruota Sinistra";
+
+/* Undo action name */
+"Rotate Page" = "Ruota Pagina";
 
 /* Tool tip message
    Toolbar item label */

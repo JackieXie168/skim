@@ -168,6 +168,7 @@ static IMP originalSetColor = NULL;
 - (void)replacementSetBounds:(NSRect)bounds {
     if ([self isNoteAnnotation]) {
         [[[self undoManager] prepareWithInvocationTarget:self] setBounds:[self bounds]];
+        [[self undoManager] setActionName:NSLocalizedString(@"Edit Note", @"Undo action name")];
         [[NSNotificationCenter defaultCenter] postNotificationName:SKAnnotationWillChangeNotification 
                 object:self userInfo:[NSDictionary dictionaryWithObjectsAndKeys:@"bounds", @"key", nil]];
     }
@@ -178,8 +179,10 @@ static IMP originalSetColor = NULL;
 }
 
 - (void)replacementSetContents:(NSString *)contents {
-    if ([self isNoteAnnotation])
+    if ([self isNoteAnnotation]) {
         [[[self undoManager] prepareWithInvocationTarget:self] setContents:[self contents]];
+        [[self undoManager] setActionName:NSLocalizedString(@"Edit Note", @"Undo action name")];
+    }
     originalSetContents(self, _cmd, contents);
     if ([self isNoteAnnotation])
         [[NSNotificationCenter defaultCenter] postNotificationName:SKAnnotationDidChangeNotification 
@@ -187,8 +190,10 @@ static IMP originalSetColor = NULL;
 }
 
 - (void)replacementSetColor:(NSColor *)color {
-    if ([self isNoteAnnotation])
+    if ([self isNoteAnnotation]) {
         [[[self undoManager] prepareWithInvocationTarget:self] setColor:[self color]];
+        [[self undoManager] setActionName:NSLocalizedString(@"Edit Note", @"Undo action name")];
+    }
     originalSetColor(self, _cmd, color);
     if ([self isNoteAnnotation])
         [[NSNotificationCenter defaultCenter] postNotificationName:SKAnnotationDidChangeNotification 
@@ -658,6 +663,7 @@ static BOOL adjacentCharacterBounds(NSRect rect1, NSRect rect2) {
 
 - (void)setFont:(NSFont *)font {
     [[[self undoManager] prepareWithInvocationTarget:self] setFont:[self font]];
+    [[self undoManager] setActionName:NSLocalizedString(@"Edit Note", @"Undo action name")];
     [super setFont:font];
     [[NSNotificationCenter defaultCenter] postNotificationName:SKAnnotationDidChangeNotification 
             object:self userInfo:[NSDictionary dictionaryWithObjectsAndKeys:@"font", @"key", nil]];
@@ -724,6 +730,7 @@ static BOOL adjacentCharacterBounds(NSRect rect1, NSRect rect2) {
 - (void)setImage:(NSImage *)newImage;
 {
     [[[self undoManager] prepareWithInvocationTarget:self] setImage:[self image]];
+    [[self undoManager] setActionName:NSLocalizedString(@"Edit Note", @"Undo action name")];
     if (image != newImage) {
         [image release];
         image = [newImage retain];
@@ -751,6 +758,7 @@ static BOOL adjacentCharacterBounds(NSRect rect1, NSRect rect2) {
 - (void)textStorageWillProcessEditing:(NSNotification *)notification;
 {
     [[[self undoManager] prepareWithInvocationTarget:self] setText:text];
+    [[self undoManager] setActionName:NSLocalizedString(@"Edit Note", @"Undo action name")];
     [self willChangeValueForKey:@"text"];
 }
 
@@ -824,6 +832,7 @@ static BOOL adjacentCharacterBounds(NSRect rect1, NSRect rect2) {
 
 - (void)setStartPoint:(NSPoint)point {
     [[[self undoManager] prepareWithInvocationTarget:self] setStartPoint:[self startPoint]];
+    [[self undoManager] setActionName:NSLocalizedString(@"Edit Note", @"Undo action name")];
     [super setStartPoint:point];
     [[NSNotificationCenter defaultCenter] postNotificationName:SKAnnotationDidChangeNotification 
             object:self userInfo:[NSDictionary dictionaryWithObjectsAndKeys:@"startPoint", @"key", nil]];
@@ -831,6 +840,7 @@ static BOOL adjacentCharacterBounds(NSRect rect1, NSRect rect2) {
 
 - (void)setEndPoint:(NSPoint)point {
     [[[self undoManager] prepareWithInvocationTarget:self] setEndPoint:[self endPoint]];
+    [[self undoManager] setActionName:NSLocalizedString(@"Edit Note", @"Undo action name")];
     [super setEndPoint:point];
     [[NSNotificationCenter defaultCenter] postNotificationName:SKAnnotationDidChangeNotification 
             object:self userInfo:[NSDictionary dictionaryWithObjectsAndKeys:@"endPoint", @"key", nil]];
