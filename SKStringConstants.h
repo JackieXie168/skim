@@ -46,7 +46,7 @@ extern NSString *SKFullScreenBackgroundColorKey;
 extern NSString *SKLastOpenFileNamesKey;
 extern NSString *SKLastVersionLaunchedKey;
 extern NSString *SKOpenContentsPaneOnlyForTOCKey;
-extern NSString *SKOpenFilesMaximizedKey;
+extern NSString *SKInitialWindowSizeOptionKey;
 extern NSString *SKReopenLastOpenFilesKey;
 extern NSString *SKRememberLastPageViewedKey;
 extern NSString *SKAutoSaveSkimNotesKey;

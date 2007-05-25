@@ -18,8 +18,8 @@
         <array/>
         <key>SKOpenContentsPaneOnlyForTOC</key>
         <false/>
-        <key>SKOpenFilesMaximized</key>
-        <false/>
+        <key>SKInitialWindowSizeOption</key>
+        <integer>0</integer>
         <key>SKReopenLastOpenFiles</key>
         <false/>
         <key>SKRememberLastPageViewed</key>
@@ -159,7 +159,7 @@
         <key>general</key>
         <array>
             <string>SKReopenLastOpenFiles</string>
-            <string>SKOpenFilesMaximized</string>
+            <string>SKInitialWindowSizeOption</string>
             <string>SKOpenContentsPaneOnlyForTOC</string>
             <string>SKRememberLastPageViewed</string>
             <string>SKDefaultPDFDisplaySettings</string>

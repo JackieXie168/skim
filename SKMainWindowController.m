@@ -203,8 +203,9 @@ static NSString *SKRightSidePaneWidthKey = @"SKRightSidePaneWidth";
     [self setWindowFrameAutosaveNameOrCascade:SKMainWindowFrameAutosaveName];
     
     [[self window] setBackgroundColor:[NSColor colorWithDeviceWhite:0.9 alpha:1.0]];
-
-    if ([[NSUserDefaults standardUserDefaults] boolForKey:SKOpenFilesMaximizedKey])
+    
+    int windowSizeOption = [[NSUserDefaults standardUserDefaults] integerForKey:SKInitialWindowSizeOptionKey];
+    if (windowSizeOption == 1)
         [[self window] setFrame:[[NSScreen mainScreen] visibleFrame] display:NO];
     
     [self applyPDFSettings:[[NSUserDefaults standardUserDefaults] dictionaryForKey:SKDefaultPDFDisplaySettingsKey]];
@@ -267,6 +268,9 @@ static NSString *SKRightSidePaneWidthKey = @"SKRightSidePaneWidth";
         if (pageIndex != NSNotFound)
             [pdfView goToPage:[[pdfView document] pageAtIndex:pageIndex]];
     }
+    
+    if (windowSizeOption == 2)
+        [self performFit:self];
     
     [[self window] makeFirstResponder:[pdfView documentView]];
     
