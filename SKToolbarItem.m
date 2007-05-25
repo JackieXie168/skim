@@ -58,4 +58,20 @@
     }
 }
 
+- (void)setLabels:(NSString *)label {
+    [self setLabel:label];
+    [self setPaletteLabel:label];
+}
+
+- (void)setViewWithSizes:(NSView *)view {
+    [self setView:view];
+    [self setMinSize:[view bounds].size];
+    [self setMaxSize:[view bounds].size];
+}
+
+
+- (void)setImageNamed:(NSString *)name {
+    [self setImage:[NSImage imageNamed:name]];
+}
+
 @end

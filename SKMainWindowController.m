@@ -2748,7 +2748,7 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
 - (void)setupToolbar {
     // Create a new toolbar instance, and attach it to our document window
     NSToolbar *toolbar = [[[NSToolbar alloc] initWithIdentifier:SKDocumentToolbarIdentifier] autorelease];
-    NSToolbarItem *item;
+    SKToolbarItem *item;
     NSRect frame;
     NSMenu *menu;
     NSMenuItem *menuItem;
@@ -2766,20 +2766,18 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
     // Add template toolbar items
     
     item = [[SKToolbarItem alloc] initWithItemIdentifier:SKDocumentToolbarPreviousItemIdentifier];
-    [item setLabel:NSLocalizedString(@"Previous", @"Toolbar item label")];
-    [item setPaletteLabel:NSLocalizedString(@"Previous", @"Toolbar item label")];
+    [item setLabels:NSLocalizedString(@"Previous", @"Toolbar item label")];
     [item setToolTip:NSLocalizedString(@"Go To Previous Page", @"Tool tip message")];
-    [item setImage:[NSImage imageNamed:@"ToolbarPrevious"]];
+    [item setImageNamed:@"ToolbarPrevious"];
     [item setTarget:self];
     [item setAction:@selector(doGoToPreviousPage:)];
     [toolbarItems setObject:item forKey:SKDocumentToolbarPreviousItemIdentifier];
     [item release];
     
     item = [[SKToolbarItem alloc] initWithItemIdentifier:SKDocumentToolbarNextItemIdentifier];
-    [item setLabel:NSLocalizedString(@"Next", @"Toolbar item label")];
-    [item setPaletteLabel:NSLocalizedString(@"Next", @"Toolbar item label")];
+    [item setLabels:NSLocalizedString(@"Next", @"Toolbar item label")];
     [item setToolTip:NSLocalizedString(@"Go To Next Page", @"Tool tip message")];
-    [item setImage:[NSImage imageNamed:@"ToolbarNext"]];
+    [item setImageNamed:@"ToolbarNext"];
     [item setTarget:self];
     [item setAction:@selector(doGoToNextPage:)];
     [toolbarItems setObject:item forKey:SKDocumentToolbarNextItemIdentifier];
@@ -2794,17 +2792,14 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
 	menuItem = [[[NSMenuItem allocWithZone:[NSMenu menuZone]] initWithTitle:NSLocalizedString(@"Back/Forward", @"Toolbar item label") action:NULL keyEquivalent:@""] autorelease];
     [menuItem setSubmenu:menu];
     item = [[SKToolbarItem alloc] initWithItemIdentifier:SKDocumentToolbarBackForwardItemIdentifier];
-    [item setLabel:NSLocalizedString(@"Back/Forward", @"Toolbar item label")];
-    [item setPaletteLabel:NSLocalizedString(@"Back/Forward", @"Toolbar item label")];
+    [item setLabels:NSLocalizedString(@"Back/Forward", @"Toolbar item label")];
     [item setToolTip:NSLocalizedString(@"Back/Forward", @"Tool tip message")];
     [[backForwardButton cell] setToolTip:NSLocalizedString(@"Go Back", @"Tool tip message") forSegment:0];
     [[backForwardButton cell] setToolTip:NSLocalizedString(@"Go Forward", @"Tool tip message") forSegment:1];
     frame = [backForwardButton frame];
     frame.size.height = SEGMENTED_CONTROL_HEIGHT;
     [backForwardButton setFrame:frame];
-    [item setView:backForwardButton];
-    [item setMinSize:[backForwardButton bounds].size];
-    [item setMaxSize:[backForwardButton bounds].size];
+    [item setViewWithSizes:backForwardButton];
     [item setMenuFormRepresentation:menuItem];
     [toolbarItems setObject:item forKey:SKDocumentToolbarBackForwardItemIdentifier];
     [item release];
@@ -2814,12 +2809,9 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
 									                          keyEquivalent:@""] autorelease];
 	[menuItem setTarget:self];
     item = [[SKToolbarItem alloc] initWithItemIdentifier:SKDocumentToolbarPageNumberItemIdentifier];
-    [item setLabel:NSLocalizedString(@"Page", @"Toolbar item label")];
-    [item setPaletteLabel:NSLocalizedString(@"Page", @"Toolbar item label")];
+    [item setLabels:NSLocalizedString(@"Page", @"Toolbar item label")];
     [item setToolTip:NSLocalizedString(@"Go To Page", @"Tool tip message")];
-    [item setView:pageNumberView];
-    [item setMinSize:[pageNumberView bounds].size];
-    [item setMaxSize:[pageNumberView bounds].size];
+    [item setViewWithSizes:pageNumberView];
     [item setMenuFormRepresentation:menuItem];
     [toolbarItems setObject:item forKey:SKDocumentToolbarPageNumberItemIdentifier];
     [item release];
@@ -2830,20 +2822,16 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
 	[menuItem setTarget:self];
     item = [[SKToolbarItem alloc] initWithItemIdentifier:SKDocumentToolbarScaleItemIdentifier];
     [item setLabel:NSLocalizedString(@"Scale", @"Toolbar item label")];
-    [item setPaletteLabel:NSLocalizedString(@"Scale", @"Toolbar item label")];
     [item setToolTip:NSLocalizedString(@"Scale", @"Tool tip message")];
-    [item setView:scaleField];
-    [item setMinSize:[scaleField bounds].size];
-    [item setMaxSize:[scaleField bounds].size];
+    [item setViewWithSizes:scaleField];
     [item setMenuFormRepresentation:menuItem];
     [toolbarItems setObject:item forKey:SKDocumentToolbarScaleItemIdentifier];
     [item release];
     
     item = [[SKToolbarItem alloc] initWithItemIdentifier:SKDocumentToolbarZoomInItemIdentifier];
     [item setLabel:NSLocalizedString(@"Zoom In", @"Toolbar item label")];
-    [item setPaletteLabel:NSLocalizedString(@"Zoom In", @"Toolbar item label")];
     [item setToolTip:NSLocalizedString(@"Zoom In", @"Tool tip message")];
-    [item setImage:[NSImage imageNamed:@"ToolbarZoomIn"]];
+    [item setImageNamed:@"ToolbarZoomIn"];
     [item setTarget:self];
     [item setAction:@selector(doZoomIn:)];
     [toolbarItems setObject:item forKey:SKDocumentToolbarZoomInItemIdentifier];
@@ -2851,9 +2839,8 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
     
     item = [[SKToolbarItem alloc] initWithItemIdentifier:SKDocumentToolbarZoomOutItemIdentifier];
     [item setLabel:NSLocalizedString(@"Zoom Out", @"Toolbar item label")];
-    [item setPaletteLabel:NSLocalizedString(@"Zoom Out", @"Toolbar item label")];
     [item setToolTip:NSLocalizedString(@"Zoom Out", @"Tool tip message")];
-    [item setImage:[NSImage imageNamed:@"ToolbarZoomOut"]];
+    [item setImageNamed:@"ToolbarZoomOut"];
     [item setTarget:self];
     [item setAction:@selector(doZoomOut:)];
     [toolbarItems setObject:item forKey:SKDocumentToolbarZoomOutItemIdentifier];
@@ -2861,9 +2848,8 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
     
     item = [[SKToolbarItem alloc] initWithItemIdentifier:SKDocumentToolbarZoomActualItemIdentifier];
     [item setLabel:NSLocalizedString(@"Actual Size", @"Toolbar item label")];
-    [item setPaletteLabel:NSLocalizedString(@"Actual Size", @"Toolbar item label")];
     [item setToolTip:NSLocalizedString(@"Zoom To Actual Size", @"Tool tip message")];
-    [item setImage:[NSImage imageNamed:@"ToolbarZoomActual"]];
+    [item setImageNamed:@"ToolbarZoomActual"];
     [item setTarget:self];
     [item setAction:@selector(doZoomToActualSize:)];
     [toolbarItems setObject:item forKey:SKDocumentToolbarZoomActualItemIdentifier];
@@ -2871,9 +2857,8 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
     
     item = [[SKToolbarItem alloc] initWithItemIdentifier:SKDocumentToolbarZoomToFitItemIdentifier];
     [item setLabel:NSLocalizedString(@"Zoom To Fit", @"Toolbar item label")];
-    [item setPaletteLabel:NSLocalizedString(@"Zoom To Fit", @"Toolbar item label")];
     [item setToolTip:NSLocalizedString(@"Zoom To Fit", @"Tool tip message")];
-    [item setImage:[NSImage imageNamed:@"ToolbarZoomToFit"]];
+    [item setImageNamed:@"ToolbarZoomToFit"];
     [item setTarget:self];
     [item setAction:@selector(doZoomToFit:)];
     [toolbarItems setObject:item forKey:SKDocumentToolbarZoomToFitItemIdentifier];
@@ -2881,9 +2866,8 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
     
     item = [[SKToolbarItem alloc] initWithItemIdentifier:SKDocumentToolbarRotateRightItemIdentifier];
     [item setLabel:NSLocalizedString(@"Rotate Right", @"Toolbar item label")];
-    [item setPaletteLabel:NSLocalizedString(@"Rotate Right", @"Toolbar item label")];
     [item setToolTip:NSLocalizedString(@"Rotate Right", @"Tool tip message")];
-    [item setImage:[NSImage imageNamed:@"ToolbarRotateRight"]];
+    [item setImageNamed:@"ToolbarRotateRight"];
     [item setTarget:self];
     [item setAction:@selector(rotateAllRight:)];
     [toolbarItems setObject:item forKey:SKDocumentToolbarRotateRightItemIdentifier];
@@ -2891,9 +2875,8 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
     
     item = [[SKToolbarItem alloc] initWithItemIdentifier:SKDocumentToolbarRotateLeftItemIdentifier];
     [item setLabel:NSLocalizedString(@"Rotate Left", @"Toolbar item label")];
-    [item setPaletteLabel:NSLocalizedString(@"Rotate Left", @"Toolbar item label")];
     [item setToolTip:NSLocalizedString(@"Rotate Left", @"Tool tip message")];
-    [item setImage:[NSImage imageNamed:@"ToolbarRotateLeft"]];
+    [item setImageNamed:@"ToolbarRotateLeft"];
     [item setTarget:self];
     [item setAction:@selector(rotateAllLeft:)];
     [toolbarItems setObject:item forKey:SKDocumentToolbarRotateLeftItemIdentifier];
@@ -2901,9 +2884,8 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
     
     item = [[SKToolbarItem alloc] initWithItemIdentifier:SKDocumentToolbarCropItemIdentifier];
     [item setLabel:NSLocalizedString(@"Crop", @"Toolbar item label")];
-    [item setPaletteLabel:NSLocalizedString(@"Crop", @"Toolbar item label")];
     [item setToolTip:NSLocalizedString(@"Crop", @"Tool tip message")];
-    [item setImage:[NSImage imageNamed:@"ToolbarCrop"]];
+    [item setImageNamed:@"ToolbarCrop"];
     [item setTarget:self];
     [item setAction:@selector(cropAll:)];
     [toolbarItems setObject:item forKey:SKDocumentToolbarCropItemIdentifier];
@@ -2911,9 +2893,8 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
     
     item = [[SKToolbarItem alloc] initWithItemIdentifier:SKDocumentToolbarFullScreenItemIdentifier];
     [item setLabel:NSLocalizedString(@"Full Screen", @"Toolbar item label")];
-    [item setPaletteLabel:NSLocalizedString(@"Full Screen", @"Toolbar item label")];
     [item setToolTip:NSLocalizedString(@"Full Screen", @"Tool tip message")];
-    [item setImage:[NSImage imageNamed:@"ToolbarFullScreen"]];
+    [item setImageNamed:@"ToolbarFullScreen"];
     [item setTarget:self];
     [item setAction:@selector(enterFullScreen:)];
     [toolbarItems setObject:item forKey:SKDocumentToolbarFullScreenItemIdentifier];
@@ -2921,9 +2902,8 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
     
     item = [[SKToolbarItem alloc] initWithItemIdentifier:SKDocumentToolbarPresentationItemIdentifier];
     [item setLabel:NSLocalizedString(@"Presentation", @"Toolbar item label")];
-    [item setPaletteLabel:NSLocalizedString(@"Presentation", @"Toolbar item label")];
     [item setToolTip:NSLocalizedString(@"Presentation", @"Tool tip message")];
-    [item setImage:[NSImage imageNamed:@"ToolbarPresentation"]];
+    [item setImageNamed:@"ToolbarPresentation"];
     [item setTarget:self];
     [item setAction:@selector(enterPresentation:)];
     [toolbarItems setObject:item forKey:SKDocumentToolbarPresentationItemIdentifier];
@@ -2942,12 +2922,9 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
     [menuItem setSubmenu:menu];
     item = [[SKToolbarItem alloc] initWithItemIdentifier:SKDocumentToolbarNewNoteItemIdentifier];
     [item setLabel:NSLocalizedString(@"Add Note", @"Toolbar item label")];
-    [item setPaletteLabel:NSLocalizedString(@"Add Note", @"Toolbar item label")];
     [item setToolTip:NSLocalizedString(@"Add New Note", @"Tool tip message")];
     [item setTarget:self];
-    [item setView:notePopUpButton];
-    [item setMinSize:[notePopUpButton bounds].size];
-    [item setMaxSize:[notePopUpButton bounds].size];
+    [item setViewWithSizes:notePopUpButton];
     [item setMenuFormRepresentation:menuItem];
     [toolbarItems setObject:item forKey:SKDocumentToolbarNewNoteItemIdentifier];
     [item release];
@@ -2972,12 +2949,9 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
     [menuItem setSubmenu:menu];
     item = [[SKToolbarItem alloc] initWithItemIdentifier:SKDocumentToolbarNewCircleNoteItemIdentifier];
     [item setLabel:NSLocalizedString(@"Add Circle", @"Toolbar item label")];
-    [item setPaletteLabel:NSLocalizedString(@"Add Circle", @"Toolbar item label")];
     [item setToolTip:NSLocalizedString(@"Add New Circle", @"Tool tip message")];
     [item setTarget:self];
-    [item setView:circlePopUpButton];
-    [item setMinSize:[circlePopUpButton bounds].size];
-    [item setMaxSize:[circlePopUpButton bounds].size];
+    [item setViewWithSizes:circlePopUpButton];
     [item setMenuFormRepresentation:menuItem];
     [toolbarItems setObject:item forKey:SKDocumentToolbarNewCircleNoteItemIdentifier];
     [item release];
@@ -3006,24 +2980,20 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
     [menuItem setSubmenu:menu];
     item = [[SKToolbarItem alloc] initWithItemIdentifier:SKDocumentToolbarNewMarkupItemIdentifier];
     [item setLabel:NSLocalizedString(@"Add Markup", @"Toolbar item label")];
-    [item setPaletteLabel:NSLocalizedString(@"Add Markup", @"Toolbar item label")];
     [item setToolTip:NSLocalizedString(@"Add New Markup", @"Tool tip message")];
     [item setTarget:self];
-    [item setView:markupPopUpButton];
-    [item setMinSize:[markupPopUpButton bounds].size];
-    [item setMaxSize:[markupPopUpButton bounds].size];
+    [item setViewWithSizes:markupPopUpButton];
     [item setMenuFormRepresentation:menuItem];
     [toolbarItems setObject:item forKey:SKDocumentToolbarNewMarkupItemIdentifier];
     [item release];
     
     item = [[SKToolbarItem alloc] initWithItemIdentifier:SKDocumentToolbarNewArrowItemIdentifier];
     [item setLabel:NSLocalizedString(@"Add Arrow", @"Toolbar item label")];
-    [item setPaletteLabel:NSLocalizedString(@"Add Arrow", @"Toolbar item label")];
     [item setToolTip:NSLocalizedString(@"Add New Arrow", @"Tool tip message")];
     [item setTag:SKArrowNote];
     [item setTarget:self];
     [item setAction:@selector(createNewNote:)];
-    [item setImage:[NSImage imageNamed:@"ToolbarArrowNote"]];
+    [item setImageNamed:@"ToolbarArrowNote"];
     [toolbarItems setObject:item forKey:SKDocumentToolbarNewArrowItemIdentifier];
     [item release];
     
@@ -3076,7 +3046,6 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
     [menuItem setSubmenu:menu];
     item = [[SKToolbarItem alloc] initWithItemIdentifier:SKDocumentToolbarToolModeItemIdentifier];
     [item setLabel:NSLocalizedString(@"Tool Mode", @"Toolbar item label")];
-    [item setPaletteLabel:NSLocalizedString(@"Tool Mode", @"Toolbar item label")];
     [item setToolTip:NSLocalizedString(@"Tool Mode", @"Tool tip message")];
     [[toolModeButton cell] setToolTip:NSLocalizedString(@"Text Tool", @"Tool tip message") forSegment:SKTextToolMode];
     [[toolModeButton cell] setToolTip:NSLocalizedString(@"Scroll Tool", @"Tool tip message") forSegment:SKMoveToolMode];
@@ -3086,9 +3055,7 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
     frame = [toolModeButton frame];
     frame.size.height = SEGMENTED_CONTROL_HEIGHT;
     [toolModeButton setFrame:frame];
-    [item setView:toolModeButton];
-    [item setMinSize:[toolModeButton bounds].size];
-    [item setMaxSize:[toolModeButton bounds].size];
+    [item setViewWithSizes:toolModeButton];
     [item setMenuFormRepresentation:menuItem];
     [toolbarItems setObject:item forKey:SKDocumentToolbarToolModeItemIdentifier];
     [item release];
@@ -3138,20 +3105,16 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
     [menuItem setSubmenu:menu];
     item = [[SKToolbarItem alloc] initWithItemIdentifier:SKDocumentToolbarDisplayBoxItemIdentifier];
     [item setLabel:NSLocalizedString(@"Display Box", @"Toolbar item label")];
-    [item setPaletteLabel:NSLocalizedString(@"Display Box", @"Toolbar item label")];
     [item setToolTip:NSLocalizedString(@"Display Box", @"Tool tip message")];
-    [item setView:displayBoxPopUpButton];
-    [item setMinSize:[displayBoxPopUpButton bounds].size];
-    [item setMaxSize:[displayBoxPopUpButton bounds].size];
+    [item setViewWithSizes:displayBoxPopUpButton];
     [item setMenuFormRepresentation:menuItem];
     [toolbarItems setObject:item forKey:SKDocumentToolbarDisplayBoxItemIdentifier];
     [item release];
     
     item = [[SKToolbarItem alloc] initWithItemIdentifier:SKDocumentToolbarInfoItemIdentifier];
     [item setLabel:NSLocalizedString(@"Info", @"Toolbar item label")];
-    [item setPaletteLabel:NSLocalizedString(@"Info", @"Toolbar item label")];
     [item setToolTip:NSLocalizedString(@"Get Document Info", @"Tool tip message")];
-    [item setImage:[NSImage imageNamed:@"ToolbarInfo"]];
+    [item setImageNamed:@"ToolbarInfo"];
     [item setTarget:self];
     [item setAction:@selector(getInfo:)];
     [toolbarItems setObject:item forKey:SKDocumentToolbarInfoItemIdentifier];
@@ -3159,9 +3122,8 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
     
     item = [[SKToolbarItem alloc] initWithItemIdentifier:SKDocumentToolbarContentsPaneItemIdentifier];
     [item setLabel:NSLocalizedString(@"Contents Pane", @"Toolbar item label")];
-    [item setPaletteLabel:NSLocalizedString(@"Contents Pane", @"Toolbar item label")];
     [item setToolTip:NSLocalizedString(@"Toggle Contents Pane", @"Tool tip message")];
-    [item setImage:[NSImage imageNamed:@"ToolbarLeftPane"]];
+    [item setImageNamed:@"ToolbarLeftPane"];
     [item setTarget:self];
     [item setAction:@selector(toggleLeftSidePane:)];
     [toolbarItems setObject:item forKey:SKDocumentToolbarContentsPaneItemIdentifier];
@@ -3169,9 +3131,8 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
     
     item = [[SKToolbarItem alloc] initWithItemIdentifier:SKDocumentToolbarNotesPaneItemIdentifier];
     [item setLabel:NSLocalizedString(@"Notes Pane", @"Toolbar item label")];
-    [item setPaletteLabel:NSLocalizedString(@"Notes Pane", @"Toolbar item label")];
     [item setToolTip:NSLocalizedString(@"Toggle Notes Pane", @"Tool tip message")];
-    [item setImage:[NSImage imageNamed:@"ToolbarRightPane"]];
+    [item setImageNamed:@"ToolbarRightPane"];
     [item setTarget:self];
     [item setAction:@selector(toggleRightSidePane:)];
     [toolbarItems setObject:item forKey:SKDocumentToolbarNotesPaneItemIdentifier];
@@ -3183,12 +3144,12 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
 
 - (NSToolbarItem *) toolbar:(NSToolbar *)toolbar itemForItemIdentifier:(NSString *)itemIdent willBeInsertedIntoToolbar:(BOOL) willBeInserted {
 
-    NSToolbarItem *item = [toolbarItems objectForKey:itemIdent];
-    NSToolbarItem *newItem = [[item copy] autorelease];
+    SKToolbarItem *item = [toolbarItems objectForKey:itemIdent];
+    SKToolbarItem *newItem = [[item copy] autorelease];
     // the view should not be copied
     if ([item view] && willBeInserted) {
         [newItem setView:[item view]];
-        [(SKToolbarItem *)newItem setDelegate:self];
+        [newItem setDelegate:self];
     }
     return newItem;
 }

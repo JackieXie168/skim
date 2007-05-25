@@ -46,4 +46,8 @@
 - (id)delegate;
 - (void)setDelegate:(id)newDelegate;
 
+- (void)setLabels:(NSString *)label;
+- (void)setViewWithSizes:(NSView *)view;
+- (void)setImageNamed:(NSString *)name;
+
 @end
