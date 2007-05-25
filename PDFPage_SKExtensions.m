@@ -71,6 +71,8 @@ static IMP originalDealloc = NULL;
     
     NSValue *rectValue = nil;
     if (FALSE == CFDictionaryGetValueIfPresent(_bboxCache, (void *)self, (const void **)&rectValue)) {
+        float marginWidth = [[NSUserDefaults standardUserDefaults] floatForKey:@"SKAutoCropBoxMarginWidth"];
+        float marginHeight = [[NSUserDefaults standardUserDefaults] floatForKey:@"SKAutoCropBoxMarginHeight"];
         NSBitmapImageRep *imageRep = [[NSBitmapImageRep alloc] initWithPDFPage:self forBox:kPDFDisplayBoxMediaBox];
         NSRect r = imageRep ? [imageRep foregroundRect] : NSZeroRect;
         NSRect b = [self boundsForBox:kPDFDisplayBoxMediaBox];
@@ -83,7 +85,7 @@ static IMP originalDealloc = NULL;
             r.origin.y += NSMinY(b);
         }
         [imageRep release];
-        r = NSIntersectionRect(NSInsetRect(r, -FOREGROUND_BOX_MARGIN, -FOREGROUND_BOX_MARGIN), b);
+        r = NSIntersectionRect(NSInsetRect(r, -marginWidth, -marginHeight), b);
         rectValue = [NSValue valueWithRect:r];
         CFDictionarySetValue(_bboxCache, (void *)self, (void *)rectValue);
     }
