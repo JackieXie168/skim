@@ -1078,6 +1078,14 @@ static NSString *SKRightSidePaneWidthKey = @"SKRightSidePaneWidth";
     [pdfView setCurrentSelectionRect:NSZeroRect];
 }
 
+- (IBAction)autoCropAll:(id)sender {
+    NSMutableArray *rectArray = [NSMutableArray array];
+    int i, iMax = [[pdfView document] pageCount];
+    for (i = 0; i < iMax; i++)
+        [rectArray addObject:[NSValue valueWithRect:[[[pdfView document] pageAtIndex:i] foregroundBox]]];
+    [self cropPagesToRects:rectArray];
+}
+
 - (IBAction)autoSelectContent:(id)sender {
     [pdfView autoSelectContent:sender];
 }
