@@ -147,6 +147,10 @@
         <integer>-1</integer>
         <key>SKBlankAllWindows</key>
         <false/>
+        <key>SKAutoCropBoxMarginHeight</key>
+        <real>10.0</real>
+        <key>SKAutoCropBoxMarginWidth</key>
+        <real>10.0</real>
         <key>SUScheduledCheckInterval</key>
         <integer>86400</integer>
     </dict>
