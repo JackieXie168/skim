@@ -85,7 +85,8 @@ static NSString *SKDocumentToolbarScaleItemIdentifier = @"SKDocumentToolbarScale
 static NSString *SKDocumentToolbarZoomInItemIdentifier = @"SKDocumentZoomInToolbarItemIdentifier";
 static NSString *SKDocumentToolbarZoomOutItemIdentifier = @"SKDocumentZoomOutToolbarItemIdentifier";
 static NSString *SKDocumentToolbarZoomActualItemIdentifier = @"SKDocumentZoomActualToolbarItemIdentifier";
-static NSString *SKDocumentToolbarZoomToFitItemIdentifier = @"SKDocumentZoomAutoToolbarItemIdentifier";
+static NSString *SKDocumentToolbarZoomToSelectionItemIdentifier = @"SKDocumentToolbarZoomToSelectionItemIdentifier";
+static NSString *SKDocumentToolbarZoomToFitItemIdentifier = @"SKDocumentToolbarZoomToFitItemIdentifier";
 static NSString *SKDocumentToolbarRotateRightItemIdentifier = @"SKDocumentRotateRightToolbarItemIdentifier";
 static NSString *SKDocumentToolbarRotateLeftItemIdentifier = @"SKDocumentRotateLeftToolbarItemIdentifier";
 static NSString *SKDocumentToolbarCropItemIdentifier = @"SKDocumentToolbarCropItemIdentifier";
@@ -881,6 +882,22 @@ static NSString *SKRightSidePaneWidthKey = @"SKRightSidePaneWidth";
 
 - (IBAction)doZoomToActualSize:(id)sender {
     [pdfView setScaleFactor:1.0];
+}
+
+- (IBAction)doZoomToSelection:(id)sender {
+    NSRect selRect = [pdfView currentSelectionRect];
+    if (NSIsEmptyRect(selRect) == NO) {
+        NSRect bounds = [pdfView bounds];
+        float scale = 1.0;
+        bounds.size.width -= [NSScroller scrollerWidth];
+        bounds.size.height -= [NSScroller scrollerWidth];
+        if (NSWidth(bounds) / NSHeight(bounds) > NSWidth(selRect) / NSHeight(selRect))
+            scale = NSHeight(bounds) / NSHeight(selRect);
+        else
+            scale = NSWidth(bounds) / NSWidth(selRect);
+        [pdfView setScaleFactor:scale];
+        [pdfView scrollRect:selRect inPageToVisible:[pdfView currentPage]]; 
+    } else NSBeep();
 }
 
 - (IBAction)doZoomToFit:(id)sender {
@@ -2855,6 +2872,15 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
     [toolbarItems setObject:item forKey:SKDocumentToolbarZoomActualItemIdentifier];
     [item release];
     
+    item = [[SKToolbarItem alloc] initWithItemIdentifier:SKDocumentToolbarZoomToSelectionItemIdentifier];
+    [item setLabels:NSLocalizedString(@"Zoom To Selection", @"Toolbar item label")];
+    [item setToolTip:NSLocalizedString(@"Zoom To Selection", @"Tool tip message")];
+    [item setImageNamed:@"ToolbarZoomToSelection"];
+    [item setTarget:self];
+    [item setAction:@selector(doZoomToSelection:)];
+    [toolbarItems setObject:item forKey:SKDocumentToolbarZoomToSelectionItemIdentifier];
+    [item release];
+    
     item = [[SKToolbarItem alloc] initWithItemIdentifier:SKDocumentToolbarZoomToFitItemIdentifier];
     [item setLabels:NSLocalizedString(@"Zoom To Fit", @"Toolbar item label")];
     [item setToolTip:NSLocalizedString(@"Zoom To Fit", @"Tool tip message")];
@@ -3181,6 +3207,7 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
         SKDocumentToolbarZoomInItemIdentifier, 
         SKDocumentToolbarZoomOutItemIdentifier, 
         SKDocumentToolbarZoomActualItemIdentifier, 
+        SKDocumentToolbarZoomToSelectionItemIdentifier, 
         SKDocumentToolbarZoomToFitItemIdentifier, 
         SKDocumentToolbarRotateRightItemIdentifier, 
         SKDocumentToolbarRotateLeftItemIdentifier, 
@@ -3213,6 +3240,8 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
         return [pdfView canGoToNextPage];
     } else if ([identifier isEqualToString:SKDocumentToolbarZoomInItemIdentifier]) {
         return [pdfView canZoomIn];
+    } else if ([identifier isEqualToString:SKDocumentToolbarZoomToSelectionItemIdentifier]) {
+        return NSIsEmptyRect([pdfView currentSelectionRect]) == NO;
     } else if ([identifier isEqualToString:SKDocumentToolbarZoomToFitItemIdentifier]) {
         return [pdfView autoScales] == NO;
     } else if ([identifier isEqualToString:SKDocumentToolbarZoomActualItemIdentifier]) {
@@ -3286,6 +3315,8 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
         return [pdfView canZoomOut];
     } else if (action == @selector(doZoomToActualSize:)) {
         return fabs([pdfView scaleFactor] - 1.0 ) > 0.01;
+    } else if (action == @selector(doZoomToSelection:)) {
+        return NSIsEmptyRect([pdfView currentSelectionRect]) == NO;
     } else if (action == @selector(doZoomToFit:)) {
         return [pdfView autoScales] == NO;
     } else if (action == @selector(doAutoScale:)) {

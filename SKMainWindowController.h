@@ -194,6 +194,7 @@ typedef struct _SKPDFViewState {
 - (IBAction)doZoomOut:(id)sender;
 - (IBAction)doZoomToActualSize:(id)sender;
 - (IBAction)doZoomToFit:(id)sender;
+- (IBAction)doZoomToSelection:(id)sender;
 - (IBAction)doAutoScale:(id)sender;
 - (IBAction)toggleAutoScale:(id)sender;
 - (IBAction)toggleAutoActualSize:(id)sender;

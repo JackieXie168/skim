@@ -49,6 +49,7 @@
 		8D15AC310486D014006FF6A4 /* SKDocument.m in Sources */ = {isa = PBXBuildFile; fileRef = 2A37F4ACFDCFA73011CA2CEA /* SKDocument.m */; settings = {ATTRIBUTES = (); }; };
 		8D15AC320486D014006FF6A4 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 2A37F4B0FDCFA73011CA2CEA /* main.m */; settings = {ATTRIBUTES = (); }; };
 		8D15AC340486D014006FF6A4 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1058C7A7FEA54F5311CA2CBB /* Cocoa.framework */; };
+		CE01D08C0C07157200FA32EF /* ToolbarZoomToSelection.tiff in Resources */ = {isa = PBXBuildFile; fileRef = CE01D08B0C07157100FA32EF /* ToolbarZoomToSelection.tiff */; };
 		CE0463CB0B84D24300C11E4A /* SKApplication.m in Sources */ = {isa = PBXBuildFile; fileRef = CE0463CA0B84D24300C11E4A /* SKApplication.m */; };
 		CE0464A20B84E3E400C11E4A /* OBUtilities.m in Sources */ = {isa = PBXBuildFile; fileRef = CE0464A10B84E3E400C11E4A /* OBUtilities.m */; };
 		CE0465070B850D7C00C11E4A /* ToolbarLeftPane.tiff in Resources */ = {isa = PBXBuildFile; fileRef = CE0465050B850D7C00C11E4A /* ToolbarLeftPane.tiff */; };
@@ -309,7 +310,7 @@
 		45A3BD380B4F097D002B297F /* InitialUserDefaults.plist */ = {isa = PBXFileReference; explicitFileType = text.xml; fileEncoding = 4; path = InitialUserDefaults.plist; sourceTree = "<group>"; };
 		45B113BF0B329A7E00DE0660 /* LICENSE */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = LICENSE; sourceTree = "<group>"; };
 		8D15AC360486D014006FF6A4 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = Info.plist; sourceTree = "<group>"; };
-		8D15AC370486D014006FF6A4 /* Skim.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = Skim.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		8D15AC370486D014006FF6A4 /* Skim.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Skim.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		A489FDBA0BC8E8D100BA14DD /* Italian */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = Italian; path = Italian.lproj/InfoWindow.nib; sourceTree = "<group>"; };
 		A489FDBD0BC8E8DA00BA14DD /* Italian */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = Italian; path = Italian.lproj/MainMenu.nib; sourceTree = "<group>"; };
 		A489FDC00BC8E8DF00BA14DD /* Italian */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = Italian; path = Italian.lproj/MainWindow.nib; sourceTree = "<group>"; };
@@ -326,6 +327,7 @@
 		A489FDE40BC8E93D00BA14DD /* Italian */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = Italian; path = Italian.lproj/Localizable.strings; sourceTree = "<group>"; };
 		A489FDE70BC8E94200BA14DD /* Italian */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = Italian; path = Italian.lproj/ZoomValues.strings; sourceTree = "<group>"; };
 		A489FE240BC8E97800BA14DD /* Italian */ = {isa = PBXFileReference; lastKnownFileType = folder; name = Italian; path = "Italian.lproj/Skim Help"; sourceTree = "<group>"; };
+		CE01D08B0C07157100FA32EF /* ToolbarZoomToSelection.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; name = ToolbarZoomToSelection.tiff; path = Images/ToolbarZoomToSelection.tiff; sourceTree = "<group>"; };
 		CE0463C90B84D24300C11E4A /* SKApplication.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SKApplication.h; sourceTree = "<group>"; };
 		CE0463CA0B84D24300C11E4A /* SKApplication.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SKApplication.m; sourceTree = "<group>"; };
 		CE0464A00B84E3E400C11E4A /* OBUtilities.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OBUtilities.h; sourceTree = "<group>"; };
@@ -931,6 +933,7 @@
 				CE5478C40B33456300F8AFB6 /* ToolbarZoomActual.tiff */,
 				CE5478C50B33456300F8AFB6 /* ToolbarZoomIn.tiff */,
 				CE5478C60B33456300F8AFB6 /* ToolbarZoomOut.tiff */,
+				CE01D08B0C07157100FA32EF /* ToolbarZoomToSelection.tiff */,
 				CE5478C70B33456300F8AFB6 /* ToolbarZoomToFit.tiff */,
 				CE7467540B7F321100CBF969 /* zoomInCursor.tiff */,
 				CE7467550B7F321A00CBF969 /* zoomOutCursor.tiff */,
@@ -1154,6 +1157,7 @@
 				CE468C480BF1F0F60007AA12 /* AnchoredNoteToolAdorn.tiff in Resources */,
 				CECBA5910BFCEE260030AB59 /* SelectToolAdorn.tiff in Resources */,
 				CE31AC4E0C02E919003612A9 /* ToolbarCrop.tiff in Resources */,
+				CE01D08C0C07157200FA32EF /* ToolbarZoomToSelection.tiff in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -511,3 +511,7 @@
    Toolbar item label */
 "Zoom To Fit" = "Adatta alla finestra";
 
+/* Tool tip message
+   Toolbar item label */
+"Zoom To Selection" = "Ingrandisci la selezione";
+
