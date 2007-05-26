@@ -168,4 +168,73 @@ CFStringRef SKStringCreateByCollapsingAndTrimmingWhitespaceAndNewlines(CFAllocat
     return arguments;
 }
 
+#pragma mark Empty lines
+
+// whitespace at the beginning of the string up to the end or until (and including) a newline
+- (NSRange)rangeOfLeadingEmptyLine {
+    return [self rangeOfLeadingEmptyLineInRange:NSMakeRange(0, [self length])];
+}
+
+- (NSRange)rangeOfLeadingEmptyLineInRange:(NSRange)range {
+    NSRange firstCharRange = [self rangeOfCharacterFromSet:[NSCharacterSet nonWhitespaceCharacterSet] options:0 range:range];
+    NSRange wsRange = NSMakeRange(NSNotFound, 0);
+    unsigned int start = range.location;
+    if (firstCharRange.location == NSNotFound) {
+        wsRange = range;
+    } else {
+        unichar firstChar = [self characterAtIndex:firstCharRange.location];
+        unsigned int rangeEnd = NSMaxRange(firstCharRange);
+        if([[NSCharacterSet newlineCharacterSet] characterIsMember:firstChar]) {
+            if (firstChar == '\r' && rangeEnd < NSMaxRange(range) && [self characterAtIndex:rangeEnd] == '\n')
+                wsRange = NSMakeRange(start, rangeEnd + 1 - start);
+            else 
+                wsRange = NSMakeRange(start, rangeEnd - start);
+        }
+    }
+    return wsRange;
+}
+
+// whitespace at the end of the string from the beginning or after a newline
+- (NSRange)rangeOfTrailingEmptyLine {
+    return [self rangeOfTrailingEmptyLineInRange:NSMakeRange(0, [self length])];
+}
+
+- (NSRange)rangeOfTrailingEmptyLineInRange:(NSRange)range {
+    NSRange lastCharRange = [self rangeOfCharacterFromSet:[NSCharacterSet nonWhitespaceCharacterSet] options:NSBackwardsSearch range:range];
+    NSRange wsRange = NSMakeRange(NSNotFound, 0);
+    unsigned int end = NSMaxRange(range);
+    if (lastCharRange.location == NSNotFound) {
+        wsRange = range;
+    } else {
+        unichar lastChar = [self characterAtIndex:lastCharRange.location];
+        unsigned int rangeEnd = NSMaxRange(lastCharRange);
+        if (rangeEnd < end && [[NSCharacterSet newlineCharacterSet] characterIsMember:lastChar]) 
+            wsRange = NSMakeRange(rangeEnd, end - rangeEnd);
+    }
+    return wsRange;
+}
+
+#pragma mark Templating support
+
+- (NSString *)typeName {
+    if ([self isEqualToString:@"FreeText"])
+        return NSLocalizedString(@"Text Note", @"Description for export");
+    else if ([self isEqualToString:@"Note"])
+        return NSLocalizedString(@"Anchored Note", @"Description for export");
+    else if ([self isEqualToString:@"Circle"])
+        return NSLocalizedString(@"Circle", @"Description for export");
+    else if ([self isEqualToString:@"Square"])
+        return NSLocalizedString(@"Box", @"Description for export");
+    else if ([self isEqualToString:@"MarkUp"] || [self isEqualToString:@"Highlight"])
+        return NSLocalizedString(@"Highlight", @"Description for export");
+    else if ([self isEqualToString:@"Underline"])
+        return NSLocalizedString(@"Underline", @"Description for export");
+    else if ([self isEqualToString:@"StrikeOut"])
+        return NSLocalizedString(@"Strike Out", @"Description for export");
+    else if ([self isEqualToString:@"Arrow"])
+        return NSLocalizedString(@"Arrow", @"Description for export");
+    else
+        return self;
+}
+ 
 @end

@@ -41,6 +41,8 @@
 #import "SKNoteOutlineView.h"
 #import "BDAlias.h"
 #import "SKDocumentController.h"
+#import "SKTemplateParser.h"
+#import "SKApplicationController.h"
 
 @implementation SKNotesDocument
 
@@ -118,59 +120,22 @@
 }
 
 - (NSData *)notesRTFData {
-    NSMutableAttributedString *attrString = [[NSMutableAttributedString alloc] init];
+    NSString *templatePath = [[NSApp delegate] pathForApplicationSupportFile:@"noteTemplate" ofType:@"txt"];
+    NSDictionary *docAttributes = nil;
+    NSAttributedString *templateAttrString = [[NSAttributedString alloc] initWithPath:templatePath documentAttributes:&docAttributes];
     NSEnumerator *noteEnum = [notes objectEnumerator];
-    NSDictionary *note;
-    NSData *data;
-    NSFont *standardFont = [NSFont systemFontOfSize:12.0];
-    NSAttributedString *newlinesAttrString = [[NSAttributedString alloc] initWithString:@"\n\n" attributes:[NSDictionary dictionaryWithObjectsAndKeys:standardFont, NSFontAttributeName, nil]];
+    PDFAnnotation *note;
+    NSMutableAttributedString *mutableAttrString = [[NSMutableAttributedString alloc] init];
+    NSAttributedString *attrString;
     
     while (note = [noteEnum nextObject]) {
-        NSString *type = [note valueForKey:@"type"];
-        NSString *contents = [note valueForKey:@"contents"];
-        NSFont *font = [note valueForKey:@"font"];
-        NSAttributedString *tmpAttrString = nil;
-        NSString *tmpString = nil;
-        
-        if ([type isEqualToString:@"FreeText"]) 
-            tmpString = NSLocalizedString(@"Text Note", @"Description for export");
-        else if ([type isEqualToString:@"Note"]) 
-            tmpString = NSLocalizedString(@"Anchored Note", @"Description for export");
-        else if ([type isEqualToString:@"Circle"]) 
-            tmpString = NSLocalizedString(@"Circle", @"Description for export");
-        else if ([type isEqualToString:@"Square"]) 
-            tmpString = NSLocalizedString(@"Box", @"Description for export");
-        else if ([type isEqualToString:@"MarkUp"] || [type isEqualToString:@"Highlight"]) 
-            tmpString = NSLocalizedString(@"Highlight", @"Description for export");
-        else if ([type isEqualToString:@"Underline"]) 
-            tmpString = NSLocalizedString(@"Underline", @"Description for export");
-        else if ([type isEqualToString:@"StrikeOut"]) 
-            tmpString = NSLocalizedString(@"Strike Out", @"Description for export");
-        else if ([type isEqualToString:@"Arrow"]) 
-            tmpString = NSLocalizedString(@"Arrow", @"Description for export");
-        tmpString = [NSString stringWithFormat:NSLocalizedString(@"%C %@, page %i", @"Description for export"), 0x2022, tmpString, [[note valueForKey:@"pageIndex"] unsignedIntValue] + 1]; 
-        tmpAttrString = [[NSAttributedString alloc] initWithString:tmpString attributes:[NSDictionary dictionaryWithObjectsAndKeys:standardFont, NSFontAttributeName, nil]];
-        [attrString appendAttributedString:tmpAttrString];
-        [tmpAttrString release];
-        [attrString appendAttributedString:newlinesAttrString];
-        
-        if ([contents length]) {
-            tmpAttrString = [[NSAttributedString alloc] initWithString:contents ? contents : @"" attributes:[NSDictionary dictionaryWithObjectsAndKeys:font ? font : standardFont, NSFontAttributeName, nil]];
-            [attrString appendAttributedString:tmpAttrString];
-            [tmpAttrString release];
-            [attrString appendAttributedString:newlinesAttrString];
-        }
-        
-        tmpAttrString = [note valueForKey:@"text"];
-        if ([tmpAttrString length]) {
-            [attrString appendAttributedString:tmpAttrString];
-            [attrString appendAttributedString:newlinesAttrString];
-        }
+        if (attrString = [SKTemplateParser attributedStringByParsingTemplate:templateAttrString usingObject:note])
+            [mutableAttrString appendAttributedString:attrString];
     }
     
-    data = [attrString RTFFromRange:NSMakeRange(0, [attrString length]) documentAttributes:nil];
-    [attrString release];
-    [newlinesAttrString release];
+    NSData *data = [mutableAttrString RTFFromRange:NSMakeRange(0, [mutableAttrString length]) documentAttributes:docAttributes];
+    [mutableAttrString release];
+    [templateAttrString release];
     
     return data;
 }
