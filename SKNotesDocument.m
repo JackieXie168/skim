@@ -120,23 +120,12 @@
 }
 
 - (NSData *)notesRTFData {
-    NSString *templatePath = [[NSApp delegate] pathForApplicationSupportFile:@"noteTemplate" ofType:@"txt"];
+    NSString *templatePath = [[NSApp delegate] pathForApplicationSupportFile:@"notesTemplate" ofType:@"rtf"];
     NSDictionary *docAttributes = nil;
     NSAttributedString *templateAttrString = [[NSAttributedString alloc] initWithPath:templatePath documentAttributes:&docAttributes];
-    NSEnumerator *noteEnum = [notes objectEnumerator];
-    PDFAnnotation *note;
-    NSMutableAttributedString *mutableAttrString = [[NSMutableAttributedString alloc] init];
-    NSAttributedString *attrString;
-    
-    while (note = [noteEnum nextObject]) {
-        if (attrString = [SKTemplateParser attributedStringByParsingTemplate:templateAttrString usingObject:note])
-            [mutableAttrString appendAttributedString:attrString];
-    }
-    
-    NSData *data = [mutableAttrString RTFFromRange:NSMakeRange(0, [mutableAttrString length]) documentAttributes:docAttributes];
-    [mutableAttrString release];
+    NSAttributedString *attrString = [SKTemplateParser attributedStringByParsingTemplate:templateAttrString usingObject:self];
+    NSData *data = [attrString RTFFromRange:NSMakeRange(0, [mutableAttrString length]) documentAttributes:docAttributes];
     [templateAttrString release];
-    
     return data;
 }
 

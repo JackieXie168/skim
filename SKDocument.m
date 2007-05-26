@@ -760,40 +760,19 @@ NSString *SKDocumentWillSaveNotification = @"SKDocumentWillSaveNotification";
 }
 
 - (NSString *)notesString {
-    NSString *templatePath = [[NSApp delegate] pathForApplicationSupportFile:@"noteTemplate" ofType:@"txt"];
+    NSString *templatePath = [[NSApp delegate] pathForApplicationSupportFile:@"notesTemplate" ofType:@"txt"];
     NSString *templateString = [[NSString alloc] initWithContentsOfFile:templatePath encoding:NSUTF8StringEncoding error:NULL];
-    NSEnumerator *noteEnum = [[[self mainWindowController] notes] objectEnumerator];
-    PDFAnnotation *note;
-    NSMutableString *mutableString = [NSMutableString stringWithCapacity:2048];
-    NSString *string;
-    
-    while (note = [noteEnum nextObject]) {
-        if (string = [SKTemplateParser stringByParsingTemplate:templateString usingObject:note])
-            [mutableString appendString:string];
-    }
-    [templateString release];
-    
-    return mutableString;
+    NSString *string = [SKTemplateParser stringByParsingTemplate:templateString usingObject:self];
+    return string;
 }
 
 - (NSData *)notesRTFData {
-    NSString *templatePath = [[NSApp delegate] pathForApplicationSupportFile:@"noteTemplate" ofType:@"txt"];
+    NSString *templatePath = [[NSApp delegate] pathForApplicationSupportFile:@"notesTemplate" ofType:@"rtf"];
     NSDictionary *docAttributes = nil;
     NSAttributedString *templateAttrString = [[NSAttributedString alloc] initWithPath:templatePath documentAttributes:&docAttributes];
-    NSEnumerator *noteEnum = [[[self mainWindowController] notes] objectEnumerator];
-    PDFAnnotation *note;
-    NSMutableAttributedString *mutableAttrString = [[NSMutableAttributedString alloc] init];
-    NSAttributedString *attrString;
-    
-    while (note = [noteEnum nextObject]) {
-        if (attrString = [SKTemplateParser attributedStringByParsingTemplate:templateAttrString usingObject:note])
-            [mutableAttrString appendAttributedString:attrString];
-    }
-    
-    NSData *data = [mutableAttrString RTFFromRange:NSMakeRange(0, [mutableAttrString length]) documentAttributes:docAttributes];
-    [mutableAttrString release];
+    NSAttributedString *attrString = [SKTemplateParser attributedStringByParsingTemplate:templateAttrString usingObject:self];
+    NSData *data = [attrString RTFFromRange:NSMakeRange(0, [mutableAttrString length]) documentAttributes:docAttributes];
     [templateAttrString release];
-    
     return data;
 }
 
