@@ -38,6 +38,7 @@
 
 #import <Cocoa/Cocoa.h>
 #import <Quartz/Quartz.h>
+#import "NSValue_SKExtensions.h"
 
 @class SKDocument;
 
@@ -61,9 +62,4 @@
 - (NSScriptObjectSpecifier *)objectSpecifier;
 - (id)handleGoToScriptCommand:(NSScriptCommand *)command;
 
-@end
-
-
-@interface NSValue (SKExtensions)
-- (NSComparisonResult)boundsCompare:(NSValue *)aValue;
 @end

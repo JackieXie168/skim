@@ -685,100 +685,8 @@ static inline NSRange altTemplateTagRange(NSString *template, NSString *altTag, 
     return self;
 }
 
-- (NSString *)stringBySurroundingWithSpacesIfNotEmpty { 
-    return [self isEqualToString:@""] ? self : [NSString stringWithFormat:@" %@ ", self];
-}
-
-- (NSString *)stringByAppendingSpaceIfNotEmpty {
-    return [self isEqualToString:@""] ? self : [self stringByAppendingString:@" "];
-}
-
-- (NSString *)stringByAppendingDoubleSpaceIfNotEmpty {
-    return [self isEqualToString:@""] ? self : [self stringByAppendingString:@"  "];
-}
-
-- (NSString *)stringByPrependingSpaceIfNotEmpty {
-    return [self isEqualToString:@""] ? self : [NSString stringWithFormat:@" %@", self];
-}
-
-- (NSString *)stringByAppendingCommaIfNotEmpty {
-    return [self isEqualToString:@""] ? self : [self stringByAppendingString:@","];
-}
-
-- (NSString *)stringByAppendingFullStopIfNotEmpty {
-    return [self isEqualToString:@""] ? self : [self stringByAppendingString:@"."];
-}
-
-- (NSString *)stringByAppendingCommaAndSpaceIfNotEmpty {
-    return [self isEqualToString:@""] ? self : [self stringByAppendingString:@", "];
-}
-
-- (NSString *)stringByAppendingFullStopAndSpaceIfNotEmpty {
-    return [self isEqualToString:@""] ? self : [self stringByAppendingString:@". "];
-}
-
-- (NSString *)stringByPrependingCommaAndSpaceIfNotEmpty {
-    return [self isEqualToString:@""] ? self : [NSString stringWithFormat:@", %@", self];
-}
-
-- (NSString *)stringByPrependingFullStopAndSpaceIfNotEmpty {
-    return [self isEqualToString:@""] ? self : [NSString stringWithFormat:@". %@", self];
-}
-
-- (NSString *)parenthesizedStringIfNotEmpty {
-    return [self isEqualToString:@""] ? self : [NSString stringWithFormat:@"(%@)", self];
-}
-
 - (BOOL)isNotEmpty {
     return [self isEqualToString:@""] == NO;
-}
-
-- (NSString *)rectString {
-    return NSStringFromRect(NSRectFromString(self));
-}
-
-- (NSString *)pointString {
-    return NSStringFromPoint(NSPointFromString(self));
-}
-
-- (NSString *)originString {
-    return NSStringFromPoint(NSRectFromString(self).origin);
-}
-
-- (NSString *)sizeString {
-    return NSStringFromSize(NSRectFromString(self).size);
-}
-
-- (NSString *)midPointString {
-    NSRect rect = NSRectFromString(self);
-    return NSStringFromPoint(NSMakePoint(NSMidX(rect), NSMidY(rect)));
-}
-
-@end
-
-#pragma mark -
-
-@implementation NSValue (SKTemplateParser)
-
-- (NSString *)rectString {
-    return NSStringFromRect([self rectValue]);
-}
-
-- (NSString *)pointString {
-    return NSStringFromPoint([self pointValue]);
-}
-
-- (NSString *)originString {
-    return NSStringFromPoint([self rectValue].origin);
-}
-
-- (NSString *)sizeString {
-    return NSStringFromSize([self rectValue].size);
-}
-
-- (NSString *)midPointString {
-    NSRect rect = [self rectValue];
-    return NSStringFromPoint(NSMakePoint(NSMidX(rect), NSMidY(rect)));
 }
 
 @end
@@ -801,13 +709,7 @@ static inline NSRange altTemplateTagRange(NSString *template, NSString *altTag, 
 
 @implementation NSArray (SKTemplateParser)
 
-- (NSString *)componentsJoinedByAnd
-{
-    return [self componentsJoinedByString:@" and "];
-}
-
-- (BOOL)isNotEmpty
-{
+- (BOOL)isNotEmpty {
     return [self count] > 0;
 }
 
@@ -817,8 +719,7 @@ static inline NSRange altTemplateTagRange(NSString *template, NSString *altTag, 
 
 @implementation NSDictionary (SKTemplateParser)
 
-- (BOOL)isNotEmpty
-{
+- (BOOL)isNotEmpty {
     return [self count] > 0;
 }
 

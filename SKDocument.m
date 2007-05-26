@@ -771,7 +771,7 @@ NSString *SKDocumentWillSaveNotification = @"SKDocumentWillSaveNotification";
     NSDictionary *docAttributes = nil;
     NSAttributedString *templateAttrString = [[NSAttributedString alloc] initWithPath:templatePath documentAttributes:&docAttributes];
     NSAttributedString *attrString = [SKTemplateParser attributedStringByParsingTemplate:templateAttrString usingObject:self];
-    NSData *data = [attrString RTFFromRange:NSMakeRange(0, [mutableAttrString length]) documentAttributes:docAttributes];
+    NSData *data = [attrString RTFFromRange:NSMakeRange(0, [attrString length]) documentAttributes:docAttributes];
     [templateAttrString release];
     return data;
 }

@@ -68,6 +68,7 @@
 #import "SKPDFHoverWindow.h"
 #import "PDFSelection_SKExtensions.h"
 #import "SKToolbarItem.h"
+#import "NSValue_SKExtensions.h"
 
 #define SEGMENTED_CONTROL_HEIGHT    25.0
 #define WINDOW_X_DELTA              0.0

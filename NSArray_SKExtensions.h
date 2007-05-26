@@ -1,8 +1,8 @@
 //
-//  NSString_SKExtensions.h
+//  NSArray_SKExtensions.h
 //  Skim
 //
-//  Created by Christiaan Hofman on 2/12/07.
+//  Created by Christiaan Hofman on 5/26/07.
 /*
  This software is Copyright (c) 2007
  Christiaan Hofman. All rights reserved.
@@ -39,35 +39,9 @@
 #import <Cocoa/Cocoa.h>
 
 
-@interface NSString (SKExtensions)
-
-- (NSString *)stringByCollapsingWhitespaceAndNewlinesAndRemovingSurroundingWhitespaceAndNewlines;
-
-- (NSString *)stringByAppendingEllipsis;
-
-- (NSArray *)shellScriptArgumentsArray;
-
-- (NSRange)rangeOfLeadingEmptyLine;
-- (NSRange)rangeOfLeadingEmptyLineInRange:(NSRange)range;
-- (NSRange)rangeOfTrailingEmptyLine;
-- (NSRange)rangeOfTrailingEmptyLineInRange:(NSRange)range;
-
-- (NSString *)rectString;
-- (NSString *)pointString;
-- (NSString *)originString;
-- (NSString *)sizeString;
-- (NSString *)midPointString;
-
-- (NSString *)stringBySurroundingWithSpacesIfNotEmpty;
-- (NSString *)stringByAppendingSpaceIfNotEmpty;
-- (NSString *)stringByAppendingDoubleSpaceIfNotEmpty;
-- (NSString *)stringByPrependingSpaceIfNotEmpty;
-- (NSString *)stringByAppendingCommaIfNotEmpty;
-- (NSString *)stringByAppendingFullStopIfNotEmpty;
-- (NSString *)stringByAppendingCommaAndSpaceIfNotEmpty;
-- (NSString *)stringByAppendingFullStopAndSpaceIfNotEmpty;
-- (NSString *)stringByPrependingCommaAndSpaceIfNotEmpty;
-- (NSString *)stringByPrependingFullStopAndSpaceIfNotEmpty;
-- (NSString *)parenthesizedStringIfNotEmpty;
-
+@interface NSArray (SKExtensions)
+- (NSArray *)arraySortedByPageIndex;
+- (NSArray *)arraySortedByBounds;
+- (NSArray *)arraySortedByType;
+- (NSArray *)arraySortedByContents;
 @end
