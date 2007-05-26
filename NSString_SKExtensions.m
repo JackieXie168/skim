@@ -236,5 +236,70 @@ CFStringRef SKStringCreateByCollapsingAndTrimmingWhitespaceAndNewlines(CFAllocat
     else
         return self;
 }
- 
+
+- (NSString *)rectString {
+    return NSStringFromRect(NSRectFromString(self));
+}
+
+- (NSString *)pointString {
+    return NSStringFromPoint(NSPointFromString(self));
+}
+
+- (NSString *)originString {
+    return NSStringFromPoint(NSRectFromString(self).origin);
+}
+
+- (NSString *)sizeString {
+    return NSStringFromSize(NSRectFromString(self).size);
+}
+
+- (NSString *)midPointString {
+    NSRect rect = NSRectFromString(self);
+    return NSStringFromPoint(NSMakePoint(NSMidX(rect), NSMidY(rect)));
+}
+
+- (NSString *)stringBySurroundingWithSpacesIfNotEmpty { 
+    return [self isEqualToString:@""] ? self : [NSString stringWithFormat:@" %@ ", self];
+}
+
+- (NSString *)stringByAppendingSpaceIfNotEmpty {
+    return [self isEqualToString:@""] ? self : [self stringByAppendingString:@" "];
+}
+
+- (NSString *)stringByAppendingDoubleSpaceIfNotEmpty {
+    return [self isEqualToString:@""] ? self : [self stringByAppendingString:@"  "];
+}
+
+- (NSString *)stringByPrependingSpaceIfNotEmpty {
+    return [self isEqualToString:@""] ? self : [NSString stringWithFormat:@" %@", self];
+}
+
+- (NSString *)stringByAppendingCommaIfNotEmpty {
+    return [self isEqualToString:@""] ? self : [self stringByAppendingString:@","];
+}
+
+- (NSString *)stringByAppendingFullStopIfNotEmpty {
+    return [self isEqualToString:@""] ? self : [self stringByAppendingString:@"."];
+}
+
+- (NSString *)stringByAppendingCommaAndSpaceIfNotEmpty {
+    return [self isEqualToString:@""] ? self : [self stringByAppendingString:@", "];
+}
+
+- (NSString *)stringByAppendingFullStopAndSpaceIfNotEmpty {
+    return [self isEqualToString:@""] ? self : [self stringByAppendingString:@". "];
+}
+
+- (NSString *)stringByPrependingCommaAndSpaceIfNotEmpty {
+    return [self isEqualToString:@""] ? self : [NSString stringWithFormat:@", %@", self];
+}
+
+- (NSString *)stringByPrependingFullStopAndSpaceIfNotEmpty {
+    return [self isEqualToString:@""] ? self : [NSString stringWithFormat:@". %@", self];
+}
+
+- (NSString *)parenthesizedStringIfNotEmpty {
+    return [self isEqualToString:@""] ? self : [NSString stringWithFormat:@"(%@)", self];
+}
+
 @end

@@ -1,8 +1,8 @@
 //
-//  NSString_SKExtensions.h
+//  NSArray_SKExtensions.m
 //  Skim
 //
-//  Created by Christiaan Hofman on 2/12/07.
+//  Created by Christiaan Hofman on 5/26/07.
 /*
  This software is Copyright (c) 2007
  Christiaan Hofman. All rights reserved.
@@ -36,38 +36,25 @@
  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-#import <Cocoa/Cocoa.h>
+#import "NSArray_SKExtensions.h"
 
 
-@interface NSString (SKExtensions)
+@implementation NSArray (SKExtensions)
 
-- (NSString *)stringByCollapsingWhitespaceAndNewlinesAndRemovingSurroundingWhitespaceAndNewlines;
+- (NSArray *)arraySortedByPageIndex {
+    return [self sortedArrayUsingDescriptors:[NSArray arrayWithObject:[[[NSSortDescriptor alloc] initWithKey:@"pageIndex" ascending:YES selector:@selector(compare:)] autorelease]]];
+}
 
-- (NSString *)stringByAppendingEllipsis;
+- (NSArray *)arraySortedByBounds {
+    return [self sortedArrayUsingDescriptors:[NSArray arrayWithObject:[[[NSSortDescriptor alloc] initWithKey:@"bounds" ascending:YES selector:@selector(boundsCompare:)] autorelease]]];
+}
 
-- (NSArray *)shellScriptArgumentsArray;
+- (NSArray *)arraySortedByType {
+    return [self sortedArrayUsingDescriptors:[NSArray arrayWithObject:[[[NSSortDescriptor alloc] initWithKey:@"type" ascending:YES selector:@selector(caseInsensitiveCompare:)] autorelease]]];
+}
 
-- (NSRange)rangeOfLeadingEmptyLine;
-- (NSRange)rangeOfLeadingEmptyLineInRange:(NSRange)range;
-- (NSRange)rangeOfTrailingEmptyLine;
-- (NSRange)rangeOfTrailingEmptyLineInRange:(NSRange)range;
-
-- (NSString *)rectString;
-- (NSString *)pointString;
-- (NSString *)originString;
-- (NSString *)sizeString;
-- (NSString *)midPointString;
-
-- (NSString *)stringBySurroundingWithSpacesIfNotEmpty;
-- (NSString *)stringByAppendingSpaceIfNotEmpty;
-- (NSString *)stringByAppendingDoubleSpaceIfNotEmpty;
-- (NSString *)stringByPrependingSpaceIfNotEmpty;
-- (NSString *)stringByAppendingCommaIfNotEmpty;
-- (NSString *)stringByAppendingFullStopIfNotEmpty;
-- (NSString *)stringByAppendingCommaAndSpaceIfNotEmpty;
-- (NSString *)stringByAppendingFullStopAndSpaceIfNotEmpty;
-- (NSString *)stringByPrependingCommaAndSpaceIfNotEmpty;
-- (NSString *)stringByPrependingFullStopAndSpaceIfNotEmpty;
-- (NSString *)parenthesizedStringIfNotEmpty;
+- (NSArray *)arraySortedByContents {
+    return [self sortedArrayUsingDescriptors:[NSArray arrayWithObject:[[[NSSortDescriptor alloc] initWithKey:@"contents" ascending:YES selector:@selector(caseInsensitiveCompare:)] autorelease]]];
+}
 
 @end
