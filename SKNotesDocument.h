@@ -54,6 +54,7 @@
 - (void)insertObject:(id)obj inNotesAtIndex:(unsigned)index;
 - (void)removeObjectFromNotesAtIndex:(unsigned)index;
 
+- (NSString *)notesString;
 - (NSData *)notesRTFData;
 
 @end

@@ -44,6 +44,7 @@ NSString *SKEmbeddedPDFDocumentType = @"PDF With Embedded Notes";
 NSString *SKBarePDFDocumentType = @"PDF Without Notes";
 NSString *SKNotesDocumentType = @"Skim Notes";
 NSString *SKNotesRTFDocumentType = @"Notes as RTF";
+NSString *SKNotesTextDocumentType = @"Notes as Text";
 NSString *SKPostScriptDocumentType = @"PostScript document";
 
 

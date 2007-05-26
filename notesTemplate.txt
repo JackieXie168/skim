@@ -1,5 +1,5 @@
 <$notes>
-¥ <$type.typeName/>, page <$pageIndex.numberByAddingOne/>
+â€¢ <$type.typeName/>, page <$pageIndex.numberByAddingOne/>
 
 <$contents?>
 <$contents/>

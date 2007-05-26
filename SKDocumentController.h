@@ -43,6 +43,7 @@ extern NSString *SKEmbeddedPDFDocumentType;
 extern NSString *SKBarePDFDocumentType;
 extern NSString *SKNotesDocumentType;
 extern NSString *SKNotesRTFDocumentType;
+extern NSString *SKNotesTextDocumentType;
 extern NSString *SKPostScriptDocumentType;
 
 

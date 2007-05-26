@@ -79,6 +79,8 @@
         data = [NSKeyedArchiver archivedDataWithRootObject:[notes valueForKey:@"dictionaryValue"]];
     } else if ([typeName isEqualToString:SKNotesRTFDocumentType]) {
         data = [self notesRTFData];
+    } else if ([typeName isEqualToString:SKNotesTextDocumentType]) {
+        data = [[self notesString] dataUsingEncoding:NSUTF8StringEncoding];
     }
     
     if (data == nil && outError != NULL)
@@ -117,6 +119,13 @@
         *outError = [NSError errorWithDomain:SKDocumentErrorDomain code:0 userInfo:[NSDictionary dictionaryWithObjectsAndKeys:NSLocalizedString(@"Unable to load file", @"Error description"), NSLocalizedDescriptionKey, nil]];
     
     return didRead;
+}
+
+- (NSString *)notesString {
+    NSString *templatePath = [[NSApp delegate] pathForApplicationSupportFile:@"notesTemplate" ofType:@"txt"];
+    NSString *templateString = [[NSString alloc] initWithContentsOfFile:templatePath encoding:NSUTF8StringEncoding error:NULL];
+    NSString *string = [SKTemplateParser stringByParsingTemplate:templateString usingObject:self];
+    return string;
 }
 
 - (NSData *)notesRTFData {
