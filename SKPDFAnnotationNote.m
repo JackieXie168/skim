@@ -208,6 +208,8 @@ static IMP originalSetColor = NULL;
 
 - (BOOL)isNoteAnnotation { return NO; }
 
+- (BOOL)isMarkupAnnotation { return NO; }
+
 - (BOOL)isTemporaryAnnotation { return NO; }
 
 - (BOOL)isResizable { return NO; }
@@ -598,6 +600,25 @@ static BOOL adjacentCharacterBounds(NSRect rect1, NSRect rect2) {
     }
 }
 
+- (PDFSelection *)selection {
+    if (0 == numberOfLines)
+        [self regenerateLineRects];
+    
+    PDFSelection *sel, *selection = nil;
+    unsigned i;
+    
+    for (i = 0; i < numberOfLines; i++) {
+        if (sel = [[self page] selectionForRect:lineRects[i]]) {
+            if (selection == nil)
+                selection = sel;
+            else
+                [selection addSelection:sel];
+        }
+    }
+    
+    return selection;
+}
+
 - (BOOL)hitTest:(NSPoint)point {
     if ([super hitTest:point] == NO)
         return NO;
@@ -616,6 +637,8 @@ static BOOL adjacentCharacterBounds(NSRect rect1, NSRect rect2) {
 }
 
 - (BOOL)isNoteAnnotation { return YES; }
+
+- (BOOL)isMarkupAnnotation { return YES; }
 
 - (BOOL)shouldPrint { return YES; }
 
