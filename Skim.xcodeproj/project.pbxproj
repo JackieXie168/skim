@@ -446,7 +446,7 @@
 		CE485BF00BC4443B00FA7109 /* Dutch */ = {isa = PBXFileReference; lastKnownFileType = text.rtf; name = Dutch; path = Dutch.lproj/Credits.rtf; sourceTree = "<group>"; };
 		CE48BAD50C089EA300A166C6 /* SKTemplateParser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SKTemplateParser.h; sourceTree = "<group>"; };
 		CE48BAD60C089EA300A166C6 /* SKTemplateParser.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SKTemplateParser.m; sourceTree = "<group>"; };
-		CE48BBB40C08AD7000A166C6 /* notesTemplate.txt */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text; path = notesTemplate.txt; sourceTree = "<group>"; };
+		CE48BBB40C08AD7000A166C6 /* notesTemplate.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = notesTemplate.txt; sourceTree = "<group>"; };
 		CE48BBB50C08AD7000A166C6 /* notesTemplate.rtf */ = {isa = PBXFileReference; lastKnownFileType = text.rtf; path = notesTemplate.rtf; sourceTree = "<group>"; };
 		CE49724E0BDE898F00D7F1D2 /* SKMainWindow.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SKMainWindow.h; sourceTree = "<group>"; };
 		CE49724F0BDE898F00D7F1D2 /* SKMainWindow.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SKMainWindow.m; sourceTree = "<group>"; };

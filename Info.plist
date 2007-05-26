@@ -41,6 +41,7 @@
 				<string>PDF Without Notes</string>
 				<string>Skim Notes</string>
 				<string>Notes as RTF</string>
+				<string>Notes as Text</string>
 			</array>
 		</dict>
 		<dict>
@@ -65,6 +66,7 @@
 			<key>NSExportableAs</key>
 			<array>
 				<string>Notes as RTF</string>
+				<string>Notes as Text</string>
 			</array>
 			<key>NSPersistentStoreTypeKey</key>
 			<string>Binary</string>
@@ -237,6 +239,26 @@
 			<array>
 				<string>RTF </string>
 			</array>
+			<key>CFBundleTypeRole</key>
+			<string>None</string>
+			<key>LSTypeIsPackage</key>
+			<false/>
+			<key>NSDocumentClass</key>
+			<string>SKDocument</string>
+			<key>NSPersistentStoreTypeKey</key>
+			<string>Binary</string>
+		</dict>
+		<dict>
+			<key>CFBundleTypeExtensions</key>
+			<array>
+				<string>txt</string>
+			</array>
+			<key>CFBundleTypeMIMETypes</key>
+			<array>
+				<string>text/plain</string>
+			</array>
+			<key>CFBundleTypeName</key>
+			<string>Notes as Text</string>
 			<key>CFBundleTypeRole</key>
 			<string>None</string>
 			<key>LSTypeIsPackage</key>

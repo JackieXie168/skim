@@ -205,6 +205,12 @@ NSString *SKDocumentWillSaveNotification = @"SKDocumentWillSaveNotification";
             didWrite = [data writeToURL:absoluteURL options:NSAtomicWrite error:outError];
         else if (outError != NULL)
             *outError = [NSError errorWithDomain:SKDocumentErrorDomain code:1 userInfo:[NSDictionary dictionaryWithObjectsAndKeys:NSLocalizedString(@"Unable to write notes as RTF", @"Error description"), NSLocalizedDescriptionKey, nil]];
+    } else if ([typeName isEqualToString:SKNotesTextDocumentType]) {
+        NSString *string = [self notesString];
+        if (string)
+            didWrite = [string writeToURL:absoluteURL atomically:YES encoding:NSUTF8StringEncoding error:outError];
+        else if (outError != NULL)
+            *outError = [NSError errorWithDomain:SKDocumentErrorDomain code:1 userInfo:[NSDictionary dictionaryWithObjectsAndKeys:NSLocalizedString(@"Unable to write notes as text", @"Error description"), NSLocalizedDescriptionKey, nil]];
     }
     return didWrite;
 }
@@ -761,8 +767,11 @@ NSString *SKDocumentWillSaveNotification = @"SKDocumentWillSaveNotification";
 
 - (NSString *)notesString {
     NSString *templatePath = [[NSApp delegate] pathForApplicationSupportFile:@"notesTemplate" ofType:@"txt"];
-    NSString *templateString = [[NSString alloc] initWithContentsOfFile:templatePath encoding:NSUTF8StringEncoding error:NULL];
+    NSStringEncoding encoding = NSUTF8StringEncoding;
+    NSError *error = nil;
+    NSString *templateString = [[NSString alloc] initWithContentsOfFile:templatePath encoding:encoding error:&error];
     NSString *string = [SKTemplateParser stringByParsingTemplate:templateString usingObject:self];
+    [templateString release];
     return string;
 }
 
