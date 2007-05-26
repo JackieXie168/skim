@@ -1,4 +1,4 @@
-<notes>
+<$notes>
 ¥ <$type.typeName/>, page <$pageIndex.numberByAddingOne/>
 
 <$contents?>
@@ -9,4 +9,4 @@
 <$text/>
 
 </$text?>
-</notes>
+</$notes>
