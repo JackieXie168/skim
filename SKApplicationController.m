@@ -308,4 +308,79 @@ static BOOL fileIsInTrash(NSURL *fileURL)
     }
 }
 
+- (NSString *)applicationSupportPathForDomain:(int)domain create:(BOOL)create {
+    static NSString *path = nil;
+    
+    if (path == nil) {
+        FSRef foundRef;
+        OSStatus err = noErr;
+        
+        err = FSFindFolder(domain, kApplicationSupportFolderType, create ? kCreateFolder : kDontCreateFolder, &foundRef);
+        if (err != noErr) {
+            if (create)
+                NSLog(@"Error %d:  the system was unable to find your Application Support folder.", err);
+            return nil;
+        }
+        
+        CFURLRef url = CFURLCreateFromFSRef(kCFAllocatorDefault, &foundRef);
+        
+        if (url != nil) {
+            path = [(NSURL *)url path];
+            CFRelease(url);
+        }
+        
+        NSString *appName = [[NSBundle mainBundle] objectForInfoDictionaryKey:(NSString *)kCFBundleExecutableKey];
+        
+        if(appName == nil)
+            [NSException raise:NSObjectNotAvailableException format:NSLocalizedString(@"Unable to find CFBundleIdentifier for %@", @"Exception message"), [NSApp description]];
+        
+        path = [[path stringByAppendingPathComponent:appName] copy];
+        
+        // the call to FSFindFolder creates the parent hierarchy, but not the directory we're looking for
+        static BOOL dirExists = NO;
+        if (dirExists == NO && create) {
+            BOOL pathIsDir;
+            dirExists = [[NSFileManager defaultManager] fileExistsAtPath:path isDirectory:&pathIsDir];
+            if (dirExists == NO || pathIsDir == NO)
+                [[NSFileManager defaultManager] createDirectoryAtPath:path attributes:nil];
+            // make sure it was created
+            dirExists = [[NSFileManager defaultManager] fileExistsAtPath:path isDirectory:&pathIsDir];
+            NSAssert1(dirExists && pathIsDir, @"Unable to create folder %@", path);
+        }
+    }
+    
+    return path;
+}
+
+- (NSString *)pathForApplicationSupportFile:(NSString *)file ofType:(NSString *)extension {
+    NSFileManager *fm = [NSFileManager defaultManager];
+    NSString *filename = [file stringByAppendingPathExtension:extension];
+    NSString *fullPath = nil;
+    NSString *appSupportPath = nil;
+    if (appSupportPath = [self applicationSupportPathForDomain:kUserDomain create:NO]) {
+        fullPath = [appSupportPath stringByAppendingPathComponent:filename];
+        if ([fm fileExistsAtPath:fullPath] == NO) {
+            fullPath = nil;
+            if (appSupportPath = [self applicationSupportPathForDomain:kLocalDomain create:NO]) {
+                fullPath = [appSupportPath stringByAppendingPathComponent:filename];
+                if ([fm fileExistsAtPath:fullPath] == NO) {
+                    fullPath = nil;
+                    if (appSupportPath = [self applicationSupportPathForDomain:kNetworkDomain create:NO]) {
+                        fullPath = [appSupportPath stringByAppendingPathComponent:filename];
+                        if ([fm fileExistsAtPath:fullPath] == NO) {
+                            fullPath = nil;
+                            if (appSupportPath = [[NSBundle mainBundle] sharedSupportPath]) {
+                                fullPath = [appSupportPath stringByAppendingPathComponent:filename];
+                                if ([fm fileExistsAtPath:fullPath] == NO)
+                                    fullPath = nil;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+    return fullPath;
+}
+
 @end

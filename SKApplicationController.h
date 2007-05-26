@@ -58,4 +58,7 @@
 
 - (void)doSpotlightImportIfNeeded;
 
+- (NSString *)applicationSupportPathForDomain:(int)domain create:(BOOL)create;
+- (NSString *)pathForApplicationSupportFile:(NSString *)file ofType:(NSString *)extension;
+
 @end

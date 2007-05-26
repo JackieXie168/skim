@@ -42,7 +42,14 @@
 @interface NSString (SKExtensions)
 
 - (NSString *)stringByCollapsingWhitespaceAndNewlinesAndRemovingSurroundingWhitespaceAndNewlines;
+
 - (NSString *)stringByAppendingEllipsis;
+
 - (NSArray *)shellScriptArgumentsArray;
+
+- (NSRange)rangeOfLeadingEmptyLine;
+- (NSRange)rangeOfLeadingEmptyLineInRange:(NSRange)range;
+- (NSRange)rangeOfTrailingEmptyLine;
+- (NSRange)rangeOfTrailingEmptyLineInRange:(NSRange)range;
 
 @end
