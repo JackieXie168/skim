@@ -1246,6 +1246,7 @@ static void SKCGContextDrawGrabHandle(CGContextRef context, CGPoint point, float
 
 - (void)addAnnotationWithType:(SKNoteType)annotationType contents:(NSString *)text page:(PDFPage *)page bounds:(NSRect)bounds {
 	PDFAnnotation *newAnnotation = nil;
+    PDFSelection *sel = [self currentSelection];
 	// Create annotation and add to page.
     switch (annotationType) {
         case SKFreeTextNote:
@@ -1265,13 +1266,25 @@ static void SKCGContextDrawGrabHandle(CGContextRef context, CGPoint point, float
             newAnnotation = [[SKPDFAnnotationSquare alloc] initWithBounds:bounds];
             break;
         case SKHighlightNote:
-            newAnnotation = [[SKPDFAnnotationMarkup alloc] initWithSelection:[self currentSelection] markupType:kPDFMarkupTypeHighlight];
+            if ([[activeAnnotation type] isEqualToString:@"Highlight"] && [[activeAnnotation page] isEqual:page]) {
+                [sel addSelection:[(SKPDFAnnotationMarkup *)activeAnnotation selection]];
+                [self removeActiveAnnotation:nil];
+            }
+            newAnnotation = [[SKPDFAnnotationMarkup alloc] initWithSelection:sel markupType:kPDFMarkupTypeHighlight];
             break;
         case SKUnderlineNote:
-            newAnnotation = [[SKPDFAnnotationMarkup alloc] initWithSelection:[self currentSelection] markupType:kPDFMarkupTypeUnderline];
+            if ([[activeAnnotation type] isEqualToString:@"Underline"] && [[activeAnnotation page] isEqual:page]) {
+                [sel addSelection:[(SKPDFAnnotationMarkup *)activeAnnotation selection]];
+                [self removeActiveAnnotation:nil];
+            }
+            newAnnotation = [[SKPDFAnnotationMarkup alloc] initWithSelection:sel markupType:kPDFMarkupTypeUnderline];
             break;
         case SKStrikeOutNote:
-            newAnnotation = [[SKPDFAnnotationMarkup alloc] initWithSelection:[self currentSelection] markupType:kPDFMarkupTypeStrikeOut];
+            if ([[activeAnnotation type] isEqualToString:@"StrikeOut"] && [[activeAnnotation page] isEqual:page]) {
+                [sel addSelection:[(SKPDFAnnotationMarkup *)activeAnnotation selection]];
+                [self removeActiveAnnotation:nil];
+            }
+            newAnnotation = [[SKPDFAnnotationMarkup alloc] initWithSelection:sel markupType:kPDFMarkupTypeStrikeOut];
             break;
         case SKArrowNote:
             newAnnotation = [[SKPDFAnnotationLine alloc] initWithBounds:bounds];
@@ -2263,6 +2276,17 @@ static void SKCGContextDrawGrabHandle(CGContextRef context, CGPoint point, float
         mouseDownInAnnotation = YES;
         clickDelta.x = pagePoint.x - NSMinX(bounds);
         clickDelta.y = pagePoint.y - NSMinY(bounds);
+    } else if (([theEvent modifierFlags] & NSShiftKeyMask) && [activeAnnotation isEqual:newActiveAnnotation] == NO && [[activeAnnotation page] isEqual:[newActiveAnnotation page]] && [[activeAnnotation type] isEqualToString:[newActiveAnnotation type]] && [activeAnnotation isMarkupAnnotation]) {
+        int markupType = [(SKPDFAnnotationMarkup *)activeAnnotation markupType];
+        PDFSelection *sel = [(SKPDFAnnotationMarkup *)activeAnnotation selection];
+        [sel addSelection:[(SKPDFAnnotationMarkup *)newActiveAnnotation selection]];
+        
+        [self removeActiveAnnotation:nil];
+        [self removeAnnotation:newActiveAnnotation];
+        
+        newActiveAnnotation = [[[SKPDFAnnotationMarkup alloc] initWithSelection:sel markupType:markupType] autorelease];
+        [newActiveAnnotation setContents:[[sel string] stringByCollapsingWhitespaceAndNewlinesAndRemovingSurroundingWhitespaceAndNewlines]];
+        [self addAnnotation:newActiveAnnotation toPage:page];
     }
     
     if (activeAnnotation != newActiveAnnotation)

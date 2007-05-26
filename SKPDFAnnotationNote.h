@@ -59,6 +59,7 @@ extern void SKCGContextSetDefaultRGBColorSpace(CGContextRef context);
 - (NSArray *)texts;
 
 - (BOOL)isNoteAnnotation;
+- (BOOL)isMarkupAnnotation;
 - (BOOL)isTemporaryAnnotation;
 - (BOOL)isResizable;
 - (BOOL)isMovable;
@@ -94,6 +95,7 @@ extern void SKCGContextSetDefaultRGBColorSpace(CGContextRef context);
 }
 - (id)initWithBounds:(NSRect)bounds markupType:(int)type quadrilateralPointsAsStrings:(NSArray *)pointStrings;
 - (id)initWithSelection:(PDFSelection *)selection markupType:(int)type;
+- (PDFSelection *)selection;
 @end
 
 @interface SKPDFAnnotationFreeText : PDFAnnotationFreeText
