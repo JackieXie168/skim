@@ -70,4 +70,15 @@
 
 @interface NSAttributedString (SKTemplateParser)
 - (id)initWithAttributedString:(NSAttributedString *)attributedString attributes:(NSDictionary *)attributes;
+- (NSString *)xmlString;
+- (NSData *)RTFRepresentation;
+@end
+
+@interface NSString (SKTemplateParser)
+- (NSString *)xmlString;
+@end
+
+
+@interface NSData (SKTemplateParser)
+- (NSString *)xmlString;
 @end
