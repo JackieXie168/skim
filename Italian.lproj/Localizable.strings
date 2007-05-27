@@ -4,9 +4,6 @@
 /* Window title format */
 "%@ (%i pages)" = "%1$@ (%2$i pagine)";
 
-/* Description for export */
-"%C %@, page %i" = "%1$C %2$@, pagina %3$i";
-
 /* Message in alert dialog */
 "\"%@\" already exists. Do you want to replace it?" = "\"%@\" esiste giˆ. Vuoi sostituirlo?";
 
@@ -219,6 +216,9 @@
 
 /* Toolbar item label */
 "Info" = "Info";
+
+/* Undo action name */
+"Join Notes" = "Unisci Note";
 
 /* Window title */
 "Latest Release Notes" = "Ultime Note Rilascio";

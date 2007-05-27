@@ -37,6 +37,7 @@
  */
 
 #import "NSArray_SKExtensions.h"
+#import "NSValue_SKExtensions.h"
 
 
 @implementation NSArray (SKExtensions)

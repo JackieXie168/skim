@@ -2431,6 +2431,7 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
 - (void)outlineViewDeleteSelectedRows:(NSOutlineView *)ov  {
     if ([ov isEqual:noteOutlineView] && [ov selectedRow] != -1) {
         [pdfView removeAnnotation:[self selectedNote]];
+        [[[self document] undoManager] setActionName:NSLocalizedString(@"Remove Note", @"Undo action name")];
     }
 }
 

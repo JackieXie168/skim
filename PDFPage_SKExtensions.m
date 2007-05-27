@@ -298,18 +298,21 @@ static IMP originalDealloc = NULL;
 }
 
 - (void)insertInNotes:(id)newNote {
-    SKDocument *document = [self containingDocument];
+    SKPDFView *pdfView = [[self containingDocument] pdfView];
     
-    [[document pdfView] addAnnotation:newNote toPage:self];
+    [pdfView addAnnotation:newNote toPage:self];
+    [[pdfView undoManager] setActionName:NSLocalizedString(@"Add Note", @"Undo action name")];
     
-    [[NSNotificationCenter defaultCenter] postNotificationName:SKPDFViewDidAddAnnotationNotification object:[document pdfView] 
+    [[NSNotificationCenter defaultCenter] postNotificationName:SKPDFViewDidAddAnnotationNotification object:pdfView 
         userInfo:[NSDictionary dictionaryWithObjectsAndKeys:newNote, @"annotation", self, @"page", nil]];
 }
 
 - (void)removeFromNotesAtIndex:(unsigned int)index {
     PDFAnnotation *note = [[self notes] objectAtIndex:index];
+    SKPDFView *pdfView = [[self containingDocument] pdfView];
     
-    [[[self containingDocument] pdfView] removeAnnotation:note];
+    [pdfView removeAnnotation:note];
+    [[pdfView undoManager] setActionName:NSLocalizedString(@"Remove Note", @"Undo action name")];
 }
 
 
