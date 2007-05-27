@@ -258,6 +258,30 @@ CFStringRef SKStringCreateByCollapsingAndTrimmingWhitespaceAndNewlines(CFAllocat
     return NSStringFromPoint(NSMakePoint(NSMidX(rect), NSMidY(rect)));
 }
 
+- (float)rectX {
+    return NSRectFromString(self).origin.x;
+}
+
+- (float)rectY {
+    return NSRectFromString(self).origin.x;
+}
+
+- (float)rectWidth {
+    return NSRectFromString(self).size.width;
+}
+
+- (float)rectHeight {
+    return NSRectFromString(self).size.height;
+}
+
+- (float)pointX {
+    return NSPointFromString(self).x;
+}
+
+- (float)pointY {
+    return NSPointFromString(self).y;
+}
+
 - (NSString *)stringBySurroundingWithSpacesIfNotEmpty { 
     return [self isEqualToString:@""] ? self : [NSString stringWithFormat:@" %@ ", self];
 }

@@ -54,4 +54,28 @@
     return NSStringFromPoint(NSMakePoint(NSMidX(rect), NSMidY(rect)));
 }
 
+- (float)rectX {
+    return [self rectValue].origin.x;
+}
+
+- (float)rectY {
+    return [self rectValue].origin.x;
+}
+
+- (float)rectWidth {
+    return [self rectValue].size.width;
+}
+
+- (float)rectHeight {
+    return [self rectValue].size.height;
+}
+
+- (float)pointX {
+    return [self pointValue].x;
+}
+
+- (float)pointY {
+    return [self pointValue].y;
+}
+
 @end

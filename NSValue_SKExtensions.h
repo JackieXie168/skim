@@ -18,5 +18,11 @@
 - (NSString *)originString;
 - (NSString *)sizeString;
 - (NSString *)midPointString;
+- (float)rectX;
+- (float)rectY;
+- (float)rectWidth;
+- (float)rectHeight;
+- (float)pointX;
+- (float)pointY;
 
 @end

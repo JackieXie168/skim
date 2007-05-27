@@ -675,6 +675,32 @@ static inline NSRange altTemplateTagRange(NSString *template, NSString *altTag, 
     return [self length] > 0;
 }
 
+- (NSString *)xmlString {
+    return [[self string] xmlString];
+}
+
+- (NSData *)RTFRepresentation {
+    return [self dataFromRange:NSMakeRange(0, [self length]) documentAttributes:nil error:NULL];
+}
+
+@end
+
+#pragma mark
+
+@implementation NSData (SKTemplateParser)
+
+- (NSString *)xmlString {
+    NSData *data = [NSPropertyListSerialization dataFromPropertyList:self format:NSPropertyListXMLFormat_v1_0 errorDescription:NULL];
+    NSMutableString *string = [[[NSMutableString alloc] initWithData:data encoding:NSUTF8StringEncoding] autorelease];
+    NSRange range = [string rangeOfString:@"<data>"];
+    if (range.location != NSNotFound)
+        [string deleteCharactersInRange:NSMakeRange(0, range.location)];
+    range = [string rangeOfString:@"</data>" options:NSBackwardsSearch];
+    if (range.location != NSNotFound)
+        [string deleteCharactersInRange:NSMakeRange(range.location, [string length] - range.location)];
+    return string;
+}
+
 @end
 
 #pragma mark -
@@ -687,6 +713,18 @@ static inline NSRange altTemplateTagRange(NSString *template, NSString *altTag, 
 
 - (BOOL)isNotEmpty {
     return [self isEqualToString:@""] == NO;
+}
+
+- (NSString *)xmlString {
+    NSData *data = [NSPropertyListSerialization dataFromPropertyList:self format:NSPropertyListXMLFormat_v1_0 errorDescription:NULL];
+    NSMutableString *string = [[[NSMutableString alloc] initWithData:data encoding:NSUTF8StringEncoding] autorelease];
+    NSRange range = [string rangeOfString:@"<string>"];
+    if (range.location != NSNotFound)
+        [string deleteCharactersInRange:NSMakeRange(0, range.location)];
+    range = [string rangeOfString:@"</string>" options:NSBackwardsSearch];
+    if (range.location != NSNotFound)
+        [string deleteCharactersInRange:NSMakeRange(range.location, [string length] - range.location)];
+    return string;
 }
 
 @end
