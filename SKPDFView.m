@@ -621,6 +621,7 @@ static void SKCGContextDrawGrabHandle(CGContextRef context, CGPoint point, float
     }
     
     [self addAnnotation:newAnnotation toPage:page];
+    [[self undoManager] setActionName:NSLocalizedString(@"Add Note", @"Undo action name")];
 
     [self setActiveAnnotation:newAnnotation];
 }
@@ -1298,6 +1299,7 @@ static void SKCGContextDrawGrabHandle(CGContextRef context, CGPoint point, float
             [newAnnotation setContents:text];
         
         [self addAnnotation:newAnnotation toPage:page];
+        [[self undoManager] setActionName:NSLocalizedString(@"Add Note", @"Undo action name")];
 
         [self setActiveAnnotation:newAnnotation];
         [newAnnotation release];
@@ -1309,22 +1311,25 @@ static void SKCGContextDrawGrabHandle(CGContextRef context, CGPoint point, float
 
 - (void)addAnnotation:(PDFAnnotation *)annotation toPage:(PDFPage *)page {
     [[[self undoManager] prepareWithInvocationTarget:self] removeAnnotation:annotation];
-    [[self undoManager] setActionName:NSLocalizedString(@"Remove Note", @"Undo action name")];
     [page addAnnotation:annotation];
     [self setNeedsDisplayForAnnotation:annotation];
     [[NSNotificationCenter defaultCenter] postNotificationName:SKPDFViewDidAddAnnotationNotification object:self userInfo:[NSDictionary dictionaryWithObjectsAndKeys:page, @"page", annotation, @"annotation", nil]];                
 }
 
 - (void)removeActiveAnnotation:(id)sender{
-    if ([activeAnnotation isNoteAnnotation])
+    if ([activeAnnotation isNoteAnnotation]) {
         [self removeAnnotation:activeAnnotation];
+        [[self undoManager] setActionName:NSLocalizedString(@"Remove Note", @"Undo action name")];
+    }
 }
 
 - (void)removeThisAnnotation:(id)sender{
     PDFAnnotation *annotation = [sender representedObject];
     
-    if (annotation)
+    if (annotation) {
         [self removeAnnotation:annotation];
+        [[self undoManager] setActionName:NSLocalizedString(@"Remove Note", @"Undo action name")];
+    }
 }
 
 - (void)removeAnnotation:(PDFAnnotation *)annotation{
@@ -1332,7 +1337,7 @@ static void SKCGContextDrawGrabHandle(CGContextRef context, CGPoint point, float
     PDFPage *page = [wasAnnotation page];
     
     [[[self undoManager] prepareWithInvocationTarget:self] addAnnotation:wasAnnotation toPage:page];
-    [[self undoManager] setActionName:NSLocalizedString(@"Add Note", @"Undo action name")];
+    [[self undoManager] setActionName:NSLocalizedString(@"Remove Note", @"Undo action name")];
     
     if (editAnnotation && activeAnnotation == annotation)
         [self endAnnotationEdit:self];
@@ -2262,6 +2267,7 @@ static void SKCGContextDrawGrabHandle(CGContextRef context, CGPoint point, float
         [[self undoManager] beginUndoGrouping];
         didBeginUndoGrouping = YES;
         [self addAnnotation:newAnnotation toPage:page];
+        [[self undoManager] setActionName:NSLocalizedString(@"Add Note", @"Undo action name")];
         newActiveAnnotation = newAnnotation;
         [newAnnotation release];
     } else if (toolMode == SKNoteToolMode && newActiveAnnotation == nil &&
@@ -2287,6 +2293,7 @@ static void SKCGContextDrawGrabHandle(CGContextRef context, CGPoint point, float
         newActiveAnnotation = [[[SKPDFAnnotationMarkup alloc] initWithSelection:sel markupType:markupType] autorelease];
         [newActiveAnnotation setContents:[[sel string] stringByCollapsingWhitespaceAndNewlinesAndRemovingSurroundingWhitespaceAndNewlines]];
         [self addAnnotation:newActiveAnnotation toPage:page];
+        [[self undoManager] setActionName:NSLocalizedString(@"Join Notes", @"Undo action name")];
     }
     
     if (activeAnnotation != newActiveAnnotation)

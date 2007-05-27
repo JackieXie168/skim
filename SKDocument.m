@@ -803,6 +803,7 @@ NSString *SKDocumentWillSaveNotification = @"SKDocumentWillSaveNotification";
     PDFAnnotation *note = [[self notes] objectAtIndex:index];
     
     [[self pdfView] removeAnnotation:note];
+    [[self undoManager] setActionName:NSLocalizedString(@"Remove Note", @"Undo action name")];
 }
 
 - (PDFPage *)currentPage {
