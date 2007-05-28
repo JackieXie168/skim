@@ -59,7 +59,7 @@
 }
 
 - (float)rectY {
-    return [self rectValue].origin.x;
+    return [self rectValue].origin.y;
 }
 
 - (float)rectWidth {
