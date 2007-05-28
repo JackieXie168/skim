@@ -263,7 +263,7 @@ CFStringRef SKStringCreateByCollapsingAndTrimmingWhitespaceAndNewlines(CFAllocat
 }
 
 - (float)rectY {
-    return NSRectFromString(self).origin.x;
+    return NSRectFromString(self).origin.y;
 }
 
 - (float)rectWidth {
