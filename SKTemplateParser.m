@@ -680,7 +680,7 @@ static inline NSRange altTemplateTagRange(NSString *template, NSString *altTag, 
 }
 
 - (NSData *)RTFRepresentation {
-    return [self dataFromRange:NSMakeRange(0, [self length]) documentAttributes:nil error:NULL];
+    return [self RTFFromRange:NSMakeRange(0, [self length]) documentAttributes:nil];
 }
 
 @end
@@ -689,15 +689,21 @@ static inline NSRange altTemplateTagRange(NSString *template, NSString *altTag, 
 
 @implementation NSData (SKTemplateParser)
 
+- (NSString *)utf8String {
+    return [[[NSString alloc] initWithData:self encoding:NSUTF8StringEncoding] autorelease];
+}
+
 - (NSString *)xmlString {
     NSData *data = [NSPropertyListSerialization dataFromPropertyList:self format:NSPropertyListXMLFormat_v1_0 errorDescription:NULL];
     NSMutableString *string = [[[NSMutableString alloc] initWithData:data encoding:NSUTF8StringEncoding] autorelease];
-    int start = NSMaxRange([string rangeOfString:@"<data>"]);
-    int end = [string rangeOfString:@"</data>" options:NSBackwardsSearch].location;
-    if (start == NSNotFound || end == NSNotFound)
+    int loc = NSMaxRange([string rangeOfString:@"<data>"]);
+    if (loc == NSNotFound)
         return nil;
-    [string deleteCharactersInRange:NSMakeRange(0, start)];
-    [string deleteCharactersInRange:NSMakeRange(end, [string length] - end)];
+    [string deleteCharactersInRange:NSMakeRange(0, loc)];
+    loc = [string rangeOfString:@"</data>" options:NSBackwardsSearch].location;
+    if (loc == NSNotFound)
+        return nil;
+    [string deleteCharactersInRange:NSMakeRange(loc, [string length] - loc)];
     return string;
 }
 
@@ -718,12 +724,14 @@ static inline NSRange altTemplateTagRange(NSString *template, NSString *altTag, 
 - (NSString *)xmlString {
     NSData *data = [NSPropertyListSerialization dataFromPropertyList:self format:NSPropertyListXMLFormat_v1_0 errorDescription:NULL];
     NSMutableString *string = [[[NSMutableString alloc] initWithData:data encoding:NSUTF8StringEncoding] autorelease];
-    int start = NSMaxRange([string rangeOfString:@"<string>"]);
-    int end = [string rangeOfString:@"</string>" options:NSBackwardsSearch].location;
-    if (start == NSNotFound || end == NSNotFound)
+    int loc = NSMaxRange([string rangeOfString:@"<string>"]);
+    if (loc == NSNotFound)
         return self;
-    [string deleteCharactersInRange:NSMakeRange(0, start)];
-    [string deleteCharactersInRange:NSMakeRange(end, [string length] - end)];
+    [string deleteCharactersInRange:NSMakeRange(0, loc)];
+    loc = [string rangeOfString:@"</string>" options:NSBackwardsSearch].location;
+    if (loc == NSNotFound)
+        return self;
+    [string deleteCharactersInRange:NSMakeRange(loc, [string length] - loc)];
     return string;
 }
 
