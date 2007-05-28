@@ -81,5 +81,4 @@
 
 @interface NSData (SKTemplateParser)
 - (NSString *)xmlString;
-- (NSString *)utf8String;
 @end
