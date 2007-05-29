@@ -69,6 +69,7 @@
 #import "PDFSelection_SKExtensions.h"
 #import "SKToolbarItem.h"
 #import "NSValue_SKExtensions.h"
+#import "NSString_SKExtensions.h"
 
 #define SEGMENTED_CONTROL_HEIGHT    25.0
 #define WINDOW_X_DELTA              0.0
@@ -161,7 +162,7 @@ static NSString *SKRightSidePaneWidthKey = @"SKRightSidePaneWidth";
     [toolbarItems release];
     [pdfOutlineItems release];
     [savedNormalSetup release];
-    [saveProgressSheet release];
+    [progressSheet release];
     [super dealloc];
 }
 
@@ -1055,16 +1056,38 @@ static NSString *SKRightSidePaneWidthKey = @"SKRightSidePaneWidth";
     NSRect rect[2] = {NSIntegralRect([pdfView currentSelectionRect]), NSZeroRect};
     NSArray *rectArray;
     if (NSIsEmptyRect(rect[0])) {
+        if (progressSheet == nil) {
+            if ([NSBundle loadNibNamed:@"ProgressSheet" owner:self])  {
+                [progressBar setUsesThreadedAnimation:YES];
+            } else {
+                NSLog(@"Failed to load ProgressSheet.nib");
+                return;
+            }
+        }
+        
         int i, j, count = [[pdfView document] pageCount];
         rect[0] = rect[1] = NSZeroRect;
+        
+        [progressBar setMaxValue:(double)MIN(18, count)];
+        [progressBar setDoubleValue:0.0];
+        [progressField setStringValue:[NSLocalizedString(@"Cropping Pages", @"Message for progress sheet") stringByAppendingEllipsis]];
+        
+        [NSApp beginSheet:progressSheet modalForWindow:[self window] modalDelegate:self didEndSelector:NULL contextInfo:NULL];
         if (count < 18) {
-            for (i = 0; i < count; i++)
+            for (i = 0; i < count; i++) {
                 rect[i % 2] = NSUnionRect(rect[i % 2], [[[pdfView document] pageAtIndex:i] foregroundBox]);
+                [progressBar setDoubleValue:(double)i];
+                [progressBar displayIfNeeded];
+            }
         } else {
             int start[3] = {0, count / 2 - 3, count - 6};
-            for (j = 0; j < 3; j++)
-                for (i = start[j]; i < start[j] + 6; i++)
+            for (j = 0; j < 3; j++) {
+                for (i = start[j]; i < start[j] + 6; i++) {
                     rect[i % 2] = NSUnionRect(rect[i % 2], [[[pdfView document] pageAtIndex:i] foregroundBox]);
+                    [progressBar setDoubleValue:(double)(3 * j + i)];
+                    [progressBar displayIfNeeded];
+                }
+            }
         }
         float w = fmax(NSWidth(rect[0]), NSWidth(rect[1]));
         float h = fmax(NSHeight(rect[0]), NSHeight(rect[1]));
@@ -1077,14 +1100,41 @@ static NSString *SKRightSidePaneWidthKey = @"SKRightSidePaneWidth";
     
     [self cropPagesToRects:rectArray];
     [pdfView setCurrentSelectionRect:NSZeroRect];
+	
+    [NSApp endSheet:progressSheet];
+    [progressSheet orderOut:self];
 }
 
 - (IBAction)autoCropAll:(id)sender {
+    if (progressSheet == nil) {
+        if ([NSBundle loadNibNamed:@"ProgressSheet" owner:self])  {
+            [progressBar setUsesThreadedAnimation:YES];
+        } else {
+            NSLog(@"Failed to load ProgressSheet.nib");
+            return;
+        }
+    }
+    
     NSMutableArray *rectArray = [NSMutableArray array];
     int i, iMax = [[pdfView document] pageCount];
-    for (i = 0; i < iMax; i++)
+    
+	[progressBar setMaxValue:(double)iMax];
+	[progressBar setDoubleValue:0.0];
+	[progressField setStringValue:[NSLocalizedString(@"Cropping Pages", @"Message for progress sheet") stringByAppendingEllipsis]];
+    
+	[NSApp beginSheet:progressSheet modalForWindow:[self window] modalDelegate:self didEndSelector:NULL contextInfo:NULL];
+    
+    for (i = 0; i < iMax; i++) {
         [rectArray addObject:[NSValue valueWithRect:[[[pdfView document] pageAtIndex:i] foregroundBox]]];
+        [progressBar setDoubleValue:(double)i];
+        [progressBar displayIfNeeded];
+        if (i && i % 10 == 0)
+            [[NSRunLoop currentRunLoop] runMode:NSDefaultRunLoopMode beforeDate:[NSDate dateWithTimeIntervalSinceNow:0.1]];
+    }
     [self cropPagesToRects:rectArray];
+	
+    [NSApp endSheet:progressSheet];
+    [progressSheet orderOut:self];
 }
 
 - (IBAction)autoSelectContent:(id)sender {
@@ -2148,37 +2198,33 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
     }
 }
 
-- (void)saveProgressSheetDidEnd:(NSWindow *)sheet returnCode:(int)returnCode contextInfo:(void *)contextInfo {
-	[saveProgressSheet close];
-}
-
 - (void)handleDocumentBeginWrite:(NSNotification *)notification {
-    if (saveProgressSheet == nil) {
-        if (NO == [NSBundle loadNibNamed:@"SaveProgressSheet" owner:self])  {
-            NSLog(@"Failed to load SaveProgressSheet.nib");
+    if (progressSheet == nil) {
+        if ([NSBundle loadNibNamed:@"ProgressSheet" owner:self])  {
+            [progressBar setUsesThreadedAnimation:YES];
+        } else {
+            NSLog(@"Failed to load ProgressSheet.nib");
             return;
         }
     }
     
 	// Establish maximum and current value for progress bar.
-	[saveProgressBar setMaxValue: (double)[[pdfView document] pageCount]];
-	[saveProgressBar setDoubleValue: 0.0];
+	[progressBar setMaxValue:(double)[[pdfView document] pageCount]];
+	[progressBar setDoubleValue:0.0];
+	[progressField setStringValue:[NSLocalizedString(@"Exporting PDF", @"Message for progress sheet") stringByAppendingEllipsis]];
 	
 	// Bring up the save panel as a sheet.
-	[NSApp beginSheet:saveProgressSheet
-       modalForWindow:[self window]
-        modalDelegate:self 
-       didEndSelector:@selector(saveProgressSheetDidEnd:returnCode:contextInfo:)
-          contextInfo:NULL];
+	[NSApp beginSheet:progressSheet modalForWindow:[self window] modalDelegate:nil didEndSelector:NULL contextInfo:NULL];
 }
 
 - (void)handleDocumentEndWrite:(NSNotification *)notification {
-	[NSApp endSheet:saveProgressSheet];
+	[NSApp endSheet:progressSheet];
+	[progressSheet orderOut:self];
 }
 
 - (void)handleDocumentEndPageWrite:(NSNotification *)notification {
-	[saveProgressBar setDoubleValue: [[[notification userInfo] objectForKey:@"PDFDocumentPageIndex"] floatValue]];
-	[saveProgressBar displayIfNeeded];
+	[progressBar setDoubleValue: [[[notification userInfo] objectForKey:@"PDFDocumentPageIndex"] floatValue]];
+	[progressBar displayIfNeeded];
 }
 
 #pragma mark KVO

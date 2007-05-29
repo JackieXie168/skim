@@ -67,11 +67,12 @@
                 pageNumberView = NSView; 
                 pdfContentBox = NSBox; 
                 pdfView = SKPDFView; 
+                progressBar = NSProgressIndicator; 
+                progressField = NSTextField; 
+                progressSheet = NSWindow; 
                 rightSideBox = NSBox; 
                 rightSideButton = NSSegmentedControl; 
                 rightSideContentBox = NSBox; 
-                saveProgressBar = NSProgressIndicator; 
-                saveProgressSheet = NSWindow; 
                 scaleField = NSTextField; 
                 searchBox = SKCollapsibleView; 
                 searchField = NSSearchField; 
