@@ -96,9 +96,7 @@
 		CE4190C40B94963A00ECF819 /* ToolbarCircleNote.tiff in Resources */ = {isa = PBXBuildFile; fileRef = CE4190C20B94963A00ECF819 /* ToolbarCircleNote.tiff */; };
 		CE4190C50B94963A00ECF819 /* ToolbarTextNote.tiff in Resources */ = {isa = PBXBuildFile; fileRef = CE4190C30B94963A00ECF819 /* ToolbarTextNote.tiff */; };
 		CE41A6CC0B975E5000ECF819 /* Skim.sdef in Resources */ = {isa = PBXBuildFile; fileRef = CE41A6CB0B975E5000ECF819 /* Skim.sdef */; };
-		CE41B2A60C08CFA900E36EB7 /* NSArray_SKExtensions.h in CopyFiles */ = {isa = PBXBuildFile; fileRef = CE41B2A40C08CFA900E36EB7 /* NSArray_SKExtensions.h */; };
 		CE41B2A70C08CFA900E36EB7 /* NSArray_SKExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = CE41B2A50C08CFA900E36EB7 /* NSArray_SKExtensions.m */; };
-		CE41B2CB0C08D17100E36EB7 /* NSValue_SKExtensions.h in CopyFiles */ = {isa = PBXBuildFile; fileRef = CE41B2C90C08D17100E36EB7 /* NSValue_SKExtensions.h */; };
 		CE41B2CC0C08D17100E36EB7 /* NSValue_SKExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = CE41B2CA0C08D17100E36EB7 /* NSValue_SKExtensions.m */; };
 		CE4294A30BBD29120016FDC2 /* SKReadingBar.m in Sources */ = {isa = PBXBuildFile; fileRef = CE4294A20BBD29120016FDC2 /* SKReadingBar.m */; };
 		CE4373B40BB5440E00A56987 /* PSDocument.icns in Resources */ = {isa = PBXBuildFile; fileRef = CE4373B30BB5440E00A56987 /* PSDocument.icns */; };
@@ -110,7 +108,6 @@
 		CE468C460BF1F0F60007AA12 /* SquareNoteToolAdorn.tiff in Resources */ = {isa = PBXBuildFile; fileRef = CE468C3E0BF1F0F60007AA12 /* SquareNoteToolAdorn.tiff */; };
 		CE468C470BF1F0F60007AA12 /* TextNoteToolAdorn.tiff in Resources */ = {isa = PBXBuildFile; fileRef = CE468C3F0BF1F0F60007AA12 /* TextNoteToolAdorn.tiff */; };
 		CE468C480BF1F0F60007AA12 /* AnchoredNoteToolAdorn.tiff in Resources */ = {isa = PBXBuildFile; fileRef = CE468C400BF1F0F60007AA12 /* AnchoredNoteToolAdorn.tiff */; };
-		CE48BAD70C089EA300A166C6 /* SKTemplateParser.h in CopyFiles */ = {isa = PBXBuildFile; fileRef = CE48BAD50C089EA300A166C6 /* SKTemplateParser.h */; };
 		CE48BAD80C089EA300A166C6 /* SKTemplateParser.m in Sources */ = {isa = PBXBuildFile; fileRef = CE48BAD60C089EA300A166C6 /* SKTemplateParser.m */; };
 		CE48BBB60C08AD7000A166C6 /* notesTemplate.txt in Resources */ = {isa = PBXBuildFile; fileRef = CE48BBB40C08AD7000A166C6 /* notesTemplate.txt */; };
 		CE48BBB70C08AD7000A166C6 /* notesTemplate.rtf in Resources */ = {isa = PBXBuildFile; fileRef = CE48BBB50C08AD7000A166C6 /* notesTemplate.rtf */; };
@@ -266,9 +263,6 @@
 			dstSubfolderSpec = 10;
 			files = (
 				CE2BD8450BD4135600A5F4DB /* Sparkle.framework in CopyFiles */,
-				CE48BAD70C089EA300A166C6 /* SKTemplateParser.h in CopyFiles */,
-				CE41B2A60C08CFA900E36EB7 /* NSArray_SKExtensions.h in CopyFiles */,
-				CE41B2CB0C08D17100E36EB7 /* NSValue_SKExtensions.h in CopyFiles */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
