@@ -131,6 +131,9 @@
 /* Undo action name */
 "Crop Page" = "Ritaglia Pagina";
 
+/* Message for progress sheet */
+"Cropping Pages" = "Ritaglia Pagine";
+
 /* Menu item title */
 "Cut" = "Taglia";
 
@@ -150,6 +153,9 @@
 /* Undo action name
    Menu item title */
 "Edit Note" = "Modifica Nota";
+
+/* Message for progress sheet */
+"Exporting PDF" = "Esportazione in corso";
 
 /* Error description */
 "File name too long." = "Nome file troppo lungo.";

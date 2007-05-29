@@ -151,8 +151,9 @@ typedef struct _SKPDFViewState {
     IBOutlet NSWindow           *bookmarkSheet;
     IBOutlet NSTextField        *bookmarkField;
     
-    IBOutlet NSWindow           *saveProgressSheet;
-    IBOutlet NSProgressIndicator *saveProgressBar;
+    IBOutlet NSWindow           *progressSheet;
+    IBOutlet NSProgressIndicator *progressBar;
+    IBOutlet NSTextField        *progressField;
     
     IBOutlet NSWindow           *passwordSheet;
     IBOutlet NSTextField        *passwordField;
