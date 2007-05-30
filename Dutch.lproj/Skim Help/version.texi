@@ -1,1 +1,1 @@
-@set VERSION 0.4
+@set VERSION 0.4.1
