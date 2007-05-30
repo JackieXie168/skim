@@ -286,11 +286,11 @@
 	<key>CFBundlePackageType</key>
 	<string>APPL</string>
 	<key>CFBundleShortVersionString</key>
-	<string>0.4</string>
+	<string>0.4.1</string>
 	<key>CFBundleSignature</key>
 	<string>SKIM</string>
 	<key>CFBundleVersion</key>
-	<string>v4</string>
+	<string>v5</string>
 	<key>LSMinimumSystemVersion</key>
 	<string>10.4.0</string>
 	<key>NSAppleScriptEnabled</key>
