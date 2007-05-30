@@ -614,9 +614,9 @@ static BOOL IsAliasFolderAtPath(NSString *path)
 		NSDirectoryEnumerator *dirEnum = [[NSFileManager defaultManager] enumeratorAtPath:[downloadPath stringByDeletingLastPathComponent]];
 		while ((file = [dirEnum nextObject]))
 		{
-			// Some DMGs have symlinks into /Applications! That's no good!
-			if ([[[dirEnum fileAttributes] objectForKey:NSFileType] isEqualToString:NSFileTypeSymbolicLink] ||
-				IsAliasFolderAtPath([[downloadPath stringByDeletingLastPathComponent] stringByAppendingPathComponent:file]))
+			// Some DMGs have symlinks into /Applications! But symlinks are not followed by NSDirectoryEnumerator, so that's OK
+            // If someone uses an alias to a folder that can lead to problems though, as it could be resolved to the Applications folder on disk or lead to loops
+			if (IsAliasFolderAtPath([[downloadPath stringByDeletingLastPathComponent] stringByAppendingPathComponent:file]))
 				[dirEnum skipDescendents];
 			if ([[file lastPathComponent] isEqualToString:appName])
 				newAppDownloadPath = [[downloadPath stringByDeletingLastPathComponent] stringByAppendingPathComponent:file];
