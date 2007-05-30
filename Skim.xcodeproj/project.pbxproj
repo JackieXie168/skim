@@ -99,14 +99,6 @@
 		CE41B2CC0C08D17100E36EB7 /* NSValue_SKExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = CE41B2CA0C08D17100E36EB7 /* NSValue_SKExtensions.m */; };
 		CE4294A30BBD29120016FDC2 /* SKReadingBar.m in Sources */ = {isa = PBXBuildFile; fileRef = CE4294A20BBD29120016FDC2 /* SKReadingBar.m */; };
 		CE4373B40BB5440E00A56987 /* PSDocument.icns in Resources */ = {isa = PBXBuildFile; fileRef = CE4373B30BB5440E00A56987 /* PSDocument.icns */; };
-		CE468C410BF1F0F60007AA12 /* ArrowNoteToolAdorn.tiff in Resources */ = {isa = PBXBuildFile; fileRef = CE468C390BF1F0F60007AA12 /* ArrowNoteToolAdorn.tiff */; };
-		CE468C420BF1F0F60007AA12 /* UnderlineNoteToolAdorn.tiff in Resources */ = {isa = PBXBuildFile; fileRef = CE468C3A0BF1F0F60007AA12 /* UnderlineNoteToolAdorn.tiff */; };
-		CE468C430BF1F0F60007AA12 /* StrikeOutNoteToolAdorn.tiff in Resources */ = {isa = PBXBuildFile; fileRef = CE468C3B0BF1F0F60007AA12 /* StrikeOutNoteToolAdorn.tiff */; };
-		CE468C440BF1F0F60007AA12 /* HighlightNoteToolAdorn.tiff in Resources */ = {isa = PBXBuildFile; fileRef = CE468C3C0BF1F0F60007AA12 /* HighlightNoteToolAdorn.tiff */; };
-		CE468C450BF1F0F60007AA12 /* CircleNoteToolAdorn.tiff in Resources */ = {isa = PBXBuildFile; fileRef = CE468C3D0BF1F0F60007AA12 /* CircleNoteToolAdorn.tiff */; };
-		CE468C460BF1F0F60007AA12 /* SquareNoteToolAdorn.tiff in Resources */ = {isa = PBXBuildFile; fileRef = CE468C3E0BF1F0F60007AA12 /* SquareNoteToolAdorn.tiff */; };
-		CE468C470BF1F0F60007AA12 /* TextNoteToolAdorn.tiff in Resources */ = {isa = PBXBuildFile; fileRef = CE468C3F0BF1F0F60007AA12 /* TextNoteToolAdorn.tiff */; };
-		CE468C480BF1F0F60007AA12 /* AnchoredNoteToolAdorn.tiff in Resources */ = {isa = PBXBuildFile; fileRef = CE468C400BF1F0F60007AA12 /* AnchoredNoteToolAdorn.tiff */; };
 		CE48BAD80C089EA300A166C6 /* SKTemplateParser.m in Sources */ = {isa = PBXBuildFile; fileRef = CE48BAD60C089EA300A166C6 /* SKTemplateParser.m */; };
 		CE48BBB60C08AD7000A166C6 /* notesTemplate.txt in Resources */ = {isa = PBXBuildFile; fileRef = CE48BBB40C08AD7000A166C6 /* notesTemplate.txt */; };
 		CE48BBB70C08AD7000A166C6 /* notesTemplate.rtf in Resources */ = {isa = PBXBuildFile; fileRef = CE48BBB50C08AD7000A166C6 /* notesTemplate.rtf */; };
@@ -319,7 +311,7 @@
 		45A3BD380B4F097D002B297F /* InitialUserDefaults.plist */ = {isa = PBXFileReference; explicitFileType = text.xml; fileEncoding = 4; path = InitialUserDefaults.plist; sourceTree = "<group>"; };
 		45B113BF0B329A7E00DE0660 /* LICENSE */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = LICENSE; sourceTree = "<group>"; };
 		8D15AC360486D014006FF6A4 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = Info.plist; sourceTree = "<group>"; };
-		8D15AC370486D014006FF6A4 /* Skim.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = Skim.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		8D15AC370486D014006FF6A4 /* Skim.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Skim.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		A489FDBA0BC8E8D100BA14DD /* Italian */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = Italian; path = Italian.lproj/InfoWindow.nib; sourceTree = "<group>"; };
 		A489FDBD0BC8E8DA00BA14DD /* Italian */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = Italian; path = Italian.lproj/MainMenu.nib; sourceTree = "<group>"; };
 		A489FDC00BC8E8DF00BA14DD /* Italian */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = Italian; path = Italian.lproj/MainWindow.nib; sourceTree = "<group>"; };
@@ -413,14 +405,6 @@
 		CE4294A10BBD29120016FDC2 /* SKReadingBar.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SKReadingBar.h; sourceTree = "<group>"; };
 		CE4294A20BBD29120016FDC2 /* SKReadingBar.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SKReadingBar.m; sourceTree = "<group>"; };
 		CE4373B30BB5440E00A56987 /* PSDocument.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; name = PSDocument.icns; path = Images/PSDocument.icns; sourceTree = "<group>"; };
-		CE468C390BF1F0F60007AA12 /* ArrowNoteToolAdorn.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; name = ArrowNoteToolAdorn.tiff; path = Images/ArrowNoteToolAdorn.tiff; sourceTree = "<group>"; };
-		CE468C3A0BF1F0F60007AA12 /* UnderlineNoteToolAdorn.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; name = UnderlineNoteToolAdorn.tiff; path = Images/UnderlineNoteToolAdorn.tiff; sourceTree = "<group>"; };
-		CE468C3B0BF1F0F60007AA12 /* StrikeOutNoteToolAdorn.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; name = StrikeOutNoteToolAdorn.tiff; path = Images/StrikeOutNoteToolAdorn.tiff; sourceTree = "<group>"; };
-		CE468C3C0BF1F0F60007AA12 /* HighlightNoteToolAdorn.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; name = HighlightNoteToolAdorn.tiff; path = Images/HighlightNoteToolAdorn.tiff; sourceTree = "<group>"; };
-		CE468C3D0BF1F0F60007AA12 /* CircleNoteToolAdorn.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; name = CircleNoteToolAdorn.tiff; path = Images/CircleNoteToolAdorn.tiff; sourceTree = "<group>"; };
-		CE468C3E0BF1F0F60007AA12 /* SquareNoteToolAdorn.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; name = SquareNoteToolAdorn.tiff; path = Images/SquareNoteToolAdorn.tiff; sourceTree = "<group>"; };
-		CE468C3F0BF1F0F60007AA12 /* TextNoteToolAdorn.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; name = TextNoteToolAdorn.tiff; path = Images/TextNoteToolAdorn.tiff; sourceTree = "<group>"; };
-		CE468C400BF1F0F60007AA12 /* AnchoredNoteToolAdorn.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; name = AnchoredNoteToolAdorn.tiff; path = Images/AnchoredNoteToolAdorn.tiff; sourceTree = "<group>"; };
 		CE485B650BC4420900FA7109 /* Dutch */ = {isa = PBXFileReference; lastKnownFileType = folder; name = Dutch; path = "Dutch.lproj/Skim Help"; sourceTree = "<group>"; };
 		CE485B780BC4426800FA7109 /* Dutch */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = Dutch; path = Dutch.lproj/InfoWindow.nib; sourceTree = "<group>"; };
 		CE485B7B0BC4427100FA7109 /* Dutch */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = Dutch; path = Dutch.lproj/MainMenu.nib; sourceTree = "<group>"; };
@@ -922,14 +906,6 @@
 				CE5478BC0B33456300F8AFB6 /* MoveToolAdorn.tiff */,
 				CECBA5900BFCEE250030AB59 /* SelectToolAdorn.tiff */,
 				CE5478C30B33456300F8AFB6 /* TextToolAdorn.tiff */,
-				CE468C390BF1F0F60007AA12 /* ArrowNoteToolAdorn.tiff */,
-				CE468C3A0BF1F0F60007AA12 /* UnderlineNoteToolAdorn.tiff */,
-				CE468C3B0BF1F0F60007AA12 /* StrikeOutNoteToolAdorn.tiff */,
-				CE468C3C0BF1F0F60007AA12 /* HighlightNoteToolAdorn.tiff */,
-				CE468C3D0BF1F0F60007AA12 /* CircleNoteToolAdorn.tiff */,
-				CE468C3E0BF1F0F60007AA12 /* SquareNoteToolAdorn.tiff */,
-				CE468C3F0BF1F0F60007AA12 /* TextNoteToolAdorn.tiff */,
-				CE468C400BF1F0F60007AA12 /* AnchoredNoteToolAdorn.tiff */,
 				CE380C600B837B6100A1B779 /* NoteViewAdorn.tiff */,
 				CE4EB8220B7B96D00091F228 /* OutlineViewAdorn.tiff */,
 				CE380C610B837B6100A1B779 /* SnapshotViewAdorn.tiff */,
@@ -1171,14 +1147,6 @@
 				CE7C5D050BD8062C0011315D /* ArrowNoteAdorn.tiff in Resources */,
 				CE7C5D190BD8086C0011315D /* ToolbarArrowNote.tiff in Resources */,
 				CE1E25680BDA61E80011D9DD /* ReadNotesAccessoryView.nib in Resources */,
-				CE468C410BF1F0F60007AA12 /* ArrowNoteToolAdorn.tiff in Resources */,
-				CE468C420BF1F0F60007AA12 /* UnderlineNoteToolAdorn.tiff in Resources */,
-				CE468C430BF1F0F60007AA12 /* StrikeOutNoteToolAdorn.tiff in Resources */,
-				CE468C440BF1F0F60007AA12 /* HighlightNoteToolAdorn.tiff in Resources */,
-				CE468C450BF1F0F60007AA12 /* CircleNoteToolAdorn.tiff in Resources */,
-				CE468C460BF1F0F60007AA12 /* SquareNoteToolAdorn.tiff in Resources */,
-				CE468C470BF1F0F60007AA12 /* TextNoteToolAdorn.tiff in Resources */,
-				CE468C480BF1F0F60007AA12 /* AnchoredNoteToolAdorn.tiff in Resources */,
 				CECBA5910BFCEE260030AB59 /* SelectToolAdorn.tiff in Resources */,
 				CE31AC4E0C02E919003612A9 /* ToolbarCrop.tiff in Resources */,
 				CE01D08C0C07157200FA32EF /* ToolbarZoomToSelection.tiff in Resources */,
