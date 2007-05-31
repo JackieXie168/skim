@@ -170,8 +170,6 @@ typedef struct _SKPDFViewState {
     
     float                       thumbnailCacheSize;
     float                       snapshotCacheSize;
-    
-    BOOL                        edited;
 }
 
 - (IBAction)pickColor:(id)sender;
