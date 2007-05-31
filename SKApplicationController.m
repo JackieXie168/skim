@@ -357,29 +357,22 @@ static BOOL fileIsInTrash(NSURL *fileURL)
     NSString *filename = [file stringByAppendingPathExtension:extension];
     NSString *fullPath = nil;
     NSString *appSupportPath = nil;
-    if (appSupportPath = [self applicationSupportPathForDomain:kUserDomain create:NO]) {
-        fullPath = [appSupportPath stringByAppendingPathComponent:filename];
-        if ([fm fileExistsAtPath:fullPath] == NO) {
-            fullPath = nil;
-            if (appSupportPath = [self applicationSupportPathForDomain:kLocalDomain create:NO]) {
-                fullPath = [appSupportPath stringByAppendingPathComponent:filename];
-                if ([fm fileExistsAtPath:fullPath] == NO) {
-                    fullPath = nil;
-                    if (appSupportPath = [self applicationSupportPathForDomain:kNetworkDomain create:NO]) {
-                        fullPath = [appSupportPath stringByAppendingPathComponent:filename];
-                        if ([fm fileExistsAtPath:fullPath] == NO) {
-                            fullPath = nil;
-                            if (appSupportPath = [[NSBundle mainBundle] sharedSupportPath]) {
-                                fullPath = [appSupportPath stringByAppendingPathComponent:filename];
-                                if ([fm fileExistsAtPath:fullPath] == NO)
-                                    fullPath = nil;
-                            }
-                        }
-                    }
-                }
-            }
+    int domains[3] = {kUserDomain, kLocalDomain, kNetworkDomain};
+    int i;
+    
+    for (i = 0; fullPath == nil && i < 3; i++) {
+        if (appSupportPath = [self applicationSupportPathForDomain:domains[i] create:NO]) {
+            fullPath = [appSupportPath stringByAppendingPathComponent:filename];
+            if ([fm fileExistsAtPath:fullPath] == NO)
+                fullPath = nil;
         }
     }
+    if (fullPath == nil) {
+        fullPath = [[[NSBundle mainBundle] sharedSupportPath] stringByAppendingPathComponent:filename];
+        if ([fm fileExistsAtPath:fullPath] == NO)
+            fullPath = nil;
+    }
+    
     return fullPath;
 }
 
