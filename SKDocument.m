@@ -89,7 +89,6 @@ NSString *SKDocumentWillSaveNotification = @"SKDocumentWillSaveNotification";
     [pdfData release];
     [noteDicts release];
     [readNotesAccessoryView release];
-    [lastExportedType release];
     [super dealloc];
 }
 
@@ -149,6 +148,7 @@ static NSPopUpButton *popUpButtonSubview(NSView *view)
 
 - (BOOL)prepareSavePanel:(NSSavePanel *)savePanel {
     NSPopUpButton *formatPopup = popUpButtonSubview([savePanel accessoryView]);
+    NSString *lastExportedType = [[NSUserDefaults standardUserDefaults] stringForKey:@"SKLastExportedType"];
     if (formatPopup && lastExportedType) {
         NSString *title = [[NSDocumentController sharedDocumentController] displayNameForType:lastExportedType];
         int index = [formatPopup indexOfItemWithTitle:title];
@@ -159,10 +159,8 @@ static NSPopUpButton *popUpButtonSubview(NSView *view)
 }
 
 - (BOOL)saveToURL:(NSURL *)absoluteURL ofType:(NSString *)typeName forSaveOperation:(NSSaveOperationType)saveOperation error:(NSError **)outError{
-    if (saveOperation == NSSaveToOperation) {
-        [lastExportedType release];
-        lastExportedType = [typeName retain];
-    }
+    if (saveOperation == NSSaveToOperation)
+        [[NSUserDefaults standardUserDefaults] setObject:typeName forKey:@"SKLastExportedType"];
     
     BOOL success = [super saveToURL:absoluteURL ofType:typeName forSaveOperation:saveOperation error:outError];
     // we check for notes and may save a .skim as well:
