@@ -897,11 +897,24 @@ static NSString *SKRightSidePaneWidthKey = @"SKRightSidePaneWidth";
         float scale = 1.0;
         bounds.size.width -= [NSScroller scrollerWidth];
         bounds.size.height -= [NSScroller scrollerWidth];
-        if (NSWidth(bounds) / NSHeight(bounds) > NSWidth(selRect) / NSHeight(selRect))
+        if (NSWidth(bounds) * NSHeight(selRect) > NSWidth(selRect) * NSHeight(bounds))
             scale = NSHeight(bounds) / NSHeight(selRect);
         else
             scale = NSWidth(bounds) / NSWidth(selRect);
         [pdfView setScaleFactor:scale];
+        NSScrollView *scrollView = [[pdfView documentView] enclosingScrollView];
+        if ([scrollView hasHorizontalScroller] == NO || [scrollView hasVerticalScroller] == NO) {
+            bounds = [pdfView bounds];
+            if ([scrollView hasVerticalScroller])
+                bounds.size.width -= [NSScroller scrollerWidth];
+            if ([scrollView hasHorizontalScroller])
+                bounds.size.height -= [NSScroller scrollerWidth];
+            if (NSWidth(bounds) * NSHeight(selRect) > NSWidth(selRect) * NSHeight(bounds))
+                scale = NSHeight(bounds) / NSHeight(selRect);
+            else
+                scale = NSWidth(bounds) / NSWidth(selRect);
+            [pdfView setScaleFactor:scale];
+        }
         [pdfView scrollRect:selRect inPageToVisible:[pdfView currentPage]]; 
     } else NSBeep();
 }
