@@ -57,6 +57,8 @@ extern NSString *SKDocumentWillSaveNotification;
     PDFDocument *pdfDocument;
     NSMutableArray *noteDicts;
     
+    NSString *lastExportedType;
+    
     SKPDFSynchronizer *synchronizer;
     
     NSTimer *fileUpdateTimer;
