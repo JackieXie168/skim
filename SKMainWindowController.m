@@ -541,6 +541,7 @@ static NSString *SKRightSidePaneWidthKey = @"SKRightSidePaneWidth";
     while (dict = [e nextObject]) {
         unsigned pageIndex = [[dict objectForKey:@"pageIndex"] unsignedIntValue];
         if (annotation = [[PDFAnnotation alloc] initWithDictionary:dict]) {
+            [annotation setShouldDisplay:[pdfView hideNotes] == NO];
             if (pageIndex == NSNotFound)
                 pageIndex = 0;
             else if (pageIndex >= [pdfDoc pageCount])
