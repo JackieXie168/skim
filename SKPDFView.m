@@ -240,7 +240,7 @@ static void SKCGContextDrawGrabHandle(CGContextRef context, CGPoint point, float
         
         for (i = 0; i < count; i++) {
             PDFAnnotation *annotation = [allAnnotations objectAtIndex: i];
-            if ([annotation isNoteAnnotation] || [[annotation type] isEqualToString:@"Link"]) {
+            if (([annotation isNoteAnnotation] || [[annotation type] isEqualToString:@"Link"]) && [annotation shouldDisplay]) {
                 if (annotation == activeAnnotation) {
                     foundActive = YES;
                 } else if ([[annotation type] isEqualToString:@"FreeText"]) {
@@ -1331,6 +1331,7 @@ static void SKCGContextDrawGrabHandle(CGContextRef context, CGPoint point, float
 
 - (void)addAnnotation:(PDFAnnotation *)annotation toPage:(PDFPage *)page {
     [[[self undoManager] prepareWithInvocationTarget:self] removeAnnotation:annotation];
+    [annotation setShouldDisplay:hideNotes == NO];
     [page addAnnotation:annotation];
     [self setNeedsDisplayForAnnotation:annotation];
     [[NSNotificationCenter defaultCenter] postNotificationName:SKPDFViewDidAddAnnotationNotification object:self userInfo:[NSDictionary dictionaryWithObjectsAndKeys:page, @"page", annotation, @"annotation", nil]];                
@@ -1397,7 +1398,7 @@ static void SKCGContextDrawGrabHandle(CGContextRef context, CGPoint point, float
 }
 
 - (void)editActiveAnnotation:(id)sender {
-    if (nil == activeAnnotation)
+    if (nil == activeAnnotation || hideNotes)
         return;
     
     [self endAnnotationEdit:self];
@@ -2281,39 +2282,41 @@ static void SKCGContextDrawGrabHandle(CGContextRef context, CGPoint point, float
         }
     }
     
-    if (([theEvent modifierFlags] & NSAlternateKeyMask) && [newActiveAnnotation isMovable]) {
-        // select a new copy of the annotation
-        PDFAnnotation *newAnnotation = [[PDFAnnotation alloc] initWithDictionary:[newActiveAnnotation dictionaryValue]];
-        [[self undoManager] beginUndoGrouping];
-        didBeginUndoGrouping = YES;
-        [self addAnnotation:newAnnotation toPage:page];
-        [[self undoManager] setActionName:NSLocalizedString(@"Add Note", @"Undo action name")];
-        newActiveAnnotation = newAnnotation;
-        [newAnnotation release];
-    } else if (toolMode == SKNoteToolMode && newActiveAnnotation == nil && hideNotes == NO && 
-               NSPointInRect(mouseDownOnPage, [page boundsForBox:[self displayBox]]) &&
-               (annotationMode == SKFreeTextNote || annotationMode == SKAnchoredNote || annotationMode == SKCircleNote || annotationMode == SKSquareNote || annotationMode == SKArrowNote)) {
-        float width = annotationMode == SKAnchoredNote ? 16.0 : annotationMode == SKArrowNote ? 4.0 : 8.0;
-        NSRect bounds = NSMakeRect(pagePoint.x - floorf(0.5 * width), pagePoint.y - floorf(0.5 * width), width, width);
-        [[self undoManager] beginUndoGrouping];
-        didBeginUndoGrouping = YES;
-        [self addAnnotationWithType:annotationMode contents:nil page:page bounds:bounds];
-        newActiveAnnotation = activeAnnotation;
-        mouseDownInAnnotation = YES;
-        clickDelta.x = pagePoint.x - NSMinX(bounds);
-        clickDelta.y = pagePoint.y - NSMinY(bounds);
-    } else if (([theEvent modifierFlags] & NSShiftKeyMask) && [activeAnnotation isEqual:newActiveAnnotation] == NO && [[activeAnnotation page] isEqual:[newActiveAnnotation page]] && [[activeAnnotation type] isEqualToString:[newActiveAnnotation type]] && [activeAnnotation isMarkupAnnotation]) {
-        int markupType = [(SKPDFAnnotationMarkup *)activeAnnotation markupType];
-        PDFSelection *sel = [(SKPDFAnnotationMarkup *)activeAnnotation selection];
-        [sel addSelection:[(SKPDFAnnotationMarkup *)newActiveAnnotation selection]];
-        
-        [self removeActiveAnnotation:nil];
-        [self removeAnnotation:newActiveAnnotation];
-        
-        newActiveAnnotation = [[[SKPDFAnnotationMarkup alloc] initWithSelection:sel markupType:markupType] autorelease];
-        [newActiveAnnotation setContents:[[sel string] stringByCollapsingWhitespaceAndNewlinesAndRemovingSurroundingWhitespaceAndNewlines]];
-        [self addAnnotation:newActiveAnnotation toPage:page];
-        [[self undoManager] setActionName:NSLocalizedString(@"Join Notes", @"Undo action name")];
+    if (hideNotes == NO) {
+        if (([theEvent modifierFlags] & NSAlternateKeyMask) && [newActiveAnnotation isMovable]) {
+            // select a new copy of the annotation
+            PDFAnnotation *newAnnotation = [[PDFAnnotation alloc] initWithDictionary:[newActiveAnnotation dictionaryValue]];
+            [[self undoManager] beginUndoGrouping];
+            didBeginUndoGrouping = YES;
+            [self addAnnotation:newAnnotation toPage:page];
+            [[self undoManager] setActionName:NSLocalizedString(@"Add Note", @"Undo action name")];
+            newActiveAnnotation = newAnnotation;
+            [newAnnotation release];
+        } else if (toolMode == SKNoteToolMode && newActiveAnnotation == nil &&
+                   NSPointInRect(mouseDownOnPage, [page boundsForBox:[self displayBox]]) &&
+                   (annotationMode == SKFreeTextNote || annotationMode == SKAnchoredNote || annotationMode == SKCircleNote || annotationMode == SKSquareNote || annotationMode == SKArrowNote)) {
+            float width = annotationMode == SKAnchoredNote ? 16.0 : annotationMode == SKArrowNote ? 4.0 : 8.0;
+            NSRect bounds = NSMakeRect(pagePoint.x - floorf(0.5 * width), pagePoint.y - floorf(0.5 * width), width, width);
+            [[self undoManager] beginUndoGrouping];
+            didBeginUndoGrouping = YES;
+            [self addAnnotationWithType:annotationMode contents:nil page:page bounds:bounds];
+            newActiveAnnotation = activeAnnotation;
+            mouseDownInAnnotation = YES;
+            clickDelta.x = pagePoint.x - NSMinX(bounds);
+            clickDelta.y = pagePoint.y - NSMinY(bounds);
+        } else if (([theEvent modifierFlags] & NSShiftKeyMask) && [activeAnnotation isEqual:newActiveAnnotation] == NO && [[activeAnnotation page] isEqual:[newActiveAnnotation page]] && [[activeAnnotation type] isEqualToString:[newActiveAnnotation type]] && [activeAnnotation isMarkupAnnotation]) {
+            int markupType = [(SKPDFAnnotationMarkup *)activeAnnotation markupType];
+            PDFSelection *sel = [(SKPDFAnnotationMarkup *)activeAnnotation selection];
+            [sel addSelection:[(SKPDFAnnotationMarkup *)newActiveAnnotation selection]];
+            
+            [self removeActiveAnnotation:nil];
+            [self removeAnnotation:newActiveAnnotation];
+            
+            newActiveAnnotation = [[[SKPDFAnnotationMarkup alloc] initWithSelection:sel markupType:markupType] autorelease];
+            [newActiveAnnotation setContents:[[sel string] stringByCollapsingWhitespaceAndNewlinesAndRemovingSurroundingWhitespaceAndNewlines]];
+            [self addAnnotation:newActiveAnnotation toPage:page];
+            [[self undoManager] setActionName:NSLocalizedString(@"Join Notes", @"Undo action name")];
+        }
     }
     
     if (activeAnnotation != newActiveAnnotation)
