@@ -205,6 +205,9 @@
 "Hide Contents Pane" = "Nascondi Pannello Contenuti";
 
 /* Menu item title */
+"Hide Notes" = "Nascondi Note";
+
+/* Menu item title */
 "Hide Notes Pane" = "Nascondi Pannello Note";
 
 /* Menu item title */
@@ -373,6 +376,9 @@
 
 /* Menu item title */
 "Show Contents Pane" = "Mostra Pannello Contenuti";
+
+/* Menu item title */
+"Show Notes" = "Mostra Note";
 
 /* Menu item title */
 "Show Notes Pane" = "Mostra Pannello Note";

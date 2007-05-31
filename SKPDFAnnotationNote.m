@@ -219,7 +219,7 @@ static IMP originalSetColor = NULL;
 - (BOOL)isEditable { return NO; }
 
 - (BOOL)hitTest:(NSPoint)point {
-    return NSPointInRect(point, [self bounds]);
+    return [self shouldDisplay] ? NSPointInRect(point, [self bounds]) : NO;
 }
 
 - (NSUndoManager *)undoManager {

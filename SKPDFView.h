@@ -75,6 +75,8 @@ typedef enum _SKNoteType {
     SKToolMode toolMode;
     SKNoteType annotationMode;
     
+    BOOL hideNotes;
+    
     BOOL autohidesCursor;
     BOOL hasNavigation;
     BOOL activateNavigationAtBottom;
@@ -117,6 +119,9 @@ typedef enum _SKNoteType {
 
 - (NSRect)currentSelectionRect;
 - (void)setCurrentSelectionRect:(NSRect)rect;
+
+- (BOOL)hideNotes;
+- (void)setHideNotes:(BOOL)flag;
 
 - (BOOL)hasReadingBar;
 

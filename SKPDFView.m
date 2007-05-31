@@ -149,6 +149,8 @@ static void SKCGContextDrawGrabHandle(CGContextRef context, CGPoint point, float
     toolMode = [[NSUserDefaults standardUserDefaults] integerForKey:SKLastToolModeKey];
     annotationMode = [[NSUserDefaults standardUserDefaults] integerForKey:SKLastAnnotationModeKey];
     
+    hideNotes = NO;
+    
     autohidesCursor = NO;
     hasNavigation = NO;
     autohideTimer = nil;
@@ -465,6 +467,19 @@ static void SKCGContextDrawGrabHandle(CGContextRef context, CGPoint point, float
     }
 }
 
+- (BOOL)hideNotes {
+    return hideNotes;
+}
+
+- (void)setHideNotes:(BOOL)flag {
+    if (hideNotes != flag) {
+        hideNotes = flag;
+        if (hideNotes)
+            [self setActiveAnnotation:nil];
+        [self setNeedsDisplay:YES];
+    }
+}
+
 #pragma mark Reading bar
 
 - (BOOL)hasReadingBar {
@@ -504,7 +519,7 @@ static void SKCGContextDrawGrabHandle(CGContextRef context, CGPoint point, float
     NSData *pdfData = nil;
     NSData *tiffData = nil;
     
-    if ([activeAnnotation isNoteAnnotation] && [activeAnnotation isMovable]) {
+    if ([self hideNotes] == NO && [activeAnnotation isNoteAnnotation] && [activeAnnotation isMovable]) {
         if (noteData = [NSKeyedArchiver archivedDataWithRootObject:[activeAnnotation dictionaryValue]])
             [types addObject:SKSkimNotePboardType];
     }
@@ -568,6 +583,11 @@ static void SKCGContextDrawGrabHandle(CGContextRef context, CGPoint point, float
 }
 
 - (void)pasteNoteAlternate:(BOOL)isAlternate {
+    if ([self hideNotes]) {
+        NSBeep();
+        return;
+    }
+    
     NSPasteboard *pboard = [NSPasteboard generalPasteboard];
     NSString *pboardType = [pboard availableTypeFromArray:[NSArray arrayWithObjects:SKSkimNotePboardType, NSStringPboardType, nil]];
     if (pboardType == nil) {
@@ -636,7 +656,7 @@ static void SKCGContextDrawGrabHandle(CGContextRef context, CGPoint point, float
 
 - (void)cut:(id)sender
 {
-	if ([activeAnnotation isNoteAnnotation]) {
+	if ([self hideNotes] == NO && [activeAnnotation isNoteAnnotation]) {
         [self copy:sender];
         [self delete:sender];
     } else
@@ -743,7 +763,7 @@ static void SKCGContextDrawGrabHandle(CGContextRef context, CGPoint point, float
                     [self dragReadingBarWithEvent:theEvent];
                 } else if (page == nil || [self selectAnnotationWithEvent:theEvent] == NO) {
                     PDFAreaOfInterest area = [self areaOfInterestForMouse:theEvent];
-                    BOOL canSelectOrDrag = area == kPDFNoArea || toolMode == SKTextToolMode || annotationMode == SKHighlightNote || annotationMode == SKUnderlineNote || annotationMode == SKStrikeOutNote;
+                    BOOL canSelectOrDrag = area == kPDFNoArea || toolMode == SKTextToolMode || hideNotes || annotationMode == SKHighlightNote || annotationMode == SKUnderlineNote || annotationMode == SKStrikeOutNote;
                     if (area == kPDFNoArea || (canSelectOrDrag && area == kPDFPageArea && [[page selectionForRect:NSMakeRect(p.x - 30.0, p.y - 40.0, 60.0, 80.0)] string] == nil)) {
                         [self dragWithEvent:theEvent];
                     } else if (canSelectOrDrag) {
@@ -798,7 +818,7 @@ static void SKCGContextDrawGrabHandle(CGContextRef context, CGPoint point, float
                     NSString *selString = [[[[activeAnnotation page] selectionForRect:[activeAnnotation bounds]] string] stringByCollapsingWhitespaceAndNewlinesAndRemovingSurroundingWhitespaceAndNewlines];
                     [activeAnnotation setContents:selString];
                 }
-            } else if (toolMode == SKNoteToolMode && [self currentSelection] && (annotationMode == SKHighlightNote || annotationMode == SKUnderlineNote || annotationMode == SKStrikeOutNote)) {
+            } else if (toolMode == SKNoteToolMode && hideNotes == NO && [self currentSelection] && (annotationMode == SKHighlightNote || annotationMode == SKUnderlineNote || annotationMode == SKStrikeOutNote)) {
                 [self addAnnotationFromSelectionWithType:annotationMode];
                 [self setCurrentSelection:nil];
             } else
@@ -975,7 +995,7 @@ static void SKCGContextDrawGrabHandle(CGContextRef context, CGPoint point, float
     
     }
     
-    if ([self toolMode] == SKTextToolMode || [self toolMode] == SKNoteToolMode) {
+    if (([self toolMode] == SKTextToolMode || [self toolMode] == SKNoteToolMode) && [self hideNotes] == NO) {
         
         [menu insertItem:[NSMenuItem separatorItem] atIndex:0];
         
@@ -1072,7 +1092,7 @@ static void SKCGContextDrawGrabHandle(CGContextRef context, CGPoint point, float
         if ([[menu itemAtIndex:0] isSeparatorItem])
             [menu removeItemAtIndex:0];
         
-    } else if (toolMode == SKSelectToolMode && NSIsEmptyRect(selectionRect) == NO) {
+    } else if ((toolMode == SKSelectToolMode && NSIsEmptyRect(selectionRect) == NO) || ([self toolMode] == SKTextToolMode && [self currentSelection] && [self hideNotes])) {
         
         [menu insertItem:[NSMenuItem separatorItem] atIndex:0];
         
@@ -1461,7 +1481,7 @@ static void SKCGContextDrawGrabHandle(CGContextRef context, CGPoint point, float
         NSArray *annotations = [[pdfDoc pageAtIndex:pageIndex] annotations];
         while (++i < (int)[annotations count] && annotation == nil) {
             annotation = [annotations objectAtIndex:i];
-            if ([annotation isNoteAnnotation] == NO && [[annotation type] isEqualToString:@"Link"] == NO)
+            if (([self hideNotes] || [annotation isNoteAnnotation] == NO) && [[annotation type] isEqualToString:@"Link"] == NO)
                 annotation = nil;
         }
         if (startPageIndex == -1)
@@ -1506,7 +1526,7 @@ static void SKCGContextDrawGrabHandle(CGContextRef context, CGPoint point, float
         NSArray *annotations = [[pdfDoc pageAtIndex:pageIndex] annotations];
         while (--i >= 0 && annotation == nil) {
             annotation = [annotations objectAtIndex:i];
-            if ([annotation isNoteAnnotation] == NO && [[annotation type] isEqualToString:@"Link"] == NO)
+            if (([self hideNotes] || [annotation isNoteAnnotation] == NO) && [[annotation type] isEqualToString:@"Link"] == NO)
                 annotation = nil;
         }
         if (startPageIndex == -1)
@@ -2270,7 +2290,7 @@ static void SKCGContextDrawGrabHandle(CGContextRef context, CGPoint point, float
         [[self undoManager] setActionName:NSLocalizedString(@"Add Note", @"Undo action name")];
         newActiveAnnotation = newAnnotation;
         [newAnnotation release];
-    } else if (toolMode == SKNoteToolMode && newActiveAnnotation == nil &&
+    } else if (toolMode == SKNoteToolMode && newActiveAnnotation == nil && hideNotes == NO && 
                NSPointInRect(mouseDownOnPage, [page boundsForBox:[self displayBox]]) &&
                (annotationMode == SKFreeTextNote || annotationMode == SKAnchoredNote || annotationMode == SKCircleNote || annotationMode == SKSquareNote || annotationMode == SKArrowNote)) {
         float width = annotationMode == SKAnchoredNote ? 16.0 : annotationMode == SKArrowNote ? 4.0 : 8.0;
@@ -3086,7 +3106,7 @@ static void SKCGContextDrawGrabHandle(CGContextRef context, CGPoint point, float
                 PDFPage *page = [self pageForPoint:p nearest:NO];
                 p = [self convertPoint:p toPage:page];
                 PDFAreaOfInterest area = [self areaOfInterestForMouse:theEvent];
-                BOOL canSelectOrDrag = area == kPDFNoArea || toolMode == SKTextToolMode || annotationMode == SKHighlightNote || annotationMode == SKUnderlineNote || annotationMode == SKStrikeOutNote;
+                BOOL canSelectOrDrag = area == kPDFNoArea || toolMode == SKTextToolMode || hideNotes || annotationMode == SKHighlightNote || annotationMode == SKUnderlineNote || annotationMode == SKStrikeOutNote;
                 if ((readingBar && [[readingBar page] isEqual:page] && NSPointInRect(p, [readingBar currentBoundsForBox:[self displayBox]])) ||
                     (area == kPDFNoArea || (canSelectOrDrag && area == kPDFPageArea && [[page selectionForRect:NSMakeRect(p.x - 30.0, p.y - 40.0, 60.0, 80.0)] string] == nil)))
                     cursor = [NSCursor openHandCursor];

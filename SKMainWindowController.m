@@ -770,19 +770,34 @@ static NSString *SKRightSidePaneWidthKey = @"SKRightSidePaneWidth";
 }
 
 - (IBAction)createNewNote:(id)sender{
-    [pdfView addAnnotationFromSelectionWithType:[sender tag]];
+    if ([pdfView hideNotes] == NO) {
+        [pdfView addAnnotationFromSelectionWithType:[sender tag]];
+    } else NSBeep();
 }
 
 - (IBAction)editNote:(id)sender{
-    [pdfView editActiveAnnotation:sender];
+    if ([pdfView hideNotes] == NO) {
+        [pdfView editActiveAnnotation:sender];
+    } else NSBeep();
 }
 
 - (void)selectSelectedNote{
-    id annotation = [self selectedNote];
-    if (annotation) {
-        [pdfView scrollAnnotationToVisible:annotation];
-        [pdfView setActiveAnnotation:annotation];
-    }
+    if ([pdfView hideNotes] == NO) {
+        id annotation = [self selectedNote];
+        if (annotation) {
+            [pdfView scrollAnnotationToVisible:annotation];
+            [pdfView setActiveAnnotation:annotation];
+        }
+    } else NSBeep();
+}
+
+- (IBAction)toggleHideNotes:(id)sender{
+    BOOL wasHidden = [pdfView hideNotes];
+    NSEnumerator *noteEnum = [notes objectEnumerator];
+    PDFAnnotation *note;
+    while (note = [noteEnum nextObject])
+        [note setShouldDisplay:wasHidden];
+    [pdfView setHideNotes:wasHidden == NO];
 }
 
 - (IBAction)takeSnapshot:(id)sender{
@@ -2466,10 +2481,12 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
     if ([ov isEqual:noteOutlineView]) {
         if ([[tableColumn identifier] isEqualToString:@"note"]) {
             if ([item type] == nil) {
-                PDFAnnotation *annotation = [(SKNoteText *)item annotation];
-                [pdfView scrollAnnotationToVisible:annotation];
-                [pdfView setActiveAnnotation:annotation];
-                [self showNote:annotation];
+                if ([pdfView hideNotes] == NO) {
+                    PDFAnnotation *annotation = [(SKNoteText *)item annotation];
+                    [pdfView scrollAnnotationToVisible:annotation];
+                    [pdfView setActiveAnnotation:annotation];
+                    [self showNote:annotation];
+                }
                 return NO;
             } else {
                 return YES;
@@ -3375,9 +3392,9 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
     } else if ([identifier isEqualToString:SKDocumentToolbarPresentationItemIdentifier]) {
         return YES;
     } else if ([identifier isEqualToString:SKDocumentToolbarNewNoteItemIdentifier] || [identifier isEqualToString:SKDocumentToolbarNewCircleNoteItemIdentifier] || [identifier isEqualToString:SKDocumentToolbarNewArrowItemIdentifier]) {
-        return [pdfView toolMode] == SKTextToolMode || [pdfView toolMode] == SKNoteToolMode;
+        return ([pdfView toolMode] == SKTextToolMode || [pdfView toolMode] == SKNoteToolMode) && [pdfView hideNotes] == NO;
     } else if ([identifier isEqualToString:SKDocumentToolbarNewMarkupItemIdentifier]) {
-        return ([pdfView toolMode] == SKTextToolMode || [pdfView toolMode] == SKNoteToolMode) && [[[pdfView currentSelection] pages] count];
+        return ([pdfView toolMode] == SKTextToolMode || [pdfView toolMode] == SKNoteToolMode) && [[[pdfView currentSelection] pages] count] && [pdfView hideNotes] == NO;
     } else if ([identifier isEqualToString:SKDocumentToolbarInfoItemIdentifier]) {
         return YES;
     } else {
@@ -3389,10 +3406,16 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
     SEL action = [menuItem action];
     if (action == @selector(createNewNote:)) {
         BOOL isMarkup = [menuItem tag] == SKHighlightNote || [menuItem tag] == SKUnderlineNote || [menuItem tag] == SKStrikeOutNote;
-        return ([pdfView toolMode] == SKTextToolMode || [pdfView toolMode] == SKNoteToolMode) && (isMarkup == NO || [[[pdfView currentSelection] pages] count]);
+        return ([pdfView toolMode] == SKTextToolMode || [pdfView toolMode] == SKNoteToolMode) && (isMarkup == NO || [[[pdfView currentSelection] pages] count]) && [pdfView hideNotes] == NO;
     } else if (action == @selector(editNote:)) {
         PDFAnnotation *annotation = [pdfView activeAnnotation];
         return [annotation isNoteAnnotation] && ([[annotation type] isEqualToString:@"FreeText"] || [[annotation type] isEqualToString:@"Note"]);
+    } else if (action == @selector(toggleHideNotes:)) {
+        if ([pdfView hideNotes])
+            [menuItem setTitle:NSLocalizedString(@"Show Notes", @"Menu item title")];
+        else
+            [menuItem setTitle:NSLocalizedString(@"Hide Notes", @"Menu item title")];
+        return YES;
     } else if (action == @selector(displaySinglePages:)) {
         BOOL displaySinglePages = [pdfView displayMode] == kPDFDisplaySinglePage || [pdfView displayMode] == kPDFDisplaySinglePageContinuous;
         [menuItem setState:displaySinglePages ? NSOnState : NSOffState];
