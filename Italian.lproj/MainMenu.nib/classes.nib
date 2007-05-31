@@ -49,6 +49,7 @@
                 toggleDisplayContinuous = id; 
                 toggleDisplayPageBreaks = id; 
                 toggleFullScreen = id; 
+                toggleHideNotes = id; 
                 toggleLeftSidePane = id; 
                 togglePresentation = id; 
                 toggleReadingBar = id; 
