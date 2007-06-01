@@ -57,4 +57,6 @@
 - (NSString *)notesString;
 - (NSData *)notesRTFData;
 
+- (void)toggleDisplayNoteType:(id)sender;
+
 @end
