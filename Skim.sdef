@@ -535,7 +535,7 @@
             <cocoa class="PDFAnnotation"/>
             <property name="type" code="NTyp" type="note type" access="r"
                 description="The type of note.">
-                <cocoa key="noteType"/>
+                <cocoa key="asNoteType"/>
             </property>
             <contents name="text" code="ctxt" type="rich text"
                 description="The text of the note. Attributes are ignored.">

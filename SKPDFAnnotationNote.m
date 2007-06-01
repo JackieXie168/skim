@@ -165,6 +165,26 @@ static IMP originalSetColor = NULL;
     return page ? [[page document] indexForPage:page] : NSNotFound;
 }
 
+- (int)noteType {
+    if ([[self type] isEqualToString:@"FreeText"])
+        return SKFreeTextNote;
+    else if ([[self type] isEqualToString:@"Note"])
+        return SKAnchoredNote;
+    else if ([[self type] isEqualToString:@"Circle"])
+        return SKCircleNote;
+    else if ([[self type] isEqualToString:@"Square"])
+        return SKSquareNote;
+    else if ([[self type] isEqualToString:@"Highlight"] || [[self type] isEqualToString:@"MarkUp"])
+        return SKHighlightNote;
+    else if ([[self type] isEqualToString:@"Underline"])
+        return SKUnderlineNote;
+    else if ([[self type] isEqualToString:@"StrikeOut"])
+        return SKStrikeOutNote;
+    else if ([[self type] isEqualToString:@"Line"])
+        return SKArrowNote;
+    return 0;
+}
+
 - (void)replacementSetBounds:(NSRect)bounds {
     if ([self isNoteAnnotation]) {
         [[[self undoManager] prepareWithInvocationTarget:self] setBounds:[self bounds]];
@@ -237,7 +257,7 @@ static IMP originalSetColor = NULL;
         if (classCode == 'Note') {
             
             NSMutableDictionary *properties = [[[(NSCreateCommand *)currentCommand resolvedKeyDictionary] mutableCopy] autorelease];
-            int type = [[properties objectForKey:@"noteType"] intValue];
+            int type = [[properties objectForKey:@"asNoteType"] intValue];
             
             if (type == 0) {
                 [currentCommand setScriptErrorNumber:NSRequiredArgumentsMissingScriptError]; 
@@ -278,7 +298,7 @@ static IMP originalSetColor = NULL;
     }
 }
 
-- (int)noteType {
+- (int)asNoteType {
     if ([[self type] isEqualToString:@"FreeText"])
         return SKASTextNote;
     else if ([[self type] isEqualToString:@"Note"])
