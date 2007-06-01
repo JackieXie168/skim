@@ -2497,6 +2497,40 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
     return NO;
 }
 
+- (void)outlineView:(NSOutlineView *)ov didClickTableColumn:(NSTableColumn *)tableColumn {
+    if ([ov isEqual:noteOutlineView]) {
+        NSTableColumn *oldTableColumn = [ov highlightedTableColumn];
+        NSArray *sortDescriptors = nil;
+        BOOL ascending = YES;
+        if ([oldTableColumn isEqual:tableColumn]) {
+            sortDescriptors = [[noteArrayController sortDescriptors] valueForKey:@"reversedSortDescriptor"];
+            ascending = [[sortDescriptors lastObject] ascending];
+        } else {
+            NSString *tcID = [tableColumn identifier];
+            if ([tcID isEqualToString:@"type"]) {
+                NSSortDescriptor *typeSortDescriptor = [[[NSSortDescriptor alloc] initWithKey:@"type" ascending:YES selector:@selector(caseInsensitiveCompare:)] autorelease];
+                sortDescriptors = [NSArray arrayWithObjects:typeSortDescriptor, nil];
+            } else if ([tcID isEqualToString:@"note"]) {
+                NSSortDescriptor *contentsSortDescriptor = [[[NSSortDescriptor alloc] initWithKey:@"contents" ascending:YES selector:@selector(caseInsensitiveCompare:)] autorelease];
+                sortDescriptors = [NSArray arrayWithObjects:contentsSortDescriptor, nil];
+            } else if ([tcID isEqualToString:@"page"]) {
+                if (oldTableColumn == nil)
+                    ascending = NO;
+                NSSortDescriptor *pageIndexSortDescriptor = [[[NSSortDescriptor alloc] initWithKey:@"pageIndex" ascending:ascending] autorelease];
+                NSSortDescriptor *boundsSortDescriptor = [[[NSSortDescriptor alloc] initWithKey:@"bounds" ascending:ascending selector:@selector(boundsCompare:)] autorelease];
+                sortDescriptors = [NSArray arrayWithObjects:pageIndexSortDescriptor, boundsSortDescriptor, nil];
+            }
+            if (oldTableColumn)
+                [ov setIndicatorImage:nil inTableColumn:oldTableColumn];
+            [ov setHighlightedTableColumn:tableColumn]; 
+        }
+        [noteArrayController setSortDescriptors:sortDescriptors];
+        [ov setIndicatorImage:[NSImage imageNamed:ascending ? @"NSAscendingSortIndicator" : @"NSDescendingSortIndicator"]
+                inTableColumn:tableColumn];
+        [ov reloadData];
+    }
+}
+
 - (void)outlineViewSelectionDidChange:(NSNotification *)notification{
 	// Get the destination associated with the search result list. Tell the PDFView to go there.
 	if ([[notification object] isEqual:outlineView] && (updatingOutlineSelection == NO)){
