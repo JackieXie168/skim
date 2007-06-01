@@ -322,7 +322,7 @@ static BOOL fileIsInTrash(NSURL *fileURL)
             
             NSWindow *window = [controller window];
             NSRect rect = [window frame];
-            [[[[SKSplashWindow alloc] initWithType:remoteScrolling atPoint:NSMakePoint(NSMidX(rect), NSMidY(rect)) screen:[window screen]] autorelease] show];
+            [[[[SKSplashWindow alloc] initWithType:remoteScrolling ? SKSplashTypeScroll : SKSplashTypeResize atPoint:NSMakePoint(NSMidX(rect), NSMidY(rect)) screen:[window screen]] autorelease] show];
             break;
         }
         default:
@@ -500,39 +500,14 @@ static BOOL fileIsInTrash(NSURL *fileURL)
 
 - (void)drawRect:(NSRect)rect {
     NSRect bounds = [self bounds];
+    NSPoint center = NSMakePoint(NSMidX(bounds), NSMidY(bounds));
     
     [[NSColor colorWithCalibratedWhite:0.0 alpha:0.5] setFill];
     [NSBezierPath fillRoundRectInRect:[self bounds] radius:10.0];
     
     NSBezierPath *path = nil;
     
-    if (splashType == 0) {
-        float centerX = NSMidX(bounds), centerY = NSMidY(bounds);
-        
-        path = [NSBezierPath bezierPathWithOvalInRect:NSInsetRect(bounds, 8.0, 8.0)];
-        [path appendBezierPath:[NSBezierPath bezierPathWithOvalInRect:NSInsetRect(bounds, 23.0, 23.0)]];
-        
-        NSBezierPath *arrow = [NSBezierPath bezierPath];
-        [arrow moveToPoint:NSMakePoint(NSMidX(bounds), NSMinY(bounds) + 10.0)];
-        [arrow relativeLineToPoint:NSMakePoint(8.0, 8.0)];
-        [arrow relativeLineToPoint:NSMakePoint(-16.0, 0.0)];
-        [arrow closePath];
-        
-        NSAffineTransform *transform = [[[NSAffineTransform alloc] init] autorelease];
-        [transform translateXBy:centerX yBy:centerY];
-        [transform rotateByDegrees:90.0];
-        [transform translateXBy:-centerX yBy:-centerY];
-        [path appendBezierPath:arrow];
-        [arrow transformUsingAffineTransform:transform];
-        [path appendBezierPath:arrow];
-        [arrow transformUsingAffineTransform:transform];
-        [path appendBezierPath:arrow];
-        [arrow transformUsingAffineTransform:transform];
-        [path appendBezierPath:arrow];
-        
-        [path setWindingRule:NSEvenOddWindingRule];
-    } else if (splashType == 1) {
-        float centerX = NSMidX(bounds), centerY = NSMidY(bounds);
+    if (splashType == SKSplashTypeResize) {
         
         path = [NSBezierPath bezierPathWithRoundRectInRect:NSInsetRect(bounds, 20.0, 20.0) radius:3.0];
         [path appendBezierPath:[NSBezierPath bezierPathWithRect:NSInsetRect(bounds, 24.0, 24.0)]];
@@ -551,9 +526,47 @@ static BOOL fileIsInTrash(NSURL *fileURL)
         [arrow closePath];
         
         NSAffineTransform *transform = [[[NSAffineTransform alloc] init] autorelease];
-        [transform translateXBy:centerX yBy:centerY];
+        [transform translateXBy:center.x yBy:center.y];
         [transform rotateByDegrees:90.0];
-        [transform translateXBy:-centerX yBy:-centerY];
+        [transform translateXBy:-center.x yBy:-center.y];
+        [path appendBezierPath:arrow];
+        [arrow transformUsingAffineTransform:transform];
+        [path appendBezierPath:arrow];
+        [arrow transformUsingAffineTransform:transform];
+        [path appendBezierPath:arrow];
+        [arrow transformUsingAffineTransform:transform];
+        [path appendBezierPath:arrow];
+        
+        arrow = [NSBezierPath bezierPath];
+        [arrow moveToPoint:NSMakePoint(NSMinX(bounds) + 8.0, NSMidY(bounds))];
+        [arrow relativeLineToPoint:NSMakePoint(7.0, 5.0)];
+        [arrow relativeLineToPoint:NSMakePoint(0.0, -10.0)];
+        [arrow closePath];
+        [path appendBezierPath:arrow];
+        [transform translateXBy:center.x yBy:center.y];
+        [transform rotateByDegrees:90.0];
+        [transform translateXBy:-center.x yBy:-center.y];
+        [arrow transformUsingAffineTransform:transform];
+        [path appendBezierPath:arrow];
+        
+        [path setWindingRule:NSEvenOddWindingRule];
+        
+    } else if (splashType == SKSplashTypeScroll) {
+        
+        path = [NSBezierPath bezierPathWithOvalInRect:NSInsetRect(bounds, 8.0, 8.0)];
+        [path appendBezierPath:[NSBezierPath bezierPathWithOvalInRect:NSInsetRect(bounds, 9.0, 9.0)]];
+        [path appendBezierPath:[NSBezierPath bezierPathWithOvalInRect:NSInsetRect(bounds, 25.0, 25.0)]];
+        
+        NSBezierPath *arrow = [NSBezierPath bezierPath];
+        [arrow moveToPoint:NSMakePoint(NSMidX(bounds), NSMinY(bounds) + 12.0)];
+        [arrow relativeLineToPoint:NSMakePoint(7.0, 7.0)];
+        [arrow relativeLineToPoint:NSMakePoint(-14.0, 0.0)];
+        [arrow closePath];
+        
+        NSAffineTransform *transform = [[[NSAffineTransform alloc] init] autorelease];
+        [transform translateXBy:center.x yBy:center.y];
+        [transform rotateByDegrees:90.0];
+        [transform translateXBy:-center.x yBy:-center.y];
         [path appendBezierPath:arrow];
         [arrow transformUsingAffineTransform:transform];
         [path appendBezierPath:arrow];
@@ -563,6 +576,7 @@ static BOOL fileIsInTrash(NSURL *fileURL)
         [path appendBezierPath:arrow];
         
         [path setWindingRule:NSEvenOddWindingRule];
+        
     }
     
     [[NSColor colorWithCalibratedWhite:1.0 alpha:1.0] setFill];
