@@ -53,16 +53,16 @@
 #define FOREGROUND_BOX_MARGIN 10.0
 
 // A subclass with ivars would be nicer in some respects, but that would require subclassing PDFDocument and returning instances of the subclass for each page.
-static CFMutableDictionaryRef _bboxCache = NULL;
+static CFMutableDictionaryRef bboxCache = NULL;
 static IMP originalDealloc = NULL;
 
 + (void)load {
     originalDealloc = OBReplaceMethodImplementationWithSelector(self, @selector(dealloc), @selector(replacementDealloc));
-    _bboxCache = CFDictionaryCreateMutable(NULL, 0, NULL, &kCFTypeDictionaryValueCallBacks);
+    bboxCache = CFDictionaryCreateMutable(NULL, 0, NULL, &kCFTypeDictionaryValueCallBacks);
 }
 
 - (void)replacementDealloc {
-    CFDictionaryRemoveValue(_bboxCache, self);
+    CFDictionaryRemoveValue(bboxCache, self);
     originalDealloc(self, _cmd);
 }
 
@@ -70,7 +70,7 @@ static IMP originalDealloc = NULL;
 - (NSRect)foregroundBox {
     
     NSValue *rectValue = nil;
-    if (FALSE == CFDictionaryGetValueIfPresent(_bboxCache, (void *)self, (const void **)&rectValue)) {
+    if (FALSE == CFDictionaryGetValueIfPresent(bboxCache, (void *)self, (const void **)&rectValue)) {
         float marginWidth = [[NSUserDefaults standardUserDefaults] floatForKey:@"SKAutoCropBoxMarginWidth"];
         float marginHeight = [[NSUserDefaults standardUserDefaults] floatForKey:@"SKAutoCropBoxMarginHeight"];
         NSBitmapImageRep *imageRep = [[NSBitmapImageRep alloc] initWithPDFPage:self forBox:kPDFDisplayBoxMediaBox];
@@ -87,7 +87,7 @@ static IMP originalDealloc = NULL;
         [imageRep release];
         r = NSIntersectionRect(NSInsetRect(r, -marginWidth, -marginHeight), b);
         rectValue = [NSValue valueWithRect:r];
-        CFDictionarySetValue(_bboxCache, (void *)self, (void *)rectValue);
+        CFDictionarySetValue(bboxCache, (void *)self, (void *)rectValue);
     }
     return [rectValue rectValue];
 }
