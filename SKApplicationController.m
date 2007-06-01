@@ -449,38 +449,37 @@ static BOOL fileIsInTrash(NSURL *fileURL)
 - (id)initWithType:(int)splashType atPoint:(NSPoint)point screen:(NSScreen *)screen {
     NSRect contentRect = NSMakeRect(point.x - 30.0, point.y - 30.0, 60.0, 60.0);
     if (self = [super initWithContentRect:contentRect styleMask:NSBorderlessWindowMask backing:NSBackingStoreBuffered defer:NO screen:screen]) {
+        [self setIgnoresMouseEvents:YES];
 		[self setBackgroundColor:[NSColor clearColor]];
+        [self setAlphaValue:0.95];
 		[self setOpaque:NO];
         [self setDisplaysWhenScreenProfileChanges:YES];
-        [self setReleasedWhenClosed:NO];
         [self setLevel:NSStatusWindowLevel];
         [self setContentView:[[[SKSplashContentView alloc] initWithType:splashType] autorelease]];
     }
     return self;
 }
 
-- (void)animationDidEnd:(NSAnimation *)animation {
-    [self close];
-    [self autorelease];
-}
+- (BOOL)canBecomeKeyWindow { return NO; }
 
-- (void)animationDidStop:(NSAnimation *)animation {
-    [self close];
-    [self autorelease];
-}
+- (BOOL)canBecomeMainWindow { return NO; }
+    
+- (void)animationDidEnd:(NSAnimation *)animation { [self close]; }
+
+- (void)animationDidStop:(NSAnimation *)animation { [self close]; }
 
 - (void)fadeOut:(NSTimer *)timer {
     NSDictionary *fadeOutDict = [[NSDictionary alloc] initWithObjectsAndKeys:self, NSViewAnimationTargetKey, NSViewAnimationFadeOutEffect, NSViewAnimationEffectKey, nil];
     NSViewAnimation *animation = [[[NSViewAnimation alloc] initWithViewAnimations:[NSArray arrayWithObjects:fadeOutDict, nil]] autorelease];
     [fadeOutDict release];
-    [animation setDuration:2.0];
+    [animation setDuration:1.0];
     [animation setAnimationBlockingMode:NSAnimationNonblocking];
     [animation setDelegate:self];
     [animation startAnimation];
 }
 
 - (void)show {
-    [self retain];
+    [self retain]; // isReleasedWhenClosed is true by default
     [self orderFrontRegardless];
     [NSTimer scheduledTimerWithTimeInterval:2.0 target:self selector:@selector(fadeOut:) userInfo:nil repeats:NO];
 }
@@ -538,8 +537,8 @@ static BOOL fileIsInTrash(NSURL *fileURL)
         [path appendBezierPath:arrow];
         
         arrow = [NSBezierPath bezierPath];
-        [arrow moveToPoint:NSMakePoint(NSMinX(bounds) + 8.0, NSMidY(bounds))];
-        [arrow relativeLineToPoint:NSMakePoint(7.0, 5.0)];
+        [arrow moveToPoint:NSMakePoint(NSMinX(bounds) + 5.0, NSMidY(bounds))];
+        [arrow relativeLineToPoint:NSMakePoint(10.0, 5.0)];
         [arrow relativeLineToPoint:NSMakePoint(0.0, -10.0)];
         [arrow closePath];
         [path appendBezierPath:arrow];
