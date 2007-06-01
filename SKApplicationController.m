@@ -49,6 +49,51 @@
 #import <Quartz/Quartz.h>
 #import <Sparkle/Sparkle.h>
 #import "AppleRemote.h"
+#import "NSBezierPath_BDSKExtensions.h"
+
+
+@interface NSView (SKScrollingExtensions)
+- (void)scrollLineUp;
+- (void)scrollLineDown;
+- (void)scrollLineRight;
+- (void)scrollLineLeft;
+@end
+
+@implementation NSView (SKScrollingExtensions)
+
+- (void)scrollLineUp {
+    NSScrollView *scrollView = [self enclosingScrollView];
+    NSView *documentView = [scrollView documentView];
+    NSPoint point = [documentView visibleRect].origin;
+    point.y -= [scrollView verticalLineScroll];
+    [documentView scrollPoint:point];
+}
+
+- (void)scrollLineDown {
+    NSScrollView *scrollView = [self enclosingScrollView];
+    NSView *documentView = [scrollView documentView];
+    NSPoint point = [documentView visibleRect].origin;
+    point.y += [scrollView verticalLineScroll];
+    [documentView scrollPoint:point];
+}
+
+- (void)scrollLineRight {
+    NSScrollView *scrollView = [self enclosingScrollView];
+    NSView *documentView = [scrollView documentView];
+    NSPoint point = [documentView visibleRect].origin;
+    point.x -= [scrollView horizontalLineScroll];
+    [documentView scrollPoint:point];
+}
+
+- (void)scrollLineLeft {
+    NSScrollView *scrollView = [self enclosingScrollView];
+    NSView *documentView = [scrollView documentView];
+    NSPoint point = [documentView visibleRect].origin;
+    point.x += [scrollView horizontalLineScroll];
+    [documentView scrollPoint:point];
+}
+
+@end
 
 
 @implementation SKApplicationController
@@ -233,13 +278,17 @@ static BOOL fileIsInTrash(NSURL *fileURL)
         case kRemoteButtonVolume_Plus:
             if (pressedDown == NO)
                 break;
-            if ([controller isPresentation])
+            if (remoteScrolling)
+                [[[controller pdfView] documentView] scrollLineUp];
+            else if ([controller isPresentation])
                 [controller doAutoScale:nil];
             else
                 [controller doZoomIn:nil];
             break;
         case kRemoteButtonVolume_Minus:
-            if (pressedDown == NO)
+            if (remoteScrolling)
+                [[[controller pdfView] documentView] scrollLineDown];
+            else if (pressedDown == NO)
                 break;
             if ([controller isPresentation])
                 [controller doZoomToActualSize:nil];
@@ -250,17 +299,32 @@ static BOOL fileIsInTrash(NSURL *fileURL)
             if (pressedDown == NO)
                 break;
         case kRemoteButtonRight:
-            [controller doGoToNextPage:nil];
+            if (remoteScrolling)
+                [[[controller pdfView] documentView] scrollLineRight];
+            else 
+                [controller doGoToNextPage:nil];
             break;
         case kRemoteButtonLeft_Hold:
             if (pressedDown == NO)
                 break;
         case kRemoteButtonLeft:
-            [controller doGoToPreviousPage:nil];
+            if (remoteScrolling)
+                [[[controller pdfView] documentView] scrollLineLeft];
+            else 
+                [controller doGoToPreviousPage:nil];
             break;
         case kRemoteButtonPlay:
             [controller togglePresentation:nil];
             break;
+		case kRemoteButtonMenu:
+        {
+            remoteScrolling = !remoteScrolling;
+            
+            NSWindow *window = [controller window];
+            NSRect rect = [window frame];
+            [[[[SKSplashWindow alloc] initWithType:remoteScrolling atPoint:NSMakePoint(NSMidX(rect), NSMidY(rect)) screen:[window screen]] autorelease] show];
+            break;
+        }
         default:
             break;
     }
@@ -374,6 +438,135 @@ static BOOL fileIsInTrash(NSURL *fileURL)
     }
     
     return fullPath;
+}
+
+@end
+
+#pragma mark -
+
+@implementation SKSplashWindow
+
+- (id)initWithType:(int)splashType atPoint:(NSPoint)point screen:(NSScreen *)screen {
+    NSRect contentRect = NSMakeRect(point.x - 30.0, point.y - 30.0, 60.0, 60.0);
+    if (self = [super initWithContentRect:contentRect styleMask:NSBorderlessWindowMask backing:NSBackingStoreBuffered defer:NO screen:screen]) {
+		[self setBackgroundColor:[NSColor clearColor]];
+		[self setOpaque:NO];
+        [self setDisplaysWhenScreenProfileChanges:YES];
+        [self setReleasedWhenClosed:NO];
+        [self setLevel:NSStatusWindowLevel];
+        [self setContentView:[[[SKSplashContentView alloc] initWithType:splashType] autorelease]];
+    }
+    return self;
+}
+
+- (void)animationDidEnd:(NSAnimation *)animation {
+    [self close];
+    [self autorelease];
+}
+
+- (void)animationDidStop:(NSAnimation *)animation {
+    [self close];
+    [self autorelease];
+}
+
+- (void)fadeOut:(NSTimer *)timer {
+    NSDictionary *fadeOutDict = [[NSDictionary alloc] initWithObjectsAndKeys:self, NSViewAnimationTargetKey, NSViewAnimationFadeOutEffect, NSViewAnimationEffectKey, nil];
+    NSViewAnimation *animation = [[[NSViewAnimation alloc] initWithViewAnimations:[NSArray arrayWithObjects:fadeOutDict, nil]] autorelease];
+    [fadeOutDict release];
+    [animation setDuration:2.0];
+    [animation setAnimationBlockingMode:NSAnimationNonblocking];
+    [animation setDelegate:self];
+    [animation startAnimation];
+}
+
+- (void)show {
+    [self retain];
+    [self orderFrontRegardless];
+    [NSTimer scheduledTimerWithTimeInterval:2.0 target:self selector:@selector(fadeOut:) userInfo:nil repeats:NO];
+}
+
+@end
+
+#pragma mark -
+
+@implementation SKSplashContentView
+
+- (id)initWithType:(int)aSplashType {
+    if (self = [super init]) {
+        splashType = aSplashType;
+    }
+    return self;
+}
+
+- (void)drawRect:(NSRect)rect {
+    NSRect bounds = [self bounds];
+    
+    [[NSColor colorWithCalibratedWhite:0.0 alpha:0.5] setFill];
+    [NSBezierPath fillRoundRectInRect:[self bounds] radius:10.0];
+    
+    NSBezierPath *path = nil;
+    
+    if (splashType == 0) {
+        float centerX = NSMidX(bounds), centerY = NSMidY(bounds);
+        
+        path = [NSBezierPath bezierPathWithOvalInRect:NSInsetRect(bounds, 8.0, 8.0)];
+        [path appendBezierPath:[NSBezierPath bezierPathWithOvalInRect:NSInsetRect(bounds, 23.0, 23.0)]];
+        
+        NSBezierPath *arrow = [NSBezierPath bezierPath];
+        [arrow moveToPoint:NSMakePoint(NSMidX(bounds), NSMinY(bounds) + 10.0)];
+        [arrow relativeLineToPoint:NSMakePoint(8.0, 8.0)];
+        [arrow relativeLineToPoint:NSMakePoint(-16.0, 0.0)];
+        [arrow closePath];
+        
+        NSAffineTransform *transform = [[[NSAffineTransform alloc] init] autorelease];
+        [transform translateXBy:centerX yBy:centerY];
+        [transform rotateByDegrees:90.0];
+        [transform translateXBy:-centerX yBy:-centerY];
+        [path appendBezierPath:arrow];
+        [arrow transformUsingAffineTransform:transform];
+        [path appendBezierPath:arrow];
+        [arrow transformUsingAffineTransform:transform];
+        [path appendBezierPath:arrow];
+        [arrow transformUsingAffineTransform:transform];
+        [path appendBezierPath:arrow];
+        
+        [path setWindingRule:NSEvenOddWindingRule];
+    } else if (splashType == 1) {
+        float centerX = NSMidX(bounds), centerY = NSMidY(bounds);
+        
+        path = [NSBezierPath bezierPathWithRoundRectInRect:NSInsetRect(bounds, 20.0, 20.0) radius:3.0];
+        [path appendBezierPath:[NSBezierPath bezierPathWithRect:NSInsetRect(bounds, 24.0, 24.0)]];
+        
+        NSBezierPath *arrow = [NSBezierPath bezierPath];
+        [arrow moveToPoint:NSMakePoint(NSMinX(bounds) + 10.0, NSMinY(bounds) + 10.0)];
+        [arrow relativeLineToPoint:NSMakePoint(6.0, 0.0)];
+        [arrow relativeLineToPoint:NSMakePoint(-2.0, 2.0)];
+        [arrow relativeLineToPoint:NSMakePoint(2.0, 2.0)];
+        [arrow relativeLineToPoint:NSMakePoint(2.0, -2.0)];
+        [arrow relativeLineToPoint:NSMakePoint(0.0, 6.0)];
+        [arrow relativeLineToPoint:NSMakePoint(-6.0, 0.0)];
+        [arrow relativeLineToPoint:NSMakePoint(2.0, -2.0)];
+        [arrow relativeLineToPoint:NSMakePoint(-2.0, -2.0)];
+        [arrow relativeLineToPoint:NSMakePoint(-2.0, 2.0)];
+        [arrow closePath];
+        
+        NSAffineTransform *transform = [[[NSAffineTransform alloc] init] autorelease];
+        [transform translateXBy:centerX yBy:centerY];
+        [transform rotateByDegrees:90.0];
+        [transform translateXBy:-centerX yBy:-centerY];
+        [path appendBezierPath:arrow];
+        [arrow transformUsingAffineTransform:transform];
+        [path appendBezierPath:arrow];
+        [arrow transformUsingAffineTransform:transform];
+        [path appendBezierPath:arrow];
+        [arrow transformUsingAffineTransform:transform];
+        [path appendBezierPath:arrow];
+        
+        [path setWindingRule:NSEvenOddWindingRule];
+    }
+    
+    [[NSColor colorWithCalibratedWhite:1.0 alpha:1.0] setFill];
+    [path fill];
 }
 
 @end

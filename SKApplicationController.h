@@ -42,6 +42,7 @@
 
 @interface SKApplicationController : NSObject {
     IBOutlet SUUpdater *updater;
+    BOOL remoteScrolling;
 }
 
 + (void)setupDefaults;
@@ -62,3 +63,17 @@
 - (NSString *)pathForApplicationSupportFile:(NSString *)file ofType:(NSString *)extension;
 
 @end
+
+
+@interface SKSplashWindow : NSWindow
+- (id)initWithType:(int)splashType atPoint:(NSPoint)point screen:(NSScreen *)screen;
+- (void)show;
+@end
+
+
+@interface SKSplashContentView : NSView {
+    int splashType;
+}
+- (id)initWithType:(int)aSplashType;
+@end
+
