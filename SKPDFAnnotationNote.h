@@ -52,6 +52,7 @@ extern void SKCGContextSetDefaultRGBColorSpace(CGContextRef context);
 
 - (PDFDestination *)destination;
 - (unsigned int)pageIndex;
+- (int)noteType;
 
 - (NSImage *)image;
 - (NSAttributedString *)text;
@@ -70,7 +71,7 @@ extern void SKCGContextSetDefaultRGBColorSpace(CGContextRef context);
 - (BOOL)hitTest:(NSPoint)point;
 
 - (NSScriptObjectSpecifier *)objectSpecifier;
-- (int)noteType;
+- (int)asNoteType;
 - (id)textContents;
 - (void)setTextContents:(id)text;
 - (id)richText;

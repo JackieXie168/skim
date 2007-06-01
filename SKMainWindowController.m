@@ -2507,19 +2507,18 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
             ascending = [[sortDescriptors lastObject] ascending];
         } else {
             NSString *tcID = [tableColumn identifier];
+            NSSortDescriptor *pageIndexSortDescriptor = [[[NSSortDescriptor alloc] initWithKey:@"pageIndex" ascending:ascending] autorelease];
+            NSSortDescriptor *boundsSortDescriptor = [[[NSSortDescriptor alloc] initWithKey:@"bounds" ascending:ascending selector:@selector(boundsCompare:)] autorelease];
+            NSMutableArray *sds = [NSArray arrayWithObjects:pageIndexSortDescriptor, boundsSortDescriptor, nil];
             if ([tcID isEqualToString:@"type"]) {
-                NSSortDescriptor *typeSortDescriptor = [[[NSSortDescriptor alloc] initWithKey:@"type" ascending:YES selector:@selector(caseInsensitiveCompare:)] autorelease];
-                sortDescriptors = [NSArray arrayWithObjects:typeSortDescriptor, nil];
+                [sds insertObject:[[[NSSortDescriptor alloc] initWithKey:@"noteType" ascending:YES selector:@selector(caseInsensitiveCompare:)] autorelease] atIndex:0];
             } else if ([tcID isEqualToString:@"note"]) {
-                NSSortDescriptor *contentsSortDescriptor = [[[NSSortDescriptor alloc] initWithKey:@"contents" ascending:YES selector:@selector(caseInsensitiveCompare:)] autorelease];
-                sortDescriptors = [NSArray arrayWithObjects:contentsSortDescriptor, nil];
+                [sds insertObject:[[[NSSortDescriptor alloc] initWithKey:@"contents" ascending:YES selector:@selector(caseInsensitiveCompare:)] autorelease] atIndex:0];
             } else if ([tcID isEqualToString:@"page"]) {
                 if (oldTableColumn == nil)
                     ascending = NO;
-                NSSortDescriptor *pageIndexSortDescriptor = [[[NSSortDescriptor alloc] initWithKey:@"pageIndex" ascending:ascending] autorelease];
-                NSSortDescriptor *boundsSortDescriptor = [[[NSSortDescriptor alloc] initWithKey:@"bounds" ascending:ascending selector:@selector(boundsCompare:)] autorelease];
-                sortDescriptors = [NSArray arrayWithObjects:pageIndexSortDescriptor, boundsSortDescriptor, nil];
             }
+            sortDescriptors = sds;
             if (oldTableColumn)
                 [ov setIndicatorImage:nil inTableColumn:oldTableColumn];
             [ov setHighlightedTableColumn:tableColumn]; 
