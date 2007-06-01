@@ -64,6 +64,7 @@
         [self setIgnoresMouseEvents:YES];
         [self setBackgroundColor:[NSColor whiteColor]];
         [self setHasShadow:YES];
+        [self setReleasedWhenClosed:NO];
         [self setLevel:NSStatusWindowLevel];
         [self setAlphaValue:ALPHA_VALUE];
         
