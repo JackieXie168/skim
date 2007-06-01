@@ -65,6 +65,11 @@
 @end
 
 
+enum {
+    SKSplashTypeResize,
+    SKSplashTypeScroll
+};
+
 @interface SKSplashWindow : NSWindow
 - (id)initWithType:(int)splashType atPoint:(NSPoint)point screen:(NSScreen *)screen;
 - (void)show;
