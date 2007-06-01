@@ -38,11 +38,12 @@
 
 #import "SKNotesDocument.h"
 #import "SKDocument.h"
-#import "SKNoteOutlineView.h"
+#import "SKoutlineView.h"
 #import "BDAlias.h"
 #import "SKDocumentController.h"
 #import "SKTemplateParser.h"
 #import "SKApplicationController.h"
+#import "NSString_SKExtensions.h"
 
 @implementation SKNotesDocument
 
@@ -68,6 +69,42 @@
     NSSortDescriptor *indexSortDescriptor = [[[NSSortDescriptor alloc] initWithKey:@"pageIndex" ascending:YES] autorelease];
     NSSortDescriptor *contentsSortDescriptor = [[[NSSortDescriptor alloc] initWithKey:@"contents" ascending:YES] autorelease];
     [arrayController setSortDescriptors:[NSArray arrayWithObjects:indexSortDescriptor, contentsSortDescriptor, nil]];
+    
+    NSMenu *menu = [[[NSMenu allocWithZone:[NSMenu menuZone]] init] autorelease];
+    NSMenuItem *menuItem = nil;
+    menuItem = [menu addItemWithTitle:[@"FreeText" typeName] action:@selector(toggleDisplayNoteType:) keyEquivalent:@""];
+    [menuItem setTarget:self];
+    [menuItem setRepresentedObject:@"FreeText"];
+    [menuItem setState:NSOnState];
+    menuItem = [menu addItemWithTitle:[@"Note" typeName] action:@selector(toggleDisplayNoteType:) keyEquivalent:@""];
+    [menuItem setTarget:self];
+    [menuItem setState:NSOnState];
+    [menuItem setRepresentedObject:@"Note"];
+    menuItem = [menu addItemWithTitle:[@"Circle" typeName] action:@selector(toggleDisplayNoteType:) keyEquivalent:@""];
+    [menuItem setTarget:self];
+    [menuItem setRepresentedObject:@"Circle"];
+    [menuItem setState:NSOnState];
+    menuItem = [menu addItemWithTitle:[@"Square" typeName] action:@selector(toggleDisplayNoteType:) keyEquivalent:@""];
+    [menuItem setTarget:self];
+    [menuItem setRepresentedObject:@"Square"];
+    [menuItem setState:NSOnState];
+    menuItem = [menu addItemWithTitle:[@"Highlight" typeName] action:@selector(toggleDisplayNoteType:) keyEquivalent:@""];
+    [menuItem setTarget:self];
+    [menuItem setRepresentedObject:@"Highlight"];
+    [menuItem setState:NSOnState];
+    menuItem = [menu addItemWithTitle:[@"Underline" typeName] action:@selector(toggleDisplayNoteType:) keyEquivalent:@""];
+    [menuItem setTarget:self];
+    [menuItem setRepresentedObject:@"Underline"];
+    [menuItem setState:NSOnState];
+    menuItem = [menu addItemWithTitle:[@"StrikeOut" typeName] action:@selector(toggleDisplayNoteType:) keyEquivalent:@""];
+    [menuItem setTarget:self];
+    [menuItem setRepresentedObject:@"StrikeOut"];
+    [menuItem setState:NSOnState];
+    menuItem = [menu addItemWithTitle:[@"Line" typeName] action:@selector(toggleDisplayNoteType:) keyEquivalent:@""];
+    [menuItem setTarget:self];
+    [menuItem setRepresentedObject:@"Line"];
+    [menuItem setState:NSOnState];
+    [[outlineView headerView] setMenu:menu];
     
     [outlineView reloadData];
 }
@@ -161,6 +198,30 @@
     else NSBeep();
 }
 
+- (void)toggleDisplayNoteType:(id)sender {
+    [sender setState:![sender state]];
+    
+    NSExpression *lhs = [NSExpression expressionForKeyPath:@"type"];
+    NSMutableArray *predicateArray = [NSMutableArray array];
+    NSMenu *menu = [[outlineView headerView] menu];
+    int i, iMax = [menu numberOfItems];
+    BOOL shouldFilter = NO;
+    
+    for (i = 0; i < iMax; i++) {
+        NSMenuItem *item = [menu itemAtIndex:i];
+        if ([item state] == NSOnState) {
+            NSString *type = [item representedObject];
+            NSExpression *rhs = [NSExpression expressionForConstantValue:type];
+            NSPredicate *predicate = [NSComparisonPredicate predicateWithLeftExpression:lhs rightExpression:rhs modifier:NSDirectPredicateModifier type:NSEqualToPredicateOperatorType options:0];
+            [predicateArray addObject:predicate];
+        } else {
+            shouldFilter = YES;
+        }
+    }
+    [arrayController setFilterPredicate:shouldFilter ? [NSCompoundPredicate orPredicateWithSubpredicates:predicateArray] : nil];
+    [outlineView reloadData];
+}
+
 #pragma mark Accessors
 
 - (NSArray *)notes {
@@ -191,7 +252,7 @@
 
 - (int)outlineView:(NSOutlineView *)ov numberOfChildrenOfItem:(id)item {
     if (item == nil)
-        return [notes count];
+        return [[arrayController arrangedObjects] count];
     else if ([[item valueForKey:@"type"] isEqualToString:@"Note"])
         return 1;
     return 0;
@@ -220,6 +281,37 @@
         return pageNumber ? [NSString stringWithFormat:@"%i", [pageNumber intValue] + 1] : nil;
     }
     return nil;
+}
+
+- (void)outlineView:(NSOutlineView *)ov didClickTableColumn:(NSTableColumn *)tableColumn {
+    NSTableColumn *oldTableColumn = [ov highlightedTableColumn];
+    NSArray *sortDescriptors = nil;
+    BOOL ascending = YES;
+    if ([oldTableColumn isEqual:tableColumn]) {
+        sortDescriptors = [[arrayController sortDescriptors] valueForKey:@"reversedSortDescriptor"];
+        ascending = [[sortDescriptors lastObject] ascending];
+    } else {
+        NSString *tcID = [tableColumn identifier];
+        NSSortDescriptor *pageIndexSortDescriptor = [[[NSSortDescriptor alloc] initWithKey:@"pageIndex" ascending:ascending] autorelease];
+        NSSortDescriptor *boundsSortDescriptor = [[[NSSortDescriptor alloc] initWithKey:@"bounds" ascending:ascending selector:@selector(boundsCompare:)] autorelease];
+        NSMutableArray *sds = [NSMutableArray arrayWithObjects:pageIndexSortDescriptor, boundsSortDescriptor, nil];
+        if ([tcID isEqualToString:@"type"]) {
+            [sds insertObject:[[[NSSortDescriptor alloc] initWithKey:@"noteType" ascending:YES selector:@selector(caseInsensitiveCompare:)] autorelease] atIndex:0];
+        } else if ([tcID isEqualToString:@"note"]) {
+            [sds insertObject:[[[NSSortDescriptor alloc] initWithKey:@"contents" ascending:YES selector:@selector(caseInsensitiveCompare:)] autorelease] atIndex:0];
+        } else if ([tcID isEqualToString:@"page"]) {
+            if (oldTableColumn == nil)
+                ascending = NO;
+        }
+        sortDescriptors = sds;
+        if (oldTableColumn)
+            [ov setIndicatorImage:nil inTableColumn:oldTableColumn];
+        [ov setHighlightedTableColumn:tableColumn]; 
+    }
+    [arrayController setSortDescriptors:sortDescriptors];
+    [ov setIndicatorImage:[NSImage imageNamed:ascending ? @"NSAscendingSortIndicator" : @"NSDescendingSortIndicator"]
+            inTableColumn:tableColumn];
+    [ov reloadData];
 }
 
 - (float)outlineView:(NSOutlineView *)ov heightOfRowByItem:(id)item {

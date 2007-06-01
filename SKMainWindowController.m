@@ -2570,7 +2570,7 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
             NSString *tcID = [tableColumn identifier];
             NSSortDescriptor *pageIndexSortDescriptor = [[[NSSortDescriptor alloc] initWithKey:@"pageIndex" ascending:ascending] autorelease];
             NSSortDescriptor *boundsSortDescriptor = [[[NSSortDescriptor alloc] initWithKey:@"bounds" ascending:ascending selector:@selector(boundsCompare:)] autorelease];
-            NSMutableArray *sds = [NSArray arrayWithObjects:pageIndexSortDescriptor, boundsSortDescriptor, nil];
+            NSMutableArray *sds = [NSMutableArray arrayWithObjects:pageIndexSortDescriptor, boundsSortDescriptor, nil];
             if ([tcID isEqualToString:@"type"]) {
                 [sds insertObject:[[[NSSortDescriptor alloc] initWithKey:@"noteType" ascending:YES selector:@selector(caseInsensitiveCompare:)] autorelease] atIndex:0];
             } else if ([tcID isEqualToString:@"note"]) {
