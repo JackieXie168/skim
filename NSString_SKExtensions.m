@@ -231,7 +231,7 @@ CFStringRef SKStringCreateByCollapsingAndTrimmingWhitespaceAndNewlines(CFAllocat
         return NSLocalizedString(@"Underline", @"Description for export");
     else if ([self isEqualToString:@"StrikeOut"])
         return NSLocalizedString(@"Strike Out", @"Description for export");
-    else if ([self isEqualToString:@"Arrow"])
+    else if ([self isEqualToString:@"Line"])
         return NSLocalizedString(@"Arrow", @"Description for export");
     else
         return self;
