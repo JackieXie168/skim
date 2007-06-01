@@ -52,6 +52,8 @@
 - (NSRange)rangeOfTrailingEmptyLine;
 - (NSRange)rangeOfTrailingEmptyLineInRange:(NSRange)range;
 
+- (NSString *)typeName;
+
 - (NSString *)rectString;
 - (NSString *)pointString;
 - (NSString *)originString;
