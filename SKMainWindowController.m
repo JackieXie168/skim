@@ -281,6 +281,11 @@ static NSString *SKRightSidePaneWidthKey = @"SKRightSidePaneWidth";
     [menuItem setTarget:self];
     [menuItem setRepresentedObject:@"Line"];
     [menuItem setState:NSOnState];
+    [menu addItem:[NSMenuItem separatorItem]];
+    menuItem = [menu addItemWithTitle:NSLocalizedString(@"Show All", @"Menu item title") action:@selector(displayAllNoteTypes:) keyEquivalent:@""];
+    [menuItem setTarget:self];
+    menuItem = [menu addItemWithTitle:[NSLocalizedString(@"Select", @"Menu item title") stringByAppendingEllipsis] action:@selector(selectNoteTypes:) keyEquivalent:@""];
+    [menuItem setTarget:self];
     [[noteOutlineView headerView] setMenu:menu];
     
     // NB: the next line will load the PDF document and annotations, so necessary setup must be finished first!
@@ -1742,16 +1747,14 @@ static NSString *SKRightSidePaneWidthKey = @"SKRightSidePaneWidth";
     [pdfView printWithInfo:[[self document] printInfo] autoRotate:NO];
 }
 
-- (void)toggleDisplayNoteType:(id)sender {
-    [sender setState:![sender state]];
-    
+- (void)updateNoteTypeFilter {
     NSExpression *lhs = [NSExpression expressionForKeyPath:@"type"];
     NSMutableArray *predicateArray = [NSMutableArray array];
     NSMenu *menu = [[noteOutlineView headerView] menu];
-    int i, iMax = [menu numberOfItems];
+    int i;
     BOOL shouldFilter = NO;
     
-    for (i = 0; i < iMax; i++) {
+    for (i = 0; i < 8; i++) {
         NSMenuItem *item = [menu itemAtIndex:i];
         if ([item state] == NSOnState) {
             NSString *type = [item representedObject];
@@ -1764,6 +1767,47 @@ static NSString *SKRightSidePaneWidthKey = @"SKRightSidePaneWidth";
     }
     [noteArrayController setFilterPredicate:shouldFilter ? [NSCompoundPredicate orPredicateWithSubpredicates:predicateArray] : nil];
     [noteOutlineView reloadData];
+}
+
+- (IBAction)toggleDisplayNoteType:(id)sender {
+    [sender setState:![sender state]];
+    [self updateNoteTypeFilter];
+}
+
+- (IBAction)displayAllNoteTypes:(id)sender {
+    NSMenu *menu = [[noteOutlineView headerView] menu];
+    int i;
+    for (i = 0; i < 8; i++)
+        [[menu itemAtIndex:i] setState:NSOnState];
+    [self updateNoteTypeFilter];
+}
+
+- (void)noteTypeSheetDidEnd:(NSWindow *)sheet returnCode:(int)returnCode contextInfo:(void *)contextInfo {
+    if (returnCode == NSOKButton) {
+        NSMenu *menu = [[noteOutlineView headerView] menu];
+        int i;
+        for (i = 0; i < 8; i++)
+            [[menu itemAtIndex:i] setState:[[noteTypeMatrix cellAtRow:i % 4 column:i / 4] state]];
+        [self updateNoteTypeFilter];
+    }
+}
+
+- (IBAction)selectNoteTypes:(id)sender {
+    NSMenu *menu = [[noteOutlineView headerView] menu];
+    int i;
+    for (i = 0; i < 8; i++)
+        [[noteTypeMatrix cellAtRow:i % 4 column:i / 4] setState:[[menu itemAtIndex:i] state]];
+	
+    [NSApp beginSheet:noteTypeSheet
+       modalForWindow:[self window]
+        modalDelegate:self 
+       didEndSelector:@selector(noteTypeSheetDidEnd:returnCode:contextInfo:)
+          contextInfo:NULL];
+}
+
+- (IBAction)dismissNoteTypeSheet:(id)sender {
+    [NSApp endSheet:noteTypeSheet returnCode:[sender tag]];
+    [noteTypeSheet orderOut:self];
 }
 
 #pragma mark Swapping tables

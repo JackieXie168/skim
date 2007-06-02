@@ -36,6 +36,8 @@
         {
             ACTIONS = {
                 addBookmark = id; 
+                autoCropAll = id; 
+                autoSelectContent = id; 
                 changeColor = id; 
                 changeDisplayBox = id; 
                 changeLeftSidePaneState = id; 
@@ -44,10 +46,14 @@
                 changeToolMode = id; 
                 chooseScale = id; 
                 createNewNote = id; 
+                crop = id; 
+                cropAll = id; 
                 dismissBookmarkSheet = id; 
                 dismissChoosePageSheet = id; 
                 dismissChooseScaleSheet = id; 
+                dismissNoteTypeSheet = id; 
                 dismissPasswordSheet = id; 
+                displayAllNoteTypes = id; 
                 displayFacingPages = id; 
                 displaySinglePages = id; 
                 doAutoScale = id; 
@@ -60,6 +66,7 @@
                 doZoomOut = id; 
                 doZoomToActualSize = id; 
                 doZoomToFit = id; 
+                doZoomToSelection = id; 
                 enterFullScreen = id; 
                 enterPresentation = id; 
                 exitFullScreen = id; 
@@ -75,11 +82,13 @@
                 savePDFSettingToDefaults = id; 
                 search = id; 
                 searchPDF = id; 
+                selectNoteTypes = id; 
                 takeSnapshot = id; 
                 toggleAutoActualSize = id; 
                 toggleAutoScale = id; 
                 toggleDisplayAsBook = id; 
                 toggleDisplayContinuous = id; 
+                toggleDisplayNoteType = id; 
                 toggleDisplayPageBreaks = id; 
                 toggleFullScreen = id; 
                 toggleLeftSidePane = id; 
@@ -114,6 +123,8 @@
                 noteArrayController = NSArrayController; 
                 noteOutlineView = SKNoteOutlineView; 
                 notePopUpButton = BDSKImagePopUpButton; 
+                noteTypeMatrix = NSMatrix; 
+                noteTypeSheet = NSWindow; 
                 noteView = NSView; 
                 outlineView = NSOutlineView; 
                 ownerController = NSObjectController; 
@@ -124,12 +135,13 @@
                 passwordSheet = NSWindow; 
                 pdfContentBox = BDSKEdgeView; 
                 pdfView = SKPDFView; 
+                progressBar = NSProgressIndicator; 
+                progressField = NSTextField; 
+                progressSheet = NSWindow; 
                 rightSideBox = NSBox; 
                 rightSideButton = NSSegmentedControl; 
                 rightSideContentBox = NSBox; 
                 rightSideEdgeView = BDSKEdgeView; 
-                saveProgressBar = NSProgressIndicator; 
-                saveProgressSheet = NSWindow; 
                 scaleField = NSTextField; 
                 searchField = NSSearchField; 
                 snapshotArrayController = NSArrayController; 
