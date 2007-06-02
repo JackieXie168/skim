@@ -151,9 +151,6 @@ typedef struct _SKPDFViewState {
     IBOutlet NSWindow           *bookmarkSheet;
     IBOutlet NSTextField        *bookmarkField;
     
-    IBOutlet NSWindow           *noteTypeSheet;
-    IBOutlet NSMatrix           *noteTypeMatrix;
-    
     IBOutlet NSWindow           *progressSheet;
     IBOutlet NSProgressIndicator *progressBar;
     IBOutlet NSTextField        *progressField;
@@ -177,7 +174,10 @@ typedef struct _SKPDFViewState {
 
 - (IBAction)pickColor:(id)sender;
 - (IBAction)changeColor:(id)sender;
+- (IBAction)changeFont:(id)sender;
 - (IBAction)createNewNote:(id)sender;
+- (IBAction)editNote:(id)sender;
+- (IBAction)toggleHideNotes:(id)sender;
 - (IBAction)takeSnapshot:(id)sender;
 - (IBAction)displaySinglePages:(id)sender;
 - (IBAction)displayFacingPages:(id)sender;
@@ -229,10 +229,6 @@ typedef struct _SKPDFViewState {
 - (IBAction)password:(id)sender;
 - (IBAction)dismissPasswordSheet:(id)sender;
 - (IBAction)savePDFSettingToDefaults:(id)sender;
-- (IBAction)toggleDisplayNoteType:(id)sender;
-- (IBAction)displayAllNoteTypes:(id)sender;
-- (IBAction)selectNoteTypes:(id)sender;
-- (IBAction)dismissNoteTypeSheet:(id)sender;
 
 - (void)showSnapshotAtPageNumber:(int)pageNum forRect:(NSRect)rect factor:(int)factor;
 - (void)toggleSnapshots:(NSArray *)snapshotArray;

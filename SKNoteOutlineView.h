@@ -39,7 +39,20 @@
 #import <Cocoa/Cocoa.h>
 
 
-@interface SKNoteOutlineView : NSOutlineView
+@interface SKNoteOutlineView : NSOutlineView {    
+    IBOutlet NSWindow *noteTypeSheet;
+    IBOutlet NSMatrix *noteTypeMatrix;
+}
+
+- (NSArray *)noteTypes;
+- (void)setNoteTypes:(NSArray *)types;
+- (NSMenu *)noteTypeMenu;
+
+- (IBAction)toggleDisplayNoteType:(id)sender;
+- (IBAction)displayAllNoteTypes:(id)sender;
+- (IBAction)selectNoteTypes:(id)sender;
+- (IBAction)dismissNoteTypeSheet:(id)sender;
+
 @end
 
 
@@ -47,6 +60,7 @@
 - (void)outlineViewDeleteSelectedRows:(NSOutlineView *)anOutlineView;
 - (BOOL)outlineView:(NSOutlineView *)anOutlineView canResizeRowByItem:(id)item;
 - (void)outlineView:(NSOutlineView *)anOutlineView setHeightOfRow:(int)newHeight byItem:(id)item;
+- (void)outlineViewNoteTypesDidChange:(NSOutlineView *)anOutlineView;
 @end
 
 

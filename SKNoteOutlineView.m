@@ -38,9 +38,19 @@
 
 #import "SKNoteOutlineView.h"
 #import <Quartz/Quartz.h>
+#import "NSString_SKExtensions.h"
 
 
 @implementation SKNoteOutlineView
+
+- (void)dealloc {
+    [noteTypeSheet release];
+    [super dealloc];
+}
+
+- (void)awakeFromNib {
+    [self noteTypeMenu]; // this sets the menu for the header view
+}
 
 - (void)delete:(id)sender {
     if ([[self delegate] respondsToSelector:@selector(outlineViewDeleteSelectedRows:)]) {
@@ -180,6 +190,131 @@
     } else {
         [super resetCursorRects];
     }
+}
+
+#pragma mark Note Types
+
+- (NSMenu *)noteTypeMenu {
+    NSMenu *menu = [[self headerView] menu];
+    
+    if (menu == nil) {
+        menu = [[[NSMenu allocWithZone:[NSMenu menuZone]] init] autorelease];
+        NSMenuItem *menuItem = nil;
+        menuItem = [menu addItemWithTitle:[@"FreeText" typeName] action:@selector(toggleDisplayNoteType:) keyEquivalent:@""];
+        [menuItem setTarget:self];
+        [menuItem setRepresentedObject:@"FreeText"];
+        [menuItem setState:NSOnState];
+        menuItem = [menu addItemWithTitle:[@"Note" typeName] action:@selector(toggleDisplayNoteType:) keyEquivalent:@""];
+        [menuItem setTarget:self];
+        [menuItem setState:NSOnState];
+        [menuItem setRepresentedObject:@"Note"];
+        menuItem = [menu addItemWithTitle:[@"Circle" typeName] action:@selector(toggleDisplayNoteType:) keyEquivalent:@""];
+        [menuItem setTarget:self];
+        [menuItem setRepresentedObject:@"Circle"];
+        [menuItem setState:NSOnState];
+        menuItem = [menu addItemWithTitle:[@"Square" typeName] action:@selector(toggleDisplayNoteType:) keyEquivalent:@""];
+        [menuItem setTarget:self];
+        [menuItem setRepresentedObject:@"Square"];
+        [menuItem setState:NSOnState];
+        menuItem = [menu addItemWithTitle:[@"Highlight" typeName] action:@selector(toggleDisplayNoteType:) keyEquivalent:@""];
+        [menuItem setTarget:self];
+        [menuItem setRepresentedObject:@"Highlight"];
+        [menuItem setState:NSOnState];
+        menuItem = [menu addItemWithTitle:[@"Underline" typeName] action:@selector(toggleDisplayNoteType:) keyEquivalent:@""];
+        [menuItem setTarget:self];
+        [menuItem setRepresentedObject:@"Underline"];
+        [menuItem setState:NSOnState];
+        menuItem = [menu addItemWithTitle:[@"StrikeOut" typeName] action:@selector(toggleDisplayNoteType:) keyEquivalent:@""];
+        [menuItem setTarget:self];
+        [menuItem setRepresentedObject:@"StrikeOut"];
+        [menuItem setState:NSOnState];
+        menuItem = [menu addItemWithTitle:[@"Line" typeName] action:@selector(toggleDisplayNoteType:) keyEquivalent:@""];
+        [menuItem setTarget:self];
+        [menuItem setRepresentedObject:@"Line"];
+        [menuItem setState:NSOnState];
+        [menu addItem:[NSMenuItem separatorItem]];
+        menuItem = [menu addItemWithTitle:NSLocalizedString(@"Show All", @"Menu item title") action:@selector(displayAllNoteTypes:) keyEquivalent:@""];
+        [menuItem setTarget:self];
+        menuItem = [menu addItemWithTitle:[NSLocalizedString(@"Select", @"Menu item title") stringByAppendingEllipsis] action:@selector(selectNoteTypes:) keyEquivalent:@""];
+        [menuItem setTarget:self];
+        [[self headerView] setMenu:menu];
+    }
+    
+    return menu;
+}
+
+- (NSArray *)noteTypes {
+    NSMutableArray *types = [NSMutableArray array];
+    NSMenu *menu = [self noteTypeMenu];
+    int i;
+    
+    for (i = 0; i < 8; i++) {
+        NSMenuItem *item = [menu itemAtIndex:i];
+        if ([item state] == NSOnState)
+            [types addObject:[item representedObject]];
+    }
+    return types;
+}
+
+- (void)setNoteTypes:(NSArray *)types {
+    NSMenu *menu = [self noteTypeMenu];
+    int i;
+    
+    for (i = 0; i < 8; i++) {
+        NSMenuItem *item = [menu itemAtIndex:i];
+        [item setState:[types containsObject:[item representedObject]] ? NSOnState : NSOffState];
+    }
+}
+
+- (void)noteTypesUpdated {
+    if ([[self delegate] respondsToSelector:@selector(outlineViewNoteTypesDidChange:)])
+        [[self delegate] outlineViewNoteTypesDidChange:self];
+}
+
+- (IBAction)toggleDisplayNoteType:(id)sender {
+    [sender setState:![sender state]];
+    [self noteTypesUpdated];
+}
+
+- (IBAction)displayAllNoteTypes:(id)sender {
+    NSMenu *menu = [self noteTypeMenu];
+    int i;
+    for (i = 0; i < 8; i++)
+        [[menu itemAtIndex:i] setState:NSOnState];
+    [self noteTypesUpdated];
+}
+
+- (void)noteTypeSheetDidEnd:(NSWindow *)sheet returnCode:(int)returnCode contextInfo:(void *)contextInfo {
+    if (returnCode == NSOKButton) {
+        NSMenu *menu = [self noteTypeMenu];
+        int i;
+        for (i = 0; i < 8; i++)
+            [[menu itemAtIndex:i] setState:[[noteTypeMatrix cellAtRow:i % 4 column:i / 4] state]];
+        [self noteTypesUpdated];
+    }
+}
+
+- (IBAction)selectNoteTypes:(id)sender {
+    if (NO == [NSBundle loadNibNamed:@"NoteTypeSheet" owner:self]) {
+        NSLog(@"Failed to load NoteTypeSheet.nib");
+        return;
+    }
+    
+    NSMenu *menu = [self noteTypeMenu];
+    int i;
+    for (i = 0; i < 8; i++)
+        [[noteTypeMatrix cellAtRow:i % 4 column:i / 4] setState:[[menu itemAtIndex:i] state]];
+	
+    [NSApp beginSheet:noteTypeSheet
+       modalForWindow:[self window]
+        modalDelegate:self 
+       didEndSelector:@selector(noteTypeSheetDidEnd:returnCode:contextInfo:)
+          contextInfo:NULL];
+}
+
+- (IBAction)dismissNoteTypeSheet:(id)sender {
+    [NSApp endSheet:noteTypeSheet returnCode:[sender tag]];
+    [noteTypeSheet orderOut:self];
 }
 
 @end
