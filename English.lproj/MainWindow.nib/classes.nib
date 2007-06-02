@@ -40,6 +40,7 @@
                 autoSelectContent = id; 
                 changeColor = id; 
                 changeDisplayBox = id; 
+                changeFont = id; 
                 changeLeftSidePaneState = id; 
                 changeRightSidePaneState = id; 
                 changeScaleFactor = id; 
@@ -51,9 +52,7 @@
                 dismissBookmarkSheet = id; 
                 dismissChoosePageSheet = id; 
                 dismissChooseScaleSheet = id; 
-                dismissNoteTypeSheet = id; 
                 dismissPasswordSheet = id; 
-                displayAllNoteTypes = id; 
                 displayFacingPages = id; 
                 displaySinglePages = id; 
                 doAutoScale = id; 
@@ -67,6 +66,7 @@
                 doZoomToActualSize = id; 
                 doZoomToFit = id; 
                 doZoomToSelection = id; 
+                editNote = id; 
                 enterFullScreen = id; 
                 enterPresentation = id; 
                 exitFullScreen = id; 
@@ -82,15 +82,14 @@
                 savePDFSettingToDefaults = id; 
                 search = id; 
                 searchPDF = id; 
-                selectNoteTypes = id; 
                 takeSnapshot = id; 
                 toggleAutoActualSize = id; 
                 toggleAutoScale = id; 
                 toggleDisplayAsBook = id; 
                 toggleDisplayContinuous = id; 
-                toggleDisplayNoteType = id; 
                 toggleDisplayPageBreaks = id; 
                 toggleFullScreen = id; 
+                toggleHideNotes = id; 
                 toggleLeftSidePane = id; 
                 togglePresentation = id; 
                 toggleRightSidePane = id; 
@@ -123,8 +122,6 @@
                 noteArrayController = NSArrayController; 
                 noteOutlineView = SKNoteOutlineView; 
                 notePopUpButton = BDSKImagePopUpButton; 
-                noteTypeMatrix = NSMatrix; 
-                noteTypeSheet = NSWindow; 
                 noteView = NSView; 
                 outlineView = NSOutlineView; 
                 ownerController = NSObjectController; 

@@ -81,6 +81,7 @@
 		CE2DED6C0B86334900D0DA12 /* BDSKFindFieldEditor.m in Sources */ = {isa = PBXBuildFile; fileRef = CE2DED6B0B86334900D0DA12 /* BDSKFindFieldEditor.m */; };
 		CE31A6180C01FC45003612A9 /* SKDocumentController.m in Sources */ = {isa = PBXBuildFile; fileRef = CE31A6160C01FC45003612A9 /* SKDocumentController.m */; };
 		CE31AC4E0C02E919003612A9 /* ToolbarCrop.tiff in Resources */ = {isa = PBXBuildFile; fileRef = CE31AC4D0C02E918003612A9 /* ToolbarCrop.tiff */; };
+		CE327A460C11BF6700DB4BEB /* NoteTypeSheet.nib in Resources */ = {isa = PBXBuildFile; fileRef = CE327A440C11BF6700DB4BEB /* NoteTypeSheet.nib */; };
 		CE380A7B0B834E6200A1B779 /* CameraCursor.tiff in Resources */ = {isa = PBXBuildFile; fileRef = CE380A7A0B834E6100A1B779 /* CameraCursor.tiff */; };
 		CE380C620B837B6100A1B779 /* NoteViewAdorn.tiff in Resources */ = {isa = PBXBuildFile; fileRef = CE380C600B837B6100A1B779 /* NoteViewAdorn.tiff */; };
 		CE380C630B837B6100A1B779 /* SnapshotViewAdorn.tiff in Resources */ = {isa = PBXBuildFile; fileRef = CE380C610B837B6100A1B779 /* SnapshotViewAdorn.tiff */; };
@@ -380,6 +381,9 @@
 		CE31A6150C01FC45003612A9 /* SKDocumentController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SKDocumentController.h; sourceTree = "<group>"; };
 		CE31A6160C01FC45003612A9 /* SKDocumentController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SKDocumentController.m; sourceTree = "<group>"; };
 		CE31AC4D0C02E918003612A9 /* ToolbarCrop.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; name = ToolbarCrop.tiff; path = Images/ToolbarCrop.tiff; sourceTree = "<group>"; };
+		CE327A450C11BF6700DB4BEB /* English */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = English; path = English.lproj/NoteTypeSheet.nib; sourceTree = "<group>"; };
+		CE327A490C11BF8B00DB4BEB /* Dutch */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = Dutch; path = Dutch.lproj/NoteTypeSheet.nib; sourceTree = "<group>"; };
+		CE327A4A0C11BF9000DB4BEB /* Italian */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = Italian; path = Italian.lproj/NoteTypeSheet.nib; sourceTree = "<group>"; };
 		CE380A7A0B834E6100A1B779 /* CameraCursor.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; name = CameraCursor.tiff; path = Images/CameraCursor.tiff; sourceTree = "<group>"; };
 		CE380C600B837B6100A1B779 /* NoteViewAdorn.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; name = NoteViewAdorn.tiff; path = Images/NoteViewAdorn.tiff; sourceTree = "<group>"; };
 		CE380C610B837B6100A1B779 /* SnapshotViewAdorn.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; name = SnapshotViewAdorn.tiff; path = Images/SnapshotViewAdorn.tiff; sourceTree = "<group>"; };
@@ -656,6 +660,7 @@
 				CE1E25660BDA61E80011D9DD /* ReadNotesAccessoryView.nib */,
 				CEF717560B90DEEF003A2771 /* ReleaseNotes.nib */,
 				F977515E0B37460100DF673B /* ConversionProgressWindow.nib */,
+				CE327A440C11BF6700DB4BEB /* NoteTypeSheet.nib */,
 				CE9A878D0C0C9E9A004F1F97 /* ProgressSheet.nib */,
 				CE4A65CA0BAB1E2E004AD07D /* BookmarksWindow.nib */,
 				2A37F4B9FDCFA73011CA2CEA /* Credits.rtf */,
@@ -1153,6 +1158,7 @@
 				CE48BBB60C08AD7000A166C6 /* notesTemplate.txt in Resources */,
 				CE48BBB70C08AD7000A166C6 /* notesTemplate.rtf in Resources */,
 				CE9A87930C0C9E9A004F1F97 /* ProgressSheet.nib in Resources */,
+				CE327A460C11BF6700DB4BEB /* NoteTypeSheet.nib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1418,6 +1424,16 @@
 				A489FDCC0BC8E90100BA14DD /* Italian */,
 			);
 			name = FindPanel.nib;
+			sourceTree = "<group>";
+		};
+		CE327A440C11BF6700DB4BEB /* NoteTypeSheet.nib */ = {
+			isa = PBXVariantGroup;
+			children = (
+				CE327A450C11BF6700DB4BEB /* English */,
+				CE327A490C11BF8B00DB4BEB /* Dutch */,
+				CE327A4A0C11BF9000DB4BEB /* Italian */,
+			);
+			name = NoteTypeSheet.nib;
 			sourceTree = "<group>";
 		};
 		CE4A65CA0BAB1E2E004AD07D /* BookmarksWindow.nib */ = {

@@ -38,12 +38,11 @@
 
 #import "SKNotesDocument.h"
 #import "SKDocument.h"
-#import "SKoutlineView.h"
+#import "SKNoteOutlineView.h"
 #import "BDAlias.h"
 #import "SKDocumentController.h"
 #import "SKTemplateParser.h"
 #import "SKApplicationController.h"
-#import "NSString_SKExtensions.h"
 #import "NSValue_SKExtensions.h"
 
 @implementation SKNotesDocument
@@ -70,48 +69,6 @@
     NSSortDescriptor *indexSortDescriptor = [[[NSSortDescriptor alloc] initWithKey:@"pageIndex" ascending:YES] autorelease];
     NSSortDescriptor *contentsSortDescriptor = [[[NSSortDescriptor alloc] initWithKey:@"contents" ascending:YES] autorelease];
     [arrayController setSortDescriptors:[NSArray arrayWithObjects:indexSortDescriptor, contentsSortDescriptor, nil]];
-    
-    NSMenu *menu = [[[NSMenu allocWithZone:[NSMenu menuZone]] init] autorelease];
-    NSMenuItem *menuItem = nil;
-    menuItem = [menu addItemWithTitle:[@"FreeText" typeName] action:@selector(toggleDisplayNoteType:) keyEquivalent:@""];
-    [menuItem setTarget:self];
-    [menuItem setRepresentedObject:@"FreeText"];
-    [menuItem setState:NSOnState];
-    menuItem = [menu addItemWithTitle:[@"Note" typeName] action:@selector(toggleDisplayNoteType:) keyEquivalent:@""];
-    [menuItem setTarget:self];
-    [menuItem setState:NSOnState];
-    [menuItem setRepresentedObject:@"Note"];
-    menuItem = [menu addItemWithTitle:[@"Circle" typeName] action:@selector(toggleDisplayNoteType:) keyEquivalent:@""];
-    [menuItem setTarget:self];
-    [menuItem setRepresentedObject:@"Circle"];
-    [menuItem setState:NSOnState];
-    menuItem = [menu addItemWithTitle:[@"Square" typeName] action:@selector(toggleDisplayNoteType:) keyEquivalent:@""];
-    [menuItem setTarget:self];
-    [menuItem setRepresentedObject:@"Square"];
-    [menuItem setState:NSOnState];
-    menuItem = [menu addItemWithTitle:[@"Highlight" typeName] action:@selector(toggleDisplayNoteType:) keyEquivalent:@""];
-    [menuItem setTarget:self];
-    [menuItem setRepresentedObject:@"Highlight"];
-    [menuItem setState:NSOnState];
-    menuItem = [menu addItemWithTitle:[@"Underline" typeName] action:@selector(toggleDisplayNoteType:) keyEquivalent:@""];
-    [menuItem setTarget:self];
-    [menuItem setRepresentedObject:@"Underline"];
-    [menuItem setState:NSOnState];
-    menuItem = [menu addItemWithTitle:[@"StrikeOut" typeName] action:@selector(toggleDisplayNoteType:) keyEquivalent:@""];
-    [menuItem setTarget:self];
-    [menuItem setRepresentedObject:@"StrikeOut"];
-    [menuItem setState:NSOnState];
-    menuItem = [menu addItemWithTitle:[@"Line" typeName] action:@selector(toggleDisplayNoteType:) keyEquivalent:@""];
-    [menuItem setTarget:self];
-    [menuItem setRepresentedObject:@"Line"];
-    [menuItem setState:NSOnState];
-    [menu addItem:[NSMenuItem separatorItem]];
-    menuItem = [menu addItemWithTitle:NSLocalizedString(@"Show All", @"Menu item title") action:@selector(displayAllNoteTypes:) keyEquivalent:@""];
-    [menuItem setTarget:self];
-    menuItem = [menu addItemWithTitle:[NSLocalizedString(@"Select", @"Menu item title") stringByAppendingEllipsis] action:@selector(selectNoteTypes:) keyEquivalent:@""];
-    [menuItem setTarget:self];
-    [[outlineView headerView] setMenu:menu];
-    
     [outlineView reloadData];
 }
 
@@ -204,69 +161,6 @@
     else NSBeep();
 }
 
-- (void)updateNoteTypeFilter {
-    NSExpression *lhs = [NSExpression expressionForKeyPath:@"type"];
-    NSMutableArray *predicateArray = [NSMutableArray array];
-    NSMenu *menu = [[outlineView headerView] menu];
-    int i;
-    BOOL shouldFilter = NO;
-    
-    for (i = 0; i < 8; i++) {
-        NSMenuItem *item = [menu itemAtIndex:i];
-        if ([item state] == NSOnState) {
-            NSString *type = [item representedObject];
-            NSExpression *rhs = [NSExpression expressionForConstantValue:type];
-            NSPredicate *predicate = [NSComparisonPredicate predicateWithLeftExpression:lhs rightExpression:rhs modifier:NSDirectPredicateModifier type:NSEqualToPredicateOperatorType options:0];
-            [predicateArray addObject:predicate];
-        } else {
-            shouldFilter = YES;
-        }
-    }
-    [arrayController setFilterPredicate:shouldFilter ? [NSCompoundPredicate orPredicateWithSubpredicates:predicateArray] : nil];
-    [outlineView reloadData];
-}
-
-- (IBAction)toggleDisplayNoteType:(id)sender {
-    [sender setState:![sender state]];
-    [self updateNoteTypeFilter];
-}
-
-- (IBAction)displayAllNoteTypes:(id)sender {
-    NSMenu *menu = [[outlineView headerView] menu];
-    int i;
-    for (i = 0; i < 8; i++)
-        [[menu itemAtIndex:i] setState:NSOnState];
-    [self updateNoteTypeFilter];
-}
-
-- (void)noteTypeSheetDidEnd:(NSWindow *)sheet returnCode:(int)returnCode contextInfo:(void *)contextInfo {
-    if (returnCode == NSOKButton) {
-        NSMenu *menu = [[outlineView headerView] menu];
-        int i;
-        for (i = 0; i < 8; i++)
-            [[menu itemAtIndex:i] setState:[[noteTypeMatrix cellAtRow:i % 4 column:i / 4] state]];
-        [self updateNoteTypeFilter];
-    }
-}
-
-- (IBAction)selectNoteTypes:(id)sender {
-    NSMenu *menu = [[outlineView headerView] menu];
-    int i;
-    for (i = 0; i < 8; i++)
-        [[noteTypeMatrix cellAtRow:i % 4 column:i / 4] setState:[[menu itemAtIndex:i] state]];
-	
-    [NSApp beginSheet:noteTypeSheet
-       modalForWindow:[self windowForSheet]
-        modalDelegate:self 
-       didEndSelector:@selector(noteTypeSheetDidEnd:returnCode:contextInfo:)
-          contextInfo:NULL];
-}
-
-- (IBAction)dismissNoteTypeSheet:(id)sender {
-    [NSApp endSheet:noteTypeSheet returnCode:[sender tag]];
-    [noteTypeSheet orderOut:self];
-}
-
 #pragma mark Accessors
 
 - (NSArray *)notes {
@@ -357,6 +251,26 @@
     [ov setIndicatorImage:[NSImage imageNamed:ascending ? @"NSAscendingSortIndicator" : @"NSDescendingSortIndicator"]
             inTableColumn:tableColumn];
     [ov reloadData];
+}
+
+- (void)outlineViewNoteTypesDidChange:(NSOutlineView *)ov {
+    NSArray *types = [outlineView noteTypes];
+    if ([types count] == 8) {
+        [arrayController setFilterPredicate:nil];
+    } else {
+        NSExpression *lhs = [NSExpression expressionForKeyPath:@"type"];
+        NSMutableArray *predicateArray = [NSMutableArray array];
+        NSEnumerator *typeEnum = [types objectEnumerator];
+        NSString *type;
+        
+        while (type = [typeEnum nextObject]) {
+            NSExpression *rhs = [NSExpression expressionForConstantValue:type];
+            NSPredicate *predicate = [NSComparisonPredicate predicateWithLeftExpression:lhs rightExpression:rhs modifier:NSDirectPredicateModifier type:NSEqualToPredicateOperatorType options:0];
+            [predicateArray addObject:predicate];
+        }
+        [arrayController setFilterPredicate:[NSCompoundPredicate orPredicateWithSubpredicates:predicateArray]];
+    }
+    [outlineView reloadData];
 }
 
 - (float)outlineView:(NSOutlineView *)ov heightOfRowByItem:(id)item {

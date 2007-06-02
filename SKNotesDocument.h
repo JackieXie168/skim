@@ -38,12 +38,11 @@
 
 #import <Cocoa/Cocoa.h>
 
+@class SKNoteOutlineView;
 
 @interface SKNotesDocument : NSDocument {
-    IBOutlet NSOutlineView *outlineView;
+    IBOutlet SKNoteOutlineView *outlineView;
     IBOutlet NSArrayController *arrayController;
-    IBOutlet NSWindow *noteTypeSheet;
-    IBOutlet NSMatrix *noteTypeMatrix;
     NSMutableArray *notes;
 }
 
@@ -58,10 +57,5 @@
 
 - (NSString *)notesString;
 - (NSData *)notesRTFData;
-
-- (IBAction)toggleDisplayNoteType:(id)sender;
-- (IBAction)displayAllNoteTypes:(id)sender;
-- (IBAction)selectNoteTypes:(id)sender;
-- (IBAction)dismissNoteTypeSheet:(id)sender;
 
 @end
