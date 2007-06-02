@@ -152,8 +152,10 @@ static NSPopUpButton *popUpButtonSubview(NSView *view)
     if (formatPopup && lastExportedType) {
         NSString *title = [[NSDocumentController sharedDocumentController] displayNameForType:lastExportedType];
         int index = [formatPopup indexOfItemWithTitle:title];
-        if (index != -1)
+        if (index != -1 && index != [formatPopup indexOfSelectedItem]) {
             [formatPopup selectItemAtIndex:index];
+            [formatPopup sendAction:[formatPopup action] to:[formatPopup target]];
+        }
     }
     return YES;
 }
