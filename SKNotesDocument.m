@@ -44,6 +44,7 @@
 #import "SKTemplateParser.h"
 #import "SKApplicationController.h"
 #import "NSString_SKExtensions.h"
+#import "NSValue_SKExtensions.h"
 
 @implementation SKNotesDocument
 
@@ -104,6 +105,11 @@
     [menuItem setTarget:self];
     [menuItem setRepresentedObject:@"Line"];
     [menuItem setState:NSOnState];
+    [menu addItem:[NSMenuItem separatorItem]];
+    menuItem = [menu addItemWithTitle:NSLocalizedString(@"Show All", @"Menu item title") action:@selector(displayAllNoteTypes:) keyEquivalent:@""];
+    [menuItem setTarget:self];
+    menuItem = [menu addItemWithTitle:[NSLocalizedString(@"Select", @"Menu item title") stringByAppendingEllipsis] action:@selector(selectNoteTypes:) keyEquivalent:@""];
+    [menuItem setTarget:self];
     [[outlineView headerView] setMenu:menu];
     
     [outlineView reloadData];
@@ -198,16 +204,14 @@
     else NSBeep();
 }
 
-- (void)toggleDisplayNoteType:(id)sender {
-    [sender setState:![sender state]];
-    
+- (void)updateNoteTypeFilter {
     NSExpression *lhs = [NSExpression expressionForKeyPath:@"type"];
     NSMutableArray *predicateArray = [NSMutableArray array];
     NSMenu *menu = [[outlineView headerView] menu];
-    int i, iMax = [menu numberOfItems];
+    int i;
     BOOL shouldFilter = NO;
     
-    for (i = 0; i < iMax; i++) {
+    for (i = 0; i < 8; i++) {
         NSMenuItem *item = [menu itemAtIndex:i];
         if ([item state] == NSOnState) {
             NSString *type = [item representedObject];
@@ -220,6 +224,47 @@
     }
     [arrayController setFilterPredicate:shouldFilter ? [NSCompoundPredicate orPredicateWithSubpredicates:predicateArray] : nil];
     [outlineView reloadData];
+}
+
+- (IBAction)toggleDisplayNoteType:(id)sender {
+    [sender setState:![sender state]];
+    [self updateNoteTypeFilter];
+}
+
+- (IBAction)displayAllNoteTypes:(id)sender {
+    NSMenu *menu = [[outlineView headerView] menu];
+    int i;
+    for (i = 0; i < 8; i++)
+        [[menu itemAtIndex:i] setState:NSOnState];
+    [self updateNoteTypeFilter];
+}
+
+- (void)noteTypeSheetDidEnd:(NSWindow *)sheet returnCode:(int)returnCode contextInfo:(void *)contextInfo {
+    if (returnCode == NSOKButton) {
+        NSMenu *menu = [[outlineView headerView] menu];
+        int i;
+        for (i = 0; i < 8; i++)
+            [[menu itemAtIndex:i] setState:[[noteTypeMatrix cellAtRow:i % 4 column:i / 4] state]];
+        [self updateNoteTypeFilter];
+    }
+}
+
+- (IBAction)selectNoteTypes:(id)sender {
+    NSMenu *menu = [[outlineView headerView] menu];
+    int i;
+    for (i = 0; i < 8; i++)
+        [[noteTypeMatrix cellAtRow:i % 4 column:i / 4] setState:[[menu itemAtIndex:i] state]];
+	
+    [NSApp beginSheet:noteTypeSheet
+       modalForWindow:[self windowForSheet]
+        modalDelegate:self 
+       didEndSelector:@selector(noteTypeSheetDidEnd:returnCode:contextInfo:)
+          contextInfo:NULL];
+}
+
+- (IBAction)dismissNoteTypeSheet:(id)sender {
+    [NSApp endSheet:noteTypeSheet returnCode:[sender tag]];
+    [noteTypeSheet orderOut:self];
 }
 
 #pragma mark Accessors

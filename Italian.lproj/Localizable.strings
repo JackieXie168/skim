@@ -375,6 +375,9 @@
 "Select Tool" = "Strumento Selezione";
 
 /* Menu item title */
+"Show All" = "Mostra Tutto";
+
+/* Menu item title */
 "Show Contents Pane" = "Mostra Pannello Contenuti";
 
 /* Menu item title */
@@ -453,6 +456,9 @@
 /* Menu item title */
 "Tools" = "Strumenti";
 
+/* Exception message */
+"Unable to find CFBundleIdentifier for %@" = "Impossibile trovare CFBundleIdentifier per %@";
+
 /* Error description */
 "Unable to load file" = "Impossibile caricare il file";
 
@@ -467,6 +473,9 @@
 
 /* Error description */
 "Unable to write notes as RTF" = "Impossibile salvare le note come RTF";
+
+/* Error description */
+"Unable to write notes as text" = "Impossibile salvare le note come testo";
 
 /* Description for export
    Menu item title */

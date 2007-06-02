@@ -42,6 +42,8 @@
 @interface SKNotesDocument : NSDocument {
     IBOutlet NSOutlineView *outlineView;
     IBOutlet NSArrayController *arrayController;
+    IBOutlet NSWindow *noteTypeSheet;
+    IBOutlet NSMatrix *noteTypeMatrix;
     NSMutableArray *notes;
 }
 
@@ -57,6 +59,9 @@
 - (NSString *)notesString;
 - (NSData *)notesRTFData;
 
-- (void)toggleDisplayNoteType:(id)sender;
+- (IBAction)toggleDisplayNoteType:(id)sender;
+- (IBAction)displayAllNoteTypes:(id)sender;
+- (IBAction)selectNoteTypes:(id)sender;
+- (IBAction)dismissNoteTypeSheet:(id)sender;
 
 @end

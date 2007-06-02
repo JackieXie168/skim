@@ -15,10 +15,21 @@
         }, 
         {CLASS = SKNoteOutlineView; LANGUAGE = ObjC; SUPERCLASS = NSOutlineView; }, 
         {
-            ACTIONS = {openPDF = id; }; 
+            ACTIONS = {
+                dismissNoteTypeSheet = id; 
+                displayAllNoteTypes = id; 
+                openPDF = id; 
+                selectNoteTypes = id; 
+                toggleDisplayNoteType = id; 
+            }; 
             CLASS = SKNotesDocument; 
             LANGUAGE = ObjC; 
-            OUTLETS = {arrayController = NSArrayController; outlineView = NSOutlineView; }; 
+            OUTLETS = {
+                arrayController = NSArrayController; 
+                noteTypeMatrix = NSMatrix; 
+                noteTypeSheet = NSWindow; 
+                outlineView = NSOutlineView; 
+            }; 
             SUPERCLASS = NSDocument; 
         }
     ); 
