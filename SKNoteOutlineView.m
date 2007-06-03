@@ -306,7 +306,7 @@
         [[noteTypeMatrix cellAtRow:i % 4 column:i / 4] setState:[[menu itemAtIndex:i] state]];
 	
     [NSApp beginSheet:noteTypeSheet
-       modalForWindow:[self window]
+       modalForWindow:[[self delegate] respondsToSelector:@selector(window)] ? [[self delegate] window] : [self window]
         modalDelegate:self 
        didEndSelector:@selector(noteTypeSheetDidEnd:returnCode:contextInfo:)
           contextInfo:NULL];
