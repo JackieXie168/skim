@@ -167,21 +167,12 @@
 {	
 	if (NO == updateInProgress) {
 		
-		NSError *nsError;
-		if ([self checkForNetworkAvailability:&nsError] == NO)
-		{
-			if (verbosity)
-				[NSApp presentError:nsError];
-		}
-		else
-		{	
-			verbose = verbosity;
-			updateInProgress = YES;
+		verbose = verbosity;
+		updateInProgress = YES;
 
-			SUAppcast *appcast = [[SUAppcast alloc] init];
-			[appcast setDelegate:self];
-			[appcast fetchAppcastFromURL:[self appcastURL]];
-		}
+		SUAppcast *appcast = [[SUAppcast alloc] init];
+		[appcast setDelegate:self];
+		[appcast fetchAppcastFromURL:[self appcastURL]];
 	}
 }
 
@@ -355,7 +346,13 @@
 	[ac autorelease];
 	updateInProgress = NO;
 	if (verbose)
-		[self showUpdateErrorAlertWithInfo:SULocalizedString(@"An error occurred in retrieving update information; are you connected to the internet? Please try again later.", nil)];
+	{
+		NSError *nsError;
+		if ([self checkForNetworkAvailability:&nsError] == NO)
+			[NSApp presentError:nsError];
+		else
+			[self showUpdateErrorAlertWithInfo:SULocalizedString(@"An error occurred in retrieving update information; are you connected to the internet? Please try again later.", nil)];
+	}
 }
 
 // Override this to change the new version comparison logic!
