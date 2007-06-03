@@ -602,7 +602,7 @@ static NSPopUpButton *popUpButtonSubview(NSView *view)
         fileUpdateTimer = nil;
         autoUpdate = NO;
     } else if (autoUpdatePref && fileUpdateTimer == nil) {
-        fileUpdateTimer = [[NSTimer alloc] initWithFireDate:[NSDate dateWithTimeIntervalSinceNow:2.0] interval:0.0 target:self selector:@selector(checkFileUpdateStatus:) userInfo:NULL repeats:NO];
+        fileUpdateTimer = [[NSTimer alloc] initWithFireDate:[NSDate dateWithTimeIntervalSinceNow:1.0] interval:0.0 target:self selector:@selector(checkFileUpdateStatus:) userInfo:NULL repeats:NO];
         [[NSRunLoop currentRunLoop] addTimer:fileUpdateTimer forMode:NSDefaultRunLoopMode];
     }
 }
