@@ -291,6 +291,9 @@ static NSString *SKRightSidePaneWidthKey = @"SKRightSidePaneWidth";
     // Application
     [nc addObserver:self selector:@selector(handleApplicationWillTerminateNotification:) 
                              name:SKApplicationWillTerminateNotification object:NSApp];
+    // Document
+    [nc addObserver:self selector:@selector(handleDocumentWillSaveNotification:) 
+                             name:SKDocumentWillSaveNotification object:[self document]];
     // PDFView
     [nc addObserver:self selector:@selector(handlePageChangedNotification:) 
                              name:PDFViewPageChangedNotification object:pdfView];
@@ -2159,6 +2162,10 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
 - (void)handleApplicationWillTerminateNotification:(NSNotification *)notification {
     if ([self isFullScreen] || [self isPresentation])
         [self exitFullScreen:self];
+}
+
+- (void)handleDocumentWillSaveNotification:(NSNotification *)notification {
+    [pdfView endAnnotationEdit:self];
 }
 
 - (void)handleDidChangeActiveAnnotationNotification:(NSNotification *)notification {
