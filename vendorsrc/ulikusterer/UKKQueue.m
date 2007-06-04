@@ -419,6 +419,7 @@ static UKKQueue * gUKKQueueSharedQueueSingleton = nil;
     if (self = [super init]) {
         path = [fullPath copy];
         fd = open( [path fileSystemRepresentation], O_EVTONLY, 0 );
+        // don't return nil even if the fd is invalid; we may need this for a path comparison to remove a stale file
     }
     return self;
 }
@@ -431,7 +432,8 @@ static UKKQueue * gUKKQueueSharedQueueSingleton = nil;
 - (void)dealloc
 {
     [path release];
-	if( close( fd ) == -1 )
+    // don't bother closing a descriptor that wasn't created; this may have been instantiated for comparison and immediately discarded
+	if( fd >= 0 && close( fd ) == -1 )
         perror(NULL);
     [super dealloc];
 }
