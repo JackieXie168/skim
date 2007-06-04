@@ -751,44 +751,41 @@ static void SKCGContextDrawGrabHandle(CGContextRef context, CGPoint point, float
         else
             [self selectSnapshotWithEvent:theEvent];
     } else {
-        switch (toolMode) {
-            case SKTextToolMode:
-            case SKNoteToolMode:
-            {
-                NSPoint p = mouseDownLoc;
-                p = [self convertPoint:p fromView:nil];
-                PDFPage *page = [self pageForPoint:p nearest:NO];
-                p = [self convertPoint:p toPage:page];
-                if (readingBar && [[readingBar page] isEqual:page] && NSPointInRect(p, [readingBar currentBoundsForBox:[self displayBox]])) {
-                    [self dragReadingBarWithEvent:theEvent];
-                } else if (page == nil || [self selectAnnotationWithEvent:theEvent] == NO) {
-                    PDFAreaOfInterest area = [self areaOfInterestForMouse:theEvent];
-                    BOOL canSelectOrDrag = area == kPDFNoArea || toolMode == SKTextToolMode || hideNotes || annotationMode == SKHighlightNote || annotationMode == SKUnderlineNote || annotationMode == SKStrikeOutNote;
-                    if (area == kPDFNoArea || (canSelectOrDrag && area == kPDFPageArea && [[page selectionForRect:NSMakeRect(p.x - 30.0, p.y - 40.0, 60.0, 80.0)] string] == nil)) {
-                        [self dragWithEvent:theEvent];
-                    } else if (canSelectOrDrag) {
-                        if (nil == activeAnnotation && mouseDownInAnnotation)
+        PDFAreaOfInterest area = [self areaOfInterestForMouse:theEvent];
+        NSPoint p = mouseDownLoc;
+        p = [self convertPoint:p fromView:nil];
+        PDFPage *page = [self pageForPoint:p nearest:YES];
+        p = [self convertPoint:p toPage:page];
+        
+        if (readingBar && (area == kPDFNoArea || (toolMode != SKSelectToolMode && toolMode != SKMagnifyToolMode)) && [[readingBar page] isEqual:page] && p.y >= NSMinY([readingBar currentBounds]) && p.y <= NSMaxY([readingBar currentBounds])) {
+            [self dragReadingBarWithEvent:theEvent];
+        } else if (area == kPDFNoArea) {
+            [self dragWithEvent:theEvent];
+        } else {
+            
+            switch (toolMode) {
+                case SKTextToolMode:
+                case SKNoteToolMode:
+                    if ([self selectAnnotationWithEvent:theEvent] == NO &&
+                        (toolMode == SKTextToolMode || hideNotes || annotationMode == SKHighlightNote || annotationMode == SKUnderlineNote || annotationMode == SKStrikeOutNote)) {
+                        if (area == kPDFPageArea && [[page selectionForRect:NSMakeRect(p.x - 30.0, p.y - 40.0, 60.0, 80.0)] string] == nil)
+                            [self dragWithEvent:theEvent];
+                        else if (nil == activeAnnotation && mouseDownInAnnotation)
                             [self selectTextWithEvent:theEvent];
-                        [super mouseDown:theEvent];
+                        else
+                            [super mouseDown:theEvent];
                     }
-                }
-                break;
-            }
-            case SKMoveToolMode:
-                [self dragWithEvent:theEvent];	
-                break;
-            case SKSelectToolMode:
-                if ([self areaOfInterestForMouse:theEvent] == kPDFNoArea)
-                    [self dragWithEvent:theEvent];
-                else
+                    break;
+                case SKMoveToolMode:
+                    [self dragWithEvent:theEvent];	
+                    break;
+                case SKSelectToolMode:
                     [self selectWithEvent:theEvent];
-                break;
-            case SKMagnifyToolMode:
-                if ([self areaOfInterestForMouse:theEvent] == kPDFNoArea)
-                    [self dragWithEvent:theEvent];
-                else
+                    break;
+                case SKMagnifyToolMode:
                     [self magnifyWithEvent:theEvent];
-                break;
+                    break;
+            }
         }
     }
 }
