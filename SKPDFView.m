@@ -824,8 +824,6 @@ static void SKCGContextDrawGrabHandle(CGContextRef context, CGPoint point, float
                 [[self undoManager] endUndoGrouping];
                 // due to an Appkit bug, endUndoGrouping registers an extra change count, which is not reverted when the group is undone
                 [[[[self window] windowController] document] updateChangeCount:NSChangeUndone];
-                if (toolMode == SKNoteToolMode && [activeAnnotation isResizable] && draggingAnnotation && didDrag == NO)
-                    [[self undoManager] undo];
             }
             draggingAnnotation = NO;
             break;
@@ -2290,17 +2288,20 @@ static void SKCGContextDrawGrabHandle(CGContextRef context, CGPoint point, float
             newActiveAnnotation = newAnnotation;
             [newAnnotation release];
         } else if (toolMode == SKNoteToolMode && newActiveAnnotation == nil &&
-                   NSPointInRect(mouseDownOnPage, [page boundsForBox:[self displayBox]]) &&
-                   (annotationMode == SKFreeTextNote || annotationMode == SKAnchoredNote || annotationMode == SKCircleNote || annotationMode == SKSquareNote || annotationMode == SKArrowNote)) {
-            float width = annotationMode == SKAnchoredNote ? 16.0 : annotationMode == SKArrowNote ? 4.0 : 8.0;
-            NSRect bounds = NSMakeRect(pagePoint.x - floorf(0.5 * width), pagePoint.y - floorf(0.5 * width), width, width);
-            [[self undoManager] beginUndoGrouping];
-            didBeginUndoGrouping = YES;
-            [self addAnnotationWithType:annotationMode contents:nil page:page bounds:bounds];
-            newActiveAnnotation = activeAnnotation;
-            mouseDownInAnnotation = YES;
-            clickDelta.x = pagePoint.x - NSMinX(bounds);
-            clickDelta.y = pagePoint.y - NSMinY(bounds);
+                   annotationMode != SKHighlightNote && annotationMode != SKUnderlineNote && annotationMode != SKStrikeOutNote &&
+                   NSPointInRect(mouseDownOnPage, [page boundsForBox:[self displayBox]])) {
+            // add a new annotation immediately, unless this is just a click
+            if (annotationMode == SKAnchoredNote || NSLeftMouseDragged == [[NSApp nextEventMatchingMask:(NSLeftMouseUpMask | NSLeftMouseDraggedMask) untilDate:[NSDate distantFuture] inMode:NSDefaultRunLoopMode dequeue:NO] type]) {
+                float width = annotationMode == SKAnchoredNote ? 16.0 : annotationMode == SKArrowNote ? 4.0 : 8.0;
+                NSRect bounds = NSMakeRect(pagePoint.x - floorf(0.5 * width), pagePoint.y - floorf(0.5 * width), width, width);
+                [[self undoManager] beginUndoGrouping];
+                didBeginUndoGrouping = YES;
+                [self addAnnotationWithType:annotationMode contents:nil page:page bounds:bounds];
+                newActiveAnnotation = activeAnnotation;
+                mouseDownInAnnotation = YES;
+                clickDelta.x = pagePoint.x - NSMinX(bounds);
+                clickDelta.y = pagePoint.y - NSMinY(bounds);
+            }
         } else if (([theEvent modifierFlags] & NSShiftKeyMask) && [activeAnnotation isEqual:newActiveAnnotation] == NO && [[activeAnnotation page] isEqual:[newActiveAnnotation page]] && [[activeAnnotation type] isEqualToString:[newActiveAnnotation type]] && [activeAnnotation isMarkupAnnotation]) {
             int markupType = [(SKPDFAnnotationMarkup *)activeAnnotation markupType];
             PDFSelection *sel = [(SKPDFAnnotationMarkup *)activeAnnotation selection];
