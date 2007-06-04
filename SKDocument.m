@@ -544,15 +544,30 @@ static NSPopUpButton *popUpButtonSubview(NSView *view)
 
 #pragma mark File update checking
 
+- (void)handleFileMoveNotification:(NSNotification *)note {
+    NSString *fileName = [[note userInfo] objectForKey:@"path"];
+    NSNotificationCenter *nc = [NSNotificationCenter defaultCenter];
+    [nc removeObserver:self name:UKFileWatcherWriteNotification object:fileName];
+    [nc removeObserver:self name:UKFileWatcherRenameNotification object:fileName];
+    [nc removeObserver:self name:UKFileWatcherDeleteNotification object:fileName];
+    // @@ how to re-add? [self fileName] is now stale.  Presumably this won't happen often for the TeX case, though.
+}
+
 - (void)checkFileUpdatesIfNeeded {
     BOOL autoUpdatePref = [[NSUserDefaults standardUserDefaults] boolForKey:SKAutoCheckFileUpdateKey];
+    NSString *fileName = [self fileName];
     
-    if ([self fileName]) {
-        [[UKKQueue sharedFileWatcher] removePath:[self fileName]];
-        [[NSNotificationCenter defaultCenter] removeObserver:self name:UKFileWatcherWriteNotification object:[self fileName]];
+    if (fileName) {
+        [[UKKQueue sharedFileWatcher] removePath:fileName];
+        NSNotificationCenter *nc = [NSNotificationCenter defaultCenter];
+        [nc removeObserver:self name:UKFileWatcherWriteNotification object:fileName];
+        [nc removeObserver:self name:UKFileWatcherRenameNotification object:fileName];
+        [nc removeObserver:self name:UKFileWatcherDeleteNotification object:fileName];
         if (autoUpdatePref) {
             [[UKKQueue sharedFileWatcher] addPath:[self fileName]];
-            [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleFileUpdateNotification:) name:UKFileWatcherWriteNotification object:[self fileName]];
+            [nc addObserver:self selector:@selector(handleFileUpdateNotification:) name:UKFileWatcherWriteNotification object:fileName];
+            [nc addObserver:self selector:@selector(handleFileMoveNotification:) name:UKFileWatcherRenameNotification object:fileName];
+            [nc addObserver:self selector:@selector(handleFileMoveNotification:) name:UKFileWatcherDeleteNotification object:fileName];
         }
     }
 }
