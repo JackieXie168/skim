@@ -187,6 +187,8 @@
 		F98DC2690BA090D8008E46EC /* BDSKImagePopUpButtonCell.m in Sources */ = {isa = PBXBuildFile; fileRef = F98DC2670BA090D8008E46EC /* BDSKImagePopUpButtonCell.m */; };
 		F98E24BF0B702D9400914AF0 /* Carbon.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F98E24BE0B702D9400914AF0 /* Carbon.framework */; };
 		F9CDD67B0B837A7F006363C3 /* SKPreferenceController.m in Sources */ = {isa = PBXBuildFile; fileRef = CE4EC4F40B7E24490091F228 /* SKPreferenceController.m */; };
+		F9F220890C14BDFF00041284 /* UKFileWatcher.m in Sources */ = {isa = PBXBuildFile; fileRef = F9F220860C14BDFF00041284 /* UKFileWatcher.m */; };
+		F9F2208B0C14BDFF00041284 /* UKKQueue.m in Sources */ = {isa = PBXBuildFile; fileRef = F9F220880C14BDFF00041284 /* UKKQueue.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -312,7 +314,7 @@
 		45A3BD380B4F097D002B297F /* InitialUserDefaults.plist */ = {isa = PBXFileReference; explicitFileType = text.xml; fileEncoding = 4; path = InitialUserDefaults.plist; sourceTree = "<group>"; };
 		45B113BF0B329A7E00DE0660 /* LICENSE */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = LICENSE; sourceTree = "<group>"; };
 		8D15AC360486D014006FF6A4 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = Info.plist; sourceTree = "<group>"; };
-		8D15AC370486D014006FF6A4 /* Skim.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Skim.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		8D15AC370486D014006FF6A4 /* Skim.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = Skim.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		A489FDBA0BC8E8D100BA14DD /* Italian */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = Italian; path = Italian.lproj/InfoWindow.nib; sourceTree = "<group>"; };
 		A489FDBD0BC8E8DA00BA14DD /* Italian */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = Italian; path = Italian.lproj/MainMenu.nib; sourceTree = "<group>"; };
 		A489FDC00BC8E8DF00BA14DD /* Italian */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = Italian; path = Italian.lproj/MainWindow.nib; sourceTree = "<group>"; };
@@ -545,6 +547,10 @@
 		F98DC2660BA090D8008E46EC /* BDSKImagePopUpButtonCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BDSKImagePopUpButtonCell.h; sourceTree = "<group>"; };
 		F98DC2670BA090D8008E46EC /* BDSKImagePopUpButtonCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BDSKImagePopUpButtonCell.m; sourceTree = "<group>"; };
 		F98E24BE0B702D9400914AF0 /* Carbon.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Carbon.framework; path = /System/Library/Frameworks/Carbon.framework; sourceTree = "<absolute>"; };
+		F9F220840C14BD9C00041284 /* UKFileWatcher.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = UKFileWatcher.h; path = vendorsrc/ulikusterer/UKFileWatcher.h; sourceTree = "<group>"; };
+		F9F220860C14BDFF00041284 /* UKFileWatcher.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = UKFileWatcher.m; path = vendorsrc/ulikusterer/UKFileWatcher.m; sourceTree = "<group>"; };
+		F9F220870C14BDFF00041284 /* UKKQueue.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = UKKQueue.h; path = vendorsrc/ulikusterer/UKKQueue.h; sourceTree = "<group>"; };
+		F9F220880C14BDFF00041284 /* UKKQueue.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = UKKQueue.m; path = vendorsrc/ulikusterer/UKKQueue.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -691,6 +697,10 @@
 				CE5F42AD0BF89FE00069D89C /* AppleRemote.m */,
 				453DC2750B4F242200A72509 /* BDAlias.m */,
 				453DC2760B4F242200A72509 /* BDAlias.h */,
+				F9F220840C14BD9C00041284 /* UKFileWatcher.h */,
+				F9F220860C14BDFF00041284 /* UKFileWatcher.m */,
+				F9F220870C14BDFF00041284 /* UKKQueue.h */,
+				F9F220880C14BDFF00041284 /* UKKQueue.m */,
 			);
 			name = "3rd-party Sources";
 			sourceTree = "<group>";
@@ -1323,6 +1333,8 @@
 				CE48BAD80C089EA300A166C6 /* SKTemplateParser.m in Sources */,
 				CE41B2A70C08CFA900E36EB7 /* NSArray_SKExtensions.m in Sources */,
 				CE41B2CC0C08D17100E36EB7 /* NSValue_SKExtensions.m in Sources */,
+				F9F220890C14BDFF00041284 /* UKFileWatcher.m in Sources */,
+				F9F2208B0C14BDFF00041284 /* UKKQueue.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
