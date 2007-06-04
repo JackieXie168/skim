@@ -432,7 +432,7 @@ static UKKQueue * gUKKQueueSharedQueueSingleton = nil;
 {
     [path release];
 	if( close( fd ) == -1 )
-        NSLog(@"dealloc: Couldn't close file descriptor (%d)", errno);
+        perror(NULL);
     [super dealloc];
 }
 
