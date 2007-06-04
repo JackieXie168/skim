@@ -32,9 +32,6 @@
 -(void) addPath: (NSString*)path;
 -(void) removePath: (NSString*)path;
 
--(id)   delegate;
--(void) setDelegate: (id)newDelegate;
-
 @end
 
 // -----------------------------------------------------------------------------
