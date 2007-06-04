@@ -861,4 +861,36 @@ static NSPopUpButton *popUpButtonSubview(NSView *view)
     return [[self pdfDocument] string];
 }
 
+- (id)handleRevertScriptCommand:(NSScriptCommand *)command {
+    if ([self fileURL] && [[NSFileManager defaultManager] fileExistsAtPath:[self fileName]]) {
+        if ([self revertToContentsOfURL:[self fileURL] ofType:[self fileType] error:NULL] == NO) {
+            [command setScriptErrorNumber:NSInternalScriptError];
+            [command setScriptErrorString:@"Revert failed."];
+        }
+    } else {
+        [command setScriptErrorNumber:NSArgumentsWrongScriptError];
+        [command setScriptErrorString:@"File does not exist."];
+    }
+    return nil;
+}
+
+@end
+
+
+@interface NSWindow (SKScriptingExtensions)
+- (id)handleRevertScriptCommand:(NSScriptCommand *)command;
+@end
+
+@implementation NSWindow (SKScriptingExtensions)
+
+- (id)handleRevertScriptCommand:(NSScriptCommand *)command {
+    id document = [[self windowController] document];
+    if (document == nil) {
+        [command setScriptErrorNumber:NSArgumentsWrongScriptError];
+        [command setScriptErrorString:@"Window does not have a document."];
+        return nil;
+    } else
+        return [document handleRevertScriptCommand:command];
+}
+
 @end

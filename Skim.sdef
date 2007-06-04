@@ -85,8 +85,8 @@
             <responds-to name="save">
                 <cocoa method="handleSaveScriptCommand:"/>
             </responds-to>
-            <responds-to name="find">
-                <cocoa method="handleFindScriptCommand:"/>
+            <responds-to name="revert">
+                <cocoa method="handleRevertScriptCommand:"/>
             </responds-to>
         </class>
         
@@ -148,6 +148,9 @@
             <responds-to name="save">
                 <cocoa method="handleSaveScriptCommand:"/>
             </responds-to>
+            <responds-to name="revert">
+                <cocoa method="handleRevertScriptCommand:"/>
+            </responds-to>
         </class>
         
         <command name="open" code="aevtodoc" description="Open a document.">
@@ -205,6 +208,12 @@
                 description="The type of file to save.">
                 <cocoa key="FileType"/>
             </parameter>
+        </command>
+
+        <command name="revert" code="coreRvrt"
+            description="Revert a document.">
+            <direct-parameter type="specifier"
+                description="The document(s) or window(s) to revert."/>
         </command>
 
         <enumeration name="printing error handling" code="enum">
