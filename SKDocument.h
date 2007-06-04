@@ -97,5 +97,6 @@ extern NSString *SKDocumentWillSaveNotification;
 - (id)activeNote;
 - (void)setActiveNote:(id)note;
 - (NSString *)string;
+- (id)handleRevertScriptCommand:(NSScriptCommand *)command;
 
 @end
