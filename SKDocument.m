@@ -643,7 +643,37 @@ static NSPopUpButton *popUpButtonSubview(NSView *view)
         if ([lastChangedDate compare:fileChangedDate] == NSOrderedAscending) {
             fileChangedOnDisk = YES;
             // check until the data stabilizes, because a (tex) process may be busy writing to the file
-            if (previousCheckedDate && [previousCheckedDate compare:fileChangedDate] == NSOrderedSame) {
+            NSFileHandle *fh = [NSFileHandle fileHandleForReadingAtPath:[self fileName]];
+            unsigned long long fileEnd = [fh seekToEndOfFile];
+            unsigned long long startPos = fileEnd < 1024 ? fileEnd : fileEnd - 1024;
+            [fh seekToFileOffset:startPos];
+            NSData *trailerData = [fh readDataToEndOfFile];
+            const char *pattern = "%%EOF";
+            unsigned patternLength = strlen(pattern);
+            BOOL foundTrailer = NO;
+
+            // adapted from OmniFoundation
+            if ([trailerData length] > patternLength) {
+                unsigned const char *bufferStart = [trailerData bytes];
+                unsigned const char *ptr = bufferStart;
+                unsigned const char *ptrEnd = bufferStart + fileEnd - startPos - patternLength;
+                
+                for (;;) {
+                    if (memcmp(ptr, pattern, patternLength) == 0) {
+                        foundTrailer = YES;
+                        break;
+                    }
+                    
+                    ptr++;
+                    if (ptr == ptrEnd)
+                        break;
+                    ptr = memchr(ptr, *(const char *)pattern, (ptrEnd - ptr));
+                    if (!ptr)
+                        break;
+                }
+            }
+            
+            if (foundTrailer && previousCheckedDate && [previousCheckedDate compare:fileChangedDate] == NSOrderedSame) {
                 if (autoUpdate && [self isDocumentEdited] == NO) {
                     [self fileUpdateAlertDidEnd:nil returnCode:NSAlertDefaultReturn contextInfo:[fileChangedDate retain]];
                     return;
