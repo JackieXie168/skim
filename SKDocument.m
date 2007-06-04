@@ -53,6 +53,7 @@
 #import "SKDocumentController.h"
 #import "SKTemplateParser.h"
 #import "SKApplicationController.h"
+#import "UKKQueue.h"
 
 // maximum length of xattr value recommended by Apple
 #define MAX_XATTR_LENGTH 2048
@@ -70,7 +71,7 @@ NSString *SKDocumentWillSaveNotification = @"SKDocumentWillSaveNotification";
 - (void)setLastChangedDate:(NSDate *)date;
 
 - (void)checkFileUpdatesIfNeeded;
-- (void)checkFileUpdateStatus:(NSTimer *)timer;
+- (void)handleFileUpdateNotification:(NSNotification *)note;
 
 @end
 
@@ -82,9 +83,6 @@ NSString *SKDocumentWillSaveNotification = @"SKDocumentWillSaveNotification";
     [[NSNotificationCenter defaultCenter] removeObserver:self];
     [synchronizer stopDOServer];
     [synchronizer release];
-    [fileUpdateTimer invalidate];
-    [fileUpdateTimer release];
-    [lastChangedDate release];
     [pdfData release];
     [noteDicts release];
     [readNotesAccessoryView release];
@@ -109,8 +107,6 @@ NSString *SKDocumentWillSaveNotification = @"SKDocumentWillSaveNotification";
     [self checkFileUpdatesIfNeeded];
     
     [[NSUserDefaultsController sharedUserDefaultsController] addObserver:self forKey:SKAutoCheckFileUpdateKey];
-	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleApplicationWillTerminateNotification:) 
-                                                 name:NSApplicationWillTerminateNotification object:NSApp];
 	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleWindowWillCloseNotification:) 
                                                  name:NSWindowWillCloseNotification object:[mainController window]];
 }
@@ -201,8 +197,7 @@ static NSPopUpButton *popUpButtonSubview(NSView *view)
         if (saveOperation == NSSaveOperation || saveOperation == NSSaveAsOperation) {
             [[self undoManager] removeAllActions];
             [self updateChangeCount:NSChangeCleared];
-            [self setLastChangedDate:[[fm fileAttributesAtPath:[absoluteURL path] traverseLink:YES] fileModificationDate]];
-            fileChangedOnDisk = NO;
+            [self checkFileUpdatesIfNeeded];
         }
         
     }
@@ -248,6 +243,7 @@ static NSPopUpButton *popUpButtonSubview(NSView *view)
 }
 
 - (BOOL)revertToContentsOfURL:(NSURL *)absoluteURL ofType:(NSString *)typeName error:(NSError **)outError{
+#warning number of pages in window title does not update
     if ([super revertToContentsOfURL:absoluteURL ofType:typeName error:outError]) {
         [[self mainWindowController] setPdfDocument:pdfDocument];
         [pdfDocument autorelease];
@@ -282,13 +278,6 @@ static NSPopUpButton *popUpButtonSubview(NSView *view)
     }
 }
 
-- (void)setLastChangedDate:(NSDate *)date {
-    if (lastChangedDate != date) {
-        [lastChangedDate release];
-        lastChangedDate = [date retain];
-    }
-}
-
 - (BOOL)readFromData:(NSData *)data ofType:(NSString *)docType error:(NSError **)outError;
 {
     BOOL didRead = NO;
@@ -309,9 +298,7 @@ static NSPopUpButton *popUpButtonSubview(NSView *view)
     if (pdfDoc) {
         [pdfDoc release];
         didRead = YES;
-        [self setLastChangedDate:nil];
         [self updateChangeCount:NSChangeDone];
-        fileChangedOnDisk = NO;
     }
     
     if (didRead == NO && outError != NULL)
@@ -375,13 +362,10 @@ static NSPopUpButton *popUpButtonSubview(NSView *view)
     if (data) {
         if (pdfDoc) {
             didRead = YES;
-            numberOfTries = 0;
             [self setPDFData:data];
             [self setPDFDoc:pdfDoc];
             [pdfDoc release];
             [data release];
-            [self setLastChangedDate:[[[NSFileManager defaultManager] fileAttributesAtPath:[absoluteURL path] traverseLink:YES] fileModificationDate]];
-            fileChangedOnDisk = NO;
         } else {
             [self setPDFData:nil];
         }
@@ -543,31 +527,6 @@ static NSPopUpButton *popUpButtonSubview(NSView *view)
     }
 }
 
-- (void)revertDocumentToSaved:(id)sender {
-    if ([self fileName]) {
-        if ([self isDocumentEdited]) {
-            [super revertDocumentToSaved:sender];
-        } else if (lastChangedDate) {
-            BOOL shouldRevert = fileChangedOnDisk;
-            if (shouldRevert == NO) {
-                NSDate *fileChangedDate = [[[NSFileManager defaultManager] fileAttributesAtPath:[self fileName] traverseLink:YES] fileModificationDate];
-                shouldRevert = [lastChangedDate compare:fileChangedDate] == NSOrderedAscending;
-            }
-            if (shouldRevert) {
-                NSAlert *alert = [NSAlert alertWithMessageText:[NSString stringWithFormat:NSLocalizedString(@"Do you want to revert to the version of the document \"%@\" on disk?", @"Message in alert dialog"), [[self fileName] lastPathComponent]]
-                                                 defaultButton:NSLocalizedString(@"Revert", @"Button title")
-                                               alternateButton:NSLocalizedString(@"Cancel", @"Button title")
-                                                   otherButton:nil
-                                     informativeTextWithFormat:NSLocalizedString(@"Your current changes will be lost.", @"Informative text in alert dialog")];
-                [alert beginSheetModalForWindow:[[self mainWindowController] window]
-                                  modalDelegate:self
-                                 didEndSelector:@selector(revertAlertDidEnd:returnCode:contextInfo:) 
-                                    contextInfo:NULL];
-            }
-        }
-    }
-}
-
 - (void)performFindPanelAction:(id)sender {
     [[SKFindController sharedFindController] performFindPanelAction:sender];
 }
@@ -578,133 +537,109 @@ static NSPopUpButton *popUpButtonSubview(NSView *view)
 	} else if ([anItem action] == @selector(revertDocumentToSaved:)) {
         if ([self fileName] == nil)
             return NO;
-        if ([self isDocumentEdited] || fileChangedOnDisk)
+        if ([self isDocumentEdited])
             return YES;
-        if (lastChangedDate == nil)
-            return NO;
-        NSDate *fileChangedDate = [[[NSFileManager defaultManager] fileAttributesAtPath:[self fileName] traverseLink:YES] fileModificationDate];
-        return [lastChangedDate compare:fileChangedDate] == NSOrderedAscending;
-    } else
-        return [super validateUserInterfaceItem:anItem];
+    }
+    return [super validateUserInterfaceItem:anItem];
 }
 
 #pragma mark File update checking
 
-// For now this just uses a timer checking the modification date of the file. We may want to use kqueue (UKKqueue) at some point. 
-
-- (void)checkFileUpdatesIfNeededAfterDelay:(NSTimeInterval)delay {
+- (void)checkFileUpdatesIfNeeded {
     BOOL autoUpdatePref = [[NSUserDefaults standardUserDefaults] boolForKey:SKAutoCheckFileUpdateKey];
     
-    if (autoUpdatePref == NO && fileUpdateTimer) {
-        [fileUpdateTimer invalidate];
-        [fileUpdateTimer release];
-        fileUpdateTimer = nil;
-        autoUpdate = NO;
-    } else if (autoUpdatePref && fileUpdateTimer == nil) {
-        fileUpdateTimer = [[NSTimer alloc] initWithFireDate:[NSDate dateWithTimeIntervalSinceNow:delay] interval:0.0 target:self selector:@selector(checkFileUpdateStatus:) userInfo:NULL repeats:NO];
-        [[NSRunLoop currentRunLoop] addTimer:fileUpdateTimer forMode:NSDefaultRunLoopMode];
+    if ([self fileName]) {
+        [[UKKQueue sharedFileWatcher] removePath:[self fileName]];
+        [[NSNotificationCenter defaultCenter] removeObserver:self name:UKFileWatcherWriteNotification object:[self fileName]];
+        if (autoUpdatePref) {
+            [[UKKQueue sharedFileWatcher] addPath:[self fileName]];
+            [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleFileUpdateNotification:) name:UKFileWatcherWriteNotification object:[self fileName]];
+        }
     }
 }
 
-- (void)checkFileUpdatesIfNeeded {
-    [self checkFileUpdatesIfNeededAfterDelay:2.0];
-}
-
 - (void)fileUpdateAlertDidEnd:(NSAlert *)alert returnCode:(int)returnCode contextInfo:(void *)contextInfo {
-    NSDate *changeDate = (NSDate *)contextInfo;
     
     if (returnCode == NSAlertOtherReturn) {
-        [self setLastChangedDate:changeDate];
         autoUpdate = NO;
     } else {
         NSError *error = nil;
         if (NO == [self revertToContentsOfURL:[self fileURL] ofType:[self fileType] error:&error]) {
-            if (autoUpdate == NO || ++numberOfTries > 10) {
+            if (autoUpdate == NO) {
                 [[alert window] orderOut:nil];
                 [self presentError:error modalForWindow:[[self mainWindowController] window] delegate:nil didPresentSelector:NULL contextInfo:NULL];
-                [self setLastChangedDate:changeDate];
             }
         }
         if (returnCode == NSAlertAlternateReturn)
             autoUpdate = YES;
     }
-    [changeDate release];
-    [self checkFileUpdatesIfNeeded];
 }
 
-static inline BOOL pdfFileHasEOF(NSString *path) {
-    NSFileHandle *fh = [NSFileHandle fileHandleForReadingAtPath:path];
-    unsigned long long fileEnd = [fh seekToEndOfFile];
-    unsigned long long startPos = fileEnd < 1024 ? fileEnd : fileEnd - 1024;
-    [fh seekToFileOffset:startPos];
-    NSData *trailerData = [fh readDataToEndOfFile];
-    const char *pattern = "%%EOF";
-    unsigned patternLength = strlen(pattern);
-
-    // adapted from OmniFoundation
-    if ([trailerData length] > patternLength) {
-        unsigned const char *bufferStart = [trailerData bytes];
-        unsigned const char *ptr = bufferStart;
-        unsigned const char *ptrEnd = bufferStart + fileEnd - startPos - patternLength;
-        
-        while (YES) {
-            if (memcmp(ptr, pattern, patternLength) == 0)
-                return YES;
-            
-            ptr++;
-            if (ptr == ptrEnd)
-                break;
-            ptr = memchr(ptr, *(const char *)pattern, (ptrEnd - ptr));
-            if (!ptr)
-                break;
-        }
-    }
-    return NO;
-}
-
-- (void)checkFileUpdateStatus:(NSTimer *)timer {
-    [fileUpdateTimer release];
-    fileUpdateTimer = nil;
+- (void)handleFileUpdateNotification:(NSNotification *)note {
+    
+    // should never happen
+    if ([[[note userInfo] objectForKey:@"path"] isEqual:[self fileName]] == NO)
+        NSLog(@"*** received change notice for %@", [note object]);
     
     NSFileManager *fm = [NSFileManager defaultManager];
-    NSTimeInterval delay = 2.0;
     
     if ([[NSUserDefaults standardUserDefaults] boolForKey:SKAutoCheckFileUpdateKey] &&
         [fm fileExistsAtPath:[self fileName]]) {
-        
-        NSDate *fileChangedDate = [[fm fileAttributesAtPath:[self fileName] traverseLink:YES] fileModificationDate];
-        
-        if ([lastChangedDate compare:fileChangedDate] == NSOrderedAscending) {
-            fileChangedOnDisk = YES;
-            delay = 0.5;
+                
+        NSFileHandle *fh = [NSFileHandle fileHandleForReadingAtPath:[self fileName]];
+        unsigned long long fileEnd = [fh seekToEndOfFile];
+        unsigned long long startPos = fileEnd < 1024 ? fileEnd : fileEnd - 1024;
+        [fh seekToFileOffset:startPos];
+        NSData *trailerData = [fh readDataToEndOfFile];
+        const char *pattern = "%%EOF";
+        unsigned patternLength = strlen(pattern);
+        BOOL foundTrailer = NO;
+
+        // adapted from OmniFoundation
+        if ([trailerData length] > patternLength) {
+            unsigned const char *bufferStart = [trailerData bytes];
+            unsigned const char *ptr = bufferStart;
+            unsigned const char *ptrEnd = bufferStart + fileEnd - startPos - patternLength;
             
-            // check to see if the PDF is complete, because a (tex) process may be busy writing to the file
-            if (pdfFileHasEOF([self fileName])) {
-                if (autoUpdate && [self isDocumentEdited] == NO) {
-                    [self fileUpdateAlertDidEnd:nil returnCode:NSAlertDefaultReturn contextInfo:[fileChangedDate retain]];
-                } else {
-                    NSString *message;
-                    if ([self isDocumentEdited])
-                        message = NSLocalizedString(@"The PDF file has changed on disk. If you reload, your changes will be lost. Do you want to reload this document now?", @"Informative text in alert dialog");
-                    else 
-                        message = NSLocalizedString(@"The PDF file has changed on disk. Do you want to reload this document now? Choosing Auto will reload this file automatically for future changes.", @"Informative text in alert dialog");
-                    
-                    NSAlert *alert = [NSAlert alertWithMessageText:NSLocalizedString(@"File Updated", @"Message in alert dialog") 
-                                                     defaultButton:NSLocalizedString(@"Yes", @"Button title")
-                                                   alternateButton:NSLocalizedString(@"Auto", @"Button title")
-                                                       otherButton:NSLocalizedString(@"No", @"Button title")
-                                         informativeTextWithFormat:message];
-                    [alert beginSheetModalForWindow:[[self mainWindowController] window]
-                                      modalDelegate:self
-                                     didEndSelector:@selector(fileUpdateAlertDidEnd:returnCode:contextInfo:) 
-                                        contextInfo:[fileChangedDate retain]];
+            for (;;) {
+                if (memcmp(ptr, pattern, patternLength) == 0) {
+                    foundTrailer = YES;
+                    break;
                 }
+                
+                ptr++;
+                if (ptr == ptrEnd)
+                    break;
+                ptr = memchr(ptr, *(const char *)pattern, (ptrEnd - ptr));
+                if (!ptr)
+                    break;
+            }
+        }
+            
+        if (foundTrailer) {
+            if (autoUpdate && [self isDocumentEdited] == NO) {
+                [self fileUpdateAlertDidEnd:nil returnCode:NSAlertDefaultReturn contextInfo:NULL];
+                return;
+            } else {
+                NSString *message;
+                if ([self isDocumentEdited])
+                    message = NSLocalizedString(@"The PDF file has changed on disk. If you reload, your changes will be lost. Do you want to reload this document now?", @"Informative text in alert dialog");
+                else 
+                    message = NSLocalizedString(@"The PDF file has changed on disk. Do you want to reload this document now? Choosing Auto will reload this file automatically for future changes.", @"Informative text in alert dialog");
+                
+                NSAlert *alert = [NSAlert alertWithMessageText:NSLocalizedString(@"File Updated", @"Message in alert dialog") 
+                                                 defaultButton:NSLocalizedString(@"Yes", @"Button title")
+                                               alternateButton:NSLocalizedString(@"Auto", @"Button title")
+                                                   otherButton:NSLocalizedString(@"No", @"Button title")
+                                     informativeTextWithFormat:message];
+                [alert beginSheetModalForWindow:[[self mainWindowController] window]
+                                  modalDelegate:self
+                                 didEndSelector:@selector(fileUpdateAlertDidEnd:returnCode:contextInfo:) 
+                                    contextInfo:NULL];
                 return;
             }
         }
-    }
-    
-    [self checkFileUpdatesIfNeededAfterDelay:delay];
+    }    
 }
 
 #pragma mark Notification observation
@@ -722,19 +657,11 @@ static inline BOOL pdfFileHasEOF(NSString *path) {
     }
 }
 
-- (void)handleApplicationWillTerminateNotification:(NSNotification *)notification {
-    [fileUpdateTimer invalidate];
-    [fileUpdateTimer release];
-    fileUpdateTimer = nil;
-}
-
 - (void)handleWindowWillCloseNotification:(NSNotification *)notification {
     NSWindow *window = [notification object];
     // ignore when we're switching fullscreen/main windows
     if ([window isEqual:[[window windowController] window]]) {
-        [fileUpdateTimer invalidate];
-        [fileUpdateTimer release];
-        fileUpdateTimer = nil;
+        [[UKKQueue sharedFileWatcher] removePath:[self fileName]];
     }
 }
 

@@ -58,12 +58,7 @@ extern NSString *SKDocumentWillSaveNotification;
     NSMutableArray *noteDicts;
         
     SKPDFSynchronizer *synchronizer;
-    
-    NSTimer *fileUpdateTimer;
-    NSDate *lastChangedDate;
     BOOL autoUpdate;
-    int numberOfTries;
-    BOOL fileChangedOnDisk;
 }
 
 - (IBAction)readNotes:(id)sender;
@@ -84,7 +79,6 @@ extern NSString *SKDocumentWillSaveNotification;
 
 - (SKPDFSynchronizer *)synchronizer;
 
-- (void)handleApplicationWillTerminateNotification:(NSNotification *)notification;
 - (void)handleWindowWillCloseNotification:(NSNotification *)notification;
 
 - (unsigned int)countOfPages;
