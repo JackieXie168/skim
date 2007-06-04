@@ -243,7 +243,6 @@ static NSPopUpButton *popUpButtonSubview(NSView *view)
 }
 
 - (BOOL)revertToContentsOfURL:(NSURL *)absoluteURL ofType:(NSString *)typeName error:(NSError **)outError{
-#warning number of pages in window title does not update
     if ([super revertToContentsOfURL:absoluteURL ofType:typeName error:outError]) {
         [[self mainWindowController] setPdfDocument:pdfDocument];
         [pdfDocument autorelease];
@@ -472,7 +471,7 @@ static NSPopUpButton *popUpButtonSubview(NSView *view)
     [oPanel beginSheetForDirectory:[path stringByDeletingLastPathComponent]
                               file:[[[path lastPathComponent] stringByDeletingPathExtension] stringByAppendingPathExtension:@"skim"]
                              types:[NSArray arrayWithObject:@"skim"]
-                    modalForWindow:[[self mainWindowController] window]
+                    modalForWindow:[self windowForSheet]
                      modalDelegate:self
                     didEndSelector:@selector(openPanelDidEnd:returnCode:contextInfo:)
                        contextInfo:NULL];		
@@ -522,7 +521,7 @@ static NSPopUpButton *popUpButtonSubview(NSView *view)
         NSError *error = nil;
         if (NO == [self revertToContentsOfURL:[self fileURL] ofType:[self fileType] error:&error]) {
             [[alert window] orderOut:nil];
-            [self presentError:error modalForWindow:[[self mainWindowController] window] delegate:nil didPresentSelector:NULL contextInfo:NULL];
+            [self presentError:error modalForWindow:[self windowForSheet] delegate:nil didPresentSelector:NULL contextInfo:NULL];
         }
     }
 }
@@ -567,7 +566,7 @@ static NSPopUpButton *popUpButtonSubview(NSView *view)
         if (NO == [self revertToContentsOfURL:[self fileURL] ofType:[self fileType] error:&error]) {
             if (autoUpdate == NO) {
                 [[alert window] orderOut:nil];
-                [self presentError:error modalForWindow:[[self mainWindowController] window] delegate:nil didPresentSelector:NULL contextInfo:NULL];
+                [self presentError:error modalForWindow:[self windowForSheet] delegate:nil didPresentSelector:NULL contextInfo:NULL];
             }
         }
         if (returnCode == NSAlertAlternateReturn)
@@ -619,7 +618,6 @@ static NSPopUpButton *popUpButtonSubview(NSView *view)
         if (foundTrailer) {
             if (autoUpdate && [self isDocumentEdited] == NO) {
                 [self fileUpdateAlertDidEnd:nil returnCode:NSAlertDefaultReturn contextInfo:NULL];
-                return;
             } else {
                 NSString *message;
                 if ([self isDocumentEdited])
@@ -632,11 +630,10 @@ static NSPopUpButton *popUpButtonSubview(NSView *view)
                                                alternateButton:NSLocalizedString(@"Auto", @"Button title")
                                                    otherButton:NSLocalizedString(@"No", @"Button title")
                                      informativeTextWithFormat:message];
-                [alert beginSheetModalForWindow:[[self mainWindowController] window]
+                [alert beginSheetModalForWindow:[self windowForSheet]
                                   modalDelegate:self
                                  didEndSelector:@selector(fileUpdateAlertDidEnd:returnCode:contextInfo:) 
                                     contextInfo:NULL];
-                return;
             }
         }
     }    

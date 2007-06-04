@@ -530,6 +530,9 @@ static NSString *SKRightSidePaneWidthKey = @"SKRightSidePaneWidth";
             [[pdfView documentView] scrollRectToVisible:[pdfView convertRect:[pdfView convertRect:visibleRect fromPage:page] toView:[pdfView documentView]]];
             [[pdfView window] enableFlushWindow];
         }
+        
+        // the number of pages may have changed
+        [[self window] setTitle:[self windowTitleForDocumentDisplayName:[[self document] displayName]]];
     }
 }
     
