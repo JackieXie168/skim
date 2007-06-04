@@ -85,7 +85,6 @@ NSString *SKDocumentWillSaveNotification = @"SKDocumentWillSaveNotification";
     [fileUpdateTimer invalidate];
     [fileUpdateTimer release];
     [lastChangedDate release];
-    [previousCheckedDate release];
     [pdfData release];
     [noteDicts release];
     [readNotesAccessoryView release];
@@ -593,7 +592,7 @@ static NSPopUpButton *popUpButtonSubview(NSView *view)
 
 // For now this just uses a timer checking the modification date of the file. We may want to use kqueue (UKKqueue) at some point. 
 
-- (void)checkFileUpdatesIfNeeded {
+- (void)checkFileUpdatesIfNeededAfterDelay:(NSTimeInterval)delay {
     BOOL autoUpdatePref = [[NSUserDefaults standardUserDefaults] boolForKey:SKAutoCheckFileUpdateKey];
     
     if (autoUpdatePref == NO && fileUpdateTimer) {
@@ -602,9 +601,13 @@ static NSPopUpButton *popUpButtonSubview(NSView *view)
         fileUpdateTimer = nil;
         autoUpdate = NO;
     } else if (autoUpdatePref && fileUpdateTimer == nil) {
-        fileUpdateTimer = [[NSTimer alloc] initWithFireDate:[NSDate dateWithTimeIntervalSinceNow:1.0] interval:0.0 target:self selector:@selector(checkFileUpdateStatus:) userInfo:NULL repeats:NO];
+        fileUpdateTimer = [[NSTimer alloc] initWithFireDate:[NSDate dateWithTimeIntervalSinceNow:delay] interval:0.0 target:self selector:@selector(checkFileUpdateStatus:) userInfo:NULL repeats:NO];
         [[NSRunLoop currentRunLoop] addTimer:fileUpdateTimer forMode:NSDefaultRunLoopMode];
     }
+}
+
+- (void)checkFileUpdatesIfNeeded {
+    [self checkFileUpdatesIfNeededAfterDelay:2.0];
 }
 
 - (void)fileUpdateAlertDidEnd:(NSAlert *)alert returnCode:(int)returnCode contextInfo:(void *)contextInfo {
@@ -629,11 +632,42 @@ static NSPopUpButton *popUpButtonSubview(NSView *view)
     [self checkFileUpdatesIfNeeded];
 }
 
+static inline BOOL pdfFileHasEOF(NSString *path) {
+    NSFileHandle *fh = [NSFileHandle fileHandleForReadingAtPath:path];
+    unsigned long long fileEnd = [fh seekToEndOfFile];
+    unsigned long long startPos = fileEnd < 1024 ? fileEnd : fileEnd - 1024;
+    [fh seekToFileOffset:startPos];
+    NSData *trailerData = [fh readDataToEndOfFile];
+    const char *pattern = "%%EOF";
+    unsigned patternLength = strlen(pattern);
+
+    // adapted from OmniFoundation
+    if ([trailerData length] > patternLength) {
+        unsigned const char *bufferStart = [trailerData bytes];
+        unsigned const char *ptr = bufferStart;
+        unsigned const char *ptrEnd = bufferStart + fileEnd - startPos - patternLength;
+        
+        while (YES) {
+            if (memcmp(ptr, pattern, patternLength) == 0)
+                return YES;
+            
+            ptr++;
+            if (ptr == ptrEnd)
+                break;
+            ptr = memchr(ptr, *(const char *)pattern, (ptrEnd - ptr));
+            if (!ptr)
+                break;
+        }
+    }
+    return NO;
+}
+
 - (void)checkFileUpdateStatus:(NSTimer *)timer {
     [fileUpdateTimer release];
     fileUpdateTimer = nil;
     
     NSFileManager *fm = [NSFileManager defaultManager];
+    NSTimeInterval delay = 2.0;
     
     if ([[NSUserDefaults standardUserDefaults] boolForKey:SKAutoCheckFileUpdateKey] &&
         [fm fileExistsAtPath:[self fileName]]) {
@@ -642,41 +676,12 @@ static NSPopUpButton *popUpButtonSubview(NSView *view)
         
         if ([lastChangedDate compare:fileChangedDate] == NSOrderedAscending) {
             fileChangedOnDisk = YES;
-            // check until the data stabilizes, because a (tex) process may be busy writing to the file
-            NSFileHandle *fh = [NSFileHandle fileHandleForReadingAtPath:[self fileName]];
-            unsigned long long fileEnd = [fh seekToEndOfFile];
-            unsigned long long startPos = fileEnd < 1024 ? fileEnd : fileEnd - 1024;
-            [fh seekToFileOffset:startPos];
-            NSData *trailerData = [fh readDataToEndOfFile];
-            const char *pattern = "%%EOF";
-            unsigned patternLength = strlen(pattern);
-            BOOL foundTrailer = NO;
-
-            // adapted from OmniFoundation
-            if ([trailerData length] > patternLength) {
-                unsigned const char *bufferStart = [trailerData bytes];
-                unsigned const char *ptr = bufferStart;
-                unsigned const char *ptrEnd = bufferStart + fileEnd - startPos - patternLength;
-                
-                for (;;) {
-                    if (memcmp(ptr, pattern, patternLength) == 0) {
-                        foundTrailer = YES;
-                        break;
-                    }
-                    
-                    ptr++;
-                    if (ptr == ptrEnd)
-                        break;
-                    ptr = memchr(ptr, *(const char *)pattern, (ptrEnd - ptr));
-                    if (!ptr)
-                        break;
-                }
-            }
+            delay = 0.5;
             
-            if (foundTrailer && previousCheckedDate && [previousCheckedDate compare:fileChangedDate] == NSOrderedSame) {
+            // check to see if the PDF is complete, because a (tex) process may be busy writing to the file
+            if (pdfFileHasEOF([self fileName])) {
                 if (autoUpdate && [self isDocumentEdited] == NO) {
                     [self fileUpdateAlertDidEnd:nil returnCode:NSAlertDefaultReturn contextInfo:[fileChangedDate retain]];
-                    return;
                 } else {
                     NSString *message;
                     if ([self isDocumentEdited])
@@ -693,16 +698,13 @@ static NSPopUpButton *popUpButtonSubview(NSView *view)
                                       modalDelegate:self
                                      didEndSelector:@selector(fileUpdateAlertDidEnd:returnCode:contextInfo:) 
                                         contextInfo:[fileChangedDate retain]];
-                    return;
                 }
-            } else {
-                [previousCheckedDate release];
-                previousCheckedDate = [fileChangedDate retain];
+                return;
             }
         }
     }
     
-    [self checkFileUpdatesIfNeeded];
+    [self checkFileUpdatesIfNeededAfterDelay:delay];
 }
 
 #pragma mark Notification observation
