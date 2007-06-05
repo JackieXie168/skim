@@ -71,6 +71,7 @@ NSString *SKDocumentWillSaveNotification = @"SKDocumentWillSaveNotification";
 - (void)setLastChangedDate:(NSDate *)date;
 
 - (void)checkFileUpdatesIfNeeded;
+- (void)stopCheckingFileUpdatesForFile:(NSString *)fileName;
 - (void)handleFileUpdateNotification:(NSNotification *)note;
 
 @end
@@ -156,8 +157,12 @@ static NSPopUpButton *popUpButtonSubview(NSView *view)
 }
 
 - (BOOL)saveToURL:(NSURL *)absoluteURL ofType:(NSString *)typeName forSaveOperation:(NSSaveOperationType)saveOperation error:(NSError **)outError{
-    if (saveOperation == NSSaveToOperation)
+    if (saveOperation == NSSaveOperation || saveOperation == NSSaveAsOperation) {
+        [self stopCheckingFileUpdatesForFile:[self fileName]];
+        isSaving = YES;
+    } else if (saveOperation == NSSaveToOperation) {
         [[NSUserDefaults standardUserDefaults] setObject:typeName forKey:@"SKLastExportedType"];
+    }
     
     BOOL success = [super saveToURL:absoluteURL ofType:typeName forSaveOperation:saveOperation error:outError];
     // we check for notes and may save a .skim as well:
@@ -197,9 +202,13 @@ static NSPopUpButton *popUpButtonSubview(NSView *view)
         if (saveOperation == NSSaveOperation || saveOperation == NSSaveAsOperation) {
             [[self undoManager] removeAllActions];
             [self updateChangeCount:NSChangeCleared];
-            [self checkFileUpdatesIfNeeded];
         }
         
+    }
+    
+    if (saveOperation == NSSaveOperation || saveOperation == NSSaveAsOperation) {
+        [self checkFileUpdatesIfNeeded];
+        isSaving = NO;
     }
     
     return success;
@@ -545,12 +554,18 @@ static NSPopUpButton *popUpButtonSubview(NSView *view)
 #pragma mark File update checking
 
 - (void)handleFileMoveNotification:(NSNotification *)note {
-    NSString *fileName = [[note userInfo] objectForKey:@"path"];
-    NSNotificationCenter *nc = [NSNotificationCenter defaultCenter];
-    [nc removeObserver:self name:UKFileWatcherWriteNotification object:fileName];
-    [nc removeObserver:self name:UKFileWatcherRenameNotification object:fileName];
-    [nc removeObserver:self name:UKFileWatcherDeleteNotification object:fileName];
-    // @@ how to re-add? [self fileName] is now stale.  Presumably this won't happen often for the TeX case, though.
+    [self stopCheckingFileUpdatesForFile:[[note userInfo] objectForKey:@"path"]];
+    // If the file is moved, NSDocument will notice and will call setFileURL, where we start watching again
+}
+
+- (void)stopCheckingFileUpdatesForFile:(NSString *)fileName {
+    if (fileName) {
+        [[UKKQueue sharedFileWatcher] removePath:fileName];
+        NSNotificationCenter *nc = [NSNotificationCenter defaultCenter];
+        [nc removeObserver:self name:UKFileWatcherWriteNotification object:fileName];
+        [nc removeObserver:self name:UKFileWatcherRenameNotification object:fileName];
+        [nc removeObserver:self name:UKFileWatcherDeleteNotification object:fileName];
+    }
 }
 
 - (void)checkFileUpdatesIfNeeded {
@@ -558,13 +573,10 @@ static NSPopUpButton *popUpButtonSubview(NSView *view)
     NSString *fileName = [self fileName];
     
     if (fileName) {
-        [[UKKQueue sharedFileWatcher] removePath:fileName];
-        NSNotificationCenter *nc = [NSNotificationCenter defaultCenter];
-        [nc removeObserver:self name:UKFileWatcherWriteNotification object:fileName];
-        [nc removeObserver:self name:UKFileWatcherRenameNotification object:fileName];
-        [nc removeObserver:self name:UKFileWatcherDeleteNotification object:fileName];
+        [self stopCheckingFileUpdatesForFile:fileName];
         if (autoUpdatePref) {
             [[UKKQueue sharedFileWatcher] addPath:[self fileName]];
+            NSNotificationCenter *nc = [NSNotificationCenter defaultCenter];
             [nc addObserver:self selector:@selector(handleFileUpdateNotification:) name:UKFileWatcherWriteNotification object:fileName];
             [nc addObserver:self selector:@selector(handleFileMoveNotification:) name:UKFileWatcherRenameNotification object:fileName];
             [nc addObserver:self selector:@selector(handleFileMoveNotification:) name:UKFileWatcherDeleteNotification object:fileName];
@@ -680,11 +692,17 @@ static NSPopUpButton *popUpButtonSubview(NSView *view)
 #pragma mark Pdfsync support
 
 - (void)setFileURL:(NSURL *)absoluteURL {
+    // this shouldn't be necessary, but better be sure
+    if ([self fileName] && [[self fileURL] isEqual:absoluteURL] == NO)
+        [self stopCheckingFileUpdatesForFile:[self fileName]];
     [super setFileURL:absoluteURL];
     if ([absoluteURL isFileURL])
         [synchronizer setFileName:[[[absoluteURL path] stringByDeletingPathExtension] stringByAppendingPathExtension:@"pdfsync"]];
     else
         [synchronizer setFileName:nil];
+    // if we're saving this will be called when saving has finished
+    if (isSaving == NO)
+        [self checkFileUpdatesIfNeeded];
 }
 
 - (SKPDFSynchronizer *)synchronizer {
