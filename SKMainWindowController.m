@@ -1111,7 +1111,7 @@ static NSString *SKRightSidePaneWidthKey = @"SKRightSidePaneWidth";
         if (count < 18) {
             for (i = 0; i < count; i++) {
                 rect[i % 2] = NSUnionRect(rect[i % 2], [[[pdfView document] pageAtIndex:i] foregroundBox]);
-                [progressBar setDoubleValue:(double)i];
+                [progressBar incrementBy:1.0];
                 [progressBar displayIfNeeded];
             }
         } else {
@@ -1161,11 +1161,70 @@ static NSString *SKRightSidePaneWidthKey = @"SKRightSidePaneWidth";
     
     for (i = 0; i < iMax; i++) {
         [rectArray addObject:[NSValue valueWithRect:[[[pdfView document] pageAtIndex:i] foregroundBox]]];
-        [progressBar setDoubleValue:(double)i];
+        [progressBar incrementBy:1.0];
         [progressBar displayIfNeeded];
         if (i && i % 10 == 0)
             [[NSRunLoop currentRunLoop] runMode:NSDefaultRunLoopMode beforeDate:[NSDate dateWithTimeIntervalSinceNow:0.1]];
     }
+    [self cropPagesToRects:rectArray];
+	
+    [NSApp endSheet:progressSheet];
+    [progressSheet orderOut:self];
+}
+
+- (IBAction)smartAutoCropAll:(id)sender {
+    if (progressSheet == nil) {
+        if ([NSBundle loadNibNamed:@"ProgressSheet" owner:self])  {
+            [progressBar setUsesThreadedAnimation:YES];
+        } else {
+            NSLog(@"Failed to load ProgressSheet.nib");
+            return;
+        }
+    }
+    
+    NSMutableArray *rectArray = [NSMutableArray array];
+    int i, iMax = [[pdfView document] pageCount];
+    
+	[progressBar setMaxValue:1.1 * iMax];
+	[progressBar setDoubleValue:0.0];
+	[progressField setStringValue:[NSLocalizedString(@"Cropping Pages", @"Message for progress sheet") stringByAppendingEllipsis]];
+    
+	[NSApp beginSheet:progressSheet modalForWindow:[self window] modalDelegate:self didEndSelector:NULL contextInfo:NULL];
+    
+    NSSize size = NSZeroSize;
+    
+    for (i = 0; i < iMax; i++) {
+        NSRect bbox = [[[pdfView document] pageAtIndex:i] foregroundBox];
+        size.width = fmax(size.width, NSWidth(bbox));
+        size.height = fmax(size.height, NSHeight(bbox));
+        [progressBar incrementBy:1.0];
+        [progressBar displayIfNeeded];
+        if (i && i % 10 == 0)
+            [[NSRunLoop currentRunLoop] runMode:NSDefaultRunLoopMode beforeDate:[NSDate dateWithTimeIntervalSinceNow:0.1]];
+    }
+    [[NSRunLoop currentRunLoop] runMode:NSDefaultRunLoopMode beforeDate:[NSDate dateWithTimeIntervalSinceNow:0.1]];
+    for (i = 0; i < iMax; i++) {
+        NSRect rect = [[[pdfView document] pageAtIndex:i] foregroundBox];
+        NSRect bounds = [[[pdfView document] pageAtIndex:i] boundsForBox:kPDFDisplayBoxMediaBox];
+        if (NSMinX(rect) - NSMinX(bounds) > NSMaxX(bounds) - NSMaxX(rect))
+            rect.origin.x = NSMaxX(rect) - size.width;
+        rect.origin.y = NSMaxY(rect) - size.height;
+        rect.size = size;
+        if (NSMaxX(rect) > NSMaxX(bounds))
+            rect.origin.x = NSMaxX(bounds) - NSWidth(rect);
+        if (NSMinX(rect) < NSMinX(bounds))
+            rect.origin.x = NSMinX(bounds);
+        if (NSMaxY(rect) > NSMaxX(bounds))
+            rect.origin.y = NSMaxY(bounds) - NSHeight(rect);
+        if (NSMinY(rect) < NSMinY(bounds))
+            rect.origin.y = NSMinY(bounds);
+        [rectArray addObject:[NSValue valueWithRect:rect]];
+        if (i && i % 10 == 0) {
+            [progressBar incrementBy:1.0];
+            [progressBar displayIfNeeded];
+        }
+    }
+    
     [self cropPagesToRects:rectArray];
 	
     [NSApp endSheet:progressSheet];

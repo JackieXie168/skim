@@ -43,6 +43,7 @@
                 saveArchive = id; 
                 savePDFSettingToDefaults = id; 
                 searchPDF = id; 
+                smartAutoCropAll = id; 
                 takeSnapshot = id; 
                 toggleAutoScale = id; 
                 toggleDisplayAsBook = id; 
