@@ -621,47 +621,44 @@ static NSPopUpButton *popUpButtonSubview(NSView *view)
 
 - (void)handleFileUpdateNotification:(NSNotification *)note {
     
+    NSString *fileName = [[self fileURL] path];
+    
     // should never happen
-    if ([[[note userInfo] objectForKey:@"path"] isEqual:[self fileName]] == NO)
+    if ([[[note userInfo] objectForKey:@"path"] isEqual:fileName] == NO)
         NSLog(@"*** received change notice for %@", [note object]);
     
     NSFileManager *fm = [NSFileManager defaultManager];
     
     if ([[NSUserDefaults standardUserDefaults] boolForKey:SKAutoCheckFileUpdateKey] &&
-        [fm fileExistsAtPath:[self fileName]]) {
+        [fm fileExistsAtPath:fileName]) {
         
         fileChangedOnDisk = YES;
         
-        NSFileHandle *fh = [NSFileHandle fileHandleForReadingAtPath:[self fileName]];
+        NSFileHandle *fh = [NSFileHandle fileHandleForReadingAtPath:fileName];
+        
+        // read the last 1024 bytes of the file (or entire file); Adobe's spec says they allow %%EOF anywhere in that range
         unsigned long long fileEnd = [fh seekToEndOfFile];
-        unsigned long long startPos = fileEnd < 1024 ? fileEnd : fileEnd - 1024;
+        unsigned long long startPos = fileEnd < 1024 ? 0 : fileEnd - 1024;
         [fh seekToFileOffset:startPos];
         NSData *trailerData = [fh readDataToEndOfFile];
+        
+        // done with the filehandle and offsets; now we have the trailer as NSData, so try to find the marker pattern in it
         const char *pattern = "%%EOF";
         unsigned patternLength = strlen(pattern);
+        unsigned trailerLength = [trailerData length];
         BOOL foundTrailer = NO;
-
-        // adapted from OmniFoundation
-        if ([trailerData length] > patternLength) {
-            unsigned const char *bufferStart = [trailerData bytes];
-            unsigned const char *ptr = bufferStart;
-            unsigned const char *ptrEnd = bufferStart + fileEnd - startPos - patternLength;
+        
+        int i, startIndex = trailerLength - patternLength;
+        const char *buffer = [trailerData bytes];
+        
+        // Adobe says to search from the end, so we get the last %%EOF
+        for (i = startIndex; i >= 0 && NO == foundTrailer; i -= 1) {
             
-            for (;;) {
-                if (memcmp(ptr, pattern, patternLength) == 0) {
-                    foundTrailer = YES;
-                    break;
-                }
-                
-                ptr++;
-                if (ptr == ptrEnd)
-                    break;
-                ptr = memchr(ptr, *(const char *)pattern, (ptrEnd - ptr));
-                if (!ptr)
-                    break;
-            }
+            // don't bother comparing if the first byte doesn't match
+            if (buffer[i] == pattern[0])
+                foundTrailer = (bcmp(&buffer[i], pattern, patternLength) == 0);
         }
-            
+        
         if (foundTrailer) {
             if (autoUpdate && [self isDocumentEdited] == NO) {
                 [self fileUpdateAlertDidEnd:nil returnCode:NSAlertDefaultReturn contextInfo:NULL];
