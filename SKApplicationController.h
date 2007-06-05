@@ -41,7 +41,6 @@
 @class SUUpdater;
 
 @interface SKApplicationController : NSObject {
-    IBOutlet SUUpdater *updater;
     BOOL remoteScrolling;
 }
 
@@ -54,8 +53,6 @@
 
 - (IBAction)editBookmarks:(id)sender;
 - (IBAction)openBookmark:(id)sender;
-
-- (SUUpdater *)updater;
 
 - (void)doSpotlightImportIfNeeded;
 
