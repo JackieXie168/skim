@@ -59,6 +59,7 @@ extern NSString *SKDocumentWillSaveNotification;
         
     SKPDFSynchronizer *synchronizer;
     BOOL autoUpdate;
+    BOOL isSaving;
 }
 
 - (IBAction)readNotes:(id)sender;
