@@ -262,10 +262,6 @@ static BOOL fileIsInTrash(NSURL *fileURL)
     }
 }
 
-- (SUUpdater *)updater {
-    return updater;
-}
-
 - (void)appleRemoteButton:(AppleRemoteEventIdentifier)buttonIdentifier pressedDown:(BOOL)pressedDown {
     NSArray *docs = [NSApp orderedDocuments];
     id document = [docs count] ? [docs objectAtIndex:0] : nil;

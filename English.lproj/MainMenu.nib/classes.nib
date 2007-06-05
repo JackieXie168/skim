@@ -71,7 +71,6 @@
             }; 
             CLASS = SKApplicationController; 
             LANGUAGE = ObjC; 
-            OUTLETS = {updater = SUUpdater; }; 
             SUPERCLASS = NSObject; 
         }, 
         {
@@ -79,6 +78,8 @@
             LANGUAGE = ObjC; 
             SUPERCLASS = NSDocumentController; 
         }, 
+        {CLASS = SKSplashContentView; LANGUAGE = ObjC; SUPERCLASS = NSView; }, 
+        {CLASS = SKSplashWindow; LANGUAGE = ObjC; SUPERCLASS = NSWindow; }, 
         {
             ACTIONS = {checkForUpdates = id; }; 
             CLASS = SUUpdater; 

@@ -161,7 +161,7 @@ static NSString *SKTeXEditorArguments[] = {@"-l %line \"%file\"", @"+%line \"%fi
 - (IBAction)changeUpdateInterval:(id)sender {
     int checkInterval = [[sender selectedItem] tag];
     if (checkInterval)
-       [[[NSApp delegate] updater] scheduleCheckWithInterval:checkInterval];
+       [[SUUpdater sharedUpdater] scheduleCheckWithInterval:checkInterval];
 }
 
 - (IBAction)changeTeXEditorPreset:(id)sender {
@@ -196,7 +196,7 @@ static NSString *SKTeXEditorArguments[] = {@"-l %line \"%file\"", @"+%line \"%fi
         if (tabID == nil || [keys containsObject:SUScheduledCheckIntervalKey]) {
             int checkInterval = [[NSUserDefaults standardUserDefaults] integerForKey:SUScheduledCheckIntervalKey];
             if (checkInterval)
-               [[[NSApp delegate] updater] scheduleCheckWithInterval:checkInterval];
+               [[SUUpdater sharedUpdater] scheduleCheckWithInterval:checkInterval];
         }
     }
 }
