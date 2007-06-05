@@ -1151,6 +1151,7 @@ static NSString *SKRightSidePaneWidthKey = @"SKRightSidePaneWidth";
     }
     
     NSMutableArray *rectArray = [NSMutableArray array];
+    PDFDocument *pdfDoc = [pdfView document];
     int i, iMax = [[pdfView document] pageCount];
     
 	[progressBar setMaxValue:(double)iMax];
@@ -1160,7 +1161,7 @@ static NSString *SKRightSidePaneWidthKey = @"SKRightSidePaneWidth";
 	[NSApp beginSheet:progressSheet modalForWindow:[self window] modalDelegate:self didEndSelector:NULL contextInfo:NULL];
     
     for (i = 0; i < iMax; i++) {
-        [rectArray addObject:[NSValue valueWithRect:[[[pdfView document] pageAtIndex:i] foregroundBox]]];
+        [rectArray addObject:[NSValue valueWithRect:[[pdfDoc pageAtIndex:i] foregroundBox]]];
         [progressBar incrementBy:1.0];
         [progressBar displayIfNeeded];
         if (i && i % 10 == 0)
@@ -1183,7 +1184,9 @@ static NSString *SKRightSidePaneWidthKey = @"SKRightSidePaneWidth";
     }
     
     NSMutableArray *rectArray = [NSMutableArray array];
-    int i, iMax = [[pdfView document] pageCount];
+    PDFDocument *pdfDoc = [pdfView document];
+    int i, iMax = [pdfDoc pageCount];
+    NSSize size = NSZeroSize;
     
 	[progressBar setMaxValue:1.1 * iMax];
 	[progressBar setDoubleValue:0.0];
@@ -1191,10 +1194,8 @@ static NSString *SKRightSidePaneWidthKey = @"SKRightSidePaneWidth";
     
 	[NSApp beginSheet:progressSheet modalForWindow:[self window] modalDelegate:self didEndSelector:NULL contextInfo:NULL];
     
-    NSSize size = NSZeroSize;
-    
     for (i = 0; i < iMax; i++) {
-        NSRect bbox = [[[pdfView document] pageAtIndex:i] foregroundBox];
+        NSRect bbox = [[pdfDoc pageAtIndex:i] foregroundBox];
         size.width = fmax(size.width, NSWidth(bbox));
         size.height = fmax(size.height, NSHeight(bbox));
         [progressBar incrementBy:1.0];
@@ -1204,8 +1205,9 @@ static NSString *SKRightSidePaneWidthKey = @"SKRightSidePaneWidth";
     }
     [[NSRunLoop currentRunLoop] runMode:NSDefaultRunLoopMode beforeDate:[NSDate dateWithTimeIntervalSinceNow:0.1]];
     for (i = 0; i < iMax; i++) {
-        NSRect rect = [[[pdfView document] pageAtIndex:i] foregroundBox];
-        NSRect bounds = [[[pdfView document] pageAtIndex:i] boundsForBox:kPDFDisplayBoxMediaBox];
+        PDFPage *page = [pdfDoc pageAtIndex:i];
+        NSRect rect = [page foregroundBox];
+        NSRect bounds = [page boundsForBox:kPDFDisplayBoxMediaBox];
         if (NSMinX(rect) - NSMinX(bounds) > NSMaxX(bounds) - NSMaxX(rect))
             rect.origin.x = NSMaxX(rect) - size.width;
         rect.origin.y = NSMaxY(rect) - size.height;
@@ -1214,7 +1216,7 @@ static NSString *SKRightSidePaneWidthKey = @"SKRightSidePaneWidth";
             rect.origin.x = NSMaxX(bounds) - NSWidth(rect);
         if (NSMinX(rect) < NSMinX(bounds))
             rect.origin.x = NSMinX(bounds);
-        if (NSMaxY(rect) > NSMaxX(bounds))
+        if (NSMaxY(rect) > NSMaxY(bounds))
             rect.origin.y = NSMaxY(bounds) - NSHeight(rect);
         if (NSMinY(rect) < NSMinY(bounds))
             rect.origin.y = NSMinY(bounds);
@@ -1222,9 +1224,11 @@ static NSString *SKRightSidePaneWidthKey = @"SKRightSidePaneWidth";
         if (i && i % 10 == 0) {
             [progressBar incrementBy:1.0];
             [progressBar displayIfNeeded];
+            if (i && i % 100 == 0)
+                [[NSRunLoop currentRunLoop] runMode:NSDefaultRunLoopMode beforeDate:[NSDate dateWithTimeIntervalSinceNow:0.1]];
         }
     }
-    
+    [[NSRunLoop currentRunLoop] runMode:NSDefaultRunLoopMode beforeDate:[NSDate dateWithTimeIntervalSinceNow:0.1]];
     [self cropPagesToRects:rectArray];
 	
     [NSApp endSheet:progressSheet];
