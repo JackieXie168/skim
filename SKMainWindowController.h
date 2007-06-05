@@ -207,6 +207,7 @@ typedef struct _SKPDFViewState {
 - (IBAction)crop:(id)sender;
 - (IBAction)cropAll:(id)sender;
 - (IBAction)autoCropAll:(id)sender;
+- (IBAction)smartAutoCropAll:(id)sender;
 - (IBAction)autoSelectContent:(id)sender;
 - (IBAction)getInfo:(id)sender;
 - (void)displaySearchResultsForString:(NSString *)string;
