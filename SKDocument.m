@@ -106,8 +106,6 @@ NSString *SKDocumentWillSaveNotification = @"SKDocumentWillSaveNotification";
     [mainController setAnnotationsFromDictionaries:noteDicts];
     [self setNoteDicts:nil];
     
-    [self checkFileUpdatesIfNeeded];
-    
     [[NSUserDefaultsController sharedUserDefaultsController] addObserver:self forKey:SKAutoCheckFileUpdateKey];
 	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleWindowWillCloseNotification:) 
                                                  name:NSWindowWillCloseNotification object:[mainController window]];
@@ -583,12 +581,11 @@ static NSPopUpButton *popUpButtonSubview(NSView *view)
 }
 
 - (void)checkFileUpdatesIfNeeded {
-    BOOL autoUpdatePref = [[NSUserDefaults standardUserDefaults] boolForKey:SKAutoCheckFileUpdateKey];
     NSString *fileName = [self fileName];
     
     if (fileName) {
         [self stopCheckingFileUpdatesForFile:fileName];
-        if (autoUpdatePref) {
+        if ([[NSUserDefaults standardUserDefaults] boolForKey:SKAutoCheckFileUpdateKey]) {
             [[UKKQueue sharedFileWatcher] addPath:[self fileName]];
             NSNotificationCenter *nc = [NSNotificationCenter defaultCenter];
             [nc addObserver:self selector:@selector(handleFileUpdateNotification:) name:UKFileWatcherWriteNotification object:fileName];
@@ -617,7 +614,7 @@ static NSPopUpButton *popUpButtonSubview(NSView *view)
 
 - (void)handleFileUpdateNotification:(NSNotification *)notification {
     
-    NSString *fileName = [[self fileURL] path];
+    NSString *fileName = [self fileName];
     
     // should never happen
     if ([[[notification userInfo] objectForKey:@"path"] isEqual:fileName] == NO)
