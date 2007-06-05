@@ -35,6 +35,10 @@
 	BOOL updateInProgress;
 }
 
+// This is the shared instance. It is the only existing instance, 
+// also returned by the standard initializer, so it can be instantiated in a nib-file.
++ (id)sharedUpdater;
+
 // This IBAction is meant for a main menu item. Hook up any menu item to this action,
 // and Sparkle will check for updates and report back its findings verbosely.
 - (IBAction)checkForUpdates:sender;

@@ -42,10 +42,28 @@
 
 @implementation SUUpdater
 
+static SUUpdater *sharedUpdater = nil;
+
++ (id)sharedUpdater
+{
+    if (sharedUpdater == nil)
+        sharedUpdater = [[self alloc] init];
+    return sharedUpdater;
+}
+
 - init
 {
-	[super init];
-	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(applicationDidFinishLaunching:) name:@"NSApplicationDidFinishLaunchingNotification" object:NSApp];	
+    self = [super init];
+    if (sharedUpdater)
+    {
+        [self release];
+        self = [sharedUpdater retain];
+    }
+    else if (self)
+    {
+        sharedUpdater = self;
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(applicationDidFinishLaunching:) name:@"NSApplicationDidFinishLaunchingNotification" object:NSApp];	
+    }
 	return self;
 }
 
