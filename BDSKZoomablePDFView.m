@@ -93,7 +93,8 @@ static float BDSKScaleMenuFontSize = 11.0;
     if(!theSelection)
         theSelection = [[self document] selectionForEntireDocument];
     
-    [pasteboardInfo setValue:theSelection forKey:@"selection"];
+    // @@ copy selection since it's mutable; may eliminate exceptions when providing data, but I've never been able to reproduce the problem
+    [pasteboardInfo setValue:[[theSelection copy] autorelease] forKey:@"selection"];
     [pasteboardInfo setValue:[self document] forKey:@"document"];
     [pasteboardInfo setValue:[self currentPage] forKey:@"page"];
 }
@@ -129,7 +130,8 @@ static float BDSKScaleMenuFontSize = 11.0;
 - (void)copyAsPDF:(id)sender;
 {
     NSPasteboard *pboard = [NSPasteboard pasteboardWithName:NSGeneralPboard];
-    [pboard declareTypes:[NSArray arrayWithObjects:NSPDFPboardType, @"BDSKPrivatePDFPageDataPboardType", nil] owner:self];
+    // don't add the private page pboard type here
+    [pboard declareTypes:[NSArray arrayWithObjects:NSPDFPboardType, nil] owner:self];
     [self updatePasteboardInfo];
 }
 
@@ -142,7 +144,9 @@ static float BDSKScaleMenuFontSize = 11.0;
 
 - (void)copyPDFPage:(id)sender;
 {
-    [self copyAsPDF:nil];
+    NSPasteboard *pboard = [NSPasteboard pasteboardWithName:NSGeneralPboard];
+    [pboard declareTypes:[NSArray arrayWithObjects:NSPDFPboardType, @"BDSKPrivatePDFPageDataPboardType", nil] owner:self];
+    [self updatePasteboardInfo];
 }
 
 - (void)saveDocumentSheetDidEnd:(NSSavePanel *)sheet returnCode:(int)returnCode  contextInfo:(void  *)contextInfo;
