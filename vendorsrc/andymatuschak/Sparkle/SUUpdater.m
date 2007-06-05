@@ -19,6 +19,7 @@
 #import "NSFileManager+Authentication.h"
 #import "NSFileManager+Verification.h"
 #import "NSApplication+AppCopies.h"
+#import <SystemConfiguration/SystemConfiguration.h>
 
 #import <stdio.h>
 #import <sys/stat.h>
@@ -167,12 +168,21 @@
 {	
 	if (NO == updateInProgress) {
 		
-		verbose = verbosity;
-		updateInProgress = YES;
-
-		SUAppcast *appcast = [[SUAppcast alloc] init];
-		[appcast setDelegate:self];
-		[appcast fetchAppcastFromURL:[self appcastURL]];
+		NSError *nsError;
+		if ([self checkForNetworkAvailability:&nsError] == NO)
+		{
+			if (verbosity)
+				[NSApp presentError:nsError];
+		}
+		else
+		{	
+			verbose = verbosity;
+			updateInProgress = YES;
+            
+			SUAppcast *appcast = [[SUAppcast alloc] init];
+			[appcast setDelegate:self];
+			[appcast fetchAppcastFromURL:[self appcastURL]];
+		}
 	}
 }
 
@@ -190,22 +200,23 @@
 
 - (BOOL)checkForNetworkAvailability:(NSError **)error
 {
-	CFURLRef theURL = (CFURLRef)[self appcastURL];
-	CFNetDiagnosticRef diagnostic = CFNetDiagnosticCreateWithURL(CFGetAllocator(theURL), theURL);
+    BOOL networkAvailable = NO;
+    SCNetworkConnectionFlags flags;
+    
+    if( SCNetworkCheckReachabilityByName([[[self appcastURL] host] UTF8String], &flags) ){
+        networkAvailable = !(flags & kSCNetworkFlagsConnectionRequired) && (flags & kSCNetworkFlagsReachable);
+    }
 	
-	NSString *details;
-	CFNetDiagnosticStatus status = CFNetDiagnosticCopyNetworkStatusPassively(diagnostic, (CFStringRef *)&details);
-	CFRelease(diagnostic);
-	[details autorelease];
-	
-	BOOL success;
-	
-	if (kCFNetDiagnosticConnectionUp == status)
-	{
-		success = YES;
-	}
-	else
-	{
+    if (NO == networkAvailable) {
+
+        CFURLRef theURL = (CFURLRef)[self appcastURL];
+        CFNetDiagnosticRef diagnostic = CFNetDiagnosticCreateWithURL(CFGetAllocator(theURL), theURL);
+        
+        NSString *details;
+        (void)CFNetDiagnosticCopyNetworkStatusPassively(diagnostic, (CFStringRef *)&details);
+        CFRelease(diagnostic);
+        [details autorelease];
+        
 		if (nil == details) details = SULocalizedString(@"Unknown network error", nil);
 		
 		// This error contains all the information needed for NSErrorRecoveryAttempting.  
@@ -216,10 +227,9 @@
 			
 			*error = [NSError errorWithDomain:SUInfoValueForKey((id)kCFBundleIdentifierKey) code:kNetworkConnectionFailed userInfo:[NSDictionary dictionaryWithObjectsAndKeys:self, NSRecoveryAttempterErrorKey, details, NSLocalizedDescriptionKey, SULocalizedString(@"Would you like to ignore this problem or attempt to diagnose it?  You may also open the Console log to check for errors.", nil), NSLocalizedRecoverySuggestionErrorKey, recoveryOptions, NSLocalizedRecoveryOptionsErrorKey, nil]];
 		}
-		success = NO;
 	}
 	
-	return success;
+	return networkAvailable;
 }
 
 // Recovery attempter is called if we're doing an interactive check and the network is not available
@@ -345,14 +355,8 @@
 {
 	[ac autorelease];
 	updateInProgress = NO;
-	if (verbose)
-	{
-		NSError *nsError;
-		if ([self checkForNetworkAvailability:&nsError] == NO)
-			[NSApp presentError:nsError];
-		else
-			[self showUpdateErrorAlertWithInfo:SULocalizedString(@"An error occurred in retrieving update information; are you connected to the internet? Please try again later.", nil)];
-	}
+    if (verbose)
+        [self showUpdateErrorAlertWithInfo:SULocalizedString(@"An error occurred in retrieving update information; are you connected to the internet? Please try again later.", nil)];
 }
 
 // Override this to change the new version comparison logic!
