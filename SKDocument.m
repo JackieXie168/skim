@@ -202,6 +202,7 @@ static NSPopUpButton *popUpButtonSubview(NSView *view)
         if (saveOperation == NSSaveOperation || saveOperation == NSSaveAsOperation) {
             [[self undoManager] removeAllActions];
             [self updateChangeCount:NSChangeCleared];
+            fileChangedOnDisk = NO;
         }
         
     }
@@ -374,6 +375,7 @@ static NSPopUpButton *popUpButtonSubview(NSView *view)
             [self setPDFDoc:pdfDoc];
             [pdfDoc release];
             [data release];
+            fileChangedOnDisk = NO;
         } else {
             [self setPDFData:nil];
         }
@@ -535,6 +537,24 @@ static NSPopUpButton *popUpButtonSubview(NSView *view)
     }
 }
 
+- (void)revertDocumentToSaved:(id)sender { 	 
+     if ([self fileName]) { 	 
+         if ([self isDocumentEdited]) { 	 
+             [super revertDocumentToSaved:sender]; 	 
+         } else if (fileChangedOnDisk) { 	 
+             NSAlert *alert = [NSAlert alertWithMessageText:[NSString stringWithFormat:NSLocalizedString(@"Do you want to revert to the version of the document \"%@\" on disk?", @"Message in alert dialog"), [[self fileName] lastPathComponent]] 	 
+                                              defaultButton:NSLocalizedString(@"Revert", @"Button title") 	 
+                                            alternateButton:NSLocalizedString(@"Cancel", @"Button title") 	 
+                                                otherButton:nil 	 
+                                  informativeTextWithFormat:NSLocalizedString(@"Your current changes will be lost.", @"Informative text in alert dialog")]; 	 
+             [alert beginSheetModalForWindow:[[self mainWindowController] window] 	 
+                               modalDelegate:self 	 
+                              didEndSelector:@selector(revertAlertDidEnd:returnCode:contextInfo:) 	 
+                                 contextInfo:NULL]; 	 
+         } 	 
+     } 	 
+ }
+
 - (void)performFindPanelAction:(id)sender {
     [[SKFindController sharedFindController] performFindPanelAction:sender];
 }
@@ -543,9 +563,7 @@ static NSPopUpButton *popUpButtonSubview(NSView *view)
 	if ([anItem action] == @selector(performFindPanelAction:)) {
         return [[SKFindController sharedFindController] validateUserInterfaceItem:anItem];
 	} else if ([anItem action] == @selector(revertDocumentToSaved:)) {
-        if ([self fileName] == nil)
-            return NO;
-        if ([self isDocumentEdited])
+        if (fileChangedOnDisk && [self fileName])
             return YES;
     }
     return [super validateUserInterfaceItem:anItem];
@@ -611,7 +629,9 @@ static NSPopUpButton *popUpButtonSubview(NSView *view)
     
     if ([[NSUserDefaults standardUserDefaults] boolForKey:SKAutoCheckFileUpdateKey] &&
         [fm fileExistsAtPath:[self fileName]]) {
-                
+        
+        fileChangedOnDisk = YES;
+        
         NSFileHandle *fh = [NSFileHandle fileHandleForReadingAtPath:[self fileName]];
         unsigned long long fileEnd = [fh seekToEndOfFile];
         unsigned long long startPos = fileEnd < 1024 ? fileEnd : fileEnd - 1024;
