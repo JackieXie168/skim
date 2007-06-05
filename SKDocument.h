@@ -81,8 +81,6 @@ extern NSString *SKDocumentWillSaveNotification;
 
 - (SKPDFSynchronizer *)synchronizer;
 
-- (void)handleWindowWillCloseNotification:(NSNotification *)notification;
-
 - (unsigned int)countOfPages;
 - (PDFPage *)objectInPagesAtIndex:(unsigned int)index;
 - (NSArray *)notes;

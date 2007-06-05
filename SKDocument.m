@@ -68,11 +68,12 @@ NSString *SKDocumentWillSaveNotification = @"SKDocumentWillSaveNotification";
 - (void)setPDFData:(NSData *)data;
 - (void)setPDFDoc:(PDFDocument *)doc;
 - (void)setNoteDicts:(NSArray *)array;
-- (void)setLastChangedDate:(NSDate *)date;
 
 - (void)checkFileUpdatesIfNeeded;
 - (void)stopCheckingFileUpdatesForFile:(NSString *)fileName;
-- (void)handleFileUpdateNotification:(NSNotification *)note;
+- (void)handleFileUpdateNotification:(NSNotification *)notification;
+- (void)handleFileMoveNotification:(NSNotification *)notification;
+- (void)handleWindowWillCloseNotification:(NSNotification *)notification;
 
 @end
 
@@ -571,11 +572,6 @@ static NSPopUpButton *popUpButtonSubview(NSView *view)
 
 #pragma mark File update checking
 
-- (void)handleFileMoveNotification:(NSNotification *)note {
-    [self stopCheckingFileUpdatesForFile:[[note userInfo] objectForKey:@"path"]];
-    // If the file is moved, NSDocument will notice and will call setFileURL, where we start watching again
-}
-
 - (void)stopCheckingFileUpdatesForFile:(NSString *)fileName {
     if (fileName) {
         [[UKKQueue sharedFileWatcher] removePath:fileName];
@@ -619,13 +615,13 @@ static NSPopUpButton *popUpButtonSubview(NSView *view)
     }
 }
 
-- (void)handleFileUpdateNotification:(NSNotification *)note {
+- (void)handleFileUpdateNotification:(NSNotification *)notification {
     
     NSString *fileName = [[self fileURL] path];
     
     // should never happen
-    if ([[[note userInfo] objectForKey:@"path"] isEqual:fileName] == NO)
-        NSLog(@"*** received change notice for %@", [note object]);
+    if ([[[notification userInfo] objectForKey:@"path"] isEqual:fileName] == NO)
+        NSLog(@"*** received change notice for %@", [notification object]);
     
     NSFileManager *fm = [NSFileManager defaultManager];
     
@@ -683,6 +679,19 @@ static NSPopUpButton *popUpButtonSubview(NSView *view)
     }    
 }
 
+- (void)handleFileMoveNotification:(NSNotification *)notification {
+    [self stopCheckingFileUpdatesForFile:[[notification userInfo] objectForKey:@"path"]];
+    // If the file is moved, NSDocument will notice and will call setFileURL, where we start watching again
+}
+
+- (void)handleWindowWillCloseNotification:(NSNotification *)notification {
+    NSWindow *window = [notification object];
+    // ignore when we're switching fullscreen/main windows
+    if ([window isEqual:[[window windowController] window]]) {
+        [[UKKQueue sharedFileWatcher] removePath:[self fileName]];
+    }
+}
+
 #pragma mark Notification observation
 
 - (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context {
@@ -695,14 +704,6 @@ static NSPopUpButton *popUpButtonSubview(NSView *view)
         }
     } else {
         [super observeValueForKeyPath:keyPath ofObject:object change:change context:context];
-    }
-}
-
-- (void)handleWindowWillCloseNotification:(NSNotification *)notification {
-    NSWindow *window = [notification object];
-    // ignore when we're switching fullscreen/main windows
-    if ([window isEqual:[[window windowController] window]]) {
-        [[UKKQueue sharedFileWatcher] removePath:[self fileName]];
     }
 }
 
