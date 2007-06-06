@@ -818,6 +818,7 @@ static void SKCGContextDrawGrabHandle(CGContextRef context, CGPoint point, float
             } else if (toolMode == SKNoteToolMode && hideNotes == NO && [self currentSelection] && (annotationMode == SKHighlightNote || annotationMode == SKUnderlineNote || annotationMode == SKStrikeOutNote)) {
                 [self addAnnotationFromSelectionWithType:annotationMode];
                 [self setCurrentSelection:nil];
+                [super mouseUp:theEvent]; // this may be necssary to clean up a selection rect
             } else
                 [super mouseUp:theEvent];
             if (didBeginUndoGrouping) {
