@@ -74,6 +74,7 @@ NSString *SKDocumentWillSaveNotification = @"SKDocumentWillSaveNotification";
 - (void)handleFileUpdateNotification:(NSNotification *)notification;
 - (void)handleFileMoveNotification:(NSNotification *)notification;
 - (void)handleWindowWillCloseNotification:(NSNotification *)notification;
+- (void)handleWindowDidEndSheetNotification:(NSNotification *)notification;
 
 @end
 
@@ -619,14 +620,20 @@ static NSPopUpButton *popUpButtonSubview(NSView *view)
     NSString *fileName = [self fileName];
     
     // should never happen
-    if ([[[notification userInfo] objectForKey:@"path"] isEqual:fileName] == NO)
+    if (notification && [[[notification userInfo] objectForKey:@"path"] isEqual:fileName] == NO)
         NSLog(@"*** received change notice for %@", [notification object]);
     
-    // check for attached sheet, since reloading the document while an alert is up looks a bit strange
     if ([[NSUserDefaults standardUserDefaults] boolForKey:SKAutoCheckFileUpdateKey] &&
-        [[NSFileManager defaultManager] fileExistsAtPath:fileName] && nil == [[self windowForSheet] attachedSheet]) {
+        [[NSFileManager defaultManager] fileExistsAtPath:fileName]) {
         
         fileChangedOnDisk = YES;
+        
+        // check for attached sheet, since reloading the document while an alert is up looks a bit strange
+        if ([[self windowForSheet] attachedSheet]) {
+            [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleWindowDidEndSheetNotification:) 
+                                                         name:NSWindowDidEndSheetNotification object:[self windowForSheet]];
+            return;
+        }
         
         NSFileHandle *fh = [NSFileHandle fileHandleForReadingAtPath:fileName];
         
@@ -689,6 +696,11 @@ static NSPopUpButton *popUpButtonSubview(NSView *view)
     if ([window isEqual:[[window windowController] window]]) {
         [[UKKQueue sharedFileWatcher] removePath:[self fileName]];
     }
+}
+
+- (void)handleWindowDidEndSheetNotification:(NSNotification *)notification {
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:NSWindowDidEndSheetNotification object:[notification object]];
+    [self handleFileUpdateNotification:nil];
 }
 
 #pragma mark Notification observation
