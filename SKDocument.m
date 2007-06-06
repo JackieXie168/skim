@@ -204,6 +204,8 @@ static NSPopUpButton *popUpButtonSubview(NSView *view)
             [[self undoManager] removeAllActions];
             [self updateChangeCount:NSChangeCleared];
             fileChangedOnDisk = NO;
+            [lastModifiedDate release];
+            lastModifiedDate = [[[[NSFileManager defaultManager] fileAttributesAtPath:[self fileName] traverseLink:YES] fileModificationDate] retain];
         }
         
     }
@@ -377,6 +379,8 @@ static NSPopUpButton *popUpButtonSubview(NSView *view)
             [pdfDoc release];
             [data release];
             fileChangedOnDisk = NO;
+            [lastModifiedDate release];
+            lastModifiedDate = [[[[NSFileManager defaultManager] fileAttributesAtPath:[absoluteURL path] traverseLink:YES] fileModificationDate] retain];
         } else {
             [self setPDFData:nil];
         }
@@ -743,6 +747,7 @@ static BOOL isFileOnHFSVolume(NSString *fileName)
     if ([window isEqual:[[window windowController] window]]) {
         [[UKKQueue sharedFileWatcher] removePath:[self fileName]];
         [fileUpdateTimer invalidate];
+        fileUpdateTimer = nil;
     }
 }
 
