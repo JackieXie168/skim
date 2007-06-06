@@ -660,7 +660,7 @@ static NSPopUpButton *popUpButtonSubview(NSView *view)
                 foundTrailer = (bcmp(&buffer[i], pattern, patternLength) == 0);
         }
         
-        if (foundTrailer) {NSLog(@"%i %i",autoUpdate,[self isDocumentEdited]);
+        if (foundTrailer) {
             if (autoUpdate && [self isDocumentEdited] == NO) {
                 // tried queuing this with a delayed perform/cancel previous, but revert takes long enough that the cancel was never used
                 [self fileUpdateAlertDidEnd:nil returnCode:NSAlertDefaultReturn contextInfo:NULL];
