@@ -562,8 +562,10 @@ static NSPopUpButton *popUpButtonSubview(NSView *view)
 	if ([anItem action] == @selector(performFindPanelAction:)) {
         return [[SKFindController sharedFindController] validateUserInterfaceItem:anItem];
 	} else if ([anItem action] == @selector(revertDocumentToSaved:)) {
-        if (fileChangedOnDisk && [self fileName])
-            return YES;
+        NSString *fileName = [self fileName];
+        if (fileName == nil || [[NSFileManager defaultManager] fileExistsAtPath:fileName] == NO)
+            return NO;
+        return [self isDocumentEdited] || fileChangedOnDisk;
     }
     return [super validateUserInterfaceItem:anItem];
 }
