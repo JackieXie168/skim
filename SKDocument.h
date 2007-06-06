@@ -61,6 +61,10 @@ extern NSString *SKDocumentWillSaveNotification;
     BOOL autoUpdate;
     BOOL isSaving;
     BOOL fileChangedOnDisk;
+    
+    // only used for network filesystems; fileUpdateTimer is not retained by the doc
+    NSDate *lastModifiedDate;
+    NSTimer *fileUpdateTimer;
 }
 
 - (IBAction)readNotes:(id)sender;

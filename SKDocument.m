@@ -89,6 +89,7 @@ NSString *SKDocumentWillSaveNotification = @"SKDocumentWillSaveNotification";
     [pdfData release];
     [noteDicts release];
     [readNotesAccessoryView release];
+    [lastModifiedDate release];
     [super dealloc];
 }
 
@@ -575,12 +576,47 @@ static NSPopUpButton *popUpButtonSubview(NSView *view)
 
 - (void)stopCheckingFileUpdatesForFile:(NSString *)fileName {
     if (fileName) {
+        // remove from kqueue and invalidate timer; maybe we've changed filesystems
         [[UKKQueue sharedFileWatcher] removePath:fileName];
         NSNotificationCenter *nc = [NSNotificationCenter defaultCenter];
         [nc removeObserver:self name:UKFileWatcherWriteNotification object:fileName];
         [nc removeObserver:self name:UKFileWatcherRenameNotification object:fileName];
         [nc removeObserver:self name:UKFileWatcherDeleteNotification object:fileName];
+
+        if (fileUpdateTimer) {
+            [fileUpdateTimer invalidate];
+            fileUpdateTimer = nil;
+        }
     }
+}
+
+static BOOL isFileOnHFSVolume(NSString *fileName)
+{
+    FSRef fileRef;
+    OSStatus err;
+    err = FSPathMakeRef((const UInt8 *)[fileName fileSystemRepresentation], &fileRef, NULL);
+    
+    FSCatalogInfo fileInfo;
+    if (noErr == err)
+        err = FSGetCatalogInfo(&fileRef, kFSCatInfoVolume, &fileInfo, NULL, NULL, NULL);
+    
+    FSVolumeInfo volInfo;
+    if (noErr == err)
+        err = FSGetVolumeInfo(fileInfo.volume, 0, NULL, kFSVolInfoFSInfo, &volInfo, NULL, NULL);
+    
+    // HFS and HFS+ are documented to have zero for filesystemID; AFP at least is non-zero
+    BOOL isHFSVolume = (noErr == err) ? (0 == volInfo.filesystemID) : NO;
+    
+    return isHFSVolume;
+}
+
+- (void)checkForFileModification:(NSTimer *)timer {
+    NSDate *currentFileModifiedDate = [[[NSFileManager defaultManager] fileAttributesAtPath:[self fileName] traverseLink:YES] fileModificationDate];
+    if (nil == lastModifiedDate)
+        lastModifiedDate = [currentFileModifiedDate copy];
+    else if ([lastModifiedDate compare:currentFileModifiedDate] == NSOrderedAscending)
+        [self handleFileUpdateNotification:nil]; // lastModifiedDate gets reset only if it's valid PDF
+        
 }
 
 - (void)checkFileUpdatesIfNeeded {
@@ -589,11 +625,18 @@ static NSPopUpButton *popUpButtonSubview(NSView *view)
     if (fileName) {
         [self stopCheckingFileUpdatesForFile:fileName];
         if ([[NSUserDefaults standardUserDefaults] boolForKey:SKAutoCheckFileUpdateKey]) {
-            [[UKKQueue sharedFileWatcher] addPath:[self fileName]];
-            NSNotificationCenter *nc = [NSNotificationCenter defaultCenter];
-            [nc addObserver:self selector:@selector(handleFileUpdateNotification:) name:UKFileWatcherWriteNotification object:fileName];
-            [nc addObserver:self selector:@selector(handleFileMoveNotification:) name:UKFileWatcherRenameNotification object:fileName];
-            [nc addObserver:self selector:@selector(handleFileMoveNotification:) name:UKFileWatcherDeleteNotification object:fileName];
+            
+            // AFP, NFS, SMB etc. don't support kqueues, so we have to manually poll and compare mod dates
+            if (isFileOnHFSVolume(fileName)) {
+                [[UKKQueue sharedFileWatcher] addPath:[self fileName]];
+                NSNotificationCenter *nc = [NSNotificationCenter defaultCenter];
+                [nc addObserver:self selector:@selector(handleFileUpdateNotification:) name:UKFileWatcherWriteNotification object:fileName];
+                [nc addObserver:self selector:@selector(handleFileMoveNotification:) name:UKFileWatcherRenameNotification object:fileName];
+                [nc addObserver:self selector:@selector(handleFileMoveNotification:) name:UKFileWatcherDeleteNotification object:fileName];
+            } else if (nil == fileUpdateTimer) {
+                // Let the runloop retain the timer; timer retains us.  Use a fairly long delay since this is likely a network volume.
+                fileUpdateTimer = [NSTimer scheduledTimerWithTimeInterval:(double)2.0 target:self selector:@selector(checkForFileModification:) userInfo:nil repeats:YES];
+            }
         }
     }
 }
@@ -609,6 +652,10 @@ static NSPopUpButton *popUpButtonSubview(NSView *view)
                 [[alert window] orderOut:nil];
                 [self presentError:error modalForWindow:[self windowForSheet] delegate:nil didPresentSelector:NULL contextInfo:NULL];
             }
+        } else {
+            // if the file load succeeded, reset the modification date
+            [lastModifiedDate release];
+            lastModifiedDate = [[[[NSFileManager defaultManager] fileAttributesAtPath:[self fileName] traverseLink:YES] fileModificationDate] copy];
         }
         if (returnCode == NSAlertAlternateReturn)
             autoUpdate = YES;
@@ -618,7 +665,7 @@ static NSPopUpButton *popUpButtonSubview(NSView *view)
 - (void)handleFileUpdateNotification:(NSNotification *)notification {
     
     NSString *fileName = [self fileName];
-    
+    NSLog(@"file update notification");
     // should never happen
     if (notification && [[[notification userInfo] objectForKey:@"path"] isEqual:fileName] == NO)
         NSLog(@"*** received change notice for %@", [notification object]);
@@ -695,6 +742,7 @@ static NSPopUpButton *popUpButtonSubview(NSView *view)
     // ignore when we're switching fullscreen/main windows
     if ([window isEqual:[[window windowController] window]]) {
         [[UKKQueue sharedFileWatcher] removePath:[self fileName]];
+        [fileUpdateTimer invalidate];
     }
 }
 
