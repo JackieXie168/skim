@@ -300,6 +300,8 @@ static UKKQueue * gUKKQueueSharedQueueSingleton = nil;
 //      To terminate this method (and its thread), set keepThreadRunning to NO.
 //
 //	REVISIONS:
+//      2007-06-05  ARM Removed NSWorkspace notification posting, as it is not
+//                      thread safe.
 //		2005-08-27	UK	Changed to use keepThreadRunning instead of kqueueFD
 //						being -1 as termination criterion, and to close the
 //						queue in this thread so the main thread isn't blocked.
@@ -327,7 +329,7 @@ static UKKQueue * gUKKQueueSharedQueueSingleton = nil;
 				{
 					if( ev.fflags )
 					{
-						NSString*		fpath = [[(NSString *)ev.udata retain] autorelease];    // In case one of the notified folks removes the path.
+						NSString*		fpath = [(NSString *)ev.udata retain];    // In case one of the notified folks removes the path.
 						//NSLog(@"UKKQueue: Detected file change: %@", fpath);
 						
 						//NSLog(@"ev.flags = %u",ev.fflags);	// DEBUG ONLY!
@@ -346,6 +348,8 @@ static UKKQueue * gUKKQueueSharedQueueSingleton = nil;
 							[self postNotification: UKFileWatcherLinkCountChangeNotification forFile: fpath];
 						if( (ev.fflags & NOTE_REVOKE) == NOTE_REVOKE )
 							[self postNotification: UKFileWatcherAccessRevocationNotification forFile: fpath];
+                        
+                        [fpath release];
 					}
 				}
 			}
@@ -371,6 +375,9 @@ static UKKQueue * gUKKQueueSharedQueueSingleton = nil;
 //		send them elsewhere.
 //
 //	REVISIONS:
+//      2007-06-05  ARM Modified to queue notifications on the main thread
+//                      rather than posting immediately on the UKKQueue thread.
+//                      Removed delegate methods as we only use the singleton.
 //      2004-02-27  UK  Changed this to send new notification, and the old one
 //                      only to objects that respond to it. The old category on
 //                      NSObject could cause problems with the proxy itself.
@@ -380,18 +387,22 @@ static UKKQueue * gUKKQueueSharedQueueSingleton = nil;
 //		2004-03-13	UK	Documented.
 // -----------------------------------------------------------------------------
 
+// this is only a wrapper method for enqueueNotification:postingStyle: to avoid using NSInvocation
+- (void)mainThreadEnqueueNotification:(NSNotification *)note
+{
+    [[NSNotificationQueue defaultQueue] enqueueNotification:note postingStyle:NSPostWhenIdle];
+}
+
 -(void) postNotification: (NSString*)nm forFile: (NSString*)fp
 {
-    NSNotificationQueue *nq = [NSNotificationQueue defaultQueue];
-    NSNotification *note = [NSNotification notificationWithName:nm object:fp userInfo:[NSDictionary dictionaryWithObjectsAndKeys: fp, @"path", nil]];
-    NSPostingStyle style = NSPostWhenIdle;
-    NSInvocation *invocation = [NSInvocation invocationWithMethodSignature:[nq methodSignatureForSelector:@selector(enqueueNotification:postingStyle:)]];
-    [invocation setTarget:nq];
-    [invocation setSelector:@selector(enqueueNotification:postingStyle:)];
-    [invocation setArgument:&note atIndex:2];
-    [invocation setArgument:&style atIndex:3];
-    [invocation retainArguments];
-    [invocation performSelectorOnMainThread:@selector(invoke) withObject:nil waitUntilDone:NO];
+    NSString *key = @"path";
+    NSDictionary *userInfo = [[NSDictionary alloc] initWithObjects:&fp forKeys:&key count:1];
+    
+    // this is the notification we'll queue on the main thread
+    NSNotification *note = [NSNotification notificationWithName:nm object:fp userInfo:userInfo];
+    [userInfo release];
+    
+    [self performSelectorOnMainThread:@selector(mainThreadEnqueueNotification:) withObject:note waitUntilDone:NO];
 }
 
 // -----------------------------------------------------------------------------
@@ -410,6 +421,17 @@ static UKKQueue * gUKKQueueSharedQueueSingleton = nil;
 }
 
 @end
+
+// -----------------------------------------------------------------------------
+//	description:
+//		UKWatchedPath wraps a path and file descriptor into a single object,
+//      implementing -hash and -isEqual: in terms of the path.  This allows
+//      easier management of path/file descriptor pairs from the queue, and
+//      enables use of NSMutableSet so duplicate paths are ignored.
+//
+//	REVISIONS:
+//		2007-06-05	ARM	Created.
+// -----------------------------------------------------------------------------
 
 
 @implementation UKWatchedPath
