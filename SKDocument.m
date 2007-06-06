@@ -622,10 +622,9 @@ static NSPopUpButton *popUpButtonSubview(NSView *view)
     if ([[[notification userInfo] objectForKey:@"path"] isEqual:fileName] == NO)
         NSLog(@"*** received change notice for %@", [notification object]);
     
-    NSFileManager *fm = [NSFileManager defaultManager];
-    
+    // check for attached sheet, since reloading the document while an alert is up looks a bit strange
     if ([[NSUserDefaults standardUserDefaults] boolForKey:SKAutoCheckFileUpdateKey] &&
-        [fm fileExistsAtPath:fileName]) {
+        [[NSFileManager defaultManager] fileExistsAtPath:fileName] && nil == [[self windowForSheet] attachedSheet]) {
         
         fileChangedOnDisk = YES;
         
@@ -656,6 +655,7 @@ static NSPopUpButton *popUpButtonSubview(NSView *view)
         
         if (foundTrailer) {
             if (autoUpdate && [self isDocumentEdited] == NO) {
+                // tried queuing this with a delayed perform/cancel previous, but revert takes long enough that the cancel was never used
                 [self fileUpdateAlertDidEnd:nil returnCode:NSAlertDefaultReturn contextInfo:NULL];
             } else {
                 NSString *message;
