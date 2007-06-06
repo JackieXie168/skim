@@ -665,7 +665,7 @@ static BOOL isFileOnHFSVolume(NSString *fileName)
 - (void)handleFileUpdateNotification:(NSNotification *)notification {
     
     NSString *fileName = [self fileName];
-    NSLog(@"file update notification");
+
     // should never happen
     if (notification && [[[notification userInfo] objectForKey:@"path"] isEqual:fileName] == NO)
         NSLog(@"*** received change notice for %@", [notification object]);
