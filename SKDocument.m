@@ -616,10 +616,14 @@ static BOOL isFileOnHFSVolume(NSString *fileName)
 
 - (void)checkForFileModification:(NSTimer *)timer {
     NSDate *currentFileModifiedDate = [[[NSFileManager defaultManager] fileAttributesAtPath:[self fileName] traverseLink:YES] fileModificationDate];
-    if (nil == lastModifiedDate)
+    if (nil == lastModifiedDate) {
         lastModifiedDate = [currentFileModifiedDate copy];
-    else if ([lastModifiedDate compare:currentFileModifiedDate] == NSOrderedAscending)
-        [self handleFileUpdateNotification:nil]; // lastModifiedDate gets reset only if it's valid PDF
+    } else if ([lastModifiedDate compare:currentFileModifiedDate] == NSOrderedAscending) {
+        // Always reset mod date to prevent repeating messages; note that the kqueue also notifies only once
+        [lastModifiedDate release];
+        lastModifiedDate = [currentFileModifiedDate copy];
+        [self handleFileUpdateNotification:nil];
+    }
         
 }
 
@@ -656,10 +660,6 @@ static BOOL isFileOnHFSVolume(NSString *fileName)
                 [[alert window] orderOut:nil];
                 [self presentError:error modalForWindow:[self windowForSheet] delegate:nil didPresentSelector:NULL contextInfo:NULL];
             }
-        } else {
-            // if the file load succeeded, reset the modification date
-            [lastModifiedDate release];
-            lastModifiedDate = [[[[NSFileManager defaultManager] fileAttributesAtPath:[self fileName] traverseLink:YES] fileModificationDate] copy];
         }
         if (returnCode == NSAlertAlternateReturn)
             autoUpdate = YES;
