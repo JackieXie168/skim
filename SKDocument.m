@@ -660,7 +660,7 @@ static NSPopUpButton *popUpButtonSubview(NSView *view)
                 foundTrailer = (bcmp(&buffer[i], pattern, patternLength) == 0);
         }
         
-        if (foundTrailer) {
+        if (foundTrailer) {NSLog(@"%i %i",autoUpdate,[self isDocumentEdited]);
             if (autoUpdate && [self isDocumentEdited] == NO) {
                 // tried queuing this with a delayed perform/cancel previous, but revert takes long enough that the cancel was never used
                 [self fileUpdateAlertDidEnd:nil returnCode:NSAlertDefaultReturn contextInfo:NULL];
@@ -699,8 +699,10 @@ static NSPopUpButton *popUpButtonSubview(NSView *view)
 }
 
 - (void)handleWindowDidEndSheetNotification:(NSNotification *)notification {
+    // This is only called to delay a file update handling
     [[NSNotificationCenter defaultCenter] removeObserver:self name:NSWindowDidEndSheetNotification object:[notification object]];
-    [self handleFileUpdateNotification:nil];
+    // Make sure we finish the sheet event first. E.g. the documentEdited status may need to be updated.
+    [self performSelector:@selector(handleFileUpdateNotification:) withObject:nil afterDelay:0.0];
 }
 
 #pragma mark Notification observation
