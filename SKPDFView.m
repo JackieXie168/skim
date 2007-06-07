@@ -383,6 +383,7 @@ static void SKCGContextDrawGrabHandle(CGContextRef context, CGPoint point, float
     readingBar = nil;
     selectionRect = NSZeroRect;
     [self removeHoverRects];
+    [[SKPDFHoverWindow sharedHoverWindow] orderOut:self];
     [super setDocument:document];
     [self resetHoverRects];
 }
