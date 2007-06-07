@@ -51,6 +51,7 @@
 #import "SKDocument.h"
 #import "SKPDFSynchronizer.h"
 #import "PDFSelection_SKExtensions.h"
+#import "NSBezierPath_BDSKExtensions.h"
 #import <Carbon/Carbon.h>
 
 NSString *SKPDFViewToolModeChangedNotification = @"SKPDFViewToolModeChangedNotification";
@@ -2983,7 +2984,6 @@ static void SKCGContextDrawGrabHandle(CGContextRef context, CGPoint point, float
 	int currentLevel = 0;
     int originalLevel = [theEvent clickCount]; // this should be at least 1
 	BOOL postNotification = [documentView postsBoundsChangedNotifications];
-    NSBezierPath *path;
     
 	[documentView setPostsBoundsChangedNotifications: NO];
 	
@@ -3013,6 +3013,8 @@ static void SKCGContextDrawGrabHandle(CGContextRef context, CGPoint point, float
                 mouseInside = YES;
                 [NSCursor hide];
             }
+            // make sure we flush the complete drawing to avoid flickering
+            [[self window] disableFlushWindow];
             // define rect for magnification in window coordinate
             if (currentLevel > 2) { 
                 magRect = visibleRect;
@@ -3032,20 +3034,20 @@ static void SKCGContextDrawGrabHandle(CGContextRef context, CGPoint point, float
                                    magScale * NSWidth(originalBounds), magScale * NSHeight(originalBounds));
             
             [documentView setBounds:magBounds];
-            [self displayRect:[self convertRect:NSInsetRect(magRect, 1.0, 1.0) fromView:nil]]; // this flushes the buffer
+            [self displayRect:[self convertRect:NSInsetRect(magRect, 3.0, 3.0) fromView:nil]]; // this flushes the buffer
             [documentView setBounds:originalBounds];
             
             [clipView lockFocus];
-            NSGraphicsContext *ctxt = [NSGraphicsContext currentContext];
-            [ctxt saveGraphicsState];
-            outlineRect = NSInsetRect(NSIntegralRect([clipView convertRect:magRect fromView:nil]), 0.5, 0.5);
-            path = [NSBezierPath bezierPathWithRect:outlineRect];
-            [path setLineWidth:1.0];
-            [[NSColor blackColor] set];
-            [path stroke];
-            [ctxt flushGraphics];
-            [ctxt restoreGraphicsState];
+            [[NSGraphicsContext currentContext] saveGraphicsState];
+            outlineRect = NSInsetRect(NSIntegralRect([clipView convertRect:magRect fromView:nil]), 1.5, 1.5);
+            [NSBezierPath setDefaultLineWidth:3.0];
+            [[NSColor colorWithDeviceWhite:0.2 alpha:1.0] set];
+            [NSBezierPath strokeRoundRectInRect:outlineRect radius:8.0];
+            [[NSGraphicsContext currentContext] restoreGraphicsState];
             [clipView unlockFocus];
+            
+            [[self window] enableFlushWindow];
+            [[self window] flushWindowIfNeeded];
             
         } else { // mouse is not in the rect
             // show cursor 
