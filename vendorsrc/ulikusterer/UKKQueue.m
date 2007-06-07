@@ -436,12 +436,15 @@ static UKKQueue * gUKKQueueSharedQueueSingleton = nil;
 
 @implementation UKWatchedPath
 
+// open() is documented to return -1 in case of an error and >=0 for success
+static const int UNOPENED_DESCRIPTOR = -2;
+
 - (id)initWatchedPathWithPath:(NSString *)fullPath;
 {
     if (self = [super init]) {
         path = [fullPath copy];
-        fd = open( [path fileSystemRepresentation], O_EVTONLY, 0 );
-        // don't return nil even if the fd is invalid; we may need this for a path comparison to remove a stale file
+        // allows us to open files lazily, since these may be created just for a path comparison when removing from the queue
+        fd = UNOPENED_DESCRIPTOR;
     }
     return self;
 }
@@ -461,8 +464,13 @@ static UKKQueue * gUKKQueueSharedQueueSingleton = nil;
 }
 
 - (unsigned int)hash { return [path hash]; }
-- (BOOL)isEqual:(id)other { return [other isKindOfClass:[self class]] ? [path isEqual:[other path]] : NO; }
-- (int)fileDescriptor { return fd; }
+// implement in terms of -isEqualToString: since that's what NSPathStore2 uses
+- (BOOL)isEqual:(id)other { return [other isKindOfClass:[self class]] ? [path isEqualToString:[other path]] : NO; }
+- (int)fileDescriptor { 
+    if (fd == UNOPENED_DESCRIPTOR)
+        fd = open([path fileSystemRepresentation], O_EVTONLY, 0);
+    return fd; 
+}
 - (NSString *)path { return path; }
 
 @end
