@@ -2968,9 +2968,6 @@ static void SKCGContextDrawGrabHandle(CGContextRef context, CGPoint point, float
     [controller showSnapshotAtPageNumber:[[self document] indexForPage:page] forRect:[self convertRect:rect toPage:page] factor:factor];
 }
 
-#define MAG_RECT_1 NSMakeRect(-150.0, -100.0, 300.0, 200.0)
-#define MAG_RECT_2 NSMakeRect(-300.0, -200.0, 600.0, 400.0)
-
 - (void)magnifyWithEvent:(NSEvent *)theEvent {
 	NSPoint mouseLoc = [theEvent locationInWindow];
     NSScrollView *scrollView = [[self documentView] enclosingScrollView];
@@ -2984,6 +2981,13 @@ static void SKCGContextDrawGrabHandle(CGContextRef context, CGPoint point, float
 	int currentLevel = 0;
     int originalLevel = [theEvent clickCount]; // this should be at least 1
 	BOOL postNotification = [documentView postsBoundsChangedNotifications];
+    NSUserDefaults *sud = [NSUserDefaults standardUserDefaults];
+    float smallWidth = [sud floatForKey:@"SKSmallMagnificationWidth"];
+    float smallHeight = [sud floatForKey:@"SKSmallMagnificationHeight"];
+    float largeWidth = [sud floatForKey:@"SKLargeMagnificationWidth"];
+    float largeHeight = [sud floatForKey:@"SKLargeMagnificationHeight"];
+    NSRect smallMagRect = NSMakeRect(-0.5 * smallWidth, -0.5 * smallHeight, smallWidth, smallHeight);
+    NSRect largeMagRect = NSMakeRect(-0.5 * largeWidth, -0.5 * largeHeight, largeWidth, largeHeight);
     
 	[documentView setPostsBoundsChangedNotifications: NO];
 	
@@ -3019,7 +3023,7 @@ static void SKCGContextDrawGrabHandle(CGContextRef context, CGPoint point, float
             if (currentLevel > 2) { 
                 magRect = visibleRect;
             } else {
-                magRect = currentLevel == 2 ? MAG_RECT_2 : MAG_RECT_1;
+                magRect = currentLevel == 2 ? largeMagRect : smallMagRect;
                 magRect.origin.x += mouseLoc.x;
                 magRect.origin.y += mouseLoc.y;
                 // restore the cached image in order to clear the rect

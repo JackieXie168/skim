@@ -151,6 +151,14 @@
         <real>10.0</real>
         <key>SKAutoCropBoxMarginWidth</key>
         <real>10.0</real>
+        <key>SKSmallMagnificationHeight</key>
+        <real>200.0</real>
+        <key>SKSmallMagnificationWidth</key>
+        <real>300.0</real>
+        <key>SKLargeMagnificationHeight</key>
+        <real>400.0</real>
+        <key>SKLargeMagnificationWidth</key>
+        <real>600.0</real>
         <key>SUScheduledCheckInterval</key>
         <integer>86400</integer>
     </dict>
