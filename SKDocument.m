@@ -934,6 +934,30 @@ static BOOL isFileOnHFSVolume(NSString *fileName)
     return [[self pdfDocument] string];
 }
 
+- (id)handleExportScriptCommand:(NSScriptCommand *)command {
+	NSDictionary *args = [command evaluatedArguments];
+    id fileURL = [args objectForKey:@"File"];
+    id fileType = [args objectForKey:@"FileType"];
+    if (fileType == nil)
+        fileType = SKPDFDocumentType;
+    if (fileURL == nil) {
+        [command setScriptErrorNumber:NSRequiredArgumentsMissingScriptError];
+        [command setScriptErrorString:@"Missing file argument."];
+    } else if ([fileURL isKindOfClass:[NSURL class]] == NO) {
+        [command setScriptErrorNumber:NSArgumentsWrongScriptError];
+        [command setScriptErrorString:@"The file is not a file or alias."];
+    } else if ([fileType isKindOfClass:[NSString class]] == NO) {
+        [command setScriptErrorNumber:NSArgumentsWrongScriptError];
+        [command setScriptErrorString:@"The file type should be a string."];
+    } else {
+        if ([self saveToURL:[self fileURL] ofType:[self fileType] forSaveOperation:NSSaveToOperation error:NULL] == NO) {
+            [command setScriptErrorNumber:NSInternalScriptError];
+            [command setScriptErrorString:@"Export failed."];
+        }
+    }
+    return nil;
+}
+
 - (id)handleRevertScriptCommand:(NSScriptCommand *)command {
     if ([self fileURL] && [[NSFileManager defaultManager] fileExistsAtPath:[self fileName]]) {
         if ([self revertToContentsOfURL:[self fileURL] ofType:[self fileType] error:NULL] == NO) {
@@ -950,11 +974,17 @@ static BOOL isFileOnHFSVolume(NSString *fileName)
 @end
 
 
-@interface NSWindow (SKScriptingExtensions)
-- (id)handleRevertScriptCommand:(NSScriptCommand *)command;
-@end
-
 @implementation NSWindow (SKScriptingExtensions)
+
+- (id)handleExportScriptCommand:(NSScriptCommand *)command {
+    id document = [[self windowController] document];
+    if (document == nil) {
+        [command setScriptErrorNumber:NSArgumentsWrongScriptError];
+        [command setScriptErrorString:@"Window does not have a document."];
+        return nil;
+    } else
+        return [document handleExportScriptCommand:command];
+}
 
 - (id)handleRevertScriptCommand:(NSScriptCommand *)command {
     id document = [[self windowController] document];

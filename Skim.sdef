@@ -85,6 +85,9 @@
             <responds-to name="save">
                 <cocoa method="handleSaveScriptCommand:"/>
             </responds-to>
+            <responds-to name="export">
+                <cocoa method="handleExportScriptCommand:"/>
+            </responds-to>
             <responds-to name="revert">
                 <cocoa method="handleRevertScriptCommand:"/>
             </responds-to>
@@ -148,6 +151,9 @@
             <responds-to name="save">
                 <cocoa method="handleSaveScriptCommand:"/>
             </responds-to>
+            <responds-to name="export">
+                <cocoa method="handleExportScriptCommand:"/>
+            </responds-to>
             <responds-to name="revert">
                 <cocoa method="handleRevertScriptCommand:"/>
             </responds-to>
@@ -206,6 +212,20 @@
             </parameter>
             <parameter name="as" code="fltp" type="text" optional="yes"
                 description="The type of file to save.">
+                <cocoa key="FileType"/>
+            </parameter>
+        </command>
+
+        <command name="export" code="coreExpt"
+            description="Export a document.">
+            <direct-parameter type="specifier"
+                description="The document(s) or window(s) to export."/>
+            <parameter name="to" code="ToFl" type="file"
+                description="The file to which to export the document.">
+                <cocoa key="File"/>
+            </parameter>
+            <parameter name="as" code="fltp" type="text" optional="yes"
+                description="The type of file to export.">
                 <cocoa key="FileType"/>
             </parameter>
         </command>
