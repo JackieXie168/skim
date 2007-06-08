@@ -550,7 +550,7 @@
                 description="The text of the note. Attributes are ignored.">
                 <cocoa key="textContents"/>
             </contents>
-            <property name="color" code="cRGB" type="color"
+            <property name="color" code="colr" type="color"
                 description="The color of the note.">
                 <cocoa key="color"/>
             </property>
