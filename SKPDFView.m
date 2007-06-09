@@ -598,7 +598,6 @@ static void SKCGContextDrawGrabHandle(CGContextRef context, CGPoint point, float
     }
     
     PDFAnnotation *newAnnotation;
-    NSRect viewFrame = [self frame];
     PDFPage *page;
     
     if ([pboardType isEqualToString:SKSkimNotePboardType]) {
@@ -627,14 +626,35 @@ static void SKCGContextDrawGrabHandle(CGContextRef context, CGPoint point, float
         
         NSAssert([pboardType isEqualToString:NSStringPboardType], @"inconsistent pasteboard type");
         
-        NSPoint center = NSMakePoint(NSMidX(viewFrame), NSMidY(viewFrame));
-        NSSize defaultSize;
-        NSRect bounds;
+		// First try the current mouse position
+        NSPoint center = [self convertPoint:[[self window] mouseLocationOutsideOfEventStream] fromView:nil];
         
-        page = [self pageForPoint: center nearest: YES];
-        defaultSize = isAlternate ? NSMakeSize(16.0, 16.0) : ([page rotation] % 180 == 90) ? NSMakeSize(64.0, 128.0) : NSMakeSize(128.0, 64.0);
-        bounds = NSMakeRect(center.x - 0.5 * defaultSize.width, center.y - 0.5 * defaultSize.height, defaultSize.width, defaultSize.height);
-       
+        // if the mouse was in the toolbar and there is a page below the toolbar, we get a point outside of the visible rect
+        page = NSPointInRect(center, [[self documentView] convertRect:[[self documentView] visibleRect] toView:self]) ? [self pageForPoint:center nearest:NO] : nil;
+        
+        if (page == nil) {
+            // Get center of the PDFView.
+            NSRect viewFrame = [self frame];
+            center = NSMakePoint(NSMidX(viewFrame), NSMidY(viewFrame));
+            page = [self pageForPoint: center nearest: YES];
+        }
+		
+		// Convert to "page space".
+		center = [self convertPoint: center toPage: page];
+        
+        NSSize defaultSize = isAlternate ? NSMakeSize(16.0, 16.0) : ([page rotation] % 180 == 90) ? NSMakeSize(64.0, 128.0) : NSMakeSize(128.0, 64.0);
+        NSRect bounds = NSMakeRect(center.x - 0.5 * defaultSize.width, center.y - 0.5 * defaultSize.height, defaultSize.width, defaultSize.height);
+        NSRect pageBounds = [page boundsForBox:[self displayBox]];
+        
+        if (NSMaxX(bounds) > NSMaxX(pageBounds))
+            bounds.origin.x = NSMaxX(pageBounds) - NSWidth(bounds);
+        if (NSMinX(bounds) < NSMinX(pageBounds))
+            bounds.origin.x = NSMinX(pageBounds);
+        if (NSMaxY(bounds) > NSMaxY(pageBounds))
+            bounds.origin.y = NSMaxY(pageBounds) - NSHeight(bounds);
+        if (NSMinY(bounds) < NSMinY(pageBounds))
+            bounds.origin.y = NSMinY(pageBounds);
+        
         if (isAlternate)
             newAnnotation = [[SKPDFAnnotationNote alloc] initWithBounds:bounds];
         else
