@@ -3097,7 +3097,8 @@ static void SKCGContextDrawGrabHandle(CGContextRef context, CGPoint point, float
 	[[self window] flushWindowIfNeeded];
 	[NSCursor unhide];
 	[documentView setPostsBoundsChangedNotifications:postNotification];
-	[[self cursorForEvent:theEvent] set];
+    // ??? PDFView's delayed layout seems to reset the cursor to an arrow
+    [[self cursorForEvent:theEvent] performSelector:@selector(set) withObject:nil afterDelay:0];
 }
 
 - (void)pdfsyncWithEvent:(NSEvent *)theEvent {
