@@ -590,10 +590,10 @@
                 description="Box."/>
             <enumerator name="highlight note" code="NHil"
                 description="Highlight."/>
-            <enumerator name="strike out note" code="NStr"
-                description="Strike out highlight."/>
             <enumerator name="underline note" code="NUnd"
                 description="Underline highlight."/>
+            <enumerator name="strike out note" code="NStr"
+                description="Strike out highlight."/>
             <enumerator name="arrow note" code="NArr"
                 description="Arrow."/>
         </enumeration>
