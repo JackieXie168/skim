@@ -185,6 +185,9 @@ You can change your view of a page in a PDF file in several ways.
 @item To keep the PDF so that its pages always fit in its window, also if you resize the window, choose View > Automatically Resize.
 @end itemize
 @itemize
+@item To zoom to a particular section of a PDF document, choose Tools > Select Tool and select the section, then choose View > Zoom To Selection.
+@end itemize
+@itemize
 @item To view a page at a size you specify, resize the window to the size you want, then choose View > Size To Fit. The page resizes to fit the window size.
 @end itemize
 @itemize
@@ -414,6 +417,35 @@ In Skim, you can rotate a PDF file in 90-degree increments. You can rotate and f
 @endbox
 
 You can also use toolbar buttons to rotate images. To add rotate buttons to the toolbar, choose View > Customize Toolbar and drag the buttons to the toolbar.
+
+@c ======================================================================================
+
+@topic Cropping pages of a PDF document
+
+You can crop a page in a PDF document to remove parts you don't need. You can crop just the page you are viewing or all pages in the document.
+
+@box{taskbox}
+@heading To crop the current page:
+@enumerate
+@item If you want to choose a custom size, choose Tools > Select Tool, and select the portion of the page you want to keep, or choose Tools > Select Content to set the selection to the content of the current page.
+@item Choose Tools > Crop Page. Without a selection, the content of the page will be automatically determined.
+@end enumerate
+@heading To crop all pages:
+@enumerate
+@item If you want to choose a custom size, choose Tools > Select Tool, and select the portion of the page you want to keep, or choose Tools > Select Content to extend the selection to contain the content of the current page.
+@item Choose Tools > Crop. Without selection, the content of the pages will be automatically determined.
+@end enumerate
+@heading To crop all pages to their individual content:
+@itemize
+@item Hold down the Shift key, and choose Tools > Auto Crop. This can be useful for unevenly scanned articles.
+@end itemize
+@heading To crop all pages automatically to a common size:
+@itemize
+@item Hold down the Control key, and choose Tools > Auto Crop. This can be useful for unevenly scanned articles that still have pages of approximately the same size.
+@end itemize
+@endbox
+
+Cropping a document does not destroy any of its contents. You can always view the uncropped document by choosing View > PDF Display > Media Box. To view the cropped document, choose View > PDF Display > Crop Box. 
 
 @c ======================================================================================
 

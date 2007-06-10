@@ -187,14 +187,17 @@ You can change your view of a page in a PDF file in several ways.
 @item Als u wilt dat de paginas altijd in het venster passen, ook als u het venster groter of kleiner maakt, kiest u Weergave > Vergroot Automatisch.
 @end itemize
 @itemize
+@item Als u wilt inzoomen op een bepaald gedeelte van een PDF-document, kiest u Extra's > Selectiefunctie. Vervolgens selecteert u het gedeelte waarop u wilt inzoomen en kiest u Weergave > 'Zoom in op selectie'.
+@end itemize
+@itemize
 @item Als U de pagina op een zelf gekozen formaat wilt weergeven, vergroot u het venster tot het gewenste formaat en kiest U Weergave > Passend. De grootte van de pagina wordt aangepast aan de grootte van het venster.
 @end itemize
 @itemize
-@item Om een pagina weer te geven op een bepaald percentage van de oorspronkelijke grootte, typt u een percentage in het veld Vergroting in de knoppenbalk. Als dit veld niet in de knoppenbalk wordt weergegeven, kiest u Weergave > Pas Knoppenbalk aan.
+@item Om een pagina weer te geven op een bepaald percentage van de oorspronkelijke grootte, typt u een percentage in het veld Vergroting in de knoppenbalk. Als dit veld niet in de knoppenbalk wordt weergegeven, kiest u Weergave > 'Pas knoppenbalk aan'.
 @end itemize
 @endbox
 
-U kunt ook in- of uitzoomen met behulp van de zoomknoppen in de knoppenbalk. Om de zoomknoppen aan de knoppenbalk toe te voegen, kiest u Weergave > Pas Knoppenbalk aan, en sleept u de zoomknoppen naar de knoppenbalk.
+U kunt ook in- of uitzoomen met behulp van de zoomknoppen in de knoppenbalk. Om de zoomknoppen aan de knoppenbalk toe te voegen, kiest u Weergave > 'Pas knoppenbalk aan', en sleept u de zoomknoppen naar de knoppenbalk.
 
 U kunt ook het locale menu gebruiken om te zoomen.
 
@@ -416,6 +419,35 @@ In Skim kunt u een afbeelding of PDF-bestand roteren in stappen van negentig gra
 @endbox
 
 U kunt pagina's ook roteren met behulp van de rotatieknoppen op de knoppenbalk. Om de rotatieknoppen aan de knoppenbalk toe te voegen, kiest u Weergave > 'Pas knoppenbalk aan' en sleept u de rotatieknoppen naar de knoppenbalk.
+
+@c ======================================================================================
+
+@topic Pagina's van een PDF-document bijsnijden
+
+U kunt een pagina van een PDF-document bijsnijden om de gedeelten van de pagina die u niet nodig hebt, te verwijderen. U kunt alleen de pagina bijsnijden die u bekijkt, of alle pagina's in het document.
+
+@box{taskbox}
+@heading Om de pagina die u bekijkt bij te snijden:
+@enumerate
+@item Als u een willekeurige grootte wilt, kiets u Extra's > Selectiefunctie, selecteer het gedeelte van de pagina dat u wilt behoude, of kiest u Extra's > 'Selecteer voorgrond'.
+@item Kies Extra's > 'Snij pagina bij'. Als er geen selectie us, wordt de voorgrond van de pagina automatisch bepaald.
+@end enumerate
+@heading Om alle pagina's bij te snijden:
+@enumerate
+@item Als u een willekeurige grootte wilt, kiets u Extra's > Selectiefunctie, selecteer het gedeelte van de pagina dat u wilt behoude, of kiest u Extra's > 'Selecteer voorgrond' om de selectie te vergroten zodat deze de voorgrond van de huidige pagina bevat.
+@item Kies Extra's > 'Snij bij'. Als er geen selectie us, wordt de voorgrond van de paginas automatisch bepaald.
+@end enumerate
+@heading Om alle pagina's automatisch bij te snijden tot hun individuele inhoud:
+@itemize
+@item Houdt de Shift-toets ingedrukt en kies Extra's > 'Snij automatisch bij'. Dit kan handig zijn voor ongelijk gescande artikelen.
+@end itemize
+@heading Om alle pagina's automatisch bij te snijden tot een gelijke grootte:
+@itemize
+@item Houdt de Control-toets ingedrukt en kies Extra's > 'Snij automatisch bij'. Dit kan handig zijn voor ongelijk gescande artikelen die nog wel pagina's van ongeveer gelijke grootte hebben.
+@end itemize
+@endbox
+
+Wanneer u een document bijsnijdt, verdwijnt daarmee niets van de inhoud van het document. U kunt het origineel altijd weer bekijken door Weergave' > PDF-weergave > Mediavak te kiezen. Om het bijgesneden document weer te geven, kiest u Weergave > PDF-weergave > Bijsnijvak.
 
 @c ======================================================================================
 
