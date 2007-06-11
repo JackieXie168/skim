@@ -302,9 +302,6 @@ static IMP originalDealloc = NULL;
     
     [pdfView addAnnotation:newNote toPage:self];
     [[pdfView undoManager] setActionName:NSLocalizedString(@"Add Note", @"Undo action name")];
-    
-    [[NSNotificationCenter defaultCenter] postNotificationName:SKPDFViewDidAddAnnotationNotification object:pdfView 
-        userInfo:[NSDictionary dictionaryWithObjectsAndKeys:newNote, @"annotation", self, @"page", nil]];
 }
 
 - (void)insertInNotes:(id)newNote atIndex:(unsigned int)index {

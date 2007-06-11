@@ -249,7 +249,7 @@ static IMP originalSetColor = NULL;
 #pragma mark Scripting support
 
 - (id)init {
-    //[[super init] release];
+    [[self initWithBounds:NSZeroRect] release];
     self = nil;
     NSScriptCommand *currentCommand = [NSScriptCommand currentCommand];
     if ([currentCommand isKindOfClass:[NSCreateCommand class]]) {
@@ -278,7 +278,11 @@ static IMP originalSetColor = NULL;
                         markupType = kPDFMarkupTypeStrikeOut;
                     else if (type == SKASStrikeOutNote)
                         markupType = kPDFMarkupTypeUnderline;
-                    self = [[SKPDFAnnotationMarkup alloc] initWithSelection:selection markupType:markupType];
+                    if (self = [[SKPDFAnnotationMarkup alloc] initWithSelection:selection markupType:markupType]) {
+                        PDFPage *page = [[selection pages] objectAtIndex:0];
+                        if (page && [self respondsToSelector:@selector(setPage:)])
+                            [self performSelector:@selector(setPage:) withObject:page];
+                    }
                 }
             } else {
                 if (type == SKASTextNote)
@@ -525,7 +529,7 @@ static BOOL adjacentCharacterBounds(NSRect rect1, NSRect rect2) {
 }
 
 - (id)initWithSelection:(PDFSelection *)selection markupType:(int)type {
-    NSRect bounds = selection ? [selection boundsForPage:[[selection pages] objectAtIndex:0]] : NSZeroRect;
+    NSRect bounds = [[selection pages] count] ? [selection boundsForPage:[[selection pages] objectAtIndex:0]] : NSZeroRect;
     if (selection == nil || NSIsEmptyRect(bounds)) {
         [[self initWithBounds:NSZeroRect] release];
         self = nil;

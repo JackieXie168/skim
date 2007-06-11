@@ -906,6 +906,20 @@ static BOOL isFileOnHFSVolume(NSString *fileName)
     return [[self mainWindowController] notes];
 }
 
+- (void)insertInNotes:(id)newNote {
+    PDFPage *page = [newNote page];
+    if (page && [[page annotations] containsObject:newNote] == NO) {
+        SKPDFView *pdfView = [self pdfView];
+        
+        [pdfView addAnnotation:newNote toPage:page];
+        [[self undoManager] setActionName:NSLocalizedString(@"Add Note", @"Undo action name")];
+    }
+}
+
+- (void)insertInNotes:(id)newNote atIndex:(unsigned int)index {
+    [self insertInNotes:newNote];
+}
+
 - (void)removeFromNotesAtIndex:(unsigned int)index {
     PDFAnnotation *note = [[self notes] objectAtIndex:index];
     
