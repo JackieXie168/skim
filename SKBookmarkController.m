@@ -39,13 +39,17 @@
 #import "SKBookmarkController.h"
 #import "BDAlias.h"
 
-#define MAX_RECENT_DOCUMENTS_COUNT 50
-
 @implementation SKBookmarkController
+
+static unsigned int maxRecentDocumentsCount = 0;
 
 + (void)initialize {
     [NSValueTransformer setValueTransformer:[[[SKPageIndexTransformer alloc] init] autorelease] forName:@"SKPageIndexTransformer"];
     [NSValueTransformer setValueTransformer:[[[SKAliasDataTransformer alloc] init] autorelease] forName:@"SKAliasDataTransformer"];
+    
+    maxRecentDocumentsCount = [[NSUserDefaults standardUserDefaults] integerForKey:@"SKMaximumDocumentPageHistoryCount"];
+    if (maxRecentDocumentsCount == 0)
+        maxRecentDocumentsCount = 50;
 }
 
 + (id)sharedBookmarkController {
@@ -153,7 +157,7 @@
     NSData *data = [[BDAlias aliasWithPath:path] aliasData];
     NSMutableDictionary *bm = [NSMutableDictionary dictionaryWithObjectsAndKeys:path, @"path", [NSNumber numberWithUnsignedInt:pageIndex], @"pageIndex", data, @"_BDAlias", nil];
     [recentDocuments insertObject:bm atIndex:0];
-    if ([recentDocuments count] > MAX_RECENT_DOCUMENTS_COUNT)
+    if ([recentDocuments count] > maxRecentDocumentsCount)
         [recentDocuments removeLastObject];
     
     [self saveBookmarks];
