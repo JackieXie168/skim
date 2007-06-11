@@ -79,7 +79,7 @@ extern void SKCGContextSetDefaultRGBColorSpace(CGContextRef context);
 - (NSData *)boundsAsQDRect;
 - (NSData *)startPointAsQDPoint;
 - (NSData *)endPointAsQDPoint;
-- (id)handleGoToScriptCommand:(NSScriptCommand *)command;
+- (id)selectionSpecifier;
 
 @end
 

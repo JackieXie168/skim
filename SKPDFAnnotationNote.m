@@ -249,6 +249,7 @@ static IMP originalSetColor = NULL;
 #pragma mark Scripting support
 
 - (id)init {
+    //[[super init] release];
     self = nil;
     NSScriptCommand *currentCommand = [NSScriptCommand currentCommand];
     if ([currentCommand isKindOfClass:[NSCreateCommand class]]) {
@@ -256,33 +257,41 @@ static IMP originalSetColor = NULL;
        
         if (classCode == 'Note') {
             
-            NSMutableDictionary *properties = [[[(NSCreateCommand *)currentCommand resolvedKeyDictionary] mutableCopy] autorelease];
+            NSDictionary *properties = [(NSCreateCommand *)currentCommand resolvedKeyDictionary];
             int type = [[properties objectForKey:@"asNoteType"] intValue];
             
             if (type == 0) {
                 [currentCommand setScriptErrorNumber:NSRequiredArgumentsMissingScriptError]; 
                 [currentCommand setScriptErrorString:NSLocalizedString(@"New notes need a type.", @"Error description")];
-                return nil;
             } else if (type == SKASHighlightNote || type == SKASStrikeOutNote || type == SKASUnderlineNote) {
-                [currentCommand setScriptErrorNumber:NSArgumentsWrongScriptError]; 
-                [currentCommand setScriptErrorString:NSLocalizedString(@"Text markups cannot be created in scripts.", @"Error description")];
-                return nil;
+                id selSpec = [properties objectForKey:@"selectionSpecifier"];
+                PDFSelection *selection;
+                int markupType;
+                
+                if (selSpec == nil) {
+                    [currentCommand setScriptErrorNumber:NSRequiredArgumentsMissingScriptError]; 
+                    [currentCommand setScriptErrorString:NSLocalizedString(@"New markup notes need a selection.", @"Error description")];
+                } else if (selection = [PDFSelection selectionWithSpecifier:selSpec]) {
+                    if (type == SKASHighlightNote)
+                        markupType = kPDFMarkupTypeHighlight;
+                    else if (type == SKASUnderlineNote)
+                        markupType = kPDFMarkupTypeStrikeOut;
+                    else if (type == SKASStrikeOutNote)
+                        markupType = kPDFMarkupTypeUnderline;
+                    self = [[SKPDFAnnotationMarkup alloc] initWithSelection:selection markupType:markupType];
+                }
+            } else {
+                if (type == SKASTextNote)
+                    self = [[SKPDFAnnotationFreeText alloc] initWithBounds:NSMakeRect(100.0, 100.0, 64.0, 64.0)];
+                else if (type == SKASAnchoredNote)
+                    self = [[SKPDFAnnotationNote alloc] initWithBounds:NSMakeRect(100.0, 100.0, 16.0, 16.0)];
+                else if (type == SKASCircleNote)
+                    self = [[SKPDFAnnotationCircle alloc] initWithBounds:NSMakeRect(100.0, 100.0, 64.0, 64.0)];
+                else if (type == SKASSquareNote)
+                    self = [[SKPDFAnnotationSquare alloc] initWithBounds:NSMakeRect(100.0, 100.0, 64.0, 64.0)];
+                else if (type == SKASArrowNote)
+                    self = [[SKPDFAnnotationLine alloc] initWithBounds:NSMakeRect(100.0, 100.0, 16.0, 16.0)];
             }
-            
-            PDFAnnotation *annotation = nil;
-            
-            if (type == SKASTextNote)
-                annotation = [[SKPDFAnnotationFreeText alloc] initWithBounds:NSMakeRect(100.0, 100.0, 64.0, 64.0)];
-            else if (type == SKASAnchoredNote)
-                annotation = [[SKPDFAnnotationNote alloc] initWithBounds:NSMakeRect(100.0, 100.0, 16.0, 16.0)];
-            else if (type == SKASCircleNote)
-                annotation = [[SKPDFAnnotationCircle alloc] initWithBounds:NSMakeRect(100.0, 100.0, 64.0, 64.0)];
-            else if (type == SKASSquareNote)
-                annotation = [[SKPDFAnnotationSquare alloc] initWithBounds:NSMakeRect(100.0, 100.0, 64.0, 64.0)];
-            else if (type == SKASArrowNote)
-                annotation = [[SKPDFAnnotationLine alloc] initWithBounds:NSMakeRect(100.0, 100.0, 16.0, 16.0)];
-           
-            self = annotation;
         }
     }
     return self;
@@ -360,10 +369,11 @@ static IMP originalSetColor = NULL;
     return (id)[NSNull null];
 }
 
-- (id)handleGoToScriptCommand:(NSScriptCommand *)command {
-    [[[[self page] containingDocument] pdfView] scrollAnnotationToVisible:self];
-    return nil;
+- (id)selectionSpecifier {
+    return [NSArray array];
 }
+
+- (void)setSelectionSpecifier:(id)specifier {}
 
 @end
 
@@ -670,6 +680,13 @@ static BOOL adjacentCharacterBounds(NSRect rect1, NSRect rect2) {
     [super drawWithBox:box inContext:context];
     
     CGContextRestoreGState(context);
+}
+
+#pragma mark Scripting support
+
+- (id)selectionSpecifier {
+    PDFSelection *sel = [self selection];
+    return sel ? [sel objectSpecifier] : [NSArray array];
 }
 
 @end

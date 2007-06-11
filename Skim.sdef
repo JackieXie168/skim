@@ -76,6 +76,11 @@
                 description="The text of the document.">
                 <cocoa key="text"/>
             </property>
+            <property name="selection" code="sele"
+                description="The selection of the document.">
+                <type type="specifier" list="yes"/>
+                <cocoa key="selectionSpecifier"/>
+            </property>
             <responds-to name="close">
                 <cocoa method="handleCloseScriptCommand:"/>
             </responds-to>
@@ -87,6 +92,12 @@
             </responds-to>
             <responds-to name="revert">
                 <cocoa method="handleRevertScriptCommand:"/>
+            </responds-to>
+            <responds-to name="go">
+                <cocoa method="handleGoToScriptCommand:"/>
+            </responds-to>
+            <responds-to name="find">
+                <cocoa method="handleFindToScriptCommand:"/>
             </responds-to>
         </class>
         
@@ -208,12 +219,6 @@
                 description="The type of file to save.">
                 <cocoa key="FileType"/>
             </parameter>
-        </command>
-
-        <command name="revert" code="coreRvrt"
-            description="Revert a document.">
-            <direct-parameter type="specifier"
-                description="The document(s) or window(s) to revert."/>
         </command>
 
         <enumeration name="printing error handling" code="enum">
@@ -534,9 +539,6 @@
                 description="The bounding rectangle of the page (left, top, right, bottom).">
                 <cocoa key="boundsAsQDRect"/>
             </property>
-            <responds-to name="go to">
-                <cocoa method="handleGoToScriptCommand:"/>
-            </responds-to>
         </class>
 
         <class name="note" plural="notes" code="Note" inherits="item"
@@ -574,9 +576,11 @@
                 description="The end point of an arrow. Relative to its bounding rectangle.">
                 <cocoa key="endPointAsQDPoint"/>
             </property>
-            <responds-to name="go to">
-                <cocoa method="handleGoToScriptCommand:"/>
-            </responds-to>
+            <property name="selection" code="sele" access="r"
+                description="The selection for a highlight, underline, or strike out markup.">
+                <type type="specifier" list="yes"/>
+                <cocoa key="selectionSpecifier"/>
+            </property>
         </class>
         
         <enumeration name="note type" code="NTpE">
@@ -598,12 +602,47 @@
                 description="Arrow."/>
         </enumeration>
 
-        <command name="go to" code="SKIMGoTo"
+        <command name="revert" code="SKIMRvrt"
+            description="Revert a document.">
+            <direct-parameter type="specifier"
+                description="The document(s) or window(s) to revert."/>
+        </command>
+
+        <command name="go" code="SKIMGoTo"
             description="Go to a location.">
-            <direct-parameter description="The page or note to go to.">
-                <type type="page"/>
-                <type type="note"/>
-            </direct-parameter>
+            <direct-parameter type="document"
+                description="The document in which to scroll."/>
+            <parameter name="to" code="ToLc" type="specifier"
+                description="The page, note or selection to go to.">
+                <cocoa key="To"/>
+            </parameter>
+        </command>
+
+        <command name="find" code="SKIMFind"
+            description="Find text in a document.">
+            <direct-parameter type="document"
+                description="The document in which to search."/>
+            <parameter name="text" code="ctxt" type="text"
+                description="The text to search for.">
+                <cocoa key="Text"/>
+            </parameter>
+            <parameter name="from" code="From" optional="yes"
+                description="The selection to search from.">
+                <type type="specifier" list="yes"/>
+                <cocoa key="From"/>
+            </parameter>
+            <parameter name="backward" code="Back" type="boolean" optional="yes"
+                description="Search backward?">
+                <cocoa key="Backward"/>
+            </parameter>
+            <parameter name="case sensitive" code="Case" type="boolean" optional="yes"
+                description="Is the search case sensitive?">
+                <cocoa key="CaseSensitive"/>
+            </parameter>
+            <result
+                description="Selection for the found text as a list of character ranges.">
+                <type type="specifier" list="yes"/>
+            </result>
         </command>
         
     </suite>

@@ -54,6 +54,7 @@
 #import "SKTemplateParser.h"
 #import "SKApplicationController.h"
 #import "UKKQueue.h"
+#import "PDFSelection_SKExtensions.h"
 
 // maximum length of xattr value recommended by Apple
 #define MAX_XATTR_LENGTH 2048
@@ -934,6 +935,16 @@ static BOOL isFileOnHFSVolume(NSString *fileName)
     return [[self pdfDocument] string];
 }
 
+- (id)selectionSpecifier {
+    PDFSelection *sel = [[self pdfView] currentSelection];
+    return sel ? [sel objectSpecifier] : [NSArray array];
+}
+
+- (void)setSelectionSpecifier:(id)specifier {
+    PDFSelection *selection = [PDFSelection selectionWithSpecifier:specifier];
+    [[self pdfView] setCurrentSelection:selection];
+}
+
 // fix a bug in Apple's implementation, which ignores the file type (for export)
 - (id)handleSaveScriptCommand:(NSScriptCommand *)command {
 	NSDictionary *args = [command evaluatedArguments];
@@ -964,6 +975,54 @@ static BOOL isFileOnHFSVolume(NSString *fileName)
         [command setScriptErrorNumber:NSArgumentsWrongScriptError];
         [command setScriptErrorString:@"File does not exist."];
     }
+    return nil;
+}
+
+- (id)handleGoToScriptCommand:(NSScriptCommand *)command {
+	NSDictionary *args = [command evaluatedArguments];
+    id location = [args objectForKey:@"To"];
+    
+    if ([location isKindOfClass:[PDFPage class]]) {
+        [[self pdfView] goToPage:(PDFPage *)location];
+    } else if ([location isKindOfClass:[PDFAnnotation class]]) {
+        [[self pdfView] scrollAnnotationToVisible:(PDFAnnotation *)location];
+    } else {
+        PDFSelection *selection = [PDFSelection selectionWithSpecifier:location];
+        if ([[selection pages] count]) {
+            PDFPage *page = [[selection pages] objectAtIndex:0];
+            NSRect bounds = [selection boundsForPage:page];
+            [[self pdfView] scrollRect:bounds inPageToVisible:page];
+        }
+    }
+    return nil;
+}
+
+- (id)handleFindScriptCommand:(NSScriptCommand *)command {
+	NSDictionary *args = [command evaluatedArguments];
+    id text = [args objectForKey:@"Text"];
+    
+    if ([text isKindOfClass:[NSString class]] == NO) {
+        [command setScriptErrorNumber:NSArgumentsWrongScriptError];
+        [command setScriptErrorString:@"The text to find is missing or is not a string."];
+    } else {
+        id from = [args objectForKey:@"From"];
+        id backward = [args objectForKey:@"Backward"];
+        id caseSensitive = [args objectForKey:@"CaseSensitive"];
+        PDFSelection *selection = nil;
+        int options = 0;
+        
+        if (from)
+            selection = [PDFSelection selectionWithSpecifier:from];
+        
+        if ([backward isKindOfClass:[NSNumber class]] && [backward boolValue])
+            options |= NSBackwardsSearch;
+        if ([caseSensitive isKindOfClass:[NSNumber class]] && [caseSensitive boolValue])
+            options |= NSCaseInsensitiveSearch;
+        
+        if (selection = [[self mainWindowController] findString:text fromSelection:selection withOptions:options])
+            return [selection objectSpecifier];
+    }
+    
     return nil;
 }
 
