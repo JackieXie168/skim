@@ -119,6 +119,8 @@
         return nil;
     if ([specifier isKindOfClass:[NSArray class]] == NO)
         specifier = [NSArray arrayWithObject:specifier];
+    else if ([specifier count] == 1 && [[specifier objectAtIndex:0] isKindOfClass:[NSPropertySpecifier class]])
+        specifier = [[specifier objectAtIndex:0] objectsByEvaluatingSpecifier];
     
     PDFSelection *selection = nil;
     NSEnumerator *specEnum = [specifier objectEnumerator];
