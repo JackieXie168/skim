@@ -97,7 +97,7 @@
                 <cocoa method="handleGoToScriptCommand:"/>
             </responds-to>
             <responds-to name="find">
-                <cocoa method="handleFindToScriptCommand:"/>
+                <cocoa method="handleFindScriptCommand:"/>
             </responds-to>
         </class>
         

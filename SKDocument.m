@@ -1014,10 +1014,12 @@ static BOOL isFileOnHFSVolume(NSString *fileName)
 - (id)handleFindScriptCommand:(NSScriptCommand *)command {
 	NSDictionary *args = [command evaluatedArguments];
     id text = [args objectForKey:@"Text"];
+    id specifier = nil;
     
     if ([text isKindOfClass:[NSString class]] == NO) {
         [command setScriptErrorNumber:NSArgumentsWrongScriptError];
         [command setScriptErrorString:@"The text to find is missing or is not a string."];
+        return nil;
     } else {
         id from = [args objectForKey:@"From"];
         id backward = [args objectForKey:@"Backward"];
@@ -1034,10 +1036,10 @@ static BOOL isFileOnHFSVolume(NSString *fileName)
             options |= NSCaseInsensitiveSearch;
         
         if (selection = [[self mainWindowController] findString:text fromSelection:selection withOptions:options])
-            return [selection objectSpecifier];
+            specifier = [selection objectSpecifier];
     }
     
-    return nil;
+    return specifier ? specifier : [NSArray array];
 }
 
 @end
