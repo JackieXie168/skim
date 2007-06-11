@@ -1016,7 +1016,7 @@ static BOOL isFileOnHFSVolume(NSString *fileName)
         
         if ([backward isKindOfClass:[NSNumber class]] && [backward boolValue])
             options |= NSBackwardsSearch;
-        if ([caseSensitive isKindOfClass:[NSNumber class]] && [caseSensitive boolValue])
+        if ([caseSensitive isKindOfClass:[NSNumber class]] == NO || [caseSensitive boolValue] == NO)
             options |= NSCaseInsensitiveSearch;
         
         if (selection = [[self mainWindowController] findString:text fromSelection:selection withOptions:options])
