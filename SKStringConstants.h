@@ -80,6 +80,6 @@ extern NSString *SKDefaultPDFDisplaySettingsKey;
 extern NSString *SKDefaultFullScreenPDFDisplaySettingsKey;
 extern NSString *SKEnableAppleRemoteKey;
 extern NSString *SKReadMissingNotesFromSkimFileOptionKey;
-extern NSString *SKBlankAllWindowsKey;
+extern NSString *SKBlankAllScreensInFullScreenKey;
 extern NSString *SKActivateFullScreenNavigationAtBottomKey;
 extern NSString *SKActivatePresentationNavigationAtBottomKey;

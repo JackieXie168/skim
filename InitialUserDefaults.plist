@@ -145,7 +145,7 @@
         <true/>
         <key>SKReadMissingNotesFromSkimFileOption</key>
         <integer>-1</integer>
-        <key>SKBlankAllWindows</key>
+        <key>SKBlankAllScreensInFullScreen</key>
         <false/>
         <key>SKAutoCropBoxMarginHeight</key>
         <real>10.0</real>
@@ -222,7 +222,7 @@
             <string>SKLastOpenFileNames</string>
             <string>SKLastToolMode</string>
             <string>SKLastAnnotationMode</string>
-            <string>SKBlankAllWindows</string>
+            <string>SKBlankAllScreensInFullScreen</string>
             <string>SKActivateFullScreenNavigationAtBottom</string>
             <string>SKActivatePresentationNavigationAtBottom</string>
             <string>SKReadMissingNotesFromSkimFileOption</string>
