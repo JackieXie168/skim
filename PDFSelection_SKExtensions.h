@@ -48,4 +48,14 @@
 - (int)safeNumberOfRangesOnPage:(PDFPage *)page;
 - (NSRange)safeRangeAtIndex:(int)index onPage:(PDFPage *)page;
 
++ (id)selectionWithSpecifier:(id)specifier;
+- (id)objectSpecifier;
+
 @end
+
+
+@interface NSTextStorage (SKExtensions) 
+- (NSRange)characterRangeForWordAtIndex:(unsigned int)index;
+- (NSRange)characterRangeForParagraphAtIndex:(unsigned int)index;
+@end
+

@@ -307,18 +307,16 @@ static IMP originalDealloc = NULL;
         userInfo:[NSDictionary dictionaryWithObjectsAndKeys:newNote, @"annotation", self, @"page", nil]];
 }
 
+- (void)insertInNotes:(id)newNote atIndex:(unsigned int)index {
+    [self insertInNotes:newNote];
+}
+
 - (void)removeFromNotesAtIndex:(unsigned int)index {
     PDFAnnotation *note = [[self notes] objectAtIndex:index];
     SKPDFView *pdfView = [[self containingDocument] pdfView];
     
     [pdfView removeAnnotation:note];
     [[pdfView undoManager] setActionName:NSLocalizedString(@"Remove Note", @"Undo action name")];
-}
-
-
-- (id)handleGoToScriptCommand:(NSScriptCommand *)command {
-    [[[self containingDocument] pdfView] goToPage:self];
-    return nil;
 }
 
 @end

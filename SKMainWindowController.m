@@ -1964,6 +1964,13 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
     }
 }
 
+- (PDFSelection *)findString:(NSString *)string fromSelection:(PDFSelection *)selection withOptions:(int)options {
+	findPanelFind = YES;
+    selection = [[pdfView document] findString:string fromSelection:selection withOptions:options];
+	findPanelFind = NO;
+    return selection;
+}
+
 - (void)findString:(NSString *)string options:(int)options{
     PDFSelection *sel = [pdfView currentSelection];
     unsigned pageIndex = [[pdfView document] indexForPage:[pdfView currentPage]];
@@ -1971,11 +1978,9 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
         PDFPage *page = [[pdfView document] pageAtIndex:pageIndex];
         sel = [page selectionForRect:[page boundsForBox:kPDFDisplayBoxCropBox]];
     }
-	findPanelFind = YES;
-    PDFSelection *selection = [[pdfView document] findString:string fromSelection:sel withOptions:options];
+    PDFSelection *selection = [self findString:string fromSelection:sel withOptions:options];
     if (selection == nil && [sel string])
-        selection = [[pdfView document] findString:string fromSelection:nil withOptions:options];
-	findPanelFind = NO;
+        selection = [self findString:string fromSelection:nil withOptions:options];
     if (selection) {
 		[pdfView setCurrentSelection:selection];
 		[pdfView scrollSelectionToVisible:self];

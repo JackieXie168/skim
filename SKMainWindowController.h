@@ -285,6 +285,8 @@ typedef struct _SKPDFViewState {
 
 - (void)removeTemporaryAnnotations;
 
+- (PDFSelection *)findString:(NSString *)string fromSelection:(PDFSelection *)selection withOptions:(int)options;
+
 - (int)outlineRowForPageIndex:(unsigned int)pageIndex;
 - (void)updateOutlineSelection;
 
