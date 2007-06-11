@@ -125,6 +125,9 @@
     NSScriptObjectSpecifier *spec;
     
     while (spec = [specEnum nextObject]) {
+        if ([spec isKindOfClass:[NSScriptObjectSpecifier class]] == NO)
+            continue;
+        
         NSScriptObjectSpecifier *pageSpec = nil;
         NSScriptObjectSpecifier *textSpec = nil;
         NSString *key = [spec key];
