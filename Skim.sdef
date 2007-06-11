@@ -612,8 +612,11 @@
             description="Go to a location.">
             <direct-parameter type="document"
                 description="The document in which to scroll."/>
-            <parameter name="to" code="ToLc" type="specifier"
+            <parameter name="to" code="to  "
                 description="The page, note or selection to go to.">
+                <type type="page"/>
+                <type type="note"/>
+                <type type="specifier" list="yes"/>
                 <cocoa key="To"/>
             </parameter>
         </command>
