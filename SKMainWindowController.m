@@ -1398,7 +1398,7 @@ static NSString *SKRightSidePaneWidthKey = @"SKRightSidePaneWidth";
             [(id)wc setForceOnTop:YES];
     }
         
-    if (NO == [self isPresentation] && [[NSUserDefaults standardUserDefaults] boolForKey:SKBlankAllWindowsKey] && [[NSScreen screens] count] > 1) {
+    if (NO == [self isPresentation] && [[NSUserDefaults standardUserDefaults] boolForKey:SKBlankAllScreensInFullScreenKey] && [[NSScreen screens] count] > 1) {
         if (nil == blankingWindows)
             blankingWindows = [[NSMutableArray alloc] init];
         [blankingWindows removeAllObjects];
@@ -1408,7 +1408,7 @@ static NSString *SKRightSidePaneWidthKey = @"SKRightSidePaneWidth";
             if ([screenToBlank isEqual:screen] == NO) {
                 SKFullScreenWindow *window = [[SKFullScreenWindow alloc] initWithScreen:screenToBlank];
                 [window setBackgroundColor:backgroundColor];
-                [window setLevel:NSNormalWindowLevel];
+                [window setLevel:NSFloatingWindowLevel];
                 [window setFrame:[screenToBlank frame] display:YES];
                 [window orderFront:nil];
                 [window setReleasedWhenClosed:YES];
