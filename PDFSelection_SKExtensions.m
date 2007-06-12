@@ -119,8 +119,15 @@
         return nil;
     if ([specifier isKindOfClass:[NSArray class]] == NO)
         specifier = [NSArray arrayWithObject:specifier];
-    else if ([specifier count] == 1 && [[specifier objectAtIndex:0] isKindOfClass:[NSPropertySpecifier class]])
-        specifier = [[specifier objectAtIndex:0] objectsByEvaluatingSpecifier];
+    if ([specifier count] == 1) {
+        NSScriptObjectSpecifier *spec = [specifier objectAtIndex:0];
+        if ([spec isKindOfClass:[NSPropertySpecifier class]]) {
+            NSString *key = [spec key];
+            if ([key isEqualToString:@"characters"] == NO && [key isEqualToString:@"words"] == NO && [key isEqualToString:@"paragraphs"] == NO)
+                // this allows to use selection properties directly
+                specifier = [spec objectsByEvaluatingSpecifier];
+        }
+    }
     
     PDFSelection *selection = nil;
     NSEnumerator *specEnum = [specifier objectEnumerator];
@@ -130,10 +137,17 @@
         if ([spec isKindOfClass:[NSScriptObjectSpecifier class]] == NO)
             continue;
         
+        // we should get ranges of characters, words, or parapgraphs of the richText of a page
+        NSString *key = [spec key];
+        if ([key isEqualToString:@"characters"] == NO && [key isEqualToString:@"words"] == NO && [key isEqualToString:@"paragraphs"] == NO)
+            continue;
+        
+        // get the richText specifier
         NSScriptObjectSpecifier *textSpec = [spec containerSpecifier];
         if ([[textSpec key] isEqualToString:@"richText"] == NO)
             continue;
         
+        // get the page
         NSScriptObjectSpecifier *pageSpec = [textSpec containerSpecifier];
         PDFPage *page = [pageSpec objectsByEvaluatingSpecifier];
         if ([page isKindOfClass:[NSArray class]])
@@ -141,52 +155,121 @@
         if ([page isKindOfClass:[PDFPage class]] == NO)
             continue;
         
+        // we could also evaluate textSpec, but we already have the page
         NSTextStorage *textStorage = [page richText];
         
-        int count;
-        int *indices = [spec indicesOfObjectsByEvaluatingWithContainer:textStorage count:&count];
-        if (count == -1)
-            continue;
+        // now get the ranges, which can be any kind of specifier
+        int startIndex, endIndex, i, count, *indices;
+        NSRange *ranges = NULL;
+        int numRanges = 0;
         
-        int startIndex = indices[0];
-        int endIndex = indices[count - 1];
-        
-        NSString *key = [spec key];
-        
-        if ([key isEqualToString:@"words"]) {
-            NSRange range = [textStorage characterRangeForWordAtIndex:startIndex];
-            if (range.location == NSNotFound)
+        if ([spec isKindOfClass:[NSPropertySpecifier class]]) {
+            // this should be the full range of characters, words, or paragraphs
+            numRanges = 1;
+            ranges = NSZoneRealloc([self zone], ranges, sizeof(NSRange));
+            ranges[0] = NSMakeRange(0, [[textStorage valueForKey:key] count]);
+        } else if ([spec isKindOfClass:[NSRangeSpecifier class]]) {
+            // somehow getting the indices as for the general case sometimes leads to an exception for NSRangeSpecifier, so we get the indices of the start/endSpecifiers
+            NSScriptObjectSpecifier *startSpec = [(NSRangeSpecifier *)spec startSpecifier];
+            NSScriptObjectSpecifier *endSpec = [(NSRangeSpecifier *)spec endSpecifier];
+            
+            if (startSpec == nil && endSpec == nil)
                 continue;
-            startIndex = range.location;
-            if (count > 1) {
-                range = [textStorage characterRangeForWordAtIndex:endIndex];
-                if (range.location == NSNotFound)
+            
+            if (startSpec) {
+                indices = [startSpec indicesOfObjectsByEvaluatingWithContainer:textStorage count:&count];
+                if (count <= 0)
                     continue;
+                startIndex = indices[0];
+            } else {
+                startIndex = 0;
             }
-            endIndex = NSMaxRange(range) - 1;
-        } else if ([key isEqualToString:@"paragraphs"]) {
-            NSRange range = [textStorage characterRangeForParagraphAtIndex:startIndex];
-            if (range.location == NSNotFound)
+            
+            if (endSpec) {
+                indices = [endSpec indicesOfObjectsByEvaluatingWithContainer:textStorage count:&count];
+                if (count <= 0)
+                    continue;
+                endIndex = indices[count - 1];
+            } else {
+                endIndex = [[textStorage valueForKey:key] count];
+            }
+            
+            numRanges = 1;
+            ranges = NSZoneRealloc([self zone], ranges, sizeof(NSRange));
+            ranges[0] = NSMakeRange(MIN(startIndex, endIndex), MAX(startIndex, endIndex) + 1 - MIN(startIndex, endIndex));
+        } else {
+            // this handles other objectSpecifiers (index, middel, random, relative, whose). It can contain several ranges, e.g. for aan NSWhoseSpecifier
+            indices = [spec indicesOfObjectsByEvaluatingWithContainer:textStorage count:&count];
+            if (count <= 0)
                 continue;
-            startIndex = range.location;
-            if (count > 1) {
-                range = [textStorage characterRangeForParagraphAtIndex:endIndex];
-                if (range.location == NSNotFound)
-                    continue;
+            
+            for (i = 0; i < count; i++) {
+                unsigned int index = indices[i];
+                if (numRanges == 0 || index > NSMaxRange(ranges[numRanges - 1])) {
+                    numRanges++;
+                    ranges = NSZoneRealloc([self zone], ranges, numRanges * sizeof(NSRange));
+                    ranges[numRanges - 1] = NSMakeRange(index, 1);
+                } else {
+                    ++(ranges[numRanges - 1].length);
+                }
             }
-            endIndex = NSMaxRange(range) - 1;
-        } else if ([key isEqualToString:@"characters"] == NO) {
-            continue;
         }
         
-        PDFSelection *sel = [page selectionForRange:NSMakeRange(startIndex, endIndex + 1 - startIndex)];
-        if (sel == nil)
-            continue;
+        if ([key isEqualToString:@"words"]) {
+            // translate from word ranges to character ranges
+            for (i = 0; i < numRanges; i++) {
+                startIndex = ranges[i].location;
+                endIndex = NSMaxRange(ranges[i]) - 1;
+                NSRange range = [textStorage characterRangeForWordAtIndex:startIndex];
+                if (range.location == NSNotFound) {
+                    ranges[i] = NSMakeRange(NSNotFound, 0);
+                    continue;
+                }
+                startIndex = range.location;
+                if (ranges[i].length > 1) {
+                    range = [textStorage characterRangeForWordAtIndex:endIndex];
+                    if (range.location == NSNotFound) {
+                        ranges[i] = NSMakeRange(NSNotFound, 0);
+                        continue;
+                    }
+                }
+                endIndex = NSMaxRange(range) - 1;
+                ranges[i] = NSMakeRange(startIndex, endIndex + 1 - startIndex);
+            }
+        } else if ([key isEqualToString:@"paragraphs"]) {
+            // translate from paragraph ranges to character ranges
+            for (i = 0; i < numRanges; i++) {
+                startIndex = ranges[i].location;
+                endIndex = NSMaxRange(ranges[i]) - 1;
+                NSRange range = [textStorage characterRangeForParagraphAtIndex:startIndex];
+                if (range.location == NSNotFound) {
+                    ranges[i] = NSMakeRange(NSNotFound, 0);
+                    continue;
+                }
+                startIndex = range.location;
+                if (ranges[i].length > 1) {
+                    range = [textStorage characterRangeForParagraphAtIndex:endIndex];
+                    if (range.location == NSNotFound) {
+                        ranges[i] = NSMakeRange(NSNotFound, 0);
+                        continue;
+                    }
+                }
+                endIndex = NSMaxRange(range) - 1;
+                ranges[i] = NSMakeRange(startIndex, endIndex + 1 - startIndex);
+            }
+        }
         
-        if (selection == nil)
-            selection = sel;
-        else
-            [selection addSelection:sel];
+        for (i = 0; i < numRanges; i++) {
+            PDFSelection *sel;
+            NSRange range = ranges[i];
+            if (range.length && (sel = [page selectionForRange:range])) {
+                if (selection == nil)
+                    selection = sel;
+                else
+                    [selection addSelection:sel];
+            }
+        }
+        if (ranges) NSZoneFree([self zone], ranges);
     }
     return selection;
 }
