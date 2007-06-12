@@ -99,6 +99,15 @@
             <responds-to name="find">
                 <cocoa method="handleFindScriptCommand:"/>
             </responds-to>
+			<responds-to name="bounds for">
+				<cocoa method=""/>
+			</responds-to>
+			<responds-to name="text for">
+				<cocoa method=""/>
+			</responds-to>
+			<responds-to name="pages for">
+				<cocoa method=""/>
+			</responds-to>
         </class>
         
         <class name="window" code="cwin"
@@ -539,6 +548,15 @@
                 description="The bounding rectangle of the page (left, top, right, bottom).">
                 <cocoa key="boundsAsQDRect"/>
             </property>
+			<responds-to name="bounds for">
+				<cocoa method=""/>
+			</responds-to>
+			<responds-to name="text for">
+				<cocoa method=""/>
+			</responds-to>
+			<responds-to name="pages for">
+				<cocoa method=""/>
+			</responds-to>
         </class>
 
         <class name="note" plural="notes" code="Note" inherits="item"
@@ -581,6 +599,15 @@
                 <type type="specifier" list="yes"/>
                 <cocoa key="selectionSpecifier"/>
             </property>
+			<responds-to name="bounds for">
+				<cocoa method=""/>
+			</responds-to>
+			<responds-to name="text for">
+				<cocoa method=""/>
+			</responds-to>
+			<responds-to name="pages for">
+				<cocoa method=""/>
+			</responds-to>
         </class>
         
         <enumeration name="note type" code="NTpE">
@@ -647,7 +674,55 @@
                 <type type="specifier" list="yes"/>
             </result>
         </command>
-        
+
+        <command name="bounds for" code="SKIMBnds"
+            description="Get the bounds of a page, note, or selection.">
+            <cocoa class="SKBoundsCommand"/>
+            <direct-parameter
+                description="The document, page, note or selection.">
+                <type type="document"/>
+                <type type="page"/>
+                <type type="note"/>
+                <type type="specifier" list="yes"/>
+            </direct-parameter>
+            <parameter name="on" type="page" code="onPg" optional="yes"
+                description="The page on which to find the bounds. Only relevant for a selection.">
+                <cocoa key="Page"/>
+            </parameter>
+            <result type="rectangle"
+                description="The bounds of the object."/>
+        </command>
+
+        <command name="text for" code="SKIMText"
+            description="Get the text of a document, page, note, or selection.">
+            <cocoa class="SKTextCommand"/>
+            <direct-parameter
+                description="The document, page, note or selection.">
+                <type type="document"/>
+                <type type="page"/>
+                <type type="note"/>
+                <type type="specifier" list="yes"/>
+            </direct-parameter>
+            <result type="rich text"
+                description="The text of the object."/>
+        </command>
+
+        <command name="pages for" code="SKIMPags"
+            description="Get the pages of a document, page, note, or selection.">
+            <cocoa class="SKPagesCommand"/>
+            <direct-parameter
+                description="The document, page, note or selection.">
+                <type type="document"/>
+                <type type="page"/>
+                <type type="note"/>
+                <type type="specifier" list="yes"/>
+            </direct-parameter>
+            <result
+                description="The list of pages for the object.">
+                <type type="page" list="yes"/>
+            </result>
+        </command>
+
     </suite>
     
 </dictionary>
