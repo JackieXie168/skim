@@ -629,6 +629,13 @@
                 description="Arrow."/>
         </enumeration>
 
+        <enumeration name="box type" code="BoxE">
+            <enumerator name="media box" code="Mdia"
+                description="Media box."/>
+            <enumerator name="crop box" code="Crop"
+                description="Crop box."/>
+        </enumeration>
+
         <command name="revert" code="SKIMRvrt"
             description="Revert a document.">
             <direct-parameter type="specifier"
@@ -688,6 +695,10 @@
             <parameter name="on" type="page" code="onPg" optional="yes"
                 description="The page on which to find the bounds. Only relevant for a selection.">
                 <cocoa key="Page"/>
+            </parameter>
+            <parameter name="for" type="box type" code="fBox" optional="yes"
+                description="The display box for which to take the bounds.">
+                <cocoa key="Box"/>
             </parameter>
             <result type="rectangle"
                 description="The bounds of the object."/>

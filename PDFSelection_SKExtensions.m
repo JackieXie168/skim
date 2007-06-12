@@ -44,6 +44,11 @@
 #import "SKDocument.h"
 
 
+enum {
+    SKASMediaBox = 'Mdia',
+    SKASCropBox = 'Crop'
+};
+
 @interface PDFSelection (PDFSelectionPrivateDeclarations)
 - (int)numberOfRangesOnPage:(PDFPage *)page;
 - (NSRange)rangeAtIndex:(int)index onPage:(PDFPage *)page;
@@ -327,8 +332,11 @@ static inline NSRange rangeOfSubstringOfStringAtIndex(NSString *string, NSArray 
     id dPO = nil;
     if ([dP isKindOfClass:[NSArray class]] == NO)
         dPO = [dP objectsByEvaluatingSpecifier];
+    
     NSDictionary *args = [self evaluatedArguments];
     PDFPage *page = [args objectForKey:@"Page"];
+    NSNumber *boxNumber = [args objectForKey:@"Box"];
+    PDFDisplayBox box = [boxNumber intValue] == SKASMediaBox ? kPDFDisplayBoxMediaBox : kPDFDisplayBoxCropBox;
     NSRect bounds = NSZeroRect;
     
     if ([dPO isKindOfClass:[SKDocument class]]) {
@@ -337,10 +345,10 @@ static inline NSRange rangeOfSubstringOfStringAtIndex(NSString *string, NSArray 
             page = [pages count] ? [pages objectAtIndex:0] : nil;
         }
         if (page)
-            bounds = [page boundsForBox:kPDFDisplayBoxCropBox];
+            bounds = [page boundsForBox:box];
     } else if ([dPO isKindOfClass:[PDFPage class]]) {
         if (page == nil || [page isEqual:dPO])
-            bounds = [dPO boundsForBox:kPDFDisplayBoxCropBox];
+            bounds = [dPO boundsForBox:box];
     } else if ([dPO isKindOfClass:[PDFAnnotation class]]) {
         if (page == nil || [page isEqual:[dPO page]])
             bounds = [dPO bounds];
@@ -368,6 +376,7 @@ static inline NSRange rangeOfSubstringOfStringAtIndex(NSString *string, NSArray 
     id dPO = nil;
     if ([dP isKindOfClass:[NSArray class]] == NO)
         dPO = [dP objectsByEvaluatingSpecifier];
+    
     if ([dPO isKindOfClass:[SKDocument class]]) {
         NSString *string = [dPO string];
         return string ? [[[NSTextStorage alloc] initWithString:string] autorelease] : [NSNull null];
@@ -393,6 +402,7 @@ static inline NSRange rangeOfSubstringOfStringAtIndex(NSString *string, NSArray 
     id dPO = nil;
     if ([dP isKindOfClass:[NSArray class]] == NO)
         dPO = [dP objectsByEvaluatingSpecifier];
+    
     if ([dPO isKindOfClass:[SKDocument class]]) {
         return [dPO valueForKey:@"pages"];
     } else if ([dPO isKindOfClass:[PDFPage class]]) {
