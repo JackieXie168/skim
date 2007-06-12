@@ -40,6 +40,8 @@
 #import "NSString_SKExtensions.h"
 #import "NSParagraphStyle_SKExtensions.h"
 #import "PDFPage_SKExtensions.h"
+#import "SKPDFAnnotationNote.h"
+#import "SKDocument.h"
 
 
 @interface PDFSelection (PDFSelectionPrivateDeclarations)
@@ -144,6 +146,8 @@ static inline NSRange rangeOfSubstringOfStringAtIndex(NSString *string, NSArray 
             if ([key isEqualToString:@"characters"] == NO && [key isEqualToString:@"words"] == NO && [key isEqualToString:@"paragraphs"] == NO && [key isEqualToString:@"attributeRuns"] == NO)
                 // this allows to use selection properties directly
                 specifier = [spec objectsByEvaluatingSpecifier];
+                if ([specifier isKindOfClass:[NSArray class]] == NO)
+                    specifier = [NSArray arrayWithObject:specifier];
         }
     }
     
@@ -311,6 +315,96 @@ static inline NSRange rangeOfSubstringOfStringAtIndex(NSString *string, NSArray 
         }
     }
     return ranges;
+}
+
+@end
+
+
+@implementation SKBoundsCommand
+
+- (id)performDefaultImplementation {
+    id dP = [self directParameter];
+    id dPO = nil;
+    if ([dP isKindOfClass:[NSArray class]] == NO)
+        dPO = [dP objectsByEvaluatingSpecifier];
+    NSDictionary *args = [self evaluatedArguments];
+    PDFPage *page = [args objectForKey:@"Page"];
+    NSRect bounds = NSZeroRect;
+    
+    if ([dPO isKindOfClass:[SKDocument class]]) {
+        if ([page isKindOfClass:[PDFPage class]] == NO) {
+            NSArray *pages = [dPO valueForKey:@"pages"];
+            page = [pages count] ? [pages objectAtIndex:0] : nil;
+        }
+        if (page)
+            bounds = [page boundsForBox:kPDFDisplayBoxCropBox];
+    } else if ([dPO isKindOfClass:[PDFPage class]]) {
+        if (page == nil || [page isEqual:dPO])
+            bounds = [dPO boundsForBox:kPDFDisplayBoxCropBox];
+    } else if ([dPO isKindOfClass:[PDFAnnotation class]]) {
+        if (page == nil || [page isEqual:[dPO page]])
+            bounds = [dPO bounds];
+    } else {
+        PDFSelection *selection = [PDFSelection selectionWithSpecifier:dP];
+        if ([page isKindOfClass:[PDFPage class]] == NO) {
+            NSArray *pages = [selection pages];
+            page = [pages count] ? [pages objectAtIndex:0] : nil;
+        }
+        if (page)
+            bounds = [selection boundsForPage:page];
+    }
+    
+    Rect qdBounds = RectFromNSRect(bounds);
+    return [NSData dataWithBytes:&qdBounds length:sizeof(Rect)];
+}
+
+@end
+
+
+@implementation SKTextCommand
+
+- (id)performDefaultImplementation {
+    id dP = [self directParameter];
+    id dPO = nil;
+    if ([dP isKindOfClass:[NSArray class]] == NO)
+        dPO = [dP objectsByEvaluatingSpecifier];
+    if ([dPO isKindOfClass:[SKDocument class]]) {
+        NSString *string = [dPO string];
+        return string ? [[[NSTextStorage alloc] initWithString:string] autorelease] : [NSNull null];
+    } else if ([dPO isKindOfClass:[PDFPage class]]) {
+        return [dPO contents];
+    } else if ([dPO isKindOfClass:[PDFAnnotation class]]) {
+        return [dPO textContents];
+    } else {
+        NSAttributedString *attrString = [[PDFSelection selectionWithSpecifier:dP] attributedString];
+        return attrString ? [[[NSTextStorage alloc] initWithAttributedString:attrString] autorelease] : [NSNull null];
+    }
+    
+    return nil;
+}
+
+@end
+
+
+@implementation SKPagesCommand
+
+- (id)performDefaultImplementation {
+    id dP = [self directParameter];
+    id dPO = nil;
+    if ([dP isKindOfClass:[NSArray class]] == NO)
+        dPO = [dP objectsByEvaluatingSpecifier];
+    if ([dPO isKindOfClass:[SKDocument class]]) {
+        return [dPO valueForKey:@"pages"];
+    } else if ([dPO isKindOfClass:[PDFPage class]]) {
+        return [NSArray arrayWithObjects:dPO, nil];
+    } else if ([dPO isKindOfClass:[PDFAnnotation class]]) {
+        return [NSArray arrayWithObjects:[dPO page], nil];
+    } else {
+        PDFSelection *selection = [PDFSelection selectionWithSpecifier:dP];
+        return selection ? [selection pages] : [NSArray array];
+    }
+    
+    return nil;
 }
 
 @end

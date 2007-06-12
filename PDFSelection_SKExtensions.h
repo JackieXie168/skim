@@ -52,3 +52,16 @@
 - (id)objectSpecifier;
 
 @end
+
+// We cannot set properties for a list of specifiers, so we get properties using some script commands
+
+@interface SKBoundsCommand : NSScriptCommand
+@end
+
+
+@interface SKTextCommand : NSScriptCommand
+@end
+
+
+@interface SKPagesCommand : NSScriptCommand
+@end
