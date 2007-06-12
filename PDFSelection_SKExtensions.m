@@ -378,15 +378,15 @@ static inline NSRange rangeOfSubstringOfStringAtIndex(NSString *string, NSArray 
         dPO = [dP objectsByEvaluatingSpecifier];
     
     if ([dPO isKindOfClass:[SKDocument class]]) {
-        NSString *string = [dPO string];
-        return string ? [[[NSTextStorage alloc] initWithString:string] autorelease] : [NSNull null];
+        NSAttributedString *attrString = [[dPO selectionForEntireDocument] attributedString];
+        return attrString ? [[[NSTextStorage alloc] initWithAttributedString:attrString] autorelease] : [[[NSTextStorage alloc] init] autorelease];
     } else if ([dPO isKindOfClass:[PDFPage class]]) {
-        return [dPO contents];
+        return [dPO richText];
     } else if ([dPO isKindOfClass:[PDFAnnotation class]]) {
         return [dPO textContents];
     } else {
         NSAttributedString *attrString = [[PDFSelection selectionWithSpecifier:dP] attributedString];
-        return attrString ? [[[NSTextStorage alloc] initWithAttributedString:attrString] autorelease] : [NSNull null];
+        return attrString ? [[[NSTextStorage alloc] initWithAttributedString:attrString] autorelease] : [[[NSTextStorage alloc] init] autorelease];
     }
     
     return nil;
