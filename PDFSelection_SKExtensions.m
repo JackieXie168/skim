@@ -43,10 +43,8 @@
 
 
 @interface PDFSelection (PDFSelectionPrivateDeclarations)
-
 - (int)numberOfRangesOnPage:(PDFPage *)page;
 - (NSRange)rangeAtIndex:(int)index onPage:(PDFPage *)page;
-
 @end
 
 
@@ -114,6 +112,26 @@
         return NSMakeRange(NSNotFound, 0);
 }
 
+
+static inline NSRange rangeOfSubstringOfStringAtIndex(NSString *string, NSArray *substrings, unsigned int index) {
+    unsigned int length = [string length];
+    NSRange range = NSMakeRange(0, 0);
+    unsigned int i, iMax = [substrings count];
+    
+    if (index >= iMax)
+        return NSMakeRange(NSNotFound, 0);
+    for (i = 0; i <= index; i++) {
+        NSString *substring = [substrings objectAtIndex:i];
+        NSRange searchRange = NSMakeRange(NSMaxRange(range), length - NSMaxRange(range));
+        if ([substring length] == 0)
+            continue;
+        range = [string rangeOfString:substring options:NSLiteralSearch range:searchRange];
+        if (range.location == NSNotFound)
+            return NSMakeRange(NSNotFound, 0);
+    }
+    return range;
+}
+
 + (id)selectionWithSpecifier:(id)specifier {
     if ([specifier isEqual:[NSNull null]])
         return nil;
@@ -123,7 +141,7 @@
         NSScriptObjectSpecifier *spec = [specifier objectAtIndex:0];
         if ([spec isKindOfClass:[NSPropertySpecifier class]]) {
             NSString *key = [spec key];
-            if ([key isEqualToString:@"characters"] == NO && [key isEqualToString:@"words"] == NO && [key isEqualToString:@"paragraphs"] == NO)
+            if ([key isEqualToString:@"characters"] == NO && [key isEqualToString:@"words"] == NO && [key isEqualToString:@"paragraphs"] == NO && [key isEqualToString:@"attributeRuns"] == NO)
                 // this allows to use selection properties directly
                 specifier = [spec objectsByEvaluatingSpecifier];
         }
@@ -139,7 +157,7 @@
         
         // we should get ranges of characters, words, or parapgraphs of the richText of a page
         NSString *key = [spec key];
-        if ([key isEqualToString:@"characters"] == NO && [key isEqualToString:@"words"] == NO && [key isEqualToString:@"paragraphs"] == NO)
+        if ([key isEqualToString:@"characters"] == NO && [key isEqualToString:@"words"] == NO && [key isEqualToString:@"paragraphs"] == NO && [key isEqualToString:@"attributeRuns"] == NO)
             continue;
         
         // get the richText specifier
@@ -215,40 +233,21 @@
             }
         }
         
-        if ([key isEqualToString:@"words"]) {
-            // translate from word ranges to character ranges
+        if ([key isEqualToString:@"characters"] == NO) {
+            // translate from subtext ranges to character ranges
             for (i = 0; i < numRanges; i++) {
                 startIndex = ranges[i].location;
                 endIndex = NSMaxRange(ranges[i]) - 1;
-                NSRange range = [textStorage characterRangeForWordAtIndex:startIndex];
+                NSString *string = [textStorage string];
+                NSArray *substrings = [[textStorage valueForKey:key] valueForKey:@"string"];
+                NSRange range = rangeOfSubstringOfStringAtIndex(string, substrings, startIndex);
                 if (range.location == NSNotFound) {
                     ranges[i] = NSMakeRange(NSNotFound, 0);
                     continue;
                 }
                 startIndex = range.location;
                 if (ranges[i].length > 1) {
-                    range = [textStorage characterRangeForWordAtIndex:endIndex];
-                    if (range.location == NSNotFound) {
-                        ranges[i] = NSMakeRange(NSNotFound, 0);
-                        continue;
-                    }
-                }
-                endIndex = NSMaxRange(range) - 1;
-                ranges[i] = NSMakeRange(startIndex, endIndex + 1 - startIndex);
-            }
-        } else if ([key isEqualToString:@"paragraphs"]) {
-            // translate from paragraph ranges to character ranges
-            for (i = 0; i < numRanges; i++) {
-                startIndex = ranges[i].location;
-                endIndex = NSMaxRange(ranges[i]) - 1;
-                NSRange range = [textStorage characterRangeForParagraphAtIndex:startIndex];
-                if (range.location == NSNotFound) {
-                    ranges[i] = NSMakeRange(NSNotFound, 0);
-                    continue;
-                }
-                startIndex = range.location;
-                if (ranges[i].length > 1) {
-                    range = [textStorage characterRangeForParagraphAtIndex:endIndex];
+                    range = rangeOfSubstringOfStringAtIndex(string, substrings, endIndex);
                     if (range.location == NSNotFound) {
                         ranges[i] = NSMakeRange(NSNotFound, 0);
                         continue;
@@ -315,51 +314,3 @@
 }
 
 @end
-
-
-@implementation NSTextStorage (SKExtensions) 
-
-- (NSRange)characterRangeForWordAtIndex:(unsigned int)index {
-    NSString *string = [self string];
-    NSArray *words = [self words];
-    unsigned int length = [string length];
-    NSRange range = NSMakeRange(0, 0);
-    unsigned int i, iMax = [words count];
-    
-    if (index >= iMax)
-        return NSMakeRange(NSNotFound, 0);
-    for (i = 0; i <= index; i++) {
-        NSString *word = [[words objectAtIndex:i] string];
-        NSRange searchRange = NSMakeRange(NSMaxRange(range), length - NSMaxRange(range));
-        if ([word length] == 0)
-            continue;
-        range = [string rangeOfString:word options:NSLiteralSearch range:searchRange];
-        if (range.location == NSNotFound)
-            return NSMakeRange(NSNotFound, 0);
-    }
-    return range;
-}
-
-- (NSRange)characterRangeForParagraphAtIndex:(unsigned int)index {
-    NSString *string = [self string];
-    NSArray *paragraphs = [self paragraphs];
-    unsigned int length = [string length];
-    NSRange range = NSMakeRange(0, 0);
-    unsigned int i, iMax = [paragraphs count];
-    
-    if (index >= iMax)
-        return NSMakeRange(NSNotFound, 0);
-    for (i = 0; i <= index; i++) {
-        NSString *paragraph = [[paragraphs objectAtIndex:i] string];
-        NSRange searchRange = NSMakeRange(NSMaxRange(range), length - NSMaxRange(range));
-        if ([paragraph length] == 0)
-            continue;
-        range = [string rangeOfString:paragraph options:NSLiteralSearch range:searchRange];
-        if (range.location == NSNotFound)
-            return NSMakeRange(NSNotFound, 0);
-    }
-    return range;
-}
-
-@end
-

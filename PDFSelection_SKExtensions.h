@@ -52,10 +52,3 @@
 - (id)objectSpecifier;
 
 @end
-
-
-@interface NSTextStorage (SKExtensions) 
-- (NSRange)characterRangeForWordAtIndex:(unsigned int)index;
-- (NSRange)characterRangeForParagraphAtIndex:(unsigned int)index;
-@end
-
