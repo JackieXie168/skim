@@ -72,6 +72,7 @@ void SKCGContextSetDefaultRGBColorSpace(CGContextRef context) {
 
 @interface PDFAnnotation (PDFAnnotationPrivateDeclarations)
 - (void)drawWithBox:(CGPDFBox)box inContext:(CGContextRef)context;
+- (void)setPage:(id)page;
 @end
 
 
@@ -266,7 +267,7 @@ static IMP originalSetColor = NULL;
             } else if (type == SKASHighlightNote || type == SKASStrikeOutNote || type == SKASUnderlineNote) {
                 id selSpec = [properties objectForKey:@"selectionSpecifier"];
                 PDFSelection *selection;
-                int markupType;
+                int markupType = 0;
                 
                 if (selSpec == nil) {
                     [currentCommand setScriptErrorNumber:NSRequiredArgumentsMissingScriptError]; 
