@@ -58,7 +58,7 @@
 - (id)richText;
 - (NSArray *)notes;
 - (void)insertInNotes:(id)newNote;
+- (void)insertInNotes:(id)newNote atIndex:(unsigned int)index;
 - (void)removeFromNotesAtIndex:(unsigned int)index;
-- (NSScriptObjectSpecifier *)objectSpecifier;
 
 @end

@@ -88,6 +88,8 @@ extern NSString *SKDocumentWillSaveNotification;
 - (unsigned int)countOfPages;
 - (PDFPage *)objectInPagesAtIndex:(unsigned int)index;
 - (NSArray *)notes;
+- (void)insertInNotes:(id)newNote;
+- (void)insertInNotes:(id)newNote atIndex:(unsigned int)index;
 - (void)removeFromNotesAtIndex:(unsigned int)index;
 - (PDFPage *)currentPage;
 - (void)setCurrentPage:(PDFPage *)page;

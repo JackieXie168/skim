@@ -130,137 +130,63 @@
         if ([spec isKindOfClass:[NSScriptObjectSpecifier class]] == NO)
             continue;
         
-        NSScriptObjectSpecifier *pageSpec = nil;
-        NSScriptObjectSpecifier *textSpec = nil;
-        NSString *key = [spec key];
-        PDFPage *page = nil;
-        int startIndex, endIndex;
-        PDFSelection *sel = nil;
-        
-        textSpec = [spec containerSpecifier];
+        NSScriptObjectSpecifier *textSpec = [spec containerSpecifier];
         if ([[textSpec key] isEqualToString:@"richText"] == NO)
             continue;
         
-        pageSpec = [textSpec containerSpecifier];
-        page = [pageSpec objectsByEvaluatingSpecifier];
+        NSScriptObjectSpecifier *pageSpec = [textSpec containerSpecifier];
+        PDFPage *page = [pageSpec objectsByEvaluatingSpecifier];
         if ([page isKindOfClass:[NSArray class]])
             page = [(NSArray *)page count] ? [(NSArray *)page objectAtIndex:0] : nil;
-        if (page == nil)
+        if ([page isKindOfClass:[PDFPage class]] == NO)
             continue;
         
-        if ([spec isKindOfClass:[NSRangeSpecifier class]]) {
-            
-            NSScriptObjectSpecifier *startSpec = [(NSRangeSpecifier *)spec startSpecifier];
-            NSScriptObjectSpecifier *endSpec = [(NSRangeSpecifier *)spec endSpecifier];
-            if (startSpec == nil && endSpec == nil)
-                continue;
-            
-            if ([key isEqualToString:@"characters"]) {
-                
-                startIndex = (startSpec && [startSpec isKindOfClass:[NSIndexSpecifier class]]) ? [(NSIndexSpecifier *)startSpec index] : 0;
-                endIndex = (endSpec && [endSpec isKindOfClass:[NSIndexSpecifier class]]) ? [(NSIndexSpecifier *)endSpec index] : -1;
-                if (startIndex < 0)
-                    startIndex += [[page string] length];
-                if (endIndex < 0)
-                    endIndex += [[page string] length];
-                
-            } else if ([key isEqualToString:@"words"]) {
-                
-                NSRange startRange, endRange;
-                NSTextStorage *textStorage = [textSpec objectsByEvaluatingSpecifier];
-                if ([textStorage isKindOfClass:[NSArray class]])
-                    textStorage = [(NSArray *)textStorage count] ? [(NSArray *)textStorage objectAtIndex:0] : nil;
-                
-                startIndex = (startSpec && [startSpec isKindOfClass:[NSIndexSpecifier class]]) ? [(NSIndexSpecifier *)startSpec index] : 0;
-                endIndex = (endSpec && [endSpec isKindOfClass:[NSIndexSpecifier class]]) ? [(NSIndexSpecifier *)endSpec index] : -1;
-                if (startIndex < 0)
-                    startIndex += [[textStorage words] count];
-                if (endIndex < 0)
-                    endIndex += [[textStorage words] count];
-                startRange = [textStorage characterRangeForWordAtIndex:startIndex];
-                endRange = [textStorage characterRangeForWordAtIndex:endIndex];
-                if (startRange.location == NSNotFound || endRange.location == NSNotFound)
-                    continue;
-                
-                startIndex = startRange.location;
-                endIndex = NSMaxRange(endRange);
-                
-            } else if ([key isEqualToString:@"paragraphs"]) {
-                
-                NSRange startRange, endRange;
-                NSTextStorage *textStorage = [textSpec objectsByEvaluatingSpecifier];
-                if ([textStorage isKindOfClass:[NSArray class]])
-                    textStorage = [(NSArray *)textStorage count] ? [(NSArray *)textStorage objectAtIndex:0] : nil;
-                
-                startIndex = (startSpec && [startSpec isKindOfClass:[NSIndexSpecifier class]]) ? [(NSIndexSpecifier *)startSpec index] : 0;
-                endIndex = (endSpec && [endSpec isKindOfClass:[NSIndexSpecifier class]]) ? [(NSIndexSpecifier *)endSpec index] : -1;
-                if (startIndex < 0)
-                    startIndex += [[textStorage paragraphs] count];
-                if (endIndex < 0)
-                    endIndex += [[textStorage paragraphs] count];
-                startRange = [textStorage characterRangeForParagraphAtIndex:startIndex];
-                endRange = [textStorage characterRangeForParagraphAtIndex:endIndex];
-                if (startRange.location == NSNotFound || endRange.location == NSNotFound)
-                    continue;
-                
-                startIndex = startRange.location;
-                endIndex = NSMaxRange(endRange) - 1;
-                
-            } else continue;
-            
-        } else if ([spec isKindOfClass:[NSIndexSpecifier class]]) {
-            
-            if ([key isEqualToString:@"characters"]) {
-                
-                startIndex = [(NSIndexSpecifier *)spec index];
-                if (startIndex < 0)
-                    startIndex += [[page string] length];
-                endIndex = startIndex;
-                
-            } else if ([key isEqualToString:@"words"]) {
-                
-                NSRange range;
-                NSTextStorage *textStorage = [textSpec objectsByEvaluatingSpecifier];
-                if ([textStorage isKindOfClass:[NSArray class]])
-                    textStorage = [(NSArray *)textStorage count] ? [(NSArray *)textStorage objectAtIndex:0] : nil;
-                
-                startIndex = [(NSIndexSpecifier *)spec index];
-                if (startIndex < 0)
-                    startIndex += [[textStorage words] count];
-                range = [textStorage characterRangeForWordAtIndex:startIndex];
-                if (range.location == NSNotFound)
-                    continue;
-                
-                startIndex = range.location;
-                endIndex = NSMaxRange(range) - 1;
-                
-            } else if ([key isEqualToString:@"paragraphs"]) {
-                
-                NSRange range;
-                NSTextStorage *textStorage = [textSpec objectsByEvaluatingSpecifier];
-                if ([textStorage isKindOfClass:[NSArray class]])
-                    textStorage = [(NSArray *)textStorage count] ? [(NSArray *)textStorage objectAtIndex:0] : nil;
-                
-                startIndex = [(NSIndexSpecifier *)spec index];
-                if (startIndex < 0)
-                    startIndex += [[textStorage paragraphs] count];
-                range = [textStorage characterRangeForParagraphAtIndex:startIndex];
-                if (range.location == NSNotFound)
-                    continue;
-                
-                startIndex = range.location;
-                endIndex = NSMaxRange(range) - 1;
-                
-            } else continue;
-            
-        } else continue;
+        NSTextStorage *textStorage = [page richText];
         
-        if ((endIndex >= startIndex) && (sel = [page selectionForRange:NSMakeRange(startIndex, endIndex + 1 - startIndex)])) {
-            if (selection == nil)
-                selection = sel;
-            else
-                [selection addSelection:sel];
+        int count;
+        int *indices = [spec indicesOfObjectsByEvaluatingWithContainer:textStorage count:&count];
+        if (count == -1)
+            continue;
+        
+        int startIndex = indices[0];
+        int endIndex = indices[count - 1];
+        
+        NSString *key = [spec key];
+        
+        if ([key isEqualToString:@"words"]) {
+            NSRange range = [textStorage characterRangeForWordAtIndex:startIndex];
+            if (range.location == NSNotFound)
+                continue;
+            startIndex = range.location;
+            if (count > 1) {
+                range = [textStorage characterRangeForWordAtIndex:endIndex];
+                if (range.location == NSNotFound)
+                    continue;
+            }
+            endIndex = NSMaxRange(range) - 1;
+        } else if ([key isEqualToString:@"paragraphs"]) {
+            NSRange range = [textStorage characterRangeForParagraphAtIndex:startIndex];
+            if (range.location == NSNotFound)
+                continue;
+            startIndex = range.location;
+            if (count > 1) {
+                range = [textStorage characterRangeForParagraphAtIndex:endIndex];
+                if (range.location == NSNotFound)
+                    continue;
+            }
+            endIndex = NSMaxRange(range) - 1;
+        } else if ([key isEqualToString:@"characters"] == NO) {
+            continue;
         }
+        
+        PDFSelection *sel = [page selectionForRange:NSMakeRange(startIndex, endIndex + 1 - startIndex)];
+        if (sel == nil)
+            continue;
+        
+        if (selection == nil)
+            selection = sel;
+        else
+            [selection addSelection:sel];
     }
     return selection;
 }
@@ -319,7 +245,7 @@
     
     if (index >= iMax)
         return NSMakeRange(NSNotFound, 0);
-    for (i = 0; i < index; i++) {
+    for (i = 0; i <= index; i++) {
         NSString *word = [[words objectAtIndex:i] string];
         NSRange searchRange = NSMakeRange(NSMaxRange(range), length - NSMaxRange(range));
         if ([word length] == 0)
@@ -340,7 +266,7 @@
     
     if (index >= iMax)
         return NSMakeRange(NSNotFound, 0);
-    for (i = 0; i < index; i++) {
+    for (i = 0; i <= index; i++) {
         NSString *paragraph = [[paragraphs objectAtIndex:i] string];
         NSRange searchRange = NSMakeRange(NSMaxRange(range), length - NSMaxRange(range));
         if ([paragraph length] == 0)
