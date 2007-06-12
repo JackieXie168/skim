@@ -276,9 +276,9 @@ static IMP originalSetColor = NULL;
                     if (type == SKASHighlightNote)
                         markupType = kPDFMarkupTypeHighlight;
                     else if (type == SKASUnderlineNote)
-                        markupType = kPDFMarkupTypeStrikeOut;
-                    else if (type == SKASStrikeOutNote)
                         markupType = kPDFMarkupTypeUnderline;
+                    else if (type == SKASStrikeOutNote)
+                        markupType = kPDFMarkupTypeStrikeOut;
                     if (self = [[SKPDFAnnotationMarkup alloc] initWithSelection:selection markupType:markupType]) {
                         PDFPage *page = [[selection pages] objectAtIndex:0];
                         if (page && [self respondsToSelector:@selector(setPage:)])
