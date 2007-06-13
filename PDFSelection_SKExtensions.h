@@ -49,6 +49,7 @@
 - (NSRange)safeRangeAtIndex:(int)index onPage:(PDFPage *)page;
 
 + (id)selectionWithSpecifier:(id)specifier;
++ (id)selectionWithSpecifier:(id)specifier onPage:(PDFPage *)aPage;
 - (id)objectSpecifier;
 
 @end
