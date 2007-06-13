@@ -44,6 +44,8 @@
 #import "OBUtilities.h"
 #import "NSBitmapImageRep_SKExtensions.h"
 
+NSString *SKPDFDocumentPageBoundsDidChangeNotification = @"SKPDFDocumentPageBoundsDidChangeNotification";
+
 @interface PDFPage (SKReplacementMethods)
 - (void)replacementDealloc;
 @end
@@ -275,8 +277,49 @@ static IMP originalDealloc = NULL;
     return document;
 }
 
+- (int)rotationAngle {
+    return [self rotation];
+}
+
+- (void)setRotationAngle:(int)angle {
+    if (angle != [self rotation]) {
+        NSUndoManager *undoManager = [[self containingDocument] undoManager];
+        [[undoManager prepareWithInvocationTarget:self] setRotationAngle:[self rotation]];
+        [undoManager setActionName:NSLocalizedString(@"Rotate Page", @"Undo action name")];
+        // this will dirty the document, even though no saveable change has been made
+        // but we cannot undo the document change count because there may be real changes to the document in the script
+        
+        [self setRotation:angle];
+        
+        [[NSNotificationCenter defaultCenter] postNotificationName:SKPDFDocumentPageBoundsDidChangeNotification 
+                object:[self document] userInfo:[NSDictionary dictionaryWithObjectsAndKeys:@"rotate", @"action", self, @"page", nil]];
+    }
+}
+
 - (NSData *)boundsAsQDRect {
     Rect qdBounds = RectFromNSRect([self boundsForBox:kPDFDisplayBoxCropBox]);
+    return [NSData dataWithBytes:&qdBounds length:sizeof(Rect)];
+}
+
+- (void)setBoundsAsQDRect:(NSData *)inQDBoundsAsData {
+    if ([inQDBoundsAsData length] == sizeof(Rect)) {
+        NSUndoManager *undoManager = [[self containingDocument] undoManager];
+        [[undoManager prepareWithInvocationTarget:self] setBoundsAsQDRect:[self boundsAsQDRect]];
+        [undoManager setActionName:NSLocalizedString(@"Crop Page", @"Undo action name")];
+        // this will dirty the document, even though no saveable change has been made
+        // but we cannot undo the document change count because there may be real changes to the document in the script
+        
+        const Rect *qdBounds = (const Rect *)[inQDBoundsAsData bytes];
+        NSRect newBounds = NSRectFromRect(*qdBounds);
+        [self setBounds:newBounds forBox:kPDFDisplayBoxCropBox];
+        
+        [[NSNotificationCenter defaultCenter] postNotificationName:SKPDFDocumentPageBoundsDidChangeNotification 
+                object:[self document] userInfo:[NSDictionary dictionaryWithObjectsAndKeys:@"crop", @"action", self, @"page", nil]];
+    }
+}
+
+- (NSData *)contentBoundsAsQDRect {
+    Rect qdBounds = RectFromNSRect([self foregroundBox]);
     return [NSData dataWithBytes:&qdBounds length:sizeof(Rect)];
 }
 

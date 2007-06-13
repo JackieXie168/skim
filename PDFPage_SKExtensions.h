@@ -40,6 +40,8 @@
 #import <Quartz/Quartz.h>
 #import "NSValue_SKExtensions.h"
 
+extern NSString *SKPDFDocumentPageBoundsDidChangeNotification;
+
 @class SKDocument;
 
 @interface PDFPage (SKExtensions)
@@ -54,7 +56,11 @@
 
 - (NSScriptObjectSpecifier *)objectSpecifier;
 - (SKDocument *)containingDocument;
+- (int)rotationAngle;
+- (void)setRotationAngle:(int)angle;
 - (NSData *)boundsAsQDRect;
+- (void)setBoundsAsQDRect:(NSData *)inQDBoundsAsData;
+- (NSData *)contentBoundsAsQDRect;
 - (id)richText;
 - (NSArray *)notes;
 - (void)insertInNotes:(id)newNote;

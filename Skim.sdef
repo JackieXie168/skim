@@ -544,9 +544,17 @@
                 description="The label of the page.">
                 <cocoa key="label"/>
             </property>
-            <property name="bounds" code="pbnd" type="rectangle" access="r"
+            <property name="bounds" code="pbnd" type="rectangle"
                 description="The bounding rectangle of the page (left, top, right, bottom).">
                 <cocoa key="boundsAsQDRect"/>
+            </property>
+            <property name="content bounds" code="CBnd" type="rectangle" access="r"
+                description="The bounding rectangle for the content of the page (left, top, right, bottom).">
+                <cocoa key="contentBoundsAsQDRect"/>
+            </property>
+            <property name="rotation" code="PRot" type="integer"
+                description="The rotation of the page. Must be one of 0, 90, 180, or 270.">
+                <cocoa key="rotationAngle"/>
             </property>
 			<responds-to name="bounds for">
 				<cocoa method=""/>
