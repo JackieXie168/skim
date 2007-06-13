@@ -402,7 +402,7 @@ static IMP originalSetColor = NULL;
     return (id)[NSNull null];
 }
 
-- (int)fontSize {
+- (float)fontSize {
     return 0;
 }
 
