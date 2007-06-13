@@ -450,6 +450,22 @@ static IMP originalSetColor = NULL;
 
 - (BOOL)shouldPrint { return YES; }
 
+#pragma mark Scripting support
+
+- (NSDictionary *)scriptingProperties {
+    NSMutableDictionary *properties = [[[super scriptingProperties] mutableCopy] autorelease];
+    [properties removeObjectForKey:@"richText"];
+    [properties removeObjectForKey:@"fontName"];
+    [properties removeObjectForKey:@"fontSize"];
+    [properties removeObjectForKey:@"asIconType"];
+    [properties removeObjectForKey:@"startPointAsQDPoint"];
+    [properties removeObjectForKey:@"endPointAsQDPoint"];
+    [properties removeObjectForKey:@"asStartLineStyle"];
+    [properties removeObjectForKey:@"asEndLineStyle"];
+    [properties removeObjectForKey:@"selectionSpecifier"];
+    return properties;
+}
+
 @end
 
 #pragma mark -
@@ -471,6 +487,22 @@ static IMP originalSetColor = NULL;
 - (BOOL)isMovable { return YES; }
 
 - (BOOL)shouldPrint { return YES; }
+
+#pragma mark Scripting support
+
+- (NSDictionary *)scriptingProperties {
+    NSMutableDictionary *properties = [[[super scriptingProperties] mutableCopy] autorelease];
+    [properties removeObjectForKey:@"richText"];
+    [properties removeObjectForKey:@"fontName"];
+    [properties removeObjectForKey:@"fontSize"];
+    [properties removeObjectForKey:@"asIconType"];
+    [properties removeObjectForKey:@"startPointAsQDPoint"];
+    [properties removeObjectForKey:@"endPointAsQDPoint"];
+    [properties removeObjectForKey:@"asStartLineStyle"];
+    [properties removeObjectForKey:@"asEndLineStyle"];
+    [properties removeObjectForKey:@"selectionSpecifier"];
+    return properties;
+}
 
 @end
 
@@ -737,6 +769,19 @@ static BOOL adjacentCharacterBounds(NSRect rect1, NSRect rect2) {
 
 #pragma mark Scripting support
 
+- (NSDictionary *)scriptingProperties {
+    NSMutableDictionary *properties = [[[super scriptingProperties] mutableCopy] autorelease];
+    [properties removeObjectForKey:@"richText"];
+    [properties removeObjectForKey:@"fontName"];
+    [properties removeObjectForKey:@"fontSize"];
+    [properties removeObjectForKey:@"asIconType"];
+    [properties removeObjectForKey:@"startPointAsQDPoint"];
+    [properties removeObjectForKey:@"endPointAsQDPoint"];
+    [properties removeObjectForKey:@"asStartLineStyle"];
+    [properties removeObjectForKey:@"asEndLineStyle"];
+    return properties;
+}
+
 - (id)selectionSpecifier {
     PDFSelection *sel = [self selection];
     return sel ? [sel objectSpecifier] : [NSArray array];
@@ -783,6 +828,18 @@ static BOOL adjacentCharacterBounds(NSRect rect1, NSRect rect2) {
 }
 
 #pragma mark Scripting support
+
+- (NSDictionary *)scriptingProperties {
+    NSMutableDictionary *properties = [[[super scriptingProperties] mutableCopy] autorelease];
+    [properties removeObjectForKey:@"richText"];
+    [properties removeObjectForKey:@"asIconType"];
+    [properties removeObjectForKey:@"startPointAsQDPoint"];
+    [properties removeObjectForKey:@"endPointAsQDPoint"];
+    [properties removeObjectForKey:@"asStartLineStyle"];
+    [properties removeObjectForKey:@"asEndLineStyle"];
+    [properties removeObjectForKey:@"selectionSpecifier"];
+    return properties;
+}
 
 - (id)textContents {
     NSTextStorage *textContents = [[[NSTextStorage alloc] initWithString:[self contents]] autorelease];
@@ -916,6 +973,18 @@ static BOOL adjacentCharacterBounds(NSRect rect1, NSRect rect2) {
 }
 
 #pragma mark Scripting support
+
+- (NSDictionary *)scriptingProperties {
+    NSMutableDictionary *properties = [[[super scriptingProperties] mutableCopy] autorelease];
+    [properties removeObjectForKey:@"fontName"];
+    [properties removeObjectForKey:@"fontSize"];
+    [properties removeObjectForKey:@"startPointAsQDPoint"];
+    [properties removeObjectForKey:@"endPointAsQDPoint"];
+    [properties removeObjectForKey:@"asStartLineStyle"];
+    [properties removeObjectForKey:@"asEndLineStyle"];
+    [properties removeObjectForKey:@"selectionSpecifier"];
+    return properties;
+}
 
 - (int)asIconType {
     switch ([self iconType]) {
@@ -1061,6 +1130,16 @@ static BOOL adjacentCharacterBounds(NSRect rect1, NSRect rect2) {
 }
 
 #pragma mark Scripting support
+
+- (NSDictionary *)scriptingProperties {
+    NSMutableDictionary *properties = [[[super scriptingProperties] mutableCopy] autorelease];
+    [properties removeObjectForKey:@"richText"];
+    [properties removeObjectForKey:@"fontName"];
+    [properties removeObjectForKey:@"fontSize"];
+    [properties removeObjectForKey:@"asIconType"];
+    [properties removeObjectForKey:@"selectionSpecifier"];
+    return properties;
+}
 
 - (void)setStartPointAsQDPoint:(NSData *)inQDPointAsData {
     if ([inQDPointAsData length] == sizeof(Point)) {log_method();
