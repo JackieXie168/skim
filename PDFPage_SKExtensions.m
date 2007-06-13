@@ -318,6 +318,11 @@ static IMP originalDealloc = NULL;
     }
 }
 
+- (NSData *)mediaBoundsAsQDRect {
+    Rect qdBounds = RectFromNSRect([self boundsForBox:kPDFDisplayBoxMediaBox]);
+    return [NSData dataWithBytes:&qdBounds length:sizeof(Rect)];
+}
+
 - (NSData *)contentBoundsAsQDRect {
     Rect qdBounds = RectFromNSRect([self foregroundBox]);
     return [NSData dataWithBytes:&qdBounds length:sizeof(Rect)];
