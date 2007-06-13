@@ -60,6 +60,7 @@ extern NSString *SKPDFDocumentPageBoundsDidChangeNotification;
 - (void)setRotationAngle:(int)angle;
 - (NSData *)boundsAsQDRect;
 - (void)setBoundsAsQDRect:(NSData *)inQDBoundsAsData;
+- (NSData *)mediaBoundsAsQDRect;
 - (NSData *)contentBoundsAsQDRect;
 - (id)richText;
 - (NSArray *)notes;
