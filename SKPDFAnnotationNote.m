@@ -351,7 +351,7 @@ static IMP originalSetColor = NULL;
 }
 
 - (void)setBoundsAsQDRect:(NSData *)inQDBoundsAsData {
-    if ([inQDBoundsAsData length] == sizeof(Rect)) {
+    if ([inQDBoundsAsData length] == sizeof(Rect) && [self isMovable]) {
         const Rect *qdBounds = (const Rect *)[inQDBoundsAsData bytes];
         NSRect newBounds = NSRectFromRect(*qdBounds);
         if ([self isResizable] == NO)
