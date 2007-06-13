@@ -598,6 +598,18 @@
                 description="The rich extended text of an anchored note.">
                 <cocoa key="richText"/>
             </property>
+            <property name="font name" code="FntN" type="text"
+                description="The font name of a text note.">
+                <cocoa key="fontName"/>
+            </property>
+            <property name="font size" code="FntS" type="integer"
+                description="The font size in points of a text note.">
+                <cocoa key="fontSize"/>
+            </property>
+            <property name="icon" code="Icon" type="icon type"
+                description="The icon type of an anchored note.">
+                <cocoa key="asIconType"/>
+            </property>
             <property name="start point" code="SPnt" type="point"
                 description="The start point of an arrow.">
                 <cocoa key="startPointAsQDPoint"/>
@@ -605,6 +617,14 @@
             <property name="end point" code="EPnt" type="point"
                 description="The end point of an arrow.">
                 <cocoa key="endPointAsQDPoint"/>
+            </property>
+            <property name="start line style" code="SLSt" type="line ending style"
+                description="The start line style of an arrow.">
+                <cocoa key="asStartLineStyle"/>
+            </property>
+            <property name="end line style" code="ELSt" type="line ending style"
+                description="The end line style of an arrow.">
+                <cocoa key="asEndLineStyle"/>
             </property>
             <property name="selection" code="sele" access="r"
                 description="The selection for a highlight, underline, or strike out markup.">
@@ -639,6 +659,38 @@
                 description="Strike out highlight."/>
             <enumerator name="arrow note" code="NArr"
                 description="Arrow."/>
+        </enumeration>
+
+        <enumeration name="icon type" code="ITpE">
+            <enumerator name="comment icon" code="ICmt"
+                description="Comment icon."/>
+            <enumerator name="key icon" code="IKey"
+                description="Key icon."/>
+            <enumerator name="note icon" code="INot"
+                description="Note icon."/>
+            <enumerator name="help icon" code="IHlp"
+                description="Help icon."/>
+            <enumerator name="new paragraph icon" code="INPa"
+                description="New paragraph icon."/>
+            <enumerator name="paragraph icon" code="IPar"
+                description="Paragraph icon."/>
+            <enumerator name="insert icon" code="IIns"
+                description="Insert icon."/>
+        </enumeration>
+
+        <enumeration name="line ending style" code="LESE">
+            <enumerator name="none" code="LSNo"
+                description="No line ending."/>
+            <enumerator name="square" code="LSSq"
+                description="Square line ending."/>
+            <enumerator name="circle" code="LSCi"
+                description="Circle line ending."/>
+            <enumerator name="diamond" code="LSDi"
+                description="Diamond line ending."/>
+            <enumerator name="open arrow" code="LSOA"
+                description="Open arrow line ending."/>
+            <enumerator name="closed arrow" code="LSCA"
+                description="Closed arrow line ending."/>
         </enumeration>
 
         <enumeration name="box type" code="BoxE">

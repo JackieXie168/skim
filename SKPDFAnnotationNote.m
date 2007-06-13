@@ -54,6 +54,25 @@ enum {
     SKASArrowNote = 'NArr'
 };
 
+enum {
+    SKASTextAnnotationIconComment = 'ICmt',
+    SKASTextAnnotationIconKey = 'IKey',
+    SKASTextAnnotationIconNote = 'INot',
+    SKASTextAnnotationIconHelp = 'IHlp',
+    SKASTextAnnotationIconNewParagraph = 'INPa',
+    SKASTextAnnotationIconParagraph = 'IPar',
+    SKASTextAnnotationIconInsert = 'IIns'
+};
+
+enum {
+    SKASLineStyleNone = 'LSNo',
+    SKASLineStyleSquare = 'LSSq',
+    SKASLineStyleCircle = 'LSCi',
+    SKASLineStyleDiamond = 'LSDi',
+    SKASLineStyleOpenArrow = 'LSOA',
+    SKASLineStyleClosedArrow = 'LSCA'
+};
+
 NSString *SKAnnotationWillChangeNotification = @"SKAnnotationWillChangeNotification";
 NSString *SKAnnotationDidChangeNotification = @"SKAnnotationDidChangeNotification";
 
@@ -107,10 +126,13 @@ static IMP originalSetColor = NULL;
         self = [[SKPDFAnnotationNote alloc] initWithBounds:bounds];
         NSAttributedString *text = [dict objectForKey:@"text"];
         NSImage *image = [dict objectForKey:@"image"];
+        NSNumber *iconType = [dict objectForKey:@"iconType"];
         if (image)
             [(SKPDFAnnotationNote *)self setImage:image];
         if (text)
             [(SKPDFAnnotationNote *)self setText:text];
+        if (iconType)
+            [(SKPDFAnnotationNote *)super setIconType:[iconType intValue]];
     } else if ([type isEqualToString:@"FreeText"]) {
         self = [[SKPDFAnnotationFreeText alloc] initWithBounds:bounds];
         NSFont *font = [dict objectForKey:@"font"];
@@ -129,10 +151,16 @@ static IMP originalSetColor = NULL;
     } else if ([type isEqualToString:@"Line"]) {
         self = [[SKPDFAnnotationLine alloc] initWithBounds:bounds];
         NSString *point;
+        NSNumber *startLineStyle = [dict objectForKey:@"startLineStyle"];
+        NSNumber *endLineStyle = [dict objectForKey:@"endLineStyle"];
         if (point = [dict objectForKey:@"startPoint"])
-            [(SKPDFAnnotationLine *)self setStartPoint:NSPointFromString(point)];
+            [(SKPDFAnnotationLine *)super setStartPoint:NSPointFromString(point)];
         if (point = [dict objectForKey:@"endPoint"])
-            [(SKPDFAnnotationLine *)self setEndPoint:NSPointFromString(point)];
+            [(SKPDFAnnotationLine *)super setEndPoint:NSPointFromString(point)];
+        if (startLineStyle)
+            [(SKPDFAnnotationLine *)super setStartLineStyle:[startLineStyle intValue]];
+        if (endLineStyle)
+            [(SKPDFAnnotationLine *)super setEndLineStyle:[endLineStyle intValue]];
     } else {
         self = nil;
     }
@@ -332,6 +360,10 @@ static IMP originalSetColor = NULL;
     return 0;
 }
 
+- (int)asIconType {
+    return kPDFTextAnnotationIconNote;
+}
+
 - (id)textContents;
 {
     return [self contents] ? [[[NSTextStorage alloc] initWithString:[self contents]] autorelease] : [NSNull null];
@@ -366,12 +398,28 @@ static IMP originalSetColor = NULL;
     return [NSData dataWithBytes:&qdBounds length:sizeof(Rect)];
 }
 
+- (NSString *)fontName {
+    return nil;
+}
+
+- (int)fontSize {
+    return 0;
+}
+
 - (NSData *)startPointAsQDPoint {
     return (id)[NSNull null];
 }
 
 - (NSData *)endPointAsQDPoint {
     return (id)[NSNull null];
+}
+
+- (int)asStartLineStyle {
+    return SKASLineStyleNone;
+}
+
+- (int)asEndLineStyle {
+    return SKASLineStyleNone;
 }
 
 - (id)selectionSpecifier {
@@ -704,8 +752,8 @@ static BOOL adjacentCharacterBounds(NSRect rect1, NSRect rect2) {
     if (self = [super initWithBounds:bounds]) {
         NSFont *font = [NSFont fontWithName:[[NSUserDefaults standardUserDefaults] stringForKey:SKTextNoteFontNameKey]
                                        size:[[NSUserDefaults standardUserDefaults] floatForKey:SKTextNoteFontSizeKey]];
-        [self setFont:font];
-        [self setColor:[NSUnarchiver unarchiveObjectWithData:[[NSUserDefaults standardUserDefaults] objectForKey:SKFreeTextNoteColorKey]]];
+        [super setFont:font];
+        [super setColor:[NSUnarchiver unarchiveObjectWithData:[[NSUserDefaults standardUserDefaults] objectForKey:SKFreeTextNoteColorKey]]];
     }
     return self;
 }
@@ -743,6 +791,26 @@ static BOOL adjacentCharacterBounds(NSRect rect1, NSRect rect2) {
     return [self contents] ? textContents : (id)[NSNull null];
 }
 
+- (NSString *)fontName {
+    return [[self font] fontName];
+}
+
+- (void)setFontName:(NSString *)fontName {
+    NSFont *font = [NSFont fontWithName:fontName size:[[self font] pointSize]];
+    if (font)
+        [self setFont:font];
+}
+
+- (int)fontSize {
+    return roundf([[self font] pointSize]);
+}
+
+- (void)setFontSize:(int)pointSize {
+    NSFont *font = [NSFont fontWithName:[[self font] fontName] size:pointSize];
+    if (font)
+        [self setFont:font];
+}
+
 @end
 
 #pragma mark -
@@ -770,6 +838,7 @@ static BOOL adjacentCharacterBounds(NSRect rect1, NSRect rect2) {
 
 - (NSDictionary *)dictionaryValue{
     NSMutableDictionary *dict = (NSMutableDictionary *)[super dictionaryValue];
+    [dict setValue:[NSNumber numberWithInt:[self iconType]] forKey:@"iconType"];
     [dict setValue:[self text] forKey:@"text"];
     [dict setValue:[self image] forKey:@"image"];
     return dict;
@@ -785,6 +854,15 @@ static BOOL adjacentCharacterBounds(NSRect rect1, NSRect rect2) {
 
 - (NSString *)type {
     return @"Note";
+}
+
+- (void)setIconType:(PDFTextAnnotationIconType)type;
+{
+    [[[self undoManager] prepareWithInvocationTarget:self] setIconType:[self iconType]];
+    [[self undoManager] setActionName:NSLocalizedString(@"Edit Note", @"Undo action name")];
+    [super setIconType:type];
+    [[NSNotificationCenter defaultCenter] postNotificationName:SKAnnotationDidChangeNotification
+            object:self userInfo:[NSDictionary dictionaryWithObjectsAndKeys:@"iconType", @"key", nil]];
 }
 
 - (NSImage *)image;
@@ -838,6 +916,33 @@ static BOOL adjacentCharacterBounds(NSRect rect1, NSRect rect2) {
 
 #pragma mark Scripting support
 
+- (int)asIconType {
+    switch ([self iconType]) {
+        case kPDFTextAnnotationIconComment: return SKASTextAnnotationIconComment;
+        case kPDFTextAnnotationIconKey: return SKASTextAnnotationIconKey;
+        case kPDFTextAnnotationIconNote: return SKASTextAnnotationIconNote;
+        case kPDFTextAnnotationIconHelp: return SKASTextAnnotationIconHelp;
+        case kPDFTextAnnotationIconNewParagraph: return SKASTextAnnotationIconNewParagraph;
+        case kPDFTextAnnotationIconParagraph: return SKASTextAnnotationIconParagraph;
+        case kPDFTextAnnotationIconInsert: return SKASTextAnnotationIconInsert;
+        default: return kPDFTextAnnotationIconNote;
+    }
+}
+
+- (void)setAsIconType:(int)type {
+    PDFTextAnnotationIconType iconType = SKASTextAnnotationIconNote;
+    switch (type) {
+        case SKASTextAnnotationIconComment: iconType = kPDFTextAnnotationIconComment; break;
+        case SKASTextAnnotationIconKey: iconType = kPDFTextAnnotationIconKey; break;
+        case SKASTextAnnotationIconNote: iconType = kPDFTextAnnotationIconNote; break;
+        case SKASTextAnnotationIconHelp: iconType = kPDFTextAnnotationIconHelp; break;
+        case SKASTextAnnotationIconNewParagraph: iconType = kPDFTextAnnotationIconNewParagraph; break;
+        case SKASTextAnnotationIconParagraph: iconType = kPDFTextAnnotationIconParagraph; break;
+        case SKASTextAnnotationIconInsert: iconType = kPDFTextAnnotationIconInsert; break;
+    }
+    [self setIconType:iconType];
+}
+
 - (id)richText;
 {
     return textStorage;
@@ -871,17 +976,19 @@ static BOOL adjacentCharacterBounds(NSRect rect1, NSRect rect2) {
 
 - (id)initWithBounds:(NSRect)bounds {
     if (self = [super initWithBounds:bounds]) {
-        [self setColor:[NSUnarchiver unarchiveObjectWithData:[[NSUserDefaults standardUserDefaults] objectForKey:SKArrowNoteColorKey]]];
-        [self setStartLineStyle:[[NSUserDefaults standardUserDefaults] integerForKey:SKArrowNoteStartLineStyleKey]];
-        [self setEndLineStyle:[[NSUserDefaults standardUserDefaults] integerForKey:SKArrowNoteEndLineStyleKey]];
-        [self setStartPoint:NSMakePoint(0.5, 0.5)];
-        [self setEndPoint:NSMakePoint(NSWidth(bounds) - 0.5, NSHeight(bounds) - 0.5)];
+        [super setColor:[NSUnarchiver unarchiveObjectWithData:[[NSUserDefaults standardUserDefaults] objectForKey:SKArrowNoteColorKey]]];
+        [super setStartLineStyle:[[NSUserDefaults standardUserDefaults] integerForKey:SKArrowNoteStartLineStyleKey]];
+        [super setEndLineStyle:[[NSUserDefaults standardUserDefaults] integerForKey:SKArrowNoteEndLineStyleKey]];
+        [super setStartPoint:NSMakePoint(0.5, 0.5)];
+        [super setEndPoint:NSMakePoint(NSWidth(bounds) - 0.5, NSHeight(bounds) - 0.5)];
     }
     return self;
 }
 
 - (NSDictionary *)dictionaryValue {
     NSMutableDictionary *dict = (NSMutableDictionary *)[super dictionaryValue];
+    [dict setValue:[NSNumber numberWithInt:[self startLineStyle]] forKey:@"startLineStyle"];
+    [dict setValue:[NSNumber numberWithInt:[self endLineStyle]] forKey:@"endLineStyle"];
     [dict setValue:NSStringFromPoint([self startPoint]) forKey:@"startPoint"];
     [dict setValue:NSStringFromPoint([self endPoint]) forKey:@"endPoint"];
     return dict;
@@ -909,6 +1016,22 @@ static BOOL adjacentCharacterBounds(NSRect rect1, NSRect rect2) {
     [super setEndPoint:point];
     [[NSNotificationCenter defaultCenter] postNotificationName:SKAnnotationDidChangeNotification 
             object:self userInfo:[NSDictionary dictionaryWithObjectsAndKeys:@"endPoint", @"key", nil]];
+}
+
+- (void)setStartLineStyle:(PDFLineStyle)startLineStyle {
+    [[[self undoManager] prepareWithInvocationTarget:self] setStartLineStyle:[self startLineStyle]];
+    [[self undoManager] setActionName:NSLocalizedString(@"Edit Note", @"Undo action name")];
+    [super setStartLineStyle:startLineStyle];
+    [[NSNotificationCenter defaultCenter] postNotificationName:SKAnnotationDidChangeNotification 
+            object:self userInfo:[NSDictionary dictionaryWithObjectsAndKeys:@"startLineStyle", @"key", nil]];
+}
+
+- (void)setEndLineStyle:(PDFLineStyle)endLineStyle {
+    [[[self undoManager] prepareWithInvocationTarget:self] setEndLineStyle:[self endLineStyle]];
+    [[self undoManager] setActionName:NSLocalizedString(@"Edit Note", @"Undo action name")];
+    [super setEndLineStyle:endLineStyle];
+    [[NSNotificationCenter defaultCenter] postNotificationName:SKAnnotationDidChangeNotification 
+            object:self userInfo:[NSDictionary dictionaryWithObjectsAndKeys:@"endLineStyle", @"key", nil]];
 }
 
 - (BOOL)hitTest:(NSPoint)point {
@@ -1030,6 +1153,56 @@ static BOOL adjacentCharacterBounds(NSRect rect1, NSRect rect2) {
     endPoint.y = floorf(endPoint.y + NSMinY(bounds));
     Point qdPoint = PointFromNSPoint(endPoint);
     return [NSData dataWithBytes:&qdPoint length:sizeof(Point)];
+}
+
+- (int)asStartLineStyle {
+    switch ([self startLineStyle]) {
+        case kPDFLineStyleNone: return SKASLineStyleNone;
+        case kPDFLineStyleSquare: return SKASLineStyleSquare;
+        case kPDFLineStyleCircle: return SKASLineStyleCircle;
+        case kPDFLineStyleDiamond: return SKASLineStyleDiamond;
+        case kPDFLineStyleOpenArrow: return SKASLineStyleOpenArrow;
+        case kPDFLineStyleClosedArrow: return SKASLineStyleClosedArrow;
+        default: return SKASLineStyleNone;
+    }
+}
+
+- (int)asEndLineStyle {
+    switch ([self endLineStyle]) {
+        case kPDFLineStyleNone: return SKASLineStyleNone;
+        case kPDFLineStyleSquare: return SKASLineStyleSquare;
+        case kPDFLineStyleCircle: return SKASLineStyleCircle;
+        case kPDFLineStyleDiamond: return SKASLineStyleDiamond;
+        case kPDFLineStyleOpenArrow: return SKASLineStyleOpenArrow;
+        case kPDFLineStyleClosedArrow: return SKASLineStyleClosedArrow;
+        default: return SKASLineStyleNone;
+    }
+}
+
+- (void)setAsStartLineStyle:(int)style {
+    int startLineStyle = 0;
+    switch (style) {
+        case SKASLineStyleNone: startLineStyle = kPDFLineStyleNone; break;
+        case SKASLineStyleSquare: startLineStyle = kPDFLineStyleSquare; break;
+        case SKASLineStyleCircle: startLineStyle = kPDFLineStyleCircle; break;
+        case SKASLineStyleDiamond: startLineStyle = kPDFLineStyleDiamond; break;
+        case SKASLineStyleOpenArrow: startLineStyle = kPDFLineStyleOpenArrow; break;
+        case SKASLineStyleClosedArrow: startLineStyle = kPDFLineStyleClosedArrow; break;
+    }
+    [self setStartLineStyle:startLineStyle];
+}
+
+- (void)setAsEndLineStyle:(int)style {
+    int endLineStyle = 0;
+    switch (style) {
+        case SKASLineStyleNone: endLineStyle = kPDFLineStyleNone; break;
+        case SKASLineStyleSquare: endLineStyle = kPDFLineStyleSquare; break;
+        case SKASLineStyleCircle: endLineStyle = kPDFLineStyleCircle; break;
+        case SKASLineStyleDiamond: endLineStyle = kPDFLineStyleDiamond; break;
+        case SKASLineStyleOpenArrow: endLineStyle = kPDFLineStyleOpenArrow; break;
+        case SKASLineStyleClosedArrow: endLineStyle = kPDFLineStyleClosedArrow; break;
+    }
+    [self setEndLineStyle:endLineStyle];
 }
 
 @end
