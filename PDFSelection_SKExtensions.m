@@ -140,6 +140,10 @@ static inline NSRange rangeOfSubstringOfStringAtIndex(NSString *string, NSArray 
 }
 
 + (id)selectionWithSpecifier:(id)specifier {
+    return [self selectionWithSpecifier:specifier onPage:nil];
+}
+
++ (id)selectionWithSpecifier:(id)specifier onPage:(PDFPage *)aPage {
     if ([specifier isEqual:[NSNull null]])
         return nil;
     if ([specifier isKindOfClass:[NSArray class]] == NO)
@@ -179,7 +183,7 @@ static inline NSRange rangeOfSubstringOfStringAtIndex(NSString *string, NSArray 
         PDFPage *page = [pageSpec objectsByEvaluatingSpecifier];
         if ([page isKindOfClass:[NSArray class]])
             page = [(NSArray *)page count] ? [(NSArray *)page objectAtIndex:0] : nil;
-        if ([page isKindOfClass:[PDFPage class]] == NO)
+        if ([page isKindOfClass:[PDFPage class]] == NO || (aPage && [aPage isEqual:page] == NO))
             continue;
         
         // we could also evaluate textSpec, but we already have the page
@@ -377,19 +381,27 @@ static inline NSRange rangeOfSubstringOfStringAtIndex(NSString *string, NSArray 
     if ([dP isKindOfClass:[NSArray class]] == NO)
         dPO = [dP objectsByEvaluatingSpecifier];
     
+    NSDictionary *args = [self evaluatedArguments];
+    PDFPage *page = [args objectForKey:@"Page"];
+    NSTextStorage *textStorage = nil;
+    
     if ([dPO isKindOfClass:[SKDocument class]]) {
-        NSAttributedString *attrString = [[dPO selectionForEntireDocument] attributedString];
-        return attrString ? [[[NSTextStorage alloc] initWithAttributedString:attrString] autorelease] : [[[NSTextStorage alloc] init] autorelease];
+        NSAttributedString *attrString = page ? [page attributedString] : [[[dPO pdfDocument] selectionForEntireDocument] attributedString];
+        if (attrString)
+            textStorage = [[[NSTextStorage alloc] initWithAttributedString:attrString] autorelease];
     } else if ([dPO isKindOfClass:[PDFPage class]]) {
-        return [dPO richText];
+        if (page == nil || [page isEqual:dPO])
+            textStorage = [dPO richText];
     } else if ([dPO isKindOfClass:[PDFAnnotation class]]) {
-        return [dPO textContents];
+        if (page == nil || [[dPO page] isEqual:dPO])
+            textStorage = [dPO textContents];
     } else {
-        NSAttributedString *attrString = [[PDFSelection selectionWithSpecifier:dP] attributedString];
-        return attrString ? [[[NSTextStorage alloc] initWithAttributedString:attrString] autorelease] : [[[NSTextStorage alloc] init] autorelease];
+        NSAttributedString *attrString = [[PDFSelection selectionWithSpecifier:dP onPage:page] attributedString];
+        if (attrString)
+            [[[NSTextStorage alloc] initWithAttributedString:attrString] autorelease];
     }
     
-    return nil;
+    return textStorage ? textStorage : [[[NSTextStorage alloc] init] autorelease];
 }
 
 @end
