@@ -73,6 +73,7 @@ NSString *SKHighlightNoteColorKey = @"SKHighlightNoteColor";
 NSString *SKUnderlineNoteColorKey = @"SKUnderlineNoteColor";
 NSString *SKStrikeOutNoteColorKey = @"SKStrikeOutNoteColor";
 NSString *SKArrowNoteColorKey = @"SKArrowNoteColor";
+NSString *SKAnchoredNoteIconTypeKey = @"SKAnchoredNoteIconType";
 NSString *SKCircleNoteLineWidthKey = @"SKCircleNoteLineWidth";
 NSString *SKSquareNoteLineWidthKey = @"SKSquareNoteLineWidth";
 NSString *SKArrowNoteStartLineStyleKey = @"SKArrowNoteStartLineStyle";

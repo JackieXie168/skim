@@ -121,6 +121,8 @@
 	BAt0eXBlZHN0cmVhbYED6IQBQISEhAdOU0NvbG9yAISECE5TT2JqZWN0AIWEAWMBhARm
 	ZmZmAAABAYY=
 	</data>
+        <key>SKAnchoredNoteIconType</key>
+        <integer>2</integer>
         <key>SKCircleNoteLineWidth</key>
         <real>2.0</real>
         <key>SKSquareNoteLineWidth</key>
@@ -205,6 +207,7 @@
             <string>SKArrowNoteColor</string>
             <string>SKTextNoteFontName</string>
             <string>SKTextNoteFontSize</string>
+            <string>SKAnchoredNoteIconType</string>
             <string>SKCircleNoteLineWidth</string>
             <string>SKSquareNoteLineWidth</string>
             <string>SKArrowNoteStartLineStyle</string>

@@ -72,6 +72,7 @@ extern NSString *SKHighlightNoteColorKey;
 extern NSString *SKUnderlineNoteColorKey;
 extern NSString *SKStrikeOutNoteColorKey;
 extern NSString *SKArrowNoteColorKey;
+extern NSString *SKAnchoredNoteIconTypeKey;
 extern NSString *SKCircleNoteLineWidthKey;
 extern NSString *SKSquareNoteLineWidthKey;
 extern NSString *SKArrowNoteStartLineStyleKey;
