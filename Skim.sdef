@@ -99,13 +99,13 @@
             <responds-to name="find">
                 <cocoa method="handleFindScriptCommand:"/>
             </responds-to>
-			<responds-to name="bounds for">
+			<responds-to name="get bounds for">
 				<cocoa method=""/>
 			</responds-to>
-			<responds-to name="text for">
+			<responds-to name="get text for">
 				<cocoa method=""/>
 			</responds-to>
-			<responds-to name="pages for">
+			<responds-to name="get pages for">
 				<cocoa method=""/>
 			</responds-to>
         </class>
@@ -560,13 +560,13 @@
                 description="The rotation of the page. Must be one of 0, 90, 180, or 270.">
                 <cocoa key="rotationAngle"/>
             </property>
-			<responds-to name="bounds for">
+			<responds-to name="get bounds for">
 				<cocoa method=""/>
 			</responds-to>
-			<responds-to name="text for">
+			<responds-to name="get text for">
 				<cocoa method=""/>
 			</responds-to>
-			<responds-to name="pages for">
+			<responds-to name="get pages for">
 				<cocoa method=""/>
 			</responds-to>
         </class>
@@ -611,13 +611,13 @@
                 <type type="specifier" list="yes"/>
                 <cocoa key="selectionSpecifier"/>
             </property>
-			<responds-to name="bounds for">
+			<responds-to name="get bounds for">
 				<cocoa method=""/>
 			</responds-to>
-			<responds-to name="text for">
+			<responds-to name="get text for">
 				<cocoa method=""/>
 			</responds-to>
-			<responds-to name="pages for">
+			<responds-to name="get pages for">
 				<cocoa method=""/>
 			</responds-to>
         </class>
@@ -694,8 +694,9 @@
             </result>
         </command>
 
-        <command name="bounds for" code="SKIMBnds"
+        <command name="get bounds for" code="SKIMBnds"
             description="Get the bounds of a page, note, or selection.">
+            <synonym name="bounds for"/>
             <cocoa class="SKBoundsCommand"/>
             <direct-parameter
                 description="The document, page, note or selection.">
@@ -704,8 +705,8 @@
                 <type type="note"/>
                 <type type="specifier" list="yes"/>
             </direct-parameter>
-            <parameter name="on" type="page" code="onPg" optional="yes"
-                description="The page on which to find the bounds. Only relevant for a selection.">
+            <parameter name="on" type="page" code="on  " optional="yes"
+                description="The page on which to get the bounds.">
                 <cocoa key="Page"/>
             </parameter>
             <parameter name="for" type="box type" code="fBox" optional="yes"
@@ -716,8 +717,9 @@
                 description="The bounds of the object."/>
         </command>
 
-        <command name="text for" code="SKIMText"
+        <command name="get text for" code="SKIMText"
             description="Get the text of a document, page, note, or selection.">
+            <synonym name="text for"/>
             <cocoa class="SKTextCommand"/>
             <direct-parameter
                 description="The document, page, note or selection.">
@@ -726,13 +728,18 @@
                 <type type="note"/>
                 <type type="specifier" list="yes"/>
             </direct-parameter>
+            <parameter name="on" type="page" code="on  " optional="yes"
+                description="The page on which to get the text.">
+                <cocoa key="Page"/>
+            </parameter>
             <result type="rich text"
                 description="The text of the object."/>
         </command>
 
-        <command name="pages for" code="SKIMPags"
+        <command name="get pages for" code="SKIMPags"
             description="Get the pages of a document, page, note, or selection.">
             <cocoa class="SKPagesCommand"/>
+            <synonym name="pages for"/>
             <direct-parameter
                 description="The document, page, note or selection.">
                 <type type="document"/>
