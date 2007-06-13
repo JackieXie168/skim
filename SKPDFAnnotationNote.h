@@ -72,35 +72,56 @@ extern void SKCGContextSetDefaultRGBColorSpace(CGContextRef context);
 
 - (NSScriptObjectSpecifier *)objectSpecifier;
 - (int)asNoteType;
+- (int)asIconType;
 - (id)textContents;
 - (void)setTextContents:(id)text;
 - (id)richText;
 - (void)setBoundsAsQDRect:(NSData *)inQDBoundsAsData;
 - (NSData *)boundsAsQDRect;
+- (NSString *)fontName;
+- (int)fontSize;
 - (NSData *)startPointAsQDPoint;
 - (NSData *)endPointAsQDPoint;
+- (int)asStartLineStyle;
+- (int)asEndLineStyle;
 - (id)selectionSpecifier;
 
 @end
 
+#pragma mark -
+
 @interface SKPDFAnnotationCircle : PDFAnnotationCircle
 @end
 
+#pragma mark -
+
 @interface SKPDFAnnotationSquare : PDFAnnotationSquare
 @end
+
+#pragma mark -
 
 @interface SKPDFAnnotationMarkup : PDFAnnotationMarkup
 {
     NSRect *lineRects;
     unsigned numberOfLines;
 }
+
 - (id)initWithBounds:(NSRect)bounds markupType:(int)type quadrilateralPointsAsStrings:(NSArray *)pointStrings;
 - (id)initWithSelection:(PDFSelection *)selection markupType:(int)type;
 - (PDFSelection *)selection;
+
 @end
 
+#pragma mark -
+
 @interface SKPDFAnnotationFreeText : PDFAnnotationFreeText
+
+- (void)setFontName:(NSString *)fontName;
+- (void)setFontSize:(int)pointSize;
+
 @end
+
+#pragma mark -
 
 @interface SKPDFAnnotationNote : PDFAnnotationText {
     NSImage *image;
@@ -112,19 +133,28 @@ extern void SKCGContextSetDefaultRGBColorSpace(CGContextRef context);
 - (void)setImage:(NSImage *)newImage;
 - (void)setText:(NSAttributedString *)newText;
 
+- (void)setIconType:(PDFTextAnnotationIconType)type;
 - (void)setRichText:(id)newText;
 
 @end
+
+#pragma mark -
 
 @interface SKPDFAnnotationLine : PDFAnnotationLine
 
 - (void)setStartPointAsQDPoint:(NSData *)inQDPointAsData;
 - (void)setEndPointAsQDPoint:(NSData *)inQDPointAsData;
+- (void)setAsStartLineStyle:(int)style;
+- (void)setAsEndLineStyle:(int)style;
 
 @end
+
+#pragma mark -
 
 @interface SKPDFAnnotationTemporary : PDFAnnotationCircle
 @end
+
+#pragma mark -
 
 @interface SKNoteText : NSObject {
     PDFAnnotation *annotation;
@@ -149,6 +179,7 @@ extern void SKCGContextSetDefaultRGBColorSpace(CGContextRef context);
 
 @end
 
+#pragma mark -
 
 static inline
 Rect RectFromNSRect(NSRect rect) {
