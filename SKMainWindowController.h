@@ -325,6 +325,7 @@ typedef struct _SKPDFViewState {
 - (void)handleDidMoveAnnotationNotification:(NSNotification *)notification;
 - (void)handleDoubleClickedAnnotationNotification:(NSNotification *)notification;
 - (void)handleAnnotationDidChangeNotification:(NSNotification *)notification;
+- (void)handlePageBoundsDidChangeNotification:(NSNotification *)notification;
 - (void)handleDocumentBeginWrite:(NSNotification *)notification;
 - (void)handleDocumentEndWrite:(NSNotification *)notification;
 - (void)handleDocumentEndPageWrite:(NSNotification *)notification;

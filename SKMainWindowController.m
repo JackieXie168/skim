@@ -324,6 +324,8 @@ static NSString *SKRightSidePaneWidthKey = @"SKRightSidePaneWidth";
                              name:@"PDFDidEndDocumentWrite" object:[pdfView document]];
     [nc addObserver:self selector:@selector(handleDocumentEndPageWrite:) 
                              name:@"PDFDidEndPageWrite" object:[pdfView document]];
+    [nc addObserver:self selector:@selector(handlePageBoundsDidChangeNotification:) 
+                             name:SKPDFDocumentPageBoundsDidChangeNotification object:[pdfView document]];
 }
 
 - (void)unregisterForDocumentNotifications {
@@ -331,6 +333,7 @@ static NSString *SKRightSidePaneWidthKey = @"SKRightSidePaneWidth";
     [nc removeObserver:self name:@"PDFDidBeginDocumentWrite" object:[pdfView document]];
     [nc removeObserver:self name:@"PDFDidEndDocumentWrite" object:[pdfView document]];
     [nc removeObserver:self name:@"PDFDidEndPageWrite" object:[pdfView document]];
+    [nc removeObserver:self name:SKPDFDocumentPageBoundsDidChangeNotification object:[pdfView document]];
 }
 
 - (void)registerAsObserver {
@@ -966,17 +969,9 @@ static NSString *SKRightSidePaneWidthKey = @"SKRightSidePaneWidth";
     
     PDFPage *page = [[pdfView document] pageAtIndex:index];
     [page setRotation:[page rotation] + rotation];
-    [pdfView layoutDocumentView];
     
-    NSEnumerator *snapshotEnum = [snapshots objectEnumerator];
-    SKSnapshotWindowController *wc;
-    while (wc = [snapshotEnum nextObject]) {
-        if ([wc isPageVisible:page]) {
-            [self snapshotNeedsUpdate:wc];
-            [wc redisplay];
-        }
-    }    
-    [self updateThumbnailAtPageIndex:index];
+    [[NSNotificationCenter defaultCenter] postNotificationName:SKPDFDocumentPageBoundsDidChangeNotification 
+            object:[pdfView document] userInfo:[NSDictionary dictionaryWithObjectsAndKeys:@"rotate", @"action", page, @"page", nil]];
 }
 
 - (IBAction)rotateRight:(id)sender {
@@ -997,12 +992,9 @@ static NSString *SKRightSidePaneWidthKey = @"SKRightSidePaneWidth";
     for (i = 0; i < count; i++) {
         [[[pdfView document] pageAtIndex:i] setRotation:[[[pdfView document] pageAtIndex:i] rotation] + 90];
     }
-    [pdfView layoutDocumentView];
     
-    [snapshots makeObjectsPerformSelector:@selector(redisplay) withObject:nil];
-    [self allSnapshotsNeedUpdate];
-    
-    [self allThumbnailsNeedUpdate];
+    [[NSNotificationCenter defaultCenter] postNotificationName:SKPDFDocumentPageBoundsDidChangeNotification 
+            object:[pdfView document] userInfo:[NSDictionary dictionaryWithObjectsAndKeys:@"rotate", @"action", nil]];
 }
 
 - (IBAction)rotateAllLeft:(id)sender {
@@ -1015,12 +1007,9 @@ static NSString *SKRightSidePaneWidthKey = @"SKRightSidePaneWidth";
     for (i = 0; i < count; i++) {
         [[[pdfView document] pageAtIndex:i] setRotation:[[[pdfView document] pageAtIndex:i] rotation] - 90];
     }
-    [pdfView layoutDocumentView];
     
-    [snapshots makeObjectsPerformSelector:@selector(redisplay) withObject:nil];
-    [self allSnapshotsNeedUpdate];
-    
-    [self allThumbnailsNeedUpdate];
+    [[NSNotificationCenter defaultCenter] postNotificationName:SKPDFDocumentPageBoundsDidChangeNotification 
+            object:[pdfView document] userInfo:[NSDictionary dictionaryWithObjectsAndKeys:@"rotate", @"action", nil]];
 }
 
 - (void)cropPageAtIndex:(unsigned int)index toRect:(NSRect)rect {
@@ -1033,17 +1022,9 @@ static NSString *SKRightSidePaneWidthKey = @"SKRightSidePaneWidth";
     PDFPage *page = [[pdfView document] pageAtIndex:index];
     rect = NSIntersectionRect(rect, [page boundsForBox:kPDFDisplayBoxMediaBox]);
     [page setBounds:rect forBox:kPDFDisplayBoxCropBox];
-    [pdfView layoutDocumentView];
     
-    NSEnumerator *snapshotEnum = [snapshots objectEnumerator];
-    SKSnapshotWindowController *wc;
-    while (wc = [snapshotEnum nextObject]) {
-        if ([wc isPageVisible:page]) {
-            [self snapshotNeedsUpdate:wc];
-            [wc redisplay];
-        }
-    }
-    [self updateThumbnailAtPageIndex:index];
+    [[NSNotificationCenter defaultCenter] postNotificationName:SKPDFDocumentPageBoundsDidChangeNotification 
+            object:[pdfView document] userInfo:[NSDictionary dictionaryWithObjectsAndKeys:@"crop", @"action", page, @"page", nil]];
 }
 
 - (IBAction)crop:(id)sender {
@@ -1072,12 +1053,8 @@ static NSString *SKRightSidePaneWidthKey = @"SKRightSidePaneWidth";
     [undoManager setActionName:NSLocalizedString(@"Crop", @"Undo action name")];
     [[self document] updateChangeCount:[undoManager isUndoing] ? NSChangeDone : NSChangeUndone];
     
-    [pdfView layoutDocumentView];
-    
-    [snapshots makeObjectsPerformSelector:@selector(redisplay) withObject:nil];
-    [self allSnapshotsNeedUpdate];
-    
-    [self allThumbnailsNeedUpdate];
+    [[NSNotificationCenter defaultCenter] postNotificationName:SKPDFDocumentPageBoundsDidChangeNotification 
+            object:[pdfView document] userInfo:[NSDictionary dictionaryWithObjectsAndKeys:@"crop", @"action", nil]];
     
     // layout after cropping when you're in the middle of a document can lose the current page
     [pdfView goToPage:currentPage];
@@ -2349,6 +2326,33 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
         
         [noteArrayController rearrangeObjects];
         [noteOutlineView reloadData];
+    }
+}
+
+- (void)handlePageBoundsDidChangeNotification:(NSNotification *)notification {
+    NSDictionary *info = [notification userInfo];
+    PDFPage *page = [info objectForKey:@"page"];
+    BOOL displayChanged = [[info objectForKey:@"action"] isEqualToString:@"rotate"] || [pdfView displayBox] == kPDFDisplayBoxCropBox;
+    
+    if (displayChanged)
+        [pdfView layoutDocumentView];
+    if (page) {
+        unsigned int index = [[pdfView document] indexForPage:page];
+        NSEnumerator *snapshotEnum = [snapshots objectEnumerator];
+        SKSnapshotWindowController *wc;
+        while (wc = [snapshotEnum nextObject]) {
+            if ([wc isPageVisible:page]) {
+                [self snapshotNeedsUpdate:wc];
+                [wc redisplay];
+            }
+        }
+        if (displayChanged)
+            [self updateThumbnailAtPageIndex:index];
+    } else {
+        [snapshots makeObjectsPerformSelector:@selector(redisplay) withObject:nil];
+        [self allSnapshotsNeedUpdate];
+        if (displayChanged)
+            [self allThumbnailsNeedUpdate];
     }
 }
 
