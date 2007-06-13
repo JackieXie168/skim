@@ -384,11 +384,10 @@ static inline NSRange rangeOfSubstringOfStringAtIndex(NSString *string, NSArray 
     NSDictionary *args = [self evaluatedArguments];
     PDFPage *page = [args objectForKey:@"Page"];
     NSTextStorage *textStorage = nil;
+    NSAttributedString *attrString = nil;
     
     if ([dPO isKindOfClass:[SKDocument class]]) {
-        NSAttributedString *attrString = page ? [page attributedString] : [[[dPO pdfDocument] selectionForEntireDocument] attributedString];
-        if (attrString)
-            textStorage = [[[NSTextStorage alloc] initWithAttributedString:attrString] autorelease];
+        attrString = page ? [page attributedString] : [[[dPO pdfDocument] selectionForEntireDocument] attributedString];
     } else if ([dPO isKindOfClass:[PDFPage class]]) {
         if (page == nil || [page isEqual:dPO])
             textStorage = [dPO richText];
@@ -396,12 +395,10 @@ static inline NSRange rangeOfSubstringOfStringAtIndex(NSString *string, NSArray 
         if (page == nil || [[dPO page] isEqual:dPO])
             textStorage = [dPO textContents];
     } else {
-        NSAttributedString *attrString = [[PDFSelection selectionWithSpecifier:dP onPage:page] attributedString];
-        if (attrString)
-            [[[NSTextStorage alloc] initWithAttributedString:attrString] autorelease];
+        attrString = [[PDFSelection selectionWithSpecifier:dP onPage:page] attributedString];
     }
     
-    return textStorage ? textStorage : [[[NSTextStorage alloc] init] autorelease];
+    return textStorage ? textStorage : attrString ? [[[NSTextStorage alloc] initWithAttributedString:attrString] autorelease] : [[[NSTextStorage alloc] init] autorelease];
 }
 
 @end
