@@ -79,7 +79,7 @@ extern void SKCGContextSetDefaultRGBColorSpace(CGContextRef context);
 - (void)setBoundsAsQDRect:(NSData *)inQDBoundsAsData;
 - (NSData *)boundsAsQDRect;
 - (NSString *)fontName;
-- (int)fontSize;
+- (float)fontSize;
 - (NSData *)startPointAsQDPoint;
 - (NSData *)endPointAsQDPoint;
 - (int)asStartLineStyle;
@@ -117,7 +117,7 @@ extern void SKCGContextSetDefaultRGBColorSpace(CGContextRef context);
 @interface SKPDFAnnotationFreeText : PDFAnnotationFreeText
 
 - (void)setFontName:(NSString *)fontName;
-- (void)setFontSize:(int)pointSize;
+- (void)setFontSize:(float)pointSize;
 
 @end
 

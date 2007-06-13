@@ -399,7 +399,7 @@ static IMP originalSetColor = NULL;
 }
 
 - (NSString *)fontName {
-    return nil;
+    return (id)[NSNull null];
 }
 
 - (int)fontSize {
@@ -423,7 +423,7 @@ static IMP originalSetColor = NULL;
 }
 
 - (id)selectionSpecifier {
-    return [NSArray array];
+    return [NSNull null];
 }
 
 - (void)setSelectionSpecifier:(id)specifier {}
@@ -801,11 +801,11 @@ static BOOL adjacentCharacterBounds(NSRect rect1, NSRect rect2) {
         [self setFont:font];
 }
 
-- (int)fontSize {
-    return roundf([[self font] pointSize]);
+- (float)fontSize {
+    return [[self font] pointSize];
 }
 
-- (void)setFontSize:(int)pointSize {
+- (void)setFontSize:(float)pointSize {
     NSFont *font = [NSFont fontWithName:[[self font] fontName] size:pointSize];
     if (font)
         [self setFont:font];
