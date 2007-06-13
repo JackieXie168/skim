@@ -599,11 +599,11 @@
                 <cocoa key="richText"/>
             </property>
             <property name="start point" code="SPnt" type="point"
-                description="The start point of an arrow. Relative to its bounding rectangle.">
+                description="The start point of an arrow.">
                 <cocoa key="startPointAsQDPoint"/>
             </property>
             <property name="end point" code="EPnt" type="point"
-                description="The end point of an arrow. Relative to its bounding rectangle.">
+                description="The end point of an arrow.">
                 <cocoa key="endPointAsQDPoint"/>
             </property>
             <property name="selection" code="sele" access="r"

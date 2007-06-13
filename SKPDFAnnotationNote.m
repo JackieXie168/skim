@@ -939,50 +939,96 @@ static BOOL adjacentCharacterBounds(NSRect rect1, NSRect rect2) {
 #pragma mark Scripting support
 
 - (void)setStartPointAsQDPoint:(NSData *)inQDPointAsData {
-    if ([inQDPointAsData length] == sizeof(Rect)) {
+    if ([inQDPointAsData length] == sizeof(Point)) {log_method();
         const Point *qdPoint = (const Point *)[inQDPointAsData bytes];
-        NSPoint newPoint = NSPointFromPoint(*qdPoint);
-        newPoint.x += 0.5;
-        newPoint.y += 0.5;
-        if (newPoint.x < 0.0)
-            newPoint.x = 0.5;
-        else if (newPoint.x > NSWidth([self bounds]))
-            newPoint.x = NSWidth([self bounds]) - 0.5;
-        if (newPoint.y < 0.0)
-            newPoint.y = 0.5;
-        else if (newPoint.y > NSHeight([self bounds]))
-            newPoint.y = NSHeight([self bounds]) - 0.5;
-        [self setStartPoint:newPoint];
+        NSPoint startPoint = NSPointFromPoint(*qdPoint);
+        startPoint.x += 0.5;
+        startPoint.y += 0.5;
+        
+        NSRect bounds = [self bounds];
+        NSPoint endPoint = [self endPoint];
+        endPoint.x += NSMinX(bounds);
+        endPoint.y += NSMinY(bounds);
+        
+        bounds.origin.x = floorf(fmin(startPoint.x, endPoint.x));
+        bounds.size.width = ceilf(fmax(endPoint.x, startPoint.x)) - NSMinX(bounds);
+        bounds.origin.y = floorf(fmin(startPoint.y, endPoint.y));
+        bounds.size.height = ceilf(fmax(endPoint.y, startPoint.y)) - NSMinY(bounds);
+        
+        if (NSWidth(bounds) < 7.0) {
+            bounds.size.width = 7.0;
+            bounds.origin.x = floorf(0.5 * (startPoint.x + endPoint.x) - 3.5);
+        }
+        if (NSHeight(bounds) < 7.0) {
+            bounds.size.height = 7.0;
+            bounds.origin.y = floorf(0.5 * (startPoint.y + endPoint.y) - 3.5);
+        }
+        
+        startPoint.x -= NSMinX(bounds);
+        startPoint.y -= NSMinY(bounds);
+        endPoint.x -= NSMinX(bounds);
+        endPoint.y -= NSMinY(bounds);
+        
+        [self setBounds:bounds];
+        [self setStartPoint:startPoint];
+        [self setEndPoint:endPoint];
     }
 
 }
 
 - (NSData *)startPointAsQDPoint {
-    Point qdPoint = PointFromNSPoint([self startPoint]);
+    NSRect bounds = [self bounds];
+    NSPoint startPoint = [self startPoint];
+    startPoint.x = floorf(startPoint.x + NSMinX(bounds));
+    startPoint.y = floorf(startPoint.y + NSMinY(bounds));
+    Point qdPoint = PointFromNSPoint(startPoint);
     return [NSData dataWithBytes:&qdPoint length:sizeof(Point)];
 }
 
 - (void)setEndPointAsQDPoint:(NSData *)inQDPointAsData {
-    if ([inQDPointAsData length] == sizeof(Rect)) {
+    if ([inQDPointAsData length] == sizeof(Point)) {
         const Point *qdPoint = (const Point *)[inQDPointAsData bytes];
-        NSPoint newPoint = NSPointFromPoint(*qdPoint);
-        newPoint.x += 0.5;
-        newPoint.y += 0.5;
-        if (newPoint.x < 0.0)
-            newPoint.x = 0.5;
-        else if (newPoint.x > NSWidth([self bounds]))
-            newPoint.x = NSWidth([self bounds]) - 0.5;
-        if (newPoint.y < 0.0)
-            newPoint.y = 0.5;
-        else if (newPoint.y > NSHeight([self bounds]))
-            newPoint.y = NSHeight([self bounds]) - 0.5;
-        [self setEndPoint:newPoint];
+        NSPoint endPoint = NSPointFromPoint(*qdPoint);
+        endPoint.x += 0.5;
+        endPoint.y += 0.5;
+        
+        NSRect bounds = [self bounds];
+        NSPoint startPoint = [self startPoint];
+        startPoint.x += NSMinX(bounds);
+        startPoint.y += NSMinY(bounds);
+        
+        bounds.origin.x = floorf(fmin(startPoint.x, endPoint.x));
+        bounds.size.width = ceilf(fmax(endPoint.x, startPoint.x)) - NSMinX(bounds);
+        bounds.origin.y = floorf(fmin(startPoint.y, endPoint.y));
+        bounds.size.height = ceilf(fmax(endPoint.y, startPoint.y)) - NSMinY(bounds);
+        
+        if (NSWidth(bounds) < 7.0) {
+            bounds.size.width = 7.0;
+            bounds.origin.x = floorf(0.5 * (startPoint.x + endPoint.x) - 3.5);
+        }
+        if (NSHeight(bounds) < 7.0) {
+            bounds.size.height = 7.0;
+            bounds.origin.y = floorf(0.5 * (startPoint.y + endPoint.y) - 3.5);
+        }
+        
+        startPoint.x -= NSMinX(bounds);
+        startPoint.y -= NSMinY(bounds);
+        endPoint.x -= NSMinX(bounds);
+        endPoint.y -= NSMinY(bounds);
+        
+        [self setBounds:bounds];
+        [self setStartPoint:startPoint];
+        [self setEndPoint:endPoint];
     }
 
 }
 
 - (NSData *)endPointAsQDPoint {
-    Point qdPoint = PointFromNSPoint([self endPoint]);
+    NSRect bounds = [self bounds];
+    NSPoint endPoint = [self endPoint];
+    endPoint.x = floorf(endPoint.x + NSMinX(bounds));
+    endPoint.y = floorf(endPoint.y + NSMinY(bounds));
+    Point qdPoint = PointFromNSPoint(endPoint);
     return [NSData dataWithBytes:&qdPoint length:sizeof(Point)];
 }
 
