@@ -245,6 +245,9 @@
 /* Menu item title */
 "Media Box" = "Rettangolo Media";
 
+/* Error description */
+"New markup notes need a selection." = "New markup notes need a selection.";
+
 /* Default text for new anchored note */
 "New note" = "Nuova Nota";
 
@@ -404,9 +407,6 @@
 
 /* Menu item title */
 "Text" = "Testo";
-
-/* Error description */
-"Text markups cannot be created in scripts." = "Evidenziazioni del testo non possono essere creati negli script.";
 
 /* Description for export
    Menu item title */
