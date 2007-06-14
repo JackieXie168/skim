@@ -944,7 +944,6 @@
         <command name="join" code="SKIMJoin"
             description="Get the pages of a document, page, note, or selection.">
             <cocoa class="SKJoinCommand"/>
-            <synonym name="pages for"/>
             <direct-parameter
                 description="The selection to add to.">
                 <type type="specifier" list="yes"/>
