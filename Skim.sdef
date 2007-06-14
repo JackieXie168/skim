@@ -628,7 +628,7 @@
             </property>
             <property name="border style" code="BdSt" type="note border style"
                 description="The border style a circle or box.">
-                <cocoa key="borderStyle"/>
+                <cocoa key="asBorderStyle"/>
             </property>
             <property name="border dash pattern" code="DshP"
                 description="The dash pattern of the border a circle or box, a list of numbers.">
@@ -882,6 +882,28 @@
             </result>
         </command>
 
+        <command name="join" code="SKIMJoin"
+            description="Get the pages of a document, page, note, or selection.">
+            <cocoa class="SKJoinCommand"/>
+            <direct-parameter
+                description="The selection to add to.">
+                <type type="specifier" list="yes"/>
+            </direct-parameter>
+            <parameter name="to" code="to  " optional="yes"
+                description="The selection to add.">
+                <cocoa key="To"/>
+                <type type="specifier" list="yes"/>
+            </parameter>
+            <parameter name="continuous" type="boolean" code="Cont" optional="yes"
+                description="Join to a continuous selection?">
+                <cocoa key="Continuous"/>
+            </parameter>
+            <result
+                description="The joined selection.">
+                <type type="specifier" list="yes"/>
+            </result>
+        </command>
+
         <command name="get bounds for" code="SKIMBnds"
             description="Get the bounds of a page, note, or selection.">
             <synonym name="bounds for"/>
@@ -938,28 +960,6 @@
             <result
                 description="The list of pages for the object.">
                 <type type="page" list="yes"/>
-            </result>
-        </command>
-
-        <command name="join" code="SKIMJoin"
-            description="Get the pages of a document, page, note, or selection.">
-            <cocoa class="SKJoinCommand"/>
-            <direct-parameter
-                description="The selection to add to.">
-                <type type="specifier" list="yes"/>
-            </direct-parameter>
-            <parameter name="to" code="to  " optional="yes"
-                description="The selection to add.">
-                <cocoa key="To"/>
-                <type type="specifier" list="yes"/>
-            </parameter>
-            <parameter name="continuous" type="boolean" code="Cont" optional="yes"
-                description="Join to a continuous selection?">
-                <cocoa key="Continuous"/>
-            </parameter>
-            <result
-                description="The joined selection.">
-                <type type="specifier" list="yes"/>
             </result>
         </command>
 

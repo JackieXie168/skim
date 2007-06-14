@@ -240,6 +240,18 @@ static IMP originalSetColor = NULL;
     return 0;
 }
 
+- (PDFBorderStyle)borderStyle {
+    return [[self border] style];
+}
+
+- (void)setBorderStyle:(PDFBorderStyle)style {
+    [[[self undoManager] prepareWithInvocationTarget:self] setBorderStyle:style];
+    [[self undoManager] setActionName:NSLocalizedString(@"Edit Note", @"Undo action name")];
+    [[self border] setStyle:style];
+    [[NSNotificationCenter defaultCenter] postNotificationName:SKAnnotationDidChangeNotification 
+            object:self userInfo:[NSDictionary dictionaryWithObjectsAndKeys:@"borderStyle", @"key", nil]];
+}
+
 - (void)replacementSetBounds:(NSRect)bounds {
     if ([self isNoteAnnotation]) {
         [[[self undoManager] prepareWithInvocationTarget:self] setBounds:[self bounds]];
@@ -444,8 +456,8 @@ static IMP originalSetColor = NULL;
             object:self userInfo:[NSDictionary dictionaryWithObjectsAndKeys:@"lineWidth", @"key", nil]];
 }
 
-- (int)borderStyle {
-    switch ([[self border] style]) {
+- (int)asBorderStyle {
+    switch ([self borderStyle]) {
         case kPDFBorderStyleSolid: return SKASBorderStyleSolid;
         case kPDFBorderStyleDashed: return SKASBorderStyleDashed;
         case kPDFBorderStyleBeveled: return SKASBorderStyleBeveled;
@@ -455,7 +467,7 @@ static IMP originalSetColor = NULL;
     }
 }
 
-- (void)setBorderStyle:(int)borderStyle {
+- (void)setAsBorderStyle:(int)borderStyle {
     PDFBorderStyle style = kPDFBorderStyleSolid;
     switch (borderStyle) {
         case SKASBorderStyleSolid: style = kPDFBorderStyleSolid; break;
@@ -464,11 +476,7 @@ static IMP originalSetColor = NULL;
         case SKASBorderStyleInset: style = kPDFBorderStyleInset; break;
         case SKASBorderStyleUnderline: style = kPDFBorderStyleUnderline; break;
     }
-    [[[self undoManager] prepareWithInvocationTarget:self] setBorderStyle:borderStyle];
-    [[self undoManager] setActionName:NSLocalizedString(@"Edit Note", @"Undo action name")];
-    [[self border] setStyle:style];
-    [[NSNotificationCenter defaultCenter] postNotificationName:SKAnnotationDidChangeNotification 
-            object:self userInfo:[NSDictionary dictionaryWithObjectsAndKeys:@"borderStyle", @"key", nil]];
+    [self setBorderStyle:style];
 }
 
 - (NSArray *)dashPattern {

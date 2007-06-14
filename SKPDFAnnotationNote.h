@@ -54,6 +54,9 @@ extern void SKCGContextSetDefaultRGBColorSpace(CGContextRef context);
 - (unsigned int)pageIndex;
 - (int)noteType;
 
+- (PDFBorderStyle)borderStyle;
+- (void)setBorderStyle:(PDFBorderStyle)style;
+
 - (NSImage *)image;
 - (NSAttributedString *)text;
 
@@ -82,8 +85,8 @@ extern void SKCGContextSetDefaultRGBColorSpace(CGContextRef context);
 - (float)fontSize;
 - (float)lineWidth;
 - (void)setLineWidth:(float)width;
-- (int)borderStyle;
-- (void)setBorderStyle:(int)style;
+- (int)asBorderStyle;
+- (void)setAsBorderStyle:(int)style;
 - (NSArray *)dashPattern;
 - (void)setDashPattern:(NSArray *)pattern;
 - (NSData *)startPointAsQDPoint;
