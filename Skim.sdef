@@ -2,7 +2,7 @@
 <!DOCTYPE dictionary SYSTEM "file://localhost/System/Library/DTDs/sdef.dtd">
 
 <dictionary title="Skim Terminology">
-    
+
     <suite name="Standard Suite" code="core"
         description="Common classes and commands for all applications.">
 
@@ -117,7 +117,7 @@
 				<cocoa method=""/>
 			</responds-to>
         </class>
-        
+
         <class name="window" code="cwin"
             description="A window.">
             <cocoa class="NSWindow"/>
@@ -180,7 +180,7 @@
                 <cocoa method="handleRevertScriptCommand:"/>
             </responds-to>
         </class>
-        
+
         <command name="open" code="aevtodoc" description="Open a document.">
             <direct-parameter description="The file(s) to be opened.">
             <type type="file" list="yes"/>
@@ -199,7 +199,7 @@
               <result type="specifier"/>
               -->
         </command>
-        
+
         <enumeration name="save options" code="savo">
             <enumerator name="yes" code="yes "
             description="Save the file."/>
@@ -300,7 +300,7 @@
                 <cocoa key="ShowPrintDialog"/>
             </parameter>
         </command>
-        
+
         <command name="quit" code="aevtquit"
             description="Quit the application.">
             <cocoa class="NSQuitCommand"/>
@@ -309,7 +309,7 @@
                 <cocoa key="SaveOptions"/>
             </parameter>
         </command>
-        
+
         <command name="count" code="corecnte"
             description="Return the number of elements of a particular class within an object.">
             <cocoa class="NSCountCommand"/>
@@ -346,7 +346,7 @@
             <result type="specifier"
             description="the duplicated object(s)"/>
         </command>
-        
+
         <command name="exists" code="coredoex"
             description="Verify if an object exists.">
             <cocoa class="NSExistsCommand"/>
@@ -355,7 +355,7 @@
             <result type="boolean"
             description="true if it exists, false if not"/>
         </command>
-        
+
         <command name="make" code="corecrel"
             description="Make a new object.">
             <cocoa class="NSCreateCommand"/>
@@ -378,7 +378,7 @@
             <result type="specifier"
             description="to the new object"/>
         </command>
-        
+
         <command name="move" code="coremove"
             description="Move object(s) to a new location.">
             <cocoa class="NSMoveCommand"/>
@@ -393,8 +393,8 @@
         </command>
         
     </suite>
-    
-    
+
+
     <suite name="Text Suite" code="TEXT"
         description="A set of basic classes for text processing.">
 
@@ -531,10 +531,11 @@
             </property>
         </class>
     </suite>
-    
-    
+
+
     <suite name="Skim Suite" code="SKIM"
             description="Skim specific commands and classes for dealing with PDF.">
+
         <cocoa name="SkimSuite"/>
 
         <class name="page" plural="pages" code="Page" inherits="item"
@@ -666,7 +667,7 @@
 				<cocoa method=""/>
 			</responds-to>
         </class>
-        
+
         <record-type name="PDF view settings" code="VSet">
             <property name="scale factor" code="SclF" type="real"
                 description="The scale factor of the PDF.">
@@ -964,5 +965,147 @@
         </command>
 
     </suite>
-    
+
+
+    <suite name="Type Definitions" code="TDef"
+        description="Records used in scripting Skim.">
+        <!-- These classes are not actually used, 
+            they are just there for display purposes in Script Editor,
+            as this does not display record-type elements.
+            We use the same properties, but slightly different 
+            name and code for the classes to avoid confusion. -->
+
+        <cocoa name="TypeDefinitionsSuite"/>
+
+        <class name="print settings " code="PSET">
+            <cocoa class="NSDictionary"/>
+            <property name="copies" code="lwcp" type="integer"
+                description="the number of copies of a document to be printed">
+                <cocoa key="NSCopies"/>
+            </property>
+            <property name="collating" code="lwcl" type="boolean"
+                description="Should printed copies be collated?">
+                <cocoa key="NSMustCollate"/>
+            </property>
+            <property name="starting page" code="lwfp" type="integer"
+                description="the first page of the document to be printed">
+                <cocoa key="NSFirstPage"/>
+            </property>
+            <property name="ending page" code="lwlp" type="integer"
+                description="the last page of the document to be printed">
+                <cocoa key="NSLastPage"/>
+            </property>
+            <property name="pages across" code="lwla" type="integer"
+                description="number of logical pages laid across a physical page">
+                <cocoa key="NSPagesAcross"/>
+            </property>
+            <property name="pages down" code="lwld" type="integer"
+                description="number of logical pages laid out down a physical page">
+                <cocoa key="NSPagesDown"/>
+            </property>
+            <property name="error handling" code="lweh" type="printing error handling"
+                description="how errors are handled">
+                <cocoa key="NSDetailedErrorReporting"/>
+            </property>
+            <property name="fax number" code="faxn" type="text"
+                description="for fax number">
+                <cocoa key="NSFaxNumber"/>
+            </property>
+            <property name="target printer" code="trpr" type="text"
+                description="for target printer">
+                <cocoa key="NSPrinterName"/>
+            </property>
+        </class>
+
+        <class name="PDF view settings " code="VSET">
+            <cocoa class="NSDictionary"/>
+            <property name="scale factor" code="SclF" type="real"
+                description="The scale factor of the PDF.">
+                <cocoa key="scaleFactor"/>
+            </property>
+            <property name="auto scales" code="AScl" type="boolean"
+                description="Does the PDF zoom automatically?">
+                <cocoa key="autoScales"/>
+            </property>
+            <property name="displays page breaks" code="PgBr" type="boolean"
+                description="Does the PDF display page breaks?">
+                <cocoa key="displaysPageBreaks"/>
+            </property>
+            <property name="displays as book" code="Book" type="boolean"
+                description="Is the first page in two-up displayed as in book mode?">
+                <cocoa key="displaysAsBook"/>
+            </property>
+            <property name="display mode" code="DMod" type="PDF display mode"
+                description="The display mode for the PDF.">
+                <cocoa key="displayMode"/>
+            </property>
+            <property name="display box" code="DBox" type="PDF display box"
+                description="The display box for the PDF.">
+                <cocoa key="displayBox"/>
+            </property>
+        </class>
+
+        <class name="document attributes " code="DATR">
+            <cocoa class="NSDictionary"/>
+            <property name="file name" code="atfn" type="text"
+                description="The file name.">
+                <cocoa key="FileName"/>
+            </property>
+            <property name="title" code="Titl" type="text"
+                description="The title.">
+                <cocoa key="Title"/>
+            </property>
+            <property name="author" code="Auth" type="text"
+                description="The autohor.">
+                <cocoa key="Author"/>
+            </property>
+            <property name="subject" code="Subj" type="text"
+                description="The subject.">
+                <cocoa key="Subject"/>
+            </property>
+            <property name="creator" code="Crea" type="text"
+                description="The creator.">
+                <cocoa key="Creator"/>
+            </property>
+            <property name="producer" code="Prod" type="text"
+                description="The producer.">
+                <cocoa key="Producer"/>
+            </property>
+            <property name="version" code="Vers" type="text"
+                description="The version.">
+                <cocoa key="Version"/>
+            </property>
+            <property name="creation date" code="CDat" type="date"
+                description="The creation date.">
+                <cocoa key="CreationDate"/>
+            </property>
+            <property name="modification date" code="MDat" type="date"
+                description="The modification date.">
+                <cocoa key="ModDate"/>
+            </property>
+            <property name="page count" code="PCnt" type="integer"
+                description="The number of pages.">
+                <cocoa key="PageCount"/>
+            </property>
+            <property name="file size" code="FlSz" type="text"
+                description="The size of the file.">
+                <cocoa key="FileSize"/>
+            </property>
+            <property name="physical size" code="PhSz" type="real"
+                description="The physical size of the file.">
+                <cocoa key="PhysicalSize"/>
+            </property>
+            <property name="logical size" code="LoSz" type="real"
+                description="The logical size of the file.">
+                <cocoa key="LogicalSize"/>
+            </property>
+            <property name="keywords" code="Keyw"
+                description="The keywords.">
+                <cocoa key="Keywords"/>
+                <type type="text" list="yes"/>
+            </property>
+        </class>
+
+    </suite>
+
 </dictionary>
