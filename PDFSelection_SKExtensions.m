@@ -432,11 +432,12 @@ static inline NSRange rangeOfSubstringOfStringAtIndex(NSString *string, NSArray 
     id other = [args objectForKey:@"To"];
     BOOL continuous = [[args objectForKey:@"Contiguous"] boolValue];
     PDFSelection *selection = [PDFSelection selectionWithSpecifier:dP];
-    PDFSelection *otherSelection = [PDFSelection selectionWithSpecifier:other];
+    PDFSelection *otherSelection = other ? [PDFSelection selectionWithSpecifier:other] : nil;
     
     if (selection == nil)
         selection = otherSelection;
-    [selection addSelection:otherSelection];
+    if (otherSelection)
+        [selection addSelection:otherSelection];
     
     if (continuous) {
         NSArray *pages = [selection pages];
@@ -447,7 +448,7 @@ static inline NSRange rangeOfSubstringOfStringAtIndex(NSString *string, NSArray 
         selection = [[firstPage document] selectionFromPage:firstPage atCharacterIndex:firstIndex toPage:lastPage atCharacterIndex:lastIndex];
     }
     
-    return [selection objectSpecifier];
+    return selection ? [selection objectSpecifier] : [NSArray array];
 }
 
 @end
