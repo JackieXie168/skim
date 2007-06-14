@@ -66,3 +66,7 @@
 
 @interface SKPagesCommand : NSScriptCommand
 @end
+
+
+@interface SKJoinCommand : NSScriptCommand
+@end
