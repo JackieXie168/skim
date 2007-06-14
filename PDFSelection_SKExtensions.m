@@ -422,3 +422,32 @@ static inline NSRange rangeOfSubstringOfStringAtIndex(NSString *string, NSArray 
 }
 
 @end
+
+
+@implementation SKJoinCommand
+
+- (id)performDefaultImplementation {
+    id dP = [self directParameter];
+	NSDictionary *args = [self evaluatedArguments];
+    id other = [args objectForKey:@"To"];
+    BOOL continuous = [[args objectForKey:@"Contiguous"] boolValue];
+    PDFSelection *selection = [PDFSelection selectionWithSpecifier:dP];
+    PDFSelection *otherSelection = [PDFSelection selectionWithSpecifier:other];
+    
+    if (selection == nil)
+        selection = otherSelection;
+    [selection addSelection:otherSelection];
+    
+    if (continuous) {
+        NSArray *pages = [selection pages];
+        PDFPage *firstPage = [pages objectAtIndex:0];
+        PDFPage *lastPage = [pages lastObject];
+        int firstIndex = [selection safeRangeAtIndex:0 onPage:firstPage].location;
+        int lastIndex = NSMaxRange([selection safeRangeAtIndex:[selection safeNumberOfRangesOnPage:lastPage] - 1 onPage:lastPage]) - 1;
+        selection = [[firstPage document] selectionFromPage:firstPage atCharacterIndex:firstIndex toPage:lastPage atCharacterIndex:lastIndex];
+    }
+    
+    return [selection objectSpecifier];
+}
+
+@end

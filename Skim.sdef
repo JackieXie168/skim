@@ -941,6 +941,29 @@
             </result>
         </command>
 
+        <command name="join" code="SKIMJoin"
+            description="Get the pages of a document, page, note, or selection.">
+            <cocoa class="SKJoinCommand"/>
+            <synonym name="pages for"/>
+            <direct-parameter
+                description="The selection to add to.">
+                <type type="specifier" list="yes"/>
+            </direct-parameter>
+            <parameter name="to" code="to  " optional="yes"
+                description="The selection to add.">
+                <cocoa key="To"/>
+                <type type="specifier" list="yes"/>
+            </parameter>
+            <parameter name="contiguous" type="boolean" code="Cont" optional="yes"
+                description="Join to a contiguous selection?">
+                <cocoa key="Contiguous"/>
+            </parameter>
+            <result
+                description="The joined selection.">
+                <type type="specifier" list="yes"/>
+            </result>
+        </command>
+
     </suite>
     
 </dictionary>
