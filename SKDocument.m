@@ -55,6 +55,7 @@
 #import "SKApplicationController.h"
 #import "UKKQueue.h"
 #import "PDFSelection_SKExtensions.h"
+#import "SKInfoWindowController.h"
 
 // maximum length of xattr value recommended by Apple
 #define MAX_XATTR_LENGTH 2048
@@ -1010,6 +1011,12 @@ static BOOL isFileOnHFSVolume(NSString *fileName)
     }
     
     [[self mainWindowController] applyPDFSettings:setup];
+}
+
+- (NSDictionary *)documentAttributes {
+    NSMutableDictionary *info = [[[[SKInfoWindowController sharedInstance] infoForDocument:self] mutableCopy] autorelease];
+    [info removeObjectForKey:@"KeywordsString"];
+    return info;
 }
 
 // fix a bug in Apple's implementation, which ignores the file type (for export)

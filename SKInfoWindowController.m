@@ -72,13 +72,13 @@
 }
 
 static inline 
-NSString *SKFileSizeStringForFileURL(NSURL *fileURL) {
+NSString *SKFileSizeStringForFileURL(NSURL *fileURL, unsigned long long *physicalSizePtr, unsigned long long *logicalSizePtr) {
     if (fileURL == nil)
         return @"";
     
     FSRef fileRef;
     FSCatalogInfo catalogInfo;
-    unsigned long long size, logicalSize;
+    unsigned long long size, logicalSize = 0;
     BOOL gotSize = NO;
     NSMutableString *string = [NSMutableString string];
     
@@ -94,6 +94,11 @@ NSString *SKFileSizeStringForFileURL(NSURL *fileURL) {
         NSDictionary *fileAttrs = [[NSFileManager defaultManager] fileAttributesAtPath:[fileURL path] traverseLink:NO];
         logicalSize = size = [[fileAttrs objectForKey:NSFileSize] unsignedLongLongValue];
     }
+    
+    if (physicalSizePtr)
+        *physicalSizePtr = size;
+    if (logicalSizePtr)
+        *logicalSizePtr = logicalSize;
     
     if (size >> 40 == 0) {
         if (size == 0) {
@@ -138,16 +143,25 @@ NSString *SKFileSizeStringForFileURL(NSURL *fileURL) {
     return string;
 }
 
-- (void)fillInfoForDocument:(SKDocument *)doc {
+- (NSDictionary *)infoForDocument:(SKDocument *)doc {
     PDFDocument *pdfDoc = [doc pdfDocument];
-    [self setInfo:[pdfDoc documentAttributes]];
+    NSMutableDictionary *dictionary = [NSMutableDictionary dictionary];
+    [dictionary setDictionary:[pdfDoc documentAttributes]];
     if (doc) {
-        [info setValue:[[doc fileName] lastPathComponent] forKey:@"FileName"];
-        [info setValue:[NSString stringWithFormat: @"%d.%d", [pdfDoc majorVersion], [pdfDoc minorVersion]] forKey:@"Version"];
-        [info setValue:[NSNumber numberWithInt:[pdfDoc pageCount]] forKey:@"PageCount"];
-        [info setValue:SKFileSizeStringForFileURL([doc fileURL]) forKey:@"FileSize"];
-        [info setValue:[[info valueForKey:@"KeyWords"] componentsJoinedByString:@" "] forKey:@"KeywordsString"];
+        unsigned long long logicalSize, physicalSize;
+        [dictionary setValue:[[doc fileName] lastPathComponent] forKey:@"FileName"];
+        [dictionary setValue:[NSString stringWithFormat: @"%d.%d", [pdfDoc majorVersion], [pdfDoc minorVersion]] forKey:@"Version"];
+        [dictionary setValue:[NSNumber numberWithInt:[pdfDoc pageCount]] forKey:@"PageCount"];
+        [dictionary setValue:SKFileSizeStringForFileURL([doc fileURL], &physicalSize, &logicalSize) forKey:@"FileSize"];
+        [dictionary setValue:[NSNumber numberWithUnsignedLongLong:physicalSize] forKey:@"PhysicalSize"];
+        [dictionary setValue:[NSNumber numberWithUnsignedLongLong:logicalSize] forKey:@"LogicalSize"];
+        [dictionary setValue:[[info valueForKey:@"KeyWords"] componentsJoinedByString:@" "] forKey:@"KeywordsString"];
     }
+    return dictionary;
+}
+
+- (void)fillInfoForDocument:(SKDocument *)doc {
+    [self setInfo:[self infoForDocument:doc]];
 }
 
 - (NSDictionary *)info {
@@ -160,11 +174,11 @@ NSString *SKFileSizeStringForFileURL(NSURL *fileURL) {
 
 - (void)handleWindowDidBecomeKeyNotification:(NSNotification *)notification {
     SKDocument *doc = (SKDocument *)[[[notification object] windowController] document];
-    [self fillInfoForDocument:doc];
+    [self setInfo:[self infoForDocument:doc]];
 }
 
 - (void)handleWindowDidResignKeyNotification:(NSNotification *)notification {
-    [self fillInfoForDocument:nil];
+    [self setInfo:nil];
 }
 
 @end
