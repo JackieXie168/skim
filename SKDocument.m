@@ -959,6 +959,59 @@ static BOOL isFileOnHFSVolume(NSString *fileName)
     [[self pdfView] setCurrentSelection:selection];
 }
 
+- (NSDictionary *)pdfViewSettings {
+    NSMutableDictionary *setup = [[[[self mainWindowController] currentPDFSettings] mutableCopy] autorelease];
+    
+    int displayMode;
+    switch ([[setup objectForKey:@"displayMode"] intValue]) {
+        case kPDFDisplaySinglePage: displayMode = SKASDisplaySinglePage; break;
+        case kPDFDisplaySinglePageContinuous: displayMode = SKASDisplaySinglePageContinuous; break;
+        case kPDFDisplayTwoUp: displayMode = SKASDisplayTwoUp; break;
+        case kPDFDisplayTwoUpContinuous: displayMode = SKASDisplayTwoUpContinuous; break;
+        default: displayMode = [[self pdfView] displayMode];
+    }
+    [setup setObject:[NSNumber numberWithInt:displayMode] forKey:@"displayMode"];
+    
+    int displayBox = [[self pdfView] displayBox];
+    switch ([[setup objectForKey:@"displayBox"] intValue]) {
+        case kPDFDisplayBoxMediaBox: displayBox = SKASMediaBox; break;
+        case kPDFDisplayBoxCropBox: displayBox = SKASCropBox; break;
+        default: displayMode = [[self pdfView] displayBox];
+    }
+    [setup setObject:[NSNumber numberWithInt:displayBox] forKey:@"displayBox"];
+    
+    return setup;
+}
+
+- (void)setPdfViewSettings:(NSDictionary *)pdfViewSettings {
+    NSMutableDictionary *setup = [[pdfViewSettings mutableCopy] autorelease];
+    NSNumber *number;
+    
+    if (number = [setup objectForKey:@"displayMode"]) {
+        int displayMode;
+        switch ([number intValue]) {
+            case SKASDisplaySinglePage: displayMode = kPDFDisplaySinglePage; break;
+            case SKASDisplaySinglePageContinuous: displayMode = kPDFDisplaySinglePageContinuous; break;
+            case SKASDisplayTwoUp: displayMode = kPDFDisplayTwoUp; break;
+            case SKASDisplayTwoUpContinuous: displayMode = kPDFDisplayTwoUpContinuous; break;
+            default: displayMode = kPDFDisplaySinglePage;
+        }
+        [setup setObject:[NSNumber numberWithInt:displayMode] forKey:@"displayMode"];
+    }
+    
+    if (number = [setup objectForKey:@"displayBox"]) {
+        int displayBox;
+        switch ([number intValue]) {
+            case SKASMediaBox: displayBox = kPDFDisplayBoxMediaBox; break;
+            case SKASCropBox: displayBox = kPDFDisplayBoxCropBox; break;
+            default: displayBox = kPDFDisplayBoxCropBox;
+        }
+        [setup setObject:[NSNumber numberWithInt:displayBox] forKey:@"displayBox"];
+    }
+    
+    [[self mainWindowController] applyPDFSettings:setup];
+}
+
 // fix a bug in Apple's implementation, which ignores the file type (for export)
 - (id)handleSaveScriptCommand:(NSScriptCommand *)command {
 	NSDictionary *args = [command evaluatedArguments];

@@ -42,6 +42,18 @@ extern NSString *SKDocumentErrorDomain;
 
 extern NSString *SKDocumentWillSaveNotification;
 
+enum {
+    SKASDisplaySinglePage = 'SiPg',
+    SKASDisplaySinglePageContinuous = 'SPgC',
+    SKASDisplayTwoUp = 'TwUp',
+    SKASDisplayTwoUpContinuous = 'TUpC'
+};
+
+enum {
+    SKASMediaBox = 'Mdia',
+    SKASCropBox = 'Crop'
+};
+
 
 @class PDFDocument, SKMainWindowController, SKPDFView, SKPDFSynchronizer;
 
