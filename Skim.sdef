@@ -548,6 +548,10 @@
                 description="The text of the page.">
                 <cocoa key="richText"/>
             </contents>
+            <property name="index" code="pidx" type="integer" access="r"
+                description="The index of the page.">
+                <cocoa key="index"/>
+            </property>
             <property name="label" code="Labl" type="text" access="r"
                 description="The label of the page.">
                 <cocoa key="label"/>
