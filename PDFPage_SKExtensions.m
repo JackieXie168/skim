@@ -277,6 +277,10 @@ static IMP originalDealloc = NULL;
     return document;
 }
 
+- (unsigned int)index {
+    return [[self document] indexForPage:self] + 1;
+}
+
 - (int)rotationAngle {
     return [self rotation];
 }

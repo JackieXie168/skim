@@ -56,6 +56,7 @@ extern NSString *SKPDFDocumentPageBoundsDidChangeNotification;
 
 - (NSScriptObjectSpecifier *)objectSpecifier;
 - (SKDocument *)containingDocument;
+- (unsigned int)index;
 - (int)rotationAngle;
 - (void)setRotationAngle:(int)angle;
 - (NSData *)boundsAsQDRect;
