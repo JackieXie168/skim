@@ -94,8 +94,8 @@
 \pard\tx1440\tx2880\tx4320\tx5760\tx7200\ql\qnatural
 
 \f1\fs22 \cf0 \
-Last update: 5 June 2007 (rev 
-\f2\fs20 2234)
+Last update: 14 June 2007 (rev 
+\f2\fs20 2307)
 \f1\fs22 \
 \pard\tx1440\tx2880\tx4320\tx5760\tx7200\ql\qnatural
 
@@ -118,6 +118,12 @@ Changes since 0.4.1\
 {\listtext	\'a5	}Allow dragging of the reading bar from the region outside a page in any tool mode.\
 {\listtext	\'a5	}Greatly enhance file update checking. Use kqueue notifications instead of a timer and check for complete PDF files.\
 {\listtext	\'a5	}Smart auto-cropping of all pages separately, but keeping the same size, for unevenly scanned papers. Accessible through Control-Command-K.\
+{\listtext	\'a5	}Improvements to magnify tool.\
+{\listtext	\'a5	}Hidden defaults for magnification tool sizes.\
+{\listtext	\'a5	}New hidden default for the maximum document page history length (SKMaximumDocumentPageHistoryCount).\
+{\listtext	\'a5	}Extensions to AppleScript support. Support for selections, additional note properties; new revert, find, and join commands; allow creation of markups; many new properties for documents, pages, and notes.\
+{\listtext	\'a5	}You can now change the icon type of anchored notes from the note's window to some standard proofreader marks.\
+{\listtext	\'a5	}Hidden default for icon type of anchored notes (SKAnchoredNoteiconType).\
 \pard\tx1440\tx2880\tx4320\tx5760\tx7200\ql\qnatural
 
 \f3\b\fs28 \cf0 \
@@ -129,6 +135,11 @@ Changes since 0.4.1\
 \f1\i0\b0\fs22 \cf0 {\listtext	\'a5	}Use old-style check for network availability for the updater, as the newer API is not reliable for dial-up connections.\
 {\listtext	\'a5	}Never add a new note on a click in note tool mode, because undoing such an addition can also remove a text edit in progress.\
 {\listtext	\'a5	}Update the window title when the document is reloaded; the number of pages can change. \
+{\listtext	\'a5	}Avoid possible crash due to tool-tip when reloading a document.\
+{\listtext	\'a5	}Fix Apple bug for AppleScript support for saving with arbitrary file types.\
+{\listtext	\'a5	}Fix AppleScript support for note color property.\
+{\listtext	\'a5	}Add help about cropping pages.\
+{\listtext	\'a5	}Start and end points for arrow notes in AppleScript are now relative to the page, and changing them automatically changes the bounds.\
 \pard\tx1440\tx2880\tx4320\tx5760\tx7200\ql\qnatural
 
 \f3\b\fs28 \cf0 \
