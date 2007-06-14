@@ -953,9 +953,9 @@
                 <cocoa key="To"/>
                 <type type="specifier" list="yes"/>
             </parameter>
-            <parameter name="contiguous" type="boolean" code="Cont" optional="yes"
-                description="Join to a contiguous selection?">
-                <cocoa key="Contiguous"/>
+            <parameter name="continuous" type="boolean" code="Cont" optional="yes"
+                description="Join to a continuous selection?">
+                <cocoa key="Continuous"/>
             </parameter>
             <result
                 description="The joined selection.">
