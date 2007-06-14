@@ -81,6 +81,10 @@
                 <type type="specifier" list="yes"/>
                 <cocoa key="selectionSpecifier"/>
             </property>
+            <property name="view settings" type="PDF view settings" code="vSet"
+                description="The PDF view settings.">
+                <cocoa key="pdfViewSettings"/>
+            </property>
             <responds-to name="close">
                 <cocoa method="handleCloseScriptCommand:"/>
             </responds-to>
@@ -642,6 +646,33 @@
 			</responds-to>
         </class>
         
+        <record-type name="PDF view settings" code="VSet">
+            <property name="scale factor" code="SclF" type="real"
+                description="The scale factor of the PDF.">
+                <cocoa key="scaleFactor"/>
+            </property>
+            <property name="auto scales" code="AScl" type="boolean"
+                description="Does the PDF zoom automatically?">
+                <cocoa key="autoScales"/>
+            </property>
+            <property name="displays page breaks" code="PgBr" type="boolean"
+                description="Does the PDF display page breaks?">
+                <cocoa key="displaysPageBreaks"/>
+            </property>
+            <property name="displays as book" code="Book" type="boolean"
+                description="Is the first page in two-up displayed as in book mode?">
+                <cocoa key="displaysAsBook"/>
+            </property>
+            <property name="display mode" code="DMod" type="display mode type"
+                description="The display mode for the PDF.">
+                <cocoa key="displayMode"/>
+            </property>
+            <property name="display box" code="DBox" type="display box type"
+                description="The display box for the PDF.">
+                <cocoa key="displayBox"/>
+            </property>
+        </record-type>
+
         <enumeration name="note type" code="NTpE">
             <enumerator name="text note" code="NTxt"
                 description="Text note."/>
@@ -693,11 +724,22 @@
                 description="Closed arrow line ending."/>
         </enumeration>
 
-        <enumeration name="box type" code="BoxE">
+        <enumeration name="display box type" code="BoxE">
             <enumerator name="media box" code="Mdia"
                 description="Media box."/>
             <enumerator name="crop box" code="Crop"
                 description="Crop box."/>
+        </enumeration>
+
+        <enumeration name="display mode type" code="ModE">
+            <enumerator name="single page" code="SiPg"
+                description="Display single pages."/>
+            <enumerator name="single page continuous" code="SPgC"
+                description="Display single pages vertically continuously."/>
+            <enumerator name="two up" code="TwUp"
+                description="Display pages side-by-side."/>
+            <enumerator name="two up continuous" code="TUpC"
+                description="Display pages side-by-side vertically continuously."/>
         </enumeration>
 
         <command name="revert" code="SKIMRvrt"
@@ -761,7 +803,7 @@
                 description="The page on which to get the bounds.">
                 <cocoa key="Page"/>
             </parameter>
-            <parameter name="for" type="box type" code="fBox" optional="yes"
+            <parameter name="for" type="display box type" code="fBox" optional="yes"
                 description="The display box for which to take the bounds.">
                 <cocoa key="Box"/>
             </parameter>

@@ -44,11 +44,6 @@
 #import "SKDocument.h"
 
 
-enum {
-    SKASMediaBox = 'Mdia',
-    SKASCropBox = 'Crop'
-};
-
 @interface PDFSelection (PDFSelectionPrivateDeclarations)
 - (int)numberOfRangesOnPage:(PDFPage *)page;
 - (NSRange)rangeAtIndex:(int)index onPage:(PDFPage *)page;
