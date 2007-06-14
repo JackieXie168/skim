@@ -148,7 +148,7 @@ NSString *SKFileSizeStringForFileURL(NSURL *fileURL, unsigned long long *physica
     NSMutableDictionary *dictionary = [NSMutableDictionary dictionary];
     [dictionary setDictionary:[pdfDoc documentAttributes]];
     if (doc) {
-        unsigned long long logicalSize, physicalSize;
+        unsigned long long logicalSize = 0, physicalSize = 0;
         [dictionary setValue:[[doc fileName] lastPathComponent] forKey:@"FileName"];
         [dictionary setValue:[NSString stringWithFormat: @"%d.%d", [pdfDoc majorVersion], [pdfDoc minorVersion]] forKey:@"Version"];
         [dictionary setValue:[NSNumber numberWithInt:[pdfDoc pageCount]] forKey:@"PageCount"];
