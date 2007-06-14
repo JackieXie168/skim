@@ -430,7 +430,7 @@ static inline NSRange rangeOfSubstringOfStringAtIndex(NSString *string, NSArray 
     id dP = [self directParameter];
 	NSDictionary *args = [self evaluatedArguments];
     id other = [args objectForKey:@"To"];
-    BOOL continuous = [[args objectForKey:@"Contiguous"] boolValue];
+    BOOL continuous = [[args objectForKey:@"Continuous"] boolValue];
     PDFSelection *selection = [PDFSelection selectionWithSpecifier:dP];
     PDFSelection *otherSelection = other ? [PDFSelection selectionWithSpecifier:other] : nil;
     
