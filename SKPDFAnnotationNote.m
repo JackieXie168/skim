@@ -132,7 +132,7 @@ static IMP originalSetColor = NULL;
         if (text)
             [(SKPDFAnnotationNote *)self setText:text];
         if (iconType)
-            [(SKPDFAnnotationNote *)super setIconType:[iconType intValue]];
+            [(SKPDFAnnotationNote *)self setIconType:[iconType intValue]];
     } else if ([type isEqualToString:@"FreeText"]) {
         self = [[SKPDFAnnotationFreeText alloc] initWithBounds:bounds];
         NSFont *font = [dict objectForKey:@"font"];
@@ -154,13 +154,13 @@ static IMP originalSetColor = NULL;
         NSNumber *startLineStyle = [dict objectForKey:@"startLineStyle"];
         NSNumber *endLineStyle = [dict objectForKey:@"endLineStyle"];
         if (point = [dict objectForKey:@"startPoint"])
-            [(SKPDFAnnotationLine *)super setStartPoint:NSPointFromString(point)];
+            [(SKPDFAnnotationLine *)self setStartPoint:NSPointFromString(point)];
         if (point = [dict objectForKey:@"endPoint"])
-            [(SKPDFAnnotationLine *)super setEndPoint:NSPointFromString(point)];
+            [(SKPDFAnnotationLine *)self setEndPoint:NSPointFromString(point)];
         if (startLineStyle)
-            [(SKPDFAnnotationLine *)super setStartLineStyle:[startLineStyle intValue]];
+            [(SKPDFAnnotationLine *)self setStartLineStyle:[startLineStyle intValue]];
         if (endLineStyle)
-            [(SKPDFAnnotationLine *)super setEndLineStyle:[endLineStyle intValue]];
+            [(SKPDFAnnotationLine *)self setEndLineStyle:[endLineStyle intValue]];
     } else {
         self = nil;
     }

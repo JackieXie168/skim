@@ -43,10 +43,10 @@ extern NSString *SKDocumentErrorDomain;
 extern NSString *SKDocumentWillSaveNotification;
 
 enum {
-    SKASDisplaySinglePage = 'SiPg',
-    SKASDisplaySinglePageContinuous = 'SPgC',
-    SKASDisplayTwoUp = 'TwUp',
-    SKASDisplayTwoUpContinuous = 'TUpC'
+    SKASDisplaySinglePage = '1Pg ',
+    SKASDisplaySinglePageContinuous = '1PgC',
+    SKASDisplayTwoUp = '2Up ',
+    SKASDisplayTwoUpContinuous = '2UpC'
 };
 
 enum {

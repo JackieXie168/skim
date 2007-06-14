@@ -233,7 +233,7 @@
                 <cocoa key="File"/>
             </parameter>
             <parameter name="as" code="fltp" type="text" optional="yes"
-                description="The type of file to save.">
+                description="The type of file to save. Should be one of &quot;PDF&quot;, &quot;PDF Without Notes&quot;, &quot;PDF With Embedded Notes&quot;, &quot;Skim Notes&quot;, &quot;Notes as RTF&quot;, and &quot;Notes as Text&quot;.">
                 <cocoa key="FileType"/>
             </parameter>
         </command>
@@ -800,13 +800,13 @@
         </enumeration>
 
         <enumeration name="PDF display mode" code="ModE">
-            <enumerator name="single page" code="SiPg"
+            <enumerator name="single page" code="1Pg "
                 description="Display single pages."/>
-            <enumerator name="single page continuous" code="SPgC"
+            <enumerator name="single page continuous" code="1PgC"
                 description="Display single pages vertically continuously."/>
-            <enumerator name="two up" code="TwUp"
+            <enumerator name="two up" code="2Up "
                 description="Display pages side-by-side."/>
-            <enumerator name="two up continuous" code="TUpC"
+            <enumerator name="two up continuous" code="2UpC"
                 description="Display pages side-by-side vertically continuously."/>
         </enumeration>
 

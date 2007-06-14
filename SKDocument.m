@@ -1024,6 +1024,14 @@ static BOOL isFileOnHFSVolume(NSString *fileName)
 	NSDictionary *args = [command evaluatedArguments];
     id fileURL = [args objectForKey:@"File"];
     id fileType = [args objectForKey:@"FileType"];
+    // we don't want to expose the value of NSPDFPboardType to the user, we advertise this type as "PDF".
+    if ([fileType isEqualToString:@"PDF"]) {
+        fileType = NSPDFPboardType;
+        NSMutableDictionary *arguments = [[command arguments] mutableCopy];
+        [arguments setObject:fileType forKey:@"FileType"];
+        [command setArguments:arguments];
+        [arguments release];
+    }
     if (fileURL == nil || fileType == nil) {
         return [super handleSaveScriptCommand:command];
     } else if ([fileURL isKindOfClass:[NSURL class]] == NO) {
