@@ -73,6 +73,14 @@ enum {
     SKASLineStyleClosedArrow = 'LSCA'
 };
 
+enum {
+    SKASBorderStyleSolid = 'Soli',
+    SKASBorderStyleDashed = 'Dash',
+    SKASBorderStyleBeveled = 'Bevl',
+    SKASBorderStyleInset = 'Inst',
+    SKASBorderStyleUnderline = 'Undr'
+};
+
 NSString *SKAnnotationWillChangeNotification = @"SKAnnotationWillChangeNotification";
 NSString *SKAnnotationDidChangeNotification = @"SKAnnotationDidChangeNotification";
 
@@ -140,8 +148,26 @@ static IMP originalSetColor = NULL;
             [(SKPDFAnnotationFreeText *)self setFont:font];
     } else if ([type isEqualToString:@"Circle"]) {
         self = [[SKPDFAnnotationCircle alloc] initWithBounds:bounds];
+        NSNumber *lineWidth = [dict objectForKey:@"lineWidth"];
+        NSNumber *borderStyle = [dict objectForKey:@"borderStyle"];
+        NSArray *dashPattern = [dict objectForKey:@"dashPattern"];
+        if (lineWidth)
+            [[self border] setLineWidth:[lineWidth floatValue]];
+        if (borderStyle)
+            [[self border] setStyle:[lineWidth intValue]];
+        if (dashPattern)
+            [[self border] setDashPattern:dashPattern];
     } else if ([type isEqualToString:@"Square"]) {
         self = [[SKPDFAnnotationSquare alloc] initWithBounds:bounds];
+        NSNumber *lineWidth = [dict objectForKey:@"lineWidth"];
+        NSNumber *borderStyle = [dict objectForKey:@"borderStyle"];
+        NSArray *dashPattern = [dict objectForKey:@"dashPattern"];
+        if (lineWidth)
+            [[self border] setLineWidth:[lineWidth floatValue]];
+        if (borderStyle)
+            [[self border] setStyle:[lineWidth intValue]];
+        if (dashPattern)
+            [[self border] setDashPattern:dashPattern];
     } else if ([type isEqualToString:@"Highlight"] || [type isEqualToString:@"MarkUp"]) {
         self = [[SKPDFAnnotationMarkup alloc] initWithBounds:bounds markupType:kPDFMarkupTypeHighlight quadrilateralPointsAsStrings:[dict objectForKey:@"quadrilateralPoints"]];
     } else if ([type isEqualToString:@"Underline"]) {
@@ -406,6 +432,57 @@ static IMP originalSetColor = NULL;
     return 0;
 }
 
+- (float)lineWidth {
+    return [[self border] lineWidth];
+}
+
+- (void)setLineWidth:(float)width {
+    [[[self undoManager] prepareWithInvocationTarget:self] setLineWidth:[self lineWidth]];
+    [[self undoManager] setActionName:NSLocalizedString(@"Edit Note", @"Undo action name")];
+    [[self border] setLineWidth:width];
+    [[NSNotificationCenter defaultCenter] postNotificationName:SKAnnotationDidChangeNotification 
+            object:self userInfo:[NSDictionary dictionaryWithObjectsAndKeys:@"lineWidth", @"key", nil]];
+}
+
+- (int)borderStyle {
+    switch ([[self border] style]) {
+        case kPDFBorderStyleSolid: return SKASBorderStyleSolid;
+        case kPDFBorderStyleDashed: return SKASBorderStyleDashed;
+        case kPDFBorderStyleBeveled: return SKASBorderStyleBeveled;
+        case kPDFBorderStyleInset: return SKASBorderStyleInset;
+        case kPDFBorderStyleUnderline: return SKASBorderStyleUnderline;
+        default: return SKASBorderStyleSolid;
+    }
+}
+
+- (void)setBorderStyle:(int)borderStyle {
+    PDFBorderStyle style = kPDFBorderStyleSolid;
+    switch (borderStyle) {
+        case SKASBorderStyleSolid: style = kPDFBorderStyleSolid; break;
+        case SKASBorderStyleDashed: style = kPDFBorderStyleDashed; break;
+        case SKASBorderStyleBeveled: style = kPDFBorderStyleBeveled; break;
+        case SKASBorderStyleInset: style = kPDFBorderStyleInset; break;
+        case SKASBorderStyleUnderline: style = kPDFBorderStyleUnderline; break;
+    }
+    [[[self undoManager] prepareWithInvocationTarget:self] setBorderStyle:borderStyle];
+    [[self undoManager] setActionName:NSLocalizedString(@"Edit Note", @"Undo action name")];
+    [[self border] setStyle:style];
+    [[NSNotificationCenter defaultCenter] postNotificationName:SKAnnotationDidChangeNotification 
+            object:self userInfo:[NSDictionary dictionaryWithObjectsAndKeys:@"borderStyle", @"key", nil]];
+}
+
+- (NSArray *)dashPattern {
+    return [[self border] dashPattern];
+}
+
+- (void)setDashPattern:(NSArray *)pattern {
+    [[[self undoManager] prepareWithInvocationTarget:self] setDashPattern:[self dashPattern]];
+    [[self undoManager] setActionName:NSLocalizedString(@"Edit Note", @"Undo action name")];
+    [[self border] setDashPattern:pattern];
+    [[NSNotificationCenter defaultCenter] postNotificationName:SKAnnotationDidChangeNotification 
+            object:self userInfo:[NSDictionary dictionaryWithObjectsAndKeys:@"dashPattern", @"key", nil]];
+}
+
 - (NSData *)startPointAsQDPoint {
     return (id)[NSNull null];
 }
@@ -440,6 +517,14 @@ static IMP originalSetColor = NULL;
         [[self border] setLineWidth:[[NSUserDefaults standardUserDefaults] floatForKey:SKCircleNoteLineWidthKey]];
     }
     return self;
+}
+
+- (NSDictionary *)dictionaryValue{
+    NSMutableDictionary *dict = (NSMutableDictionary *)[super dictionaryValue];
+    [dict setValue:[NSNumber numberWithFloat:[[self border] lineWidth]] forKey:@"lineWidth"];
+    [dict setValue:[NSNumber numberWithInt:[[self border] style]] forKey:@"borderStyle"];
+    [dict setValue:[[self border] dashPattern] forKey:@"dashPattern"];
+    return dict;
 }
 
 - (BOOL)isNoteAnnotation { return YES; }
@@ -478,6 +563,14 @@ static IMP originalSetColor = NULL;
         [[self border] setLineWidth:[[NSUserDefaults standardUserDefaults] floatForKey:SKSquareNoteLineWidthKey]];
     }
     return self;
+}
+
+- (NSDictionary *)dictionaryValue{
+    NSMutableDictionary *dict = (NSMutableDictionary *)[super dictionaryValue];
+    [dict setValue:[NSNumber numberWithFloat:[[self border] lineWidth]] forKey:@"lineWidth"];
+    [dict setValue:[NSNumber numberWithInt:[[self border] style]] forKey:@"borderStyle"];
+    [dict setValue:[[self border] dashPattern] forKey:@"dashPattern"];
+    return dict;
 }
 
 - (BOOL)isNoteAnnotation { return YES; }
@@ -775,6 +868,9 @@ static BOOL adjacentCharacterBounds(NSRect rect1, NSRect rect2) {
     [properties removeObjectForKey:@"fontName"];
     [properties removeObjectForKey:@"fontSize"];
     [properties removeObjectForKey:@"asIconType"];
+    [properties removeObjectForKey:@"lineWidth"];
+    [properties removeObjectForKey:@"borderStyle"];
+    [properties removeObjectForKey:@"dashPattern"];
     [properties removeObjectForKey:@"startPointAsQDPoint"];
     [properties removeObjectForKey:@"endPointAsQDPoint"];
     [properties removeObjectForKey:@"asStartLineStyle"];
@@ -833,6 +929,9 @@ static BOOL adjacentCharacterBounds(NSRect rect1, NSRect rect2) {
     NSMutableDictionary *properties = [[[super scriptingProperties] mutableCopy] autorelease];
     [properties removeObjectForKey:@"richText"];
     [properties removeObjectForKey:@"asIconType"];
+    [properties removeObjectForKey:@"lineWidth"];
+    [properties removeObjectForKey:@"borderStyle"];
+    [properties removeObjectForKey:@"dashPattern"];
     [properties removeObjectForKey:@"startPointAsQDPoint"];
     [properties removeObjectForKey:@"endPointAsQDPoint"];
     [properties removeObjectForKey:@"asStartLineStyle"];
@@ -978,6 +1077,9 @@ static BOOL adjacentCharacterBounds(NSRect rect1, NSRect rect2) {
     NSMutableDictionary *properties = [[[super scriptingProperties] mutableCopy] autorelease];
     [properties removeObjectForKey:@"fontName"];
     [properties removeObjectForKey:@"fontSize"];
+    [properties removeObjectForKey:@"lineWidth"];
+    [properties removeObjectForKey:@"borderStyle"];
+    [properties removeObjectForKey:@"dashPattern"];
     [properties removeObjectForKey:@"startPointAsQDPoint"];
     [properties removeObjectForKey:@"endPointAsQDPoint"];
     [properties removeObjectForKey:@"asStartLineStyle"];
@@ -1137,6 +1239,9 @@ static BOOL adjacentCharacterBounds(NSRect rect1, NSRect rect2) {
     [properties removeObjectForKey:@"fontName"];
     [properties removeObjectForKey:@"fontSize"];
     [properties removeObjectForKey:@"asIconType"];
+    [properties removeObjectForKey:@"lineWidth"];
+    [properties removeObjectForKey:@"borderStyle"];
+    [properties removeObjectForKey:@"dashPattern"];
     [properties removeObjectForKey:@"selectionSpecifier"];
     return properties;
 }

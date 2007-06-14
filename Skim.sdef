@@ -622,6 +622,19 @@
                 description="The icon type of an anchored note.">
                 <cocoa key="asIconType"/>
             </property>
+            <property name="border width" code="LnWd" type="real"
+                description="The line width of the border a circle or box.">
+                <cocoa key="lineWidth"/>
+            </property>
+            <property name="border style" code="BdSt" type="note border style"
+                description="The border style a circle or box.">
+                <cocoa key="borderStyle"/>
+            </property>
+            <property name="border dash pattern" code="DshP"
+                description="The dash pattern of the border a circle or box, a list of numbers.">
+                <cocoa key="dashPattern"/>
+                <type type="real" list="yes"/>
+            </property>
             <property name="start point" code="SPnt" type="point"
                 description="The start point of an arrow.">
                 <cocoa key="startPointAsQDPoint"/>
@@ -790,6 +803,19 @@
                 description="Open arrow line ending."/>
             <enumerator name="closed arrow" code="LSCA"
                 description="Closed arrow line ending."/>
+        </enumeration>
+
+        <enumeration name="note border style" code="BrSE">
+            <enumerator name="solid" code="Soli"
+                description="Solid border."/>
+            <enumerator name="dashed" code="Dash"
+                description="Dashed border."/>
+            <enumerator name="beveled" code="Bevl"
+                description="Beveled border."/>
+            <enumerator name="inset" code="Inst"
+                description="Inset border."/>
+            <enumerator name="underline" code="Undr"
+                description="Underline border."/>
         </enumeration>
 
         <enumeration name="PDF display box" code="BoxE">
