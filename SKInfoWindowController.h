@@ -49,6 +49,7 @@
 - (NSDictionary *)info;
 - (void)setInfo:(NSDictionary *)newInfo;
 
+- (NSDictionary *)infoForDocument:(SKDocument *)doc;
 - (void)fillInfoForDocument:(SKDocument *)doc;
 
 - (void)handleWindowDidBecomeKeyNotification:(NSNotification *)notification;

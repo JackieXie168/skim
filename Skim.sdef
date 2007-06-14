@@ -85,6 +85,10 @@
                 description="The PDF view settings.">
                 <cocoa key="pdfViewSettings"/>
             </property>
+            <property name="info" type="document attributes" code="DInf" access="r"
+                description="The attributes of the PDF document.">
+                <cocoa key="documentAttributes"/>
+            </property>
             <responds-to name="close">
                 <cocoa method="handleCloseScriptCommand:"/>
             </responds-to>
@@ -663,13 +667,73 @@
                 description="Is the first page in two-up displayed as in book mode?">
                 <cocoa key="displaysAsBook"/>
             </property>
-            <property name="display mode" code="DMod" type="display mode type"
+            <property name="display mode" code="DMod" type="PDF display mode"
                 description="The display mode for the PDF.">
                 <cocoa key="displayMode"/>
             </property>
-            <property name="display box" code="DBox" type="display box type"
+            <property name="display box" code="DBox" type="PDF display box"
                 description="The display box for the PDF.">
                 <cocoa key="displayBox"/>
+            </property>
+        </record-type>
+
+        <record-type name="document attributes" code="DAtr">
+            <property name="file name" code="atfn" type="text"
+                description="The file name.">
+                <cocoa key="FileName"/>
+            </property>
+            <property name="title" code="Titl" type="text"
+                description="The title.">
+                <cocoa key="Title"/>
+            </property>
+            <property name="author" code="Auth" type="text"
+                description="The autohor.">
+                <cocoa key="Author"/>
+            </property>
+            <property name="subject" code="Subj" type="text"
+                description="The subject.">
+                <cocoa key="Subject"/>
+            </property>
+            <property name="creator" code="Crea" type="text"
+                description="The creator.">
+                <cocoa key="Creator"/>
+            </property>
+            <property name="producer" code="Prod" type="text"
+                description="The producer.">
+                <cocoa key="Producer"/>
+            </property>
+            <property name="version" code="Vers" type="text"
+                description="The version.">
+                <cocoa key="Version"/>
+            </property>
+            <property name="creation date" code="CDat" type="date"
+                description="The creation date.">
+                <cocoa key="CreationDate"/>
+            </property>
+            <property name="modification date" code="MDat" type="date"
+                description="The modification date.">
+                <cocoa key="ModDate"/>
+            </property>
+            <property name="page count" code="PCnt" type="integer"
+                description="The number of pages.">
+                <cocoa key="PageCount"/>
+            </property>
+            <property name="file size" code="FlSz" type="text"
+                description="The size of the file.">
+                <cocoa key="FileSize"/>
+            </property>
+            <property name="physical size" code="PhSz" type="real"
+                description="The physical size of the file.">
+                <cocoa key="PhysicalSize"/>
+            </property>
+            <property name="logical size" code="LoSz" type="real"
+                description="The logical size of the file.">
+                <cocoa key="LogicalSize"/>
+            </property>
+            <property name="keywords" code="Keyw"
+                description="The keywords.">
+                <cocoa key="Keywords"/>
+                <type type="text" list="yes"/>
             </property>
         </record-type>
 
@@ -724,14 +788,14 @@
                 description="Closed arrow line ending."/>
         </enumeration>
 
-        <enumeration name="display box type" code="BoxE">
+        <enumeration name="PDF display box" code="BoxE">
             <enumerator name="media box" code="Mdia"
                 description="Media box."/>
             <enumerator name="crop box" code="Crop"
                 description="Crop box."/>
         </enumeration>
 
-        <enumeration name="display mode type" code="ModE">
+        <enumeration name="PDF display mode" code="ModE">
             <enumerator name="single page" code="SiPg"
                 description="Display single pages."/>
             <enumerator name="single page continuous" code="SPgC"
@@ -803,7 +867,7 @@
                 description="The page on which to get the bounds.">
                 <cocoa key="Page"/>
             </parameter>
-            <parameter name="for" type="display box type" code="fBox" optional="yes"
+            <parameter name="for" type="PDF display box" code="fBox" optional="yes"
                 description="The display box for which to take the bounds.">
                 <cocoa key="Box"/>
             </parameter>
