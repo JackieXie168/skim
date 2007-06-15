@@ -315,6 +315,7 @@ static IMP originalSetColor = NULL;
 
 #pragma mark Scripting support
 
+// to support the 'make' command
 - (id)init {
     [[self initWithBounds:NSZeroRect] release];
     self = nil;
@@ -376,6 +377,14 @@ static IMP originalSetColor = NULL;
     } else {
         return nil;
     }
+}
+
+// to support the 'duplicate' command
+- (id)copyWithZone:(NSZone *)zone {
+    if ([self isMovable]) // we don't want to duplicate markup
+        return [[PDFAnnotation allocWithZone:zone] initWithDictionary:[self dictionaryValue]];
+    else
+        return nil;
 }
 
 - (int)asNoteType {
