@@ -596,8 +596,13 @@
                 <cocoa key="textContents"/>
             </contents>
             <property name="color" code="colr" type="color"
-                description="The color of the note.">
+                description="The color of the note (red, green, blue).">
                 <cocoa key="color"/>
+            </property>
+            <property name="RGBA color" code="RGBA"
+                description="The color of the note (red, green, blue, alpha).">
+                <cocoa key="rgbaColor"/>
+                <type type="integer" list="yes"/>
             </property>
             <property name="page" code="Page" type="page" access="r"
                 description="The page for the note.">
@@ -637,11 +642,11 @@
                 <type type="real" list="yes"/>
             </property>
             <property name="start point" code="SPnt" type="point"
-                description="The start point of an arrow.">
+                description="The start point of an arrow (left, top).">
                 <cocoa key="startPointAsQDPoint"/>
             </property>
             <property name="end point" code="EPnt" type="point"
-                description="The end point of an arrow.">
+                description="The end point of an arrow (left, top).">
                 <cocoa key="endPointAsQDPoint"/>
             </property>
             <property name="start line style" code="SLSt" type="line ending style"
