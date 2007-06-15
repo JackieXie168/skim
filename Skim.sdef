@@ -29,7 +29,7 @@
 			<responds-to name="open">
 				<cocoa method="handleOpenScriptCommand:"/>
 			</responds-to>
-			<responds-to name="print">
+			<responds-to name="print" hidden="yes">
 				<cocoa method="handlePrintScriptCommand:"/>
 			</responds-to>
             <responds-to name="quit">
@@ -92,7 +92,7 @@
             <responds-to name="close">
                 <cocoa method="handleCloseScriptCommand:"/>
             </responds-to>
-            <responds-to name="print">
+            <responds-to name="print" hidden="yes">
                 <cocoa method="handlePrintScriptCommand:"/>
             </responds-to>
             <responds-to name="save">
@@ -170,7 +170,7 @@
             <responds-to name="close">
                 <cocoa method="handleCloseScriptCommand:"/>
             </responds-to>
-            <responds-to name="print">
+            <responds-to name="print" hidden="yes">
                 <cocoa method="handlePrintScriptCommand:"/>
             </responds-to>
             <responds-to name="save">
@@ -245,7 +245,7 @@
                 description="print a detailed report of PostScript errors"/>
         </enumeration>
 
-        <record-type name="print settings" code="pset">
+        <record-type name="print settings" hidden="yes" code="pset">
             <property name="copies" code="lwcp" type="integer"
                 description="the number of copies of a document to be printed">
                 <cocoa key="NSCopies"/>
@@ -284,18 +284,18 @@
             </property>
         </record-type>
 
-        <command name="print" code="aevtpdoc"
+        <command name="print" code="aevtpdoc" hidden="yes"
             description="Print a document.">
-            <direct-parameter
+            <direct-parameter hidden="yes"
                 description="The file(s), document(s), or window(s) to be printed.">
                 <type type="file" list="yes"/>
                 <type type="specifier"/>
             </direct-parameter>
-            <parameter name="with properties" code="prdt" type="print settings" optional="yes"
+            <parameter name="with properties" code="prdt" type="print settings" optional="yes" hidden="yes"
                 description="The print settings to use.">
                 <cocoa key="PrintSettings"/>
             </parameter>
-            <parameter name="print dialog" code="pdlg" type="boolean" optional="yes"
+            <parameter name="print dialog" code="pdlg" type="boolean" optional="yes" hidden="yes"
                 description="Should the application show the print dialog?">
                 <cocoa key="ShowPrintDialog"/>
             </parameter>
