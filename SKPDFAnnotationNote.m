@@ -407,6 +407,20 @@ static IMP originalSetColor = NULL;
     return 0;
 }
 
+- (NSArray *)rgbaColor {
+    float red, green, blue, alpha;
+    [[self color] getRed:&red green:&green blue:&blue alpha:&alpha];
+    return [NSArray arrayWithObjects:[NSNumber numberWithFloat:round(65535 * red)], [NSNumber numberWithFloat:round(65535 * green)], [NSNumber numberWithFloat:round(65535 * blue)], [NSNumber numberWithFloat:round(65535 * alpha)], nil];
+}
+
+- (void)setRgbaColor:(NSArray *)components {
+    float red = [[components objectAtIndex:0] floatValue] / 65535.0f;
+    float green = [[components objectAtIndex:1] floatValue] / 65535.0f;
+    float blue = [[components objectAtIndex:2] floatValue] / 65535.0f;
+    float alpha = [[components objectAtIndex:3] floatValue] / 65535.0f;
+    [self setColor:[NSColor colorWithCalibratedRed:red green:green blue:blue alpha:alpha]];
+}
+
 - (int)asIconType {
     return kPDFTextAnnotationIconNote;
 }

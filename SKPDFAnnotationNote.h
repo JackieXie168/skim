@@ -75,6 +75,8 @@ extern void SKCGContextSetDefaultRGBColorSpace(CGContextRef context);
 
 - (NSScriptObjectSpecifier *)objectSpecifier;
 - (int)asNoteType;
+- (NSArray *)rgbaColor;
+- (void)setRgbaColor:(NSArray *)components;
 - (int)asIconType;
 - (id)textContents;
 - (void)setTextContents:(id)text;
