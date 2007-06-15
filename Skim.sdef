@@ -553,7 +553,7 @@
                 description="The index of the page.">
                 <cocoa key="index"/>
             </property>
-            <property name="label" code="Labl" type="text" access="r"
+            <property name="label" code="labB" type="text" access="r"
                 description="The label of the page.">
                 <cocoa key="label"/>
             </property>
@@ -569,7 +569,7 @@
                 description="The bounding rectangle for the foreground of the page (left, top, right, bottom).">
                 <cocoa key="contentBoundsAsQDRect"/>
             </property>
-            <property name="rotation" code="PRot" type="integer"
+            <property name="rotation" code="trot" type="integer"
                 description="The rotation of the page. Must be one of 0, 90, 180, or 270.">
                 <cocoa key="rotationAngle"/>
             </property>
@@ -624,7 +624,7 @@
                 description="The font size in points of a text note.">
                 <cocoa key="fontSize"/>
             </property>
-            <property name="icon" code="Icon" type="icon type"
+            <property name="icon" code="iimg" type="icon type"
                 description="The icon type of an anchored note.">
                 <cocoa key="asIconType"/>
             </property>
@@ -705,7 +705,7 @@
                 description="The file name.">
                 <cocoa key="FileName"/>
             </property>
-            <property name="title" code="Titl" type="text"
+            <property name="title" code="titl" type="text"
                 description="The title.">
                 <cocoa key="Title"/>
             </property>
@@ -725,15 +725,15 @@
                 description="The producer.">
                 <cocoa key="Producer"/>
             </property>
-            <property name="version" code="Vers" type="text"
+            <property name="version" code="vers" type="text"
                 description="The version.">
                 <cocoa key="Version"/>
             </property>
-            <property name="creation date" code="CDat" type="date"
+            <property name="creation date" code="ascd" type="date"
                 description="The creation date.">
                 <cocoa key="CreationDate"/>
             </property>
-            <property name="modification date" code="MDat" type="date"
+            <property name="modification date" code="asmo" type="date"
                 description="The modification date.">
                 <cocoa key="ModDate"/>
             </property>
@@ -745,11 +745,11 @@
                 description="The size of the file.">
                 <cocoa key="FileSize"/>
             </property>
-            <property name="physical size" code="PhSz" type="real"
+            <property name="physical size" code="phys" type="real"
                 description="The physical size of the file.">
                 <cocoa key="PhysicalSize"/>
             </property>
-            <property name="logical size" code="LoSz" type="real"
+            <property name="logical size" code="Logi" type="real"
                 description="The logical size of the file.">
                 <cocoa key="LogicalSize"/>
             </property>
@@ -820,7 +820,7 @@
                 description="Beveled border."/>
             <enumerator name="inset" code="Inst"
                 description="Inset border."/>
-            <enumerator name="underline" code="Undr"
+            <enumerator name="underline" code="undl"
                 description="Underline border."/>
         </enumeration>
 
@@ -869,7 +869,7 @@
                 description="The text to search for.">
                 <cocoa key="Text"/>
             </parameter>
-            <parameter name="from" code="From" optional="yes"
+            <parameter name="from" code="from" optional="yes"
                 description="The selection to search from.">
                 <type type="specifier" list="yes"/>
                 <cocoa key="From"/>
@@ -878,7 +878,7 @@
                 description="Search backward?">
                 <cocoa key="Backward"/>
             </parameter>
-            <parameter name="case sensitive" code="Case" type="boolean" optional="yes"
+            <parameter name="case sensitive" code="casS" type="boolean" optional="yes"
                 description="Is the search case sensitive?">
                 <cocoa key="CaseSensitive"/>
             </parameter>
@@ -900,7 +900,7 @@
                 <cocoa key="To"/>
                 <type type="specifier" list="yes"/>
             </parameter>
-            <parameter name="continuous" type="boolean" code="Cont" optional="yes"
+            <parameter name="continuous" type="boolean" code="conI" optional="yes"
                 description="Join to a continuous selection?">
                 <cocoa key="Continuous"/>
             </parameter>
@@ -925,7 +925,7 @@
                 description="The page on which to get the bounds.">
                 <cocoa key="Page"/>
             </parameter>
-            <parameter name="for" type="PDF display box" code="fBox" optional="yes"
+            <parameter name="for" type="PDF display box" code="for " optional="yes"
                 description="The display box for which to take the bounds.">
                 <cocoa key="Box"/>
             </parameter>
