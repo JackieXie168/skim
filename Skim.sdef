@@ -825,7 +825,7 @@
                 description="Default box color."/>
             <enumerator name="highlight note color" code="CHil"
                 description="Default highlight color."/>
-            <enumerator name="underline color" code="CUnd"
+            <enumerator name="underline note color" code="CUnd"
                 description="Default underline highlight color."/>
             <enumerator name="strike out note color" code="CStr"
                 description="Default strike out highlight color."/>
