@@ -70,7 +70,6 @@
 		[self setHasShadow:YES];
         [self setDisplaysWhenScreenProfileChanges:YES];
         [self setReleasedWhenClosed:NO];
-        [self setLevel:NSFloatingWindowLevel];
         [self moveToScreen:screen];
     }
     return self;
