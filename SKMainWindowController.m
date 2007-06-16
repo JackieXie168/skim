@@ -1487,18 +1487,14 @@ static NSString *SKRightSidePaneWidthKey = @"SKRightSidePaneWidth";
     [rightSideWindow hideSideWindow];
     
     [leftSideWindow orderFront:self];
-    [[self window] addChildWindow:leftSideWindow ordered:NSWindowAbove];
     [rightSideWindow orderFront:self];
-    [[self window] addChildWindow:rightSideWindow ordered:NSWindowAbove];
     
     [pdfView setFrame:NSInsetRect([[pdfView superview] bounds], 9.0, 0.0)];
     [[pdfView superview] setNeedsDisplay:YES];
 }
 
 - (void)hideSideWindows {
-    [[self window] removeChildWindow:leftSideWindow];
     [leftSideWindow orderOut:self];
-    [[self window] removeChildWindow:rightSideWindow];
     [rightSideWindow orderOut:self];
     
     if ([[leftSideWindow firstResponder] isDescendantOf:leftSideBox])
