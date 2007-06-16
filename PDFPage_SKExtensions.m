@@ -43,6 +43,7 @@
 #import "PDFSelection_SKExtensions.h"
 #import "OBUtilities.h"
 #import "NSBitmapImageRep_SKExtensions.h"
+#import "SKStringConstants.h"
 
 NSString *SKPDFDocumentPageBoundsDidChangeNotification = @"SKPDFDocumentPageBoundsDidChangeNotification";
 
@@ -132,12 +133,16 @@ static IMP originalDealloc = NULL;
 }
 
 - (NSImage *)thumbnailWithSize:(float)size forBox:(PDFDisplayBox)box {
-    float shadowBlurRadius = roundf(size / 32.0);
-    float shadowOffset = - ceilf(shadowBlurRadius * 0.75);
-    return  [self thumbnailWithSize:size forBox:box shadowBlurRadius:shadowBlurRadius shadowOffset:NSMakeSize(0.0, shadowOffset)];
+    return  [self thumbnailWithSize:size forBox:box readingBarRect:NSZeroRect];
 }
 
-- (NSImage *)thumbnailWithSize:(float)size forBox:(PDFDisplayBox)box shadowBlurRadius:(float)shadowBlurRadius shadowOffset:(NSSize)shadowOffset {
+- (NSImage *)thumbnailWithSize:(float)size forBox:(PDFDisplayBox)box readingBarRect:(NSRect)readingBarRect {
+    float shadowBlurRadius = roundf(size / 32.0);
+    float shadowOffset = - ceilf(shadowBlurRadius * 0.75);
+    return  [self thumbnailWithSize:size forBox:box shadowBlurRadius:shadowBlurRadius shadowOffset:NSMakeSize(0.0, shadowOffset) readingBarRect:readingBarRect];
+}
+
+- (NSImage *)thumbnailWithSize:(float)size forBox:(PDFDisplayBox)box shadowBlurRadius:(float)shadowBlurRadius shadowOffset:(NSSize)shadowOffset readingBarRect:(NSRect)readingBarRect {
     NSRect bounds = [self boundsForBox:box];
     BOOL isScaled = size > 0.0;
     BOOL hasShadow = shadowBlurRadius > 0.0;
@@ -159,6 +164,9 @@ static IMP originalDealloc = NULL;
         thumbnailSize = NSMakeSize(NSWidth(bounds) + 2.0 * shadowBlurRadius, NSHeight(bounds) + 2.0 * shadowBlurRadius);
         scaleX = scaleY = 1.0;
     }
+    
+    readingBarRect.origin.x -= NSMinX(bounds);
+    readingBarRect.origin.y -= NSMinY(bounds);
     
     image = [[NSImage alloc] initWithSize:thumbnailSize];
     [image lockFocus];
@@ -185,6 +193,19 @@ static IMP originalDealloc = NULL;
     NSRectFill(bounds);
     [NSGraphicsContext restoreGraphicsState];
     [self drawWithBox:box]; 
+    if (NSIsEmptyRect(readingBarRect) == NO) {
+        [[NSUnarchiver unarchiveObjectWithData:[[NSUserDefaults standardUserDefaults] objectForKey:SKReadingBarColorKey]] setFill];
+        if ([[NSUserDefaults standardUserDefaults] boolForKey:SKReadingBarInvertKey]) {
+            NSRect outRect, ignored;
+            NSDivideRect(bounds, &outRect, &ignored, NSMaxY(bounds) - NSMaxY(readingBarRect), NSMaxYEdge);
+            [NSBezierPath fillRect:outRect];
+            NSDivideRect(bounds, &outRect, &ignored, NSMinY(readingBarRect) - NSMinY(bounds), NSMinYEdge);
+            [NSBezierPath fillRect:outRect];
+        } else {
+            CGContextSetBlendMode([[NSGraphicsContext currentContext] graphicsPort], kCGBlendModeMultiply);
+            [NSBezierPath fillRect:readingBarRect];
+        }
+    }
     [NSGraphicsContext restoreGraphicsState];
     [image unlockFocus];
     

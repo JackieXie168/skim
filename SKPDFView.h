@@ -47,6 +47,7 @@ extern NSString *SKPDFViewDidAddAnnotationNotification;
 extern NSString *SKPDFViewDidRemoveAnnotationNotification;
 extern NSString *SKPDFViewDidMoveAnnotationNotification;
 extern NSString *SKPDFViewAnnotationDoubleClickedNotification;
+extern NSString *SKPDFViewReadingBarDidChangeNotification;
 
 extern NSString *SKSkimNotePboardType;
 
@@ -124,6 +125,7 @@ typedef enum _SKNoteType {
 - (void)setHideNotes:(BOOL)flag;
 
 - (BOOL)hasReadingBar;
+- (SKReadingBar *)readingBar;
 
 - (void)toggleReadingBar;
 
