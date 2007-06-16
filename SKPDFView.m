@@ -61,6 +61,7 @@ NSString *SKPDFViewDidAddAnnotationNotification = @"SKPDFViewDidAddAnnotationNot
 NSString *SKPDFViewDidRemoveAnnotationNotification = @"SKPDFViewDidRemoveAnnotationNotification";
 NSString *SKPDFViewDidMoveAnnotationNotification = @"SKPDFViewDidMoveAnnotationNotification";
 NSString *SKPDFViewAnnotationDoubleClickedNotification = @"SKPDFViewAnnotationDoubleClickedNotification";
+NSString *SKPDFViewReadingBarDidChangeNotification = @"SKPDFViewReadingBarDidChangeNotification";
 
 NSString *SKSkimNotePboardType = @"SKSkimNotePboardType";
 
@@ -184,7 +185,7 @@ static void SKCGContextDrawGrabHandle(CGContextRef context, CGPoint point, float
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleAnnotationDidChangeNotification:) 
                                                  name:SKAnnotationDidChangeNotification object:nil];
     [[NSUserDefaultsController sharedUserDefaultsController] addObserver:self forKeys:
-        [NSArray arrayWithObjects:SKReadingBarColorKey, SKReadingBarTransparencyKey, SKReadingBarInvertKey, nil]];
+        [NSArray arrayWithObjects:SKReadingBarColorKey, SKReadingBarInvertKey, nil]];
 }
 
 - (id)initWithFrame:(NSRect)frameRect {
@@ -203,7 +204,7 @@ static void SKCGContextDrawGrabHandle(CGContextRef context, CGPoint point, float
 
 - (void)dealloc {
     [[NSUserDefaultsController sharedUserDefaultsController] removeObserver:self forKeys:
-        [NSArray arrayWithObjects:SKReadingBarColorKey, SKReadingBarTransparencyKey, SKReadingBarInvertKey, nil]];
+        [NSArray arrayWithObjects:SKReadingBarColorKey, SKReadingBarInvertKey, nil]];
     [[NSNotificationCenter defaultCenter] removeObserver:self];
     [self doAutohide:NO]; // invalidates and releases the timer
     [[SKPDFHoverWindow sharedHoverWindow] orderOut:self];
@@ -488,7 +489,12 @@ static void SKCGContextDrawGrabHandle(CGContextRef context, CGPoint point, float
     return readingBar != nil;
 }
 
+- (SKReadingBar *)readingBar {
+    return readingBar;
+}
+
 - (void)toggleReadingBar {
+    NSMutableDictionary *userInfo = [NSMutableDictionary dictionaryWithObjectsAndKeys:[readingBar page], @"oldPage", nil];
     if (readingBar) {
         [readingBar release];
         readingBar = nil;
@@ -499,7 +505,9 @@ static void SKCGContextDrawGrabHandle(CGContextRef context, CGPoint point, float
         [readingBar goToNextLine];
         [self setNeedsDisplay:YES];
         [self scrollRect:[readingBar currentBounds] inPageToVisible:[readingBar page]];
+        [userInfo setValue:[readingBar page] forKey:@"newPage"];
     }
+    [[NSNotificationCenter defaultCenter] postNotificationName:SKPDFViewReadingBarDidChangeNotification object:self userInfo:userInfo];
 }
 
 #pragma mark Actions
@@ -1708,9 +1716,12 @@ static void SKCGContextDrawGrabHandle(CGContextRef context, CGPoint point, float
 - (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context {
     if (object == [NSUserDefaultsController sharedUserDefaultsController] && [keyPath hasPrefix:@"values."]) {
         NSString *key = [keyPath substringFromIndex:7];
-        if ([key isEqualToString:SKReadingBarColorKey] || [key isEqualToString:SKReadingBarTransparencyKey] || [key isEqualToString:SKReadingBarInvertKey]) {
-            if (readingBar)
+        if ([key isEqualToString:SKReadingBarColorKey] || [key isEqualToString:SKReadingBarInvertKey]) {
+            if (readingBar) {
                 [self setNeedsDisplay:YES];
+                [[NSNotificationCenter defaultCenter] postNotificationName:SKPDFViewReadingBarDidChangeNotification 
+                    object:self userInfo:[NSDictionary dictionaryWithObjectsAndKeys:[readingBar page], @"oldPage", [readingBar page], @"newPage", nil]];
+            }
         }
     } else {
         [super observeValueForKeyPath:keyPath ofObject:object change:change context:context];
@@ -2234,6 +2245,7 @@ static void SKCGContextDrawGrabHandle(CGContextRef context, CGPoint point, float
 
 - (void)moveReadingBarForKey:(unichar)eventChar {
     BOOL moved = NO;
+    NSMutableDictionary *userInfo = [NSMutableDictionary dictionaryWithObjectsAndKeys:[readingBar page], @"oldPage", nil];
     if (eventChar == NSDownArrowFunctionKey)
         moved = [readingBar goToNextLine];
     else if (eventChar == NSUpArrowFunctionKey)
@@ -2246,6 +2258,8 @@ static void SKCGContextDrawGrabHandle(CGContextRef context, CGPoint point, float
         if ([[self currentPage] isEqual:[readingBar page]] == NO)
             [self goToPage:[readingBar page]];
         [self setNeedsDisplay:YES];
+        [userInfo setObject:[readingBar page] forKey:@"newPage"];
+        [[NSNotificationCenter defaultCenter] postNotificationName:SKPDFViewReadingBarDidChangeNotification object:self userInfo:userInfo];
     }
 }
 
@@ -2830,7 +2844,8 @@ static void SKCGContextDrawGrabHandle(CGContextRef context, CGPoint point, float
 - (void)dragReadingBarWithEvent:(NSEvent *)theEvent {
     PDFPage *page = [readingBar page];
     NSArray *lineBounds = [page lineBounds];
-	
+	NSMutableDictionary *userInfo = [NSMutableDictionary dictionaryWithObjectsAndKeys:page, @"oldPage", nil];
+    
     [[NSCursor closedHandCursor] push];
     
 	while (YES) {
@@ -2859,6 +2874,8 @@ static void SKCGContextDrawGrabHandle(CGContextRef context, CGPoint point, float
                 [readingBar setPage:page];
                 [readingBar setCurrentLine:i];
                 [self setNeedsDisplay:YES];
+                [userInfo setObject:[readingBar page] forKey:@"newPage"];
+                [[NSNotificationCenter defaultCenter] postNotificationName:SKPDFViewReadingBarDidChangeNotification object:self userInfo:userInfo];
                 break;
             }
         }

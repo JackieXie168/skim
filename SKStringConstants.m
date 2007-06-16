@@ -61,7 +61,6 @@ NSString *SKLastAnnotationModeKey = @"SKLastAnnotationMode";
 NSString *SKShouldAntiAliasKey = @"SKShouldAntiAlias";
 NSString *SKGreekingThresholdKey = @"SKGreekingThreshold";
 NSString *SKReadingBarColorKey = @"SKReadingBarColor";
-NSString *SKReadingBarTransparencyKey = @"SKReadingBarTransparency";
 NSString *SKReadingBarInvertKey = @"SKReadingBarInvert";
 NSString *SKTextNoteFontNameKey = @"SKTextNoteFontName";
 NSString *SKTextNoteFontSizeKey = @"SKTextNoteFontSize";

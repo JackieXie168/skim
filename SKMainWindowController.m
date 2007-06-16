@@ -70,6 +70,7 @@
 #import "SKToolbarItem.h"
 #import "NSValue_SKExtensions.h"
 #import "NSString_SKExtensions.h"
+#import "SKReadingBar.h"
 
 #define SEGMENTED_CONTROL_HEIGHT    25.0
 #define WINDOW_X_DELTA              0.0
@@ -312,6 +313,8 @@ static NSString *SKRightSidePaneWidthKey = @"SKRightSidePaneWidth";
                              name:SKPDFViewDidMoveAnnotationNotification object:pdfView];
     [nc addObserver:self selector:@selector(handleDoubleClickedAnnotationNotification:) 
                              name:SKPDFViewAnnotationDoubleClickedNotification object:pdfView];
+    [nc addObserver:self selector:@selector(handleReadingBarDidChangeNotification:) 
+                             name:SKPDFViewReadingBarDidChangeNotification object:pdfView];
     [nc addObserver:self selector:@selector(handleAnnotationDidChangeNotification:) 
                              name:SKAnnotationDidChangeNotification object:nil];
 }
@@ -692,9 +695,9 @@ static NSString *SKRightSidePaneWidthKey = @"SKRightSidePaneWidth";
         NSSize newSize, oldSize = [[thumbnail image] size];
         PDFDocument *pdfDoc = [pdfView document];
         PDFPage *page = [pdfDoc pageAtIndex:theIndex];
-        NSImage *image = [page thumbnailWithSize:thumbnailCacheSize forBox:[pdfView displayBox]];
+        NSRect readingBarRect = [[[pdfView readingBar] page] isEqual:page] ? [[pdfView readingBar] currentBoundsForBox:[pdfView displayBox]] : NSZeroRect;
+        NSImage *image = [page thumbnailWithSize:thumbnailCacheSize forBox:[pdfView displayBox] readingBarRect:readingBarRect];
         
-
         // setImage: sends a KVO notification that results in calling objectInThumbnailsAtIndex: endlessly, so set dirty to NO first
         [thumbnail setDirty:NO];
         [thumbnail setImage:image];
@@ -2310,6 +2313,16 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
     PDFAnnotation *annotation = [[notification userInfo] objectForKey:@"annotation"];
     
     [self showNote:annotation];
+}
+
+- (void)handleReadingBarDidChangeNotification:(NSNotification *)notification {
+    NSDictionary *userInfo = [notification userInfo];
+    PDFPage *oldPage = [userInfo objectForKey:@"oldPage"];
+    PDFPage *newPage = [userInfo objectForKey:@"newPage"];
+    if (oldPage)
+        [self updateThumbnailAtPageIndex:[[pdfView document] indexForPage:oldPage]];
+    if (newPage && [newPage isEqual:oldPage] == NO)
+        [self updateThumbnailAtPageIndex:[[pdfView document] indexForPage:newPage]];
 }
 
 - (void)handleAnnotationDidChangeNotification:(NSNotification *)notification {
