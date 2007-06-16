@@ -407,20 +407,6 @@ static IMP originalSetColor = NULL;
     return 0;
 }
 
-- (NSArray *)rgbaColor {
-    float red, green, blue, alpha;
-    [[self color] getRed:&red green:&green blue:&blue alpha:&alpha];
-    return [NSArray arrayWithObjects:[NSNumber numberWithFloat:round(65535 * red)], [NSNumber numberWithFloat:round(65535 * green)], [NSNumber numberWithFloat:round(65535 * blue)], [NSNumber numberWithFloat:round(65535 * alpha)], nil];
-}
-
-- (void)setRgbaColor:(NSArray *)components {
-    float red = [[components objectAtIndex:0] floatValue] / 65535.0f;
-    float green = [[components objectAtIndex:1] floatValue] / 65535.0f;
-    float blue = [[components objectAtIndex:2] floatValue] / 65535.0f;
-    float alpha = [[components objectAtIndex:3] floatValue] / 65535.0f;
-    [self setColor:[NSColor colorWithCalibratedRed:red green:green blue:blue alpha:alpha]];
-}
-
 - (int)asIconType {
     return kPDFTextAnnotationIconNote;
 }
@@ -683,6 +669,7 @@ static NSArray *createQuadPointsWithBounds(const NSRect bounds, const NSPoint or
             [self setColor:[NSUnarchiver unarchiveObjectWithData:[[NSUserDefaults standardUserDefaults] objectForKey:SKUnderlineNoteColorKey]]];
         else if (type == kPDFMarkupTypeStrikeOut)
             [self setColor:[NSUnarchiver unarchiveObjectWithData:[[NSUserDefaults standardUserDefaults] objectForKey:SKStrikeOutNoteColorKey]]];
+            [[NSUserDefaults standardUserDefaults] setObject:[NSArchiver archivedDataWithRootObject:[NSColor colorWithDeviceRed:0 green:0.5 blue:0 alpha:1.0]] forKey:SKUnderlineNoteColorKey];
         
         NSArray *quadPoints = nil;
         if (pointStrings) {
@@ -1478,6 +1465,138 @@ static BOOL adjacentCharacterBounds(NSRect rect1, NSRect rect2) {
         [self willChangeValueForKey:@"contents"];
         [self didChangeValueForKey:@"contents"];
     }
+}
+
+@end
+
+#pragma mark -
+
+enum {
+    SKASColorRed = 'Red ',
+    SKASColorGreen = 'Gren',
+    SKASColorBlue = 'Blue',
+    SKASColorYellow = 'Yelw',
+    SKASColorMagenta = 'Mgnt',
+    SKASColorCyan = 'Cyan',
+    SKASColorDarkRed = 'DRed',
+    SKASColorDarkGreen = 'DGrn',
+    SKASColorDarkBlue = 'DBlu',
+    SKASColorBanana = 'Bana',
+    SKASColorTurquoise = 'Turq',
+    SKASColorViolet = 'Viol',
+    SKASColorOrange = 'Orng',
+    SKASColorDeepPink = 'DpPk',
+    SKASColorSpringGreen = 'SprG',
+    SKASColorAqua = 'Aqua',
+    SKASColorLime = 'Lime',
+    SKASColorDarkViolet = 'DVio',
+    SKASColorPurple = 'Prpl',
+    SKASColorTeal = 'Teal',
+    SKASColorOlive = 'Oliv',
+    SKASColorBrown = 'Brwn',
+    SKASColorBlack = 'Blck',
+    SKASColorWhite = 'Whit',
+    SKASColorGray = 'Gray',
+    SKASColorLightGray = 'LGry',
+    SKASColorDarkGray = 'DGry',
+    SKASColorClear = 'Clea'
+};
+
+enum {
+    SKASColorTextNote = 'CTxt',
+    SKASColorAnchoredNote = 'CAnc',
+    SKASColorCircleNote = 'CCir',
+    SKASColorSquareNote = 'CSqu',
+    SKASColorHighlightNote = 'CHil',
+    SKASColorUnderlineNote = 'CUnd',
+    SKASColorStrikeOutNote = 'CStr',
+    SKASColorArrowNote = 'CArr'
+};
+
+@interface NSColor (SKExtensions)
++ (id)scriptingRgbaColorWithDescriptor:(NSAppleEventDescriptor *)descriptor;
+- (id)scriptingRgbaColorDescriptor;
+@end
+
+
+@implementation NSColor (SKExtensions)
+
++ (id)scriptingRgbaColorWithDescriptor:(NSAppleEventDescriptor *)descriptor;
+{
+    float red, green, blue, alpha = 1.0;
+    NSUserDefaults *sud = [NSUserDefaults standardUserDefaults];
+    switch ([descriptor numberOfItems]) {
+        case 0:
+            switch ([descriptor enumCodeValue]) {
+                case SKASColorRed: return [NSColor redColor];
+                case SKASColorGreen: return [NSColor greenColor];
+                case SKASColorBlue: return [NSColor blueColor];
+                case SKASColorYellow: return [NSColor yellowColor];
+                case SKASColorMagenta: return [NSColor magentaColor];
+                case SKASColorCyan: return [NSColor cyanColor];
+                case SKASColorDarkRed: return [NSColor colorWithDeviceRed:0.5 green:0.0 blue:0.0 alpha:1.0];
+                case SKASColorDarkGreen: return [NSColor colorWithDeviceRed:0.0 green:0.5 blue:0.0 alpha:1.0];
+                case SKASColorDarkBlue: return [NSColor colorWithDeviceRed:0.0 green:0.0 blue:0.5 alpha:1.0];
+                case SKASColorBanana: return [NSColor colorWithDeviceRed:1.0 green:1.0 blue:0.5 alpha:1.0];
+                case SKASColorTurquoise: return [NSColor colorWithDeviceRed:1.0 green:0.5 blue:1.0 alpha:1.0];
+                case SKASColorViolet: return [NSColor colorWithDeviceRed:0.5 green:1.0 blue:1.0 alpha:1.0];
+                case SKASColorOrange: return [NSColor orangeColor];
+                case SKASColorDeepPink: return [NSColor colorWithDeviceRed:1.0 green:0.0 blue:0.5 alpha:1.0];
+                case SKASColorSpringGreen: return [NSColor colorWithDeviceRed:0.0 green:1.0 blue:0.5 alpha:1.0];
+                case SKASColorAqua: return [NSColor colorWithDeviceRed:0.0 green:0.5 blue:1.0 alpha:1.0];
+                case SKASColorLime: return [NSColor colorWithDeviceRed:0.5 green:1.0 blue:0.0 alpha:1.0];
+                case SKASColorDarkViolet: return [NSColor colorWithDeviceRed:0.5 green:0.0 blue:1.0 alpha:1.0];
+                case SKASColorPurple: return [NSColor purpleColor];
+                case SKASColorTeal: return [NSColor colorWithDeviceRed:0.0 green:0.5 blue:0.5 alpha:1.0];
+                case SKASColorOlive: return [NSColor colorWithDeviceRed:0.5 green:0.5 blue:0.0 alpha:1.0];
+                case SKASColorBrown: return [NSColor brownColor];
+                case SKASColorBlack: return [NSColor blackColor];
+                case SKASColorWhite: return [NSColor whiteColor];
+                case SKASColorGray: return [NSColor grayColor];
+                case SKASColorDarkGray: return [NSColor darkGrayColor];
+                case SKASColorLightGray: return [NSColor lightGrayColor];
+                case SKASColorClear: return [NSColor clearColor];
+                case SKASColorTextNote: return [NSUnarchiver unarchiveObjectWithData:[sud objectForKey:SKFreeTextNoteColorKey]];
+                case SKASColorAnchoredNote: return [NSUnarchiver unarchiveObjectWithData:[sud objectForKey:SKAnchoredNoteColorKey]];
+                case SKASColorCircleNote: return [NSUnarchiver unarchiveObjectWithData:[sud objectForKey:SKCircleNoteColorKey]];
+                case SKASColorSquareNote: return [NSUnarchiver unarchiveObjectWithData:[sud objectForKey:SKSquareNoteColorKey]];
+                case SKASColorHighlightNote: return [NSUnarchiver unarchiveObjectWithData:[sud objectForKey:SKHighlightNoteColorKey]];
+                case SKASColorUnderlineNote: return [NSUnarchiver unarchiveObjectWithData:[sud objectForKey:SKUnderlineNoteColorKey]];
+                case SKASColorStrikeOutNote: return [NSUnarchiver unarchiveObjectWithData:[sud objectForKey:SKStrikeOutNoteColorKey]];
+                case SKASColorArrowNote: return [NSUnarchiver unarchiveObjectWithData:[sud objectForKey:SKArrowNoteColorKey]];
+                default: return nil;
+            }
+            break;
+        case 4:
+            alpha = (float)[[descriptor descriptorAtIndex:4] int32Value] / 65535.0f;
+        case 3:
+            red = (float)[[descriptor descriptorAtIndex:1] int32Value] / 65535.0f;
+            green = (float)[[descriptor descriptorAtIndex:2] int32Value] / 65535.0f;
+            blue = (float)[[descriptor descriptorAtIndex:3] int32Value] / 65535.0f;
+            break;
+        case 2:
+            alpha = (float)[[descriptor descriptorAtIndex:2] int32Value] / 65535.0f;
+        case 1:
+            red = green = blue = (float)[[descriptor descriptorAtIndex:1] int32Value] / 65535.0f;
+            break;
+        default:
+            return nil;
+    }
+    return [NSColor colorWithCalibratedRed:red green:green blue:blue alpha:alpha];
+}
+
+- (id)scriptingRgbaColorDescriptor;
+{
+    float red, green, blue, alpha;
+    [[self colorUsingColorSpaceName:NSCalibratedRGBColorSpace] getRed:&red green:&green blue:&blue alpha:&alpha];
+    
+    NSAppleEventDescriptor *descriptor = [NSAppleEventDescriptor listDescriptor];
+    [descriptor insertDescriptor:[NSAppleEventDescriptor descriptorWithInt32:round(65535 * red)] atIndex:1];
+    [descriptor insertDescriptor:[NSAppleEventDescriptor descriptorWithInt32:round(65535 * green)] atIndex:2];
+    [descriptor insertDescriptor:[NSAppleEventDescriptor descriptorWithInt32:round(65535 * blue)] atIndex:3];
+    [descriptor insertDescriptor:[NSAppleEventDescriptor descriptorWithInt32:round(65535 * alpha)] atIndex:4];
+    
+    return descriptor;
 }
 
 @end
