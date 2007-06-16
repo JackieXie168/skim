@@ -400,10 +400,6 @@
 
         <cocoa name="NSTextSuite"/>
 
-        <value-type name="color" code="colr">
-            <cocoa class="NSColor"/>
-        </value-type>
-
         <class name="rich text" plural="rich text" code="ricT"
             description="Rich (styled) text">
             <cocoa class="NSTextStorage"/>
@@ -411,7 +407,7 @@
                 contradict the DTD, are NOT errors.  Cocoa Scripting in 10.4
                 uses them to accomplish certain type conversions. -->
             <type type="text"/>
-            <property name="color" code="colr" type="color"
+            <property name="color" code="colr" type="RGBA color"
                 description="The color of the first character.">
                 <cocoa key="foregroundColor"/>
             </property>
@@ -434,7 +430,7 @@
             description="This subdivides the text into characters.">
             <cocoa class="NSTextStorage"/>
             <type type="text"/>
-            <property name="color" code="colr" type="color"
+            <property name="color" code="colr" type="RGBA color"
                 description="The color of the first character.">
                 <cocoa key="foregroundColor"/>
             </property>
@@ -457,7 +453,7 @@
             description="This subdivides the text into paragraphs.">
             <cocoa class="NSTextStorage"/>
             <type type="text"/>
-            <property name="color" code="colr" type="color"
+            <property name="color" code="colr" type="RGBA color"
                 description="The color of the first character.">
                 <cocoa key="foregroundColor"/>
             </property>
@@ -480,7 +476,7 @@
             description="This subdivides the text into words.">
             <cocoa class="NSTextStorage"/>
             <type type="text"/>
-            <property name="color" code="colr" type="color"
+            <property name="color" code="colr" type="RGBA color"
                 description="The color of the first character.">
                 <cocoa key="foregroundColor"/>
             </property>
@@ -503,7 +499,7 @@
             description="This subdivides the text into chunks that all have the same attributes.">
             <cocoa class="NSTextStorage"/>
             <type type="text"/>
-            <property name="color" code="colr" type="color"
+            <property name="color" code="colr" type="RGBA color"
                 description="The color of the first character.">
                 <cocoa key="foregroundColor"/>
             </property>
@@ -595,14 +591,9 @@
                 description="The text of the note. Attributes are ignored.">
                 <cocoa key="textContents"/>
             </contents>
-            <property name="color" code="colr" type="color"
-                description="The color of the note (red, green, blue).">
+            <property name="color" code="colr" type="RGBA color"
+                description="The color of the note. Can be given as a list of (red, green, blue, alpha), a standard color (e.g. red), or a default color (e.g. text note color).">
                 <cocoa key="color"/>
-            </property>
-            <property name="RGBA color" code="RGBA"
-                description="The color of the note (red, green, blue, alpha).">
-                <cocoa key="rgbaColor"/>
-                <type type="integer" list="yes"/>
             </property>
             <property name="page" code="Page" type="page" access="r"
                 description="The page for the note.">
@@ -759,6 +750,88 @@
                 <type type="text" list="yes"/>
             </property>
         </record-type>
+
+        <value-type name="RGBA color" code="RGBA">
+            <cocoa class="NSColor"/>
+        </value-type>
+
+        <enumeration name="standard color" code="ClrE">
+            <enumerator name="red" code="Red "
+                description="Red color."/>
+            <enumerator name="green" code="Gren"
+                description="Green color."/>
+            <enumerator name="blue" code="Blue"
+                description="Blue color."/>
+            <enumerator name="yellow" code="Yelw"
+                description="Yellow color."/>
+            <enumerator name="magenta" code="Mgnt"
+                description="Magenta color."/>
+            <enumerator name="cyan" code="Cyan"
+                description="Cyan color."/>
+            <enumerator name="dark red" code="DRed"
+                description="Dark red color."/>
+            <enumerator name="dark green" code="DGrn"
+                description="Dark green color."/>
+            <enumerator name="dark blue" code="DBlu"
+                description="Dark blue color."/>
+            <enumerator name="banana" code="Bana"
+                description="Banana color."/>
+            <enumerator name="turquoise" code="Turq"
+                description="Turquoise color."/>
+            <enumerator name="violet" code="Viol"
+                description="Violet color."/>
+            <enumerator name="orange" code="Orng"
+                description="Orange color."/>
+            <enumerator name="deep pink" code="DpPk"
+                description="Deep pink color."/>
+            <enumerator name="spring green" code="SprG"
+                description="Spring green color."/>
+            <enumerator name="aqua" code="Aqua"
+                description="Aqua color."/>
+            <enumerator name="lime" code="Lime"
+                description="Lime color."/>
+            <enumerator name="dark violet" code="DVio"
+                description="Dark violet color."/>
+            <enumerator name="purple" code="Prpl"
+                description="Purple color."/>
+            <enumerator name="teal" code="Teal"
+                description="Teal color."/>
+            <enumerator name="olive" code="Oliv"
+                description="Olive color."/>
+            <enumerator name="brown" code="Brwn"
+                description="Brown color."/>
+            <enumerator name="black" code="Blck"
+                description="Black color."/>
+            <enumerator name="white" code="Whit"
+                description="White color."/>
+            <enumerator name="gray" code="Gray"
+                description="Gray color."/>
+            <enumerator name="light gray" code="LGry"
+                description="Light gray color."/>
+            <enumerator name="dark gray" code="DGry"
+                description="Dark gray color."/>
+            <enumerator name="clear" code="Clea"
+                description="Clear color."/>
+        </enumeration>
+
+        <enumeration name="default color" code="DClE">
+            <enumerator name="text note color" code="CTxt"
+                description="Default text note color."/>
+            <enumerator name="anchored note color" code="CAnc"
+                description="Default anchored note color."/>
+            <enumerator name="circle note color" code="CCir"
+                description="Default circle note color."/>
+            <enumerator name="box note color" code="CSqu"
+                description="Default box color."/>
+            <enumerator name="highlight note color" code="CHil"
+                description="Default highlight note color."/>
+            <enumerator name="underline color" code="CUnd"
+                description="Default underline color."/>
+            <enumerator name="strike out note color" code="CStr"
+                description="Default strike out color."/>
+            <enumerator name="arrow note color" code="CArr"
+                description="Default arrow color."/>
+        </enumeration>
 
         <enumeration name="note type" code="NTpE">
             <enumerator name="text note" code="NTxt"
