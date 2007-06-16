@@ -820,15 +820,15 @@
             <enumerator name="anchored note color" code="CAnc"
                 description="Default anchored note color."/>
             <enumerator name="circle note color" code="CCir"
-                description="Default circle note color."/>
+                description="Default circle color."/>
             <enumerator name="box note color" code="CSqu"
                 description="Default box color."/>
             <enumerator name="highlight note color" code="CHil"
-                description="Default highlight note color."/>
+                description="Default highlight color."/>
             <enumerator name="underline color" code="CUnd"
-                description="Default underline color."/>
+                description="Default underline highlight color."/>
             <enumerator name="strike out note color" code="CStr"
-                description="Default strike out color."/>
+                description="Default strike out highlight color."/>
             <enumerator name="arrow note color" code="CArr"
                 description="Default arrow color."/>
         </enumeration>
