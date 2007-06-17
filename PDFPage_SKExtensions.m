@@ -291,7 +291,7 @@ static IMP originalDealloc = NULL;
     SKDocument *document;
     
     while (document = [docEnum nextObject]) {
-        if ([[self document] isEqual:[document pdfDocument]])
+        if ([document respondsToSelector:@selector(pdfDocument)] && [[self document] isEqual:[document pdfDocument]])
             break;
     }
     

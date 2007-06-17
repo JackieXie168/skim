@@ -144,18 +144,21 @@ NSString *SKFileSizeStringForFileURL(NSURL *fileURL, unsigned long long *physica
 }
 
 - (NSDictionary *)infoForDocument:(SKDocument *)doc {
-    PDFDocument *pdfDoc = [doc pdfDocument];
-    NSMutableDictionary *dictionary = [NSMutableDictionary dictionary];
-    [dictionary setDictionary:[pdfDoc documentAttributes]];
-    if (doc) {
-        unsigned long long logicalSize = 0, physicalSize = 0;
-        [dictionary setValue:[[doc fileName] lastPathComponent] forKey:@"FileName"];
-        [dictionary setValue:[NSString stringWithFormat: @"%d.%d", [pdfDoc majorVersion], [pdfDoc minorVersion]] forKey:@"Version"];
-        [dictionary setValue:[NSNumber numberWithInt:[pdfDoc pageCount]] forKey:@"PageCount"];
-        [dictionary setValue:SKFileSizeStringForFileURL([doc fileURL], &physicalSize, &logicalSize) forKey:@"FileSize"];
-        [dictionary setValue:[NSNumber numberWithUnsignedLongLong:physicalSize] forKey:@"PhysicalSize"];
-        [dictionary setValue:[NSNumber numberWithUnsignedLongLong:logicalSize] forKey:@"LogicalSize"];
-        [dictionary setValue:[[info valueForKey:@"KeyWords"] componentsJoinedByString:@" "] forKey:@"KeywordsString"];
+    NSMutableDictionary *dictionary = nil;
+    if ([doc respondsToSelector:@selector(pdfDocument)]) {
+        PDFDocument *pdfDoc = [doc pdfDocument];
+        dictionary = [NSMutableDictionary dictionary];
+        [dictionary setDictionary:[pdfDoc documentAttributes]];
+        if (doc) {
+            unsigned long long logicalSize = 0, physicalSize = 0;
+            [dictionary setValue:[[doc fileName] lastPathComponent] forKey:@"FileName"];
+            [dictionary setValue:[NSString stringWithFormat: @"%d.%d", [pdfDoc majorVersion], [pdfDoc minorVersion]] forKey:@"Version"];
+            [dictionary setValue:[NSNumber numberWithInt:[pdfDoc pageCount]] forKey:@"PageCount"];
+            [dictionary setValue:SKFileSizeStringForFileURL([doc fileURL], &physicalSize, &logicalSize) forKey:@"FileSize"];
+            [dictionary setValue:[NSNumber numberWithUnsignedLongLong:physicalSize] forKey:@"PhysicalSize"];
+            [dictionary setValue:[NSNumber numberWithUnsignedLongLong:logicalSize] forKey:@"LogicalSize"];
+            [dictionary setValue:[[info valueForKey:@"KeyWords"] componentsJoinedByString:@" "] forKey:@"KeywordsString"];
+        }
     }
     return dictionary;
 }
