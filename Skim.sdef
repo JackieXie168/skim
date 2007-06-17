@@ -26,6 +26,26 @@
             </property>
             <property name="version" code="vers" type="text" access="r"
                 description="The version of the application."/>
+            <property name="default view settings" type="PDF view settings" code="DVSt"
+                description="The default PDF view settings for normal mode.">
+                <cocoa key="defaultPdfViewSettings"/>
+            </property>
+            <property name="default full screen view settings" type="PDF view settings" code="DVSt"
+                description="The default PDF view settings for full screen mode. An empty dictionary indicates that default view settings for normal mode are used.">
+                <cocoa key="defaultFullScreenPdfViewSettings"/>
+            </property>
+            <property name="background color" type="RGBA color" code="NBgC"
+                description="The default background color in normal mode.">
+                <cocoa key="backgroundColor"/>
+            </property>
+            <property name="full screen background color" type="RGBA color" code="FBgC"
+                description="The default background color in full screen mode.">
+                <cocoa key="fullScreenBackgroundColor"/>
+            </property>
+            <property name="note colors" type="default colors" code="NotC"
+                description="The default colors used for new notes.">
+                <cocoa key="defaultNoteColors"/>
+            </property>
 			<responds-to name="open">
 				<cocoa method="handleOpenScriptCommand:"/>
 			</responds-to>
@@ -757,6 +777,41 @@
                 description="The keywords.">
                 <cocoa key="Keywords"/>
                 <type type="text" list="yes"/>
+            </property>
+        </record-type>
+
+        <record-type name="default colors" code="DClr">
+            <property name="text note color" code="CTxt" type="RGBA color"
+                description="Default text note color.">
+                <cocoa key="textNote"/>
+            </property>
+            <property name="anchored note color" code="CAnc" type="RGBA color"
+                description="Default anchored note color.">
+                <cocoa key="anchoredNote"/>
+            </property>
+            <property name="circle note color" code="CCir" type="RGBA color"
+                description="Default circle color.">
+                <cocoa key="circleNote"/>
+            </property>
+            <property name="box note color" code="CSqu" type="RGBA color"
+                description="Default box color.">
+                <cocoa key="squareNote"/>
+            </property>
+            <property name="highlight note color" code="CHil" type="RGBA color"
+                description="Default highlight color.">
+                <cocoa key="highlightNote"/>
+            </property>
+            <property name="underline note color" code="CUnd" type="RGBA color"
+                description="Default underline highlight color.">
+                <cocoa key="underlineNote"/>
+            </property>
+            <property name="strike out note color" code="CStr" type="RGBA color"
+                description="Default strike out highlight color.">
+                <cocoa key="strikeOutNote"/>
+            </property>
+            <property name="arrow note color" code="CArr" type="RGBA color"
+                description="Default arrow color.">
+                <cocoa key="arrowNote"/>
             </property>
         </record-type>
 
