@@ -466,7 +466,7 @@ static inline NSRange rangeOfSubstringOfStringAtIndex(NSString *string, NSArray 
         }
     }
     
-    return [NSNumber numberWithInt:index == NSNotFound ? -1 : (int)index + 1];
+    return [NSNumber numberWithInt:index == NSNotFound ? 0 : (int)index + 1];
 }
 
 @end

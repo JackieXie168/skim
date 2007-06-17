@@ -1090,7 +1090,7 @@
                 <cocoa key="Last"/>
             </parameter>
             <result type="integer"
-                description="The index for the object. Returns -1 if no index was found.">
+                description="The index for the object. Returns 0 if no index was found.">
             </result>
         </command>
 
