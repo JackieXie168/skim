@@ -54,19 +54,28 @@
 
 @end
 
+#pragma mark -
+
+@interface SKJoinCommand : NSScriptCommand
+@end
+
+#pragma mark -
 // We cannot set properties for a list of specifiers, so we get properties using some script commands
 
 @interface SKBoundsCommand : NSScriptCommand
 @end
 
+#pragma mark -
 
 @interface SKTextCommand : NSScriptCommand
 @end
 
+#pragma mark -
 
 @interface SKPagesCommand : NSScriptCommand
 @end
 
+#pragma mark -
 
-@interface SKJoinCommand : NSScriptCommand
+@interface SKIndexCommand : NSScriptCommand
 @end

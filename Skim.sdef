@@ -113,6 +113,9 @@
 			<responds-to name="get text for">
 				<cocoa method=""/>
 			</responds-to>
+			<responds-to name="get index for">
+				<cocoa method=""/>
+			</responds-to>
 			<responds-to name="get pages for">
 				<cocoa method=""/>
 			</responds-to>
@@ -575,6 +578,9 @@
 			<responds-to name="get text for">
 				<cocoa method=""/>
 			</responds-to>
+			<responds-to name="get index for">
+				<cocoa method=""/>
+			</responds-to>
 			<responds-to name="get pages for">
 				<cocoa method=""/>
 			</responds-to>
@@ -657,6 +663,9 @@
 				<cocoa method=""/>
 			</responds-to>
 			<responds-to name="get text for">
+				<cocoa method=""/>
+			</responds-to>
+			<responds-to name="get index for">
 				<cocoa method=""/>
 			</responds-to>
 			<responds-to name="get pages for">
@@ -947,11 +956,11 @@
                 <type type="specifier" list="yes"/>
                 <cocoa key="From"/>
             </parameter>
-            <parameter name="backward" code="Back" type="boolean" optional="yes"
+            <parameter name="backward search" code="Back" type="boolean" optional="yes"
                 description="Search backward?">
                 <cocoa key="Backward"/>
             </parameter>
-            <parameter name="case sensitive" code="casS" type="boolean" optional="yes"
+            <parameter name="case sensitive search" code="casS" type="boolean" optional="yes"
                 description="Is the search case sensitive?">
                 <cocoa key="CaseSensitive"/>
             </parameter>
@@ -973,7 +982,7 @@
                 <cocoa key="To"/>
                 <type type="specifier" list="yes"/>
             </parameter>
-            <parameter name="continuous" type="boolean" code="conI" optional="yes"
+            <parameter name="continuous selection" type="boolean" code="conI" optional="yes"
                 description="Join to a continuous selection?">
                 <cocoa key="Continuous"/>
             </parameter>
@@ -1025,12 +1034,36 @@
                 description="The text of the object."/>
         </command>
 
+        <command name="get index for" code="SKIMIndx"
+            description="Get the index of a document, page, note, or selection.">
+            <cocoa class="SKIndexCommand"/>
+            <synonym name="index for"/>
+            <direct-parameter
+                description="The document, page, note, or selection.">
+                <type type="document"/>
+                <type type="page"/>
+                <type type="note"/>
+                <type type="specifier" list="yes"/>
+            </direct-parameter>
+            <parameter name="on" type="page" code="on  " optional="yes"
+                description="The page on which to get the index.">
+                <cocoa key="Page"/>
+            </parameter>
+            <parameter name="last" type="boolean" code="Last" optional="yes"
+                description="Gets the index of the last character of a selection.">
+                <cocoa key="Last"/>
+            </parameter>
+            <result type="integer"
+                description="The index for the object. Returns -1 if no index was found.">
+            </result>
+        </command>
+
         <command name="get pages for" code="SKIMPags"
             description="Get the pages of a document, page, note, or selection.">
             <cocoa class="SKPagesCommand"/>
             <synonym name="pages for"/>
             <direct-parameter
-                description="The document, page, note or selection.">
+                description="The document, page, note, or selection.">
                 <type type="document"/>
                 <type type="page"/>
                 <type type="note"/>
