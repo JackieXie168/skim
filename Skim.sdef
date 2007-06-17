@@ -682,6 +682,10 @@
                 description="Does the PDF zoom automatically?">
                 <cocoa key="autoScales"/>
             </property>
+            <property name="display mode" code="DMod" type="PDF display mode"
+                description="The display mode for the PDF.">
+                <cocoa key="displayMode"/>
+            </property>
             <property name="displays page breaks" code="PgBr" type="boolean"
                 description="Does the PDF display page breaks?">
                 <cocoa key="displaysPageBreaks"/>
@@ -689,10 +693,6 @@
             <property name="displays as book" code="Book" type="boolean"
                 description="Is the first page in two-up displayed as in book mode?">
                 <cocoa key="displaysAsBook"/>
-            </property>
-            <property name="display mode" code="DMod" type="PDF display mode"
-                description="The display mode for the PDF.">
-                <cocoa key="displayMode"/>
             </property>
             <property name="display box" code="DBox" type="PDF display box"
                 description="The display box for the PDF.">
