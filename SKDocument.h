@@ -107,7 +107,7 @@ enum {
 - (void)setCurrentPage:(PDFPage *)page;
 - (id)activeNote;
 - (void)setActiveNote:(id)note;
-- (NSString *)string;
+- (NSString *)text;
 - (id)selectionSpecifier;
 - (void)setSelectionSpecifier:(id)specifier;
 - (id)handleRevertScriptCommand:(NSScriptCommand *)command;

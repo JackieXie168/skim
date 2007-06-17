@@ -963,7 +963,7 @@ static BOOL isFileOnHFSVolume(NSString *fileName)
         [[self pdfView] setActiveAnnotation:note];
 }
 
-- (NSString *)string {
+- (NSString *)text {
     return [[self pdfDocument] string];
 }
 
