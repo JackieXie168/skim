@@ -42,7 +42,7 @@
                 description="The default background color in full screen mode.">
                 <cocoa key="fullScreenBackgroundColor"/>
             </property>
-            <property name="note colors" type="default colors" code="NotC"
+            <property name="default note colors" type="note colors" code="DNtC"
                 description="The default colors used for new notes.">
                 <cocoa key="defaultNoteColors"/>
             </property>
@@ -780,36 +780,36 @@
             </property>
         </record-type>
 
-        <record-type name="default colors" code="DClr">
-            <property name="text note color" code="CTxt" type="RGBA color"
+        <record-type name="note colors" code="NClr">
+            <property name="text note" code="NTxt" type="RGBA color"
                 description="Default text note color.">
                 <cocoa key="textNote"/>
             </property>
-            <property name="anchored note color" code="CAnc" type="RGBA color"
+            <property name="anchored note" code="NAnc" type="RGBA color"
                 description="Default anchored note color.">
                 <cocoa key="anchoredNote"/>
             </property>
-            <property name="circle note color" code="CCir" type="RGBA color"
+            <property name="circle note" code="NCir" type="RGBA color"
                 description="Default circle color.">
                 <cocoa key="circleNote"/>
             </property>
-            <property name="box note color" code="CSqu" type="RGBA color"
+            <property name="box note" code="NSqu" type="RGBA color"
                 description="Default box color.">
                 <cocoa key="squareNote"/>
             </property>
-            <property name="highlight note color" code="CHil" type="RGBA color"
+            <property name="highlight note" code="NHil" type="RGBA color"
                 description="Default highlight color.">
                 <cocoa key="highlightNote"/>
             </property>
-            <property name="underline note color" code="CUnd" type="RGBA color"
+            <property name="underline note" code="NUnd" type="RGBA color"
                 description="Default underline highlight color.">
                 <cocoa key="underlineNote"/>
             </property>
-            <property name="strike out note color" code="CStr" type="RGBA color"
+            <property name="strike out note" code="NStr" type="RGBA color"
                 description="Default strike out highlight color.">
                 <cocoa key="strikeOutNote"/>
             </property>
-            <property name="arrow note color" code="CArr" type="RGBA color"
+            <property name="arrow note" code="NArr" type="RGBA color"
                 description="Default arrow color.">
                 <cocoa key="arrowNote"/>
             </property>
@@ -876,25 +876,6 @@
                 description="Dark gray color."/>
             <enumerator name="clear" code="Clea"
                 description="Clear color."/>
-        </enumeration>
-
-        <enumeration name="default color" code="DClE">
-            <enumerator name="text note color" code="CTxt"
-                description="Default text note color."/>
-            <enumerator name="anchored note color" code="CAnc"
-                description="Default anchored note color."/>
-            <enumerator name="circle note color" code="CCir"
-                description="Default circle color."/>
-            <enumerator name="box note color" code="CSqu"
-                description="Default box color."/>
-            <enumerator name="highlight note color" code="CHil"
-                description="Default highlight color."/>
-            <enumerator name="underline note color" code="CUnd"
-                description="Default underline highlight color."/>
-            <enumerator name="strike out note color" code="CStr"
-                description="Default strike out highlight color."/>
-            <enumerator name="arrow note color" code="CArr"
-                description="Default arrow color."/>
         </enumeration>
 
         <enumeration name="note type" code="NTpE">

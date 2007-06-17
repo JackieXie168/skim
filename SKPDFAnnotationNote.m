@@ -1502,17 +1502,6 @@ enum {
     SKASColorClear = 'Clea'
 };
 
-enum {
-    SKASColorTextNote = 'CTxt',
-    SKASColorAnchoredNote = 'CAnc',
-    SKASColorCircleNote = 'CCir',
-    SKASColorSquareNote = 'CSqu',
-    SKASColorHighlightNote = 'CHil',
-    SKASColorUnderlineNote = 'CUnd',
-    SKASColorStrikeOutNote = 'CStr',
-    SKASColorArrowNote = 'CArr'
-};
-
 @interface NSColor (SKExtensions)
 + (id)scriptingRgbaColorWithDescriptor:(NSAppleEventDescriptor *)descriptor;
 - (id)scriptingRgbaColorDescriptor;
@@ -1524,7 +1513,6 @@ enum {
 + (id)scriptingRgbaColorWithDescriptor:(NSAppleEventDescriptor *)descriptor;
 {
     float red, green, blue, alpha = 1.0;
-    NSUserDefaults *sud = [NSUserDefaults standardUserDefaults];
     switch ([descriptor numberOfItems]) {
         case 0:
             switch ([descriptor enumCodeValue]) {
@@ -1556,14 +1544,6 @@ enum {
                 case SKASColorDarkGray: return [NSColor darkGrayColor];
                 case SKASColorLightGray: return [NSColor lightGrayColor];
                 case SKASColorClear: return [NSColor clearColor];
-                case SKASColorTextNote: return [NSUnarchiver unarchiveObjectWithData:[sud objectForKey:SKFreeTextNoteColorKey]];
-                case SKASColorAnchoredNote: return [NSUnarchiver unarchiveObjectWithData:[sud objectForKey:SKAnchoredNoteColorKey]];
-                case SKASColorCircleNote: return [NSUnarchiver unarchiveObjectWithData:[sud objectForKey:SKCircleNoteColorKey]];
-                case SKASColorSquareNote: return [NSUnarchiver unarchiveObjectWithData:[sud objectForKey:SKSquareNoteColorKey]];
-                case SKASColorHighlightNote: return [NSUnarchiver unarchiveObjectWithData:[sud objectForKey:SKHighlightNoteColorKey]];
-                case SKASColorUnderlineNote: return [NSUnarchiver unarchiveObjectWithData:[sud objectForKey:SKUnderlineNoteColorKey]];
-                case SKASColorStrikeOutNote: return [NSUnarchiver unarchiveObjectWithData:[sud objectForKey:SKStrikeOutNoteColorKey]];
-                case SKASColorArrowNote: return [NSUnarchiver unarchiveObjectWithData:[sud objectForKey:SKArrowNoteColorKey]];
                 default: return nil;
             }
             break;
