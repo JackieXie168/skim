@@ -337,7 +337,7 @@ static inline NSRange rangeOfSubstringOfStringAtIndex(NSString *string, NSArray 
     
     if (selection == nil)
         selection = otherSelection;
-    if (otherSelection)
+    else if (otherSelection)
         [selection addSelection:otherSelection];
     
     if (continuous) {
@@ -348,7 +348,7 @@ static inline NSRange rangeOfSubstringOfStringAtIndex(NSString *string, NSArray 
         int lastIndex = NSMaxRange([selection safeRangeAtIndex:[selection safeNumberOfRangesOnPage:lastPage] - 1 onPage:lastPage]) - 1;
         selection = [[firstPage document] selectionFromPage:firstPage atCharacterIndex:firstIndex toPage:lastPage atCharacterIndex:lastIndex];
     }
-    
+    NSLog(@"%@",selection);
     return selection ? [selection objectSpecifier] : [NSArray array];
 }
 
