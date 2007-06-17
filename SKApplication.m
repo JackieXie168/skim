@@ -228,4 +228,17 @@ NSString *SKApplicationWillTerminateNotification = @"SKApplicationWillTerminateN
     }
 }
 
+#pragma mark Scripting support
+
+- (NSArray *)orderedDocuments {
+    NSMutableArray *orderedDocuments = [[[super orderedDocuments] mutableCopy] autorelease];
+    int i = [orderedDocuments count];
+    
+    while (i--)
+        if ([[orderedDocuments objectAtIndex:i] isKindOfClass:[SKDocument class]] == NO)
+            [orderedDocuments removeObjectAtIndex:i];
+    
+    return orderedDocuments;
+}
+
 @end
