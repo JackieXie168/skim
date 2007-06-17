@@ -52,50 +52,6 @@
 #import "NSBezierPath_BDSKExtensions.h"
 
 
-@interface NSView (SKScrollingExtensions)
-- (void)scrollLineUp;
-- (void)scrollLineDown;
-- (void)scrollLineRight;
-- (void)scrollLineLeft;
-@end
-
-@implementation NSView (SKScrollingExtensions)
-
-- (void)scrollLineUp {
-    NSScrollView *scrollView = [self enclosingScrollView];
-    NSView *documentView = [scrollView documentView];
-    NSPoint point = [documentView visibleRect].origin;
-    point.y -= [scrollView verticalLineScroll];
-    [documentView scrollPoint:point];
-}
-
-- (void)scrollLineDown {
-    NSScrollView *scrollView = [self enclosingScrollView];
-    NSView *documentView = [scrollView documentView];
-    NSPoint point = [documentView visibleRect].origin;
-    point.y += [scrollView verticalLineScroll];
-    [documentView scrollPoint:point];
-}
-
-- (void)scrollLineRight {
-    NSScrollView *scrollView = [self enclosingScrollView];
-    NSView *documentView = [scrollView documentView];
-    NSPoint point = [documentView visibleRect].origin;
-    point.x -= [scrollView horizontalLineScroll];
-    [documentView scrollPoint:point];
-}
-
-- (void)scrollLineLeft {
-    NSScrollView *scrollView = [self enclosingScrollView];
-    NSView *documentView = [scrollView documentView];
-    NSPoint point = [documentView visibleRect].origin;
-    point.x += [scrollView horizontalLineScroll];
-    [documentView scrollPoint:point];
-}
-
-@end
-
-
 @implementation SKApplicationController
 
 + (void)initialize{
@@ -161,6 +117,8 @@ static BOOL fileIsInTrash(NSURL *fileURL)
     [[NSColorPanel sharedColorPanel] setShowsAlpha:YES];
 }
 
+#pragma mark NSApplication delegate
+
 - (BOOL)applicationShouldOpenUntitledFile:(NSApplication *)sender{
     
     if ([[NSUserDefaults standardUserDefaults] boolForKey:SKReopenLastOpenFilesKey]) {
@@ -217,6 +175,8 @@ static BOOL fileIsInTrash(NSURL *fileURL)
     }
 }
 
+#pragma mark Actions
+
 - (IBAction)visitWebSite:(id)sender{
     if([[NSWorkspace sharedWorkspace] openURL:[NSURL URLWithString:@"http://skim-app.sourceforge.net/"]] == NO)
         NSBeep();
@@ -246,6 +206,8 @@ static BOOL fileIsInTrash(NSURL *fileURL)
     if (fileURL && NO == fileIsInTrash(fileURL) && (document = [[NSDocumentController sharedDocumentController] openDocumentWithContentsOfURL:fileURL display:YES error:NULL]))
         [[document mainWindowController] setPageNumber:[[bm objectForKey:@"pageIndex"] unsignedIntValue] + 1];
 }
+
+#pragma mark Support
 
 - (void)menuNeedsUpdate:(NSMenu *)menu {
     NSArray *bookmarks = [[SKBookmarkController sharedBookmarkController] bookmarks];
@@ -434,6 +396,133 @@ static BOOL fileIsInTrash(NSURL *fileURL)
     }
     
     return fullPath;
+}
+
+#pragma mark Scripting support
+
+- (BOOL)application:(NSApplication *)sender delegateHandlesKey:(NSString *)key {
+    static NSSet *applicationScriptingKeys = nil;
+    if (applicationScriptingKeys == nil)
+        applicationScriptingKeys = [[NSSet alloc] initWithObjects:@"defaultPdfViewSettings", @"defaultFullScreenPdfViewSettings", @"backgroundColor", @"fullScreenBackgroundColor", 
+            @"defaultNoteColors",nil];
+	return [applicationScriptingKeys containsObject:key];
+}
+
+- (NSDictionary *)defaultPdfViewSettings {
+    return [[[NSUserDefaults standardUserDefaults] dictionaryForKey:SKDefaultPDFDisplaySettingsKey] AppleScriptPDFViewSettingsFromPDFViewSettings];
+}
+
+- (void)setDefaultPdfViewSettings:(NSDictionary *)settings {
+    if (settings == nil)
+        return;
+    NSMutableDictionary *setup = [NSMutableDictionary dictionary];
+    [setup addEntriesFromDictionary:[[NSUserDefaults standardUserDefaults] dictionaryForKey:SKDefaultPDFDisplaySettingsKey]];
+    [setup addEntriesFromDictionary:settings];
+    [[NSUserDefaults standardUserDefaults] setObject:[setup PDFViewSettingsFromAppleScriptPDFViewSettings] forKey:SKDefaultPDFDisplaySettingsKey];
+}
+
+- (NSDictionary *)defaultFullScreenPdfViewSettings {
+    return [[[NSUserDefaults standardUserDefaults] dictionaryForKey:SKDefaultFullScreenPDFDisplaySettingsKey] AppleScriptPDFViewSettingsFromPDFViewSettings];
+}
+
+- (void)setDefaultFullScreenPdfViewSettings:(NSDictionary *)settings {
+    if (settings == nil)
+        return;
+    NSMutableDictionary *setup = [NSMutableDictionary dictionary];
+    if ([settings count]) {
+        [setup addEntriesFromDictionary:[[NSUserDefaults standardUserDefaults] dictionaryForKey:SKDefaultPDFDisplaySettingsKey]];
+        [setup addEntriesFromDictionary:[[NSUserDefaults standardUserDefaults] dictionaryForKey:SKDefaultFullScreenPDFDisplaySettingsKey]];
+        [setup addEntriesFromDictionary:settings];
+    }
+    [[NSUserDefaults standardUserDefaults] setObject:[setup PDFViewSettingsFromAppleScriptPDFViewSettings] forKey:SKDefaultFullScreenPDFDisplaySettingsKey];
+}
+
+- (NSColor *)backgroundColor {
+    return [NSUnarchiver unarchiveObjectWithData:[[NSUserDefaults standardUserDefaults] dataForKey:SKBackgroundColorKey]];
+}
+
+- (void)setBackgroundColor:(NSColor *)color {
+    return [[NSUserDefaults standardUserDefaults] setObject:[NSArchiver archivedDataWithRootObject:color] forKey:SKBackgroundColorKey];
+}
+
+- (NSColor *)fullScreenBackgroundColor {
+    return [NSUnarchiver unarchiveObjectWithData:[[NSUserDefaults standardUserDefaults] dataForKey:SKFullScreenBackgroundColorKey]];
+}
+
+- (void)setFullScreenBackgroundColor:(NSColor *)color {
+    return [[NSUserDefaults standardUserDefaults] setObject:[NSArchiver archivedDataWithRootObject:color] forKey:SKFullScreenBackgroundColorKey];
+}
+
+- (NSDictionary *)defaultNoteColors {
+    NSUserDefaults *sud = [NSUserDefaults standardUserDefaults];
+    return [NSDictionary dictionaryWithObjectsAndKeys: 
+        [NSUnarchiver unarchiveObjectWithData:[sud dataForKey:SKFreeTextNoteColorKey]], @"textNote", 
+        [NSUnarchiver unarchiveObjectWithData:[sud dataForKey:SKAnchoredNoteColorKey]], @"anchoredNote", 
+        [NSUnarchiver unarchiveObjectWithData:[sud dataForKey:SKCircleNoteColorKey]], @"circleNote", 
+        [NSUnarchiver unarchiveObjectWithData:[sud dataForKey:SKSquareNoteColorKey]], @"squareNote", 
+        [NSUnarchiver unarchiveObjectWithData:[sud dataForKey:SKHighlightNoteColorKey]], @"highlightNote", 
+        [NSUnarchiver unarchiveObjectWithData:[sud dataForKey:SKUnderlineNoteColorKey]], @"underlineNote", 
+        [NSUnarchiver unarchiveObjectWithData:[sud dataForKey:SKStrikeOutNoteColorKey]], @"strikeOutNote", 
+        [NSUnarchiver unarchiveObjectWithData:[sud dataForKey:SKArrowNoteColorKey]], @"arrowNote", nil];
+}
+
+- (void)setDefaultColors:(NSDictionary *)colorDict {
+    NSUserDefaults *sud = [NSUserDefaults standardUserDefaults];
+    NSColor *color;
+    if (color = [colorDict objectForKey:@"textNote"])
+        [sud setObject:[NSArchiver archivedDataWithRootObject:color] forKey:SKFreeTextNoteColorKey];
+    if (color = [colorDict objectForKey:@"anchoredNote"])
+        [sud setObject:[NSArchiver archivedDataWithRootObject:color] forKey:SKAnchoredNoteColorKey];
+    if (color = [colorDict objectForKey:@"circleNote"])
+        [sud setObject:[NSArchiver archivedDataWithRootObject:color] forKey:SKCircleNoteColorKey];
+    if (color = [colorDict objectForKey:@"squareNote"])
+        [sud setObject:[NSArchiver archivedDataWithRootObject:color] forKey:SKSquareNoteColorKey];
+    if (color = [colorDict objectForKey:@"highlightNote"])
+        [sud setObject:[NSArchiver archivedDataWithRootObject:color] forKey:SKHighlightNoteColorKey];
+    if (color = [colorDict objectForKey:@"underlineNote"])
+        [sud setObject:[NSArchiver archivedDataWithRootObject:color] forKey:SKUnderlineNoteColorKey];
+    if (color = [colorDict objectForKey:@"strikeOutNote"])
+        [sud setObject:[NSArchiver archivedDataWithRootObject:color] forKey:SKStrikeOutNoteColorKey];
+    if (color = [colorDict objectForKey:@"arrowNote"])
+        [sud setObject:[NSArchiver archivedDataWithRootObject:color] forKey:SKArrowNoteColorKey];
+}
+
+@end
+
+#pragma mark -
+
+@implementation NSView (SKScrollingExtensions)
+
+- (void)scrollLineUp {
+    NSScrollView *scrollView = [self enclosingScrollView];
+    NSView *documentView = [scrollView documentView];
+    NSPoint point = [documentView visibleRect].origin;
+    point.y -= [scrollView verticalLineScroll];
+    [documentView scrollPoint:point];
+}
+
+- (void)scrollLineDown {
+    NSScrollView *scrollView = [self enclosingScrollView];
+    NSView *documentView = [scrollView documentView];
+    NSPoint point = [documentView visibleRect].origin;
+    point.y += [scrollView verticalLineScroll];
+    [documentView scrollPoint:point];
+}
+
+- (void)scrollLineRight {
+    NSScrollView *scrollView = [self enclosingScrollView];
+    NSView *documentView = [scrollView documentView];
+    NSPoint point = [documentView visibleRect].origin;
+    point.x -= [scrollView horizontalLineScroll];
+    [documentView scrollPoint:point];
+}
+
+- (void)scrollLineLeft {
+    NSScrollView *scrollView = [self enclosingScrollView];
+    NSView *documentView = [scrollView documentView];
+    NSPoint point = [documentView visibleRect].origin;
+    point.x += [scrollView horizontalLineScroll];
+    [documentView scrollPoint:point];
 }
 
 @end

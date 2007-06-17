@@ -59,8 +59,29 @@
 - (NSString *)applicationSupportPathForDomain:(int)domain create:(BOOL)create;
 - (NSString *)pathForApplicationSupportFile:(NSString *)file ofType:(NSString *)extension;
 
+- (NSDictionary *)defaultPdfViewSettings;
+- (void)setDefaultPdfViewSettings:(NSDictionary *)settings;
+- (NSDictionary *)defaultFullScreenPdfViewSettings;
+- (void)setDefaultFullScreenPdfViewSettings:(NSDictionary *)settings;
+- (NSColor *)backgroundColor;
+- (void)setBackgroundColor:(NSColor *)color;
+- (NSColor *)fullScreenBackgroundColor;
+- (void)setFullScreenBackgroundColor:(NSColor *)color;
+- (NSDictionary *)defaultNoteColors;
+- (void)setDefaultColors:(NSDictionary *)colorDict;
+
 @end
 
+#pragma mark -
+
+@interface NSView (SKScrollingExtensions)
+- (void)scrollLineUp;
+- (void)scrollLineDown;
+- (void)scrollLineRight;
+- (void)scrollLineLeft;
+@end
+
+#pragma mark -
 
 enum {
     SKSplashTypeResize,

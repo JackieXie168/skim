@@ -120,3 +120,9 @@ enum {
 @interface NSWindow (SKScriptingExtensions)
 - (id)handleRevertScriptCommand:(NSScriptCommand *)command;
 @end
+
+
+@interface NSDictionary (SKScriptingExtensions)
+- (NSDictionary *)AppleScriptPDFViewSettingsFromPDFViewSettings;
+- (NSDictionary *)PDFViewSettingsFromAppleScriptPDFViewSettings;
+@end
