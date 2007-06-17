@@ -323,6 +323,38 @@ static inline NSRange rangeOfSubstringOfStringAtIndex(NSString *string, NSArray 
 
 @end
 
+#pragma mark -
+
+@implementation SKJoinCommand
+
+- (id)performDefaultImplementation {
+    id dP = [self directParameter];
+	NSDictionary *args = [self evaluatedArguments];
+    id other = [args objectForKey:@"To"];
+    BOOL continuous = [[args objectForKey:@"Continuous"] boolValue];
+    PDFSelection *selection = [PDFSelection selectionWithSpecifier:dP];
+    PDFSelection *otherSelection = other ? [PDFSelection selectionWithSpecifier:other] : nil;
+    
+    if (selection == nil)
+        selection = otherSelection;
+    if (otherSelection)
+        [selection addSelection:otherSelection];
+    
+    if (continuous) {
+        NSArray *pages = [selection pages];
+        PDFPage *firstPage = [pages objectAtIndex:0];
+        PDFPage *lastPage = [pages lastObject];
+        int firstIndex = [selection safeRangeAtIndex:0 onPage:firstPage].location;
+        int lastIndex = NSMaxRange([selection safeRangeAtIndex:[selection safeNumberOfRangesOnPage:lastPage] - 1 onPage:lastPage]) - 1;
+        selection = [[firstPage document] selectionFromPage:firstPage atCharacterIndex:firstIndex toPage:lastPage atCharacterIndex:lastIndex];
+    }
+    
+    return selection ? [selection objectSpecifier] : [NSArray array];
+}
+
+@end
+
+#pragma mark -
 
 @implementation SKBoundsCommand
 
@@ -367,6 +399,7 @@ static inline NSRange rangeOfSubstringOfStringAtIndex(NSString *string, NSArray 
 
 @end
 
+#pragma mark -
 
 @implementation SKTextCommand
 
@@ -387,7 +420,7 @@ static inline NSRange rangeOfSubstringOfStringAtIndex(NSString *string, NSArray 
         if (page == nil || [page isEqual:dPO])
             textStorage = [dPO richText];
     } else if ([dPO isKindOfClass:[PDFAnnotation class]]) {
-        if (page == nil || [[dPO page] isEqual:dPO])
+        if (page == nil || [page isEqual:[dPO page]])
             textStorage = [dPO textContents];
     } else {
         attrString = [[PDFSelection selectionWithSpecifier:dP onPage:page] attributedString];
@@ -398,6 +431,47 @@ static inline NSRange rangeOfSubstringOfStringAtIndex(NSString *string, NSArray 
 
 @end
 
+#pragma mark -
+
+@implementation SKIndexCommand
+
+- (id)performDefaultImplementation {
+    id dP = [self directParameter];
+    id dPO = nil;
+    if ([dP isKindOfClass:[NSArray class]] == NO)
+        dPO = [dP objectsByEvaluatingSpecifier];
+    
+    NSDictionary *args = [self evaluatedArguments];
+    PDFPage *page = [args objectForKey:@"Page"];
+    BOOL last = [[args objectForKey:@"Last"] boolValue];
+    unsigned int index = NSNotFound;
+    
+    if ([dPO isKindOfClass:[SKDocument class]]) {
+        index = [[NSApp orderedDocuments] indexOfObjectIdenticalTo:dPO];
+    } else if ([dPO isKindOfClass:[PDFPage class]]) {
+        index = [[page document] indexForPage:dPO];
+    } else if ([dPO isKindOfClass:[PDFAnnotation class]]) {
+        index = [[(page ? (id)page : (id)[page containingDocument]) valueForKey:@"notes"] indexOfObjectIdenticalTo:dPO];
+    } else {
+        PDFSelection *selection = [PDFSelection selectionWithSpecifier:dP onPage:page];
+        NSArray *pages = [selection pages];
+        if ([pages count] && (page = [pages objectAtIndex:last ? [pages count] - 1 : 0])) {
+            int count = [selection safeNumberOfRangesOnPage:page];
+            if (count > 0) {
+                NSRange range = [selection safeRangeAtIndex:last ? count - 1 : 0 onPage:page];
+                if (range.length) {
+                    index = last ? NSMaxRange(range) - 1 : range.location;
+                }
+            }
+        }
+    }
+    
+    return [NSNumber numberWithInt:index == NSNotFound ? -1 : (int)index + 1];
+}
+
+@end
+
+#pragma mark -
 
 @implementation SKPagesCommand
 
@@ -419,36 +493,6 @@ static inline NSRange rangeOfSubstringOfStringAtIndex(NSString *string, NSArray 
     }
     
     return nil;
-}
-
-@end
-
-
-@implementation SKJoinCommand
-
-- (id)performDefaultImplementation {
-    id dP = [self directParameter];
-	NSDictionary *args = [self evaluatedArguments];
-    id other = [args objectForKey:@"To"];
-    BOOL continuous = [[args objectForKey:@"Continuous"] boolValue];
-    PDFSelection *selection = [PDFSelection selectionWithSpecifier:dP];
-    PDFSelection *otherSelection = other ? [PDFSelection selectionWithSpecifier:other] : nil;
-    
-    if (selection == nil)
-        selection = otherSelection;
-    if (otherSelection)
-        [selection addSelection:otherSelection];
-    
-    if (continuous) {
-        NSArray *pages = [selection pages];
-        PDFPage *firstPage = [pages objectAtIndex:0];
-        PDFPage *lastPage = [pages lastObject];
-        int firstIndex = [selection safeRangeAtIndex:0 onPage:firstPage].location;
-        int lastIndex = NSMaxRange([selection safeRangeAtIndex:[selection safeNumberOfRangesOnPage:lastPage] - 1 onPage:lastPage]) - 1;
-        selection = [[firstPage document] selectionFromPage:firstPage atCharacterIndex:firstIndex toPage:lastPage atCharacterIndex:lastIndex];
-    }
-    
-    return selection ? [selection objectSpecifier] : [NSArray array];
 }
 
 @end
