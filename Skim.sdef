@@ -781,35 +781,35 @@
         </record-type>
 
         <record-type name="note colors" code="NClr">
-            <property name="text note" code="NTxt" type="RGBA color"
+            <property name="text note color" code="CTxt" type="RGBA color"
                 description="Default text note color.">
                 <cocoa key="textNote"/>
             </property>
-            <property name="anchored note" code="NAnc" type="RGBA color"
+            <property name="anchored note color" code="CAnc" type="RGBA color"
                 description="Default anchored note color.">
                 <cocoa key="anchoredNote"/>
             </property>
-            <property name="circle note" code="NCir" type="RGBA color"
+            <property name="circle note color" code="CCir" type="RGBA color"
                 description="Default circle color.">
                 <cocoa key="circleNote"/>
             </property>
-            <property name="box note" code="NSqu" type="RGBA color"
+            <property name="box note color" code="CSqu" type="RGBA color"
                 description="Default box color.">
                 <cocoa key="squareNote"/>
             </property>
-            <property name="highlight note" code="NHil" type="RGBA color"
+            <property name="highlight note color" code="CHil" type="RGBA color"
                 description="Default highlight color.">
                 <cocoa key="highlightNote"/>
             </property>
-            <property name="underline note" code="NUnd" type="RGBA color"
+            <property name="underline note color" code="CUnd" type="RGBA color"
                 description="Default underline highlight color.">
                 <cocoa key="underlineNote"/>
             </property>
-            <property name="strike out note" code="NStr" type="RGBA color"
+            <property name="strike out note color" code="CStr" type="RGBA color"
                 description="Default strike out highlight color.">
                 <cocoa key="strikeOutNote"/>
             </property>
-            <property name="arrow note" code="NArr" type="RGBA color"
+            <property name="arrow note color" code="CArr" type="RGBA color"
                 description="Default arrow color.">
                 <cocoa key="arrowNote"/>
             </property>
