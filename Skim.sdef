@@ -666,19 +666,19 @@
                 <type type="real" list="yes"/>
             </property>
             <property name="start point" code="SPnt" type="point"
-                description="The start point of an arrow (left, top).">
+                description="The start point of a line (left, top).">
                 <cocoa key="startPointAsQDPoint"/>
             </property>
             <property name="end point" code="EPnt" type="point"
-                description="The end point of an arrow (left, top).">
+                description="The end point of a line (left, top).">
                 <cocoa key="endPointAsQDPoint"/>
             </property>
             <property name="start line style" code="SLSt" type="line ending style"
-                description="The start line style of an arrow.">
+                description="The start line style of a line.">
                 <cocoa key="asStartLineStyle"/>
             </property>
             <property name="end line style" code="ELSt" type="line ending style"
-                description="The end line style of an arrow.">
+                description="The end line style of a line.">
                 <cocoa key="asEndLineStyle"/>
             </property>
             <property name="selection" code="sele" access="r"
@@ -820,9 +820,9 @@
                 description="Default strike out highlight color.">
                 <cocoa key="strikeOutNote"/>
             </property>
-            <property name="arrow note color" code="CArr" type="RGBA color"
-                description="Default arrow color.">
-                <cocoa key="arrowNote"/>
+            <property name="line note color" code="CArr" type="RGBA color"
+                description="Default line color.">
+                <cocoa key="lineNote"/>
             </property>
         </record-type>
 
@@ -904,8 +904,8 @@
                 description="Underline highlight."/>
             <enumerator name="strike out note" code="NStr"
                 description="Strike out highlight."/>
-            <enumerator name="arrow note" code="NArr"
-                description="Arrow."/>
+            <enumerator name="line note" code="NArr"
+                description="Line."/>
         </enumeration>
 
         <enumeration name="icon type" code="ITpE">

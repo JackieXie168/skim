@@ -116,7 +116,7 @@
 	BAt0eXBlZHN0cmVhbYED6IQBQISEhAdOU0NvbG9yAISECE5TT2JqZWN0AIWEAWMBhARm
 	ZmZmAQAAAYY=
 	</data>
-        <key>SKArrowNoteColor</key>
+        <key>SKLineNoteColor</key>
         <data>
 	BAt0eXBlZHN0cmVhbYED6IQBQISEhAdOU0NvbG9yAISECE5TT2JqZWN0AIWEAWMBhARm
 	ZmZmAAABAYY=
@@ -127,9 +127,9 @@
         <real>2.0</real>
         <key>SKSquareNoteLineWidth</key>
         <real>2.0</real>
-        <key>SKArrowNoteStartLineStyle</key>
+        <key>SKLineNoteStartLineStyle</key>
         <integer>0</integer>
-        <key>SKArrowNoteEndLineStyle</key>
+        <key>SKLineNoteEndLineStyle</key>
         <integer>4</integer>
         <key>SKAutoCheckFileUpdate</key>
         <false/>
@@ -204,14 +204,14 @@
             <string>SKHighlightNoteColor</string>
             <string>SKUnderlineNoteColor</string>
             <string>SKStrikeOutNoteColor</string>
-            <string>SKArrowNoteColor</string>
+            <string>SKLineNoteColor</string>
             <string>SKTextNoteFontName</string>
             <string>SKTextNoteFontSize</string>
             <string>SKAnchoredNoteIconType</string>
             <string>SKCircleNoteLineWidth</string>
             <string>SKSquareNoteLineWidth</string>
-            <string>SKArrowNoteStartLineStyle</string>
-            <string>SKArrowNoteEndLineStyle</string>
+            <string>SKLineNoteStartLineStyle</string>
+            <string>SKLineNoteEndLineStyle</string>
         </array>
         <key>sync</key>
         <array>

@@ -51,7 +51,7 @@ enum {
     SKASHighlightNote = 'NHil',
     SKASUnderlineNote = 'NUnd',
     SKASStrikeOutNote = 'NStr',
-    SKASArrowNote = 'NArr'
+    SKASLineNote = 'NArr'
 };
 
 enum {
@@ -242,7 +242,7 @@ static IMP originalSetColor = NULL;
     else if ([[self type] isEqualToString:@"StrikeOut"])
         return SKStrikeOutNote;
     else if ([[self type] isEqualToString:@"Line"])
-        return SKArrowNote;
+        return SKLineNote;
     return 0;
 }
 
@@ -369,7 +369,7 @@ static IMP originalSetColor = NULL;
                     self = [[SKPDFAnnotationCircle alloc] initWithBounds:NSMakeRect(100.0, 100.0, 64.0, 64.0)];
                 else if (type == SKASSquareNote)
                     self = [[SKPDFAnnotationSquare alloc] initWithBounds:NSMakeRect(100.0, 100.0, 64.0, 64.0)];
-                else if (type == SKASArrowNote)
+                else if (type == SKASLineNote)
                     self = [[SKPDFAnnotationLine alloc] initWithBounds:NSMakeRect(100.0, 100.0, 16.0, 16.0)];
             }
         }
@@ -411,7 +411,7 @@ static IMP originalSetColor = NULL;
     else if ([[self type] isEqualToString:@"StrikeOut"])
         return SKASStrikeOutNote;
     else if ([[self type] isEqualToString:@"Line"])
-        return SKASArrowNote;
+        return SKASLineNote;
     return 0;
 }
 
@@ -1192,9 +1192,9 @@ static BOOL adjacentCharacterBounds(NSRect rect1, NSRect rect2) {
 
 - (id)initWithBounds:(NSRect)bounds {
     if (self = [super initWithBounds:bounds]) {
-        [super setColor:[NSUnarchiver unarchiveObjectWithData:[[NSUserDefaults standardUserDefaults] objectForKey:SKArrowNoteColorKey]]];
-        [super setStartLineStyle:[[NSUserDefaults standardUserDefaults] integerForKey:SKArrowNoteStartLineStyleKey]];
-        [super setEndLineStyle:[[NSUserDefaults standardUserDefaults] integerForKey:SKArrowNoteEndLineStyleKey]];
+        [super setColor:[NSUnarchiver unarchiveObjectWithData:[[NSUserDefaults standardUserDefaults] objectForKey:SKLineNoteColorKey]]];
+        [super setStartLineStyle:[[NSUserDefaults standardUserDefaults] integerForKey:SKLineNoteStartLineStyleKey]];
+        [super setEndLineStyle:[[NSUserDefaults standardUserDefaults] integerForKey:SKLineNoteEndLineStyleKey]];
         [super setStartPoint:NSMakePoint(0.5, 0.5)];
         [super setEndPoint:NSMakePoint(NSWidth(bounds) - 0.5, NSHeight(bounds) - 0.5)];
     }

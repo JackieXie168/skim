@@ -759,7 +759,7 @@ static void SKCGContextDrawGrabHandle(CGContextRef context, CGPoint point, float
     } else if (isPresentation == NO && [self toolMode] == SKNoteToolMode && modifiers == 0 && eventChar == 's') {
         [self setAnnotationMode:SKStrikeOutNote];
     } else if (isPresentation == NO && [self toolMode] == SKNoteToolMode && modifiers == 0 && eventChar == 'a') {
-        [self setAnnotationMode:SKArrowNote];
+        [self setAnnotationMode:SKLineNote];
     } else {
 		[super keyDown:theEvent];
     }
@@ -991,8 +991,8 @@ static void SKCGContextDrawGrabHandle(CGContextRef context, CGPoint point, float
     [item setTag:SKStrikeOutNote];
     [item setTarget:self];
     
-    item = [submenu addItemWithTitle:NSLocalizedString(@"Arrow", @"Menu item title") action:@selector(changeAnnotationMode:) keyEquivalent:@""];
-    [item setTag:SKArrowNote];
+    item = [submenu addItemWithTitle:NSLocalizedString(@"Line", @"Menu item title") action:@selector(changeAnnotationMode:) keyEquivalent:@""];
+    [item setTag:SKLineNote];
     [item setTarget:self];
     
     item = [menu insertItemWithTitle:NSLocalizedString(@"Tools", @"Menu item title") action:NULL keyEquivalent:@"" atIndex:0];
@@ -1064,9 +1064,9 @@ static void SKCGContextDrawGrabHandle(CGContextRef context, CGPoint point, float
             [item setTarget:self];
         }
         
-        item = [submenu addItemWithTitle:NSLocalizedString(@"Arrow", @"Menu item title") action:@selector(addAnnotationFromMenu:) keyEquivalent:@""];
+        item = [submenu addItemWithTitle:NSLocalizedString(@"Line", @"Menu item title") action:@selector(addAnnotationFromMenu:) keyEquivalent:@""];
         [item setRepresentedObject:[NSValue valueWithPoint:point]];
-        [item setTag:SKArrowNote];
+        [item setTag:SKLineNote];
         [item setTarget:self];
         
         item = [menu insertItemWithTitle:NSLocalizedString(@"New Note or Highlight", @"Menu item title") action:NULL keyEquivalent:@"" atIndex:0];
@@ -1333,7 +1333,7 @@ static void SKCGContextDrawGrabHandle(CGContextRef context, CGPoint point, float
             }
             newAnnotation = [[SKPDFAnnotationMarkup alloc] initWithSelection:sel markupType:kPDFMarkupTypeStrikeOut];
             break;
-        case SKArrowNote:
+        case SKLineNote:
             newAnnotation = [[SKPDFAnnotationLine alloc] initWithBounds:bounds];
             break;
 	}
@@ -2329,7 +2329,7 @@ static void SKCGContextDrawGrabHandle(CGContextRef context, CGPoint point, float
                    NSPointInRect(mouseDownOnPage, [page boundsForBox:[self displayBox]])) {
             // add a new annotation immediately, unless this is just a click
             if (annotationMode == SKAnchoredNote || NSLeftMouseDragged == [[NSApp nextEventMatchingMask:(NSLeftMouseUpMask | NSLeftMouseDraggedMask) untilDate:[NSDate distantFuture] inMode:NSDefaultRunLoopMode dequeue:NO] type]) {
-                float width = annotationMode == SKAnchoredNote ? 16.0 : annotationMode == SKArrowNote ? 4.0 : 8.0;
+                float width = annotationMode == SKAnchoredNote ? 16.0 : annotationMode == SKLineNote ? 4.0 : 8.0;
                 NSRect bounds = NSMakeRect(pagePoint.x - floorf(0.5 * width), pagePoint.y - floorf(0.5 * width), width, width);
                 [[self undoManager] beginUndoGrouping];
                 didBeginUndoGrouping = YES;

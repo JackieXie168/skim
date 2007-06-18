@@ -232,7 +232,7 @@ CFStringRef SKStringCreateByCollapsingAndTrimmingWhitespaceAndNewlines(CFAllocat
     else if ([self isEqualToString:@"StrikeOut"])
         return NSLocalizedString(@"Strike Out", @"Description for export");
     else if ([self isEqualToString:@"Line"])
-        return NSLocalizedString(@"Arrow", @"Description for export");
+        return NSLocalizedString(@"Line", @"Description for export");
     else
         return self;
 }
