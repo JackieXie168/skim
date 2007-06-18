@@ -1291,7 +1291,7 @@ static BOOL adjacentCharacterBounds(NSRect rect1, NSRect rect2) {
 }
 
 - (void)setStartPointAsQDPoint:(NSData *)inQDPointAsData {
-    if ([inQDPointAsData length] == sizeof(Point)) {log_method();
+    if ([inQDPointAsData length] == sizeof(Point)) {
         const Point *qdPoint = (const Point *)[inQDPointAsData bytes];
         NSPoint startPoint = NSPointFromPoint(*qdPoint);
         startPoint.x += 0.5;
