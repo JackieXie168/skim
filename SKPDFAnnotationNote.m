@@ -51,7 +51,7 @@ enum {
     SKASHighlightNote = 'NHil',
     SKASUnderlineNote = 'NUnd',
     SKASStrikeOutNote = 'NStr',
-    SKASLineNote = 'NArr'
+    SKASLineNote = 'NLin'
 };
 
 enum {
