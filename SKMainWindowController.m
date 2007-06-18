@@ -98,7 +98,7 @@ static NSString *SKDocumentToolbarPresentationItemIdentifier = @"SKDocumentToolb
 static NSString *SKDocumentToolbarNewNoteItemIdentifier = @"SKDocumentToolbarNewNoteItemIdentifier";
 static NSString *SKDocumentToolbarNewCircleNoteItemIdentifier = @"SKDocumentToolbarNewCircleNoteItemIdentifier";
 static NSString *SKDocumentToolbarNewMarkupItemIdentifier = @"SKDocumentToolbarNewMarkupItemIdentifier";
-static NSString *SKDocumentToolbarNewArrowItemIdentifier = @"SKDocumentToolbarNewArrowItemIdentifier";
+static NSString *SKDocumentToolbarNewLineItemIdentifier = @"SKDocumentToolbarNewLineItemIdentifier";
 static NSString *SKDocumentToolbarInfoItemIdentifier = @"SKDocumentToolbarInfoItemIdentifier";
 static NSString *SKDocumentToolbarToolModeItemIdentifier = @"SKDocumentToolbarToolModeItemIdentifier";
 static NSString *SKDocumentToolbarDisplayBoxItemIdentifier = @"SKDocumentToolbarDisplayBoxItemIdentifier";
@@ -2196,12 +2196,12 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
         [arrowPath fill];
         [noteToolAdornImages[SKStrikeOutNote] unlockFocus];
         
-        noteToolAdornImages[SKArrowNote] = [[NSImage alloc] initWithSize:size];
-        [noteToolAdornImages[SKArrowNote] lockFocus];
-        [[NSImage imageNamed:@"ArrowNoteAdorn"] compositeToPoint:point operation:NSCompositeCopy];
+        noteToolAdornImages[SKLineNote] = [[NSImage alloc] initWithSize:size];
+        [noteToolAdornImages[SKLineNote] lockFocus];
+        [[NSImage imageNamed:@"LineNoteAdorn"] compositeToPoint:point operation:NSCompositeCopy];
         [color setFill];
         [arrowPath fill];
-        [noteToolAdornImages[SKArrowNote] unlockFocus];
+        [noteToolAdornImages[SKLineNote] unlockFocus];
     }
     
     [toolModeButton setImage:noteToolAdornImages[[pdfView annotationMode]] forSegment:SKNoteToolMode];
@@ -3300,14 +3300,14 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
     [toolbarItems setObject:item forKey:SKDocumentToolbarNewMarkupItemIdentifier];
     [item release];
     
-    item = [[SKToolbarItem alloc] initWithItemIdentifier:SKDocumentToolbarNewArrowItemIdentifier];
-    [item setLabels:NSLocalizedString(@"Add Arrow", @"Toolbar item label")];
-    [item setToolTip:NSLocalizedString(@"Add New Arrow", @"Tool tip message")];
-    [item setTag:SKArrowNote];
+    item = [[SKToolbarItem alloc] initWithItemIdentifier:SKDocumentToolbarNewLineItemIdentifier];
+    [item setLabels:NSLocalizedString(@"Add Line", @"Toolbar item label")];
+    [item setToolTip:NSLocalizedString(@"Add New Line", @"Tool tip message")];
+    [item setTag:SKLineNote];
     [item setTarget:self];
     [item setAction:@selector(createNewNote:)];
-    [item setImageNamed:@"ToolbarArrowNote"];
-    [toolbarItems setObject:item forKey:SKDocumentToolbarNewArrowItemIdentifier];
+    [item setImageNamed:@"ToolbarLineNote"];
+    [toolbarItems setObject:item forKey:SKDocumentToolbarNewLineItemIdentifier];
     [item release];
     
     [markupPopUpButton setShowsMenuWhenIconClicked:NO];
@@ -3352,9 +3352,9 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
     menuItem = [menu addItemWithTitle:NSLocalizedString(@"Strike Out Tool", @"Menu item title") action:@selector(changeAnnotationMode:) keyEquivalent:@""];
 	[menuItem setTarget:self];
 	[menuItem setTag:SKStrikeOutNote];
-    menuItem = [menu addItemWithTitle:NSLocalizedString(@"Arrow Tool", @"Menu item title") action:@selector(changeAnnotationMode:) keyEquivalent:@""];
+    menuItem = [menu addItemWithTitle:NSLocalizedString(@"Line Tool", @"Menu item title") action:@selector(changeAnnotationMode:) keyEquivalent:@""];
 	[menuItem setTarget:self];
-	[menuItem setTag:SKArrowNote];
+	[menuItem setTag:SKLineNote];
 	menuItem = [[[NSMenuItem allocWithZone:[NSMenu menuZone]] initWithTitle:NSLocalizedString(@"Tool Mode", @"Toolbar item label") action:NULL keyEquivalent:@""] autorelease];
     [menuItem setSubmenu:menu];
     item = [[SKToolbarItem alloc] initWithItemIdentifier:SKDocumentToolbarToolModeItemIdentifier];
@@ -3401,10 +3401,10 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
 	[menuItem setTarget:self];
 	[menuItem setTag:SKStrikeOutNote];
 	[menuItem setImage:[NSImage imageNamed:@"StrikeOutNoteAdorn"]];
-    menuItem = [menu addItemWithTitle:NSLocalizedString(@"Arrow", @"Menu item title") action:@selector(changeAnnotationMode:) keyEquivalent:@""];
+    menuItem = [menu addItemWithTitle:NSLocalizedString(@"Line", @"Menu item title") action:@selector(changeAnnotationMode:) keyEquivalent:@""];
 	[menuItem setTarget:self];
-	[menuItem setTag:SKArrowNote];
-	[menuItem setImage:[NSImage imageNamed:@"ArrowNoteAdorn"]];
+	[menuItem setTag:SKLineNote];
+	[menuItem setImage:[NSImage imageNamed:@"LineNoteAdorn"]];
     [toolModeButton setMenu:menu forSegment:SKNoteToolMode];
     
 	menu = [[NSMenu allocWithZone:[NSMenu menuZone]] init];
@@ -3481,7 +3481,7 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
         SKDocumentToolbarNewNoteItemIdentifier, 
         SKDocumentToolbarNewCircleNoteItemIdentifier, 
         SKDocumentToolbarNewMarkupItemIdentifier,
-        SKDocumentToolbarNewArrowItemIdentifier, nil];
+        SKDocumentToolbarNewLineItemIdentifier, nil];
 }
 
 - (NSArray *)toolbarAllowedItemIdentifiers:(NSToolbar *)toolbar {
@@ -3504,7 +3504,7 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
         SKDocumentToolbarNewNoteItemIdentifier, 
         SKDocumentToolbarNewCircleNoteItemIdentifier, 
         SKDocumentToolbarNewMarkupItemIdentifier,
-        SKDocumentToolbarNewArrowItemIdentifier,
+        SKDocumentToolbarNewLineItemIdentifier,
         SKDocumentToolbarInfoItemIdentifier, 
         SKDocumentToolbarContentsPaneItemIdentifier, 
         SKDocumentToolbarNotesPaneItemIdentifier, 
@@ -3539,7 +3539,7 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
         return YES;
     } else if ([identifier isEqualToString:SKDocumentToolbarPresentationItemIdentifier]) {
         return YES;
-    } else if ([identifier isEqualToString:SKDocumentToolbarNewNoteItemIdentifier] || [identifier isEqualToString:SKDocumentToolbarNewCircleNoteItemIdentifier] || [identifier isEqualToString:SKDocumentToolbarNewArrowItemIdentifier]) {
+    } else if ([identifier isEqualToString:SKDocumentToolbarNewNoteItemIdentifier] || [identifier isEqualToString:SKDocumentToolbarNewCircleNoteItemIdentifier] || [identifier isEqualToString:SKDocumentToolbarNewLineItemIdentifier]) {
         return ([pdfView toolMode] == SKTextToolMode || [pdfView toolMode] == SKNoteToolMode) && [pdfView hideNotes] == NO;
     } else if ([identifier isEqualToString:SKDocumentToolbarNewMarkupItemIdentifier]) {
         return ([pdfView toolMode] == SKTextToolMode || [pdfView toolMode] == SKNoteToolMode) && [[[pdfView currentSelection] pages] count] && [pdfView hideNotes] == NO;

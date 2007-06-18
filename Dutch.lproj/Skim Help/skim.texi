@@ -247,7 +247,7 @@ Als u in Skim een PDF-bestand met meerdere pagina's opent, wordt ŽŽn venster geo
 @item U navigeert door de miniatuurafbeeldingen van de pagina's in het document door te klikken op de desbetreffende miniatuur in het inhoudspaneel. 
 @end itemize
 @itemize
-@item Om naar de volgende pagina te gaan, drukt u op de pijl-omlaagtoets of de Page Down-toets. Om naar de vorige pagina te gaan, drukt u op de pijl-omhoogtoets of de Page Up-toets. 
+@item Om naar de volgende pagina te gaan, drukt u op de Pijl-Omlaagtoets of de Pagina Omlaag-toets. Om naar de vorige pagina te gaan, drukt u op de Pijl-Omhoogtoets of de Pagina Omhoog-toets. 
 @end itemize
 @itemize
 @item Om met de verticale schuifbalk door de verschillende pagina's in de PDF te bladeren, kiest u Weergave > PDF Weergave > Doorlopend. 
@@ -567,7 +567,7 @@ U kunt notities wijzigen en verwijderen. Om een notitie te verplaatsen of te ver
 @heading Zie ook
 @menu
 * Gedeelten van een PDF-document markeren::
-* Pijlen aan een PDF-document toevoegen::
+* Lijnen aan een PDF-document toevoegen::
 * De kleur van notities en markeringen wijzigen::
 * Het lettertype en de lettergrootte van textnotities wijzigen::
 @end menu
@@ -599,30 +599,30 @@ Circel- en box-markeringen kunnen ook verplaatst en vergroot of verkleind worden
 @heading Zie ook
 @menu
 * Notities aan een PDF-document toevoegen::
-* Pijlen aan een PDF-document toevoegen::
+* Lijnen aan een PDF-document toevoegen::
 * De kleur van notities en markeringen wijzigen::
 @end menu
 
 @c ======================================================================================
 
-@topic Pijlen aan een PDF-document toevoegen
+@topic Lijnen aan een PDF-document toevoegen
 
-U kunt uw pijlen toevoegen aan een PDF-document om relaties tussen secties aan te geven.
+U kunt uw lijnen toevoegen aan een PDF-document om relaties tussen secties aan te geven.
 
-De pijlen worden bewaard bij het document en zijn zichtbaar voor andere gebruikers van Skim. De pijlen worden niet bewaard in de PDF-data zelf, zodat u de pijlen niet kunt zien in de meeste andere PDF vertoningsprogrammas.
+De lijnen worden bewaard bij het document en zijn zichtbaar voor andere gebruikers van Skim. De lijnen worden niet bewaard in de PDF-data zelf, zodat u de lijnen niet kunt zien in de meeste andere PDF vertoningsprogrammas.
 
 @box{taskbox}
-@heading Om een pijl toe te voegen:
+@heading Om een lijn toe te voegen:
 @enumerate
 @item Kies Extra's > Tekstfunctie. 
-@item Kies Notities > Pijl. 
-@item Sleep de pijl of ŽŽn van zijn eindpunten in het document tot deze op de gewenste plaats is en naar de juiste postie wijst.
+@item Kies Notities > Lijn. 
+@item Sleep de lijn of ŽŽn van zijn eindpunten in het document tot deze op de gewenste plaats is en naar de juiste postie wijst.
 @end enumerate
 @endbox
 
-U kunt pijlen ook toevoegen met behulp van een knop op de knoppenbalk. Om de knop aan de knoppenbalk toe te voegen, kiest u Weergave > 'Pas knoppenbalk aan' en sleept u de knop naar de knoppenbalk.
+U kunt lijnen ook toevoegen met behulp van een knop op de knoppenbalk. Om de knop aan de knoppenbalk toe te voegen, kiest u Weergave > 'Pas knoppenbalk aan' en sleept u de knop naar de knoppenbalk.
 
-U kunt pijlen wijzigen en verwijderen. Om een pijl of ŽŽn van zijn eindpunten te verplaatsen, kies Extra's > Tekstfunctie, en gebruik de muis om te selecteren en te slepen. Sleep een zwarte vierkantje om een eindpunt te verplaatsen. Om de kleur van de pijl te wijzigen, kies Extra's > 'Toon kleuren'. Om een pijl te verwijderen, kies Extra's > Textfunctie, selecteer de pijl, en druk op de Delete-toets.
+U kunt lijnen wijzigen en verwijderen. Om een lijn of ŽŽn van zijn eindpunten te verplaatsen, kies Extra's > Tekstfunctie, en gebruik de muis om te selecteren en te slepen. Sleep een zwarte vierkantje om een eindpunt te verplaatsen. Om de kleur van de lijn te wijzigen, kies Extra's > 'Toon kleuren'. Om een lijn te verwijderen, kies Extra's > Textfunctie, selecteer de lijn, en druk op de Delete-toets.
 
 @heading Zie ook
 @menu
@@ -636,16 +636,16 @@ U kunt pijlen wijzigen en verwijderen. Om een pijl of ŽŽn van zijn eindpunten te
 
 @topic De kleur van notities en markeringen wijzigen
 
-In Skim kunt u de kleur van een notitie, markering of pijl die u met Skim heeft aangebracht wijzigen. U kunt ook de standaardkleuren die gebruikt worden voor nieuwe notities, markeringen en pijlen instellen.
+In Skim kunt u de kleur van een notitie, markering of lijn die u met Skim heeft aangebracht wijzigen. U kunt ook de standaardkleuren die gebruikt worden voor nieuwe notities, markeringen en lijnen instellen.
 
 @box{taskbox}
-@heading Om de standaardkleuren voor notities, markeringenen pijlen te wijzigen:
+@heading Om de standaardkleuren voor notities, markeringenen lijnen te wijzigen:
 @itemize
-@item Kies Skim > Voorkeuren, selecteer Notities, en klik op een kleur behorende bij de type notitie, markering orfpijl die u wilt veranderen.
+@item Kies Skim > Voorkeuren, selecteer Notities, en klik op een kleur behorende bij de type notitie, markering of lijn die u wilt veranderen.
 @end itemize
-@heading Om de kleur van een enkele notitie, markering of pijl te wijzigen:
+@heading Om de kleur van een enkele notitie, markering of lijn te wijzigen:
 @itemize
-@item Selecteer de notitie, markering of pijl in de PDF en kies Extra's > Toon kleuren.
+@item Selecteer de notitie, markering of lijn in de PDF en kies Extra's > Toon kleuren.
 @end itemize
 @endbox
 
@@ -653,7 +653,7 @@ In Skim kunt u de kleur van een notitie, markering of pijl die u met Skim heeft 
 @menu
 * Notities aan een PDF-document toevoegen::
 * Gedeelten van een PDF-document markeren::
-* Pijlen aan een PDF-document toevoegen::
+* Lijnen aan een PDF-document toevoegen::
 * Het lettertype en de lettergrootte van textnotities wijzigen::
 @end menu
 
@@ -676,7 +676,7 @@ In Skim kunt u het lettertype en de lettergrootte van een tekstnotitie dat u met
 @menu
 * Notities aan een PDF-document toevoegen::
 * Gedeelten van een PDF-document markeren::
-* Pijlen aan een PDF-document toevoegen::
+* Lijnen aan een PDF-document toevoegen::
 * De kleur van notities en markeringen wijzigen::
 @end menu
 
@@ -888,10 +888,10 @@ In Skim kunt u de tekstregel die u aan het lezen bent markeren, zodat u zich bet
 @item Om de leesbalk te tonen, kies Weergave > Toon Leesbalk.
 @end itemize
 @itemize
-@item Om de leesbalk naar de volgende of vorige regel te verplaatsen, houd de Option-toets ingedrukt en druk de pijl-omlaagtoets of pijl-omhoogtoets in.
+@item Om de leesbalk naar de volgende of vorige regel te verplaatsen, houd de Option-toets ingedrukt en druk de Lijn-Omlaagtoets of Pijl-Omhoogtoets in.
 @end itemize
 @itemize
-@item Om de leesbalk naar de volgende of vorige pagina te verplaatsen, houd de Option-toets ingedrukt en druk de pijl-rechtstoets of pijl-linkstoets in.
+@item Om de leesbalk naar de volgende of vorige pagina te verplaatsen, houd de Option-toets ingedrukt en druk de Pijl-Rechtstoets of Pijl-Linkstoets in.
 @end itemize
 @endbox
 
@@ -961,7 +961,7 @@ U kunt Skim ook gebruiken om presentatie van een PDF-document te geven.
 @end enumerate
 @endbox
 
-In presentatiemodus kunt u de pijl-rechtstoets en pijl-linkstoets gebruiken om door de paginas te navigeren.
+In presentatiemodus kunt u de Pijl-Rechtstoets en Pijl-Linkstoets gebruiken om door de paginas te navigeren.
 
 Als u de muis naar de onderzijde van het scherm beweegt, worden navigatietoetsen getoond.
 

@@ -18,19 +18,19 @@
 "Actual Size" = "Dimensione Effettiva";
 
 /* Toolbar item label */
-"Add Arrow" = "Aggiungi Freccia";
+"Add Circle" = "Aggiungi Cerchio";
 
 /* Toolbar item label */
-"Add Circle" = "Aggiungi Cerchio";
+"Add Line" = "Aggiungi Riga";
 
 /* Toolbar item label */
 "Add Markup" = "Aggiungi Evidenziazione";
 
 /* Tool tip message */
-"Add New Arrow" = "Aggiungi Nuova Freccia";
+"Add New Circle" = "Aggiungi Nuovo Cerchio";
 
 /* Tool tip message */
-"Add New Circle" = "Aggiungi Nuovo Cerchio";
+"Add New Line" = "Aggiungi Nuova Riga";
 
 /* Tool tip message */
 "Add New Markup" = "Aggiungi Nuova Evidenziazione";
@@ -48,13 +48,6 @@
 
 /* Menu item title */
 "Anchored Note Tool" = "Strumento Nota Ancorata";
-
-/* Description for export
-   Menu item title */
-"Arrow" = "Freccia";
-
-/* Menu item title */
-"Arrow Tool" = "Strumento Freccia";
 
 /* Button title */
 "Auto" = "Auto";
@@ -231,6 +224,13 @@
 
 /* Window title */
 "Latest Release Notes" = "Ultime Note Rilascio";
+
+/* Description for export
+   Menu item title */
+"Line" = "Riga";
+
+/* Menu item title */
+"Line Tool" = "Strumento Riga";
 
 /* No comment provided by engineer. */
 "Look Up in Dictionary" = "Cerca nel dizionario";
