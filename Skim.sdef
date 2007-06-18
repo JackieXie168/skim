@@ -127,6 +127,9 @@
             <responds-to name="find">
                 <cocoa method="handleFindScriptCommand:"/>
             </responds-to>
+            <responds-to name="show TeX file">
+                <cocoa method="handleShowTeXScriptCommand:"/>
+            </responds-to>
 			<responds-to name="get bounds for">
 				<cocoa method=""/>
 			</responds-to>
@@ -1034,6 +1037,20 @@
                 description="The joined selection.">
                 <type type="specifier" list="yes"/>
             </result>
+        </command>
+
+        <command name="show TeX file" code="SKIMSTeX"
+            description="Show the LaTeX source file.">
+            <direct-parameter type="document"
+                description="The document to show the TeX source for."/>
+            <parameter name="from" code="from" type="point" optional="yes"
+                description="The point from the page to show the TeX line for.">
+                <cocoa key="Point"/>
+            </parameter>
+            <parameter name="at" code="at  " type="page" optional="yes"
+                description="The page to show the TeX line for.">
+                <cocoa key="Page"/>
+            </parameter>
         </command>
 
         <command name="get bounds for" code="SKIMBnds"

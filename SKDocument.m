@@ -1082,6 +1082,32 @@ static BOOL isFileOnHFSVolume(NSString *fileName)
     return specifier ? specifier : [NSArray array];
 }
 
+- (id)handleShowTeXScriptCommand:(NSScriptCommand *)command {
+	NSDictionary *args = [command evaluatedArguments];
+    id page = [args objectForKey:@"Page"];
+    id pointData = [args objectForKey:@"Point"];
+    NSPoint point = NSZeroPoint;
+    
+    if ([page isKindOfClass:[PDFPage class]] == NO)
+        page = [[self pdfView] currentPage];
+    if ([pointData isKindOfClass:[NSDate class]] && [pointData length] != sizeof(Point)) {
+        const Point *qdPoint = (const Point *)[pointData bytes];
+        point = NSPointFromPoint(*qdPoint);
+    } else {
+        NSRect bounds = [page boundsForBox:[[self pdfView] displayBox]];
+        point = NSMakePoint(NSMidX(bounds), NSMidY(bounds));
+    }
+    if (page) {
+        unsigned int pageIndex = [[page document] indexForPage:page];
+        PDFSelection *sel = [page selectionForLineAtPoint:point];
+        NSRect rect = sel ? [sel boundsForPage:page] : NSMakeRect(point.x - 20.0, point.y - 5.0, 40.0, 10.0);
+        
+        [[self synchronizer] findLineForLocation:point inRect:rect atPageIndex:pageIndex];
+    }
+    
+    return nil;
+}
+
 @end
 
 
