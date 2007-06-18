@@ -148,9 +148,12 @@ static IMP originalSetColor = NULL;
             [(SKPDFAnnotationFreeText *)self setFont:font];
     } else if ([type isEqualToString:@"Circle"]) {
         self = [[SKPDFAnnotationCircle alloc] initWithBounds:bounds];
+        NSColor *interiorColor = [dict objectForKey:@"interiorColor"];
         NSNumber *lineWidth = [dict objectForKey:@"lineWidth"];
         NSNumber *borderStyle = [dict objectForKey:@"borderStyle"];
         NSArray *dashPattern = [dict objectForKey:@"dashPattern"];
+        if (interiorColor)
+            [(SKPDFAnnotationCircle *)self setInteriorColor:interiorColor];
         if (lineWidth)
             [[self border] setLineWidth:[lineWidth floatValue]];
         if (borderStyle)
@@ -159,9 +162,12 @@ static IMP originalSetColor = NULL;
             [[self border] setDashPattern:dashPattern];
     } else if ([type isEqualToString:@"Square"]) {
         self = [[SKPDFAnnotationSquare alloc] initWithBounds:bounds];
+        NSColor *interiorColor = [dict objectForKey:@"interiorColor"];
         NSNumber *lineWidth = [dict objectForKey:@"lineWidth"];
         NSNumber *borderStyle = [dict objectForKey:@"borderStyle"];
         NSArray *dashPattern = [dict objectForKey:@"dashPattern"];
+        if (interiorColor)
+            [(SKPDFAnnotationSquare *)self setInteriorColor:interiorColor];
         if (lineWidth)
             [[self border] setLineWidth:[lineWidth floatValue]];
         if (borderStyle)
@@ -293,6 +299,8 @@ static IMP originalSetColor = NULL;
 
 - (NSArray *)texts { return nil; }
 
+- (NSColor *)interiorColor { return nil; }
+
 - (BOOL)isNoteAnnotation { return NO; }
 
 - (BOOL)isMarkupAnnotation { return NO; }
@@ -408,7 +416,7 @@ static IMP originalSetColor = NULL;
 }
 
 - (int)asIconType {
-    return kPDFTextAnnotationIconNote;
+    return SKASTextAnnotationIconNote;
 }
 
 - (id)textContents;
@@ -538,6 +546,7 @@ static IMP originalSetColor = NULL;
 
 - (NSDictionary *)dictionaryValue{
     NSMutableDictionary *dict = (NSMutableDictionary *)[super dictionaryValue];
+    [dict setValue:[self interiorColor] forKey:@"interiorColor"];
     [dict setValue:[NSNumber numberWithFloat:[[self border] lineWidth]] forKey:@"lineWidth"];
     [dict setValue:[NSNumber numberWithInt:[[self border] style]] forKey:@"borderStyle"];
     [dict setValue:[[self border] dashPattern] forKey:@"dashPattern"];
@@ -551,6 +560,14 @@ static IMP originalSetColor = NULL;
 - (BOOL)isMovable { return YES; }
 
 - (BOOL)shouldPrint { return YES; }
+
+- (void)setInteriorColor:(NSColor *)color {
+    [[[self undoManager] prepareWithInvocationTarget:self] setInteriorColor:[self interiorColor]];
+    [[self undoManager] setActionName:NSLocalizedString(@"Edit Note", @"Undo action name")];
+    [super setInteriorColor:color];
+    [[NSNotificationCenter defaultCenter] postNotificationName:SKAnnotationDidChangeNotification 
+            object:self userInfo:[NSDictionary dictionaryWithObjectsAndKeys:@"interiorColor", @"key", nil]];
+}
 
 #pragma mark Scripting support
 
@@ -584,6 +601,7 @@ static IMP originalSetColor = NULL;
 
 - (NSDictionary *)dictionaryValue{
     NSMutableDictionary *dict = (NSMutableDictionary *)[super dictionaryValue];
+    [dict setValue:[self interiorColor] forKey:@"interiorColor"];
     [dict setValue:[NSNumber numberWithFloat:[[self border] lineWidth]] forKey:@"lineWidth"];
     [dict setValue:[NSNumber numberWithInt:[[self border] style]] forKey:@"borderStyle"];
     [dict setValue:[[self border] dashPattern] forKey:@"dashPattern"];
@@ -597,6 +615,14 @@ static IMP originalSetColor = NULL;
 - (BOOL)isMovable { return YES; }
 
 - (BOOL)shouldPrint { return YES; }
+
+- (void)setInteriorColor:(NSColor *)color {
+    [[[self undoManager] prepareWithInvocationTarget:self] setInteriorColor:[self interiorColor]];
+    [[self undoManager] setActionName:NSLocalizedString(@"Edit Note", @"Undo action name")];
+    [super setInteriorColor:color];
+    [[NSNotificationCenter defaultCenter] postNotificationName:SKAnnotationDidChangeNotification 
+            object:self userInfo:[NSDictionary dictionaryWithObjectsAndKeys:@"interiorColor", @"key", nil]];
+}
 
 #pragma mark Scripting support
 
