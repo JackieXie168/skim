@@ -1292,26 +1292,24 @@ static BOOL adjacentCharacterBounds(NSRect rect1, NSRect rect2) {
     if ([inQDPointAsData length] == sizeof(Point)) {
         const Point *qdPoint = (const Point *)[inQDPointAsData bytes];
         NSPoint startPoint = NSPointFromPoint(*qdPoint);
-        startPoint.x += 0.5;
-        startPoint.y += 0.5;
         
         NSRect bounds = [self bounds];
         NSPoint endPoint = [self endPoint];
-        endPoint.x += NSMinX(bounds);
-        endPoint.y += NSMinY(bounds);
+        endPoint.x = roundf(endPoint.x + NSMinX(bounds));
+        endPoint.y = roundf(endPoint.y + NSMinY(bounds));
         
         bounds.origin.x = floorf(fmin(startPoint.x, endPoint.x));
         bounds.size.width = ceilf(fmax(endPoint.x, startPoint.x)) - NSMinX(bounds);
         bounds.origin.y = floorf(fmin(startPoint.y, endPoint.y));
         bounds.size.height = ceilf(fmax(endPoint.y, startPoint.y)) - NSMinY(bounds);
         
-        if (NSWidth(bounds) < 7.0) {
-            bounds.size.width = 7.0;
-            bounds.origin.x = floorf(0.5 * (startPoint.x + endPoint.x) - 3.5);
+        if (NSWidth(bounds) < 8.0) {
+            bounds.size.width = 8.0;
+            bounds.origin.x = floorf(0.5 * (startPoint.x + endPoint.x) - 4.0);
         }
-        if (NSHeight(bounds) < 7.0) {
-            bounds.size.height = 7.0;
-            bounds.origin.y = floorf(0.5 * (startPoint.y + endPoint.y) - 3.5);
+        if (NSHeight(bounds) < 8.0) {
+            bounds.size.height = 8.0;
+            bounds.origin.y = floorf(0.5 * (startPoint.y + endPoint.y) - 4.0);
         }
         
         startPoint.x -= NSMinX(bounds);
@@ -1339,26 +1337,24 @@ static BOOL adjacentCharacterBounds(NSRect rect1, NSRect rect2) {
     if ([inQDPointAsData length] == sizeof(Point)) {
         const Point *qdPoint = (const Point *)[inQDPointAsData bytes];
         NSPoint endPoint = NSPointFromPoint(*qdPoint);
-        endPoint.x += 0.5;
-        endPoint.y += 0.5;
         
         NSRect bounds = [self bounds];
         NSPoint startPoint = [self startPoint];
-        startPoint.x += NSMinX(bounds);
-        startPoint.y += NSMinY(bounds);
+        startPoint.x = roundf(startPoint.x + NSMinX(bounds));
+        startPoint.y = roundf(startPoint.y + NSMinY(bounds));
         
         bounds.origin.x = floorf(fmin(startPoint.x, endPoint.x));
         bounds.size.width = ceilf(fmax(endPoint.x, startPoint.x)) - NSMinX(bounds);
         bounds.origin.y = floorf(fmin(startPoint.y, endPoint.y));
         bounds.size.height = ceilf(fmax(endPoint.y, startPoint.y)) - NSMinY(bounds);
         
-        if (NSWidth(bounds) < 7.0) {
-            bounds.size.width = 7.0;
-            bounds.origin.x = floorf(0.5 * (startPoint.x + endPoint.x) - 3.5);
+        if (NSWidth(bounds) < 8.0) {
+            bounds.size.width = 8.0;
+            bounds.origin.x = floorf(0.5 * (startPoint.x + endPoint.x) - 4.0);
         }
-        if (NSHeight(bounds) < 7.0) {
-            bounds.size.height = 7.0;
-            bounds.origin.y = floorf(0.5 * (startPoint.y + endPoint.y) - 3.5);
+        if (NSHeight(bounds) < 8.0) {
+            bounds.size.height = 8.0;
+            bounds.origin.y = floorf(0.5 * (startPoint.y + endPoint.y) - 4.0);
         }
         
         startPoint.x -= NSMinX(bounds);

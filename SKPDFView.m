@@ -1761,7 +1761,7 @@ static void SKCGContextDrawGrabHandle(CGContextRef context, CGPoint point, float
 
 - (NSRect)resizeThumbForRect:(NSRect)rect point:(NSPoint)point {
 	NSRect thumb = rect;
-    float size = 7.0;
+    float size = 8.0;
     
     thumb.size = NSMakeSize(size, size);
 	
@@ -1998,10 +1998,10 @@ static void SKCGContextDrawGrabHandle(CGContextRef context, CGPoint point, float
         NSPoint oldEndPoint = [annotation endPoint];
         NSPoint endPoint;
         NSPoint startPoint = [annotation startPoint];
-        startPoint.x += NSMinX(bounds);
-        startPoint.y += NSMinY(bounds);
-        oldEndPoint.x += NSMinX(bounds);
-        oldEndPoint.y += NSMinY(bounds);
+        startPoint.x = roundf(startPoint.x + NSMinX(bounds));
+        startPoint.y = roundf(startPoint.y + NSMinY(bounds));
+        oldEndPoint.x = roundf(oldEndPoint.x + NSMinX(bounds));
+        oldEndPoint.y = roundf(oldEndPoint.y + NSMinY(bounds));
         endPoint = oldEndPoint;
         
         // Resize the annotation.
@@ -2010,82 +2010,82 @@ static void SKCGContextDrawGrabHandle(CGContextRef context, CGPoint point, float
                 if (eventChar == NSRightArrowFunctionKey) {
                     endPoint.x += delta;
                     if (endPoint.x > NSMaxX(pageBounds))
-                        endPoint.x = NSMaxX(pageBounds) - 0.5;
+                        endPoint.x = NSMaxX(pageBounds);
                 } else if (eventChar == NSLeftArrowFunctionKey) {
                     endPoint.x -= delta;
                     if (endPoint.x < NSMinX(pageBounds))
-                        endPoint.x = NSMinX(pageBounds) + 0.5;
+                        endPoint.x = NSMinX(pageBounds);
                 } else if (eventChar == NSUpArrowFunctionKey) {
                     endPoint.y += delta;
                     if (endPoint.y > NSMaxY(pageBounds))
-                        endPoint.y = NSMaxY(pageBounds) - 0.5;
+                        endPoint.y = NSMaxY(pageBounds);
                 } else if (eventChar == NSDownArrowFunctionKey) {
                     endPoint.y -= delta;
                     if (endPoint.y < NSMinY(pageBounds))
-                        endPoint.y = NSMinY(pageBounds) + 0.5;
+                        endPoint.y = NSMinY(pageBounds);
                 }
                 break;
             case 90:
                 if (eventChar == NSRightArrowFunctionKey) {
                     endPoint.y += delta;
                     if (endPoint.y > NSMaxY(pageBounds))
-                        endPoint.y = NSMaxY(pageBounds) - 0.5;
+                        endPoint.y = NSMaxY(pageBounds);
                 } else if (eventChar == NSLeftArrowFunctionKey) {
                     endPoint.y -= delta;
                     if (endPoint.y < NSMinY(pageBounds))
-                        endPoint.y = NSMinY(pageBounds) + 0.5;
+                        endPoint.y = NSMinY(pageBounds);
                 } else if (eventChar == NSUpArrowFunctionKey) {
                     endPoint.x -= delta;
                     if (endPoint.x < NSMinX(pageBounds))
-                        endPoint.x = NSMinX(pageBounds) + 0.5;
+                        endPoint.x = NSMinX(pageBounds);
                 } else if (eventChar == NSDownArrowFunctionKey) {
                     endPoint.x += delta;
                     if (endPoint.x > NSMaxX(pageBounds))
-                        endPoint.x = NSMaxX(pageBounds) - 0.5;
+                        endPoint.x = NSMaxX(pageBounds);
                 }
                 break;
             case 180:
                 if (eventChar == NSRightArrowFunctionKey) {
                     endPoint.x -= delta;
                     if (endPoint.x < NSMinX(pageBounds))
-                        endPoint.x = NSMinX(pageBounds) + 0.5;
+                        endPoint.x = NSMinX(pageBounds);
                 } else if (eventChar == NSLeftArrowFunctionKey) {
                     endPoint.x += delta;
                     if (endPoint.x > NSMaxX(pageBounds))
-                        endPoint.x = NSMaxX(pageBounds) - 0.5;
+                        endPoint.x = NSMaxX(pageBounds);
                 } else if (eventChar == NSUpArrowFunctionKey) {
                     endPoint.y -= delta;
                     if (endPoint.y < NSMinY(pageBounds))
-                        endPoint.y = NSMinY(pageBounds) + 0.5;
+                        endPoint.y = NSMinY(pageBounds);
                 } else if (eventChar == NSDownArrowFunctionKey) {
                     endPoint.y += delta;
                     if (endPoint.y > NSMaxY(pageBounds))
-                        endPoint.y = NSMaxY(pageBounds) - 0.5;
+                        endPoint.y = NSMaxY(pageBounds);
                 }
                 break;
             case 270:
                 if (eventChar == NSRightArrowFunctionKey) {
                     endPoint.y -= delta;
                     if (endPoint.y < NSMinY(pageBounds))
-                        endPoint.y = NSMinY(pageBounds) + 0.5;
+                        endPoint.y = NSMinY(pageBounds);
                 } else if (eventChar == NSLeftArrowFunctionKey) {
                     endPoint.y += delta;
                     if (endPoint.y > NSMaxY(pageBounds))
-                        endPoint.y = NSMaxY(pageBounds) - 0.5;
+                        endPoint.y = NSMaxY(pageBounds);
                 } else if (eventChar == NSUpArrowFunctionKey) {
                     endPoint.x += delta;
                     if (endPoint.x > NSMaxX(pageBounds))
-                        endPoint.x = NSMaxX(pageBounds) - 0.5;
+                        endPoint.x = NSMaxX(pageBounds);
                 } else if (eventChar == NSDownArrowFunctionKey) {
                     endPoint.x -= delta;
                     if (endPoint.x < NSMinX(pageBounds))
-                        endPoint.x = NSMinX(pageBounds) + 0.5;
+                        endPoint.x = NSMinX(pageBounds);
                 }
                 break;
         }
         
-        endPoint.x = floorf(endPoint.x) + 0.5;
-        endPoint.y = floorf(endPoint.y) + 0.5;
+        endPoint.x = floorf(endPoint.x);
+        endPoint.y = floorf(endPoint.y);
         
         if (NSEqualPoints(endPoint, oldEndPoint) == NO) {
             newBounds.origin.x = floorf(fmin(startPoint.x, endPoint.x));
@@ -2093,13 +2093,13 @@ static void SKCGContextDrawGrabHandle(CGContextRef context, CGPoint point, float
             newBounds.origin.y = floorf(fmin(startPoint.y, endPoint.y));
             newBounds.size.height = ceilf(fmax(endPoint.y, startPoint.y)) - NSMinY(newBounds);
             
-            if (NSWidth(newBounds) < 7.0) {
-                newBounds.size.width = 7.0;
-                newBounds.origin.x = floorf(0.5 * (startPoint.x + endPoint.x) - 3.5);
+            if (NSWidth(newBounds) < 8.0) {
+                newBounds.size.width = 8.0;
+                newBounds.origin.x = floorf(0.5 * (startPoint.x + endPoint.x) - 4.0);
             }
-            if (NSHeight(newBounds) < 7.0) {
-                newBounds.size.height = 7.0;
-                newBounds.origin.y = floorf(0.5 * (startPoint.y + endPoint.y) - 3.5);
+            if (NSHeight(newBounds) < 8.0) {
+                newBounds.size.height = 8.0;
+                newBounds.origin.y = floorf(0.5 * (startPoint.y + endPoint.y) - 4.0);
             }
             
             startPoint.x -= NSMinX(newBounds);
@@ -2424,11 +2424,11 @@ static void SKCGContextDrawGrabHandle(CGContextRef context, CGPoint point, float
             
             SKPDFAnnotationLine *annotation = (SKPDFAnnotationLine *)activeAnnotation;
             NSPoint endPoint = wasEndPoint;
-            endPoint.x += NSMinX(wasBounds);
-            endPoint.y += NSMinY(wasBounds);
+            endPoint.x = roundf(endPoint.x + NSMinX(wasBounds));
+            endPoint.y = roundf(endPoint.y + NSMinY(wasBounds));
             startPoint = wasStartPoint;
-            startPoint.x += NSMinX(wasBounds);
-            startPoint.y += NSMinY(wasBounds);
+            startPoint.x = roundf(startPoint.x + NSMinX(wasBounds));
+            startPoint.y = roundf(startPoint.y + NSMinY(wasBounds));
             NSPoint *draggedPoint = draggingStartPoint ? &startPoint : &endPoint;
             
             // Resize the annotation.
@@ -2452,28 +2452,28 @@ static void SKCGContextDrawGrabHandle(CGContextRef context, CGPoint point, float
             }
             
             if (draggedPoint->x > NSMaxX(pageBounds))
-                draggedPoint->x = NSMaxX(pageBounds) - 0.5;
+                draggedPoint->x = NSMaxX(pageBounds);
             else if (draggedPoint->x < NSMinX(pageBounds))
-                draggedPoint->x = NSMinX(pageBounds) + 0.5;
+                draggedPoint->x = NSMinX(pageBounds);
             if (draggedPoint->y > NSMaxY(pageBounds))
-                draggedPoint->y = NSMaxY(pageBounds) - 0.5;
+                draggedPoint->y = NSMaxY(pageBounds) ;
             else if (draggedPoint->y < NSMinY(pageBounds))
-                draggedPoint->y = NSMinY(pageBounds) + 0.5;
-            draggedPoint->x = floorf(draggedPoint->x) + 0.5;
-            draggedPoint->y = floorf(draggedPoint->y) + 0.5;
+                draggedPoint->y = NSMinY(pageBounds);
+            draggedPoint->x = floorf(draggedPoint->x);
+            draggedPoint->y = floorf(draggedPoint->y);
             
             newBounds.origin.x = floorf(fmin(startPoint.x, endPoint.x));
             newBounds.size.width = ceilf(fmax(endPoint.x, startPoint.x)) - NSMinX(newBounds);
             newBounds.origin.y = floorf(fmin(startPoint.y, endPoint.y));
             newBounds.size.height = ceilf(fmax(endPoint.y, startPoint.y)) - NSMinY(newBounds);
             
-            if (NSWidth(newBounds) < 7.0) {
-                newBounds.size.width = 7.0;
-                newBounds.origin.x = floorf(0.5 * (startPoint.x + endPoint.x) - 3.5);
+            if (NSWidth(newBounds) < 8.0) {
+                newBounds.size.width = 8.0;
+                newBounds.origin.x = floorf(0.5 * (startPoint.x + endPoint.x) - 4.0);
             }
-            if (NSHeight(newBounds) < 7.0) {
-                newBounds.size.height = 7.0;
-                newBounds.origin.y = floorf(0.5 * (startPoint.y + endPoint.y) - 3.5);
+            if (NSHeight(newBounds) < 8.0) {
+                newBounds.size.height = 8.0;
+                newBounds.origin.y = floorf(0.5 * (startPoint.y + endPoint.y) - 4.0);
             }
             
             startPoint.x -= NSMinX(newBounds);
