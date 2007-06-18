@@ -129,6 +129,9 @@ static IMP originalSetColor = NULL;
     NSRect bounds = NSRectFromString([dict objectForKey:@"bounds"]);
     NSString *contents = [dict objectForKey:@"contents"];
     NSColor *color = [dict objectForKey:@"color"];
+    NSNumber *lineWidth = [dict objectForKey:@"lineWidth"];
+    NSNumber *borderStyle = [dict objectForKey:@"borderStyle"];
+    NSArray *dashPattern = [dict objectForKey:@"dashPattern"];
     
     if ([type isEqualToString:@"Note"]) {
         self = [[SKPDFAnnotationNote alloc] initWithBounds:bounds];
@@ -149,31 +152,13 @@ static IMP originalSetColor = NULL;
     } else if ([type isEqualToString:@"Circle"]) {
         self = [[SKPDFAnnotationCircle alloc] initWithBounds:bounds];
         NSColor *interiorColor = [dict objectForKey:@"interiorColor"];
-        NSNumber *lineWidth = [dict objectForKey:@"lineWidth"];
-        NSNumber *borderStyle = [dict objectForKey:@"borderStyle"];
-        NSArray *dashPattern = [dict objectForKey:@"dashPattern"];
         if (interiorColor)
             [(SKPDFAnnotationCircle *)self setInteriorColor:interiorColor];
-        if (lineWidth)
-            [[self border] setLineWidth:[lineWidth floatValue]];
-        if (borderStyle)
-            [[self border] setStyle:[lineWidth intValue]];
-        if (dashPattern)
-            [[self border] setDashPattern:dashPattern];
     } else if ([type isEqualToString:@"Square"]) {
         self = [[SKPDFAnnotationSquare alloc] initWithBounds:bounds];
         NSColor *interiorColor = [dict objectForKey:@"interiorColor"];
-        NSNumber *lineWidth = [dict objectForKey:@"lineWidth"];
-        NSNumber *borderStyle = [dict objectForKey:@"borderStyle"];
-        NSArray *dashPattern = [dict objectForKey:@"dashPattern"];
         if (interiorColor)
             [(SKPDFAnnotationSquare *)self setInteriorColor:interiorColor];
-        if (lineWidth)
-            [[self border] setLineWidth:[lineWidth floatValue]];
-        if (borderStyle)
-            [[self border] setStyle:[lineWidth intValue]];
-        if (dashPattern)
-            [[self border] setDashPattern:dashPattern];
     } else if ([type isEqualToString:@"Highlight"] || [type isEqualToString:@"MarkUp"]) {
         self = [[SKPDFAnnotationMarkup alloc] initWithBounds:bounds markupType:kPDFMarkupTypeHighlight quadrilateralPointsAsStrings:[dict objectForKey:@"quadrilateralPoints"]];
     } else if ([type isEqualToString:@"Underline"]) {
@@ -201,6 +186,14 @@ static IMP originalSetColor = NULL;
         [self setContents:contents];
     if (color)
         [self setColor:color];
+    if ((lineWidth || borderStyle || dashPattern) && [self border] == nil)
+        [self setBorder:[[[PDFBorder alloc] init] autorelease]];
+    if (lineWidth)
+        [[self border] setLineWidth:[lineWidth floatValue]];
+    if (borderStyle)
+        [[self border] setStyle:[lineWidth intValue]];
+    if (dashPattern)
+        [[self border] setDashPattern:dashPattern];
     
     return self;
 }
@@ -212,6 +205,11 @@ static IMP originalSetColor = NULL;
     [dict setValue:[self color] forKey:@"color"];
     [dict setValue:NSStringFromRect([self bounds]) forKey:@"bounds"];
     [dict setValue:[NSNumber numberWithUnsignedInt:[self pageIndex]] forKey:@"pageIndex"];
+    if ([self border]) {
+        [dict setValue:[NSNumber numberWithFloat:[[self border] lineWidth]] forKey:@"lineWidth"];
+        [dict setValue:[NSNumber numberWithInt:[[self border] style]] forKey:@"borderStyle"];
+        [dict setValue:[[self border] dashPattern] forKey:@"dashPattern"];
+    }
     return dict;
 }
 
@@ -253,6 +251,8 @@ static IMP originalSetColor = NULL;
 - (void)setBorderStyle:(PDFBorderStyle)style {
     [[[self undoManager] prepareWithInvocationTarget:self] setBorderStyle:style];
     [[self undoManager] setActionName:NSLocalizedString(@"Edit Note", @"Undo action name")];
+    if ([self border] == nil)
+        [self setBorder:[[[PDFBorder alloc] init] autorelease]];
     [[self border] setStyle:style];
     [[NSNotificationCenter defaultCenter] postNotificationName:SKAnnotationDidChangeNotification 
             object:self userInfo:[NSDictionary dictionaryWithObjectsAndKeys:@"borderStyle", @"key", nil]];
@@ -468,6 +468,8 @@ static IMP originalSetColor = NULL;
 - (void)setLineWidth:(float)width {
     [[[self undoManager] prepareWithInvocationTarget:self] setLineWidth:[self lineWidth]];
     [[self undoManager] setActionName:NSLocalizedString(@"Edit Note", @"Undo action name")];
+    if ([self border] == nil)
+        [self setBorder:[[[PDFBorder alloc] init] autorelease]];
     [[self border] setLineWidth:width];
     [[NSNotificationCenter defaultCenter] postNotificationName:SKAnnotationDidChangeNotification 
             object:self userInfo:[NSDictionary dictionaryWithObjectsAndKeys:@"lineWidth", @"key", nil]];
@@ -503,6 +505,8 @@ static IMP originalSetColor = NULL;
 - (void)setDashPattern:(NSArray *)pattern {
     [[[self undoManager] prepareWithInvocationTarget:self] setDashPattern:[self dashPattern]];
     [[self undoManager] setActionName:NSLocalizedString(@"Edit Note", @"Undo action name")];
+    if ([self border] == nil)
+        [self setBorder:[[[PDFBorder alloc] init] autorelease]];
     [[self border] setDashPattern:pattern];
     [[NSNotificationCenter defaultCenter] postNotificationName:SKAnnotationDidChangeNotification 
             object:self userInfo:[NSDictionary dictionaryWithObjectsAndKeys:@"dashPattern", @"key", nil]];
@@ -547,9 +551,6 @@ static IMP originalSetColor = NULL;
 - (NSDictionary *)dictionaryValue{
     NSMutableDictionary *dict = (NSMutableDictionary *)[super dictionaryValue];
     [dict setValue:[self interiorColor] forKey:@"interiorColor"];
-    [dict setValue:[NSNumber numberWithFloat:[[self border] lineWidth]] forKey:@"lineWidth"];
-    [dict setValue:[NSNumber numberWithInt:[[self border] style]] forKey:@"borderStyle"];
-    [dict setValue:[[self border] dashPattern] forKey:@"dashPattern"];
     return dict;
 }
 
@@ -602,9 +603,6 @@ static IMP originalSetColor = NULL;
 - (NSDictionary *)dictionaryValue{
     NSMutableDictionary *dict = (NSMutableDictionary *)[super dictionaryValue];
     [dict setValue:[self interiorColor] forKey:@"interiorColor"];
-    [dict setValue:[NSNumber numberWithFloat:[[self border] lineWidth]] forKey:@"lineWidth"];
-    [dict setValue:[NSNumber numberWithInt:[[self border] style]] forKey:@"borderStyle"];
-    [dict setValue:[[self border] dashPattern] forKey:@"dashPattern"];
     return dict;
 }
 

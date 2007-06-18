@@ -652,16 +652,16 @@
                 description="The fill color of a circle or box.">
                 <cocoa key="interiorColor"/>
             </property>
-            <property name="border width" code="LnWd" type="real"
-                description="The line width of the border a circle or box.">
+            <property name="line width" code="LnWd" type="real"
+                description="The line width of the note.">
                 <cocoa key="lineWidth"/>
             </property>
-            <property name="border style" code="BdSt" type="note border style"
-                description="The border style a circle or box.">
+            <property name="line style" code="LnSt" type="note line style"
+                description="The line style of the note.">
                 <cocoa key="asBorderStyle"/>
             </property>
-            <property name="border dash pattern" code="DshP"
-                description="The dash pattern of the border a circle or box, a list of numbers.">
+            <property name="dash pattern" code="DshP"
+                description="The dash pattern of the border of the note or of the line, a list of numbers.">
                 <cocoa key="dashPattern"/>
                 <type type="real" list="yes"/>
             </property>
@@ -940,17 +940,17 @@
                 description="Closed arrow line ending."/>
         </enumeration>
 
-        <enumeration name="note border style" code="BrSE">
-            <enumerator name="solid border" code="Soli"
-                description="Solid border."/>
-            <enumerator name="dashed border" code="Dash"
-                description="Dashed border."/>
-            <enumerator name="beveled border" code="Bevl"
-                description="Beveled border."/>
-            <enumerator name="inset border" code="Inst"
-                description="Inset border."/>
-            <enumerator name="underline border" code="Undl"
-                description="Underline border."/>
+        <enumeration name="note line style" code="LnSE">
+            <enumerator name="solid line" code="Soli"
+                description="Solid line."/>
+            <enumerator name="dashed line" code="Dash"
+                description="Dashed line."/>
+            <enumerator name="beveled line" code="Bevl"
+                description="Beveled line."/>
+            <enumerator name="inset line" code="Inst"
+                description="Inset line."/>
+            <enumerator name="underline line" code="Undl"
+                description="Underline line."/>
         </enumeration>
 
         <enumeration name="PDF display box" code="BoxE">
