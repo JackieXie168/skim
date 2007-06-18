@@ -734,7 +734,7 @@
                 <cocoa key="Title"/>
             </property>
             <property name="author" code="Auth" type="text"
-                description="The autohor.">
+                description="The author.">
                 <cocoa key="Author"/>
             </property>
             <property name="subject" code="Subj" type="text"
@@ -778,9 +778,13 @@
                 <cocoa key="LogicalSize"/>
             </property>
             <property name="keywords" code="Keyw"
-                description="The keywords.">
+                description="The list of keywords.">
                 <cocoa key="Keywords"/>
                 <type type="text" list="yes"/>
+            </property>
+            <property name="keywords string" code="KywS" type="text"
+                description="The keywords as a string.">
+                <cocoa key="KeywordsString"/>
             </property>
         </record-type>
 
@@ -919,30 +923,30 @@
         </enumeration>
 
         <enumeration name="line ending style" code="LESE">
-            <enumerator name="none" code="LSNo"
+            <enumerator name="no line ending" code="LSNo"
                 description="No line ending."/>
-            <enumerator name="square" code="LSSq"
+            <enumerator name="square line ending" code="LSSq"
                 description="Square line ending."/>
-            <enumerator name="circle" code="LSCi"
+            <enumerator name="circle line ending" code="LSCi"
                 description="Circle line ending."/>
-            <enumerator name="diamond" code="LSDi"
+            <enumerator name="diamond line ending" code="LSDi"
                 description="Diamond line ending."/>
-            <enumerator name="open arrow" code="LSOA"
+            <enumerator name="open arrow line ending" code="LSOA"
                 description="Open arrow line ending."/>
-            <enumerator name="closed arrow" code="LSCA"
+            <enumerator name="closed arrow line ending" code="LSCA"
                 description="Closed arrow line ending."/>
         </enumeration>
 
         <enumeration name="note border style" code="BrSE">
-            <enumerator name="solid" code="Soli"
+            <enumerator name="solid border" code="Soli"
                 description="Solid border."/>
-            <enumerator name="dashed" code="Dash"
+            <enumerator name="dashed border" code="Dash"
                 description="Dashed border."/>
-            <enumerator name="beveled" code="Bevl"
+            <enumerator name="beveled border" code="Bevl"
                 description="Beveled border."/>
-            <enumerator name="inset" code="Inst"
+            <enumerator name="inset border" code="Inst"
                 description="Inset border."/>
-            <enumerator name="underline" code="undl"
+            <enumerator name="underline border" code="Undl"
                 description="Underline border."/>
         </enumeration>
 
