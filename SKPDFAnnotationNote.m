@@ -78,7 +78,7 @@ enum {
     SKASBorderStyleDashed = 'Dash',
     SKASBorderStyleBeveled = 'Bevl',
     SKASBorderStyleInset = 'Inst',
-    SKASBorderStyleUnderline = 'undl'
+    SKASBorderStyleUnderline = 'Undl'
 };
 
 NSString *SKAnnotationWillChangeNotification = @"SKAnnotationWillChangeNotification";
