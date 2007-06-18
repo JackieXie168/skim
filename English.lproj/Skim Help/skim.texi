@@ -1178,6 +1178,29 @@ You can save notes added in Skim to a separately in human readable form to a Ric
 
 @c ======================================================================================
 
+@topic Automating tasks with AppleScript
+
+Skim is a scriptable application. It responds to AppleScript commands that let you automate Skim. 
+For example, you can change the colors of all notes or highlights of a certain type, automatically add or remove highlights, and much more.
+
+@box{taskbox}
+@heading To see the commands you can use with Skim:
+@enumerate
+@item Open the Script Editor application. 
+@item Choose Window > Library or File > Open Dictionary@dots{}, and then click Skim. You may need to add Skim to the list first.
+@end enumerate
+@endbox
+
+@heading Open this for me
+@multitable {}
+@item @uref{http://skim-app.sourceforge.net/wiki/index.php?title=AppleScript, AppleScript page on the Skim Wiki}
+@item @uref{help:runscript=Skim%20Help/scripts/OpenAppDict.scpt string='net.sourceforge.skim-app.skim', Skim dictionary in Script Editor}
+@item @uref{help:anchor='access' bookID=AppleScript Help, AppleScript Help}
+@item @uref{http://www.apple.com/macosx/features/applescript/, AppleScript website}
+@end multitable
+
+@c ======================================================================================
+
 @node More information
 @chapter More information
 @abstract{Getting more help}

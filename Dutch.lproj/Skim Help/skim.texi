@@ -1184,6 +1184,29 @@ U kunt de notities en markeringen apart in een door mensen leesbare vorm in een 
 
 @c ======================================================================================
 
+@topic Taken automatiseren met AppleScript
+
+Skim is een scriptgeschikt programma. Het reageert op AppleScript commando's die u in staat stellen Skim te automatiseren. 
+U kunt bijvoorbeeld de kleuren van alle notities of markeringen van een bepaald type veranderen, automatisch markeringen toevoegen of verwijderen, en veel meer.
+
+@box{taskbox}
+@heading Om alle commando's die u met Skim kunt gebruiken te zien:
+@enumerate
+@item Open het Scripteditor programma. 
+@item Kies Venster > Bibliotheek of Archief > Open woordenboek@dots{}, en klik op Skim. U moet eventueel aan de lijst Skim toevoegen.
+@end enumerate
+@endbox
+
+@heading Open dit voor mij
+@multitable {}
+@item @uref{http://skim-app.sourceforge.net/wiki/index.php?title=AppleScript, AppleScript pagina op de Skim Wiki}
+@item @uref{help:runscript=Skim%20Help/scripts/OpenAppDict.scpt string='net.sourceforge.skim-app.skim', Skim woordenboek in Scripteditor}
+@item @uref{help:anchor='access' bookID=AppleScript Help, AppleScript Help}
+@item @uref{http://www.apple.com/macosx/features/applescript/, AppleScript webpagina}
+@end multitable
+
+@c ======================================================================================
+
 @node Meer informatie
 @chapter Meer informatie
 @abstract{Vind meer help}
