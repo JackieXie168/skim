@@ -758,7 +758,7 @@ static void SKCGContextDrawGrabHandle(CGContextRef context, CGPoint point, float
         [self setAnnotationMode:SKUnderlineNote];
     } else if (isPresentation == NO && [self toolMode] == SKNoteToolMode && modifiers == 0 && eventChar == 's') {
         [self setAnnotationMode:SKStrikeOutNote];
-    } else if (isPresentation == NO && [self toolMode] == SKNoteToolMode && modifiers == 0 && eventChar == 'a') {
+    } else if (isPresentation == NO && [self toolMode] == SKNoteToolMode && modifiers == 0 && eventChar == 'l') {
         [self setAnnotationMode:SKLineNote];
     } else {
 		[super keyDown:theEvent];
