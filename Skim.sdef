@@ -629,10 +629,6 @@
                 description="The bounding rectangle of the note (left, top, right, bottom).">
                 <cocoa key="boundsAsQDRect"/>
             </property>
-            <property name="extended text" code="XTxt" type="rich text"
-                description="The rich extended text of an anchored note.">
-                <cocoa key="richText"/>
-            </property>
             <property name="font name" code="FntN" type="text"
                 description="The font name of a text note.">
                 <cocoa key="fontName"/>
@@ -641,9 +637,17 @@
                 description="The font size in points of a text note.">
                 <cocoa key="fontSize"/>
             </property>
+            <property name="extended text" code="XTxt" type="rich text"
+                description="The rich extended text of an anchored note.">
+                <cocoa key="richText"/>
+            </property>
             <property name="icon" code="iimg" type="icon type"
                 description="The icon type of an anchored note.">
                 <cocoa key="asIconType"/>
+            </property>
+            <property name="interior color" code="IClr" type="RGBA color"
+                description="The fill color of a circle or box.">
+                <cocoa key="interiorColor"/>
             </property>
             <property name="border width" code="LnWd" type="real"
                 description="The line width of the border a circle or box.">
