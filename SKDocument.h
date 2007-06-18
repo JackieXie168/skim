@@ -113,6 +113,7 @@ enum {
 - (id)handleRevertScriptCommand:(NSScriptCommand *)command;
 - (id)handleGoToScriptCommand:(NSScriptCommand *)command;
 - (id)handleFindScriptCommand:(NSScriptCommand *)command;
+- (id)handleShowTeXScriptCommand:(NSScriptCommand *)command;
 
 @end
 
