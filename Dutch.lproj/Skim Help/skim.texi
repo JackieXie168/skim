@@ -1202,7 +1202,7 @@ U kunt bijvoorbeeld de kleuren van alle notities of markeringen van een bepaald 
 @item @uref{http://skim-app.sourceforge.net/wiki/index.php?title=AppleScript, AppleScript pagina op de Skim Wiki}
 @item @uref{help:runscript=Skim%20Help/scripts/OpenAppDict.scpt string='net.sourceforge.skim-app.skim', Skim woordenboek in Scripteditor}
 @item @uref{help:anchor='access' bookID=AppleScript Help, AppleScript Help}
-@item @uref{http://www.apple.com/macosx/features/applescript/, AppleScript webpagina}
+@item @uref{http://www.apple.com/nl/macosx/features/applescript/, AppleScript webpagina}
 @end multitable
 
 @c ======================================================================================
