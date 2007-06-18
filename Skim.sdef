@@ -820,7 +820,7 @@
                 description="Default strike out highlight color.">
                 <cocoa key="strikeOutNote"/>
             </property>
-            <property name="line note color" code="CArr" type="RGBA color"
+            <property name="line note color" code="CLin" type="RGBA color"
                 description="Default line color.">
                 <cocoa key="lineNote"/>
             </property>
@@ -904,7 +904,7 @@
                 description="Underline highlight."/>
             <enumerator name="strike out note" code="NStr"
                 description="Strike out highlight."/>
-            <enumerator name="line note" code="NArr"
+            <enumerator name="line note" code="NLin"
                 description="Line."/>
         </enumeration>
 
