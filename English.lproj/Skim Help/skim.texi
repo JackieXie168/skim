@@ -1119,6 +1119,28 @@ It is important that the notes file is associated to the PDF file. If the file n
 
 @c ======================================================================================
 
+@topic I don't see notes and highlights in other PDF viewers
+
+Normally, Notes and highlights you add to a PDF document are not saved in the PDF data, but are added to the file as extended attributes. However, Skim allows you to save a copy of your PDF file that does contain the notes in the PDF data. This allows you to see the notes also in other PDF viewers. 
+
+@heading See also
+@menu
+* Saving PDF files with the notes and highlights included::
+@end menu
+
+@c ======================================================================================
+
+@topic PDF with fillable forms loses edits to the forms
+
+Even though you can edit forms in PDF document that have them, those edits will not be saved. However, Skim allows you to save a copy of your PDF file that does contain the filled forms in the PDF data, by exporting it with embedded notes. This will also allow you to see the filled forms in other PDF viewers. However, after saving these edits, the forms will not be editable anymore.
+
+@heading See also
+@menu
+* Saving PDF files with the notes and highlights included::
+@end menu
+
+@c ======================================================================================
+
 @topic Saving PDF files with the notes and highlights included
 
 Normally, Notes and highlights you add to a PDF document are not saved in the PDF data, but are added to the file as extended attributes. However, Skim allows you to save a copy of your PDF file that does contain the notes in the PDF data. This allows you to see the notes also in other PDF viewers. 

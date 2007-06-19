@@ -1125,6 +1125,28 @@ Het is belangrijk dat het notitie-bestand geassocieerd is met het PDF-bestand. D
 
 @c ======================================================================================
 
+@topic Ik kan notities en merkeringen niet in andere PDF-vertoningsprogrammas zien
+
+Normaal worden notities en markeringen die aan een PDF-bestand zijn toegevoegd worden niet bewaard in de PDF-data, maar worden toegevoegd als 'uitgebreide attributen' (extended attributes). U kunt in Skim ook een kopie van het PDF-bestand bewaren dat de notities in de PDF-data insluit. Daarmee kunt u de notities ook in andere PDF-vertoningsprogrammas bekijken.
+
+@heading Zie ook
+@menu
+* PDF-bestanden met de notities en markeringen inbegrepen bewaren::
+@end menu
+
+@c ======================================================================================
+
+@topic Wijzigingen aan PDFs met invulbare formulieren raken verloren
+
+Hoewel u met Skim formulieren in hiervoor geschikte PDF-documenten kunt invullen, worden wijzigingen die u aanbrent aan deze formulieren normaal niet bewaard. U kunt in Skim ook een kopie van het PDF-bestand bewaren dat de ingevulde formulieren in de PDF-data insluit, door het document te exporteren met ingebedde notities . Daarmee kunt u deze wijzigingen ook in andere PDF-vertoningsprogrammas bekijken. U kunt de formulieren in kopie na het bewaren echter niet meer wijzigen.
+
+@heading Zie ook
+@menu
+* PDF-bestanden met de notities en markeringen inbegrepen bewaren::
+@end menu
+
+@c ======================================================================================
+
 @topic PDF-bestanden met de notities en markeringen inbegrepen bewaren
 
 Normaal worden notities en markeringen die aan een PDF-bestand zijn toegevoegd worden niet bewaard in de PDF-data, maar worden toegevoegd als 'uitgebreide attributen' (extended attributes). U kunt in Skim ook een kopie van het PDF-bestand bewaren dat de notities in de PDF-data insluit. Daarmee kunt u de notities ook in andere PDF-vertoningsprogrammas bekijken.
