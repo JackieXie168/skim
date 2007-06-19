@@ -271,19 +271,40 @@ static IMP originalSetBorder = NULL;
     return [[self border] style];
 }
 
-- (void)setBorderStyle:(PDFBorderStyle)style {}
+- (void)setBorderStyle:(PDFBorderStyle)style {
+    PDFBorder *border = [[self border] copyWithZone:[self zone]];
+    if (border == nil)
+        border = [[PDFBorder allocWithZone:[self zone]] init];
+    [border setStyle:style];
+    [self setBorder:border];
+    [border release];
+}
 
 - (float)lineWidth {
     return [[self border] lineWidth];
 }
 
-- (void)setLineWidth:(float)width {}
+- (void)setLineWidth:(float)width {
+    PDFBorder *border = [[self border] copyWithZone:[self zone]];
+    if (border == nil)
+        border = [[PDFBorder allocWithZone:[self zone]] init];
+    [border setLineWidth:width];
+    [self setBorder:width > 0.0 ? border : nil];
+    [border release];
+}
 
 - (NSArray *)dashPattern {
     return [[self border] dashPattern];
 }
 
-- (void)setDashPattern:(NSArray *)pattern {}
+- (void)setDashPattern:(NSArray *)pattern {
+    PDFBorder *border = [[self border] copyWithZone:[self zone]];
+    if (border == nil)
+        border = [[PDFBorder allocWithZone:[self zone]] init];
+    [border setDashPattern:pattern];
+    [self setBorder:border];
+    [border release];
+}
 
 - (void)replacementSetBounds:(NSRect)bounds {
     if ([self isNoteAnnotation]) {
@@ -574,33 +595,6 @@ static IMP originalSetBorder = NULL;
 
 - (BOOL)shouldPrint { return YES; }
 
-- (void)setBorderStyle:(PDFBorderStyle)style {
-    PDFBorder *border = [[self border] copyWithZone:[self zone]];
-    if (border == nil)
-        border = [[PDFBorder allocWithZone:[self zone]] init];
-    [border setStyle:style];
-    [self setBorder:border];
-    [border release];
-}
-
-- (void)setLineWidth:(float)width {
-    PDFBorder *border = [[self border] copyWithZone:[self zone]];
-    if (border == nil)
-        border = [[PDFBorder allocWithZone:[self zone]] init];
-    [border setLineWidth:width];
-    [self setBorder:border];
-    [border release];
-}
-
-- (void)setDashPattern:(NSArray *)pattern {
-    PDFBorder *border = [[self border] copyWithZone:[self zone]];
-    if (border == nil)
-        border = [[PDFBorder allocWithZone:[self zone]] init];
-    [border setDashPattern:pattern];
-    [self setBorder:border];
-    [border release];
-}
-
 - (void)setInteriorColor:(NSColor *)color {
     [[[self undoManager] prepareWithInvocationTarget:self] setInteriorColor:[self interiorColor]];
     [[self undoManager] setActionName:NSLocalizedString(@"Edit Note", @"Undo action name")];
@@ -652,33 +646,6 @@ static IMP originalSetBorder = NULL;
 - (BOOL)isMovable { return YES; }
 
 - (BOOL)shouldPrint { return YES; }
-
-- (void)setBorderStyle:(PDFBorderStyle)style {
-    PDFBorder *border = [[self border] copyWithZone:[self zone]];
-    if (border == nil)
-        border = [[PDFBorder allocWithZone:[self zone]] init];
-    [border setStyle:style];
-    [self setBorder:border];
-    [border release];
-}
-
-- (void)setLineWidth:(float)width {
-    PDFBorder *border = [[self border] copyWithZone:[self zone]];
-    if (border == nil)
-        border = [[PDFBorder allocWithZone:[self zone]] init];
-    [border setLineWidth:width];
-    [self setBorder:border];
-    [border release];
-}
-
-- (void)setDashPattern:(NSArray *)pattern {
-    PDFBorder *border = [[self border] copyWithZone:[self zone]];
-    if (border == nil)
-        border = [[PDFBorder allocWithZone:[self zone]] init];
-    [border setDashPattern:pattern];
-    [self setBorder:border];
-    [border release];
-}
 
 - (void)setInteriorColor:(NSColor *)color {
     [[[self undoManager] prepareWithInvocationTarget:self] setInteriorColor:[self interiorColor]];
@@ -1026,33 +993,6 @@ static BOOL adjacentCharacterBounds(NSRect rect1, NSRect rect2) {
 
 - (BOOL)shouldPrint { return YES; }
 
-- (void)setBorderStyle:(PDFBorderStyle)style {
-    PDFBorder *border = [[self border] copyWithZone:[self zone]];
-    if (border == nil)
-        border = [[PDFBorder allocWithZone:[self zone]] init];
-    [border setStyle:style];
-    [self setBorder:border];
-    [border release];
-}
-
-- (void)setLineWidth:(float)width {
-    PDFBorder *border = [[self border] copyWithZone:[self zone]];
-    if (border == nil)
-        border = [[PDFBorder allocWithZone:[self zone]] init];
-    [border setLineWidth:width];
-    [self setBorder:border];
-    [border release];
-}
-
-- (void)setDashPattern:(NSArray *)pattern {
-    PDFBorder *border = [[self border] copyWithZone:[self zone]];
-    if (border == nil)
-        border = [[PDFBorder allocWithZone:[self zone]] init];
-    [border setDashPattern:pattern];
-    [self setBorder:border];
-    [border release];
-}
-
 - (void)setFont:(NSFont *)font {
     [[[self undoManager] prepareWithInvocationTarget:self] setFont:[self font]];
     [[self undoManager] setActionName:NSLocalizedString(@"Edit Note", @"Undo action name")];
@@ -1312,33 +1252,6 @@ static BOOL adjacentCharacterBounds(NSRect rect1, NSRect rect2) {
 - (BOOL)isMovable { return YES; }
 
 - (BOOL)shouldPrint { return YES; }
-
-- (void)setBorderStyle:(PDFBorderStyle)style {
-    PDFBorder *border = [[self border] copyWithZone:[self zone]];
-    if (border == nil)
-        border = [[PDFBorder allocWithZone:[self zone]] init];
-    [border setStyle:style];
-    [self setBorder:border];
-    [border release];
-}
-
-- (void)setLineWidth:(float)width {
-    PDFBorder *border = [[self border] copyWithZone:[self zone]];
-    if (border == nil)
-        border = [[PDFBorder allocWithZone:[self zone]] init];
-    [border setLineWidth:width];
-    [self setBorder:border];
-    [border release];
-}
-
-- (void)setDashPattern:(NSArray *)pattern {
-    PDFBorder *border = [[self border] copyWithZone:[self zone]];
-    if (border == nil)
-        border = [[PDFBorder allocWithZone:[self zone]] init];
-    [border setDashPattern:pattern];
-    [self setBorder:border];
-    [border release];
-}
 
 - (void)setStartPoint:(NSPoint)point {
     [[[self undoManager] prepareWithInvocationTarget:self] setStartPoint:[self startPoint]];
