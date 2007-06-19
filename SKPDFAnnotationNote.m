@@ -285,11 +285,14 @@ static IMP originalSetBorder = NULL;
 }
 
 - (void)setLineWidth:(float)width {
-    PDFBorder *border = [[self border] copyWithZone:[self zone]];
-    if (border == nil)
-        border = [[PDFBorder allocWithZone:[self zone]] init];
-    [border setLineWidth:width];
-    [self setBorder:width > 0.0 ? border : nil];
+    PDFBorder *border = nil;
+    if (width > 0.0) {
+        border = [[self border] copyWithZone:[self zone]];
+        if (border == nil)
+            border = [[PDFBorder allocWithZone:[self zone]] init];
+        [border setLineWidth:width];
+    } 
+    [self setBorder:border];
     [border release];
 }
 
