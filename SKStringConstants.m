@@ -75,6 +75,7 @@ NSString *SKLineNoteColorKey = @"SKLineNoteColor";
 NSString *SKAnchoredNoteIconTypeKey = @"SKAnchoredNoteIconType";
 NSString *SKCircleNoteLineWidthKey = @"SKCircleNoteLineWidth";
 NSString *SKSquareNoteLineWidthKey = @"SKSquareNoteLineWidth";
+NSString *SKLineNoteLineWidthKey = @"SKLineNoteLineWidth";
 NSString *SKLineNoteStartLineStyleKey = @"SKLineNoteStartLineStyle";
 NSString *SKLineNoteEndLineStyleKey = @"SKLineNoteEndLineStyle";
 NSString *SKDefaultPDFDisplaySettingsKey = @"SKDefaultPDFDisplaySettings";

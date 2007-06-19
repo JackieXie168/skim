@@ -97,6 +97,26 @@ void SKCGContextSetDefaultRGBColorSpace(CGContextRef context) {
 }
 
 
+@interface PDFBorder (SKExtensions)
+- (id)copyWithZone:(NSZone *)aZone;
+@end
+
+@implementation PDFBorder (SKExtensions)
+
+- (id)copyWithZone:(NSZone *)aZone {
+    PDFBorder *copy = [[PDFBorder alloc] init];
+    [copy setDashPattern:[self dashPattern]];
+    [copy setLineWidth:[self lineWidth]];
+    [copy setDashPattern:[self dashPattern]];
+    [copy setStyle:[self style]];
+    [copy setHorizontalCornerRadius:[self horizontalCornerRadius]];
+    [copy setVerticalCornerRadius:[self verticalCornerRadius]];
+    return copy;
+}
+
+@end
+
+
 @interface PDFAnnotation (PDFAnnotationPrivateDeclarations)
 - (void)drawWithBox:(CGPDFBox)box inContext:(CGContextRef)context;
 - (void)setPage:(id)page;
@@ -107,6 +127,7 @@ void SKCGContextSetDefaultRGBColorSpace(CGContextRef context) {
 - (void)replacementSetBounds:(NSRect)bounds;
 - (void)replacementSetContents:(NSString *)contents;
 - (void)replacementSetColor:(NSColor *)color;
+- (void)replacementSetBorder:(PDFBorder *)border;
 @end
 
 
@@ -115,11 +136,13 @@ void SKCGContextSetDefaultRGBColorSpace(CGContextRef context) {
 static IMP originalSetBounds = NULL;
 static IMP originalSetContents = NULL;
 static IMP originalSetColor = NULL;
+static IMP originalSetBorder = NULL;
 
 + (void)load {
     originalSetBounds = OBReplaceMethodImplementationWithSelector(self, @selector(setBounds:), @selector(replacementSetBounds:));
     originalSetContents = OBReplaceMethodImplementationWithSelector(self, @selector(setContents:), @selector(replacementSetContents:));
     originalSetColor = OBReplaceMethodImplementationWithSelector(self, @selector(setColor:), @selector(replacementSetColor:));
+    originalSetBorder = OBReplaceMethodImplementationWithSelector(self, @selector(setBorder:), @selector(replacementSetBorder:));
 }
 
 - (id)initWithDictionary:(NSDictionary *)dict{
@@ -295,6 +318,19 @@ static IMP originalSetColor = NULL;
     if ([self isNoteAnnotation])
         [[NSNotificationCenter defaultCenter] postNotificationName:SKAnnotationDidChangeNotification 
                 object:self userInfo:[NSDictionary dictionaryWithObjectsAndKeys:@"color", @"key", nil]];
+}
+
+- (void)replacementSetBorder:(PDFBorder *)border {
+    if ([self isNoteAnnotation]) {
+        PDFBorder *oldBorder = [[self border] copyWithZone:[self zone]];
+        [[[self undoManager] prepareWithInvocationTarget:self] setBorder:oldBorder];
+        [[self undoManager] setActionName:NSLocalizedString(@"Edit Note", @"Undo action name")];
+        [oldBorder release];
+    }
+    originalSetBorder(self, _cmd, border);
+    if ([self isNoteAnnotation])
+        [[NSNotificationCenter defaultCenter] postNotificationName:SKAnnotationDidChangeNotification 
+                object:self userInfo:[NSDictionary dictionaryWithObjectsAndKeys:@"border", @"key", nil]];
 }
 
 - (NSImage *)image { return nil; }
@@ -539,33 +575,30 @@ static IMP originalSetColor = NULL;
 - (BOOL)shouldPrint { return YES; }
 
 - (void)setBorderStyle:(PDFBorderStyle)style {
-    [[[self undoManager] prepareWithInvocationTarget:self] setBorderStyle:style];
-    [[self undoManager] setActionName:NSLocalizedString(@"Edit Note", @"Undo action name")];
-    if ([self border] == nil)
-        [self setBorder:[[[PDFBorder alloc] init] autorelease]];
-    [[self border] setStyle:style];
-    [[NSNotificationCenter defaultCenter] postNotificationName:SKAnnotationDidChangeNotification 
-            object:self userInfo:[NSDictionary dictionaryWithObjectsAndKeys:@"borderStyle", @"key", nil]];
+    PDFBorder *border = [[self border] copyWithZone:[self zone]];
+    if (border == nil)
+        border = [[PDFBorder allocWithZone:[self zone]] init];
+    [border setStyle:style];
+    [self setBorder:border];
+    [border release];
 }
 
 - (void)setLineWidth:(float)width {
-    [[[self undoManager] prepareWithInvocationTarget:self] setLineWidth:[self lineWidth]];
-    [[self undoManager] setActionName:NSLocalizedString(@"Edit Note", @"Undo action name")];
-    if ([self border] == nil)
-        [self setBorder:[[[PDFBorder alloc] init] autorelease]];
-    [[self border] setLineWidth:width];
-    [[NSNotificationCenter defaultCenter] postNotificationName:SKAnnotationDidChangeNotification 
-            object:self userInfo:[NSDictionary dictionaryWithObjectsAndKeys:@"lineWidth", @"key", nil]];
+    PDFBorder *border = [[self border] copyWithZone:[self zone]];
+    if (border == nil)
+        border = [[PDFBorder allocWithZone:[self zone]] init];
+    [border setLineWidth:width];
+    [self setBorder:border];
+    [border release];
 }
 
 - (void)setDashPattern:(NSArray *)pattern {
-    [[[self undoManager] prepareWithInvocationTarget:self] setDashPattern:[self dashPattern]];
-    [[self undoManager] setActionName:NSLocalizedString(@"Edit Note", @"Undo action name")];
-    if ([self border] == nil)
-        [self setBorder:[[[PDFBorder alloc] init] autorelease]];
-    [[self border] setDashPattern:pattern];
-    [[NSNotificationCenter defaultCenter] postNotificationName:SKAnnotationDidChangeNotification 
-            object:self userInfo:[NSDictionary dictionaryWithObjectsAndKeys:@"dashPattern", @"key", nil]];
+    PDFBorder *border = [[self border] copyWithZone:[self zone]];
+    if (border == nil)
+        border = [[PDFBorder allocWithZone:[self zone]] init];
+    [border setDashPattern:pattern];
+    [self setBorder:border];
+    [border release];
 }
 
 - (void)setInteriorColor:(NSColor *)color {
@@ -621,33 +654,30 @@ static IMP originalSetColor = NULL;
 - (BOOL)shouldPrint { return YES; }
 
 - (void)setBorderStyle:(PDFBorderStyle)style {
-    [[[self undoManager] prepareWithInvocationTarget:self] setBorderStyle:style];
-    [[self undoManager] setActionName:NSLocalizedString(@"Edit Note", @"Undo action name")];
-    if ([self border] == nil)
-        [self setBorder:[[[PDFBorder alloc] init] autorelease]];
-    [[self border] setStyle:style];
-    [[NSNotificationCenter defaultCenter] postNotificationName:SKAnnotationDidChangeNotification 
-            object:self userInfo:[NSDictionary dictionaryWithObjectsAndKeys:@"borderStyle", @"key", nil]];
+    PDFBorder *border = [[self border] copyWithZone:[self zone]];
+    if (border == nil)
+        border = [[PDFBorder allocWithZone:[self zone]] init];
+    [border setStyle:style];
+    [self setBorder:border];
+    [border release];
 }
 
 - (void)setLineWidth:(float)width {
-    [[[self undoManager] prepareWithInvocationTarget:self] setLineWidth:[self lineWidth]];
-    [[self undoManager] setActionName:NSLocalizedString(@"Edit Note", @"Undo action name")];
-    if ([self border] == nil)
-        [self setBorder:[[[PDFBorder alloc] init] autorelease]];
-    [[self border] setLineWidth:width];
-    [[NSNotificationCenter defaultCenter] postNotificationName:SKAnnotationDidChangeNotification 
-            object:self userInfo:[NSDictionary dictionaryWithObjectsAndKeys:@"lineWidth", @"key", nil]];
+    PDFBorder *border = [[self border] copyWithZone:[self zone]];
+    if (border == nil)
+        border = [[PDFBorder allocWithZone:[self zone]] init];
+    [border setLineWidth:width];
+    [self setBorder:border];
+    [border release];
 }
 
 - (void)setDashPattern:(NSArray *)pattern {
-    [[[self undoManager] prepareWithInvocationTarget:self] setDashPattern:[self dashPattern]];
-    [[self undoManager] setActionName:NSLocalizedString(@"Edit Note", @"Undo action name")];
-    if ([self border] == nil)
-        [self setBorder:[[[PDFBorder alloc] init] autorelease]];
-    [[self border] setDashPattern:pattern];
-    [[NSNotificationCenter defaultCenter] postNotificationName:SKAnnotationDidChangeNotification 
-            object:self userInfo:[NSDictionary dictionaryWithObjectsAndKeys:@"dashPattern", @"key", nil]];
+    PDFBorder *border = [[self border] copyWithZone:[self zone]];
+    if (border == nil)
+        border = [[PDFBorder allocWithZone:[self zone]] init];
+    [border setDashPattern:pattern];
+    [self setBorder:border];
+    [border release];
 }
 
 - (void)setInteriorColor:(NSColor *)color {
@@ -973,7 +1003,9 @@ static BOOL adjacentCharacterBounds(NSRect rect1, NSRect rect2) {
                                        size:[[NSUserDefaults standardUserDefaults] floatForKey:SKTextNoteFontSizeKey]];
         [super setFont:font];
         [super setColor:[NSUnarchiver unarchiveObjectWithData:[[NSUserDefaults standardUserDefaults] objectForKey:SKFreeTextNoteColorKey]]];
-        [self setBorder:[[[PDFBorder alloc] init] autorelease]];
+        PDFBorder *border = [[PDFBorder allocWithZone:[self zone]] init];
+        [self setBorder:border];
+        [border release];
     }
     return self;
 }
@@ -995,33 +1027,30 @@ static BOOL adjacentCharacterBounds(NSRect rect1, NSRect rect2) {
 - (BOOL)shouldPrint { return YES; }
 
 - (void)setBorderStyle:(PDFBorderStyle)style {
-    [[[self undoManager] prepareWithInvocationTarget:self] setBorderStyle:style];
-    [[self undoManager] setActionName:NSLocalizedString(@"Edit Note", @"Undo action name")];
-    if ([self border] == nil)
-        [self setBorder:[[[PDFBorder alloc] init] autorelease]];
-    [[self border] setStyle:style];
-    [[NSNotificationCenter defaultCenter] postNotificationName:SKAnnotationDidChangeNotification 
-            object:self userInfo:[NSDictionary dictionaryWithObjectsAndKeys:@"borderStyle", @"key", nil]];
+    PDFBorder *border = [[self border] copyWithZone:[self zone]];
+    if (border == nil)
+        border = [[PDFBorder allocWithZone:[self zone]] init];
+    [border setStyle:style];
+    [self setBorder:border];
+    [border release];
 }
 
 - (void)setLineWidth:(float)width {
-    [[[self undoManager] prepareWithInvocationTarget:self] setLineWidth:[self lineWidth]];
-    [[self undoManager] setActionName:NSLocalizedString(@"Edit Note", @"Undo action name")];
-    if ([self border] == nil)
-        [self setBorder:[[[PDFBorder alloc] init] autorelease]];
-    [[self border] setLineWidth:width];
-    [[NSNotificationCenter defaultCenter] postNotificationName:SKAnnotationDidChangeNotification 
-            object:self userInfo:[NSDictionary dictionaryWithObjectsAndKeys:@"lineWidth", @"key", nil]];
+    PDFBorder *border = [[self border] copyWithZone:[self zone]];
+    if (border == nil)
+        border = [[PDFBorder allocWithZone:[self zone]] init];
+    [border setLineWidth:width];
+    [self setBorder:border];
+    [border release];
 }
 
 - (void)setDashPattern:(NSArray *)pattern {
-    [[[self undoManager] prepareWithInvocationTarget:self] setDashPattern:[self dashPattern]];
-    [[self undoManager] setActionName:NSLocalizedString(@"Edit Note", @"Undo action name")];
-    if ([self border] == nil)
-        [self setBorder:[[[PDFBorder alloc] init] autorelease]];
-    [[self border] setDashPattern:pattern];
-    [[NSNotificationCenter defaultCenter] postNotificationName:SKAnnotationDidChangeNotification 
-            object:self userInfo:[NSDictionary dictionaryWithObjectsAndKeys:@"dashPattern", @"key", nil]];
+    PDFBorder *border = [[self border] copyWithZone:[self zone]];
+    if (border == nil)
+        border = [[PDFBorder allocWithZone:[self zone]] init];
+    [border setDashPattern:pattern];
+    [self setBorder:border];
+    [border release];
 }
 
 - (void)setFont:(NSFont *)font {
@@ -1259,6 +1288,10 @@ static BOOL adjacentCharacterBounds(NSRect rect1, NSRect rect2) {
         [super setEndLineStyle:[[NSUserDefaults standardUserDefaults] integerForKey:SKLineNoteEndLineStyleKey]];
         [super setStartPoint:NSMakePoint(0.5, 0.5)];
         [super setEndPoint:NSMakePoint(NSWidth(bounds) - 0.5, NSHeight(bounds) - 0.5)];
+        PDFBorder *border = [[PDFBorder allocWithZone:[self zone]] init];
+        [border setLineWidth:[[NSUserDefaults standardUserDefaults] floatForKey:SKLineNoteLineWidthKey]];
+        [self setBorder:border];
+        [border release];
     }
     return self;
 }
@@ -1281,33 +1314,30 @@ static BOOL adjacentCharacterBounds(NSRect rect1, NSRect rect2) {
 - (BOOL)shouldPrint { return YES; }
 
 - (void)setBorderStyle:(PDFBorderStyle)style {
-    [[[self undoManager] prepareWithInvocationTarget:self] setBorderStyle:style];
-    [[self undoManager] setActionName:NSLocalizedString(@"Edit Note", @"Undo action name")];
-    if ([self border] == nil)
-        [self setBorder:[[[PDFBorder alloc] init] autorelease]];
-    [[self border] setStyle:style];
-    [[NSNotificationCenter defaultCenter] postNotificationName:SKAnnotationDidChangeNotification 
-            object:self userInfo:[NSDictionary dictionaryWithObjectsAndKeys:@"borderStyle", @"key", nil]];
+    PDFBorder *border = [[self border] copyWithZone:[self zone]];
+    if (border == nil)
+        border = [[PDFBorder allocWithZone:[self zone]] init];
+    [border setStyle:style];
+    [self setBorder:border];
+    [border release];
 }
 
 - (void)setLineWidth:(float)width {
-    [[[self undoManager] prepareWithInvocationTarget:self] setLineWidth:[self lineWidth]];
-    [[self undoManager] setActionName:NSLocalizedString(@"Edit Note", @"Undo action name")];
-    if ([self border] == nil)
-        [self setBorder:[[[PDFBorder alloc] init] autorelease]];
-    [[self border] setLineWidth:width];
-    [[NSNotificationCenter defaultCenter] postNotificationName:SKAnnotationDidChangeNotification 
-            object:self userInfo:[NSDictionary dictionaryWithObjectsAndKeys:@"lineWidth", @"key", nil]];
+    PDFBorder *border = [[self border] copyWithZone:[self zone]];
+    if (border == nil)
+        border = [[PDFBorder allocWithZone:[self zone]] init];
+    [border setLineWidth:width];
+    [self setBorder:border];
+    [border release];
 }
 
 - (void)setDashPattern:(NSArray *)pattern {
-    [[[self undoManager] prepareWithInvocationTarget:self] setDashPattern:[self dashPattern]];
-    [[self undoManager] setActionName:NSLocalizedString(@"Edit Note", @"Undo action name")];
-    if ([self border] == nil)
-        [self setBorder:[[[PDFBorder alloc] init] autorelease]];
-    [[self border] setDashPattern:pattern];
-    [[NSNotificationCenter defaultCenter] postNotificationName:SKAnnotationDidChangeNotification 
-            object:self userInfo:[NSDictionary dictionaryWithObjectsAndKeys:@"dashPattern", @"key", nil]];
+    PDFBorder *border = [[self border] copyWithZone:[self zone]];
+    if (border == nil)
+        border = [[PDFBorder allocWithZone:[self zone]] init];
+    [border setDashPattern:pattern];
+    [self setBorder:border];
+    [border release];
 }
 
 - (void)setStartPoint:(NSPoint)point {
