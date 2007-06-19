@@ -4,7 +4,6 @@
 <dict>
 	<key>IBPaletteDependency</key>
 	<array>
-		<string>Controllers</string>
 		<string>PDFKit</string>
 	</array>
 </dict>
