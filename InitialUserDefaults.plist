@@ -127,6 +127,8 @@
         <real>2.0</real>
         <key>SKSquareNoteLineWidth</key>
         <real>2.0</real>
+        <key>SKLineNoteLineWidth</key>
+        <real>2.0</real>
         <key>SKLineNoteStartLineStyle</key>
         <integer>0</integer>
         <key>SKLineNoteEndLineStyle</key>
@@ -210,6 +212,7 @@
             <string>SKAnchoredNoteIconType</string>
             <string>SKCircleNoteLineWidth</string>
             <string>SKSquareNoteLineWidth</string>
+            <string>SKLineNoteLineWidth</string>
             <string>SKLineNoteStartLineStyle</string>
             <string>SKLineNoteEndLineStyle</string>
         </array>
