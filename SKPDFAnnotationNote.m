@@ -911,7 +911,7 @@ static BOOL adjacentCharacterBounds(NSRect rect1, NSRect rect2) {
     [properties removeObjectForKey:@"fontSize"];
     [properties removeObjectForKey:@"asIconType"];
     [properties removeObjectForKey:@"lineWidth"];
-    [properties removeObjectForKey:@"borderStyle"];
+    [properties removeObjectForKey:@"asBorderStyle"];
     [properties removeObjectForKey:@"dashPattern"];
     [properties removeObjectForKey:@"startPointAsQDPoint"];
     [properties removeObjectForKey:@"endPointAsQDPoint"];
@@ -971,9 +971,6 @@ static BOOL adjacentCharacterBounds(NSRect rect1, NSRect rect2) {
     NSMutableDictionary *properties = [[[super scriptingProperties] mutableCopy] autorelease];
     [properties removeObjectForKey:@"richText"];
     [properties removeObjectForKey:@"asIconType"];
-    [properties removeObjectForKey:@"lineWidth"];
-    [properties removeObjectForKey:@"borderStyle"];
-    [properties removeObjectForKey:@"dashPattern"];
     [properties removeObjectForKey:@"startPointAsQDPoint"];
     [properties removeObjectForKey:@"endPointAsQDPoint"];
     [properties removeObjectForKey:@"asStartLineStyle"];
@@ -1120,7 +1117,7 @@ static BOOL adjacentCharacterBounds(NSRect rect1, NSRect rect2) {
     [properties removeObjectForKey:@"fontName"];
     [properties removeObjectForKey:@"fontSize"];
     [properties removeObjectForKey:@"lineWidth"];
-    [properties removeObjectForKey:@"borderStyle"];
+    [properties removeObjectForKey:@"asBorderStyle"];
     [properties removeObjectForKey:@"dashPattern"];
     [properties removeObjectForKey:@"startPointAsQDPoint"];
     [properties removeObjectForKey:@"endPointAsQDPoint"];
@@ -1282,7 +1279,7 @@ static BOOL adjacentCharacterBounds(NSRect rect1, NSRect rect2) {
     [properties removeObjectForKey:@"fontSize"];
     [properties removeObjectForKey:@"asIconType"];
     [properties removeObjectForKey:@"lineWidth"];
-    [properties removeObjectForKey:@"borderStyle"];
+    [properties removeObjectForKey:@"asBorderStyle"];
     [properties removeObjectForKey:@"dashPattern"];
     [properties removeObjectForKey:@"selectionSpecifier"];
     return properties;
