@@ -3675,7 +3675,7 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
         else
             return YES;
     } else if (action == @selector(password:)) {
-        return [[self pdfDocument] isEncrypted] && [[self pdfDocument] isLocked];
+        return [[self pdfDocument] isEncrypted];
     } else if (action == @selector(toggleReadingBar:)) {
         if ([[self pdfView] hasReadingBar])
             [menuItem setTitle:NSLocalizedString(@"Hide Reading Bar", @"Menu item title")];
