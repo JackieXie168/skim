@@ -1402,6 +1402,7 @@ static NSString *SKRightSidePaneWidthKey = @"SKRightSidePaneWidth";
     [fullScreenWindow makeKeyAndOrderFront:self];
     [fullScreenWindow makeFirstResponder:pdfView];
     [fullScreenWindow setAcceptsMouseMovedEvents:YES];
+    [fullScreenWindow recalculateKeyViewLoop];
     [mainWindow orderOut:self];    
 }
 
@@ -1434,6 +1435,7 @@ static NSString *SKRightSidePaneWidthKey = @"SKRightSidePaneWidth";
     [fullScreenWindow setAlphaValue:1.0];
     [mainWindow makeKeyAndOrderFront:self];
     [mainWindow makeFirstResponder:pdfView];
+    [mainWindow recalculateKeyViewLoop];
     
     NSEnumerator *blankScreenEnumerator = [blankingWindows objectEnumerator];
     NSWindow *window;
@@ -1783,6 +1785,7 @@ static NSString *SKRightSidePaneWidthKey = @"SKRightSidePaneWidth";
             [[newView window] makeFirstResponder:[newView nextKeyView]];
         [oldView removeFromSuperview];
         [oldView setHidden:NO];
+        [[newView window] recalculateKeyViewLoop];
     }
 }
 
