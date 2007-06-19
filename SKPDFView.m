@@ -238,27 +238,14 @@ static void SKCGContextDrawGrabHandle(CGContextRef context, CGPoint point, float
     
     if (allAnnotations) {
         unsigned int i, count = [allAnnotations count];
-        BOOL foundActive = NO;
         
         for (i = 0; i < count; i++) {
             PDFAnnotation *annotation = [allAnnotations objectAtIndex: i];
-            if (([annotation isNoteAnnotation] || [[annotation type] isEqualToString:@"Link"]) && [annotation shouldDisplay]) {
-                if (annotation == activeAnnotation) {
-                    foundActive = YES;
-                } else if ([[annotation type] isEqualToString:@"FreeText"]) {
-                    NSRect bounds = [annotation bounds];
-                    NSRect rect = NSInsetRect(NSIntegralRect(bounds), 0.5, 0.5);
-                    float color[4] = { 0.5, 0.5, 0.5, 1.0 };
-                    CGContextSetStrokeColor(context, color);
-                    CGContextStrokeRectWithWidth(context, *(CGRect *)&rect, 1.0);
-                }
-                if ([[annotation type] isEqualToString:@"Link"]) 	 
-                    [(PDFAnnotationLink *)annotation fixRelativeURLIfNeeded];
-            }
+            if ([[annotation type] isEqualToString:@"Link"]) 	 
+                [(PDFAnnotationLink *)annotation fixRelativeURLIfNeeded];
         }
         
-        // Draw active annotation last so it is not "painted" over.
-        if (foundActive) {
+        if (activeAnnotation) {
             BOOL isLink = [[activeAnnotation type] isEqualToString:@"Link"];
             float lineWidth = isLink ? 2.0 : 1.0;
             NSRect bounds = [activeAnnotation bounds];
