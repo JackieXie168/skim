@@ -136,6 +136,8 @@ static NSString *SKRightSidePaneWidthKey = @"SKRightSidePaneWidth";
         rightSidePaneState = SKNoteSidePaneState;
         temporaryAnnotations = CFSetCreateMutable(kCFAllocatorDefault, 0, &kCFTypeSetCallBacks);
         isAnimating = NO;
+        updatingColor = NO;
+        updatingFont = NO;
     }
     
     return self;
@@ -161,6 +163,7 @@ static NSString *SKRightSidePaneWidthKey = @"SKRightSidePaneWidth";
     [pdfOutlineItems release];
     [savedNormalSetup release];
     [progressSheet release];
+    [colorAccessoryView release];
     [super dealloc];
 }
 
@@ -436,14 +439,65 @@ static NSString *SKRightSidePaneWidthKey = @"SKRightSidePaneWidth";
         return displayName;
 }
 
-- (void)windowDidBecomeKey:(NSNotification *)notification {
+- (void)updateFontPanel {
     PDFAnnotation *annotation = [pdfView activeAnnotation];
     
-    if ([annotation isNoteAnnotation]) {
-        if ([annotation respondsToSelector:@selector(font)])
+    if ([[self window] isMainWindow]) {
+        if ([annotation isNoteAnnotation] && [annotation respondsToSelector:@selector(font)]) {
+            updatingFont = YES;
             [[NSFontManager sharedFontManager] setSelectedFont:[(PDFAnnotationFreeText *)annotation font] isMultiple:NO];
-        [[NSColorPanel sharedColorPanel] setColor:[annotation color]];
+            updatingFont = NO;
+        }
     }
+}
+
+- (void)updateColorPanel {
+    PDFAnnotation *annotation = [pdfView activeAnnotation];
+    NSColor *color = nil;
+    NSView *accessoryView = nil;
+    
+    if ([[self window] isMainWindow]) {
+        if ([annotation isNoteAnnotation]) {
+            if ([annotation respondsToSelector:@selector(setInteriorColor:)]) {
+                if (colorAccessoryView == nil) {
+                    colorAccessoryView = [[NSButton alloc] init];
+                    [colorAccessoryView setButtonType:NSSwitchButton];
+                    [colorAccessoryView setTitle:NSLocalizedString(@"Fill color", @"Button title")];
+                    [colorAccessoryView setTarget:self];
+                    [colorAccessoryView setAction:@selector(changeColorFill:)];
+                    [colorAccessoryView sizeToFit];
+                }
+                accessoryView = colorAccessoryView;
+            }
+            if ([annotation respondsToSelector:@selector(setInteriorColor:)] && [colorAccessoryView state] == NSOnState) {
+                color = [(id)annotation interiorColor];
+                if (color == nil)
+                    color = [NSColor clearColor];
+            } else {
+                color = [annotation color];
+            }
+        }
+        if ([[NSColorPanel sharedColorPanel] accessoryView] != accessoryView)
+            [[NSColorPanel sharedColorPanel] setAccessoryView:accessoryView];
+    }
+    
+    if (color) {
+        updatingColor = YES;
+        [[NSColorPanel sharedColorPanel] setColor:color];
+        updatingColor = NO;
+    }
+}
+
+- (void)windowDidBecomeMain:(NSNotification *)notification {
+    if ([[self window] isEqual:[notification object]]) {
+        [self updateFontPanel];
+        [self updateColorPanel];
+    }
+}
+
+- (void)windowDidResignMain:(NSNotification *)notification {
+    if ([[[NSColorPanel sharedColorPanel] accessoryView] isEqual:colorAccessoryView])
+        [[NSColorPanel sharedColorPanel] setAccessoryView:nil];
 }
 
 - (void)windowWillClose:(NSNotification *)notification {
@@ -756,26 +810,35 @@ static NSString *SKRightSidePaneWidthKey = @"SKRightSidePaneWidth";
 
 #pragma mark Actions
 
-- (IBAction)pickColor:(id)sender{
-    PDFAnnotation *annotation = [pdfView activeAnnotation];
-    if ([annotation isNoteAnnotation])
-        [[NSColorPanel sharedColorPanel] setColor:[annotation color]];
-    [[NSColorPanel sharedColorPanel] makeKeyAndOrderFront:self];
-}
-
 - (IBAction)changeColor:(id)sender{
     PDFAnnotation *annotation = [pdfView activeAnnotation];
-    if ([annotation isNoteAnnotation]) {
-        if ([[annotation color] isEqual:[sender color]] == NO)
-            [annotation setColor:[sender color]];
+    if (updatingColor == NO && [annotation isNoteAnnotation]) {
+        BOOL isFill = [colorAccessoryView state] == NSOnState && [annotation respondsToSelector:@selector(setInteriorColor:)];
+        NSColor *color = isFill ? [(id)annotation interiorColor] : [annotation color];
+        if (color == nil)
+            color = [NSColor clearColor];
+        if ([color isEqual:[sender color]] == NO) {
+            updatingColor = YES;
+            if (isFill)
+                [(id)annotation setInteriorColor:[[sender color] isEqual:[NSColor clearColor]] ? nil : [sender color]];
+            else
+                [annotation setColor:[sender color]];
+            updatingColor = NO;
+        }
     }
+}
+
+- (IBAction)changeColorFill:(id)sender{
+   [self updateColorPanel];
 }
 
 - (IBAction)changeFont:(id)sender{
     PDFAnnotation *annotation = [pdfView activeAnnotation];
-    if ([annotation isNoteAnnotation] && [annotation respondsToSelector:@selector(setFont:)] && [annotation respondsToSelector:@selector(font)]) {
+    if (updatingFont == NO && [annotation isNoteAnnotation] && [annotation respondsToSelector:@selector(setFont:)] && [annotation respondsToSelector:@selector(font)]) {
         NSFont *font = [sender convertFont:[(PDFAnnotationFreeText *)annotation font]];
+        updatingFont = YES;
         [(PDFAnnotationFreeText *)annotation setFont:font];
+        updatingFont = NO;
     }
 }
 
@@ -2222,14 +2285,13 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
 - (void)handleDidChangeActiveAnnotationNotification:(NSNotification *)notification {
     PDFAnnotation *annotation = [pdfView activeAnnotation];
     
+    if ([[self window] isMainWindow]) {
+        [self updateFontPanel];
+        [self updateColorPanel];
+    }
     if ([annotation isNoteAnnotation]) {
         if ([self selectedNote] != annotation) {
             [noteOutlineView selectRowIndexes:[NSIndexSet indexSetWithIndex:[noteOutlineView rowForItem:annotation]] byExtendingSelection:NO];
-        }
-        if ([[self window] isKeyWindow]) {
-            if ([annotation respondsToSelector:@selector(font)])
-                [[NSFontManager sharedFontManager] setSelectedFont:[(PDFAnnotationFreeText *)annotation font] isMultiple:NO];
-            [[NSColorPanel sharedColorPanel] setColor:[annotation color]];
         }
     } else {
         [noteOutlineView deselectAll:self];
@@ -2342,6 +2404,19 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
         
         [noteArrayController rearrangeObjects];
         [noteOutlineView reloadData];
+    }
+    if ([[self window] isMainWindow] && [annotation isEqual:[pdfView activeAnnotation]]) {
+        NSString *key = [[notification userInfo] objectForKey:@"key"];
+        if (updatingColor == NO && ([key isEqualToString:@"color"] || [key isEqualToString:@"interiorColor"])) {
+            updatingColor = YES;
+            [[NSColorPanel sharedColorPanel] setColor:[annotation color]];
+            updatingColor = NO;
+        }
+        if (updatingFont == NO && ([key isEqualToString:@"font"] || [key isEqualToString:@"fontName"] || [key isEqualToString:@"fontSize"])) {
+            updatingFont = YES;
+            [[NSFontManager sharedFontManager] setSelectedFont:[(PDFAnnotationFreeText *)annotation font] isMultiple:NO];
+            updatingFont = NO;
+        }
     }
 }
 

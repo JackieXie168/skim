@@ -158,6 +158,10 @@ typedef struct _SKPDFViewState {
     IBOutlet NSWindow           *passwordSheet;
     IBOutlet NSTextField        *passwordField;
     
+    NSButton                    *colorAccessoryView;
+    BOOL                        updatingColor;
+    BOOL                        updatingFont;
+    
     NSMutableArray              *lastViewedPages;
     
     NSTimer                     *activityTimer;
@@ -172,8 +176,8 @@ typedef struct _SKPDFViewState {
     float                       snapshotCacheSize;
 }
 
-- (IBAction)pickColor:(id)sender;
 - (IBAction)changeColor:(id)sender;
+- (IBAction)changeColorFill:(id)sender;
 - (IBAction)changeFont:(id)sender;
 - (IBAction)createNewNote:(id)sender;
 - (IBAction)editNote:(id)sender;

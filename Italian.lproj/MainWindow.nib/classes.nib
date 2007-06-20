@@ -39,6 +39,7 @@
                 autoCropAll = id; 
                 autoSelectContent = id; 
                 changeColor = id; 
+                changeColorFill = id; 
                 changeDisplayBox = id; 
                 changeFont = id; 
                 changeLeftSidePaneState = id; 
@@ -74,7 +75,6 @@
                 goBackOrForward = id; 
                 password = id; 
                 performFit = id; 
-                pickColor = id; 
                 rotateAllLeft = id; 
                 rotateAllRight = id; 
                 rotateLeft = id; 
