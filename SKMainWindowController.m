@@ -71,6 +71,7 @@
 #import "NSValue_SKExtensions.h"
 #import "NSString_SKExtensions.h"
 #import "SKReadingBar.h"
+#import "SKLineInspector.h"
 
 #define SEGMENTED_CONTROL_HEIGHT    25.0
 #define WINDOW_X_DELTA              0.0
@@ -138,6 +139,7 @@ static NSString *SKRightSidePaneWidthKey = @"SKRightSidePaneWidth";
         isAnimating = NO;
         updatingColor = NO;
         updatingFont = NO;
+        updatingLine = NO;
     }
     
     return self;
@@ -489,10 +491,24 @@ static NSString *SKRightSidePaneWidthKey = @"SKRightSidePaneWidth";
     }
 }
 
+- (void)updateLineInspector {
+    PDFAnnotation *annotation = [pdfView activeAnnotation];
+    NSString *type = [annotation type];
+    
+    if ([[self window] isMainWindow]) {
+        if ([annotation isNoteAnnotation] && ([type isEqualToString:@"FreeText"] || [type isEqualToString:@"Circle"] || [type isEqualToString:@"Square"] || [type isEqualToString:@""] || [type isEqualToString:@"Line"])) {
+            updatingLine = YES;
+            [[SKLineInspector sharedLineInspector] setAnnotationStyle:annotation];
+            updatingLine = NO;
+        }
+    }
+}
+
 - (void)windowDidBecomeMain:(NSNotification *)notification {
     if ([[self window] isEqual:[notification object]]) {
         [self updateFontPanel];
         [self updateColorPanel];
+        [self updateLineInspector];
     }
 }
 
@@ -840,6 +856,56 @@ static NSString *SKRightSidePaneWidthKey = @"SKRightSidePaneWidth";
         updatingFont = YES;
         [(PDFAnnotationFreeText *)annotation setFont:font];
         updatingFont = NO;
+    }
+}
+
+- (void)changeLineWidth:(id)sender {
+    PDFAnnotation *annotation = [pdfView activeAnnotation];
+    NSString *type = [annotation type];
+    if (updatingLine == NO && [annotation isNoteAnnotation] && ([type isEqualToString:@"FreeText"] || [type isEqualToString:@"Circle"] || [type isEqualToString:@"Square"] || [type isEqualToString:@""] || [type isEqualToString:@"Line"])) {
+        updatingLine = YES;
+        [annotation setLineWidth:[sender lineWidth]];
+        updatingLine = NO;
+    }
+}
+
+- (void)changeLineStyle:(id)sender {
+    PDFAnnotation *annotation = [pdfView activeAnnotation];
+    NSString *type = [annotation type];
+    if (updatingLine == NO && [annotation isNoteAnnotation] && ([type isEqualToString:@"FreeText"] || [type isEqualToString:@"Circle"] || [type isEqualToString:@"Square"] || [type isEqualToString:@"Line"])) {
+        //updatingLine = YES;
+        [annotation setBorderStyle:[sender style]];
+        //updatingLine = NO;
+    }
+}
+
+- (void)changeDashPattern:(id)sender {
+    PDFAnnotation *annotation = [pdfView activeAnnotation];
+    NSString *type = [annotation type];
+    if (updatingLine == NO && [annotation isNoteAnnotation] && ([type isEqualToString:@"FreeText"] || [type isEqualToString:@"Circle"] || [type isEqualToString:@"Square"] || [type isEqualToString:@"Line"])) {
+        updatingLine = YES;
+        [annotation setDashPattern:[sender dashPattern]];
+        updatingLine = NO;
+    }
+}
+
+- (void)changeStartLineStyle:(id)sender {
+    PDFAnnotation *annotation = [pdfView activeAnnotation];
+    NSString *type = [annotation type];
+    if (updatingLine == NO && [annotation isNoteAnnotation] && [type isEqualToString:@"Line"]) {
+        updatingLine = YES;
+        [(SKPDFAnnotationLine *)annotation setStartLineStyle:[sender startLineStyle]];
+        updatingLine = NO;
+    }
+}
+
+- (void)changeEndLineStyle:(id)sender {
+    PDFAnnotation *annotation = [pdfView activeAnnotation];
+    NSString *type = [annotation type];
+    if (updatingLine == NO && [annotation isNoteAnnotation] && [type isEqualToString:@"Line"]) {
+        updatingLine = YES;
+        [(SKPDFAnnotationLine *)annotation setEndLineStyle:[sender endLineStyle]];
+        updatingLine = NO;
     }
 }
 
@@ -2289,6 +2355,7 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
     if ([[self window] isMainWindow]) {
         [self updateFontPanel];
         [self updateColorPanel];
+        [self updateLineInspector];
     }
     if ([annotation isNoteAnnotation]) {
         if ([self selectedNote] != annotation) {
@@ -2417,6 +2484,11 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
             updatingFont = YES;
             [[NSFontManager sharedFontManager] setSelectedFont:[(PDFAnnotationFreeText *)annotation font] isMultiple:NO];
             updatingFont = NO;
+        }
+        if (updatingLine == NO && ([key isEqualToString:@"border"] || [key isEqualToString:@"lineWidth"] || [key isEqualToString:@"borderStyle"] || [key isEqualToString:@"dashPattern"] || [key isEqualToString:@"startLineStyle"] || [key isEqualToString:@"endLineStyle"])) {
+            updatingLine = YES;
+            [[SKLineInspector sharedLineInspector] setAnnotationStyle:annotation];
+            updatingLine = NO;
         }
     }
 }

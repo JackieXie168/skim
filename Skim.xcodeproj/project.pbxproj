@@ -153,6 +153,8 @@
 		CE7C20500C259A5D0059E08C /* NSColor_SKExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = CE7C204E0C259A5D0059E08C /* NSColor_SKExtensions.m */; };
 		CE7C5D050BD8062C0011315D /* LineNoteAdorn.tiff in Resources */ = {isa = PBXBuildFile; fileRef = CE7C5D040BD8062C0011315D /* LineNoteAdorn.tiff */; };
 		CE7C5D190BD8086C0011315D /* ToolbarLineNote.tiff in Resources */ = {isa = PBXBuildFile; fileRef = CE7C5D180BD8086C0011315D /* ToolbarLineNote.tiff */; };
+		CE8B46E90C29CA00005CE7F1 /* SKLineInspector.m in Sources */ = {isa = PBXBuildFile; fileRef = CE8B46E70C29CA00005CE7F1 /* SKLineInspector.m */; };
+		CE8B46F00C29CA3D005CE7F1 /* LineInspector.nib in Resources */ = {isa = PBXBuildFile; fileRef = CE8B46EA0C29CA3D005CE7F1 /* LineInspector.nib */; };
 		CE9A87930C0C9E9A004F1F97 /* ProgressSheet.nib in Resources */ = {isa = PBXBuildFile; fileRef = CE9A878D0C0C9E9A004F1F97 /* ProgressSheet.nib */; };
 		CE9C423C0B8B5633004AD8CF /* PreferenceWindow.nib in Resources */ = {isa = PBXBuildFile; fileRef = CE9C42360B8B5633004AD8CF /* PreferenceWindow.nib */; };
 		CE9DC2E90B9F131900D64F28 /* HighlightNoteAdorn.tiff in Resources */ = {isa = PBXBuildFile; fileRef = CE9DC2E70B9F131800D64F28 /* HighlightNoteAdorn.tiff */; };
@@ -502,6 +504,11 @@
 		CE7C5D040BD8062C0011315D /* LineNoteAdorn.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; name = LineNoteAdorn.tiff; path = Images/LineNoteAdorn.tiff; sourceTree = "<group>"; };
 		CE7C5D180BD8086C0011315D /* ToolbarLineNote.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; name = ToolbarLineNote.tiff; path = Images/ToolbarLineNote.tiff; sourceTree = "<group>"; };
 		CE87EF690BA9FF5A0027BBDD /* skimhelp.css */ = {isa = PBXFileReference; explicitFileType = text; fileEncoding = 30; name = skimhelp.css; path = "English.lproj/Skim Help/sty/skimhelp.css"; sourceTree = "<group>"; };
+		CE8B46E60C29CA00005CE7F1 /* SKLineInspector.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = SKLineInspector.h; sourceTree = "<group>"; };
+		CE8B46E70C29CA00005CE7F1 /* SKLineInspector.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = SKLineInspector.m; sourceTree = "<group>"; };
+		CE8B46EB0C29CA3D005CE7F1 /* English */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = English; path = English.lproj/LineInspector.nib; sourceTree = "<group>"; };
+		CE8B46F30C29CA4A005CE7F1 /* Dutch */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = Dutch; path = Dutch.lproj/LineInspector.nib; sourceTree = "<group>"; };
+		CE8B46F40C29CA50005CE7F1 /* Italian */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = Italian; path = Italian.lproj/LineInspector.nib; sourceTree = "<group>"; };
 		CE9A878E0C0C9E9A004F1F97 /* English */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = English; path = English.lproj/ProgressSheet.nib; sourceTree = "<group>"; };
 		CE9A87960C0C9EA3004F1F97 /* Dutch */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = Dutch; path = Dutch.lproj/ProgressSheet.nib; sourceTree = "<group>"; };
 		CE9A87970C0C9EA7004F1F97 /* Italian */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = Italian; path = Italian.lproj/ProgressSheet.nib; sourceTree = "<group>"; };
@@ -656,6 +663,7 @@
 		2A37F4B8FDCFA73011CA2CEA /* Resources */ = {
 			isa = PBXGroup;
 			children = (
+				CE8B46EA0C29CA3D005CE7F1 /* LineInspector.nib */,
 				CE5475A00B33058B00F8AFB6 /* Images */,
 				CE4DA9190B9E190D0039E89C /* Skim Help */,
 				CE54898A0B35D4EF00F8AFB6 /* InfoWindow.nib */,
@@ -790,6 +798,8 @@
 				4530D7E70B27AAB9007C59F4 /* SKSnapshotWindowController.m */,
 				CE546FC20B32D5DB00F8AFB6 /* SKNoteWindowController.h */,
 				CE546FC30B32D5DB00F8AFB6 /* SKNoteWindowController.m */,
+				CE8B46E60C29CA00005CE7F1 /* SKLineInspector.h */,
+				CE8B46E70C29CA00005CE7F1 /* SKLineInspector.m */,
 				CE4A659D0BAB1598004AD07D /* SKBookmarkController.h */,
 				CE4A659E0BAB1598004AD07D /* SKBookmarkController.m */,
 				CE54898D0B35D50E00F8AFB6 /* SKInfoWindowController.h */,
@@ -1174,6 +1184,7 @@
 				CE48BBB70C08AD7000A166C6 /* notesTemplate.rtf in Resources */,
 				CE9A87930C0C9E9A004F1F97 /* ProgressSheet.nib in Resources */,
 				CE327A460C11BF6700DB4BEB /* NoteTypeSheet.nib in Resources */,
+				CE8B46F00C29CA3D005CE7F1 /* LineInspector.nib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1341,6 +1352,7 @@
 				F9F220890C14BDFF00041284 /* UKFileWatcher.m in Sources */,
 				F9F2208B0C14BDFF00041284 /* UKKQueue.m in Sources */,
 				CE7C20500C259A5D0059E08C /* NSColor_SKExtensions.m in Sources */,
+				CE8B46E90C29CA00005CE7F1 /* SKLineInspector.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1512,6 +1524,16 @@
 				A489FDE70BC8E94200BA14DD /* Italian */,
 			);
 			name = ZoomValues.strings;
+			sourceTree = "<group>";
+		};
+		CE8B46EA0C29CA3D005CE7F1 /* LineInspector.nib */ = {
+			isa = PBXVariantGroup;
+			children = (
+				CE8B46EB0C29CA3D005CE7F1 /* English */,
+				CE8B46F30C29CA4A005CE7F1 /* Dutch */,
+				CE8B46F40C29CA50005CE7F1 /* Italian */,
+			);
+			name = LineInspector.nib;
 			sourceTree = "<group>";
 		};
 		CE9A878D0C0C9E9A004F1F97 /* ProgressSheet.nib */ = {
