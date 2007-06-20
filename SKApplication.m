@@ -41,6 +41,7 @@
 #import "SKDocument.h"
 #import "SKPDFSynchronizer.h"
 #import "SKPDFView.h"
+#import "SKLineInspector.h"
 
 NSString *SKApplicationWillTerminateNotification = @"SKApplicationWillTerminateNotification";
 
@@ -66,6 +67,10 @@ NSString *SKApplicationWillTerminateNotification = @"SKApplicationWillTerminateN
 
 
 @implementation SKApplication
+
+- (IBAction)orderFrontLineInspector:(id)sender {
+    [[SKLineInspector sharedLineInspector] showWindow:sender];
+}
 
 - (void)sendEvent:(NSEvent *)anEvent {
     id target = nil;

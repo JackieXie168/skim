@@ -33,6 +33,7 @@
                 getInfo = id; 
                 myAction = id; 
                 newDocumentFromClipboard = id; 
+                orderFrontLineInspector = id; 
                 password = id; 
                 performFit = id; 
                 readNotes = id; 
