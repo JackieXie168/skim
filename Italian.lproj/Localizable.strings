@@ -162,6 +162,9 @@
 /* Message in alert dialog */
 "File Updated" = "File Aggiornato";
 
+/* Button title */
+"Fill color" = "Fill color";
+
 /* Tool tip message */
 "Fit to Screen" = "Adatta alla finestra";
 

@@ -35,7 +35,6 @@
                 newDocumentFromClipboard = id; 
                 password = id; 
                 performFit = id; 
-                pickColor = id; 
                 readNotes = id; 
                 rotateAllLeft = id; 
                 rotateAllRight = id; 
