@@ -463,6 +463,7 @@ static NSString *SKRightSidePaneWidthKey = @"SKRightSidePaneWidth";
                     colorAccessoryView = [[NSButton alloc] init];
                     [colorAccessoryView setButtonType:NSSwitchButton];
                     [colorAccessoryView setTitle:NSLocalizedString(@"Fill color", @"Button title")];
+                    [[colorAccessoryView cell] setControlSize:NSSmallControlSize];
                     [colorAccessoryView setTarget:self];
                     [colorAccessoryView setAction:@selector(changeColorFill:)];
                     [colorAccessoryView sizeToFit];
