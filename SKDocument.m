@@ -826,14 +826,23 @@ static BOOL isFileOnHFSVolume(NSString *fileName)
         
         if ([editorPreset isEqualToString:@""] == NO) {
             NSString *appPath = [[NSWorkspace sharedWorkspace] fullPathForApplication:editorPreset];
-            NSString *toolPath = appPath ? [NSBundle pathForResource:editorCmd ofType:nil inDirectory:appPath] : nil;
-            if (toolPath) {
-               editorCmd = toolPath;
-            } else {
-                // Emacs has its tool in Emacs.app/Contents/MacOS/bin/
-                toolPath = [[[[[NSBundle bundleWithPath:appPath] executablePath] stringByDeletingLastPathComponent] stringByAppendingPathComponent:@"bin"] stringByAppendingPathComponent:editorCmd];
-                if ([[NSFileManager defaultManager] isExecutableFileAtPath:toolPath])
+            if (appPath) {
+                NSBundle *appBundle = [NSBundle bundleWithPath:appPath];
+                NSString *toolPath = [appBundle pathForResource:editorCmd ofType:nil];
+                if (toolPath && [[NSFileManager defaultManager] isExecutableFileAtPath:toolPath]) {
+                   editorCmd = toolPath;
+                } else if (toolPath = [appBundle pathForAuxiliaryExecutable:editorCmd]) {
                     editorCmd = toolPath;
+                } else if (toolPath = [appBundle pathForAuxiliaryExecutable:[@"bin" stringByAppendingPathComponent:editorCmd]]) {
+                    // Emacs has its tool in Emacs.app/Contents/MacOS/bin/
+                    editorCmd = toolPath;
+                } else if ((toolPath = [[appBundle sharedSupportPath] stringByAppendingPathComponent:editorCmd]) &&
+                           [[NSFileManager defaultManager] isExecutableFileAtPath:toolPath]) {
+                    editorCmd = toolPath;
+                } else if ((toolPath = [[[appBundle sharedSupportPath] stringByAppendingPathComponent:@"bin"] stringByAppendingPathComponent:editorCmd]) &&
+                           [[NSFileManager defaultManager] isExecutableFileAtPath:toolPath]) {
+                    editorCmd = toolPath;
+                }
             }
         }
         

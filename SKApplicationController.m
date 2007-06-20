@@ -58,7 +58,7 @@
     [self setupDefaults];
 }
    
-+ (void)setupDefaults{
++ (void)setupDefaults{NSLog(@"%@ %@",[[NSBundle bundleWithPath:@"/Applications/Emacs.app"] pathForAuxiliaryExecutable:@"emacsclient"],[[NSBundle bundleWithPath:@"/Applications/Emacs.app"] pathForAuxiliaryExecutable:@"bin/emacsclient"]);
     
     NSString *userDefaultsValuesPath;
     NSDictionary *userDefaultsValuesDict;
