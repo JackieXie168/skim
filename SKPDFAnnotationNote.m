@@ -739,7 +739,6 @@ static NSArray *createQuadPointsWithBounds(const NSRect bounds, const NSPoint or
             [self setColor:[NSUnarchiver unarchiveObjectWithData:[[NSUserDefaults standardUserDefaults] dataForKey:SKUnderlineNoteColorKey]]];
         else if (type == kPDFMarkupTypeStrikeOut)
             [self setColor:[NSUnarchiver unarchiveObjectWithData:[[NSUserDefaults standardUserDefaults] dataForKey:SKStrikeOutNoteColorKey]]];
-            [[NSUserDefaults standardUserDefaults] setObject:[NSArchiver archivedDataWithRootObject:[NSColor colorWithDeviceRed:0 green:0.5 blue:0 alpha:1.0]] forKey:SKUnderlineNoteColorKey];
         
         NSArray *quadPoints = nil;
         if (pointStrings) {
