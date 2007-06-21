@@ -47,6 +47,32 @@ static NSString *SKTeXEditors[] = {@"TextMate", @"BBEdit", @"TextWrangler", @"Em
 static NSString *SKTeXEditorCommands[] = {@"mate", @"bbedit", @"edit", @"emacsclient", @"emacsclient", @"lyxeditor"};
 static NSString *SKTeXEditorArguments[] = {@"-l %line \"%file\"", @"+%line \"%file\"", @"+%line \"%file\"", @"--no-wait +%line \"%file\"", @"--no-wait +%line \"%file\"", @"\"%file\" %line"};
 
+
+@interface NSView (SKExtensions)
+- (void)deactivateColorWells;
+@end
+
+@implementation NSView (SKExtensions)
+- (void)deactivateColorWells {
+    NSEnumerator *viewEnum = [[self subviews] objectEnumerator];
+    NSView *view;
+    while (view = [viewEnum nextObject])
+        [view deactivateColorWells];
+}
+@end
+
+@interface NSColorWell (SKExtensions)
+@end
+
+@implementation NSColorWell (SKExtensions)
+- (void)deactivateColorWells {
+    [self deactivate];
+    [super deactivateColorWells];
+}
+@end
+
+#pragma mark -
+
 @implementation SKPreferenceController
 
 + (id)sharedPrefenceController {
@@ -120,6 +146,10 @@ static NSString *SKTeXEditorArguments[] = {@"-l %line \"%file\"", @"+%line \"%fi
         [texEditorPopUpButton selectItemAtIndex:index];
     
     [self updateRevertButtons];
+}
+
+- (void)windowDidResignMain:(NSNotification *)notification {
+    [[[self window] contentView] deactivateColorWells];
 }
 
 - (NSArray *)fonts {
