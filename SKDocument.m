@@ -1013,8 +1013,13 @@ static BOOL isFileOnHFSVolume(NSString *fileName)
         [command setArguments:arguments];
         [arguments release];
     }
-    if (fileURL == nil || fileType == nil) {
-        return [super handleSaveScriptCommand:command];
+    if (fileType == nil) {
+        if (fileURL == nil) {
+            return [super handleSaveScriptCommand:command];
+        } else if ([self saveToURL:fileURL ofType:NSPDFPboardType forSaveOperation:NSSaveAsOperation error:NULL] == NO) {
+            [command setScriptErrorNumber:NSInternalScriptError];
+            [command setScriptErrorString:@"Unable to save."];
+        }
     } else if ([fileURL isKindOfClass:[NSURL class]] == NO) {
         [command setScriptErrorNumber:NSArgumentsWrongScriptError];
         [command setScriptErrorString:@"The file is not a file or alias."];
@@ -1023,7 +1028,7 @@ static BOOL isFileOnHFSVolume(NSString *fileName)
         [command setScriptErrorString:@"The file type should be a string."];
     } else if ([self saveToURL:fileURL ofType:fileType forSaveOperation:NSSaveToOperation error:NULL] == NO) {
         [command setScriptErrorNumber:NSInternalScriptError];
-        [command setScriptErrorString:@"No file name set."];
+        [command setScriptErrorString:@"Unable to export."];
     }
     return nil;
 }
