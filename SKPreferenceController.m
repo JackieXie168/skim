@@ -100,6 +100,8 @@ static NSString *SKTeXEditorArguments[] = {@"-l %line \"%file\"", @"+%line \"%fi
 }
 
 - (void)windowDidLoad {
+    [self setWindowFrameAutosaveName:@"SKPreferenceWindow"];
+    
     NSString *editorPreset = [[NSUserDefaults standardUserDefaults] stringForKey:SKTeXEditorPresetKey];
     int i = sizeof(SKTeXEditors) / sizeof(NSString *);
     int index = -1;

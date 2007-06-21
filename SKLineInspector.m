@@ -84,7 +84,9 @@ static SKLineInspector *sharedLineInspector = nil;
 
 - (unsigned)retainCount { return UINT_MAX; }
 
-- (void)awakeFromNib {
+- (void)windowDidLoad {
+    [self setWindowFrameAutosaveName:@"SKLineInspector"];
+    
     [[styleButton cell] setToolTip:NSLocalizedString(@"Solid line style", @"Tool tip message") forSegment:kPDFBorderStyleSolid];
     [[styleButton cell] setToolTip:NSLocalizedString(@"Dashed line style", @"Tool tip message") forSegment:kPDFBorderStyleDashed];
     [[styleButton cell] setToolTip:NSLocalizedString(@"Beveled line style", @"Tool tip message") forSegment:kPDFBorderStyleBeveled];
