@@ -245,7 +245,8 @@ static void SKCGContextDrawGrabHandle(CGContextRef context, CGPoint point, float
                 [(PDFAnnotationLink *)annotation fixRelativeURLIfNeeded];
         }
         
-        if (activeAnnotation) {
+        // activeAnnotation may be a leftover, and we don't want to outline it on the wrong page
+        if (activeAnnotation && [[activeAnnotation page] isEqual:pdfPage]) {
             BOOL isLink = [[activeAnnotation type] isEqualToString:@"Link"];
             float lineWidth = isLink ? 2.0 : 1.0;
             NSRect bounds = [activeAnnotation bounds];
