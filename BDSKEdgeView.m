@@ -44,7 +44,7 @@
 
 - (id)initWithFrame:(NSRect)frame {
     if (self = [super initWithFrame:frame]) {
-       NSColor *color = [NSColor colorWithDeviceWhite:0.75 alpha:1.0];
+       NSColor *color = [NSColor colorWithCalibratedWhite:0.75 alpha:1.0];
 	   edgeColors = [[NSMutableArray alloc] initWithObjects:color, color, color, color, nil];
 	   edges = BDSKNoEdgeMask; // we start with no edge, so we can use this in IB without getting weird offsets
     }

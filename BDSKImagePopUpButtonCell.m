@@ -81,7 +81,7 @@
             [path lineToPoint:NSMakePoint(6.5, 5.0)];
             [path lineToPoint:NSMakePoint(3.5, 0.0)];
             [path closePath];
-            [[NSColor colorWithDeviceWhite:0.0 alpha:0.75] setFill];
+            [[NSColor colorWithCalibratedWhite:0.0 alpha:0.75] setFill];
             [path fill];
             [defaultArrowImage unlockFocus];
         }
