@@ -359,7 +359,8 @@ static void SKCGContextDrawGrabHandle(CGContextRef context, CGPoint point, float
         bounds.origin.y -= delta;
         bounds.size.height += delta;
     } else if ([[annotation type] isEqualToString:@"Line"]) {
-        bounds = NSInsetRect(bounds, -4.0, -4.0);
+        // need a large padding amount for large line width and cap changes
+        bounds = NSInsetRect(bounds, -20, -20);
     }
     [self setNeedsDisplayInRect:bounds ofPage:[annotation page]];
 }
