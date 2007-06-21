@@ -273,7 +273,7 @@ static IMP originalSetBorder = NULL;
 
 - (void)setBorderStyle:(PDFBorderStyle)style {
     PDFBorder *border = [[self border] copyWithZone:[self zone]];
-    if (border == nil)
+    if (border == nil && style)
         border = [[PDFBorder allocWithZone:[self zone]] init];
     [border setStyle:style];
     [self setBorder:border];
@@ -302,7 +302,7 @@ static IMP originalSetBorder = NULL;
 
 - (void)setDashPattern:(NSArray *)pattern {
     PDFBorder *border = [[self border] copyWithZone:[self zone]];
-    if (border == nil)
+    if (border == nil && [pattern count])
         border = [[PDFBorder allocWithZone:[self zone]] init];
     [border setDashPattern:pattern];
     [self setBorder:border];

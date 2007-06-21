@@ -837,7 +837,7 @@ static NSString *SKRightSidePaneWidthKey = @"SKRightSidePaneWidth";
         if ([color isEqual:[sender color]] == NO) {
             updatingColor = YES;
             if (isFill)
-                [(id)annotation setInteriorColor:[[sender color] isEqual:[NSColor clearColor]] ? nil : [sender color]];
+                [(id)annotation setInteriorColor:[[sender color] alphaComponent] > 0.0 ? [sender color] : nil];
             else
                 [annotation setColor:[sender color]];
             updatingColor = NO;
@@ -863,9 +863,7 @@ static NSString *SKRightSidePaneWidthKey = @"SKRightSidePaneWidth";
     PDFAnnotation *annotation = [pdfView activeAnnotation];
     NSString *type = [annotation type];
     if (updatingLine == NO && [annotation isNoteAnnotation] && ([type isEqualToString:@"FreeText"] || [type isEqualToString:@"Circle"] || [type isEqualToString:@"Square"] || [type isEqualToString:@""] || [type isEqualToString:@"Line"])) {
-        updatingLine = YES;
         [annotation setLineWidth:[sender lineWidth]];
-        updatingLine = NO;
     }
 }
 
@@ -873,9 +871,7 @@ static NSString *SKRightSidePaneWidthKey = @"SKRightSidePaneWidth";
     PDFAnnotation *annotation = [pdfView activeAnnotation];
     NSString *type = [annotation type];
     if (updatingLine == NO && [annotation isNoteAnnotation] && ([type isEqualToString:@"FreeText"] || [type isEqualToString:@"Circle"] || [type isEqualToString:@"Square"] || [type isEqualToString:@"Line"])) {
-        //updatingLine = YES;
         [annotation setBorderStyle:[sender style]];
-        //updatingLine = NO;
     }
 }
 
@@ -883,9 +879,7 @@ static NSString *SKRightSidePaneWidthKey = @"SKRightSidePaneWidth";
     PDFAnnotation *annotation = [pdfView activeAnnotation];
     NSString *type = [annotation type];
     if (updatingLine == NO && [annotation isNoteAnnotation] && ([type isEqualToString:@"FreeText"] || [type isEqualToString:@"Circle"] || [type isEqualToString:@"Square"] || [type isEqualToString:@"Line"])) {
-        //updatingLine = YES;
         [annotation setDashPattern:[sender dashPattern]];
-        //updatingLine = NO;
     }
 }
 
