@@ -121,14 +121,36 @@
 	BAt0eXBlZHN0cmVhbYED6IQBQISEhAdOU0NvbG9yAISECE5TT2JqZWN0AIWEAWMBhARm
 	ZmZmAAABAYY=
 	</data>
+        <key>SKCircleNoteInteriorColor</key>
+        <data></data>
+        <key>SKSquareNoteInteriorColor</key>
+        <data></data>
+        <key>SKFreeTextNoteLineWidth</key>
+        <real>1.0</real>
+        <key>SKFreeTextNoteLineStyle</key>
+        <integer>0</integer>
+        <key>SKFreeTextNoteDashPattern</key>
+        <array/>
         <key>SKAnchoredNoteIconType</key>
         <integer>2</integer>
         <key>SKCircleNoteLineWidth</key>
         <real>2.0</real>
+        <key>SKCircleNoteLineStyle</key>
+        <integer>0</integer>
+        <key>SKCircleNoteDashPattern</key>
+        <array/>
         <key>SKSquareNoteLineWidth</key>
         <real>2.0</real>
+        <key>SKSquareNoteLineStyle</key>
+        <integer>0</integer>
+        <key>SKSquareNoteDashPattern</key>
+        <array/>
         <key>SKLineNoteLineWidth</key>
         <real>2.0</real>
+        <key>SKLineNoteLineStyle</key>
+        <integer>0</integer>
+        <key>SKLineNoteDashPattern</key>
+        <array/>
         <key>SKLineNoteStartLineStyle</key>
         <integer>0</integer>
         <key>SKLineNoteEndLineStyle</key>
@@ -207,12 +229,23 @@
             <string>SKUnderlineNoteColor</string>
             <string>SKStrikeOutNoteColor</string>
             <string>SKLineNoteColor</string>
+            <string>SKCircleNoteInteriorColor</string>
+            <string>SKSquareNoteInteriorColor</string>
             <string>SKTextNoteFontName</string>
             <string>SKTextNoteFontSize</string>
+            <string>SKFreeTextNoteLineWidth</string>
+            <string>SKFreeTextNoteLineStyle</string>
+            <string>SKFreeTextNoteDashPattern</string>
             <string>SKAnchoredNoteIconType</string>
             <string>SKCircleNoteLineWidth</string>
+            <string>SKCircleNoteLineStyle</string>
+            <string>SKCircleNoteDashPattern</string>
             <string>SKSquareNoteLineWidth</string>
+            <string>SKSquareNoteLineStyle</string>
+            <string>SKSquareNoteDashPattern</string>
             <string>SKLineNoteLineWidth</string>
+            <string>SKLineNoteLineStyle</string>
+            <string>SKLineNoteDashPattern</string>
             <string>SKLineNoteStartLineStyle</string>
             <string>SKLineNoteEndLineStyle</string>
         </array>
