@@ -30,11 +30,6 @@
                 styleButton = NSSegmentedControl; 
             }; 
             SUPERCLASS = NSWindowController; 
-        }, 
-        {
-            CLASS = SKNumberArrayFormatter; 
-            LANGUAGE = ObjC; 
-            SUPERCLASS = NSNumberFormatter; 
         }
     ); 
     IBVersion = 1; 

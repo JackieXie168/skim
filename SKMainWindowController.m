@@ -883,9 +883,9 @@ static NSString *SKRightSidePaneWidthKey = @"SKRightSidePaneWidth";
     PDFAnnotation *annotation = [pdfView activeAnnotation];
     NSString *type = [annotation type];
     if (updatingLine == NO && [annotation isNoteAnnotation] && ([type isEqualToString:@"FreeText"] || [type isEqualToString:@"Circle"] || [type isEqualToString:@"Square"] || [type isEqualToString:@"Line"])) {
-        updatingLine = YES;
+        //updatingLine = YES;
         [annotation setDashPattern:[sender dashPattern]];
-        updatingLine = NO;
+        //updatingLine = NO;
     }
 }
 

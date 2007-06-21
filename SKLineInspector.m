@@ -389,6 +389,10 @@ static SKLineInspector *sharedLineInspector = nil;
     [path fill];
     [image unlockFocus];
     [endLineStyleButton setImage:image forSegment:kPDFLineStyleClosedArrow];
+    
+    SKNumberArrayFormatter *formatter = [[SKNumberArrayFormatter alloc] init];
+    [dashPatternField setFormatter:formatter];
+    [formatter release];
 }
 
 - (void)sendActionToTarget:(SEL)selector {
@@ -483,8 +487,33 @@ static SKLineInspector *sharedLineInspector = nil;
 
 #pragma mark -
 
-@implementation SKNumberArrayFormatter : NSNumberFormatter
+@implementation SKNumberArrayFormatter
 
+- (void)commonInit {
+    numberFormatter = [[NSNumberFormatter alloc] init];
+    [numberFormatter setFormatterBehavior:NSNumberFormatterBehavior10_4];
+    [numberFormatter setNumberStyle:NSNumberFormatterDecimalStyle];
+    [numberFormatter setFormat:@"#,###.0;0.0;-#,###.0"];
+    [numberFormatter setMinimum:[NSNumber numberWithFloat:0.0]];
+}
+
+ - (id)init {
+    if (self = [super init])
+        [self commonInit];
+    return self;
+ }
+
+ - (id)initWithCoder:(NSCoder *)aCoder {
+    if (self = [super initWithCoder:aCoder])
+        [self commonInit];
+    return self;
+}
+
+- (void)dealloc {
+    [numberFormatter release];
+    [super dealloc];
+}
+ 
 - (NSString *)stringForObjectValue:(id)obj {
     if ([obj isKindOfClass:[NSNumber class]])
         obj = [NSArray arrayWithObjects:obj, nil];
@@ -494,7 +523,7 @@ static SKLineInspector *sharedLineInspector = nil;
     NSMutableString *string = [NSMutableString string];
     
     while (number = [numberEnum nextObject]) {
-        NSString *s = [super stringForObjectValue:number];
+        NSString *s = [numberFormatter stringForObjectValue:number];
         if ([s length]) {
             if ([string length])
                 [string appendString:@" "];
@@ -513,7 +542,7 @@ static SKLineInspector *sharedLineInspector = nil;
     NSMutableAttributedString *string = [[[NSMutableAttributedString alloc] init] autorelease];
     
     while (number = [numberEnum nextObject]) {
-        NSAttributedString *s = [super attributedStringForObjectValue:number withDefaultAttributes:attrs];
+        NSAttributedString *s = [numberFormatter attributedStringForObjectValue:number withDefaultAttributes:attrs];
         if ([s length]) {
             if ([string length])
                 [string appendAttributedString:[[[NSAttributedString alloc] initWithString:@" " attributes:attrs] autorelease]];
@@ -531,7 +560,7 @@ static SKLineInspector *sharedLineInspector = nil;
     BOOL success = YES;
     
     while (success && (s = [stringEnum nextObject])) {
-        if ([s length] && (success = [super getObjectValue:&number forString:s errorDescription:error]))
+        if ([s length] && (success = [numberFormatter getObjectValue:&number forString:s errorDescription:error]))
             [array addObject:number];
     }
     if (success)
