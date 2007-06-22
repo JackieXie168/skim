@@ -64,7 +64,9 @@ static SKLineInspector *sharedLineInspector = nil;
 - (id)init {
     if (sharedLineInspector == nil && (self = [super initWithWindowNibName:@"LineInspector"])) {
         sharedLineInspector = self;
-        border = [[PDFBorder alloc] init];
+        style = kPDFBorderStyleSolid;
+        lineWidth = 1.0;
+        dashPattern = nil;
         startLineStyle = kPDFLineStyleNone;
         endLineStyle = kPDFLineStyleNone;
     }
@@ -72,7 +74,7 @@ static SKLineInspector *sharedLineInspector = nil;
 }
 
 - (void)dealloc {
-    [border release];
+    [dashPattern release];
     [super dealloc];
 }
 
@@ -406,34 +408,35 @@ static SKLineInspector *sharedLineInspector = nil;
 #pragma mark Accessors
 
 - (float)lineWidth {
-    return [border lineWidth];
+    return  lineWidth;
 }
 
 - (void)setLineWidth:(float)width {
-    [border setLineWidth:width];
+    lineWidth = width;
     [self sendActionToTarget:@selector(changeLineWidth:)];
     [[NSNotificationCenter defaultCenter] postNotificationName:SKLineInspectorLineWidthDidChangeNotification object:self];
 }
 
 - (PDFBorderStyle)style {
-    return [border style];
+    return style;
 }
 
-- (void)setStyle:(PDFBorderStyle)style {
-    if (style != [border style]) {
-        [border setStyle:style];
+- (void)setStyle:(PDFBorderStyle)newStyle {
+    if (newStyle != style) {
+        style = newStyle;
         [self sendActionToTarget:@selector(changeLineStyle:)];
         [[NSNotificationCenter defaultCenter] postNotificationName:SKLineInspectorLineStyleDidChangeNotification object:self];
     }
 }
 
 - (NSArray *)dashPattern {
-    return [border dashPattern];
+    return dashPattern;
 }
 
 - (void)setDashPattern:(NSArray *)pattern {
-    if (pattern != [border dashPattern]) {
-        [border setDashPattern:pattern];
+    if (pattern != dashPattern) {
+        [dashPattern release];
+        dashPattern = [pattern copy];
         [self sendActionToTarget:@selector(changeDashPattern:)];
         [[NSNotificationCenter defaultCenter] postNotificationName:SKLineInspectorDashPatternDidChangeNotification object:self];
     }
@@ -463,18 +466,13 @@ static SKLineInspector *sharedLineInspector = nil;
     }
 }
 
-- (void)setBorder:(PDFBorder *)newBorder {
-    if (newBorder != border) {
-        [self setLineWidth:[newBorder lineWidth]];
-        [self setDashPattern:[newBorder dashPattern]];
-        [self setStyle:[newBorder style]];
-    }
-}
-
 - (void)setAnnotationStyle:(PDFAnnotation *)annotation {
     NSString *type = [annotation type];
-    if ([type isEqualToString:@"FreeText"] || [type isEqualToString:@"Circle"] || [type isEqualToString:@"Square"] || [type isEqualToString:@"Line"])
-        [self setBorder:[annotation border]];
+    if ([type isEqualToString:@"FreeText"] || [type isEqualToString:@"Circle"] || [type isEqualToString:@"Square"] || [type isEqualToString:@"Line"]) {
+        [self setLineWidth:[[annotation border] lineWidth]];
+        [self setDashPattern:[[annotation border] dashPattern]];
+        [self setStyle:[[annotation border] style]];
+    }
     if ([type isEqualToString:@"Line"]) {
         [self setStartLineStyle:[(PDFAnnotationLine *)annotation startLineStyle]];
         [self setEndLineStyle:[(PDFAnnotationLine *)annotation endLineStyle]];

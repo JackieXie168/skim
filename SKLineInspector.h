@@ -53,7 +53,9 @@ extern NSString *SKLineInspectorEndLineStyleDidChangeNotification;
     IBOutlet NSTextField *dashPatternField;
     IBOutlet NSSegmentedControl *startLineStyleButton;
     IBOutlet NSSegmentedControl *endLineStyleButton;
-    PDFBorder *border;
+    float lineWidth;
+    PDFBorderStyle style;
+    NSArray *dashPattern;
     PDFLineStyle startLineStyle;
     PDFLineStyle endLineStyle;
 }
@@ -72,7 +74,6 @@ extern NSString *SKLineInspectorEndLineStyleDidChangeNotification;
 - (PDFLineStyle)endLineStyle;
 - (void)setEndLineStyle:(PDFLineStyle)newStyle;
 
-- (void)setBorder:(PDFBorder *)newBorder;
 - (void)setAnnotationStyle:(PDFAnnotation *)annotation;
 
 @end
