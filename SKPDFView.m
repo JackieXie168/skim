@@ -493,7 +493,7 @@ static void SKCGContextDrawGrabHandle(CGContextRef context, CGPoint point, float
         [readingBar setPage:[self currentPage]];
         [readingBar goToNextLine];
         [self setNeedsDisplay:YES];
-        [self scrollRect:[readingBar currentBounds] inPageToVisible:[readingBar page]];
+        [self scrollRect:NSInsetRect([readingBar currentBounds], 0.0, -20.0) inPageToVisible:[readingBar page]];
         [userInfo setValue:[readingBar page] forKey:@"newPage"];
     }
     [[NSNotificationCenter defaultCenter] postNotificationName:SKPDFViewReadingBarDidChangeNotification object:self userInfo:userInfo];
@@ -1570,7 +1570,8 @@ static void SKCGContextDrawGrabHandle(CGContextRef context, CGPoint point, float
 
 - (void)scrollRect:(NSRect)rect inPageToVisible:(PDFPage *)page {
     rect = [self convertRect:[self convertRect:rect fromPage:page] toView:[self documentView]];
-    [self goToPage:page];
+    if ([[self currentPage] isEqual:page] == NO)
+        [self goToPage:page];
     [[self documentView] scrollRectToVisible:rect];
 }
 
@@ -2244,8 +2245,7 @@ static void SKCGContextDrawGrabHandle(CGContextRef context, CGPoint point, float
     else if (eventChar == NSLeftArrowFunctionKey)
         moved = [readingBar goToPreviousPage];
     if (moved) {
-        if ([[self currentPage] isEqual:[readingBar page]] == NO)
-            [self goToPage:[readingBar page]];
+        [self scrollRect:NSInsetRect([readingBar currentBounds], 0.0, -20.0) inPageToVisible:[readingBar page]];
         [self setNeedsDisplay:YES];
         [userInfo setObject:[readingBar page] forKey:@"newPage"];
         [[NSNotificationCenter defaultCenter] postNotificationName:SKPDFViewReadingBarDidChangeNotification object:self userInfo:userInfo];
