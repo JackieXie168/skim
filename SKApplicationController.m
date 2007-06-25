@@ -463,10 +463,12 @@ static BOOL fileIsInTrash(NSURL *fileURL)
         [NSUnarchiver unarchiveObjectWithData:[sud dataForKey:SKHighlightNoteColorKey]], @"highlightNote", 
         [NSUnarchiver unarchiveObjectWithData:[sud dataForKey:SKUnderlineNoteColorKey]], @"underlineNote", 
         [NSUnarchiver unarchiveObjectWithData:[sud dataForKey:SKStrikeOutNoteColorKey]], @"strikeOutNote", 
-        [NSUnarchiver unarchiveObjectWithData:[sud dataForKey:SKLineNoteColorKey]], @"lineNote", nil];
+        [NSUnarchiver unarchiveObjectWithData:[sud dataForKey:SKLineNoteColorKey]], @"lineNote", 
+        [NSUnarchiver unarchiveObjectWithData:[sud dataForKey:SKCircleNoteInteriorColorKey]], @"circleNoteInterior", 
+        [NSUnarchiver unarchiveObjectWithData:[sud dataForKey:SKSquareNoteInteriorColorKey]], @"squareNoteInterior", nil];
 }
 
-- (void)setDefaultColors:(NSDictionary *)colorDict {
+- (void)setDefaultNoteColors:(NSDictionary *)colorDict {
     NSUserDefaults *sud = [NSUserDefaults standardUserDefaults];
     NSColor *color;
     if (color = [colorDict objectForKey:@"textNote"])
@@ -485,6 +487,10 @@ static BOOL fileIsInTrash(NSURL *fileURL)
         [sud setObject:[NSArchiver archivedDataWithRootObject:color] forKey:SKStrikeOutNoteColorKey];
     if (color = [colorDict objectForKey:@"lineNote"])
         [sud setObject:[NSArchiver archivedDataWithRootObject:color] forKey:SKLineNoteColorKey];
+    if (color = [colorDict objectForKey:@"circleNoteInterior"])
+        [sud setObject:[NSArchiver archivedDataWithRootObject:color] forKey:SKCircleNoteInteriorColorKey];
+    if (color = [colorDict objectForKey:@"squareNoteInterior"])
+        [sud setObject:[NSArchiver archivedDataWithRootObject:color] forKey:SKSquareNoteInteriorColorKey];
 }
 
 @end

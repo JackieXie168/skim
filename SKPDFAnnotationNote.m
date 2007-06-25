@@ -578,9 +578,9 @@ static IMP originalSetBorder = NULL;
 
 - (id)initWithBounds:(NSRect)bounds {
     if (self = [super initWithBounds:bounds]) {
-        NSData *colorData = [[NSUserDefaults standardUserDefaults] dataForKey:SKCircleNoteInteriorColorKey];
-        if ([colorData length])
-            [self setInteriorColor:[NSUnarchiver unarchiveObjectWithData:colorData]];
+        NSColor *color = [NSUnarchiver unarchiveObjectWithData:[[NSUserDefaults standardUserDefaults] dataForKey:SKCircleNoteInteriorColorKey]];
+        if ([color alphaComponent] > 0.0)
+            [self setInteriorColor:color];
         [self setColor:[NSUnarchiver unarchiveObjectWithData:[[NSUserDefaults standardUserDefaults] dataForKey:SKCircleNoteColorKey]]];
         [[self border] setLineWidth:[[NSUserDefaults standardUserDefaults] floatForKey:SKCircleNoteLineWidthKey]];
         [[self border] setDashPattern:[[NSUserDefaults standardUserDefaults] arrayForKey:SKCircleNoteDashPatternKey]];
@@ -635,9 +635,9 @@ static IMP originalSetBorder = NULL;
 
 - (id)initWithBounds:(NSRect)bounds {
     if (self = [super initWithBounds:bounds]) {
-        NSData *colorData = [[NSUserDefaults standardUserDefaults] dataForKey:SKSquareNoteInteriorColorKey];
-        if ([colorData length])
-            [self setInteriorColor:[NSUnarchiver unarchiveObjectWithData:colorData]];
+        NSColor *color = [NSUnarchiver unarchiveObjectWithData:[[NSUserDefaults standardUserDefaults] dataForKey:SKSquareNoteInteriorColorKey]];
+        if ([color alphaComponent] > 0.0)
+            [self setInteriorColor:color];
         [self setColor:[NSUnarchiver unarchiveObjectWithData:[[NSUserDefaults standardUserDefaults] dataForKey:SKSquareNoteColorKey]]];
         [[self border] setLineWidth:[[NSUserDefaults standardUserDefaults] floatForKey:SKSquareNoteLineWidthKey]];
         [[self border] setDashPattern:[[NSUserDefaults standardUserDefaults] arrayForKey:SKSquareNoteDashPatternKey]];

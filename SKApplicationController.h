@@ -68,7 +68,7 @@
 - (NSColor *)fullScreenBackgroundColor;
 - (void)setFullScreenBackgroundColor:(NSColor *)color;
 - (NSDictionary *)defaultNoteColors;
-- (void)setDefaultColors:(NSDictionary *)colorDict;
+- (void)setDefaultNoteColors:(NSDictionary *)colorDict;
 
 @end
 
