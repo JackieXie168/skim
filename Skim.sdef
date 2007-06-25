@@ -824,6 +824,14 @@
                 description="Default line color.">
                 <cocoa key="lineNote"/>
             </property>
+            <property name="circle note interior color" code="CCiI" type="RGBA color"
+                description="Default circle fill color.">
+                <cocoa key="circleNoteInterior"/>
+            </property>
+            <property name="box note interior color" code="CSqI" type="RGBA color"
+                description="Default box fill color.">
+                <cocoa key="squareNoteInterior"/>
+            </property>
         </record-type>
 
         <value-type name="RGBA color" code="RGBA">
