@@ -57,8 +57,9 @@
 - (NSString *)bookmarksFilePath;
 
 - (NSArray *)recentDocuments;
-- (void)addRecentDocumentForPath:(NSString *)path pageIndex:(unsigned)pageIndex;
+- (void)addRecentDocumentForPath:(NSString *)path pageIndex:(unsigned)pageIndex snapshots:(NSArray *)setups;
 - (unsigned int)pageIndexForRecentDocumentAtPath:(NSString *)path;
+- (NSArray *)snapshotsAtPath:(NSString *)path;
 
 @end
 

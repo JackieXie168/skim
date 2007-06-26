@@ -279,6 +279,13 @@ static NSString *SKRightSidePaneWidthKey = @"SKRightSidePaneWidth";
     
     [[self window] makeFirstResponder:[pdfView documentView]];
     
+    if ([[NSUserDefaults standardUserDefaults] boolForKey:SKRememberSnapshotsKey]) {
+        NSEnumerator *setupEnum = [[[SKBookmarkController sharedBookmarkController] snapshotsAtPath:[[[self document] fileURL] path]] objectEnumerator];
+        NSDictionary *setup;
+        if (setup = [setupEnum nextObject])
+            [self showSnapshotAtPageNumber:[[setup objectForKey:@"page"] unsignedIntValue] forRect:NSRectFromString([setup objectForKey:@"rect"]) factor:[[setup objectForKey:@"page"] floatValue] display:NO];
+    }
+    
     [self handleChangedHistoryNotification:nil];
     [self handlePageChangedNotification:nil];
     [self handleScaleChangedNotification:nil];
@@ -540,7 +547,7 @@ static NSString *SKRightSidePaneWidthKey = @"SKRightSidePaneWidth";
         unsigned int pageIndex = [[pdfView document] indexForPage:[pdfView currentPage]];
         NSString *path = [[[self document] fileURL] path];
         if (pageIndex != NSNotFound && path)
-            [[SKBookmarkController sharedBookmarkController] addRecentDocumentForPath:path pageIndex:pageIndex];
+            [[SKBookmarkController sharedBookmarkController] addRecentDocumentForPath:path pageIndex:pageIndex snapshots:[snapshots valueForKey:@"currentSetup"]];
     }
     [super setDocument:document];
 }
@@ -566,6 +573,10 @@ static NSString *SKRightSidePaneWidthKey = @"SKRightSidePaneWidth";
         // these will be invalid. If needed, the document will restore them
         [[self mutableArrayValueForKey:@"notes"] removeAllObjects];
         [[self mutableArrayValueForKey:@"thumbnails"] removeAllObjects];
+        
+        NSArray *snapshotDicts = [snapshots valueForKey:@"currentSetup"];
+        [snapshots makeObjectsPerformSelector:@selector(close) withObject:nil];
+        [[self mutableArrayValueForKey:@"snapshots"] removeAllObjects];
         
         [lastViewedPages removeAllObjects];
         
@@ -595,6 +606,11 @@ static NSString *SKRightSidePaneWidthKey = @"SKRightSidePaneWidth";
         
         [self resetThumbnails];
         [self updateThumbnailSelection];
+        
+        NSEnumerator *setupEnum = [snapshotDicts objectEnumerator];
+        NSDictionary *setup;
+        while (setup = [setupEnum nextObject])
+            [self showSnapshotAtPageNumber:[[setup objectForKey:@"page"] unsignedIntValue] forRect:NSRectFromString([setup objectForKey:@"rect"]) factor:[[setup objectForKey:@"page"] floatValue] display:NO];
         
         if (pageIndex != NSNotFound && [document pageCount]) {
             PDFPage *page = [document pageAtIndex:MIN(pageIndex, [document pageCount] - 1)];
@@ -2102,7 +2118,7 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
 
 #pragma mark Sub- and note- windows
 
-- (void)showSnapshotAtPageNumber:(int)pageNum forRect:(NSRect)rect factor:(int)factor{
+- (void)showSnapshotAtPageNumber:(int)pageNum forRect:(NSRect)rect factor:(int)factor display:(BOOL)display{
     
     SKSnapshotWindowController *swc = [[SKSnapshotWindowController alloc] init];
     BOOL snapshotsOnTop = [[NSUserDefaults standardUserDefaults] boolForKey:SKSnapshotsOnTopKey];
@@ -2120,7 +2136,9 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
     
     [[self document] addWindowController:swc];
     [swc release];
-    [swc showWindow:self];
+    
+    if (display)
+        [swc showWindow:self];
 }
 
 - (void)toggleSnapshots:(NSArray *)snapshotArray {
@@ -2926,7 +2944,7 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
         
         rect.origin.y = NSMidY(rect) - 100.0;
         rect.size.height = 200.0;
-        [self showSnapshotAtPageNumber:row forRect:rect factor:1];
+        [self showSnapshotAtPageNumber:row forRect:rect factor:1 display:YES];
         return YES;
     }
     return NO;

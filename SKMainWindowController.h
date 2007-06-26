@@ -236,7 +236,7 @@ typedef struct _SKPDFViewState {
 - (IBAction)dismissPasswordSheet:(id)sender;
 - (IBAction)savePDFSettingToDefaults:(id)sender;
 
-- (void)showSnapshotAtPageNumber:(int)pageNum forRect:(NSRect)rect factor:(int)factor;
+- (void)showSnapshotAtPageNumber:(int)pageNum forRect:(NSRect)rect factor:(int)factor display:(BOOL)display;
 - (void)toggleSnapshots:(NSArray *)snapshotArray;
 - (void)showNote:(PDFAnnotation *)annotation;
 

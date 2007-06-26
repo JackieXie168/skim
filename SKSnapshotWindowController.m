@@ -285,6 +285,12 @@ static NSString *SKSnapshotViewChangedNotification = @"SKSnapshotViewChangedNoti
     [[self window] setLevel:keepOnTop || forceOnTop ? NSFloatingWindowLevel : NSNormalWindowLevel];
 }
 
+- (NSDictionary *)currentSetup {
+    NSView *clipView = [[[pdfView documentView] enclosingScrollView] contentView];
+    NSRect rect = [pdfView convertRect:[pdfView convertRect:[clipView bounds] fromView:clipView] toPage:[pdfView currentPage]];
+    return [NSDictionary dictionaryWithObjectsAndKeys:[NSNumber numberWithUnsignedInt:[self pageIndex]], @"page", NSStringFromRect(rect), @"rect", [NSNumber numberWithFloat:[pdfView scaleFactor]], @"scaleFactor", nil];
+}
+
 #pragma mark Thumbnails
 
 - (NSImage *)thumbnailWithSize:(float)size {

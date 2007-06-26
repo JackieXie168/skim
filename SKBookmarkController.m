@@ -146,7 +146,7 @@ static unsigned int maxRecentDocumentsCount = 0;
     return index;
 }
 
-- (void)addRecentDocumentForPath:(NSString *)path pageIndex:(unsigned)pageIndex {
+- (void)addRecentDocumentForPath:(NSString *)path pageIndex:(unsigned)pageIndex snapshots:(NSArray *)setups {
     if (path == nil)
         return;
     
@@ -155,7 +155,7 @@ static unsigned int maxRecentDocumentsCount = 0;
         [recentDocuments removeObjectAtIndex:index];
     
     NSData *data = [[BDAlias aliasWithPath:path] aliasData];
-    NSMutableDictionary *bm = [NSMutableDictionary dictionaryWithObjectsAndKeys:path, @"path", [NSNumber numberWithUnsignedInt:pageIndex], @"pageIndex", data, @"_BDAlias", nil];
+    NSMutableDictionary *bm = [NSMutableDictionary dictionaryWithObjectsAndKeys:path, @"path", [NSNumber numberWithUnsignedInt:pageIndex], @"pageIndex", data, @"_BDAlias", [setups count] ? setups : nil, @"snapshots", nil];
     [recentDocuments insertObject:bm atIndex:0];
     if ([recentDocuments count] > maxRecentDocumentsCount)
         [recentDocuments removeLastObject];
@@ -168,6 +168,14 @@ static unsigned int maxRecentDocumentsCount = 0;
         return NSNotFound;
     unsigned int index = [self indexOfRecentDocumentAtPath:path];
     return index == NSNotFound ? NSNotFound : [[[recentDocuments objectAtIndex:index] objectForKey:@"pageIndex"] unsignedIntValue];
+}
+
+- (NSArray *)snapshotsAtPath:(NSString *)path {
+    if (path == nil)
+        return nil;
+    unsigned int index = [self indexOfRecentDocumentAtPath:path];
+    NSArray *setups = index == NSNotFound ? nil : [[recentDocuments objectAtIndex:index] objectForKey:@"snapshots"];
+    return [setups count] ? setups : nil;
 }
 
 - (void)saveBookmarks {
