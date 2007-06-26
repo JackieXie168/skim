@@ -178,10 +178,10 @@
 
 - (void)drawRect:(NSRect)rect {
     rect = NSInsetRect([self bounds], 1.0, 1.0);
-    [[NSColor colorWithDeviceWhite:0.0 alpha:0.5] set];
+    [[NSColor colorWithCalibratedWhite:0.0 alpha:0.5] set];
     [NSBezierPath fillRoundRectInRect:rect radius:10.0];
     rect = NSInsetRect([self bounds], 0.5, 0.5);
-    [[NSColor colorWithDeviceWhite:1.0 alpha:0.2] set];
+    [[NSColor colorWithCalibratedWhite:1.0 alpha:0.2] set];
     [NSBezierPath strokeRoundRectInRect:rect radius:10.0];
 }
 
@@ -359,7 +359,7 @@ static SKNavigationToolTipWindow *sharedToolTipWindow = nil;
 }
 
 - (void)drawWithFrame:(NSRect)cellFrame inView:(NSView *)controlView {
-    [[NSColor colorWithDeviceWhite:1.0 alpha:[self isHighlighted] ? 0.9 : 0.6] set];
+    [[NSColor colorWithCalibratedWhite:1.0 alpha:[self isHighlighted] ? 0.9 : 0.6] set];
     [[self pathWithFrame:cellFrame] fill];
 }
 
