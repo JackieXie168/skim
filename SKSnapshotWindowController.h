@@ -66,6 +66,8 @@
 
 - (NSDictionary *)pageAndWindow;
 
+- (NSDictionary *)currentSetup;
+
 - (BOOL)forceOnTop;
 - (void)setForceOnTop:(BOOL)flag;
 
