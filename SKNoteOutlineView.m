@@ -388,9 +388,9 @@ static void SKAddNamedAndFilteredImageForKey(NSMutableDictionary *images, NSMuta
     if (active) {
         [[NSGraphicsContext currentContext] saveGraphicsState];
         if (isSelected)
-            [[NSColor colorWithDeviceWhite:1.0 alpha:0.8] set];
+            [[NSColor colorWithCalibratedWhite:1.0 alpha:0.8] set];
         else
-            [[NSColor colorWithDeviceWhite:0.0 alpha:0.7] set];
+            [[NSColor colorWithCalibratedWhite:0.0 alpha:0.7] set];
         [NSBezierPath strokeRect:NSInsetRect(cellFrame, 0.5, 0.5)];
         [[NSGraphicsContext currentContext] restoreGraphicsState];
     }

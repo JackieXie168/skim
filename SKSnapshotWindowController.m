@@ -333,7 +333,7 @@ static NSString *SKSnapshotViewChangedNotification = @"SKSnapshotViewChangedNoti
     [[NSColor whiteColor] set];
     if (hasShadow) {
         NSShadow *shadow = [[NSShadow alloc] init];
-        [shadow setShadowColor:[NSColor colorWithDeviceWhite:0.0 alpha:0.5]];
+        [shadow setShadowColor:[NSColor colorWithCalibratedWhite:0.0 alpha:0.5]];
         [shadow setShadowBlurRadius:shadowBlurRadius];
         [shadow setShadowOffset:shadowOffset];
         [shadow set];

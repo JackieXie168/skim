@@ -200,23 +200,23 @@
     
     [NSGraphicsContext saveGraphicsState];
     
-    [[NSColor colorWithDeviceWhite:0.9 alpha:1.0] set];
+    [[NSColor colorWithCalibratedWhite:0.9 alpha:1.0] set];
     [NSBezierPath fillRoundRectInRect:topRect radius:CORNER_RADIUS];
-    [[NSColor colorWithDeviceWhite:0.4 alpha:1.0] set];
+    [[NSColor colorWithCalibratedWhite:0.4 alpha:1.0] set];
     [NSBezierPath fillRoundRectInRect:bottomRect radius:CORNER_RADIUS];
-    [[NSColor colorWithDeviceWhite:0.8 alpha:1.0] set];
+    [[NSColor colorWithCalibratedWhite:0.8 alpha:1.0] set];
     [NSBezierPath fillRoundRectInRect:NSInsetRect(rect, 0.0, 1.5) radius:CORNER_RADIUS];
     
     rect = [self resizeHandleRect];
     startPoint = NSMakePoint(NSMidX(rect) - 1.5, NSMidY(rect) - 10.0);
     endPoint = NSMakePoint(startPoint.x, startPoint.y + 20.0);
     [NSBezierPath setDefaultLineWidth:1.0];
-    [[NSColor colorWithDeviceWhite:0.5 alpha:1.0] set];
+    [[NSColor colorWithCalibratedWhite:0.5 alpha:1.0] set];
     [NSBezierPath strokeLineFromPoint:startPoint toPoint:endPoint];
     startPoint.x += 2.0;
     endPoint.x += 2.0;
     [NSBezierPath strokeLineFromPoint:startPoint toPoint:endPoint];
-    [[NSColor colorWithDeviceWhite:0.9 alpha:1.0] set];
+    [[NSColor colorWithCalibratedWhite:0.9 alpha:1.0] set];
     startPoint.x -= 1.0;
     endPoint.x -= 1.0;
     [NSBezierPath strokeLineFromPoint:startPoint toPoint:endPoint];
