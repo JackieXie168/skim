@@ -46,14 +46,14 @@
 + (CIColor *)startColor{
     static CIColor *startColor = nil;
     if (startColor == nil)
-        startColor = [[CIColor colorWithNSColor:[NSColor colorWithCalibratedWhite:0.85 alpha:1.0]] retain];
+        startColor = [[CIColor colorWithNSColor:[NSColor colorWithDeviceWhite:0.85 alpha:1.0]] retain];
     return startColor;
 }
 
 + (CIColor *)endColor{
     static CIColor *endColor = nil;
     if (endColor == nil)
-        endColor = [[CIColor colorWithNSColor:[NSColor colorWithCalibratedWhite:0.95 alpha:1.0]] retain];
+        endColor = [[CIColor colorWithNSColor:[NSColor colorWithDeviceWhite:0.95 alpha:1.0]] retain];
    return endColor;
 }
 
@@ -88,8 +88,8 @@
 - (void)drawDividerInRect:(NSRect)aRect {
     NSPoint startPoint, endPoint;
     float handleSize = 20.0;
-    NSColor *darkColor = [NSColor colorWithCalibratedWhite:0.6 alpha:1.0];
-    NSColor *lightColor = [NSColor colorWithCalibratedWhite:0.95 alpha:1.0];
+    NSColor *darkColor = [NSColor colorWithDeviceWhite:0.6 alpha:1.0];
+    NSColor *lightColor = [NSColor colorWithDeviceWhite:0.95 alpha:1.0];
     
     // Draw the gradient
     [[NSBezierPath bezierPathWithRect:aRect] fillPathVertically:NO == [self isVertical] withStartColor:[[self class] startColor] endColor:[[self class] endColor]];

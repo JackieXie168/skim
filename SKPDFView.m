@@ -3072,7 +3072,7 @@ static void SKCGContextDrawGrabHandle(CGContextRef context, CGPoint point, float
             [[NSGraphicsContext currentContext] saveGraphicsState];
             outlineRect = NSInsetRect(NSIntegralRect([clipView convertRect:magRect fromView:nil]), 1.5, 1.5);
             [NSBezierPath setDefaultLineWidth:3.0];
-            [[NSColor colorWithCalibratedWhite:0.2 alpha:1.0] set];
+            [[NSColor colorWithDeviceWhite:0.2 alpha:1.0] set];
             [NSBezierPath strokeRoundRectInRect:outlineRect radius:8.0];
             [[NSGraphicsContext currentContext] restoreGraphicsState];
             [clipView unlockFocus];
