@@ -479,6 +479,15 @@ static SKLineInspector *sharedLineInspector = nil;
     }
 }
 
+- (void)setNilValueForKey:(NSString *)key {
+    if ([key isEqualToString:@"lineWidth"] || [key isEqualToString:@"style"] || 
+        [key isEqualToString:@"startLineStyle"] || [key isEqualToString:@"endLineStyle"]) {
+        [self setValue:[NSNumber numberWithInt:0] forKey:key];
+    } else {
+        [super setNilValueForKey:key];
+    }
+}
+
 @end
 
 #pragma mark -
@@ -489,7 +498,7 @@ static SKLineInspector *sharedLineInspector = nil;
     numberFormatter = [[NSNumberFormatter alloc] init];
     [numberFormatter setFormatterBehavior:NSNumberFormatterBehavior10_4];
     [numberFormatter setNumberStyle:NSNumberFormatterDecimalStyle];
-    [numberFormatter setFormat:@"#,###.0;0.0;-#,###.0"];
+    [numberFormatter setFormat:@"0;0;-0"];
     [numberFormatter setMinimum:[NSNumber numberWithFloat:0.0]];
 }
 
