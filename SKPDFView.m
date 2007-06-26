@@ -2315,7 +2315,7 @@ static void SKCGContextDrawGrabHandle(CGContextRef context, CGPoint point, float
             [newAnnotation release];
         } else if (toolMode == SKNoteToolMode && newActiveAnnotation == nil &&
                    annotationMode != SKHighlightNote && annotationMode != SKUnderlineNote && annotationMode != SKStrikeOutNote &&
-                   NSPointInRect(mouseDownOnPage, [page boundsForBox:[self displayBox]])) {
+                   NSPointInRect(pagePoint, [page boundsForBox:[self displayBox]])) {
             // add a new annotation immediately, unless this is just a click
             if (annotationMode == SKAnchoredNote || NSLeftMouseDragged == [[NSApp nextEventMatchingMask:(NSLeftMouseUpMask | NSLeftMouseDraggedMask) untilDate:[NSDate distantFuture] inMode:NSDefaultRunLoopMode dequeue:NO] type]) {
                 float width = annotationMode == SKAnchoredNote ? 16.0 : annotationMode == SKLineNote ? 4.0 : 8.0;
