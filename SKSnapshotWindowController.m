@@ -288,7 +288,7 @@ static NSString *SKSnapshotViewChangedNotification = @"SKSnapshotViewChangedNoti
 - (NSDictionary *)currentSetup {
     NSView *clipView = [[[pdfView documentView] enclosingScrollView] contentView];
     NSRect rect = [pdfView convertRect:[pdfView convertRect:[clipView bounds] fromView:clipView] toPage:[pdfView currentPage]];
-    return [NSDictionary dictionaryWithObjectsAndKeys:[NSNumber numberWithUnsignedInt:[self pageIndex]], @"page", NSStringFromRect(rect), @"rect", [NSNumber numberWithFloat:[pdfView scaleFactor]], @"scaleFactor", nil];
+    return [NSDictionary dictionaryWithObjectsAndKeys:[NSNumber numberWithUnsignedInt:[self pageIndex]], @"page", NSStringFromRect(rect), @"rect", [NSNumber numberWithFloat:[pdfView scaleFactor]], @"scaleFactor", [NSNumber numberWithBool:[[self window] isVisible]], @"hasWindow", nil];
 }
 
 #pragma mark Thumbnails
