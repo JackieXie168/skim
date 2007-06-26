@@ -592,7 +592,7 @@ static BOOL fileIsInTrash(NSURL *fileURL)
     NSRect bounds = [self bounds];
     NSPoint center = NSMakePoint(NSMidX(bounds), NSMidY(bounds));
     
-    [[NSColor colorWithCalibratedWhite:0.0 alpha:0.5] setFill];
+    [[NSColor colorWithDeviceWhite:0.0 alpha:0.5] setFill];
     [NSBezierPath fillRoundRectInRect:[self bounds] radius:10.0];
     
     NSBezierPath *path = nil;
@@ -669,7 +669,7 @@ static BOOL fileIsInTrash(NSURL *fileURL)
         
     }
     
-    [[NSColor colorWithCalibratedWhite:1.0 alpha:1.0] setFill];
+    [[NSColor colorWithDeviceWhite:1.0 alpha:1.0] setFill];
     [path fill];
 }
 

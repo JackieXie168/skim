@@ -179,14 +179,14 @@ static NSColor *deselectedColor = nil;
     if (NO == didInit) {
         didInit = YES;
         selectedShadow = [[NSShadow alloc] init];
-        [selectedShadow setShadowColor:[NSColor colorWithCalibratedWhite:1.0 alpha:0.2]];
+        [selectedShadow setShadowColor:[NSColor colorWithDeviceWhite:1.0 alpha:0.2]];
         [selectedShadow setShadowOffset:NSMakeSize(0.0, -1.0)];
         deselectedShadow = [[NSShadow alloc] init];
-        [deselectedShadow setShadowColor:[NSColor colorWithCalibratedWhite:1.0 alpha:0.2]];
+        [deselectedShadow setShadowColor:[NSColor colorWithDeviceWhite:1.0 alpha:0.2]];
         [deselectedShadow setShadowOffset:NSMakeSize(0.0, -1.0)];
         
-        selectedColor = [[NSColor colorWithCalibratedWhite:1.0 alpha:1.0] copy];
-        deselectedColor = [[NSColor colorWithCalibratedWhite:0.0 alpha:0.8] copy];
+        selectedColor = [[NSColor colorWithDeviceWhite:1.0 alpha:1.0] copy];
+        deselectedColor = [[NSColor colorWithDeviceWhite:0.0 alpha:0.8] copy];
     }
 }
 

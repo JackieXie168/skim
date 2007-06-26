@@ -80,7 +80,7 @@ static NSString *SKNoteWindowFrameAutosaveName = @"SKNoteWindow";
 }
 
 - (void)windowDidLoad {
-    [[self window] setBackgroundColor:[NSColor colorWithCalibratedWhite:0.9 alpha:1.0]];
+    [[self window] setBackgroundColor:[NSColor colorWithDeviceWhite:0.9 alpha:1.0]];
     [[self window] setLevel:keepOnTop || forceOnTop ? NSFloatingWindowLevel : NSNormalWindowLevel];
     [[self window] setHidesOnDeactivate:keepOnTop];
     

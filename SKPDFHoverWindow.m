@@ -74,9 +74,9 @@
         [imageView release];
         
         font = [[NSFont toolTipsFontOfSize:11.0] retain];
-        backgroundColor = [[NSColor colorWithCalibratedRed:1.0 green:1.0 blue:0.75 alpha:1.0] retain];
+        backgroundColor = [[NSColor colorWithDeviceRed:1.0 green:1.0 blue:0.75 alpha:1.0] retain];
         labelFont = [[NSFont boldSystemFontOfSize:11.0] retain];
-        labelColor = [[NSColor colorWithCalibratedWhite:0.5 alpha:0.8] retain];
+        labelColor = [[NSColor colorWithDeviceWhite:0.5 alpha:0.8] retain];
         
         annotation = nil;
         point = NSZeroPoint;
