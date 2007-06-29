@@ -687,6 +687,21 @@ static NSString *SKRightSidePaneWidthKey = @"SKRightSidePaneWidth";
         [pdfView goToPage:[[pdfView document] pageAtIndex:pageNumber - 1]];
 }
 
+- (NSString *)pageLabel {
+    return [[pdfView currentPage] label];
+}
+
+- (void)setPageLabel:(NSString *)label {
+    PDFDocument *pdfDoc = [pdfView document];
+    int i, count = [pdfDoc pageCount];
+    for (i = 0; i < count; i++) {
+        if ([[[pdfDoc pageAtIndex:i] label] isEqualToString:label]) {
+            [pdfView goToPage:[pdfDoc pageAtIndex:i]];
+            break;
+        }
+    }
+}
+
 - (BOOL)isFullScreen {
     return [self window] == fullScreenWindow && isPresentation == NO;
 }
@@ -1010,7 +1025,7 @@ static NSString *SKRightSidePaneWidthKey = @"SKRightSidePaneWidth";
 
 - (void)choosePageSheetDidEnd:(NSWindow *)sheet returnCode:(int)returnCode contextInfo:(void *)contextInfo {
     if (returnCode == NSOKButton)
-        [self setPageNumber:[choosePageField intValue]];
+        [self setPageLabel:[choosePageField stringValue]];
 }
 
 - (IBAction)doGoToPage:(id)sender {
@@ -2264,6 +2279,8 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
     [outlineView setNeedsDisplay:YES];
     
     [self willChangeValueForKey:@"pageNumber"];
+    [self willChangeValueForKey:@"pageLabel"];
+    [self didChangeValueForKey:@"pageLabel"];
     [self didChangeValueForKey:@"pageNumber"];
     
     [self updateOutlineSelection];
