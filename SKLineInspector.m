@@ -37,6 +37,7 @@
  */
 
 #import "SKLineInspector.h"
+#import "SKLineWell.h"
 
 NSString *SKLineInspectorLineWidthDidChangeNotification = @"SKLineInspectorLineWidthDidChangeNotification";
 NSString *SKLineInspectorLineStyleDidChangeNotification = @"SKLineInspectorLineStyleDidChangeNotification";
@@ -88,6 +89,17 @@ static SKLineInspector *sharedLineInspector = nil;
 
 - (void)windowDidLoad {
     [self setWindowFrameAutosaveName:@"SKLineInspector"];
+    
+    [lineWell setCanActivate:NO];
+    [lineWell bind:@"lineWidth" toObject:self withKeyPath:@"lineWidth" options:nil];
+    [lineWell bind:@"style" toObject:self withKeyPath:@"style" options:nil];
+    [lineWell bind:@"dashPattern" toObject:self withKeyPath:@"dashPattern" options:nil];
+    [lineWell bind:@"startLineStyle" toObject:self withKeyPath:@"startLineStyle" options:nil];
+    [lineWell bind:@"endLineStyle" toObject:self withKeyPath:@"endLineStyle" options:nil];
+    
+    SKNumberArrayFormatter *formatter = [[SKNumberArrayFormatter alloc] init];
+    [dashPatternField setFormatter:formatter];
+    [formatter release];
     
     [[styleButton cell] setToolTip:NSLocalizedString(@"Solid line style", @"Tool tip message") forSegment:kPDFBorderStyleSolid];
     [[styleButton cell] setToolTip:NSLocalizedString(@"Dashed line style", @"Tool tip message") forSegment:kPDFBorderStyleDashed];
@@ -389,10 +401,6 @@ static SKLineInspector *sharedLineInspector = nil;
     [path stroke];
     [image unlockFocus];
     [endLineStyleButton setImage:image forSegment:kPDFLineStyleClosedArrow];
-    
-    SKNumberArrayFormatter *formatter = [[SKNumberArrayFormatter alloc] init];
-    [dashPatternField setFormatter:formatter];
-    [formatter release];
 }
 
 - (void)sendActionToTarget:(SEL)selector {

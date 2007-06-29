@@ -24,6 +24,8 @@
         <false/>
         <key>SKRememberLastPageViewed</key>
         <false/>
+        <key>SKRememberSnapshots</key>
+        <false/>
         <key>SKDefaultPDFDisplaySettings</key>
         <dict>
             <key>scaleFactor</key>
@@ -202,6 +204,7 @@
             <string>SKInitialWindowSizeOption</string>
             <string>SKOpenContentsPaneOnlyForTOC</string>
             <string>SKRememberLastPageViewed</string>
+            <string>SKRememberSnapshots</string>
             <string>SKDefaultPDFDisplaySettings</string>
             <string>SKDefaultFullScreenPDFDisplaySettings</string>
             <string>SKAutoSaveSkimNotes</string>
@@ -215,9 +218,6 @@
             <string>SKSnapshotThumbnailSize</string>
             <string>SKShouldAntiAlias</string>
             <string>SKGreekingThreshold</string>
-        </array>
-        <key>colors</key>
-        <array>
             <string>SKBackgroundColor</string>
             <string>SKFullScreenBackgroundColor</string>
             <string>SKShouldHighlightSearchResults</string>

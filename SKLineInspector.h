@@ -46,6 +46,8 @@ extern NSString *SKLineInspectorDashPatternDidChangeNotification;
 extern NSString *SKLineInspectorStartLineStyleDidChangeNotification;
 extern NSString *SKLineInspectorEndLineStyleDidChangeNotification;
 
+@class SKLineWell;
+
 @interface SKLineInspector : NSWindowController {
     IBOutlet NSSlider *lineWidthSlider;
     IBOutlet NSTextField *lineWidthField;
@@ -53,6 +55,7 @@ extern NSString *SKLineInspectorEndLineStyleDidChangeNotification;
     IBOutlet NSTextField *dashPatternField;
     IBOutlet NSSegmentedControl *startLineStyleButton;
     IBOutlet NSSegmentedControl *endLineStyleButton;
+    IBOutlet SKLineWell *lineWell;
     float lineWidth;
     PDFBorderStyle style;
     NSArray *dashPattern;

@@ -300,10 +300,10 @@ By default, Skim shows a gray background behind images and PDF files, and a dark
 
 @box{taskbox}
 @itemize
-@item To change the default background color, choose Skim > Preferences, click Colors, and then click Normal below "Background color".
+@item To change the default background color, choose Skim > Preferences, click Display, and then click Normal below "Background color".
 @end itemize
 @itemize
-@item To change the background color for Full Screen mode, choose Skim > Preferences, click Colors, and then click "Full Screen" below "Background color".
+@item To change the background color for Full Screen mode, choose Skim > Preferences, click Display, and then click "Full Screen" below "Background color".
 @end itemize
 @endbox
 

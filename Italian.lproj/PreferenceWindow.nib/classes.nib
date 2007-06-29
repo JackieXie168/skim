@@ -7,6 +7,12 @@
             SUPERCLASS = NSObject; 
         }, 
         {
+            CLASS = SKLineWell; 
+            LANGUAGE = ObjC; 
+            OUTLETS = {target = id; }; 
+            SUPERCLASS = NSControl; 
+        }, 
+        {
             ACTIONS = {
                 changeDiscreteThumbnailSizes = id; 
                 changeTeXEditorPreset = id; 

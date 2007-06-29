@@ -1,8 +1,8 @@
 //
-//  SKPreferenceController.h
+//  SKLineWell.h
 //  Skim
 //
-//  Created by Christiaan Hofman on 2/10/07.
+//  Created by Christiaan Hofman on 6/22/07.
 /*
  This software is Copyright (c) 2007
  Christiaan Hofman. All rights reserved.
@@ -37,41 +37,62 @@
  */
 
 #import <Cocoa/Cocoa.h>
+#import <Quartz/Quartz.h>
 
-@class SKLineWell;
+extern NSString *SKLineStylePboardType;
 
-@interface SKPreferenceController : NSWindowController {
-    IBOutlet NSTabView *tabView;
-    IBOutlet NSSlider *thumbnailSizeSlider;
-    IBOutlet NSSlider *snapshotSizeSlider;
-    IBOutlet NSPopUpButton *texEditorPopUpButton;
-    IBOutlet NSButton *revertPDFSettingsButton;
-    IBOutlet NSButton *revertFullScreenPDFSettingsButton;
-    IBOutlet SKLineWell *textLineWell;
-    IBOutlet SKLineWell *lineLineWell;
-    IBOutlet SKLineWell *circleLineWell;
-    IBOutlet SKLineWell *boxLineWell;
-    NSArray *fonts;
-    NSDictionary *resettableKeys;
-    BOOL isCustomTeXEditor;
+@interface SKLineWell : NSControl {
+    float lineWidth;
+    PDFBorderStyle style;
+    NSArray *dashPattern;
+    PDFLineStyle startLineStyle;
+    PDFLineStyle endLineStyle;
+    BOOL active;
+    BOOL canActivate;
+    BOOL isHighlighted;
+    BOOL ignoresLineEndings;
+    BOOL existsActiveLineWell;
+    
+    id target;
+    SEL action;
+    
+    BOOL updatingFromLineInspector;
+    BOOL updatingFromBinding;
+    
+    NSMutableDictionary *observedObjects;
+    NSMutableDictionary *observedKeyPaths;
 }
 
-+ (id)sharedPrefenceController;
+- (void)activate:(BOOL)exclusive;
+- (void)deactivate;
 
-- (NSArray *)fonts;
-- (unsigned)countOfSizes;
-- (id)objectInSizesAtIndex:(unsigned)index;
-- (BOOL)isCustomTeXEditor;
-- (void)setCustomTeXEditor:(BOOL)flag;
+- (BOOL)isActive;
 
-- (IBAction)changeDiscreteThumbnailSizes:(id)sender;
-- (IBAction)changeUpdateInterval:(id)sender;
-- (IBAction)changeTeXEditorPreset:(id)sender;
+- (BOOL)canActivate;
+- (void)setCanActivate:(BOOL)flag;
 
-- (IBAction)revertPDFViewSettings:(id)sender;
-- (IBAction)revertFullScreenPDFViewSettings:(id)sender;
+- (BOOL)isHighlighted;
+- (void)setHighlighted:(BOOL)flag;
 
-- (IBAction)resetAll:(id)sender;
-- (IBAction)resetCurrent:(id)sender;
+- (BOOL)ignoresLineEndings;
+- (void)setIgnoresLineEndings:(BOOL)flag;
+
+- (float)lineWidth;
+- (void)setLineWidth:(float)width;
+- (PDFBorderStyle)style;
+- (void)setStyle:(PDFBorderStyle)newStyle;
+- (NSArray *)dashPattern;
+- (void)setDashPattern:(NSArray *)pattern;
+
+- (PDFLineStyle)startLineStyle;
+- (void)setStartLineStyle:(PDFLineStyle)newStyle;
+- (PDFLineStyle)endLineStyle;
+- (void)setEndLineStyle:(PDFLineStyle)newStyle;
+
+- (void)lineInspectorLineWidthChanged:(NSNotification *)notification;
+- (void)lineInspectorLineStyleChanged:(NSNotification *)notification;
+- (void)lineInspectorDashPatternChanged:(NSNotification *)notification;
+- (void)lineInspectorStartLineStyleChanged:(NSNotification *)notification;
+- (void)lineInspectorEndLineStyleChanged:(NSNotification *)notification;
 
 @end
