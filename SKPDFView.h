@@ -87,6 +87,7 @@ typedef enum _SKNoteType {
     SKReadingBar *readingBar;
     
 	PDFAnnotation *activeAnnotation;
+	PDFAnnotation *highlightAnnotation;
 	PDFAnnotationTextWidget *editAnnotation;
     PDFSelection *wasSelection;
 	NSRect wasBounds;
