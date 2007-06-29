@@ -268,6 +268,8 @@ typedef struct _SKPDFViewState {
 
 - (unsigned int)pageNumber;
 - (void)setPageNumber:(unsigned int)pageNumber;
+- (NSString *)pageLabel;
+- (void)setPageLabel:(NSString *)label;
 
 - (BOOL)isFullScreen;
 - (BOOL)isPresentation;
