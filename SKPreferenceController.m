@@ -40,6 +40,7 @@
 #import "SKStringConstants.h"
 #import "NSUserDefaultsController_SKExtensions.h"
 #import "SKApplicationController.h"
+#import "SKLineWell.h"
 #import <Sparkle/Sparkle.h>
 
 static float SKDefaultFontSizes[] = {8.0, 9.0, 10.0, 11.0, 12.0, 13.0, 14.0, 16.0, 18.0, 20.0, 24.0, 28.0, 32.0, 48.0, 64.0};
@@ -146,6 +147,29 @@ static NSString *SKTeXEditorArguments[] = {@"-l %line \"%file\"", @"+%line \"%fi
         [texEditorPopUpButton selectItemAtIndex:index];
     
     [self updateRevertButtons];
+    
+    NSUserDefaultsController *sudc = [NSUserDefaultsController sharedUserDefaultsController];
+    
+    [textLineWell bind:@"lineWidth" toObject:sudc withKeyPath:[NSString stringWithFormat:@"values.%@", SKFreeTextNoteLineWidthKey] options:nil];
+    [textLineWell bind:@"style" toObject:sudc withKeyPath:[NSString stringWithFormat:@"values.%@", SKFreeTextNoteLineStyleKey] options:nil];
+    [textLineWell bind:@"dashPattern" toObject:sudc withKeyPath:[NSString stringWithFormat:@"values.%@", SKFreeTextNoteDashPatternKey] options:nil];
+    [textLineWell setIgnoresLineEndings:YES];
+    
+    [circleLineWell bind:@"lineWidth" toObject:sudc withKeyPath:[NSString stringWithFormat:@"values.%@", SKCircleNoteLineWidthKey] options:nil];
+    [circleLineWell bind:@"style" toObject:sudc withKeyPath:[NSString stringWithFormat:@"values.%@", SKCircleNoteLineStyleKey] options:nil];
+    [circleLineWell bind:@"dashPattern" toObject:sudc withKeyPath:[NSString stringWithFormat:@"values.%@", SKCircleNoteDashPatternKey] options:nil];
+    [circleLineWell setIgnoresLineEndings:YES];
+    
+    [boxLineWell bind:@"lineWidth" toObject:sudc withKeyPath:[NSString stringWithFormat:@"values.%@", SKSquareNoteLineWidthKey] options:nil];
+    [boxLineWell bind:@"style" toObject:sudc withKeyPath:[NSString stringWithFormat:@"values.%@", SKSquareNoteLineStyleKey] options:nil];
+    [boxLineWell bind:@"dashPattern" toObject:sudc withKeyPath:[NSString stringWithFormat:@"values.%@", SKSquareNoteDashPatternKey] options:nil];
+    [boxLineWell setIgnoresLineEndings:YES];
+    
+    [lineLineWell bind:@"lineWidth" toObject:sudc withKeyPath:[NSString stringWithFormat:@"values.%@", SKLineNoteLineWidthKey] options:nil];
+    [lineLineWell bind:@"style" toObject:sudc withKeyPath:[NSString stringWithFormat:@"values.%@", SKLineNoteLineStyleKey] options:nil];
+    [lineLineWell bind:@"dashPattern" toObject:sudc withKeyPath:[NSString stringWithFormat:@"values.%@", SKLineNoteDashPatternKey] options:nil];
+    [lineLineWell bind:@"startLineStyle" toObject:sudc withKeyPath:[NSString stringWithFormat:@"values.%@", SKLineNoteStartLineStyleKey] options:nil];
+    [lineLineWell bind:@"endLineStyle" toObject:sudc withKeyPath:[NSString stringWithFormat:@"values.%@", SKLineNoteEndLineStyleKey] options:nil];
 }
 
 - (void)windowDidResignMain:(NSNotification *)notification {

@@ -302,10 +302,10 @@ In Skim wordt standaard een donkergrijze achtergrond weergegeven achter PDF-best
 
 @box{taskbox}
 @itemize
-@item Om de normale achtergrondkleur te wijzigen, kies Skim > Voorkeuren, klik op Kleuren, en vervolgens op Normaal onder Achtergrondkleur.
+@item Om de normale achtergrondkleur te wijzigen, kies Skim > Voorkeuren, klik op Weergave, en vervolgens op Normaal onder Achtergrondkleur.
 @end itemize
 @itemize
-@item Om de achtergrondkleur voor beeldschermvullende modus te wijzigen, kies Skim > Voorkeuren, klik op Kleuren, en vervolgens op Beeldschermvullend onder Achtergrondkleur.
+@item Om de achtergrondkleur voor beeldschermvullende modus te wijzigen, kies Skim > Voorkeuren, klik op Weergave, en vervolgens op Beeldschermvullend onder Achtergrondkleur.
 @end itemize
 @endbox
 

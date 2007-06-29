@@ -24,13 +24,21 @@
             OUTLETS = {
                 dashPatternField = NSTextField; 
                 endLineStyleButton = NSSegmentedControl; 
+                lineWell = SKLineWell; 
                 lineWidthField = NSTextField; 
                 lineWidthSlider = NSSlider; 
                 startLineStyleButton = NSSegmentedControl; 
                 styleButton = NSSegmentedControl; 
             }; 
             SUPERCLASS = NSWindowController; 
-        }
+        }, 
+        {
+            CLASS = SKLineWell; 
+            LANGUAGE = ObjC; 
+            OUTLETS = {target = id; }; 
+            SUPERCLASS = NSControl; 
+        }, 
+        {CLASS = SKNumberArrayFormatter; LANGUAGE = ObjC; SUPERCLASS = NSFormatter; }
     ); 
     IBVersion = 1; 
 }
