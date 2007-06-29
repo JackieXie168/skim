@@ -52,6 +52,7 @@
 #import "SKPDFSynchronizer.h"
 #import "PDFSelection_SKExtensions.h"
 #import "NSBezierPath_BDSKExtensions.h"
+#import "SKLineWell.h"
 #import <Carbon/Carbon.h>
 
 NSString *SKPDFViewToolModeChangedNotification = @"SKPDFViewToolModeChangedNotification";
@@ -180,6 +181,8 @@ static void SKCGContextDrawGrabHandle(CGContextRef context, CGPoint point, float
     
     trackingRect = 0;
     
+    [self registerForDraggedTypes:[NSArray arrayWithObjects:NSColorPboardType, SKLineStylePboardType, nil]];
+    
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleAnnotationWillChangeNotification:) 
                                                  name:SKAnnotationWillChangeNotification object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleAnnotationDidChangeNotification:) 
@@ -283,6 +286,13 @@ static void SKCGContextDrawGrabHandle(CGContextRef context, CGPoint point, float
                     CGContextFillRect(context, *(CGRect *)&rect);
                 }
             }
+        }
+        if (highlightAnnotation && [[highlightAnnotation page] isEqual:pdfPage]) {
+            float color[4] = { 0.0, 0.0, 0.0, 1.0 };
+            NSRect bounds = [highlightAnnotation bounds];
+            NSRect rect = NSInsetRect(NSIntegralRect(bounds), 0.5, 0.5);
+            CGContextSetStrokeColor(context, color);
+            CGContextStrokeRectWithWidth(context, *(CGRect *)&rect, 1.0);
         }
                 
     }
@@ -1183,6 +1193,106 @@ static void SKCGContextDrawGrabHandle(CGContextRef context, CGPoint point, float
 
 - (void)viewDidMoveToWindow {
     trackingRect = [self addTrackingRect:[self bounds] owner:self userData:NULL assumeInside:NO];
+}
+
+#pragma mark NSDraggingDestination protocol
+
+- (NSDragOperation)draggingEntered:(id <NSDraggingInfo>)sender {
+    NSDragOperation dragOp = NSDragOperationNone;
+    NSPasteboard *pboard = [sender draggingPasteboard];
+    NSString *pboardType = [pboard availableTypeFromArray:[NSArray arrayWithObjects:NSColorPboardType, SKLineStylePboardType, nil]];
+    if (pboardType) {
+        return [self draggingUpdated:sender];
+    } else if ([[self superclass] instancesRespondToSelector:_cmd]) {
+        dragOp = [super draggingEntered:sender];
+    }
+    return dragOp;
+}
+
+- (NSDragOperation)draggingUpdated:(id <NSDraggingInfo>)sender {
+    NSDragOperation dragOp = NSDragOperationNone;
+    NSPasteboard *pboard = [sender draggingPasteboard];
+    NSString *pboardType = [pboard availableTypeFromArray:[NSArray arrayWithObjects:NSColorPboardType, SKLineStylePboardType, nil]];
+    if (pboardType) {
+        NSPoint location = [self convertPoint:[sender draggingLocation] fromView:nil];
+        PDFPage *page = [self pageForPoint:location nearest:NO];
+        if (page) {
+            NSArray *annotations = [page annotations];
+            PDFAnnotation *annotation = nil;
+            int i = [annotations count];
+            location = [self convertPoint:location toPage:page];
+            while (i-- > 0) {
+                annotation = [annotations objectAtIndex:i];
+                NSString *type = [annotation type];
+                if ([annotation isNoteAnnotation] && [annotation hitTest:location] && 
+                    ([pboardType isEqualToString:NSColorPboardType] || [type isEqualToString:@"Text"] || [type isEqualToString:@"Circle"] || [type isEqualToString:@"Square"] || [type isEqualToString:@"Line"])) {
+                    if ([annotation isEqual:highlightAnnotation] == NO) {
+                        if (highlightAnnotation)
+                            [self setNeedsDisplayForAnnotation:highlightAnnotation];
+                        highlightAnnotation = annotation;
+                        [self setNeedsDisplayForAnnotation:highlightAnnotation];
+                    }
+                    dragOp = NSDragOperationEvery;
+                    break;
+                }
+            }
+        }
+        if (dragOp == NSDragOperationNone && highlightAnnotation) {
+            [self setNeedsDisplayForAnnotation:highlightAnnotation];
+            highlightAnnotation = nil;
+        }
+    } else if ([[self superclass] instancesRespondToSelector:_cmd]) {
+        dragOp = [super draggingUpdated:sender];
+    }
+    return dragOp;
+}
+
+- (void)draggingExited:(id <NSDraggingInfo>)sender {
+    NSPasteboard *pboard = [sender draggingPasteboard];
+    NSString *pboardType = [pboard availableTypeFromArray:[NSArray arrayWithObjects:NSColorPboardType, SKLineStylePboardType, nil]];
+    if (pboardType) {
+        if (highlightAnnotation) {
+            [self setNeedsDisplayForAnnotation:highlightAnnotation];
+            highlightAnnotation = nil;
+        }
+    } else if ([[self superclass] instancesRespondToSelector:_cmd]) {
+        [super draggingExited:sender];
+    }
+}
+
+- (BOOL)performDragOperation:(id <NSDraggingInfo>)sender {
+    BOOL performedDrag = NO;
+    NSPasteboard *pboard = [sender draggingPasteboard];
+    NSString *pboardType = [pboard availableTypeFromArray:[NSArray arrayWithObjects:NSColorPboardType, SKLineStylePboardType, nil]];
+    if (pboardType) {
+        if (highlightAnnotation) {
+            NSString *type = [highlightAnnotation type];
+            if ([pboardType isEqualToString:NSColorPboardType]) {
+                [highlightAnnotation setColor:[NSColor colorFromPasteboard:pboard]];
+                performedDrag = YES;
+            } else if ([type isEqualToString:@"Text"] || [type isEqualToString:@"Circle"] || [type isEqualToString:@"Square"] || [type isEqualToString:@"Line"]) {
+                NSDictionary *dict = [pboard propertyListForType:SKLineStylePboardType];
+                NSNumber *number;
+                if (number = [dict objectForKey:@"lineWidth"])
+                    [highlightAnnotation setLineWidth:[number floatValue]];
+                if (number = [dict objectForKey:@"style"])
+                    [highlightAnnotation setBorderStyle:[number intValue]];
+                [highlightAnnotation setDashPattern:[dict objectForKey:@"dashPattern"]];
+                if ([type isEqualToString:@"Line"]) {
+                    if (number = [dict objectForKey:@"startLineStyle"])
+                        [(SKPDFAnnotationLine *)highlightAnnotation setStartLineStyle:[number intValue]];
+                    if (number = [dict objectForKey:@"endLineStyle"])
+                        [(SKPDFAnnotationLine *)highlightAnnotation setEndLineStyle:[number intValue]];
+                }
+                performedDrag = YES;
+            }
+            [self setNeedsDisplayForAnnotation:highlightAnnotation];
+            highlightAnnotation = nil;
+        }
+    } else if ([[self superclass] instancesRespondToSelector:_cmd]) {
+        performedDrag = [super performDragOperation:sender];
+    }
+    return performedDrag;
 }
 
 #pragma mark UndoManager
