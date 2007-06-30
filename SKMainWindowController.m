@@ -577,7 +577,7 @@ static NSString *SKRightSidePaneWidthKey = @"SKRightSidePaneWidth";
         [[self mutableArrayValueForKey:@"thumbnails"] removeAllObjects];
         
         NSArray *snapshotDicts = [snapshots valueForKey:@"currentSetup"];
-        [snapshots makeObjectsPerformSelector:@selector(close) withObject:nil];
+        [snapshots makeObjectsPerformSelector:@selector(close)];
         [[self mutableArrayValueForKey:@"snapshots"] removeAllObjects];
         
         [lastViewedPages removeAllObjects];
@@ -2554,7 +2554,7 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
         if (displayChanged)
             [self updateThumbnailAtPageIndex:index];
     } else {
-        [snapshots makeObjectsPerformSelector:@selector(redisplay) withObject:nil];
+        [snapshots makeObjectsPerformSelector:@selector(redisplay)];
         [self allSnapshotsNeedUpdate];
         if (displayChanged)
             [self allThumbnailsNeedUpdate];
