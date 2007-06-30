@@ -163,6 +163,8 @@ typedef struct _SKPDFViewState {
     BOOL                        updatingFont;
     BOOL                        updatingLine;
     
+    NSMutableArray              *pageLabels;
+    
     NSMutableArray              *lastViewedPages;
     
     NSTimer                     *activityTimer;
