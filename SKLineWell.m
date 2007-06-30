@@ -85,9 +85,6 @@ static NSString *SKLineWellWillBecomeActiveNotification = @"SKLineWellWillBecome
         updatingFromLineInspector = NO;
         updatingFromBinding = NO;
         
-        observedObjects = [[NSMutableDictionary alloc] init];
-        observedKeyPaths = [[NSMutableDictionary alloc] init];
-        
         [self registerForDraggedTypes:[NSArray arrayWithObjects:SKLineStylePboardType, nil]];
     }
     return self;
@@ -121,9 +118,6 @@ static NSString *SKLineWellWillBecomeActiveNotification = @"SKLineWellWillBecome
         
         updatingFromLineInspector = NO;
         updatingFromBinding = NO;
-        
-        observedObjects = [[NSMutableDictionary alloc] init];
-        observedKeyPaths = [[NSMutableDictionary alloc] init];
         
         [self registerForDraggedTypes:[NSArray arrayWithObjects:SKLineStylePboardType, nil]];
     }
@@ -161,8 +155,6 @@ static NSString *SKLineWellWillBecomeActiveNotification = @"SKLineWellWillBecome
     [self unbind:@"dashPattern"];
     [self unbind:@"startLineStyle"];
     [self unbind:@"endLineStyle"];
-    [observedObjects release];
-    [observedKeyPaths release];
     if (active)
         [self deactivate];
     [dashPattern release];
@@ -488,8 +480,10 @@ static NSString *SKLineWellWillBecomeActiveNotification = @"SKLineWellWillBecome
 }
 
 - (void)updateValue:(id)value forKey:(NSString *)key {
-    if (updatingFromBinding == NO)
-        [[observedObjects objectForKey:key] setValue:value forKeyPath:[observedKeyPaths objectForKey:key]];
+    if (updatingFromBinding == NO) {
+		NSDictionary *bindingInfo = [self infoForBinding:key];
+		[[bindingInfo objectForKey:NSObservedObjectKey] setValue:value forKeyPath:[bindingInfo objectForKey:NSObservedKeyPathKey]];
+    }
     if ([self isActive] && updatingFromLineInspector == NO)
         [[SKLineInspector sharedLineInspector] setValue:value forKey:key];
     [self setNeedsDisplay:YES];
@@ -675,15 +669,10 @@ static NSString *SKLineWellWillBecomeActiveNotification = @"SKLineWellWillBecome
 #pragma mark Binding support
 
 - (void)bind:(NSString *)bindingName toObject:(id)observableController withKeyPath:(NSString *)keyPath options:(NSDictionary *)options {	
-    if (observableController && bindingName) {
-        if ([bindingName isEqualToString:@"lineWidth"] || [bindingName isEqualToString:@"style"] || [bindingName isEqualToString:@"dashPattern"] || 
-            [bindingName isEqualToString:@"startLineStyle"] || [bindingName isEqualToString:@"endLineStyle"]) {
-            
-            [observableController addObserver:self forKeyPath:keyPath  options:nil context:[observationContexts objectForKey:bindingName]];
-            [observedObjects setObject:observableController forKey:bindingName];
-            [observedKeyPaths setObject:keyPath forKey:bindingName];
-        }
-	}
+    if ([bindingName isEqualToString:@"lineWidth"] || [bindingName isEqualToString:@"style"] || [bindingName isEqualToString:@"dashPattern"] || 
+        [bindingName isEqualToString:@"startLineStyle"] || [bindingName isEqualToString:@"endLineStyle"]) {
+        [observableController addObserver:self forKeyPath:keyPath  options:nil context:[observationContexts objectForKey:bindingName]];
+    }
 	[super bind:bindingName toObject:observableController withKeyPath:keyPath options:options];
 	[self setNeedsDisplay:YES];
 }
@@ -691,10 +680,8 @@ static NSString *SKLineWellWillBecomeActiveNotification = @"SKLineWellWillBecome
 - (void)unbind:(NSString *)bindingName {
     if ([bindingName isEqualToString:@"lineWidth"] || [bindingName isEqualToString:@"style"] || [bindingName isEqualToString:@"dashPattern"] || 
         [bindingName isEqualToString:@"startLineStyle"] || [bindingName isEqualToString:@"endLineStyle"]) {
-		
-        [[observedObjects objectForKey:bindingName] removeObserver:self forKeyPath:[observedKeyPaths objectForKey:bindingName]];
-        [observedObjects removeObjectForKey:bindingName];
-        [observedKeyPaths removeObjectForKey:bindingName];
+		NSDictionary *bindingInfo = [self infoForBinding:bindingName];
+        [[bindingInfo objectForKey:NSObservedObjectKey] removeObserver:self forKeyPath:[bindingInfo objectForKey:NSObservedKeyPathKey]];
     }
     [super unbind:bindingName];
     [self setNeedsDisplay:YES];
@@ -713,9 +700,10 @@ static NSString *SKLineWellWillBecomeActiveNotification = @"SKLineWellWillBecome
         key = @"startLineStyle";
     else if (context == [observationContexts objectForKey:@"endLineStyle"])
         key = @"endLineStyle";
-   
-     if (key) {
-		id value = [[observedObjects objectForKey:key] valueForKeyPath:[observedKeyPaths valueForKey:key]];
+    
+    if (key) {
+		NSDictionary *bindingInfo = [self infoForBinding:key];
+		id value = [[bindingInfo objectForKey:NSObservedObjectKey] valueForKeyPath:[bindingInfo objectForKey:NSObservedKeyPathKey]];
 		if (NSIsControllerMarker(value) == NO) {
             updatingFromBinding = YES;
             [self setValue:value forKey:key];
