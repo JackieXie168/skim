@@ -50,15 +50,12 @@ static NSString *SKTeXEditorArguments[] = {@"-l %line \"%file\"", @"+%line \"%fi
 
 
 @interface NSView (SKExtensions)
-- (void)deactivateColorWells;
+- (void)deactivateColorAndLineWells;
 @end
 
 @implementation NSView (SKExtensions)
-- (void)deactivateColorWells {
-    NSEnumerator *viewEnum = [[self subviews] objectEnumerator];
-    NSView *view;
-    while (view = [viewEnum nextObject])
-        [view deactivateColorWells];
+- (void)deactivateColorAndLineWells {
+    [[self subviews] makeObjectsPerformSelector:_cmd];
 }
 @end
 
@@ -66,9 +63,16 @@ static NSString *SKTeXEditorArguments[] = {@"-l %line \"%file\"", @"+%line \"%fi
 @end
 
 @implementation NSColorWell (SKExtensions)
-- (void)deactivateColorWells {
+- (void)deactivateColorAndLineWells {
     [self deactivate];
-    [super deactivateColorWells];
+    [super deactivateColorAndLineWells];
+}
+@end
+
+@implementation SKLineWell (SKExtensions)
+- (void)deactivateColorAndLineWells {
+    [self deactivate];
+    [super deactivateColorAndLineWells];
 }
 @end
 
@@ -173,7 +177,7 @@ static NSString *SKTeXEditorArguments[] = {@"-l %line \"%file\"", @"+%line \"%fi
 }
 
 - (void)windowDidResignMain:(NSNotification *)notification {
-    [[[self window] contentView] deactivateColorWells];
+    [[[self window] contentView] deactivateColorAndLineWells];
 }
 
 - (NSArray *)fonts {
