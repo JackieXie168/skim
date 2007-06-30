@@ -129,6 +129,7 @@ static NSString *SKRightSidePaneWidthKey = @"SKRightSidePaneWidth";
         notes = [[NSMutableArray alloc] init];
         snapshots = [[NSMutableArray alloc] init];
         dirtySnapshots = [[NSMutableArray alloc] init];
+        pageLabels = [[NSMutableArray alloc] init];
         lastViewedPages = [[NSMutableArray alloc] init];
         // @@ remove or set to nil for Leopard?
         pdfOutlineItems = [[NSMutableArray alloc] init];
@@ -156,6 +157,7 @@ static NSString *SKRightSidePaneWidthKey = @"SKRightSidePaneWidth";
 	[thumbnails release];
 	[notes release];
 	[snapshots release];
+    [pageLabels release];
     [lastViewedPages release];
 	[leftSideWindow release];
 	[rightSideWindow release];
@@ -607,6 +609,15 @@ static NSString *SKRightSidePaneWidthKey = @"SKRightSidePaneWidth";
         [self resetThumbnails];
         [self updateThumbnailSelection];
         
+        [self willChangeValueForKey:@"pageLabels"];
+        [pageLabels removeAllObjects];
+        int i, count = [document pageCount];
+        for (i = 0; i < count; i++) {
+            NSString *label = [[document pageAtIndex:i] label];
+            [pageLabels addObject:label ? label : @""];
+        }
+        [self didChangeValueForKey:@"pageLabels"];
+        
         NSEnumerator *setupEnum = [snapshotDicts objectEnumerator];
         NSDictionary *setup;
         while (setup = [setupEnum nextObject])
@@ -692,23 +703,14 @@ static NSString *SKRightSidePaneWidthKey = @"SKRightSidePaneWidth";
 }
 
 - (void)setPageLabel:(NSString *)label {
-    PDFDocument *pdfDoc = [pdfView document];
-    int i, count = [pdfDoc pageCount];
-    for (i = 0; i < count; i++) {
-        if ([[[pdfDoc pageAtIndex:i] label] isEqualToString:label]) {
-            [pdfView goToPage:[pdfDoc pageAtIndex:i]];
-            break;
-        }
-    }
+    unsigned int index = [pageLabels indexOfObject:label];
+    if (index != NSNotFound)
+        [pdfView goToPage:[[pdfView document] pageAtIndex:index]];
 }
 
 - (BOOL)validatePageLabel:(id *)value error:(NSError **)error {
-    PDFDocument *pdfDoc = [pdfView document];
-    int i, count = [pdfDoc pageCount];
-    for (i = 0; i < count; i++)
-        if ([[[pdfDoc pageAtIndex:i] label] isEqualToString:*value])
-            return YES;
-    *value = [self pageLabel];
+    if ([pageLabels indexOfObject:*value] == NSNotFound)
+        *value = [self pageLabel];
     return YES;
 }
 
@@ -1039,7 +1041,7 @@ static NSString *SKRightSidePaneWidthKey = @"SKRightSidePaneWidth";
 }
 
 - (IBAction)doGoToPage:(id)sender {
-    [choosePageField setStringValue:@""];
+    [choosePageField setStringValue:[self pageLabel]];
     
     [NSApp beginSheet: choosePageSheet
        modalForWindow: [self window]
