@@ -1275,9 +1275,9 @@ static void SKCGContextDrawGrabHandle(CGContextRef context, CGPoint point, float
                 NSNumber *number;
                 if (number = [dict objectForKey:@"lineWidth"])
                     [highlightAnnotation setLineWidth:[number floatValue]];
+                [highlightAnnotation setDashPattern:[dict objectForKey:@"dashPattern"]];
                 if (number = [dict objectForKey:@"style"])
                     [highlightAnnotation setBorderStyle:[number intValue]];
-                [highlightAnnotation setDashPattern:[dict objectForKey:@"dashPattern"]];
                 if ([type isEqualToString:@"Line"]) {
                     if (number = [dict objectForKey:@"startLineStyle"])
                         [(SKPDFAnnotationLine *)highlightAnnotation setStartLineStyle:[number intValue]];
