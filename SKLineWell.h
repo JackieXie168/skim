@@ -58,9 +58,6 @@ extern NSString *SKLineStylePboardType;
     
     BOOL updatingFromLineInspector;
     BOOL updatingFromBinding;
-    
-    NSMutableDictionary *observedObjects;
-    NSMutableDictionary *observedKeyPaths;
 }
 
 - (void)activate:(BOOL)exclusive;
