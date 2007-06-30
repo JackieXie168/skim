@@ -648,6 +648,8 @@ static void SKCGContextDrawGrabHandle(CGContextRef context, CGPoint point, float
 		
 		// Convert to "page space".
 		center = [self convertPoint: center toPage: page];
+        center.x = roundf(center.x);
+        center.y = roundf(center.y);
         
         NSSize defaultSize = isAlternate ? NSMakeSize(16.0, 16.0) : ([page rotation] % 180 == 90) ? NSMakeSize(64.0, 128.0) : NSMakeSize(128.0, 64.0);
         NSRect bounds = NSMakeRect(center.x - 0.5 * defaultSize.width, center.y - 0.5 * defaultSize.height, defaultSize.width, defaultSize.height);
@@ -1372,6 +1374,8 @@ static void SKCGContextDrawGrabHandle(CGContextRef context, CGPoint point, float
 		
 		// Convert to "page space".
 		center = [self convertPoint: center toPage: page];
+        center.x = roundf(center.x);
+        center.y = roundf(center.y);
         if ([page rotation] % 180 == 90)
             defaultSize = NSMakeSize(defaultSize.height, defaultSize.width);
         bounds = NSMakeRect(center.x - 0.5 * defaultSize.width, center.y - 0.5 * defaultSize.height, defaultSize.width, defaultSize.height);
