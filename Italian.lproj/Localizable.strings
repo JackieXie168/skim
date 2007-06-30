@@ -59,6 +59,9 @@
    Toolbar item label */
 "Back/Forward" = "Indietro/Avanti";
 
+/* Tool tip message */
+"Beveled line style" = "Beveled line style";
+
 /* Description for export
    Menu item title */
 "Box" = "Rettangolo";
@@ -82,12 +85,24 @@
    Menu item title */
 "Circle" = "Cerchio";
 
+/* Tool tip message */
+"Circle end line style" = "Circle end line style";
+
+/* Tool tip message */
+"Circle start line style" = "Circle start line style";
+
 /* Menu item title */
 "Circle Tool" = "Strumento Cerchio";
 
 /* Button title
    Tool tip message */
 "Close" = "Chiudi";
+
+/* Tool tip message */
+"Closed arrow end line style" = "Closed arrow end line style";
+
+/* Tool tip message */
+"Closed arrow start line style" = "Closed arrow start line style";
 
 /* Toolbar item label */
 "Contents Pane" = "Pannello Contenuti";
@@ -129,6 +144,15 @@
 
 /* Menu item title */
 "Cut" = "Taglia";
+
+/* Tool tip message */
+"Dashed line style" = "Dashed line style";
+
+/* Tool tip message */
+"Diamond end line style" = "Diamond end line style";
+
+/* Tool tip message */
+"Diamond start line style" = "Diamond start line style";
 
 /* Tool tip message
    Toolbar item label */
@@ -222,6 +246,9 @@
 /* Toolbar item label */
 "Info" = "Info";
 
+/* Tool tip message */
+"Inset line style" = "Inset line style";
+
 /* Undo action name */
 "Join Notes" = "Unisci Note";
 
@@ -267,14 +294,26 @@
 /* Button title */
 "No" = "No";
 
+/* Tool tip message */
+"No end line style" = "No end line style";
+
 /* Error description */
 "No space left on file system." = "Nessuno spazio rimasto sul file system.";
+
+/* Tool tip message */
+"No start line style" = "No start line style";
 
 /* Tool tip message */
 "Note Tool" = "Strumento Note";
 
 /* Toolbar item label */
 "Notes Pane" = "Pannello Note";
+
+/* Tool tip message */
+"Open arrow end line style" = "Open arrow end line style";
+
+/* Tool tip message */
+"Open arrow start line style" = "Open arrow start line style";
 
 /* Error description */
 "Options contained XATTR_CREATE but the named attribute exists." = "L'opzione contiene XATTR_CREATE, ma l'attributo con nome esiste già.";
@@ -398,6 +437,15 @@
 /* Informative text in alert dialog */
 "Skim was not able to read the notes at %@. %@ Do you want to continue to open the PDF document anyway?" = "Skim non è stato in grado di leggere le note a %1$@. %2$@ Vuoi continuare comunque ad aprire il documento PDF?";
 
+/* Tool tip message */
+"Solid line style" = "Solid line style";
+
+/* Tool tip message */
+"Square end line style" = "Square end line style";
+
+/* Tool tip message */
+"Square start line style" = "Square start line style";
+
 /* Description for export
    Menu item title */
 "Strike Out" = "Barra";
@@ -483,6 +531,9 @@
 /* Description for export
    Menu item title */
 "Underline" = "Sottolinea";
+
+/* Tool tip message */
+"Underline line style" = "Underline line style";
 
 /* Menu item title */
 "Underline Tool" = "Strumento Sottolineatura";
