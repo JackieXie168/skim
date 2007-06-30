@@ -702,6 +702,16 @@ static NSString *SKRightSidePaneWidthKey = @"SKRightSidePaneWidth";
     }
 }
 
+- (BOOL)validatePageLabel:(id *)value error:(NSError **)error {
+    PDFDocument *pdfDoc = [pdfView document];
+    int i, count = [pdfDoc pageCount];
+    for (i = 0; i < count; i++)
+        if ([[[pdfDoc pageAtIndex:i] label] isEqualToString:*value])
+            return YES;
+    *value = [self pageLabel];
+    return YES;
+}
+
 - (BOOL)isFullScreen {
     return [self window] == fullScreenWindow && isPresentation == NO;
 }
