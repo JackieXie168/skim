@@ -275,14 +275,15 @@ static BOOL fileIsInTrash(NSURL *fileURL)
             [controller togglePresentation:nil];
             break;
 		case kRemoteButtonMenu:
-        {
             remoteScrolling = !remoteScrolling;
-            
-            NSWindow *window = [controller window];
-            NSRect rect = [window frame];
-            [[[[SKSplashWindow alloc] initWithType:remoteScrolling ? SKSplashTypeScroll : SKSplashTypeResize atPoint:NSMakePoint(NSMidX(rect), NSMidY(rect)) screen:[window screen]] autorelease] show];
+            float timeout = [[NSUserDefaults standardUserDefaults] floatForKey:SKAppleRemoteSwitchIndicationTimeoutKey];
+            if (timeout > 0.0) {
+                NSWindow *window = [controller window];
+                NSRect rect = [window frame];
+                SKSplashWindow *splashWindow = [[[SKSplashWindow alloc] initWithType:remoteScrolling ? SKSplashTypeScroll : SKSplashTypeResize atPoint:NSMakePoint(NSMidX(rect), NSMidY(rect)) screen:[window screen]] autorelease];
+                [splashWindow showWithTimeout:timeout];
+            }
             break;
-        }
         default:
             break;
     }
@@ -559,7 +560,7 @@ static BOOL fileIsInTrash(NSURL *fileURL)
 
 - (void)animationDidStop:(NSAnimation *)animation { [self close]; }
 
-- (void)fadeOut:(NSTimer *)timer {
+- (void)fadeOut:(id)sender {
     NSDictionary *fadeOutDict = [[NSDictionary alloc] initWithObjectsAndKeys:self, NSViewAnimationTargetKey, NSViewAnimationFadeOutEffect, NSViewAnimationEffectKey, nil];
     NSViewAnimation *animation = [[[NSViewAnimation alloc] initWithViewAnimations:[NSArray arrayWithObjects:fadeOutDict, nil]] autorelease];
     [fadeOutDict release];
@@ -569,10 +570,10 @@ static BOOL fileIsInTrash(NSURL *fileURL)
     [animation startAnimation];
 }
 
-- (void)show {
+- (void)showWithTimeout:(NSTimeInterval)timeout {
     [self retain]; // isReleasedWhenClosed is true by default
     [self orderFrontRegardless];
-    [NSTimer scheduledTimerWithTimeInterval:2.0 target:self selector:@selector(fadeOut:) userInfo:nil repeats:NO];
+    [NSTimer scheduledTimerWithTimeInterval:timeout target:self selector:@selector(fadeOut:) userInfo:nil repeats:NO];
 }
 
 @end
