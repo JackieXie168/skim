@@ -177,6 +177,8 @@
         <true/>
         <key>SKEnableAppleRemote</key>
         <true/>
+        <key>SKAppleRemoteSwitchIndicationTimeout</key>
+        <real>2.0</real>
         <key>SKReadMissingNotesFromSkimFileOption</key>
         <integer>-1</integer>
         <key>SKBlankAllScreensInFullScreen</key>

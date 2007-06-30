@@ -93,6 +93,7 @@ NSString *SKLineNoteEndLineStyleKey = @"SKLineNoteEndLineStyle";
 NSString *SKDefaultPDFDisplaySettingsKey = @"SKDefaultPDFDisplaySettings";
 NSString *SKDefaultFullScreenPDFDisplaySettingsKey = @"SKDefaultFullScreenPDFDisplaySettings";
 NSString *SKEnableAppleRemoteKey = @"SKEnableAppleRemote";
+NSString *SKAppleRemoteSwitchIndicationTimeoutKey = @"SKAppleRemoteSwitchIndicationTimeout";
 NSString *SKReadMissingNotesFromSkimFileOptionKey = @"SKReadMissingNotesFromSkimFileOption";
 NSString *SKBlankAllScreensInFullScreenKey = @"SKBlankAllScreensInFullScreen";
 NSString *SKActivateFullScreenNavigationAtBottomKey = @"SKActivateFullScreenNavigationAtBottom";

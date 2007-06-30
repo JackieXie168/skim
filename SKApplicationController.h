@@ -90,7 +90,8 @@ enum {
 
 @interface SKSplashWindow : NSWindow
 - (id)initWithType:(int)splashType atPoint:(NSPoint)point screen:(NSScreen *)screen;
-- (void)show;
+- (void)showWithTimeout:(NSTimeInterval)timeout;
+- (void)fadeOut:(id)sender;
 @end
 
 
