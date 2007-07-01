@@ -1026,7 +1026,7 @@ static BOOL isFileOnHFSVolume(NSString *fileName)
             }
             if ([fileExtensions containsObject:[extension lowercaseString]] == NO) {
                 [command setScriptErrorNumber:NSArgumentsWrongScriptError];
-                [command setScriptErrorString:[NSString stringWithFormat:@"Invalid file extension for this file type."];
+                [command setScriptErrorString:[NSString stringWithFormat:@"Invalid file extension for this file type."]];
             } else if (fileType) {
                 if ([self saveToURL:fileURL ofType:fileType forSaveOperation:NSSaveToOperation error:NULL] == NO) {
                     [command setScriptErrorNumber:NSInternalScriptError];
