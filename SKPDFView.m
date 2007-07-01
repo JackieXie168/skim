@@ -1227,7 +1227,7 @@ static void SKCGContextDrawGrabHandle(CGContextRef context, CGPoint point, float
                 annotation = [annotations objectAtIndex:i];
                 NSString *type = [annotation type];
                 if ([annotation isNoteAnnotation] && [annotation hitTest:location] && 
-                    ([pboardType isEqualToString:NSColorPboardType] || [type isEqualToString:@"Text"] || [type isEqualToString:@"Circle"] || [type isEqualToString:@"Square"] || [type isEqualToString:@"Line"])) {
+                    ([pboardType isEqualToString:NSColorPboardType] || [type isEqualToString:@"FreeText"] || [type isEqualToString:@"Circle"] || [type isEqualToString:@"Square"] || [type isEqualToString:@"Line"])) {
                     if ([annotation isEqual:highlightAnnotation] == NO) {
                         if (highlightAnnotation)
                             [self setNeedsDisplayForAnnotation:highlightAnnotation];
@@ -1272,7 +1272,7 @@ static void SKCGContextDrawGrabHandle(CGContextRef context, CGPoint point, float
             if ([pboardType isEqualToString:NSColorPboardType]) {
                 [highlightAnnotation setColor:[NSColor colorFromPasteboard:pboard]];
                 performedDrag = YES;
-            } else if ([type isEqualToString:@"Text"] || [type isEqualToString:@"Circle"] || [type isEqualToString:@"Square"] || [type isEqualToString:@"Line"]) {
+            } else if ([type isEqualToString:@"FreeText"] || [type isEqualToString:@"Circle"] || [type isEqualToString:@"Square"] || [type isEqualToString:@"Line"]) {
                 NSDictionary *dict = [pboard propertyListForType:SKLineStylePboardType];
                 NSNumber *number;
                 if (number = [dict objectForKey:@"lineWidth"])
