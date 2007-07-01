@@ -1013,22 +1013,35 @@ static BOOL isFileOnHFSVolume(NSString *fileName)
         [command setArguments:arguments];
         [arguments release];
     }
-    if (fileType == nil) {
-        if (fileURL == nil) {
-            return [super handleSaveScriptCommand:command];
-        } else if ([self saveToURL:fileURL ofType:NSPDFPboardType forSaveOperation:NSSaveAsOperation error:NULL] == NO) {
-            [command setScriptErrorNumber:NSInternalScriptError];
-            [command setScriptErrorString:@"Unable to save."];
+    if (fileURL) {
+        if ([fileURL isKindOfClass:[NSURL class]] == NO) {
+            [command setScriptErrorNumber:NSArgumentsWrongScriptError];
+            [command setScriptErrorString:@"The file is not a file or alias."];
+        } else {
+            NSArray *fileExtensions = [[NSDocumentController sharedDocumentController] fileExtensionsFromType:fileType ? fileType : NSPDFPboardType];
+            NSString *extension = [[fileURL path] pathExtension];
+            if (extension == nil) {
+                extension = [fileExtensions objectAtIndex:0];
+                fileURL = [NSURL fileURLWithPath:[[fileURL path] stringByAppendingPathExtension:extension]];
+            }
+            if ([fileExtensions containsObject:[extension lowercaseString]] == NO) {
+                [command setScriptErrorNumber:NSArgumentsWrongScriptError];
+                [command setScriptErrorString:[NSString stringWithFormat:@"Invalid file extension for this file type."];
+            } else if (fileType) {
+                if ([self saveToURL:fileURL ofType:fileType forSaveOperation:NSSaveToOperation error:NULL] == NO) {
+                    [command setScriptErrorNumber:NSInternalScriptError];
+                    [command setScriptErrorString:@"Unable to export."];
+                }
+            } else if ([self saveToURL:fileURL ofType:NSPDFPboardType forSaveOperation:NSSaveAsOperation error:NULL] == NO) {
+                [command setScriptErrorNumber:NSInternalScriptError];
+                [command setScriptErrorString:@"Unable to save."];
+            }
         }
-    } else if ([fileURL isKindOfClass:[NSURL class]] == NO) {
+    } else if (fileType) {
         [command setScriptErrorNumber:NSArgumentsWrongScriptError];
-        [command setScriptErrorString:@"The file is not a file or alias."];
-    } else if ([fileType isKindOfClass:[NSString class]] == NO) {
-        [command setScriptErrorNumber:NSArgumentsWrongScriptError];
-        [command setScriptErrorString:@"The file type should be a string."];
-    } else if ([self saveToURL:fileURL ofType:fileType forSaveOperation:NSSaveToOperation error:NULL] == NO) {
-        [command setScriptErrorNumber:NSInternalScriptError];
-        [command setScriptErrorString:@"Unable to export."];
+        [command setScriptErrorString:@"Missing file argument."];
+    } else {
+        return [super handleSaveScriptCommand:command];
     }
     return nil;
 }
