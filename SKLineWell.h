@@ -56,6 +56,8 @@ extern NSString *SKLineStylePboardType;
     id target;
     SEL action;
     
+    NSMutableDictionary *bindingInfo;
+    
     BOOL updatingFromLineInspector;
     BOOL updatingFromBinding;
 }
