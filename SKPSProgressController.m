@@ -51,6 +51,7 @@ typedef enum {
 - (void)postscriptConversionCompleted:(BOOL)didComplete;
 - (void)postscriptConversionStarted;
 - (void)showPostScriptConversionMessage:(NSString *)message;
+- (NSString *)fileType;
 @end
 
 static void PSConverterBeginDocumentCallback(void *info)
@@ -207,6 +208,10 @@ static void PSConverterMessageCallback(void *info, CFStringRef message)
     [pool release];
 }    
 
+- (NSString *)fileType {
+    return @"PostScript";
+}
+
 - (void)processingPostScriptPage:(NSNumber *)page;
 {
     [textField setStringValue:[[NSString stringWithFormat:NSLocalizedString(@"Processing page %d", @"PS conversion progress message"), [page intValue]] stringByAppendingEllipsis]];
@@ -223,7 +228,7 @@ static void PSConverterMessageCallback(void *info, CFStringRef message)
 - (void)postscriptConversionStarted;
 {
     [progressBar startAnimation:nil];
-    [textField setStringValue:[[NSString stringWithFormat:NSLocalizedString(@"Converting PostScript", @"PS conversion progress message")] stringByAppendingEllipsis]];
+    [textField setStringValue:[[NSString stringWithFormat:NSLocalizedString(@"Converting %@", @"PS conversion progress message"), [self fileType]] stringByAppendingEllipsis]];
 }
 
 - (void)showPostScriptConversionMessage:(NSString *)message;
@@ -272,6 +277,10 @@ static void PSConverterMessageCallback(void *info, CFStringRef message)
     }
     
     return [psData length] ? [self PDFDataWithPostScriptData:psData] : nil;
+}
+
+- (NSString *)fileType {
+    return @"DVI";
 }
 
 @end
