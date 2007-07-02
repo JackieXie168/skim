@@ -48,3 +48,8 @@
 - (NSData *)PDFDataWithPostScriptData:(NSData *)psData;
 - (IBAction)cancel:(id)sender;
 @end
+
+
+@interface SKDVIProgressController : SKPSProgressController
+- (NSData *)PDFDataWithDVIFile:(NSString *)dviFile;
+@end
