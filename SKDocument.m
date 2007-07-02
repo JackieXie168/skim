@@ -388,6 +388,13 @@ static NSPopUpButton *popUpButtonSubview(NSView *view)
                 pdfDoc = [[PDFDocument alloc] initWithData:data];
             [progressController autorelease];
         }
+    } else if ([docType isEqualToString:SKDVIDocumentType]) {
+        if (data = [NSData dataWithContentsOfURL:absoluteURL options:0 error:&error]) {
+            SKDVIProgressController *progressController = [[SKDVIProgressController alloc] init];
+            if (data = [[progressController PDFDataWithDVIFile:[absoluteURL path]] retain])
+                pdfDoc = [[PDFDocument alloc] initWithData:data];
+            [progressController autorelease];
+        }
     }
     
     if (data) {

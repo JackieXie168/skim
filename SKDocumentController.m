@@ -46,6 +46,7 @@ NSString *SKNotesDocumentType = @"Skim Notes";
 NSString *SKNotesRTFDocumentType = @"Notes as RTF";
 NSString *SKNotesTextDocumentType = @"Notes as Text";
 NSString *SKPostScriptDocumentType = @"PostScript document";
+NSString *SKDVIDocumentType = @"DVI document";
 
 
 @implementation SKDocumentController

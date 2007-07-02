@@ -232,3 +232,46 @@ static void PSConverterMessageCallback(void *info, CFStringRef message)
 }
 
 @end
+
+
+@implementation SKDVIProgressController
+
+- (NSData *)PDFDataWithDVIFile:(NSString *)dviFile {
+    NSData *psData = nil;
+    
+    NSString *dvipsPath = [[NSUserDefaults standardUserDefaults] stringForKey:@"SKDvipsBinaryPath"];
+    NSFileManager *fm = [NSFileManager defaultManager];
+    NSArray *paths = [NSArray arrayWithObjects:@"/usr/texbin", @"/usr/local/teTeX/bin/powerpc-apple-darwin-current", @"/sw/bin", @"/opt/local/bin", @"/usr/local/bin", nil];
+    int i = 0, count = [paths count];
+    
+    while ([fm isExecutableFileAtPath:dvipsPath] == NO) {
+        if (i < count) {
+            dvipsPath = [[paths objectAtIndex:i++] stringByAppendingPathComponent:@"dvips"];
+        } else {
+            dvipsPath = nil;
+            break;
+        }
+    }
+    
+    if (dvipsPath && [fm fileExistsAtPath:dviFile]) {
+        NSTask *task = [[NSTask alloc] init];
+        NSPipe *pipe = [NSPipe pipe];
+        NSFileHandle *fileHandle = [pipe fileHandleForReading];
+        
+        [task setLaunchPath:dvipsPath];
+        [task setArguments:[NSArray arrayWithObjects:@"-q", @"-f", dviFile, nil]]; 
+        [task setCurrentDirectoryPath:[dviFile stringByDeletingLastPathComponent]];
+        [task setStandardError:[NSFileHandle fileHandleWithNullDevice]];
+        [task setStandardOutput:pipe];
+        
+        [task launch];
+        
+        psData = [fileHandle readDataToEndOfFile];
+        
+        [task release];
+    }
+    
+    return [psData length] ? [self PDFDataWithPostScriptData:psData] : nil;
+}
+
+@end

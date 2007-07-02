@@ -45,6 +45,7 @@ extern NSString *SKNotesDocumentType;
 extern NSString *SKNotesRTFDocumentType;
 extern NSString *SKNotesTextDocumentType;
 extern NSString *SKPostScriptDocumentType;
+extern NSString *SKDVIDocumentType;
 
 
 @interface SKDocumentController : NSDocumentController
