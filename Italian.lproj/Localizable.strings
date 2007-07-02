@@ -111,7 +111,7 @@
 "Converter already stopped." = "Convertitore giˆ fermato.";
 
 /* PS conversion progress message */
-"Converting PostScript" = "Convertendo PostScript";
+"Converting %@" = "Convertendo %@";
 
 /* Menu item title */
 "Copy" = "Copia";
