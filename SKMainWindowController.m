@@ -566,25 +566,30 @@ static NSString *SKRightSidePaneWidthKey = @"SKRightSidePaneWidth";
         
         unsigned pageIndex = NSNotFound;
         NSRect visibleRect = NSZeroRect;
+        NSArray *snapshotDicts = nil;
         
         if ([pdfView document]) {
             pageIndex = [[pdfView document] indexForPage:[pdfView currentPage]];
             visibleRect = [pdfView convertRect:[pdfView convertRect:[[pdfView documentView] visibleRect] fromView:[pdfView documentView]] toPage:[pdfView currentPage]];
+            
+            [[pdfView document] cancelFindString];
+            
+            // these will be invalid. If needed, the document will restore them
+            [[self mutableArrayValueForKey:@"searchResults"] removeAllObjects];
+            [[self mutableArrayValueForKey:@"notes"] removeAllObjects];
+            [[self mutableArrayValueForKey:@"thumbnails"] removeAllObjects];
+            
+            snapshotDicts = [snapshots valueForKey:@"currentSetup"];
+            [snapshots makeObjectsPerformSelector:@selector(close)];
+            [[self mutableArrayValueForKey:@"snapshots"] removeAllObjects];
+            
+            [lastViewedPages removeAllObjects];
+            
+            [self unregisterForDocumentNotifications];
+            
+            [[pdfView document] setDelegate:nil];
         }
         
-        // these will be invalid. If needed, the document will restore them
-        [[self mutableArrayValueForKey:@"notes"] removeAllObjects];
-        [[self mutableArrayValueForKey:@"thumbnails"] removeAllObjects];
-        
-        NSArray *snapshotDicts = [snapshots valueForKey:@"currentSetup"];
-        [snapshots makeObjectsPerformSelector:@selector(close)];
-        [[self mutableArrayValueForKey:@"snapshots"] removeAllObjects];
-        
-        [lastViewedPages removeAllObjects];
-        
-        [self unregisterForDocumentNotifications];
-        
-        [[pdfView document] setDelegate:nil];
         [pdfView setDocument:document];
         [[pdfView document] setDelegate:self];
         
