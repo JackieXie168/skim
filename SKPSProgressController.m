@@ -45,20 +45,24 @@ typedef enum {
     SKPSConversionFailed = 1
 } SKPSConversionStatus;
 
-@interface SKPSProgressController (Private)
+@interface SKConversionProgressController (Private)
+- (int)runModalConversionInWithInfo:(NSDictionary *)info;
 - (void)doConversionWithInfo:(NSDictionary *)info;
-- (void)processingPostScriptPage:(NSNumber *)page;
-- (void)postscriptConversionCompleted:(BOOL)didComplete;
-- (void)postscriptConversionStarted;
-- (void)showPostScriptConversionMessage:(NSString *)message;
+- (void)conversionCompleted:(BOOL)didComplete;
+- (void)conversionStarted;
 - (NSString *)fileType;
+@end
+
+@interface SKPSProgressController (Private)
+- (void)processingPostScriptPage:(NSNumber *)page;
+- (void)showPostScriptConversionMessage:(NSString *)message;
 @end
 
 static void PSConverterBeginDocumentCallback(void *info)
 {
     id delegate = (id)info;
-    if (delegate && [delegate respondsToSelector:@selector(postscriptConversionStarted)])
-        [delegate performSelectorOnMainThread:@selector(postscriptConversionStarted) withObject:nil waitUntilDone:NO];
+    if (delegate && [delegate respondsToSelector:@selector(conversionStarted)])
+        [delegate performSelectorOnMainThread:@selector(conversionStarted) withObject:nil waitUntilDone:NO];
 }
 
 static void PSConverterBeginPageCallback(void *info, size_t pageNumber, CFDictionaryRef pageInfo)
@@ -71,11 +75,11 @@ static void PSConverterBeginPageCallback(void *info, size_t pageNumber, CFDictio
 static void PSConverterEndDocumentCallback(void *info, bool success)
 {
     id delegate = (id)info;
-    if (delegate && [delegate respondsToSelector:@selector(postscriptConversionCompleted:)]) {
-        NSMethodSignature *ms = [delegate methodSignatureForSelector:@selector(postscriptConversionCompleted:)];
+    if (delegate && [delegate respondsToSelector:@selector(conversionCompleted:)]) {
+        NSMethodSignature *ms = [delegate methodSignatureForSelector:@selector(conversionCompleted:)];
         NSInvocation *invocation = [NSInvocation invocationWithMethodSignature:ms];
         [invocation setTarget:delegate];
-        [invocation setSelector:@selector(postscriptConversionCompleted:)];
+        [invocation setSelector:@selector(conversionCompleted:)];
         
         BOOL val = (success == true);
         [invocation setArgument:&val atIndex:2];
@@ -90,12 +94,9 @@ static void PSConverterMessageCallback(void *info, CFStringRef message)
         [delegate performSelectorOnMainThread:@selector(showPostScriptConversionMessage:) withObject:(id)message waitUntilDone:NO];
 }
 
-@implementation SKPSProgressController
+#pragma mark -
 
-- (id)init
-{
-    return [super initWithWindowNibName:[self windowNibName] owner:self];
-}
+@implementation SKConversionProgressController
 
 - (void)awakeFromNib
 {
@@ -103,15 +104,73 @@ static void PSConverterMessageCallback(void *info, CFStringRef message)
     [[self window] setTitle:@""];
 }
 
+- (NSString *)windowNibName { return @"ConversionProgressWindow"; }
+
+- (IBAction)close:(id)sender { [self close]; }
+
+- (IBAction)cancel:(id)sender {}
+
+@end
+
+
+@implementation SKConversionProgressController (Private)
+
+- (int)runModalConversionInWithInfo:(NSDictionary *)info {
+    
+    NSModalSession session = [NSApp beginModalSessionForWindow:[self window]];
+    BOOL didDetach = NO;
+    int rv = 0;
+    
+    while (1) {
+        
+        // we run this inside the modal session since the thread could end before runModalForWindow starts
+        if (NO == didDetach) {
+            [NSThread detachNewThreadSelector:@selector(doConversionWithInfo:) toTarget:self withObject:info];
+            didDetach = YES;
+        }
+        
+        rv = [NSApp runModalSession:session];
+        if (rv != NSRunContinuesResponse)
+            break;
+    }
+    
+    [NSApp endModalSession:session];
+    
+    // close the window when finished
+    [self close];
+    
+    return rv;
+}
+
+- (void)doConversionWithInfo:(NSDictionary *)info {}    
+
+- (NSString *)fileType { return @""; }
+
+- (void)conversionCompleted:(BOOL)didComplete;
+{
+    [textField setStringValue:NSLocalizedString(@"File successfully converted!", @"PS conversion progress message")];
+    [progressBar stopAnimation:nil];
+    [cancelButton setTitle:NSLocalizedString(@"Close", @"Button title")];
+    [cancelButton setAction:@selector(close:)];
+}
+
+- (void)conversionStarted;
+{
+    [progressBar startAnimation:nil];
+    [textField setStringValue:[[NSString stringWithFormat:NSLocalizedString(@"Converting %@", @"PS conversion progress message"), [self fileType]] stringByAppendingEllipsis]];
+}
+
+@end
+
+#pragma mark -
+
+@implementation SKPSProgressController
+
 - (void)dealloc
 {
     if (converter) CFRelease(converter);
     [super dealloc];
 }
-
-- (NSString *)windowNibName { return @"ConversionProgressWindow"; }
-
-- (IBAction)close:(id)sender { [self close]; }
 
 - (IBAction)cancel:(id)sender
 {
@@ -151,24 +210,7 @@ static void PSConverterMessageCallback(void *info, CFStringRef message)
     
     NSDictionary *dictionary = [NSDictionary dictionaryWithObjectsAndKeys:(id)provider, @"provider", (id)consumer, @"consumer", nil];
     
-    NSModalSession session = [NSApp beginModalSessionForWindow:[self window]];
-    BOOL didDetach = NO;
-    int rv;
-    
-    while (1) {
-        
-        // we run this inside the modal session since the thread could end before runModalForWindow starts
-        if (NO == didDetach) {
-            [NSThread detachNewThreadSelector:@selector(doConversionWithInfo:) toTarget:self withObject:dictionary];
-            didDetach = YES;
-        }
-        
-        rv = [NSApp runModalSession:session];
-        if (rv != NSRunContinuesResponse)
-            break;
-    }
-    
-    [NSApp endModalSession:session];
+    int rv = [self runModalConversionInWithInfo:dictionary];
     
     CGDataProviderRelease(provider);
     CGDataConsumerRelease(consumer);
@@ -178,13 +220,11 @@ static void PSConverterMessageCallback(void *info, CFStringRef message)
         pdfData = nil;
     }
     
-    // close the window when finished
-    [self close];
-    
     return [(id)pdfData autorelease];
 }
 
 @end
+
 
 @implementation SKPSProgressController (Private)
 
@@ -217,20 +257,6 @@ static void PSConverterMessageCallback(void *info, CFStringRef message)
     [textField setStringValue:[[NSString stringWithFormat:NSLocalizedString(@"Processing page %d", @"PS conversion progress message"), [page intValue]] stringByAppendingEllipsis]];
 }
 
-- (void)postscriptConversionCompleted:(BOOL)didComplete;
-{
-    [textField setStringValue:NSLocalizedString(@"File successfully converted!", @"PS conversion progress message")];
-    [progressBar stopAnimation:nil];
-    [cancelButton setTitle:NSLocalizedString(@"Close", @"Button title")];
-    [cancelButton setAction:@selector(close:)];
-}
-
-- (void)postscriptConversionStarted;
-{
-    [progressBar startAnimation:nil];
-    [textField setStringValue:[[NSString stringWithFormat:NSLocalizedString(@"Converting %@", @"PS conversion progress message"), [self fileType]] stringByAppendingEllipsis]];
-}
-
 - (void)showPostScriptConversionMessage:(NSString *)message;
 {
     [textField setStringValue:message];
@@ -238,45 +264,122 @@ static void PSConverterMessageCallback(void *info, CFStringRef message)
 
 @end
 
+#pragma mark -
 
 @implementation SKDVIProgressController
 
+- (IBAction)cancel:(id)sender
+{
+    if (task == nil) {
+        NSBeep();
+        [textField setStringValue:NSLocalizedString(@"Converter already stopped.", @"PS conversion progress message")];
+        [cancelButton setTitle:NSLocalizedString(@"Close", @"Button title")];
+        [cancelButton setAction:@selector(close:)];
+    } else {
+        [task terminate];
+    }
+}
+
 - (NSData *)PDFDataWithDVIFile:(NSString *)dviFile {
-    NSData *psData = nil;
+    NSMutableData *pdfData = [[NSMutableData alloc] init];
     
-    NSString *dvipsPath = [[NSUserDefaults standardUserDefaults] stringForKey:@"SKDvipsBinaryPath"];
+    NSDictionary *dictionary = [NSDictionary dictionaryWithObjectsAndKeys:dviFile, @"dviFile", pdfData, @"pdfData", nil];
+    
+    int rv = [self runModalConversionInWithInfo:dictionary];
+    
+    if (rv != SKPSConversionSucceeded) {
+        [pdfData release];
+        pdfData = nil;
+    }
+    
+    return [pdfData autorelease];
+}
+
+@end
+
+@implementation SKDVIProgressController (Private)
+
+- (void)doConversionWithInfo:(NSDictionary *)info {
+    NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
+    
+    NSString *dviFile = [info objectForKey:@"dviFile"];
+    NSString *dvipdfmxPath = [[NSUserDefaults standardUserDefaults] stringForKey:@"SKDvipdfmxBinaryPath"];
     NSFileManager *fm = [NSFileManager defaultManager];
     NSArray *paths = [NSArray arrayWithObjects:@"/usr/texbin", @"/usr/local/teTeX/bin/powerpc-apple-darwin-current", @"/sw/bin", @"/opt/local/bin", @"/usr/local/bin", nil];
     int i = 0, count = [paths count];
     
-    while ([fm isExecutableFileAtPath:dvipsPath] == NO) {
+    while ([fm isExecutableFileAtPath:dvipdfmxPath] == NO) {
         if (i < count) {
-            dvipsPath = [[paths objectAtIndex:i++] stringByAppendingPathComponent:@"dvips"];
+            dvipdfmxPath = [[paths objectAtIndex:i++] stringByAppendingPathComponent:@"dvipdfmx"];
         } else {
-            dvipsPath = nil;
+            dvipdfmxPath = nil;
             break;
         }
     }
     
-    if (dvipsPath && [fm fileExistsAtPath:dviFile]) {
-        NSTask *task = [[NSTask alloc] init];
-        NSPipe *pipe = [NSPipe pipe];
-        NSFileHandle *fileHandle = [pipe fileHandleForReading];
+    NSString *tmpDir = NSTemporaryDirectory();
+    NSString *pdfFile = [tmpDir stringByAppendingPathComponent:[[[dviFile lastPathComponent] stringByDeletingPathExtension] stringByAppendingPathExtension:@"pdf"]];
+    BOOL success = dvipdfmxPath != nil && [fm fileExistsAtPath:dviFile];
+    
+    NSMethodSignature *ms;
+    NSInvocation *invocation;
+    
+    if (success) {
         
-        [task setLaunchPath:dvipsPath];
-        [task setArguments:[NSArray arrayWithObjects:@"-q", @"-f", dviFile, nil]]; 
+        [fm createDirectoryAtPath:tmpDir attributes:nil];
+        
+        task = [[NSTask alloc] init];
+        [task setLaunchPath:dvipdfmxPath];
+        [task setArguments:[NSArray arrayWithObjects:@"-o", pdfFile, dviFile, nil]]; 
         [task setCurrentDirectoryPath:[dviFile stringByDeletingLastPathComponent]];
         [task setStandardError:[NSFileHandle fileHandleWithNullDevice]];
-        [task setStandardOutput:pipe];
         
-        [task launch];
+        @try {
+            [task launch];
+        }
+        @catch(id exception) {
+            if([task isRunning])
+                [task terminate];
+            NSLog(@"%@ %@ failed", [task description], [task launchPath]);
+            success = NO;
+        }
         
-        psData = [fileHandle readDataToEndOfFile];
+        ms = [self methodSignatureForSelector:@selector(conversionStarted)];
+        invocation = [NSInvocation invocationWithMethodSignature:ms];
+        [invocation setTarget:self];
+        [invocation setSelector:@selector(conversionStarted)];
+        [invocation performSelectorOnMainThread:@selector(invoke) withObject:nil waitUntilDone:NO];
         
-        [task release];
+        if (success) {
+            [task waitUntilExit];
+            [task terminate];
+            success = 0 == [task terminationStatus];
+        }
     }
     
-    return [psData length] ? [self PDFDataWithPostScriptData:psData] : nil;
+    [task release];
+    task = nil;
+    
+    if (success)
+        [[info objectForKey:@"pdfData"] setData:[NSData dataWithContentsOfFile:pdfFile]];
+    [fm removeFileAtPath:tmpDir handler:nil];
+    
+    ms = [self methodSignatureForSelector:@selector(conversionCompleted:)];
+    invocation = [NSInvocation invocationWithMethodSignature:ms];
+    [invocation setTarget:self];
+    [invocation setSelector:@selector(conversionCompleted:)];
+    [invocation setArgument:&success atIndex:2];
+    [invocation performSelectorOnMainThread:@selector(invoke) withObject:nil waitUntilDone:NO];
+    
+    int val = (success ? SKPSConversionSucceeded : SKPSConversionFailed);
+    ms = [NSApp methodSignatureForSelector:@selector(stopModalWithCode:)];
+    invocation = [NSInvocation invocationWithMethodSignature:ms];
+    [invocation setTarget:NSApp];
+    [invocation setSelector:@selector(stopModalWithCode:)];
+    [invocation setArgument:&val atIndex:2];
+    [invocation performSelectorOnMainThread:@selector(invoke) withObject:nil waitUntilDone:NO];
+    
+    [pool release];
 }
 
 - (NSString *)fileType {

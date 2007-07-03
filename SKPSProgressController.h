@@ -38,18 +38,23 @@
 
 #import <Cocoa/Cocoa.h>
 
-@interface SKPSProgressController : NSWindowController
-{
+@interface SKConversionProgressController : NSWindowController {
     CGPSConverterRef converter;
     IBOutlet NSButton *cancelButton;
     IBOutlet NSProgressIndicator *progressBar;
     IBOutlet NSTextField *textField;
 }
-- (NSData *)PDFDataWithPostScriptData:(NSData *)psData;
 - (IBAction)cancel:(id)sender;
+- (IBAction)close:(id)sender;
+@end
+
+@interface SKPSProgressController : SKConversionProgressController
+- (NSData *)PDFDataWithPostScriptData:(NSData *)psData;
 @end
 
 
-@interface SKDVIProgressController : SKPSProgressController
+@interface SKDVIProgressController : SKConversionProgressController {
+    NSTask *task;
+}
 - (NSData *)PDFDataWithDVIFile:(NSString *)dviFile;
 @end

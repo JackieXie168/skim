@@ -3,7 +3,7 @@
         {CLASS = FirstResponder; LANGUAGE = ObjC; SUPERCLASS = NSObject; }, 
         {
             ACTIONS = {cancel = id; }; 
-            CLASS = SKPSProgressController; 
+            CLASS = SKConversionProgressController; 
             LANGUAGE = ObjC; 
             OUTLETS = {
                 cancelButton = NSButton; 
