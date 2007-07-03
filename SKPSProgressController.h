@@ -39,7 +39,6 @@
 #import <Cocoa/Cocoa.h>
 
 @interface SKConversionProgressController : NSWindowController {
-    CGPSConverterRef converter;
     IBOutlet NSButton *cancelButton;
     IBOutlet NSProgressIndicator *progressBar;
     IBOutlet NSTextField *textField;
@@ -48,7 +47,10 @@
 - (IBAction)close:(id)sender;
 @end
 
-@interface SKPSProgressController : SKConversionProgressController
+
+@interface SKPSProgressController : SKConversionProgressController {
+    CGPSConverterRef converter;
+}
 - (NSData *)PDFDataWithPostScriptData:(NSData *)psData;
 @end
 
