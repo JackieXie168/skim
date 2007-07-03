@@ -39,11 +39,11 @@
 #import "SKPSProgressController.h"
 #import "NSString_SKExtensions.h"
 
-typedef enum {
-    SKPSConversionCanceled = -1,
-    SKPSConversionSucceeded = 0,
-    SKPSConversionFailed = 1
-} SKPSConversionStatus;
+enum {
+    SKConversionCanceled = -1,
+    SKConversionSucceeded = 0,
+    SKConversionFailed = 1
+};
 
 @interface SKConversionProgressController (Private)
 - (int)runModalConversionInWithInfo:(NSDictionary *)info;
@@ -174,7 +174,7 @@ static void PSConverterMessageCallback(void *info, CFStringRef message)
 
 - (IBAction)cancel:(id)sender
 {
-    [NSApp stopModalWithCode:SKPSConversionCanceled];
+    [NSApp stopModalWithCode:SKConversionCanceled];
 
     if (CGPSConverterAbort(converter) == false) {
         NSBeep();
@@ -215,7 +215,7 @@ static void PSConverterMessageCallback(void *info, CFStringRef message)
     CGDataProviderRelease(provider);
     CGDataConsumerRelease(consumer);
     
-    if (rv != SKPSConversionSucceeded) {
+    if (rv != SKConversionSucceeded) {
         CFRelease(pdfData);
         pdfData = nil;
     }
@@ -236,7 +236,7 @@ static void PSConverterMessageCallback(void *info, CFStringRef message)
     CGDataConsumerRef consumer = (void *)[info objectForKey:@"consumer"];
     Boolean success = CGPSConverterConvert(converter, provider, consumer, NULL);
     
-    int val = (success ? SKPSConversionSucceeded : SKPSConversionFailed);
+    int val = (success ? SKConversionSucceeded : SKConversionFailed);
     
     NSMethodSignature *ms = [NSApp methodSignatureForSelector:@selector(stopModalWithCode:)];
     NSInvocation *invocation = [NSInvocation invocationWithMethodSignature:ms];
@@ -287,7 +287,7 @@ static void PSConverterMessageCallback(void *info, CFStringRef message)
     
     int rv = [self runModalConversionInWithInfo:dictionary];
     
-    if (rv != SKPSConversionSucceeded) {
+    if (rv != SKConversionSucceeded) {
         [pdfData release];
         pdfData = nil;
     }
@@ -371,7 +371,7 @@ static void PSConverterMessageCallback(void *info, CFStringRef message)
     [invocation setArgument:&success atIndex:2];
     [invocation performSelectorOnMainThread:@selector(invoke) withObject:nil waitUntilDone:NO];
     
-    int val = (success ? SKPSConversionSucceeded : SKPSConversionFailed);
+    int val = (success ? SKConversionSucceeded : SKConversionFailed);
     ms = [NSApp methodSignatureForSelector:@selector(stopModalWithCode:)];
     invocation = [NSInvocation invocationWithMethodSignature:ms];
     [invocation setTarget:NSApp];
