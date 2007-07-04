@@ -420,7 +420,7 @@ static SKLineInspector *sharedLineInspector = nil;
 }
 
 - (void)setLineWidth:(float)width {
-    if (fabs(lineWidth - width) > 0.0) {
+    if (fabs(lineWidth - width) > 0.00001) {
         lineWidth = width;
         [self sendActionToTarget:@selector(changeLineWidth:)];
         [[NSNotificationCenter defaultCenter] postNotificationName:SKLineInspectorLineWidthDidChangeNotification object:self];
