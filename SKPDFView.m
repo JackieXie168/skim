@@ -808,7 +808,10 @@ static void SKCGContextDrawGrabHandle(CGContextRef context, CGPoint point, float
                     }
                     break;
                 case SKMoveToolMode:
-                    [self dragWithEvent:theEvent];	
+                    if (area & kPDFLinkArea)
+                        [super mouseDown:theEvent];
+                    else
+                        [self dragWithEvent:theEvent];	
                     break;
                 case SKSelectToolMode:
                     [self selectWithEvent:theEvent];
@@ -860,6 +863,8 @@ static void SKCGContextDrawGrabHandle(CGContextRef context, CGPoint point, float
             draggingAnnotation = NO;
             break;
         case SKMoveToolMode:
+            [super mouseUp:theEvent];
+            break;
         case SKMagnifyToolMode:
         case SKSelectToolMode:
             // shouldn't reach this
@@ -888,6 +893,8 @@ static void SKCGContextDrawGrabHandle(CGContextRef context, CGPoint point, float
             }
             break;
         case SKMoveToolMode:
+            [super mouseDragged:theEvent];
+            break;
         case SKMagnifyToolMode:
         case SKSelectToolMode:
             // shouldn't reach this
@@ -3263,7 +3270,10 @@ static void SKCGContextDrawGrabHandle(CGContextRef context, CGPoint point, float
                 break;
             }
             case SKMoveToolMode:
-                cursor = [NSCursor openHandCursor];
+                if ([self areaOfInterestForMouse:theEvent] & kPDFLinkArea)
+                    cursor = [NSCursor pointingHandCursor];
+                else
+                    cursor = [NSCursor openHandCursor];
                 break;
             case SKSelectToolMode:
                 if ([self areaOfInterestForMouse:theEvent] == kPDFNoArea) {
