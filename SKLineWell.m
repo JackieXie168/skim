@@ -731,6 +731,7 @@ static NSString *SKLineWellWillBecomeActiveNotification = @"SKLineWellWillBecome
 - (NSDragOperation)draggingEntered:(id <NSDraggingInfo>)sender {
     if ([self isEnabled] && [sender draggingSource] != self && [[sender draggingPasteboard] availableTypeFromArray:[NSArray arrayWithObjects:SKLineStylePboardType, nil]]) {
         [self setHighlighted:YES];
+        [self setKeyboardFocusRingNeedsDisplayInRect:[self bounds]];
         [self setNeedsDisplay:YES];
         return NSDragOperationEvery;
     } else
@@ -740,6 +741,7 @@ static NSString *SKLineWellWillBecomeActiveNotification = @"SKLineWellWillBecome
 - (void)draggingExited:(id <NSDraggingInfo>)sender {
     if ([self isEnabled] && [sender draggingSource] != self && [[sender draggingPasteboard] availableTypeFromArray:[NSArray arrayWithObjects:SKLineStylePboardType, nil]]) {
         [self setHighlighted:NO];
+        [self setKeyboardFocusRingNeedsDisplayInRect:[self bounds]];
         [self setNeedsDisplay:YES];
     }
 }
@@ -767,6 +769,7 @@ static NSString *SKLineWellWillBecomeActiveNotification = @"SKLineWellWillBecome
     [self sendAction:[self action] to:[self target]];
     
     [self setHighlighted:NO];
+    [self setKeyboardFocusRingNeedsDisplayInRect:[self bounds]];
     [self setNeedsDisplay:YES];
     
 	return dict != nil;
