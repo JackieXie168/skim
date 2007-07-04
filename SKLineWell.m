@@ -378,21 +378,6 @@ static NSString *SKLineWellWillBecomeActiveNotification = @"SKLineWellWillBecome
     }
 }
 
-- (void)keyDown:(NSEvent *)theEvent {
-    NSString *characters = [theEvent charactersIgnoringModifiers];
-    unichar eventChar = [characters length] > 0 ? [characters characterAtIndex:0] : 0;
-	unsigned int modifiers = [theEvent modifierFlags] & NSDeviceIndependentModifierFlagsMask;
-    if (eventChar == 0x20) {
-        if ([self isEnabled]) {
-            if ([self isActive])
-                [self deactivate];
-            else
-                [self activate:(modifiers & NSShiftKeyMask) == 0];
-        }
-    } else 
-        [super keyDown:theEvent];
-}
-
 - (void)performClick:(id)sender {
     if ([self isEnabled]) {
         if ([self isActive])
