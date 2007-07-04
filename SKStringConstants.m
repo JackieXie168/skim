@@ -90,6 +90,7 @@ NSString *SKLineNoteDashPatternKey = @"SKLineNoteDashPattern";
 NSString *SKLineNoteLineStyleKey = @"SKLineNoteLineStyle";
 NSString *SKLineNoteStartLineStyleKey = @"SKLineNoteStartLineStyle";
 NSString *SKLineNoteEndLineStyleKey = @"SKLineNoteEndLineStyle";
+NSString *SKSwatchColorsKey = @"SKSwatchColors";
 NSString *SKDefaultPDFDisplaySettingsKey = @"SKDefaultPDFDisplaySettings";
 NSString *SKDefaultFullScreenPDFDisplaySettingsKey = @"SKDefaultFullScreenPDFDisplaySettings";
 NSString *SKEnableAppleRemoteKey = @"SKEnableAppleRemote";

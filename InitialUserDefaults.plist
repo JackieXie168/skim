@@ -171,6 +171,33 @@
         <string>mate</string>
         <key>SKTeXEditorArguments</key>
         <string>-l %line "%file"</string>
+        <key>SKSwatchColors</key>
+        <array>
+            <data>
+		BAt0eXBlZHN0cmVhbYED6IQBQISEhAdOU0NvbG9yAISECE5TT2JqZWN0AIWE
+		AWMBhARmZmZmAQAAAYY=
+		</data>
+            <data>
+		BAt0eXBlZHN0cmVhbYED6IQBQISEhAdOU0NvbG9yAISECE5TT2JqZWN0AIWE
+		AWMBhARmZmZmAYM/AAAAAAGG
+		</data>
+            <data>
+		BAt0eXBlZHN0cmVhbYED6IQBQISEhAdOU0NvbG9yAISECE5TT2JqZWN0AIWE
+		AWMBhARmZmZmAQEAAYY=
+		</data>
+            <data>
+		BAt0eXBlZHN0cmVhbYED6IQBQISEhAdOU0NvbG9yAISECE5TT2JqZWN0AIWE
+		AWMBhARmZmZmAAEAAYY=
+		</data>
+            <data>
+		BAt0eXBlZHN0cmVhbYED6IQBQISEhAdOU0NvbG9yAISECE5TT2JqZWN0AIWE
+		AWMBhARmZmZmAAABAYY=
+		</data>
+            <data>
+		BAt0eXBlZHN0cmVhbYED6IQBQISEhAdOU0NvbG9yAISECE5TT2JqZWN0AIWE
+		AWMBhARmZmZmgz8AAAAAgz8AAAABhg==
+		</data>
+        </array>
         <key>SKActivateFullScreenNavigationAtBottom</key>
         <false/>
         <key>SKActivatePresentationNavigationAtBottom</key>

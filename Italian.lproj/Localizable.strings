@@ -104,6 +104,10 @@
 /* Tool tip message */
 "Closed arrow start line style" = "Closed arrow start line style";
 
+/* Tool tip message
+   Toolbar item label */
+"Colors" = "Colori";
+
 /* Toolbar item label */
 "Contents Pane" = "Pannello Contenuti";
 

@@ -31,6 +31,7 @@
             LANGUAGE = ObjC; 
             SUPERCLASS = NSImageCell; 
         }, 
+        {CLASS = SKColorSwatch; LANGUAGE = ObjC; SUPERCLASS = NSControl; }, 
         {CLASS = SKFullScreenWindow; LANGUAGE = ObjC; SUPERCLASS = NSWindow; }, 
         {CLASS = SKMainWindow; LANGUAGE = ObjC; SUPERCLASS = NSWindow; }, 
         {
@@ -82,6 +83,8 @@
                 savePDFSettingToDefaults = id; 
                 search = id; 
                 searchPDF = id; 
+                selectColor = id; 
+                smartAutoCropAll = id; 
                 takeSnapshot = id; 
                 toggleAutoActualSize = id; 
                 toggleAutoScale = id; 
@@ -105,6 +108,7 @@
                 chooseScaleField = NSTextField; 
                 chooseScaleSheet = NSWindow; 
                 circlePopUpButton = BDSKImagePopUpButton; 
+                colorSwatch = SKColorSwatch; 
                 currentLeftSideView = NSView; 
                 currentRightSideView = NSView; 
                 displayBoxPopUpButton = NSPopUpButton; 

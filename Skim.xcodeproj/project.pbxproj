@@ -114,6 +114,8 @@
 		CE4BC12F0C357A0300C2AF03 /* SKLineWell.h in CopyFiles */ = {isa = PBXBuildFile; fileRef = CE4BC12D0C357A0300C2AF03 /* SKLineWell.h */; };
 		CE4BC1300C357A0300C2AF03 /* SKLineWell.m in Sources */ = {isa = PBXBuildFile; fileRef = CE4BC12E0C357A0300C2AF03 /* SKLineWell.m */; };
 		CE4D88D80C3AE531002C20CB /* DVIDocument.icns in Resources */ = {isa = PBXBuildFile; fileRef = CE4D88D70C3AE52F002C20CB /* DVIDocument.icns */; };
+		CE4D97FC0C3C2BFF002C20CB /* SKColorSwatch.h in CopyFiles */ = {isa = PBXBuildFile; fileRef = CE4D97FA0C3C2BFF002C20CB /* SKColorSwatch.h */; };
+		CE4D97FD0C3C2BFF002C20CB /* SKColorSwatch.m in Sources */ = {isa = PBXBuildFile; fileRef = CE4D97FB0C3C2BFF002C20CB /* SKColorSwatch.m */; };
 		CE4DA2380B9D9BE10039E89C /* ToolbarSquareNote.tiff in Resources */ = {isa = PBXBuildFile; fileRef = CE4DA2160B9D9AA70039E89C /* ToolbarSquareNote.tiff */; };
 		CE4DA2440B9D9EC00039E89C /* SquareNoteAdorn.tiff in Resources */ = {isa = PBXBuildFile; fileRef = CE4DA2430B9D9E640039E89C /* SquareNoteAdorn.tiff */; };
 		CE4DA9240B9E190D0039E89C /* Skim Help in Resources */ = {isa = PBXBuildFile; fileRef = CE4DA9190B9E190D0039E89C /* Skim Help */; };
@@ -265,6 +267,7 @@
 			files = (
 				CE2BD8450BD4135600A5F4DB /* Sparkle.framework in CopyFiles */,
 				CE4BC12F0C357A0300C2AF03 /* SKLineWell.h in CopyFiles */,
+				CE4D97FC0C3C2BFF002C20CB /* SKColorSwatch.h in CopyFiles */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -450,6 +453,8 @@
 		CE4BC12D0C357A0300C2AF03 /* SKLineWell.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = SKLineWell.h; sourceTree = "<group>"; };
 		CE4BC12E0C357A0300C2AF03 /* SKLineWell.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = SKLineWell.m; sourceTree = "<group>"; };
 		CE4D88D70C3AE52F002C20CB /* DVIDocument.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; name = DVIDocument.icns; path = Images/DVIDocument.icns; sourceTree = "<group>"; };
+		CE4D97FA0C3C2BFF002C20CB /* SKColorSwatch.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = SKColorSwatch.h; sourceTree = "<group>"; };
+		CE4D97FB0C3C2BFF002C20CB /* SKColorSwatch.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = SKColorSwatch.m; sourceTree = "<group>"; };
 		CE4DA2160B9D9AA70039E89C /* ToolbarSquareNote.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; name = ToolbarSquareNote.tiff; path = Images/ToolbarSquareNote.tiff; sourceTree = "<group>"; };
 		CE4DA2430B9D9E640039E89C /* SquareNoteAdorn.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; name = SquareNoteAdorn.tiff; path = Images/SquareNoteAdorn.tiff; sourceTree = "<group>"; };
 		CE4DA8D00B9E15AD0039E89C /* applehelp.init */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text; name = applehelp.init; path = "Skim Help/applehelp.init"; sourceTree = "<group>"; };
@@ -843,6 +848,8 @@
 		CE2DE4D10B85D92F00D0DA12 /* Views */ = {
 			isa = PBXGroup;
 			children = (
+				CE4D97FA0C3C2BFF002C20CB /* SKColorSwatch.h */,
+				CE4D97FB0C3C2BFF002C20CB /* SKColorSwatch.m */,
 				CE4BC12D0C357A0300C2AF03 /* SKLineWell.h */,
 				CE4BC12E0C357A0300C2AF03 /* SKLineWell.m */,
 				CEA575CC0B9206E60003D2E7 /* SKNoteOutlineView.h */,
@@ -1365,6 +1372,7 @@
 				CE7C20500C259A5D0059E08C /* NSColor_SKExtensions.m in Sources */,
 				CE8B46E90C29CA00005CE7F1 /* SKLineInspector.m in Sources */,
 				CE4BC1300C357A0300C2AF03 /* SKLineWell.m in Sources */,
+				CE4D97FD0C3C2BFF002C20CB /* SKColorSwatch.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -72,6 +72,7 @@
 #import "NSString_SKExtensions.h"
 #import "SKReadingBar.h"
 #import "SKLineInspector.h"
+#import "SKColorSwatch.h"
 
 #define SEGMENTED_CONTROL_HEIGHT    25.0
 #define WINDOW_X_DELTA              0.0
@@ -103,6 +104,7 @@ static NSString *SKDocumentToolbarNewLineItemIdentifier = @"SKDocumentToolbarNew
 static NSString *SKDocumentToolbarInfoItemIdentifier = @"SKDocumentToolbarInfoItemIdentifier";
 static NSString *SKDocumentToolbarToolModeItemIdentifier = @"SKDocumentToolbarToolModeItemIdentifier";
 static NSString *SKDocumentToolbarDisplayBoxItemIdentifier = @"SKDocumentToolbarDisplayBoxItemIdentifier";
+static NSString *SKDocumentToolbarColorSwatchItemIdentifier = @"SKDocumentToolbarColorSwatchItemIdentifier";
 static NSString *SKDocumentToolbarContentsPaneItemIdentifier = @"SKDocumentToolbarContentsPaneItemIdentifier";
 static NSString *SKDocumentToolbarNotesPaneItemIdentifier = @"SKDocumentToolbarNotesPaneItemIdentifier";
 
@@ -118,6 +120,10 @@ static NSString *SKRightSidePaneWidthKey = @"SKRightSidePaneWidth";
 @end
 
 @implementation SKMainWindowController
+
++ (void)initialize {
+    [NSValueTransformer setValueTransformer:[[[SKUnarchiveFromDataArrayTransformer alloc] init] autorelease] forName:@"SKUnarchiveFromDataArrayTransformer"];
+}
 
 - (id)initWithWindowNibName:(NSString *)windowNibName owner:(id)owner{
     self = [super initWithWindowNibName:windowNibName owner:owner];
@@ -147,7 +153,7 @@ static NSString *SKRightSidePaneWidthKey = @"SKRightSidePaneWidth";
 }
 
 - (void)dealloc {
-    
+    [colorSwatch unbind:@"color"];
 	[[NSNotificationCenter defaultCenter] removeObserver: self];
     [self unregisterAsObserver];
     [(id)temporaryAnnotations release];
@@ -895,6 +901,16 @@ static NSString *SKRightSidePaneWidthKey = @"SKRightSidePaneWidth";
 
 - (IBAction)changeColorFill:(id)sender{
    [self updateColorPanel];
+}
+
+- (IBAction)selectColor:(id)sender{
+    PDFAnnotation *annotation = [pdfView activeAnnotation];
+    if ([annotation isNoteAnnotation]) {
+        NSColor *color = [annotation color];
+        NSColor *newColor = [sender color];
+        if (newColor && [color isEqual:newColor] == NO)
+            [annotation setColor:newColor];
+    }
 }
 
 - (IBAction)changeFont:(id)sender{
@@ -3285,7 +3301,7 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
     [item release];
     
     
-	menu = [[NSMenu allocWithZone:[NSMenu menuZone]] init];
+    menu = [[[NSMenu allocWithZone:[NSMenu menuZone]] initWithTitle:@""] autorelease];
     menuItem = [menu addItemWithTitle:NSLocalizedString(@"Back", @"Menu item title") action:@selector(doGoBack:) keyEquivalent:@""];
 	[menuItem setTarget:self];
     menuItem = [menu addItemWithTitle:NSLocalizedString(@"Forward", @"Menu item title") action:@selector(doGoForward:) keyEquivalent:@""];
@@ -3514,7 +3530,7 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
     [markupPopUpButton setRefreshesMenu:NO];
     [markupPopUpButton setMenu:menu];
     
-	menu = [[NSMenu allocWithZone:[NSMenu menuZone]] init];
+    menu = [[[NSMenu allocWithZone:[NSMenu menuZone]] initWithTitle:@""] autorelease];
     menuItem = [menu addItemWithTitle:NSLocalizedString(@"Text Tool", @"Menu item title") action:@selector(changeToolMode:) keyEquivalent:@""];
 	[menuItem setTarget:self];
 	[menuItem setTag:SKTextToolMode];
@@ -3569,7 +3585,7 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
     [item setMenuFormRepresentation:menuItem];
     [toolbarItems setObject:item forKey:SKDocumentToolbarToolModeItemIdentifier];
     [item release];
-	menu = [[NSMenu allocWithZone:[NSMenu menuZone]] init];
+    menu = [[[NSMenu allocWithZone:[NSMenu menuZone]] initWithTitle:@""] autorelease];
     menuItem = [menu addItemWithTitle:NSLocalizedString(@"Text Note", @"Menu item title") action:@selector(changeAnnotationMode:) keyEquivalent:@""];
 	[menuItem setTarget:self];
 	[menuItem setTag:SKFreeTextNote];
@@ -3604,7 +3620,7 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
 	[menuItem setImage:[NSImage imageNamed:@"LineNoteAdorn"]];
     [toolModeButton setMenu:menu forSegment:SKNoteToolMode];
     
-	menu = [[NSMenu allocWithZone:[NSMenu menuZone]] init];
+    menu = [[[NSMenu allocWithZone:[NSMenu menuZone]] initWithTitle:@""] autorelease];
     menuItem = [menu addItemWithTitle:NSLocalizedString(@"Media Box", @"Menu item title") action:@selector(changeDisplayBox:) keyEquivalent:@""];
 	[menuItem setTarget:self];
 	[menuItem setTag:kPDFDisplayBoxMediaBox];
@@ -3619,6 +3635,18 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
     [item setViewWithSizes:displayBoxPopUpButton];
     [item setMenuFormRepresentation:menuItem];
     [toolbarItems setObject:item forKey:SKDocumentToolbarDisplayBoxItemIdentifier];
+    [item release];
+    
+    NSDictionary *options = [NSDictionary dictionaryWithObject:@"SKUnarchiveFromDataArrayTransformer" forKey:NSValueTransformerNameBindingOption];
+    [colorSwatch bind:@"colors" toObject:[NSUserDefaultsController sharedUserDefaultsController] withKeyPath:[NSString stringWithFormat:@"values.%@", SKSwatchColorsKey] options:options];
+    [colorSwatch sizeToFit];
+	menuItem = [[[NSMenuItem allocWithZone:[NSMenu menuZone]] initWithTitle:NSLocalizedString(@"Colors", @"Toolbar item label") action:@selector(orderFrontColorPanel:) keyEquivalent:@""] autorelease];
+    item = [[SKToolbarItem alloc] initWithItemIdentifier:SKDocumentToolbarColorSwatchItemIdentifier];
+    [item setLabels:NSLocalizedString(@"Colors", @"Toolbar item label")];
+    [item setToolTip:NSLocalizedString(@"Colors", @"Tool tip message")];
+    [item setViewWithSizes:colorSwatch];
+    [item setMenuFormRepresentation:menuItem];
+    [toolbarItems setObject:item forKey:SKDocumentToolbarColorSwatchItemIdentifier];
     [item release];
     
     item = [[SKToolbarItem alloc] initWithItemIdentifier:SKDocumentToolbarInfoItemIdentifier];
@@ -3702,11 +3730,12 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
         SKDocumentToolbarNewCircleNoteItemIdentifier, 
         SKDocumentToolbarNewMarkupItemIdentifier,
         SKDocumentToolbarNewLineItemIdentifier,
-        SKDocumentToolbarInfoItemIdentifier, 
         SKDocumentToolbarContentsPaneItemIdentifier, 
         SKDocumentToolbarNotesPaneItemIdentifier, 
+        SKDocumentToolbarInfoItemIdentifier, 
         SKDocumentToolbarToolModeItemIdentifier, 
         SKDocumentToolbarDisplayBoxItemIdentifier, 
+        SKDocumentToolbarColorSwatchItemIdentifier, 
 		NSToolbarPrintItemIdentifier,
 		NSToolbarFlexibleSpaceItemIdentifier, 
 		NSToolbarSpaceItemIdentifier, 
