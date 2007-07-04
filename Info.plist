@@ -169,6 +169,8 @@
 			<array>
 				<string>dvi</string>
 			</array>
+			<key>CFBundleTypeIconFile</key>
+			<string>DVIDocument</string>
 			<key>CFBundleTypeMIMETypes</key>
 			<array>
 				<string>application/x-dvi</string>
