@@ -420,9 +420,11 @@ static SKLineInspector *sharedLineInspector = nil;
 }
 
 - (void)setLineWidth:(float)width {
-    lineWidth = width;
-    [self sendActionToTarget:@selector(changeLineWidth:)];
-    [[NSNotificationCenter defaultCenter] postNotificationName:SKLineInspectorLineWidthDidChangeNotification object:self];
+    if (fabs(lineWidth - width) > 0.0) {
+        lineWidth = width;
+        [self sendActionToTarget:@selector(changeLineWidth:)];
+        [[NSNotificationCenter defaultCenter] postNotificationName:SKLineInspectorLineWidthDidChangeNotification object:self];
+    }
 }
 
 - (PDFBorderStyle)style {
@@ -442,7 +444,7 @@ static SKLineInspector *sharedLineInspector = nil;
 }
 
 - (void)setDashPattern:(NSArray *)pattern {
-    if (pattern != dashPattern) {
+    if ([pattern isEqualToArray:dashPattern] == NO && (pattern || dashPattern)) {
         [dashPattern release];
         dashPattern = [pattern copy];
         [self sendActionToTarget:@selector(changeDashPattern:)];

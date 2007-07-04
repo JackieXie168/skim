@@ -571,8 +571,10 @@ static NSString *SKLineWellWillBecomeActiveNotification = @"SKLineWellWillBecome
 }
 
 - (void)setLineWidth:(float)width {
-    lineWidth = width;
-    [self updateValue:[NSNumber numberWithFloat:lineWidth] forKey:@"lineWidth"];
+    if (fabs(lineWidth - width) > 0.0) {
+        lineWidth = width;
+        [self updateValue:[NSNumber numberWithFloat:lineWidth] forKey:@"lineWidth"];
+    }
 }
 
 - (PDFBorderStyle)style {
@@ -591,7 +593,7 @@ static NSString *SKLineWellWillBecomeActiveNotification = @"SKLineWellWillBecome
 }
 
 - (void)setDashPattern:(NSArray *)pattern {
-    if (pattern != dashPattern) {
+    if ([pattern isEqualToArray:dashPattern] == NO && (pattern || dashPattern)) {
         [dashPattern release];
         dashPattern = [pattern copy];
         [self updateValue:dashPattern forKey:@"dashPattern"];
