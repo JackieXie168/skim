@@ -58,7 +58,7 @@ typedef struct _SKPDFViewState {
 } SKPDFViewState;
 
 @class PDFOutline, SKThumbnail;
-@class SKPDFView, SKOutlineView, SKNoteOutlineView, SKThumbnailTableView, SKSnapshotTableView, SKSplitView, BDSKCollapsibleView, BDSKEdgeView, BDSKImagePopUpButton;
+@class SKPDFView, SKOutlineView, SKNoteOutlineView, SKThumbnailTableView, SKSnapshotTableView, SKSplitView, BDSKCollapsibleView, BDSKEdgeView, BDSKImagePopUpButton, SKColorSwatch;
 @class SKFullScreenWindow, SKNavigationWindow, SKSideWindow, SKSnapshotWindowController;
 
 @interface SKMainWindowController : NSWindowController {
@@ -140,6 +140,7 @@ typedef struct _SKPDFViewState {
     IBOutlet BDSKImagePopUpButton *notePopUpButton;
     IBOutlet BDSKImagePopUpButton *circlePopUpButton;
     IBOutlet BDSKImagePopUpButton *markupPopUpButton;
+    IBOutlet SKColorSwatch      *colorSwatch;
     NSMutableDictionary         *toolbarItems;
     
     IBOutlet NSWindow           *choosePageSheet;
@@ -181,6 +182,7 @@ typedef struct _SKPDFViewState {
 
 - (IBAction)changeColor:(id)sender;
 - (IBAction)changeColorFill:(id)sender;
+- (IBAction)selectColor:(id)sender;
 - (IBAction)changeFont:(id)sender;
 - (IBAction)createNewNote:(id)sender;
 - (IBAction)editNote:(id)sender;
