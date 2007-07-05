@@ -112,6 +112,11 @@ CFStringRef SKStringCreateByCollapsingAndTrimmingWhitespaceAndNewlines(CFAllocat
     return [self stringByAppendingFormat:@"%C", 0x2026];
 }
 
+- (NSString *)stringByReplacingPathExtension:(NSString *)ext;
+{
+    return [[self stringByDeletingPathExtension] stringByAppendingPathExtension:ext];
+}
+
 // parses a space separated list of shell script argments
 // allows quoting parts of an argument and escaped characters outside quotes, according to shell rules
 - (NSArray *)shellScriptArgumentsArray;

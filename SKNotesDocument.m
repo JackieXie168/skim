@@ -44,6 +44,7 @@
 #import "SKTemplateParser.h"
 #import "SKApplicationController.h"
 #import "NSValue_SKExtensions.h"
+#import "NSString_SKExtensions.h"
 
 @implementation SKNotesDocument
 
@@ -170,7 +171,7 @@
 }
 
 - (IBAction)openPDF:(id)sender {
-    NSString *path = [[[self fileName] stringByDeletingPathExtension] stringByAppendingPathExtension:@"pdf"];
+    NSString *path = [[self fileName] stringByReplacingPathExtension:@"pdf"];
     if ([[NSFileManager defaultManager] fileExistsAtPath:path])
         [[NSDocumentController sharedDocumentController] openDocumentWithContentsOfURL:[NSURL fileURLWithPath:path] display:YES error:NULL];
     else NSBeep();

@@ -37,6 +37,7 @@
  */
 
 #import "SKDocumentController.h"
+#import "NSString_SKExtensions.h"
 
 // See CFBundleTypeName in Info.plist
 NSString *SKPDFDocumentType = nil; /* set to NSPDFPboardType, not @"NSPDFPboardType" */
@@ -135,7 +136,7 @@ static NSData *convertTIFFDataToPDF(NSData *tiffData)
     if ([type isEqualToString:SKNotesDocumentType]) {
         NSAppleEventDescriptor *event = [[NSAppleEventManager sharedAppleEventManager] currentAppleEvent];
         if ([event eventID] == kAEOpenDocuments && [event descriptorForKeyword:keyAESearchText]) {
-            NSString *pdfFile = [[[absoluteURL path] stringByDeletingPathExtension] stringByAppendingPathExtension:@"pdf"];
+            NSString *pdfFile = [[absoluteURL path] stringByReplacingPathExtension:@"pdf"];
             BOOL isDir;
             if ([[NSFileManager defaultManager] fileExistsAtPath:pdfFile isDirectory:&isDir] && isDir == NO)
                 absoluteURL = [NSURL fileURLWithPath:pdfFile];
