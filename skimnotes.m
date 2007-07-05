@@ -48,10 +48,7 @@ int main (int argc, const char * argv[]) {
     BOOL isDir = NO;
     
     if (action != SKNActionRemove && notesPath == nil) {
-        if ([[pdfPath pathExtension] caseInsensitiveCompare:@"pdf"] == NSOrderedSame)
-            notesPath = [[pdfPath stringByDeletingPathExtension] stringByAppendingPathExtension:@"skim"];
-        else
-            notesPath = [pdfPath stringByAppendingPathExtension:@"skim"];
+        notesPath = [[pdfPath stringByDeletingPathExtension] stringByAppendingPathExtension:@"skim"];
     }
     
     if ([[pdfPath pathExtension] caseInsensitiveCompare:@"pdf"] == NSOrderedSame && 

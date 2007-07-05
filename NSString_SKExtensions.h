@@ -45,6 +45,8 @@
 
 - (NSString *)stringByAppendingEllipsis;
 
+- (NSString *)stringByReplacingPathExtension:(NSString *)ext;
+
 - (NSArray *)shellScriptArgumentsArray;
 
 - (NSRange)rangeOfLeadingEmptyLine;

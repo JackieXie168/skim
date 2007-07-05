@@ -318,7 +318,7 @@ static void PSConverterMessageCallback(void *info, CFStringRef message)
     }
     
     NSString *tmpDir = NSTemporaryDirectory();
-    NSString *pdfFile = [tmpDir stringByAppendingPathComponent:[[[dviFile lastPathComponent] stringByDeletingPathExtension] stringByAppendingPathExtension:@"pdf"]];
+    NSString *pdfFile = [tmpDir stringByAppendingPathComponent:[[dviFile lastPathComponent] stringByReplacingPathExtension:@"pdf"]];
     BOOL success = dvipdfmxPath != nil && [fm fileExistsAtPath:dviFile];
     
     NSMethodSignature *ms;

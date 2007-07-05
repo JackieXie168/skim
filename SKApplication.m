@@ -42,6 +42,7 @@
 #import "SKPDFSynchronizer.h"
 #import "SKPDFView.h"
 #import "SKLineInspector.h"
+#import "NSString_SKExtensions.h"
 
 NSString *SKApplicationWillTerminateNotification = @"SKApplicationWillTerminateNotification";
 
@@ -109,11 +110,7 @@ NSString *SKApplicationWillTerminateNotification = @"SKApplicationWillTerminateN
     
     if ([file isKindOfClass:[NSURL class]] && [source isKindOfClass:[NSURL class]]) {
         
-        source = [source path];
-        if ([[source pathExtension] length] == 0)
-            source = [source stringByAppendingPathExtension:@"tex"];
-        else if ([[source pathExtension] caseInsensitiveCompare:@"tex"] == NO)
-            source = [[source stringByDeletingPathExtension] stringByAppendingPathExtension:@"tex"];
+        source = [[source path] stringByReplacingPathExtension:@"tex"];
         
         if ([[NSFileManager defaultManager] fileExistsAtPath:[file path]] && [[NSFileManager defaultManager] fileExistsAtPath:source]) {
             

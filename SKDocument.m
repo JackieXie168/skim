@@ -175,7 +175,7 @@ static NSPopUpButton *popUpButtonSubview(NSView *view)
         [self saveNotesToExtendedAttributesAtURL:absoluteURL error:NULL];
         
         if ([[NSUserDefaults standardUserDefaults] boolForKey:SKAutoSaveSkimNotesKey]) {
-            NSString *notesPath = [[[absoluteURL path] stringByDeletingPathExtension] stringByAppendingPathExtension:@"skim"];
+            NSString *notesPath = [[absoluteURL path] stringByReplacingPathExtension:@"skim"];
             BOOL canMove = YES;
             BOOL fileExists = [fm fileExistsAtPath:notesPath];
             
@@ -360,7 +360,7 @@ static NSPopUpButton *popUpButtonSubview(NSView *view)
                     pdfDoc = nil;
                 }
             } else if ([noteDicts count] == 0) {
-                NSString *path = [[[absoluteURL path] stringByDeletingPathExtension] stringByAppendingPathExtension:@"skim"];
+                NSString *path = [[absoluteURL path] stringByReplacingPathExtension:@"skim"];
                 if ([[NSFileManager defaultManager] fileExistsAtPath:path]) {
                     int readOption = [[NSUserDefaults standardUserDefaults] integerForKey:SKReadMissingNotesFromSkimFileOptionKey];
                     if (readOption == NSAlertOtherReturn) {
@@ -511,7 +511,7 @@ static NSPopUpButton *popUpButtonSubview(NSView *view)
     }
     
     [oPanel beginSheetForDirectory:[path stringByDeletingLastPathComponent]
-                              file:[[[path lastPathComponent] stringByDeletingPathExtension] stringByAppendingPathExtension:@"skim"]
+                              file:[[path lastPathComponent] stringByReplacingPathExtension:@"skim"]
                              types:[NSArray arrayWithObject:@"skim"]
                     modalForWindow:[self windowForSheet]
                      modalDelegate:self
@@ -547,7 +547,7 @@ static NSPopUpButton *popUpButtonSubview(NSView *view)
         [sp setRequiredFileType:@"tgz"];
         [sp setCanCreateDirectories:YES];
         [sp beginSheetForDirectory:nil
-                              file:[[[path lastPathComponent] stringByDeletingPathExtension] stringByAppendingPathExtension:@"tgz"]
+                              file:[[path lastPathComponent] stringByReplacingPathExtension:@"tgz"]
                     modalForWindow:[self windowForSheet]
                      modalDelegate:self
                     didEndSelector:@selector(archiveSavePanelDidEnd:returnCode:contextInfo:)
@@ -807,7 +807,7 @@ static BOOL isFileOnHFSVolume(NSString *fileName)
         [self stopCheckingFileUpdatesForFile:[self fileName]];
     [super setFileURL:absoluteURL];
     if ([absoluteURL isFileURL])
-        [synchronizer setFileName:[[[absoluteURL path] stringByDeletingPathExtension] stringByAppendingPathExtension:@"pdfsync"]];
+        [synchronizer setFileName:[[absoluteURL path] stringByReplacingPathExtension:@"pdfsync"]];
     else
         [synchronizer setFileName:nil];
     // if we're saving this will be called when saving has finished
@@ -819,7 +819,7 @@ static BOOL isFileOnHFSVolume(NSString *fileName)
     if (synchronizer == nil) {
         synchronizer = [[SKPDFSynchronizer alloc] init];
         [synchronizer setDelegate:self];
-        [synchronizer setFileName:[[[self fileName] stringByDeletingPathExtension] stringByAppendingPathExtension:@"pdfsync"]];
+        [synchronizer setFileName:[[self fileName] stringByReplacingPathExtension:@"pdfsync"]];
     }
     return synchronizer;
 }
