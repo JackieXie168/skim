@@ -122,7 +122,7 @@ static NSString *SKRightSidePaneWidthKey = @"SKRightSidePaneWidth";
 @implementation SKMainWindowController
 
 + (void)initialize {
-    [NSValueTransformer setValueTransformer:[[[SKUnarchiveFromDataArrayTransformer alloc] init] autorelease] forName:@"SKUnarchiveFromDataArrayTransformer"];
+    [NSValueTransformer setValueTransformer:[[[SKUnarchiveFromDataArrayTransformer alloc] init] autorelease] forName:SKUnarchiveFromDataArrayTransformerName];
 }
 
 - (id)initWithWindowNibName:(NSString *)windowNibName owner:(id)owner{
@@ -3669,7 +3669,7 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
     [toolbarItems setObject:item forKey:SKDocumentToolbarDisplayBoxItemIdentifier];
     [item release];
     
-    NSDictionary *options = [NSDictionary dictionaryWithObject:@"SKUnarchiveFromDataArrayTransformer" forKey:NSValueTransformerNameBindingOption];
+    NSDictionary *options = [NSDictionary dictionaryWithObject:SKUnarchiveFromDataArrayTransformerName forKey:NSValueTransformerNameBindingOption];
     [colorSwatch bind:@"colors" toObject:[NSUserDefaultsController sharedUserDefaultsController] withKeyPath:[NSString stringWithFormat:@"values.%@", SKSwatchColorsKey] options:options];
     [colorSwatch sizeToFit];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleColorSwatchColorsChangedNotification:) 
