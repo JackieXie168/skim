@@ -430,6 +430,9 @@ static NSString *SKColorsBindingName = @"colors";
 
 @end
 
+#pragma mark -
+
+NSString *SKUnarchiveFromDataArrayTransformerName = @"SKUnarchiveFromDataArrayTransformer";
 
 @implementation SKUnarchiveFromDataArrayTransformer
 

@@ -63,6 +63,7 @@ extern NSString *SKColorSwatchColorsChangedNotification;
 
 @end
 
+extern NSString *SKUnarchiveFromDataArrayTransformerName;
 
 @interface SKUnarchiveFromDataArrayTransformer : NSValueTransformer
 @end
