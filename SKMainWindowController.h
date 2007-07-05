@@ -142,6 +142,7 @@ typedef struct _SKPDFViewState {
     IBOutlet BDSKImagePopUpButton *markupPopUpButton;
     IBOutlet SKColorSwatch      *colorSwatch;
     NSMutableDictionary         *toolbarItems;
+    NSToolbarItem               *colorSwatchToolbarItem;
     
     IBOutlet NSWindow           *choosePageSheet;
     IBOutlet NSTextField        *choosePageField;
@@ -341,6 +342,7 @@ typedef struct _SKPDFViewState {
 - (void)handleDocumentBeginWrite:(NSNotification *)notification;
 - (void)handleDocumentEndWrite:(NSNotification *)notification;
 - (void)handleDocumentEndPageWrite:(NSNotification *)notification;
+- (void)handleColorSwatchColorsChangedNotification:(NSNotification *)notification;
 
 - (void)addAnnotationsFromDictionaries:(NSArray *)noteDicts;
 - (void)setAnnotationsFromDictionaries:(NSArray *)noteDicts;

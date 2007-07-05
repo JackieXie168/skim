@@ -907,7 +907,7 @@ static NSString *SKRightSidePaneWidthKey = @"SKRightSidePaneWidth";
     PDFAnnotation *annotation = [pdfView activeAnnotation];
     if ([annotation isNoteAnnotation]) {
         NSColor *color = [annotation color];
-        NSColor *newColor = [sender color];
+        NSColor *newColor = [sender respondsToSelector:@selector(representedObject)] ? [sender representedObject] : [sender respondsToSelector:@selector(color)] ? [sender color] : nil;
         if (newColor && [color isEqual:newColor] == NO)
             [annotation setColor:newColor];
     }
@@ -2611,6 +2611,38 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
 	[progressBar displayIfNeeded];
 }
 
+- (void)handleColorSwatchColorsChangedNotification:(NSNotification *)notification {
+    NSMenu *menu = [[[toolbarItems objectForKey:SKDocumentToolbarColorSwatchItemIdentifier] menuFormRepresentation] submenu];
+    
+    int i = [menu numberOfItems];
+    while (i--)
+        [menu removeItemAtIndex:i];
+    
+    NSEnumerator *colorEnum = [[colorSwatch colors] objectEnumerator];
+    NSColor *color;
+    NSRect rect = NSMakeRect(0.0, 0.0, 16.0, 16.0);
+    NSRect lineRect = NSInsetRect(rect, 0.5, 0.5);
+    NSRect swatchRect = NSInsetRect(rect, 1.0, 1.0);
+    
+    while (color = [colorEnum nextObject]) {
+        NSImage *image = [[NSImage alloc] initWithSize:rect.size];
+        NSMenuItem *item = [menu addItemWithTitle:@"" action:@selector(selectColor:) keyEquivalent:@""];
+        
+        [image lockFocus];
+        [[NSColor lightGrayColor] setStroke];
+        [NSBezierPath strokeRect:lineRect];
+        [color drawSwatchInRect:swatchRect];
+        [image unlockFocus];
+        [item setTarget:self];
+        [item setRepresentedObject:color];
+        [item setImage:image];
+        [image release];
+    }
+    
+    if (colorSwatchToolbarItem)
+        [[colorSwatchToolbarItem menuFormRepresentation] setSubmenu:[NSKeyedUnarchiver unarchiveObjectWithData:[NSKeyedArchiver archivedDataWithRootObject:menu]]];
+}
+
 #pragma mark KVO
 
 - (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context {
@@ -3640,7 +3672,11 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
     NSDictionary *options = [NSDictionary dictionaryWithObject:@"SKUnarchiveFromDataArrayTransformer" forKey:NSValueTransformerNameBindingOption];
     [colorSwatch bind:@"colors" toObject:[NSUserDefaultsController sharedUserDefaultsController] withKeyPath:[NSString stringWithFormat:@"values.%@", SKSwatchColorsKey] options:options];
     [colorSwatch sizeToFit];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleColorSwatchColorsChangedNotification:) 
+                                                 name:SKColorSwatchColorsChangedNotification object:colorSwatch];
+    menu = [[[NSMenu allocWithZone:[NSMenu menuZone]] initWithTitle:@""] autorelease];
 	menuItem = [[[NSMenuItem allocWithZone:[NSMenu menuZone]] initWithTitle:NSLocalizedString(@"Colors", @"Toolbar item label") action:@selector(orderFrontColorPanel:) keyEquivalent:@""] autorelease];
+    [menuItem setSubmenu:menu];
     item = [[SKToolbarItem alloc] initWithItemIdentifier:SKDocumentToolbarColorSwatchItemIdentifier];
     [item setLabels:NSLocalizedString(@"Colors", @"Toolbar item label")];
     [item setToolTip:NSLocalizedString(@"Colors", @"Tool tip message")];
@@ -3648,6 +3684,7 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
     [item setMenuFormRepresentation:menuItem];
     [toolbarItems setObject:item forKey:SKDocumentToolbarColorSwatchItemIdentifier];
     [item release];
+    [self handleColorSwatchColorsChangedNotification:nil];
     
     item = [[SKToolbarItem alloc] initWithItemIdentifier:SKDocumentToolbarInfoItemIdentifier];
     [item setLabels:NSLocalizedString(@"Info", @"Toolbar item label")];
@@ -3690,6 +3727,20 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
         [newItem setDelegate:self];
     }
     return newItem;
+}
+
+- (void)toolbarWillAddItem:(NSNotification *)notification {
+    NSToolbarItem *item = [[notification userInfo] objectForKey:@"item"];
+    if ([[item itemIdentifier] isEqualToString:SKDocumentToolbarColorSwatchItemIdentifier]) {
+        colorSwatchToolbarItem = item;
+    }
+}
+
+- (void)toolbarDidRemoveItem:(NSNotification *)notification {
+    NSToolbarItem *item = [[notification userInfo] objectForKey:@"item"];
+    if ([[item itemIdentifier] isEqualToString:SKDocumentToolbarColorSwatchItemIdentifier]) {
+        colorSwatchToolbarItem = nil;
+    }
 }
 
 - (NSArray *)toolbarDefaultItemIdentifiers:(NSToolbar *)toolbar {
