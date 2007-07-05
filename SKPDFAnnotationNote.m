@@ -117,6 +117,12 @@ void SKCGContextSetDefaultRGBColorSpace(CGContextRef context) {
 @end
 
 
+@interface PDFAnnotationFreeText (SKPDFAnnotationFreeTextPrivateDeclarations)
+- (int)rotation;
+- (void)setRotation:(int)rotation;
+@end
+
+
 @interface PDFAnnotation (PDFAnnotationPrivateDeclarations)
 - (void)drawWithBox:(CGPDFBox)box inContext:(CGContextRef)context;
 - (void)setPage:(id)page;
@@ -170,8 +176,11 @@ static IMP originalSetBorder = NULL;
     } else if ([type isEqualToString:@"FreeText"]) {
         self = [[SKPDFAnnotationFreeText alloc] initWithBounds:bounds];
         NSFont *font = [dict objectForKey:@"font"];
+        NSNumber *rotation = [dict objectForKey:@"rotation"];
         if (font)
             [(SKPDFAnnotationFreeText *)self setFont:font];
+        if (rotation && [self respondsToSelector:@selector(setRotation:)])
+            [(SKPDFAnnotationFreeText *)self setRotation:[rotation intValue]];
     } else if ([type isEqualToString:@"Circle"]) {
         self = [[SKPDFAnnotationCircle alloc] initWithBounds:bounds];
         NSColor *interiorColor = [dict objectForKey:@"interiorColor"];
@@ -995,6 +1004,8 @@ static BOOL adjacentCharacterBounds(NSRect rect1, NSRect rect2) {
 - (NSDictionary *)dictionaryValue{
     NSMutableDictionary *dict = (NSMutableDictionary *)[super dictionaryValue];
     [dict setValue:[self font] forKey:@"font"];
+    if ([self respondsToSelector:@selector(rotation)])
+        [dict setValue:[NSNumber numberWithInt:[self rotation]] forKey:@"rotation"];
     return dict;
 }
 
