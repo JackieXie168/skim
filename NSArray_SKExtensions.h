@@ -42,6 +42,9 @@
 @interface NSArray (SKExtensions)
 - (NSArray *)arraySortedByPageIndex;
 - (NSArray *)arraySortedByBounds;
+- (NSArray *)arraySortedByPageIndexAndBounds;
 - (NSArray *)arraySortedByType;
 - (NSArray *)arraySortedByContents;
+- (NSArray *)arraySortedByTypeAndContents;
+- (NSArray *)arraySortedByTypeAndPageIndex;
 @end

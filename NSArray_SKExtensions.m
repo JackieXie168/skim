@@ -50,12 +50,24 @@
     return [self sortedArrayUsingDescriptors:[NSArray arrayWithObject:[[[NSSortDescriptor alloc] initWithKey:@"bounds" ascending:YES selector:@selector(boundsCompare:)] autorelease]]];
 }
 
+- (NSArray *)arraySortedByPageIndexAndBounds {
+    return [self sortedArrayUsingDescriptors:[NSArray arrayWithObjects:[[[NSSortDescriptor alloc] initWithKey:@"pageIndex" ascending:YES selector:@selector(compare:)] autorelease], [[[NSSortDescriptor alloc] initWithKey:@"bounds" ascending:YES selector:@selector(boundsCompare:)] autorelease], nil]];
+}
+
 - (NSArray *)arraySortedByType {
     return [self sortedArrayUsingDescriptors:[NSArray arrayWithObject:[[[NSSortDescriptor alloc] initWithKey:@"noteType" ascending:YES selector:@selector(caseInsensitiveCompare:)] autorelease]]];
 }
 
 - (NSArray *)arraySortedByContents {
     return [self sortedArrayUsingDescriptors:[NSArray arrayWithObject:[[[NSSortDescriptor alloc] initWithKey:@"contents" ascending:YES selector:@selector(caseInsensitiveCompare:)] autorelease]]];
+}
+
+- (NSArray *)arraySortedByTypeAndContents {
+    return [self sortedArrayUsingDescriptors:[NSArray arrayWithObjects:[[[NSSortDescriptor alloc] initWithKey:@"noteType" ascending:YES selector:@selector(caseInsensitiveCompare:)] autorelease], [[[NSSortDescriptor alloc] initWithKey:@"contents" ascending:YES selector:@selector(caseInsensitiveCompare:)] autorelease], nil]];
+}
+
+- (NSArray *)arraySortedByTypeAndPageIndex {
+    return [self sortedArrayUsingDescriptors:[NSArray arrayWithObjects:[[[NSSortDescriptor alloc] initWithKey:@"noteType" ascending:YES selector:@selector(caseInsensitiveCompare:)] autorelease], [[[NSSortDescriptor alloc] initWithKey:@"pageIndex" ascending:YES selector:@selector(compare:)] autorelease], nil]];
 }
 
 @end
