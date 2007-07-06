@@ -42,8 +42,11 @@
 {
 	NSAutoreleasePool* pool = [[NSAutoreleasePool alloc] init];
 	
-	NSError *error;
-	NSXMLDocument *document = [[NSXMLDocument alloc] initWithContentsOfURL:url options:0 error:&error];
+	NSError *error = nil;
+    NSURLRequest *request = [NSURLRequest requestWithURL:url cachePolicy:NSURLRequestReloadIgnoringCacheData timeoutInterval:60.0];
+    NSURLResponse *response = nil;
+    NSData *data = [NSURLConnection sendSynchronousRequest:request returningResponse:&response error:&error];
+	NSXMLDocument *document = [[NSXMLDocument alloc] initWithData:data options:0 error:&error];
 	BOOL failed = NO;
 	
 	if (nil == document)
