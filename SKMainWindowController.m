@@ -309,6 +309,10 @@ static NSString *SKRightSidePaneWidthKey = @"SKRightSidePaneWidth";
     // Application
     [nc addObserver:self selector:@selector(handleApplicationWillTerminateNotification:) 
                              name:SKApplicationWillTerminateNotification object:NSApp];
+    [nc addObserver:self selector:@selector(handleApplicationDidResignActiveNotification:) 
+                             name:NSApplicationDidResignActiveNotification object:NSApp];
+    [nc addObserver:self selector:@selector(handleApplicationWillBecomeActiveNotification:) 
+                             name:NSApplicationWillBecomeActiveNotification object:NSApp];
     // Document
     [nc addObserver:self selector:@selector(handleDocumentWillSaveNotification:) 
                              name:SKDocumentWillSaveNotification object:[self document]];
@@ -2405,6 +2409,16 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
 - (void)handleApplicationWillTerminateNotification:(NSNotification *)notification {
     if ([self isFullScreen] || [self isPresentation])
         [self exitFullScreen:self];
+}
+
+- (void)handleApplicationDidResignActiveNotification:(NSNotification *)notification {
+    if ([self isPresentation])
+        [fullScreenWindow setLevel:NSNormalWindowLevel];
+}
+
+- (void)handleApplicationWillBecomeActiveNotification:(NSNotification *)notification {
+    if ([self isPresentation])
+        [fullScreenWindow setLevel:NSPopUpMenuWindowLevel];
 }
 
 - (void)handleDocumentWillSaveNotification:(NSNotification *)notification {
