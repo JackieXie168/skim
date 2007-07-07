@@ -88,6 +88,7 @@ NSString *SKDocumentWillSaveNotification = @"SKDocumentWillSaveNotification";
     [[NSNotificationCenter defaultCenter] removeObserver:self];
     [synchronizer stopDOServer];
     [synchronizer release];
+    [kQueue release];
     [pdfData release];
     [noteDicts release];
     [readNotesAccessoryView release];
@@ -607,11 +608,11 @@ static NSPopUpButton *popUpButtonSubview(NSView *view)
 - (void)stopCheckingFileUpdatesForFile:(NSString *)fileName {
     if (fileName) {
         // remove from kqueue and invalidate timer; maybe we've changed filesystems
-        [[UKKQueue sharedFileWatcher] removePath:fileName];
+        [kQueue removePath:fileName];
         NSNotificationCenter *nc = [NSNotificationCenter defaultCenter];
-        [nc removeObserver:self name:UKFileWatcherWriteNotification object:fileName];
-        [nc removeObserver:self name:UKFileWatcherRenameNotification object:fileName];
-        [nc removeObserver:self name:UKFileWatcherDeleteNotification object:fileName];
+        [nc removeObserver:self name:UKFileWatcherWriteNotification object:kQueue];
+        [nc removeObserver:self name:UKFileWatcherRenameNotification object:kQueue];
+        [nc removeObserver:self name:UKFileWatcherDeleteNotification object:kQueue];
 
         if (fileUpdateTimer) {
             [fileUpdateTimer invalidate];
@@ -662,11 +663,13 @@ static BOOL isFileOnHFSVolume(NSString *fileName)
             
             // AFP, NFS, SMB etc. don't support kqueues, so we have to manually poll and compare mod dates
             if (isFileOnHFSVolume(fileName)) {
-                [[UKKQueue sharedFileWatcher] addPath:[self fileName]];
+                if (kQueue == nil)
+                    kQueue = [[UKKQueue alloc] init];
+                [kQueue addPath:[self fileName]];
                 NSNotificationCenter *nc = [NSNotificationCenter defaultCenter];
-                [nc addObserver:self selector:@selector(handleFileUpdateNotification:) name:UKFileWatcherWriteNotification object:fileName];
-                [nc addObserver:self selector:@selector(handleFileMoveNotification:) name:UKFileWatcherRenameNotification object:fileName];
-                [nc addObserver:self selector:@selector(handleFileMoveNotification:) name:UKFileWatcherDeleteNotification object:fileName];
+                [nc addObserver:self selector:@selector(handleFileUpdateNotification:) name:UKFileWatcherWriteNotification object:kQueue];
+                [nc addObserver:self selector:@selector(handleFileMoveNotification:) name:UKFileWatcherRenameNotification object:kQueue];
+                [nc addObserver:self selector:@selector(handleFileMoveNotification:) name:UKFileWatcherDeleteNotification object:kQueue];
             } else if (nil == fileUpdateTimer) {
                 // Let the runloop retain the timer; timer retains us.  Use a fairly long delay since this is likely a network volume.
                 fileUpdateTimer = [NSTimer scheduledTimerWithTimeInterval:(double)2.0 target:self selector:@selector(checkForFileModification:) userInfo:nil repeats:YES];
@@ -697,8 +700,8 @@ static BOOL isFileOnHFSVolume(NSString *fileName)
     NSString *fileName = [self fileName];
 
     // should never happen
-    if (notification && [[[notification userInfo] objectForKey:@"path"] isEqual:fileName] == NO)
-        NSLog(@"*** received change notice for %@", [notification object]);
+    if (notification && [[[notification userInfo] objectForKey:@"path"] isEqualToString:fileName] == NO)
+        NSLog(@"*** received change notice for %@", [[notification userInfo] objectForKey:@"path"]);
     
     if ([[NSUserDefaults standardUserDefaults] boolForKey:SKAutoCheckFileUpdateKey] &&
         [[NSFileManager defaultManager] fileExistsAtPath:fileName]) {
@@ -771,7 +774,7 @@ static BOOL isFileOnHFSVolume(NSString *fileName)
     NSWindow *window = [notification object];
     // ignore when we're switching fullscreen/main windows
     if ([window isEqual:[[window windowController] window]]) {
-        [[UKKQueue sharedFileWatcher] removePath:[self fileName]];
+        [kQueue removePath:[self fileName]];
         [fileUpdateTimer invalidate];
         fileUpdateTimer = nil;
     }

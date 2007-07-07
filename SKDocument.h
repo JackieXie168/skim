@@ -55,7 +55,7 @@ enum {
 };
 
 
-@class PDFDocument, SKMainWindowController, SKPDFView, SKPDFSynchronizer;
+@class PDFDocument, SKMainWindowController, SKPDFView, SKPDFSynchronizer, UKKQueue;
 
 @interface SKDocument : NSDocument
 {
@@ -70,6 +70,7 @@ enum {
     NSMutableArray *noteDicts;
         
     SKPDFSynchronizer *synchronizer;
+    UKKQueue *kQueue;
     BOOL autoUpdate;
     BOOL isSaving;
     BOOL fileChangedOnDisk;
