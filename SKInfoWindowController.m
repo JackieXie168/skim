@@ -161,7 +161,7 @@ NSString *SKFileSizeStringForFileURL(NSURL *fileURL, unsigned long long *physica
             [dictionary setValue:SKFileSizeStringForFileURL([doc fileURL], &physicalSize, &logicalSize) forKey:@"FileSize"];
             [dictionary setValue:[NSNumber numberWithUnsignedLongLong:physicalSize] forKey:@"PhysicalSize"];
             [dictionary setValue:[NSNumber numberWithUnsignedLongLong:logicalSize] forKey:@"LogicalSize"];
-            [dictionary setValue:[[dictionary valueForKey:@"KeyWords"] componentsJoinedByString:@" "] forKey:@"KeywordsString"];
+            [dictionary setValue:[[dictionary valueForKey:@"Keywords"] componentsJoinedByString:@" "] forKey:@"KeywordsString"];
         }
     }
     return dictionary;
