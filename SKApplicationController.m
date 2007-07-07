@@ -127,16 +127,21 @@ static BOOL fileIsInTrash(NSURL *fileURL)
         NSDictionary *dict;
         NSURL *fileURL = nil;
         SKDocument *document;
+        NSError *error;
         
         while (dict = [fileEnum nextObject]){ 
             fileURL = [[BDAlias aliasWithData:[dict objectForKey:@"_BDAlias"]] fileURL];
             if(fileURL == nil && [dict objectForKey:@"fileName"])
                 fileURL = [NSURL fileURLWithPath:[dict objectForKey:@"fileName"]];
-            if(fileURL && NO == fileIsInTrash(fileURL) && (document = [[NSDocumentController sharedDocumentController] openDocumentWithContentsOfURL:fileURL display:NO error:NULL])) {
-                [document makeWindowControllers];
-                if ([document respondsToSelector:@selector(mainWindowController)])
-                    [[document mainWindowController] setupWindow:dict];
-                [document showWindows];
+            if(fileURL && NO == fileIsInTrash(fileURL)) {
+                if (document = [[NSDocumentController sharedDocumentController] openDocumentWithContentsOfURL:fileURL display:NO error:&error]) {
+                    [document makeWindowControllers];
+                    if ([document respondsToSelector:@selector(mainWindowController)])
+                        [[document mainWindowController] setupWindow:dict];
+                    [document showWindows];
+                } else {
+                    [NSApp presentError:error];
+                }
             }
         }
     }
@@ -200,11 +205,17 @@ static BOOL fileIsInTrash(NSURL *fileURL)
     NSDictionary *bm = [bookmarks objectAtIndex:i];
     id document = nil;
     NSURL *fileURL = [[BDAlias aliasWithData:[bm objectForKey:@"_BDAlias"]] fileURL];
+    NSError *error;
     
     if (fileURL == nil && [bm objectForKey:@"path"])
         fileURL = [NSURL fileURLWithPath:[bm objectForKey:@"path"]];
-    if (fileURL && NO == fileIsInTrash(fileURL) && (document = [[NSDocumentController sharedDocumentController] openDocumentWithContentsOfURL:fileURL display:YES error:NULL]))
-        [[document mainWindowController] setPageNumber:[[bm objectForKey:@"pageIndex"] unsignedIntValue] + 1];
+    if (fileURL && NO == fileIsInTrash(fileURL)) {
+        if (document = [[NSDocumentController sharedDocumentController] openDocumentWithContentsOfURL:fileURL display:YES error:&error]) {
+            [[document mainWindowController] setPageNumber:[[bm objectForKey:@"pageIndex"] unsignedIntValue] + 1];
+        } else {
+            [NSApp presentError:error];
+        }
+    }
 }
 
 #pragma mark Support
