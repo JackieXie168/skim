@@ -80,13 +80,10 @@ NSString *SKApplicationWillTerminateNotification = @"SKApplicationWillTerminateN
             [target performSelector:@selector(magnifyWheel:) withObject:anEvent];
             return;
         }
-    } else if ([anEvent type] == NSLeftMouseDown || [anEvent type] == NSRightMouseDown) {
+    } else if ([anEvent type] == NSRightMouseDown || ([anEvent type] == NSLeftMouseDown && ([anEvent modifierFlags] & NSControlKeyMask))) {
         id controller = [[self mainWindow] windowController];
         if ([controller respondsToSelector:@selector(isPresentation)] && [controller isPresentation]) {
-            if ([anEvent type] == NSRightMouseDown || ([anEvent modifierFlags] & NSControlKeyMask))
-                [controller doGoToPreviousPage:self];
-            else
-                [controller doGoToNextPage:self];
+            [controller doGoToPreviousPage:self];
             return;
         }
     }
