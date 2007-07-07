@@ -43,6 +43,12 @@
 
 @implementation SKInfoWindowController
 
++ (void)initialize {
+    SKBoolStringTransformer *transformer = [[SKBoolStringTransformer alloc] init];
+    [NSValueTransformer setValueTransformer:transformer forName:@"SKBoolStringTransformer"];
+    [transformer release];
+}
+
 + (id)sharedInstance {
     static SKInfoWindowController *sharedInstance = nil;
     if (sharedInstance == nil) {
@@ -147,6 +153,14 @@ NSString *SKFileSizeStringForFileURL(NSURL *fileURL, unsigned long long *physica
     return string;
 }
 
+static inline 
+NSString *SKSizeString(NSSize size, NSSize altSize) {
+    BOOL useMetric = [[NSUserDefaults standardUserDefaults] boolForKey:@"AppleMetricUnits"];
+    NSString *units = useMetric ? @"cm" : @"in";
+    float factor = useMetric ? 0.035277778 : 0.013888889;
+    return [NSString stringWithFormat:@"%.1f x %.1f %@  (%.1f x %.1f %@)", size.width * factor, size.height * factor, units, altSize.width * factor, altSize.height * factor, units];
+}
+
 - (NSDictionary *)infoForDocument:(SKDocument *)doc {
     NSMutableDictionary *dictionary = nil;
     if ([doc respondsToSelector:@selector(pdfDocument)]) {
@@ -159,9 +173,14 @@ NSString *SKFileSizeStringForFileURL(NSURL *fileURL, unsigned long long *physica
             [dictionary setValue:[NSString stringWithFormat: @"%d.%d", [pdfDoc majorVersion], [pdfDoc minorVersion]] forKey:@"Version"];
             [dictionary setValue:[NSNumber numberWithInt:[pdfDoc pageCount]] forKey:@"PageCount"];
             [dictionary setValue:SKFileSizeStringForFileURL([doc fileURL], &physicalSize, &logicalSize) forKey:@"FileSize"];
+            if ([pdfDoc pageCount])
+                [dictionary setValue:SKSizeString([[pdfDoc pageAtIndex:0] boundsForBox:kPDFDisplayBoxCropBox].size, [[pdfDoc pageAtIndex:0] boundsForBox:kPDFDisplayBoxMediaBox].size) forKey:@"PageSize"];
             [dictionary setValue:[NSNumber numberWithUnsignedLongLong:physicalSize] forKey:@"PhysicalSize"];
             [dictionary setValue:[NSNumber numberWithUnsignedLongLong:logicalSize] forKey:@"LogicalSize"];
             [dictionary setValue:[[dictionary valueForKey:@"Keywords"] componentsJoinedByString:@" "] forKey:@"KeywordsString"];
+            [dictionary setValue:[NSNumber numberWithBool:[pdfDoc isEncrypted]] forKey:@"Encrypted"];
+            [dictionary setValue:[NSNumber numberWithBool:[pdfDoc allowsPrinting]] forKey:@"AllowsPrinting"];
+            [dictionary setValue:[NSNumber numberWithBool:[pdfDoc allowsCopying]] forKey:@"AllowsCopying"];
         }
     }
     return dictionary;
@@ -186,6 +205,23 @@ NSString *SKFileSizeStringForFileURL(NSURL *fileURL, unsigned long long *physica
 
 - (void)handleWindowDidResignKeyNotification:(NSNotification *)notification {
     [self setInfo:nil];
+}
+
+@end
+
+
+@implementation SKBoolStringTransformer
+
++ (Class)transformedValueClass {
+    return [NSString class];
+}
+
++ (BOOL)allowsReverseTransformation {
+    return NO;
+}
+
+- (id)transformedValue:(id)value {
+	return value == nil ? nil : [value boolValue] ? NSLocalizedString(@"Yes", @"") : NSLocalizedString(@"No", @"");
 }
 
 @end
