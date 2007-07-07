@@ -773,6 +773,11 @@ static void SKCGContextDrawGrabHandle(CGContextRef context, CGPoint point, float
     mouseDownLoc = [theEvent locationInWindow];
 	unsigned int modifiers = [theEvent modifierFlags] & NSDeviceIndependentModifierFlagsMask;
     
+    if (hasNavigation && autohidesCursor && ([self areaOfInterestForMouse:theEvent] & kPDFLinkArea) == 0) {
+        [self goToNextPage:self];
+        return;
+    }
+    
     didBeginUndoGrouping = NO;
     didDrag = NO;
     
