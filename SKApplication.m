@@ -96,14 +96,17 @@ NSString *SKApplicationWillTerminateNotification = @"SKApplicationWillTerminateN
     [super terminate:sender];
 }
 
-- (id)handleOpenScriptCommand:(NSScriptCommand *)command {
+- (void)handleOpenScriptCommand:(NSScriptCommand *)command {
 	NSDictionary *args = [command evaluatedArguments];
     id file = [command directParameter];
 	id lineNumber = [args objectForKey:@"line"];
  	id source = [args objectForKey:@"source"];
     
-    if (lineNumber == nil || ([file isKindOfClass:[NSArray class]] && [file count] != 1))
-        return [[self superclass] instancesRespondToSelector:_cmd] ? [super handleOpenScriptCommand:command] : nil;
+    if (lineNumber == nil || ([file isKindOfClass:[NSArray class]] && [file count] != 1)) {
+        if ([[self superclass] instancesRespondToSelector:_cmd])
+            [super handleOpenScriptCommand:command];
+        return;
+    }
 	
     if ([file isKindOfClass:[NSArray class]])
         file = [file lastObject];
@@ -119,11 +122,14 @@ NSString *SKApplicationWillTerminateNotification = @"SKApplicationWillTerminateN
         
         source = [[source path] stringByReplacingPathExtension:@"tex"];
         
-        if ([[NSFileManager defaultManager] fileExistsAtPath:[file path]] && [[NSFileManager defaultManager] fileExistsAtPath:source]) {
+        if ([[NSFileManager defaultManager] fileExistsAtPath:[file path]]) {
             
-            SKDocument *document = [[NSDocumentController sharedDocumentController] openDocumentWithContentsOfURL:file display:YES error:NULL];
+            NSError *error = nil;
+            SKDocument *document = [[NSDocumentController sharedDocumentController] openDocumentWithContentsOfURL:file display:YES error:&error];
+            if (document == nil)
+                [self presentError:error];
             
-            if ([document respondsToSelector:@selector(synchronizer)])
+            if ([[NSFileManager defaultManager] fileExistsAtPath:source] && [document respondsToSelector:@selector(synchronizer)])
                 [[document synchronizer] findPageLocationForLine:[lineNumber intValue] inFile:source];
             
         } else {
@@ -135,7 +141,7 @@ NSString *SKApplicationWillTerminateNotification = @"SKApplicationWillTerminateN
         [command setScriptErrorString:@"File argument is not a file."];
     }
     
-    return nil;
+    return;
 }
 
 - (void)reorganizeWindowsItem:(NSWindow *)aWindow {
