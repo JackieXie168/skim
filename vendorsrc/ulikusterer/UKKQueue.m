@@ -399,7 +399,7 @@ static UKKQueue * gUKKQueueSharedQueueSingleton = nil;
     NSDictionary *userInfo = [[NSDictionary alloc] initWithObjects:&fp forKeys:&key count:1];
     
     // this is the notification we'll queue on the main thread
-    NSNotification *note = [NSNotification notificationWithName:nm object:fp userInfo:userInfo];
+    NSNotification *note = [NSNotification notificationWithName:nm object:self userInfo:userInfo];
     [userInfo release];
     
     [self performSelectorOnMainThread:@selector(mainThreadEnqueueNotification:) withObject:note waitUntilDone:NO];
