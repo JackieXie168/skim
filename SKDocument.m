@@ -72,7 +72,7 @@ NSString *SKDocumentWillSaveNotification = @"SKDocumentWillSaveNotification";
 - (void)setNoteDicts:(NSArray *)array;
 
 - (void)checkFileUpdatesIfNeeded;
-- (void)stopCheckingFileUpdatesForFile:(NSString *)fileName;
+- (void)stopCheckingFileUpdates;
 - (void)handleFileUpdateNotification:(NSNotification *)notification;
 - (void)handleFileMoveNotification:(NSNotification *)notification;
 - (void)handleWindowWillCloseNotification:(NSNotification *)notification;
@@ -88,7 +88,7 @@ NSString *SKDocumentWillSaveNotification = @"SKDocumentWillSaveNotification";
     [[NSNotificationCenter defaultCenter] removeObserver:self];
     [synchronizer stopDOServer];
     [synchronizer release];
-    [kQueue release];
+    [watchedFile release];
     [pdfData release];
     [noteDicts release];
     [readNotesAccessoryView release];
@@ -162,7 +162,7 @@ static NSPopUpButton *popUpButtonSubview(NSView *view)
 
 - (BOOL)saveToURL:(NSURL *)absoluteURL ofType:(NSString *)typeName forSaveOperation:(NSSaveOperationType)saveOperation error:(NSError **)outError{
     if (saveOperation == NSSaveOperation || saveOperation == NSSaveAsOperation) {
-        [self stopCheckingFileUpdatesForFile:[self fileName]];
+        [self stopCheckingFileUpdates];
         isSaving = YES;
     } else if (saveOperation == NSSaveToOperation) {
         [[NSUserDefaults standardUserDefaults] setObject:typeName forKey:@"SKLastExportedType"];
@@ -605,19 +605,21 @@ static NSPopUpButton *popUpButtonSubview(NSView *view)
 
 #pragma mark File update checking
 
-- (void)stopCheckingFileUpdatesForFile:(NSString *)fileName {
-    if (fileName) {
+- (void)stopCheckingFileUpdates {
+    if (watchedFile) {
         // remove from kqueue and invalidate timer; maybe we've changed filesystems
-        [kQueue removePath:fileName];
+        UKKQueue *kQueue = [UKKQueue sharedFileWatcher];
+        [kQueue removePath:watchedFile];
         NSNotificationCenter *nc = [NSNotificationCenter defaultCenter];
         [nc removeObserver:self name:UKFileWatcherWriteNotification object:kQueue];
         [nc removeObserver:self name:UKFileWatcherRenameNotification object:kQueue];
         [nc removeObserver:self name:UKFileWatcherDeleteNotification object:kQueue];
-
-        if (fileUpdateTimer) {
-            [fileUpdateTimer invalidate];
-            fileUpdateTimer = nil;
-        }
+        [watchedFile release];
+        watchedFile = nil;
+    }
+    if (fileUpdateTimer) {
+        [fileUpdateTimer invalidate];
+        fileUpdateTimer = nil;
     }
 }
 
@@ -655,17 +657,16 @@ static BOOL isFileOnHFSVolume(NSString *fileName)
 }
 
 - (void)checkFileUpdatesIfNeeded {
-    NSString *fileName = [self fileName];
-    
-    if (fileName) {
-        [self stopCheckingFileUpdatesForFile:fileName];
+    if ([self fileName]) {
+        [self stopCheckingFileUpdates];
         if ([[NSUserDefaults standardUserDefaults] boolForKey:SKAutoCheckFileUpdateKey]) {
             
             // AFP, NFS, SMB etc. don't support kqueues, so we have to manually poll and compare mod dates
-            if (isFileOnHFSVolume(fileName)) {
-                if (kQueue == nil)
-                    kQueue = [[UKKQueue alloc] init];
-                [kQueue addPath:[self fileName]];
+            if (isFileOnHFSVolume(watchedFile)) {
+                watchedFile = [[self fileName] retain];
+                
+                UKKQueue *kQueue = [UKKQueue sharedFileWatcher];
+                [kQueue addPath:watchedFile];
                 NSNotificationCenter *nc = [NSNotificationCenter defaultCenter];
                 [nc addObserver:self selector:@selector(handleFileUpdateNotification:) name:UKFileWatcherWriteNotification object:kQueue];
                 [nc addObserver:self selector:@selector(handleFileMoveNotification:) name:UKFileWatcherRenameNotification object:kQueue];
@@ -696,77 +697,82 @@ static BOOL isFileOnHFSVolume(NSString *fileName)
 }
 
 - (void)handleFileUpdateNotification:(NSNotification *)notification {
+    NSString *path = [[notification userInfo] objectForKey:@"path"];
     
-    NSString *fileName = [self fileName];
+    if (notification == nil || [watchedFile isEqualToString:path]) {
+        
+        NSString *fileName = [self fileName];
 
-    // should never happen
-    if (notification && [[[notification userInfo] objectForKey:@"path"] isEqualToString:fileName] == NO)
-        NSLog(@"*** received change notice for %@", [[notification userInfo] objectForKey:@"path"]);
-    
-    if ([[NSUserDefaults standardUserDefaults] boolForKey:SKAutoCheckFileUpdateKey] &&
-        [[NSFileManager defaultManager] fileExistsAtPath:fileName]) {
+        // should never happen
+        if (notification && [path isEqualToString:fileName] == NO)
+            NSLog(@"*** received change notice for %@", path);
         
-        fileChangedOnDisk = YES;
-        
-        // check for attached sheet, since reloading the document while an alert is up looks a bit strange
-        if ([[self windowForSheet] attachedSheet]) {
-            [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleWindowDidEndSheetNotification:) 
-                                                         name:NSWindowDidEndSheetNotification object:[self windowForSheet]];
-            return;
-        }
-        
-        NSFileHandle *fh = [NSFileHandle fileHandleForReadingAtPath:fileName];
-        
-        // read the last 1024 bytes of the file (or entire file); Adobe's spec says they allow %%EOF anywhere in that range
-        unsigned long long fileEnd = [fh seekToEndOfFile];
-        unsigned long long startPos = fileEnd < 1024 ? 0 : fileEnd - 1024;
-        [fh seekToFileOffset:startPos];
-        NSData *trailerData = [fh readDataToEndOfFile];
-        
-        // done with the filehandle and offsets; now we have the trailer as NSData, so try to find the marker pattern in it
-        const char *pattern = "%%EOF";
-        unsigned patternLength = strlen(pattern);
-        unsigned trailerLength = [trailerData length];
-        BOOL foundTrailer = NO;
-        
-        int i, startIndex = trailerLength - patternLength;
-        const char *buffer = [trailerData bytes];
-        
-        // Adobe says to search from the end, so we get the last %%EOF
-        for (i = startIndex; i >= 0 && NO == foundTrailer; i -= 1) {
+        if ([[NSUserDefaults standardUserDefaults] boolForKey:SKAutoCheckFileUpdateKey] &&
+            [[NSFileManager defaultManager] fileExistsAtPath:fileName]) {
             
-            // don't bother comparing if the first byte doesn't match
-            if (buffer[i] == pattern[0])
-                foundTrailer = (bcmp(&buffer[i], pattern, patternLength) == 0);
-        }
-        
-        if (foundTrailer) {
-            if (autoUpdate && [self isDocumentEdited] == NO) {
-                // tried queuing this with a delayed perform/cancel previous, but revert takes long enough that the cancel was never used
-                [self fileUpdateAlertDidEnd:nil returnCode:NSAlertDefaultReturn contextInfo:NULL];
-            } else {
-                NSString *message;
-                if ([self isDocumentEdited])
-                    message = NSLocalizedString(@"The PDF file has changed on disk. If you reload, your changes will be lost. Do you want to reload this document now?", @"Informative text in alert dialog");
-                else 
-                    message = NSLocalizedString(@"The PDF file has changed on disk. Do you want to reload this document now? Choosing Auto will reload this file automatically for future changes.", @"Informative text in alert dialog");
+            fileChangedOnDisk = YES;
+            
+            // check for attached sheet, since reloading the document while an alert is up looks a bit strange
+            if ([[self windowForSheet] attachedSheet]) {
+                [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleWindowDidEndSheetNotification:) 
+                                                             name:NSWindowDidEndSheetNotification object:[self windowForSheet]];
+                return;
+            }
+            
+            NSFileHandle *fh = [NSFileHandle fileHandleForReadingAtPath:fileName];
+            
+            // read the last 1024 bytes of the file (or entire file); Adobe's spec says they allow %%EOF anywhere in that range
+            unsigned long long fileEnd = [fh seekToEndOfFile];
+            unsigned long long startPos = fileEnd < 1024 ? 0 : fileEnd - 1024;
+            [fh seekToFileOffset:startPos];
+            NSData *trailerData = [fh readDataToEndOfFile];
+            
+            // done with the filehandle and offsets; now we have the trailer as NSData, so try to find the marker pattern in it
+            const char *pattern = "%%EOF";
+            unsigned patternLength = strlen(pattern);
+            unsigned trailerLength = [trailerData length];
+            BOOL foundTrailer = NO;
+            
+            int i, startIndex = trailerLength - patternLength;
+            const char *buffer = [trailerData bytes];
+            
+            // Adobe says to search from the end, so we get the last %%EOF
+            for (i = startIndex; i >= 0 && NO == foundTrailer; i -= 1) {
                 
-                NSAlert *alert = [NSAlert alertWithMessageText:NSLocalizedString(@"File Updated", @"Message in alert dialog") 
-                                                 defaultButton:NSLocalizedString(@"Yes", @"Button title")
-                                               alternateButton:NSLocalizedString(@"Auto", @"Button title")
-                                                   otherButton:NSLocalizedString(@"No", @"Button title")
-                                     informativeTextWithFormat:message];
-                [alert beginSheetModalForWindow:[self windowForSheet]
-                                  modalDelegate:self
-                                 didEndSelector:@selector(fileUpdateAlertDidEnd:returnCode:contextInfo:) 
-                                    contextInfo:NULL];
+                // don't bother comparing if the first byte doesn't match
+                if (buffer[i] == pattern[0])
+                    foundTrailer = (bcmp(&buffer[i], pattern, patternLength) == 0);
+            }
+            
+            if (foundTrailer) {
+                if (autoUpdate && [self isDocumentEdited] == NO) {
+                    // tried queuing this with a delayed perform/cancel previous, but revert takes long enough that the cancel was never used
+                    [self fileUpdateAlertDidEnd:nil returnCode:NSAlertDefaultReturn contextInfo:NULL];
+                } else {
+                    NSString *message;
+                    if ([self isDocumentEdited])
+                        message = NSLocalizedString(@"The PDF file has changed on disk. If you reload, your changes will be lost. Do you want to reload this document now?", @"Informative text in alert dialog");
+                    else 
+                        message = NSLocalizedString(@"The PDF file has changed on disk. Do you want to reload this document now? Choosing Auto will reload this file automatically for future changes.", @"Informative text in alert dialog");
+                    
+                    NSAlert *alert = [NSAlert alertWithMessageText:NSLocalizedString(@"File Updated", @"Message in alert dialog") 
+                                                     defaultButton:NSLocalizedString(@"Yes", @"Button title")
+                                                   alternateButton:NSLocalizedString(@"Auto", @"Button title")
+                                                       otherButton:NSLocalizedString(@"No", @"Button title")
+                                         informativeTextWithFormat:message];
+                    [alert beginSheetModalForWindow:[self windowForSheet]
+                                      modalDelegate:self
+                                     didEndSelector:@selector(fileUpdateAlertDidEnd:returnCode:contextInfo:) 
+                                        contextInfo:NULL];
+                }
             }
         }
-    }    
+    }
 }
 
 - (void)handleFileMoveNotification:(NSNotification *)notification {
-    [self stopCheckingFileUpdatesForFile:[[notification userInfo] objectForKey:@"path"]];
+    if ([watchedFile isEqualToString:[[notification userInfo] objectForKey:@"path"]])
+        [self stopCheckingFileUpdates];
     // If the file is moved, NSDocument will notice and will call setFileURL, where we start watching again
 }
 
@@ -774,7 +780,7 @@ static BOOL isFileOnHFSVolume(NSString *fileName)
     NSWindow *window = [notification object];
     // ignore when we're switching fullscreen/main windows
     if ([window isEqual:[[window windowController] window]]) {
-        [kQueue removePath:[self fileName]];
+        [[UKKQueue sharedFileWatcher] removePath:[self fileName]];
         [fileUpdateTimer invalidate];
         fileUpdateTimer = nil;
     }
@@ -807,7 +813,7 @@ static BOOL isFileOnHFSVolume(NSString *fileName)
 - (void)setFileURL:(NSURL *)absoluteURL {
     // this shouldn't be necessary, but better be sure
     if ([self fileName] && [[self fileURL] isEqual:absoluteURL] == NO)
-        [self stopCheckingFileUpdatesForFile:[self fileName]];
+        [self stopCheckingFileUpdates];
     [super setFileURL:absoluteURL];
     if ([absoluteURL isFileURL])
         [synchronizer setFileName:[[absoluteURL path] stringByReplacingPathExtension:@"pdfsync"]];
