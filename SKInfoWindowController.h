@@ -56,3 +56,7 @@
 - (void)handleWindowDidResignKeyNotification:(NSNotification *)notification;
 
 @end
+
+
+@interface SKBoolStringTransformer : NSValueTransformer
+@end

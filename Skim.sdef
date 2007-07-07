@@ -780,6 +780,10 @@
                 description="The logical size of the file.">
                 <cocoa key="LogicalSize"/>
             </property>
+            <property name="page size" code="PgSz" type="text"
+                description="The size of a page.">
+                <cocoa key="PageSize"/>
+            </property>
             <property name="keywords" code="Keyw"
                 description="The list of keywords.">
                 <cocoa key="Keywords"/>
@@ -788,6 +792,18 @@
             <property name="keywords string" code="KywS" type="text"
                 description="The keywords as a string.">
                 <cocoa key="KeywordsString"/>
+            </property>
+            <property name="encrypted" code="Encr" type="boolean"
+                description=".">
+                <cocoa key="Encrypted"/>
+            </property>
+            <property name="allows printing" code="Prnt" type="boolean"
+                description=".">
+                <cocoa key="AllowsPrinting"/>
+            </property>
+            <property name="allows printing" code="Copy" type="boolean"
+                description=".">
+                <cocoa key="AllowsCopying"/>
             </property>
         </record-type>
 
