@@ -74,13 +74,23 @@ NSString *SKApplicationWillTerminateNotification = @"SKApplicationWillTerminateN
 }
 
 - (void)sendEvent:(NSEvent *)anEvent {
-    id target = nil;
-    if ([anEvent type] == NSScrollWheel && [anEvent modifierFlags] & NSAlternateKeyMask)
-        target = [self targetForAction:@selector(magnifyWheel:)];
-    if (target)
-        [target performSelector:@selector(magnifyWheel:) withObject:anEvent];
-    else
-        [super sendEvent:anEvent];
+    if ([anEvent type] == NSScrollWheel && [anEvent modifierFlags] & NSAlternateKeyMask) {
+        id target = [self targetForAction:@selector(magnifyWheel:)];
+        if (target) {
+            [target performSelector:@selector(magnifyWheel:) withObject:anEvent];
+            return;
+        }
+    } else if ([anEvent type] == NSLeftMouseDown || [anEvent type] == NSRightMouseDown) {
+        id controller = [[self mainWindow] windowController];
+        if ([controller respondsToSelector:@selector(isPresentation)] && [controller isPresentation]) {
+            if ([anEvent type] == NSRightMouseDown || ([anEvent modifierFlags] & NSControlKeyMask))
+                [controller doGoToPreviousPage:self];
+            else
+                [controller doGoToNextPage:self];
+            return;
+        }
+    }
+    [super sendEvent:anEvent];
 }
 
 - (IBAction)terminate:(id)sender {
