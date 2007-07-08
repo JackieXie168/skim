@@ -105,6 +105,9 @@ static NSString *SKDocumentToolbarInfoItemIdentifier = @"SKDocumentToolbarInfoIt
 static NSString *SKDocumentToolbarToolModeItemIdentifier = @"SKDocumentToolbarToolModeItemIdentifier";
 static NSString *SKDocumentToolbarDisplayBoxItemIdentifier = @"SKDocumentToolbarDisplayBoxItemIdentifier";
 static NSString *SKDocumentToolbarColorSwatchItemIdentifier = @"SKDocumentToolbarColorSwatchItemIdentifier";
+static NSString *SKDocumentToolbarColorsItemIdentifier = @"SKDocumentToolbarColorsItemIdentifier";
+static NSString *SKDocumentToolbarFontsItemIdentifier = @"SKDocumentToolbarFontsItemIdentifier";
+static NSString *SKDocumentToolbarLinesItemIdentifier = @"SKDocumentToolbarLinesItemIdentifier";
 static NSString *SKDocumentToolbarContentsPaneItemIdentifier = @"SKDocumentToolbarContentsPaneItemIdentifier";
 static NSString *SKDocumentToolbarNotesPaneItemIdentifier = @"SKDocumentToolbarNotesPaneItemIdentifier";
 
@@ -3692,13 +3695,38 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
 	menuItem = [[[NSMenuItem allocWithZone:[NSMenu menuZone]] initWithTitle:NSLocalizedString(@"Colors", @"Toolbar item label") action:@selector(orderFrontColorPanel:) keyEquivalent:@""] autorelease];
     [menuItem setSubmenu:menu];
     item = [[SKToolbarItem alloc] initWithItemIdentifier:SKDocumentToolbarColorSwatchItemIdentifier];
-    [item setLabels:NSLocalizedString(@"Colors", @"Toolbar item label")];
-    [item setToolTip:NSLocalizedString(@"Colors", @"Tool tip message")];
+    [item setLabels:NSLocalizedString(@"Favorite Colors", @"Toolbar item label")];
+    [item setToolTip:NSLocalizedString(@"Favorite Colors", @"Tool tip message")];
     [item setViewWithSizes:colorSwatch];
     [item setMenuFormRepresentation:menuItem];
     [toolbarItems setObject:item forKey:SKDocumentToolbarColorSwatchItemIdentifier];
     [item release];
     [self handleColorSwatchColorsChangedNotification:nil];
+    
+    item = [[SKToolbarItem alloc] initWithItemIdentifier:SKDocumentToolbarColorsItemIdentifier];
+    [item setLabels:NSLocalizedString(@"Colors", @"Toolbar item label")];
+    [item setToolTip:NSLocalizedString(@"Colors", @"Tool tip message")];
+    [item setImageNamed:@"ToolbarColors"];
+    [item setAction:@selector(orderFrontColorPanel:)];
+    [toolbarItems setObject:item forKey:SKDocumentToolbarColorsItemIdentifier];
+    [item release];
+    
+    item = [[SKToolbarItem alloc] initWithItemIdentifier:SKDocumentToolbarFontsItemIdentifier];
+    [item setLabels:NSLocalizedString(@"Fonts", @"Toolbar item label")];
+    [item setToolTip:NSLocalizedString(@"Fonts", @"Tool tip message")];
+    [item setImageNamed:@"ToolbarFonts"];
+    [item setTarget:[NSFontManager sharedFontManager]];
+    [item setAction:@selector(orderFrontFontPanel:)];
+    [toolbarItems setObject:item forKey:SKDocumentToolbarFontsItemIdentifier];
+    [item release];
+    
+    item = [[SKToolbarItem alloc] initWithItemIdentifier:SKDocumentToolbarLinesItemIdentifier];
+    [item setLabels:NSLocalizedString(@"Lines", @"Toolbar item label")];
+    [item setToolTip:NSLocalizedString(@"Lines", @"Tool tip message")];
+    [item setImageNamed:@"ToolbarLines"];
+    [item setAction:@selector(orderFrontLineInspector:)];
+    [toolbarItems setObject:item forKey:SKDocumentToolbarLinesItemIdentifier];
+    [item release];
     
     item = [[SKToolbarItem alloc] initWithItemIdentifier:SKDocumentToolbarInfoItemIdentifier];
     [item setLabels:NSLocalizedString(@"Info", @"Toolbar item label")];
@@ -3801,6 +3829,9 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
         SKDocumentToolbarToolModeItemIdentifier, 
         SKDocumentToolbarDisplayBoxItemIdentifier, 
         SKDocumentToolbarColorSwatchItemIdentifier, 
+        SKDocumentToolbarColorsItemIdentifier, 
+        SKDocumentToolbarFontsItemIdentifier, 
+        SKDocumentToolbarLinesItemIdentifier, 
 		NSToolbarPrintItemIdentifier,
 		NSToolbarFlexibleSpaceItemIdentifier, 
 		NSToolbarSpaceItemIdentifier, 

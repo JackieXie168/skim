@@ -167,6 +167,9 @@
 		CEA575CE0B9206E60003D2E7 /* SKNoteOutlineView.m in Sources */ = {isa = PBXBuildFile; fileRef = CEA575CD0B9206E60003D2E7 /* SKNoteOutlineView.m */; };
 		CEA575E50B9207B80003D2E7 /* SKThumbnailTableView.m in Sources */ = {isa = PBXBuildFile; fileRef = CEA575E40B9207B80003D2E7 /* SKThumbnailTableView.m */; };
 		CEA575FD0B9208B60003D2E7 /* SKOutlineView.m in Sources */ = {isa = PBXBuildFile; fileRef = CEA575FC0B9208B60003D2E7 /* SKOutlineView.m */; };
+		CEAFFD7C0C40ED5400C3ECBB /* ToolbarColors.tiff in Resources */ = {isa = PBXBuildFile; fileRef = CEAFFD7A0C40ED5400C3ECBB /* ToolbarColors.tiff */; };
+		CEAFFD7D0C40ED5400C3ECBB /* ToolbarFonts.tiff in Resources */ = {isa = PBXBuildFile; fileRef = CEAFFD7B0C40ED5400C3ECBB /* ToolbarFonts.tiff */; };
+		CEAFFD9D0C40F2A800C3ECBB /* ToolbarLines.tiff in Resources */ = {isa = PBXBuildFile; fileRef = CEAFFD9C0C40F2A800C3ECBB /* ToolbarLines.tiff */; };
 		CECBA5910BFCEE260030AB59 /* SelectToolAdorn.tiff in Resources */ = {isa = PBXBuildFile; fileRef = CECBA5900BFCEE250030AB59 /* SelectToolAdorn.tiff */; };
 		CEE106150BCBB72C00BF2D3E /* SKNotesDocument.m in Sources */ = {isa = PBXBuildFile; fileRef = CEE106140BCBB72C00BF2D3E /* SKNotesDocument.m */; };
 		CEE1065E0BCBBE1300BF2D3E /* NotesDocument.nib in Resources */ = {isa = PBXBuildFile; fileRef = CEE106580BCBBE1200BF2D3E /* NotesDocument.nib */; };
@@ -533,6 +536,9 @@
 		CEA575E40B9207B80003D2E7 /* SKThumbnailTableView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SKThumbnailTableView.m; sourceTree = "<group>"; };
 		CEA575FB0B9208B60003D2E7 /* SKOutlineView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SKOutlineView.h; sourceTree = "<group>"; };
 		CEA575FC0B9208B60003D2E7 /* SKOutlineView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SKOutlineView.m; sourceTree = "<group>"; };
+		CEAFFD7A0C40ED5400C3ECBB /* ToolbarColors.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; name = ToolbarColors.tiff; path = Images/ToolbarColors.tiff; sourceTree = "<group>"; };
+		CEAFFD7B0C40ED5400C3ECBB /* ToolbarFonts.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; name = ToolbarFonts.tiff; path = Images/ToolbarFonts.tiff; sourceTree = "<group>"; };
+		CEAFFD9C0C40F2A800C3ECBB /* ToolbarLines.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; name = ToolbarLines.tiff; path = Images/ToolbarLines.tiff; sourceTree = "<group>"; };
 		CECBA5900BFCEE250030AB59 /* SelectToolAdorn.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; name = SelectToolAdorn.tiff; path = Images/SelectToolAdorn.tiff; sourceTree = "<group>"; };
 		CEE106130BCBB72C00BF2D3E /* SKNotesDocument.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SKNotesDocument.h; sourceTree = "<group>"; };
 		CEE106140BCBB72C00BF2D3E /* SKNotesDocument.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SKNotesDocument.m; sourceTree = "<group>"; };
@@ -675,7 +681,6 @@
 		2A37F4B8FDCFA73011CA2CEA /* Resources */ = {
 			isa = PBXGroup;
 			children = (
-				CE8B46EA0C29CA3D005CE7F1 /* LineInspector.nib */,
 				CE5475A00B33058B00F8AFB6 /* Images */,
 				CE4DA9190B9E190D0039E89C /* Skim Help */,
 				CE54898A0B35D4EF00F8AFB6 /* InfoWindow.nib */,
@@ -685,6 +690,7 @@
 				CEE106580BCBBE1200BF2D3E /* NotesDocument.nib */,
 				CEF7071D0B8F8EFC003A2771 /* SnapshotWindow.nib */,
 				CE9C42360B8B5633004AD8CF /* PreferenceWindow.nib */,
+				CE8B46EA0C29CA3D005CE7F1 /* LineInspector.nib */,
 				CE2DEB900B86206400D0DA12 /* FindPanel.nib */,
 				CE1E25660BDA61E80011D9DD /* ReadNotesAccessoryView.nib */,
 				CEF717560B90DEEF003A2771 /* ReleaseNotes.nib */,
@@ -959,11 +965,14 @@
 				CE4EB8230B7B96D00091F228 /* ThumbnailViewAdorn.tiff */,
 				CE7C5D180BD8086C0011315D /* ToolbarLineNote.tiff */,
 				CE4190C20B94963A00ECF819 /* ToolbarCircleNote.tiff */,
+				CEAFFD7A0C40ED5400C3ECBB /* ToolbarColors.tiff */,
 				CE31AC4D0C02E918003612A9 /* ToolbarCrop.tiff */,
+				CEAFFD7B0C40ED5400C3ECBB /* ToolbarFonts.tiff */,
 				CE5478BA0B33456300F8AFB6 /* ToolbarFullScreen.tiff */,
 				CE9DC2E80B9F131800D64F28 /* ToolbarHighlightNote.tiff */,
 				CE7467330B7F2ED700CBF969 /* ToolbarInfo.tiff */,
 				CE0465050B850D7C00C11E4A /* ToolbarLeftPane.tiff */,
+				CEAFFD9C0C40F2A800C3ECBB /* ToolbarLines.tiff */,
 				CE5478BD0B33456300F8AFB6 /* ToolbarNext.tiff */,
 				CE3A4BA40B7A4D0C006B64D3 /* ToolbarNote.tiff */,
 				CE5478BE0B33456300F8AFB6 /* ToolbarNotesDrawer.tiff */,
@@ -1203,6 +1212,9 @@
 				CE327A460C11BF6700DB4BEB /* NoteTypeSheet.nib in Resources */,
 				CE8B46F00C29CA3D005CE7F1 /* LineInspector.nib in Resources */,
 				CE4D88D80C3AE531002C20CB /* DVIDocument.icns in Resources */,
+				CEAFFD7C0C40ED5400C3ECBB /* ToolbarColors.tiff in Resources */,
+				CEAFFD7D0C40ED5400C3ECBB /* ToolbarFonts.tiff in Resources */,
+				CEAFFD9D0C40F2A800C3ECBB /* ToolbarLines.tiff in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

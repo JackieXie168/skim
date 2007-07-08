@@ -70,7 +70,7 @@ NSString *SKApplicationWillTerminateNotification = @"SKApplicationWillTerminateN
 @implementation SKApplication
 
 - (IBAction)orderFrontLineInspector:(id)sender {
-    [[SKLineInspector sharedLineInspector] showWindow:sender];
+    [[[SKLineInspector sharedLineInspector] window] orderFront:sender];
 }
 
 - (void)sendEvent:(NSEvent *)anEvent {
