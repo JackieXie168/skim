@@ -165,6 +165,9 @@ typedef enum _SKNoteType {
 - (void)handleAnnotationDidChangeNotification:(NSNotification *)notification;
 - (void)handleWindowWillCloseNotification:(NSNotification *)notification;
 
+- (void)resetHoverRects;
+- (void)removeHoverRects;
+
 - (NSUndoManager *)undoManager;
 
 @end
