@@ -32,6 +32,7 @@
 }
 + (id)watchedPathWithPath:(NSString *)fullPath;
 - (int)fileDescriptor;
+- (NSString *)path;
 @end
 
 
@@ -225,22 +226,27 @@ static UKKQueue * gUKKQueueSharedQueueSingleton = nil;
 
 -(void) addPathToQueue: (NSString*)path notifyingAbout: (u_int)fflags
 {
-	struct timespec		nullts = { 0, 0 };
 	struct kevent		ev;
-    UKWatchedPath       *tmpPath = [UKWatchedPath watchedPathWithPath:path];
-	int					fd = [tmpPath fileDescriptor];
-	
-    if( fd >= 0 )
+    UKWatchedPath       *watchedPath = [UKWatchedPath watchedPathWithPath:path];
+
+    AT_SYNCHRONIZED( self )
     {
-        EV_SET( &ev, fd, EVFILT_VNODE, 
-				EV_ADD | EV_ENABLE | EV_CLEAR,
-				fflags, 0, (void*)path );
-		
-        AT_SYNCHRONIZED( self )
-        {
-            if ([watchedPaths containsObject:tmpPath] == NO) {
-                [watchedPaths addObject:tmpPath];
-                kevent( queueFD, &ev, 1, NULL, 0, &nullts );
+        if ([watchedPaths containsObject:watchedPath] == NO) {
+            
+            // this will be closed when watchedPath is dealloced
+            int					fd = [watchedPath fileDescriptor];
+
+            if( fd >= 0 )
+            {
+                
+                [watchedPaths addObject:watchedPath];
+
+                // add the instance that we know is retained by watchedPaths
+                EV_SET( &ev, fd, EVFILT_VNODE, 
+                    EV_ADD | EV_ENABLE | EV_CLEAR,
+                    fflags, 0, (void*)watchedPath );
+            
+                kevent( queueFD, &ev, 1, NULL, 0, NULL );
             }
         }
     }
@@ -314,7 +320,6 @@ static UKKQueue * gUKKQueueSharedQueueSingleton = nil;
 {
 	int					n;
     struct kevent		ev;
-    struct timespec     timeout = { 5, 0 }; // 5 seconds timeout.
 	int					theFD = queueFD;	// So we don't have to risk accessing iVars when the thread is terminated.
     
     while( keepThreadRunning )
@@ -322,14 +327,15 @@ static UKKQueue * gUKKQueueSharedQueueSingleton = nil;
 		NSAutoreleasePool*  pool = [[NSAutoreleasePool alloc] init];
 		
 		NS_DURING
-			n = kevent( queueFD, NULL, 0, &ev, 1, &timeout );
+			n = kevent( queueFD, NULL, 0, &ev, 1, NULL );
 			if( n > 0 )
 			{
 				if( ev.filter == EVFILT_VNODE )
 				{
 					if( ev.fflags )
 					{
-						NSString*		fpath = [(NSString *)ev.udata retain];    // In case one of the notified folks removes the path.
+                        // retain in case one of the notified folks removes the path.
+						NSString*		fpath = [[(UKWatchedPath *)ev.udata path] retain];
 						//NSLog(@"UKKQueue: Detected file change: %@", fpath);
 						
 						//NSLog(@"ev.flags = %u",ev.fflags);	// DEBUG ONLY!
@@ -442,6 +448,7 @@ static const int UNOPENED_DESCRIPTOR = -2;
 - (id)initWatchedPathWithPath:(NSString *)fullPath;
 {
     if (self = [super init]) {
+        // copy since the hash mustn't change
         path = [fullPath copy];
         // allows us to open files lazily, since these may be created just for a path comparison when removing from the queue
         fd = UNOPENED_DESCRIPTOR;
