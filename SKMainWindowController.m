@@ -617,6 +617,8 @@ static NSString *SKRightSidePaneWidthKey = @"SKRightSidePaneWidth";
             
             [[pdfView document] cancelFindString];
             
+            [pdfView removeHoverRects];
+            
             NSEnumerator *e = [notes objectEnumerator];
             PDFAnnotation *annotation;
             
@@ -718,11 +720,14 @@ static NSString *SKRightSidePaneWidthKey = @"SKRightSidePaneWidth";
     }
     [noteOutlineView reloadData];
     [self allThumbnailsNeedUpdate];
+    [pdfView resetHoverRects];
 }
 
 - (void)setAnnotationsFromDictionaries:(NSArray *)noteDicts{
     NSEnumerator *e = [notes objectEnumerator];
     PDFAnnotation *annotation;
+    
+    [pdfView removeHoverRects];
     
     // remove the current annotations
     [pdfView setActiveAnnotation:nil];

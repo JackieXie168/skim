@@ -87,9 +87,6 @@ static void SKCGContextDrawGrabHandle(CGContextRef context, CGPoint point, float
 - (NSRange)visiblePageIndexRange;
 - (NSRect)visibleContentRect;
 
-- (void)resetHoverRects;
-- (void)removeHoverRects;
-
 - (NSRect)resizeThumbForRect:(NSRect) rect rotation:(int)rotation;
 - (NSRect)resizeThumbForRect:(NSRect) rect point:(NSPoint)point;
 - (void)transformCGContext:(CGContextRef)context forPage:(PDFPage *)page;
@@ -225,6 +222,47 @@ static void SKCGContextDrawGrabHandle(CGContextRef context, CGPoint point, float
 - (void)resetCursorRects {
 	[super resetCursorRects];
     [self resetHoverRects];
+}
+
+#pragma mark Hover-rects
+
+// Fix a bug in Tiger's PDFKit, tooltips lead to a crash when you reload a PDFDocument in a PDFView
+// see http://www.cocoabuilder.com/archive/message/cocoa/2007/3/12/180190
+- (void)scheduleAddingToolips {}
+
+- (void)removeHoverRects {
+    CFIndex idx = [hoverRects count];
+    while (idx--) {
+        [self removeTrackingRect:(NSTrackingRectTag)[hoverRects objectAtIndex:idx]];
+        [hoverRects removeObjectAtIndex:idx];
+    }
+}
+
+- (void)resetHoverRects {
+    if (hoverRects == nil)
+        hoverRects = (NSMutableArray *)CFArrayCreateMutable(NULL, 0, NULL);
+    else
+        [self removeHoverRects];
+    
+    NSRange range = [self visiblePageIndexRange];
+    int i, iMax = NSMaxRange(range);
+    NSRect visibleRect = [self visibleContentRect];
+    
+    for (i = range.location; i < iMax; i++) {
+        PDFPage *page = [[self document] pageAtIndex:i];
+        NSArray *annotations = [page annotations];
+        unsigned j, jMax = [annotations count];
+        for (j = 0; j < jMax; j++) {
+            PDFAnnotation *annotation = [annotations objectAtIndex:j];
+            if ([[annotation type] isEqualToString:@"Note"] || [[annotation type] isEqualToString:@"Link"]) {
+                NSRect rect = NSIntersectionRect([self convertRect:[annotation bounds] fromPage:page], visibleRect);
+                if (NSIsEmptyRect(rect) == NO) {
+                    NSTrackingRectTag tag = [self addTrackingRect:rect owner:self userData:annotation assumeInside:NO];
+                    [hoverRects addObject:(id)tag];
+                }
+            }
+        }
+    }
 }
 
 #pragma mark Drawing
@@ -1484,6 +1522,7 @@ static void SKCGContextDrawGrabHandle(CGContextRef context, CGPoint point, float
     [annotation setShouldDisplay:hideNotes == NO];
     [page addAnnotation:annotation];
     [self setNeedsDisplayForAnnotation:annotation];
+    [self resetHoverRects];
     [[NSNotificationCenter defaultCenter] postNotificationName:SKPDFViewDidAddAnnotationNotification object:self userInfo:[NSDictionary dictionaryWithObjectsAndKeys:page, @"page", annotation, @"annotation", nil]];                
 }
 
@@ -1506,6 +1545,7 @@ static void SKCGContextDrawGrabHandle(CGContextRef context, CGPoint point, float
 - (void)removeAnnotation:(PDFAnnotation *)annotation{
     PDFAnnotation *wasAnnotation = [annotation retain];
     PDFPage *page = [wasAnnotation page];
+    BOOL wasNote = [[wasAnnotation type] isEqualToString:@"Note"];
     
     [[[self undoManager] prepareWithInvocationTarget:self] addAnnotation:wasAnnotation toPage:page];
     [[self undoManager] setActionName:NSLocalizedString(@"Remove Note", @"Undo action name")];
@@ -1516,6 +1556,8 @@ static void SKCGContextDrawGrabHandle(CGContextRef context, CGPoint point, float
 		[self setActiveAnnotation:nil];
     [self setNeedsDisplayForAnnotation:wasAnnotation];
     [page removeAnnotation:wasAnnotation];
+    if (wasNote)
+        [self resetHoverRects];
     [[NSNotificationCenter defaultCenter] postNotificationName:SKPDFViewDidRemoveAnnotationNotification object:self 
         userInfo:[NSDictionary dictionaryWithObjectsAndKeys:wasAnnotation, @"annotation", page, @"page", nil]];
     [wasAnnotation release];
@@ -1531,6 +1573,8 @@ static void SKCGContextDrawGrabHandle(CGContextRef context, CGPoint point, float
     [page addAnnotation:annotation];
     [annotation release];
     [self setNeedsDisplayForAnnotation:annotation];
+    if ([[annotation type] isEqualToString:@"Note"])
+        [self resetHoverRects];
     [[NSNotificationCenter defaultCenter] postNotificationName:SKPDFViewDidMoveAnnotationNotification object:self userInfo:[NSDictionary dictionaryWithObjectsAndKeys:oldPage, @"oldPage", page, @"newPage", annotation, @"annotation", nil]];                
 }
 
@@ -1777,8 +1821,11 @@ static void SKCGContextDrawGrabHandle(CGContextRef context, CGPoint point, float
 
 - (void)handleAnnotationDidChangeNotification:(NSNotification *)notification {
     PDFAnnotation *annotation = [notification object];
-    if ([[[annotation page] document] isEqual:[self document]])
+    if ([[[annotation page] document] isEqual:[self document]]) {
         [self setNeedsDisplayForAnnotation:annotation];
+        if ([[annotation type] isEqualToString:@"Note"] && [[[notification userInfo] objectForKey:@"key"] isEqualToString:@"bounds"])
+            [self resetHoverRects];
+    }
 }
 
 #pragma mark FullScreen navigation and autohide
@@ -1947,47 +1994,6 @@ static void SKCGContextDrawGrabHandle(CGContextRef context, CGPoint point, float
     last = [[self document] indexForPage:page];
     
     return NSMakeRange(first, last - first + 1);
-}
-
-#pragma mark Hover-rects
-
-// Fix a bug in Tiger's PDFKit, tooltips lead to a crash when you reload a PDFDocument in a PDFView
-// see http://www.cocoabuilder.com/archive/message/cocoa/2007/3/12/180190
-- (void)scheduleAddingToolips {}
-
-- (void)removeHoverRects {
-    CFIndex idx = [hoverRects count];
-    while (idx--) {
-        [self removeTrackingRect:(NSTrackingRectTag)[hoverRects objectAtIndex:idx]];
-        [hoverRects removeObjectAtIndex:idx];
-    }
-}
-
-- (void)resetHoverRects {
-    if (hoverRects == nil)
-        hoverRects = (NSMutableArray *)CFArrayCreateMutable(NULL, 0, NULL);
-    else
-        [self removeHoverRects];
-    
-    NSRange range = [self visiblePageIndexRange];
-    int i, iMax = NSMaxRange(range);
-    NSRect visibleRect = [self visibleContentRect];
-    
-    for (i = range.location; i < iMax; i++) {
-        PDFPage *page = [[self document] pageAtIndex:i];
-        NSArray *annotations = [page annotations];
-        unsigned j, jMax = [annotations count];
-        for (j = 0; j < jMax; j++) {
-            PDFAnnotation *annotation = [annotations objectAtIndex:j];
-            if ([[annotation type] isEqualToString:@"Note"] || [[annotation type] isEqualToString:@"Link"]) {
-                NSRect rect = NSIntersectionRect([self convertRect:[annotation bounds] fromPage:page], visibleRect);
-                if (NSIsEmptyRect(rect) == NO) {
-                    NSTrackingRectTag tag = [self addTrackingRect:rect owner:self userData:annotation assumeInside:NO];
-                    [hoverRects addObject:(id)tag];
-                }
-            }
-        }
-    }
 }
 
 #pragma mark Autohide timer
