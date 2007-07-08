@@ -335,6 +335,8 @@ static NSString *SKRightSidePaneWidthKey = @"SKRightSidePaneWidth";
                              name:SKPDFViewAnnotationModeChangedNotification object:pdfView];
     [nc addObserver:self selector:@selector(handleSelectionChangedNotification:) 
                              name:SKPDFViewSelectionChangedNotification object:pdfView];
+    [nc addObserver:self selector:@selector(handleMagnificationChangedNotification:) 
+                             name:SKPDFViewMagnificationChangedNotification object:pdfView];
     [nc addObserver:self selector:@selector(handleChangedHistoryNotification:) 
                              name:PDFViewChangedHistoryNotification object:pdfView];
     [nc addObserver:self selector:@selector(handleDidChangeActiveAnnotationNotification:) 
@@ -571,11 +573,17 @@ static NSString *SKRightSidePaneWidthKey = @"SKRightSidePaneWidth";
 
 - (void)updateRightStatus {
     NSRect selRect = [pdfView currentSelectionRect];
+    float magnification = [pdfView currentMagnification];
+    
     NSString *message;
-    if (NSEqualRects(selRect, NSZeroRect))
-        message = @"";
-    else
+    if (NSEqualRects(selRect, NSZeroRect)) {
+        if (magnification > 0.0001)
+            message = [NSString stringWithFormat:@"%.2f x", magnification];
+        else
+           message = @"";
+    } else {
         message = [NSString stringWithFormat:@"%i x %i", (int)NSWidth(selRect), (int)NSHeight(selRect)];
+    }
     [statusBar setRightStringValue:message];
 }
 
@@ -2444,6 +2452,10 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
 }
 
 - (void)handleSelectionChangedNotification:(NSNotification *)notification {
+    [self updateRightStatus];
+}
+
+- (void)handleMagnificationChangedNotification:(NSNotification *)notification {
     [self updateRightStatus];
 }
 
