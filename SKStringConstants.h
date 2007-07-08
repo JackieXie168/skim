@@ -92,6 +92,7 @@ extern NSString *SKLineNoteEndLineStyleKey;
 extern NSString *SKSwatchColorsKey;
 extern NSString *SKDefaultPDFDisplaySettingsKey;
 extern NSString *SKDefaultFullScreenPDFDisplaySettingsKey;
+extern NSString *SKShowStatusBarKey;
 extern NSString *SKEnableAppleRemoteKey;
 extern NSString *SKAppleRemoteSwitchIndicationTimeoutKey;
 extern NSString *SKReadMissingNotesFromSkimFileOptionKey;

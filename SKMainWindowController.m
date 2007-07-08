@@ -73,6 +73,7 @@
 #import "SKReadingBar.h"
 #import "SKLineInspector.h"
 #import "SKColorSwatch.h"
+#import "SKStatusBar.h"
 
 #define SEGMENTED_CONTROL_HEIGHT    25.0
 #define WINDOW_X_DELTA              0.0
@@ -172,6 +173,7 @@ static NSString *SKRightSidePaneWidthKey = @"SKRightSidePaneWidth";
 	[rightSideWindow release];
 	[fullScreenWindow release];
     [mainWindow release];
+    [statusBar release];
     [toolbarItems release];
     [pdfOutlineItems release];
     [savedNormalSetup release];
@@ -187,7 +189,7 @@ static NSString *SKRightSidePaneWidthKey = @"SKRightSidePaneWidth";
     [findCollapsibleView setCollapseEdges:BDSKMaxXEdgeMask | BDSKMinYEdgeMask];
     [findCollapsibleView setMinSize:NSMakeSize(50.0, 25.0)];
     
-    [pdfContentBox setEdges:BDSKMinXEdgeMask | BDSKMaxXEdgeMask];
+    [pdfContentBox setEdges:BDSKMinXEdgeMask | BDSKMaxXEdgeMask | BDSKMinYEdgeMask];
     [findEdgeView setEdges:BDSKMaxXEdgeMask];
     [leftSideEdgeView setEdges:BDSKMaxXEdgeMask];
     [rightSideEdgeView setEdges:BDSKMinXEdgeMask];
@@ -249,6 +251,9 @@ static NSString *SKRightSidePaneWidthKey = @"SKRightSidePaneWidth";
         frame.origin.x = NSMaxX([leftSideContentBox frame]) + [splitView dividerThickness];
         [pdfContentBox setFrame:frame];
     }
+    
+    if ([[NSUserDefaults standardUserDefaults] boolForKey:SKShowStatusBarKey])
+        [self toggleStatusBar:nil];
     
     // this needs to be done before loading the PDFDocument
     [self resetThumbnailSizeIfNeeded];
@@ -328,6 +333,8 @@ static NSString *SKRightSidePaneWidthKey = @"SKRightSidePaneWidth";
                              name:SKPDFViewToolModeChangedNotification object:pdfView];
     [nc addObserver:self selector:@selector(handleAnnotationModeChangedNotification:) 
                              name:SKPDFViewAnnotationModeChangedNotification object:pdfView];
+    [nc addObserver:self selector:@selector(handleSelectionChangedNotification:) 
+                             name:SKPDFViewSelectionChangedNotification object:pdfView];
     [nc addObserver:self selector:@selector(handleChangedHistoryNotification:) 
                              name:PDFViewChangedHistoryNotification object:pdfView];
     [nc addObserver:self selector:@selector(handleDidChangeActiveAnnotationNotification:) 
@@ -557,6 +564,23 @@ static NSString *SKRightSidePaneWidthKey = @"SKRightSidePaneWidth";
     }
 }
 
+- (void)updateLeftStatus {
+    NSString *message = [NSString stringWithFormat:NSLocalizedString(@"Page %i of %i", @"Status message"), [self pageNumber], [[pdfView document] pageCount]];
+    [statusBar setLeftStringValue:message];
+}
+
+- (void)updateRightStatus {
+    NSRect selRect = [pdfView currentSelectionRect];
+    NSString *message;
+    if (NSEqualRects(selRect, NSZeroRect))
+        message = @"";
+    else
+        message = [NSString stringWithFormat:@"%i x %i", (int)NSWidth(selRect), (int)NSHeight(selRect)];
+    [statusBar setRightStringValue:message];
+}
+
+#pragma mark Accessors
+
 - (void)setDocument:(NSDocument *)document {
     if ([self document] && document == nil) {
         unsigned int pageIndex = [[pdfView document] indexForPage:[pdfView currentPage]];
@@ -566,8 +590,6 @@ static NSString *SKRightSidePaneWidthKey = @"SKRightSidePaneWidth";
     }
     [super setDocument:document];
 }
-
-#pragma mark Accessors
 
 - (PDFDocument *)pdfDocument{
     return [pdfView document];
@@ -1528,6 +1550,16 @@ static NSString *SKRightSidePaneWidthKey = @"SKRightSidePaneWidth";
     [self setRightSidePaneState:[sender tag]];
 }
 
+- (IBAction)toggleStatusBar:(id)sender {
+    if (statusBar == nil) {
+        statusBar = [[SKStatusBar alloc] initWithFrame:NSMakeRect(0.0, 0.0, NSWidth([splitView frame]), 20.0)];
+        [self updateLeftStatus];
+        [self updateRightStatus];
+    }
+    [statusBar toggleBelowView:splitView offset:1.0];
+    [[NSUserDefaults standardUserDefaults] setBool:[statusBar isVisible] forKey:SKShowStatusBarKey];
+}
+
 - (IBAction)searchPDF:(id)sender {
     if ([self isFullScreen]) {
         if ([leftSideWindow state] == NSDrawerClosedState || [leftSideWindow state] == NSDrawerClosingState)
@@ -2326,6 +2358,8 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
     [self updateOutlineSelection];
     [self updateNoteSelection];
     [self updateThumbnailSelection];
+    
+    [self updateLeftStatus];
 }
 
 - (void)handleScaleChangedNotification:(NSNotification *)notification {
@@ -2407,6 +2441,10 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
     }
     
     [toolModeButton setImage:noteToolAdornImages[[pdfView annotationMode]] forSegment:SKNoteToolMode];
+}
+
+- (void)handleSelectionChangedNotification:(NSNotification *)notification {
+    [self updateRightStatus];
 }
 
 - (void)handleApplicationWillTerminateNotification:(NSNotification *)notification {
@@ -3974,6 +4012,12 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
         return [menuItem tag] == SKThumbnailSidePaneState || pdfOutline;
     } else if (action == @selector(changeRightSidePaneState:)) {
         [menuItem setState:(int)rightSidePaneState == [menuItem tag] ? NSOnState : NSOffState];
+        return YES;
+    } else if (action == @selector(toggleStatusBar:)) {
+        if ([statusBar isVisible])
+            [menuItem setTitle:NSLocalizedString(@"Hide Status Bar", @"Menu item title")];
+        else
+            [menuItem setTitle:NSLocalizedString(@"Show Status Bar", @"Menu item title")];
         return YES;
     } else if (action == @selector(searchPDF:)) {
         return [self isPresentation] == NO;

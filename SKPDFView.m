@@ -63,6 +63,7 @@ NSString *SKPDFViewDidRemoveAnnotationNotification = @"SKPDFViewDidRemoveAnnotat
 NSString *SKPDFViewDidMoveAnnotationNotification = @"SKPDFViewDidMoveAnnotationNotification";
 NSString *SKPDFViewAnnotationDoubleClickedNotification = @"SKPDFViewAnnotationDoubleClickedNotification";
 NSString *SKPDFViewReadingBarDidChangeNotification = @"SKPDFViewReadingBarDidChangeNotification";
+NSString *SKPDFViewSelectionChangedNotification = @"SKPDFViewSelectionChangedNotification";
 
 NSString *SKSkimNotePboardType = @"SKSkimNotePboardType";
 
@@ -712,6 +713,7 @@ static void SKCGContextDrawGrabHandle(CGContextRef context, CGPoint point, float
     if (toolMode == SKSelectToolMode) {
         PDFPage *page = [self currentPage];
         selectionRect = NSIntersectionRect(NSUnionRect([page foregroundBox], selectionRect), [page boundsForBox:[self displayBox]]);
+        [[NSNotificationCenter defaultCenter] postNotificationName:SKPDFViewSelectionChangedNotification object:self];
         [self setNeedsDisplay:YES];
     }
 }
@@ -837,6 +839,7 @@ static void SKCGContextDrawGrabHandle(CGContextRef context, CGPoint point, float
                 if (nil == activeAnnotation && NSIsEmptyRect(selectionRect) == NO) {
                     [self setNeedsDisplayInRect:selectionRect];
                     selectionRect = NSZeroRect;
+                    [[NSNotificationCenter defaultCenter] postNotificationName:SKPDFViewSelectionChangedNotification object:self];
                 } else if ([[activeAnnotation type] isEqualToString:@"Link"]) {
                     NSPoint p = [self convertPoint:[theEvent locationInWindow] fromView:nil];
                     PDFPage *page = [self pageForPoint:p nearest:NO];
@@ -2762,6 +2765,7 @@ static void SKCGContextDrawGrabHandle(CGContextRef context, CGPoint point, float
     
     if (page == nil) {
         selectionRect = NSZeroRect;
+        [[NSNotificationCenter defaultCenter] postNotificationName:SKPDFViewSelectionChangedNotification object:self];
         [self setNeedsDisplay:YES];
         return;
     }
@@ -2868,13 +2872,14 @@ static void SKCGContextDrawGrabHandle(CGContextRef context, CGPoint point, float
             didDrag = YES;
         }
         selectionRect = newRect;
-        
+        [[NSNotificationCenter defaultCenter] postNotificationName:SKPDFViewSelectionChangedNotification object:self];
 	}
     
     didDrag = NO;
     
     if (NSIsEmptyRect(selectionRect)) {
         selectionRect = NSZeroRect;
+        [[NSNotificationCenter defaultCenter] postNotificationName:SKPDFViewSelectionChangedNotification object:self];
         [self setNeedsDisplay:YES];
     }
     
@@ -2943,6 +2948,7 @@ static void SKCGContextDrawGrabHandle(CGContextRef context, CGPoint point, float
             if (NSIsEmptyRect(selectionRect) == NO)
                 [self setNeedsDisplayInRect:selectionRect];
             selectionRect = NSIntegralRect([self convertRect:selRect fromPage:page1]);
+            [[NSNotificationCenter defaultCenter] postNotificationName:SKPDFViewSelectionChangedNotification object:self];
             [self setNeedsDisplayInRect:selectionRect];
             [[self window] flushWindow];
         } else if (extendSelection) {
