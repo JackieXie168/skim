@@ -178,6 +178,10 @@
 /* Message for progress sheet */
 "Exporting PDF" = "Esportazione in corso";
 
+/* Tool tip message
+   Toolbar item label */
+"Favorite Colors" = "Colori preferito";
+
 /* Error description */
 "File name too long." = "Nome file troppo lungo.";
 
@@ -195,6 +199,10 @@
 
 /* Tool tip message */
 "Fit to Screen" = "Adatta alla finestra";
+
+/* Tool tip message
+   Toolbar item label */
+"Fonts" = "Font";
 
 /* Menu item title */
 "Forward" = "Avanti";
@@ -265,6 +273,10 @@
 
 /* Menu item title */
 "Line Tool" = "Strumento Riga";
+
+/* Tool tip message
+   Toolbar item label */
+"Lines" = "Riga";
 
 /* No comment provided by engineer. */
 "Look Up in Dictionary" = "Cerca nel dizionario";
