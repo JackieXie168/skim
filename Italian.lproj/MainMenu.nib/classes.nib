@@ -54,6 +54,7 @@
                 togglePresentation = id; 
                 toggleReadingBar = id; 
                 toggleRightSidePane = id; 
+                toggleStatusBar = id; 
             }; 
             CLASS = FirstResponder; 
             LANGUAGE = ObjC; 

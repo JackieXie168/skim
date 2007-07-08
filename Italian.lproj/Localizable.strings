@@ -245,6 +245,9 @@
 /* Menu item title */
 "Hide Reading Bar" = "Nascondi Barra Lettura";
 
+/* Menu item title */
+"Hide Status Bar" = "Nascondi Barra di stato";
+
 /* Description for export
    Menu item title */
 "Highlight" = "Evidenziazione";
@@ -343,6 +346,9 @@
 
 /* Tool tip label format */
 "Page %@" = "Pagina %@";
+
+/* Status message */
+"Page %i of %i" = "Pagina %1$i di %2$i";
 
 /* Menu item title */
 "Paste" = "Incolla";
@@ -448,7 +454,10 @@
 "Show Notes Pane" = "Mostra Pannello Note";
 
 /* Menu item title */
-"Show Reading Bar" = "Mostra Barra Lettura";
+"Show Reading Bar" = "Mostra Barra di stato";
+
+/* Menu item title */
+"Show Status Bar" = "Show Status Bar";
 
 /* Informative text in alert dialog */
 "Skim was not able to read the notes at %@. %@ Do you want to continue to open the PDF document anyway?" = "Skim non è stato in grado di leggere le note a %1$@. %2$@ Vuoi continuare comunque ad aprire il documento PDF?";

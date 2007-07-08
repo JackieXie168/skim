@@ -58,7 +58,7 @@ typedef struct _SKPDFViewState {
 } SKPDFViewState;
 
 @class PDFOutline, SKThumbnail;
-@class SKPDFView, SKOutlineView, SKNoteOutlineView, SKThumbnailTableView, SKSnapshotTableView, SKSplitView, BDSKCollapsibleView, BDSKEdgeView, BDSKImagePopUpButton, SKColorSwatch;
+@class SKPDFView, SKOutlineView, SKNoteOutlineView, SKThumbnailTableView, SKSnapshotTableView, SKSplitView, BDSKCollapsibleView, BDSKEdgeView, BDSKImagePopUpButton, SKColorSwatch, SKStatusBar;
 @class SKFullScreenWindow, SKNavigationWindow, SKSideWindow, SKSnapshotWindowController;
 
 @interface SKMainWindowController : NSWindowController {
@@ -83,6 +83,8 @@ typedef struct _SKPDFViewState {
     IBOutlet NSView             *currentRightSideView;
     SKLeftSidePaneState         leftSidePaneState;
     SKRightSidePaneState        rightSidePaneState;
+    
+    SKStatusBar                 *statusBar;
     
     IBOutlet NSOutlineView      *outlineView;
     IBOutlet NSView             *tocView;
@@ -230,6 +232,7 @@ typedef struct _SKPDFViewState {
 - (IBAction)toggleRightSidePane:(id)sender;
 - (IBAction)changeLeftSidePaneState:(id)sender;
 - (IBAction)changeRightSidePaneState:(id)sender;
+- (IBAction)toggleStatusBar:(id)sender;
 - (IBAction)searchPDF:(id)sender;
 - (IBAction)enterFullScreen:(id)sender;
 - (IBAction)exitFullScreen:(id)sender;
@@ -332,6 +335,7 @@ typedef struct _SKPDFViewState {
 - (void)handleScaleChangedNotification:(NSNotification *)notification;
 - (void)handleToolModeChangedNotification:(NSNotification *)notification;
 - (void)handleAnnotationModeChangedNotification:(NSNotification *)notification;
+- (void)handleSelectionChangedNotification:(NSNotification *)notification;
 - (void)handleChangedHistoryNotification:(NSNotification *)notification;
 - (void)handleDidChangeActiveAnnotationNotification:(NSNotification *)notification;
 - (void)handleDidAddAnnotationNotification:(NSNotification *)notification;
