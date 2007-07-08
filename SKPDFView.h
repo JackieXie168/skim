@@ -49,6 +49,7 @@ extern NSString *SKPDFViewDidMoveAnnotationNotification;
 extern NSString *SKPDFViewAnnotationDoubleClickedNotification;
 extern NSString *SKPDFViewReadingBarDidChangeNotification;
 extern NSString *SKPDFViewSelectionChangedNotification;
+extern NSString *SKPDFViewMagnificationChangedNotification;
 
 extern NSString *SKSkimNotePboardType;
 
@@ -97,6 +98,7 @@ typedef enum _SKNoteType {
 	NSPoint mouseDownLoc;
 	NSPoint clickDelta;
     NSRect selectionRect;
+    float magnification;
 	BOOL resizingAnnotation;
 	BOOL draggingAnnotation;
 	BOOL draggingStartPoint;
@@ -122,6 +124,8 @@ typedef enum _SKNoteType {
 
 - (NSRect)currentSelectionRect;
 - (void)setCurrentSelectionRect:(NSRect)rect;
+
+- (float)currentMagnification;
 
 - (BOOL)hideNotes;
 - (void)setHideNotes:(BOOL)flag;

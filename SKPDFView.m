@@ -64,6 +64,7 @@ NSString *SKPDFViewDidMoveAnnotationNotification = @"SKPDFViewDidMoveAnnotationN
 NSString *SKPDFViewAnnotationDoubleClickedNotification = @"SKPDFViewAnnotationDoubleClickedNotification";
 NSString *SKPDFViewReadingBarDidChangeNotification = @"SKPDFViewReadingBarDidChangeNotification";
 NSString *SKPDFViewSelectionChangedNotification = @"SKPDFViewSelectionChangedNotification";
+NSString *SKPDFViewMagnificationChangedNotification = @"SKPDFViewMagnificationChangedNotification";
 
 NSString *SKSkimNotePboardType = @"SKSkimNotePboardType";
 
@@ -171,6 +172,7 @@ static void SKCGContextDrawGrabHandle(CGContextRef context, CGPoint point, float
     mouseDownLoc = NSZeroPoint;
     clickDelta = NSZeroPoint;
     selectionRect = NSZeroRect;
+    magnification = 0.0;
     resizingAnnotation = NO;
     draggingAnnotation = NO;
     draggingStartPoint = NO;
@@ -468,6 +470,10 @@ static void SKCGContextDrawGrabHandle(CGContextRef context, CGPoint point, float
             [self setNeedsDisplay:YES];
         selectionRect = rect;
     }
+}
+
+- (float)currentMagnification {
+    return magnification;
 }
 
 - (BOOL)hideNotes {
@@ -3135,7 +3141,6 @@ static void SKCGContextDrawGrabHandle(CGContextRef context, CGPoint point, float
 	NSRect originalBounds = [documentView bounds];
     NSRect visibleRect = [clipView convertRect:[clipView visibleRect] toView: nil];
     NSRect magBounds, magRect, outlineRect;
-	float magScale = 1.0;
     BOOL mouseInside = NO;
 	int currentLevel = 0;
     int originalLevel = [theEvent clickCount]; // this should be at least 1
@@ -3148,23 +3153,25 @@ static void SKCGContextDrawGrabHandle(CGContextRef context, CGPoint point, float
     NSRect smallMagRect = NSMakeRect(-0.5 * smallWidth, -0.5 * smallHeight, smallWidth, smallHeight);
     NSRect largeMagRect = NSMakeRect(-0.5 * largeWidth, -0.5 * largeHeight, largeWidth, largeHeight);
     
-	[documentView setPostsBoundsChangedNotifications: NO];
+    [documentView setPostsBoundsChangedNotifications: NO];
 	
 	[[self window] discardCachedImage]; // make sure not to use the cached image
         
 	while ([theEvent type] != NSLeftMouseUp) {
         
         if ([theEvent type] == NSLeftMouseDown || [theEvent type] == NSFlagsChanged) {	
-            // set up the currentLevel and magScale
+            // set up the currentLevel and magnification
             unsigned modifierFlags = [theEvent modifierFlags];
             currentLevel = originalLevel + ((modifierFlags & NSAlternateKeyMask) ? 1 : 0);
             if (currentLevel > 2) {
                 [[self window] restoreCachedImage];
                 [[self window] cacheImageInRect:visibleRect];
             }
-            magScale = (modifierFlags & NSCommandKeyMask) ? 4.0 : (modifierFlags & NSControlKeyMask) ? 1.5 : 2.5;
-            if ((modifierFlags & NSShiftKeyMask) == 0)
-                magScale = 1.0 / magScale;
+            magnification = (modifierFlags & NSCommandKeyMask) ? 4.0 : (modifierFlags & NSControlKeyMask) ? 1.5 : 2.5;
+            if (modifierFlags & NSShiftKeyMask) {
+                magnification = 1.0 / magnification;
+            }
+            [[NSNotificationCenter defaultCenter] postNotificationName:SKPDFViewMagnificationChangedNotification object:self];
             [[self cursorForEvent:theEvent] set];
         } else if ([theEvent type] == NSLeftMouseDragged) {
             // get Mouse location and check if it is with the view's rect
@@ -3192,9 +3199,9 @@ static void SKCGContextDrawGrabHandle(CGContextRef context, CGPoint point, float
             
             // resize bounds around mouseLoc
             magBounds.origin = [documentView convertPoint:mouseLoc fromView:nil];
-            magBounds = NSMakeRect(magBounds.origin.x + magScale * (originalBounds.origin.x - magBounds.origin.x), 
-                                   magBounds.origin.y + magScale * (originalBounds.origin.y - magBounds.origin.y), 
-                                   magScale * NSWidth(originalBounds), magScale * NSHeight(originalBounds));
+            magBounds = NSMakeRect(magBounds.origin.x + (originalBounds.origin.x - magBounds.origin.x) / magnification, 
+                                   magBounds.origin.y + (originalBounds.origin.y - magBounds.origin.y) / magnification, 
+                                   NSWidth(originalBounds) / magnification, NSHeight(originalBounds) / magnification);
             
             [documentView setBounds:magBounds];
             [self displayRect:[self convertRect:NSInsetRect(magRect, 3.0, 3.0) fromView:nil]]; // this flushes the buffer
@@ -3230,7 +3237,11 @@ static void SKCGContextDrawGrabHandle(CGContextRef context, CGPoint point, float
         }
         theEvent = [[self window] nextEventMatchingMask: NSLeftMouseUpMask | NSLeftMouseDraggedMask | NSFlagsChangedMask];
 	}
+    
+    magnification = 0.0;
+    [[NSNotificationCenter defaultCenter] postNotificationName:SKPDFViewMagnificationChangedNotification object:self];
 	
+    
 	[[self window] restoreCachedImage];
 	[[self window] flushWindowIfNeeded];
 	[NSCursor unhide];
