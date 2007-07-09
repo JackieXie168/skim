@@ -72,6 +72,12 @@ typedef enum _SKNoteType {
     SKLineNote
 } SKNoteType;
 
+// selection tool state
+typedef struct _SKPageImageSelection {
+    PDFPage *page; // source page for the selection (not retained)
+    NSRect rect;   // rect in page coordinates
+} SKPageImageSelection;
+
 @class SKReadingBar;
 
 @interface SKPDFView : PDFView {
@@ -92,12 +98,12 @@ typedef enum _SKNoteType {
 	PDFAnnotation *highlightAnnotation;
 	PDFAnnotationTextWidget *editAnnotation;
     PDFSelection *wasSelection;
-	NSRect wasBounds;
-    NSPoint wasStartPoint;
-    NSPoint wasEndPoint;
-	NSPoint mouseDownLoc;
-	NSPoint clickDelta;
-    NSRect selectionRect;
+	NSRect wasBounds;                     // page coordinates
+    NSPoint wasStartPoint;                // page coordinates
+    NSPoint wasEndPoint;                  // page coordinates
+	NSPoint mouseDownLoc;                 // window coordinates
+	NSPoint clickDelta;                   // page coordinates
+    SKPageImageSelection imageSelection;
     float magnification;
 	BOOL resizingAnnotation;
 	BOOL draggingAnnotation;
