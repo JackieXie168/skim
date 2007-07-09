@@ -268,6 +268,9 @@ static NSPopUpButton *popUpButtonSubview(NSView *view)
             [self setNoteDicts:nil];
         }
         [[self undoManager] removeAllActions];
+        // file watching could have been disabled if the file was deleted
+        if (watchedFile == nil && fileUpdateTimer == nil)
+            [self checkFileUpdatesIfNeeded];
         return YES;
     } else return NO;
 }
@@ -662,7 +665,7 @@ static BOOL isFileOnHFSVolume(NSString *fileName)
         if ([[NSUserDefaults standardUserDefaults] boolForKey:SKAutoCheckFileUpdateKey]) {
             
             // AFP, NFS, SMB etc. don't support kqueues, so we have to manually poll and compare mod dates
-            if (isFileOnHFSVolume(watchedFile)) {
+            if (isFileOnHFSVolume([self fileName])) {
                 watchedFile = [[self fileName] retain];
                 
                 UKKQueue *kQueue = [UKKQueue sharedFileWatcher];
