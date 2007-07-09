@@ -4,16 +4,16 @@
 #
 # Usage: displayline LINE PDFFILE [TEXSOURCEFILE]
 
-# get arguments, expand tilde in paths
+# get arguments
 line=$1
 if [ "${0%forward-search.sh}" != "$0" ]; then
 # if called as forward-search.sh, the order of arguments is different
-source="${2/#~/$HOME}"
-file="${3/#~/$HOME}"
+source="$2"
+file="$3"
 else
-file="${2/#~/$HOME}"
+file="$2"
 if [ $# -gt 2 ]; then
-source="${3/#~/$HOME}"
+source="$3"
 else
 # derive source file from pdf file
 source="${file%.pdf}.tex"
@@ -21,12 +21,8 @@ fi
 fi
 
 # expand relative paths
-if [ "${file:0:1}" != "/" ]; then
-file="${PWD}/${file}"
-fi
-if [ "${source:0:1}" != "/" ]; then
-source="${PWD}/${source}"
-fi
+[ "${file:0:1}" == "/" ] || file="${PWD}/${file}"
+[ "${source:0:1}" == "/" ] || source="${PWD}/${source}"
 
 # call the AppleScript
 /usr/bin/osascript -e "tell application \"Skim\"" -e "activate" -e "open POSIX file \"${file}\" at TeX line ${line} from source POSIX file \"${source}\"" -e "end tell"
