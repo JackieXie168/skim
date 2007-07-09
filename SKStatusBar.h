@@ -39,9 +39,10 @@
 #import <Cocoa/Cocoa.h>
 
 
-@interface SKStatusBar : NSView {
+@interface SKStatusBar : NSControl {
 	id leftCell;
 	id rightCell;
+    int state;
 }
 
 + (CIColor *)lowerColor;
@@ -65,5 +66,8 @@
 
 - (NSFont *)font;
 - (void)setFont:(NSFont *)fontObject;
+
+- (int)state;
+- (void)setState:(int)newState;
 
 @end
