@@ -617,15 +617,9 @@ static NSString *SKRightSidePaneWidthKey = @"SKRightSidePaneWidth";
             
             [[pdfView document] cancelFindString];
             
+            // make sure these will not be activated, or they can lead to a crash
             [pdfView removeHoverRects];
-            
-            NSEnumerator *e = [notes objectEnumerator];
-            PDFAnnotation *annotation;
-            
-            // remove the current annotations
             [pdfView setActiveAnnotation:nil];
-            while (annotation = [e nextObject])
-                [[annotation page] removeAnnotation:annotation];
             
             // these will be invalid. If needed, the document will restore them
             [[self mutableArrayValueForKey:@"searchResults"] removeAllObjects];
