@@ -108,6 +108,8 @@ static NSString *SKColorsBindingName = @"colors";
     [super dealloc];
 }
 
+- (BOOL)isOpaque{  return YES; }
+
 - (BOOL)acceptsFirstMouse:(NSEvent *)theEvent { return YES; }
 
 - (BOOL)acceptsFirstResponder { return YES; }
