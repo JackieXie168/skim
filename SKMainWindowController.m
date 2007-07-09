@@ -1573,6 +1573,7 @@ static NSString *SKRightSidePaneWidthKey = @"SKRightSidePaneWidth";
 - (IBAction)toggleStatusBar:(id)sender {
     if (statusBar == nil) {
         statusBar = [[SKStatusBar alloc] initWithFrame:NSMakeRect(0.0, 0.0, NSWidth([splitView frame]), 20.0)];
+        [statusBar setAutoresizingMask:NSViewWidthSizable | NSViewMaxYMargin];
         [self updateLeftStatus];
         [self updateRightStatus];
     }
@@ -1926,6 +1927,7 @@ static NSString *SKRightSidePaneWidthKey = @"SKRightSidePaneWidth";
     NSRect screenFrame = [[[self window] screen] visibleFrame];
     NSRect frame = [splitView frame];
     NSRect documentRect = [[[self pdfView] documentView] convertRect:[[[self pdfView] documentView] bounds] toView:nil];
+    float bottomOffset = -1.0;
     
     if ([[self pdfView] autoScales]) {
         documentRect.size.width /= [[self pdfView] scaleFactor];
@@ -1934,18 +1936,23 @@ static NSString *SKRightSidePaneWidthKey = @"SKRightSidePaneWidth";
     
     frame.size.width = NSWidth([leftSideContentBox frame]) + NSWidth([rightSideContentBox frame]) + NSWidth(documentRect) + 2 * [splitView dividerThickness] + 2.0;
     if (displayMode == kPDFDisplaySinglePage || displayMode == kPDFDisplayTwoUp) {
-        frame.size.height = NSHeight(documentRect);
+        frame.size.height = NSHeight(documentRect) + 1.0;
     } else {
         NSRect pageBounds = [[self pdfView] convertRect:[[[self pdfView] currentPage] boundsForBox:[[self pdfView] displayBox]] fromPage:[[self pdfView] currentPage]];
         if ([[self pdfView] autoScales]) {
             pageBounds.size.width /= [[self pdfView] scaleFactor];
             pageBounds.size.height /= [[self pdfView] scaleFactor];
         }
-        frame.size.height = NSHeight(pageBounds) + NSWidth(documentRect) - NSWidth(pageBounds);
+        frame.size.height = NSHeight(pageBounds) + NSWidth(documentRect) - NSWidth(pageBounds) + 1.0;
         frame.size.width += [NSScroller scrollerWidth];
     }
-    frame.origin = [[self window] convertBaseToScreen:[[[self window] contentView] convertPoint:frame.origin toView:nil]];
     
+    if ([statusBar isVisible])
+        bottomOffset = NSHeight([statusBar frame]);
+    frame.origin.y -= bottomOffset;
+    frame.size.height += bottomOffset;
+    
+    frame.origin = [[self window] convertBaseToScreen:[[[self window] contentView] convertPoint:frame.origin toView:nil]];
     frame = [[self window] frameRectForContentRect:frame];
     if (frame.size.width > NSWidth(screenFrame))
         frame.size.width = NSWidth(screenFrame);
