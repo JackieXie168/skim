@@ -293,7 +293,7 @@ static NSString *SKLineWellWillBecomeActiveNotification = @"SKLineWellWillBecome
         [[NSColor controlBackgroundColor] setFill];
     NSRectFill(rect);
 
-    NSRectClip(rect);
+    [[NSBezierPath bezierPathWithRect:rect] addClip];
     
     [[NSColor blackColor] setStroke];
     [[self path] stroke];
