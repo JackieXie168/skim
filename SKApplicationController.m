@@ -343,7 +343,11 @@ static BOOL fileIsInTrash(NSURL *fileURL)
 }
 
 - (NSString *)applicationSupportPathForDomain:(int)domain create:(BOOL)create {
-    static NSString *path = nil;
+    static CFMutableDictionaryRef pathDict = nil;
+    if (pathDict == nil)
+        pathDict = CFDictionaryCreateMutable(NULL, 3, NULL, &kCFTypeDictionaryValueCallBacks);
+    
+    NSString *path = (NSString *)CFDictionaryGetValue(pathDict, (void *)domain);
     
     if (path == nil) {
         FSRef foundRef;
@@ -368,7 +372,9 @@ static BOOL fileIsInTrash(NSURL *fileURL)
         if(appName == nil)
             [NSException raise:NSObjectNotAvailableException format:NSLocalizedString(@"Unable to find CFBundleIdentifier for %@", @"Exception message"), [NSApp description]];
         
-        path = [[path stringByAppendingPathComponent:appName] copy];
+        path = [path stringByAppendingPathComponent:appName];
+        
+        CFDictionarySetValue(pathDict, (void *)domain, (void *)path);
         
         // the call to FSFindFolder creates the parent hierarchy, but not the directory we're looking for
         static BOOL dirExists = NO;
