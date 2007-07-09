@@ -573,16 +573,23 @@ static NSString *SKRightSidePaneWidthKey = @"SKRightSidePaneWidth";
 
 - (void)updateRightStatus {
     NSRect selRect = [pdfView currentSelectionRect];
-    float magnification = [pdfView currentMagnification];
     
     NSString *message;
     if (NSEqualRects(selRect, NSZeroRect)) {
+        float magnification = [pdfView currentMagnification];
         if (magnification > 0.0001)
             message = [NSString stringWithFormat:@"%.2f x", magnification];
         else
            message = @"";
     } else {
-        message = [NSString stringWithFormat:@"%i x %i", (int)NSWidth(selRect), (int)NSHeight(selRect)];
+        if ([statusBar state] == NSOnState) {
+            BOOL useMetric = [[NSUserDefaults standardUserDefaults] boolForKey:@"AppleMetricUnits"];
+            NSString *units = useMetric ? @"cm" : @"in";
+            float factor = useMetric ? 0.035277778 : 0.013888889;
+            message = [NSString stringWithFormat:@"%.2f x %.2f %@", NSWidth(selRect) * factor, NSHeight(selRect) * factor, units];
+        } else {
+            message = [NSString stringWithFormat:@"%i x %i pt", (int)NSWidth(selRect), (int)NSHeight(selRect)];
+        }
     }
     [statusBar setRightStringValue:message];
 }
@@ -1564,12 +1571,18 @@ static NSString *SKRightSidePaneWidthKey = @"SKRightSidePaneWidth";
     [self setRightSidePaneState:[sender tag]];
 }
 
+- (IBAction)statusBarClicked:(id)sender {
+    [self updateRightStatus];
+}
+
 - (IBAction)toggleStatusBar:(id)sender {
     if (statusBar == nil) {
         statusBar = [[SKStatusBar alloc] initWithFrame:NSMakeRect(0.0, 0.0, NSWidth([splitView frame]), 20.0)];
         [statusBar setAutoresizingMask:NSViewWidthSizable | NSViewMaxYMargin];
         [self updateLeftStatus];
         [self updateRightStatus];
+        [statusBar setAction:@selector(statusBarClicked:)];
+        [statusBar setTarget:self];
     }
     [statusBar toggleBelowView:splitView offset:1.0];
     [[NSUserDefaults standardUserDefaults] setBool:[statusBar isVisible] forKey:SKShowStatusBarKey];

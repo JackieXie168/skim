@@ -39,9 +39,8 @@
 #import "SKStatusBar.h"
 #import "NSBezierPath_CoreImageExtensions.h"
 
-#define LEFT_MARGIN				5.0
-#define RIGHT_MARGIN			15.0
-#define MARGIN_BETWEEN_ITEMS	2.0
+#define LEFT_MARGIN     5.0
+#define RIGHT_MARGIN    15.0
 
 
 @implementation SKStatusBar
@@ -66,9 +65,11 @@
         leftCell = [[NSCell alloc] initTextCell:@""];
 		[leftCell setFont:[NSFont labelFontOfSize:0]];
         [leftCell setAlignment:NSLeftTextAlignment];
-        rightCell = [[NSCell alloc] initTextCell:@""];
+        [leftCell setControlView:self];
+        rightCell = [[NSActionCell alloc] initTextCell:@""];
 		[rightCell setFont:[NSFont labelFontOfSize:0]];
         [rightCell setAlignment:NSRightTextAlignment];
+        [rightCell setControlView:self];
     }
     return self;
 }
@@ -135,6 +136,25 @@
 	[contentView setNeedsDisplay:YES];
 }
 
+- (void)mouseDown:(NSEvent *)theEvent {
+    if ([[rightCell stringValue] length]) {
+        NSPoint mouseLoc = [self convertPoint:[theEvent locationInWindow] fromView:nil];
+        float width = [rightCell cellSize].width;
+        NSRect ignored, rect = [self bounds];
+        NSDivideRect([self bounds], &ignored, &rect, LEFT_MARGIN, NSMinXEdge);
+        NSDivideRect(rect, &ignored, &rect, RIGHT_MARGIN, NSMaxXEdge);
+        NSDivideRect(rect, &rect, &ignored, width, NSMaxXEdge);
+        if (NSPointInRect(mouseLoc, rect)) {
+            theEvent = [[self window] nextEventMatchingMask: NSLeftMouseUpMask];
+            mouseLoc = [self convertPoint:[theEvent locationInWindow] fromView:nil];
+            if (NSPointInRect(mouseLoc, rect)) {
+                state = state == NSOnState ? NSOffState : NSOnState;
+                [self sendAction:[rightCell action] to:[rightCell target]];
+            }
+        }
+    }
+}
+
 #pragma mark Text cell accessors
 
 - (NSString *)leftStringValue {
@@ -181,6 +201,32 @@
 	[leftCell setFont:fontObject];
 	[rightCell setFont:fontObject];
 	[self setNeedsDisplay:YES];
+}
+
+- (SEL)action {
+    return [rightCell action];
+}
+
+- (void)setAction:(SEL)selector {
+    [rightCell setAction:selector];
+}
+
+- (id)target {
+    return [rightCell target];
+}
+
+- (void)setTarget:(id)newTarget {
+    [rightCell setTarget:newTarget];
+}
+
+- (int)state {
+    return state;
+}
+
+- (void)setState:(int)newState {
+    if (state != newState) {
+        state = newState;
+    }
 }
 
 @end
