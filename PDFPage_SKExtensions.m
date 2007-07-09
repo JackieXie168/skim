@@ -336,6 +336,10 @@ static IMP originalDealloc = NULL;
         
         const Rect *qdBounds = (const Rect *)[inQDBoundsAsData bytes];
         NSRect newBounds = NSRectFromRect(*qdBounds);
+        if (NSWidth(newBounds) < 0.0)
+            newBounds.size.width = 0.0;
+        if (NSHeight(newBounds) < 0.0)
+            newBounds.size.height = 0.0;
         [self setBounds:newBounds forBox:kPDFDisplayBoxCropBox];
         
         [[NSNotificationCenter defaultCenter] postNotificationName:SKPDFDocumentPageBoundsDidChangeNotification 
