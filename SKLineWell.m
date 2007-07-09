@@ -166,6 +166,8 @@ static NSString *SKLineWellWillBecomeActiveNotification = @"SKLineWellWillBecome
     [super dealloc];
 }
 
+- (BOOL)isOpaque{  return YES; }
+
 - (BOOL)acceptsFirstResponder { return [self canActivate]; }
 
 - (BOOL)acceptsFirstMouse:(NSEvent *)theEvent { return [self canActivate]; }
