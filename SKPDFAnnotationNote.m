@@ -514,8 +514,14 @@ static IMP originalSetBorder = NULL;
     if ([inQDBoundsAsData length] == sizeof(Rect) && [self isMovable]) {
         const Rect *qdBounds = (const Rect *)[inQDBoundsAsData bytes];
         NSRect newBounds = NSRectFromRect(*qdBounds);
-        if ([self isResizable] == NO)
+        if ([self isResizable] == NO) {
             newBounds.size = [self bounds].size;
+        } else {
+            if (NSWidth(newBounds) < 0.0)
+                newBounds.size.width = 0.0;
+            if (NSHeight(newBounds) < 0.0)
+                newBounds.size.height = 0.0;
+        }
         [self setBounds:newBounds];
     }
 
