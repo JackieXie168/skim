@@ -1065,6 +1065,35 @@ static BOOL isFileOnHFSVolume(NSString *fileName)
     return nil;
 }
 
+- (id)handlePrintScriptCommand:(NSScriptCommand *)command {
+	NSDictionary *args = [command evaluatedArguments];
+    id settings = [args objectForKey:@"PrintSettings"];
+    // PDFView does not allow printing without showing the dialog, so we just ignore that setting
+    
+    NSPrintInfo *printInfo = [self printInfo];
+    
+    if ([settings isKindOfClass:[NSDictionary class]]) {
+        settings = [[settings mutableCopy] autorelease];
+        id value;
+        if (value = [settings objectForKey:NSPrintDetailedErrorReporting])
+            [settings setObject:[NSNumber numberWithBool:[value intValue] == 'lwdt'] forKey:NSPrintDetailedErrorReporting];
+        if ((value = [settings objectForKey:NSPrintPrinterName]) && (value = [NSPrinter printerWithName:value]))
+            [settings setObject:value forKey:NSPrintPrinter];
+        if ([settings objectForKey:NSPrintFirstPage] || [settings objectForKey:NSPrintLastPage]) {
+            [settings setObject:[NSNumber numberWithBool:NO] forKey:NSPrintAllPages];
+            if ([settings objectForKey:NSPrintFirstPage] == nil)
+                [settings setObject:[NSNumber numberWithInt:1] forKey:NSPrintLastPage];
+            if ([settings objectForKey:NSPrintLastPage] == nil)
+                [settings setObject:[NSNumber numberWithInt:[[self pdfDocument] pageCount]] forKey:NSPrintLastPage];
+        }
+        [[printInfo dictionary] addEntriesFromDictionary:settings];
+    }
+    
+    [[self pdfView] printWithInfo:printInfo autoRotate:NO];
+    
+    return nil;
+}
+
 - (id)handleRevertScriptCommand:(NSScriptCommand *)command {
     if ([self fileURL] && [[NSFileManager defaultManager] fileExistsAtPath:[self fileName]]) {
         if ([self revertToContentsOfURL:[self fileURL] ofType:[self fileType] error:NULL] == NO) {
