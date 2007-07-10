@@ -66,7 +66,7 @@ static NSString *SKSnapshotViewChangedNotification = @"SKSnapshotViewChangedNoti
 - (void)windowDidLoad {
     BOOL keepOnTop = [[NSUserDefaults standardUserDefaults] boolForKey:SKSnapshotsOnTopKey];
     [[self window] setLevel:keepOnTop || forceOnTop ? NSFloatingWindowLevel : NSNormalWindowLevel];
-    [[self window] setHidesOnDeactivate:keepOnTop];
+    [[self window] setHidesOnDeactivate:keepOnTop || forceOnTop];
     [self setWindowFrameAutosaveNameOrCascade:SKSnapshotWindowFrameAutosaveName];
     [[self window] makeFirstResponder:pdfView];
     [[NSUserDefaultsController sharedUserDefaultsController] addObserver:self forKey:SKSnapshotsOnTopKey];
@@ -283,6 +283,7 @@ static NSString *SKSnapshotViewChangedNotification = @"SKSnapshotViewChangedNoti
     forceOnTop = flag;
     BOOL keepOnTop = [[NSUserDefaults standardUserDefaults] boolForKey:SKSnapshotsOnTopKey];
     [[self window] setLevel:keepOnTop || forceOnTop ? NSFloatingWindowLevel : NSNormalWindowLevel];
+    [[self window] setHidesOnDeactivate:keepOnTop || forceOnTop];
 }
 
 - (NSDictionary *)currentSetup {
@@ -425,7 +426,7 @@ static NSString *SKSnapshotViewChangedNotification = @"SKSnapshotViewChangedNoti
         if ([key isEqualToString:SKSnapshotsOnTopKey]) {
             BOOL keepOnTop = [[NSUserDefaults standardUserDefaults] boolForKey:SKSnapshotsOnTopKey];
             [[self window] setLevel:keepOnTop || forceOnTop ? NSFloatingWindowLevel : NSNormalWindowLevel];
-            [[self window] setHidesOnDeactivate:keepOnTop];
+            [[self window] setHidesOnDeactivate:keepOnTop || forceOnTop];
         }
     } else {
         [super observeValueForKeyPath:keyPath ofObject:object change:change context:context];
