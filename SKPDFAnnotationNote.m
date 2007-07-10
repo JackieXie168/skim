@@ -130,6 +130,7 @@ void SKCGContextSetDefaultRGBColorSpace(CGContextRef context) {
 
 
 @interface PDFAnnotation (SKPDFAnnotationPrivate)
+- (id)initWithBounds:(NSRect)bounds dictionary:(NSDictionary *)dict;
 - (void)replacementSetBounds:(NSRect)bounds;
 - (void)replacementSetContents:(NSString *)contents;
 - (void)replacementSetColor:(NSColor *)color;
@@ -137,12 +138,12 @@ void SKCGContextSetDefaultRGBColorSpace(CGContextRef context) {
 @end
 
 
-@implementation PDFAnnotation (SKExtensions)
-
 static IMP originalSetBounds = NULL;
 static IMP originalSetContents = NULL;
 static IMP originalSetColor = NULL;
 static IMP originalSetBorder = NULL;
+
+@implementation PDFAnnotation (SKExtensions)
 
 + (void)load {
     originalSetBounds = OBReplaceMethodImplementationWithSelector(self, @selector(setBounds:), @selector(replacementSetBounds:));
@@ -151,82 +152,51 @@ static IMP originalSetBorder = NULL;
     originalSetBorder = OBReplaceMethodImplementationWithSelector(self, @selector(setBorder:), @selector(replacementSetBorder:));
 }
 
+- (id)initWithBounds:(NSRect)bounds dictionary:(NSDictionary *)dict{
+    [[self initWithBounds:NSZeroRect] release];
+    return nil;
+}
+
 - (id)initWithDictionary:(NSDictionary *)dict{
     [[self initWithBounds:NSZeroRect] release];
     
     NSString *type = [dict objectForKey:@"type"];
     NSRect bounds = NSRectFromString([dict objectForKey:@"bounds"]);
-    NSString *contents = [dict objectForKey:@"contents"];
-    NSColor *color = [dict objectForKey:@"color"];
-    NSNumber *lineWidth = [dict objectForKey:@"lineWidth"];
-    NSNumber *borderStyle = [dict objectForKey:@"borderStyle"];
-    NSArray *dashPattern = [dict objectForKey:@"dashPattern"];
+    Class annotationClass = NULL;
     
-    if ([type isEqualToString:@"Note"]) {
-        self = [[SKPDFAnnotationNote alloc] initWithBounds:bounds];
-        NSAttributedString *text = [dict objectForKey:@"text"];
-        NSImage *image = [dict objectForKey:@"image"];
-        NSNumber *iconType = [dict objectForKey:@"iconType"];
-        if (image)
-            [(SKPDFAnnotationNote *)self setImage:image];
-        if (text)
-            [(SKPDFAnnotationNote *)self setText:text];
-        if (iconType)
-            [(SKPDFAnnotationNote *)self setIconType:[iconType intValue]];
-    } else if ([type isEqualToString:@"FreeText"]) {
-        self = [[SKPDFAnnotationFreeText alloc] initWithBounds:bounds];
-        NSFont *font = [dict objectForKey:@"font"];
-        NSNumber *rotation = [dict objectForKey:@"rotation"];
-        if (font)
-            [(SKPDFAnnotationFreeText *)self setFont:font];
-        if (rotation && [self respondsToSelector:@selector(setRotation:)])
-            [(SKPDFAnnotationFreeText *)self setRotation:[rotation intValue]];
-    } else if ([type isEqualToString:@"Circle"]) {
-        self = [[SKPDFAnnotationCircle alloc] initWithBounds:bounds];
-        NSColor *interiorColor = [dict objectForKey:@"interiorColor"];
-        if (interiorColor)
-            [(SKPDFAnnotationCircle *)self setInteriorColor:interiorColor];
-    } else if ([type isEqualToString:@"Square"]) {
-        self = [[SKPDFAnnotationSquare alloc] initWithBounds:bounds];
-        NSColor *interiorColor = [dict objectForKey:@"interiorColor"];
-        if (interiorColor)
-            [(SKPDFAnnotationSquare *)self setInteriorColor:interiorColor];
-    } else if ([type isEqualToString:@"Highlight"] || [type isEqualToString:@"MarkUp"]) {
-        self = [[SKPDFAnnotationMarkup alloc] initWithBounds:bounds markupType:kPDFMarkupTypeHighlight quadrilateralPointsAsStrings:[dict objectForKey:@"quadrilateralPoints"]];
-    } else if ([type isEqualToString:@"Underline"]) {
-        self = [[SKPDFAnnotationMarkup alloc] initWithBounds:bounds markupType:kPDFMarkupTypeUnderline quadrilateralPointsAsStrings:[dict objectForKey:@"quadrilateralPoints"]];
-    } else if ([type isEqualToString:@"StrikeOut"]) {
-        self = [[SKPDFAnnotationMarkup alloc] initWithBounds:bounds markupType:kPDFMarkupTypeStrikeOut quadrilateralPointsAsStrings:[dict objectForKey:@"quadrilateralPoints"]];
-    } else if ([type isEqualToString:@"Line"]) {
-        self = [[SKPDFAnnotationLine alloc] initWithBounds:bounds];
-        NSString *point;
-        NSNumber *startLineStyle = [dict objectForKey:@"startLineStyle"];
-        NSNumber *endLineStyle = [dict objectForKey:@"endLineStyle"];
-        if (point = [dict objectForKey:@"startPoint"])
-            [(SKPDFAnnotationLine *)self setStartPoint:NSPointFromString(point)];
-        if (point = [dict objectForKey:@"endPoint"])
-            [(SKPDFAnnotationLine *)self setEndPoint:NSPointFromString(point)];
-        if (startLineStyle)
-            [(SKPDFAnnotationLine *)self setStartLineStyle:[startLineStyle intValue]];
-        if (endLineStyle)
-            [(SKPDFAnnotationLine *)self setEndLineStyle:[endLineStyle intValue]];
-    } else {
-        self = nil;
+    if ([type isEqualToString:@"Note"])
+        annotationClass = [SKPDFAnnotationNote class];
+    else if ([type isEqualToString:@"FreeText"])
+        annotationClass = [SKPDFAnnotationFreeText class];
+    else if ([type isEqualToString:@"Circle"])
+        annotationClass = [SKPDFAnnotationCircle class];
+    else if ([type isEqualToString:@"Square"])
+        annotationClass = [SKPDFAnnotationSquare class];
+    else if ([type isEqualToString:@"Highlight"] || [type isEqualToString:@"MarkUp"] || [type isEqualToString:@"Underline"] || [type isEqualToString:@"StrikeOut"])
+        annotationClass = [SKPDFAnnotationMarkup class];
+    else if ([type isEqualToString:@"Line"])
+        annotationClass = [SKPDFAnnotationLine class];
+    
+    if (self = [[annotationClass alloc] initWithBounds:bounds dictionary:dict]) {
+        NSString *contents = [dict objectForKey:@"contents"];
+        NSColor *color = [dict objectForKey:@"color"];
+        NSNumber *lineWidth = [dict objectForKey:@"lineWidth"];
+        NSNumber *borderStyle = [dict objectForKey:@"borderStyle"];
+        NSArray *dashPattern = [dict objectForKey:@"dashPattern"];
+        
+        if (contents)
+            originalSetContents(self, @selector(setContents:), contents);
+        if (color)
+            originalSetColor(self, @selector(setColor:), color);
+        if ((lineWidth || borderStyle || dashPattern) && [self border] == nil)
+            originalSetBorder(self, @selector(setBorder:), [[[PDFBorder alloc] init] autorelease]);
+        if (lineWidth)
+            [[self border] setLineWidth:[lineWidth floatValue]];
+        if (borderStyle)
+            [[self border] setStyle:[lineWidth intValue]];
+        if (dashPattern)
+            [[self border] setDashPattern:dashPattern];
     }
-    
-    if (contents)
-        [self setContents:contents];
-    if (color)
-        [self setColor:color];
-    if ((lineWidth || borderStyle || dashPattern) && [self border] == nil)
-        [self setBorder:[[[PDFBorder alloc] init] autorelease]];
-    if (lineWidth)
-        [[self border] setLineWidth:[lineWidth floatValue]];
-    if (borderStyle)
-        [[self border] setStyle:[lineWidth intValue]];
-    if (dashPattern)
-        [[self border] setDashPattern:dashPattern];
-    
     return self;
 }
 
@@ -433,17 +403,16 @@ static IMP originalSetBorder = NULL;
                             [self performSelector:@selector(setPage:) withObject:page];
                     }
                 }
-            } else {
-                if (type == SKASTextNote)
-                    self = [[SKPDFAnnotationFreeText alloc] initWithBounds:NSMakeRect(100.0, 100.0, 64.0, 64.0)];
-                else if (type == SKASAnchoredNote)
-                    self = [[SKPDFAnnotationNote alloc] initWithBounds:NSMakeRect(100.0, 100.0, 16.0, 16.0)];
-                else if (type == SKASCircleNote)
-                    self = [[SKPDFAnnotationCircle alloc] initWithBounds:NSMakeRect(100.0, 100.0, 64.0, 64.0)];
-                else if (type == SKASSquareNote)
-                    self = [[SKPDFAnnotationSquare alloc] initWithBounds:NSMakeRect(100.0, 100.0, 64.0, 64.0)];
-                else if (type == SKASLineNote)
-                    self = [[SKPDFAnnotationLine alloc] initWithBounds:NSMakeRect(100.0, 100.0, 16.0, 16.0)];
+            } else if (type == SKASTextNote) {
+                self = [[SKPDFAnnotationFreeText alloc] initWithBounds:NSMakeRect(100.0, 100.0, 64.0, 64.0)];
+            } else if (type == SKASAnchoredNote) {
+                self = [[SKPDFAnnotationNote alloc] initWithBounds:NSMakeRect(100.0, 100.0, 16.0, 16.0)];
+            } else if (type == SKASCircleNote) {
+                self = [[SKPDFAnnotationCircle alloc] initWithBounds:NSMakeRect(100.0, 100.0, 64.0, 64.0)];
+            } else if (type == SKASSquareNote) {
+                self = [[SKPDFAnnotationSquare alloc] initWithBounds:NSMakeRect(100.0, 100.0, 64.0, 64.0)];
+            } else if (type == SKASLineNote) {
+                self = [[SKPDFAnnotationLine alloc] initWithBounds:NSMakeRect(100.0, 100.0, 16.0, 16.0)];
             }
         }
     }
@@ -595,11 +564,20 @@ static IMP originalSetBorder = NULL;
     if (self = [super initWithBounds:bounds]) {
         NSColor *color = [NSUnarchiver unarchiveObjectWithData:[[NSUserDefaults standardUserDefaults] dataForKey:SKCircleNoteInteriorColorKey]];
         if ([color alphaComponent] > 0.0)
-            [self setInteriorColor:color];
-        [self setColor:[NSUnarchiver unarchiveObjectWithData:[[NSUserDefaults standardUserDefaults] dataForKey:SKCircleNoteColorKey]]];
+            [super setInteriorColor:color];
+        originalSetColor(self, @selector(setColor:), [NSUnarchiver unarchiveObjectWithData:[[NSUserDefaults standardUserDefaults] dataForKey:SKCircleNoteColorKey]]);
         [[self border] setLineWidth:[[NSUserDefaults standardUserDefaults] floatForKey:SKCircleNoteLineWidthKey]];
         [[self border] setDashPattern:[[NSUserDefaults standardUserDefaults] arrayForKey:SKCircleNoteDashPatternKey]];
         [[self border] setStyle:[[NSUserDefaults standardUserDefaults] floatForKey:SKCircleNoteLineStyleKey]];
+    }
+    return self;
+}
+
+- (id)initWithBounds:(NSRect)bounds dictionary:(NSDictionary *)dict{
+    if (self = [self initWithBounds:bounds]) {
+        NSColor *interiorColor = [dict objectForKey:@"interiorColor"];
+        if (interiorColor)
+            [super setInteriorColor:interiorColor];
     }
     return self;
 }
@@ -652,11 +630,20 @@ static IMP originalSetBorder = NULL;
     if (self = [super initWithBounds:bounds]) {
         NSColor *color = [NSUnarchiver unarchiveObjectWithData:[[NSUserDefaults standardUserDefaults] dataForKey:SKSquareNoteInteriorColorKey]];
         if ([color alphaComponent] > 0.0)
-            [self setInteriorColor:color];
-        [self setColor:[NSUnarchiver unarchiveObjectWithData:[[NSUserDefaults standardUserDefaults] dataForKey:SKSquareNoteColorKey]]];
+            [super setInteriorColor:color];
+        originalSetColor(self, @selector(setColor:), [NSUnarchiver unarchiveObjectWithData:[[NSUserDefaults standardUserDefaults] dataForKey:SKSquareNoteColorKey]]);
         [[self border] setLineWidth:[[NSUserDefaults standardUserDefaults] floatForKey:SKSquareNoteLineWidthKey]];
         [[self border] setDashPattern:[[NSUserDefaults standardUserDefaults] arrayForKey:SKSquareNoteDashPatternKey]];
         [[self border] setStyle:[[NSUserDefaults standardUserDefaults] floatForKey:SKSquareNoteLineStyleKey]];
+    }
+    return self;
+}
+
+- (id)initWithBounds:(NSRect)bounds dictionary:(NSDictionary *)dict{
+    if (self = [self initWithBounds:bounds]) {
+        NSColor *interiorColor = [dict objectForKey:@"interiorColor"];
+        if (interiorColor)
+            [super setInteriorColor:interiorColor];
     }
     return self;
 }
@@ -745,15 +732,25 @@ static NSArray *createQuadPointsWithBounds(const NSRect bounds, const NSPoint or
     return self;
 }
 
+- (id)initWithBounds:(NSRect)bounds dictionary:(NSDictionary *)dict{
+    NSString *type = [dict objectForKey:@"type"];
+    int markupType = kPDFMarkupTypeHighlight;
+    if ([type isEqualToString:@"Underline"])
+        markupType = kPDFMarkupTypeUnderline;
+    else if ([type isEqualToString:@"StrikeOut"])
+        markupType = kPDFMarkupTypeStrikeOut;
+    return [self initWithBounds:bounds markupType:kPDFMarkupTypeHighlight quadrilateralPointsAsStrings:[dict objectForKey:@"quadrilateralPoints"]];
+}
+
 - (id)initWithBounds:(NSRect)bounds markupType:(int)type quadrilateralPointsAsStrings:(NSArray *)pointStrings {
     if (self = [super initWithBounds:bounds]) {
         [self setMarkupType:type];
         if (type == kPDFMarkupTypeHighlight)
-            [self setColor:[NSUnarchiver unarchiveObjectWithData:[[NSUserDefaults standardUserDefaults] dataForKey:SKHighlightNoteColorKey]]];
+            originalSetColor(self, @selector(setColor:), [NSUnarchiver unarchiveObjectWithData:[[NSUserDefaults standardUserDefaults] dataForKey:SKHighlightNoteColorKey]]);
         else if (type == kPDFMarkupTypeUnderline)
-            [self setColor:[NSUnarchiver unarchiveObjectWithData:[[NSUserDefaults standardUserDefaults] dataForKey:SKUnderlineNoteColorKey]]];
+            originalSetColor(self, @selector(setColor:), [NSUnarchiver unarchiveObjectWithData:[[NSUserDefaults standardUserDefaults] dataForKey:SKUnderlineNoteColorKey]]);
         else if (type == kPDFMarkupTypeStrikeOut)
-            [self setColor:[NSUnarchiver unarchiveObjectWithData:[[NSUserDefaults standardUserDefaults] dataForKey:SKStrikeOutNoteColorKey]]];
+            originalSetColor(self, @selector(setColor:), [NSUnarchiver unarchiveObjectWithData:[[NSUserDefaults standardUserDefaults] dataForKey:SKStrikeOutNoteColorKey]]);
         
         NSArray *quadPoints = nil;
         if (pointStrings) {
@@ -996,13 +993,25 @@ static BOOL adjacentCharacterBounds(NSRect rect1, NSRect rect2) {
         NSFont *font = [NSFont fontWithName:[[NSUserDefaults standardUserDefaults] stringForKey:SKTextNoteFontNameKey]
                                        size:[[NSUserDefaults standardUserDefaults] floatForKey:SKTextNoteFontSizeKey]];
         [super setFont:font];
-        [super setColor:[NSUnarchiver unarchiveObjectWithData:[[NSUserDefaults standardUserDefaults] dataForKey:SKFreeTextNoteColorKey]]];
+        originalSetColor(self, @selector(setColor:), [NSUnarchiver unarchiveObjectWithData:[[NSUserDefaults standardUserDefaults] dataForKey:SKFreeTextNoteColorKey]]);
         PDFBorder *border = [[PDFBorder allocWithZone:[self zone]] init];
         [border setLineWidth:[[NSUserDefaults standardUserDefaults] floatForKey:SKFreeTextNoteLineWidthKey]];
         [border setDashPattern:[[NSUserDefaults standardUserDefaults] arrayForKey:SKFreeTextNoteDashPatternKey]];
         [border setStyle:[[NSUserDefaults standardUserDefaults] floatForKey:SKFreeTextNoteLineStyleKey]];
-        [self setBorder:[border lineWidth] > 0.0 ? border : nil];
+        originalSetBorder(self, @selector(setBorder:), [border lineWidth] > 0.0 ? border : nil);
         [border release];
+    }
+    return self;
+}
+
+- (id)initWithBounds:(NSRect)bounds dictionary:(NSDictionary *)dict{
+    if (self = [self initWithBounds:bounds]) {
+        NSFont *font = [dict objectForKey:@"font"];
+        NSNumber *rotation = [dict objectForKey:@"rotation"];
+        if (font)
+            [super setFont:font];
+        if (rotation && [self respondsToSelector:@selector(setRotation:)])
+            [self setRotation:[rotation intValue]];
     }
     return self;
 }
@@ -1082,12 +1091,27 @@ static BOOL adjacentCharacterBounds(NSRect rect1, NSRect rect2) {
 
 - (id)initWithBounds:(NSRect)bounds {
     if (self = [super initWithBounds:bounds]) {
-        [self setColor:[NSUnarchiver unarchiveObjectWithData:[[NSUserDefaults standardUserDefaults] dataForKey:SKAnchoredNoteColorKey]]];
-        [self setIconType:[[NSUserDefaults standardUserDefaults] integerForKey:SKAnchoredNoteIconTypeKey]];
+        originalSetColor(self, @selector(setColor:), [NSUnarchiver unarchiveObjectWithData:[[NSUserDefaults standardUserDefaults] dataForKey:SKAnchoredNoteColorKey]]);
+        [super setIconType:[[NSUserDefaults standardUserDefaults] integerForKey:SKAnchoredNoteIconTypeKey]];
         texts = [[NSArray alloc] initWithObjects:[[[SKNoteText alloc] initWithAnnotation:self] autorelease], nil];
         textStorage = [[NSTextStorage allocWithZone:[self zone]] init];
         [textStorage setDelegate:self];
         text = [[NSAttributedString alloc] init];
+    }
+    return self;
+}
+
+- (id)initWithBounds:(NSRect)bounds dictionary:(NSDictionary *)dict{
+    if (self = [self initWithBounds:bounds]) {
+        NSAttributedString *aText = [dict objectForKey:@"text"];
+        NSImage *anImage = [dict objectForKey:@"image"];
+        NSNumber *iconType = [dict objectForKey:@"iconType"];
+        if (anImage)
+            image = [anImage retain];
+        if (aText)
+            [textStorage replaceCharactersInRange:NSMakeRange(0, [textStorage length]) withAttributedString:aText];
+        if (iconType)
+            [super setIconType:[iconType intValue]];
     }
     return self;
 }
@@ -1255,7 +1279,7 @@ static BOOL adjacentCharacterBounds(NSRect rect1, NSRect rect2) {
 
 - (id)initWithBounds:(NSRect)bounds {
     if (self = [super initWithBounds:bounds]) {
-        [super setColor:[NSUnarchiver unarchiveObjectWithData:[[NSUserDefaults standardUserDefaults] dataForKey:SKLineNoteColorKey]]];
+        originalSetColor(self, @selector(setColor:), [NSUnarchiver unarchiveObjectWithData:[[NSUserDefaults standardUserDefaults] dataForKey:SKLineNoteColorKey]]);
         [super setStartLineStyle:[[NSUserDefaults standardUserDefaults] integerForKey:SKLineNoteStartLineStyleKey]];
         [super setEndLineStyle:[[NSUserDefaults standardUserDefaults] integerForKey:SKLineNoteEndLineStyleKey]];
         [super setStartPoint:NSMakePoint(0.5, 0.5)];
@@ -1264,8 +1288,25 @@ static BOOL adjacentCharacterBounds(NSRect rect1, NSRect rect2) {
         [border setLineWidth:[[NSUserDefaults standardUserDefaults] floatForKey:SKLineNoteLineWidthKey]];
         [border setDashPattern:[[NSUserDefaults standardUserDefaults] arrayForKey:SKLineNoteDashPatternKey]];
         [border setStyle:[[NSUserDefaults standardUserDefaults] floatForKey:SKLineNoteLineStyleKey]];
-        [self setBorder:[border lineWidth] > 0.0 ? border : nil];
+        originalSetBounds(self, @selector(setBorder:), [border lineWidth] > 0.0 ? border : nil);
         [border release];
+    }
+    return self;
+}
+
+- (id)initWithBounds:(NSRect)bounds dictionary:(NSDictionary *)dict{
+    if (self = [self initWithBounds:bounds]) {
+        NSString *point;
+        NSNumber *startLineStyle = [dict objectForKey:@"startLineStyle"];
+        NSNumber *endLineStyle = [dict objectForKey:@"endLineStyle"];
+        if (point = [dict objectForKey:@"startPoint"])
+            [super setStartPoint:NSPointFromString(point)];
+        if (point = [dict objectForKey:@"endPoint"])
+            [super setEndPoint:NSPointFromString(point)];
+        if (startLineStyle)
+            [super setStartLineStyle:[startLineStyle intValue]];
+        if (endLineStyle)
+            [super setEndLineStyle:[endLineStyle intValue]];
     }
     return self;
 }
