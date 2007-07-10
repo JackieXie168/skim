@@ -557,6 +557,14 @@ static void SKCGContextDrawGrabHandle(CGContextRef context, CGPoint point, float
 
 #pragma mark Actions
 
+- (IBAction)printDocument:(id)sender{
+    id document = [[[self window] windowController] document];
+    if ([document respondsToSelector:_cmd])
+        [document printDocument:sender];
+    else if ([[self superclass] instancesRespondToSelector:_cmd])
+        [(id)super printDocument:sender];
+}
+
 - (void)delete:(id)sender
 {
 	if ([activeAnnotation isNoteAnnotation])

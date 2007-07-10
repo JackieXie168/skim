@@ -482,6 +482,10 @@ static NSPopUpButton *popUpButtonSubview(NSView *view)
 
 #pragma mark Actions
 
+- (IBAction)printDocument:(id)sender{
+    [[self pdfView] printWithInfo:[self printInfo] autoRotate:NO];
+}
+
 - (void)openPanelDidEnd:(NSOpenPanel *)oPanel returnCode:(int)returnCode  contextInfo:(void  *)contextInfo{
     if (returnCode == NSOKButton) {
         NSURL *notesURL = [[oPanel URLs] objectAtIndex:0];
