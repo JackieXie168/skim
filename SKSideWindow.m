@@ -137,10 +137,13 @@
 - (void)setMainView:(NSView *)newContentView {
     NSView *contentView = [[self contentView] contentView];
     [newContentView setFrame:[contentView bounds]];
+    [newContentView retain];
     if ([[contentView subviews] count])
         [contentView replaceSubview:[[contentView subviews] objectAtIndex:0] with:newContentView];
     else
         [contentView addSubview:newContentView];
+    [newContentView release];
+    [self recalculateKeyViewLoop];
 }
 
 - (NSRectEdge)edge {
