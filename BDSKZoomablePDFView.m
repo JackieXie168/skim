@@ -84,6 +84,14 @@ static float BDSKScaleMenuFontSize = 11.0;
     [super dealloc];
 }
 
+- (void)printDocument:(id)sender{
+    id document = [[[self window] windowController] document];
+    if ([document respondsToSelector:_cmd])
+        [document printDocument:sender];
+    else if ([[self superclass] instancesRespondToSelector:_cmd])
+        [(id)super printDocument:sender];
+}
+
 #pragma mark Copying
 
 // used to cache the selection info and document for lazy copying
