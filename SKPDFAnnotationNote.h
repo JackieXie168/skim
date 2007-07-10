@@ -115,7 +115,6 @@ extern void SKCGContextSetDefaultRGBColorSpace(CGContextRef context);
     unsigned numberOfLines;
 }
 
-- (id)initWithBounds:(NSRect)bounds markupType:(int)type quadrilateralPointsAsStrings:(NSArray *)pointStrings;
 - (id)initWithSelection:(PDFSelection *)selection markupType:(int)type;
 - (PDFSelection *)selection;
 

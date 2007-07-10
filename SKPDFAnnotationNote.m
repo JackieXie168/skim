@@ -727,30 +727,18 @@ static NSArray *createQuadPointsWithBounds(const NSRect bounds, const NSPoint or
     return [[NSArray alloc] initWithObjects:[NSValue valueWithPoint:p0], [NSValue valueWithPoint:p1], [NSValue valueWithPoint:p2], [NSValue valueWithPoint:p3], nil];
 }
 
-- (id)initWithBounds:(NSRect)bounds {
-    self = [self initWithBounds:bounds markupType:kPDFMarkupTypeHighlight quadrilateralPointsAsStrings:nil];
-    return self;
-}
-
-- (id)initWithBounds:(NSRect)bounds dictionary:(NSDictionary *)dict{
-    NSString *type = [dict objectForKey:@"type"];
-    int markupType = kPDFMarkupTypeHighlight;
-    if ([type isEqualToString:@"Underline"])
-        markupType = kPDFMarkupTypeUnderline;
-    else if ([type isEqualToString:@"StrikeOut"])
-        markupType = kPDFMarkupTypeStrikeOut;
-    return [self initWithBounds:bounds markupType:kPDFMarkupTypeHighlight quadrilateralPointsAsStrings:[dict objectForKey:@"quadrilateralPoints"]];
-}
-
 - (id)initWithBounds:(NSRect)bounds markupType:(int)type quadrilateralPointsAsStrings:(NSArray *)pointStrings {
     if (self = [super initWithBounds:bounds]) {
         [self setMarkupType:type];
-        if (type == kPDFMarkupTypeHighlight)
-            originalSetColor(self, @selector(setColor:), [NSUnarchiver unarchiveObjectWithData:[[NSUserDefaults standardUserDefaults] dataForKey:SKHighlightNoteColorKey]]);
-        else if (type == kPDFMarkupTypeUnderline)
-            originalSetColor(self, @selector(setColor:), [NSUnarchiver unarchiveObjectWithData:[[NSUserDefaults standardUserDefaults] dataForKey:SKUnderlineNoteColorKey]]);
-        else if (type == kPDFMarkupTypeStrikeOut)
-            originalSetColor(self, @selector(setColor:), [NSUnarchiver unarchiveObjectWithData:[[NSUserDefaults standardUserDefaults] dataForKey:SKStrikeOutNoteColorKey]]);
+        
+        NSString *colorKey = nil;
+        switch (type) {
+            case kPDFMarkupTypeHighlight: colorKey = SKHighlightNoteColorKey; break;
+            case kPDFMarkupTypeUnderline: colorKey = SKUnderlineNoteColorKey; break;
+            case kPDFMarkupTypeStrikeOut: colorKey = SKStrikeOutNoteColorKey; break;
+        }
+        if (colorKey)
+            originalSetColor(self, @selector(setColor:), [NSUnarchiver unarchiveObjectWithData:[[NSUserDefaults standardUserDefaults] dataForKey:colorKey]]);
         
         NSArray *quadPoints = nil;
         if (pointStrings) {
@@ -776,6 +764,21 @@ static NSArray *createQuadPointsWithBounds(const NSRect bounds, const NSPoint or
         lineRects = NULL;
     }
     return self;
+}
+
+- (id)initWithBounds:(NSRect)bounds {
+    self = [self initWithBounds:bounds markupType:kPDFMarkupTypeHighlight quadrilateralPointsAsStrings:nil];
+    return self;
+}
+
+- (id)initWithBounds:(NSRect)bounds dictionary:(NSDictionary *)dict{
+    NSString *type = [dict objectForKey:@"type"];
+    int markupType = kPDFMarkupTypeHighlight;
+    if ([type isEqualToString:@"Underline"])
+        markupType = kPDFMarkupTypeUnderline;
+    else if ([type isEqualToString:@"StrikeOut"])
+        markupType = kPDFMarkupTypeStrikeOut;
+    return [self initWithBounds:bounds markupType:markupType quadrilateralPointsAsStrings:[dict objectForKey:@"quadrilateralPoints"]];
 }
 
 - (void)addLineRect:(NSRect)aRect {
@@ -1282,13 +1285,13 @@ static BOOL adjacentCharacterBounds(NSRect rect1, NSRect rect2) {
         originalSetColor(self, @selector(setColor:), [NSUnarchiver unarchiveObjectWithData:[[NSUserDefaults standardUserDefaults] dataForKey:SKLineNoteColorKey]]);
         [super setStartLineStyle:[[NSUserDefaults standardUserDefaults] integerForKey:SKLineNoteStartLineStyleKey]];
         [super setEndLineStyle:[[NSUserDefaults standardUserDefaults] integerForKey:SKLineNoteEndLineStyleKey]];
-        [super setStartPoint:NSMakePoint(0.5, 0.5)];
-        [super setEndPoint:NSMakePoint(NSWidth(bounds) - 0.5, NSHeight(bounds) - 0.5)];
+        [super setStartPoint:NSMakePoint(0.0, 0.0)];
+        [super setEndPoint:NSMakePoint(NSWidth(bounds), NSHeight(bounds))];
         PDFBorder *border = [[PDFBorder allocWithZone:[self zone]] init];
         [border setLineWidth:[[NSUserDefaults standardUserDefaults] floatForKey:SKLineNoteLineWidthKey]];
         [border setDashPattern:[[NSUserDefaults standardUserDefaults] arrayForKey:SKLineNoteDashPatternKey]];
         [border setStyle:[[NSUserDefaults standardUserDefaults] floatForKey:SKLineNoteLineStyleKey]];
-        originalSetBounds(self, @selector(setBorder:), [border lineWidth] > 0.0 ? border : nil);
+        originalSetBorder(self, @selector(setBorder:), [border lineWidth] > 0.0 ? border : nil);
         [border release];
     }
     return self;
