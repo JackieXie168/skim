@@ -82,7 +82,7 @@ static NSString *SKNoteWindowFrameAutosaveName = @"SKNoteWindow";
 - (void)windowDidLoad {
     [[self window] setBackgroundColor:[NSColor colorWithCalibratedWhite:0.9 alpha:1.0]];
     [[self window] setLevel:keepOnTop || forceOnTop ? NSFloatingWindowLevel : NSNormalWindowLevel];
-    [[self window] setHidesOnDeactivate:keepOnTop];
+    [[self window] setHidesOnDeactivate:keepOnTop || forceOnTop];
     
     [self setWindowFrameAutosaveNameOrCascade:SKNoteWindowFrameAutosaveName];
     
@@ -128,7 +128,7 @@ static NSString *SKNoteWindowFrameAutosaveName = @"SKNoteWindow";
 - (void)setKeepOnTop:(BOOL)flag {
     keepOnTop = flag;
     [[self window] setLevel:keepOnTop || forceOnTop ? NSFloatingWindowLevel : NSNormalWindowLevel];
-    [[self window] setHidesOnDeactivate:keepOnTop];
+    [[self window] setHidesOnDeactivate:keepOnTop || forceOnTop];
 }
 
 - (BOOL)forceOnTop {
@@ -138,6 +138,7 @@ static NSString *SKNoteWindowFrameAutosaveName = @"SKNoteWindow";
 - (void)setForceOnTop:(BOOL)flag {
     forceOnTop = flag;
     [[self window] setLevel:keepOnTop || forceOnTop ? NSFloatingWindowLevel : NSNormalWindowLevel];
+    [[self window] setHidesOnDeactivate:keepOnTop || forceOnTop];
 }
 
 - (void)objectDidBeginEditing:(id)editor {
