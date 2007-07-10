@@ -77,6 +77,7 @@ static void SKCGContextDrawGrabHandle(CGContextRef context, CGPoint point, float
 
 @interface PDFView (PDFViewPrivateDeclarations)
 - (void)pdfViewControlHit:(id)sender;
+- (void)activateNextAnnotation:(BOOL)backward;
 - (void)removeAnnotationControl;
 @end
 
@@ -1622,7 +1623,6 @@ static void SKCGContextDrawGrabHandle(CGContextRef context, CGPoint point, float
         [editAnnotation setStringValue:[activeAnnotation contents]];
         if ([activeAnnotation respondsToSelector:@selector(font)])
             [editAnnotation setFont:[(PDFAnnotationFreeText *)activeAnnotation font]];
-        [editAnnotation setColor:[activeAnnotation color]];
         [[activeAnnotation page] addAnnotation:editAnnotation];
         
         // Start editing
@@ -1648,13 +1648,21 @@ static void SKCGContextDrawGrabHandle(CGContextRef context, CGPoint point, float
 
 // this is the action for the textfield for the text widget. Override to remove it after an edit. 
 - (void)pdfViewControlHit:(id)sender{
-    if ([PDFView instancesRespondToSelector:@selector(pdfViewControlHit:)]) {
+    if ([[self superclass] instancesRespondToSelector:@selector(pdfViewControlHit:)])
         [super pdfViewControlHit:sender];
-        if ([sender isKindOfClass:[NSTextField class]] && editAnnotation) {
-            [self endAnnotationEdit:self];
-            [[self window] makeFirstResponder:self];
-        }
+    if ([sender isKindOfClass:[NSTextField class]] && editAnnotation) {
+        [self endAnnotationEdit:self];
+        [[self window] makeFirstResponder:self];
     }
+}
+
+// this is called after hitting tab or backtab from a text widget. 
+- (void)activateNextAnnotation:(BOOL)backward{
+    if (editAnnotation) {
+        [self endAnnotationEdit:self];
+        [[self window] makeFirstResponder:self];
+    } else if ([[self superclass] instancesRespondToSelector:@selector(activateNextAnnotation:)])
+        [super activateNextAnnotation:backward];
 }
 
 - (void)selectNextActiveAnnotation:(id)sender {
@@ -2496,7 +2504,6 @@ static void SKCGContextDrawGrabHandle(CGContextRef context, CGPoint point, float
         [editAnnotation setStringValue:[activeAnnotation contents]];
         if ([activeAnnotation respondsToSelector:@selector(font)])
             [editAnnotation setFont:[(PDFAnnotationFreeText *)activeAnnotation font]];
-        [editAnnotation setColor:[activeAnnotation color]];
         [[activeAnnotation page] addAnnotation:editAnnotation];
         
         // Start editing
