@@ -2005,10 +2005,6 @@ static NSString *SKRightSidePaneWidthKey = @"SKRightSidePaneWidth";
         [[NSUserDefaults standardUserDefaults] setObject:[self currentPDFSettings] forKey:SKDefaultPDFDisplaySettingsKey];
 }
 
-- (IBAction)printDocument:(id)sender{
-    [pdfView printWithInfo:[[self document] printInfo] autoRotate:NO];
-}
-
 #pragma mark Swapping tables
 
 - (void)replaceSideView:(NSView *)oldView withView:(NSView *)newView animate:(BOOL)animate {
