@@ -566,6 +566,34 @@ static NSString *SKRightSidePaneWidthKey = @"SKRightSidePaneWidth";
     }
 }
 
+- (void)windowDidChangeScreen:(NSNotification *)notification {
+    if ([[notification object] isEqual:[self window]]) {
+        if ([self isFullScreen]) {
+            NSScreen *screen = [fullScreenWindow screen];
+            [fullScreenWindow setFrame:[screen frame] display:NO];
+            [pdfView layoutDocumentView];
+            [pdfView setNeedsDisplay:YES];
+            
+            if ([[leftSideWindow screen] isEqual:screen] == NO) {
+                [leftSideWindow orderOut:self];
+                [leftSideWindow moveToScreen:screen];
+                [leftSideWindow hideSideWindow];
+                [leftSideWindow orderFront:self];
+            }
+            if ([[rightSideWindow screen] isEqual:screen] == NO) {
+                [rightSideWindow orderOut:self];
+                [leftSideWindow moveToScreen:screen];
+                [rightSideWindow hideSideWindow];
+                [rightSideWindow orderFront:self];
+            }
+        } else if ([self isPresentation]) {
+            [fullScreenWindow setFrame:[[fullScreenWindow screen] frame] display:NO];
+            [pdfView layoutDocumentView];
+            [pdfView setNeedsDisplay:YES];
+        }
+    }
+}
+
 - (void)updateLeftStatus {
     NSString *message = [NSString stringWithFormat:NSLocalizedString(@"Page %i of %i", @"Status message"), [self pageNumber], [[pdfView document] pageCount]];
     [statusBar setLeftStringValue:message];
