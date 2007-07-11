@@ -1634,7 +1634,6 @@ static NSString *SKRightSidePaneWidthKey = @"SKRightSidePaneWidth";
     // Create the full-screen window if it does not already  exist.
     if (fullScreenWindow == nil) {
         fullScreenWindow = [[SKFullScreenWindow alloc] initWithScreen:screen];
-        [fullScreenWindow setDelegate:self];
     }
         
     // explicitly set window frame; screen may have moved, or may be nil (in which case [fullScreenWindow frame] is wrong, which is weird); the first time through this method, [fullScreenWindow screen] is nil
@@ -1679,12 +1678,14 @@ static NSString *SKRightSidePaneWidthKey = @"SKRightSidePaneWidth";
         }
     }
     
+    [mainWindow setDelegate:nil];
     [self setWindow:fullScreenWindow];
     [fullScreenWindow makeKeyAndOrderFront:self];
     [fullScreenWindow makeFirstResponder:pdfView];
     [fullScreenWindow setAcceptsMouseMovedEvents:YES];
     [fullScreenWindow recalculateKeyViewLoop];
     [mainWindow orderOut:self];    
+    [fullScreenWindow setDelegate:self];
 }
 
 - (void)removeFullScreen {
@@ -1699,6 +1700,7 @@ static NSString *SKRightSidePaneWidthKey = @"SKRightSidePaneWidth";
             [(id)wc setForceOnTop:NO];
     }
     
+    [fullScreenWindow setDelegate:nil];
     [self setWindow:mainWindow];
     [mainWindow orderWindow:NSWindowBelow relativeTo:[fullScreenWindow windowNumber]];
     [mainWindow makeKeyWindow];
@@ -1717,6 +1719,7 @@ static NSString *SKRightSidePaneWidthKey = @"SKRightSidePaneWidth";
     [mainWindow makeKeyAndOrderFront:self];
     [mainWindow makeFirstResponder:pdfView];
     [mainWindow recalculateKeyViewLoop];
+    [mainWindow setDelegate:self];
     
     NSEnumerator *blankScreenEnumerator = [blankingWindows objectEnumerator];
     NSWindow *window;
