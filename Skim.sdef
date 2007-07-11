@@ -68,6 +68,10 @@
                 description="Notes in the PDF file">
                 <cocoa key="notes"/>
             </element>
+            <element type="TeX line" access="r" hidden="yes"
+                description="Lines in a TeX source file.">
+                <cocoa key="lines"/>
+            </element>
             <property name="name" code="pnam" type="text" access="r"
                 description="The document's name.">
                 <cocoa key="displayName"/>
@@ -211,11 +215,11 @@
             <direct-parameter description="The file(s) to be opened.">
             <type type="file" list="yes"/>
             </direct-parameter>
-            <parameter name="at TeX line" code="Line" type="integer" optional="yes"
+            <parameter name="at TeX line" code="Line" type="integer" optional="yes" hidden="yes"
                 description="Go to a location in the PDF corresponding to the line in a TeX source file.">
                 <cocoa key="line"/>
             </parameter>
-			<parameter name="from source" type="file" code="SrcF" optional="yes" 
+			<parameter name="from source" type="file" code="SrcF" optional="yes" hidden="yes"
 				description="The TeX source file. By default this is derived from the file."> 
 				<cocoa key="source"/> 
 			</parameter>
@@ -700,6 +704,15 @@
 			</responds-to>
         </class>
 
+        <class name="TeX line" plural="TeX lines" code="Line" inherits="item"
+            description="A line in a TeX source document.">
+            <cocoa class="SKLine"/>
+            <property name="index" code="pidx" type="integer" access="r"
+                description="the line number.">
+                <cocoa key="line"/>
+            </property>
+        </class>
+
         <record-type name="PDF view settings" code="VSet">
             <property name="scale factor" code="SclF" type="real"
                 description="The scale factor of the PDF.">
@@ -1006,12 +1019,17 @@
             <direct-parameter type="document"
                 description="The document in which to scroll."/>
             <parameter name="to" code="to  "
-                description="The page, note or selection to go to.">
+                description="The page, note, TeX line, or selection to go to.">
                 <type type="page"/>
                 <type type="note"/>
+                <type type="TeX line"/>
                 <type type="specifier" list="yes"/>
                 <cocoa key="To"/>
             </parameter>
+			<parameter name="from" code="from" type="file" optional="yes" 
+				description="The TeX source file. By default this is derived from the file. Only applies for a TeX line."> 
+				<cocoa key="Source"/> 
+			</parameter>
         </command>
 
         <command name="find" code="SKIMFind"
