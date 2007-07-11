@@ -76,8 +76,6 @@ static void SKCGContextDrawGrabHandle(CGContextRef context, CGPoint point, float
 @end
 
 @interface PDFView (PDFViewPrivateDeclarations)
-- (void)pdfViewControlHit:(id)sender;
-- (void)activateNextAnnotation:(BOOL)backward;
 - (void)removeAnnotationControl;
 @end
 
@@ -1654,23 +1652,16 @@ static void SKCGContextDrawGrabHandle(CGContextRef context, CGPoint point, float
     }
 }
 
-// this is the action for the textfield for the text widget. Override to remove it after an edit. 
-- (void)pdfViewControlHit:(id)sender{
-    if ([[self superclass] instancesRespondToSelector:@selector(pdfViewControlHit:)])
-        [super pdfViewControlHit:sender];
-    if ([sender isKindOfClass:[NSTextField class]] && editAnnotation) {
+// we're the delegate of the textfield used to edit text widgets
+- (BOOL)control:(NSControl *)control textView:(NSTextView *)textView doCommandBySelector:(SEL)command {
+    BOOL rv = NO;
+    if (editAnnotation && (command == @selector(insertNewline:) || command == @selector(insertTab:) || command == @selector(insertBacktab:))) {
         [self endAnnotationEdit:self];
         [[self window] makeFirstResponder:self];
+    } else if ([[self superclass] instancesRespondToSelector:_cmd]) {
+       rv = [super control:control textView:textView doCommandBySelector:command];
     }
-}
-
-// this is called after hitting tab or backtab from a text widget. 
-- (void)activateNextAnnotation:(BOOL)backward{
-    if (editAnnotation) {
-        [self endAnnotationEdit:self];
-        [[self window] makeFirstResponder:self];
-    } else if ([[self superclass] instancesRespondToSelector:@selector(activateNextAnnotation:)])
-        [super activateNextAnnotation:backward];
+    return rv;
 }
 
 - (void)selectNextActiveAnnotation:(id)sender {
