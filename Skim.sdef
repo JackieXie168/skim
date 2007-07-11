@@ -18,6 +18,10 @@
             <element type="window" access="r">
                 <cocoa key="orderedWindows"/>
             </element>
+            <element type="TeX line" access="r" hidden="yes"
+                description="Lines in a TeX source file.">
+                <cocoa key="lines"/>
+            </element>
             <property name="name" code="pnam" type="text" access="r"
                 description="The name of the application."/>
             <property name="frontmost" code="pisf" type="boolean" access="r"

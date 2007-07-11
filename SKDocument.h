@@ -55,7 +55,7 @@ enum {
 };
 
 
-@class PDFDocument, SKMainWindowController, SKPDFView, SKPDFSynchronizer;
+@class PDFDocument, SKMainWindowController, SKPDFView, SKPDFSynchronizer, SKLine;
 
 @interface SKDocument : NSDocument
 {
@@ -104,6 +104,8 @@ enum {
 - (void)insertInNotes:(id)newNote;
 - (void)insertInNotes:(id)newNote atIndex:(unsigned int)index;
 - (void)removeFromNotesAtIndex:(unsigned int)index;
+- (unsigned int)countOfLines;
+- (SKLine *)objectInLinesAtIndex:(unsigned int)index;
 - (PDFPage *)currentPage;
 - (void)setCurrentPage:(PDFPage *)page;
 - (id)activeNote;
@@ -127,13 +129,4 @@ enum {
 @interface NSDictionary (SKScriptingExtensions)
 - (NSDictionary *)AppleScriptPDFViewSettingsFromPDFViewSettings;
 - (NSDictionary *)PDFViewSettingsFromAppleScriptPDFViewSettings;
-@end
-
-
-@interface SKLine : NSObject {
-    id container;
-    int line;
-}
-- (id)initWithContainer:(id)aContainer line:(int)aLine;
-- (int)line;
 @end

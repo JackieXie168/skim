@@ -166,6 +166,7 @@
 		CEA575E50B9207B80003D2E7 /* SKThumbnailTableView.m in Sources */ = {isa = PBXBuildFile; fileRef = CEA575E40B9207B80003D2E7 /* SKThumbnailTableView.m */; };
 		CEA575FD0B9208B60003D2E7 /* SKOutlineView.m in Sources */ = {isa = PBXBuildFile; fileRef = CEA575FC0B9208B60003D2E7 /* SKOutlineView.m */; };
 		CEAF079D0C4139EB00C3ECBB /* SKStatusBar.m in Sources */ = {isa = PBXBuildFile; fileRef = CEAF079B0C4139EB00C3ECBB /* SKStatusBar.m */; };
+		CEAF2E5A0C45414100C3ECBB /* SKLine.m in Sources */ = {isa = PBXBuildFile; fileRef = CEAF2E580C45414100C3ECBB /* SKLine.m */; };
 		CEAFFD7C0C40ED5400C3ECBB /* ToolbarColors.tiff in Resources */ = {isa = PBXBuildFile; fileRef = CEAFFD7A0C40ED5400C3ECBB /* ToolbarColors.tiff */; };
 		CEAFFD7D0C40ED5400C3ECBB /* ToolbarFonts.tiff in Resources */ = {isa = PBXBuildFile; fileRef = CEAFFD7B0C40ED5400C3ECBB /* ToolbarFonts.tiff */; };
 		CEAFFD9D0C40F2A800C3ECBB /* ToolbarLines.tiff in Resources */ = {isa = PBXBuildFile; fileRef = CEAFFD9C0C40F2A800C3ECBB /* ToolbarLines.tiff */; };
@@ -535,6 +536,8 @@
 		CEA575FC0B9208B60003D2E7 /* SKOutlineView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SKOutlineView.m; sourceTree = "<group>"; };
 		CEAF079A0C4139EB00C3ECBB /* SKStatusBar.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SKStatusBar.h; sourceTree = "<group>"; };
 		CEAF079B0C4139EB00C3ECBB /* SKStatusBar.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SKStatusBar.m; sourceTree = "<group>"; };
+		CEAF2E570C45414100C3ECBB /* SKLine.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SKLine.h; sourceTree = "<group>"; };
+		CEAF2E580C45414100C3ECBB /* SKLine.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SKLine.m; sourceTree = "<group>"; };
 		CEAFFD7A0C40ED5400C3ECBB /* ToolbarColors.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; name = ToolbarColors.tiff; path = Images/ToolbarColors.tiff; sourceTree = "<group>"; };
 		CEAFFD7B0C40ED5400C3ECBB /* ToolbarFonts.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; name = ToolbarFonts.tiff; path = Images/ToolbarFonts.tiff; sourceTree = "<group>"; };
 		CEAFFD9C0C40F2A800C3ECBB /* ToolbarLines.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; name = ToolbarLines.tiff; path = Images/ToolbarLines.tiff; sourceTree = "<group>"; };
@@ -900,6 +903,8 @@
 			children = (
 				CE3A3D2A0B78C0A0006B64D3 /* SKPDFAnnotationNote.h */,
 				CE3A3D2B0B78C0A0006B64D3 /* SKPDFAnnotationNote.m */,
+				CEAF2E570C45414100C3ECBB /* SKLine.h */,
+				CEAF2E580C45414100C3ECBB /* SKLine.m */,
 				CE4294A10BBD29120016FDC2 /* SKReadingBar.h */,
 				CE4294A20BBD29120016FDC2 /* SKReadingBar.m */,
 				CE2DE4900B85D48F00D0DA12 /* SKThumbnail.h */,
@@ -1387,6 +1392,7 @@
 				CE4BC1300C357A0300C2AF03 /* SKLineWell.m in Sources */,
 				CE4D97FD0C3C2BFF002C20CB /* SKColorSwatch.m in Sources */,
 				CEAF079D0C4139EB00C3ECBB /* SKStatusBar.m in Sources */,
+				CEAF2E5A0C45414100C3ECBB /* SKLine.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

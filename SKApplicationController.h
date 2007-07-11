@@ -38,7 +38,7 @@
 
 #import <Cocoa/Cocoa.h>
 
-@class SUUpdater;
+@class SUUpdater, SKLine;
 
 @interface SKApplicationController : NSObject {
     BOOL remoteScrolling;
@@ -69,6 +69,8 @@
 - (void)setFullScreenBackgroundColor:(NSColor *)color;
 - (NSDictionary *)defaultNoteColors;
 - (void)setDefaultNoteColors:(NSDictionary *)colorDict;
+- (unsigned int)countOfLines;
+- (SKLine *)objectInLinesAtIndex:(unsigned int)index;
 
 @end
 
