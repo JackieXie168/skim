@@ -177,7 +177,7 @@ NSString *SKSizeString(NSSize size, NSSize altSize) {
                 [dictionary setValue:SKSizeString([[pdfDoc pageAtIndex:0] boundsForBox:kPDFDisplayBoxCropBox].size, [[pdfDoc pageAtIndex:0] boundsForBox:kPDFDisplayBoxMediaBox].size) forKey:@"PageSize"];
             [dictionary setValue:[NSNumber numberWithUnsignedLongLong:physicalSize] forKey:@"PhysicalSize"];
             [dictionary setValue:[NSNumber numberWithUnsignedLongLong:logicalSize] forKey:@"LogicalSize"];
-            [dictionary setValue:[[dictionary valueForKey:@"Keywords"] componentsJoinedByString:@" "] forKey:@"KeywordsString"];
+            [dictionary setValue:[[dictionary valueForKey:@"Keywords"] componentsJoinedByString:@"\n"] forKey:@"KeywordsString"];
             [dictionary setValue:[NSNumber numberWithBool:[pdfDoc isEncrypted]] forKey:@"Encrypted"];
             [dictionary setValue:[NSNumber numberWithBool:[pdfDoc allowsPrinting]] forKey:@"AllowsPrinting"];
             [dictionary setValue:[NSNumber numberWithBool:[pdfDoc allowsCopying]] forKey:@"AllowsCopying"];
