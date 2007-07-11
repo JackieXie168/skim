@@ -571,8 +571,6 @@ static NSString *SKRightSidePaneWidthKey = @"SKRightSidePaneWidth";
         if ([self isFullScreen]) {
             NSScreen *screen = [fullScreenWindow screen];
             [fullScreenWindow setFrame:[screen frame] display:NO];
-            [pdfView layoutDocumentView];
-            [pdfView setNeedsDisplay:YES];
             
             if ([[leftSideWindow screen] isEqual:screen] == NO) {
                 [leftSideWindow orderOut:self];
@@ -588,9 +586,9 @@ static NSString *SKRightSidePaneWidthKey = @"SKRightSidePaneWidth";
             }
         } else if ([self isPresentation]) {
             [fullScreenWindow setFrame:[[fullScreenWindow screen] frame] display:NO];
-            [pdfView layoutDocumentView];
-            [pdfView setNeedsDisplay:YES];
         }
+        [pdfView layoutDocumentView];
+        [pdfView setNeedsDisplay:YES];
     }
 }
 
