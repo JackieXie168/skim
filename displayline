@@ -23,5 +23,6 @@ fi
 exec /usr/bin/osascript \
   -e "tell application \"Skim\"" \
   -e "activate" \
-  -e "open POSIX file \"${file}\" at TeX line ${line} from source POSIX file \"${source}\"" \
+  -e "open POSIX file \"${file}\"" \
+  -e "tell front document to go to TeX line ${line} from POSIX file \"${source}\"" \
   -e "end tell"

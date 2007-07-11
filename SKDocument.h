@@ -128,3 +128,12 @@ enum {
 - (NSDictionary *)AppleScriptPDFViewSettingsFromPDFViewSettings;
 - (NSDictionary *)PDFViewSettingsFromAppleScriptPDFViewSettings;
 @end
+
+
+@interface SKLine : NSObject {
+    id container;
+    int line;
+}
+- (id)initWithContainer:(id)aContainer line:(int)aLine;
+- (int)line;
+@end

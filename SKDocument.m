@@ -64,7 +64,6 @@ NSString *SKDocumentErrorDomain = @"SKDocumentErrorDomain";
 
 NSString *SKDocumentWillSaveNotification = @"SKDocumentWillSaveNotification";
 
-
 @interface SKDocument (Private)
 
 - (void)setPDFData:(NSData *)data;
@@ -977,6 +976,14 @@ static BOOL isFileOnHFSVolume(NSString *fileName)
     [[self undoManager] setActionName:NSLocalizedString(@"Remove Note", @"Undo action name")];
 }
 
+- (unsigned int)countOfLines {
+    return 0;
+}
+
+- (SKLine *)objectInLinesAtIndex:(unsigned int)index {
+    return [[[SKLine alloc] initWithContainer:self line:index] autorelease];
+}
+
 - (PDFPage *)currentPage {
     return [[self pdfView] currentPage];
 }
@@ -1119,6 +1126,13 @@ static BOOL isFileOnHFSVolume(NSString *fileName)
         [[self pdfView] goToPage:(PDFPage *)location];
     } else if ([location isKindOfClass:[PDFAnnotation class]]) {
         [[self pdfView] scrollAnnotationToVisible:(PDFAnnotation *)location];
+    } else if ([location isKindOfClass:[SKLine class]]) {
+        id source = [args objectForKey:@"Source"];
+        if ([source isKindOfClass:[NSString class]])
+            source = [NSURL fileURLWithPath:source];
+        if ([source isKindOfClass:[NSURL class]] == NO)
+            source = [self fileURL];
+        [[self synchronizer] findPageLocationForLine:[location line] inFile:[[source path] stringByReplacingPathExtension:@"tex"]];
     } else {
         PDFSelection *selection = [PDFSelection selectionWithSpecifier:location];
         if ([[selection pages] count]) {
@@ -1254,6 +1268,29 @@ static BOOL isFileOnHFSVolume(NSString *fileName)
     }
     
     return setup;
+}
+
+@end
+
+#pragma mark -
+
+@implementation SKLine
+
+- (id)initWithContainer:(id)aContainer line:(int)aLine {
+    if (self = [super init]) {
+        container = aContainer;
+        line = aLine;
+    }
+    return self;
+}
+
+- (NSScriptObjectSpecifier *)objectSpecifier {
+    NSScriptObjectSpecifier *containerRef = [container objectSpecifier];
+    return [[[NSIndexSpecifier allocWithZone:[self zone]] initWithContainerClassDescription:[containerRef keyClassDescription] containerSpecifier:containerRef key:@"lines" index:line] autorelease];
+}
+
+- (int)line {
+    return line;
 }
 
 @end
