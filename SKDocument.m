@@ -56,6 +56,7 @@
 #import "UKKQueue.h"
 #import "PDFSelection_SKExtensions.h"
 #import "SKInfoWindowController.h"
+#import "SKLine.h"
 
 // maximum length of xattr value recommended by Apple
 #define MAX_XATTR_LENGTH 2048
@@ -1268,29 +1269,6 @@ static BOOL isFileOnHFSVolume(NSString *fileName)
     }
     
     return setup;
-}
-
-@end
-
-#pragma mark -
-
-@implementation SKLine
-
-- (id)initWithContainer:(id)aContainer line:(int)aLine {
-    if (self = [super init]) {
-        container = aContainer;
-        line = aLine;
-    }
-    return self;
-}
-
-- (NSScriptObjectSpecifier *)objectSpecifier {
-    NSScriptObjectSpecifier *containerRef = [container objectSpecifier];
-    return [[[NSIndexSpecifier allocWithZone:[self zone]] initWithContainerClassDescription:[containerRef keyClassDescription] containerSpecifier:containerRef key:@"lines" index:line] autorelease];
-}
-
-- (int)line {
-    return line;
 }
 
 @end

@@ -50,6 +50,7 @@
 #import <Sparkle/Sparkle.h>
 #import "AppleRemote.h"
 #import "NSBezierPath_BDSKExtensions.h"
+#import "SKLine.h"
 
 
 @implementation SKApplicationController
@@ -422,7 +423,7 @@ static BOOL fileIsInTrash(NSURL *fileURL)
     static NSSet *applicationScriptingKeys = nil;
     if (applicationScriptingKeys == nil)
         applicationScriptingKeys = [[NSSet alloc] initWithObjects:@"defaultPdfViewSettings", @"defaultFullScreenPdfViewSettings", @"backgroundColor", @"fullScreenBackgroundColor", 
-            @"defaultNoteColors",nil];
+            @"defaultNoteColors", @"lines", nil];
 	return [applicationScriptingKeys containsObject:key];
 }
 
@@ -509,6 +510,14 @@ static BOOL fileIsInTrash(NSURL *fileURL)
         [sud setObject:[NSArchiver archivedDataWithRootObject:color] forKey:SKCircleNoteInteriorColorKey];
     if (color = [colorDict objectForKey:@"squareNoteInterior"])
         [sud setObject:[NSArchiver archivedDataWithRootObject:color] forKey:SKSquareNoteInteriorColorKey];
+}
+
+- (unsigned int)countOfLines {
+    return 0;
+}
+
+- (SKLine *)objectInLinesAtIndex:(unsigned int)index {
+    return [[[SKLine alloc] initWithContainer:nil line:index] autorelease];
 }
 
 @end
