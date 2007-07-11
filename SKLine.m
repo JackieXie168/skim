@@ -51,7 +51,7 @@
 
 - (NSScriptObjectSpecifier *)objectSpecifier {
     NSScriptObjectSpecifier *containerRef = [container objectSpecifier];
-    NSScriptClassDescription *containerClassDescription = container ? [containerRef keyClassDescription] : (NSScriptClassDescription *)[NSClassDescription classDescriptionForClass:[NSApplication class]];
+    NSScriptClassDescription *containerClassDescription = container ? [containerRef keyClassDescription] : (NSScriptClassDescription *)[NSClassDescription classDescriptionForClass:[NSApp class]];
     return [[[NSIndexSpecifier allocWithZone:[self zone]] initWithContainerClassDescription:containerClassDescription containerSpecifier:containerRef key:@"lines" index:line] autorelease];
 }
 
