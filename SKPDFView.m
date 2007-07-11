@@ -796,6 +796,10 @@ static void SKCGContextDrawGrabHandle(CGContextRef context, CGPoint point, float
         [self moveActiveAnnotationForKey:eventChar byAmount:(modifiers & NSShiftKeyMask) ? 10.0 : 1.0];
 	} else if (isPresentation == NO && [activeAnnotation isNoteAnnotation] && [activeAnnotation isResizable] && (eventChar == NSRightArrowFunctionKey || eventChar == NSLeftArrowFunctionKey || eventChar == NSUpArrowFunctionKey || eventChar == NSDownArrowFunctionKey) && (modifiers == NSControlKeyMask || modifiers == NSControlKeyMask | NSShiftKeyMask)) {
         [self resizeActiveAnnotationForKey:eventChar byAmount:(modifiers & NSShiftKeyMask) ? 10.0 : 1.0];
+    } else if (isPresentation == NO && (eventChar == NSRightArrowFunctionKey) && (modifiers == NSShiftKeyMask)) {
+        [self setToolMode:(toolMode + 1) % 5];
+    } else if (isPresentation == NO && (eventChar == NSLeftArrowFunctionKey) && (modifiers == NSShiftKeyMask)) {
+        [self setToolMode:(toolMode + 4) % 5];
     } else if (readingBar && (eventChar == NSRightArrowFunctionKey || eventChar == NSLeftArrowFunctionKey || eventChar == NSUpArrowFunctionKey || eventChar == NSDownArrowFunctionKey) && (modifiers == NSAlternateKeyMask)) {
         [self moveReadingBarForKey:eventChar];
     } else if (isPresentation == NO && [self toolMode] == SKNoteToolMode && modifiers == 0 && eventChar == 't') {
