@@ -273,7 +273,9 @@ CGPSConverterCallbacks SKPSConverterCallbacks = {
 
 - (IBAction)cancel:(id)sender
 {
-    if ([task isRunning]) {
+    if (convertingPS) {
+        [super cancel:sender];
+    } else if ([task isRunning]) {
         [task terminate];
     } else {
         NSBeep();
@@ -281,11 +283,6 @@ CGPSConverterCallbacks SKPSConverterCallbacks = {
         [cancelButton setTitle:NSLocalizedString(@"Close", @"Button title")];
         [cancelButton setAction:@selector(close:)];
     }
-}
-
-- (IBAction)cancelPS:(id)sender
-{
-    [super cancel:sender];
 }
 
 - (NSData *)PDFDataWithDVIFile:(NSString *)dviFile {
@@ -312,7 +309,7 @@ CGPSConverterCallbacks SKPSConverterCallbacks = {
     
     
     NSString *dviFile = [info objectForKey:@"dviFile"];
-    NSString *commandPath = [[NSUserDefaults standardUserDefaults] stringForKey:@"SKDviConverterBinary"];
+    NSString *commandPath = [[NSUserDefaults standardUserDefaults] stringForKey:@"SKDviConversionCommand"];
     NSString *commandName = commandPath ? [commandPath lastPathComponent] : @"dvips";
     NSFileManager *fm = [NSFileManager defaultManager];
     NSArray *paths = [NSArray arrayWithObjects:@"/usr/texbin", @"/usr/local/teTeX/bin/powerpc-apple-darwin-current", @"/sw/bin", @"/opt/local/bin", @"/usr/local/bin", nil];
@@ -387,13 +384,7 @@ CGPSConverterCallbacks SKPSConverterCallbacks = {
         
         NSDictionary *dictionary = [NSDictionary dictionaryWithObjectsAndKeys:(id)provider, @"provider", (id)consumer, @"consumer", nil];
         
-        SEL selector = @selector(cancelPS:);
-        ms = [self methodSignatureForSelector:@selector(setAction)];
-        invocation = [NSInvocation invocationWithMethodSignature:ms];
-        [invocation setTarget:cancelButton];
-        [invocation setSelector:@selector(setAction)];
-        [invocation setArgument:&selector atIndex:2];
-        [invocation performSelectorOnMainThread:@selector(invoke) withObject:nil waitUntilDone:NO];
+        OSAtomicCompareAndSwap32Barrier(0, 1, (int32_t *)&convertingPS);
         
         [super doConversionWithInfo:dictionary];
         
