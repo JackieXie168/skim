@@ -950,6 +950,11 @@ static BOOL isFileOnHFSVolume(NSString *fileName)
     return data;
 }
 
+- (void)setPrintInfo:(NSPrintInfo *)printInfo {
+    [super setPrintInfo:printInfo];
+    [self updateChangeCount:[[self undoManager] isUndoing] ? NSChangeDone : NSChangeUndone];
+}
+
 #pragma mark Scripting support
 
 - (unsigned int)countOfPages {
