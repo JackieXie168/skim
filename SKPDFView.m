@@ -800,6 +800,10 @@ static void SKCGContextDrawGrabHandle(CGContextRef context, CGPoint point, float
         [self setToolMode:(toolMode + 1) % 5];
     } else if (isPresentation == NO && (eventChar == NSLeftArrowFunctionKey) && (modifiers == NSShiftKeyMask)) {
         [self setToolMode:(toolMode + 4) % 5];
+    } else if (isPresentation == NO && (eventChar == NSDownArrowFunctionKey) && (modifiers == NSShiftKeyMask)) {
+        [self setAnnotationMode:(annotationMode + 1) % 8];
+    } else if (isPresentation == NO && (eventChar == NSUpArrowFunctionKey) && (modifiers == NSShiftKeyMask)) {
+        [self setAnnotationMode:(annotationMode + 7) % 8];
     } else if (readingBar && (eventChar == NSRightArrowFunctionKey || eventChar == NSLeftArrowFunctionKey || eventChar == NSUpArrowFunctionKey || eventChar == NSDownArrowFunctionKey) && (modifiers == NSAlternateKeyMask)) {
         [self moveReadingBarForKey:eventChar];
     } else if (isPresentation == NO && [self toolMode] == SKNoteToolMode && modifiers == 0 && eventChar == 't') {
