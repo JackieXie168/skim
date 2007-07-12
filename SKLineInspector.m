@@ -479,9 +479,9 @@ static SKLineInspector *sharedLineInspector = nil;
 - (void)setAnnotationStyle:(PDFAnnotation *)annotation {
     NSString *type = [annotation type];
     if ([type isEqualToString:@"FreeText"] || [type isEqualToString:@"Circle"] || [type isEqualToString:@"Square"] || [type isEqualToString:@"Line"]) {
-        [self setLineWidth:[[annotation border] lineWidth]];
+        [self setLineWidth:[annotation border] ? [[annotation border] lineWidth] : 0.0];
         [self setDashPattern:[[annotation border] dashPattern]];
-        [self setStyle:[[annotation border] style]];
+        [self setStyle:[annotation border] ? [[annotation border] style] : 0];
     }
     if ([type isEqualToString:@"Line"]) {
         [self setStartLineStyle:[(PDFAnnotationLine *)annotation startLineStyle]];
@@ -490,8 +490,9 @@ static SKLineInspector *sharedLineInspector = nil;
 }
 
 - (void)setNilValueForKey:(NSString *)key {
-    if ([key isEqualToString:@"lineWidth"] || [key isEqualToString:@"style"] || 
-        [key isEqualToString:@"startLineStyle"] || [key isEqualToString:@"endLineStyle"]) {
+    if ([key isEqualToString:@"lineWidth"]) {
+        [self setValue:[NSNumber numberWithFloat:0.0] forKey:key];
+    } else if ([key isEqualToString:@"style"] || [key isEqualToString:@"startLineStyle"] || [key isEqualToString:@"endLineStyle"]) {
         [self setValue:[NSNumber numberWithInt:0] forKey:key];
     } else {
         [super setNilValueForKey:key];
