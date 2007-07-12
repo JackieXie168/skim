@@ -105,6 +105,14 @@ NSString *SKDocumentWillSaveNotification = @"SKDocumentWillSaveNotification";
 - (void)windowControllerDidLoadNib:(NSWindowController *)aController{
     SKMainWindowController *mainController =  (SKMainWindowController *)aController;
     
+    if ([pdfDocument pageCount]) {
+        NSPrintInfo *printInfo = [self printInfo];
+        NSSize paperSize = [printInfo paperSize];
+        NSSize pageSize = [[pdfDocument pageAtIndex:0] boundsForBox:kPDFDisplayBoxMediaBox].size;
+        if ((pageSize.width > pageSize.height) != (paperSize.width > paperSize.height))
+            [printInfo setOrientation:NSLandscapeOrientation];
+    }
+    
     [mainController setPdfDocument:pdfDocument];
     [self setPDFDoc:nil];
     
