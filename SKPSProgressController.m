@@ -40,7 +40,6 @@
 #import "NSString_SKExtensions.h"
 
 enum {
-    SKConversionCanceled = -1,
     SKConversionSucceeded = 0,
     SKConversionFailed = 1
 };
@@ -284,6 +283,11 @@ CGPSConverterCallbacks SKPSConverterCallbacks = {
     }
 }
 
+- (IBAction)cancelPS:(id)sender
+{
+    [super cancel:sender];
+}
+
 - (NSData *)PDFDataWithDVIFile:(NSString *)dviFile {
     NSMutableData *pdfData = [[NSMutableData alloc] init];
     
@@ -382,6 +386,14 @@ CGPSConverterCallbacks SKPSConverterCallbacks = {
         CGDataConsumerRef consumer = CGDataConsumerCreateWithCFData((CFMutableDataRef)pdfData);
         
         NSDictionary *dictionary = [NSDictionary dictionaryWithObjectsAndKeys:(id)provider, @"provider", (id)consumer, @"consumer", nil];
+        
+        SEL selector = @selector(cancelPS:);
+        ms = [self methodSignatureForSelector:@selector(setAction)];
+        invocation = [NSInvocation invocationWithMethodSignature:ms];
+        [invocation setTarget:cancelButton];
+        [invocation setSelector:@selector(setAction)];
+        [invocation setArgument:&selector atIndex:2];
+        [invocation performSelectorOnMainThread:@selector(invoke) withObject:nil waitUntilDone:NO];
         
         [super doConversionWithInfo:dictionary];
         

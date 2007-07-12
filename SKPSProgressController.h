@@ -59,4 +59,5 @@
     NSTask *task;
 }
 - (NSData *)PDFDataWithDVIFile:(NSString *)dviFile;
+- (IBAction)cancelPS:(id)sender;
 @end
