@@ -55,7 +55,7 @@
 @end
 
 
-@interface SKDVIProgressController : SKConversionProgressController {
+@interface SKDVIProgressController : SKPSProgressController {
     NSTask *task;
 }
 - (NSData *)PDFDataWithDVIFile:(NSString *)dviFile;

@@ -48,6 +48,7 @@ enum {
 @interface SKConversionProgressController (Private)
 - (int)runModalConversionInWithInfo:(NSDictionary *)info;
 - (void)doConversionWithInfo:(NSDictionary *)info;
+- (void)stopModalOnMainThread:(BOOL)success;
 - (void)conversionCompleted:(BOOL)didComplete;
 - (void)conversionStarted;
 - (NSString *)fileType;
@@ -57,6 +58,8 @@ enum {
 - (void)processingPostScriptPage:(NSNumber *)page;
 - (void)showPostScriptConversionMessage:(NSString *)message;
 @end
+
+#pragma mark Callbacks
 
 static void PSConverterBeginDocumentCallback(void *info)
 {
@@ -93,6 +96,17 @@ static void PSConverterMessageCallback(void *info, CFStringRef message)
     if (delegate && [delegate respondsToSelector:@selector(showPostScriptConversionMessage:)])
         [delegate performSelectorOnMainThread:@selector(showPostScriptConversionMessage:) withObject:(id)message waitUntilDone:NO];
 }
+
+CGPSConverterCallbacks SKPSConverterCallbacks = { 
+    0, 
+    PSConverterBeginDocumentCallback, 
+    PSConverterEndDocumentCallback, 
+    PSConverterBeginPageCallback,   /* haven't seen this called in my testing */
+    NULL, 
+    NULL, 
+    PSConverterMessageCallback,     /* haven't seen this called in my testing */
+    NULL 
+};
 
 #pragma mark -
 
@@ -142,7 +156,17 @@ static void PSConverterMessageCallback(void *info, CFStringRef message)
     return rv;
 }
 
-- (void)doConversionWithInfo:(NSDictionary *)info {}    
+- (void)doConversionWithInfo:(NSDictionary *)info {}   
+ 
+- (void)stopModalOnMainThread:(BOOL)success {
+    int val = (success ? SKConversionSucceeded : SKConversionFailed);
+    NSMethodSignature *ms = [NSApp methodSignatureForSelector:@selector(stopModalWithCode:)];
+    NSInvocation *invocation = [NSInvocation invocationWithMethodSignature:ms];
+    [invocation setTarget:NSApp];
+    [invocation setSelector:@selector(stopModalWithCode:)];
+    [invocation setArgument:&val atIndex:2];
+    [invocation performSelectorOnMainThread:@selector(invoke) withObject:nil waitUntilDone:NO];
+}
 
 - (NSString *)fileType { return @""; }
 
@@ -174,8 +198,6 @@ static void PSConverterMessageCallback(void *info, CFStringRef message)
 
 - (IBAction)cancel:(id)sender
 {
-    [NSApp stopModalWithCode:SKConversionCanceled];
-
     if (CGPSConverterAbort(converter) == false) {
         NSBeep();
         [textField setStringValue:NSLocalizedString(@"Converter already stopped.", @"PS conversion progress message")];
@@ -188,19 +210,8 @@ static void PSConverterMessageCallback(void *info, CFStringRef message)
 {
     NSAssert(NULL == converter, @"attempted to reenter SKPSProgressController, but this is not supported");
     
-    CGPSConverterCallbacks converterCallbacks = { 
-        0, 
-        PSConverterBeginDocumentCallback, 
-        PSConverterEndDocumentCallback, 
-        PSConverterBeginPageCallback,   /* haven't seen this called in my testing */
-        NULL, 
-        NULL, 
-        PSConverterMessageCallback,     /* haven't seen this called in my testing */
-        NULL 
-    };
-    
     // pass self as info
-    converter = CGPSConverterCreate((void *)self, &converterCallbacks, NULL);
+    converter = CGPSConverterCreate((void *)self, &SKPSConverterCallbacks, NULL);
     NSAssert(converter != NULL, @"unable to create PS converter");
     
     CGDataProviderRef provider = CGDataProviderCreateWithCFData((CFDataRef)psData);
@@ -236,14 +247,7 @@ static void PSConverterMessageCallback(void *info, CFStringRef message)
     CGDataConsumerRef consumer = (void *)[info objectForKey:@"consumer"];
     Boolean success = CGPSConverterConvert(converter, provider, consumer, NULL);
     
-    int val = (success ? SKConversionSucceeded : SKConversionFailed);
-    
-    NSMethodSignature *ms = [NSApp methodSignatureForSelector:@selector(stopModalWithCode:)];
-    NSInvocation *invocation = [NSInvocation invocationWithMethodSignature:ms];
-    [invocation setTarget:NSApp];
-    [invocation setSelector:@selector(stopModalWithCode:)];
-    [invocation setArgument:&val atIndex:2];
-    [invocation performSelectorOnMainThread:@selector(invoke) withObject:nil waitUntilDone:NO];
+    [self stopModalOnMainThread:success];
     
     [pool release];
 }    
@@ -270,13 +274,13 @@ static void PSConverterMessageCallback(void *info, CFStringRef message)
 
 - (IBAction)cancel:(id)sender
 {
-    if (task == nil) {
+    if ([task isRunning]) {
+        [task terminate];
+    } else {
         NSBeep();
         [textField setStringValue:NSLocalizedString(@"Converter already stopped.", @"PS conversion progress message")];
         [cancelButton setTitle:NSLocalizedString(@"Close", @"Button title")];
         [cancelButton setAction:@selector(close:)];
-    } else {
-        [task terminate];
     }
 }
 
@@ -302,24 +306,28 @@ static void PSConverterMessageCallback(void *info, CFStringRef message)
 - (void)doConversionWithInfo:(NSDictionary *)info {
     NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
     
+    
     NSString *dviFile = [info objectForKey:@"dviFile"];
-    NSString *dvipdfmxPath = [[NSUserDefaults standardUserDefaults] stringForKey:@"SKDvipdfmxBinaryPath"];
+    NSString *commandPath = [[NSUserDefaults standardUserDefaults] stringForKey:@"SKDviConverterBinary"];
+    NSString *commandName = commandPath ? [commandPath lastPathComponent] : @"dvips";
     NSFileManager *fm = [NSFileManager defaultManager];
     NSArray *paths = [NSArray arrayWithObjects:@"/usr/texbin", @"/usr/local/teTeX/bin/powerpc-apple-darwin-current", @"/sw/bin", @"/opt/local/bin", @"/usr/local/bin", nil];
     int i = 0, count = [paths count];
     
-    while ([fm isExecutableFileAtPath:dvipdfmxPath] == NO) {
-        if (i < count) {
-            dvipdfmxPath = [[paths objectAtIndex:i++] stringByAppendingPathComponent:@"dvipdfmx"];
-        } else {
-            dvipdfmxPath = nil;
-            break;
-        }
+    NSAssert1(commandName == nil || [commandName isEqualToString:@"dvips"] || [commandName isEqualToString:@"dvipdf"] || [commandName isEqualToString:@"dvipdfm"] || [commandName isEqualToString:@"dvipdfmx"], @"DVI converter %@ is not supported", commandName);
+    
+    while ([fm isExecutableFileAtPath:commandPath] == NO) {
+        if (i < count)
+            commandPath = [[paths objectAtIndex:i++] stringByAppendingPathComponent:commandName];
+        else
+            commandPath = nil;
     }
     
     NSString *tmpDir = NSTemporaryDirectory();
-    NSString *pdfFile = [tmpDir stringByAppendingPathComponent:[[dviFile lastPathComponent] stringByReplacingPathExtension:@"pdf"]];
-    BOOL success = dvipdfmxPath != nil && [fm fileExistsAtPath:dviFile];
+    BOOL outputPS = [commandName isEqualToString:@"dvips"];
+    NSString *outFile = [tmpDir stringByAppendingPathComponent:[[dviFile lastPathComponent] stringByReplacingPathExtension:outputPS ? @"ps" : @"pdf"]];
+    NSArray *arguments = [commandName isEqualToString:@"dvipdf"] ? [NSArray arrayWithObjects:dviFile, outFile, nil] : [NSArray arrayWithObjects:@"-o", outFile, dviFile, nil];
+    BOOL success = commandPath != nil && [fm fileExistsAtPath:dviFile];
     
     NSMethodSignature *ms;
     NSInvocation *invocation;
@@ -329,8 +337,8 @@ static void PSConverterMessageCallback(void *info, CFStringRef message)
         [fm createDirectoryAtPath:tmpDir attributes:nil];
         
         task = [[NSTask alloc] init];
-        [task setLaunchPath:dvipdfmxPath];
-        [task setArguments:[NSArray arrayWithObjects:@"-o", pdfFile, dviFile, nil]]; 
+        [task setLaunchPath:commandPath];
+        [task setArguments:arguments]; 
         [task setCurrentDirectoryPath:[dviFile stringByDeletingLastPathComponent]];
         [task setStandardError:[NSFileHandle fileHandleWithNullDevice]];
         
@@ -360,24 +368,40 @@ static void PSConverterMessageCallback(void *info, CFStringRef message)
     [task release];
     task = nil;
     
-    if (success)
-        [[info objectForKey:@"pdfData"] setData:[NSData dataWithContentsOfFile:pdfFile]];
+    NSData *outData = success ? [NSData dataWithContentsOfFile:outFile] : nil;
+    NSMutableData *pdfData = [info objectForKey:@"pdfData"];
+    
+    if (outputPS && success) {
+        NSAssert(NULL == converter, @"attempted to reenter SKPSProgressController, but this is not supported");
+        
+        // pass self as info
+        converter = CGPSConverterCreate((void *)self, &SKPSConverterCallbacks, NULL);
+        NSAssert(converter != NULL, @"unable to create PS converter");
+        
+        CGDataProviderRef provider = CGDataProviderCreateWithCFData((CFDataRef)outData);
+        CGDataConsumerRef consumer = CGDataConsumerCreateWithCFData((CFMutableDataRef)pdfData);
+        
+        NSDictionary *dictionary = [NSDictionary dictionaryWithObjectsAndKeys:(id)provider, @"provider", (id)consumer, @"consumer", nil];
+        
+        [super doConversionWithInfo:dictionary];
+        
+        CGDataProviderRelease(provider);
+        CGDataConsumerRelease(consumer);
+    } else {
+        if (success)
+            [pdfData setData:outData];
+        
+        ms = [self methodSignatureForSelector:@selector(conversionCompleted:)];
+        invocation = [NSInvocation invocationWithMethodSignature:ms];
+        [invocation setTarget:self];
+        [invocation setSelector:@selector(conversionCompleted:)];
+        [invocation setArgument:&success atIndex:2];
+        [invocation performSelectorOnMainThread:@selector(invoke) withObject:nil waitUntilDone:NO];
+        
+        [self stopModalOnMainThread:success];
+    }
+    
     [fm removeFileAtPath:tmpDir handler:nil];
-    
-    ms = [self methodSignatureForSelector:@selector(conversionCompleted:)];
-    invocation = [NSInvocation invocationWithMethodSignature:ms];
-    [invocation setTarget:self];
-    [invocation setSelector:@selector(conversionCompleted:)];
-    [invocation setArgument:&success atIndex:2];
-    [invocation performSelectorOnMainThread:@selector(invoke) withObject:nil waitUntilDone:NO];
-    
-    int val = (success ? SKConversionSucceeded : SKConversionFailed);
-    ms = [NSApp methodSignatureForSelector:@selector(stopModalWithCode:)];
-    invocation = [NSInvocation invocationWithMethodSignature:ms];
-    [invocation setTarget:NSApp];
-    [invocation setSelector:@selector(stopModalWithCode:)];
-    [invocation setArgument:&val atIndex:2];
-    [invocation performSelectorOnMainThread:@selector(invoke) withObject:nil waitUntilDone:NO];
     
     [pool release];
 }
