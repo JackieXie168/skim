@@ -880,6 +880,16 @@ static BOOL isFileOnHFSVolume(NSString *fileName)
         NSRange range = NSMakeRange(0, 0);
         unichar prevChar, nextChar;
         while (NSMaxRange(range) < [cmdString length]) {
+            range = [cmdString rangeOfString:@"%line" options:NSLiteralSearch range:NSMakeRange(NSMaxRange(range), [cmdString length] - NSMaxRange(range))];
+            if (range.location == NSNotFound)
+                break;
+            nextChar = NSMaxRange(range) < [cmdString length] ? [cmdString characterAtIndex:NSMaxRange(range)] : 0;
+            if ([[NSCharacterSet letterCharacterSet] characterIsMember:nextChar] == NO)
+                [cmdString replaceCharactersInRange:range withString:[NSString stringWithFormat:@"%d", line]];
+        }
+        
+        range = NSMakeRange(0, 0);
+        while (NSMaxRange(range) < [cmdString length]) {
             range = [cmdString rangeOfString:@"%file" options:NSLiteralSearch range:NSMakeRange(NSMaxRange(range), [cmdString length] - NSMaxRange(range))];
             if (range.location == NSNotFound)
                 break;
@@ -889,16 +899,6 @@ static BOOL isFileOnHFSVolume(NSString *fileName)
                 [cmdString replaceCharactersInRange:range withString:file];
             else if ([[NSCharacterSet letterCharacterSet] characterIsMember:nextChar] == NO)
                 [cmdString replaceCharactersInRange:range withString:[file stringByEscapingShellChars]];
-        }
-        
-        range = NSMakeRange(0, 0);
-        while (NSMaxRange(range) < [cmdString length]) {
-            range = [cmdString rangeOfString:@"%line" options:NSLiteralSearch range:NSMakeRange(NSMaxRange(range), [cmdString length] - NSMaxRange(range))];
-            if (range.location == NSNotFound)
-                break;
-            nextChar = NSMaxRange(range) < [cmdString length] ? [cmdString characterAtIndex:NSMaxRange(range)] : 0;
-            if ([[NSCharacterSet letterCharacterSet] characterIsMember:nextChar] == NO)
-                [cmdString replaceCharactersInRange:range withString:[NSString stringWithFormat:@"%d", line]];
         }
         
         [cmdString insertString:@"\" " atIndex:0];
