@@ -877,8 +877,30 @@ static BOOL isFileOnHFSVolume(NSString *fileName)
             }
         }
         
-        [cmdString replaceOccurrencesOfString:@"%file" withString:file options:NSLiteralSearch range: NSMakeRange(0, [cmdString length] )];
-        [cmdString replaceOccurrencesOfString:@"%line" withString:[NSString stringWithFormat:@"%d", line] options:NSLiteralSearch range:NSMakeRange(0, [cmdString length])];
+        NSRange range = NSMakeRange(0, 0);
+        unichar prevChar, nextChar;
+        while (NSMaxRange(range) < [cmdString length]) {
+            range = [cmdString rangeOfString:@"%file" options:NSLiteralSearch range:NSMakeRange(NSMaxRange(range), [cmdString length] - NSMaxRange(range))];
+            if (range.location == NSNotFound)
+                break;
+            prevChar = range.location > 0 ? [cmdString characterAtIndex:range.location - 1] : 0;
+            nextChar = NSMaxRange(range) < [cmdString length] ? [cmdString characterAtIndex:NSMaxRange(range)] : 0;
+            if (prevChar == '\'' && nextChar == '\'')
+                [cmdString replaceCharactersInRange:range withString:file];
+            else if ([[NSCharacterSet letterCharacterSet] characterIsMember:nextChar] == NO)
+                [cmdString replaceCharactersInRange:range withString:[file stringByEscapingShellChars]];
+        }
+        
+        range = NSMakeRange(0, 0);
+        while (NSMaxRange(range) < [cmdString length]) {
+            range = [cmdString rangeOfString:@"%line" options:NSLiteralSearch range:NSMakeRange(NSMaxRange(range), [cmdString length] - NSMaxRange(range))];
+            if (range.location == NSNotFound)
+                break;
+            nextChar = NSMaxRange(range) < [cmdString length] ? [cmdString characterAtIndex:NSMaxRange(range)] : 0;
+            if ([[NSCharacterSet letterCharacterSet] characterIsMember:nextChar] == NO)
+                [cmdString replaceCharactersInRange:range withString:[NSString stringWithFormat:@"%d", line]];
+        }
+        
         [cmdString insertString:@"\" " atIndex:0];
         [cmdString insertString:editorCmd atIndex:0];
         [cmdString insertString:@"\"" atIndex:0];
