@@ -3366,6 +3366,8 @@ static void SKCGContextDrawGrabHandle(CGContextRef context, CGPoint point, float
                 if ((readingBar && [[readingBar page] isEqual:page] && NSPointInRect(p, [readingBar currentBoundsForBox:[self displayBox]])) ||
                     (area == kPDFNoArea || (canSelectOrDrag && area == kPDFPageArea && [[page selectionForRect:NSMakeRect(p.x - 30.0, p.y - 40.0, 60.0, 80.0)] string] == nil)))
                     cursor = [NSCursor openHandCursor];
+                else if (toolMode == SKNoteToolMode && annotationMode != SKHighlightNote && annotationMode != SKUnderlineNote && annotationMode != SKStrikeOutNote)
+                    cursor = [NSCursor arrowCursor];
                 break;
             }
             case SKMoveToolMode:
