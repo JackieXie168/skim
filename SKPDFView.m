@@ -150,6 +150,8 @@ static void SKCGContextDrawGrabHandle(CGContextRef context, CGPoint point, float
     toolMode = [[NSUserDefaults standardUserDefaults] integerForKey:SKLastToolModeKey];
     annotationMode = [[NSUserDefaults standardUserDefaults] integerForKey:SKLastAnnotationModeKey];
     
+    spellingTag = [NSSpellChecker uniqueSpellDocumentTag];
+    
     hideNotes = NO;
     
     autohidesCursor = NO;
@@ -205,6 +207,7 @@ static void SKCGContextDrawGrabHandle(CGContextRef context, CGPoint point, float
 }
 
 - (void)dealloc {
+    [[NSSpellChecker sharedSpellChecker] closeSpellDocumentWithTag:spellingTag];
     [[NSUserDefaultsController sharedUserDefaultsController] removeObserver:self forKeys:
         [NSArray arrayWithObjects:SKReadingBarColorKey, SKReadingBarInvertKey, nil]];
     [[NSNotificationCenter defaultCenter] removeObserver:self];
@@ -1230,6 +1233,60 @@ static void SKCGContextDrawGrabHandle(CGContextRef context, CGPoint point, float
         [[SKPDFHoverWindow sharedHoverWindow] hide];
         hoverRect = 0;
     }
+}
+
+- (void)checkSpellingStartingAtIndex:(int)index onPage:(PDFPage *)page {
+    unsigned int i, first = [[self document] indexForPage:page];
+    unsigned int count = [[self document] pageCount];
+    BOOL didWrap = NO;
+    i = first;
+    NSRange range = NSMakeRange(NSNotFound, 0);
+    
+    while (YES) {
+        range = [[NSSpellChecker sharedSpellChecker] checkSpellingOfString:[page string] startingAt:index language:nil wrap:NO inSpellDocumentWithTag:spellingTag wordCount:NULL];
+        if (range.location != NSNotFound) break;
+        if (++i >= count) {
+            i = 0;
+            didWrap = YES;
+        }
+        if (didWrap && i > first) break;
+        page = [[self document] pageAtIndex:i];
+        index = 0;
+    }
+    
+    if (range.location != NSNotFound) {
+        PDFSelection *selection = [page selectionForRange:range];
+        [self setCurrentSelection:selection];
+        [self scrollRect:[selection boundsForPage:page] inPageToVisible:page];
+        [[NSSpellChecker sharedSpellChecker] updateSpellingPanelWithMisspelledWord:[selection string]];
+    } else NSBeep();
+}
+
+- (void)checkSpelling:(id)sender {
+    PDFSelection *selection = [self currentSelection];
+    PDFPage *page = [self currentPage];
+    int index = 0;
+    if ([[selection pages] count]) {
+        page = [[selection pages] lastObject];
+        index = NSMaxRange([selection safeRangeAtIndex:[selection safeNumberOfRangesOnPage:page] - 1 onPage:page]);
+    }
+    [self checkSpellingStartingAtIndex:index onPage:page];
+}
+
+- (void)showGuessPanel:(id)sender {
+    PDFSelection *selection = [self currentSelection];
+    PDFPage *page = [self currentPage];
+    int index = 0;
+    if ([[selection pages] count]) {
+        page = [[selection pages] objectAtIndex:0];
+        index = [selection safeRangeAtIndex:0 onPage:page].location;
+    }
+    [self checkSpellingStartingAtIndex:index onPage:page];
+    [[[NSSpellChecker sharedSpellChecker] spellingPanel] orderFront:self];
+}
+
+- (void)ignoreSpelling:(id)sender {
+    [[NSSpellChecker sharedSpellChecker] ignoreWord:[[sender selectedCell] stringValue] inSpellDocumentWithTag:spellingTag];
 }
 
 #pragma mark Tracking mousemoved fix
