@@ -111,6 +111,8 @@ typedef enum _SKNoteType {
     int trackingRect;
     NSMutableArray *hoverRects;
     int hoverRect;
+    
+    int spellingTag;
 }
 
 - (SKToolMode)toolMode;
