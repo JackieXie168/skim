@@ -47,6 +47,7 @@
 
 - (NSString *)stringByReplacingPathExtension:(NSString *)ext;
 
+- (NSString *)stringByEscapingShellChars;
 - (NSArray *)shellScriptArgumentsArray;
 
 - (NSRange)rangeOfLeadingEmptyLine;

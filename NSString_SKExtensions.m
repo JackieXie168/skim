@@ -117,6 +117,25 @@ CFStringRef SKStringCreateByCollapsingAndTrimmingWhitespaceAndNewlines(CFAllocat
     return [[self stringByDeletingPathExtension] stringByAppendingPathExtension:ext];
 }
 
+// Escape those characters that are special, to the shell, inside a "quoted" string
+- (NSString *)stringByEscapingShellChars {
+    static NSCharacterSet *shellSpecialChars = nil;
+    if (shellSpecialChars == nil)
+        shellSpecialChars = [[NSCharacterSet characterSetWithCharactersInString:@"$\"`\\"] retain];
+
+    NSMutableString *result = [self mutableCopy];
+    unsigned int i = 0;
+    while (i < [result length]) {
+        i = [result rangeOfCharacterFromSet:shellSpecialChars options:0 range:NSMakeRange(i, [result length] - i)].location;
+        if (i != NSNotFound) {
+            [result insertString:@"\\" atIndex: i];
+            i += 2;
+        }
+    }
+
+    return [result autorelease];
+}
+
 // parses a space separated list of shell script argments
 // allows quoting parts of an argument and escaped characters outside quotes, according to shell rules
 - (NSArray *)shellScriptArgumentsArray;
