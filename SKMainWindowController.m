@@ -1675,6 +1675,7 @@ static NSString *SKRightSidePaneWidthKey = @"SKRightSidePaneWidth";
                 [window setFrame:[screenToBlank frame] display:YES];
                 [window orderFront:nil];
                 [window setReleasedWhenClosed:YES];
+                [window setHidesOnDeactivate:YES];
                 [blankingWindows addObject:window];
                 [window release];
             }
@@ -2513,13 +2514,15 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
 }
 
 - (void)handleApplicationDidResignActiveNotification:(NSNotification *)notification {
-    if ([self isPresentation])
+    if ([self isPresentation]) {
         [fullScreenWindow setLevel:NSNormalWindowLevel];
+    }
 }
 
 - (void)handleApplicationWillBecomeActiveNotification:(NSNotification *)notification {
-    if ([self isPresentation])
+    if ([self isPresentation]) {
         [fullScreenWindow setLevel:NSPopUpMenuWindowLevel];
+    }
 }
 
 - (void)handleDocumentWillSaveNotification:(NSNotification *)notification {
