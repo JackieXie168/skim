@@ -562,6 +562,7 @@ static IMP originalSetBorder = NULL;
 
 - (id)initWithBounds:(NSRect)bounds {
     if (self = [super initWithBounds:bounds]) {
+        [self setShouldPrint:YES];
         NSColor *color = [NSUnarchiver unarchiveObjectWithData:[[NSUserDefaults standardUserDefaults] dataForKey:SKCircleNoteInteriorColorKey]];
         if ([color alphaComponent] > 0.0)
             [super setInteriorColor:color];
@@ -593,8 +594,6 @@ static IMP originalSetBorder = NULL;
 - (BOOL)isResizable { return YES; }
 
 - (BOOL)isMovable { return YES; }
-
-- (BOOL)shouldPrint { return YES; }
 
 - (void)setInteriorColor:(NSColor *)color {
     [[[self undoManager] prepareWithInvocationTarget:self] setInteriorColor:[self interiorColor]];
@@ -628,6 +627,7 @@ static IMP originalSetBorder = NULL;
 
 - (id)initWithBounds:(NSRect)bounds {
     if (self = [super initWithBounds:bounds]) {
+        [self setShouldPrint:YES];
         NSColor *color = [NSUnarchiver unarchiveObjectWithData:[[NSUserDefaults standardUserDefaults] dataForKey:SKSquareNoteInteriorColorKey]];
         if ([color alphaComponent] > 0.0)
             [super setInteriorColor:color];
@@ -659,8 +659,6 @@ static IMP originalSetBorder = NULL;
 - (BOOL)isResizable { return YES; }
 
 - (BOOL)isMovable { return YES; }
-
-- (BOOL)shouldPrint { return YES; }
 
 - (void)setInteriorColor:(NSColor *)color {
     [[[self undoManager] prepareWithInvocationTarget:self] setInteriorColor:[self interiorColor]];
@@ -729,6 +727,7 @@ static NSArray *createQuadPointsWithBounds(const NSRect bounds, const NSPoint or
 
 - (id)initWithBounds:(NSRect)bounds markupType:(int)type quadrilateralPointsAsStrings:(NSArray *)pointStrings {
     if (self = [super initWithBounds:bounds]) {
+        [self setShouldPrint:YES];
         [self setMarkupType:type];
         
         NSString *colorKey = nil;
@@ -950,8 +949,6 @@ static BOOL adjacentCharacterBounds(NSRect rect1, NSRect rect2) {
 
 - (BOOL)isMarkupAnnotation { return YES; }
 
-- (BOOL)shouldPrint { return YES; }
-
 // fix a bug in PDFKit, the color space sometimes is not correct
 - (void)drawWithBox:(CGPDFBox)box inContext:(CGContextRef)context {
     CGContextSaveGState(context);
@@ -993,6 +990,7 @@ static BOOL adjacentCharacterBounds(NSRect rect1, NSRect rect2) {
 
 - (id)initWithBounds:(NSRect)bounds {
     if (self = [super initWithBounds:bounds]) {
+        [self setShouldPrint:YES];
         NSFont *font = [NSFont fontWithName:[[NSUserDefaults standardUserDefaults] stringForKey:SKTextNoteFontNameKey]
                                        size:[[NSUserDefaults standardUserDefaults] floatForKey:SKTextNoteFontSizeKey]];
         [super setFont:font];
@@ -1034,8 +1032,6 @@ static BOOL adjacentCharacterBounds(NSRect rect1, NSRect rect2) {
 - (BOOL)isMovable { return YES; }
 
 - (BOOL)isEditable { return YES; }
-
-- (BOOL)shouldPrint { return YES; }
 
 - (void)setFont:(NSFont *)font {
     [[[self undoManager] prepareWithInvocationTarget:self] setFont:[self font]];
@@ -1094,6 +1090,7 @@ static BOOL adjacentCharacterBounds(NSRect rect1, NSRect rect2) {
 
 - (id)initWithBounds:(NSRect)bounds {
     if (self = [super initWithBounds:bounds]) {
+        [self setShouldPrint:YES];
         originalSetColor(self, @selector(setColor:), [NSUnarchiver unarchiveObjectWithData:[[NSUserDefaults standardUserDefaults] dataForKey:SKAnchoredNoteColorKey]]);
         [super setIconType:[[NSUserDefaults standardUserDefaults] integerForKey:SKAnchoredNoteIconTypeKey]];
         texts = [[NSArray alloc] initWithObjects:[[[SKNoteText alloc] initWithAnnotation:self] autorelease], nil];
@@ -1140,8 +1137,6 @@ static BOOL adjacentCharacterBounds(NSRect rect1, NSRect rect2) {
 - (BOOL)isMovable { return YES; }
 
 - (BOOL)isEditable { return YES; }
-
-- (BOOL)shouldPrint { return YES; }
 
 - (NSString *)type {
     return @"Note";
@@ -1328,8 +1323,6 @@ static BOOL adjacentCharacterBounds(NSRect rect1, NSRect rect2) {
 - (BOOL)isResizable { return YES; }
 
 - (BOOL)isMovable { return YES; }
-
-- (BOOL)shouldPrint { return YES; }
 
 - (void)setStartPoint:(NSPoint)point {
     [[[self undoManager] prepareWithInvocationTarget:self] setStartPoint:[self startPoint]];

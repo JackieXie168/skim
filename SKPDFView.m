@@ -1592,6 +1592,7 @@ static void SKCGContextDrawGrabHandle(CGContextRef context, CGPoint point, float
 - (void)addAnnotation:(PDFAnnotation *)annotation toPage:(PDFPage *)page {
     [[[self undoManager] prepareWithInvocationTarget:self] removeAnnotation:annotation];
     [annotation setShouldDisplay:hideNotes == NO];
+    [annotation setShouldPrint:hideNotes == NO];
     [page addAnnotation:annotation];
     [self setNeedsDisplayForAnnotation:annotation];
     [self resetHoverRects];
