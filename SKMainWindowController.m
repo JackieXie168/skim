@@ -734,6 +734,7 @@ static NSString *SKRightSidePaneWidthKey = @"SKRightSidePaneWidth";
         unsigned pageIndex = [[dict objectForKey:@"pageIndex"] unsignedIntValue];
         if (annotation = [[PDFAnnotation alloc] initWithDictionary:dict]) {
             [annotation setShouldDisplay:[pdfView hideNotes] == NO];
+            [annotation setShouldPrint:[pdfView hideNotes] == NO];
             if (pageIndex == NSNotFound)
                 pageIndex = 0;
             else if (pageIndex >= [pdfDoc pageCount])
@@ -1069,8 +1070,10 @@ static NSString *SKRightSidePaneWidthKey = @"SKRightSidePaneWidth";
     BOOL wasHidden = [pdfView hideNotes];
     NSEnumerator *noteEnum = [notes objectEnumerator];
     PDFAnnotation *note;
-    while (note = [noteEnum nextObject])
+    while (note = [noteEnum nextObject]) {
         [note setShouldDisplay:wasHidden];
+        [note setShouldPrint:wasHidden];
+    }
     [pdfView setHideNotes:wasHidden == NO];
 }
 
