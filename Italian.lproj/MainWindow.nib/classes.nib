@@ -48,6 +48,7 @@
                 changeScaleFactor = id; 
                 changeToolMode = id; 
                 chooseScale = id; 
+                chooseTransition = id; 
                 createNewNote = id; 
                 crop = id; 
                 cropAll = id; 
@@ -55,6 +56,7 @@
                 dismissChoosePageSheet = id; 
                 dismissChooseScaleSheet = id; 
                 dismissPasswordSheet = id; 
+                dismissTransitionSheet = id; 
                 displayFacingPages = id; 
                 displaySinglePages = id; 
                 doAutoScale = id; 
@@ -96,6 +98,7 @@
                 toggleLeftSidePane = id; 
                 togglePresentation = id; 
                 toggleRightSidePane = id; 
+                toggleStatusBar = id; 
             }; 
             CLASS = SKMainWindowController; 
             LANGUAGE = ObjC; 
@@ -155,6 +158,10 @@
                 thumbnailView = NSView; 
                 tocView = NSView; 
                 toolModeButton = NSSegmentedControl; 
+                transitionDurationField = NSTextField; 
+                transitionDurationSlider = NSSlider; 
+                transitionSheet = NSWindow; 
+                transitionStylePopUpButton = NSPopUpButton; 
             }; 
             SUPERCLASS = NSWindowController; 
         }, 
