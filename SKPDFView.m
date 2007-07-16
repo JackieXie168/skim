@@ -843,19 +843,19 @@ static void SKCGContextDrawGrabHandle(CGContextRef context, CGPoint point, float
     } else if (isPresentation == NO && ([self toolMode] == SKTextToolMode || [self toolMode] == SKNoteToolMode) && (eventChar == NSTabCharacter) && (modifiers == NSAlternateKeyMask)) {
         [self selectNextActiveAnnotation:self];
     // backtab is a bit inconsistent, it seems Shift+Tab gives a Shift-BackTab key event, I would have expected either Shift-Tab (as for the raw event) or BackTab (as for most shift-modified keys)
-    } else if (isPresentation == NO && ([self toolMode] == SKTextToolMode || [self toolMode] == SKNoteToolMode) && (((eventChar == NSBackTabCharacter) && (modifiers == NSAlternateKeyMask | NSShiftKeyMask)) || ((eventChar == NSBackTabCharacter) && (modifiers == NSAlternateKeyMask)) || ((eventChar == NSTabCharacter) && (modifiers == NSAlternateKeyMask)))) {
+    } else if (isPresentation == NO && ([self toolMode] == SKTextToolMode || [self toolMode] == SKNoteToolMode) && (((eventChar == NSBackTabCharacter) && (modifiers == (NSAlternateKeyMask | NSShiftKeyMask))) || ((eventChar == NSBackTabCharacter) && (modifiers == NSAlternateKeyMask)) || ((eventChar == NSTabCharacter) && (modifiers == NSAlternateKeyMask)))) {
         [self selectPreviousActiveAnnotation:self];
 	} else if (isPresentation == NO && [activeAnnotation isNoteAnnotation] && [activeAnnotation isMovable] && (eventChar == NSRightArrowFunctionKey || eventChar == NSLeftArrowFunctionKey || eventChar == NSUpArrowFunctionKey || eventChar == NSDownArrowFunctionKey) && (modifiers == 0 || modifiers == NSShiftKeyMask)) {
         [self moveActiveAnnotationForKey:eventChar byAmount:(modifiers & NSShiftKeyMask) ? 10.0 : 1.0];
-	} else if (isPresentation == NO && [activeAnnotation isNoteAnnotation] && [activeAnnotation isResizable] && (eventChar == NSRightArrowFunctionKey || eventChar == NSLeftArrowFunctionKey || eventChar == NSUpArrowFunctionKey || eventChar == NSDownArrowFunctionKey) && (modifiers == NSControlKeyMask || modifiers == NSControlKeyMask | NSShiftKeyMask)) {
+	} else if (isPresentation == NO && [activeAnnotation isNoteAnnotation] && [activeAnnotation isResizable] && (eventChar == NSRightArrowFunctionKey || eventChar == NSLeftArrowFunctionKey || eventChar == NSUpArrowFunctionKey || eventChar == NSDownArrowFunctionKey) && (modifiers == NSControlKeyMask || modifiers == (NSControlKeyMask | NSShiftKeyMask))) {
         [self resizeActiveAnnotationForKey:eventChar byAmount:(modifiers & NSShiftKeyMask) ? 10.0 : 1.0];
-    } else if (isPresentation == NO && (eventChar == NSRightArrowFunctionKey) && (modifiers == NSCommandKeyMask | NSAlternateKeyMask)) {
+    } else if (isPresentation == NO && (eventChar == NSRightArrowFunctionKey) && (modifiers == (NSCommandKeyMask | NSAlternateKeyMask))) {
         [self setToolMode:(toolMode + 1) % 5];
-    } else if (isPresentation == NO && (eventChar == NSLeftArrowFunctionKey) && (modifiers == NSCommandKeyMask | NSAlternateKeyMask)) {
+    } else if (isPresentation == NO && (eventChar == NSLeftArrowFunctionKey) && (modifiers == (NSCommandKeyMask | NSAlternateKeyMask))) {
         [self setToolMode:(toolMode + 4) % 5];
-    } else if (isPresentation == NO && (eventChar == NSDownArrowFunctionKey) && (modifiers == NSCommandKeyMask | NSAlternateKeyMask)) {
+    } else if (isPresentation == NO && (eventChar == NSDownArrowFunctionKey) && (modifiers == (NSCommandKeyMask | NSAlternateKeyMask))) {
         [self setAnnotationMode:(annotationMode + 1) % 8];
-    } else if (isPresentation == NO && (eventChar == NSUpArrowFunctionKey) && (modifiers == NSCommandKeyMask | NSAlternateKeyMask)) {
+    } else if (isPresentation == NO && (eventChar == NSUpArrowFunctionKey) && (modifiers == (NSCommandKeyMask | NSAlternateKeyMask))) {
         [self setAnnotationMode:(annotationMode + 7) % 8];
     } else if (readingBar && (eventChar == NSRightArrowFunctionKey || eventChar == NSLeftArrowFunctionKey || eventChar == NSUpArrowFunctionKey || eventChar == NSDownArrowFunctionKey) && (modifiers == NSAlternateKeyMask)) {
         [self moveReadingBarForKey:eventChar];
