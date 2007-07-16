@@ -1,5 +1,5 @@
 //
-//  SKAnimationView.h
+//  SKTransitionController.h
 //  Skim
 //
 //  Created by Christiaan Hofman on 7/15/07.
@@ -88,7 +88,7 @@ extern OSStatus CGSNewTransition(const CGSConnection cid, const CGSTransitionSpe
 extern OSStatus CGSInvokeTransition(const CGSConnection cid, int transitionHandle, float duration);
 extern OSStatus CGSReleaseTransition(const CGSConnection cid, int transitionHandle);
 
-#pragma mark SKAnimationView
+#pragma mark SKTransitionController
 
 @class CIFilter, CIImage;
 
@@ -114,28 +114,22 @@ typedef enum _SKAnimationTransitionStyle {
     SKSwipeTransition
 } SKAnimationTransitionStyle;
 
+@class SKTransitionView;
 
-@interface SKAnimationView : NSView {
+@interface SKTransitionController : NSObject {
+    NSWindow *transitionWindow;
+    SKTransitionView *transitionView;
+    NSView *view;
     CIImage *initialImage;
     NSRect imageRect;
 }
 
+- (id)initWithView:(NSView *)aView;
+
+- (NSView *)view;
+- (void)setView:(NSView *)newView;
+
 - (void)prepareForAnimationWithTransitionStyle:(SKAnimationTransitionStyle)transitionStyle fromRect:(NSRect)rect;
 - (void)animateWithTransitionStyle:(SKAnimationTransitionStyle)transitionStyle direction:(CGSTransitionOption)direction duration:(float)duration fromRect:(NSRect)rect;
 
-@end
-
-
-@interface SKTransitionAnimation : NSAnimation {
-    CIFilter *filter;
-}
-
-- (id)initWithFilter:(CIFilter *)aFilter duration:(NSTimeInterval)duration animationCurve:(NSAnimationCurve)animationCurve;
-- (CIImage *)currentImage;
-
-@end
-
-
-@interface NSObject (SKTransitionAnimationDelegate)
-- (void)transitionAnimationDidUpdate:(SKTransitionAnimation *)anAnimation;
 @end

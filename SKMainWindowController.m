@@ -74,7 +74,6 @@
 #import "SKLineInspector.h"
 #import "SKColorSwatch.h"
 #import "SKStatusBar.h"
-#import "SKAnimationView.h"
 
 #define SEGMENTED_CONTROL_HEIGHT    25.0
 #define WINDOW_X_DELTA              0.0
@@ -1657,9 +1656,6 @@ static NSString *SKRightSidePaneWidthKey = @"SKRightSidePaneWidth";
     [pdfView layoutDocumentView];
     [pdfView setNeedsDisplay:YES];
     
-    if ([self isPresentation])
-        [pdfView setAnimationView:(SKAnimationView *)[fullScreenWindow contentView]];
-    
     NSEnumerator *wcEnum = [[[self document] windowControllers] objectEnumerator];
     NSWindowController *wc = [wcEnum nextObject];
     
@@ -1847,8 +1843,6 @@ static NSString *SKRightSidePaneWidthKey = @"SKRightSidePaneWidth";
     [fullScreenWindow setBackgroundColor:backgroundColor];
     [fullScreenWindow setLevel:NSPopUpMenuWindowLevel];
     
-    [pdfView setAnimationView:(SKAnimationView *)[fullScreenWindow contentView]];
-    
     // periodically send a 'user activity' to prevent sleep mode and screensaver from being activated
     activityTimer = [[NSTimer scheduledTimerWithTimeInterval:30 target:self selector:@selector(activityTimerFired:) userInfo:NULL repeats:YES] retain];
     
@@ -1859,8 +1853,6 @@ static NSString *SKRightSidePaneWidthKey = @"SKRightSidePaneWidth";
     [activityTimer invalidate];
     [activityTimer release];
     activityTimer = nil;
-    
-    [pdfView setAnimationView:nil];
     
     NSScrollView *scrollView = [[pdfView documentView] enclosingScrollView];
     [self applyPDFSettings:savedNormalSetup];
