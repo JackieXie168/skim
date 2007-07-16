@@ -150,7 +150,7 @@ static void SKCGContextDrawGrabHandle(CGContextRef context, CGPoint point, float
     toolMode = [[NSUserDefaults standardUserDefaults] integerForKey:SKLastToolModeKey];
     annotationMode = [[NSUserDefaults standardUserDefaults] integerForKey:SKLastAnnotationModeKey];
     
-    animationView = nil;
+    transitionController = nil;
     transitionStyle = SKNoTransition;
     transitionDuration = 1.0;
     
@@ -219,6 +219,7 @@ static void SKCGContextDrawGrabHandle(CGContextRef context, CGPoint point, float
     [[SKPDFHoverWindow sharedHoverWindow] orderOut:self];
     [self removeHoverRects];
     [hoverRects release];
+    [transitionController release];
     [navWindow release];
     [readingBar release];
     [super dealloc];
@@ -531,14 +532,6 @@ static void SKCGContextDrawGrabHandle(CGContextRef context, CGPoint point, float
     }
 }
 
-- (SKAnimationView *)animationView {
-    return animationView;
-}
-
-- (void)setAnimationView:(SKAnimationView *)view {
-    animationView = view;
-}
-
 - (SKAnimationTransitionStyle)transitionStyle {
     return transitionStyle;
 }
@@ -584,28 +577,31 @@ static void SKCGContextDrawGrabHandle(CGContextRef context, CGPoint point, float
 
 #pragma mark Actions
 
+- (void)animateTransitionForNextPage:(BOOL)next {
+    if (transitionController == nil)
+        transitionController = [[SKTransitionController alloc] initWithView:self];
+    NSRect rect = [self convertRect:[[self currentPage] boundsForBox:[self displayBox]] fromPage:[self currentPage]];
+    [transitionController prepareForAnimationWithTransitionStyle:[self transitionStyle] fromRect:rect];
+    if (next)
+        [super goToNextPage:self];
+    else
+        [super goToPreviousPage:self];
+    rect = [self convertRect:[[self currentPage] boundsForBox:[self displayBox]] fromPage:[self currentPage]];
+    [transitionController animateWithTransitionStyle:[self transitionStyle] direction:next ? CGSLeft : CGSRight duration:[self transitionDuration] fromRect:rect];
+}
+
 - (void)goToNextPage:(id)sender {
-    if (animationView && [self transitionStyle] != SKNoTransition && [self canGoToNextPage]) {
-        NSRect rect = [self convertRect:[self convertRect:[[self currentPage] boundsForBox:[self displayBox]] fromPage:[self currentPage]] toView:animationView];
-        [animationView prepareForAnimationWithTransitionStyle:[self transitionStyle] fromRect:rect];
+    if (hasNavigation && autohidesCursor && [self transitionStyle] != SKNoTransition && [self canGoToNextPage])
+        [self animateTransitionForNextPage:YES];
+    else
         [super goToNextPage:sender];
-        rect = [self convertRect:[self convertRect:[[self currentPage] boundsForBox:[self displayBox]] fromPage:[self currentPage]] toView:animationView];
-        [animationView animateWithTransitionStyle:[self transitionStyle] direction:CGSLeft duration:[self transitionDuration] fromRect:rect];
-    } else {
-        [super goToNextPage:sender];
-    }
 }
 
 - (void)goToPreviousPage:(id)sender {
-    if (animationView && [self transitionStyle] != SKNoTransition && [self canGoToPreviousPage]) {
-        NSRect rect = [self convertRect:[self convertRect:[[self currentPage] boundsForBox:[self displayBox]] fromPage:[self currentPage]] toView:animationView];
-        [animationView prepareForAnimationWithTransitionStyle:[self transitionStyle] fromRect:rect];
+    if (hasNavigation && autohidesCursor && [self transitionStyle] != SKNoTransition && [self canGoToPreviousPage])
+        [self animateTransitionForNextPage:NO];
+    else
         [super goToPreviousPage:sender];
-        rect = [self convertRect:[self convertRect:[[self currentPage] boundsForBox:[self displayBox]] fromPage:[self currentPage]] toView:animationView];
-        [animationView animateWithTransitionStyle:[self transitionStyle] direction:CGSRight duration:[self transitionDuration] fromRect:rect];
-    } else {
-        [super goToPreviousPage:sender];
-    }
 }
 
 - (IBAction)printDocument:(id)sender{

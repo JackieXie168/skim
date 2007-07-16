@@ -39,7 +39,6 @@
 #import "SKFullScreenWindow.h"
 #import "SKMainWindowController.h"
 #import "SKPDFHoverWindow.h"
-#import "SKAnimationview.h"
 
 
 @implementation SKFullScreenWindow
@@ -50,7 +49,6 @@
         [self setDisplaysWhenScreenProfileChanges:YES];
         [self setAcceptsMouseMovedEvents:YES];
         [self setBackgroundColor:[NSColor blackColor]];
-        [self setContentView:[[[SKAnimationView alloc] init] autorelease]];
     }
     return self;
 }
