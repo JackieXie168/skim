@@ -74,6 +74,7 @@
 #import "SKLineInspector.h"
 #import "SKColorSwatch.h"
 #import "SKStatusBar.h"
+#import "SKAnimationView.h"
 
 #define SEGMENTED_CONTROL_HEIGHT    25.0
 #define WINDOW_X_DELTA              0.0
@@ -1221,7 +1222,10 @@ static NSString *SKRightSidePaneWidthKey = @"SKRightSidePaneWidth";
 }
 
 - (IBAction)toggleAutoScale:(id)sender {
-    [pdfView setAutoScales:[pdfView autoScales] == NO];
+    if ([self isPresentation])
+        [self toggleAutoActualSize:sender];
+    else
+        [pdfView setAutoScales:[pdfView autoScales] == NO];
 }
 
 - (IBAction)toggleAutoActualSize:(id)sender {
@@ -1653,6 +1657,9 @@ static NSString *SKRightSidePaneWidthKey = @"SKRightSidePaneWidth";
     [pdfView layoutDocumentView];
     [pdfView setNeedsDisplay:YES];
     
+    if ([self isPresentation])
+        [pdfView setAnimationView:(SKAnimationView *)[fullScreenWindow contentView]];
+    
     NSEnumerator *wcEnum = [[[self document] windowControllers] objectEnumerator];
     NSWindowController *wc = [wcEnum nextObject];
     
@@ -1840,6 +1847,8 @@ static NSString *SKRightSidePaneWidthKey = @"SKRightSidePaneWidth";
     [fullScreenWindow setBackgroundColor:backgroundColor];
     [fullScreenWindow setLevel:NSPopUpMenuWindowLevel];
     
+    [pdfView setAnimationView:(SKAnimationView *)[fullScreenWindow contentView]];
+    
     // periodically send a 'user activity' to prevent sleep mode and screensaver from being activated
     activityTimer = [[NSTimer scheduledTimerWithTimeInterval:30 target:self selector:@selector(activityTimerFired:) userInfo:NULL repeats:YES] retain];
     
@@ -1850,6 +1859,8 @@ static NSString *SKRightSidePaneWidthKey = @"SKRightSidePaneWidth";
     [activityTimer invalidate];
     [activityTimer release];
     activityTimer = nil;
+    
+    [pdfView setAnimationView:nil];
     
     NSScrollView *scrollView = [[pdfView documentView] enclosingScrollView];
     [self applyPDFSettings:savedNormalSetup];
@@ -2036,6 +2047,29 @@ static NSString *SKRightSidePaneWidthKey = @"SKRightSidePaneWidth";
         [[NSUserDefaults standardUserDefaults] setObject:[self currentPDFSettings] forKey:SKDefaultFullScreenPDFDisplaySettingsKey];
     else if ([self isPresentation] == NO)
         [[NSUserDefaults standardUserDefaults] setObject:[self currentPDFSettings] forKey:SKDefaultPDFDisplaySettingsKey];
+}
+
+- (void)transitionSheetDidEnd:(NSWindow *)sheet returnCode:(int)returnCode contextInfo:(void *)contextInfo {
+    if (returnCode == NSOKButton) {
+        [pdfView setTransitionStyle:[[transitionStylePopUpButton selectedItem] tag]];
+        [pdfView setTransitionDuration:fmax([transitionDurationField floatValue], 0.0)];
+    }
+}
+
+- (IBAction)chooseTransition:(id)sender {
+    [transitionStylePopUpButton selectItemWithTag:[pdfView transitionStyle]];
+    [transitionDurationField setFloatValue:[pdfView transitionDuration]];
+    [transitionDurationSlider setFloatValue:[pdfView transitionDuration]];
+	[NSApp beginSheet:transitionSheet
+       modalForWindow:[self window]
+        modalDelegate:self 
+       didEndSelector:@selector(transitionSheetDidEnd:returnCode:contextInfo:)
+          contextInfo:NULL];
+}
+
+- (IBAction)dismissTransitionSheet:(id)sender {
+    [NSApp endSheet:transitionSheet returnCode:[sender tag]];
+    [transitionSheet orderOut:self];
 }
 
 #pragma mark Swapping tables
@@ -3977,10 +4011,10 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
     SEL action = [menuItem action];
     if (action == @selector(createNewNote:)) {
         BOOL isMarkup = [menuItem tag] == SKHighlightNote || [menuItem tag] == SKUnderlineNote || [menuItem tag] == SKStrikeOutNote;
-        return ([pdfView toolMode] == SKTextToolMode || [pdfView toolMode] == SKNoteToolMode) && (isMarkup == NO || [[[pdfView currentSelection] pages] count]) && [pdfView hideNotes] == NO;
+        return [self isPresentation] == NO && ([pdfView toolMode] == SKTextToolMode || [pdfView toolMode] == SKNoteToolMode) && (isMarkup == NO || [[[pdfView currentSelection] pages] count]) && [pdfView hideNotes] == NO;
     } else if (action == @selector(editNote:)) {
         PDFAnnotation *annotation = [pdfView activeAnnotation];
-        return [annotation isNoteAnnotation] && ([[annotation type] isEqualToString:@"FreeText"] || [[annotation type] isEqualToString:@"Note"]);
+        return [self isPresentation] == NO && [annotation isNoteAnnotation] && ([[annotation type] isEqualToString:@"FreeText"] || [[annotation type] isEqualToString:@"Note"]);
     } else if (action == @selector(toggleHideNotes:)) {
         if ([pdfView hideNotes])
             [menuItem setTitle:NSLocalizedString(@"Show Notes", @"Menu item title")];
@@ -3990,24 +4024,24 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
     } else if (action == @selector(displaySinglePages:)) {
         BOOL displaySinglePages = [pdfView displayMode] == kPDFDisplaySinglePage || [pdfView displayMode] == kPDFDisplaySinglePageContinuous;
         [menuItem setState:displaySinglePages ? NSOnState : NSOffState];
-        return YES;
+        return [self isPresentation] == NO;
     } else if (action == @selector(displayFacingPages:)) {
         BOOL displayFacingPages = [pdfView displayMode] == kPDFDisplayTwoUp || [pdfView displayMode] == kPDFDisplayTwoUpContinuous;
         [menuItem setState:displayFacingPages ? NSOnState : NSOffState];
-        return YES;
+        return [self isPresentation] == NO;
     } else if (action == @selector(toggleDisplayContinuous:)) {
         BOOL displayContinuous = [pdfView displayMode] == kPDFDisplaySinglePageContinuous || [pdfView displayMode] == kPDFDisplayTwoUpContinuous;
         [menuItem setState:displayContinuous ? NSOnState : NSOffState];
-        return YES;
+        return [self isPresentation] == NO;
     } else if (action == @selector(toggleDisplayAsBook:)) {
         [menuItem setState:[pdfView displaysAsBook] ? NSOnState : NSOffState];
-        return [pdfView displayMode] == kPDFDisplayTwoUp || [pdfView displayMode] == kPDFDisplayTwoUpContinuous;
+        return [self isPresentation] == NO && ([pdfView displayMode] == kPDFDisplayTwoUp || [pdfView displayMode] == kPDFDisplayTwoUpContinuous);
     } else if (action == @selector(toggleDisplayPageBreaks:)) {
         [menuItem setState:[pdfView displaysPageBreaks] ? NSOnState : NSOffState];
-        return YES;
+        return [self isPresentation] == NO;
     } else if (action == @selector(changeDisplayBox:)) {
         [menuItem setState:[pdfView displayBox] == [menuItem tag] ? NSOnState : NSOffState];
-        return YES;
+        return [self isPresentation] == NO;
     } else if (action == @selector(changeToolMode:)) {
         [menuItem setState:[pdfView toolMode] == (unsigned)[menuItem tag] ? NSOnState : NSOffState];
         return YES;
@@ -4026,24 +4060,24 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
     } else if (action == @selector(doGoForward:)) {
         return [pdfView canGoForward];
     } else if (action == @selector(doZoomIn:)) {
-        return [pdfView canZoomIn];
+        return [self isPresentation] == NO && [pdfView canZoomIn];
     } else if (action == @selector(doZoomOut:)) {
-        return [pdfView canZoomOut];
+        return [self isPresentation] == NO && [pdfView canZoomOut];
     } else if (action == @selector(doZoomToActualSize:)) {
         return fabs([pdfView scaleFactor] - 1.0 ) > 0.01;
     } else if (action == @selector(doZoomToSelection:)) {
-        return NSIsEmptyRect([pdfView currentSelectionRect]) == NO;
+        return [self isPresentation] == NO && NSIsEmptyRect([pdfView currentSelectionRect]) == NO;
     } else if (action == @selector(doZoomToFit:)) {
-        return [pdfView autoScales] == NO;
+        return [self isPresentation] == NO && [pdfView autoScales] == NO;
     } else if (action == @selector(doAutoScale:)) {
         return [pdfView autoScales] == NO;
     } else if (action == @selector(toggleAutoScale:)) {
         [menuItem setState:[pdfView autoScales] ? NSOnState : NSOffState];
         return YES;
-    } else if (action == @selector(cropAll:) || action == @selector(crop:)) {
-        return YES;
+    } else if (action == @selector(cropAll:) || action == @selector(crop:) || action == @selector(autoCropAll:) || action == @selector(smartAutoCropAll:)) {
+        return [self isPresentation] == NO;
     } else if (action == @selector(autoSelectContent:)) {
-        return [pdfView toolMode] == SKSelectToolMode;
+        return [self isPresentation] == NO && [pdfView toolMode] == SKSelectToolMode;
     } else if (action == @selector(toggleLeftSidePane:)) {
         if ([self isFullScreen]) {
             if ([leftSideWindow state] == NSDrawerOpenState || [leftSideWindow state] == NSDrawerOpeningState)
@@ -4072,16 +4106,16 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
         return [self isPresentation] == NO;
     } else if (action == @selector(changeLeftSidePaneState:)) {
         [menuItem setState:(int)leftSidePaneState == [menuItem tag] ? ([findTableView window] ? NSMixedState : NSOnState) : NSOffState];
-        return [menuItem tag] == SKThumbnailSidePaneState || pdfOutline;
+        return [self isPresentation] == NO && ([menuItem tag] == SKThumbnailSidePaneState || pdfOutline);
     } else if (action == @selector(changeRightSidePaneState:)) {
         [menuItem setState:(int)rightSidePaneState == [menuItem tag] ? NSOnState : NSOffState];
-        return YES;
+        return [self isPresentation] == NO;
     } else if (action == @selector(toggleStatusBar:)) {
         if ([statusBar isVisible])
             [menuItem setTitle:NSLocalizedString(@"Hide Status Bar", @"Menu item title")];
         else
             [menuItem setTitle:NSLocalizedString(@"Show Status Bar", @"Menu item title")];
-        return YES;
+        return [self isPresentation] == NO;
     } else if (action == @selector(searchPDF:)) {
         return [self isPresentation] == NO;
     } else if (action == @selector(toggleFullScreen:)) {
@@ -4097,20 +4131,17 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
             [menuItem setTitle:NSLocalizedString(@"Presentation", @"Menu item title")];
         return YES;
     } else if (action == @selector(getInfo:)) {
-        return YES;
+        return [self isPresentation] == NO;
     } else if (action == @selector(performFit:)) {
-        if ([self isFullScreen] || [self isPresentation])
-            return NO;
-        else
-            return YES;
+        return [self isFullScreen] == NO && [self isPresentation] == NO;
     } else if (action == @selector(password:)) {
-        return [[self pdfDocument] isEncrypted];
+        return [self isPresentation] == NO && [[self pdfDocument] isEncrypted];
     } else if (action == @selector(toggleReadingBar:)) {
         if ([[self pdfView] hasReadingBar])
             [menuItem setTitle:NSLocalizedString(@"Hide Reading Bar", @"Menu item title")];
         else
             [menuItem setTitle:NSLocalizedString(@"Show Reading Bar", @"Menu item title")];
-        return YES;
+        return [self isPresentation] == NO;
     } else if (action == @selector(savePDFSettingToDefaults:)) {
         if ([self isFullScreen])
             [menuItem setTitle:NSLocalizedString(@"Use Current View Settings as Default for Full Screen", @"Menu item title")];

@@ -170,6 +170,9 @@
 		CEAFFD7C0C40ED5400C3ECBB /* ToolbarColors.tiff in Resources */ = {isa = PBXBuildFile; fileRef = CEAFFD7A0C40ED5400C3ECBB /* ToolbarColors.tiff */; };
 		CEAFFD7D0C40ED5400C3ECBB /* ToolbarFonts.tiff in Resources */ = {isa = PBXBuildFile; fileRef = CEAFFD7B0C40ED5400C3ECBB /* ToolbarFonts.tiff */; };
 		CEAFFD9D0C40F2A800C3ECBB /* ToolbarLines.tiff in Resources */ = {isa = PBXBuildFile; fileRef = CEAFFD9C0C40F2A800C3ECBB /* ToolbarLines.tiff */; };
+		CEB72B8C0C4A189D000350F9 /* SKAnimationView.m in Sources */ = {isa = PBXBuildFile; fileRef = CEB72B8A0C4A189D000350F9 /* SKAnimationView.m */; };
+		CEB7359C0C4A8C1C000350F9 /* TransitionMask.jpg in Resources */ = {isa = PBXBuildFile; fileRef = CEB7359A0C4A8C1B000350F9 /* TransitionMask.jpg */; };
+		CEB735A20C4A8CD6000350F9 /* TransitionShading.tiff in Resources */ = {isa = PBXBuildFile; fileRef = CEB735A10C4A8CD6000350F9 /* TransitionShading.tiff */; };
 		CECBA5910BFCEE260030AB59 /* SelectToolAdorn.tiff in Resources */ = {isa = PBXBuildFile; fileRef = CECBA5900BFCEE250030AB59 /* SelectToolAdorn.tiff */; };
 		CEE106150BCBB72C00BF2D3E /* SKNotesDocument.m in Sources */ = {isa = PBXBuildFile; fileRef = CEE106140BCBB72C00BF2D3E /* SKNotesDocument.m */; };
 		CEE1065E0BCBBE1300BF2D3E /* NotesDocument.nib in Resources */ = {isa = PBXBuildFile; fileRef = CEE106580BCBBE1200BF2D3E /* NotesDocument.nib */; };
@@ -541,6 +544,10 @@
 		CEAFFD7A0C40ED5400C3ECBB /* ToolbarColors.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; name = ToolbarColors.tiff; path = Images/ToolbarColors.tiff; sourceTree = "<group>"; };
 		CEAFFD7B0C40ED5400C3ECBB /* ToolbarFonts.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; name = ToolbarFonts.tiff; path = Images/ToolbarFonts.tiff; sourceTree = "<group>"; };
 		CEAFFD9C0C40F2A800C3ECBB /* ToolbarLines.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; name = ToolbarLines.tiff; path = Images/ToolbarLines.tiff; sourceTree = "<group>"; };
+		CEB72B890C4A189D000350F9 /* SKAnimationView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SKAnimationView.h; sourceTree = "<group>"; };
+		CEB72B8A0C4A189D000350F9 /* SKAnimationView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SKAnimationView.m; sourceTree = "<group>"; };
+		CEB7359A0C4A8C1B000350F9 /* TransitionMask.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = TransitionMask.jpg; path = Images/TransitionMask.jpg; sourceTree = "<group>"; };
+		CEB735A10C4A8CD6000350F9 /* TransitionShading.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; name = TransitionShading.tiff; path = Images/TransitionShading.tiff; sourceTree = "<group>"; };
 		CECBA5900BFCEE250030AB59 /* SelectToolAdorn.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; name = SelectToolAdorn.tiff; path = Images/SelectToolAdorn.tiff; sourceTree = "<group>"; };
 		CEE106130BCBB72C00BF2D3E /* SKNotesDocument.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SKNotesDocument.h; sourceTree = "<group>"; };
 		CEE106140BCBB72C00BF2D3E /* SKNotesDocument.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SKNotesDocument.m; sourceTree = "<group>"; };
@@ -856,6 +863,8 @@
 		CE2DE4D10B85D92F00D0DA12 /* Views */ = {
 			isa = PBXGroup;
 			children = (
+				CEB72B890C4A189D000350F9 /* SKAnimationView.h */,
+				CEB72B8A0C4A189D000350F9 /* SKAnimationView.m */,
 				CE4D97FA0C3C2BFF002C20CB /* SKColorSwatch.h */,
 				CE4D97FB0C3C2BFF002C20CB /* SKColorSwatch.m */,
 				CE4BC12D0C357A0300C2AF03 /* SKLineWell.h */,
@@ -996,6 +1005,8 @@
 				CE5478C60B33456300F8AFB6 /* ToolbarZoomOut.tiff */,
 				CE01D08B0C07157100FA32EF /* ToolbarZoomToSelection.tiff */,
 				CE5478C70B33456300F8AFB6 /* ToolbarZoomToFit.tiff */,
+				CEB7359A0C4A8C1B000350F9 /* TransitionMask.jpg */,
+				CEB735A10C4A8CD6000350F9 /* TransitionShading.tiff */,
 				CE7467540B7F321100CBF969 /* zoomInCursor.tiff */,
 				CE7467550B7F321A00CBF969 /* zoomOutCursor.tiff */,
 			);
@@ -1221,6 +1232,8 @@
 				CEAFFD7C0C40ED5400C3ECBB /* ToolbarColors.tiff in Resources */,
 				CEAFFD7D0C40ED5400C3ECBB /* ToolbarFonts.tiff in Resources */,
 				CEAFFD9D0C40F2A800C3ECBB /* ToolbarLines.tiff in Resources */,
+				CEB7359C0C4A8C1C000350F9 /* TransitionMask.jpg in Resources */,
+				CEB735A20C4A8CD6000350F9 /* TransitionShading.tiff in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1393,6 +1406,7 @@
 				CE4D97FD0C3C2BFF002C20CB /* SKColorSwatch.m in Sources */,
 				CEAF079D0C4139EB00C3ECBB /* SKStatusBar.m in Sources */,
 				CEAF2E5A0C45414100C3ECBB /* SKLine.m in Sources */,
+				CEB72B8C0C4A189D000350F9 /* SKAnimationView.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

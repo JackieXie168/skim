@@ -150,6 +150,10 @@ static void SKCGContextDrawGrabHandle(CGContextRef context, CGPoint point, float
     toolMode = [[NSUserDefaults standardUserDefaults] integerForKey:SKLastToolModeKey];
     annotationMode = [[NSUserDefaults standardUserDefaults] integerForKey:SKLastAnnotationModeKey];
     
+    animationView = nil;
+    transitionStyle = SKNoTransition;
+    transitionDuration = 1.0;
+    
     spellingTag = [NSSpellChecker uniqueSpellDocumentTag];
     
     hideNotes = NO;
@@ -438,8 +442,6 @@ static void SKCGContextDrawGrabHandle(CGContextRef context, CGPoint point, float
 - (void)setToolMode:(SKToolMode)newToolMode {
     if (toolMode != newToolMode) {
         if ((toolMode == SKTextToolMode || toolMode == SKNoteToolMode) && newToolMode != SKTextToolMode && newToolMode != SKNoteToolMode) {
-            if (editAnnotation)
-                [self endAnnotationEdit:self];
             if (activeAnnotation)
                 [self setActiveAnnotation:nil];
             if ([self currentSelection])
@@ -529,6 +531,30 @@ static void SKCGContextDrawGrabHandle(CGContextRef context, CGPoint point, float
     }
 }
 
+- (SKAnimationView *)animationView {
+    return animationView;
+}
+
+- (void)setAnimationView:(SKAnimationView *)view {
+    animationView = view;
+}
+
+- (SKAnimationTransitionStyle)transitionStyle {
+    return transitionStyle;
+}
+
+- (void)setTransitionStyle:(SKAnimationTransitionStyle)style {
+    transitionStyle = style;
+}
+
+- (float)transitionDuration {
+    return transitionDuration;
+}
+
+- (void)setTransitionDuration:(float)duration {
+    transitionDuration = duration;
+}
+
 #pragma mark Reading bar
 
 - (BOOL)hasReadingBar {
@@ -557,6 +583,30 @@ static void SKCGContextDrawGrabHandle(CGContextRef context, CGPoint point, float
 }
 
 #pragma mark Actions
+
+- (void)goToNextPage:(id)sender {
+    if (animationView && [self transitionStyle] != SKNoTransition && [self canGoToNextPage]) {
+        NSRect rect = [self convertRect:[self convertRect:[[self currentPage] boundsForBox:[self displayBox]] fromPage:[self currentPage]] toView:animationView];
+        [animationView prepareForAnimationWithTransitionStyle:[self transitionStyle] fromRect:rect];
+        [super goToNextPage:sender];
+        rect = [self convertRect:[self convertRect:[[self currentPage] boundsForBox:[self displayBox]] fromPage:[self currentPage]] toView:animationView];
+        [animationView animateWithTransitionStyle:[self transitionStyle] direction:CGSLeft duration:[self transitionDuration] fromRect:rect];
+    } else {
+        [super goToNextPage:sender];
+    }
+}
+
+- (void)goToPreviousPage:(id)sender {
+    if (animationView && [self transitionStyle] != SKNoTransition && [self canGoToPreviousPage]) {
+        NSRect rect = [self convertRect:[self convertRect:[[self currentPage] boundsForBox:[self displayBox]] fromPage:[self currentPage]] toView:animationView];
+        [animationView prepareForAnimationWithTransitionStyle:[self transitionStyle] fromRect:rect];
+        [super goToPreviousPage:sender];
+        rect = [self convertRect:[self convertRect:[[self currentPage] boundsForBox:[self displayBox]] fromPage:[self currentPage]] toView:animationView];
+        [animationView animateWithTransitionStyle:[self transitionStyle] direction:CGSRight duration:[self transitionDuration] fromRect:rect];
+    } else {
+        [super goToPreviousPage:sender];
+    }
+}
 
 - (IBAction)printDocument:(id)sender{
     id document = [[[self window] windowController] document];
@@ -837,8 +887,11 @@ static void SKCGContextDrawGrabHandle(CGContextRef context, CGPoint point, float
     mouseDownLoc = [theEvent locationInWindow];
 	unsigned int modifiers = [theEvent modifierFlags] & NSDeviceIndependentModifierFlagsMask;
     
-    if (hasNavigation && autohidesCursor && ([self areaOfInterestForMouse:theEvent] & kPDFLinkArea) == 0) {
-        [self goToNextPage:self];
+    if (hasNavigation && autohidesCursor) {
+        if ([self areaOfInterestForMouse:theEvent] & kPDFLinkArea)
+            [super mouseDown:theEvent];
+        else
+            [self goToNextPage:self];
         return;
     }
     
@@ -3348,7 +3401,12 @@ static void SKCGContextDrawGrabHandle(CGContextRef context, CGPoint point, float
     NSPoint p = [self convertPoint:[theEvent locationInWindow] fromView:nil];
     NSCursor *cursor = nil;
     
-    if (NSPointInRect(p, [self visibleContentRect]) == NO || ([navWindow isVisible] && NSPointInRect([NSEvent mouseLocation], [navWindow frame]))) {
+    if (hasNavigation && autohidesCursor) {
+        if ([self areaOfInterestForMouse:theEvent] & kPDFLinkArea)
+            cursor = [NSCursor pointingHandCursor];
+        else
+            cursor = [NSCursor arrowCursor];
+    } else if (NSPointInRect(p, [self visibleContentRect]) == NO || ([navWindow isVisible] && NSPointInRect([NSEvent mouseLocation], [navWindow frame]))) {
         cursor = [NSCursor arrowCursor];
     } else if ([theEvent modifierFlags] & NSCommandKeyMask) {
         if ([theEvent modifierFlags] & NSShiftKeyMask)

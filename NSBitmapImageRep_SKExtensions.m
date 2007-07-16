@@ -217,4 +217,11 @@ static BOOL isSignificantPixelFromBitMapData(SKBitmapData *bitmap, int x, int y,
     return self;
 }
 
+// A fast alternative to filling with [NSColor clearColor].
+- (void)clear {
+    unsigned char *bitmapData = [self bitmapData];
+    if (bitmapData)
+        bzero(bitmapData, [self bytesPerRow] * [self pixelsHigh]);
+}
+
 @end

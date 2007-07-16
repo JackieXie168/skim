@@ -39,6 +39,7 @@
 #import <Cocoa/Cocoa.h>
 #import <Quartz/Quartz.h>
 #import "SKMainWindowController.h"
+#import "SKAnimationView.h"
 
 extern NSString *SKPDFViewToolModeChangedNotification;
 extern NSString *SKPDFViewAnnotationModeChangedNotification;
@@ -72,7 +73,7 @@ typedef enum _SKNoteType {
     SKLineNote
 } SKNoteType;
 
-@class SKReadingBar;
+@class SKReadingBar, SKAnimationView;
 
 @interface SKPDFView : PDFView {
     SKToolMode toolMode;
@@ -87,6 +88,11 @@ typedef enum _SKNoteType {
     SKNavigationWindow *navWindow;
     
     SKReadingBar *readingBar;
+    
+    SKAnimationView *animationView;
+    
+    SKAnimationTransitionStyle transitionStyle;
+    float transitionDuration;
     
 	PDFAnnotation *activeAnnotation;
 	PDFAnnotation *highlightAnnotation;
@@ -136,6 +142,15 @@ typedef enum _SKNoteType {
 - (SKReadingBar *)readingBar;
 
 - (void)toggleReadingBar;
+
+- (SKAnimationView *)animationView;
+- (void)setAnimationView:(SKAnimationView *)view;
+
+- (SKAnimationTransitionStyle)transitionStyle;
+- (void)setTransitionStyle:(SKAnimationTransitionStyle)style;
+
+- (float)transitionDuration;
+- (void)setTransitionDuration:(float)duration;
 
 - (IBAction)delete:(id)sender;
 - (IBAction)autoSelectContent:(id)sender;
