@@ -1043,7 +1043,6 @@ static void SKCGContextDrawGrabHandle(CGContextRef context, CGPoint point, float
     BOOL shouldShowNavWindow = hasNavigation && (activateNavigationAtBottom == NO || [theEvent locationInWindow].y < 5.0);
     if (activateNavigationAtBottom || shouldShowNavWindow) {
         if (shouldShowNavWindow && [navWindow isVisible] == NO) {
-            [[self window] addChildWindow:navWindow ordered:NSWindowAbove];
             [navWindow orderFront:self];
         }
         [self doAutohide:YES];
@@ -1974,7 +1973,7 @@ static void SKCGContextDrawGrabHandle(CGContextRef context, CGPoint point, float
                                                          name: NSWindowWillCloseNotification object: [self window]];
         navWindow = [[SKNavigationWindow alloc] initWithPDFView:self];
         [navWindow moveToScreen:[[self window] screen]];
-        [navWindow setLevel:[[self window] level]];
+        [navWindow setLevel:[[self window] level] + 1];
     } else if ([navWindow isVisible]) {
         [navWindow orderOut:self];
     }
