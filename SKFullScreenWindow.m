@@ -68,10 +68,6 @@
         SKMainWindowController *wc = (SKMainWindowController *)[self windowController];
         if (ch == 0x1B) {
             [wc exitFullScreen:self];
-        } else if (ch == '1' && [wc isPresentation]) {
-            [wc displaySinglePages:self];
-        } else if (ch == '2' && [wc isPresentation]) {
-            [wc displayFacingPages:self];
         } else {
             [super keyDown:theEvent];
         }
