@@ -63,6 +63,7 @@
         [self setDisplaysWhenScreenProfileChanges:YES];
         [self setReleasedWhenClosed:NO];
         [self setLevel:[[pdfView window] level]];
+        [self setHidesOnDeactivate:YES];
         
         [self setContentView:[[[SKNavigationContentView alloc] init] autorelease]];
         
@@ -140,7 +141,6 @@
 - (void)orderOut:(id)sender {
     [animation stopAnimation];
     [[SKNavigationToolTipWindow sharedToolTipWindow] orderOut:self];
-    [[self parentWindow] removeChildWindow:self];
     [super orderOut:sender];
 }
 
