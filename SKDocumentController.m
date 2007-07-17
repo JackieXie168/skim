@@ -67,6 +67,39 @@ NSString *SKDVIDocumentType = @"DVI document";
 	return type;
 }
 
+- (NSString *)typeForContentsOfURL:(NSURL *)inAbsoluteURL error:(NSError **)outError {
+    static NSData *pdfHeaderData = nil;
+    if (nil == pdfHeaderData) {
+        char *h = "%PDF-";
+        pdfHeaderData = [[NSData alloc] initWithBytes:h length:strlen(h)];
+    }
+    static NSData *psHeaderData = nil;
+    if (nil == psHeaderData) {
+        char *h = "%PS-";
+        psHeaderData = [[NSData alloc] initWithBytes:h length:strlen(h)];
+    }
+    
+    NSError *error = nil;
+    NSString *type = [super typeForContentsOfURL:inAbsoluteURL error:&error];
+    
+    if (type == nil || [type isEqualToString:SKNotesRTFDocumentType] || [type isEqualToString:SKNotesTextDocumentType]) {
+        if ([inAbsoluteURL isFileURL]) {
+            NSString *fileName = [inAbsoluteURL path];
+            NSFileHandle *fh = [NSFileHandle fileHandleForReadingAtPath:fileName];
+            NSData *leadingData = [fh readDataOfLength:5];
+            if ([leadingData length] >= [pdfHeaderData length] && [pdfHeaderData isEqual:[leadingData subdataWithRange:NSMakeRange(0, [pdfHeaderData length])]]) {
+                type = SKPDFDocumentType;
+            } else if ([leadingData length] >= [psHeaderData length] && [psHeaderData isEqual:[leadingData subdataWithRange:NSMakeRange(0, [psHeaderData length])]]) {
+                type = SKPostScriptDocumentType;
+            }
+        }
+        if (type == nil && outError)
+            *outError = error;
+    }
+    
+    return type;
+}
+
 static NSData *convertTIFFDataToPDF(NSData *tiffData)
 {
     // this should accept any image data types we're likely to run across, but PICT returns a zero size image
