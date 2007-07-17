@@ -911,7 +911,7 @@ In Skim kunt u de tekstregel die u aan het lezen bent markeren. U kunt de kleur 
 @box{taskbox}
 @heading Om de kleur van de leesbalk of de transparantie te wijzigen:
 @itemize
-@item Om de kleur van de leesbalk of de transparantie te wijzigen, kies Skim > Voorkeuren, klik op Kleuren, en selecteer Kleur. 
+@item Om de kleur van de leesbalk of de transparantie te wijzigen, kies Skim > Voorkeuren, klik op Weergave, en selecteer Kleur onder Leesbalk. 
 @end itemize
 @endbox
 
@@ -995,7 +995,7 @@ U kunt aangeven of Skim zoekresultaten markeert met een cirkel. U kunt ook de kl
 
 @box{taskbox}
 @itemize
-@item Om zoekresultaten te markeren met een cirkel, kies Skim > Voorkeuren, klik op Kleuren, en selecteer "Markeer zoekresultaten met kleur".
+@item Om zoekresultaten te markeren met een cirkel, kies Skim > Voorkeuren, klik op Weergave, en selecteer "Markeer zoekresultaten met kleur".
 @item Om de kleur die gebruikt wordt voor zoekresultaten te wijzigen, klik op Kleur.
 @end itemize
 @endbox

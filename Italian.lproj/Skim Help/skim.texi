@@ -906,7 +906,7 @@ In skim you can highlight the line of text you are reading. You can change the c
 
 @box{taskbox}
 @itemize
-@item To change the color or transparency of the reading bar, choose Skim > Preferences, click Colors, and select Color. 
+@item To change the color or transparency of the reading bar, choose Skim > Preferences, click Display, and select Color below "Reading bar". 
 @end itemize
 @endbox
 
@@ -990,7 +990,7 @@ You can set whether Skim should circle highlight results of a text searches well
 
 @box{taskbox}
 @itemize
-@item To highlight Find results using a circle, choose Skim > Preferences, click Colors, and select "Highlight search results with color".
+@item To highlight Find results using a circle, choose Skim > Preferences, click Display, and select "Highlight search results with color".
 @item To change the color used for the Find highlights, click the color.
 @end itemize
 @endbox
