@@ -211,9 +211,9 @@
 
 - (BOOL)validateMenuItem:(NSMenuItem *)menuItem {
     SEL action = [menuItem action];
-    if (action == @selector(toggleLeftSidePane) || action == @selector(toggleRightSidePane) ||
-        action == @selector(changeLeftSidePaneState) || action == @selector(changeRightSidePaneState) ||
-        action == @selector(toggleFullScreen) || action == @selector(togglePresentation)) {
+    if (action == @selector(toggleLeftSidePane:) || action == @selector(toggleRightSidePane:) ||
+        action == @selector(changeLeftSidePaneState:) || action == @selector(changeRightSidePaneState:) ||
+        action == @selector(toggleFullScreen:) || action == @selector(togglePresentation:)) {
         return [controller validateMenuItem:menuItem];
     } else {
         return [super validateMenuItem:menuItem];
