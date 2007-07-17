@@ -841,6 +841,8 @@
 				F97751620B37461000DF673B /* SKPSProgressController.m */,
 				CE2DEB1A0B8618DE00D0DA12 /* SKFindController.h */,
 				CE2DEB1B0B8618DE00D0DA12 /* SKFindController.m */,
+				CEB72B890C4A189D000350F9 /* SKTransitionController.h */,
+				CE1ADEBE0C4C341100071840 /* SKTransitionController.m */,
 			);
 			name = Controllers;
 			sourceTree = "<group>";
@@ -867,8 +869,6 @@
 		CE2DE4D10B85D92F00D0DA12 /* Views */ = {
 			isa = PBXGroup;
 			children = (
-				CEB72B890C4A189D000350F9 /* SKTransitionController.h */,
-				CE1ADEBE0C4C341100071840 /* SKTransitionController.m */,
 				CE4D97FA0C3C2BFF002C20CB /* SKColorSwatch.h */,
 				CE4D97FB0C3C2BFF002C20CB /* SKColorSwatch.m */,
 				CE4BC12D0C357A0300C2AF03 /* SKLineWell.h */,

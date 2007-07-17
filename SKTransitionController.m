@@ -272,8 +272,6 @@
             transitionWindow = [[NSWindow alloc] initWithContentRect:frame styleMask:NSBorderlessWindowMask backing:NSBackingStoreBuffered defer:NO screen:[window screen]];
             [transitionWindow setReleasedWhenClosed:NO];
             [transitionWindow setDisplaysWhenScreenProfileChanges:YES];
-            [transitionWindow setBackgroundColor:[NSColor clearColor]];
-            [transitionWindow setOpaque:NO];
             [transitionWindow setIgnoresMouseEvents:YES];
             
             transitionView = [[SKTransitionView alloc] init];
@@ -322,7 +320,7 @@
 - (void)setCurrentProgress:(NSAnimationProgress)progress {
     [filter setValue:[NSNumber numberWithFloat:[self currentValue]] forKey:@"inputTime"];
     [super setCurrentProgress:progress];
-    [[self delegate] display];
+    [[[self delegate] window] display];
 }
 
 - (CIImage *)currentImage {
@@ -397,27 +395,34 @@
     }
 }
 
-- (BOOL)isOpaque { return NO; }
-
 - (void)drawRect:(NSRect)rect {
+    NSRect bounds = [self bounds];
+    
+    [[self openGLContext] makeCurrentContext];
+    
+    if (needsReshape) {
+        // reset the views coordinate system when the view has been resized or scrolled
+        
+        glViewport (0, 0, NSWidth(bounds), NSHeight(bounds));
+
+        glMatrixMode(GL_PROJECTION);
+        glLoadIdentity();
+        glOrtho(NSMinX(bounds), NSMaxX(bounds), NSMinY(bounds), NSMaxY(bounds), -1, 1);
+
+        glMatrixMode(GL_MODELVIEW);
+        glLoadIdentity();
+        needsReshape = NO;
+    }
+    
+    glColor4f(0.0f, 0.0f, 0.0f, 0.0f);
+    glBegin(GL_POLYGON);
+        glVertex2f(NSMinX(rect), NSMinY(rect));
+        glVertex2f(NSMaxX(rect), NSMinY(rect));
+        glVertex2f(NSMaxX(rect), NSMaxY(rect));
+        glVertex2f(NSMinX(rect), NSMaxY(rect));
+    glEnd();
+    
     if (animation) {
-        NSRect bounds = [self bounds];
-        
-        [[self openGLContext] makeCurrentContext];
-        
-        if (needsReshape) {
-            // reset the views coordinate system when the view has been resized or scrolled
-            
-            glViewport (0, 0, NSWidth(bounds), NSHeight(bounds));
-
-            glMatrixMode(GL_PROJECTION);
-            glLoadIdentity();
-            glOrtho(NSMinX(bounds), NSMaxX(bounds), NSMinY(bounds), NSMaxY(bounds), -1, 1);
-
-            glMatrixMode(GL_MODELVIEW);
-            glLoadIdentity();
-            needsReshape = NO;
-        }
         
         if (context == nil) {
             NSOpenGLPixelFormat *pf = [self pixelFormat];
@@ -426,18 +431,11 @@
             context = [[CIContext contextWithCGLContext:CGLGetCurrentContext() pixelFormat:[pf CGLPixelFormatObj] options:nil] retain];
         }
         
-        glColor4f(0.0f, 0.0f, 0.0f, 0.0f);
-        glBegin(GL_POLYGON);
-            glVertex2f(bounds.origin.x, bounds.origin.y);
-            glVertex2f(bounds.origin.x + bounds.size.width, bounds.origin.y);
-            glVertex2f(bounds.origin.x + bounds.size.width, bounds.origin.y + bounds.size.height);
-            glVertex2f(bounds.origin.x, bounds.origin.y + bounds.size.height);
-        glEnd();
-        
         [context drawImage:[animation currentImage] inRect:*(CGRect*)&bounds fromRect:*(CGRect*)&bounds];
         
-        glFlush();
     }
+    
+    glFlush();
 }
 
 @end
