@@ -163,6 +163,22 @@
     [[self contentView] hideWindow];
 }
 
+- (void)keyDown:(NSEvent *)theEvent {
+    NSString *characters = [theEvent charactersIgnoringModifiers];
+    unichar ch = [characters length] > 0 ? [characters characterAtIndex:0] : 0;
+	unsigned modifierFlags = [theEvent modifierFlags] & NSDeviceIndependentModifierFlagsMask;
+    
+    if (modifierFlags == 0) {
+        if (ch == 0x1B) {
+            [controller exitFullScreen:self];
+        } else {
+            [super keyDown:theEvent];
+        }
+    } else {
+        [super keyDown:theEvent];
+    }
+}
+
 @end
 
 
