@@ -101,6 +101,7 @@
 
 
 @interface SKNavigationZoomButton : SKNavigationButton
+- (void)handleScaleChangedNotification:(NSNotification *)notification;
 @end
 
 @interface SKNavigationZoomButtonCell : SKNavigationButtonCell
