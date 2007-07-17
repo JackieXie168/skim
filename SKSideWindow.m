@@ -163,6 +163,14 @@
     [[self contentView] hideWindow];
 }
 
+- (BOOL)isEnabled {
+    return [(SKSideWindowContentView *)[self contentView] isEnabled];
+}
+
+- (void)setEnabled:(BOOL)flag {
+    [(SKSideWindowContentView *)[self contentView] setEnabled:flag];
+}
+
 - (void)keyDown:(NSEvent *)theEvent {
     NSString *characters = [theEvent charactersIgnoringModifiers];
     unichar ch = [characters length] > 0 ? [characters characterAtIndex:0] : 0;
@@ -191,6 +199,7 @@
         contentView = [[[NSView alloc] initWithFrame:contentRect] autorelease];
         [contentView setAutoresizingMask:(anEdge == NSMaxXEdge ? NSViewMaxXMargin : NSViewMinXMargin) | NSViewHeightSizable];
         [self addSubview:contentView];
+        enabled = YES;
         edge = anEdge;
     }
     return self;
@@ -201,6 +210,16 @@
     [timer release];
     timer = nil;
     [super dealloc];
+}
+
+- (BOOL)isEnabled {
+    return enabled;
+}
+
+- (void)setEnabled:(BOOL)flag {
+    if (enabled != flag) {
+        enabled = flag;
+    }
 }
 
 - (NSRect)resizeHandleRect {
@@ -352,7 +371,7 @@
 	NSPoint mouseLoc = [self convertPoint:[theEvent locationInWindow] fromView:nil];
     NSRect resizeHandleRect = [self resizeHandleRect];
     if (NSPointInRect(mouseLoc, resizeHandleRect) && [(SKSideWindow *)[self window] state] == NSDrawerOpenState) {
-        if ([theEvent clickCount] == 2)
+        if (enabled && [theEvent clickCount] == 2)
             [self hideWindow];
         else
             [self resizeWithEvent:theEvent];

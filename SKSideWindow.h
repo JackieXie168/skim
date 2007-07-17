@@ -57,6 +57,8 @@
 - (void)setMainView:(NSView *)newContentView;
 - (NSRectEdge)edge;
 - (int)state;
+- (BOOL)isEnabled;
+- (void)setEnabled:(BOOL)flag;
 
 @end
 
@@ -66,6 +68,7 @@
     NSTrackingRectTag trackingRect;
     NSTimer *timer;
     NSRectEdge edge;
+    BOOL enabled;
     BOOL resizing;
     BOOL isStatic;
 }
@@ -73,4 +76,6 @@
 - (void)showWindow;
 - (void)hideWindow;
 - (void)trackMouseOvers;
+- (BOOL)isEnabled;
+- (void)setEnabled:(BOOL)flag;
 @end

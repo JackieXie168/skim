@@ -123,6 +123,50 @@ static NSString *SKRightSidePaneWidthKey = @"SKRightSidePaneWidth";
 - (BOOL)isDescendantOf:(NSView *)aView { return NO; }
 @end
 
+@interface SKMainWindowController (Private)
+
+- (void)setupToolbar;
+
+- (void)showLeftSideWindow;
+- (void)showRightSideWindow;
+- (void)hideLeftSideWindow;
+- (void)hideRightSideWindow;
+- (void)showSideWindows;
+- (void)hideSideWindows;
+- (void)goFullScreen;
+- (void)removeFullScreen;
+- (void)saveNormalSetup;
+- (void)enterPresentationMode;
+- (void)exitPresentationMode;
+- (void)activityTimerFired:(NSTimer *)timer;
+
+- (void)replaceSideView:(NSView *)oldView withView:(NSView *)newView animate:(BOOL)animate;
+
+- (void)handleApplicationWillTerminateNotification:(NSNotification *)notification;
+- (void)handleApplicationDidResignActiveNotification:(NSNotification *)notification;
+- (void)handleApplicationWillBecomeActiveNotification:(NSNotification *)notification;
+- (void)handlePageChangedNotification:(NSNotification *)notification;
+- (void)handleScaleChangedNotification:(NSNotification *)notification;
+- (void)handleToolModeChangedNotification:(NSNotification *)notification;
+- (void)handleAnnotationModeChangedNotification:(NSNotification *)notification;
+- (void)handleSelectionChangedNotification:(NSNotification *)notification;
+- (void)handleMagnificationChangedNotification:(NSNotification *)notification;
+- (void)handleChangedHistoryNotification:(NSNotification *)notification;
+- (void)handleDidChangeActiveAnnotationNotification:(NSNotification *)notification;
+- (void)handleDidAddAnnotationNotification:(NSNotification *)notification;
+- (void)handleDidRemoveAnnotationNotification:(NSNotification *)notification;
+- (void)handleDidMoveAnnotationNotification:(NSNotification *)notification;
+- (void)handleDoubleClickedAnnotationNotification:(NSNotification *)notification;
+- (void)handleReadingBarDidChangeNotification:(NSNotification *)notification;
+- (void)handleAnnotationDidChangeNotification:(NSNotification *)notification;
+- (void)handlePageBoundsDidChangeNotification:(NSNotification *)notification;
+- (void)handleDocumentBeginWrite:(NSNotification *)notification;
+- (void)handleDocumentEndWrite:(NSNotification *)notification;
+- (void)handleDocumentEndPageWrite:(NSNotification *)notification;
+- (void)handleColorSwatchColorsChangedNotification:(NSNotification *)notification;
+
+@end
+
 @implementation SKMainWindowController
 
 + (void)initialize {
@@ -1531,12 +1575,154 @@ static NSString *SKRightSidePaneWidthKey = @"SKRightSidePaneWidth";
     [pdfView setAnnotationMode:[sender tag]];
 }
 
+- (IBAction)statusBarClicked:(id)sender {
+    [self updateRightStatus];
+}
+
+- (IBAction)toggleStatusBar:(id)sender {
+    if (statusBar == nil) {
+        statusBar = [[SKStatusBar alloc] initWithFrame:NSMakeRect(0.0, 0.0, NSWidth([splitView frame]), 20.0)];
+        [statusBar setAutoresizingMask:NSViewWidthSizable | NSViewMaxYMargin];
+        [self updateLeftStatus];
+        [self updateRightStatus];
+        [statusBar setAction:@selector(statusBarClicked:)];
+        [statusBar setTarget:self];
+    }
+    [statusBar toggleBelowView:splitView offset:1.0];
+    [[NSUserDefaults standardUserDefaults] setBool:[statusBar isVisible] forKey:SKShowStatusBarKey];
+}
+
+- (IBAction)searchPDF:(id)sender {
+    if ([self isFullScreen]) {
+        if ([leftSideWindow state] == NSDrawerClosedState || [leftSideWindow state] == NSDrawerClosingState)
+            [leftSideWindow showSideWindow];
+    } else if (NSWidth([leftSideContentBox frame]) <= 0.0) {
+        [self toggleLeftSidePane:sender];
+    }
+    [searchField selectText:self];
+}
+
+- (IBAction)performFit:(id)sender {
+    if ([self isFullScreen] || [self isPresentation]) {
+        NSBeep();
+        return;
+    }
+    
+    PDFDisplayMode displayMode = [pdfView displayMode];
+    NSRect screenFrame = [[[self window] screen] visibleFrame];
+    NSRect frame = [splitView frame];
+    NSRect documentRect = [[[self pdfView] documentView] convertRect:[[[self pdfView] documentView] bounds] toView:nil];
+    float bottomOffset = -1.0;
+    
+    if ([[self pdfView] autoScales]) {
+        documentRect.size.width /= [[self pdfView] scaleFactor];
+        documentRect.size.height /= [[self pdfView] scaleFactor];
+    }
+    
+    frame.size.width = NSWidth([leftSideContentBox frame]) + NSWidth([rightSideContentBox frame]) + NSWidth(documentRect) + 2 * [splitView dividerThickness] + 2.0;
+    if (displayMode == kPDFDisplaySinglePage || displayMode == kPDFDisplayTwoUp) {
+        frame.size.height = NSHeight(documentRect) + 1.0;
+    } else {
+        NSRect pageBounds = [[self pdfView] convertRect:[[[self pdfView] currentPage] boundsForBox:[[self pdfView] displayBox]] fromPage:[[self pdfView] currentPage]];
+        if ([[self pdfView] autoScales]) {
+            pageBounds.size.width /= [[self pdfView] scaleFactor];
+            pageBounds.size.height /= [[self pdfView] scaleFactor];
+        }
+        frame.size.height = NSHeight(pageBounds) + NSWidth(documentRect) - NSWidth(pageBounds) + 1.0;
+        frame.size.width += [NSScroller scrollerWidth];
+    }
+    
+    if ([statusBar isVisible])
+        bottomOffset = NSHeight([statusBar frame]);
+    frame.origin.y -= bottomOffset;
+    frame.size.height += bottomOffset;
+    
+    frame.origin = [[self window] convertBaseToScreen:[[[self window] contentView] convertPoint:frame.origin toView:nil]];
+    frame = [[self window] frameRectForContentRect:frame];
+    if (frame.size.width > NSWidth(screenFrame))
+        frame.size.width = NSWidth(screenFrame);
+    if (frame.size.height > NSHeight(screenFrame))
+        frame.size.height = NSHeight(screenFrame);
+    if (NSMaxX(frame) > NSMaxX(screenFrame))
+        frame.origin.x = NSMaxX(screenFrame) - NSWidth(frame);
+    if (NSMaxY(frame) > NSMaxY(screenFrame))
+        frame.origin.y = NSMaxY(screenFrame) - NSHeight(frame);
+    
+    [[self window] setFrame:frame display:[[self window] isVisible]];
+}
+
+- (void)passwordSheetDidEnd:(NSWindow *)sheet returnCode:(int)returnCode contextInfo:(void *)contextInfo {
+    if (returnCode == NSOKButton) {
+        [pdfView takePasswordFrom:passwordField];
+        if (pdfOutline && [[pdfView document] isLocked] == NO) {
+            [outlineView reloadData];
+            [outlineView setAutoresizesOutlineColumn: NO];
+            
+            if ([outlineView numberOfRows] == 1)
+                [outlineView expandItem: [outlineView itemAtRow: 0] expandChildren: NO];
+            [self updateOutlineSelection];
+        }
+    }
+}
+
+- (IBAction)password:(id)sender {
+	[NSApp beginSheet:passwordSheet
+       modalForWindow:[self window]
+        modalDelegate:self 
+       didEndSelector:@selector(passwordSheetDidEnd:returnCode:contextInfo:)
+          contextInfo:NULL];
+}
+
+- (IBAction)dismissPasswordSheet:(id)sender {
+    [NSApp endSheet:passwordSheet returnCode:[sender tag]];
+    [passwordSheet orderOut:self];
+}
+
+- (IBAction)toggleReadingBar:(id)sender {
+    [pdfView toggleReadingBar];
+}
+
+- (IBAction)savePDFSettingToDefaults:(id)sender {
+    if ([self isFullScreen])
+        [[NSUserDefaults standardUserDefaults] setObject:[self currentPDFSettings] forKey:SKDefaultFullScreenPDFDisplaySettingsKey];
+    else if ([self isPresentation] == NO)
+        [[NSUserDefaults standardUserDefaults] setObject:[self currentPDFSettings] forKey:SKDefaultPDFDisplaySettingsKey];
+}
+
+- (void)transitionSheetDidEnd:(NSWindow *)sheet returnCode:(int)returnCode contextInfo:(void *)contextInfo {
+    if (returnCode == NSOKButton) {
+        [pdfView setTransitionStyle:[[transitionStylePopUpButton selectedItem] tag]];
+        [pdfView setTransitionDuration:fmax([transitionDurationField floatValue], 0.0)];
+    }
+}
+
+- (IBAction)chooseTransition:(id)sender {
+    [transitionStylePopUpButton selectItemWithTag:[pdfView transitionStyle]];
+    [transitionDurationField setFloatValue:[pdfView transitionDuration]];
+    [transitionDurationSlider setFloatValue:[pdfView transitionDuration]];
+	[NSApp beginSheet:transitionSheet
+       modalForWindow:[self window]
+        modalDelegate:self 
+       didEndSelector:@selector(transitionSheetDidEnd:returnCode:contextInfo:)
+          contextInfo:NULL];
+}
+
+- (IBAction)dismissTransitionSheet:(id)sender {
+    [NSApp endSheet:transitionSheet returnCode:[sender tag]];
+    [transitionSheet orderOut:self];
+}
+
 - (IBAction)toggleLeftSidePane:(id)sender {
     if ([self isFullScreen]) {
         if ([leftSideWindow state] == NSDrawerOpenState || [leftSideWindow state] == NSDrawerOpeningState)
             [leftSideWindow hideSideWindow];
         else
             [leftSideWindow showSideWindow];
+    } else if ([self isPresentation]) {
+        if ([leftSideWindow isVisible])
+            [self hideLeftSideWindow];
+        else
+            [self showLeftSideWindow];
     } else {
         NSRect sideFrame = [leftSideContentBox frame];
         NSRect pdfFrame = [pdfContentBox frame];
@@ -1603,31 +1789,140 @@ static NSString *SKRightSidePaneWidthKey = @"SKRightSidePaneWidth";
     [self setRightSidePaneState:[sender tag]];
 }
 
-- (IBAction)statusBarClicked:(id)sender {
-    [self updateRightStatus];
+- (IBAction)toggleFullScreen:(id)sender {
+    if ([self isFullScreen])
+        [self exitFullScreen:sender];
+    else
+        [self enterFullScreen:sender];
 }
 
-- (IBAction)toggleStatusBar:(id)sender {
-    if (statusBar == nil) {
-        statusBar = [[SKStatusBar alloc] initWithFrame:NSMakeRect(0.0, 0.0, NSWidth([splitView frame]), 20.0)];
-        [statusBar setAutoresizingMask:NSViewWidthSizable | NSViewMaxYMargin];
-        [self updateLeftStatus];
-        [self updateRightStatus];
-        [statusBar setAction:@selector(statusBarClicked:)];
-        [statusBar setTarget:self];
-    }
-    [statusBar toggleBelowView:splitView offset:1.0];
-    [[NSUserDefaults standardUserDefaults] setBool:[statusBar isVisible] forKey:SKShowStatusBarKey];
+- (IBAction)togglePresentation:(id)sender {
+    if ([self isPresentation])
+        [self exitFullScreen:sender];
+    else
+        [self enterPresentation:sender];
 }
 
-- (IBAction)searchPDF:(id)sender {
-    if ([self isFullScreen]) {
-        if ([leftSideWindow state] == NSDrawerClosedState || [leftSideWindow state] == NSDrawerClosingState)
-            [leftSideWindow showSideWindow];
-    } else if (NSWidth([leftSideContentBox frame]) <= 0.0) {
-        [self toggleLeftSidePane:sender];
+#pragma mark Full Screen support
+
+- (void)showLeftSideWindow {
+    NSScreen *screen = [[self window] screen];
+    if (screen == nil)
+        screen = [NSScreen mainScreen];
+    if (leftSideWindow == nil) {
+        leftSideWindow = [[SKSideWindow alloc] initWithMainController:self edge:NSMinXEdge];
+    } else if (screen != [leftSideWindow screen]) {
+        [leftSideWindow moveToScreen:screen];
     }
-    [searchField selectText:self];
+    
+    if ([[mainWindow firstResponder] isDescendantOf:leftSideBox])
+        [mainWindow makeFirstResponder:nil];
+    [leftSideWindow setMainView:leftSideBox];
+    [leftSideWindow setInitialFirstResponder:searchField];
+    
+    [leftSideEdgeView setEdges:BDSKNoEdgeMask];
+    [findEdgeView setEdges:BDSKNoEdgeMask];
+    
+    if ([self isPresentation]) {
+        savedLeftSidePaneState = [self leftSidePaneState];
+        [self setLeftSidePaneState:SKThumbnailSidePaneState];
+        [leftSideWindow showSideWindow];
+        [leftSideWindow setLevel:[[self window] level] + 1];
+        [leftSideWindow setAlphaValue:0.95];
+        [leftSideWindow setEnabled:NO];
+        [leftSideWindow makeFirstResponder:thumbnailTableView];
+    } else {
+        [leftSideWindow hideSideWindow];
+    }
+    
+    [leftSideWindow orderFront:self];
+}
+
+- (void)showRightSideWindow {
+    NSScreen *screen = [[self window] screen]; // @@ or should we use the main screen?
+    if (screen == nil)
+        screen = [NSScreen mainScreen];
+    if (rightSideWindow == nil) {
+        rightSideWindow = [[SKSideWindow alloc] initWithMainController:self edge:NSMaxXEdge];
+    } else if (screen != [rightSideWindow screen]) {
+        [rightSideWindow moveToScreen:screen];
+    }
+    
+    if ([[mainWindow firstResponder] isDescendantOf:rightSideBox])
+        [mainWindow makeFirstResponder:nil];
+    [rightSideWindow setMainView:rightSideBox];
+    
+    [rightSideEdgeView setEdges:BDSKNoEdgeMask];
+    
+    if ([self isPresentation]) {
+        [rightSideWindow showSideWindow];
+        [leftSideWindow setLevel:[[self window] level] + 1];
+        [leftSideWindow setAlphaValue:0.95];
+        [leftSideWindow setEnabled:NO];
+    } else {
+        [rightSideWindow hideSideWindow];
+    }
+    
+    [rightSideWindow orderFront:self];
+}
+
+- (void)hideLeftSideWindow {
+    if ([[leftSideBox window] isEqual:leftSideWindow]) {
+        [leftSideWindow orderOut:self];
+        
+        if ([[leftSideWindow firstResponder] isDescendantOf:leftSideBox])
+            [leftSideWindow makeFirstResponder:nil];
+        [leftSideBox retain]; // leftSideBox is removed from its old superview in the process
+        [leftSideBox setFrame:[leftSideContentBox bounds]];
+        [leftSideContentBox addSubview:leftSideBox];
+        [leftSideBox release];
+        
+        [leftSideEdgeView setEdges:BDSKMaxXEdgeMask];
+        [findEdgeView setEdges:BDSKMaxXEdgeMask];
+        
+        if ([self isPresentation]) {
+            [self setLeftSidePaneState:savedLeftSidePaneState];
+            [leftSideWindow setLevel:NSFloatingWindowLevel];
+            [leftSideWindow setAlphaValue:1.0];
+            [leftSideWindow setEnabled:YES];
+        }
+    }
+}
+
+- (void)hideRightSideWindow {
+    if ([[rightSideBox window] isEqual:rightSideWindow]) {
+        [rightSideWindow orderOut:self];
+        
+        if ([[rightSideWindow firstResponder] isDescendantOf:rightSideBox])
+            [rightSideWindow makeFirstResponder:nil];
+        [rightSideBox retain]; // rightSideBox is removed from its old superview in the process
+        [rightSideBox setFrame:[rightSideContentBox bounds]];
+        [rightSideContentBox addSubview:rightSideBox];
+        [rightSideBox release];
+        
+        [rightSideEdgeView setEdges:BDSKMinXEdgeMask];
+        
+        if ([self isPresentation]) {
+            [rightSideWindow setLevel:NSFloatingWindowLevel];
+            [rightSideWindow setAlphaValue:1.0];
+            [rightSideWindow setEnabled:YES];
+        }
+    }
+}
+
+- (void)showSideWindows {
+    [self showLeftSideWindow];
+    [self showRightSideWindow];
+    
+    [pdfView setFrame:NSInsetRect([[pdfView superview] bounds], 9.0, 0.0)];
+    [[pdfView superview] setNeedsDisplay:YES];
+}
+
+- (void)hideSideWindows {
+    [self hideLeftSideWindow];
+    [self hideRightSideWindow];
+    
+    [pdfView setFrame:[[pdfView superview] bounds]];
 }
 
 - (void)goFullScreen {
@@ -1742,73 +2037,6 @@ static NSString *SKRightSidePaneWidthKey = @"SKRightSidePaneWidth";
     }
 }
 
-- (void)showSideWindows {
-    NSScreen *screen = [[self window] screen]; // @@ or should we use the main screen?
-    if (screen == nil)
-        screen = [NSScreen mainScreen];
-    if (leftSideWindow == nil) {
-        leftSideWindow = [[SKSideWindow alloc] initWithMainController:self edge:NSMinXEdge];
-    } else if (screen != [leftSideWindow screen]) {
-        [leftSideWindow moveToScreen:screen];
-    }
-    if (rightSideWindow == nil) {
-        rightSideWindow = [[SKSideWindow alloc] initWithMainController:self edge:NSMaxXEdge];
-    } else if (screen != [rightSideWindow screen]) {
-        [rightSideWindow moveToScreen:screen];
-    }
-    
-    if ([[mainWindow firstResponder] isDescendantOf:leftSideBox])
-        [mainWindow makeFirstResponder:nil];
-    [leftSideWindow setMainView:leftSideBox];
-    [leftSideWindow setInitialFirstResponder:searchField];
-    
-    if ([[mainWindow firstResponder] isDescendantOf:rightSideBox])
-        [mainWindow makeFirstResponder:nil];
-    [rightSideWindow setMainView:rightSideBox];
-    
-    [leftSideEdgeView setEdges:BDSKNoEdgeMask];
-    [rightSideEdgeView setEdges:BDSKNoEdgeMask];
-    [findEdgeView setEdges:BDSKNoEdgeMask];
-    
-    [leftSideWindow hideSideWindow];
-    [rightSideWindow hideSideWindow];
-    
-    [leftSideWindow orderFront:self];
-    [rightSideWindow orderFront:self];
-    
-    [pdfView setFrame:NSInsetRect([[pdfView superview] bounds], 9.0, 0.0)];
-    [[pdfView superview] setNeedsDisplay:YES];
-}
-
-- (void)hideSideWindows {
-    [leftSideWindow orderOut:self];
-    [rightSideWindow orderOut:self];
-    
-    if ([[leftSideWindow firstResponder] isDescendantOf:leftSideBox])
-        [leftSideWindow makeFirstResponder:nil];
-    [leftSideBox retain]; // leftSideBox is removed from its old superview in the process
-    [leftSideBox setFrame:[leftSideContentBox bounds]];
-    [leftSideContentBox addSubview:leftSideBox];
-    [leftSideBox release];
-    
-    if ([[rightSideWindow firstResponder] isDescendantOf:rightSideBox])
-        [rightSideWindow makeFirstResponder:nil];
-    [rightSideBox retain]; // rightSideBox is removed from its old superview in the process
-    [rightSideBox setFrame:[rightSideContentBox bounds]];
-    [rightSideContentBox addSubview:rightSideBox];
-    [rightSideBox release];
-    
-    [leftSideEdgeView setEdges:BDSKMaxXEdgeMask];
-    [rightSideEdgeView setEdges:BDSKMinXEdgeMask];
-    [findEdgeView setEdges:BDSKMaxXEdgeMask];
-    
-    [pdfView setFrame:[[pdfView superview] bounds]];
-}
-
-- (void)activityTimerFired:(NSTimer *)timer {
-    UpdateSystemActivity(UsrActivity);
-}
-
 - (void)saveNormalSetup {
     if ([self isPresentation] == NO && [self isFullScreen] == NO) {
         NSScrollView *scrollView = [[pdfView documentView] enclosingScrollView];
@@ -1821,6 +2049,10 @@ static NSString *SKRightSidePaneWidthKey = @"SKRightSidePaneWidth";
     NSDictionary *fullScreenSetup = [[NSUserDefaults standardUserDefaults] objectForKey:SKDefaultFullScreenPDFDisplaySettingsKey];
     if ([fullScreenSetup count])
         [self applyPDFSettings:fullScreenSetup];
+}
+
+- (void)activityTimerFired:(NSTimer *)timer {
+    UpdateSystemActivity(UsrActivity);
 }
 
 - (void)enterPresentationMode {
@@ -1866,6 +2098,8 @@ static NSString *SKRightSidePaneWidthKey = @"SKRightSidePaneWidth";
     [pdfView setBackgroundColor:backgroundColor];
     [fullScreenWindow setBackgroundColor:backgroundColor];
     [fullScreenWindow setLevel:NSNormalWindowLevel];
+    
+    [self hideLeftSideWindow];
     
     isPresentation = NO;
 }
@@ -1938,130 +2172,6 @@ static NSString *SKRightSidePaneWidthKey = @"SKRightSidePaneWidth";
     SetSystemUIMode(kUIModeNormal, 0);
     
     [self removeFullScreen];
-}
-
-- (IBAction)toggleFullScreen:(id)sender {
-    if ([self isFullScreen])
-        [self exitFullScreen:sender];
-    else
-        [self enterFullScreen:sender];
-}
-
-- (IBAction)togglePresentation:(id)sender {
-    if ([self isPresentation])
-        [self exitFullScreen:sender];
-    else
-        [self enterPresentation:sender];
-}
-
-- (IBAction)performFit:(id)sender {
-    if ([self isFullScreen] || [self isPresentation]) {
-        NSBeep();
-        return;
-    }
-    
-    PDFDisplayMode displayMode = [pdfView displayMode];
-    NSRect screenFrame = [[[self window] screen] visibleFrame];
-    NSRect frame = [splitView frame];
-    NSRect documentRect = [[[self pdfView] documentView] convertRect:[[[self pdfView] documentView] bounds] toView:nil];
-    float bottomOffset = -1.0;
-    
-    if ([[self pdfView] autoScales]) {
-        documentRect.size.width /= [[self pdfView] scaleFactor];
-        documentRect.size.height /= [[self pdfView] scaleFactor];
-    }
-    
-    frame.size.width = NSWidth([leftSideContentBox frame]) + NSWidth([rightSideContentBox frame]) + NSWidth(documentRect) + 2 * [splitView dividerThickness] + 2.0;
-    if (displayMode == kPDFDisplaySinglePage || displayMode == kPDFDisplayTwoUp) {
-        frame.size.height = NSHeight(documentRect) + 1.0;
-    } else {
-        NSRect pageBounds = [[self pdfView] convertRect:[[[self pdfView] currentPage] boundsForBox:[[self pdfView] displayBox]] fromPage:[[self pdfView] currentPage]];
-        if ([[self pdfView] autoScales]) {
-            pageBounds.size.width /= [[self pdfView] scaleFactor];
-            pageBounds.size.height /= [[self pdfView] scaleFactor];
-        }
-        frame.size.height = NSHeight(pageBounds) + NSWidth(documentRect) - NSWidth(pageBounds) + 1.0;
-        frame.size.width += [NSScroller scrollerWidth];
-    }
-    
-    if ([statusBar isVisible])
-        bottomOffset = NSHeight([statusBar frame]);
-    frame.origin.y -= bottomOffset;
-    frame.size.height += bottomOffset;
-    
-    frame.origin = [[self window] convertBaseToScreen:[[[self window] contentView] convertPoint:frame.origin toView:nil]];
-    frame = [[self window] frameRectForContentRect:frame];
-    if (frame.size.width > NSWidth(screenFrame))
-        frame.size.width = NSWidth(screenFrame);
-    if (frame.size.height > NSHeight(screenFrame))
-        frame.size.height = NSHeight(screenFrame);
-    if (NSMaxX(frame) > NSMaxX(screenFrame))
-        frame.origin.x = NSMaxX(screenFrame) - NSWidth(frame);
-    if (NSMaxY(frame) > NSMaxY(screenFrame))
-        frame.origin.y = NSMaxY(screenFrame) - NSHeight(frame);
-    
-    [[self window] setFrame:frame display:[[self window] isVisible]];
-}
-
-- (void)passwordSheetDidEnd:(NSWindow *)sheet returnCode:(int)returnCode contextInfo:(void *)contextInfo {
-    if (returnCode == NSOKButton) {
-        [pdfView takePasswordFrom:passwordField];
-        if (pdfOutline && [[pdfView document] isLocked] == NO) {
-            [outlineView reloadData];
-            [outlineView setAutoresizesOutlineColumn: NO];
-            
-            if ([outlineView numberOfRows] == 1)
-                [outlineView expandItem: [outlineView itemAtRow: 0] expandChildren: NO];
-            [self updateOutlineSelection];
-        }
-    }
-}
-
-- (IBAction)password:(id)sender {
-	[NSApp beginSheet:passwordSheet
-       modalForWindow:[self window]
-        modalDelegate:self 
-       didEndSelector:@selector(passwordSheetDidEnd:returnCode:contextInfo:)
-          contextInfo:NULL];
-}
-
-- (IBAction)dismissPasswordSheet:(id)sender {
-    [NSApp endSheet:passwordSheet returnCode:[sender tag]];
-    [passwordSheet orderOut:self];
-}
-
-- (IBAction)toggleReadingBar:(id)sender {
-    [pdfView toggleReadingBar];
-}
-
-- (IBAction)savePDFSettingToDefaults:(id)sender {
-    if ([self isFullScreen])
-        [[NSUserDefaults standardUserDefaults] setObject:[self currentPDFSettings] forKey:SKDefaultFullScreenPDFDisplaySettingsKey];
-    else if ([self isPresentation] == NO)
-        [[NSUserDefaults standardUserDefaults] setObject:[self currentPDFSettings] forKey:SKDefaultPDFDisplaySettingsKey];
-}
-
-- (void)transitionSheetDidEnd:(NSWindow *)sheet returnCode:(int)returnCode contextInfo:(void *)contextInfo {
-    if (returnCode == NSOKButton) {
-        [pdfView setTransitionStyle:[[transitionStylePopUpButton selectedItem] tag]];
-        [pdfView setTransitionDuration:fmax([transitionDurationField floatValue], 0.0)];
-    }
-}
-
-- (IBAction)chooseTransition:(id)sender {
-    [transitionStylePopUpButton selectItemWithTag:[pdfView transitionStyle]];
-    [transitionDurationField setFloatValue:[pdfView transitionDuration]];
-    [transitionDurationSlider setFloatValue:[pdfView transitionDuration]];
-	[NSApp beginSheet:transitionSheet
-       modalForWindow:[self window]
-        modalDelegate:self 
-       didEndSelector:@selector(transitionSheetDidEnd:returnCode:contextInfo:)
-          contextInfo:NULL];
-}
-
-- (IBAction)dismissTransitionSheet:(id)sender {
-    [NSApp endSheet:transitionSheet returnCode:[sender tag]];
-    [transitionSheet orderOut:self];
 }
 
 #pragma mark Swapping tables
@@ -3016,6 +3126,8 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
 	// Get the destination associated with the search result list. Tell the PDFView to go there.
 	if ([[notification object] isEqual:outlineView] && (updatingOutlineSelection == NO)){
 		[pdfView goToDestination: [[outlineView itemAtRow: [outlineView selectedRow]] destination]];
+        if ([self isPresentation] && [[NSUserDefaults standardUserDefaults] boolForKey:SKAutoHidePresentationContentsKey])
+            [self hideLeftSideWindow];
     }
 }
 
@@ -3143,11 +3255,17 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
                 [self addAnnotationsForSelection:sel];
         }
         
+        if ([self isPresentation] && [[NSUserDefaults standardUserDefaults] boolForKey:SKAutoHidePresentationContentsKey])
+            [self hideLeftSideWindow];
+        
     } else if ([[aNotification object] isEqual:thumbnailTableView]) {
         if (updatingThumbnailSelection == NO) {
             int row = [thumbnailTableView selectedRow];
             if (row != -1)
                 [pdfView goToPage:[[pdfView document] pageAtIndex:row]];
+            
+            if ([self isPresentation] && [[NSUserDefaults standardUserDefaults] boolForKey:SKAutoHidePresentationContentsKey])
+                [self hideLeftSideWindow];
         }
     } else if ([[aNotification object] isEqual:snapshotTableView]) {
         int row = [snapshotTableView selectedRow];
@@ -4082,7 +4200,7 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
             else
                 [menuItem setTitle:NSLocalizedString(@"Show Contents Pane", @"Menu item title")];
         }
-        return [self isPresentation] == NO;
+        return YES;
     } else if (action == @selector(toggleRightSidePane:)) {
         if ([self isFullScreen]) {
             if ([rightSideWindow state] == NSDrawerOpenState || [rightSideWindow state] == NSDrawerOpeningState)
@@ -4098,7 +4216,7 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
         return [self isPresentation] == NO;
     } else if (action == @selector(changeLeftSidePaneState:)) {
         [menuItem setState:(int)leftSidePaneState == [menuItem tag] ? ([findTableView window] ? NSMixedState : NSOnState) : NSOffState];
-        return [self isPresentation] == NO && ([menuItem tag] == SKThumbnailSidePaneState || pdfOutline);
+        return [menuItem tag] == SKThumbnailSidePaneState || pdfOutline;
     } else if (action == @selector(changeRightSidePaneState:)) {
         [menuItem setState:(int)rightSidePaneState == [menuItem tag] ? NSOnState : NSOffState];
         return [self isPresentation] == NO;
