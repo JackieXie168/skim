@@ -582,6 +582,7 @@ static void SKCGContextDrawGrabHandle(CGContextRef context, CGPoint point, float
         transitionController = [[SKTransitionController alloc] initWithView:self];
     NSRect rect = [self convertRect:[[self currentPage] boundsForBox:[self displayBox]] fromPage:[self currentPage]];
     [transitionController prepareForAnimationWithTransitionStyle:[self transitionStyle] fromRect:rect];
+    // @@ I think going to the next/previous page before animating a transition may relay on implementation details that have a very high probability of breaking in future.  If goToNextPage: displays the next page before the transition, things will look a bit odd...
     if (next)
         [super goToNextPage:self];
     else
