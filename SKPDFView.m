@@ -831,6 +831,8 @@ static void SKCGContextDrawGrabHandle(CGContextRef context, CGPoint point, float
         [self goToNextPage:self];
     } else if (isPresentation && (eventChar == NSLeftArrowFunctionKey) && (modifiers == 0)) {
 		[self goToPreviousPage:self];
+    } else if (isPresentation && (eventChar == 't') && (modifiers == 0)) {
+        [(SKMainWindowController *)[[self window] windowController] toggleLeftSidePane:self];
 	} else if ((eventChar == NSDeleteCharacter || eventChar == NSDeleteFunctionKey) && (modifiers == 0)) {
 		[self delete:self];
     } else if (isPresentation == NO && ([self toolMode] == SKTextToolMode || [self toolMode] == SKNoteToolMode) && (eventChar == NSEnterCharacter || eventChar == NSFormFeedCharacter || eventChar == NSNewlineCharacter || eventChar == NSCarriageReturnCharacter) && (modifiers == 0)) {

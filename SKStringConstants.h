@@ -99,3 +99,4 @@ extern NSString *SKReadMissingNotesFromSkimFileOptionKey;
 extern NSString *SKBlankAllScreensInFullScreenKey;
 extern NSString *SKActivateFullScreenNavigationAtBottomKey;
 extern NSString *SKActivatePresentationNavigationAtBottomKey;
+extern NSString *SKAutoHidePresentationContentsKey;

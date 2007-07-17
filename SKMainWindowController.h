@@ -83,6 +83,7 @@ typedef struct _SKPDFViewState {
     IBOutlet NSView             *currentRightSideView;
     SKLeftSidePaneState         leftSidePaneState;
     SKRightSidePaneState        rightSidePaneState;
+    SKLeftSidePaneState         savedLeftSidePaneState;
     
     SKStatusBar                 *statusBar;
     
@@ -335,29 +336,6 @@ typedef struct _SKPDFViewState {
 - (void)registerAsObserver;
 - (void)unregisterAsObserver;
 
-- (void)handleApplicationWillTerminateNotification:(NSNotification *)notification;
-- (void)handleApplicationDidResignActiveNotification:(NSNotification *)notification;
-- (void)handleApplicationWillBecomeActiveNotification:(NSNotification *)notification;
-- (void)handlePageChangedNotification:(NSNotification *)notification;
-- (void)handleScaleChangedNotification:(NSNotification *)notification;
-- (void)handleToolModeChangedNotification:(NSNotification *)notification;
-- (void)handleAnnotationModeChangedNotification:(NSNotification *)notification;
-- (void)handleSelectionChangedNotification:(NSNotification *)notification;
-- (void)handleMagnificationChangedNotification:(NSNotification *)notification;
-- (void)handleChangedHistoryNotification:(NSNotification *)notification;
-- (void)handleDidChangeActiveAnnotationNotification:(NSNotification *)notification;
-- (void)handleDidAddAnnotationNotification:(NSNotification *)notification;
-- (void)handleDidRemoveAnnotationNotification:(NSNotification *)notification;
-- (void)handleDidMoveAnnotationNotification:(NSNotification *)notification;
-- (void)handleDoubleClickedAnnotationNotification:(NSNotification *)notification;
-- (void)handleReadingBarDidChangeNotification:(NSNotification *)notification;
-- (void)handleAnnotationDidChangeNotification:(NSNotification *)notification;
-- (void)handlePageBoundsDidChangeNotification:(NSNotification *)notification;
-- (void)handleDocumentBeginWrite:(NSNotification *)notification;
-- (void)handleDocumentEndWrite:(NSNotification *)notification;
-- (void)handleDocumentEndPageWrite:(NSNotification *)notification;
-- (void)handleColorSwatchColorsChangedNotification:(NSNotification *)notification;
-
 - (void)addAnnotationsFromDictionaries:(NSArray *)noteDicts;
 - (void)setAnnotationsFromDictionaries:(NSArray *)noteDicts;
 
@@ -365,7 +343,5 @@ typedef struct _SKPDFViewState {
 - (NSDictionary *)currentSetup;
 - (void)applyPDFSettings:(NSDictionary *)setup;
 - (NSDictionary *)currentPDFSettings;
-
-- (void)setupToolbar;
 
 @end
