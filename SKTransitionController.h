@@ -37,6 +37,7 @@
  */
 
 #import <Cocoa/Cocoa.h>
+#import <Carbon/Carbon.h>
 
 #pragma mark Private Core Graphics types and functions
 
@@ -52,7 +53,8 @@ typedef enum _CGSTransitionType {
     CGSWarpFade,
     CGSSwap,
     CGSCube,
-    CGSWarpSwitch
+    CGSWarpSwitch,
+    CGSFlip
 } CGSTransitionType;
 
 typedef enum _CGSTransitionOption {
@@ -103,6 +105,7 @@ typedef enum _SKAnimationTransitionStyle {
 	SKSwapTransition = CGSSwap,
 	SKCubeTransition = CGSCube,
 	SKWarpSwitchTransition = CGSWarpSwitch,
+	SKWarpFlipTransition = CGSFlip,
     // Core Image transitions
     SKCopyMachineTransition,
     SKDisintegrateTransition,
