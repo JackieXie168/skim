@@ -295,7 +295,6 @@
         
         [transitionWindow setFrame:frame display:NO];
         [transitionWindow orderBack:nil];
-        [transitionWindow display];
         [window addChildWindow:transitionWindow ordered:NSWindowAbove];
         
         [animation startAnimation];
@@ -334,7 +333,7 @@
 - (void)setCurrentProgress:(NSAnimationProgress)progress {
     [filter setValue:[NSNumber numberWithFloat:[self currentValue]] forKey:@"inputTime"];
     [super setCurrentProgress:progress];
-    [[[self delegate] window] display];
+    [[self delegate] display];
 }
 
 - (CIImage *)currentImage {
@@ -406,6 +405,7 @@
         [animation release];
         animation = [newAnimation retain];
         [animation setDelegate:self];
+        [self setNeedsDisplay:YES];
     }
 }
 
