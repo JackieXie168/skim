@@ -338,14 +338,14 @@
     static NSOpenGLPixelFormat *pf;
 
     if (pf == nil) {
-        static const NSOpenGLPixelFormatAttribute attr[] = {
+        NSOpenGLPixelFormatAttribute attr[] = {
             NSOpenGLPFAAccelerated,
             NSOpenGLPFANoRecovery,
             NSOpenGLPFAColorSize, 32,
             0
         };
         
-        pf = [[NSOpenGLPixelFormat alloc] initWithAttributes:(void *)&attr];
+        pf = [[NSOpenGLPixelFormat alloc] initWithAttributes:attr];
     }
 
     return pf;
