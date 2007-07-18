@@ -57,6 +57,7 @@
 #import "PDFSelection_SKExtensions.h"
 #import "SKInfoWindowController.h"
 #import "SKLine.h"
+#import "SKApplicationController.h"
 
 // maximum length of xattr value recommended by Apple
 #define MAX_XATTR_LENGTH 2048
@@ -854,6 +855,7 @@ static BOOL isFileOnHFSVolume(NSString *fileName)
         NSString *editorPreset = [[NSUserDefaults standardUserDefaults] objectForKey:SKTeXEditorPresetKey];
         NSString *editorCmd = [[NSUserDefaults standardUserDefaults] objectForKey:SKTeXEditorCommandKey];
         NSMutableString *cmdString = [[[[NSUserDefaults standardUserDefaults] objectForKey:SKTeXEditorArgumentsKey] mutableCopy] autorelease];
+        NSMutableDictionary *environment = [[[[NSProcessInfo processInfo] environment] mutableCopy] autorelease];
         
         if ([editorPreset isEqualToString:@""] == NO) {
             NSString *appPath = [[NSWorkspace sharedWorkspace] fullPathForApplication:editorPreset];
@@ -875,6 +877,25 @@ static BOOL isFileOnHFSVolume(NSString *fileName)
                     editorCmd = toolPath;
                 }
             }
+        } else {
+            NSString *path = [environment objectForKey:@"PATH"];
+            NSMutableArray *paths = [NSMutableArray arrayWithObjects:@"/usr/local/bin", nil];
+            NSString *appSupportPath;
+            if ([path length]) 
+                [paths insertObject:path atIndex:0];
+            if (appSupportPath = [[NSApp delegate] applicationSupportPathForDomain:kUserDomain create:NO]) {
+                [paths addObject:appSupportPath];
+                [paths addObject:[appSupportPath stringByAppendingPathComponent:@"Scripts"]];
+            }
+            if (appSupportPath = [[NSApp delegate] applicationSupportPathForDomain:kLocalDomain create:NO]) {
+                [paths addObject:appSupportPath];
+                [paths addObject:[appSupportPath stringByAppendingPathComponent:@"Scripts"]];
+            }
+            if (appSupportPath = [[NSApp delegate] applicationSupportPathForDomain:kNetworkDomain create:NO]) {
+                [paths addObject:appSupportPath];
+                [paths addObject:[appSupportPath stringByAppendingPathComponent:@"Scripts"]];
+            }
+            [environment setObject:[paths componentsJoinedByString:@":"] forKey:@"PATH"];
         }
         
         NSRange range = NSMakeRange(0, 0);
@@ -901,6 +922,7 @@ static BOOL isFileOnHFSVolume(NSString *fileName)
                 [cmdString replaceCharactersInRange:range withString:[file stringByEscapingShellChars]];
         }
         
+        
         [cmdString insertString:@"\" " atIndex:0];
         [cmdString insertString:editorCmd atIndex:0];
         [cmdString insertString:@"\"" atIndex:0];
@@ -908,6 +930,7 @@ static BOOL isFileOnHFSVolume(NSString *fileName)
         [task setLaunchPath:@"/bin/sh"];
         [task setArguments:[NSArray arrayWithObjects:@"-c", cmdString, nil]];
         [task setCurrentDirectoryPath:[file stringByDeletingLastPathComponent]];
+        [task setEnvironment:environment];
         [task launch];
     }
 }
