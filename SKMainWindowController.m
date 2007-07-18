@@ -141,6 +141,8 @@ static NSString *SKRightSidePaneWidthKey = @"SKRightSidePaneWidth";
 - (void)exitPresentationMode;
 - (void)activityTimerFired:(NSTimer *)timer;
 
+- (void)updateNoteFilterPredicate;
+
 - (void)replaceSideView:(NSView *)oldView withView:(NSView *)newView animate:(BOOL)animate;
 
 - (void)handleApplicationWillTerminateNotification:(NSNotification *)notification;
@@ -233,6 +235,9 @@ static NSString *SKRightSidePaneWidthKey = @"SKRightSidePaneWidth";
     
     [findCollapsibleView setCollapseEdges:BDSKMaxXEdgeMask | BDSKMinYEdgeMask];
     [findCollapsibleView setMinSize:NSMakeSize(50.0, 25.0)];
+    
+    [rightSideCollapsibleView setCollapseEdges:BDSKMaxXEdgeMask | BDSKMinYEdgeMask];
+    [rightSideCollapsibleView setMinSize:NSMakeSize(100.0, 42.0)];
     
     [pdfContentBox setEdges:BDSKMinXEdgeMask | BDSKMaxXEdgeMask | BDSKMinYEdgeMask];
     [findEdgeView setEdges:BDSKMaxXEdgeMask];
@@ -2409,6 +2414,12 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
 	}
 }
 
+- (IBAction)searchNotes:(id)sender {
+    if ([[sender stringValue] length] && rightSidePaneState != SKNoteSidePaneState)
+        [self setRightSidePaneState:SKNoteSidePaneState];
+    [self updateNoteFilterPredicate];
+}
+
 #pragma mark Sub- and note- windows
 
 - (void)showSnapshotAtPageNumber:(int)pageNum forRect:(NSRect)rect factor:(int)factor display:(BOOL)display{
@@ -3168,23 +3179,7 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
 
 - (void)outlineViewNoteTypesDidChange:(NSOutlineView *)ov {
     if ([ov isEqual:noteOutlineView]) {
-        NSArray *types = [noteOutlineView noteTypes];
-        if ([types count] == 8) {
-            [noteArrayController setFilterPredicate:nil];
-        } else {
-            NSExpression *lhs = [NSExpression expressionForKeyPath:@"type"];
-            NSMutableArray *predicateArray = [NSMutableArray array];
-            NSEnumerator *typeEnum = [types objectEnumerator];
-            NSString *type;
-            
-            while (type = [typeEnum nextObject]) {
-                NSExpression *rhs = [NSExpression expressionForConstantValue:type];
-                NSPredicate *predicate = [NSComparisonPredicate predicateWithLeftExpression:lhs rightExpression:rhs modifier:NSDirectPredicateModifier type:NSEqualToPredicateOperatorType options:0];
-                [predicateArray addObject:predicate];
-            }
-            [noteArrayController setFilterPredicate:[NSCompoundPredicate orPredicateWithSubpredicates:predicateArray]];
-        }
-        [noteOutlineView reloadData];
+        [self updateNoteFilterPredicate];
     }
 }
 
@@ -3505,6 +3500,45 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
         [noteOutlineView selectRowIndexes:[NSIndexSet indexSetWithIndex:[noteOutlineView rowForItem:selAnnotation]] byExtendingSelection:NO];
         updatingNoteSelection = NO;
     }
+}
+
+- (void)updateNoteFilterPredicate {
+    NSPredicate *filterPredicate = nil;
+    NSPredicate *typePredicate = nil;
+    NSPredicate *searchPredicate = nil;
+    NSArray *types = [noteOutlineView noteTypes];
+    NSString *searchString = [noteSearchField stringValue];
+    if ([types count] < 8) {
+        NSExpression *lhs = [NSExpression expressionForKeyPath:@"type"];
+        NSMutableArray *predicateArray = [NSMutableArray array];
+        NSEnumerator *typeEnum = [types objectEnumerator];
+        NSString *type;
+        
+        while (type = [typeEnum nextObject]) {
+            NSExpression *rhs = [NSExpression expressionForConstantValue:type];
+            NSPredicate *predicate = [NSComparisonPredicate predicateWithLeftExpression:lhs rightExpression:rhs modifier:NSDirectPredicateModifier type:NSEqualToPredicateOperatorType options:0];
+            [predicateArray addObject:predicate];
+        }
+        typePredicate = [NSCompoundPredicate orPredicateWithSubpredicates:predicateArray];
+    }
+    if (searchString && [searchString isEqualToString:@""] == NO) {
+        NSExpression *lhs = [NSExpression expressionForConstantValue:searchString];
+        NSExpression *rhs = [NSExpression expressionForKeyPath:@"contents"];
+        NSPredicate *contentsPredicate = [NSComparisonPredicate predicateWithLeftExpression:lhs rightExpression:rhs modifier:NSDirectPredicateModifier type:NSInPredicateOperatorType options:NSCaseInsensitivePredicateOption | NSDiacriticInsensitivePredicateOption];
+        rhs = [NSExpression expressionForKeyPath:@"text.string"];
+        NSPredicate *textPredicate = [NSComparisonPredicate predicateWithLeftExpression:lhs rightExpression:rhs modifier:NSDirectPredicateModifier type:NSInPredicateOperatorType options:NSCaseInsensitivePredicateOption | NSDiacriticInsensitivePredicateOption];
+        searchPredicate = [NSCompoundPredicate orPredicateWithSubpredicates:[NSArray arrayWithObjects:contentsPredicate, textPredicate, nil]];
+    }
+    if (typePredicate) {
+        if (searchPredicate)
+            filterPredicate = [NSCompoundPredicate andPredicateWithSubpredicates:[NSArray arrayWithObjects:typePredicate, searchPredicate, nil]];
+        else
+            filterPredicate = typePredicate;
+    } else if (searchPredicate) {
+        filterPredicate = searchPredicate;
+    }
+    [noteArrayController setFilterPredicate:filterPredicate];
+    [noteOutlineView reloadData];
 }
 
 #pragma mark Snapshots
