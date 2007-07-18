@@ -84,6 +84,7 @@
                 rotateRight = id; 
                 savePDFSettingToDefaults = id; 
                 search = id; 
+                searchNotes = id; 
                 searchPDF = id; 
                 selectColor = id; 
                 smartAutoCropAll = id; 
@@ -129,6 +130,7 @@
                 noteArrayController = NSArrayController; 
                 noteOutlineView = SKNoteOutlineView; 
                 notePopUpButton = BDSKImagePopUpButton; 
+                noteSearchField = NSSearchField; 
                 noteView = NSView; 
                 outlineView = NSOutlineView; 
                 ownerController = NSObjectController; 
@@ -144,6 +146,7 @@
                 progressSheet = NSWindow; 
                 rightSideBox = NSBox; 
                 rightSideButton = NSSegmentedControl; 
+                rightSideCollapsibleView = BDSKCollapsibleView; 
                 rightSideContentBox = NSBox; 
                 rightSideEdgeView = BDSKEdgeView; 
                 scaleField = NSTextField; 

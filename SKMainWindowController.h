@@ -77,7 +77,9 @@ typedef struct _SKPDFViewState {
     IBOutlet NSBox              *rightSideContentBox;
     IBOutlet NSBox              *rightSideBox;
     IBOutlet BDSKEdgeView       *rightSideEdgeView;
+    IBOutlet BDSKCollapsibleView *rightSideCollapsibleView;
     IBOutlet NSSegmentedControl *rightSideButton;
+    IBOutlet NSSearchField      *noteSearchField;
     
     IBOutlet NSView             *currentLeftSideView;
     IBOutlet NSView             *currentRightSideView;
@@ -231,6 +233,7 @@ typedef struct _SKPDFViewState {
 - (IBAction)getInfo:(id)sender;
 - (void)displaySearchResultsForString:(NSString *)string;
 - (IBAction)search:(id)sender;
+- (IBAction)searchNotes:(id)sender;
 - (IBAction)changeScaleFactor:(id)sender;
 - (IBAction)chooseScale:(id)sender;
 - (IBAction)dismissChooseScaleSheet:(id)sender;
