@@ -107,6 +107,8 @@ typedef enum _SKAnimationTransitionStyle {
 	SKWarpSwitchTransition = CGSWarpSwitch,
 	SKWarpFlipTransition = CGSFlip,
     // Core Image transitions
+    SKCoreImageTransition
+    /*
     SKCopyMachineTransition,
     SKDisintegrateTransition,
     SKDissolveTransition,
@@ -114,7 +116,7 @@ typedef enum _SKAnimationTransitionStyle {
     SKModTransition,
     SKPageCurlTransition,
     SKRippleTransition,
-    SKSwipeTransition
+    SKSwipeTransition*/
 } SKAnimationTransitionStyle;
 
 @class SKTransitionView;
@@ -127,12 +129,14 @@ typedef enum _SKAnimationTransitionStyle {
     NSRect imageRect;
 }
 
++ (NSArray *)transitionFilterNames;
+
 - (id)initWithView:(NSView *)aView;
 
 - (NSView *)view;
 - (void)setView:(NSView *)newView;
 
 - (void)prepareForAnimationWithTransitionStyle:(SKAnimationTransitionStyle)transitionStyle fromRect:(NSRect)rect;
-- (void)animateWithTransitionStyle:(SKAnimationTransitionStyle)transitionStyle direction:(CGSTransitionOption)direction duration:(float)duration fromRect:(NSRect)rect;
+- (void)animateWithTransitionStyle:(SKAnimationTransitionStyle)transitionStyle direction:(CGSTransitionOption)direction duration:(float)duration fromRect:(NSRect)rect shouldRestrict:(BOOL)shouldRestrict;
 
 @end

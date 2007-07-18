@@ -93,6 +93,7 @@ typedef enum _SKNoteType {
     
     SKAnimationTransitionStyle transitionStyle;
     float transitionDuration;
+    BOOL transitionShouldRestrict;
     
 	PDFAnnotation *activeAnnotation;
 	PDFAnnotation *highlightAnnotation;
@@ -148,6 +149,9 @@ typedef enum _SKNoteType {
 
 - (float)transitionDuration;
 - (void)setTransitionDuration:(float)duration;
+
+- (BOOL)transitionShouldRestrict;
+- (void)setTransitionShouldRestrict:(BOOL)flag;
 
 - (IBAction)delete:(id)sender;
 - (IBAction)autoSelectContent:(id)sender;

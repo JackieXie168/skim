@@ -167,6 +167,7 @@ typedef struct _SKPDFViewState {
     IBOutlet NSPopUpButton      *transitionStylePopUpButton;
     IBOutlet NSTextField        *transitionDurationField;
     IBOutlet NSSlider           *transitionDurationSlider;
+    IBOutlet NSMatrix           *transitionExtentMatrix;
     
     NSButton                    *colorAccessoryView;
     BOOL                        updatingColor;
