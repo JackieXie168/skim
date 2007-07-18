@@ -38,6 +38,7 @@
 
 #import "SKDocument.h"
 #import <Quartz/Quartz.h>
+#import <Carbon/Carbon.h>
 #import "SKMainWindowController.h"
 #import "NSFileManager_ExtendedAttributes.h"
 #import "SKPDFAnnotationNote.h"
@@ -926,6 +927,14 @@ static BOOL isFileOnHFSVolume(NSString *fileName)
         [cmdString insertString:@"\" " atIndex:0];
         [cmdString insertString:editorCmd atIndex:0];
         [cmdString insertString:@"\"" atIndex:0];
+        
+        NSString *extension = [editorCmd pathExtension];
+        if (extension) {
+            NSString *theUTI = [(id)UTTypeCreatePreferredIdentifierForTag(kUTTagClassFilenameExtension, (CFStringRef)extension, NULL) autorelease];
+            if (theUTI && UTTypeConformsTo((CFStringRef)theUTI, CFSTR("com.apple.applescript.script")) || UTTypeConformsTo((CFStringRef)theUTI, CFSTR("com.apple.applescript.text")))
+                [cmdString insertString:@"/usr/bin/osascript " atIndex:0];
+        }
+        
         NSTask *task = [[[NSTask alloc] init] autorelease];
         [task setLaunchPath:@"/bin/sh"];
         [task setArguments:[NSArray arrayWithObjects:@"-c", cmdString, nil]];
