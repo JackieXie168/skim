@@ -75,7 +75,7 @@ NSString *SKDVIDocumentType = @"DVI document";
     }
     static NSData *psHeaderData = nil;
     if (nil == psHeaderData) {
-        char *h = "%PS-";
+        char *h = "%!PS-";
         psHeaderData = [[NSData alloc] initWithBytes:h length:strlen(h)];
     }
     
