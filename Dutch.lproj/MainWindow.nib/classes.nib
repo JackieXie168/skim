@@ -160,6 +160,7 @@
                 toolModeButton = NSSegmentedControl; 
                 transitionDurationField = NSTextField; 
                 transitionDurationSlider = NSSlider; 
+                transitionExtentMatrix = NSMatrix; 
                 transitionSheet = NSWindow; 
                 transitionStylePopUpButton = NSPopUpButton; 
             }; 

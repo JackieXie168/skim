@@ -74,6 +74,7 @@
 #import "SKLineInspector.h"
 #import "SKColorSwatch.h"
 #import "SKStatusBar.h"
+#import "SKTransitionController.h"
 
 #define SEGMENTED_CONTROL_HEIGHT    25.0
 #define WINDOW_X_DELTA              0.0
@@ -1693,13 +1694,25 @@ static NSString *SKRightSidePaneWidthKey = @"SKRightSidePaneWidth";
     if (returnCode == NSOKButton) {
         [pdfView setTransitionStyle:[[transitionStylePopUpButton selectedItem] tag]];
         [pdfView setTransitionDuration:fmax([transitionDurationField floatValue], 0.0)];
+        [pdfView setTransitionShouldRestrict:(BOOL)[[transitionExtentMatrix selectedCell] tag]];
     }
 }
 
 - (IBAction)chooseTransition:(id)sender {
+    if ([transitionStylePopUpButton numberOfItems] == SKCoreImageTransition) {
+        NSArray *filterNames = [SKTransitionController transitionFilterNames];
+        int i, count = [filterNames count];
+        for (i = 0; i < count; i++) {
+            NSString *name = [filterNames objectAtIndex:i];
+            [transitionStylePopUpButton addItemWithTitle:[CIFilter localizedNameForFilterName:name]];
+            NSMenuItem *item = [transitionStylePopUpButton lastItem];
+            [item setTag:SKCoreImageTransition + i];
+        }
+    }
     [transitionStylePopUpButton selectItemWithTag:[pdfView transitionStyle]];
     [transitionDurationField setFloatValue:[pdfView transitionDuration]];
     [transitionDurationSlider setFloatValue:[pdfView transitionDuration]];
+    [transitionExtentMatrix selectCellWithTag:(int)[pdfView transitionShouldRestrict]];
 	[NSApp beginSheet:transitionSheet
        modalForWindow:[self window]
         modalDelegate:self 

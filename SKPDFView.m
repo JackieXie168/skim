@@ -153,6 +153,7 @@ static void SKCGContextDrawGrabHandle(CGContextRef context, CGPoint point, float
     transitionController = nil;
     transitionStyle = SKNoTransition;
     transitionDuration = 1.0;
+    transitionShouldRestrict = NO;
     
     spellingTag = [NSSpellChecker uniqueSpellDocumentTag];
     
@@ -548,6 +549,14 @@ static void SKCGContextDrawGrabHandle(CGContextRef context, CGPoint point, float
     transitionDuration = duration;
 }
 
+- (BOOL)transitionShouldRestrict {
+    return transitionShouldRestrict;
+}
+
+- (void)setTransitionShouldRestrict:(BOOL)flag {
+    transitionShouldRestrict = flag;
+}
+
 #pragma mark Reading bar
 
 - (BOOL)hasReadingBar {
@@ -587,7 +596,7 @@ static void SKCGContextDrawGrabHandle(CGContextRef context, CGPoint point, float
     else
         [super goToPreviousPage:self];
     rect = [self convertRect:[[self currentPage] boundsForBox:[self displayBox]] fromPage:[self currentPage]];
-    [transitionController animateWithTransitionStyle:[self transitionStyle] direction:next ? CGSLeft : CGSRight duration:[self transitionDuration] fromRect:rect];
+    [transitionController animateWithTransitionStyle:[self transitionStyle] direction:next ? CGSLeft : CGSRight duration:[self transitionDuration] fromRect:rect shouldRestrict:transitionShouldRestrict];
 }
 
 - (void)goToNextPage:(id)sender {

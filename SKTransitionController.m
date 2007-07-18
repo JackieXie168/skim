@@ -74,6 +74,18 @@
 
 @implementation SKTransitionController
 
++ (NSArray *)transitionFilterNames {
+    static NSMutableArray *transitionFilterNames = nil;
+    
+    if(transitionFilterNames == nil) {
+        // get all the transition filters
+		[CIPlugIn loadAllPlugIns];
+        transitionFilterNames = [[CIFilter filterNamesInCategories:[NSArray arrayWithObject:kCICategoryTransition]] copy];
+    }
+    
+    return transitionFilterNames;
+}
+
 - (id)initWithView:(NSView *)aView {
     if (self = [super init]) {
         view = aView;
@@ -126,71 +138,48 @@
     return inputMaskImage;
 }
 
-- (CIFilter *)transitionFilter:(SKAnimationTransitionStyle)transitionStyle forRect:(NSRect)rect inBounds:(NSRect)bounds initialCIImage:(CIImage *)initialCIImage finalCIImage:(CIImage *)finalCIImage {
-    CIFilter *transitionFilter = nil;
+- (CIFilter *)transitionFilter:(SKAnimationTransitionStyle)transitionStyle forRect:(NSRect)rect inBounds:(NSRect)bounds shouldRestrict:(BOOL)shouldRestrict initialCIImage:(CIImage *)initialCIImage finalCIImage:(CIImage *)finalCIImage {
+    NSString *filterName = [[[self class] transitionFilterNames] objectAtIndex:transitionStyle - SKCoreImageTransition];
+    CIFilter *transitionFilter = [self filterWithName:filterName];
     
-    switch (transitionStyle) {
-        case SKCopyMachineTransition:
-            transitionFilter = [self filterWithName:@"CICopyMachineTransition"];
-            [transitionFilter setValue:[CIVector vectorWithX:NSMinX(rect) Y:NSMinY(rect) Z:NSWidth(rect) W:NSHeight(rect)] forKey:@"inputExtent"];
-            break;
-            
-        case SKDisintegrateTransition:
-        {
-            transitionFilter = [self filterWithName:@"CIDisintegrateWithMaskTransition"];
-            
-            // Scale and translate our mask image to match the transition area size.
-            CIFilter *maskScalingFilter = [self filterWithName:@"CILanczosScaleTransform"];
-            CGRect maskExtent = [[self inputMaskImage] extent];
-            float xScale = NSWidth(rect) / CGRectGetWidth(maskExtent);
-            float yScale = NSHeight(rect) / CGRectGetHeight(maskExtent);
-            [maskScalingFilter setValue:[NSNumber numberWithFloat:yScale] forKey:@"inputScale"];
-            [maskScalingFilter setValue:[NSNumber numberWithFloat:xScale / yScale] forKey:@"inputAspectRatio"];
-            [maskScalingFilter setValue:[self inputMaskImage] forKey:@"inputImage"];
-            CIFilter *maskTranslationFilter = [self filterWithName:@"CIAffineTransform"];
-            NSAffineTransform *affineTransform = [NSAffineTransform transform];
-            [affineTransform translateXBy:NSMinX(rect) - NSMinX(bounds) yBy:NSMinY(rect) - NSMinY(bounds)];
-            [maskTranslationFilter setValue:affineTransform forKey:@"inputTransform"];
-            [maskTranslationFilter setValue:[maskScalingFilter valueForKey:@"outputImage"] forKey:@"inputImage"];
-            
-            [transitionFilter setValue:[maskTranslationFilter valueForKey:@"outputImage"] forKey:@"inputMaskImage"];
-            break;
-        }
-        case SKDissolveTransition:
-            transitionFilter = [self filterWithName:@"CIDissolveTransition"];
-            break;
-            
-        case SKFlashTransition:
-            transitionFilter = [self filterWithName:@"CIFlashTransition"];
-            [transitionFilter setValue:[CIVector vectorWithX:NSMidX(rect) Y:NSMidY(rect)] forKey:@"inputCenter"];
-            [transitionFilter setValue:[CIVector vectorWithX:NSMinX(bounds) Y:NSMinY(bounds) Z:NSWidth(bounds) W:NSHeight(bounds)] forKey:@"inputExtent"];
-            break;
-            
-        case SKModTransition:
-            transitionFilter = [self filterWithName:@"CIModTransition"];
-            [transitionFilter setValue:[CIVector vectorWithX:NSMidX(rect) Y:NSMidY(rect)] forKey:@"inputCenter"];
-            break;
-            
-        case SKPageCurlTransition:
-            transitionFilter = [self filterWithName:@"CIPageCurlTransition"];
+    NSEnumerator *keyEnum = [[transitionFilter inputKeys] objectEnumerator];
+    NSString *key;
+    
+    while (key = [keyEnum nextObject]) {
+        if([key isEqualToString:@"inputExtent"]) {
+            NSRect extent = shouldRestrict ? rect : bounds;
+            [transitionFilter setValue:[CIVector vectorWithX:NSMinX(extent) Y:NSMinY(extent) Z:NSWidth(extent) W:NSHeight(extent)] forKey:key];
+        } else if([key isEqualToString:@"inputAngle"] && [filterName isEqualToString:@"CIPageCurlTransition"]) {
             [transitionFilter setValue:[NSNumber numberWithFloat:-M_PI_4] forKey:@"inputAngle"];
-            [transitionFilter setValue:initialCIImage forKey:@"inputBacksideImage"];
-            [transitionFilter setValue:[self inputShadingImage] forKey:@"inputShadingImage"];
-            [transitionFilter setValue:[CIVector vectorWithX:NSMinX(rect) Y:NSMinY(rect) Z:NSWidth(rect) W:NSHeight(rect)] forKey:@"inputExtent"];
-            break;
+        } else if([key isEqualToString:@"inputCenter"]) {
+            [transitionFilter setValue:[CIVector vectorWithX:NSMidX(rect) Y:NSMidY(rect)] forKey:key];
+        } else {
+            NSString *classType = [[[transitionFilter attributes] objectForKey:key] objectForKey:kCIAttributeClass];
             
-        case SKSwipeTransition:
-            transitionFilter = [self filterWithName:@"CISwipeTransition"];
-            [transitionFilter setValue:[CIVector vectorWithX:NSMinX(rect) Y:NSMinY(rect) Z:NSWidth(rect) W:NSHeight(rect)] forKey:@"inputExtent"];
-            break;
-            
-        case SKRippleTransition:
-        default:
-            transitionFilter = [self filterWithName:@"CIRippleTransition"];
-            [transitionFilter setValue:[CIVector vectorWithX:NSMidX(rect) Y:NSMidY(rect)] forKey:@"inputCenter"];
-            [transitionFilter setValue:[CIVector vectorWithX:NSMinX(bounds) Y:NSMinY(bounds) Z:NSWidth(bounds) W:NSHeight(bounds)] forKey:@"inputExtent"];
-            [transitionFilter setValue:[self inputShadingImage] forKey:@"inputShadingImage"];
-            break;
+            if([classType isEqualToString:@"CIImage"]) {
+                if([key isEqualToString:@"inputShadingImage"]) {
+                    [transitionFilter setValue:[self inputShadingImage] forKey:key];
+                } else if ([key isEqualToString:@"inputBacksideImage"]) {
+                    [transitionFilter setValue:initialCIImage forKey:key];
+                } else  {
+                    // Scale and translate our mask image to match the transition area size.
+                    CIFilter *maskScalingFilter = [self filterWithName:@"CILanczosScaleTransform"];
+                    CGRect maskExtent = [[self inputMaskImage] extent];
+                    float xScale = NSWidth(rect) / CGRectGetWidth(maskExtent);
+                    float yScale = NSHeight(rect) / CGRectGetHeight(maskExtent);
+                    [maskScalingFilter setValue:[NSNumber numberWithFloat:yScale] forKey:@"inputScale"];
+                    [maskScalingFilter setValue:[NSNumber numberWithFloat:xScale / yScale] forKey:@"inputAspectRatio"];
+                    [maskScalingFilter setValue:[self inputMaskImage] forKey:@"inputImage"];
+                    CIFilter *maskTranslationFilter = [self filterWithName:@"CIAffineTransform"];
+                    NSAffineTransform *affineTransform = [NSAffineTransform transform];
+                    [affineTransform translateXBy:NSMinX(rect) - NSMinX(bounds) yBy:NSMinY(rect) - NSMinY(bounds)];
+                    [maskTranslationFilter setValue:affineTransform forKey:@"inputTransform"];
+                    [maskTranslationFilter setValue:[maskScalingFilter valueForKey:@"outputImage"] forKey:@"inputImage"];
+                    
+                    [transitionFilter setValue:[maskTranslationFilter valueForKey:@"outputImage"] forKey:key];
+                }
+            }
+        }
     }
     
     if (NSEqualRects(rect, bounds) == NO) {
@@ -211,7 +200,7 @@
 - (void)prepareForAnimationWithTransitionStyle:(SKAnimationTransitionStyle)transitionStyle fromRect:(NSRect)rect {
 	if (transitionStyle == SKNoTransition) {
 
-	} else if (transitionStyle < SKCopyMachineTransition) {
+	} else if (transitionStyle < SKCoreImageTransition) {
         // We don't want the window to draw the next state before the animation is run
         [[view window] disableFlushWindow];
     } else {
@@ -228,10 +217,10 @@
     }
 }
 
-- (void)animateWithTransitionStyle:(SKAnimationTransitionStyle)transitionStyle direction:(CGSTransitionOption)direction duration:(float)duration fromRect:(NSRect)rect {
+- (void)animateWithTransitionStyle:(SKAnimationTransitionStyle)transitionStyle direction:(CGSTransitionOption)direction duration:(float)duration fromRect:(NSRect)rect shouldRestrict:(BOOL)shouldRestrict {
 	if (transitionStyle == SKNoTransition) {
 
-	} else if (transitionStyle < SKCopyMachineTransition) {
+	} else if (transitionStyle < SKCoreImageTransition) {
         
         // declare our variables  
         int handle = -1;
@@ -257,7 +246,7 @@
         [[view window] flushWindow];
         
         CGSInvokeTransition(cgs, handle, duration);
-        // We need to wait for the transition to finish before we get rid of it, otherwise we’ll get all sorts of nasty errors... or maybe not.
+        // We need to wait for the transition to finish before we get rid of it, otherwise we'll get all sorts of nasty errors... or maybe not.
         usleep((useconds_t)(duration * 1000000));
         
         CGSReleaseTransition(cgs, handle);
@@ -275,7 +264,7 @@
         [view cacheDisplayInRect:bounds toBitmapImageRep:finalContentBitmap];
         CIImage *finalImage = [[CIImage alloc] initWithBitmapImageRep:finalContentBitmap];
         
-        CIFilter *transitionFilter = [self transitionFilter:transitionStyle forRect:imageRect inBounds:[view bounds] initialCIImage:initialImage finalCIImage:finalImage];
+        CIFilter *transitionFilter = [self transitionFilter:transitionStyle forRect:imageRect inBounds:[view bounds] shouldRestrict:shouldRestrict initialCIImage:initialImage finalCIImage:finalImage];
         
         [finalImage release];
         [initialImage release];
