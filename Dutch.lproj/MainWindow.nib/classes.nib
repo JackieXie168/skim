@@ -121,10 +121,10 @@
                 findEdgeView = BDSKEdgeView; 
                 findTableView = NSTableView; 
                 findView = NSView; 
-                leftSideBox = NSBox; 
                 leftSideButton = NSSegmentedControl; 
                 leftSideCollapsibleView = BDSKCollapsibleView; 
                 leftSideContentBox = NSBox; 
+                leftSideContentView = NSView; 
                 leftSideEdgeView = BDSKEdgeView; 
                 markupPopUpButton = BDSKImagePopUpButton; 
                 noteArrayController = NSArrayController; 
@@ -144,10 +144,10 @@
                 progressBar = NSProgressIndicator; 
                 progressField = NSTextField; 
                 progressSheet = NSWindow; 
-                rightSideBox = NSBox; 
                 rightSideButton = NSSegmentedControl; 
                 rightSideCollapsibleView = BDSKCollapsibleView; 
                 rightSideContentBox = NSBox; 
+                rightSideContentView = NSView; 
                 rightSideEdgeView = BDSKEdgeView; 
                 scaleField = NSTextField; 
                 searchField = NSSearchField; 
