@@ -246,7 +246,14 @@ static NSString *SKRightSidePaneWidthKey = @"SKRightSidePaneWidth";
     
     [pdfView setFrame:[[pdfContentBox contentView] bounds]];
     
-    NSRect frame = [leftSideButton frame];
+    NSRect frame = [leftSideBox frame];
+    frame.size.width = NSWidth([leftSideContentBox frame]);
+    [leftSideBox setFrame:frame];
+    frame = [rightSideBox frame];
+    frame.size.width = NSWidth([rightSideContentBox frame]);
+    [rightSideBox setFrame:frame];
+    
+    frame = [leftSideButton frame];
     frame.size.height = SEGMENTED_CONTROL_HEIGHT;
     [leftSideButton setFrame:frame];
     [[leftSideButton cell] setToolTip:NSLocalizedString(@"View Thumbnails", @"Tool tip message") forSegment:SKThumbnailSidePaneState];
