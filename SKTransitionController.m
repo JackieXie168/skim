@@ -49,7 +49,7 @@
 #import <OpenGL/gl.h>
 #import "SKFullScreenWindow.h"
 
-BOOL CoreGraphicsTransitionsDefined() {
+BOOL CoreGraphicsServicesTransitionsDefined() {
     return &_CGSDefaultConnection != kUnresolvedCFragSymbolAddress &&
            &CGSNewTransition != kUnresolvedCFragSymbolAddress &&
            &CGSInvokeTransition != kUnresolvedCFragSymbolAddress &&
@@ -207,7 +207,7 @@ BOOL CoreGraphicsTransitionsDefined() {
 	if (transitionStyle == SKNoTransition) {
 
 	} else if (transitionStyle < SKCoreImageTransition) {
-        if (CoreGraphicsTransitionsDefined()) {
+        if (CoreGraphicsServicesTransitionsDefined()) {
             // We don't want the window to draw the next state before the animation is run
             [[view window] disableFlushWindow];
         }
@@ -229,7 +229,7 @@ BOOL CoreGraphicsTransitionsDefined() {
 	if (transitionStyle == SKNoTransition) {
 
 	} else if (transitionStyle < SKCoreImageTransition) {
-        if (CoreGraphicsTransitionsDefined()) {
+        if (CoreGraphicsServicesTransitionsDefined()) {
             // declare our variables  
             int handle = -1;
             CGSTransitionSpec spec;

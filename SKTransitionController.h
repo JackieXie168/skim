@@ -92,11 +92,9 @@ extern OSStatus CGSReleaseTransition(const CGSConnection cid, int transitionHand
 
 #pragma mark Check whether the above functions are actually defined at run time
 
-extern BOOL CoreGraphicsTransitionsDefined();
+extern BOOL CoreGraphicsServicesTransitionsDefined();
 
 #pragma mark SKTransitionController
-
-@class CIFilter, CIImage;
 
 typedef enum _SKAnimationTransitionStyle {
 	SKNoTransition = CGSNone,
@@ -114,7 +112,7 @@ typedef enum _SKAnimationTransitionStyle {
     SKCoreImageTransition
 } SKAnimationTransitionStyle;
 
-@class SKTransitionView;
+@class CIImage, SKTransitionView;
 
 @interface SKTransitionController : NSObject {
     NSWindow *transitionWindow;
