@@ -246,12 +246,27 @@ static NSString *SKRightSidePaneWidthKey = @"SKRightSidePaneWidth";
     
     [pdfView setFrame:[[pdfContentBox contentView] bounds]];
     
+    float width = NSWidth([leftSideContentBox frame]);
     NSRect frame = [leftSideBox frame];
-    frame.size.width = NSWidth([leftSideContentBox frame]);
+    frame.size.width = width;
     [leftSideBox setFrame:frame];
+    frame = [leftSideEdgeView frame];
+    frame.size.width = width;
+    [leftSideEdgeView setFrame:frame];
+    frame = [currentLeftSideView frame];
+    frame.size.width = width;
+    [currentLeftSideView setFrame:frame];
+    
+    width = NSWidth([rightSideContentBox frame]);
     frame = [rightSideBox frame];
-    frame.size.width = NSWidth([rightSideContentBox frame]);
+    frame.size.width = width;
     [rightSideBox setFrame:frame];
+    frame = [rightSideEdgeView frame];
+    frame.size.width = width;
+    [rightSideEdgeView setFrame:frame];
+    frame = [currentRightSideView frame];
+    frame.size.width = width;
+    [currentRightSideView setFrame:frame];
     
     frame = [leftSideButton frame];
     frame.size.height = SEGMENTED_CONTROL_HEIGHT;
