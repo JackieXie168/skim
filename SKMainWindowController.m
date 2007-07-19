@@ -256,14 +256,10 @@ static NSString *SKRightSidePaneWidthKey = @"SKRightSidePaneWidth";
     [[rightSideButton cell] setToolTip:NSLocalizedString(@"View Notes", @"Tool tip message") forSegment:SKNoteSidePaneState];
     [[rightSideButton cell] setToolTip:NSLocalizedString(@"View Snapshots", @"Tool tip message") forSegment:SKSnapshotSidePaneState];
     
-    [leftSideContentView retain];
     [leftSideContentView setFrame:[leftSideContentBox bounds]];
     [leftSideContentBox addSubview:leftSideContentView];
-    [leftSideContentView release];
-    [rightSideContentView retain];
     [rightSideContentView setFrame:[rightSideContentBox bounds]];
     [rightSideContentBox addSubview:rightSideContentView];
-    [rightSideContentView release];
     
     [pdfView setFrame:[[pdfContentBox contentView] bounds]];
     
@@ -1899,10 +1895,8 @@ static NSString *SKRightSidePaneWidthKey = @"SKRightSidePaneWidth";
         
         if ([[leftSideWindow firstResponder] isDescendantOf:leftSideContentView])
             [leftSideWindow makeFirstResponder:nil];
-        [leftSideContentView retain]; // leftSideContentView is removed from its old superview in the process
         [leftSideContentView setFrame:[leftSideContentBox bounds]];
         [leftSideContentBox addSubview:leftSideContentView];
-        [leftSideContentView release];
         
         [leftSideEdgeView setEdges:BDSKMinXEdgeMask | BDSKMaxXEdgeMask];
         [findEdgeView setEdges:BDSKMinXEdgeMask | BDSKMaxXEdgeMask];
@@ -1922,10 +1916,8 @@ static NSString *SKRightSidePaneWidthKey = @"SKRightSidePaneWidth";
         
         if ([[rightSideWindow firstResponder] isDescendantOf:rightSideContentView])
             [rightSideWindow makeFirstResponder:nil];
-        [rightSideContentView retain]; // rightSideContentView is removed from its old superview in the process
         [rightSideContentView setFrame:[rightSideContentBox bounds]];
         [rightSideContentBox addSubview:rightSideContentView];
-        [rightSideContentView release];
         
         [rightSideEdgeView setEdges:BDSKMinXEdgeMask | BDSKMaxXEdgeMask];
         
