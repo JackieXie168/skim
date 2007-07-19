@@ -230,6 +230,10 @@ static NSString *SKRightSidePaneWidthKey = @"SKRightSidePaneWidth";
 }
 
 - (void)windowDidLoad{
+    NSUserDefaults *sud = [NSUserDefaults standardUserDefaults];
+    
+    // Set up the panes and subviews, needs to be done before we resize them
+    
     [leftSideCollapsibleView setCollapseEdges:BDSKMaxXEdgeMask | BDSKMinYEdgeMask];
     [leftSideCollapsibleView setMinSize:NSMakeSize(100.0, 42.0)];
     
@@ -268,8 +272,10 @@ static NSString *SKRightSidePaneWidthKey = @"SKRightSidePaneWidth";
     
     [spinner setUsesThreadedAnimation:YES];
     
+    // Set up the tool bar
     [self setupToolbar];
     
+    // Set up the window
     // we retain as we might replace it with the full screen window
     mainWindow = [[self window] retain];
     
@@ -277,24 +283,30 @@ static NSString *SKRightSidePaneWidthKey = @"SKRightSidePaneWidth";
     
     [[self window] setBackgroundColor:[NSColor colorWithCalibratedWhite:0.9 alpha:1.0]];
     
-    int windowSizeOption = [[NSUserDefaults standardUserDefaults] integerForKey:SKInitialWindowSizeOptionKey];
-    if (windowSizeOption == 1)
+    int windowSizeOption = [sud integerForKey:SKInitialWindowSizeOptionKey];
+    if (windowSizeOption == SKMaximizeWindowOption)
         [[self window] setFrame:[[NSScreen mainScreen] visibleFrame] display:NO];
     
-    [self applyPDFSettings:[[NSUserDefaults standardUserDefaults] dictionaryForKey:SKDefaultPDFDisplaySettingsKey]];
+    if ([sud boolForKey:SKShowStatusBarKey])
+        [self toggleStatusBar:nil];
     
-    [pdfView setShouldAntiAlias:[[NSUserDefaults standardUserDefaults] boolForKey:SKShouldAntiAliasKey]];
-    [pdfView setGreekingThreshold:[[NSUserDefaults standardUserDefaults] floatForKey:SKGreekingThresholdKey]];
-    [pdfView setBackgroundColor:[NSUnarchiver unarchiveObjectWithData:[[NSUserDefaults standardUserDefaults] dataForKey:SKBackgroundColorKey]]];
+    [[self window] makeFirstResponder:[pdfView documentView]];
     
-    if ([[NSUserDefaults standardUserDefaults] objectForKey:SKLeftSidePaneWidthKey]) {
-        float width = [[NSUserDefaults standardUserDefaults] floatForKey:SKLeftSidePaneWidthKey];
+    // Set up the PDF
+    [self applyPDFSettings:[sud dictionaryForKey:SKDefaultPDFDisplaySettingsKey]];
+    
+    [pdfView setShouldAntiAlias:[sud boolForKey:SKShouldAntiAliasKey]];
+    [pdfView setGreekingThreshold:[sud floatForKey:SKGreekingThresholdKey]];
+    [pdfView setBackgroundColor:[sud colorForKey:SKBackgroundColorKey]];
+    
+    if ([sud objectForKey:SKLeftSidePaneWidthKey]) {
+        float width = [sud floatForKey:SKLeftSidePaneWidthKey];
         if (width >= 0.0) {
             frame = [leftSideContentBox frame];
             frame.size.width = width;
             [leftSideContentBox setFrame:frame];
         }
-        width = [[NSUserDefaults standardUserDefaults] floatForKey:SKRightSidePaneWidthKey];
+        width = [sud floatForKey:SKRightSidePaneWidthKey];
         if (width >= 0.0) {
             frame = [rightSideContentBox frame];
             frame.size.width = width;
@@ -306,9 +318,6 @@ static NSString *SKRightSidePaneWidthKey = @"SKRightSidePaneWidth";
         frame.origin.x = NSMaxX([leftSideContentBox frame]) + [splitView dividerThickness];
         [pdfContentBox setFrame:frame];
     }
-    
-    if ([[NSUserDefaults standardUserDefaults] boolForKey:SKShowStatusBarKey])
-        [self toggleStatusBar:nil];
     
     // this needs to be done before loading the PDFDocument
     [self resetThumbnailSizeIfNeeded];
@@ -328,41 +337,41 @@ static NSString *SKRightSidePaneWidthKey = @"SKRightSidePaneWidth";
     // this is mainly needed when the pdf auto-scales
     [pdfView layoutDocumentView];
     
+    // Show/hide left side pane if necessary
+    if ([sud boolForKey:SKOpenContentsPaneOnlyForTOCKey] && (NSWidth([leftSideContentBox frame]) > 0.0) == (pdfOutline == nil))
+        [self toggleLeftSidePane:self];
     if (pdfOutline == nil) {
-        if ([[NSUserDefaults standardUserDefaults] boolForKey:SKOpenContentsPaneOnlyForTOCKey] &&
-            NSWidth([leftSideContentBox frame]) > 0.0)
-            [self toggleLeftSidePane:self];
         [self setLeftSidePaneState:SKThumbnailSidePaneState];
         [leftSideButton setEnabled:NO forSegment:SKOutlineSidePaneState];
-    } else if ([[NSUserDefaults standardUserDefaults] boolForKey:SKOpenContentsPaneOnlyForTOCKey] &&
-               NSWidth([leftSideContentBox frame]) <= 0.0) {
-        [self toggleLeftSidePane:self];
     }
     
-    if ([[NSUserDefaults standardUserDefaults] boolForKey:SKRememberLastPageViewedKey]) {
+    // Go to page?
+    if ([sud boolForKey:SKRememberLastPageViewedKey]) {
         unsigned int pageIndex = [[SKBookmarkController sharedBookmarkController] pageIndexForRecentDocumentAtPath:[[[self document] fileURL] path]];
         if (pageIndex != NSNotFound)
             [pdfView goToPage:[[pdfView document] pageAtIndex:pageIndex]];
     }
     
-    if (windowSizeOption == 2)
+    // We can fit only after the PDF has been loaded
+    if (windowSizeOption == SKFitWindowOption)
         [self performFit:self];
     
-    [[self window] makeFirstResponder:[pdfView documentView]];
-    
-    if ([[NSUserDefaults standardUserDefaults] boolForKey:SKRememberSnapshotsKey]) {
+    // Open snapshots?
+    if ([sud boolForKey:SKRememberSnapshotsKey]) {
         NSEnumerator *setupEnum = [[[SKBookmarkController sharedBookmarkController] snapshotsAtPath:[[[self document] fileURL] path]] objectEnumerator];
         NSDictionary *setup;
         if (setup = [setupEnum nextObject])
             [self showSnapshotAtPageNumber:[[setup objectForKey:@"page"] unsignedIntValue] forRect:NSRectFromString([setup objectForKey:@"rect"]) factor:[[setup objectForKey:@"page"] floatValue] display:[[setup objectForKey:@"hasWindow"] boolValue]];
     }
     
+    // This update toolbar item and other states
     [self handleChangedHistoryNotification:nil];
     [self handlePageChangedNotification:nil];
     [self handleScaleChangedNotification:nil];
     [self handleToolModeChangedNotification:nil];
     [self handleAnnotationModeChangedNotification:nil];
     
+    // Observe notifications and KVO
     [self registerForNotifications];
     [self registerAsObserver];
 }
@@ -1946,7 +1955,7 @@ static NSString *SKRightSidePaneWidthKey = @"SKRightSidePaneWidth";
 
 - (void)goFullScreen {
     NSScreen *screen = [[self window] screen]; // @@ screen: or should we use the main screen?
-    NSColor *backgroundColor = [self isPresentation] ? [NSColor blackColor] : [NSUnarchiver unarchiveObjectWithData:[[NSUserDefaults standardUserDefaults] dataForKey:SKFullScreenBackgroundColorKey]];
+    NSColor *backgroundColor = [self isPresentation] ? [NSColor blackColor] : [[NSUserDefaults standardUserDefaults] colorForKey:SKFullScreenBackgroundColorKey];
     
     if (screen == nil) // @@ screen: can this ever happen?
         screen = [NSScreen mainScreen];
@@ -2010,7 +2019,7 @@ static NSString *SKRightSidePaneWidthKey = @"SKRightSidePaneWidth";
 }
 
 - (void)removeFullScreen {
-    [pdfView setBackgroundColor:[NSUnarchiver unarchiveObjectWithData:[[NSUserDefaults standardUserDefaults] dataForKey:SKBackgroundColorKey]]];
+    [pdfView setBackgroundColor:[[NSUserDefaults standardUserDefaults] colorForKey:SKBackgroundColorKey]];
     [pdfView layoutDocumentView];
     
     NSEnumerator *wcEnum = [[[self document] windowControllers] objectEnumerator];
@@ -2113,7 +2122,7 @@ static NSString *SKRightSidePaneWidthKey = @"SKRightSidePaneWidth";
     [scrollView setHasVerticalScroller:[[savedNormalSetup objectForKey:@"hasVerticalScroller"] boolValue]];
     [scrollView setAutohidesScrollers:[[savedNormalSetup objectForKey:@"autoHidesScrollers"] boolValue]];
     
-    NSColor *backgroundColor = [NSUnarchiver unarchiveObjectWithData:[[NSUserDefaults standardUserDefaults] dataForKey:SKFullScreenBackgroundColorKey]];
+    NSColor *backgroundColor = [[NSUserDefaults standardUserDefaults] colorForKey:SKFullScreenBackgroundColorKey];
     [pdfView setBackgroundColor:backgroundColor];
     [fullScreenWindow setBackgroundColor:backgroundColor];
     [fullScreenWindow setLevel:NSNormalWindowLevel];
@@ -2310,11 +2319,8 @@ static NSString *SKRightSidePaneWidthKey = @"SKRightSidePaneWidth";
 - (void)addAnnotationsForSelection:(PDFSelection *)sel {
     NSArray *pages = [sel pages];
     int i, iMax = [pages count];
-    NSColor *color = nil;
-    NSData *colorData = [[NSUserDefaults standardUserDefaults] dataForKey:SKSearchHighlightColorKey];
+    NSColor *color = [[NSUserDefaults standardUserDefaults] colorForKey:SKSearchHighlightColorKey];
     
-    if (colorData != nil)
-        color = [NSUnarchiver unarchiveObjectWithData:colorData];
     if (color == nil)
         color = [NSColor redColor];
     
@@ -2931,10 +2937,10 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
         NSString *key = [keyPath substringFromIndex:7];
         if ([key isEqualToString:SKBackgroundColorKey]) {
             if ([self isFullScreen] == NO && [self isPresentation] == NO)
-                [pdfView setBackgroundColor:[NSUnarchiver unarchiveObjectWithData:[[NSUserDefaults standardUserDefaults] dataForKey:SKBackgroundColorKey]]];
+                [pdfView setBackgroundColor:[[NSUserDefaults standardUserDefaults] colorForKey:SKBackgroundColorKey]];
         } else if ([key isEqualToString:SKFullScreenBackgroundColorKey]) {
             if ([self isFullScreen]) {
-                NSColor *color = [NSUnarchiver unarchiveObjectWithData:[[NSUserDefaults standardUserDefaults] dataForKey:SKFullScreenBackgroundColorKey]];
+                NSColor *color = [[NSUserDefaults standardUserDefaults] colorForKey:SKFullScreenBackgroundColorKey];
                 if (color) {
                     [pdfView setBackgroundColor:color];
                     [fullScreenWindow setBackgroundColor:color];

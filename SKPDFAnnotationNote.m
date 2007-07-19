@@ -42,6 +42,7 @@
 #import "PDFSelection_SKExtensions.h"
 #import "SKPDFView.h"
 #import "OBUtilities.h"
+#import "NSUserDefaultsController_SKExtensions.h"
 
 enum {
     SKASTextNote = 'NTxt',
@@ -563,10 +564,10 @@ static IMP originalSetBorder = NULL;
 - (id)initWithBounds:(NSRect)bounds {
     if (self = [super initWithBounds:bounds]) {
         [self setShouldPrint:YES];
-        NSColor *color = [NSUnarchiver unarchiveObjectWithData:[[NSUserDefaults standardUserDefaults] dataForKey:SKCircleNoteInteriorColorKey]];
+        NSColor *color = [[NSUserDefaults standardUserDefaults] colorForKey:SKCircleNoteInteriorColorKey];
         if ([color alphaComponent] > 0.0)
             [super setInteriorColor:color];
-        originalSetColor(self, @selector(setColor:), [NSUnarchiver unarchiveObjectWithData:[[NSUserDefaults standardUserDefaults] dataForKey:SKCircleNoteColorKey]]);
+        originalSetColor(self, @selector(setColor:), [[NSUserDefaults standardUserDefaults] colorForKey:SKCircleNoteColorKey]);
         [[self border] setLineWidth:[[NSUserDefaults standardUserDefaults] floatForKey:SKCircleNoteLineWidthKey]];
         [[self border] setDashPattern:[[NSUserDefaults standardUserDefaults] arrayForKey:SKCircleNoteDashPatternKey]];
         [[self border] setStyle:[[NSUserDefaults standardUserDefaults] floatForKey:SKCircleNoteLineStyleKey]];
@@ -628,10 +629,10 @@ static IMP originalSetBorder = NULL;
 - (id)initWithBounds:(NSRect)bounds {
     if (self = [super initWithBounds:bounds]) {
         [self setShouldPrint:YES];
-        NSColor *color = [NSUnarchiver unarchiveObjectWithData:[[NSUserDefaults standardUserDefaults] dataForKey:SKSquareNoteInteriorColorKey]];
+        NSColor *color = [[NSUserDefaults standardUserDefaults] colorForKey:SKSquareNoteInteriorColorKey];
         if ([color alphaComponent] > 0.0)
             [super setInteriorColor:color];
-        originalSetColor(self, @selector(setColor:), [NSUnarchiver unarchiveObjectWithData:[[NSUserDefaults standardUserDefaults] dataForKey:SKSquareNoteColorKey]]);
+        originalSetColor(self, @selector(setColor:), [[NSUserDefaults standardUserDefaults] colorForKey:SKSquareNoteColorKey]);
         [[self border] setLineWidth:[[NSUserDefaults standardUserDefaults] floatForKey:SKSquareNoteLineWidthKey]];
         [[self border] setDashPattern:[[NSUserDefaults standardUserDefaults] arrayForKey:SKSquareNoteDashPatternKey]];
         [[self border] setStyle:[[NSUserDefaults standardUserDefaults] floatForKey:SKSquareNoteLineStyleKey]];
@@ -737,7 +738,7 @@ static NSArray *createQuadPointsWithBounds(const NSRect bounds, const NSPoint or
             case kPDFMarkupTypeStrikeOut: colorKey = SKStrikeOutNoteColorKey; break;
         }
         if (colorKey)
-            originalSetColor(self, @selector(setColor:), [NSUnarchiver unarchiveObjectWithData:[[NSUserDefaults standardUserDefaults] dataForKey:colorKey]]);
+            originalSetColor(self, @selector(setColor:), [[NSUserDefaults standardUserDefaults] colorForKey:colorKey]);
         
         NSArray *quadPoints = nil;
         if (pointStrings) {
@@ -994,7 +995,7 @@ static BOOL adjacentCharacterBounds(NSRect rect1, NSRect rect2) {
         NSFont *font = [NSFont fontWithName:[[NSUserDefaults standardUserDefaults] stringForKey:SKTextNoteFontNameKey]
                                        size:[[NSUserDefaults standardUserDefaults] floatForKey:SKTextNoteFontSizeKey]];
         [super setFont:font];
-        originalSetColor(self, @selector(setColor:), [NSUnarchiver unarchiveObjectWithData:[[NSUserDefaults standardUserDefaults] dataForKey:SKFreeTextNoteColorKey]]);
+        originalSetColor(self, @selector(setColor:), [[NSUserDefaults standardUserDefaults] colorForKey:SKFreeTextNoteColorKey]);
         PDFBorder *border = [[PDFBorder allocWithZone:[self zone]] init];
         [border setLineWidth:[[NSUserDefaults standardUserDefaults] floatForKey:SKFreeTextNoteLineWidthKey]];
         [border setDashPattern:[[NSUserDefaults standardUserDefaults] arrayForKey:SKFreeTextNoteDashPatternKey]];
@@ -1091,7 +1092,7 @@ static BOOL adjacentCharacterBounds(NSRect rect1, NSRect rect2) {
 - (id)initWithBounds:(NSRect)bounds {
     if (self = [super initWithBounds:bounds]) {
         [self setShouldPrint:YES];
-        originalSetColor(self, @selector(setColor:), [NSUnarchiver unarchiveObjectWithData:[[NSUserDefaults standardUserDefaults] dataForKey:SKAnchoredNoteColorKey]]);
+        originalSetColor(self, @selector(setColor:), [[NSUserDefaults standardUserDefaults] colorForKey:SKAnchoredNoteColorKey]);
         [super setIconType:[[NSUserDefaults standardUserDefaults] integerForKey:SKAnchoredNoteIconTypeKey]];
         texts = [[NSArray alloc] initWithObjects:[[[SKNoteText alloc] initWithAnnotation:self] autorelease], nil];
         textStorage = [[NSTextStorage allocWithZone:[self zone]] init];
@@ -1277,7 +1278,7 @@ static BOOL adjacentCharacterBounds(NSRect rect1, NSRect rect2) {
 
 - (id)initWithBounds:(NSRect)bounds {
     if (self = [super initWithBounds:bounds]) {
-        originalSetColor(self, @selector(setColor:), [NSUnarchiver unarchiveObjectWithData:[[NSUserDefaults standardUserDefaults] dataForKey:SKLineNoteColorKey]]);
+        originalSetColor(self, @selector(setColor:), [[NSUserDefaults standardUserDefaults] colorForKey:SKLineNoteColorKey]);
         [super setStartLineStyle:[[NSUserDefaults standardUserDefaults] integerForKey:SKLineNoteStartLineStyleKey]];
         [super setEndLineStyle:[[NSUserDefaults standardUserDefaults] integerForKey:SKLineNoteEndLineStyleKey]];
         [super setStartPoint:NSMakePoint(0.0, 0.0)];

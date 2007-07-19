@@ -78,3 +78,18 @@
 }
 
 @end
+
+
+@implementation NSUserDefaults (SKExtensions)
+
+- (NSColor *)colorForKey:(NSString *)key {
+    NSData *data = [self dataForKey:key];
+    return data ? [NSUnarchiver unarchiveObjectWithData:data] : nil;
+}
+
+- (void)setColor:(NSColor *)color forKey:(NSString *)key {
+    NSData *data = color ? [NSArchiver archivedDataWithRootObject:color] : nil;
+    return [self setObject:data forKey:key];
+}
+
+@end
