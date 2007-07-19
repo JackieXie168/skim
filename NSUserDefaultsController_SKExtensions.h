@@ -49,3 +49,11 @@
 - (void)revertToInitialValuesForKeys:(NSArray *)keys;
 
 @end
+
+
+@interface NSUserDefaults (SKExtensions)
+
+- (NSColor *)colorForKey:(NSString *)key;
+- (void)setColor:(NSColor *)color forKey:(NSString *)key;
+
+@end

@@ -457,59 +457,59 @@ static BOOL fileIsInTrash(NSURL *fileURL)
 }
 
 - (NSColor *)backgroundColor {
-    return [NSUnarchiver unarchiveObjectWithData:[[NSUserDefaults standardUserDefaults] dataForKey:SKBackgroundColorKey]];
+    return [[NSUserDefaults standardUserDefaults] colorForKey:SKBackgroundColorKey];
 }
 
 - (void)setBackgroundColor:(NSColor *)color {
-    return [[NSUserDefaults standardUserDefaults] setObject:[NSArchiver archivedDataWithRootObject:color] forKey:SKBackgroundColorKey];
+    return [[NSUserDefaults standardUserDefaults] setColor:color forKey:SKBackgroundColorKey];
 }
 
 - (NSColor *)fullScreenBackgroundColor {
-    return [NSUnarchiver unarchiveObjectWithData:[[NSUserDefaults standardUserDefaults] dataForKey:SKFullScreenBackgroundColorKey]];
+    return [[NSUserDefaults standardUserDefaults] colorForKey:SKFullScreenBackgroundColorKey];
 }
 
 - (void)setFullScreenBackgroundColor:(NSColor *)color {
-    return [[NSUserDefaults standardUserDefaults] setObject:[NSArchiver archivedDataWithRootObject:color] forKey:SKFullScreenBackgroundColorKey];
+    return [[NSUserDefaults standardUserDefaults] setColor:color forKey:SKFullScreenBackgroundColorKey];
 }
 
 - (NSDictionary *)defaultNoteColors {
     NSUserDefaults *sud = [NSUserDefaults standardUserDefaults];
     return [NSDictionary dictionaryWithObjectsAndKeys: 
-        [NSUnarchiver unarchiveObjectWithData:[sud dataForKey:SKFreeTextNoteColorKey]], @"textNote", 
-        [NSUnarchiver unarchiveObjectWithData:[sud dataForKey:SKAnchoredNoteColorKey]], @"anchoredNote", 
-        [NSUnarchiver unarchiveObjectWithData:[sud dataForKey:SKCircleNoteColorKey]], @"circleNote", 
-        [NSUnarchiver unarchiveObjectWithData:[sud dataForKey:SKSquareNoteColorKey]], @"squareNote", 
-        [NSUnarchiver unarchiveObjectWithData:[sud dataForKey:SKHighlightNoteColorKey]], @"highlightNote", 
-        [NSUnarchiver unarchiveObjectWithData:[sud dataForKey:SKUnderlineNoteColorKey]], @"underlineNote", 
-        [NSUnarchiver unarchiveObjectWithData:[sud dataForKey:SKStrikeOutNoteColorKey]], @"strikeOutNote", 
-        [NSUnarchiver unarchiveObjectWithData:[sud dataForKey:SKLineNoteColorKey]], @"lineNote", 
-        [NSUnarchiver unarchiveObjectWithData:[sud dataForKey:SKCircleNoteInteriorColorKey]], @"circleNoteInterior", 
-        [NSUnarchiver unarchiveObjectWithData:[sud dataForKey:SKSquareNoteInteriorColorKey]], @"squareNoteInterior", nil];
+        [sud colorForKey:SKFreeTextNoteColorKey], @"textNote", 
+        [sud colorForKey:SKAnchoredNoteColorKey], @"anchoredNote", 
+        [sud colorForKey:SKCircleNoteColorKey], @"circleNote", 
+        [sud colorForKey:SKSquareNoteColorKey], @"squareNote", 
+        [sud colorForKey:SKHighlightNoteColorKey], @"highlightNote", 
+        [sud colorForKey:SKUnderlineNoteColorKey], @"underlineNote", 
+        [sud colorForKey:SKStrikeOutNoteColorKey], @"strikeOutNote", 
+        [sud colorForKey:SKLineNoteColorKey], @"lineNote", 
+        [sud colorForKey:SKCircleNoteInteriorColorKey], @"circleNoteInterior", 
+        [sud colorForKey:SKSquareNoteInteriorColorKey], @"squareNoteInterior", nil];
 }
 
 - (void)setDefaultNoteColors:(NSDictionary *)colorDict {
     NSUserDefaults *sud = [NSUserDefaults standardUserDefaults];
     NSColor *color;
     if (color = [colorDict objectForKey:@"textNote"])
-        [sud setObject:[NSArchiver archivedDataWithRootObject:color] forKey:SKFreeTextNoteColorKey];
+        [sud setColor:color forKey:SKFreeTextNoteColorKey];
     if (color = [colorDict objectForKey:@"anchoredNote"])
-        [sud setObject:[NSArchiver archivedDataWithRootObject:color] forKey:SKAnchoredNoteColorKey];
+        [sud setColor:color forKey:SKAnchoredNoteColorKey];
     if (color = [colorDict objectForKey:@"circleNote"])
-        [sud setObject:[NSArchiver archivedDataWithRootObject:color] forKey:SKCircleNoteColorKey];
+        [sud setColor:color forKey:SKCircleNoteColorKey];
     if (color = [colorDict objectForKey:@"squareNote"])
-        [sud setObject:[NSArchiver archivedDataWithRootObject:color] forKey:SKSquareNoteColorKey];
+        [sud setColor:color forKey:SKSquareNoteColorKey];
     if (color = [colorDict objectForKey:@"highlightNote"])
-        [sud setObject:[NSArchiver archivedDataWithRootObject:color] forKey:SKHighlightNoteColorKey];
+        [sud setColor:color forKey:SKHighlightNoteColorKey];
     if (color = [colorDict objectForKey:@"underlineNote"])
-        [sud setObject:[NSArchiver archivedDataWithRootObject:color] forKey:SKUnderlineNoteColorKey];
+        [sud setColor:color forKey:SKUnderlineNoteColorKey];
     if (color = [colorDict objectForKey:@"strikeOutNote"])
-        [sud setObject:[NSArchiver archivedDataWithRootObject:color] forKey:SKStrikeOutNoteColorKey];
+        [sud setColor:color forKey:SKStrikeOutNoteColorKey];
     if (color = [colorDict objectForKey:@"lineNote"])
-        [sud setObject:[NSArchiver archivedDataWithRootObject:color] forKey:SKLineNoteColorKey];
+        [sud setColor:color forKey:SKLineNoteColorKey];
     if (color = [colorDict objectForKey:@"circleNoteInterior"])
-        [sud setObject:[NSArchiver archivedDataWithRootObject:color] forKey:SKCircleNoteInteriorColorKey];
+        [sud setColor:color forKey:SKCircleNoteInteriorColorKey];
     if (color = [colorDict objectForKey:@"squareNoteInterior"])
-        [sud setObject:[NSArchiver archivedDataWithRootObject:color] forKey:SKSquareNoteInteriorColorKey];
+        [sud setColor:color forKey:SKSquareNoteInteriorColorKey];
 }
 
 - (unsigned int)countOfLines {

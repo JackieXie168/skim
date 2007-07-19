@@ -350,7 +350,7 @@ static void SKCGContextDrawGrabHandle(CGContextRef context, CGPoint point, float
         
         NSRect rect = [readingBar currentBoundsForBox:[self displayBox]];
         BOOL invert = [[NSUserDefaults standardUserDefaults] boolForKey:SKReadingBarInvertKey];
-        NSColor *nsColor = [NSUnarchiver unarchiveObjectWithData:[[NSUserDefaults standardUserDefaults] dataForKey:SKReadingBarColorKey]];
+        NSColor *nsColor = [[NSUserDefaults standardUserDefaults] colorForKey:SKReadingBarColorKey];
         float color[4] = { [nsColor redComponent], [nsColor greenComponent], [nsColor blueComponent], [nsColor alphaComponent] };
         
         CGContextSetFillColor(context, color);

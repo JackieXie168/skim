@@ -48,6 +48,12 @@ typedef enum _SKRightSidePaneState {
     SKSnapshotSidePaneState
 } SKRightSidePaneState;
 
+enum {
+    SKDefaultWindowOption,
+    SKMaximizeWindowOption,
+    SKFitWindowOption
+};
+
 typedef struct _SKPDFViewState {
 	int displayMode;
 	BOOL autoScales;
