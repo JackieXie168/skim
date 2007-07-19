@@ -90,6 +90,10 @@ extern OSStatus CGSNewTransition(const CGSConnection cid, const CGSTransitionSpe
 extern OSStatus CGSInvokeTransition(const CGSConnection cid, int transitionHandle, float duration);
 extern OSStatus CGSReleaseTransition(const CGSConnection cid, int transitionHandle);
 
+#pragma mark Check whether the above functions are actually defined at run time
+
+extern BOOL CoreGraphicsTransitionsDefined();
+
 #pragma mark SKTransitionController
 
 @class CIFilter, CIImage;
@@ -108,15 +112,6 @@ typedef enum _SKAnimationTransitionStyle {
 	SKWarpFlipTransition = CGSFlip,
     // Core Image transitions
     SKCoreImageTransition
-    /*
-    SKCopyMachineTransition,
-    SKDisintegrateTransition,
-    SKDissolveTransition,
-    SKFlashTransition,
-    SKModTransition,
-    SKPageCurlTransition,
-    SKRippleTransition,
-    SKSwipeTransition*/
 } SKAnimationTransitionStyle;
 
 @class SKTransitionView;
