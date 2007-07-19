@@ -68,14 +68,14 @@ typedef struct _SKPDFViewState {
     IBOutlet BDSKEdgeView       *pdfContentBox;
     
     IBOutlet NSBox              *leftSideContentBox;
-    IBOutlet NSBox              *leftSideBox;
+    IBOutlet NSView             *leftSideContentView;
     IBOutlet BDSKEdgeView       *leftSideEdgeView;
     IBOutlet BDSKCollapsibleView *leftSideCollapsibleView;
     IBOutlet NSSegmentedControl *leftSideButton;
     IBOutlet NSSearchField      *searchField;
     
     IBOutlet NSBox              *rightSideContentBox;
-    IBOutlet NSBox              *rightSideBox;
+    IBOutlet NSView             *rightSideContentView;
     IBOutlet BDSKEdgeView       *rightSideEdgeView;
     IBOutlet BDSKCollapsibleView *rightSideCollapsibleView;
     IBOutlet NSSegmentedControl *rightSideButton;

@@ -241,34 +241,10 @@ static NSString *SKRightSidePaneWidthKey = @"SKRightSidePaneWidth";
     
     [pdfContentBox setEdges:BDSKMinXEdgeMask | BDSKMaxXEdgeMask | BDSKMinYEdgeMask];
     [findEdgeView setEdges:BDSKMaxXEdgeMask];
-    [leftSideEdgeView setEdges:BDSKMaxXEdgeMask];
-    [rightSideEdgeView setEdges:BDSKMinXEdgeMask];
+    [leftSideEdgeView setEdges:BDSKMinXEdgeMask | BDSKMaxXEdgeMask];
+    [rightSideEdgeView setEdges:BDSKMinXEdgeMask | BDSKMaxXEdgeMask];
     
-    [pdfView setFrame:[[pdfContentBox contentView] bounds]];
-    
-    float width = NSWidth([leftSideContentBox frame]);
-    NSRect frame = [leftSideBox frame];
-    frame.size.width = width;
-    [leftSideBox setFrame:frame];
-    frame = [leftSideEdgeView frame];
-    frame.size.width = width;
-    [leftSideEdgeView setFrame:frame];
-    frame = [currentLeftSideView frame];
-    frame.size.width = width;
-    [currentLeftSideView setFrame:frame];
-    
-    width = NSWidth([rightSideContentBox frame]);
-    frame = [rightSideBox frame];
-    frame.size.width = width;
-    [rightSideBox setFrame:frame];
-    frame = [rightSideEdgeView frame];
-    frame.size.width = width;
-    [rightSideEdgeView setFrame:frame];
-    frame = [currentRightSideView frame];
-    frame.size.width = width;
-    [currentRightSideView setFrame:frame];
-    
-    frame = [leftSideButton frame];
+    NSRect frame = [leftSideButton frame];
     frame.size.height = SEGMENTED_CONTROL_HEIGHT;
     [leftSideButton setFrame:frame];
     [[leftSideButton cell] setToolTip:NSLocalizedString(@"View Thumbnails", @"Tool tip message") forSegment:SKThumbnailSidePaneState];
@@ -279,6 +255,17 @@ static NSString *SKRightSidePaneWidthKey = @"SKRightSidePaneWidth";
     [rightSideButton setFrame:frame];
     [[rightSideButton cell] setToolTip:NSLocalizedString(@"View Notes", @"Tool tip message") forSegment:SKNoteSidePaneState];
     [[rightSideButton cell] setToolTip:NSLocalizedString(@"View Snapshots", @"Tool tip message") forSegment:SKSnapshotSidePaneState];
+    
+    [leftSideContentView retain];
+    [leftSideContentView setFrame:[leftSideContentBox bounds]];
+    [leftSideContentBox addSubview:leftSideContentView];
+    [leftSideContentView release];
+    [rightSideContentView retain];
+    [rightSideContentView setFrame:[rightSideContentBox bounds]];
+    [rightSideContentBox addSubview:rightSideContentView];
+    [rightSideContentView release];
+    
+    [pdfView setFrame:[[pdfContentBox contentView] bounds]];
     
     [self displayOutlineView];
     [self displayNoteView];
@@ -1855,9 +1842,9 @@ static NSString *SKRightSidePaneWidthKey = @"SKRightSidePaneWidth";
         [leftSideWindow moveToScreen:screen];
     }
     
-    if ([[mainWindow firstResponder] isDescendantOf:leftSideBox])
+    if ([[mainWindow firstResponder] isDescendantOf:leftSideContentView])
         [mainWindow makeFirstResponder:nil];
-    [leftSideWindow setMainView:leftSideBox];
+    [leftSideWindow setMainView:leftSideContentView];
     [leftSideWindow setInitialFirstResponder:searchField];
     
     [leftSideEdgeView setEdges:BDSKNoEdgeMask];
@@ -1888,9 +1875,9 @@ static NSString *SKRightSidePaneWidthKey = @"SKRightSidePaneWidth";
         [rightSideWindow moveToScreen:screen];
     }
     
-    if ([[mainWindow firstResponder] isDescendantOf:rightSideBox])
+    if ([[mainWindow firstResponder] isDescendantOf:rightSideContentView])
         [mainWindow makeFirstResponder:nil];
-    [rightSideWindow setMainView:rightSideBox];
+    [rightSideWindow setMainView:rightSideContentView];
     
     [rightSideEdgeView setEdges:BDSKNoEdgeMask];
     
@@ -1907,18 +1894,18 @@ static NSString *SKRightSidePaneWidthKey = @"SKRightSidePaneWidth";
 }
 
 - (void)hideLeftSideWindow {
-    if ([[leftSideBox window] isEqual:leftSideWindow]) {
+    if ([[leftSideContentView window] isEqual:leftSideWindow]) {
         [leftSideWindow orderOut:self];
         
-        if ([[leftSideWindow firstResponder] isDescendantOf:leftSideBox])
+        if ([[leftSideWindow firstResponder] isDescendantOf:leftSideContentView])
             [leftSideWindow makeFirstResponder:nil];
-        [leftSideBox retain]; // leftSideBox is removed from its old superview in the process
-        [leftSideBox setFrame:[leftSideContentBox bounds]];
-        [leftSideContentBox addSubview:leftSideBox];
-        [leftSideBox release];
+        [leftSideContentView retain]; // leftSideContentView is removed from its old superview in the process
+        [leftSideContentView setFrame:[leftSideContentBox bounds]];
+        [leftSideContentBox addSubview:leftSideContentView];
+        [leftSideContentView release];
         
-        [leftSideEdgeView setEdges:BDSKMaxXEdgeMask];
-        [findEdgeView setEdges:BDSKMaxXEdgeMask];
+        [leftSideEdgeView setEdges:BDSKMinXEdgeMask | BDSKMaxXEdgeMask];
+        [findEdgeView setEdges:BDSKMinXEdgeMask | BDSKMaxXEdgeMask];
         
         if ([self isPresentation]) {
             [self setLeftSidePaneState:savedLeftSidePaneState];
@@ -1930,17 +1917,17 @@ static NSString *SKRightSidePaneWidthKey = @"SKRightSidePaneWidth";
 }
 
 - (void)hideRightSideWindow {
-    if ([[rightSideBox window] isEqual:rightSideWindow]) {
+    if ([[rightSideContentView window] isEqual:rightSideWindow]) {
         [rightSideWindow orderOut:self];
         
-        if ([[rightSideWindow firstResponder] isDescendantOf:rightSideBox])
+        if ([[rightSideWindow firstResponder] isDescendantOf:rightSideContentView])
             [rightSideWindow makeFirstResponder:nil];
-        [rightSideBox retain]; // rightSideBox is removed from its old superview in the process
-        [rightSideBox setFrame:[rightSideContentBox bounds]];
-        [rightSideContentBox addSubview:rightSideBox];
-        [rightSideBox release];
+        [rightSideContentView retain]; // rightSideContentView is removed from its old superview in the process
+        [rightSideContentView setFrame:[rightSideContentBox bounds]];
+        [rightSideContentBox addSubview:rightSideContentView];
+        [rightSideContentView release];
         
-        [rightSideEdgeView setEdges:BDSKMinXEdgeMask];
+        [rightSideEdgeView setEdges:BDSKMinXEdgeMask | BDSKMaxXEdgeMask];
         
         if ([self isPresentation]) {
             [rightSideWindow setLevel:NSFloatingWindowLevel];
