@@ -49,6 +49,12 @@
 #import <OpenGL/gl.h>
 #import "SKFullScreenWindow.h"
 
+BOOL CoreGraphicsTransitionsDefined() {
+    return &_CGSDefaultConnection != kUnresolvedCFragSymbolAddress &&
+           &CGSNewTransition != kUnresolvedCFragSymbolAddress &&
+           &CGSInvokeTransition != kUnresolvedCFragSymbolAddress &&
+           &CGSReleaseTransition != kUnresolvedCFragSymbolAddress;
+}
 
 @interface SKTransitionAnimation : NSAnimation {
     CIFilter *filter;
@@ -201,8 +207,10 @@
 	if (transitionStyle == SKNoTransition) {
 
 	} else if (transitionStyle < SKCoreImageTransition) {
-        // We don't want the window to draw the next state before the animation is run
-        [[view window] disableFlushWindow];
+        if (CoreGraphicsTransitionsDefined()) {
+            // We don't want the window to draw the next state before the animation is run
+            [[view window] disableFlushWindow];
+        }
     } else {
         NSRect bounds = [view bounds];
         [initialImage release];
@@ -221,37 +229,37 @@
 	if (transitionStyle == SKNoTransition) {
 
 	} else if (transitionStyle < SKCoreImageTransition) {
-        
-        // declare our variables  
-        int handle = -1;
-        CGSTransitionSpec spec;
-        
-        // specify our specifications
-        spec.unknown1 = 0;
-        spec.type =  transitionStyle;
-        spec.option = direction;
-        spec.backColour = NULL;
-        spec.wid = [[view window] windowNumber];
-        
-        // Let's get a connection
-        CGSConnection cgs = _CGSDefaultConnection();
-        
-        // Create a transition
-        CGSNewTransition(cgs, &spec, &handle);
-        
-        // Redraw the window
-        [[view window] display];
-        // Remember we disabled flushing in the previous method, we need to balance that.
-        [[view window] enableFlushWindow];
-        [[view window] flushWindow];
-        
-        CGSInvokeTransition(cgs, handle, duration);
-        // We need to wait for the transition to finish before we get rid of it, otherwise we'll get all sorts of nasty errors... or maybe not.
-        usleep((useconds_t)(duration * 1000000));
-        
-        CGSReleaseTransition(cgs, handle);
-        handle = 0;
-		
+        if (CoreGraphicsTransitionsDefined()) {
+            // declare our variables  
+            int handle = -1;
+            CGSTransitionSpec spec;
+            
+            // specify our specifications
+            spec.unknown1 = 0;
+            spec.type =  transitionStyle;
+            spec.option = direction;
+            spec.backColour = NULL;
+            spec.wid = [[view window] windowNumber];
+            
+            // Let's get a connection
+            CGSConnection cgs = _CGSDefaultConnection();
+            
+            // Create a transition
+            CGSNewTransition(cgs, &spec, &handle);
+            
+            // Redraw the window
+            [[view window] display];
+            // Remember we disabled flushing in the previous method, we need to balance that.
+            [[view window] enableFlushWindow];
+            [[view window] flushWindow];
+            
+            CGSInvokeTransition(cgs, handle, duration);
+            // We need to wait for the transition to finish before we get rid of it, otherwise we'll get all sorts of nasty errors... or maybe not.
+            usleep((useconds_t)(duration * 1000000));
+            
+            CGSReleaseTransition(cgs, handle);
+            handle = 0;
+		}
 	} else {
         
         if (initialImage == nil)
