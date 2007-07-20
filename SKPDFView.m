@@ -153,7 +153,7 @@ static void SKCGContextDrawGrabHandle(CGContextRef context, CGPoint point, float
     transitionController = nil;
     transitionStyle = SKNoTransition;
     transitionDuration = 1.0;
-    transitionShouldRestrict = NO;
+    transitionShouldRestrict = YES;
     
     spellingTag = [NSSpellChecker uniqueSpellDocumentTag];
     
@@ -590,7 +590,7 @@ static void SKCGContextDrawGrabHandle(CGContextRef context, CGPoint point, float
     if (transitionController == nil)
         transitionController = [[SKTransitionController alloc] initWithView:self];
     NSRect rect = [self convertRect:[[self currentPage] boundsForBox:[self displayBox]] fromPage:[self currentPage]];
-    [transitionController prepareForAnimationWithTransitionStyle:[self transitionStyle] fromRect:rect];
+    [transitionController prepareForAnimationWithTransitionStyle:[self transitionStyle] fromRect:rect shouldRestrict:transitionShouldRestrict];
     if (next)
         [super goToNextPage:self];
     else

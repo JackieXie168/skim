@@ -69,11 +69,15 @@ BOOL CoreGraphicsServicesTransitionsDefined() {
 
 @interface SKTransitionView : NSOpenGLView {
     SKTransitionAnimation *animation;
+    CIImage *image;
     CIContext *context;
     BOOL needsReshape;
 }
 - (SKTransitionAnimation *)animation;
 - (void)setAnimation:(SKTransitionAnimation *)newAnimation;
+- (CIImage *)image;
+- (void)setImage:(CIImage *)newImage;
+- (CIImage *)currentImage;
 @end
 
 #pragma mark -
@@ -144,6 +148,22 @@ BOOL CoreGraphicsServicesTransitionsDefined() {
     return inputMaskImage;
 }
 
+- (CIImage *)cropImage:(CIImage *)image toRect:(NSRect)rect {
+    CIFilter *cropFilter = [self filterWithName:@"CICrop"];
+    [cropFilter setValue:[CIVector vectorWithX:NSMinX(rect) Y:NSMinY(rect) Z:NSWidth(rect) W:NSHeight(rect)] forKey:@"inputRectangle"];
+    [cropFilter setValue:image forKey:@"inputImage"];
+    return [cropFilter valueForKey:@"outputImage"];
+}
+
+- (CIImage *)translateImage:(CIImage *)image xBy:(float)dx yBy:(float)dy {
+    CIFilter *translationFilter = [self filterWithName:@"CIAffineTransform"];
+    NSAffineTransform *affineTransform = [NSAffineTransform transform];
+    [affineTransform translateXBy:dx yBy:dy];
+    [translationFilter setValue:affineTransform forKey:@"inputTransform"];
+    [translationFilter setValue:image forKey:@"inputImage"];
+    return [translationFilter valueForKey:@"outputImage"];
+}
+
 - (CIFilter *)transitionFilter:(SKAnimationTransitionStyle)transitionStyle forRect:(NSRect)rect inBounds:(NSRect)bounds shouldRestrict:(BOOL)shouldRestrict initialCIImage:(CIImage *)initialCIImage finalCIImage:(CIImage *)finalCIImage {
     NSString *filterName = [[[self class] transitionFilterNames] objectAtIndex:transitionStyle - SKCoreImageTransition];
     CIFilter *transitionFilter = [self filterWithName:filterName];
@@ -176,25 +196,16 @@ BOOL CoreGraphicsServicesTransitionsDefined() {
                     [maskScalingFilter setValue:[NSNumber numberWithFloat:yScale] forKey:@"inputScale"];
                     [maskScalingFilter setValue:[NSNumber numberWithFloat:xScale / yScale] forKey:@"inputAspectRatio"];
                     [maskScalingFilter setValue:[self inputMaskImage] forKey:@"inputImage"];
-                    CIFilter *maskTranslationFilter = [self filterWithName:@"CIAffineTransform"];
-                    NSAffineTransform *affineTransform = [NSAffineTransform transform];
-                    [affineTransform translateXBy:NSMinX(rect) - NSMinX(bounds) yBy:NSMinY(rect) - NSMinY(bounds)];
-                    [maskTranslationFilter setValue:affineTransform forKey:@"inputTransform"];
-                    [maskTranslationFilter setValue:[maskScalingFilter valueForKey:@"outputImage"] forKey:@"inputImage"];
                     
-                    [transitionFilter setValue:[maskTranslationFilter valueForKey:@"outputImage"] forKey:key];
+                    [transitionFilter setValue:[self translateImage:[maskScalingFilter valueForKey:@"outputImage"] xBy:NSMinX(rect) - NSMinX(bounds) yBy:NSMinY(rect) - NSMinY(bounds)] forKey:key];
                 }
             }
         }
     }
     
     if (NSEqualRects(rect, bounds) == NO) {
-        CIFilter *cropFilter = [self filterWithName:@"CICrop"];
-        [cropFilter setValue:[CIVector vectorWithX:NSMinX(rect) Y:NSMinY(rect) Z:NSWidth(rect) W:NSHeight(rect)] forKey:@"inputRectangle"];
-        [cropFilter setValue:initialCIImage forKey:@"inputImage"];
-        initialCIImage = [cropFilter valueForKey:@"outputImage"];
-        [cropFilter setValue:finalCIImage forKey:@"inputImage"];
-        finalCIImage = [cropFilter valueForKey:@"outputImage"];
+        initialCIImage = [self cropImage:initialCIImage toRect:rect];
+        finalCIImage = [self cropImage:finalCIImage toRect:rect];
     }
     
     [transitionFilter setValue:initialCIImage forKey:@"inputImage"];
@@ -203,26 +214,53 @@ BOOL CoreGraphicsServicesTransitionsDefined() {
     return transitionFilter;
 }
 
-- (void)prepareForAnimationWithTransitionStyle:(SKAnimationTransitionStyle)transitionStyle fromRect:(NSRect)rect {
+- (CIImage *)createCurrentImage {
+    NSRect bounds = [view bounds];
+    NSBitmapImageRep *contentBitmap = [view bitmapImageRepForCachingDisplayInRect:bounds];
+    [contentBitmap clear];
+    [view cacheDisplayInRect:bounds toBitmapImageRep:contentBitmap];
+    return [[CIImage alloc] initWithBitmapImageRep:contentBitmap];
+}
+
+- (NSWindow *)transitionWindow {
+    if (transitionWindow == nil) {
+        transitionWindow = [[NSWindow alloc] initWithContentRect:NSZeroRect styleMask:NSBorderlessWindowMask backing:NSBackingStoreBuffered defer:NO];
+        [transitionWindow setReleasedWhenClosed:NO];
+        [transitionWindow setIgnoresMouseEvents:YES];
+        
+        transitionView = [[SKTransitionView alloc] init];
+        [transitionWindow setContentView:transitionView];
+        [transitionView release];
+    }
+    return transitionWindow;
+}
+
+- (SKTransitionView *)transitionView {
+    if (transitionView == nil)
+        [self transitionWindow];
+    return transitionView;
+}
+
+- (void)prepareForAnimationWithTransitionStyle:(SKAnimationTransitionStyle)transitionStyle fromRect:(NSRect)rect shouldRestrict:(BOOL)shouldRestrict {
 	if (transitionStyle == SKNoTransition) {
 
 	} else if (transitionStyle < SKCoreImageTransition) {
         if (CoreGraphicsServicesTransitionsDefined()) {
+            if (shouldRestrict) {
+                [initialImage release];
+                initialImage = [self createCurrentImage];
+            }
             // We don't want the window to draw the next state before the animation is run
             [[view window] disableFlushWindow];
         }
     } else {
-        NSRect bounds = [view bounds];
         [initialImage release];
-        NSBitmapImageRep *initialContentBitmap = [view bitmapImageRepForCachingDisplayInRect:bounds];
-        [initialContentBitmap clear];
-        [view cacheDisplayInRect:bounds toBitmapImageRep:initialContentBitmap];
-        initialImage = [[CIImage alloc] initWithBitmapImageRep:initialContentBitmap];
-        imageRect = rect;
+        initialImage = [self createCurrentImage];
         
         // We don't want the window to draw the next state before the animation is run
         [[view window] disableFlushWindow];
     }
+    imageRect = rect;
 }
 
 - (void)animateWithTransitionStyle:(SKAnimationTransitionStyle)transitionStyle direction:(CGSTransitionOption)direction duration:(float)duration fromRect:(NSRect)rect shouldRestrict:(BOOL)shouldRestrict {
@@ -230,22 +268,54 @@ BOOL CoreGraphicsServicesTransitionsDefined() {
 
 	} else if (transitionStyle < SKCoreImageTransition) {
         if (CoreGraphicsServicesTransitionsDefined()) {
+            
+            CIImage *finalImage = nil;
+            
+            if (shouldRestrict) {
+                if (initialImage == nil)
+                    [self prepareForAnimationWithTransitionStyle:transitionStyle fromRect:rect shouldRestrict:shouldRestrict];
+                
+                NSRect bounds = [view bounds];
+                imageRect = NSIntegralRect(NSIntersectionRect(NSUnionRect(imageRect, rect), bounds));
+                
+                finalImage = [self createCurrentImage];
+                
+                float dx = NSMinX(bounds) - NSMinX(imageRect);
+                float dy = NSMinY(bounds) - NSMinY(imageRect);
+                initialImage = [self translateImage:[self cropImage:[initialImage autorelease] toRect:rect] xBy:dx yBy:dy];
+                finalImage = [self translateImage:[self cropImage:[finalImage autorelease] toRect:rect] xBy:dx yBy:dy];
+                
+                NSRect frame = [view convertRect:imageRect toView:nil];
+                frame.origin = [[view window] convertBaseToScreen:frame.origin];
+                
+                [[self transitionView] setImage:initialImage];
+                initialImage = nil;
+                
+                [[self transitionWindow] setFrame:frame display:YES];
+                [[self transitionWindow] orderBack:nil];
+                [[view window] addChildWindow:[self transitionWindow] ordered:NSWindowAbove];
+            }
+            
             // declare our variables  
             int handle = -1;
             CGSTransitionSpec spec;
-            
             // specify our specifications
             spec.unknown1 = 0;
             spec.type =  transitionStyle;
             spec.option = direction;
             spec.backColour = NULL;
-            spec.wid = [[view window] windowNumber];
+            spec.wid = [(shouldRestrict ? [self transitionWindow] : [view window]) windowNumber];
             
             // Let's get a connection
             CGSConnection cgs = _CGSDefaultConnection();
             
             // Create a transition
             CGSNewTransition(cgs, &spec, &handle);
+            
+            if (shouldRestrict) {
+                [[self transitionView] setImage:finalImage];
+                [[self transitionView] display];
+            }
             
             // Redraw the window
             [[view window] display];
@@ -259,18 +329,22 @@ BOOL CoreGraphicsServicesTransitionsDefined() {
             
             CGSReleaseTransition(cgs, handle);
             handle = 0;
+            
+            if (shouldRestrict) {
+                [[view window] removeChildWindow:[self transitionWindow]];
+                [[self transitionWindow] orderOut:nil];
+                [[self transitionView] setImage:nil];
+            }
 		}
 	} else {
         
         if (initialImage == nil)
-            [self prepareForAnimationWithTransitionStyle:transitionStyle fromRect:rect];
-        NSRect bounds = [view bounds];
-        imageRect = NSIntersectionRect(NSUnionRect(imageRect, rect), bounds);
+            [self prepareForAnimationWithTransitionStyle:transitionStyle fromRect:rect shouldRestrict:shouldRestrict];
         
-        NSBitmapImageRep *finalContentBitmap = [view bitmapImageRepForCachingDisplayInRect:bounds];
-        [finalContentBitmap clear];
-        [view cacheDisplayInRect:bounds toBitmapImageRep:finalContentBitmap];
-        CIImage *finalImage = [[CIImage alloc] initWithBitmapImageRep:finalContentBitmap];
+        NSRect bounds = [view bounds];
+        imageRect = NSIntegralRect(NSIntersectionRect(NSUnionRect(imageRect, rect), bounds));
+        
+        CIImage *finalImage = [self createCurrentImage];
         
         CIFilter *transitionFilter = [self transitionFilter:transitionStyle forRect:imageRect inBounds:[view bounds] shouldRestrict:shouldRestrict initialCIImage:initialImage finalCIImage:finalImage];
         
@@ -282,24 +356,12 @@ BOOL CoreGraphicsServicesTransitionsDefined() {
         NSRect frame = [view convertRect:[view frame] toView:nil];
         frame.origin = [window convertBaseToScreen:frame.origin];
         
-        if (transitionWindow == nil) {
-            transitionWindow = [[NSWindow alloc] initWithContentRect:frame styleMask:NSBorderlessWindowMask backing:NSBackingStoreBuffered defer:NO screen:[window screen]];
-            [transitionWindow setReleasedWhenClosed:NO];
-            [transitionWindow setDisplaysWhenScreenProfileChanges:YES];
-            [transitionWindow setIgnoresMouseEvents:YES];
-            
-            transitionView = [[SKTransitionView alloc] init];
-            [transitionWindow setContentView:transitionView];
-            [transitionView release];
-        }
-        
         SKTransitionAnimation *animation = [[SKTransitionAnimation alloc] initWithFilter:transitionFilter duration:duration animationCurve:NSAnimationEaseInOut];
-        
-        [transitionView setAnimation:animation];
+        [[self transitionView] setAnimation:animation];
         [animation release];
         
-        [transitionWindow setFrame:frame display:NO];
-        [transitionWindow orderBack:nil];
+        [[self transitionWindow] setFrame:frame display:NO];
+        [[self transitionWindow] orderBack:nil];
         [window addChildWindow:transitionWindow ordered:NSWindowAbove];
         
         [animation startAnimation];
@@ -307,12 +369,12 @@ BOOL CoreGraphicsServicesTransitionsDefined() {
         // Update the view and its window, so it shows the correct state when it is shown.
         [view display];
         // Remember we disabled flushing in the previous method, we need to balance that.
-        [[view window] enableFlushWindow];
-        [[view window] flushWindow];
+        [window enableFlushWindow];
+        [window flushWindow];
         
         [window removeChildWindow:transitionWindow];
-        [transitionWindow orderOut:nil];
-        [transitionView setAnimation:nil];
+        [[self transitionWindow] orderOut:nil];
+        [[self transitionView] setAnimation:nil];
         
     }
 }
@@ -414,6 +476,22 @@ BOOL CoreGraphicsServicesTransitionsDefined() {
     }
 }
 
+- (CIImage *)image {
+    return image;
+}
+
+- (void)setImage:(CIImage *)newImage {
+    if (image != newImage) {
+        [image release];
+        image = [newImage retain];
+        [self setNeedsDisplay:YES];
+    }
+}
+
+- (CIImage *)currentImage {
+    return image ? image : [animation currentImage];
+}
+
 - (void)drawRect:(NSRect)rect {
     NSRect bounds = [self bounds];
     
@@ -430,10 +508,13 @@ BOOL CoreGraphicsServicesTransitionsDefined() {
 
         glMatrixMode(GL_MODELVIEW);
         glLoadIdentity();
+        
+        [[self openGLContext] update];
+        
         needsReshape = NO;
     }
     
-    glColor4f(0.0f, 0.0f, 0.0f, 0.0f);
+    glColor4f(0.0f, 0.0f, 0.0f, 1.0f);
     glBegin(GL_POLYGON);
         glVertex2f(NSMinX(rect), NSMinY(rect));
         glVertex2f(NSMaxX(rect), NSMinY(rect));
@@ -441,7 +522,9 @@ BOOL CoreGraphicsServicesTransitionsDefined() {
         glVertex2f(NSMinX(rect), NSMaxY(rect));
     glEnd();
     
-    if (animation) {
+    CIImage *currentImage = [self currentImage];
+    
+    if (currentImage) {
         
         if (context == nil) {
             NSOpenGLPixelFormat *pf = [self pixelFormat];
@@ -450,7 +533,7 @@ BOOL CoreGraphicsServicesTransitionsDefined() {
             context = [[CIContext contextWithCGLContext:CGLGetCurrentContext() pixelFormat:[pf CGLPixelFormatObj] options:nil] retain];
         }
         
-        [context drawImage:[animation currentImage] inRect:*(CGRect*)&bounds fromRect:*(CGRect*)&bounds];
+        [context drawImage:currentImage inRect:*(CGRect*)&bounds fromRect:*(CGRect*)&bounds];
         
     }
     

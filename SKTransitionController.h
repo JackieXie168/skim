@@ -129,7 +129,7 @@ typedef enum _SKAnimationTransitionStyle {
 - (NSView *)view;
 - (void)setView:(NSView *)newView;
 
-- (void)prepareForAnimationWithTransitionStyle:(SKAnimationTransitionStyle)transitionStyle fromRect:(NSRect)rect;
+- (void)prepareForAnimationWithTransitionStyle:(SKAnimationTransitionStyle)transitionStyle fromRect:(NSRect)rect shouldRestrict:(BOOL)shouldRestrict;
 - (void)animateWithTransitionStyle:(SKAnimationTransitionStyle)transitionStyle direction:(CGSTransitionOption)direction duration:(float)duration fromRect:(NSRect)rect shouldRestrict:(BOOL)shouldRestrict;
 
 @end
