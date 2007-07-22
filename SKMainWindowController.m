@@ -4241,6 +4241,8 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
         return [self isPresentation] == NO && [pdfView canZoomOut];
     } else if (action == @selector(doZoomToActualSize:)) {
         return fabs([pdfView scaleFactor] - 1.0 ) > 0.01;
+    } else if (action == @selector(doZoomToPhysicalSize:)) {
+        return [self isPresentation] == NO;
     } else if (action == @selector(doZoomToSelection:)) {
         return [self isPresentation] == NO && NSIsEmptyRect([pdfView currentSelectionRect]) == NO;
     } else if (action == @selector(doZoomToFit:)) {
