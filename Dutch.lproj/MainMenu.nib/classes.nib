@@ -28,6 +28,7 @@
                 doZoomOut = id; 
                 doZoomToActualSize = id; 
                 doZoomToFit = id; 
+                doZoomToPhysicalSize = id; 
                 doZoomToSelection = id; 
                 editBookmarks = id; 
                 editNote = id; 

@@ -1242,6 +1242,18 @@ static NSString *SKRightSidePaneWidthKey = @"SKRightSidePaneWidth";
     [pdfView zoomOut:sender];
 }
 
+- (IBAction)doZoomToPhysicalSize:(id)sender {
+    float scaleFactor = 1.0;
+    NSScreen *screen = [[self window] screen];
+	CGDirectDisplayID displayID = [[[screen deviceDescription] objectForKey:@"NSScreenNumber"] pointerValue];
+	CGSize physicalSize = CGDisplayScreenSize(displayID);
+    NSSize resolution = [[[screen deviceDescription] objectForKey:NSDeviceResolution] sizeValue];
+	
+    if (CGSizeEqualToSize(physicalSize, CGSizeZero) == NO)
+        scaleFactor = CGDisplayPixelsWide(displayID) * 25.4f / (physicalSize.width * resolution.width);
+    [pdfView setScaleFactor:scaleFactor];
+}
+
 - (IBAction)doZoomToActualSize:(id)sender {
     [pdfView setScaleFactor:1.0];
 }
