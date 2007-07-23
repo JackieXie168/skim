@@ -673,7 +673,7 @@ static NSString *SKLineWellWillBecomeActiveNotification = @"SKLineWellWillBecome
 		[bindingInfo setObject:bindingsData forKey:bindingName];
         
         void *context = (void *)[observationContexts objectForKey:bindingName];
-        [observableController addObserver:self forKeyPath:keyPath options:nil context:context];
+        [observableController addObserver:self forKeyPath:keyPath options:0 context:context];
         [self observeValueForKeyPath:keyPath ofObject:observableController change:nil context:context];
     } else {
         [super bind:bindingName toObject:observableController withKeyPath:keyPath options:options];
