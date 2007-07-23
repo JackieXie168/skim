@@ -120,6 +120,10 @@ typedef enum _SKAnimationTransitionStyle {
     NSView *view;
     CIImage *initialImage;
     NSRect imageRect;
+    
+    SKAnimationTransitionStyle transitionStyle;
+    float duration;
+    BOOL shouldRestrict;
 }
 
 + (NSArray *)transitionFilterNames;
@@ -129,7 +133,16 @@ typedef enum _SKAnimationTransitionStyle {
 - (NSView *)view;
 - (void)setView:(NSView *)newView;
 
-- (void)prepareForAnimationWithTransitionStyle:(SKAnimationTransitionStyle)transitionStyle fromRect:(NSRect)rect shouldRestrict:(BOOL)shouldRestrict;
-- (void)animateWithTransitionStyle:(SKAnimationTransitionStyle)transitionStyle direction:(CGSTransitionOption)direction duration:(float)duration fromRect:(NSRect)rect shouldRestrict:(BOOL)shouldRestrict;
+- (SKAnimationTransitionStyle)transitionStyle;
+- (void)setTransitionStyle:(SKAnimationTransitionStyle)style;
+
+- (float)duration;
+- (void)setDuration:(float)newDuration;
+
+- (BOOL)shouldRestrict;
+- (void)setShouldRestrict:(BOOL)flag;
+
+- (void)prepareAnimationForRect:(NSRect)rect;
+- (void)animateForRect:(NSRect)rect forward:(BOOL)forward;
 
 @end

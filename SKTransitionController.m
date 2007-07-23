@@ -82,6 +82,11 @@ BOOL CoreGraphicsServicesTransitionsDefined() {
 
 #pragma mark -
 
+@interface SKTransitionWindow : NSWindow
+@end
+
+#pragma mark -
+
 @implementation SKTransitionController
 
 + (NSArray *)transitionFilterNames {
@@ -99,6 +104,9 @@ BOOL CoreGraphicsServicesTransitionsDefined() {
 - (id)initWithView:(NSView *)aView {
     if (self = [super init]) {
         view = aView;
+        transitionStyle = SKNoTransition;
+        duration = 1.0;
+        shouldRestrict = YES;
     }
     return self;
 }
@@ -115,6 +123,30 @@ BOOL CoreGraphicsServicesTransitionsDefined() {
 
 - (void)setView:(NSView *)newView {
     view = newView;
+}
+
+- (SKAnimationTransitionStyle)transitionStyle {
+    return transitionStyle;
+}
+
+- (void)setTransitionStyle:(SKAnimationTransitionStyle)style {
+    transitionStyle = style;
+}
+
+- (float)duration {
+    return duration;
+}
+
+- (void)setDuration:(float)newDuration {
+    duration = newDuration;
+}
+
+- (BOOL)shouldRestrict {
+    return shouldRestrict;
+}
+
+- (void)setShouldRestrict:(BOOL)flag {
+    shouldRestrict = flag;
 }
 
 - (CIFilter *)filterWithName:(NSString *)name {
@@ -164,9 +196,11 @@ BOOL CoreGraphicsServicesTransitionsDefined() {
     return [translationFilter valueForKey:@"outputImage"];
 }
 
-- (CIFilter *)transitionFilter:(SKAnimationTransitionStyle)transitionStyle forRect:(NSRect)rect inBounds:(NSRect)bounds shouldRestrict:(BOOL)shouldRestrict initialCIImage:(CIImage *)initialCIImage finalCIImage:(CIImage *)finalCIImage {
+- (CIFilter *)transitionFilterForRect:(NSRect)rect initialCIImage:(CIImage *)initialCIImage finalCIImage:(CIImage *)finalCIImage {
     NSString *filterName = [[[self class] transitionFilterNames] objectAtIndex:transitionStyle - SKCoreImageTransition];
     CIFilter *transitionFilter = [self filterWithName:filterName];
+    
+    NSRect bounds = [view bounds];
     
     NSEnumerator *keyEnum = [[transitionFilter inputKeys] objectEnumerator];
     NSString *key;
@@ -224,7 +258,7 @@ BOOL CoreGraphicsServicesTransitionsDefined() {
 
 - (NSWindow *)transitionWindow {
     if (transitionWindow == nil) {
-        transitionWindow = [[NSWindow alloc] initWithContentRect:NSZeroRect styleMask:NSBorderlessWindowMask backing:NSBackingStoreBuffered defer:NO];
+        transitionWindow = [[SKTransitionWindow alloc] initWithContentRect:NSZeroRect styleMask:NSBorderlessWindowMask backing:NSBackingStoreBuffered defer:NO];
         [transitionWindow setReleasedWhenClosed:NO];
         [transitionWindow setIgnoresMouseEvents:YES];
         
@@ -241,9 +275,9 @@ BOOL CoreGraphicsServicesTransitionsDefined() {
     return transitionView;
 }
 
-- (void)prepareForAnimationWithTransitionStyle:(SKAnimationTransitionStyle)transitionStyle fromRect:(NSRect)rect shouldRestrict:(BOOL)shouldRestrict {
+- (void)prepareAnimationForRect:(NSRect)rect {
 	if (transitionStyle == SKNoTransition) {
-
+        // Do nothing
 	} else if (transitionStyle < SKCoreImageTransition) {
         if (CoreGraphicsServicesTransitionsDefined()) {
             if (shouldRestrict) {
@@ -263,9 +297,9 @@ BOOL CoreGraphicsServicesTransitionsDefined() {
     imageRect = rect;
 }
 
-- (void)animateWithTransitionStyle:(SKAnimationTransitionStyle)transitionStyle direction:(CGSTransitionOption)direction duration:(float)duration fromRect:(NSRect)rect shouldRestrict:(BOOL)shouldRestrict {
+- (void)animateForRect:(NSRect)rect forward:(BOOL)forward {
 	if (transitionStyle == SKNoTransition) {
-
+        // Do nothing
 	} else if (transitionStyle < SKCoreImageTransition) {
         if (CoreGraphicsServicesTransitionsDefined()) {
             
@@ -273,7 +307,7 @@ BOOL CoreGraphicsServicesTransitionsDefined() {
             
             if (shouldRestrict) {
                 if (initialImage == nil)
-                    [self prepareForAnimationWithTransitionStyle:transitionStyle fromRect:rect shouldRestrict:shouldRestrict];
+                    [self prepareAnimationForRect:rect];
                 
                 NSRect bounds = [view bounds];
                 imageRect = NSIntegralRect(NSIntersectionRect(NSUnionRect(imageRect, rect), bounds));
@@ -302,7 +336,7 @@ BOOL CoreGraphicsServicesTransitionsDefined() {
             // specify our specifications
             spec.unknown1 = 0;
             spec.type =  transitionStyle;
-            spec.option = direction;
+            spec.option = forward ? CGSLeft : CGSRight;
             spec.backColour = NULL;
             spec.wid = [(shouldRestrict ? [self transitionWindow] : [view window]) windowNumber];
             
@@ -339,22 +373,21 @@ BOOL CoreGraphicsServicesTransitionsDefined() {
 	} else {
         
         if (initialImage == nil)
-            [self prepareForAnimationWithTransitionStyle:transitionStyle fromRect:rect shouldRestrict:shouldRestrict];
+            [self prepareAnimationForRect:rect];
         
         NSRect bounds = [view bounds];
         imageRect = NSIntegralRect(NSIntersectionRect(NSUnionRect(imageRect, rect), bounds));
         
         CIImage *finalImage = [self createCurrentImage];
         
-        CIFilter *transitionFilter = [self transitionFilter:transitionStyle forRect:imageRect inBounds:[view bounds] shouldRestrict:shouldRestrict initialCIImage:initialImage finalCIImage:finalImage];
+        CIFilter *transitionFilter = [self transitionFilterForRect:imageRect initialCIImage:initialImage finalCIImage:finalImage];
         
         [finalImage release];
         [initialImage release];
         initialImage = nil;
         
-        NSWindow *window = [view window];
         NSRect frame = [view convertRect:[view frame] toView:nil];
-        frame.origin = [window convertBaseToScreen:frame.origin];
+        frame.origin = [[view window] convertBaseToScreen:frame.origin];
         
         SKTransitionAnimation *animation = [[SKTransitionAnimation alloc] initWithFilter:transitionFilter duration:duration animationCurve:NSAnimationEaseInOut];
         [[self transitionView] setAnimation:animation];
@@ -362,17 +395,17 @@ BOOL CoreGraphicsServicesTransitionsDefined() {
         
         [[self transitionWindow] setFrame:frame display:NO];
         [[self transitionWindow] orderBack:nil];
-        [window addChildWindow:transitionWindow ordered:NSWindowAbove];
+        [[view window] addChildWindow:transitionWindow ordered:NSWindowAbove];
         
         [animation startAnimation];
         
         // Update the view and its window, so it shows the correct state when it is shown.
         [view display];
         // Remember we disabled flushing in the previous method, we need to balance that.
-        [window enableFlushWindow];
-        [window flushWindow];
+        [[view window] enableFlushWindow];
+        [[view window] flushWindow];
         
-        [window removeChildWindow:transitionWindow];
+        [[view window] removeChildWindow:transitionWindow];
         [[self transitionWindow] orderOut:nil];
         [[self transitionView] setAnimation:nil];
         
@@ -445,8 +478,8 @@ BOOL CoreGraphicsServicesTransitionsDefined() {
     long parm = 1;
     [[self openGLContext] setValues:&parm forParameter:NSOpenGLCPSwapInterval];
     
-    // Make sure that everything we don't need is disabled. Some of these
-    //are enabled by default and can slow down rendering.
+    // Make sure that everything we don't need is disabled.
+    // Some of these are enabled by default and can slow down rendering.
     
     glDisable(GL_ALPHA_TEST);
     glDisable(GL_DEPTH_TEST);
@@ -492,29 +525,44 @@ BOOL CoreGraphicsServicesTransitionsDefined() {
     return image ? image : [animation currentImage];
 }
 
-- (void)drawRect:(NSRect)rect {
+- (CIContext *)ciContext {
+    if (context == nil) {
+        [[self openGLContext] makeCurrentContext];
+        
+        NSOpenGLPixelFormat *pf = [self pixelFormat];
+        if (pf == nil)
+            pf = [[self class] defaultPixelFormat];
+        
+        context = [[CIContext contextWithCGLContext:CGLGetCurrentContext() pixelFormat:[pf CGLPixelFormatObj] options:nil] retain];
+    }
+    return context;
+}
+
+- (void)updateMatrices {
     NSRect bounds = [self bounds];
+    
+    [[self openGLContext] update];
+    
+    glViewport(0, 0, NSWidth(bounds), NSHeight(bounds));
+
+    glMatrixMode(GL_PROJECTION);
+    glLoadIdentity();
+    glOrtho(NSMinX(bounds), NSMaxX(bounds), NSMinY(bounds), NSMaxY(bounds), -1, 1);
+
+    glMatrixMode(GL_MODELVIEW);
+    glLoadIdentity();
+    
+    needsReshape = NO;
+}
+
+- (void)drawRect:(NSRect)rect {
     
     [[self openGLContext] makeCurrentContext];
     
-    if (needsReshape) {
-        // reset the views coordinate system when the view has been resized or scrolled
-        
-        glViewport (0, 0, NSWidth(bounds), NSHeight(bounds));
-
-        glMatrixMode(GL_PROJECTION);
-        glLoadIdentity();
-        glOrtho(NSMinX(bounds), NSMaxX(bounds), NSMinY(bounds), NSMaxY(bounds), -1, 1);
-
-        glMatrixMode(GL_MODELVIEW);
-        glLoadIdentity();
-        
-        [[self openGLContext] update];
-        
-        needsReshape = NO;
-    }
+    if (needsReshape)
+        [self updateMatrices];
     
-    glColor4f(0.0f, 0.0f, 0.0f, 1.0f);
+    glColor4f(0.0f, 0.0f, 0.0f, 0.0f);
     glBegin(GL_POLYGON);
         glVertex2f(NSMinX(rect), NSMinY(rect));
         glVertex2f(NSMaxX(rect), NSMinY(rect));
@@ -523,21 +571,18 @@ BOOL CoreGraphicsServicesTransitionsDefined() {
     glEnd();
     
     CIImage *currentImage = [self currentImage];
-    
     if (currentImage) {
-        
-        if (context == nil) {
-            NSOpenGLPixelFormat *pf = [self pixelFormat];
-            if (pf == nil)
-                pf = [[self class] defaultPixelFormat];
-            context = [[CIContext contextWithCGLContext:CGLGetCurrentContext() pixelFormat:[pf CGLPixelFormatObj] options:nil] retain];
-        }
-        
-        [context drawImage:currentImage inRect:*(CGRect*)&bounds fromRect:*(CGRect*)&bounds];
-        
+        NSRect bounds = [self bounds];
+        [[self ciContext] drawImage:currentImage inRect:*(CGRect*)&bounds fromRect:*(CGRect*)&bounds];
     }
     
     glFlush();
 }
 
+@end
+
+
+@implementation SKTransitionWindow
+- (BOOL)canBecomeMainWindow { return NO; }
+- (BOOL)canBecomeKeyWindow { return NO; }
 @end

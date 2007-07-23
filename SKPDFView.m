@@ -151,9 +151,6 @@ static void SKCGContextDrawGrabHandle(CGContextRef context, CGPoint point, float
     annotationMode = [[NSUserDefaults standardUserDefaults] integerForKey:SKLastAnnotationModeKey];
     
     transitionController = nil;
-    transitionStyle = SKNoTransition;
-    transitionDuration = 1.0;
-    transitionShouldRestrict = YES;
     
     spellingTag = [NSSpellChecker uniqueSpellDocumentTag];
     
@@ -533,28 +530,34 @@ static void SKCGContextDrawGrabHandle(CGContextRef context, CGPoint point, float
     }
 }
 
+- (SKTransitionController * )transitionController {
+    if (transitionController == nil)
+        transitionController = [[SKTransitionController alloc] initWithView:self];
+    return transitionController;
+}
+
 - (SKAnimationTransitionStyle)transitionStyle {
-    return transitionStyle;
+    return [[self transitionController] transitionStyle];
 }
 
 - (void)setTransitionStyle:(SKAnimationTransitionStyle)style {
-    transitionStyle = style;
+    [[self transitionController] setTransitionStyle:style];
 }
 
 - (float)transitionDuration {
-    return transitionDuration;
+    return [[self transitionController] duration];
 }
 
 - (void)setTransitionDuration:(float)duration {
-    transitionDuration = duration;
+    [[self transitionController] setDuration:duration];
 }
 
 - (BOOL)transitionShouldRestrict {
-    return transitionShouldRestrict;
+    return [[self transitionController] shouldRestrict];
 }
 
 - (void)setTransitionShouldRestrict:(BOOL)flag {
-    transitionShouldRestrict = flag;
+    [[self transitionController] setShouldRestrict:flag];
 }
 
 #pragma mark Reading bar
@@ -587,27 +590,25 @@ static void SKCGContextDrawGrabHandle(CGContextRef context, CGPoint point, float
 #pragma mark Actions
 
 - (void)animateTransitionForNextPage:(BOOL)next {
-    if (transitionController == nil)
-        transitionController = [[SKTransitionController alloc] initWithView:self];
     NSRect rect = [self convertRect:[[self currentPage] boundsForBox:[self displayBox]] fromPage:[self currentPage]];
-    [transitionController prepareForAnimationWithTransitionStyle:[self transitionStyle] fromRect:rect shouldRestrict:transitionShouldRestrict];
+    [[self transitionController] prepareAnimationForRect:rect];
     if (next)
         [super goToNextPage:self];
     else
         [super goToPreviousPage:self];
     rect = [self convertRect:[[self currentPage] boundsForBox:[self displayBox]] fromPage:[self currentPage]];
-    [transitionController animateWithTransitionStyle:[self transitionStyle] direction:next ? CGSLeft : CGSRight duration:[self transitionDuration] fromRect:rect shouldRestrict:transitionShouldRestrict];
+    [[self transitionController] animateForRect:rect forward:next];
 }
 
 - (void)goToNextPage:(id)sender {
-    if (hasNavigation && autohidesCursor && [self transitionStyle] != SKNoTransition && [self canGoToNextPage])
+    if (hasNavigation && autohidesCursor && transitionController && [self transitionStyle] != SKNoTransition && [self canGoToNextPage])
         [self animateTransitionForNextPage:YES];
     else
         [super goToNextPage:sender];
 }
 
 - (void)goToPreviousPage:(id)sender {
-    if (hasNavigation && autohidesCursor && [self transitionStyle] != SKNoTransition && [self canGoToPreviousPage])
+    if (hasNavigation && autohidesCursor && transitionController && [self transitionStyle] != SKNoTransition && [self canGoToPreviousPage])
         [self animateTransitionForNextPage:NO];
     else
         [super goToPreviousPage:sender];

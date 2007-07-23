@@ -91,10 +91,6 @@ typedef enum _SKNoteType {
     
     SKTransitionController *transitionController;
     
-    SKAnimationTransitionStyle transitionStyle;
-    float transitionDuration;
-    BOOL transitionShouldRestrict;
-    
 	PDFAnnotation *activeAnnotation;
 	PDFAnnotation *highlightAnnotation;
 	PDFAnnotationTextWidget *editAnnotation;
