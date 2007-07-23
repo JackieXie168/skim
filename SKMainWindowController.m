@@ -1413,7 +1413,9 @@ static NSString *SKRightSidePaneWidthKey = @"SKRightSidePaneWidth";
 - (IBAction)cropAll:(id)sender {
     NSRect rect[2] = {NSIntegralRect([pdfView currentSelectionRect]), NSZeroRect};
     NSArray *rectArray;
-    if (NSIsEmptyRect(rect[0])) {
+    BOOL emptySelection = NSIsEmptyRect(rect[0]);
+    
+    if (emptySelection) {
         if (progressSheet == nil) {
             if ([NSBundle loadNibNamed:@"ProgressSheet" owner:self])  {
                 [progressBar setUsesThreadedAnimation:YES];
@@ -1459,8 +1461,10 @@ static NSString *SKRightSidePaneWidthKey = @"SKRightSidePaneWidth";
     [self cropPagesToRects:rectArray];
     [pdfView setCurrentSelectionRect:NSZeroRect];
 	
-    [NSApp endSheet:progressSheet];
-    [progressSheet orderOut:self];
+    if (emptySelection) {
+        [NSApp endSheet:progressSheet];
+        [progressSheet orderOut:self];
+    }
 }
 
 - (IBAction)autoCropAll:(id)sender {
