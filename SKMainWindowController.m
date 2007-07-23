@@ -1245,7 +1245,7 @@ static NSString *SKRightSidePaneWidthKey = @"SKRightSidePaneWidth";
 - (IBAction)doZoomToPhysicalSize:(id)sender {
     float scaleFactor = 1.0;
     NSScreen *screen = [[self window] screen];
-	CGDirectDisplayID displayID = [[[screen deviceDescription] objectForKey:@"NSScreenNumber"] pointerValue];
+	CGDirectDisplayID displayID = [[[screen deviceDescription] objectForKey:@"NSScreenNumber"] unsignedIntValue];
 	CGSize physicalSize = CGDisplayScreenSize(displayID);
     NSSize resolution = [[[screen deviceDescription] objectForKey:NSDeviceResolution] sizeValue];
 	
@@ -3152,7 +3152,7 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
             if ([tcID isEqualToString:@"type"]) {
                 [sds insertObject:[[[NSSortDescriptor alloc] initWithKey:@"noteType" ascending:YES selector:@selector(caseInsensitiveCompare:)] autorelease] atIndex:0];
             } else if ([tcID isEqualToString:@"note"]) {
-                [sds insertObject:[[[NSSortDescriptor alloc] initWithKey:@"contents" ascending:YES selector:@selector(caseInsensitiveNumericCompare:)] autorelease] atIndex:0];
+                [sds insertObject:[[[NSSortDescriptor alloc] initWithKey:@"contents" ascending:YES selector:@selector(localizedCaseInsensitiveNumericCompare:)] autorelease] atIndex:0];
             } else if ([tcID isEqualToString:@"page"]) {
                 if (oldTableColumn == nil)
                     ascending = NO;

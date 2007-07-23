@@ -49,6 +49,7 @@
 
 - (NSString *)stringByEscapingShellChars;
 - (NSArray *)shellScriptArgumentsArray;
+- (NSComparisonResult)localizedCaseInsensitiveNumericCompare:(NSString *)aStr;
 
 - (NSRange)rangeOfLeadingEmptyLine;
 - (NSRange)rangeOfLeadingEmptyLineInRange:(NSRange)range;

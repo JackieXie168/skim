@@ -38,7 +38,7 @@
 
 #import "NSArray_SKExtensions.h"
 #import "NSValue_SKExtensions.h"
-
+#import "NSString_SKExtensions.h"
 
 @implementation NSArray (SKExtensions)
 
@@ -59,7 +59,7 @@
 }
 
 - (NSArray *)arraySortedByContents {
-    return [self sortedArrayUsingDescriptors:[NSArray arrayWithObject:[[[NSSortDescriptor alloc] initWithKey:@"contents" ascending:YES selector:@selector(caseInsensitiveNumericCompare:)] autorelease]]];
+    return [self sortedArrayUsingDescriptors:[NSArray arrayWithObject:[[[NSSortDescriptor alloc] initWithKey:@"contents" ascending:YES selector:@selector(localizedCaseInsensitiveNumericCompare:)] autorelease]]];
 }
 
 - (NSArray *)arraySortedByTypeAndContents {
