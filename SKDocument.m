@@ -454,7 +454,7 @@ static NSPopUpButton *popUpButtonSubview(NSView *view)
             [rootObject addObject:[[notes objectAtIndex:i] dictionaryValue]];
         }
         data = [NSKeyedArchiver archivedDataWithRootObject:rootObject];
-        if ([fm setExtendedAttributeNamed:@"net_sourceforge_skim-app_notes" toValue:data atPath:path options:nil error:&error] == NO) {
+        if ([fm setExtendedAttributeNamed:@"net_sourceforge_skim-app_notes" toValue:data atPath:path options:kBDSKXattrDefault error:&error] == NO) {
             success = NO;
             if (outError) *outError = error;
             NSLog(@"%@: %@", self, error);

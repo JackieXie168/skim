@@ -319,7 +319,7 @@ static NSString *SKColorsBindingName = @"colors";
         NSDictionary *bindingsData = [NSDictionary dictionaryWithObjectsAndKeys:observableController, NSObservedObjectKey, [[keyPath copy] autorelease], NSObservedKeyPathKey, [[options copy] autorelease], NSOptionsKey, nil];
 		[bindingInfo setObject:bindingsData forKey:bindingName];
         
-        [observableController addObserver:self forKeyPath:keyPath options:nil context:SKColorsObservationContext];
+        [observableController addObserver:self forKeyPath:keyPath options:0 context:SKColorsObservationContext];
         [self observeValueForKeyPath:keyPath ofObject:observableController change:nil context:SKColorsObservationContext];
     } else {
         [super bind:bindingName toObject:observableController withKeyPath:keyPath options:options];
