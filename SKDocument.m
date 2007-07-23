@@ -133,7 +133,7 @@ NSString *SKDocumentWillSaveNotification = @"SKDocumentWillSaveNotification";
     NSAppleEventDescriptor *event = [[NSAppleEventManager sharedAppleEventManager] currentAppleEvent];
     NSString *searchString = [[event descriptorForKeyword:keyAESearchText] stringValue];
     
-    if([event eventID] == kAEOpenDocuments && searchString != nil){
+    if([event eventID] == kAEOpenDocuments && searchString != nil && [@"" isEqualToString:searchString] == NO){
         [[self mainWindowController] displaySearchResultsForString:searchString];
     }
 }
