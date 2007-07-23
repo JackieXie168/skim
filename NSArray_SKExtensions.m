@@ -59,7 +59,7 @@
 }
 
 - (NSArray *)arraySortedByContents {
-    return [self sortedArrayUsingDescriptors:[NSArray arrayWithObject:[[[NSSortDescriptor alloc] initWithKey:@"contents" ascending:YES selector:@selector(caseInsensitiveCompare:)] autorelease]]];
+    return [self sortedArrayUsingDescriptors:[NSArray arrayWithObject:[[[NSSortDescriptor alloc] initWithKey:@"contents" ascending:YES selector:@selector(caseInsensitiveNumericCompare:)] autorelease]]];
 }
 
 - (NSArray *)arraySortedByTypeAndContents {

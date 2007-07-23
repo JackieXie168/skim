@@ -3150,9 +3150,9 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
             NSSortDescriptor *boundsSortDescriptor = [[[NSSortDescriptor alloc] initWithKey:@"bounds" ascending:ascending selector:@selector(boundsCompare:)] autorelease];
             NSMutableArray *sds = [NSMutableArray arrayWithObjects:pageIndexSortDescriptor, boundsSortDescriptor, nil];
             if ([tcID isEqualToString:@"type"]) {
-                [sds insertObject:[[[NSSortDescriptor alloc] initWithKey:@"noteType" ascending:YES] autorelease] atIndex:0];
+                [sds insertObject:[[[NSSortDescriptor alloc] initWithKey:@"noteType" ascending:YES selector:@selector(caseInsensitiveCompare:)] autorelease] atIndex:0];
             } else if ([tcID isEqualToString:@"note"]) {
-                [sds insertObject:[[[NSSortDescriptor alloc] initWithKey:@"contents" ascending:YES selector:@selector(caseInsensitiveCompare:)] autorelease] atIndex:0];
+                [sds insertObject:[[[NSSortDescriptor alloc] initWithKey:@"contents" ascending:YES selector:@selector(caseInsensitiveNumericCompare:)] autorelease] atIndex:0];
             } else if ([tcID isEqualToString:@"page"]) {
                 if (oldTableColumn == nil)
                     ascending = NO;
