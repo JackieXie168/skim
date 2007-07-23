@@ -1245,7 +1245,7 @@ static NSString *SKRightSidePaneWidthKey = @"SKRightSidePaneWidth";
 - (IBAction)doZoomToPhysicalSize:(id)sender {
     float scaleFactor = 1.0;
     NSScreen *screen = [[self window] screen];
-	CGDirectDisplayID displayID = [[[screen deviceDescription] objectForKey:@"NSScreenNumber"] unsignedIntValue];
+	CGDirectDisplayID displayID = (CGDirectDisplayID)[[[screen deviceDescription] objectForKey:@"NSScreenNumber"] unsignedIntValue];
 	CGSize physicalSize = CGDisplayScreenSize(displayID);
     NSSize resolution = [[[screen deviceDescription] objectForKey:NSDeviceResolution] sizeValue];
 	
