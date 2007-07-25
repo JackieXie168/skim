@@ -1,0 +1,94 @@
+{
+    IBClasses = (
+        {
+            ACTIONS = {
+                addBookmark = id; 
+                alternatePaste = id; 
+                autoCropAll = id; 
+                autoSelectContent = id; 
+                changeAnnotationMode = id; 
+                changeDisplayBox = id; 
+                changeLeftSidePaneState = id; 
+                changeRightSidePaneState = id; 
+                changeToolMode = id; 
+                chooseTransition = id; 
+                createNewNote = id; 
+                crop = id; 
+                cropAll = id; 
+                displayCropBox = id; 
+                displayFacingPages = id; 
+                displayMediaBox = id; 
+                displaySinglePages = id; 
+                doGoBack = id; 
+                doGoForward = id; 
+                doGoToNextPage = id; 
+                doGoToPage = id; 
+                doGoToPreviousPage = id; 
+                doZoomIn = id; 
+                doZoomOut = id; 
+                doZoomToActualSize = id; 
+                doZoomToFit = id; 
+                doZoomToPhysicalSize = id; 
+                doZoomToSelection = id; 
+                editBookmarks = id; 
+                editNote = id; 
+                getInfo = id; 
+                myAction = id; 
+                newDocumentFromClipboard = id; 
+                orderFrontLineInspector = id; 
+                password = id; 
+                performFit = id; 
+                readNotes = id; 
+                rotateAllLeft = id; 
+                rotateAllRight = id; 
+                rotateLeft = id; 
+                rotateRight = id; 
+                saveArchive = id; 
+                savePDFSettingToDefaults = id; 
+                searchPDF = id; 
+                smartAutoCropAll = id; 
+                takeSnapshot = id; 
+                toggleAutoScale = id; 
+                toggleDisplayAsBook = id; 
+                toggleDisplayContinuous = id; 
+                toggleDisplayPageBreaks = id; 
+                toggleFullScreen = id; 
+                toggleHideNotes = id; 
+                toggleLeftSidePane = id; 
+                togglePresentation = id; 
+                toggleReadingBar = id; 
+                toggleRightSidePane = id; 
+                toggleStatusBar = id; 
+            }; 
+            CLASS = FirstResponder; 
+            LANGUAGE = ObjC; 
+            SUPERCLASS = NSObject; 
+        }, 
+        {
+            ACTIONS = {
+                editBookmarks = id; 
+                openBookmark = id; 
+                showPreferencePanel = id; 
+                showReleaseNotes = id; 
+                visitWebSite = id; 
+            }; 
+            CLASS = SKApplicationController; 
+            LANGUAGE = ObjC; 
+            SUPERCLASS = NSObject; 
+        }, 
+        {
+            CLASS = SKDocumentController; 
+            LANGUAGE = ObjC; 
+            SUPERCLASS = NSDocumentController; 
+        }, 
+        {CLASS = SKSplashContentView; LANGUAGE = ObjC; SUPERCLASS = NSView; }, 
+        {CLASS = SKSplashWindow; LANGUAGE = ObjC; SUPERCLASS = NSWindow; }, 
+        {
+            ACTIONS = {checkForUpdates = id; }; 
+            CLASS = SUUpdater; 
+            LANGUAGE = ObjC; 
+            SUPERCLASS = NSObject; 
+        }
+    ); 
+    IBVersion = 1; 
+}

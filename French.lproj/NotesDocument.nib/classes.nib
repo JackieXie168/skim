@@ -1,0 +1,44 @@
+{
+    IBClasses =     (
+                {
+            CLASS = FirstResponder;
+            LANGUAGE = ObjC;
+            SUPERCLASS = NSObject;
+        },
+                {
+            CLASS = NSObject;
+            LANGUAGE = ObjC;
+        },
+                {
+            ACTIONS =             {
+                myAction = id;
+            };
+            CLASS = NSPersistentDocument;
+            LANGUAGE = ObjC;
+            SUPERCLASS = NSDocument;
+        },
+                {
+            CLASS = SKAnnotationTypeImageCell;
+            LANGUAGE = ObjC;
+            SUPERCLASS = NSImageCell;
+        },
+                {
+            CLASS = SKNoteOutlineView;
+            LANGUAGE = ObjC;
+            SUPERCLASS = NSOutlineView;
+        },
+                {
+            ACTIONS =             {
+                openPDF = id;
+            };
+            CLASS = SKNotesDocument;
+            LANGUAGE = ObjC;
+            OUTLETS =             {
+                arrayController = NSArrayController;
+                outlineView = SKNoteOutlineView;
+            };
+            SUPERCLASS = NSDocument;
+        }
+    );
+    IBVersion = 1;
+}
