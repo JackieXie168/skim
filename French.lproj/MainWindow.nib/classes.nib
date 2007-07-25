@@ -1,0 +1,194 @@
+{
+    IBClasses = (
+        {
+            CLASS = BDSKCollapsibleView; 
+            LANGUAGE = ObjC; 
+            SUPERCLASS = BDSKContainerView; 
+        }, 
+        {
+            CLASS = BDSKContainerView; 
+            LANGUAGE = ObjC; 
+            OUTLETS = {contentView = id; }; 
+            SUPERCLASS = NSView; 
+        }, 
+        {CLASS = BDSKEdgeView; LANGUAGE = ObjC; SUPERCLASS = BDSKContainerView; }, 
+        {
+            CLASS = BDSKImagePopUpButton; 
+            LANGUAGE = ObjC; 
+            OUTLETS = {delegate = id; }; 
+            SUPERCLASS = NSPopUpButton; 
+        }, 
+        {CLASS = FirstResponder; LANGUAGE = ObjC; SUPERCLASS = NSObject; }, 
+        {ACTIONS = {splitViewDoubleClick = id; }; CLASS = NSObject; LANGUAGE = ObjC; }, 
+        {CLASS = NSSegmentedControl; LANGUAGE = ObjC; SUPERCLASS = NSControl; }, 
+        {
+            CLASS = NSUserDefaultsController; 
+            LANGUAGE = ObjC; 
+            SUPERCLASS = NSController; 
+        }, 
+        {
+            CLASS = SKAnnotationTypeImageCell; 
+            LANGUAGE = ObjC; 
+            SUPERCLASS = NSImageCell; 
+        }, 
+        {CLASS = SKColorSwatch; LANGUAGE = ObjC; SUPERCLASS = NSControl; }, 
+        {CLASS = SKFullScreenWindow; LANGUAGE = ObjC; SUPERCLASS = NSWindow; }, 
+        {CLASS = SKMainWindow; LANGUAGE = ObjC; SUPERCLASS = NSWindow; }, 
+        {
+            ACTIONS = {
+                addBookmark = id; 
+                autoCropAll = id; 
+                autoSelectContent = id; 
+                changeColor = id; 
+                changeColorFill = id; 
+                changeDisplayBox = id; 
+                changeFont = id; 
+                changeLeftSidePaneState = id; 
+                changeRightSidePaneState = id; 
+                changeScaleFactor = id; 
+                changeToolMode = id; 
+                chooseScale = id; 
+                chooseTransition = id; 
+                createNewNote = id; 
+                crop = id; 
+                cropAll = id; 
+                dismissBookmarkSheet = id; 
+                dismissChoosePageSheet = id; 
+                dismissChooseScaleSheet = id; 
+                dismissPasswordSheet = id; 
+                dismissTransitionSheet = id; 
+                displayFacingPages = id; 
+                displaySinglePages = id; 
+                doAutoScale = id; 
+                doGoBack = id; 
+                doGoForward = id; 
+                doGoToNextPage = id; 
+                doGoToPage = id; 
+                doGoToPreviousPage = id; 
+                doZoomIn = id; 
+                doZoomOut = id; 
+                doZoomToActualSize = id; 
+                doZoomToFit = id; 
+                doZoomToSelection = id; 
+                editNote = id; 
+                enterFullScreen = id; 
+                enterPresentation = id; 
+                exitFullScreen = id; 
+                getInfo = id; 
+                goBackOrForward = id; 
+                password = id; 
+                performFit = id; 
+                rotateAllLeft = id; 
+                rotateAllRight = id; 
+                rotateLeft = id; 
+                rotateRight = id; 
+                savePDFSettingToDefaults = id; 
+                search = id; 
+                searchNotes = id; 
+                searchPDF = id; 
+                selectColor = id; 
+                smartAutoCropAll = id; 
+                takeSnapshot = id; 
+                toggleAutoActualSize = id; 
+                toggleAutoScale = id; 
+                toggleDisplayAsBook = id; 
+                toggleDisplayContinuous = id; 
+                toggleDisplayPageBreaks = id; 
+                toggleFullScreen = id; 
+                toggleHideNotes = id; 
+                toggleLeftSidePane = id; 
+                togglePresentation = id; 
+                toggleRightSidePane = id; 
+                toggleStatusBar = id; 
+            }; 
+            CLASS = SKMainWindowController; 
+            LANGUAGE = ObjC; 
+            OUTLETS = {
+                backForwardButton = NSSegmentedControl; 
+                bookmarkField = NSTextField; 
+                bookmarkSheet = NSWindow; 
+                choosePageField = NSTextField; 
+                choosePageSheet = NSWindow; 
+                chooseScaleField = NSTextField; 
+                chooseScaleSheet = NSWindow; 
+                circlePopUpButton = BDSKImagePopUpButton; 
+                colorSwatch = SKColorSwatch; 
+                currentLeftSideView = NSView; 
+                currentRightSideView = NSView; 
+                displayBoxPopUpButton = NSPopUpButton; 
+                findArrayController = NSArrayController; 
+                findCollapsibleView = BDSKCollapsibleView; 
+                findEdgeView = BDSKEdgeView; 
+                findTableView = NSTableView; 
+                findView = NSView; 
+                leftSideButton = NSSegmentedControl; 
+                leftSideCollapsibleView = BDSKCollapsibleView; 
+                leftSideContentBox = NSBox; 
+                leftSideContentView = NSView; 
+                leftSideEdgeView = BDSKEdgeView; 
+                markupPopUpButton = BDSKImagePopUpButton; 
+                noteArrayController = NSArrayController; 
+                noteOutlineView = SKNoteOutlineView; 
+                notePopUpButton = BDSKImagePopUpButton; 
+                noteSearchField = NSSearchField; 
+                noteView = NSView; 
+                outlineView = NSOutlineView; 
+                ownerController = NSObjectController; 
+                pageNumberField = NSTextField; 
+                pageNumberStepper = NSStepper; 
+                pageNumberView = NSView; 
+                passwordField = NSTextField; 
+                passwordSheet = NSWindow; 
+                pdfContentBox = BDSKEdgeView; 
+                pdfView = SKPDFView; 
+                progressBar = NSProgressIndicator; 
+                progressField = NSTextField; 
+                progressSheet = NSWindow; 
+                rightSideButton = NSSegmentedControl; 
+                rightSideCollapsibleView = BDSKCollapsibleView; 
+                rightSideContentBox = NSBox; 
+                rightSideContentView = NSView; 
+                rightSideEdgeView = BDSKEdgeView; 
+                scaleField = NSTextField; 
+                searchField = NSSearchField; 
+                snapshotArrayController = NSArrayController; 
+                snapshotTableView = SKSnapshotTableView; 
+                snapshotView = NSView; 
+                spinner = NSProgressIndicator; 
+                splitView = SKSplitView; 
+                thumbnailArrayController = NSArrayController; 
+                thumbnailTableView = SKThumbnailTableView; 
+                thumbnailView = NSView; 
+                tocView = NSView; 
+                toolModeButton = NSSegmentedControl; 
+                transitionDurationField = NSTextField; 
+                transitionDurationSlider = NSSlider; 
+                transitionExtentMatrix = NSMatrix; 
+                transitionSheet = NSWindow; 
+                transitionStylePopUpButton = NSPopUpButton; 
+            }; 
+            SUPERCLASS = NSWindowController; 
+        }, 
+        {CLASS = SKNoteOutlineView; LANGUAGE = ObjC; SUPERCLASS = NSOutlineView; }, 
+        {
+            ACTIONS = {delete = id; }; 
+            CLASS = SKNoteTableView; 
+            LANGUAGE = ObjC; 
+            SUPERCLASS = NSTableView; 
+        }, 
+        {CLASS = SKOutlineView; LANGUAGE = ObjC; SUPERCLASS = NSOutlineView; }, 
+        {CLASS = SKPDFView; LANGUAGE = ObjC; SUPERCLASS = PDFView; }, 
+        {CLASS = SKSnapshotPageCell; LANGUAGE = ObjC; SUPERCLASS = NSTextFieldCell; }, 
+        {CLASS = SKSnapshotTableView; LANGUAGE = ObjC; SUPERCLASS = SKNoteTableView; }, 
+        {CLASS = SKSplitView; LANGUAGE = ObjC; SUPERCLASS = NSSplitView; }, 
+        {
+            CLASS = SKThumbnail; 
+            LANGUAGE = ObjC; 
+            OUTLETS = {controller = id; }; 
+            SUPERCLASS = NSObject; 
+        }, 
+        {CLASS = SKThumbnailTableView; LANGUAGE = ObjC; SUPERCLASS = NSTableView; }, 
+        {CLASS = SkimDocument; LANGUAGE = ObjC; SUPERCLASS = NSDocument; }
+    ); 
+    IBVersion = 1; 
+}

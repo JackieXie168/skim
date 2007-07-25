@@ -551,6 +551,26 @@
 		CEB7359A0C4A8C1B000350F9 /* TransitionMask.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = TransitionMask.jpg; path = Images/TransitionMask.jpg; sourceTree = "<group>"; };
 		CEB735A10C4A8CD6000350F9 /* TransitionShading.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; name = TransitionShading.tiff; path = Images/TransitionShading.tiff; sourceTree = "<group>"; };
 		CECBA5900BFCEE250030AB59 /* SelectToolAdorn.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; name = SelectToolAdorn.tiff; path = Images/SelectToolAdorn.tiff; sourceTree = "<group>"; };
+		CECD97200C57A3230026AAEC /* French */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = French; path = French.lproj/InfoWindow.nib; sourceTree = "<group>"; };
+		CECD97230C57A32F0026AAEC /* French */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = French; path = French.lproj/MainMenu.nib; sourceTree = "<group>"; };
+		CECD97260C57A3390026AAEC /* French */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = French; path = French.lproj/MainWindow.nib; sourceTree = "<group>"; };
+		CECD97290C57A3430026AAEC /* French */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = French; path = French.lproj/NoteWindow.nib; sourceTree = "<group>"; };
+		CECD972C0C57A34D0026AAEC /* French */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = French; path = French.lproj/NotesDocument.nib; sourceTree = "<group>"; };
+		CECD972F0C57A3570026AAEC /* French */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = French; path = French.lproj/SnapshotWindow.nib; sourceTree = "<group>"; };
+		CECD97320C57A3610026AAEC /* French */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = French; path = French.lproj/PreferenceWindow.nib; sourceTree = "<group>"; };
+		CECD97350C57A36D0026AAEC /* French */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = French; path = French.lproj/LineInspector.nib; sourceTree = "<group>"; };
+		CECD97380C57A3750026AAEC /* French */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = French; path = French.lproj/FindPanel.nib; sourceTree = "<group>"; };
+		CECD973B0C57A3810026AAEC /* French */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = French; path = French.lproj/ReadNotesAccessoryView.nib; sourceTree = "<group>"; };
+		CECD973E0C57A3890026AAEC /* French */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = French; path = French.lproj/ReleaseNotes.nib; sourceTree = "<group>"; };
+		CECD97410C57A3950026AAEC /* French */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = French; path = French.lproj/ConversionProgressWindow.nib; sourceTree = "<group>"; };
+		CECD97440C57A39C0026AAEC /* French */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = French; path = French.lproj/NoteTypeSheet.nib; sourceTree = "<group>"; };
+		CECD97470C57A3A70026AAEC /* French */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = French; path = French.lproj/ProgressSheet.nib; sourceTree = "<group>"; };
+		CECD974A0C57A3AE0026AAEC /* French */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = French; path = French.lproj/BookmarksWindow.nib; sourceTree = "<group>"; };
+		CECD974D0C57A3B70026AAEC /* French */ = {isa = PBXFileReference; lastKnownFileType = text.rtf; name = French; path = French.lproj/Credits.rtf; sourceTree = "<group>"; };
+		CECD97500C57A3C10026AAEC /* French */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = French; path = French.lproj/InfoPlist.strings; sourceTree = "<group>"; };
+		CECD97530C57A3C90026AAEC /* French */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = French; path = French.lproj/Localizable.strings; sourceTree = "<group>"; };
+		CECD97560C57A3D20026AAEC /* French */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = French; path = French.lproj/ZoomValues.strings; sourceTree = "<group>"; };
+		CECD97590C57A3E30026AAEC /* French */ = {isa = PBXFileReference; lastKnownFileType = folder; name = French; path = "French.lproj/Skim Help"; sourceTree = "<group>"; };
 		CEE106130BCBB72C00BF2D3E /* SKNotesDocument.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SKNotesDocument.h; sourceTree = "<group>"; };
 		CEE106140BCBB72C00BF2D3E /* SKNotesDocument.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SKNotesDocument.m; sourceTree = "<group>"; };
 		CEE106590BCBBE1200BF2D3E /* English */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = English; path = English.lproj/NotesDocument.nib; sourceTree = "<group>"; };
@@ -1271,6 +1291,8 @@
 				"$(SRCROOT)/Dutch.lproj/Skim Help/version.texi",
 				"$(SRCROOT)/Italian.lproj/Skim Help/skim.texi",
 				"$(SRCROOT)/Italian.lproj/Skim Help/version.texi",
+				"$(SRCROOT)/French.lproj/Skim Help/skim.texi",
+				"$(SRCROOT)/French.lproj/Skim Help/version.texi",
 			);
 			outputPaths = (
 				"$(SRCROOT)/English.lproj/Skim Help/Skim Help.html",
@@ -1460,6 +1482,7 @@
 				089C1660FE840EACC02AAC07 /* English */,
 				CE485B960BC442BA00FA7109 /* Dutch */,
 				A489FDE10BC8E93100BA14DD /* Italian */,
+				CECD97500C57A3C10026AAEC /* French */,
 			);
 			name = InfoPlist.strings;
 			sourceTree = "<group>";
@@ -1470,6 +1493,7 @@
 				2A37F4B7FDCFA73011CA2CEA /* English */,
 				CE485B7B0BC4427100FA7109 /* Dutch */,
 				A489FDBD0BC8E8DA00BA14DD /* Italian */,
+				CECD97230C57A32F0026AAEC /* French */,
 			);
 			name = MainMenu.nib;
 			sourceTree = "<group>";
@@ -1480,6 +1504,7 @@
 				2A37F4BAFDCFA73011CA2CEA /* English */,
 				CE485BF00BC4443B00FA7109 /* Dutch */,
 				A489FDDB0BC8E91B00BA14DD /* Italian */,
+				CECD974D0C57A3B70026AAEC /* French */,
 			);
 			name = Credits.rtf;
 			sourceTree = "<group>";
@@ -1490,6 +1515,7 @@
 				4530D81C0B27ACAC007C59F4 /* English */,
 				CE485B7E0BC4427A00FA7109 /* Dutch */,
 				A489FDC00BC8E8DF00BA14DD /* Italian */,
+				CECD97260C57A3390026AAEC /* French */,
 			);
 			name = MainWindow.nib;
 			sourceTree = "<group>";
@@ -1500,6 +1526,7 @@
 				CE1E25670BDA61E80011D9DD /* English */,
 				CE1E259E0BDA6E4D0011D9DD /* Dutch */,
 				CE1E259F0BDA6E570011D9DD /* Italian */,
+				CECD973B0C57A3810026AAEC /* French */,
 			);
 			name = ReadNotesAccessoryView.nib;
 			sourceTree = "<group>";
@@ -1510,6 +1537,7 @@
 				CE2DEB910B86206400D0DA12 /* English */,
 				CE485B8A0BC4429700FA7109 /* Dutch */,
 				A489FDCC0BC8E90100BA14DD /* Italian */,
+				CECD97380C57A3750026AAEC /* French */,
 			);
 			name = FindPanel.nib;
 			sourceTree = "<group>";
@@ -1520,6 +1548,7 @@
 				CE327A450C11BF6700DB4BEB /* English */,
 				CE327A490C11BF8B00DB4BEB /* Dutch */,
 				CE327A4A0C11BF9000DB4BEB /* Italian */,
+				CECD97440C57A39C0026AAEC /* French */,
 			);
 			name = NoteTypeSheet.nib;
 			sourceTree = "<group>";
@@ -1530,6 +1559,7 @@
 				CE4A65CB0BAB1E2E004AD07D /* English */,
 				CE485B9C0BC442CB00FA7109 /* Dutch */,
 				A489FDD80BC8E91700BA14DD /* Italian */,
+				CECD974A0C57A3AE0026AAEC /* French */,
 			);
 			name = BookmarksWindow.nib;
 			sourceTree = "<group>";
@@ -1540,6 +1570,7 @@
 				CE4DA91A0B9E190D0039E89C /* English */,
 				CE485B650BC4420900FA7109 /* Dutch */,
 				A489FE240BC8E97800BA14DD /* Italian */,
+				CECD97590C57A3E30026AAEC /* French */,
 			);
 			name = "Skim Help";
 			sourceTree = "<group>";
@@ -1550,6 +1581,7 @@
 				CE4F9DED0BC1BE3A005BE0A1 /* English */,
 				CE485B990BC442C000FA7109 /* Dutch */,
 				A489FDE40BC8E93D00BA14DD /* Italian */,
+				CECD97530C57A3C90026AAEC /* French */,
 			);
 			name = Localizable.strings;
 			sourceTree = "<group>";
@@ -1560,6 +1592,7 @@
 				CE5470020B32D96500F8AFB6 /* English */,
 				CE485B810BC4428200FA7109 /* Dutch */,
 				A489FDC30BC8E8EE00BA14DD /* Italian */,
+				CECD97290C57A3430026AAEC /* French */,
 			);
 			name = NoteWindow.nib;
 			sourceTree = "<group>";
@@ -1570,6 +1603,7 @@
 				CE54898B0B35D4EF00F8AFB6 /* English */,
 				CE485B780BC4426800FA7109 /* Dutch */,
 				A489FDBA0BC8E8D100BA14DD /* Italian */,
+				CECD97200C57A3230026AAEC /* French */,
 			);
 			name = InfoWindow.nib;
 			sourceTree = "<group>";
@@ -1580,6 +1614,7 @@
 				CE67BB250BC44AC9007B6929 /* English */,
 				CE67BB290BC44AD5007B6929 /* Dutch */,
 				A489FDE70BC8E94200BA14DD /* Italian */,
+				CECD97560C57A3D20026AAEC /* French */,
 			);
 			name = ZoomValues.strings;
 			sourceTree = "<group>";
@@ -1590,6 +1625,7 @@
 				CE8B46EB0C29CA3D005CE7F1 /* English */,
 				CE8B46F30C29CA4A005CE7F1 /* Dutch */,
 				CE8B46F40C29CA50005CE7F1 /* Italian */,
+				CECD97350C57A36D0026AAEC /* French */,
 			);
 			name = LineInspector.nib;
 			sourceTree = "<group>";
@@ -1600,6 +1636,7 @@
 				CE9A878E0C0C9E9A004F1F97 /* English */,
 				CE9A87960C0C9EA3004F1F97 /* Dutch */,
 				CE9A87970C0C9EA7004F1F97 /* Italian */,
+				CECD97470C57A3A70026AAEC /* French */,
 			);
 			name = ProgressSheet.nib;
 			sourceTree = "<group>";
@@ -1610,6 +1647,7 @@
 				CE9C42370B8B5633004AD8CF /* English */,
 				CE485B870BC4429100FA7109 /* Dutch */,
 				A489FDC90BC8E8FA00BA14DD /* Italian */,
+				CECD97320C57A3610026AAEC /* French */,
 			);
 			name = PreferenceWindow.nib;
 			sourceTree = "<group>";
@@ -1620,6 +1658,7 @@
 				CEE106590BCBBE1200BF2D3E /* English */,
 				CEE107380BCBCA3200BF2D3E /* Dutch */,
 				CEE11EF50BCC262800BF2D3E /* Italian */,
+				CECD972C0C57A34D0026AAEC /* French */,
 			);
 			name = NotesDocument.nib;
 			sourceTree = "<group>";
@@ -1630,6 +1669,7 @@
 				CEF7071E0B8F8EFC003A2771 /* English */,
 				CE485B840BC4428900FA7109 /* Dutch */,
 				A489FDC60BC8E8F400BA14DD /* Italian */,
+				CECD972F0C57A3570026AAEC /* French */,
 			);
 			name = SnapshotWindow.nib;
 			sourceTree = "<group>";
@@ -1640,6 +1680,7 @@
 				CEF717570B90DEEF003A2771 /* English */,
 				CE485B8D0BC4429C00FA7109 /* Dutch */,
 				A489FDCF0BC8E90700BA14DD /* Italian */,
+				CECD973E0C57A3890026AAEC /* French */,
 			);
 			name = ReleaseNotes.nib;
 			sourceTree = "<group>";
@@ -1650,6 +1691,7 @@
 				F977515F0B37460100DF673B /* English */,
 				CE485B900BC442A200FA7109 /* Dutch */,
 				A489FDD20BC8E90C00BA14DD /* Italian */,
+				CECD97410C57A3950026AAEC /* French */,
 			);
 			name = ConversionProgressWindow.nib;
 			sourceTree = "<group>";
