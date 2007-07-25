@@ -113,6 +113,7 @@ BOOL CoreGraphicsServicesTransitionsDefined() {
 
 - (void)dealloc {
     [transitionWindow release];
+    [bitmap release];
     [initialImage release];
     [super dealloc];
 }
@@ -122,7 +123,11 @@ BOOL CoreGraphicsServicesTransitionsDefined() {
 }
 
 - (void)setView:(NSView *)newView {
-    view = newView;
+    if (view != newView) {
+        view = newView;
+        [bitmap release];
+        bitmap = nil;
+    }
 }
 
 - (SKAnimationTransitionStyle)transitionStyle {
@@ -250,10 +255,16 @@ BOOL CoreGraphicsServicesTransitionsDefined() {
 
 - (CIImage *)createCurrentImage {
     NSRect bounds = [view bounds];
-    NSBitmapImageRep *contentBitmap = [view bitmapImageRepForCachingDisplayInRect:bounds];
-    [contentBitmap clear];
-    [view cacheDisplayInRect:bounds toBitmapImageRep:contentBitmap];
-    return [[CIImage alloc] initWithBitmapImageRep:contentBitmap];
+    
+    if (bitmap == nil || NSEqualSizes(bounds.size, NSMakeSize([bitmap pixelsWide], [bitmap pixelsHigh])) == NO) {
+        [bitmap release];
+        bitmap = [[view bitmapImageRepForCachingDisplayInRect:bounds] retain];
+    }
+    
+    [bitmap clear];
+    [view cacheDisplayInRect:bounds toBitmapImageRep:bitmap];
+    
+    return [[CIImage alloc] initWithBitmapImageRep:bitmap];
 }
 
 - (NSWindow *)transitionWindow {

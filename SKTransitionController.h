@@ -118,6 +118,7 @@ typedef enum _SKAnimationTransitionStyle {
     NSWindow *transitionWindow;
     SKTransitionView *transitionView;
     NSView *view;
+    NSBitmapImageRep *bitmap;
     CIImage *initialImage;
     NSRect imageRect;
     
