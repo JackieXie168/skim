@@ -178,7 +178,7 @@
     
     if (ch == 0x1B && modifierFlags == 0) {
         [controller exitFullScreen:self];
-    } else if (ch == 't' && modifierFlags == 0 && [controller isPresentation]) {
+    } else if (ch == 'p' && modifierFlags == 0 && [controller isPresentation]) {
         [controller toggleLeftSidePane:self];
     } else {
         [super keyDown:theEvent];
