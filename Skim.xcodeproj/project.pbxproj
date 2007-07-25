@@ -341,9 +341,9 @@
 		A489FDD20BC8E90C00BA14DD /* Italian */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = Italian; path = Italian.lproj/ConversionProgressWindow.nib; sourceTree = "<group>"; };
 		A489FDD80BC8E91700BA14DD /* Italian */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = Italian; path = Italian.lproj/BookmarksWindow.nib; sourceTree = "<group>"; };
 		A489FDDB0BC8E91B00BA14DD /* Italian */ = {isa = PBXFileReference; lastKnownFileType = text.rtf; name = Italian; path = Italian.lproj/Credits.rtf; sourceTree = "<group>"; };
-		A489FDE10BC8E93100BA14DD /* Italian */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = Italian; path = Italian.lproj/InfoPlist.strings; sourceTree = "<group>"; };
-		A489FDE40BC8E93D00BA14DD /* Italian */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = Italian; path = Italian.lproj/Localizable.strings; sourceTree = "<group>"; };
-		A489FDE70BC8E94200BA14DD /* Italian */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = Italian; path = Italian.lproj/ZoomValues.strings; sourceTree = "<group>"; };
+		A489FDE10BC8E93100BA14DD /* Italian */ = {isa = PBXFileReference; fileEncoding = 10; lastKnownFileType = text.plist.strings; name = Italian; path = Italian.lproj/InfoPlist.strings; sourceTree = "<group>"; };
+		A489FDE40BC8E93D00BA14DD /* Italian */ = {isa = PBXFileReference; fileEncoding = 10; lastKnownFileType = text.plist.strings; name = Italian; path = Italian.lproj/Localizable.strings; sourceTree = "<group>"; };
+		A489FDE70BC8E94200BA14DD /* Italian */ = {isa = PBXFileReference; fileEncoding = 10; lastKnownFileType = text.plist.strings; name = Italian; path = Italian.lproj/ZoomValues.strings; sourceTree = "<group>"; };
 		A489FE240BC8E97800BA14DD /* Italian */ = {isa = PBXFileReference; lastKnownFileType = folder; name = Italian; path = "Italian.lproj/Skim Help"; sourceTree = "<group>"; };
 		CE01D08B0C07157100FA32EF /* ToolbarZoomToSelection.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; name = ToolbarZoomToSelection.tiff; path = Images/ToolbarZoomToSelection.tiff; sourceTree = "<group>"; };
 		CE0463C90B84D24300C11E4A /* SKApplication.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SKApplication.h; sourceTree = "<group>"; };
@@ -438,8 +438,8 @@
 		CE485B8A0BC4429700FA7109 /* Dutch */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = Dutch; path = Dutch.lproj/FindPanel.nib; sourceTree = "<group>"; };
 		CE485B8D0BC4429C00FA7109 /* Dutch */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = Dutch; path = Dutch.lproj/ReleaseNotes.nib; sourceTree = "<group>"; };
 		CE485B900BC442A200FA7109 /* Dutch */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = Dutch; path = Dutch.lproj/ConversionProgressWindow.nib; sourceTree = "<group>"; };
-		CE485B960BC442BA00FA7109 /* Dutch */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = Dutch; path = Dutch.lproj/InfoPlist.strings; sourceTree = "<group>"; };
-		CE485B990BC442C000FA7109 /* Dutch */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = Dutch; path = Dutch.lproj/Localizable.strings; sourceTree = "<group>"; };
+		CE485B960BC442BA00FA7109 /* Dutch */ = {isa = PBXFileReference; fileEncoding = 10; lastKnownFileType = text.plist.strings; name = Dutch; path = Dutch.lproj/InfoPlist.strings; sourceTree = "<group>"; };
+		CE485B990BC442C000FA7109 /* Dutch */ = {isa = PBXFileReference; fileEncoding = 10; lastKnownFileType = text.plist.strings; name = Dutch; path = Dutch.lproj/Localizable.strings; sourceTree = "<group>"; };
 		CE485B9C0BC442CB00FA7109 /* Dutch */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = Dutch; path = Dutch.lproj/BookmarksWindow.nib; sourceTree = "<group>"; };
 		CE485BF00BC4443B00FA7109 /* Dutch */ = {isa = PBXFileReference; lastKnownFileType = text.rtf; name = Dutch; path = Dutch.lproj/Credits.rtf; sourceTree = "<group>"; };
 		CE48BAD50C089EA300A166C6 /* SKTemplateParser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SKTemplateParser.h; sourceTree = "<group>"; };
@@ -511,7 +511,7 @@
 		CE5F42AD0BF89FE00069D89C /* AppleRemote.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; name = AppleRemote.m; path = vendorsrc/martinkahr/AppleRemoteSource_R80/AppleRemote.m; sourceTree = "<group>"; };
 		CE5F42D30BF8A3400069D89C /* IOKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = IOKit.framework; path = /System/Library/Frameworks/IOKit.framework; sourceTree = "<absolute>"; };
 		CE67BB250BC44AC9007B6929 /* English */ = {isa = PBXFileReference; fileEncoding = 10; lastKnownFileType = text.plist.strings; name = English; path = English.lproj/ZoomValues.strings; sourceTree = "<group>"; };
-		CE67BB290BC44AD5007B6929 /* Dutch */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = Dutch; path = Dutch.lproj/ZoomValues.strings; sourceTree = "<group>"; };
+		CE67BB290BC44AD5007B6929 /* Dutch */ = {isa = PBXFileReference; fileEncoding = 10; lastKnownFileType = text.plist.strings; name = Dutch; path = Dutch.lproj/ZoomValues.strings; sourceTree = "<group>"; };
 		CE6C03EE0BEDF759007BF0B5 /* NSParagraphStyle_SKExtensions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NSParagraphStyle_SKExtensions.h; sourceTree = "<group>"; };
 		CE6C03EF0BEDF759007BF0B5 /* NSParagraphStyle_SKExtensions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NSParagraphStyle_SKExtensions.m; sourceTree = "<group>"; };
 		CE7467330B7F2ED700CBF969 /* ToolbarInfo.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; name = ToolbarInfo.tiff; path = Images/ToolbarInfo.tiff; sourceTree = "<group>"; };
@@ -567,9 +567,9 @@
 		CECD97470C57A3A70026AAEC /* French */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = French; path = French.lproj/ProgressSheet.nib; sourceTree = "<group>"; };
 		CECD974A0C57A3AE0026AAEC /* French */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = French; path = French.lproj/BookmarksWindow.nib; sourceTree = "<group>"; };
 		CECD974D0C57A3B70026AAEC /* French */ = {isa = PBXFileReference; lastKnownFileType = text.rtf; name = French; path = French.lproj/Credits.rtf; sourceTree = "<group>"; };
-		CECD97500C57A3C10026AAEC /* French */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = French; path = French.lproj/InfoPlist.strings; sourceTree = "<group>"; };
-		CECD97530C57A3C90026AAEC /* French */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = French; path = French.lproj/Localizable.strings; sourceTree = "<group>"; };
-		CECD97560C57A3D20026AAEC /* French */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = French; path = French.lproj/ZoomValues.strings; sourceTree = "<group>"; };
+		CECD97500C57A3C10026AAEC /* French */ = {isa = PBXFileReference; fileEncoding = 10; lastKnownFileType = text.plist.strings; name = French; path = French.lproj/InfoPlist.strings; sourceTree = "<group>"; };
+		CECD97530C57A3C90026AAEC /* French */ = {isa = PBXFileReference; fileEncoding = 10; lastKnownFileType = text.plist.strings; name = French; path = French.lproj/Localizable.strings; sourceTree = "<group>"; };
+		CECD97560C57A3D20026AAEC /* French */ = {isa = PBXFileReference; fileEncoding = 10; lastKnownFileType = text.plist.strings; name = French; path = French.lproj/ZoomValues.strings; sourceTree = "<group>"; };
 		CECD97590C57A3E30026AAEC /* French */ = {isa = PBXFileReference; lastKnownFileType = folder; name = French; path = "French.lproj/Skim Help"; sourceTree = "<group>"; };
 		CEE106130BCBB72C00BF2D3E /* SKNotesDocument.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SKNotesDocument.h; sourceTree = "<group>"; };
 		CEE106140BCBB72C00BF2D3E /* SKNotesDocument.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SKNotesDocument.m; sourceTree = "<group>"; };
