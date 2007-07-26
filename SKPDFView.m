@@ -1307,11 +1307,11 @@ static void SKCGContextDrawGrabHandle(CGContextRef context, CGPoint point, float
     while (YES) {
         range = [[NSSpellChecker sharedSpellChecker] checkSpellingOfString:[page string] startingAt:index language:nil wrap:NO inSpellDocumentWithTag:spellingTag wordCount:NULL];
         if (range.location != NSNotFound) break;
+        if (didWrap && i == first) break;
         if (++i >= count) {
             i = 0;
             didWrap = YES;
         }
-        if (didWrap && i > first) break;
         page = [[self document] pageAtIndex:i];
         index = 0;
     }
