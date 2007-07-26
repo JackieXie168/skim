@@ -818,7 +818,7 @@
                 description=".">
                 <cocoa key="AllowsPrinting"/>
             </property>
-            <property name="allows printing" code="Copy" type="boolean"
+            <property name="allows copying" code="Copy" type="boolean"
                 description=".">
                 <cocoa key="AllowsCopying"/>
             </property>
