@@ -232,6 +232,8 @@ static NSString *SKRightSidePaneWidthKey = @"SKRightSidePaneWidth";
 - (void)windowDidLoad{
     NSUserDefaults *sud = [NSUserDefaults standardUserDefaults];
     
+    settingUpWindow = YES;
+    
     // Set up the panes and subviews, needs to be done before we resize them
     
     [leftSideCollapsibleView setCollapseEdges:BDSKMaxXEdgeMask | BDSKMinYEdgeMask];
@@ -374,6 +376,8 @@ static NSString *SKRightSidePaneWidthKey = @"SKRightSidePaneWidth";
     // Observe notifications and KVO
     [self registerForNotifications];
     [self registerAsObserver];
+    
+    settingUpWindow = NO;
 }
 
 - (void)registerForNotifications {
@@ -4374,7 +4378,7 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
 }
 
 - (void)splitViewDidResizeSubviews:(NSNotification *)notification {
-    if ([[self window] frameAutosaveName]) {
+    if ([[self window] frameAutosaveName] && settingUpWindow == NO) {
         [[NSUserDefaults standardUserDefaults] setFloat:NSWidth([leftSideContentBox frame]) forKey:SKLeftSidePaneWidthKey];
         [[NSUserDefaults standardUserDefaults] setFloat:NSWidth([rightSideContentBox frame]) forKey:SKRightSidePaneWidthKey];
     }
