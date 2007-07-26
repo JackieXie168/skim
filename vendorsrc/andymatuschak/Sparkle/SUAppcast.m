@@ -49,7 +49,7 @@
     NSXMLDocument *document = nil;
     
     if (data)
-        [[NSXMLDocument alloc] initWithData:data options:0 error:&error];
+        document = [[NSXMLDocument alloc] initWithData:data options:0 error:&error];
         
 	BOOL failed = NO;
 	
