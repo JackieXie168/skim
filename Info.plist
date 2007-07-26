@@ -312,11 +312,11 @@
 	<key>CFBundlePackageType</key>
 	<string>APPL</string>
 	<key>CFBundleShortVersionString</key>
-	<string>0.5.1</string>
+	<string>0.6</string>
 	<key>CFBundleSignature</key>
 	<string>SKIM</string>
 	<key>CFBundleVersion</key>
-	<string>v7</string>
+	<string>v8</string>
 	<key>LSMinimumSystemVersion</key>
 	<string>10.4.0</string>
 	<key>NSAppleScriptEnabled</key>
