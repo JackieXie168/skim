@@ -116,6 +116,8 @@ static NSString *SKDocumentToolbarNotesPaneItemIdentifier = @"SKDocumentToolbarN
 static NSString *SKLeftSidePaneWidthKey = @"SKLeftSidePaneWidth";
 static NSString *SKRightSidePaneWidthKey = @"SKRightSidePaneWidth";
 
+static NSString *noteToolAdornImageNames[] = {@"TextNoteToolAdorn", @"AnchoredNoteToolAdorn", @"CircleNoteToolAdorn", @"SquareNoteToolAdorn", @"HighlightNoteToolAdorn", @"UnderlineNoteToolAdorn", @"StrikeOutNoteToolAdorn", @"LineNoteToolAdorn"};
+
 @interface NSResponder (SKExtensions)
 - (BOOL)isDescendantOf:(NSView *)aView;
 @end
@@ -2615,76 +2617,7 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
 }
 
 - (void)handleAnnotationModeChangedNotification:(NSNotification *)notification {
-    static NSImage *noteToolAdornImages[8] = {nil, nil, nil, nil, nil, nil, nil, nil};
-    
-    if (noteToolAdornImages[0] == nil) {
-        NSSize size = NSMakeSize(23.0, 11.0);
-        NSPoint point = NSMakePoint(2.0, 0.0);
-        NSColor *color = [NSColor colorWithCalibratedWhite:0.0 alpha:0.75];
-        NSBezierPath *arrowPath = [NSBezierPath bezierPath];
-        [arrowPath moveToPoint:NSMakePoint(20.5,4.0)];
-        [arrowPath lineToPoint:NSMakePoint(18.0,7.0)];
-        [arrowPath lineToPoint:NSMakePoint(23.0,7.0)];
-        [arrowPath closePath];
-        
-        noteToolAdornImages[SKFreeTextNote] = [[NSImage alloc] initWithSize:size];
-        [noteToolAdornImages[SKFreeTextNote] lockFocus];
-        [[NSImage imageNamed:@"TextNoteAdorn"] compositeToPoint:point operation:NSCompositeCopy];
-        [color setFill];
-        [arrowPath fill];
-        [noteToolAdornImages[SKFreeTextNote] unlockFocus];
-        
-        noteToolAdornImages[SKAnchoredNote] = [[NSImage alloc] initWithSize:size];
-        [noteToolAdornImages[SKAnchoredNote] lockFocus];
-        [[NSImage imageNamed:@"AnchoredNoteAdorn"] compositeToPoint:point operation:NSCompositeCopy];
-        [color setFill];
-        [arrowPath fill];
-        [noteToolAdornImages[SKAnchoredNote] unlockFocus];
-        
-        noteToolAdornImages[SKCircleNote] = [[NSImage alloc] initWithSize:size];
-        [noteToolAdornImages[SKCircleNote] lockFocus];
-        [[NSImage imageNamed:@"CircleNoteAdorn"] compositeToPoint:point operation:NSCompositeCopy];
-        [color setFill];
-        [arrowPath fill];
-        [noteToolAdornImages[SKCircleNote] unlockFocus];
-        
-        noteToolAdornImages[SKSquareNote] = [[NSImage alloc] initWithSize:size];
-        [noteToolAdornImages[SKSquareNote] lockFocus];
-        [[NSImage imageNamed:@"SquareNoteAdorn"] compositeToPoint:point operation:NSCompositeCopy];
-        [color setFill];
-        [arrowPath fill];
-        [noteToolAdornImages[SKSquareNote] unlockFocus];
-        
-        noteToolAdornImages[SKHighlightNote] = [[NSImage alloc] initWithSize:size];
-        [noteToolAdornImages[SKHighlightNote] lockFocus];
-        [[NSImage imageNamed:@"HighlightNoteAdorn"] compositeToPoint:point operation:NSCompositeCopy];
-        [color setFill];
-        [arrowPath fill];
-        [noteToolAdornImages[SKHighlightNote] unlockFocus];
-        
-        noteToolAdornImages[SKUnderlineNote] = [[NSImage alloc] initWithSize:size];
-        [noteToolAdornImages[SKUnderlineNote] lockFocus];
-        [[NSImage imageNamed:@"UnderlineNoteAdorn"] compositeToPoint:point operation:NSCompositeCopy];
-        [color setFill];
-        [arrowPath fill];
-        [noteToolAdornImages[SKUnderlineNote] unlockFocus];
-        
-        noteToolAdornImages[SKStrikeOutNote] = [[NSImage alloc] initWithSize:size];
-        [noteToolAdornImages[SKStrikeOutNote] lockFocus];
-        [[NSImage imageNamed:@"StrikeOutNoteAdorn"] compositeToPoint:point operation:NSCompositeCopy];
-        [color setFill];
-        [arrowPath fill];
-        [noteToolAdornImages[SKStrikeOutNote] unlockFocus];
-        
-        noteToolAdornImages[SKLineNote] = [[NSImage alloc] initWithSize:size];
-        [noteToolAdornImages[SKLineNote] lockFocus];
-        [[NSImage imageNamed:@"LineNoteAdorn"] compositeToPoint:point operation:NSCompositeCopy];
-        [color setFill];
-        [arrowPath fill];
-        [noteToolAdornImages[SKLineNote] unlockFocus];
-    }
-    
-    [toolModeButton setImage:noteToolAdornImages[[pdfView annotationMode]] forSegment:SKNoteToolMode];
+    [toolModeButton setImage:[NSImage imageNamed:noteToolAdornImageNames[[pdfView annotationMode]]] forSegment:SKNoteToolMode];
 }
 
 - (void)handleSelectionChangedNotification:(NSNotification *)notification {
