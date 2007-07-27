@@ -99,12 +99,16 @@ extern void SKCGContextSetDefaultRGBColorSpace(CGContextRef context);
 
 #pragma mark -
 
-@interface SKPDFAnnotationCircle : PDFAnnotationCircle
+@interface SKPDFAnnotationCircle : PDFAnnotationCircle {
+    float rowHeight;
+}
 @end
 
 #pragma mark -
 
-@interface SKPDFAnnotationSquare : PDFAnnotationSquare
+@interface SKPDFAnnotationSquare : PDFAnnotationSquare {
+    float rowHeight;
+}
 @end
 
 #pragma mark -
@@ -113,6 +117,7 @@ extern void SKCGContextSetDefaultRGBColorSpace(CGContextRef context);
 {
     NSRect *lineRects;
     unsigned numberOfLines;
+    float rowHeight;
 }
 
 - (id)initWithSelection:(PDFSelection *)selection markupType:(int)type;
@@ -122,7 +127,9 @@ extern void SKCGContextSetDefaultRGBColorSpace(CGContextRef context);
 
 #pragma mark -
 
-@interface SKPDFAnnotationFreeText : PDFAnnotationFreeText
+@interface SKPDFAnnotationFreeText : PDFAnnotationFreeText {
+    float rowHeight;
+}
 
 - (void)setFontName:(NSString *)fontName;
 - (void)setFontSize:(float)pointSize;
@@ -136,6 +143,7 @@ extern void SKCGContextSetDefaultRGBColorSpace(CGContextRef context);
     NSTextStorage *textStorage;
     NSAttributedString *text;
     NSArray *texts;
+    float rowHeight;
 }
 
 - (void)setImage:(NSImage *)newImage;
@@ -148,8 +156,9 @@ extern void SKCGContextSetDefaultRGBColorSpace(CGContextRef context);
 
 #pragma mark -
 
-@interface SKPDFAnnotationLine : PDFAnnotationLine
-
+@interface SKPDFAnnotationLine : PDFAnnotationLine {
+    float rowHeight;
+}
 - (void)setStartPointAsQDPoint:(NSData *)inQDPointAsData;
 - (void)setEndPointAsQDPoint:(NSData *)inQDPointAsData;
 - (void)setAsStartLineStyle:(int)style;
