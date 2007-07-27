@@ -60,10 +60,8 @@
 		CE0710190B89BDD600733CC8 /* BDSKEdgeView.m in Sources */ = {isa = PBXBuildFile; fileRef = CE0710160B89BDD600733CC8 /* BDSKEdgeView.m */; };
 		CE07158B0B8A3D6500733CC8 /* NoteDocument.icns in Resources */ = {isa = PBXBuildFile; fileRef = CE0715890B8A3D6300733CC8 /* NoteDocument.icns */; };
 		CE07158C0B8A3D6500733CC8 /* PDFDocument.icns in Resources */ = {isa = PBXBuildFile; fileRef = CE07158A0B8A3D6300733CC8 /* PDFDocument.icns */; };
-		CE15832C0BA0740000D5B03F /* StrikeOutNoteAdorn.tiff in Resources */ = {isa = PBXBuildFile; fileRef = CE1583280BA073FF00D5B03F /* StrikeOutNoteAdorn.tiff */; };
 		CE15832D0BA0740000D5B03F /* ToolbarStrikeOutNote.tiff in Resources */ = {isa = PBXBuildFile; fileRef = CE1583290BA073FF00D5B03F /* ToolbarStrikeOutNote.tiff */; };
 		CE15832E0BA0740000D5B03F /* ToolbarUnderlineNote.tiff in Resources */ = {isa = PBXBuildFile; fileRef = CE15832A0BA073FF00D5B03F /* ToolbarUnderlineNote.tiff */; };
-		CE15832F0BA0740000D5B03F /* UnderlineNoteAdorn.tiff in Resources */ = {isa = PBXBuildFile; fileRef = CE15832B0BA073FF00D5B03F /* UnderlineNoteAdorn.tiff */; };
 		CE1ADB280C4BC6DE00071840 /* OpenGL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CE1ADB170C4BC6DE00071840 /* OpenGL.framework */; };
 		CE1ADEBF0C4C341100071840 /* SKTransitionController.m in Sources */ = {isa = PBXBuildFile; fileRef = CE1ADEBE0C4C341100071840 /* SKTransitionController.m */; };
 		CE1E25680BDA61E80011D9DD /* ReadNotesAccessoryView.nib in Resources */ = {isa = PBXBuildFile; fileRef = CE1E25660BDA61E80011D9DD /* ReadNotesAccessoryView.nib */; };
@@ -85,13 +83,9 @@
 		CE31AC4E0C02E919003612A9 /* ToolbarCrop.tiff in Resources */ = {isa = PBXBuildFile; fileRef = CE31AC4D0C02E918003612A9 /* ToolbarCrop.tiff */; };
 		CE327A460C11BF6700DB4BEB /* NoteTypeSheet.nib in Resources */ = {isa = PBXBuildFile; fileRef = CE327A440C11BF6700DB4BEB /* NoteTypeSheet.nib */; };
 		CE380A7B0B834E6200A1B779 /* CameraCursor.tiff in Resources */ = {isa = PBXBuildFile; fileRef = CE380A7A0B834E6100A1B779 /* CameraCursor.tiff */; };
-		CE380C620B837B6100A1B779 /* NoteViewAdorn.tiff in Resources */ = {isa = PBXBuildFile; fileRef = CE380C600B837B6100A1B779 /* NoteViewAdorn.tiff */; };
-		CE380C630B837B6100A1B779 /* SnapshotViewAdorn.tiff in Resources */ = {isa = PBXBuildFile; fileRef = CE380C610B837B6100A1B779 /* SnapshotViewAdorn.tiff */; };
 		CE38ECD30B8093B200A1B779 /* NSString_SKExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = CE38ECD20B8093B200A1B779 /* NSString_SKExtensions.m */; };
 		CE3A3D2C0B78C0A0006B64D3 /* SKPDFAnnotationNote.m in Sources */ = {isa = PBXBuildFile; fileRef = CE3A3D2B0B78C0A0006B64D3 /* SKPDFAnnotationNote.m */; };
 		CE3A41580B790C56006B64D3 /* BDSKDragImageView.m in Sources */ = {isa = PBXBuildFile; fileRef = CE3A41570B790C56006B64D3 /* BDSKDragImageView.m */; };
-		CE3A42350B7927D3006B64D3 /* CircleNoteAdorn.tiff in Resources */ = {isa = PBXBuildFile; fileRef = CE3A42330B7927D3006B64D3 /* CircleNoteAdorn.tiff */; };
-		CE3A42360B7927D3006B64D3 /* AnchoredNoteAdorn.tiff in Resources */ = {isa = PBXBuildFile; fileRef = CE3A42340B7927D3006B64D3 /* AnchoredNoteAdorn.tiff */; };
 		CE3A45530B7A04A4006B64D3 /* NSBezierPath_BDSKExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = CE3A45520B7A04A4006B64D3 /* NSBezierPath_BDSKExtensions.m */; };
 		CE3A4BA50B7A4D0D006B64D3 /* ToolbarNote.tiff in Resources */ = {isa = PBXBuildFile; fileRef = CE3A4BA40B7A4D0C006B64D3 /* ToolbarNote.tiff */; };
 		CE3A4DE30B7A7FC7006B64D3 /* ToolbarPresentation.tiff in Resources */ = {isa = PBXBuildFile; fileRef = CE3A4DE20B7A7FC7006B64D3 /* ToolbarPresentation.tiff */; };
@@ -117,10 +111,7 @@
 		CE4D88D80C3AE531002C20CB /* DVIDocument.icns in Resources */ = {isa = PBXBuildFile; fileRef = CE4D88D70C3AE52F002C20CB /* DVIDocument.icns */; };
 		CE4D97FD0C3C2BFF002C20CB /* SKColorSwatch.m in Sources */ = {isa = PBXBuildFile; fileRef = CE4D97FB0C3C2BFF002C20CB /* SKColorSwatch.m */; };
 		CE4DA2380B9D9BE10039E89C /* ToolbarSquareNote.tiff in Resources */ = {isa = PBXBuildFile; fileRef = CE4DA2160B9D9AA70039E89C /* ToolbarSquareNote.tiff */; };
-		CE4DA2440B9D9EC00039E89C /* SquareNoteAdorn.tiff in Resources */ = {isa = PBXBuildFile; fileRef = CE4DA2430B9D9E640039E89C /* SquareNoteAdorn.tiff */; };
 		CE4DA9240B9E190D0039E89C /* Skim Help in Resources */ = {isa = PBXBuildFile; fileRef = CE4DA9190B9E190D0039E89C /* Skim Help */; };
-		CE4EB8240B7B96D00091F228 /* OutlineViewAdorn.tiff in Resources */ = {isa = PBXBuildFile; fileRef = CE4EB8220B7B96D00091F228 /* OutlineViewAdorn.tiff */; };
-		CE4EB8250B7B96D00091F228 /* ThumbnailViewAdorn.tiff in Resources */ = {isa = PBXBuildFile; fileRef = CE4EB8230B7B96D00091F228 /* ThumbnailViewAdorn.tiff */; };
 		CE4EBDDA0B7BF3B30091F228 /* SKSideWindow.m in Sources */ = {isa = PBXBuildFile; fileRef = CE4EBDD90B7BF3B30091F228 /* SKSideWindow.m */; };
 		CE4EC87F0B7E6E110091F228 /* NSBezierPath_CoreImageExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = CE4EC87E0B7E6E110091F228 /* NSBezierPath_CoreImageExtensions.m */; };
 		CE4EC8830B7E6E920091F228 /* CIImage_BDSKExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = CE4EC8820B7E6E920091F228 /* CIImage_BDSKExtensions.m */; };
@@ -128,22 +119,16 @@
 		CE4F9DEE0BC1BE3A005BE0A1 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = CE4F9DEC0BC1BE3A005BE0A1 /* Localizable.strings */; };
 		CE546FC40B32D5DB00F8AFB6 /* SKNoteWindowController.m in Sources */ = {isa = PBXBuildFile; fileRef = CE546FC30B32D5DB00F8AFB6 /* SKNoteWindowController.m */; };
 		CE5470030B32D96500F8AFB6 /* NoteWindow.nib in Resources */ = {isa = PBXBuildFile; fileRef = CE5470010B32D96500F8AFB6 /* NoteWindow.nib */; };
-		CE5478C80B33456300F8AFB6 /* TextNoteAdorn.tiff in Resources */ = {isa = PBXBuildFile; fileRef = CE5478B70B33456300F8AFB6 /* TextNoteAdorn.tiff */; };
-		CE5478C90B33456300F8AFB6 /* BackAdorn.tiff in Resources */ = {isa = PBXBuildFile; fileRef = CE5478B80B33456300F8AFB6 /* BackAdorn.tiff */; };
-		CE5478CA0B33456300F8AFB6 /* ForwardAdorn.tiff in Resources */ = {isa = PBXBuildFile; fileRef = CE5478B90B33456300F8AFB6 /* ForwardAdorn.tiff */; };
 		CE5478CB0B33456300F8AFB6 /* ToolbarFullScreen.tiff in Resources */ = {isa = PBXBuildFile; fileRef = CE5478BA0B33456300F8AFB6 /* ToolbarFullScreen.tiff */; };
-		CE5478CD0B33456300F8AFB6 /* MoveToolAdorn.tiff in Resources */ = {isa = PBXBuildFile; fileRef = CE5478BC0B33456300F8AFB6 /* MoveToolAdorn.tiff */; };
 		CE5478CE0B33456300F8AFB6 /* ToolbarNext.tiff in Resources */ = {isa = PBXBuildFile; fileRef = CE5478BD0B33456300F8AFB6 /* ToolbarNext.tiff */; };
 		CE5478CF0B33456300F8AFB6 /* ToolbarNotesDrawer.tiff in Resources */ = {isa = PBXBuildFile; fileRef = CE5478BE0B33456300F8AFB6 /* ToolbarNotesDrawer.tiff */; };
 		CE5478D10B33456300F8AFB6 /* ToolbarPrevious.tiff in Resources */ = {isa = PBXBuildFile; fileRef = CE5478C00B33456300F8AFB6 /* ToolbarPrevious.tiff */; };
 		CE5478D20B33456300F8AFB6 /* ToolbarRotateLeft.tiff in Resources */ = {isa = PBXBuildFile; fileRef = CE5478C10B33456300F8AFB6 /* ToolbarRotateLeft.tiff */; };
 		CE5478D30B33456300F8AFB6 /* ToolbarRotateRight.tiff in Resources */ = {isa = PBXBuildFile; fileRef = CE5478C20B33456300F8AFB6 /* ToolbarRotateRight.tiff */; };
-		CE5478D40B33456300F8AFB6 /* TextToolAdorn.tiff in Resources */ = {isa = PBXBuildFile; fileRef = CE5478C30B33456300F8AFB6 /* TextToolAdorn.tiff */; };
 		CE5478D50B33456300F8AFB6 /* ToolbarZoomActual.tiff in Resources */ = {isa = PBXBuildFile; fileRef = CE5478C40B33456300F8AFB6 /* ToolbarZoomActual.tiff */; };
 		CE5478D60B33456300F8AFB6 /* ToolbarZoomIn.tiff in Resources */ = {isa = PBXBuildFile; fileRef = CE5478C50B33456300F8AFB6 /* ToolbarZoomIn.tiff */; };
 		CE5478D70B33456300F8AFB6 /* ToolbarZoomOut.tiff in Resources */ = {isa = PBXBuildFile; fileRef = CE5478C60B33456300F8AFB6 /* ToolbarZoomOut.tiff */; };
 		CE5478D80B33456300F8AFB6 /* ToolbarZoomToFit.tiff in Resources */ = {isa = PBXBuildFile; fileRef = CE5478C70B33456300F8AFB6 /* ToolbarZoomToFit.tiff */; };
-		CE5478E50B334CAC00F8AFB6 /* MagnifyToolAdorn.tiff in Resources */ = {isa = PBXBuildFile; fileRef = CE5478E40B334CAC00F8AFB6 /* MagnifyToolAdorn.tiff */; };
 		CE5487BC0B35A20A00F8AFB6 /* NSFileManager_ExtendedAttributes.m in Sources */ = {isa = PBXBuildFile; fileRef = CE5487BB0B35A20A00F8AFB6 /* NSFileManager_ExtendedAttributes.m */; };
 		CE54898C0B35D4EF00F8AFB6 /* InfoWindow.nib in Resources */ = {isa = PBXBuildFile; fileRef = CE54898A0B35D4EF00F8AFB6 /* InfoWindow.nib */; };
 		CE54898F0B35D50E00F8AFB6 /* SKInfoWindowController.m in Sources */ = {isa = PBXBuildFile; fileRef = CE54898E0B35D50E00F8AFB6 /* SKInfoWindowController.m */; };
@@ -156,13 +141,11 @@
 		CE7468820B7F3C0000CBF969 /* zoomOutCursor.tiff in Resources */ = {isa = PBXBuildFile; fileRef = CE7467550B7F321A00CBF969 /* zoomOutCursor.tiff */; };
 		CE7469180B7F40B700CBF969 /* Skim.icns in Resources */ = {isa = PBXBuildFile; fileRef = CE7469170B7F40B600CBF969 /* Skim.icns */; };
 		CE7C20500C259A5D0059E08C /* NSColor_SKExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = CE7C204E0C259A5D0059E08C /* NSColor_SKExtensions.m */; };
-		CE7C5D050BD8062C0011315D /* LineNoteAdorn.tiff in Resources */ = {isa = PBXBuildFile; fileRef = CE7C5D040BD8062C0011315D /* LineNoteAdorn.tiff */; };
 		CE7C5D190BD8086C0011315D /* ToolbarLineNote.tiff in Resources */ = {isa = PBXBuildFile; fileRef = CE7C5D180BD8086C0011315D /* ToolbarLineNote.tiff */; };
 		CE8B46E90C29CA00005CE7F1 /* SKLineInspector.m in Sources */ = {isa = PBXBuildFile; fileRef = CE8B46E70C29CA00005CE7F1 /* SKLineInspector.m */; };
 		CE8B46F00C29CA3D005CE7F1 /* LineInspector.nib in Resources */ = {isa = PBXBuildFile; fileRef = CE8B46EA0C29CA3D005CE7F1 /* LineInspector.nib */; };
 		CE9A87930C0C9E9A004F1F97 /* ProgressSheet.nib in Resources */ = {isa = PBXBuildFile; fileRef = CE9A878D0C0C9E9A004F1F97 /* ProgressSheet.nib */; };
 		CE9C423C0B8B5633004AD8CF /* PreferenceWindow.nib in Resources */ = {isa = PBXBuildFile; fileRef = CE9C42360B8B5633004AD8CF /* PreferenceWindow.nib */; };
-		CE9DC2E90B9F131900D64F28 /* HighlightNoteAdorn.tiff in Resources */ = {isa = PBXBuildFile; fileRef = CE9DC2E70B9F131800D64F28 /* HighlightNoteAdorn.tiff */; };
 		CE9DC2EA0B9F131900D64F28 /* ToolbarHighlightNote.tiff in Resources */ = {isa = PBXBuildFile; fileRef = CE9DC2E80B9F131800D64F28 /* ToolbarHighlightNote.tiff */; };
 		CEA575CE0B9206E60003D2E7 /* SKNoteOutlineView.m in Sources */ = {isa = PBXBuildFile; fileRef = CEA575CD0B9206E60003D2E7 /* SKNoteOutlineView.m */; };
 		CEA575E50B9207B80003D2E7 /* SKThumbnailTableView.m in Sources */ = {isa = PBXBuildFile; fileRef = CEA575E40B9207B80003D2E7 /* SKThumbnailTableView.m */; };
@@ -174,7 +157,7 @@
 		CEAFFD9D0C40F2A800C3ECBB /* ToolbarLines.tiff in Resources */ = {isa = PBXBuildFile; fileRef = CEAFFD9C0C40F2A800C3ECBB /* ToolbarLines.tiff */; };
 		CEB7359C0C4A8C1C000350F9 /* TransitionMask.jpg in Resources */ = {isa = PBXBuildFile; fileRef = CEB7359A0C4A8C1B000350F9 /* TransitionMask.jpg */; };
 		CEB735A20C4A8CD6000350F9 /* TransitionShading.tiff in Resources */ = {isa = PBXBuildFile; fileRef = CEB735A10C4A8CD6000350F9 /* TransitionShading.tiff */; };
-		CECBA5910BFCEE260030AB59 /* SelectToolAdorn.tiff in Resources */ = {isa = PBXBuildFile; fileRef = CECBA5900BFCEE250030AB59 /* SelectToolAdorn.tiff */; };
+		CECDC4FF0C5966A80026AAEC /* NSImage_BDSKExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = CECDC4FD0C5966A80026AAEC /* NSImage_BDSKExtensions.m */; };
 		CEE106150BCBB72C00BF2D3E /* SKNotesDocument.m in Sources */ = {isa = PBXBuildFile; fileRef = CEE106140BCBB72C00BF2D3E /* SKNotesDocument.m */; };
 		CEE1065E0BCBBE1300BF2D3E /* NotesDocument.nib in Resources */ = {isa = PBXBuildFile; fileRef = CEE106580BCBBE1200BF2D3E /* NotesDocument.nib */; };
 		CEE229390BFB7CE9002B746B /* ReleaseNotes.rtf in Resources */ = {isa = PBXBuildFile; fileRef = CE54AA8E0BBC037400008750 /* ReleaseNotes.rtf */; };
@@ -362,10 +345,8 @@
 		CE0710160B89BDD600733CC8 /* BDSKEdgeView.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = BDSKEdgeView.m; sourceTree = "<group>"; };
 		CE0715890B8A3D6300733CC8 /* NoteDocument.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; name = NoteDocument.icns; path = Images/NoteDocument.icns; sourceTree = "<group>"; };
 		CE07158A0B8A3D6300733CC8 /* PDFDocument.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; name = PDFDocument.icns; path = Images/PDFDocument.icns; sourceTree = "<group>"; };
-		CE1583280BA073FF00D5B03F /* StrikeOutNoteAdorn.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; name = StrikeOutNoteAdorn.tiff; path = Images/StrikeOutNoteAdorn.tiff; sourceTree = "<group>"; };
 		CE1583290BA073FF00D5B03F /* ToolbarStrikeOutNote.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; name = ToolbarStrikeOutNote.tiff; path = Images/ToolbarStrikeOutNote.tiff; sourceTree = "<group>"; };
 		CE15832A0BA073FF00D5B03F /* ToolbarUnderlineNote.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; name = ToolbarUnderlineNote.tiff; path = Images/ToolbarUnderlineNote.tiff; sourceTree = "<group>"; };
-		CE15832B0BA073FF00D5B03F /* UnderlineNoteAdorn.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; name = UnderlineNoteAdorn.tiff; path = Images/UnderlineNoteAdorn.tiff; sourceTree = "<group>"; };
 		CE1ADB170C4BC6DE00071840 /* OpenGL.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenGL.framework; path = /System/Library/Frameworks/OpenGL.framework; sourceTree = "<absolute>"; };
 		CE1ADEBE0C4C341100071840 /* SKTransitionController.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = SKTransitionController.m; sourceTree = "<group>"; };
 		CE1E25670BDA61E80011D9DD /* English */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = English; path = English.lproj/ReadNotesAccessoryView.nib; sourceTree = "<group>"; };
@@ -404,16 +385,12 @@
 		CE327A490C11BF8B00DB4BEB /* Dutch */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = Dutch; path = Dutch.lproj/NoteTypeSheet.nib; sourceTree = "<group>"; };
 		CE327A4A0C11BF9000DB4BEB /* Italian */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = Italian; path = Italian.lproj/NoteTypeSheet.nib; sourceTree = "<group>"; };
 		CE380A7A0B834E6100A1B779 /* CameraCursor.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; name = CameraCursor.tiff; path = Images/CameraCursor.tiff; sourceTree = "<group>"; };
-		CE380C600B837B6100A1B779 /* NoteViewAdorn.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; name = NoteViewAdorn.tiff; path = Images/NoteViewAdorn.tiff; sourceTree = "<group>"; };
-		CE380C610B837B6100A1B779 /* SnapshotViewAdorn.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; name = SnapshotViewAdorn.tiff; path = Images/SnapshotViewAdorn.tiff; sourceTree = "<group>"; };
 		CE38ECD10B8093B200A1B779 /* NSString_SKExtensions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NSString_SKExtensions.h; sourceTree = "<group>"; };
 		CE38ECD20B8093B200A1B779 /* NSString_SKExtensions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NSString_SKExtensions.m; sourceTree = "<group>"; };
 		CE3A3D2A0B78C0A0006B64D3 /* SKPDFAnnotationNote.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SKPDFAnnotationNote.h; sourceTree = "<group>"; };
 		CE3A3D2B0B78C0A0006B64D3 /* SKPDFAnnotationNote.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SKPDFAnnotationNote.m; sourceTree = "<group>"; };
 		CE3A41560B790C56006B64D3 /* BDSKDragImageView.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = BDSKDragImageView.h; sourceTree = "<group>"; };
 		CE3A41570B790C56006B64D3 /* BDSKDragImageView.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = BDSKDragImageView.m; sourceTree = "<group>"; };
-		CE3A42330B7927D3006B64D3 /* CircleNoteAdorn.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; name = CircleNoteAdorn.tiff; path = Images/CircleNoteAdorn.tiff; sourceTree = "<group>"; };
-		CE3A42340B7927D3006B64D3 /* AnchoredNoteAdorn.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; name = AnchoredNoteAdorn.tiff; path = Images/AnchoredNoteAdorn.tiff; sourceTree = "<group>"; };
 		CE3A45510B7A04A4006B64D3 /* NSBezierPath_BDSKExtensions.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = NSBezierPath_BDSKExtensions.h; sourceTree = "<group>"; };
 		CE3A45520B7A04A4006B64D3 /* NSBezierPath_BDSKExtensions.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = NSBezierPath_BDSKExtensions.m; sourceTree = "<group>"; };
 		CE3A4BA40B7A4D0C006B64D3 /* ToolbarNote.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; name = ToolbarNote.tiff; path = Images/ToolbarNote.tiff; sourceTree = "<group>"; };
@@ -463,14 +440,11 @@
 		CE4D97FA0C3C2BFF002C20CB /* SKColorSwatch.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = SKColorSwatch.h; sourceTree = "<group>"; };
 		CE4D97FB0C3C2BFF002C20CB /* SKColorSwatch.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = SKColorSwatch.m; sourceTree = "<group>"; };
 		CE4DA2160B9D9AA70039E89C /* ToolbarSquareNote.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; name = ToolbarSquareNote.tiff; path = Images/ToolbarSquareNote.tiff; sourceTree = "<group>"; };
-		CE4DA2430B9D9E640039E89C /* SquareNoteAdorn.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; name = SquareNoteAdorn.tiff; path = Images/SquareNoteAdorn.tiff; sourceTree = "<group>"; };
 		CE4DA8D00B9E15AD0039E89C /* applehelp.init */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text; name = applehelp.init; path = "Skim Help/applehelp.init"; sourceTree = "<group>"; };
 		CE4DA8D10B9E15AD0039E89C /* postprocess-nontitle.py */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text.script.python; name = "postprocess-nontitle.py"; path = "Skim Help/postprocess-nontitle.py"; sourceTree = "<group>"; };
 		CE4DA8D20B9E15C20039E89C /* skim.texi */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text; name = skim.texi; path = "English.lproj/Skim Help/skim.texi"; sourceTree = "<group>"; };
 		CE4DA8D30B9E15C20039E89C /* version.texi */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text; name = version.texi; path = "English.lproj/Skim Help/version.texi"; sourceTree = "<group>"; };
 		CE4DA91A0B9E190D0039E89C /* English */ = {isa = PBXFileReference; lastKnownFileType = folder; name = English; path = "English.lproj/Skim Help"; sourceTree = "<group>"; };
-		CE4EB8220B7B96D00091F228 /* OutlineViewAdorn.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; name = OutlineViewAdorn.tiff; path = Images/OutlineViewAdorn.tiff; sourceTree = "<group>"; };
-		CE4EB8230B7B96D00091F228 /* ThumbnailViewAdorn.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; name = ThumbnailViewAdorn.tiff; path = Images/ThumbnailViewAdorn.tiff; sourceTree = "<group>"; };
 		CE4EBDD80B7BF3B30091F228 /* SKSideWindow.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = SKSideWindow.h; sourceTree = "<group>"; };
 		CE4EBDD90B7BF3B30091F228 /* SKSideWindow.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = SKSideWindow.m; sourceTree = "<group>"; };
 		CE4EC4F30B7E24490091F228 /* SKPreferenceController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SKPreferenceController.h; sourceTree = "<group>"; };
@@ -485,22 +459,16 @@
 		CE546FC20B32D5DB00F8AFB6 /* SKNoteWindowController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SKNoteWindowController.h; sourceTree = "<group>"; };
 		CE546FC30B32D5DB00F8AFB6 /* SKNoteWindowController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SKNoteWindowController.m; sourceTree = "<group>"; };
 		CE5470020B32D96500F8AFB6 /* English */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = English; path = English.lproj/NoteWindow.nib; sourceTree = "<group>"; };
-		CE5478B70B33456300F8AFB6 /* TextNoteAdorn.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; name = TextNoteAdorn.tiff; path = Images/TextNoteAdorn.tiff; sourceTree = "<group>"; };
-		CE5478B80B33456300F8AFB6 /* BackAdorn.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; name = BackAdorn.tiff; path = Images/BackAdorn.tiff; sourceTree = "<group>"; };
-		CE5478B90B33456300F8AFB6 /* ForwardAdorn.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; name = ForwardAdorn.tiff; path = Images/ForwardAdorn.tiff; sourceTree = "<group>"; };
 		CE5478BA0B33456300F8AFB6 /* ToolbarFullScreen.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; name = ToolbarFullScreen.tiff; path = Images/ToolbarFullScreen.tiff; sourceTree = "<group>"; };
-		CE5478BC0B33456300F8AFB6 /* MoveToolAdorn.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; name = MoveToolAdorn.tiff; path = Images/MoveToolAdorn.tiff; sourceTree = "<group>"; };
 		CE5478BD0B33456300F8AFB6 /* ToolbarNext.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; name = ToolbarNext.tiff; path = Images/ToolbarNext.tiff; sourceTree = "<group>"; };
 		CE5478BE0B33456300F8AFB6 /* ToolbarNotesDrawer.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; name = ToolbarNotesDrawer.tiff; path = Images/ToolbarNotesDrawer.tiff; sourceTree = "<group>"; };
 		CE5478C00B33456300F8AFB6 /* ToolbarPrevious.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; name = ToolbarPrevious.tiff; path = Images/ToolbarPrevious.tiff; sourceTree = "<group>"; };
 		CE5478C10B33456300F8AFB6 /* ToolbarRotateLeft.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; name = ToolbarRotateLeft.tiff; path = Images/ToolbarRotateLeft.tiff; sourceTree = "<group>"; };
 		CE5478C20B33456300F8AFB6 /* ToolbarRotateRight.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; name = ToolbarRotateRight.tiff; path = Images/ToolbarRotateRight.tiff; sourceTree = "<group>"; };
-		CE5478C30B33456300F8AFB6 /* TextToolAdorn.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; name = TextToolAdorn.tiff; path = Images/TextToolAdorn.tiff; sourceTree = "<group>"; };
 		CE5478C40B33456300F8AFB6 /* ToolbarZoomActual.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; name = ToolbarZoomActual.tiff; path = Images/ToolbarZoomActual.tiff; sourceTree = "<group>"; };
 		CE5478C50B33456300F8AFB6 /* ToolbarZoomIn.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; name = ToolbarZoomIn.tiff; path = Images/ToolbarZoomIn.tiff; sourceTree = "<group>"; };
 		CE5478C60B33456300F8AFB6 /* ToolbarZoomOut.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; name = ToolbarZoomOut.tiff; path = Images/ToolbarZoomOut.tiff; sourceTree = "<group>"; };
 		CE5478C70B33456300F8AFB6 /* ToolbarZoomToFit.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; name = ToolbarZoomToFit.tiff; path = Images/ToolbarZoomToFit.tiff; sourceTree = "<group>"; };
-		CE5478E40B334CAC00F8AFB6 /* MagnifyToolAdorn.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; name = MagnifyToolAdorn.tiff; path = Images/MagnifyToolAdorn.tiff; sourceTree = "<group>"; };
 		CE5487BA0B35A20A00F8AFB6 /* NSFileManager_ExtendedAttributes.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = NSFileManager_ExtendedAttributes.h; sourceTree = "<group>"; };
 		CE5487BB0B35A20A00F8AFB6 /* NSFileManager_ExtendedAttributes.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = NSFileManager_ExtendedAttributes.m; sourceTree = "<group>"; };
 		CE54898B0B35D4EF00F8AFB6 /* English */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = English; path = English.lproj/InfoWindow.nib; sourceTree = "<group>"; };
@@ -520,7 +488,6 @@
 		CE7469170B7F40B600CBF969 /* Skim.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; name = Skim.icns; path = Images/Skim.icns; sourceTree = "<group>"; };
 		CE7C204D0C259A5D0059E08C /* NSColor_SKExtensions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NSColor_SKExtensions.h; sourceTree = "<group>"; };
 		CE7C204E0C259A5D0059E08C /* NSColor_SKExtensions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NSColor_SKExtensions.m; sourceTree = "<group>"; };
-		CE7C5D040BD8062C0011315D /* LineNoteAdorn.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; name = LineNoteAdorn.tiff; path = Images/LineNoteAdorn.tiff; sourceTree = "<group>"; };
 		CE7C5D180BD8086C0011315D /* ToolbarLineNote.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; name = ToolbarLineNote.tiff; path = Images/ToolbarLineNote.tiff; sourceTree = "<group>"; };
 		CE87EF690BA9FF5A0027BBDD /* skimhelp.css */ = {isa = PBXFileReference; explicitFileType = text; fileEncoding = 30; name = skimhelp.css; path = "English.lproj/Skim Help/sty/skimhelp.css"; sourceTree = "<group>"; };
 		CE8B46E60C29CA00005CE7F1 /* SKLineInspector.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = SKLineInspector.h; sourceTree = "<group>"; };
@@ -532,7 +499,6 @@
 		CE9A87960C0C9EA3004F1F97 /* Dutch */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = Dutch; path = Dutch.lproj/ProgressSheet.nib; sourceTree = "<group>"; };
 		CE9A87970C0C9EA7004F1F97 /* Italian */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = Italian; path = Italian.lproj/ProgressSheet.nib; sourceTree = "<group>"; };
 		CE9C42370B8B5633004AD8CF /* English */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = English; path = English.lproj/PreferenceWindow.nib; sourceTree = "<group>"; };
-		CE9DC2E70B9F131800D64F28 /* HighlightNoteAdorn.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; name = HighlightNoteAdorn.tiff; path = Images/HighlightNoteAdorn.tiff; sourceTree = "<group>"; };
 		CE9DC2E80B9F131800D64F28 /* ToolbarHighlightNote.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; name = ToolbarHighlightNote.tiff; path = Images/ToolbarHighlightNote.tiff; sourceTree = "<group>"; };
 		CEA575CC0B9206E60003D2E7 /* SKNoteOutlineView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SKNoteOutlineView.h; sourceTree = "<group>"; };
 		CEA575CD0B9206E60003D2E7 /* SKNoteOutlineView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SKNoteOutlineView.m; sourceTree = "<group>"; };
@@ -550,7 +516,6 @@
 		CEB72B890C4A189D000350F9 /* SKTransitionController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SKTransitionController.h; sourceTree = "<group>"; };
 		CEB7359A0C4A8C1B000350F9 /* TransitionMask.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = TransitionMask.jpg; path = Images/TransitionMask.jpg; sourceTree = "<group>"; };
 		CEB735A10C4A8CD6000350F9 /* TransitionShading.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; name = TransitionShading.tiff; path = Images/TransitionShading.tiff; sourceTree = "<group>"; };
-		CECBA5900BFCEE250030AB59 /* SelectToolAdorn.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; name = SelectToolAdorn.tiff; path = Images/SelectToolAdorn.tiff; sourceTree = "<group>"; };
 		CECD97200C57A3230026AAEC /* French */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = French; path = French.lproj/InfoWindow.nib; sourceTree = "<group>"; };
 		CECD97230C57A32F0026AAEC /* French */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = French; path = French.lproj/MainMenu.nib; sourceTree = "<group>"; };
 		CECD97260C57A3390026AAEC /* French */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = French; path = French.lproj/MainWindow.nib; sourceTree = "<group>"; };
@@ -571,6 +536,8 @@
 		CECD97530C57A3C90026AAEC /* French */ = {isa = PBXFileReference; fileEncoding = 10; lastKnownFileType = text.plist.strings; name = French; path = French.lproj/Localizable.strings; sourceTree = "<group>"; };
 		CECD97560C57A3D20026AAEC /* French */ = {isa = PBXFileReference; fileEncoding = 10; lastKnownFileType = text.plist.strings; name = French; path = French.lproj/ZoomValues.strings; sourceTree = "<group>"; };
 		CECD97590C57A3E30026AAEC /* French */ = {isa = PBXFileReference; lastKnownFileType = folder; name = French; path = "French.lproj/Skim Help"; sourceTree = "<group>"; };
+		CECDC4FC0C5966A80026AAEC /* NSImage_BDSKExtensions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NSImage_BDSKExtensions.h; sourceTree = "<group>"; };
+		CECDC4FD0C5966A80026AAEC /* NSImage_BDSKExtensions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NSImage_BDSKExtensions.m; sourceTree = "<group>"; };
 		CEE106130BCBB72C00BF2D3E /* SKNotesDocument.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SKNotesDocument.h; sourceTree = "<group>"; };
 		CEE106140BCBB72C00BF2D3E /* SKNotesDocument.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SKNotesDocument.m; sourceTree = "<group>"; };
 		CEE106590BCBBE1200BF2D3E /* English */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = English; path = English.lproj/NotesDocument.nib; sourceTree = "<group>"; };
@@ -788,6 +755,8 @@
 				CE2DE4ED0B85DB6300D0DA12 /* NSCursor_SKExtensions.m */,
 				CE5487BA0B35A20A00F8AFB6 /* NSFileManager_ExtendedAttributes.h */,
 				CE5487BB0B35A20A00F8AFB6 /* NSFileManager_ExtendedAttributes.m */,
+				CECDC4FC0C5966A80026AAEC /* NSImage_BDSKExtensions.h */,
+				CECDC4FD0C5966A80026AAEC /* NSImage_BDSKExtensions.m */,
 				CE6C03EE0BEDF759007BF0B5 /* NSParagraphStyle_SKExtensions.h */,
 				CE6C03EF0BEDF759007BF0B5 /* NSParagraphStyle_SKExtensions.m */,
 				CE1E301A0BDB9D5C0011D9DD /* NSScanner_SKExtensions.h */,
@@ -984,24 +953,6 @@
 				CE4D88D70C3AE52F002C20CB /* DVIDocument.icns */,
 				CE0715890B8A3D6300733CC8 /* NoteDocument.icns */,
 				CE380A7A0B834E6100A1B779 /* CameraCursor.tiff */,
-				CE5478B80B33456300F8AFB6 /* BackAdorn.tiff */,
-				CE5478B90B33456300F8AFB6 /* ForwardAdorn.tiff */,
-				CE3A42340B7927D3006B64D3 /* AnchoredNoteAdorn.tiff */,
-				CE7C5D040BD8062C0011315D /* LineNoteAdorn.tiff */,
-				CE3A42330B7927D3006B64D3 /* CircleNoteAdorn.tiff */,
-				CE9DC2E70B9F131800D64F28 /* HighlightNoteAdorn.tiff */,
-				CE1583280BA073FF00D5B03F /* StrikeOutNoteAdorn.tiff */,
-				CE4DA2430B9D9E640039E89C /* SquareNoteAdorn.tiff */,
-				CE5478B70B33456300F8AFB6 /* TextNoteAdorn.tiff */,
-				CE15832B0BA073FF00D5B03F /* UnderlineNoteAdorn.tiff */,
-				CE5478E40B334CAC00F8AFB6 /* MagnifyToolAdorn.tiff */,
-				CE5478BC0B33456300F8AFB6 /* MoveToolAdorn.tiff */,
-				CECBA5900BFCEE250030AB59 /* SelectToolAdorn.tiff */,
-				CE5478C30B33456300F8AFB6 /* TextToolAdorn.tiff */,
-				CE380C600B837B6100A1B779 /* NoteViewAdorn.tiff */,
-				CE4EB8220B7B96D00091F228 /* OutlineViewAdorn.tiff */,
-				CE380C610B837B6100A1B779 /* SnapshotViewAdorn.tiff */,
-				CE4EB8230B7B96D00091F228 /* ThumbnailViewAdorn.tiff */,
 				CE7C5D180BD8086C0011315D /* ToolbarLineNote.tiff */,
 				CE4190C20B94963A00ECF819 /* ToolbarCircleNote.tiff */,
 				CEAFFD7A0C40ED5400C3ECBB /* ToolbarColors.tiff */,
@@ -1186,25 +1137,10 @@
 				8D15AC2D0486D014006FF6A4 /* MainMenu.nib in Resources */,
 				4530D81D0B27ACAC007C59F4 /* MainWindow.nib in Resources */,
 				CE5470030B32D96500F8AFB6 /* NoteWindow.nib in Resources */,
-				CE5478C80B33456300F8AFB6 /* TextNoteAdorn.tiff in Resources */,
-				CE5478C90B33456300F8AFB6 /* BackAdorn.tiff in Resources */,
 				CE380A7B0B834E6200A1B779 /* CameraCursor.tiff in Resources */,
-				CE3A42350B7927D3006B64D3 /* CircleNoteAdorn.tiff in Resources */,
-				CE5478CA0B33456300F8AFB6 /* ForwardAdorn.tiff in Resources */,
-				CE9DC2E90B9F131900D64F28 /* HighlightNoteAdorn.tiff in Resources */,
-				CE5478E50B334CAC00F8AFB6 /* MagnifyToolAdorn.tiff in Resources */,
-				CE5478CD0B33456300F8AFB6 /* MoveToolAdorn.tiff in Resources */,
 				CE07158B0B8A3D6500733CC8 /* NoteDocument.icns in Resources */,
-				CE3A42360B7927D3006B64D3 /* AnchoredNoteAdorn.tiff in Resources */,
-				CE380C620B837B6100A1B779 /* NoteViewAdorn.tiff in Resources */,
-				CE4EB8240B7B96D00091F228 /* OutlineViewAdorn.tiff in Resources */,
 				CE07158C0B8A3D6500733CC8 /* PDFDocument.icns in Resources */,
 				CE7469180B7F40B700CBF969 /* Skim.icns in Resources */,
-				CE380C630B837B6100A1B779 /* SnapshotViewAdorn.tiff in Resources */,
-				CE4DA2440B9D9EC00039E89C /* SquareNoteAdorn.tiff in Resources */,
-				CE15832C0BA0740000D5B03F /* StrikeOutNoteAdorn.tiff in Resources */,
-				CE5478D40B33456300F8AFB6 /* TextToolAdorn.tiff in Resources */,
-				CE4EB8250B7B96D00091F228 /* ThumbnailViewAdorn.tiff in Resources */,
 				CE4190C40B94963A00ECF819 /* ToolbarCircleNote.tiff in Resources */,
 				CE9DC2EA0B9F131900D64F28 /* ToolbarHighlightNote.tiff in Resources */,
 				CE74686F0B7F3B1C00CBF969 /* ToolbarInfo.tiff in Resources */,
@@ -1228,7 +1164,6 @@
 				CE5478D80B33456300F8AFB6 /* ToolbarZoomToFit.tiff in Resources */,
 				CE7468810B7F3C0000CBF969 /* zoomInCursor.tiff in Resources */,
 				CE7468820B7F3C0000CBF969 /* zoomOutCursor.tiff in Resources */,
-				CE15832F0BA0740000D5B03F /* UnderlineNoteAdorn.tiff in Resources */,
 				CE2DEB920B86206400D0DA12 /* FindPanel.nib in Resources */,
 				CE9C423C0B8B5633004AD8CF /* PreferenceWindow.nib in Resources */,
 				CEF707240B8F8EFC003A2771 /* SnapshotWindow.nib in Resources */,
@@ -1241,10 +1176,8 @@
 				CE4F9DEE0BC1BE3A005BE0A1 /* Localizable.strings in Resources */,
 				CE67BB260BC44AC9007B6929 /* ZoomValues.strings in Resources */,
 				CEE1065E0BCBBE1300BF2D3E /* NotesDocument.nib in Resources */,
-				CE7C5D050BD8062C0011315D /* LineNoteAdorn.tiff in Resources */,
 				CE7C5D190BD8086C0011315D /* ToolbarLineNote.tiff in Resources */,
 				CE1E25680BDA61E80011D9DD /* ReadNotesAccessoryView.nib in Resources */,
-				CECBA5910BFCEE260030AB59 /* SelectToolAdorn.tiff in Resources */,
 				CE31AC4E0C02E919003612A9 /* ToolbarCrop.tiff in Resources */,
 				CE01D08C0C07157200FA32EF /* ToolbarZoomToSelection.tiff in Resources */,
 				CE48BBB60C08AD7000A166C6 /* notesTemplate.txt in Resources */,
@@ -1433,6 +1366,7 @@
 				CEAF079D0C4139EB00C3ECBB /* SKStatusBar.m in Sources */,
 				CEAF2E5A0C45414100C3ECBB /* SKLine.m in Sources */,
 				CE1ADEBF0C4C341100071840 /* SKTransitionController.m in Sources */,
+				CECDC4FF0C5966A80026AAEC /* NSImage_BDSKExtensions.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

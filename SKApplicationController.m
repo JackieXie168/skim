@@ -51,6 +51,7 @@
 #import "AppleRemote.h"
 #import "NSBezierPath_BDSKExtensions.h"
 #import "SKLine.h"
+#import "NSImage_BDSKExtensions.h"
 
 
 @implementation SKApplicationController
@@ -149,6 +150,10 @@ static BOOL fileIsInTrash(NSURL *fileURL)
     
     return NO;
 }    
+
+- (void)applicationWillFinishLaunching:(NSNotification *)aNotification {
+    [NSImage makeAdornImages];
+}
 
 - (void)applicationDidFinishLaunching:(NSNotification *)aNotification{
     NSString *versionString = [[[NSBundle mainBundle] infoDictionary] objectForKey:@"CFBundleShortVersionString"];
