@@ -898,10 +898,16 @@ static void SKCGContextDrawGrabHandle(CGContextRef context, CGPoint point, float
 	unsigned int modifiers = [theEvent modifierFlags] & NSDeviceIndependentModifierFlagsMask;
     
     if (hasNavigation && autohidesCursor) {
-        if ([self areaOfInterestForMouse:theEvent] & kPDFLinkArea)
+        if ([self areaOfInterestForMouse:theEvent] & kPDFLinkArea) {
             [super mouseDown:theEvent];
-        else
+        } else {
             [self goToNextPage:self];
+            // Eat up drag events because we don't want to select
+            while (YES) {
+                if ([[[self window] nextEventMatchingMask: NSLeftMouseUpMask | NSLeftMouseDraggedMask] type] == NSLeftMouseUp)
+                    break;
+            }
+        }
         return;
     }
     
