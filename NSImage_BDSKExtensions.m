@@ -76,7 +76,7 @@
     
     NSColor *color = [NSColor colorWithCalibratedWhite:0.0 alpha:0.85];
     
-    NSSize size = NSMakeSize(26.0, 13.0);
+    NSSize size = NSMakeSize(25.0, 13.0);
     NSSize noteSize = NSMakeSize(15.0, 11.0);
     NSPoint point = NSMakePoint(2.0, 1.0);
     NSBezierPath *path;
@@ -314,11 +314,18 @@
     [[NSColor colorWithCalibratedWhite:0.0 alpha:0.85] set];
     [path fill];
     path = [NSBezierPath bezierPath];
-    [path moveToPoint:NSMakePoint(4.0, 0.5)];
-    [path lineToPoint:NSMakePoint(6.0, 2.0)];
+    [path moveToPoint:NSMakePoint(3.0, 1.5)];
     [path lineToPoint:NSMakePoint(4.0, 4.0)];
     [path lineToPoint:NSMakePoint(3.0, 4.0)];
     [path lineToPoint:NSMakePoint(2.5, 2.0)];
+    [path closePath];
+    [[NSColor colorWithCalibratedWhite:0.3 alpha:0.85] set];
+    [path fill];
+    path = [NSBezierPath bezierPath];
+    [path moveToPoint:NSMakePoint(3.5, 1.0)];
+    [path lineToPoint:NSMakePoint(6.0, 2.0)];
+    [path lineToPoint:NSMakePoint(4.0, 4.0)];
+    [path lineToPoint:NSMakePoint(3.0, 1.5)];
     [path closePath];
     [[NSColor colorWithCalibratedWhite:0.8 alpha:0.85] set];
     [path fill];
