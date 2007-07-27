@@ -626,10 +626,10 @@ static NSString *noteToolAdornImageNames[] = {@"TextNoteToolAdorn", @"AnchoredNo
             [snapshotTimer release];
             snapshotTimer = nil;
         }
-        if (findTimer) {
-            [findTimer invalidate];
-            [findTimer release];
-            findTimer = nil;
+        if (temporaryAnnotationTimer) {
+            [temporaryAnnotationTimer invalidate];
+            [temporaryAnnotationTimer release];
+            temporaryAnnotationTimer = nil;
         }
         
         [ownerController setContent:nil];
@@ -2338,6 +2338,10 @@ static NSString *noteToolAdornImageNames[] = {@"TextNoteToolAdorn", @"AnchoredNo
     }
 }
 
+- (void)temporaryAnnotationTimerFired:(NSTimer *)timer {
+    [self removeTemporaryAnnotations];
+}
+
 - (void)addAnnotationsForSelection:(PDFSelection *)sel {
     NSArray *pages = [sel pages];
     int i, iMax = [pages count];
@@ -2365,6 +2369,21 @@ static NSString *noteToolAdornImageNames[] = {@"TextNoteToolAdorn", @"AnchoredNo
     }
 }
 
+- (void)addTemporaryAnnotationForPoint:(NSPoint)point onPage:(PDFPage *)page {
+    NSRect bounds = NSMakeRect(point.x - 2.0, point.y - 2.0, 4.0, 4.0);
+    SKPDFAnnotationTemporary *circle = [[SKPDFAnnotationTemporary alloc] initWithBounds:bounds];
+    NSColor *color = [[NSUserDefaults standardUserDefaults] colorForKey:SKSearchHighlightColorKey];
+    
+    [self removeTemporaryAnnotations];
+    [circle setColor:color];
+    [circle setInteriorColor:color];
+    [page addAnnotation:circle];
+    [pdfView setNeedsDisplayForAnnotation:circle];
+    [circle release];
+    CFSetAddValue(temporaryAnnotations, (void *)circle);
+    temporaryAnnotationTimer = [[NSTimer scheduledTimerWithTimeInterval:10 target:self selector:@selector(temporaryAnnotationTimerFired:) userInfo:NULL repeats:NO] retain];
+}
+
 static void removeTemporaryAnnotations(const void *annotation, void *context)
 {
     SKMainWindowController *wc = (SKMainWindowController *)context;
@@ -2375,16 +2394,12 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
 }
 
 - (void)removeTemporaryAnnotations {
-    [findTimer invalidate];
-    [findTimer release];
-    findTimer = nil;
+    [temporaryAnnotationTimer invalidate];
+    [temporaryAnnotationTimer release];
+    temporaryAnnotationTimer = nil;
     // for long documents, this is much faster than iterating all pages and sending -isTemporaryAnnotation to each one
     CFSetApplyFunction(temporaryAnnotations, removeTemporaryAnnotations, self);
     CFSetRemoveAllValues(temporaryAnnotations);
-}
-
-- (void)findTimerFired:(NSTimer *)timer {
-    [self removeTemporaryAnnotations];
 }
 
 - (void)displaySearchResultsForString:(NSString *)string {
@@ -2435,9 +2450,11 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
 		[pdfView setCurrentSelection:selection];
 		[pdfView scrollSelectionToVisible:self];
         [findTableView deselectAll:self];
-        [self removeTemporaryAnnotations];
-        [self addAnnotationsForSelection:selection];
-        findTimer = [[NSTimer scheduledTimerWithTimeInterval:10 target:self selector:@selector(findTimerFired:) userInfo:NULL repeats:NO] retain];
+        if ([[NSUserDefaults standardUserDefaults] boolForKey:SKShouldHighlightSearchResultsKey]) {
+            [self removeTemporaryAnnotations];
+            [self addAnnotationsForSelection:selection];
+            temporaryAnnotationTimer = [[NSTimer scheduledTimerWithTimeInterval:10 target:self selector:@selector(temporaryAnnotationTimerFired:) userInfo:NULL repeats:NO] retain];
+        }
 	} else {
 		NSBeep();
 	}

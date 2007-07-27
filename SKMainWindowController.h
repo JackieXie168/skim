@@ -119,7 +119,7 @@ typedef struct _SKPDFViewState {
     NSMutableArray              *searchResults;
     BOOL                        findPanelFind;
     CFMutableSetRef             temporaryAnnotations;
-    NSTimer                     *findTimer;
+    NSTimer                     *temporaryAnnotationTimer;
     
     IBOutlet NSArrayController  *noteArrayController;
     IBOutlet SKNoteOutlineView  *noteOutlineView;
@@ -319,6 +319,7 @@ typedef struct _SKPDFViewState {
 - (void)displaySnapshotView;
 
 - (void)removeTemporaryAnnotations;
+- (void)addTemporaryAnnotationForPoint:(NSPoint)point onPage:(PDFPage *)page;
 
 - (PDFSelection *)findString:(NSString *)string fromSelection:(PDFSelection *)selection withOptions:(int)options;
 

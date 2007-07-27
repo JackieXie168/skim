@@ -948,7 +948,9 @@ static BOOL isFileOnHFSVolume(NSString *fileName)
 }
 
 - (void)synchronizer:(SKPDFSynchronizer *)synchronizer foundLocation:(NSPoint)point atPageIndex:(unsigned int)pageIndex {
-   [[self pdfView] displayLineAtPoint:point inPageAtIndex:pageIndex];
+    if ([[NSUserDefaults standardUserDefaults] boolForKey:SKShouldHighlightSearchResultsKey])
+        [[self mainWindowController] addTemporaryAnnotationForPoint:point onPage:[[self pdfDocument] pageAtIndex:pageIndex]];
+    [[self pdfView] displayLineAtPoint:point inPageAtIndex:pageIndex];
 }
 
 
