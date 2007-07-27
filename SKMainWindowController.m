@@ -2117,6 +2117,7 @@ static NSString *noteToolAdornImageNames[] = {@"TextNoteToolAdorn", @"AnchoredNo
     [scrollView setNeverHasVerticalScroller:YES];
     [scrollView setAutohidesScrollers:YES];
     
+    [pdfView setCurrentSelection:nil];
     if ([pdfView hasReadingBar])
         [pdfView toggleReadingBar];
     
