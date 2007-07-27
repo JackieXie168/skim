@@ -391,7 +391,10 @@ static void SKAddNamedAndFilteredImageForKey(NSMutableDictionary *images, NSMuta
             [[NSColor colorWithCalibratedWhite:1.0 alpha:0.8] set];
         else
             [[NSColor colorWithCalibratedWhite:0.0 alpha:0.7] set];
-        [NSBezierPath strokeRect:NSInsetRect(cellFrame, 0.5, 0.5)];
+        NSRect rect = cellFrame;
+        rect.origin.y = floorf(NSMinY(rect) + 0.5 * (NSHeight(cellFrame) - NSWidth(cellFrame)));
+        rect.size.height = NSWidth(rect);
+        [NSBezierPath strokeRect:NSInsetRect(rect, 0.5, 0.5)];
         [[NSGraphicsContext currentContext] restoreGraphicsState];
     }
     
