@@ -17,7 +17,7 @@
 		<key>502</key>
 		<string>610 420 220 442 0 0 1440 938 </string>
 		<key>511</key>
-		<string>690 564 220 442 0 0 1600 1178 </string>
+		<string>610 420 220 442 0 0 1440 938 </string>
 		<key>660</key>
 		<string>610 420 220 442 0 0 1440 938 </string>
 		<key>661</key>
@@ -33,10 +33,11 @@
 	<array>
 		<integer>633</integer>
 		<integer>314</integer>
-		<integer>502</integer>
-		<integer>660</integer>
 		<integer>661</integer>
 		<integer>5</integer>
+		<integer>502</integer>
+		<integer>660</integer>
+		<integer>511</integer>
 	</array>
 	<key>IBSystem Version</key>
 	<string>8R218</string>
