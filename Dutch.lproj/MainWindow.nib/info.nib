@@ -29,6 +29,11 @@
 	<array>
 		<integer>208</integer>
 	</array>
+	<key>IBOpenObjects</key>
+	<array>
+		<integer>5</integer>
+		<integer>511</integer>
+	</array>
 	<key>IBSystem Version</key>
 	<string>8R218</string>
 </dict>
