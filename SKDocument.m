@@ -906,8 +906,11 @@ static BOOL isFileOnHFSVolume(NSString *fileName)
             if (range.location == NSNotFound)
                 break;
             nextChar = NSMaxRange(range) < [cmdString length] ? [cmdString characterAtIndex:NSMaxRange(range)] : 0;
-            if ([[NSCharacterSet letterCharacterSet] characterIsMember:nextChar] == NO)
-                [cmdString replaceCharactersInRange:range withString:[NSString stringWithFormat:@"%d", line]];
+            if ([[NSCharacterSet letterCharacterSet] characterIsMember:nextChar] == NO) {
+                NSString *lineString = [NSString stringWithFormat:@"%d", line];
+                [cmdString replaceCharactersInRange:range withString:lineString];
+                range.length = [lineString length];
+            }
         }
         
         range = NSMakeRange(0, 0);
@@ -917,12 +920,12 @@ static BOOL isFileOnHFSVolume(NSString *fileName)
                 break;
             prevChar = range.location > 0 ? [cmdString characterAtIndex:range.location - 1] : 0;
             nextChar = NSMaxRange(range) < [cmdString length] ? [cmdString characterAtIndex:NSMaxRange(range)] : 0;
-            if (prevChar == '\'' && nextChar == '\'')
-                [cmdString replaceCharactersInRange:range withString:file];
-            else if ([[NSCharacterSet letterCharacterSet] characterIsMember:nextChar] == NO)
-                [cmdString replaceCharactersInRange:range withString:[file stringByEscapingShellChars]];
+            if ([[NSCharacterSet letterCharacterSet] characterIsMember:nextChar] == NO) {
+                NSString *escapedFile = (prevChar == '\'' && nextChar == '\'') ? file : [file stringByEscapingShellChars];
+                [cmdString replaceCharactersInRange:range withString:escapedFile];
+                range.length = [escapedFile length];
+            }
         }
-        
         
         [cmdString insertString:@"\" " atIndex:0];
         [cmdString insertString:editorCmd atIndex:0];
