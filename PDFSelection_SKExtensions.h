@@ -45,6 +45,8 @@
 - (NSString *)firstPageLabel;
 - (NSAttributedString *)contextString;
 
+- (PDFDestination *)destination;
+
 - (int)safeNumberOfRangesOnPage:(PDFPage *)page;
 - (NSRange)safeRangeAtIndex:(int)index onPage:(PDFPage *)page;
 

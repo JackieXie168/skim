@@ -100,6 +100,17 @@
 	return [attributedSample autorelease];
 }
 
+- (PDFDestination *)destination {
+    PDFDestination *destination = nil;
+    NSArray *pages = [self pages];
+    if ([pages count]) {
+        PDFPage *page = [pages objectAtIndex:0];
+        NSRect bounds = [self boundsForPage:page];
+        destination = [[[PDFDestination alloc] initWithPage:page atPoint:NSMakePoint(NSMinX(bounds), NSMaxY(bounds))] autorelease];
+    }
+    return destination;
+}
+
 - (int)safeNumberOfRangesOnPage:(PDFPage *)page {
     if ([self respondsToSelector:@selector(numberOfRangesOnPage:)])
         return [self numberOfRangesOnPage:page];
