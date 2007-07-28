@@ -94,13 +94,15 @@
     NSRange columnRange = [self columnsInRect:[self visibleRect]];
     unsigned int row, column;
 	NSTableColumn *tableColumn;
+    int userData;
     NSTrackingRectTag tag;
     
     for (column = columnRange.location; column < NSMaxRange(columnRange); column++) {
         tableColumn = [[self tableColumns] objectAtIndex:column];
 		for (row = rowRange.location; row < NSMaxRange(rowRange); row++) {
             if ([[self delegate] outlineView:self shouldTrackTableColumn:tableColumn item:[self itemAtRow:row]]) {
-                tag = [self addTrackingRect:[self frameOfCellAtColumn:column row:row] owner:self userData:NULL assumeInside:NO];
+                userData = row * [self numberOfColumns] + column;
+                tag = [self addTrackingRect:[self frameOfCellAtColumn:column row:row] owner:self userData:(void *)userData assumeInside:NO];
                 CFArrayAppendValue(trackingRects, (const void *)tag);
             }
         }
@@ -139,9 +141,10 @@
 
 - (void)mouseEntered:(NSEvent *)theEvent{
     if ([[self delegate] respondsToSelector:@selector(outlineView:mouseEnteredTableColumn:item:)]) {
-        NSPoint point = [self convertPoint:[theEvent locationInWindow] fromView:nil];
-		int column = [self columnAtPoint:point];
-		int row = [self rowAtPoint:point];
+        int userData = (int)[theEvent userData];
+        int numCols = [self numberOfColumns];
+		int column = userData % numCols;
+		int row = userData / numCols;
         if (column != -1 && row != -1) {
             NSTableColumn *tableColumn = [[self tableColumns] objectAtIndex:column];
             [[self delegate] outlineView:self mouseEnteredTableColumn:tableColumn item:[self itemAtRow:row]];
@@ -151,9 +154,10 @@
 
 - (void)mouseExited:(NSEvent *)theEvent{
     if ([[self delegate] respondsToSelector:@selector(outlineView:mouseExitedTableColumn:item:)]) {
-        NSPoint point = [self convertPoint:[theEvent locationInWindow] fromView:nil];
-		int column = [self columnAtPoint:point];
-		int row = [self rowAtPoint:point];
+        int userData = (int)[theEvent userData];
+        int numCols = [self numberOfColumns];
+		int column = userData % numCols;
+		int row = userData / numCols;
         if (column != -1 && row != -1) {
             NSTableColumn *tableColumn = [[self tableColumns] objectAtIndex:column];
             [[self delegate] outlineView:self mouseExitedTableColumn:tableColumn item:[self itemAtRow:row]];
