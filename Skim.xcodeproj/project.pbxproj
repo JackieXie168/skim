@@ -158,6 +158,7 @@
 		CEB7359C0C4A8C1C000350F9 /* TransitionMask.jpg in Resources */ = {isa = PBXBuildFile; fileRef = CEB7359A0C4A8C1B000350F9 /* TransitionMask.jpg */; };
 		CEB735A20C4A8CD6000350F9 /* TransitionShading.tiff in Resources */ = {isa = PBXBuildFile; fileRef = CEB735A10C4A8CD6000350F9 /* TransitionShading.tiff */; };
 		CECDC4FF0C5966A80026AAEC /* NSImage_BDSKExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = CECDC4FD0C5966A80026AAEC /* NSImage_BDSKExtensions.m */; };
+		CECDD2990C5B68580026AAEC /* SKCenteredTextFieldCell.m in Sources */ = {isa = PBXBuildFile; fileRef = CECDD2970C5B68580026AAEC /* SKCenteredTextFieldCell.m */; };
 		CEE106150BCBB72C00BF2D3E /* SKNotesDocument.m in Sources */ = {isa = PBXBuildFile; fileRef = CEE106140BCBB72C00BF2D3E /* SKNotesDocument.m */; };
 		CEE1065E0BCBBE1300BF2D3E /* NotesDocument.nib in Resources */ = {isa = PBXBuildFile; fileRef = CEE106580BCBBE1200BF2D3E /* NotesDocument.nib */; };
 		CEE229390BFB7CE9002B746B /* ReleaseNotes.rtf in Resources */ = {isa = PBXBuildFile; fileRef = CE54AA8E0BBC037400008750 /* ReleaseNotes.rtf */; };
@@ -538,6 +539,8 @@
 		CECD97590C57A3E30026AAEC /* French */ = {isa = PBXFileReference; lastKnownFileType = folder; name = French; path = "French.lproj/Skim Help"; sourceTree = "<group>"; };
 		CECDC4FC0C5966A80026AAEC /* NSImage_BDSKExtensions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NSImage_BDSKExtensions.h; sourceTree = "<group>"; };
 		CECDC4FD0C5966A80026AAEC /* NSImage_BDSKExtensions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NSImage_BDSKExtensions.m; sourceTree = "<group>"; };
+		CECDD2960C5B68580026AAEC /* SKCenteredTextFieldCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SKCenteredTextFieldCell.h; sourceTree = "<group>"; };
+		CECDD2970C5B68580026AAEC /* SKCenteredTextFieldCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SKCenteredTextFieldCell.m; sourceTree = "<group>"; };
 		CEE106130BCBB72C00BF2D3E /* SKNotesDocument.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SKNotesDocument.h; sourceTree = "<group>"; };
 		CEE106140BCBB72C00BF2D3E /* SKNotesDocument.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SKNotesDocument.m; sourceTree = "<group>"; };
 		CEE106590BCBBE1200BF2D3E /* English */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = English; path = English.lproj/NotesDocument.nib; sourceTree = "<group>"; };
@@ -874,6 +877,8 @@
 				CEAF079B0C4139EB00C3ECBB /* SKStatusBar.m */,
 				CEA575E30B9207B80003D2E7 /* SKThumbnailTableView.h */,
 				CEA575E40B9207B80003D2E7 /* SKThumbnailTableView.m */,
+				CECDD2960C5B68580026AAEC /* SKCenteredTextFieldCell.h */,
+				CECDD2970C5B68580026AAEC /* SKCenteredTextFieldCell.m */,
 				CE0710110B89BDD600733CC8 /* BDSKCollapsibleView.h */,
 				CE0710120B89BDD600733CC8 /* BDSKCollapsibleView.m */,
 				CE0710130B89BDD600733CC8 /* BDSKContainerView.h */,
@@ -1367,6 +1372,7 @@
 				CEAF2E5A0C45414100C3ECBB /* SKLine.m in Sources */,
 				CE1ADEBF0C4C341100071840 /* SKTransitionController.m in Sources */,
 				CECDC4FF0C5966A80026AAEC /* NSImage_BDSKExtensions.m in Sources */,
+				CECDD2990C5B68580026AAEC /* SKCenteredTextFieldCell.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
