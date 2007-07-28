@@ -264,6 +264,12 @@ static NSString *noteToolAdornImageNames[] = {@"TextNoteToolAdorn", @"AnchoredNo
     [[rightSideButton cell] setToolTip:NSLocalizedString(@"View Notes", @"Tool tip message") forSegment:SKNoteSidePaneState];
     [[rightSideButton cell] setToolTip:NSLocalizedString(@"View Snapshots", @"Tool tip message") forSegment:SKSnapshotSidePaneState];
     
+    // This gets sometimes messed up in the nib, AppKit bug rdar://5346690
+    [leftSideContentBox setAutoresizesSubviews:YES];
+    [[leftSideContentBox contentView] setAutoresizesSubviews:YES];
+    [rightSideContentBox setAutoresizesSubviews:YES];
+    [[rightSideContentBox contentView] setAutoresizesSubviews:YES];
+    
     [leftSideContentView setFrame:[leftSideContentBox bounds]];
     [leftSideContentBox addSubview:leftSideContentView];
     [rightSideContentView setFrame:[rightSideContentBox bounds]];
