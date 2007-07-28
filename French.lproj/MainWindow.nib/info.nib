@@ -11,7 +11,7 @@
 		<key>224</key>
 		<string>690 564 220 442 0 0 1600 1178 </string>
 		<key>256</key>
-		<string>690 564 220 442 0 0 1600 1178 </string>
+		<string>610 420 220 442 0 0 1440 938 </string>
 		<key>314</key>
 		<string>610 420 220 442 0 0 1440 938 </string>
 		<key>502</key>
@@ -31,14 +31,15 @@
 	</array>
 	<key>IBOpenObjects</key>
 	<array>
-		<integer>502</integer>
-		<integer>661</integer>
-		<integer>5</integer>
-		<integer>660</integer>
-		<integer>511</integer>
 		<integer>314</integer>
-		<integer>633</integer>
+		<integer>660</integer>
 		<integer>168</integer>
+		<integer>633</integer>
+		<integer>511</integer>
+		<integer>661</integer>
+		<integer>502</integer>
+		<integer>256</integer>
+		<integer>5</integer>
 	</array>
 	<key>IBSystem Version</key>
 	<string>8R218</string>
