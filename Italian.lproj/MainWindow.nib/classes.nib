@@ -37,6 +37,7 @@
             SUPERCLASS = NSTextFieldCell; 
         }, 
         {CLASS = SKColorSwatch; LANGUAGE = ObjC; SUPERCLASS = NSControl; }, 
+        {CLASS = SKFindTableView; LANGUAGE = ObjC; SUPERCLASS = NSTableView; }, 
         {CLASS = SKFullScreenWindow; LANGUAGE = ObjC; SUPERCLASS = NSWindow; }, 
         {CLASS = SKMainWindow; LANGUAGE = ObjC; SUPERCLASS = NSWindow; }, 
         {

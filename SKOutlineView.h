@@ -37,12 +37,18 @@
  */
 
 #import <Cocoa/Cocoa.h>
+#import <Carbon/Carbon.h>
 
 
-@interface SKOutlineView : NSOutlineView
+@interface SKOutlineView : NSOutlineView {
+    CFMutableArrayRef trackingRects;
+}
 @end
 
 
 @interface NSObject (SKOutlineViewDelegate)
 - (NSArray *)outlineViewHighlightedRows:(NSOutlineView *)anOutlineView;
+- (BOOL)outlineView:(NSOutlineView *)anOutlineView shouldTrackTableColumn:(NSTableColumn *)aTableColumn item:(id)item;
+- (void)outlineView:(NSOutlineView *)anOutlineView mouseEnteredTableColumn:(NSTableColumn *)aTableColumn item:(id)item;
+- (void)outlineView:(NSOutlineView *)anOutlineView mouseExitedTableColumn:(NSTableColumn *)aTableColumn item:(id)item;
 @end

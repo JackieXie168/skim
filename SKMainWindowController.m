@@ -63,6 +63,7 @@
 #import "SKOutlineView.h"
 #import "SKNoteOutlineView.h"
 #import "SKThumbnailTableView.h"
+#import "SKFindTableView.h"
 #import "BDSKImagePopUpButton.h"
 #import "NSWindowController_SKExtensions.h"
 #import "SKPDFHoverWindow.h"
@@ -2237,6 +2238,9 @@ static NSString *noteToolAdornImageNames[] = {@"TextNoteToolAdorn", @"AnchoredNo
     if ([newView window] == nil) {
         BOOL wasFirstResponder = [[[oldView window] firstResponder] isDescendantOf:oldView];
         
+        if ([oldView isEqual:tocView] || [oldView isEqual:findView])
+            [[SKPDFHoverWindow sharedHoverWindow] orderOut:self];
+        
         [newView setFrame:[oldView frame]];
         [newView setHidden:animate];
         [[oldView superview] addSubview:newView];
@@ -3152,15 +3156,6 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
     }
 }
 
-- (NSString *)outlineView:(NSOutlineView *)ov toolTipForCell:(NSCell *)cell rect:(NSRectPointer)rect tableColumn:(NSTableColumn *)tc item:(id)item mouseLocation:(NSPoint)mouseLocation{
-    if ([ov isEqual:outlineView]) {
-        return [(PDFOutline *)item label];
-    } else if ([ov isEqual:noteOutlineView]) {
-        return [item type] ? [item contents] : [[(SKNoteText *)item contents] string];
-    }
-    return nil;
-}
-
 - (void)outlineViewNoteTypesDidChange:(NSOutlineView *)ov {
     if ([ov isEqual:noteOutlineView]) {
         [self updateNoteFilterPredicate];
@@ -3216,6 +3211,20 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
         return array;
     }
     return nil;
+}
+
+- (BOOL)outlineView:(NSOutlineView *)anOutlineView shouldTrackTableColumn:(NSTableColumn *)aTableColumn item:(id)item {
+    return YES;
+}
+
+- (void)outlineView:(NSOutlineView *)anOutlineView mouseEnteredTableColumn:(NSTableColumn *)aTableColumn item:(id)item {
+    PDFAnnotationLink *link = [[[PDFAnnotationLink alloc] initWithBounds:NSZeroRect] autorelease];
+    [link setDestination:[item destination]];
+    [[SKPDFHoverWindow sharedHoverWindow] showForAnnotation:link atPoint:NSZeroPoint];
+}
+
+- (void)outlineView:(NSOutlineView *)anOutlineView mouseExitedTableColumn:(NSTableColumn *)aTableColumn item:(id)item {
+    [[SKPDFHoverWindow sharedHoverWindow] hide];
 }
 
 #pragma mark NSTableView delegate protocol
@@ -3339,6 +3348,30 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
         return lastViewedPages;
     }
     return nil;
+}
+
+- (BOOL)tableView:(NSTableView *)tv shouldTrackTableColumn:(NSTableColumn *)aTableColumn row:(int)row {
+    if ([tv isEqual:findTableView]) {
+        return YES;
+    }
+    return NO;
+}
+
+- (void)tableView:(NSTableView *)tv mouseEnteredTableColumn:(NSTableColumn *)aTableColumn row:(int)row {
+    if ([tv isEqual:findTableView]) {
+        PDFAnnotationLink *link = [[[PDFAnnotationLink alloc] initWithBounds:NSZeroRect] autorelease];
+        PDFSelection *selection = [[[findArrayController arrangedObjects] objectAtIndex:row] copy];
+        [selection extendSelectionAtStart:10];
+        [link setDestination:[selection destination]];
+        [selection release];
+        [[SKPDFHoverWindow sharedHoverWindow] showForAnnotation:link atPoint:NSZeroPoint];
+    }
+}
+
+- (void)tableView:(NSTableView *)tv mouseExitedTableColumn:(NSTableColumn *)aTableColumn row:(int)row {
+    if ([tv isEqual:findTableView]) {
+        [[SKPDFHoverWindow sharedHoverWindow] hide];
+    }
 }
 
 #pragma mark Outline

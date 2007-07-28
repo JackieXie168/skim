@@ -41,6 +41,12 @@
 
 @implementation SKOutlineView
 
+- (void)dealloc {
+    if (trackingRects != NULL)
+        CFRelease(trackingRects);
+    [super dealloc];
+}
+
 - (void)highlightSelectionInClipRect:(NSRect)clipRect {
     if ([[self delegate] respondsToSelector:@selector(outlineViewHighlightedRows:)]) {
         NSMutableIndexSet *rowIndexes = [[[self selectedRowIndexes] mutableCopy] autorelease];
@@ -63,6 +69,96 @@
         [NSGraphicsContext restoreGraphicsState];
     }
     [super highlightSelectionInClipRect:clipRect]; 
+}
+
+- (void)removeTrackingRects {
+    if ([[self delegate] respondsToSelector:@selector(outlineView:shouldTrackTableColumn:item:)] == NO)
+        return;
+    
+    CFIndex idx = CFArrayGetCount(trackingRects);
+    while(idx--)
+        [self removeTrackingRect:(NSTrackingRectTag)CFArrayGetValueAtIndex(trackingRects, idx)];
+    CFArrayRemoveAllValues(trackingRects);
+}
+
+- (void)rebuildTrackingRects {
+    if ([[self delegate] respondsToSelector:@selector(outlineView:shouldTrackTableColumn:item:)] == NO)
+        return;
+    
+    if (trackingRects == nil)
+        trackingRects = CFArrayCreateMutable(kCFAllocatorDefault, 0, NULL);
+    else
+        [self removeTrackingRects];
+    
+    NSRange rowRange = [self rowsInRect:[self visibleRect]];
+    NSRange columnRange = [self columnsInRect:[self visibleRect]];
+    unsigned int row, column;
+	NSTableColumn *tableColumn;
+    NSTrackingRectTag tag;
+    
+    for (column = columnRange.location; column < NSMaxRange(columnRange); column++) {
+        tableColumn = [[self tableColumns] objectAtIndex:column];
+		for (row = rowRange.location; row < NSMaxRange(rowRange); row++) {
+            if ([[self delegate] outlineView:self shouldTrackTableColumn:tableColumn item:[self itemAtRow:row]]) {
+                tag = [self addTrackingRect:[self frameOfCellAtColumn:column row:row] owner:self userData:NULL assumeInside:NO];
+                CFArrayAppendValue(trackingRects, (const void *)tag);
+            }
+        }
+    }
+}
+
+- (void)reloadData{
+    [super reloadData];
+	[self rebuildTrackingRects];
+}
+
+- (void)resetCursorRects {
+	[super resetCursorRects];
+    [self rebuildTrackingRects];
+}
+
+- (void)setDataSource:(id)anObject {
+	[super setDataSource:anObject];
+	[self rebuildTrackingRects];
+}
+
+- (void)noteNumberOfRowsChanged {
+	[super noteNumberOfRowsChanged];
+	[self rebuildTrackingRects];
+}
+
+- (void)viewWillMoveToWindow:(NSWindow *)newWindow {
+    if ([self window])
+        [self removeTrackingRects];
+}
+
+- (void)viewDidMoveToWindow {
+	if ([self window])
+        [self rebuildTrackingRects];
+}
+
+- (void)mouseEntered:(NSEvent *)theEvent{
+    if ([[self delegate] respondsToSelector:@selector(outlineView:mouseEnteredTableColumn:item:)]) {
+        NSPoint point = [self convertPoint:[theEvent locationInWindow] fromView:nil];
+		int column = [self columnAtPoint:point];
+		int row = [self rowAtPoint:point];
+        if (column != -1 && row != -1) {
+            NSTableColumn *tableColumn = [[self tableColumns] objectAtIndex:column];
+            [[self delegate] outlineView:self mouseEnteredTableColumn:tableColumn item:[self itemAtRow:row]];
+        }
+	}
+}
+
+- (void)mouseExited:(NSEvent *)theEvent{
+    if ([[self delegate] respondsToSelector:@selector(outlineView:mouseExitedTableColumn:item:)]) {
+        NSPoint point = [self convertPoint:[theEvent locationInWindow] fromView:nil];
+		int column = [self columnAtPoint:point];
+		int row = [self rowAtPoint:point];
+        if (column != -1 && row != -1) {
+            NSTableColumn *tableColumn = [[self tableColumns] objectAtIndex:column];
+            [[self delegate] outlineView:self mouseExitedTableColumn:tableColumn item:[self itemAtRow:row]];
+        }
+	}
 }
 
 @end
