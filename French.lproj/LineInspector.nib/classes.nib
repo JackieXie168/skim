@@ -1,56 +1,44 @@
 {
-    IBClasses =     (
-                {
-            ACTIONS =             {
-                "" = id;
-            };
-            CLASS = FirstResponder;
-            LANGUAGE = ObjC;
-            SUPERCLASS = NSObject;
-        },
-                {
-            ACTIONS =             {
-                changeDashPattern = id;
-                changeEndLineStyle = id;
-                changeLineStyle = id;
-                changeLineWidth = id;
-                changeStartLineStyle = id;
-            };
-            CLASS = NSObject;
-            LANGUAGE = ObjC;
-        },
-                {
-            CLASS = NSSegmentedControl;
-            LANGUAGE = ObjC;
-            SUPERCLASS = NSControl;
-        },
-                {
-            CLASS = SKLineInspector;
-            LANGUAGE = ObjC;
-            OUTLETS =             {
-                dashPatternField = NSTextField;
-                endLineStyleButton = NSSegmentedControl;
-                lineWell = SKLineWell;
-                lineWidthField = NSTextField;
-                lineWidthSlider = NSSlider;
-                startLineStyleButton = NSSegmentedControl;
-                styleButton = NSSegmentedControl;
-            };
-            SUPERCLASS = NSWindowController;
-        },
-                {
-            CLASS = SKLineWell;
-            LANGUAGE = ObjC;
-            OUTLETS =             {
-                target = id;
-            };
-            SUPERCLASS = NSControl;
-        },
-                {
-            CLASS = SKNumberArrayFormatter;
-            LANGUAGE = ObjC;
-            SUPERCLASS = NSFormatter;
-        }
-    );
-    IBVersion = 1;
+    IBClasses = (
+        {
+            ACTIONS = {"" = id; }; 
+            CLASS = FirstResponder; 
+            LANGUAGE = ObjC; 
+            SUPERCLASS = NSObject; 
+        }, 
+        {
+            ACTIONS = {
+                changeDashPattern = id; 
+                changeEndLineStyle = id; 
+                changeLineStyle = id; 
+                changeLineWidth = id; 
+                changeStartLineStyle = id; 
+            }; 
+            CLASS = NSObject; 
+            LANGUAGE = ObjC; 
+        }, 
+        {CLASS = NSSegmentedControl; LANGUAGE = ObjC; SUPERCLASS = NSControl; }, 
+        {
+            CLASS = SKLineInspector; 
+            LANGUAGE = ObjC; 
+            OUTLETS = {
+                dashPatternField = NSTextField; 
+                endLineStyleButton = NSSegmentedControl; 
+                lineWell = SKLineWell; 
+                lineWidthField = NSTextField; 
+                lineWidthSlider = NSSlider; 
+                startLineStyleButton = NSSegmentedControl; 
+                styleButton = NSSegmentedControl; 
+            }; 
+            SUPERCLASS = NSWindowController; 
+        }, 
+        {
+            CLASS = SKLineWell; 
+            LANGUAGE = ObjC; 
+            OUTLETS = {target = id; }; 
+            SUPERCLASS = NSControl; 
+        }, 
+        {CLASS = SKNumberArrayFormatter; LANGUAGE = ObjC; SUPERCLASS = NSFormatter; }
+    ); 
+    IBVersion = 1; 
 }
