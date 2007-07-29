@@ -1775,6 +1775,7 @@ static NSString *noteToolAdornImageNames[] = {@"TextNoteToolAdorn", @"AnchoredNo
 
 - (IBAction)toggleLeftSidePane:(id)sender {
     if ([self isFullScreen]) {
+        [[SKPDFHoverWindow sharedHoverWindow] hide];
         if ([leftSideWindow state] == NSDrawerOpenState || [leftSideWindow state] == NSDrawerOpeningState)
             [leftSideWindow hideSideWindow];
         else
@@ -1788,7 +1789,9 @@ static NSString *noteToolAdornImageNames[] = {@"TextNoteToolAdorn", @"AnchoredNo
         NSRect sideFrame = [leftSideContentBox frame];
         NSRect pdfFrame = [pdfContentBox frame];
         
-        if(NSWidth(sideFrame) > 0.0){
+        if (NSWidth(sideFrame) > 0.0) {
+            if (leftSidePaneState == SKOutlineSidePaneState || [[searchField stringValue] length])
+                [[SKPDFHoverWindow sharedHoverWindow] hide];
             lastLeftSidePaneWidth = NSWidth(sideFrame); // cache this
             pdfFrame.size.width += lastLeftSidePaneWidth;
             sideFrame.size.width = 0.0;
@@ -1820,7 +1823,7 @@ static NSString *noteToolAdornImageNames[] = {@"TextNoteToolAdorn", @"AnchoredNo
         NSRect sideFrame = [rightSideContentBox frame];
         NSRect pdfFrame = [pdfContentBox frame];
         
-        if(NSWidth(sideFrame) > 1.0){
+        if (NSWidth(sideFrame) > 1.0) {
             lastRightSidePaneWidth = NSWidth(sideFrame); // cache this
             pdfFrame.size.width += lastRightSidePaneWidth;
             sideFrame.size.width = 0.0;
