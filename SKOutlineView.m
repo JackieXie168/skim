@@ -72,13 +72,12 @@
 }
 
 - (void)removeTrackingRects {
-    if ([[self delegate] respondsToSelector:@selector(outlineView:shouldTrackTableColumn:item:)] == NO)
-        return;
-    
-    CFIndex idx = CFArrayGetCount(trackingRects);
-    while(idx--)
-        [self removeTrackingRect:(NSTrackingRectTag)CFArrayGetValueAtIndex(trackingRects, idx)];
-    CFArrayRemoveAllValues(trackingRects);
+    if (trackingRects) {
+        CFIndex idx = CFArrayGetCount(trackingRects);
+        while(idx--)
+            [self removeTrackingRect:(NSTrackingRectTag)CFArrayGetValueAtIndex(trackingRects, idx)];
+        CFArrayRemoveAllValues(trackingRects);
+    }
 }
 
 - (void)rebuildTrackingRects {
