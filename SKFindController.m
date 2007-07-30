@@ -41,6 +41,7 @@
 #import "SKDocument.h"
 #import <Quartz/Quartz.h>
 
+static NSString *SKFindPanelFrameAutosaveName = @"SKFindPanel";
 
 @implementation SKFindController
 
@@ -84,6 +85,11 @@ static id sharedFindController = nil;
 }
 
 - (NSString *)windowNibName { return @"FindPanel"; }
+
+- (void)awakeFromNib {
+    if (self == sharedFindController)
+        [self setWindowFrameAutosaveName:SKFindPanelFrameAutosaveName];
+}
 
 - (IBAction)performFindPanelAction:(id)sender {
 	switch ([sender tag]) {
