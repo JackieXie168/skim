@@ -240,13 +240,13 @@ static NSString *noteToolAdornImageNames[] = {@"TextNoteToolAdorn", @"AnchoredNo
     // Set up the panes and subviews, needs to be done before we resize them
     
     [leftSideCollapsibleView setCollapseEdges:BDSKMaxXEdgeMask | BDSKMinYEdgeMask];
-    [leftSideCollapsibleView setMinSize:NSMakeSize(100.0, 42.0)];
+    [leftSideCollapsibleView setMinSize:NSMakeSize(111.0, NSHeight([leftSideCollapsibleView frame]))];
     
     [findCollapsibleView setCollapseEdges:BDSKMaxXEdgeMask | BDSKMinYEdgeMask];
-    [findCollapsibleView setMinSize:NSMakeSize(50.0, 25.0)];
+    [findCollapsibleView setMinSize:NSMakeSize(50.0, NSHeight([findCollapsibleView frame]))];
     
     [rightSideCollapsibleView setCollapseEdges:BDSKMaxXEdgeMask | BDSKMinYEdgeMask];
-    [rightSideCollapsibleView setMinSize:NSMakeSize(100.0, 42.0)];
+    [rightSideCollapsibleView setMinSize:NSMakeSize(111.0, NSHeight([rightSideCollapsibleView frame]))];
     
     [pdfContentBox setEdges:BDSKMinXEdgeMask | BDSKMaxXEdgeMask | BDSKMinYEdgeMask];
     [findEdgeView setEdges:BDSKMaxXEdgeMask];
