@@ -180,6 +180,18 @@ static NSString *SKTeXEditorArguments[] = {@"-l %line \"%file\"", @"+%line \"%fi
     [[[self window] contentView] deactivateColorAndLineWells];
 }
 
+- (void)windowWillClose:(NSNotification *)notification {
+    // make sure edits are committed
+    if ([[[self window] firstResponder] isKindOfClass:[NSText class]] && [[self window] makeFirstResponder:[self window]] == NO)
+        [[self window] endEditingFor:nil];
+}
+
+- (void)tabView:(NSTabView *)tabView willSelectTabViewItem:(NSTabViewItem *)tabViewItem {
+    // make sure edits are committed
+    if ([[[self window] firstResponder] isKindOfClass:[NSText class]] && [[self window] makeFirstResponder:[self window]] == NO)
+        [[self window] endEditingFor:nil];
+}
+
 - (NSArray *)fonts {
     return fonts;
 }
