@@ -3457,12 +3457,27 @@ static void SKCGContextDrawGrabHandle(CGContextRef context, CGPoint point, float
                     float margin = 4.0 / [self scaleFactor];
                     PDFPage *page = [self pageForPoint:p nearest:NO];
                     p = [self convertPoint:p toPage:page];
-                    if (NSPointInRect(p, NSInsetRect(selectionRect, -margin, -margin)) == NO)
+                    if (NSIsEmptyRect(selectionRect) || NSPointInRect(p, NSInsetRect(selectionRect, -margin, -margin)) == NO) {
                         cursor = [NSCursor crosshairCursor];
-                    else if (NSPointInRect(p, NSInsetRect(selectionRect, margin, margin)))
+                    } else if (p.x > NSMaxX(selectionRect) - margin) {
+                        if (p.y > NSMaxY(selectionRect) - margin)
+                            cursor = [NSCursor resizeRightUpCursor];
+                        else if (p.y < NSMinY(selectionRect) + margin)
+                            cursor = [NSCursor resizeRightDownCursor];
+                        else
+                            cursor = [NSCursor resizeLeftRightCursor];
+                    } else if (p.x < NSMinX(selectionRect) + margin) {
+                        if (p.y > NSMaxY(selectionRect) - margin)
+                            cursor = [NSCursor resizeLeftUpCursor];
+                        else if (p.y < NSMinY(selectionRect) + margin)
+                            cursor = [NSCursor resizeLeftDownCursor];
+                        else
+                            cursor = [NSCursor resizeLeftRightCursor];
+                    } else if (p.y > NSMaxY(selectionRect) - margin || p.y < NSMinY(selectionRect) + margin) {
+                        cursor = [NSCursor resizeUpDownCursor];
+                    } else {
                         cursor = [NSCursor openHandCursor];
-                    else
-                        cursor = [NSCursor arrowCursor];
+                    }
                 }
                 break;
             case SKMagnifyToolMode:

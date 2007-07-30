@@ -43,6 +43,10 @@
 
 + (NSCursor *)zoomInCursor;
 + (NSCursor *)zoomOutCursor;
++ (NSCursor *)resizeLeftUpCursor;
++ (NSCursor *)resizeLeftDownCursor;
++ (NSCursor *)resizeRightUpCursor;
++ (NSCursor *)resizeRightDownCursor;
 + (NSCursor *)cameraCursor;
 
 @end

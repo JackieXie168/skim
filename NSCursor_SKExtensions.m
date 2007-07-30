@@ -59,6 +59,42 @@
     return zoomOutCursor;
 }
 
++ (NSCursor *)resizeLeftUpCursor {
+    static NSCursor *resizeLeftUpCursor = nil;
+    if (nil == resizeLeftUpCursor) {
+        NSImage *cursorImage = [[[NSImage imageNamed:@"ResizeLeftUpCursor"] copy] autorelease];
+        resizeLeftUpCursor = [[NSCursor alloc] initWithImage:cursorImage hotSpot:NSMakePoint(8.0, 8.0)];
+    }
+    return resizeLeftUpCursor;
+}
+
++ (NSCursor *)resizeLeftDownCursor {
+    static NSCursor *resizeLeftDownCursor = nil;
+    if (nil == resizeLeftDownCursor) {
+        NSImage *cursorImage = [[[NSImage imageNamed:@"ResizeLeftDownCursor"] copy] autorelease];
+        resizeLeftDownCursor = [[NSCursor alloc] initWithImage:cursorImage hotSpot:NSMakePoint(8.0, 8.0)];
+    }
+    return resizeLeftDownCursor;
+}
+
++ (NSCursor *)resizeRightUpCursor {
+    static NSCursor *resizeRightUpCursor = nil;
+    if (nil == resizeRightUpCursor) {
+        NSImage *cursorImage = [[[NSImage imageNamed:@"ResizeRightUpCursor"] copy] autorelease];
+        resizeRightUpCursor = [[NSCursor alloc] initWithImage:cursorImage hotSpot:NSMakePoint(8.0, 8.0)];
+    }
+    return resizeRightUpCursor;
+}
+
++ (NSCursor *)resizeRightDownCursor {
+    static NSCursor *resizeRightDownCursor = nil;
+    if (nil == resizeRightDownCursor) {
+        NSImage *cursorImage = [[[NSImage imageNamed:@"ResizeRightDownCursor"] copy] autorelease];
+        resizeRightDownCursor = [[NSCursor alloc] initWithImage:cursorImage hotSpot:NSMakePoint(8.0, 8.0)];
+    }
+    return resizeRightDownCursor;
+}
+
 + (NSCursor *)cameraCursor {
     NSCursor *cameraCursor = nil;
     

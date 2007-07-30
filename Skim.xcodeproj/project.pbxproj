@@ -68,6 +68,10 @@
 		CE1E2B290BDAB6180011D9DD /* SKPDFSynchronizer.m in Sources */ = {isa = PBXBuildFile; fileRef = CE1E2B270BDAB6180011D9DD /* SKPDFSynchronizer.m */; };
 		CE1E301D0BDB9D5C0011D9DD /* NSScanner_SKExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = CE1E301B0BDB9D5C0011D9DD /* NSScanner_SKExtensions.m */; };
 		CE1E30290BDB9D8E0011D9DD /* NSCharacterSet_SKExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = CE1E30270BDB9D8E0011D9DD /* NSCharacterSet_SKExtensions.m */; };
+		CE2082E30C5E09DC009D3EFB /* ResizeLeftDownCursor.tiff in Resources */ = {isa = PBXBuildFile; fileRef = CE2082DF0C5E09DC009D3EFB /* ResizeLeftDownCursor.tiff */; };
+		CE2082E40C5E09DC009D3EFB /* ResizeLeftUpCursor.tiff in Resources */ = {isa = PBXBuildFile; fileRef = CE2082E00C5E09DC009D3EFB /* ResizeLeftUpCursor.tiff */; };
+		CE2082E50C5E09DC009D3EFB /* ResizeRightDownCursor.tiff in Resources */ = {isa = PBXBuildFile; fileRef = CE2082E10C5E09DC009D3EFB /* ResizeRightDownCursor.tiff */; };
+		CE2082E60C5E09DC009D3EFB /* ResizeRightUpCursor.tiff in Resources */ = {isa = PBXBuildFile; fileRef = CE2082E20C5E09DC009D3EFB /* ResizeRightUpCursor.tiff */; };
 		CE2BD83E0BD4132B00A5F4DB /* Sparkle.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CE2BD82A0BD4132B00A5F4DB /* Sparkle.framework */; };
 		CE2BD8450BD4135600A5F4DB /* Sparkle.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = CE2BD82A0BD4132B00A5F4DB /* Sparkle.framework */; };
 		CE2DE4920B85D48F00D0DA12 /* SKThumbnail.m in Sources */ = {isa = PBXBuildFile; fileRef = CE2DE4910B85D48F00D0DA12 /* SKThumbnail.m */; };
@@ -361,6 +365,10 @@
 		CE1E301B0BDB9D5C0011D9DD /* NSScanner_SKExtensions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NSScanner_SKExtensions.m; sourceTree = "<group>"; };
 		CE1E30260BDB9D8E0011D9DD /* NSCharacterSet_SKExtensions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NSCharacterSet_SKExtensions.h; sourceTree = "<group>"; };
 		CE1E30270BDB9D8E0011D9DD /* NSCharacterSet_SKExtensions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NSCharacterSet_SKExtensions.m; sourceTree = "<group>"; };
+		CE2082DF0C5E09DC009D3EFB /* ResizeLeftDownCursor.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; name = ResizeLeftDownCursor.tiff; path = Images/ResizeLeftDownCursor.tiff; sourceTree = "<group>"; };
+		CE2082E00C5E09DC009D3EFB /* ResizeLeftUpCursor.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; name = ResizeLeftUpCursor.tiff; path = Images/ResizeLeftUpCursor.tiff; sourceTree = "<group>"; };
+		CE2082E10C5E09DC009D3EFB /* ResizeRightDownCursor.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; name = ResizeRightDownCursor.tiff; path = Images/ResizeRightDownCursor.tiff; sourceTree = "<group>"; };
+		CE2082E20C5E09DC009D3EFB /* ResizeRightUpCursor.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; name = ResizeRightUpCursor.tiff; path = Images/ResizeRightUpCursor.tiff; sourceTree = "<group>"; };
 		CE2BD8170BD4127A00A5F4DB /* Sparkle.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = Sparkle.xcodeproj; path = vendorsrc/andymatuschak/Sparkle/Sparkle.xcodeproj; sourceTree = "<group>"; };
 		CE2BD82A0BD4132B00A5F4DB /* Sparkle.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = Sparkle.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		CE2DE4900B85D48F00D0DA12 /* SKThumbnail.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SKThumbnail.h; sourceTree = "<group>"; };
@@ -962,7 +970,6 @@
 				CE4373B30BB5440E00A56987 /* PSDocument.icns */,
 				CE4D88D70C3AE52F002C20CB /* DVIDocument.icns */,
 				CE0715890B8A3D6300733CC8 /* NoteDocument.icns */,
-				CE380A7A0B834E6100A1B779 /* CameraCursor.tiff */,
 				CE7C5D180BD8086C0011315D /* ToolbarLineNote.tiff */,
 				CE4190C20B94963A00ECF819 /* ToolbarCircleNote.tiff */,
 				CEAFFD7A0C40ED5400C3ECBB /* ToolbarColors.tiff */,
@@ -992,6 +999,11 @@
 				CE5478C70B33456300F8AFB6 /* ToolbarZoomToFit.tiff */,
 				CEB7359A0C4A8C1B000350F9 /* TransitionMask.jpg */,
 				CEB735A10C4A8CD6000350F9 /* TransitionShading.tiff */,
+				CE380A7A0B834E6100A1B779 /* CameraCursor.tiff */,
+				CE2082DF0C5E09DC009D3EFB /* ResizeLeftDownCursor.tiff */,
+				CE2082E00C5E09DC009D3EFB /* ResizeLeftUpCursor.tiff */,
+				CE2082E10C5E09DC009D3EFB /* ResizeRightDownCursor.tiff */,
+				CE2082E20C5E09DC009D3EFB /* ResizeRightUpCursor.tiff */,
 				CE7467540B7F321100CBF969 /* zoomInCursor.tiff */,
 				CE7467550B7F321A00CBF969 /* zoomOutCursor.tiff */,
 			);
@@ -1201,6 +1213,10 @@
 				CEAFFD9D0C40F2A800C3ECBB /* ToolbarLines.tiff in Resources */,
 				CEB7359C0C4A8C1C000350F9 /* TransitionMask.jpg in Resources */,
 				CEB735A20C4A8CD6000350F9 /* TransitionShading.tiff in Resources */,
+				CE2082E30C5E09DC009D3EFB /* ResizeLeftDownCursor.tiff in Resources */,
+				CE2082E40C5E09DC009D3EFB /* ResizeLeftUpCursor.tiff in Resources */,
+				CE2082E50C5E09DC009D3EFB /* ResizeRightDownCursor.tiff in Resources */,
+				CE2082E60C5E09DC009D3EFB /* ResizeRightUpCursor.tiff in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
