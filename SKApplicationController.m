@@ -61,7 +61,7 @@
 }
    
 + (void)setupDefaults{
-    
+    NSString *userDefaultsValuesPath;
     NSDictionary *userDefaultsValuesDict;
     NSDictionary *initialValuesDict;
     NSArray *resettableUserDefaultsKeys;
