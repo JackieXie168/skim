@@ -61,9 +61,7 @@
 }
    
 + (void)setupDefaults{
-    NSLog(NSStringFromPoint([[NSCursor resizeLeftRightCursor] hotSpot]));
-    NSLog(NSStringFromPoint([[NSCursor resizeUpDownCursor] hotSpot]));
-    NSString *userDefaultsValuesPath;
+    
     NSDictionary *userDefaultsValuesDict;
     NSDictionary *initialValuesDict;
     NSArray *resettableUserDefaultsKeys;
