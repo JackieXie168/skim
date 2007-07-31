@@ -56,11 +56,13 @@ static id sharedFindController = nil;
 - (id)init {
     if (self = [super init]) {
         ignoreCase = YES;
+        editors = CFArrayCreateMutable(kCFAllocatorMallocZone, 0, NULL);
     }
     return self;
 }
 
 - (void)dealloc {
+    CFRelease(editors);
     [fieldEditor release];
     [super dealloc];
 }
@@ -134,6 +136,7 @@ static id sharedFindController = nil;
 }
 
 - (IBAction)findNext:(id)sender {
+    [self commitEditing];
     [[self target] findString:findString options:[self findOptions] & ~NSBackwardsSearch];
     [self updateFindPboard];
 }
@@ -144,6 +147,7 @@ static id sharedFindController = nil;
 }
 
 - (IBAction)findPrevious:(id)sender {
+    [self commitEditing];
     [[self target] findString:findString options:[self findOptions] | NSBackwardsSearch];
     [self updateFindPboard];
 }
@@ -241,6 +245,27 @@ static id sharedFindController = nil;
     if (fieldEditor == nil)
         fieldEditor = [[BDSKFindFieldEditor alloc] init];
     return fieldEditor;
+}
+
+- (void)objectDidBeginEditing:(id)editor {
+    if (CFArrayGetFirstIndexOfValue(editors, CFRangeMake(0, CFArrayGetCount(editors)), editor) == -1)
+		CFArrayAppendValue((CFMutableArrayRef)editors, editor);		
+}
+
+- (void)objectDidEndEditing:(id)editor {
+    CFIndex index = CFArrayGetFirstIndexOfValue(editors, CFRangeMake(0, CFArrayGetCount(editors)), editor);
+    if (index != -1)
+		CFArrayRemoveValueAtIndex((CFMutableArrayRef)editors, index);		
+}
+
+- (BOOL)commitEditing {
+    CFIndex index = CFArrayGetCount(editors);
+    
+	while (index--)
+		if([(NSObject *)(CFArrayGetValueAtIndex(editors, index)) commitEditing] == NO)
+			return NO;
+    
+    return YES;
 }
 
 @end
