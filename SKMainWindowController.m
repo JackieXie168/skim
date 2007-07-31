@@ -652,13 +652,13 @@ static NSString *noteToolAdornImageNames[] = {@"TextNoteToolAdorn", @"AnchoredNo
             if ([[leftSideWindow screen] isEqual:screen] == NO) {
                 [leftSideWindow orderOut:self];
                 [leftSideWindow moveToScreen:screen];
-                [leftSideWindow hideSideWindow];
+                [leftSideWindow collapse];
                 [leftSideWindow orderFront:self];
             }
             if ([[rightSideWindow screen] isEqual:screen] == NO) {
                 [rightSideWindow orderOut:self];
                 [leftSideWindow moveToScreen:screen];
-                [rightSideWindow hideSideWindow];
+                [rightSideWindow collapse];
                 [rightSideWindow orderFront:self];
             }
         } else if ([self isPresentation]) {
@@ -1644,7 +1644,7 @@ static NSString *noteToolAdornImageNames[] = {@"TextNoteToolAdorn", @"AnchoredNo
 - (IBAction)searchPDF:(id)sender {
     if ([self isFullScreen]) {
         if ([leftSideWindow state] == NSDrawerClosedState || [leftSideWindow state] == NSDrawerClosingState)
-            [leftSideWindow showSideWindow];
+            [leftSideWindow expand];
     } else if (NSWidth([leftSideContentBox frame]) <= 0.0) {
         [self toggleLeftSidePane:sender];
     }
@@ -1777,9 +1777,9 @@ static NSString *noteToolAdornImageNames[] = {@"TextNoteToolAdorn", @"AnchoredNo
     if ([self isFullScreen]) {
         [[SKPDFHoverWindow sharedHoverWindow] hide];
         if ([leftSideWindow state] == NSDrawerOpenState || [leftSideWindow state] == NSDrawerOpeningState)
-            [leftSideWindow hideSideWindow];
+            [leftSideWindow collapse];
         else
-            [leftSideWindow showSideWindow];
+            [leftSideWindow expand];
     } else if ([self isPresentation]) {
         if ([leftSideWindow isVisible])
             [self hideLeftSideWindow];
@@ -1816,9 +1816,9 @@ static NSString *noteToolAdornImageNames[] = {@"TextNoteToolAdorn", @"AnchoredNo
 - (IBAction)toggleRightSidePane:(id)sender {
     if ([self isFullScreen]) {
         if ([rightSideWindow state] == NSDrawerOpenState || [rightSideWindow state] == NSDrawerOpeningState)
-            [rightSideWindow hideSideWindow];
+            [rightSideWindow collapse];
         else
-            [rightSideWindow showSideWindow];
+            [rightSideWindow expand];
     } else {
         NSRect sideFrame = [rightSideContentBox frame];
         NSRect pdfFrame = [pdfContentBox frame];
@@ -1882,7 +1882,6 @@ static NSString *noteToolAdornImageNames[] = {@"TextNoteToolAdorn", @"AnchoredNo
     if ([[mainWindow firstResponder] isDescendantOf:leftSideContentView])
         [mainWindow makeFirstResponder:nil];
     [leftSideWindow setMainView:leftSideContentView];
-    [leftSideWindow setInitialFirstResponder:searchField];
     
     [leftSideEdgeView setEdges:BDSKNoEdgeMask];
     [findEdgeView setEdges:BDSKNoEdgeMask];
@@ -1890,16 +1889,16 @@ static NSString *noteToolAdornImageNames[] = {@"TextNoteToolAdorn", @"AnchoredNo
     if ([self isPresentation]) {
         savedLeftSidePaneState = [self leftSidePaneState];
         [self setLeftSidePaneState:SKThumbnailSidePaneState];
-        [leftSideWindow showSideWindow];
         [leftSideWindow setLevel:[[self window] level] + 1];
         [leftSideWindow setAlphaValue:0.95];
         [leftSideWindow setEnabled:NO];
         [leftSideWindow makeFirstResponder:thumbnailTableView];
+        [leftSideWindow expand];
     } else {
-        [leftSideWindow hideSideWindow];
+        [leftSideWindow makeFirstResponder:searchField];
+        [leftSideWindow collapse];
+        [leftSideWindow orderFront:self];
     }
-    
-    [leftSideWindow orderFront:self];
 }
 
 - (void)showRightSideWindow {
@@ -1919,12 +1918,12 @@ static NSString *noteToolAdornImageNames[] = {@"TextNoteToolAdorn", @"AnchoredNo
     [rightSideEdgeView setEdges:BDSKNoEdgeMask];
     
     if ([self isPresentation]) {
-        [rightSideWindow showSideWindow];
+        [rightSideWindow expand];
         [leftSideWindow setLevel:[[self window] level] + 1];
         [leftSideWindow setAlphaValue:0.95];
         [leftSideWindow setEnabled:NO];
     } else {
-        [rightSideWindow hideSideWindow];
+        [rightSideWindow collapse];
     }
     
     [rightSideWindow orderFront:self];
@@ -2540,7 +2539,7 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
 }
 
 - (void)hideRightSideWindow:(NSTimer *)timer {
-    [rightSideWindow hideSideWindow];
+    [rightSideWindow collapse];
 }
 
 - (NSRect)snapshotControllerTargetRectForMiniaturize:(SKSnapshotWindowController *)controller {
@@ -2548,7 +2547,7 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
         if ([self isFullScreen] == NO && NSWidth([rightSideContentBox frame]) <= 0.0) {
             [self toggleRightSidePane:self];
         } else if ([self isFullScreen] && ([rightSideWindow state] == NSDrawerClosedState || [rightSideWindow state] == NSDrawerClosingState)) {
-            [rightSideWindow showSideWindow];
+            [rightSideWindow expand];
             [NSTimer scheduledTimerWithTimeInterval:1.0 target:self selector:@selector(hideRightSideWindow:) userInfo:NULL repeats:NO];
         }
         [self setRightSidePaneState:SKSnapshotSidePaneState];

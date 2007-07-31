@@ -155,13 +155,15 @@
     return state;
 }
 
-- (void)showSideWindow {
-    [[self contentView] showWindow];
+- (void)expand {
+    [[self contentView] setAcceptsMouseOver:NO];
+    [self slideIn];
     [self makeKeyAndOrderFront:nil];
 }
 
-- (void)hideSideWindow {
-    [[self contentView] hideWindow];
+- (void)collapse {
+    [self slideOut];
+    [[self contentView] setAcceptsMouseOver:YES];
 }
 
 - (BOOL)isEnabled {
@@ -259,6 +261,21 @@
 - (void)setEnabled:(BOOL)flag {
     if (enabled != flag) {
         enabled = flag;
+    }
+}
+
+- (BOOL)acceptsMouseOver {
+    return acceptsMouseOver;
+}
+
+- (void)setAcceptsMouseOver:(BOOL)flag {
+    if (acceptsMouseOver != flag) {
+        acceptsMouseOver = flag;
+        if (timer) {
+            [timer invalidate];
+            [timer release];
+            timer = nil;
+        }
     }
 }
 
@@ -412,7 +429,7 @@
     NSRect resizeHandleRect = [self resizeHandleRect];
     if (NSPointInRect(mouseLoc, resizeHandleRect) && [(SKSideWindow *)[self window] state] == NSDrawerOpenState) {
         if (enabled && [theEvent clickCount] == 2)
-            [self hideWindow];
+            [(SKSideWindow *)[self window] collapse];
         else
             [self resizeWithEvent:theEvent];
     } else
@@ -433,7 +450,7 @@
 }
 
 - (void)mouseExited:(NSEvent *)theEvent {
-    if (isStatic)
+    if (acceptsMouseOver == NO)
         return;
     if (timer) {
         [timer invalidate];
@@ -452,7 +469,7 @@
 }
 
 - (void)mouseEntered:(NSEvent *)theEvent {
-    if (isStatic)
+    if (acceptsMouseOver == NO)
         return;
     if (NSPointInRect([NSEvent mouseLocation], [[self window] frame])) {
         if (timer == nil)
@@ -462,26 +479,6 @@
         [timer release];
         timer = nil;
     }
-}
-
-- (void)showWindow {
-    isStatic = YES;
-    if (timer) {
-        [timer invalidate];
-        [timer release];
-        timer = nil;
-    }
-    [(SKSideWindow *)[self window] slideIn];
-}
-
-- (void)hideWindow {
-    isStatic = NO;
-    if (timer) {
-        [timer invalidate];
-        [timer release];
-        timer = nil;
-    }
-    [(SKSideWindow *)[self window] slideOut];
 }
 
 @end
