@@ -51,8 +51,8 @@
 - (void)moveToScreen:(NSScreen *)screen;
 - (void)slideIn;
 - (void)slideOut;
-- (void)showSideWindow;
-- (void)hideSideWindow;
+- (void)expand;
+- (void)collapse;
 - (NSView *)mainView;
 - (void)setMainView:(NSView *)newContentView;
 - (NSRectEdge)edge;
@@ -70,12 +70,12 @@
     NSRectEdge edge;
     BOOL enabled;
     BOOL resizing;
-    BOOL isStatic;
+    BOOL acceptsMouseOver;
 }
 - (id)initWithFrame:(NSRect)frameRect edge:(NSRectEdge)anEdge;
-- (void)showWindow;
-- (void)hideWindow;
 - (void)trackMouseOvers;
 - (BOOL)isEnabled;
 - (void)setEnabled:(BOOL)flag;
+- (BOOL)acceptsMouseOver;
+- (void)setAcceptsMouseOver:(BOOL)flag;
 @end
