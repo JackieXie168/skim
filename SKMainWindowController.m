@@ -2440,6 +2440,10 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
     } else {
         [self fadeInSearchView];
         [[pdfView document] beginFindString:[sender stringValue] withOptions:NSCaseInsensitiveSearch];
+        
+        NSPasteboard *findPboard = [NSPasteboard pasteboardWithName:NSFindPboard];
+        [findPboard declareTypes:[NSArray arrayWithObject:NSStringPboardType] owner:nil];
+        [findPboard setString:[sender stringValue] forType:NSStringPboardType];
     }
 }
 
@@ -2478,6 +2482,11 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
     if ([[sender stringValue] length] && rightSidePaneState != SKNoteSidePaneState)
         [self setRightSidePaneState:SKNoteSidePaneState];
     [self updateNoteFilterPredicate];
+    if ([[sender stringValue] length]) {
+        NSPasteboard *findPboard = [NSPasteboard pasteboardWithName:NSFindPboard];
+        [findPboard declareTypes:[NSArray arrayWithObject:NSStringPboardType] owner:nil];
+        [findPboard setString:[sender stringValue] forType:NSStringPboardType];
+    }
 }
 
 #pragma mark Sub- and note- windows

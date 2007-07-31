@@ -91,6 +91,21 @@ static id sharedFindController = nil;
         [self setWindowFrameAutosaveName:SKFindPanelFrameAutosaveName];
 }
 
+- (void)windowDidBecomeKey:(NSNotification *)notification {
+    NSPasteboard *findPboard = [NSPasteboard pasteboardWithName:NSFindPboard];
+    if (lastChangeCount < [findPboard changeCount] && [findPboard availableTypeFromArray:[NSArray arrayWithObject:NSStringPboardType]]) {
+        [self setFindString:[findPboard stringForType:NSStringPboardType]];
+        lastChangeCount = [findPboard changeCount];
+    }
+}
+
+- (void)updateFindPboard {
+    NSPasteboard *findPboard = [NSPasteboard pasteboardWithName:NSFindPboard];
+    [findPboard declareTypes:[NSArray arrayWithObject:NSStringPboardType] owner:nil];
+    [findPboard setString:findString forType:NSStringPboardType];
+    lastChangeCount = [findPboard changeCount];
+}
+
 - (IBAction)performFindPanelAction:(id)sender {
 	switch ([sender tag]) {
 		case NSFindPanelActionShowFindPanel:
@@ -109,7 +124,7 @@ static id sharedFindController = nil;
             NSBeep();
             break;
 		case NSFindPanelActionSetFindString:
-            [self setFindString:self];
+            [self pickFindString:self];
             break;
 		case NSFindPanelActionSelectAll:
 		case NSFindPanelActionSelectAllInSelection:
@@ -119,7 +134,8 @@ static id sharedFindController = nil;
 }
 
 - (IBAction)findNext:(id)sender {
-    [[self target] findString:[findField stringValue] options:[self findOptions] & ~NSBackwardsSearch];
+    [[self target] findString:findString options:[self findOptions] & ~NSBackwardsSearch];
+    [self updateFindPboard];
 }
 
 - (IBAction)findNextAndOrderOutFindPanel:(id)sender {
@@ -128,20 +144,29 @@ static id sharedFindController = nil;
 }
 
 - (IBAction)findPrevious:(id)sender {
-    [[self target] findString:[findField stringValue] options:[self findOptions] | NSBackwardsSearch];
+    [[self target] findString:findString options:[self findOptions] | NSBackwardsSearch];
+    [self updateFindPboard];
 }
 
-- (IBAction)setFindString:(id)sender {
+- (IBAction)pickFindString:(id)sender {
     id source = [self selectionSource];
     if (source) {
         PDFSelection *selection = [[source pdfView] currentSelection];
-        if (selection == nil) {
-            NSPasteboard *findPasteboard = [NSPasteboard pasteboardWithName:NSFindPboard];
-            [findPasteboard declareTypes:[NSArray arrayWithObject:NSStringPboardType] owner:nil];
-            [findPasteboard setString:[selection string] forType:NSStringPboardType];
-        
-            [findField setStringValue:[selection string]];
+        if (selection) {
+            [self setFindString:[selection string]];
+            [self updateFindPboard];
         }
+    }
+}
+
+- (NSString *)findString {
+    return findString;
+}
+
+- (void)setFindString:(NSString *)newFindString {
+    if (findString != newFindString) {
+        [findString release];
+        findString = [newFindString retain];
     }
 }
 
