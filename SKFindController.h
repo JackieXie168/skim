@@ -43,6 +43,8 @@
 @interface SKFindController : NSWindowController {
     IBOutlet NSTextField *findField;
     IBOutlet NSButton *ignoreCaseCheckbox;
+    NSString *findString;
+    int lastChangeCount;
     BOOL ignoreCase;
     BDSKFindFieldEditor *fieldEditor;
 }
@@ -53,7 +55,10 @@
 - (IBAction)findNext:(id)sender;
 - (IBAction)findNextAndOrderOutFindPanel:(id)sender;
 - (IBAction)findPrevious:(id)sender;
-- (IBAction)setFindString:(id)sender;
+- (IBAction)pickFindString:(id)sender;
+
+- (NSString *)findString;
+- (void)setFindString:(NSString *)newFindString;
 
 - (BOOL)ignoreCase;
 - (void)setIgnoreCase:(BOOL)newIgnoreCase;
