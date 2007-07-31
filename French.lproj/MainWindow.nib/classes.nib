@@ -12,6 +12,7 @@
             SUPERCLASS = NSView; 
         }, 
         {CLASS = BDSKEdgeView; LANGUAGE = ObjC; SUPERCLASS = BDSKContainerView; }, 
+        {CLASS = BDSKGradientView; LANGUAGE = ObjC; SUPERCLASS = NSView; }, 
         {
             CLASS = BDSKImagePopUpButton; 
             LANGUAGE = ObjC; 
@@ -123,8 +124,6 @@
                 currentRightSideView = NSView; 
                 displayBoxPopUpButton = NSPopUpButton; 
                 findArrayController = NSArrayController; 
-                findCollapsibleView = BDSKCollapsibleView; 
-                findEdgeView = BDSKEdgeView; 
                 findTableView = NSTableView; 
                 findView = NSView; 
                 leftSideButton = NSSegmentedControl; 
@@ -132,6 +131,7 @@
                 leftSideContentBox = NSBox; 
                 leftSideContentView = NSView; 
                 leftSideEdgeView = BDSKEdgeView; 
+                leftSideGradientView = BDSKGradientView; 
                 markupPopUpButton = BDSKImagePopUpButton; 
                 noteArrayController = NSArrayController; 
                 noteOutlineView = SKNoteOutlineView; 
@@ -155,12 +155,12 @@
                 rightSideContentBox = NSBox; 
                 rightSideContentView = NSView; 
                 rightSideEdgeView = BDSKEdgeView; 
+                rightSideGradientView = BDSKGradientView; 
                 scaleField = NSTextField; 
                 searchField = NSSearchField; 
                 snapshotArrayController = NSArrayController; 
                 snapshotTableView = SKSnapshotTableView; 
                 snapshotView = NSView; 
-                spinner = NSProgressIndicator; 
                 splitView = SKSplitView; 
                 thumbnailArrayController = NSArrayController; 
                 thumbnailTableView = SKThumbnailTableView; 

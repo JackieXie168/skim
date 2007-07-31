@@ -39,9 +39,10 @@
 #import "SKStatusBar.h"
 #import "NSBezierPath_CoreImageExtensions.h"
 
-#define LEFT_MARGIN     5.0
-#define RIGHT_MARGIN    15.0
-
+#define LEFT_MARGIN         5.0
+#define RIGHT_MARGIN        15.0
+#define SEPARATION          2.0
+#define PROGRESSBAR_WIDTH   100.0
 
 @implementation SKStatusBar
 
@@ -70,6 +71,7 @@
 		[rightCell setFont:[NSFont labelFontOfSize:0]];
         [rightCell setAlignment:NSRightTextAlignment];
         [rightCell setControlView:self];
+		progressIndicator = nil;
     }
     return self;
 }
@@ -86,11 +88,14 @@
 
 - (void)drawRect:(NSRect)rect {
 	NSRect textRect, ignored;
+    float rightMargin = RIGHT_MARGIN;
     
     [[NSBezierPath bezierPathWithRect:[self bounds]] fillPathVerticallyWithStartColor:[[self class] upperColor] endColor:[[self class] lowerColor]];
     
+    if (progressIndicator)
+        rightMargin += NSWidth([progressIndicator frame]) + SEPARATION;
     NSDivideRect([self bounds], &ignored, &textRect, LEFT_MARGIN, NSMinXEdge);
-    NSDivideRect(textRect, &ignored, &textRect, RIGHT_MARGIN, NSMaxXEdge);
+    NSDivideRect(textRect, &ignored, &textRect, rightMargin, NSMaxXEdge);
 	
 	if (textRect.size.width < 0.0)
 		textRect.size.width = 0.0;
@@ -227,6 +232,64 @@
     if (state != newState) {
         state = newState;
     }
+}
+
+#pragma mark Progress indicator
+
+- (NSProgressIndicator *)progressIndicator {
+	return progressIndicator;
+}
+
+- (SKProgressIndicatorStyle)progressIndicatorStyle {
+	if (progressIndicator == nil)
+		return SKProgressIndicatorNone;
+	else
+		return [progressIndicator style];
+}
+
+- (void)setProgressIndicatorStyle:(SKProgressIndicatorStyle)style {
+	if (style == SKProgressIndicatorNone) {
+		if (progressIndicator == nil)
+			return;
+		[progressIndicator removeFromSuperview];
+		progressIndicator = nil;
+	} else {
+		if (progressIndicator && (int)[progressIndicator style] == style)
+			return;
+		if(progressIndicator == nil) {
+            progressIndicator = [[NSProgressIndicator alloc] init];
+        } else {
+            [progressIndicator retain];
+            [progressIndicator removeFromSuperview];
+		}
+        [progressIndicator setAutoresizingMask:NSViewMinXMargin | NSViewMinYMargin | NSViewMaxYMargin];
+		[progressIndicator setStyle:style];
+		[progressIndicator setControlSize:NSSmallControlSize];
+		[progressIndicator setIndeterminate:style == NSProgressIndicatorSpinningStyle];
+		[progressIndicator setDisplayedWhenStopped:style == NSProgressIndicatorBarStyle];
+		[progressIndicator sizeToFit];
+		
+		NSRect rect, ignored;
+		NSSize size = [progressIndicator frame].size;
+        if (size.width < 0.01) size.width = PROGRESSBAR_WIDTH;
+        NSDivideRect([self bounds], &ignored, &rect, RIGHT_MARGIN, NSMaxXEdge);
+        NSDivideRect(rect, &rect, &ignored, size.width, NSMaxXEdge);
+        rect.origin.y = floorf(NSMidY(rect) - 0.5 * size.height);
+        rect.size.height = size.height;
+		[progressIndicator setFrame:rect];
+		
+        [self addSubview:progressIndicator];
+		[progressIndicator release];
+	}
+	[[self superview] setNeedsDisplayInRect:[self frame]];
+}
+
+- (void)startAnimation:(id)sender {
+	[progressIndicator startAnimation:sender];
+}
+
+- (void)stopAnimation:(id)sender {
+	[progressIndicator stopAnimation:sender];
 }
 
 @end

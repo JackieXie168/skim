@@ -55,6 +55,7 @@
 #import "SKPDFView.h"
 #import "BDSKCollapsibleView.h"
 #import "BDSKEdgeView.h"
+#import "BDSKGradientView.h"
 #import "SKPDFAnnotationNote.h"
 #import "SKSplitView.h"
 #import "NSScrollView_SKExtensions.h"
@@ -242,14 +243,10 @@ static NSString *noteToolAdornImageNames[] = {@"TextNoteToolAdorn", @"AnchoredNo
     [leftSideCollapsibleView setCollapseEdges:BDSKMaxXEdgeMask | BDSKMinYEdgeMask];
     [leftSideCollapsibleView setMinSize:NSMakeSize(111.0, NSHeight([leftSideCollapsibleView frame]))];
     
-    [findCollapsibleView setCollapseEdges:BDSKMaxXEdgeMask | BDSKMinYEdgeMask];
-    [findCollapsibleView setMinSize:NSMakeSize(50.0, NSHeight([findCollapsibleView frame]))];
-    
     [rightSideCollapsibleView setCollapseEdges:BDSKMaxXEdgeMask | BDSKMinYEdgeMask];
     [rightSideCollapsibleView setMinSize:NSMakeSize(111.0, NSHeight([rightSideCollapsibleView frame]))];
     
     [pdfContentBox setEdges:BDSKMinXEdgeMask | BDSKMaxXEdgeMask | BDSKMinYEdgeMask];
-    [findEdgeView setEdges:BDSKMaxXEdgeMask];
     [leftSideEdgeView setEdges:BDSKMinXEdgeMask | BDSKMaxXEdgeMask];
     [rightSideEdgeView setEdges:BDSKMinXEdgeMask | BDSKMaxXEdgeMask];
     
@@ -280,8 +277,6 @@ static NSString *noteToolAdornImageNames[] = {@"TextNoteToolAdorn", @"AnchoredNo
     
     [self displayOutlineView];
     [self displayNoteView];
-    
-    [spinner setUsesThreadedAnimation:YES];
     
     // Set up the tool bar
     [self setupToolbar];
@@ -1884,7 +1879,7 @@ static NSString *noteToolAdornImageNames[] = {@"TextNoteToolAdorn", @"AnchoredNo
     [leftSideWindow setMainView:leftSideContentView];
     
     [leftSideEdgeView setEdges:BDSKNoEdgeMask];
-    [findEdgeView setEdges:BDSKNoEdgeMask];
+    [leftSideGradientView setDrawsGradient:NO];
     
     if ([self isPresentation]) {
         savedLeftSidePaneState = [self leftSidePaneState];
@@ -1916,6 +1911,7 @@ static NSString *noteToolAdornImageNames[] = {@"TextNoteToolAdorn", @"AnchoredNo
     [rightSideWindow setMainView:rightSideContentView];
     
     [rightSideEdgeView setEdges:BDSKNoEdgeMask];
+    [rightSideGradientView setDrawsGradient:NO];
     
     if ([self isPresentation]) {
         [rightSideWindow expand];
@@ -1939,7 +1935,7 @@ static NSString *noteToolAdornImageNames[] = {@"TextNoteToolAdorn", @"AnchoredNo
         [leftSideContentBox addSubview:leftSideContentView];
         
         [leftSideEdgeView setEdges:BDSKMinXEdgeMask | BDSKMaxXEdgeMask];
-        [findEdgeView setEdges:BDSKMinXEdgeMask | BDSKMaxXEdgeMask];
+        [leftSideGradientView setDrawsGradient:YES];
         
         if ([self isPresentation]) {
             [self setLeftSidePaneState:savedLeftSidePaneState];
@@ -1960,6 +1956,7 @@ static NSString *noteToolAdornImageNames[] = {@"TextNoteToolAdorn", @"AnchoredNo
         [rightSideContentBox addSubview:rightSideContentView];
         
         [rightSideEdgeView setEdges:BDSKMinXEdgeMask | BDSKMaxXEdgeMask];
+        [rightSideGradientView setDrawsGradient:YES];
         
         if ([self isPresentation]) {
             [rightSideWindow setLevel:NSFloatingWindowLevel];
@@ -2322,23 +2319,26 @@ static NSString *noteToolAdornImageNames[] = {@"TextNoteToolAdorn", @"AnchoredNo
 - (void)documentDidBeginDocumentFind:(NSNotification *)note {
     if (findPanelFind == NO) {
         [findArrayController removeObjects:searchResults];
-        [spinner startAnimation:nil];
+        [[[[findTableView tableColumns] objectAtIndex:1] headerCell] setStringValue:[NSLocalizedString(@"Searching", @"Message in search table header") stringByAppendingEllipsis]];
+        [statusBar setProgressIndicatorStyle:SKProgressIndicatorBarStyle];
+        [[statusBar progressIndicator] setMaxValue:[[note object] pageCount]];
+        [[statusBar progressIndicator] setDoubleValue:0.0];
+        [statusBar startAnimation:self];
     }
 }
 
 - (void)documentDidEndDocumentFind:(NSNotification *)note {
     if (findPanelFind == NO) {
-        [spinner stopAnimation:nil];
         [self willChangeValueForKey:@"searchResults"];
         [self didChangeValueForKey:@"searchResults"];
+        [[[[findTableView tableColumns] objectAtIndex:1] headerCell] setStringValue:[NSString stringWithFormat:NSLocalizedString(@"%i Results", @"Message in search table header"), [searchResults count]]];
+        [statusBar stopAnimation:self];
+        [statusBar setProgressIndicatorStyle:SKProgressIndicatorNone];
     }
 }
 
 - (void)documentDidEndPageFind:(NSNotification *)note {
-    if (findPanelFind == NO) {
-        double pageIndex = [[[note userInfo] objectForKey:@"PDFDocumentPageIndex"] doubleValue];
-        [spinner setDoubleValue: pageIndex / [[pdfView document] pageCount]];
-    }
+    [[statusBar progressIndicator] setDoubleValue:[[[note userInfo] objectForKey:@"PDFDocumentPageIndex"] doubleValue]];
 }
 
 - (void)didMatchString:(PDFSelection *)instance {
