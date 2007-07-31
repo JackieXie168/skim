@@ -382,15 +382,17 @@ static BOOL fileIsInTrash(NSURL *fileURL)
         CFDictionarySetValue(pathDict, (void *)domain, (void *)path);
         
         // the call to FSFindFolder creates the parent hierarchy, but not the directory we're looking for
-        static BOOL dirExists = NO;
-        if (dirExists == NO && create) {
-            BOOL pathIsDir;
-            dirExists = [[NSFileManager defaultManager] fileExistsAtPath:path isDirectory:&pathIsDir];
-            if (dirExists == NO || pathIsDir == NO)
-                [[NSFileManager defaultManager] createDirectoryAtPath:path attributes:nil];
-            // make sure it was created
-            dirExists = [[NSFileManager defaultManager] fileExistsAtPath:path isDirectory:&pathIsDir];
-            NSAssert1(dirExists && pathIsDir, @"Unable to create folder %@", path);
+        if (create) {
+            BOOL dirExists = [[NSFileManager defaultManager] fileExistsAtPath:path];
+            if (dirExists == NO) {
+                BOOL pathIsDir;
+                dirExists = [[NSFileManager defaultManager] fileExistsAtPath:path isDirectory:&pathIsDir];
+                if (dirExists == NO || pathIsDir == NO)
+                    [[NSFileManager defaultManager] createDirectoryAtPath:path attributes:nil];
+                // make sure it was created
+                dirExists = [[NSFileManager defaultManager] fileExistsAtPath:path isDirectory:&pathIsDir];
+                NSAssert1(dirExists && pathIsDir, @"Unable to create folder %@", path);
+            }
         }
     }
     
