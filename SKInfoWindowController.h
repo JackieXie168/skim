@@ -38,7 +38,6 @@
 
 #import <Cocoa/Cocoa.h>
 
-@class SKDocument;
 
 @interface SKInfoWindowController : NSWindowController {
     NSMutableDictionary *info;
@@ -49,8 +48,8 @@
 - (NSDictionary *)info;
 - (void)setInfo:(NSDictionary *)newInfo;
 
-- (NSDictionary *)infoForDocument:(SKDocument *)doc;
-- (void)fillInfoForDocument:(SKDocument *)doc;
+- (NSDictionary *)infoForDocument:(NSDocument *)doc;
+- (void)fillInfoForDocument:(NSDocument *)doc;
 
 - (void)handleWindowDidBecomeKeyNotification:(NSNotification *)notification;
 - (void)handleWindowDidResignKeyNotification:(NSNotification *)notification;
