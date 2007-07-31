@@ -64,7 +64,7 @@ typedef struct _SKPDFViewState {
 } SKPDFViewState;
 
 @class PDFOutline, SKThumbnail;
-@class SKPDFView, SKOutlineView, SKNoteOutlineView, SKThumbnailTableView, SKSnapshotTableView, SKSplitView, BDSKCollapsibleView, BDSKEdgeView, BDSKImagePopUpButton, SKColorSwatch, SKStatusBar;
+@class SKPDFView, SKOutlineView, SKNoteOutlineView, SKThumbnailTableView, SKSnapshotTableView, SKSplitView, BDSKCollapsibleView, BDSKEdgeView, BDSKGradientView, BDSKImagePopUpButton, SKColorSwatch, SKStatusBar;
 @class SKFullScreenWindow, SKNavigationWindow, SKSideWindow, SKSnapshotWindowController;
 
 @interface SKMainWindowController : NSWindowController {
@@ -77,6 +77,7 @@ typedef struct _SKPDFViewState {
     IBOutlet NSView             *leftSideContentView;
     IBOutlet BDSKEdgeView       *leftSideEdgeView;
     IBOutlet BDSKCollapsibleView *leftSideCollapsibleView;
+    IBOutlet BDSKGradientView   *leftSideGradientView;
     IBOutlet NSSegmentedControl *leftSideButton;
     IBOutlet NSSearchField      *searchField;
     
@@ -84,6 +85,7 @@ typedef struct _SKPDFViewState {
     IBOutlet NSView             *rightSideContentView;
     IBOutlet BDSKEdgeView       *rightSideEdgeView;
     IBOutlet BDSKCollapsibleView *rightSideCollapsibleView;
+    IBOutlet BDSKGradientView   *rightSideGradientView;
     IBOutlet NSSegmentedControl *rightSideButton;
     IBOutlet NSSearchField      *noteSearchField;
     
@@ -113,9 +115,6 @@ typedef struct _SKPDFViewState {
     IBOutlet NSArrayController  *findArrayController;
     IBOutlet NSTableView        *findTableView;
     IBOutlet NSView             *findView;
-    IBOutlet BDSKEdgeView       *findEdgeView;
-    IBOutlet BDSKCollapsibleView *findCollapsibleView;
-    IBOutlet NSProgressIndicator *spinner;
     NSMutableArray              *searchResults;
     BOOL                        findPanelFind;
     CFMutableSetRef             temporaryAnnotations;

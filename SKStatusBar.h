@@ -37,11 +37,19 @@
  */
 
 #import <Cocoa/Cocoa.h>
+#import "BDSKGradientView.h"
+
+typedef enum {
+   SKProgressIndicatorNone = -1,
+   SKProgressIndicatorBarStyle = NSProgressIndicatorBarStyle,
+   SKProgressIndicatorSpinningStyle = NSProgressIndicatorSpinningStyle
+} SKProgressIndicatorStyle;
 
 
 @interface SKStatusBar : NSControl {
 	id leftCell;
 	id rightCell;
+	NSProgressIndicator *progressIndicator;
     int state;
 }
 
@@ -69,5 +77,13 @@
 
 - (int)state;
 - (void)setState:(int)newState;
+
+- (NSProgressIndicator *)progressIndicator;
+
+- (SKProgressIndicatorStyle)progressIndicatorStyle;
+- (void)setProgressIndicatorStyle:(SKProgressIndicatorStyle)style;
+
+- (void)startAnimation:(id)sender;
+- (void)stopAnimation:(id)sender;
 
 @end

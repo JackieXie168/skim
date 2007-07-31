@@ -31,16 +31,16 @@
 	</array>
 	<key>IBOpenObjects</key>
 	<array>
-		<integer>256</integer>
-		<integer>314</integer>
-		<integer>5</integer>
-		<integer>633</integer>
-		<integer>661</integer>
-		<integer>511</integer>
-		<integer>168</integer>
 		<integer>502</integer>
-		<integer>660</integer>
 		<integer>224</integer>
+		<integer>168</integer>
+		<integer>5</integer>
+		<integer>660</integer>
+		<integer>511</integer>
+		<integer>314</integer>
+		<integer>661</integer>
+		<integer>256</integer>
+		<integer>633</integer>
 	</array>
 	<key>IBSystem Version</key>
 	<string>8R218</string>
