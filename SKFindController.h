@@ -47,6 +47,7 @@
     int lastChangeCount;
     BOOL ignoreCase;
     BDSKFindFieldEditor *fieldEditor;
+    CFArrayRef editors;
 }
 
 + (id)sharedFindController;
@@ -67,6 +68,8 @@
 
 - (id)target;
 - (id)selectionSource;
+
+- (BOOL)commitEditing;
 
 @end
 
