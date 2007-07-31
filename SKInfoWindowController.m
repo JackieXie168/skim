@@ -161,32 +161,31 @@ NSString *SKSizeString(NSSize size, NSSize altSize) {
     return [NSString stringWithFormat:@"%.1f x %.1f %@  (%.1f x %.1f %@)", size.width * factor, size.height * factor, units, altSize.width * factor, altSize.height * factor, units];
 }
 
-- (NSDictionary *)infoForDocument:(SKDocument *)doc {
-    NSMutableDictionary *dictionary = nil;
-    if ([doc respondsToSelector:@selector(pdfDocument)]) {
-        PDFDocument *pdfDoc = [doc pdfDocument];
-        dictionary = [NSMutableDictionary dictionary];
-        [dictionary setDictionary:[pdfDoc documentAttributes]];
-        if (doc) {
-            unsigned long long logicalSize = 0, physicalSize = 0;
-            [dictionary setValue:[[doc fileName] lastPathComponent] forKey:@"FileName"];
-            [dictionary setValue:[NSString stringWithFormat: @"%d.%d", [pdfDoc majorVersion], [pdfDoc minorVersion]] forKey:@"Version"];
-            [dictionary setValue:[NSNumber numberWithInt:[pdfDoc pageCount]] forKey:@"PageCount"];
-            [dictionary setValue:SKFileSizeStringForFileURL([doc fileURL], &physicalSize, &logicalSize) forKey:@"FileSize"];
-            if ([pdfDoc pageCount])
-                [dictionary setValue:SKSizeString([[pdfDoc pageAtIndex:0] boundsForBox:kPDFDisplayBoxCropBox].size, [[pdfDoc pageAtIndex:0] boundsForBox:kPDFDisplayBoxMediaBox].size) forKey:@"PageSize"];
-            [dictionary setValue:[NSNumber numberWithUnsignedLongLong:physicalSize] forKey:@"PhysicalSize"];
-            [dictionary setValue:[NSNumber numberWithUnsignedLongLong:logicalSize] forKey:@"LogicalSize"];
-            [dictionary setValue:[[dictionary valueForKey:@"Keywords"] componentsJoinedByString:@"\n"] forKey:@"KeywordsString"];
-            [dictionary setValue:[NSNumber numberWithBool:[pdfDoc isEncrypted]] forKey:@"Encrypted"];
-            [dictionary setValue:[NSNumber numberWithBool:[pdfDoc allowsPrinting]] forKey:@"AllowsPrinting"];
-            [dictionary setValue:[NSNumber numberWithBool:[pdfDoc allowsCopying]] forKey:@"AllowsCopying"];
-        }
+- (NSDictionary *)infoForDocument:(NSDocument *)doc {
+    NSMutableDictionary *dictionary = [NSMutableDictionary dictionary];
+    PDFDocument *pdfDoc;
+    unsigned long long logicalSize = 0, physicalSize = 0;
+    
+    if ([doc respondsToSelector:@selector(pdfDocument)] && (pdfDoc = [(SKDocument *)doc pdfDocument])) {
+        [dictionary addEntriesFromDictionary:[pdfDoc documentAttributes]];
+        [dictionary setValue:[NSString stringWithFormat: @"%d.%d", [pdfDoc majorVersion], [pdfDoc minorVersion]] forKey:@"Version"];
+        [dictionary setValue:[NSNumber numberWithInt:[pdfDoc pageCount]] forKey:@"PageCount"];
+        if ([pdfDoc pageCount])
+            [dictionary setValue:SKSizeString([[pdfDoc pageAtIndex:0] boundsForBox:kPDFDisplayBoxCropBox].size, [[pdfDoc pageAtIndex:0] boundsForBox:kPDFDisplayBoxMediaBox].size) forKey:@"PageSize"];
+        [dictionary setValue:[[dictionary valueForKey:@"Keywords"] componentsJoinedByString:@"\n"] forKey:@"KeywordsString"];
+        [dictionary setValue:[NSNumber numberWithBool:[pdfDoc isEncrypted]] forKey:@"Encrypted"];
+        [dictionary setValue:[NSNumber numberWithBool:[pdfDoc allowsPrinting]] forKey:@"AllowsPrinting"];
+        [dictionary setValue:[NSNumber numberWithBool:[pdfDoc allowsCopying]] forKey:@"AllowsCopying"];
     }
+    [dictionary setValue:[[doc fileName] lastPathComponent] forKey:@"FileName"];
+    [dictionary setValue:SKFileSizeStringForFileURL([doc fileURL], &physicalSize, &logicalSize) forKey:@"FileSize"];
+    [dictionary setValue:[NSNumber numberWithUnsignedLongLong:physicalSize] forKey:@"PhysicalSize"];
+    [dictionary setValue:[NSNumber numberWithUnsignedLongLong:logicalSize] forKey:@"LogicalSize"];
+    
     return dictionary;
 }
 
-- (void)fillInfoForDocument:(SKDocument *)doc {
+- (void)fillInfoForDocument:(NSDocument *)doc {
     [self setInfo:[self infoForDocument:doc]];
 }
 
@@ -199,7 +198,7 @@ NSString *SKSizeString(NSSize size, NSSize altSize) {
 }
 
 - (void)handleWindowDidBecomeKeyNotification:(NSNotification *)notification {
-    SKDocument *doc = (SKDocument *)[[[notification object] windowController] document];
+    NSDocument *doc = [[[notification object] windowController] document];
     [self setInfo:[self infoForDocument:doc]];
 }
 
