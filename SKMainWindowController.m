@@ -2438,8 +2438,8 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
         else 
             [self fadeInOutlineView];
     } else {
-        [self fadeInSearchView];
         [[pdfView document] beginFindString:[sender stringValue] withOptions:NSCaseInsensitiveSearch];
+        [self fadeInSearchView];
         
         NSPasteboard *findPboard = [NSPasteboard pasteboardWithName:NSFindPboard];
         [findPboard declareTypes:[NSArray arrayWithObject:NSStringPboardType] owner:nil];
