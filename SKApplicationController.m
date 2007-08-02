@@ -51,7 +51,7 @@
 #import "AppleRemote.h"
 #import "NSBezierPath_BDSKExtensions.h"
 #import "SKLine.h"
-#import "NSImage_BDSKExtensions.h"
+#import "NSImage_SKExtensions.h"
 
 
 @implementation SKApplicationController

@@ -1,5 +1,5 @@
 //
-//  NSImage_BDSKExtensions.h
+//  NSImage_SKExtensions.h
 //  Skim
 //
 //  Created by Christiaan Hofman on 7/27/07.
@@ -39,6 +39,6 @@
 #import <Cocoa/Cocoa.h>
 
 
-@interface NSImage (BDSKExtensions)
+@interface NSImage (SKExtensions)
 + (void)makeAdornImages;
 @end
