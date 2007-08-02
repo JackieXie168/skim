@@ -1,5 +1,5 @@
 //
-//  NSImage_BDSKExtensions.m
+//  NSImage_SKExtensions.m
 //  Skim
 //
 //  Created by Christiaan Hofman on 7/27/07.
@@ -36,10 +36,10 @@
  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-#import "NSImage_BDSKExtensions.h"
+#import "NSImage_SKExtensions.h"
 
 
-@implementation NSImage (BDSKExtensions)
+@implementation NSImage (SKExtensions)
 
 + (void)makeAdornImages {
     static NSImage *backAdornImage = nil;
