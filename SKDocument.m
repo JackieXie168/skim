@@ -108,11 +108,13 @@ NSString *SKDocumentWillSaveNotification = @"SKDocumentWillSaveNotification";
     SKMainWindowController *mainController =  (SKMainWindowController *)aController;
     
     if ([pdfDocument pageCount]) {
+        PDFPage *page = [pdfDocument pageAtIndex:0];
         NSPrintInfo *printInfo = [self printInfo];
         NSSize paperSize = [printInfo paperSize];
-        NSSize pageSize = [[pdfDocument pageAtIndex:0] boundsForBox:kPDFDisplayBoxMediaBox].size;
-        if ((pageSize.width > pageSize.height) != (paperSize.width > paperSize.height))
-            [printInfo setOrientation:NSLandscapeOrientation];
+        NSSize pageSize = [page boundsForBox:kPDFDisplayBoxMediaBox].size;
+        BOOL isRotated = [page rotation] % 180 == 90;
+        BOOL isWide = (pageSize.width > pageSize.height) != (paperSize.width > paperSize.height);
+        [printInfo setOrientation:isRotated == isWide ? NSPortraitOrientation : NSLandscapeOrientation];
     }
     
     [mainController setPdfDocument:pdfDocument];
