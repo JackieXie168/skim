@@ -189,14 +189,19 @@ static IMP originalSetBorder = NULL;
             originalSetContents(self, @selector(setContents:), contents);
         if (color)
             originalSetColor(self, @selector(setColor:), color);
-        if ((lineWidth || borderStyle || dashPattern) && [self border] == nil)
-            originalSetBorder(self, @selector(setBorder:), [[[PDFBorder alloc] init] autorelease]);
-        if (lineWidth)
-            [[self border] setLineWidth:[lineWidth floatValue]];
-        if (borderStyle)
-            [[self border] setStyle:[lineWidth intValue]];
-        if (dashPattern)
-            [[self border] setDashPattern:dashPattern];
+        if (lineWidth == nil && borderStyle == nil && dashPattern == nil) {
+            if ([self border])
+                originalSetBorder(self, @selector(setBorder:), nil);
+        } else {
+            if ([self border] == nil)
+                originalSetBorder(self, @selector(setBorder:), [[[PDFBorder alloc] init] autorelease]);
+            if (lineWidth)
+                [[self border] setLineWidth:[lineWidth floatValue]];
+            if (borderStyle)
+                [[self border] setStyle:[lineWidth intValue]];
+            if (dashPattern)
+                [[self border] setDashPattern:dashPattern];
+        }
     }
     return self;
 }
