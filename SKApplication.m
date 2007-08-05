@@ -103,7 +103,7 @@ NSString *SKApplicationWillTerminateNotification = @"SKApplicationWillTerminateN
  	id source = [args objectForKey:@"source"];
     
     if (lineNumber == nil || ([file isKindOfClass:[NSArray class]] && [file count] != 1)) {
-        if ([[self superclass] instancesRespondToSelector:_cmd])
+        if ([NSApplication instancesRespondToSelector:_cmd])
             [super handleOpenScriptCommand:command];
         return;
     }

@@ -105,6 +105,7 @@ static NSString *SKDocumentToolbarNewNoteItemIdentifier = @"SKDocumentToolbarNew
 static NSString *SKDocumentToolbarNewCircleNoteItemIdentifier = @"SKDocumentToolbarNewCircleNoteItemIdentifier";
 static NSString *SKDocumentToolbarNewMarkupItemIdentifier = @"SKDocumentToolbarNewMarkupItemIdentifier";
 static NSString *SKDocumentToolbarNewLineItemIdentifier = @"SKDocumentToolbarNewLineItemIdentifier";
+static NSString *SKDocumentToolbarNewNotesItemIdentifier = @"SKDocumentToolbarNewNotesItemIdentifier";
 static NSString *SKDocumentToolbarInfoItemIdentifier = @"SKDocumentToolbarInfoItemIdentifier";
 static NSString *SKDocumentToolbarToolModeItemIdentifier = @"SKDocumentToolbarToolModeItemIdentifier";
 static NSString *SKDocumentToolbarDisplayBoxItemIdentifier = @"SKDocumentToolbarDisplayBoxItemIdentifier";
@@ -1118,7 +1119,8 @@ static NSString *noteToolAdornImageNames[] = {@"TextNoteToolAdorn", @"AnchoredNo
 
 - (IBAction)createNewNote:(id)sender{
     if ([pdfView hideNotes] == NO) {
-        [pdfView addAnnotationFromSelectionWithType:[sender tag]];
+        int type = [sender respondsToSelector:@selector(selectedSegment)] ? [sender selectedSegment] : [sender tag];
+        [pdfView addAnnotationFromSelectionWithType:type];
     } else NSBeep();
 }
 
@@ -3339,6 +3341,13 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
     }
 }
 
+- (BOOL)tableView:(NSTableView *)tv canDeleteRowsWithIndexes:(NSIndexSet *)rowIndexes {
+    if ([tv isEqual:snapshotTableView]) {
+        return [rowIndexes count] > 0;
+    }
+    return NO;
+}
+
 - (void)tableView:(NSTableView *)tv copyRowsWithIndexes:(NSIndexSet *)rowIndexes {
     if ([tv isEqual:thumbnailTableView]) {
         unsigned int index = [rowIndexes firstIndex];
@@ -3352,6 +3361,13 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
             [pboard setData:tiffData forType:NSTIFFPboardType];
         }
     }
+}
+
+- (BOOL)tableView:(NSTableView *)tv canCopyRowsWithIndexes:(NSIndexSet *)rowIndexes {
+    if ([tv isEqual:thumbnailTableView]) {
+        return [rowIndexes count] > 0;
+    }
+    return NO;
 }
 
 - (NSArray *)tableViewHighlightedRows:(NSTableView *)tv {
@@ -3882,6 +3898,13 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
     [toolbarItems setObject:item forKey:SKDocumentToolbarNewMarkupItemIdentifier];
     [item release];
     
+    [markupPopUpButton setShowsMenuWhenIconClicked:NO];
+    [[markupPopUpButton cell] setAltersStateOfSelectedItem:YES];
+    [[markupPopUpButton cell] setAlwaysUsesFirstItemAsSelected:NO];
+    [[markupPopUpButton cell] setUsesItemFromMenu:YES];
+    [markupPopUpButton setRefreshesMenu:NO];
+    [markupPopUpButton setMenu:menu];
+    
     item = [[SKToolbarItem alloc] initWithItemIdentifier:SKDocumentToolbarNewLineItemIdentifier];
     [item setLabels:NSLocalizedString(@"Add Line", @"Toolbar item label")];
     [item setToolTip:NSLocalizedString(@"Add New Line", @"Tool tip message")];
@@ -3892,12 +3915,59 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
     [toolbarItems setObject:item forKey:SKDocumentToolbarNewLineItemIdentifier];
     [item release];
     
-    [markupPopUpButton setShowsMenuWhenIconClicked:NO];
-    [[markupPopUpButton cell] setAltersStateOfSelectedItem:YES];
-    [[markupPopUpButton cell] setAlwaysUsesFirstItemAsSelected:NO];
-    [[markupPopUpButton cell] setUsesItemFromMenu:YES];
-    [markupPopUpButton setRefreshesMenu:NO];
-    [markupPopUpButton setMenu:menu];
+    menu = [[[NSMenu allocWithZone:[NSMenu menuZone]] initWithTitle:@""] autorelease];
+    menuItem = [menu addItemWithTitle:NSLocalizedString(@"Text Note", @"Menu item title") action:@selector(createNewNote:) keyEquivalent:@""];
+	[menuItem setTarget:self];
+	[menuItem setTag:SKFreeTextNote];
+	[menuItem setImage:[NSImage imageNamed:@"TextNoteAdorn"]];
+    menuItem = [menu addItemWithTitle:NSLocalizedString(@"Anchored Note", @"Menu item title") action:@selector(createNewNote:) keyEquivalent:@""];
+	[menuItem setTarget:self];
+	[menuItem setTag:SKAnchoredNote];
+	[menuItem setImage:[NSImage imageNamed:@"AnchoredNoteAdorn"]];
+    menuItem = [menu addItemWithTitle:NSLocalizedString(@"Circle", @"Menu item title") action:@selector(createNewNote:) keyEquivalent:@""];
+	[menuItem setTarget:self];
+	[menuItem setTag:SKCircleNote];
+	[menuItem setImage:[NSImage imageNamed:@"CircleNoteAdorn"]];
+    menuItem = [menu addItemWithTitle:NSLocalizedString(@"Box", @"Menu item title") action:@selector(createNewNote:) keyEquivalent:@""];
+	[menuItem setTarget:self];
+	[menuItem setTag:SKSquareNote];
+	[menuItem setImage:[NSImage imageNamed:@"SquareNoteAdorn"]];
+    menuItem = [menu addItemWithTitle:NSLocalizedString(@"Highlight", @"Menu item title") action:@selector(createNewNote:) keyEquivalent:@""];
+	[menuItem setTarget:self];
+	[menuItem setTag:SKHighlightNote];
+	[menuItem setImage:[NSImage imageNamed:@"HighlightNoteAdorn"]];
+    menuItem = [menu addItemWithTitle:NSLocalizedString(@"Underline", @"Menu item title") action:@selector(createNewNote:) keyEquivalent:@""];
+	[menuItem setTarget:self];
+	[menuItem setTag:SKUnderlineNote];
+	[menuItem setImage:[NSImage imageNamed:@"UnderlineNoteAdorn"]];
+    menuItem = [menu addItemWithTitle:NSLocalizedString(@"Strike Out", @"Menu item title") action:@selector(createNewNote:) keyEquivalent:@""];
+	[menuItem setTarget:self];
+	[menuItem setTag:SKStrikeOutNote];
+	[menuItem setImage:[NSImage imageNamed:@"StrikeOutNoteAdorn"]];
+    menuItem = [menu addItemWithTitle:NSLocalizedString(@"Line", @"Menu item title") action:@selector(createNewNote:) keyEquivalent:@""];
+	[menuItem setTarget:self];
+	[menuItem setTag:SKLineNote];
+	[menuItem setImage:[NSImage imageNamed:@"LineNoteAdorn"]];
+	menuItem = [[[NSMenuItem allocWithZone:[NSMenu menuZone]] initWithTitle:NSLocalizedString(@"Add Note", @"Toolbar item label") action:NULL keyEquivalent:@""] autorelease];
+    [menuItem setSubmenu:menu];
+    item = [[SKToolbarItem alloc] initWithItemIdentifier:SKDocumentToolbarNewNotesItemIdentifier];
+    [item setLabels:NSLocalizedString(@"Add Note", @"Toolbar item label")];
+    [item setToolTip:NSLocalizedString(@"Add New Note", @"Tool tip message")];
+    [[noteButton cell] setToolTip:NSLocalizedString(@"Add New Text Note", @"Tool tip message") forSegment:SKFreeTextNote];
+    [[noteButton cell] setToolTip:NSLocalizedString(@"Add New Anchored Note", @"Tool tip message") forSegment:SKAnchoredNote];
+    [[noteButton cell] setToolTip:NSLocalizedString(@"Add New Circle", @"Tool tip message") forSegment:SKCircleNote];
+    [[noteButton cell] setToolTip:NSLocalizedString(@"Add New Box", @"Tool tip message") forSegment:SKSquareNote];
+    [[noteButton cell] setToolTip:NSLocalizedString(@"Add New Highlight", @"Tool tip message") forSegment:SKHighlightNote];
+    [[noteButton cell] setToolTip:NSLocalizedString(@"Add New Underline", @"Tool tip message") forSegment:SKUnderlineNote];
+    [[noteButton cell] setToolTip:NSLocalizedString(@"Add New Strike Out", @"Tool tip message") forSegment:SKStrikeOutNote];
+    [[noteButton cell] setToolTip:NSLocalizedString(@"Add New Line", @"Tool tip message") forSegment:SKLineNote];
+    frame = [noteButton frame];
+    frame.size.height = SEGMENTED_CONTROL_HEIGHT;
+    [noteButton setFrame:frame];
+    [item setViewWithSizes:noteButton];
+    [item setMenuFormRepresentation:menuItem];
+    [toolbarItems setObject:item forKey:SKDocumentToolbarNewNotesItemIdentifier];
+    [item release];
     
     menu = [[[NSMenu allocWithZone:[NSMenu menuZone]] initWithTitle:@""] autorelease];
     menuItem = [menu addItemWithTitle:NSLocalizedString(@"Text Tool", @"Menu item title") action:@selector(changeToolMode:) keyEquivalent:@""];
@@ -4143,6 +4213,7 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
         SKDocumentToolbarNewCircleNoteItemIdentifier, 
         SKDocumentToolbarNewMarkupItemIdentifier,
         SKDocumentToolbarNewLineItemIdentifier,
+        SKDocumentToolbarNewNotesItemIdentifier, 
         SKDocumentToolbarContentsPaneItemIdentifier, 
         SKDocumentToolbarNotesPaneItemIdentifier, 
         SKDocumentToolbarInfoItemIdentifier, 
@@ -4185,6 +4256,14 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
         return ([pdfView toolMode] == SKTextToolMode || [pdfView toolMode] == SKNoteToolMode) && [pdfView hideNotes] == NO;
     } else if ([identifier isEqualToString:SKDocumentToolbarNewMarkupItemIdentifier]) {
         return ([pdfView toolMode] == SKTextToolMode || [pdfView toolMode] == SKNoteToolMode) && [[[pdfView currentSelection] pages] count] && [pdfView hideNotes] == NO;
+    } else if ([identifier isEqualToString:SKDocumentToolbarNewNotesItemIdentifier]) {
+        if (([pdfView toolMode] != SKTextToolMode && [pdfView toolMode] != SKNoteToolMode) || [pdfView hideNotes])
+            return NO;
+        BOOL enabled = [[[pdfView currentSelection] pages] count] > 0;
+        [noteButton setEnabled:enabled forSegment:SKHighlightNote];
+        [noteButton setEnabled:enabled forSegment:SKUnderlineNote];
+        [noteButton setEnabled:enabled forSegment:SKStrikeOutNote];
+        return YES;
     } else if ([identifier isEqualToString:SKDocumentToolbarInfoItemIdentifier]) {
         return YES;
     } else {

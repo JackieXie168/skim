@@ -41,6 +41,32 @@
 
 @implementation NSImage (SKExtensions)
 
+- (NSImage *)createMenuAdornImage {
+    NSBezierPath *arrowPath = [NSBezierPath bezierPath];
+    [arrowPath moveToPoint:NSMakePoint(20.5,4.0)];
+    [arrowPath lineToPoint:NSMakePoint(18.0,7.0)];
+    [arrowPath lineToPoint:NSMakePoint(23.0,7.0)];
+    [arrowPath closePath];
+    
+    NSImage *image = [[NSImage alloc] initWithSize:NSMakeSize(25.0, 13.0)];
+    [image lockFocus];
+    [self compositeToPoint:NSMakePoint(2.0, 1.0) operation:NSCompositeCopy];
+    [[NSColor colorWithCalibratedWhite:0.0 alpha:0.85] setFill];
+    [arrowPath fill];
+    [image unlockFocus];
+    
+    return image;
+}
+
+- (NSImage *)createLargeNoteAdornImage {
+    NSImage *image = [[NSImage alloc] initWithSize:NSMakeSize(19.0, 11.0)];
+    [image lockFocus];
+    [self compositeToPoint:NSMakePoint(2.0, 0.0) operation:NSCompositeCopy];
+    [image unlockFocus];
+    
+    return image;
+}
+
 + (void)makeAdornImages {
     static NSImage *backAdornImage = nil;
     static NSImage *forwardAdornImage = nil;
@@ -68,6 +94,14 @@
     static NSImage *underlineNoteAdornImage = nil;
     static NSImage *strikeOutNoteAdornImage = nil;
     static NSImage *lineNoteAdornImage = nil;
+    static NSImage *textNoteAdorn2Image = nil;
+    static NSImage *anchoredNoteAdorn2Image = nil;
+    static NSImage *circleNoteAdorn2Image = nil;
+    static NSImage *squareNoteAdorn2Image = nil;
+    static NSImage *highlightNoteAdorn2Image = nil;
+    static NSImage *underlineNoteAdorn2Image = nil;
+    static NSImage *strikeOutNoteAdorn2Image = nil;
+    static NSImage *lineNoteAdorn2Image = nil;
     
     NSShadow *shadow = [[NSShadow alloc] init];
     [shadow setShadowBlurRadius:0.0];
@@ -78,13 +112,7 @@
     
     NSSize size = NSMakeSize(25.0, 13.0);
     NSSize noteSize = NSMakeSize(15.0, 11.0);
-    NSPoint point = NSMakePoint(2.0, 1.0);
     NSBezierPath *path;
-    NSBezierPath *arrowPath = [NSBezierPath bezierPath];
-    [arrowPath moveToPoint:NSMakePoint(20.5,4.0)];
-    [arrowPath lineToPoint:NSMakePoint(18.0,7.0)];
-    [arrowPath lineToPoint:NSMakePoint(23.0,7.0)];
-    [arrowPath closePath];
     
     backAdornImage = [[NSImage alloc] initWithSize:size];
     [backAdornImage lockFocus];
@@ -347,13 +375,10 @@
     [textNoteAdornImage unlockFocus];
     [textNoteAdornImage setName:@"TextNoteAdorn"];
 
-    textNoteToolAdornImage = [[NSImage alloc] initWithSize:size];
-    [textNoteToolAdornImage lockFocus];
-    [[NSGraphicsContext currentContext] saveGraphicsState];
-    [textNoteAdornImage compositeToPoint:point operation:NSCompositeCopy];
-    [color setFill];
-    [arrowPath fill];
-    [textNoteToolAdornImage unlockFocus];
+    textNoteAdorn2Image = [textNoteAdornImage createLargeNoteAdornImage];
+    [textNoteAdorn2Image setName:@"TextNoteAdorn2"];
+
+    textNoteToolAdornImage = [textNoteAdornImage createMenuAdornImage];
     [textNoteToolAdornImage setName:@"TextNoteToolAdorn"];
     
     anchoredNoteAdornImage = [[NSImage alloc] initWithSize:noteSize];
@@ -380,12 +405,10 @@
     [anchoredNoteAdornImage unlockFocus];
     [anchoredNoteAdornImage setName:@"AnchoredNoteAdorn"];
 
-    anchoredNoteToolAdornImage = [[NSImage alloc] initWithSize:size];
-    [anchoredNoteToolAdornImage lockFocus];
-    [anchoredNoteAdornImage compositeToPoint:point operation:NSCompositeCopy];
-    [shadow set];
-    [arrowPath fill];
-    [anchoredNoteToolAdornImage unlockFocus];
+    anchoredNoteAdorn2Image = [anchoredNoteAdornImage createLargeNoteAdornImage];
+    [anchoredNoteAdorn2Image setName:@"AnchoredNoteAdorn2"];
+
+    anchoredNoteToolAdornImage = [anchoredNoteAdornImage createMenuAdornImage];
     [anchoredNoteToolAdornImage setName:@"AnchoredNoteToolAdorn"];
     
     circleNoteAdornImage = [[NSImage alloc] initWithSize:noteSize];
@@ -410,12 +433,10 @@
     [circleNoteAdornImage unlockFocus];
     [circleNoteAdornImage setName:@"CircleNoteAdorn"];
 
-    circleNoteToolAdornImage = [[NSImage alloc] initWithSize:size];
-    [circleNoteToolAdornImage lockFocus];
-    [circleNoteAdornImage compositeToPoint:point operation:NSCompositeCopy];
-    [color setFill];
-    [arrowPath fill];
-    [circleNoteToolAdornImage unlockFocus];
+    circleNoteAdorn2Image = [circleNoteAdornImage createLargeNoteAdornImage];
+    [circleNoteAdorn2Image setName:@"CircleNoteAdorn2"];
+
+    circleNoteToolAdornImage = [circleNoteAdornImage createMenuAdornImage];
     [circleNoteToolAdornImage setName:@"CircleNoteToolAdorn"];
     
     squareNoteAdornImage = [[NSImage alloc] initWithSize:noteSize];
@@ -432,12 +453,10 @@
     [squareNoteAdornImage unlockFocus];
     [squareNoteAdornImage setName:@"SquareNoteAdorn"];
 
-    squareNoteToolAdornImage = [[NSImage alloc] initWithSize:size];
-    [squareNoteToolAdornImage lockFocus];
-    [squareNoteAdornImage compositeToPoint:point operation:NSCompositeCopy];
-    [color setFill];
-    [arrowPath fill];
-    [squareNoteToolAdornImage unlockFocus];
+    squareNoteAdorn2Image = [squareNoteAdornImage createLargeNoteAdornImage];
+    [squareNoteAdorn2Image setName:@"SquareNoteAdorn2"];
+
+    squareNoteToolAdornImage = [squareNoteAdornImage createMenuAdornImage];
     [squareNoteToolAdornImage setName:@"SquareNoteToolAdorn"];
     
     highlightNoteAdornImage = [[NSImage alloc] initWithSize:noteSize];
@@ -458,12 +477,10 @@
     [highlightNoteAdornImage unlockFocus];
     [highlightNoteAdornImage setName:@"HighlightNoteAdorn"];
 
-    highlightNoteToolAdornImage = [[NSImage alloc] initWithSize:size];
-    [highlightNoteToolAdornImage lockFocus];
-    [highlightNoteAdornImage compositeToPoint:point operation:NSCompositeCopy];
-    [color setFill];
-    [arrowPath fill];
-    [highlightNoteToolAdornImage unlockFocus];
+    highlightNoteAdorn2Image = [highlightNoteAdornImage createLargeNoteAdornImage];
+    [highlightNoteAdorn2Image setName:@"HighlightNoteAdorn2"];
+
+    highlightNoteToolAdornImage = [highlightNoteAdornImage createMenuAdornImage];
     [highlightNoteToolAdornImage setName:@"HighlightNoteToolAdorn"];
     
     underlineNoteAdornImage = [[NSImage alloc] initWithSize:noteSize];
@@ -479,12 +496,10 @@
     [underlineNoteAdornImage unlockFocus];
     [underlineNoteAdornImage setName:@"UnderlineNoteAdorn"];
 
-    underlineNoteToolAdornImage = [[NSImage alloc] initWithSize:size];
-    [underlineNoteToolAdornImage lockFocus];
-    [underlineNoteAdornImage compositeToPoint:point operation:NSCompositeCopy];
-    [color setFill];
-    [arrowPath fill];
-    [underlineNoteToolAdornImage unlockFocus];
+    underlineNoteAdorn2Image = [underlineNoteAdornImage createLargeNoteAdornImage];
+    [underlineNoteAdorn2Image setName:@"UnderlineNoteAdorn2"];
+
+    underlineNoteToolAdornImage = [underlineNoteAdornImage createMenuAdornImage];
     [underlineNoteToolAdornImage setName:@"UnderlineNoteToolAdorn"];
     
     strikeOutNoteAdornImage = [[NSImage alloc] initWithSize:noteSize];
@@ -500,12 +515,10 @@
     [strikeOutNoteAdornImage unlockFocus];
     [strikeOutNoteAdornImage setName:@"StrikeOutNoteAdorn"];
 
-    strikeOutNoteToolAdornImage = [[NSImage alloc] initWithSize:size];
-    [strikeOutNoteToolAdornImage lockFocus];
-    [strikeOutNoteAdornImage compositeToPoint:point operation:NSCompositeCopy];
-    [color setFill];
-    [arrowPath fill];
-    [strikeOutNoteToolAdornImage unlockFocus];
+    strikeOutNoteAdorn2Image = [strikeOutNoteAdornImage createLargeNoteAdornImage];
+    [strikeOutNoteAdorn2Image setName:@"StrikeOutNoteAdorn2"];
+
+    strikeOutNoteToolAdornImage = [strikeOutNoteAdornImage createMenuAdornImage];
     [strikeOutNoteToolAdornImage setName:@"StrikeOutNoteToolAdorn"];
     
     lineNoteAdornImage = [[NSImage alloc] initWithSize:noteSize];
@@ -523,12 +536,10 @@
     [lineNoteAdornImage unlockFocus];
     [lineNoteAdornImage setName:@"LineNoteAdorn"];
 
-    lineNoteToolAdornImage = [[NSImage alloc] initWithSize:size];
-    [lineNoteToolAdornImage lockFocus];
-    [lineNoteAdornImage compositeToPoint:point operation:NSCompositeCopy];
-    [color setFill];
-    [arrowPath fill];
-    [lineNoteToolAdornImage unlockFocus];
+    lineNoteAdorn2Image = [lineNoteAdornImage createLargeNoteAdornImage];
+    [lineNoteAdorn2Image setName:@"LineNoteAdorn2"];
+
+    lineNoteToolAdornImage = [lineNoteAdornImage createMenuAdornImage];
     [lineNoteToolAdornImage setName:@"LineNoteToolAdorn"];
     
     [shadow release];

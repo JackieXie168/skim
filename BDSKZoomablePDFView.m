@@ -88,7 +88,7 @@ static float BDSKScaleMenuFontSize = 11.0;
     id document = [[[self window] windowController] document];
     if ([document respondsToSelector:_cmd])
         [document printDocument:sender];
-    else if ([[self superclass] instancesRespondToSelector:_cmd])
+    else if ([PDFView instancesRespondToSelector:_cmd])
         [(id)super printDocument:sender];
 }
 

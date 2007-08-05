@@ -618,7 +618,7 @@ static void SKCGContextDrawGrabHandle(CGContextRef context, CGPoint point, float
     id document = [[[self window] windowController] document];
     if ([document respondsToSelector:_cmd])
         [document printDocument:sender];
-    else if ([[self superclass] instancesRespondToSelector:_cmd])
+    else if ([PDFView instancesRespondToSelector:_cmd])
         [(id)super printDocument:sender];
 }
 
@@ -1404,7 +1404,7 @@ static void SKCGContextDrawGrabHandle(CGContextRef context, CGPoint point, float
     NSString *pboardType = [pboard availableTypeFromArray:[NSArray arrayWithObjects:NSColorPboardType, SKLineStylePboardType, nil]];
     if (pboardType) {
         return [self draggingUpdated:sender];
-    } else if ([[self superclass] instancesRespondToSelector:_cmd]) {
+    } else if ([PDFView instancesRespondToSelector:_cmd]) {
         dragOp = [super draggingEntered:sender];
     }
     return dragOp;
@@ -1442,7 +1442,7 @@ static void SKCGContextDrawGrabHandle(CGContextRef context, CGPoint point, float
             [self setNeedsDisplayForAnnotation:highlightAnnotation];
             highlightAnnotation = nil;
         }
-    } else if ([[self superclass] instancesRespondToSelector:_cmd]) {
+    } else if ([PDFView instancesRespondToSelector:_cmd]) {
         dragOp = [super draggingUpdated:sender];
     }
     return dragOp;
@@ -1456,7 +1456,7 @@ static void SKCGContextDrawGrabHandle(CGContextRef context, CGPoint point, float
             [self setNeedsDisplayForAnnotation:highlightAnnotation];
             highlightAnnotation = nil;
         }
-    } else if ([[self superclass] instancesRespondToSelector:_cmd]) {
+    } else if ([PDFView instancesRespondToSelector:_cmd]) {
         [super draggingExited:sender];
     }
 }
@@ -1490,7 +1490,7 @@ static void SKCGContextDrawGrabHandle(CGContextRef context, CGPoint point, float
             [self setNeedsDisplayForAnnotation:highlightAnnotation];
             highlightAnnotation = nil;
         }
-    } else if ([[self superclass] instancesRespondToSelector:_cmd]) {
+    } else if ([PDFView instancesRespondToSelector:_cmd]) {
         performedDrag = [super performDragOperation:sender];
     }
     return performedDrag;
@@ -1792,7 +1792,7 @@ static void SKCGContextDrawGrabHandle(CGContextRef context, CGPoint point, float
     if (editAnnotation && (command == @selector(insertNewline:) || command == @selector(insertTab:) || command == @selector(insertBacktab:))) {
         [self endAnnotationEdit:self];
         [[self window] makeFirstResponder:self];
-    } else if ([[self superclass] instancesRespondToSelector:_cmd]) {
+    } else if ([PDFView instancesRespondToSelector:_cmd]) {
        rv = [super control:control textView:textView doCommandBySelector:command];
     }
     return rv;

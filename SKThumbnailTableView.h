@@ -44,10 +44,12 @@
     BOOL isScrolling;
 }
 - (BOOL)isScrolling;
+- (BOOL)canCopy;
 @end
 
 
 @interface SKSnapshotTableView : SKThumbnailTableView
+- (BOOL)canDelete;
 @end
 
 
@@ -59,6 +61,7 @@
 
 @interface NSObject (SKSnapshotTableViewDelegate)
 - (void)tableView:(NSTableView *)aTableView deleteRowsWithIndexes:(NSIndexSet *)rowIndexes;
+- (BOOL)tableView:(NSTableView *)aTableView canDeleteRowsWithIndexes:(NSIndexSet *)rowIndexes;
 @end
 
 
@@ -66,4 +69,5 @@
 - (NSArray *)tableViewHighlightedRows:(NSTableView *)tableView;
 - (BOOL)tableView:(NSTableView *)tableView commandSelectRow:(int)rowIndex;
 - (void)tableView:(NSTableView *)aTableView copyRowsWithIndexes:(NSIndexSet *)rowIndexes;
+- (BOOL)tableView:(NSTableView *)aTableView canCopyRowsWithIndexes:(NSIndexSet *)rowIndexes;
 @end

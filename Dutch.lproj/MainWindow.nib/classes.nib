@@ -134,6 +134,7 @@
                 leftSideGradientView = BDSKGradientView; 
                 markupPopUpButton = BDSKImagePopUpButton; 
                 noteArrayController = NSArrayController; 
+                noteButton = NSSegmentedControl; 
                 noteOutlineView = SKNoteOutlineView; 
                 notePopUpButton = BDSKImagePopUpButton; 
                 noteSearchField = NSSearchField; 
