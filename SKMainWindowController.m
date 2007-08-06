@@ -3262,6 +3262,47 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
     [[SKPDFHoverWindow sharedHoverWindow] hide];
 }
 
+- (void)deleteNote:(id)sender {
+    PDFAnnotation *annotation = [sender representedObject];
+    [pdfView removeAnnotation:annotation];
+    [[[self document] undoManager] setActionName:NSLocalizedString(@"Remove Note", @"Undo action name")];
+}
+
+- (void)selectNote:(id)sender {
+    PDFAnnotation *annotation = [sender representedObject];
+    [pdfView setActiveAnnotation:annotation];
+}
+
+- (void)deselectNote:(id)sender {
+    [pdfView setActiveAnnotation:nil];
+}
+
+- (NSMenu *)outlineView:(NSOutlineView *)ov menuForTableColumn:(NSTableColumn *)tableColumn item:(id)item {
+    NSMenu *menu = nil;
+    if ([ov isEqual:noteOutlineView]) {
+        if ([item type] == nil)
+            item = [(SKNoteText *)item annotation];
+        menu = [[[NSMenu allocWithZone:[NSMenu menuZone]] init] autorelease];
+        NSMenuItem *menuItem = [menu addItemWithTitle:NSLocalizedString(@"Delete", @"Menu item title") action:@selector(deleteNote:) keyEquivalent:@""];
+        [menuItem setTarget:self];
+        [menuItem setRepresentedObject:item];
+        if ([pdfView hideNotes] == NO) {
+            if ([item isEditable]) {
+                menuItem = [menu addItemWithTitle:NSLocalizedString(@"Edit", @"Menu item title") action:@selector(editThisAnnotation:) keyEquivalent:@""];
+                [menuItem setTarget:pdfView];
+                [menuItem setRepresentedObject:item];
+            }
+            if ([pdfView activeAnnotation] == item)
+                menuItem = [menu addItemWithTitle:NSLocalizedString(@"Deselect", @"Menu item title") action:@selector(deselectNote:) keyEquivalent:@""];
+            else
+                menuItem = [menu addItemWithTitle:NSLocalizedString(@"Select", @"Menu item title") action:@selector(selectNote:) keyEquivalent:@""];
+            [menuItem setTarget:self];
+            [menuItem setRepresentedObject:item];
+        }
+    }
+    return menu;
+}
+
 #pragma mark NSTableView delegate protocol
 
 - (void)tableViewSelectionDidChange:(NSNotification *)aNotification {
@@ -3421,6 +3462,61 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
     if ([tv isEqual:findTableView]) {
         [[SKPDFHoverWindow sharedHoverWindow] hide];
     }
+}
+
+- (void)copyPage:(id)sender {
+    PDFPage *page = [sender representedObject];
+    NSData *pdfData = [page dataRepresentation];
+    NSData *tiffData = [[page imageForBox:[pdfView displayBox]] TIFFRepresentation];
+    NSPasteboard *pboard = [NSPasteboard generalPasteboard];
+    [pboard declareTypes:[NSArray arrayWithObjects:NSPDFPboardType, NSTIFFPboardType, nil] owner:nil];
+    [pboard setData:pdfData forType:NSPDFPboardType];
+    [pboard setData:tiffData forType:NSTIFFPboardType];
+}
+
+- (void)deleteSnapshot:(id)sender {
+    SKSnapshotWindowController *controller = [sender representedObject];
+    [[controller window] orderOut:self];
+    [[self mutableArrayValueForKey:@"snapshots"] removeObject:controller];
+}
+
+- (void)showSnapshot:(id)sender {
+    SKSnapshotWindowController *controller = [sender representedObject];
+    if ([[controller window] isVisible])
+        [[controller window] orderFront:self];
+    else
+        [controller deminiaturize];
+}
+
+- (void)hideSnapshot:(id)sender {
+    SKSnapshotWindowController *controller = [sender representedObject];
+    if ([[controller window] isVisible])
+        [controller miniaturize];
+}
+
+- (NSMenu *)tableView:(NSTableView *)tv menuForTableColumn:(NSTableColumn *)tableColumn row:(int)row {
+    NSMenu *menu = nil;
+    if ([tv isEqual:thumbnailTableView]) {
+        menu = [[[NSMenu allocWithZone:[NSMenu menuZone]] init] autorelease];
+        NSMenuItem *menuItem = [menu addItemWithTitle:NSLocalizedString(@"Copy", @"Menu item title") action:@selector(copyPage:) keyEquivalent:@""];
+        [menuItem setTarget:self];
+        [menuItem setRepresentedObject:[[pdfView document] pageAtIndex:row]];
+    } else if ([tv isEqual:snapshotTableView]) {
+        menu = [[[NSMenu allocWithZone:[NSMenu menuZone]] init] autorelease];
+        SKSnapshotWindowController *controller = [[snapshotArrayController arrangedObjects] objectAtIndex:row];
+        NSMenuItem *menuItem = [menu addItemWithTitle:NSLocalizedString(@"Delete", @"Menu item title") action:@selector(deleteSnapshot:) keyEquivalent:@""];
+        [menuItem setTarget:self];
+        [menuItem setRepresentedObject:controller];
+        menuItem = [menu addItemWithTitle:NSLocalizedString(@"Show", @"Menu item title") action:@selector(showSnapshot:) keyEquivalent:@""];
+        [menuItem setTarget:self];
+        [menuItem setRepresentedObject:controller];
+        if ([[controller window] isVisible]) {
+            menuItem = [menu addItemWithTitle:NSLocalizedString(@"Hide", @"Menu item title") action:@selector(hideSnapshot:) keyEquivalent:@""];
+            [menuItem setTarget:self];
+            [menuItem setRepresentedObject:controller];
+        }
+    }
+    return menu;
 }
 
 #pragma mark Outline

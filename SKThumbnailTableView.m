@@ -146,34 +146,25 @@ static IMP originalTrackKnob = NULL;
         NSBeep();
 }
 
-- (void)copyFromContextualMenu:(id)sender {
-    [[self delegate] tableView:self copyRowsWithIndexes:[sender representedObject]];
-}
-
 - (NSMenu *)menuForEvent:(NSEvent *)theEvent {
-    NSMenu *menu = [super menuForEvent:theEvent];
-    NSPoint mouseLoc = [self convertPoint:[theEvent locationInWindow] fromView:nil];
-    int row = [self rowAtPoint:mouseLoc];
-    if (row != -1) {
-        NSIndexSet *indexes = [NSIndexSet indexSetWithIndex:row];
-        if ([[self delegate] respondsToSelector:@selector(tableView:canCopyRowsWithIndexes:)] && 
-            [[self delegate] respondsToSelector:@selector(tableView:copyRowsWithIndexes:)] && 
-            [[self delegate] tableView:self canCopyRowsWithIndexes:indexes]) {
-            if (menu == nil)
-                menu = [[[NSMenu allocWithZone:[NSMenu menuZone]] init] autorelease];
-            NSMenuItem *item = [menu addItemWithTitle:NSLocalizedString(@"Copy", @"Menu item title") action:@selector(copyFromContextualMenu:) keyEquivalent:@""];
-            [item setTarget:self];
-            [item setRepresentedObject:indexes];
+    NSMenu *menu = nil;
+    
+    if ([[self delegate] respondsToSelector:@selector(tableView:menuForTableColumn:row:)]) {
+        NSPoint mouseLoc = [self convertPoint:[theEvent locationInWindow] fromView:nil];
+        int row = [self rowAtPoint:mouseLoc];
+        int column = [self columnAtPoint:mouseLoc];
+        if (row != -1 && column != -1) {
+            NSTableColumn *tableColumn = [[self tableColumns] objectAtIndex:column];
+            menu = [[self delegate] tableView:self menuForTableColumn:tableColumn row:row];
         }
     }
+    
 	return menu;
 }
 
 - (BOOL)validateMenuItem:(NSMenuItem *)menuItem {
     if ([menuItem action] == @selector(copy:))
         return [self canCopy];
-    else if ([menuItem action] == @selector(copyFromContextualMenu:))
-        return YES;
     else if ([NSTableView instancesRespondToSelector:@selector(validateMenuItem:)])
         return [super validateMenuItem:menuItem];
     return YES;
@@ -211,34 +202,9 @@ static IMP originalTrackKnob = NULL;
 		[super keyDown:theEvent];
 }
 
-- (void)deleteFromContextualMenu:(id)sender {
-    [[self delegate] tableView:self deleteRowsWithIndexes:[sender representedObject]];
-}
-
-- (NSMenu *)menuForEvent:(NSEvent *)theEvent {
-    NSMenu *menu = [super menuForEvent:theEvent];
-    NSPoint mouseLoc = [self convertPoint:[theEvent locationInWindow] fromView:nil];
-    int row = [self rowAtPoint:mouseLoc];
-    if (row != -1) {
-        NSIndexSet *indexes = [NSIndexSet indexSetWithIndex:row];
-        if ([[self delegate] respondsToSelector:@selector(tableView:canDeleteRowsWithIndexes:)] && 
-            [[self delegate] respondsToSelector:@selector(tableView:deleteRowsWithIndexes:)] && 
-            [[self delegate] tableView:self canDeleteRowsWithIndexes:indexes]) {
-            if (menu == nil)
-                menu = [[[NSMenu allocWithZone:[NSMenu menuZone]] init] autorelease];
-            NSMenuItem *item = [menu addItemWithTitle:NSLocalizedString(@"Delete", @"Menu item title") action:@selector(deleteFromContextualMenu:) keyEquivalent:@""];
-            [item setTarget:self];
-            [item setRepresentedObject:indexes];
-        }
-    }
-	return menu;
-}
-
 - (BOOL)validateMenuItem:(NSMenuItem *)menuItem {
     if ([menuItem action] == @selector(delete:))
         return [self canDelete];
-    else if ([menuItem action] == @selector(deleteFromContextualMenu:))
-        return YES;
     return [super validateMenuItem:menuItem];
 }
 
