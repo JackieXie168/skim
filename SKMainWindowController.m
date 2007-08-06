@@ -965,7 +965,7 @@ static NSString *noteToolAdornImageNames[] = {@"TextNoteToolAdorn", @"AnchoredNo
 - (id)objectInThumbnailsAtIndex:(unsigned)theIndex {
     SKThumbnail *thumbnail = [thumbnails objectAtIndex:theIndex];
     
-    if ([thumbnail isDirty] && NO == isAnimating && NO == [thumbnailTableView isScrolling]) {
+    if ([thumbnail isDirty] && NO == isAnimating && NO == [thumbnailTableView isScrolling] && [[pdfView document] isLocked] == NO) {
         
         NSSize newSize, oldSize = [[thumbnail image] size];
         PDFDocument *pdfDoc = [pdfView document];
