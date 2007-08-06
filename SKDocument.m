@@ -623,6 +623,8 @@ static NSPopUpButton *popUpButtonSubview(NSView *view)
         if (fileName == nil || [[NSFileManager defaultManager] fileExistsAtPath:fileName] == NO)
             return NO;
         return [self isDocumentEdited] || fileChangedOnDisk;
+    } else if ([anItem action] == @selector(printDocument:)) {
+        return [[self pdfDocument] allowsPrinting];
     }
     return [super validateUserInterfaceItem:anItem];
 }

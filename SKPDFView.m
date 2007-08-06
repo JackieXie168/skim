@@ -632,7 +632,17 @@ static void SKCGContextDrawGrabHandle(CGContextRef context, CGPoint point, float
 
 - (void)copy:(id)sender
 {
-    [super copy:sender];
+    if ([[self document] allowsCopying]) {
+        [super copy:sender];
+    } else if ([self currentSelection]) {
+        NSPasteboard *pboard = [NSPasteboard generalPasteboard];
+        NSString *string = [[self currentSelection] string];
+        NSAttributedString *attrString = [[self currentSelection] attributedString];
+        
+        [pboard declareTypes:[NSArray arrayWithObjects:NSStringPboardType, NSRTFPboardType, nil] owner:nil];
+        [pboard setString:string forType:NSStringPboardType];
+        [pboard setData:[attrString RTFFromRange:NSMakeRange(0, [attrString length]) documentAttributes:nil] forType:NSRTFPboardType];
+    }
     
     NSMutableArray *types = [NSMutableArray array];
     NSData *noteData = nil;
@@ -2010,13 +2020,17 @@ static void SKCGContextDrawGrabHandle(CGContextRef context, CGPoint point, float
             [menuItem setState:[self annotationMode] == (unsigned)[menuItem tag] ? NSOnState : NSOffState];
         return YES;
     } else if (action == @selector(copy:)) {
-        if ([super validateMenuItem:menuItem])
+        if ([self currentSelection])
             return YES;
         if ([activeAnnotation isNoteAnnotation] && [activeAnnotation isMovable])
             return YES;
         if (toolMode == SKSelectToolMode && NSIsEmptyRect(selectionRect) == NO)
             return YES;
         return NO;
+    } else if (action == @selector(delete:)) {
+        return [activeAnnotation isNoteAnnotation];
+    } else if (action == @selector(printDocument:)) {
+        return [[self document] allowsPrinting];
     } else if (action == @selector(autoSelectContent:)) {
         return toolMode == SKSelectToolMode;
     } else {
