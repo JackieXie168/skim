@@ -166,9 +166,13 @@ static NSPopUpButton *popUpButtonSubview(NSView *view)
 - (BOOL)prepareSavePanel:(NSSavePanel *)savePanel {
     NSPopUpButton *formatPopup = popUpButtonSubview([savePanel accessoryView]);
     NSString *lastExportedType = [[NSUserDefaults standardUserDefaults] stringForKey:@"SKLastExportedType"];
+    if ([[self pdfDocument] allowsPrinting] == NO) {
+        int index = [formatPopup indexOfItemWithRepresentedObject:SKEmbeddedPDFDocumentType];
+        if (index != -1)
+            [formatPopup removeItemAtIndex:index];
+    }
     if (formatPopup && lastExportedType) {
-        NSString *title = [[NSDocumentController sharedDocumentController] displayNameForType:lastExportedType];
-        int index = [formatPopup indexOfItemWithTitle:title];
+        int index = [formatPopup indexOfItemWithRepresentedObject:lastExportedType];
         if (index != -1 && index != [formatPopup indexOfSelectedItem]) {
             [formatPopup selectItemAtIndex:index];
             [formatPopup sendAction:[formatPopup action] to:[formatPopup target]];
