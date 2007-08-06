@@ -3521,7 +3521,7 @@ static void SKCGContextDrawGrabHandle(CGContextRef context, CGPoint point, float
                                    modifierFlags:flags
                                        timestamp:0
                                     windowNumber:[[self window] windowNumber]
-                                         context:[[self window] graphicsContext]
+                                         context:nil
                                      eventNumber:0
                                       clickCount:1
                                         pressure:0.0];
