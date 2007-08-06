@@ -78,6 +78,7 @@
 - (void)deminiaturize;
 
 - (void)handlePageChangedNotification:(NSNotification *)notification;
+- (void)handleDocumentDidUnlockNotification:(NSNotification *)notification;
 - (void)handlePDFViewFrameChangedNotification:(NSNotification *)notification;
 - (void)handleViewChangedNotification:(NSNotification *)notification;
 - (void)handleAnnotationWillChangeNotification:(NSNotification *)notification;

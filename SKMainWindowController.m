@@ -1698,17 +1698,8 @@ static NSString *noteToolAdornImageNames[] = {@"TextNoteToolAdorn", @"AnchoredNo
 }
 
 - (void)passwordSheetDidEnd:(NSWindow *)sheet returnCode:(int)returnCode contextInfo:(void *)contextInfo {
-    if (returnCode == NSOKButton) {
+    if (returnCode == NSOKButton)
         [pdfView takePasswordFrom:passwordField];
-        if (pdfOutline && [[pdfView document] isLocked] == NO) {
-            [outlineView reloadData];
-            [outlineView setAutoresizesOutlineColumn: NO];
-            
-            if ([outlineView numberOfRows] == 1)
-                [outlineView expandItem: [outlineView itemAtRow: 0] expandChildren: NO];
-            [self updateOutlineSelection];
-        }
-    }
 }
 
 - (IBAction)password:(id)sender {
@@ -2888,6 +2879,36 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
 - (void)handleDocumentEndPageWrite:(NSNotification *)notification {
 	[progressBar setDoubleValue: [[[notification userInfo] objectForKey:@"PDFDocumentPageIndex"] floatValue]];
 	[progressBar displayIfNeeded];
+}
+
+- (void)documentDidUnlock:(NSNotification *)notification {
+    PDFDocument *pdfDoc = [self pdfDocument];
+    
+    [self willChangeValueForKey:@"pageLabel"];
+    [self willChangeValueForKey:@"pageLabels"];
+    [pageLabels removeAllObjects];
+    int i, count = [pdfDoc pageCount];
+    for (i = 0; i < count; i++) {
+        NSString *label = [[pdfDoc pageAtIndex:i] label];
+        [pageLabels addObject:label ? label : @""];
+    }
+    [self didChangeValueForKey:@"pageLabels"];
+    [self didChangeValueForKey:@"pageLabel"];
+    
+    [self resetThumbnails];
+    
+    if (pdfOutline == nil) {
+        pdfOutline = [[pdfDoc outlineRoot] retain];
+        [pdfOutlineItems removeAllObjects];
+    }
+    if (pdfOutline) {
+        [outlineView reloadData];
+        [outlineView setAutoresizesOutlineColumn: NO];
+        
+        if ([outlineView numberOfRows] == 1)
+            [outlineView expandItem: [outlineView itemAtRow: 0] expandChildren: NO];
+        [self updateOutlineSelection];
+    }
 }
 
 - (void)handleColorSwatchColorsChangedNotification:(NSNotification *)notification {

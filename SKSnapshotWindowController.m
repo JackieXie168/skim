@@ -100,6 +100,12 @@ static NSString *SKSnapshotViewChangedNotification = @"SKSnapshotViewChangedNoti
     [self didChangeValueForKey:@"pageAndWindow"];
 }
 
+- (void)handleDocumentDidUnlockNotification:(NSNotification *)notification {
+    [[self window] setTitle:[self windowTitleForDocumentDisplayName:[[self document] displayName]]];
+    [self willChangeValueForKey:@"pageAndWindow"];
+    [self didChangeValueForKey:@"pageAndWindow"];
+}
+
 - (void)handlePDFViewFrameChangedNotification:(NSNotification *)notification {
     if ([[self delegate] respondsToSelector:@selector(snapshotControllerViewDidChange:)]) {
         NSNotification *note = [NSNotification notificationWithName:SKSnapshotViewChangedNotification object:self];
@@ -155,6 +161,8 @@ static NSString *SKSnapshotViewChangedNotification = @"SKSnapshotViewChangedNoti
     
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handlePageChangedNotification:) 
                                                  name:PDFViewPageChangedNotification object:pdfView];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleDocumentDidUnlockNotification:) 
+                                                 name:PDFDocumentDidUnlockNotification object:[pdfView document]];
     
     NSView *clipView = [[[pdfView documentView] enclosingScrollView] contentView];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handlePDFViewFrameChangedNotification:) 
