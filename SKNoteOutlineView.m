@@ -72,6 +72,30 @@
 		[super keyDown:theEvent];
 }
 
+- (BOOL)validateMenuItem:(NSMenuItem *)menuItem {
+    if ([menuItem action] == @selector(delete:))
+        return [[self selectedRowIndexes] count] > 0;
+    else if ([NSOutlineView instancesRespondToSelector:@selector(validateMenuItem:)])
+        return [super validateMenuItem:menuItem];
+    return YES;
+}
+
+- (NSMenu *)menuForEvent:(NSEvent *)theEvent {
+    NSMenu *menu = nil;
+    
+    if ([[self delegate] respondsToSelector:@selector(outlineView:menuForTableColumn:item:)]) {
+        NSPoint mouseLoc = [self convertPoint:[theEvent locationInWindow] fromView:nil];
+        int row = [self rowAtPoint:mouseLoc];
+        int column = [self columnAtPoint:mouseLoc];
+        if (row != -1 && column != -1) {
+            NSTableColumn *tableColumn = [[self tableColumns] objectAtIndex:column];
+            menu = [[self delegate] outlineView:self menuForTableColumn:tableColumn item:[self itemAtRow:row]];
+        }
+    }
+    
+	return menu;
+}
+
 - (BOOL)resizeRow:(int)row withEvent:(NSEvent *)theEvent {
     id item = [self itemAtRow:row];
     NSPoint startPoint = [self convertPoint:[theEvent locationInWindow] fromView:nil];

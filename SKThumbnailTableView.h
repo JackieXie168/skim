@@ -70,4 +70,5 @@
 - (BOOL)tableView:(NSTableView *)tableView commandSelectRow:(int)rowIndex;
 - (void)tableView:(NSTableView *)aTableView copyRowsWithIndexes:(NSIndexSet *)rowIndexes;
 - (BOOL)tableView:(NSTableView *)aTableView canCopyRowsWithIndexes:(NSIndexSet *)rowIndexes;
+- (NSMenu *)tableView:(NSTableView *)aTableView menuForTableColumn:(NSTableColumn *)tableColumn row:(int)rowIndex;
 @end
