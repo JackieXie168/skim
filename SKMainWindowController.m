@@ -2896,6 +2896,7 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
     [self didChangeValueForKey:@"pageLabel"];
     
     [self resetThumbnails];
+    [self allSnapshotsNeedUpdate];
     
     if (pdfOutline == nil) {
         pdfOutline = [[pdfDoc outlineRoot] retain];
