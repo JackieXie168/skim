@@ -98,8 +98,8 @@ static SUUpdater *sharedUpdater = nil;
 		if (intervalSinceCheck < interval)
 		{
 			// Hasn't been long enough; schedule a check for the future.
-			[self performSelector:@selector(checkForUpdatesInBackground) withObject:nil afterDelay:intervalSinceCheck];
-			[self performSelector:@selector(scheduleCheckWithIntervalObject:) withObject:[NSNumber numberWithLong:interval] afterDelay:intervalSinceCheck];
+			[self performSelector:@selector(checkForUpdatesInBackground) withObject:nil afterDelay:interval - intervalSinceCheck];
+			[self performSelector:@selector(scheduleCheckWithIntervalObject:) withObject:[NSNumber numberWithLong:interval] afterDelay:interval - intervalSinceCheck];
 		}
 		else
 		{
