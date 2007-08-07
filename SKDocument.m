@@ -630,7 +630,7 @@ static NSPopUpButton *popUpButtonSubview(NSView *view)
             
             if (success) {
                 success = [NSTask runTaskWithLaunchPath:@"/usr/bin/hdiutil"
-                                              arguments:[NSArray arrayWithObjects:@"attach", @"-mountpoint", tmpMountPath, tmpDmgPath1, nil]
+                                              arguments:[NSArray arrayWithObjects:@"attach", @"-nobrowse", @"-mountpoint", tmpMountPath, tmpDmgPath1, nil]
                                    currentDirectoryPath:tmpDir];
                 didAttach = success;
             }
