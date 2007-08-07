@@ -548,20 +548,28 @@ static NSPopUpButton *popUpButtonSubview(NSView *view)
                        contextInfo:NULL];		
 }
 
+#define RUN_TASK(cmd, args, curDir) \
+    do { \
+    NSTask *task = [[[NSTask alloc] init] autorelease]; \
+    [task setLaunchPath:cmd]; \
+    [task setCurrentDirectoryPath:curDir]; \
+    [task setArguments:args]; \
+    [task setStandardOutput:[NSFileHandle fileHandleWithNullDevice]]; \
+    [task setStandardError:[NSFileHandle fileHandleWithNullDevice]]; \
+    [task launch]; \
+    if ([task isRunning])  [task waitUntilExit]; \
+    success = success && 0 == [task terminationStatus]; \
+    } while (0);
+
 - (void)archiveSavePanelDidEnd:(NSSavePanel *)sheet returnCode:(int)returnCode  contextInfo:(void  *)contextInfo {
     
     if (NSOKButton == returnCode && [self fileURL]) {
                             
         @try {            
             // create a tar archive; make sure we use a relative path in the archive
-            NSTask *task = [[[NSTask alloc] init] autorelease];
-            [task setLaunchPath:@"/usr/bin/tar"];
-            [task setCurrentDirectoryPath:[[[self fileURL] path] stringByDeletingLastPathComponent]];
-            [task setArguments:[NSArray arrayWithObjects:@"-czf", [sheet filename], [[[self fileURL] path] lastPathComponent], nil]];
-            [task launch];
-            // just in case this is a really huge file, we don't want the user to move it before tar completes
-            if ([task isRunning])
-                [task waitUntilExit];
+            [NSTask runTaskWithLaunchPath:@"/usr/bin/tar"
+                                arguments:[NSArray arrayWithObjects:@"-czf", [sheet filename], [[[self fileURL] path] lastPathComponent], nil]
+                     currentDirectoryPath:[[[self fileURL] path] stringByDeletingLastPathComponent]];
         }
         @catch(id exception) {
             NSLog(@"caught exception %@ while archiving %@ to %@", exception, [[self fileURL] path], [sheet filename]);
@@ -580,6 +588,98 @@ static NSPopUpButton *popUpButtonSubview(NSView *view)
                     modalForWindow:[self windowForSheet]
                      modalDelegate:self
                     didEndSelector:@selector(archiveSavePanelDidEnd:returnCode:contextInfo:)
+                       contextInfo:NULL];
+    } else {
+        NSAlert *alert = [NSAlert alertWithMessageText:NSLocalizedString(@"You must save this file first", @"Alert text when trying to create archive for unsaved document") defaultButton:nil alternateButton:nil otherButton:nil informativeTextWithFormat:NSLocalizedString(@"The document has unsaved changes, or has not previously been saved to disk.", @"Informative text in alert dialog")];
+        [alert beginSheetModalForWindow:[self windowForSheet] modalDelegate:nil didEndSelector:NULL contextInfo:NULL];
+    }
+}
+
+- (void)diskImageSavePanelDidEnd:(NSSavePanel *)sheet returnCode:(int)returnCode  contextInfo:(void  *)contextInfo {
+    
+    if (NSOKButton == returnCode && [self fileURL]) {
+        
+        NSFileManager *fm = [NSFileManager defaultManager];
+        NSString *baseTmpDir = [NSTemporaryDirectory() stringByAppendingPathComponent:@"net.sourceforge.skim-app.skim"];
+        NSString *tmpDir = baseTmpDir;
+        int i = 0;
+        while ([fm fileExistsAtPath:tmpDir])
+            tmpDir = [baseTmpDir stringByAppendingFormat:@"%i", ++i];
+        
+        NSString *sourcePath = [[self fileURL] path];
+        NSString *path = [sheet filename];
+        NSString *name = [[path lastPathComponent] stringByDeletingPathExtension];
+        NSString *tmpName = [name caseInsensitiveCompare:@"tmp"] == NSOrderedSame ? @"tmp1" : @"tmp";
+        NSString *tmpDmgPath1 = [[tmpDir stringByAppendingPathComponent:tmpName] stringByAppendingPathExtension:@"dmg"];
+        NSString *tmpDmgPath2 = [[tmpDir stringByAppendingPathComponent:name] stringByAppendingPathExtension:@"dmg"];
+        NSString *tmpMountPath = [tmpDir stringByAppendingPathComponent:tmpName];
+        NSString *tmpPath = [tmpMountPath stringByAppendingPathComponent:[sourcePath lastPathComponent]];
+        BOOL success = YES;
+        BOOL didAttach = NO;
+        
+        success = [fm createDirectoryAtPath:tmpDir attributes:nil];
+        
+        @try {            
+            if (success) {
+                success = [NSTask runTaskWithLaunchPath:@"/usr/bin/hdiutil"
+                                              arguments:[NSArray arrayWithObjects:@"create", @"-format", @"UDRW", @"-volname", name, @"-srcfolder", sourcePath, tmpDmgPath1, nil]
+                                   currentDirectoryPath:tmpDir];
+            }
+            
+            // asr (used by "hdiutil create") has a bug in Tiger: it loses the EAs, so we need to copy another copy with the EAs
+            
+            if (success) {
+                success = [NSTask runTaskWithLaunchPath:@"/usr/bin/hdiutil"
+                                              arguments:[NSArray arrayWithObjects:@"attach", @"-mountpoint", tmpMountPath, tmpDmgPath1, nil]
+                                   currentDirectoryPath:tmpDir];
+                didAttach = success;
+            }
+            
+            if (success) {
+                if ([fm fileExistsAtPath:tmpPath])
+                    success = [fm removeFileAtPath:tmpPath handler:nil];
+                if (success)
+                    success = [fm copyPath:sourcePath toPath:tmpPath handler:nil];
+            }
+            
+            if (didAttach) {
+                success = success && [NSTask runTaskWithLaunchPath:@"/usr/bin/hdiutil"
+                                              arguments:[NSArray arrayWithObjects:@"detach", tmpMountPath, nil]
+                                   currentDirectoryPath:tmpDir];
+            }
+            
+            if (success) {
+                success = [NSTask runTaskWithLaunchPath:@"/usr/bin/hdiutil"
+                                              arguments:[NSArray arrayWithObjects:@"convert", @"-format", @"UDZO", @"-o", tmpDmgPath2, tmpDmgPath1, nil]
+                                   currentDirectoryPath:tmpDir];
+            }
+            
+            if (success) {
+                if ([fm fileExistsAtPath:path])
+                    success = [fm removeFileAtPath:path handler:nil];
+                if (success)
+                    success = [fm copyPath:tmpDmgPath2 toPath:path handler:nil];
+            }
+        }
+        @catch(id exception) {
+            NSLog(@"caught exception %@ while archiving %@ to %@", exception, sourcePath, path);
+        }
+        
+        [fm removeFileAtPath:tmpDir handler:nil];
+    }
+}
+
+- (IBAction)saveDiskImage:(id)sender {
+    NSString *path = [[self fileURL] path];
+    if (path && [[NSFileManager defaultManager] fileExistsAtPath:path] && [self isDocumentEdited] == NO) {
+        NSSavePanel *sp = [NSSavePanel savePanel];
+        [sp setRequiredFileType:@"dmg"];
+        [sp setCanCreateDirectories:YES];
+        [sp beginSheetForDirectory:nil
+                              file:[[path lastPathComponent] stringByReplacingPathExtension:@"dmg"]
+                    modalForWindow:[self windowForSheet]
+                     modalDelegate:self
+                    didEndSelector:@selector(diskImageSavePanelDidEnd:returnCode:contextInfo:)
                        contextInfo:NULL];
     } else {
         NSAlert *alert = [NSAlert alertWithMessageText:NSLocalizedString(@"You must save this file first", @"Alert text when trying to create archive for unsaved document") defaultButton:nil alternateButton:nil otherButton:nil informativeTextWithFormat:NSLocalizedString(@"The document has unsaved changes, or has not previously been saved to disk.", @"Informative text in alert dialog")];
@@ -1354,6 +1454,26 @@ static BOOL isFileOnHFSVolume(NSString *fileName)
     }
     
     return setup;
+}
+
+@end
+
+
+@implementation NSTask (SKExtensions) 
+
++ (BOOL)runTaskWithLaunchPath:(NSString *)launchPath arguments:(NSArray *)arguments currentDirectoryPath:(NSString *)directoryPath {
+    NSTask *task = [[[NSTask alloc] init] autorelease];
+    
+    [task setLaunchPath:launchPath];
+    [task setCurrentDirectoryPath:directoryPath];
+    [task setArguments:arguments];
+    [task setStandardOutput:[NSFileHandle fileHandleWithNullDevice]];
+    [task setStandardError:[NSFileHandle fileHandleWithNullDevice]];
+    [task launch];
+    if ([task isRunning])
+        [task waitUntilExit];
+    
+    return 0 == [task terminationStatus];
 }
 
 @end

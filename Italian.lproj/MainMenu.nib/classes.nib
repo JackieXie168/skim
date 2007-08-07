@@ -42,6 +42,7 @@
                 rotateLeft = id; 
                 rotateRight = id; 
                 saveArchive = id; 
+                saveDiskImage = id; 
                 savePDFSettingToDefaults = id; 
                 searchPDF = id; 
                 smartAutoCropAll = id; 
