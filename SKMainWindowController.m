@@ -2089,7 +2089,7 @@ static NSString *noteToolAdornImageNames[] = {@"TextNoteToolAdorn", @"AnchoredNo
 - (void)saveNormalSetup {
     if ([self isPresentation] == NO && [self isFullScreen] == NO) {
         NSScrollView *scrollView = [[pdfView documentView] enclosingScrollView];
-        [savedNormalSetup setDictionary:[self currentSetup]];
+        [savedNormalSetup setDictionary:[self currentPDFSettings]];
         [savedNormalSetup setObject:[NSNumber numberWithBool:[scrollView hasHorizontalScroller]] forKey:@"hasHorizontalScroller"];
         [savedNormalSetup setObject:[NSNumber numberWithBool:[scrollView hasVerticalScroller]] forKey:@"hasVerticalScroller"];
         [savedNormalSetup setObject:[NSNumber numberWithBool:[scrollView autohidesScrollers]] forKey:@"autohidesScrollers"];
@@ -4507,13 +4507,13 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
             [menuItem setTitle:NSLocalizedString(@"Remove Full Screen", @"Menu item title")];
         else
             [menuItem setTitle:NSLocalizedString(@"Full Screen", @"Menu item title")];
-        return YES;
+        return [[self pdfDocument] isLocked] == NO;
     } else if (action == @selector(togglePresentation:)) {
         if ([self isPresentation])
             [menuItem setTitle:NSLocalizedString(@"Remove Presentation", @"Menu item title")];
         else
             [menuItem setTitle:NSLocalizedString(@"Presentation", @"Menu item title")];
-        return YES;
+        return [[self pdfDocument] isLocked] == NO;
     } else if (action == @selector(getInfo:)) {
         return [self isPresentation] == NO;
     } else if (action == @selector(performFit:)) {
