@@ -2727,26 +2727,8 @@ static void SKCGContextDrawGrabHandle(CGContextRef context, CGPoint point, float
             startPoint.y = roundf(startPoint.y + NSMinY(wasBounds));
             NSPoint *draggedPoint = draggingStartPoint ? &startPoint : &endPoint;
             
-            // Resize the annotation.
-            switch ([page rotation]) {
-                case 0:
-                    draggedPoint->x += relPoint.x;
-                    draggedPoint->y += relPoint.y;
-                    break;
-                case 90:
-                    draggedPoint->x += relPoint.y;
-                    draggedPoint->y -= relPoint.x;
-                    break;
-                case 180:
-                    draggedPoint->x -= relPoint.x;
-                    draggedPoint->y -= relPoint.y;
-                    break;
-                case 270:
-                    draggedPoint->x -= relPoint.y;
-                    draggedPoint->y += relPoint.x;
-                    break;
-            }
-            
+            draggedPoint->x += relPoint.x;
+            draggedPoint->y += relPoint.y;
             if (draggedPoint->x > NSMaxX(pageBounds))
                 draggedPoint->x = NSMaxX(pageBounds);
             else if (draggedPoint->x < NSMinX(pageBounds))
