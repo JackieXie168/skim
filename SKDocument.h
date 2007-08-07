@@ -82,6 +82,7 @@ enum {
 
 - (IBAction)readNotes:(id)sender;
 - (IBAction)saveArchive:(id)sender;
+- (IBAction)saveDiskImage:(id)sender;
 
 - (BOOL)saveNotesToExtendedAttributesAtURL:(NSURL *)aURL error:(NSError **)outError;
 - (BOOL)readNotesFromExtendedAttributesAtURL:(NSURL *)aURL error:(NSError **)outError;
@@ -129,4 +130,9 @@ enum {
 @interface NSDictionary (SKScriptingExtensions)
 - (NSDictionary *)AppleScriptPDFViewSettingsFromPDFViewSettings;
 - (NSDictionary *)PDFViewSettingsFromAppleScriptPDFViewSettings;
+@end
+
+
+@interface NSTask (SKExtensions)
++ (BOOL)runTaskWithLaunchPath:(NSString *)launchPath arguments:(NSArray *)arguments currentDirectoryPath:(NSString *)directoryPath;
 @end
