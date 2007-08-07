@@ -907,7 +907,10 @@ static void SKCGContextDrawGrabHandle(CGContextRef context, CGPoint point, float
     mouseDownLoc = [theEvent locationInWindow];
 	unsigned int modifiers = [theEvent modifierFlags] & NSDeviceIndependentModifierFlagsMask;
     
-    if (hasNavigation && autohidesCursor) {
+    if ([[self document] isLocked]) {
+        [super mouseDown:theEvent];
+        return;
+    } else if (hasNavigation && autohidesCursor) {
         if ([self areaOfInterestForMouse:theEvent] & kPDFLinkArea) {
             [super mouseDown:theEvent];
         } else {
@@ -973,6 +976,11 @@ static void SKCGContextDrawGrabHandle(CGContextRef context, CGPoint point, float
 }
 
 - (void)mouseUp:(NSEvent *)theEvent{
+    if ([[self document] isLocked]) {
+        [super mouseUp:theEvent];
+        return;
+    }
+    
     switch (toolMode) {
         case SKTextToolMode:
         case SKNoteToolMode:
@@ -1024,6 +1032,11 @@ static void SKCGContextDrawGrabHandle(CGContextRef context, CGPoint point, float
 }
 
 - (void)mouseDragged:(NSEvent *)theEvent {
+    if ([[self document] isLocked]) {
+        [super mouseDragged:theEvent];
+        return;
+    }
+    
     switch (toolMode) {
         case SKTextToolMode:
         case SKNoteToolMode:
@@ -1053,7 +1066,6 @@ static void SKCGContextDrawGrabHandle(CGContextRef context, CGPoint point, float
 }
 
 - (void)mouseMoved:(NSEvent *)theEvent {
-
     NSCursor *cursor = [self cursorForEvent:theEvent];
     if (cursor)
         [cursor set];
@@ -3430,7 +3442,8 @@ static void SKCGContextDrawGrabHandle(CGContextRef context, CGPoint point, float
     NSPoint p = [self convertPoint:[theEvent locationInWindow] fromView:nil];
     NSCursor *cursor = nil;
     
-    if (hasNavigation && autohidesCursor) {
+    if ([[self document] isLocked]) {
+    } else if (hasNavigation && autohidesCursor) {
         if ([self areaOfInterestForMouse:theEvent] & kPDFLinkArea)
             cursor = [NSCursor pointingHandCursor];
         else
