@@ -62,6 +62,10 @@ enum {
     IBOutlet NSView *readNotesAccessoryView;
     IBOutlet NSButton *replaceNotesCheckButton;
     
+    IBOutlet NSWindow           *progressSheet;
+    IBOutlet NSProgressIndicator *progressBar;
+    IBOutlet NSTextField        *progressField;
+    
     // variables to be saved:
     NSData *pdfData;
     

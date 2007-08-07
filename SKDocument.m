@@ -95,6 +95,7 @@ NSString *SKDocumentWillSaveNotification = @"SKDocumentWillSaveNotification";
     [noteDicts release];
     [readNotesAccessoryView release];
     [lastModifiedDate release];
+    [progressSheet release];
     [super dealloc];
 }
 
@@ -599,6 +600,22 @@ static NSPopUpButton *popUpButtonSubview(NSView *view)
     
     if (NSOKButton == returnCode && [self fileURL]) {
         
+        if (progressSheet == nil) {
+            if ([NSBundle loadNibNamed:@"ProgressSheet" owner:self])  {
+                [progressBar setUsesThreadedAnimation:YES];
+            } else {
+                NSLog(@"Failed to load ProgressSheet.nib");
+                return;
+            }
+        }
+        
+        [progressField setStringValue:[NSLocalizedString(@"Saving Disk Image", @"Message for progress sheet") stringByAppendingEllipsis]];
+        [progressBar setIndeterminate:YES];
+        [progressBar startAnimation:self];
+        
+        [sheet orderOut:self];
+        [NSApp beginSheet:progressSheet modalForWindow:[[self mainWindowController] window] modalDelegate:nil didEndSelector:NULL contextInfo:NULL];
+        
         NSFileManager *fm = [NSFileManager defaultManager];
         NSString *baseTmpDir = [NSTemporaryDirectory() stringByAppendingPathComponent:@"net.sourceforge.skim-app.skim"];
         NSString *tmpDir = baseTmpDir;
@@ -666,6 +683,10 @@ static NSPopUpButton *popUpButtonSubview(NSView *view)
         }
         
         [fm removeFileAtPath:tmpDir handler:nil];
+        
+        [NSApp endSheet:progressSheet];
+        [progressBar stopAnimation:self];
+        [progressSheet orderOut:self];
     }
 }
 
