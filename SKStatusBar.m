@@ -267,6 +267,7 @@
 		[progressIndicator setControlSize:NSSmallControlSize];
 		[progressIndicator setIndeterminate:style == NSProgressIndicatorSpinningStyle];
 		[progressIndicator setDisplayedWhenStopped:style == NSProgressIndicatorBarStyle];
+        [progressIndicator setUsesThreadedAnimation:YES];
 		[progressIndicator sizeToFit];
 		
 		NSRect rect, ignored;
