@@ -1163,7 +1163,7 @@ static BOOL isFileOnHFSVolume(NSString *fileName)
 }
 
 - (unsigned int)countOfLines {
-    return 0;
+    return UINT_MAX;
 }
 
 - (SKLine *)objectInLinesAtIndex:(unsigned int)index {
