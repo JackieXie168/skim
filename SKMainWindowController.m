@@ -760,6 +760,8 @@ static NSString *noteToolAdornImageNames[] = {@"TextNoteToolAdorn", @"AnchoredNo
             [self updateOutlineSelection];
         }
         
+        [leftSideButton setEnabled:pdfOutline != nil forSegment:SKOutlineSidePaneState];
+        
         [noteOutlineView reloadData];
         
         [self updateNoteSelection];
@@ -2910,6 +2912,7 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
             [outlineView expandItem: [outlineView itemAtRow: 0] expandChildren: NO];
         [self updateOutlineSelection];
     }
+    [leftSideButton setEnabled:pdfOutline != nil forSegment:SKOutlineSidePaneState];
 }
 
 - (void)handleColorSwatchColorsChangedNotification:(NSNotification *)notification {
