@@ -639,12 +639,6 @@ static NSPopUpButton *popUpButtonSubview(NSView *view)
                                    currentDirectoryPath:tmpDir] && success;
             }
             
-            if (didAttach) {
-                success = [NSTask runTaskWithLaunchPath:@"/usr/bin/hdiutil"
-                                              arguments:[NSArray arrayWithObjects:@"compact", tmpImagePath1, nil]
-                                   currentDirectoryPath:tmpDir];
-            }
-            
             if (success) {
                 success = [NSTask runTaskWithLaunchPath:@"/usr/bin/hdiutil"
                                               arguments:[NSArray arrayWithObjects:@"convert", @"-format", @"UDZO", @"-o", tmpImagePath2, tmpImagePath1, nil]
