@@ -1496,7 +1496,7 @@ static BOOL isFileOnHFSVolume(NSString *fileName)
     [task setCurrentDirectoryPath:directoryPath];
     [task setArguments:arguments];
     [task setStandardOutput:[NSFileHandle fileHandleWithNullDevice]];
-    //[task setStandardError:[NSFileHandle fileHandleWithNullDevice]];
+    [task setStandardError:[NSFileHandle fileHandleWithNullDevice]];
     [task launch];
     if ([task isRunning])
         [task waitUntilExit];
