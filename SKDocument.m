@@ -549,19 +549,6 @@ static NSPopUpButton *popUpButtonSubview(NSView *view)
                        contextInfo:NULL];		
 }
 
-#define RUN_TASK(cmd, args, curDir) \
-    do { \
-    NSTask *task = [[[NSTask alloc] init] autorelease]; \
-    [task setLaunchPath:cmd]; \
-    [task setCurrentDirectoryPath:curDir]; \
-    [task setArguments:args]; \
-    [task setStandardOutput:[NSFileHandle fileHandleWithNullDevice]]; \
-    [task setStandardError:[NSFileHandle fileHandleWithNullDevice]]; \
-    [task launch]; \
-    if ([task isRunning])  [task waitUntilExit]; \
-    success = success && 0 == [task terminationStatus]; \
-    } while (0);
-
 - (void)archiveSavePanelDidEnd:(NSSavePanel *)sheet returnCode:(int)returnCode  contextInfo:(void  *)contextInfo {
     
     if (NSOKButton == returnCode && [self fileURL]) {
@@ -596,45 +583,35 @@ static NSPopUpButton *popUpButtonSubview(NSView *view)
     }
 }
 
-- (void)diskImageSavePanelDidEnd:(NSSavePanel *)sheet returnCode:(int)returnCode  contextInfo:(void  *)contextInfo {
-    
-    if (NSOKButton == returnCode && [self fileURL]) {
+- (void)saveDiskImageWithInfo:(NSDictionary *)info {
         
-        if (progressSheet == nil) {
-            if ([NSBundle loadNibNamed:@"ProgressSheet" owner:self])  {
-                [progressBar setUsesThreadedAnimation:YES];
-            } else {
-                NSLog(@"Failed to load ProgressSheet.nib");
-                return;
-            }
-        }
+        NSAutoreleasePool *pool = [NSAutoreleasePool new];
         
-        [progressField setStringValue:[NSLocalizedString(@"Saving Disk Image", @"Message for progress sheet") stringByAppendingEllipsis]];
-        [progressBar setIndeterminate:YES];
-        [progressBar startAnimation:self];
-        
-        [sheet orderOut:self];
-        [NSApp beginSheet:progressSheet modalForWindow:[[self mainWindowController] window] modalDelegate:nil didEndSelector:NULL contextInfo:NULL];
-        
-        NSFileManager *fm = [NSFileManager defaultManager];
         NSString *baseTmpDir = [NSTemporaryDirectory() stringByAppendingPathComponent:@"net.sourceforge.skim-app.skim"];
         NSString *tmpDir = baseTmpDir;
+        NSString *tmpDirName;
+        FSRef tmpRef;
+        FSRef tmpDirRef;
         int i = 0;
-        while ([fm fileExistsAtPath:tmpDir])
+        BOOL success = YES;
+        
+        while (fnfErr != FSPathMakeRef((UInt8 *)[tmpDir fileSystemRepresentation], &tmpDirRef, NULL))
             tmpDir = [baseTmpDir stringByAppendingFormat:@"%i", ++i];
         
-        NSString *sourcePath = [[self fileURL] path];
-        NSString *path = [sheet filename];
+        tmpDirName = [tmpDir lastPathComponent];
+        success = noErr == FSPathMakeRef((UInt8 *)[NSTemporaryDirectory() fileSystemRepresentation], &tmpRef, NULL);
+        if (success)
+            success = noErr == FSCreateDirectoryUnicode(&tmpRef, [tmpDirName length], (const UniChar *)[tmpDirName cStringUsingEncoding:NSUnicodeStringEncoding], kFSCatInfoNone, NULL, &tmpDirRef, NULL, NULL);
+        
+        NSString *sourcePath = [info objectForKey:@"sourcePath"];
+        NSString *path = [info objectForKey:@"targetPath"];
         NSString *name = [[path lastPathComponent] stringByDeletingPathExtension];
         NSString *tmpName = [name caseInsensitiveCompare:@"tmp"] == NSOrderedSame ? @"tmp1" : @"tmp";
         NSString *tmpDmgPath1 = [[tmpDir stringByAppendingPathComponent:tmpName] stringByAppendingPathExtension:@"dmg"];
         NSString *tmpDmgPath2 = [[tmpDir stringByAppendingPathComponent:name] stringByAppendingPathExtension:@"dmg"];
         NSString *tmpMountPath = [tmpDir stringByAppendingPathComponent:tmpName];
         NSString *tmpPath = [tmpMountPath stringByAppendingPathComponent:[sourcePath lastPathComponent]];
-        BOOL success = YES;
         BOOL didAttach = NO;
-        
-        success = [fm createDirectoryAtPath:tmpDir attributes:nil];
         
         @try {            
             if (success) {
@@ -653,10 +630,9 @@ static NSPopUpButton *popUpButtonSubview(NSView *view)
             }
             
             if (success) {
-                if ([fm fileExistsAtPath:tmpPath])
-                    success = [fm removeFileAtPath:tmpPath handler:nil];
-                if (success)
-                    success = [fm copyPath:sourcePath toPath:tmpPath handler:nil];
+                success = [NSTask runTaskWithLaunchPath:@"/bin/cp"
+                                              arguments:[NSArray arrayWithObjects:@"-f", sourcePath, tmpPath, nil]
+                                   currentDirectoryPath:tmpDir];
             }
             
             if (didAttach) {
@@ -672,21 +648,47 @@ static NSPopUpButton *popUpButtonSubview(NSView *view)
             }
             
             if (success) {
-                if ([fm fileExistsAtPath:path])
-                    success = [fm removeFileAtPath:path handler:nil];
-                if (success)
-                    success = [fm copyPath:tmpDmgPath2 toPath:path handler:nil];
+                success = [NSTask runTaskWithLaunchPath:@"/bin/cp"
+                                              arguments:[NSArray arrayWithObjects:@"-f", tmpDmgPath2, path, nil]
+                                   currentDirectoryPath:tmpDir];
             }
+            
+            [NSTask launchedTaskWithLaunchPath:@"/bin/rm" arguments:[NSArray arrayWithObjects:@"-rf", tmpDir, nil]];
+        
         }
         @catch(id exception) {
             NSLog(@"caught exception %@ while archiving %@ to %@", exception, sourcePath, path);
         }
         
-        [fm removeFileAtPath:tmpDir handler:nil];
+        [progressBar performSelectorOnMainThread:@selector(stopAnimation:) withObject:nil waitUntilDone:NO];
+        [progressSheet performSelectorOnMainThread:@selector(orderOut:) withObject:nil waitUntilDone:NO];
         
-        [NSApp endSheet:progressSheet];
-        [progressBar stopAnimation:self];
-        [progressSheet orderOut:self];
+        [pool release];
+}
+
+- (void)diskImageSavePanelDidEnd:(NSSavePanel *)sheet returnCode:(int)returnCode  contextInfo:(void  *)contextInfo {
+    
+    if (NSOKButton == returnCode && [self fileURL]) {
+        
+        if (progressSheet == nil) {
+            if ([NSBundle loadNibNamed:@"ProgressSheet" owner:self])  {
+                [progressBar setUsesThreadedAnimation:YES];
+            } else {
+                NSLog(@"Failed to load ProgressSheet.nib");
+                return;
+            }
+        }
+        
+        [progressField setStringValue:[NSLocalizedString(@"Saving Disk Image", @"Message for progress sheet") stringByAppendingEllipsis]];
+        [progressSheet setTitle:NSLocalizedString(@"Saving Disk Image", @"Message for progress sheet")];
+        [progressBar setIndeterminate:YES];
+        [progressBar startAnimation:self];
+        
+        [sheet orderOut:self];
+        [progressSheet orderFront:self];
+        
+        NSDictionary *info = [NSDictionary dictionaryWithObjectsAndKeys:[[self fileURL] path], @"sourcePath", [sheet filename], @"targetPath", nil];
+        [NSThread detachNewThreadSelector:@selector(saveDiskImageWithInfo:) toTarget:self withObject:info];
     }
 }
 
