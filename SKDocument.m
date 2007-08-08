@@ -587,77 +587,82 @@ static NSPopUpButton *popUpButtonSubview(NSView *view)
         
         NSAutoreleasePool *pool = [NSAutoreleasePool new];
         
-        NSString *baseTmpDir = [NSTemporaryDirectory() stringByAppendingPathComponent:@"net.sourceforge.skim-app.skim"];
+        NSString *baseTmpDir = [NSTemporaryDirectory() stringByAppendingPathComponent:[[NSBundle mainBundle] bundleIdentifier]];
         NSString *tmpDir = baseTmpDir;
         NSString *tmpDirName;
         FSRef tmpRef;
-        FSRef tmpDirRef;
         int i = 0;
         BOOL success = YES;
         
-        while (fnfErr != FSPathMakeRef((UInt8 *)[tmpDir fileSystemRepresentation], &tmpDirRef, NULL))
-            tmpDir = [baseTmpDir stringByAppendingFormat:@"%i", ++i];
+        while (fnfErr != FSPathMakeRef((UInt8 *)[tmpDir fileSystemRepresentation], &tmpRef, NULL))
+            tmpDir = [baseTmpDir stringByAppendingFormat:@"-%i", ++i];
         
         tmpDirName = [tmpDir lastPathComponent];
         success = noErr == FSPathMakeRef((UInt8 *)[NSTemporaryDirectory() fileSystemRepresentation], &tmpRef, NULL);
         if (success)
-            success = noErr == FSCreateDirectoryUnicode(&tmpRef, [tmpDirName length], (const UniChar *)[tmpDirName cStringUsingEncoding:NSUnicodeStringEncoding], kFSCatInfoNone, NULL, &tmpDirRef, NULL, NULL);
+            success = noErr == FSCreateDirectoryUnicode(&tmpRef, [tmpDirName length], (const UniChar *)[tmpDirName cStringUsingEncoding:NSUnicodeStringEncoding], kFSCatInfoNone, NULL, NULL, NULL, NULL);
         
-        NSString *sourcePath = [info objectForKey:@"sourcePath"];
-        NSString *path = [info objectForKey:@"targetPath"];
-        NSString *name = [[path lastPathComponent] stringByDeletingPathExtension];
-        NSString *tmpName = [name caseInsensitiveCompare:@"tmp"] == NSOrderedSame ? @"tmp1" : @"tmp";
-        NSString *tmpDmgPath1 = [[tmpDir stringByAppendingPathComponent:tmpName] stringByAppendingPathExtension:@"dmg"];
-        NSString *tmpDmgPath2 = [[tmpDir stringByAppendingPathComponent:name] stringByAppendingPathExtension:@"dmg"];
-        NSString *tmpMountPath = [tmpDir stringByAppendingPathComponent:tmpName];
-        NSString *tmpPath = [tmpMountPath stringByAppendingPathComponent:[sourcePath lastPathComponent]];
+        NSString *sourcePath = [[[info objectForKey:@"sourcePath"] copy] autorelease];
+        NSString *targetPath = [[[info objectForKey:@"targetPath"] copy] autorelease];
+        NSString *name = [[targetPath lastPathComponent] stringByDeletingPathExtension];
+        NSString *tmpImagePath1 = [[tmpDir stringByAppendingPathComponent:name] stringByAppendingPathExtension:@"sparseimage"];
+        NSString *tmpImagePath2 = [[tmpDir stringByAppendingPathComponent:name] stringByAppendingPathExtension:@"dmg"];
+        NSString *tmpMountPath = [tmpDir stringByAppendingPathComponent:name];
         BOOL didAttach = NO;
         
         @try {            
             if (success) {
                 success = [NSTask runTaskWithLaunchPath:@"/usr/bin/hdiutil"
-                                              arguments:[NSArray arrayWithObjects:@"create", @"-format", @"UDRW", @"-volname", name, @"-srcfolder", sourcePath, tmpDmgPath1, nil]
+                                              arguments:[NSArray arrayWithObjects:@"create", @"-type", @"SPARSE", @"-fs", @"HFS+", @"-volname", name, tmpImagePath1, nil]
                                    currentDirectoryPath:tmpDir];
             }
             
-            // asr (used by "hdiutil create") has a bug in Tiger: it loses the EAs, so we need to copy another copy with the EAs
+            // asr (used by "hdiutil create") has a bug in Tiger: it loses the EAs, so we need to copy another version with the EAs
             
             if (success) {
                 success = [NSTask runTaskWithLaunchPath:@"/usr/bin/hdiutil"
-                                              arguments:[NSArray arrayWithObjects:@"attach", @"-nobrowse", @"-mountpoint", tmpMountPath, tmpDmgPath1, nil]
+                                              arguments:[NSArray arrayWithObjects:@"attach", @"-nobrowse", @"-mountpoint", tmpMountPath, tmpImagePath1, nil]
                                    currentDirectoryPath:tmpDir];
                 didAttach = success;
             }
             
             if (success) {
+                // we can't use NSFileManager because it's not thread safe, while FSPathCopyObjectSync complains about not enough space
                 success = [NSTask runTaskWithLaunchPath:@"/bin/cp"
-                                              arguments:[NSArray arrayWithObjects:@"-f", sourcePath, tmpPath, nil]
+                                              arguments:[NSArray arrayWithObjects:@"-f", sourcePath, tmpMountPath, nil]
                                    currentDirectoryPath:tmpDir];
             }
             
             if (didAttach) {
-                success = success && [NSTask runTaskWithLaunchPath:@"/usr/bin/hdiutil"
+                success = [NSTask runTaskWithLaunchPath:@"/usr/bin/hdiutil"
                                               arguments:[NSArray arrayWithObjects:@"detach", tmpMountPath, nil]
+                                   currentDirectoryPath:tmpDir] && success;
+            }
+            
+            if (didAttach) {
+                success = [NSTask runTaskWithLaunchPath:@"/usr/bin/hdiutil"
+                                              arguments:[NSArray arrayWithObjects:@"compact", tmpImagePath1, nil]
                                    currentDirectoryPath:tmpDir];
             }
             
             if (success) {
                 success = [NSTask runTaskWithLaunchPath:@"/usr/bin/hdiutil"
-                                              arguments:[NSArray arrayWithObjects:@"convert", @"-format", @"UDZO", @"-o", tmpDmgPath2, tmpDmgPath1, nil]
+                                              arguments:[NSArray arrayWithObjects:@"convert", @"-format", @"UDZO", @"-o", tmpImagePath2, tmpImagePath1, nil]
                                    currentDirectoryPath:tmpDir];
             }
             
             if (success) {
                 success = [NSTask runTaskWithLaunchPath:@"/bin/cp"
-                                              arguments:[NSArray arrayWithObjects:@"-f", tmpDmgPath2, path, nil]
+                                              arguments:[NSArray arrayWithObjects:@"-f", tmpImagePath2, targetPath, nil]
                                    currentDirectoryPath:tmpDir];
             }
             
+            // easier than FSDeleteObject, because that cannot delete the directory recursively
             [NSTask launchedTaskWithLaunchPath:@"/bin/rm" arguments:[NSArray arrayWithObjects:@"-rf", tmpDir, nil]];
-        
+                    
         }
         @catch(id exception) {
-            NSLog(@"caught exception %@ while archiving %@ to %@", exception, sourcePath, path);
+            NSLog(@"caught exception %@ while archiving %@ to %@", exception, sourcePath, targetPath);
         }
         
         [progressBar performSelectorOnMainThread:@selector(stopAnimation:) withObject:nil waitUntilDone:NO];
@@ -1491,7 +1496,7 @@ static BOOL isFileOnHFSVolume(NSString *fileName)
     [task setCurrentDirectoryPath:directoryPath];
     [task setArguments:arguments];
     [task setStandardOutput:[NSFileHandle fileHandleWithNullDevice]];
-    [task setStandardError:[NSFileHandle fileHandleWithNullDevice]];
+    //[task setStandardError:[NSFileHandle fileHandleWithNullDevice]];
     [task launch];
     if ([task isRunning])
         [task waitUntilExit];
