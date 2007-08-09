@@ -42,15 +42,14 @@
 
 @interface BDSKZoomablePDFView : PDFView {
     NSPopUpButton *scalePopUpButton;
-    PDFPage *page;
-    NSRect fitRect;
-    BOOL fits;
+    PDFPage *autoFitPage;
+    NSRect autoFitRect;
+    BOOL autoFits;
 }
 
-- (BOOL)fits;
-- (void)setFits:(BOOL)newFits;
-- (void)setFits:(BOOL)newFits adjustPopup:(BOOL)flag;
-- (void)setAutoScales:(BOOL)newAuto adjustPopup:(BOOL)flag;
+- (BOOL)autoFits;
+- (void)setAutoFits:(BOOL)newAuto;
+- (void)setAutoFits:(BOOL)newAuto adjustPopup:(BOOL)flag;
 - (void)setScaleFactor:(float)factor adjustPopup:(BOOL)flag;
 - (void)scalePopUpAction:(id)sender;
 - (NSScrollView *)scrollView;
@@ -58,6 +57,6 @@
 - (void)setScrollerSize:(NSControlSize)controlSize;
 - (void)dragWithEvent:(NSEvent *)theEvent;
 - (void)handlePDFViewFrameChangedNotification:(NSNotification *)notification;
-- (void)resetFitRectIfNeeded;
+- (void)resetAutoFitRectIfNeeded;
 
 @end

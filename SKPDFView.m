@@ -1968,12 +1968,12 @@ static void SKCGContextDrawGrabHandle(CGContextRef context, CGPoint point, float
     NSPoint point;
     PDFPage *page = nil;
     NSRect rect = NSZeroRect;
-    BOOL fits = NO;
+    BOOL autoFits = NO;
     
     if (toolMode == SKSelectToolMode && NSIsEmptyRect(selectionRect) == NO) {
         rect = NSIntersectionRect(selectionRect, [[self currentPage] boundsForBox:kPDFDisplayBoxCropBox]);
         page = [self currentPage];
-        fits = YES;
+        autoFits = YES;
 	}
     if (NSIsEmptyRect(rect)) {
         if ([sender respondsToSelector:@selector(representedObject)] && [[sender representedObject] respondsToSelector:@selector(pointValue)]) {
@@ -2002,7 +2002,7 @@ static void SKCGContextDrawGrabHandle(CGContextRef context, CGPoint point, float
     
     SKMainWindowController *controller = [[self window] windowController];
     
-    [controller showSnapshotAtPageNumber:[[self document] indexForPage:page] forRect:rect factor:1 fits:fits display:YES];
+    [controller showSnapshotAtPageNumber:[[self document] indexForPage:page] forRect:rect factor:1 autoFits:autoFits display:YES];
 }
 
 #pragma mark Notification handling
@@ -3271,7 +3271,7 @@ static void SKCGContextDrawGrabHandle(CGContextRef context, CGPoint point, float
     PDFPage *page = [self pageForPoint:point nearest:YES];
     NSRect rect = [self convertRect:selRect fromView:[self documentView]];
     int factor = 1;
-    BOOL fits = NO;
+    BOOL autoFits = NO;
     
     if (dragged) {
     
@@ -3297,7 +3297,7 @@ static void SKCGContextDrawGrabHandle(CGContextRef context, CGPoint point, float
                 rect.origin.y = NSMaxY(bounds) - NSHeight(rect);
         }
         
-        fits = YES;
+        autoFits = YES;
         
     } else {
         
@@ -3318,7 +3318,7 @@ static void SKCGContextDrawGrabHandle(CGContextRef context, CGPoint point, float
     
     SKMainWindowController *controller = [[self window] windowController];
     
-    [controller showSnapshotAtPageNumber:[[self document] indexForPage:page] forRect:[self convertRect:rect toPage:page] factor:factor fits:fits display:YES];
+    [controller showSnapshotAtPageNumber:[[self document] indexForPage:page] forRect:[self convertRect:rect toPage:page] factor:factor autoFits:autoFits display:YES];
 }
 
 - (void)magnifyWithEvent:(NSEvent *)theEvent {

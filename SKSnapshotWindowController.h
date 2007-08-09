@@ -49,7 +49,7 @@
     BOOL forceOnTop;
 }
 
-- (void)setPdfDocument:(PDFDocument *)pdfDocument scaleFactor:(float)factor goToPageNumber:(int)pageNum rect:(NSRect)rect fits:(BOOL)fits;
+- (void)setPdfDocument:(PDFDocument *)pdfDocument scaleFactor:(float)factor goToPageNumber:(int)pageNum rect:(NSRect)rect autoFits:(BOOL)autoFits;
 
 - (BOOL)isPageVisible:(PDFPage *)page;
 
