@@ -190,6 +190,8 @@ static void SKCGContextDrawGrabHandle(CGContextRef context, CGPoint point, float
                                                  name:SKAnnotationWillChangeNotification object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleAnnotationDidChangeNotification:) 
                                                  name:SKAnnotationDidChangeNotification object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handlePageChangedNotification:) 
+                                                 name:PDFViewPageChangedNotification object:self];
     [[NSUserDefaultsController sharedUserDefaultsController] addObserver:self forKeys:
         [NSArray arrayWithObjects:SKReadingBarColorKey, SKReadingBarInvertKey, nil]];
 }
@@ -383,6 +385,11 @@ static void SKCGContextDrawGrabHandle(CGContextRef context, CGPoint point, float
         CGContextAddRect(context, *(CGRect *)&selectionRect);
         CGContextSetFillColor(context, color);
         CGContextEOFillPath(context);
+        if ([pdfPage isEqual:[self currentPage]] == NO) {
+            color[3] = 0.3;
+            CGContextSetFillColor(context, color);
+            CGContextFillRect(context, *(CGRect *)&selectionRect);
+        }
         SKCGContextDrawGrabHandle(context, CGPointMake(NSMinX(selectionRect), NSMinY(selectionRect)), radius);
         SKCGContextDrawGrabHandle(context, CGPointMake(NSMinX(selectionRect), NSMaxY(selectionRect)), radius);
         SKCGContextDrawGrabHandle(context, CGPointMake(NSMaxX(selectionRect), NSMinY(selectionRect)), radius);
@@ -2020,6 +2027,11 @@ static void SKCGContextDrawGrabHandle(CGContextRef context, CGPoint point, float
         if ([[annotation type] isEqualToString:@"Note"] && [[[notification userInfo] objectForKey:@"key"] isEqualToString:@"bounds"])
             [self resetHoverRects];
     }
+}
+
+- (void)handlePageChangedNotification:(NSNotification *)notification {
+    if ([self toolMode] == SKSelectToolMode && NSIsEmptyRect(selectionRect) == NO)
+        [self setNeedsDisplay:YES];
 }
 
 #pragma mark FullScreen navigation and autohide
