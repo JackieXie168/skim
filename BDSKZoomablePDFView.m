@@ -175,6 +175,14 @@ static float BDSKScaleMenuFontSize = 11.0;
     }
 }
 
+- (void)resetFitRectIfNeeded {
+    if ([self fits]) {
+        NSView *clipView = [[[self documentView] enclosingScrollView] contentView];
+        page = [self currentPage];
+        fitRect = [self convertRect:[self convertRect:[clipView visibleRect] fromView:clipView] toPage:page];
+    }
+}
+
 - (void)scalePopUpAction:(id)sender {
     int index = [sender indexOfSelectedItem];
     NSNumber *selectedFactorObject = [[sender selectedCell] representedObject];
@@ -198,10 +206,8 @@ static float BDSKScaleMenuFontSize = 11.0;
     if (fits != newFits) {
         fits = newFits;
         if (fits) {
-            NSView *clipView = [[[self documentView] enclosingScrollView] contentView];
-            page = [self currentPage];
-            fitRect = [self convertRect:[self convertRect:[clipView visibleRect] fromView:clipView] toPage:page];
             [self setAutoScales:NO adjustPopup:NO];
+            [self resetFitRectIfNeeded];
             if (flag)
                 [scalePopUpButton selectItemAtIndex:0];
         } else {
@@ -259,9 +265,7 @@ static float BDSKScaleMenuFontSize = 11.0;
 - (IBAction)zoomIn:(id)sender{
     if([self fits]){
         [super zoomIn:sender];
-        NSView *clipView = [[[self documentView] enclosingScrollView] contentView];
-        page = [self currentPage];
-        fitRect = [self convertRect:[self convertRect:[clipView visibleRect] fromView:clipView] toPage:page];
+        [self resetFitRectIfNeeded];
     }else if([self autoScales]){
         [super zoomIn:sender];
     }else{
@@ -279,9 +283,7 @@ static float BDSKScaleMenuFontSize = 11.0;
 - (IBAction)zoomOut:(id)sender{
     if([self fits]){
         [super zoomOut:sender];
-        NSView *clipView = [[[self documentView] enclosingScrollView] contentView];
-        page = [self currentPage];
-        fitRect = [self convertRect:[self convertRect:[clipView visibleRect] fromView:clipView] toPage:page];
+        [self resetFitRectIfNeeded];
     }else if([self autoScales]){
         [super zoomOut:sender];
     }else{
@@ -318,6 +320,16 @@ static float BDSKScaleMenuFontSize = 11.0;
     // We only work with some preset zoom values, so choose one of the appropriate values (Fudge a little for floating point == to work)
     while (cnt < numberOfDefaultItems && scaleFactor * .99 > BDSKDefaultScaleMenuFactors[cnt]) cnt++;
     return cnt > 0;
+}
+
+- (void)goToPage:(PDFPage *)aPage {
+    [super goToPage:aPage];
+    [self resetFitRectIfNeeded];
+}
+
+- (void)goToDestination:(PDFDestination *)destination {
+    [super goToDestination:destination];
+    [self resetFitRectIfNeeded];
 }
 
 #pragma mark Scrollview

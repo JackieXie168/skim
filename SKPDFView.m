@@ -1968,10 +1968,12 @@ static void SKCGContextDrawGrabHandle(CGContextRef context, CGPoint point, float
     NSPoint point;
     PDFPage *page = nil;
     NSRect rect = NSZeroRect;
+    BOOL fits = NO;
     
     if (toolMode == SKSelectToolMode && NSIsEmptyRect(selectionRect) == NO) {
         rect = NSIntersectionRect(selectionRect, [[self currentPage] boundsForBox:kPDFDisplayBoxCropBox]);
         page = [self currentPage];
+        fits = YES;
 	}
     if (NSIsEmptyRect(rect)) {
         if ([sender respondsToSelector:@selector(representedObject)] && [[sender representedObject] respondsToSelector:@selector(pointValue)]) {
@@ -2000,7 +2002,7 @@ static void SKCGContextDrawGrabHandle(CGContextRef context, CGPoint point, float
     
     SKMainWindowController *controller = [[self window] windowController];
     
-    [controller showSnapshotAtPageNumber:[[self document] indexForPage:page] forRect:rect factor:1 display:YES];
+    [controller showSnapshotAtPageNumber:[[self document] indexForPage:page] forRect:rect factor:1 fits:fits display:YES];
 }
 
 #pragma mark Notification handling
@@ -3269,6 +3271,7 @@ static void SKCGContextDrawGrabHandle(CGContextRef context, CGPoint point, float
     PDFPage *page = [self pageForPoint:point nearest:YES];
     NSRect rect = [self convertRect:selRect fromView:[self documentView]];
     int factor = 1;
+    BOOL fits = NO;
     
     if (dragged) {
     
@@ -3287,12 +3290,14 @@ static void SKCGContextDrawGrabHandle(CGContextRef context, CGPoint point, float
                 rect.origin.x = NSMaxX(bounds) - NSWidth(rect);
         }
         if (factor * NSHeight(rect) < 60.0) {
-            rect = NSInsetRect(rect, 0.5 * (NSHeight(rect) - 60.0 / factor), 0.0);
+            rect = NSInsetRect(rect, 0.0, 0.5 * (NSHeight(rect) - 60.0 / factor));
             if (NSMinY(rect) < NSMinY(bounds))
                 rect.origin.y = NSMinY(bounds);
             if (NSMaxX(rect) > NSMaxY(bounds))
                 rect.origin.y = NSMaxY(bounds) - NSHeight(rect);
         }
+        
+        fits = YES;
         
     } else {
         
@@ -3313,7 +3318,7 @@ static void SKCGContextDrawGrabHandle(CGContextRef context, CGPoint point, float
     
     SKMainWindowController *controller = [[self window] windowController];
     
-    [controller showSnapshotAtPageNumber:[[self document] indexForPage:page] forRect:[self convertRect:rect toPage:page] factor:factor display:YES];
+    [controller showSnapshotAtPageNumber:[[self document] indexForPage:page] forRect:[self convertRect:rect toPage:page] factor:factor fits:fits display:YES];
 }
 
 - (void)magnifyWithEvent:(NSEvent *)theEvent {
