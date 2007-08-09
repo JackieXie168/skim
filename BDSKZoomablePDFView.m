@@ -48,6 +48,7 @@
 @implementation BDSKZoomablePDFView
 
 /* For genstrings:
+    NSLocalizedStringFromTable(@"Fit", @"ZoomValues", @"Zoom popup entry")
     NSLocalizedStringFromTable(@"Auto", @"ZoomValues", @"Zoom popup entry")
     NSLocalizedStringFromTable(@"10%", @"ZoomValues", @"Zoom popup entry")
     NSLocalizedStringFromTable(@"25%", @"ZoomValues", @"Zoom popup entry")
@@ -59,11 +60,42 @@
     NSLocalizedStringFromTable(@"400%", @"ZoomValues", @"Zoom popup entry")
     NSLocalizedStringFromTable(@"800%", @"ZoomValues", @"Zoom popup entry")
 */   
-static NSString *BDSKDefaultScaleMenuLabels[] = {/* @"Set...", */ @"Auto", @"10%", @"25%", @"50%", @"75%", @"100%", @"128%", @"150%", @"200%", @"400%", @"800%"};
-static float BDSKDefaultScaleMenuFactors[] = {/* 0.0, */ 0, 0.1, 0.25, 0.5, 0.75, 1.0, 1.28, 1.5, 2.0, 4.0, 8.0};
+static NSString *BDSKDefaultScaleMenuLabels[] = {/* @"Set...", */ @"Fit", @"Auto", @"10%", @"25%", @"50%", @"75%", @"100%", @"128%", @"150%", @"200%", @"400%", @"800%"};
+static float BDSKDefaultScaleMenuFactors[] = {/* 0.0, */ -1, 0, 0.1, 0.25, 0.5, 0.75, 1.0, 1.28, 1.5, 2.0, 4.0, 8.0};
 static float BDSKScaleMenuFontSize = 11.0;
 
 #pragma mark Popup button
+
+- (id)initWithFrame:(NSRect)frameRect {
+    if (self = [super initWithFrame:frameRect]) {
+        scalePopUpButton = nil;
+        page = nil;
+        fitRect = NSZeroRect;
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handlePDFViewFrameChangedNotification:) 
+                                                     name:NSViewFrameDidChangeNotification object:self];
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handlePDFViewFrameChangedNotification:) 
+                                                     name:NSViewBoundsDidChangeNotification object:self];
+    }
+    return self;
+}
+
+- (id)initWithCoder:(NSCoder *)decoder {
+    if (self = [super initWithCoder:decoder]) {
+        scalePopUpButton = nil;
+        page = nil;
+        fitRect = NSZeroRect;
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handlePDFViewFrameChangedNotification:) 
+                                                     name:NSViewFrameDidChangeNotification object:self];
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handlePDFViewFrameChangedNotification:) 
+                                                     name:NSViewBoundsDidChangeNotification object:self];
+    }
+    return self;
+}
+
+- (void)dealloc {
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
+    [super dealloc];
+}
 
 - (void)makeScalePopUpButton {
     
@@ -130,12 +162,53 @@ static float BDSKScaleMenuFontSize = 11.0;
     }
 }
 
+- (void)handlePDFViewFrameChangedNotification:(NSNotification *)notification {
+    if (fits) {
+        NSView *clipView = [[[self documentView] enclosingScrollView] contentView];
+        NSRect rect = [self convertRect:[clipView visibleRect] fromView:clipView];
+        BOOL scaleWidth = NSWidth(rect) / NSHeight(rect) < NSWidth(fitRect) / NSHeight(fitRect);
+        float factor = scaleWidth ? NSWidth(rect) / NSWidth(fitRect) : NSHeight(rect) / NSHeight(fitRect);
+        NSRect viewRect = scaleWidth ? NSInsetRect(fitRect, 0.0, 0.5 * (NSHeight(fitRect) - NSHeight(rect) / factor)) : NSInsetRect(fitRect, 0.5 * (NSWidth(fitRect) - NSWidth(rect) / factor), 0.0);
+        [super setScaleFactor:factor];
+        viewRect = [self convertRect:[self convertRect:viewRect fromPage:page] toView:[self documentView]];
+        [[self documentView] scrollRectToVisible:viewRect];
+    }
+}
+
 - (void)scalePopUpAction:(id)sender {
+    int index = [sender indexOfSelectedItem];
     NSNumber *selectedFactorObject = [[sender selectedCell] representedObject];
-    if(!selectedFactorObject)
-        [super setAutoScales:YES];
-    else
+    if(index == 0)
+        [self setFits:YES adjustPopup:NO];
+    else if(index == 1)
+        [self setAutoScales:YES adjustPopup:NO];
+    else if(selectedFactorObject)
         [self setScaleFactor:[selectedFactorObject floatValue] adjustPopup:NO];
+}
+
+- (BOOL)fits {
+    return fits;
+}
+
+- (void)setFits:(BOOL)newFits {
+    [self setFits:newFits adjustPopup:YES];
+}
+
+- (void)setFits:(BOOL)newFits adjustPopup:(BOOL)flag {
+    if (fits != newFits) {
+        fits = newFits;
+        if (fits) {
+            NSView *clipView = [[[self documentView] enclosingScrollView] contentView];
+            page = [self currentPage];
+            fitRect = [self convertRect:[self convertRect:[clipView visibleRect] fromView:clipView] toPage:page];
+            [self setAutoScales:NO adjustPopup:NO];
+            if (flag)
+                [scalePopUpButton selectItemAtIndex:0];
+        } else {
+            page = nil;
+            fitRect = NSZeroRect;
+        }
+    }
 }
 
 - (void)setScaleFactor:(float)newScaleFactor {
@@ -145,10 +218,12 @@ static float BDSKScaleMenuFontSize = 11.0;
 - (void)setScaleFactor:(float)newScaleFactor adjustPopup:(BOOL)flag {
     
 	if (flag) {
-		if (newScaleFactor < 0.01) {
+		if (newScaleFactor < -0.01) {
+            newScaleFactor = -1.0;
+		} else if (newScaleFactor < 0.01) {
             newScaleFactor = 0.0;
         } else {
-            unsigned cnt = 1, numberOfDefaultItems = (sizeof(BDSKDefaultScaleMenuFactors) / sizeof(float));
+            unsigned cnt = 2, numberOfDefaultItems = (sizeof(BDSKDefaultScaleMenuFactors) / sizeof(float));
             
             // We only work with some preset zoom values, so choose one of the appropriate values
             while (cnt < numberOfDefaultItems - 1 && newScaleFactor > 0.5 * (BDSKDefaultScaleMenuFactors[cnt] + BDSKDefaultScaleMenuFactors[cnt + 1])) cnt++;
@@ -157,24 +232,40 @@ static float BDSKScaleMenuFontSize = 11.0;
         }
     }
     
+    if(newScaleFactor < -0.01)
+        [self setFits:YES];
     if(newScaleFactor < 0.01)
         [self setAutoScales:YES];
-    else
+    else{
+        [self setFits:NO adjustPopup:NO];
         [super setScaleFactor:newScaleFactor];
+    }
 }
 
 - (void)setAutoScales:(BOOL)newAuto {
+    [self setAutoScales:newAuto adjustPopup:YES];
+}
+
+- (void)setAutoScales:(BOOL)newAuto adjustPopup:(BOOL)flag {
+    if (newAuto)
+        [self setFits:NO adjustPopup:NO];
+    
     [super setAutoScales:newAuto];
     
-    if(newAuto)
-		[scalePopUpButton selectItemAtIndex:0];
+    if(newAuto && flag)
+		[scalePopUpButton selectItemAtIndex:1];
 }
 
 - (IBAction)zoomIn:(id)sender{
-    if([self autoScales]){
+    if([self fits]){
+        [super zoomIn:sender];
+        NSView *clipView = [[[self documentView] enclosingScrollView] contentView];
+        page = [self currentPage];
+        fitRect = [self convertRect:[self convertRect:[clipView visibleRect] fromView:clipView] toPage:page];
+    }else if([self autoScales]){
         [super zoomIn:sender];
     }else{
-        int cnt = 0, numberOfDefaultItems = (sizeof(BDSKDefaultScaleMenuFactors) / sizeof(float));
+        int cnt = 1, numberOfDefaultItems = (sizeof(BDSKDefaultScaleMenuFactors) / sizeof(float));
         float scaleFactor = [self scaleFactor];
         
         // We only work with some preset zoom values, so choose one of the appropriate values (Fudge a little for floating point == to work)
@@ -186,16 +277,21 @@ static float BDSKScaleMenuFontSize = 11.0;
 }
 
 - (IBAction)zoomOut:(id)sender{
-    if([self autoScales]){
+    if([self fits]){
+        [super zoomOut:sender];
+        NSView *clipView = [[[self documentView] enclosingScrollView] contentView];
+        page = [self currentPage];
+        fitRect = [self convertRect:[self convertRect:[clipView visibleRect] fromView:clipView] toPage:page];
+    }else if([self autoScales]){
         [super zoomOut:sender];
     }else{
-        int cnt = 0, numberOfDefaultItems = (sizeof(BDSKDefaultScaleMenuFactors) / sizeof(float));
+        int cnt = 1, numberOfDefaultItems = (sizeof(BDSKDefaultScaleMenuFactors) / sizeof(float));
         float scaleFactor = [self scaleFactor];
         
         // We only work with some preset zoom values, so choose one of the appropriate values (Fudge a little for floating point == to work)
         while (cnt < numberOfDefaultItems && scaleFactor * .99 > BDSKDefaultScaleMenuFactors[cnt]) cnt++;
         cnt--;
-        if (cnt < 0) cnt++;
+        if (cnt < 1) cnt++;
         [self setScaleFactor:BDSKDefaultScaleMenuFactors[cnt]];
     }
 }
@@ -205,7 +301,7 @@ static float BDSKScaleMenuFontSize = 11.0;
         return NO;
     if([self autoScales])   
         return YES;
-    unsigned cnt = 0, numberOfDefaultItems = (sizeof(BDSKDefaultScaleMenuFactors) / sizeof(float));
+    unsigned cnt = 1, numberOfDefaultItems = (sizeof(BDSKDefaultScaleMenuFactors) / sizeof(float));
     float scaleFactor = [self scaleFactor];
     // We only work with some preset zoom values, so choose one of the appropriate values (Fudge a little for floating point == to work)
     while (cnt < numberOfDefaultItems && scaleFactor * .99 > BDSKDefaultScaleMenuFactors[cnt]) cnt++;
@@ -355,6 +451,12 @@ static float BDSKScaleMenuFontSize = 11.0;
 				break;
 		} // end of switch (event type)
 	} // end of mouse-tracking loop
+    
+    if ([self fits]) {
+        NSView *clipView = [[[self documentView] enclosingScrollView] contentView];
+        page = [self currentPage];
+        fitRect = [self convertRect:[self convertRect:[clipView visibleRect] fromView:clipView] toPage:page];
+    }
 }
 
 @end
