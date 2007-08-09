@@ -186,7 +186,7 @@ static NSString *SKSnapshotViewChangedNotification = @"SKSnapshotViewChangedNoti
         [[self delegate] performSelector:@selector(snapshotControllerDidFinishSetup:) withObject:self afterDelay:0.1];
 }
 
-- (void)setPdfDocument:(PDFDocument *)pdfDocument scaleFactor:(float)factor goToPageNumber:(int)pageNum rect:(NSRect)rect fits:(BOOL)fits {
+- (void)setPdfDocument:(PDFDocument *)pdfDocument scaleFactor:(float)factor goToPageNumber:(int)pageNum rect:(NSRect)rect autoFits:(BOOL)autoFits {
     [self window];
     
     [pdfView setDocument:pdfDocument];
@@ -230,8 +230,8 @@ static NSString *SKSnapshotViewChangedNotification = @"SKSnapshotViewChangedNoti
     
     PDFDestination *dest = [[[PDFDestination alloc] initWithPage:page atPoint:point] autorelease];
     
-    if (fits && [pdfView respondsToSelector:@selector(fits)])
-        [(BDSKZoomablePDFView *)pdfView setFits:fits];
+    if (autoFits && [pdfView respondsToSelector:@selector(setAutoFits:)])
+        [(BDSKZoomablePDFView *)pdfView setAutoFits:autoFits];
     
     // Delayed to allow PDFView to finish its bookkeeping 
     // fixes bug of apparently ignoring the point but getting the page right.
@@ -301,9 +301,8 @@ static NSString *SKSnapshotViewChangedNotification = @"SKSnapshotViewChangedNoti
 - (NSDictionary *)currentSetup {
     NSView *clipView = [[[pdfView documentView] enclosingScrollView] contentView];
     NSRect rect = [pdfView convertRect:[pdfView convertRect:[clipView bounds] fromView:clipView] toPage:[pdfView currentPage]];
-    float factor = [pdfView autoScales] ? 0.0 : [pdfView scaleFactor];
-    BOOL fits = [pdfView respondsToSelector:@selector(fits)] && [(BDSKZoomablePDFView *)pdfView fits];
-    return [NSDictionary dictionaryWithObjectsAndKeys:[NSNumber numberWithUnsignedInt:[self pageIndex]], @"page", NSStringFromRect(rect), @"rect", [NSNumber numberWithFloat:factor], @"scaleFactor", [NSNumber numberWithBool:fits], @"fits", [NSNumber numberWithBool:[[self window] isVisible]], @"hasWindow", nil];
+    BOOL autoFits = [pdfView respondsToSelector:@selector(autoFits)] && [(BDSKZoomablePDFView *)pdfView autoFits];
+    return [NSDictionary dictionaryWithObjectsAndKeys:[NSNumber numberWithUnsignedInt:[self pageIndex]], @"page", NSStringFromRect(rect), @"rect", [NSNumber numberWithFloat:[pdfView scaleFactor]], @"scaleFactor", [NSNumber numberWithBool:autoFits], @"autoFits", [NSNumber numberWithBool:[[self window] isVisible]], @"hasWindow", nil];
 }
 
 #pragma mark Thumbnails
