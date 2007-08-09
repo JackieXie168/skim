@@ -656,11 +656,39 @@ static void SKCGContextDrawGrabHandle(CGContextRef context, CGPoint point, float
     
     if (toolMode == SKSelectToolMode && NSIsEmptyRect(selectionRect) == NO) {
         NSRect selRect = NSIntegralRect(selectionRect);
+        NSRect targetRect = selRect;
+        PDFPage *page = [self currentPage];
         
-        PDFDocument *pdfDoc = [[PDFDocument alloc] initWithData:[[self currentPage] dataRepresentation]];
-        PDFPage *page = [pdfDoc pageAtIndex:0];
-        [page setBounds:[[self currentPage] boundsForBox:kPDFDisplayBoxMediaBox] forBox:kPDFDisplayBoxMediaBox];
-        [page setBounds:selRect forBox:kPDFDisplayBoxCropBox];
+        if ([page rotation]) {
+            NSAffineTransform *transform = [NSAffineTransform transform];
+            NSRect bounds = [page boundsForBox:kPDFDisplayBoxMediaBox];
+            switch ([page rotation]) {
+                case 90:
+                    [transform translateXBy:0.0 yBy:NSWidth(bounds)];
+                    break;
+                case 180:
+                    [transform translateXBy:NSWidth(bounds) yBy:NSHeight(bounds)];
+                    break;
+                case 270:
+                    [transform translateXBy:NSHeight(bounds) yBy:0.0];
+                    break;
+            }
+            [transform rotateByDegrees:-[page rotation]];
+            targetRect.origin = [transform transformPoint:targetRect.origin];
+            targetRect.size = [transform transformSize:targetRect.size];
+            if (NSWidth(targetRect) < 0.0) {
+                targetRect.origin.x += NSWidth(targetRect);
+                targetRect.size.width *= -1.0;
+            }
+            if (NSHeight(targetRect) < 0.0) {
+                targetRect.origin.y += NSHeight(targetRect);
+                targetRect.size.height *= -1.0;
+            }
+        }
+        
+        PDFDocument *pdfDoc = [[PDFDocument alloc] initWithData:[page dataRepresentation]];
+        page = [pdfDoc pageAtIndex:0];
+        [page setBounds:targetRect forBox:kPDFDisplayBoxCropBox];
         [page setBounds:NSZeroRect forBox:kPDFDisplayBoxBleedBox];
         [page setBounds:NSZeroRect forBox:kPDFDisplayBoxTrimBox];
         [page setBounds:NSZeroRect forBox:kPDFDisplayBoxArtBox];
@@ -670,12 +698,13 @@ static void SKCGContextDrawGrabHandle(CGContextRef context, CGPoint point, float
         [pdfDoc release];
         
         NSRect bounds = [[self currentPage] boundsForBox:[self displayBox]];
-        NSRect targetRect = NSZeroRect, sourceRect = selRect;
+        NSRect sourceRect = selRect;
         NSImage *pageImage = [[self currentPage] imageForBox:[self displayBox]];
         NSImage *image = nil;
         
         sourceRect.origin.x -= NSMinX(bounds);
         sourceRect.origin.y -= NSMinY(bounds);
+        targetRect.origin = NSZeroPoint;
         targetRect.size = sourceRect.size;
         image = [[NSImage alloc] initWithSize:targetRect.size];
         [image lockFocus];
