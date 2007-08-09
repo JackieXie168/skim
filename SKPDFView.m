@@ -3468,24 +3468,40 @@ static void SKCGContextDrawGrabHandle(CGContextRef context, CGPoint point, float
                     p = [self convertPoint:p toPage:page];
                     if (NSIsEmptyRect(selectionRect) || NSPointInRect(p, NSInsetRect(selectionRect, -margin, -margin)) == NO) {
                         cursor = [NSCursor crosshairCursor];
-                    } else if (p.x > NSMaxX(selectionRect) - margin) {
-                        if (p.y > NSMaxY(selectionRect) - margin)
-                            cursor = [NSCursor resizeRightUpCursor];
-                        else if (p.y < NSMinY(selectionRect) + margin)
-                            cursor = [NSCursor resizeRightDownCursor];
-                        else
-                            cursor = [NSCursor resizeLeftRightCursor];
-                    } else if (p.x < NSMinX(selectionRect) + margin) {
-                        if (p.y > NSMaxY(selectionRect) - margin)
-                            cursor = [NSCursor resizeLeftUpCursor];
-                        else if (p.y < NSMinY(selectionRect) + margin)
-                            cursor = [NSCursor resizeLeftDownCursor];
-                        else
-                            cursor = [NSCursor resizeLeftRightCursor];
-                    } else if (p.y > NSMaxY(selectionRect) - margin || p.y < NSMinY(selectionRect) + margin) {
-                        cursor = [NSCursor resizeUpDownCursor];
                     } else {
-                        cursor = [NSCursor openHandCursor];
+                        int angle = 360;
+                        if (p.x > NSMaxX(selectionRect) - margin) {
+                            if (p.y < NSMinY(selectionRect) + margin)
+                                angle = 45;
+                            else if (p.y > NSMaxY(selectionRect) - margin)
+                                angle = 315;
+                            else
+                                angle = 0;
+                        } else if (p.x < NSMinX(selectionRect) + margin) {
+                            if (p.y < NSMinY(selectionRect) + margin)
+                                angle = 135;
+                            else if (p.y > NSMaxY(selectionRect) - margin)
+                                angle = 225;
+                            else
+                                angle = 180;
+                        } else if (p.y < NSMinY(selectionRect) + margin) {
+                            angle = 90;
+                        } else if (p.y > NSMaxY(selectionRect) - margin) {
+                            angle = 270;
+                        } else {
+                            cursor = [NSCursor openHandCursor];
+                        }
+                        if (angle != 360) {
+                            angle = (360 + angle + [page rotation]) % 360;
+                            switch (angle) {
+                                case 0: case 180: cursor = [NSCursor resizeLeftRightCursor]; break;
+                                case 45: cursor = [NSCursor resizeRightDownCursor]; break;
+                                case 90: case 270: cursor = [NSCursor resizeUpDownCursor]; break;
+                                case 135: cursor = [NSCursor resizeLeftDownCursor]; break;
+                                case 225: cursor = [NSCursor resizeLeftUpCursor]; break;
+                                case 315: cursor = [NSCursor resizeRightUpCursor]; break;
+                            }
+                        }
                     }
                 }
                 break;
