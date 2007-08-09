@@ -3212,11 +3212,14 @@ static void SKCGContextDrawGrabHandle(CGContextRef context, CGPoint point, float
 	while (YES) {
 		theEvent = [[self window] nextEventMatchingMask: NSLeftMouseUpMask | NSLeftMouseDraggedMask | NSFlagsChangedMask];
         
+        [[self window] disableFlushWindow];
         [[self window] restoreCachedImage];
-        [[self window] flushWindow];
 		
-        if ([theEvent type] == NSLeftMouseUp)
+        if ([theEvent type] == NSLeftMouseUp) {
+            [[self window] enableFlushWindow];
+            [[self window] flushWindow];
             break;
+        }
         
         if ([theEvent type] == NSLeftMouseDragged) {
             // change mouseLoc
@@ -3260,6 +3263,7 @@ static void SKCGContextDrawGrabHandle(CGContextRef context, CGPoint point, float
         [NSBezierPath strokeRect:NSInsetRect(NSIntegralRect([self convertRect:selRect fromView:[self documentView]]), 0.5, 0.5)];
         [NSGraphicsContext restoreGraphicsState];
         [self unlockFocus];
+        [[self window] enableFlushWindow];
         [[self window] flushWindow];
         
     }
