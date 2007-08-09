@@ -77,6 +77,7 @@ NSString *SKDocumentWillSaveNotification = @"SKDocumentWillSaveNotification";
 - (void)stopCheckingFileUpdates;
 - (void)handleFileUpdateNotification:(NSNotification *)notification;
 - (void)handleFileMoveNotification:(NSNotification *)notification;
+- (void)handleFileDeleteNotification:(NSNotification *)notification;
 - (void)handleWindowWillCloseNotification:(NSNotification *)notification;
 - (void)handleWindowDidEndSheetNotification:(NSNotification *)notification;
 
@@ -822,7 +823,7 @@ static BOOL isFileOnHFSVolume(NSString *fileName)
                 NSNotificationCenter *nc = [NSNotificationCenter defaultCenter];
                 [nc addObserver:self selector:@selector(handleFileUpdateNotification:) name:UKFileWatcherWriteNotification object:kQueue];
                 [nc addObserver:self selector:@selector(handleFileMoveNotification:) name:UKFileWatcherRenameNotification object:kQueue];
-                [nc addObserver:self selector:@selector(handleFileMoveNotification:) name:UKFileWatcherDeleteNotification object:kQueue];
+                [nc addObserver:self selector:@selector(handleFileDeleteNotification:) name:UKFileWatcherDeleteNotification object:kQueue];
             } else if (nil == fileUpdateTimer) {
                 // Let the runloop retain the timer; timer retains us.  Use a fairly long delay since this is likely a network volume.
                 fileUpdateTimer = [NSTimer scheduledTimerWithTimeInterval:(double)2.0 target:self selector:@selector(checkForFileModification:) userInfo:nil repeats:YES];
@@ -926,6 +927,12 @@ static BOOL isFileOnHFSVolume(NSString *fileName)
     if ([watchedFile isEqualToString:[[notification userInfo] objectForKey:@"path"]])
         [self stopCheckingFileUpdates];
     // If the file is moved, NSDocument will notice and will call setFileURL, where we start watching again
+}
+
+- (void)handleFileDeleteNotification:(NSNotification *)notification {
+    if ([watchedFile isEqualToString:[[notification userInfo] objectForKey:@"path"]])
+        [self stopCheckingFileUpdates];
+    fileChangedOnDisk = YES;
 }
 
 - (void)handleWindowWillCloseNotification:(NSNotification *)notification {
