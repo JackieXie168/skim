@@ -368,7 +368,7 @@ static NSString *noteToolAdornImageNames[] = {@"TextNoteToolAdorn", @"AnchoredNo
         NSEnumerator *setupEnum = [[[SKBookmarkController sharedBookmarkController] snapshotsAtPath:[[[self document] fileURL] path]] objectEnumerator];
         NSDictionary *setup;
         if (setup = [setupEnum nextObject])
-            [self showSnapshotAtPageNumber:[[setup objectForKey:@"page"] unsignedIntValue] forRect:NSRectFromString([setup objectForKey:@"rect"]) factor:[[setup objectForKey:@"scaleFactor"] floatValue] display:[[setup objectForKey:@"hasWindow"] boolValue]];
+            [self showSnapshotAtPageNumber:[[setup objectForKey:@"page"] unsignedIntValue] forRect:NSRectFromString([setup objectForKey:@"rect"]) factor:[[setup objectForKey:@"scaleFactor"] floatValue] fits:[[setup objectForKey:@"fits"] boolValue] display:[[setup objectForKey:@"hasWindow"] boolValue]];
     }
     
     // This update toolbar item and other states
@@ -781,7 +781,7 @@ static NSString *noteToolAdornImageNames[] = {@"TextNoteToolAdorn", @"AnchoredNo
         NSEnumerator *setupEnum = [snapshotDicts objectEnumerator];
         NSDictionary *setup;
         while (setup = [setupEnum nextObject])
-            [self showSnapshotAtPageNumber:[[setup objectForKey:@"page"] unsignedIntValue] forRect:NSRectFromString([setup objectForKey:@"rect"]) factor:[[setup objectForKey:@"scaleFactor"] floatValue] display:[[setup objectForKey:@"hasWindow"] boolValue]];
+            [self showSnapshotAtPageNumber:[[setup objectForKey:@"page"] unsignedIntValue] forRect:NSRectFromString([setup objectForKey:@"rect"]) factor:[[setup objectForKey:@"scaleFactor"] floatValue] fits:[[setup objectForKey:@"fits"] boolValue] display:[[setup objectForKey:@"hasWindow"] boolValue]];
         
         if (pageIndex != NSNotFound && [document pageCount]) {
             PDFPage *page = [document pageAtIndex:MIN(pageIndex, [document pageCount] - 1)];
@@ -2485,7 +2485,7 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
 
 #pragma mark Sub- and note- windows
 
-- (void)showSnapshotAtPageNumber:(int)pageNum forRect:(NSRect)rect factor:(int)factor display:(BOOL)display{
+- (void)showSnapshotAtPageNumber:(int)pageNum forRect:(NSRect)rect factor:(int)factor fits:(BOOL)fits display:(BOOL)display{
     
     SKSnapshotWindowController *swc = [[SKSnapshotWindowController alloc] init];
     BOOL snapshotsOnTop = [[NSUserDefaults standardUserDefaults] boolForKey:SKSnapshotsOnTopKey];
@@ -2496,7 +2496,8 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
     [swc setPdfDocument:doc
             scaleFactor:[pdfView scaleFactor] * factor
          goToPageNumber:pageNum
-                   rect:rect];
+                   rect:rect
+                   fits:fits];
     
     [swc setForceOnTop:[self isFullScreen] || [self isPresentation]];
     [[swc window] setHidesOnDeactivate:snapshotsOnTop];
@@ -3368,7 +3369,7 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
         
         rect.origin.y = NSMidY(rect) - 100.0;
         rect.size.height = 200.0;
-        [self showSnapshotAtPageNumber:row forRect:rect factor:1 display:YES];
+        [self showSnapshotAtPageNumber:row forRect:rect factor:1 fits:NO display:YES];
         return YES;
     }
     return NO;

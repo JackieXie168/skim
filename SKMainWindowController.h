@@ -264,7 +264,7 @@ typedef struct _SKPDFViewState {
 - (IBAction)chooseTransition:(id)sender;
 - (IBAction)dismissTransitionSheet:(id)sender;
 
-- (void)showSnapshotAtPageNumber:(int)pageNum forRect:(NSRect)rect factor:(int)factor display:(BOOL)display;
+- (void)showSnapshotAtPageNumber:(int)pageNum forRect:(NSRect)rect factor:(int)factor fits:(BOOL)fits display:(BOOL)display;
 - (void)toggleSnapshots:(NSArray *)snapshotArray;
 - (void)showNote:(PDFAnnotation *)annotation;
 
