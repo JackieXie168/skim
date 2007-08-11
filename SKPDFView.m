@@ -146,6 +146,15 @@ static void SKCGContextDrawGrabHandle(CGContextRef context, CGPoint point, float
 
 @implementation SKPDFView
 
++ (void)initialize {
+    static BOOL initialized = NO;
+    if (initialized == YES) return;
+    initialized = YES;
+ 
+    NSArray *sendTypes = [NSArray arrayWithObjects:NSPDFPboardType, NSTIFFPboardType, nil];
+    [NSApp registerServicesMenuSendTypes:sendTypes returnTypes:nil];
+}
+
 - (void)commonInitialization {
     toolMode = [[NSUserDefaults standardUserDefaults] integerForKey:SKLastToolModeKey];
     annotationMode = [[NSUserDefaults standardUserDefaults] integerForKey:SKLastAnnotationModeKey];
@@ -1552,6 +1561,99 @@ static void SKCGContextDrawGrabHandle(CGContextRef context, CGPoint point, float
         performedDrag = [super performDragOperation:sender];
     }
     return performedDrag;
+}
+
+#pragma mark Services
+
+- (BOOL)writeSelectionToPasteboard:(NSPasteboard *)pboard types:(NSArray *)types {
+    if ([self toolMode] == SKSelectToolMode && NSIsEmptyRect(selectionRect) == NO && ([types containsObject:NSPDFPboardType] || [types containsObject:NSTIFFPboardType])) {
+        NSMutableArray *writeTypes = [NSMutableArray array];
+        NSData *pdfData = nil;
+        NSData *tiffData = nil;
+        
+        NSRect selRect = NSIntegralRect(selectionRect);
+        NSRect targetRect = selRect;
+        
+        if ([types containsObject:NSPDFPboardType]) {
+            PDFPage *page = [self currentPage];
+            
+            if ([page rotation]) {
+                NSAffineTransform *transform = [NSAffineTransform transform];
+                NSRect bounds = [page boundsForBox:kPDFDisplayBoxMediaBox];
+                switch ([page rotation]) {
+                    case 90:
+                        [transform translateXBy:0.0 yBy:NSWidth(bounds)];
+                        break;
+                    case 180:
+                        [transform translateXBy:NSWidth(bounds) yBy:NSHeight(bounds)];
+                        break;
+                    case 270:
+                        [transform translateXBy:NSHeight(bounds) yBy:0.0];
+                        break;
+                }
+                [transform rotateByDegrees:-[page rotation]];
+                targetRect.origin = [transform transformPoint:targetRect.origin];
+                targetRect.size = [transform transformSize:targetRect.size];
+                if (NSWidth(targetRect) < 0.0) {
+                    targetRect.origin.x += NSWidth(targetRect);
+                    targetRect.size.width *= -1.0;
+                }
+                if (NSHeight(targetRect) < 0.0) {
+                    targetRect.origin.y += NSHeight(targetRect);
+                    targetRect.size.height *= -1.0;
+                }
+            }
+            
+            PDFDocument *pdfDoc = [[PDFDocument alloc] initWithData:[page dataRepresentation]];
+            page = [pdfDoc pageAtIndex:0];
+            [page setBounds:targetRect forBox:kPDFDisplayBoxCropBox];
+            [page setBounds:NSZeroRect forBox:kPDFDisplayBoxBleedBox];
+            [page setBounds:NSZeroRect forBox:kPDFDisplayBoxTrimBox];
+            [page setBounds:NSZeroRect forBox:kPDFDisplayBoxArtBox];
+            
+            if (pdfData = [page dataRepresentation])
+                [writeTypes addObject:NSPDFPboardType];
+            [pdfDoc release];
+        }
+        
+        if ([types containsObject:NSTIFFPboardType]) {
+            NSRect bounds = [[self currentPage] boundsForBox:[self displayBox]];
+            NSRect sourceRect = selRect;
+            NSImage *pageImage = [[self currentPage] imageForBox:[self displayBox]];
+            NSImage *image = nil;
+            
+            sourceRect.origin.x -= NSMinX(bounds);
+            sourceRect.origin.y -= NSMinY(bounds);
+            targetRect.origin = NSZeroPoint;
+            targetRect.size = sourceRect.size;
+            image = [[NSImage alloc] initWithSize:targetRect.size];
+            [image lockFocus];
+            [pageImage drawInRect:targetRect fromRect:sourceRect operation:NSCompositeCopy fraction:1.0];
+            [image unlockFocus];
+            if (tiffData = [image TIFFRepresentation])
+                [writeTypes addObject:NSTIFFPboardType];
+            [image release];
+        }
+    
+        [pboard declareTypes:writeTypes owner:nil];
+        if (pdfData)
+            [pboard setData:pdfData forType:NSPDFPboardType];
+        if (tiffData)
+            [pboard setData:tiffData forType:NSTIFFPboardType];
+        
+        return YES;
+        
+    } else if ([[SKPDFView superclass] instancesRespondToSelector:_cmd]) {
+        return [super writeSelectionToPasteboard:pboard types:types];
+    }
+    return NO;
+}
+
+- (id)validRequestorForSendType:(NSString *)sendType returnType:(NSString *)returnType {
+    if ([self toolMode] == SKSelectToolMode && NSIsEmptyRect(selectionRect) == NO && returnType == nil && ([sendType isEqualToString:NSPDFPboardType] || [sendType isEqualToString:NSTIFFPboardType])) {
+        return self;
+    }
+    return [super validRequestorForSendType:sendType returnType:returnType];
 }
 
 #pragma mark UndoManager

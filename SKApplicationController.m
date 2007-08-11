@@ -52,6 +52,7 @@
 #import "NSBezierPath_BDSKExtensions.h"
 #import "SKLine.h"
 #import "NSImage_SKExtensions.h"
+#import "SKDownloadController.h"
 
 
 @implementation SKApplicationController
@@ -198,6 +199,10 @@ static BOOL fileIsInTrash(NSURL *fileURL)
 
 - (IBAction)showReleaseNotes:(id)sender{
     [[SKReleaseNotesController sharedReleaseNotesController] showWindow:self];
+}
+
+- (IBAction)showDownloads:(id)sender{
+    [[SKDownloadController sharedDownloadController] showWindow:self];
 }
 
 - (IBAction)editBookmarks:(id)sender {

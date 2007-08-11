@@ -155,6 +155,12 @@
 		CEA575CE0B9206E60003D2E7 /* SKNoteOutlineView.m in Sources */ = {isa = PBXBuildFile; fileRef = CEA575CD0B9206E60003D2E7 /* SKNoteOutlineView.m */; };
 		CEA575E50B9207B80003D2E7 /* SKThumbnailTableView.m in Sources */ = {isa = PBXBuildFile; fileRef = CEA575E40B9207B80003D2E7 /* SKThumbnailTableView.m */; };
 		CEA575FD0B9208B60003D2E7 /* SKOutlineView.m in Sources */ = {isa = PBXBuildFile; fileRef = CEA575FC0B9208B60003D2E7 /* SKOutlineView.m */; };
+		CEAA55800C6DE030006BD633 /* SKDownloadController.m in Sources */ = {isa = PBXBuildFile; fileRef = CEAA557E0C6DE030006BD633 /* SKDownloadController.m */; };
+		CEAA559E0C6DE235006BD633 /* SKDownload.m in Sources */ = {isa = PBXBuildFile; fileRef = CEAA559C0C6DE235006BD633 /* SKDownload.m */; };
+		CEAA55B70C6DE452006BD633 /* SKProgressCell.m in Sources */ = {isa = PBXBuildFile; fileRef = CEAA55B50C6DE452006BD633 /* SKProgressCell.m */; };
+		CEAA55F10C6DE5AE006BD633 /* DownloadsWindow.nib in Resources */ = {isa = PBXBuildFile; fileRef = CEAA55EF0C6DE5AE006BD633 /* DownloadsWindow.nib */; };
+		CEAA56D40C6DEE83006BD633 /* Cancel.tiff in Resources */ = {isa = PBXBuildFile; fileRef = CEAA56D20C6DEE83006BD633 /* Cancel.tiff */; };
+		CEAA56D50C6DEE83006BD633 /* Delete.tiff in Resources */ = {isa = PBXBuildFile; fileRef = CEAA56D30C6DEE83006BD633 /* Delete.tiff */; };
 		CEAF079D0C4139EB00C3ECBB /* SKStatusBar.m in Sources */ = {isa = PBXBuildFile; fileRef = CEAF079B0C4139EB00C3ECBB /* SKStatusBar.m */; };
 		CEAF2E5A0C45414100C3ECBB /* SKLine.m in Sources */ = {isa = PBXBuildFile; fileRef = CEAF2E580C45414100C3ECBB /* SKLine.m */; };
 		CEAFFD7C0C40ED5400C3ECBB /* ToolbarColors.tiff in Resources */ = {isa = PBXBuildFile; fileRef = CEAFFD7A0C40ED5400C3ECBB /* ToolbarColors.tiff */; };
@@ -519,6 +525,18 @@
 		CEA575E40B9207B80003D2E7 /* SKThumbnailTableView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SKThumbnailTableView.m; sourceTree = "<group>"; };
 		CEA575FB0B9208B60003D2E7 /* SKOutlineView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SKOutlineView.h; sourceTree = "<group>"; };
 		CEA575FC0B9208B60003D2E7 /* SKOutlineView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SKOutlineView.m; sourceTree = "<group>"; };
+		CEAA557D0C6DE02F006BD633 /* SKDownloadController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SKDownloadController.h; sourceTree = "<group>"; };
+		CEAA557E0C6DE030006BD633 /* SKDownloadController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SKDownloadController.m; sourceTree = "<group>"; };
+		CEAA559B0C6DE235006BD633 /* SKDownload.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SKDownload.h; sourceTree = "<group>"; };
+		CEAA559C0C6DE235006BD633 /* SKDownload.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SKDownload.m; sourceTree = "<group>"; };
+		CEAA55B40C6DE452006BD633 /* SKProgressCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SKProgressCell.h; sourceTree = "<group>"; };
+		CEAA55B50C6DE452006BD633 /* SKProgressCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SKProgressCell.m; sourceTree = "<group>"; };
+		CEAA55F00C6DE5AE006BD633 /* English */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = English; path = English.lproj/DownloadsWindow.nib; sourceTree = "<group>"; };
+		CEAA565E0C6DE967006BD633 /* Dutch */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = Dutch; path = Dutch.lproj/DownloadsWindow.nib; sourceTree = "<group>"; };
+		CEAA565F0C6DE96A006BD633 /* French */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = French; path = French.lproj/DownloadsWindow.nib; sourceTree = "<group>"; };
+		CEAA56600C6DE96F006BD633 /* Italian */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = Italian; path = Italian.lproj/DownloadsWindow.nib; sourceTree = "<group>"; };
+		CEAA56D20C6DEE83006BD633 /* Cancel.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; name = Cancel.tiff; path = Images/Cancel.tiff; sourceTree = "<group>"; };
+		CEAA56D30C6DEE83006BD633 /* Delete.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; name = Delete.tiff; path = Images/Delete.tiff; sourceTree = "<group>"; };
 		CEAF079A0C4139EB00C3ECBB /* SKStatusBar.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SKStatusBar.h; sourceTree = "<group>"; };
 		CEAF079B0C4139EB00C3ECBB /* SKStatusBar.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SKStatusBar.m; sourceTree = "<group>"; };
 		CEAF2E570C45414100C3ECBB /* SKLine.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SKLine.h; sourceTree = "<group>"; };
@@ -715,6 +733,7 @@
 				CE327A440C11BF6700DB4BEB /* NoteTypeSheet.nib */,
 				CE9A878D0C0C9E9A004F1F97 /* ProgressSheet.nib */,
 				CE4A65CA0BAB1E2E004AD07D /* BookmarksWindow.nib */,
+				CEAA55EF0C6DE5AE006BD633 /* DownloadsWindow.nib */,
 				2A37F4B9FDCFA73011CA2CEA /* Credits.rtf */,
 				CE54AA8E0BBC037400008750 /* ReleaseNotes.rtf */,
 				8D15AC360486D014006FF6A4 /* Info.plist */,
@@ -839,6 +858,10 @@
 				CE8B46E70C29CA00005CE7F1 /* SKLineInspector.m */,
 				CE4A659D0BAB1598004AD07D /* SKBookmarkController.h */,
 				CE4A659E0BAB1598004AD07D /* SKBookmarkController.m */,
+				CEAA557D0C6DE02F006BD633 /* SKDownloadController.h */,
+				CEAA557E0C6DE030006BD633 /* SKDownloadController.m */,
+				CEAA559B0C6DE235006BD633 /* SKDownload.h */,
+				CEAA559C0C6DE235006BD633 /* SKDownload.m */,
 				CE54898D0B35D50E00F8AFB6 /* SKInfoWindowController.h */,
 				CE54898E0B35D50E00F8AFB6 /* SKInfoWindowController.m */,
 				CE4EC4F30B7E24490091F228 /* SKPreferenceController.h */,
@@ -887,6 +910,8 @@
 				CEA575FC0B9208B60003D2E7 /* SKOutlineView.m */,
 				4530DCF50B27CACE007C59F4 /* SKPDFView.h */,
 				4530DCF60B27CACE007C59F4 /* SKPDFView.m */,
+				CEAA55B40C6DE452006BD633 /* SKProgressCell.h */,
+				CEAA55B50C6DE452006BD633 /* SKProgressCell.m */,
 				CE4EC88A0B7E6EDB0091F228 /* SKSplitView.h */,
 				CE4EC88B0B7E6EDB0091F228 /* SKSplitView.m */,
 				CEAF079A0C4139EB00C3ECBB /* SKStatusBar.h */,
@@ -974,6 +999,8 @@
 				CE07158A0B8A3D6300733CC8 /* PDFDocument.icns */,
 				CE4373B30BB5440E00A56987 /* PSDocument.icns */,
 				CE4D88D70C3AE52F002C20CB /* DVIDocument.icns */,
+				CEAA56D20C6DEE83006BD633 /* Cancel.tiff */,
+				CEAA56D30C6DEE83006BD633 /* Delete.tiff */,
 				CE0715890B8A3D6300733CC8 /* NoteDocument.icns */,
 				CE7C5D180BD8086C0011315D /* ToolbarLineNote.tiff */,
 				CE4190C20B94963A00ECF819 /* ToolbarCircleNote.tiff */,
@@ -1222,6 +1249,9 @@
 				CE2082E40C5E09DC009D3EFB /* ResizeLeftUpCursor.tiff in Resources */,
 				CE2082E50C5E09DC009D3EFB /* ResizeRightDownCursor.tiff in Resources */,
 				CE2082E60C5E09DC009D3EFB /* ResizeRightUpCursor.tiff in Resources */,
+				CEAA55F10C6DE5AE006BD633 /* DownloadsWindow.nib in Resources */,
+				CEAA56D40C6DEE83006BD633 /* Cancel.tiff in Resources */,
+				CEAA56D50C6DEE83006BD633 /* Delete.tiff in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1401,6 +1431,9 @@
 				CECDD2990C5B68580026AAEC /* SKCenteredTextFieldCell.m in Sources */,
 				CECDDBAE0C5BB9600026AAEC /* SKFindTableView.m in Sources */,
 				CE2093910C5F9A8D009D3EFB /* BDSKGradientView.m in Sources */,
+				CEAA55800C6DE030006BD633 /* SKDownloadController.m in Sources */,
+				CEAA559E0C6DE235006BD633 /* SKDownload.m in Sources */,
+				CEAA55B70C6DE452006BD633 /* SKProgressCell.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1618,6 +1651,17 @@
 				CECD97320C57A3610026AAEC /* French */,
 			);
 			name = PreferenceWindow.nib;
+			sourceTree = "<group>";
+		};
+		CEAA55EF0C6DE5AE006BD633 /* DownloadsWindow.nib */ = {
+			isa = PBXVariantGroup;
+			children = (
+				CEAA55F00C6DE5AE006BD633 /* English */,
+				CEAA565E0C6DE967006BD633 /* Dutch */,
+				CEAA565F0C6DE96A006BD633 /* French */,
+				CEAA56600C6DE96F006BD633 /* Italian */,
+			);
+			name = DownloadsWindow.nib;
 			sourceTree = "<group>";
 		};
 		CEE106580BCBBE1200BF2D3E /* NotesDocument.nib */ = {

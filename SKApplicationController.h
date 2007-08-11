@@ -50,6 +50,7 @@
 
 - (IBAction)showPreferencePanel:(id)sender;
 - (IBAction)showReleaseNotes:(id)sender;
+- (IBAction)showDownloads:(id)sender;
 
 - (IBAction)editBookmarks:(id)sender;
 - (IBAction)openBookmark:(id)sender;
