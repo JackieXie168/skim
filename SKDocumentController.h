@@ -50,4 +50,5 @@ extern NSString *SKDVIDocumentType;
 
 @interface SKDocumentController : NSDocumentController
 - (void)newDocumentFromClipboard:(id)sender;
+- (id)openDocumentWithContentsOfPasteboard:(NSPasteboard *)pboard error:(NSError **)outError;
 @end

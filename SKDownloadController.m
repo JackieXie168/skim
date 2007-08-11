@@ -40,6 +40,7 @@
 #import "SKDownload.h"
 #import "SKProgressCell.h"
 
+NSString *SKWeblocFilePboardType = @"CorePasteboardFlavorType 0x75726C20";
 
 @implementation SKDownloadController
 
@@ -87,6 +88,7 @@
 - (void)windowDidLoad {
     [self setWindowFrameAutosaveName:@"SKDownloadsWindow"];
     [self updateButtons];
+    [tableView registerForDraggedTypes:[NSArray arrayWithObjects:NSURLPboardType, SKWeblocFilePboardType, nil]];
 }
 
 - (void)addDownloadForURL:(NSURL *)aURL {
@@ -178,6 +180,37 @@
         return [download fileIcon];
     }
     return nil;
+}
+
+- (NSDragOperation)tableView:(NSTableView*)tv validateDrop:(id <NSDraggingInfo>)info proposedRow:(int)row proposedDropOperation:(NSTableViewDropOperation)op {
+    NSPasteboard *pboard = [info draggingPasteboard];
+    NSString *type = [pboard availableTypeFromArray:[NSArray arrayWithObjects:NSURLPboardType, SKWeblocFilePboardType, nil]];
+    
+    if (type) {
+        [tv setDropRow:-1 dropOperation:NSTableViewDropOn];
+        return NSDragOperationEvery;
+    }
+    return NSDragOperationNone;
+}
+       
+- (BOOL)tableView:(NSTableView*)tv acceptDrop:(id <NSDraggingInfo>)info row:(int)row dropOperation:(NSTableViewDropOperation)op {
+    NSPasteboard *pboard = [info draggingPasteboard];
+    NSString *type = [pboard availableTypeFromArray:[NSArray arrayWithObjects:NSURLPboardType, SKWeblocFilePboardType, nil]];
+    NSURL *theURL;
+    
+    if ([type isEqualToString:NSURLPboardType]) {
+        theURL = [NSURL URLFromPasteboard:pboard];
+    } else if ([type isEqualToString:SKWeblocFilePboardType]) {
+        theURL = [NSURL URLWithString:[pboard stringForType:SKWeblocFilePboardType]];
+    }
+    if ([theURL isFileURL]) {
+        if ([[NSDocumentController sharedDocumentController] openDocumentWithContentsOfURL:theURL display:YES error:NULL])
+            return YES;
+    } else if (theURL) {
+        [self addDownloadForURL:theURL];
+        return YES;
+    }
+    return NO;
 }
 
 #pragma mark NSTableViewDelegate
