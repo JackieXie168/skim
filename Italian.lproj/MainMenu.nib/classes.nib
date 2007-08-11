@@ -67,6 +67,7 @@
             ACTIONS = {
                 editBookmarks = id; 
                 openBookmark = id; 
+                showDownloads = id; 
                 showPreferencePanel = id; 
                 showReleaseNotes = id; 
                 visitWebSite = id; 

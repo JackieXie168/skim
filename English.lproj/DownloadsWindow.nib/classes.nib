@@ -1,0 +1,19 @@
+{
+    IBClasses = (
+        {
+            ACTIONS = {"" = id; }; 
+            CLASS = FirstResponder; 
+            LANGUAGE = ObjC; 
+            SUPERCLASS = NSObject; 
+        }, 
+        {
+            ACTIONS = {cancelDownload = id; clearDownloads = id; removeDownload = id; }; 
+            CLASS = SKDownloadController; 
+            LANGUAGE = ObjC; 
+            OUTLETS = {clearButton = NSButton; tableView = NSTableView; }; 
+            SUPERCLASS = NSWindowController; 
+        }, 
+        {CLASS = SKProgressCell; LANGUAGE = ObjC; SUPERCLASS = NSTextFieldCell; }
+    ); 
+    IBVersion = 1; 
+}
