@@ -38,6 +38,7 @@
 
 #import <Cocoa/Cocoa.h>
 
+extern NSString *SKWeblocFilePboardType;
 
 @interface SKDownloadController : NSWindowController {
     IBOutlet NSTableView *tableView;

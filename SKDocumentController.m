@@ -37,6 +37,8 @@
  */
 
 #import "SKDocumentController.h"
+#import "SKDocument.h"
+#import "SKDownloadController.h"
 #import "NSString_SKExtensions.h"
 
 // See CFBundleTypeName in Info.plist
@@ -133,35 +135,68 @@ static NSData *convertTIFFDataToPDF(NSData *tiffData)
     return pdfData;
 }
 
-- (void)newDocumentFromClipboard:(id)sender {
-    
+- (id)openDocumentWithContentsOfPasteboard:(NSPasteboard *)pboard error:(NSError **)outError {
     // allow any filter services to convert to TIFF data if we can't get PDF or PS directly
-    NSPasteboard *pboard = [NSPasteboard pasteboardByFilteringTypesInPasteboard:[NSPasteboard generalPasteboard]];
-    NSString *pboardType = [pboard availableTypeFromArray:[NSArray arrayWithObjects:NSPDFPboardType, NSPostScriptPboardType, NSTIFFPboardType, nil]];
-    if (nil == pboardType) {
-        NSBeep();
-        return;
+    pboard = [NSPasteboard pasteboardByFilteringTypesInPasteboard:pboard];
+    NSString *pboardType = [pboard availableTypeFromArray:[NSArray arrayWithObjects:NSPDFPboardType, NSPostScriptPboardType, NSTIFFPboardType, NSURLPboardType, SKWeblocFilePboardType, nil]];
+    id document = nil;
+    
+    if ([pboardType isEqualToString:NSPDFPboardType] || [pboardType isEqualToString:NSPostScriptPboardType] || [pboardType isEqualToString:NSTIFFPboardType]) {
+        
+        NSData *data = [pboard dataForType:pboardType];
+        
+        // if it's image data, convert to PDF, then explicitly set the pboard type to PDF
+        if ([pboardType isEqualToString:NSTIFFPboardType]) {
+            data = convertTIFFDataToPDF(data);
+            pboardType = NSPDFPboardType;
+        }
+        
+        NSString *type = [pboardType isEqualToString:NSPostScriptPboardType] ? SKPostScriptDocumentType : SKPDFDocumentType;
+        NSError *error = nil;
+        
+        document = [self makeUntitledDocumentOfType:type error:&error];
+        
+        if ([document readFromData:data ofType:type error:&error]) {
+            [self addDocument:document];
+            [document makeWindowControllers];
+            [document showWindows];
+        } else {
+            document = nil;
+            if (outError)
+                *outError = error;
+        }
+        
+    } else if ([pboardType isEqualToString:NSURLPboardType] || [pboardType isEqualToString:SKWeblocFilePboardType]) {
+        
+        NSURL *theURL = nil;
+        if ([pboardType isEqualToString:NSURLPboardType]) {
+            theURL = [NSURL URLFromPasteboard:pboard];
+        } else if ([pboardType isEqualToString:SKWeblocFilePboardType]) {
+            theURL = [NSURL URLWithString:[pboard stringForType:SKWeblocFilePboardType]];
+        }
+        if ([theURL isFileURL]) {
+            document = [self openDocumentWithContentsOfURL:theURL display:YES error:outError];
+        } else if (theURL) {
+            [[SKDownloadController sharedDownloadController] addDownloadForURL:theURL];
+            if (outError)
+                *outError = nil;
+        } else if (outError) {
+            *outError = [NSError errorWithDomain:SKDocumentErrorDomain code:0 userInfo:[NSDictionary dictionaryWithObjectsAndKeys:NSLocalizedString(@"Unable to load data from clipboard", @"Error description"), NSLocalizedDescriptionKey, nil]];
+        }
+        
+    } else if (outError) {
+        *outError = [NSError errorWithDomain:SKDocumentErrorDomain code:0 userInfo:[NSDictionary dictionaryWithObjectsAndKeys:NSLocalizedString(@"Unable to load data from clipboard", @"Error description"), NSLocalizedDescriptionKey, nil]];
     }
     
-    NSData *data = [pboard dataForType:pboardType];
-    
-    // if it's image data, convert to PDF, then explicitly set the pboard type to PDF
-    if ([pboardType isEqualToString:NSTIFFPboardType]) {
-        data = convertTIFFDataToPDF(data);
-        pboardType = NSPDFPboardType;
-    }
-    
-    NSString *type = [pboardType isEqualToString:NSPostScriptPboardType] ? SKPostScriptDocumentType : SKPDFDocumentType;
+    return document;
+}
+
+- (void)newDocumentFromClipboard:(id)sender {
     NSError *error = nil;
-    id document = [self makeUntitledDocumentOfType:type error:&error];
+    id document = [self openDocumentWithContentsOfPasteboard:[NSPasteboard generalPasteboard] error:&error];
     
-    if ([document readFromData:data ofType:type error:&error]) {
-        [self addDocument:document];
-        [document makeWindowControllers];
-        [document showWindows];
-    } else {
+    if (document == nil && error)
         [NSApp presentError:error];
-    }
 }
 
 - (id)openDocumentWithContentsOfURL:(NSURL *)absoluteURL display:(BOOL)displayDocument error:(NSError **)outError {
