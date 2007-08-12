@@ -186,7 +186,7 @@ NSString *SKWeblocFilePboardType = @"CorePasteboardFlavorType 0x75726C20";
 
 - (NSDragOperation)tableView:(NSTableView*)tv validateDrop:(id <NSDraggingInfo>)info proposedRow:(int)row proposedDropOperation:(NSTableViewDropOperation)op {
     NSPasteboard *pboard = [info draggingPasteboard];
-    NSString *type = [pboard availableTypeFromArray:[NSArray arrayWithObjects:NSURLPboardType, SKWeblocFilePboardType, nil]];
+    NSString *type = [pboard availableTypeFromArray:[NSArray arrayWithObjects:NSURLPboardType, SKWeblocFilePboardType, NSStringPboardType, nil]];
     
     if (type) {
         [tv setDropRow:-1 dropOperation:NSTableViewDropOn];
@@ -197,13 +197,18 @@ NSString *SKWeblocFilePboardType = @"CorePasteboardFlavorType 0x75726C20";
        
 - (BOOL)tableView:(NSTableView*)tv acceptDrop:(id <NSDraggingInfo>)info row:(int)row dropOperation:(NSTableViewDropOperation)op {
     NSPasteboard *pboard = [info draggingPasteboard];
-    NSString *type = [pboard availableTypeFromArray:[NSArray arrayWithObjects:NSURLPboardType, SKWeblocFilePboardType, nil]];
+    NSString *type = [pboard availableTypeFromArray:[NSArray arrayWithObjects:NSURLPboardType, SKWeblocFilePboardType, NSStringPboardType, nil]];
     NSURL *theURL;
     
     if ([type isEqualToString:NSURLPboardType]) {
         theURL = [NSURL URLFromPasteboard:pboard];
     } else if ([type isEqualToString:SKWeblocFilePboardType]) {
         theURL = [NSURL URLWithString:[pboard stringForType:SKWeblocFilePboardType]];
+    } else if ([type isEqualToString:NSStringPboardType]) {
+        NSString *string = [pboard stringForType:NSStringPboardType];
+        theURL = [NSURL URLWithString:string];
+        if (theURL == nil && [[NSFileManager defaultManager] fileExistsAtPath:string])
+            theURL = [NSURL fileURLWithPath:string];
     }
     if ([theURL isFileURL]) {
         if ([[NSDocumentController sharedDocumentController] openDocumentWithContentsOfURL:theURL display:YES error:NULL])
