@@ -138,7 +138,7 @@ static NSData *convertTIFFDataToPDF(NSData *tiffData)
 - (id)openDocumentWithContentsOfPasteboard:(NSPasteboard *)pboard error:(NSError **)outError {
     // allow any filter services to convert to TIFF data if we can't get PDF or PS directly
     pboard = [NSPasteboard pasteboardByFilteringTypesInPasteboard:pboard];
-    NSString *pboardType = [pboard availableTypeFromArray:[NSArray arrayWithObjects:NSPDFPboardType, NSPostScriptPboardType, NSTIFFPboardType, NSURLPboardType, SKWeblocFilePboardType, nil]];
+    NSString *pboardType = [pboard availableTypeFromArray:[NSArray arrayWithObjects:NSPDFPboardType, NSPostScriptPboardType, NSTIFFPboardType, NSURLPboardType, SKWeblocFilePboardType, NSStringPboardType, nil]];
     id document = nil;
     
     if ([pboardType isEqualToString:NSPDFPboardType] || [pboardType isEqualToString:NSPostScriptPboardType] || [pboardType isEqualToString:NSTIFFPboardType]) {
@@ -166,13 +166,18 @@ static NSData *convertTIFFDataToPDF(NSData *tiffData)
                 *outError = error;
         }
         
-    } else if ([pboardType isEqualToString:NSURLPboardType] || [pboardType isEqualToString:SKWeblocFilePboardType]) {
+    } else if ([pboardType isEqualToString:NSURLPboardType] || [pboardType isEqualToString:SKWeblocFilePboardType] || [pboardType isEqualToString:NSStringPboardType]) {
         
         NSURL *theURL = nil;
         if ([pboardType isEqualToString:NSURLPboardType]) {
             theURL = [NSURL URLFromPasteboard:pboard];
         } else if ([pboardType isEqualToString:SKWeblocFilePboardType]) {
             theURL = [NSURL URLWithString:[pboard stringForType:SKWeblocFilePboardType]];
+        } else if ([pboardType isEqualToString:NSStringPboardType]) {
+            NSString *string = [pboard stringForType:NSStringPboardType];
+            theURL = [NSURL URLWithString:string];
+            if (theURL == nil && [[NSFileManager defaultManager] fileExistsAtPath:string])
+                theURL = [NSURL fileURLWithPath:string];
         }
         if ([theURL isFileURL]) {
             document = [self openDocumentWithContentsOfURL:theURL display:YES error:outError];
@@ -217,7 +222,7 @@ static NSData *convertTIFFDataToPDF(NSData *tiffData)
 - (BOOL)validateUserInterfaceItem:(id <NSValidatedUserInterfaceItem>)anItem {
     if ([anItem action] == @selector(newDocumentFromClipboard:)) {
         NSPasteboard *pboard = [NSPasteboard pasteboardByFilteringTypesInPasteboard:[NSPasteboard generalPasteboard]];
-        return ([[pboard types] firstObjectCommonWithArray:[NSArray arrayWithObjects:NSPDFPboardType, NSPostScriptPboardType, NSTIFFPboardType, nil]] != nil);
+        return ([pboard availableTypeFromArray:[NSArray arrayWithObjects:NSPDFPboardType, NSPostScriptPboardType, NSTIFFPboardType, NSURLPboardType, SKWeblocFilePboardType, NSStringPboardType, nil]] != nil);
     } else if ([super respondsToSelector:_cmd]) {
         return [super validateUserInterfaceItem:anItem];
     } else
