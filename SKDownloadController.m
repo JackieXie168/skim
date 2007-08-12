@@ -93,8 +93,10 @@ NSString *SKWeblocFilePboardType = @"CorePasteboardFlavorType 0x75726C20";
 
 - (void)addDownloadForURL:(NSURL *)aURL {
     if (aURL) {
-        [downloads addObject:[[[SKDownload alloc] initWithURL:aURL delegate:self] autorelease]];
+        SKDownload *download = [[[SKDownload alloc] initWithURL:aURL delegate:self] autorelease];
+        [downloads addObject:download];
         [self reloadTableView];
+        [tableView selectRowIndexes:[NSIndexSet indexSetWithIndex:[tableView numberOfRows] - 1] byExtendingSelection:NO];
     }
 }
 
