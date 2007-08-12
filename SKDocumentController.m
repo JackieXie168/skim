@@ -178,6 +178,7 @@ static NSData *convertTIFFDataToPDF(NSData *tiffData)
             document = [self openDocumentWithContentsOfURL:theURL display:YES error:outError];
         } else if (theURL) {
             [[SKDownloadController sharedDownloadController] addDownloadForURL:theURL];
+            [[SKDownloadController sharedDownloadController] showWindow:self];
             if (outError)
                 *outError = nil;
         } else if (outError) {
