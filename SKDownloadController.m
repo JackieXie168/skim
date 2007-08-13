@@ -159,7 +159,10 @@
     if ([download status] == SKDownloadStatusFinished) {
         NSURL *URL = [NSURL fileURLWithPath:[download filePath]];
         NSError *error = nil;
-        if (NO == [[NSDocumentController sharedDocumentController] openDocumentWithContentsOfURL:URL display:YES error:&error])
+        id document = [[NSDocumentController sharedDocumentController] openDocumentWithContentsOfURL:URL display:YES error:&error];
+        if (document)
+            [document setFileName:[[URL path] lastPathComponent]];
+        else
             [NSApp presentError:error];
     }
     
