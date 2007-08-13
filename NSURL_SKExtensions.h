@@ -1,8 +1,8 @@
 //
-//  SKDownloadController.h
+//  NSURL_SKExtensions.h
 //  Skim
 //
-//  Created by Christiaan Hofman on 8/11/07.
+//  Created by Christiaan Hofman on 8/13/07.
 /*
  This software is Copyright (c) 2007
  Christiaan Hofman. All rights reserved.
@@ -38,19 +38,8 @@
 
 #import <Cocoa/Cocoa.h>
 
+extern NSString *SKWeblocFilePboardType;
 
-@interface SKDownloadController : NSWindowController {
-    IBOutlet NSTableView *tableView;
-    IBOutlet NSButton *clearButton;
-    NSMutableArray *downloads;
-}
-
-+ (id)sharedDownloadController;
-
-- (void)addDownloadForURL:(NSURL *)aURL;
-
-- (IBAction)clearDownloads:(id)sender;
-- (IBAction)removeDownload:(id)sender;
-- (IBAction)cancelDownload:(id)sender;
-
+@interface NSURL (SKExtensions)
++ (NSURL *)URLFromPasteboardAnyType:(NSPasteboard *)pasteboard;
 @end

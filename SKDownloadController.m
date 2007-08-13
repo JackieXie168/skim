@@ -39,8 +39,8 @@
 #import "SKDownloadController.h"
 #import "SKDownload.h"
 #import "SKProgressCell.h"
+#import "NSURL_SKExtensions.h"
 
-NSString *SKWeblocFilePboardType = @"CorePasteboardFlavorType 0x75726C20";
 
 @implementation SKDownloadController
 
@@ -197,25 +197,8 @@ NSString *SKWeblocFilePboardType = @"CorePasteboardFlavorType 0x75726C20";
        
 - (BOOL)tableView:(NSTableView*)tv acceptDrop:(id <NSDraggingInfo>)info row:(int)row dropOperation:(NSTableViewDropOperation)op {
     NSPasteboard *pboard = [info draggingPasteboard];
-    NSString *type = [pboard availableTypeFromArray:[NSArray arrayWithObjects:NSURLPboardType, SKWeblocFilePboardType, NSStringPboardType, nil]];
-    NSURL *theURL;
+    NSURL *theURL = [NSURL URLFromPasteboardAnyType:pboard];
     
-    if ([type isEqualToString:NSURLPboardType]) {
-        theURL = [NSURL URLFromPasteboard:pboard];
-    } else if ([type isEqualToString:SKWeblocFilePboardType]) {
-        theURL = [NSURL URLWithString:[pboard stringForType:SKWeblocFilePboardType]];
-    } else if ([type isEqualToString:NSStringPboardType]) {
-        NSString *string = [[pboard stringForType:NSStringPboardType] stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
-        if ([string hasPrefix:@"<"] && [string hasSuffix:@">"])
-            string = [string substringWithRange:NSMakeRange(1, [string length] - 2)];
-        theURL = [NSURL URLWithString:string];
-        if (theURL == nil) {
-            if ([string hasPrefix:@"~"])
-                string = [string stringByExpandingTildeInPath];
-            if ([[NSFileManager defaultManager] fileExistsAtPath:string])
-                theURL = [NSURL fileURLWithPath:string];
-        }
-    }
     if ([theURL isFileURL]) {
         if ([[NSDocumentController sharedDocumentController] openDocumentWithContentsOfURL:theURL display:YES error:NULL])
             return YES;
