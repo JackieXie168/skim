@@ -88,7 +88,7 @@
 - (void)windowDidLoad {
     [self setWindowFrameAutosaveName:@"SKDownloadsWindow"];
     [self updateButtons];
-    [tableView registerForDraggedTypes:[NSArray arrayWithObjects:NSURLPboardType, SKWeblocFilePboardType, nil]];
+    [tableView registerForDraggedTypes:[NSArray arrayWithObjects:NSURLPboardType, SKWeblocFilePboardType, NSStringPboardType, nil]];
 }
 
 - (void)addDownloadForURL:(NSURL *)aURL {
