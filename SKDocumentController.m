@@ -139,10 +139,10 @@ static NSData *convertTIFFDataToPDF(NSData *tiffData)
 - (id)openDocumentWithContentsOfPasteboard:(NSPasteboard *)pboard error:(NSError **)outError {
     // allow any filter services to convert to TIFF data if we can't get PDF or PS directly
     pboard = [NSPasteboard pasteboardByFilteringTypesInPasteboard:pboard];
-    NSString *pboardType = [pboard availableTypeFromArray:[NSArray arrayWithObjects:NSPDFPboardType, NSPostScriptPboardType, NSTIFFPboardType, NSURLPboardType, SKWeblocFilePboardType, NSStringPboardType, nil]];
+    NSString *pboardType;
     id document = nil;
     
-    if ([pboardType isEqualToString:NSPDFPboardType] || [pboardType isEqualToString:NSPostScriptPboardType] || [pboardType isEqualToString:NSTIFFPboardType]) {
+    if (pboardType = [pboard availableTypeFromArray:[NSArray arrayWithObjects:NSPDFPboardType, NSPostScriptPboardType, NSTIFFPboardType, nil]]) {
         
         NSData *data = [pboard dataForType:pboardType];
         
@@ -167,7 +167,7 @@ static NSData *convertTIFFDataToPDF(NSData *tiffData)
                 *outError = error;
         }
         
-    } else if ([pboardType isEqualToString:NSURLPboardType] || [pboardType isEqualToString:SKWeblocFilePboardType] || [pboardType isEqualToString:NSStringPboardType]) {
+    } else if (pboardType = [pboard availableTypeFromArray:[NSArray arrayWithObjects:NSURLPboardType, SKWeblocFilePboardType, NSStringPboardType, nil]]) {
         
         NSURL *theURL = [NSURL URLFromPasteboardAnyType:pboard];
         if ([theURL isFileURL]) {
