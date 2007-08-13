@@ -174,10 +174,16 @@ static NSData *convertTIFFDataToPDF(NSData *tiffData)
         } else if ([pboardType isEqualToString:SKWeblocFilePboardType]) {
             theURL = [NSURL URLWithString:[pboard stringForType:SKWeblocFilePboardType]];
         } else if ([pboardType isEqualToString:NSStringPboardType]) {
-            NSString *string = [pboard stringForType:NSStringPboardType];
+            NSString *string = [[pboard stringForType:NSStringPboardType] stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
+            if ([string hasPrefix:@"<"] && [string hasSuffix:@">"])
+                string = [string substringWithRange:NSMakeRange(1, [string length] - 2)];
             theURL = [NSURL URLWithString:string];
-            if (theURL == nil && [[NSFileManager defaultManager] fileExistsAtPath:string])
-                theURL = [NSURL fileURLWithPath:string];
+            if (theURL == nil) {
+                if ([string hasPrefix:@"~"])
+                    string = [string stringByExpandingTildeInPath];
+                if ([[NSFileManager defaultManager] fileExistsAtPath:string])
+                    theURL = [NSURL fileURLWithPath:string];
+            }
         }
         if ([theURL isFileURL]) {
             document = [self openDocumentWithContentsOfURL:theURL display:YES error:outError];
