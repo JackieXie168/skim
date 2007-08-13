@@ -91,10 +91,11 @@
         if ([progressIndicator isDescendantOf:controlView] == NO)
             [controlView addSubview:progressIndicator];
     } else { 
-        if ([controlView isFlipped] == NO)
+        if ([controlView isFlipped])
+            textRect.origin.y = NSMinY(cellFrame);
+        else
             textRect.origin.y = NSMaxY(cellFrame) - NSHeight(textRect);
         id value = [[[self objectValue] retain] autorelease];
-        textRect.origin.x += ([[self attributedStringValue] size].width + MARGIN_X);
         NSString *string = nil;
         switch (status) {
             case SKDownloadStatusStarting:
