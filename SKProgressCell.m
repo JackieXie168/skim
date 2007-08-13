@@ -94,6 +94,7 @@
         if ([controlView isFlipped] == NO)
             textRect.origin.y = NSMaxY(cellFrame) - NSHeight(textRect);
         id value = [[[self objectValue] retain] autorelease];
+        textRect.origin.x += ([[self attributedStringValue] size].width + MARGIN_X);
         NSString *string = nil;
         switch (status) {
             case SKDownloadStatusStarting:
