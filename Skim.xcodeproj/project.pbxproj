@@ -161,6 +161,8 @@
 		CEAA55F10C6DE5AE006BD633 /* DownloadsWindow.nib in Resources */ = {isa = PBXBuildFile; fileRef = CEAA55EF0C6DE5AE006BD633 /* DownloadsWindow.nib */; };
 		CEAA56D40C6DEE83006BD633 /* Cancel.tiff in Resources */ = {isa = PBXBuildFile; fileRef = CEAA56D20C6DEE83006BD633 /* Cancel.tiff */; };
 		CEAA56D50C6DEE83006BD633 /* Delete.tiff in Resources */ = {isa = PBXBuildFile; fileRef = CEAA56D30C6DEE83006BD633 /* Delete.tiff */; };
+		CEAA67250C70A882006BD633 /* NSURL_SKExtensions.h in CopyFiles */ = {isa = PBXBuildFile; fileRef = CEAA67230C70A882006BD633 /* NSURL_SKExtensions.h */; };
+		CEAA67260C70A882006BD633 /* NSURL_SKExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = CEAA67240C70A882006BD633 /* NSURL_SKExtensions.m */; };
 		CEAF079D0C4139EB00C3ECBB /* SKStatusBar.m in Sources */ = {isa = PBXBuildFile; fileRef = CEAF079B0C4139EB00C3ECBB /* SKStatusBar.m */; };
 		CEAF2E5A0C45414100C3ECBB /* SKLine.m in Sources */ = {isa = PBXBuildFile; fileRef = CEAF2E580C45414100C3ECBB /* SKLine.m */; };
 		CEAFFD7C0C40ED5400C3ECBB /* ToolbarColors.tiff in Resources */ = {isa = PBXBuildFile; fileRef = CEAFFD7A0C40ED5400C3ECBB /* ToolbarColors.tiff */; };
@@ -269,6 +271,7 @@
 			dstSubfolderSpec = 10;
 			files = (
 				CE2BD8450BD4135600A5F4DB /* Sparkle.framework in CopyFiles */,
+				CEAA67250C70A882006BD633 /* NSURL_SKExtensions.h in CopyFiles */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -537,6 +540,8 @@
 		CEAA56600C6DE96F006BD633 /* Italian */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = Italian; path = Italian.lproj/DownloadsWindow.nib; sourceTree = "<group>"; };
 		CEAA56D20C6DEE83006BD633 /* Cancel.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; name = Cancel.tiff; path = Images/Cancel.tiff; sourceTree = "<group>"; };
 		CEAA56D30C6DEE83006BD633 /* Delete.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; name = Delete.tiff; path = Images/Delete.tiff; sourceTree = "<group>"; };
+		CEAA67230C70A882006BD633 /* NSURL_SKExtensions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NSURL_SKExtensions.h; sourceTree = "<group>"; };
+		CEAA67240C70A882006BD633 /* NSURL_SKExtensions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NSURL_SKExtensions.m; sourceTree = "<group>"; };
 		CEAF079A0C4139EB00C3ECBB /* SKStatusBar.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SKStatusBar.h; sourceTree = "<group>"; };
 		CEAF079B0C4139EB00C3ECBB /* SKStatusBar.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SKStatusBar.m; sourceTree = "<group>"; };
 		CEAF2E570C45414100C3ECBB /* SKLine.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SKLine.h; sourceTree = "<group>"; };
@@ -801,6 +806,8 @@
 				CE070EA10B89039700733CC8 /* NSScrollView_SKExtensions.m */,
 				CE38ECD10B8093B200A1B779 /* NSString_SKExtensions.h */,
 				CE38ECD20B8093B200A1B779 /* NSString_SKExtensions.m */,
+				CEAA67230C70A882006BD633 /* NSURL_SKExtensions.h */,
+				CEAA67240C70A882006BD633 /* NSURL_SKExtensions.m */,
 				CEF7119F0B90B714003A2771 /* NSUserDefaultsController_SKExtensions.h */,
 				CEF711A00B90B714003A2771 /* NSUserDefaultsController_SKExtensions.m */,
 				CE41B2C90C08D17100E36EB7 /* NSValue_SKExtensions.h */,
@@ -1434,6 +1441,7 @@
 				CEAA55800C6DE030006BD633 /* SKDownloadController.m in Sources */,
 				CEAA559E0C6DE235006BD633 /* SKDownload.m in Sources */,
 				CEAA55B70C6DE452006BD633 /* SKProgressCell.m in Sources */,
+				CEAA67260C70A882006BD633 /* NSURL_SKExtensions.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

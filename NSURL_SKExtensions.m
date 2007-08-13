@@ -1,8 +1,8 @@
 //
-//  SKDownloadController.h
+//  NSURL_SKExtensions.m
 //  Skim
 //
-//  Created by Christiaan Hofman on 8/11/07.
+//  Created by Christiaan Hofman on 8/13/07.
 /*
  This software is Copyright (c) 2007
  Christiaan Hofman. All rights reserved.
@@ -36,21 +36,32 @@
  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-#import <Cocoa/Cocoa.h>
+#import "NSURL_SKExtensions.h"
 
+NSString *SKWeblocFilePboardType = @"CorePasteboardFlavorType 0x75726C20";
 
-@interface SKDownloadController : NSWindowController {
-    IBOutlet NSTableView *tableView;
-    IBOutlet NSButton *clearButton;
-    NSMutableArray *downloads;
+@implementation NSURL (SKExtensions)
+
++ (NSURL *)URLFromPasteboardAnyType:(NSPasteboard *)pasteboard {
+    NSString *pboardType = [pasteboard availableTypeFromArray:[NSArray arrayWithObjects:NSURLPboardType, SKWeblocFilePboardType, NSStringPboardType, nil]];
+    NSURL *theURL = nil;
+    if ([pboardType isEqualToString:NSURLPboardType]) {
+        theURL = [NSURL URLFromPasteboard:pasteboard];
+    } else if ([pboardType isEqualToString:SKWeblocFilePboardType]) {
+        theURL = [NSURL URLWithString:[pasteboard stringForType:SKWeblocFilePboardType]];
+    } else if ([pboardType isEqualToString:NSStringPboardType]) {
+        NSString *string = [[pasteboard stringForType:NSStringPboardType] stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
+        if ([string hasPrefix:@"<"] && [string hasSuffix:@">"])
+            string = [string substringWithRange:NSMakeRange(1, [string length] - 2)];
+        theURL = [NSURL URLWithString:string];
+        if (theURL == nil) {
+            if ([string hasPrefix:@"~"])
+                string = [string stringByExpandingTildeInPath];
+            if ([[NSFileManager defaultManager] fileExistsAtPath:string])
+                theURL = [NSURL fileURLWithPath:string];
+        }
+    }
+    return theURL;
 }
-
-+ (id)sharedDownloadController;
-
-- (void)addDownloadForURL:(NSURL *)aURL;
-
-- (IBAction)clearDownloads:(id)sender;
-- (IBAction)removeDownload:(id)sender;
-- (IBAction)cancelDownload:(id)sender;
 
 @end
