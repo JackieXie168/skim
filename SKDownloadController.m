@@ -140,6 +140,16 @@
     }
 }
 
+- (IBAction)paste:(id)sender {
+    NSPasteboard *pboard = [NSPasteboard generalPasteboard];
+    NSURL *theURL = [NSURL URLFromPasteboardAnyType:pboard];
+    
+    if ([theURL isFileURL])
+        [[NSDocumentController sharedDocumentController] openDocumentWithContentsOfURL:theURL display:YES error:NULL];
+    else if (theURL)
+        [self addDownloadForURL:theURL];
+}
+
 #pragma mark SKDownloadDelegate
 
 - (void)downloadDidStart:(SKDownload *)download {
