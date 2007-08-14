@@ -99,16 +99,16 @@
         NSString *string = nil;
         switch (status) {
             case SKDownloadStatusStarting:
-                string = [NSLocalizedString(@"Starting", @"") stringByAppendingEllipsis];
+                string = [NSLocalizedString(@"Starting", @"Download status message") stringByAppendingEllipsis];
                 break;
             case SKDownloadStatusFinished:
-                string = NSLocalizedString(@"Finished", @"");
+                string = NSLocalizedString(@"Finished", @"Download status message");
                 break;
             case SKDownloadStatusFailed:
-                string = NSLocalizedString(@"Failed", @"");
+                string = NSLocalizedString(@"Failed", @"Download status message");
                 break;
             case SKDownloadStatusCanceled:
-                string = NSLocalizedString(@"Canceled", @"");
+                string = NSLocalizedString(@"Canceled", @"Download status message");
                 break;
         }
         [self setObjectValue:string];
