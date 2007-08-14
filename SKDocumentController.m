@@ -41,6 +41,7 @@
 #import "SKDownloadController.h"
 #import "NSString_SKExtensions.h"
 #import "NSURL_SKExtensions.h"
+#import "SKStringConstants.h"
 
 // See CFBundleTypeName in Info.plist
 NSString *SKPDFDocumentType = nil; /* set to NSPDFPboardType, not @"NSPDFPboardType" */
@@ -174,7 +175,8 @@ static NSData *convertTIFFDataToPDF(NSData *tiffData)
             document = [self openDocumentWithContentsOfURL:theURL display:YES error:outError];
         } else if (theURL) {
             [[SKDownloadController sharedDownloadController] addDownloadForURL:theURL];
-            [[SKDownloadController sharedDownloadController] showWindow:self];
+            if ([[NSUserDefaults standardUserDefaults] boolForKey:SKAutoOpenDownloadsWindowKey])
+                [[SKDownloadController sharedDownloadController] showWindow:self];
             if (outError)
                 *outError = nil;
         } else if (outError) {
