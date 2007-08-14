@@ -38,10 +38,11 @@
 
 #import <Cocoa/Cocoa.h>
 
-@class SUUpdater, SKLine;
+@class SUUpdater, SKLine, SKDownloadController;
 
 @interface SKApplicationController : NSObject {
     BOOL remoteScrolling;
+    
 }
 
 + (void)setupDefaults;

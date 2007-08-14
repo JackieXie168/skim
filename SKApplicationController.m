@@ -156,6 +156,7 @@ static BOOL fileIsInTrash(NSURL *fileURL)
 }
 
 - (void)applicationDidFinishLaunching:(NSNotification *)aNotification{
+    [NSApp setServicesProvider:self];
     NSString *versionString = [[[NSBundle mainBundle] infoDictionary] objectForKey:@"CFBundleShortVersionString"];
     SKVersionNumber *versionNumber = versionString ? [[[SKVersionNumber alloc] initWithVersionString:versionString] autorelease] : nil;
     NSString *lastVersionString = [[NSUserDefaults standardUserDefaults] stringForKey:SKLastVersionLaunchedKey];
@@ -184,6 +185,58 @@ static BOOL fileIsInTrash(NSURL *fileURL)
         [[AppleRemote sharedRemote] setListeningToRemote:NO];
         [[AppleRemote sharedRemote] setDelegate:nil];
     }
+}
+
+#pragma mark Services Support
+
+- (void)openDocumentFromURLOnPboard:(NSPasteboard *)pboard
+                           userData:(NSString *)userData
+                              error:(NSString **)error{
+
+    NSArray *types = [pboard types];
+    
+    bool pbHasStringType = [types containsObject:NSStringPboardType];
+    bool pbHasURLType = [types containsObject:NSURLPboardType];
+    
+    if (!pbHasStringType && !pbHasURLType) {
+        *error = NSLocalizedString(@"Error: couldn't get a URL.",
+                                   @"pboard couldn't give string or URL.");
+        return;
+    }
+    
+    NSURL *pdfURL = nil;
+    
+    if (pbHasURLType){
+        pdfURL = [NSURL URLFromPasteboard:pboard];
+    }
+    
+    if (pdfURL == nil && pbHasStringType){
+        NSString *pboardString = [pboard stringForType:NSStringPboardType];
+        
+        if (!pboardString) {
+            *error = NSLocalizedString(@"Error: couldn't get a URL.",
+                                       @"pboard couldn't give string.");
+            return;
+        }
+        pdfURL = [NSURL URLWithString:pboardString];
+    }
+    
+    if (!pdfURL){
+        *error = NSLocalizedString(@"Error: couldn't get a URL",
+                                   @"nothing worked.");
+        return;
+    }
+
+    if([pdfURL isFileURL]){
+        NSError *newError;
+        [[NSDocumentController sharedDocumentController] openDocumentWithContentsOfURL:pdfURL
+                                                                               display:YES
+                                                                                 error:&newError];
+    }else{
+        [[SKDownloadController sharedDownloadController] addDownloadForURL:pdfURL];
+    }
+    
+    return;
 }
 
 #pragma mark Actions
