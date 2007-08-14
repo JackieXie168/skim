@@ -102,3 +102,4 @@ NSString *SKActivateFullScreenNavigationAtBottomKey = @"SKActivateFullScreenNavi
 NSString *SKActivatePresentationNavigationAtBottomKey = @"SKActivatePresentationNavigationAtBottom";
 NSString *SKAutoHidePresentationContentsKey = @"SKAutoHidePresentationContents";
 NSString *SKAutoOpenDownloadsWindowKey = @"SKAutoOpenDownloadsWindow";
+NSString *SKAutoRemoveFinishedDownloadsKey = @"SKAutoRemoveFinishedDownloads";
