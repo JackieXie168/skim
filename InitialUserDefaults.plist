@@ -226,6 +226,8 @@
         <real>600.0</real>
         <key>SKAutoOpenDownloadsWindow</key>
         <true/>
+        <key>SKAutoRemoveFinishedDownloads</key>
+        <true/>
         <key>SUScheduledCheckInterval</key>
         <integer>86400</integer>
     </dict>

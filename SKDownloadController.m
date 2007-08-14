@@ -40,6 +40,7 @@
 #import "SKDownload.h"
 #import "SKProgressCell.h"
 #import "NSURL_SKExtensions.h"
+#import "SKStringConstants.h"
 
 
 @implementation SKDownloadController
@@ -190,8 +191,10 @@
         else
             [NSApp presentError:error];
         
-        [download cleanupDownload];
-        [downloads removeObject:download];
+        if ([[NSUserDefaults standardUserDefaults] boolForKey:SKAutoRemoveFinishedDownloadsKey]) {
+            [download cleanupDownload];
+            [downloads removeObject:download];
+        }
     }
     
     [self reloadTableView];

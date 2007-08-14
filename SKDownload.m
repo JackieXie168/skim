@@ -48,6 +48,8 @@
         URLDownload = nil;
         filePath = nil;
         fileIcon = nil;
+        expectedContentLength = -1;
+        receivedContentLength = 0;
         progressIndicator = nil;
         status = SKDownloadStatusUndefined;
         delegate = aDelegate;
@@ -294,6 +296,8 @@
 }
 
 - (void)downloadDidFinish:(NSURLDownload *)theDownload {
+    if (expectedContentLength > 0)
+		[progressIndicator setDoubleValue:(double)expectedContentLength];
     [self setStatus:SKDownloadStatusFinished];
     if ([delegate respondsToSelector:@selector(downloadDidEnd:)])
         [delegate downloadDidEnd:self];

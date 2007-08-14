@@ -101,3 +101,4 @@ extern NSString *SKActivateFullScreenNavigationAtBottomKey;
 extern NSString *SKActivatePresentationNavigationAtBottomKey;
 extern NSString *SKAutoHidePresentationContentsKey;
 extern NSString *SKAutoOpenDownloadsWindowKey;
+extern NSString *SKAutoRemoveFinishedDownloadsKey;
