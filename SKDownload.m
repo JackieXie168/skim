@@ -40,6 +40,15 @@
 #import <ApplicationServices/ApplicationServices.h>
 
 
+@interface SKDownload (Private)
+- (void)setStatus:(int)newStatus;
+- (void)setFilePath:(NSString *)newFilePath;
+- (void)setExpectedContentLength:(long long)newExpectedContentLength;
+- (void)setReceivedContentLength:(long long)newReceivedContentLength;
+- (void)handleApplicationWillTerminateNotification:(NSNotification *)notification;
+@end
+
+
 @implementation SKDownload
 
 - (id)initWithURL:(NSURL *)aURL delegate:(id)aDelegate {
@@ -56,6 +65,9 @@
         
         if (URL)
             [self startDownload];
+        
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleApplicationWillTerminateNotification:) 
+                                                     name:NSApplicationWillTerminateNotification object:NSApp];
     }
     return self;
 }
@@ -65,6 +77,7 @@
 }
 
 - (void)dealloc {
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
     [self cleanupDownload];
     [URL release];
     [URLDownload release];
@@ -72,6 +85,10 @@
     [fileIcon release];
     [progressIndicator release];
     [super dealloc];
+}
+
+- (void)handleApplicationWillTerminateNotification:(NSNotification *)notification {
+    [self cleanupDownload];
 }
 
 #pragma mark Accessors
@@ -150,7 +167,7 @@
         expectedContentLength = newExpectedContentLength;
         if (expectedContentLength > 0) {
             [progressIndicator setIndeterminate:NO];
-            [progressIndicator setMaxValue:expectedContentLength];
+            [progressIndicator setMaxValue:(double)expectedContentLength];
         } else {
             [progressIndicator setIndeterminate:YES];
             [progressIndicator setMaxValue:1.0];
@@ -181,13 +198,13 @@
         [progressIndicator sizeToFit];
         if (expectedContentLength > 0) {
             [progressIndicator setIndeterminate:NO];
-            [progressIndicator setMaxValue:expectedContentLength];
+            [progressIndicator setMaxValue:(double)expectedContentLength];
+            [progressIndicator setDoubleValue:(double)receivedContentLength];
         } else {
             [progressIndicator setIndeterminate:YES];
             [progressIndicator setMaxValue:1.0];
         }
-        if ([self status] == SKDownloadStatusDownloading)
-            [progressIndicator startAnimation:self];
+        [progressIndicator startAnimation:self];
     }
     return progressIndicator;
 }

@@ -64,18 +64,13 @@ enum {
 - (id)delegate;
 - (void)setDelegate:(id)newDelegate;
 
-- (int)status;
-- (void)setStatus:(int)newStatus;
-
 - (NSURL *)URL;
 - (void)setURL:(NSURL *)newURL;
 
+- (int)status;
 - (NSString *)filePath;
-- (void)setFilePath:(NSString *)newFilePath;
-
 - (NSString *)fileName;
 - (NSImage *)fileIcon;
-
 - (long long)expectedContentLength;
 - (long long)receivedContentLength;
 

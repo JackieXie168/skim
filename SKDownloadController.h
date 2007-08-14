@@ -53,6 +53,4 @@
 - (IBAction)removeDownload:(id)sender;
 - (IBAction)cancelDownload:(id)sender;
 
-- (void)handleApplicationWillTerminateNotification:(NSNotification *)notification;
-
 @end
