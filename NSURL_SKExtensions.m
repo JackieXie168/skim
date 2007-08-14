@@ -43,7 +43,7 @@ NSString *SKWeblocFilePboardType = @"CorePasteboardFlavorType 0x75726C20";
 @implementation NSURL (SKExtensions)
 
 + (NSURL *)URLFromPasteboardAnyType:(NSPasteboard *)pasteboard {
-    NSString *pboardType = [pasteboard availableTypeFromArray:[NSArray arrayWithObjects:NSURLPboardType, SKWeblocFilePboardType, NSStringPboardType, nil]];
+    NSString *pboardType = [pasteboard availableTypeFromArray:[NSArray arrayWithObjects:SKWeblocFilePboardType, NSURLPboardType, NSStringPboardType, nil]];
     NSURL *theURL = nil;
     if ([pboardType isEqualToString:NSURLPboardType]) {
         theURL = [NSURL URLFromPasteboard:pasteboard];
