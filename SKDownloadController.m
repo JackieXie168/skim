@@ -282,12 +282,12 @@
     NSString *toolTip = nil;
     if ([[tableColumn identifier] isEqualToString:@"cancel"]) {
         if ([[downloads objectAtIndex:row] canCancel])
-            toolTip = NSLocalizedString(@"Cancel download", @"");
+            toolTip = NSLocalizedString(@"Cancel download", @"Tool tip message");
         else
-            toolTip = NSLocalizedString(@"Remove download", @"");
+            toolTip = NSLocalizedString(@"Remove download", @"Tool tip message");
     } else if ([[tableColumn identifier] isEqualToString:@"resume"]) {
         if ([[downloads objectAtIndex:row] canResume])
-            toolTip = NSLocalizedString(@"Resume download", @"");
+            toolTip = NSLocalizedString(@"Resume download", @"Tool tip message");
     }
     return toolTip;
 }
