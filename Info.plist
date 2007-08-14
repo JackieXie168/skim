@@ -357,7 +357,7 @@
         <key>NSMenuItem</key>
         <dict>
            <key>default</key>
-           <string>Open PDF at URL</string>
+           <string>Skim/Open PDF at URL</string>
         </dict>
         <key>NSMessage</key>
         <string>openDocumentFromURLOnPboard</string>
@@ -374,7 +374,7 @@
         <key>NSMenuItem</key>
         <dict>
            <key>default</key>
-           <string>Open Selected PDF</string>
+           <string>Skim/Open Selected PDF</string>
         </dict>
         <key>NSMessage</key>
         <string>openDocumentFromDataOnPboard</string>
