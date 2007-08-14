@@ -55,8 +55,6 @@
 - (id)init {
     if (self = [super init]) {
         downloads = [[NSMutableArray alloc] init];
-        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleApplicationWillTerminateNotification:) 
-                                                     name:NSApplicationWillTerminateNotification object:NSApp];
     }
     return self;
 }
@@ -67,10 +65,6 @@
 }
 
 - (NSString *)windowNibName { return @"DownloadsWindow"; }
-
-- (void)handleApplicationWillTerminateNotification:(NSNotification *)notification {
-    [downloads makeObjectsPerformSelector:@selector(cleanupDownload)];
-}
 
 - (void)reloadTableView {
     NSView *view;
