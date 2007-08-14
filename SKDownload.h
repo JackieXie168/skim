@@ -85,9 +85,11 @@ enum {
 
 - (void)startDownload;
 - (void)cancelDownload;
+- (void)resumeDownload;
 - (void)cleanupDownload;
 
 - (BOOL)canCancel;
+- (BOOL)canResume;
 
 @end
 

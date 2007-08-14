@@ -163,6 +163,7 @@
 		CEAA56D50C6DEE83006BD633 /* Delete.tiff in Resources */ = {isa = PBXBuildFile; fileRef = CEAA56D30C6DEE83006BD633 /* Delete.tiff */; };
 		CEAA67250C70A882006BD633 /* NSURL_SKExtensions.h in CopyFiles */ = {isa = PBXBuildFile; fileRef = CEAA67230C70A882006BD633 /* NSURL_SKExtensions.h */; };
 		CEAA67260C70A882006BD633 /* NSURL_SKExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = CEAA67240C70A882006BD633 /* NSURL_SKExtensions.m */; };
+		CEAA68EB0C71242F006BD633 /* Resume.tiff in Resources */ = {isa = PBXBuildFile; fileRef = CEAA68EA0C71242F006BD633 /* Resume.tiff */; };
 		CEAF079D0C4139EB00C3ECBB /* SKStatusBar.m in Sources */ = {isa = PBXBuildFile; fileRef = CEAF079B0C4139EB00C3ECBB /* SKStatusBar.m */; };
 		CEAF2E5A0C45414100C3ECBB /* SKLine.m in Sources */ = {isa = PBXBuildFile; fileRef = CEAF2E580C45414100C3ECBB /* SKLine.m */; };
 		CEAFFD7C0C40ED5400C3ECBB /* ToolbarColors.tiff in Resources */ = {isa = PBXBuildFile; fileRef = CEAFFD7A0C40ED5400C3ECBB /* ToolbarColors.tiff */; };
@@ -542,6 +543,7 @@
 		CEAA56D30C6DEE83006BD633 /* Delete.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; name = Delete.tiff; path = Images/Delete.tiff; sourceTree = "<group>"; };
 		CEAA67230C70A882006BD633 /* NSURL_SKExtensions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NSURL_SKExtensions.h; sourceTree = "<group>"; };
 		CEAA67240C70A882006BD633 /* NSURL_SKExtensions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NSURL_SKExtensions.m; sourceTree = "<group>"; };
+		CEAA68EA0C71242F006BD633 /* Resume.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; name = Resume.tiff; path = Images/Resume.tiff; sourceTree = "<group>"; };
 		CEAF079A0C4139EB00C3ECBB /* SKStatusBar.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SKStatusBar.h; sourceTree = "<group>"; };
 		CEAF079B0C4139EB00C3ECBB /* SKStatusBar.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SKStatusBar.m; sourceTree = "<group>"; };
 		CEAF2E570C45414100C3ECBB /* SKLine.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SKLine.h; sourceTree = "<group>"; };
@@ -1008,6 +1010,7 @@
 				CE4D88D70C3AE52F002C20CB /* DVIDocument.icns */,
 				CEAA56D20C6DEE83006BD633 /* Cancel.tiff */,
 				CEAA56D30C6DEE83006BD633 /* Delete.tiff */,
+				CEAA68EA0C71242F006BD633 /* Resume.tiff */,
 				CE0715890B8A3D6300733CC8 /* NoteDocument.icns */,
 				CE7C5D180BD8086C0011315D /* ToolbarLineNote.tiff */,
 				CE4190C20B94963A00ECF819 /* ToolbarCircleNote.tiff */,
@@ -1259,6 +1262,7 @@
 				CEAA55F10C6DE5AE006BD633 /* DownloadsWindow.nib in Resources */,
 				CEAA56D40C6DEE83006BD633 /* Cancel.tiff in Resources */,
 				CEAA56D50C6DEE83006BD633 /* Delete.tiff in Resources */,
+				CEAA68EB0C71242F006BD633 /* Resume.tiff in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
