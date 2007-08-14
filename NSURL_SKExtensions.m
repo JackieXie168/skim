@@ -51,9 +51,11 @@ NSString *SKWeblocFilePboardType = @"CorePasteboardFlavorType 0x75726C20";
         theURL = [NSURL URLWithString:[pasteboard stringForType:SKWeblocFilePboardType]];
     } else if ([pboardType isEqualToString:NSStringPboardType]) {
         NSString *string = [[pasteboard stringForType:NSStringPboardType] stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
-        if ([string hasPrefix:@"<"] && [string hasSuffix:@">"])
-            string = [string substringWithRange:NSMakeRange(1, [string length] - 2)];
-        theURL = [NSURL URLWithString:string];
+        if ([string rangeOfString:@"://"].length) {
+            if ([string hasPrefix:@"<"] && [string hasSuffix:@">"])
+                string = [string substringWithRange:NSMakeRange(1, [string length] - 2)];
+            theURL = [NSURL URLWithString:string];
+        }
         if (theURL == nil) {
             if ([string hasPrefix:@"~"])
                 string = [string stringByExpandingTildeInPath];
