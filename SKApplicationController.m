@@ -53,6 +53,8 @@
 #import "SKLine.h"
 #import "NSImage_SKExtensions.h"
 #import "SKDownloadController.h"
+#import "NSURL_SKExtensions.h"
+#import "SKDocumentController.h"
 
 
 @implementation SKApplicationController
@@ -189,54 +191,20 @@ static BOOL fileIsInTrash(NSURL *fileURL)
 
 #pragma mark Services Support
 
-- (void)openDocumentFromURLOnPboard:(NSPasteboard *)pboard
-                           userData:(NSString *)userData
-                              error:(NSString **)error{
+- (void)openDocumentFromURLOnPboard:(NSPasteboard *)pboard userData:(NSString *)userData error:(NSString **)error {
+    NSError *outError;
+    id document = [[NSDocumentController sharedDocumentController] openDocumentWithContentsOfPasteboard:pboard typesMask:SKURLPboardTypesMask error:&outError];
+    
+    if (document == nil && outError && error)
+        *error = [outError localizedDescription];
+}
 
-    NSArray *types = [pboard types];
+- (void)openDocumentFromDataOnPboard:(NSPasteboard *)pboard userData:(NSString *)userData error:(NSString **)error {
+    NSError *outError;
+    id document = [[NSDocumentController sharedDocumentController] openDocumentWithContentsOfPasteboard:pboard typesMask:SKImagePboardTypesMask error:&outError];
     
-    bool pbHasStringType = [types containsObject:NSStringPboardType];
-    bool pbHasURLType = [types containsObject:NSURLPboardType];
-    
-    if (!pbHasStringType && !pbHasURLType) {
-        *error = NSLocalizedString(@"Error: couldn't get a URL.",
-                                   @"pboard couldn't give string or URL.");
-        return;
-    }
-    
-    NSURL *pdfURL = nil;
-    
-    if (pbHasURLType){
-        pdfURL = [NSURL URLFromPasteboard:pboard];
-    }
-    
-    if (pdfURL == nil && pbHasStringType){
-        NSString *pboardString = [pboard stringForType:NSStringPboardType];
-        
-        if (!pboardString) {
-            *error = NSLocalizedString(@"Error: couldn't get a URL.",
-                                       @"pboard couldn't give string.");
-            return;
-        }
-        pdfURL = [NSURL URLWithString:pboardString];
-    }
-    
-    if (!pdfURL){
-        *error = NSLocalizedString(@"Error: couldn't get a URL",
-                                   @"nothing worked.");
-        return;
-    }
-
-    if([pdfURL isFileURL]){
-        NSError *newError;
-        [[NSDocumentController sharedDocumentController] openDocumentWithContentsOfURL:pdfURL
-                                                                               display:YES
-                                                                                 error:&newError];
-    }else{
-        [[SKDownloadController sharedDownloadController] addDownloadForURL:pdfURL];
-    }
-    
-    return;
+    if (document == nil && outError && error)
+        *error = [outError localizedDescription];
 }
 
 #pragma mark Actions

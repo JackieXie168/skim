@@ -365,8 +365,26 @@
         <string>Skim</string>
         <key>NSSendTypes</key>
         <array>
-           <string>NSStringPboardType</string>
            <string>NSURLPboardType</string>
+           <string>NSStringPboardType</string>
+           <string>CorePasteboardFlavorType 0x75726C20</string>
+        </array>
+     </dict>
+     <dict>
+        <key>NSMenuItem</key>
+        <dict>
+           <key>default</key>
+           <string>Open Selected PDF</string>
+        </dict>
+        <key>NSMessage</key>
+        <string>openDocumentFromDataOnPboard</string>
+        <key>NSPortName</key>
+        <string>Skim</string>
+        <key>NSSendTypes</key>
+        <array>
+           <string>NSPDFPboardType</string>
+           <string>NSPostScriptPboardType</string>
+           <string>NSTIFFPboardType</string>
         </array>
      </dict>
   </array>

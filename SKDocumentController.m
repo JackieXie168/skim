@@ -136,13 +136,13 @@ static NSData *convertTIFFDataToPDF(NSData *tiffData)
     return pdfData;
 }
 
-- (id)openDocumentWithContentsOfPasteboard:(NSPasteboard *)pboard error:(NSError **)outError {
+- (id)openDocumentWithContentsOfPasteboard:(NSPasteboard *)pboard typesMask:(int)mask error:(NSError **)outError {
     // allow any filter services to convert to TIFF data if we can't get PDF or PS directly
     pboard = [NSPasteboard pasteboardByFilteringTypesInPasteboard:pboard];
     NSString *pboardType;
     id document = nil;
     
-    if (pboardType = [pboard availableTypeFromArray:[NSArray arrayWithObjects:NSPDFPboardType, NSPostScriptPboardType, NSTIFFPboardType, nil]]) {
+    if ((mask & SKImagePboardTypesMask) && (pboardType = [pboard availableTypeFromArray:[NSArray arrayWithObjects:NSPDFPboardType, NSPostScriptPboardType, NSTIFFPboardType, nil]])) {
         
         NSData *data = [pboard dataForType:pboardType];
         
@@ -167,7 +167,7 @@ static NSData *convertTIFFDataToPDF(NSData *tiffData)
                 *outError = error;
         }
         
-    } else if (pboardType = [pboard availableTypeFromArray:[NSArray arrayWithObjects:NSURLPboardType, SKWeblocFilePboardType, NSStringPboardType, nil]]) {
+    } else if ((mask & SKURLPboardTypesMask) && (pboardType = [pboard availableTypeFromArray:[NSArray arrayWithObjects:NSURLPboardType, SKWeblocFilePboardType, NSStringPboardType, nil]])) {
         
         NSURL *theURL = [NSURL URLFromPasteboardAnyType:pboard];
         if ([theURL isFileURL]) {
@@ -190,7 +190,7 @@ static NSData *convertTIFFDataToPDF(NSData *tiffData)
 
 - (void)newDocumentFromClipboard:(id)sender {
     NSError *error = nil;
-    id document = [self openDocumentWithContentsOfPasteboard:[NSPasteboard generalPasteboard] error:&error];
+    id document = [self openDocumentWithContentsOfPasteboard:[NSPasteboard generalPasteboard] typesMask:SKImagePboardTypesMask | SKURLPboardTypesMask error:&error];
     
     if (document == nil && error)
         [NSApp presentError:error];
