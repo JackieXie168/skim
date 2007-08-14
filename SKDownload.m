@@ -63,7 +63,7 @@
 }
 
 - (void)dealloc {
-    [self cancelDownload];
+    [self cleanupDownload];
     [URL release];
     [URLDownload release];
     [filePath release];
@@ -198,10 +198,10 @@
         return;
     }
     
-    [self setStatus:SKDownloadStatusDownloading];
     [self setExpectedContentLength:-1];
     [self setReceivedContentLength:0];
     URLDownload = [[NSURLDownload alloc] initWithRequest:[NSURLRequest requestWithURL:URL] delegate:self];
+    [URLDownload setDeletesFileUponFailure:NO];
     [self setStatus:SKDownloadStatusStarting];
     if ([delegate respondsToSelector:@selector(downloadDidUpdate:)])
         [delegate downloadDidUpdate:self];
@@ -209,10 +209,26 @@
 
 - (void)cancelDownload {
     if ([self canCancel]) {
-        [self setStatus:SKDownloadStatusCanceled];
+        
         [URLDownload cancel];
+        [self setStatus:SKDownloadStatusCanceled];
         if ([delegate respondsToSelector:@selector(downloadDidEnd:)])
             [delegate downloadDidEnd:self];
+    }
+}
+
+- (void)resumeDownload {
+    if ([self canResume]) {
+        
+        NSData *resumeData = [[[URLDownload resumeData] retain] autorelease];
+        if (resumeData) {
+            [URLDownload release];
+            URLDownload = [[NSURLDownload alloc] initWithResumeData:resumeData delegate:self path:[self filePath]];
+            [URLDownload setDeletesFileUponFailure:NO];
+            [self setStatus:SKDownloadStatusDownloading];
+            if ([delegate respondsToSelector:@selector(downloadDidUpdate:)])
+                [delegate downloadDidUpdate:self];
+        }
     }
 }
 
@@ -220,12 +236,14 @@
     [self cancelDownload];
     if (filePath)
         [[NSFileManager defaultManager] removeFileAtPath:[filePath stringByDeletingLastPathComponent] handler:nil];
-    [URLDownload release];
-    URLDownload = nil;
 }
 
 - (BOOL)canCancel {
     return [self status] == SKDownloadStatusStarting || [self status] == SKDownloadStatusDownloading;
+}
+
+- (BOOL)canResume {
+    return [self status] == SKDownloadStatusCanceled;
 }
 
 #pragma mark NSURLDownloadDelegate protocol

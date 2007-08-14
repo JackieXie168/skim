@@ -53,7 +53,9 @@
 
 - (id)init {
     if (self = [super init]) {
-         downloads = [[NSMutableArray alloc] init];
+        downloads = [[NSMutableArray alloc] init];
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleApplicationWillTerminateNotification:) 
+                                                     name:NSApplicationWillTerminateNotification object:NSApp];
     }
     return self;
 }
@@ -64,6 +66,10 @@
 }
 
 - (NSString *)windowNibName { return @"DownloadsWindow"; }
+
+- (void)handleApplicationWillTerminateNotification:(NSNotification *)notification {
+    [downloads makeObjectsPerformSelector:@selector(cleanupDownload)];
+}
 
 - (void)reloadTableView {
     NSView *view;
@@ -127,13 +133,25 @@
     }
 }
 
+- (IBAction)resumeDownload:(id)sender {
+	int row = [tableView clickedRow];
+    
+    if (row != -1) {
+        SKDownload *download = [downloads objectAtIndex:row];
+        if ([download status] == SKDownloadStatusCanceled) {
+            [download resumeDownload];
+            [self reloadTableView];
+            [self updateButtons];
+        }
+    }
+}
+
 - (IBAction)removeDownload:(id)sender {
 	int row = [tableView clickedRow];
     
     if (row != -1) {
         SKDownload *download = [downloads objectAtIndex:row];
-        if ([download status] == SKDownloadStatusDownloading)
-            [download cancelDownload];
+        [download cleanupDownload];
         [downloads removeObjectAtIndex:row];
         [self reloadTableView];
         [self updateButtons];
@@ -163,9 +181,6 @@
 }
 
 - (void)downloadDidEnd:(SKDownload *)download {
-    [self reloadTableView];
-    [self updateButtons];
-    
     if ([download status] == SKDownloadStatusFinished) {
         NSURL *URL = [NSURL fileURLWithPath:[download filePath]];
         NSError *error = nil;
@@ -174,9 +189,13 @@
             [document setFileName:[[URL path] lastPathComponent]];
         else
             [NSApp presentError:error];
+        
+        [download cleanupDownload];
+        [downloads removeObject:download];
     }
     
-    [download cleanupDownload];
+    [self reloadTableView];
+    [self updateButtons];
 }
 
 #pragma mark NSTableViewDataSource
@@ -243,6 +262,16 @@
             [cell setAction:@selector(removeDownload:)];
             [cell setTarget:self];
         }
+    } else if ([identifier isEqualToString:@"resume"]) {
+        if ([download canResume]) {
+            [cell setImage:[NSImage imageNamed:@"Resume"]];
+            [cell setAction:@selector(resumeDownload:)];
+            [cell setTarget:self];
+        } else {
+            [cell setImage:nil];
+            [cell setAction:NULL];
+            [cell setTarget:nil];
+        }
     }
 }
 
@@ -253,6 +282,9 @@
             toolTip = NSLocalizedString(@"Cancel download", @"");
         else
             toolTip = NSLocalizedString(@"Remove download", @"");
+    } else if ([[tableColumn identifier] isEqualToString:@"resume"]) {
+        if ([[downloads objectAtIndex:row] canResume])
+            toolTip = NSLocalizedString(@"Resume download", @"");
     }
     return toolTip;
 }
