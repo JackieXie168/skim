@@ -95,9 +95,11 @@
 - (void)addDownloadForURL:(NSURL *)aURL {
     if (aURL) {
         SKDownload *download = [[[SKDownload alloc] initWithURL:aURL delegate:self] autorelease];
+        int row = [downloads count];
         [downloads addObject:download];
         [self reloadTableView];
-        [tableView selectRowIndexes:[NSIndexSet indexSetWithIndex:[tableView numberOfRows] - 1] byExtendingSelection:NO];
+        [tableView selectRowIndexes:[NSIndexSet indexSetWithIndex:row] byExtendingSelection:NO];
+        [tableView scrollRowToVisible:row];
     }
 }
 
