@@ -195,6 +195,7 @@
         progressIndicator = [[NSProgressIndicator alloc] init];
         [progressIndicator setStyle:NSProgressIndicatorBarStyle];
         [progressIndicator setControlSize:NSSmallControlSize];
+        [progressIndicator setUsesThreadedAnimation:YES];
         [progressIndicator sizeToFit];
         if (expectedContentLength > 0) {
             [progressIndicator setIndeterminate:NO];
@@ -239,14 +240,27 @@
 - (void)resumeDownload {
     if ([self canResume]) {
         
-        NSData *resumeData = [[[URLDownload resumeData] retain] autorelease];
+        NSData *resumeData = nil;
+        if ([self status] == SKDownloadStatusCanceled) 
+            resumeData = [[[URLDownload resumeData] retain] autorelease];
+        
         if (resumeData) {
+            
             [URLDownload release];
             URLDownload = [[NSURLDownload alloc] initWithResumeData:resumeData delegate:self path:[self filePath]];
             [URLDownload setDeletesFileUponFailure:NO];
             [self setStatus:SKDownloadStatusDownloading];
             if ([delegate respondsToSelector:@selector(downloadDidUpdate:)])
                 [delegate downloadDidUpdate:self];
+            
+        } else {
+            
+            [self cleanupDownload];
+            [self setFilePath:nil];
+            [URLDownload release];
+            URLDownload = nil;
+            [self startDownload];
+            
         }
     }
 }
@@ -262,7 +276,7 @@
 }
 
 - (BOOL)canResume {
-    return [self status] == SKDownloadStatusCanceled;
+    return ([self status] == SKDownloadStatusCanceled || [self status] == SKDownloadStatusFailed) && [self URL];
 }
 
 #pragma mark NSURLDownloadDelegate protocol
