@@ -97,6 +97,7 @@ NSString *SKDocumentWillSaveNotification = @"SKDocumentWillSaveNotification";
     [readNotesAccessoryView release];
     [lastModifiedDate release];
     [progressSheet release];
+    [autoRotateButton release];
     [super dealloc];
 }
 
@@ -507,7 +508,7 @@ static NSPopUpButton *popUpButtonSubview(NSView *view)
 #pragma mark Actions
 
 - (IBAction)printDocument:(id)sender{
-    [[self pdfView] printWithInfo:[self printInfo] autoRotate:NO];
+    [[self pdfView] printWithInfo:[self printInfo] autoRotate:autoRotate];
 }
 
 - (void)openPanelDidEnd:(NSOpenPanel *)oPanel returnCode:(int)returnCode  contextInfo:(void  *)contextInfo{
@@ -1154,7 +1155,22 @@ static BOOL isFileOnHFSVolume(NSString *fileName)
 
 - (void)setPrintInfo:(NSPrintInfo *)printInfo {
     [super setPrintInfo:printInfo];
+    if (autoRotateButton)
+        autoRotate = [autoRotateButton state] == NSOnState;
     [self updateChangeCount:[[self undoManager] isUndoing] ? NSChangeDone : NSChangeUndone];
+}
+
+- (BOOL)preparePageLayout:(NSPageLayout *)pageLayout {
+    if (autoRotateButton == nil) {
+        autoRotateButton = [[NSButton alloc] init];
+        [autoRotateButton setBezelStyle:NSRoundedBezelStyle];
+        [autoRotateButton setButtonType:NSSwitchButton];
+        [autoRotateButton setTitle:NSLocalizedString(@"Auto Rotate Pages", @"Print layout sheet button title")];
+        [autoRotateButton sizeToFit];
+    }
+    [autoRotateButton setState:autoRotate ? NSOnState : NSOffState];
+    [pageLayout setAccessoryView:autoRotateButton];
+    return YES;
 }
 
 #pragma mark Scripting support

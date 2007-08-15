@@ -66,6 +66,9 @@ enum {
     IBOutlet NSProgressIndicator *progressBar;
     IBOutlet NSTextField        *progressField;
     
+    IBOutlet NSButton *autoRotateButton;
+    BOOL autoRotate;
+    
     // variables to be saved:
     NSData *pdfData;
     
