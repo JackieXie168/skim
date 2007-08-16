@@ -73,7 +73,6 @@
         [self setReleasedWhenClosed:NO];
         [self setHidesOnDeactivate:YES];
         [self setLevel:NSFloatingWindowLevel];
-        [self moveToScreen:screen];
     }
     return self;
 }
