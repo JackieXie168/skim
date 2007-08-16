@@ -539,9 +539,12 @@ static NSString *noteToolAdornImageNames[] = {@"TextNoteToolAdorn", @"AnchoredNo
 }
 
 - (NSString *)windowTitleForDocumentDisplayName:(NSString *)displayName {
-    if ([pdfView document])
-        return [NSString stringWithFormat:NSLocalizedString(@"%@ (%i pages)", @"Window title format"), displayName, [[pdfView document] pageCount]];
-    else
+    if ([pdfView document]) {
+        if ([[pdfView document] pageCount] == 1)
+            return [NSString stringWithFormat:NSLocalizedString(@"%@ (1 page)", @"Window title format"), displayName];
+        else
+            return [NSString stringWithFormat:NSLocalizedString(@"%@ (%i pages)", @"Window title format"), displayName, [[pdfView document] pageCount]];
+    } else
         return displayName;
 }
 
