@@ -943,7 +943,8 @@ static BOOL adjacentCharacterBounds(NSRect rect1, NSRect rect2) {
     unsigned i;
     
     for (i = 0; i < numberOfLines; i++) {
-        if (sel = [[self page] selectionForRect:lineRects[i]]) {
+        // slightly outset the rect to avoid rounding errors, as selectionForRect is pretty strict
+        if (sel = [[self page] selectionForRect:NSInsetRect(lineRects[i], -1.0, -1.0)]) {
             if (selection == nil)
                 selection = sel;
             else
