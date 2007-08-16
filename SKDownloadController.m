@@ -190,6 +190,8 @@
             [downloads removeObject:download];
             // for the document to note that the file has been deleted
             [document setFileURL:[NSURL fileURLWithPath:[download filePath]]];
+            if ([downloads count] == 0 && [[NSUserDefaults standardUserDefaults] boolForKey:SKAutoCloseDownloadsWindowKey])
+                [[self window] close];
         }
     }
     
