@@ -182,14 +182,14 @@
         NSURL *URL = [NSURL fileURLWithPath:[download filePath]];
         NSError *error = nil;
         id document = [[NSDocumentController sharedDocumentController] openDocumentWithContentsOfURL:URL display:YES error:&error];
-        if (document)
-            [document setFileName:[[URL path] lastPathComponent]];
-        else
+        if (document == nil)
             [NSApp presentError:error];
         
         if ([[NSUserDefaults standardUserDefaults] boolForKey:SKAutoRemoveFinishedDownloadsKey]) {
             [download cleanupDownload];
             [downloads removeObject:download];
+            // for the document to note that the file has been deleted
+            [document setFileURL:[NSURL fileURLWithPath:[download filePath]]];
         }
     }
     
