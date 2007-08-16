@@ -103,3 +103,4 @@ NSString *SKActivatePresentationNavigationAtBottomKey = @"SKActivatePresentation
 NSString *SKAutoHidePresentationContentsKey = @"SKAutoHidePresentationContents";
 NSString *SKAutoOpenDownloadsWindowKey = @"SKAutoOpenDownloadsWindow";
 NSString *SKAutoRemoveFinishedDownloadsKey = @"SKAutoRemoveFinishedDownloads";
+NSString *SKAutoCloseDownloadsWindowKey = @"SKAutoCloseDownloadsWindow";

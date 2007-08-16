@@ -228,6 +228,8 @@
         <true/>
         <key>SKAutoRemoveFinishedDownloads</key>
         <true/>
+        <key>SKAutoCloseDownloadsWindow</key>
+        <false/>
         <key>SUScheduledCheckInterval</key>
         <integer>86400</integer>
     </dict>
