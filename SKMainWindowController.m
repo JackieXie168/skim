@@ -1863,11 +1863,10 @@ static NSString *noteToolAdornImageNames[] = {@"TextNoteToolAdorn", @"AnchoredNo
     NSScreen *screen = [[self window] screen];
     if (screen == nil)
         screen = [NSScreen mainScreen];
-    if (leftSideWindow == nil) {
+    if (leftSideWindow == nil)
         leftSideWindow = [[SKSideWindow alloc] initWithMainController:self edge:NSMinXEdge];
-    } else if (screen != [leftSideWindow screen]) {
-        [leftSideWindow moveToScreen:screen];
-    }
+    
+    [leftSideWindow moveToScreen:screen];
     
     if ([[mainWindow firstResponder] isDescendantOf:leftSideContentView])
         [mainWindow makeFirstResponder:nil];
@@ -1895,11 +1894,10 @@ static NSString *noteToolAdornImageNames[] = {@"TextNoteToolAdorn", @"AnchoredNo
     NSScreen *screen = [[self window] screen]; // @@ or should we use the main screen?
     if (screen == nil)
         screen = [NSScreen mainScreen];
-    if (rightSideWindow == nil) {
+    if (rightSideWindow == nil) 
         rightSideWindow = [[SKSideWindow alloc] initWithMainController:self edge:NSMaxXEdge];
-    } else if (screen != [rightSideWindow screen]) {
-        [rightSideWindow moveToScreen:screen];
-    }
+    
+    [rightSideWindow moveToScreen:screen];
     
     if ([[mainWindow firstResponder] isDescendantOf:rightSideContentView])
         [mainWindow makeFirstResponder:nil];
@@ -1989,9 +1987,7 @@ static NSString *noteToolAdornImageNames[] = {@"TextNoteToolAdorn", @"AnchoredNo
     }
         
     // explicitly set window frame; screen may have moved, or may be nil (in which case [fullScreenWindow frame] is wrong, which is weird); the first time through this method, [fullScreenWindow screen] is nil
-    if ([screen isEqual:[fullScreenWindow screen]] == NO) {
-        [fullScreenWindow setFrame:[screen frame] display:NO];
-    }
+    [fullScreenWindow setFrame:[screen frame] display:NO];
     
     if ([[mainWindow firstResponder] isDescendantOf:pdfView])
         [mainWindow makeFirstResponder:nil];
