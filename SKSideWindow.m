@@ -89,6 +89,8 @@
         frame.origin.x = NSMaxX(screenFrame) - WINDOW_OFFSET;
     frame = NSInsetRect(frame, 0.0, WINDOW_INSET);
     [self setFrame:frame display:NO];
+    state = NSDrawerClosedState;
+    [[self contentView] setAcceptsMouseOver:YES];
 }
 
 - (void)slideOut {
