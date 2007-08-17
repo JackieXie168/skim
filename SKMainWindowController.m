@@ -133,11 +133,11 @@ static NSString *noteToolAdornImageNames[] = {@"TextNoteToolAdorn", @"AnchoredNo
 
 - (void)setupToolbar;
 
-- (void)showLeftSideWindow;
-- (void)showRightSideWindow;
+- (void)showLeftSideWindowOnScreen:(NSScreen *)screen;
+- (void)showRightSideWindowOnScreen:(NSScreen *)screen;
 - (void)hideLeftSideWindow;
 - (void)hideRightSideWindow;
-- (void)showSideWindows;
+- (void)showSideWindowsOnScreen:(NSScreen *)screen;
 - (void)hideSideWindows;
 - (void)goFullScreen;
 - (void)removeFullScreen;
@@ -1777,7 +1777,7 @@ static NSString *noteToolAdornImageNames[] = {@"TextNoteToolAdorn", @"AnchoredNo
         if ([leftSideWindow isVisible])
             [self hideLeftSideWindow];
         else
-            [self showLeftSideWindow];
+            [self showLeftSideWindowOnScreen:[[self window] screen]];
     } else {
         NSRect sideFrame = [leftSideContentBox frame];
         NSRect pdfFrame = [pdfContentBox frame];
@@ -1862,10 +1862,7 @@ static NSString *noteToolAdornImageNames[] = {@"TextNoteToolAdorn", @"AnchoredNo
 
 #pragma mark Full Screen support
 
-- (void)showLeftSideWindow {
-    NSScreen *screen = [[self window] screen];
-    if (screen == nil)
-        screen = [NSScreen mainScreen];
+- (void)showLeftSideWindowOnScreen:(NSScreen *)screen {
     if (leftSideWindow == nil)
         leftSideWindow = [[SKSideWindow alloc] initWithMainController:self edge:NSMinXEdge];
     
@@ -1893,10 +1890,7 @@ static NSString *noteToolAdornImageNames[] = {@"TextNoteToolAdorn", @"AnchoredNo
     }
 }
 
-- (void)showRightSideWindow {
-    NSScreen *screen = [[self window] screen]; // @@ or should we use the main screen?
-    if (screen == nil)
-        screen = [NSScreen mainScreen];
+- (void)showRightSideWindowOnScreen:(NSScreen *)screen {
     if (rightSideWindow == nil) 
         rightSideWindow = [[SKSideWindow alloc] initWithMainController:self edge:NSMaxXEdge];
     
@@ -1962,9 +1956,9 @@ static NSString *noteToolAdornImageNames[] = {@"TextNoteToolAdorn", @"AnchoredNo
     }
 }
 
-- (void)showSideWindows {
-    [self showLeftSideWindow];
-    [self showRightSideWindow];
+- (void)showSideWindowsOnScreen:(NSScreen *)screen {
+    [self showLeftSideWindowOnScreen:screen];
+    [self showRightSideWindowOnScreen:screen];
     
     [pdfView setFrame:NSInsetRect([[pdfView superview] bounds], 9.0, 0.0)];
     [[pdfView superview] setNeedsDisplay:YES];
@@ -2176,8 +2170,8 @@ static NSString *noteToolAdornImageNames[] = {@"TextNoteToolAdorn", @"AnchoredNo
     if ([fullScreenSetup count])
         [self applyPDFSettings:fullScreenSetup];
     
-    [pdfView setHasNavigation:YES activateAtBottom:[[NSUserDefaults standardUserDefaults] boolForKey:SKActivateFullScreenNavigationAtBottomKey] autohidesCursor:NO];
-    [self showSideWindows];
+    [pdfView setHasNavigation:YES activateAtBottom:[[NSUserDefaults standardUserDefaults] boolForKey:SKActivateFullScreenNavigationAtBottomKey] autohidesCursor:NO screen:screen];
+    [self showSideWindowsOnScreen:screen];
 }
 
 - (IBAction)enterPresentation:(id)sender {
@@ -2199,7 +2193,7 @@ static NSString *noteToolAdornImageNames[] = {@"TextNoteToolAdorn", @"AnchoredNo
     else
         [self goFullScreen];
     
-    [pdfView setHasNavigation:YES activateAtBottom:[[NSUserDefaults standardUserDefaults] boolForKey:SKActivatePresentationNavigationAtBottomKey] autohidesCursor:YES];
+    [pdfView setHasNavigation:YES activateAtBottom:[[NSUserDefaults standardUserDefaults] boolForKey:SKActivatePresentationNavigationAtBottomKey] autohidesCursor:YES screen:nil];
 }
 
 - (IBAction)exitFullScreen:(id)sender {
@@ -2211,7 +2205,7 @@ static NSString *noteToolAdornImageNames[] = {@"TextNoteToolAdorn", @"AnchoredNo
     
     if ([[fullScreenWindow firstResponder] isDescendantOf:pdfView])
         [fullScreenWindow makeFirstResponder:nil];
-    [pdfView setHasNavigation:NO activateAtBottom:NO autohidesCursor:NO];
+    [pdfView setHasNavigation:NO activateAtBottom:NO autohidesCursor:NO screen:nil];
     [pdfView setFrame:[[pdfContentBox contentView] bounds]];
     [pdfContentBox addSubview:pdfView]; // this should be done before exitPresentationMode to get a smooth transition
     
