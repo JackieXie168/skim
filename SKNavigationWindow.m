@@ -53,6 +53,8 @@
 
 - (id)initWithPDFView:(PDFView *)pdfView {
     NSScreen *screen = [[pdfView window] screen];
+    if (screen == nil)
+        screen = [NSScreen mainScreen];
     float width = 4 * BUTTON_WIDTH + 2 * SEP_WIDTH + 2 * MARGIN;
     NSRect contentRect = NSMakeRect(NSMidX([screen frame]) - 0.5 * width, NSMinY([screen frame]) + OFFSET, width, BUTTON_WIDTH + 2 * MARGIN);
     if (self = [super initWithContentRect:contentRect styleMask:NSBorderlessWindowMask backing:NSBackingStoreBuffered defer:NO screen:screen]) {

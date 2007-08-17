@@ -44,6 +44,8 @@
 @implementation SKFullScreenWindow
 
 - (id)initWithScreen:(NSScreen *)screen {
+    if (screen == nil)
+        screen = [NSScreen mainScreen];
     if (self = [self initWithContentRect:[screen frame] styleMask:NSBorderlessWindowMask backing:NSBackingStoreBuffered defer:NO screen:screen]) {
         [self setReleasedWhenClosed:NO];
         [self setDisplaysWhenScreenProfileChanges:YES];
