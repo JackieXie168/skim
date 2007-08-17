@@ -2142,7 +2142,7 @@ static void SKCGContextDrawGrabHandle(CGContextRef context, CGPoint point, float
     [navWindow orderOut:self];
 }
 
-- (void)setHasNavigation:(BOOL)hasNav activateAtBottom:(BOOL)atBottom autohidesCursor:(BOOL)hideCursor {
+- (void)setHasNavigation:(BOOL)hasNav activateAtBottom:(BOOL)atBottom autohidesCursor:(BOOL)hideCursor screen:(NSScreen *)screen {
     hasNavigation = hasNav;
     autohidesCursor = hideCursor;
     activateNavigationAtBottom = atBottom;
@@ -2155,7 +2155,7 @@ static void SKCGContextDrawGrabHandle(CGContextRef context, CGPoint point, float
             [[NSNotificationCenter defaultCenter] addObserver: self selector: @selector(handleWindowWillCloseNotification:) 
                                                          name: NSWindowWillCloseNotification object: [self window]];
         navWindow = [[SKNavigationWindow alloc] initWithPDFView:self];
-        [navWindow moveToScreen:[[self window] screen]];
+        [navWindow moveToScreen:screen];
         [navWindow setLevel:[[self window] level] + 1];
     } else if ([navWindow isVisible]) {
         [navWindow orderOut:self];

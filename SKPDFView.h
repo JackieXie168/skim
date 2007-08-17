@@ -170,7 +170,7 @@ typedef enum _SKNoteType {
 
 - (void)takeSnapshot:(id)sender;
 
-- (void)setHasNavigation:(BOOL)hasNav activateAtBottom:(BOOL)atBottom autohidesCursor:(BOOL)hideCursor;
+- (void)setHasNavigation:(BOOL)hasNav activateAtBottom:(BOOL)atBottom autohidesCursor:(BOOL)hideCursor screen:(NSScreen *)screen;
 
 - (void)setNeedsDisplayInRect:(NSRect)rect ofPage:(PDFPage *)page;
 - (void)setNeedsDisplayForAnnotation:(PDFAnnotation *)annotation;
