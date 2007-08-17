@@ -189,6 +189,37 @@ static NSString *SKNoteWindowFrameAutosaveName = @"SKNoteWindow";
     } else return NO;
 }
 
+- (BOOL)dragImageView:(BDSKDragImageView *)view writeDataToPasteboard:(NSPasteboard *)pasteboard {
+    NSImage *image = [self isNoteType] ? [(SKPDFAnnotationNote *)note image] : nil;
+    if (image) {
+        NSString *name = [note contents];
+        if ([name length] == 0)
+            name = @"NoteImage";
+        [pasteboard declareTypes:[NSArray arrayWithObjects:NSFilesPromisePboardType, NSTIFFPboardType, nil] owner:nil];
+        [pasteboard setPropertyList:[NSArray arrayWithObjects:[name stringByAppendingPathExtension:@"tiff"], nil] forType:NSFilesPromisePboardType];
+        [pasteboard setData:[image TIFFRepresentation] forType:NSTIFFPboardType];
+        return YES;
+    } else return NO;
+}
+
+- (NSArray *)dragImageView:(BDSKDragImageView *)view namesOfPromisedFilesDroppedAtDestination:(NSURL *)dropDestination {
+    NSImage *image = [self isNoteType] ? [(SKPDFAnnotationNote *)note image] : nil;
+    if (image) {
+        NSString *name = [note contents];
+        if ([name length] == 0)
+            name = @"NoteImage";
+        NSString *basePath = [[dropDestination path] stringByAppendingPathComponent:[note contents]];
+        NSString *path = [basePath stringByAppendingPathExtension:@"tiff"];
+        int i = 0;
+        NSFileManager *fm = [NSFileManager defaultManager];
+        while ([fm fileExistsAtPath:path])
+            path = [[basePath stringByAppendingFormat:@"-%i", ++i] stringByAppendingPathExtension:@"tiff"];
+        if ([[image TIFFRepresentation] writeToFile:path atomically:YES])
+            return [NSArray arrayWithObjects:[path lastPathComponent], nil];
+    }
+    return nil;
+}
+
 @end
 
 
