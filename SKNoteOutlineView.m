@@ -169,17 +169,15 @@
                 continue;
             
             BOOL isHighlighted = isFirstResponder && [self isRowSelected:row];
-            NSColor *color = isHighlighted ? [NSColor whiteColor] : [NSColor grayColor];
+            NSColor *color = [NSColor colorWithCalibratedWhite:isHighlighted ? 1.0 : 0.5 alpha:0.7];
             NSRect rect = [self rectOfRow:row];
-            NSPoint startPoint = NSMakePoint(NSMaxX(rect) - 20.0, NSMaxY(rect) - 1.5);
-            NSPoint endPoint = NSMakePoint(NSMaxX(rect), NSMaxY(rect) - 1.5);
+            float x = ceilf(NSMidX(rect));
+            float y = NSMaxY(rect) - 1.5;
             
             [color set];
-            [NSBezierPath strokeLineFromPoint:startPoint toPoint:endPoint];
-            [[color colorWithAlphaComponent:0.5] set];
-            startPoint.y -= 2.0;
-            endPoint.y -= 2.0;
-            [NSBezierPath strokeLineFromPoint:startPoint toPoint:endPoint];
+            [NSBezierPath strokeLineFromPoint:NSMakePoint(x - 1.0, y) toPoint:NSMakePoint(x + 1.0, y)];
+            y -= 2.0;
+            [NSBezierPath strokeLineFromPoint:NSMakePoint(x - 3.0, y) toPoint:NSMakePoint(x + 3.0, y)];
         }
         
         [NSGraphicsContext restoreGraphicsState];

@@ -116,7 +116,7 @@
                 
                 if ([[dict valueForKey:@"type"] isEqualToString:@"Note"])
                     [note setObject:[NSMutableDictionary dictionaryWithObjectsAndKeys:[NSNumber numberWithFloat:85.0], @"rowHeight", [dict valueForKey:@"text"], @"contents", nil] forKey:@"child"];
-                [note setObject:[NSNumber numberWithFloat:17.0] forKey:@"rowHeight"];
+                [note setObject:[NSNumber numberWithFloat:19.0] forKey:@"rowHeight"];
                 
                 [newNotes addObject:note];
                 [note release];
