@@ -71,6 +71,7 @@
 		dragOp = [delegate dragImageView:self validateDrop:sender];
 	if (dragOp != NSDragOperationNone) {
 		highlight = YES;
+        [self setKeyboardFocusRingNeedsDisplayInRect:[self bounds]];
 		[self setNeedsDisplay:YES];
 	}
 	return dragOp;
@@ -78,11 +79,13 @@
 
 - (void)draggingExited:(id <NSDraggingInfo>)sender{
     highlight = NO;
+    [self setKeyboardFocusRingNeedsDisplayInRect:[self bounds]];
 	[self setNeedsDisplay:YES];
 }
 
 - (BOOL)performDragOperation:(id <NSDraggingInfo>)sender {
     highlight = NO;
+    [self setKeyboardFocusRingNeedsDisplayInRect:[self bounds]];
 	[self setNeedsDisplay:YES];
 	if ([delegate respondsToSelector:@selector(dragImageView:acceptDrop:)])
 		return [delegate dragImageView:self acceptDrop:sender];
@@ -106,22 +109,33 @@
 					if ([delegate respondsToSelector:@selector(dragImageView:writeDataToPasteboard:)] &&
 						[delegate dragImageView:self writeDataToPasteboard:pboard]) {
                    
-						NSImage *image;
-						NSImage *dragImage;
-						NSSize imageSize;
-						if ([delegate respondsToSelector:@selector(dragImageForDragImageView:)])
-							image = [delegate dragImageForDragImageView:self];
-						else
-							image = [self image];
-						imageSize = [image size];
-						
-						dragImage = [[NSImage alloc] initWithSize:imageSize];
-						[dragImage lockFocus];
-						[image compositeToPoint:NSZeroPoint operation:NSCompositeCopy fraction:0.7];
-						[dragImage unlockFocus];
+						NSImage *dragImage = nil;
+                        NSPoint dragPoint = mouseLoc;
+						if ([delegate respondsToSelector:@selector(dragImageForDragImageView:)]) {
+							dragImage = [delegate dragImageForDragImageView:self];
+                            NSSize imageSize = [dragImage size];
+                            dragPoint.x -= floorf(0.5 * imageSize.width);
+                            dragPoint.y -= floorf(0.5 * imageSize.height);
+						}
+                        if (dragImage == nil) {
+                            NSRect rect = [self bounds];
+                            
+                            dragPoint = rect.origin;
+                            rect.origin = NSZeroPoint;
+                            
+                            NSImage *image = [[NSImage alloc] initWithSize:rect.size];
 
-						[self dragImage:dragImage at:NSMakePoint(mouseLoc.x - 0.5f * imageSize.width, mouseLoc.y - 0.5f * imageSize.height) offset:NSZeroSize event:theEvent pasteboard:pboard source:self slideBack:YES]; 
-						[dragImage release];
+                            [image lockFocus];
+                            [[self cell] drawInteriorWithFrame:rect inView:self];
+                            [image lockFocus];
+                            
+                            dragImage = [[[NSImage alloc] initWithSize:rect.size] autorelease];
+                            [dragImage lockFocus];
+                            [image compositeToPoint:NSZeroPoint operation:NSCompositeCopy fraction:0.7];
+                            [dragImage unlockFocus];
+                            [image release];
+                        }
+                        [self dragImage:dragImage at:dragPoint offset:NSZeroSize event:theEvent pasteboard:pboard source:self slideBack:YES]; 
                     }
 					keepOn = NO;
                     break;
