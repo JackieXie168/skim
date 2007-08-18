@@ -150,7 +150,6 @@
 		CEAA55F10C6DE5AE006BD633 /* DownloadsWindow.nib in Resources */ = {isa = PBXBuildFile; fileRef = CEAA55EF0C6DE5AE006BD633 /* DownloadsWindow.nib */; };
 		CEAA56D40C6DEE83006BD633 /* Cancel.tiff in Resources */ = {isa = PBXBuildFile; fileRef = CEAA56D20C6DEE83006BD633 /* Cancel.tiff */; };
 		CEAA56D50C6DEE83006BD633 /* Delete.tiff in Resources */ = {isa = PBXBuildFile; fileRef = CEAA56D30C6DEE83006BD633 /* Delete.tiff */; };
-		CEAA67250C70A882006BD633 /* NSURL_SKExtensions.h in CopyFiles */ = {isa = PBXBuildFile; fileRef = CEAA67230C70A882006BD633 /* NSURL_SKExtensions.h */; };
 		CEAA67260C70A882006BD633 /* NSURL_SKExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = CEAA67240C70A882006BD633 /* NSURL_SKExtensions.m */; };
 		CEAA68EB0C71242F006BD633 /* Resume.tiff in Resources */ = {isa = PBXBuildFile; fileRef = CEAA68EA0C71242F006BD633 /* Resume.tiff */; };
 		CEAF079D0C4139EB00C3ECBB /* SKStatusBar.m in Sources */ = {isa = PBXBuildFile; fileRef = CEAF079B0C4139EB00C3ECBB /* SKStatusBar.m */; };
@@ -254,7 +253,6 @@
 			dstSubfolderSpec = 10;
 			files = (
 				CE2BD8450BD4135600A5F4DB /* Sparkle.framework in CopyFiles */,
-				CEAA67250C70A882006BD633 /* NSURL_SKExtensions.h in CopyFiles */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1341,7 +1339,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "TARGET=\"${DERIVED_FILE_DIR}/Skim Help\"\n\nINPUT=\"Skim Help/skim.texi\"\nTOOLS=\"Skim Help\"\nDEST=\"Skim Help\"\nPREFIX=\"Skim Help\";\n\ncd \"${SOURCE_ROOT}\"\n\n[ -d \"${TARGET}\" ] || /bin/mkdir -p \"${TARGET}\";\n\nfor LOC_DIR in *.lproj; do \\\n\tLOC_TARGET=\"${TARGET}/${LOC_DIR}/${DEST}\"; \\\n\t[ -d \"${LOC_TARGET}\" ] && /bin/rm -rf \"${LOC_TARGET}\"/* || /bin/mkdir -p \"${LOC_TARGET}\"; \\\n\t\"${TOOLS}/texi2html\" \"${LOC_DIR}/${INPUT}\" --init-file=\"${TOOLS}/applehelp.init\" --prefix=\"${PREFIX}\" --output=\"${LOC_TARGET}\" --split=node --nonumber && \\\n\tpython \"${TOOLS}/postprocess-nontitle.py\" \"${LOC_TARGET}/${PREFIX}_\"*.html; \\\ndone;\n";
+			shellScript = "TARGET=\"${DERIVED_FILE_DIR}/Skim Help\"\n\nINPUT=\"Skim Help/skim.texi\"\nTOOLS=\"Skim Help\"\nDEST=\"Skim Help\"\nPREFIX=\"Skim Help\";\n\ncd \"${SOURCE_ROOT}\"\n\n[ -d \"${TARGET}\" ] || /bin/mkdir -p \"${TARGET}\";\n\nfor LOC_DIR in *.lproj; do \\\n\tLOC_TARGET=\"${TARGET}/${LOC_DIR}/${DEST}\"; \\\n\t[ -d \"${LOC_TARGET}\" ] && /bin/rm -rf \"${LOC_TARGET}\"/* || /bin/mkdir -p \"${LOC_TARGET}\"; \\\n\techo \"*** Creating help files in ${LOC_TARGET} ***\"; \\\n\t\"${TOOLS}/texi2html\" \"${LOC_DIR}/${INPUT}\" --init-file=\"${TOOLS}/applehelp.init\" --prefix=\"${PREFIX}\" --output=\"${LOC_TARGET}\" --split=node --nonumber && \\\n\tpython \"${TOOLS}/postprocess-nontitle.py\" \"${LOC_TARGET}/${PREFIX}_\"*.html; \\\ndone;\n";
 		};
 		CEF82CAD0C772A4200A3AD51 /* ShellScript */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -1362,7 +1360,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "TARGET=\"${BUILT_PRODUCTS_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}\";\nDEST=\"Skim Help\";\n\ncd \"${DERIVED_FILE_DIR}/Skim Help\";\n\nfor LOC_DIR in *.lproj; do \\\n\tLOC_TARGET=\"${TARGET}/${LOC_DIR}/${DEST}\"; \\\n\t/bin/rm -rf \"${LOC_TARGET}/\"*.html; \\\n\t/bin/cp -Rf \"${LOC_DIR}/${DEST}/\"*.html \"${LOC_TARGET}\"; \\\ndone;\n";
+			shellScript = "TARGET=\"${BUILT_PRODUCTS_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}\";\nDEST=\"Skim Help\";\n\ncd \"${DERIVED_FILE_DIR}/Skim Help\";\n\nfor LOC_DIR in *.lproj; do \\\n\techo \"*** Copying help files from ${LOC_DIR}/${DEST} to ${LOC_TARGET} ***\"; \\\n\tLOC_TARGET=\"${TARGET}/${LOC_DIR}/${DEST}\"; \\\n\t/bin/rm -rf \"${LOC_TARGET}/\"*.html; \\\n\t/bin/cp -Rf \"${LOC_DIR}/${DEST}/\"*.html \"${LOC_TARGET}\"; \\\ndone;\n";
 		};
 /* End PBXShellScriptBuildPhase section */
 
