@@ -40,30 +40,8 @@
 #import "NSCharacterSet_SKExtensions.h"
 #import "NSScanner_SKExtensions.h"
 #import <Carbon/Carbon.h>
+#import "Files_SKExtensions.h"
 
-
-// NSFileManager is not thread safe
-static BOOL SKFileExistsAtPath(NSString *path) {
-    FSRef fileRef;
-    
-    if (path && noErr == FSPathMakeRef((UInt8 *)[path fileSystemRepresentation], &fileRef, NULL))
-        return YES;
-    else
-        return NO;
-}
-
-static NSDate *SKFileModificationDateAtPath(NSString *path) {
-    FSRef fileRef;
-    FSCatalogInfo info;
-    CFAbsoluteTime absoluteTime;
-    
-    if (CFURLGetFSRef((CFURLRef)[NSURL fileURLWithPath:path], &fileRef) &&
-        noErr == FSGetCatalogInfo(&fileRef, kFSCatInfoContentMod, &info, NULL, NULL, NULL) &&
-        noErr == UCConvertUTCDateTimeToCFAbsoluteTime(&info.contentModDate, &absoluteTime))
-        return [NSDate dateWithTimeIntervalSinceReferenceDate:(NSTimeInterval)absoluteTime];
-    else
-        return nil;
-}
 
 static NSString *SKTeXSourceFile(NSString *file, NSString *base) {
     if ([[file pathExtension] caseInsensitiveCompare:@"tex"] != NSOrderedSame)

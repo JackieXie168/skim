@@ -55,7 +55,7 @@
 #import "SKDownloadController.h"
 #import "NSURL_SKExtensions.h"
 #import "SKDocumentController.h"
-#import "NSFileManager_SKExtensions.h"
+#import "Files_SKExtensions.h"
 
 
 @implementation SKApplicationController
@@ -118,7 +118,7 @@
             fileURL = [[BDAlias aliasWithData:[dict objectForKey:@"_BDAlias"]] fileURL];
             if(fileURL == nil && [dict objectForKey:@"fileName"])
                 fileURL = [NSURL fileURLWithPath:[dict objectForKey:@"fileName"]];
-            if(fileURL && NO == [[NSFileManager defaultManager] fileIsInTrash:fileURL]) {
+            if(fileURL && NO == SKFileIsInTrash(fileURL)) {
                 if (document = [[NSDocumentController sharedDocumentController] openDocumentWithContentsOfURL:fileURL display:NO error:&error]) {
                     [document makeWindowControllers];
                     if ([document respondsToSelector:@selector(mainWindowController)])

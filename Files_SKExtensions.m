@@ -1,5 +1,5 @@
 //
-//  NSFileManager_SKExtensions.m
+//  Files_SKExtensions.m
 //  Skim
 //
 //  Created by Christiaan Hofman on 8/18/07.
@@ -36,12 +36,11 @@
  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-#import "NSFileManager_SKExtensions.h"
+#import "Files_SKExtensions.h"
 #import <Carbon/Carbon.h>
 
-@implementation NSFileManager (SKExtensions)
 
-- (BOOL)fileIsInTrash:(NSURL *)fileURL {
+BOOL SKFileIsInTrash(NSURL *fileURL) {
     NSCParameterAssert([fileURL isFileURL]);    
     FSRef parentRef;
     CFURLRef parentURL = CFURLCreateCopyDeletingLastPathComponent(CFGetAllocator((CFURLRef)fileURL), (CFURLRef)fileURL);
@@ -60,4 +59,44 @@
     return NO;
 }
 
-@end
+BOOL SKFileExistsAtPath(NSString *path) {
+    FSRef fileRef;
+    
+    if (path && noErr == FSPathMakeRef((UInt8 *)[path fileSystemRepresentation], &fileRef, NULL))
+        return YES;
+    else
+        return NO;
+}
+
+NSDate *SKFileModificationDateAtPath(NSString *path) {
+    FSRef fileRef;
+    FSCatalogInfo info;
+    CFAbsoluteTime absoluteTime;
+    
+    if (CFURLGetFSRef((CFURLRef)[NSURL fileURLWithPath:path], &fileRef) &&
+        noErr == FSGetCatalogInfo(&fileRef, kFSCatInfoContentMod, &info, NULL, NULL, NULL) &&
+        noErr == UCConvertUTCDateTimeToCFAbsoluteTime(&info.contentModDate, &absoluteTime))
+        return [NSDate dateWithTimeIntervalSinceReferenceDate:(NSTimeInterval)absoluteTime];
+    else
+        return nil;
+}
+
+NSString *SKTemporaryDirectoryCreating(BOOL create) {
+    NSString *baseTmpDir = [NSTemporaryDirectory() stringByAppendingPathComponent:[[NSBundle mainBundle] bundleIdentifier]];
+    NSString *tmpDir = baseTmpDir;
+    NSString *tmpDirName;
+    int i = 0;
+    BOOL success = YES;
+    
+    while (SKFileExistsAtPath(tmpDir))
+        tmpDir = [baseTmpDir stringByAppendingFormat:@"-%i", ++i];
+    
+    tmpDirName = [tmpDir lastPathComponent];
+    if (success && create) {
+        FSRef tmpRef;
+        success = noErr == FSPathMakeRef((UInt8 *)[NSTemporaryDirectory() fileSystemRepresentation], &tmpRef, NULL) &&
+                  noErr == FSCreateDirectoryUnicode(&tmpRef, [tmpDirName length], (const UniChar *)[tmpDirName cStringUsingEncoding:NSUnicodeStringEncoding], kFSCatInfoNone, NULL, NULL, NULL, NULL);
+    }
+    
+    return success ? tmpDir : nil;
+}
