@@ -55,6 +55,7 @@
 #import "SKDownloadController.h"
 #import "NSURL_SKExtensions.h"
 #import "SKDocumentController.h"
+#import "NSFileManager_SKExtensions.h"
 
 
 @implementation SKApplicationController
@@ -88,26 +89,6 @@
     [[NSUserDefaultsController sharedUserDefaultsController] setInitialValues:initialValuesDict];
 }
 
-static BOOL fileIsInTrash(NSURL *fileURL)
-{
-    NSCParameterAssert([fileURL isFileURL]);    
-    FSRef parentRef;
-    CFURLRef parentURL = CFURLCreateCopyDeletingLastPathComponent(CFGetAllocator((CFURLRef)fileURL), (CFURLRef)fileURL);
-    [(id)parentURL autorelease];
-    if (CFURLGetFSRef(parentURL, &parentRef)) {
-        OSStatus err;
-        FSRef fsRef;
-        err = FSFindFolder(kUserDomain, kTrashFolderType, TRUE, &fsRef);
-        if (noErr == err && noErr == FSCompareFSRefs(&fsRef, &parentRef))
-            return YES;
-        
-        err = FSFindFolder(kOnAppropriateDisk, kSystemTrashFolderType, TRUE, &fsRef);
-        if (noErr == err && noErr == FSCompareFSRefs(&fsRef, &parentRef))
-            return YES;
-    }
-    return NO;
-}
-
 - (void)awakeFromNib {
     NSMenu *viewMenu = [[[NSApp mainMenu] itemAtIndex:4] submenu];
     int i, count = [viewMenu numberOfItems];
@@ -137,7 +118,7 @@ static BOOL fileIsInTrash(NSURL *fileURL)
             fileURL = [[BDAlias aliasWithData:[dict objectForKey:@"_BDAlias"]] fileURL];
             if(fileURL == nil && [dict objectForKey:@"fileName"])
                 fileURL = [NSURL fileURLWithPath:[dict objectForKey:@"fileName"]];
-            if(fileURL && NO == fileIsInTrash(fileURL)) {
+            if(fileURL && NO == [[NSFileManager defaultManager] fileIsInTrash:fileURL]) {
                 if (document = [[NSDocumentController sharedDocumentController] openDocumentWithContentsOfURL:fileURL display:NO error:&error]) {
                     [document makeWindowControllers];
                     if ([document respondsToSelector:@selector(mainWindowController)])
@@ -234,19 +215,8 @@ static BOOL fileIsInTrash(NSURL *fileURL)
     int i = [sender tag];
     NSArray *bookmarks = [[SKBookmarkController sharedBookmarkController] bookmarks];
     NSDictionary *bm = [bookmarks objectAtIndex:i];
-    id document = nil;
-    NSURL *fileURL = [[BDAlias aliasWithData:[bm objectForKey:@"_BDAlias"]] fileURL];
-    NSError *error;
     
-    if (fileURL == nil && [bm objectForKey:@"path"])
-        fileURL = [NSURL fileURLWithPath:[bm objectForKey:@"path"]];
-    if (fileURL && NO == fileIsInTrash(fileURL)) {
-        if (document = [[NSDocumentController sharedDocumentController] openDocumentWithContentsOfURL:fileURL display:YES error:&error]) {
-            [[document mainWindowController] setPageNumber:[[bm objectForKey:@"pageIndex"] unsignedIntValue] + 1];
-        } else {
-            [NSApp presentError:error];
-        }
-    }
+    [[SKBookmarkController sharedBookmarkController] openBookmarks:[NSArray arrayWithObjects:bm, nil]];
 }
 
 #pragma mark Support

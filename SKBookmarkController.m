@@ -38,6 +38,9 @@
 
 #import "SKBookmarkController.h"
 #import "BDAlias.h"
+#import "SKDocument.h"
+#import "SKMainWindowController.h"
+#import "NSFileManager_SKExtensions.h"
 
 @implementation SKBookmarkController
 
@@ -224,6 +227,27 @@ static unsigned int maxRecentDocumentsCount = 0;
 
 - (void)controlTextDidEndEditing:(NSNotification *)notification {
     [self saveBookmarks];
+}
+
+- (void)openBookmarks:(NSArray *)items {
+    NSEnumerator *bmEnum = [items objectEnumerator];
+    NSDictionary *bm;
+    
+    while (bm = [bmEnum nextObject]) {
+        id document = nil;
+        NSURL *fileURL = [[BDAlias aliasWithData:[bm objectForKey:@"_BDAlias"]] fileURL];
+        NSError *error;
+        
+        if (fileURL == nil && [bm objectForKey:@"path"])
+            fileURL = [NSURL fileURLWithPath:[bm objectForKey:@"path"]];
+        if (fileURL && NO == [[NSFileManager defaultManager] fileIsInTrash:fileURL]) {
+            if (document = [[NSDocumentController sharedDocumentController] openDocumentWithContentsOfURL:fileURL display:YES error:&error]) {
+                [[document mainWindowController] setPageNumber:[[bm objectForKey:@"pageIndex"] unsignedIntValue] + 1];
+            } else {
+                [NSApp presentError:error];
+            }
+        }
+    }
 }
 
 @end
