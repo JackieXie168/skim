@@ -176,6 +176,7 @@
 		CEF711A10B90B714003A2771 /* NSUserDefaultsController_SKExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = CEF711A00B90B714003A2771 /* NSUserDefaultsController_SKExtensions.m */; };
 		CEF7175C0B90DEEF003A2771 /* ReleaseNotes.nib in Resources */ = {isa = PBXBuildFile; fileRef = CEF717560B90DEEF003A2771 /* ReleaseNotes.nib */; };
 		CEF7175F0B90DF10003A2771 /* SKReleaseNotesController.m in Sources */ = {isa = PBXBuildFile; fileRef = CEF7175E0B90DF10003A2771 /* SKReleaseNotesController.m */; };
+		CEF839B30C77742A00A3AD51 /* NSFileManager_SKExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = CEF839B10C77742A00A3AD51 /* NSFileManager_SKExtensions.m */; };
 		CEFD68740C01D4080027B933 /* SkimImporter.mdimporter in CopyFiles */ = {isa = PBXBuildFile; fileRef = CEFD68690C01D3BB0027B933 /* SkimImporter.mdimporter */; };
 		CEFDF8BE0B3848C40091C61A /* SKNavigationWindow.m in Sources */ = {isa = PBXBuildFile; fileRef = CEFDF8BD0B3848C40091C61A /* SKNavigationWindow.m */; };
 		F92DB5AC0B36FE1F002A26E9 /* BDSKHeaderPopUpButtonCell.m in Sources */ = {isa = PBXBuildFile; fileRef = F92DB5A90B36FE1F002A26E9 /* BDSKHeaderPopUpButtonCell.m */; };
@@ -575,6 +576,8 @@
 		CEF717570B90DEEF003A2771 /* English */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = English; path = English.lproj/ReleaseNotes.nib; sourceTree = "<group>"; };
 		CEF7175D0B90DF10003A2771 /* SKReleaseNotesController.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = SKReleaseNotesController.h; sourceTree = "<group>"; };
 		CEF7175E0B90DF10003A2771 /* SKReleaseNotesController.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = SKReleaseNotesController.m; sourceTree = "<group>"; };
+		CEF839B00C77742A00A3AD51 /* NSFileManager_SKExtensions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NSFileManager_SKExtensions.h; sourceTree = "<group>"; };
+		CEF839B10C77742A00A3AD51 /* NSFileManager_SKExtensions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NSFileManager_SKExtensions.m; sourceTree = "<group>"; };
 		CEFD68610C01D3BB0027B933 /* SkimImporter.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = SkimImporter.xcodeproj; path = SkimImporter/SkimImporter.xcodeproj; sourceTree = "<group>"; };
 		CEFDF8BC0B3848C40091C61A /* SKNavigationWindow.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SKNavigationWindow.h; sourceTree = "<group>"; };
 		CEFDF8BD0B3848C40091C61A /* SKNavigationWindow.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SKNavigationWindow.m; sourceTree = "<group>"; };
@@ -778,6 +781,8 @@
 				CE2DE4ED0B85DB6300D0DA12 /* NSCursor_SKExtensions.m */,
 				CE5487BA0B35A20A00F8AFB6 /* NSFileManager_ExtendedAttributes.h */,
 				CE5487BB0B35A20A00F8AFB6 /* NSFileManager_ExtendedAttributes.m */,
+				CEF839B00C77742A00A3AD51 /* NSFileManager_SKExtensions.h */,
+				CEF839B10C77742A00A3AD51 /* NSFileManager_SKExtensions.m */,
 				CECDC4FC0C5966A80026AAEC /* NSImage_SKExtensions.h */,
 				CECDC4FD0C5966A80026AAEC /* NSImage_SKExtensions.m */,
 				CE6C03EE0BEDF759007BF0B5 /* NSParagraphStyle_SKExtensions.h */,
@@ -1450,6 +1455,7 @@
 				CEAA559E0C6DE235006BD633 /* SKDownload.m in Sources */,
 				CEAA55B70C6DE452006BD633 /* SKProgressCell.m in Sources */,
 				CEAA67260C70A882006BD633 /* NSURL_SKExtensions.m in Sources */,
+				CEF839B30C77742A00A3AD51 /* NSFileManager_SKExtensions.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

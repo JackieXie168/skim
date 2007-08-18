@@ -1,8 +1,8 @@
 //
-//  SKBookmarkController.h
+//  NSFileManager_SKExtensions.h
 //  Skim
 //
-//  Created by Christiaan Hofman on 3/16/07.
+//  Created by Christiaan Hofman on 8/18/07.
 /*
  This software is Copyright (c) 2007
  Christiaan Hofman. All rights reserved.
@@ -39,34 +39,6 @@
 #import <Cocoa/Cocoa.h>
 
 
-@interface SKBookmarkController : NSWindowController {
-    NSMutableArray *bookmarks;
-    NSMutableArray *recentDocuments;
-}
-
-+ (id)sharedBookmarkController;
-
-- (NSArray *)bookmarks;
-- (void)setBookmarks:(NSArray *)newBookmarks;
-- (unsigned)countOfBookmarks;
-- (id)objectInBookmarksAtIndex:(unsigned)index;
-- (void)insertObject:(id)obj inBookmarksAtIndex:(unsigned)index;
-- (void)removeObjectFromBookmarksAtIndex:(unsigned)index;
-
-- (void)addBookmarkForPath:(NSString *)path pageIndex:(unsigned)pageIndex label:(NSString *)label;
-- (void)saveBookmarks;
-- (NSString *)bookmarksFilePath;
-- (void)openBookmarks:(NSArray *)items;
-
-- (NSArray *)recentDocuments;
-- (void)addRecentDocumentForPath:(NSString *)path pageIndex:(unsigned)pageIndex snapshots:(NSArray *)setups;
-- (unsigned int)pageIndexForRecentDocumentAtPath:(NSString *)path;
-- (NSArray *)snapshotsAtPath:(NSString *)path;
-
-@end
-
-@interface SKPageIndexTransformer : NSValueTransformer
-@end
-
-@interface SKAliasDataTransformer : NSValueTransformer
+@interface NSFileManager (SKExtensions)
+- (BOOL)fileIsInTrash:(NSURL *)fileURL;
 @end
