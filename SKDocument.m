@@ -59,6 +59,7 @@
 #import "SKInfoWindowController.h"
 #import "SKLine.h"
 #import "SKApplicationController.h"
+#import "Files_SKExtensions.h"
 
 // maximum length of xattr value recommended by Apple
 #define MAX_XATTR_LENGTH 2048
@@ -590,20 +591,8 @@ static NSPopUpButton *popUpButtonSubview(NSView *view)
         
         NSAutoreleasePool *pool = [NSAutoreleasePool new];
         
-        NSString *baseTmpDir = [NSTemporaryDirectory() stringByAppendingPathComponent:[[NSBundle mainBundle] bundleIdentifier]];
-        NSString *tmpDir = baseTmpDir;
-        NSString *tmpDirName;
-        FSRef tmpRef;
-        int i = 0;
-        BOOL success = YES;
-        
-        while (fnfErr != FSPathMakeRef((UInt8 *)[tmpDir fileSystemRepresentation], &tmpRef, NULL))
-            tmpDir = [baseTmpDir stringByAppendingFormat:@"-%i", ++i];
-        
-        tmpDirName = [tmpDir lastPathComponent];
-        success = noErr == FSPathMakeRef((UInt8 *)[NSTemporaryDirectory() fileSystemRepresentation], &tmpRef, NULL);
-        if (success)
-            success = noErr == FSCreateDirectoryUnicode(&tmpRef, [tmpDirName length], (const UniChar *)[tmpDirName cStringUsingEncoding:NSUnicodeStringEncoding], kFSCatInfoNone, NULL, NULL, NULL, NULL);
+        NSString *tmpDir = SKTemporaryDirectoryCreating(YES);
+        BOOL success = tmpDir != nil;
         
         NSString *sourcePath = [[[info objectForKey:@"sourcePath"] copy] autorelease];
         NSString *targetPath = [[[info objectForKey:@"targetPath"] copy] autorelease];

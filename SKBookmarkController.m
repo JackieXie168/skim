@@ -40,7 +40,7 @@
 #import "BDAlias.h"
 #import "SKDocument.h"
 #import "SKMainWindowController.h"
-#import "NSFileManager_SKExtensions.h"
+#import "Files_SKExtensions.h"
 
 @implementation SKBookmarkController
 
@@ -240,7 +240,7 @@ static unsigned int maxRecentDocumentsCount = 0;
         
         if (fileURL == nil && [bm objectForKey:@"path"])
             fileURL = [NSURL fileURLWithPath:[bm objectForKey:@"path"]];
-        if (fileURL && NO == [[NSFileManager defaultManager] fileIsInTrash:fileURL]) {
+        if (fileURL && NO == SKFileIsInTrash(fileURL)) {
             if (document = [[NSDocumentController sharedDocumentController] openDocumentWithContentsOfURL:fileURL display:YES error:&error]) {
                 [[document mainWindowController] setPageNumber:[[bm objectForKey:@"pageIndex"] unsignedIntValue] + 1];
             } else {

@@ -1,5 +1,5 @@
 //
-//  NSFileManager_SKExtensions.h
+//  Files_SKExtensions.h
 //  Skim
 //
 //  Created by Christiaan Hofman on 8/18/07.
@@ -38,7 +38,9 @@
 
 #import <Cocoa/Cocoa.h>
 
+// These functions are thread safe
 
-@interface NSFileManager (SKExtensions)
-- (BOOL)fileIsInTrash:(NSURL *)fileURL;
-@end
+extern BOOL SKFileIsInTrash(NSURL *fileURL);
+extern BOOL SKFileExistsAtPath(NSString *path);
+extern NSDate *SKFileModificationDateAtPath(NSString *path);
+extern NSString *SKTemporaryDirectoryCreating(BOOL create);
