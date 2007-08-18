@@ -7,17 +7,6 @@
 	objects = {
 
 /* Begin PBXAggregateTarget section */
-		CE4DA8D60B9E16100039E89C /* Skim Help */ = {
-			isa = PBXAggregateTarget;
-			buildConfigurationList = CE4DA8D90B9E16370039E89C /* Build configuration list for PBXAggregateTarget "Skim Help" */;
-			buildPhases = (
-				CE4DA8D70B9E16190039E89C /* ShellScript */,
-			);
-			dependencies = (
-			);
-			name = "Skim Help";
-			productName = "Skim Help";
-		};
 		CE592C5D0B9239C500C113DF /* DiskImage */ = {
 			isa = PBXAggregateTarget;
 			buildConfigurationList = CE592C5E0B9239C600C113DF /* Build configuration list for PBXAggregateTarget "DiskImage" */;
@@ -206,13 +195,6 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
-		CE157D880B9F89CE00D5B03F /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 2A37F4A9FDCFA73011CA2CEA /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = CE4DA8D60B9E16100039E89C;
-			remoteInfo = "Skim Help";
-		};
 		CE1E39870BDBCC930011D9DD /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 2A37F4A9FDCFA73011CA2CEA /* Project object */;
@@ -1087,6 +1069,8 @@
 			buildPhases = (
 				CEE1383C0BCEA63F00BF2D3E /* ShellScript */,
 				8D15AC2B0486D014006FF6A4 /* Resources */,
+				CEF82CA50C77286200A3AD51 /* ShellScript */,
+				CEF82CAD0C772A4200A3AD51 /* ShellScript */,
 				8D15AC300486D014006FF6A4 /* Sources */,
 				8D15AC330486D014006FF6A4 /* Frameworks */,
 				CEE112760BCBF52500BF2D3E /* CopyFiles */,
@@ -1099,7 +1083,6 @@
 			buildRules = (
 			);
 			dependencies = (
-				CE157D890B9F89CE00D5B03F /* PBXTargetDependency */,
 				CE2BD8610BD4144000A5F4DB /* PBXTargetDependency */,
 				CE1E39880BDBCC930011D9DD /* PBXTargetDependency */,
 				CEFD68710C01D3E50027B933 /* PBXTargetDependency */,
@@ -1156,7 +1139,6 @@
 			projectRoot = "";
 			targets = (
 				8D15AC270486D014006FF6A4 /* Skim */,
-				CE4DA8D60B9E16100039E89C /* Skim Help */,
 				CE592C5D0B9239C500C113DF /* DiskImage */,
 				CEF3BF740B99CA2900E12E3D /* skimnotes */,
 			);
@@ -1280,31 +1262,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "if [ ${BUILD_STYLE} = \"Debug\" ]; then\nexit 0\nfi\n\necho \"*** stripping header files from frameworks ***\"\nfind \"${BUILT_PRODUCTS_DIR}/${FRAMEWORKS_FOLDER_PATH}\" -type file -name \"*.h\" -delete\n\n#echo \"*** stripping IB files from NIBs ***\"\n#find \"${BUILT_PRODUCTS_DIR}\" -type file \\( -name \"classes.nib\" -or -name \"info.nib\" -or -name \"data.dependency\" \\) -delete\n\nexit 0";
-		};
-		CE4DA8D70B9E16190039E89C /* ShellScript */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-				"$(SRCROOT)/Skim Help/applehelp.init",
-				"$(SRCROOT)/Skim Help/postprocess-nontitle.py",
-				"$(SRCROOT)/English.lproj/Skim Help/skim.texi",
-				"$(SRCROOT)/English.lproj/Skim Help/version.texi",
-				"$(SRCROOT)/Dutch.lproj/Skim Help/skim.texi",
-				"$(SRCROOT)/Dutch.lproj/Skim Help/version.texi",
-				"$(SRCROOT)/Italian.lproj/Skim Help/skim.texi",
-				"$(SRCROOT)/Italian.lproj/Skim Help/version.texi",
-				"$(SRCROOT)/French.lproj/Skim Help/skim.texi",
-				"$(SRCROOT)/French.lproj/Skim Help/version.texi",
-			);
-			outputPaths = (
-				"$(SRCROOT)/English.lproj/Skim Help/Skim Help.html",
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "cd ${SOURCE_ROOT}/Skim\\ Help;\ntexi2html=./texi2html\n\nINPUT='Skim Help/skim.texi'\nDEST='Skim Help'\n\nfor LOC_DIR in ${SOURCE_ROOT}/*.lproj; do \\\n\t/bin/rm -f \"${LOC_DIR}/${DEST}\"/Skim\\ Help*.html; \\\n\t${texi2html} \"${LOC_DIR}/${INPUT}\" --init-file=applehelp.init --prefix=\"Skim Help\" --output=\"${LOC_DIR}/${DEST}\" --split=node --nonumber && \\\n\tpython postprocess-nontitle.py \"${LOC_DIR}/${DEST}\"/Skim\\ Help_*.html;\\\ndone;\n";
+			shellScript = "if [ ${BUILD_STYLE} = \"Debug\" ]; then\nexit 0\nfi\n\necho \"*** stripping header files from frameworks ***\"\nfind \"${BUILT_PRODUCTS_DIR}/${FRAMEWORKS_FOLDER_PATH}\" -type file -name \"*.h\" -delete\n\n#echo \"*** stripping IB files from NIBs ***\"\n#find \"${BUILT_PRODUCTS_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}\" -type file \\( -name \"classes.nib\" -or -name \"info.nib\" -or -name \"data.dependency\" \\) -delete\n\necho \"*** removing .DS_Store files ***\"\nfind \"${BUILT_PRODUCTS_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}\" -type file -name \".DS_Store\" -delete\n\nexit 0";
 		};
 		CE4DA9060B9E17890039E89C /* ShellScript */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -1357,6 +1315,54 @@
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
 			shellScript = "cd \"${BUILT_PRODUCTS_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}\"\nln -fs ../SharedSupport/displayline displayline\nln -fs ../SharedSupport/displayline forward-search.sh\nexit 0";
+		};
+		CEF82CA50C77286200A3AD51 /* ShellScript */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+				"$(SRCROOT)/Skim Help/applehelp.init",
+				"$(SRCROOT)/Skim Help/postprocess-nontitle.py",
+				"$(SRCROOT)/English.lproj/Skim Help/skim.texi",
+				"$(SRCROOT)/English.lproj/Skim Help/version.texi",
+				"$(SRCROOT)/Dutch.lproj/Skim Help/skim.texi",
+				"$(SRCROOT)/Dutch.lproj/Skim Help/version.texi",
+				"$(SRCROOT)/Italian.lproj/Skim Help/skim.texi",
+				"$(SRCROOT)/Italian.lproj/Skim Help/version.texi",
+				"$(SRCROOT)/French.lproj/Skim Help/skim.texi",
+				"$(SRCROOT)/French.lproj/Skim Help/version.texi",
+			);
+			outputPaths = (
+				"$(DERIVED_FILE_DIR)/Skim Help/English.lproj/Skim Help/Skim Help.html",
+				"$(DERIVED_FILE_DIR)/Skim Help/Dutch.lproj/Skim Help/Skim Help.html",
+				"$(DERIVED_FILE_DIR)/Skim Help/Italian.lproj/Skim Help/Skim Help.html",
+				"$(DERIVED_FILE_DIR)/Skim Help/French.lproj/Skim Help/Skim Help.html",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "TARGET=\"${DERIVED_FILE_DIR}/Skim Help\"\n\nINPUT=\"Skim Help/skim.texi\"\nTOOLS=\"Skim Help\"\nDEST=\"Skim Help\"\nPREFIX=\"Skim Help\";\n\ncd \"${SOURCE_ROOT}\"\n\n[ -d \"${TARGET}\" ] || /bin/mkdir -p \"${TARGET}\";\n\nfor LOC_DIR in *.lproj; do \\\n\tLOC_TARGET=\"${TARGET}/${LOC_DIR}/${DEST}\"; \\\n\t[ -d \"${LOC_TARGET}\" ] && /bin/rm -rf \"${LOC_TARGET}\"/* || /bin/mkdir -p \"${LOC_TARGET}\"; \\\n\t\"${TOOLS}/texi2html\" \"${LOC_DIR}/${INPUT}\" --init-file=\"${TOOLS}/applehelp.init\" --prefix=\"${PREFIX}\" --output=\"${LOC_TARGET}\" --split=node --nonumber && \\\n\tpython \"${TOOLS}/postprocess-nontitle.py\" \"${LOC_TARGET}/${PREFIX}_\"*.html; \\\ndone;\n";
+		};
+		CEF82CAD0C772A4200A3AD51 /* ShellScript */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+				"$(DERIVED_FILE_DIR)/Skim Help/English.lproj/Skim Help/Skim Help.html",
+				"$(DERIVED_FILE_DIR)/Skim Help/Dutch.lproj/Skim Help/Skim Help.html",
+				"$(DERIVED_FILE_DIR)/Skim Help/Italian.lproj/Skim Help/Skim Help.html",
+				"$(DERIVED_FILE_DIR)/Skim Help/French.lproj/Skim Help/Skim Help.html",
+			);
+			outputPaths = (
+				"$(BUILT_PRODUCTS_DIR)/$(UNLOCALIZED_RESOURCES_FOLDER_PATH)/English.lproj/Skim Help/Skim Help.html",
+				"$(BUILT_PRODUCTS_DIR)/$(UNLOCALIZED_RESOURCES_FOLDER_PATH)/Dutch.lproj/Skim Help/Skim Help.html",
+				"$(BUILT_PRODUCTS_DIR)/$(UNLOCALIZED_RESOURCES_FOLDER_PATH)/Italian.lproj/Skim Help/Skim Help.html",
+				"$(BUILT_PRODUCTS_DIR)/$(UNLOCALIZED_RESOURCES_FOLDER_PATH)/French.lproj/Skim Help/Skim Help.html",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "TARGET=\"${BUILT_PRODUCTS_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}\";\nDEST=\"Skim Help\";\n\ncd \"${DERIVED_FILE_DIR}/Skim Help\";\n\nfor LOC_DIR in *.lproj; do \\\n\tLOC_TARGET=\"${TARGET}/${LOC_DIR}/${DEST}\"; \\\n\t/bin/rm -rf \"${LOC_TARGET}/\"*.html; \\\n\t/bin/cp -Rf \"${LOC_DIR}/${DEST}/\"*.html \"${LOC_TARGET}\"; \\\ndone;\n";
 		};
 /* End PBXShellScriptBuildPhase section */
 
@@ -1461,11 +1467,6 @@
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
-		CE157D890B9F89CE00D5B03F /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = CE4DA8D60B9E16100039E89C /* Skim Help */;
-			targetProxy = CE157D880B9F89CE00D5B03F /* PBXContainerItemProxy */;
-		};
 		CE1E39880BDBCC930011D9DD /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			target = CEF3BF740B99CA2900E12E3D /* skimnotes */;
@@ -1817,28 +1818,6 @@
 			};
 			name = Release;
 		};
-		CE4DA8DA0B9E16370039E89C /* Debug */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				COPY_PHASE_STRIP = NO;
-				GCC_DYNAMIC_NO_PIC = NO;
-				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
-				GCC_OPTIMIZATION_LEVEL = 0;
-				PRODUCT_NAME = "Skim Help";
-			};
-			name = Debug;
-		};
-		CE4DA8DB0B9E16370039E89C /* Release */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				COPY_PHASE_STRIP = YES;
-				GCC_ENABLE_FIX_AND_CONTINUE = NO;
-				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
-				PRODUCT_NAME = "Skim Help";
-				ZERO_LINK = NO;
-			};
-			name = Release;
-		};
 		CE592C5F0B9239C600C113DF /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -1948,15 +1927,6 @@
 			buildConfigurations = (
 				C05733CC08A9546B00998B17 /* Debug */,
 				C05733CD08A9546B00998B17 /* Release */,
-			);
-			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Release;
-		};
-		CE4DA8D90B9E16370039E89C /* Build configuration list for PBXAggregateTarget "Skim Help" */ = {
-			isa = XCConfigurationList;
-			buildConfigurations = (
-				CE4DA8DA0B9E16370039E89C /* Debug */,
-				CE4DA8DB0B9E16370039E89C /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
