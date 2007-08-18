@@ -1339,7 +1339,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "TARGET=\"${DERIVED_FILE_DIR}/Skim Help\"\n\nINPUT=\"Skim Help/skim.texi\"\nTOOLS=\"Skim Help\"\nDEST=\"Skim Help\"\nPREFIX=\"Skim Help\";\n\ncd \"${SOURCE_ROOT}\"\n\n[ -d \"${TARGET}\" ] || /bin/mkdir -p \"${TARGET}\";\n\nfor LOC_DIR in *.lproj; do \\\n\tLOC_TARGET=\"${TARGET}/${LOC_DIR}/${DEST}\"; \\\n\t[ -d \"${LOC_TARGET}\" ] && /bin/rm -rf \"${LOC_TARGET}\"/* || /bin/mkdir -p \"${LOC_TARGET}\"; \\\n\techo \"*** Creating help files in ${LOC_TARGET} ***\"; \\\n\t\"${TOOLS}/texi2html\" \"${LOC_DIR}/${INPUT}\" --init-file=\"${TOOLS}/applehelp.init\" --prefix=\"${PREFIX}\" --output=\"${LOC_TARGET}\" --split=node --nonumber && \\\n\tpython \"${TOOLS}/postprocess-nontitle.py\" \"${LOC_TARGET}/${PREFIX}_\"*.html; \\\ndone;\n";
+			shellScript = "HELP_NAME=\"Skim Help\"\n\nINPUT=\"${HELP_NAME}/skim.texi\"\nTOOLS=\"${HELP_NAME}\"\nDEST=\"${HELP_NAME}\"\nPREFIX=\"${HELP_NAME}\";\n\nTARGET=\"${DERIVED_FILE_DIR}/${HELP_NAME}\"\n\ncd \"${SOURCE_ROOT}\"\n\n[ -d \"${TARGET}\" ] || /bin/mkdir -p \"${TARGET}\";\n\nfor LOC_DIR in *.lproj; do \\\n\tLOC_TARGET=\"${TARGET}/${LOC_DIR}/${DEST}\"; \\\n\t[ -d \"${LOC_TARGET}\" ] && /bin/rm -rf \"${LOC_TARGET}\"/* || /bin/mkdir -p \"${LOC_TARGET}\"; \\\n\techo \"*** Creating help files in ${LOC_TARGET} ***\"; \\\n\t\"${TOOLS}/texi2html\" \"${LOC_DIR}/${INPUT}\" --init-file=\"${TOOLS}/applehelp.init\" --prefix=\"${PREFIX}\" --output=\"${LOC_TARGET}\" --split=node --nonumber && \\\n\tpython \"${TOOLS}/postprocess-nontitle.py\" \"${LOC_TARGET}/${PREFIX}_\"*.html; \\\ndone;\n";
 		};
 		CEF82CAD0C772A4200A3AD51 /* ShellScript */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -1360,7 +1360,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "TARGET=\"${BUILT_PRODUCTS_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}\";\nDEST=\"Skim Help\";\n\ncd \"${DERIVED_FILE_DIR}/Skim Help\";\n\nfor LOC_DIR in *.lproj; do \\\n\techo \"*** Copying help files from ${LOC_DIR}/${DEST} to ${LOC_TARGET} ***\"; \\\n\tLOC_TARGET=\"${TARGET}/${LOC_DIR}/${DEST}\"; \\\n\t/bin/rm -rf \"${LOC_TARGET}/\"*.html; \\\n\t/bin/cp -Rf \"${LOC_DIR}/${DEST}/\"*.html \"${LOC_TARGET}\"; \\\ndone;\n";
+			shellScript = "HELP_NAME=\"Skim Help\"\n\nSOURCE=\"${DERIVED_FILE_DIR}/${HELP_NAME}\";\nTARGET=\"${BUILT_PRODUCTS_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}\";\nDEST=\"${HELP_NAME}\";\n\ncd \"${SOURCE}\";\n\nfor LOC_DIR in *.lproj; do \\\n\tLOC_TARGET=\"${TARGET}/${LOC_DIR}/${DEST}\"; \\\n\techo \"*** Copying help files from ${SOURCE}/${LOC_DIR}/${DEST} to ${LOC_TARGET} ***\"; \\\n\t/bin/rm -rf \"${LOC_TARGET}/\"*.html; \\\n\t/bin/cp -Rf \"${LOC_DIR}/${DEST}/\"*.html \"${LOC_TARGET}\"; \\\ndone;\n";
 		};
 /* End PBXShellScriptBuildPhase section */
 
