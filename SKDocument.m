@@ -591,7 +591,7 @@ static NSPopUpButton *popUpButtonSubview(NSView *view)
         
         NSAutoreleasePool *pool = [NSAutoreleasePool new];
         
-        NSString *tmpDir = SKTemporaryDirectoryCreating(YES);
+        NSString *tmpDir = SKUniqueDirectoryCreating(NSTemporaryDirectory(), YES);
         BOOL success = tmpDir != nil;
         
         NSString *sourcePath = [[[info objectForKey:@"sourcePath"] copy] autorelease];
@@ -599,8 +599,10 @@ static NSPopUpButton *popUpButtonSubview(NSView *view)
         NSString *name = [[targetPath lastPathComponent] stringByDeletingPathExtension];
         NSString *tmpImagePath1 = [[tmpDir stringByAppendingPathComponent:name] stringByAppendingPathExtension:@"sparseimage"];
         NSString *tmpImagePath2 = [[tmpDir stringByAppendingPathComponent:name] stringByAppendingPathExtension:@"dmg"];
-        NSString *tmpMountPath = [tmpDir stringByAppendingPathComponent:name];
+        NSString *tmpMountPath = SKUniqueDirectoryCreating(@"/tmp", NO); // we don't use tmpDir because the mountpath has a maximum length of 90
         BOOL didAttach = NO;
+        
+        
         
         @try {            
             if (success) {
@@ -619,10 +621,7 @@ static NSPopUpButton *popUpButtonSubview(NSView *view)
             }
             
             if (success) {
-                // we can't use NSFileManager because it's not thread safe, while FSPathCopyObjectSync complains about not enough space
-                success = [NSTask runTaskWithLaunchPath:@"/bin/cp"
-                                              arguments:[NSArray arrayWithObjects:@"-f", sourcePath, tmpMountPath, nil]
-                                   currentDirectoryPath:tmpDir];
+                success = noErr == FSPathCopyObjectSync((const char *)[sourcePath fileSystemRepresentation], (const char *)[tmpMountPath fileSystemRepresentation], (CFStringRef)[sourcePath lastPathComponent], NULL, kFSFileOperationOverwrite);
             }
             
             if (didAttach) {
@@ -638,13 +637,10 @@ static NSPopUpButton *popUpButtonSubview(NSView *view)
             }
             
             if (success) {
-                success = [NSTask runTaskWithLaunchPath:@"/bin/cp"
-                                              arguments:[NSArray arrayWithObjects:@"-f", tmpImagePath2, targetPath, nil]
-                                   currentDirectoryPath:tmpDir];
+                success = noErr == FSPathCopyObjectSync((const char *)[tmpImagePath2 fileSystemRepresentation], (const char *)[[targetPath stringByDeletingLastPathComponent] fileSystemRepresentation], (CFStringRef)[targetPath lastPathComponent], NULL, kFSFileOperationOverwrite);
             }
             
-            // easier than FSDeleteObject, because that cannot delete the directory recursively
-            [NSTask launchedTaskWithLaunchPath:@"/bin/rm" arguments:[NSArray arrayWithObjects:@"-rf", tmpDir, nil]];
+            FSPathDeleteContainer((const UInt8 *)[tmpDir fileSystemRepresentation]);
                     
         }
         @catch(id exception) {
