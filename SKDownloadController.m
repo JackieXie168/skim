@@ -165,6 +165,15 @@
         [self addDownloadForURL:theURL];
 }
 
+- (IBAction)showDownloadPreferences:(id)sender {
+    [NSApp beginSheet:preferencesSheet modalForWindow:[self window] modalDelegate:nil didEndSelector:NULL contextInfo:NULL];
+}
+
+- (IBAction)dismissDownloadsPreferences:(id)sender {
+    [NSApp endSheet:preferencesSheet returnCode:[sender tag]];
+    [preferencesSheet orderOut:self];
+}
+
 #pragma mark SKDownloadDelegate
 
 - (void)downloadDidStart:(SKDownload *)download {
