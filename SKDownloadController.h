@@ -42,6 +42,7 @@
 @interface SKDownloadController : NSWindowController {
     IBOutlet NSTableView *tableView;
     IBOutlet NSButton *clearButton;
+    IBOutlet NSWindow *preferencesSheet;
     NSMutableArray *downloads;
 }
 
@@ -52,5 +53,8 @@
 - (IBAction)clearDownloads:(id)sender;
 - (IBAction)removeDownload:(id)sender;
 - (IBAction)cancelDownload:(id)sender;
+
+- (IBAction)showDownloadPreferences:(id)sender;
+- (IBAction)dismissDownloadsPreferences:(id)sender;
 
 @end

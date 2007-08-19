@@ -8,10 +8,20 @@
             SUPERCLASS = NSObject; 
         }, 
         {
-            ACTIONS = {cancelDownload = id; clearDownloads = id; removeDownload = id; }; 
+            ACTIONS = {
+                cancelDownload = id; 
+                clearDownloads = id; 
+                dismissDownloadsPreferences = id; 
+                removeDownload = id; 
+                showDownloadPreferences = id; 
+            }; 
             CLASS = SKDownloadController; 
             LANGUAGE = ObjC; 
-            OUTLETS = {clearButton = NSButton; tableView = NSTableView; }; 
+            OUTLETS = {
+                clearButton = NSButton; 
+                preferencesSheet = NSWindow; 
+                tableView = NSTableView; 
+            }; 
             SUPERCLASS = NSWindowController; 
         }, 
         {CLASS = SKProgressCell; LANGUAGE = ObjC; SUPERCLASS = NSTextFieldCell; }

@@ -177,6 +177,7 @@
 		CEF7175C0B90DEEF003A2771 /* ReleaseNotes.nib in Resources */ = {isa = PBXBuildFile; fileRef = CEF717560B90DEEF003A2771 /* ReleaseNotes.nib */; };
 		CEF7175F0B90DF10003A2771 /* SKReleaseNotesController.m in Sources */ = {isa = PBXBuildFile; fileRef = CEF7175E0B90DF10003A2771 /* SKReleaseNotesController.m */; };
 		CEF839B30C77742A00A3AD51 /* Files_SKExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = CEF839B10C77742A00A3AD51 /* Files_SKExtensions.m */; };
+		CEF84C630C78A89A00A3AD51 /* SmallPreferences.tiff in Resources */ = {isa = PBXBuildFile; fileRef = CEF84C620C78A89900A3AD51 /* SmallPreferences.tiff */; };
 		CEFD68740C01D4080027B933 /* SkimImporter.mdimporter in CopyFiles */ = {isa = PBXBuildFile; fileRef = CEFD68690C01D3BB0027B933 /* SkimImporter.mdimporter */; };
 		CEFDF8BE0B3848C40091C61A /* SKNavigationWindow.m in Sources */ = {isa = PBXBuildFile; fileRef = CEFDF8BD0B3848C40091C61A /* SKNavigationWindow.m */; };
 		F92DB5AC0B36FE1F002A26E9 /* BDSKHeaderPopUpButtonCell.m in Sources */ = {isa = PBXBuildFile; fileRef = F92DB5A90B36FE1F002A26E9 /* BDSKHeaderPopUpButtonCell.m */; };
@@ -578,6 +579,7 @@
 		CEF7175E0B90DF10003A2771 /* SKReleaseNotesController.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = SKReleaseNotesController.m; sourceTree = "<group>"; };
 		CEF839B00C77742A00A3AD51 /* Files_SKExtensions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Files_SKExtensions.h; sourceTree = "<group>"; };
 		CEF839B10C77742A00A3AD51 /* Files_SKExtensions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Files_SKExtensions.m; sourceTree = "<group>"; };
+		CEF84C620C78A89900A3AD51 /* SmallPreferences.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; name = SmallPreferences.tiff; path = Images/SmallPreferences.tiff; sourceTree = "<group>"; };
 		CEFD68610C01D3BB0027B933 /* SkimImporter.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = SkimImporter.xcodeproj; path = SkimImporter/SkimImporter.xcodeproj; sourceTree = "<group>"; };
 		CEFDF8BC0B3848C40091C61A /* SKNavigationWindow.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SKNavigationWindow.h; sourceTree = "<group>"; };
 		CEFDF8BD0B3848C40091C61A /* SKNavigationWindow.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SKNavigationWindow.m; sourceTree = "<group>"; };
@@ -996,6 +998,7 @@
 				CEAA56D20C6DEE83006BD633 /* Cancel.tiff */,
 				CEAA56D30C6DEE83006BD633 /* Delete.tiff */,
 				CEAA68EA0C71242F006BD633 /* Resume.tiff */,
+				CEF84C620C78A89900A3AD51 /* SmallPreferences.tiff */,
 				CE0715890B8A3D6300733CC8 /* NoteDocument.icns */,
 				CE7C5D180BD8086C0011315D /* ToolbarLineNote.tiff */,
 				CE4190C20B94963A00ECF819 /* ToolbarCircleNote.tiff */,
@@ -1248,6 +1251,7 @@
 				CEAA56D40C6DEE83006BD633 /* Cancel.tiff in Resources */,
 				CEAA56D50C6DEE83006BD633 /* Delete.tiff in Resources */,
 				CEAA68EB0C71242F006BD633 /* Resume.tiff in Resources */,
+				CEF84C630C78A89A00A3AD51 /* SmallPreferences.tiff in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
