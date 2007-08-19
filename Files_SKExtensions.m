@@ -81,22 +81,160 @@ NSDate *SKFileModificationDateAtPath(NSString *path) {
         return nil;
 }
 
-NSString *SKTemporaryDirectoryCreating(BOOL create) {
-    NSString *baseTmpDir = [NSTemporaryDirectory() stringByAppendingPathComponent:[[NSBundle mainBundle] bundleIdentifier]];
-    NSString *tmpDir = baseTmpDir;
-    NSString *tmpDirName;
-    int i = 0;
+NSString *SKUniqueDirectoryCreating(NSString *basePath, BOOL create) {
+    CFUUIDRef uuid = CFUUIDCreate(NULL);
+    NSString *tmpDirName = [(NSString *)CFUUIDCreateString(NULL, uuid) autorelease];
+    CFRelease(uuid);
+    
     BOOL success = YES;
     
-    while (SKFileExistsAtPath(tmpDir))
-        tmpDir = [baseTmpDir stringByAppendingFormat:@"-%i", ++i];
-    
-    tmpDirName = [tmpDir lastPathComponent];
-    if (success && create) {
+    if (create) {
         FSRef tmpRef;
-        success = noErr == FSPathMakeRef((UInt8 *)[NSTemporaryDirectory() fileSystemRepresentation], &tmpRef, NULL) &&
+        success = noErr == FSPathMakeRef((UInt8 *)[basePath fileSystemRepresentation], &tmpRef, NULL) &&
                   noErr == FSCreateDirectoryUnicode(&tmpRef, [tmpDirName length], (const UniChar *)[tmpDirName cStringUsingEncoding:NSUnicodeStringEncoding], kFSCatInfoNone, NULL, NULL, NULL, NULL);
     }
     
-    return success ? tmpDir : nil;
+    return success ? [basePath stringByAppendingPathComponent:tmpDirName] : nil;
+}
+
+// These are taken from MoreFilesX
+
+struct FSDeleteContainerGlobals
+{
+	OSErr							result;			/* result */
+	ItemCount						actualObjects;	/* number of objects returned */
+	FSCatalogInfo					catalogInfo;	/* FSCatalogInfo */
+};
+typedef struct FSDeleteContainerGlobals FSDeleteContainerGlobals;
+
+static
+void
+FSDeleteContainerLevel(
+	const FSRef *container,
+	FSDeleteContainerGlobals *theGlobals)
+{
+	/* level locals */
+	FSIterator					iterator;
+	FSRef						itemToDelete;
+	UInt16						nodeFlags;
+	
+	/* Open FSIterator for flat access and give delete optimization hint */
+	theGlobals->result = FSOpenIterator(container, kFSIterateFlat + kFSIterateDelete, &iterator);
+	require_noerr(theGlobals->result, FSOpenIterator);
+	
+	/* delete the contents of the directory */
+	do
+	{
+		/* get 1 item to delete */
+		theGlobals->result = FSGetCatalogInfoBulk(iterator, 1, &theGlobals->actualObjects,
+								NULL, kFSCatInfoNodeFlags, &theGlobals->catalogInfo,
+								&itemToDelete, NULL, NULL);
+		if ( (noErr == theGlobals->result) && (1 == theGlobals->actualObjects) )
+		{
+			/* save node flags in local in case we have to recurse */
+			nodeFlags = theGlobals->catalogInfo.nodeFlags;
+			
+			/* is it a file or directory? */
+			if ( 0 != (nodeFlags & kFSNodeIsDirectoryMask) )
+			{
+				/* it's a directory -- delete its contents before attempting to delete it */
+				FSDeleteContainerLevel(&itemToDelete, theGlobals);
+			}
+			/* are we still OK to delete? */
+			if ( noErr == theGlobals->result )
+			{
+				/* is item locked? */
+				if ( 0 != (nodeFlags & kFSNodeLockedMask) )
+				{
+					/* then attempt to unlock it (ignore result since FSDeleteObject will set it correctly) */
+					theGlobals->catalogInfo.nodeFlags = nodeFlags & ~kFSNodeLockedMask;
+					(void) FSSetCatalogInfo(&itemToDelete, kFSCatInfoNodeFlags, &theGlobals->catalogInfo);
+				}
+				/* delete the item */
+				theGlobals->result = FSDeleteObject(&itemToDelete);
+			}
+		}
+	} while ( noErr == theGlobals->result );
+	
+	/* we found the end of the items normally, so return noErr */
+	if ( errFSNoMoreItems == theGlobals->result )
+	{
+		theGlobals->result = noErr;
+	}
+	
+	/* close the FSIterator (closing an open iterator should never fail) */
+	verify_noerr(FSCloseIterator(iterator));
+
+FSOpenIterator:
+
+	return;
+}
+
+OSErr
+FSDeleteContainerContents(
+	const FSRef *container)
+{
+	FSDeleteContainerGlobals	theGlobals;
+	
+	/* delete container's contents */
+	FSDeleteContainerLevel(container, &theGlobals);
+	
+	return ( theGlobals.result );
+}
+
+OSErr
+FSDeleteContainer(
+	const FSRef *container)
+{
+	OSErr			result;
+	FSCatalogInfo	catalogInfo;
+	
+	/* get nodeFlags for container */
+	result = FSGetCatalogInfo(container, kFSCatInfoNodeFlags, &catalogInfo, NULL, NULL,NULL);
+	require_noerr(result, FSGetCatalogInfo);
+	
+	/* make sure container is a directory */
+	require_action(0 != (catalogInfo.nodeFlags & kFSNodeIsDirectoryMask), ContainerNotDirectory, result = dirNFErr);
+	
+	/* delete container's contents */
+	result = FSDeleteContainerContents(container);
+	require_noerr(result, FSDeleteContainerContents);
+	
+	/* is container locked? */
+	if ( 0 != (catalogInfo.nodeFlags & kFSNodeLockedMask) )
+	{
+		/* then attempt to unlock container (ignore result since FSDeleteObject will set it correctly) */
+		catalogInfo.nodeFlags &= ~kFSNodeLockedMask;
+		(void) FSSetCatalogInfo(container, kFSCatInfoNodeFlags, &catalogInfo);
+	}
+	
+	/* delete the container */
+	result = FSDeleteObject(container);
+	
+FSDeleteContainerContents:
+ContainerNotDirectory:
+FSGetCatalogInfo:
+
+	return ( result );
+}
+
+OSErr
+FSPathDeleteContainer(
+	const UInt8 *containerPath)
+{
+	OSErr			result;
+	FSRef			container;
+    Boolean         isDirectory;
+    
+    result = FSPathMakeRef(containerPath, &container, &isDirectory);
+    if (isDirectory == false)
+        result = errFSNotAFolder;
+	require_noerr(result, FSPathMakeRef);
+    
+	/* delete the container recursively  */
+    result = FSDeleteContainer(&container);
+    
+FSPathMakeRef:
+
+	return ( result );
 }

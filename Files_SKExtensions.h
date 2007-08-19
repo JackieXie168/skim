@@ -43,4 +43,9 @@
 extern BOOL SKFileIsInTrash(NSURL *fileURL);
 extern BOOL SKFileExistsAtPath(NSString *path);
 extern NSDate *SKFileModificationDateAtPath(NSString *path);
-extern NSString *SKTemporaryDirectoryCreating(BOOL create);
+extern NSString *SKUniqueDirectoryCreating(NSString *basePath, BOOL create);
+
+extern OSErr FSDeleteContainerContents(const FSRef *container);
+extern OSErr FSDeleteContainer(const FSRef *container);
+extern OSErr FSPathDeleteContainer(const UInt8 *containerPath);
+    
