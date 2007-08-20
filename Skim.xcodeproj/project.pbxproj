@@ -126,6 +126,8 @@
 		CE5487BC0B35A20A00F8AFB6 /* NSFileManager_ExtendedAttributes.m in Sources */ = {isa = PBXBuildFile; fileRef = CE5487BB0B35A20A00F8AFB6 /* NSFileManager_ExtendedAttributes.m */; };
 		CE54898C0B35D4EF00F8AFB6 /* InfoWindow.nib in Resources */ = {isa = PBXBuildFile; fileRef = CE54898A0B35D4EF00F8AFB6 /* InfoWindow.nib */; };
 		CE54898F0B35D50E00F8AFB6 /* SKInfoWindowController.m in Sources */ = {isa = PBXBuildFile; fileRef = CE54898E0B35D50E00F8AFB6 /* SKInfoWindowController.m */; };
+		CE5BC5B10C79A27B00EBDCF7 /* NSTableView_SKExtensions.h in CopyFiles */ = {isa = PBXBuildFile; fileRef = CE5BC5AF0C79A27B00EBDCF7 /* NSTableView_SKExtensions.h */; };
+		CE5BC5B20C79A27B00EBDCF7 /* NSTableView_SKExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = CE5BC5B00C79A27B00EBDCF7 /* NSTableView_SKExtensions.m */; };
 		CE5F42AF0BF89FE00069D89C /* AppleRemote.m in Sources */ = {isa = PBXBuildFile; fileRef = CE5F42AD0BF89FE00069D89C /* AppleRemote.m */; };
 		CE5F43730BF8A3410069D89C /* IOKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CE5F42D30BF8A3400069D89C /* IOKit.framework */; };
 		CE67BB260BC44AC9007B6929 /* ZoomValues.strings in Resources */ = {isa = PBXBuildFile; fileRef = CE67BB240BC44AC9007B6929 /* ZoomValues.strings */; };
@@ -255,6 +257,7 @@
 			dstSubfolderSpec = 10;
 			files = (
 				CE2BD8450BD4135600A5F4DB /* Sparkle.framework in CopyFiles */,
+				CE5BC5B10C79A27B00EBDCF7 /* NSTableView_SKExtensions.h in CopyFiles */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -480,6 +483,8 @@
 		CE54898D0B35D50E00F8AFB6 /* SKInfoWindowController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SKInfoWindowController.h; sourceTree = "<group>"; };
 		CE54898E0B35D50E00F8AFB6 /* SKInfoWindowController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SKInfoWindowController.m; sourceTree = "<group>"; };
 		CE54AA8E0BBC037400008750 /* ReleaseNotes.rtf */ = {isa = PBXFileReference; lastKnownFileType = text.rtf; path = ReleaseNotes.rtf; sourceTree = "<group>"; };
+		CE5BC5AF0C79A27B00EBDCF7 /* NSTableView_SKExtensions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NSTableView_SKExtensions.h; sourceTree = "<group>"; };
+		CE5BC5B00C79A27B00EBDCF7 /* NSTableView_SKExtensions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NSTableView_SKExtensions.m; sourceTree = "<group>"; };
 		CE5F42AC0BF89FE00069D89C /* AppleRemote.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = AppleRemote.h; path = vendorsrc/martinkahr/AppleRemoteSource_R80/AppleRemote.h; sourceTree = "<group>"; };
 		CE5F42AD0BF89FE00069D89C /* AppleRemote.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; name = AppleRemote.m; path = vendorsrc/martinkahr/AppleRemoteSource_R80/AppleRemote.m; sourceTree = "<group>"; };
 		CE5F42D30BF8A3400069D89C /* IOKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = IOKit.framework; path = /System/Library/Frameworks/IOKit.framework; sourceTree = "<absolute>"; };
@@ -795,6 +800,8 @@
 				CE070EA10B89039700733CC8 /* NSScrollView_SKExtensions.m */,
 				CE38ECD10B8093B200A1B779 /* NSString_SKExtensions.h */,
 				CE38ECD20B8093B200A1B779 /* NSString_SKExtensions.m */,
+				CE5BC5AF0C79A27B00EBDCF7 /* NSTableView_SKExtensions.h */,
+				CE5BC5B00C79A27B00EBDCF7 /* NSTableView_SKExtensions.m */,
 				CEAA67230C70A882006BD633 /* NSURL_SKExtensions.h */,
 				CEAA67240C70A882006BD633 /* NSURL_SKExtensions.m */,
 				CEF7119F0B90B714003A2771 /* NSUserDefaultsController_SKExtensions.h */,
@@ -1460,6 +1467,7 @@
 				CEAA55B70C6DE452006BD633 /* SKProgressCell.m in Sources */,
 				CEAA67260C70A882006BD633 /* NSURL_SKExtensions.m in Sources */,
 				CEF839B30C77742A00A3AD51 /* Files_SKExtensions.m in Sources */,
+				CE5BC5B20C79A27B00EBDCF7 /* NSTableView_SKExtensions.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
