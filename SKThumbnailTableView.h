@@ -49,19 +49,12 @@
 
 
 @interface SKSnapshotTableView : SKThumbnailTableView
-- (BOOL)canDelete;
 @end
 
 
 @interface SKSnapshotPageCell : NSTextFieldCell {
     BOOL hasWindow;
 }
-@end
-
-
-@interface NSObject (SKSnapshotTableViewDelegate)
-- (void)tableView:(NSTableView *)aTableView deleteRowsWithIndexes:(NSIndexSet *)rowIndexes;
-- (BOOL)tableView:(NSTableView *)aTableView canDeleteRowsWithIndexes:(NSIndexSet *)rowIndexes;
 @end
 
 

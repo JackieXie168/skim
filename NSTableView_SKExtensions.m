@@ -63,12 +63,35 @@ static IMP originalKeyDown = NULL;
     unichar eventChar = [characters length] > 0 ? [characters characterAtIndex:0] : 0;
 	unsigned modifierFlags = [theEvent modifierFlags] & NSDeviceIndependentModifierFlagsMask;
     
-    if (eventChar == NSHomeFunctionKey && (modifierFlags & ~NSFunctionKeyMask) == 0)
+	if ((eventChar == NSDeleteCharacter || eventChar == NSDeleteFunctionKey) && modifierFlags == 0 && [self canDelete])
+        [self delete:self];
+    else if (eventChar == NSHomeFunctionKey && (modifierFlags & ~NSFunctionKeyMask) == 0)
         [self scrollToBeginningOfDocument:nil];
     else if (eventChar == NSEndFunctionKey && (modifierFlags & ~NSFunctionKeyMask) == 0)
         [self scrollToEndOfDocument:nil];
     else
         originalKeyDown(self, _cmd, theEvent);
+}
+
+- (BOOL)canDelete {
+    NSIndexSet *indexes = [self selectedRowIndexes];
+    return [indexes count] && 
+           [[self delegate] respondsToSelector:@selector(tableView:canDeleteRowsWithIndexes:)] && 
+           [[self delegate] respondsToSelector:@selector(tableView:deleteRowsWithIndexes:)] && 
+           [[self delegate] tableView:self canDeleteRowsWithIndexes:indexes];
+}
+
+- (void)delete:(id)sender {
+    if ([self canDelete])
+        [[self delegate] tableView:self deleteRowsWithIndexes:[self selectedRowIndexes]];
+    else
+        NSBeep();
+}
+
+- (BOOL)validateMenuItem:(NSMenuItem *)menuItem {
+    if ([menuItem action] == @selector(delete:))
+        return [self canDelete];
+    return YES;
 }
 
 @end

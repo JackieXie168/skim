@@ -41,15 +41,16 @@
 #import "SKDocument.h"
 #import "SKMainWindowController.h"
 #import "Files_SKExtensions.h"
+#import "NSTableView_SKExtensions.h"
+
+static NSString *SKBookmarkRowsPboardType = @"SKBookmarkRowsPboardType";
+static NSString *SKBookmarkChangedNotification = @"SKBookmarkChangedNotification";
 
 @implementation SKBookmarkController
 
 static unsigned int maxRecentDocumentsCount = 0;
 
 + (void)initialize {
-    [NSValueTransformer setValueTransformer:[[[SKPageIndexTransformer alloc] init] autorelease] forName:@"SKPageIndexTransformer"];
-    [NSValueTransformer setValueTransformer:[[[SKAliasDataTransformer alloc] init] autorelease] forName:@"SKAliasDataTransformer"];
-    
     maxRecentDocumentsCount = [[NSUserDefaults standardUserDefaults] integerForKey:@"SKMaximumDocumentPageHistoryCount"];
     if (maxRecentDocumentsCount == 0)
         maxRecentDocumentsCount = 50;
@@ -80,10 +81,22 @@ static unsigned int maxRecentDocumentsCount = 0;
                 NSLog(@"Error deserializing: %@", error);
                 [error release];
             } else if ([plist isKindOfClass:[NSDictionary class]]) {
-                [bookmarks addObjectsFromArray:[plist objectForKey:@"bookmarks"]];
                 [recentDocuments addObjectsFromArray:[plist objectForKey:@"recentDocuments"]];
+                NSEnumerator *dictEnum = [[plist objectForKey:@"bookmarks"] objectEnumerator];
+                NSDictionary *dict;
+                
+                while (dict = [dictEnum nextObject]) {
+                    SKBookmark *bookmark = [[SKBookmark alloc] initWithDictionary:dict];
+                    [bookmarks addObject:bookmark];
+                    [bookmark release];
+                }
             }
         }
+        
+		[[NSNotificationCenter defaultCenter] addObserver:self
+                                                 selector:@selector(handleBookmarkChangedNotification:)
+                                                     name:SKBookmarkChangedNotification
+                                                   object:nil];
     }
     return self;
 }
@@ -96,11 +109,19 @@ static unsigned int maxRecentDocumentsCount = 0;
 
 - (NSString *)windowNibName { return @"BookmarksWindow"; }
 
+- (void)windowDidLoad {
+    [self setWindowFrameAutosaveName:@"SKBookmarksWindow"];
+    [tableView registerForDraggedTypes:[NSArray arrayWithObjects:SKBookmarkRowsPboardType, nil]];
+}
+
+#pragma mark Bookmarks
+
 - (NSArray *)bookmarks {
     return bookmarks;
 }
 
 - (void)setBookmarks:(NSArray *)newBookmarks {
+    [[[self undoManager] prepareWithInvocationTarget:self] setBookmarks:[[bookmarks copy] autorelease]];
     return [bookmarks setArray:newBookmarks];
 }
 
@@ -113,11 +134,13 @@ static unsigned int maxRecentDocumentsCount = 0;
 }
 
 - (void)insertObject:(id)obj inBookmarksAtIndex:(unsigned)index {
+    [[[self undoManager] prepareWithInvocationTarget:self] removeObjectFromBookmarksAtIndex:index];
     [bookmarks insertObject:obj atIndex:index];
     [self saveBookmarks];
 }
 
 - (void)removeObjectFromBookmarksAtIndex:(unsigned)index {
+    [[[self undoManager] prepareWithInvocationTarget:self] insertObject:[bookmarks objectAtIndex:index] inBookmarksAtIndex:index];
     [bookmarks removeObjectAtIndex:index];
     [self saveBookmarks];
 }
@@ -125,10 +148,12 @@ static unsigned int maxRecentDocumentsCount = 0;
 - (void)addBookmarkForPath:(NSString *)path pageIndex:(unsigned)pageIndex label:(NSString *)label {
     if (path == nil)
         return;
-    NSData *data = [[BDAlias aliasWithPath:path] aliasData];
-    NSMutableDictionary *bm = [NSMutableDictionary dictionaryWithObjectsAndKeys:path, @"path", label, @"label", [NSNumber numberWithUnsignedInt:pageIndex], @"pageIndex", data, @"_BDAlias", nil];
-    [[self mutableArrayValueForKey:@"bookmarks"] addObject:bm];
+    SKBookmark *bookmark = [[SKBookmark alloc] initWithPath:path pageIndex:pageIndex label:label];
+    [[self mutableArrayValueForKey:@"bookmarks"] addObject:bookmark];
+    [bookmark release];
 }
+
+#pragma mark Recent Documents
 
 - (NSArray *)recentDocuments {
     return recentDocuments;
@@ -182,7 +207,7 @@ static unsigned int maxRecentDocumentsCount = 0;
 }
 
 - (void)saveBookmarks {
-    NSDictionary *bookmarksDictionary = [NSDictionary dictionaryWithObjectsAndKeys:bookmarks, @"bookmarks", recentDocuments, @"recentDocuments", nil];
+    NSDictionary *bookmarksDictionary = [NSDictionary dictionaryWithObjectsAndKeys:[bookmarks valueForKey:@"dictionaryValue"], @"bookmarks", recentDocuments, @"recentDocuments", nil];
     NSString *error = nil;
     NSPropertyListFormat format = NSPropertyListXMLFormat_v1_0;
     NSData *data = [NSPropertyListSerialization dataFromPropertyList:bookmarksDictionary format:format errorDescription:&error];
@@ -193,6 +218,10 @@ static unsigned int maxRecentDocumentsCount = 0;
 	} else {
         [data writeToFile:[self bookmarksFilePath] atomically:YES];
     }
+}
+
+- (void)handleBookmarkChangedNotification:(NSNotification *)notification {
+    [self saveBookmarks];
 }
 
 - (NSString *)bookmarksFilePath {
@@ -225,24 +254,19 @@ static unsigned int maxRecentDocumentsCount = 0;
     return bookmarksPath;
 }
 
-- (void)controlTextDidEndEditing:(NSNotification *)notification {
-    [self saveBookmarks];
-}
-
 - (void)openBookmarks:(NSArray *)items {
     NSEnumerator *bmEnum = [items objectEnumerator];
-    NSDictionary *bm;
+    SKBookmark *bm;
     
     while (bm = [bmEnum nextObject]) {
         id document = nil;
-        NSURL *fileURL = [[BDAlias aliasWithData:[bm objectForKey:@"_BDAlias"]] fileURL];
+        NSString *path = [bm resolvedPath];
+        NSURL *fileURL = path ? [NSURL fileURLWithPath:path] : nil;
         NSError *error;
         
-        if (fileURL == nil && [bm objectForKey:@"path"])
-            fileURL = [NSURL fileURLWithPath:[bm objectForKey:@"path"]];
         if (fileURL && NO == SKFileIsInTrash(fileURL)) {
             if (document = [[NSDocumentController sharedDocumentController] openDocumentWithContentsOfURL:fileURL display:YES error:&error]) {
-                [[document mainWindowController] setPageNumber:[[bm objectForKey:@"pageIndex"] unsignedIntValue] + 1];
+                [[document mainWindowController] setPageNumber:[bm pageIndex] + 1];
             } else {
                 [NSApp presentError:error];
             }
@@ -250,41 +274,157 @@ static unsigned int maxRecentDocumentsCount = 0;
     }
 }
 
-@end
+#pragma mark Undo support
 
-
-@implementation SKPageIndexTransformer
-
-+ (Class)transformedValueClass {
-    return [NSNumber class];
+- (NSUndoManager *)undoManager {
+    if(undoManager == nil)
+        undoManager = [[NSUndoManager alloc] init];
+    return undoManager;
 }
 
-+ (BOOL)allowsReverseTransformation {
+- (NSUndoManager *)windowWillReturnUndoManager:(NSWindow *)sender {
+    return [self undoManager];
+}
+
+#pragma mark NSTableView datasource methods
+
+- (int)numberOfRowsInTableView:(NSTableView *)tv { return 0; }
+
+- (id)tableView:(NSTableView *)tv objectValueForTableColumn:(NSTableColumn *)tableColumn row:(int)row { return nil; }
+
+- (BOOL)tableView:(NSTableView *)tv writeRowsWithIndexes:(NSIndexSet *)rowIndexes toPasteboard:(NSPasteboard *)pboard {
+    [pboard declareTypes:[NSArray arrayWithObjects:SKBookmarkRowsPboardType, nil] owner:nil];
+    [pboard setPropertyList:[NSNumber numberWithUnsignedInt:[rowIndexes firstIndex]] forType:SKBookmarkRowsPboardType];
+    return YES;
+}
+
+- (NSDragOperation)tableView:(NSTableView *)tv validateDrop:(id <NSDraggingInfo>)info proposedRow:(int)row proposedDropOperation:(NSTableViewDropOperation)op {
+    NSPasteboard *pboard = [info draggingPasteboard];
+    NSString *type = [pboard availableTypeFromArray:[NSArray arrayWithObjects:SKBookmarkRowsPboardType, nil]];
+    
+    if (type) {
+        [tv setDropRow:row == -1 ? [tv numberOfRows] : row dropOperation:NSTableViewDropAbove];
+        return NSDragOperationMove;
+    }
+    return NSDragOperationNone;
+}
+
+- (BOOL)tableView:(NSTableView *)tv acceptDrop:(id <NSDraggingInfo>)info row:(int)row dropOperation:(NSTableViewDropOperation)op {
+    NSPasteboard *pboard = [info draggingPasteboard];
+    NSString *type = [pboard availableTypeFromArray:[NSArray arrayWithObjects:SKBookmarkRowsPboardType, nil]];
+    
+    if (type) {
+        int draggedRow = [[pboard propertyListForType:SKBookmarkRowsPboardType] intValue];
+        SKBookmark *bookmark = [[bookmarks objectAtIndex:draggedRow] retain];
+        [self removeObjectFromBookmarksAtIndex:draggedRow];
+        [self insertObject:bookmark inBookmarksAtIndex:row < draggedRow ? row : row - 1];
+        [bookmark release];
+        [tableView selectRowIndexes:[NSIndexSet indexSetWithIndex:row] byExtendingSelection:NO];
+        return YES;
+    }
     return NO;
 }
 
-- (id)transformedValue:(id)number {
-    return [NSNumber numberWithUnsignedInt:[number unsignedIntValue] + 1];
+#pragma mark NSTableView delegate methods
+
+- (NSString *)tableView:(NSTableView *)tv toolTipForCell:(NSCell *)cell rect:(NSRectPointer)rect tableColumn:(NSTableColumn *)tableColumn row:(int)row mouseLocation:(NSPoint)mouseLocation {
+    NSString *tcID = [tableColumn identifier];
+    SKBookmark *bookmark = [self objectInBookmarksAtIndex:row];
+    
+    if ([tcID isEqualToString:@"label"]) {
+        return [bookmark label];
+    } else if ([tcID isEqualToString:@"file"]) {
+        return [bookmark resolvedPath];
+    } else if ([tcID isEqualToString:@"page"]) {
+        return [[bookmark pageNumber] stringValue];
+    }
+    return nil;
+}
+
+- (void)tableView:(NSTableView *)aTableView deleteRowsWithIndexes:(NSIndexSet *)rowIndexes {
+    int row = [rowIndexes firstIndex];
+    [self removeObjectFromBookmarksAtIndex:row];
+}
+
+- (BOOL)tableView:(NSTableView *)aTableView canDeleteRowsWithIndexes:(NSIndexSet *)rowIndexes {
+    return YES;
 }
 
 @end
 
+#pragma mark -
 
-@implementation SKAliasDataTransformer
+@implementation SKBookmark
 
-+ (Class)transformedValueClass {
-    return [NSString class];
+- (id)initWithPath:(NSString *)aPath aliasData:(NSData *)aData pageIndex:(unsigned)aPageIndex label:(NSString *)aLabel {
+    if (self = [super init]) {
+        path = [aPath copy];
+        aliasData = [aData copy];
+        pageIndex = aPageIndex;
+        label = [aLabel copy];
+    }
+    return self;
 }
 
-+ (BOOL)allowsReverseTransformation {
-    return NO;
+- (id)initWithPath:(NSString *)aPath pageIndex:(unsigned)aPageIndex label:(NSString *)aLabel {
+    return [self initWithPath:aPath aliasData:[[BDAlias aliasWithPath:aPath] aliasData] pageIndex:aPageIndex label:aLabel];
 }
 
-- (id)transformedValue:(id)dictionary {
-    NSString *path = [[BDAlias aliasWithData:[dictionary valueForKey:@"_BDAlias"]] fullPathNoUI];
-    if (path == nil)
-        path = [dictionary valueForKey:@"path"];
-    return path;
+- (id)initWithDictionary:(NSDictionary *)dictionary {
+    return [self initWithPath:[dictionary objectForKey:@"path"] aliasData:[dictionary objectForKey:@"_BDAlias"] pageIndex:[[dictionary objectForKey:@"pageIndex"] unsignedIntValue] label:[dictionary objectForKey:@"label"]];
+}
+
+- (id)copyWithZone:(NSZone *)aZone {
+    return [[[self class] allocWithZone:aZone] initWithPath:path aliasData:aliasData pageIndex:pageIndex label:label];
+}
+
+- (void)dealloc {
+    [[[SKBookmarkController sharedBookmarkController] undoManager] removeAllActionsWithTarget:self];
+    [path release];
+    [aliasData release];
+    [label release];
+    [super dealloc];
+}
+
+- (NSDictionary *)dictionaryValue {
+    return [NSDictionary dictionaryWithObjectsAndKeys:path, @"path", aliasData, @"_BDAlias", [NSNumber numberWithUnsignedInt:pageIndex], @"pageIndex", label, @"label", nil];
+}
+
+- (NSString *)path {
+    return [[path retain] autorelease];
+}
+
+- (NSData *)aliasData {
+    return aliasData;
+}
+
+- (NSString *)resolvedPath {
+    NSString *resolvedPath = [[BDAlias aliasWithData:aliasData] fullPathNoUI];
+    if (resolvedPath == nil)
+        resolvedPath = path;
+    return resolvedPath;
+}
+
+- (unsigned int)pageIndex {
+    return pageIndex;
+}
+
+- (NSNumber *)pageNumber {
+    return [NSNumber numberWithUnsignedInt:pageIndex + 1];
+}
+
+- (NSString *)label {
+    return label;
+}
+
+- (void)setLabel:(NSString *)newLabel {
+    if (label != newLabel) {
+        NSUndoManager *undoManager = [[SKBookmarkController sharedBookmarkController] undoManager];
+        [(SKBookmark *)[undoManager prepareWithInvocationTarget:self] setLabel:label];
+        [label release];
+        label = [newLabel retain];
+        [[NSNotificationCenter defaultCenter] postNotificationName:SKBookmarkChangedNotification object:self];
+    }
 }
 
 @end
