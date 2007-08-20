@@ -212,11 +212,8 @@
 }
 
 - (IBAction)openBookmark:(id)sender {
-    int i = [sender tag];
-    NSArray *bookmarks = [[SKBookmarkController sharedBookmarkController] bookmarks];
-    NSDictionary *bm = [bookmarks objectAtIndex:i];
-    
-    [[SKBookmarkController sharedBookmarkController] openBookmarks:[NSArray arrayWithObjects:bm, nil]];
+    SKBookmark *bookmark = [sender representedObject];
+    [[SKBookmarkController sharedBookmarkController] openBookmarks:[NSArray arrayWithObjects:bookmark, nil]];
 }
 
 #pragma mark Support
@@ -229,10 +226,10 @@
     if (iMax > 0)
         [menu addItem:[NSMenuItem separatorItem]];
     for (i = 0; i < iMax; i++) {
-        NSDictionary *bm = [bookmarks objectAtIndex:i];
-        NSMenuItem *item = [menu addItemWithTitle:[bm objectForKey:@"label"] action:@selector(openBookmark:)  keyEquivalent:@""];
+        SKBookmark *bm = [bookmarks objectAtIndex:i];
+        NSMenuItem *item = [menu addItemWithTitle:[bm label] action:@selector(openBookmark:)  keyEquivalent:@""];
         [item setTarget:self];
-        [item setTag:i];
+        [item setRepresentedObject:bm];
     }
 }
 

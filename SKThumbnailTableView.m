@@ -176,38 +176,6 @@ static IMP originalTrackKnob = NULL;
 
 @implementation SKSnapshotTableView
 
-- (BOOL)canDelete {
-    NSIndexSet *indexes = [self selectedRowIndexes];
-    return [indexes count] && 
-           [[self delegate] respondsToSelector:@selector(tableView:canDeleteRowsWithIndexes:)] && 
-           [[self delegate] respondsToSelector:@selector(tableView:deleteRowsWithIndexes:)] && 
-           [[self delegate] tableView:self canDeleteRowsWithIndexes:indexes];
-}
-
-- (void)delete:(id)sender {
-    if ([self canDelete])
-        [[self delegate] tableView:self deleteRowsWithIndexes:[self selectedRowIndexes]];
-    else
-        NSBeep();
-}
-
-- (void)keyDown:(NSEvent *)theEvent {
-    NSString *characters = [theEvent charactersIgnoringModifiers];
-    unichar eventChar = [characters length] > 0 ? [characters characterAtIndex:0] : 0;
-	unsigned int modifiers = [theEvent modifierFlags] & NSDeviceIndependentModifierFlagsMask;
-    
-	if ((eventChar == NSDeleteCharacter || eventChar == NSDeleteFunctionKey) && modifiers == 0 && [self canDelete])
-        [self delete:self];
-	else
-		[super keyDown:theEvent];
-}
-
-- (BOOL)validateMenuItem:(NSMenuItem *)menuItem {
-    if ([menuItem action] == @selector(delete:))
-        return [self canDelete];
-    return [super validateMenuItem:menuItem];
-}
-
 @end
 
 #pragma mark -

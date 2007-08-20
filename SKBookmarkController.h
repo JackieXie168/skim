@@ -40,8 +40,10 @@
 
 
 @interface SKBookmarkController : NSWindowController {
+    IBOutlet NSTableView *tableView;
     NSMutableArray *bookmarks;
     NSMutableArray *recentDocuments;
+    NSUndoManager *undoManager;
 }
 
 + (id)sharedBookmarkController;
@@ -55,6 +57,7 @@
 
 - (void)addBookmarkForPath:(NSString *)path pageIndex:(unsigned)pageIndex label:(NSString *)label;
 - (void)saveBookmarks;
+- (void)handleBookmarkChangedNotification:(NSNotification *)notification;
 - (NSString *)bookmarksFilePath;
 - (void)openBookmarks:(NSArray *)items;
 
@@ -63,10 +66,30 @@
 - (unsigned int)pageIndexForRecentDocumentAtPath:(NSString *)path;
 - (NSArray *)snapshotsAtPath:(NSString *)path;
 
+- (NSUndoManager *)undoManager;
+
 @end
 
-@interface SKPageIndexTransformer : NSValueTransformer
-@end
 
-@interface SKAliasDataTransformer : NSValueTransformer
+@interface SKBookmark : NSObject <NSCopying> {
+    NSString *path;
+    NSData *aliasData;
+    NSString *label;
+    unsigned int pageIndex;
+}
+
+- (id)initWithPath:(NSString *)aPath aliasData:(NSData *)aData pageIndex:(unsigned)aPageIndex label:(NSString *)aLabel;
+- (id)initWithPath:(NSString *)aPath pageIndex:(unsigned)aPageIndex label:(NSString *)aLabel;
+- (id)initWithDictionary:(NSDictionary *)dictionary;
+
+- (NSDictionary *)dictionaryValue;
+
+- (NSString *)path;
+- (NSData *)aliasData;
+- (NSString *)resolvedPath;
+- (unsigned int)pageIndex;
+- (NSNumber *)pageNumber;
+- (NSString *)label;
+- (void)setLabel:(NSString *)newLabel;
+
 @end

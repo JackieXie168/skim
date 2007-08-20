@@ -5,6 +5,7 @@
         {
             CLASS = SKBookmarkController; 
             LANGUAGE = ObjC; 
+            OUTLETS = {tableView = NSTableView; }; 
             SUPERCLASS = NSWindowController; 
         }
     ); 

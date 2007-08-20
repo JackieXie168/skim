@@ -40,5 +40,12 @@
 
 
 @interface NSTableView (SKExtensions)
+- (BOOL)canDelete;
+- (void)delete:(id)sender;
+@end
 
+
+@interface NSObject (NSTableViewSKExtendedDelegate)
+- (void)tableView:(NSTableView *)aTableView deleteRowsWithIndexes:(NSIndexSet *)rowIndexes;
+- (BOOL)tableView:(NSTableView *)aTableView canDeleteRowsWithIndexes:(NSIndexSet *)rowIndexes;
 @end
