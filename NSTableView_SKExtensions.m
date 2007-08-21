@@ -40,7 +40,7 @@
 #import "OBUtilities.h"
 
 
-@implementation NSTableView (SKPrivateExtensions)
+@interface NSTableView (SKPrivateExtensions)
 - (void)replacementKeyDown:(NSEvent *)theEvent;
 @end
 
