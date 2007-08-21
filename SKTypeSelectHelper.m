@@ -38,9 +38,14 @@
 
 #import "SKTypeSelectHelper.h"
 
+#define TIMEOUT 0.7
 
 @interface SKTypeSelectHelper (SKPrivate)
-- (void)typeSelectSearchTimeout;
+- (void)searchWithStickyMatch:(BOOL)allowUpdate;
+- (void)stopTimer;
+- (void)startTimerForSelector:(SEL)selector;
+- (void)typeSelectSearchTimeout:(NSTimer *)aTimer;
+- (void)typeSelectCleanTimeout:(NSTimer *)aTimer;
 - (unsigned int)indexOfMatchedItemAfterIndex:(unsigned int)selectedIndex;
 @end
 
@@ -50,32 +55,32 @@
 
 - (id)init {
     if (self = [super init]){
+        searchString = [[NSMutableString alloc] init];
         cycleResults = YES;
-        matchesImmediately = NO;
+        matchesImmediately = YES;
         matchOption = SKPrefixMatch;
     }
     return self;
 }
 
 - (void)dealloc {
-    [timer invalidate];
-    [timer release];
+    [self stopTimer];
     [searchString release];
     [searchCache release];
     [super dealloc];
 }
 
-// API
+#pragma mark Accessors
+
 - (id)dataSource {
     return dataSource;
 }
 
 - (void)setDataSource:(id)newDataSource {
-    if (dataSource == newDataSource)
-        return;
-    
-    dataSource = newDataSource;
-    [self rebuildTypeSelectSearchCache];
+    if (dataSource != newDataSource) {
+        dataSource = newDataSource;
+        [self rebuildTypeSelectSearchCache];
+    }
 }
 
 - (BOOL)cyclesSimilarResults {
@@ -102,6 +107,12 @@
     matchOption = newValue;
 }
 
+- (BOOL)isProcessing {
+    return processing;
+}
+
+#pragma mark API
+
 - (void)rebuildTypeSelectSearchCache {    
     if (searchCache)
         [searchCache release];
@@ -110,12 +121,8 @@
 }
 
 - (void)processKeyDownCharacter:(unichar)character {
-    NSString *selectedItem = nil;
-    unsigned int selectedIndex, foundIndex;
-    
-    // Create the search string the first time around
-    if (searchString == nil)
-        searchString = [[NSMutableString alloc] init];
+    if (processing == NO)
+        [searchString setString:@""];
     
     // Append the new character to the search string
     [searchString appendFormat:@"%C", character];
@@ -124,51 +131,59 @@
         [dataSource typeSelectHelper:self updateSearchString:searchString];
     
     // Reset the timer if it hasn't expired yet
-    NSDate *date = [NSDate dateWithTimeIntervalSinceNow:0.7];
+    [self startTimerForSelector:@selector(typeSelectSearchTimeout:)];
+    
+    if (matchesImmediately)
+        [self searchWithStickyMatch:processing];
+    
+    processing = YES;
+}
+
+- (void)repeatSearch {
+    [self searchWithStickyMatch:NO];
+    
+    if ([searchString length] && [dataSource respondsToSelector:@selector(typeSelectHelper:updateSearchString:)])
+        [dataSource typeSelectHelper:self updateSearchString:searchString];
+    
+    [self startTimerForSelector:@selector(typeSelectCleanTimeout:)];
+    
+    processing = NO;
+}
+
+@end 
+
+#pragma mark -
+
+@implementation SKTypeSelectHelper (SKPrivate)
+
+- (void)stopTimer {
     [timer invalidate];
     [timer release];
     timer = nil;
-    timer = [[NSTimer alloc] initWithFireDate:date interval:0 target:self selector:@selector(typeSelectSearchTimeout:) userInfo:NULL repeats:NO];
-    [[NSRunLoop currentRunLoop] addTimer:timer forMode:NSDefaultRunLoopMode];
-    
-    if (matchesImmediately) {
-        if (cycleResults) {
-            selectedIndex = [dataSource typeSelectHelperCurrentlySelectedIndex:self];
-            if (selectedIndex < [searchCache count])
-               selectedItem = [searchCache objectAtIndex:selectedIndex];
-            else
-                selectedIndex = NSNotFound;
-            
-            // Avoid flashing a selection all over the place while you're still typing the thing you have selected
-            if (matchOption == SKFullStringMatch) {
-                if ([selectedItem caseInsensitiveCompare:searchString] == NSOrderedSame)
-                    return;
-            } else {
-                unsigned int searchStringLength = [searchString length];
-                unsigned int selectedItemLength = [selectedItem length];
-                NSRange range = NSMakeRange(0, matchOption == SKPrefixMatch ? searchStringLength : selectedItemLength);
-                if (searchStringLength > 1 && selectedItemLength >= searchStringLength && [selectedItem rangeOfString:searchString options:NSCaseInsensitiveSearch range:range].location != NSNotFound)
-                    return;
-            }
-            
-        } else {
-            selectedIndex = NSNotFound;
-        }
-        
-        foundIndex = [self indexOfMatchedItemAfterIndex:selectedIndex];
-        
-        if (foundIndex != NSNotFound)
-            [dataSource typeSelectHelper:self selectItemAtIndex:foundIndex];
-    }
 }
 
-- (BOOL)isProcessing {
-    return timer != nil;
+- (void)startTimerForSelector:(SEL)selector {
+    [self stopTimer];
+    timer = [[NSTimer alloc] initWithFireDate:[NSDate dateWithTimeIntervalSinceNow:TIMEOUT] interval:0 target:self selector:selector userInfo:NULL repeats:NO];
+    [[NSRunLoop currentRunLoop] addTimer:timer forMode:NSDefaultRunLoopMode];
 }
 
 - (void)typeSelectSearchTimeout:(NSTimer *)aTimer {
-    if (matchesImmediately == NO && [searchString length]) {
-        unsigned int selectedIndex, foundIndex;
+    if (matchesImmediately == NO)
+        [self searchWithStickyMatch:NO];
+    [self typeSelectCleanTimeout:aTimer];
+}
+
+- (void)typeSelectCleanTimeout:(NSTimer *)aTimer {
+    if ([dataSource respondsToSelector:@selector(typeSelectHelper:updateSearchString:)])
+        [dataSource typeSelectHelper:self updateSearchString:nil];
+    [self stopTimer];
+    processing = NO;
+}
+
+- (void)searchWithStickyMatch:(BOOL)sticky {
+    if ([searchString length]) {
+        unsigned int selectedIndex, startIndex, foundIndex;
         
         if (cycleResults) {
             selectedIndex = [dataSource typeSelectHelperCurrentlySelectedIndex:self];
@@ -177,18 +192,17 @@
         } else {
             selectedIndex = NSNotFound;
         }
-        foundIndex = [self indexOfMatchedItemAfterIndex:selectedIndex];
-        if (foundIndex != NSNotFound)
+        
+        startIndex = selectedIndex;
+        if (sticky && selectedIndex != NSNotFound)
+            startIndex = startIndex > 0 ? startIndex - 1 : [searchCache count] - 1;
+        
+        foundIndex = [self indexOfMatchedItemAfterIndex:startIndex];
+        
+        // Avoid flashing a selection all over the place while you're still typing the thing you have selected
+        if (foundIndex != NSNotFound && foundIndex != selectedIndex)
             [dataSource typeSelectHelper:self selectItemAtIndex:foundIndex];
     }
-    
-    if ([dataSource respondsToSelector:@selector(typeSelectHelper:updateSearchString:)])
-        [dataSource typeSelectHelper:self updateSearchString:nil];
-    [timer invalidate];
-    [timer release];
-    timer = nil;
-    [searchString release];
-    searchString = nil;
 }
 
 - (unsigned int)indexOfMatchedItemAfterIndex:(unsigned int)selectedIndex {
