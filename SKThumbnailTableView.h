@@ -39,12 +39,20 @@
 #import <Cocoa/Cocoa.h>
 
 
+@class SKTypeSelectHelper;
+
 @interface SKThumbnailTableView : NSTableView
 {
     BOOL isScrolling;
+    SKTypeSelectHelper *typeSelectHelper;
 }
+
 - (BOOL)isScrolling;
 - (BOOL)canCopy;
+
+- (SKTypeSelectHelper *)typeSelectHelper;
+- (void)setTypeSelectHelper:(SKTypeSelectHelper *)newTypeSelectHelper;
+
 @end
 
 

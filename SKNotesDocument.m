@@ -45,6 +45,8 @@
 #import "SKApplicationController.h"
 #import "NSValue_SKExtensions.h"
 #import "NSString_SKExtensions.h"
+#import "SKTypeSelectHelper.h"
+#import "SKPDFAnnotationNote.h"
 
 @implementation SKNotesDocument
 
@@ -71,6 +73,11 @@
     NSSortDescriptor *contentsSortDescriptor = [[[NSSortDescriptor alloc] initWithKey:@"contents" ascending:YES selector:@selector(localizedCaseInsensitiveNumericCompare:)] autorelease];
     [arrayController setSortDescriptors:[NSArray arrayWithObjects:indexSortDescriptor, contentsSortDescriptor, nil]];
     [outlineView reloadData];
+    
+    SKTypeSelectHelper *typeSelectHelper = [[[SKTypeSelectHelper alloc] init] autorelease];
+    [typeSelectHelper setMatchOption:SKSubstringMatch];
+    [typeSelectHelper setDataSource:self];
+    [outlineView setTypeSelectHelper:typeSelectHelper];
 }
 
 - (NSData *)dataOfType:(NSString *)typeName error:(NSError **)outError {
@@ -317,6 +324,30 @@
 
 - (NSString *)outlineView:(NSOutlineView *)ov toolTipForCell:(NSCell *)cell rect:(NSRectPointer)rect tableColumn:(NSTableColumn *)tableColumn item:(id)item mouseLocation:(NSPoint)mouseLocation {
     return [item valueForKey:@"type"] ? [item valueForKey:@"contents"] : [[item valueForKey:@"contents"] string];
+}
+
+#pragma mark SKTypeSelectHelper datasource protocol
+
+- (NSArray *)typeSelectHelperSelectionItems:(SKTypeSelectHelper *)typeSelectHelper {
+    return [[arrayController arrangedObjects] valueForKey:@"contents"];
+}
+
+- (unsigned int)typeSelectHelperCurrentlySelectedIndex:(SKTypeSelectHelper *)typeSelectHelper {
+    NSArray *arrangedNotes = [arrayController arrangedObjects];
+    int row = [outlineView selectedRow];
+    id item = nil;
+    if (row == -1)
+        return NSNotFound;
+    item = [outlineView itemAtRow:row];
+    if ([item valueForKey:@"type"])
+        return [arrangedNotes indexOfObject:item];
+    else 
+        return [[arrangedNotes valueForKey:@"child"] indexOfObject:item];
+}
+
+- (void)typeSelectHelper:(SKTypeSelectHelper *)typeSelectHelper selectItemAtIndex:(unsigned int)itemIndex {
+    int row = [outlineView rowForItem:[[arrayController arrangedObjects] objectAtIndex:itemIndex]];
+    [outlineView selectRowIndexes:[NSIndexSet indexSetWithIndex:row] byExtendingSelection:NO];
 }
 
 @end

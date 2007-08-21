@@ -128,6 +128,7 @@
 		CE54898F0B35D50E00F8AFB6 /* SKInfoWindowController.m in Sources */ = {isa = PBXBuildFile; fileRef = CE54898E0B35D50E00F8AFB6 /* SKInfoWindowController.m */; };
 		CE5BC5B10C79A27B00EBDCF7 /* NSTableView_SKExtensions.h in CopyFiles */ = {isa = PBXBuildFile; fileRef = CE5BC5AF0C79A27B00EBDCF7 /* NSTableView_SKExtensions.h */; };
 		CE5BC5B20C79A27B00EBDCF7 /* NSTableView_SKExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = CE5BC5B00C79A27B00EBDCF7 /* NSTableView_SKExtensions.m */; };
+		CE5BD6740C7ADF1500EBDCF7 /* SKTypeSelectHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = CE5BD6720C7ADF1500EBDCF7 /* SKTypeSelectHelper.m */; };
 		CE5F42AF0BF89FE00069D89C /* AppleRemote.m in Sources */ = {isa = PBXBuildFile; fileRef = CE5F42AD0BF89FE00069D89C /* AppleRemote.m */; };
 		CE5F43730BF8A3410069D89C /* IOKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CE5F42D30BF8A3400069D89C /* IOKit.framework */; };
 		CE67BB260BC44AC9007B6929 /* ZoomValues.strings in Resources */ = {isa = PBXBuildFile; fileRef = CE67BB240BC44AC9007B6929 /* ZoomValues.strings */; };
@@ -485,6 +486,8 @@
 		CE54AA8E0BBC037400008750 /* ReleaseNotes.rtf */ = {isa = PBXFileReference; lastKnownFileType = text.rtf; path = ReleaseNotes.rtf; sourceTree = "<group>"; };
 		CE5BC5AF0C79A27B00EBDCF7 /* NSTableView_SKExtensions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NSTableView_SKExtensions.h; sourceTree = "<group>"; };
 		CE5BC5B00C79A27B00EBDCF7 /* NSTableView_SKExtensions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NSTableView_SKExtensions.m; sourceTree = "<group>"; };
+		CE5BD6710C7ADF1500EBDCF7 /* SKTypeSelectHelper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SKTypeSelectHelper.h; sourceTree = "<group>"; };
+		CE5BD6720C7ADF1500EBDCF7 /* SKTypeSelectHelper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SKTypeSelectHelper.m; sourceTree = "<group>"; };
 		CE5F42AC0BF89FE00069D89C /* AppleRemote.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = AppleRemote.h; path = vendorsrc/martinkahr/AppleRemoteSource_R80/AppleRemote.h; sourceTree = "<group>"; };
 		CE5F42AD0BF89FE00069D89C /* AppleRemote.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; name = AppleRemote.m; path = vendorsrc/martinkahr/AppleRemoteSource_R80/AppleRemote.m; sourceTree = "<group>"; };
 		CE5F42D30BF8A3400069D89C /* IOKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = IOKit.framework; path = /System/Library/Frameworks/IOKit.framework; sourceTree = "<absolute>"; };
@@ -979,6 +982,8 @@
 				CE1E2B270BDAB6180011D9DD /* SKPDFSynchronizer.m */,
 				CE48BAD50C089EA300A166C6 /* SKTemplateParser.h */,
 				CE48BAD60C089EA300A166C6 /* SKTemplateParser.m */,
+				CE5BD6710C7ADF1500EBDCF7 /* SKTypeSelectHelper.h */,
+				CE5BD6720C7ADF1500EBDCF7 /* SKTypeSelectHelper.m */,
 			);
 			name = Miscellaneous;
 			sourceTree = "<group>";
@@ -1468,6 +1473,7 @@
 				CEAA67260C70A882006BD633 /* NSURL_SKExtensions.m in Sources */,
 				CEF839B30C77742A00A3AD51 /* Files_SKExtensions.m in Sources */,
 				CE5BC5B20C79A27B00EBDCF7 /* NSTableView_SKExtensions.m in Sources */,
+				CE5BD6740C7ADF1500EBDCF7 /* SKTypeSelectHelper.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
