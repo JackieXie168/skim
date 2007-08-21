@@ -3559,6 +3559,20 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
     }
 }
 
+- (void)typeSelectHelper:(SKTypeSelectHelper *)typeSelectHelper updateSearchString:(NSString *)searchString {
+    if ([typeSelectHelper isEqual:[thumbnailTableView typeSelectHelper]]) {
+        if (searchString)
+            [statusBar setLeftStringValue:[NSString stringWithFormat:NSLocalizedString(@"Go to page: %@", @"Status message"), searchString]];
+        else
+            [self updateLeftStatus];
+    } else if ([typeSelectHelper isEqual:[noteOutlineView typeSelectHelper]]) {
+        if (searchString)
+            [statusBar setRightStringValue:[NSString stringWithFormat:NSLocalizedString(@"Finding note: \"%@\"", @"Status message"), searchString]];
+        else
+            [self updateRightStatus];
+    }
+}
+
 #pragma mark Outline
 
 - (int)outlineRowForPageIndex:(unsigned int)pageIndex {
