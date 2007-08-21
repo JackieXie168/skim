@@ -40,6 +40,10 @@
 #import "OBUtilities.h"
 
 
+@implementation NSTableView (SKPrivateExtensions)
+- (void)replacementKeyDown:(NSEvent *)theEvent;
+@end
+
 @implementation NSTableView (SKExtensions)
 
 static IMP originalKeyDown = NULL;
