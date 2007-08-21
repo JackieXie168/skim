@@ -171,11 +171,11 @@
         unsigned int selectedIndex, foundIndex;
         
         if (cycleResults) {
-            selectedIndex = NSNotFound;
-        } else {
             selectedIndex = [dataSource typeSelectHelperCurrentlySelectedIndex:self];
             if (selectedIndex >= [searchCache count])
                 selectedIndex = NSNotFound;
+        } else {
+            selectedIndex = NSNotFound;
         }
         foundIndex = [self indexOfMatchedItemAfterIndex:selectedIndex];
         if (foundIndex != NSNotFound)
