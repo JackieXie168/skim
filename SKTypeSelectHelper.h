@@ -54,6 +54,7 @@ enum {
     NSArray *searchCache;
     NSMutableString *searchString;
     NSTimer *timer;
+    BOOL processing;
 }
 
 - (id)dataSource;
@@ -73,6 +74,7 @@ enum {
 - (BOOL)isProcessing;
 
 - (void)processKeyDownCharacter:(unichar)character;
+- (void)repeatSearch;
 
 @end
 

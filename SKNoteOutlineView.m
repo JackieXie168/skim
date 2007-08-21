@@ -89,6 +89,8 @@
         [self delete:self];
     else if (typeSelectHelper && modifiers == 0 && [[NSCharacterSet alphanumericCharacterSet] characterIsMember:eventChar])
         [typeSelectHelper processKeyDownCharacter:eventChar];
+    else if (typeSelectHelper && modifiers == 0 && eventChar == '/')
+        [typeSelectHelper repeatSearch];
 	else
 		[super keyDown:theEvent];
 }
