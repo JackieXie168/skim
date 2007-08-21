@@ -40,6 +40,12 @@
 
 #define TIMEOUT 0.7
 
+@interface NSString (BDSKTypeAheadHelperExtensions)
+- (BOOL)containsStringStartingAtWord:(NSString *)string options:(int)mask range:(NSRange)range;
+@end
+
+#pragma mark -
+
 @interface SKTypeSelectHelper (SKPrivate)
 - (NSArray *)searchCache;
 - (void)searchWithStickyMatch:(BOOL)allowUpdate;
@@ -223,7 +229,6 @@
 
     unsigned int labelIndex = selectedIndex;
     BOOL looped = NO;
-    unsigned int searchStringLength = [searchString length];
     int options = NSCaseInsensitiveSearch;
     
     if (matchOption == SKPrefixMatch)
@@ -243,15 +248,41 @@
             if ([label caseInsensitiveCompare:searchString] == NSOrderedSame)
                 return labelIndex;
         } else {
-            int location = [label length] < searchStringLength ? NSNotFound : [label rangeOfString:searchString options:options].location;
-            if (location != NSNotFound) {
-                if (location == 0 || [[NSCharacterSet letterCharacterSet] characterIsMember:[label characterAtIndex:location - 1]] == NO)
-                    return labelIndex;
-            }
+            if ([label containsStringStartingAtWord:searchString options:options range:NSMakeRange(0, [label length])])
+                return labelIndex;
         }
     }
     
     return NSNotFound;
+}
+
+@end
+
+#pragma mark -
+
+@implementation NSString (BDSKTypeAheadHelperExtensions)
+
+- (BOOL)containsStringStartingAtWord:(NSString *)string options:(int)mask range:(NSRange)range {
+    unsigned int stringLength = [string length];
+    if (stringLength == 0 || stringLength > range.length)
+        return NO;
+    if (mask & NSAnchoredSearch)
+        return [self rangeOfString:string options:mask range:range].length > 0;
+    NSRange searchRange = range;
+    while (searchRange.length >= stringLength) {
+        NSRange r = [self rangeOfString:string options:mask range:searchRange];
+        if (r.location == NSNotFound)
+            return NO;
+        if (r.location == 0 || [[NSCharacterSet letterCharacterSet] characterIsMember:[self characterAtIndex:r.location - 1]])
+            return YES;
+        if (mask & NSBackwardsSearch)
+            searchRange = NSMakeRange(searchRange.location, NSMaxRange(r) - searchRange.location - 1);
+        else
+            searchRange = NSMakeRange(r.location + 1, NSMaxRange(searchRange) - r.location - 1);
+        if (mask & NSAnchoredSearch)
+            return NO;
+    }
+    return NO;
 }
 
 @end
