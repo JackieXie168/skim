@@ -41,6 +41,7 @@
 #define TIMEOUT 0.7
 
 @interface SKTypeSelectHelper (SKPrivate)
+- (NSArray *)searchCache;
 - (void)searchWithStickyMatch:(BOOL)allowUpdate;
 - (void)stopTimer;
 - (void)startTimerForSelector:(SEL)selector;
@@ -156,6 +157,12 @@
 
 @implementation SKTypeSelectHelper (SKPrivate)
 
+- (NSArray *)searchCache {
+    if (searchCache == nil)
+        [self rebuildTypeSelectSearchCache];
+    return searchCache;
+}
+
 - (void)stopTimer {
     [timer invalidate];
     [timer release];
@@ -187,7 +194,7 @@
         
         if (cycleResults) {
             selectedIndex = [dataSource typeSelectHelperCurrentlySelectedIndex:self];
-            if (selectedIndex >= [searchCache count])
+            if (selectedIndex >= [[self searchCache] count])
                 selectedIndex = NSNotFound;
         } else {
             selectedIndex = NSNotFound;
@@ -195,7 +202,7 @@
         
         startIndex = selectedIndex;
         if (sticky && selectedIndex != NSNotFound)
-            startIndex = startIndex > 0 ? startIndex - 1 : [searchCache count] - 1;
+            startIndex = startIndex > 0 ? startIndex - 1 : [[self searchCache] count] - 1;
         
         foundIndex = [self indexOfMatchedItemAfterIndex:startIndex];
         
@@ -206,10 +213,7 @@
 }
 
 - (unsigned int)indexOfMatchedItemAfterIndex:(unsigned int)selectedIndex {
-    if (searchCache == nil)
-        [self rebuildTypeSelectSearchCache];
-    
-    unsigned int labelCount = [searchCache count];
+    unsigned int labelCount = [[self searchCache] count];
     
     if (labelCount == NO)
         return NSNotFound;
@@ -233,7 +237,7 @@
         if (labelIndex == selectedIndex)
             looped = YES;
         
-        label = [searchCache objectAtIndex:labelIndex];
+        label = [[self searchCache] objectAtIndex:labelIndex];
         
         if (matchOption == SKFullStringMatch) {
             if ([label caseInsensitiveCompare:searchString] == NSOrderedSame)
