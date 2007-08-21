@@ -38,10 +38,12 @@
 
 #import <Cocoa/Cocoa.h>
 
+@class SKTypeSelectHelper;
 
 @interface SKNoteOutlineView : NSOutlineView {    
     IBOutlet NSWindow *noteTypeSheet;
     IBOutlet NSMatrix *noteTypeMatrix;
+    SKTypeSelectHelper *typeSelectHelper;
 }
 
 - (NSArray *)noteTypes;
@@ -52,6 +54,9 @@
 - (IBAction)displayAllNoteTypes:(id)sender;
 - (IBAction)selectNoteTypes:(id)sender;
 - (IBAction)dismissNoteTypeSheet:(id)sender;
+
+- (SKTypeSelectHelper *)typeSelectHelper;
+- (void)setTypeSelectHelper:(SKTypeSelectHelper *)newTypeSelectHelper;
 
 @end
 

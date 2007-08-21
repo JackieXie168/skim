@@ -77,6 +77,7 @@
 #import "SKColorSwatch.h"
 #import "SKStatusBar.h"
 #import "SKTransitionController.h"
+#import "SKTypeSelectHelper.h"
 
 #define SEGMENTED_CONTROL_HEIGHT    25.0
 #define WINDOW_X_DELTA              0.0
@@ -370,6 +371,18 @@ static NSString *noteToolAdornImageNames[] = {@"TextNoteToolAdorn", @"AnchoredNo
         if (setup = [setupEnum nextObject])
             [self showSnapshotAtPageNumber:[[setup objectForKey:@"page"] unsignedIntValue] forRect:NSRectFromString([setup objectForKey:@"rect"]) factor:[[setup objectForKey:@"scaleFactor"] floatValue] autoFits:[[setup objectForKey:@"autoFits"] boolValue] display:[[setup objectForKey:@"hasWindow"] boolValue]];
     }
+    
+    // typeSelectHelpers
+    SKTypeSelectHelper *typeSelectHelper = [[[SKTypeSelectHelper alloc] init] autorelease];
+    [typeSelectHelper setMatchesImmediately:NO];
+    [typeSelectHelper setMatchOption:SKFullStringMatch];
+    [typeSelectHelper setDataSource:self];
+    [thumbnailTableView setTypeSelectHelper:typeSelectHelper];
+    
+    typeSelectHelper = [[[SKTypeSelectHelper alloc] init] autorelease];
+    [typeSelectHelper setMatchOption:SKSubstringMatch];
+    [typeSelectHelper setDataSource:self];
+    [noteOutlineView setTypeSelectHelper:typeSelectHelper];
     
     // This update toolbar item and other states
     [self handleChangedHistoryNotification:nil];
@@ -780,6 +793,7 @@ static NSString *noteToolAdornImageNames[] = {@"TextNoteToolAdorn", @"AnchoredNo
             [pageLabels addObject:label ? label : @""];
         }
         [self didChangeValueForKey:@"pageLabels"];
+        [[thumbnailTableView typeSelectHelper] rebuildTypeSelectSearchCache];
         
         NSEnumerator *setupEnum = [snapshotDicts objectEnumerator];
         NSDictionary *setup;
@@ -3514,6 +3528,35 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
         }
     }
     return menu;
+}
+
+#pragma mark SKTypeSelectHelper datasource protocol
+
+- (NSArray *)typeSelectHelperSelectionItems:(SKTypeSelectHelper *)typeSelectHelper {
+    if ([typeSelectHelper isEqual:[thumbnailTableView typeSelectHelper]]) {
+        return pageLabels;
+    } else if ([typeSelectHelper isEqual:[noteOutlineView typeSelectHelper]]) {
+        return [[noteArrayController arrangedObjects] valueForKey:@"contents"];
+    }
+    return nil;
+}
+
+- (unsigned int)typeSelectHelperCurrentlySelectedIndex:(SKTypeSelectHelper *)typeSelectHelper {
+    if ([typeSelectHelper isEqual:[thumbnailTableView typeSelectHelper]]) {
+        return [[thumbnailTableView selectedRowIndexes] lastIndex];
+    } else if ([typeSelectHelper isEqual:[noteOutlineView typeSelectHelper]]) {
+        return [[noteArrayController arrangedObjects] indexOfObject:[self selectedNote]];
+    }
+    return NSNotFound;
+}
+
+- (void)typeSelectHelper:(SKTypeSelectHelper *)typeSelectHelper selectItemAtIndex:(unsigned int)itemIndex {
+    if ([typeSelectHelper isEqual:[thumbnailTableView typeSelectHelper]]) {
+        [self setPageNumber:itemIndex + 1];
+    } else if ([typeSelectHelper isEqual:[noteOutlineView typeSelectHelper]]) {
+        int row = [noteOutlineView rowForItem:[[noteArrayController arrangedObjects] objectAtIndex:itemIndex]];
+        [noteOutlineView selectRowIndexes:[NSIndexSet indexSetWithIndex:row] byExtendingSelection:NO];
+    }
 }
 
 #pragma mark Outline
