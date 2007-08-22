@@ -44,6 +44,7 @@
 #import "OBUtilities.h"
 #import "NSBitmapImageRep_SKExtensions.h"
 #import "SKStringConstants.h"
+#import "NSGeometry_SKExtensions.h"
 
 NSString *SKPDFDocumentPageBoundsDidChangeNotification = @"SKPDFDocumentPageBoundsDidChangeNotification";
 
@@ -84,8 +85,7 @@ static IMP originalDealloc = NULL;
         } else if (NSEqualRects(NSZeroRect, r)) {
             r = NSMakeRect(NSMidX(b), NSMidY(b), 0.0, 0.0);
         } else {
-            r.origin.x += NSMinX(b);
-            r.origin.y += NSMinY(b);
+            r.origin = SKAddPoints(r.origin, b.origin);
         }
         [imageRep release];
         r = NSIntersectionRect(NSInsetRect(r, -marginWidth, -marginHeight), b);
@@ -165,8 +165,7 @@ static IMP originalDealloc = NULL;
         scaleX = scaleY = 1.0;
     }
     
-    readingBarRect.origin.x -= NSMinX(bounds);
-    readingBarRect.origin.y -= NSMinY(bounds);
+    readingBarRect.origin = SKSubstractPoints(readingBarRect.origin, bounds.origin);
     
     image = [[NSImage alloc] initWithSize:thumbnailSize];
     [image lockFocus];
@@ -233,7 +232,7 @@ static IMP originalDealloc = NULL;
                 continue;
             
             NSRect r = [self characterBoundsAtIndex:j];
-            PDFSelection *s = [self selectionForLineAtPoint:NSMakePoint(NSMidX(r), NSMidY(r))];
+            PDFSelection *s = [self selectionForLineAtPoint:SKCenterPoint(r)];
             unsigned k, kMax = [s safeNumberOfRangesOnPage:self];
             BOOL notEmpty = NO;
             

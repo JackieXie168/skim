@@ -78,6 +78,7 @@
 #import "SKStatusBar.h"
 #import "SKTransitionController.h"
 #import "SKTypeSelectHelper.h"
+#import "NSGeometry_SKExtensions.h"
 
 #define SEGMENTED_CONTROL_HEIGHT    25.0
 #define WINDOW_X_DELTA              0.0
@@ -1568,14 +1569,7 @@ static NSString *noteToolAdornImageNames[] = {@"TextNoteToolAdorn", @"AnchoredNo
             rect.origin.x = NSMaxX(rect) - size.width;
         rect.origin.y = NSMaxY(rect) - size.height;
         rect.size = size;
-        if (NSMaxX(rect) > NSMaxX(bounds))
-            rect.origin.x = NSMaxX(bounds) - NSWidth(rect);
-        if (NSMinX(rect) < NSMinX(bounds))
-            rect.origin.x = NSMinX(bounds);
-        if (NSMaxY(rect) > NSMaxY(bounds))
-            rect.origin.y = NSMaxY(bounds) - NSHeight(rect);
-        if (NSMinY(rect) < NSMinY(bounds))
-            rect.origin.y = NSMinY(bounds);
+        rect = SKConstrainRect(rect, bounds);
         [rectArray addObject:[NSValue valueWithRect:rect]];
         if (i && i % 10 == 0) {
             [progressBar incrementBy:1.0];
@@ -1674,7 +1668,6 @@ static NSString *noteToolAdornImageNames[] = {@"TextNoteToolAdorn", @"AnchoredNo
     }
     
     PDFDisplayMode displayMode = [pdfView displayMode];
-    NSRect screenFrame = [[[self window] screen] visibleFrame];
     NSRect frame = [splitView frame];
     NSRect documentRect = [[[self pdfView] documentView] convertRect:[[[self pdfView] documentView] bounds] toView:nil];
     float bottomOffset = -1.0;
@@ -1704,14 +1697,7 @@ static NSString *noteToolAdornImageNames[] = {@"TextNoteToolAdorn", @"AnchoredNo
     
     frame.origin = [[self window] convertBaseToScreen:[[[self window] contentView] convertPoint:frame.origin toView:nil]];
     frame = [[self window] frameRectForContentRect:frame];
-    if (frame.size.width > NSWidth(screenFrame))
-        frame.size.width = NSWidth(screenFrame);
-    if (frame.size.height > NSHeight(screenFrame))
-        frame.size.height = NSHeight(screenFrame);
-    if (NSMaxX(frame) > NSMaxX(screenFrame))
-        frame.origin.x = NSMaxX(screenFrame) - NSWidth(frame);
-    if (NSMaxY(frame) > NSMaxY(screenFrame))
-        frame.origin.y = NSMaxY(screenFrame) - NSHeight(frame);
+    frame = SKConstrainRect(frame, [[[self window] screen] visibleFrame]);
     
     [[self window] setFrame:frame display:[[self window] isVisible]];
 }

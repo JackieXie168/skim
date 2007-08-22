@@ -54,6 +54,7 @@
 #import "NSBezierPath_BDSKExtensions.h"
 #import "SKLineWell.h"
 #import <Carbon/Carbon.h>
+#import "NSGeometry_SKExtensions.h"
 
 NSString *SKPDFViewToolModeChangedNotification = @"SKPDFViewToolModeChangedNotification";
 NSString *SKPDFViewAnnotationModeChangedNotification = @"SKPDFViewAnnotationModeChangedNotification";
@@ -777,21 +778,12 @@ static void SKCGContextDrawGrabHandle(CGContextRef context, CGPoint point, float
     
         NSData *data = [pboard dataForType:SKSkimNotePboardType];
         NSDictionary *note = [NSKeyedUnarchiver unarchiveObjectWithData:data];
-        NSRect bounds, pageBounds;
+        NSRect bounds;
         
         newAnnotation = [[[PDFAnnotation alloc] initWithDictionary:note] autorelease];
         bounds = [newAnnotation bounds];
         page = [self currentPage];
-        pageBounds = [page boundsForBox:[self displayBox]];
-        
-        if (NSMaxX(bounds) > NSMaxX(pageBounds))
-            bounds.origin.x = NSMaxX(pageBounds) - NSWidth(bounds);
-        if (NSMinX(bounds) < NSMinX(pageBounds))
-            bounds.origin.x = NSMinX(pageBounds);
-        if (NSMaxY(bounds) > NSMaxY(pageBounds))
-            bounds.origin.y = NSMaxY(pageBounds) - NSHeight(bounds);
-        if (NSMinY(bounds) < NSMinY(pageBounds))
-            bounds.origin.y = NSMinY(pageBounds);
+        bounds = SKConstrainRect(bounds, [page boundsForBox:[self displayBox]]);
         
         [newAnnotation setBounds:bounds];
         
@@ -808,27 +800,17 @@ static void SKCGContextDrawGrabHandle(CGContextRef context, CGPoint point, float
         if (page == nil) {
             // Get center of the PDFView.
             NSRect viewFrame = [self frame];
-            center = NSMakePoint(NSMidX(viewFrame), NSMidY(viewFrame));
+            center = SKCenterPoint(viewFrame);
             page = [self pageForPoint: center nearest: YES];
         }
 		
 		// Convert to "page space".
-		center = [self convertPoint: center toPage: page];
-        center.x = roundf(center.x);
-        center.y = roundf(center.y);
+		center = SKIntegralPoint([self convertPoint: center toPage: page]);
         
         NSSize defaultSize = isAlternate ? NSMakeSize(16.0, 16.0) : ([page rotation] % 180 == 90) ? NSMakeSize(64.0, 128.0) : NSMakeSize(128.0, 64.0);
-        NSRect bounds = NSMakeRect(center.x - 0.5 * defaultSize.width, center.y - 0.5 * defaultSize.height, defaultSize.width, defaultSize.height);
-        NSRect pageBounds = [page boundsForBox:[self displayBox]];
+        NSRect bounds = SKRectFromCenterAndSize(center, defaultSize);
         
-        if (NSMaxX(bounds) > NSMaxX(pageBounds))
-            bounds.origin.x = NSMaxX(pageBounds) - NSWidth(bounds);
-        if (NSMinX(bounds) < NSMinX(pageBounds))
-            bounds.origin.x = NSMinX(pageBounds);
-        if (NSMaxY(bounds) > NSMaxY(pageBounds))
-            bounds.origin.y = NSMaxY(pageBounds) - NSHeight(bounds);
-        if (NSMinY(bounds) < NSMinY(pageBounds))
-            bounds.origin.y = NSMinY(pageBounds);
+        bounds = SKConstrainRect(bounds, [page boundsForBox:[self displayBox]]);
         
         if (isAlternate)
             newAnnotation = [[SKPDFAnnotationNote alloc] initWithBounds:bounds];
@@ -1622,8 +1604,7 @@ static void SKCGContextDrawGrabHandle(CGContextRef context, CGPoint point, float
             NSImage *pageImage = [[self currentPage] imageForBox:[self displayBox]];
             NSImage *image = nil;
             
-            sourceRect.origin.x -= NSMinX(bounds);
-            sourceRect.origin.y -= NSMinY(bounds);
+            sourceRect.origin = SKSubstractPoints(sourceRect.origin, bounds.origin);
             targetRect.origin = NSZeroPoint;
             targetRect.size = sourceRect.size;
             image = [[NSImage alloc] initWithSize:targetRect.size];
@@ -1684,15 +1665,7 @@ static void SKCGContextDrawGrabHandle(CGContextRef context, CGPoint point, float
     }
     
     // Make sure it fits in the page
-    NSRect pageBounds = [page boundsForBox:[self displayBox]];
-    if (NSMaxX(bounds) > NSMaxX(pageBounds))
-        bounds.origin.x = NSMaxX(pageBounds) - NSWidth(bounds);
-    if (NSMinX(bounds) < NSMinX(pageBounds))
-        bounds.origin.x = NSMinX(pageBounds);
-    if (NSMaxY(bounds) > NSMaxY(pageBounds))
-        bounds.origin.y = NSMaxY(pageBounds) - NSHeight(bounds);
-    if (NSMinY(bounds) < NSMinY(pageBounds))
-        bounds.origin.y = NSMinY(pageBounds);
+    bounds = SKConstrainRect(bounds, [page boundsForBox:[self displayBox]]);
     
     [self addAnnotationWithType:annotationType contents:text page:page bounds:bounds];
 }
@@ -1727,28 +1700,18 @@ static void SKCGContextDrawGrabHandle(CGContextRef context, CGPoint point, float
         if (page == nil) {
             // Get center of the PDFView.
             NSRect viewFrame = [self frame];
-            center = NSMakePoint(NSMidX(viewFrame), NSMidY(viewFrame));
+            center = SKCenterPoint(viewFrame);
             page = [self pageForPoint: center nearest: YES];
         }
 		
 		// Convert to "page space".
-		center = [self convertPoint: center toPage: page];
-        center.x = roundf(center.x);
-        center.y = roundf(center.y);
+		center = SKIntegralPoint([self convertPoint: center toPage: page]);
         if ([page rotation] % 180 == 90)
             defaultSize = NSMakeSize(defaultSize.height, defaultSize.width);
         bounds = NSMakeRect(center.x - 0.5 * defaultSize.width, center.y - 0.5 * defaultSize.height, defaultSize.width, defaultSize.height);
         
         // Make sure it fits in the page
-        NSRect pageBounds = [page boundsForBox:[self displayBox]];
-        if (NSMaxX(bounds) > NSMaxX(pageBounds))
-            bounds.origin.x = NSMaxX(pageBounds) - NSWidth(bounds);
-        if (NSMinX(bounds) < NSMinX(pageBounds))
-            bounds.origin.x = NSMinX(pageBounds);
-        if (NSMaxY(bounds) > NSMaxY(pageBounds))
-            bounds.origin.y = NSMaxY(pageBounds) - NSHeight(bounds);
-        if (NSMinY(bounds) < NSMinY(pageBounds))
-            bounds.origin.y = NSMinY(pageBounds);
+        bounds = SKConstrainRect(bounds, [page boundsForBox:[self displayBox]]);
 	}
     [self addAnnotationWithType:annotationType contents:text page:page bounds:bounds];
 }
@@ -1926,7 +1889,7 @@ static void SKCGContextDrawGrabHandle(CGContextRef context, CGPoint point, float
         [[activeAnnotation page] addAnnotation:editAnnotation];
         
         // Start editing
-        NSPoint location = [self convertPoint:[self convertPoint:NSMakePoint(NSMidX(editBounds), NSMidY(editBounds)) fromPage:[activeAnnotation page]] toView:nil];
+        NSPoint location = [self convertPoint:[self convertPoint:SKCenterPoint(editBounds) fromPage:[activeAnnotation page]] toView:nil];
         NSEvent *theEvent = [NSEvent mouseEventWithType:NSLeftMouseDown location:location modifierFlags:0 timestamp:0 windowNumber:[[self window] windowNumber] context:nil eventNumber:0 clickCount:1 pressure:1.0];
         [super mouseDown:theEvent];
         
@@ -2095,7 +2058,7 @@ static void SKCGContextDrawGrabHandle(CGContextRef context, CGPoint point, float
             if (page == nil) {
                 // Get the center
                 NSRect viewFrame = [self frame];
-                point = NSMakePoint(NSMidX(viewFrame), NSMidY(viewFrame));
+                point = SKCenterPoint(viewFrame);
                 page = [self pageForPoint:point nearest:YES];
             }
         }
@@ -2219,10 +2182,10 @@ static void SKCGContextDrawGrabHandle(CGContextRef context, CGPoint point, float
 @implementation SKPDFView (Private)
 
 - (NSRect)resizeThumbForRect:(NSRect)rect rotation:(int)rotation {
+    NSSize size = NSMakeSize(8.0, 8.0);
 	NSRect thumb = rect;
-    float size = 8.0;
     
-    thumb.size = NSMakeSize(size, size);
+    thumb.size = size;
 	
 	// Use rotation to determine thumb origin.
 	switch (rotation) {
@@ -2244,14 +2207,9 @@ static void SKCGContextDrawGrabHandle(CGContextRef context, CGPoint point, float
 }
 
 - (NSRect)resizeThumbForRect:(NSRect)rect point:(NSPoint)point {
-	NSRect thumb = rect;
-    float size = 8.0;
+    NSSize size = NSMakeSize(8.0, 8.0);
+	NSRect thumb = SKRectFromCenterAndSize(SKAddPoints(rect.origin, point), size);
     
-    thumb.size = NSMakeSize(size, size);
-	
-    thumb.origin.x = NSMinX(rect) + point.x - 0.5 * size;
-    thumb.origin.y = NSMinY(rect) + point.y - 0.5 * size;
-	
     thumb.origin.x =  point.x > 0.5 * NSWidth(rect) ? floorf(NSMinX(thumb)) : ceilf(NSMinX(thumb));
     thumb.origin.y =  point.y > 0.5 * NSHeight(rect) ? floorf(NSMinY(thumb)) : ceilf(NSMinY(thumb));
     
@@ -2300,9 +2258,9 @@ static void SKCGContextDrawGrabHandle(CGContextRef context, CGPoint point, float
     PDFPage *page;
     unsigned first, last;
     
-    page = [self pageForPoint:NSMakePoint(NSMinX(visibleRect), NSMaxY(visibleRect)) nearest:YES];
+    page = [self pageForPoint:SKTopLeftPoint(visibleRect) nearest:YES];
     first = [[self document] indexForPage:page];
-    page = [self pageForPoint:NSMakePoint(NSMaxX(visibleRect), NSMinY(visibleRect)) nearest:YES];
+    page = [self pageForPoint:SKBottomRightPoint(visibleRect) nearest:YES];
     last = [[self document] indexForPage:page];
     
     return NSMakeRange(first, last - first + 1);
@@ -2438,14 +2396,9 @@ static void SKCGContextDrawGrabHandle(CGContextRef context, CGPoint point, float
     if ([[activeAnnotation type] isEqualToString:@"Line"]) {
         
         SKPDFAnnotationLine *annotation = (SKPDFAnnotationLine *)activeAnnotation;
-        NSPoint oldEndPoint = [annotation endPoint];
-        NSPoint endPoint;
-        NSPoint startPoint = [annotation startPoint];
-        startPoint.x = roundf(startPoint.x + NSMinX(bounds));
-        startPoint.y = roundf(startPoint.y + NSMinY(bounds));
-        oldEndPoint.x = roundf(oldEndPoint.x + NSMinX(bounds));
-        oldEndPoint.y = roundf(oldEndPoint.y + NSMinY(bounds));
-        endPoint = oldEndPoint;
+        NSPoint startPoint = SKIntegralPoint(SKAddPoints([annotation startPoint], bounds.origin));
+        NSPoint endPoint = SKIntegralPoint(SKAddPoints([annotation endPoint], bounds.origin));
+        NSPoint oldEndPoint = endPoint;
         
         // Resize the annotation.
         switch ([page rotation]) {
@@ -2531,10 +2484,7 @@ static void SKCGContextDrawGrabHandle(CGContextRef context, CGPoint point, float
         endPoint.y = floorf(endPoint.y);
         
         if (NSEqualPoints(endPoint, oldEndPoint) == NO) {
-            newBounds.origin.x = floorf(fmin(startPoint.x, endPoint.x));
-            newBounds.size.width = ceilf(fmax(endPoint.x, startPoint.x)) - NSMinX(newBounds);
-            newBounds.origin.y = floorf(fmin(startPoint.y, endPoint.y));
-            newBounds.size.height = ceilf(fmax(endPoint.y, startPoint.y)) - NSMinY(newBounds);
+            newBounds = SKIntegralRectFromPoints(startPoint, endPoint);
             
             if (NSWidth(newBounds) < 8.0) {
                 newBounds.size.width = 8.0;
@@ -2545,10 +2495,8 @@ static void SKCGContextDrawGrabHandle(CGContextRef context, CGPoint point, float
                 newBounds.origin.y = floorf(0.5 * (startPoint.y + endPoint.y) - 4.0);
             }
             
-            startPoint.x -= NSMinX(newBounds);
-            startPoint.y -= NSMinY(newBounds);
-            endPoint.x -= NSMinX(newBounds);
-            endPoint.y -= NSMinY(newBounds);
+            startPoint = SKSubstractPoints(startPoint, newBounds.origin);
+            endPoint = SKSubstractPoints(endPoint, newBounds.origin);
             
             [annotation setBounds:newBounds];
             [annotation setStartPoint:startPoint];
@@ -2858,37 +2806,21 @@ static void SKCGContextDrawGrabHandle(CGContextRef context, CGPoint point, float
         NSPoint mouseLoc = [self convertPoint:[theEvent locationInWindow] fromView:nil];
         NSPoint startPoint = [self convertPoint:[self convertPoint:mouseDownLoc fromView:nil] toPage:page];
         NSPoint endPt = [self convertPoint:mouseLoc toPage:page];
-        NSPoint relPoint = NSMakePoint(endPt.x - startPoint.x, endPt.y - startPoint.y);
+        NSPoint relPoint = SKSubstractPoints(endPt, startPoint);
         newBounds = wasBounds;
         
         if ([[activeAnnotation type] isEqualToString:@"Line"]) {
             
             SKPDFAnnotationLine *annotation = (SKPDFAnnotationLine *)activeAnnotation;
-            NSPoint endPoint = wasEndPoint;
-            endPoint.x = roundf(endPoint.x + NSMinX(wasBounds));
-            endPoint.y = roundf(endPoint.y + NSMinY(wasBounds));
-            startPoint = wasStartPoint;
-            startPoint.x = roundf(startPoint.x + NSMinX(wasBounds));
-            startPoint.y = roundf(startPoint.y + NSMinY(wasBounds));
+            NSPoint endPoint = SKIntegralPoint(SKSubstractPoints(wasEndPoint, wasBounds.origin));
+            startPoint = SKIntegralPoint(SKSubstractPoints(wasStartPoint, wasBounds.origin));
             NSPoint *draggedPoint = draggingStartPoint ? &startPoint : &endPoint;
             
-            draggedPoint->x += relPoint.x;
-            draggedPoint->y += relPoint.y;
-            if (draggedPoint->x > NSMaxX(pageBounds))
-                draggedPoint->x = NSMaxX(pageBounds);
-            else if (draggedPoint->x < NSMinX(pageBounds))
-                draggedPoint->x = NSMinX(pageBounds);
-            if (draggedPoint->y > NSMaxY(pageBounds))
-                draggedPoint->y = NSMaxY(pageBounds) ;
-            else if (draggedPoint->y < NSMinY(pageBounds))
-                draggedPoint->y = NSMinY(pageBounds);
+            *draggedPoint = SKConstrainPointInRect(SKAddPoints(*draggedPoint, relPoint), pageBounds);
             draggedPoint->x = floorf(draggedPoint->x);
             draggedPoint->y = floorf(draggedPoint->y);
             
-            newBounds.origin.x = floorf(fmin(startPoint.x, endPoint.x));
-            newBounds.size.width = ceilf(fmax(endPoint.x, startPoint.x)) - NSMinX(newBounds);
-            newBounds.origin.y = floorf(fmin(startPoint.y, endPoint.y));
-            newBounds.size.height = ceilf(fmax(endPoint.y, startPoint.y)) - NSMinY(newBounds);
+            newBounds = SKIntegralRectFromPoints(startPoint, endPoint);
             
             if (NSWidth(newBounds) < 8.0) {
                 newBounds.size.width = 8.0;
@@ -2899,10 +2831,8 @@ static void SKCGContextDrawGrabHandle(CGContextRef context, CGPoint point, float
                 newBounds.origin.y = floorf(0.5 * (startPoint.y + endPoint.y) - 4.0);
             }
             
-            startPoint.x -= NSMinX(newBounds);
-            startPoint.y -= NSMinY(newBounds);
-            endPoint.x -= NSMinX(newBounds);
-            endPoint.y -= NSMinY(newBounds);
+            startPoint = SKSubstractPoints(startPoint, newBounds.origin);
+            endPoint = SKSubstractPoints(endPoint, newBounds.origin);
             
             [annotation setStartPoint:startPoint];
             [annotation setEndPoint:endPoint];
@@ -3011,19 +2941,10 @@ static void SKCGContextDrawGrabHandle(CGContextRef context, CGPoint point, float
                 page = newActivePage;
             }
             
-            NSPoint endPt = [self convertPoint:mouseLoc toPage:page];
             newBounds = currentBounds;
-            newBounds.origin.x = roundf(endPt.x - clickDelta.x);
-            newBounds.origin.y = roundf(endPt.y - clickDelta.y);
+            newBounds.origin = SKIntegralPoint(SKSubstractPoints([self convertPoint:mouseLoc toPage:page], clickDelta));
             // constrain bounds inside page bounds
-            if (NSMaxX(newBounds) > NSMaxX(pageBounds))
-                newBounds.origin.x = NSMaxX(pageBounds) - NSWidth(newBounds);
-            if (NSMinX(newBounds) < NSMinX(pageBounds))
-                newBounds.origin.x = NSMinX(pageBounds);
-            if (NSMaxY(newBounds) > NSMaxY(pageBounds))
-                newBounds.origin.y = NSMaxY(pageBounds) - NSHeight(newBounds);
-            if (NSMinY(newBounds) < NSMinY(pageBounds))
-                newBounds.origin.y = NSMinY(pageBounds);
+            newBounds = SKConstrainRect(newBounds, pageBounds);
         }
     }
     
@@ -3044,17 +2965,14 @@ static void SKCGContextDrawGrabHandle(CGContextRef context, CGPoint point, float
             break;
         
         // dragging
-        NSPoint	newLocation;
+        NSPoint	newLocation = [theEvent locationInWindow];
+        NSPoint	delta = SKSubstractPoints(initialLocation, newLocation);
         NSRect	newVisibleRect;
-        float	xDelta, yDelta;
         
-        newLocation = [theEvent locationInWindow];
-        xDelta = initialLocation.x - newLocation.x;
-        yDelta = initialLocation.y - newLocation.y;
         if ([self isFlipped])
-            yDelta = -yDelta;
+            delta.y = -delta.y;
         
-        newVisibleRect = NSOffsetRect (visibleRect, xDelta, yDelta);
+        newVisibleRect = NSOffsetRect (visibleRect, delta.x, delta.y);
         [[self documentView] scrollRectToVisible: newVisibleRect];
 	}
     
@@ -3119,25 +3037,23 @@ static void SKCGContextDrawGrabHandle(CGContextRef context, CGPoint point, float
         // we must be dragging
         NSPoint	newPoint;
         NSRect	newRect = initialRect;
-        float	xDelta, yDelta;
+        NSPoint delta;
         
         newPoint = [self convertPoint:[self convertPoint:[theEvent locationInWindow] fromView:nil] toPage:page];
-        xDelta = newPoint.x - initialPoint.x;
-        yDelta = newPoint.y - initialPoint.y;
+        delta = SKSubstractPoints(newPoint, initialPoint);
         
         if (xEdge == 0 && yEdge == 0) {
-            newRect.origin.x += xDelta;
-            newRect.origin.y += yDelta;
+            newRect.origin = SKAddPoints(newRect.origin, delta);
         } else {
             if (xEdge == 1) {
-                newRect.size.width += xDelta;
+                newRect.size.width += delta.x;
                 if (NSWidth(newRect) < 0.0) {
                     newRect.size.width *= -1.0;
                     newRect.origin.x -= NSWidth(newRect);
                 }
             } else if (xEdge == 2) {
-                newRect.origin.x += xDelta;
-                newRect.size.width -= xDelta;
+                newRect.origin.x += delta.x;
+                newRect.size.width -= delta.x;
                 if (NSWidth(newRect) < 0.0) {
                     newRect.size.width *= -1.0;
                     newRect.origin.x -= NSWidth(newRect);
@@ -3145,14 +3061,14 @@ static void SKCGContextDrawGrabHandle(CGContextRef context, CGPoint point, float
             }
             
             if (yEdge == 1) {
-                newRect.size.height += yDelta;
+                newRect.size.height += delta.y;
                 if (NSHeight(newRect) < 0.0) {
                     newRect.size.height *= -1.0;
                     newRect.origin.y -= NSHeight(newRect);
                 }
             } else if (yEdge == 2) {
-                newRect.origin.y += yDelta;
-                newRect.size.height -= yDelta;
+                newRect.origin.y += delta.y;
+                newRect.size.height -= delta.y;
                 if (NSHeight(newRect) < 0.0) {
                     newRect.size.height *= -1.0;
                     newRect.origin.y -= NSHeight(newRect);
@@ -3161,11 +3077,7 @@ static void SKCGContextDrawGrabHandle(CGContextRef context, CGPoint point, float
         }
         
         // don't use NSIntersectionRect, because we want to keep empty rects
-        float minX = fmin(fmax(NSMinX(newRect), NSMinX(pageBounds)), NSMaxX(pageBounds));
-        float maxX = fmax(fmin(NSMaxX(newRect), NSMaxX(pageBounds)), NSMinX(pageBounds));
-        float minY = fmin(fmax(NSMinY(newRect), NSMinY(pageBounds)), NSMaxY(pageBounds));
-        float maxY = fmax(fmin(NSMaxY(newRect), NSMaxY(pageBounds)), NSMinY(pageBounds));
-        newRect = NSMakeRect(minX, minY, maxX - minX, maxY - minY);
+        newRect = SKIntersectionRect(newRect, pageBounds);
         if (didDrag) {
             NSRect dirtyRect = NSUnionRect(NSInsetRect(selectionRect, -margin, -margin), NSInsetRect(newRect, -margin, -margin));
             NSRange r = [self visiblePageIndexRange];
@@ -3248,7 +3160,7 @@ static void SKCGContextDrawGrabHandle(CGContextRef context, CGPoint point, float
         PDFSelection *sel = nil;
         if (rectSelection) {
             // how to handle multipage selection?  Preview.app's behavior is screwy as well, so we'll do the same thing
-            NSRect selRect = NSMakeRect(fmin(p2.x, p1.x), fmin(p2.y, p1.y), fabs(p2.x - p1.x), fabs(p2.y - p1.y));
+            NSRect selRect = SKRectFromPoints(p1, p2);
             sel = [page1 selectionForRect:selRect];
             if (NSIsEmptyRect(selectionRect) == NO)
                 [self setNeedsDisplayInRect:selectionRect];
@@ -3317,8 +3229,6 @@ static void SKCGContextDrawGrabHandle(CGContextRef context, CGPoint point, float
 	NSPoint startPoint = [[self documentView] convertPoint:mouseLoc fromView:nil];
 	NSPoint	currentPoint;
     NSRect selRect = {startPoint, NSZeroSize};
-    NSRect bounds;
-    float minX, maxX, minY, maxY;
     BOOL dragged = NO;
 	
     [[self window] discardCachedImage];
@@ -3346,28 +3256,14 @@ static void SKCGContextDrawGrabHandle(CGContextRef context, CGPoint point, float
         
         currentPoint = [[self documentView] convertPoint:mouseLoc fromView:nil];
         
-        minX = fmin(startPoint.x, currentPoint.x);
-        maxX = fmax(startPoint.x, currentPoint.x);
-        minY = fmin(startPoint.y, currentPoint.y);
-        maxY = fmax(startPoint.y, currentPoint.y);
         // center around startPoint when holding down the Shift key
-        if ([theEvent modifierFlags] & NSShiftKeyMask) {
-            if (currentPoint.x > startPoint.x)
-                minX -= maxX - minX;
-            else
-                maxX += maxX - minX;
-            if (currentPoint.y > startPoint.y)
-                minY -= maxY - minY;
-            else
-                maxY += maxY - minY;
-        }
+        if ([theEvent modifierFlags] & NSShiftKeyMask)
+            selRect = SKRectFromCenterAndPoint(startPoint, currentPoint);
+        else
+            selRect = SKRectFromPoints(startPoint, currentPoint);
+        
         // intersect with the bounds, project on the bounds if necessary and allow zero width or height
-        bounds = [[self documentView] bounds];
-        minX = fmin(fmax(minX, NSMinX(bounds)), NSMaxX(bounds));
-        maxX = fmax(fmin(maxX, NSMaxX(bounds)), NSMinX(bounds));
-        minY = fmin(fmax(minY, NSMinY(bounds)), NSMaxY(bounds));
-        maxY = fmax(fmin(maxY, NSMaxY(bounds)), NSMinY(bounds));
-        selRect = NSMakeRect(minX, minY, maxX - minX, maxY - minY);
+        selRect = SKIntersectionRect(selRect, [[self documentView] bounds]);
         
         [[self window] cacheImageInRect:NSInsetRect([[self documentView] convertRect:selRect toView:nil], -2.0, -2.0)];
         
@@ -3385,9 +3281,10 @@ static void SKCGContextDrawGrabHandle(CGContextRef context, CGPoint point, float
     [[self window] discardCachedImage];
 	[[self cursorForEvent:theEvent] set];
     
-    NSPoint point = [self convertPoint:NSMakePoint(NSMidX(selRect), NSMidY(selRect)) fromView:[self documentView]];
+    NSPoint point = [self convertPoint:SKCenterPoint(selRect) fromView:[self documentView]];
     PDFPage *page = [self pageForPoint:point nearest:YES];
     NSRect rect = [self convertRect:selRect fromView:[self documentView]];
+    NSRect bounds;
     int factor = 1;
     BOOL autoFits = NO;
     
@@ -3496,8 +3393,7 @@ static void SKCGContextDrawGrabHandle(CGContextRef context, CGPoint point, float
                 magRect = visibleRect;
             } else {
                 magRect = currentLevel == 2 ? largeMagRect : smallMagRect;
-                magRect.origin.x += mouseLoc.x;
-                magRect.origin.y += mouseLoc.y;
+                magRect.origin = SKAddPoints(magRect.origin, mouseLoc);
                 // restore the cached image in order to clear the rect
                 [[self window] restoreCachedImage];
                 [[self window] cacheImageInRect:NSIntersectionRect(NSInsetRect(magRect, -2.0, -2.0), visibleRect)];

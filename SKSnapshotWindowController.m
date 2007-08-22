@@ -47,6 +47,7 @@
 #import "NSWindowController_SKExtensions.h"
 #import "SKStringConstants.h"
 #import "NSUserDefaultsController_SKExtensions.h"
+#import "NSGeometry_SKExtensions.h"
 
 static NSString *SKSnapshotWindowFrameAutosaveName = @"SKSnapshotWindow";
 static NSString *SKSnapshotViewChangedNotification = @"SKSnapshotViewChangedNotification";
@@ -199,26 +200,11 @@ static NSString *SKSnapshotViewChangedNotification = @"SKSnapshotViewChangedNoti
     NSRect contentRect = [pdfView convertRect:rect fromPage:page];
     contentRect = [pdfView convertRect:contentRect toView:nil];
     NSRect frame = [[self window] frame];
-    NSRect screenFrame = [[[self window] screen] visibleFrame];
     
     contentRect.size.width += [NSScroller scrollerWidth];
     contentRect.size.height += [NSScroller scrollerWidth];
     frame.size = [[self window] frameRectForContentRect:contentRect].size;
-    
-    if (NSMaxX(frame) > NSMaxX(screenFrame))
-        frame.origin.x = NSMaxX(screenFrame) - NSWidth(frame);
-    if (NSMinX(frame) < NSMinX(screenFrame)) {
-        frame.origin.x = NSMinX(screenFrame);
-        if (NSWidth(frame) > NSWidth(screenFrame))
-            frame.size.width = NSWidth(screenFrame);
-    }
-    if (NSMaxY(frame) > NSMaxY(screenFrame))
-        frame.origin.x = NSMaxY(screenFrame) - NSHeight(frame);
-    if (NSMinY(frame) < NSMinY(screenFrame)) {
-        frame.origin.x = NSMinY(screenFrame);
-        if (NSHeight(frame) > NSHeight(screenFrame))
-            frame.size.height = NSHeight(screenFrame);
-    }
+    frame = SKConstrainRect(frame, [[[self window] screen] visibleFrame]);
     
     [[self window] setFrame:NSIntegralRect(frame) display:NO animate:NO];
     
@@ -246,8 +232,8 @@ static NSString *SKSnapshotViewChangedNotification = @"SKSnapshotViewChangedNoti
     NSRect visibleRect = [clipView convertRect:[clipView visibleRect] toView:pdfView];
     unsigned first, last, index = [[pdfView document] indexForPage:page];
     
-    first = [[pdfView document] indexForPage:[pdfView pageForPoint:NSMakePoint(NSMinX(visibleRect), NSMaxY(visibleRect)) nearest:YES]];
-    last = [[pdfView document] indexForPage:[pdfView pageForPoint:NSMakePoint(NSMaxX(visibleRect), NSMinY(visibleRect)) nearest:YES]];
+    first = [[pdfView document] indexForPage:[pdfView pageForPoint:SKTopLeftPoint(visibleRect) nearest:YES]];
+    last = [[pdfView document] indexForPage:[pdfView pageForPoint:SKBottomRightPoint(visibleRect) nearest:YES]];
     
     return index >= first && index <= last;
 }
