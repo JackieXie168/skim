@@ -380,6 +380,7 @@ static NSString *noteToolAdornImageNames[] = {@"TextNoteToolAdorn", @"AnchoredNo
     [typeSelectHelper setMatchOption:SKFullStringMatch];
     [typeSelectHelper setDataSource:self];
     [thumbnailTableView setTypeSelectHelper:typeSelectHelper];
+    [pdfView setTypeSelectHelper:typeSelectHelper];
     
     typeSelectHelper = [[[SKTypeSelectHelper alloc] init] autorelease];
     [typeSelectHelper setMatchOption:SKSubstringMatch];
@@ -3527,7 +3528,7 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
 #pragma mark SKTypeSelectHelper datasource protocol
 
 - (NSArray *)typeSelectHelperSelectionItems:(SKTypeSelectHelper *)typeSelectHelper {
-    if ([typeSelectHelper isEqual:[thumbnailTableView typeSelectHelper]]) {
+    if ([typeSelectHelper isEqual:[thumbnailTableView typeSelectHelper]] || [typeSelectHelper isEqual:[pdfView typeSelectHelper]]) {
         return pageLabels;
     } else if ([typeSelectHelper isEqual:[noteOutlineView typeSelectHelper]]) {
         return [[noteArrayController arrangedObjects] valueForKey:@"contents"];
@@ -3542,7 +3543,7 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
 }
 
 - (unsigned int)typeSelectHelperCurrentlySelectedIndex:(SKTypeSelectHelper *)typeSelectHelper {
-    if ([typeSelectHelper isEqual:[thumbnailTableView typeSelectHelper]]) {
+    if ([typeSelectHelper isEqual:[thumbnailTableView typeSelectHelper]] || [typeSelectHelper isEqual:[pdfView typeSelectHelper]]) {
         return [[thumbnailTableView selectedRowIndexes] lastIndex];
     } else if ([typeSelectHelper isEqual:[noteOutlineView typeSelectHelper]]) {
         return [[noteArrayController arrangedObjects] indexOfObject:[self selectedNote]];
@@ -3554,7 +3555,7 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
 }
 
 - (void)typeSelectHelper:(SKTypeSelectHelper *)typeSelectHelper selectItemAtIndex:(unsigned int)itemIndex {
-    if ([typeSelectHelper isEqual:[thumbnailTableView typeSelectHelper]]) {
+    if ([typeSelectHelper isEqual:[thumbnailTableView typeSelectHelper]] || [typeSelectHelper isEqual:[pdfView typeSelectHelper]]) {
         [self setPageNumber:itemIndex + 1];
     } else if ([typeSelectHelper isEqual:[noteOutlineView typeSelectHelper]]) {
         int row = [noteOutlineView rowForItem:[[noteArrayController arrangedObjects] objectAtIndex:itemIndex]];
@@ -3565,7 +3566,7 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
 }
 
 - (void)typeSelectHelper:(SKTypeSelectHelper *)typeSelectHelper updateSearchString:(NSString *)searchString {
-    if ([typeSelectHelper isEqual:[thumbnailTableView typeSelectHelper]]) {
+    if ([typeSelectHelper isEqual:[thumbnailTableView typeSelectHelper]] || [typeSelectHelper isEqual:[pdfView typeSelectHelper]]) {
         if (searchString)
             [statusBar setLeftStringValue:[NSString stringWithFormat:NSLocalizedString(@"Go to page: %@", @"Status message"), searchString]];
         else
