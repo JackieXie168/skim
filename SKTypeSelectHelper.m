@@ -266,21 +266,21 @@
     unsigned int stringLength = [string length];
     if (stringLength == 0 || stringLength > range.length)
         return NO;
-    if (mask & NSAnchoredSearch)
-        return [self rangeOfString:string options:mask range:range].length > 0;
-    NSRange searchRange = range;
-    while (searchRange.length >= stringLength) {
-        NSRange r = [self rangeOfString:string options:mask range:searchRange];
+    while (range.length >= stringLength) {
+        NSRange r = [self rangeOfString:string options:mask range:range];
         if (r.location == NSNotFound)
             return NO;
-        if (r.location == 0 || [[NSCharacterSet letterCharacterSet] characterIsMember:[self characterAtIndex:r.location - 1]])
+        // see if we start at a "word boundary"
+        if (r.location == 0 || [[NSCharacterSet alphanumericCharacterSet] characterIsMember:[self characterAtIndex:r.location - 1]] == NO)
             return YES;
-        if (mask & NSBackwardsSearch)
-            searchRange = NSMakeRange(searchRange.location, NSMaxRange(r) - searchRange.location - 1);
-        else
-            searchRange = NSMakeRange(r.location + 1, NSMaxRange(searchRange) - r.location - 1);
+        // if it's anchored, we only should search once
         if (mask & NSAnchoredSearch)
             return NO;
+        // get the new range, shifted by one from the last match
+        if (mask & NSBackwardsSearch)
+            range = NSMakeRange(range.location, NSMaxRange(r) - range.location - 1);
+        else
+            range = NSMakeRange(r.location + 1, NSMaxRange(range) - r.location - 1);
     }
     return NO;
 }
