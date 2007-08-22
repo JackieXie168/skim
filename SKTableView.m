@@ -36,20 +36,51 @@
  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-#import "NSTableView_SKExtensions.h"
-#import "OBUtilities.h"
+#import "SKTableView.h"
+#import "SKTypeSelectHelper.h"
 
 
-@interface NSTableView (SKPrivateExtensions)
-- (void)replacementKeyDown:(NSEvent *)theEvent;
-@end
+@implementation SKTableView
 
-@implementation NSTableView (SKExtensions)
+- (void)dealloc {
+    [typeSelectHelper setDataSource:nil];
+    [typeSelectHelper release];
+    [super dealloc];
+}
 
-static IMP originalKeyDown = NULL;
+- (SKTypeSelectHelper *)typeSelectHelper {
+    return typeSelectHelper;
+}
 
-+ (void)load {
-    originalKeyDown = OBReplaceMethodImplementationWithSelector(self, @selector(keyDown:), @selector(replacementKeyDown:));
+- (void)setTypeSelectHelper:(SKTypeSelectHelper *)newTypeSelectHelper {
+    if (typeSelectHelper != newTypeSelectHelper) {
+        [typeSelectHelper release];
+        typeSelectHelper = [newTypeSelectHelper retain];
+    }
+}
+
+- (void)reloadData {
+    [super reloadData];
+    [typeSelectHelper rebuildTypeSelectSearchCache];
+}
+
+- (void)keyDown:(NSEvent *)theEvent {
+    NSString *characters = [theEvent charactersIgnoringModifiers];
+    unichar eventChar = [characters length] > 0 ? [characters characterAtIndex:0] : 0;
+	unsigned modifierFlags = [theEvent modifierFlags] & NSDeviceIndependentModifierFlagsMask;
+    
+    if (typeSelectHelper && modifierFlags == 0 && [[NSCharacterSet alphanumericCharacterSet] characterIsMember:eventChar])
+        [typeSelectHelper processKeyDownCharacter:eventChar];
+    else if ([typeSelectHelper cyclesSimilarResults] && modifierFlags == 0 && eventChar == '/')
+        [typeSelectHelper repeatSearch];
+	else if ((eventChar == NSDeleteCharacter || eventChar == NSDeleteFunctionKey) && modifierFlags == 0 && [self canDelete])
+        [self delete:self];
+    else if (eventChar == NSHomeFunctionKey && (modifierFlags & ~NSFunctionKeyMask) == 0)
+        [self scrollToBeginningOfDocument:nil];
+    else if (eventChar == NSEndFunctionKey && (modifierFlags & ~NSFunctionKeyMask) == 0)
+        [self scrollToEndOfDocument:nil];
+    else
+        [super keyDown:theEvent];
 }
 
 - (void)scrollToBeginningOfDocument:(id)sender {
@@ -60,21 +91,6 @@ static IMP originalKeyDown = NULL;
 - (void)scrollToEndOfDocument:(id)sender {
     if ([self numberOfRows])
         [self scrollRowToVisible:[self numberOfRows] - 1];
-}
-
-- (void)replacementKeyDown:(NSEvent *)theEvent {
-    NSString *characters = [theEvent charactersIgnoringModifiers];
-    unichar eventChar = [characters length] > 0 ? [characters characterAtIndex:0] : 0;
-	unsigned modifierFlags = [theEvent modifierFlags] & NSDeviceIndependentModifierFlagsMask;
-    
-	if ((eventChar == NSDeleteCharacter || eventChar == NSDeleteFunctionKey) && modifierFlags == 0 && [self canDelete])
-        [self delete:self];
-    else if (eventChar == NSHomeFunctionKey && (modifierFlags & ~NSFunctionKeyMask) == 0)
-        [self scrollToBeginningOfDocument:nil];
-    else if (eventChar == NSEndFunctionKey && (modifierFlags & ~NSFunctionKeyMask) == 0)
-        [self scrollToEndOfDocument:nil];
-    else
-        originalKeyDown(self, _cmd, theEvent);
 }
 
 - (BOOL)canDelete {

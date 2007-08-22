@@ -41,7 +41,8 @@
 #import "SKDocument.h"
 #import "SKMainWindowController.h"
 #import "Files_SKExtensions.h"
-#import "NSTableView_SKExtensions.h"
+#import "SKTableView.h"
+#import "SKTypeSelectHelper.h"
 
 static NSString *SKBookmarkRowsPboardType = @"SKBookmarkRowsPboardType";
 static NSString *SKBookmarkChangedNotification = @"SKBookmarkChangedNotification";
@@ -111,6 +112,11 @@ static unsigned int maxRecentDocumentsCount = 0;
 
 - (void)windowDidLoad {
     [self setWindowFrameAutosaveName:@"SKBookmarksWindow"];
+    
+    SKTypeSelectHelper *typeSelectHelper = [[[SKTypeSelectHelper alloc] init] autorelease];
+    [typeSelectHelper setDataSource:self];
+    [tableView setTypeSelectHelper:typeSelectHelper];
+    
     [tableView registerForDraggedTypes:[NSArray arrayWithObjects:SKBookmarkRowsPboardType, nil]];
 }
 
@@ -348,6 +354,20 @@ static unsigned int maxRecentDocumentsCount = 0;
 
 - (BOOL)tableView:(NSTableView *)aTableView canDeleteRowsWithIndexes:(NSIndexSet *)rowIndexes {
     return YES;
+}
+
+#pragma mark SKTypeSelectHelper datasource protocol
+
+- (NSArray *)typeSelectHelperSelectionItems:(SKTypeSelectHelper *)typeSelectHelper {
+    return [bookmarks valueForKey:@"label"];
+}
+
+- (unsigned int)typeSelectHelperCurrentlySelectedIndex:(SKTypeSelectHelper *)typeSelectHelper {
+    return [[tableView selectedRowIndexes] lastIndex];
+}
+
+- (void)typeSelectHelper:(SKTypeSelectHelper *)typeSelectHelper selectItemAtIndex:(unsigned int)itemIndex {
+    [tableView selectRowIndexes:[NSIndexSet indexSetWithIndex:itemIndex] byExtendingSelection:NO];
 }
 
 @end

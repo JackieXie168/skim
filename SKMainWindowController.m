@@ -61,7 +61,7 @@
 #import "NSScrollView_SKExtensions.h"
 #import "NSBezierPath_BDSKExtensions.h"
 #import "NSUserDefaultsController_SKExtensions.h"
-#import "SKOutlineView.h"
+#import "SKTocOutlineView.h"
 #import "SKNoteOutlineView.h"
 #import "SKThumbnailTableView.h"
 #import "SKFindTableView.h"
@@ -376,6 +376,7 @@ static NSString *noteToolAdornImageNames[] = {@"TextNoteToolAdorn", @"AnchoredNo
     // typeSelectHelpers
     SKTypeSelectHelper *typeSelectHelper = [[[SKTypeSelectHelper alloc] init] autorelease];
     [typeSelectHelper setMatchesImmediately:NO];
+    [typeSelectHelper setCyclesSimilarResults:NO];
     [typeSelectHelper setMatchOption:SKFullStringMatch];
     [typeSelectHelper setDataSource:self];
     [thumbnailTableView setTypeSelectHelper:typeSelectHelper];

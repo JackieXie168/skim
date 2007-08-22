@@ -38,9 +38,10 @@
 
 #import <Cocoa/Cocoa.h>
 
+@class SKTableView;
 
 @interface SKBookmarkController : NSWindowController {
-    IBOutlet NSTableView *tableView;
+    IBOutlet SKTableView *tableView;
     NSMutableArray *bookmarks;
     NSMutableArray *recentDocuments;
     NSUndoManager *undoManager;

@@ -67,8 +67,6 @@ static IMP originalTrackKnob = NULL;
 
 - (void)dealloc {
     [[NSNotificationCenter defaultCenter] removeObserver:self];
-    [typeSelectHelper setDataSource:nil];
-    [typeSelectHelper release];
     [super dealloc];
 }
 
@@ -123,34 +121,6 @@ static IMP originalTrackKnob = NULL;
         [NSGraphicsContext restoreGraphicsState];
     }
     [super highlightSelectionInClipRect:clipRect]; 
-}
-
-- (SKTypeSelectHelper *)typeSelectHelper {
-    return typeSelectHelper;
-}
-
-- (void)setTypeSelectHelper:(SKTypeSelectHelper *)newTypeSelectHelper {
-    if (typeSelectHelper != newTypeSelectHelper) {
-        [typeSelectHelper release];
-        typeSelectHelper = [newTypeSelectHelper retain];
-    }
-}
-
-- (void)reloadData{
-    [super reloadData];
-    [typeSelectHelper rebuildTypeSelectSearchCache];
-}
-
-- (void)keyDown:(NSEvent *)theEvent {
-    NSString *characters = [theEvent charactersIgnoringModifiers];
-    unichar eventChar = [characters length] > 0 ? [characters characterAtIndex:0] : 0;
-	unsigned modifierFlags = [theEvent modifierFlags] & NSDeviceIndependentModifierFlagsMask;
-    
-    if (typeSelectHelper && modifierFlags == 0 && [[NSCharacterSet alphanumericCharacterSet] characterIsMember:eventChar]) {
-        [typeSelectHelper processKeyDownCharacter:eventChar];
-    } else {
-        [super keyDown:theEvent];
-    }
 }
 
 - (void)mouseDown:(NSEvent *)theEvent {

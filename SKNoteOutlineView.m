@@ -45,30 +45,12 @@
 @implementation SKNoteOutlineView
 
 - (void)dealloc {
-    [typeSelectHelper setDataSource:nil];
-    [typeSelectHelper release];
     [noteTypeSheet release];
     [super dealloc];
 }
 
 - (void)awakeFromNib {
     [self noteTypeMenu]; // this sets the menu for the header view
-}
-
-- (SKTypeSelectHelper *)typeSelectHelper {
-    return typeSelectHelper;
-}
-
-- (void)setTypeSelectHelper:(SKTypeSelectHelper *)newTypeSelectHelper {
-    if (typeSelectHelper != newTypeSelectHelper) {
-        [typeSelectHelper release];
-        typeSelectHelper = [newTypeSelectHelper retain];
-    }
-}
-
-- (void)reloadData{
-    [super reloadData];
-    [typeSelectHelper rebuildTypeSelectSearchCache];
 }
 
 - (void)delete:(id)sender {
@@ -87,10 +69,6 @@
     
 	if ((eventChar == NSDeleteCharacter || eventChar == NSDeleteFunctionKey) && modifiers == 0)
         [self delete:self];
-    else if (typeSelectHelper && modifiers == 0 && [[NSCharacterSet alphanumericCharacterSet] characterIsMember:eventChar])
-        [typeSelectHelper processKeyDownCharacter:eventChar];
-    else if (typeSelectHelper && modifiers == 0 && eventChar == '/')
-        [typeSelectHelper repeatSearch];
 	else
 		[super keyDown:theEvent];
 }

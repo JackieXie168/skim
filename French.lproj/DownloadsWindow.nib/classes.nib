@@ -7,6 +7,7 @@
             LANGUAGE = ObjC; 
             SUPERCLASS = NSObject; 
         }, 
+        {CLASS = NSObject; LANGUAGE = ObjC; }, 
         {
             ACTIONS = {
                 cancelDownload = id; 
@@ -20,11 +21,17 @@
             OUTLETS = {
                 clearButton = NSButton; 
                 preferencesSheet = NSWindow; 
-                tableView = NSTableView; 
+                tableView = SKTableView; 
             }; 
             SUPERCLASS = NSWindowController; 
         }, 
-        {CLASS = SKProgressCell; LANGUAGE = ObjC; SUPERCLASS = NSTextFieldCell; }
+        {CLASS = SKProgressCell; LANGUAGE = ObjC; SUPERCLASS = NSTextFieldCell; }, 
+        {
+            ACTIONS = {delete = id; scrollToBeginningOfDocument = id; scrollToEndOfDocument = id; }; 
+            CLASS = SKTableView; 
+            LANGUAGE = ObjC; 
+            SUPERCLASS = NSTableView; 
+        }
     ); 
     IBVersion = 1; 
 }

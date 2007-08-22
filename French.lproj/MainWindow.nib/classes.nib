@@ -38,7 +38,7 @@
             SUPERCLASS = NSTextFieldCell; 
         }, 
         {CLASS = SKColorSwatch; LANGUAGE = ObjC; SUPERCLASS = NSControl; }, 
-        {CLASS = SKFindTableView; LANGUAGE = ObjC; SUPERCLASS = NSTableView; }, 
+        {CLASS = SKFindTableView; LANGUAGE = ObjC; SUPERCLASS = SKTableView; }, 
         {CLASS = SKFullScreenWindow; LANGUAGE = ObjC; SUPERCLASS = NSWindow; }, 
         {CLASS = SKMainWindow; LANGUAGE = ObjC; SUPERCLASS = NSWindow; }, 
         {
@@ -139,7 +139,7 @@
                 notePopUpButton = BDSKImagePopUpButton; 
                 noteSearchField = NSSearchField; 
                 noteView = NSView; 
-                outlineView = NSOutlineView; 
+                outlineView = SKTocOutlineView; 
                 ownerController = NSObjectController; 
                 pageNumberField = NSTextField; 
                 pageNumberStepper = NSStepper; 
@@ -176,25 +176,36 @@
             }; 
             SUPERCLASS = NSWindowController; 
         }, 
-        {CLASS = SKNoteOutlineView; LANGUAGE = ObjC; SUPERCLASS = NSOutlineView; }, 
         {
-            ACTIONS = {delete = id; }; 
-            CLASS = SKNoteTableView; 
+            ACTIONS = {
+                dismissNoteTypeSheet = id; 
+                displayAllNoteTypes = id; 
+                selectNoteTypes = id; 
+                toggleDisplayNoteType = id; 
+            }; 
+            CLASS = SKNoteOutlineView; 
             LANGUAGE = ObjC; 
-            SUPERCLASS = NSTableView; 
+            OUTLETS = {noteTypeMatrix = NSMatrix; noteTypeSheet = NSWindow; }; 
+            SUPERCLASS = SKOutlineView; 
         }, 
         {CLASS = SKOutlineView; LANGUAGE = ObjC; SUPERCLASS = NSOutlineView; }, 
         {CLASS = SKPDFView; LANGUAGE = ObjC; SUPERCLASS = PDFView; }, 
         {CLASS = SKSnapshotPageCell; LANGUAGE = ObjC; SUPERCLASS = NSTextFieldCell; }, 
-        {CLASS = SKSnapshotTableView; LANGUAGE = ObjC; SUPERCLASS = SKNoteTableView; }, 
+        {
+            CLASS = SKSnapshotTableView; 
+            LANGUAGE = ObjC; 
+            SUPERCLASS = SKThumbnailTableView; 
+        }, 
         {CLASS = SKSplitView; LANGUAGE = ObjC; SUPERCLASS = NSSplitView; }, 
+        {CLASS = SKTableView; LANGUAGE = ObjC; SUPERCLASS = NSTableView; }, 
         {
             CLASS = SKThumbnail; 
             LANGUAGE = ObjC; 
             OUTLETS = {controller = id; }; 
             SUPERCLASS = NSObject; 
         }, 
-        {CLASS = SKThumbnailTableView; LANGUAGE = ObjC; SUPERCLASS = NSTableView; }, 
+        {CLASS = SKThumbnailTableView; LANGUAGE = ObjC; SUPERCLASS = SKTableView; }, 
+        {CLASS = SKTocOutlineView; LANGUAGE = ObjC; SUPERCLASS = SKOutlineView; }, 
         {CLASS = SkimDocument; LANGUAGE = ObjC; SUPERCLASS = NSDocument; }
     ); 
     IBVersion = 1; 

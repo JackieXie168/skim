@@ -41,6 +41,8 @@
 #import "SKProgressCell.h"
 #import "NSURL_SKExtensions.h"
 #import "SKStringConstants.h"
+#import "SKTableView.h"
+#import "SKTypeSelectHelper.h"
 
 
 @implementation SKDownloadController
@@ -89,6 +91,11 @@
 - (void)windowDidLoad {
     [self setWindowFrameAutosaveName:@"SKDownloadsWindow"];
     [self updateButtons];
+    
+    SKTypeSelectHelper *typeSelectHelper = [[[SKTypeSelectHelper alloc] init] autorelease];
+    [typeSelectHelper setDataSource:self];
+    [tableView setTypeSelectHelper:typeSelectHelper];
+    
     [tableView registerForDraggedTypes:[NSArray arrayWithObjects:NSURLPboardType, SKWeblocFilePboardType, NSStringPboardType, nil]];
 }
 
@@ -297,6 +304,20 @@
             toolTip = NSLocalizedString(@"Resume download", @"Tool tip message");
     }
     return toolTip;
+}
+
+#pragma mark SKTypeSelectHelper datasource protocol
+
+- (NSArray *)typeSelectHelperSelectionItems:(SKTypeSelectHelper *)typeSelectHelper {
+    return [downloads valueForKeyPath:@"fileName"];
+}
+
+- (unsigned int)typeSelectHelperCurrentlySelectedIndex:(SKTypeSelectHelper *)typeSelectHelper {
+    return [[tableView selectedRowIndexes] lastIndex];
+}
+
+- (void)typeSelectHelper:(SKTypeSelectHelper *)typeSelectHelper selectItemAtIndex:(unsigned int)itemIndex {
+    [tableView selectRowIndexes:[NSIndexSet indexSetWithIndex:itemIndex] byExtendingSelection:NO];
 }
 
 @end
