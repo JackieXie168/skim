@@ -385,6 +385,11 @@ static NSString *noteToolAdornImageNames[] = {@"TextNoteToolAdorn", @"AnchoredNo
     [typeSelectHelper setDataSource:self];
     [noteOutlineView setTypeSelectHelper:typeSelectHelper];
     
+    typeSelectHelper = [[[SKTypeSelectHelper alloc] init] autorelease];
+    [typeSelectHelper setMatchOption:SKSubstringMatch];
+    [typeSelectHelper setDataSource:self];
+    [outlineView setTypeSelectHelper:typeSelectHelper];
+    
     // This update toolbar item and other states
     [self handleChangedHistoryNotification:nil];
     [self handlePageChangedNotification:nil];
@@ -3169,7 +3174,9 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
 - (void)outlineViewSelectionDidChange:(NSNotification *)notification{
 	// Get the destination associated with the search result list. Tell the PDFView to go there.
 	if ([[notification object] isEqual:outlineView] && (updatingOutlineSelection == NO)){
+        updatingOutlineSelection = YES;
 		[pdfView goToDestination: [[outlineView itemAtRow: [outlineView selectedRow]] destination]];
+        updatingOutlineSelection = NO;
         if ([self isPresentation] && [[NSUserDefaults standardUserDefaults] boolForKey:SKAutoHidePresentationContentsKey])
             [self hideLeftSideWindow];
     }
@@ -3523,6 +3530,12 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
         return pageLabels;
     } else if ([typeSelectHelper isEqual:[noteOutlineView typeSelectHelper]]) {
         return [[noteArrayController arrangedObjects] valueForKey:@"contents"];
+    } else if ([typeSelectHelper isEqual:[outlineView typeSelectHelper]]) {
+        int i, count = [outlineView numberOfRows];
+        NSMutableArray *array = [NSMutableArray arrayWithCapacity:count];
+        for (i = 0; i < count; i++) 
+            [array addObject:[(PDFOutline *)[outlineView itemAtRow:i] label]];
+        return array;
     }
     return nil;
 }
@@ -3532,6 +3545,9 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
         return [[thumbnailTableView selectedRowIndexes] lastIndex];
     } else if ([typeSelectHelper isEqual:[noteOutlineView typeSelectHelper]]) {
         return [[noteArrayController arrangedObjects] indexOfObject:[self selectedNote]];
+    } else if ([typeSelectHelper isEqual:[outlineView typeSelectHelper]]) {
+        int row = [outlineView selectedRow];
+        return row == -1 ? NSNotFound : row;
     }
     return NSNotFound;
 }
@@ -3542,6 +3558,8 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
     } else if ([typeSelectHelper isEqual:[noteOutlineView typeSelectHelper]]) {
         int row = [noteOutlineView rowForItem:[[noteArrayController arrangedObjects] objectAtIndex:itemIndex]];
         [noteOutlineView selectRowIndexes:[NSIndexSet indexSetWithIndex:row] byExtendingSelection:NO];
+    } else if ([typeSelectHelper isEqual:[outlineView typeSelectHelper]]) {
+        [outlineView selectRowIndexes:[NSIndexSet indexSetWithIndex:itemIndex] byExtendingSelection:NO];
     }
 }
 
@@ -3556,6 +3574,11 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
             [statusBar setRightStringValue:[NSString stringWithFormat:NSLocalizedString(@"Finding note: \"%@\"", @"Status message"), searchString]];
         else
             [self updateRightStatus];
+    } else if ([typeSelectHelper isEqual:[outlineView typeSelectHelper]]) {
+        if (searchString)
+            [statusBar setLeftStringValue:[NSString stringWithFormat:NSLocalizedString(@"Finding: %@", @"Status message"), searchString]];
+        else
+            [self updateLeftStatus];
     }
 }
 
@@ -3580,7 +3603,7 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
 - (void)updateOutlineSelection{
 
 	// Skip out if this PDF has no outline.
-	if (pdfOutline == nil)
+	if (pdfOutline == nil || updatingOutlineSelection)
 		return;
 	
 	// Get index of current page.
@@ -3588,7 +3611,8 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
 	
 	// Test that the current selection is still valid.
 	PDFOutline *outlineItem = (PDFOutline *)[outlineView itemAtRow: [outlineView selectedRow]];
-	if ([[pdfView document] indexForPage: [[outlineItem destination] page]] == pageIndex)
+	
+    if ([[pdfView document] indexForPage: [[outlineItem destination] page]] == pageIndex)
 		return;
 	
     int row = [self outlineRowForPageIndex:pageIndex];

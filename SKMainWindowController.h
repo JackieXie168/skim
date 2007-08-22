@@ -97,7 +97,7 @@ typedef struct _SKPDFViewState {
     
     SKStatusBar                 *statusBar;
     
-    IBOutlet NSOutlineView      *outlineView;
+    IBOutlet SKOutlineView      *outlineView;
     IBOutlet NSView             *tocView;
     PDFOutline                  *pdfOutline;
     NSMutableArray              *pdfOutlineItems;
