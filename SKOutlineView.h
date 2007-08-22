@@ -39,10 +39,16 @@
 #import <Cocoa/Cocoa.h>
 #import <Carbon/Carbon.h>
 
+@class SKTypeSelectHelper;
 
 @interface SKOutlineView : NSOutlineView {
     CFMutableArrayRef trackingRects;
+    SKTypeSelectHelper *typeSelectHelper;
 }
+
+- (SKTypeSelectHelper *)typeSelectHelper;
+- (void)setTypeSelectHelper:(SKTypeSelectHelper *)newTypeSelectHelper;
+
 @end
 
 

@@ -248,8 +248,9 @@
             if ([label caseInsensitiveCompare:searchString] == NSOrderedSame)
                 return labelIndex;
         } else {
-            if ([label containsStringStartingAtWord:searchString options:options range:NSMakeRange(0, [label length])])
+            if ([label containsStringStartingAtWord:searchString options:options range:NSMakeRange(0, [label length])]) {
                 return labelIndex;
+            }
         }
     }
     
