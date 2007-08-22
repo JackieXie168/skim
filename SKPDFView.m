@@ -55,6 +55,7 @@
 #import "SKLineWell.h"
 #import <Carbon/Carbon.h>
 #import "NSGeometry_SKExtensions.h"
+#import "SKTypeSelectHelper.h"
 
 NSString *SKPDFViewToolModeChangedNotification = @"SKPDFViewToolModeChangedNotification";
 NSString *SKPDFViewAnnotationModeChangedNotification = @"SKPDFViewAnnotationModeChangedNotification";
@@ -162,6 +163,8 @@ static void SKCGContextDrawGrabHandle(CGContextRef context, CGPoint point, float
     
     transitionController = nil;
     
+    typeSelectHelper = nil;
+    
     spellingTag = [NSSpellChecker uniqueSpellDocumentTag];
     
     hideNotes = NO;
@@ -229,6 +232,8 @@ static void SKCGContextDrawGrabHandle(CGContextRef context, CGPoint point, float
     [[SKPDFHoverWindow sharedHoverWindow] orderOut:self];
     [self removeHoverRects];
     [hoverRects release];
+    [typeSelectHelper setDataSource:nil];
+    [typeSelectHelper release];
     [transitionController release];
     [navWindow release];
     [readingBar release];
@@ -577,6 +582,17 @@ static void SKCGContextDrawGrabHandle(CGContextRef context, CGPoint point, float
     [[self transitionController] setShouldRestrict:flag];
 }
 
+- (SKTypeSelectHelper *)typeSelectHelper {
+    return typeSelectHelper;
+}
+
+- (void)setTypeSelectHelper:(SKTypeSelectHelper *)newTypeSelectHelper {
+    if (typeSelectHelper != newTypeSelectHelper) {
+        [typeSelectHelper release];
+        typeSelectHelper = [newTypeSelectHelper retain];
+    }
+}
+
 #pragma mark Reading bar
 
 - (BOOL)hasReadingBar {
@@ -922,6 +938,10 @@ static void SKCGContextDrawGrabHandle(CGContextRef context, CGPoint point, float
         [self setAnnotationMode:SKStrikeOutNote];
     } else if (isPresentation == NO && [self toolMode] == SKNoteToolMode && modifiers == 0 && eventChar == 'l') {
         [self setAnnotationMode:SKLineNote];
+    } else if (isPresentation == NO && typeSelectHelper && modifiers == 0 && [[NSCharacterSet alphanumericCharacterSet] characterIsMember:eventChar]) {
+        [typeSelectHelper processKeyDownCharacter:eventChar];
+    } else if (isPresentation == NO && [typeSelectHelper cyclesSimilarResults] && modifiers == 0 && eventChar == '/') {
+        [typeSelectHelper repeatSearch];
     } else {
 		[super keyDown:theEvent];
     }

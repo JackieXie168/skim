@@ -73,7 +73,7 @@ typedef enum _SKNoteType {
     SKLineNote
 } SKNoteType;
 
-@class SKReadingBar, SKTransitionController;
+@class SKReadingBar, SKTransitionController, SKTypeSelectHelper;
 
 @interface SKPDFView : PDFView {
     SKToolMode toolMode;
@@ -90,6 +90,8 @@ typedef enum _SKNoteType {
     SKReadingBar *readingBar;
     
     SKTransitionController *transitionController;
+    
+    SKTypeSelectHelper *typeSelectHelper;
     
 	PDFAnnotation *activeAnnotation;
 	PDFAnnotation *highlightAnnotation;
@@ -148,6 +150,9 @@ typedef enum _SKNoteType {
 
 - (BOOL)transitionShouldRestrict;
 - (void)setTransitionShouldRestrict:(BOOL)flag;
+
+- (SKTypeSelectHelper *)typeSelectHelper;
+- (void)setTypeSelectHelper:(SKTypeSelectHelper *)newTypeSelectHelper;
 
 - (IBAction)delete:(id)sender;
 - (IBAction)autoSelectContent:(id)sender;
