@@ -13,13 +13,30 @@
             LANGUAGE = ObjC; 
             SUPERCLASS = NSImageCell; 
         }, 
-        {CLASS = SKNoteOutlineView; LANGUAGE = ObjC; SUPERCLASS = NSOutlineView; }, 
+        {
+            ACTIONS = {
+                dismissNoteTypeSheet = id; 
+                displayAllNoteTypes = id; 
+                selectNoteTypes = id; 
+                toggleDisplayNoteType = id; 
+            }; 
+            CLASS = SKNoteOutlineView; 
+            LANGUAGE = ObjC; 
+            OUTLETS = {noteTypeMatrix = NSMatrix; noteTypeSheet = NSWindow; }; 
+            SUPERCLASS = SKOutlineView; 
+        }, 
         {
             ACTIONS = {openPDF = id; }; 
             CLASS = SKNotesDocument; 
             LANGUAGE = ObjC; 
             OUTLETS = {arrayController = NSArrayController; outlineView = SKNoteOutlineView; }; 
             SUPERCLASS = NSDocument; 
+        }, 
+        {
+            ACTIONS = {scrollToBeginningOfDocument = id; scrollToEndOfDocument = id; }; 
+            CLASS = SKOutlineView; 
+            LANGUAGE = ObjC; 
+            SUPERCLASS = NSOutlineView; 
         }
     ); 
     IBVersion = 1; 

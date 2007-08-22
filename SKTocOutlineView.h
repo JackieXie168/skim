@@ -1,8 +1,8 @@
 //
-//  NSTableView_SKExtensions.h
+//  SKTocOutlineView.h
 //  Skim
 //
-//  Created by Christiaan Hofman on 8/20/07.
+//  Created by Christiaan Hofman on 2/25/07.
 /*
  This software is Copyright (c) 2007
  Christiaan Hofman. All rights reserved.
@@ -37,15 +37,19 @@
  */
 
 #import <Cocoa/Cocoa.h>
+#import <Carbon/Carbon.h>
+#import "SKOutlineView.h"
 
 
-@interface NSTableView (SKExtensions)
-- (BOOL)canDelete;
-- (void)delete:(id)sender;
+@interface SKTocOutlineView : SKOutlineView {
+    CFMutableArrayRef trackingRects;
+}
 @end
 
 
-@interface NSObject (NSTableViewSKExtendedDelegate)
-- (void)tableView:(NSTableView *)aTableView deleteRowsWithIndexes:(NSIndexSet *)rowIndexes;
-- (BOOL)tableView:(NSTableView *)aTableView canDeleteRowsWithIndexes:(NSIndexSet *)rowIndexes;
+@interface NSObject (SKTocOutlineViewDelegate)
+- (NSArray *)outlineViewHighlightedRows:(NSOutlineView *)anOutlineView;
+- (BOOL)outlineView:(NSOutlineView *)anOutlineView shouldTrackTableColumn:(NSTableColumn *)aTableColumn item:(id)item;
+- (void)outlineView:(NSOutlineView *)anOutlineView mouseEnteredTableColumn:(NSTableColumn *)aTableColumn item:(id)item;
+- (void)outlineView:(NSOutlineView *)anOutlineView mouseExitedTableColumn:(NSTableColumn *)aTableColumn item:(id)item;
 @end

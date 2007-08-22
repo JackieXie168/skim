@@ -1,8 +1,8 @@
 //
-//  SKOutlineView.h
+//  SKTableView.h
 //  Skim
 //
-//  Created by Christiaan Hofman on 2/25/07.
+//  Created by Christiaan Hofman on 8/20/07.
 /*
  This software is Copyright (c) 2007
  Christiaan Hofman. All rights reserved.
@@ -37,24 +37,26 @@
  */
 
 #import <Cocoa/Cocoa.h>
-#import <Carbon/Carbon.h>
 
 @class SKTypeSelectHelper;
 
-@interface SKOutlineView : NSOutlineView {
-    CFMutableArrayRef trackingRects;
+@interface SKTableView : NSTableView {
     SKTypeSelectHelper *typeSelectHelper;
 }
 
 - (SKTypeSelectHelper *)typeSelectHelper;
 - (void)setTypeSelectHelper:(SKTypeSelectHelper *)newTypeSelectHelper;
 
+- (BOOL)canDelete;
+- (void)delete:(id)sender;
+
+- (void)scrollToBeginningOfDocument:(id)sender;
+- (void)scrollToEndOfDocument:(id)sender;
+
 @end
 
 
-@interface NSObject (SKOutlineViewDelegate)
-- (NSArray *)outlineViewHighlightedRows:(NSOutlineView *)anOutlineView;
-- (BOOL)outlineView:(NSOutlineView *)anOutlineView shouldTrackTableColumn:(NSTableColumn *)aTableColumn item:(id)item;
-- (void)outlineView:(NSOutlineView *)anOutlineView mouseEnteredTableColumn:(NSTableColumn *)aTableColumn item:(id)item;
-- (void)outlineView:(NSOutlineView *)anOutlineView mouseExitedTableColumn:(NSTableColumn *)aTableColumn item:(id)item;
+@interface NSObject (SKTableViewDelegate)
+- (void)tableView:(NSTableView *)aTableView deleteRowsWithIndexes:(NSIndexSet *)rowIndexes;
+- (BOOL)tableView:(NSTableView *)aTableView canDeleteRowsWithIndexes:(NSIndexSet *)rowIndexes;
 @end

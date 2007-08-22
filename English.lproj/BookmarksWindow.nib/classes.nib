@@ -2,12 +2,14 @@
     IBClasses = (
         {CLASS = BDSKGradientView; LANGUAGE = ObjC; SUPERCLASS = NSView; }, 
         {CLASS = FirstResponder; LANGUAGE = ObjC; SUPERCLASS = NSObject; }, 
+        {CLASS = SKBookmark; LANGUAGE = ObjC; SUPERCLASS = NSObject; }, 
         {
             CLASS = SKBookmarkController; 
             LANGUAGE = ObjC; 
-            OUTLETS = {tableView = NSTableView; }; 
+            OUTLETS = {tableView = SKTableView; }; 
             SUPERCLASS = NSWindowController; 
-        }
+        }, 
+        {CLASS = SKTableView; LANGUAGE = ObjC; SUPERCLASS = NSTableView; }
     ); 
     IBVersion = 1; 
 }

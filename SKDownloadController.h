@@ -38,9 +38,10 @@
 
 #import <Cocoa/Cocoa.h>
 
+@class SKTableView;
 
 @interface SKDownloadController : NSWindowController {
-    IBOutlet NSTableView *tableView;
+    IBOutlet SKTableView *tableView;
     IBOutlet NSButton *clearButton;
     IBOutlet NSWindow *preferencesSheet;
     NSMutableArray *downloads;

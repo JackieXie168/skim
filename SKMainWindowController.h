@@ -64,7 +64,7 @@ typedef struct _SKPDFViewState {
 } SKPDFViewState;
 
 @class PDFOutline, SKThumbnail;
-@class SKPDFView, SKOutlineView, SKNoteOutlineView, SKThumbnailTableView, SKSnapshotTableView, SKSplitView, BDSKCollapsibleView, BDSKEdgeView, BDSKGradientView, BDSKImagePopUpButton, SKColorSwatch, SKStatusBar;
+@class SKPDFView, SKTocOutlineView, SKNoteOutlineView, SKThumbnailTableView, SKSnapshotTableView, SKSplitView, BDSKCollapsibleView, BDSKEdgeView, BDSKGradientView, BDSKImagePopUpButton, SKColorSwatch, SKStatusBar;
 @class SKFullScreenWindow, SKNavigationWindow, SKSideWindow, SKSnapshotWindowController;
 
 @interface SKMainWindowController : NSWindowController {
@@ -97,7 +97,7 @@ typedef struct _SKPDFViewState {
     
     SKStatusBar                 *statusBar;
     
-    IBOutlet SKOutlineView      *outlineView;
+    IBOutlet SKTocOutlineView      *outlineView;
     IBOutlet NSView             *tocView;
     PDFOutline                  *pdfOutline;
     NSMutableArray              *pdfOutlineItems;

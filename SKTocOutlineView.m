@@ -1,5 +1,5 @@
 //
-//  SKOutlineView.m
+//  SKTocOutlineView.m
 //  Skim
 //
 //  Created by Christiaan Hofman on 2/25/07.
@@ -36,29 +36,16 @@
  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-#import "SKOutlineView.h"
+#import "SKTocOutlineView.h"
 #import "SKTypeSelectHelper.h"
 
 
-@implementation SKOutlineView
+@implementation SKTocOutlineView
 
 - (void)dealloc {
     if (trackingRects != NULL)
         CFRelease(trackingRects);
-    [typeSelectHelper setDataSource:nil];
-    [typeSelectHelper release];
     [super dealloc];
-}
-
-- (SKTypeSelectHelper *)typeSelectHelper {
-    return typeSelectHelper;
-}
-
-- (void)setTypeSelectHelper:(SKTypeSelectHelper *)newTypeSelectHelper {
-    if (typeSelectHelper != newTypeSelectHelper) {
-        [typeSelectHelper release];
-        typeSelectHelper = [newTypeSelectHelper retain];
-    }
 }
 
 - (void)highlightSelectionInClipRect:(NSRect)clipRect {
@@ -125,20 +112,17 @@
 - (void)expandItem:(id)item expandChildren:(BOOL)collapseChildren {
     // NSOutlineView does not call resetCursorRect when expanding
     [super expandItem:item expandChildren:collapseChildren];
-    [typeSelectHelper rebuildTypeSelectSearchCache];
 	[self rebuildTrackingRects];
 }
 
 - (void)collapseItem:(id)item collapseChildren:(BOOL)collapseChildren {
     // NSOutlineView does not call resetCursorRect when collapsing
     [super collapseItem:item collapseChildren:collapseChildren];
-    [typeSelectHelper rebuildTypeSelectSearchCache];
 	[self rebuildTrackingRects];
 }
 
 - (void)reloadData{
     [super reloadData];
-    [typeSelectHelper rebuildTypeSelectSearchCache];
 	[self rebuildTrackingRects];
 }
 
@@ -191,20 +175,6 @@
             [[self delegate] outlineView:self mouseExitedTableColumn:tableColumn item:[self itemAtRow:row]];
         }
 	}
-}
-
-- (void)keyDown:(NSEvent *)theEvent {
-    NSString *characters = [theEvent charactersIgnoringModifiers];
-    unichar eventChar = [characters length] > 0 ? [characters characterAtIndex:0] : 0;
-	unsigned modifierFlags = [theEvent modifierFlags] & NSDeviceIndependentModifierFlagsMask;
-    
-    if (typeSelectHelper && modifierFlags == 0 && [[NSCharacterSet alphanumericCharacterSet] characterIsMember:eventChar]) {
-        [typeSelectHelper processKeyDownCharacter:eventChar];
-    } else if (typeSelectHelper && modifierFlags == 0 && eventChar == '/') {
-        [typeSelectHelper repeatSearch];
-    } else {
-        [super keyDown:theEvent];
-    }
 }
 
 @end

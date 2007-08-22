@@ -8,9 +8,10 @@
 
 #import <Cocoa/Cocoa.h>
 #import <Carbon/Carbon.h>
+#import "SKTableView.h"
 
 
-@interface SKFindTableView : NSTableView {
+@interface SKFindTableView : SKTableView {
     CFMutableArrayRef trackingRects;
 }
 @end
