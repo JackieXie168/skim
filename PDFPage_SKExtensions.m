@@ -44,6 +44,7 @@
 #import "OBUtilities.h"
 #import "NSBitmapImageRep_SKExtensions.h"
 #import "SKStringConstants.h"
+#import "NSCharacterSet_SKExtensions.h"
 #import "NSGeometry_SKExtensions.h"
 
 NSString *SKPDFDocumentPageBoundsDidChangeNotification = @"SKPDFDocumentPageBoundsDidChangeNotification";
@@ -212,10 +213,6 @@ static IMP originalDealloc = NULL;
 }
 
 - (NSArray *)lineBounds {
-    static NSCharacterSet *nonWhitespaceAndNewlineCharacterSet = nil;
-    if (nonWhitespaceAndNewlineCharacterSet == nil)
-        nonWhitespaceAndNewlineCharacterSet = [[[NSCharacterSet whitespaceAndNewlineCharacterSet] invertedSet] copy];
-    
     NSMutableArray *lines = [NSMutableArray array];
     PDFSelection *sel = [self selectionForRect:[self boundsForBox:kPDFDisplayBoxCropBox]];
     unsigned i, iMax = [sel safeNumberOfRangesOnPage:self];
@@ -240,7 +237,7 @@ static IMP originalDealloc = NULL;
                 NSRange selRange = [s safeRangeAtIndex:k onPage:self];
                 [indexes addIndexesInRange:selRange];
                 // due to a bug in PDFKit, the range of the selection can sometimes lie partly outside the range of the string
-                if ([string rangeOfCharacterFromSet:nonWhitespaceAndNewlineCharacterSet options:0 range:NSIntersectionRange(selRange, stringRange)].length)
+                if ([string rangeOfCharacterFromSet:[NSCharacterSet nonWhitespaceAndNewlineCharacterSet] options:0 range:NSIntersectionRange(selRange, stringRange)].length)
                     notEmpty = YES;
             }
             if (notEmpty)

@@ -60,4 +60,11 @@
     return nonWhitespaceCharacterSet;
 }
 
++ (NSCharacterSet *)nonWhitespaceAndNewlineCharacterSet {
+    static NSCharacterSet *nonWhitespaceAndNewlineCharacterSet = nil;
+    if (nonWhitespaceAndNewlineCharacterSet == nil)
+        nonWhitespaceAndNewlineCharacterSet = [[[NSCharacterSet whitespaceAndNewlineCharacterSet] invertedSet] copy];
+    return nonWhitespaceAndNewlineCharacterSet;
+}
+
 @end
