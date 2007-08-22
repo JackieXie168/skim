@@ -43,6 +43,7 @@
 #import "SKPDFView.h"
 #import "OBUtilities.h"
 #import "NSUserDefaultsController_SKExtensions.h"
+#import "NSGeometry_SKExtensions.h"
 
 enum {
     SKASTextNote = 'NTxt',
@@ -223,7 +224,7 @@ static IMP originalSetBorder = NULL;
 
 - (PDFDestination *)destination{
     NSRect bounds = [self bounds];
-    NSPoint point = NSMakePoint(NSMinX(bounds), NSMaxY(bounds));
+    NSPoint point = SKTopLeftPoint(bounds);
     return [[[PDFDestination alloc] initWithPage:[self page] atPoint:point] autorelease];
 }
 
@@ -742,10 +743,11 @@ static NSArray *createPointsFromStrings(NSArray *strings)
 
 static NSArray *createQuadPointsWithBounds(const NSRect bounds, const NSPoint origin)
 {
-    NSPoint p0 = NSMakePoint(NSMinX(bounds) - origin.x, NSMaxY(bounds) - origin.y);
-    NSPoint p1 = NSMakePoint(NSMaxX(bounds) - origin.x, NSMaxY(bounds) - origin.y);
-    NSPoint p2 = NSMakePoint(NSMinX(bounds) - origin.x, NSMinY(bounds) - origin.y);
-    NSPoint p3 = NSMakePoint(NSMaxX(bounds) - origin.x, NSMinY(bounds) - origin.y);
+    NSRect r = NSOffsetRect(bounds, -origin.x, -origin.y);
+    NSPoint p0 = SKTopLeftPoint(r);
+    NSPoint p1 = SKTopRightPoint(r);
+    NSPoint p2 = SKBottomLeftPoint(r);
+    NSPoint p3 = SKBottomRightPoint(r);
     return [[NSArray alloc] initWithObjects:[NSValue valueWithPoint:p0], [NSValue valueWithPoint:p1], [NSValue valueWithPoint:p2], [NSValue valueWithPoint:p3], nil];
 }
 
@@ -928,9 +930,7 @@ static BOOL adjacentCharacterBounds(NSRect rect1, NSRect rect2) {
         NSRect lineRect;
         lineRect.size.height = points[1].y - points[2].y;
         lineRect.size.width = points[1].x - points[2].x;
-        lineRect.origin = points[2];
-        lineRect.origin.x += [self bounds].origin.x;
-        lineRect.origin.y += [self bounds].origin.y;
+        lineRect.origin = SKAddPoints(points[2], [self bounds].origin);
         [self addLineRect:lineRect];
     }
 }
@@ -1415,20 +1415,20 @@ static BOOL adjacentCharacterBounds(NSRect rect1, NSRect rect2) {
     NSPoint startPoint = [self startPoint];
     NSPoint endPoint = [self endPoint];
     
+    point = SKSubstractPoints(point, bounds.origin);
+    
     if ([super hitTest:point]) {
-        NSPoint relPoint = NSMakePoint(endPoint.x - startPoint.x, endPoint.y - startPoint.y);
+        NSPoint relPoint = SKSubstractPoints(endPoint, startPoint);
         float lengthSquared = relPoint.x * relPoint.x + relPoint.y * relPoint.y;
         float extProduct;
         
         if (lengthSquared < 16.0)
             return YES;
         
-        extProduct = (point.x - NSMinX(bounds) - startPoint.x) * relPoint.y - (point.y - NSMinY(bounds) - startPoint.y) * relPoint.x;
+        extProduct = (point.x - startPoint.x) * relPoint.y - (point.y - startPoint.y) * relPoint.x;
         
         return extProduct * extProduct < 16.0 * lengthSquared;
     } else {
-        point.x -= NSMinX(bounds);
-        point.y -= NSMinY(bounds);
         
         return (fabs(point.x - startPoint.x) < 3.5 && fabs(point.y - startPoint.y) < 3.5) ||
                (fabs(point.x - endPoint.x) < 3.5 && fabs(point.y - endPoint.y) < 3.5);
@@ -1464,14 +1464,9 @@ static BOOL adjacentCharacterBounds(NSRect rect1, NSRect rect2) {
         NSPoint startPoint = NSPointFromPoint(*qdPoint);
         
         NSRect bounds = [self bounds];
-        NSPoint endPoint = [self endPoint];
-        endPoint.x = roundf(endPoint.x + NSMinX(bounds));
-        endPoint.y = roundf(endPoint.y + NSMinY(bounds));
+        NSPoint endPoint = SKIntegralPoint(SKAddPoints([self endPoint], bounds.origin));
         
-        bounds.origin.x = floorf(fmin(startPoint.x, endPoint.x));
-        bounds.size.width = ceilf(fmax(endPoint.x, startPoint.x)) - NSMinX(bounds);
-        bounds.origin.y = floorf(fmin(startPoint.y, endPoint.y));
-        bounds.size.height = ceilf(fmax(endPoint.y, startPoint.y)) - NSMinY(bounds);
+        bounds = SKIntegralRectFromPoints(startPoint, endPoint);
         
         if (NSWidth(bounds) < 8.0) {
             bounds.size.width = 8.0;
@@ -1482,10 +1477,8 @@ static BOOL adjacentCharacterBounds(NSRect rect1, NSRect rect2) {
             bounds.origin.y = floorf(0.5 * (startPoint.y + endPoint.y) - 4.0);
         }
         
-        startPoint.x -= NSMinX(bounds);
-        startPoint.y -= NSMinY(bounds);
-        endPoint.x -= NSMinX(bounds);
-        endPoint.y -= NSMinY(bounds);
+        startPoint = SKSubstractPoints(startPoint, bounds.origin);
+        endPoint = SKSubstractPoints(endPoint, bounds.origin);
         
         [self setBounds:bounds];
         [self setStartPoint:startPoint];
@@ -1496,9 +1489,9 @@ static BOOL adjacentCharacterBounds(NSRect rect1, NSRect rect2) {
 
 - (NSData *)startPointAsQDPoint {
     NSRect bounds = [self bounds];
-    NSPoint startPoint = [self startPoint];
-    startPoint.x = floorf(startPoint.x + NSMinX(bounds));
-    startPoint.y = floorf(startPoint.y + NSMinY(bounds));
+    NSPoint startPoint = SKAddPoints([self startPoint], bounds.origin);
+    startPoint.x = floorf(startPoint.x);
+    startPoint.y = floorf(startPoint.y);
     Point qdPoint = PointFromNSPoint(startPoint);
     return [NSData dataWithBytes:&qdPoint length:sizeof(Point)];
 }
@@ -1509,14 +1502,9 @@ static BOOL adjacentCharacterBounds(NSRect rect1, NSRect rect2) {
         NSPoint endPoint = NSPointFromPoint(*qdPoint);
         
         NSRect bounds = [self bounds];
-        NSPoint startPoint = [self startPoint];
-        startPoint.x = roundf(startPoint.x + NSMinX(bounds));
-        startPoint.y = roundf(startPoint.y + NSMinY(bounds));
+        NSPoint startPoint = SKIntegralPoint(SKAddPoints([self startPoint], bounds.origin));
         
-        bounds.origin.x = floorf(fmin(startPoint.x, endPoint.x));
-        bounds.size.width = ceilf(fmax(endPoint.x, startPoint.x)) - NSMinX(bounds);
-        bounds.origin.y = floorf(fmin(startPoint.y, endPoint.y));
-        bounds.size.height = ceilf(fmax(endPoint.y, startPoint.y)) - NSMinY(bounds);
+        bounds = SKIntegralRectFromPoints(startPoint, endPoint);
         
         if (NSWidth(bounds) < 8.0) {
             bounds.size.width = 8.0;
@@ -1527,10 +1515,8 @@ static BOOL adjacentCharacterBounds(NSRect rect1, NSRect rect2) {
             bounds.origin.y = floorf(0.5 * (startPoint.y + endPoint.y) - 4.0);
         }
         
-        startPoint.x -= NSMinX(bounds);
-        startPoint.y -= NSMinY(bounds);
-        endPoint.x -= NSMinX(bounds);
-        endPoint.y -= NSMinY(bounds);
+        startPoint = SKSubstractPoints(startPoint, bounds.origin);
+        endPoint = SKSubstractPoints(endPoint, bounds.origin);
         
         [self setBounds:bounds];
         [self setStartPoint:startPoint];
@@ -1541,9 +1527,9 @@ static BOOL adjacentCharacterBounds(NSRect rect1, NSRect rect2) {
 
 - (NSData *)endPointAsQDPoint {
     NSRect bounds = [self bounds];
-    NSPoint endPoint = [self endPoint];
-    endPoint.x = floorf(endPoint.x + NSMinX(bounds));
-    endPoint.y = floorf(endPoint.y + NSMinY(bounds));
+    NSPoint endPoint = SKAddPoints([self endPoint], bounds.origin);
+    endPoint.x = floorf(endPoint.x);
+    endPoint.y = floorf(endPoint.y);
     Point qdPoint = PointFromNSPoint(endPoint);
     return [NSData dataWithBytes:&qdPoint length:sizeof(Point)];
 }

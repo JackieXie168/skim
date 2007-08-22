@@ -56,6 +56,7 @@
 #import "NSURL_SKExtensions.h"
 #import "SKDocumentController.h"
 #import "Files_SKExtensions.h"
+#import "NSGeometry_SKExtensions.h"
 
 
 @implementation SKApplicationController
@@ -616,7 +617,7 @@
 
 - (void)drawRect:(NSRect)rect {
     NSRect bounds = [self bounds];
-    NSPoint center = NSMakePoint(NSMidX(bounds), NSMidY(bounds));
+    NSPoint center = SKCenterPoint(bounds);
     
     [[NSColor colorWithCalibratedWhite:0.0 alpha:0.5] setFill];
     [NSBezierPath fillRoundRectInRect:[self bounds] radius:10.0];

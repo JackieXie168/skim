@@ -41,6 +41,7 @@
 #import "SKPDFAnnotationNote.h"
 #import "NSBezierPath_BDSKExtensions.h"
 #import "NSParagraphStyle_SKExtensions.h"
+#import "NSGeometry_SKExtensions.h"
 
 #define WINDOW_WIDTH    400.0
 #define WINDOW_HEIGHT   80.0
@@ -172,22 +173,6 @@
     [super orderOut:sender];
 }
 
-static NSRect SKRectFittingRectInRect(NSRect inRect, NSRect outRect) {
-    if (NSWidth(inRect) > NSWidth(outRect))
-        inRect.size.width = NSWidth(outRect);
-    if (NSHeight(inRect) > NSHeight(outRect))
-        inRect.size.height = NSHeight(outRect);
-    if (NSMaxX(inRect) > NSMaxX(outRect) )
-        inRect.origin.x = NSMaxX(outRect) - NSWidth(inRect);
-    if (NSMinX(inRect) < NSMinX(outRect))
-        inRect.origin.x = NSMinX(outRect);
-    if (NSMaxY(inRect) > NSMaxY(outRect))
-        inRect.origin.y = NSMaxY(outRect) - NSHeight(inRect);
-    if (NSMinY(inRect) < NSMinY(outRect))
-        inRect.origin.y = NSMinY(outRect);
-    return inRect;
-}
-
 - (void)showWithTimer:(NSTimer *)aTimer {
     NSPoint thePoint = NSEqualPoints(point, NSZeroPoint) ? [NSEvent mouseLocation] : point;
     NSRect contentRect = NSMakeRect(thePoint.x, thePoint.y - WINDOW_OFFSET, WINDOW_WIDTH, WINDOW_HEIGHT);
@@ -227,7 +212,7 @@ static NSRect SKRectFittingRectInRect(NSRect inRect, NSRect outRect) {
             
             color = [NSColor controlBackgroundColor];
             
-            sourceRect = SKRectFittingRectInRect(sourceRect, pageImageRect);
+            sourceRect = SKConstrainRect(sourceRect, pageImageRect);
             
             NSDictionary *attrs = [[NSDictionary alloc] initWithObjectsAndKeys:labelFont, NSFontAttributeName, color, NSForegroundColorAttributeName, [NSParagraphStyle defaultClippingParagraphStyle], NSParagraphStyleAttributeName, nil];
             NSAttributedString *labelString = [[NSAttributedString alloc] initWithString:[NSString stringWithFormat:NSLocalizedString(@"Page %@", @"Tool tip label format"), [page label]] attributes:attrs];
@@ -308,7 +293,7 @@ static NSRect SKRectFittingRectInRect(NSRect inRect, NSRect outRect) {
         
         contentRect.size = [image size];
         contentRect.origin.y -= NSHeight(contentRect);
-        contentRect = SKRectFittingRectInRect(contentRect, [[NSScreen mainScreen] visibleFrame]);
+        contentRect = SKConstrainRect(contentRect, [[NSScreen mainScreen] visibleFrame]);
         [self setFrame:[self frameRectForContentRect:contentRect] display:NO];
         
         [[imageView enclosingScrollView] setBackgroundColor:color];
