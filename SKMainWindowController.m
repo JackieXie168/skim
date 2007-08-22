@@ -3577,7 +3577,7 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
             [self updateRightStatus];
     } else if ([typeSelectHelper isEqual:[outlineView typeSelectHelper]]) {
         if (searchString)
-            [statusBar setLeftStringValue:[NSString stringWithFormat:NSLocalizedString(@"Finding: %@", @"Status message"), searchString]];
+            [statusBar setLeftStringValue:[NSString stringWithFormat:NSLocalizedString(@"Finding: \"%@\"", @"Status message"), searchString]];
         else
             [self updateLeftStatus];
     }
