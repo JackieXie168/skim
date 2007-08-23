@@ -50,6 +50,9 @@
 - (BOOL)canDelete;
 - (void)delete:(id)sender;
 
+- (BOOL)canCopy;
+- (void)copy:(id)sender;
+
 - (void)scrollToBeginningOfDocument:(id)sender;
 - (void)scrollToEndOfDocument:(id)sender;
 
@@ -59,4 +62,7 @@
 @interface NSObject (SKTableViewDelegate)
 - (void)tableView:(NSTableView *)aTableView deleteRowsWithIndexes:(NSIndexSet *)rowIndexes;
 - (BOOL)tableView:(NSTableView *)aTableView canDeleteRowsWithIndexes:(NSIndexSet *)rowIndexes;
+- (void)tableView:(NSTableView *)aTableView copyRowsWithIndexes:(NSIndexSet *)rowIndexes;
+- (BOOL)tableView:(NSTableView *)aTableView canCopyRowsWithIndexes:(NSIndexSet *)rowIndexes;
+- (NSMenu *)tableView:(NSTableView *)aTableView menuForTableColumn:(NSTableColumn *)tableColumn row:(int)rowIndex;
 @end
