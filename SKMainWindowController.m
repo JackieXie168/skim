@@ -3662,6 +3662,9 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
 #pragma mark Outline
 
 - (int)outlineRowForPageIndex:(unsigned int)pageIndex {
+    if (pdfOutline == nil)
+        return -1;
+    
 	int i, numRows = [outlineView numberOfRows];
 	for (i = 0; i < numRows; i++) {
 		// Get the destination of the given row....
