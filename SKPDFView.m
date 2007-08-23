@@ -2125,25 +2125,30 @@ static void SKCGContextDrawGrabHandle(CGContextRef context, CGPoint point, float
     [navWindow orderOut:self];
 }
 
-- (void)setHasNavigation:(BOOL)hasNav activateAtBottom:(BOOL)atBottom autohidesCursor:(BOOL)hideCursor screen:(NSScreen *)screen {
-    hasNavigation = hasNav;
+- (void)enableNavigationActivatedAtBottom:(BOOL)atBottom autohidesCursor:(BOOL)hideCursor screen:(NSScreen *)screen {
+    hasNavigation = YES;
     autohidesCursor = hideCursor;
     activateNavigationAtBottom = atBottom;
     
-    if (hasNavigation) {
-        // always recreate the navWindow, since moving between screens of different resolution can mess up the location (in spite of moveToScreen:)
-        if (navWindow != nil)
-            [navWindow release];
-        else
-            [[NSNotificationCenter defaultCenter] addObserver: self selector: @selector(handleWindowWillCloseNotification:) 
-                                                         name: NSWindowWillCloseNotification object: [self window]];
-        navWindow = [[SKNavigationWindow alloc] initWithPDFView:self];
-        [navWindow moveToScreen:screen];
-        [navWindow setLevel:[[self window] level] + 1];
-    } else if ([navWindow isVisible]) {
-        [navWindow orderOut:self];
-    }
-    [self doAutohide:autohidesCursor || hasNavigation];
+    // always recreate the navWindow, since moving between screens of different resolution can mess up the location (in spite of moveToScreen:)
+    if (navWindow != nil)
+        [navWindow release];
+    else
+        [[NSNotificationCenter defaultCenter] addObserver: self selector: @selector(handleWindowWillCloseNotification:) 
+                                                     name: NSWindowWillCloseNotification object: [self window]];
+    navWindow = [[SKNavigationWindow alloc] initWithPDFView:self];
+    [navWindow moveToScreen:screen];
+    [navWindow setLevel:[[self window] level] + 1];
+    
+    [self doAutohide:YES];
+}
+
+- (void)disableNavigation {
+    hasNavigation = NO;
+    autohidesCursor = NO;
+    activateNavigationAtBottom = NO;
+    
+    [navWindow orderOut:self];
 }
 
 #pragma mark Menu validation

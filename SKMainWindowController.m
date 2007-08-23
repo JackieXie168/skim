@@ -2177,7 +2177,7 @@ static NSString *noteToolAdornImageNames[] = {@"TextNoteToolAdorn", @"AnchoredNo
     if ([fullScreenSetup count])
         [self applyPDFSettings:fullScreenSetup];
     
-    [pdfView setHasNavigation:YES activateAtBottom:[[NSUserDefaults standardUserDefaults] boolForKey:SKActivateFullScreenNavigationAtBottomKey] autohidesCursor:NO screen:screen];
+    [pdfView enableNavigationActivatedAtBottom:[[NSUserDefaults standardUserDefaults] boolForKey:SKActivateFullScreenNavigationAtBottomKey] autohidesCursor:NO screen:screen];
     [self showSideWindowsOnScreen:screen];
 }
 
@@ -2200,7 +2200,7 @@ static NSString *noteToolAdornImageNames[] = {@"TextNoteToolAdorn", @"AnchoredNo
     else
         [self goFullScreen];
     
-    [pdfView setHasNavigation:YES activateAtBottom:[[NSUserDefaults standardUserDefaults] boolForKey:SKActivatePresentationNavigationAtBottomKey] autohidesCursor:YES screen:nil];
+    [pdfView enableNavigationActivatedAtBottom:[[NSUserDefaults standardUserDefaults] boolForKey:SKActivatePresentationNavigationAtBottomKey] autohidesCursor:YES screen:screen];
 }
 
 - (IBAction)exitFullScreen:(id)sender {
@@ -2212,7 +2212,7 @@ static NSString *noteToolAdornImageNames[] = {@"TextNoteToolAdorn", @"AnchoredNo
     
     if ([[fullScreenWindow firstResponder] isDescendantOf:pdfView])
         [fullScreenWindow makeFirstResponder:nil];
-    [pdfView setHasNavigation:NO activateAtBottom:NO autohidesCursor:NO screen:nil];
+    [pdfView disableNavigation];
     [pdfView setFrame:[[pdfContentBox contentView] bounds]];
     [pdfContentBox addSubview:pdfView]; // this should be done before exitPresentationMode to get a smooth transition
     
