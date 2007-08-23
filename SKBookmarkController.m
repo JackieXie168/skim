@@ -43,6 +43,7 @@
 #import "Files_SKExtensions.h"
 #import "SKTableView.h"
 #import "SKTypeSelectHelper.h"
+#import "SKStatusBar.h"
 
 static NSString *SKBookmarkRowsPboardType = @"SKBookmarkRowsPboardType";
 static NSString *SKBookmarkChangedNotification = @"SKBookmarkChangedNotification";
@@ -369,6 +370,13 @@ static unsigned int maxRecentDocumentsCount = 0;
 - (void)typeSelectHelper:(SKTypeSelectHelper *)typeSelectHelper selectItemAtIndex:(unsigned int)itemIndex {
     [tableView selectRowIndexes:[NSIndexSet indexSetWithIndex:itemIndex] byExtendingSelection:NO];
     [tableView scrollRowToVisible:itemIndex];
+}
+
+- (void)typeSelectHelper:(SKTypeSelectHelper *)typeSelectHelper updateSearchString:(NSString *)searchString {
+    NSString *message = @"";
+    if (searchString)
+        message = [NSString stringWithFormat:NSLocalizedString(@"Finding: \"%@\"", @"Status message"), searchString];
+    [statusBar setLeftStringValue:message];
 }
 
 @end
