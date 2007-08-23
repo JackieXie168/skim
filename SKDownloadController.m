@@ -336,6 +336,7 @@
 
 - (void)typeSelectHelper:(SKTypeSelectHelper *)typeSelectHelper selectItemAtIndex:(unsigned int)itemIndex {
     [tableView selectRowIndexes:[NSIndexSet indexSetWithIndex:itemIndex] byExtendingSelection:NO];
+    [tableView scrollRowToVisible:itemIndex];
 }
 
 @end

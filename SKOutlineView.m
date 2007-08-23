@@ -91,9 +91,9 @@
     unichar eventChar = [characters length] > 0 ? [characters characterAtIndex:0] : 0;
 	unsigned modifierFlags = [theEvent modifierFlags] & NSDeviceIndependentModifierFlagsMask;
     
-    if (typeSelectHelper && modifierFlags == 0 && [[NSCharacterSet alphanumericCharacterSet] characterIsMember:eventChar])
+    if ([typeSelectHelper isTypeSelectCharacter:eventChar] && typeSelectHelper && modifierFlags == 0)
         [typeSelectHelper processKeyDownCharacter:eventChar];
-    else if (typeSelectHelper && modifierFlags == 0 && eventChar == '/')
+    else if ([typeSelectHelper isRepeatCharacter:eventChar] && modifierFlags == 0)
         [typeSelectHelper repeatSearch];
     else if (eventChar == NSHomeFunctionKey && (modifierFlags & ~NSFunctionKeyMask) == 0)
         [self scrollToBeginningOfDocument:nil];
