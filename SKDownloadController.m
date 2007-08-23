@@ -306,6 +306,24 @@
     return toolTip;
 }
 
+- (void)tableView:(NSTableView *)aTableView deleteRowsWithIndexes:(NSIndexSet *)rowIndexes {
+    unsigned int row = [rowIndexes firstIndex];
+    SKDownload *download = [downloads objectAtIndex:row];
+    
+    if ([download canCancel]) {
+        [download cancelDownload];
+    } else {
+        [download cleanupDownload];
+        [downloads removeObjectAtIndex:row];
+        [self reloadTableView];
+        [self updateButtons];
+    }
+}
+
+- (BOOL)tableView:(NSTableView *)aTableView canDeleteRowsWithIndexes:(NSIndexSet *)rowIndexes {
+    return YES;
+}
+
 #pragma mark SKTypeSelectHelper datasource protocol
 
 - (NSArray *)typeSelectHelperSelectionItems:(SKTypeSelectHelper *)typeSelectHelper {
