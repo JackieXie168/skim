@@ -161,7 +161,7 @@
 - (BOOL)isTypeSelectCharacter:(unichar)character {
     if ([[NSCharacterSet alphanumericCharacterSet] characterIsMember:character])
         return YES;
-    if ([self isProcessing] && [[NSCharacterSet controlCharacterSet] characterIsMember:character])
+    if ([self isProcessing] && [[NSCharacterSet controlCharacterSet] characterIsMember:character] == NO)
         return YES;
     return NO;
 }
