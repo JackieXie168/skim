@@ -39,6 +39,7 @@
 #import "SKTypeSelectHelper.h"
 
 #define TIMEOUT 0.7
+#define REPEAT_CHARACTER '/'
 
 @interface NSString (BDSKTypeAheadHelperExtensions)
 - (BOOL)containsStringStartingAtWord:(NSString *)string options:(int)mask range:(NSRange)range;
@@ -155,6 +156,18 @@
     [self startTimerForSelector:@selector(typeSelectCleanTimeout:)];
     
     processing = NO;
+}
+
+- (BOOL)isTypeSelectCharacter:(unichar)character {
+    if ([[NSCharacterSet alphanumericCharacterSet] characterIsMember:character])
+        return YES;
+    if ([self isProcessing] && [[NSCharacterSet controlCharacterSet] characterIsMember:character])
+        return YES;
+    return NO;
+}
+
+- (BOOL)isRepeatCharacter:(unichar)character {
+    return [self cyclesSimilarResults] && character == REPEAT_CHARACTER;
 }
 
 @end 

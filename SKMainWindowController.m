@@ -3633,8 +3633,10 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
     } else if ([typeSelectHelper isEqual:[noteOutlineView typeSelectHelper]]) {
         int row = [noteOutlineView rowForItem:[[noteArrayController arrangedObjects] objectAtIndex:itemIndex]];
         [noteOutlineView selectRowIndexes:[NSIndexSet indexSetWithIndex:row] byExtendingSelection:NO];
+        [noteOutlineView scrollRowToVisible:row];
     } else if ([typeSelectHelper isEqual:[outlineView typeSelectHelper]]) {
         [outlineView selectRowIndexes:[NSIndexSet indexSetWithIndex:itemIndex] byExtendingSelection:NO];
+        [noteOutlineView scrollRowToVisible:itemIndex];
     }
 }
 

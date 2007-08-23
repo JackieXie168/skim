@@ -348,6 +348,7 @@
 - (void)typeSelectHelper:(SKTypeSelectHelper *)typeSelectHelper selectItemAtIndex:(unsigned int)itemIndex {
     int row = [outlineView rowForItem:[[arrayController arrangedObjects] objectAtIndex:itemIndex]];
     [outlineView selectRowIndexes:[NSIndexSet indexSetWithIndex:row] byExtendingSelection:NO];
+    [outlineView scrollRowToVisible:row];
 }
 
 @end
