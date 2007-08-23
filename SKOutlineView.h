@@ -44,10 +44,27 @@
     SKTypeSelectHelper *typeSelectHelper;
 }
 
+- (NSArray *)selectedItems;
+
 - (SKTypeSelectHelper *)typeSelectHelper;
 - (void)setTypeSelectHelper:(SKTypeSelectHelper *)newTypeSelectHelper;
+
+- (BOOL)canDelete;
+- (void)delete:(id)sender;
+
+- (BOOL)canCopy;
+- (void)copy:(id)sender;
 
 - (void)scrollToBeginningOfDocument:(id)sender;
 - (void)scrollToEndOfDocument:(id)sender;
 
+@end
+
+
+@interface NSObject (SKOutlineViewDelegate)
+- (void)outlineView:(NSOutlineView *)anOutlineView deleteItems:(NSArray *)items;
+- (BOOL)outlineView:(NSOutlineView *)anOutlineView canDeleteItems:(NSArray *)items;
+- (void)outlineView:(NSOutlineView *)anOutlineView copyItems:(NSArray *)items;
+- (BOOL)outlineView:(NSOutlineView *)anOutlineView canCopyItems:(NSArray *)items;
+- (NSMenu *)outlineView:(NSOutlineView *)anOutlineView menuForTableColumn:(NSTableColumn *)tableColumn item:(id)item;
 @end

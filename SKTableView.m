@@ -95,10 +95,13 @@
 
 - (BOOL)canDelete {
     NSIndexSet *indexes = [self selectedRowIndexes];
-    return [indexes count] && 
-           [[self delegate] respondsToSelector:@selector(tableView:canDeleteRowsWithIndexes:)] && 
-           [[self delegate] respondsToSelector:@selector(tableView:deleteRowsWithIndexes:)] && 
-           [[self delegate] tableView:self canDeleteRowsWithIndexes:indexes];
+    if ([indexes count] && [[self delegate] respondsToSelector:@selector(tableView:deleteRowsWithIndexes:)]) {
+        if ([[self delegate] respondsToSelector:@selector(tableView:canDeleteRowsWithIndexes:)])
+           return [[self delegate] tableView:self canDeleteRowsWithIndexes:indexes];
+        else
+            return YES;
+    }
+    return NO;
 }
 
 - (void)delete:(id)sender {
@@ -108,10 +111,48 @@
         NSBeep();
 }
 
+- (BOOL)canCopy {
+    NSIndexSet *indexes = [self selectedRowIndexes];
+    if ([indexes count] && [[self delegate] respondsToSelector:@selector(tableView:copyRowsWithIndexes:)]) {
+        if ([[self delegate] respondsToSelector:@selector(tableView:canCopyRowsWithIndexes:)])
+           return [[self delegate] tableView:self canCopyRowsWithIndexes:indexes];
+        else
+            return YES;
+    }
+    return NO;
+}
+
+- (void)copy:(id)sender {
+    if ([self canCopy])
+        [[self delegate] tableView:self copyRowsWithIndexes:[self selectedRowIndexes]];
+    else
+        NSBeep();
+}
+
 - (BOOL)validateMenuItem:(NSMenuItem *)menuItem {
     if ([menuItem action] == @selector(delete:))
         return [self canDelete];
+    else if ([menuItem action] == @selector(copy:))
+        return [self canCopy];
+    else if ([[SKTableView superclass] instancesRespondToSelector:@selector(validateMenuItem:)])
+        return [super validateMenuItem:menuItem];
     return YES;
+}
+
+- (NSMenu *)menuForEvent:(NSEvent *)theEvent {
+    NSMenu *menu = nil;
+    
+    if ([[self delegate] respondsToSelector:@selector(tableView:menuForTableColumn:row:)]) {
+        NSPoint mouseLoc = [self convertPoint:[theEvent locationInWindow] fromView:nil];
+        int row = [self rowAtPoint:mouseLoc];
+        int column = [self columnAtPoint:mouseLoc];
+        if (row != -1 && column != -1) {
+            NSTableColumn *tableColumn = [[self tableColumns] objectAtIndex:column];
+            menu = [[self delegate] tableView:self menuForTableColumn:tableColumn row:row];
+        }
+    }
+    
+	return menu;
 }
 
 @end

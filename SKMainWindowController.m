@@ -3230,11 +3230,72 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
     [item setRowHeight:newHeight];
 }
 
-- (void)outlineViewDeleteSelectedRows:(NSOutlineView *)ov  {
-    if ([ov isEqual:noteOutlineView] && [ov selectedRow] != -1) {
-        [pdfView removeAnnotation:[self selectedNote]];
+- (NSArray *)noteItems:(NSArray *)items {
+    NSEnumerator *itemEnum = [items objectEnumerator];
+    PDFAnnotation *item;
+    NSMutableArray *noteItems = [NSMutableArray array];
+    
+    while (item = [itemEnum nextObject]) {
+        if ([item type] == nil) {
+            item = [(SKNoteText *)item annotation];
+        }
+        if ([noteItems containsObject:item] == NO)
+            [noteItems addObject:item];
+    }
+    return noteItems;
+}
+
+- (void)outlineView:(NSOutlineView *)ov deleteItems:(NSArray *)items  {
+    if ([ov isEqual:noteOutlineView] && [items count]) {
+        NSEnumerator *itemEnum = [[self noteItems:items] objectEnumerator];
+        PDFAnnotation *item;
+        while (item = [itemEnum nextObject])
+            [pdfView removeAnnotation:item];
         [[[self document] undoManager] setActionName:NSLocalizedString(@"Remove Note", @"Undo action name")];
     }
+}
+
+- (BOOL)outlineView:(NSOutlineView *)ov canDeleteItems:(NSArray *)items  {
+    if ([ov isEqual:noteOutlineView]) {
+        return [items count] > 0;
+    }
+    return NO;
+}
+
+- (void)outlineView:(NSOutlineView *)ov copyItems:(NSArray *)items  {
+    if ([ov isEqual:noteOutlineView] && [items count]) {
+        NSEnumerator *itemEnum = [[self noteItems:items] objectEnumerator];
+        PDFAnnotation *item = nil;
+        id firstItem = [items objectAtIndex:0];
+        while (item = [itemEnum nextObject])
+            if ([item isMovable]) break;
+        NSPasteboard *pboard = [NSPasteboard generalPasteboard];
+        NSMutableArray *types = [NSMutableArray array];
+        NSData *noteData = item ? [NSKeyedArchiver archivedDataWithRootObject:[item dictionaryValue]] : nil;
+        NSAttributedString *attrString = [firstItem type] ? nil : [(SKNoteText *)firstItem contents];
+        NSString *string = [firstItem type] ? [firstItem contents] : [attrString string];
+        if (noteData)
+            [types addObject:SKSkimNotePboardType];
+        if (string)
+            [types addObject:NSStringPboardType];
+        if (attrString)
+            [types addObject:NSRTFPboardType];
+        if ([types count])
+            [pboard declareTypes:types owner:nil];
+        if (noteData)
+            [pboard setData:noteData forType:SKSkimNotePboardType];
+        if (string)
+            [pboard setString:string forType:NSStringPboardType];
+        if (attrString)
+            [pboard setData:[attrString RTFFromRange:NSMakeRange(0, [string length]) documentAttributes:nil] forType:NSRTFPboardType];
+    }
+}
+
+- (BOOL)outlineView:(NSOutlineView *)ov canCopyItems:(NSArray *)items  {
+    if ([ov isEqual:noteOutlineView]) {
+        return [items count] > 0;
+    }
+    return NO;
 }
 
 - (NSArray *)outlineViewHighlightedRows:(NSOutlineView *)ov {
@@ -3270,8 +3331,12 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
 
 - (void)deleteNote:(id)sender {
     PDFAnnotation *annotation = [sender representedObject];
-    [pdfView removeAnnotation:annotation];
-    [[[self document] undoManager] setActionName:NSLocalizedString(@"Remove Note", @"Undo action name")];
+    [self outlineView:noteOutlineView deleteItems:[NSArray arrayWithObjects:annotation, nil]];
+}
+
+- (void)copyNote:(id)sender {
+    PDFAnnotation *annotation = [sender representedObject];
+    [self outlineView:noteOutlineView copyItems:[NSArray arrayWithObjects:annotation, nil]];
 }
 
 - (void)selectNote:(id)sender {
@@ -3285,25 +3350,33 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
 
 - (NSMenu *)outlineView:(NSOutlineView *)ov menuForTableColumn:(NSTableColumn *)tableColumn item:(id)item {
     NSMenu *menu = nil;
+    NSMenuItem *menuItem;
+    
     if ([ov isEqual:noteOutlineView]) {
-        if ([item type] == nil)
-            item = [(SKNoteText *)item annotation];
+        PDFAnnotation *annotation = [item type] ? item : [(SKNoteText *)item annotation];
         menu = [[[NSMenu allocWithZone:[NSMenu menuZone]] init] autorelease];
-        NSMenuItem *menuItem = [menu addItemWithTitle:NSLocalizedString(@"Delete", @"Menu item title") action:@selector(deleteNote:) keyEquivalent:@""];
-        [menuItem setTarget:self];
-        [menuItem setRepresentedObject:item];
+        if ([self outlineView:ov canDeleteItems:[NSArray arrayWithObjects:item, nil]]) {
+            menuItem = [menu addItemWithTitle:NSLocalizedString(@"Delete", @"Menu item title") action:@selector(deleteNote:) keyEquivalent:@""];
+            [menuItem setTarget:self];
+            [menuItem setRepresentedObject:item];
+        }
+        if ([self outlineView:ov canCopyItems:[NSArray arrayWithObjects:item, nil]]) {
+            menuItem = [menu addItemWithTitle:NSLocalizedString(@"Copy", @"Menu item title") action:@selector(copyNote:) keyEquivalent:@""];
+            [menuItem setTarget:self];
+            [menuItem setRepresentedObject:item];
+        }
         if ([pdfView hideNotes] == NO) {
-            if ([item isEditable]) {
+            if ([annotation isEditable]) {
                 menuItem = [menu addItemWithTitle:NSLocalizedString(@"Edit", @"Menu item title") action:@selector(editThisAnnotation:) keyEquivalent:@""];
                 [menuItem setTarget:pdfView];
-                [menuItem setRepresentedObject:item];
+                [menuItem setRepresentedObject:annotation];
             }
-            if ([pdfView activeAnnotation] == item)
+            if ([pdfView activeAnnotation] == annotation)
                 menuItem = [menu addItemWithTitle:NSLocalizedString(@"Deselect", @"Menu item title") action:@selector(deselectNote:) keyEquivalent:@""];
             else
                 menuItem = [menu addItemWithTitle:NSLocalizedString(@"Select", @"Menu item title") action:@selector(selectNote:) keyEquivalent:@""];
             [menuItem setTarget:self];
-            [menuItem setRepresentedObject:item];
+            [menuItem setRepresentedObject:annotation];
         }
     }
     return menu;

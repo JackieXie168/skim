@@ -48,6 +48,18 @@
     [super dealloc];
 }
 
+- (NSArray *)selectedItems {
+    NSMutableArray *items = [NSMutableArray array];
+    NSIndexSet *indexes = [self selectedRowIndexes];
+    unsigned int index = [indexes firstIndex];
+    
+    while (index != NSNotFound) {
+        [items addObject:[self itemAtRow:index]];
+        index = [indexes indexGreaterThanIndex:index];
+    }
+    return items;
+}
+
 - (SKTypeSelectHelper *)typeSelectHelper {
     return typeSelectHelper;
 }
@@ -99,6 +111,68 @@
 - (void)scrollToEndOfDocument:(id)sender {
     if ([self numberOfRows])
         [self scrollRowToVisible:[self numberOfRows] - 1];
+}
+
+- (BOOL)canDelete {
+    NSArray *items = [self selectedItems];
+    if ([items count] && [[self delegate] respondsToSelector:@selector(outlineView:deleteItems:)]) {
+        if ([[self delegate] respondsToSelector:@selector(outlineView:canDeleteItems:)])
+           return [[self delegate] outlineView:self canDeleteItems:items];
+        else
+            return YES;
+    }
+    return NO;
+}
+
+- (void)delete:(id)sender {
+    if ([self canDelete])
+        [[self delegate] outlineView:self deleteItems:[self selectedItems]];
+    else
+        NSBeep();
+}
+
+- (BOOL)canCopy {
+    NSArray *items = [self selectedItems];
+    if ([items count] && [[self delegate] respondsToSelector:@selector(outlineView:copyItems:)]) {
+        if ([[self delegate] respondsToSelector:@selector(outlineView:canCopyItems:)])
+           return [[self delegate] outlineView:self canCopyItems:items];
+        else
+            return YES;
+    }
+    return NO;
+}
+
+- (void)copy:(id)sender {
+    if ([self canCopy])
+        [[self delegate] outlineView:self copyItems:[self selectedItems]];
+    else
+        NSBeep();
+}
+
+- (BOOL)validateMenuItem:(NSMenuItem *)menuItem {
+    if ([menuItem action] == @selector(delete:))
+        return [self canDelete];
+    else if ([menuItem action] == @selector(copy:))
+        return [self canCopy];
+    else if ([[SKOutlineView superclass] instancesRespondToSelector:@selector(validateMenuItem:)])
+        return [super validateMenuItem:menuItem];
+    return YES;
+}
+
+- (NSMenu *)menuForEvent:(NSEvent *)theEvent {
+    NSMenu *menu = nil;
+    
+    if ([[self delegate] respondsToSelector:@selector(outlineView:menuForTableColumn:item:)]) {
+        NSPoint mouseLoc = [self convertPoint:[theEvent locationInWindow] fromView:nil];
+        int row = [self rowAtPoint:mouseLoc];
+        int column = [self columnAtPoint:mouseLoc];
+        if (row != -1 && column != -1) {
+            NSTableColumn *tableColumn = [[self tableColumns] objectAtIndex:column];
+            menu = [[self delegate] outlineView:self menuForTableColumn:tableColumn item:[self itemAtRow:row]];
+        }
+    }
+    
+	return menu;
 }
 
 @end

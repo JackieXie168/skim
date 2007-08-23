@@ -132,45 +132,6 @@ static IMP originalTrackKnob = NULL;
     [super mouseDown:theEvent];
 }
 
-- (BOOL)canCopy {
-    NSIndexSet *indexes = [self selectedRowIndexes];
-    return [indexes count] && 
-           [[self delegate] respondsToSelector:@selector(tableView:canCopyRowsWithIndexes:)] && 
-           [[self delegate] respondsToSelector:@selector(tableView:copyRowsWithIndexes:)] && 
-           [[self delegate] tableView:self canCopyRowsWithIndexes:indexes];
-}
-
-- (void)copy:(id)sender {
-    if ([self canCopy])
-        [[self delegate] tableView:self copyRowsWithIndexes:[self selectedRowIndexes]];
-    else
-        NSBeep();
-}
-
-- (NSMenu *)menuForEvent:(NSEvent *)theEvent {
-    NSMenu *menu = nil;
-    
-    if ([[self delegate] respondsToSelector:@selector(tableView:menuForTableColumn:row:)]) {
-        NSPoint mouseLoc = [self convertPoint:[theEvent locationInWindow] fromView:nil];
-        int row = [self rowAtPoint:mouseLoc];
-        int column = [self columnAtPoint:mouseLoc];
-        if (row != -1 && column != -1) {
-            NSTableColumn *tableColumn = [[self tableColumns] objectAtIndex:column];
-            menu = [[self delegate] tableView:self menuForTableColumn:tableColumn row:row];
-        }
-    }
-    
-	return menu;
-}
-
-- (BOOL)validateMenuItem:(NSMenuItem *)menuItem {
-    if ([menuItem action] == @selector(copy:))
-        return [self canCopy];
-    else if ([NSTableView instancesRespondToSelector:@selector(validateMenuItem:)])
-        return [super validateMenuItem:menuItem];
-    return YES;
-}
-
 @end
 
 #pragma mark -
