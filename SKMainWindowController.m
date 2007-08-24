@@ -3604,12 +3604,12 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
     if ([typeSelectHelper isEqual:[thumbnailTableView typeSelectHelper]] || [typeSelectHelper isEqual:[pdfView typeSelectHelper]]) {
         return pageLabels;
     } else if ([typeSelectHelper isEqual:[noteOutlineView typeSelectHelper]]) {
-        return [[noteArrayController arrangedObjects] valueForKey:@"contents"];
+        return [[noteArrayController arrangedObjects] valueForKeyPath:@"contents.lossyASCIIString"];
     } else if ([typeSelectHelper isEqual:[outlineView typeSelectHelper]]) {
         int i, count = [outlineView numberOfRows];
         NSMutableArray *array = [NSMutableArray arrayWithCapacity:count];
         for (i = 0; i < count; i++) 
-            [array addObject:[(PDFOutline *)[outlineView itemAtRow:i] label]];
+            [array addObject:[[(PDFOutline *)[outlineView itemAtRow:i] label] lossyASCIIString]];
         return array;
     }
     return nil;

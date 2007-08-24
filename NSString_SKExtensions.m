@@ -199,6 +199,10 @@ CFStringRef SKStringCreateByCollapsingAndTrimmingWhitespaceAndNewlines(CFAllocat
                   locale:[[NSUserDefaults standardUserDefaults] dictionaryRepresentation]];
 }
 
+- (NSString *)lossyASCIIString {
+    return [[[NSString alloc] initWithData:[self dataUsingEncoding:NSASCIIStringEncoding allowLossyConversion:YES] encoding:NSASCIIStringEncoding] autorelease];
+}
+
 #pragma mark Empty lines
 
 // whitespace at the beginning of the string up to the end or until (and including) a newline

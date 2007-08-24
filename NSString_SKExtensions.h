@@ -51,6 +51,8 @@
 - (NSArray *)shellScriptArgumentsArray;
 - (NSComparisonResult)localizedCaseInsensitiveNumericCompare:(NSString *)aStr;
 
+- (NSString *)lossyASCIIString;
+
 - (NSRange)rangeOfLeadingEmptyLine;
 - (NSRange)rangeOfLeadingEmptyLineInRange:(NSRange)range;
 - (NSRange)rangeOfTrailingEmptyLine;
