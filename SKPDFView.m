@@ -3380,6 +3380,12 @@ static void SKCGContextDrawGrabHandle(CGContextRef context, CGPoint point, float
     float largeHeight = [sud floatForKey:@"SKLargeMagnificationHeight"];
     NSRect smallMagRect = NSMakeRect(-0.5 * smallWidth, -0.5 * smallHeight, smallWidth, smallHeight);
     NSRect largeMagRect = NSMakeRect(-0.5 * largeWidth, -0.5 * largeHeight, largeWidth, largeHeight);
+    NSBezierPath *path;
+    NSColor *color = [NSColor colorWithCalibratedWhite:0.2 alpha:1.0];
+    NSShadow *shadow = [[[NSShadow alloc] init] autorelease];
+    [shadow setShadowBlurRadius:4.0];
+    [shadow setShadowOffset:NSMakeSize(0.0, -2.0)];
+    [shadow setShadowColor:[NSColor colorWithCalibratedWhite:0.0 alpha:0.5]];
     
     [documentView setPostsBoundsChangedNotifications: NO];
 	
@@ -3415,20 +3421,31 @@ static void SKCGContextDrawGrabHandle(CGContextRef context, CGPoint point, float
             [[self window] disableFlushWindow];
             // define rect for magnification in window coordinate
             if (currentLevel > 2) { 
-                magRect = visibleRect;
+                magRect = (visibleRect);
             } else {
                 magRect = currentLevel == 2 ? largeMagRect : smallMagRect;
                 magRect.origin = SKAddPoints(magRect.origin, mouseLoc);
+                magRect = NSIntegralRect(magRect);
                 // restore the cached image in order to clear the rect
                 [[self window] restoreCachedImage];
-                [[self window] cacheImageInRect:NSIntersectionRect(NSInsetRect(magRect, -2.0, -2.0), visibleRect)];
+                [[self window] cacheImageInRect:NSIntersectionRect(NSInsetRect(magRect, -8.0, -8.0), visibleRect)];
             }
             
             // resize bounds around mouseLoc
             magBounds.origin = [documentView convertPoint:mouseLoc fromView:nil];
-            magBounds = NSMakeRect(magBounds.origin.x + (originalBounds.origin.x - magBounds.origin.x) / magnification, 
-                                   magBounds.origin.y + (originalBounds.origin.y - magBounds.origin.y) / magnification, 
+            magBounds = NSMakeRect(NSMinX(magBounds) + (NSMinX(originalBounds) - NSMinX(magBounds)) / magnification, 
+                                   NSMinY(magBounds) + (NSMinY(originalBounds) - NSMinY(magBounds)) / magnification, 
                                    NSWidth(originalBounds) / magnification, NSHeight(originalBounds) / magnification);
+            
+            [clipView lockFocus];
+            [[NSGraphicsContext currentContext] saveGraphicsState];
+            outlineRect = [clipView convertRect:magRect fromView:nil];
+            [shadow set];
+            [color set];
+            path = [NSBezierPath bezierPathWithRoundRectInRect:outlineRect radius:9.5];
+            [path fill];
+            [[NSGraphicsContext currentContext] restoreGraphicsState];
+            [clipView unlockFocus];
             
             [documentView setBounds:magBounds];
             [self displayRect:[self convertRect:NSInsetRect(magRect, 3.0, 3.0) fromView:nil]]; // this flushes the buffer
@@ -3436,10 +3453,11 @@ static void SKCGContextDrawGrabHandle(CGContextRef context, CGPoint point, float
             
             [clipView lockFocus];
             [[NSGraphicsContext currentContext] saveGraphicsState];
-            outlineRect = NSInsetRect(NSIntegralRect([clipView convertRect:magRect fromView:nil]), 1.5, 1.5);
-            [NSBezierPath setDefaultLineWidth:3.0];
-            [[NSColor colorWithCalibratedWhite:0.2 alpha:1.0] set];
-            [NSBezierPath strokeRoundRectInRect:outlineRect radius:8.0];
+            outlineRect = NSInsetRect(outlineRect, 1.5, 1.5);
+            [color set];
+            path = [NSBezierPath bezierPathWithRoundRectInRect:outlineRect radius:8.0];
+            [path setLineWidth:3.0];
+            [path stroke];
             [[NSGraphicsContext currentContext] restoreGraphicsState];
             [clipView unlockFocus];
             
