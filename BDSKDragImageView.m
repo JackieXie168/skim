@@ -65,6 +65,39 @@
 	delegate = newDelegate;
 }
 
+- (IBAction)show:(id)sender {
+    NSImage *image = [self image];
+    
+    if (image == nil) {
+        NSBeep();
+        return;
+    }
+    
+    NSFileManager *fm = [NSFileManager defaultManager];
+    NSString *basePath = [NSTemporaryDirectory() stringByAppendingPathComponent:@"SkimNote"];
+    NSString *path = [basePath stringByAppendingPathExtension:@"tiff"];
+    int i = 0;
+    
+    while ([fm fileExistsAtPath:path])
+        path = [[basePath stringByAppendingFormat:@"-%i", ++i] stringByAppendingPathExtension:@"tiff"];
+    
+    [[image TIFFRepresentation] writeToFile:path atomically:YES];
+    [[NSWorkspace sharedWorkspace] openTempFile:path];
+}
+
+- (BOOL)validateMenuItem:(NSMenuItem *)menuItem {
+    SEL action = [menuItem action];
+    if (action == @selector(copy:))
+        return [self image] && [delegate respondsToSelector:@selector(dragImageView:writeDataToPasteboard:)];
+    else if (action == @selector(delete:))
+        return [self image] != nil;
+    else if (action == @selector(show:))
+        return [self image] != nil;
+    else if ([[BDSKDragImageView superclass] instancesRespondToSelector:_cmd])
+        [super validateMenuItem:menuItem];
+    return YES;
+}
+
 - (NSDragOperation)draggingEntered:(id <NSDraggingInfo>)sender{
     NSDragOperation dragOp = NSDragOperationNone;
 	if ([delegate respondsToSelector:@selector(dragImageView:validateDrop:)])
@@ -91,9 +124,19 @@
 		return [delegate dragImageView:self acceptDrop:sender];
 	return NO;
 }
-
-- (void)mouseDown:(NSEvent *)theEvent
-{
+/*
+- (void)keyDown:(NSEvent *)theEvent {
+    NSString *characters = [theEvent charactersIgnoringModifiers];
+    unichar eventChar = [characters length] > 0 ? [characters characterAtIndex:0] : 0;
+	unsigned modifierFlags = [theEvent modifierFlags] & NSDeviceIndependentModifierFlagsMask;
+    
+    if ((eventChar == NSDeleteCharacter || eventChar == NSDeleteFunctionKey) && modifierFlags == 0 && [self image])
+        [self delete:self];
+    else
+        [super keyDown:theEvent];
+}
+*/
+- (void)mouseDown:(NSEvent *)theEvent {
     BOOL keepOn = YES;
     BOOL isInside = YES;
     NSPoint mouseLoc;
