@@ -369,7 +369,7 @@ static NSString *noteToolAdornImageNames[] = {@"TextNoteToolAdorn", @"AnchoredNo
     if ([sud boolForKey:SKRememberSnapshotsKey]) {
         NSEnumerator *setupEnum = [[[SKBookmarkController sharedBookmarkController] snapshotsAtPath:[[[self document] fileURL] path]] objectEnumerator];
         NSDictionary *setup;
-        if (setup = [setupEnum nextObject])
+        while (setup = [setupEnum nextObject])
             [self showSnapshotAtPageNumber:[[setup objectForKey:@"page"] unsignedIntValue] forRect:NSRectFromString([setup objectForKey:@"rect"]) factor:[[setup objectForKey:@"scaleFactor"] floatValue] autoFits:[[setup objectForKey:@"autoFits"] boolValue] display:[[setup objectForKey:@"hasWindow"] boolValue]];
     }
     
