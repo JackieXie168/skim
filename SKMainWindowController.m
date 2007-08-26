@@ -3353,6 +3353,8 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
     NSMenuItem *menuItem;
     
     if ([ov isEqual:noteOutlineView]) {
+        [outlineView selectRowIndexes:[NSIndexSet indexSetWithIndex:[outlineView rowForItem:item]] byExtendingSelection:NO];
+        
         PDFAnnotation *annotation = [item type] ? item : [(SKNoteText *)item annotation];
         menu = [[[NSMenu allocWithZone:[NSMenu menuZone]] init] autorelease];
         if ([self outlineView:ov canDeleteItems:[NSArray arrayWithObjects:item, nil]]) {
@@ -3581,6 +3583,8 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
         [menuItem setTarget:self];
         [menuItem setRepresentedObject:[[pdfView document] pageAtIndex:row]];
     } else if ([tv isEqual:snapshotTableView]) {
+        [snapshotTableView selectRowIndexes:[NSIndexSet indexSetWithIndex:row] byExtendingSelection:NO];
+        
         menu = [[[NSMenu allocWithZone:[NSMenu menuZone]] init] autorelease];
         SKSnapshotWindowController *controller = [[snapshotArrayController arrangedObjects] objectAtIndex:row];
         NSMenuItem *menuItem = [menu addItemWithTitle:NSLocalizedString(@"Delete", @"Menu item title") action:@selector(deleteSnapshot:) keyEquivalent:@""];
