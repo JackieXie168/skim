@@ -1,6 +1,7 @@
 {
     IBClasses = (
         {
+            ACTIONS = {copy = id; delete = id; paste = id; show = id; }; 
             CLASS = BDSKDragImageView; 
             LANGUAGE = ObjC; 
             OUTLETS = {delegate = id; }; 
