@@ -71,6 +71,10 @@ static inline NSPoint SKCenterPoint(NSRect rect) {
     return NSMakePoint(NSMidX(rect), NSMidY(rect));
 }
 
+static inline NSPoint SKMakeSquareSize(float width) {
+    return NSMakeSize(width, width);
+}
+
 static inline NSRect SKRectFromPoints(NSPoint aPoint, NSPoint bPoint) {
     NSRect rect;
     rect.origin.x = fmin(aPoint.x, bPoint.x);
