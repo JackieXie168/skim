@@ -410,7 +410,7 @@ static NSString *noteToolAdornImageNames[] = {@"TextNoteToolAdorn", @"AnchoredNo
     NSNotificationCenter *nc = [NSNotificationCenter defaultCenter];
     // Application
     [nc addObserver:self selector:@selector(handleApplicationWillTerminateNotification:) 
-                             name:SKApplicationWillTerminateNotification object:NSApp];
+                             name:SKApplicationStartsTerminatingNotification object:NSApp];
     [nc addObserver:self selector:@selector(handleApplicationDidResignActiveNotification:) 
                              name:NSApplicationDidResignActiveNotification object:NSApp];
     [nc addObserver:self selector:@selector(handleApplicationWillBecomeActiveNotification:) 
