@@ -40,9 +40,8 @@
 
 
 @interface SKLine : NSObject {
-    id container;
     int line;
 }
-- (id)initWithContainer:(id)aContainer line:(int)aLine;
+- (id)initWithLine:(int)aLine;
 - (int)line;
 @end

@@ -1198,7 +1198,7 @@ static BOOL isFileOnHFSVolume(NSString *fileName)
 }
 
 - (SKLine *)objectInLinesAtIndex:(unsigned int)index {
-    return [[[SKLine alloc] initWithContainer:self line:index] autorelease];
+    return [[[SKLine alloc] initWithLine:index] autorelease];
 }
 
 - (PDFPage *)currentPage {

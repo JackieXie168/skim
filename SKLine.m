@@ -41,18 +41,16 @@
 
 @implementation SKLine
 
-- (id)initWithContainer:(id)aContainer line:(int)aLine {
+- (id)initWithLine:(int)aLine {
     if (self = [super init]) {
-        container = aContainer;
         line = aLine;
     }
     return self;
 }
 
 - (NSScriptObjectSpecifier *)objectSpecifier {
-    NSScriptObjectSpecifier *containerRef = [container objectSpecifier];
-    NSScriptClassDescription *containerClassDescription = container ? [containerRef keyClassDescription] : (NSScriptClassDescription *)[NSClassDescription classDescriptionForClass:[NSApp class]];
-    return [[[NSIndexSpecifier allocWithZone:[self zone]] initWithContainerClassDescription:containerClassDescription containerSpecifier:containerRef key:@"lines" index:line] autorelease];
+    NSScriptClassDescription *containerClassDescription = (NSScriptClassDescription *)[NSClassDescription classDescriptionForClass:[NSApp class]];
+    return [[[NSIndexSpecifier allocWithZone:[self zone]] initWithContainerClassDescription:containerClassDescription containerSpecifier:nil key:@"lines" index:line] autorelease];
 }
 
 - (int)line {
