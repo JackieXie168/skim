@@ -175,6 +175,12 @@ static NSColor *deselectedColor = nil;
     return [NSDictionary dictionaryWithObjectsAndKeys:[NSNumber numberWithBool:hasWindow], @"hasWindow", [self stringValue], @"label", nil];
 }
 
+- (NSSize)cellSize {
+    NSSize size = [super cellSize];
+    size.width = fmax(size.width, 12.0);
+    return size;
+}
+
 - (void)drawInteriorWithFrame:(NSRect)cellFrame inView:(NSView *)controlView {
     NSRect textRect, imageRect, ignored;
     NSDivideRect(cellFrame, &textRect, &imageRect, 17.0, NSMinYEdge);

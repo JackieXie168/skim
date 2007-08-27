@@ -793,14 +793,33 @@ static NSString *noteToolAdornImageNames[] = {@"TextNoteToolAdorn", @"AnchoredNo
         [self resetThumbnails];
         [self updateThumbnailSelection];
         
+        NSTableColumn *tableColumn = [[thumbnailTableView tableColumns] objectAtIndex:1];
+        id cell = [tableColumn dataCell];
+        float labelWidth = 0.0;
+        int i, count = [document pageCount];
+        
         [self willChangeValueForKey:@"pageLabels"];
         [pageLabels removeAllObjects];
-        int i, count = [document pageCount];
         for (i = 0; i < count; i++) {
             NSString *label = [[document pageAtIndex:i] label];
             [pageLabels addObject:label ? label : @""];
+            [cell setStringValue:label];
+            labelWidth = fmax(labelWidth, [cell cellSize].width);
         }
         [self didChangeValueForKey:@"pageLabels"];
+        
+        [tableColumn setMinWidth:labelWidth];
+        [tableColumn setMaxWidth:labelWidth];
+        [thumbnailTableView sizeToFit];
+        tableColumn = [[outlineView tableColumns] objectAtIndex:1];
+        [tableColumn setMinWidth:labelWidth];
+        [tableColumn setMaxWidth:labelWidth];
+        [outlineView sizeToFit];
+        tableColumn = [[snapshotTableView tableColumns] objectAtIndex:1];
+        [tableColumn setMinWidth:labelWidth];
+        [tableColumn setMaxWidth:labelWidth];
+        [snapshotTableView sizeToFit];
+        
         [[thumbnailTableView typeSelectHelper] rebuildTypeSelectSearchCache];
         
         NSEnumerator *setupEnum = [snapshotDicts objectEnumerator];
