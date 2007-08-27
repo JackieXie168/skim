@@ -141,6 +141,7 @@
 
 - (void)applicationDidFinishLaunching:(NSNotification *)aNotification{
     [NSApp setServicesProvider:self];
+    
     NSString *versionString = [[[NSBundle mainBundle] infoDictionary] objectForKey:@"CFBundleShortVersionString"];
     SKVersionNumber *versionNumber = versionString ? [[[SKVersionNumber alloc] initWithVersionString:versionString] autorelease] : nil;
     NSString *lastVersionString = [[NSUserDefaults standardUserDefaults] stringForKey:SKLastVersionLaunchedKey];
@@ -149,9 +150,13 @@
         [self showReleaseNotes:nil];
         [[NSUserDefaults standardUserDefaults] setObject:versionString forKey:SKLastVersionLaunchedKey];
     }
-	if ([[NSUserDefaults standardUserDefaults] boolForKey:SKEnableAppleRemoteKey])
+	
+    if ([[NSUserDefaults standardUserDefaults] boolForKey:SKEnableAppleRemoteKey])
         [[AppleRemote sharedRemote] setDelegate:self];
+    
     [self doSpotlightImportIfNeeded];
+    
+    currentDocumentsTimer = [[NSTimer scheduledTimerWithTimeInterval:10.0 target:self selector:@selector(saveCurrentOpenDocuments:) userInfo:nil repeats:YES] retain];
 }
 
 - (void)applicationDidBecomeActive:(NSNotification *)aNotification {
@@ -162,6 +167,13 @@
 - (void)applicationWillResignActive:(NSNotification *)aNotification {
 	if ([[NSUserDefaults standardUserDefaults] boolForKey:SKEnableAppleRemoteKey])
         [[AppleRemote sharedRemote] setListeningToRemote:NO];
+}
+
+- (void)applicationStartsTerminating:(NSNotification *)aNotification {
+    [currentDocumentsTimer invalidate];
+    [currentDocumentsTimer release];
+    currentDocumentsTimer = nil;
+    [self saveCurrentOpenDocuments:nil];
 }
 
 - (void)applicationWillTerminate:(NSNotification *)aNotification {
@@ -339,6 +351,10 @@
             } else NSLog(@"%@ not found!", mdimportPath);
         }
     }
+}
+
+- (void)saveCurrentOpenDocuments:(id)sender {
+    [[NSUserDefaults standardUserDefaults] setObject:[[[NSDocumentController sharedDocumentController] documents] valueForKey:@"currentDocumentSetup"] forKey:SKLastOpenFileNamesKey];
 }
 
 - (NSString *)applicationSupportPathForDomain:(int)domain create:(BOOL)create {

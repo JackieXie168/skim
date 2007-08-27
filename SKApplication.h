@@ -38,12 +38,15 @@
 
 #import <Cocoa/Cocoa.h>
 
-extern NSString *SKApplicationWillTerminateNotification;
+extern NSString *SKApplicationStartsTerminatingNotification;
 
-@interface SKApplication : NSApplication {
-    NSTimer *currentDocumentsTimer;
-}
+@interface SKApplication : NSApplication
 - (IBAction)orderFrontLineInspector:(id)sender;
+@end
+
+
+@interface NSObject (SKApplicationDelegate)
+- (void)applicationStartsTerminating:(NSNotification *)aNotification;
 @end
 
 
