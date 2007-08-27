@@ -3258,6 +3258,8 @@ static void SKCGContextDrawGrabHandle(CGContextRef context, CGPoint point, float
 	
     [[self window] discardCachedImage];
     
+    [[NSCursor cameraCursor] set];
+    
 	while (YES) {
 		theEvent = [[self window] nextEventMatchingMask: NSLeftMouseUpMask | NSLeftMouseDraggedMask | NSFlagsChangedMask];
         
@@ -3521,7 +3523,7 @@ static void SKCGContextDrawGrabHandle(CGContextRef context, CGPoint point, float
         if ([theEvent modifierFlags] & NSShiftKeyMask)
             cursor = [NSCursor arrowCursor];
         else
-            cursor = [NSCursor cameraCursor];
+            cursor = [NSCursor arrowCursor];
     } else {
         switch (toolMode) {
             case SKTextToolMode:
