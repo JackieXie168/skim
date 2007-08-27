@@ -96,11 +96,11 @@
 }
 
 + (NSCursor *)cameraCursor {
-    NSCursor *cameraCursor = nil;
-    
-    if (cameraCursor == nil)
-        cameraCursor = [[NSCursor alloc] initWithImage:[NSImage imageNamed:@"CameraCursor"] hotSpot:NSMakePoint(8.0, 8.0)];
-    
+    static NSCursor *cameraCursor = nil;
+    if (nil == cameraCursor) {
+        NSImage *cursorImage = [[[NSImage imageNamed:@"CameraCursor"] copy] autorelease];
+        cameraCursor = [[NSCursor alloc] initWithImage:cursorImage hotSpot:NSMakePoint(8.0, 8.0)];
+    }
     return cameraCursor;
 }
 
