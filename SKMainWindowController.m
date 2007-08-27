@@ -809,7 +809,7 @@ static NSString *noteToolAdornImageNames[] = {@"TextNoteToolAdorn", @"AnchoredNo
             NSString *label = [[document pageAtIndex:i] label];
             [pageLabels addObject:label ? label : @""];
             [cell setStringValue:label];
-            labelWidth = fmax(labelWidth, [cell cellSize].width);
+            labelWidth = fmaxf(labelWidth, [cell cellSize].width);
         }
         [self didChangeValueForKey:@"pageLabels"];
         
@@ -1029,7 +1029,7 @@ static NSString *noteToolAdornImageNames[] = {@"TextNoteToolAdorn", @"AnchoredNo
         [thumbnail setImage:image];
         
         newSize = [image size];
-        if (fabs(newSize.width - oldSize.width) > 1.0 || fabs(newSize.height - oldSize.height) > 1.0) {
+        if (fabsf(newSize.width - oldSize.width) > 1.0 || fabsf(newSize.height - oldSize.height) > 1.0) {
             [thumbnailTableView performSelector:@selector(noteHeightOfRowsWithIndexesChanged:) withObject:[NSIndexSet indexSetWithIndex:theIndex] afterDelay:0.0];
         }
     }
@@ -1510,8 +1510,8 @@ static NSString *noteToolAdornImageNames[] = {@"TextNoteToolAdorn", @"AnchoredNo
                 }
             }
         }
-        float w = fmax(NSWidth(rect[0]), NSWidth(rect[1]));
-        float h = fmax(NSHeight(rect[0]), NSHeight(rect[1]));
+        float w = fmaxf(NSWidth(rect[0]), NSWidth(rect[1]));
+        float h = fmaxf(NSHeight(rect[0]), NSHeight(rect[1]));
         for (j = 0; j < 2; j++)
             rect[j] = NSMakeRect(floorf(NSMidX(rect[j]) - 0.5 * w), floorf(NSMidY(rect[j]) - 0.5 * h), w, h);
         rectArray = [NSArray arrayWithObjects:[NSValue valueWithRect:rect[0]], [NSValue valueWithRect:rect[1]], nil];
@@ -1584,8 +1584,8 @@ static NSString *noteToolAdornImageNames[] = {@"TextNoteToolAdorn", @"AnchoredNo
     
     for (i = 0; i < iMax; i++) {
         NSRect bbox = [[pdfDoc pageAtIndex:i] foregroundBox];
-        size.width = fmax(size.width, NSWidth(bbox));
-        size.height = fmax(size.height, NSHeight(bbox));
+        size.width = fmaxf(size.width, NSWidth(bbox));
+        size.height = fmaxf(size.height, NSHeight(bbox));
         [progressBar incrementBy:1.0];
         [progressBar displayIfNeeded];
         if (i && i % 10 == 0)
@@ -1765,7 +1765,7 @@ static NSString *noteToolAdornImageNames[] = {@"TextNoteToolAdorn", @"AnchoredNo
 - (void)transitionSheetDidEnd:(NSWindow *)sheet returnCode:(int)returnCode contextInfo:(void *)contextInfo {
     if (returnCode == NSOKButton) {
         [pdfView setTransitionStyle:[[transitionStylePopUpButton selectedItem] tag]];
-        [pdfView setTransitionDuration:fmax([transitionDurationField floatValue], 0.0)];
+        [pdfView setTransitionDuration:fmaxf([transitionDurationField floatValue], 0.0)];
         [pdfView setTransitionShouldRestrict:(BOOL)[[transitionExtentMatrix selectedCell] tag]];
     }
 }
@@ -3757,7 +3757,7 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
         [image lockFocus];
         NSRect imgRect = NSZeroRect;
         imgRect.size = [image size];
-        float width = 0.8 * fmin(NSWidth(imgRect), NSHeight(imgRect));
+        float width = 0.8 * fminf(NSWidth(imgRect), NSHeight(imgRect));
         imgRect = NSInsetRect(imgRect, 0.5 * (NSWidth(imgRect) - width), 0.5 * (NSHeight(imgRect) - width));
         [[NSImage imageNamed:@"NSApplicationIcon"] drawInRect:imgRect fromRect:NSZeroRect operation:NSCompositeSourceOver fraction:0.5];
         [image unlockFocus];
@@ -3779,7 +3779,7 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
     float defaultSize = roundedThumbnailSize;
     float thumbnailSize = (defaultSize < 32.1) ? 32.0 : (defaultSize < 64.1) ? 64.0 : (defaultSize < 128.1) ? 128.0 : 256.0;
     
-    if (fabs(thumbnailSize - thumbnailCacheSize) > 0.1) {
+    if (fabsf(thumbnailSize - thumbnailCacheSize) > 0.1) {
         thumbnailCacheSize = thumbnailSize;
         
         if ([self countOfThumbnails])
@@ -3882,7 +3882,7 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
     float defaultSize = roundedSnapshotThumbnailSize;
     float snapshotSize = (defaultSize < 32.1) ? 32.0 : (defaultSize < 64.1) ? 64.0 : (defaultSize < 128.1) ? 128.0 : 256.0;
     
-    if (fabs(snapshotSize - snapshotCacheSize) > 0.1) {
+    if (fabsf(snapshotSize - snapshotCacheSize) > 0.1) {
         snapshotCacheSize = snapshotSize;
         
         if (snapshotTimer) {
@@ -3923,7 +3923,7 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
         [dirtySnapshots removeObject:controller];
         
         newSize = [image size];
-        if (fabs(newSize.width - oldSize.width) > 1.0 || fabs(newSize.height - oldSize.height) > 1.0) {
+        if (fabsf(newSize.width - oldSize.width) > 1.0 || fabsf(newSize.height - oldSize.height) > 1.0) {
             unsigned index = [[snapshotArrayController arrangedObjects] indexOfObject:controller];
             [snapshotTableView noteHeightOfRowsWithIndexesChanged:[NSIndexSet indexSetWithIndex:index]];
         }
@@ -4535,7 +4535,7 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
     } else if ([identifier isEqualToString:SKDocumentToolbarZoomToFitItemIdentifier]) {
         return [pdfView autoScales] == NO;
     } else if ([identifier isEqualToString:SKDocumentToolbarZoomActualItemIdentifier]) {
-        return fabs([pdfView scaleFactor] - 1.0) > 0.01;
+        return fabsf([pdfView scaleFactor] - 1.0) > 0.01;
     } else if ([identifier isEqualToString:SKDocumentToolbarCropItemIdentifier]) {
         return YES;
     } else if ([identifier isEqualToString:SKDocumentToolbarFullScreenItemIdentifier]) {
@@ -4618,7 +4618,7 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
     } else if (action == @selector(doZoomOut:)) {
         return [self isPresentation] == NO && [pdfView canZoomOut];
     } else if (action == @selector(doZoomToActualSize:)) {
-        return fabs([pdfView scaleFactor] - 1.0 ) > 0.01;
+        return fabsf([pdfView scaleFactor] - 1.0 ) > 0.01;
     } else if (action == @selector(doZoomToPhysicalSize:)) {
         return [self isPresentation] == NO;
     } else if (action == @selector(doZoomToSelection:)) {

@@ -558,7 +558,7 @@ static NSString *SKLineWellWillBecomeActiveNotification = @"SKLineWellWillBecome
 }
 
 - (void)setLineWidth:(float)width {
-    if (fabs(lineWidth - width) > 0.00001) {
+    if (fabsf(lineWidth - width) > 0.00001) {
         lineWidth = width;
         [self updateValue:[NSNumber numberWithFloat:lineWidth] forKey:@"lineWidth"];
     }

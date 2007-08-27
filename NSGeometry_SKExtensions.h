@@ -77,26 +77,26 @@ static inline NSSize SKMakeSquareSize(float width) {
 
 static inline NSRect SKRectFromPoints(NSPoint aPoint, NSPoint bPoint) {
     NSRect rect;
-    rect.origin.x = fmin(aPoint.x, bPoint.x);
-    rect.origin.y = fmin(aPoint.y, bPoint.y);
-    rect.size.width = fmax(aPoint.x, bPoint.x) - NSMinX(rect);
-    rect.size.height = fmax(aPoint.y, bPoint.y) - NSMinY(rect);
+    rect.origin.x = fminf(aPoint.x, bPoint.x);
+    rect.origin.y = fminf(aPoint.y, bPoint.y);
+    rect.size.width = fmaxf(aPoint.x, bPoint.x) - NSMinX(rect);
+    rect.size.height = fmaxf(aPoint.y, bPoint.y) - NSMinY(rect);
     return rect;
 }
 
 static inline NSRect SKIntegralRectFromPoints(NSPoint aPoint, NSPoint bPoint) {
     NSRect rect;
-    rect.origin.x = floorf(fmin(aPoint.x, bPoint.x));
-    rect.origin.y = floorf(fmin(aPoint.y, bPoint.y));
-    rect.size.width = ceilf(fmax(aPoint.x, bPoint.x) - NSMinX(rect));
-    rect.size.height = ceilf(fmax(aPoint.y, bPoint.y) - NSMinY(rect));
+    rect.origin.x = floorf(fminf(aPoint.x, bPoint.x));
+    rect.origin.y = floorf(fminf(aPoint.y, bPoint.y));
+    rect.size.width = ceilf(fmaxf(aPoint.x, bPoint.x) - NSMinX(rect));
+    rect.size.height = ceilf(fmaxf(aPoint.y, bPoint.y) - NSMinY(rect));
     return rect;
 }
 
 static inline NSRect SKRectFromCenterAndPoint(NSPoint center, NSPoint point) {
     NSRect rect;
-    rect.size.width = 2.0 * fabs(center.x - point.x);
-    rect.size.height = 2.0 * fabs(center.y - point.y);
+    rect.size.width = 2.0 * fabsf(center.x - point.x);
+    rect.size.height = 2.0 * fabsf(center.y - point.y);
     rect.origin.x = center.x - 0.5 * NSWidth(rect);
     rect.origin.y = center.y - 0.5 * NSHeight(rect);
     return rect;

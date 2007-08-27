@@ -202,8 +202,8 @@
             PDFSelection *selection = [page selectionForRect:bounds];
             if ([selection string]) {
                 NSRect selBounds = [selection boundsForPage:page];
-                float top = ceilf(fmax(NSMaxY(selBounds), NSMinX(selBounds) + NSHeight(sourceRect)));
-                float left = floorf(fmin(NSMinX(selBounds), NSMaxX(bounds) - NSWidth(sourceRect)));
+                float top = ceilf(fmaxf(NSMaxY(selBounds), NSMinX(selBounds) + NSHeight(sourceRect)));
+                float left = floorf(fminf(NSMinX(selBounds), NSMaxX(bounds) - NSWidth(sourceRect)));
                 if (top < NSMaxY(sourceRect))
                     sourceRect.origin.y = top - NSHeight(sourceRect);
                 if (left > NSMinX(sourceRect))
@@ -270,7 +270,7 @@
         
         NSRect textRect = [text boundingRectWithSize:NSInsetRect(contentRect, TEXT_MARGIN_X, TEXT_MARGIN_Y).size options:NSStringDrawingUsesLineFragmentOrigin];
         
-        textRect.size.height = fmin(NSHeight(textRect), NSHeight(contentRect) - 2.0 * TEXT_MARGIN_Y);
+        textRect.size.height = fminf(NSHeight(textRect), NSHeight(contentRect) - 2.0 * TEXT_MARGIN_Y);
         textRect.origin = NSMakePoint(TEXT_MARGIN_X, TEXT_MARGIN_Y);
         
         image = [[NSImage alloc] initWithSize:NSInsetRect(NSIntegralRect(textRect), -TEXT_MARGIN_X, -TEXT_MARGIN_X).size];

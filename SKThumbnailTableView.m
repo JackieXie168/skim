@@ -177,7 +177,7 @@ static NSColor *deselectedColor = nil;
 
 - (NSSize)cellSize {
     NSSize size = [super cellSize];
-    size.width = fmax(size.width, 12.0);
+    size.width = fmaxf(size.width, 12.0);
     return size;
 }
 

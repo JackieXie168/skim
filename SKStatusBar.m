@@ -100,7 +100,7 @@
 	if (textRect.size.width < 0.0)
 		textRect.size.width = 0.0;
 	
-    float height = fmax([leftCell cellSize].height, [rightCell cellSize].height);
+    float height = fmaxf([leftCell cellSize].height, [rightCell cellSize].height);
     textRect.origin.y += 0.5f * (NSHeight(textRect) - height);
     textRect.origin.y = [self isFlipped] ? ceilf(NSMinY(textRect))  : floorf(NSMinY(textRect));
     textRect.size.height = height;

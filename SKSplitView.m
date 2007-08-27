@@ -100,7 +100,7 @@
     [NSBezierPath setDefaultLineWidth:1.0];
     
     if ([self isVertical]) {
-        handleSize = fmin(handleSize, 2.0 * floorf(0.5 * NSHeight(aRect)));
+        handleSize = fminf(handleSize, 2.0 * floorf(0.5 * NSHeight(aRect)));
         startPoint = NSMakePoint(NSMinX(aRect) + 1.5, NSMidY(aRect) - 0.5 * handleSize);
         endPoint = NSMakePoint(startPoint.x, startPoint.y + handleSize);
         [darkColor set];
@@ -116,7 +116,7 @@
         endPoint.x += 2.0;
         [NSBezierPath strokeLineFromPoint:startPoint toPoint:endPoint];
     } else {
-        handleSize = fmin(handleSize, 2.0 * floorf(0.5 * NSWidth(aRect)));
+        handleSize = fminf(handleSize, 2.0 * floorf(0.5 * NSWidth(aRect)));
         startPoint = NSMakePoint(NSMidX(aRect) - 0.5 * handleSize, NSMinY(aRect) + 1.5);
         endPoint = NSMakePoint(startPoint.x + handleSize, startPoint.y);
         [darkColor set];

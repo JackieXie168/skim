@@ -68,7 +68,7 @@
 			case NSLeftMouseDragged:
             {
                 NSPoint currentPoint = [self convertPoint:[theEvent locationInWindow] fromView:nil];
-                float currentHeight = fmax([self rowHeight], startHeight + currentPoint.y - startPoint.y);
+                float currentHeight = fmaxf([self rowHeight], startHeight + currentPoint.y - startPoint.y);
                 
                 [[self delegate] outlineView:self setHeightOfRow:currentHeight byItem:item];
                 [self noteHeightOfRowsWithIndexesChanged:[NSIndexSet indexSetWithIndex:row]];
