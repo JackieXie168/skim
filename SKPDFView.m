@@ -2856,6 +2856,23 @@ static void SKCGContextDrawGrabHandle(CGContextRef context, CGPoint point, float
                 newBounds.origin.y = floorf(0.5 * (startPoint.y + endPoint.y) - 4.0);
             }
             
+            if ([theEvent modifierFlags] & NSShiftKeyMask) {
+                NSPoint *fixedPoint = draggingStartPoint ? &endPoint : &startPoint;
+                NSPoint diffPoint = SKSubstractPoints(*draggedPoint, *fixedPoint);
+                float dx = fabs(diffPoint.x), dy = fabs(diffPoint.y);
+                
+                if (dx < 0.4 * dy) {
+                    diffPoint.x = 0.0;
+                } else if (dy < 0.4 * dx) {
+                    diffPoint.y = 0.0;
+                } else {
+                    dx = fmin(dx, dy);
+                    diffPoint.x = diffPoint.x < 0.0 ? -dx : dx;
+                    diffPoint.y = diffPoint.y < 0.0 ? -dx : dx;
+                }
+                *draggedPoint = SKAddPoints(*fixedPoint, diffPoint);
+            }
+            
             startPoint = SKSubstractPoints(startPoint, newBounds.origin);
             endPoint = SKSubstractPoints(endPoint, newBounds.origin);
             
