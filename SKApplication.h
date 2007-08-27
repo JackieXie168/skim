@@ -40,7 +40,9 @@
 
 extern NSString *SKApplicationWillTerminateNotification;
 
-@interface SKApplication : NSApplication
+@interface SKApplication : NSApplication {
+    NSTimer *currentDocumentsTimer;
+}
 - (IBAction)orderFrontLineInspector:(id)sender;
 @end
 
