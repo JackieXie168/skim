@@ -1346,7 +1346,7 @@ static void SKCGContextDrawGrabHandle(CGContextRef context, CGPoint point, float
 
 - (void)magnifyWheel:(NSEvent *)theEvent {
     float dy = [theEvent deltaY];
-    dy = dy > 0 ? MIN(0.2, dy) : MAX(-0.2, dy);
+    dy = dy > 0 ? fminf(0.2, dy) : fmaxf(-0.2, dy);
     [self setScaleFactor:[self scaleFactor] + 0.5 * dy];
 }
 

@@ -3480,23 +3480,23 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
     if ([tv isEqual:thumbnailTableView]) {
         NSSize thumbSize = [[[thumbnails objectAtIndex:row] image] size];
         NSSize cellSize = NSMakeSize([[[tv tableColumns] objectAtIndex:0] width], 
-                                     MIN(thumbSize.height, roundedThumbnailSize));
+                                     fminf(thumbSize.height, roundedThumbnailSize));
         if (thumbSize.height < 1.0)
             return 1.0;
         else if (thumbSize.width / thumbSize.height < cellSize.width / cellSize.height)
             return cellSize.height;
         else
-            return MAX(1.0, MIN(cellSize.width, thumbSize.width) * thumbSize.height / thumbSize.width);
+            return fmaxf(1.0, fminf(cellSize.width, thumbSize.width) * thumbSize.height / thumbSize.width);
     } else if ([tv isEqual:snapshotTableView]) {
         NSSize thumbSize = [[[[snapshotArrayController arrangedObjects] objectAtIndex:row] thumbnail] size];
         NSSize cellSize = NSMakeSize([[[tv tableColumns] objectAtIndex:0] width], 
-                                     MIN(thumbSize.height, roundedSnapshotThumbnailSize));
+                                     fminf(thumbSize.height, roundedSnapshotThumbnailSize));
         if (thumbSize.height < 1.0)
             return 1.0;
         else if (thumbSize.width / thumbSize.height < cellSize.width / cellSize.height)
             return cellSize.height;
         else
-            return MAX(32.0, MIN(cellSize.width, thumbSize.width) * thumbSize.height / thumbSize.width);
+            return fmaxf(32.0, fminf(cellSize.width, thumbSize.width) * thumbSize.height / thumbSize.width);
     }
     return 17.0;
 }
