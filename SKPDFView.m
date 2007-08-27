@@ -2837,8 +2837,8 @@ static void SKCGContextDrawGrabHandle(CGContextRef context, CGPoint point, float
         if ([[activeAnnotation type] isEqualToString:@"Line"]) {
             
             SKPDFAnnotationLine *annotation = (SKPDFAnnotationLine *)activeAnnotation;
-            NSPoint endPoint = SKIntegralPoint(SKSubstractPoints(wasEndPoint, wasBounds.origin));
-            startPoint = SKIntegralPoint(SKSubstractPoints(wasStartPoint, wasBounds.origin));
+            NSPoint endPoint = SKIntegralPoint(SKAddPoints(wasEndPoint, wasBounds.origin));
+            startPoint = SKIntegralPoint(SKAddPoints(wasStartPoint, wasBounds.origin));
             NSPoint *draggedPoint = draggingStartPoint ? &startPoint : &endPoint;
             
             *draggedPoint = SKConstrainPointInRect(SKAddPoints(*draggedPoint, relPoint), pageBounds);

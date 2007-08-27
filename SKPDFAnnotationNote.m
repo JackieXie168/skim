@@ -1415,8 +1415,6 @@ static BOOL adjacentCharacterBounds(NSRect rect1, NSRect rect2) {
     NSPoint startPoint = [self startPoint];
     NSPoint endPoint = [self endPoint];
     
-    point = SKSubstractPoints(point, bounds.origin);
-    
     if ([super hitTest:point]) {
         NSPoint relPoint = SKSubstractPoints(endPoint, startPoint);
         float lengthSquared = relPoint.x * relPoint.x + relPoint.y * relPoint.y;
@@ -1425,11 +1423,13 @@ static BOOL adjacentCharacterBounds(NSRect rect1, NSRect rect2) {
         if (lengthSquared < 16.0)
             return YES;
         
-        extProduct = (point.x - startPoint.x) * relPoint.y - (point.y - startPoint.y) * relPoint.x;
+        point = SKSubstractPoints(SKSubstractPoints(point, bounds.origin), startPoint);
+        extProduct = point.x * relPoint.y - point.y * relPoint.x;
         
         return extProduct * extProduct < 16.0 * lengthSquared;
     } else {
         
+        point = SKSubstractPoints(point, bounds.origin);
         return (fabs(point.x - startPoint.x) < 3.5 && fabs(point.y - startPoint.y) < 3.5) ||
                (fabs(point.x - endPoint.x) < 3.5 && fabs(point.y - endPoint.y) < 3.5);
     }
