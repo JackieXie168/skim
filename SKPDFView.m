@@ -823,7 +823,7 @@ static void SKCGContextDrawGrabHandle(CGContextRef context, CGPoint point, float
 		// Convert to "page space".
 		center = SKIntegralPoint([self convertPoint: center toPage: page]);
         
-        NSSize defaultSize = isAlternate ? NSMakeSize(16.0, 16.0) : ([page rotation] % 180 == 90) ? NSMakeSize(64.0, 128.0) : NSMakeSize(128.0, 64.0);
+        NSSize defaultSize = isAlternate ? SKMakeSquareSize(16.0) : ([page rotation] % 180 == 90) ? NSMakeSize(64.0, 128.0) : NSMakeSize(128.0, 64.0);
         NSRect bounds = SKRectFromCenterAndSize(center, defaultSize);
         
         bounds = SKConstrainRect(bounds, [page boundsForBox:[self displayBox]]);
@@ -1678,7 +1678,7 @@ static void SKCGContextDrawGrabHandle(CGContextRef context, CGPoint point, float
         if (annotationType == SKCircleNote || annotationType == SKSquareNote)
             bounds = NSInsetRect(bounds, -5.0, -5.0);
     } else {
-        NSSize defaultSize = (annotationType == SKAnchoredNote) ? NSMakeSize(16.0, 16.0) : ([page rotation] % 180 == 90) ? NSMakeSize(64.0, 128.0) : NSMakeSize(128.0, 64.0);
+        NSSize defaultSize = (annotationType == SKAnchoredNote) ? SKMakeSquareSize(16.0) : ([page rotation] % 180 == 90) ? NSMakeSize(64.0, 128.0) : NSMakeSize(128.0, 64.0);
         
         point = [self convertPoint:point toPage:page];
         bounds = NSMakeRect(point.x - 0.5 * defaultSize.width, point.y - 0.5 * defaultSize.height, defaultSize.width, defaultSize.height);
@@ -1710,7 +1710,7 @@ static void SKCGContextDrawGrabHandle(CGContextRef context, CGPoint point, float
         NSBeep();
         return;
     } else {
-        NSSize defaultSize = (annotationType == SKAnchoredNote) ? NSMakeSize(16.0, 16.0) : NSMakeSize(128.0, 64.0);
+        NSSize defaultSize = (annotationType == SKAnchoredNote) ? SKMakeSquareSize(16.0) : NSMakeSize(128.0, 64.0);
 		// First try the current mouse position
         NSPoint center = [self convertPoint:[[self window] mouseLocationOutsideOfEventStream] fromView:nil];
         
@@ -1728,7 +1728,7 @@ static void SKCGContextDrawGrabHandle(CGContextRef context, CGPoint point, float
 		center = SKIntegralPoint([self convertPoint: center toPage: page]);
         if ([page rotation] % 180 == 90)
             defaultSize = NSMakeSize(defaultSize.height, defaultSize.width);
-        bounds = NSMakeRect(center.x - 0.5 * defaultSize.width, center.y - 0.5 * defaultSize.height, defaultSize.width, defaultSize.height);
+        bounds = SKRectfromCenterAndSize(center, defaultSize);
         
         // Make sure it fits in the page
         bounds = SKConstrainRect(bounds, [page boundsForBox:[self displayBox]]);
@@ -2046,7 +2046,7 @@ static void SKCGContextDrawGrabHandle(CGContextRef context, CGPoint point, float
     if (pageIndex < [[self document] pageCount]) {
         PDFPage *page = [[self document] pageAtIndex:pageIndex];
         PDFSelection *sel = [page selectionForLineAtPoint:point];
-        NSRect rect = sel ? [sel boundsForPage:page] : NSMakeRect(point.x - 5.0, point.y - 5.0, 10.0, 10.0);
+        NSRect rect = sel ? [sel boundsForPage:page] : SKRectFromCenterAndSize(point, SKMakeSquareSize(10.0));
         
         if (sel)
             [self setCurrentSelection:sel];
@@ -2207,7 +2207,7 @@ static void SKCGContextDrawGrabHandle(CGContextRef context, CGPoint point, float
 @implementation SKPDFView (Private)
 
 - (NSRect)resizeThumbForRect:(NSRect)rect rotation:(int)rotation {
-    NSSize size = NSMakeSize(8.0, 8.0);
+    NSSize size = SKMakeSquareSize(8.0);
 	NSRect thumb = rect;
     
     thumb.size = size;
@@ -2232,7 +2232,7 @@ static void SKCGContextDrawGrabHandle(CGContextRef context, CGPoint point, float
 }
 
 - (NSRect)resizeThumbForRect:(NSRect)rect point:(NSPoint)point {
-    NSSize size = NSMakeSize(8.0, 8.0);
+    NSSize size = SKMakeSquareSize(8.0);
 	NSRect thumb = SKRectFromCenterAndSize(SKAddPoints(rect.origin, point), size);
     
     thumb.origin.x =  point.x > 0.5 * NSWidth(rect) ? floorf(NSMinX(thumb)) : ceilf(NSMinX(thumb));
