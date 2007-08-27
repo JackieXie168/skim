@@ -1728,7 +1728,7 @@ static void SKCGContextDrawGrabHandle(CGContextRef context, CGPoint point, float
 		center = SKIntegralPoint([self convertPoint: center toPage: page]);
         if ([page rotation] % 180 == 90)
             defaultSize = NSMakeSize(defaultSize.height, defaultSize.width);
-        bounds = SKRectfromCenterAndSize(center, defaultSize);
+        bounds = SKRectFromCenterAndSize(center, defaultSize);
         
         // Make sure it fits in the page
         bounds = SKConstrainRect(bounds, [page boundsForBox:[self displayBox]]);

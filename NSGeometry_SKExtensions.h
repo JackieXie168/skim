@@ -71,7 +71,7 @@ static inline NSPoint SKCenterPoint(NSRect rect) {
     return NSMakePoint(NSMidX(rect), NSMidY(rect));
 }
 
-static inline NSPoint SKMakeSquareSize(float width) {
+static inline NSSize SKMakeSquareSize(float width) {
     return NSMakeSize(width, width);
 }
 
