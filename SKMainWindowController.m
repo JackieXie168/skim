@@ -520,7 +520,12 @@ static NSString *noteToolAdornImageNames[] = {@"TextNoteToolAdorn", @"AnchoredNo
     [setup setObject:[NSNumber numberWithFloat:NSWidth([leftSideContentBox frame])] forKey:@"leftSidePaneWidth"];
     [setup setObject:[NSNumber numberWithFloat:NSWidth([rightSideContentBox frame])] forKey:@"rightSidePaneWidth"];
     [setup setObject:[NSNumber numberWithUnsignedInt:[[pdfView document] indexForPage:[pdfView currentPage]]] forKey:@"pageIndex"];
-    [setup addEntriesFromDictionary:[self currentPDFSettings]];
+    if ([self isFullScreen] || [self isPresentation]) {
+        [setup addEntriesFromDictionary:savedNormalSetup];
+        [setup removeObjectsForKeys:[NSArray arrayWithObjects:@"hasHorizontalScroller", @"hasVerticalScroller", @"autoHidesScrollers", nil]];
+    } else {
+        [setup addEntriesFromDictionary:[self currentPDFSettings]];
+    }
     
     return setup;
 }

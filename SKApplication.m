@@ -90,9 +90,21 @@ NSString *SKApplicationWillTerminateNotification = @"SKApplicationWillTerminateN
     [super sendEvent:anEvent];
 }
 
+- (void)saveCurrentOpenDocuments:(NSTimer *)timer {
+    [[NSUserDefaults standardUserDefaults] setObject:[[[NSDocumentController sharedDocumentController] documents] valueForKey:@"currentDocumentSetup"] forKey:SKLastOpenFileNamesKey];
+}
+
+- (void)finishLaunching {
+    [super finishLaunching];
+    currentDocumentsTimer = [[NSTimer scheduledTimerWithTimeInterval:10.0 target:self selector:@selector(saveCurrentOpenDocuments:) userInfo:nil repeats:YES] retain];
+}
+
 - (IBAction)terminate:(id)sender {
     [[NSNotificationCenter defaultCenter] postNotificationName:SKApplicationWillTerminateNotification object:self];
-    [[NSUserDefaults standardUserDefaults] setObject:[[[NSDocumentController sharedDocumentController] documents] valueForKey:@"currentDocumentSetup"] forKey:SKLastOpenFileNamesKey];
+    [currentDocumentsTimer invalidate];
+    [currentDocumentsTimer release];
+    currentDocumentsTimer = nil;
+    [self saveCurrentOpenDocuments:nil];
     [super terminate:sender];
 }
 
