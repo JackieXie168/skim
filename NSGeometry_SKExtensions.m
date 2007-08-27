@@ -72,9 +72,9 @@ NSRect SKConstrainRect(NSRect rect, NSRect boundary) {
 }
 
 NSRect SKIntersectionRect(NSRect rect, NSRect boundary) {
-    float minX = fmin(fmax(NSMinX(rect), NSMinX(boundary)), NSMaxX(boundary));
-    float maxX = fmax(fmin(NSMaxX(rect), NSMaxX(boundary)), NSMinX(boundary));
-    float minY = fmin(fmax(NSMinY(rect), NSMinY(boundary)), NSMaxY(boundary));
-    float maxY = fmax(fmin(NSMaxY(rect), NSMaxY(boundary)), NSMinY(boundary));
+    float minX = fminf(fmaxf(NSMinX(rect), NSMinX(boundary)), NSMaxX(boundary));
+    float maxX = fmaxf(fminf(NSMaxX(rect), NSMaxX(boundary)), NSMinX(boundary));
+    float minY = fminf(fmaxf(NSMinY(rect), NSMinY(boundary)), NSMaxY(boundary));
+    float maxY = fmaxf(fminf(NSMaxY(rect), NSMaxY(boundary)), NSMinY(boundary));
     return NSMakeRect(minX, minY, maxX - minX, maxY - minY);
 }

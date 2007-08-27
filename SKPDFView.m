@@ -2859,14 +2859,14 @@ static void SKCGContextDrawGrabHandle(CGContextRef context, CGPoint point, float
             if ([theEvent modifierFlags] & NSShiftKeyMask) {
                 NSPoint *fixedPoint = draggingStartPoint ? &endPoint : &startPoint;
                 NSPoint diffPoint = SKSubstractPoints(*draggedPoint, *fixedPoint);
-                float dx = fabs(diffPoint.x), dy = fabs(diffPoint.y);
+                float dx = fabsf(diffPoint.x), dy = fabsf(diffPoint.y);
                 
                 if (dx < 0.4 * dy) {
                     diffPoint.x = 0.0;
                 } else if (dy < 0.4 * dx) {
                     diffPoint.y = 0.0;
                 } else {
-                    dx = fmin(dx, dy);
+                    dx = fminf(dx, dy);
                     diffPoint.x = diffPoint.x < 0.0 ? -dx : dx;
                     diffPoint.y = diffPoint.y < 0.0 ? -dx : dx;
                 }
@@ -3650,7 +3650,7 @@ static void SKCGContextDrawGrabHandle(CGContextRef context, CGPoint point, float
 static CGMutablePathRef SKCGCreatePathWithRoundRectInRect(CGRect rect, float radius)
 {
     // Make sure radius doesn't exceed a maximum size to avoid artifacts:
-    radius = fmin(radius, 0.5f * fmin(rect.size.width, rect.size.height));
+    radius = fminf(radius, 0.5f * fminf(rect.size.width, rect.size.height));
     
     CGMutablePathRef path = CGPathCreateMutable();
     

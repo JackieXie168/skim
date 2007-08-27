@@ -117,7 +117,7 @@ static NSString *SKColorsBindingName = @"colors";
 - (void)sizeToFit {
     NSRect frame = [self frame];
     int count = [colors count];
-    frame.size.width = fmin(NSWidth(frame), count * (NSHeight(frame) - 3.0) + 3.0);
+    frame.size.width = fminf(NSWidth(frame), count * (NSHeight(frame) - 3.0) + 3.0);
     [self setFrame:frame];
 }
 
@@ -125,7 +125,7 @@ static NSString *SKColorsBindingName = @"colors";
     NSRect bounds = [self bounds];
     int count = [colors count];
     
-    bounds.size.width = fmin(NSWidth(bounds), count * (NSHeight(bounds) - 3.0) + 3.0);
+    bounds.size.width = fminf(NSWidth(bounds), count * (NSHeight(bounds) - 3.0) + 3.0);
     
     NSRectEdge sides[4] = {NSMaxYEdge, NSMaxXEdge, NSMinXEdge, NSMinYEdge};
     float grays[4] = {0.5, 0.75, 0.75, 0.75};

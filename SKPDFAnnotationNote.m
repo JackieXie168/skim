@@ -815,10 +815,10 @@ static NSArray *createQuadPointsWithBounds(const NSRect bounds, const NSPoint or
 }
 
 static BOOL adjacentCharacterBounds(NSRect rect1, NSRect rect2) {
-    float w = fmax(NSWidth(rect2), NSWidth(rect1));
-    float h = fmax(NSHeight(rect2), NSHeight(rect1));
+    float w = fmaxf(NSWidth(rect2), NSWidth(rect1));
+    float h = fmaxf(NSHeight(rect2), NSHeight(rect1));
     // first check the vertical position; allow sub/superscripts
-    if (fabs(NSMinY(rect1) - NSMinY(rect2)) > 0.2 * h && fabs(NSMaxY(rect1) - NSMaxY(rect2)) > 0.2 * h)
+    if (fabsf(NSMinY(rect1) - NSMinY(rect2)) > 0.2 * h && fabsf(NSMaxY(rect1) - NSMaxY(rect2)) > 0.2 * h)
         return NO;
     // compare horizontal position
     // rect1 before rect2
@@ -1430,8 +1430,8 @@ static BOOL adjacentCharacterBounds(NSRect rect1, NSRect rect2) {
     } else {
         
         point = SKSubstractPoints(point, bounds.origin);
-        return (fabs(point.x - startPoint.x) < 3.5 && fabs(point.y - startPoint.y) < 3.5) ||
-               (fabs(point.x - endPoint.x) < 3.5 && fabs(point.y - endPoint.y) < 3.5);
+        return (fabsf(point.x - startPoint.x) < 3.5 && fabsf(point.y - startPoint.y) < 3.5) ||
+               (fabsf(point.x - endPoint.x) < 3.5 && fabsf(point.y - endPoint.y) < 3.5);
     }
 }
 

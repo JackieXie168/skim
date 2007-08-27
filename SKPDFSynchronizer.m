@@ -456,7 +456,7 @@ static NSPoint pdfOffset = {0.0, 0.0};
                 afterRecord = record;
                 break;
             } else {
-                [atRecords setObject:record forKey:[NSNumber numberWithFloat:fabs(x - point.x)]];
+                [atRecords setObject:record forKey:[NSNumber numberWithFloat:fabsf(x - point.x)]];
             }
         }
         
