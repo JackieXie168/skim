@@ -37,14 +37,13 @@
  */
 
 #import "SKApplication.h"
-#import "SKStringConstants.h"
 #import "SKDocument.h"
 #import "SKPDFSynchronizer.h"
 #import "SKPDFView.h"
 #import "SKLineInspector.h"
 #import "NSString_SKExtensions.h"
 
-NSString *SKApplicationWillTerminateNotification = @"SKApplicationWillTerminateNotification";
+NSString *SKApplicationStartsTerminatingNotification = @"SKApplicationStartsTerminatingNotification";
 
 @interface NSApplication (NSApplicationPrivateDeclarations)
 - (id)handleOpenScriptCommand:(NSScriptCommand *)command;
@@ -90,21 +89,11 @@ NSString *SKApplicationWillTerminateNotification = @"SKApplicationWillTerminateN
     [super sendEvent:anEvent];
 }
 
-- (void)saveCurrentOpenDocuments:(NSTimer *)timer {
-    [[NSUserDefaults standardUserDefaults] setObject:[[[NSDocumentController sharedDocumentController] documents] valueForKey:@"currentDocumentSetup"] forKey:SKLastOpenFileNamesKey];
-}
-
-- (void)finishLaunching {
-    [super finishLaunching];
-    currentDocumentsTimer = [[NSTimer scheduledTimerWithTimeInterval:10.0 target:self selector:@selector(saveCurrentOpenDocuments:) userInfo:nil repeats:YES] retain];
-}
-
 - (IBAction)terminate:(id)sender {
-    [[NSNotificationCenter defaultCenter] postNotificationName:SKApplicationWillTerminateNotification object:self];
-    [currentDocumentsTimer invalidate];
-    [currentDocumentsTimer release];
-    currentDocumentsTimer = nil;
-    [self saveCurrentOpenDocuments:nil];
+    NSNotification *notification = [NSNotification notificationWithName:SKApplicationStartsTerminatingNotification object:self];
+    [[NSNotificationCenter defaultCenter] postNotification:notification];
+    if ([[self delegate] respondsToSelector:@selector(applicationStartsTerminating:)])
+        [[self delegate] applicationStartsTerminating:notification];
     [super terminate:sender];
 }
 

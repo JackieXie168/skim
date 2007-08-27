@@ -41,8 +41,8 @@
 @class SUUpdater, SKLine, SKDownloadController;
 
 @interface SKApplicationController : NSObject {
+    NSTimer *currentDocumentsTimer;
     BOOL remoteScrolling;
-    
 }
 
 + (void)setupDefaults;
@@ -57,6 +57,8 @@
 - (IBAction)openBookmark:(id)sender;
 
 - (void)doSpotlightImportIfNeeded;
+
+- (void)saveCurrentOpenDocuments:(id)sender;
 
 - (NSString *)applicationSupportPathForDomain:(int)domain create:(BOOL)create;
 - (NSString *)pathForApplicationSupportFile:(NSString *)file ofType:(NSString *)extension;
