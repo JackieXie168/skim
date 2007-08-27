@@ -533,7 +533,7 @@
 }
 
 - (SKLine *)objectInLinesAtIndex:(unsigned int)index {
-    return [[[SKLine alloc] initWithContainer:nil line:index] autorelease];
+    return [[[SKLine alloc] initWithLine:index] autorelease];
 }
 
 @end
