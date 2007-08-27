@@ -87,15 +87,26 @@
 
 - (BOOL)validateMenuItem:(NSMenuItem *)menuItem {
     SEL action = [menuItem action];
-    if (action == @selector(copy:))
-        return [self image] && [delegate respondsToSelector:@selector(dragImageView:writeDataToPasteboard:)];
-    else if (action == @selector(delete:))
+    if (action == @selector(cut:) || action == @selector(copy:) || action == @selector(delete:) || action == @selector(show:))
         return [self image] != nil;
-    else if (action == @selector(show:))
-        return [self image] != nil;
+    else if (action == @selector(paste:))
+        return YES;
     else if ([[BDSKDragImageView superclass] instancesRespondToSelector:_cmd])
         [super validateMenuItem:menuItem];
     return YES;
+}
+
+- (NSMenu *)menuForEvent:(NSEvent *)theEvent {
+    NSMenu *menu = [[[super menuForEvent:theEvent] copy] autorelease];
+	int i = [menu numberOfItems];
+    
+    while (i-- > 0) {
+		NSMenuItem *item = (NSMenuItem *)[menu itemAtIndex:i];
+		if ([self validateMenuItem:item] == NO)
+			[menu removeItem:item];
+	}
+    
+    return [menu numberOfItems] ? menu : nil;
 }
 
 - (NSDragOperation)draggingEntered:(id <NSDraggingInfo>)sender{
@@ -124,19 +135,13 @@
 		return [delegate dragImageView:self acceptDrop:sender];
 	return NO;
 }
-/*
-- (void)keyDown:(NSEvent *)theEvent {
-    NSString *characters = [theEvent charactersIgnoringModifiers];
-    unichar eventChar = [characters length] > 0 ? [characters characterAtIndex:0] : 0;
-	unsigned modifierFlags = [theEvent modifierFlags] & NSDeviceIndependentModifierFlagsMask;
-    
-    if ((eventChar == NSDeleteCharacter || eventChar == NSDeleteFunctionKey) && modifierFlags == 0 && [self image])
-        [self delete:self];
-    else
-        [super keyDown:theEvent];
-}
-*/
+
 - (void)mouseDown:(NSEvent *)theEvent {
+    if ([theEvent clickCount] == 2) {
+        [self show:self];
+        return;
+    }
+    
     BOOL keepOn = YES;
     BOOL isInside = YES;
     NSPoint mouseLoc;
