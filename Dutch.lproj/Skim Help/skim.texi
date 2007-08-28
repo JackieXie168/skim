@@ -1106,6 +1106,8 @@ U kunt de PDF and de notities ook bewaren in een bundle, met bestandsextensie pd
 @end enumerate
 @endbox
 
+Een PDF bundel bevat het overanderde PDF-bestand en bestanden voor de notities. U kunt deze bestanden in de Finder zien door 'Toon pakketinhoud' van het contextuele menu te kiezen.
+
 @heading Zie ook
 @menu
 * Als ik een PDF-bestand email verlies ik de notities en markeringen::
