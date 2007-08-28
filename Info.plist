@@ -37,12 +37,50 @@
 			<key>NSExportableAs</key>
 			<array>
 				<string>NSPDFPboardType</string>
+				<string>PDF Package</string>
 				<string>PDF With Embedded Notes</string>
 				<string>PDF Without Notes</string>
 				<string>Skim Notes</string>
 				<string>Notes as RTF</string>
 				<string>Notes as Text</string>
 			</array>
+		</dict>
+		<dict>
+			<key>CFBundleTypeExtensions</key>
+			<array>
+				<string>pdfd</string>
+			</array>
+			<key>CFBundleTypeIconFile</key>
+			<string>PDFDDocument</string>
+			<key>CFBundleTypeName</key>
+			<string>PDF Bundle</string>
+			<key>CFBundleTypeOSTypes</key>
+			<array>
+				<string>PDFD</string>
+			</array>
+			<key>CFBundleTypeRole</key>
+			<string>Editor</string>
+			<key>LSIsAppleDefaultForType</key>
+			<true/>
+			<key>LSItemContentTypes</key>
+			<array>
+				<string>net.sourceforge.skim-app.pdfd</string>
+			</array>
+			<key>LSTypeIsPackage</key>
+			<true/>
+			<key>NSDocumentClass</key>
+			<string>SKDocument</string>
+			<key>NSExportableAs</key>
+			<array>
+				<string>NSPDFPboardType</string>
+				<string>PDF With Embedded Notes</string>
+				<string>PDF Without Notes</string>
+				<string>Skim Notes</string>
+				<string>Notes as RTF</string>
+				<string>Notes as Text</string>
+			</array>
+			<key>NSPersistentStoreTypeKey</key>
+			<string>Binary</string>
 		</dict>
 		<dict>
 			<key>CFBundleTypeExtensions</key>
@@ -55,6 +93,8 @@
 			<string>Skim Notes</string>
 			<key>CFBundleTypeRole</key>
 			<string>Editor</string>
+			<key>LSIsAppleDefaultForType</key>
+			<true/>
 			<key>LSItemContentTypes</key>
 			<array>
 				<string>net.sourceforge.skim-app.skimnotes</string>
@@ -325,12 +365,69 @@
 	<string>MainMenu</string>
 	<key>NSPrincipalClass</key>
 	<string>SKApplication</string>
+	<key>NSServices</key>
+	<array>
+		<dict>
+			<key>NSMenuItem</key>
+			<dict>
+				<key>default</key>
+				<string>Skim/Open PDF at URL</string>
+			</dict>
+			<key>NSMessage</key>
+			<string>openDocumentFromURLOnPboard</string>
+			<key>NSPortName</key>
+			<string>Skim</string>
+			<key>NSSendTypes</key>
+			<array>
+				<string>NSURLPboardType</string>
+				<string>NSStringPboardType</string>
+				<string>CorePasteboardFlavorType 0x75726C20</string>
+			</array>
+		</dict>
+		<dict>
+			<key>NSMenuItem</key>
+			<dict>
+				<key>default</key>
+				<string>Skim/Open Selected PDF</string>
+			</dict>
+			<key>NSMessage</key>
+			<string>openDocumentFromDataOnPboard</string>
+			<key>NSPortName</key>
+			<string>Skim</string>
+			<key>NSSendTypes</key>
+			<array>
+				<string>NSPDFPboardType</string>
+				<string>NSPostScriptPboardType</string>
+				<string>NSTIFFPboardType</string>
+			</array>
+		</dict>
+	</array>
 	<key>OSAScriptingDefinition</key>
 	<string>Skim.sdef</string>
 	<key>SUFeedURL</key>
 	<string>http://skim-app.sourceforge.net/skim.xml</string>
 	<key>UTExportedTypeDeclarations</key>
 	<array>
+		<dict>
+			<key>UTTypeConformsTo</key>
+			<array>
+				<string>com.apple.package</string>
+				<string>public.composite-content </string>
+			</array>
+			<key>UTTypeDescription</key>
+			<string>PDF Bundle</string>
+			<key>UTTypeIconFile</key>
+			<string>PDFDDocument</string>
+			<key>UTTypeIdentifier</key>
+			<string>net.sourceforge.skim-app.pdfd</string>
+			<key>UTTypeTagSpecification</key>
+			<dict>
+				<key>public.filename-extension</key>
+				<array>
+					<string>pdfd</string>
+				</array>
+			</dict>
+		</dict>
 		<dict>
 			<key>UTTypeConformsTo</key>
 			<array>
@@ -351,43 +448,5 @@
 			</dict>
 		</dict>
 	</array>
-   <key>NSServices</key>
-  <array>
-     <dict>
-        <key>NSMenuItem</key>
-        <dict>
-           <key>default</key>
-           <string>Skim/Open PDF at URL</string>
-        </dict>
-        <key>NSMessage</key>
-        <string>openDocumentFromURLOnPboard</string>
-        <key>NSPortName</key>
-        <string>Skim</string>
-        <key>NSSendTypes</key>
-        <array>
-           <string>NSURLPboardType</string>
-           <string>NSStringPboardType</string>
-           <string>CorePasteboardFlavorType 0x75726C20</string>
-        </array>
-     </dict>
-     <dict>
-        <key>NSMenuItem</key>
-        <dict>
-           <key>default</key>
-           <string>Skim/Open Selected PDF</string>
-        </dict>
-        <key>NSMessage</key>
-        <string>openDocumentFromDataOnPboard</string>
-        <key>NSPortName</key>
-        <string>Skim</string>
-        <key>NSSendTypes</key>
-        <array>
-           <string>NSPDFPboardType</string>
-           <string>NSPostScriptPboardType</string>
-           <string>NSTIFFPboardType</string>
-        </array>
-     </dict>
-  </array>
-
 </dict>
 </plist>

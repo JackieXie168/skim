@@ -39,6 +39,7 @@
 #import <Cocoa/Cocoa.h>
 
 extern NSString *SKPDFDocumentType;
+extern NSString *SKPDFBundleDocumentType;
 extern NSString *SKEmbeddedPDFDocumentType;
 extern NSString *SKBarePDFDocumentType;
 extern NSString *SKNotesDocumentType;

@@ -81,6 +81,7 @@ enum {
     BOOL autoUpdate;
     BOOL isSaving;
     BOOL fileChangedOnDisk;
+    NSSaveOperationType currentSaveOperation;
     
     // only used for network filesystems; fileUpdateTimer is not retained by the doc
     NSDate *lastModifiedDate;
