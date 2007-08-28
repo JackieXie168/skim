@@ -65,8 +65,9 @@ int main (int argc, const char * argv[]) {
                 data = [NSData data];
         } else if ([[notesPath pathExtension] caseInsensitiveCompare:@"txt"] == NSOrderedSame || [[notesPath pathExtension] caseInsensitiveCompare:@"text"] == NSOrderedSame) {
             NSError *error = nil;
-            data = [fm extendedAttributeNamed:SKIM_TEXT_NOTES_KEY atPath:pdfPath traverseLink:YES error:&error];
-            if (data == nil && [error code] == ENOATTR)
+            NSString *string = [fm propertyListFromExtendedAttributeNamed:SKIM_TEXT_NOTES_KEY atPath:pdfPath traverseLink:YES error:&error];
+            data = [string dataUsingEncoding:NSUTF8StringEncoding];
+            if (string == nil && [error code] == ENOATTR)
                 data = [NSData data];
         } else {
             NSError *error = nil;
