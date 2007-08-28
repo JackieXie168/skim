@@ -751,6 +751,9 @@ static NSString *noteToolAdornImageNames[] = {@"TextNoteToolAdorn", @"AnchoredNo
             visibleRect = [pdfView convertRect:[pdfView convertRect:[[pdfView documentView] visibleRect] fromView:[pdfView documentView]] toPage:[pdfView currentPage]];
             
             [[pdfView document] cancelFindString];
+            [temporaryAnnotationTimer invalidate];
+            [temporaryAnnotationTimer release];
+            temporaryAnnotationTimer = nil;
             
             // make sure these will not be activated, or they can lead to a crash
             [pdfView removeHoverRects];
