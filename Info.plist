@@ -37,7 +37,7 @@
 			<key>NSExportableAs</key>
 			<array>
 				<string>NSPDFPboardType</string>
-				<string>PDF Package</string>
+				<string>PDF Bundle</string>
 				<string>PDF With Embedded Notes</string>
 				<string>PDF Without Notes</string>
 				<string>Skim Notes</string>
@@ -73,6 +73,7 @@
 			<key>NSExportableAs</key>
 			<array>
 				<string>NSPDFPboardType</string>
+				<string>PDF Bundle</string>
 				<string>PDF With Embedded Notes</string>
 				<string>PDF Without Notes</string>
 				<string>Skim Notes</string>
