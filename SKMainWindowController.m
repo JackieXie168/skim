@@ -754,6 +754,7 @@ static NSString *noteToolAdornImageNames[] = {@"TextNoteToolAdorn", @"AnchoredNo
             [temporaryAnnotationTimer invalidate];
             [temporaryAnnotationTimer release];
             temporaryAnnotationTimer = nil;
+            CFSetRemoveAllValues(temporaryAnnotations);
             
             // make sure these will not be activated, or they can lead to a crash
             [pdfView removeHoverRects];
