@@ -57,11 +57,8 @@ Boolean GetMetadataForFile(void* thisInterface,
     if (UTTypeEqual(contentTypeUTI, CFSTR("net.sourceforge.skim-app.skimnotes"))) {
         notePath = (NSString *)pathToFile;
         sourcePath = [[(NSString *)pathToFile stringByDeletingPathExtension] stringByAppendingPathExtension:@"pdf"];
-        if ([[NSFileManager defaultManager] fileExistsAtPath:sourcePath] == NO)
-            sourcePath = nil;
     } else if (UTTypeEqual(contentTypeUTI, CFSTR("net.sourceforge.skim-app.pdfd"))) {
         notePath = [(NSString *)pathToFile stringByAppendingPathComponent:@"data.skim"];
-        sourcePath = (NSString *)pathToFile;
     }
     
     if (notePath && [[NSFileManager defaultManager] fileExistsAtPath:notePath]) {
