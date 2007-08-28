@@ -888,62 +888,68 @@ static void SKCGContextDrawGrabHandle(CGContextRef context, CGPoint point, float
     NSString *characters = [theEvent charactersIgnoringModifiers];
     unichar eventChar = [characters length] > 0 ? [characters characterAtIndex:0] : 0;
 	unsigned int modifiers = [theEvent modifierFlags] & (NSCommandKeyMask | NSAlternateKeyMask | NSShiftKeyMask | NSControlKeyMask);
-    BOOL isPresentation = hasNavigation && autohidesCursor;
     
-	if (isPresentation && (eventChar == NSRightArrowFunctionKey) && (modifiers == 0)) {
-        [self goToNextPage:self];
-    } else if (isPresentation && (eventChar == NSLeftArrowFunctionKey) && (modifiers == 0)) {
-		[self goToPreviousPage:self];
-    } else if (isPresentation && (eventChar == 'p') && (modifiers == 0)) {
-        [(SKMainWindowController *)[[self window] windowController] toggleLeftSidePane:self];
-    } else if (isPresentation && (eventChar == 'a') && (modifiers == 0)) {
-        [(SKMainWindowController *)[[self window] windowController] toggleAutoActualSize:self];
-	} else if ((eventChar == NSDeleteCharacter || eventChar == NSDeleteFunctionKey) && (modifiers == 0)) {
-		[self delete:self];
-    } else if (isPresentation == NO && ([self toolMode] == SKTextToolMode || [self toolMode] == SKNoteToolMode) && (eventChar == NSEnterCharacter || eventChar == NSFormFeedCharacter || eventChar == NSNewlineCharacter || eventChar == NSCarriageReturnCharacter) && (modifiers == 0)) {
-        if (activeAnnotation && activeAnnotation != editAnnotation)
-            [self editActiveAnnotation:self];
-    } else if (isPresentation == NO && ([self toolMode] == SKTextToolMode || [self toolMode] == SKNoteToolMode) && (eventChar == NSTabCharacter) && (modifiers == NSAlternateKeyMask)) {
-        [self selectNextActiveAnnotation:self];
-    // backtab is a bit inconsistent, it seems Shift+Tab gives a Shift-BackTab key event, I would have expected either Shift-Tab (as for the raw event) or BackTab (as for most shift-modified keys)
-    } else if (isPresentation == NO && ([self toolMode] == SKTextToolMode || [self toolMode] == SKNoteToolMode) && (((eventChar == NSBackTabCharacter) && (modifiers == (NSAlternateKeyMask | NSShiftKeyMask))) || ((eventChar == NSBackTabCharacter) && (modifiers == NSAlternateKeyMask)) || ((eventChar == NSTabCharacter) && (modifiers == NSAlternateKeyMask)))) {
-        [self selectPreviousActiveAnnotation:self];
-	} else if (isPresentation == NO && [activeAnnotation isNoteAnnotation] && [activeAnnotation isMovable] && (eventChar == NSRightArrowFunctionKey || eventChar == NSLeftArrowFunctionKey || eventChar == NSUpArrowFunctionKey || eventChar == NSDownArrowFunctionKey) && (modifiers == 0 || modifiers == NSShiftKeyMask)) {
-        [self moveActiveAnnotationForKey:eventChar byAmount:(modifiers & NSShiftKeyMask) ? 10.0 : 1.0];
-	} else if (isPresentation == NO && [activeAnnotation isNoteAnnotation] && [activeAnnotation isResizable] && (eventChar == NSRightArrowFunctionKey || eventChar == NSLeftArrowFunctionKey || eventChar == NSUpArrowFunctionKey || eventChar == NSDownArrowFunctionKey) && (modifiers == NSControlKeyMask || modifiers == (NSControlKeyMask | NSShiftKeyMask))) {
-        [self resizeActiveAnnotationForKey:eventChar byAmount:(modifiers & NSShiftKeyMask) ? 10.0 : 1.0];
-    } else if (isPresentation == NO && (eventChar == NSRightArrowFunctionKey) && (modifiers == (NSCommandKeyMask | NSAlternateKeyMask))) {
-        [self setToolMode:(toolMode + 1) % 5];
-    } else if (isPresentation == NO && (eventChar == NSLeftArrowFunctionKey) && (modifiers == (NSCommandKeyMask | NSAlternateKeyMask))) {
-        [self setToolMode:(toolMode + 4) % 5];
-    } else if (isPresentation == NO && (eventChar == NSDownArrowFunctionKey) && (modifiers == (NSCommandKeyMask | NSAlternateKeyMask))) {
-        [self setAnnotationMode:(annotationMode + 1) % 8];
-    } else if (isPresentation == NO && (eventChar == NSUpArrowFunctionKey) && (modifiers == (NSCommandKeyMask | NSAlternateKeyMask))) {
-        [self setAnnotationMode:(annotationMode + 7) % 8];
-    } else if (readingBar && (eventChar == NSRightArrowFunctionKey || eventChar == NSLeftArrowFunctionKey || eventChar == NSUpArrowFunctionKey || eventChar == NSDownArrowFunctionKey) && (modifiers == NSAlternateKeyMask)) {
-        [self moveReadingBarForKey:eventChar];
-    } else if (isPresentation == NO && [self toolMode] == SKNoteToolMode && modifiers == 0 && eventChar == 't') {
-        [self setAnnotationMode:SKFreeTextNote];
-    } else if (isPresentation == NO && [self toolMode] == SKNoteToolMode && modifiers == 0 && eventChar == 'n') {
-        [self setAnnotationMode:SKAnchoredNote];
-    } else if (isPresentation == NO && [self toolMode] == SKNoteToolMode && modifiers == 0 && eventChar == 'c') {
-        [self setAnnotationMode:SKCircleNote];
-    } else if (isPresentation == NO && [self toolMode] == SKNoteToolMode && modifiers == 0 && eventChar == 'b') {
-        [self setAnnotationMode:SKSquareNote];
-    } else if (isPresentation == NO && [self toolMode] == SKNoteToolMode && modifiers == 0 && eventChar == 'h') {
-        [self setAnnotationMode:SKHighlightNote];
-    } else if (isPresentation == NO && [self toolMode] == SKNoteToolMode && modifiers == 0 && eventChar == 'u') {
-        [self setAnnotationMode:SKUnderlineNote];
-    } else if (isPresentation == NO && [self toolMode] == SKNoteToolMode && modifiers == 0 && eventChar == 's') {
-        [self setAnnotationMode:SKStrikeOutNote];
-    } else if (isPresentation == NO && [self toolMode] == SKNoteToolMode && modifiers == 0 && eventChar == 'l') {
-        [self setAnnotationMode:SKLineNote];
-    } else if (isPresentation == NO && typeSelectHelper && modifiers == 0 && [[NSCharacterSet alphanumericCharacterSet] characterIsMember:eventChar]) {
-        [typeSelectHelper processKeyDownCharacter:eventChar];
-    } else if (isPresentation == NO && [typeSelectHelper cyclesSimilarResults] && modifiers == 0 && eventChar == '/') {
-        [typeSelectHelper repeatSearch];
+    if (hasNavigation && autohidesCursor) {
+        // Presentation mode
+        if (eventChar == NSRightArrowFunctionKey && modifiers == 0) {
+            [self goToNextPage:self];
+        } else if ((eventChar == NSLeftArrowFunctionKey) && (modifiers == 0)) {
+            [self goToPreviousPage:self];
+        } else if ((eventChar == 'p') && (modifiers == 0)) {
+            [(SKMainWindowController *)[[self window] windowController] toggleLeftSidePane:self];
+        } else if ((eventChar == 'a') && (modifiers == 0)) {
+            [(SKMainWindowController *)[[self window] windowController] toggleAutoActualSize:self];
+        } else {
+            [super keyDown:theEvent];
+        }
     } else {
-		[super keyDown:theEvent];
+        // Normal or fullscreen mode
+        if ((eventChar == NSDeleteCharacter || eventChar == NSDeleteFunctionKey) && (modifiers == 0)) {
+            [self delete:self];
+        } else if (([self toolMode] == SKTextToolMode || [self toolMode] == SKNoteToolMode) && (eventChar == NSEnterCharacter || eventChar == NSFormFeedCharacter || eventChar == NSNewlineCharacter || eventChar == NSCarriageReturnCharacter) && (modifiers == 0) && activeAnnotation && activeAnnotation != editAnnotation) {
+            [self editActiveAnnotation:self];
+        } else if (([self toolMode] == SKTextToolMode || [self toolMode] == SKNoteToolMode) && (eventChar == NSTabCharacter) && (modifiers == NSAlternateKeyMask)) {
+            [self selectNextActiveAnnotation:self];
+        // backtab is a bit inconsistent, it seems Shift+Tab gives a Shift-BackTab key event, I would have expected either Shift-Tab (as for the raw event) or BackTab (as for most shift-modified keys)
+        } else if (([self toolMode] == SKTextToolMode || [self toolMode] == SKNoteToolMode) && (((eventChar == NSBackTabCharacter) && (modifiers == (NSAlternateKeyMask | NSShiftKeyMask))) || ((eventChar == NSBackTabCharacter) && (modifiers == NSAlternateKeyMask)) || ((eventChar == NSTabCharacter) && (modifiers == NSAlternateKeyMask)))) {
+            [self selectPreviousActiveAnnotation:self];
+        } else if ([activeAnnotation isNoteAnnotation] && [activeAnnotation isMovable] && (eventChar == NSRightArrowFunctionKey || eventChar == NSLeftArrowFunctionKey || eventChar == NSUpArrowFunctionKey || eventChar == NSDownArrowFunctionKey) && (modifiers == 0 || modifiers == NSShiftKeyMask)) {
+            [self moveActiveAnnotationForKey:eventChar byAmount:(modifiers & NSShiftKeyMask) ? 10.0 : 1.0];
+        } else if ([activeAnnotation isNoteAnnotation] && [activeAnnotation isResizable] && (eventChar == NSRightArrowFunctionKey || eventChar == NSLeftArrowFunctionKey || eventChar == NSUpArrowFunctionKey || eventChar == NSDownArrowFunctionKey) && (modifiers == NSControlKeyMask || modifiers == (NSControlKeyMask | NSShiftKeyMask))) {
+            [self resizeActiveAnnotationForKey:eventChar byAmount:(modifiers & NSShiftKeyMask) ? 10.0 : 1.0];
+        } else if ((eventChar == NSRightArrowFunctionKey) && (modifiers == (NSCommandKeyMask | NSAlternateKeyMask))) {
+            [self setToolMode:(toolMode + 1) % 5];
+        } else if ((eventChar == NSLeftArrowFunctionKey) && (modifiers == (NSCommandKeyMask | NSAlternateKeyMask))) {
+            [self setToolMode:(toolMode + 4) % 5];
+        } else if ((eventChar == NSDownArrowFunctionKey) && (modifiers == (NSCommandKeyMask | NSAlternateKeyMask))) {
+            [self setAnnotationMode:(annotationMode + 1) % 8];
+        } else if ((eventChar == NSUpArrowFunctionKey) && (modifiers == (NSCommandKeyMask | NSAlternateKeyMask))) {
+            [self setAnnotationMode:(annotationMode + 7) % 8];
+        } else if (readingBar && (eventChar == NSRightArrowFunctionKey || eventChar == NSLeftArrowFunctionKey || eventChar == NSUpArrowFunctionKey || eventChar == NSDownArrowFunctionKey) && (modifiers == NSAlternateKeyMask)) {
+            [self moveReadingBarForKey:eventChar];
+        } else if ([self toolMode] == SKNoteToolMode && modifiers == 0 && eventChar == 't') {
+            [self setAnnotationMode:SKFreeTextNote];
+        } else if ([self toolMode] == SKNoteToolMode && modifiers == 0 && eventChar == 'n') {
+            [self setAnnotationMode:SKAnchoredNote];
+        } else if ([self toolMode] == SKNoteToolMode && modifiers == 0 && eventChar == 'c') {
+            [self setAnnotationMode:SKCircleNote];
+        } else if ([self toolMode] == SKNoteToolMode && modifiers == 0 && eventChar == 'b') {
+            [self setAnnotationMode:SKSquareNote];
+        } else if ([self toolMode] == SKNoteToolMode && modifiers == 0 && eventChar == 'h') {
+            [self setAnnotationMode:SKHighlightNote];
+        } else if ([self toolMode] == SKNoteToolMode && modifiers == 0 && eventChar == 'u') {
+            [self setAnnotationMode:SKUnderlineNote];
+        } else if ([self toolMode] == SKNoteToolMode && modifiers == 0 && eventChar == 's') {
+            [self setAnnotationMode:SKStrikeOutNote];
+        } else if ([self toolMode] == SKNoteToolMode && modifiers == 0 && eventChar == 'l') {
+            [self setAnnotationMode:SKLineNote];
+        } else if ([typeSelectHelper isTypeSelectCharacter:eventChar]) {
+            [typeSelectHelper processKeyDownCharacter:eventChar];
+        } else if ([typeSelectHelper isRepeatCharacter:eventChar]) {
+            [typeSelectHelper repeatSearch];
+        } else {
+            [super keyDown:theEvent];
+        }
     }
 }
 
