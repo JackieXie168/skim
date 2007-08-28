@@ -255,8 +255,8 @@ static NSPopUpButton *popUpButtonSubview(NSView *view)
         if (fileExists == NO || isDir == NO) {
             success = [super saveToURL:absoluteURL ofType:typeName forSaveOperation:saveOperation error:outError];
         } else {
-            NSString *tmpDir = SKUniqueDirectoryCreating(NSTemporaryDirectory(), YES);
             NSString *filename = [path lastPathComponent];
+            NSString *tmpDir = SKUniqueDirectoryCreating(NSTemporaryDirectory(), YES);
             NSString *tmpPath = [tmpDir stringByAppendingPathComponent:filename];
             NSURL *tmpURL = [NSURL fileURLWithPath:tmpPath];
             
@@ -265,9 +265,14 @@ static NSPopUpButton *popUpButtonSubview(NSView *view)
                 NSSet *knownExtensions = [NSSet setWithObjects:@"pdf", @"skim", @"txt", @"text", @"rtf", nil];
                 NSEnumerator *fileEnum;
                 NSString *file;
-                
-                if ([[[fm fileAttributesAtPath:path traverseLink:YES] objectForKey:NSFileImmutable] boolValue])
-                    [fm changeFileAttributes:[NSDictionary dictionaryWithObjectsAndKeys:[NSNumber numberWithBool:NO], NSFileImmutable, nil] atPath:path];
+                NSMutableDictionary *attributes = [[fm fileAttributesAtPath:path traverseLink:YES] mutableCopy];
+                unsigned long permissions = [[attributes objectForKey:NSFilePosixPermissions] unsignedLongValue];
+               
+                [attributes setObject:[NSNumber numberWithUnsignedLong:permissions | 0200] forKey:NSFilePosixPermissions];
+                if ([attributes fileIsImmutable])
+                    [attributes setObject:[NSNumber numberWithBool:NO] forKey:NSFileImmutable];
+                [fm changeFileAttributes:attributes atPath:path];
+                [attributes release];
                 
                 fileEnum = [[fm directoryContentsAtPath:path] objectEnumerator];
                 while (file = [fileEnum nextObject]) {
