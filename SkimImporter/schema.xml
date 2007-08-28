@@ -27,6 +27,19 @@
                 net_sourceforge_skim_app_notes
             </displayattrs>
         </type>
+        <type name="net.sourceforge.skim-app.pdfd">
+            <note>
+		The keys that this metadata importer handles.
+            </note>
+            <allattrs>
+                net_sourceforge_skim_app_notes
+            </allattrs>
+            <displayattrs>
+                kMDItemContentModificationDate
+                kMDItemContentCreationDate
+                net_sourceforge_skim_app_notes
+            </displayattrs>
+        </type>
     </types>
 </schema>
 
