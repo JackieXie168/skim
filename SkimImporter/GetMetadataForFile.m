@@ -51,56 +51,21 @@ Boolean GetMetadataForFile(void* thisInterface,
     
     NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
     Boolean success = FALSE;
+    NSString *notePath = nil;
+    NSString *sourcePath = nil;
     
     if (UTTypeEqual(contentTypeUTI, CFSTR("net.sourceforge.skim-app.skimnotes"))) {
-        NSData *data = [[NSData alloc] initWithContentsOfFile:(NSString *)pathToFile options:NSUncachedRead error:NULL];
-        if (data) {
-            NSArray *array = [NSKeyedUnarchiver unarchiveObjectWithData:data];
-            [data release];
-            
-            if (array) {
-                NSEnumerator *noteEnum = [array objectEnumerator];
-                NSDictionary *note;
-                NSMutableString *textContent = [[NSMutableString alloc] init];
-                NSMutableArray *notes = [[NSMutableArray alloc] init];
-                while (note = [noteEnum nextObject]) {
-                    NSString *contents = [note objectForKey:@"contents"];
-                    if (contents) {
-                        if ([textContent length])
-                            [textContent appendString:@"\n\n"];
-                        [textContent appendString:contents];
-                        [notes addObject:contents];
-                    }
-                    NSString *text = [[note objectForKey:@"text"] string];
-                    if (text) {
-                        if ([textContent length])
-                            [textContent appendString:@"\n\n"];
-                        [textContent appendString:text];
-                    }
-                }
-                [(NSMutableDictionary *)attributes setObject:textContent forKey:(NSString *)kMDItemTextContent];
-                [(NSMutableDictionary *)attributes setObject:notes forKey:@"net_sourceforge_skim_app_notes"];
-                [textContent release];
-                [notes release];
-            }
-        }
-        
-        [(NSMutableDictionary *)attributes setObject:@"Skim" forKey:(NSString *)kMDItemCreator];
-        
-        NSString *pdfFile = [[(NSString *)pathToFile stringByDeletingPathExtension] stringByAppendingPathExtension:@"pdf"];
-        if ([[NSFileManager defaultManager] fileExistsAtPath:pdfFile])
-            [(NSMutableDictionary *)attributes setObject:[NSArray arrayWithObjects:pdfFile, nil] forKey:(NSString *)kMDItemWhereFroms];
-        
-        NSDictionary *fileAttributes = [[NSFileManager defaultManager] fileAttributesAtPath:(NSString *)pathToFile traverseLink:YES];
-        NSDate *date;
-        if (date = [fileAttributes objectForKey:NSFileModificationDate])
-            [(NSMutableDictionary *)attributes setObject:date forKey:(NSString *)kMDItemContentModificationDate];
-        if (date = [fileAttributes objectForKey:NSFileCreationDate])
-            [(NSMutableDictionary *)attributes setObject:date forKey:(NSString *)kMDItemContentCreationDate];
-        
-        success = TRUE;
+        notePath = (NSString *)pathToFile;
+        sourcePath = [[(NSString *)pathToFile stringByDeletingPathExtension] stringByAppendingPathExtension:@"pdf"];
+        if ([[NSFileManager defaultManager] fileExistsAtPath:sourcePath] == NO)
+            sourcePath = nil;
     } else if (UTTypeEqual(contentTypeUTI, CFSTR("net.sourceforge.skim-app.pdfd"))) {
-        NSData *data = [[NSData alloc] initWithContentsOfFile:[(NSString *)pathToFile stringByAppendingPathComponent:@"data.skim"] options:NSUncachedRead error:NULL];
+        notePath = [(NSString *)pathToFile stringByAppendingPathComponent:@"data.skim"];
+        sourcePath = (NSString *)pathToFile;
+    }
+    
+    if (notePath && [[NSFileManager defaultManager] fileExistsAtPath:notePath]) {
+        NSData *data = [[NSData alloc] initWithContentsOfFile:notePath options:NSUncachedRead error:NULL];
         if (data) {
             NSArray *array = [NSKeyedUnarchiver unarchiveObjectWithData:data];
             [data release];
@@ -134,7 +99,8 @@ Boolean GetMetadataForFile(void* thisInterface,
         
         [(NSMutableDictionary *)attributes setObject:@"Skim" forKey:(NSString *)kMDItemCreator];
         
-        [(NSMutableDictionary *)attributes setObject:[NSArray arrayWithObjects:(NSString *)pathToFile, nil] forKey:(NSString *)kMDItemWhereFroms];
+        if (sourcePath && [[NSFileManager defaultManager] fileExistsAtPath:sourcePath])
+            [(NSMutableDictionary *)attributes setObject:[NSArray arrayWithObjects:sourcePath, nil] forKey:(NSString *)kMDItemWhereFroms];
         
         NSDictionary *fileAttributes = [[NSFileManager defaultManager] fileAttributesAtPath:(NSString *)pathToFile traverseLink:YES];
         NSDate *date;
