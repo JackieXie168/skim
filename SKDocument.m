@@ -65,9 +65,10 @@
 #define MAX_XATTR_LENGTH        2048
 
 #define WRAPPER_PDF_FILENAME    @"data.pdf"
-#define WRAPPER_SKIM_FILENAME   @"data.skim"
-#define WRAPPER_TXT_FILENAME    @"data.txt"
-#define WRAPPER_RTF_FILENAME    @"data.rtf"
+#define WRAPPER_TEXT_FILENAME   @"data.txt"
+#define WRAPPER_SKIM_FILENAME   @"notes.skim"
+#define WRAPPER_TXT_FILENAME    @"notes.txt"
+#define WRAPPER_RTF_FILENAME    @"notes.rtf"
 
 NSString *SKDocumentErrorDomain = @"SKDocumentErrorDomain";
 
@@ -327,11 +328,14 @@ static NSPopUpButton *popUpButtonSubview(NSView *view)
         didWrite = [pdfData writeToURL:absoluteURL options:NSAtomicWrite error:outError] &&
                    [self saveNotesToExtendedAttributesAtURL:absoluteURL error:outError];
     } else if ([typeName isEqualToString:SKPDFBundleDocumentType]) {
+        NSData *textData = [[[self pdfDocument] string] dataUsingEncoding:NSUTF8StringEncoding];
         NSData *notesData = [[self notes] count] ? [NSKeyedArchiver archivedDataWithRootObject:[[self notes] valueForKey:@"dictionaryValue"]] : nil;
         NSData *notesTextData = [[self notesString] dataUsingEncoding:NSUTF8StringEncoding];
         NSData *notesRTFData = [self notesRTFData];
         NSFileWrapper *fileWrapper = [[NSFileWrapper alloc] initDirectoryWithFileWrappers:[NSDictionary dictionary]];
         [fileWrapper addRegularFileWithContents:pdfData preferredFilename:WRAPPER_PDF_FILENAME];
+        if (textData)
+            [fileWrapper addRegularFileWithContents:textData preferredFilename:WRAPPER_TEXT_FILENAME];
         if (notesData)
             [fileWrapper addRegularFileWithContents:notesData preferredFilename:WRAPPER_SKIM_FILENAME];
         if (notesTextData)
