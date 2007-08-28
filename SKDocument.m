@@ -174,7 +174,7 @@ static NSPopUpButton *popUpButtonSubview(NSView *view)
 }
 
 - (BOOL)prepareSavePanel:(NSSavePanel *)savePanel {
-    if (currentSaveOperation == NSSaveToOperation) {
+    if (exportUsingPanel) {
         NSPopUpButton *formatPopup = popUpButtonSubview([savePanel accessoryView]);
         NSString *lastExportedType = [[NSUserDefaults standardUserDefaults] stringForKey:@"SKLastExportedType"];
         if ([[self pdfDocument] allowsPrinting] == NO) {
@@ -195,7 +195,8 @@ static NSPopUpButton *popUpButtonSubview(NSView *view)
 
 - (void)runModalSavePanelForSaveOperation:(NSSaveOperationType)saveOperation delegate:(id)delegate didSaveSelector:(SEL)didSaveSelector contextInfo:(void *)contextInfo {
     // Override so we can determine if this is a save, saveAs or export operation, so we can prepare the correct accessory view
-    currentSaveOperation = saveOperation;
+    if (saveOperation == NSSaveToOperation)
+        exportUsingPanel = YES;
     [super runModalSavePanelForSaveOperation:saveOperation delegate:delegate didSaveSelector:didSaveSelector contextInfo:contextInfo];
 }
 
@@ -203,7 +204,7 @@ static NSPopUpButton *popUpButtonSubview(NSView *view)
     if (saveOperation == NSSaveOperation || saveOperation == NSSaveAsOperation) {
         [self stopCheckingFileUpdates];
         isSaving = YES;
-    } else if (saveOperation == NSSaveToOperation) {
+    } else if (exportUsingPanel) {
         [[NSUserDefaults standardUserDefaults] setObject:typeName forKey:@"SKLastExportedType"];
     }
     
@@ -211,6 +212,7 @@ static NSPopUpButton *popUpButtonSubview(NSView *view)
     
     // we check for notes and may save a .skim as well:
     if ([typeName isEqualToString:SKPDFDocumentType]) {
+        
         NSFileManager *fm = [NSFileManager defaultManager];
         
         if (success = [super saveToURL:absoluteURL ofType:typeName forSaveOperation:saveOperation error:outError]) {
@@ -247,12 +249,12 @@ static NSPopUpButton *popUpButtonSubview(NSView *view)
         }
         
     } else if ([typeName isEqualToString:SKPDFBundleDocumentType]) {
+        
         NSFileManager *fm = [NSFileManager defaultManager];
         NSString *path = [absoluteURL path];
         BOOL isDir = NO;
-        BOOL fileExists = [fm fileExistsAtPath:path isDirectory:&isDir];
         
-        if (fileExists == NO || isDir == NO) {
+        if ([fm fileExistsAtPath:path isDirectory:&isDir] == NO || isDir == NO) {
             success = [super saveToURL:absoluteURL ofType:typeName forSaveOperation:saveOperation error:outError];
         } else {
             NSString *filename = [path lastPathComponent];
@@ -262,7 +264,7 @@ static NSPopUpButton *popUpButtonSubview(NSView *view)
             
             if (success = [self writeToURL:tmpURL ofType:typeName error:outError]) {
                 
-                NSSet *knownExtensions = [NSSet setWithObjects:@"pdf", @"skim", @"txt", @"text", @"rtf", nil];
+                NSSet *ourExtensions = [NSSet setWithObjects:@"pdf", @"skim", @"txt", @"text", @"rtf", nil];
                 NSEnumerator *fileEnum;
                 NSString *file;
                 NSMutableDictionary *attributes = [[fm fileAttributesAtPath:path traverseLink:YES] mutableCopy];
@@ -276,7 +278,7 @@ static NSPopUpButton *popUpButtonSubview(NSView *view)
                 
                 fileEnum = [[fm directoryContentsAtPath:path] objectEnumerator];
                 while (file = [fileEnum nextObject]) {
-                    if ([knownExtensions containsObject:[[file pathExtension] lowercaseString]])
+                    if ([ourExtensions containsObject:[[file pathExtension] lowercaseString]])
                         [fm removeFileAtPath:[path stringByAppendingPathComponent:file] handler:nil];
                 }
                 
@@ -286,10 +288,18 @@ static NSPopUpButton *popUpButtonSubview(NSView *view)
                 
                 if (success)
                     [NSTask launchedTaskWithLaunchPath:@"/usr/bin/touch" arguments:[NSArray arrayWithObjects:@"-fm", path, nil]];
+                
+                if (saveOperation == NSSaveAsOperation)
+                    [self setFileURL:absoluteURL];
             }
             
             [fm removeFileAtPath:tmpDir handler:nil];
         }
+        
+    } else {
+        
+        success = [super saveToURL:absoluteURL ofType:typeName forSaveOperation:saveOperation error:outError];
+        
     }
     
     if (saveOperation == NSSaveOperation || saveOperation == NSSaveAsOperation) {
@@ -303,6 +313,8 @@ static NSPopUpButton *popUpButtonSubview(NSView *view)
         [self checkFileUpdatesIfNeeded];
         isSaving = NO;
     }
+    
+    exportUsingPanel = NO;
     
     return success;
 }
@@ -355,6 +367,10 @@ static NSPopUpButton *popUpButtonSubview(NSView *view)
         else if (outError != NULL)
             *outError = [NSError errorWithDomain:SKDocumentErrorDomain code:1 userInfo:[NSDictionary dictionaryWithObjectsAndKeys:NSLocalizedString(@"Unable to write notes as text", @"Error description"), NSLocalizedDescriptionKey, nil]];
     }
+    
+    if (didWrite == NO && outError != NULL && *outError == nil)
+        *outError = [NSError errorWithDomain:SKDocumentErrorDomain code:0 userInfo:[NSDictionary dictionaryWithObjectsAndKeys:NSLocalizedString(@"Unable to write file", @"Error description"), NSLocalizedDescriptionKey, nil]];
+    
     return didWrite;
 }
 
