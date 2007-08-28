@@ -99,6 +99,51 @@ Boolean GetMetadataForFile(void* thisInterface,
             [(NSMutableDictionary *)attributes setObject:date forKey:(NSString *)kMDItemContentCreationDate];
         
         success = TRUE;
+    } else if (UTTypeEqual(contentTypeUTI, CFSTR("net.sourceforge.skim-app.pdfd"))) {
+        NSData *data = [[NSData alloc] initWithContentsOfFile:[(NSString *)pathToFile stringByAppendingPathComponent:@"data.skim"] options:NSUncachedRead error:NULL];
+        if (data) {
+            NSArray *array = [NSKeyedUnarchiver unarchiveObjectWithData:data];
+            [data release];
+            
+            if (array) {
+                NSEnumerator *noteEnum = [array objectEnumerator];
+                NSDictionary *note;
+                NSMutableString *textContent = [[NSMutableString alloc] init];
+                NSMutableArray *notes = [[NSMutableArray alloc] init];
+                while (note = [noteEnum nextObject]) {
+                    NSString *contents = [note objectForKey:@"contents"];
+                    if (contents) {
+                        if ([textContent length])
+                            [textContent appendString:@"\n\n"];
+                        [textContent appendString:contents];
+                        [notes addObject:contents];
+                    }
+                    NSString *text = [[note objectForKey:@"text"] string];
+                    if (text) {
+                        if ([textContent length])
+                            [textContent appendString:@"\n\n"];
+                        [textContent appendString:text];
+                    }
+                }
+                [(NSMutableDictionary *)attributes setObject:textContent forKey:(NSString *)kMDItemTextContent];
+                [(NSMutableDictionary *)attributes setObject:notes forKey:@"net_sourceforge_skim_app_notes"];
+                [textContent release];
+                [notes release];
+            }
+        }
+        
+        [(NSMutableDictionary *)attributes setObject:@"Skim" forKey:(NSString *)kMDItemCreator];
+        
+        [(NSMutableDictionary *)attributes setObject:[NSArray arrayWithObjects:(NSString *)pathToFile, nil] forKey:(NSString *)kMDItemWhereFroms];
+        
+        NSDictionary *fileAttributes = [[NSFileManager defaultManager] fileAttributesAtPath:(NSString *)pathToFile traverseLink:YES];
+        NSDate *date;
+        if (date = [fileAttributes objectForKey:NSFileModificationDate])
+            [(NSMutableDictionary *)attributes setObject:date forKey:(NSString *)kMDItemContentModificationDate];
+        if (date = [fileAttributes objectForKey:NSFileCreationDate])
+            [(NSMutableDictionary *)attributes setObject:date forKey:(NSString *)kMDItemContentCreationDate];
+        
+        success = TRUE;
     } else {
         NSLog(@"Importer asked to handle unknown UTI %@ at path", contentTypeUTI, pathToFile);
     }
