@@ -140,6 +140,7 @@
 		CE7469180B7F40B700CBF969 /* Skim.icns in Resources */ = {isa = PBXBuildFile; fileRef = CE7469170B7F40B600CBF969 /* Skim.icns */; };
 		CE7C20500C259A5D0059E08C /* NSColor_SKExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = CE7C204E0C259A5D0059E08C /* NSColor_SKExtensions.m */; };
 		CE7C5D190BD8086C0011315D /* ToolbarLineNote.tiff in Resources */ = {isa = PBXBuildFile; fileRef = CE7C5D180BD8086C0011315D /* ToolbarLineNote.tiff */; };
+		CE898F060C843A8B008A0856 /* PDFDDocument.icns in Resources */ = {isa = PBXBuildFile; fileRef = CE898F050C843A8B008A0856 /* PDFDDocument.icns */; };
 		CE8B46E90C29CA00005CE7F1 /* SKLineInspector.m in Sources */ = {isa = PBXBuildFile; fileRef = CE8B46E70C29CA00005CE7F1 /* SKLineInspector.m */; };
 		CE8B46F00C29CA3D005CE7F1 /* LineInspector.nib in Resources */ = {isa = PBXBuildFile; fileRef = CE8B46EA0C29CA3D005CE7F1 /* LineInspector.nib */; };
 		CE9A87930C0C9E9A004F1F97 /* ProgressSheet.nib in Resources */ = {isa = PBXBuildFile; fileRef = CE9A878D0C0C9E9A004F1F97 /* ProgressSheet.nib */; };
@@ -507,6 +508,7 @@
 		CE7C204E0C259A5D0059E08C /* NSColor_SKExtensions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NSColor_SKExtensions.m; sourceTree = "<group>"; };
 		CE7C5D180BD8086C0011315D /* ToolbarLineNote.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; name = ToolbarLineNote.tiff; path = Images/ToolbarLineNote.tiff; sourceTree = "<group>"; };
 		CE87EF690BA9FF5A0027BBDD /* skimhelp.css */ = {isa = PBXFileReference; explicitFileType = text; fileEncoding = 30; name = skimhelp.css; path = "English.lproj/Skim Help/sty/skimhelp.css"; sourceTree = "<group>"; };
+		CE898F050C843A8B008A0856 /* PDFDDocument.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; name = PDFDDocument.icns; path = Images/PDFDDocument.icns; sourceTree = "<group>"; };
 		CE8B46E60C29CA00005CE7F1 /* SKLineInspector.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = SKLineInspector.h; sourceTree = "<group>"; };
 		CE8B46E70C29CA00005CE7F1 /* SKLineInspector.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = SKLineInspector.m; sourceTree = "<group>"; };
 		CE8B46EB0C29CA3D005CE7F1 /* English */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = English; path = English.lproj/LineInspector.nib; sourceTree = "<group>"; };
@@ -1013,6 +1015,7 @@
 			children = (
 				CE7469170B7F40B600CBF969 /* Skim.icns */,
 				CE07158A0B8A3D6300733CC8 /* PDFDocument.icns */,
+				CE898F050C843A8B008A0856 /* PDFDDocument.icns */,
 				CE4373B30BB5440E00A56987 /* PSDocument.icns */,
 				CE4D88D70C3AE52F002C20CB /* DVIDocument.icns */,
 				CEAA56D20C6DEE83006BD633 /* Cancel.tiff */,
@@ -1272,6 +1275,7 @@
 				CEAA56D50C6DEE83006BD633 /* Delete.tiff in Resources */,
 				CEAA68EB0C71242F006BD633 /* Resume.tiff in Resources */,
 				CEF84C630C78A89A00A3AD51 /* SmallPreferences.tiff in Resources */,
+				CE898F060C843A8B008A0856 /* PDFDDocument.icns in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

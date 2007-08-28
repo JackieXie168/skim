@@ -62,7 +62,12 @@
 #import "Files_SKExtensions.h"
 
 // maximum length of xattr value recommended by Apple
-#define MAX_XATTR_LENGTH 2048
+#define MAX_XATTR_LENGTH        2048
+
+#define WRAPPER_PDF_FILENAME    @"data.pdf"
+#define WRAPPER_SKIM_FILENAME   @"data.skim"
+#define WRAPPER_TXT_FILENAME    @"data.txt"
+#define WRAPPER_RTF_FILENAME    @"data.rtf"
 
 NSString *SKDocumentErrorDomain = @"SKDocumentErrorDomain";
 
@@ -169,21 +174,29 @@ static NSPopUpButton *popUpButtonSubview(NSView *view)
 }
 
 - (BOOL)prepareSavePanel:(NSSavePanel *)savePanel {
-    NSPopUpButton *formatPopup = popUpButtonSubview([savePanel accessoryView]);
-    NSString *lastExportedType = [[NSUserDefaults standardUserDefaults] stringForKey:@"SKLastExportedType"];
-    if ([[self pdfDocument] allowsPrinting] == NO) {
-        int index = [formatPopup indexOfItemWithRepresentedObject:SKEmbeddedPDFDocumentType];
-        if (index != -1)
-            [formatPopup removeItemAtIndex:index];
-    }
-    if (formatPopup && lastExportedType) {
-        int index = [formatPopup indexOfItemWithRepresentedObject:lastExportedType];
-        if (index != -1 && index != [formatPopup indexOfSelectedItem]) {
-            [formatPopup selectItemAtIndex:index];
-            [formatPopup sendAction:[formatPopup action] to:[formatPopup target]];
+    if (currentSaveOperation == NSSaveToOperation) {
+        NSPopUpButton *formatPopup = popUpButtonSubview([savePanel accessoryView]);
+        NSString *lastExportedType = [[NSUserDefaults standardUserDefaults] stringForKey:@"SKLastExportedType"];
+        if ([[self pdfDocument] allowsPrinting] == NO) {
+            int index = [formatPopup indexOfItemWithRepresentedObject:SKEmbeddedPDFDocumentType];
+            if (index != -1)
+                [formatPopup removeItemAtIndex:index];
+        }
+        if (formatPopup && lastExportedType) {
+            int index = [formatPopup indexOfItemWithRepresentedObject:lastExportedType];
+            if (index != -1 && index != [formatPopup indexOfSelectedItem]) {
+                [formatPopup selectItemAtIndex:index];
+                [formatPopup sendAction:[formatPopup action] to:[formatPopup target]];
+            }
         }
     }
     return YES;
+}
+
+- (void)runModalSavePanelForSaveOperation:(NSSaveOperationType)saveOperation delegate:(id)delegate didSaveSelector:(SEL)didSaveSelector contextInfo:(void *)contextInfo {
+    // Override so we can determine if this is a save, saveAs or export operation, so we can prepare the correct accessory view
+    currentSaveOperation = saveOperation;
+    [super runModalSavePanelForSaveOperation:saveOperation delegate:delegate didSaveSelector:didSaveSelector contextInfo:contextInfo];
 }
 
 - (BOOL)saveToURL:(NSURL *)absoluteURL ofType:(NSString *)typeName forSaveOperation:(NSSaveOperationType)saveOperation error:(NSError **)outError{
@@ -254,6 +267,20 @@ static NSPopUpButton *popUpButtonSubview(NSView *view)
         // notes are only saved as a dry-run to test if we can write, they are not copied to the final destination. 
         didWrite = [pdfData writeToURL:absoluteURL options:NSAtomicWrite error:outError] &&
                    [self saveNotesToExtendedAttributesAtURL:absoluteURL error:outError];
+    } else if ([typeName isEqualToString:SKPDFBundleDocumentType]) {
+        NSData *notesData = [[self notes] count] ? [NSKeyedArchiver archivedDataWithRootObject:[[self notes] valueForKey:@"dictionaryValue"]] : nil;
+        NSData *notesTextData = [[self notesString] dataUsingEncoding:NSUTF8StringEncoding];
+        NSData *notesRTFData = [self notesRTFData];
+        NSFileWrapper *fileWrapper = [[NSFileWrapper alloc] initDirectoryWithFileWrappers:[NSDictionary dictionary]];
+        [fileWrapper addRegularFileWithContents:pdfData preferredFilename:WRAPPER_PDF_FILENAME];
+        if (notesData)
+            [fileWrapper addRegularFileWithContents:notesData preferredFilename:WRAPPER_SKIM_FILENAME];
+        if (notesTextData)
+            [fileWrapper addRegularFileWithContents:notesTextData preferredFilename:WRAPPER_TXT_FILENAME];
+        if (notesRTFData)
+            [fileWrapper addRegularFileWithContents:notesRTFData preferredFilename:WRAPPER_RTF_FILENAME];
+        didWrite = [fileWrapper writeToFile:[absoluteURL path] atomically:YES updateFilenames:NO];
+        [fileWrapper release];
     } else if ([typeName isEqualToString:SKEmbeddedPDFDocumentType]) {
         [[self mainWindowController] removeTemporaryAnnotations];
         didWrite = [[[self mainWindowController] pdfDocument] writeToURL:absoluteURL];
@@ -305,7 +332,7 @@ static NSPopUpButton *popUpButtonSubview(NSView *view)
     NSMutableDictionary *dict = [[[super fileAttributesToWriteToURL:absoluteURL ofType:typeName forSaveOperation:saveOperation originalContentsURL:absoluteOriginalContentsURL error:outError] mutableCopy] autorelease];
     
     // only set the creator code for our native types
-    if ([typeName isEqualToString:SKPDFDocumentType] || [typeName isEqualToString:SKEmbeddedPDFDocumentType] || [typeName isEqualToString:SKBarePDFDocumentType] || [typeName isEqualToString:SKNotesDocumentType])
+    if ([typeName isEqualToString:SKPDFDocumentType] || [typeName isEqualToString:SKPDFBundleDocumentType] || [typeName isEqualToString:SKEmbeddedPDFDocumentType] || [typeName isEqualToString:SKBarePDFDocumentType] || [typeName isEqualToString:SKNotesDocumentType])
         [dict setObject:[NSNumber numberWithUnsignedLong:'SKIM'] forKey:NSFileHFSCreatorCode];
     
     if ([[[absoluteURL path] pathExtension] isEqualToString:@"pdf"] || ([typeName isEqualToString:SKPDFDocumentType] || [typeName isEqualToString:SKEmbeddedPDFDocumentType] || [typeName isEqualToString:SKBarePDFDocumentType]))
@@ -411,6 +438,29 @@ static NSPopUpButton *popUpButtonSubview(NSView *view)
                 }
             }
         }
+    } else if ([docType isEqualToString:SKPDFBundleDocumentType]) {
+        NSFileWrapper *fileWrapper = [[NSFileWrapper alloc] initWithPath:[absoluteURL path]];
+        NSDictionary *fileWrappers = [fileWrapper fileWrappers];
+        NSData *notesData = nil;
+        NSEnumerator *nameEnum = [fileWrappers keyEnumerator];
+        NSString *name;
+        
+        while (name = [nameEnum nextObject]) {
+            NSFileWrapper *fw = [fileWrappers objectForKey:name];
+            if ([fw isRegularFile] == NO)
+                continue;
+            NSString *extension = [[fw filename] pathExtension];
+            if ([name caseInsensitiveCompare:WRAPPER_PDF_FILENAME] == NSOrderedSame || (data == nil && [extension caseInsensitiveCompare:@"pdf"] == NSOrderedSame)) {
+                if (data = [[fw regularFileContents] retain])
+                    pdfDoc = [[PDFDocument alloc] initWithData:data];
+            } else if ([name caseInsensitiveCompare:WRAPPER_SKIM_FILENAME] == NSOrderedSame || (notesData == nil && [extension caseInsensitiveCompare:@"skim"] == NSOrderedSame)) {
+                notesData = [fw regularFileContents];
+                NSArray *array = [NSKeyedUnarchiver unarchiveObjectWithData:notesData];
+                if (array)
+                    [self setNoteDicts:array];
+            }
+        }
+        [fileWrapper release];
     } else if ([docType isEqualToString:SKPostScriptDocumentType]) {
         if (data = [NSData dataWithContentsOfURL:absoluteURL options:0 error:&error]) {
             SKPSProgressController *progressController = [[SKPSProgressController alloc] init];

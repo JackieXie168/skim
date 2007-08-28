@@ -45,6 +45,7 @@
 
 // See CFBundleTypeName in Info.plist
 NSString *SKPDFDocumentType = nil; /* set to NSPDFPboardType, not @"NSPDFPboardType" */
+NSString *SKPDFBundleDocumentType = @"PDF Bundle";
 NSString *SKEmbeddedPDFDocumentType = @"PDF With Embedded Notes";
 NSString *SKBarePDFDocumentType = @"PDF Without Notes";
 NSString *SKNotesDocumentType = @"Skim Notes";
