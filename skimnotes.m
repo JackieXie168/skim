@@ -5,8 +5,8 @@
 #define SKIM_RTF_NOTES_KEY @"net_sourceforge_skim-app_rtf_notes"
 #define SKIM_TEXT_NOTES_KEY @"net_sourceforge_skim-app_text_notes"
 
-static char *usageStr = "Usage:\n skimnotes set PDF_FILE [SKIM_FILE]\n skimnotes get PDF_FILE [SKIM_FILE|RTF_FILE|TEXT_FILE]\n skimnotes remove PDF_FILE";
-static char *versionStr = "SkimNotes command-line client, version 0.2.";
+static char *usageStr = "Usage:\n skimnotes set PDF_FILE [SKIM_FILE|-]\n skimnotes get [-format skim|text|rtf] PDF_FILE [SKIM_FILE|RTF_FILE|TEXT_FILE|-]\n skimnotes remove PDF_FILE\n skimnotes help";
+static char *versionStr = "SkimNotes command-line client, version 0.3.";
 
 enum {
     SKNActionGet,
@@ -14,37 +14,80 @@ enum {
     SKNActionRemove
 };
 
+enum {
+    SKNFormatAuto,
+    SKNFormatSkim,
+    SKNFormatText,
+    SKNFormatRTF
+};
+
 static inline NSString *SKNNormalizedPath(NSString *path, NSString *basePath) {
-    unichar ch = [path length] ? [path characterAtIndex:0] : 0;
-    if (basePath && ch != '/' && ch != '~')
-        path = [basePath stringByAppendingPathComponent:path];
-    return [path stringByStandardizingPath];
+    if ([path isEqualToString:@"-"] == NO) {
+        unichar ch = [path length] ? [path characterAtIndex:0] : 0;
+        if (basePath && ch != '/' && ch != '~')
+            path = [basePath stringByAppendingPathComponent:path];
+        path = [path stringByStandardizingPath];
+    }
+    return path;
+}
+
+static inline void SKNWriteUsageAndVersion() {
+    fprintf (stderr, "%s\n%s\n", usageStr, versionStr);
 }
 
 int main (int argc, const char * argv[]) {
 	int action = 0;
     
-    if (argc == 2 && (strcmp("-h", argv[1]) == 0 || strcmp("-help", argv[1]) == 0)) {
-        fprintf (stderr, "%s\n%s\n", usageStr, versionStr);
-        exit (0);
-    } else if (argc > 2 && strcmp("get", argv[1]) == 0) {
+    NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
+ 
+    NSArray *args = [[NSProcessInfo processInfo] arguments];
+    
+    if (argc < 3) {
+        if (argc == 2 && ([[args objectAtIndex:1] isEqualToString:@"-h"] || [[args objectAtIndex:1] isEqualToString:@"-help"] || [[args objectAtIndex:1] isEqualToString:@"help"])) {
+            SKNWriteUsageAndVersion();
+            exit (0);
+        } else {
+            SKNWriteUsageAndVersion();
+            exit (1);
+        }
+    } 
+    
+    NSString *actionString = [args objectAtIndex:2];
+    if ([actionString isEqualToString:@"get"]) {
         action = SKNActionGet;
-    } else if (argc > 2 && strcmp("set", argv[1]) == 0) {
+    } else if ([actionString isEqualToString:@"set"]) {
         action = SKNActionSet;
-    } else if (argc > 2 && strcmp("remove", argv[1]) == 0) {
+    } else if ([actionString isEqualToString:@"remove"]) {
         action = SKNActionRemove;
     } else {
-        fprintf (stderr, "%s\n%s\n", usageStr, versionStr);
+        SKNWriteUsageAndVersion();
         exit (1);
     }
     
-    NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
- 
+    NSString *formatString = nil;
+    int format = SKNFormatAuto;
+    int offset = 2;
+    
+    if ([[args objectAtIndex:2] isEqualToString:@"-format"]) {
+        if (argc < 5) {
+            SKNWriteUsageAndVersion();
+            exit (1);
+        }
+        offset = 4;
+        formatString = [args objectAtIndex:3];
+        if ([formatString caseInsensitiveCompare:@"skim"] == NSOrderedSame)
+            format = SKNFormatSkim;
+        if ([formatString caseInsensitiveCompare:@"text"] == NSOrderedSame || [formatString caseInsensitiveCompare:@"txt"] == NSOrderedSame)
+            format = SKNFormatText;
+        if ([formatString caseInsensitiveCompare:@"rtf"] == NSOrderedSame)
+            format = SKNFormatRTF;
+    }
+    
     NSFileManager *fm = [NSFileManager defaultManager];
     BOOL success = NO;
     NSString *currentDir = [fm currentDirectoryPath];
-    NSString *pdfPath = SKNNormalizedPath([[[NSProcessInfo processInfo] arguments] objectAtIndex:2], currentDir);
-    NSString *notesPath = argc < 4 ? nil : SKNNormalizedPath([[[NSProcessInfo processInfo] arguments] objectAtIndex:3], currentDir);
+    NSString *pdfPath = SKNNormalizedPath([args objectAtIndex:offset], currentDir);
+    NSString *notesPath = argc < offset + 2 ? nil : SKNNormalizedPath([args objectAtIndex:offset + 1], currentDir);
     BOOL isDir = NO;
     
     if (action != SKNActionRemove && notesPath == nil) {
@@ -59,27 +102,46 @@ int main (int argc, const char * argv[]) {
     } else if (action == SKNActionGet) {
         NSError *error = nil;
         NSData *data = nil;
-        if ([[notesPath pathExtension] caseInsensitiveCompare:@"rtf"] == NSOrderedSame) {
-            data = [fm extendedAttributeNamed:SKIM_RTF_NOTES_KEY atPath:pdfPath traverseLink:YES error:&error];
+        if (format == SKNFormatAuto) {
+            NSString *extension = [notesPath pathExtension];
+            if ([extension caseInsensitiveCompare:@"rtf"] == NSOrderedSame)
+                format = SKNFormatRTF;
+            else if ([[notesPath pathExtension] caseInsensitiveCompare:@"txt"] == NSOrderedSame || [[notesPath pathExtension] caseInsensitiveCompare:@"text"] == NSOrderedSame)
+                format = SKNFormatText;
+            else
+                format = SKNFormatSkim;
+        }
+        if (format = SKNFormatSkim) {
+            NSError *error = nil;
+            data = [fm extendedAttributeNamed:SKIM_NOTES_KEY atPath:pdfPath traverseLink:YES error:&error];
             if (data == nil && [error code] == ENOATTR)
-                data = [NSData data];
-        } else if ([[notesPath pathExtension] caseInsensitiveCompare:@"txt"] == NSOrderedSame || [[notesPath pathExtension] caseInsensitiveCompare:@"text"] == NSOrderedSame) {
+                data = [NSKeyedArchiver archivedDataWithRootObject:[NSArray array]];
+        } else if (format = SKNFormatText) {
             NSError *error = nil;
             NSString *string = [fm propertyListFromExtendedAttributeNamed:SKIM_TEXT_NOTES_KEY atPath:pdfPath traverseLink:YES error:&error];
             data = [string dataUsingEncoding:NSUTF8StringEncoding];
             if (string == nil && [error code] == ENOATTR)
                 data = [NSData data];
-        } else {
-            NSError *error = nil;
-            data = [fm extendedAttributeNamed:SKIM_NOTES_KEY atPath:pdfPath traverseLink:YES error:&error];
+        } else if (format = SKNFormatRTF) {
+            data = [fm extendedAttributeNamed:SKIM_RTF_NOTES_KEY atPath:pdfPath traverseLink:YES error:&error];
             if (data == nil && [error code] == ENOATTR)
-                data = [NSKeyedArchiver archivedDataWithRootObject:[NSArray array]];
+                data = [NSData data];
         }
-        if (data)
-            success = [data writeToFile:notesPath atomically:YES];
-    } else if (action == SKNActionSet && notesPath && [fm fileExistsAtPath:notesPath isDirectory:&isDir] && isDir == NO) {
-        NSData *data = [NSData dataWithContentsOfFile:notesPath];
+        if (data) {
+            if ([notesPath isEqualToString:@"-"]) {
+                [(NSFileHandle *)[NSFileHandle fileHandleWithStandardOutput] writeData:data];
+                success = YES;
+            } else {
+                success = [data writeToFile:notesPath atomically:YES];
+            }
+        }
+    } else if (action == SKNActionSet && notesPath && ([notesPath isEqualToString:@"-"] || ([fm fileExistsAtPath:notesPath isDirectory:&isDir] && isDir == NO))) {
+        NSData *data = nil;
         NSError *error = nil;
+        if ([notesPath isEqualToString:@"-"])
+            data = [[NSFileHandle fileHandleWithStandardInput] readDataToEndOfFile];
+        else
+            data = [NSData dataWithContentsOfFile:notesPath];
         if (data) {
             success = [fm removeExtendedAttribute:SKIM_NOTES_KEY atPath:pdfPath traverseLink:YES error:&error];
             if (success || [error code] == ENOATTR)
