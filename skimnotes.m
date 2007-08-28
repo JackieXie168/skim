@@ -52,7 +52,7 @@ int main (int argc, const char * argv[]) {
         }
     } 
     
-    NSString *actionString = [args objectAtIndex:2];
+    NSString *actionString = [args objectAtIndex:1];
     if ([actionString isEqualToString:@"get"]) {
         action = SKNActionGet;
     } else if ([actionString isEqualToString:@"set"]) {
