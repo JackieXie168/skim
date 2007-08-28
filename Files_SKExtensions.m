@@ -231,7 +231,7 @@ FSPathDeleteContainer(
 	require_noerr(result, FSPathMakeRef);
 	
 	/* make sure container is a directory */
-	require_action(isDirectory == false, ContainerNotDirectory, result = dirNFErr);
+	require_action(isDirectory == true, ContainerNotDirectory, result = dirNFErr);
     
 	/* delete the container recursively  */
     result = FSDeleteContainer(&container);
