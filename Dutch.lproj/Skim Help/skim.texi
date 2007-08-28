@@ -868,7 +868,7 @@ Wannneer het PDF-document niet is ingesteld om automatisch in het venster te pas
 
 @box{taskbox}
 @itemize
-@item Om het venster te vergroten of verkleinen zodat het precies om de PDF past, kies Venster > Passend.
+@item Om het venster te vergroten of verkleinen zodat het precies om de PDF past, kies Venster > Pas om PDF.
 @end itemize
 @endbox
 
@@ -1044,6 +1044,8 @@ Er zijn een aantal manieren om notities te behouden. Sommige compressie-methoden
 
 U kunt de notities en markeringen ook in een apart .sim-bestand bewaren. De ontvanger van de email kan de notities dan later aan het PDF-bestand toevoegen.
 
+Als laatste kunt u ook de PDF en notities bewaren in een PDF bundel, dat de PDF en notities samenvoegt.
+
 @box{taskbox}
 @heading Om de notities in een apart bestand te bewaren:
 @enumerate
@@ -1060,6 +1062,16 @@ U kunt de notities en markeringen ook in een apart .sim-bestand bewaren. De ontv
 @item Maak zeker dat u het PDF-bestand bewaard heeft.
 @item Kies Archief > Bewaar gearchiveerd bestand@dots{}, kies a locatie om het archief te bewaren, en druk op de OK-knop.
 @end enumerate
+@heading Om een schijfkopie van een PDF-document te maken:
+@enumerate
+@item Maak zeker dat u het PDF-bestand bewaard heeft.
+@item Kies Archief > Bewaar schijfkopie@dots{}, kies a locatie om de schijfkopie te bewaren, en druk op de OK-knop.
+@end enumerate
+@heading Om een kopie van de PDF en notities in een bundel te bewaren:
+@enumerate
+@item Kies File > Exporteer@dots{}. 
+@item Selecteer "PDF bundel" van de Structuur popup, kies een locatie om de bundel te bewaren, en druk op de OK-knop.
+@end enumerate
 @endbox
 
 Het is belangrijk dat het notitie-bestand geassocieerd is met het PDF-bestand. Daarom is het meestal het beste om dezelfde naam voor het PDF-bestand en het .skim-bestand te kiezen. Als dit het geval is, zal Skim automatisch de keuze aanbieden om de notities in de notitie-bestand te lezen wanneer u het PDF-bestand opent.
@@ -1068,6 +1080,38 @@ Het is belangrijk dat het notitie-bestand geassocieerd is met het PDF-bestand. D
 @menu
 * Notities aan een PDF-document toevoegen::
 * Gedeelten van een PDF-document markeren::
+* Notities en markeringen in een apart bestand bewaren::
+* Notities en markeringen uit een apart Skim notities-bestand toevoegen::
+* PDF en notities in een bundel bewaren::
+@end menu
+
+@c ======================================================================================
+
+@topic PDF en notities in een bundel bewaren
+
+Notities en markeringen die aan een PDF-bestand zijn toegevoegd worden niet bewaard in de PDF-data, maar worden toegevoegd als 'uitgebreide attributen' (extended attributes). Deze kunnen soms verloren gaan als het bestand gecomprimeerd wordt of via email word verstuurd.
+
+U kunt de PDF and de notities ook bewaren in een bundle, met bestandsextensie pdfd.
+
+@box{taskbox}
+@heading Om de PDF en notities in een bundel te bewaren:
+@enumerate
+@item Kies File > Bewaar als@dots{}. 
+@item Selecteer "PDF bundel" van de Structuur popup, kies een locatie om de bundel te bewaren, en druk op de OK-knop.
+@end enumerate
+@heading Om een kopie van de PDF en notities in een bundel te bewaren:
+@enumerate
+@item Kies File > Exporteer@dots{}. 
+@item Selecteer "PDF bundel" van de Structuur popup, kies een locatie om de bundel te bewaren, en druk op de OK-knop.
+@end enumerate
+@endbox
+
+@heading Zie ook
+@menu
+* Als ik een PDF-bestand email verlies ik de notities en markeringen::
+* PDF-bestanden zonder de notities en markeringen bewaren::
+* PDF-bestanden met de notities en markeringen inbegrepen bewaren::
+* Notities en markeringen in een apart bestand bewaren::
 @end menu
 
 @c ======================================================================================
@@ -1162,6 +1206,7 @@ Normaal worden notities en markeringen die aan een PDF-bestand zijn toegevoegd w
 @heading Zie ook
 @menu
 * PDF-bestanden zonder de notities en markeringen bewaren::
+* Ik kan notities en merkeringen niet in andere PDF-vertoningsprogrammas zien::
 @end menu
 
 @c ======================================================================================
