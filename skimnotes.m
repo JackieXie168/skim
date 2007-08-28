@@ -129,10 +129,14 @@ int main (int argc, const char * argv[]) {
         }
         if (data) {
             if ([notesPath isEqualToString:@"-"]) {
-                [(NSFileHandle *)[NSFileHandle fileHandleWithStandardOutput] writeData:data];
+                if ([data length])
+                    [(NSFileHandle *)[NSFileHandle fileHandleWithStandardOutput] writeData:data];
                 success = YES;
             } else {
-                success = [data writeToFile:notesPath atomically:YES];
+                if ([data length] || ([fm fileExistsAtPath:notesPath isDirectory:&isDir] && isDir == NO))
+                    success = [data writeToFile:notesPath atomically:YES];
+                else
+                    success = YES;
             }
         }
     } else if (action == SKNActionSet && notesPath && ([notesPath isEqualToString:@"-"] || ([fm fileExistsAtPath:notesPath isDirectory:&isDir] && isDir == NO))) {
@@ -144,7 +148,7 @@ int main (int argc, const char * argv[]) {
             data = [NSData dataWithContentsOfFile:notesPath];
         if (data) {
             success = [fm removeExtendedAttribute:SKIM_NOTES_KEY atPath:pdfPath traverseLink:YES error:&error];
-            if (success || [error code] == ENOATTR)
+            if ((success || [error code] == ENOATTR) && [data length])
                 success = [fm setExtendedAttributeNamed:SKIM_NOTES_KEY toValue:data atPath:pdfPath options:0 error:NULL];
         }
     } else if (action == SKNActionRemove) {
