@@ -58,19 +58,19 @@ Boolean GetMetadataForFile(void* thisInterface,
         notePath = (NSString *)pathToFile;
         sourcePath = [[(NSString *)pathToFile stringByDeletingPathExtension] stringByAppendingPathExtension:@"pdf"];
     } else if (UTTypeEqual(contentTypeUTI, CFSTR("net.sourceforge.skim-app.pdfd"))) {
-        notePath = [(NSString *)pathToFile stringByAppendingPathComponent:@"data.skim"];
+        notePath = [(NSString *)pathToFile stringByAppendingPathComponent:@"notes.skim"];
     }
     
     if (notePath && [[NSFileManager defaultManager] fileExistsAtPath:notePath]) {
         NSData *data = [[NSData alloc] initWithContentsOfFile:notePath options:NSUncachedRead error:NULL];
         if (data) {
+            NSMutableString *textContent = [[NSMutableString alloc] init];
             NSArray *array = [NSKeyedUnarchiver unarchiveObjectWithData:data];
             [data release];
             
             if (array) {
                 NSEnumerator *noteEnum = [array objectEnumerator];
                 NSDictionary *note;
-                NSMutableString *textContent = [[NSMutableString alloc] init];
                 NSMutableArray *notes = [[NSMutableArray alloc] init];
                 while (note = [noteEnum nextObject]) {
                     NSString *contents = [note objectForKey:@"contents"];
@@ -87,11 +87,21 @@ Boolean GetMetadataForFile(void* thisInterface,
                         [textContent appendString:text];
                     }
                 }
-                [(NSMutableDictionary *)attributes setObject:textContent forKey:(NSString *)kMDItemTextContent];
                 [(NSMutableDictionary *)attributes setObject:notes forKey:@"net_sourceforge_skim_app_notes"];
                 [textContent release];
                 [notes release];
             }
+            
+            if (UTTypeEqual(contentTypeUTI, CFSTR("net.sourceforge.skim-app.pdfd"))) {
+                NSString *textPath = [(NSString *)pathToFile stringByAppendingPathComponent:@"data.txt"];
+                NSString *string = [NSString stringWithContentsOfFile:textPath];
+                if ([string length]) {
+                    if ([textContent length])
+                        [textContent appendString:@"\n\n"];
+                    [textContent appendString:string];
+                }
+            }
+            [(NSMutableDictionary *)attributes setObject:textContent forKey:(NSString *)kMDItemTextContent];
         }
         
         [(NSMutableDictionary *)attributes setObject:@"Skim" forKey:(NSString *)kMDItemCreator];
