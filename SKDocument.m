@@ -465,7 +465,7 @@ static NSPopUpButton *popUpButtonSubview(NSView *view)
     NSError *error = nil;
     
     if ([docType isEqualToString:SKPDFDocumentType]) {
-        if ((data = [[NSData alloc] initWithContentsOfURL:absoluteURL options:0 error:&error]) &&
+        if ((data = [[NSData alloc] initWithContentsOfURL:absoluteURL options:NSUncachedRead error:&error]) &&
             (pdfDoc = [[PDFDocument alloc] initWithURL:absoluteURL])) {
             if ([self readNotesFromExtendedAttributesAtURL:absoluteURL error:&error] == NO) {
                 NSAlert *alert = [NSAlert alertWithMessageText:NSLocalizedString(@"Unable to Read Notes", @"Message in alert dialog") 
@@ -525,14 +525,14 @@ static NSPopUpButton *popUpButtonSubview(NSView *view)
         }
         [fileWrapper release];
     } else if ([docType isEqualToString:SKPostScriptDocumentType]) {
-        if (data = [NSData dataWithContentsOfURL:absoluteURL options:0 error:&error]) {
+        if (data = [NSData dataWithContentsOfURL:absoluteURL options:NSUncachedRead error:&error]) {
             SKPSProgressController *progressController = [[SKPSProgressController alloc] init];
             if (data = [[progressController PDFDataWithPostScriptData:data] retain])
                 pdfDoc = [[PDFDocument alloc] initWithData:data];
             [progressController autorelease];
         }
     } else if ([docType isEqualToString:SKDVIDocumentType]) {
-        if (data = [NSData dataWithContentsOfURL:absoluteURL options:0 error:&error]) {
+        if (data = [NSData dataWithContentsOfURL:absoluteURL options:NSUncachedRead error:&error]) {
             SKDVIProgressController *progressController = [[SKDVIProgressController alloc] init];
             if (data = [[progressController PDFDataWithDVIFile:[absoluteURL path]] retain])
                 pdfDoc = [[PDFDocument alloc] initWithData:data];
