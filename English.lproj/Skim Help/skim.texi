@@ -1100,6 +1100,8 @@ Alternatively, you can save the PDF and the notes wrapped in a bundle, with file
 @end enumerate
 @endbox
 
+A PDF bundle contains the unmodified PDF file and files containing the notes. You can see those file in the Finder using the 'Show package Contents' contextual menu item.
+
 @heading See also
 @menu
 * Emailing a PDF file loses notes or highlights::
