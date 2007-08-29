@@ -147,8 +147,9 @@ static IMP originalDealloc = NULL;
     NSRect bounds = [self boundsForBox:box];
     BOOL isScaled = size > 0.0;
     BOOL hasShadow = shadowBlurRadius > 0.0;
-    float scaleX, scaleY;
+    float scale = 1.0;
     NSSize thumbnailSize;
+    NSRect pageRect = NSZeroRect;
     NSImage *image;
     
     if ([self rotation] % 180 == 90)
@@ -159,11 +160,9 @@ static IMP originalDealloc = NULL;
             thumbnailSize = NSMakeSize(roundf((size - 2.0 * shadowBlurRadius) * NSWidth(bounds) / NSHeight(bounds) + 2.0 * shadowBlurRadius), size);
         else
             thumbnailSize = NSMakeSize(size, roundf((size - 2.0 * shadowBlurRadius) * NSHeight(bounds) / NSWidth(bounds) + 2.0 * shadowBlurRadius));
-        scaleX = (thumbnailSize.width - 2.0 * shadowBlurRadius) / NSWidth(bounds);
-        scaleY = (thumbnailSize.height - 2.0 * shadowBlurRadius) / NSHeight(bounds);
+        scale = fminf((thumbnailSize.width - 2.0 * shadowBlurRadius) / NSWidth(bounds), (thumbnailSize.height - 2.0 * shadowBlurRadius) / NSHeight(bounds));
     } else {
         thumbnailSize = NSMakeSize(NSWidth(bounds) + 2.0 * shadowBlurRadius, NSHeight(bounds) + 2.0 * shadowBlurRadius);
-        scaleX = scaleY = 1.0;
     }
     
     readingBarRect.origin = SKSubstractPoints(readingBarRect.origin, bounds.origin);
@@ -172,13 +171,6 @@ static IMP originalDealloc = NULL;
     [image lockFocus];
     [NSGraphicsContext saveGraphicsState];
     [[NSGraphicsContext currentContext] setImageInterpolation:NSImageInterpolationHigh];
-    if (isScaled || hasShadow) {
-        NSAffineTransform *transform = [NSAffineTransform transform];
-        if (isScaled)
-            [transform scaleXBy:scaleX yBy:scaleY];
-        [transform translateXBy:(shadowBlurRadius - shadowOffset.width) / scaleX yBy:(shadowBlurRadius - shadowOffset.height) / scaleY];
-        [transform concat];
-    }
     [NSGraphicsContext saveGraphicsState];
     [[NSColor whiteColor] set];
     if (hasShadow) {
@@ -189,14 +181,25 @@ static IMP originalDealloc = NULL;
         [shadow set];
         [shadow release];
     }
-    bounds.origin = NSZeroPoint;
-    NSRectFill(bounds);
+    pageRect.size = thumbnailSize;
+    pageRect = NSInsetRect(pageRect, shadowBlurRadius, shadowBlurRadius);
+    pageRect.origin.x -= shadowOffset.width;
+    pageRect.origin.y -= shadowOffset.height;
+    NSRectFill(pageRect);
     [NSGraphicsContext restoreGraphicsState];
+    if (isScaled || hasShadow) {
+        NSAffineTransform *transform = [NSAffineTransform transform];
+        if (isScaled)
+            [transform scaleBy:scale];
+        [transform translateXBy:(shadowBlurRadius - shadowOffset.width) / scale yBy:(shadowBlurRadius - shadowOffset.height) / scale];
+        [transform concat];
+    }
     [self drawWithBox:box]; 
     if (NSIsEmptyRect(readingBarRect) == NO) {
         [[NSUnarchiver unarchiveObjectWithData:[[NSUserDefaults standardUserDefaults] objectForKey:SKReadingBarColorKey]] setFill];
         if ([[NSUserDefaults standardUserDefaults] boolForKey:SKReadingBarInvertKey]) {
             NSRect outRect, ignored;
+            bounds.origin = NSZeroPoint;
             NSDivideRect(bounds, &outRect, &ignored, NSMaxY(bounds) - NSMaxY(readingBarRect), NSMaxYEdge);
             [NSBezierPath fillRect:outRect];
             NSDivideRect(bounds, &outRect, &ignored, NSMinY(readingBarRect) - NSMinY(bounds), NSMinYEdge);
