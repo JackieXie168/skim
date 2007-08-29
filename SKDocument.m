@@ -521,23 +521,28 @@ static NSPopUpButton *popUpButtonSubview(NSView *view)
     } else if ([docType isEqualToString:SKPDFBundleDocumentType]) {
         NSFileWrapper *fileWrapper = [[NSFileWrapper alloc] initWithPath:[absoluteURL path]];
         NSDictionary *fileWrappers = [fileWrapper fileWrappers];
-        NSData *notesData = nil;
-        NSEnumerator *nameEnum = [fileWrappers keyEnumerator];
-        NSString *name;
+        NSArray *noteArray = nil;
+        NSFileWrapper *fw;
         
-        while (name = [nameEnum nextObject]) {
-            NSFileWrapper *fw = [fileWrappers objectForKey:name];
-            if ([fw isRegularFile] == NO)
-                continue;
-            NSString *extension = [[fw filename] pathExtension];
-            if ([name caseInsensitiveCompare:WRAPPER_PDF_FILENAME] == NSOrderedSame || (data == nil && [extension caseInsensitiveCompare:@"pdf"] == NSOrderedSame)) {
-                if (data = [[fw regularFileContents] retain])
-                    pdfDoc = [[PDFDocument alloc] initWithData:data];
-            } else if ([name caseInsensitiveCompare:WRAPPER_SKIM_FILENAME] == NSOrderedSame || (notesData == nil && [extension caseInsensitiveCompare:@"skim"] == NSOrderedSame)) {
-                notesData = [fw regularFileContents];
-                NSArray *array = [NSKeyedUnarchiver unarchiveObjectWithData:notesData];
-                if (array)
-                    [self setNoteDicts:array];
+        if ((fw = [fileWrappers objectForKey:WRAPPER_PDF_FILENAME]) && [fw isRegularFile])
+            data = [[fw regularFileContents] retain];
+        if ((fw = [fileWrappers objectForKey:WRAPPER_SKIM_FILENAME]) && [fw isRegularFile] &&
+            (noteArray = [NSKeyedUnarchiver unarchiveObjectWithData:[fw regularFileContents]]))
+            [self setNoteDicts:noteArray];
+        if (data == nil || noteArray == nil) {
+            NSArray *fws = [fileWrappers allValues];
+            NSArray *extensions = [fws valueForKeyPath:@"filename.pathExtension.lowercaseString"];
+            unsigned int index;
+            if (data == nil) {
+                index = [extensions indexOfObject:@"pdf"];
+                if ((index != NSNotFound) && (fw = [fws objectAtIndex:index]) && [fw isRegularFile]) 
+                    data = [[fw regularFileContents] retain];
+            }
+            if (noteArray == nil) {
+                index = [extensions indexOfObject:@"skim"];
+                if ((index != NSNotFound) && (fw = [fws objectAtIndex:index]) && [fw isRegularFile] &&
+                    (noteArray = [NSKeyedUnarchiver unarchiveObjectWithData:[fw regularFileContents]]))
+                    [self setNoteDicts:noteArray];
             }
         }
         [fileWrapper release];
