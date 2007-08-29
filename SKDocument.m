@@ -452,6 +452,10 @@ static NSPopUpButton *popUpButtonSubview(NSView *view)
     PDFDocument *pdfDoc = nil;
     NSError *error = nil;
     
+    [self setPDFData:nil];
+    [self setPDFDoc:nil];
+    [self setNoteDicts:nil];
+    
     if ([docType isEqualToString:SKPostScriptDocumentType]) {
         SKPSProgressController *progressController = [[[SKPSProgressController alloc] init] autorelease];
         data = [progressController PDFDataWithPostScriptData:data];
@@ -480,6 +484,10 @@ static NSPopUpButton *popUpButtonSubview(NSView *view)
     NSData *data = nil;
     PDFDocument *pdfDoc = nil;
     NSError *error = nil;
+    
+    [self setPDFData:nil];
+    [self setPDFDoc:nil];
+    [self setNoteDicts:nil];
     
     if ([docType isEqualToString:SKPDFDocumentType]) {
         if ((data = [[NSData alloc] initWithContentsOfURL:absoluteURL options:NSUncachedRead error:&error]) &&
@@ -524,25 +532,31 @@ static NSPopUpButton *popUpButtonSubview(NSView *view)
         NSArray *noteArray = nil;
         NSFileWrapper *fw;
         
-        if ((fw = [fileWrappers objectForKey:WRAPPER_PDF_FILENAME]) && [fw isRegularFile])
+        if ((fw = [fileWrappers objectForKey:WRAPPER_PDF_FILENAME]) && [fw isRegularFile]) {
             data = [[fw regularFileContents] retain];
-        if ((fw = [fileWrappers objectForKey:WRAPPER_SKIM_FILENAME]) && [fw isRegularFile] &&
-            (noteArray = [NSKeyedUnarchiver unarchiveObjectWithData:[fw regularFileContents]]))
-            [self setNoteDicts:noteArray];
+            pdfDoc = [[PDFDocument alloc] initWithURL:[NSURL fileURLWithPath:[[absoluteURL path] stringByAppendingPathComponent:[fw filename]]]];
+        }
+        if ((fw = [fileWrappers objectForKey:WRAPPER_SKIM_FILENAME]) && [fw isRegularFile]) {
+            if (noteArray = [NSKeyedUnarchiver unarchiveObjectWithData:[fw regularFileContents]])
+                [self setNoteDicts:noteArray];
+        }
         if (data == nil || noteArray == nil) {
             NSArray *fws = [fileWrappers allValues];
             NSArray *extensions = [fws valueForKeyPath:@"filename.pathExtension.lowercaseString"];
             unsigned int index;
             if (data == nil) {
                 index = [extensions indexOfObject:@"pdf"];
-                if ((index != NSNotFound) && (fw = [fws objectAtIndex:index]) && [fw isRegularFile]) 
+                if ((index != NSNotFound) && (fw = [fws objectAtIndex:index]) && [fw isRegularFile]) {
                     data = [[fw regularFileContents] retain];
+                    pdfDoc = [[PDFDocument alloc] initWithURL:[NSURL fileURLWithPath:[[absoluteURL path] stringByAppendingPathComponent:[fw filename]]]];
+                }
             }
             if (noteArray == nil) {
                 index = [extensions indexOfObject:@"skim"];
-                if ((index != NSNotFound) && (fw = [fws objectAtIndex:index]) && [fw isRegularFile] &&
-                    (noteArray = [NSKeyedUnarchiver unarchiveObjectWithData:[fw regularFileContents]]))
-                    [self setNoteDicts:noteArray];
+                if ((index != NSNotFound) && (fw = [fws objectAtIndex:index]) && [fw isRegularFile]) {
+                    if (noteArray = [NSKeyedUnarchiver unarchiveObjectWithData:[fw regularFileContents]])
+                        [self setNoteDicts:noteArray];
+                }
             }
         }
         [fileWrapper release];
