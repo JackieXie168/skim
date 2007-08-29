@@ -10,6 +10,7 @@
     </note>
     <attributes>
         <attribute name="net_sourceforge_skim_app_notes" multivalued="true" type="CFString"/>
+        <attribute name="net_sourceforge_skim_app_dimensions" multivalued="false" type="CFString"/>
     </attributes>
 
     <types>
@@ -22,8 +23,6 @@
             </allattrs>
             <displayattrs>
                 kMDItemWhereFroms
-                kMDItemContentModificationDate
-                kMDItemContentCreationDate
                 net_sourceforge_skim_app_notes
             </displayattrs>
         </type>
@@ -33,10 +32,18 @@
             </note>
             <allattrs>
                 net_sourceforge_skim_app_notes
+                net_sourceforge_skim_app_dimensions
             </allattrs>
             <displayattrs>
-                kMDItemContentModificationDate
-                kMDItemContentCreationDate
+                kMDItemTitle
+                kMDItemAuthors
+                kMDItemCreator
+                kMDItemNumberOfPages
+                net_sourceforge_skim_app_dimensions
+                kMDItemVersion
+                kMDItemEncodingApplications
+                kMDItemSecurityMethod
+                kMDItemKeywords
                 net_sourceforge_skim_app_notes
             </displayattrs>
         </type>

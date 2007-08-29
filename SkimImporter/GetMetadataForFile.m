@@ -62,9 +62,10 @@ Boolean GetMetadataForFile(void* thisInterface,
     }
     
     if (notePath && [[NSFileManager defaultManager] fileExistsAtPath:notePath]) {
+        NSMutableString *textContent = [[NSMutableString alloc] init];
+        
         NSData *data = [[NSData alloc] initWithContentsOfFile:notePath options:NSUncachedRead error:NULL];
         if (data) {
-            NSMutableString *textContent = [[NSMutableString alloc] init];
             NSArray *array = [NSKeyedUnarchiver unarchiveObjectWithData:data];
             [data release];
             
@@ -88,21 +89,49 @@ Boolean GetMetadataForFile(void* thisInterface,
                     }
                 }
                 [(NSMutableDictionary *)attributes setObject:notes forKey:@"net_sourceforge_skim_app_notes"];
-                [textContent release];
                 [notes release];
             }
-            
-            if (UTTypeEqual(contentTypeUTI, CFSTR("net.sourceforge.skim-app.pdfd"))) {
-                NSString *textPath = [(NSString *)pathToFile stringByAppendingPathComponent:@"data.txt"];
-                NSString *string = [NSString stringWithContentsOfFile:textPath];
-                if ([string length]) {
-                    if ([textContent length])
-                        [textContent appendString:@"\n\n"];
-                    [textContent appendString:string];
+        }
+        
+        if (UTTypeEqual(contentTypeUTI, CFSTR("net.sourceforge.skim-app.pdfd"))) {
+            NSString *textPath = [(NSString *)pathToFile stringByAppendingPathComponent:@"data.txt"];
+            NSString *string = [NSString stringWithContentsOfFile:textPath];
+            if ([string length]) {
+                if ([textContent length])
+                    [textContent appendString:@"\n\n"];
+                [textContent appendString:string];
+            }
+        
+            NSString *plistPath = [(NSString *)pathToFile stringByAppendingPathComponent:@"data.plist"];
+            NSData *plistData = [NSData dataWithContentsOfFile:plistPath];
+            NSDictionary *info = plistData ? [NSPropertyListSerialization propertyListFromData:plistData mutabilityOption:NSPropertyListImmutable format:NULL errorDescription:NULL] : nil;
+            if (info) {
+                id value;
+                id pageWidth = [info objectForKey:@"PageWidth"], pageHeight = [info objectForKey:@"PageHeight"];
+                if (value = [info objectForKey:@"Title"])
+                    [(NSMutableDictionary *)attributes setObject:value forKey:(NSString *)kMDItemTitle];
+                if (value = [info objectForKey:@"Author"])
+                    [(NSMutableDictionary *)attributes setObject:value forKey:(NSString *)kMDItemAuthors];
+                if (value = [info objectForKey:@"Keywords"])
+                    [(NSMutableDictionary *)attributes setObject:value forKey:(NSString *)kMDItemKeywords];
+                if (value = [info objectForKey:@"Producer"])
+                    [(NSMutableDictionary *)attributes setObject:value forKey:(NSString *)kMDItemEncodingApplications];
+                if (value = [info objectForKey:@"Version"])
+                    [(NSMutableDictionary *)attributes setObject:value forKey:(NSString *)kMDItemVersion];
+                if (value = [info objectForKey:@"Encrypted"])
+                    [(NSMutableDictionary *)attributes setObject:[value boolValue] ? @"Password Encrypted" : @"None" forKey:(NSString *)kMDItemSecurityMethod];
+                if (value = [info objectForKey:@"PageCount"])
+                    [(NSMutableDictionary *)attributes setObject:value forKey:(NSString *)kMDItemNumberOfPages];
+                if (pageWidth && pageHeight) {
+                    [(NSMutableDictionary *)attributes setObject:pageWidth forKey:(NSString *)kMDItemPageWidth];
+                    [(NSMutableDictionary *)attributes setObject:pageHeight forKey:(NSString *)kMDItemPageHeight];
+                    [(NSMutableDictionary *)attributes setObject:[NSString stringWithFormat:@"%@ x %@ points", pageWidth, pageHeight] forKey:@"net_sourceforge_skim_app_dimensions"];
                 }
             }
-            [(NSMutableDictionary *)attributes setObject:textContent forKey:(NSString *)kMDItemTextContent];
         }
+        
+        [(NSMutableDictionary *)attributes setObject:textContent forKey:(NSString *)kMDItemTextContent];
+        [textContent release];
         
         [(NSMutableDictionary *)attributes setObject:@"Skim" forKey:(NSString *)kMDItemCreator];
         
