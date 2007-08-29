@@ -266,9 +266,11 @@ static NSPopUpButton *popUpButtonSubview(NSView *view)
             
             if (success = [self writeToURL:tmpURL ofType:typeName error:outError]) {
                 
-                NSSet *ourExtensions = [NSSet setWithObjects:@"pdf", @"skim", @"txt", @"text", @"rtf", nil];
+                NSSet *ourExtensions = [NSSet setWithObjects:@"pdf", @"skim", @"txt", @"text", @"rtf", @"plist", nil];
+                NSSet *ourImportantExtensions = [NSSet setWithObjects:@"pdf", @"skim", nil];
                 NSEnumerator *fileEnum;
                 NSString *file;
+                BOOL didMove;
                 NSMutableDictionary *attributes = [[fm fileAttributesAtPath:path traverseLink:YES] mutableCopy];
                 unsigned long permissions = [[attributes objectForKey:NSFilePosixPermissions] unsignedLongValue];
                
@@ -285,8 +287,11 @@ static NSPopUpButton *popUpButtonSubview(NSView *view)
                 }
                 
                 fileEnum = [[fm directoryContentsAtPath:tmpPath] objectEnumerator];
-                while (success && (file = [fileEnum nextObject]))
-                    success = [fm movePath:[tmpPath stringByAppendingPathComponent:file] toPath:[path stringByAppendingPathComponent:file] handler:nil];
+                while (success && (file = [fileEnum nextObject])) {
+                    didMove = [fm movePath:[tmpPath stringByAppendingPathComponent:file] toPath:[path stringByAppendingPathComponent:file] handler:nil];
+                    if (didMove == NO && [ourImportantExtensions containsObject:[[file pathExtension] lowercaseString]])
+                        success = NO;
+                }
                 
                 if (success)
                     [NSTask launchedTaskWithLaunchPath:@"/usr/bin/touch" arguments:[NSArray arrayWithObjects:@"-fm", path, nil]];
@@ -317,6 +322,9 @@ static NSPopUpButton *popUpButtonSubview(NSView *view)
     }
     
     exportUsingPanel = NO;
+    
+    if (success == NO && outError != NULL && *outError == nil)
+        *outError = [NSError errorWithDomain:SKDocumentErrorDomain code:0 userInfo:[NSDictionary dictionaryWithObjectsAndKeys:NSLocalizedString(@"Unable to write file", @"Error description"), NSLocalizedDescriptionKey, nil]];
     
     return success;
 }
