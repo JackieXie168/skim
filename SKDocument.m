@@ -66,6 +66,7 @@
 
 #define WRAPPER_PDF_FILENAME    @"data.pdf"
 #define WRAPPER_TEXT_FILENAME   @"data.txt"
+#define WRAPPER_PLIST_FILENAME  @"data.plist"
 #define WRAPPER_SKIM_FILENAME   @"notes.skim"
 #define WRAPPER_TXT_FILENAME    @"notes.txt"
 #define WRAPPER_RTF_FILENAME    @"notes.rtf"
@@ -332,10 +333,14 @@ static NSPopUpButton *popUpButtonSubview(NSView *view)
         NSData *notesData = [[self notes] count] ? [NSKeyedArchiver archivedDataWithRootObject:[[self notes] valueForKey:@"dictionaryValue"]] : nil;
         NSData *notesTextData = [[self notesString] dataUsingEncoding:NSUTF8StringEncoding];
         NSData *notesRTFData = [self notesRTFData];
+        NSDictionary *info = [[SKInfoWindowController sharedInstance] infoForDocument:self];
+        NSData *infoData = [NSPropertyListSerialization dataFromPropertyList:info format:NSPropertyListXMLFormat_v1_0 errorDescription:NULL];
         NSFileWrapper *fileWrapper = [[NSFileWrapper alloc] initDirectoryWithFileWrappers:[NSDictionary dictionary]];
         [fileWrapper addRegularFileWithContents:pdfData preferredFilename:WRAPPER_PDF_FILENAME];
         if (textData)
             [fileWrapper addRegularFileWithContents:textData preferredFilename:WRAPPER_TEXT_FILENAME];
+        if (infoData)
+            [fileWrapper addRegularFileWithContents:infoData preferredFilename:WRAPPER_PLIST_FILENAME];
         if (notesData)
             [fileWrapper addRegularFileWithContents:notesData preferredFilename:WRAPPER_SKIM_FILENAME];
         if (notesTextData)
