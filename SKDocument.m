@@ -989,6 +989,25 @@ static BOOL isFileOnHFSVolume(NSString *fileName)
                 return;
             }
             
+            NSString *extension = [fileName pathExtension];
+            if (extension) {
+                NSString *theUTI = [(id)UTTypeCreatePreferredIdentifierForTag(kUTTagClassFilenameExtension, (CFStringRef)extension, NULL) autorelease];
+                if (theUTI && UTTypeConformsTo((CFStringRef)theUTI, CFSTR("application/x-dvi"))) {
+                    return;
+                } if (theUTI && UTTypeConformsTo((CFStringRef)theUTI, CFSTR("net.sourceforge.skim-app.pdfd"))) {
+                    NSString *pdfFile = [fileName stringByAppendingPathComponent:@"data.pdf"];
+                    if ([[NSFileManager defaultManager] fileExistsAtPath:pdfFile]) {
+                        fileName = pdfFile;
+                    } else {
+                        NSArray *subfiles = [[NSFileManager defaultManager] subpathsAtPath:fileName];
+                        unsigned int index = [[subfiles valueForKeyPath:@"pathExtension.lowercaseString"] indexOfObject:@"pdf"];
+                        if (index == NSNotFound)
+                            return;
+                        fileName = [fileName stringByAppendingPathComponent:[subfiles objectAtIndex:index]];
+                    }
+                }
+            }
+            
             NSFileHandle *fh = [NSFileHandle fileHandleForReadingAtPath:fileName];
             
             // read the last 1024 bytes of the file (or entire file); Adobe's spec says they allow %%EOF anywhere in that range
