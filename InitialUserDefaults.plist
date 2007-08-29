@@ -79,6 +79,10 @@
 	</data>
         <key>SKReadingBarInvert</key>
         <false/>
+        <key>SKAnchoredNoteFontName</key>
+        <string>Helvetica</string>
+        <key>SKAnchoredNoteFontSize</key>
+        <real>12.0</real>
         <key>SKTextNoteFontName</key>
         <string>LucidaGrande</string>
         <key>SKTextNoteFontSize</key>
@@ -276,6 +280,8 @@
             <string>SKSquareNoteInteriorColor</string>
             <string>SKTextNoteFontName</string>
             <string>SKTextNoteFontSize</string>
+            <string>SKAnchoredNoteFontName</string>
+            <string>SKAnchoredNoteFontSize</string>
             <string>SKFreeTextNoteLineWidth</string>
             <string>SKFreeTextNoteLineStyle</string>
             <string>SKFreeTextNoteDashPattern</string>

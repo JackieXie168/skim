@@ -64,6 +64,8 @@ extern NSString *SKReadingBarColorKey;
 extern NSString *SKReadingBarInvertKey;
 extern NSString *SKTextNoteFontNameKey;
 extern NSString *SKTextNoteFontSizeKey;
+extern NSString *SKAnchoredNoteFontNameKey;
+extern NSString *SKAnchoredNoteFontSizeKey;
 extern NSString *SKFreeTextNoteColorKey;
 extern NSString *SKAnchoredNoteColorKey;
 extern NSString *SKCircleNoteColorKey;

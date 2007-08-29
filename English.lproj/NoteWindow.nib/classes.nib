@@ -13,7 +13,7 @@
         {
             CLASS = SKNoteWindowController; 
             LANGUAGE = ObjC; 
-            OUTLETS = {imageView = BDSKDragImageView; }; 
+            OUTLETS = {imageView = BDSKDragImageView; textView = NSTextView; }; 
             SUPERCLASS = NSWindowController; 
         }, 
         {
