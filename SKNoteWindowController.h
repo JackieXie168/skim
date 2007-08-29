@@ -42,6 +42,7 @@
 @class PDFAnnotation, BDSKDragImageView;
 
 @interface SKNoteWindowController : NSWindowController {
+    IBOutlet NSTextView *textView;
     IBOutlet BDSKDragImageView *imageView;
     
     PDFAnnotation *note;

@@ -42,6 +42,7 @@
 #import "SKPDFAnnotationNote.h"
 #import "SKDocument.h"
 #import "NSWindowController_SKExtensions.h"
+#import "SKStringConstants.h"
 
 static NSString *SKNoteWindowFrameAutosaveName = @"SKNoteWindow";
 
@@ -83,6 +84,12 @@ static NSString *SKNoteWindowFrameAutosaveName = @"SKNoteWindow";
     [[self window] setBackgroundColor:[NSColor colorWithCalibratedWhite:0.9 alpha:1.0]];
     [[self window] setLevel:keepOnTop || forceOnTop ? NSFloatingWindowLevel : NSNormalWindowLevel];
     [[self window] setHidesOnDeactivate:keepOnTop || forceOnTop];
+    
+    if ([self isNoteType] && [[textView string] length] == 0) {
+        NSFont *font = [NSFont fontWithName:[[NSUserDefaults standardUserDefaults] stringForKey:SKAnchoredNoteFontNameKey]
+                                       size:[[NSUserDefaults standardUserDefaults] floatForKey:SKAnchoredNoteFontSizeKey]];
+        [textView setFont:font];
+    }
     
     [self setWindowFrameAutosaveNameOrCascade:SKNoteWindowFrameAutosaveName];
     
@@ -220,6 +227,20 @@ static NSString *SKNoteWindowFrameAutosaveName = @"SKNoteWindow";
     return nil;
 }
 
+- (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary *)change context:(void *)context {
+    if (object == [NSUserDefaultsController sharedUserDefaultsController]) {
+        if (NO == [keyPath hasPrefix:@"values."])
+            return;
+        NSString *key = [keyPath substringFromIndex:7];
+        if ([key isEqualToString:SKAnchoredNoteFontNameKey] || [key isEqualToString:SKAnchoredNoteFontSizeKey] && [self isNoteType] && [[textView string] length] == 0) {
+            NSFont *font = [NSFont fontWithName:[[NSUserDefaults standardUserDefaults] stringForKey:SKAnchoredNoteFontNameKey]
+                                           size:[[NSUserDefaults standardUserDefaults] floatForKey:SKAnchoredNoteFontSizeKey]];
+            [textView setFont:font];
+        }
+    } else {
+        [super observeValueForKeyPath:keyPath ofObject:object change:change context:context];
+    }
+}
 @end
 
 
