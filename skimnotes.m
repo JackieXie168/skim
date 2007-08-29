@@ -89,6 +89,7 @@ int main (int argc, const char * argv[]) {
     NSString *pdfPath = SKNNormalizedPath([args objectAtIndex:offset], currentDir);
     NSString *notesPath = argc < offset + 2 ? nil : SKNNormalizedPath([args objectAtIndex:offset + 1], currentDir);
     BOOL isDir = NO;
+    NSError *error = nil;
     
     if (action != SKNActionRemove && notesPath == nil) {
         notesPath = [[pdfPath stringByDeletingPathExtension] stringByAppendingPathExtension:format == SKNFormatText ? @"txt" : format == SKNFormatRTF ? @"rtf" : @"skim"];
@@ -99,8 +100,8 @@ int main (int argc, const char * argv[]) {
         pdfPath = [pdfPath stringByAppendingPathExtension:@"pdf"];
     
     if ([fm fileExistsAtPath:pdfPath isDirectory:&isDir] == NO || isDir) {
+        error = [NSError errorWithDomain:NSPOSIXErrorDomain code:ENOENT userInfo:[NSDictionary dictionaryWithObjectsAndKeys:NSLocalizedString(@"PDF file does not exist", @"Error description"), NSLocalizedDescriptionKey, nil]];
     } else if (action == SKNActionGet) {
-        NSError *error = nil;
         NSData *data = nil;
         if (format == SKNFormatAuto) {
             NSString *extension = [notesPath pathExtension];
@@ -115,7 +116,7 @@ int main (int argc, const char * argv[]) {
             NSError *error = nil;
             data = [fm extendedAttributeNamed:SKIM_NOTES_KEY atPath:pdfPath traverseLink:YES error:&error];
             if (data == nil && [error code] == ENOATTR)
-                data = [NSKeyedArchiver archivedDataWithRootObject:[NSArray array]];
+                data = [NSData data];
         } else if (format == SKNFormatText) {
             NSError *error = nil;
             NSString *string = [fm propertyListFromExtendedAttributeNamed:SKIM_TEXT_NOTES_KEY atPath:pdfPath traverseLink:YES error:&error];
@@ -133,10 +134,15 @@ int main (int argc, const char * argv[]) {
                     [(NSFileHandle *)[NSFileHandle fileHandleWithStandardOutput] writeData:data];
                 success = YES;
             } else {
-                if ([data length] || ([fm fileExistsAtPath:notesPath isDirectory:&isDir] && isDir == NO))
-                    success = [data writeToFile:notesPath atomically:YES];
-                else
+                if ([data length]) {
+                    success = [data writeToFile:notesPath options:NSAtomicWrite error:&error];
+                } else if ([fm fileExistsAtPath:notesPath isDirectory:&isDir] && isDir == NO) {
+                    success = [fm removeFileAtPath:notesPath handler:nil];
+                    if (success = NO)
+                        error = [NSError errorWithDomain:NSPOSIXErrorDomain code:EACCES userInfo:[NSDictionary dictionaryWithObjectsAndKeys:NSLocalizedString(@"Unable to remove file", @"Error description"), NSLocalizedDescriptionKey, nil]];
+                } else {
                     success = YES;
+                }
             }
         }
     } else if (action == SKNActionSet && notesPath && ([notesPath isEqualToString:@"-"] || ([fm fileExistsAtPath:notesPath isDirectory:&isDir] && isDir == NO))) {
@@ -147,9 +153,9 @@ int main (int argc, const char * argv[]) {
         else
             data = [NSData dataWithContentsOfFile:notesPath];
         if (data) {
-            success = [fm removeExtendedAttribute:SKIM_NOTES_KEY atPath:pdfPath traverseLink:YES error:&error];
-            if ((success || [error code] == ENOATTR) && [data length])
-                success = [fm setExtendedAttributeNamed:SKIM_NOTES_KEY toValue:data atPath:pdfPath options:0 error:NULL];
+            success = [fm removeExtendedAttribute:SKIM_NOTES_KEY atPath:pdfPath traverseLink:YES error:&error] || [error code] == ENOATTR;
+            if (success && [data length])
+                success = [fm setExtendedAttributeNamed:SKIM_NOTES_KEY toValue:data atPath:pdfPath options:0 error:&error];
         }
     } else if (action == SKNActionRemove) {
         NSError *error = nil;
@@ -164,6 +170,9 @@ int main (int argc, const char * argv[]) {
             success3 = YES;
         success = success1 && success2 && success3;
     }
+    
+    if (success == NO && error)
+        [(NSFileHandle *)[NSFileHandle fileHandleWithStandardError] writeData:[[error localizedDescription] dataUsingEncoding:NSUTF8StringEncoding]];
     
     [pool release];
     
