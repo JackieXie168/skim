@@ -65,6 +65,9 @@ static NSString *SKNoteWindowFrameAutosaveName = @"SKNoteWindow";
     if (self = [super init]) {
         note = [aNote retain];
         editors = CFArrayCreateMutable(kCFAllocatorMallocZone, 0, NULL);
+        
+        keepOnTop = [[NSUserDefaults standardUserDefaults] boolForKey:@"SKKeepNoteWindowsOnTop"];
+        forceOnTop = NO;
     }
     return self;
 }
