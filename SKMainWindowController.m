@@ -3379,18 +3379,26 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
     return nil;
 }
 
-- (BOOL)outlineView:(NSOutlineView *)anOutlineView shouldTrackTableColumn:(NSTableColumn *)aTableColumn item:(id)item {
+- (BOOL)outlineView:(NSOutlineView *)ov shouldTrackTableColumn:(NSTableColumn *)aTableColumn item:(id)item {
     return YES;
 }
 
-- (void)outlineView:(NSOutlineView *)anOutlineView mouseEnteredTableColumn:(NSTableColumn *)aTableColumn item:(id)item {
-    PDFAnnotationLink *link = [[[PDFAnnotationLink alloc] initWithBounds:NSZeroRect] autorelease];
-    [link setDestination:[item destination]];
-    [[SKPDFHoverWindow sharedHoverWindow] showForAnnotation:link atPoint:NSZeroPoint];
+- (void)outlineView:(NSOutlineView *)ov mouseEnteredTableColumn:(NSTableColumn *)aTableColumn item:(id)item {
+    if ([ov isEqual:outlineView]) {
+        PDFAnnotationLink *link = [[[PDFAnnotationLink alloc] initWithBounds:NSZeroRect] autorelease];
+        PDFDestination *dest = [item destination];
+        NSPoint point = [dest point];
+        point.x -= 50.0;
+        point.y += 20.0;
+        [link setDestination:[[[PDFDestination alloc] initWithPage:[dest page] atPoint:point] autorelease]];
+        [[SKPDFHoverWindow sharedHoverWindow] showForAnnotation:link atPoint:NSZeroPoint];
+    }
 }
 
-- (void)outlineView:(NSOutlineView *)anOutlineView mouseExitedTableColumn:(NSTableColumn *)aTableColumn item:(id)item {
-    [[SKPDFHoverWindow sharedHoverWindow] hide];
+- (void)outlineView:(NSOutlineView *)ov mouseExitedTableColumn:(NSTableColumn *)aTableColumn item:(id)item {
+    if ([ov isEqual:outlineView]) {
+        [[SKPDFHoverWindow sharedHoverWindow] hide];
+    }
 }
 
 - (void)deleteNote:(id)sender {
@@ -3417,7 +3425,7 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
     NSMenuItem *menuItem;
     
     if ([ov isEqual:noteOutlineView]) {
-        [outlineView selectRowIndexes:[NSIndexSet indexSetWithIndex:[outlineView rowForItem:item]] byExtendingSelection:NO];
+        [noteOutlineView selectRowIndexes:[NSIndexSet indexSetWithIndex:[noteOutlineView rowForItem:item]] byExtendingSelection:NO];
         
         PDFAnnotation *annotation = [item type] ? item : [(SKNoteText *)item annotation];
         menu = [[[NSMenu allocWithZone:[NSMenu menuZone]] init] autorelease];
@@ -3571,10 +3579,11 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
 - (void)tableView:(NSTableView *)tv mouseEnteredTableColumn:(NSTableColumn *)aTableColumn row:(int)row {
     if ([tv isEqual:findTableView]) {
         PDFAnnotationLink *link = [[[PDFAnnotationLink alloc] initWithBounds:NSZeroRect] autorelease];
-        PDFSelection *selection = [[[findArrayController arrangedObjects] objectAtIndex:row] copy];
-        [selection extendSelectionAtStart:10];
-        [link setDestination:[selection destination]];
-        [selection release];
+        PDFDestination *dest = [[[findArrayController arrangedObjects] objectAtIndex:row] destination];
+        NSPoint point = [dest point];
+        point.x -= 50.0;
+        point.y += 20.0;
+        [link setDestination:[[[PDFDestination alloc] initWithPage:[dest page] atPoint:point] autorelease]];
         [[SKPDFHoverWindow sharedHoverWindow] showForAnnotation:link atPoint:NSZeroPoint];
     }
 }
