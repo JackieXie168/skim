@@ -38,7 +38,6 @@
 
 #import "SKTypeSelectHelper.h"
 
-#define TIMEOUT 0.7
 #define REPEAT_CHARACTER '/'
 
 @interface NSString (BDSKTypeAheadHelperExtensions)
@@ -48,6 +47,7 @@
 #pragma mark -
 
 @interface SKTypeSelectHelper (SKPrivate)
+- (NSTimeInterval)timeoutInterval;
 - (NSArray *)searchCache;
 - (void)searchWithStickyMatch:(BOOL)allowUpdate;
 - (void)stopTimer;
@@ -176,6 +176,15 @@
 
 @implementation SKTypeSelectHelper (SKPrivate)
 
+// See http://www.mactech.com/articles/mactech/Vol.18/18.10/1810TableTechniques/index.html
+- (NSTimeInterval)timeoutInterval {
+    int keyThreshTicks = [[NSUserDefaults standardUserDefaults] integerForKey:@"InitialKeyRepeat"];
+    if (0 == keyThreshTicks)
+        keyThreshTicks = 35;	// apparent default value, translates to 1.17 sec timeout.
+    
+    return fmin(2.0 / 60.0 * keyThreshTicks, 2.0);
+}
+
 - (NSArray *)searchCache {
     if (searchCache == nil)
         [self rebuildTypeSelectSearchCache];
@@ -190,7 +199,7 @@
 
 - (void)startTimerForSelector:(SEL)selector {
     [self stopTimer];
-    timer = [[NSTimer alloc] initWithFireDate:[NSDate dateWithTimeIntervalSinceNow:TIMEOUT] interval:0 target:self selector:selector userInfo:NULL repeats:NO];
+    timer = [[NSTimer alloc] initWithFireDate:[NSDate dateWithTimeIntervalSinceNow:[self timeoutInterval]] interval:0 target:self selector:selector userInfo:NULL repeats:NO];
     [[NSRunLoop currentRunLoop] addTimer:timer forMode:NSDefaultRunLoopMode];
 }
 
