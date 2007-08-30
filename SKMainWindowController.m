@@ -148,6 +148,8 @@ static NSString *noteToolAdornImageNames[] = {@"TextNoteToolAdorn", @"AnchoredNo
 - (void)exitPresentationMode;
 - (void)activityTimerFired:(NSTimer *)timer;
 
+- (void)goToSelectedOutlineItem;
+
 - (void)goToFindResults:(NSArray *)findResults;
 
 - (void)updateNoteFilterPredicate;
@@ -1206,6 +1208,12 @@ static NSString *noteToolAdornImageNames[] = {@"TextNoteToolAdorn", @"AnchoredNo
         [note setShouldPrint:wasHidden];
     }
     [pdfView setHideNotes:wasHidden == NO];
+}
+
+- (void)goToSelectedOutlineItem {
+    updatingOutlineSelection = YES;
+    [pdfView goToDestination: [[outlineView itemAtRow: [outlineView selectedRow]] destination]];
+    updatingOutlineSelection = NO;
 }
 
 - (IBAction)takeSnapshot:(id)sender{
