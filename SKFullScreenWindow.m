@@ -86,8 +86,15 @@
 }
 
 - (void)sendEvent:(NSEvent *)theEvent {
-    if ([theEvent type] == NSLeftMouseDown || [theEvent type] == NSRightMouseDown)
+    if ([theEvent type] == NSLeftMouseDown || [theEvent type] == NSRightMouseDown) {
         [[SKPDFHoverWindow sharedHoverWindow] orderOut:nil];
+        
+        SKMainWindowController *wc = (SKMainWindowController *)[self windowController];
+        if ([wc isPresentation] && ([theEvent type] == NSRightMouseDown || ([theEvent modifierFlags] & NSControlKeyMask))) {
+            [wc doGoToPreviousPage:self];
+            return;
+        }
+    }
     [super sendEvent:theEvent];
 }
 
