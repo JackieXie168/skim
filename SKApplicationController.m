@@ -363,18 +363,18 @@
         pathDict = CFDictionaryCreateMutable(NULL, 3, NULL, &kCFTypeDictionaryValueCallBacks);
     
     NSString *path = (NSString *)CFDictionaryGetValue(pathDict, (void *)domain);
+    FSRef foundRef = NULL;
+    OSStatus err = noErr;
     
-    if (path == nil) {
-        FSRef foundRef;
-        OSStatus err = noErr;
-        
+    if (path == nil || (create && [[NSFileManager defaultManager] fileExistsAtPath:path] == NO)) {
         err = FSFindFolder(domain, kApplicationSupportFolderType, create ? kCreateFolder : kDontCreateFolder, &foundRef);
         if (err != noErr) {
             if (create)
                 NSLog(@"Error %d:  the system was unable to find your Application Support folder.", err);
             return nil;
         }
-        
+    }
+    if (path == nil) {
         CFURLRef url = CFURLCreateFromFSRef(kCFAllocatorDefault, &foundRef);
         
         if (url != nil) {
@@ -390,19 +390,19 @@
         path = [path stringByAppendingPathComponent:appName];
         
         CFDictionarySetValue(pathDict, (void *)domain, (void *)path);
-        
-        // the call to FSFindFolder creates the parent hierarchy, but not the directory we're looking for
-        if (create) {
-            BOOL dirExists = [[NSFileManager defaultManager] fileExistsAtPath:path];
-            if (dirExists == NO) {
-                BOOL pathIsDir;
-                dirExists = [[NSFileManager defaultManager] fileExistsAtPath:path isDirectory:&pathIsDir];
-                if (dirExists == NO || pathIsDir == NO)
-                    [[NSFileManager defaultManager] createDirectoryAtPath:path attributes:nil];
-                // make sure it was created
-                dirExists = [[NSFileManager defaultManager] fileExistsAtPath:path isDirectory:&pathIsDir];
-                NSAssert1(dirExists && pathIsDir, @"Unable to create folder %@", path);
-            }
+    }
+    
+    // the call to FSFindFolder creates the parent hierarchy, but not the directory we're looking for
+    if (create) {
+        BOOL dirExists = [[NSFileManager defaultManager] fileExistsAtPath:path];
+        if (dirExists == NO) {
+            BOOL pathIsDir;
+            dirExists = [[NSFileManager defaultManager] fileExistsAtPath:path isDirectory:&pathIsDir];
+            if (dirExists == NO || pathIsDir == NO)
+                [[NSFileManager defaultManager] createDirectoryAtPath:path attributes:nil];
+            // make sure it was created
+            dirExists = [[NSFileManager defaultManager] fileExistsAtPath:path isDirectory:&pathIsDir];
+            NSAssert1(dirExists && pathIsDir, @"Unable to create folder %@", path);
         }
     }
     
