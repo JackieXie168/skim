@@ -148,6 +148,8 @@ static NSString *noteToolAdornImageNames[] = {@"TextNoteToolAdorn", @"AnchoredNo
 - (void)exitPresentationMode;
 - (void)activityTimerFired:(NSTimer *)timer;
 
+- (void)goToFindResults:(NSArray *)findResults;
+
 - (void)updateNoteFilterPredicate;
 
 - (void)replaceSideView:(NSView *)oldView withView:(NSView *)newView animate:(BOOL)animate;
@@ -2500,6 +2502,32 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
 	}
 }
 
+- (void)goToFindResults:(NSArray *)findResults {
+    BOOL highlight = [[NSUserDefaults standardUserDefaults] boolForKey:SKShouldHighlightSearchResultsKey];
+    
+    // union all selected objects
+    NSEnumerator *selE = [findResults objectEnumerator];
+    PDFSelection *sel;
+    
+    // arm:  PDFSelection is mutable, and using -addSelection on an object from selectedObjects will actually mutate the object in searchResults, which does bad things.  MagicHat indicates that PDFSelection implements copyWithZone: even though it doesn't conform to <NSCopying>, so we'll use that since -init doesn't work (-initWithDocument: does, but it's not listed in the header either).  I filed rdar://problem/4888251 and also noticed that PDFKitViewer sample code uses -[PDFSelection copy].
+    PDFSelection *currentSel = [[[selE nextObject] copy] autorelease];
+    
+    [pdfView setCurrentSelection:currentSel];
+    [pdfView scrollSelectionToVisible:self];
+    
+    [self removeTemporaryAnnotations];
+    
+    // add an annotation so it's easier to see the search result
+    if (highlight)
+        [self addAnnotationsForSelection:currentSel];
+    
+    while (sel = [selE nextObject]) {
+        [currentSel addSelection:sel];
+        if (highlight)
+            [self addAnnotationsForSelection:sel];
+    }
+}
+
 - (IBAction)searchNotes:(id)sender {
     if ([[sender stringValue] length] && rightSidePaneState != SKNoteSidePaneState)
         [self setRightSidePaneState:SKNoteSidePaneState];
@@ -3416,34 +3444,10 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
 
 - (void)tableViewSelectionDidChange:(NSNotification *)aNotification {
     if ([[aNotification object] isEqual:findTableView]) {
-        
-        BOOL highlight = [[NSUserDefaults standardUserDefaults] boolForKey:SKShouldHighlightSearchResultsKey];
-        
-        // union all selected objects
-        NSEnumerator *selE = [[findArrayController selectedObjects] objectEnumerator];
-        PDFSelection *sel;
-        
-        // arm:  PDFSelection is mutable, and using -addSelection on an object from selectedObjects will actually mutate the object in searchResults, which does bad things.  MagicHat indicates that PDFSelection implements copyWithZone: even though it doesn't conform to <NSCopying>, so we'll use that since -init doesn't work (-initWithDocument: does, but it's not listed in the header either).  I filed rdar://problem/4888251 and also noticed that PDFKitViewer sample code uses -[PDFSelection copy].
-        PDFSelection *currentSel = [[[selE nextObject] copy] autorelease];
-        
-        [pdfView setCurrentSelection:currentSel];
-        [pdfView scrollSelectionToVisible:self];
-        
-        [self removeTemporaryAnnotations];
-        
-        // add an annotation so it's easier to see the search result
-        if (highlight)
-            [self addAnnotationsForSelection:currentSel];
-        
-        while (sel = [selE nextObject]) {
-            [currentSel addSelection:sel];
-            if (highlight)
-                [self addAnnotationsForSelection:sel];
-        }
+        [self goToFindResults:[findArrayController selectedObjects]];
         
         if ([self isPresentation] && [[NSUserDefaults standardUserDefaults] boolForKey:SKAutoHidePresentationContentsKey])
             [self hideLeftSideWindow];
-        
     } else if ([[aNotification object] isEqual:thumbnailTableView]) {
         if (updatingThumbnailSelection == NO) {
             int row = [thumbnailTableView selectedRow];
