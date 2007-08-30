@@ -363,7 +363,7 @@
         pathDict = CFDictionaryCreateMutable(NULL, 3, NULL, &kCFTypeDictionaryValueCallBacks);
     
     NSString *path = (NSString *)CFDictionaryGetValue(pathDict, (void *)domain);
-    FSRef foundRef = NULL;
+    FSRef foundRef;
     OSStatus err = noErr;
     
     if (path == nil || (create && [[NSFileManager defaultManager] fileExistsAtPath:path] == NO)) {
