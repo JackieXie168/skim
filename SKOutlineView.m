@@ -154,6 +154,10 @@
         return [self canDelete];
     else if ([menuItem action] == @selector(copy:))
         return [self canCopy];
+    else if ([menuItem action] == @selector(selectAll:))
+        return [self allowsMultipleSelection];
+    else if ([menuItem action] == @selector(deselectAll:))
+        return [self allowsEmptySelection];
     else if ([[SKOutlineView superclass] instancesRespondToSelector:@selector(validateMenuItem:)])
         return [super validateMenuItem:menuItem];
     return YES;

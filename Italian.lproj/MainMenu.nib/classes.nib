@@ -15,6 +15,7 @@
                 createNewNote = id; 
                 crop = id; 
                 cropAll = id; 
+                deselectAll = id; 
                 displayCropBox = id; 
                 displayFacingPages = id; 
                 displayMediaBox = id; 
