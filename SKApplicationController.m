@@ -363,33 +363,35 @@
         pathDict = CFDictionaryCreateMutable(NULL, 3, NULL, &kCFTypeDictionaryValueCallBacks);
     
     NSString *path = (NSString *)CFDictionaryGetValue(pathDict, (void *)domain);
-    FSRef foundRef;
-    OSStatus err = noErr;
     
     if (path == nil || (create && [[NSFileManager defaultManager] fileExistsAtPath:path] == NO)) {
+        FSRef foundRef;
+        OSStatus err = noErr;
+        
         err = FSFindFolder(domain, kApplicationSupportFolderType, create ? kCreateFolder : kDontCreateFolder, &foundRef);
         if (err != noErr) {
             if (create)
                 NSLog(@"Error %d:  the system was unable to find your Application Support folder.", err);
             return nil;
         }
-    }
-    if (path == nil) {
-        CFURLRef url = CFURLCreateFromFSRef(kCFAllocatorDefault, &foundRef);
         
-        if (url != nil) {
-            path = [(NSURL *)url path];
-            CFRelease(url);
+        if (path == nil) {
+            CFURLRef url = CFURLCreateFromFSRef(kCFAllocatorDefault, &foundRef);
+            
+            if (url != nil) {
+                path = [(NSURL *)url path];
+                CFRelease(url);
+            }
+            
+            NSString *appName = [[NSBundle mainBundle] objectForInfoDictionaryKey:(NSString *)kCFBundleExecutableKey];
+            
+            if(appName == nil)
+                [NSException raise:NSObjectNotAvailableException format:NSLocalizedString(@"Unable to find CFBundleIdentifier for %@", @"Exception message"), [NSApp description]];
+            
+            path = [path stringByAppendingPathComponent:appName];
+            
+            CFDictionarySetValue(pathDict, (void *)domain, (void *)path);
         }
-        
-        NSString *appName = [[NSBundle mainBundle] objectForInfoDictionaryKey:(NSString *)kCFBundleExecutableKey];
-        
-        if(appName == nil)
-            [NSException raise:NSObjectNotAvailableException format:NSLocalizedString(@"Unable to find CFBundleIdentifier for %@", @"Exception message"), [NSApp description]];
-        
-        path = [path stringByAppendingPathComponent:appName];
-        
-        CFDictionarySetValue(pathDict, (void *)domain, (void *)path);
     }
     
     // the call to FSFindFolder creates the parent hierarchy, but not the directory we're looking for
