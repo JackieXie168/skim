@@ -79,12 +79,6 @@ NSString *SKApplicationStartsTerminatingNotification = @"SKApplicationStartsTerm
             [target performSelector:@selector(magnifyWheel:) withObject:anEvent];
             return;
         }
-    } else if ([anEvent type] == NSRightMouseDown || ([anEvent type] == NSLeftMouseDown && ([anEvent modifierFlags] & NSControlKeyMask))) {
-        id controller = [[self mainWindow] windowController];
-        if ([controller respondsToSelector:@selector(isPresentation)] && [controller isPresentation]) {
-            [controller doGoToPreviousPage:self];
-            return;
-        }
     }
     [super sendEvent:anEvent];
 }
