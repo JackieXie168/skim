@@ -3248,6 +3248,13 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
     }
 }
 
+- (NSString *)outlineView:(NSOutlineView *)ov toolTipForCell:(NSCell *)cell rect:(NSRectPointer)rect tableColumn:(NSTableColumn *)tableColumn item:(id)item mouseLocation:(NSPoint)mouseLocation {
+    if ([ov isEqual:noteOutlineView] && [[tableColumn identifier] isEqualToString:@"note"]) {
+        return [item type] ? [(PDFAnnotation *)item contents] : [[(SKNoteText *)item contents] string];
+    }
+    return nil;
+}
+
 - (void)outlineViewItemDidExpand:(NSNotification *)notification{
     if ([[notification object] isEqual:outlineView]) {
         [self updateOutlineSelection];
