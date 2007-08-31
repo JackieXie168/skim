@@ -40,22 +40,14 @@
 #import <Quartz/Quartz.h>
 #import "BDSKDragImageView.h"
 #import "SKPDFAnnotationNote.h"
+#import "SKStatusBar.h"
 #import "SKDocument.h"
 #import "NSWindowController_SKExtensions.h"
 #import "SKStringConstants.h"
 
 static NSString *SKNoteWindowFrameAutosaveName = @"SKNoteWindow";
 
-@interface SKRectStringTransformer : NSValueTransformer
-@end
-
 @implementation SKNoteWindowController
-
-+ (void)initialize {
-    SKRectStringTransformer *transformer = [[SKRectStringTransformer alloc] init];
-    [NSValueTransformer setValueTransformer:transformer forName:@"SKRectStringTransformer"];
-    [transformer release];
-}
 
 - (id)init {
     return self = [self initWithNote:nil];
@@ -68,11 +60,16 @@ static NSString *SKNoteWindowFrameAutosaveName = @"SKNoteWindow";
         
         keepOnTop = [[NSUserDefaults standardUserDefaults] boolForKey:@"SKKeepNoteWindowsOnTop"];
         forceOnTop = NO;
+        
+        [note addObserver:self forKeyPath:@"page" options:0 context:NULL];
+        [note addObserver:self forKeyPath:@"bounds" options:0 context:NULL];
     }
     return self;
 }
 
 - (void)dealloc {
+    [note removeObserver:self forKeyPath:@"page"];
+    [note removeObserver:self forKeyPath:@"bounds"];
     [[NSNotificationCenter defaultCenter] removeObserver:self];
     CFRelease(editors);
     [note release];
@@ -81,6 +78,11 @@ static NSString *SKNoteWindowFrameAutosaveName = @"SKNoteWindow";
 
 - (NSString *)windowNibName {
     return @"NoteWindow";
+}
+
+- (void)updateStatusMessage {
+    NSRect bounds = [note bounds];
+    [statusBar setLeftStringValue:[NSString stringWithFormat:NSLocalizedString(@"Page %@ at (%i, %i)", @"Status message"), [[note page] label], (int)NSMidX(bounds), (int)NSMidY(bounds)]];
 }
 
 - (void)windowDidLoad {
@@ -93,6 +95,8 @@ static NSString *SKNoteWindowFrameAutosaveName = @"SKNoteWindow";
                                        size:[[NSUserDefaults standardUserDefaults] floatForKey:SKAnchoredNoteFontSizeKey]];
         [textView setFont:font];
     }
+    
+    [self updateStatusMessage];
     
     [self setWindowFrameAutosaveNameOrCascade:SKNoteWindowFrameAutosaveName];
     
@@ -122,8 +126,12 @@ static NSString *SKNoteWindowFrameAutosaveName = @"SKNoteWindow";
 
 - (void)setNote:(PDFAnnotation *)newNote {
     if (note != newNote) {
+        [note removeObserver:self forKeyPath:@"page"];
+        [note removeObserver:self forKeyPath:@"bounds"];
         [note release];
         note = [newNote retain];
+        [note addObserver:self forKeyPath:@"page" options:0 context:NULL];
+        [note addObserver:self forKeyPath:@"bounds" options:0 context:NULL];
     }
 }
 
@@ -240,27 +248,11 @@ static NSString *SKNoteWindowFrameAutosaveName = @"SKNoteWindow";
                                            size:[[NSUserDefaults standardUserDefaults] floatForKey:SKAnchoredNoteFontSizeKey]];
             [textView setFont:font];
         }
+    } else if (object == note) {
+        if ([keyPath isEqualToString:@"page"] || [keyPath isEqualToString:@"bounds"])
+            [self updateStatusMessage];
     } else {
         [super observeValueForKeyPath:keyPath ofObject:object change:change context:context];
     }
 }
 @end
-
-
-@implementation SKRectStringTransformer
-
-+ (Class)transformedValueClass {
-    return [NSString class];
-}
-
-+ (BOOL)allowsReverseTransformation {
-    return NO;
-}
-
-- (id)transformedValue:(id)value {
-    NSRect rect = [value rectValue];
-	return [NSString stringWithFormat:@"(%i, %i)", (int)NSMidX(rect), (int)NSMidY(rect)];
-}
-
-@end
-
