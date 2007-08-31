@@ -66,14 +66,17 @@
             LANGUAGE = ObjC; 
             SUPERCLASS = NSObject; 
         }, 
+        {CLASS = NSView; LANGUAGE = ObjC; SUPERCLASS = NSResponder; }, 
         {
             ACTIONS = {
                 editBookmarks = id; 
                 openBookmark = id; 
+                saveCurrentOpenDocuments = id; 
                 showDownloads = id; 
                 showPreferencePanel = id; 
                 showReleaseNotes = id; 
                 visitWebSite = id; 
+                visitWiki = id; 
             }; 
             CLASS = SKApplicationController; 
             LANGUAGE = ObjC; 
@@ -85,7 +88,12 @@
             SUPERCLASS = NSDocumentController; 
         }, 
         {CLASS = SKSplashContentView; LANGUAGE = ObjC; SUPERCLASS = NSView; }, 
-        {CLASS = SKSplashWindow; LANGUAGE = ObjC; SUPERCLASS = NSWindow; }, 
+        {
+            ACTIONS = {fadeOut = id; }; 
+            CLASS = SKSplashWindow; 
+            LANGUAGE = ObjC; 
+            SUPERCLASS = NSWindow; 
+        }, 
         {
             ACTIONS = {checkForUpdates = id; }; 
             CLASS = SUUpdater; 

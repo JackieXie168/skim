@@ -58,6 +58,8 @@
 #import "Files_SKExtensions.h"
 #import "NSGeometry_SKExtensions.h"
 
+#define WEBSITE_URL @"@"http://skim-app.sourceforge.net/"
+#define WIKI_URL @"@"http://skim-app.sourceforge.net/wiki/"
 
 @implementation SKApplicationController
 
@@ -204,7 +206,12 @@
 #pragma mark Actions
 
 - (IBAction)visitWebSite:(id)sender{
-    if([[NSWorkspace sharedWorkspace] openURL:[NSURL URLWithString:@"http://skim-app.sourceforge.net/"]] == NO)
+    if([[NSWorkspace sharedWorkspace] openURL:[NSURL URLWithString:WEBSITE_URL]] == NO)
+        NSBeep();
+}
+
+- (IBAction)visitWiki:(id)sender{
+    if([[NSWorkspace sharedWorkspace] openURL:[NSURL URLWithString:WIKI_URL]] == NO)
         NSBeep();
 }
 
