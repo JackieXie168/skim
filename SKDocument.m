@@ -412,7 +412,7 @@ static NSPopUpButton *popUpButtonSubview(NSView *view)
     NSMutableDictionary *dict = [[[super fileAttributesToWriteToURL:absoluteURL ofType:typeName forSaveOperation:saveOperation originalContentsURL:absoluteOriginalContentsURL error:outError] mutableCopy] autorelease];
     
     // only set the creator code for our native types
-    if ([typeName isEqualToString:SKPDFDocumentType] || [typeName isEqualToString:SKPDFBundleDocumentType] || [typeName isEqualToString:SKNotesDocumentType])
+    if ([[NSUserDefaults standardUserDefaults] boolForKey:SKShouldSetCreatorCodeKey] && ([typeName isEqualToString:SKPDFDocumentType] || [typeName isEqualToString:SKPDFBundleDocumentType] || [typeName isEqualToString:SKNotesDocumentType]))
         [dict setObject:[NSNumber numberWithUnsignedLong:'SKim'] forKey:NSFileHFSCreatorCode];
     
     if ([[[absoluteURL path] pathExtension] isEqualToString:@"pdf"] || ([typeName isEqualToString:SKPDFDocumentType] || [typeName isEqualToString:SKEmbeddedPDFDocumentType] || [typeName isEqualToString:SKBarePDFDocumentType]))

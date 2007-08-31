@@ -47,6 +47,7 @@
 #import "NSString_SKExtensions.h"
 #import "SKTypeSelectHelper.h"
 #import "SKPDFAnnotationNote.h"
+#import "SKStringConstants.h"
 
 @implementation SKNotesDocument
 
@@ -144,7 +145,7 @@
     NSMutableDictionary *dict = [[[super fileAttributesToWriteToURL:absoluteURL ofType:typeName forSaveOperation:saveOperation originalContentsURL:absoluteOriginalContentsURL error:outError] mutableCopy] autorelease];
     
     // only set the creator code for our native types
-    if ([typeName isEqualToString:SKNotesDocumentType])
+    if ([[NSUserDefaults standardUserDefaults] boolForKey:SKShouldSetCreatorCodeKey] && [typeName isEqualToString:SKNotesDocumentType])
         [dict setObject:[NSNumber numberWithUnsignedLong:'SKim'] forKey:NSFileHFSCreatorCode];
     
     if ([[[absoluteURL path] pathExtension] isEqualToString:@"rtf"] || [typeName isEqualToString:SKNotesRTFDocumentType])

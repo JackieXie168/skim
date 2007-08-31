@@ -106,3 +106,4 @@ NSString *SKAutoHidePresentationContentsKey = @"SKAutoHidePresentationContents";
 NSString *SKAutoOpenDownloadsWindowKey = @"SKAutoOpenDownloadsWindow";
 NSString *SKAutoRemoveFinishedDownloadsKey = @"SKAutoRemoveFinishedDownloads";
 NSString *SKAutoCloseDownloadsWindowKey = @"SKAutoCloseDownloadsWindow";
+NSString *SKShouldSetCreatorCodeKey = @"SKShouldSetCreatorCode";
