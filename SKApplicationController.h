@@ -48,6 +48,7 @@
 + (void)setupDefaults;
 
 - (IBAction)visitWebSite:(id)sender;
+- (IBAction)visitWiki:(id)sender;
 
 - (IBAction)showPreferencePanel:(id)sender;
 - (IBAction)showReleaseNotes:(id)sender;
