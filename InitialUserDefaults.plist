@@ -236,6 +236,8 @@
         <false/>
         <key>SUScheduledCheckInterval</key>
         <integer>86400</integer>
+        <key>SKShouldSetCreatorCode</key>
+        <true/>
     </dict>
 	<key>ResettableKeys</key>
     <dict>
