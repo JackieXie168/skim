@@ -58,8 +58,8 @@
 #import "Files_SKExtensions.h"
 #import "NSGeometry_SKExtensions.h"
 
-#define WEBSITE_URL @"@"http://skim-app.sourceforge.net/"
-#define WIKI_URL @"@"http://skim-app.sourceforge.net/wiki/"
+#define WEBSITE_URL @"http://skim-app.sourceforge.net/"
+#define WIKI_URL    @"http://skim-app.sourceforge.net/wiki/"
 
 @implementation SKApplicationController
 
