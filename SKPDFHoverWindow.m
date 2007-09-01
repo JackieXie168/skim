@@ -230,12 +230,10 @@
             image = [[NSImage alloc] initWithSize:targetRect.size];
             
             [image lockFocus];
-            [NSGraphicsContext saveGraphicsState];
             [pageImage drawInRect:targetRect fromRect:sourceRect operation:NSCompositeCopy fraction:1.0];
             [labelColor setFill];
             [NSBezierPath fillHorizontalOvalAroundRect:labelRect];
             [labelString drawWithRect:labelRect options:NSStringDrawingUsesLineFragmentOrigin];
-            [NSGraphicsContext restoreGraphicsState];
             [image unlockFocus];
             
             [attrs release];

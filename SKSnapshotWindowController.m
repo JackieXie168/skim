@@ -326,7 +326,6 @@ static NSString *SKSnapshotViewChangedNotification = @"SKSnapshotViewChangedNoti
     
     image = [[NSImage alloc] initWithSize:thumbnailSize];
     [image lockFocus];
-    [NSGraphicsContext saveGraphicsState];
     [[NSGraphicsContext currentContext] setImageInterpolation:NSImageInterpolationHigh];
     if (isScaled || hasShadow) {
         NSAffineTransform *transform = [NSAffineTransform transform];
@@ -349,7 +348,6 @@ static NSString *SKSnapshotViewChangedNotification = @"SKSnapshotViewChangedNoti
     NSRectFill(bounds);
     [NSGraphicsContext restoreGraphicsState];
     [imageRep drawInRect:bounds];
-    [NSGraphicsContext restoreGraphicsState];
     [image unlockFocus];
     
     return [image autorelease];
