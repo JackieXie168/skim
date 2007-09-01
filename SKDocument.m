@@ -272,6 +272,7 @@ static NSPopUpButton *popUpButtonSubview(NSView *view)
                 NSString *file;
                 BOOL didMove;
                 NSMutableDictionary *attributes = [[fm fileAttributesAtPath:path traverseLink:YES] mutableCopy];
+                [attributes addEntriesFromDictionary:[self fileAttributesToWriteToURL:absoluteURL ofType:typeName forSaveOperation:saveOperation originalContentsURL:[self fileURL] error:NULL]];
                 unsigned long permissions = [[attributes objectForKey:NSFilePosixPermissions] unsignedLongValue];
                
                 [attributes setObject:[NSNumber numberWithUnsignedLong:permissions | 0200] forKey:NSFilePosixPermissions];
