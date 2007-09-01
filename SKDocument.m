@@ -289,10 +289,14 @@ static NSPopUpButton *popUpButtonSubview(NSView *view)
                 fileEnum = [[fm directoryContentsAtPath:tmpPath] objectEnumerator];
                 while (success && (file = [fileEnum nextObject])) {
                     NSString *filePath = [path stringByAppendingPathComponent:file];
-                    if ([fm movePath:[tmpPath stringByAppendingPathComponent:file] toPath:filePath handler:nil])
-                        [fm changeFileAttributes:[self fileAttributesToWriteToURL:[NSURL fileURLWithPath:filePath] ofType:typeName forSaveOperation:saveOperation originalContentsURL:[self fileURL] error:NULL] atPath:filePath];
-                    else if ([ourImportantExtensions containsObject:[[file pathExtension] lowercaseString]])
+                    if ([fm movePath:[tmpPath stringByAppendingPathComponent:file] toPath:filePath handler:nil]) {
+                        NSURL *fileURL = [NSURL fileURLWithPath:filePath];
+                        NSString *fileType = [[NSDocumentController sharedDocumentController] typeForContentsOfURL:fileURL error:NULL];
+                        NSDictionary *fileAttributes = [self fileAttributesToWriteToURL:fileURL ofType:fileType forSaveOperation:saveOperation originalContentsURL:[self fileURL] error:NULL];
+                        [fm changeFileAttributes:fileAttributes atPath:filePath];
+                    } else if ([ourImportantExtensions containsObject:[[file pathExtension] lowercaseString]]) {
                         success = NO;
+                    }
                 }
                 
                 if (success)
