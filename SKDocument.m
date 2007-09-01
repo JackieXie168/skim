@@ -270,7 +270,6 @@ static NSPopUpButton *popUpButtonSubview(NSView *view)
                 NSSet *ourImportantExtensions = [NSSet setWithObjects:@"pdf", @"skim", nil];
                 NSEnumerator *fileEnum;
                 NSString *file;
-                BOOL didMove;
                 NSMutableDictionary *attributes = [[fm fileAttributesAtPath:path traverseLink:YES] mutableCopy];
                 [attributes addEntriesFromDictionary:[self fileAttributesToWriteToURL:absoluteURL ofType:typeName forSaveOperation:saveOperation originalContentsURL:[self fileURL] error:NULL]];
                 unsigned long permissions = [[attributes objectForKey:NSFilePosixPermissions] unsignedLongValue];
@@ -289,8 +288,10 @@ static NSPopUpButton *popUpButtonSubview(NSView *view)
                 
                 fileEnum = [[fm directoryContentsAtPath:tmpPath] objectEnumerator];
                 while (success && (file = [fileEnum nextObject])) {
-                    didMove = [fm movePath:[tmpPath stringByAppendingPathComponent:file] toPath:[path stringByAppendingPathComponent:file] handler:nil];
-                    if (didMove == NO && [ourImportantExtensions containsObject:[[file pathExtension] lowercaseString]])
+                    NSString *filePath = [path stringByAppendingPathComponent:file];
+                    if ([fm movePath:[tmpPath stringByAppendingPathComponent:file] toPath:filePath handler:nil])
+                        [fm changeFileAttributes:[self fileAttributesToWriteToURL:[NSURL fileURLWithPath:filePath] ofType:typeName forSaveOperation:saveOperation originalContentsURL:[self fileURL] error:NULL] atPath:filePath];
+                    else if ([ourImportantExtensions containsObject:[[file pathExtension] lowercaseString]])
                         success = NO;
                 }
                 
