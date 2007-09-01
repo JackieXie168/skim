@@ -60,6 +60,7 @@
 #import "SKLine.h"
 #import "SKApplicationController.h"
 #import "Files_SKExtensions.h"
+#import "NSTask_SKExtensions.h"
 
 // maximum length of xattr value recommended by Apple
 #define MAX_XATTR_LENGTH        2048
@@ -1231,12 +1232,7 @@ static BOOL isFileOnHFSVolume(NSString *fileName)
                 [cmdString insertString:@"/usr/bin/osascript " atIndex:0];
         }
         
-        NSTask *task = [[[NSTask alloc] init] autorelease];
-        [task setLaunchPath:@"/bin/sh"];
-        [task setArguments:[NSArray arrayWithObjects:@"-c", cmdString, nil]];
-        [task setCurrentDirectoryPath:[file stringByDeletingLastPathComponent]];
-        [task setEnvironment:environment];
-        [task launch];
+        [NSTask launchedTaskWithLaunchPath:@"/bin/sh" arguments:[NSArray arrayWithObjects:@"-c", cmdString, nil] currentDirectoryPath:[file stringByDeletingLastPathComponent]];
     }
 }
 
@@ -1668,26 +1664,6 @@ static BOOL isFileOnHFSVolume(NSString *fileName)
 			return view;
 	}
 	return nil;
-}
-
-@end
-
-
-@implementation NSTask (SKExtensions) 
-
-+ (BOOL)runTaskWithLaunchPath:(NSString *)launchPath arguments:(NSArray *)arguments currentDirectoryPath:(NSString *)directoryPath {
-    NSTask *task = [[[NSTask alloc] init] autorelease];
-    
-    [task setLaunchPath:launchPath];
-    [task setCurrentDirectoryPath:directoryPath];
-    [task setArguments:arguments];
-    [task setStandardOutput:[NSFileHandle fileHandleWithNullDevice]];
-    [task setStandardError:[NSFileHandle fileHandleWithNullDevice]];
-    [task launch];
-    if ([task isRunning])
-        [task waitUntilExit];
-    
-    return 0 == [task terminationStatus];
 }
 
 @end

@@ -57,6 +57,7 @@
 #import "SKDocumentController.h"
 #import "Files_SKExtensions.h"
 #import "NSGeometry_SKExtensions.h"
+#import "NSTask_SKExtensions.h"
 
 #define WEBSITE_URL @"http://skim-app.sourceforge.net/"
 #define WIKI_URL    @"http://skim-app.sourceforge.net/wiki/"
@@ -347,10 +348,7 @@
         if (runImporter) {
             NSString *mdimportPath = @"/usr/bin/mdimport";
             if ([[NSFileManager defaultManager] isExecutableFileAtPath:mdimportPath]) {
-                NSTask *importerTask = [[[NSTask alloc] init] autorelease];
-                [importerTask setLaunchPath:mdimportPath];
-                [importerTask setArguments:[NSArray arrayWithObjects:@"-r", importerPath, nil]];
-                [importerTask launch];
+                [NSTask launchedTaskWithLaunchPath:mdimportPath arguments:[NSArray arrayWithObjects:@"-r", importerPath, nil]];
                 
                 NSDictionary *info = [NSDictionary dictionaryWithObjectsAndKeys:[NSNumber numberWithLong:sysVersion], @"lastSysVersion", importerVersion, @"lastImporterVersion", nil];
                 [[NSUserDefaults standardUserDefaults] setObject:info forKey:@"SKSpotlightVersionInfo"];
