@@ -159,36 +159,22 @@ NSString *SKDocumentWillSaveNotification = @"SKDocumentWillSaveNotification";
 
 #pragma mark Document read/write
 
-static NSPopUpButton *popUpButtonSubview(NSView *view)
-{
-	if ([view isKindOfClass:[NSPopUpButton class]])
-		return (NSPopUpButton *)view;
-	
-	NSEnumerator *viewEnum = [[view subviews] objectEnumerator];
-	NSView *subview;
-	NSPopUpButton *popup;
-	
-	while (subview = [viewEnum nextObject]) {
-		if (popup = popUpButtonSubview(subview))
-			return popup;
-	}
-	return nil;
-}
-
 - (BOOL)prepareSavePanel:(NSSavePanel *)savePanel {
     if (exportUsingPanel) {
-        NSPopUpButton *formatPopup = popUpButtonSubview([savePanel accessoryView]);
-        NSString *lastExportedType = [[NSUserDefaults standardUserDefaults] stringForKey:@"SKLastExportedType"];
-        if ([[self pdfDocument] allowsPrinting] == NO) {
-            int index = [formatPopup indexOfItemWithRepresentedObject:SKEmbeddedPDFDocumentType];
-            if (index != -1)
-                [formatPopup removeItemAtIndex:index];
-        }
-        if (formatPopup && lastExportedType) {
-            int index = [formatPopup indexOfItemWithRepresentedObject:lastExportedType];
-            if (index != -1 && index != [formatPopup indexOfSelectedItem]) {
-                [formatPopup selectItemAtIndex:index];
-                [formatPopup sendAction:[formatPopup action] to:[formatPopup target]];
+        NSPopUpButton *formatPopup = [[savePanel accessoryView] subviewOfClass:[NSPopUpButton class]];
+        if (formatPopup) {
+            NSString *lastExportedType = [[NSUserDefaults standardUserDefaults] stringForKey:@"SKLastExportedType"];
+            if ([[self pdfDocument] allowsPrinting] == NO) {
+                int index = [formatPopup indexOfItemWithRepresentedObject:SKEmbeddedPDFDocumentType];
+                if (index != -1)
+                    [formatPopup removeItemAtIndex:index];
+            }
+            if (lastExportedType) {
+                int index = [formatPopup indexOfItemWithRepresentedObject:lastExportedType];
+                if (index != -1 && index != [formatPopup indexOfSelectedItem]) {
+                    [formatPopup selectItemAtIndex:index];
+                    [formatPopup sendAction:[formatPopup action] to:[formatPopup target]];
+                }
             }
         }
     }
@@ -1663,6 +1649,25 @@ static BOOL isFileOnHFSVolume(NSString *fileName)
     }
     
     return setup;
+}
+
+@end
+
+
+@implementation NSView (SKExtensions)
+
+- (id)subviewOfClass:(Class)aClass {
+	if ([self isKindOfClass:aClass])
+		return self;
+	
+	NSEnumerator *viewEnum = [[self subviews] objectEnumerator];
+	NSView *view, *subview;
+	
+	while (subview = [viewEnum nextObject]) {
+		if (view = [subview subviewOfClass:aClass])
+			return view;
+	}
+	return nil;
 }
 
 @end

@@ -141,6 +141,11 @@ enum {
 @end
 
 
+@interface NSView (SKExtensions)
+- (id)subviewOfClass:(Class)aClass;
+@end
+
+
 @interface NSTask (SKExtensions)
 + (BOOL)runTaskWithLaunchPath:(NSString *)launchPath arguments:(NSArray *)arguments currentDirectoryPath:(NSString *)directoryPath;
 @end
