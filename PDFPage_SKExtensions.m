@@ -105,7 +105,6 @@ static IMP originalDealloc = NULL;
     NSImage *image = [[NSImage alloc] initWithSize:bounds.size];
     
     [image lockFocus];
-    [NSGraphicsContext saveGraphicsState];
     [[NSGraphicsContext currentContext] setImageInterpolation:NSImageInterpolationHigh];
     if ([self rotation]) {
         NSAffineTransform *transform = [NSAffineTransform transform];
@@ -127,7 +126,6 @@ static IMP originalDealloc = NULL;
     bounds.origin = NSZeroPoint;
     NSRectFill(bounds);
     [self drawWithBox:box]; 
-    [NSGraphicsContext restoreGraphicsState];
     [image unlockFocus];
     
     return [image autorelease];
@@ -169,7 +167,6 @@ static IMP originalDealloc = NULL;
     
     image = [[NSImage alloc] initWithSize:thumbnailSize];
     [image lockFocus];
-    [NSGraphicsContext saveGraphicsState];
     [[NSGraphicsContext currentContext] setImageInterpolation:NSImageInterpolationHigh];
     [NSGraphicsContext saveGraphicsState];
     [[NSColor whiteColor] set];
@@ -209,7 +206,6 @@ static IMP originalDealloc = NULL;
             [NSBezierPath fillRect:readingBarRect];
         }
     }
-    [NSGraphicsContext restoreGraphicsState];
     [image unlockFocus];
     
     return [image autorelease];

@@ -3327,10 +3327,8 @@ static void SKCGContextDrawGrabHandle(CGContextRef context, CGPoint point, float
         [[self window] cacheImageInRect:NSInsetRect([[self documentView] convertRect:selRect toView:nil], -2.0, -2.0)];
         
         [self lockFocus];
-        [NSGraphicsContext saveGraphicsState];
         [[NSColor blackColor] set];
         [NSBezierPath strokeRect:NSInsetRect(NSIntegralRect([self convertRect:selRect fromView:[self documentView]]), 0.5, 0.5)];
-        [NSGraphicsContext restoreGraphicsState];
         [self unlockFocus];
         [[self window] enableFlushWindow];
         [[self window] flushWindow];
