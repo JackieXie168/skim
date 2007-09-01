@@ -250,16 +250,12 @@
 
     if ([event type] == NSKeyDown) {
 		// Keyboard event
-		unichar upAndDownArrowCharacters[2];
-		upAndDownArrowCharacters[0] = NSUpArrowFunctionKey;
-		upAndDownArrowCharacters[1] = NSDownArrowFunctionKey;
-		NSString *upAndDownArrowString = [NSString stringWithCharacters: upAndDownArrowCharacters  length: 2];
-		NSCharacterSet *upAndDownArrowCharacterSet = [NSCharacterSet characterSetWithCharactersInString: upAndDownArrowString];
+        NSString *characters = [event charactersIgnoringModifiers];
+        unichar ch = [characters length] > 0 ? [characters characterAtIndex:0] : 0;
 		
-		if ([self showsMenuWhenIconClicked] == YES ||
-			[[event characters] rangeOfCharacterFromSet: upAndDownArrowCharacterSet].location != NSNotFound) {
+		if ([self showsMenuWhenIconClicked] == YES || ch == NSUpArrowFunctionKey || ch == NSDownArrowFunctionKey) {
 			[self showMenuInView:controlView withEvent:event];
-		} else if ([[event characters] rangeOfString: @" "].location != NSNotFound) {
+		} else if (ch == ' ') {
 			[self performClick: controlView];
 		}
     } else {
@@ -354,10 +350,7 @@
 		if (shouldSendAction) {
 			NSMenuItem *selectedItem = [self selectedItem];
 			[NSEvent stopPeriodicEvents];
-			[[NSApplication sharedApplication] sendAction: [selectedItem action]  
-													   to: [selectedItem target]
-													 from: selectedItem];
-			
+            [NSApp sendAction: [selectedItem action] to: [selectedItem target] from: selectedItem];
 		}
     }
     
@@ -369,6 +362,10 @@
 - (void)performClick:(id)sender{
     [buttonCell performClick: sender];
     [super performClick: sender];
+    if ([self iconActionEnabled]) {
+        NSMenuItem *selectedItem = [self selectedItem];
+        [NSApp sendAction: [selectedItem action] to: [selectedItem target] from: selectedItem];
+    }
 }
 
 
