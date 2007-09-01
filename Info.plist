@@ -92,6 +92,10 @@
 			<string>NoteDocument</string>
 			<key>CFBundleTypeName</key>
 			<string>Skim Notes</string>
+			<key>CFBundleTypeOSTypes</key>
+			<array>
+				<string>SKNT</string>
+			</array>
 			<key>CFBundleTypeRole</key>
 			<string>Editor</string>
 			<key>LSIsAppleDefaultForType</key>
@@ -423,6 +427,8 @@
 			<string>net.sourceforge.skim-app.pdfd</string>
 			<key>UTTypeTagSpecification</key>
 			<dict>
+				<key>com.apple.ostype</key>
+                <string>PDFD</string>
 				<key>public.filename-extension</key>
 				<array>
 					<string>pdfd</string>
@@ -442,6 +448,8 @@
 			<string>net.sourceforge.skim-app.skimnotes</string>
 			<key>UTTypeTagSpecification</key>
 			<dict>
+				<key>com.apple.ostype</key>
+                <string>SKNT</string>
 				<key>public.filename-extension</key>
 				<array>
 					<string>skim</string>
