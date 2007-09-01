@@ -38,6 +38,7 @@
 
 #import "SKPSProgressController.h"
 #import "NSString_SKExtensions.h"
+#import "NSTask_SKExtensions.h"
 
 enum {
     SKConversionSucceeded = 0,
@@ -337,21 +338,7 @@ CGPSConverterCallbacks SKPSConverterCallbacks = {
         
         [fm createDirectoryAtPath:tmpDir attributes:nil];
         
-        task = [[NSTask alloc] init];
-        [task setLaunchPath:commandPath];
-        [task setArguments:arguments]; 
-        [task setCurrentDirectoryPath:[dviFile stringByDeletingLastPathComponent]];
-        [task setStandardError:[NSFileHandle fileHandleWithNullDevice]];
-        
-        @try {
-            [task launch];
-        }
-        @catch(id exception) {
-            if([task isRunning])
-                [task terminate];
-            NSLog(@"%@ %@ failed", [task description], [task launchPath]);
-            success = NO;
-        }
+        task = [[NSTask launchedTaskWithLaunchPath:commandPath arguments:arguments currentDirectoryPath:[dviFile stringByDeletingLastPathComponent]] retain];
         
         ms = [self methodSignatureForSelector:@selector(conversionStarted)];
         invocation = [NSInvocation invocationWithMethodSignature:ms];
