@@ -868,8 +868,13 @@ static void SKCGContextDrawGrabHandle(CGContextRef context, CGPoint point, float
 }
 
 - (IBAction)selectAll:(id)sender {
-    if (toolMode == SKTextToolMode || toolMode == SKNoteToolMode)
+    if (toolMode == SKTextToolMode)
         [super selectAll:sender];
+}
+
+- (IBAction)deselectAll:(id)sender {
+    if (toolMode == SKTextToolMode)
+        [self setCurrentSelection:nil];
 }
 
 - (IBAction)autoSelectContent:(id)sender {
@@ -2182,6 +2187,10 @@ static void SKCGContextDrawGrabHandle(CGContextRef context, CGPoint point, float
         return [activeAnnotation isNoteAnnotation];
     } else if (action == @selector(printDocument:)) {
         return [[self document] allowsPrinting];
+    } else if (action == @selector(selectAll:)) {
+        return toolMode == SKTextToolMode;
+    } else if (action == @selector(deselectAll:)) {
+        return [self currentSelection] && toolMode == SKTextToolMode;
     } else if (action == @selector(autoSelectContent:)) {
         return toolMode == SKSelectToolMode;
     } else {

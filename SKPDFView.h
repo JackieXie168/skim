@@ -155,6 +155,7 @@ typedef enum _SKNoteType {
 - (void)setTypeSelectHelper:(SKTypeSelectHelper *)newTypeSelectHelper;
 
 - (IBAction)delete:(id)sender;
+- (IBAction)deselectAll:(id)sender;
 - (IBAction)autoSelectContent:(id)sender;
 
 - (void)addAnnotationFromMenu:(id)sender;
