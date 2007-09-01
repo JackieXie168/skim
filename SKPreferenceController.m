@@ -49,27 +49,27 @@ static NSString *SKTeXEditorCommands[] = {@"mate", @"bbedit", @"edit", @"emacscl
 static NSString *SKTeXEditorArguments[] = {@"-l %line \"%file\"", @"+%line \"%file\"", @"+%line \"%file\"", @"--no-wait +%line \"%file\"", @"--no-wait +%line \"%file\"", @"\"%file\" %line"};
 
 
-@interface NSView (SKExtensions)
+@interface NSView (SKPreferenceControllerExtensions)
 - (void)deactivateColorAndLineWells;
 @end
 
-@implementation NSView (SKExtensions)
+@implementation NSView (SKPreferenceControllerExtensions)
 - (void)deactivateColorAndLineWells {
     [[self subviews] makeObjectsPerformSelector:_cmd];
 }
 @end
 
-@interface NSColorWell (SKExtensions)
+@interface NSColorWell (SKPreferenceControllerExtensions)
 @end
 
-@implementation NSColorWell (SKExtensions)
+@implementation NSColorWell (SKPreferenceControllerExtensions)
 - (void)deactivateColorAndLineWells {
     [self deactivate];
     [super deactivateColorAndLineWells];
 }
 @end
 
-@implementation SKLineWell (SKExtensions)
+@implementation SKLineWell (SKPreferenceControllerExtensions)
 - (void)deactivateColorAndLineWells {
     [self deactivate];
     [super deactivateColorAndLineWells];
