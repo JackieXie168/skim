@@ -70,7 +70,7 @@
 	
 	// Extend selection.
 	[extendedSelection extendSelectionAtStart:10];
-	[extendedSelection extendSelectionAtEnd:30];
+	[extendedSelection extendSelectionAtEnd:50];
 	
     // get the cleaned string
     sample = [[extendedSelection string] stringByCollapsingWhitespaceAndNewlinesAndRemovingSurroundingWhitespaceAndNewlines];
