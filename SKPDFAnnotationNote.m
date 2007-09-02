@@ -380,6 +380,8 @@ static IMP originalSetBorder = NULL;
     NSScriptCommand *currentCommand = [NSScriptCommand currentCommand];
     if ([currentCommand isKindOfClass:[NSCreateCommand class]]) {
         unsigned long classCode = [[(NSCreateCommand *)currentCommand createClassDescription] appleEventCode];
+        float defaultWidth = [[NSUserDefaults standardUserDefaults] floatForKey:SKDefaultNoteWidthKey];
+        float defaultHeight = [[NSUserDefaults standardUserDefaults] floatForKey:SKDefaultNoteHeightKey];
        
         if (classCode == 'Note') {
             
@@ -411,15 +413,15 @@ static IMP originalSetBorder = NULL;
                     }
                 }
             } else if (type == SKASTextNote) {
-                self = [[SKPDFAnnotationFreeText alloc] initWithBounds:NSMakeRect(100.0, 100.0, 64.0, 64.0)];
+                self = [[SKPDFAnnotationFreeText alloc] initWithBounds:NSMakeRect(100.0, 100.0, defaultWidth, defaultHeight)];
             } else if (type == SKASAnchoredNote) {
                 self = [[SKPDFAnnotationNote alloc] initWithBounds:NSMakeRect(100.0, 100.0, 16.0, 16.0)];
             } else if (type == SKASCircleNote) {
-                self = [[SKPDFAnnotationCircle alloc] initWithBounds:NSMakeRect(100.0, 100.0, 64.0, 64.0)];
+                self = [[SKPDFAnnotationCircle alloc] initWithBounds:NSMakeRect(100.0, 100.0, defaultWidth, defaultHeight)];
             } else if (type == SKASSquareNote) {
-                self = [[SKPDFAnnotationSquare alloc] initWithBounds:NSMakeRect(100.0, 100.0, 64.0, 64.0)];
+                self = [[SKPDFAnnotationSquare alloc] initWithBounds:NSMakeRect(100.0, 100.0, defaultWidth, defaultHeight)];
             } else if (type == SKASLineNote) {
-                self = [[SKPDFAnnotationLine alloc] initWithBounds:NSMakeRect(100.0, 100.0, 16.0, 16.0)];
+                self = [[SKPDFAnnotationLine alloc] initWithBounds:NSMakeRect(100.0, 100.0, defaultWidth, defaultHeight)];
             }
         }
     }
