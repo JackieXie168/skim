@@ -201,6 +201,10 @@
 		BAt0eXBlZHN0cmVhbYED6IQBQISEhAdOU0NvbG9yAISECE5TT2JqZWN0AIWE
 		AWMBhARmZmZmAQABAYY=
 		</data>
+        <key>SKDefaultNoteWidth</key>
+        <real>128.0</real>
+        <key>SKDefaultNoteHeight</key>
+        <real>64.0</real>
         </array>
         <key>SKActivateFullScreenNavigationAtBottom</key>
         <false/>

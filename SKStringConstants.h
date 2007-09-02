@@ -91,6 +91,8 @@ extern NSString *SKLineNoteLineStyleKey;
 extern NSString *SKLineNoteDashPatternKey;
 extern NSString *SKLineNoteStartLineStyleKey;
 extern NSString *SKLineNoteEndLineStyleKey;
+extern NSString *SKDefaultNoteWidthKey;
+extern NSString *SKDefaultNoteHeightKey;
 extern NSString *SKSwatchColorsKey;
 extern NSString *SKDefaultPDFDisplaySettingsKey;
 extern NSString *SKDefaultFullScreenPDFDisplaySettingsKey;
