@@ -50,6 +50,11 @@
 #define TEXT_MARGIN_Y   2.0
 #define ALPHA_VALUE     0.95
 
+@interface NSScreen (SKExtensions)
++ (NSScreen *)screenForPoint:(NSPoint)point;
+@end
+
+
 @implementation SKPDFHoverWindow
 
 + (id)sharedHoverWindow {
@@ -291,7 +296,7 @@
         
         contentRect.size = [image size];
         contentRect.origin.y -= NSHeight(contentRect);
-        contentRect = SKConstrainRect(contentRect, [[NSScreen mainScreen] visibleFrame]);
+        contentRect = SKConstrainRect(contentRect, [[NSScreen screenForPoint:thePoint] visibleFrame]);
         [self setFrame:[self frameRectForContentRect:contentRect] display:NO];
         
         [[imageView enclosingScrollView] setBackgroundColor:color];
@@ -372,6 +377,54 @@
 - (void)animationDidStop:(NSAnimation*)anAnimation {
     [animation release];
     animation = nil;
+}
+
+@end
+
+
+static inline float SKSquaredDistanceFromPointToRect(NSPoint point, NSRect rect) {
+    float dx, dy;
+
+    if (point.x < NSMinX(rect))
+        dx = NSMinX(rect) - point.x;
+    else if (point.x > NSMaxX(rect))
+        dx = point.x - NSMaxX(rect);
+    else
+        dx = 0.0;
+
+    if (point.y < NSMinY(rect))
+        dy = NSMinY(rect) - point.y;
+    else if (point.y > NSMaxY(rect))
+        dy = point.y - NSMaxY(rect);
+    else
+        dy = 0.0;
+    
+    return dx * dx + dy * dy;
+}
+
+
+@implementation NSScreen (SKExtensions)
+
++ (NSScreen *)screenForPoint:(NSPoint)point {
+    NSEnumerator *screenEnum = [[NSScreen screens] objectEnumerator];
+    NSScreen *aScreen;
+    NSScreen *screen = nil;
+    float distanceSquared = FLT_MAX;
+    
+    while (aScreen = [screenEnum nextObject]) {
+        NSRect frame = [aScreen frame];
+        
+        if (NSPointInRect(point, frame))
+            return aScreen;
+        
+        float aDistanceSquared = SKSquaredDistanceFromPointToRect(point, frame);
+        if (aDistanceSquared < distanceSquared) {
+            distanceSquared = aDistanceSquared;
+            screen = aScreen;
+        }
+    }
+    
+    return screen;
 }
 
 @end
