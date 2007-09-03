@@ -60,6 +60,7 @@
 @interface NSObject (SKTemplateParser)
 - (NSString *)stringDescription;
 - (BOOL)isNotEmpty;
+- (id)safeValueForKeyPath:(NSString *)keyPath;
 @end
 
 
