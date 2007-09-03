@@ -38,6 +38,7 @@
 
 #import "SKTocOutlineView.h"
 #import "SKTypeSelectHelper.h"
+#import "NSColor_SKExtensions.h"
 
 
 @implementation SKTocOutlineView
@@ -48,18 +49,25 @@
     [super dealloc];
 }
 
+- (NSColor *)backgroundColor {
+    return [NSColor tableBackgroundColor];
+}
+
 - (void)highlightSelectionInClipRect:(NSRect)clipRect {
+    NSColor *color = ([[self window] isKeyWindow] && [[self window] firstResponder] == self) ? [NSColor alternateSelectedControlColor] : [NSColor secondarySelectedControlColor];
+    int row;
+    
+    [NSGraphicsContext saveGraphicsState];
+    
     if ([[self delegate] respondsToSelector:@selector(outlineViewHighlightedRows:)]) {
         NSMutableIndexSet *rowIndexes = [[[self selectedRowIndexes] mutableCopy] autorelease];
         NSArray *rows = [[self delegate] outlineViewHighlightedRows:self];
-        NSColor *color = ([[self window] isKeyWindow] && [[self window] firstResponder] == self) ? [NSColor alternateSelectedControlColor] : [NSColor secondarySelectedControlColor];
         float factor = 0.5;
         int i, count = [rows count];
         
-        [NSGraphicsContext saveGraphicsState];
         for (i = 0; i < count; i++) {
-            int row = [[rows objectAtIndex:i] intValue];
-            [[[NSColor controlBackgroundColor] blendedColorWithFraction:factor ofColor:color] set];
+            row = [[rows objectAtIndex:i] intValue];
+            [[[self backgroundColor] blendedColorWithFraction:factor ofColor:color] set];
             factor -= 0.1;
             if ([rowIndexes containsIndex:row] == NO) {
                 NSRectFill([self rectOfRow:row]);
@@ -67,9 +75,15 @@
             }
             if (factor <= 0.0) break;
         }
-        [NSGraphicsContext restoreGraphicsState];
     }
-    [super highlightSelectionInClipRect:clipRect]; 
+    
+    row = [self selectedRow];
+    if (row != -1) {
+        [color setFill];
+        NSRectFill([self rectOfRow:row]);
+    }
+    
+    [NSGraphicsContext restoreGraphicsState];
 }
 
 - (void)removeTrackingRects {

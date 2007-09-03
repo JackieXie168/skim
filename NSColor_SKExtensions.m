@@ -41,6 +41,15 @@
 
 @implementation NSColor (SKExtensions)
 
++ (NSColor *)tableBackgroundColor {
+    static NSColor *tableBackgroundColor = nil;
+    if (nil == tableBackgroundColor) {
+        // from Mail.app on 10.4; should be based on control tint?
+        tableBackgroundColor = [[NSColor colorWithCalibratedRed:231.0f/255.0f green:237.0f/255.0f blue:246.0f/255.0f alpha:1.0] retain];
+    }
+    return tableBackgroundColor;
+}
+
 + (id)scriptingRgbaColorWithDescriptor:(NSAppleEventDescriptor *)descriptor {
     float red, green, blue, alpha = 1.0;
     switch ([descriptor numberOfItems]) {
