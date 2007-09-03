@@ -3379,6 +3379,12 @@ static void SKCGContextDrawGrabHandle(CGContextRef context, CGPoint point, float
         
         autoFits = YES;
         
+    } else if (toolMode == SKSelectToolMode && NSIsEmptyRect(selectionRect) == NO) {
+        
+        rect = NSIntersectionRect(selectionRect, [page boundsForBox:kPDFDisplayBoxCropBox]);
+        rect = [self convertRect:rect fromPage:page];
+        autoFits = YES;
+        
     } else {
         
         BOOL isLink = NO;
