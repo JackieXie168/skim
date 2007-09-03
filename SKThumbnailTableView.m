@@ -39,6 +39,7 @@
 #import "SKThumbnailTableView.h"
 #import "OBUtilities.h"
 #import "SKTypeSelectHelper.h"
+#import "NSColor_SKExtensions.h"
 
 static NSString *SKScrollerWillScrollNotification = @"SKScrollerWillScrollNotification";
 static NSString *SKScrollerDidScrollNotification = @"SKScrollerDidScrollNotification";
@@ -68,6 +69,10 @@ static IMP originalTrackKnob = NULL;
 - (void)dealloc {
     [[NSNotificationCenter defaultCenter] removeObserver:self];
     [super dealloc];
+}
+
+- (NSColor *)backgroundColor {
+    return [NSColor tableBackgroundColor];
 }
 
 - (BOOL)isScrolling { return isScrolling; }
@@ -100,27 +105,35 @@ static IMP originalTrackKnob = NULL;
 }
 
 - (void)highlightSelectionInClipRect:(NSRect)clipRect {
+    NSColor *color = ([[self window] isKeyWindow] && [[self window] firstResponder] == self) ? [NSColor alternateSelectedControlColor] : [NSColor secondarySelectedControlColor];
+    int row;
+    
+    [NSGraphicsContext saveGraphicsState];
+    
     if ([[self delegate] respondsToSelector:@selector(tableViewHighlightedRows:)]) {
         NSMutableIndexSet *rowIndexes = [[[self selectedRowIndexes] mutableCopy] autorelease];
         NSArray *rows = [[self delegate] tableViewHighlightedRows:self];
-        NSColor *color = ([[self window] isKeyWindow] && [[self window] firstResponder] == self) ? [NSColor alternateSelectedControlColor] : [NSColor secondarySelectedControlColor];
         float factor = 0.5;
         int i, count = [rows count];
         
-        [NSGraphicsContext saveGraphicsState];
-        NSColor *bgColor = [NSColor controlBackgroundColor];
         for (i = 0; i < count && factor > 0.0; i++) {
-            int row = [[rows objectAtIndex:i] intValue];
-            [[bgColor blendedColorWithFraction:factor ofColor:color] setFill];
+            row = [[rows objectAtIndex:i] intValue];
+            [[[self backgroundColor] blendedColorWithFraction:factor ofColor:color] setFill];
             factor -= 0.1;
             if ([rowIndexes containsIndex:row] == NO) {
                 NSRectFill([self rectOfRow:row]);
                 [rowIndexes addIndex:row];
             }
         }
-        [NSGraphicsContext restoreGraphicsState];
     }
-    [super highlightSelectionInClipRect:clipRect]; 
+    
+    row = [self selectedRow];
+    if (row != -1) {
+        [color setFill];
+        NSRectFill([self rectOfRow:row]);
+    }
+    
+    [NSGraphicsContext restoreGraphicsState];
 }
 
 - (void)mouseDown:(NSEvent *)theEvent {

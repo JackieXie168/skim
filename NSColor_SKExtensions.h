@@ -71,6 +71,8 @@ enum {
 
 @interface NSColor (SKExtensions)
 
++ (NSColor *)tableBackgroundColor;
+
 + (id)scriptingRgbaColorWithDescriptor:(NSAppleEventDescriptor *)descriptor;
 - (id)scriptingRgbaColorDescriptor;
 
