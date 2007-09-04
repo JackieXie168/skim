@@ -769,6 +769,7 @@ static NSString *noteToolAdornImageNames[] = {@"TextNoteToolAdorn", @"AnchoredNo
     // these carry a label, moreover when this is called the thumbnails will also be invalid
     [self resetThumbnails];
     [self allSnapshotsNeedUpdate];
+    [noteOutlineView reloadData];
     
     // update the outline
     [pdfOutline release];
@@ -843,11 +844,8 @@ static NSString *noteToolAdornImageNames[] = {@"TextNoteToolAdorn", @"AnchoredNo
         
         [self registerForDocumentNotifications];
         
-        [noteOutlineView reloadData];
-        
-        [self updateNoteSelection];
-        
         [self updatePageLabelsAndOutline];
+        [self updateNoteSelection];
         
         NSEnumerator *setupEnum = [snapshotDicts objectEnumerator];
         NSDictionary *setup;
