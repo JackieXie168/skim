@@ -1575,7 +1575,7 @@ static BOOL isFileOnHFSVolume(NSString *fileName)
         point = NSMakePoint(NSMidX(bounds), NSMidY(bounds));
     }
     if (page) {
-        unsigned int pageIndex = [[page document] indexForPage:page];
+        unsigned int pageIndex = [page pageIndex];
         PDFSelection *sel = [page selectionForLineAtPoint:point];
         NSRect rect = sel ? [sel boundsForPage:page] : NSMakeRect(point.x - 20.0, point.y - 5.0, 40.0, 10.0);
         

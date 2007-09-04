@@ -1388,7 +1388,7 @@ static void SKCGContextDrawGrabHandle(CGContextRef context, CGPoint point, float
 }
 
 - (void)checkSpellingStartingAtIndex:(int)index onPage:(PDFPage *)page {
-    unsigned int i, first = [[self document] indexForPage:page];
+    unsigned int i, first = [page pageIndex];
     unsigned int count = [[self document] pageCount];
     BOOL didWrap = NO;
     i = first;
@@ -1970,10 +1970,10 @@ static void SKCGContextDrawGrabHandle(CGContextRef context, CGPoint point, float
     if (activeAnnotation) {
         if (editAnnotation)
             [self endAnnotationEdit:self];
-        pageIndex = [pdfDoc indexForPage:[activeAnnotation page]];
+        pageIndex = [[activeAnnotation page] pageIndex];
         i = [[[activeAnnotation page] annotations] indexOfObject:activeAnnotation];
     } else {
-        pageIndex = [pdfDoc indexForPage:[self currentPage]];
+        pageIndex = [[self currentPage] pageIndex];
     }
     while (annotation == nil) {
         NSArray *annotations = [[pdfDoc pageAtIndex:pageIndex] annotations];
@@ -2015,10 +2015,10 @@ static void SKCGContextDrawGrabHandle(CGContextRef context, CGPoint point, float
     if (activeAnnotation) {
         if (editAnnotation)
             [self endAnnotationEdit:self];
-        pageIndex = [pdfDoc indexForPage:[activeAnnotation page]];
+        pageIndex = [[activeAnnotation page] pageIndex];
         i = [[[activeAnnotation page] annotations] indexOfObject:activeAnnotation];
     } else {
-        pageIndex = [pdfDoc indexForPage:[self currentPage]];
+        pageIndex = [[self currentPage] pageIndex];
     }
     while (annotation == nil) {
         NSArray *annotations = [[pdfDoc pageAtIndex:pageIndex] annotations];
@@ -2113,7 +2113,7 @@ static void SKCGContextDrawGrabHandle(CGContextRef context, CGPoint point, float
     
     SKMainWindowController *controller = [[self window] windowController];
     
-    [controller showSnapshotAtPageNumber:[[self document] indexForPage:page] forRect:rect factor:1 autoFits:autoFits display:YES];
+    [controller showSnapshotAtPageNumber:[page pageIndex] forRect:rect factor:1 autoFits:autoFits display:YES];
 }
 
 #pragma mark Notification handling
@@ -2307,9 +2307,9 @@ static void SKCGContextDrawGrabHandle(CGContextRef context, CGPoint point, float
     unsigned first, last;
     
     page = [self pageForPoint:SKTopLeftPoint(visibleRect) nearest:YES];
-    first = [[self document] indexForPage:page];
+    first = [page pageIndex];
     page = [self pageForPoint:SKBottomRightPoint(visibleRect) nearest:YES];
-    last = [[self document] indexForPage:page];
+    last = [page pageIndex];
     
     return NSMakeRange(first, last - first + 1);
 }
@@ -3404,7 +3404,7 @@ static void SKCGContextDrawGrabHandle(CGContextRef context, CGPoint point, float
     
     SKMainWindowController *controller = [[self window] windowController];
     
-    [controller showSnapshotAtPageNumber:[[self document] indexForPage:page] forRect:[self convertRect:rect toPage:page] factor:factor autoFits:autoFits display:YES];
+    [controller showSnapshotAtPageNumber:[page pageIndex] forRect:[self convertRect:rect toPage:page] factor:factor autoFits:autoFits display:YES];
 }
 
 - (void)magnifyWithEvent:(NSEvent *)theEvent {
@@ -3543,7 +3543,7 @@ static void SKCGContextDrawGrabHandle(CGContextRef context, CGPoint point, float
         NSPoint mouseLoc = [self convertPoint:[theEvent locationInWindow] fromView:nil];
         PDFPage *page = [self pageForPoint:mouseLoc nearest:YES];
         NSPoint location = [self convertPoint:mouseLoc toPage:page];
-        unsigned int pageIndex = [[self document] indexForPage:page];
+        unsigned int pageIndex = [page pageIndex];
         PDFSelection *sel = [page selectionForLineAtPoint:location];
         NSRect rect = sel ? [sel boundsForPage:page] : NSMakeRect(location.x - 20.0, location.y - 5.0, 40.0, 10.0);
         

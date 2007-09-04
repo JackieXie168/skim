@@ -55,6 +55,8 @@ extern NSString *SKPDFDocumentPageBoundsDidChangeNotification;
 
 - (NSArray *)lineBounds;
 
+- (unsigned int)pageIndex;
+
 - (NSScriptObjectSpecifier *)objectSpecifier;
 - (SKDocument *)containingDocument;
 - (unsigned int)index;

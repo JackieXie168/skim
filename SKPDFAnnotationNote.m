@@ -230,7 +230,7 @@ static IMP originalSetBorder = NULL;
 
 - (unsigned int)pageIndex {
     PDFPage *page = [self page];
-    return page ? [[page document] indexForPage:page] : NSNotFound;
+    return page ? [page pageIndex] : NSNotFound;
 }
 
 - (int)noteType {
