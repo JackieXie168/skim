@@ -89,13 +89,14 @@ NSString *SKFileSizeStringForFileURL(NSURL *fileURL, unsigned long long *physica
     FSRef fileRef;
     FSCatalogInfo catalogInfo;
     unsigned long long size, logicalSize = 0;
-    BOOL gotSize = NO;
+    BOOL gotSize = NO, isDir = NO;
     NSMutableString *string = [NSMutableString string];
     
     Boolean gotRef = CFURLGetFSRef((CFURLRef)fileURL, &fileRef);
-    if (gotRef && noErr == FSGetCatalogInfo(&fileRef, kFSCatInfoDataSizes | kFSCatInfoRsrcSizes, &catalogInfo, NULL, NULL, NULL)) {
+    if (gotRef && noErr == FSGetCatalogInfo(&fileRef, kFSCatInfoDataSizes | kFSCatInfoRsrcSizes | kFSCatInfoNodeFlags, &catalogInfo, NULL, NULL, NULL)) {
         size = catalogInfo.dataPhysicalSize + catalogInfo.rsrcPhysicalSize;
         logicalSize = catalogInfo.dataLogicalSize + catalogInfo.rsrcLogicalSize;
+        isDir = (catalogInfo.nodeFlags & kFSNodeIsDirectoryMask) != 0;
         gotSize = YES;
     }
     
@@ -103,6 +104,20 @@ NSString *SKFileSizeStringForFileURL(NSURL *fileURL, unsigned long long *physica
         // this seems to give the logical size
         NSDictionary *fileAttrs = [[NSFileManager defaultManager] fileAttributesAtPath:[fileURL path] traverseLink:NO];
         logicalSize = size = [[fileAttrs objectForKey:NSFileSize] unsignedLongLongValue];
+        isDir = [[fileAttrs fileType] isEqualToString:NSFileTypeDirectory];
+    }
+    
+    if (isDir) {
+        NSString *path = [fileURL path];
+        NSEnumerator *fileEnum = [[[NSFileManager defaultManager] subpathsAtPath:path] objectEnumerator];
+        NSString *file;
+        unsigned long long componentSize;
+        unsigned long long logicalComponentSize;
+        while (file = [fileEnum nextObject]) {
+            SKFileSizeStringForFileURL([NSURL fileURLWithPath:[path stringByAppendingPathComponent:file]], &componentSize, &logicalComponentSize);
+            size += componentSize;
+            logicalSize += logicalComponentSize;
+        }
     }
     
     if (physicalSizePtr)
