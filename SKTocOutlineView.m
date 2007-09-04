@@ -76,8 +76,8 @@
             row = [[rows objectAtIndex:i] intValue];
             rect = [self rectOfRow:row];
             if (NSIntersectsRect(rect, clipRect) && [rowIndexes containsIndex:row] == NO) {
-                [[[self backgroundColor] blendedColorWithFraction:0.5 - 0.1 * i ofColor:color] setFill];
-                NSRectFill(rect);
+                [[color colorWithAlphaComponent:0.5 - 0.1 * i] setFill];
+                [NSBezierPath fillRect:rect];
             }
             [rowIndexes addIndex:row];
         }
@@ -88,11 +88,21 @@
         rect = [self rectOfRow:row];
         if (NSIntersectsRect(rect, clipRect)) {
             [color setFill];
-            NSRectFill([self rectOfRow:row]);
+            [NSBezierPath fillRect:rect];
         }
     }
     
     [NSGraphicsContext restoreGraphicsState];
+}
+
+- (void)selectRowIndexes:(NSIndexSet *)indexes byExtendingSelection:(BOOL)extend {
+    [super selectRowIndexes:indexes byExtendingSelection:extend];
+    [self setNeedsDisplay:YES];
+}
+
+- (void)deselectRow:(int)row {
+    [super deselectRow:row];
+    [self setNeedsDisplay:YES];
 }
 
 - (void)removeTrackingRects {
