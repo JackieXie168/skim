@@ -75,6 +75,46 @@ static IMP originalTrackKnob = NULL;
     return [NSColor tableBackgroundColor];
 }
 
+- (NSColor *)highlightColor {
+    if ([[self window] isKeyWindow] && [[self window] firstResponder] == self)
+        return [NSColor alternateSelectedControlColor];
+    else
+        return [NSColor secondarySelectedTableColor];
+}
+
+- (void)highlightSelectionInClipRect:(NSRect)clipRect {
+    NSColor *color = [self highlightColor];
+    int row;
+    
+    [NSGraphicsContext saveGraphicsState];
+    
+    if ([[self delegate] respondsToSelector:@selector(tableViewHighlightedRows:)]) {
+        
+        NSMutableIndexSet *rowIndexes = [[[self selectedRowIndexes] mutableCopy] autorelease];
+        NSArray *rows = [[self delegate] tableViewHighlightedRows:self];
+        float factor = 0.5;
+        int i, count = [rows count];
+        
+        for (i = 0; i < count && factor > 0.0; i++) {
+            row = [[rows objectAtIndex:i] intValue];
+            [[[self backgroundColor] blendedColorWithFraction:factor ofColor:color] setFill];
+            factor -= 0.1;
+            if ([rowIndexes containsIndex:row] == NO) {
+                NSRectFill([self rectOfRow:row]);
+                [rowIndexes addIndex:row];
+            }
+        }
+    }
+    
+    row = [self selectedRow];
+    if (row != -1) {
+        [color setFill];
+        NSRectFill([self rectOfRow:row]);
+    }
+    
+    [NSGraphicsContext restoreGraphicsState];
+}
+
 - (BOOL)isScrolling { return isScrolling; }
 
 - (void)handleScrollerWillScroll:(NSNotification *)note {
@@ -102,38 +142,6 @@ static IMP originalTrackKnob = NULL;
 - (void)setFrameSize:(NSSize)frameSize {
     [super setFrameSize:frameSize];
     [self noteHeightOfRowsWithIndexesChanged:[NSIndexSet indexSetWithIndexesInRange:NSMakeRange(0, [self numberOfRows])]];
-}
-
-- (void)highlightSelectionInClipRect:(NSRect)clipRect {
-    NSColor *color = ([[self window] isKeyWindow] && [[self window] firstResponder] == self) ? [NSColor alternateSelectedControlColor] : [NSColor secondarySelectedControlColor];
-    int row;
-    
-    [NSGraphicsContext saveGraphicsState];
-    
-    if ([[self delegate] respondsToSelector:@selector(tableViewHighlightedRows:)]) {
-        NSMutableIndexSet *rowIndexes = [[[self selectedRowIndexes] mutableCopy] autorelease];
-        NSArray *rows = [[self delegate] tableViewHighlightedRows:self];
-        float factor = 0.5;
-        int i, count = [rows count];
-        
-        for (i = 0; i < count && factor > 0.0; i++) {
-            row = [[rows objectAtIndex:i] intValue];
-            [[[self backgroundColor] blendedColorWithFraction:factor ofColor:color] setFill];
-            factor -= 0.1;
-            if ([rowIndexes containsIndex:row] == NO) {
-                NSRectFill([self rectOfRow:row]);
-                [rowIndexes addIndex:row];
-            }
-        }
-    }
-    
-    row = [self selectedRow];
-    if (row != -1) {
-        [color setFill];
-        NSRectFill([self rectOfRow:row]);
-    }
-    
-    [NSGraphicsContext restoreGraphicsState];
 }
 
 - (void)mouseDown:(NSEvent *)theEvent {

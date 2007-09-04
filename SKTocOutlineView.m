@@ -53,8 +53,15 @@
     return [NSColor tableBackgroundColor];
 }
 
+- (NSColor *)highlightColor {
+    if ([[self window] isKeyWindow] && [[self window] firstResponder] == self)
+        return [NSColor alternateSelectedControlColor];
+    else
+        return [NSColor secondarySelectedTableColor];
+}
+
 - (void)highlightSelectionInClipRect:(NSRect)clipRect {
-    NSColor *color = ([[self window] isKeyWindow] && [[self window] firstResponder] == self) ? [NSColor alternateSelectedControlColor] : [NSColor secondarySelectedControlColor];
+    NSColor *color = [self highlightColor];
     int row;
     
     [NSGraphicsContext saveGraphicsState];
