@@ -63,31 +63,33 @@
 - (void)highlightSelectionInClipRect:(NSRect)clipRect {
     NSColor *color = [self highlightColor];
     int row;
+    NSRect rect;
     
     [NSGraphicsContext saveGraphicsState];
     
     if ([[self delegate] respondsToSelector:@selector(outlineViewHighlightedRows:)]) {
         NSMutableIndexSet *rowIndexes = [[[self selectedRowIndexes] mutableCopy] autorelease];
         NSArray *rows = [[self delegate] outlineViewHighlightedRows:self];
-        float factor = 0.5;
-        int i, count = [rows count];
+        int i, count = MIN((int)[rows count], 5);
         
         for (i = 0; i < count; i++) {
             row = [[rows objectAtIndex:i] intValue];
-            [[[self backgroundColor] blendedColorWithFraction:factor ofColor:color] set];
-            factor -= 0.1;
-            if ([rowIndexes containsIndex:row] == NO) {
-                NSRectFill([self rectOfRow:row]);
-                [rowIndexes addIndex:row];
+            rect = [self rectOfRow:row];
+            if (NSIntersectsRect(rect, clipRect) && [rowIndexes containsIndex:row] == NO) {
+                [[[self backgroundColor] blendedColorWithFraction:0.5 - 0.1 * i ofColor:color] setFill];
+                NSRectFill(rect);
             }
-            if (factor <= 0.0) break;
+            [rowIndexes addIndex:row];
         }
     }
     
     row = [self selectedRow];
     if (row != -1) {
-        [color setFill];
-        NSRectFill([self rectOfRow:row]);
+        rect = [self rectOfRow:row];
+        if (NSIntersectsRect(rect, clipRect)) {
+            [color setFill];
+            NSRectFill([self rectOfRow:row]);
+        }
     }
     
     [NSGraphicsContext restoreGraphicsState];
