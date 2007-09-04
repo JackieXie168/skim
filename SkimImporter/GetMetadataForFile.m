@@ -58,7 +58,17 @@ Boolean GetMetadataForFile(void* thisInterface,
         notePath = (NSString *)pathToFile;
         sourcePath = [[(NSString *)pathToFile stringByDeletingPathExtension] stringByAppendingPathExtension:@"pdf"];
     } else if (UTTypeEqual(contentTypeUTI, CFSTR("net.sourceforge.skim-app.pdfd"))) {
-        notePath = [(NSString *)pathToFile stringByAppendingPathComponent:@"notes.skim"];
+        NSArray *files = [[NSFileManager defaultManager] subpathsAtPath:(NSString *)pathToFile];
+        NSString *noteFilename = @"notes.skim";
+        if ([files containsObject:noteFilename] == NO) {
+            noteFilename = [[[(NSString *)pathToFile lastPathComponent] stringByDeletingPathExtension] stringByAppendingPathExtension:@"skim"];
+            if ([files containsObject:noteFilename] == NO) {
+                unsigned index = [[files valueForKeyPath:@"pathExtension.lowercaseString"] indexOfObject:@"skim"];
+                noteFilename = index == NSNotFound ? nil : [files objectAtIndex:index];
+            }
+        }
+        if (noteFilename)
+            notePath = [(NSString *)pathToFile stringByAppendingPathComponent:noteFilename];
     }
     
     if (notePath && [[NSFileManager defaultManager] fileExistsAtPath:notePath]) {
