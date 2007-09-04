@@ -1,8 +1,10 @@
 //
-//  NSColor_SKExtensions.h
+//  NSCell_SKExtensions.h
 //  Skim
 //
-//  Created by Christiaan Hofman on 6/17/07.
+//  Created by Christiaan Hofman on 9/4/07.
+//  Copyright 2007 Christiaan Hofman. All rights reserved.
+//
 /*
  This software is Copyright (c) 2007
  Christiaan Hofman. All rights reserved.
@@ -38,43 +40,6 @@
 
 #import <Cocoa/Cocoa.h>
 
-enum {
-    SKASColorRed = 'Red ',
-    SKASColorGreen = 'Gren',
-    SKASColorBlue = 'Blue',
-    SKASColorYellow = 'Yelw',
-    SKASColorMagenta = 'Mgnt',
-    SKASColorCyan = 'Cyan',
-    SKASColorDarkRed = 'DRed',
-    SKASColorDarkGreen = 'DGrn',
-    SKASColorDarkBlue = 'DBlu',
-    SKASColorBanana = 'Bana',
-    SKASColorTurquoise = 'Turq',
-    SKASColorViolet = 'Viol',
-    SKASColorOrange = 'Orng',
-    SKASColorDeepPink = 'DpPk',
-    SKASColorSpringGreen = 'SprG',
-    SKASColorAqua = 'Aqua',
-    SKASColorLime = 'Lime',
-    SKASColorDarkViolet = 'DVio',
-    SKASColorPurple = 'Prpl',
-    SKASColorTeal = 'Teal',
-    SKASColorOlive = 'Oliv',
-    SKASColorBrown = 'Brwn',
-    SKASColorBlack = 'Blck',
-    SKASColorWhite = 'Whit',
-    SKASColorGray = 'Gray',
-    SKASColorLightGray = 'LGry',
-    SKASColorDarkGray = 'DGry',
-    SKASColorClear = 'Clea'
-};
 
-@interface NSColor (SKExtensions)
-
-+ (NSColor *)tableBackgroundColor;
-+ (NSColor *)secondarySelectedTableColor;
-
-+ (id)scriptingRgbaColorWithDescriptor:(NSAppleEventDescriptor *)descriptor;
-- (id)scriptingRgbaColorDescriptor;
-
+@interface NSCell (SKExtensions)
 @end

@@ -132,6 +132,7 @@
 		CE5BF8430C7CC24A00EBDCF7 /* SKOutlineView.m in Sources */ = {isa = PBXBuildFile; fileRef = CE5BF8410C7CC24A00EBDCF7 /* SKOutlineView.m */; };
 		CE5F42AF0BF89FE00069D89C /* AppleRemote.m in Sources */ = {isa = PBXBuildFile; fileRef = CE5F42AD0BF89FE00069D89C /* AppleRemote.m */; };
 		CE5F43730BF8A3410069D89C /* IOKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CE5F42D30BF8A3400069D89C /* IOKit.framework */; };
+		CE5F71560C8CDF9A008BE480 /* NSCell_SKExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = CE5F71540C8CDF9A008BE480 /* NSCell_SKExtensions.m */; };
 		CE67BB260BC44AC9007B6929 /* ZoomValues.strings in Resources */ = {isa = PBXBuildFile; fileRef = CE67BB240BC44AC9007B6929 /* ZoomValues.strings */; };
 		CE6C03F10BEDF759007BF0B5 /* NSParagraphStyle_SKExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = CE6C03EF0BEDF759007BF0B5 /* NSParagraphStyle_SKExtensions.m */; };
 		CE74686F0B7F3B1C00CBF969 /* ToolbarInfo.tiff in Resources */ = {isa = PBXBuildFile; fileRef = CE7467330B7F2ED700CBF969 /* ToolbarInfo.tiff */; };
@@ -497,6 +498,8 @@
 		CE5F42AC0BF89FE00069D89C /* AppleRemote.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = AppleRemote.h; path = vendorsrc/martinkahr/AppleRemoteSource_R80/AppleRemote.h; sourceTree = "<group>"; };
 		CE5F42AD0BF89FE00069D89C /* AppleRemote.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; name = AppleRemote.m; path = vendorsrc/martinkahr/AppleRemoteSource_R80/AppleRemote.m; sourceTree = "<group>"; };
 		CE5F42D30BF8A3400069D89C /* IOKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = IOKit.framework; path = /System/Library/Frameworks/IOKit.framework; sourceTree = "<absolute>"; };
+		CE5F71530C8CDF9A008BE480 /* NSCell_SKExtensions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NSCell_SKExtensions.h; sourceTree = "<group>"; };
+		CE5F71540C8CDF9A008BE480 /* NSCell_SKExtensions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NSCell_SKExtensions.m; sourceTree = "<group>"; };
 		CE67BB250BC44AC9007B6929 /* English */ = {isa = PBXFileReference; fileEncoding = 10; lastKnownFileType = text.plist.strings; name = English; path = English.lproj/ZoomValues.strings; sourceTree = "<group>"; };
 		CE67BB290BC44AD5007B6929 /* Dutch */ = {isa = PBXFileReference; fileEncoding = 10; lastKnownFileType = text.plist.strings; name = Dutch; path = Dutch.lproj/ZoomValues.strings; sourceTree = "<group>"; };
 		CE6C03EE0BEDF759007BF0B5 /* NSParagraphStyle_SKExtensions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NSParagraphStyle_SKExtensions.h; sourceTree = "<group>"; };
@@ -792,6 +795,8 @@
 				CE4EC87E0B7E6E110091F228 /* NSBezierPath_CoreImageExtensions.m */,
 				F968C5A00C036E9D000BD1B2 /* NSBitmapImageRep_SKExtensions.h */,
 				F968C5A10C036E9D000BD1B2 /* NSBitmapImageRep_SKExtensions.m */,
+				CE5F71530C8CDF9A008BE480 /* NSCell_SKExtensions.h */,
+				CE5F71540C8CDF9A008BE480 /* NSCell_SKExtensions.m */,
 				CE1E30260BDB9D8E0011D9DD /* NSCharacterSet_SKExtensions.h */,
 				CE1E30270BDB9D8E0011D9DD /* NSCharacterSet_SKExtensions.m */,
 				CE7C204D0C259A5D0059E08C /* NSColor_SKExtensions.h */,
@@ -1494,6 +1499,7 @@
 				CE5BF8010C7CBF6300EBDCF7 /* SKTableView.m in Sources */,
 				CE5BF8430C7CC24A00EBDCF7 /* SKOutlineView.m in Sources */,
 				CE820A220C8A0E310020E6B0 /* NSTask_SKExtensions.m in Sources */,
+				CE5F71560C8CDF9A008BE480 /* NSCell_SKExtensions.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
