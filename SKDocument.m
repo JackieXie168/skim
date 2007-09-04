@@ -520,36 +520,48 @@ NSString *SKDocumentWillSaveNotification = @"SKDocumentWillSaveNotification";
         }
     } else if ([docType isEqualToString:SKPDFBundleDocumentType]) {
         NSFileWrapper *fileWrapper = [[NSFileWrapper alloc] initWithPath:[absoluteURL path]];
+        NSFileWrapper *pdfFW = nil;
+        NSFileWrapper *skimFW = nil;
         NSDictionary *fileWrappers = [fileWrapper fileWrappers];
         NSArray *noteArray = nil;
-        NSFileWrapper *fw;
+        NSString *name = [[[absoluteURL path] lastPathComponent] stringByDeletingPathExtension];
+        if ([name caseInsensitiveCompare:BUNDLE_DATA_FILENAME] == NSOrderedSame)
+            name = [name stringByAppendingString:@"1"];
         
-        if ((fw = [fileWrappers objectForKey:BUNDLE_DATA_FILENAME]) && [fw isRegularFile]) {
-            data = [[fw regularFileContents] retain];
-            pdfDoc = [[PDFDocument alloc] initWithURL:[NSURL fileURLWithPath:[[absoluteURL path] stringByAppendingPathComponent:[fw filename]]]];
-        }
-        if ((fw = [fileWrappers objectForKey:BUNDLE_DATA_FILENAME]) && [fw isRegularFile]) {
-            if (noteArray = [NSKeyedUnarchiver unarchiveObjectWithData:[fw regularFileContents]])
-                [self setNoteDicts:noteArray];
-        }
-        if (data == nil || noteArray == nil) {
+        pdfFW = [fileWrappers objectForKey:[name stringByAppendingPathExtension:@"pdf"]];
+        if ([pdfFW isRegularFile] == NO)
+            pdfFW = nil;
+        skimFW = [fileWrappers objectForKey:[name stringByAppendingPathExtension:@"skim"]];
+        if ([skimFW isRegularFile] == NO)
+            skimFW = nil;
+        if (pdfFW == nil || skimFW == nil) {
             NSArray *fws = [fileWrappers allValues];
             NSArray *extensions = [fws valueForKeyPath:@"filename.pathExtension.lowercaseString"];
             unsigned int index;
-            if (data == nil) {
+            if (pdfFW == nil) {
                 index = [extensions indexOfObject:@"pdf"];
-                if ((index != NSNotFound) && (fw = [fws objectAtIndex:index]) && [fw isRegularFile]) {
-                    data = [[fw regularFileContents] retain];
-                    pdfDoc = [[PDFDocument alloc] initWithURL:[NSURL fileURLWithPath:[[absoluteURL path] stringByAppendingPathComponent:[fw filename]]]];
+                if (index != NSNotFound) {
+                    pdfFW = [fws objectAtIndex:index];
+                    if ([pdfFW isRegularFile] == NO)
+                        pdfFW = nil;
                 }
             }
-            if (noteArray == nil) {
+            if (skimFW == nil) {
                 index = [extensions indexOfObject:@"skim"];
-                if ((index != NSNotFound) && (fw = [fws objectAtIndex:index]) && [fw isRegularFile]) {
-                    if (noteArray = [NSKeyedUnarchiver unarchiveObjectWithData:[fw regularFileContents]])
-                        [self setNoteDicts:noteArray];
+                if (index != NSNotFound) {
+                    skimFW = [fws objectAtIndex:index];
+                    if ([skimFW isRegularFile] == NO)
+                        skimFW = nil;
                 }
             }
+        }
+        if (pdfFW) {
+            data = [[pdfFW regularFileContents] retain];
+            pdfDoc = [[PDFDocument alloc] initWithURL:[NSURL fileURLWithPath:[[absoluteURL path] stringByAppendingPathComponent:[pdfFW filename]]]];
+        }
+        if (skimFW) {
+            if (noteArray = [NSKeyedUnarchiver unarchiveObjectWithData:[skimFW regularFileContents]])
+                [self setNoteDicts:noteArray];
         }
         [fileWrapper release];
     } else if ([docType isEqualToString:SKPostScriptDocumentType]) {
