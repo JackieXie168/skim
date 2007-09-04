@@ -62,15 +62,7 @@
 #import "Files_SKExtensions.h"
 #import "NSTask_SKExtensions.h"
 
-// maximum length of xattr value recommended by Apple
-#define MAX_XATTR_LENGTH        2048
-
-#define WRAPPER_PDF_FILENAME    @"data.pdf"
-#define WRAPPER_TEXT_FILENAME   @"data.txt"
-#define WRAPPER_PLIST_FILENAME  @"data.plist"
-#define WRAPPER_SKIM_FILENAME   @"notes.skim"
-#define WRAPPER_TXT_FILENAME    @"notes.txt"
-#define WRAPPER_RTF_FILENAME    @"notes.rtf"
+#define BUNDLE_DATA_FILENAME @"data"
 
 NSString *SKDocumentErrorDomain = @"SKDocumentErrorDomain";
 
@@ -330,25 +322,28 @@ NSString *SKDocumentWillSaveNotification = @"SKDocumentWillSaveNotification";
         didWrite = [pdfData writeToURL:absoluteURL options:NSAtomicWrite error:outError] &&
                    [self saveNotesToExtendedAttributesAtURL:absoluteURL error:outError];
     } else if ([typeName isEqualToString:SKPDFBundleDocumentType]) {
-        NSData *textData = [[[self pdfDocument] string] dataUsingEncoding:NSUTF8StringEncoding];
         NSData *notesData = [[self notes] count] ? [NSKeyedArchiver archivedDataWithRootObject:[[self notes] valueForKey:@"dictionaryValue"]] : nil;
         NSData *notesTextData = [[self notesString] dataUsingEncoding:NSUTF8StringEncoding];
         NSData *notesRTFData = [self notesRTFData];
+        NSData *textData = [[[self pdfDocument] string] dataUsingEncoding:NSUTF8StringEncoding];
         NSDictionary *info = [[SKInfoWindowController sharedInstance] infoForDocument:self];
         NSData *infoData = [NSPropertyListSerialization dataFromPropertyList:info format:NSPropertyListXMLFormat_v1_0 errorDescription:NULL];
         NSFileWrapper *fileWrapper = [[NSFileWrapper alloc] initDirectoryWithFileWrappers:[NSDictionary dictionary]];
-        [fileWrapper addRegularFileWithContents:pdfData preferredFilename:WRAPPER_PDF_FILENAME];
-        if (textData)
-            [fileWrapper addRegularFileWithContents:textData preferredFilename:WRAPPER_TEXT_FILENAME];
-        if (infoData)
-            [fileWrapper addRegularFileWithContents:infoData preferredFilename:WRAPPER_PLIST_FILENAME];
+        NSString *name = [[[absoluteURL path] lastPathComponent] stringByDeletingPathExtension];
+        if ([name caseInsensitiveCompare:BUNDLE_DATA_FILENAME] == NSOrderedSame)
+            name = [name stringByAppendingString:@"1"];
+        [fileWrapper addRegularFileWithContents:pdfData preferredFilename:[name stringByAppendingPathExtension:@"pdf"]];
         if (notesData)
-            [fileWrapper addRegularFileWithContents:notesData preferredFilename:WRAPPER_SKIM_FILENAME];
+            [fileWrapper addRegularFileWithContents:notesData preferredFilename:[name stringByAppendingPathExtension:@"skim"]];
         if (notesTextData)
-            [fileWrapper addRegularFileWithContents:notesTextData preferredFilename:WRAPPER_TXT_FILENAME];
+            [fileWrapper addRegularFileWithContents:notesTextData preferredFilename:[name stringByAppendingPathExtension:@"txt"]];
         if (notesRTFData)
-            [fileWrapper addRegularFileWithContents:notesRTFData preferredFilename:WRAPPER_RTF_FILENAME];
-        didWrite = [fileWrapper writeToFile:[absoluteURL path] atomically:YES updateFilenames:NO];
+            [fileWrapper addRegularFileWithContents:notesRTFData preferredFilename:[name stringByAppendingPathExtension:@"rtf"]];
+        if (textData)
+            [fileWrapper addRegularFileWithContents:textData preferredFilename:[BUNDLE_DATA_FILENAME stringByAppendingPathExtension:@"txt"]];
+        if (infoData)
+            [fileWrapper addRegularFileWithContents:infoData preferredFilename:[BUNDLE_DATA_FILENAME stringByAppendingPathExtension:@"plist"]];
+        didWrite = [fileWrapper writeToFile:[absoluteURL path] atomically:NO updateFilenames:NO];
         [fileWrapper release];
     } else if ([typeName isEqualToString:SKEmbeddedPDFDocumentType]) {
         [[self mainWindowController] removeTemporaryAnnotations];
@@ -529,11 +524,11 @@ NSString *SKDocumentWillSaveNotification = @"SKDocumentWillSaveNotification";
         NSArray *noteArray = nil;
         NSFileWrapper *fw;
         
-        if ((fw = [fileWrappers objectForKey:WRAPPER_PDF_FILENAME]) && [fw isRegularFile]) {
+        if ((fw = [fileWrappers objectForKey:BUNDLE_DATA_FILENAME]) && [fw isRegularFile]) {
             data = [[fw regularFileContents] retain];
             pdfDoc = [[PDFDocument alloc] initWithURL:[NSURL fileURLWithPath:[[absoluteURL path] stringByAppendingPathComponent:[fw filename]]]];
         }
-        if ((fw = [fileWrappers objectForKey:WRAPPER_SKIM_FILENAME]) && [fw isRegularFile]) {
+        if ((fw = [fileWrappers objectForKey:BUNDLE_DATA_FILENAME]) && [fw isRegularFile]) {
             if (noteArray = [NSKeyedUnarchiver unarchiveObjectWithData:[fw regularFileContents]])
                 [self setNoteDicts:noteArray];
         }
