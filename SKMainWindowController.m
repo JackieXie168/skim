@@ -3760,7 +3760,7 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
 
 - (void)resetThumbnails {
     unsigned i, count = [pageLabels count];
-    [self willChange:NSKeyValueChangeReplacement valuesAtIndexes:[NSIndexSet indexSetWithIndexesInRange:NSMakeRange(0, count)] forKey:@"thumbnails"];
+    [self willChangeValueForKey:@"thumbnails"];
     [thumbnails removeAllObjects];
     if (count) {
         PDFPage *emptyPage = [[[PDFPage alloc] init] autorelease];
@@ -3782,7 +3782,7 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
             [thumbnail release];
         }
     }
-    [self didChange:NSKeyValueChangeReplacement valuesAtIndexes:[NSIndexSet indexSetWithIndexesInRange:NSMakeRange(0, count)] forKey:@"thumbnails"];
+    [self didChangeValueForKey:@"thumbnails"];
     [self allThumbnailsNeedUpdate];
 }
 
