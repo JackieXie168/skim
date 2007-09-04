@@ -135,6 +135,8 @@ static NSString *noteToolAdornImageNames[] = {@"TextNoteToolAdorn", @"AnchoredNo
 
 - (void)setupToolbar;
 
+- (void)updatePageLabelsAndOutline;
+
 - (void)showLeftSideWindowOnScreen:(NSScreen *)screen;
 - (void)showRightSideWindowOnScreen:(NSScreen *)screen;
 - (void)hideLeftSideWindow;
@@ -282,6 +284,7 @@ static NSString *noteToolAdornImageNames[] = {@"TextNoteToolAdorn", @"AnchoredNo
     
     [pdfView setFrame:[[pdfContentBox contentView] bounds]];
     
+    [outlineView setAutoresizesOutlineColumn: NO];
     [self displayOutlineView];
     [self displayNoteView];
     
@@ -726,6 +729,61 @@ static NSString *noteToolAdornImageNames[] = {@"TextNoteToolAdorn", @"AnchoredNo
     [statusBar setRightStringValue:message];
 }
 
+- (void)updatePageLabelsAndOutline {
+    PDFDocument *pdfDoc = [pdfView document];
+    NSTableColumn *tableColumn = [[thumbnailTableView tableColumns] objectAtIndex:1];
+    id cell = [tableColumn dataCell];
+    float labelWidth = 0.0;
+    int i, count = [pdfDoc pageCount];
+    
+    // update page labels, also update the size of the table columns displaying the labels
+    [self willChangeValueForKey:@"pageLabel"];
+    [self willChangeValueForKey:@"pageLabels"];
+    [pageLabels removeAllObjects];
+    for (i = 0; i < count; i++) {
+        NSString *label = [[pdfDoc pageAtIndex:i] label];
+        if (label == nil)
+            label = [NSString stringWithFormat:@"%i", i+1];
+        [pageLabels addObject:label];
+        [cell setStringValue:label];
+        labelWidth = fmaxf(labelWidth, [cell cellSize].width);
+    }
+    [self didChangeValueForKey:@"pageLabels"];
+    [self didChangeValueForKey:@"pageLabel"];
+    
+    [tableColumn setMinWidth:labelWidth];
+    [tableColumn setMaxWidth:labelWidth];
+    [thumbnailTableView sizeToFit];
+    tableColumn = [[outlineView tableColumns] objectAtIndex:1];
+    [tableColumn setMinWidth:labelWidth];
+    [tableColumn setMaxWidth:labelWidth];
+    [outlineView sizeToFit];
+    tableColumn = [[snapshotTableView tableColumns] objectAtIndex:1];
+    [tableColumn setMinWidth:labelWidth];
+    [tableColumn setMaxWidth:labelWidth];
+    [snapshotTableView sizeToFit];
+    
+    // this uses the pageLabels
+    [[thumbnailTableView typeSelectHelper] rebuildTypeSelectSearchCache];
+    
+    // these carry a label, moreover when this is called the thumbnails will also be invalid
+    [self resetThumbnails];
+    [self allSnapshotsNeedUpdate];
+    
+    // update the outline
+    [pdfOutline release];
+    pdfOutline = [[pdfDoc outlineRoot] retain];
+    [pdfOutlineItems removeAllObjects];
+    if (pdfOutline) {
+        [outlineView reloadData];
+        
+        if ([outlineView numberOfRows] == 1)
+            [outlineView expandItem: [outlineView itemAtRow: 0] expandChildren: NO];
+        [self updateOutlineSelection];
+    }
+    [leftSideButton setEnabled:pdfOutline != nil forSegment:SKOutlineSidePaneState];
+}
+
 #pragma mark Accessors
 
 - (void)setDocument:(NSDocument *)document {
@@ -785,55 +843,11 @@ static NSString *noteToolAdornImageNames[] = {@"TextNoteToolAdorn", @"AnchoredNo
         
         [self registerForDocumentNotifications];
         
-        [pdfOutline release];
-        pdfOutline = [[[pdfView document] outlineRoot] retain];
-        [pdfOutlineItems removeAllObjects];
-        if (pdfOutline && [[pdfView document] isLocked] == NO) {
-            [outlineView reloadData];
-            [outlineView setAutoresizesOutlineColumn: NO];
-            
-            if ([outlineView numberOfRows] == 1)
-                [outlineView expandItem: [outlineView itemAtRow: 0] expandChildren: NO];
-            [self updateOutlineSelection];
-        }
-        
-        [leftSideButton setEnabled:pdfOutline != nil forSegment:SKOutlineSidePaneState];
-        
         [noteOutlineView reloadData];
         
         [self updateNoteSelection];
         
-        [self resetThumbnails];
-        [self updateThumbnailSelection];
-        
-        NSTableColumn *tableColumn = [[thumbnailTableView tableColumns] objectAtIndex:1];
-        id cell = [tableColumn dataCell];
-        float labelWidth = 0.0;
-        int i, count = [document pageCount];
-        
-        [self willChangeValueForKey:@"pageLabels"];
-        [pageLabels removeAllObjects];
-        for (i = 0; i < count; i++) {
-            NSString *label = [[document pageAtIndex:i] label];
-            [pageLabels addObject:label ? label : @""];
-            [cell setStringValue:label];
-            labelWidth = fmaxf(labelWidth, [cell cellSize].width);
-        }
-        [self didChangeValueForKey:@"pageLabels"];
-        
-        [tableColumn setMinWidth:labelWidth];
-        [tableColumn setMaxWidth:labelWidth];
-        [thumbnailTableView sizeToFit];
-        tableColumn = [[outlineView tableColumns] objectAtIndex:1];
-        [tableColumn setMinWidth:labelWidth];
-        [tableColumn setMaxWidth:labelWidth];
-        [outlineView sizeToFit];
-        tableColumn = [[snapshotTableView tableColumns] objectAtIndex:1];
-        [tableColumn setMinWidth:labelWidth];
-        [tableColumn setMaxWidth:labelWidth];
-        [snapshotTableView sizeToFit];
-        
-        [[thumbnailTableView typeSelectHelper] rebuildTypeSelectSearchCache];
+        [self updatePageLabelsAndOutline];
         
         NSEnumerator *setupEnum = [snapshotDicts objectEnumerator];
         NSDictionary *setup;
@@ -2949,35 +2963,7 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
 }
 
 - (void)documentDidUnlock:(NSNotification *)notification {
-    PDFDocument *pdfDoc = [self pdfDocument];
-    
-    [self willChangeValueForKey:@"pageLabel"];
-    [self willChangeValueForKey:@"pageLabels"];
-    [pageLabels removeAllObjects];
-    int i, count = [pdfDoc pageCount];
-    for (i = 0; i < count; i++) {
-        NSString *label = [[pdfDoc pageAtIndex:i] label];
-        [pageLabels addObject:label ? label : @""];
-    }
-    [self didChangeValueForKey:@"pageLabels"];
-    [self didChangeValueForKey:@"pageLabel"];
-    
-    [self resetThumbnails];
-    [self allSnapshotsNeedUpdate];
-    
-    if (pdfOutline == nil) {
-        pdfOutline = [[pdfDoc outlineRoot] retain];
-        [pdfOutlineItems removeAllObjects];
-    }
-    if (pdfOutline) {
-        [outlineView reloadData];
-        [outlineView setAutoresizesOutlineColumn: NO];
-        
-        if ([outlineView numberOfRows] == 1)
-            [outlineView expandItem: [outlineView itemAtRow: 0] expandChildren: NO];
-        [self updateOutlineSelection];
-    }
-    [leftSideButton setEnabled:pdfOutline != nil forSegment:SKOutlineSidePaneState];
+    [self updatePageLabelsAndOutline];
 }
 
 - (void)handleColorSwatchColorsChangedNotification:(NSNotification *)notification {
@@ -3775,9 +3761,7 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
 }
 
 - (void)resetThumbnails {
-    
-    PDFDocument *pdfDoc = [pdfView document];
-    unsigned i, count = [pdfDoc pageCount];
+    unsigned i, count = [pageLabels count];
     [self willChange:NSKeyValueChangeReplacement valuesAtIndexes:[NSIndexSet indexSetWithIndexesInRange:NSMakeRange(0, count)] forKey:@"thumbnails"];
     [thumbnails removeAllObjects];
     if (count) {
@@ -3794,7 +3778,7 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
         [image unlockFocus];
         
         for (i = 0; i < count; i++) {
-            SKThumbnail *thumbnail = [[SKThumbnail alloc] initWithImage:image label:[[pdfDoc pageAtIndex:i] label]];
+            SKThumbnail *thumbnail = [[SKThumbnail alloc] initWithImage:image label:[pageLabels objectAtIndex:i]];
             [thumbnail setDirty:YES];
             [thumbnails addObject:thumbnail];
             [thumbnail release];
