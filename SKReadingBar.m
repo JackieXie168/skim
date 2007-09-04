@@ -127,7 +127,7 @@
 - (BOOL)goToNextPage {
     BOOL didMove = NO;
     PDFDocument *doc = [page document];
-    int i = [doc indexForPage:page], iMax = [doc pageCount];
+    int i = [page pageIndex], iMax = [doc pageCount];
     
     while (++i < iMax) {
         PDFPage *nextPage = [doc pageAtIndex:i];

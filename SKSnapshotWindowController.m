@@ -48,6 +48,7 @@
 #import "SKStringConstants.h"
 #import "NSUserDefaultsController_SKExtensions.h"
 #import "NSGeometry_SKExtensions.h"
+#import "PDFPage_SKExtensions.h"
 
 static NSString *SKSnapshotWindowFrameAutosaveName = @"SKSnapshotWindow";
 static NSString *SKSnapshotViewChangedNotification = @"SKSnapshotViewChangedNotification";
@@ -230,10 +231,10 @@ static NSString *SKSnapshotViewChangedNotification = @"SKSnapshotViewChangedNoti
     
     NSView *clipView = [[[pdfView documentView] enclosingScrollView] contentView];
     NSRect visibleRect = [clipView convertRect:[clipView visibleRect] toView:pdfView];
-    unsigned first, last, index = [[pdfView document] indexForPage:page];
+    unsigned first, last, index = [page pageIndex];
     
-    first = [[pdfView document] indexForPage:[pdfView pageForPoint:SKTopLeftPoint(visibleRect) nearest:YES]];
-    last = [[pdfView document] indexForPage:[pdfView pageForPoint:SKBottomRightPoint(visibleRect) nearest:YES]];
+    first = [[pdfView pageForPoint:SKTopLeftPoint(visibleRect) nearest:YES] pageIndex];
+    last = [[pdfView pageForPoint:SKBottomRightPoint(visibleRect) nearest:YES] pageIndex];
     
     return index >= first && index <= last;
 }
@@ -264,7 +265,7 @@ static NSString *SKSnapshotViewChangedNotification = @"SKSnapshotViewChangedNoti
 }
 
 - (unsigned int)pageIndex {
-    return [[pdfView document] indexForPage:[pdfView currentPage]];
+    return [[pdfView currentPage] pageIndex];
 }
 
 - (NSDictionary *)pageAndWindow {

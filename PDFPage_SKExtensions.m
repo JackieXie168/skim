@@ -267,11 +267,15 @@ static IMP originalDealloc = NULL;
     return fullLines;
 }
 
+- (unsigned int)pageIndex {
+    return [[self document] indexForPage:self];
+}
+
 #pragma mark Scripting support
 
 - (NSScriptObjectSpecifier *)objectSpecifier {
     SKDocument *document = [self containingDocument];
-	unsigned index = [[self document] indexForPage:self];
+	unsigned index = [self pageIndex];
     
     if (document && index != NSNotFound) {
         NSScriptObjectSpecifier *containerRef = [document objectSpecifier];
@@ -294,7 +298,7 @@ static IMP originalDealloc = NULL;
 }
 
 - (unsigned int)index {
-    return [[self document] indexForPage:self] + 1;
+    return [self pageIndex] + 1;
 }
 
 - (int)rotationAngle {

@@ -459,7 +459,7 @@ static inline NSRange rangeOfSubstringOfStringAtIndex(NSString *string, NSArray 
     if ([dPO isKindOfClass:[SKDocument class]]) {
         index = [[NSApp orderedDocuments] indexOfObjectIdenticalTo:dPO];
     } else if ([dPO isKindOfClass:[PDFPage class]]) {
-        index = [[page document] indexForPage:dPO];
+        index = [dPO pageIndex];
     } else if ([dPO isKindOfClass:[PDFAnnotation class]]) {
         index = [[(page ? (id)page : (id)[page containingDocument]) valueForKey:@"notes"] indexOfObjectIdenticalTo:dPO];
     } else {

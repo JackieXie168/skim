@@ -523,7 +523,7 @@ static NSString *noteToolAdornImageNames[] = {@"TextNoteToolAdorn", @"AnchoredNo
     [setup setObject:NSStringFromRect([mainWindow frame]) forKey:@"windowFrame"];
     [setup setObject:[NSNumber numberWithFloat:NSWidth([leftSideContentBox frame])] forKey:@"leftSidePaneWidth"];
     [setup setObject:[NSNumber numberWithFloat:NSWidth([rightSideContentBox frame])] forKey:@"rightSidePaneWidth"];
-    [setup setObject:[NSNumber numberWithUnsignedInt:[[pdfView document] indexForPage:[pdfView currentPage]]] forKey:@"pageIndex"];
+    [setup setObject:[NSNumber numberWithUnsignedInt:[[pdfView currentPage] pageIndex]] forKey:@"pageIndex"];
     if ([self isFullScreen] || [self isPresentation]) {
         [setup addEntriesFromDictionary:savedNormalSetup];
         [setup removeObjectsForKeys:[NSArray arrayWithObjects:@"hasHorizontalScroller", @"hasVerticalScroller", @"autoHidesScrollers", nil]];
@@ -730,7 +730,7 @@ static NSString *noteToolAdornImageNames[] = {@"TextNoteToolAdorn", @"AnchoredNo
 
 - (void)setDocument:(NSDocument *)document {
     if ([self document] && document == nil) {
-        unsigned int pageIndex = [[pdfView document] indexForPage:[pdfView currentPage]];
+        unsigned int pageIndex = [[pdfView currentPage] pageIndex];
         NSString *path = [[[self document] fileURL] path];
         if (pageIndex != NSNotFound && path)
             [[SKBookmarkController sharedBookmarkController] addRecentDocumentForPath:path pageIndex:pageIndex snapshots:[snapshots valueForKey:@"currentSetup"]];
@@ -751,7 +751,7 @@ static NSString *noteToolAdornImageNames[] = {@"TextNoteToolAdorn", @"AnchoredNo
         NSArray *snapshotDicts = nil;
         
         if ([pdfView document]) {
-            pageIndex = [[pdfView document] indexForPage:[pdfView currentPage]];
+            pageIndex = [[pdfView currentPage] pageIndex];
             visibleRect = [pdfView convertRect:[pdfView convertRect:[[pdfView documentView] visibleRect] fromView:[pdfView documentView]] toPage:[pdfView currentPage]];
             
             [[pdfView document] cancelFindString];
@@ -906,7 +906,7 @@ static NSString *noteToolAdornImageNames[] = {@"TextNoteToolAdorn", @"AnchoredNo
 }
 
 - (unsigned int)pageNumber {
-    return [[pdfView document] indexForPage:[pdfView currentPage]] + 1;
+    return [[pdfView currentPage] pageIndex] + 1;
 }
 
 - (void)setPageNumber:(unsigned int)pageNumber {
@@ -1399,11 +1399,11 @@ static NSString *noteToolAdornImageNames[] = {@"TextNoteToolAdorn", @"AnchoredNo
 }
 
 - (IBAction)rotateRight:(id)sender {
-    [self rotatePageAtIndex:[[pdfView document] indexForPage:[pdfView currentPage]] by:90];
+    [self rotatePageAtIndex:[[pdfView currentPage] pageIndex] by:90];
 }
 
 - (IBAction)rotateLeft:(id)sender {
-    [self rotatePageAtIndex:[[pdfView document] indexForPage:[pdfView currentPage]] by:-90];
+    [self rotatePageAtIndex:[[pdfView currentPage] pageIndex] by:-90];
 }
 
 - (IBAction)rotateAllRight:(id)sender {
@@ -1455,7 +1455,7 @@ static NSString *noteToolAdornImageNames[] = {@"TextNoteToolAdorn", @"AnchoredNo
     NSRect rect = NSIntegralRect([pdfView currentSelectionRect]);
     if (NSIsEmptyRect(rect))
         rect = [[pdfView currentPage] foregroundBox];
-    [self cropPageAtIndex:[[pdfView document] indexForPage:[pdfView currentPage]] toRect:rect];
+    [self cropPageAtIndex:[[pdfView currentPage] pageIndex] toRect:rect];
 }
 
 - (void)cropPagesToRects:(NSArray *)rects {
@@ -2488,7 +2488,7 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
 
 - (void)findString:(NSString *)string options:(int)options{
     PDFSelection *sel = [pdfView currentSelection];
-    unsigned pageIndex = [[pdfView document] indexForPage:[pdfView currentPage]];
+    unsigned pageIndex = [[pdfView currentPage] pageIndex];
     while ([sel string] == nil && pageIndex-- > 0) {
         PDFPage *page = [[pdfView document] pageAtIndex:pageIndex];
         sel = [page selectionForRect:[page boundsForBox:kPDFDisplayBoxCropBox]];
@@ -2661,7 +2661,7 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
         SKBookmarkController *bmController = [SKBookmarkController sharedBookmarkController];
         NSString *path = [[self document] fileName];
         NSString *label = [bookmarkField stringValue];
-        unsigned int pageIndex = [[pdfView document] indexForPage:[pdfView currentPage]];
+        unsigned int pageIndex = [[pdfView currentPage] pageIndex];
         [bmController addBookmarkForPath:path pageIndex:pageIndex label:label];
     }
 }
@@ -2689,7 +2689,7 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
 }
 
 - (void)handlePageChangedNotification:(NSNotification *)notification {
-    [lastViewedPages insertObject:[NSNumber numberWithInt:[[pdfView document] indexForPage:[pdfView currentPage]]] atIndex:0];
+    [lastViewedPages insertObject:[NSNumber numberWithInt:[[pdfView currentPage] pageIndex]] atIndex:0];
     if ([lastViewedPages count] > 5)
         [lastViewedPages removeLastObject];
     [thumbnailTableView setNeedsDisplay:YES];
@@ -2777,7 +2777,7 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
         updatingNoteSelection = NO;
     }
     if (page) {
-        [self updateThumbnailAtPageIndex:[[pdfView document] indexForPage:page]];
+        [self updateThumbnailAtPageIndex:[page pageIndex]];
         NSEnumerator *snapshotEnum = [snapshots objectEnumerator];
         SKSnapshotWindowController *wc;
         while (wc = [snapshotEnum nextObject]) {
@@ -2809,7 +2809,7 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
         [noteArrayController rearrangeObjects];
     }
     if (page) {
-        [self updateThumbnailAtPageIndex:[[pdfView document] indexForPage:page]];
+        [self updateThumbnailAtPageIndex:[page pageIndex]];
         NSEnumerator *snapshotEnum = [snapshots objectEnumerator];
         SKSnapshotWindowController *wc;
         while (wc = [snapshotEnum nextObject]) {
@@ -2826,9 +2826,9 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
     
     if (oldPage || newPage) {
         if (oldPage)
-            [self updateThumbnailAtPageIndex:[[pdfView document] indexForPage:oldPage]];
+            [self updateThumbnailAtPageIndex:[oldPage pageIndex]];
         if (newPage)
-            [self updateThumbnailAtPageIndex:[[pdfView document] indexForPage:newPage]];
+            [self updateThumbnailAtPageIndex:[newPage pageIndex]];
         NSEnumerator *snapshotEnum = [snapshots objectEnumerator];
         SKSnapshotWindowController *wc;
         while (wc = [snapshotEnum nextObject]) {
@@ -2852,9 +2852,9 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
     PDFPage *oldPage = [userInfo objectForKey:@"oldPage"];
     PDFPage *newPage = [userInfo objectForKey:@"newPage"];
     if (oldPage)
-        [self updateThumbnailAtPageIndex:[[pdfView document] indexForPage:oldPage]];
+        [self updateThumbnailAtPageIndex:[oldPage pageIndex]];
     if (newPage && [newPage isEqual:oldPage] == NO)
-        [self updateThumbnailAtPageIndex:[[pdfView document] indexForPage:newPage]];
+        [self updateThumbnailAtPageIndex:[newPage pageIndex]];
 }
 
 - (void)handleAnnotationDidChangeNotification:(NSNotification *)notification {
@@ -2900,7 +2900,7 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
     if (displayChanged)
         [pdfView layoutDocumentView];
     if (page) {
-        unsigned int index = [[pdfView document] indexForPage:page];
+        unsigned int index = [page pageIndex];
         NSEnumerator *snapshotEnum = [snapshots objectEnumerator];
         SKSnapshotWindowController *wc;
         while (wc = [snapshotEnum nextObject]) {
@@ -3730,14 +3730,16 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
 		// Get the destination of the given row....
 		PDFOutline *outlineItem = (PDFOutline *)[outlineView itemAtRow: i];
 		
-		if ([[pdfView document] indexForPage: [[outlineItem destination] page]] == pageIndex) {
+		if ([[[outlineItem destination] page ] pageIndex] == pageIndex) {
             break;
-        } else if ([[pdfView document] indexForPage: [[outlineItem destination] page]] > pageIndex) {
+        } else if ([[[outlineItem destination] page] pageIndex] > pageIndex) {
 			if (i > 0) --i;
             break;	
 		}
 	}
-    return i == numRows ? -1 : i;
+    if (i == numRows)
+        i--;
+    return i;
 }
 
 - (void)updateOutlineSelection{
@@ -3747,20 +3749,17 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
 		return;
 	
 	// Get index of current page.
-	unsigned int pageIndex = [[pdfView document] indexForPage: [pdfView currentPage]];
-	
-	// Test that the current selection is still valid.
-	PDFOutline *outlineItem = (PDFOutline *)[outlineView itemAtRow: [outlineView selectedRow]];
-	
-    if ([[pdfView document] indexForPage: [[outlineItem destination] page]] == pageIndex)
-		return;
-	
-    int row = [self outlineRowForPageIndex:pageIndex];
+	unsigned int pageIndex = [[pdfView currentPage] pageIndex];
     
-    if (row != -1) {
-        updatingOutlineSelection = YES;
-        [outlineView selectRow:row byExtendingSelection: NO];
-        updatingOutlineSelection = NO;
+	// Test that the current selection is still valid.
+	int row = [outlineView selectedRow];
+    if (row == -1 || [[[[outlineView itemAtRow:row] destination] page] pageIndex] != pageIndex) {
+        row = [self outlineRowForPageIndex:pageIndex];
+        if (row != -1) {
+            updatingOutlineSelection = YES;
+            [outlineView selectRow:row byExtendingSelection: NO];
+            updatingOutlineSelection = NO;
+        }
     }
 }
 
@@ -3768,7 +3767,7 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
 
 - (void)updateThumbnailSelection {
 	// Get index of current page.
-	unsigned pageIndex = [[pdfView document] indexForPage: [pdfView currentPage]];
+	unsigned pageIndex = [[pdfView currentPage] pageIndex];
     updatingThumbnailSelection = YES;
     [thumbnailTableView selectRowIndexes:[NSIndexSet indexSetWithIndex:pageIndex] byExtendingSelection:NO];
     [thumbnailTableView scrollRowToVisible:pageIndex];
@@ -3838,7 +3837,7 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
 
     NSArray *orderedNotes = [noteArrayController arrangedObjects];
     PDFAnnotation *annotation, *selAnnotation = nil;
-    unsigned int pageIndex = [[pdfView document] indexForPage: [pdfView currentPage]];
+    unsigned int pageIndex = [[pdfView currentPage] pageIndex];
 	int i, count = [orderedNotes count];
     unsigned int selPageIndex = [noteOutlineView selectedRow] != -1 ? [[self selectedNote] pageIndex] : NSNotFound;
     
