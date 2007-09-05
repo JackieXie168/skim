@@ -2365,6 +2365,7 @@ static NSString *noteToolAdornImageNames[] = {@"TextNoteToolAdorn", @"AnchoredNo
     if (findPanelFind == NO) {
         [findArrayController removeObjects:searchResults];
         [[[[findTableView tableColumns] objectAtIndex:1] headerCell] setStringValue:[NSLocalizedString(@"Searching", @"Message in search table header") stringByAppendingEllipsis]];
+        [[findTableView headerView] setNeedsDisplay:YES];
         [statusBar setProgressIndicatorStyle:SKProgressIndicatorBarStyle];
         [[statusBar progressIndicator] setMaxValue:[[note object] pageCount]];
         [[statusBar progressIndicator] setDoubleValue:0.0];
@@ -2377,6 +2378,7 @@ static NSString *noteToolAdornImageNames[] = {@"TextNoteToolAdorn", @"AnchoredNo
         [self willChangeValueForKey:@"searchResults"];
         [self didChangeValueForKey:@"searchResults"];
         [[[[findTableView tableColumns] objectAtIndex:1] headerCell] setStringValue:[NSString stringWithFormat:NSLocalizedString(@"%i Results", @"Message in search table header"), [searchResults count]]];
+        [[findTableView headerView] setNeedsDisplay:YES];
         [statusBar stopAnimation:self];
         [statusBar setProgressIndicatorStyle:SKProgressIndicatorNone];
     }
