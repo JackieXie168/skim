@@ -360,7 +360,7 @@ static unsigned int maxRecentDocumentsCount = 0;
 #pragma mark SKTypeSelectHelper datasource protocol
 
 - (NSArray *)typeSelectHelperSelectionItems:(SKTypeSelectHelper *)typeSelectHelper {
-    return [bookmarks valueForKeyPath:@"label.lossyASCIIString"];
+    return [bookmarks valueForKey:@"label"];
 }
 
 - (unsigned int)typeSelectHelperCurrentlySelectedIndex:(SKTypeSelectHelper *)typeSelectHelper {

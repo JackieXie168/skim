@@ -952,9 +952,9 @@ static void SKCGContextDrawGrabHandle(CGContextRef context, CGPoint point, float
             [self setAnnotationMode:SKStrikeOutNote];
         } else if ([self toolMode] == SKNoteToolMode && modifiers == 0 && eventChar == 'l') {
             [self setAnnotationMode:SKLineNote];
-        } else if ([typeSelectHelper isTypeSelectCharacter:eventChar] && modifiers == 0) {
-            [typeSelectHelper processKeyDownCharacter:eventChar];
-        } else if ([typeSelectHelper isRepeatCharacter:eventChar] && modifiers == 0) {
+        } else if ([typeSelectHelper isTypeSelectEvent:theEvent]) {
+            [typeSelectHelper processKeyDownEvent:theEvent];
+        } else if ([typeSelectHelper isRepeatEvent:theEvent]) {
             [typeSelectHelper repeatSearch];
         } else {
             [super keyDown:theEvent];
@@ -1439,6 +1439,13 @@ static void SKCGContextDrawGrabHandle(CGContextRef context, CGPoint point, float
 
 - (void)ignoreSpelling:(id)sender {
     [[NSSpellChecker sharedSpellChecker] ignoreWord:[[sender selectedCell] stringValue] inSpellDocumentWithTag:spellingTag];
+}
+
+- (BOOL)resignFirstResponder {
+    BOOL shouldResign = [super resignFirstResponder];
+    if (shouldResign)
+        [typeSelectHelper stopSearch];
+    return shouldResign;
 }
 
 #pragma mark Tracking mousemoved fix
