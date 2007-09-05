@@ -41,7 +41,8 @@
 
 static NSString *SKWindowDidChangeFirstResponderNotification = @"SKWindowDidChangeFirstResponderNotification";
 
-#define REPEAT_CHARACTER '/'
+#define REPEAT_CHARACTER 0x2F
+#define CANCEL_CHARACTER 0x1B
 
 @interface NSString (SKTypeAheadHelperExtensions)
 - (BOOL)containsStringStartingAtWord:(NSString *)string options:(int)mask range:(NSRange)range;
@@ -146,12 +147,28 @@ static NSString *SKWindowDidChangeFirstResponderNotification = @"SKWindowDidChan
     searchCache = [[dataSource typeSelectHelperSelectionItems:self] retain];
 }
 
-- (void)processKeyDownEvent:(NSEvent *)keyEvent {
-    NSText *fieldEditor = [[NSApp keyWindow] fieldEditor:YES forObject:self];
+- (BOOL)processKeyDownEvent:(NSEvent *)keyEvent {
+    if ([self isSearchEvent:keyEvent]) {
+        [self searchWithEvent:keyEvent];
+        return YES;
+    } else if ([self isRepeatEvent:keyEvent]) {
+        [self repeatSearch];
+        return YES;
+    } else if ([self isCancelEvent:keyEvent]) {
+        [self cancelSearch];
+        return YES;
+    }
+    return NO;
+}
+
+- (void)searchWithEvent:(NSEvent *)keyEvent {
+    NSWindow *keyWindow = [NSApp keyWindow];
+    NSText *fieldEditor = [keyWindow fieldEditor:YES forObject:self];
     
     if (processing == NO) {
-        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(typeSelectCleanTimeout:) name:SKWindowDidChangeFirstResponderNotification object:[NSApp keyWindow]];
-        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(typeSelectCleanTimeout:) name:NSWindowDidResignKeyNotification object:[NSApp keyWindow]];
+        [[NSNotificationCenter defaultCenter] removeObserver:self];
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(typeSelectCleanTimeout:) name:SKWindowDidChangeFirstResponderNotification object:keyWindow];
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(typeSelectCleanTimeout:) name:NSWindowDidResignKeyNotification object:keyWindow];
         [fieldEditor setString:@""];
     }
     
@@ -182,33 +199,28 @@ static NSString *SKWindowDidChangeFirstResponderNotification = @"SKWindowDidChan
     processing = NO;
 }
 
-- (void)stopSearch {
+- (void)cancelSearch {
     if (timer)
         [self typeSelectCleanTimeout:timer];
 }
 
 - (BOOL)isTypeSelectEvent:(NSEvent *)keyEvent {
+    return [self isSearchEvent:keyEvent] || [self isRepeatEvent:keyEvent] || [self isCancelEvent:keyEvent];
+}
+
+- (BOOL)isSearchEvent:(NSEvent *)keyEvent {
     if ([keyEvent type] != NSKeyDown)
         return NO;
     if ([keyEvent modifierFlags] & NSDeviceIndependentModifierFlagsMask & ~NSShiftKeyMask & ~NSAlternateKeyMask)
         return NO;
     
-    NSString *characters = [keyEvent charactersIgnoringModifiers];
-    int i, count = [characters length];
-    unichar character;
+    static NSCharacterSet *nonAlphanumericCharacterSet = nil;
+    if (nonAlphanumericCharacterSet == nil)
+        nonAlphanumericCharacterSet = [[[NSCharacterSet alphanumericCharacterSet] invertedSet] copy];
     
-    if (count == 0)
-        return NO;
+    NSCharacterSet *invalidCharacters = [self isProcessing] ? [NSCharacterSet controlCharacterSet] : nonAlphanumericCharacterSet;
     
-    for (i = 0; i < count; i++) {
-        character = [characters characterAtIndex:i];
-        if ([[NSCharacterSet alphanumericCharacterSet] characterIsMember:character])
-            continue;
-        if ([self isProcessing] && [[NSCharacterSet controlCharacterSet] characterIsMember:character])
-            continue;
-        return NO;
-    }
-    return YES;
+    return [[keyEvent characters] rangeOfCharacterFromSet:invalidCharacters].location == NSNotFound;
 }
 
 - (BOOL)isRepeatEvent:(NSEvent *)keyEvent {
@@ -220,6 +232,19 @@ static NSString *SKWindowDidChangeFirstResponderNotification = @"SKWindowDidChan
 	unsigned modifierFlags = [keyEvent modifierFlags] & NSDeviceIndependentModifierFlagsMask;
     
     return modifierFlags == 0 && character == REPEAT_CHARACTER;
+}
+
+- (BOOL)isCancelEvent:(NSEvent *)keyEvent {
+    if ([keyEvent type] != NSKeyDown)
+        return NO;
+    if ([self isProcessing] == NO)
+        return NO;
+    
+    NSString *characters = [keyEvent charactersIgnoringModifiers];
+    unichar character = [characters length] > 0 ? [characters characterAtIndex:0] : 0;
+	unsigned modifierFlags = [keyEvent modifierFlags] & NSDeviceIndependentModifierFlagsMask;
+    
+    return modifierFlags == 0 && character == CANCEL_CHARACTER;
 }
 
 @end 
