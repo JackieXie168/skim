@@ -52,7 +52,7 @@ enum {
     BOOL matchesImmediately;
     
     NSArray *searchCache;
-    NSMutableString *searchString;
+    NSString *searchString;
     NSTimer *timer;
     BOOL processing;
 }
@@ -68,16 +68,20 @@ enum {
 
 - (int)matchOption;
 - (void)setMatchOption:(int)newValue;
-
-- (void)rebuildTypeSelectSearchCache;
     
+- (NSString *)searchString;
+- (void)setSearchString:(NSString *)newSearchString;
+
 - (BOOL)isProcessing;
 
-- (void)processKeyDownCharacter:(unichar)character;
-- (void)repeatSearch;
+- (void)rebuildTypeSelectSearchCache;
 
-- (BOOL)isTypeSelectCharacter:(unichar)character;
-- (BOOL)isRepeatCharacter:(unichar)character;
+- (void)processKeyDownEvent:(NSEvent *)keyEvent;
+- (void)repeatSearch;
+- (void)stopSearch;
+
+- (BOOL)isTypeSelectEvent:(NSEvent *)keyEvent;
+- (BOOL)isRepeatEvent:(NSEvent *)keyEvent;
 
 @end
 

@@ -3648,7 +3648,7 @@ static void removeTemporaryAnnotations(const void *annotation, void *context)
     if ([typeSelectHelper isEqual:[thumbnailTableView typeSelectHelper]] || [typeSelectHelper isEqual:[pdfView typeSelectHelper]]) {
         return pageLabels;
     } else if ([typeSelectHelper isEqual:[noteOutlineView typeSelectHelper]]) {
-        return [[noteArrayController arrangedObjects] valueForKeyPath:@"contents.lossyASCIIString"];
+        return [[noteArrayController arrangedObjects] valueForKey:@"contents"];
     } else if ([typeSelectHelper isEqual:[outlineView typeSelectHelper]]) {
         int i, count = [outlineView numberOfRows];
         NSMutableArray *array = [NSMutableArray arrayWithCapacity:count];

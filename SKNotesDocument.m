@@ -332,7 +332,7 @@
 #pragma mark SKTypeSelectHelper datasource protocol
 
 - (NSArray *)typeSelectHelperSelectionItems:(SKTypeSelectHelper *)typeSelectHelper {
-    return [[arrayController arrangedObjects] valueForKeyPath:@"contents.lossyASCIIString"];
+    return [[arrayController arrangedObjects] valueForKey:@"contents"];
 }
 
 - (unsigned int)typeSelectHelperCurrentlySelectedIndex:(SKTypeSelectHelper *)typeSelectHelper {

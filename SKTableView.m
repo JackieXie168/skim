@@ -69,9 +69,9 @@
     unichar eventChar = [characters length] > 0 ? [characters characterAtIndex:0] : 0;
 	unsigned modifierFlags = [theEvent modifierFlags] & NSDeviceIndependentModifierFlagsMask;
     
-    if ([typeSelectHelper isTypeSelectCharacter:eventChar] && typeSelectHelper && modifierFlags == 0)
-        [typeSelectHelper processKeyDownCharacter:eventChar];
-    else if ([typeSelectHelper isRepeatCharacter:eventChar] && modifierFlags == 0)
+    if ([typeSelectHelper isTypeSelectEvent:theEvent])
+        [typeSelectHelper processKeyDownEvent:theEvent];
+    else if ([typeSelectHelper isRepeatEvent:theEvent])
         [typeSelectHelper repeatSearch];
 	else if ((eventChar == NSDeleteCharacter || eventChar == NSDeleteFunctionKey) && modifierFlags == 0 && [self canDelete])
         [self delete:self];
@@ -81,6 +81,13 @@
         [self scrollToEndOfDocument:nil];
     else
         [super keyDown:theEvent];
+}
+
+- (BOOL)resignFirstResponder {
+    BOOL shouldResign = [super resignFirstResponder];
+    if (shouldResign)
+        [typeSelectHelper stopSearch];
+    return shouldResign;
 }
 
 - (void)scrollToBeginningOfDocument:(id)sender {

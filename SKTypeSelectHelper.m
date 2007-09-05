@@ -115,6 +115,17 @@
     matchOption = newValue;
 }
 
+- (NSString *)searchString {
+    return searchString;
+}
+
+- (void)setSearchString:(NSString *)newSearchString {
+    if (searchString != newSearchString) {
+        [searchString release];
+        searchString = [newSearchString retain];
+    }
+}
+
 - (BOOL)isProcessing {
     return processing;
 }
@@ -128,12 +139,15 @@
     searchCache = [[dataSource typeSelectHelperSelectionItems:self] retain];
 }
 
-- (void)processKeyDownCharacter:(unichar)character {
+- (void)processKeyDownEvent:(NSEvent *)keyEvent {
+    NSText *fieldEditor = [[NSApp keyWindow] fieldEditor:YES forObject:self];
+    
     if (processing == NO)
-        [searchString setString:@""];
+        [fieldEditor setString:@""];
     
     // Append the new character to the search string
-    [searchString appendFormat:@"%C", character];
+    [fieldEditor interpretKeyEvents:[NSArray arrayWithObject:keyEvent]];
+    [self setSearchString:[fieldEditor string]];
     
     if ([dataSource respondsToSelector:@selector(typeSelectHelper:updateSearchString:)])
         [dataSource typeSelectHelper:self updateSearchString:searchString];
@@ -158,16 +172,43 @@
     processing = NO;
 }
 
-- (BOOL)isTypeSelectCharacter:(unichar)character {
-    if ([[NSCharacterSet alphanumericCharacterSet] characterIsMember:character])
-        return YES;
-    if ([self isProcessing] && [[NSCharacterSet controlCharacterSet] characterIsMember:character] == NO)
-        return YES;
-    return NO;
+- (void)stopSearch {
+    if (timer)
+        [self typeSelectCleanTimeout:timer];
 }
 
-- (BOOL)isRepeatCharacter:(unichar)character {
-    return [self cyclesSimilarResults] && character == REPEAT_CHARACTER;
+- (BOOL)isTypeSelectEvent:(NSEvent *)keyEvent {
+    if ([keyEvent type] != NSKeyDown)
+        return NO;
+    if ([keyEvent modifierFlags] & NSDeviceIndependentModifierFlagsMask & ~NSShiftKeyMask & ~NSAlternateKeyMask)
+        return NO;
+    
+    NSString *characters = [keyEvent charactersIgnoringModifiers];
+    int i, count = [characters length];
+    unichar character;
+    
+    if (count == 0)
+        return NO;
+    
+    for (i = 0; i < count; i++) {
+        character = [characters characterAtIndex:i];
+        if ([[NSCharacterSet alphanumericCharacterSet] characterIsMember:character])
+            continue;
+        if ([self isProcessing] && [[NSCharacterSet controlCharacterSet] characterIsMember:character])
+            continue;
+    }
+    return YES;
+}
+
+- (BOOL)isRepeatEvent:(NSEvent *)keyEvent {
+    if ([keyEvent type] != NSKeyDown)
+        return NO;
+    
+    NSString *characters = [keyEvent charactersIgnoringModifiers];
+    unichar character = [characters length] > 0 ? [characters characterAtIndex:0] : 0;
+	unsigned modifierFlags = [keyEvent modifierFlags] & NSDeviceIndependentModifierFlagsMask;
+    
+    return modifierFlags == 0 && character == REPEAT_CHARACTER;
 }
 
 @end 
