@@ -139,28 +139,26 @@
     searchCache = [[dataSource typeSelectHelperSelectionItems:self] retain];
 }
 
-- (void)processKeyDownEvent:(NSEvent *)keyEvent forView:(NSView *)view {
-    if ([self isTypeSelectEvent:keyEvent forView:view]) {
-        NSText *fieldEditor = [[view window] fieldEditor:YES forObject:self];
-        
-        if (processing == NO)
-            [fieldEditor setString:@""];
-        
-        // Append the new character to the search string
-        [fieldEditor interpretKeyEvents:[NSArray arrayWithObject:keyEvent]];
-        [self setSearchString:[fieldEditor string]];
-        
-        if ([dataSource respondsToSelector:@selector(typeSelectHelper:updateSearchString:)])
-            [dataSource typeSelectHelper:self updateSearchString:searchString];
-        
-        // Reset the timer if it hasn't expired yet
-        [self startTimerForSelector:@selector(typeSelectSearchTimeout:)];
-        
-        if (matchesImmediately)
-            [self searchWithStickyMatch:processing];
-        
-        processing = YES;
-    }
+- (void)processKeyDownEvent:(NSEvent *)keyEvent {
+    NSText *fieldEditor = [[NSApp keyWindow] fieldEditor:YES forObject:self];
+    
+    if (processing == NO)
+        [fieldEditor setString:@""];
+    
+    // Append the new character to the search string
+    [fieldEditor interpretKeyEvents:[NSArray arrayWithObject:keyEvent]];
+    [self setSearchString:[fieldEditor string]];
+    
+    if ([dataSource respondsToSelector:@selector(typeSelectHelper:updateSearchString:)])
+        [dataSource typeSelectHelper:self updateSearchString:searchString];
+    
+    // Reset the timer if it hasn't expired yet
+    [self startTimerForSelector:@selector(typeSelectSearchTimeout:)];
+    
+    if (matchesImmediately)
+        [self searchWithStickyMatch:processing];
+    
+    processing = YES;
 }
 
 - (void)repeatSearch {
@@ -179,12 +177,10 @@
         [self typeSelectCleanTimeout:timer];
 }
 
-- (BOOL)isTypeSelectEvent:(NSEvent *)keyEvent forView:(NSView *)view {
+- (BOOL)isTypeSelectEvent:(NSEvent *)keyEvent {
     if ([keyEvent type] != NSKeyDown)
         return NO;
     if ([keyEvent modifierFlags] & NSDeviceIndependentModifierFlagsMask & ~NSShiftKeyMask & ~NSAlternateKeyMask)
-        return NO;
-    if ([[view window] firstResponder] != view)
         return NO;
     
     NSString *characters = [keyEvent charactersIgnoringModifiers];
@@ -204,10 +200,8 @@
     return YES;
 }
 
-- (BOOL)isRepeatEvent:(NSEvent *)keyEvent forView:(NSView *)view {
+- (BOOL)isRepeatEvent:(NSEvent *)keyEvent {
     if ([keyEvent type] != NSKeyDown)
-        return NO;
-    if ([[view window] firstResponder] != view)
         return NO;
     
     NSString *characters = [keyEvent charactersIgnoringModifiers];

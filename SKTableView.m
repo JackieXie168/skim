@@ -69,9 +69,9 @@
     unichar eventChar = [characters length] > 0 ? [characters characterAtIndex:0] : 0;
 	unsigned modifierFlags = [theEvent modifierFlags] & NSDeviceIndependentModifierFlagsMask;
     
-    if ([typeSelectHelper isTypeSelectEvent:theEvent forView:self])
-        [typeSelectHelper processKeyDownEvent:theEvent forView:self];
-    else if ([typeSelectHelper isRepeatEvent:theEvent forView:self])
+    if ([typeSelectHelper isTypeSelectEvent:theEvent])
+        [typeSelectHelper processKeyDownEvent:theEvent];
+    else if ([typeSelectHelper isRepeatEvent:theEvent])
         [typeSelectHelper repeatSearch];
 	else if ((eventChar == NSDeleteCharacter || eventChar == NSDeleteFunctionKey) && modifierFlags == 0 && [self canDelete])
         [self delete:self];
