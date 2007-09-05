@@ -91,16 +91,14 @@
     unichar eventChar = [characters length] > 0 ? [characters characterAtIndex:0] : 0;
 	unsigned modifierFlags = [theEvent modifierFlags] & NSDeviceIndependentModifierFlagsMask;
     
-    if ([typeSelectHelper isTypeSelectEvent:theEvent])
-        [typeSelectHelper processKeyDownEvent:theEvent];
-    else if ([typeSelectHelper isRepeatEvent:theEvent])
-        [typeSelectHelper repeatSearch];
-    else if (eventChar == NSHomeFunctionKey && (modifierFlags & ~NSFunctionKeyMask) == 0)
+    if ([typeSelectHelper processKeyDownEvent:theEvent]) {
+    } else if (eventChar == NSHomeFunctionKey && (modifierFlags & ~NSFunctionKeyMask) == 0) {
         [self scrollToBeginningOfDocument:nil];
-    else if (eventChar == NSEndFunctionKey && (modifierFlags & ~NSFunctionKeyMask) == 0)
+    } else if (eventChar == NSEndFunctionKey && (modifierFlags & ~NSFunctionKeyMask) == 0) {
         [self scrollToEndOfDocument:nil];
-    else
+    } else {
         [super keyDown:theEvent];
+    }
 }
 
 - (void)scrollToBeginningOfDocument:(id)sender {

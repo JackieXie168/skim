@@ -952,10 +952,7 @@ static void SKCGContextDrawGrabHandle(CGContextRef context, CGPoint point, float
             [self setAnnotationMode:SKStrikeOutNote];
         } else if ([self toolMode] == SKNoteToolMode && modifiers == 0 && eventChar == 'l') {
             [self setAnnotationMode:SKLineNote];
-        } else if ([typeSelectHelper isTypeSelectEvent:theEvent]) {
-            [typeSelectHelper processKeyDownEvent:theEvent];
-        } else if ([typeSelectHelper isRepeatEvent:theEvent]) {
-            [typeSelectHelper repeatSearch];
+        } else if ([typeSelectHelper processKeyDownEvent:theEvent]) {
         } else {
             [super keyDown:theEvent];
         }
